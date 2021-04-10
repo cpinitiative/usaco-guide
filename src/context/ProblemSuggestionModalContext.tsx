@@ -1,13 +1,14 @@
-import { createContext, useContext, useState } from 'react';
 import * as React from 'react';
-import { Problem } from '../models/problem';
-import UserDataContext from './UserDataContext/UserDataContext';
+import { createContext, useContext, useState } from 'react';
 import ProblemSuggestionModal from '../components/ProblemSuggestionModal';
+import UserDataContext from './UserDataContext/UserDataContext';
 
 const ProblemSuggestionModalContext = createContext<{
   openProblemSuggestionModal: (listName: string) => void;
 }>({
-  openProblemSuggestionModal: x => {},
+  openProblemSuggestionModal: (listName: string) => {
+    // Do Nothing
+  },
 });
 
 export default ProblemSuggestionModalContext;

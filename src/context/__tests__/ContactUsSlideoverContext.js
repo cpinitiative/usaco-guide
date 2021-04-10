@@ -10,6 +10,7 @@ jest.mock('@headlessui/react', () => {
     ...RealModule,
     Transition: props => (props.show ? props.children : null),
   };
+  // eslint-disable-next-line react/display-name
   MyModule.Transition.Child = props => <div>{props.children}</div>;
   return MyModule;
 });

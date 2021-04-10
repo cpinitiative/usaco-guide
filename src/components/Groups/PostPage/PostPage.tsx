@@ -1,14 +1,14 @@
 import * as React from 'react';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import PostHeader from './PostHeader';
-import PostBody from './PostBody';
-import PostProblems from './PostProblems';
-import PostSidebar from './PostSidebar';
-import SEO from '../../seo';
-import Layout from '../../layout';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
+import Layout from '../../layout';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
+import PostBody from './PostBody';
+import PostHeader from './PostHeader';
+import PostProblems from './PostProblems';
+import PostSidebar from './PostSidebar';
 
 export default function PostPage(props) {
   const { postId } = props as {

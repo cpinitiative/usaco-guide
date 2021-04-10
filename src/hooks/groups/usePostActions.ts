@@ -1,14 +1,13 @@
-import useFirebase from '../useFirebase';
-import { PostData } from '../../models/groups/posts';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { PostData } from '../../models/groups/posts';
 import {
   groupProblemConverter,
   GroupProblemData,
-  ProblemData,
   Submission,
   SubmissionType,
 } from '../../models/groups/problem';
+import useFirebase from '../useFirebase';
 
 export function usePostActions(groupId: string) {
   const firebase = useFirebase();

@@ -1,5 +1,7 @@
+import * as fs from 'fs';
 import { SECTIONS } from './content/ordering';
-import importFresh = require('import-fresh');
+import PGS from './src/components/markdown/PGS';
+import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
 import {
   getProblemURL,
   ProblemInfo,
@@ -7,11 +9,8 @@ import {
   ProblemSolutionInfo,
   probSources,
 } from './src/models/problem';
-import PGS from './src/components/markdown/PGS';
 import { books } from './src/utils/books';
-import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
-import { strict as assert } from 'assert';
-import * as fs from 'fs';
+import importFresh = require('import-fresh');
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -209,7 +208,7 @@ exports.onCreateNode = async ({
           'Failed to create problem info for',
           parsedContent[tableId]
         );
-        throw new Error('Failed to create problem info');
+        throw new Error(e);
       }
     });
 
@@ -368,6 +367,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     if (problemInfo.hasOwnProperty(node.uniqueId)) {
       let a = node,
         b = problemInfo[node.uniqueId];
+      // Some problems with no corresponding module gets put into extraProblems.json.
+      // If a problem has a module, then it should be removed from extraProblems.json.
+      if (!a.module || !b.module) {
+        throw new Error(
+          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
+        );
+      }
       if (a.name !== b.name || a.url !== b.url || a.source !== b.source) {
         throw new Error(
           `The problem ${node.uniqueId} appears in both ${
@@ -377,13 +383,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           } - ${
             problemInfo[node.uniqueId].module.frontmatter.title
           } but has different information! They need to have the same name / url / source.`
-        );
-      }
-      // Some problems with no corresponding module gets put into extraProblems.json.
-      // If a problem has a module, then it should be removed from extraProblems.json.
-      if (!a.module || !b.module) {
-        throw new Error(
-          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
         );
       }
     }
@@ -457,13 +456,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           console.error(
             'Problem ' +
               node.uniqueId +
-              " isn't linked to its corresponding internal solution in " +
-              node.module
-              ? 'module ' +
-                  node.module.frontmatter.title +
-                  ' - ' +
-                  node.module.frontmatter.id
-              : 'extraProblems.json'
+              " isn't linked to its corresponding internal solution in module " +
+              node.module.frontmatter.title +
+              ' - ' +
+              node.module.frontmatter.id
           );
         });
         throw new Error(

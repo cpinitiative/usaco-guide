@@ -1,17 +1,17 @@
-import * as React from 'react';
 import { Link, PageProps } from 'gatsby';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import * as React from 'react';
+import { useRef } from 'react';
+import AuthorsSection from '../components/Index/AuthorsSection';
+import ContributorsSection from '../components/Index/ContributorsSection';
+import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import { useRef } from 'react';
 import Video from '../components/Video';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
-import AuthorsSection from '../components/Index/AuthorsSection';
-import TrustedBy from '../components/Index/TrustedBy';
-import ContributorsSection from '../components/Index/ContributorsSection';
 
 export default function IndexPage(props: PageProps) {
-  const learnMoreRef = useRef();
+  const learnMoreRef = useRef<HTMLDivElement>();
 
   return (
     <Layout>
@@ -64,7 +64,6 @@ export default function IndexPage(props: PageProps) {
                       href="#learn-more"
                       onClick={e => {
                         e.preventDefault();
-                        // @ts-ignore
                         learnMoreRef.current.scrollIntoView({
                           behavior: 'smooth',
                         });
@@ -478,6 +477,7 @@ export default function IndexPage(props: PageProps) {
               href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
               target="_blank"
               className="underline"
+              rel="noreferrer"
             >
               Vercel
             </a>

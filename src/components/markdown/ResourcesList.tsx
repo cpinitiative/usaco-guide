@@ -1,10 +1,10 @@
 import * as React from 'react';
-import Tooltip from '../Tooltip/Tooltip';
-import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import PGS from './PGS';
 import { books } from '../../utils/books';
+import TextTooltip from '../Tooltip/TextTooltip';
+import Tooltip from '../Tooltip/Tooltip';
+import PGS from './PGS';
 
 export function ResourcesList(props) {
   return (
@@ -19,7 +19,7 @@ export function ResourcesList(props) {
                 <tr>
                   <th
                     colSpan={4}
-                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-purple-800 bg-purple-50 text-purple-500 dark:bg-purple-900 dark:text-purple-200`}
+                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-30 dark:text-purple-200`}
                   >
                     Resources{props.title ? `: ${props.title}` : ''}
                   </th>

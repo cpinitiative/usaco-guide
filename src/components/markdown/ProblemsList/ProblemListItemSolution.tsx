@@ -1,17 +1,17 @@
 import * as React from 'react';
-import Tooltip from '../../Tooltip/Tooltip';
-import TextTooltip from '../../Tooltip/TextTooltip';
 import { getProblemURL, ProblemInfo } from '../../../models/problem';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import Tooltip from '../../Tooltip/Tooltip';
 import { Anchor } from './ProblemsListItem';
 
 type ProblemListItemSolutionProps = {
   problem: ProblemInfo;
-  onShowSolutionSketch: Function;
+  onShowSolutionSketch: (problem: ProblemInfo) => void;
 };
 
 export default function ProblemListItemSolution(
   props: ProblemListItemSolutionProps
-) {
+): JSX.Element {
   const { problem } = props;
   let contents: JSX.Element = null;
   if (!problem.solution) {
@@ -77,13 +77,15 @@ export default function ProblemListItemSolution(
         className={`flex items-center group px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
         href={`${getProblemURL(problem)}/solution`}
         target="_blank"
+        rel="noreferrer"
       >
         <div className="text-left">Internal Sol</div>
       </a>
     );
   } else {
-    // @ts-ignore
     throw new Error(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       "Couldn't determine problem solution type " + problem.solution.kind
     );
   }

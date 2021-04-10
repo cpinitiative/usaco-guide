@@ -1,8 +1,7 @@
-import { GroupData } from '../../models/groups/groups';
 import * as React from 'react';
-import firebaseType from 'firebase';
-import useFirebase from '../useFirebase';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import { GroupData } from '../../models/groups/groups';
+import useFirebase from '../useFirebase';
 
 export type MemberInfo = {
   displayName: string;

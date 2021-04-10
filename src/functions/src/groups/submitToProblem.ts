@@ -1,5 +1,5 @@
-import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import { Submission, SubmissionType } from '../../../models/groups/problem';
 
 if (admin.apps.length === 0) {

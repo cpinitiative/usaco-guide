@@ -1,14 +1,14 @@
-import * as React from 'react';
 import { Link } from 'gatsby';
-import { PostData } from '../../models/groups/posts';
+import * as React from 'react';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { GroupData } from '../../models/groups/groups';
+import { PostData } from '../../models/groups/posts';
 import {
   ExecutionStatus,
   ProblemData,
   submissionCircleBorderColor,
   submissionCircleColor,
 } from '../../models/groups/problem';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 const ProblemListItem = ({
   group,

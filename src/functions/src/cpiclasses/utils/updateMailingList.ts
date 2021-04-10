@@ -1,6 +1,6 @@
-import * as functions from 'firebase-functions';
-import * as crypto from 'crypto';
 import axios from 'axios';
+import * as crypto from 'crypto';
+import * as functions from 'firebase-functions';
 const MAILCHIMP_API_KEY = functions.config().mailchimp.apikey;
 
 export default async function updateMailingList({

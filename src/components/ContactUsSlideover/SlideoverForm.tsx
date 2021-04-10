@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
+import * as React from 'react';
 import { FormEvent } from 'react';
 
 type SlideoverProps = {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   title: React.ReactNode;
   subtitle: React.ReactNode;
   children: React.ReactNode;

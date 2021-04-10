@@ -1,5 +1,5 @@
-import { createContext } from 'react';
 import * as React from 'react';
+import { createContext } from 'react';
 
 const FirebaseContext = createContext(null);
 const firebaseConfig = {
@@ -26,6 +26,7 @@ export const FirebaseProvider = ({ children }) => {
       Promise.all([app, auth, firestore, database, functions]).then(values => {
         const firebaseInstance = values[0].default;
         firebaseInstance.initializeApp(firebaseConfig);
+        // firebaseInstance.functions().useEmulator('localhost', 5001);
         setFirebase(firebaseInstance);
       });
     }

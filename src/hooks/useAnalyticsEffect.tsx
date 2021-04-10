@@ -1,11 +1,8 @@
-import * as React from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useFirebase from './useFirebase';
 
 export const useAnalyticsEffect = () => {
   useFirebase(firebase => {
-    // @ts-ignore
-    if (window.ga && ga.create) {
+    if ((window as any).ga && (window as any).ga.create) {
       // google analytics loaded
     } else {
       // google analytics got blocked

@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0     # Required to retrieve git history of Chromatic
 
       - name: Cache node modules
         uses: actions/cache@v2
@@ -24,6 +26,19 @@ jobs:
 
       - name: Run tests
         run: yarn test
+
+      - name: Check for typescript errors
+        run: yarn check-ts-errors
+
+      - name: Run eslint
+        run: yarn eslint --quiet
+
+      - name: Run chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: 6f3c58ad349c
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exitZeroOnChanges: true    # don't fail the workflow if snapshots change
 
   check-links:
     runs-on: ubuntu-latest

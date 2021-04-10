@@ -1,14 +1,12 @@
-import * as React from 'react';
 import { graphql } from 'gatsby';
+import * as React from 'react';
 import Layout from '../components/layout';
-
 import Markdown from '../components/markdown/Markdown';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
-import { SolutionInfo } from '../models/solution';
+import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { ProblemSolutionContext } from '../context/ProblemSolutionContext';
+import { SolutionInfo } from '../models/solution';
 
 export default function Template(props) {
   const { mdx, allProblemInfo, problemInfo } = props.data;

@@ -1,31 +1,31 @@
-import React, { ReactElement } from 'react';
 import { Router } from '@reach/router';
-import NotFoundPage from './404';
-import GroupSelectPage from '../components/Groups/GroupSelectPage';
-import GroupPage from '../components/Groups/GroupPage/GroupPage';
-import PostPage from '../components/Groups/PostPage/PostPage';
-import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
+import { Link } from 'gatsby';
+import React, { ReactElement } from 'react';
+import EditGroupPage from '../components/Groups/EditGroupPage/EditGroupPage';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
+import GroupLeaderboardPage from '../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
+import GroupPage from '../components/Groups/GroupPage/GroupPage';
+import GroupSelectPage from '../components/Groups/GroupSelectPage';
+import JoinGroupPage from '../components/Groups/JoinGroupPage';
+import JoinLinksPage from '../components/Groups/JoinLinksPage/JoinLinksPage';
+import MembersPage from '../components/Groups/MembersPage/MembersPage';
+import PostLeaderboardPage from '../components/Groups/PostLeaderboardPage/PostLeaderboardPage';
+import PostPage from '../components/Groups/PostPage/PostPage';
+import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
+import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
+import Layout from '../components/layout';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   ActiveGroupProvider,
   useActiveGroup,
 } from '../hooks/groups/useActiveGroup';
-import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
-import JoinGroupPage from '../components/Groups/JoinGroupPage';
-import EditGroupPage from '../components/Groups/EditGroupPage/EditGroupPage';
-import Layout from '../components/layout';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import { Link } from 'gatsby';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import JoinLinksPage from '../components/Groups/JoinLinksPage/JoinLinksPage';
 import {
   ActivePostProblemsProvider,
   useActivePostProblems,
 } from '../hooks/groups/useActivePostProblems';
-import PostLeaderboardPage from '../components/Groups/PostLeaderboardPage/PostLeaderboardPage';
-import GroupLeaderboardPage from '../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
-import MembersPage from '../components/Groups/MembersPage/MembersPage';
+import NotFoundPage from './404';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {

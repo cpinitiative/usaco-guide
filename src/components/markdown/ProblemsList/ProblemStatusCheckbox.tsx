@@ -1,18 +1,17 @@
+import Tippy from '@tippyjs/react';
 import * as React from 'react';
+import { useContext, useRef, useState } from 'react';
+import styled from 'styled-components';
+import 'tippy.js/themes/light.css';
+import ConfettiContext from '../../../context/ConfettiContext';
+import { useDarkMode } from '../../../context/DarkModeContext';
+import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import {
-  Problem,
-  PROBLEM_PROGRESS_OPTIONS,
   ProblemInfo,
   ProblemProgress,
+  PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
-import { useContext, useRef, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/themes/light.css';
-import styled from 'styled-components';
-
-import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import ConfettiContext from '../../../context/ConfettiContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -25,7 +24,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
     currentProgress
   );
 
-  const icon = (status: ProblemProgress, equal: Boolean) => {
+  const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
       'Not Attempted': '',
       Solving: 'text-orange-500',
@@ -93,8 +92,8 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
           role="option"
           className={`${
             activeProgress === progress
-              ? 'text-white bg-indigo-600'
-              : 'text-gray-900'
+              ? 'text-white bg-indigo-600 dark:bg-indigo-800'
+              : 'text-gray-900 dark:text-dark-med-emphasis'
           } cursor-default select-none relative py-2 pl-10 pr-4`}
           key={progress}
           onClick={() => onProgressSelected(progress)}
@@ -140,6 +139,7 @@ export default function ProblemStatusCheckbox({
   problem: ProblemInfo;
   size?: 'small' | 'large';
 }) {
+  const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
   const { userProgressOnModules, setModuleProgress } = useContext(
     UserDataContext
@@ -160,7 +160,7 @@ export default function ProblemStatusCheckbox({
     if (moduleProgress !== 'Not Started') return;
     setModuleProgress(markdownLayoutInfo.id, 'Practicing');
   };
-  let status: ProblemProgress =
+  const status: ProblemProgress =
     userProgressOnProblems[problem.uniqueId] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
@@ -170,7 +170,7 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
-  const tippyRef = useRef();
+  const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
     <StyledTippy
@@ -179,10 +179,9 @@ export default function ProblemStatusCheckbox({
         <div className="w-56 z-20">
           <ProgressDropdown
             onProgressSelected={progress => {
-              // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem.uniqueId, progress);
-              let solved = x => x == 'Reviewing' || x == 'Solved';
+              const solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
               if (!solved(status) && solved(progress)) {
@@ -196,7 +195,7 @@ export default function ProblemStatusCheckbox({
       interactive={true}
       trigger="click"
       placement="bottom-start"
-      theme="light"
+      theme={darkMode ? "dark" : "light"}
     >
       <span
         // onClick={handleClick}
