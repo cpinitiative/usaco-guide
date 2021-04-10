@@ -5,6 +5,7 @@ import Asterisk from '../components/Tooltip/Asterisk';
 export default {
   title: 'AsteriskTooltip',
   component: Asterisk,
+  chromatic: { delay: 300 },
 };
 
 const Template: Story<ComponentProps<typeof Asterisk>> = args => {

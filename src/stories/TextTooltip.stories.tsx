@@ -5,6 +5,7 @@ import TextTooltip from '../components/Tooltip/TextTooltip';
 export default {
   title: 'TextTooltip',
   component: TextTooltip,
+  chromatic: { delay: 300 },
 };
 
 const Template: Story<ComponentProps<typeof TextTooltip>> = args => {
