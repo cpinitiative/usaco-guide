@@ -48,8 +48,8 @@ const CompactTippy = styled(StyledTippy)`
 `;
 
 export interface TooltipProps extends Omit<TippyProps, 'placement'> {
-  position: Placement;
-  type: 'normal' | 'asterisk' | 'compact';
+  position?: Placement;
+  type?: 'normal' | 'asterisk' | 'compact';
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
