@@ -17,13 +17,85 @@ TODO:
 
 ## Introduction
 
+### Centroids
+
+A **centroid** of a tree is defined as a node such that when the tree is rooted at it, no other nodes
+have a subtree of size greater than $\frac{N}{2}$.
+
 <FocusProblem problem="sam" />
 
-**Centroid Decomposition** is a divide and conquer technique for trees. The
-**centroid** of a tree is a node which, if rooted, results in no other nodes
-having a subtree of size greater than $\frac{N}{2}$. **Centroid Decomposition**
-works by repeated splitting the tree and each of the resulting subgraphs at the
-centroid, producing $\mathcal{O}(\log N)$ layers of subgraphs.
+We can find a centroid in a tree by starting at the root. Each step, loop
+through all of its children. If all of its children have subtree size less
+than or equal to $\frac{N}{2}$, then it is a centroid. Otherwise, move to the
+child with a subtree size that is more than $\frac{N}{2}$ and repeat until you find a
+centroid.
+
+<LanguageSection>
+
+<CPPSection>
+
+### Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int maxn = 200010;
+
+int n;
+vector <int> adj[maxn];
+int subtree_size[maxn];
+
+int get_subtree_size(int node, int par = -1) {
+	int& res = subtree_size[node];
+	res = 1;
+	for (int i : adj[node]) {
+		if (i == par) continue;
+		res += get_subtree_size(i, node);
+	}
+	return res;
+}
+
+int get_centroid(int node, int par = -1) {
+	for (int i : adj[node]) {
+		if (i == par) continue;
+
+		if (subtree_size[i] * 2 > n) {
+			return get_centroid(i, node);
+		}
+	}
+	return node;
+}
+
+int main() {
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--; b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	get_subtree_size(0);
+	cout << get_centroid(0) + 1 << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Centroid decomposition
+
+<FocusProblem problem="sam2" />
+
+**Centroid Decomposition** is a divide and conquer technique for trees.
+**Centroid Decomposition** works by repeated splitting the tree and each of the
+resulting subgraphs at the centroid, producing $\mathcal{O}(\log N)$ layers of
+subgraphs.
 
 <Resources>
 	<Resource

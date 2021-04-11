@@ -11,7 +11,7 @@ const ProblemAutocompleteHit = ({
   return (
     <li key={hit.objectID}>
       <button
-        className="p-4 bg-gray-50 rounded-lg text-left w-full focus:outline-none group hover:bg-light-blue-500 hover:text-white"
+        className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-left w-full focus:outline-none group hover:bg-light-blue-500 dark:hover:bg-light-blue-700 hover:text-white"
         onClick={() => onClick(hit)}
       >
         <div className="flex items-center justify-between">
@@ -23,7 +23,7 @@ const ProblemAutocompleteHit = ({
             {hit.difficulty}
           </span>
         </div>
-        <div className="md:flex md:items-center md:justify-between text-sm text-gray-700 group-hover:text-light-blue-100">
+        <div className="md:flex md:items-center md:justify-between text-sm text-gray-700 dark:text-gray-300 group-hover:text-light-blue-100">
           <span>
             Tags: {hit.tags?.length > 0 ? hit.tags.join(', ') : 'None'}
           </span>
@@ -51,7 +51,7 @@ export const ProblemAutocomplete = ({
         <input
           autoFocus
           type="text"
-          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          className="input"
           placeholder="Problem Name"
           value={currentRefinement}
           onChange={e => refine(e.currentTarget.value)}
@@ -59,7 +59,7 @@ export const ProblemAutocomplete = ({
       ) : (
         <input
           type="text"
-          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          className="input"
           placeholder="Problem Name"
           value={currentRefinement}
           onChange={e => refine(e.currentTarget.value)}

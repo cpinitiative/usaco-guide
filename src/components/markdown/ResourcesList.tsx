@@ -12,14 +12,14 @@ export function ResourcesList(props) {
       <div className="flex flex-col mb-4">
         <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
           <div
-            className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent`}
+            className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200 dark:border-transparent`}
           >
             <table className="min-w-full">
               <thead>
                 <tr>
                   <th
                     colSpan={4}
-                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-purple-800 bg-purple-50 text-purple-500 dark:bg-purple-900 dark:text-purple-200`}
+                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-25 dark:text-purple-200`}
                   >
                     Resources{props.title ? `: ${props.title}` : ''}
                   </th>
