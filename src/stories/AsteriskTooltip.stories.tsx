@@ -6,7 +6,9 @@ export default {
   title: 'AsteriskTooltip',
   component: Asterisk,
   // tooltips move around and cause false positive change detection :(
-  chromatic: { disable: true },
+  parameters: {
+    chromatic: { disable: false },
+  },
 };
 
 const Template: Story<ComponentProps<typeof Asterisk>> = args => {
