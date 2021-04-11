@@ -7,7 +7,7 @@ export default {
   component: TextTooltip,
   // tooltips move around and cause false positive change detection :(
   parameters: {
-    chromatic: { disable: false },
+    chromatic: { disable: true },
   },
 };
 
