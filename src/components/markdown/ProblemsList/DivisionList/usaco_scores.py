@@ -27,10 +27,8 @@ def usaco_parse(is_plat,html):
 					if c.has_attr('colspan'):
 						lens.append(int(c['colspan'])-1)
 						names.append(c.text);
-				# print("????",lens,names)
 				num_probs = len(lens)
 				totScore = [0]*num_probs
-				relScore = [0]*num_probs
 				perfect = [0]*num_probs
 			else:
 				arr = []
@@ -58,19 +56,17 @@ def usaco_parse(is_plat,html):
 				tot += 1 
 				if tmpScore < 1: # less than third of points, data is probably complete?
 					bad = False
-				if is_plat:
+				if is_plat and tot == 10:
 					break
 			fst = False
 		tsum = 0
 		if tot == 0:
 			return None
+		# print("BEFORE DIVISION",table_number,totScore,tot)
 		for i in range(num_probs):
 			totScore[i] /= tot 
 			tsum += totScore[i]
-		for i in range(num_probs):
-			relScore[i] = totScore[i]/tsum
-		# if bad:
-		# 	return None
+		# print("AFTER DIVISION",table_number,totScore,tot)
 		if table_number == 2:
 			if bad:
 				print("INCOMPLETE DATA")
@@ -83,7 +79,10 @@ def usaco_parse(is_plat,html):
 		# break
 	return None
 
-def usaco_stats():
+def usaco_stats(): 
+	"""
+	generate contest_to_points
+	"""
 	prefix = "http://www.usaco.org/current/data/"
 	month = ["dec","jan","feb","open"]
 	month_expand = ["December","January","February","US Open"]

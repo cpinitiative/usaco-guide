@@ -26,7 +26,7 @@ export const parameters = {
 
 export const decorators = [
   renderStory => (
-    <div className="grid storybook-container">
+    <div className="grid storybook-container font-sans">
       <div className="h-full">
         <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
           <h1 className="text-gray-800 text-2xl font-bold">Light Mode</h1>
