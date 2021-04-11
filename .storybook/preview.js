@@ -29,7 +29,7 @@ export const decorators = [
     <div className="grid storybook-container font-sans">
       <div className="h-full">
         <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-          <h1 className="text-gray-800 text-2xl font-bold">Light Mode</h1>
+          <p className="text-gray-800 text-2xl font-bold">Light Mode</p>
           <div className="h-4" />
           <DarkModeContext.Provider value={false}>
             {renderStory()}
@@ -38,7 +38,7 @@ export const decorators = [
       </div>
       <div className="bg-dark-surface text-dark-high-emphasis dark h-full">
         <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-          <h1 className="text-gray-100 text-2xl font-bold">Dark Mode</h1>
+          <p className="text-gray-100 text-2xl font-bold">Dark Mode</p>
           <div className="h-4" />
           <DarkModeContext.Provider value={true}>
             {renderStory()}
