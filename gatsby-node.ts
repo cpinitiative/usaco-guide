@@ -652,20 +652,7 @@ exports.createResolvers = ({ createResolvers }) => {
       isIncomplete: {
         type: `Boolean`,
         async resolve(source, args, context, info) {
-          const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          const mdast = await resolve(source, args, context, {
-            fieldName: 'mdast',
-          });
-          let incomplete = false;
-          mdast.children.forEach(node => {
-            if (
-              node.type === 'jsx' &&
-              node.value.includes('<IncompleteSection')
-            ) {
-              incomplete = true;
-            }
-          });
-          return incomplete;
+          return source.rawBody.indexOf('<IncompleteSection') !== -1;
         },
       },
     },
