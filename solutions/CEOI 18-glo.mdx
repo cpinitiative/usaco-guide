@@ -17,7 +17,8 @@ interval's increase.
 
 One key observation is that it is useless to subtract $d$ from any interval
 $[l,r]$ as opposed to just $[1, r]$ for any $l \neq 1$. Additionally, observe
-that it is optimal to always subtract $x$ from the interval $[1, r]$ no matter what.
+that it is optimal to always subtract $x$ from the interval $[1, r]$ no matter
+what.
 
 An $\mathcal{O}(n^2 \log n)$ algorithm would involve brute forcing for all
 prefixes. Subtract $x$ from each interval $[1, i]$ for all
@@ -25,23 +26,23 @@ $i \in \{1, 2, \dotsc, n\}$ and then find the LIS after each subtraction.
 
 # Subtask 4: One pass
 
-Take the LIS of the array. Any $\mathcal{O}(n \log n)$ algorithm to find
-the LIS will pass.
+Take the LIS of the array. Any $\mathcal{O}(n \log n)$ algorithm to find the LIS
+will pass.
 
 # General Solution
 
-For each $i$, let $L_i$ be the length of the longest increasing subsequence
-that ends at and contains $i$ and $R_i$ be the length of the longest
-increasing subsequence starting at $i$ after $[1, i]$ is decremented.
-We can compute each $R_i$ by storing the length of the longest decreasing
-subsequence for each prefix of the reverse of the input array.
+For each $i$, let $L_i$ be the length of the longest increasing subsequence that
+ends at and contains $i$ and $R_i$ be the length of the longest increasing
+subsequence starting at $i$ after $[1, i]$ is decremented. We can compute each
+$R_i$ by storing the length of the longest decreasing subsequence for each
+prefix of the reverse of the input array.
 
 The final answer is $\max_{i \in \{0, 1, \dotsc, n\}} L_i+R_i-1$.
 
 # Implementation
 
-In the implementation $L_i$ is $pref_longest_i$ and $R_i-1$ is the variable $pos$
-in the second `for` loop.
+In the implementation $L_i$ is $pref_longest_i$ and $R_i-1$ is the variable
+$pos$ in the second `for` loop.
 
 <LanguageSection>
 
@@ -51,7 +52,7 @@ in the second `for` loop.
 #include <bits/stdc++.h>
 using namespace std;
 
-int temps[200005]; 
+int temps[200005];
 int pref_longest[200005];
 
 int main() {
@@ -61,7 +62,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> temps[i];
 	}
-	
+
 	vector<int> dp(n, INT_MAX);
 	int longest = 0;
 	// longest increasing subsequence ending at i
@@ -71,7 +72,7 @@ int main() {
 		pref_longest[i] = j + 1;
 		longest = max(longest, pref_longest[i]);
 	}
-	
+
 	dp = vector<int>(n, INT_MAX);
 	// longest decreasing subsequence ending at i of reverse
 	// = longest increasing subsequence starting at i

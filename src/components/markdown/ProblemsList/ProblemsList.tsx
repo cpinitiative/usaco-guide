@@ -76,7 +76,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
   return (
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
-      id={`problemlist-${props.isDivisionTable === false ? props.tableName : ("division-" + props.division)}`}
+      id={`problemlist-${
+        props.isDivisionTable === false
+          ? props.tableName
+          : 'division-' + props.division
+      }`}
     >
       <div className="flex flex-col">
         <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">

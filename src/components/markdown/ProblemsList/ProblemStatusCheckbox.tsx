@@ -195,7 +195,7 @@ export default function ProblemStatusCheckbox({
       interactive={true}
       trigger="click"
       placement="bottom-start"
-      theme={darkMode ? "dark" : "light"}
+      theme={darkMode ? 'dark' : 'light'}
     >
       <span
         // onClick={handleClick}
