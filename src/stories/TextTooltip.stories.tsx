@@ -5,6 +5,8 @@ import TextTooltip from '../components/Tooltip/TextTooltip';
 export default {
   title: 'TextTooltip',
   component: TextTooltip,
+  // tooltips move around and cause false positive change detection :(
+  chromatic: { disable: true },
 };
 
 const Template: Story<ComponentProps<typeof TextTooltip>> = args => {

@@ -1,5 +1,6 @@
 import { Story } from '@storybook/react';
 import React, { ComponentProps } from 'react';
+import HTMLComponents from '../../components/markdown/HTMLComponents';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 
 const MarkdownComponent: React.FC = props => <div {...props} />;
@@ -16,7 +17,6 @@ const Template: Story<ComponentProps<typeof MarkdownComponent>> = args => (
 
 export const Lists = Template.bind({});
 Lists.args = {
-  title: 'Lists',
   children: (
     <>
       <ul>
@@ -111,6 +111,18 @@ Lists.args = {
           </div>
         </li>
       </ol>
+    </>
+  ),
+};
+
+export const InlineCode = Template.bind({});
+InlineCode.args = {
+  children: (
+    <>
+      <p>
+        This is a test of some inline code:{' '}
+        <HTMLComponents.inlineCode>rick.astley()</HTMLComponents.inlineCode>!
+      </p>
     </>
   ),
 };
