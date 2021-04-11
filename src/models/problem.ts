@@ -203,7 +203,7 @@ export type ProblemSolutionMetadata =
       // USACO solution, generates it based off of the USACO problem ID
       // ex. 1113 is mapped to sol_prob1_gold_feb21.html
       kind: 'USACO';
-      usacoId: number;
+      usacoId: string;
     }
   | {
       // IOI solution, generates it based off of the year
@@ -326,7 +326,7 @@ export function autoGenerateSolutionMetadata(
   if (isUsaco(source)) {
     return {
       kind: 'USACO',
-      usacoId: getTrailingCodeFromProblemURL(url),
+      usacoId: '' + getTrailingCodeFromProblemURL(url),
     };
   } else if (source == 'IOI') {
     for (let i = 1994; i <= 2089; ++i) {
