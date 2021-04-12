@@ -33,15 +33,15 @@ jobs:
       - name: Run eslint
         run: yarn eslint --quiet
 
-      - name: Check file formatting with prettier
-        run: yarn prettier --list-different .
-
       - name: Run chromatic
         uses: chromaui/action@v1
         with:
           projectToken: 6f3c58ad349c
           token: ${{ secrets.GITHUB_TOKEN }}
           exitZeroOnChanges: true # don't fail the workflow if snapshots change
+
+      - name: Check file formatting with prettier
+        run: yarn prettier --list-different .
 
   check-links:
     runs-on: ubuntu-latest
