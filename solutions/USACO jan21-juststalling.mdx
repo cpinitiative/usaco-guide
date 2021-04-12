@@ -13,21 +13,20 @@ number of possibilities that each cow can use in a permutation, all we have to d
 off the number of other cows that will be using other stalls which this cow is capable of using. To do this, we
 can use the fact that only cows with heights greater than or equal to this cow are required to use one of the
 stalls that this cow is capable of using. Since we know that our cows are sorted in height increasing order,
-the $\texttt{i}$th cow in our list will have $\texttt{n-i}$ cows with heights greater than or equal to it. So to
+the ith cow in our list will have $\texttt{n-i}$ cows with heights greater than or equal to it. So to
 get our final answer, we can initialize a cumulative product which will contain our answer, and for every
-$\texttt{i}$ between 1 and $\texttt{n}$, we just have to multiply this cumulative product by the number of
-stalls that the $\texttt{i}$th cow could possibly use, minus $\texttt{(n-i)}$.
+i between 1 and n, we just have to multiply this cumulative product by the number of
+stalls that the ith cow could possibly use, minus $\texttt{(n-i)}$.
 
 ## Implementation
 
-Time Complexity: $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 
 <PySection>
 
 ```python
-// Take in the data as an integer (n) and two separate lists (the stalls and the cows) using Python standard input.
 n = int(input(""))
 cows = list(map(int, input("").split(" ")))
 stalls = list(map(int, input("").split(" ")))
@@ -35,9 +34,9 @@ stalls = list(map(int, input("").split(" ")))
 cows.sort()
 stalls.sort()
 
-possible_places = [0]*n
+possible_places = [0] * n
 
-// Create a list with the ith element of this list containing the number of stalls that the ith cow in our sorted cows list can use.
+# Create a list containing the number of stalls each cow can use.
 for i in range(n):
     for j in range(n):
         if cows[i] <= stalls[j]:
@@ -45,9 +44,10 @@ for i in range(n):
 // Initialize a cumulative product
 product = 1
 
-// Starting from the back, we can multiply our cumultive product by the number of possibilities of stalls that each cow can take in a permutation, based off of the formula provided in the explanation.
-for i in range(n-1, -1, -1):
-    product *= (possible_places[i] - (n-i-1))
+# Multiply our cumultive product by the number of possibilities of stalls that each cow can take
+# Use the formula provided in the explanation.
+for i in range(n - 1, -1, -1):
+    product *= (possible_places[i] - (n - i - 1))
 
 print(product)
 ```
