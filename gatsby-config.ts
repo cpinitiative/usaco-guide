@@ -3,7 +3,6 @@ require('dotenv').config();
 export const flags = {
   PRESERVE_WEBPACK_CACHE: true,
   FAST_DEV: true,
-  FAST_REFRESH: true,
 };
 
 export const siteMetadata = {
