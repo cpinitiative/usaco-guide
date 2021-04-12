@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import Select from 'react-select';
 import { SECTION_LABELS } from '../../content/ordering';
+import { useDarkMode } from '../context/DarkModeContext';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
@@ -29,6 +30,7 @@ export default function ProblemSuggestionModal({
 
   const submitSuggestion = useProblemSuggestionAction();
   const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
+  const darkMode = useDarkMode();
 
   React.useEffect(() => {
     if (isOpen) {
@@ -170,6 +172,53 @@ export default function ProblemSuggestionModal({
             onChange={o => setSource(o.value)}
             className={'mt-1 block w-full text-sm tw-forms-disable'}
             isDisabled={loading}
+            styles={
+              !darkMode
+                ? undefined
+                : {
+                    control: provided => ({
+                      ...provided,
+                      backgroundColor: '#111827',
+                      borderColor: '#374151',
+                    }),
+                    menuList: provided => ({
+                      ...provided,
+                      borderColor: '#374151',
+                      borderWidth: '1px',
+                      borderRadius: '6px',
+                    }),
+                    menu: provided => ({
+                      ...provided,
+                      backgroundColor: '#111827',
+                    }),
+                    indicatorSeparator: provided => ({
+                      ...provided,
+                      backgroundColor: '#374151',
+                    }),
+                    indicatorsContainer: provided => ({
+                      ...provided,
+                      color: '#374151',
+                    }),
+                    singleValue: provided => ({
+                      ...provided,
+                      color: 'rgba(255, 255, 255, 0.87)',
+                    }),
+                    input: provided => ({
+                      ...provided,
+                      color: 'rgba(255, 255, 255, 0.87)',
+                    }),
+                    option: (provided, { isFocused, isSelected }) => ({
+                      ...provided,
+                      ...(isFocused
+                        ? {
+                            backgroundColor: '#4d94ff',
+                          }
+                        : isSelected
+                        ? { backgroundColor: '#0063e6' }
+                        : {}),
+                    }),
+                  }
+            }
           />
         </div>
       </div>

@@ -195,7 +195,7 @@ const submitProblemSuggestion = functions.https.onCall(
       )}`,
       {
         content: Buffer.from(formattedNewContent).toString('base64'),
-        message: "Feat: add suggested problem 'test'",
+        message: `Feat: add suggested problem '${name}'`,
         branch: branchName,
         sha: oldFileHash,
       }
