@@ -23,6 +23,7 @@ import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsCon
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
+import { getProblemInfo } from '../models/problem';
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );
@@ -120,7 +121,9 @@ export default function LiveUpdatePage(props: PageProps) {
         .filter(key => key !== 'MODULE_ID')
         .map(key => ({
           listId: key,
-          problems: parsedProblems[key],
+          problems: parsedProblems[key].map(problemMetadata =>
+            getProblemInfo(problemMetadata)
+          ),
         }));
       setMarkdownProblemListsProviderValue(problemsList);
     } catch (e) {
