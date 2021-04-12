@@ -317,8 +317,8 @@ export const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
       url += '#page=' + PGS[dictKey][sec];
       return url;
     };
-    let source = 'CPH';
-    let cphUrl = getSec(source, books[source][0], solutionMetadata.section);
+    const source = 'CPH';
+    const cphUrl = getSec(source, books[source][0], solutionMetadata.section);
     sol = {
       kind: 'link',
       label: 'CPH ' + solutionMetadata.section,
@@ -339,8 +339,8 @@ export const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
         id_to_sol[solutionMetadata.usacoId],
     };
   } else if (solutionMetadata.kind === 'IOI') {
-    let year = solutionMetadata.year;
-    let num = year - 1994 + 20;
+    const year = solutionMetadata.year;
+    const num = year - 1994 + 20;
     sol = {
       kind: 'link',
       label: 'External Sol',
