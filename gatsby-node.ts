@@ -82,9 +82,11 @@ exports.onCreateNode = async ({
       if (tableId === 'MODULE_ID') return;
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
+          const freshOrdering = importFresh<any>('./content/ordering');
+
           transformObject(
             {
-              ...getProblemInfo(metadata),
+              ...getProblemInfo(metadata, freshOrdering),
               module: moduleId,
             },
             createNodeId(
