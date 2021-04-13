@@ -8,7 +8,13 @@ import { EditorContext } from '../context/EditorContext';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
-import { PROBLEM_DIFFICULTY_OPTIONS, probSources } from '../models/problem';
+import {
+  autoGenerateSolutionMetadata,
+  generateProblemUniqueId,
+  ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
+  probSources,
+} from '../models/problem';
 import ButtonGroup from './ButtonGroup';
 
 export default function ProblemSuggestionModal({
@@ -30,11 +36,15 @@ export default function ProblemSuggestionModal({
   const [createdIssueLink, setCreatedIssueLink] = React.useState(null);
 
   const submitSuggestion = useProblemSuggestionAction();
-  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
-  const darkMode = useDarkMode();
+  const editorActions = useContext(EditorContext);
+  console.log('EA', editorActions);
+  const inEditor = editorActions.inEditor;
 
-  // @jeffrey -- editorContext is null if not in editor, not null if is in editor
-  const editorContext = React.useContext(EditorContext);
+  // will be null if in editor
+  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
+    ?.markdownLayoutInfo;
+
+  const darkMode = useDarkMode();
 
   React.useEffect(() => {
     if (isOpen) {
@@ -57,6 +67,26 @@ export default function ProblemSuggestionModal({
     const problemTableLink =
       window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
+    if (editorActions.inEditor) {
+      const tagsArr = tags.split(/,\s*/g);
+      const generatedProblemId = generateProblemUniqueId(source, name, link);
+      const problemToAdd: ProblemMetadata = {
+        uniqueId: generatedProblemId,
+        name,
+        url: link,
+        source,
+        difficulty,
+        isStarred: false,
+        tags: tagsArr,
+        solutionMetadata: autoGenerateSolutionMetadata(source, name, link) || {
+          kind: 'none',
+        },
+      };
+      editorActions.addProblem(listName, problemToAdd);
+      setLoading(false);
+      onClose();
+      return;
+    }
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
@@ -318,7 +348,6 @@ export default function ProblemSuggestionModal({
       </div>
     </div>
   );
-
   return (
     <Transition
       show={isOpen}
@@ -389,22 +418,29 @@ export default function ProblemSuggestionModal({
               className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-headline"
             >
-              Suggest a Problem
+              {inEditor ? 'Add a Problem' : 'Suggest a Problem'}
             </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Help us improve the USACO Guide by suggesting a problem to add!
-              <br />
-              This will be submitted as a public{' '}
-              <a
-                href="https://github.com/cpinitiative/usaco-guide/issues"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-600 dark:text-blue-300 underline"
-              >
-                Github issue
-              </a>
-              .
-            </p>
+            {inEditor ? (
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                You're in the editor, so the problem will be automatically added
+                to problems.json.
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Help us improve the USACO Guide by suggesting a problem to add!
+                <br />
+                This will be submitted as a public{' '}
+                <a
+                  href="https://github.com/cpinitiative/usaco-guide/issues"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 dark:text-blue-300 underline"
+                >
+                  Github issue
+                </a>
+                .
+              </p>
+            )}
             <div className="mt-6 space-y-6">
               {createdIssueLink ? successMessage : form}
             </div>
@@ -431,7 +467,11 @@ export default function ProblemSuggestionModal({
                     }
                     disabled={loading}
                   >
-                    {loading ? 'Submitting...' : 'Submit Suggestion'}
+                    {inEditor
+                      ? 'Add Problem'
+                      : loading
+                      ? 'Submitting...'
+                      : 'Submit Suggestion'}
                   </button>
                 </span>
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

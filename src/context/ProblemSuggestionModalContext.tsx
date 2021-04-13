@@ -13,7 +13,11 @@ const ProblemSuggestionModalContext = createContext<{
 
 export default ProblemSuggestionModalContext;
 
-export const ProblemSuggestionModalProvider = ({ children }) => {
+export const ProblemSuggestionModalProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [listName, setListName] = useState<string>(null);
   const { firebaseUser } = useContext(UserDataContext);

@@ -10,6 +10,8 @@
 // }
 
 import { PageProps } from 'gatsby';
+import prettier from 'prettier';
+import markdownParser from 'prettier/parser-markdown';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import Split from 'react-split';
@@ -21,10 +23,11 @@ import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
 import { EditorContext } from '../context/EditorContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
+import { ProblemSuggestionModalProvider } from '../context/ProblemSuggestionModalContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
-import { ProblemMetadata } from '../models/problem';
+import { ProblemMetadata, PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );
@@ -134,7 +137,37 @@ export default function LiveUpdatePage(props: PageProps) {
     listId: string,
     problemMetadata: ProblemMetadata
   ) => {
-    // todo @jeffrey
+    const parsedOldFileData = JSON.parse(problems);
+    const tableToEdit = parsedOldFileData[listId];
+
+    // sort the table such that the suggested problem is inserted below the bottommost
+    // problem with the same difficulty as the suggested problem.
+    parsedOldFileData[listId] = ([
+      ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+      { index: tableToEdit.length, data: problemMetadata },
+    ] as { index: number; data: ProblemMetadata }[])
+      .sort((a, b) => {
+        const difficultyDiff =
+          PROBLEM_DIFFICULTY_OPTIONS.indexOf(a.data.difficulty) -
+          PROBLEM_DIFFICULTY_OPTIONS.indexOf(b.data.difficulty);
+        return difficultyDiff !== 0 ? difficultyDiff : a.index - b.index;
+      })
+      .map(prob => prob.data);
+
+    // Use pretty JSON.stringify because it inserts a newline before all objects, which forces prettier to then convert
+    // these objects into multiline ones.
+    const newContent = JSON.stringify(parsedOldFileData, null, 2) + '\n';
+    const formattedNewContent = prettier.format(newContent, {
+      endOfLine: 'lf',
+      semi: true,
+      singleQuote: true,
+      tabWidth: 2,
+      useTabs: false,
+      trailingComma: 'es5',
+      arrowParens: 'avoid',
+      parser: 'json',
+    });
+    setProblems(formattedNewContent);
   };
 
   return (
@@ -165,6 +198,44 @@ export default function LiveUpdatePage(props: PageProps) {
             }
           >
             Switch to Editing {tab === 'content' ? 'Problems' : 'Content'}
+          </button>
+
+          <button
+            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
+            onClick={() => {
+              const prettierConfig = {};
+              if (tab == 'content') {
+                setMarkdown(old =>
+                  prettier.format(old, {
+                    endOfLine: 'lf',
+                    semi: true,
+                    singleQuote: true,
+                    tabWidth: 2,
+                    trailingComma: 'es5',
+                    arrowParens: 'avoid',
+                    useTabs: true,
+                    proseWrap: 'always',
+                    parser: 'mdx',
+                    plugins: [markdownParser],
+                  })
+                );
+              } else {
+                setProblems(old =>
+                  prettier.format(old, {
+                    endOfLine: 'lf',
+                    semi: true,
+                    singleQuote: true,
+                    tabWidth: 2,
+                    useTabs: false,
+                    trailingComma: 'es5',
+                    arrowParens: 'avoid',
+                    parser: 'json',
+                  })
+                );
+              }
+            }}
+          >
+            Prettify {tab === 'content' ? 'Content' : 'Problems'}
           </button>
 
           {filePath && (
@@ -295,13 +366,16 @@ export default function LiveUpdatePage(props: PageProps) {
                     <MarkdownProblemListsProvider
                       value={markdownProblemListsProviderValue}
                     >
-                      <EditorContext.Provider
-                        value={{
-                          addProblem: handleAddProblem,
-                        }}
-                      >
-                        <RawMarkdownRenderer markdown={markdown} />
-                      </EditorContext.Provider>
+                      <ProblemSuggestionModalProvider>
+                        <EditorContext.Provider
+                          value={{
+                            addProblem: handleAddProblem,
+                            inEditor: true,
+                          }}
+                        >
+                          <RawMarkdownRenderer markdown={markdown} />
+                        </EditorContext.Provider>
+                      </ProblemSuggestionModalProvider>
                     </MarkdownProblemListsProvider>
                   </div>
                 </div>
