@@ -110,9 +110,13 @@ exports.onCreateNode = async ({
         .filter(x => x !== 'MODULE_ID')
         .map(listId => ({
           listId,
-          problems: parsedContent[listId].map(x => ({
-            ...getProblemInfo(x),
-          })),
+          problems: parsedContent[listId].map(x => {
+            const freshOrdering = importFresh<any>('./content/ordering');
+
+            return {
+              ...getProblemInfo(x, freshOrdering),
+            };
+          }),
         }));
       const data = {
         problemLists,
