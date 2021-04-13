@@ -150,12 +150,14 @@ export const plugins = [
       skipIndexing: !!!process.env.ALGOLIA_APP_ID,
     },
   },
-  {
-    resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
-    options: {
-      devMode: true,
-    },
-  },
+  // devMode currently has some sketchy output
+  // See https://github.com/JimmyBeldone/gatsby-plugin-webpack-bundle-analyser-v2/issues/343
+  // {
+  //   resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
+  //   options: {
+  //     devMode: true,
+  //   },
+  // },
   // {
   //   resolve: `gatsby-plugin-hotjar`,
   //   options: {
