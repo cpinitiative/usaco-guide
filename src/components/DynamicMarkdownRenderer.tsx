@@ -6,8 +6,10 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as remarkExternalLinks from 'remark-external-links';
 import * as remarkMath from 'remark-math';
+import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
+import { getProblemInfo } from '../models/problem';
 import { components } from './markdown/MDXProvider';
 
 class ErrorBoundary extends React.Component {
@@ -47,10 +49,13 @@ class ErrorBoundary extends React.Component {
 
 export default function DynamicMarkdownRenderer({
   markdown,
+  problems,
   debounce = 1000,
 }): JSX.Element {
   const [fn, setFn] = useState(null);
-  const [error, setError] = useState(null);
+  const [markdownError, setMarkdownError] = useState(null);
+  const [problemError, setProblemError] = useState(null);
+
   useEffect(() => {
     // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
     const compile = async () => {
@@ -107,13 +112,13 @@ export const _frontmatter = ${JSON.stringify(data)}`;
         );
 
         setFn(fn.bind(null, {}, React, ...values)());
-        setError(null);
+        setMarkdownError(null);
 
         console.timeEnd('compile');
       } catch (e) {
         console.log('editor error caught:', e);
         setFn(null);
-        setError(e);
+        setMarkdownError(e);
       }
     };
     if (debounce > 0) {
@@ -123,13 +128,36 @@ export const _frontmatter = ${JSON.stringify(data)}`;
       compile();
     }
   }, [markdown]);
-  if (error) {
-    console.error(error);
+
+  const [
+    markdownProblemListsProviderValue,
+    setMarkdownProblemListsProviderValue,
+  ] = useState([]);
+  useEffect(() => {
+    try {
+      const parsedProblems = JSON.parse(problems || '{}');
+      const problemsList = Object.keys(parsedProblems)
+        .filter(key => key !== 'MODULE_ID')
+        .map(key => ({
+          listId: key,
+          problems: parsedProblems[key].map(problemMetadata =>
+            getProblemInfo(problemMetadata)
+          ),
+        }));
+      setMarkdownProblemListsProviderValue(problemsList);
+      setProblemError(null);
+    } catch (e) {
+      setProblemError(e);
+    }
+  }, [problems]);
+
+  if (markdownError) {
+    console.error(markdownError);
     return (
       <div>
         An error occurred:
         <pre className="mt-2 text-red-700">
-          {error.stack || error.toString()}
+          {markdownError.stack || markdownError.toString()}
         </pre>
         <pre className="mt-2 text-red-700">
           This error has also been logged into the console.
@@ -137,7 +165,30 @@ export const _frontmatter = ${JSON.stringify(data)}`;
       </div>
     );
   }
-  return <ErrorBoundary>{fn}</ErrorBoundary>;
+
+  if (problemError) {
+    console.error(problemError);
+    return (
+      <div>
+        An error occurred while generating the problem solution info. This
+        likely means that the JSON data for problems is incorrect.
+        <pre className="mt-2 text-red-700">
+          {problemError.stack || problemError.toString()}
+        </pre>
+        <pre className="mt-2 text-red-700">
+          This error has also been logged into the console.
+        </pre>
+      </div>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
+        {fn}
+      </MarkdownProblemListsProvider>
+    </ErrorBoundary>
+  );
 }
 
 // Backup...

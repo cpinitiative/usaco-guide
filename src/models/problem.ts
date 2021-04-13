@@ -1,5 +1,5 @@
 import { slug } from 'github-slugger';
-import defaultOrdering from '../../content/ordering';
+import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { books } from '../utils/books';
