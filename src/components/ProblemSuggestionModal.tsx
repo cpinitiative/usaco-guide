@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import Select from 'react-select';
 import { SECTION_LABELS } from '../../content/ordering';
 import { useDarkMode } from '../context/DarkModeContext';
+import { EditorContext } from '../context/EditorContext';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
@@ -31,6 +32,9 @@ export default function ProblemSuggestionModal({
   const submitSuggestion = useProblemSuggestionAction();
   const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
   const darkMode = useDarkMode();
+
+  // @jeffrey -- editorContext is null if not in editor, not null if is in editor
+  const editorContext = React.useContext(EditorContext);
 
   React.useEffect(() => {
     if (isOpen) {

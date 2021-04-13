@@ -19,10 +19,12 @@ import ButtonGroup from '../components/ButtonGroup';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
+import { EditorContext } from '../context/EditorContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
+import { ProblemMetadata } from '../models/problem';
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );
@@ -127,6 +129,14 @@ export default function LiveUpdatePage(props: PageProps) {
       console.log(e);
     }
   }, [problems]);
+
+  const handleAddProblem = (
+    listId: string,
+    problemMetadata: ProblemMetadata
+  ) => {
+    // todo @jeffrey
+  };
+
   return (
     <Layout>
       <SEO title="Editor" />
@@ -285,7 +295,13 @@ export default function LiveUpdatePage(props: PageProps) {
                     <MarkdownProblemListsProvider
                       value={markdownProblemListsProviderValue}
                     >
-                      <RawMarkdownRenderer markdown={markdown} />
+                      <EditorContext.Provider
+                        value={{
+                          addProblem: handleAddProblem,
+                        }}
+                      >
+                        <RawMarkdownRenderer markdown={markdown} />
+                      </EditorContext.Provider>
                     </MarkdownProblemListsProvider>
                   </div>
                 </div>
