@@ -10,6 +10,7 @@
 // }
 
 import { PageProps } from 'gatsby';
+import importFresh from 'import-fresh';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import Split from 'react-split';
@@ -122,7 +123,10 @@ export default function LiveUpdatePage(props: PageProps) {
         .map(key => ({
           listId: key,
           problems: parsedProblems[key].map(problemMetadata =>
-            getProblemInfo(problemMetadata)
+            getProblemInfo(
+              problemMetadata,
+              importFresh('../../content/ordering')
+            )
           ),
         }));
       setMarkdownProblemListsProviderValue(problemsList);

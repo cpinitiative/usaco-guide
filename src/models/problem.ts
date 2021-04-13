@@ -1,5 +1,5 @@
 import { slug } from 'github-slugger';
-import importFresh from 'import-fresh';
+import defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { books } from '../utils/books';
@@ -266,9 +266,14 @@ const getTrailingCodeFromProblemURL = (url: string): number => {
   const code = url.match(/([0-9]+)\/?$/)[1];
   return parseInt(code);
 };
-export const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
+export const getProblemInfo = (
+  metadata: ProblemMetadata,
+  ordering?: any
+): ProblemInfo => {
   // don't cache the ordering import, to make sure it gets re-fetched each time
-  const ordering = importFresh<any>('../../content/ordering');
+  if (!ordering) {
+    ordering = defaultOrdering;
+  }
   const { solutionMetadata, ...info } = metadata;
 
   if (
