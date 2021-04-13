@@ -71,6 +71,8 @@ int main(){
 
 <JavaSection>
 
+###Java Implementation
+
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,21 +80,21 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class MaxSubSum {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        read.readLine();
-        int[] arr = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        
-        long maxSubSum = arr[0];
-        long runningPrefSum = 0;
-        long minPrefSum = 0;
-        for (int i : arr) {
-            runningPrefSum += i;
-            maxSubSum = Math.max(maxSubSum, runningPrefSum - minPrefSum);
-            minPrefSum = Math.min(minPrefSum, runningPrefSum);
-        }
-        System.out.println(maxSubSum);
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		read.readLine();
+		int[] arr = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+		
+		long maxSubSum = arr[0];
+		long runningPrefSum = 0;
+		long minPrefSum = 0;
+		for (int i : arr) {
+			runningPrefSum += i;
+			maxSubSum = Math.max(maxSubSum, runningPrefSum - minPrefSum);
+			minPrefSum = Math.min(minPrefSum, runningPrefSum);
+		}
+		System.out.println(maxSubSum);
+	}
 }
 ```
 
@@ -111,9 +113,9 @@ max_subarrary_sum = arr[0]
 min_pref_sum = 0
 running_pref_sum = 0
 for i in arr:
-    running_pref_sum += i
-    max_subarrary_sum = max(max_subarrary_sum, running_pref_sum - min_pref_sum)
-    min_pref_sum = min(min_pref_sum, running_pref_sum)
+	running_pref_sum += i
+	max_subarrary_sum = max(max_subarrary_sum, running_pref_sum - min_pref_sum)
+	min_pref_sum = min(min_pref_sum, running_pref_sum)
 print(max_subarrary_sum)
 ```
 
@@ -482,25 +484,25 @@ int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
 
-    int N;
-    int Q;
+	int N;
+	int Q;
 	cin >> N >> Q;
-    // read in the initial trees
+	// read in the initial trees
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			char a; 
-            cin >> a;
-            forest[i + 1][j + 1] += a == '*';
+			cin >> a;
+			forest[i + 1][j + 1] += a == '*';
 		}
 	}
 
-    // build the prefix sum array
+	// build the prefix sum array
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
 			tree_pref[i][j] = forest[i][j]
-                        + tree_pref[i - 1][j]
-                        + tree_pref[i][j - 1]
-                        - tree_pref[i - 1][j - 1];
+						+ tree_pref[i - 1][j]
+						+ tree_pref[i][j - 1]
+						- tree_pref[i - 1][j - 1];
 		}
 	}
 
@@ -508,9 +510,9 @@ int main() {
 		int x1, x2, y1, y2;
 		cin >> x1 >> y1 >> x2 >> y2;
 		cout << tree_pref[x2][y2]
-                - tree_pref[x1-1][y2]
-                - tree_pref[x2][y1-1]
-                + tree_pref[x1-1][y1-1] << '\n';
+				- tree_pref[x1-1][y2]
+				- tree_pref[x2][y1-1]
+				+ tree_pref[x1-1][y1-1] << '\n';
 	}
 }
 ```
@@ -574,17 +576,17 @@ public class ForestQueries {
 side_len, query_num = [int(i) for i in input().split()]
 tree_prefixes = [[0 for _ in range(side_len + 1)] for _ in range(side_len + 1)]
 for r in range(side_len):
-    for ci, c in enumerate(input()):
-        tree = c == '*'
-        tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1] + tree_prefixes[r + 1][ci]
-                                         - tree_prefixes[r][ci] + tree)
+	for ci, c in enumerate(input()):
+		tree = c == '*'
+		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1] + tree_prefixes[r + 1][ci]
+										 - tree_prefixes[r][ci] + tree)
 
 for _ in range(query_num):
-    from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
-    print(tree_prefixes[to_row][to_col]
-          - tree_prefixes[to_row][from_col - 1]
-          - tree_prefixes[from_row - 1][to_col]
-          + tree_prefixes[from_row - 1][from_col - 1])
+	from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
+	print(tree_prefixes[to_row][to_col]
+		  - tree_prefixes[to_row][from_col - 1]
+		  - tree_prefixes[from_row - 1][to_col]
+		  + tree_prefixes[from_row - 1][from_col - 1])
 ```
 
 </PySection>
