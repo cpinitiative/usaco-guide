@@ -41,25 +41,24 @@ implementation without checking whether `i == best[node].second`
 using namespace std;
 
 vector<int> graph[200001];
-pair<int, int> best[200001];
-int sec[200001], ans[200001];
+int fir[200001], sec[200001], ans[200001];
 
 void dfs1(int node = 1, int parent = 0) {
 	for (int i : graph[node]) if (i != parent) {
 		dfs1(i, node);
-		if (best[i].first + 1 > best[node].first) {
-			sec[node] = best[node].first;
-			best[node] = {best[i].first + 1, i};
-		} else if (best[i].first + 1 > sec[node]) {
-			sec[node] = best[i].first + 1;
+		if (fir[i] + 1 > fir[node]) {
+			sec[node] = fir[node];
+			fir[node] = fir[i] + 1;
+		} else if (fir[i] + 1 > sec[node]) {
+			sec[node] = fir[i] + 1;
 		}
 	}
 }
 
 void dfs2(int node = 1, int parent = 0, int to_p = 0) {
-	ans[node] = max(to_p, best[node].first);
+	ans[node] = max(to_p, fir[node]);
 	for (int i : graph[node]) if (i != parent) {
-		if (i == best[node].second) dfs2(i, node, max(to_p, sec[node]) + 1);
+		if (fir[i] + 1 == fir[node]) dfs2(i, node, max(to_p, sec[node]) + 1);
 		else dfs2(i, node, ans[node] + 1);
 	}
 }
