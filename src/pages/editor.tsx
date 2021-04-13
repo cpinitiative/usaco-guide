@@ -11,7 +11,7 @@
 
 import { PageProps } from 'gatsby';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
@@ -19,7 +19,6 @@ import ButtonGroup from '../components/ButtonGroup';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
-import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
@@ -109,24 +108,7 @@ export default function LiveUpdatePage(props: PageProps) {
 
   const userSettings = React.useContext(UserDataContext);
   const isDarkMode = useDarkMode();
-  const [
-    markdownProblemListsProviderValue,
-    setMarkdownProblemListsProviderValue,
-  ] = useState([]);
-  useEffect(() => {
-    try {
-      const parsedProblems = JSON.parse(problems || '{}');
-      const problemsList = Object.keys(parsedProblems)
-        .filter(key => key !== 'MODULE_ID')
-        .map(key => ({
-          listId: key,
-          problems: parsedProblems[key],
-        }));
-      setMarkdownProblemListsProviderValue(problemsList);
-    } catch (e) {
-      console.log(e);
-    }
-  }, [problems]);
+
   return (
     <Layout>
       <SEO title="Editor" />
@@ -282,11 +264,10 @@ export default function LiveUpdatePage(props: PageProps) {
                 </div>
                 <div className="overflow-y-auto relative flex-1">
                   <div className="markdown p-4">
-                    <MarkdownProblemListsProvider
-                      value={markdownProblemListsProviderValue}
-                    >
-                      <RawMarkdownRenderer markdown={markdown} />
-                    </MarkdownProblemListsProvider>
+                    <RawMarkdownRenderer
+                      markdown={markdown}
+                      problems={problems}
+                    />
                   </div>
                 </div>
               </div>
