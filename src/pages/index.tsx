@@ -172,7 +172,7 @@ export default function IndexPage(props: PageProps) {
                       two-time IOI winner and USACO Problemsetter{' '}
                       <a
                         href="https://github.com/bqi343"
-                        className="underline text-blue-500"
+                        className="underline text-blue-500 dark:text-blue-400"
                       >
                         Benjamin Qi
                       </a>
