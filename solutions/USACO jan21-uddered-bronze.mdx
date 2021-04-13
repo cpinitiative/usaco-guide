@@ -1,0 +1,44 @@
+---
+id: usaco-1083
+source: USACO Bronze 2021 January
+title: Uddered but not Herd
+author: Ananth Kashyap
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob3_bronze_jan21.html)
+
+In this problem, we are asked to find the minimum number of times that Bessie must
+hum the entire cowphabet to have sung every letter in the given string in order.
+For every character in the string, we want to know if the next character in the
+string appears before this character in the cowphabet. If this is true, we know
+that we have to increment the number of times that Bessie must hum the cowphabet
+as Bessie cannot hum the cowphabet backwards, and thus must hum it again in order
+to reach the next character.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(length(string))$
+
+<LanguageSection>
+
+<PySection>
+
+```python
+# Take in the cowphabet and string as strings through standard Python input
+cowphabet = input("")
+word = input("")
+
+# For any string, we always have to look through the cowphabet at least once.
+num_times = 1
+
+for i in range(len(word)-1):
+    # Check if next character in string appears before previous character
+    if cowphabet.index(word[i + 1]) <= cowphabet.index(word[i]):
+        num_times += 1
+
+print(num_times)
+```
+
+</PySection>
+
+</LanguageSection>
