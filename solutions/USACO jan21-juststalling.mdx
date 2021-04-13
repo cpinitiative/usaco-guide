@@ -27,10 +27,6 @@ stalls that the $i$th cow could possibly use, minus $n-i$.
 <PySection>
 
 ```python
-n = int(input(""))
-cows = list(map(int, input("").split(" ")))
-stalls = list(map(int, input("").split(" ")))
-
 n = int(input())
 cows = list(map(int, input().split(" ")))
 stalls = list(map(int, input().split(" ")))
@@ -49,8 +45,10 @@ for i in range(n):
 # Initialize a cumulative product
 product = 1
 
-# Multiply our cumultive product by the number of possibilities of stalls that each cow can take
-# Use the formula provided in the explanation.
+# For each cow, find out the number of stalls it can use in a valid permutation
+# Use the formula provided in the explanation
+# Multiply the cumulative product by this value
+
 for i in range(n - 1, -1, -1):
     product *= (possible_places[i] - (n - i - 1))
 
