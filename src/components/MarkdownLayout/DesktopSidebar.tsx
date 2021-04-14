@@ -4,7 +4,8 @@ import Logo from '../Logo';
 import SidebarBottomButtons from './SidebarBottomButtons';
 import { SidebarNav } from './SidebarNav/SidebarNav';
 
-export default function DesktopSidebar() {
+export default function DesktopSidebar(props) {
+  console.log(props.expandable)
   return (
     <div
       className="hidden lg:block fixed z-10 top-0 left-0 bottom-0"

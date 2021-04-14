@@ -24,6 +24,7 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
+import { OffCanvas, OffCanvasMenu, OffCanvasBody } from "react-offcanvas";
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -130,6 +131,8 @@ export default function MarkdownLayout({
     activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 
+  const [toggle, setToggle] = React.useState(false);
+
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -145,9 +148,18 @@ export default function MarkdownLayout({
     >
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
-          <MobileSideNav />
-          <DesktopSidebar />
-
+          <OffCanvas
+              // width={300}
+              transitionDuration={300}
+              isMenuOpened={toggle}
+              position={"left"}
+              effect={"push"}
+          >
+            <OffCanvasMenu>
+              <MobileSideNav />
+              <DesktopSidebar expandable={toggle}/>
+              </OffCanvasMenu>
+            <OffCanvasBody>
           <div className="w-full">
             <MobileAppBar />
 
@@ -161,6 +173,8 @@ export default function MarkdownLayout({
               </div>
 
               {children}
+              <button onClick={event => {
+                console.log(event)}} > Toggle </button>
 
               <ModuleProgressUpdateBanner />
 
@@ -171,6 +185,8 @@ export default function MarkdownLayout({
               {/*</div>*/}
             </ContentContainer>
           </div>
+              </OffCanvasBody>
+            </OffCanvas>
         </ProblemSuggestionModalProvider>
       </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
