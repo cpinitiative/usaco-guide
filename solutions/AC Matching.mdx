@@ -1,0 +1,53 @@
+---
+id: ac-matching
+source: AtCoder DP Contest
+title: Matching
+author: Neo Wang
+---
+
+## Explanation
+
+If we define $\texttt{dp}[S]$ to be the amount of matchings for females in set
+$S$, this problem boils down to the following formulation:
+
+$$
+\texttt{dp}[S] = \sum \texttt{dp}[S\backslash x]\: \text{if}\:  \texttt{compat}[ \text{male}][x]
+$$
+
+In English, this is the equivalent of
+
+> The amount of matchings in a subset $S$ to include a certain female $x$ is
+> equivalent to the sum of all the matchings without female $x$ such that the
+> addition of a certain female $x$ produces a match.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\cdot 2^N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool compat[21][21];
+int dp[1 << 21];
+
+int N;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N;
+    for(int i = 0; i < N; i++) for(int j = 0; j < N; j++) cin >> compat[i][j];
+
+    for(int i = 0; i < N; i++) if(compat[0][i]) dp[1 << i] = 1;
+    for(int s = 1; s < (1<<N); s++) {
+        int v = __builtin_popcount(s);
+        for(int x = 0; x < N; x++) {
+            if((s & (1 << x)) || !compat[v][x]) continue;
+            dp[s|(1<<x)] += dp[s];
+            dp[s|(1<<x)] %= (int)1e9+7;
+        }
+    }
+
+   	cout << dp[(1<<N)-1];
+}
+```
