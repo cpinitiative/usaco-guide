@@ -16,26 +16,26 @@ author: Ananth Kashyap
 <PySection>
 
 ```python
-	file_in = open("blist.in")
-	data = file_in.read().strip().split("\n")
-	n = int(data[0])
-	cows = [list(map(int, data[i + 1].split(" "))) for i in range(n)]
+file_in = open("blist.in")
+data = file_in.read().strip().split("\n")
+n = int(data[0])
+cows = [list(map(int, data[i + 1].split(" "))) for i in range(n)]
 
-	# Initialize a variable to store the maximum number of buckets needed
-	max_buckets = cows[0][2]
+# Initialize a variable to store the maximum number of buckets needed
+max_buckets = cows[0][2]
 
-	# For each posssible time, check how many buckets are needed at that time
-	# Set the maximum equal to that value if it is larger than the current maximum
-	for i in range(1, 1001):
-		buckets_at_this_time = 0
-		for j in range(n):
-			if i >= cows[j][0] and i <= cows[j][1]:
-				buckets_at_this_time += cows[j][2]
-		max_buckets = max(max_buckets, buckets_at_this_time)
+# For each posssible time, check how many buckets are needed at that time
+# Set the maximum equal to that value if it is larger than the current maximum
+for i in range(1, 1001):
+	buckets_at_this_time = 0
+	for j in range(n):
+		if i >= cows[j][0] and i <= cows[j][1]:
+			buckets_at_this_time += cows[j][2]
+	max_buckets = max(max_buckets, buckets_at_this_time)
 
-	file_out = open("blist.out", "w")
-	file_out.write(str(max_buckets))
-	file_out.close()
+file_out = open("blist.out", "w")
+file_out.write(str(max_buckets))
+file_out.close()
 ```
 
 </PySection>
