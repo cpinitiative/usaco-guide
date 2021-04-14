@@ -11,7 +11,7 @@ import {
 } from './src/models/problem';
 import { books } from './src/utils/books';
 import importFresh from "import-fresh";
-import { createXdmNode } from './src/gatsby/create-xdm-node';
+import './src/gatsby/create-xdm-node';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -150,13 +150,13 @@ exports.onCreateNode = async ({
 
   if (node.internal.type === `File` && node.ext === ".mdx") {
     const content = loadNodeContent(node);
-    const xdmNode = await createXdmNode({
-      id: createNodeId(`${node.id} >>> Xdm`),
-      node,
-      content,
-    });
-    createNode(xdmNode)
-    createParentChildLink({ parent: node, child: xdmNode });
+    // const xdmNode = await createXdmNode({
+    //   id: createNodeId(`${node.id} >>> Xdm`),
+    //   node,
+    //   content,
+    // });
+    // createNode(xdmNode)
+    // createParentChildLink({ parent: node, child: xdmNode });
   }
 
   function transformObject(obj, id) {

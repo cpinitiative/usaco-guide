@@ -3,9 +3,8 @@
 // tsconfig.json.
 require('ts-node').register({
   compilerOptions: {
-    module: 'esnext',
-  },
+    module: 'commonjs',
+  }
 });
 
-const esm = require('esm')(module);
-module.exports = esm('./gatsby-config.ts');
+module.exports = require('./gatsby-config.ts');
