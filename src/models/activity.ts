@@ -1,5 +1,5 @@
-import { ProblemProgress } from './problem';
 import { ModuleProgress } from './module';
+import { ProblemProgress } from './problem';
 
 export type ProblemActivity = {
   timestamp: number;

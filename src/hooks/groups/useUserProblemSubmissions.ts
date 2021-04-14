@@ -1,8 +1,8 @@
 import * as React from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { Submission, submissionConverter } from '../../models/groups/problem';
 import useFirebase from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
-import { Submission, submissionConverter } from '../../models/groups/problem';
 
 export default function useUserProblemSubmissions(
   postId: string,

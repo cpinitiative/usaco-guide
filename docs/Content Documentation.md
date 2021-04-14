@@ -334,7 +334,7 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
 				// USACO solution, generates it based off of the USACO problem ID
 				// ex. 1113 is mapped to sol_prob1_gold_feb21.html
 				kind: 'USACO';
-				usacoId: number;
+				usacoId: string;
 		  }
 		| {
 				// IOI solution, generates it based off of the year

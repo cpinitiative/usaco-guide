@@ -1,10 +1,10 @@
-import * as React from 'react';
-import ProblemListItem from '../ProblemListItem';
 import { navigate } from 'gatsby';
-import { PostData } from '../../../models/groups/posts';
+import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { PostData } from '../../../models/groups/posts';
+import ProblemListItem from '../ProblemListItem';
 
 export default function PostProblems({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();

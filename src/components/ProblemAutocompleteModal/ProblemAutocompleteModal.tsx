@@ -1,20 +1,26 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import { ProblemAutocomplete } from './ProblemAutocomplete';
-import { connectAutoComplete } from 'react-instantsearch-dom';
-import { InstantSearch } from 'react-instantsearch-dom';
+import * as React from 'react';
+import { connectAutoComplete, InstantSearch } from 'react-instantsearch-dom';
+import { AlgoliaProblemInfo } from '../../models/problem';
 import { searchClient } from '../../utils/algoliaSearchClient';
+import { ProblemAutocomplete } from './ProblemAutocomplete';
 
 const CustomProblemAutocomplete = connectAutoComplete(ProblemAutocomplete);
 
 const indexName =
   process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
 
-export default function ProblemAutocompleteModal({
+export interface ProblemAutocompleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onProblemSelect: (problem: AlgoliaProblemInfo) => void;
+}
+
+const ProblemAutocompleteModal = ({
   isOpen,
   onClose,
   onProblemSelect,
-}) {
+}: ProblemAutocompleteModalProps): JSX.Element => {
   const handleSubmit = e => {
     e.preventDefault();
   };
@@ -109,4 +115,6 @@ export default function ProblemAutocompleteModal({
       </form>
     </Transition>
   );
-}
+};
+
+export default ProblemAutocompleteModal;

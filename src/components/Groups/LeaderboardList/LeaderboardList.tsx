@@ -1,6 +1,5 @@
 import * as React from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { Leaderboard } from '../../../models/groups/leaderboard';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import getMemberInfoForGroup, {
   MemberInfo,
@@ -57,8 +56,8 @@ export default function LeaderboardList({
 
     const processPost = id => {
       if (!leaderboard.hasOwnProperty(id)) return;
-      for (let problemID of Object.keys(leaderboard[id])) {
-        for (let userID of Object.keys(leaderboard[id][problemID])) {
+      for (const problemID of Object.keys(leaderboard[id])) {
+        for (const userID of Object.keys(leaderboard[id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
           leaderboardSum[userID] +=
             leaderboard[id][problemID][userID].bestScore;
@@ -67,14 +66,14 @@ export default function LeaderboardList({
     };
 
     if (!postId) {
-      for (let postID of Object.keys(leaderboard)) {
+      for (const postID of Object.keys(leaderboard)) {
         processPost(postID);
       }
     } else {
       processPost(postId);
     }
 
-    let data = activeGroup.groupData.memberIds
+    const data = activeGroup.groupData.memberIds
       .map(id => ({
         member: members.find(member => member.uid === id),
         points: leaderboardSum[id] ?? 0,

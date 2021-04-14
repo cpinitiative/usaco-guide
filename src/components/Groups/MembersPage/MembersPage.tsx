@@ -1,13 +1,10 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { Link } from 'gatsby';
-import getMemberInfoForGroup, {
-  MemberInfo,
-} from '../../../hooks/groups/useMemberInfoForGroup';
 import MemberDetail from './MemberDetail';
 
 export default function MembersPage() {

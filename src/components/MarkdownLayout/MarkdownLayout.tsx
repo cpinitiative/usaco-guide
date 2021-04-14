@@ -1,31 +1,29 @@
+import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useContext, useState } from 'react';
-import { ModuleInfo } from '../../models/module';
-import { graphql, useStaticQuery } from 'gatsby';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
-import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
-import { SolutionInfo } from '../../models/solution';
-
-import ConfettiContext from '../../context/ConfettiContext';
-import ForumCTA from '../ForumCTA';
-import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
-import MobileSideNav from './MobileSideNav';
-import DesktopSidebar from './DesktopSidebar';
-import MobileAppBar from './MobileAppBar';
-import NavBar from './NavBar';
-import NotSignedInWarning from './NotSignedInWarning';
-import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
-import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
-import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
-import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
 } from '../../../content/ordering';
+import ConfettiContext from '../../context/ConfettiContext';
+import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
+import ForumCTA from '../ForumCTA';
+import DesktopSidebar from './DesktopSidebar';
+import MobileAppBar from './MobileAppBar';
+import MobileSideNav from './MobileSideNav';
+import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
+import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import NavBar from './NavBar';
+import NotSignedInWarning from './NotSignedInWarning';
+import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
+import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -132,7 +130,6 @@ export default function MarkdownLayout({
     activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 
-  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{

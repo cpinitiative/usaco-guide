@@ -1,14 +1,14 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import {
   getTotalPointsFromProblems,
   PostData,
 } from '../../../models/groups/posts';
-import SidebarDueDate from '../SidebarDueDate';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
-import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { Link } from 'gatsby';
+import SidebarDueDate from '../SidebarDueDate';
 
 export default function PostSidebar({
   post,

@@ -1,8 +1,6 @@
 import * as React from 'react';
-
-import { random, sample, range, getDiameter } from './Confetti.helpers';
 import { defaultShapes } from './confetti-shapes.js';
-
+import { getDiameter, random, range, sample } from './Confetti.helpers';
 import type { Particle, Shape } from './types';
 
 type State = {

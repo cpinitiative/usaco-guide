@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { FirebaseProvider } from './src/context/FirebaseContext';
 import MDXProvider from './src/components/markdown/MDXProvider';
+import { DarkModeProvider } from './src/context/DarkModeProvider';
+import { EditorContext } from './src/context/EditorContext';
+import { FirebaseProvider } from './src/context/FirebaseContext';
+import GlobalErrorBoundary from './src/context/GlobalErrorBoundary';
+import { NotificationSystemProvider } from './src/context/NotificationSystemContext';
 import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
 import { UserGroupsProvider } from './src/hooks/groups/useUserGroups';
-import { NotificationSystemProvider } from './src/context/NotificationSystemContext';
-import GlobalErrorBoundary from './src/context/GlobalErrorBoundary';
-import { DarkModeProvider } from './src/context/DarkModeContext';
 
 export const wrapRootElement = ({ element }) => (
   <NotificationSystemProvider>
@@ -14,7 +15,11 @@ export const wrapRootElement = ({ element }) => (
         <MDXProvider>
           <UserDataProvider>
             <UserGroupsProvider>
-              <DarkModeProvider>{element}</DarkModeProvider>
+              <DarkModeProvider>
+                <EditorContext.Provider value={{ inEditor: false }}>
+                  {element}
+                </EditorContext.Provider>
+              </DarkModeProvider>
             </UserGroupsProvider>
           </UserDataProvider>
         </MDXProvider>
