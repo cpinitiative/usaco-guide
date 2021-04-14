@@ -545,12 +545,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       redirects: [String]
       frequency: Int
     }
-  
-    type MdxFrontmatter implements Node {
-      prerequisites: [String]
-      date: String
-      redirects: [String]
-    }
     
     type Heading {
       depth: Int

@@ -55,46 +55,46 @@ const plugins = [
     },
   },
   `gatsby-plugin-sharp`,
-  {
-    resolve: `gatsby-plugin-mdx`,
-    options: {
-      extensions: [`.mdx`, `.md`],
-      gatsbyRemarkPlugins: [
-        {
-          resolve: `gatsby-remark-autolink-headers`,
-          options: {
-            // icon source: https://joshwcomeau.com/
-            icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
-          },
-        },
-        {
-          resolve: `gatsby-remark-images`,
-          options: {
-            maxWidth: 832,
-            quality: 100,
-            disableBgImageOnAlpha: true,
-          },
-        },
-        // {
-        //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
-        // },
-      ],
-      remarkPlugins: [require(`remark-external-links`), require('remark-math')],
-      rehypePlugins: [
-        require('./src/mdx-plugins/rehype-math.js'),
-        require('./src/mdx-plugins/rehype-snippets.js'),
-      ],
-      plugins: [
-        {
-          resolve: `gatsby-remark-autolink-headers`,
-          options: {
-            // icon source: https://joshwcomeau.com/
-            icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
-          },
-        },
-      ],
-    },
-  },
+  // {
+  //   resolve: `gatsby-plugin-mdx`,
+  //   options: {
+  //     extensions: [`.mdx`, `.md`],
+  //     gatsbyRemarkPlugins: [
+  //       {
+  //         resolve: `gatsby-remark-autolink-headers`,
+  //         options: {
+  //           // icon source: https://joshwcomeau.com/
+  //           icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
+  //         },
+  //       },
+  //       {
+  //         resolve: `gatsby-remark-images`,
+  //         options: {
+  //           maxWidth: 832,
+  //           quality: 100,
+  //           disableBgImageOnAlpha: true,
+  //         },
+  //       },
+  //       // {
+  //       //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
+  //       // },
+  //     ],
+  //     remarkPlugins: [require(`remark-external-links`), require('remark-math')],
+  //     rehypePlugins: [
+  //       require('./src/mdx-plugins/rehype-math.js'),
+  //       require('./src/mdx-plugins/rehype-snippets.js'),
+  //     ],
+  //     plugins: [
+  //       {
+  //         resolve: `gatsby-remark-autolink-headers`,
+  //         options: {
+  //           // icon source: https://joshwcomeau.com/
+  //           icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // },
   {
     resolve: `gatsby-plugin-postcss`,
   },

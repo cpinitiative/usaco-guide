@@ -20,11 +20,25 @@ export async function createXdmNode({ id, node, content }) {
       ],
       rehypePlugins: [customRehypeKatex, rehypeSnippets],
     });
+    compiledResult = String(compiledResult);
   } catch (e) {
     // add the path of the file to simplify debugging error messages
     e.message += `${node.absolutePath}: ${e.message}`;
     throw e;
   }
+  compiledResult = compiledResult.replace(
+    /import .* from "react\/jsx-runtime";/,
+    ''
+  );
+  compiledResult = compiledResult.replace(
+    `function MDXContent(_props) {`,
+    'function MDXContent(_Fragment, _jsx, _jsxs, _props) {'
+  );
+  compiledResult = compiledResult.replace(
+    'export default MDXContent',
+    'return MDXContent'
+  );
+  compiledResult = compiledResult.replace('export const ', 'const ');
 
   // // extract all the exports
   // const { frontmatter, ...nodeExports } = extractExports(
@@ -40,7 +54,7 @@ export async function createXdmNode({ id, node, content }) {
       content: content,
       type: `Xdm`,
     },
-    body: String(compiledResult),
+    body: compiledResult,
     frontmatter,
   };
 
