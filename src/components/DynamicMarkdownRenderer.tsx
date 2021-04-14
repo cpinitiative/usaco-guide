@@ -6,7 +6,9 @@ import {
   jsxs as _jsxs,
 } from 'react/jsx-runtime';
 import remarkExternalLinks from 'remark-external-links';
+import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
+import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import { compile as xdmCompile } from 'xdm';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
@@ -59,14 +61,13 @@ export default function DynamicMarkdownRenderer({
       try {
         console.time('compile');
 
-        //         const { data, content: frontMatterCodeResult } = grayMatter(markdown);
-        //
-        //         const content = `${frontMatterCodeResult}
-        //
-        // export const _frontmatter = ${JSON.stringify(data)}`;
-
         const compiledResult = await xdmCompile(markdown, {
-          remarkPlugins: [remarkMath, remarkExternalLinks],
+          remarkPlugins: [
+            remarkMath,
+            remarkExternalLinks,
+            remarkFrontmatter,
+            remarkMdxFrontmatter,
+          ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
         });
 
@@ -77,6 +78,7 @@ export default function DynamicMarkdownRenderer({
           'function MDXContent(_Fragment, _jsx, _jsxs, _props) {'
         );
         code = code.replace('export default MDXContent', 'return MDXContent');
+        code = code.replace('export const ', 'const ');
 
         setFn(new Function(code));
         setError(null);

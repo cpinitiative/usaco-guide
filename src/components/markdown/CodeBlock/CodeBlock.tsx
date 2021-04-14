@@ -1,3 +1,5 @@
+// todo: switch to https://github.com/react-syntax-highlighter/react-syntax-highlighter
+
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
 import vsDark from 'prism-react-renderer/themes/vsDark';
