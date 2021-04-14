@@ -119,7 +119,7 @@ export default function LiveUpdatePage(props: PageProps) {
     markdownProblemListsProviderValue,
     setMarkdownProblemListsProviderValue,
   ] = useState([]);
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       const parsedProblems = JSON.parse(problems || '{}');
       const problemsList = Object.keys(parsedProblems)
@@ -383,7 +383,6 @@ export default function LiveUpdatePage(props: PageProps) {
                         </ProblemSuggestionModalProvider>
                       </MarkdownProblemListsProvider>
                     </EditorContext.Provider>
-                    <RawMarkdownRenderer markdown={markdown} />
                   </div>
                 </div>
               </div>
