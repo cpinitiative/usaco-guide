@@ -49,7 +49,7 @@ class ErrorBoundary extends React.Component {
 
 export default function DynamicMarkdownRenderer({
   markdown,
-  debounce = 1000,
+  debounce = 200,
 }): JSX.Element {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);

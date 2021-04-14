@@ -76,6 +76,13 @@ const a = ({ children, ...props }) => (
     {children}
   </a>
 );
+const pre = ({ children, ...props }) => {
+  return (
+    <pre {...props}>
+      <CodeBlock {...children.props} />
+    </pre>
+  );
+};
 
 const HTMLComponents = {
   table,
@@ -87,8 +94,8 @@ const HTMLComponents = {
   h4,
   p,
   'ol.li': liNestedInOl,
-  inlineCode,
-  code: CodeBlock,
+  code: inlineCode,
+  pre,
   a,
 };
 
