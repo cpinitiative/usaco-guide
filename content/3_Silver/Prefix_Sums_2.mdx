@@ -112,14 +112,14 @@ size = int(input())
 arr = [int(i) for i in input().split()]
 assert len(arr) == size
 
-max_subarrary_sum = arr[0]
+max_subarray_sum = arr[0]
 min_pref_sum = 0
 running_pref_sum = 0
 for i in arr:
 	running_pref_sum += i
-	max_subarrary_sum = max(max_subarrary_sum, running_pref_sum - min_pref_sum)
+	max_subarray_sum = max(max_subarray_sum, running_pref_sum - min_pref_sum)
 	min_pref_sum = min(min_pref_sum, running_pref_sum)
-print(max_subarrary_sum)
+print(max_subarray_sum)
 ```
 
 </PySection>
@@ -147,22 +147,24 @@ Kadane's Algorithm finds the largest subarray sum using a greedy method.
 
 using namespace std;
 using ll = long long;
-using vl = vector<ll>;
 
-int main(){
-	int n; cin >> n;
-	vl x(n);
-	for(int i=0; i<n; i++){
+int main() {
+	int n;
+	cin >> n;
+	vector<long long> x(n);
+	for (int i = 0; i < n; i++){
 		cin >> x[i];
 	}
-	ll current_sum = x[0], max_subarray_sum = x[0];
-	for(int i=1; i<n; i++){
+	ll current_sum = x[0];
+	ll max_subarray_sum = x[0];
+	for (int i = 1; i < n; i++){
+		/* 
+		 * Continue the subarray sum or start a new
+		 * subarray sum beginning at the current element.
+		 */
 		current_sum = max(current_sum + x[i], x[i]);
-		/* Continue the subarray sum or start a new
-		subarray sum beginning at the current element.
-		*/
-		max_subarray_sum = max(max_subarray_sum, current_sum);
 		// Store the maximum subarray sum at each iteration.
+		max_subarray_sum = max(max_subarray_sum, current_sum);
 	}
 	cout << max_subarray_sum << endl;
 }
@@ -546,7 +548,7 @@ public class ForestQueries {
 			String line = io.next();
 			for (int j = 0; j < N; j++) {
 				if (line.charAt(j) == '*') {
-					arr[i+1][j+1]++;
+					arr[i + 1][j + 1]++;
 				}
 			}
 		}
@@ -560,7 +562,7 @@ public class ForestQueries {
 			}
 		}
 
-		for(int i = 0; i < Q; i++) {
+		for (int i = 0; i < Q; i++) {
 			int x1 = io.nextInt();
 			int y1 = io.nextInt();
 			int x2 = io.nextInt();
