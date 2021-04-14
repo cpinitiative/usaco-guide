@@ -10,7 +10,8 @@ import {
   probSources,
 } from './src/models/problem';
 import { books } from './src/utils/books';
-import importFresh = require('import-fresh');
+import importFresh from "import-fresh";
+import { createXdmNode } from './src/gatsby/create-xdm-node';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -146,6 +147,17 @@ exports.onCreateNode = async ({
   createNodeId,
 }) => {
   const { createNodeField, createNode, createParentChildLink } = actions;
+
+  if (node.internal.type === `File` && node.ext === ".mdx") {
+    const content = loadNodeContent(node);
+    const xdmNode = await createXdmNode({
+      id: createNodeId(`${node.id} >>> Xdm`),
+      node,
+      content,
+    });
+    createNode(xdmNode)
+    createParentChildLink({ parent: node, child: xdmNode });
+  }
 
   function transformObject(obj, id) {
     const problemInfoNode = {

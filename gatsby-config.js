@@ -3,9 +3,9 @@
 // tsconfig.json.
 require('ts-node').register({
   compilerOptions: {
-    module: 'commonjs',
+    module: 'esnext',
   },
 });
 
-// Use a TypeScript version of gatsby-config.js.
-module.exports = require('./gatsby-config.ts');
+const esm = require('esm')(module);
+module.exports = esm('./gatsby-config.ts');

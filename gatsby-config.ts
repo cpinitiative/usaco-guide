@@ -1,11 +1,11 @@
 require('dotenv').config();
 
-export const flags = {
+const flags = {
   PRESERVE_WEBPACK_CACHE: true,
   FAST_DEV: true,
 };
 
-export const siteMetadata = {
+const siteMetadata = {
   title: `USACO Guide`,
   description: `A free collection of curated, high-quality competitive programming resources to take you from USACO Bronze to USACO Platinum and beyond. Written by top USACO Finalists, these tutorials will guide you through your competitive programming journey.`,
   author: `@usacoguide`,
@@ -13,7 +13,7 @@ export const siteMetadata = {
   keywords: ['USACO', 'Competitive Programming', 'USACO Guide'],
 };
 
-export const plugins = [
+const plugins = [
   {
     resolve: 'gatsby-plugin-sitemap',
     options: {
@@ -171,3 +171,7 @@ export const plugins = [
   // To learn more, visit: https://gatsby.dev/offline
   // `gatsby-plugin-offline`,
 ];
+
+module.exports = {
+  flags, siteMetadata, plugins
+};

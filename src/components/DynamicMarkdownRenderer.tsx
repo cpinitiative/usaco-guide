@@ -66,7 +66,7 @@ export default function DynamicMarkdownRenderer({
             remarkMath,
             remarkExternalLinks,
             remarkFrontmatter,
-            remarkMdxFrontmatter,
+            [remarkMdxFrontmatter, { name: "frontmatter" }],
           ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
         });
@@ -79,6 +79,8 @@ export default function DynamicMarkdownRenderer({
         );
         code = code.replace('export default MDXContent', 'return MDXContent');
         code = code.replace('export const ', 'const ');
+
+        console.log(code);
 
         setFn(new Function(code));
         setError(null);
