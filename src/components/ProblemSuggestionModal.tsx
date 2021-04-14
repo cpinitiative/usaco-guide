@@ -37,7 +37,6 @@ export default function ProblemSuggestionModal({
 
   const submitSuggestion = useProblemSuggestionAction();
   const editorActions = useContext(EditorContext);
-  console.log('EA', editorActions);
   const inEditor = editorActions.inEditor;
 
   // will be null if in editor
@@ -274,7 +273,7 @@ export default function ProblemSuggestionModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Suggested Tags (separated with comma and space)
+          {!inEditor && 'Suggested '}Tags (separated with comma and space)
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input
@@ -287,26 +286,28 @@ export default function ProblemSuggestionModal({
           />
         </div>
       </div>
-      <div>
-        <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Additional Notes
-        </label>
+      {!inEditor && (
         <div>
-          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            In case there's anything else you want to let us know.
-          </p>
-          <div className="rounded-md shadow-sm">
-            <textarea
-              rows={3}
-              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
-              value={additionalNotes}
-              onChange={e => setAdditionalNotes(e.target.value)}
-              placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
-              disabled={loading}
-            />
+          <label className="block font-medium text-gray-700 dark:text-gray-200">
+            Additional Notes
+          </label>
+          <div>
+            <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+              In case there's anything else you want to let us know.
+            </p>
+            <div className="rounded-md shadow-sm">
+              <textarea
+                rows={3}
+                className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+                value={additionalNotes}
+                onChange={e => setAdditionalNotes(e.target.value)}
+                placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
+                disabled={loading}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 
