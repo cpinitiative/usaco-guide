@@ -14,7 +14,7 @@ import prettier from 'prettier';
 import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
@@ -376,10 +376,15 @@ export default function LiveUpdatePage(props: PageProps) {
                         value={markdownProblemListsProviderValue}
                       >
                         <ProblemSuggestionModalProvider>
-                          <RawMarkdownRenderer markdown={markdown} />
+                          <RawMarkdownRenderer markdown={markdown}                      
+                            problems={problems}
+ />
                         </ProblemSuggestionModalProvider>
                       </MarkdownProblemListsProvider>
                     </EditorContext.Provider>
+                    <RawMarkdownRenderer
+                      markdown={markdown}
+                    />
                   </div>
                 </div>
               </div>
