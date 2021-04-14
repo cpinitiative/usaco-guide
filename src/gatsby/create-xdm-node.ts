@@ -1,9 +1,11 @@
 import { createContentDigest } from 'gatsby-core-utils';
 import graymatter from 'gray-matter';
+import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
+import remarkSlug from 'remark-slug';
 import customRehypeKatex from '../mdx-plugins/rehype-math';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets';
 import remarkToC from '../mdx-plugins/remark-toc';
@@ -20,6 +22,21 @@ export async function createXdmNode({ id, node, content }) {
         remarkFrontmatter,
         remarkMdxFrontmatter,
         [remarkToC, { tableOfContents }],
+        remarkSlug,
+        [
+          remarkAutolinkHeadings,
+          {
+            linkProperties: {
+              ariaHidden: 'true',
+              tabIndex: -1,
+              className: 'anchor before',
+            },
+            content: {
+              type: 'mdxJsxFlowElement',
+              name: 'HeaderLink',
+            },
+          },
+        ],
       ],
       rehypePlugins: [customRehypeKatex, rehypeSnippets],
     });

@@ -5,10 +5,12 @@ import {
   jsx as _jsx,
   jsxs as _jsxs,
 } from 'react/jsx-runtime';
+import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
+import remarkSlug from 'remark-slug';
 import { compile as xdmCompile } from 'xdm';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
@@ -70,10 +72,24 @@ export default function DynamicMarkdownRenderer({
             remarkFrontmatter,
             [remarkMdxFrontmatter, { name: 'frontmatter' }],
             [remarkToC, { tableOfContents }],
+            remarkSlug,
+            [
+              remarkAutolinkHeadings,
+              {
+                linkProperties: {
+                  ariaHidden: 'true',
+                  tabIndex: -1,
+                  className: 'anchor before',
+                },
+                content: {
+                  type: 'mdxJsxFlowElement',
+                  name: 'HeaderLink',
+                },
+              },
+            ],
           ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
         });
-        console.log('Got ToC', tableOfContents);
 
         let code = String(compiledResult);
         code = code.replace(/import .* from "react\/jsx-runtime";/, '');

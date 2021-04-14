@@ -52,6 +52,7 @@ module.exports = ({ tableOfContents }) => {
   }
 
   return node => {
+    console.log(node);
     process(node);
   };
 };
