@@ -24,7 +24,7 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
-import { OffCanvas, OffCanvasMenu, OffCanvasBody } from "react-offcanvas";
+import { OffCanvas, OffCanvasMenu, OffCanvasBody } from 'react-offcanvas';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -149,44 +149,52 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <OffCanvas
-              // width={300}
-              transitionDuration={300}
-              isMenuOpened={toggle}
-              position={"left"}
-              effect={"push"}
+            // width={300}
+            transitionDuration={300}
+            isMenuOpened={toggle}
+            position={'left'}
+            effect={'push'}
           >
             <OffCanvasMenu>
               <MobileSideNav />
-              <DesktopSidebar expandable={toggle}/>
-              </OffCanvasMenu>
+              <DesktopSidebar expandable={toggle} />
+            </OffCanvasMenu>
             <OffCanvasBody>
-          <div className="w-full">
-            <MobileAppBar />
+              <div className="w-full">
+                <MobileAppBar />
 
-            <ContentContainer tableOfContents={tableOfContents}>
-              <NotSignedInWarning />
+                <ContentContainer tableOfContents={tableOfContents}>
+                  <NotSignedInWarning />
 
-              <ModuleHeaders moduleLinks={moduleLinks} />
+                  <ModuleHeaders moduleLinks={moduleLinks} />
 
-              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
-                <TableOfContentsBlock tableOfContents={tableOfContents} />
+                  <div
+                    className={tableOfContents.length > 1 ? 'xl:hidden' : ''}
+                  >
+                    <TableOfContentsBlock tableOfContents={tableOfContents} />
+                  </div>
+
+                  {children}
+                  <button
+                    onClick={event => {
+                      console.log(event);
+                    }}
+                  >
+                    {' '}
+                    Toggle{' '}
+                  </button>
+
+                  <ModuleProgressUpdateBanner />
+
+                  <ForumCTA />
+
+                  {/*<div className="my-8">*/}
+                  {/*  <ModuleFeedback markdownData={markdownData} />*/}
+                  {/*</div>*/}
+                </ContentContainer>
               </div>
-
-              {children}
-              <button onClick={event => {
-                console.log(event)}} > Toggle </button>
-
-              <ModuleProgressUpdateBanner />
-
-              <ForumCTA />
-
-              {/*<div className="my-8">*/}
-              {/*  <ModuleFeedback markdownData={markdownData} />*/}
-              {/*</div>*/}
-            </ContentContainer>
-          </div>
-              </OffCanvasBody>
-            </OffCanvas>
+            </OffCanvasBody>
+          </OffCanvas>
         </ProblemSuggestionModalProvider>
       </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
