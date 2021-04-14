@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
+import 'flatpickr/dist/themes/material_blue.css';
+import * as React from 'react';
+import Flatpickr from 'react-flatpickr';
+import useFirebase from '../../../hooks/useFirebase';
 import { JoinGroupLink } from '../../../models/groups/groups';
 import Switch from '../../elements/Switch';
-import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/themes/material_blue.css';
-import useFirebase from '../../../hooks/useFirebase';
 import Tooltip from '../../Tooltip/Tooltip';
 
 export default function EditJoinLinkModal({
@@ -14,7 +14,7 @@ export default function EditJoinLinkModal({
   link: initialLink,
 }: {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   onSave: (link: JoinGroupLink | null) => any;
   link: JoinGroupLink;
 }) {

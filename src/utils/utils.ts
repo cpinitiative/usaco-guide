@@ -1,6 +1,5 @@
 import MODULE_ORDERING from '../../content/ordering';
-import { ModuleInfo, ModuleLinkInfo } from '../models/module';
-import { Problem } from '../models/problem';
+import { ModuleInfo } from '../models/module';
 
 export const getModulesForDivision = (allModules, division) => {
   return MODULE_ORDERING[division].map(k => {

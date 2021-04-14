@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
+import * as React from 'react';
 import { useContext } from 'react';
 import {
   getSubmissionStatus,
@@ -10,9 +10,9 @@ import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;
-  setShowPopup: Function;
+  setShowPopup: (showPopup: boolean) => void;
   submission: Submission;
-  setSubmission: Function;
+  setSubmission: (submission: Submission) => void;
 }>(null);
 
 function ProblemSubmissionPopup() {

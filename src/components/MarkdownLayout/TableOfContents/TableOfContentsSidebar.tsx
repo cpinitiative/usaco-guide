@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { TOCHeading } from '../../../models/module';
-import { Link } from 'gatsby';
-import { useActiveHash } from '../../../hooks/useActiveHash';
 import { useMemo } from 'react';
+import { useActiveHash } from '../../../hooks/useActiveHash';
+import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import LinksToEdit from './LinksToEdit';
 
 const TableOfContentsSidebar = ({
@@ -22,7 +20,7 @@ const TableOfContentsSidebar = ({
     (activeHash === heading.slug
       ? 'underline text-blue-600 dark:text-dark-high-emphasis'
       : 'text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis');
-  let links = genLinksFromTOCHeadings(tableOfContents, getLinkStyles);
+  const links = genLinksFromTOCHeadings(tableOfContents, getLinkStyles);
 
   return (
     <div className="sticky" style={{ top: '2.5rem' }}>

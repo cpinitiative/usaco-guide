@@ -1,17 +1,11 @@
-import { SECTIONS } from './content/ordering';
-import importFresh = require('import-fresh');
-import {
-  getProblemURL,
-  ProblemInfo,
-  ProblemMetadata,
-  ProblemSolutionInfo,
-  probSources,
-} from './src/models/problem';
-import PGS from './src/components/markdown/PGS';
-import { books } from './src/utils/books';
-import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
-import { strict as assert } from 'assert';
 import * as fs from 'fs';
+import { SECTIONS } from './content/ordering';
+import {
+  getProblemInfo,
+  getProblemURL,
+  ProblemMetadata,
+} from './src/models/problem';
+import importFresh = require('import-fresh');
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -29,112 +23,6 @@ try {
   );
   console.error(e);
 }
-
-const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
-  const ordering = importFresh<any>('./content/ordering');
-  const { solutionMetadata, ...info } = metadata;
-
-  if (
-    !info.source ||
-    !info.uniqueId ||
-    info.isStarred === null ||
-    info.isStarred === undefined ||
-    !info.name ||
-    !info.url
-  ) {
-    console.error("problem metadata isn't valid", metadata);
-    throw new Error('Bad problem metadata');
-  }
-
-  let sol: ProblemSolutionInfo;
-  if (solutionMetadata.kind === 'autogen-label-from-site') {
-    const site = solutionMetadata.site;
-    if (!probSources.hasOwnProperty(site) || probSources[site].length !== 3) {
-      console.error(metadata);
-      throw new Error(
-        "Couldn't autogenerate solution label from problem site " + site
-      );
-    }
-    sol = {
-      kind: 'label',
-      label: 'Check ' + site,
-      labelTooltip: probSources[site][2],
-    };
-  } else if (solutionMetadata.kind === 'internal') {
-    sol = {
-      kind: 'internal',
-    };
-  } else if (solutionMetadata.kind === 'link') {
-    sol = {
-      kind: 'link',
-      url: solutionMetadata.url,
-      label: 'External Sol',
-    };
-  } else if (solutionMetadata.kind === 'CPH') {
-    const getSec = (dictKey, book, sec) => {
-      let url = book;
-      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
-      if (!/^\d.*$/.test(sec)) return url;
-      if (!(sec in PGS[dictKey]))
-        throw `Could not find section ${sec} in source ${dictKey}`;
-      url += '#page=' + PGS[dictKey][sec];
-      return url;
-    };
-    let source = 'CPH';
-    let cphUrl = getSec(source, books[source][0], solutionMetadata.section);
-    sol = {
-      kind: 'link',
-      label: 'CPH ' + solutionMetadata.section,
-      url: cphUrl,
-    };
-  } else if (solutionMetadata.kind === 'USACO') {
-    if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
-      throw new Error(
-        "Couldn't find a corresponding USACO external solution for USACO problem ID " +
-          solutionMetadata.usacoId
-      );
-    }
-    sol = {
-      kind: 'link',
-      label: 'External Sol',
-      url:
-        `http://www.usaco.org/current/data/` +
-        id_to_sol[solutionMetadata.usacoId],
-    };
-  } else if (solutionMetadata.kind === 'IOI') {
-    let year = solutionMetadata.year;
-    let num = year - 1994 + 20;
-    sol = {
-      kind: 'link',
-      label: 'External Sol',
-      url: `https://ioinformatics.org/page/ioi-${year}/` + num.toString(),
-    };
-  } else if (solutionMetadata.kind === 'none') {
-    sol = null;
-  } else if (solutionMetadata.kind === 'in-module') {
-    sol = {
-      kind: 'link',
-      label: 'In Module',
-      url: `https://usaco.guide/${
-        ordering.moduleIDToSectionMap[solutionMetadata.moduleId]
-      }/${solutionMetadata.moduleId}#problem-${info.uniqueId}`,
-    };
-  } else if (solutionMetadata.kind === 'sketch') {
-    sol = {
-      kind: 'sketch',
-      sketch: solutionMetadata.sketch,
-    };
-  } else {
-    throw new Error(
-      'Unknown solution metadata ' + JSON.stringify(solutionMetadata)
-    );
-  }
-
-  return {
-    ...info,
-    solution: sol,
-  };
-};
 
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
@@ -194,9 +82,11 @@ exports.onCreateNode = async ({
       if (tableId === 'MODULE_ID') return;
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
+          const freshOrdering = importFresh<any>('./content/ordering');
+
           transformObject(
             {
-              ...getProblemInfo(metadata),
+              ...getProblemInfo(metadata, freshOrdering),
               module: moduleId,
             },
             createNodeId(
@@ -209,7 +99,7 @@ exports.onCreateNode = async ({
           'Failed to create problem info for',
           parsedContent[tableId]
         );
-        throw new Error('Failed to create problem info');
+        throw new Error(e);
       }
     });
 
@@ -220,9 +110,13 @@ exports.onCreateNode = async ({
         .filter(x => x !== 'MODULE_ID')
         .map(listId => ({
           listId,
-          problems: parsedContent[listId].map(x => ({
-            ...getProblemInfo(x),
-          })),
+          problems: parsedContent[listId].map(x => {
+            const freshOrdering = importFresh<any>('./content/ordering');
+
+            return {
+              ...getProblemInfo(x, freshOrdering),
+            };
+          }),
         }));
       const data = {
         problemLists,
@@ -368,6 +262,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     if (problemInfo.hasOwnProperty(node.uniqueId)) {
       let a = node,
         b = problemInfo[node.uniqueId];
+      // Some problems with no corresponding module gets put into extraProblems.json.
+      // If a problem has a module, then it should be removed from extraProblems.json.
+      if (!a.module || !b.module) {
+        throw new Error(
+          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
+        );
+      }
       if (a.name !== b.name || a.url !== b.url || a.source !== b.source) {
         throw new Error(
           `The problem ${node.uniqueId} appears in both ${
@@ -377,13 +278,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           } - ${
             problemInfo[node.uniqueId].module.frontmatter.title
           } but has different information! They need to have the same name / url / source.`
-        );
-      }
-      // Some problems with no corresponding module gets put into extraProblems.json.
-      // If a problem has a module, then it should be removed from extraProblems.json.
-      if (!a.module || !b.module) {
-        throw new Error(
-          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
         );
       }
     }
@@ -457,13 +351,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           console.error(
             'Problem ' +
               node.uniqueId +
-              " isn't linked to its corresponding internal solution in " +
-              node.module
-              ? 'module ' +
-                  node.module.frontmatter.title +
-                  ' - ' +
-                  node.module.frontmatter.id
-              : 'extraProblems.json'
+              " isn't linked to its corresponding internal solution in module " +
+              node.module.frontmatter.title +
+              ' - ' +
+              node.module.frontmatter.id
           );
         });
         throw new Error(
@@ -656,20 +547,7 @@ exports.createResolvers = ({ createResolvers }) => {
       isIncomplete: {
         type: `Boolean`,
         async resolve(source, args, context, info) {
-          const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          const mdast = await resolve(source, args, context, {
-            fieldName: 'mdast',
-          });
-          let incomplete = false;
-          mdast.children.forEach(node => {
-            if (
-              node.type === 'jsx' &&
-              node.value.includes('<IncompleteSection')
-            ) {
-              incomplete = true;
-            }
-          });
-          return incomplete;
+          return source.rawBody.indexOf('<IncompleteSection') !== -1;
         },
       },
     },

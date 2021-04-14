@@ -1,12 +1,12 @@
-import { ProblemInfo } from '../models/problem';
 import * as React from 'react';
-import useFirebase from './useFirebase';
+import { useContext } from 'react';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { ProblemInfo } from '../models/problem';
 import {
   UserSolutionForProblem,
   userSolutionForProblemConverter,
 } from '../models/userSolutionForProblem';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import useFirebase from './useFirebase';
 
 export default function useUserSolutionsForProblem(problem: ProblemInfo) {
   const [solutions, setSolutions] = React.useState<UserSolutionForProblem[]>(

@@ -3,7 +3,6 @@ import { createContext } from 'react';
 import {
   MarkdownLayoutSidebarModuleLinkInfo,
   ModuleInfo,
-  ModuleLinkInfo,
   ModuleProgress,
 } from '../models/module';
 import { SolutionInfo } from '../models/solution';

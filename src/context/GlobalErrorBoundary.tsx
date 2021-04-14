@@ -1,5 +1,5 @@
-import * as React from 'react';
 import * as Sentry from '@sentry/gatsby';
+import * as React from 'react';
 
 const GlobalErrorBoundary = ({ children }) => {
   return (
@@ -19,6 +19,7 @@ const GlobalErrorBoundary = ({ children }) => {
               href="mailto:usacoguide@gmail.com"
               target="_blank"
               className="text-blue-600 underline dark:text-blue-400"
+              rel="noreferrer"
             >
               emailing us
             </a>{' '}
@@ -27,6 +28,7 @@ const GlobalErrorBoundary = ({ children }) => {
               href="https://github.com/cpinitiative/usaco-guide/issues"
               target="_blank"
               className="text-blue-600 underline dark:text-blue-400"
+              rel="noreferrer"
             >
               opening a Github issue
             </a>
