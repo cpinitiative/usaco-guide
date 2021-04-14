@@ -11,6 +11,7 @@
 
 import { PageProps } from 'gatsby';
 import prettier from 'prettier';
+import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -166,6 +167,7 @@ export default function LiveUpdatePage(props: PageProps) {
       trailingComma: 'es5',
       arrowParens: 'avoid',
       parser: 'json',
+      plugins: [babelParser],
     });
     setProblems(formattedNewContent);
   };
@@ -230,6 +232,7 @@ export default function LiveUpdatePage(props: PageProps) {
                     trailingComma: 'es5',
                     arrowParens: 'avoid',
                     parser: 'json',
+                    plugins: [babelParser],
                   })
                 );
               }
@@ -363,20 +366,20 @@ export default function LiveUpdatePage(props: PageProps) {
                 </div>
                 <div className="overflow-y-auto relative flex-1">
                   <div className="markdown p-4">
-                    <MarkdownProblemListsProvider
-                      value={markdownProblemListsProviderValue}
+                    <EditorContext.Provider
+                      value={{
+                        addProblem: handleAddProblem,
+                        inEditor: true,
+                      }}
                     >
-                      <ProblemSuggestionModalProvider>
-                        <EditorContext.Provider
-                          value={{
-                            addProblem: handleAddProblem,
-                            inEditor: true,
-                          }}
-                        >
+                      <MarkdownProblemListsProvider
+                        value={markdownProblemListsProviderValue}
+                      >
+                        <ProblemSuggestionModalProvider>
                           <RawMarkdownRenderer markdown={markdown} />
-                        </EditorContext.Provider>
-                      </ProblemSuggestionModalProvider>
-                    </MarkdownProblemListsProvider>
+                        </ProblemSuggestionModalProvider>
+                      </MarkdownProblemListsProvider>
+                    </EditorContext.Provider>
                   </div>
                 </div>
               </div>
