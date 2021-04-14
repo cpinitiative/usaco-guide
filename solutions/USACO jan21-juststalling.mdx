@@ -16,57 +16,31 @@ author: Ananth Kashyap
 <PySection>
 
 ```python
-    n = int(input())
-    cows = list(map(int, input().split(" ")))
-    stalls = list(map(int, input().split(" ")))
-    
-    cows.sort()
-    stalls.sort()
-    
-    possible_places = [0] * n
-    
-    # Create a list containing the number of stalls each cow can use.
-    for i in range(n):
-	    for j in range(n):
-		    if cows[i] <= stalls[j]:
-			    possible_places[i] += 1
-			    
-    # Initialize a cumulative product
-    product = 1
-    
-    # For each cow, find out the number of stalls it can use in a valid permutation
-    # Use the formula provided in the explanation
-    # Multiply the cumulative product by this value
-    for i in range(n - 1, -1, -1):
-	    product *= (possible_places[i] - (n - i - 1))
-    
-    print(product)
-    ```
-    n = int(input())
-    cows = list(map(int, input().split(" ")))
-    stalls = list(map(int, input().split(" ")))
-    
-    cows.sort()
-    stalls.sort()
-    
-    possible_places = [0] * n
-    
-    # Create a list containing the number of stalls each cow can use.
-    for i in range(n):
-	    for j in range(n):
-		    if cows[i] <= stalls[j]:
-			    possible_places[i] += 1
-			    
-    # Initialize a cumulative product
-    product = 1
-    
-    # For each cow, find out the number of stalls it can use in a valid permutation
-    # Use the formula provided in the explanation
-    # Multiply the cumulative product by this value
-    for i in range(n - 1, -1, -1):
-	    product *= (possible_places[i] - (n - i - 1))
-    
-    print(product)
+n = int(input())
+cows = list(map(int, input().split(" ")))
+stalls = list(map(int, input().split(" ")))
+
+cows.sort()
+stalls.sort()
+
+possible_places = [0] * n
+
+# Create a list containing the number of stalls each cow can use.
+for i in range(n):
+	for j in range(n):
+		if cows[i] <= stalls[j]:
+			possible_places[i] += 1
+
+# Initialize a cumulative product
+product = 1
+
+# For each cow, find out the number of stalls it can use in a valid permutation
+# Use the formula provided in the explanation
+# Multiply the cumulative product by this value
+for i in range(n - 1, -1, -1):
+	product *= (possible_places[i] - (n - i - 1))
+
+print(product)
 ```
 
 </PySection>
