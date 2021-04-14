@@ -16,8 +16,10 @@ author: Ananth Kashyap
 <PySection>
 
 ```python
-n = int(input())
-cows = [list(map(int, input().split(" "))) for i in range(n)]
+file_in = open('blist.in')
+data = file_in.read().strip().split("\n")
+n = int(data[0])
+cows = [list(map(int, data[i+1].split(" "))) for i in range(n)]
 
 for i in range(n):
 	for j in range(3):
@@ -35,7 +37,9 @@ for i in range(1, 1001):
 			buckets_at_this_time += cows[j][2]
 	max_buckets = max(max_buckets, buckets_at_this_time)
 
-print(max_buckets)
+file_out = open('blist.out', 'w')
+file_out.write(str(max_buckets))
+file_out.close()
 ```
 
 </PySection>
