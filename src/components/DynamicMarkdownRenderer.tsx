@@ -8,6 +8,7 @@ import {
 import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
+import gfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
@@ -68,6 +69,7 @@ export default function DynamicMarkdownRenderer({
         const tableOfContents = {};
         const compiledResult = await xdmCompile(markdown, {
           remarkPlugins: [
+            gfm,
             remarkMath,
             remarkExternalLinks,
             remarkFrontmatter,

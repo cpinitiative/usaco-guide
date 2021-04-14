@@ -3,6 +3,7 @@ import graymatter from 'gray-matter';
 import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
+import gfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
@@ -37,6 +38,7 @@ export async function createXdmNode({ id, node, content }, api) {
   try {
     compiledResult = await xdm.compile(content, {
       remarkPlugins: [
+        gfm,
         remarkMath,
         remarkExternalLinks,
         remarkFrontmatter,

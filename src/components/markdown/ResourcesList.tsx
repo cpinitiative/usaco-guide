@@ -159,7 +159,7 @@ export function Resource(props) {
           </a>
         </div>
       </td>
-      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-bottom-margin">
         {props.children}
       </td>
     </tr>
