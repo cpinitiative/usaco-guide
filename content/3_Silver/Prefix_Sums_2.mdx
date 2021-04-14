@@ -81,9 +81,12 @@ import java.util.Arrays;
 
 public class MaxSubSum {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(
+			new InputStreamReader(System.in)
+		);
 		read.readLine();
-		int[] arr = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+		int[] arr = Arrays.stream(read.readLine().split(" ")
+				.mapToInt(Integer::parseInt).toArray();
 		
 		long maxSubSum = arr[0];
 		long runningPrefSum = 0;
@@ -539,18 +542,21 @@ public class ForestQueries {
 		pfx = new int[N+1][N+1];
 		arr = new int[N+1][N+1];
 
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			String line = io.next();
-			for(int j = 0; j < N; j++) {
-				if(line.charAt(j) == '*') {
+			for (int j = 0; j < N; j++) {
+				if (line.charAt(j) == '*') {
 					arr[i+1][j+1]++;
 				}
 			}
 		}
 
-		for(int i = 1; i < N + 1; i++) {
-			for(int j = 1; j < N + 1; j++) {
-				pfx[i][j] = arr[i][j] + pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
+		for (int i = 1; i < N + 1; i++) {
+			for (int j = 1; j < N + 1; j++) {
+				pfx[i][j] = arr[i][j]
+						+ pfx[i-1][j]
+						+ pfx[i][j-1]
+						- pfx[i-1][j-1];
 			}
 		}
 
@@ -559,7 +565,12 @@ public class ForestQueries {
 			int y1 = io.nextInt();
 			int x2 = io.nextInt();
 			int y2 = io.nextInt();
-			io.println(pfx[x2][y2] - pfx[x1-1][y2] - pfx[x2][y1-1] + pfx[x1-1][y1-1]);
+			io.println(
+					pfx[x2][y2]
+					- pfx[x1-1][y2]
+					- pfx[x2][y1-1]
+					+ pfx[x1-1][y1-1]
+			);
 		}
 		io.close();
 	}
@@ -578,8 +589,10 @@ tree_prefixes = [[0 for _ in range(side_len + 1)] for _ in range(side_len + 1)]
 for r in range(side_len):
 	for ci, c in enumerate(input()):
 		tree = c == '*'
-		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1] + tree_prefixes[r + 1][ci]
-										 - tree_prefixes[r][ci] + tree)
+		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1]
+										 + tree_prefixes[r + 1][ci]
+										 - tree_prefixes[r][ci]
+										 + tree)
 
 for _ in range(query_num):
 	from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
