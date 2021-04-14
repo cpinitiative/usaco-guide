@@ -3,7 +3,7 @@ import { Problem } from './src/models/problem';
 
 let data: any = {
   data: {
-    allMdx: {
+    allXdm: {
       edges: [
         {
           node: {
@@ -14487,7 +14487,7 @@ let data: any = {
 };
 
 // @ts-ignore
-data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
+data.data.allXdm.edges = data.data.allXdm.edges.map(x => ({
   ...x,
   node: {
     ...x.node,
@@ -14548,7 +14548,7 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
 
 export default data;
 
-export const urlToNewIDMap = data.data.allMdx.edges.reduce(
+export const urlToNewIDMap = data.data.allXdm.edges.reduce(
   (acc, cur) => {
     cur.node.problems.forEach(prob => {
       acc[prob.url] = prob.uniqueId;

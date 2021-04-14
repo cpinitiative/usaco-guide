@@ -1,6 +1,6 @@
 query = '''
 query MyQuery {
-  allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
+  allXdm(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     nodes {
       problems {
         source
@@ -20,7 +20,7 @@ F = open("id_cses.json","r")
 ids = json.load(F)
 
 f = open("oops.json","r")
-x = json.load(f)["data"]["allMdx"]["nodes"]
+x = json.load(f)["data"]["allXdm"]["nodes"]
 
 done = {}
 

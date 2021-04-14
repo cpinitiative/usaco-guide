@@ -66,7 +66,7 @@ export default function Template(props) {
 
 export const pageQuery = graphql`
   query($id: String!) {
-    mdx(frontmatter: { id: { eq: $id } }) {
+    xdm(frontmatter: { id: { eq: $id } }) {
       body
       frontmatter {
         title
