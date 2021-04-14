@@ -1,11 +1,11 @@
-import { compile as xdmCompile } from "xdm";
+import { compile as xdmCompile } from 'xdm';
 import remarkMath from 'remark-math';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import customRehypeKatex from '../mdx-plugins/rehype-math';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets';
-import { createContentDigest } from "gatsby-core-utils";
+import { createContentDigest } from 'gatsby-core-utils';
 
 export async function createXdmNode({ id, node, content }) {
   let compiledResult;
@@ -21,8 +21,8 @@ export async function createXdmNode({ id, node, content }) {
     });
   } catch (e) {
     // add the path of the file to simplify debugging error messages
-    e.message += `${node.absolutePath}: ${e.message}`
-    throw e
+    e.message += `${node.absolutePath}: ${e.message}`;
+    throw e;
   }
 
   // extract all the exports
@@ -40,7 +40,7 @@ export async function createXdmNode({ id, node, content }) {
       type: `Xdm`,
     },
     body: compiledResult,
-  }
+  };
 
   // xdmNode.frontmatter = {
   //   title: ``, // always include a title
@@ -51,10 +51,10 @@ export async function createXdmNode({ id, node, content }) {
 
   // Add path to the markdown file path
   if (node.internal.type === `File`) {
-    xdmNode.fileAbsolutePath = node.absolutePath
+    xdmNode.fileAbsolutePath = node.absolutePath;
   }
 
-  xdmNode.internal.contentDigest = createContentDigest(xdmNode)
+  xdmNode.internal.contentDigest = createContentDigest(xdmNode);
 
-  return xdmNode
+  return xdmNode;
 }

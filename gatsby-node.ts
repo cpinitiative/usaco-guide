@@ -10,7 +10,7 @@ import {
   probSources,
 } from './src/models/problem';
 import { books } from './src/utils/books';
-import importFresh from "import-fresh";
+import importFresh from 'import-fresh';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
@@ -148,14 +148,14 @@ exports.onCreateNode = async ({
 }) => {
   const { createNodeField, createNode, createParentChildLink } = actions;
 
-  if (node.internal.type === `File` && node.ext === ".mdx") {
+  if (node.internal.type === `File` && node.ext === '.mdx') {
     const content = loadNodeContent(node);
     const xdmNode = await createXdmNode({
       id: createNodeId(`${node.id} >>> Xdm`),
       node,
       content,
     });
-    createNode(xdmNode)
+    createNode(xdmNode);
     createParentChildLink({ parent: node, child: xdmNode });
   }
 

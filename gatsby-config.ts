@@ -173,5 +173,7 @@ const plugins = [
 ];
 
 module.exports = {
-  flags, siteMetadata, plugins
+  flags,
+  siteMetadata,
+  plugins,
 };
