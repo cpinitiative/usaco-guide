@@ -14,6 +14,7 @@ import remarkSlug from 'remark-slug';
 import { compile as xdmCompile } from 'xdm';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
+import remarkHtmlNodes from '../mdx-plugins/remark-html-nodes.js';
 import remarkToC from '../mdx-plugins/remark-toc.js';
 import { components } from './markdown/MDXProvider';
 
@@ -87,6 +88,7 @@ export default function DynamicMarkdownRenderer({
                 },
               },
             ],
+            remarkHtmlNodes,
           ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
         });

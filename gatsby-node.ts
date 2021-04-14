@@ -139,22 +139,27 @@ const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
 
-exports.onCreateNode = async ({
-  node,
-  actions,
-  loadNodeContent,
-  createContentDigest,
-  createNodeId,
-}) => {
+exports.onCreateNode = async api => {
+  const {
+    node,
+    actions,
+    loadNodeContent,
+    createContentDigest,
+    createNodeId,
+  } = api;
+
   const { createNodeField, createNode, createParentChildLink } = actions;
 
   if (node.internal.type === `File` && node.ext === '.mdx') {
     const content = await loadNodeContent(node);
-    const xdmNode = await createXdmNode({
-      id: createNodeId(`${node.id} >>> Xdm`),
-      node,
-      content,
-    });
+    const xdmNode = await createXdmNode(
+      {
+        id: createNodeId(`${node.id} >>> Xdm`),
+        node,
+        content,
+      },
+      api
+    );
     createNode(xdmNode);
     createParentChildLink({ parent: node, child: xdmNode });
   }

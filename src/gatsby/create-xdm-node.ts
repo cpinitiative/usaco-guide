@@ -8,12 +8,32 @@ import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
 import customRehypeKatex from '../mdx-plugins/rehype-math';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets';
+import remarkHtmlNodes from '../mdx-plugins/remark-html-nodes.js';
 import remarkToC from '../mdx-plugins/remark-toc';
+import getGatsbyImage from './wrapped-gatsby-img-plugin';
 import { xdm } from './xdm';
 
-export async function createXdmNode({ id, node, content }) {
+// todo: migrate to resolver for even better development performance
+
+export async function createXdmNode({ id, node, content }, api) {
+  let xdmNode: any = {
+    id,
+    children: [],
+    parent: node.id,
+    internal: {
+      content: content,
+      type: `Xdm`,
+    },
+  };
+
   let compiledResult;
   const tableOfContents = {};
+
+  const gatsbyImage = getGatsbyImage({
+    ...api,
+    xdmNode,
+  });
+
   try {
     compiledResult = await xdm.compile(content, {
       remarkPlugins: [
@@ -37,6 +57,8 @@ export async function createXdmNode({ id, node, content }) {
             },
           },
         ],
+        gatsbyImage,
+        remarkHtmlNodes,
       ],
       rehypePlugins: [customRehypeKatex, rehypeSnippets],
     });
@@ -67,14 +89,8 @@ export async function createXdmNode({ id, node, content }) {
   // )
 
   const { data: frontmatter } = graymatter(content);
-  const xdmNode: any = {
-    id,
-    children: [],
-    parent: node.id,
-    internal: {
-      content: content,
-      type: `Xdm`,
-    },
+  xdmNode = {
+    ...xdmNode,
     body: compiledResult,
     frontmatter,
     isIncomplete: content.indexOf('<IncompleteSection') !== -1,

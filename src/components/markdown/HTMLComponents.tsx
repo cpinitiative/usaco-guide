@@ -102,6 +102,10 @@ const HeaderLink: React.FC = props => {
   );
 };
 
+const RAWHTML = ({ children }) => {
+  return <div dangerouslySetInnerHTML={{ __html: children }} />;
+};
+
 const HTMLComponents = {
   table,
   th,
@@ -116,6 +120,7 @@ const HTMLComponents = {
   pre,
   a,
   HeaderLink,
+  RAWHTML,
 };
 
 export default HTMLComponents;
