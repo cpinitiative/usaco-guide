@@ -534,6 +534,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       body: String
       fileAbsolutePath: String
       frontmatter: XdmFrontmatter
+      isIncomplete: Boolean
+      toc: TableOfContents
     }
   
     type XdmFrontmatter implements Node {
@@ -600,91 +602,6 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
   `;
   createTypes(typeDefs);
-};
-
-exports.createResolvers = ({ createResolvers }) => {
-  const resolvers = {
-    Xdm: {
-      toc: {
-        type: `TableOfContents`,
-        async resolve(source, args, context, info) {
-          return {
-            cpp: [],
-            java: [],
-            py: [],
-          };
-          // const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          // const mdast = await resolve(source, args, context, {
-          //   fieldName: 'mdast',
-          // });
-          // const cpp = [],
-          //   java = [],
-          //   py = [];
-          // // lol the spaghetti code going to be insane
-          // let cppCt = 0,
-          //   javaCt = 0,
-          //   pyCt = 0;
-          // // https://github.com/cpinitiative/usaco-guide/issues/966
-          // // We don't want to include headers inside spoilers
-          // let spoilerCt = 0;
-          // const slugger = new Slugger();
-          // mdast.children.forEach(node => {
-          //   if (node.type === 'jsx') {
-          //     const str = 'exact match ' + node.value;
-          //     cppCt += str.split('<CPPSection>').length - 1;
-          //     javaCt += str.split('<JavaSection>').length - 1;
-          //     pyCt += str.split('<PySection>').length - 1;
-          //     spoilerCt += str.split('<Spoiler').length - 1;
-          //     cppCt -= str.split('</CPPSection>').length - 1;
-          //     javaCt -= str.split('</JavaSection>').length - 1;
-          //     pyCt -= str.split('</PySection>').length - 1;
-          //     spoilerCt -= str.split('</Spoiler>').length - 1;
-          //   }
-          //   if (node.type === 'heading') {
-          //     const val = {
-          //       depth: node.depth,
-          //       value: mdastToStringWithKatex(node),
-          //       slug: slugger.slug(mdastToString(node)),
-          //     };
-          //     if (spoilerCt < 0) {
-          //       throw "Spoiler count went negative -- shouldn't happen...";
-          //     }
-          //     if (spoilerCt === 0) {
-          //       if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
-          //         cpp.push(val);
-          //         java.push(val);
-          //         py.push(val);
-          //       } else if (cppCt === 1 && javaCt === 0 && pyCt === 0) {
-          //         cpp.push(val);
-          //       } else if (cppCt === 0 && javaCt === 1 && pyCt === 0) {
-          //         java.push(val);
-          //       } else if (cppCt === 0 && javaCt === 0 && pyCt === 1) {
-          //         py.push(val);
-          //       } else {
-          //         throw 'Generating table of contents ran into a weird error. CPP/Java/Py Section tags mismatched?';
-          //       }
-          //     }
-          //   }
-          // });
-          // if (spoilerCt !== 0) {
-          //   throw 'Spoiler count should end at zero...';
-          // }
-          // return {
-          //   cpp,
-          //   java,
-          //   py,
-          // };
-        },
-      },
-      isIncomplete: {
-        type: `Boolean`,
-        async resolve(source, args, context, info) {
-          return source.internal.content.indexOf('<IncompleteSection') !== -1;
-        },
-      },
-    },
-  };
-  createResolvers(resolvers);
 };
 
 exports.onCreateWebpackConfig = ({ actions, stage, plugins }) => {

@@ -12,6 +12,7 @@ import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import { compile as xdmCompile } from 'xdm';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
+import remarkToC from '../mdx-plugins/remark-toc.js';
 import { components } from './markdown/MDXProvider';
 
 class ErrorBoundary extends React.Component {
@@ -61,15 +62,18 @@ export default function DynamicMarkdownRenderer({
       try {
         console.time('compile');
 
+        const tableOfContents = {};
         const compiledResult = await xdmCompile(markdown, {
           remarkPlugins: [
             remarkMath,
             remarkExternalLinks,
             remarkFrontmatter,
             [remarkMdxFrontmatter, { name: 'frontmatter' }],
+            [remarkToC, { tableOfContents }],
           ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
         });
+        console.log('Got ToC', tableOfContents);
 
         let code = String(compiledResult);
         code = code.replace(/import .* from "react\/jsx-runtime";/, '');
@@ -80,7 +84,7 @@ export default function DynamicMarkdownRenderer({
         code = code.replace('export default MDXContent', 'return MDXContent');
         code = code.replace('export const ', 'const ');
 
-        console.log(code);
+        // console.log(code);
 
         setFn(new Function(code));
         setError(null);

@@ -1,22 +1,25 @@
 import { createContentDigest } from 'gatsby-core-utils';
 import graymatter from 'gray-matter';
 import remarkExternalLinks from 'remark-external-links';
+import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
+import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import customRehypeKatex from '../mdx-plugins/rehype-math';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets';
+import remarkToC from '../mdx-plugins/remark-toc';
 import { xdm } from './xdm';
 
 export async function createXdmNode({ id, node, content }) {
-  const { content: markdown, data: frontmatter } = graymatter(content);
-
   let compiledResult;
+  const tableOfContents = {};
   try {
-    compiledResult = await xdm.compile(markdown, {
+    compiledResult = await xdm.compile(content, {
       remarkPlugins: [
         remarkMath,
         remarkExternalLinks,
-        // remarkFrontmatter,
-        // remarkMdxFrontmatter,
+        remarkFrontmatter,
+        remarkMdxFrontmatter,
+        [remarkToC, { tableOfContents }],
       ],
       rehypePlugins: [customRehypeKatex, rehypeSnippets],
     });
@@ -46,6 +49,7 @@ export async function createXdmNode({ id, node, content }) {
   //   node.absolutePath
   // )
 
+  const { data: frontmatter } = graymatter(content);
   const xdmNode: any = {
     id,
     children: [],
@@ -56,6 +60,8 @@ export async function createXdmNode({ id, node, content }) {
     },
     body: compiledResult,
     frontmatter,
+    isIncomplete: content.indexOf('<IncompleteSection') !== -1,
+    toc: tableOfContents,
   };
 
   // xdmNode.exports = nodeExports
