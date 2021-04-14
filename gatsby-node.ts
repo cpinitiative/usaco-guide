@@ -1,7 +1,9 @@
 import * as fs from 'fs';
+import importFresh from 'import-fresh';
 import { SECTIONS } from './content/ordering';
 import PGS from './src/components/markdown/PGS';
 import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
+import './src/gatsby/create-xdm-node';
 import {
   getProblemURL,
   ProblemInfo,
@@ -10,8 +12,6 @@ import {
   probSources,
 } from './src/models/problem';
 import { books } from './src/utils/books';
-import importFresh from "import-fresh";
-import './src/gatsby/create-xdm-node';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -148,7 +148,7 @@ exports.onCreateNode = async ({
 }) => {
   const { createNodeField, createNode, createParentChildLink } = actions;
 
-  if (node.internal.type === `File` && node.ext === ".mdx") {
+  if (node.internal.type === `File` && node.ext === '.mdx') {
     const content = loadNodeContent(node);
     // const xdmNode = await createXdmNode({
     //   id: createNodeId(`${node.id} >>> Xdm`),

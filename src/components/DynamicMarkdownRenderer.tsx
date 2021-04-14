@@ -66,7 +66,7 @@ export default function DynamicMarkdownRenderer({
             remarkMath,
             remarkExternalLinks,
             remarkFrontmatter,
-            [remarkMdxFrontmatter, { name: "frontmatter" }],
+            [remarkMdxFrontmatter, { name: 'frontmatter' }],
           ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
         });
