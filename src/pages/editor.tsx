@@ -376,15 +376,14 @@ export default function LiveUpdatePage(props: PageProps) {
                         value={markdownProblemListsProviderValue}
                       >
                         <ProblemSuggestionModalProvider>
-                          <RawMarkdownRenderer markdown={markdown}                      
+                          <RawMarkdownRenderer
+                            markdown={markdown}
                             problems={problems}
- />
+                          />
                         </ProblemSuggestionModalProvider>
                       </MarkdownProblemListsProvider>
                     </EditorContext.Provider>
-                    <RawMarkdownRenderer
-                      markdown={markdown}
-                    />
+                    <RawMarkdownRenderer markdown={markdown} />
                   </div>
                 </div>
               </div>
