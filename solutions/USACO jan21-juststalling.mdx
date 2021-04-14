@@ -7,17 +7,6 @@ author: Ananth Kashyap
 
 [Official Analysis](http://www.usaco.org/current/data/sol_prob3_bronze_jan21.html)
 
-For this problem, we are going to use permutations. First, we can sort the cows in increasing order based on
-height. Then we can keep track of the number of stalls that each cow is able to fit in. Now, to get the total
-number of possibilities that each cow can use in a permutation, all we have to do is, for each cow, subtract
-off the number of other cows that will be using other stalls which this cow is capable of using. To do this, we
-can use the fact that only cows with heights greater than or equal to this cow are required to use one of the
-stalls that this cow is capable of using. Since we know that our cows are sorted in height increasing order,
-the $i$th cow in our list will have $n-i$ cows with heights greater than or equal to it. So to
-get our final answer, we can initialize a cumulative product which will contain our answer, and for every
-$i$ between 1 and $n$, we just have to multiply this cumulative product by the number of
-stalls that the $i$th cow could possibly use, minus $n-i$.
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
