@@ -223,14 +223,14 @@ export default function TopNavigationBar({
                 to={linkLogoToIndex ? '/' : '/dashboard'}
                 className="flex-shrink-0 flex items-center"
               >
-                <div className="block sm:hidden h-10">
-                  <LogoSquare />
+                <div className="block sm:hidden">
+                  <LogoSquare className="h-10 w-10" />
                 </div>
                 <div className={'hidden sm:block h-9'}>
                   <Logo />
                 </div>
               </Link>
-              <div className={`hidden lg:ml-6 lg:flex space-x-8`}>
+              <div className={`hidden lg:ml-8 lg:flex space-x-8`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"

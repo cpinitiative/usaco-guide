@@ -7,7 +7,20 @@ function determineIfSingularCodeBlock(
   return firstName == 'LanguageSection' && numChildren == 1;
 }
 
-const Spoiler = ({ children, title }) => {
+export interface SpoilerProps {
+  title: string;
+  /**
+   * Whether or not the spoiler should start expanded.
+   * Defaults to false.
+   */
+  startExpanded?: boolean;
+}
+
+const Spoiler: React.FC<SpoilerProps> = ({
+  children,
+  title,
+  startExpanded = false,
+}) => {
   let count = 0;
   let numChildren = 0;
   let firstName = 'None';
@@ -25,7 +38,7 @@ const Spoiler = ({ children, title }) => {
   const childrenWithProps = React.Children.map(children, child => {
     if (count == 0 && onlyContainsCode) {
       count++;
-      return React.cloneElement(child, {
+      return React.cloneElement(child as any, {
         children: ogProps.children,
         mdxType: 'LanguageSection',
         originalType: ogProps.originalType,
@@ -36,11 +49,11 @@ const Spoiler = ({ children, title }) => {
     }
   });
 
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = React.useState(startExpanded);
 
   return (
     <div
-      className={`border border-gray-200 dark:border-gray-800 rounded-md mb-4`}
+      className={`bg-gray-50 dark:bg-gray-800 dark:bg-opacity-50 shadow rounded-md mb-4`}
     >
       <p
         className="p-4 flex items-start"
@@ -78,7 +91,11 @@ const Spoiler = ({ children, title }) => {
         <span className="flex-1">{title}</span>
       </p>
 
-      {show && <div className="px-4 spoiler-body">{childrenWithProps}</div>}
+      {show && (
+        <div className="p-4 spoiler-body bg-white dark:bg-dark-surface dark:bg-opacity-40 no-bottom-margin">
+          {childrenWithProps}
+        </div>
+      )}
     </div>
   );
 };
