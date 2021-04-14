@@ -1,0 +1,58 @@
+# Template for Prettifier's announcement when it cannot make commits to somebody's feature branch,
+# for example on pull requests from outside the organization.
+# Default: enabled
+cannot-prettify-message: >
+  Hey there! :wave: This repository uses [Prettier](https://prettier.io)
+  for code style.
+
+  You forgot to format these files in your pull request, and prettifier bot was unable to format them automatically:
+
+  {{#files}}
+
+  - {{.}}
+
+  {{/files}}
+
+  You can format your code in the [editor](https://usaco.guide/editor) by clicking the prettify button.
+  If you edit code locally, pre-commit hooks should run prettier on all staged changes as long as you `yarn install` dependencies when you clone the repository. You can also run `yarn format` to run prettier on all files. Thanks!
+
+  :heart:
+
+  Your friendly [Prettifier bot](https://www.prettifier.io).  
+
+# Template for commit messages from Prettifier.
+# Placeholders are:
+# - {{commitSha}}: the SHA of your commit that Prettifier formats
+commitMessage: "Format: {{commitSha}}"
+
+# Branches that Prettifier should ignore.
+# Default: empty
+# excludeBranches:
+#   - development
+#   - production
+
+# Files that Prettifier should ignore.
+# Please try ignoring them using Prettier first: https://prettier.io/docs/en/ignore.html.
+# Values are globs similar to how .gitignore works: https://git-scm.com/docs/gitignore.
+# Default: empty
+# excludeFiles:
+#   - confidential/
+
+# Whether to fix formatting issues by directly committing into the branches that introduce them
+fixByCommit: true
+
+# When unable to directly commit changes, whether to open a pull request containing the formatting fixes.
+fixByPullRequest: false
+
+# Template for Prettifier's announcement when it made commits to somebody's feature branch.
+# Default: disabled, provide this option to enable the feature
+# prettified-message: >
+#   Thanks for your contribution and welcome to this project! We format our source
+#   code using [Prettier](https://prettier.io). I have adjusted the formatting of
+#   this pull request for you.
+# 
+#   To stop seeing this message, please install Prettier on your machine and run
+#   `prettier --write .` to format your changes before submitting them.  
+
+# Whether to only check branches that have an active pull request.
+pulls-only: false
