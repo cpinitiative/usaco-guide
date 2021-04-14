@@ -1,11 +1,13 @@
-import { transform } from '@babel/standalone';
-import mdx from '@mdx-js/mdx';
-import { mdx as createElement, MDXProvider } from '@mdx-js/react';
-import grayMatter from 'gray-matter';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import * as remarkExternalLinks from 'remark-external-links';
-import * as remarkMath from 'remark-math';
+import {
+  Fragment as _Fragment,
+  jsx as _jsx,
+  jsxs as _jsxs,
+} from 'react/jsx-runtime';
+import remarkExternalLinks from 'remark-external-links';
+import remarkMath from 'remark-math';
+import { compile as xdmCompile } from 'xdm';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
 import { components } from './markdown/MDXProvider';
@@ -55,58 +57,28 @@ export default function DynamicMarkdownRenderer({
     // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
     const compile = async () => {
       try {
-        const fullScope = {
-          mdx: createElement,
-          MDXProvider,
-          components,
-          props: [],
-        };
-
         console.time('compile');
 
-        const { data, content: frontMatterCodeResult } = grayMatter(markdown);
+        //         const { data, content: frontMatterCodeResult } = grayMatter(markdown);
+        //
+        //         const content = `${frontMatterCodeResult}
+        //
+        // export const _frontmatter = ${JSON.stringify(data)}`;
 
-        const content = `${frontMatterCodeResult}
+        const compiledResult = await xdmCompile(markdown, {
+          remarkPlugins: [remarkMath, remarkExternalLinks],
+          rehypePlugins: [customRehypeKatex, rehypeSnippets],
+        });
 
-export const _frontmatter = ${JSON.stringify(data)}`;
-
-        const jsx = (
-          await mdx(content, {
-            remarkPlugins: [remarkExternalLinks, remarkMath],
-            rehypePlugins: [customRehypeKatex, rehypeSnippets],
-            skipExport: true,
-          })
-        ).trim();
-
-        let code;
-        try {
-          code = transform(jsx, {
-            presets: ['react'],
-            compact: true,
-          }).code;
-        } catch (err) {
-          console.log('transform error');
-          console.error(err);
-          throw err;
-        }
-
-        code = code.replace(/export const/g, 'const');
-
-        const keys = Object.keys(fullScope);
-        const values = Object.values(fullScope);
-
-        // eslint-disable-next-line no-new-func
-        const fn = new Function(
-          '_fn',
-          'React',
-          ...keys,
-          `${code}
-          return React.createElement(MDXProvider, { components },
-            React.createElement(MDXContent, props)
-          );`
+        let code = String(compiledResult);
+        code = code.replace(/import .* from "react\/jsx-runtime";/, '');
+        code = code.replace(
+          `function MDXContent(_props) {`,
+          'function MDXContent(_Fragment, _jsx, _jsxs, _props) {'
         );
+        code = code.replace('export default MDXContent', 'return MDXContent');
 
-        setFn(fn.bind(null, {}, React, ...values)());
+        setFn(new Function(code));
         setError(null);
 
         console.timeEnd('compile');
@@ -137,7 +109,11 @@ export const _frontmatter = ${JSON.stringify(data)}`;
       </div>
     );
   }
-  return <ErrorBoundary>{fn}</ErrorBoundary>;
+  return (
+    <ErrorBoundary>
+      {fn && fn(_Fragment, _jsx, _jsxs, { components })}
+    </ErrorBoundary>
+  );
 }
 
 // Backup...

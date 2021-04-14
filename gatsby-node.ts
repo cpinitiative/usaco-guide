@@ -660,7 +660,7 @@ exports.createResolvers = ({ createResolvers }) => {
   createResolvers(resolvers);
 };
 
-exports.onCreateWebpackConfig = ({ actions }) => {
+exports.onCreateWebpackConfig = ({ actions, stage, plugins }) => {
   actions.setWebpackConfig({
     resolve: {
       alias: {
@@ -671,4 +671,9 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       },
     },
   });
+  if (stage === 'build-javascript' || stage === 'develop') {
+    actions.setWebpackConfig({
+      plugins: [plugins.provide({ process: 'process/browser' })],
+    });
+  }
 };
