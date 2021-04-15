@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import importFresh from 'import-fresh';
+import * as path from 'path';
 import { SECTIONS } from './content/ordering';
 import PGS from './src/components/markdown/PGS';
 import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
@@ -12,10 +13,6 @@ import {
   probSources,
 } from './src/models/problem';
 import { books } from './src/utils/books';
-
-const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
-const mdastToString = require('mdast-util-to-string');
-const Slugger = require('github-slugger');
 const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
@@ -27,7 +24,6 @@ try {
   console.warn(
     'Git fetch failed. Ignore this if developing or building locally.'
   );
-  console.error(e);
 }
 
 const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
@@ -609,7 +605,7 @@ exports.createSchemaCustomization = ({ actions }) => {
   createTypes(typeDefs);
 };
 
-exports.onCreateWebpackConfig = ({ actions, stage, plugins }) => {
+exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
   actions.setWebpackConfig({
     resolve: {
       alias: {
@@ -618,6 +614,20 @@ exports.onCreateWebpackConfig = ({ actions, stage, plugins }) => {
       fallback: {
         fs: false,
       },
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mdx$/,
+          use: [
+            loaders.js(),
+            {
+              loader: path.resolve(__dirname, 'src/gatsby/webpack-xdm.js'),
+              options: {},
+            },
+          ],
+        },
+      ],
     },
   });
   if (stage === 'build-javascript' || stage === 'develop') {

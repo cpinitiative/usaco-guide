@@ -5,6 +5,7 @@
 import vsDark from 'prism-react-renderer/themes/vsDark';
 import * as React from 'react';
 import styled from 'styled-components';
+import { SpoilerContext } from '../Spoiler';
 import Highlight from './SyntaxHighlighting/Highlight';
 import Prism from './SyntaxHighlighting/prism';
 
@@ -94,7 +95,6 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
-    isCodeBlockExpandable?: boolean;
   },
   {
     collapsed: boolean;
@@ -102,6 +102,7 @@ class CodeBlock extends React.Component<
   }
 > {
   codeSnips = [];
+  static contextType = SpoilerContext;
 
   constructor(props) {
     super(props);
@@ -248,7 +249,7 @@ class CodeBlock extends React.Component<
   render() {
     const code = this.getCode();
     const className = this.props.className;
-    const isCodeBlockExpandable = this.props.isCodeBlockExpandable ?? true;
+    const isCodeBlockExpandable = !this.context.expandCodeBlock;
     const language = className?.replace(/language-/, '');
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag

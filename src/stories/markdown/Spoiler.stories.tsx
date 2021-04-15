@@ -39,23 +39,23 @@ WithCodeBlocks.args = {
   startExpanded: true,
   children: (
     <>
-      <pre>
+      <HTMLComponents.pre>
         <HTMLComponents.code className="language-java">
           {fakeCode}
         </HTMLComponents.code>
-      </pre>
+      </HTMLComponents.pre>
       <p>Hello World!</p>
-      <pre>
+      <HTMLComponents.pre>
         <HTMLComponents.code className="language-java">
           {fakeCode}
         </HTMLComponents.code>
-      </pre>
+      </HTMLComponents.pre>
       <p>Hello World!</p>
-      <pre>
+      <HTMLComponents.pre>
         <HTMLComponents.code className="language-java">
           {fakeCode}
         </HTMLComponents.code>
-      </pre>
+      </HTMLComponents.pre>
     </>
   ),
 };
