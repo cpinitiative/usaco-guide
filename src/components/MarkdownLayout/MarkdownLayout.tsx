@@ -134,7 +134,7 @@ export default function MarkdownLayout({
   const [toggle, setToggle] = React.useState(false);
 
   function set() {
-    setToggle(!toggle)
+    setToggle(!toggle);
   }
 
   return (
@@ -153,49 +153,51 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <OffCanvas
-              width={500}
-              transitionDuration={300}
-              isMenuOpened={toggle}
-              position={"left"}
-              effect={"push"}
+            width={500}
+            transitionDuration={300}
+            isMenuOpened={toggle}
+            position={'left'}
+            effect={'push'}
           >
             <OffCanvasMenu>
               <MobileSideNav />
               <DesktopSidebar expandable={toggle} />
             </OffCanvasMenu>
             <OffCanvasBody>
-          <div className="w-full">
-            <MobileAppBar />
+              <div className="w-full">
+                <MobileAppBar />
 
-            <ContentContainer tableOfContents={tableOfContents}>
-              <NotSignedInWarning />
+                <ContentContainer tableOfContents={tableOfContents}>
+                  <NotSignedInWarning />
 
-              <ModuleHeaders moduleLinks={moduleLinks} />
+                  <ModuleHeaders moduleLinks={moduleLinks} />
 
-              <button
-                  className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-                  onClick={set}>
-                Toggle
-              </button>
+                  <button
+                    className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+                    onClick={set}
+                  >
+                    Toggle
+                  </button>
 
-              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
-                <TableOfContentsBlock tableOfContents={tableOfContents} />
+                  <div
+                    className={tableOfContents.length > 1 ? 'xl:hidden' : ''}
+                  >
+                    <TableOfContentsBlock tableOfContents={tableOfContents} />
+                  </div>
+
+                  {children}
+
+                  <ModuleProgressUpdateBanner />
+
+                  <ForumCTA />
+
+                  {/*<div className="my-8">*/}
+                  {/*  <ModuleFeedback markdownData={markdownData} />*/}
+                  {/*</div>*/}
+                </ContentContainer>
               </div>
-
-              {children}
-
-              <ModuleProgressUpdateBanner />
-
-              <ForumCTA />
-
-              {/*<div className="my-8">*/}
-              {/*  <ModuleFeedback markdownData={markdownData} />*/}
-              {/*</div>*/}
-            </ContentContainer>
-          </div>
-              </OffCanvasBody>
-            </OffCanvas>
-
+            </OffCanvasBody>
+          </OffCanvas>
         </ProblemSuggestionModalProvider>
       </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
