@@ -60,7 +60,9 @@ const h4 = ({ id, children, ...props }): JSX.Element => (
   </h4>
 );
 const p = (props): JSX.Element => <p {...props} />;
-const liNestedInOl = ({ children, ...props }): JSX.Element => (
+// Note: for the following li component, this is only really necessary for ol.li. It's not needed for anything else.
+// But XDM removed support for ol.li so this sort of works :P
+const li = ({ children, ...props }): JSX.Element => (
   <li {...props}>
     <div className="flex-1">{children}</div>
   </li>
@@ -111,7 +113,7 @@ const HTMLComponents = {
   h3,
   h4,
   p,
-  'ol.li': liNestedInOl,
+  li,
   code: inlineCode,
   pre,
   a,
