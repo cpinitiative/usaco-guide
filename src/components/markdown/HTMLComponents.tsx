@@ -32,7 +32,7 @@ const td = ({ className, ...props }): JSX.Element => (
 const h1 = ({ id, children, ...props }): JSX.Element => (
   <h1
     {...props}
-    className="leading-tight text-4xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis "
+    className="leading-tight text-4xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis"
   >
     <OffsetAnchor id={id} />
     {children}
@@ -40,7 +40,7 @@ const h1 = ({ id, children, ...props }): JSX.Element => (
 );
 const h2 = ({ id, children, ...props }): JSX.Element => (
   <h2
-    className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis relative"
+    className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis"
     {...props}
   >
     <OffsetAnchor id={id} />

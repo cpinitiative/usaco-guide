@@ -26,11 +26,28 @@ const plugins = [
       allowNamespaces: true,
     },
   },
+  /* any images referenced by .mdx needs to be loaded before the mdx file is loaded. */
   {
     resolve: `gatsby-source-filesystem`,
     options: {
       path: `${__dirname}/src/assets`,
       name: `assets`,
+    },
+  },
+  {
+    resolve: `gatsby-source-filesystem`,
+    options: {
+      path: `${__dirname}/content`,
+      name: `content-images`,
+      ignore: [`**/*.json`, `**/*.mdx`],
+    },
+  },
+  {
+    resolve: `gatsby-source-filesystem`,
+    options: {
+      path: `${__dirname}/solutions`,
+      name: `solution-images`,
+      ignore: [`**/*.json`, `**/*.mdx`],
     },
   },
   {
