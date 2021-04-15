@@ -4,12 +4,21 @@ import * as React from 'react';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
-import Tooltip from './Tooltip';
+import Tooltip, { TooltipProps } from './Tooltip';
 
-const Asterisk = ({ children, position = 'top' }) => {
+const Asterisk: React.FC<Omit<TooltipProps, 'type'>> = ({
+  children,
+  position = 'top',
+  ...other
+}) => {
   return (
     <span className="inline-block h-4 relative" style={{ width: 9 }}>
-      <Tooltip content={children} position={position} type="asterisk">
+      <Tooltip
+        {...other}
+        content={children}
+        position={position}
+        type="asterisk"
+      >
         <button
           className="absolute block cursor-pointer focus:outline-none"
           style={{

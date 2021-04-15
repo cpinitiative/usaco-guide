@@ -40,11 +40,13 @@ export default function Feed() {
         {group.isLoading && 'Loading posts...'}
         {!group.isLoading && (
           <ul className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
-            {feedPosts.map(post => (
-              <li key={post.id}>
-                <FeedItem group={group.groupData} post={post} />
-              </li>
-            ))}
+            {feedPosts
+              .sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis())
+              .map(post => (
+                <li key={post.id}>
+                  <FeedItem group={group.groupData} post={post} />
+                </li>
+              ))}
           </ul>
         )}
       </div>
