@@ -133,6 +133,10 @@ export default function MarkdownLayout({
 
   const [toggle, setToggle] = React.useState(false);
 
+  function set() {
+    setToggle(!toggle)
+  }
+
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -149,7 +153,7 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <OffCanvas
-              // width={300}
+              width={500}
               transitionDuration={300}
               isMenuOpened={toggle}
               position={"left"}
@@ -168,13 +172,17 @@ export default function MarkdownLayout({
 
               <ModuleHeaders moduleLinks={moduleLinks} />
 
+              <button
+                  className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+                  onClick={set}>
+                Toggle
+              </button>
+
               <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
 
               {children}
-              <button onClick={event => {
-                console.log(event)}} > Toggle </button>
 
               <ModuleProgressUpdateBanner />
 
