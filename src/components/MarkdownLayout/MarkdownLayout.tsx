@@ -24,7 +24,7 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
-import { OffCanvas, OffCanvasMenu, OffCanvasBody } from "react-offcanvas";
+import { OffCanvas, OffCanvasMenu, OffCanvasBody } from 'react-offcanvas';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -161,8 +161,8 @@ export default function MarkdownLayout({
           >
             <OffCanvasMenu>
               <MobileSideNav />
-              <DesktopSidebar expandable={toggle}/>
-              </OffCanvasMenu>
+              <DesktopSidebar expandable={toggle} />
+            </OffCanvasMenu>
             <OffCanvasBody>
           <div className="w-full">
             <MobileAppBar />
@@ -195,6 +195,7 @@ export default function MarkdownLayout({
           </div>
               </OffCanvasBody>
             </OffCanvas>
+
         </ProblemSuggestionModalProvider>
       </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
