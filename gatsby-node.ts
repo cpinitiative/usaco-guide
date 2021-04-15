@@ -150,6 +150,7 @@ exports.onCreateNode = async api => {
     }
   } else if (
     node.internal.type === 'Xdm' &&
+    // todo fileAbsolutePath seems wrong
     node.fileAbsolutePath.includes('content')
   ) {
     const ordering = importFresh<any>('./content/ordering');
