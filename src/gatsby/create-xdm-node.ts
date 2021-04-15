@@ -1,5 +1,6 @@
 import { createContentDigest } from 'gatsby-core-utils';
 import graymatter from 'gray-matter';
+import rehypeRaw from 'rehype-raw';
 import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -9,7 +10,6 @@ import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
 import customRehypeKatex from '../mdx-plugins/rehype-math';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets';
-import remarkHtmlNodes from '../mdx-plugins/remark-html-nodes.js';
 import remarkToC from '../mdx-plugins/remark-toc';
 import getGatsbyImage from './wrapped-gatsby-img-plugin';
 import { xdm } from './xdm';
@@ -60,9 +60,25 @@ export async function createXdmNode({ id, node, content }, api) {
           },
         ],
         gatsbyImage,
-        remarkHtmlNodes,
       ],
-      rehypePlugins: [customRehypeKatex, rehypeSnippets],
+      rehypePlugins: [
+        [
+          rehypeRaw,
+          {
+            passThrough: [
+              'mdxjsEsm',
+              'mdxFlowExpression',
+              'mdxTextExpression',
+              'mdxJsxFlowElement',
+              'mdxJsxTextElement',
+              'mdxjsEsm',
+            ],
+          },
+        ],
+        customRehypeKatex,
+        rehypeSnippets,
+      ],
+      outputFormat: 'function-body',
     });
     compiledResult = String(compiledResult);
   } catch (e) {
@@ -70,19 +86,6 @@ export async function createXdmNode({ id, node, content }, api) {
     e.message += `${node.absolutePath}: ${e.message}`;
     throw e;
   }
-  compiledResult = compiledResult.replace(
-    /import .* from "react\/jsx-runtime";/,
-    ''
-  );
-  compiledResult = compiledResult.replace(
-    `function MDXContent(_props) {`,
-    'function MDXContent(_Fragment, _jsx, _jsxs, _props) {'
-  );
-  compiledResult = compiledResult.replace(
-    'export default MDXContent',
-    'return MDXContent'
-  );
-  compiledResult = compiledResult.replace('export const ', 'const ');
 
   // // extract all the exports
   // const { frontmatter, ...nodeExports } = extractExports(

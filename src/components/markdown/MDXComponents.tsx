@@ -39,10 +39,6 @@ const MATHSPAN = props => {
   );
 };
 
-const RAWHTML = ({ children }) => {
-  return <div dangerouslySetInnerHTML={{ __html: children }} />;
-};
-
 export const components = {
   Spoiler,
   Info,
@@ -64,7 +60,6 @@ export const components = {
   PrefixSumInteractive,
   MATHDIV,
   MATHSPAN,
-  RAWHTML,
 
   ...HTMLComponents,
 };

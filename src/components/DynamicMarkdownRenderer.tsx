@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  Fragment as _Fragment,
-  jsx as _jsx,
-  jsxs as _jsxs,
-} from 'react/jsx-runtime';
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -61,7 +57,7 @@ export default function DynamicMarkdownRenderer({
   problems,
   debounce = 200,
 }): JSX.Element {
-  const [fn, setFn] = useState(null);
+  const [mdxContent, setMdxContent] = useState(null);
   const [markdownError, setMarkdownError] = useState(null);
   const [problemError, setProblemError] = useState(null);
 
@@ -98,26 +94,26 @@ export default function DynamicMarkdownRenderer({
             remarkHtmlNodes,
           ],
           rehypePlugins: [customRehypeKatex, rehypeSnippets],
+          outputFormat: 'function-body',
         });
 
-        let code = String(compiledResult);
-        code = code.replace(/import .* from "react\/jsx-runtime";/, '');
-        code = code.replace(
-          `function MDXContent(_props) {`,
-          'function MDXContent(_Fragment, _jsx, _jsxs, _props) {'
-        );
-        code = code.replace('export default MDXContent', 'return MDXContent');
-        code = code.replace('export const ', 'const ');
+        const code = String(compiledResult);
 
         // console.log(code);
 
-        setFn(new Function(code));
+        setMdxContent(
+          new Function(code)({
+            Fragment,
+            jsx,
+            jsxs,
+          }).default({ components })
+        );
         setMarkdownError(null);
 
         console.timeEnd('compile');
       } catch (e) {
         console.log('editor error caught:', e);
-        setFn(null);
+        setMdxContent(null);
         setMarkdownError(e);
       }
     };
@@ -185,7 +181,7 @@ export default function DynamicMarkdownRenderer({
   return (
     <ErrorBoundary>
       <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
-        {fn && fn(_Fragment, _jsx, _jsxs, { components })}
+        {mdxContent}
       </MarkdownProblemListsProvider>
     </ErrorBoundary>
   );

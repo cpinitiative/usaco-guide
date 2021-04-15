@@ -1,18 +1,16 @@
 import 'katex/dist/katex.min.css';
 import * as React from 'react';
-import {
-  Fragment as _Fragment,
-  jsx as _jsx,
-  jsxs as _jsxs,
-} from 'react/jsx-runtime';
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { components } from './MDXComponents';
 
 const Markdown = (props: { body: any }) => {
-  const fn = new Function(props.body)();
+  const mdxComponent = new Function(props.body)({
+    Fragment,
+    jsx,
+    jsxs,
+  }).default({ components });
 
-  return (
-    <div className="markdown">{fn(_Fragment, _jsx, _jsxs, { components })}</div>
-  );
+  return <div className="markdown">{mdxComponent}</div>;
 };
 
 export default React.memo(Markdown);
