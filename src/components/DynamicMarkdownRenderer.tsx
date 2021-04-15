@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Fragment as _Fragment,
   jsx as _jsx,
-  jsxs as _jsxs
+  jsxs as _jsxs,
 } from 'react/jsx-runtime';
 import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
@@ -13,12 +13,11 @@ import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
 import { compile as xdmCompile } from 'xdm';
-import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext.js';
+import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
 import remarkHtmlNodes from '../mdx-plugins/remark-html-nodes.js';
-import remarkToC from "../mdx-plugins/remark-toc.js";
-
+import remarkToC from '../mdx-plugins/remark-toc.js';
 import { getProblemInfo } from '../models/problem';
 import { components } from './markdown/MDXComponents';
 
@@ -60,7 +59,7 @@ class ErrorBoundary extends React.Component {
 export default function DynamicMarkdownRenderer({
   markdown,
   problems,
-                                                  debounce = 200,
+  debounce = 200,
 }): JSX.Element {
   const [fn, setFn] = useState(null);
   const [markdownError, setMarkdownError] = useState(null);

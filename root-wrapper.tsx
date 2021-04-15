@@ -11,15 +11,15 @@ export const wrapRootElement = ({ element }) => (
   <NotificationSystemProvider>
     <GlobalErrorBoundary>
       <FirebaseProvider>
-          <UserDataProvider>
-            <UserGroupsProvider>
-              <DarkModeProvider>
-                <EditorContext.Provider value={{ inEditor: false }}>
-                  {element}
-                </EditorContext.Provider>
-              </DarkModeProvider>
-            </UserGroupsProvider>
-          </UserDataProvider>
+        <UserDataProvider>
+          <UserGroupsProvider>
+            <DarkModeProvider>
+              <EditorContext.Provider value={{ inEditor: false }}>
+                {element}
+              </EditorContext.Provider>
+            </DarkModeProvider>
+          </UserGroupsProvider>
+        </UserDataProvider>
       </FirebaseProvider>
     </GlobalErrorBoundary>
   </NotificationSystemProvider>

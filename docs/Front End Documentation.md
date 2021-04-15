@@ -36,16 +36,16 @@ compile xdm into `src/gatsby/xdm.js` with Webpack:
 import path from 'path';
 
 export default {
-  mode: 'production',
-  entry: './index.js',
-  output: {
-    path: path.resolve('D:\\Code\\xdm', 'dist'),
-    filename: 'bundle.js',
-    library: {
-      name: 'xdm',
-      type: 'commonjs',
-    },
-  },
+	mode: 'production',
+	entry: './index.js',
+	output: {
+		path: path.resolve('D:\\Code\\xdm', 'dist'),
+		filename: 'bundle.js',
+		library: {
+			name: 'xdm',
+			type: 'commonjs',
+		},
+	},
 };
 ```
 
