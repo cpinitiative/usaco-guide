@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect,useState } from 'react';
 import {
   Fragment as _Fragment,
   jsx as _jsx,
-  jsxs as _jsxs,
+  jsxs as _jsxs
 } from 'react/jsx-runtime';
 import remarkAutolinkHeadings from 'remark-autolink-headings';
 import remarkExternalLinks from 'remark-external-links';
@@ -13,10 +13,13 @@ import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
 import { compile as xdmCompile } from 'xdm';
+import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext.js';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
 import remarkHtmlNodes from '../mdx-plugins/remark-html-nodes.js';
-import remarkToC from '../mdx-plugins/remark-toc.js';
+import remarkToC from "../mdx-plugins/remark-toc.js";
+
+import { getProblemInfo } from '../models/problem';
 import { components } from './markdown/MDXComponents';
 
 class ErrorBoundary extends React.Component {
@@ -56,10 +59,13 @@ class ErrorBoundary extends React.Component {
 
 export default function DynamicMarkdownRenderer({
   markdown,
-  debounce = 200,
+  problems,
+                                                  debounce = 200,
 }): JSX.Element {
   const [fn, setFn] = useState(null);
-  const [error, setError] = useState(null);
+  const [markdownError, setMarkdownError] = useState(null);
+  const [problemError, setProblemError] = useState(null);
+
   useEffect(() => {
     // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
     const compile = async () => {
@@ -107,13 +113,13 @@ export default function DynamicMarkdownRenderer({
         // console.log(code);
 
         setFn(new Function(code));
-        setError(null);
+        setMarkdownError(null);
 
         console.timeEnd('compile');
       } catch (e) {
         console.log('editor error caught:', e);
         setFn(null);
-        setError(e);
+        setMarkdownError(e);
       }
     };
     if (debounce > 0) {
@@ -123,13 +129,36 @@ export default function DynamicMarkdownRenderer({
       compile();
     }
   }, [markdown]);
-  if (error) {
-    console.error(error);
+
+  const [
+    markdownProblemListsProviderValue,
+    setMarkdownProblemListsProviderValue,
+  ] = useState([]);
+  useEffect(() => {
+    try {
+      const parsedProblems = JSON.parse(problems || '{}');
+      const problemsList = Object.keys(parsedProblems)
+        .filter(key => key !== 'MODULE_ID')
+        .map(key => ({
+          listId: key,
+          problems: parsedProblems[key].map(problemMetadata =>
+            getProblemInfo(problemMetadata)
+          ),
+        }));
+      setMarkdownProblemListsProviderValue(problemsList);
+      setProblemError(null);
+    } catch (e) {
+      setProblemError(e);
+    }
+  }, [problems]);
+
+  if (markdownError) {
+    console.error(markdownError);
     return (
       <div>
         An error occurred:
         <pre className="mt-2 text-red-700">
-          {error.stack || error.toString()}
+          {markdownError.stack || markdownError.toString()}
         </pre>
         <pre className="mt-2 text-red-700">
           This error has also been logged into the console.
@@ -137,9 +166,28 @@ export default function DynamicMarkdownRenderer({
       </div>
     );
   }
+
+  if (problemError) {
+    console.error(problemError);
+    return (
+      <div>
+        An error occurred while generating the problem solution info. This
+        likely means that the JSON data for problems is incorrect.
+        <pre className="mt-2 text-red-700">
+          {problemError.stack || problemError.toString()}
+        </pre>
+        <pre className="mt-2 text-red-700">
+          This error has also been logged into the console.
+        </pre>
+      </div>
+    );
+  }
+
   return (
     <ErrorBoundary>
-      {fn && fn(_Fragment, _jsx, _jsxs, { components })}
+      <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
+        {fn && fn(_Fragment, _jsx, _jsxs, { components })}
+      </MarkdownProblemListsProvider>
     </ErrorBoundary>
   );
 }
