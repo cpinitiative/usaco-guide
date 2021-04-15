@@ -138,7 +138,7 @@ InlineCode.args = {
     <>
       <p>
         This is a test of some inline code:{' '}
-        <HTMLComponents.inlineCode>rick.astley()</HTMLComponents.inlineCode>!
+        <HTMLComponents.code>rick.astley()</HTMLComponents.code>!
       </p>
     </>
   ),
