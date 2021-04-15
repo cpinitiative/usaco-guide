@@ -58,8 +58,6 @@ export default function USACOFAQPage(props: any) {
     }
   };
 
-  console.log(FAQ);
-
   return (
     <Layout>
       <SEO
