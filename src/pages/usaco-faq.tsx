@@ -12,7 +12,7 @@ import {
 } from 'react-share';
 import Layout from '../components/layout';
 import { OffsetAnchor } from '../components/markdown/HTMLComponents';
-import { components } from '../components/markdown/MDXProvider';
+import { components } from '../components/markdown/MDXComponents';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import FAQ from '../faq.mdx';

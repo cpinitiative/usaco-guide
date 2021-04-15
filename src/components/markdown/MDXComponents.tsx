@@ -1,4 +1,3 @@
-import { MDXProvider as ActualMDXProvider } from '@mdx-js/react';
 import * as React from 'react';
 import Asterisk from '../Tooltip/Asterisk';
 import TextTooltip from '../Tooltip/TextTooltip';
@@ -40,6 +39,10 @@ const MATHSPAN = props => {
   );
 };
 
+const RAWHTML = ({ children }) => {
+  return <div dangerouslySetInnerHTML={{ __html: children }} />;
+};
+
 export const components = {
   Spoiler,
   Info,
@@ -61,12 +64,7 @@ export const components = {
   PrefixSumInteractive,
   MATHDIV,
   MATHSPAN,
+  RAWHTML,
 
   ...HTMLComponents,
 };
-
-export default function MDXProvider({ children }): JSX.Element {
-  return (
-    <ActualMDXProvider components={components}>{children}</ActualMDXProvider>
-  );
-}

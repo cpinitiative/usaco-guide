@@ -5,7 +5,7 @@ import {
   jsx as _jsx,
   jsxs as _jsxs,
 } from 'react/jsx-runtime';
-import { components } from './MDXProvider';
+import { components } from './MDXComponents';
 
 const Markdown = (props: { body: any }) => {
   const fn = new Function(props.body)();
