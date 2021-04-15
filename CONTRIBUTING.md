@@ -1,7 +1,7 @@
 # Contributing
 
 You may find [this live editor](https://usaco.guide/editor) helpful when editing
-modules. For more information contributing, view our
+modules. For more information about contributing, view our
 [Contributing module](https://usaco.guide/general/contributing) or our
 [docs](docs).
 
