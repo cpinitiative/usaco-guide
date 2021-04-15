@@ -163,7 +163,7 @@ export default function MarkdownLayout({
               <MobileSideNav />
               <DesktopSidebar expandable={toggle} />
             </OffCanvasMenu>
-            <OffCanvasBody>
+            <OffCanvasBody width={500}>
               <div className="w-full">
                 <MobileAppBar />
 
