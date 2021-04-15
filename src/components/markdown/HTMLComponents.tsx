@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import * as React from 'react';
 import CodeBlock from './CodeBlock/CodeBlock';
 
@@ -14,21 +13,6 @@ export const OffsetAnchor = ({ id, ...props }): JSX.Element => (
   />
 );
 
-const table = ({ className, ...props }): JSX.Element => (
-  <table
-    {...props}
-    className={classNames(
-      'text-base border-gray-600 no-bottom-margin',
-      className
-    )}
-  />
-);
-const th = ({ className, ...props }): JSX.Element => (
-  <th {...props} className={classNames('border py-1 px-3', className)} />
-);
-const td = ({ className, ...props }): JSX.Element => (
-  <td {...props} className={classNames('border py-1 px-3', className)} />
-);
 const h1 = ({ id, children, ...props }): JSX.Element => (
   <h1
     {...props}
@@ -105,9 +89,6 @@ const HeaderLink: React.FC = props => {
 };
 
 const HTMLComponents = {
-  table,
-  th,
-  td,
   h1,
   h2,
   h3,

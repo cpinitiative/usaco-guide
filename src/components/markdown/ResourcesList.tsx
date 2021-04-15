@@ -14,7 +14,7 @@ export function ResourcesList(props) {
           <div
             className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200 dark:border-transparent`}
           >
-            <table className="min-w-full">
+            <table className="min-w-full no-markdown">
               <thead>
                 <tr>
                   <th
