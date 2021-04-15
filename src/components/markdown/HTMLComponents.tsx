@@ -2,6 +2,9 @@ import classNames from 'classnames';
 import * as React from 'react';
 import CodeBlock from './CodeBlock/CodeBlock';
 
+// Note: try to avoid adding inline styles here; rather, use css selectors to target them.
+// Otherwise it's really hard to override some of these styles
+
 export const OffsetAnchor = ({ id, ...props }): JSX.Element => (
   <span
     id={id}
@@ -56,17 +59,14 @@ const h4 = ({ id, children, ...props }): JSX.Element => (
     {children}
   </h4>
 );
-const p = (props): JSX.Element => <p {...props} className="mb-4" />;
+const p = (props): JSX.Element => <p {...props} />;
 const liNestedInOl = ({ children, ...props }): JSX.Element => (
   <li {...props}>
     <div className="flex-1">{children}</div>
   </li>
 );
 const inlineCode = (props): JSX.Element => (
-  <code
-    {...props}
-    className="font-mono inline bg-gray-200 rounded px-1 py-05 dark:bg-gray-800"
-  />
+  <code {...props} className="inline-code" />
 );
 const a = ({ children, ...props }) => (
   <a

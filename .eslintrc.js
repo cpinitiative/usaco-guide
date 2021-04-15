@@ -3,12 +3,12 @@ module.exports = {
     browser: true,
     node: true,
     es6: true,
-    'jest/globals': true,
   },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:jest/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -26,5 +26,13 @@ module.exports = {
     // some of these are just too hard to fix at the moment :(
     'react/prop-types': 'off',
   },
-  ignorePatterns: ['**/node_modules', 'src/functions'],
+  ignorePatterns: [
+    '**/node_modules',
+    'src/functions',
+    'gatsby-config.ts',
+    'gatsby-node.ts',
+    'gatsby-ssr.tsx',
+    'gatsby-browser.tsx',
+    'tailwind.config.js',
+  ],
 };
