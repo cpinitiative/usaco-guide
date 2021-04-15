@@ -71,7 +71,6 @@ export async function createXdmNode({ id, node, content }, api) {
               'mdxTextExpression',
               'mdxJsxFlowElement',
               'mdxJsxTextElement',
-              'mdxjsEsm',
             ],
           },
         ],
