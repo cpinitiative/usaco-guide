@@ -1,14 +1,7 @@
 // heavily based on https://github.com/microsoft/monaco-languages/blob/main/src/markdown/markdown.ts (MIT License)
 // contains some mdx support, but not much (only the most essential support, like different comment syntax)
 
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-import type { languages } from '../fillers/monaco-editor-core';
-
-export const conf: languages.LanguageConfiguration = {
+export const conf = {
   comments: {
     blockComment: ['<!--', '-->'],
   },
@@ -36,7 +29,7 @@ export const conf: languages.LanguageConfiguration = {
   },
 };
 
-export const language = <languages.IMonarchLanguage>{
+export const language = {
   defaultToken: '',
   tokenPostfix: '.md',
 
