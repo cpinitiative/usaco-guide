@@ -12,6 +12,7 @@ module.exports = {
       },
     },
     'storybook-dark-mode',
+    '@storybook/addon-a11y',
   ],
   webpackFinal: async config => {
     // Transpile Gatsby module because Gatsby includes un-transpiled ES6 code.
