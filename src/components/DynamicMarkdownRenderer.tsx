@@ -15,7 +15,6 @@ import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
 import remarkToC from '../mdx-plugins/remark-toc.js';
 import { getProblemInfo } from '../models/problem';
 import { components } from './markdown/MDXComponents';
-
 class ErrorBoundary extends React.Component {
   state: {
     error: null | any;
@@ -150,12 +149,12 @@ export default function DynamicMarkdownRenderer({
     return (
       <div>
         An error occurred:
-        <pre className="mt-2 text-red-700">
+        <p className="mt-2 text-red-700 font-mono text-sm">
           {markdownError.stack || markdownError.toString()}
-        </pre>
-        <pre className="mt-2 text-red-700">
-          This error has also been logged into the console.
-        </pre>
+        </p>
+        <p className="mt-2 text-red-700 font-mono text-sm">
+          This error has also been logged to the console.
+        </p>
       </div>
     );
   }
@@ -165,13 +164,13 @@ export default function DynamicMarkdownRenderer({
     return (
       <div>
         An error occurred while generating the problem solution info. This
-        likely means that the JSON data for problems is incorrect.
-        <pre className="mt-2 text-red-700">
+        typically indicates an error in the problems JSON file:
+        <p className="mt-2 text-red-700 font-mono text-sm">
           {problemError.stack || problemError.toString()}
-        </pre>
-        <pre className="mt-2 text-red-700">
-          This error has also been logged into the console.
-        </pre>
+        </p>
+        <p className="mt-2 text-red-700 font-mono text-sm">
+          This error has also been logged to the console.
+        </p>
       </div>
     );
   }

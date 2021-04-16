@@ -19,6 +19,10 @@ import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
 import ButtonGroup from '../components/ButtonGroup';
+import {
+  conf as mdxConf,
+  language as mdxLang,
+} from '../components/Editor/mdx-lang';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
@@ -284,13 +288,23 @@ export default function LiveUpdatePage(props: PageProps) {
                       ? 'inmemory://usaco-guide/module.mdx'
                       : 'inmemory://usaco-guide/module.problems.json'
                   }
-                  language={tab === 'content' ? 'markdown' : 'json'}
+                  language={tab === 'content' ? 'custom-mdx' : 'json'}
                   value={tab === 'content' ? markdown : problems}
                   onChange={(v, e) =>
                     tab === 'content' ? setMarkdown(v) : setProblems(v)
                   }
                   options={{ wordWrap: 'on', rulers: [80] }}
                   beforeMount={monaco => {
+                    // sort of MDX (basically markdown with mdx comments)
+                    monaco.languages.register({ id: 'custom-mdx' });
+                    monaco.languages.setMonarchTokensProvider(
+                      'custom-mdx',
+                      mdxLang
+                    );
+                    monaco.languages.setLanguageConfiguration(
+                      'custom-mdx',
+                      mdxConf
+                    );
                     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
                       validate: true,
                       schemas: [
