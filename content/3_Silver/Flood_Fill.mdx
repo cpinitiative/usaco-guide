@@ -272,8 +272,8 @@ public class Floodfill {
 row_num, col_num = [int(i) for i in input().split()]
 grid = []
 for _ in range(row_num):
-    grid.append([int(i) for i in input().split()])
-    assert len(grid[-1]) == col_num
+	grid.append([int(i) for i in input().split()])
+	assert len(grid[-1]) == col_num
 ```
 
 </PySection>
@@ -343,10 +343,10 @@ int main() {
 			if (!visited[i][j]) {
 				curr_size = 0;
 				/*
-	             * start a floodfill if the square hasn't already been visited,
-	             * and then store or otherwise use the component size
-	             * for whatever it's needed for
-	             */
+				 * start a floodfill if the square hasn't already been visited,
+				 * and then store or otherwise use the component size
+				 * for whatever it's needed for
+				 */
 				floodfill(i, j, grid[i][j]);
 			}
 		}
@@ -423,22 +423,22 @@ curr_size = 0
 
 
 def floodfill(r: int, c: int, color: int):
-    global curr_size
+	global curr_size
 
-    if (
-        (r < 0 or r >= row_num or c < 0 or c >= col_num)  # if out of bounds
-        or grid[r][c] != color  # wrong color
-        or visited[r][c]  # already visited this square
-    ): return
+	if (
+		(r < 0 or r >= row_num or c < 0 or c >= col_num)  # if out of bounds
+		or grid[r][c] != color  # wrong color
+		or visited[r][c]  # already visited this square
+	): return
 
-    visited[r][c] = True  # mark current square as visited
-    curr_size += 1  # increment the size for each square we visit
+	visited[r][c] = True  # mark current square as visited
+	curr_size += 1  # increment the size for each square we visit
 
-    # recursively call floodfill for neighboring squares
-    floodfill(r, c + 1, color)
-    floodfill(r, c - 1, color)
-    floodfill(r - 1, c, color)
-    floodfill(r + 1, c, color)
+	# recursively call floodfill for neighboring squares
+	floodfill(r, c + 1, color)
+	floodfill(r, c - 1, color)
+	floodfill(r - 1, c, color)
+	floodfill(r + 1, c, color)
 
 
 """
@@ -446,15 +446,15 @@ input code and other problem-specific stuff here
 """
 
 for r in range(row_num):
-    for c in range(col_num):
-        if not visited[r][c]:
-            curr_size = 0
-            """
+	for c in range(col_num):
+		if not visited[r][c]:
+			curr_size = 0
+			"""
 			start a floodfill if the square hasn't already been visited,
 			and then store or otherwise use the component size
 			for whatever it's needed for
 			"""
-            floodfill(r, c, grid[r][c])
+			floodfill(r, c, grid[r][c])
 ```
 
 </PySection>
@@ -614,29 +614,29 @@ visited = [[False for _ in range(col_num)] for _ in range(row_num)]
 
 
 def floodfill(r: int, c: int):
-    global visited
+	global visited
 
 	# Note: you can also use collections.deque for a BFS-based approach
-    frontier = [(r, c)]
-    while frontier:
-        r, c = frontier.pop()
-        if (r < 0 or r >= row_num or c < 0 or c >= col_num
-                or visited[r][c] or grid[r][c] == '#'):
-            continue
+	frontier = [(r, c)]
+	while frontier:
+		r, c = frontier.pop()
+		if (r < 0 or r >= row_num or c < 0 or c >= col_num
+				or visited[r][c] or grid[r][c] == '#'):
+			continue
 
-        visited[r][c] = True
-        frontier.append((r - 1, c))
-        frontier.append((r, c - 1))
-        frontier.append((r + 1, c))
-        frontier.append((r, c + 1))
+		visited[r][c] = True
+		frontier.append((r - 1, c))
+		frontier.append((r, c - 1))
+		frontier.append((r + 1, c))
+		frontier.append((r, c + 1))
 
 
 room_num = 0
 for row in range(row_num):
-    for col in range(col_num):
-        if not visited[row][col] and grid[row][col] == '.':
-            floodfill(row, col)
-            room_num += 1
+	for col in range(col_num):
+		if not visited[row][col] and grid[row][col] == '.':
+			floodfill(row, col)
+			room_num += 1
 print(room_num)
 ```
 
