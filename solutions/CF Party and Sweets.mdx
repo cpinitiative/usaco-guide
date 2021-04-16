@@ -23,7 +23,10 @@ sweets, making it impossible.
 If a single boy gives more sweets than a girl
 received, then any arrangement of sweets is impossible with the constraints.
 More formally, if
-$$max(b_1, b_2, \dots, b_n-1, b_n) > min(g_1, g_2, \dots, g_m-1, g_m)$$, then the
+$$
+max(b_1, b_2, \dots, b_{n-1}, b_n) > min(g_1, g_2, \dots, g_{m-1}, g_m),
+$$ 
+then the
 answer is $-1$.
 
 If the input provided has an arrangement of sweets that follow the given
@@ -60,11 +63,11 @@ int main(){
 	int n, m; cin >> n >> m;
 	vector<int> b(n), g(m);
 	ll res = 0;
-	for(int i=0; i<n; i++){
+	for(int i = 0; i < n; i++){
 		cin >> b[i];
 		res += b[i];
 	}
-	for(int i=0; i<m; i++){
+	for(int i = 0; i < m; i++){
 		cin >> g[i];
 	}
 	// Sort b_i and g_i in descending order to improve the ease of using 2P
@@ -78,10 +81,10 @@ int main(){
 	res *= m;
 	int p1 = 0, p2 = 0, cur = 0;
 	int maxB = b[0], minG = g[0];
-	for(int i=1; i<n; i++){
+	for(int i = 1; i < n; i++){
 		maxB = max(maxB, b[i]);
 	}
-	for(int i=1; i<m; i++){
+	for(int i = 1; i < m; i++){
 		minG = min(minG, g[i]);
 	}
 	// If its impossible to satisfy the constraints
@@ -93,7 +96,7 @@ int main(){
 	while(p2 < m){
 		++cur;
 		res += (g[p2] - b[p1]);
-		if((cur == m-1 && g[p2+1] != b[p1]) || cur == m){
+		if((cur == m - 1 && g[p2 + 1] != b[p1]) || cur == m){
 			cur = 0;
 			p1++;
 		}
