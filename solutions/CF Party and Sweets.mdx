@@ -43,7 +43,6 @@ on the sweet to replace (the $m$ greatest number of sweets given without
 dissatisfying a constraint) by sorting $b_i$ and $g_j$ in decreasing order and
 adding $\sum_{i = 1}^{m} (g_i - c_i)$ to the answer, where $c_i$ represents the
 chosen $m$ sweets.
-sum.
 
 ### Implementation
 
@@ -71,12 +70,10 @@ int main(){
 		cin >> g[i];
 	}
 	// Sort b_i and g_i in descending order to improve the ease of using 2P
-	sort(b.begin(), b.end(), [](int a, int b){
+	sort(b.begin(), b.end(), greater<int>()){
 	   return a > b;
 	});
-	sort(g.begin(), g.end(), [](int a, int b){
-	   return a > b;
-	});
+	sort(g.begin(), g.end(), greater<int>());
 	// The initial sum without accounting for the constraints on the maximum values of g_i
 	res *= m;
 	int p1 = 0, p2 = 0, cur = 0;
@@ -87,7 +84,7 @@ int main(){
 	for(int i = 1; i < m; i++){
 		minG = min(minG, g[i]);
 	}
-	// If its impossible to satisfy the constraints
+	// If it's impossible to satisfy the constraints
 	if(maxB > minG){
 		cout << -1 << endl;
 		return 0;
