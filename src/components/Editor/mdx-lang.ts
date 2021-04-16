@@ -14,6 +14,7 @@ export const conf = {
     { open: '{', close: '}' },
     { open: '[', close: ']' },
     { open: '(', close: ')' },
+    { open: '"', close: '"' },
     { open: '<', close: '>', notIn: ['string'] },
   ],
   surroundingPairs: [
@@ -184,16 +185,15 @@ export const language = {
       ],
       [/<\/(\w+)\s*>/, { token: 'tag' }],
 
-      [/<!--/, 'comment', '@comment'],
+      [/{\/\*/, 'comment', '@comment'],
     ],
 
-    // TODO highlight comments properly
-    // comment: [
-    //   [/[^<\-]+/, 'comment.content'],
-    //   [/-->/, 'comment', '@pop'],
-    //   [/<!--/, 'comment.content.invalid'],
-    //   [/[<\-]/, 'comment.content'],
-    // ],
+    comment: [
+      [/[^{/*]+/, 'comment'],
+      // [/\/\*/,    'comment', '@push' ],    // nested comment
+      [/\*\/}/, 'comment', '@pop'],
+      [/[{/*]/, 'comment'],
+    ],
 
     // Almost full HTML tag matching, complete with embedded scripts & styles
     tag: [
