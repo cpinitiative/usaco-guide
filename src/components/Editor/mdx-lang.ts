@@ -1,9 +1,16 @@
 // heavily based on https://github.com/microsoft/monaco-languages/blob/main/src/markdown/markdown.ts (MIT License)
 // contains some mdx support, but not much (only the most essential support, like different comment syntax)
 
-export const conf = {
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import type { languages } from '../fillers/monaco-editor-core';
+
+export const conf: languages.LanguageConfiguration = {
   comments: {
-    blockComment: ['{/*', '*/}'],
+    blockComment: ['<!--', '-->'],
   },
   brackets: [
     ['{', '}'],
@@ -14,7 +21,6 @@ export const conf = {
     { open: '{', close: '}' },
     { open: '[', close: ']' },
     { open: '(', close: ')' },
-    { open: '"', close: '"' },
     { open: '<', close: '>', notIn: ['string'] },
   ],
   surroundingPairs: [
@@ -30,9 +36,9 @@ export const conf = {
   },
 };
 
-export const language = {
+export const language = <languages.IMonarchLanguage>{
   defaultToken: '',
-  tokenPostfix: '.mdx',
+  tokenPostfix: '.md',
 
   // escape codes
   control: /[\\`*_\[\]{}()#+\-\.!]/,
@@ -83,13 +89,10 @@ export const language = {
       [/^\s*([\*\-+:]|\d+\.)\s/, 'keyword'],
 
       // code block (4 spaces indent)
-      //[/^(\t|[ ]{4})[^ ].*$/, 'string'],
+      // [/^(\t|[ ]{4})[^ ].*$/, 'string'],
 
       // code block (3 tilde)
-      // [
-      //   /^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/,
-      //   { token: 'string', next: '@codeblock' },
-      // ],
+      // [/^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/, { token: 'string', next: '@codeblock' }],
 
       // github style code blocks (with backticks and language)
       [
@@ -185,14 +188,14 @@ export const language = {
       ],
       [/<\/(\w+)\s*>/, { token: 'tag' }],
 
-      [/{\/\*/, 'comment', '@comment'],
+      [/<!--/, 'comment', '@comment'],
     ],
 
     comment: [
-      [/[^{/*]+/, 'comment'],
-      // [/\/\*/,    'comment', '@push' ],    // nested comment
-      [/\*\/}/, 'comment', '@pop'],
-      [/[{/*]/, 'comment'],
+      [/[^<\-]+/, 'comment.content'],
+      [/-->/, 'comment', '@pop'],
+      [/<!--/, 'comment.content.invalid'],
+      [/[<\-]/, 'comment.content'],
     ],
 
     // Almost full HTML tag matching, complete with embedded scripts & styles
