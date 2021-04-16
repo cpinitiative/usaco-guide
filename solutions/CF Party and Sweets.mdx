@@ -59,24 +59,27 @@ using namespace std;
 using ll = long long;
 
 int main(){
+
 	int n, m; cin >> n >> m;
 	vector<int> b(n), g(m);
 	ll res = 0;
+	
 	for(int i = 0; i < n; i++){
 		cin >> b[i];
 		res += b[i];
 	}
+	
 	for(int i = 0; i < m; i++){
 		cin >> g[i];
 	}
-	// Sort b_i and g_i in descending order to improve the ease of using 2P
-	sort(b.begin(), b.end(), greater<int>()){
-	   return a > b;
-	});
-	sort(g.begin(), g.end(), greater<int>());
+	
 	// The initial sum without accounting for the constraints on the maximum values of g_i
 	res *= m;
-	int p1 = 0, p2 = 0, cur = 0;
+	
+	// Sort b_i and g_i in descending order to improve the ease of using 2P
+	sort(b.begin(), b.end(), greater<int>());
+	sort(g.begin(), g.end(), greater<int>());
+	
 	int maxB = b[0], minG = g[0];
 	for(int i = 1; i < n; i++){
 		maxB = max(maxB, b[i]);
@@ -84,12 +87,15 @@ int main(){
 	for(int i = 1; i < m; i++){
 		minG = min(minG, g[i]);
 	}
+	
 	// If it's impossible to satisfy the constraints
 	if(maxB > minG){
 		cout << -1 << endl;
 		return 0;
 	}
+	
 	// Two pointers to find the sum of (g_i - c_i).
+	int p1 = 0, p2 = 0, cur = 0;
 	while(p2 < m){
 		++cur;
 		res += (g[p2] - b[p1]);
@@ -99,6 +105,7 @@ int main(){
 		}
 		p2++;
 	}
+	
 	cout << res << endl;
 }
 ```
