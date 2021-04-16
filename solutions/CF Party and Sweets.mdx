@@ -20,14 +20,14 @@ many sweets, even if boy $2$ gives girl $2$ the minimum number of sweets he
 could possibly give, which is $1$. However, girl $2$ received a maximum of no
 sweets, making it impossible.
 
-If a single boy gives more sweets than a girl
-received, then any arrangement of sweets is impossible with the constraints.
-More formally, if
+If a single boy gives more sweets than a girl received, then any arrangement of
+sweets is impossible with the constraints. More formally, if
+
 $$
 max(b_1, b_2, \dots, b_{n-1}, b_n) > min(g_1, g_2, \dots, g_{m-1}, g_m),
-$$ 
-then the
-answer is $-1$.
+$$
+
+then the answer is $-1$.
 
 If the input provided has an arrangement of sweets that follow the given
 constraints, then we can greedily find the answer.
@@ -37,20 +37,23 @@ make each sweet in the arrangement as small as possible. Since the smallest
 number of sweet a boy $i$ could give to a girl $j$ is $b_i$, we could "give"
 each girl $b_i$ sweets, which is: $\sum\limits_{i=1}^{n} b_i \cdot m$.
 
-However, with the constraints on the maximum number of sweets a girl $j$
-received, we need to change $m$ of the sweet given to $g_j$. We greedily decide
-on the sweet to replace (the $m$ greatest number of sweets given without
-dissatisfying a constraint) by sorting $b_i$ and $g_j$ in decreasing order and
-adding $\sum_{i = 1}^{m} (g_i - c_i)$ to the answer, where $c_i$ represents the
-chosen $m$ sweets.
+We are not done yet, however. The previous sum does not satisfy the condition
+that $g_i$ is the maximum number of sweets a single girl received. For this to
+be satisfied, while still maintainting a minimum sum of sweets, we add
+$\sum\limits_{i = 1}^{m} (g_i - c_i)$ to the answer, where $c_i$ represents the
+chosen $m$ sweets to "replace" in order to satisfy $g_i$ being the maximum
+amount of candies a single girl received.
 
-### Implementation
+$c_i$ can be found by choosing the highest $m$ sweets which still satisfies the
+condition that $b_i$ is the minimum number of sweets that a boy gave.
 
 **Time Complexity:** $\mathcal{O}(N\log N + M\log M)$
 
 <LanguageSection>
 
 <CPPSection>
+
+### C++ Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -63,23 +66,23 @@ int main(){
 	int n, m; cin >> n >> m;
 	vector<int> b(n), g(m);
 	ll res = 0;
-	
+
 	for(int i = 0; i < n; i++){
 		cin >> b[i];
 		res += b[i];
 	}
-	
+
 	for(int i = 0; i < m; i++){
 		cin >> g[i];
 	}
-	
+
 	// The initial sum without accounting for the constraints on the maximum values of g_i
 	res *= m;
-	
+
 	// Sort b_i and g_i in descending order to improve the ease of using 2P
 	sort(b.begin(), b.end(), greater<int>());
 	sort(g.begin(), g.end(), greater<int>());
-	
+
 	int maxB = b[0], minG = g[0];
 	for(int i = 1; i < n; i++){
 		maxB = max(maxB, b[i]);
@@ -87,13 +90,13 @@ int main(){
 	for(int i = 1; i < m; i++){
 		minG = min(minG, g[i]);
 	}
-	
+
 	// If it's impossible to satisfy the constraints
 	if(maxB > minG){
 		cout << -1 << endl;
 		return 0;
 	}
-	
+
 	// Two pointers to find the sum of (g_i - c_i).
 	int p1 = 0, p2 = 0, cur = 0;
 	while(p2 < m){
@@ -105,7 +108,7 @@ int main(){
 		}
 		p2++;
 	}
-	
+
 	cout << res << endl;
 }
 ```
