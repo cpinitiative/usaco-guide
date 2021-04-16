@@ -280,7 +280,10 @@ export default function LiveUpdatePage(props: PageProps) {
               }}
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
-              <div className="h-full" style={{ minWidth: '300px' }}>
+              <div
+                className="h-full tw-forms-disable"
+                style={{ minWidth: '300px' }}
+              >
                 <Editor
                   theme="vs-dark"
                   path={

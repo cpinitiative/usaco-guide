@@ -17,7 +17,10 @@ module.exports = function (code) {
   const callback = this.async();
   xdm
     .compile(
-      { contents: code, path: this.resourcePath },
+      {
+        contents: code.replace(/<!--/g, '{/* ').replace(/-->/g, '*/}'),
+        path: this.resourcePath,
+      },
       {
         remarkPlugins: [
           gfm,

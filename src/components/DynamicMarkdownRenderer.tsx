@@ -42,7 +42,9 @@ class ErrorBoundary extends React.Component {
       return (
         <div>
           An error occurred:
-          <pre className="mt-2 text-red-700">{this.state.error.toString()}</pre>
+          <p className="mt-2 text-red-700 font-mono text-sm">
+            {this.state.error.toString()}
+          </p>
         </div>
       );
     }
@@ -66,33 +68,36 @@ export default function DynamicMarkdownRenderer({
         console.time('compile');
 
         const tableOfContents = {};
-        const compiledResult = await xdmCompile(markdown, {
-          remarkPlugins: [
-            gfm,
-            remarkMath,
-            remarkExternalLinks,
-            remarkFrontmatter,
-            [remarkMdxFrontmatter, { name: 'frontmatter' }],
-            [remarkToC, { tableOfContents }],
-            remarkSlug,
-            [
-              remarkAutolinkHeadings,
-              {
-                linkProperties: {
-                  ariaHidden: 'true',
-                  tabIndex: -1,
-                  className: 'anchor before',
+        const compiledResult = await xdmCompile(
+          markdown.replace(/<!--/g, '{/* ').replace(/-->/g, '*/}'),
+          {
+            remarkPlugins: [
+              gfm,
+              remarkMath,
+              remarkExternalLinks,
+              remarkFrontmatter,
+              [remarkMdxFrontmatter, { name: 'frontmatter' }],
+              [remarkToC, { tableOfContents }],
+              remarkSlug,
+              [
+                remarkAutolinkHeadings,
+                {
+                  linkProperties: {
+                    ariaHidden: 'true',
+                    tabIndex: -1,
+                    className: 'anchor before',
+                  },
+                  content: {
+                    type: 'mdxJsxFlowElement',
+                    name: 'HeaderLink',
+                  },
                 },
-                content: {
-                  type: 'mdxJsxFlowElement',
-                  name: 'HeaderLink',
-                },
-              },
+              ],
             ],
-          ],
-          rehypePlugins: [customRehypeKatex, rehypeSnippets],
-          outputFormat: 'function-body',
-        });
+            rehypePlugins: [customRehypeKatex, rehypeSnippets],
+            outputFormat: 'function-body',
+          }
+        );
 
         const code = String(compiledResult);
 
