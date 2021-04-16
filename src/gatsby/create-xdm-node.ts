@@ -36,49 +36,52 @@ export async function createXdmNode({ id, node, content }, api) {
   });
 
   try {
-    compiledResult = await xdm.compile(content, {
-      remarkPlugins: [
-        gfm,
-        remarkMath,
-        remarkExternalLinks,
-        remarkFrontmatter,
-        remarkMdxFrontmatter,
-        [remarkToC, { tableOfContents }],
-        remarkSlug,
-        [
-          remarkAutolinkHeadings,
-          {
-            linkProperties: {
-              ariaHidden: 'true',
-              tabIndex: -1,
-              className: 'anchor before',
+    compiledResult = await xdm.compile(
+      content.replace(/<!--/g, '{/* ').replace(/-->/g, '*/}'),
+      {
+        remarkPlugins: [
+          gfm,
+          remarkMath,
+          remarkExternalLinks,
+          remarkFrontmatter,
+          remarkMdxFrontmatter,
+          [remarkToC, { tableOfContents }],
+          remarkSlug,
+          [
+            remarkAutolinkHeadings,
+            {
+              linkProperties: {
+                ariaHidden: 'true',
+                tabIndex: -1,
+                className: 'anchor before',
+              },
+              content: {
+                type: 'mdxJsxFlowElement',
+                name: 'HeaderLink',
+              },
             },
-            content: {
-              type: 'mdxJsxFlowElement',
-              name: 'HeaderLink',
+          ],
+          gatsbyImage,
+        ],
+        rehypePlugins: [
+          [
+            rehypeRaw,
+            {
+              passThrough: [
+                'mdxjsEsm',
+                'mdxFlowExpression',
+                'mdxTextExpression',
+                'mdxJsxFlowElement',
+                'mdxJsxTextElement',
+              ],
             },
-          },
+          ],
+          customRehypeKatex,
+          rehypeSnippets,
         ],
-        gatsbyImage,
-      ],
-      rehypePlugins: [
-        [
-          rehypeRaw,
-          {
-            passThrough: [
-              'mdxjsEsm',
-              'mdxFlowExpression',
-              'mdxTextExpression',
-              'mdxJsxFlowElement',
-              'mdxJsxTextElement',
-            ],
-          },
-        ],
-        customRehypeKatex,
-        rehypeSnippets,
-      ],
-      outputFormat: 'function-body',
-    });
+        outputFormat: 'function-body',
+      }
+    );
     compiledResult = String(compiledResult);
   } catch (e) {
     // add the path of the file to simplify debugging error messages
