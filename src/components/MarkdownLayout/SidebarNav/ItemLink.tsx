@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { Link } from 'gatsby';
-import { ModuleLinkInfo } from '../../../models/module';
+import * as React from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
-import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { ModuleLinkInfo } from '../../../models/module';
 
 export const LinkWithProgress = styled.span`
   ${tw`block relative`}

@@ -1,10 +1,10 @@
+import { useContext } from 'react';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   UserSolutionForProblem,
   userSolutionForProblemConverter,
 } from '../models/userSolutionForProblem';
 import useFirebase from './useFirebase';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 export default function useUserProblemSolutionActions() {
   const firebase = useFirebase();
@@ -22,6 +22,7 @@ export default function useUserProblemSolutionActions() {
         .collection('userProblemSolutions')
         .withConverter(userSolutionForProblemConverter)
         .add({
+          id: undefined, // the ID is ignored by userSolutionForProblemConverter; we add it here to fix typescript issue
           ...solution,
           userID: firebaseUser.uid,
           userName: firebaseUser.displayName,

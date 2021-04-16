@@ -226,107 +226,168 @@ Fun fact: the title attribute is optional.
 
 ### Problem Lists
 
-**Problem sketches are deprecated. Do not add any new problem sketches.**
+Each module has two corresponding files, a `.mdx` file and a `.problems.json`
+file. The `.problems.json` file stores the focus problems and problem lists used
+in that module; it is also indexed by Algolia for problem search.
 
-Problem constructor syntax:
+The `.problems.json` file holds an object, where keys are problem list names (or
+focus problem names) and values are arrays of `ProblemMetadata` objects. For
+focus problems, the array should have length exactly one. Additionally, the
+`.problems.json` file should have a `MODULE_ID` key with value equal to a string
+that represents the module ID.
+
+For more information on problem definitions, refer to `src/models/problem.ts`.
+
+There is a distinction between `ProblemInfo` and `ProblemMetadata`.
+`ProblemMetadata` is what is stored in `[module].problems.json`. Gatsby takes
+`ProblemMetadata` and converts it into `ProblemInfo` at build time; React
+components use `ProblemInfo` when interacting with problem information. The
+documentation below is for `ProblemMetadata`, which is what content authors will
+be writing.
+
+`ProblemMetadata` fields:
+
+`uniqueId` -- The uniqueId of the problem. Problem progress is linked to this,
+so don't change this (otherwise problem progress will be lost). By convention,
+it's `[source]-[SlugifiedProblemNameCamelCased]`.
+
+- If the problem name is only one word, the word is lower cased.
+- If the problem is USACO or CSES, the unique ID is instead
+  `usaco-[USACO URL Number]` or `cses-[CSES number]`.
+- If the problem is Codeforces, the unique ID is
+  `cf-[contestNumber][problemLetter]`. If it's CF Gym, it's
+  `cfgym-[gymNumber][problemLetter]`.
+- If the problem is an OI with a year, the unique ID is
+  `[oiName]-[twodigityear]-[slugifiedName]`.
+
+Here are some example unique ID's:
 
 ```
-new Problem("Source", "Problem Name", "Problem ID (this is used to generate link to problem)", "Difficulty", starred, ["tags"], "editorial-id", "editorial quality")
+cses-2177
+poi-08-blockade
+apio-18-duathlon
+dmoj-investment
+infoarena-xortransform
+usaco-949
+cses-1691
+kattis-chineseremainder
+cfgym-102538F
+cf-1209H
+spoj-LexicographicalStringSearch
+ys-AssociativeArray
+```
+
+Problems with the same unique ID are expected to have identical names, sources,
+and URL's.
+
+`name` -- The name of the problem. Should not include source.
+
+Examples:
+
+```
+2009 - Beetle
+Greedy Pie Eaters
+Zuma
+2014 - The Stables of Genghis Khan
+```
+
+`source` -- The source of the problem. Restricted to: _todo, refer to
+`src/models/problem.ts` `contests` and `probSources`_
+
+`difficulty` -- The difficulty of the problem **relative to the module it is
+in**. Valid options are `Very Easy`, `Easy`, `Normal`, `Hard`, `Very Hard`,
+`Insane`
+
+`isStarred` -- Whether this problem should be starred or not.
+
+`tags` -- List of tags for this problem.
+
+`solutionMetadata` -- Information about the solution.
+
+```ts
+export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
+	solutionMetadata:
+		| {
+				// auto generate problem solution label based off of the given site
+				// For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+				kind: 'autogen-label-from-site';
+				// The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+				site: string;
+		  }
+		| {
+				// internal solution
+				kind: 'internal';
+		  }
+		| {
+				// URL solution
+				// Use this for links to PDF solutions, etc
+				kind: 'link';
+				url: string;
+		  }
+		| {
+				// Competitive Programming Handbook
+				// Ex: 5.3 or something
+				kind: 'CPH';
+				section: string;
+		  }
+		| {
+				// USACO solution, generates it based off of the USACO problem ID
+				// ex. 1113 is mapped to sol_prob1_gold_feb21.html
+				kind: 'USACO';
+				usacoId: string;
+		  }
+		| {
+				// IOI solution, generates it based off of the year
+				// ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+				kind: 'IOI';
+				year: number;
+		  }
+		| {
+				// no solution exists
+				kind: 'none';
+		  }
+		| {
+				// for focus problems, when the solution is presented in the module of the problem
+				kind: 'in-module';
+				moduleId: string;
+		  }
+		| {
+				kind: 'sketch';
+				sketch: string;
+		  };
+};
 ```
 
 To add problem editorials, create a new file under the `solutions/` folder. Try
 to name it something reasonable; follow existing naming conventions.
 
-Editorials are also written in MDX. The frontmatter has three fields:
+Editorials are also written in MDX. The frontmatter has four fields:
 
 ```
 ---
 id: cses-1621
-title: CSES Distinct Numbers
+source: CSES
+title: Distinct Numbers
 author: Nathan Wang
 ---
 
 ... solution
 ```
 
-The author field is optional.
-
-To reference that editorial:
-
-```
-new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, ["sets"], "cses-1621", "good")
-```
-
-The important parameters are the last two: `cses-1621` is equal to the
-frontmatter ID, and `good` shows a green check next to the problem to indicate
-that the editorial is of high quality.
-
-Problem constructor:
-
-```typescript
-class Problem {
-	constructor(
-		public source: string,
-		public name: string,
-		public id: string,
-		labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
-		public starred?: boolean,
-		public tags?: string[],
-		sol?: string, // either a URL, an empty string (USACO auto-populates), or a problem editorial ID
-		public solQuality: 'bad' | 'ok' | 'good' = 'ok'
-	) {}
-}
-```
+The ID of the solution frontmatter must be the same as the unique ID of the
+problem. Make sure to also update the problem metadata to "internal" for any
+associated problems. We assume that if there is an internal solution, we should
+use it; therefore, the build will throw an error if there is an internal
+solution but the problem metadata isn't set to "internal".
 
 Example usage:
 
 ```mdx
----
-id: ds
-title: Data Structures
-author: Nathan Wang, Darren Yao, Benjamin Qi
-description: Introductory problems using sets and maps.
-prerequisites:
-  - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
----
-
-import { Problem } from '../models';
-
-export const problems = {
-	standard: [
-		new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
-		new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
-		new Problem(
-			'CSES',
-			'Sum of Two Values',
-			'1640',
-			'Intro',
-			false,
-			[],
-			'Can be solved without sets.'
-		),
-		new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
-			'iterators',
-		]),
-		new Problem('CSES', 'Towers', '1073', 'Easy', false, [
-			'multiset',
-			'greedy',
-		]),
-		new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
-		new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
-			'multiset',
-			'greedy',
-		]),
-	],
-};
-
-## Standard
-
-Do roughly the first half of the Sorting and Searching section in the
-[CSES Problem Set](https://cses.fi/problemset/).
-
-<Problems problems={problems.standard} />
+<Problems problems="problems" />
 ```
+
+`[module].problems.json` should have a key of `problems` that maps to an array
+of `ProblemMetadata`.
 
 ### Focus Problem
 
@@ -336,8 +397,8 @@ Displays a singular problem as a "focus problem."
 <FocusProblem problem="genPermutations" />
 ```
 
-Make sure to still use an array: `gatsby-node.ts` expects all exported problems
-to be in arrays...
+`[module].problems.json` should have a key of `genPermutations` that maps to an
+**array** of length 1.
 
 ### Resource Lists
 

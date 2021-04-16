@@ -1,14 +1,14 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
+import { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
-import { ModuleLinkInfo } from '../../models/module';
-import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { Link } from 'gatsby';
-import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
+import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';
-import Tooltip from '../Tooltip/Tooltip';
+import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
 import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/SidebarNav/ItemLink';
+import Tooltip from '../Tooltip/Tooltip';
 
 const LinkWithProgress = styled(SidebarLinkWithProgress)`
   &&::after {

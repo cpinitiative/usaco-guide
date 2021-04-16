@@ -1,13 +1,14 @@
-import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { ProblemInfo, ProblemProgress } from '../../../models/problem';
-import problemURLToIdMap from './problemURLToIdMap';
+import * as Sentry from '@sentry/browser';
 import { ProblemActivity } from '../../../models/activity';
+import { ProblemProgress } from '../../../models/problem';
+import UserDataPropertyAPI from '../userDataPropertyAPI';
+import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
-    problem: ProblemInfo,
+    problemId: string,
     status: ProblemProgress
   ) => void;
 };
@@ -94,7 +95,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     let pendingProgressValue = data[this.progressStorageKey] || { version: 2 };
     if (!pendingProgressValue.version || pendingProgressValue.version < 2) {
       pendingProgressValue = this.migrateLegacyValue(pendingProgressValue);
@@ -107,35 +108,55 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     return {
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
-      setUserProgressOnProblems: (problem, status) => {
+      setUserProgressOnProblems: (problemId, status) => {
         if (!this.firebaseUserDoc) {
           // if the user isn't using firebase, it is possible that they
           // have multiple tabs open, which can result in localStorage
           // being out of sync.
           this.initializeFromLocalStorage();
         }
+        try {
+          this.activityValue.push({
+            timestamp: Date.now(),
+            problemID: problemId,
+            problemProgress: status,
+          });
+          this.progressValue[problemId] = status;
 
-        this.activityValue.push({
-          timestamp: Date.now(),
-          problemID: problem.uniqueId,
-          problemProgress: status,
-        });
-        this.progressValue[problem.uniqueId] = status;
-
-        if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
-            {
-              [this.progressStorageKey]: {
-                [problem.uniqueId]: status,
+          if (this.firebaseUserDoc) {
+            this.firebaseUserDoc.set(
+              {
+                [this.progressStorageKey]: {
+                  [problemId]: status,
+                },
+                [this.activityStorageKey]: this.activityValue,
               },
-              [this.activityStorageKey]: this.activityValue,
+              { merge: true }
+            );
+          }
+
+          this.writeValueToLocalStorage();
+          this.triggerRerender();
+        } catch (e) {
+          Sentry.captureException(e, {
+            extra: {
+              status,
+              problemId,
+              activityValue: this.activityValue,
+              fbData: {
+                [this.progressStorageKey]: {
+                  [problemId]: status,
+                },
+                [this.activityStorageKey]: this.activityValue,
+              },
+              thisValue: { ...this },
             },
-            { merge: true }
+          });
+
+          alert(
+            "We're sorry, but an error occurred. This error has been automatically sent to us, but you can email us to provide details if you wish."
           );
         }
-
-        this.writeValueToLocalStorage();
-        this.triggerRerender();
       },
     };
   };

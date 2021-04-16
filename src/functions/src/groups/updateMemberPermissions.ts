@@ -1,8 +1,8 @@
-import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
-import getPermissionLevel from './utils/getPermissionLevel';
+import * as functions from 'firebase-functions';
 import { GroupData } from '../../../models/groups/groups';
 import getMembershipKey from './utils/getMembershipKey';
+import getPermissionLevel from './utils/getPermissionLevel';
 interface UpdateMemberPermissionsArgs {
   groupId: string;
   targetUid: string;

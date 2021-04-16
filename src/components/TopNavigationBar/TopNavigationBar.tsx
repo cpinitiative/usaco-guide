@@ -1,31 +1,30 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Link } from 'gatsby';
 import {
-  InstantSearch,
+  Configure,
   connectAutoComplete,
   Highlight,
-  Snippet,
-  Configure,
+  InstantSearch,
   PoweredBy,
+  Snippet,
 } from 'react-instantsearch-dom';
-import {
-  moduleIDToURLMap,
-  SECTION_LABELS,
-  SECTIONS,
-} from '../../../content/ordering';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import {
+  moduleIDToURLMap,
+  SECTIONS,
+  SECTION_LABELS,
+} from '../../../content/ordering';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import { searchClient } from '../../utils/algoliaSearchClient';
+import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import SectionsDropdown from '../SectionsDropdown';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
-import { searchClient } from '../../utils/algoliaSearchClient';
+import SectionsDropdown from '../SectionsDropdown';
 import Transition from '../Transition';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
-import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -62,11 +61,10 @@ const indexName =
 
 const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
 
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setShowResults(false);
       }
@@ -115,6 +113,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
               <Link
                 to={moduleIDToURLMap[hit.id]}
                 className="block hover:bg-blue-100 dark:hover:bg-gray-700 px-4 py-2 transition"
+                key={hit.id}
               >
                 <h3 className="text-gray-600 dark:text-dark-high-emphasis font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
@@ -170,10 +169,9 @@ export default function TopNavigationBar({
         ]
       : []),
   ];
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setIsActive(false);
       }
@@ -225,14 +223,14 @@ export default function TopNavigationBar({
                 to={linkLogoToIndex ? '/' : '/dashboard'}
                 className="flex-shrink-0 flex items-center"
               >
-                <div className="block sm:hidden h-10">
-                  <LogoSquare />
+                <div className="block sm:hidden">
+                  <LogoSquare className="h-10 w-10" />
                 </div>
                 <div className={'hidden sm:block h-9'}>
                   <Logo />
                 </div>
               </Link>
-              <div className={`hidden lg:ml-6 lg:flex space-x-8`}>
+              <div className={`hidden lg:ml-8 lg:flex space-x-8`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
@@ -259,6 +257,7 @@ export default function TopNavigationBar({
                 <a
                   href="https://forum.usaco.guide/"
                   target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition"
                 >
                   Forum
@@ -356,7 +355,7 @@ export default function TopNavigationBar({
                   >
                     <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                       <div
-                        className="py-1 rounded-md bg-white shadow-xs"
+                        className="py-1 rounded-md bg-white dark:bg-gray-800 shadow-xs"
                         role="menu"
                         aria-orientation="vertical"
                         aria-labelledby="user-menu"
@@ -364,7 +363,7 @@ export default function TopNavigationBar({
                         <Link
                           to="/settings"
                           onClick={() => setIsActive(false)}
-                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition"
+                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                           role="menuitem"
                         >
                           Settings
@@ -374,7 +373,7 @@ export default function TopNavigationBar({
                             signOut();
                             setIsActive(false);
                           }}
-                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition"
+                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                           role="menuitem"
                         >
                           Sign out

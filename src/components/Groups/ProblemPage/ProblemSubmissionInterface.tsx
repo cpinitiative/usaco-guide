@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { useReducer } from 'react';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useDropzone } from 'react-dropzone';
-import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
+import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
 import {
   ExecutionStatus,
-  ProblemData,
+  GroupProblemData,
   Submission,
   SubmissionType,
 } from '../../../models/groups/problem';
 import ButtonGroup from '../../ButtonGroup';
-import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 
 // const ScoreInput = styled.input`
 //   &::-webkit-outer-spin-button,
@@ -30,7 +30,7 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 export default function ProblemSubmissionInterface({
   problem,
 }: {
-  problem: ProblemData;
+  problem: GroupProblemData;
 }) {
   const { lang } = React.useContext(UserDataContext);
   if (problem.submissionType !== SubmissionType.SELF_GRADED) {
@@ -150,7 +150,7 @@ export default function ProblemSubmissionInterface({
         />
       </div>
       <div className="mt-1 text-sm space-x-2 text-gray-500 dark:text-gray-400">
-        If you&apos;d prefer, you can also{' '}
+        If you'd prefer, you can also{' '}
         <button
           className="hover:text-gray-900 underline"
           type="button"

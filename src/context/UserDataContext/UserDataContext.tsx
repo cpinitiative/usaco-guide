@@ -1,41 +1,35 @@
+import firebaseType from 'firebase';
 import * as React from 'react';
-import {
-  createContext,
-  useReducer,
-  useState,
-  useContext,
-  ReactNode,
-} from 'react';
+import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import useFirebase from '../../hooks/useFirebase';
-import UserLang, { UserLangAPI } from './properties/userLang';
-import UserDataPropertyAPI from './userDataPropertyAPI';
-import LastViewedModule, {
-  LastViewedModuleAPI,
-} from './properties/lastViewedModule';
-import HideTagsAndDifficulty, {
-  HideTagsAndDifficultyAPI,
-} from './properties/hideTagsAndDifficulty';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
+import LastViewedModule, {
+  LastViewedModuleAPI,
+} from './properties/lastViewedModule';
+import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
+import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
   UserProgressOnModulesAPI,
 } from './properties/userProgressOnModules';
 import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
-import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import firebaseType from 'firebase';
+import UserDataPropertyAPI from './userDataPropertyAPI';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
-import AdSettingsProperty, {
-  AdSettingsAPI,
-} from './properties/adSettingsProperty';
-import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -118,19 +112,19 @@ type UserDataContextAPI = UserLangAPI &
   LastVisitAPI &
   AdSettingsAPI & {
     firebaseUser: firebaseType.User;
-    signIn: Function;
-    signOut: Function;
+    signIn: () => Promise<firebaseType.auth.UserCredential | null>;
+    signOut: () => Promise<void>;
     isLoaded: boolean;
     onlineUsers: number;
-    getDataExport: Function;
-    importUserData: Function;
+    getDataExport: () => Record<string, any>;
+    importUserData: (data: Record<string, any>) => boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
   firebaseUser: null,
-  getDataExport: () => {},
-  importUserData: () => {},
+  getDataExport: () => Promise.resolve(),
+  importUserData: () => true,
   hideTagsAndDifficulty: false,
   divisionTableQuery: {
     division: '',
@@ -177,15 +171,17 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setShowIgnored: x => {
     // do nothing
   },
-  setUserProgressOnProblems: (problem, status) => {
+  setUserProgressOnProblems: (problemId, status) => {
     // do nothing
   },
   showIgnored: false,
   signIn: () => {
     // do nothing
+    return Promise.resolve(null);
   },
   signOut: () => {
     // do nothing
+    return Promise.resolve();
   },
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
@@ -296,13 +292,13 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
 
   const userData = {
     firebaseUser,
-    signIn: (): Promise<void> => {
+    signIn: (): Promise<firebaseType.auth.UserCredential | null> => {
       if (firebase) {
         return firebase
           .auth()
           .signInWithPopup(new firebase.auth.GoogleAuthProvider());
       }
-      return Promise.resolve();
+      return Promise.resolve(null);
     },
     signOut: (): Promise<void> => {
       return firebase
@@ -330,7 +326,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       );
     },
 
-    importUserData: (data: JSON) => {
+    importUserData: (data: Record<string, any>): boolean => {
       if (
         confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'

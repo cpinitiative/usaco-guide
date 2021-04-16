@@ -1,11 +1,13 @@
 ---
 id: lis
-title: '(Optional) Longest Increasing Subsequence'
-author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang, Dong Liu, Siyong Huang
+title: 'Longest Increasing Subsequence'
+author:
+  Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang, Dong Liu, Siyong Huang,
+  Aryansh Shrivastava
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
-frequency: 1
+frequency: 0
 ---
 
 <!-- ### Longest Increasing Subsequence -->
@@ -93,35 +95,46 @@ We can do much better than this though!
 
 **Time Complexity**: $\mathcal O(N \log N)$
 
-Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$
-elements of $A$ with an increasing sequence of length $j$ ending on it (or
-$\infty$ if there is no such element).
+Let $L_i$ be an array (0-indexed) where $L_i[j]$ is the smallest element from
+the first $i$ elements of $A$ with an increasing sequence of length $j + 1$
+ending on it (or $\infty$ if there is no such element).
 
-**Lemma 1:** $L_i$ forms a non-decreasing sequence.
+For example, let our array be $[2, 18, 7, 20, 18, 5, 18, 15, 13, 19, 9]$.
+
+In this case, $L_8$ would be $[2, 5, 15]$. Some example sequences satisfying
+these are $[2]$, $[2, 5]$, and $[2, 5, 15]$.
+
+**Lemma 1:** $L_i$ forms a strictly increasing sequence.
 
 **Proof:** Assume for a contradiction that for some $j$, we have
-$L_i[j] > L_i[j + 1]$. However, this is impossible because an increasing
-sequence of length $j + 1$ ending on some element implies that there is also an
-increasing sequence of length $j$ ending on that same sequence.
+$L_i[j - 1] \geq L_i[j]$. Let $a_0, a_1, \dots, a_{j}$ be any increasing
+subsequence of length $j + 1$ ending on $L_i[j]$ (so $a_j = L_i[j]$). Notice
+that $a_0, a_1, \dots, a_{j - 1}$ is an increasing subsequence of length $j$.
+Thus, $L_i[j]$ has to be greater than $L_i[j - 1]$. From that, we can write this
+equation: $L_i[j - 1] \leq a_{j-1} < a_j = L_i[j]$, which is exactly what we
+wanted.
 
 **Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least
-index $j$ such that $L_i[j] \geq A[i + 1]$.
+index $j$ (with 0-indexing) such that $L_i[j] \geq A[i + 1]$.
 
-**Proof:** Firstly, since $A[i + 1] > L_i[j - 1]$, there is an increasing
-sequence of length $j$ ending on $A[i + 1]$. By Lemma 1, $L_i$ is
-non-decreasing, so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that
-the length of the LIS is $j$.
+**Proof:** Let $j$ be defined as it is in the statement. First of all, since
+$A[i + 1] > L_i[j - 1]$, there is an increasing sequence of length $j$ ending on
+$A[i + 1]$, as we can append $A[i + 1]$ to the end of the sequence of length
+$j$. By Lemma 1, $L_i$ is strictly increasing, so $L_i[k] \geq A[i + 1]$ for all
+$k \geq j$. This means that there cannot be a LIS ending at $A[i + 1]$ longer
+than $j + 1$.
 
-**Lemma 3:** Exactly 1 element differs between $L_i$ and $L_{i + 1}$.
+**Lemma 3:** At most 1 element differs between $L_i$ and $L_{i + 1}$.
 
-**Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since
-$L_i[j] \geq A[i + 1]$. We don't update anything else though, since
-$A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending
-on $A[i + 1]$ of length greater than $j$.
+**Proof:** Let $j$ be defined as it was in Lemma 2. We need to set
+$L_{i + 1}[j]$ to be $A[i + 1]$ since $A[i + 1] \leq L_i[j]$.
+$L_{i + 1}[k] = L_i[k]$ for all $k \neq j$, though, since $A[i + 1] > L_i[k]$
+for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ for
+$k > j$.
 
 To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
-`std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set`
-(demonstrated in the solution for PCB).
+list with binary search, or we can use an ordered set (as demonstrated in the
+solution for PCB).
 
 <LanguageSection>
 
@@ -132,8 +145,10 @@ int find_lis(vector<int> a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
-		if (pos == dp.size()) dp.push_back(i);
-		else dp[pos] = i;
+		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
+			dp.push_back(i);
+		else  // oh ok, at least we can make the ending element smaller
+			dp[pos] = i;
 	}
 	return dp.size();
 }
@@ -144,13 +159,15 @@ int find_lis(vector<int> a) {
 <JavaSection>
 
 ```java
-public static int find_lis(int[] a) {
+public static int findLis(int[] a) {
 	ArrayList<Integer> dp = new ArrayList<Integer>();
 	for (int i : a) {
 		int pos = Collections.binarySearch(dp, i);
-		if(pos < 0) pos = Math.abs(pos + 1);
-		if (pos == dp.size()) dp.add(i);
-		else dp.set(pos, i);
+		pos = pos < 0 ? Math.abs(pos + 1) : pos;
+		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
+			dp.add(i);
+		else  // oh ok, at least we can make the ending element smaller
+			dp.set(pos, i);
 	}
 	return dp.size();
 }
@@ -158,7 +175,110 @@ public static int find_lis(int[] a) {
 
 </JavaSection>
 
+<PySection>
+
+```py
+# list from typing module
+def find_lis(arr: List[int]) -> int:
+	min_endings = []
+	for i in arr:
+		pos = bisect_left(min_endings, i)  # bisect_left from the bisect module
+		if pos == len(min_endings):  # we can have a new, longer increasing subsequence!
+			min_endings.append(i)
+		else:  # oh ok, at least we can make the ending element smaller
+			min_endings[pos] = i
+	return len(min_endings)
+```
+
+</PySection>
+
 </LanguageSection>
+
+### Fast Solution (RMQ Data Structures)
+
+(By Aryansh Shrivastava)
+
+**Time Complexity**: $\mathcal O(N \log N)$, but perhaps a constant factor
+slower than binary search.
+
+Note that the following solution assumes knowledge of a basic PURQ data
+structure for RMQ. Suitable implementations include a segment tree or a modified
+Fenwick tree, but both of these are generally considered Platinum level topics.
+However, this solution has the advantage of being more intuitive if you're
+deriving LIS on the spot.
+
+Let $\texttt{dp}[k]$ be the length of the LIS of $a$ that ends with the element
+$k \in a$. Our base case is obviously $\texttt{dp}[a[0]] = 1$ (we have an LIS
+containing only $a[0]$, which has length $1$). Since LIS exhibits optimal
+substructure, we transition as follows, processing
+$\forall t \in a[1 \dots n-1]$ from left to right (which we must do in order to
+maintain the property that our subsequence strictly increases in this
+direction):
+
+$$
+\texttt{dp}[t] = \max_{0 \leq k < t} \texttt{dp}[k] + 1.
+$$
+
+If $\texttt{dp}$ is now a RMQ data structure, the change in $\texttt{dp}[t]$ is
+merely a point update, while the calculation of
+$\max\limits_{0 \leq k < t} \texttt{dp}[k]$ is a range query.
+
+Our final answer is just an RMQ from end to end (or, alternatively, you could
+keep a running max of the answer in another variable and change it with each
+update). This method actually gives us the leisure to process online as long as
+our elements are small enough to be used as indices, or if we use a more
+advanced data structure such as a sparse segment tree. If we are willing to
+process offline as we often can, however, we can avoid using a more advanced
+technique: it suffices to collect the array elements and sort them to coordinate
+compress, creating $\texttt{dp}$ with those compressed IDs instead.
+
+My implementation is below:
+
+```cpp
+// Code by Aryansh Shrivastava
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct RMQ {
+	int n; vector<int> seg;
+	const int ID = 0; // at minimum, the length of a subsequence is 0 (-INF won't work here for example)
+	void init(int n0) { n = n0; seg.assign(2 * n, ID); }
+	void upd(int p, int v) {
+		seg[p += n] = v;
+		for(p /= 2; p; p /= 2) seg[p] = max(seg[2 * p], seg[2 * p + 1]);
+	}
+	int qry(int l, int r) {
+		int ql = ID, qr = ID;
+		for(l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if(l & 1) ql = max(ql, seg[l++]);
+			if(r & 1) qr = max(seg[--r], qr);
+		}
+		return max(ql, qr);
+	}
+} dp;
+
+int n;
+vector<int> v, cmp;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> n; v.resize(n);
+	for(int i = 0; i < n; ++i) cin >> v[i];
+
+	// define coordinate compression //
+	cmp = v;
+	sort(begin(cmp), end(cmp));
+	cmp.erase(unique(begin(cmp), end(cmp)), end(cmp));
+	auto cid = [&](int x) { return lower_bound(begin(cmp), end(cmp), x) - begin(cmp); };
+	// cid gives compressed id //
+
+	dp.init(size(cmp));
+	dp.upd(cid(v[0]), 1); // base case: a[0] has LIS 1
+	for(int i = 1; i < n; ++i) dp.upd(cid(v[i]), dp.qry(0, cid(v[i]) - 1) + 1);
+	cout << dp.qry(0, size(cmp) - 1) << "\n";
+}
+```
 
 ## Example - PCB
 

@@ -1,7 +1,6 @@
-import firebase from 'firebase';
-import firebaseType from 'firebase';
+import { default as firebase, default as firebaseType } from 'firebase';
 
-export type ProblemData = {
+export interface ProblemData {
   id: string;
   postId: string;
   name: string;
@@ -17,7 +16,20 @@ export type ProblemData = {
    * Lower = appears first in problem list. Ties broken by name.
    */
   order: number;
-};
+}
+export type GroupProblemData = ProblemData &
+  (
+    | {
+        usacoGuideId: string;
+        solutionReleaseMode: 'due-date' | 'now' | 'never';
+      }
+    | {
+        usacoGuideId: string;
+        solutionReleaseMode: 'custom';
+        solutionReleaseTimestamp: firebaseType.firestore.Timestamp;
+      }
+  );
+
 export type ProblemHint = {
   // /**
   //  * How many points you lose for activating the hint
@@ -78,8 +90,8 @@ export type TestCaseResult = {
   executionTime: number;
 };
 
-export const problemConverter = {
-  toFirestore(problem: ProblemData): firebaseType.firestore.DocumentData {
+export const groupProblemConverter = {
+  toFirestore(problem: GroupProblemData): firebaseType.firestore.DocumentData {
     const { id, ...data } = problem;
     return data;
   },
@@ -87,11 +99,11 @@ export const problemConverter = {
   fromFirestore(
     snapshot: firebaseType.firestore.QueryDocumentSnapshot,
     options: firebaseType.firestore.SnapshotOptions
-  ): ProblemData {
+  ): GroupProblemData {
     return {
       ...snapshot.data(options),
       id: snapshot.id,
-    } as ProblemData;
+    } as GroupProblemData;
   },
 };
 

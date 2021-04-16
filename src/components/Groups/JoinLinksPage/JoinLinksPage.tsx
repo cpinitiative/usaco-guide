@@ -1,15 +1,13 @@
 import * as React from 'react';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import useGroupJoinLinks from '../../../hooks/groups/useGroupJoinLinks';
+import { JoinGroupLink } from '../../../models/groups/groups';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import Breadcrumbs from '../Breadcrumbs';
-import { JoinGroupLink } from '../../../models/groups/groups';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import EditJoinLinkModal from './EditJoinLinkModal';
-import useFirebase from '../../../hooks/useFirebase';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import useGroupJoinLinks from '../../../hooks/groups/useGroupJoinLinks';
 
 const JoinLinksPage = () => {
   const activeGroup = useActiveGroup();
@@ -25,7 +23,7 @@ const JoinLinksPage = () => {
         <SEO title="403 Forbidden" />
         <TopNavigationBar />
         <p className="text-center mt-12">
-          You don&apos;t have permissions to access this page.
+          You don't have permissions to access this page.
         </p>
       </Layout>
     );

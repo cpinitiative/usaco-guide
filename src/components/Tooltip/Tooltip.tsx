@@ -1,14 +1,22 @@
 // Heavily inspired by https://joshwcomeau.com/
 
+import Tippy, { TippyProps } from '@tippyjs/react';
 import * as React from 'react';
-import Tippy from '@tippyjs/react';
+import styled from 'styled-components';
+import { Placement } from 'tippy.js';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
-import styled from 'styled-components';
 
 const StyledTippy = styled(Tippy)`
-  background-color: #252f3f !important;
+  --tooltip-bg-color: #252f3f;
+
+  .dark & {
+    --tooltip-bg-color: #e2e8f0;
+    color: #27272a;
+  }
+
+  background-color: var(--tooltip-bg-color) !important;
   padding: 0.5rem;
   line-height: 1.5;
   font-size: 1rem !important;
@@ -16,16 +24,16 @@ const StyledTippy = styled(Tippy)`
   text-align: center;
 
   &[data-placement^='top'] > .tippy-arrow::before {
-    border-top-color: #252f3f !important;
+    border-top-color: var(--tooltip-bg-color) !important;
   }
   &[data-placement^='bottom'] > .tippy-arrow::before {
-    border-bottom-color: #252f3f !important;
+    border-bottom-color: var(--tooltip-bg-color) !important;
   }
   &[data-placement^='left'] > .tippy-arrow::before {
-    border-left-color: #252f3f !important;
+    border-left-color: var(--tooltip-bg-color) !important;
   }
   &[data-placement^='right'] > .tippy-arrow::before {
-    border-right-color: #252f3f !important;
+    border-right-color: var(--tooltip-bg-color) !important;
   }
 `;
 
@@ -39,7 +47,12 @@ const CompactTippy = styled(StyledTippy)`
   padding: 0rem;
 `;
 
-const Tooltip = ({
+export interface TooltipProps extends Omit<TippyProps, 'placement'> {
+  position?: Placement;
+  type?: 'normal' | 'asterisk' | 'compact';
+}
+
+const Tooltip: React.FC<TooltipProps> = ({
   children,
   content,
   position = 'top',

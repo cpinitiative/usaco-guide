@@ -1,17 +1,16 @@
-import * as React from 'react';
 import { graphql } from 'gatsby';
-import Layout from '../components/layout';
-
-import Markdown from '../components/markdown/Markdown';
-import { SECTION_LABELS } from '../../content/ordering';
-import { graphqlToModuleInfo } from '../utils/utils';
-import SEO from '../components/seo';
-import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
+import * as React from 'react';
 import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Helmet } from 'react-helmet';
+import { SECTION_LABELS } from '../../content/ordering';
+import Layout from '../components/layout';
+import Markdown from '../components/markdown/Markdown';
+import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
+import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { graphqlToModuleInfo } from '../utils/utils';
 
 export default function Template(props) {
   const { mdx, moduleProblemLists } = props.data; // data.markdownRemark holds your post data

@@ -1,5 +1,5 @@
-import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import { GroupData } from '../../../models/groups/groups';
 
 if (admin.apps.length === 0) {

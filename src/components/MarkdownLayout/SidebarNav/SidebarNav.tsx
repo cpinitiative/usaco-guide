@@ -1,19 +1,15 @@
 import * as React from 'react';
-import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
-import ItemLink from './ItemLink';
-import Accordion from './Accordion';
+import { useContext, useState } from 'react';
 import MODULE_ORDERING, {
   Chapter,
   SECTION_LABELS,
-  SectionID,
-  SECTIONS,
 } from '../../../../content/ordering';
-import { useContext, useState } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import { ModuleLinkInfo } from '../../../models/module';
 import { SolutionInfo } from '../../../models/solution';
 import SectionsDropdown from '../../SectionsDropdown';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import SidebarAd from './SidebarAd';
+import Accordion from './Accordion';
+import ItemLink from './ItemLink';
 
 export interface NavLinkGroup {
   label: string;

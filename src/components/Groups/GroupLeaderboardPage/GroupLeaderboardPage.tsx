@@ -1,13 +1,11 @@
 import * as React from 'react';
-import SEO from '../../seo';
-import Layout from '../../layout';
-import { usePost } from '../../../hooks/groups/usePost';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
-import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
+import Layout from '../../layout';
+import SEO from '../../seo';
 import TextTooltip from '../../Tooltip/TextTooltip';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
 
 export default function GroupLeaderboardPage(props) {
   const activeGroup = useActiveGroup();
@@ -23,10 +21,10 @@ export default function GroupLeaderboardPage(props) {
     if (!leaderboard || !members || !assignments) return null;
 
     const leaderboardSum = {};
-    for (let post of assignments) {
+    for (const post of assignments) {
       if (!leaderboard.hasOwnProperty(post.id)) continue;
-      for (let problemID of Object.keys(leaderboard[post.id])) {
-        for (let userID of Object.keys(leaderboard[post.id][problemID])) {
+      for (const problemID of Object.keys(leaderboard[post.id])) {
+        for (const userID of Object.keys(leaderboard[post.id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = {};
           if (!(post.id in leaderboardSum[userID]))
             leaderboardSum[userID][post.id] = 0;
@@ -35,7 +33,7 @@ export default function GroupLeaderboardPage(props) {
         }
       }
     }
-    let data = activeGroup.groupData.memberIds
+    const data = activeGroup.groupData.memberIds
       .map(id => ({
         member: members.find(member => member.uid === id),
         postDetails: assignments.map(

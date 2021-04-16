@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
-import { moduleIDToSectionMap } from '../../../content/ordering';
 import { Link } from 'gatsby';
+import * as React from 'react';
 import { Highlight } from 'react-instantsearch-dom';
+import { moduleIDToSectionMap } from '../../../content/ordering';
+import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
 function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   return (
@@ -26,6 +26,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         <a
           href={hit.url}
           target="_blank"
+          rel="noreferrer"
           className="text-gray-500 dark:text-dark-med-emphasis text-sm"
         >
           View Problem Statement
@@ -45,10 +46,14 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
           <a
             href={
               hit.solution.kind === 'internal'
-                ? `${getProblemURL(hit)}/solution`
+                ? `${getProblemURL({
+                    ...hit,
+                    uniqueId: hit.objectID,
+                  })}/solution`
                 : hit.solution.url
             }
             target="_blank"
+            rel="noreferrer"
             className="text-gray-500 dark:text-dark-med-emphasis text-sm"
           >
             View Solution

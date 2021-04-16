@@ -1,8 +1,8 @@
 import {
   convertHexColorToRgb,
+  formatRgbColor,
   mixWithBlack,
   mixWithWhite,
-  formatRgbColor,
 } from './Confetti.helpers';
 
 // Creates an actual <img> element. This is needed to paint a shape into an

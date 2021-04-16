@@ -1,0 +1,65 @@
+---
+id: usaco-1109
+source: USACO Bronze 2021 February
+title: Clockwise Fence
+author: Melody Yu
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_prob3_bronze_feb21.html)
+
+## Solution (Vector Cross Product)
+
+To find the area of a triangle with a vertex at $(0, 0)$, a second vertex at
+$(x_1, y_1)$ and third vertex at $(x_2, y_2)$, we can use the formula
+$\frac{x_1y_2 - y_1x_2}{2}$. This value is positive if $\frac{x_1}{y_1}$ is
+greater than $\frac{x_2}{y_2}$, since the slope becomes smaller, making it
+clockwise. Likewise, a negative area means the direction is counterclockwise.
+
+In the program, every time Farmer John lays down another fence, a new triangle
+is formed with his new position, the origin, and the previous position (the last
+fence he laid down). We can calculate the area of this new triangle. After he
+lays down all the fences, we can sum the areas of the multiple triangles to find
+if the final direction was positive (clockwise) or negative (counterclockwise).
+
+The [cross product](https://en.wikipedia.org/wiki/Cross_product) of two vectors
+is twice the signed area of the triangle between them. Every time Farmer John
+lays down a fence, we can treat it as a vector and compute the cross product of
+this vector against the previous one. By adding the cross products together, we
+get twice the final area of the polygon formed by these vectors. Based on the
+sign of the area, we can know if it's counterclockwise or clockwise (vector
+directing up or down with the right hand rule). The process is also how the
+shoelace formula is proved.
+
+<LanguageSection>
+<PySection>
+
+## Implementation
+
+```python
+def cross_product(p1, p2):
+	return p1[0] * p2[1] - p2[0] * p1[1]
+
+for i in range(int(input())):
+	p0 = (0, 0)
+	sum = 0
+	direction = input()
+	for d in direction:
+		if d == 'N':
+			p1 = (p0[0], p0[1] + 1)
+		elif d == 'E':
+			p1 = (p0[0] + 1, p0[1])
+		elif d == 'S':
+			p1 = (p0[0], p0[1] - 1)
+		else:
+			p1 = (p0[0] - 1, p0[1])
+		sum += cross_product(p1, p0)
+		p0 = p1
+
+	if sum > 0:
+		print("CW")
+	else:
+		print("CCW")
+```
+
+</PySection>
+</LanguageSection>
