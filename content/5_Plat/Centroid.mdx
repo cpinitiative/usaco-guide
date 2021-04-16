@@ -176,56 +176,56 @@ void centroid(int n = 1)
 
 ```java
 private static class Centroid {
-    int n;
-    int[][] g;
-    int[] size;
-    int[] parent;
-    boolean[] seen;
+	int n;
+	int[][] g;
+	int[] size;
+	int[] parent;
+	boolean[] seen;
 
-    Centroid(int n, int[][] g) {
-        this.n = n;
-        this.g = g;
-        size = new int[n];
-        parent = new int[n];
-        seen = new boolean[n];
-        initCentroid(0, -1);
-    }
+	Centroid(int n, int[][] g) {
+		this.n = n;
+		this.g = g;
+		size = new int[n];
+		parent = new int[n];
+		seen = new boolean[n];
+		initCentroid(0, -1);
+	}
 
-    private int getSize(int u, int v) {
-        if (seen[u]) {
-            return 0;
-        }
-        size[u] = 1;
-        for (int next : g[u]) {
-            if (next != v) {
-                size[u] += getSize(next, u);
-            }
-        }
-        return size[u];
-    }
+	private int getSize(int u, int v) {
+		if (seen[u]) {
+			return 0;
+		}
+		size[u] = 1;
+		for (int next : g[u]) {
+			if (next != v) {
+				size[u] += getSize(next, u);
+			}
+		}
+		return size[u];
+	}
 
-    private void initCentroid(int u, int v) {
-        getSize(u, v);
-        final int c = findCentroid(u, -1, size[u]);
-        seen[c] = true;
-        parent[c] = v;
-        for (int next : g[c]) {
-            if (!seen[next]) {
-                initCentroid(next, c);
-            }
-        }
-    }
+	private void initCentroid(int u, int v) {
+		getSize(u, v);
+		final int c = findCentroid(u, -1, size[u]);
+		seen[c] = true;
+		parent[c] = v;
+		for (int next : g[c]) {
+			if (!seen[next]) {
+				initCentroid(next, c);
+			}
+		}
+	}
 
-    private int findCentroid(int u, int v, int currSize) {
-        for (int x : g[u]) {
-            if (x != v) {
-                if (!seen[x] && size[x] > currSize / 2) {
-                    return findCentroid(x, u, currSize);
-                }
-            }
-        }
-        return u;
-    }
+	private int findCentroid(int u, int v, int currSize) {
+		for (int x : g[u]) {
+			if (x != v) {
+				if (!seen[x] && size[x] > currSize / 2) {
+					return findCentroid(x, u, currSize);
+				}
+			}
+		}
+		return u;
+	}
 }
 ```
 
