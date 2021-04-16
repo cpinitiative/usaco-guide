@@ -1,0 +1,114 @@
+---
+id: cf-1158A
+source: CF
+title: The Party and Sweets
+author: Jesse Choe
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/66993)
+
+**Time Complexity:** $\mathcal{O}(N\log N + M\log M)$
+
+The problem asks us to find the minimum sum of sweets which a boy could give to
+a girl with the given constraints on the minimum number of sweets a boy could
+give to a girl and the maximum number of sweets a girl has received from a boy.
+Additionally, the problem asks us to print $-1$ if any given arrangement of
+sweets does not follow the given constraints.
+
+Let's consider the following example from the sample input, which outputs $-1$:
+
+```
+2 2
+0 1
+1 0
+```
+
+The answer to this example is $-1$ since boy $2$ ends up giving girl $2$ too
+many sweets, even if boy $2$ gives girl $2$ the minimum number of sweets he
+could possibly give, which is $1$. However, girl $2$ received a maximum of no
+sweets, making it impossible.
+
+As we can see in this example, if a single boy gives more sweets than a girl
+received, then any arrangement of sweets is impossible with the constraints.
+More formally, if the
+$max(b_1, b_2, \dots, b_n-1, b_n) > min(g_1, g_2, \dots, g_m-1, g_m)$, then the
+answer is $-1$.
+
+If the input provided has an arrrangement of sweets that follows the given
+constraints, then we can greedily search for the answer.
+
+Since our objective is to minimize the total sum of sweets, it is optimal to
+make each sweet in the arrangement as small as possible. Since the smallest
+number of sweet a boy $i$ could give to a girl $j$ is $b_i$, we could "give"
+each girl $b_i$ sweets, which is: $\sum_{i=1}^{n} b_i \times m$.
+
+However, with the constraints on the maximum number of sweets a girl $j$
+received, we need to change $m$ of the sweet given to $g_j$. We greedily decide
+on the sweet to replace (the $m$ greatest number of sweets given without
+dissatisfying a constraint) by sorting $b_i$ and $g_j$ in decreasing order and
+add $\sum_{i = 1}^{m} (g_i - c_i)$ to the answer, where $c_i$ represents the
+chosen $m$ sweets. We can use the two-pointer technique to compute the previous
+sum.
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+int main(){
+    int n, m; cin >> n >> m;
+    vector<int> b(n), g(m);
+    ll res = 0;
+    for(int i=0; i<n; i++){
+        cin >> b[i];
+        res += b[i];
+    }
+    for(int i=0; i<m; i++){
+        cin >> g[i];
+    }
+	// Sort b_i and g_i in descending order to improve the ease of using 2P
+    sort(b.begin(), b.end(), [](int a, int b){
+       return a > b;
+    });
+    sort(g.begin(), g.end(), [](int a, int b){
+       return a > b;
+    });
+	// The initial sum without accounting for the constraints on the maximum values of g_i
+    res *= m;
+    int p1 = 0, p2 = 0, cur = 0;
+    int maxB = b[0], minG = g[0];
+    for(int i=1; i<n; i++){
+        maxB = max(maxB, b[i]);
+    }
+    for(int i=1; i<m; i++){
+        minG = min(minG, g[i]);
+    }
+	// If its impossible to satisfy the constraints
+    if(maxB > minG){
+        cout << -1 << endl;
+        return 0;
+    }
+	// Two pointers to find the sum of (g_i - c_i).
+    while(p2 < m){
+        ++cur;
+        res += (g[p2] - b[p1]);
+        if((cur == m-1 && g[p2+1] != b[p1]) || cur == m){
+            cur = 0;
+            p1++;
+        }
+        p2++;
+    }
+    cout << res << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
