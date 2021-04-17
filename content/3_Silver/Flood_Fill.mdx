@@ -466,6 +466,14 @@ for r in range(row_num):
 
 ### Implementation
 
+<Warning>
+
+Recursive implementations of floodfill can sometimes lead to a stack overflow.
+To avoid that, we can use a stack data structure in an iterative implementation
+as follows:
+
+</Warning>
+
 <LanguageSection>
 
 <CPPSection>
@@ -473,6 +481,7 @@ for r in range(row_num):
 ```cpp
 #include <iostream>
 #include <string>
+#include <stack>
 
 using namespace std;
 
@@ -486,21 +495,26 @@ string building[MAX_N];
 bool visited[MAX_N][MAX_N];
 
 void floodfill(int r, int c) {
-	if (
-		r < 0 || r >= row_num || c < 0 || c >= col_num
-		|| building[r][c] == '#'
-		|| visited[r][c]
-	) return;
+	// Note: you can also use an ArrayDeque for a BFS-based approach
+	stack<pair<int, int>> frontier;
+	frontier.push({r, c});
+	while(!frontier.empty()) {
+		r = frontier.top().first;
+		c = frontier.top().second;
+		frontier.pop();
 
-	visited[r][c] = true;
-	for (int i = 0; i < 4; i++) {
-		floodfill(r + R_CHANGE[i], c + C_CHANGE[i]);
+		if (r < 0 || r >= row_num || c < 0 || c >= col_num
+				|| building[r][c] == '#' || visited[r][c])
+			continue;
+
+		visited[r][c] = true;
+		for (int i = 0; i < 4; i++){
+			frontier.push({r + R_CHANGE[i], c + C_CHANGE[i]});
+		}
 	}
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	cin >> row_num >> col_num;
 	for (int i = 0; i < row_num; i++) {
 		cin >> building[i];
@@ -523,14 +537,6 @@ int main() {
 
 <JavaSection>
 
-<Warning>
-
-Recursive implementations of floodfill in Java can sometimes lead to a
-StackOverflowError. To avoid that, we can use our own stack in an iterative
-implementation as follows:
-
-</Warning>
-
 ```java
 public class RoomCount {
 	public static final int R_CHANGE[] = {0, 1, 0, -1};
@@ -541,24 +547,22 @@ public class RoomCount {
 	private static int rowNum;
 	private static int colNum;
 
-	public static void floodfill(int x, int y) {
+	public static void floodfill(int r, int c) {
 		// Note: you can also use an ArrayDeque for a BFS-based approach
 		Stack<int[]> frontier = new Stack<>();
-		frontier.push(new int[] {x, y});
+		frontier.push(new int[] {r, c});
 		while(!frontier.isEmpty()){
 			int[] p = frontier.pop();
-			x = p[0];
-			y = p[1];
+			r = p[0];
+			c = p[1];
 
-			if (x < 0 || x >= rowNum || y < 0 || y >= colNum
-					|| building[x][y] == '#' || visited[x][y])
+			if (r < 0 || r >= rowNum || c < 0 || c >= colNum
+					|| building[r][c] == '#' || visited[r][c])
 				continue;
 
-			visited[x][y] = true;
-			for (int i = 0; i < 4; i++){
-				int nx = x + R_CHANGE[i];
-				int ny = y + C_CHANGE[i];
-				frontier.add(new int[] {nx, ny});
+			visited[r][c] = true;
+			for (int i = 0; i < 4; i++) {
+				frontier.add(new int[] {r + R_CHANGE[i], c + C_CHANGE[i]});
 			}
 		}
 	}
@@ -587,9 +591,7 @@ public class RoomCount {
 				}
 			}
 		}
-		PrintWriter out = new PrintWriter(System.out);
-		out.println(roomNum);
-		out.close();
+		System.out.println(roomNum);
 	}
 }
 ```
@@ -597,14 +599,6 @@ public class RoomCount {
 </JavaSection>
 
 <PySection>
-
-<Warning>
-
-Recursive implementations of floodfill in Python can sometimes lead to a
-StackOverflowError. To avoid that, we can use our own stack in an iterative
-implementation as follows:
-
-</Warning>
 
 ```py
 row_num, col_num = [int(i) for i in input().split()]
