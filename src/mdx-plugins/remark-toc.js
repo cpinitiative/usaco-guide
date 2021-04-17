@@ -46,6 +46,11 @@ module.exports = ({ tableOfContents }) => {
       }
       curLang = 'py';
     }
+
+    // We don't want to generate table of contents for headers inside spoilers, since those
+    // links won't work unless the spoiler is expanded.
+    if (node.name === 'Spoiler') return;
+
     for (let child of node.children || []) {
       process(child, curLang);
     }
