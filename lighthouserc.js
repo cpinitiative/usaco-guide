@@ -4,9 +4,9 @@ module.exports = {
       staticDistDir: './public',
       url: [
         'http://localhost/',
-        'http://localhost/dashboard',
+        'http://localhost/dashboard/',
         'http://localhost/general/',
-        'http://localhost/general/using-this-guide',
+        'http://localhost/general/using-this-guide/',
       ],
     },
     upload: {
