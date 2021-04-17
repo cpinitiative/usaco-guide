@@ -14,10 +14,13 @@ export const conf = {
     { open: '{', close: '}' },
     { open: '[', close: ']' },
     { open: '(', close: ')' },
+    { open: '*', close: '*' },
     { open: '<', close: '>', notIn: ['string'] },
   ],
   surroundingPairs: [
     { open: '(', close: ')' },
+    { open: '{', close: '}' },
+    { open: '*', close: '*' },
     { open: '[', close: ']' },
     { open: '`', close: '`' },
   ],
@@ -31,7 +34,7 @@ export const conf = {
 
 export const language = {
   defaultToken: '',
-  tokenPostfix: '.md',
+  tokenPostfix: '.mdx',
 
   // escape codes
   control: /[\\`*_\[\]{}()#+\-\.!]/,
