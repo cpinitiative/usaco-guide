@@ -5,8 +5,8 @@ module.exports = {
       url: [
         'http://localhost/',
         'http://localhost/dashboard',
-        'https://usaco.guide/general/',
-        'https://usaco.guide/general/using-this-guide',
+        'https://localhost/general/',
+        'https://localhost/general/using-this-guide',
       ],
     },
     upload: {
