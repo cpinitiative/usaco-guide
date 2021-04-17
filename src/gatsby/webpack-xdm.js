@@ -5,7 +5,6 @@ const remarkMath = require('remark-math');
 const remarkExternalLinks = require('remark-external-links');
 const remarkFrontmatter = require('remark-frontmatter');
 const { remarkMdxFrontmatter } = require('remark-mdx-frontmatter');
-const remarkHtmlNodes = require('../mdx-plugins/remark-html-nodes');
 const customRehypeKatex = require('../mdx-plugins/rehype-math');
 const rehypeSnippets = require('../mdx-plugins/rehype-snippets');
 const remarkSlug = require('remark-slug');
@@ -43,9 +42,9 @@ module.exports = function (code) {
               },
             },
           ],
-          remarkHtmlNodes,
         ],
         rehypePlugins: [customRehypeKatex, rehypeSnippets],
+        jsxRuntime: 'classic',
         ...getOptions(this),
       }
     )
