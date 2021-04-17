@@ -1,5 +1,7 @@
 import 'katex/dist/katex.min.css';
 import * as React from 'react';
+// eslint-disable-next-line
+// @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { components } from './MDXComponents';
 
