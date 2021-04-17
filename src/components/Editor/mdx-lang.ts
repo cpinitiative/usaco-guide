@@ -3,7 +3,7 @@
 
 export const conf = {
   comments: {
-    blockComment: ['{/*', '*/}'],
+    blockComment: ['<!--', '-->'],
   },
   brackets: [
     ['{', '}'],
@@ -14,7 +14,6 @@ export const conf = {
     { open: '{', close: '}' },
     { open: '[', close: ']' },
     { open: '(', close: ')' },
-    { open: '"', close: '"' },
     { open: '<', close: '>', notIn: ['string'] },
   ],
   surroundingPairs: [
@@ -32,7 +31,7 @@ export const conf = {
 
 export const language = {
   defaultToken: '',
-  tokenPostfix: '.mdx',
+  tokenPostfix: '.md',
 
   // escape codes
   control: /[\\`*_\[\]{}()#+\-\.!]/,
@@ -83,13 +82,10 @@ export const language = {
       [/^\s*([\*\-+:]|\d+\.)\s/, 'keyword'],
 
       // code block (4 spaces indent)
-      //[/^(\t|[ ]{4})[^ ].*$/, 'string'],
+      // [/^(\t|[ ]{4})[^ ].*$/, 'string'],
 
       // code block (3 tilde)
-      // [
-      //   /^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/,
-      //   { token: 'string', next: '@codeblock' },
-      // ],
+      // [/^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/, { token: 'string', next: '@codeblock' }],
 
       // github style code blocks (with backticks and language)
       [
@@ -185,14 +181,14 @@ export const language = {
       ],
       [/<\/(\w+)\s*>/, { token: 'tag' }],
 
-      [/{\/\*/, 'comment', '@comment'],
+      [/<!--/, 'comment', '@comment'],
     ],
 
     comment: [
-      [/[^{/*]+/, 'comment'],
-      // [/\/\*/,    'comment', '@push' ],    // nested comment
-      [/\*\/}/, 'comment', '@pop'],
-      [/[{/*]/, 'comment'],
+      [/[^<\-]+/, 'comment.content'],
+      [/-->/, 'comment', '@pop'],
+      [/<!--/, 'comment.content.invalid'],
+      [/[<\-]/, 'comment.content'],
     ],
 
     // Almost full HTML tag matching, complete with embedded scripts & styles
