@@ -5,27 +5,27 @@ title: Matching
 author: Neo Wang
 ---
 
-## Explanation
+## Solution
 
-If we define $\texttt{dp}[S]$ to be the number of matchings for females in the set
-$S$ to the first $|S|$ males, this problem boils down to the following:
+**Time Complexity:** $\mathcal{O}(N\cdot 2^N)$
+
+If we define $\texttt{dp}[S]$ to be the number of matchings for females in the
+set $S$ to the first $|S|$ males, this problem boils down to the following:
 
 $$
-\texttt{dp}[S] = \sum \texttt{dp}[S\backslash x]\: \text{if}\:  \texttt{compatible}[|S|][x]
+\texttt{dp}[S] = \sum \texttt{dp}[S\backslash x]:  \texttt{compatible}[|S|][x]
 $$
 
 In English, this is equivalent to the following:
 
-> The number of matchings in a subset $S$ to include a certain female $x$ is
-> equivalent to the sum of all the matchings without female $x$ such that the
-> addition of female $x$ is compatible with the $|S|$-th male.
+> The amount of matchings in a subset $S$ to include a certain female $x$ is
+> equivalent to the sum of all the matchings without female $x$ where female $x$
+> is compatible with the $|S|$-th male.
 
 Our base case is the empty set, which has a value of $1$ (the empty set can be
 considered as a single matching involving zero pairs).
 
 ## Implementation
-
-**Time Complexity:** $\mathcal{O}(N\cdot 2^N)$
 
 ```cpp
 #include <bits/stdc++.h>
