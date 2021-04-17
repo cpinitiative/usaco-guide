@@ -156,10 +156,10 @@ export default function DynamicMarkdownRenderer({
     return (
       <div>
         An error occurred:
-        <p className="mt-2 text-red-700 font-mono text-sm">
-          {markdownError.stack || markdownError.toString()}
+        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
+          {markdownError.toString()}
         </p>
-        <p className="mt-2 text-red-700 font-mono text-sm">
+        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
           This error has also been logged to the console.
         </p>
       </div>
@@ -172,10 +172,10 @@ export default function DynamicMarkdownRenderer({
       <div>
         An error occurred while generating the problem solution info. This
         typically indicates an error in the problems JSON file:
-        <p className="mt-2 text-red-700 font-mono text-sm">
-          {problemError.stack || problemError.toString()}
+        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
+          {problemError.toString()}
         </p>
-        <p className="mt-2 text-red-700 font-mono text-sm">
+        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
           This error has also been logged to the console.
         </p>
       </div>
