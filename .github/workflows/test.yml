@@ -40,7 +40,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           exitZeroOnChanges: true # don't fail the workflow if snapshots change
 
-  check-links:
+  build-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -62,6 +62,12 @@ jobs:
 
       - name: Check Links
         run: $HOME/.pub-cache/bin/linkcheck --no-nice :5000
+
+      - name: Bundle Watch
+        run: yarn bundlewatch ./public/*.js
+        env:
+          BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
+          CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
 #      - name: Check Links
 #        uses: wunderundfitzig/linkcheck-action@v1
 #        with:
