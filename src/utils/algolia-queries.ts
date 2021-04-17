@@ -14,21 +14,21 @@ const pageQuery = `{
         fields {
           division
         }
-        mdxAST
+        mdast
       }
     }
   }
 }`;
 
 function pageToAlgoliaRecord({
-  node: { id, frontmatter, fields, mdxAST, ...rest },
+  node: { id, frontmatter, fields, mdast, ...rest },
 }) {
   return {
     objectID: frontmatter.id,
     ...frontmatter,
     ...fields,
     ...rest,
-    content: extractSearchableText(mdxAST),
+    content: extractSearchableText(JSON.parse(mdast)),
   };
 }
 

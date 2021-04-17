@@ -8,6 +8,7 @@ import gfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
 import remarkSlug from 'remark-slug';
+import remarkExtractAST from '../mdx-plugins/extract-mdast';
 import customRehypeKatex from '../mdx-plugins/rehype-math';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets';
 import remarkToC from '../mdx-plugins/remark-toc';
@@ -29,6 +30,7 @@ export async function createXdmNode({ id, node, content }, api) {
 
   let compiledResult;
   const tableOfContents = {};
+  const mdast = { data: null };
 
   const gatsbyImage = getGatsbyImage({
     ...api,
@@ -42,9 +44,10 @@ export async function createXdmNode({ id, node, content }, api) {
         remarkPlugins: [
           gfm,
           remarkMath,
-          remarkExternalLinks,
           remarkFrontmatter,
           remarkMdxFrontmatter,
+          [remarkExtractAST, { mdast }],
+          remarkExternalLinks,
           [remarkToC, { tableOfContents }],
           remarkSlug,
           [
@@ -102,6 +105,7 @@ export async function createXdmNode({ id, node, content }, api) {
     frontmatter,
     isIncomplete: content.indexOf('<IncompleteSection') !== -1,
     toc: tableOfContents,
+    mdast: mdast.data,
   };
 
   // xdmNode.exports = nodeExports

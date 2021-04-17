@@ -432,6 +432,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       frontmatter: XdmFrontmatter
       isIncomplete: Boolean
       toc: TableOfContents
+      mdast: String
     }
   
     type XdmFrontmatter implements Node {
