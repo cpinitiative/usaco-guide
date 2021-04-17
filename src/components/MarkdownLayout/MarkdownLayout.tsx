@@ -81,7 +81,7 @@ export default function MarkdownLayout({
 
   const data = useStaticQuery(graphql`
     query {
-      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+      allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
             frontmatter {
@@ -94,13 +94,13 @@ export default function MarkdownLayout({
     }
   `);
   const moduleLinks = React.useMemo(() => {
-    return data.allMdx.edges.map(cur => ({
+    return data.allXdm.edges.map(cur => ({
       id: cur.node.frontmatter.id,
       title: cur.node.frontmatter.title,
       section: moduleIDToSectionMap[cur.node.frontmatter.id],
       url: moduleIDToURLMap[cur.node.frontmatter.id],
     }));
-  }, [data.allMdx]);
+  }, [data.allXdm]);
   // console.log(moduleLinks);
 
   const showConfetti = useContext(ConfettiContext);

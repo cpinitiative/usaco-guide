@@ -1,15 +1,13 @@
 import * as fs from 'fs';
+import importFresh from 'import-fresh';
+import * as path from 'path';
 import { SECTIONS } from './content/ordering';
+import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
   getProblemInfo,
   getProblemURL,
   ProblemMetadata,
 } from './src/models/problem';
-import importFresh = require('import-fresh');
-
-const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
-const mdastToString = require('mdast-util-to-string');
-const Slugger = require('github-slugger');
 const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
@@ -21,20 +19,35 @@ try {
   console.warn(
     'Git fetch failed. Ignore this if developing or building locally.'
   );
-  console.error(e);
 }
 
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
 
-exports.onCreateNode = async ({
-  node,
-  actions,
-  loadNodeContent,
-  createContentDigest,
-  createNodeId,
-}) => {
+exports.onCreateNode = async api => {
+  const {
+    node,
+    actions,
+    loadNodeContent,
+    createContentDigest,
+    createNodeId,
+  } = api;
+
   const { createNodeField, createNode, createParentChildLink } = actions;
+
+  if (node.internal.type === `File` && node.ext === '.mdx') {
+    const content = await loadNodeContent(node);
+    const xdmNode = await createXdmNode(
+      {
+        id: createNodeId(`${node.id} >>> Xdm`),
+        node,
+        content,
+      },
+      api
+    );
+    createNode(xdmNode);
+    createParentChildLink({ parent: node, child: xdmNode });
+  }
 
   function transformObject(obj, id) {
     const problemInfoNode = {
@@ -136,7 +149,7 @@ exports.onCreateNode = async ({
       createParentChildLink({ parent: node, child: problemInfoNode });
     }
   } else if (
-    node.internal.type === 'Mdx' &&
+    node.internal.type === 'Xdm' &&
     node.fileAbsolutePath.includes('content')
   ) {
     const ordering = importFresh<any>('./content/ordering');
@@ -184,7 +197,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   const result = await graphql(`
     query {
-      modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+      modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
             frontmatter {
@@ -198,7 +211,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }
       }
 
-      solutions: allMdx(
+      solutions: allXdm(
         filter: { fileAbsolutePath: { regex: "/solutions/" } }
       ) {
         edges {
@@ -413,10 +426,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
-    type MdxFrontmatter implements Node {
+    type Xdm implements Node {
+      body: String
+      fileAbsolutePath: String
+      frontmatter: XdmFrontmatter
+      isIncomplete: Boolean
+      toc: TableOfContents
+    }
+  
+    type XdmFrontmatter implements Node {
+      id: String
+      title: String
+      author: String
+      description: String
       prerequisites: [String]
-      date: String
       redirects: [String]
+      frequency: Int
     }
     
     type Heading {
@@ -450,7 +475,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       difficulty: String
       tags: [String]
       solution: ProblemSolutionInfo
-      module: Mdx @link(by: "frontmatter.id")
+      module: Xdm @link(by: "frontmatter.id")
     }
     
     type ModuleProblemInfo {
@@ -475,90 +500,34 @@ exports.createSchemaCustomization = ({ actions }) => {
   createTypes(typeDefs);
 };
 
-exports.createResolvers = ({ createResolvers }) => {
-  const resolvers = {
-    Mdx: {
-      toc: {
-        type: `TableOfContents`,
-        async resolve(source, args, context, info) {
-          const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          const mdast = await resolve(source, args, context, {
-            fieldName: 'mdast',
-          });
-          const cpp = [],
-            java = [],
-            py = [];
-          // lol the spaghetti code going to be insane
-          let cppCt = 0,
-            javaCt = 0,
-            pyCt = 0;
-          // https://github.com/cpinitiative/usaco-guide/issues/966
-          // We don't want to include headers inside spoilers
-          let spoilerCt = 0;
-          const slugger = new Slugger();
-          mdast.children.forEach(node => {
-            if (node.type === 'jsx') {
-              const str = 'exact match ' + node.value;
-              cppCt += str.split('<CPPSection>').length - 1;
-              javaCt += str.split('<JavaSection>').length - 1;
-              pyCt += str.split('<PySection>').length - 1;
-              spoilerCt += str.split('<Spoiler').length - 1;
-              cppCt -= str.split('</CPPSection>').length - 1;
-              javaCt -= str.split('</JavaSection>').length - 1;
-              pyCt -= str.split('</PySection>').length - 1;
-              spoilerCt -= str.split('</Spoiler>').length - 1;
-            }
-            if (node.type === 'heading') {
-              const val = {
-                depth: node.depth,
-                value: mdastToStringWithKatex(node),
-                slug: slugger.slug(mdastToString(node)),
-              };
-              if (spoilerCt < 0) {
-                throw "Spoiler count went negative -- shouldn't happen...";
-              }
-              if (spoilerCt === 0) {
-                if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
-                  cpp.push(val);
-                  java.push(val);
-                  py.push(val);
-                } else if (cppCt === 1 && javaCt === 0 && pyCt === 0) {
-                  cpp.push(val);
-                } else if (cppCt === 0 && javaCt === 1 && pyCt === 0) {
-                  java.push(val);
-                } else if (cppCt === 0 && javaCt === 0 && pyCt === 1) {
-                  py.push(val);
-                } else {
-                  throw 'Generating table of contents ran into a weird error. CPP/Java/Py Section tags mismatched?';
-                }
-              }
-            }
-          });
-          if (spoilerCt !== 0) {
-            throw 'Spoiler count should end at zero...';
-          }
-          return {
-            cpp,
-            java,
-            py,
-          };
-        },
+exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
+  actions.setWebpackConfig({
+    resolve: {
+      alias: {
+        path: require.resolve('path-browserify'),
       },
-      isIncomplete: {
-        type: `Boolean`,
-        async resolve(source, args, context, info) {
-          return source.rawBody.indexOf('<IncompleteSection') !== -1;
-        },
+      fallback: {
+        fs: false,
       },
     },
-  };
-  createResolvers(resolvers);
-};
-
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
-    node: {
-      fs: 'empty',
+    module: {
+      rules: [
+        {
+          test: /\.mdx$/,
+          use: [
+            loaders.js(),
+            {
+              loader: path.resolve(__dirname, 'src/gatsby/webpack-xdm.js'),
+              options: {},
+            },
+          ],
+        },
+      ],
     },
   });
+  if (stage === 'build-javascript' || stage === 'develop') {
+    actions.setWebpackConfig({
+      plugins: [plugins.provide({ process: 'process/browser' })],
+    });
+  }
 };

@@ -11,7 +11,6 @@ module.exports = {
         },
       },
     },
-    'storybook-dark-mode',
     '@storybook/addon-a11y',
   ],
   webpackFinal: async config => {
@@ -47,4 +46,9 @@ module.exports = {
     config.resolve.extensions.push('.ts', '.tsx');
     return config;
   },
+  // https://github.com/storybookjs/storybook/issues/12585
+  // react docgen typescript plugin hampers hot reloading time, so we'll disable it in development
+  ...(process.env.NODE_ENV === 'development'
+    ? { typescript: { reactDocgen: 'react-docgen' } }
+    : {}),
 };

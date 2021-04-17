@@ -3,7 +3,7 @@ import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
 
 const pageQuery = `{
-  pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
+  pages: allXdm(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
         frontmatter {
