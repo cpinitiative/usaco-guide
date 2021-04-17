@@ -5,8 +5,8 @@ module.exports = {
       url: [
         'http://localhost/',
         'http://localhost/dashboard',
-        'https://localhost/general/',
-        'https://localhost/general/using-this-guide',
+        'http://localhost/general/',
+        'http://localhost/general/using-this-guide',
       ],
     },
     upload: {
