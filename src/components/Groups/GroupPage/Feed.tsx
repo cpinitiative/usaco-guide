@@ -17,8 +17,10 @@ export default function Feed() {
       throw 'unknown feed ' + this.currentFeed;
     })
     .sort((a, b) => {
-      if (a.isPinned !== b.isPinned)
+      if (a.isPinned !== b.isPinned) {
         return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
+      }
+
       return (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0);
     });
 
@@ -41,7 +43,10 @@ export default function Feed() {
         {!group.isLoading && (
           <ul className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
             {feedPosts
-              .sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis())
+              .sort((a, b) => {
+                // timestamp can be null when the post is first created with timestamp set to the server value
+                return b.timestamp?.toMillis() - a.timestamp?.toMillis();
+              })
               .map(post => (
                 <li key={post.id}>
                   <FeedItem group={group.groupData} post={post} />
