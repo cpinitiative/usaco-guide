@@ -306,55 +306,55 @@ in**. Valid options are `Very Easy`, `Easy`, `Normal`, `Hard`, `Very Hard`,
 
 ```ts
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
-	solutionMetadata:
-		| {
-				// auto generate problem solution label based off of the given site
-				// For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
-				kind: 'autogen-label-from-site';
-				// The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
-				site: string;
-		  }
-		| {
-				// internal solution
-				kind: 'internal';
-		  }
-		| {
-				// URL solution
-				// Use this for links to PDF solutions, etc
-				kind: 'link';
-				url: string;
-		  }
-		| {
-				// Competitive Programming Handbook
-				// Ex: 5.3 or something
-				kind: 'CPH';
-				section: string;
-		  }
-		| {
-				// USACO solution, generates it based off of the USACO problem ID
-				// ex. 1113 is mapped to sol_prob1_gold_feb21.html
-				kind: 'USACO';
-				usacoId: string;
-		  }
-		| {
-				// IOI solution, generates it based off of the year
-				// ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
-				kind: 'IOI';
-				year: number;
-		  }
-		| {
-				// no solution exists
-				kind: 'none';
-		  }
-		| {
-				// for focus problems, when the solution is presented in the module of the problem
-				kind: 'in-module';
-				moduleId: string;
-		  }
-		| {
-				kind: 'sketch';
-				sketch: string;
-		  };
+  solutionMetadata:
+    | {
+        // auto generate problem solution label based off of the given site
+        // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+        kind: 'autogen-label-from-site';
+        // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+        site: string;
+      }
+    | {
+        // internal solution
+        kind: 'internal';
+      }
+    | {
+        // URL solution
+        // Use this for links to PDF solutions, etc
+        kind: 'link';
+        url: string;
+      }
+    | {
+        // Competitive Programming Handbook
+        // Ex: 5.3 or something
+        kind: 'CPH';
+        section: string;
+      }
+    | {
+        // USACO solution, generates it based off of the USACO problem ID
+        // ex. 1113 is mapped to sol_prob1_gold_feb21.html
+        kind: 'USACO';
+        usacoId: string;
+      }
+    | {
+        // IOI solution, generates it based off of the year
+        // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+        kind: 'IOI';
+        year: number;
+      }
+    | {
+        // no solution exists
+        kind: 'none';
+      }
+    | {
+        // for focus problems, when the solution is presented in the module of the problem
+        kind: 'in-module';
+        moduleId: string;
+      }
+    | {
+        kind: 'sketch';
+        sketch: string;
+      };
 };
 ```
 
@@ -429,60 +429,60 @@ Special functionality based on source:
 - Some sources have URL shortcuts that they will prepend to the URL.
   - ```typescript
     const sources = {
-    	TC:
-    		'https://www.topcoder.com/community/competitive-programming/tutorials/',
-    	CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
-    	CF: 'http://codeforces.com/',
-    	'cp-algo': 'https://cp-algorithms.com/',
-    	CSA: 'https://csacademy.com/lesson/',
-    	GFG: 'https://www.geeksforgeeks.org/',
-    	Benq:
-    		'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
-    	HR: 'https://www.hackerrank.com/',
-    	SO: 'https://stackoverflow.com/',
-    	Infoarena: 'https://infoarena.ro/',
+      TC:
+        'https://www.topcoder.com/community/competitive-programming/tutorials/',
+      CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
+      CF: 'http://codeforces.com/',
+      'cp-algo': 'https://cp-algorithms.com/',
+      CSA: 'https://csacademy.com/lesson/',
+      GFG: 'https://www.geeksforgeeks.org/',
+      Benq:
+        'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
+      HR: 'https://www.hackerrank.com/',
+      SO: 'https://stackoverflow.com/',
+      Infoarena: 'https://infoarena.ro/',
     };
     ```
 - Some sources will automatically have tooltips generated for them.
   - ```typescript
     export const sourceTooltip = {
-    	GCP: 'Guide to Competitive Programming (based off CPH)',
-    	AoPS: 'Art of Problem Solving',
-    	CPH: "Book - Competitive Programmer's Handbook",
-    	PAPS: 'Book - Principles of Algorithmic Problem Solving',
-    	IUSACO: 'Book - An Introduction to USACO',
-    	CP1: 'Book - Competitive Programming 1',
-    	TC: 'TopCoder',
-    	IOI: 'International Olympiad in Informatics',
-    	TLX: 'tlx.toki.id',
-    	CPC:
-    		'Competitive Programming Course (taught at Reykjavík University, Iceland)',
-    	CF: 'CodeForces',
-    	'cp-algo': 'CP Algorithms',
-    	CSA: 'CS Academy',
-    	GFG: 'Geeks For Geeks',
-    	Benq: 'github.com/bqi343/USACO',
-    	HR: 'HackerRank',
-    	CSES: 'Code Submission Evaluation System (includes CPH problemset)',
-    	HE: 'HackerEarth',
-    	AC: 'AtCoder',
-    	CC: 'CodeChef',
-    	DMOJ: 'DMOJ: Modern Online Judge',
-    	SPOJ: 'Sphere Online Judge',
-    	YS: 'Library Checker',
-    	LC: 'LeetCode',
-    	POI: 'Polish Olympiad in Informatics',
-    	SO: 'StackOverflow',
-    	KA: 'KhanAcademy',
-    	USACO: 'USACO',
-    	'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
-    	'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
-    	'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
-    	Bronze: 'USACO 2015-16 to present',
-    	Silver: 'USACO 2015-16 to present',
-    	Gold: 'USACO 2015-16 to present',
-    	Plat: 'USACO 2015-16 to present',
-    	ZLE: 'kauntaofficial.github.io',
+      GCP: 'Guide to Competitive Programming (based off CPH)',
+      AoPS: 'Art of Problem Solving',
+      CPH: "Book - Competitive Programmer's Handbook",
+      PAPS: 'Book - Principles of Algorithmic Problem Solving',
+      IUSACO: 'Book - An Introduction to USACO',
+      CP1: 'Book - Competitive Programming 1',
+      TC: 'TopCoder',
+      IOI: 'International Olympiad in Informatics',
+      TLX: 'tlx.toki.id',
+      CPC:
+        'Competitive Programming Course (taught at Reykjavík University, Iceland)',
+      CF: 'CodeForces',
+      'cp-algo': 'CP Algorithms',
+      CSA: 'CS Academy',
+      GFG: 'Geeks For Geeks',
+      Benq: 'github.com/bqi343/USACO',
+      HR: 'HackerRank',
+      CSES: 'Code Submission Evaluation System (includes CPH problemset)',
+      HE: 'HackerEarth',
+      AC: 'AtCoder',
+      CC: 'CodeChef',
+      DMOJ: 'DMOJ: Modern Online Judge',
+      SPOJ: 'Sphere Online Judge',
+      YS: 'Library Checker',
+      LC: 'LeetCode',
+      POI: 'Polish Olympiad in Informatics',
+      SO: 'StackOverflow',
+      KA: 'KhanAcademy',
+      USACO: 'USACO',
+      'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
+      'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
+      'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
+      Bronze: 'USACO 2015-16 to present',
+      Silver: 'USACO 2015-16 to present',
+      Gold: 'USACO 2015-16 to present',
+      Plat: 'USACO 2015-16 to present',
+      ZLE: 'kauntaofficial.github.io',
     };
     ```
 
