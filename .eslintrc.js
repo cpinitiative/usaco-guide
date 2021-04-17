@@ -24,6 +24,7 @@ module.exports = {
     'react/no-unescaped-entities': 'off',
     'no-useless-escape': 'warn',
     '@typescript-eslint/no-empty-function': 'off',
+    curly: ['error', 'multi-line'],
     // some of these are just too hard to fix at the moment :(
     'react/prop-types': 'off',
   },

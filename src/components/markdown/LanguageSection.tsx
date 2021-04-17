@@ -33,11 +33,12 @@ export const LanguageSection = props => {
   if (!sections.hasOwnProperty(userLang)) {
     const langs = ['cpp', 'java', 'py'];
     let fallbackLang = '';
-    for (const lang of langs)
+    for (const lang of langs) {
       if (sections.hasOwnProperty(lang)) {
         fallbackLang = lang;
         break;
       }
+    }
     const notAvailable = (
       <div className="p-4 bg-red-50 rounded-md dark:bg-red-900 mb-4">
         <div className="flex">

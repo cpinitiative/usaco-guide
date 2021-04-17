@@ -8,8 +8,9 @@ export default function extractSearchableText(node) {
     node.type === 'export' ||
     node.type === 'inlineMath' ||
     node.name === 'Resources'
-  )
+  ) {
     return '';
+  }
   return (
     (node.type === 'paragraph' || node.type === 'heading' ? ' ' : '') +
     ((node &&

@@ -93,11 +93,11 @@ export default function ContactUsSlideover({
 
   React.useEffect(() => {
     const activeModule = markdownContext?.markdownLayoutInfo;
-    if (activeModule && activeModule instanceof ModuleInfo)
+    if (activeModule && activeModule instanceof ModuleInfo) {
       setLocation(
         `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
       );
-    else setLocation('');
+    } else setLocation('');
   }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);

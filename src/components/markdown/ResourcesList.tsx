@@ -87,8 +87,9 @@ export function Resource(props) {
         let sec = parts[0];
         if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
         if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey]))
+        if (!(sec in PGS[dictKey])) {
           throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+        }
         url += '#page=' + PGS[dictKey][sec];
         return url;
       };
@@ -114,8 +115,9 @@ export function Resource(props) {
     if (!url.startsWith('http')) url = moduleSources[source][0] + url;
     des = moduleSources[source][1];
   } else {
-    if (!url.startsWith('http'))
+    if (!url.startsWith('http')) {
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
+    }
     if (source.indexOf('@') != -1) {
       const ind = source.indexOf('@');
       des = source.substring(ind + 1, source.length);

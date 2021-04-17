@@ -340,8 +340,9 @@ export default function EditProblemPage(props) {
                     id="points"
                     value={problem.points}
                     onChange={e => {
-                      if (canEditPoints)
+                      if (canEditPoints) {
                         editProblem({ points: parseInt(e.target.value) });
+                      }
                     }}
                     className="input"
                     disabled={!canEditPoints}
