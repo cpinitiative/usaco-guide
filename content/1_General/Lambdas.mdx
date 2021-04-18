@@ -1,7 +1,7 @@
 ---
 id: lambda
 title: (Optional) C++ - Lambda Expressions
-author: Benjamin Qi
+author: Benjamin Qi, Dong Liu
 description: 'Defining anonymous function objects.'
 ---
 
@@ -51,6 +51,8 @@ Anything more beginner-friendly?
 </Resources>
 
 ## Recursive Lambdas
+
+### With `y_combinator`
 
 <Resources>
 	<Resource
@@ -104,3 +106,13 @@ int main() {
 
 Looks like [ecnerwala](https://codeforces.com/contest/1375/submission/86008510)
 uses these a lot.
+
+### Another way
+
+Change `auto` to `function<return_type(param)>`.
+
+```cpp
+function<int(int, int)> gcd = [&](int a, int b) {
+	return b == 0 ? a : gcd(b, a % b);
+};
+```
