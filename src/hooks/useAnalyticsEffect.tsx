@@ -1,23 +1,15 @@
-import useFirebase from './useFirebase';
+import { getDatabase, increment, ref, set } from 'firebase/database';
+import { useFirebaseApp } from './useFirebase';
 
 export const useAnalyticsEffect = () => {
-  useFirebase(firebase => {
+  useFirebaseApp(firebaseApp => {
+    const db = getDatabase(firebaseApp);
     if ((window as any).ga && (window as any).ga.create) {
       // google analytics loaded
     } else {
       // google analytics got blocked
-      firebase
-        .database()
-        .ref('analytics/no_ga_pageviews')
-        .set(firebase.database.ServerValue.increment(1));
+      set(ref(db, 'analytics/no_ga_pageviews'), increment(1));
     }
-    firebase
-      .database()
-      .ref('analytics/pageviews')
-      .set(firebase.database.ServerValue.increment(1));
-    firebase
-      .database()
-      .ref('pageviews')
-      .set(firebase.database.ServerValue.increment(1));
+    set(ref(db, 'analytics/pageviews'), increment(1));
   });
 };
