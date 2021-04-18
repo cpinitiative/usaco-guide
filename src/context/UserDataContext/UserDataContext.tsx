@@ -1,8 +1,16 @@
-import firebaseType from 'firebase';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  UserCredential,
+} from 'firebase/auth';
+import firebaseType from 'firebase/compat';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
-import useFirebase from '../../hooks/useFirebase';
+import useFirebase, { useFirebaseApp } from '../../hooks/useFirebase';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
@@ -197,6 +205,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
     // when the firebase user changes, update all the API's
@@ -218,8 +227,9 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   );
 
   // Listen for firebase user sign in / sign out
-  useFirebase(firebase => {
-    return firebase.auth().onAuthStateChanged(user => {
+  useFirebaseApp(firebase => {
+    const auth = getAuth(firebase);
+    onAuthStateChanged(auth, user => {
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
@@ -292,22 +302,17 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
 
   const userData = {
     firebaseUser,
-    signIn: (): Promise<firebaseType.auth.UserCredential | null> => {
-      if (firebase) {
-        return firebase
-          .auth()
-          .signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    signIn: (): Promise<UserCredential | null> => {
+      if (firebaseApp) {
+        return signInWithPopup(getAuth(firebaseApp), new GoogleAuthProvider());
       }
       return Promise.resolve(null);
     },
     signOut: (): Promise<void> => {
-      return firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
-        });
+      return signOut(getAuth(firebaseApp)).then(() => {
+        UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
+        UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
+      });
     },
     isLoaded,
     onlineUsers: -1,
