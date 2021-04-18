@@ -272,7 +272,6 @@ row_num, col_num = [int(i) for i in input().split()]
 grid = []
 for _ in range(row_num):
 	grid.append([int(i) for i in input().split()])
-	assert len(grid[-1]) == col_num
 ```
 
 </PySection>
@@ -538,6 +537,9 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
+
 public class RoomCount {
 	public static final int R_CHANGE[] = {0, 1, 0, -1};
 	public static final int C_CHANGE[] = {1, 0, -1, 0};
@@ -547,22 +549,22 @@ public class RoomCount {
 	private static int rowNum;
 	private static int colNum;
 
-	public static void floodfill(int r, int c) {
-		// Note: you can also use an ArrayDeque for a BFS-based approach
-		Stack<int[]> frontier = new Stack<>();
-		frontier.push(new int[] {r, c});
+	public static void floodfill(int row, int col) {
+		// Note: you can also use a deque and pop from the front for a BFS-based approach
+		Stack<Pos> frontier = new Stack<>();
+		frontier.push(new Pos(row, col));
 		while(!frontier.isEmpty()){
-			int[] p = frontier.pop();
-			r = p[0];
-			c = p[1];
+			Pos curr = frontier.pop();
+			row = curr.row;
+			col = curr.col;
 
-			if (r < 0 || r >= rowNum || c < 0 || c >= colNum
-					|| building[r][c] == '#' || visited[r][c])
+			if (row < 0 || row >= rowNum || col < 0 || col >= colNum
+					|| building[row][col] == '#' || visited[row][col])
 				continue;
 
-			visited[r][c] = true;
+			visited[row][col] = true;
 			for (int i = 0; i < 4; i++) {
-				frontier.add(new int[] {r + R_CHANGE[i], c + C_CHANGE[i]});
+				frontier.add(new Pos(row + R_CHANGE[i], col + C_CHANGE[i]));
 			}
 		}
 	}
@@ -594,6 +596,15 @@ public class RoomCount {
 		System.out.println(roomNum);
 	}
 }
+
+class Pos {
+	int row;
+	int col;
+	public Pos(int row, int col) {
+		this.row = row;
+		this.col = col;
+	}
+}
 ```
 
 </JavaSection>
@@ -609,7 +620,10 @@ visited = [[False for _ in range(col_num)] for _ in range(row_num)]
 def floodfill(r: int, c: int):
 	global visited
 
-	# Note: you can also use collections.deque for a BFS-based approach
+	"""
+	Note: you can also use collections.deque and pop from the
+	front (as opposed to popping from the back) for a BFS-based approach
+	"""
 	frontier = [(r, c)]
 	while frontier:
 		r, c = frontier.pop()
