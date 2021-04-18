@@ -1,16 +1,28 @@
-import { getDatabase, increment, ref, set } from 'firebase/database';
-import { useFirebaseApp } from './useFirebase';
+import React from 'react';
 
 export const useAnalyticsEffect = () => {
-  useFirebaseApp(firebaseApp => {
-    // todo @jeffrey can we migrate this to a firebase function?
-    const db = getDatabase(firebaseApp);
+  React.useEffect(() => {
     if ((window as any).ga && (window as any).ga.create) {
       // google analytics loaded
     } else {
       // google analytics got blocked
-      set(ref(db, 'analytics/no_ga_pageviews'), increment(1));
+      fetch(
+        'https://usaco-guide.firebaseio.com/analytics/no_ga_pageviews.json',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ '.sv': { increment: 1 } }),
+        }
+      );
     }
-    set(ref(db, 'analytics/pageviews'), increment(1));
-  });
+    fetch('https://usaco-guide.firebaseio.com/pageviews.json', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ '.sv': { increment: 1 } }),
+    });
+  }, []);
 };
