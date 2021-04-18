@@ -47,7 +47,7 @@ export function usePostActions(groupId: string) {
             }),
       };
       const doc = await addDoc(
-        collection(getFirestore(firebaseApp), 'groups', groupId),
+        collection(getFirestore(firebaseApp), 'groups', groupId, 'posts'),
         { ...defaultPost, timestamp: serverTimestamp() }
       );
       return doc.id;

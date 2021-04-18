@@ -35,12 +35,12 @@ export default function AdminSettings() {
 
     setSearching(true);
     try {
-      const response = httpsCallable(
+      const response = await (httpsCallable(
         getFunctions(firebaseApp),
         'getUsers'
       )({
         users: [{ email }],
-      }) as any;
+      }) as any);
       if (response.data.users.length === 0) {
         notifications.addNotification({
           level: 'warning',
