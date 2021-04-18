@@ -1,17 +1,20 @@
+import {
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  setDoc,
+  updateDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import {
-  groupConverter,
-  GroupData,
-  JoinGroupLink,
-  joinGroupLinkConverter,
-} from '../../models/groups/groups';
-import useFirebase, { useFirebaseApp } from '../useFirebase';
+import { GroupData, JoinGroupLink } from '../../models/groups/groups';
+import { useFirebaseApp } from '../useFirebase';
 import { useUserGroups } from './useUserGroups';
 
 export function useGroupActions() {
-  const firebase = useFirebase();
   const firebaseApp = useFirebaseApp();
   const { firebaseUser } = useContext(UserDataContext);
   const { invalidateData } = useUserGroups();
@@ -20,12 +23,10 @@ export function useGroupActions() {
     groupId: string,
     updatedData: Partial<GroupData>
   ) => {
-    await firebase
-      .firestore()
-      .collection('groups')
-      .doc(groupId)
-      .withConverter(groupConverter)
-      .update(updatedData);
+    const { id, ...data } = updatedData;
+    await updateDoc(doc(getFirestore(firebaseApp), 'groups', groupId), {
+      ...data,
+    });
     invalidateData();
   };
 
@@ -43,52 +44,55 @@ export function useGroupActions() {
         memberIds: [],
         leaderboard: {},
       };
-      const doc = firebase.firestore().collection('groups').doc();
-      const docId = doc.id;
+      const groupDoc = doc(collection(getFirestore(firebaseApp), 'groups'));
+      const docId = groupDoc.id;
 
-      await doc.set(defaultGroup).then(() => invalidateData());
+      await setDoc(groupDoc, defaultGroup).then(() => invalidateData());
 
       return docId;
     },
     deleteGroup: async (groupId: string) => {
-      const batch = firebase.firestore().batch();
+      const firestore = getFirestore(firebaseApp);
+      // oops this batch should really be a transaction todo
+      const batch = writeBatch(firestore);
 
-      const posts = await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('posts')
-        .get();
+      const posts = await getDocs(
+        collection(firestore, 'groups', groupId, 'posts')
+      );
       posts.docs.forEach(doc => batch.delete(doc.ref));
       await Promise.all(
         posts.docs.map(async doc => {
-          const problems = await firebase
-            .firestore()
-            .collection('groups')
-            .doc(groupId)
-            .collection('posts')
-            .doc(doc.id)
-            .collection('problems')
-            .get();
+          const problems = await getDocs(
+            collection(
+              firestore,
+              'groups',
+              groupId,
+              'posts',
+              doc.id,
+              'problems'
+            )
+          );
           problems.docs.forEach(doc => batch.delete(doc.ref));
           await Promise.all(
             problems.docs.map(async problemDoc => {
-              const submissions = await firebase
-                .firestore()
-                .collection('groups')
-                .doc(groupId)
-                .collection('posts')
-                .doc(doc.id)
-                .collection('problems')
-                .doc(problemDoc.id)
-                .collection('submissions')
-                .get();
+              const submissions = await getDocs(
+                collection(
+                  firestore,
+                  'groups',
+                  groupId,
+                  'posts',
+                  doc.id,
+                  'problems',
+                  problemDoc.id,
+                  'submissions'
+                )
+              );
               submissions.docs.forEach(doc => batch.delete(doc.ref));
             })
           );
         })
       );
-      batch.delete(firebase.firestore().collection('groups').doc(groupId));
+      batch.delete(doc(firestore, 'groups', groupId));
 
       await batch.commit();
       invalidateData();
@@ -132,10 +136,12 @@ export function useGroupActions() {
         usedBy: [],
         author: firebaseUser.uid,
       };
-      const doc = firebase.firestore().collection('group-join-links').doc();
-      const docId = doc.id;
+      const linkDoc = doc(
+        collection(getFirestore(firebaseApp), 'group-join-links')
+      );
+      const docId = linkDoc.id;
 
-      await doc.set(defaultJoinLink);
+      await setDoc(linkDoc, defaultJoinLink);
 
       return {
         ...defaultJoinLink,
@@ -144,14 +150,13 @@ export function useGroupActions() {
     },
     updateJoinLink: async (
       id: string,
-      data: Partial<JoinGroupLink>
+      linkData: Partial<JoinGroupLink>
     ): Promise<void> => {
-      await firebase
-        .firestore()
-        .collection('group-join-links')
-        .doc(id)
-        .withConverter(joinGroupLinkConverter)
-        .update(data);
+      const { id: _, ...data } = linkData;
+      await updateDoc(
+        doc(getFirestore(firebaseApp), 'group-join-links', id),
+        data
+      );
     },
     removeMemberFromGroup: async (
       groupId: string,

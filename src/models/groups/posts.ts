@@ -1,4 +1,5 @@
-import { default as firebase, default as firebaseType } from 'firebase/compat';
+// todo @jeffrey no moment :c
+import { Timestamp } from 'firebase/firestore';
 import moment from 'moment';
 import {
   ExecutionStatus,
@@ -10,7 +11,7 @@ import {
 export type PostData = {
   id?: string;
   name: string;
-  timestamp: firebase.firestore.Timestamp;
+  timestamp: Timestamp;
   /**
    * Markdown string of the post content
    */
@@ -24,26 +25,9 @@ export type PostData = {
     }
   | {
       type: 'assignment';
-      dueTimestamp: firebase.firestore.Timestamp | null;
+      dueTimestamp: Timestamp | null;
     }
 );
-
-export const postConverter = {
-  toFirestore(post: PostData): firebaseType.firestore.DocumentData {
-    const { id, ...data } = post;
-    return data;
-  },
-
-  fromFirestore(
-    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
-    options: firebaseType.firestore.SnapshotOptions
-  ): PostData {
-    return {
-      ...snapshot.data(options),
-      id: snapshot.id,
-    } as PostData;
-  },
-};
 
 /**
  * Returns the due date as a string if the post is an assignment with a due date

@@ -1,8 +1,7 @@
-import { FirebaseApp } from 'firebase/app';
+import { FirebaseApp, initializeApp } from 'firebase/app';
 import * as React from 'react';
 import { createContext } from 'react';
 
-const FirebaseContext = createContext(null);
 export const FirebaseAppContext = createContext<FirebaseApp>(null);
 const firebaseConfig = {
   apiKey: 'AIzaSyAvm-cvPgEFer3MVQtCiKegFTc1E9RHGG4',
@@ -15,34 +14,18 @@ const firebaseConfig = {
 };
 
 export const FirebaseProvider = ({ children }) => {
-  const [firebase, setFirebase] = React.useState(null);
   const [firebaseApp, setFirebaseApp] = React.useState<FirebaseApp>(null);
 
   React.useEffect(() => {
-    if (!firebase && typeof window !== 'undefined') {
-      // const firebaseApp = initializeApp(firebaseConfig);
-      // setFirebaseApp(firebaseApp);
-
-      const app = import('firebase/compat/app');
-      const firestore = import('firebase/compat/firestore');
-      Promise.all([app, firestore]).then(values => {
-        const firebaseInstance = values[0].default;
-        firebaseInstance.initializeApp(firebaseConfig);
-        // firebaseInstance.functions().useEmulator('localhost', 5001);
-
-        setFirebaseApp(firebaseInstance.app());
-        setFirebase(firebaseInstance);
-      });
+    if (!firebaseApp && typeof window !== 'undefined') {
+      const firebaseApp = initializeApp(firebaseConfig);
+      setFirebaseApp(firebaseApp);
     }
   }, []);
 
   return (
-    <FirebaseContext.Provider value={firebase}>
-      <FirebaseAppContext.Provider value={firebaseApp}>
-        {children}
-      </FirebaseAppContext.Provider>
-    </FirebaseContext.Provider>
+    <FirebaseAppContext.Provider value={firebaseApp}>
+      {children}
+    </FirebaseAppContext.Provider>
   );
 };
-
-export default FirebaseContext;
