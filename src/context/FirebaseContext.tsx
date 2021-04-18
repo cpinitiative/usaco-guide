@@ -25,8 +25,7 @@ export const FirebaseProvider = ({ children }) => {
 
       const app = import('firebase/compat/app');
       const firestore = import('firebase/compat/firestore');
-      const functions = import('firebase/compat/functions');
-      Promise.all([app, firestore, functions]).then(values => {
+      Promise.all([app, firestore]).then(values => {
         const firebaseInstance = values[0].default;
         firebaseInstance.initializeApp(firebaseConfig);
         // firebaseInstance.functions().useEmulator('localhost', 5001);

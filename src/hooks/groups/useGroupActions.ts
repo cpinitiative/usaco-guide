@@ -1,3 +1,4 @@
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
@@ -6,11 +7,12 @@ import {
   JoinGroupLink,
   joinGroupLinkConverter,
 } from '../../models/groups/groups';
-import useFirebase from '../useFirebase';
+import useFirebase, { useFirebaseApp } from '../useFirebase';
 import { useUserGroups } from './useUserGroups';
 
 export function useGroupActions() {
   const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const { firebaseUser } = useContext(UserDataContext);
   const { invalidateData } = useUserGroups();
 
@@ -94,7 +96,10 @@ export function useGroupActions() {
     updateGroup,
     leaveGroup: async (groupId: string, userId: string) => {
       const leaveResult = ((
-        await firebase.functions().httpsCallable('groups-leave')({
+        await httpsCallable(
+          getFunctions(firebaseApp),
+          'groups-leave'
+        )({
           groupId,
         })
       ).data as never) as
@@ -153,7 +158,10 @@ export function useGroupActions() {
       targetUid: string
     ): Promise<void> => {
       const removeResult = ((
-        await firebase.functions().httpsCallable('groups-removeMember')({
+        await httpsCallable(
+          getFunctions(firebaseApp),
+          'groups-removeMember'
+        )({
           groupId,
           targetUid,
         })
@@ -185,9 +193,10 @@ export function useGroupActions() {
       newPermissionLevel: 'OWNER' | 'ADMIN' | 'MEMBER'
     ): Promise<void> => {
       const updateResult = ((
-        await firebase
-          .functions()
-          .httpsCallable('groups-updateMemberPermissions')({
+        await httpsCallable(
+          getFunctions(firebaseApp),
+          'groups-updateMemberPermissions'
+        )({
           groupId,
           targetUid,
           newPermissionLevel,
