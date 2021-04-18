@@ -3,6 +3,7 @@ import { useFirebaseApp } from './useFirebase';
 
 export const useAnalyticsEffect = () => {
   useFirebaseApp(firebaseApp => {
+    // todo @jeffrey can we migrate this to a firebase function?
     const db = getDatabase(firebaseApp);
     if ((window as any).ga && (window as any).ga.create) {
       // google analytics loaded
