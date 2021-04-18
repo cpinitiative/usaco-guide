@@ -56,7 +56,7 @@ export default function useUserSolutionsForProblem(problem: ProblemInfo) {
               ),
               {
                 next: snap => {
-                  setSolutions(
+                  setCurrentUserSolutions(
                     snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
                   );
                 },

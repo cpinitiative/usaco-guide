@@ -33,6 +33,8 @@ export default function ProblemSolutions({
     submission => submission.userID !== firebaseUser?.uid
   );
 
+  console.log(solutions, publicSolutions);
+
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
   return (
