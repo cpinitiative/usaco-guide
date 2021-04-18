@@ -1,4 +1,4 @@
-import firebaseType from 'firebase';
+import firebaseType from 'firebase/compat';
 import { ExecutionStatus } from './problem';
 
 export type Leaderboard = {

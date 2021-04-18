@@ -1,4 +1,4 @@
-import { default as firebase, default as firebaseType } from 'firebase';
+import { default as firebase, default as firebaseType } from 'firebase/compat';
 import moment from 'moment';
 import {
   ExecutionStatus,

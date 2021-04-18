@@ -1,4 +1,4 @@
-import firebaseType from 'firebase';
+import firebaseType from 'firebase/compat';
 import { Leaderboard } from './leaderboard';
 
 export type GroupData = {

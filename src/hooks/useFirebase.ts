@@ -23,7 +23,10 @@ export default function useFirebase(
   }, [firebase, ...dep]);
 }
 
-export function useFirebaseApp(fn = null, dep = []): FirebaseApp {
+export function useFirebaseApp(
+  fn: (firebaseApp: FirebaseApp) => void | (() => void | undefined) = null,
+  dep = []
+): FirebaseApp {
   const firebaseApp = React.useContext(FirebaseAppContext);
 
   if (fn == null) return firebaseApp;

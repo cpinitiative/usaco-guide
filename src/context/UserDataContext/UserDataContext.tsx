@@ -1,16 +1,18 @@
+import * as Sentry from '@sentry/browser';
 import {
   getAuth,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signOut,
+  User,
   UserCredential,
 } from 'firebase/auth';
-import firebaseType from 'firebase/compat';
+import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
-import useFirebase, { useFirebaseApp } from '../../hooks/useFirebase';
+import { useFirebaseApp } from '../../hooks/useFirebase';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
@@ -119,8 +121,8 @@ type UserDataContextAPI = UserLangAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
   AdSettingsAPI & {
-    firebaseUser: firebaseType.User;
-    signIn: () => Promise<firebaseType.auth.UserCredential | null>;
+    firebaseUser: User;
+    signIn: () => Promise<UserCredential | null>;
     signOut: () => Promise<void>;
     isLoaded: boolean;
     onlineUsers: number;
@@ -204,13 +206,12 @@ const UserDataContext = createContext<UserDataContextAPI>({
 });
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
-  const firebase = useFirebase();
   const firebaseApp = useFirebaseApp();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
     // when the firebase user changes, update all the API's
     const userDoc = user
-      ? firebase.firestore().collection('users').doc(user.uid)
+      ? doc(getFirestore(firebaseApp), 'users', user.uid)
       : null;
     UserDataContextAPIs.forEach(api => api.setFirebaseUserDoc(userDoc));
 
@@ -254,11 +255,9 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   // If the user is signed in, sync remote data with local data
   React.useEffect(() => {
     if (firebaseUser) {
-      return firebase
-        .firestore()
-        .collection('users')
-        .doc(firebaseUser.uid)
-        .onSnapshot(snapshot => {
+      const userDoc = doc(getFirestore(firebaseApp), 'users', firebaseUser.uid);
+      onSnapshot(userDoc, {
+        next: snapshot => {
           let data = snapshot.data();
           if (!data) {
             const lastViewedModule = UserDataContextAPIs.find(
@@ -273,19 +272,16 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
-                firebase
-                  .firestore()
-                  .collection('users')
-                  .doc(firebaseUser.uid)
-                  .set(
-                    UserDataContextAPIs.reduce((acc, cur) => {
-                      return {
-                        ...acc,
-                        ...cur.exportValue(),
-                      };
-                    }, {}),
-                    { merge: true }
-                  );
+                setDoc(
+                  userDoc,
+                  UserDataContextAPIs.reduce((acc, cur) => {
+                    return {
+                      ...acc,
+                      ...cur.exportValue(),
+                    };
+                  }, {}),
+                  { merge: true }
+                );
               }
             }
           }
@@ -296,7 +292,16 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
             setIsLoaded(true);
             triggerRerender();
           });
-        });
+        },
+        error: error => {
+          console.error('Firebase error:', error);
+          Sentry.captureException(error, {
+            extra: {
+              userId: firebaseUser.uid,
+            },
+          });
+        },
+      });
     }
   }, [firebaseUser]);
 
@@ -340,11 +345,10 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
         UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
         UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
         if (firebaseUser) {
-          firebase
-            .firestore()
-            .collection('users')
-            .doc(firebaseUser.uid)
-            .set(data);
+          setDoc(
+            doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
+            data
+          );
         }
         triggerRerender();
         return true;
