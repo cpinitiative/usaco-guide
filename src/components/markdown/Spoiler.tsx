@@ -83,7 +83,7 @@ const Spoiler: React.FC<SpoilerProps> = ({
       </p>
 
       {show && (
-        <div className="p-4 spoiler-body bg-white dark:bg-dark-surface dark:bg-opacity-40 no-bottom-margin">
+        <div className="p-4 spoiler-body bg-white dark:bg-dark-surface dark:bg-opacity-40 no-y-margin">
           <SpoilerContext.Provider value={{ expandCodeBlock }}>
             {children}
           </SpoilerContext.Provider>

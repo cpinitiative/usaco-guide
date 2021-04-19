@@ -31,7 +31,7 @@ const Info: React.FC<InfoProps> = ({ children, title }) => (
         <h3 className="text-sm leading-5 font-medium text-blue-800 my-0 dark:text-blue-100">
           {title}
         </h3>
-        <div className="text-sm leading-5 text-blue-700 mt-2 no-bottom-margin dark:text-blue-300 tailwind-alert tailwind-alert--info">
+        <div className="text-sm leading-5 text-blue-700 mt-2 no-y-margin dark:text-blue-300 tailwind-alert tailwind-alert--info">
           {children}
         </div>
       </div>
