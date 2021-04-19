@@ -31,7 +31,7 @@ const Danger: React.FC<DangerProps> = ({ children, title }) => (
         <h3 className="text-sm leading-5 font-medium text-red-800 my-0 dark:text-red-100">
           {title}
         </h3>
-        <div className="text-sm leading-5 text-red-700 mt-2 no-bottom-margin dark:text-red-300 tailwind-alert tailwind-alert--danger">
+        <div className="text-sm leading-5 text-red-700 mt-2 no-y-margin dark:text-red-300 tailwind-alert tailwind-alert--danger">
           {children}
         </div>
       </div>
