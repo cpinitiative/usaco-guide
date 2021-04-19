@@ -5,13 +5,24 @@ title: Easy Query
 author: Benjamin Qi
 ---
 
-<IncompleteSection />
+**Time Complexity:** $\mathcal O(30(n + q) \log n)$
 
 The first step is to determine $s_u$ and $s_v$ for each query with a Wavelet
 tree. Once we have these values, we can answer the queries in decreasing order
 of $l$ with a segment tree.
 
-<Spoiler title="Solution">
+We can do this by computing each of the 30 bits of $f(t^{(i)})$ independently.
+The $k$-th bit of $f(t^{(i)})$ is equal to $1$ if there exists some value $x$
+such that the following conditions hold:
+- $x \in [s_u + 1, s_v - 1]$.
+- The $k$-th bit of $x$ is $1$.
+- The $i$-th leftmost occurrence of $x$ among $a_l, \dots, a_n$ is less than or
+  equal to $r$ (see `a[k] <= t[0]` in the code below.)
+
+The indices of each segment tree correspond to the $x$ that appear in $a_i$ in
+increasing order. Each node of the $i$-th segment tree corresponds to some
+$x$-range $[x_l, x_r]$, and stores the minimum $j$ such that $a_j$ is the $i$-th
+occurrence of $x$ among $a_l, \dots, a_n$ for some $x \in [x_l, x_r]$.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -336,5 +347,3 @@ int main() {
 	F0R(i,t) solve();
 }
 ```
-
-</Spoiler>
