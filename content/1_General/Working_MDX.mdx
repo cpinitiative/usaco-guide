@@ -1,33 +1,15 @@
 ---
 id: working-mdx
 title: Working With MDX
-author: Nathan Wang, Benjamin Qi, Maggie Liu
+author: Nathan Wang
 description: '?'
+prerequisites:
+  - modules
 ---
 
-## Markdown Resources
-
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
-- [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
-
-Markdown Editors:
-
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Sublime Text](https://www.sublimetext.com/)
-  - `.md` syntax highlighting is fine, is also ok for `.mdx`
-  - You can open a `.mdx` file and set syntax highlighting to be the same as
-    `.md` with
-    `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
-- [StackEdit](https://stackedit.io/)
-  - Automatically compiles $\LaTeX$ (doesn't require an installation)
-- [Obsidian](https://obsidian.md/)
-  - Automatically compiles $\LaTeX$ (doesn't require an installation)
-
-## Module Ordering
-
-Located at `content/ordering.ts`, this file stores the ordering of the modules.
-Hopefully the format is self-explanatory (it matches based on "slug"). Let
-Nathan Wang know if you have questions.
+We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React
+components are supported, so it is possible to add interactivity / custom
+components to each module.
 
 ## Frontmatter
 
@@ -48,8 +30,10 @@ written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
   to reference a module as a prerequisite, list it as a module ID. A link will
   be auto-generated.
 - **Frequency**: _Optional_. Takes a number 0-4 inclusive, where 0 = never shown
-  up before and 4 = shows up ~once a contest. Leave this field out if you don't
+  up before and 4 = shows up \~once a contest. Leave this field out if you don't
   want to show the frequency.
+- **Redirects**: _Optional_. Takes a list of URLs that will redirect to the
+  current module. Include this whenever the module URL changes.
 
 ### Example Frontmatter
 
@@ -63,15 +47,26 @@ order: 1
 prerequisites:
  - Dummy prerequisite
  - running-cpp
+redirects:
+  - /silver/bipartite
 ---
 
 # Getting Started
 ...
 ```
 
-### Linking to Modules
+### Module Ordering
 
-Do `[insert text here](/general/code-con)`.
+Located at `content/ordering.ts`, this file stores the ordering of the modules.
+The format should be self-explanatory (it matches based on the ID).
+
+## Linking to Modules
+
+Linking to another module within the guide looks like this:
+
+`[insert text here](/general/code-con)`.
+
+[insert text here](/general/code-con)
 
 Don't use relative links like `code-con`, that will break our
 [link checker](https://github.com/cpinitiative/usaco-guide/blob/master/docs/Front%20End%20Documentation.md).
@@ -82,10 +77,6 @@ A table of contents will be auto-generated based off of the headings in the
 Markdown. Keep this in mind when formatting your module.
 
 ## MDX and Custom Components
-
-We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React
-components are supported, so it is possible to add interactivity / custom
-components to each module.
 
 Some components are globally available in every module (without having to be
 imported):
@@ -108,31 +99,6 @@ imported):
 
 These are all documented below.
 
-### Using Custom Components
-
-Interleaving Markdown in JSX is currently a work-in-progress:
-https://github.com/mdx-js/mdx/issues/628. As such, in order to use markdown with
-custom components, we need to leave **blank lines** between the HTML tags and
-the markdown.
-
-```mdx
-Good:
-
-<Spoiler>
-
-This is **bold**.
-
-</Spoiler>
-```
-
-```mdx
-Bad:
-
-<Spoiler>This is NOT **bold**.</Spoiler>
-
-<Spoiler>This isn't **bold** either!</Spoiler>
-```
-
 ### Spoilers
 
 Spoilers are collapsible elements that only show themselves when the user clicks
@@ -141,10 +107,16 @@ on it. It's useful when writing solutions to problems.
 ```
 <Spoiler title="Show Solution">
 
-- Insert OP benq solution here
+- Insert solution here
 
 </Spoiler>
 ```
+
+<Spoiler title="Show Solution">
+
+- Insert solution here
+
+</Spoiler>
 
 ### Info Block
 
@@ -156,6 +128,12 @@ on it. It's useful when writing solutions to problems.
 </Info>
 ```
 
+<Info title="Insert Title Here">
+
+**Markdown is Supported!!**
+
+</Info>
+
 ### Warning Block
 
 ```
@@ -166,6 +144,12 @@ Fun fact: the title attribute is optional.
 </Warning>
 ```
 
+<Warning title="Insert Title Here">
+
+Fun fact: the title attribute is optional.
+
+</Warning>
+
 ### Optional Content
 
 ```
@@ -175,6 +159,12 @@ Fun fact: the title attribute is optional.
 
 </Optional>
 ```
+
+<Optional title="Insert Title Here">
+
+Fun fact: the title attribute is optional.
+
+</Optional>
 
 ### Problem Lists
 
@@ -189,6 +179,15 @@ focus problems, the array should have length exactly one. Additionally, the
 that represents the module ID.
 
 For more information on problem definitions, refer to `src/models/problem.ts`.
+
+Example usage:
+
+```
+<Problems problems="problems" />
+```
+
+`[module].problems.json` should have a key of `problems` that maps to an array
+of `ProblemMetadata`.
 
 There is a distinction between `ProblemInfo` and `ProblemMetadata`.
 `ProblemMetadata` is what is stored in `[module].problems.json`. Gatsby takes
@@ -256,7 +255,7 @@ in**. Valid options are `Very Easy`, `Easy`, `Normal`, `Hard`, `Very Hard`,
 
 `solutionMetadata` -- Information about the solution.
 
-```ts
+```
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
   solutionMetadata:
     | {
@@ -310,9 +309,6 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
 };
 ```
 
-To add problem editorials, create a new file under the `solutions/` folder. Try
-to name it something reasonable; follow existing naming conventions.
-
 Editorials are also written in MDX. The frontmatter has four fields:
 
 ```
@@ -327,19 +323,11 @@ author: Nathan Wang
 ```
 
 The ID of the solution frontmatter must be the same as the unique ID of the
-problem. Make sure to also update the problem metadata to "internal" for any
+problem. Make sure to also update the problem metadata to `'internal'` for any
 associated problems. We assume that if there is an internal solution, we should
 use it; therefore, the build will throw an error if there is an internal
-solution but the problem metadata isn't set to "internal".
-
-Example usage:
-
-```mdx
-<Problems problems="problems" />
-```
-
-`[module].problems.json` should have a key of `problems` that maps to an array
-of `ProblemMetadata`.
+solution but the problem metadata isn't set to `'internal'`. The
+[next module](/general/adding-solution) describes how to add a new solution.
 
 ### Focus Problem
 
@@ -368,6 +356,17 @@ Displays a singular problem as a "focus problem."
 </Resources>
 ```
 
+<Resources>
+	<Resource
+		source="Errichto"
+		title="Video - How to test your solution"
+		url="https://www.youtube.com/watch?v=JXTVOyQpSGM"
+		starred
+	>
+		using a script to stress test
+	</Resource>
+</Resources>
+
 Special functionality based on source:
 
 - If the source is a book, it'll automatically set the URL to point to the book.
@@ -389,41 +388,23 @@ can be hovered over.
 
 #### `<TextTooltip>`
 
-```jsx
+```
 <TextTooltip content="Popup text goes here">short text goes here</TextTooltip>
 ```
 
+<TextTooltip content="Popup text goes here">short text goes here</TextTooltip>
+
 #### `<Asterisk>`
 
-```jsx
+```
 <Asterisk>Popup text goes here</Asterisk>
 ```
 
-### Language-Specific Content
-
-```mdx
-<LanguageSection>
-<CPPSection>
-
-# A heading that only appears in C++
-
-CPP content goes here, note the newlines!
-
-</CPPSection>
-<JavaSection>
-
-Java content goes here!
-
-</JavaSection>
-<PySection />
-</LanguageSection>
-```
-
-In the example above, nothing will be rendered for Python.
+<Asterisk>Popup text goes here</Asterisk>
 
 ### Incomplete Section
 
-```mdx
+```
 <IncompleteSection>
 
 - this list is optional and can be used to specify what is missing
@@ -432,12 +413,18 @@ In the example above, nothing will be rendered for Python.
 </IncompleteSection>
 ```
 
+<IncompleteSection>
+
+- this list is optional and can be used to specify what is missing
+- missing 32-bit integer explanation
+
+</IncompleteSection>
+
 ### Code Blocks and Code Snippets
 
 Code blocks are separated by three backticks, just like in normal markdown.
 Additionally, we have support for collapsible code snippets:
 
-````markdown
 ```cpp
 //BeginCodeSnip{Optional Code Snippet Title}
 My snippet code goes here
@@ -452,14 +439,15 @@ My snippet code goes here
 
 My non-snippet code goes here
 ```
-````
 
 Some common snippets have shorthand notations, as defined in
-`src/mdx-plugins/rehype-snippets.js`. They can be accessed using
-`CodeSnip{Snip ID}`.
+[`src/mdx-plugins/rehype-snippets.js`](https://github.com/cpinitiative/usaco-guide/blob/master/src/mdx-plugins/rehype-snippets.js).
+They can be accessed using `CodeSnip{Snip ID}`.
 
-````markdown
-## Kattio
+#### Kattio
+
+`CodeSnip{Kattio}` gets replaced with an indented version (based off of
+indentation of `CodeSnip`):
 
 ```java
 import java.io.*;
@@ -467,90 +455,69 @@ import java.util.*;
 
 public class myClass {
 	CodeSnip{Kattio}
-
-    public static void main ...
+	public static void main ...
 }
 ```
 
-`CodeSnip{Kattio}` gets replaced with an indented version (based off of
-indentation of `CodeSnip`):
+#### C++ Long Template
 
-```java
-//BeginCodeSnip{Kattio}
-static class Kattio extends PrintWriter {
-	private BufferedReader r;
-	private StringTokenizer st;
-
-	// standard input
-	public Kattio() { this(System.in,System.out); }
-	public Kattio(InputStream i, OutputStream o) {
-		super(o);
-		r = new BufferedReader(new InputStreamReader(i));
-	}
-	// USACO-style file input
-	public Kattio(String problemName) throws IOException {
-		super(new FileWriter(problemName+".out"));
-		r = new BufferedReader(new FileReader(problemName+".in"));
-	}
-
-	// returns null if no more input
-	public String next() {
-		try {
-			while (st == null || !st.hasMoreTokens())
-				st = new StringTokenizer(r.readLine());
-			return st.nextToken();
-		} catch (Exception e) {}
-		return null;
-	}
-
-	public int nextInt() { return Integer.parseInt(next()); }
-	public double nextDouble() { return Double.parseDouble(next()); }
-	public long nextLong() { return Long.parseLong(next()); }
-}
-//EndCodeSnip
-```
-
-## C++ Long Template
+`CodeSnip{Benq Template}` gets replaced with
+[Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp).
 
 ```cpp
 CodeSnip{Benq Template}
 ```
 
-Gets replaced with
-[Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp).
+#### C++ Short Template
 
-## C++ Short Template
-
-```cpp
-CodeSnip{TemplateShort}
-```
-
-Is replaced with
+`CodeSnip{CPP Short Template}` is replaced with
 
 ```cpp
-//BeginCodeSnip{C++ Short Template}
-#include <bits/stdc++.h> // see /general/running-code-locally
-using namespace std;
-
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
-	if (sz(name)) {
-		freopen((name+".in").c_str(), "r", stdin); // see /general/io
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
-//EndCodeSnip
+CodeSnip{CPP Short Template}
 ```
+
+### Language-Specific Content
+
 ````
+<LanguageSection>
+<CPPSection>
+#### A heading that only appears in C++
+
+```cpp
+C++ code here
+```
+
+</CPPSection>
+<JavaSection>
+#### A heading that only appears in Java
+
+```java
+Java code here
+```
+
+</JavaSection>
+<PySection />
+</LanguageSection>
+````
+
+In the example above, nothing will be rendered for Python.
+
+<LanguageSection>
+<CPPSection>
+#### A heading that only appears in C++
+
+```cpp
+C++ code here
+```
+
+</CPPSection>
+<JavaSection>
+#### A heading that only appears in Java
+
+```java
+Java code here
+```
+
+</JavaSection>
+<PySection />
+</LanguageSection>
