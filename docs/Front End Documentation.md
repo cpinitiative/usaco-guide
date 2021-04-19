@@ -21,6 +21,22 @@ experience.
 4. Run development server
    - `yarn develop`
 
+## Link Checker
+
+`yarn build && yarn serve` -- keep this terminal alive!
+
+`yarn check-links`
+
+If crash due to some `bhttp` error, it's probably a timeout. To fix temporarily,
+run:
+
+```
+blc http://localhost:9000 -rof --exclude train.usaco.org
+```
+
+And find where it crashes, then check the broken link manually and add to
+exclusion list. As `train.usaco.org` sometimes crashes, it's added already.
+
 ## XDM Configuration
 
 XDM configuration is currently (somewhat) duplicated across three files:

@@ -1,68 +1,35 @@
-# Content Documentation
+---
+id: working-mdx
+title: Working With MDX
+author: Nathan Wang, Benjamin Qi, Maggie Liu
+description: '?'
+---
 
-Note: You may find [this live editor](https://usaco.guide/editor) helpful when
-writing modules.
+## Markdown Resources
 
-The following two modules are good to read:
-
-1. https://usaco.guide/general/modules
-2. https://usaco.guide/general/code-con
-
-All modules are written in
-[Markdown](https://www.markdownguide.org/cheat-sheet/). There are special
-additions to the markdown that we have added to this site. If you are confused
-about something, or if there's a certain feature that you want to add, reach out
-to Nathan Wang.
-
-## 1. Getting Started
-
-### Using the Editor (recommended)
-
-The easiest way to edit content is to use our live
-[editor](https://usaco.guide/liveupdate). If you choose this option, you can
-skip the rest of the "Getting Started" section.
-
-### Running Site Locally
-
-You can also [run a local version of the site](Front%20End%20Documentation.md)
-in order to view your changes. This is useful if you need to use Tailwind CSS
-classes, which don't work with /editor.
-
-### Using Sublime Text with .mdx
-
-1. Download [here](https://www.sublimetext.com/).
-2. Open the command palette (Cmd-Shift-P) and install package control.
-3. Open the command palette again, install package -> PackageResourceViewer
-4. Extract the HTML package with PackageResourceViewer.
-5. Now you can modify `html_completions.py` by adding to `normal_tags` (ex.
-   `spoiler`)
-   - actually, for some reason uppercase (`CPPSection`) doesn't work ...
-6. Open a `.mdx` file and set syntax highlighting to be the same as `.md` with
-   `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
-7. Make snippets!
-
-### Other Tools
-
-- You can use [StackEdit](https://stackedit.io/) to check that latex renders
-  properly.
+- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
 - [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
 
-## 2. Module Ordering
+Markdown Editors:
 
-### Organization
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Sublime Text](https://www.sublimetext.com/)
+  - `.md` syntax highlighting is fine, is also ok for `.mdx`
+  - You can open a `.mdx` file and set syntax highlighting to be the same as
+    `.md` with
+    `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
+- [StackEdit](https://stackedit.io/)
+  - Automatically compiles $\LaTeX$ (doesn't require an installation)
+- [Obsidian](https://obsidian.md/)
+  - Automatically compiles $\LaTeX$ (doesn't require an installation)
 
-There are six **sections** in the guide: Intro, Bronze, Silver, Gold, Platinum,
-and Advanced. Each section is subdivided into **categories**, which is just a
-group of modules. Each **module** represents one "article" or "page" on the
-site.
-
-### `ordering.ts`
+## Module Ordering
 
 Located at `content/ordering.ts`, this file stores the ordering of the modules.
 Hopefully the format is self-explanatory (it matches based on "slug"). Let
 Nathan Wang know if you have questions.
 
-## 3. Frontmatter
+## Frontmatter
 
 [Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the
 beginning of each module that's surrounded by three dashes. Frontmatter is
@@ -106,30 +73,15 @@ prerequisites:
 
 Do `[insert text here](/general/code-con)`.
 
-Don't use relative links like `code-con`, that will break our link checker...
+Don't use relative links like `code-con`, that will break our
+[link checker](https://github.com/cpinitiative/usaco-guide/blob/master/docs/Front%20End%20Documentation.md).
 
-### Link Checker
-
-`yarn build && yarn serve` -- keep this terminal alive!
-
-`yarn check-links`
-
-If crash due to some `bhttp` error, it's probably a timeout. To fix temporarily,
-run:
-
-```
-blc http://localhost:9000 -rof --exclude train.usaco.org
-```
-
-And find where it crashes, then check the broken link manually and add to
-exclusion list. As train.usaco.org sometimes crashes, it's added already.
-
-## 4. Table of Contents
+## Table of Contents
 
 A table of contents will be auto-generated based off of the headings in the
 Markdown. Keep this in mind when formatting your module.
 
-## 5. MDX and Custom Components
+## MDX and Custom Components
 
 We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React
 components are supported, so it is possible to add interactivity / custom
@@ -426,65 +378,8 @@ Special functionality based on source:
     - `CP2` (Competitive Programming 2)
     - `IUSACO` (Darren's book; will auto-set URL based on user language; uses
       C++ for Python users)
-- Some sources have URL shortcuts that they will prepend to the URL.
-  - ```typescript
-    const sources = {
-      TC:
-        'https://www.topcoder.com/community/competitive-programming/tutorials/',
-      CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
-      CF: 'http://codeforces.com/',
-      'cp-algo': 'https://cp-algorithms.com/',
-      CSA: 'https://csacademy.com/lesson/',
-      GFG: 'https://www.geeksforgeeks.org/',
-      Benq:
-        'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
-      HR: 'https://www.hackerrank.com/',
-      SO: 'https://stackoverflow.com/',
-      Infoarena: 'https://infoarena.ro/',
-    };
-    ```
-- Some sources will automatically have tooltips generated for them.
-  - ```typescript
-    export const sourceTooltip = {
-      GCP: 'Guide to Competitive Programming (based off CPH)',
-      AoPS: 'Art of Problem Solving',
-      CPH: "Book - Competitive Programmer's Handbook",
-      PAPS: 'Book - Principles of Algorithmic Problem Solving',
-      IUSACO: 'Book - An Introduction to USACO',
-      CP1: 'Book - Competitive Programming 1',
-      TC: 'TopCoder',
-      IOI: 'International Olympiad in Informatics',
-      TLX: 'tlx.toki.id',
-      CPC:
-        'Competitive Programming Course (taught at Reykjavík University, Iceland)',
-      CF: 'CodeForces',
-      'cp-algo': 'CP Algorithms',
-      CSA: 'CS Academy',
-      GFG: 'Geeks For Geeks',
-      Benq: 'github.com/bqi343/USACO',
-      HR: 'HackerRank',
-      CSES: 'Code Submission Evaluation System (includes CPH problemset)',
-      HE: 'HackerEarth',
-      AC: 'AtCoder',
-      CC: 'CodeChef',
-      DMOJ: 'DMOJ: Modern Online Judge',
-      SPOJ: 'Sphere Online Judge',
-      YS: 'Library Checker',
-      LC: 'LeetCode',
-      POI: 'Polish Olympiad in Informatics',
-      SO: 'StackOverflow',
-      KA: 'KhanAcademy',
-      USACO: 'USACO',
-      'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
-      'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
-      'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
-      Bronze: 'USACO 2015-16 to present',
-      Silver: 'USACO 2015-16 to present',
-      Gold: 'USACO 2015-16 to present',
-      Plat: 'USACO 2015-16 to present',
-      ZLE: 'kauntaofficial.github.io',
-    };
-    ```
+- Some sources will automatically have tooltips generated for them (listed
+  [here](https://github.com/cpinitiative/usaco-guide/blob/947a3ac220e330fa03aa5b53a201f80b0f4c208f/src/models/problem.ts#L22)).
 
 ### Tooltips
 
