@@ -31,8 +31,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       ],
     },
     {
-      name: 'Adding Content',
-      description: 'How to add content to the guide.',
+      name: 'Contributing',
+      description: 'How you can add content to the guide.',
       items: ['contributing', 'adding-solution', 'modules', 'working-mdx'],
     },
     {
