@@ -1,6 +1,5 @@
-// todo @jeffrey no moment :c
+import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
-import moment from 'moment';
 import {
   ExecutionStatus,
   ProblemData,
@@ -42,16 +41,16 @@ export const getPostTimestampString = (post: PostData) => {
 };
 export const getPostDateString = (post: PostData) =>
   post.timestamp
-    ? moment(post.timestamp.toDate()).format('MMMM Do h:mma')
+    ? dayjs(post.timestamp.toDate()).format('MMMM DD h:mma')
     : null;
 export const getPostDueDateString = (post: PostData) =>
   post.type === 'assignment' && post.dueTimestamp
-    ? moment(post.dueTimestamp.toDate()).format('MMMM Do h:mma')
+    ? dayjs(post.dueTimestamp.toDate()).format('MMMM DD h:mma')
     : null;
 export const getTotalPointsFromProblems = (problems: ProblemData[]) =>
   problems.reduce((acc, cur) => acc + cur.points, 0);
 export const getSubmissionTimestampString = (submission: Submission) =>
-  moment(submission?.timestamp?.toDate()).format('MMMM Do h:mma');
+  dayjs(submission?.timestamp?.toDate()).format('MMMM DD h:mma');
 export const getSubmissionStatus = (submission: Submission) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
     return submission.status;
