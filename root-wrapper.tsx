@@ -1,5 +1,4 @@
 import * as React from 'react';
-import MDXProvider from './src/components/markdown/MDXProvider';
 import { DarkModeProvider } from './src/context/DarkModeProvider';
 import { EditorContext } from './src/context/EditorContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';
@@ -12,17 +11,15 @@ export const wrapRootElement = ({ element }) => (
   <NotificationSystemProvider>
     <GlobalErrorBoundary>
       <FirebaseProvider>
-        <MDXProvider>
-          <UserDataProvider>
-            <UserGroupsProvider>
-              <DarkModeProvider>
-                <EditorContext.Provider value={{ inEditor: false }}>
-                  {element}
-                </EditorContext.Provider>
-              </DarkModeProvider>
-            </UserGroupsProvider>
-          </UserDataProvider>
-        </MDXProvider>
+        <UserDataProvider>
+          <UserGroupsProvider>
+            <DarkModeProvider>
+              <EditorContext.Provider value={{ inEditor: false }}>
+                {element}
+              </EditorContext.Provider>
+            </DarkModeProvider>
+          </UserGroupsProvider>
+        </UserDataProvider>
       </FirebaseProvider>
     </GlobalErrorBoundary>
   </NotificationSystemProvider>

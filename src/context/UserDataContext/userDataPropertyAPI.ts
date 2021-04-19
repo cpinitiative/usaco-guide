@@ -1,4 +1,4 @@
-type DocumentReference = import('@firebase/firestore').DocumentReference;
+import firebase from 'firebase';
 
 /**
  * This class makes it easy to add new properties to UserDataContext.
@@ -17,7 +17,7 @@ export default abstract class UserDataPropertyAPI {
    * It can be used to save information to firebase.
    * If the user is not signed in, the value is null.
    */
-  protected firebaseUserDoc: DocumentReference | null;
+  protected firebaseUserDoc: firebase.firestore.DocumentReference | null;
   /**
    * This function will trigger a rerender of the User Data Context component.
    * Any time the value returned by `getAPI()` changes, make sure to call
@@ -25,7 +25,9 @@ export default abstract class UserDataPropertyAPI {
    */
   protected triggerRerender: () => void;
 
-  public setFirebaseUserDoc = (doc: DocumentReference | null) => {
+  public setFirebaseUserDoc = (
+    doc: firebase.firestore.DocumentReference | null
+  ) => {
     this.firebaseUserDoc = doc;
   };
 

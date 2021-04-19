@@ -21,6 +21,36 @@ experience.
 4. Run development server
    - `yarn develop`
 
+## XDM Configuration
+
+XDM configuration is currently (somewhat) duplicated across three files:
+
+1. `src/gatsby/create-xdm-node.ts`
+2. `src/components/DynamicMarkdownRenderer.tsx`
+3. `src/gatsby/webpack-xdm.js`
+
+XDM (which is ESM) and Gatsby (which is CJS) don't work well together. We had to
+compile xdm into `src/gatsby/xdm.js` with Webpack:
+
+```js
+import path from 'path';
+
+export default {
+	mode: 'production',
+	entry: './index.js',
+	output: {
+		path: path.resolve('D:\\Code\\xdm', 'dist'),
+		filename: 'bundle.js',
+		library: {
+			name: 'xdm',
+			type: 'commonjs',
+		},
+	},
+};
+```
+
+Every time XDM is updated this will have to be rerun and re-copy-pasted.
+
 ## Credits
 
 - Confetti taken from Josh Comeau:

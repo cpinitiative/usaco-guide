@@ -1,12 +1,5 @@
 import React from 'react';
 
-function determineIfSingularCodeBlock(
-  firstName: string,
-  numChildren: number
-): boolean {
-  return firstName == 'LanguageSection' && numChildren == 1;
-}
-
 export interface SpoilerProps {
   title: string;
   /**
@@ -16,40 +9,38 @@ export interface SpoilerProps {
   startExpanded?: boolean;
 }
 
+export const SpoilerContext = React.createContext<{
+  /**
+   * If true, code blocks should be expanded by default. This is the case if
+   * the spoiler's only child is a code block, which means that the code block
+   * should just always be expanded.
+   */
+  expandCodeBlock: boolean;
+}>({
+  expandCodeBlock: false,
+});
+
 const Spoiler: React.FC<SpoilerProps> = ({
   children,
   title,
   startExpanded = false,
 }) => {
-  let count = 0;
-  let numChildren = 0;
-  let firstName = 'None';
-
-  const firstChild = React.Children.toArray(children)[0];
-  numChildren = React.Children.count(children);
-  firstName = (firstChild as any).props.mdxType;
-  const ogProps = (firstChild as any).props;
-
-  const onlyContainsCode: boolean = determineIfSingularCodeBlock(
-    firstName,
-    numChildren
-  );
-
-  const childrenWithProps = React.Children.map(children, child => {
-    if (count == 0 && onlyContainsCode) {
-      count++;
-      return React.cloneElement(child as any, {
-        children: ogProps.children,
-        mdxType: 'LanguageSection',
-        originalType: ogProps.originalType,
-        isCodeBlockExpandable: false,
-      });
-    } else {
-      return child;
-    }
-  });
-
   const [show, setShow] = React.useState(startExpanded);
+
+  let expandCodeBlock = false;
+  const arrChildren = React.Children.toArray(children);
+  if (
+    arrChildren.length === 1 &&
+    (arrChildren[0] as any).type?.name === 'pre'
+  ) {
+    expandCodeBlock = true;
+  } else if (
+    arrChildren.length === 1 &&
+    (arrChildren[0] as any).type?.name === 'LanguageSection'
+  ) {
+    // note: this should ideally check each language section to make sure it only has one child
+    expandCodeBlock = true;
+  }
 
   return (
     <div
@@ -93,7 +84,9 @@ const Spoiler: React.FC<SpoilerProps> = ({
 
       {show && (
         <div className="p-4 spoiler-body bg-white dark:bg-dark-surface dark:bg-opacity-40 no-bottom-margin">
-          {childrenWithProps}
+          <SpoilerContext.Provider value={{ expandCodeBlock }}>
+            {children}
+          </SpoilerContext.Provider>
         </div>
       )}
     </div>

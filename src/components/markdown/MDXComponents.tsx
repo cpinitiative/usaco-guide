@@ -1,4 +1,3 @@
-import { MDXProvider as ActualMDXProvider } from '@mdx-js/react';
 import * as React from 'react';
 import Asterisk from '../Tooltip/Asterisk';
 import TextTooltip from '../Tooltip/TextTooltip';
@@ -64,9 +63,3 @@ export const components = {
 
   ...HTMLComponents,
 };
-
-export default function MDXProvider({ children }): JSX.Element {
-  return (
-    <ActualMDXProvider components={components}>{children}</ActualMDXProvider>
-  );
-}

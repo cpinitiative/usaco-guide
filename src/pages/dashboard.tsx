@@ -280,7 +280,7 @@ export default function DashboardPage(props: PageProps) {
 
 export const pageQuery = graphql`
   query {
-    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+    modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
       edges {
         node {
           frontmatter {
@@ -304,7 +304,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    announcements: allMdx(
+    announcements: allXdm(
       filter: { fileAbsolutePath: { regex: "/announcements/" } }
       sort: { order: DESC, fields: frontmatter___order }
     ) {

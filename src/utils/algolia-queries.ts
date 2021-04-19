@@ -3,7 +3,7 @@ import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
 
 const pageQuery = `{
-  pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
+  pages: allXdm(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
         frontmatter {
@@ -14,21 +14,21 @@ const pageQuery = `{
         fields {
           division
         }
-        mdxAST
+        mdast
       }
     }
   }
 }`;
 
 function pageToAlgoliaRecord({
-  node: { id, frontmatter, fields, mdxAST, ...rest },
+  node: { id, frontmatter, fields, mdast, ...rest },
 }) {
   return {
     objectID: frontmatter.id,
     ...frontmatter,
     ...fields,
     ...rest,
-    content: extractSearchableText(mdxAST),
+    content: extractSearchableText(JSON.parse(mdast)),
   };
 }
 

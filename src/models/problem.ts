@@ -317,8 +317,9 @@ export const getProblemInfo = (
       let url = book;
       if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
       if (!/^\d.*$/.test(sec)) return url;
-      if (!(sec in PGS[dictKey]))
+      if (!(sec in PGS[dictKey])) {
         throw `Could not find section ${sec} in source ${dictKey}`;
+      }
       url += '#page=' + PGS[dictKey][sec];
       return url;
     };
@@ -572,18 +573,20 @@ export class Problem {
             this.url.startsWith('contest') ||
             this.url.startsWith('gym') ||
             this.url.startsWith('edu'))
-        )
+        ) {
           this.url = 'https://codeforces.com/' + this.url;
-        else this.url = probSources[this.source][0] + this.url;
+        } else this.url = probSources[this.source][0] + this.url;
       }
       this.tooltipHoverDescription = probSources[this.source][1];
     } else if (this.source in contests) {
-      if (!this.url.startsWith('http'))
+      if (!this.url.startsWith('http')) {
         this.url = probSources[contests[this.source][0]][0] + this.url;
+      }
       this.tooltipHoverDescription = contests[this.source][1];
     } else {
-      if (!this.url.startsWith('http'))
+      if (!this.url.startsWith('http')) {
         throw `URL ${this.id} is not valid. Did you make a typo in the problem source (${this.source}), or in the URL? Problem name: ${this.name}`;
+      }
       if (this.source.indexOf('@') != -1) {
         const ind = this.source.indexOf('@');
         this.tooltipHoverDescription = this.source.substring(
@@ -657,7 +660,7 @@ export class Problem {
         };
       } else {
         // this isn't necessary -- can just use hasOwnProperty instead of in
-        for (const source in probSources)
+        for (const source in probSources) {
           if (
             probSources[source].length == 3 &&
             this.url.startsWith(probSources[source][0])
@@ -673,6 +676,7 @@ export class Problem {
             };
             break;
           }
+        }
       }
     }
   }
@@ -725,8 +729,9 @@ export class Problem {
         let url = book;
         if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
         if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey]))
+        if (!(sec in PGS[dictKey])) {
           throw `Could not find section ${sec} in source ${dictKey}`;
+        }
         url += '#page=' + PGS[dictKey][sec];
         return url;
       };

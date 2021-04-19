@@ -1,6 +1,6 @@
+import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Link, navigate } from 'gatsby';
-import * as Icons from 'heroicons-react';
 import * as React from 'react';
 import { useReducer } from 'react';
 import Flatpickr from 'react-flatpickr';
@@ -24,6 +24,7 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
+
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
     path: string;
@@ -157,7 +158,7 @@ export default function EditProblemPage(props) {
               <div className="sm:col-span-4">
                 {problem.usacoGuideId ? (
                   <b className="block text-sm font-medium text-green-700 dark:text-green-200">
-                    <Icons.Check
+                    <CheckIcon
                       className={'text-green-700 h-5 w-5 mr-2 inline'}
                     />
                     This problem is linked to a USACO Guide Problem (
@@ -171,7 +172,7 @@ export default function EditProblemPage(props) {
                   </b>
                 ) : (
                   <b className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    <Icons.X className={'text-gray-700 h-4 w-4 mr-1 inline'} />
+                    <XIcon className={'text-gray-700 h-4 w-4 mr-1 inline'} />
                     This problem is not linked to a USACO Guide Problem. To link
                     this problem to a USACO Guide Problem, import a problem from
                     above.
@@ -339,8 +340,9 @@ export default function EditProblemPage(props) {
                     id="points"
                     value={problem.points}
                     onChange={e => {
-                      if (canEditPoints)
+                      if (canEditPoints) {
                         editProblem({ points: parseInt(e.target.value) });
+                      }
                     }}
                     className="input"
                     disabled={!canEditPoints}

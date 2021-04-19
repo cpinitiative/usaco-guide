@@ -1,8 +1,9 @@
 # Contributing
 
 You may find [this live editor](https://usaco.guide/editor) helpful when editing
-modules. For more information contributing, view our
-[Contributing module](https://usaco.guide/general/contributing).
+modules. For more information about contributing, view our
+[Contributing module](https://usaco.guide/general/contributing) or our
+[docs](docs).
 
 - If you're looking to add/modify modules, refer to the `content/` folder.
 - If you're looking to add/modify problem solutions, refer to the `solutions/`

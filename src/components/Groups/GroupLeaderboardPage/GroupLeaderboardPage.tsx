@@ -26,8 +26,9 @@ export default function GroupLeaderboardPage(props) {
       for (const problemID of Object.keys(leaderboard[post.id])) {
         for (const userID of Object.keys(leaderboard[post.id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = {};
-          if (!(post.id in leaderboardSum[userID]))
+          if (!(post.id in leaderboardSum[userID])) {
             leaderboardSum[userID][post.id] = 0;
+          }
           leaderboardSum[userID][post.id] +=
             leaderboard[post.id][problemID][userID].bestScore;
         }

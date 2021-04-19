@@ -14,7 +14,7 @@ export function ResourcesList(props) {
           <div
             className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200 dark:border-transparent`}
           >
-            <table className="min-w-full">
+            <table className="min-w-full no-markdown">
               <thead>
                 <tr>
                   <th
@@ -87,8 +87,9 @@ export function Resource(props) {
         let sec = parts[0];
         if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
         if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey]))
+        if (!(sec in PGS[dictKey])) {
           throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+        }
         url += '#page=' + PGS[dictKey][sec];
         return url;
       };
@@ -114,8 +115,9 @@ export function Resource(props) {
     if (!url.startsWith('http')) url = moduleSources[source][0] + url;
     des = moduleSources[source][1];
   } else {
-    if (!url.startsWith('http'))
+    if (!url.startsWith('http')) {
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
+    }
     if (source.indexOf('@') != -1) {
       const ind = source.indexOf('@');
       des = source.substring(ind + 1, source.length);
@@ -159,7 +161,7 @@ export function Resource(props) {
           </a>
         </div>
       </td>
-      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-bottom-margin">
         {props.children}
       </td>
     </tr>

@@ -250,7 +250,7 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query($division: String!) {
-    modules: allMdx(
+    modules: allXdm(
       filter: {
         fileAbsolutePath: { regex: "/content/" }
         fields: { division: { eq: $division } }

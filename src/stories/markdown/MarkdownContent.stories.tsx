@@ -84,6 +84,23 @@ Lists.args = {
               </a>{' '}
               -- you can search by tag, difficulty level, etc.
             </p>
+            <ol>
+              <li>
+                <div className="flex-1">
+                  We provide a list of recent USACO problems (2015 onwards){' '}
+                  <a target="_blank" href="/general/usaco-monthlies">
+                    here
+                  </a>
+                  .
+                </div>
+              </li>
+              <li>
+                <div className="flex-1">
+                  Older USACO problems may be easier than recent USACO contest
+                  problems due to increases in difficulty.
+                </div>
+              </li>
+            </ol>
           </div>
         </li>
         <li>
@@ -121,7 +138,7 @@ InlineCode.args = {
     <>
       <p>
         This is a test of some inline code:{' '}
-        <HTMLComponents.inlineCode>rick.astley()</HTMLComponents.inlineCode>!
+        <HTMLComponents.code>rick.astley()</HTMLComponents.code>!
       </p>
     </>
   ),
