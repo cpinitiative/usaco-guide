@@ -177,7 +177,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Geometry',
-      description: 'Most Platinum geometry problems.',
+      description: 'More advanced concepts in computational geometry.',
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
     },
     {
