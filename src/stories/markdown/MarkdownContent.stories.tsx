@@ -143,3 +143,48 @@ InlineCode.args = {
     </>
   ),
 };
+
+const fakeCode = new Array(20)
+  .fill(null)
+  .map(_ => `import java.io.*`)
+  .join('\n');
+
+export const CodeInLists = Template.bind({});
+CodeInLists.args = {
+  children: (
+    <>
+      <ul>
+        <li>
+          <div className="flex-1">
+            <p>
+              Use <em>tabs</em> to indent.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div className="flex-1">
+            <p>
+              Be <em>consistent</em> about formatting your code, unlike the
+              following snippet. We don't care about which one you use (
+              <code className="inline-code">a+b</code> or{' '}
+              <code className="inline-code">a + b</code>), but pick one and
+              stick with it!
+            </p>
+            <HTMLComponents.pre>
+              <HTMLComponents.code className="language-java">
+                {fakeCode}
+              </HTMLComponents.code>
+            </HTMLComponents.pre>
+          </div>
+        </li>
+        <li>
+          <div className="flex-1">
+            <p>
+              Use <em>tabs</em> to indent.
+            </p>
+          </div>
+        </li>
+      </ul>
+    </>
+  ),
+};

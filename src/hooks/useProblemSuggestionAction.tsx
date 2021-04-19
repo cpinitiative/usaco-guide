@@ -20,18 +20,15 @@ export default function useProblemSuggestionAction() {
       filePath,
     }) => {
       if (!source) {
-        alert(
+        throw new Error(
           "Please select a source (You can select 'other' if you can't find the correct source)"
         );
-        return;
       }
       if (!difficulty) {
-        alert('Please select a difficulty');
-        return;
+        throw new Error('Please select a difficulty');
       }
       if (!firebaseApp) {
-        alert('Too fast! Please wait ten seconds and try again.');
-        return;
+        throw new Error('Too fast! Please wait ten seconds and try again.');
       }
       const submitProblemSuggestion = httpsCallable(
         getFunctions(firebaseApp),
