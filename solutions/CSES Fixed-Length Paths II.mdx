@@ -109,18 +109,35 @@ and with [small-to-large merging](/plat/merging) in a single DFS instead of
 centroid decomposition. This is because we can merge two prefix sum arrays $A$
 and $B$ in $\mathcal O(\min(|A|, |B|))$ time.
 
-If we let $d_i$ denote the maximum depth in node $i$'s subtree, then the
-resulting time complexity is
+If we let $d_i$ denote the maximum depth in node $i$'s subtree, then the number of
+operations $S$ that our algorithm performs can be calculated by
 
 $$
-\mathcal O\left(\sum_{i = 1}^N\left(d_i - \max_{c \in i \text{'s children}}(d_c)\right)\right).
+\begin{aligned}
+	S &= \sum_{i = 1}^N \left[1 + \sum_{c \in i\text{'s children}} (1 + d_c) - \max_{c \in i \text{'s children}}(d_c) \right]\\\\
+	  &= N + \sum_{i = 1}^N \left(\sum_{c \in i\text{'s children}} (1 + d_c) - (d_i - 1) \right)
+\end{aligned}
 $$
 
-Since $d_i = \max_{c \in i \text{'s children}}(d_c) + 1$, the above expression
-simplifies to $\mathcal O(N)$ - a significant improvement from our first
-solution!
+Now,
 
-Below is Ben's code implementing this idea:
+$$
+\sum_{i = 1}^N \sum_{c \in i\text{'s children}} (1 + d_c) = N - 1 + \sum_{i = 2}^N d_i
+$$
+
+and
+
+$$
+\sum_{i = 1}^N -(d_i - 1) = -\sum_{i = 1}^N d_i + N.
+$$
+
+Summing these two expressions and adding $N$ gives
+
+$$
+S = 3N - 1 - d_1
+$$
+
+which is $\mathcal O(N)$. Below is Ben's code implementing this idea:
 
 <LanguageSection>
 
