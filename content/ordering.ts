@@ -281,7 +281,7 @@ export const SECTION_SEO_TITLES: { [key in SectionID]: string } = {
   adv: 'Advanced USACO Topics',
 };
 
-let moduleIDToSectionMap: { [key: string]: SectionID } = {};
+const moduleIDToSectionMap: { [key: string]: SectionID } = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
@@ -294,7 +294,7 @@ SECTIONS.forEach(section => {
 export { moduleIDToSectionMap };
 export { moduleIDToURLMap };
 
-let moduleIDToURLMap: { [key: string]: string } = {};
+const moduleIDToURLMap: { [key: string]: string } = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
