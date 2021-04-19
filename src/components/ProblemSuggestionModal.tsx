@@ -67,7 +67,10 @@ export default function ProblemSuggestionModal({
       window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
     if (editorActions.inEditor) {
-      const tagsArr = tags.split(/,\s*/g);
+      const tagsArr = tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
       const generatedProblemId = generateProblemUniqueId(source, name, link);
       const problemToAdd: ProblemMetadata = {
         uniqueId: generatedProblemId,
@@ -107,7 +110,7 @@ export default function ProblemSuggestionModal({
         setCreatedIssueLink(response.data);
       })
       .catch(e => {
-        alert('Error: ' + e.message);
+        alert('Problem Suggestion Error: ' + e.message);
       })
       .finally(() => setLoading(false));
   };
