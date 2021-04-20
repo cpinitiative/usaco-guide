@@ -1,23 +1,21 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import Youtube from './markdown/Youtube';
 export default function Video() {
   const [showVideo, setShowVideo] = React.useState(false);
   const data = useStaticQuery(graphql`
-    query {
+    {
       thumbnail: file(relativePath: { eq: "index-video-thumbnail.jpg" }) {
         childImageSharp {
-          fluid(maxWidth: 1200) {
-            ...GatsbyImageSharpFluid_withWebp
-          }
+          gatsbyImageData(layout: CONSTRAINED, width: 512, quality: 100)
         }
       }
     }
   `);
   return (
     <>
-      <div className="relative mx-auto w-full rounded-lg shadow-lg lg:mx-4 xl:mx-8">
+      <div className="relative mx-auto w-full rounded-lg shadow-lg lg:mx-4 xl:mx-8 max-w-[512px]">
         {showVideo && (
           <div className="relative block w-full min-h-32 lg:min-h-64 xl:min-h-80 rounded-lg overflow-hidden focus:outline-none focus:shadow-outline bg-gray-300">
             <Youtube id={'ueNT-w7Oluw'} autoplay />
@@ -29,9 +27,9 @@ export default function Video() {
             type="button"
             className="relative block w-full rounded-lg overflow-hidden focus:outline-none focus:shadow-outline"
           >
-            <Img
+            <GatsbyImage
+              image={data.thumbnail.childImageSharp.gatsbyImageData}
               className="w-full"
-              fluid={data.thumbnail.childImageSharp.fluid}
               alt="Video by William Lin"
             />
 

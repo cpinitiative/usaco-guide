@@ -71,6 +71,7 @@ const plugins = [
       name: `announcements`,
     },
   },
+  `gatsby-plugin-image`,
   `gatsby-plugin-sharp`,
   {
     resolve: `gatsby-plugin-postcss`,
