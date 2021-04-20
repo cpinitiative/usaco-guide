@@ -258,7 +258,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   React.useEffect(() => {
     if (firebaseUser) {
       const userDoc = doc(getFirestore(firebaseApp), 'users', firebaseUser.uid);
-      onSnapshot(userDoc, {
+      return onSnapshot(userDoc, {
         next: snapshot => {
           let data = snapshot.data();
           if (!data) {

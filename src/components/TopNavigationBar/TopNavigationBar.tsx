@@ -24,7 +24,7 @@ import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import SectionsDropdown from '../SectionsDropdown';
-import Transition from '../Transition';
+import { UserAvatarMenu } from './UserAvatarMenu';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -145,7 +145,6 @@ export default function TopNavigationBar({
   const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
-  const [isActive, setIsActive] = useState(false);
   const userGroups = useUserGroups();
   const mobileLinks = [
     {
@@ -169,16 +168,6 @@ export default function TopNavigationBar({
         ]
       : []),
   ];
-  const ref = useRef<HTMLDivElement>();
-  useEffect(() => {
-    const handleClick = e => {
-      if (!(ref.current && ref.current.contains(e.target))) {
-        setIsActive(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [ref.current]);
 
   return (
     <>
@@ -328,60 +317,10 @@ export default function TopNavigationBar({
             </div>
             <div className="hidden lg:ml-3 lg:flex lg:items-center">
               {firebaseUser ? (
-                <div className="relative" ref={ref}>
-                  <div>
-                    <button
-                      className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition"
-                      id="user-menu"
-                      aria-label="User menu"
-                      aria-haspopup="true"
-                      onClick={() => setIsActive(!isActive)}
-                    >
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src={firebaseUser.photoURL}
-                        alt=""
-                      />
-                    </button>
-                  </div>
-                  <Transition
-                    show={isActive}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
-                      <div
-                        className="py-1 rounded-md bg-white dark:bg-gray-800 shadow-xs"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="user-menu"
-                      >
-                        <Link
-                          to="/settings"
-                          onClick={() => setIsActive(false)}
-                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
-                          role="menuitem"
-                        >
-                          Settings
-                        </Link>
-                        <button
-                          onClick={() => {
-                            signOut();
-                            setIsActive(false);
-                          }}
-                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
-                          role="menuitem"
-                        >
-                          Sign out
-                        </button>
-                      </div>
-                    </div>
-                  </Transition>
-                </div>
+                <UserAvatarMenu
+                  firebaseUser={firebaseUser}
+                  onSignOut={() => signOut()}
+                />
               ) : (
                 <>
                   <button
