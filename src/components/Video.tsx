@@ -25,8 +25,9 @@ export default function Video() {
           <button
             onClick={() => setShowVideo(true)}
             type="button"
-            className="relative block w-full rounded-lg overflow-hidden focus:outline-none focus:shadow-outline"
+            className="relative block w-full rounded-lg overflow-hidden focus:outline-none focus:shadow-outline text-[0px]"
           >
+            {/* We put 0px as text size above since GatsbyImage is inline block, so there's unwanted bottom spacing */}
             <GatsbyImage
               image={data.thumbnail.childImageSharp.gatsbyImageData}
               className="w-full"
