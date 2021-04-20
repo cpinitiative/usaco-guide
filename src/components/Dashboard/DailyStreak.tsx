@@ -51,7 +51,7 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
         {/* We set text size to 0px because GatsbyImage is inline block. Without it, there's extra space after the image. */}
         <div className="overflow-hidden relative text-[0px]">
           {tomorrowMilliseconds >= 0 ? (
-            <div className="absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white dark:bg-black dark:text-white bg-opacity-25 dark:bg-opacity-25 z-10 p-4">
+            <div className="text-base absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white dark:bg-black dark:text-white bg-opacity-25 dark:bg-opacity-25 z-10 p-4">
               <ComeBackTimer tomorrowMilliseconds={tomorrowMilliseconds} />
             </div>
           ) : null}
