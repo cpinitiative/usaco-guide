@@ -70,7 +70,7 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
-- MDX (JSX in Markdown)
+- MDX (JSX in Markdown) with XDM compiler
 - Firebase
 - Deployed with
   [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
