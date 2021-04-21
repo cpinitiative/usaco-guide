@@ -34,6 +34,10 @@ export const SignInModal: React.FC<SignInModalProps> = ({
     onClose();
   };
 
+  React.useEffect(() => {
+    if (isOpen) setError(null);
+  }, [isOpen]);
+
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
