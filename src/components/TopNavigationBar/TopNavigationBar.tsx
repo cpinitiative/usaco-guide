@@ -16,6 +16,7 @@ import {
   SECTIONS,
   SECTION_LABELS,
 } from '../../../content/ordering';
+import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import { searchClient } from '../../utils/algoliaSearchClient';
@@ -142,7 +143,8 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
+  const { firebaseUser, signOut } = useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const userGroups = useUserGroups();

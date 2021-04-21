@@ -1,13 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-  User,
-  UserCredential,
-} from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
@@ -123,7 +115,6 @@ type UserDataContextAPI = UserLangAPI &
   LastVisitAPI &
   AdSettingsAPI & {
     firebaseUser: User;
-    signIn: () => Promise<UserCredential | null>;
     signOut: () => Promise<void>;
     isLoaded: boolean;
     onlineUsers: number;
@@ -186,10 +177,6 @@ const UserDataContext = createContext<UserDataContextAPI>({
     // do nothing
   },
   showIgnored: false,
-  signIn: () => {
-    // do nothing
-    return Promise.resolve(null);
-  },
   signOut: () => {
     // do nothing
     return Promise.resolve();
@@ -309,12 +296,6 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
 
   const userData = {
     firebaseUser,
-    signIn: (): Promise<UserCredential | null> => {
-      if (firebaseApp) {
-        return signInWithPopup(getAuth(firebaseApp), new GoogleAuthProvider());
-      }
-      return Promise.resolve(null);
-    },
     signOut: (): Promise<void> => {
       return signOut(getAuth(firebaseApp)).then(() => {
         UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());

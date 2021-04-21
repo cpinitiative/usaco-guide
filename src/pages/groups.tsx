@@ -16,6 +16,7 @@ import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
 import Layout from '../components/layout';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { SignInContext } from '../context/SignInContext';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   ActiveGroupProvider,
@@ -35,7 +36,8 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
   const { setActiveGroupId, isLoading, groupData } = useActiveGroup();
-  const { firebaseUser, isLoaded, signIn } = React.useContext(UserDataContext);
+  const { firebaseUser, isLoaded } = React.useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
 
   React.useEffect(() => {
     setActiveGroupId(props.groupId);
