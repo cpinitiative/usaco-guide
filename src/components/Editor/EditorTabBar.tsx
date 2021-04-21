@@ -3,11 +3,14 @@ import React from 'react';
 
 export interface EditorTab {
   label: string;
+  value: string;
 }
 
 export interface EditorTabBarProps {
   tabs: EditorTab[];
-  // currently matches based on label for now
+  /**
+   * Value of the active tab.
+   */
   activeTab: string;
   onTabSelect: (tab: EditorTab) => void;
 }
@@ -18,15 +21,15 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   onTabSelect,
 }) => {
   return (
-    <div className="flex bg-gray-900">
+    <div className="flex bg-gray-300 dark:bg-gray-900">
       {tabs.map(tab => (
         <button
-          key={tab.label}
+          key={tab.value}
           className={classNames(
-            tab.label === activeTab
-              ? 'bg-[#1E1E1E] text-gray-200'
-              : 'text-gray-400 hover:text-gray-200',
-            'px-4 py-2 font-medium text-sm rounded-md focus:outline-none'
+            tab.value === activeTab
+              ? 'dark:bg-gray-900 dark:text-gray-200 text-gray-700 bg-white'
+              : 'dark:text-gray-400 dark:hover:bg-gray-800 text-gray-600 hover:bg-gray-200 active:bg-gray-100 dark:active:bg-gray-900',
+            'px-4 py-2 font-medium text-sm focus:outline-none'
           )}
           onClick={() => onTabSelect(tab)}
         >
