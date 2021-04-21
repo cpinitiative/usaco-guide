@@ -1,4 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/solid';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React, { Fragment } from 'react';
 import { useFirebaseApp } from '../hooks/useFirebase';
@@ -150,6 +151,16 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 ) : (
                   <p>Loading...</p>
                 )}
+              </div>
+              <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+                <button
+                  type="button"
+                  className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-blue-500"
+                  onClick={() => onClose()}
+                >
+                  <span className="sr-only">Close</span>
+                  <XIcon className="h-6 w-6" aria-hidden="true" />
+                </button>
               </div>
             </div>
           </Transition.Child>
