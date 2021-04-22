@@ -135,7 +135,7 @@ export function usePostActions(groupId: string) {
         }
       );
       batch.update(doc(firestore, 'groups', groupId), {
-        [`leaderboard.${post.id}.${problemId}`]: deleteField,
+        [`leaderboard.${post.id}.${problemId}`]: deleteField(),
       });
       await batch.commit();
     },
