@@ -19,7 +19,6 @@ import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
 import ButtonGroup from '../components/ButtonGroup';
-import EditorTabBar from '../components/Editor/EditorTabBar';
 import {
   conf as mdxConf,
   language as mdxLang,
@@ -285,14 +284,14 @@ export default function LiveUpdatePage(props: PageProps) {
                 className="h-full tw-forms-disable"
                 style={{ minWidth: '300px' }}
               >
-                <EditorTabBar
-                  tabs={[
-                    { label: 'Contributing.mdx' },
-                    { label: 'Prefix_Sums.mdx' },
-                  ]}
-                  activeTab={'Contributing.mdx'}
-                  onTabSelect={tab => console.log(tab)}
-                />
+                {/*<EditorTabBar*/}
+                {/*  tabs={[*/}
+                {/*    { label: 'Contributing.mdx' },*/}
+                {/*    { label: 'Prefix_Sums.mdx' },*/}
+                {/*  ]}*/}
+                {/*  activeTab={'Contributing.mdx'}*/}
+                {/*  onTabSelect={tab => console.log(tab)}*/}
+                {/*/>*/}
                 <Editor
                   theme="vs-dark"
                   path={
