@@ -195,7 +195,7 @@ export default function TopNavigationBar({
                 </svg>
               </MobileMenuButtonContainer>
             </div>
-            <div className="hidden lg:mx-3 lg:block border-l border-gray-200 h-8 self-center" />
+            <div className="hidden lg:mx-3 lg:block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
             <div className="hidden lg:flex lg:items-center">
               {firebaseUser ? (
                 <UserAvatarMenu
