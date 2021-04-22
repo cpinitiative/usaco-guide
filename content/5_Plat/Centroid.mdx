@@ -4,7 +4,7 @@ title: 'Centroid Decomposition'
 author: Siyong Huang, Benjamin Qi
 prerequisites:
   - intro-tree
-description: 'Decomposing a tree to faciliate path computations.'
+description: 'Decomposing a tree to facilitate path computations.'
 frequency: 1
 ---
 
@@ -172,37 +172,60 @@ void centroid(int n = 1)
 
 <JavaSection>
 
-<!-- Modified from above. I can't guarauntee it compiles and functions as expected -->
+<!-- I used the code on a successful submission to "Xenia and Tree" https://codeforces.com/contest/342/submission/113088188 -->
 
 ```java
-boolean[] r = new boolean[MN];//removed
-int[] s = new int[MN];//subtree size
-public int dfs(int n, int p)
-{
-	s[n] = 1;
-	for(int x : a[n])
-		if(x != p && !r[x])
-			s[n] += dfs(x, n);
-	return s[n];
-}
-public int get_centroid(int n, int ms, int p)//n = node, ms = size of tree, p = parent
-{
-	for(int x : a[n])
-		if(x != p && !r[x])
-			if(s[x]*2 > ms)
-				return get_centroid(x, ms, n);
-	return n;
-}
-public void centroid(int n)
-{
-	int C = get_centroid(n, dfs(n, 0), 0);
+private static class Centroid {
+	int n;
+	int[][] g;
+	int[] size;
+	int[] parent;
+	boolean[] seen;
 
-	//do something
+	Centroid(int n, int[][] g) {
+		this.n = n;
+		this.g = g;
+		size = new int[n];
+		parent = new int[n];
+		seen = new boolean[n];
+		initCentroid(0, -1);
+	}
 
-	r[C] = 1;
-	for(int x : a[C])
-		if(!r[x])
-			centroid(x);
+	private int getSize(int u, int v) {
+		if (seen[u]) {
+			return 0;
+		}
+		size[u] = 1;
+		for (int next : g[u]) {
+			if (next != v) {
+				size[u] += getSize(next, u);
+			}
+		}
+		return size[u];
+	}
+
+	private void initCentroid(int u, int v) {
+		getSize(u, v);
+		final int c = findCentroid(u, -1, size[u]);
+		seen[c] = true;
+		parent[c] = v;
+		for (int next : g[c]) {
+			if (!seen[next]) {
+				initCentroid(next, c);
+			}
+		}
+	}
+
+	private int findCentroid(int u, int v, int currSize) {
+		for (int x : g[u]) {
+			if (x != v) {
+				if (!seen[x] && size[x] > currSize / 2) {
+					return findCentroid(x, u, currSize);
+				}
+			}
+		}
+		return u;
+	}
 }
 ```
 
