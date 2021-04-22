@@ -144,7 +144,7 @@ export default function TopNavigationBar({
             >
               <button
                 type="button"
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-full text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inline-flex items-center px-2 py-1 border border-transparent rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onClick={() => setIsSearchOpen(true)}
               >
                 <SearchIcon
@@ -152,7 +152,7 @@ export default function TopNavigationBar({
                   aria-hidden="true"
                 />
 
-                <span className="ml-2">Search</span>
+                <span className="ml-2 font-medium">Search</span>
               </button>
             </div>
             <div className="flex items-center lg:hidden">
@@ -195,7 +195,8 @@ export default function TopNavigationBar({
                 </svg>
               </MobileMenuButtonContainer>
             </div>
-            <div className="hidden lg:ml-3 lg:flex lg:items-center">
+            <div className="hidden lg:mx-3 lg:block border-l border-gray-200 h-8 self-center" />
+            <div className="hidden lg:flex lg:items-center">
               {firebaseUser ? (
                 <UserAvatarMenu
                   firebaseUser={firebaseUser}
@@ -205,7 +206,7 @@ export default function TopNavigationBar({
                 <>
                   <button
                     onClick={() => signIn()}
-                    className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150"
+                    className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     Login
                   </button>
