@@ -7,9 +7,9 @@ author: Kevin Sheng
 
 [Official Editorial](http://www.usaco.org/current/data/sol_fortmoo_platinum_jan16.html)
 
-We will use an adaption of 2D Kadane's algorithm to solve this problem.
+The approach here is a bit different from the official solution, using an adaption of 2D Kadane's algorithm instead.
 
-Iterate through all possible pairs of columns. For each pair, we'll solve the problem with the restriction that the fort must be aligned along these two columns. For each row between these two columns, we will use prefix sums to check if the area between them is clear.
+Iterate through all possible pairs of columns. For each pair, we'll solve the problem with the restriction that the fort must be aligned along these two columns. For each row between these two columns, we will use prefix sums to check if the area between the two columns and in the row is clear.
 
 We keep a running variable `r_start` which keeps track of the earliest row we can start the fort at and iterate through all possible row endings (`r_end` in the code). Note that if a swampy area resides in one of the columns themselves, no fort can go through that row, so we must check for that and update `r_start` accordingly.
 
