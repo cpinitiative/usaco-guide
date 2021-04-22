@@ -83,7 +83,7 @@ export default function SectionsDropdown({
                           className={classNames(
                             'w-full text-left block px-4 py-2 text-base font-medium leading-6 focus:outline-none',
                             active
-                              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700'
+                              ? 'bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-700'
                               : 'text-gray-700 dark:text-gray-100'
                           )}
                         >
@@ -99,7 +99,7 @@ export default function SectionsDropdown({
                           className={classNames(
                             'block px-4 py-2 text-base font-medium leading-6 focus:outline-none',
                             active
-                              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700'
+                              ? 'bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-700'
                               : 'text-gray-700 dark:text-gray-100'
                           )}
                         >

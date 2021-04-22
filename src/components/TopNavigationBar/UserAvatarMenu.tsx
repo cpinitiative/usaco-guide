@@ -38,7 +38,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
           >
             <Menu.Items
               static
-              className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+              className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
               <div className="py-1">
                 <Menu.Item>
@@ -47,7 +47,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       to="/settings"
                       className={classNames(
                         active && 'bg-gray-100 dark:bg-gray-700',
-                        'block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis transition'
+                        'block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 focus:outline-none'
                       )}
                     >
                       Settings
@@ -62,7 +62,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       }}
                       className={classNames(
                         active && 'bg-gray-100 dark:bg-gray-700',
-                        'block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis transition'
+                        'block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 focus:outline-none'
                       )}
                       role="menuitem"
                     >
