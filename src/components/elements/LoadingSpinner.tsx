@@ -3,7 +3,7 @@ import React from 'react';
 
 // Taken from play.tailwindcss.com
 export const LoadingSpinner: React.FC<{ className?: string }> = ({
-  className,
+  className = 'h-4 w-4',
 }) => {
   return (
     <svg
