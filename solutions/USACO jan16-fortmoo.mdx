@@ -11,7 +11,7 @@ The approach here is a bit different from the official solution, using an adapti
 
 Iterate through all possible pairs of columns. For each pair, we'll solve the problem with the restriction that the fort must be aligned along these two columns. For each row between these two columns, we will use prefix sums to check if the area between the two columns and in the row is clear.
 
-We keep a running variable `r_start` which keeps track of the earliest row we can start the fort at and iterate through all possible row endings (`r_end` in the code). Note that if a swampy area resides in one of the columns themselves, no fort can go through that row, so we must check for that and update `r_start` accordingly.
+We keep a running variable $\texttt{r_{start}}$ which keeps track of the earliest row we can start the fort at and iterate through all possible row endings ($\texttt{r_{end}}$ in the code). Note that if a swampy area resides in one of the columns themselves, no fort can go through that row, so we must check for that and update $\texttt{r_{start}}$ accordingly.
 
 <LanguageSection>
 
@@ -37,7 +37,7 @@ int main() {
 	read >> row_num >> col_num;
 
 	vector<vector<bool>> sturdy(row_num, vector<bool>(col_num));
-	// colNum + 1 because of how pref sums work
+	// col_num + 1 because of how pref sums work
 	vector<vector<int>> row_bad_nums(row_num, vector<int>(col_num + 1));
 	for (int r = 0; r < row_num; r++) {
 		for (int c = 0; c < col_num; c++) {
