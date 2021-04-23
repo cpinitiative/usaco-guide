@@ -7,6 +7,7 @@ import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
+import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
@@ -20,7 +21,7 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut } = useContext(UserDataContext);
+  const { firebaseUser, signOut, isLoaded } = useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
@@ -202,6 +203,10 @@ export default function TopNavigationBar({
                   firebaseUser={firebaseUser}
                   onSignOut={() => signOut()}
                 />
+              ) : !isLoaded ? (
+                <div className="p-2.5">
+                  <LoadingSpinner className="h-4 w-4" />
+                </div>
               ) : (
                 <>
                   <button
