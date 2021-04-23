@@ -7,6 +7,9 @@ author: Jesse Choe
 
 [Official Editorial](https://codeforces.com/blog/entry/66993)
 
+
+# Solution (Greedy)
+
 Let's consider the following example:
 
 ```
@@ -42,8 +45,6 @@ However, this boy still must give $b_i$ sweets to some girl; thus if no $g_j$ is
 
 **Time Complexity:** $\mathcal{O}(N\log N + M\log M)$
 
-# Solution (Two Pointers + Greedy)
-
 <LanguageSection>
 
 <CPPSection>
@@ -71,7 +72,7 @@ int main(){
 		cin >> g[i];
 	}
 
-	// The initial sum without accounting for the constraints on the maximum values of g_i
+	// Initial lower bound on answer
 	res *= m;
 
 	// Sort b_i and g_i in descending order to improve the ease of using 2P
@@ -92,7 +93,6 @@ int main(){
 		return 0;
 	}
 
-	// Two pointers to find the sum of (g_i - c_i).
 	int p1 = 0, p2 = 0, cur = 0;
 	while(p2 < m){
 		++cur;
