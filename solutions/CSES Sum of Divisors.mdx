@@ -5,14 +5,15 @@ title: Sum of Divisors
 author: Benjamin Qi
 ---
 
-Try to prove that the question is equivalent to computing the summation
-$\sum_{i=1}^n\left\lfloor \frac{n}{i}\right\rfloor\cdot i$ 
+Our goal is to compute the summation
+$\sum_{i=1}^n\left\lfloor \frac{n}{i}\right\rfloor\cdot i$ in faster than
+$\Theta(n)$ time.
 
 <Spoiler title="Hint">
 
-The first key observation is to notice that for each divisor $i$ within the 
-range $[1,N]$ will appear exactly $\lfloor\frac {n}{i}\rfloor$ times.
-This implies that each divisor will contribute $i*\lfloor\frac{n}{i}\rfloor$ 
+The first key observation is to notice that each divisor $i$ within the 
+range $[1,n]$ will appear exactly $\lfloor\frac {n}{i}\rfloor$ times in the sum.
+This implies that each divisor will contribute $i\cdot\lfloor\frac{n}{i}\rfloor$ 
 to the answer. Applying this to all divisors, the question is now equivalent to 
 computing the summation $\sum_{i=1}^n\left\lfloor \frac{n}{i}\right\rfloor\cdot i$ 
 in faster than $\Theta(n)$ time.
@@ -23,19 +24,11 @@ $n=10^{12}$ implies that the desired time complexity is $\mathcal{O}(\sqrt n)$!
 
 <Spoiler title="Solution">
 
-Naively, this summation can be computed in $\mathcal{O}(n)$ time. However, we 
-can do better. The second key observation is that there are actually 
-only $\mathcal{O}(\sqrt n)$ distinct values of $\lfloor \frac{n}{i} \rfloor$
-as opposed to $\mathcal{O}(n)$ distinct values. We can consider 
-$i\in [1,\sqrt n]$ and $i\in [\sqrt n+1,n]$ separately. When $i\in [1,\sqrt n]$, 
-there are at most $\mathcal{O}(\sqrt n)$ possible $n$ values, hence only 
-$\mathcal{O}(\sqrt n)$ $\lfloor \frac{n}{i} \rfloor$ values. When 
-$i\in [\sqrt n+1, n]$, $\lfloor \frac{n}{i} \rfloor \in [1, \sqrt n)$ holds true. 
-This results in a total of $\mathcal{O}(\sqrt n) + \mathcal{O}(\sqrt n) 
-= \mathcal{O}(\sqrt n)$ distinct $\lfloor \frac{n}{i} \rfloor$ values. 
+The key observation is that there are only $\mathcal{O}(\sqrt n)$ distinct
+values of $q=\left\lfloor \frac{n}{i}\right\rfloor$. To show this, consider
+$i\in [1,\sqrt n]$ and $i\in [\sqrt n+1,n]$ separately.
 
-To speed up the computational process, we can quickly process all terms in the 
-summation with the same value of $\lfloor \frac{n}{i} \rfloor$.
+So we can quickly process all terms in the summation with the same value of $q$.
 We start with $i=1$ and increase it until it reaches $n$. Note that the smallest
 $j$ such that
 $\left\lfloor \frac{n}{j}\right\rfloor<\left\lfloor \frac{n}{i}\right\rfloor$ is
