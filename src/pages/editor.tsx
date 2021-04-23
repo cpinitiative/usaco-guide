@@ -11,12 +11,7 @@
 
 import { InformationCircleIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import {
-  collection,
-  doc,
-  getFirestore,
-  runTransaction,
-} from 'firebase/firestore';
+import { collection, doc, getFirestore } from 'firebase/firestore';
 import { PageProps } from 'gatsby';
 import babelParser from 'prettier/parser-babel';
 import prettier from 'prettier/standalone';
@@ -190,6 +185,7 @@ export default function EditorPage(props: PageProps) {
     setProblems(formattedNewContent);
   };
   const firebaseApp = React.useContext(FirebaseAppContext);
+
   return (
     <Layout>
       <SEO title="Editor" />
@@ -214,18 +210,17 @@ export default function EditorPage(props: PageProps) {
                     doc(db, 'editor-documents', id),
                     'edits'
                   );
-                  await runTransaction(
-                    getFirestore(firebaseApp),
-                    async transaction => {
-                      const v = await transaction;
-                      if (!v.exists()) {
-                        transaction.set(docRef, {});
-                      }
-
-                      const newPopulation = doc.data().population + 1;
-                      transaction.update(docRef, { population: newPopulation });
-                    }
-                  );
+                  // await runTransaction(
+                  //   getFirestore(firebaseApp),
+                  //   async transaction => {
+                  //     const v = await transaction;
+                  //     if (!v.exists()) {
+                  //       transaction.set(docRef, {});
+                  //     }
+                  //     const newPopulation = doc.data().population + 1;
+                  //     transaction.update(docRef, { population: newPopulation });
+                  //   }
+                  // );
                   console.log('Transaction successfully committed!');
                 } catch (e) {
                   console.log('Transaction failed: ', e);
