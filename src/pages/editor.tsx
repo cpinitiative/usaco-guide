@@ -195,7 +195,7 @@ export default function EditorPage(props: PageProps) {
       <SEO title="Editor" />
 
       <div className="h-screen flex flex-col">
-        <div className="block py-2 px-4 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900 flex items-center justify-between">
+        <div className="block py-2 px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap">
               <div className="h-8 w-8 flex-shrink-0">
