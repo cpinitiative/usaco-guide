@@ -264,7 +264,7 @@ export default function EditorPage(props: PageProps) {
             <a
               href="/general/contributing#adding-a-solution"
               target="_blank"
-              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white inline-flex items-center space-x-2 font-medium text-sm group"
+              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group"
             >
               <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
               <span>Documentation</span>
