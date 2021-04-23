@@ -1,5 +1,5 @@
 import { Story } from '@storybook/react';
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import EditorTabBar from '../../components/Editor/EditorTabBar';
 
 export default {
@@ -7,7 +7,7 @@ export default {
   component: EditorTabBar,
 };
 
-const Template: Story = args => (
+const Template: Story<ComponentProps<typeof EditorTabBar>> = args => (
   <div>
     <EditorTabBar {...args} />
     <div className="h-24 bg-[#1E1E1E] p-8">VSCode Editor</div>

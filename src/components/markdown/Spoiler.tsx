@@ -44,7 +44,7 @@ const Spoiler: React.FC<SpoilerProps> = ({
 
   return (
     <div
-      className={`bg-gray-50 dark:bg-gray-800 dark:bg-opacity-50 shadow rounded-md mb-4`}
+      className={`bg-gray-50 border border-gray-100 dark:border-transparent dark:bg-gray-800 dark:bg-opacity-50 rounded-md mb-4`}
     >
       <p
         className="p-4 flex items-start"
