@@ -9,6 +9,12 @@
 //   );
 // }
 
+import {
+  collection,
+  doc,
+  getFirestore,
+  runTransaction,
+} from 'firebase/firestore';
 import { PageProps } from 'gatsby';
 import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
@@ -28,6 +34,7 @@ import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
 import { EditorContext } from '../context/EditorContext';
+import { FirebaseAppContext } from '../context/FirebaseContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import { ProblemSuggestionModalProvider } from '../context/ProblemSuggestionModalContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
@@ -63,15 +70,16 @@ function getQueryVariable(query, variable) {
   return null;
 }
 
-export default function LiveUpdatePage(props: PageProps) {
+export default function EditorPage(props: PageProps) {
+  const id = '4kXuiTbiSlELsbgB8Gc9';
   const filePath =
     props.location?.search?.length > 0
       ? getQueryVariable(props.location.search.slice(1), 'filepath')
       : null;
   const markdownStorageKey = 'guide:editor:markdown';
   const problemsStorageKey = 'guide:editor:problems';
-  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
-  const [problems, setProblems] = useStickyState('', problemsStorageKey);
+  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey, 5000);
+  const [problems, setProblems] = useStickyState('', problemsStorageKey, 5000);
   const editor = useRef<any>();
   const [tab, setTab] = useState<'problems' | 'content'>('content');
 
@@ -176,7 +184,7 @@ export default function LiveUpdatePage(props: PageProps) {
     });
     setProblems(formattedNewContent);
   };
-
+  const firebaseApp = React.useContext(FirebaseAppContext);
   return (
     <Layout>
       <SEO title="Editor" />
@@ -206,11 +214,39 @@ export default function LiveUpdatePage(props: PageProps) {
           >
             Switch to Editing {tab === 'content' ? 'Problems' : 'Content'}
           </button>
+          <button
+            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
+            onClick={async () => {
+              const db = getFirestore(firebaseApp);
+              try {
+                const docCollection = collection(
+                  doc(db, 'editor-documents', id),
+                  'edits'
+                );
+                await runTransaction(
+                  getFirestore(firebaseApp),
+                  async transaction => {
+                    const v = await transaction;
+                    if (!v.exists()) {
+                      transaction.set(docRef, {});
+                    }
+
+                    const newPopulation = doc.data().population + 1;
+                    transaction.update(docRef, { population: newPopulation });
+                  }
+                );
+                console.log('Transaction successfully committed!');
+              } catch (e) {
+                console.log('Transaction failed: ', e);
+              }
+            }}
+          >
+            Save
+          </button>
 
           <button
             className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
             onClick={() => {
-              const prettierConfig = {};
               if (tab == 'content') {
                 setMarkdown(old =>
                   prettier.format(old, {
@@ -282,16 +318,23 @@ export default function LiveUpdatePage(props: PageProps) {
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div
-                className="h-full tw-forms-disable"
+                className="h-full tw-forms-disable-all-descendants"
                 style={{ minWidth: '300px' }}
               >
                 <EditorTabBar
                   tabs={[
-                    { label: 'Contributing.mdx' },
-                    { label: 'Prefix_Sums.mdx' },
+                    { label: 'module.mdx', value: 'module.mdx' },
+                    {
+                      label: 'module.problems.mdx',
+                      value: 'module.problems.mdx',
+                    },
                   ]}
-                  activeTab={'Contributing.mdx'}
-                  onTabSelect={tab => console.log(tab)}
+                  activeTab={
+                    tab == 'content' ? 'module.mdx' : 'module.problems.mdx'
+                  }
+                  onTabSelect={tab =>
+                    setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
+                  }
                 />
                 <Editor
                   theme="vs-dark"
@@ -305,7 +348,11 @@ export default function LiveUpdatePage(props: PageProps) {
                   onChange={(v, e) =>
                     tab === 'content' ? setMarkdown(v) : setProblems(v)
                   }
-                  options={{ wordWrap: 'on', rulers: [80] }}
+                  options={{
+                    wordWrap: 'on',
+                    rulers: [80],
+                    minimap: { enabled: false },
+                  }}
                   beforeMount={monaco => {
                     // sort of MDX (basically markdown with mdx comments)
                     monaco.languages.register({ id: 'custom-mdx' });
