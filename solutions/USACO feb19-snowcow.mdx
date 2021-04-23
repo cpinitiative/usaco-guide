@@ -52,44 +52,44 @@ ll T[400005], L[400005];
 // L[] is lazy tag
 
 void pushdown(int t, int tl, int tr) {
-    if (L[t]) {
-        int tm = (tl + tr) >> 1;
-        T[t << 1] += (tm - tl + 1) * L[t];
-        L[t << 1] += L[t];
+	if (L[t]) {
+		int tm = (tl + tr) >> 1;
+		T[t << 1] += (tm - tl + 1) * L[t];
+		L[t << 1] += L[t];
 
-        T[t << 1 | 1] += (tr - tm) * L[t];
-        L[t << 1 | 1] += L[t];
-        L[t] = 0;
-    }
+		T[t << 1 | 1] += (tr - tm) * L[t];
+		L[t << 1 | 1] += L[t];
+		L[t] = 0;
+	}
 }
 
 void update(int l, int r, int v, int t = 1, int tl = 1, int tr = N) {
-    if (tl != tr)
-        pushdown(t, tl, tr);
-    if (r < tl || tr < l || tr < tl)
-        return;
-    if (l <= tl && tr <= r) {
-        T[t] += (tr - tl + 1) * v;
-        L[t] += v;
-        return;
-    }
+	if (tl != tr)
+		pushdown(t, tl, tr);
+	if (r < tl || tr < l || tr < tl)
+		return;
+	if (l <= tl && tr <= r) {
+		T[t] += (tr - tl + 1) * v;
+		L[t] += v;
+		return;
+	}
 
-    int tm = (tl + tr) >> 1;
-    update(l, r, v, t << 1, tl, tm);
-    update(l, r, v, t << 1 | 1, tm + 1, tr);
-    T[t] = T[t << 1] + T[t << 1 | 1];
+	int tm = (tl + tr) >> 1;
+	update(l, r, v, t << 1, tl, tm);
+	update(l, r, v, t << 1 | 1, tm + 1, tr);
+	T[t] = T[t << 1] + T[t << 1 | 1];
 }
 
 ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
-    if (tl != tr)
-        pushdown(t, tl, tr);
-    if (r < tl || tr < l || tr < tl)
-        return 0;
-    if (l <= tl && tr <= r)
-        return T[t];
-    
-    int tm = (tl + tr) >> 1;
-    return query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr);
+	if (tl != tr)
+		pushdown(t, tl, tr);
+	if (r < tl || tr < l || tr < tl)
+		return 0;
+	if (l <= tl && tr <= r)
+		return T[t];
+	
+	int tm = (tl + tr) >> 1;
+	return query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr);
 }
 
 vector<int> adj[100005];
@@ -103,48 +103,48 @@ set<pii> S[100005];
 // S[] stores current active intervals of each color
 
 void init(int u, int p) {
-    LL[u] = ++tt;
-    for (int v : adj[u]) 
-        if (v != p)
-            init(v, u);
-    RR[u] = tt;
+	LL[u] = ++tt;
+	for (int v : adj[u]) 
+		if (v != p)
+			init(v, u);
+	RR[u] = tt;
 }
 
 int main(void) {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    freopen("snowcow.in", "r", stdin);
-    freopen("snowcow.out", "w", stdout);
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("snowcow.in", "r", stdin);
+	freopen("snowcow.out", "w", stdout);
 
-    cin >> N >> Q;
-    for (int i = 1, a, b; i < N; i++) {
-        cin >> a >> b;
-        adj[a].PB(b);
-        adj[b].PB(a);
-    }
-    init(1, 0);
-    
-    while (Q--) {
-        int t; cin >> t;
-        if (t == 1) {
-            int x, c; cin >> x >> c;
-            auto it = S[c].lower_bound(MP(LL[x], 0)); 
-            // step 1: check if ancestor already has same color
-            if (it != S[c].begin() && prev(it)->SS >= RR[x])
-                continue;
-            // step 2: remove updates on subtree
-            for (; it != S[c].end() && it->FF <= RR[x];) {
-                update(it->FF, it->SS, -1);
-                S[c].erase(it++);
-            }
-            // step 3: update current node
-            update(LL[x], RR[x], 1);
-            S[c].insert(MP(LL[x], RR[x]));
-        }
-        else if (t == 2) {
-            int x; cin >> x;
-            cout << query(LL[x], RR[x]) << '\n';
-        }
-    }
+	cin >> N >> Q;
+	for (int i = 1, a, b; i < N; i++) {
+		cin >> a >> b;
+		adj[a].PB(b);
+		adj[b].PB(a);
+	}
+	init(1, 0);
+	
+	while (Q--) {
+		int t; cin >> t;
+		if (t == 1) {
+			int x, c; cin >> x >> c;
+			auto it = S[c].lower_bound(MP(LL[x], 0)); 
+			// step 1: check if ancestor already has same color
+			if (it != S[c].begin() && prev(it)->SS >= RR[x])
+				continue;
+			// step 2: remove updates on subtree
+			for (; it != S[c].end() && it->FF <= RR[x];) {
+				update(it->FF, it->SS, -1);
+				S[c].erase(it++);
+			}
+			// step 3: update current node
+			update(LL[x], RR[x], 1);
+			S[c].insert(MP(LL[x], RR[x]));
+		}
+		else if (t == 2) {
+			int x; cin >> x;
+			cout << query(LL[x], RR[x]) << '\n';
+		}
+	}
 }
 ```
 
