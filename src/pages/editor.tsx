@@ -9,6 +9,8 @@
 //   );
 // }
 
+import { InformationCircleIcon } from '@heroicons/react/outline';
+import classNames from 'classnames';
 import {
   collection,
   doc,
@@ -17,27 +19,29 @@ import {
 } from 'firebase/firestore';
 import { PageProps } from 'gatsby';
 import babelParser from 'prettier/parser-babel';
-import markdownParser from 'prettier/parser-markdown';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
-import ButtonGroup from '../components/ButtonGroup';
 import EditorTabBar from '../components/Editor/EditorTabBar';
 import {
   conf as mdxConf,
   language as mdxLang,
 } from '../components/Editor/mdx-lang';
 import Layout from '../components/layout';
+import LogoSquare from '../components/LogoSquare';
 import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
 import { EditorContext } from '../context/EditorContext';
 import { FirebaseAppContext } from '../context/FirebaseContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import { ProblemSuggestionModalProvider } from '../context/ProblemSuggestionModalContext';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
+import {
+  Language,
+  LANGUAGE_LABELS,
+} from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
 import { ProblemMetadata, PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
@@ -191,118 +195,181 @@ export default function EditorPage(props: PageProps) {
       <SEO title="Editor" />
 
       <div className="h-screen flex flex-col">
-        <div className="block py-3 px-3 shadow dark:bg-gray-900 flex items-center justify-around">
-          <a
-            href="/dashboard"
-            target="_blank"
-            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-          >
-            Dashboard
-          </a>
-          <a
-            href="/general/contributing#adding-a-solution"
-            target="_blank"
-            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-          >
-            How to add a solution &rarr;
-          </a>
-
-          <button
-            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            onClick={() =>
-              setTab(old => (old === 'content' ? 'problems' : 'content'))
-            }
-          >
-            Switch to Editing {tab === 'content' ? 'Problems' : 'Content'}
-          </button>
-          <button
-            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            onClick={async () => {
-              const db = getFirestore(firebaseApp);
-              try {
-                const docCollection = collection(
-                  doc(db, 'editor-documents', id),
-                  'edits'
-                );
-                await runTransaction(
-                  getFirestore(firebaseApp),
-                  async transaction => {
-                    const v = await transaction;
-                    if (!v.exists()) {
-                      transaction.set(docRef, {});
-                    }
-
-                    const newPopulation = doc.data().population + 1;
-                    transaction.update(docRef, { population: newPopulation });
-                  }
-                );
-                console.log('Transaction successfully committed!');
-              } catch (e) {
-                console.log('Transaction failed: ', e);
-              }
-            }}
-          >
-            Save
-          </button>
-
-          <button
-            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            onClick={() => {
-              if (tab == 'content') {
-                setMarkdown(old =>
-                  prettier.format(old, {
-                    endOfLine: 'lf',
-                    semi: true,
-                    singleQuote: true,
-                    tabWidth: 2,
-                    trailingComma: 'es5',
-                    arrowParens: 'avoid',
-                    useTabs: true,
-                    proseWrap: 'always',
-                    parser: 'mdx',
-                    plugins: [markdownParser],
-                  })
-                );
-              } else {
-                setProblems(old =>
-                  prettier.format(old, {
-                    endOfLine: 'lf',
-                    semi: true,
-                    singleQuote: true,
-                    tabWidth: 2,
-                    useTabs: false,
-                    trailingComma: 'es5',
-                    arrowParens: 'avoid',
-                    parser: 'json',
-                    plugins: [babelParser],
-                  })
-                );
-              }
-            }}
-          >
-            Prettify {tab === 'content' ? 'Content' : 'Problems'}
-          </button>
-
-          {filePath && (
+        <div className="block py-2 px-4 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900 flex items-center justify-between">
+          <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap">
+              <div className="h-8 w-8 flex-shrink-0">
+                <LogoSquare />
+              </div>
+              <span className="font-medium text-xl tracking-tight">
+                Guide Editor
+              </span>
+            </div>
             <button
-              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-              onClick={handleReloadContent}
+              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white text-sm font-medium px-6 py-1 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 rounded-md transition"
+              onClick={async () => {
+                const db = getFirestore(firebaseApp);
+                try {
+                  const docCollection = collection(
+                    doc(db, 'editor-documents', id),
+                    'edits'
+                  );
+                  await runTransaction(
+                    getFirestore(firebaseApp),
+                    async transaction => {
+                      const v = await transaction;
+                      if (!v.exists()) {
+                        transaction.set(docRef, {});
+                      }
+
+                      const newPopulation = doc.data().population + 1;
+                      transaction.update(docRef, { population: newPopulation });
+                    }
+                  );
+                  console.log('Transaction successfully committed!');
+                } catch (e) {
+                  console.log('Transaction failed: ', e);
+                }
+              }}
             >
-              Reload Content from Github
+              Save
             </button>
-          )}
-          {filePath && (
+          </div>
+          <div className="flex items-center">
+            {/*<ButtonGroup*/}
+            {/*  options={['cpp', 'java', 'py']}*/}
+            {/*  value={userSettings.lang}*/}
+            {/*  onChange={v => userSettings.setLang(v)}*/}
+            {/*  labelMap={LANGUAGE_LABELS}*/}
+            {/*/>*/}
+            <nav className="flex space-x-1" aria-label="Tabs">
+              {['cpp', 'java', 'py'].map((tab: Language) => (
+                <button
+                  key={tab}
+                  className={classNames(
+                    tab === userSettings.lang
+                      ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
+                    'px-3 py-2 font-medium text-sm rounded-md focus:outline-none'
+                  )}
+                  onClick={() => userSettings.setLang(tab)}
+                >
+                  {LANGUAGE_LABELS[tab]}
+                </button>
+              ))}
+            </nav>
+
+            <div className="mx-4 block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
+
             <a
-              href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
-                filePath
-              )}`}
+              href="/general/contributing#adding-a-solution"
               target="_blank"
-              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-              rel="noreferrer"
+              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white inline-flex items-center space-x-2 font-medium text-sm group"
             >
-              View File on Github &rarr;
+              <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
+              <span>Documentation</span>
             </a>
-          )}
+
+            <div className="mx-4 block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
+
+            <button
+              onClick={() =>
+                userSettings.setTheme(isDarkMode ? 'light' : 'dark')
+              }
+              className="-mx-1 p-1 border-2 border-transparent text-gray-400 dark:text-gray-400 rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+            >
+              {isDarkMode ? (
+                <svg
+                  className="h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
+                </svg>
+              )}
+            </button>
+
+            {/*<button*/}
+            {/*  className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
+            {/*  onClick={() => {*/}
+            {/*    if (tab == 'content') {*/}
+            {/*      setMarkdown(old =>*/}
+            {/*        prettier.format(old, {*/}
+            {/*          endOfLine: 'lf',*/}
+            {/*          semi: true,*/}
+            {/*          singleQuote: true,*/}
+            {/*          tabWidth: 2,*/}
+            {/*          trailingComma: 'es5',*/}
+            {/*          arrowParens: 'avoid',*/}
+            {/*          useTabs: true,*/}
+            {/*          proseWrap: 'always',*/}
+            {/*          parser: 'mdx',*/}
+            {/*          plugins: [markdownParser],*/}
+            {/*        })*/}
+            {/*      );*/}
+            {/*    } else {*/}
+            {/*      setProblems(old =>*/}
+            {/*        prettier.format(old, {*/}
+            {/*          endOfLine: 'lf',*/}
+            {/*          semi: true,*/}
+            {/*          singleQuote: true,*/}
+            {/*          tabWidth: 2,*/}
+            {/*          useTabs: false,*/}
+            {/*          trailingComma: 'es5',*/}
+            {/*          arrowParens: 'avoid',*/}
+            {/*          parser: 'json',*/}
+            {/*          plugins: [babelParser],*/}
+            {/*        })*/}
+            {/*      );*/}
+            {/*    }*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  Prettify {tab === 'content' ? 'Content' : 'Problems'}*/}
+            {/*</button>*/}
+
+            {/*{filePath && (*/}
+            {/*  <button*/}
+            {/*    className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
+            {/*    onClick={handleReloadContent}*/}
+            {/*  >*/}
+            {/*    Reload Content from Github*/}
+            {/*  </button>*/}
+            {/*)}*/}
+            {/*{filePath && (*/}
+            {/*  <a*/}
+            {/*    href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(*/}
+            {/*      filePath*/}
+            {/*    )}`}*/}
+            {/*    target="_blank"*/}
+            {/*    className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
+            {/*    rel="noreferrer"*/}
+            {/*  >*/}
+            {/*    View File on Github &rarr;*/}
+            {/*  </a>*/}
+            {/*)}*/}
+          </div>
         </div>
 
         {typeof window !== 'undefined' && (
@@ -391,53 +458,6 @@ export default function EditorPage(props: PageProps) {
                 className="flex flex-col"
                 style={{ maxWidth: 'calc(100% - 310px)' }}
               >
-                <div className="border-b border-gray-200 dark:border-gray-700 py-2 px-2 flex-shrink-0 flex items-center justify-between">
-                  <ButtonGroup
-                    options={['cpp', 'java', 'py']}
-                    value={userSettings.lang}
-                    onChange={v => userSettings.setLang(v)}
-                    labelMap={LANGUAGE_LABELS}
-                  />
-                  {/* Settings button */}
-                  <button
-                    onClick={() =>
-                      userSettings.setTheme(isDarkMode ? 'light' : 'dark')
-                    }
-                    className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
-                  >
-                    {isDarkMode ? (
-                      <svg
-                        className="h-6 w-6"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="h-6 w-6"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                        />
-                      </svg>
-                    )}
-                  </button>
-                </div>
                 <div className="overflow-y-auto relative flex-1">
                   <div className="markdown p-4">
                     <EditorContext.Provider

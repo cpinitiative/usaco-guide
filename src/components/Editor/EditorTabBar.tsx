@@ -21,14 +21,14 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   onTabSelect,
 }) => {
   return (
-    <div className="flex bg-gray-300 dark:bg-gray-900">
+    <div className="flex bg-gray-900">
       {tabs.map(tab => (
         <button
           key={tab.value}
           className={classNames(
             tab.value === activeTab
-              ? 'dark:bg-gray-900 dark:text-gray-200 text-gray-700 bg-white'
-              : 'dark:text-gray-400 dark:hover:bg-gray-800 text-gray-600 hover:bg-gray-200 active:bg-gray-100 dark:active:bg-gray-900',
+              ? 'bg-[#1E1E1E] text-gray-200'
+              : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
             'px-4 py-2 font-medium text-sm focus:outline-none'
           )}
           onClick={() => onTabSelect(tab)}
