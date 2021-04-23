@@ -1,0 +1,153 @@
+---
+id: usaco-973
+source: USACO Platinum 2019 December
+title: Bessie's Snow Cow
+author: Dustin Miao
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_snowcow_platinum_dec19.html)
+
+## Explanation
+
+Although the official solution uses manipulation on two BITs, its more straightforward to use lazy propogation on a segment tree. 
+As with the official solution, we first create an array using a preorder traversal of the tree: thus, each node's subtree lies in
+a contiguous range following the position of that node. We store the start and end points of the range of each node x's subtree in 
+arrays \texttt{LL[x]} and \texttt{RR[x]}. Note that each node's subtree size can be calculated by simply subtracting the bounds of this range.
+
+We then construct a lazy segment tree on an empty array as a base. This will represent the number of distinct colors at each node
+Note that each query can be calculated by querying the sum of distinct colors from the endpoints of each node. 
+Similarly to the official solution, we keep track of updates for each color. For each new update ($c$, $x$), we only update the tree by: 
+- Ignoring the update if one of the node's ancestors already has been colored by color $c$ (because this would be redundant)
+- Removing all updates of color $c$ in the subtree of $x$ 
+- Using lazy propogation to increase the subtree of $x$ by 1
+
+We can keep track of the updates of a certain color in either a map or a set. Since each update query is added and removed at most once
+from the set, this solution will run in time with binary search on the appropriate range. 
+
+**Time Complexity:** $\mathcal O(N + Q \log^2 N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <set>
+#include <vector>
+using namespace std;
+
+typedef long long ll;
+typedef pair<int, int> pii;
+
+#define MP make_pair
+#define PB push_back
+#define FF first
+#define SS second
+
+int N, Q;
+ll T[400005], L[400005];
+
+// T[] is segment tree
+// L[] is lazy tag
+
+void pushdown(int t, int tl, int tr) {
+    if (L[t]) {
+        int tm = (tl + tr) >> 1;
+        T[t << 1] += (tm - tl + 1) * L[t];
+        L[t << 1] += L[t];
+
+        T[t << 1 | 1] += (tr - tm) * L[t];
+        L[t << 1 | 1] += L[t];
+        L[t] = 0;
+    }
+}
+
+void update(int l, int r, int v, int t = 1, int tl = 1, int tr = N) {
+    if (tl != tr)
+        pushdown(t, tl, tr);
+    if (r < tl || tr < l || tr < tl)
+        return;
+    if (l <= tl && tr <= r) {
+        T[t] += (tr - tl + 1) * v;
+        L[t] += v;
+        return;
+    }
+
+    int tm = (tl + tr) >> 1;
+    update(l, r, v, t << 1, tl, tm);
+    update(l, r, v, t << 1 | 1, tm + 1, tr);
+    T[t] = T[t << 1] + T[t << 1 | 1];
+}
+
+ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
+    if (tl != tr)
+        pushdown(t, tl, tr);
+    if (r < tl || tr < l || tr < tl)
+        return 0;
+    if (l <= tl && tr <= r)
+        return T[t];
+    
+    int tm = (tl + tr) >> 1;
+    return query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr);
+}
+
+vector<int> adj[100005];
+int LL[100005], RR[100005], tt;
+set<pii> S[100005];
+
+// adj[] stores tree
+// LL[] stores left bound of subtree interval
+// RR[] stores right bound of subtree interval
+// tt is current index/"time" during dfs
+// S[] stores current active intervals of each color
+
+void init(int u, int p) {
+    LL[u] = ++tt;
+    for (int v : adj[u]) 
+        if (v != p)
+            init(v, u);
+    RR[u] = tt;
+}
+
+int main(void) {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    freopen("snowcow.in", "r", stdin);
+    freopen("snowcow.out", "w", stdout);
+
+    cin >> N >> Q;
+    for (int i = 1, a, b; i < N; i++) {
+        cin >> a >> b;
+        adj[a].PB(b);
+        adj[b].PB(a);
+    }
+    init(1, 0);
+    
+    while (Q--) {
+        int t; cin >> t;
+        if (t == 1) {
+            int x, c; cin >> x >> c;
+            auto it = S[c].lower_bound(MP(LL[x], 0)); 
+            // step 1: check if ancestor already has same color
+            if (it != S[c].begin() && prev(it)->SS >= RR[x])
+                continue;
+            // step 2: remove updates on subtree
+            for (; it != S[c].end() && it->FF <= RR[x];) {
+                update(it->FF, it->SS, -1);
+                S[c].erase(it++);
+            }
+            // step 3: update current node
+            update(LL[x], RR[x], 1);
+            S[c].insert(MP(LL[x], RR[x]));
+        }
+        else if (t == 2) {
+            int x; cin >> x;
+            cout << query(LL[x], RR[x]) << '\n';
+        }
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
