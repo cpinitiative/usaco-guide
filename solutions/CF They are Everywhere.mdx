@@ -1,0 +1,181 @@
+---
+id: cf-701C
+source: CF
+title: They are Everywhere
+author: Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/46283)
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+ 
+using std::cout;
+using std::endl;
+using std::vector;
+ 
+/**
+ * https://codeforces.com/problemset/problem/701/C
+ * 7
+ * bcAAcbc should output 3
+ * 6
+ * aaBCCe should output 5
+ */
+int main() {
+    int flat_num;
+    std::cin >> flat_num;
+    vector<char> flats(flat_num);
+    std::unordered_set<char> types;
+    for (char& p : flats) {
+        std::cin >> p;
+        types.insert(p);
+    }
+ 
+    int lo = 0;
+    int hi = flat_num;
+    int valid = -1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+ 
+        bool all_catchable = false;    
+        std::unordered_map<char, int> curr_pokemon;
+        for (int to_add = 0; to_add < flat_num; to_add++) {
+            curr_pokemon[flats[to_add]]++;
+            if (to_add >= mid) {
+                char to_remove = flats[to_add - mid];
+                curr_pokemon[to_remove]--;
+                if (curr_pokemon[to_remove] == 0) {
+                    curr_pokemon.erase(to_remove);
+                }
+            }
+            if (curr_pokemon.size() == types.size()) {
+                all_catchable = true;
+                break;
+            }
+        }
+    
+        if (all_catchable) {
+            valid = mid;
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
+    }
+    cout << valid << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.HashSet;
+ 
+public class Everywhere {
+    public static void main(String[] args) throws IOException  {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        int flatNum = Integer.parseInt(read.readLine());
+        String flats = read.readLine();
+ 
+        HashSet<Character> types = new HashSet<>();
+        for (int f = 0; f < flatNum; f++) {
+            types.add(flats.charAt(f));
+        }
+ 
+        int lo = 0;
+        int hi = flatNum;
+        int valid = -1;
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+ 
+            boolean allCatchable = false;
+            HashMap<Character, Integer> currCaught = new HashMap<>();
+            for (int toAdd = 0; toAdd < flatNum; toAdd++) {
+                currCaught.put(flats.charAt(toAdd), currCaught.getOrDefault(flats.charAt(toAdd), 0) + 1);
+                if (toAdd >= mid) {
+                    char toRemove = flats.charAt(toAdd - mid);
+                    currCaught.put(toRemove, currCaught.get(toRemove) - 1);
+                    if (currCaught.get(toRemove) == 0) {
+                        currCaught.remove(toRemove);
+                    }
+                }
+                if (currCaught.size() == types.size()) {
+                    allCatchable = true;
+                    break;
+                }
+            }
+ 
+            if (allCatchable) {
+                valid = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        System.out.println(valid);
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+"""
+https://codeforces.com/contest/701/problem/C
+7
+bcAAcbc should output 3
+6
+aaBCCe should output 5
+"""
+flat_num = int(input())
+flats = input()
+types = set(flats)
+ 
+lo = 0
+hi = flat_num
+valid = -1
+while lo <= hi:
+    mid = (lo + hi) // 2
+ 
+    all_catchable = False
+    curr_caught = {}
+    for to_add in range(flat_num):
+        if flats[to_add] not in curr_caught:
+            curr_caught[flats[to_add]] = 0
+        curr_caught[flats[to_add]] += 1
+ 
+        if to_add >= mid:
+            to_remove = flats[to_add - mid]
+            curr_caught[to_remove] -= 1
+            if curr_caught[to_remove] == 0:
+                del curr_caught[to_remove]
+ 
+        if len(curr_caught) == len(types):
+            all_catchable = True
+            break
+ 
+    if all_catchable:
+        valid = mid
+        hi = mid - 1
+    else:
+        lo = mid + 1
+print(valid)
+```
+
+</PySection>
+
+</LanguageSection>
