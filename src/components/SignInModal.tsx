@@ -3,6 +3,7 @@ import { XIcon } from '@heroicons/react/solid';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React, { Fragment } from 'react';
 import { useFirebaseApp } from '../hooks/useFirebase';
+import { LoadingSpinner } from './elements/LoadingSpinner';
 
 export interface SignInModalProps {
   isOpen: boolean;
@@ -162,6 +163,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                   {/*  </svg>*/}
                   {/*  <span className="ml-3">Sign In With Github</span>*/}
                   {/*</button>*/}
+                  {isSigningIn && <LoadingSpinner />}
                 </div>
                 {error && (
                   <div>
