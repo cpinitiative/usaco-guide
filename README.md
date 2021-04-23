@@ -13,17 +13,10 @@ Thank you to the following companies:
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
 - And [more](docs/Companies.md)!
 
-## Documentation
+## Documentation + Contributing
 
-- To get this site running locally, refer to the
-  [Front End Documentation](docs/Front%20End%20Documentation.md).
-- For information regarding Content Writing, refer to the
-  [Content Documentation](docs/Content%20Documentation.md).
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get
-started, simply pick an
+See the [contributing module](https://usaco.guide/general/contributing). All
+contributions are welcome! To get started, simply pick an
 [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work
 on, leave a comment, and submit a Pull Request!
 

@@ -17,16 +17,11 @@ export type Chapter = {
 const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   general: [
     {
-      name: 'About This Guide',
-      description:
-        "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing'],
-    },
-    {
       name: 'Getting Started',
       description: "Start here if you're new to competitive programming.",
       items: [
-        'intro',
+        'using-this-guide',
+        'intro-cp',
         'choosing-lang',
         'resources-learning-to-code',
         'running-code-online',
@@ -36,7 +31,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       ],
     },
     {
-      name: 'General',
+      name: 'Contributing',
+      description: 'How you can add content to the guide.',
+      items: ['contributing', 'adding-solution', 'modules', 'working-mdx'],
+    },
+    {
+      name: 'General Resources',
       description: 'Useful for competitors of all levels.',
       items: [
         'debugging-general',
