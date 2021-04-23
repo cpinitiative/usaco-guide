@@ -22,20 +22,33 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
 }) => {
   return (
     <div className="flex bg-gray-900">
-      {tabs.map(tab => (
+      <div className="flex-1">
+        {tabs.map(tab => (
+          <button
+            key={tab.value}
+            className={classNames(
+              tab.value === activeTab
+                ? 'bg-[#1E1E1E] text-gray-200'
+                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+              'px-4 py-2 font-medium text-sm focus:outline-none'
+            )}
+            onClick={() => onTabSelect(tab)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <div className="flex-shrink-0">
         <button
-          key={tab.value}
           className={classNames(
-            tab.value === activeTab
-              ? 'bg-[#1E1E1E] text-gray-200'
-              : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+            'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
             'px-4 py-2 font-medium text-sm focus:outline-none'
           )}
-          onClick={() => onTabSelect(tab)}
+          onClick={() => console.log('prettify @jeffrey')}
         >
-          {tab.label}
+          Format Code
         </button>
-      ))}
+      </div>
     </div>
   );
 };
