@@ -1,5 +1,9 @@
+import { Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon, ExternalLinkIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import { Link } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
+import { Fragment, useContext } from 'react';
 // import { SolutionInfo } from '../../models/solution';
 import {
   moduleIDToSectionMap,
@@ -9,13 +13,16 @@ import {
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';
 import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
+import {
+  Language,
+  LANGUAGE_LABELS,
+} from '../../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
 import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
 import { Frequency } from '../../Frequency';
 import MarkCompleteButton from '../MarkCompleteButton';
-import ModuleHeadersLinkList from './ModuleHeadersLinkList';
-// import { timeAgoString } from '../Dashboard/ModuleLink';
 
 export default function ModuleHeaders({
   moduleLinks,
@@ -27,6 +34,8 @@ export default function ModuleHeaders({
     moduleProgress,
     handleCompletionChange,
   } = useContext(MarkdownLayoutContext);
+
+  const { lang, setLang } = useContext(UserDataContext);
 
   // this is for modules
   const problemIDs =
@@ -115,14 +124,113 @@ export default function ModuleHeaders({
         } */}
       </div>
 
-      {moduleHeaderLinks?.length > 0 && (
-        <ModuleHeadersLinkList
-          title={
-            markdownData instanceof ModuleInfo ? 'Prerequisites' : 'Appears In'
-          }
-          links={moduleHeaderLinks}
-        />
+      {/*{moduleHeaderLinks?.length > 0 && (*/}
+      {/*  <ModuleHeadersLinkList*/}
+      {/*    title={*/}
+      {/*      markdownData instanceof ModuleInfo ? 'Prerequisites' : 'Appears In'*/}
+      {/*    }*/}
+      {/*    links={moduleHeaderLinks}*/}
+      {/*  />*/}
+      {/*)}*/}
+
+      {markdownData instanceof ModuleInfo && markdownData.description && (
+        <p className="italic mb-4">{markdownData.description}</p>
       )}
+
+      <div className="rounded-md bg-gray-50 dark:bg-gray-900 p-4 mb-4 relative">
+        <Menu as="div" className="relative inline-block text-left">
+          {({ open }) => (
+            <>
+              <div>
+                <Menu.Button
+                  className="inline-flex items-center w-full px-1 -mx-1 rounded-md text-sm leading-6 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500"
+                  style={{ width: 'fit-content' }}
+                >
+                  Language: {LANGUAGE_LABELS[lang]}
+                  <ChevronDownIcon
+                    className="-mr-1 ml-1 h-5 w-5 text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Menu.Button>
+              </div>
+
+              <Transition
+                show={open}
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items
+                  static
+                  className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                >
+                  <div className="py-1">
+                    {['cpp', 'java', 'py'].map((lang: Language) => (
+                      <Menu.Item key={lang}>
+                        {({ active }) => (
+                          <button
+                            className={classNames(
+                              active
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-700',
+                              'block px-4 py-2 text-sm focus:outline-none w-full text-left'
+                            )}
+                            onClick={() => setLang(lang)}
+                          >
+                            {LANGUAGE_LABELS[lang]}
+                          </button>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </>
+          )}
+        </Menu>
+        <Link
+          to="/editor"
+          className="text-sm leading-6 font-medium text-gray-600 my-0 dark:text-gray-100 inline-flex items-center space-x-1.5 absolute top-4 right-4"
+        >
+          <span>Edit This Page</span>
+          <ExternalLinkIcon className="h-5 w-5 text-gray-400" />
+        </Link>
+
+        {moduleHeaderLinks?.length > 0 && (
+          <div>
+            <div className="h-4" />
+            <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-100">
+              Prerequisites
+            </h3>
+            <div className="text-sm leading-5 text-gray-700 mt-2 no-y-margin dark:text-gray-300">
+              <ul className="list-disc list-inside pl-3 space-y-1">
+                {moduleHeaderLinks.map(link => (
+                  <li key={link.url ?? link.label}>
+                    {link.url ? (
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline text-black dark:text-gray-200"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <span className="text-black dark:text-gray-200">
+                        {link.label}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
 
       {problem && (
         <a
@@ -147,10 +255,6 @@ export default function ModuleHeaders({
             />
           </svg>
         </a>
-      )}
-
-      {markdownData instanceof ModuleInfo && markdownData.description && (
-        <p className="italic">{markdownData.description}</p>
       )}
     </>
   );
