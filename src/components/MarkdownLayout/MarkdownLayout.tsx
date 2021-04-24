@@ -35,7 +35,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
           style={{ width: '20rem' }}
         />
         {tableOfContents.length > 1 && (
-          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+          <div className="hidden 2xl:block ml-6 mr-6 w-64 mt-48 flex-shrink-0 order-3">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
@@ -156,7 +156,7 @@ export default function MarkdownLayout({
 
               <ModuleHeaders moduleLinks={moduleLinks} />
 
-              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
+              <div className={tableOfContents.length > 1 ? '2xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
 
