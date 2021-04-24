@@ -14,6 +14,7 @@ import classNames from 'classnames';
 import { collection, doc, getFirestore } from 'firebase/firestore';
 import { PageProps } from 'gatsby';
 import babelParser from 'prettier/parser-babel';
+import markdownParser from 'prettier/parser-markdown';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
 import { useRef, useState } from 'react';
@@ -186,14 +187,47 @@ export default function EditorPage(props: PageProps) {
   };
   const firebaseApp = React.useContext(FirebaseAppContext);
 
+  const handleFormatCode = () => {
+    if (tab == 'content') {
+      setMarkdown(old =>
+        prettier.format(old, {
+          endOfLine: 'lf',
+          semi: true,
+          singleQuote: true,
+          tabWidth: 2,
+          trailingComma: 'es5',
+          arrowParens: 'avoid',
+          useTabs: true,
+          proseWrap: 'always',
+          parser: 'mdx',
+          plugins: [markdownParser],
+        })
+      );
+    } else {
+      setProblems(old =>
+        prettier.format(old, {
+          endOfLine: 'lf',
+          semi: true,
+          singleQuote: true,
+          tabWidth: 2,
+          useTabs: false,
+          trailingComma: 'es5',
+          arrowParens: 'avoid',
+          parser: 'json',
+          plugins: [babelParser],
+        })
+      );
+    }
+  };
+
   return (
     <Layout>
       <SEO title="Editor" />
 
       <div className="h-screen flex flex-col">
-        <div className="block py-2 px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap">
+        <div className="block px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap py-2 mr-8">
               <div className="h-8 w-8 flex-shrink-0">
                 <LogoSquare />
               </div>
@@ -201,8 +235,16 @@ export default function EditorPage(props: PageProps) {
                 Guide Editor
               </span>
             </div>
+            <button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">
+              {/*<ArchiveIcon className="h-4 w-4" />*/}
+              <span>History</span>
+            </button>
+            <button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">
+              {/*<ShareIcon className="h-4 w-4" />*/}
+              <span>Share</span>
+            </button>
             <button
-              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white text-sm font-medium px-6 py-1 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 rounded-md transition"
+              className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
               onClick={async () => {
                 const db = getFirestore(firebaseApp);
                 try {
@@ -245,7 +287,7 @@ export default function EditorPage(props: PageProps) {
                     tab === userSettings.lang
                       ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
-                    'px-3 py-2 font-medium text-sm rounded-md focus:outline-none'
+                    'px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition'
                   )}
                   onClick={() => userSettings.setLang(tab)}
                 >
@@ -259,9 +301,9 @@ export default function EditorPage(props: PageProps) {
             <a
               href="/general/contributing#adding-a-solution"
               target="_blank"
-              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group"
+              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group transition"
             >
-              <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
+              <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300 transition" />
               <span>Documentation</span>
             </a>
 
@@ -305,44 +347,6 @@ export default function EditorPage(props: PageProps) {
                 </svg>
               )}
             </button>
-
-            {/*<button*/}
-            {/*  className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
-            {/*  onClick={() => {*/}
-            {/*    if (tab == 'content') {*/}
-            {/*      setMarkdown(old =>*/}
-            {/*        prettier.format(old, {*/}
-            {/*          endOfLine: 'lf',*/}
-            {/*          semi: true,*/}
-            {/*          singleQuote: true,*/}
-            {/*          tabWidth: 2,*/}
-            {/*          trailingComma: 'es5',*/}
-            {/*          arrowParens: 'avoid',*/}
-            {/*          useTabs: true,*/}
-            {/*          proseWrap: 'always',*/}
-            {/*          parser: 'mdx',*/}
-            {/*          plugins: [markdownParser],*/}
-            {/*        })*/}
-            {/*      );*/}
-            {/*    } else {*/}
-            {/*      setProblems(old =>*/}
-            {/*        prettier.format(old, {*/}
-            {/*          endOfLine: 'lf',*/}
-            {/*          semi: true,*/}
-            {/*          singleQuote: true,*/}
-            {/*          tabWidth: 2,*/}
-            {/*          useTabs: false,*/}
-            {/*          trailingComma: 'es5',*/}
-            {/*          arrowParens: 'avoid',*/}
-            {/*          parser: 'json',*/}
-            {/*          plugins: [babelParser],*/}
-            {/*        })*/}
-            {/*      );*/}
-            {/*    }*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  Prettify {tab === 'content' ? 'Content' : 'Problems'}*/}
-            {/*</button>*/}
 
             {/*{filePath && (*/}
             {/*  <button*/}
