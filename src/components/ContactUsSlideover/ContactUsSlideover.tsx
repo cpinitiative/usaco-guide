@@ -66,9 +66,9 @@ export default function ContactUsSlideover({
   onClose,
 }: {
   isOpen: boolean;
-  onClose: any;
+  onClose: () => void;
   activeModule?: ModuleInfo;
-}) {
+}): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

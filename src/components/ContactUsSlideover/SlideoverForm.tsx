@@ -12,7 +12,7 @@ type SlideoverProps = {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
 
-export default function SlideoverForm(props: SlideoverProps) {
+export default function SlideoverForm(props: SlideoverProps): JSX.Element {
   return (
     <Transition.Root show={props.isOpen} as={Fragment}>
       <Dialog
