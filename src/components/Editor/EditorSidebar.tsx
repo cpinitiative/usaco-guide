@@ -32,7 +32,7 @@ export const EditorSidebar: React.FC<{ className?: string }> = ({
           className="cursor-pointer"
           onClick={() => console.log('Open file?')}
         >
-          <span className="text-gray-500 group-hover:text-gray-300 text-sm transition">
+          <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
             1_General/Contributing.mdx
           </span>
         </div>
@@ -42,7 +42,7 @@ export const EditorSidebar: React.FC<{ className?: string }> = ({
           className="cursor-pointer"
           onClick={() => console.log('Open file?')}
         >
-          <span className="text-gray-500 group-hover:text-gray-300 text-sm transition">
+          <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
             1_General/About_MDX.mdx
           </span>
         </div>
