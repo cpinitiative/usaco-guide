@@ -21,6 +21,7 @@ import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
+import { EditorSidebar } from '../components/Editor/EditorSidebar';
 import EditorTabBar from '../components/Editor/EditorTabBar';
 import {
   conf as mdxConf,
@@ -224,7 +225,7 @@ export default function EditorPage(props: PageProps) {
     <Layout>
       <SEO title="Editor" />
 
-      <div className="h-screen flex flex-col">
+      <div className="h-screen flex flex-col min-w-[768px]">
         <div className="block px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap py-2 mr-8">
@@ -382,81 +383,79 @@ export default function EditorPage(props: PageProps) {
               onDrag={() => {
                 if (editor.current !== undefined) editor.current.layout();
               }}
+              minSize={[600, 10]}
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
-              <div
-                className="h-full tw-forms-disable-all-descendants"
-                style={{ minWidth: '300px' }}
-              >
-                <EditorTabBar
-                  tabs={[
-                    { label: 'module.mdx', value: 'module.mdx' },
-                    {
-                      label: 'module.problems.mdx',
-                      value: 'module.problems.mdx',
-                    },
-                  ]}
-                  activeTab={
-                    tab == 'content' ? 'module.mdx' : 'module.problems.mdx'
-                  }
-                  onTabSelect={tab =>
-                    setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
-                  }
-                />
-                <Editor
-                  theme="vs-dark"
-                  path={
-                    tab === 'content'
-                      ? 'inmemory://usaco-guide/module.mdx'
-                      : 'inmemory://usaco-guide/module.problems.json'
-                  }
-                  language={tab === 'content' ? 'custom-mdx' : 'json'}
-                  value={tab === 'content' ? markdown : problems}
-                  onChange={(v, e) =>
-                    tab === 'content' ? setMarkdown(v) : setProblems(v)
-                  }
-                  options={{
-                    wordWrap: 'on',
-                    rulers: [80],
-                    minimap: { enabled: false },
-                  }}
-                  beforeMount={monaco => {
-                    // sort of MDX (basically markdown with mdx comments)
-                    monaco.languages.register({ id: 'custom-mdx' });
-                    monaco.languages.setMonarchTokensProvider(
-                      'custom-mdx',
-                      mdxLang
-                    );
-                    monaco.languages.setLanguageConfiguration(
-                      'custom-mdx',
-                      mdxConf
-                    );
-                    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-                      validate: true,
-                      schemas: [
-                        {
-                          fileMatch: ['*.json'],
-                          uri: 'https://usaco.guide/problems.schema.json',
-                          schema: problemsSchema,
-                        },
-                      ],
-                    });
-                  }}
-                  onMount={e => {
-                    editor.current = e;
-                    e.getModel().updateOptions({ insertSpaces: false });
+              <div className="flex items-stretch">
+                <EditorSidebar className="h-full flex-shrink-0" />
+                <div className="h-full tw-forms-disable-all-descendants flex-1 w-0">
+                  <EditorTabBar
+                    tabs={[
+                      { label: 'module.mdx', value: 'module.mdx' },
+                      {
+                        label: 'module.problems.mdx',
+                        value: 'module.problems.mdx',
+                      },
+                    ]}
+                    activeTab={
+                      tab == 'content' ? 'module.mdx' : 'module.problems.mdx'
+                    }
+                    onTabSelect={tab =>
+                      setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
+                    }
+                  />
+                  <Editor
+                    theme="vs-dark"
+                    path={
+                      tab === 'content'
+                        ? 'inmemory://usaco-guide/module.mdx'
+                        : 'inmemory://usaco-guide/module.problems.json'
+                    }
+                    language={tab === 'content' ? 'custom-mdx' : 'json'}
+                    value={tab === 'content' ? markdown : problems}
+                    onChange={(v, e) =>
+                      tab === 'content' ? setMarkdown(v) : setProblems(v)
+                    }
+                    options={{
+                      wordWrap: 'on',
+                      rulers: [80],
+                      minimap: { enabled: false },
+                    }}
+                    beforeMount={monaco => {
+                      // sort of MDX (basically markdown with mdx comments)
+                      monaco.languages.register({ id: 'custom-mdx' });
+                      monaco.languages.setMonarchTokensProvider(
+                        'custom-mdx',
+                        mdxLang
+                      );
+                      monaco.languages.setLanguageConfiguration(
+                        'custom-mdx',
+                        mdxConf
+                      );
+                      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+                        validate: true,
+                        schemas: [
+                          {
+                            fileMatch: ['*.json'],
+                            uri: 'https://usaco.guide/problems.schema.json',
+                            schema: problemsSchema,
+                          },
+                        ],
+                      });
+                    }}
+                    onMount={e => {
+                      editor.current = e;
+                      e.getModel().updateOptions({ insertSpaces: false });
 
-                    setTimeout(() => {
-                      e.layout();
-                      e.focus();
-                    }, 0);
-                  }}
-                />
+                      setTimeout(() => {
+                        e.layout();
+                        e.focus();
+                      }, 0);
+                    }}
+                  />
+                </div>
               </div>
-              <div
-                className="flex flex-col"
-                style={{ maxWidth: 'calc(100% - 310px)' }}
-              >
+              <div className="flex flex-col">
                 <div className="overflow-y-auto relative flex-1">
                   <div className="markdown p-4">
                     <EditorContext.Provider
