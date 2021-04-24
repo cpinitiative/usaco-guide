@@ -23,6 +23,7 @@ import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
 import { Frequency } from '../../Frequency';
 import MarkCompleteButton from '../MarkCompleteButton';
+import getSuffix from '../TableOfContents/getSuffix';
 
 export default function ModuleHeaders({
   moduleLinks,
@@ -137,76 +138,79 @@ export default function ModuleHeaders({
         <p className="italic mb-4">{markdownData.description}</p>
       )}
 
-      <div className="rounded-md bg-gray-50 dark:bg-gray-900 p-4 mb-4 relative">
-        <Menu as="div" className="relative inline-block text-left">
-          {({ open }) => (
-            <>
-              <div>
-                <Menu.Button
-                  className="inline-flex items-center w-full px-1 -mx-1 rounded-md text-sm leading-6 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500"
-                  style={{ width: 'fit-content' }}
-                >
-                  Language: {LANGUAGE_LABELS[lang]}
-                  <ChevronDownIcon
-                    className="-mr-1 ml-1 h-5 w-5 text-gray-500"
-                    aria-hidden="true"
-                  />
-                </Menu.Button>
-              </div>
+      <div className="rounded-md bg-gray-50 dark:bg-gray-900 px-4 py-5 sm:p-6 mb-4">
+        <div className="flex items-center justify-between">
+          <Menu as="div" className="inline-block text-left relative">
+            {({ open }) => (
+              <>
+                <div className="-mt-1">
+                  <Menu.Button
+                    className="inline-flex items-center w-full px-1 -mx-1 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-900 focus:ring-blue-500"
+                    style={{ width: 'fit-content' }}
+                  >
+                    Language: {LANGUAGE_LABELS[lang]}
+                    <ChevronDownIcon
+                      className="-mr-1 ml-1 h-5 w-5 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
+                </div>
 
-              <Transition
-                show={open}
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <Menu.Items
-                  static
-                  className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                <Transition
+                  show={open}
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
                 >
-                  <div className="py-1">
-                    {['cpp', 'java', 'py'].map((lang: Language) => (
-                      <Menu.Item key={lang}>
-                        {({ active }) => (
-                          <button
-                            className={classNames(
-                              active
-                                ? 'bg-gray-100 text-gray-900'
-                                : 'text-gray-700',
-                              'block px-4 py-2 text-sm focus:outline-none w-full text-left'
-                            )}
-                            onClick={() => setLang(lang)}
-                          >
-                            {LANGUAGE_LABELS[lang]}
-                          </button>
-                        )}
-                      </Menu.Item>
-                    ))}
-                  </div>
-                </Menu.Items>
-              </Transition>
-            </>
-          )}
-        </Menu>
-        <Link
-          to="/editor"
-          className="text-sm leading-6 font-medium text-gray-600 my-0 dark:text-gray-100 inline-flex items-center space-x-1.5 absolute top-4 right-4"
-        >
-          <span>Edit This Page</span>
-          <ExternalLinkIcon className="h-5 w-5 text-gray-400" />
-        </Link>
+                  <Menu.Items
+                    static
+                    className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    <div className="py-1">
+                      {['cpp', 'java', 'py'].map((lang: Language) => (
+                        <Menu.Item key={lang}>
+                          {({ active }) => (
+                            <button
+                              className={classNames(
+                                active
+                                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                                  : 'text-gray-700 dark:text-gray-300',
+                                'block px-4 py-2 text-sm focus:outline-none w-full text-left'
+                              )}
+                              onClick={() => setLang(lang)}
+                            >
+                              {LANGUAGE_LABELS[lang]}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      ))}
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </>
+            )}
+          </Menu>
+
+          <Link
+            to={`/editor?filepath=${getSuffix()}`}
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 my-0 dark:text-gray-400 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
+          >
+            <span>Edit This Page</span>
+            <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
+          </Link>
+        </div>
 
         {moduleHeaderLinks?.length > 0 && (
           <div>
-            <div className="h-4" />
-            <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-100">
+            <div className="h-4 sm:h-6" />
+            <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-200">
               Prerequisites
             </h3>
-            <div className="text-sm leading-5 text-gray-700 mt-2 no-y-margin dark:text-gray-300">
+            <div className="text-sm leading-5 text-gray-700 mt-1 no-y-margin dark:text-gray-300">
               <ul className="list-disc list-inside pl-3 space-y-1">
                 {moduleHeaderLinks.map(link => (
                   <li key={link.url ?? link.label}>
@@ -230,32 +234,22 @@ export default function ModuleHeaders({
             </div>
           </div>
         )}
-      </div>
 
-      {problem && (
-        <a
-          href={problem.url}
-          target="_blank"
-          rel="noreferrer"
-          className="group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
-        >
-          Problem Statement
-          <svg
-            className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
-        </a>
-      )}
+        {problem && (
+          <div>
+            <div className="h-4 sm:h-6" />
+            <a
+              href={problem.url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-gray-800 hover:text-gray-900 my-0 dark:text-gray-200 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
+            >
+              <span>View Problem Statement</span>
+              <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
+            </a>
+          </div>
+        )}
+      </div>
     </>
   );
 }
