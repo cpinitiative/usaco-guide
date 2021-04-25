@@ -88,7 +88,7 @@ const AuthorCard = ({
             <div className="w-36 h-36 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
               <GatsbyImage
                 image={gatsbyImage.gatsbyImageData}
-                className="rounded-full"
+                className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
                 alt={author.name}
                 style={{ width: '100%', height: '100%' }}
               />
