@@ -217,9 +217,6 @@ export default class Block<
           markdown: applyPatch(current.markdown, transaction.patches.markdown),
           problems: applyPatch(current.problems, transaction.patches.problems),
         };
-        if (ids.length == 2) {
-          console.log(processedIds, id - 1);
-        }
 
         // need to use id - 1 because a transaction is how to go from state A to B, where
         // B is `current`, and `id` refers to B. Thus, id - ` allows us to get A.

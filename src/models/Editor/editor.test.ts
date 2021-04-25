@@ -168,6 +168,7 @@ describe('block', () => {
       data[3],
       data[5],
     ]);
+
     expect(block.getStates([2, 5]).map(s => s.val)).toStrictEqual([
       data[2],
       data[5],
@@ -176,5 +177,20 @@ describe('block', () => {
       data[2],
       data[5],
     ]);
+
+    expect(block.getStates([5, 2, 4]).map(s => s.val)).toStrictEqual([
+      data[5],
+      data[2],
+      data[4],
+    ]);
+    expect(block.getStates([5, 2, 4], true).map(s => s.val)).toStrictEqual([
+      data[5],
+      data[2],
+      data[4],
+    ]);
+
+    expect(() => block.getStates([14])).toThrowError();
+    expect(() => block.getStates([1, 2, 5, 14])).toThrowError();
+    expect(() => block.getStates([6, 4])).toThrowError();
   });
 });
