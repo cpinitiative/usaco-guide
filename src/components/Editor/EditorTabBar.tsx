@@ -30,7 +30,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
               tab.value === activeTab
                 ? 'bg-[#1E1E1E] text-gray-200'
                 : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
-              'px-4 py-2 font-medium text-sm focus:outline-none'
+              'px-4 py-2 font-medium text-sm focus:outline-none transition'
             )}
             onClick={() => onTabSelect(tab)}
           >
@@ -42,9 +42,9 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         <button
           className={classNames(
             'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
-            'px-4 py-2 font-medium text-sm focus:outline-none'
+            'px-3 py-2 font-medium text-sm focus:outline-none transition'
           )}
-          onClick={() => console.log('prettify @jeffrey')}
+          onClick={() => console.log('prettify')}
         >
           Format Code
         </button>

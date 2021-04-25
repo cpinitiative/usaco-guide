@@ -14,12 +14,14 @@ import classNames from 'classnames';
 import { collection, doc, getFirestore } from 'firebase/firestore';
 import { PageProps } from 'gatsby';
 import babelParser from 'prettier/parser-babel';
+import markdownParser from 'prettier/parser-markdown';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
+import { EditorSidebar } from '../components/Editor/EditorSidebar';
 import EditorTabBar from '../components/Editor/EditorTabBar';
 import {
   conf as mdxConf,
@@ -42,7 +44,7 @@ import useStickyState from '../hooks/useStickyState';
 import { ProblemMetadata, PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
 
 const RawMarkdownRenderer = React.lazy(
-  () => import('../components/DynamicMarkdownRenderer')
+  () => import('../components/DynamicMarkdownRenderer/DynamicMarkdownRenderer')
 );
 const Editor = React.lazy(() => import('@monaco-editor/react'));
 
@@ -186,14 +188,47 @@ export default function EditorPage(props: PageProps) {
   };
   const firebaseApp = React.useContext(FirebaseAppContext);
 
+  const handleFormatCode = () => {
+    if (tab == 'content') {
+      setMarkdown(old =>
+        prettier.format(old, {
+          endOfLine: 'lf',
+          semi: true,
+          singleQuote: true,
+          tabWidth: 2,
+          trailingComma: 'es5',
+          arrowParens: 'avoid',
+          useTabs: true,
+          proseWrap: 'always',
+          parser: 'mdx',
+          plugins: [markdownParser],
+        })
+      );
+    } else {
+      setProblems(old =>
+        prettier.format(old, {
+          endOfLine: 'lf',
+          semi: true,
+          singleQuote: true,
+          tabWidth: 2,
+          useTabs: false,
+          trailingComma: 'es5',
+          arrowParens: 'avoid',
+          parser: 'json',
+          plugins: [babelParser],
+        })
+      );
+    }
+  };
+
   return (
     <Layout>
       <SEO title="Editor" />
 
-      <div className="h-screen flex flex-col">
-        <div className="block py-2 px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap">
+      <div className="h-screen flex flex-col min-w-[768px]">
+        <div className="block px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap py-2 mr-8">
               <div className="h-8 w-8 flex-shrink-0">
                 <LogoSquare />
               </div>
@@ -201,8 +236,16 @@ export default function EditorPage(props: PageProps) {
                 Guide Editor
               </span>
             </div>
+            <button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">
+              {/*<ArchiveIcon className="h-4 w-4" />*/}
+              <span>History</span>
+            </button>
+            <button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">
+              {/*<ShareIcon className="h-4 w-4" />*/}
+              <span>Share</span>
+            </button>
             <button
-              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white text-sm font-medium px-6 py-1 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 rounded-md transition"
+              className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
               onClick={async () => {
                 const db = getFirestore(firebaseApp);
                 try {
@@ -245,7 +288,7 @@ export default function EditorPage(props: PageProps) {
                     tab === userSettings.lang
                       ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
-                    'px-3 py-2 font-medium text-sm rounded-md focus:outline-none'
+                    'px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition'
                   )}
                   onClick={() => userSettings.setLang(tab)}
                 >
@@ -259,9 +302,9 @@ export default function EditorPage(props: PageProps) {
             <a
               href="/general/contributing#adding-a-solution"
               target="_blank"
-              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group"
+              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group transition"
             >
-              <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
+              <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300 transition" />
               <span>Documentation</span>
             </a>
 
@@ -306,44 +349,6 @@ export default function EditorPage(props: PageProps) {
               )}
             </button>
 
-            {/*<button*/}
-            {/*  className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
-            {/*  onClick={() => {*/}
-            {/*    if (tab == 'content') {*/}
-            {/*      setMarkdown(old =>*/}
-            {/*        prettier.format(old, {*/}
-            {/*          endOfLine: 'lf',*/}
-            {/*          semi: true,*/}
-            {/*          singleQuote: true,*/}
-            {/*          tabWidth: 2,*/}
-            {/*          trailingComma: 'es5',*/}
-            {/*          arrowParens: 'avoid',*/}
-            {/*          useTabs: true,*/}
-            {/*          proseWrap: 'always',*/}
-            {/*          parser: 'mdx',*/}
-            {/*          plugins: [markdownParser],*/}
-            {/*        })*/}
-            {/*      );*/}
-            {/*    } else {*/}
-            {/*      setProblems(old =>*/}
-            {/*        prettier.format(old, {*/}
-            {/*          endOfLine: 'lf',*/}
-            {/*          semi: true,*/}
-            {/*          singleQuote: true,*/}
-            {/*          tabWidth: 2,*/}
-            {/*          useTabs: false,*/}
-            {/*          trailingComma: 'es5',*/}
-            {/*          arrowParens: 'avoid',*/}
-            {/*          parser: 'json',*/}
-            {/*          plugins: [babelParser],*/}
-            {/*        })*/}
-            {/*      );*/}
-            {/*    }*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  Prettify {tab === 'content' ? 'Content' : 'Problems'}*/}
-            {/*</button>*/}
-
             {/*{filePath && (*/}
             {/*  <button*/}
             {/*    className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
@@ -378,81 +383,79 @@ export default function EditorPage(props: PageProps) {
               onDrag={() => {
                 if (editor.current !== undefined) editor.current.layout();
               }}
+              minSize={[600, 10]}
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
-              <div
-                className="h-full tw-forms-disable-all-descendants"
-                style={{ minWidth: '300px' }}
-              >
-                <EditorTabBar
-                  tabs={[
-                    { label: 'module.mdx', value: 'module.mdx' },
-                    {
-                      label: 'module.problems.mdx',
-                      value: 'module.problems.mdx',
-                    },
-                  ]}
-                  activeTab={
-                    tab == 'content' ? 'module.mdx' : 'module.problems.mdx'
-                  }
-                  onTabSelect={tab =>
-                    setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
-                  }
-                />
-                <Editor
-                  theme="vs-dark"
-                  path={
-                    tab === 'content'
-                      ? 'inmemory://usaco-guide/module.mdx'
-                      : 'inmemory://usaco-guide/module.problems.json'
-                  }
-                  language={tab === 'content' ? 'custom-mdx' : 'json'}
-                  value={tab === 'content' ? markdown : problems}
-                  onChange={(v, e) =>
-                    tab === 'content' ? setMarkdown(v) : setProblems(v)
-                  }
-                  options={{
-                    wordWrap: 'on',
-                    rulers: [80],
-                    minimap: { enabled: false },
-                  }}
-                  beforeMount={monaco => {
-                    // sort of MDX (basically markdown with mdx comments)
-                    monaco.languages.register({ id: 'custom-mdx' });
-                    monaco.languages.setMonarchTokensProvider(
-                      'custom-mdx',
-                      mdxLang
-                    );
-                    monaco.languages.setLanguageConfiguration(
-                      'custom-mdx',
-                      mdxConf
-                    );
-                    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-                      validate: true,
-                      schemas: [
-                        {
-                          fileMatch: ['*.json'],
-                          uri: 'https://usaco.guide/problems.schema.json',
-                          schema: problemsSchema,
-                        },
-                      ],
-                    });
-                  }}
-                  onMount={e => {
-                    editor.current = e;
-                    e.getModel().updateOptions({ insertSpaces: false });
+              <div className="flex items-stretch">
+                <EditorSidebar className="h-full flex-shrink-0" />
+                <div className="h-full tw-forms-disable-all-descendants flex-1 w-0">
+                  <EditorTabBar
+                    tabs={[
+                      { label: 'module.mdx', value: 'module.mdx' },
+                      {
+                        label: 'module.problems.mdx',
+                        value: 'module.problems.mdx',
+                      },
+                    ]}
+                    activeTab={
+                      tab == 'content' ? 'module.mdx' : 'module.problems.mdx'
+                    }
+                    onTabSelect={tab =>
+                      setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
+                    }
+                  />
+                  <Editor
+                    theme="vs-dark"
+                    path={
+                      tab === 'content'
+                        ? 'inmemory://usaco-guide/module.mdx'
+                        : 'inmemory://usaco-guide/module.problems.json'
+                    }
+                    language={tab === 'content' ? 'custom-mdx' : 'json'}
+                    value={tab === 'content' ? markdown : problems}
+                    onChange={(v, e) =>
+                      tab === 'content' ? setMarkdown(v) : setProblems(v)
+                    }
+                    options={{
+                      wordWrap: 'on',
+                      rulers: [80],
+                      minimap: { enabled: false },
+                    }}
+                    beforeMount={monaco => {
+                      // sort of MDX (basically markdown with mdx comments)
+                      monaco.languages.register({ id: 'custom-mdx' });
+                      monaco.languages.setMonarchTokensProvider(
+                        'custom-mdx',
+                        mdxLang
+                      );
+                      monaco.languages.setLanguageConfiguration(
+                        'custom-mdx',
+                        mdxConf
+                      );
+                      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+                        validate: true,
+                        schemas: [
+                          {
+                            fileMatch: ['*.json'],
+                            uri: 'https://usaco.guide/problems.schema.json',
+                            schema: problemsSchema,
+                          },
+                        ],
+                      });
+                    }}
+                    onMount={e => {
+                      editor.current = e;
+                      e.getModel().updateOptions({ insertSpaces: false });
 
-                    setTimeout(() => {
-                      e.layout();
-                      e.focus();
-                    }, 0);
-                  }}
-                />
+                      setTimeout(() => {
+                        e.layout();
+                        e.focus();
+                      }, 0);
+                    }}
+                  />
+                </div>
               </div>
-              <div
-                className="flex flex-col"
-                style={{ maxWidth: 'calc(100% - 310px)' }}
-              >
+              <div className="flex flex-col">
                 <div className="overflow-y-auto relative flex-1">
                   <div className="markdown p-4">
                     <EditorContext.Provider

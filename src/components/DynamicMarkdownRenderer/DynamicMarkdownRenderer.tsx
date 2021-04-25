@@ -1,22 +1,15 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line
 // @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
-import remarkAutolinkHeadings from 'remark-autolink-headings';
-import remarkExternalLinks from 'remark-external-links';
-import remarkFrontmatter from 'remark-frontmatter';
-import gfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
-import remarkSlug from 'remark-slug';
-import { compile as xdmCompile } from 'xdm';
-import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
-import customRehypeKatex from '../mdx-plugins/rehype-math.js';
-import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
-import remarkToC from '../mdx-plugins/remark-toc.js';
-import { getProblemInfo } from '../models/problem';
-import { components } from './markdown/MDXComponents';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import Worker from 'worker-loader!./mdx-renderer.js';
+import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
+import { getProblemInfo } from '../../models/problem';
+import { components } from '../markdown/MDXComponents';
+
 class ErrorBoundary extends React.Component {
   state: {
     error: null | any;
@@ -57,76 +50,54 @@ class ErrorBoundary extends React.Component {
 export default function DynamicMarkdownRenderer({
   markdown,
   problems,
-  debounce = 200,
+}: {
+  markdown: string;
+  problems: string;
 }): JSX.Element {
   const [mdxContent, setMdxContent] = useState(null);
   const [markdownError, setMarkdownError] = useState(null);
   const [problemError, setProblemError] = useState(null);
+  const workerRef = useRef(null);
+  const currentlyCompilingRef = useRef<string>(null);
+  const waitingToBeCompiledRef = useRef<string>(null);
 
-  useEffect(() => {
-    // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
-    const compile = async () => {
-      try {
-        console.time('compile');
+  const requestMarkdownCompilation = () => {
+    if (workerRef.current === null) return;
+    if (currentlyCompilingRef.current !== null) return;
+    const markdown = waitingToBeCompiledRef.current;
+    if (markdown === null) return;
+    currentlyCompilingRef.current = markdown;
+    waitingToBeCompiledRef.current = null;
+    workerRef.current.postMessage({ markdown });
+  };
 
-        const tableOfContents = {};
-        const compiledResult = await xdmCompile(
-          markdown.replace(/<!--/g, '{/* ').replace(/-->/g, '*/}'),
-          {
-            remarkPlugins: [
-              gfm,
-              remarkMath,
-              remarkExternalLinks,
-              remarkFrontmatter,
-              [remarkMdxFrontmatter, { name: 'frontmatter' }],
-              [remarkToC, { tableOfContents }],
-              remarkSlug,
-              [
-                remarkAutolinkHeadings,
-                {
-                  linkProperties: {
-                    ariaHidden: 'true',
-                    tabIndex: -1,
-                    className: 'anchor before',
-                  },
-                  content: {
-                    type: 'mdxJsxFlowElement',
-                    name: 'HeaderLink',
-                  },
-                },
-              ],
-            ],
-            rehypePlugins: [customRehypeKatex, rehypeSnippets],
-            outputFormat: 'function-body',
-          }
-        );
-
-        const code = String(compiledResult);
-
-        // console.log(code);
-
+  React.useEffect(() => {
+    const worker = new Worker();
+    worker.onmessage = ({ data }) => {
+      currentlyCompilingRef.current = null;
+      if (data.compiledResult) {
         setMdxContent(
-          new Function(code)({
+          new Function(data.compiledResult)({
             Fragment,
             jsx,
             jsxs,
           }).default({ components })
         );
         setMarkdownError(null);
-
-        console.timeEnd('compile');
-      } catch (e) {
-        console.log('editor error caught:', e);
+      } else {
+        setMarkdownError(data.error);
         setMdxContent(null);
-        setMarkdownError(e);
       }
+      requestMarkdownCompilation();
     };
-    if (debounce > 0) {
-      const id = setTimeout(compile, debounce);
-      return () => clearTimeout(id);
-    } else {
-      compile();
-    }
+    workerRef.current = worker;
+    requestMarkdownCompilation();
+    return () => worker.terminate();
+  }, []);
+
+  useEffect(() => {
+    waitingToBeCompiledRef.current = markdown;
+    requestMarkdownCompilation();
   }, [markdown]);
 
   const [
@@ -157,7 +128,7 @@ export default function DynamicMarkdownRenderer({
       <div>
         An error occurred:
         <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
-          {markdownError.toString()}
+          {markdownError.message || markdownError.toString()}
         </p>
         <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
           This error has also been logged to the console.
