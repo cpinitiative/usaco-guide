@@ -7,13 +7,97 @@ author: Dong Liu
 
 **Time Complexity**: $\mathcal O(N\log N)$
 
-# Solution
-
 In this problem, we're given an array $a$ and we're asked to answer 2 types of
 queries
 
 1. update the value at position $i$ to $x$
-2. calculate the maximum prefix sum in the range $[a,b]$
+2. calculate the maximum prefix sum in the range $[a, b]$
+
+## Solution 1 - Segment Tree
+
+In each segment tree node, we will store
+
+- $\texttt{sum}$: the sum of the elements in the range
+- $\texttt{pref}$: the maximum prefix sum in the range
+
+To calculate $\texttt{seg}[i]$,
+
+- The $\texttt{sum}$ would be equal to $\texttt{left}.\texttt{sum} + \texttt{right}.\texttt{sum}$.
+- The maximum prefix has to end at either the left segment ($\texttt{left}.\texttt{pref}$), or at the right segment ($\texttt{left}.\texttt{sum} + \texttt{right}.\texttt{pref}$), so $\texttt{pref}$ would equal $\max(\texttt{left}.\texttt{pref}, \texttt{left}.\texttt{sum} + \texttt{right}.\texttt{pref})$.
+
+Now we can build and update any value in our segment tree.
+
+To answer an query, we can split the range $[l, r]$ into $\mathcal O(\log N)$ segments. To calculate the answer, we just repeatedly merge these segements until there is one left and take the $\texttt{pref}$. 
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int N = 200010;
+const int S = 1 << 18;
+ 
+int n, q, a[N];
+ 
+struct node {
+	long long sum, pref;
+	
+	node(long long sum, long long pref) : sum(sum), pref(pref) {}
+	node(long long x = 0) {
+		sum = x, pref = max((long long) 0, x);
+	}
+ 
+	friend node operator+(const node& a, const node& b) {
+		return {a.sum + b.sum, max(a.pref, a.sum + b.pref)};
+	}
+} tt[S << 1];
+ 
+void build(int k = 1, int l = 1, int r = n) {
+	if (l == r) { tt[k] = node(a[l]); return; }
+	int m = (l + r) >> 1;
+	build(k << 1, l, m);
+	build(k << 1 | 1, m + 1, r);
+	tt[k] = tt[k << 1] + tt[k << 1 | 1];
+}
+ 
+void update(int i, int x, int k = 1, int l = 1, int r = n) {
+	if (l == r) { tt[k] = node(x); return; }
+	int m = (l + r) >> 1;
+	if (i <= m) update(i, x, k << 1, l, m);
+	else update(i, x, k << 1 | 1, m + 1, r);
+	tt[k] = tt[k << 1] + tt[k << 1 | 1];
+}
+ 
+node query(int ql, int qr, int k = 1, int l = 1, int r = n) {
+	if (ql > r || qr < l) return 0;
+	if (ql <= l && qr >= r) return tt[k];
+	int m = (l + r) >> 1;
+	node q1 = query(ql, qr, k << 1, l, m);
+	node q2 = query(ql, qr, k << 1 | 1, m + 1, r);
+	return q1 + q2;
+}
+ 
+int main() {
+	scanf("%d%d", &n, &q);
+	for (int i = 1; i <= n; ++i)
+		scanf("%d", a + i);
+	build();
+	for (int i = 0, t, x, y; i < q; ++i) {
+		scanf("%d%d%d", &t, &x, &y);
+		if (t == 1) update(x, a[x] = y);
+		else printf("%lld\n", query(x, y).pref);
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Solution 2 - With Lazy Proagation
 
 We can use a segment tree with [lazy propagation](/plat/RURQ) to solve this
 problem. Let $\texttt{ps}[i]$ be the sum of $a_1, a_2, \dots a_i$. We can
@@ -25,8 +109,6 @@ in the range $[i,N]$.
 
 To answer a query of type 2, our answer would be
 $\max_{i \in [a, b]}(\texttt{ps}[i]) - \texttt{ps}[{a-1}]$.
-
-# Code
 
 <LanguageSection>
 
