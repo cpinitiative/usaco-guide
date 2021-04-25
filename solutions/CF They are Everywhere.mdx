@@ -7,20 +7,13 @@ author: Kevin Sheng
 
 [Official Editorial](https://codeforces.com/blog/entry/46283)
 
+Let's iterate through all possible ending flats while keeping a variable (`closest_left` in the code) that keeps track of the closest starting point. When moving one to the right, we first add the new Pokemon to our list of caught Pokemon. Then, as long as the Pokemon at the starting point isn't unique, we move the starting point one flat forward. After processing each ending point, we update the total minimum flats travelled.
+
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
- 
-using std::cout;
-using std::endl;
-using std::vector;
- 
 /**
  * https://codeforces.com/problemset/problem/701/C
  * 7
@@ -38,37 +31,27 @@ int main() {
         types.insert(p);
     }
  
-    int lo = 0;
-    int hi = flat_num;
-    int valid = -1;
-    while (lo <= hi) {
-        int mid = (lo + hi) / 2;
- 
-        bool all_catchable = false;    
-        std::unordered_map<char, int> curr_pokemon;
-        for (int to_add = 0; to_add < flat_num; to_add++) {
-            curr_pokemon[flats[to_add]]++;
-            if (to_add >= mid) {
-                char to_remove = flats[to_add - mid];
-                curr_pokemon[to_remove]--;
-                if (curr_pokemon[to_remove] == 0) {
-                    curr_pokemon.erase(to_remove);
-                }
-            }
-            if (curr_pokemon.size() == types.size()) {
-                all_catchable = true;
-                break;
-            }
+    int shortest_interval = INT32_MAX;
+    std::unordered_map<char, int> curr_pokemon;
+    int closest_left = 0;
+    for (int right = 0; right < flat_num; right++) {
+        curr_pokemon[flats[right]]++;
+        // move the left pointer to the left only if we've caught another one like it
+        while (closest_left + 1 <= right
+                && curr_pokemon.count(flats[closest_left + 1])
+                && curr_pokemon[flats[closest_left + 1]] > 1) {
+            closest_left++;
+            curr_pokemon[flats[closest_left]]--;
         }
-    
-        if (all_catchable) {
-            valid = mid;
-            hi = mid - 1;
-        } else {
-            lo = mid + 1;
+        /*
+         * of course, it could be that the config wasn't valid in the first place,
+         * so we'll have to check for that
+         */
+        if (curr_pokemon.size() == types.size()) {
+            shortest_interval = std::min(shortest_interval, right - closest_left + 1);
         }
     }
-    cout << valid << endl;
+    cout << shortest_interval << endl;
 }
 ```
 
@@ -82,49 +65,49 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
- 
+
+/**
+ * https://codeforces.com/problemset/problem/701/C
+ * 7
+ * bcAAcbc should output 3
+ * 6
+ * aaBCCe should output 5
+ */
 public class Everywhere {
     public static void main(String[] args) throws IOException  {
         BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
         int flatNum = Integer.parseInt(read.readLine());
         String flats = read.readLine();
- 
+
         HashSet<Character> types = new HashSet<>();
         for (int f = 0; f < flatNum; f++) {
             types.add(flats.charAt(f));
         }
- 
-        int lo = 0;
-        int hi = flatNum;
-        int valid = -1;
-        while (lo <= hi) {
-            int mid = (lo + hi) / 2;
- 
-            boolean allCatchable = false;
-            HashMap<Character, Integer> currCaught = new HashMap<>();
-            for (int toAdd = 0; toAdd < flatNum; toAdd++) {
-                currCaught.put(flats.charAt(toAdd), currCaught.getOrDefault(flats.charAt(toAdd), 0) + 1);
-                if (toAdd >= mid) {
-                    char toRemove = flats.charAt(toAdd - mid);
-                    currCaught.put(toRemove, currCaught.get(toRemove) - 1);
-                    if (currCaught.get(toRemove) == 0) {
-                        currCaught.remove(toRemove);
-                    }
-                }
-                if (currCaught.size() == types.size()) {
-                    allCatchable = true;
-                    break;
-                }
+
+        int shortestInterval = Integer.MAX_VALUE;
+        int closestLeft = 0;
+        HashMap<Character, Integer> currCaught = new HashMap<>();
+        for (int right = 0; right < flatNum; right++) {
+            char newCaught = flats.charAt(right);
+            currCaught.put(newCaught, currCaught.getOrDefault(newCaught, 0) + 1);
+            // move the left pointer to the left only if it isn't unique
+            while (closestLeft + 1 <= right
+                    && currCaught.getOrDefault(flats.charAt(closestLeft), 0) > 1) {
+                currCaught.put(
+                    flats.charAt(closestLeft),
+                    currCaught.get(flats.charAt(closestLeft)) - 1
+                );
+                closestLeft++;
             }
- 
-            if (allCatchable) {
-                valid = mid;
-                hi = mid - 1;
-            } else {
-                lo = mid + 1;
+            /*
+             * of course, it could be that the config wasn't valid in the first place,
+             * so we'll have to check for that
+             */
+            if (currCaught.size() == types.size()) {
+                shortestInterval = Math.min(shortestInterval, right - closestLeft + 1);
             }
         }
-        System.out.println(valid);
+        System.out.println(shortestInterval);
     }
 }
 ```
@@ -141,39 +124,33 @@ bcAAcbc should output 3
 6
 aaBCCe should output 5
 """
+from typing import Dict, Any
+ 
 flat_num = int(input())
 flats = input()
 types = set(flats)
  
-lo = 0
-hi = flat_num
-valid = -1
-while lo <= hi:
-    mid = (lo + hi) // 2
+shortest_interval = float('inf')
+closest_left = 0
+curr_caught = {}
+for right, f in enumerate(flats):
+    if f not in curr_caught:
+        curr_caught[f] = 0
+    curr_caught[f] += 1
  
-    all_catchable = False
-    curr_caught = {}
-    for to_add in range(flat_num):
-        if flats[to_add] not in curr_caught:
-            curr_caught[flats[to_add]] = 0
-        curr_caught[flats[to_add]] += 1
+    # move the left pointer to the left only if we've caught another one like it
+    while closest_left + 1 <= right and curr_caught.get(flats[closest_left], 0) > 1:
+        curr_caught[flats[closest_left]] -= 1
+        closest_left += 1
  
-        if to_add >= mid:
-            to_remove = flats[to_add - mid]
-            curr_caught[to_remove] -= 1
-            if curr_caught[to_remove] == 0:
-                del curr_caught[to_remove]
+    """
+    of course, it could be that the config wasn't valid in the first place,
+    so we'll have to check for that
+    """
+    if len(curr_caught) == len(types):
+        shortest_interval = min(shortest_interval, right - closest_left + 1)
  
-        if len(curr_caught) == len(types):
-            all_catchable = True
-            break
- 
-    if all_catchable:
-        valid = mid
-        hi = mid - 1
-    else:
-        lo = mid + 1
-print(valid)
+print(shortest_interval)
 ```
 
 </PySection>
