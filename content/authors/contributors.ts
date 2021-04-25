@@ -55,4 +55,9 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'AAkashyap1',
     sinceDate: 'Apr 2021',
   },
+  {
+    name: "Sofia Yang",
+    githubUsername: "truashamu",
+    sinceDate: "Apr 2021",
+  },
 ];
