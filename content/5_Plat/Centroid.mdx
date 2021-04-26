@@ -241,9 +241,6 @@ private static class Centroid {
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#pragma GCC optimize ("Ofast")
-#pragma GCC target ("avx2")
-#pragma GCC optimize("unroll-loops")
 using namespace std;
  
 const int inf = 2000000011;
@@ -263,30 +260,30 @@ bool r[100005];
 // r[] stores if a node has been deleted
  
 int dfs_w(int u, int p = 0) {
-    if (r[u])
-        return 0;
-    W[u] = 1;
-    for (int v : adj[u])
-        if (v != p && !r[v])
-            W[u] += dfs_w(v, u);
-    return W[u];
+	if (r[u])
+		return 0;
+	W[u] = 1;
+	for (int v : adj[u])
+		if (v != p && !r[v])
+			W[u] += dfs_w(v, u);
+	return W[u];
 }
  
 int centroid(int u, int n, int p = 0) {
-    for (int v : adj[u])
-        if (v != p && !r[v])
-            if (W[v] * 2 > n) 
-                return centroid(v, n, u);
-    return u;
+	for (int v : adj[u])
+		if (v != p && !r[v])
+			if (W[v] * 2 > n) 
+				return centroid(v, n, u);
+	return u;
 }
  
 void build(int u = 1, int p = 0) {
-    int c = centroid(u, dfs_w(u));
-    P[c] = p;
-    r[c] = 1;
-    for (int v : adj[c])
-        if (!r[v]) 
-            build(v, c);
+	int c = centroid(u, dfs_w(u));
+	P[c] = p;
+	r[c] = 1;
+	for (int v : adj[c])
+		if (!r[v]) 
+			build(v, c);
 }
  
 // this stuff is for tree distance, see binary jumping mondule
@@ -295,82 +292,82 @@ int dep[100005], anc[100005][18];
 // anc[][] stores id of kth ancestor
  
 void dfs_d(int u, int p, int d) {
-    dep[u] = d;
-    anc[u][0] = p;
-    for (int v : adj[u])
-        if (v != p)
-            dfs_d(v, u, d + 1);
+	dep[u] = d;
+	anc[u][0] = p;
+	for (int v : adj[u])
+		if (v != p)
+			dfs_d(v, u, d + 1);
 }
  
 void init() {
-    dfs_d(1, 1, 0);
-    for (int k = 1; (1 << k) <= N; k++)
-        for (int i = 1; i <= N; i++)
-            anc[i][k] = anc[anc[i][k - 1]][k - 1];
+	dfs_d(1, 1, 0);
+	for (int k = 1; (1 << k) <= N; k++)
+		for (int i = 1; i <= N; i++)
+			anc[i][k] = anc[anc[i][k - 1]][k - 1];
 }
  
 int lca(int u, int v) {
-    if (dep[u] > dep[v])
-        swap(u, v);
-    for (int i = 17; i >= 0; i--)
-        if (dep[v] - (1 << i) >= dep[u]) 
-            v = anc[v][i];
+	if (dep[u] > dep[v])
+		swap(u, v);
+	for (int i = 17; i >= 0; i--)
+		if (dep[v] - (1 << i) >= dep[u]) 
+			v = anc[v][i];
  
-    if (u == v)
-        return u;
-    for (int i = 17; i >= 0; i--) 
-        if (anc[u][i] != anc[v][i]) {
-            u = anc[u][i];
-            v = anc[v][i];
-        }
-    return anc[u][0];    
+	if (u == v)
+		return u;
+	for (int i = 17; i >= 0; i--) 
+		if (anc[u][i] != anc[v][i]) {
+			u = anc[u][i];
+			v = anc[v][i];
+		}
+	return anc[u][0];	
 }
  
 inline int dist(int u, int v) {
-    int l = lca(u, v);
-    return dep[u] + dep[v] - dep[l] - dep[l];
+	int l = lca(u, v);
+	return dep[u] + dep[v] - dep[l] - dep[l];
 }
 
 // update all ancestors 
 void update(int u) {
-    if (col[u])
-        return;
-    col[u] = 1;
-    for (int v = u; v; v = P[v])
-        ans[v] = min(ans[v], dist(u, v));
+	if (col[u])
+		return;
+	col[u] = 1;
+	for (int v = u; v; v = P[v])
+		ans[v] = min(ans[v], dist(u, v));
 }
  
  // query all ancestors
 int query(int u) {
-    int res = inf;
-    for (int v = u; v != P[v]; v = P[v]) 
-        res = min(res, ans[v] + dist(u, v));
-    return res;
+	int res = inf;
+	for (int v = u; v != P[v]; v = P[v]) 
+		res = min(res, ans[v] + dist(u, v));
+	return res;
 }
  
 int main(void) {
-    ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0);
  
-    cin >> N >> Q;
-    for (int i = 1; i <= N; i++)
-        ans[i] = inf;
-    for (int i = 1, a, b; i < N; i++) {
-        cin >> a >> b;
-        adj[a].PB(b);
-        adj[b].PB(a);
-    }  
+	cin >> N >> Q;
+	for (int i = 1; i <= N; i++)
+		ans[i] = inf;
+	for (int i = 1, a, b; i < N; i++) {
+		cin >> a >> b;
+		adj[a].PB(b);
+		adj[b].PB(a);
+	}  
  
-    init();
-    build();
-    
-    update(1);
-    for (int t, u; Q--;) {
-        cin >> t >> u;
-        if (t == 1)
-            update(u);
-        else if (t == 2)
-            cout << query(u) << '\n';
-    }
+	init();
+	build();
+	
+	update(1);
+	for (int t, u; Q--;) {
+		cin >> t >> u;
+		if (t == 1)
+			update(u);
+		else if (t == 2)
+			cout << query(u) << '\n';
+	}
 }
 ```
 
