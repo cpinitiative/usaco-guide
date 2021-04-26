@@ -6,6 +6,11 @@ export type Contributor = {
 
 export const contentAuthors: Contributor[] = [
   {
+    name: 'Jeffrey Meng',
+    githubUsername: 'jeffreymeng',
+    sinceDate: 'Oct 2020',
+  },
+  {
     name: 'Óscar Garries Urbina',
     githubUsername: 'Farrius',
     sinceDate: 'Jan 2021',
@@ -39,5 +44,20 @@ export const contentAuthors: Contributor[] = [
     name: 'Maggie Liu',
     githubUsername: 'maggie-j-liu',
     sinceDate: 'Feb 2021',
+  },
+  {
+    name: 'Kevin Sheng',
+    githubUsername: 'sanspapyrus683',
+    sinceDate: 'Apr 2021',
+  },
+  {
+    name: 'Ananth Kashyap',
+    githubUsername: 'AAkashyap1',
+    sinceDate: 'Apr 2021',
+  },
+  {
+    name: "Sofia Yang",
+    githubUsername: "truashamu",
+    sinceDate: "Apr 2021",
   },
 ];

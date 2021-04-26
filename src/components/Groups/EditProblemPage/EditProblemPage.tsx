@@ -1,4 +1,5 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
+import { Timestamp } from 'firebase/firestore';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Link, navigate } from 'gatsby';
 import * as React from 'react';
@@ -9,7 +10,6 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
-import useFirebase from '../../../hooks/useFirebase';
 import { GroupProblemData } from '../../../models/groups/problem';
 import {
   AlgoliaProblemInfo,
@@ -36,7 +36,6 @@ export default function EditProblemPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const originalProblem = useProblem(problemId);
-  const firebase = useFirebase();
   const [problem, editProblem] = useReducer(
     (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => ({
       ...oldProblem,
@@ -81,17 +80,17 @@ export default function EditProblemPage(props) {
       name: problem.name,
       body: `See [${problem.url}](${problem.url})`,
       solution:
-        problem.solution.kind == 'internal'
+        problem.solution?.kind == 'internal'
           ? `See [https://usaco.guide${[
               getProblemURL(problemInfo),
             ]}/solution](https://usaco.guide${[
               getProblemURL(problemInfo),
             ]}/solution)`
-          : problem.solution.kind == 'link'
+          : problem.solution?.kind == 'link'
           ? `See [${problem.solution.url}](${problem.solution.url})`
-          : problem.solution.kind == 'label'
+          : problem.solution?.kind == 'label'
           ? problem.solution.label
-          : problem.solution.kind === 'sketch'
+          : problem.solution?.kind === 'sketch'
           ? problem.solution.sketch
           : '',
 
@@ -296,7 +295,7 @@ export default function EditProblemPage(props) {
                         onChange={date => {
                           console.log(date);
                           editProblem({
-                            solutionReleaseTimestamp: firebase.firestore.Timestamp.fromDate(
+                            solutionReleaseTimestamp: Timestamp.fromDate(
                               date[0]
                             ),
                           });

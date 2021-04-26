@@ -263,9 +263,13 @@ export function getProblemURL(
  * Ex: https://cses.fi/problemset/task/1652 yields 1652
  */
 const getTrailingCodeFromProblemURL = (url: string): number => {
-  const code = url.match(/([0-9]+)\/?$/)[1];
-  return parseInt(code);
+  const match = url.match(/([0-9]+)\/?$/);
+  if (match === null) {
+    throw new Error('Could not extract USACO / CSES code from URL.');
+  }
+  return parseInt(match[1]);
 };
+
 export const getProblemInfo = (
   metadata: ProblemMetadata,
   ordering?: any

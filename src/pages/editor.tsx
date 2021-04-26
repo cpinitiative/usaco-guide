@@ -190,7 +190,7 @@ export default function LiveUpdatePage(props: PageProps) {
             Dashboard
           </a>
           <a
-            href="/general/contributing#adding-a-solution"
+            href="/general/adding-solution"
             target="_blank"
             className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
           >
@@ -209,7 +209,6 @@ export default function LiveUpdatePage(props: PageProps) {
           <button
             className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
             onClick={() => {
-              const prettierConfig = {};
               if (tab == 'content') {
                 setMarkdown(old =>
                   prettier.format(old, {
@@ -284,6 +283,14 @@ export default function LiveUpdatePage(props: PageProps) {
                 className="h-full tw-forms-disable"
                 style={{ minWidth: '300px' }}
               >
+                {/*<EditorTabBar*/}
+                {/*  tabs={[*/}
+                {/*    { label: 'Contributing.mdx' },*/}
+                {/*    { label: 'Prefix_Sums.mdx' },*/}
+                {/*  ]}*/}
+                {/*  activeTab={'Contributing.mdx'}*/}
+                {/*  onTabSelect={tab => console.log(tab)}*/}
+                {/*/>*/}
                 <Editor
                   theme="vs-dark"
                   path={

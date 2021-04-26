@@ -24,7 +24,21 @@ alternate solution to the problem.
 
 </Info>
 
-DFS twice. See CPH and the code for more details.
+It is a common technique to calculate two DP arrays for some DP on trees problems. Usually one DP array is responsible for calculating results within the subtree rooted at $i$. The other DP array calculates results outside of the subtree rooted at $i$. 
+
+The focus problem asks us to find for each node the maximum distance to another node. We can divide the problem into two parts. 
+
+Define $f[x]$ as the maximum distance from node $x$ to any node in the subtree rooted at $x$.
+
+Define $g[x]$ as the maximum distance from node $x$ to any node outside of the subtree rooted at $x$.
+
+Then the answer for node $x$ = $\max(f[x],g[x])$
+
+$f[x]$ can be calculated using a DFS since $f[x]$ = $\max(f[c])+1$, where $c$ is a child of $x$.
+
+$g[x]$ can also be calculated using a DFS as $g[c]$ = $\max(g[x]+1,f[d]+1)$, where $c$ and $d$ are both children of $x$ with $c \neq d$.
+
+To calculate $g$ in linear time, we can define another array $h$ such that $h[x]$ is the second largest distance from node $x$ to any node in the subtree rooted at $x$. So if $f[x]$ is transitioned from the branch with $c$, $g[c]$ = $\max(g[x]+1,h[x]+1)$. Otherwise $g[c]$ = $\max(g[x]+1,f[x]+1)$.
 
 <LanguageSection>
 
@@ -74,7 +88,6 @@ int main() {
 	return 0;
 }
 ```
-
 </CPPSection>
 
 <JavaSection>

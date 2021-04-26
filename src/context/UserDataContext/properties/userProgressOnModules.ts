@@ -1,3 +1,4 @@
+import { setDoc } from 'firebase/firestore';
 import { ModuleActivity } from '../../../models/activity';
 import { ModuleProgress } from '../../../models/module';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
@@ -90,7 +91,8 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
         this.progressValue[moduleID] = progress;
 
         if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
+          setDoc(
+            this.firebaseUserDoc,
             {
               [this.progressStorageKey]: {
                 [moduleID]: progress,

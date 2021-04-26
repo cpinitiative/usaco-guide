@@ -531,4 +531,16 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
       plugins: [plugins.provide({ process: 'process/browser' })],
     });
   }
+  if (stage === 'build-html' || stage === 'develop-html') {
+    actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /firebase/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    });
+  }
 };

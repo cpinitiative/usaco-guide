@@ -1,12 +1,16 @@
+import {
+  collection,
+  getFirestore,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import {
-  groupProblemConverter,
-  GroupProblemData,
-} from '../../models/groups/problem';
-import useFirebase from '../useFirebase';
+import { GroupProblemData } from '../../models/groups/problem';
+import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
 
 const ActivePostProblemsContext = React.createContext<{
@@ -29,8 +33,8 @@ export function ActivePostProblemsProvider({
 
   const notifications = useNotificationSystem();
 
-  useFirebase(
-    firebase => {
+  useFirebaseApp(
+    firebaseApp => {
       setProblems(null);
       setIsLoading(true);
       if (activePostId === null || !firebaseUser?.uid) {
@@ -42,31 +46,33 @@ export function ActivePostProblemsProvider({
         );
       }
 
-      return firebase
-        .firestore()
-        .collection('groups')
-        .doc(activeGroup.activeGroupId)
-        .collection('posts')
-        .doc(activePostId)
-        .collection('problems')
-        .where('isDeleted', '==', false)
-        .withConverter(groupProblemConverter)
-        .onSnapshot(
-          snap => {
-            setProblems(
-              snap.docs
-                .map(doc => doc.data())
-                .sort((a, b) => {
-                  if (a.order === b.order) return a.name < b.name ? -1 : 1;
-                  return a.order < b.order ? -1 : 1;
-                })
-            );
-            setIsLoading(false);
-          },
-          error => {
-            notifications.showErrorNotification(error);
-          }
-        );
+      const q = query(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          activeGroup.activeGroupId,
+          'posts',
+          activePostId,
+          'problems'
+        ),
+        where('isDeleted', '==', false)
+      );
+      onSnapshot<GroupProblemData>(q, {
+        next: snap => {
+          setProblems(
+            snap.docs
+              .map(doc => ({ id: doc.id, ...doc.data() }))
+              .sort((a, b) => {
+                if (a.order === b.order) return a.name < b.name ? -1 : 1;
+                return a.order < b.order ? -1 : 1;
+              })
+          );
+          setIsLoading(false);
+        },
+        error: error => {
+          notifications.showErrorNotification(error);
+        },
+      });
     },
     [firebaseUser?.uid, activePostId, activeGroup.activeGroupId]
   );

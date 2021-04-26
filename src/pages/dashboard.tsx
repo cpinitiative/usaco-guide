@@ -16,6 +16,7 @@ import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { SignInContext } from '../context/SignInContext';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   AnnouncementInfo,
@@ -57,8 +58,8 @@ export default function DashboardPage(props: PageProps) {
     setLastReadAnnouncement,
     firebaseUser,
     consecutiveVisits,
-    signIn,
   } = React.useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
 
   const showIgnored = userSettings.showIgnored;
 

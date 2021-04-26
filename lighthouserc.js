@@ -6,7 +6,7 @@ module.exports = {
         'http://localhost/',
         'http://localhost/dashboard/',
         'http://localhost/general/',
-        'http://localhost/general/using-this-guide/',
+        'http://localhost/silver/prefix-sums-2/',
       ],
     },
     upload: {
