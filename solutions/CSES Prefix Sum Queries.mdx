@@ -27,7 +27,7 @@ To calculate $\texttt{seg}[i]$,
 
 Now we can build and update any value in our segment tree.
 
-To answer an query, we can split the range $[l, r]$ into $\mathcal O(\log N)$ segments. To calculate the answer, we just repeatedly merge these segements until there is one left and take the $\texttt{pref}$. 
+To answer an query, we can split the range $[l, r]$ into $\mathcal O(\log N)$ segments. To calculate the answer, we just repeatedly merge these segments until there is one left and take the $\texttt{pref}$. 
 
 <LanguageSection>
 
@@ -44,12 +44,8 @@ int n, q, a[N];
  
 struct node {
 	long long sum, pref;
-	
 	node(long long sum, long long pref) : sum(sum), pref(pref) {}
-	node(long long x = 0) {
-		sum = x, pref = max((long long) 0, x);
-	}
- 
+	node(long long x = 0) : sum(x), pref(max(0LL, x)) {}
 	friend node operator+(const node& a, const node& b) {
 		return {a.sum + b.sum, max(a.pref, a.sum + b.pref)};
 	}
