@@ -86,4 +86,112 @@ int main(){
 
 </CPPSection>
 
+<JavaSection>
+    
+### Java Implementation
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Comparator;
+
+public final class SaveNature {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        int queryNum = Integer.parseInt(read.readLine());
+        for (int q = 0; q < queryNum; q++) {
+            int ticketNum = Integer.parseInt(read.readLine());
+            long[] tickets = Arrays.stream(read.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
+            Arrays.sort(tickets);
+
+            // first the percentage of the proceeds, then the frequency
+            int[] prog1 = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+            int[] prog2 = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+            long minRevenue = Long.parseLong(read.readLine());
+            long comboFreq = (long) prog1[1] * prog2[1] / gcd(prog1[1], prog2[1]);
+
+            int lo = 0;
+            int hi = ticketNum;
+            int valid = -1;
+            while (lo <= hi) {
+                int mid = (lo + hi) / 2;
+                int[][] helpChances = new int[][] {
+                        {prog1[0] + prog2[0], ((int) (mid / comboFreq))},
+                        {prog1[0], (int) (mid / prog1[1] - mid / comboFreq)},
+                        {prog2[0], (int) (mid / prog2[1] - mid / comboFreq)}
+                };
+                Arrays.sort(helpChances, Comparator.comparingInt(c -> -c[0]));
+                
+                int ticketAt = ticketNum - 1;
+                long revenue = 0;
+                for (int[] chance : helpChances) {
+                    for (int i = 0; i < chance[1]; i++) {
+                        revenue += tickets[ticketAt--] * chance[0] / 100;
+                    }
+                }
+
+                if (revenue >= minRevenue) {
+                    valid = mid;
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+            System.out.println(valid);
+        }
+    }
+
+    private static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+    
+### Python Implementation
+
+```py
+from math import gcd
+
+for _ in range(int(input())):
+    ticket_num = int(input())
+    tickets = sorted([int(i) for i in input().split()], reverse=True)
+    prog1 = [int(i) for i in input().split()]
+    prog2 = [int(i) for i in input().split()]
+    min_revenue = int(input())
+    combo_freq = prog1[1] * prog2[1] // gcd(prog1[1], prog2[1])
+
+    lo = 0
+    hi = ticket_num
+    valid = -1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        help_chances = sorted([
+            [prog1[0] + prog2[0], mid // combo_freq],
+            [prog1[0], mid // prog1[1] - mid // combo_freq],
+            [prog2[0], mid // prog2[1] - mid // combo_freq],
+        ], reverse=True)
+
+        ticket_at = 0
+        revenue = 0
+        for ch in help_chances:
+            for _ in range(ch[1]):
+                revenue += tickets[ticket_at] * ch[0] // 100
+                ticket_at += 1
+
+        if revenue >= min_revenue:
+            valid = mid
+            hi = mid - 1
+        else:
+            lo = mid + 1
+    print(valid)
+```
+    
+</PySection>
+
 </LanguageSection>
