@@ -5,8 +5,17 @@ title: Save the Nature
 author: Jesse Choe
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/70358)
+[Official Editorial](https://codeforces.com/blog/entry/66993)
 
+Binary search on the answer for the minimum number of tickets, which we call $t$, to sell to make the total ecological contribution to at least $k$. 
+
+To check if a certain number of tickets reaches a minimal contribution of $k$, we can greedily observe that in order to minimize the number of tickets sold, we should maximize the total revenue from selling these tickets. If, however, it is impossible to sell at least $k$ tickets after selling all tickets, then output $-1$.
+
+Additionally, the problem indicates that only $x\%$ of the $a$-th ticket and $y\%$ of the $b$-th ticket could contribute to the total ecological contribution. Thus, we can iterate over every $a$-th ticket and $b$-th ticket at most $t$ and add $x\%$ to the total percentages contributing to an ecological program for each $a$-th ticket and $y\%$ for each $b$-th ticket, which we can store in $pct$.
+
+It suffices to sort the tickets and percentages in decreasing order. Our total ecological contribution is $\sum\limits_{i=1}^{t} p_i \cdot pct_i$.
+
+All that remains is to check whether the total sum of ecological contribution is at least $k$, which can be done in constant time.
 
 # Solution 
 
@@ -25,24 +34,23 @@ using namespace std;
 using ll = long long;
 using vl = vector<ll>;
 
-#define dbg(x) for(auto& a: x) cout << a << " "
-#define print(x) cout << x << endl
-
 int n; vl p;
 ll x, a, y, b, k;
 
 bool works(int sellTickets){
-    vl pct(sellTickets);
+    vl percentages(sellTickets);
+    // Add x% to every a-th ticket.
     for(int i=a-1; i<sellTickets; i+=a){
-        pct[i] += x;
+        percentages[i] += x;
     }
+    // Add y% to every b-th ticket
     for(int i=b-1; i<sellTickets; i+=b){
-        pct[i] += y;
+        percentages[i] += y;
     }
-    sort(pct.begin(), pct.end(), greater<ll>());
+    sort(percentages.begin(), percentages.end(), greater<ll>());
     ll cur = 0;
     for(int i=0; i<sellTickets; i++){
-        cur += pct[i]*p[i]/100;
+        cur += percentages[i]*p[i]/100;
     }
     return cur >= k;
 }
