@@ -235,99 +235,142 @@ private static class Centroid {
 
 ## Solution - Xenia & Tree
 
+<!-- code from https://codeforces.com/contest/342/submission/114241456 (with a couple of minor modifications) -->
+
 ```cpp
-#include <cstdio>
-#include <cstring>
+#include <iostream>
+#include <algorithm>
 #include <vector>
+#pragma GCC optimize ("Ofast")
+#pragma GCC target ("avx2")
+#pragma GCC optimize("unroll-loops")
+using namespace std;
+ 
+const int inf = 2000000011;
+#define PB push_back
+ 
+int N, Q, W[100005], P[100005], ans[100005];
+vector<int> adj[100005];
+bool col[100005];
 
-template<typename T> bool ckmin(T& a, const T& b){return b<a?a=b,1:0;}
-
-const int MN = 1e5+10, INF = 0x3f3f3f3f;
-
-int N, M, s[MN], m[MN][2], t, b, d;
-bool r[MN], red[MN];
-std::vector<int> a[MN], v[MN];
-struct info
-{
-	public:
-		int n,b,d;
-};
-std::vector<info> g[MN];
-
-int dfs(int n, int p=0)
-{
-	s[n]=1;
-	for(auto x:a[n])
-		if(x!=p&&!r[x])
-			s[n]+=dfs(x, n);
-	return s[n];
+// W[] is weight(size) of subtree (excluding deleted nodes)
+// P[] is parent in centroid tree
+// ans[] is closest red node in subtree of centroid tree
+// adj[] stores original tree given in input
+// col[] stores if node has already been colored red (optional)
+ 
+bool r[100005];
+// r[] stores if a node has been deleted
+ 
+int dfs_w(int u, int p = 0) {
+    if (r[u])
+        return 0;
+    W[u] = 1;
+    for (int v : adj[u])
+        if (v != p && !r[v])
+            W[u] += dfs_w(v, u);
+    return W[u];
 }
-int find(int n, int ms, int p=0)
-{
-	for(auto x:a[n])
-		if(!r[x]&&x!=p&&s[x]*2>ms)
-			return find(x, ms, n);
-	return n;
+ 
+int centroid(int u, int n, int p = 0) {
+    for (int v : adj[u])
+        if (v != p && !r[v])
+            if (W[v] * 2 > n) 
+                return centroid(v, n, u);
+    return u;
 }
-void dfs2(int n, int p=0)
-{
-	for(auto x:a[n])
-		if(!r[x]&&x!=p)
-			++d, dfs2(x, n), --d;
-	g[n].push_back({t,b,d});
+ 
+void build(int u = 1, int p = 0) {
+    int c = centroid(u, dfs_w(u));
+    P[c] = p;
+    r[c] = 1;
+    for (int v : adj[c])
+        if (!r[v]) 
+            build(v, c);
 }
-void centroid(int n=1)
-{
-	n = find(n, dfs(n));
-	v[n].reserve(a[n].size());
-	for(auto x:a[n])
-		if(!r[x])
-		{
-			t=n, b=v[n].size(), d=1;
-			dfs2(x, n);
-			v[n].push_back(INF);
-		}
-	r[n]=1;
-	for(auto x:a[n])
-		if(!r[x])
-			centroid(x);
+ 
+// this stuff is for tree distance, see binary jumping mondule
+int dep[100005], anc[100005][18];
+// dep[] stores depth of node
+// anc[][] stores id of kth ancestor
+ 
+void dfs_d(int u, int p, int d) {
+    dep[u] = d;
+    anc[u][0] = p;
+    for (int v : adj[u])
+        if (v != p)
+            dfs_d(v, u, d + 1);
+}
+ 
+void init() {
+    dfs_d(1, 1, 0);
+    for (int k = 1; (1 << k) <= N; k++)
+        for (int i = 1; i <= N; i++)
+            anc[i][k] = anc[anc[i][k - 1]][k - 1];
+}
+ 
+int lca(int u, int v) {
+    if (dep[u] > dep[v])
+        swap(u, v);
+    for (int i = 17; i >= 0; i--)
+        if (dep[v] - (1 << i) >= dep[u]) 
+            v = anc[v][i];
+ 
+    if (u == v)
+        return u;
+    for (int i = 17; i >= 0; i--) 
+        if (anc[u][i] != anc[v][i]) {
+            u = anc[u][i];
+            v = anc[v][i];
+        }
+    return anc[u][0];    
+}
+ 
+inline int dist(int u, int v) {
+    int l = lca(u, v);
+    return dep[u] + dep[v] - dep[l] - dep[l];
 }
 
-int main()
-{
-	scanf("%d%d", &N, &M);
-	for(int i=0,u,v;i+1<N;++i)
-		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
-	centroid();
-	memset(m, 0x3f, sizeof m);
-	for(int i=0,t=1,n=1;i<=M;++i)
-	{
-		if(t==1)
-		{
-			for(auto x:g[n])
-			{
-				int &q=v[x.n][x.b];
-				if(x.d<q)
-				{
-					if(m[x.n][0]==q) m[x.n][0]=x.d;
-					else for(int i=0,u=x.d;i<2;++i) if(u<m[x.n][i]) std::swap(u, m[x.n][i]);
-					q=x.d;
-				}
-			}
-			red[n]=1;
-			m[n][0]=0;
-		}
-		else
-		{
-			int f=m[n][0];
-			for(auto x:g[n])
-				if(x.d)
-					ckmin(f, m[x.n][v[x.n][x.b]==m[x.n][0]]+x.d);
-			printf("%d\n", f);
-		}
-		if(i<M) scanf("%d%d", &t, &n);
-	}
-	return 0;
+// update all ancestors 
+void update(int u) {
+    if (col[u])
+        return;
+    col[u] = 1;
+    for (int v = u; v; v = P[v])
+        ans[v] = min(ans[v], dist(u, v));
+}
+ 
+ // query all ancestors
+int query(int u) {
+    int res = inf;
+    for (int v = u; v != P[v]; v = P[v]) 
+        res = min(res, ans[v] + dist(u, v));
+    return res;
+}
+ 
+int main(void) {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+ 
+    cin >> N >> Q;
+    for (int i = 1; i <= N; i++)
+        ans[i] = inf;
+    for (int i = 1, a, b; i < N; i++) {
+        cin >> a >> b;
+        adj[a].PB(b);
+        adj[b].PB(a);
+    }  
+ 
+    init();
+    build();
+    
+    update(1);
+    for (int t, u; Q--;) {
+        cin >> t >> u;
+        if (t == 1)
+            update(u);
+        else if (t == 2)
+            cout << query(u) << '\n';
+    }
 }
 ```
 
