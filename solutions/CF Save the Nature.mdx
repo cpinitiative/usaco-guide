@@ -41,16 +41,16 @@ bool works(int sellTickets){
         vl percentages(sellTickets);
         // Add x% to every a-th ticket.
         for(int i = a - 1; i < sellTickets; i += a){
-            percentages[i] += x;
+                    percentages[i] += x;
         }
         // Add y% to every b-th ticket
         for(int i = b - 1; i < sellTickets; i += b){
-            percentages[i] += y;
+                    percentages[i] += y;
         }
         sort(percentages.begin(), percentages.end(), greater<ll>());
         ll cur = 0;
         for(int i = 0; i < sellTickets; i++){
-            cur += percentages[i] * p[i] / 100;
+                    cur += percentages[i] * p[i] / 100;
         }
         return cur >= k;
 }
@@ -59,19 +59,19 @@ void solve(int t){
         cin >> n;
         p.resize(n);
         for(int i = 0; i < n; i++){
-            cin >> p[i];
+                    cin >> p[i];
         }
         sort(p.begin(), p.end(), greater<ll>());
         cin >> x >> a >> y >> b >> k;
         int l = 0, r = n, ans = -1;
         while(l <= r){
-            int mid = l + (r - l) / 2;
-            if(works(mid)){
-                ans = mid;
-                r = mid - 1;
-            } else {
-                l = mid + 1;
-            }
+                    int mid = l + (r - l) / 2;
+                    if(works(mid)){
+                        ans = mid;
+                        r = mid - 1;
+                    } else {
+                        l = mid + 1;
+                    }
         }
         cout << ans << endl;
 }
@@ -131,16 +131,16 @@ public final class SaveNature {
                                 int ticketAt = ticketNum - 1;
                                 long revenue = 0;
                                 for (int[] chance : helpChances) {
-                                    for (int i = 0; i < chance[1]; i++) {
-                                        revenue += tickets[ticketAt--] * chance[0] / 100;
-                                    }
+                                            for (int i = 0; i < chance[1]; i++) {
+                                                        revenue += tickets[ticketAt--] * chance[0] / 100;
+                                            }
                                 }
 
                                 if (revenue >= minRevenue) {
-                                    valid = mid;
-                                    hi = mid - 1;
+                                            valid = mid;
+                                            hi = mid - 1;
                                 } else {
-                                    lo = mid + 1;
+                                            lo = mid + 1;
                                 }
                         }
                         System.out.println(valid);
@@ -163,43 +163,43 @@ public final class SaveNature {
 from math import gcd
 
 for _ in range(int(input())):
-    ticket_num = int(input())
-    tickets = sorted([int(i) for i in input().split()], reverse=True)
-    prog1 = [int(i) for i in input().split()]
-    prog2 = [int(i) for i in input().split()]
-    min_revenue = int(input())
-    # the frequency of both programs including a single ticket
-    combo_freq = prog1[1] * prog2[1] // gcd(prog1[1], prog2[1])
+        ticket_num = int(input())
+        tickets = sorted([int(i) for i in input().split()], reverse=True)
+        prog1 = [int(i) for i in input().split()]
+        prog2 = [int(i) for i in input().split()]
+        min_revenue = int(input())
+        # the frequency of both programs including a single ticket
+        combo_freq = prog1[1] * prog2[1] // gcd(prog1[1], prog2[1])
 
-    lo = 0
-    hi = ticket_num
-    valid = -1
-    while lo <= hi:
-        mid = (lo + hi) // 2
-        # all the possible tickets that can be used to save the nature
-        help_chances = sorted([
-            [prog1[0] + prog2[0], mid // combo_freq],
-            [prog1[0], mid // prog1[1] - mid // combo_freq],
-            [prog2[0], mid // prog2[1] - mid // combo_freq],
-        ], reverse=True)
+        lo = 0
+        hi = ticket_num
+        valid = -1
+        while lo <= hi:
+                mid = (lo + hi) // 2
+                # all the possible tickets that can be used to save the nature
+                help_chances = sorted([
+                    [prog1[0] + prog2[0], mid // combo_freq],
+                    [prog1[0], mid // prog1[1] - mid // combo_freq],
+                    [prog2[0], mid // prog2[1] - mid // combo_freq],
+                ], reverse=True)
 
-        ticket_at = 0
-        revenue = 0
-        """
-        sell the tickets, with the most expensive ticket
-        and the greatest percentage going first to maximize revenue
-        """
-        for ch in help_chances:
-            for _ in range(ch[1]):
-                revenue += tickets[ticket_at] * ch[0] // 100
-                ticket_at += 1
+                ticket_at = 0
+                revenue = 0
+                """
+                sell the tickets, with the most expensive ticket
+                and the greatest percentage going first to maximize revenue
+                """
+                for ch in help_chances:
+                            for _ in range(ch[1]):
+                                        revenue += tickets[ticket_at] * ch[0] // 100
+                                        ticket_at += 1
 
-        if revenue >= min_revenue:
-            valid = mid
-            hi = mid - 1
-        else:
-            lo = mid + 1
-    print(valid)
+                if revenue >= min_revenue:
+                            valid = mid
+                            hi = mid - 1
+                else:
+                            lo = mid + 1
+                print(valid)
 ```
     
 </PySection>
