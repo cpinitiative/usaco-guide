@@ -5,16 +5,18 @@ title: Robot Turtles
 author: Maggie Liu
 ---
 
-Official Analysis: [Solution Outline](https://icpc.cs.vt.edu/hs/2016/outlines-vths-2016.pdf#page=20), [Code](https://icpc.cs.vt.edu/hs/2016/judge/robotturtles/submissions/accepted/)
+Official Analysis:
+[Solution Outline](https://icpc.cs.vt.edu/hs/2016/outlines-vths-2016.pdf#page=20),
+[Code](https://icpc.cs.vt.edu/hs/2016/judge/robotturtles/submissions/accepted/)
 
 ## Explanation
 
 We can use Dijkstra's, keeping track of the current length of the program
 ($\texttt{dist}$), the direction the turtle faces ($\texttt{dir}$) and the moves
-it has already made to reach its current location ($\texttt{moves}$). If there is an ice
-castle in front of the turtle, it should only be melted if the turtle will move
-there immediately. If the turtle doesn't move onto the square immediately, then
-it will either:
+it has already made to reach its current location ($\texttt{moves}$). If there
+is an ice castle in front of the turtle, it should only be melted if the turtle
+will move there immediately. If the turtle doesn't move onto the square
+immediately, then it will either:
 
 - return to the square later, in which case the turtle has wasted moves before
   returning.
@@ -22,16 +24,18 @@ it will either:
   ice castle. 
 So, we only need to melt ice castles if the turtle moves forward immediately after.
 
-There are 3 moves that a turtle can make at each location. It can move forward
-if there is an empty square, or melt an ice castle and then move forward if
-there is an ice castle. Or, the turtle can turn left or turn right. As we make
-moves, we add the instructions to the string $\texttt{moves}$.
+At each location, the turtle can:
 
-Once we reach the diamond, we can print out the $\texttt{moves}$.
+- move forward if there is an empty square.
+- melt an ice castle and then move forward if there is an ice castle.
+- turn.
+As we make moves, we add the instructions to the string $\texttt{moves}$. Once we
+reach the diamond, we can print out the $\texttt{moves}$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2\log N^2)$, where $N$ is the side length of the board.
+**Time Complexity:** $\mathcal{O}(N^2\log N^2)$, where $N$ is the side length of
+the board.
 
 <LanguageSection>
 
