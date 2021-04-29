@@ -80,17 +80,17 @@ export default function EditProblemPage(props) {
       name: problem.name,
       body: `See [${problem.url}](${problem.url})`,
       solution:
-        problem.solution.kind == 'internal'
+        problem.solution?.kind == 'internal'
           ? `See [https://usaco.guide${[
               getProblemURL(problemInfo),
             ]}/solution](https://usaco.guide${[
               getProblemURL(problemInfo),
             ]}/solution)`
-          : problem.solution.kind == 'link'
+          : problem.solution?.kind == 'link'
           ? `See [${problem.solution.url}](${problem.solution.url})`
-          : problem.solution.kind == 'label'
+          : problem.solution?.kind == 'label'
           ? problem.solution.label
-          : problem.solution.kind === 'sketch'
+          : problem.solution?.kind === 'sketch'
           ? problem.solution.sketch
           : '',
 
