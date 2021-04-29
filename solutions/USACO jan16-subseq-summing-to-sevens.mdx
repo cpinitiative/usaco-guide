@@ -1,44 +1,123 @@
 ---
 id: usaco-595
-source: USACO Bronze 2016 January
+source: USACO Silver 2016 January
 title: Subsequences Summing to Sevens
-author: thetazero
+author: Kevin Sheng, thetazero
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_div7_silver_jan16.html)
 
 <LanguageSection>
+
 <CPPSection>
 
-## Implementation
+## C++ Implementation
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-int main(){
+const int MOD = 7;
+
+int main() {
 	freopen("div7.in", "r", stdin);
 	freopen("div7.out", "w", stdout);
-	int n;
-	cin >> n;
-	vector<int> pref(n+1);
-	int ans=0;
-	vector<int> first(7, -1);
-	first[0]=0;
-	for(int i=1;i<=n;i++){
-		int x;
-		cin >> x;
-		pref[i]=(pref[i-1]+x)%7;
-		if(first[pref[i]]==-1){
-			first[pref[i]]=i;
-		}else{
-			ans=max(ans, i-first[pref[i]]);
+	int cow_num;
+	cin >> cow_num;
+
+	int longest_photo = 0;
+	vector<int> first(MOD, -1);
+	first[0] = 0;
+
+    int curr_remainder = 0;
+	for (int i = 1; i <= cow_num; i++) {
+		int cow;
+		cin >> cow;
+		
+        curr_remainder = (curr_remainder + cow) % MOD;
+		if (first[curr_remainder] == -1){
+			first[curr_remainder] = i;
+		} else {
+			longest_photo = max(longest_photo, i - first[curr_remainder]);
 		}
 	}
-	cout << ans << endl;
+	cout << longest_photo << endl;
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+
+public final class Div7 {
+    private static final int MOD = 7;
+    public static void main(String[] args) throws IOException {
+        long start = System.currentTimeMillis();
+        BufferedReader read = new BufferedReader(new FileReader("div7.in"));
+        int cowNum = Integer.parseInt(read.readLine());
+        
+		int maxLen = 0;
+		int[] firstModOccurrence = new int[MOD];
+        Arrays.fill(firstModOccurrence, -1);
+        firstModOccurrence[0] = 0;
+
+        int runningMod = 0;
+		for (int c = 0; c < cowNum; c++) {
+            int cow = Integer.parseInt(read.readLine());
+            runningMod = (runningMod + cow) % MOD;
+            if (firstModOccurrence[runningMod] == -1) {
+                firstModOccurrence[runningMod] = c;
+            } else {
+                maxLen = Math.max(maxLen, c - firstModOccurrence[runningMod]);
+            }
+        }
+
+        PrintWriter written = new PrintWriter("div7.out");
+        written.println(maxLen);
+        written.close();
+        System.out.println(maxLen);
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+## Python Implementation
+
+```py
+MOD = 7
+
+with open('div7.in') as read:
+    cows = [int(read.readline()) for _ in range(int(read.readline()))]
+
+best_photo = 0
+first_occ = [-1 for _ in range(MOD)]
+first_occ[0] = 0
+
+running_mod = 0
+for v, c in enumerate(cows):
+    running_mod = (running_mod + c) % MOD
+
+    if first_occ[running_mod] == -1:
+        first_occ[running_mod] = v
+    else:
+        best_photo = max(best_photo, v - first_occ[running_mod])
+
+print(best_photo)
+print(best_photo, file=open('div7.out', 'w'))
+```
+
+</PySection>
+
 </LanguageSection>
