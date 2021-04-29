@@ -53,6 +53,8 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Kevin Sheng (Since Apr 2021)
 - Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
+- Zhixin Wang (Since Apr 2021)
+- Andrew Cheng (Since Apr 2021)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
