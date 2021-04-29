@@ -32,12 +32,12 @@ int main() {
 	vector<int> first(MOD, -1);
 	first[0] = 0;
 
-    int curr_remainder = 0;
+	int curr_remainder = 0;
 	for (int i = 1; i <= cow_num; i++) {
 		int cow;
 		cin >> cow;
 		
-        curr_remainder = (curr_remainder + cow) % MOD;
+		curr_remainder = (curr_remainder + cow) % MOD;
 		if (first[curr_remainder] == -1){
 			first[curr_remainder] = i;
 		} else {
@@ -59,33 +59,33 @@ import java.io.*;
 import java.util.*;
 
 public final class Div7 {
-    private static final int MOD = 7;
-    public static void main(String[] args) throws IOException {
-        long start = System.currentTimeMillis();
-        BufferedReader read = new BufferedReader(new FileReader("div7.in"));
-        int cowNum = Integer.parseInt(read.readLine());
-        
+	private static final int MOD = 7;
+	public static void main(String[] args) throws IOException {
+		long start = System.currentTimeMillis();
+		BufferedReader read = new BufferedReader(new FileReader("div7.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		
 		int maxLen = 0;
 		int[] firstModOccurrence = new int[MOD];
-        Arrays.fill(firstModOccurrence, -1);
-        firstModOccurrence[0] = 0;
+		Arrays.fill(firstModOccurrence, -1);
+		firstModOccurrence[0] = 0;
 
-        int runningMod = 0;
+		int runningMod = 0;
 		for (int c = 0; c < cowNum; c++) {
-            int cow = Integer.parseInt(read.readLine());
-            runningMod = (runningMod + cow) % MOD;
-            if (firstModOccurrence[runningMod] == -1) {
-                firstModOccurrence[runningMod] = c;
-            } else {
-                maxLen = Math.max(maxLen, c - firstModOccurrence[runningMod]);
-            }
-        }
+			int cow = Integer.parseInt(read.readLine());
+			runningMod = (runningMod + cow) % MOD;
+			if (firstModOccurrence[runningMod] == -1) {
+				firstModOccurrence[runningMod] = c;
+			} else {
+				maxLen = Math.max(maxLen, c - firstModOccurrence[runningMod]);
+			}
+		}
 
-        PrintWriter written = new PrintWriter("div7.out");
-        written.println(maxLen);
-        written.close();
-        System.out.println(maxLen);
-    }
+		PrintWriter written = new PrintWriter("div7.out");
+		written.println(maxLen);
+		written.close();
+		System.out.println(maxLen);
+	}
 }
 ```
 
@@ -99,7 +99,7 @@ public final class Div7 {
 MOD = 7
 
 with open('div7.in') as read:
-    cows = [int(read.readline()) for _ in range(int(read.readline()))]
+	cows = [int(read.readline()) for _ in range(int(read.readline()))]
 
 best_photo = 0
 first_occ = [-1 for _ in range(MOD)]
@@ -107,12 +107,12 @@ first_occ[0] = 0
 
 running_mod = 0
 for v, c in enumerate(cows):
-    running_mod = (running_mod + c) % MOD
+	running_mod = (running_mod + c) % MOD
 
-    if first_occ[running_mod] == -1:
-        first_occ[running_mod] = v
-    else:
-        best_photo = max(best_photo, v - first_occ[running_mod])
+	if first_occ[running_mod] == -1:
+		first_occ[running_mod] = v
+	else:
+		best_photo = max(best_photo, v - first_occ[running_mod])
 
 print(best_photo)
 print(best_photo, file=open('div7.out', 'w'))
