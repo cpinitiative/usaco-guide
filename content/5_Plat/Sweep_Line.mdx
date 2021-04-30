@@ -121,19 +121,27 @@ struct Event {
 };
 
 pair<ll, ll> origin, polygon[22];
-// Custom comparator to sort by bearing via cross product
-bool cmp(pair<ll, ll> a, pair<ll, ll> b) {
-	return (a.x - origin.x) * (b.y - origin.y) < (a.y - origin.y) * (b.x - origin.x);
-}
-// Custom comparator to sort by bearing via atan2
-bool operator<(Event a, Event b) {
-	double angle_a = atan2(a.loc.x - origin.x, a.loc.y - origin.y);
-	double angle_b = atan2(b.loc.x - origin.x, b.loc.y - origin.y);
-	if (angle_a < 0) angle_a += 2 * PI;
-	if (angle_b < 0) angle_b += 2 * PI;
 
-	if (angle_a == angle_b) return a.type > b.type;
-	return angle_a < angle_b;
+// Cross product
+ll cross(pair<ll, ll> a, pair<ll, ll> b) {
+    return (a.y - origin.y) * (b.x - origin.x) - (a.x - origin.x) * (b.y - origin.y);
+}
+
+// Which half of the plane some point lies in
+int half(pair<ll, ll> p) {
+    if (p.x != origin.x) return (p.x < origin.x) - (p.x > origin.x);
+    return (p.y < origin.y) - (p.y > origin.y);
+}
+
+// Custom comparator to sort by bearing
+bool operator<(Event a, Event b) {
+    int ah = half(a.loc), bh = half(b.loc);
+    if (ah == bh) {
+        ll c = cross(a.loc, b.loc);
+        if (c == 0) return a.type > b.type;
+        return c > 0;
+    }
+    return ah < bh;
 }
 
 vector<Event> events, walls;
@@ -149,7 +157,9 @@ int main() {
 		cin >> m;
 		for (int j = 0; j < m; j++) cin >> polygon[j].x >> polygon[j].y;
 		// Sort the polygon's vertices to find the 2 "tangents" from the origin
-		sort(polygon, polygon + m, cmp);
+		sort(polygon, polygon + m, [](pair<ll, ll> a, pair<ll, ll> b) {
+		    return cross(a, b) > 0;
+		});
 		events.push_back({1, i, polygon[0]});
 		events.push_back({-1, i, polygon[m - 1]});
 	}
