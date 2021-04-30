@@ -23,15 +23,16 @@ import java.io.*;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		BufferedReader r =
+		new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(r.readLine());
 
 		int N = Integer.parseInt(st.nextToken());
 		int P = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
 
 		//Read the audience.
-		st = new StringTokenizer(br.readLine());
+		st = new StringTokenizer(r.readLine());
 		pair[] A = new pair[N];
 		for (int i = 0; i < N; i++) {
 			A[i] = new pair(i, Integer.parseInt(st.nextToken()));
@@ -41,7 +42,7 @@ public class Main {
 		//Read the player skill matrix.
 		int[][] skill = new int[N][P];
 		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
+			st = new StringTokenizer(r.readLine());
 			for (int j = 0; j < P; j++) {
 				skill[i][j] = Integer.parseInt(st.nextToken());
 			}
@@ -57,12 +58,12 @@ public class Main {
 
 		for (int i = 1; i <= N; i++) {
 			int ind = A[i - 1].idx;
-			for (int mask = 0; mask < (1 << P); mask++) {
+			for (int m = 0; m < (1 << P); m++) {
 
 				//Count the number of bits in the mask.
 				int bits = 0;
 				for (int j = 0; j < P; j++) {
-					if ((mask & (1 << j)) > 0) {
+					if ((m & (1 << j)) > 0) {
 						bits++;
 					}
 				}
@@ -70,19 +71,23 @@ public class Main {
 				int numAud = i - 1 - bits;
 				//If the player is added to the audience.
 				if (numAud < K) {
-					if (dp[i - 1][mask] != -1) {
-						dp[i][mask] = dp[i - 1][mask] + A[i - 1].val;
+					if (dp[i - 1][m] != -1) {
+						dp[i][m] = dp[i - 1][m] + A[i - 1].val;
 					}
 				} else {
-					if (dp[i - 1][mask] != -1) {
-						dp[i][mask] = dp[i - 1][mask];
+					if (dp[i - 1][m] != -1) {
+						dp[i][m] = dp[i - 1][m];
 					}
 				}
 
 				//Add the player to the team.
 				for (int j = 0; j < P; j++) {
-					if ((mask & (1 << j)) > 0 && (dp[i - 1][mask ^ (1 << j)]) != -1) {
-						dp[i][mask] = Math.max(dp[i][mask], dp[i - 1][mask ^ (1 << j)] + skill[ind][j]);
+					if ((m & (1 << j)) > 0 ) {
+						if ((dp[i - 1][m ^ (1 << j)]) != -1) {
+
+							dp[i][m] = Math.max(dp[i][m],
+									dp[i - 1][m ^ (1 << j)] + skill[ind][j]);
+						}
 					}
 				}
 			}
