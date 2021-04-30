@@ -35,60 +35,60 @@ int n; vector<ll> p;
 ll x, a, y, b, k;
 
 bool works(int sellTickets){
-		vector<ll> percentages(sellTickets);
-		
-		// Add x% to every a-th ticket.
-		for(int i = a - 1; i < sellTickets; i += a){
-				percentages[i] += x;
-		}
-		
-		// Add y% to every b-th ticket
-		for(int i = b - 1; i < sellTickets; i += b){
-				percentages[i] += y;
-		}
-		
-		sort(percentages.begin(), percentages.end(), greater<ll>());
-		
-		ll cur = 0;
-		for(int i = 0; i < sellTickets; i++){
-				cur += percentages[i] * p[i] / 100;
-		}
-		
-		return cur >= k;
+	vector<ll> percentages(sellTickets);
+	
+	// Add x% to every a-th ticket.
+	for(int i = a - 1; i < sellTickets; i += a){
+		percentages[i] += x;
+	}
+	
+	// Add y% to every b-th ticket
+	for(int i = b - 1; i < sellTickets; i += b){
+		percentages[i] += y;
+	}
+	
+	sort(percentages.begin(), percentages.end(), greater<ll>());
+	
+	ll cur = 0;
+	for(int i = 0; i < sellTickets; i++){
+		cur += percentages[i] * p[i] / 100;
+	}
+	
+	return cur >= k;
 }
 
 void solve(){
-		cin >> n;
-		p.resize(n);
-		
-		for(int i = 0; i < n; i++){
-				cin >> p[i];
+	cin >> n;
+	p.resize(n);
+	
+	for(int i = 0; i < n; i++){
+		cin >> p[i];
+	}
+	
+	sort(p.begin(), p.end(), greater<ll>());
+	
+	cin >> x >> a >> y >> b >> k;
+	
+	int l = 0, r = n, ans = -1;
+	
+	while(l <= r){
+		int mid = l + (r - l) / 2;
+		if(works(mid)){
+			ans = mid;
+			r = mid - 1;
+		} else {
+			l = mid + 1;
 		}
-		
-		sort(p.begin(), p.end(), greater<ll>());
-		
-		cin >> x >> a >> y >> b >> k;
-		
-		int l = 0, r = n, ans = -1;
-		
-		while(l <= r){
-				int mid = l + (r - l) / 2;
-				if(works(mid)){
-						ans = mid;
-						r = mid - 1;
-				} else {
-						l = mid + 1;
-				}
-		}
-		
-		cout << ans << endl;
+	}
+	
+	cout << ans << endl;
 }
 
 int main(){
-		int q; cin >> q;
-		for(int i = 1; i <= q; i++){
-				solve();
-		}
+	int q; cin >> q;
+	for(int i = 1; i <= q; i++){
+		solve();
+	}
 }
 ```
 
@@ -106,57 +106,57 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public final class SaveNature {
-		public static void main(String[] args) throws IOException {
-			BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-			int queryNum = Integer.parseInt(read.readLine());
-			for (int q = 0; q < queryNum; q++) {
-					int ticketNum = Integer.parseInt(read.readLine());
-					long[] tickets = Arrays.stream(read.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
-					Arrays.sort(tickets);
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int queryNum = Integer.parseInt(read.readLine());
+		for (int q = 0; q < queryNum; q++) {
+			int ticketNum = Integer.parseInt(read.readLine());
+			long[] tickets = Arrays.stream(read.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
+			Arrays.sort(tickets);
 
-					// first the percentage of the proceeds, then the frequency
-					int[] prog1 = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-					int[] prog2 = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-					long minRevenue = Long.parseLong(read.readLine());
-					// the frequency of both programs including a single ticket
-					long comboFreq = (long) prog1[1] * prog2[1] / gcd(prog1[1], prog2[1]);
+			// first the percentage of the proceeds, then the frequency
+			int[] prog1 = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			int[] prog2 = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			long minRevenue = Long.parseLong(read.readLine());
+			// the frequency of both programs including a single ticket
+			long comboFreq = (long) prog1[1] * prog2[1] / gcd(prog1[1], prog2[1]);
 
-					int lo = 0;
-					int hi = ticketNum;
-					int valid = -1;
-					while (lo <= hi) {
-							int mid = (lo + hi) / 2;
-							// all the possible tickets that can be used to save the nature
-							int[][] helpChances = new int[][] {
-									{prog1[0] + prog2[0], ((int) (mid / comboFreq))},
-									{prog1[0], (int) (mid / prog1[1] - mid / comboFreq)},
-									{prog2[0], (int) (mid / prog2[1] - mid / comboFreq)}
-							};
-							// sort the chances, the greatest percentage going first
-							Arrays.sort(helpChances, Comparator.comparingInt(c -> -c[0]));
+			int lo = 0;
+			int hi = ticketNum;
+			int valid = -1;
+			while (lo <= hi) {
+				int mid = (lo + hi) / 2;
+				// all the possible tickets that can be used to save the nature
+				int[][] helpChances = new int[][] {
+					{prog1[0] + prog2[0], ((int) (mid / comboFreq))},
+					{prog1[0], (int) (mid / prog1[1] - mid / comboFreq)},
+					{prog2[0], (int) (mid / prog2[1] - mid / comboFreq)}
+				};
+				// sort the chances, the greatest percentage going first
+				Arrays.sort(helpChances, Comparator.comparingInt(c -> -c[0]));
 
-							// since the tickets are sorted in increasing order, we go in reverse
-							int ticketAt = ticketNum - 1;
-							long revenue = 0;
-							for (int[] chance : helpChances) {
-									for (int i = 0; i < chance[1]; i++) {
-										revenue += tickets[ticketAt--] * chance[0] / 100;
-									}
-							}
-							if (revenue >= minRevenue) {
-								valid = mid;
-								hi = mid - 1;
-							} else {
-								lo = mid + 1;
-							}
+				// since the tickets are sorted in increasing order, we go in reverse
+				int ticketAt = ticketNum - 1;
+				long revenue = 0;
+				for (int[] chance : helpChances) {
+					for (int i = 0; i < chance[1]; i++) {
+						revenue += tickets[ticketAt--] * chance[0] / 100;
 					}
-					System.out.println(valid);
+				}
+				if (revenue >= minRevenue) {
+					valid = mid;
+					hi = mid - 1;
+				} else {
+					lo = mid + 1;
+				}
 			}
+			System.out.println(valid);
 		}
+	}
 
-		private static int gcd(int a, int b) {
-				return b == 0 ? a : gcd(b, a % b);
-		}
+	private static int gcd(int a, int b) {
+		return b == 0 ? a : gcd(b, a % b);
+	}
 }
 ```
 
