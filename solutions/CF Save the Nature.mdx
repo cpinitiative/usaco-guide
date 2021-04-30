@@ -11,11 +11,7 @@ Binary search on the answer for the minimum number of tickets, which we call $t$
 
 Greedily, it is optimal to maximize the total revenue from selling these tickets since that will minimize the total number of tickets. If it is impossible to sell at least $k$ tickets, then output $-1$.
 
-Additionally, the problem indicates that only $x\%$ of the $a$-th ticket and $y\%$ of the $b$-th ticket could contribute to the total ecological contribution. Thus, we can iterate over every $a$-th ticket and $b$-th ticket at most $t$ and add $x\%$ to the total percentages contributing to an ecological program for each $a$-th ticket and $y\%$ for each $b$-th ticket, which we can store in $pct$.
-
-It suffices to sort the tickets and percentages in decreasing order. Our total ecological contribution is $\sum\limits_{i=1}^{t} p_i \cdot pct_i$.
-
-We can move the binary search forward by comparing the amount of money we came up with with the amount of money required
+Additionally, the problem indicates that only $x\%$ of the $a$-th ticket and $y\%$ of the $b$-th ticket could contribute to the total ecological contribution. We can precompute the multipliers $pct$ (namely: x, y, and x+y) over all $t$ tickets, then greedily match the largest multiplier with highest value ticket by sorting the multipliers $pct$ and tickets $p$ in decreasing order. Our total ecological contribution is $\sum\limits_{i=1}^{t} p_i \cdot pct_i$.
 
 # Solution 
 
@@ -32,13 +28,12 @@ We can move the binary search forward by comparing the amount of money we came u
 
 using namespace std;
 using ll = long long;
-using vl = vector<ll>;
 
-int n; vl p;
+int n; vector<ll> p;
 ll x, a, y, b, k;
 
 bool works(int sellTickets){
-        vl percentages(sellTickets);
+        vector<ll> percentages(sellTickets);
         // Add x% to every a-th ticket.
         for(int i = a - 1; i < sellTickets; i += a){
                     percentages[i] += x;
