@@ -104,9 +104,12 @@ export default function EditorPage(props: PageProps) {
       )}`
     );
     const problemResult = await fetch(githubProblemsURL);
-    const problemText = await problemResult.text();
-    if (problemText.includes('Not Found')) setProblems('');
-    else setProblems(problemText);
+    if (!problemResult.ok) {
+      setProblems('');
+    } else {
+      const problemText = await problemResult.text();
+      setProblems(problemText);
+    }
   };
   React.useEffect(() => {
     if (filePath) {
