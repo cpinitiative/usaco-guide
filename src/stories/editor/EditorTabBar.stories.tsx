@@ -21,7 +21,7 @@ Default.args = {
       label: 'Contributing.mdx',
     },
     {
-      label: 'Prefix_Sums.mdx',
+      label: 'Contributing.problems.json',
     },
   ],
   activeTab: 'Contributing.mdx',
