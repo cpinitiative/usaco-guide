@@ -89,4 +89,76 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+### Java Implementation
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.TreeMap;
+
+public final class DestroyArray {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int halfSize = Integer.parseInt(read.readLine());
+			TreeMap<Integer, Integer> nums = new TreeMap<>();
+			for (int i : Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray()) {
+				nums.put(i, nums.getOrDefault(i, 0) + 1);
+			}
+			int validStart = -1;
+			ArrayList<int[]> validMoves = null;
+			for (int toRemove : nums.keySet()) {
+				int start = nums.lastKey() + toRemove;
+				int at = start;
+
+				TreeMap<Integer, Integer> remaining = new TreeMap<>(nums);
+				ArrayList<int[]> moves = new ArrayList<>();
+				for (int i = 0; i < halfSize; i++) {
+					int largest = remaining.lastKey();
+					remaining.put(largest, remaining.get(largest) - 1);
+					if (remaining.get(largest) == 0) {
+						remaining.remove(largest);
+					}
+
+					int other = at - largest;
+					if (!remaining.containsKey(other)) {
+						break;
+					}
+
+					at = largest;
+					remaining.put(other, remaining.get(other) - 1);
+					if (remaining.get(other) == 0) {
+						remaining.remove(other);
+					}
+					moves.add(new int[] {largest, other});
+				}
+
+				if (moves.size() == halfSize) {
+					validStart = start;
+					validMoves = moves;
+					break;
+				}
+			}
+
+			if (validMoves == null) {
+				System.out.println("NO");
+			} else {
+				System.out.printf("YES%n%d%n", validStart);
+				for (int[] m : validMoves) {
+					System.out.printf("%d %d%n", m[0], m[1]);
+				}
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
