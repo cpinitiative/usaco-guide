@@ -323,8 +323,9 @@ export default function EditorPage(props: PageProps) {
             <div className="mx-4 block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
 
             <a
-              href="/general/contributing#adding-a-solution"
+              href="/general/adding-solution"
               target="_blank"
+              rel="noreferrer"
               className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group transition"
             >
               <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300 transition" />
