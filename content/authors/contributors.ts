@@ -70,4 +70,14 @@ export const contentAuthors: Contributor[] = [
     githubUsername: "Qw3rTy827",
     sinceDate: "Apr 2021",
   },
+  {
+    name: "Nathan Gong",
+    githubUsername: "nathangong",
+    sinceDate: "Apr 2021",
+  },
+  {
+    name: "Melody Yu",
+    githubUsername: "cskitty",
+    sinceDate: "Apr 2021",
+  },
 ];
