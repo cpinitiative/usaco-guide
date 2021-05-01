@@ -5,8 +5,83 @@ title: Array Destruction
 author: Kevin Sheng, Jesse Choe
 ---
 
+[Official Editorial](https://codeforces.com/blog/entry/86933)
 
+# Solution 
+
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using pi = pair<int, int>;
+
+int arr_size;
+int arr[2000];
+
+vector<pi> pair_to_remove;
+
+bool works(int initial_sum){
+	pair_to_remove.clear();
+	// This multiset stores the all of the undestroyed elements
+	multiset<int> remaining;
+	for(int i = 0; i < arr_size; i++){
+		remaining.insert(arr[i]);
+	}
+	while(remaining.size()){
+		// The largest element that hasn't been removed
+		int cur = *remaining.rbegin();
+		remaining.erase(remaining.find(cur));
+		// If this condition is true, then it is impossible to destruct the array with the given initial sum
+		if(remaining.find(initial_sum - cur) == remaining.end()){
+			return false;
+		}
+		remaining.erase(remaining.find(initial_sum - cur));
+		pair_to_remove.push_back({cur, initial_sum - cur});
+		initial_sum = cur;
+	}
+	return remaining.empty();
+}
+
+void solve(){
+	cin >> arr_size; arr_size*=2;
+	for(int i = 0; i < arr_size; i++){
+		cin >> arr[i];
+	} 
+	sort(arr, arr+arr_size);
+	for(int i = 0; i < arr_size - 1; i++){
+		// The initial sum should be the largest element in the array and arr[i]
+		int initial_sum = arr[i] + arr[arr_size-1];
+		/* It suffices to check if the initial sum could destruct the array.
+		   Then, we should print out the initial sum and each of pair of elements we destruct.
+		*/
+		if(works(initial_sum)){
+			cout << "YES" << endl;
+			cout << initial_sum << endl;
+			for(pi x: pair_to_remove){
+				cout << x.first << " " << x.second << endl;
+			}
+			return;
+		}
+	}
+	cout << "NO" << endl;
+}
+
+int main(){
+	int t; cin >> t;
+	for(int i=1; i<=t; i++){
+		solve();
+	}
+}
+```
+
+</CPPSection>
 
 </LanguageSection>
