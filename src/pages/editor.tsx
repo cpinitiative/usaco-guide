@@ -11,7 +11,6 @@
 
 import { InformationCircleIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { collection, doc, getFirestore } from 'firebase/firestore';
 import { PageProps } from 'gatsby';
 import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
@@ -21,7 +20,6 @@ import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
-import { EditorSidebar } from '../components/Editor/EditorSidebar';
 import EditorTabBar from '../components/Editor/EditorTabBar';
 import {
   conf as mdxConf,
@@ -80,8 +78,11 @@ export default function EditorPage(props: PageProps) {
       : null;
   const markdownStorageKey = 'guide:editor:markdown';
   const problemsStorageKey = 'guide:editor:problems';
-  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey, 5000);
-  const [problems, setProblems] = useStickyState('', problemsStorageKey, 5000);
+  // some issues w/ reloading w/ filepath & stuff
+  // const [markdown, setMarkdown] = useStickyState('', markdownStorageKey, 5000);
+  // const [problems, setProblems] = useStickyState('', problemsStorageKey, 5000);
+  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
+  const [problems, setProblems] = useStickyState('', problemsStorageKey);
   const editor = useRef<any>();
   const [tab, setTab] = useState<'problems' | 'content'>('content');
 
@@ -104,7 +105,8 @@ export default function EditorPage(props: PageProps) {
     );
     const problemResult = await fetch(githubProblemsURL);
     const problemText = await problemResult.text();
-    setProblems(problemText);
+    if (problemText.includes('Not Found')) setProblems('');
+    else setProblems(problemText);
   };
   React.useEffect(() => {
     if (filePath) {
@@ -236,42 +238,63 @@ export default function EditorPage(props: PageProps) {
                 Guide Editor
               </span>
             </div>
-            <button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">
-              {/*<ArchiveIcon className="h-4 w-4" />*/}
-              <span>History</span>
-            </button>
-            <button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">
-              {/*<ShareIcon className="h-4 w-4" />*/}
-              <span>Share</span>
-            </button>
-            <button
-              className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
-              onClick={async () => {
-                const db = getFirestore(firebaseApp);
-                try {
-                  const docCollection = collection(
-                    doc(db, 'editor-documents', id),
-                    'edits'
-                  );
-                  // await runTransaction(
-                  //   getFirestore(firebaseApp),
-                  //   async transaction => {
-                  //     const v = await transaction;
-                  //     if (!v.exists()) {
-                  //       transaction.set(docRef, {});
-                  //     }
-                  //     const newPopulation = doc.data().population + 1;
-                  //     transaction.update(docRef, { population: newPopulation });
-                  //   }
-                  // );
-                  console.log('Transaction successfully committed!');
-                } catch (e) {
-                  console.log('Transaction failed: ', e);
-                }
-              }}
-            >
-              Save
-            </button>
+            {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
+            {/*  /!*<ArchiveIcon className="h-4 w-4" />*!/*/}
+            {/*  <span>History</span>*/}
+            {/*</button>*/}
+            {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
+            {/*  /!*<ShareIcon className="h-4 w-4" />*!/*/}
+            {/*  <span>Share</span>*/}
+            {/*</button>*/}
+            {/*<button*/}
+            {/*  className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"*/}
+            {/*  onClick={async () => {*/}
+            {/*    const db = getFirestore(firebaseApp);*/}
+            {/*    try {*/}
+            {/*      const docCollection = collection(*/}
+            {/*        doc(db, 'editor-documents', id),*/}
+            {/*        'edits'*/}
+            {/*      );*/}
+            {/*      // await runTransaction(*/}
+            {/*      //   getFirestore(firebaseApp),*/}
+            {/*      //   async transaction => {*/}
+            {/*      //     const v = await transaction;*/}
+            {/*      //     if (!v.exists()) {*/}
+            {/*      //       transaction.set(docRef, {});*/}
+            {/*      //     }*/}
+            {/*      //     const newPopulation = doc.data().population + 1;*/}
+            {/*      //     transaction.update(docRef, { population: newPopulation });*/}
+            {/*      //   }*/}
+            {/*      // );*/}
+            {/*      console.log('Transaction successfully committed!');*/}
+            {/*    } catch (e) {*/}
+            {/*      console.log('Transaction failed: ', e);*/}
+            {/*    }*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  Save*/}
+            {/*</button>*/}
+
+            {filePath && (
+              <button
+                className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+                onClick={handleReloadContent}
+              >
+                Reload Content from Github
+              </button>
+            )}
+            {filePath && (
+              <a
+                href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
+                  filePath
+                )}`}
+                target="_blank"
+                className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+                rel="noreferrer"
+              >
+                View File on Github &rarr;
+              </a>
+            )}
           </div>
           <div className="flex items-center">
             {/*<ButtonGroup*/}
@@ -348,27 +371,6 @@ export default function EditorPage(props: PageProps) {
                 </svg>
               )}
             </button>
-
-            {/*{filePath && (*/}
-            {/*  <button*/}
-            {/*    className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
-            {/*    onClick={handleReloadContent}*/}
-            {/*  >*/}
-            {/*    Reload Content from Github*/}
-            {/*  </button>*/}
-            {/*)}*/}
-            {/*{filePath && (*/}
-            {/*  <a*/}
-            {/*    href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(*/}
-            {/*      filePath*/}
-            {/*    )}`}*/}
-            {/*    target="_blank"*/}
-            {/*    className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"*/}
-            {/*    rel="noreferrer"*/}
-            {/*  >*/}
-            {/*    View File on Github &rarr;*/}
-            {/*  </a>*/}
-            {/*)}*/}
           </div>
         </div>
 
@@ -387,22 +389,23 @@ export default function EditorPage(props: PageProps) {
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div className="flex items-stretch">
-                <EditorSidebar className="h-full flex-shrink-0" />
+                {/*<EditorSidebar className="h-full flex-shrink-0" />*/}
                 <div className="h-full tw-forms-disable-all-descendants flex-1 w-0">
                   <EditorTabBar
                     tabs={[
                       { label: 'module.mdx', value: 'module.mdx' },
                       {
-                        label: 'module.problems.mdx',
-                        value: 'module.problems.mdx',
+                        label: 'module.problems.json',
+                        value: 'module.problems.json',
                       },
                     ]}
                     activeTab={
-                      tab == 'content' ? 'module.mdx' : 'module.problems.mdx'
+                      tab == 'content' ? 'module.mdx' : 'module.problems.json'
                     }
                     onTabSelect={tab =>
                       setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
                     }
+                    onFormatCode={handleFormatCode}
                   />
                   <Editor
                     theme="vs-dark"

@@ -13,12 +13,14 @@ export interface EditorTabBarProps {
    */
   activeTab: string;
   onTabSelect: (tab: EditorTab) => void;
+  onFormatCode: () => void;
 }
 
 const EditorTabBar: React.FC<EditorTabBarProps> = ({
   tabs,
   activeTab,
   onTabSelect,
+  onFormatCode,
 }) => {
   return (
     <div className="flex bg-gray-900">
@@ -44,7 +46,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
             'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
             'px-3 py-2 font-medium text-sm focus:outline-none transition'
           )}
-          onClick={() => console.log('prettify')}
+          onClick={() => onFormatCode()}
         >
           Format Code
         </button>
