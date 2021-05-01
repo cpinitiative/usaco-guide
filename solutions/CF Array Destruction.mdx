@@ -9,7 +9,7 @@ author: Kevin Sheng, Jesse Choe
 
 # Solution 
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(N^2\log N)$
 
 <LanguageSection>
 
@@ -18,54 +18,58 @@ author: Kevin Sheng, Jesse Choe
 ### C++ Implementation
 
 ```cpp
+// iostream, vector, set, and algorithm
 #include <bits/stdc++.h>
 
 using namespace std;
-using pi = pair<int, int>;
+
+const int MAX_SIZE = 2000;
 
 int arr_size;
-int arr[2000];
+int arr[MAX_SIZE];
 
-vector<pi> pair_to_remove;
+vector<pair<int, int>> pair_to_remove;
 
-bool works(int initial_sum){
+bool works(int initial_sum) {
 	pair_to_remove.clear();
 	// This multiset stores the all of the undestroyed elements
 	multiset<int> remaining;
-	for(int i = 0; i < arr_size; i++){
+	for (int i = 0; i < arr_size; i++) {
 		remaining.insert(arr[i]);
 	}
-	while(remaining.size()){
+	while (remaining.size()) {
 		// The largest element that hasn't been removed
-		int cur = *remaining.rbegin();
-		remaining.erase(remaining.find(cur));
+		int curr = *remaining.rbegin();
+		remaining.erase(remaining.find(curr));
 		// If this condition is true, then it is impossible to destruct the array with the given initial sum
-		if(remaining.find(initial_sum - cur) == remaining.end()){
+		if (remaining.find(initial_sum - curr) == remaining.end()) {
 			return false;
 		}
-		remaining.erase(remaining.find(initial_sum - cur));
-		pair_to_remove.push_back({cur, initial_sum - cur});
-		initial_sum = cur;
+		remaining.erase(remaining.find(initial_sum - curr));
+		pair_to_remove.push_back({curr, initial_sum - curr});
+		initial_sum = curr;
 	}
 	return remaining.empty();
 }
 
-void solve(){
-	cin >> arr_size; arr_size*=2;
+void solve() {
+	cin >> arr_size;
+	arr_size *= 2;
 	for(int i = 0; i < arr_size; i++){
 		cin >> arr[i];
 	} 
-	sort(arr, arr+arr_size);
-	for(int i = 0; i < arr_size - 1; i++){
+	sort(arr, arr + arr_size);
+	for (int i = 0; i < arr_size - 1; i++) {
 		// The initial sum should be the largest element in the array and arr[i]
-		int initial_sum = arr[i] + arr[arr_size-1];
-		/* It suffices to check if the initial sum could destruct the array.
-		   Then, we should print out the initial sum and each of pair of elements we destruct.
-		*/
-		if(works(initial_sum)){
+		int initial_sum = arr[i] + arr[arr_size - 1];
+		/* 
+		 * It suffices to check if the initial sum could destruct the array.
+		 * Then, we should print out the initial sum and each of pair of elements we destruct.
+		 */
+		if (works(initial_sum)) {
 			cout << "YES" << endl;
 			cout << initial_sum << endl;
-			for(pi x: pair_to_remove){
+			for (pair<int, int> x: pair_to_remove) {
 				cout << x.first << " " << x.second << endl;
 			}
 			return;
@@ -74,9 +78,10 @@ void solve(){
 	cout << "NO" << endl;
 }
 
-int main(){
-	int t; cin >> t;
-	for(int i=1; i<=t; i++){
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 1; i <= t; i++) {
 		solve();
 	}
 }
