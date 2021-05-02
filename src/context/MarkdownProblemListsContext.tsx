@@ -29,7 +29,7 @@ export function useMarkdownProblemLists() {
 
 export function useMarkdownProblems() {
   const lists = useMarkdownProblemLists();
-  let problems: ProblemInfo[] = React.useMemo(() => {
+  const problems: ProblemInfo[] = React.useMemo(() => {
     let all = [];
     lists.forEach(list => {
       all = [...all, ...list.problems];

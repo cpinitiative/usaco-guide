@@ -1,3 +1,4 @@
+/*eslint-disable */
 const visit = require('unist-util-visit');
 const katex = require('katex').renderToString;
 const unified = require('unified');

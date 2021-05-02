@@ -1,17 +1,17 @@
+import { navigate } from 'gatsby';
 import * as React from 'react';
+import UnderlinedTabs from '../components/elements/UnderlinedTabs';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import UnderlinedTabs from '../components/elements/UnderlinedTabs';
+import AdminSettings from '../components/Settings/AdminSettings';
+import Authentication from '../components/Settings/Authentication';
+import DarkMode from '../components/Settings/DarkMode';
 import General from '../components/Settings/General';
 import Language from '../components/Settings/Language';
-import DarkMode from '../components/Settings/DarkMode';
-import UserData from '../components/Settings/UserData';
 import Profile from '../components/Settings/Profile';
-import Authentication from '../components/Settings/Authentication';
-import { navigate } from 'gatsby';
+import UserData from '../components/Settings/UserData';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
-import AdminSettings from '../components/Settings/AdminSettings';
 
 /*
 1. General

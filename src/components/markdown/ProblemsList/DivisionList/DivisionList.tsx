@@ -1,15 +1,13 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import React from 'react';
-import divToProbs from './div_to_probs';
-import contestToPoints from './contest_to_points';
-import { ProblemsList } from '../ProblemsList';
-
-import Transition from '../../../Transition';
-import { useContext } from 'react';
-import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
-import { ProblemSolutionInfo } from '../../../../models/problem';
+import React, { useContext } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
+import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
+import { ProblemSolutionInfo } from '../../../../models/problem';
+import Transition from '../../../Transition';
+import { ProblemsList } from '../ProblemsList';
+import contestToPoints from './contest_to_points';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
+import divToProbs from './div_to_probs';
 import id_to_sol from './id_to_sol';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
@@ -49,7 +47,7 @@ const DivisionButton = ({
 }: {
   options: string[];
   state: string;
-  onChange: Function;
+  onChange: (option: string) => void;
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
@@ -57,10 +55,9 @@ const DivisionButton = ({
     setShow(false);
     onChange(option);
   };
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setShow(false);
     };
@@ -211,13 +208,15 @@ export function DivisionList(props): JSX.Element {
   for (const division of divisions) {
     for (const contest of Object.keys(contestToPoints[division])) {
       contestToFraction[division][contest] = [];
-      if (contestToPoints[division][contest])
-        for (const num of contestToPoints[division][contest])
+      if (contestToPoints[division][contest]) {
+        for (const num of contestToPoints[division][contest]) {
           contestToFraction[division][contest].push(num);
+        }
+      }
     }
   }
 
-  for (const division of divisions)
+  for (const division of divisions) {
     for (const probInfo of divToProbs[division]) {
       const contest = probInfo[1];
       let fraction = null;
@@ -253,6 +252,7 @@ export function DivisionList(props): JSX.Element {
       }
       divisionToSeasonToProbs[division][season].push(prob);
     }
+  }
   const userSettings = useContext(UserDataContext);
 
   let curDivision =

@@ -1,31 +1,29 @@
+import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useContext, useState } from 'react';
-import { ModuleInfo } from '../../models/module';
-import { graphql, useStaticQuery } from 'gatsby';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
-import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
-import { SolutionInfo } from '../../models/solution';
-
-import ConfettiContext from '../../context/ConfettiContext';
-import ForumCTA from '../ForumCTA';
-import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
-import MobileSideNav from './MobileSideNav';
-import DesktopSidebar from './DesktopSidebar';
-import MobileAppBar from './MobileAppBar';
-import NavBar from './NavBar';
-import NotSignedInWarning from './NotSignedInWarning';
-import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
-import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
-import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
-import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
 } from '../../../content/ordering';
+import ConfettiContext from '../../context/ConfettiContext';
+import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
+import ForumCTA from '../ForumCTA';
+import DesktopSidebar from './DesktopSidebar';
+import MobileAppBar from './MobileAppBar';
+import MobileSideNav from './MobileSideNav';
+import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
+import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import NavBar from './NavBar';
+import NotSignedInWarning from './NotSignedInWarning';
+import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
+import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -37,7 +35,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
           style={{ width: '20rem' }}
         />
         {tableOfContents.length > 1 && (
-          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+          <div className="hidden 2xl:block ml-6 mr-6 w-64 mt-48 flex-shrink-0 order-3">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
@@ -83,7 +81,7 @@ export default function MarkdownLayout({
 
   const data = useStaticQuery(graphql`
     query {
-      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+      allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
             frontmatter {
@@ -96,13 +94,13 @@ export default function MarkdownLayout({
     }
   `);
   const moduleLinks = React.useMemo(() => {
-    return data.allMdx.edges.map(cur => ({
+    return data.allXdm.edges.map(cur => ({
       id: cur.node.frontmatter.id,
       title: cur.node.frontmatter.title,
       section: moduleIDToSectionMap[cur.node.frontmatter.id],
       url: moduleIDToURLMap[cur.node.frontmatter.id],
     }));
-  }, [data.allMdx]);
+  }, [data.allXdm]);
   // console.log(moduleLinks);
 
   const showConfetti = useContext(ConfettiContext);
@@ -132,7 +130,6 @@ export default function MarkdownLayout({
     activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 
-  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -159,7 +156,7 @@ export default function MarkdownLayout({
 
               <ModuleHeaders moduleLinks={moduleLinks} />
 
-              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
+              <div className={tableOfContents.length > 1 ? '2xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
 

@@ -1,17 +1,18 @@
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import * as React from 'react';
-import SEO from '../../seo';
-import Layout from '../../layout';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
+import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import { usePost } from '../../../hooks/groups/usePost';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
+import { Submission } from '../../../models/groups/problem';
+import Layout from '../../layout';
+import SEO from '../../seo';
+import TextTooltip from '../../Tooltip/TextTooltip';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
-import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
-import TextTooltip from '../../Tooltip/TextTooltip';
 import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
-import useFirebase from '../../../hooks/useFirebase';
-import { submissionConverter } from '../../../models/groups/problem';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function PostLeaderboardPage(props) {
   const { postId } = props as {
@@ -22,7 +23,7 @@ export default function PostLeaderboardPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const { problems } = useActivePostProblems();
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const notifications = useNotificationSystem();
   const leaderboard = activeGroup.groupData.leaderboard;
 
@@ -32,14 +33,14 @@ export default function PostLeaderboardPage(props) {
 
     const leaderboardSum = {};
     const postID = post.id;
-    for (let problemID of Object.keys(leaderboard[postID] || {})) {
-      for (let userID of Object.keys(leaderboard[postID][problemID] || {})) {
+    for (const problemID of Object.keys(leaderboard[postID] || {})) {
+      for (const userID of Object.keys(leaderboard[postID][problemID] || {})) {
         if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
         leaderboardSum[userID] +=
           leaderboard[postID][problemID][userID].bestScore;
       }
     }
-    let data = activeGroup.groupData.memberIds
+    const data = activeGroup.groupData.memberIds
       .map(id => ({
         member: members.find(member => member.uid === id),
         problemDetails: problems.map(
@@ -56,21 +57,21 @@ export default function PostLeaderboardPage(props) {
     problemId: string,
     submissionId: string
   ) => {
-    console.log(problemId, submissionId);
-    firebase
-      .firestore()
-      .collection('groups')
-      .doc(activeGroup.activeGroupId)
-      .collection('posts')
-      .doc(postId)
-      .collection('problems')
-      .doc(problemId)
-      .collection('submissions')
-      .doc(submissionId)
-      .withConverter(submissionConverter)
-      .get()
+    getDoc<Submission>(
+      doc(
+        getFirestore(firebaseApp),
+        'groups',
+        activeGroup.activeGroupId,
+        'posts',
+        postId,
+        'problems',
+        problemId,
+        'submissions',
+        submissionId
+      )
+    )
       .then(doc => {
-        const submission = doc.data();
+        const submission = { id: doc.id, ...doc.data() };
         openProblemSubmissionPopup(submission);
       })
       .catch(e => {

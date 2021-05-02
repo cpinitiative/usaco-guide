@@ -17,16 +17,11 @@ export type Chapter = {
 const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   general: [
     {
-      name: 'About This Guide',
-      description:
-        "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing'],
-    },
-    {
       name: 'Getting Started',
       description: "Start here if you're new to competitive programming.",
       items: [
-        'intro',
+        'using-this-guide',
+        'intro-cp',
         'choosing-lang',
         'resources-learning-to-code',
         'running-code-online',
@@ -36,7 +31,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       ],
     },
     {
-      name: 'General',
+      name: 'Contributing',
+      description: 'How you can add content to the guide.',
+      items: ['contributing', 'adding-solution', 'modules', 'working-mdx'],
+    },
+    {
+      name: 'General Resources',
       description: 'Useful for competitors of all levels.',
       items: [
         'debugging-general',
@@ -52,7 +52,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description:
         'Setup instructions and discussion of language-specific features.',
       items: [
-        'factors-choosing',
         'running-code-locally',
         'cpp-command',
         'debugging-lang',
@@ -91,6 +90,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description: 'Topics not strictly necessary to know to pass Bronze.',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
+    {
+      name: 'Conclusion',
+      items: ['bronze-conclusion'],
+    },
   ],
   silver: [
     {
@@ -114,6 +117,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'Every (?) Silver - Plat contest has at least one graph problem.',
       items: ['dfs', 'ff', 'intro-tree', 'func-graphs'],
     },
+    {
+      name: 'Conclusion',
+      items: ['silver-conclusion'],
+    },
   ],
   gold: [
     {
@@ -124,7 +131,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Dynamic Programming',
       description:
         'Every (?) Gold and Platinum contest has at least one DP problem.',
-      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis'],
+      items: [
+        'intro-dp',
+        'knapsack',
+        'paths-grids',
+        'lis',
+        'dp-bitmasks',
+        'dp-ranges',
+      ],
     },
     {
       name: 'Graphs',
@@ -142,6 +156,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Hashing',
       description: 'Rarely required at this level, but still good to know.',
       items: ['string-hashing', 'unordered', 'faster-hashmap'],
+    },
+    {
+      name: 'Misc. Topics',
+      items: ['intro-bitwise'],
+    },
+    {
+      name: 'Conclusion',
+      items: ['gold-conclusion'],
     },
   ],
   plat: [
@@ -165,17 +187,17 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['bin-jump', 'merging', 'hld', 'centroid'],
     },
     {
-      name: 'Convex Hull',
-      description: 'Most Platinum geometry problems.',
+      name: 'Geometry',
+      description: 'More advanced concepts in computational geometry.',
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
     },
     {
-      name: 'Dynamic Programming',
-      items: ['dp-bitmasks', 'dp-ranges', 'DC-DP'],
+      name: 'Misc. Topics',
+      items: ['mat-exp', 'bitsets', 'DC-DP'],
     },
     {
-      name: 'Misc. Topics',
-      items: ['intro-bitwise', 'mat-exp', 'bitsets'],
+      name: 'Conclusion',
+      items: ['plat-conclusion'],
     },
   ],
   adv: [
@@ -274,7 +296,7 @@ export const SECTION_SEO_TITLES: { [key in SectionID]: string } = {
   adv: 'Advanced USACO Topics',
 };
 
-let moduleIDToSectionMap: { [key: string]: SectionID } = {};
+const moduleIDToSectionMap: { [key: string]: SectionID } = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
@@ -285,8 +307,9 @@ SECTIONS.forEach(section => {
 });
 
 export { moduleIDToSectionMap };
+export { moduleIDToURLMap };
 
-let moduleIDToURLMap: { [key: string]: string } = {};
+const moduleIDToURLMap: { [key: string]: string } = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
@@ -295,5 +318,3 @@ SECTIONS.forEach(section => {
     });
   });
 });
-
-export { moduleIDToURLMap };

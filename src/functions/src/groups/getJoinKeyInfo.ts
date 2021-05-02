@@ -1,5 +1,5 @@
-import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import getJoinKeyData from './utils/getJoinKeyData';
 interface submitToProblemArgs {
   key: string;

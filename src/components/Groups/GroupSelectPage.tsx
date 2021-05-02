@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { useContext, useEffect } from 'react';
 import { Link, navigate } from 'gatsby';
+import * as React from 'react';
+import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
+import { useGroupActions } from '../../hooks/groups/useGroupActions';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
-import { useGroupActions } from '../../hooks/groups/useGroupActions';
-import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 
 const GroupSelectPage = (props: { path: string }) => {
   const { firebaseUser, isLoaded } = useContext(UserDataContext);

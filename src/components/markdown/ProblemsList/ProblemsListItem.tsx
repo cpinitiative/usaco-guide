@@ -1,24 +1,22 @@
-import * as React from 'react';
-import { useContext, useRef } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import ProblemStatusCheckbox from './ProblemStatusCheckbox';
-import TextTooltip from '../../Tooltip/TextTooltip';
-import Tooltip from '../../Tooltip/Tooltip';
-import { Instance } from 'tippy.js';
 import Tippy from '@tippyjs/react';
 import { navigate } from 'gatsby';
-import { contests, ProblemInfo, probSources } from '../../../models/problem';
-import tw from 'twin.macro';
+import * as React from 'react';
+import { useRef } from 'react';
 import styled, { css } from 'styled-components';
-import ProblemListItemSolution from './ProblemListItemSolution';
-import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
-import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
+import { Instance } from 'tippy.js';
+import tw from 'twin.macro';
 import { useDarkMode } from '../../../context/DarkModeContext';
+import { contests, ProblemInfo, probSources } from '../../../models/problem';
+import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import Tooltip from '../../Tooltip/Tooltip';
+import ProblemListItemSolution from './ProblemListItemSolution';
+import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 
 type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
   showTagsAndDifficulty: boolean;
-  onShowSolutionSketch: Function;
+  onShowSolutionSketch: (problem: ProblemInfo) => void;
   isDivisionTable?: boolean; // only if is division table
   modules?: boolean; // only if is division table
   showPercent?: boolean; // only if is division table
@@ -253,7 +251,7 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">
               <summary>Show Tags</summary>
-              <p className="text-xs">{problem.tags.sort().join(', ')}</p>
+              <span className="text-xs">{problem.tags.sort().join(', ')}</span>
             </details>
           ) : null}
         </td>

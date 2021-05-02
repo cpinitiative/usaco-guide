@@ -1,8 +1,8 @@
-import { GroupData } from '../../models/groups/groups';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import * as React from 'react';
-import firebaseType from 'firebase';
-import useFirebase from '../useFirebase';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import { GroupData } from '../../models/groups/groups';
+import { useFirebaseApp } from '../useFirebase';
 
 export type MemberInfo = {
   displayName: string;
@@ -19,8 +19,8 @@ export default function getMemberInfoForGroup(group: GroupData) {
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>(null);
   const notifications = useNotificationSystem();
 
-  useFirebase(
-    firebase => {
+  useFirebaseApp(
+    firebaseApp => {
       setMemberInfo(null);
       if (!group) return;
 
@@ -35,11 +35,12 @@ export default function getMemberInfoForGroup(group: GroupData) {
         group.memberIds.some(id => !cachedData.data.find(x => x.uid === id)) ||
         cachedData.data.some(x => !group.memberIds.includes(x.uid))
       ) {
-        firebase
-          .functions()
-          .httpsCallable('groups-getMembers')({
-            groupId: group.id,
-          })
+        httpsCallable<any, any>(
+          getFunctions(firebaseApp),
+          'groups-getMembers'
+        )({
+          groupId: group.id,
+        })
           .then(d => {
             if (d?.data?.length > 0) {
               d.data.sort((a, b) => a.displayName.localeCompare(b.displayName));

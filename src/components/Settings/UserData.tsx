@@ -1,6 +1,6 @@
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext, useState } from 'react';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 export default function UserData() {
   const userSettings = useContext(UserDataContext);
@@ -32,8 +32,7 @@ export default function UserData() {
     fileReader.readAsText(file, 'UTF-8');
     fileReader.onload = e => {
       // console.log("e.target.result", e.target.result);
-      // @ts-ignore
-      setFile(e.target.result);
+      setFile(e.target.result as any);
     };
   };
 

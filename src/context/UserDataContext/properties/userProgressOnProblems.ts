@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/browser';
-import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { ProblemInfo, ProblemProgress } from '../../../models/problem';
-import problemURLToIdMap from './problemURLToIdMap';
+import { setDoc, updateDoc } from 'firebase/firestore';
 import { ProblemActivity } from '../../../models/activity';
+import { ProblemProgress } from '../../../models/problem';
+import UserDataPropertyAPI from '../userDataPropertyAPI';
+import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
@@ -62,7 +63,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     this.progressValue = migratedValue;
     this.writeValueToLocalStorage();
     if (this.firebaseUserDoc) {
-      this.firebaseUserDoc.update({
+      updateDoc(this.firebaseUserDoc, {
         [this.progressStorageKey]: migratedValue,
       });
     }
@@ -95,7 +96,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     let pendingProgressValue = data[this.progressStorageKey] || { version: 2 };
     if (!pendingProgressValue.version || pendingProgressValue.version < 2) {
       pendingProgressValue = this.migrateLegacyValue(pendingProgressValue);
@@ -124,7 +125,8 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
           this.progressValue[problemId] = status;
 
           if (this.firebaseUserDoc) {
-            this.firebaseUserDoc.set(
+            setDoc(
+              this.firebaseUserDoc,
               {
                 [this.progressStorageKey]: {
                   [problemId]: status,

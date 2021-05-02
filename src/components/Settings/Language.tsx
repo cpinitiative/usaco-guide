@@ -1,8 +1,7 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import RadioList from '../elements/RadioList';
-import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
 export default function Language() {
   const { lang, setLang } = React.useContext(UserDataContext);

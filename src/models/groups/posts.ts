@@ -1,18 +1,16 @@
-import moment from 'moment';
-import firebase from 'firebase';
-import firebaseType from 'firebase';
+import dayjs from 'dayjs';
+import { Timestamp } from 'firebase/firestore';
 import {
   ExecutionStatus,
   ProblemData,
   Submission,
   SubmissionType,
 } from './problem';
-import { Leaderboard } from './leaderboard';
 
 export type PostData = {
   id?: string;
   name: string;
-  timestamp: firebase.firestore.Timestamp;
+  timestamp: Timestamp;
   /**
    * Markdown string of the post content
    */
@@ -26,26 +24,9 @@ export type PostData = {
     }
   | {
       type: 'assignment';
-      dueTimestamp: firebase.firestore.Timestamp | null;
+      dueTimestamp: Timestamp | null;
     }
 );
-
-export const postConverter = {
-  toFirestore(post: PostData): firebaseType.firestore.DocumentData {
-    const { id, ...data } = post;
-    return data;
-  },
-
-  fromFirestore(
-    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
-    options: firebaseType.firestore.SnapshotOptions
-  ): PostData {
-    return {
-      ...snapshot.data(options),
-      id: snapshot.id,
-    } as PostData;
-  },
-};
 
 /**
  * Returns the due date as a string if the post is an assignment with a due date
@@ -60,16 +41,16 @@ export const getPostTimestampString = (post: PostData) => {
 };
 export const getPostDateString = (post: PostData) =>
   post.timestamp
-    ? moment(post.timestamp.toDate()).format('MMMM Do h:mma')
+    ? dayjs(post.timestamp.toDate()).format('MMMM DD h:mma')
     : null;
 export const getPostDueDateString = (post: PostData) =>
   post.type === 'assignment' && post.dueTimestamp
-    ? moment(post.dueTimestamp.toDate()).format('MMMM Do h:mma')
+    ? dayjs(post.dueTimestamp.toDate()).format('MMMM DD h:mma')
     : null;
 export const getTotalPointsFromProblems = (problems: ProblemData[]) =>
   problems.reduce((acc, cur) => acc + cur.points, 0);
 export const getSubmissionTimestampString = (submission: Submission) =>
-  moment(submission?.timestamp?.toDate()).format('MMMM Do h:mma');
+  dayjs(submission?.timestamp?.toDate()).format('MMMM DD h:mma');
 export const getSubmissionStatus = (submission: Submission) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
     return submission.status;

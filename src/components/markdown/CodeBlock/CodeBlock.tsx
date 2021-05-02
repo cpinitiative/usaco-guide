@@ -1,11 +1,13 @@
+// todo: switch to https://github.com/react-syntax-highlighter/react-syntax-highlighter
+
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import * as React from 'react';
-import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
-import Prism from './SyntaxHighlighting/prism';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
+import { SpoilerContext } from '../Spoiler';
+import Highlight from './SyntaxHighlighting/Highlight';
+import Prism from './SyntaxHighlighting/prism';
 
 const Line = styled.div`
   display: table-row;
@@ -58,6 +60,7 @@ const CodeSnipButton = ({
   snipID: number;
   showSnip: boolean;
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
+  buttonDir: 'Up' | 'Down' | 'Left' | 'Right';
 }) => {
   return (
     <CodeSnipButtonIcon
@@ -99,16 +102,18 @@ class CodeBlock extends React.Component<
   }
 > {
   codeSnips = [];
+  static contextType = SpoilerContext;
 
   constructor(props) {
     super(props);
+
     let i = 0;
     let prev = -1;
     let prevVal = '';
     let prevIndentation = '';
-    let codeSnipShowDefault = [];
-    let code = this.getCode();
-    for (let line of code.split('\n')) {
+    const codeSnipShowDefault = [];
+    const code = this.getCode();
+    for (const line of code.split('\n')) {
       if (prev == -1) {
         const found = line.match(/^(\s*).*?BeginCodeSnip{(.*?)}/); // BeginCodeSnip{...}
         if (found != null) {
@@ -150,7 +155,7 @@ class CodeBlock extends React.Component<
 
   setCodeSnipShow(id, val) {
     this.setState(state => {
-      let codeSnipShow = state.codeSnipShow;
+      const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
       return { codeSnipShow: codeSnipShow };
     });
@@ -205,9 +210,9 @@ class CodeBlock extends React.Component<
       }
 
       //proceed as normal: (show must == true)
-      let isFirst =
+      const isFirst =
         curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
-      let isLast =
+      const isLast =
         curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
       --maxLines;
       return (
@@ -242,8 +247,9 @@ class CodeBlock extends React.Component<
   }
 
   render() {
-    let code = this.getCode();
+    const code = this.getCode();
     const className = this.props.className;
+    const isCodeBlockExpandable = !this.context.expandCodeBlock;
     const language = className?.replace(/language-/, '');
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag
@@ -271,9 +277,7 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-
     return (
-      // @ts-ignore
       <Highlight
         Prism={Prism as any}
         code={code}
@@ -289,11 +293,11 @@ class CodeBlock extends React.Component<
               }
               style={{ ...style }}
             >
-              {collapsed && tokens.length > 15
+              {isCodeBlockExpandable && collapsed && tokens.length > 15
                 ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                 : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {tokens.length > 15 && (
+              {isCodeBlockExpandable && tokens.length > 15 && (
                 <div
                   className={
                     (collapsed ? 'h-full' : 'h-12') +
@@ -307,7 +311,7 @@ class CodeBlock extends React.Component<
                       ' absolute inset-x-0 bottom-0 flex items-end justify-center'
                     }
                     style={
-                      collapsed
+                      collapsed && isCodeBlockExpandable
                         ? {
                             background:
                               'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',

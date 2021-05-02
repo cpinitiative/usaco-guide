@@ -1,7 +1,7 @@
-import { Authors, Author } from '../../../content/authors/authors';
-import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
+import * as React from 'react';
+import { Author, Authors } from '../../../content/authors/authors';
 
 const AuthorCard = ({
   author,
@@ -86,9 +86,9 @@ const AuthorCard = ({
             className={`inline-flex rounded-full border-2 border-white dark:border-gray-200`}
           >
             <div className="w-36 h-36 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
-              <Img
-                className="rounded-full"
-                fixed={gatsbyImage.fixed}
+              <GatsbyImage
+                image={gatsbyImage.gatsbyImageData}
+                className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
                 alt={author.name}
                 style={{ width: '100%', height: '100%' }}
               />
@@ -129,14 +129,18 @@ const AuthorCard = ({
 
 export default function AuthorsSection() {
   const data = useStaticQuery(graphql`
-    query {
+    {
       allFile(filter: { relativePath: { regex: "/^authors/images/.*/" } }) {
         edges {
           node {
             childImageSharp {
-              fixed(width: 192, height: 192, cropFocus: CENTER, quality: 100) {
-                ...GatsbyImageSharpFixed
-              }
+              gatsbyImageData(
+                width: 192
+                height: 192
+                quality: 100
+                transformOptions: { cropFocus: CENTER }
+                layout: FIXED
+              )
             }
             name
           }

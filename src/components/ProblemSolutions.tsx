@@ -1,21 +1,13 @@
 import * as React from 'react';
-import { Transition } from '@headlessui/react';
-import {
-  Problem,
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemFeedback,
-  ProblemInfo,
-} from '../models/problem';
-import className from 'classnames';
-import ButtonGroup from './ButtonGroup';
+import { useContext } from 'react';
+import { SignInContext } from '../context/SignInContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
-import CodeBlock from './markdown/CodeBlock/CodeBlock';
-import Spoiler from './markdown/Spoiler';
-import { useContext } from 'react';
-import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
+import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
+import { ProblemInfo } from '../models/problem';
+import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 export default function ProblemSolutions({
   onClose,
@@ -23,9 +15,9 @@ export default function ProblemSolutions({
   problem,
 }: {
   onClose: () => void;
-  showSubmitSolutionModal: Function;
+  showSubmitSolutionModal: () => void;
   problem: ProblemInfo;
-}) {
+}): JSX.Element {
   const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
     problem
   );
@@ -35,12 +27,15 @@ export default function ProblemSolutions({
     undoUpvoteSolution,
     mutateSolution,
   } = useUserProblemSolutionActions();
-  const { firebaseUser, signIn } = useContext(UserDataContext);
+  const { firebaseUser } = useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
   );
+
+  console.log(solutions, publicSolutions);
 
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
@@ -76,6 +71,7 @@ export default function ProblemSolutions({
             className="underline text-blue-600 dark:text-blue-400"
             href="mailto:usacoguide@gmail.com"
             target="_blank"
+            rel="noreferrer"
           >
             usacoguide@gmail.com
           </a>
