@@ -2,7 +2,7 @@
 id: usaco-735
 source: USACO Bronze 2017 Open
 title: The Lost Cow
-author: Jesse Choe
+author: Jesse Choe, Ananth Kashyap
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html)
@@ -127,6 +127,8 @@ int main(){
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}(log|x-y|)$
+
 ```py
 # Take in the input data using python standard file I/O system
 file_in = open('lostcow.in')
@@ -135,24 +137,24 @@ x, y = map(int, data[0].split(' '))
 
 # Compute the number of times Farmer John must change direction
 if y > x:
-    p = 0
-    while (2 ** p) + x < y:
-        p += 2
+	p = 0
+	while (2 ** p) + x < y:
+		p += 2
 else:
-    p = 1
-    while x - (2 ** p) > y:
-        p += 2
+	p = 1
+	while x - (2 ** p) > y:
+		p += 2
 
 total_distance = 0
 
 # Compute the total distance that farmer John must travel
 if p == 0:
-    print(1)
+	print(1)
 else:
-    total_distance = 1
-    for i in range(1, p):
-        total_distance += (2 ** i) + (2 ** (i - 1))
-    total_distance += (2 ** (p - 1)) + abs(x - y)
+	total_distance = 1
+	for i in range(1, p):
+		total_distance += (2 ** i) + (2 ** (i - 1))
+	total_distance += (2 ** (p - 1)) + abs(x - y)
 
 # Add the answer to the output file using python standard file I/O system
 file_out = open('lostcow.out', 'w')
