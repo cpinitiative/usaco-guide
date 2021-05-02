@@ -2,7 +2,7 @@
 id: persistent
 title: 'Persistent Data Structures'
 author: Andi Qu, Benjamin Qi
-description: '?'
+description: 'What if data structures could time travel?'
 prerequisites:
   - sparse-seg
 frequency: 1
@@ -45,7 +45,21 @@ place (hence persistence).
 
 ### Solution
 
-<IncompleteSection />
+Since this problem involves range queries, we'll use some type of segment tree
+to solve it. (We can also use a Fenwick tree, but that's much harder to make
+persistent.)
+
+When dealing with problems involving multiple dimensions, it's often helpful to
+try view one of those dimensions as time. In this problem, we'll view the index
+of each array as its time dimension.
+
+Using a persistent segment tree, we can then turn the problem into the
+following:
+
+- Type 1 queries involve a point update on the segment tree at some time.
+- Type 2 queries involve a range query on the segment tree at some time.
+- Type 3 queries involve copying the root of the segment tree at some time and
+  appending it to the array of segment tree roots at each time.
 
 <LanguageSection>
 
@@ -127,13 +141,34 @@ int main() {
 
 </LanguageSection>
 
+### Application 1 - Static 2D Range Sums on Large Grids
+
+Persistent segment trees can be used for online 2D static range sum queries in
+$\mathcal O(\log N)$ time (think of it like prefix sums.)
+
+Note that 2D Fenwick trees with coordinate compression often also work for this
+(and are easier to implement), but it's still good to know this application.
+
+### Application 2 - Largest Interval Completely Inside a Range
+
+Consider the following problem:
+
+> Given $N$ intervals on the number line, answer $Q$ queries of the form "what
+> is the largest interval completely contained inside the range $[x, y]$?
+>
+> $N, Q \leq 10^5$.
+
+Since each interval has two dimensions (i.e. left and right endpoints $l_i$ and
+$r_i$), we can view it as a *point* on the number line at $l_i$ with "value"
+$r_i - l_i$ that was inserted at time $r_i$.
+
+Now, each query becomes "what is the most valuable point in the range $[x, y]$
+that was inserted at or before time $y$?" This is much easier to handle, so we
+can solve this problem in $\mathcal O(Q \log N)$ time.
+
 ### Problems
 
-A nice thing about persistent segment trees is that they can be used for online
-2D static range sum queries in $\mathcal{O}(\log N)$ time (think about it like
-prefix sums).
-
-<IncompleteSection />
+<Problems problems="segtree" />
 
 ## Persistent Heap
 
