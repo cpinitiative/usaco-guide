@@ -24,12 +24,12 @@ number line?) never explicitly mentioned in module
 </IncompleteSection>
 
 <Resources>
-	<Resource source="CPH" title="30.1, 30.2 - Sweep Line Algorithms"></Resource>
-	<Resource
-		source="TC"
-		title="Line Sweep Algorithms"
-		url="line-sweep-algorithms"
-	></Resource>
+  <Resource source="CPH" title="30.1, 30.2 - Sweep Line Algorithms"></Resource>
+  <Resource
+    source="TC"
+    title="Line Sweep Algorithms"
+    url="line-sweep-algorithms"
+  ></Resource>
 </Resources>
 
 ## Closest Pair
@@ -71,13 +71,36 @@ TC 760 ComponentsForever -->
 
 ## Radial Sweep
 
-<IncompleteSection />
+Instead of a vertical line sweeping the plane from left to right, **radial
+sweep** involves a ray that rotates around a central point (like a radar
+screen):
+
+![Radar screen gif](https://i.gifer.com/7jnn.gif)
+
+In this case, we sort points/events by their
+[bearing](<https://en.wikipedia.org/wiki/Bearing_(angle)>) instead of by their
+x- and y-coordinates. Besides that, the mechanics are the same as those of
+normal line sweep.
 
 <FocusProblem problem="radialSam" />
 
 ### Solution - Seeing the Boundary
 
-<IncompleteSection />
+**Complexity:** $\mathcal O(N + Rp_i \log R)$
+
+In this problem, there are three types of events: when our ray hits a fence
+post, enters a rock, or exits a rock.
+
+The second and third types of events can be found for each rock by sorting the
+rays to its vertices by bearing and then taking the two endpoints of the sorted
+list. These two rays are the two tangents to the rock.
+
+We can then perform a radial sweep to find the fence posts that Farmer Don can
+see - these fence posts are simply the ones where the number of type-2 and
+type-3 events we've processed so far are equal.
+
+Note that some optimizations (e.g. not constructing the list of fence posts
+explicitly) may be required to get 100 points.
 
 <LanguageSection>
 
@@ -98,22 +121,47 @@ struct Event {
 };
 
 pair<ll, ll> origin, polygon[22];
-// Custom comparator to sort by bearing via cross product
-bool cmp(pair<ll, ll> a, pair<ll, ll> b) {
-	return (a.x - origin.x) * (b.y - origin.y) < (a.y - origin.y) * (b.x - origin.x);
+
+// Cross product
+ll cross(pair<ll, ll> a, pair<ll, ll> b) {
+	return (a.y - origin.y) * (b.x - origin.x) - (a.x - origin.x) * (b.y - origin.y);
 }
-// Custom comparator to sort by bearing via atan2
+
+// Which half of the plane some point lies in
+int half(pair<ll, ll> p) {
+	if (p.x != origin.x) return (p.x < origin.x) - (p.x > origin.x);
+	return (p.y < origin.y) - (p.y > origin.y);
+}
+
+// Custom comparator to sort by bearing
 bool operator<(Event a, Event b) {
-	double angle_a = atan2(a.loc.x - origin.x, a.loc.y - origin.y);
-	double angle_b = atan2(b.loc.x - origin.x, b.loc.y - origin.y);
-	if (angle_a < 0) angle_a += 2 * PI;
-	if (angle_b < 0) angle_b += 2 * PI;
-
-	if (angle_a == angle_b) return a.type > b.type;
-	return angle_a < angle_b;
+	int ah = half(a.loc), bh = half(b.loc);
+	if (ah == bh) {
+		ll c = cross(a.loc, b.loc);
+		if (c == 0) return a.type > b.type;
+		return c > 0;
+	}
+	return ah < bh;
 }
 
-vector<Event> events, walls;
+// Generates the next fence post in clockwise order
+Event get_next_post(Event curr, int n) {
+	if (curr.loc.x == n) {
+		if (curr.loc.y) return {0, 0, {n, curr.loc.y - 1}};
+		return {0, 0, {n - 1, 0}};
+	} else if (!curr.loc.x) {
+		if (curr.loc.y != n) return {0, 0, {0, curr.loc.y + 1}};
+		return {0, 0, {1, n}};
+	} else if (curr.loc.y == n) {
+		if (curr.loc.x != n) return {0, 0, {curr.loc.x + 1, n}};
+		return {0, 0, {n, n - 1}};
+	} else {
+		if (curr.loc.x) return {0, 0, {curr.loc.x - 1, 0}};
+		return {0, 0, {0, 1}};
+	}
+}
+
+vector<Event> events;
 bool before[44444];
 
 int main() {
@@ -126,18 +174,13 @@ int main() {
 		cin >> m;
 		for (int j = 0; j < m; j++) cin >> polygon[j].x >> polygon[j].y;
 		// Sort the polygon's vertices to find the 2 "tangents" from the origin
-		sort(polygon, polygon + m, cmp);
+		sort(polygon, polygon + m, [](pair<ll, ll> a, pair<ll, ll> b) {
+			return cross(a, b) > 0;
+		});
 		events.push_back({1, i, polygon[0]});
 		events.push_back({-1, i, polygon[m - 1]});
 	}
 	sort(events.begin(), events.end());
-
-	// Insert fence posts in this specific order to avoid sorting
-	for (int i = origin.x; i < n; i++) walls.push_back({0, 0, {i, n}});
-	for (int i = 0; i < n; i++) walls.push_back({0, 0, {n, n - i}});
-	for (int i = 0; i < n; i++) walls.push_back({0, 0, {n - i, 0}});
-	for (int i = 0; i < n; i++) walls.push_back({0, 0, {0, i}});
-	for (int i = 0; i < origin.x; i++) walls.push_back({0, 0, {i, n}});
 
 	int active = 0;
 	// Do an initial sweep to handle rocks containing the ray with bearing 0
@@ -148,11 +191,13 @@ int main() {
 	}
 
 	int ans = 0, ptr = 0;
+	Event curr_post = {0, 0, {origin.x, n}};
 	for (Event i : events) {
-		while (ptr != 4 * n && walls[ptr] < i) {
+		while (ptr != 4 * n && curr_post < i) {
 			// If there are no rocks that our current ray intersects...
 			if (!active) ans++;
 			ptr++;
+			curr_post = get_next_post(curr_post, n);
 		}
 
 		if (i.type == 1) active++;
