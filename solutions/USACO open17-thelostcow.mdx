@@ -122,4 +122,44 @@ int main(){
 ```
 
 </CPPSection>
+
+<PySection>
+
+## Implementation
+
+```py
+# Take in the input data using python standard file I/O system
+file_in = open('lostcow.in')
+data = file_in.read().strip().split('\n')
+x, y = map(int, data[0].split(' '))
+
+# Compute the number of times Farmer John must change direction
+if y > x:
+    p = 0
+    while (2 ** p) + x < y:
+        p += 2
+else:
+    p = 1
+    while x - (2 ** p) > y:
+        p += 2
+
+total_distance = 0
+
+# Compute the total distance that farmer John must travel
+if p == 0:
+    print(1)
+else:
+    total_distance = 1
+    for i in range(1, p):
+        total_distance += (2 ** i) + (2 ** (i - 1))
+    total_distance += (2 ** (p - 1)) + abs(x - y)
+
+# Add the answer to the output file using python standard file I/O system
+file_out = open('lostcow.out', 'w')
+file_out.write(str(total_distance))
+file_out.close()
+```
+
+</PySection>
+
 </LanguageSection>
