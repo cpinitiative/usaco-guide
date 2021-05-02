@@ -23,49 +23,49 @@ import java.util.*;
 
 public class cownomics {
 
-    public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
-        Scanner sc = new Scanner(new File("cownomics.in"));
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cownomics.out")));
-        int N = sc.nextInt();
-        int M = sc.nextInt();
+		Scanner sc = new Scanner(new File("cownomics.in"));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cownomics.out")));
+		int N = sc.nextInt();
+		int M = sc.nextInt();
 
-        char[][] spotted = new char[N][M];
-        char[][] plain = new char[N][M];
-        int ans = 0;
+		char[][] spotted = new char[N][M];
+		char[][] plain = new char[N][M];
+		int ans = 0;
 
-        for (int i = 0; i < N; i++) {
-            String s = sc.next();
-            char[] a = s.toCharArray();
-            if (M >= 0) System.arraycopy(a, 0, spotted[i], 0, M);
-        }
+		for (int i = 0; i < N; i++) {
+			String s = sc.next();
+			char[] a = s.toCharArray();
+			if (M >= 0) System.arraycopy(a, 0, spotted[i], 0, M);
+		}
 
-        for (int i = 0; i < N; i++) {
-            String s = sc.next();
-            char[] a = s.toCharArray();
-            if (M >= 0) System.arraycopy(a, 0, plain[i], 0, M);
-        }
+		for (int i = 0; i < N; i++) {
+			String s = sc.next();
+			char[] a = s.toCharArray();
+			if (M >= 0) System.arraycopy(a, 0, plain[i], 0, M);
+		}
 
-        for (int i = 0; i < M; i++) {
-            boolean contains = false;
-            HashSet < Character > a = new HashSet < > ();
+		for (int i = 0; i < M; i++) {
+			boolean contains = false;
+			HashSet < Character > a = new HashSet < > ();
 
-            for (int j = 0; j < N; j++) {
-                a.add(plain[j][i]); // Go to column j at position i
-            }
+			for (int j = 0; j < N; j++) {
+				a.add(plain[j][i]); // Go to column j at position i
+			}
 
-            for (int j = 0; j < N; j++) {
-                if (a.contains(spotted[j][i])) {
-                    contains = true;
-                    break;
-                }
-            }
+			for (int j = 0; j < N; j++) {
+				if (a.contains(spotted[j][i])) {
+					contains = true;
+					break;
+				}
+			}
 
-            if (!contains) ans++;
-        }
-        out.println(ans);
-        out.close();
-    }
+			if (!contains) ans++;
+		}
+		out.println(ans);
+		out.close();
+	}
 }
 ```
 
@@ -104,14 +104,14 @@ total = 0
 # For every position, check if it can be a potential mutation location
 # Check if the spotty and plain cows have any repeated characters at this position
 for i in range(m):
-    used = False
-    for j in range(n):
-        for k in range(n):
-            if spotty_cows[j][i] == plain_cows[k][i]:
-                used = True
-                break
-    if used == False:
-        total += 1
+	used = False
+	for j in range(n):
+		for k in range(n):
+			if spotty_cows[j][i] == plain_cows[k][i]:
+				used = True
+				break
+	if used == False:
+		total += 1
 
 # Add the answer to the output file using python standard file I/O system
 file_out = open('cownomics.out', 'w')
