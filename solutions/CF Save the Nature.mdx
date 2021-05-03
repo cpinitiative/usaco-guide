@@ -11,9 +11,9 @@ author: Jesse Choe, Kevin Sheng
 
 Binary search on the answer for the minimum number of tickets, $t$, to sell to make the total ecological contribution to at least $k$. 
 
-Let's try to determine the maximum revenue. If it is impossible to sell at least $t$ tickets with a revenue of at least $k$, then output $-1$.
+Let's try to determine the maximum contribution attainable with $t$ tickets.
 
-Additionally, the problem indicates that only $x\%$ of the $a$-th ticket and $y\%$ of the $b$-th ticket could contribute to the total ecological contribution. We can precompute the multipliers $pct$ (either $0$, $x$, $y$, or $x+y$ depending on the ticket) over all $t$ tickets, then greedily match the largest multiplier with highest value ticket by sorting the multipliers $pct$ and tickets $p$ in decreasing order. Our total ecological contribution is $\sum\limits_{i=1}^{t} p_i \cdot pct_i$.
+The problem indicates that only $x\%$ of the $a$-th ticket and $y\%$ of the $b$-th ticket could contribute to the total ecological contribution. We can precompute these multipliers $pct$ (either $0$, $x$, $y$, or $x+y$ depending on the ticket) over $t$ tickets, then greedily match the largest multiplier with the highest value ticket. This can be done by sorting the multipliers $pct$ and tickets $p$ in decreasing order; then the maximum total ecological contribution would be $\sum\limits_{i=1}^{t} p_i \cdot pct_i$.
 
 
 **Time Complexity:** $\mathcal{O}(N\log^2 N)$
