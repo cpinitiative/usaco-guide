@@ -83,28 +83,28 @@ public class ArrayDesc {
 		int M = Integer.parseInt(st.nextToken());
 		int[][] dp = new int[N][M + 1];
 
-		/* Process the first element in the array. */
+		// Process the first element in the array. 
 		st = new StringTokenizer(r.readLine());
 		int first = Integer.parseInt(st.nextToken());
-		/* The first element can be anything. */
+		// The first element can be anything.
 		if (first == 0) {
 			Arrays.fill(dp[0], 1);
 		} else {
-			/* This is the only valid value. */
+			// This is the only valid value.
 			dp[0][first] = 1;
 		}
 
 		for (int i = 1; i < N; i++) {
 			int A = Integer.parseInt(st.nextToken());
 
-			/* A free element. */
+			// A free element.
 			if (A == 0) {
 
 				for (int j = 1; j <= M; j++) {
 					int[] moves = new int[] {j - 1, j, j + 1};
 					for (int k : moves) {
-						/* Number of values,
-						 where the previous value is in the valid range. */
+						// Number of values,
+						// where the previous value is in the valid range.
 						if (1<=k && k <= M) {
 							dp[i][j] += dp[i - 1][k];
 							dp[i][j] %= MOD;
@@ -112,7 +112,7 @@ public class ArrayDesc {
 					}
 				}
 			} else {
-				/* Find number of ways that the current value is valid. */
+				// Find number of ways that the current value is valid.
 				int[] moves = new int[] {A - 1, A, A + 1};
 				for (int k : moves) {
 					if (1<=k && k <= M) {
@@ -123,7 +123,7 @@ public class ArrayDesc {
 			}
 		}
 
-		/* Aggregate the dp values. */
+		//Aggregate the dp values.
 		int ans = 0;
 		for (int j = 1; j <= M; j++) {
 			ans += dp[N - 1][j];
