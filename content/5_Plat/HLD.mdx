@@ -1,7 +1,7 @@
 ---
 id: hld
 title: 'Heavy-Light Decomposition'
-author: Benjamin Qi
+author: Benjamin Qi, Andrew Cheng
 prerequisites:
   - tree-euler
   - RURQ
@@ -14,6 +14,218 @@ frequency: 1
 <FocusProblem problem="sample2" />
 
 ## Tutorial
+
+In some advanced problems on trees, the problem may ask you to support the following operations:
+
+- Update all nodes along the path from node $x$ to node $y$. (Note that this path is unique due to properties of trees)
+
+- Find the sum, maximum, minimum (or any other operation that satisfies the associative property) along the path from node $x$ to node $y$.
+
+Other simpler algorithms such as difference on trees or LCAs could be used to support any one of the operations. However, Heavy Light Decomposition (or HLD) is needed to support both. 
+
+**Definitions:**
+
+To understand HLD, I will first clarify the definition of these important terms: 
+
+- A  **heavy child** of a node is the child with the largest subtree size rooted at the child
+- A  **light child** of a node is any child that is not a **heavy child**
+- A  **heavy edge** connects the current node to its **heavy child**
+- A  **light edge** connects the current node to any of its **light children**
+- A  **heavy path** is the path formed by a collection **heavy edges**
+- A  **light path** is the path formed by a collection **light edges**
+
+**Properties:**
+
+Given the definitions stated above, an important property can be derived (I will prove this a bit later).
+
+- Any path from node $x$ to node $y$ on the tree can pass through at most $O(logN)$ light edges.
+
+Lets suppose the above property is true for a moment. Since a heavy path can only be broken by a light edge (or else the edge will be a part of the heavy path), we can know that there are at most $O(logN)$ heavy paths on any path from an arbitrary node $x$ to an arbitrary node $y$.
+
+In addition, by using segment trees (or any other RURQ data structure) we can calculate the value of any consecutive interval on any heavy path in $O(logN)$ time. 
+
+Since there are at most $O(logN)$ heavy paths and $O(logN)$ light edges, computing the value on the path from node $x$ to node $y$ will take $O(log^2N + logN) = O(log^2N)$ time. We can answer $Q$ queries in $O(Qlog^2N)$ time if the above propert is true. This computational complexity allows us to pass questions where $N = Q = 10^5$
+
+**Proof:**
+
+Finally, we would need to prove the property above to conclude the tutorial. Consider a path from node $x$ to node $y$, this path can be broken down into a path from node $x$ to the LCA of $(x,y)$ and another path from node $y$ to the LCA of $(x,y)$. LCA of $(x,y)$ must be an ancestor of both $x$ and $y$ by definition. Hence now we only need to prove that the path from any node to any of its ancestor can only pass through $O(logN)$ light edges to prove the property above. 
+
+Suppose that a light edge connects node $x$ and node $y$, where y is a child of $x$. By the definition of light edge, $y$ must be a light child of $x$. This means that there has to be another child of $x$ with a larger subtree size than $y$, or else $y$ will become the heavy child of $x$. Hence the size of the subtree rooted at $x$ must be at least two times of the size of the subtree rooted at $y$. Since the subtree size of a node can not exceed the total number of nodes $N$, the doubling process can only happen at most $O(logN)$ times when traversing up from an arbitrary node to its parent along a light edge. Given this, we now know that there could be at most $O(logN)$ light edges in both the path from $x$ to LCA of $(x,y)$ and the path from LCA of $(x,y)$ to $y$. Hence there are at most $O(logN + logN) = O(logN)$ light edges in the path from node $x$ to node $y$. 
+
+We can solve the focus problem "Subtrees & Paths" using Heavy Light Decomposition:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+#define pb push_back
+#define INF 2e9
+using namespace std;
+
+const int maxN = 1e5+5;
+
+vector<int> adj[maxN];
+int N,Q;
+
+//HLD Arrays
+int dep[maxN]; //dep[x] = depth of node x
+int fa[maxN];
+int sz[maxN]; //sz[x] = size of subtree with root at node x
+int son[maxN]; //son[x] = id of node x's heavy child
+int dfn[maxN]; //dfn[x] = new id of node x
+int val[maxN]; //val[dfn[x]] = a[x]
+//val is not used in this question since there are no initial values
+//However this array is most likely necessary in a lot of other HLD questions
+int top[maxN]; //top[x] = id of the top of the chain that node x is currently in
+int cnt;
+
+//Lazy Max Segment Tree
+
+#define lc p<<1
+#define rc (p<<1)+1
+
+struct node{
+    int val;
+    int l,r;
+    int lz;
+}tree[maxN<<2];
+
+void pushup(int p){
+    tree[p].val = max(tree[lc].val,tree[rc].val);
+    return;
+}
+
+void pushdown(int p){
+    if(tree[p].l == tree[p].r)return; //This is a leaf node
+    tree[lc].val += tree[p].lz;
+    tree[rc].val += tree[p].lz;
+    tree[lc].lz += tree[p].lz;
+    tree[rc].lz += tree[p].lz;
+    tree[p].lz = 0;
+    return;
+}
+
+void build(int p, int l, int r){
+    tree[p].l = l;
+    tree[p].r = r;
+    if(l == r)return;
+    int mid = (l+r)>>1;
+    build(lc,l,mid);
+    build(rc,mid+1,r);
+    return;
+}
+
+void update(int p, int l, int r, int a, int b, int val){
+    if(a > r || b < l)return;
+    if(a <= l && r <= b){
+        tree[p].val += val;
+        tree[p].lz += val;
+        return;
+    }
+    if(tree[p].lz != 0)pushdown(p);
+    int mid = (l+r)>>1;
+    update(lc,l,mid,a,b,val);
+    update(rc,mid+1,r,a,b,val);
+    pushup(p);
+    return;
+}
+
+int query(int p, int l, int r, int a, int b){
+    if(a > r || b < l)return -INF;
+    if(a <= l && r <= b)return tree[p].val;
+    if(tree[p].lz != 0)pushdown(p);
+    int mid = (l+r)>>1;
+    return max(query(lc,l,mid,a,b),query(rc,mid+1,r,a,b));
+}
+
+#undef lc
+#undef rc
+
+//Heavy Light Decomposition
+
+void dfs1(int x, int par, int depth){
+    dep[x] = depth;
+    fa[x] = par;
+    sz[x] = 1;
+    int maxSon = -1;
+    for(int i = 0; i < adj[x].size(); ++i){
+        int c = adj[x][i];
+        if(c == par)continue;
+        dfs1(c,x,depth+1);
+        sz[x] += sz[c];
+        if(sz[c] > maxSon){
+            maxSon = sz[c];
+            son[x] = c;
+        }
+    }
+    return;
+}
+
+void dfs2(int x, int par, int topf){
+    dfn[x] = ++cnt;
+    //val[dfn[x]] = a[x] is needed if the initial value of nodes on the tree is stored in array a
+    top[x] = topf;
+    if(son[x] == 0)return; //node x is a leaf
+    dfs2(son[x],x,topf); //dfs to heavy children first
+    for(int i = 0; i < adj[x].size(); ++i){
+        int c = adj[x][i];
+        if(c == par || c == son[x])continue;
+        dfs2(c,x,c);
+    }
+    return;
+}
+
+void subtreeUpdate(int t, int val){
+    update(1,1,N,dfn[t], dfn[t] + sz[t] - 1, val);
+    return;
+}
+
+int pathQuery(int x, int y){
+    int ans = -INF;
+    while(top[x] != top[y]){
+        if(dep[top[x]] < dep[top[y]])swap(x,y);
+        ans = max(ans, query(1,1,N,dfn[top[x]],dfn[x]));
+        x = fa[top[x]];
+    }
+    if(dep[x] > dep[y])swap(x,y);
+    ans = max(ans, query(1,1,N,dfn[x],dfn[y]));
+    return ans;
+}
+
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cin >> N;
+    for(int i = 1; i < N; ++i){
+        int x,y; cin >> x >> y;
+        adj[x].pb(y); adj[y].pb(x);
+    }
+    dfs1(1,0,1);
+    dfs2(1,0,1);
+    build(1,1,N);
+    cin >> Q;
+    for(int i = 1; i <= Q; ++i){
+        string s; cin >> s;
+        if(s == "add"){
+            int t,val; cin >> t >> val;
+            subtreeUpdate(t,val);
+        }
+        else{
+            int x,y; cin >> x >> y;
+            cout << pathQuery(x,y) << '\n';
+        }
+    }
+    return 0;
+}
+
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Resources>
 	<Resource
