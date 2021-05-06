@@ -15,44 +15,79 @@ frequency: 1
 
 ## Tutorial
 
-In some advanced problems on trees, the problem may ask you to support the following operations:
+In some advanced problems on trees, the problem may ask you to support the
+following operations:
 
-- Update all nodes along the path from node $x$ to node $y$. (Note that this path is unique due to properties of trees).
+- Update all nodes along the path from node $x$ to node $y$ (Note that this path
+  is unique due to properties of trees).
 
-- Find the sum, maximum, minimum (or any other operation that satisfies the associative property) along the path from node $x$ to node $y$.
+- Find the sum, maximum, minimum (or any other operation that satisfies the
+  associative property) along the path from node $x$ to node $y$.
 
-Other simpler algorithms such as difference on trees or LCAs could be used to support any one of the operations. However, Heavy Light Decomposition (or HLD) is needed to support both. 
+Other simpler algorithms such as difference on trees or LCAs could be used to
+support any one of the operations. However, Heavy Light Decomposition (or HLD)
+is needed to support both.
 
-**Definitions:**
+## Definitions:
 
-To understand HLD, I will first clarify the definition of these important terms: 
+To understand HLD, I will first clarify the definition of these important terms:
 
-- A  **heavy child** of a node is the child with the largest subtree size rooted at the child.
-- A  **light child** of a node is any child that is not a **heavy child**.
-- A  **heavy edge** connects the current node to its **heavy child**.
-- A  **light edge** connects the current node to any of its **light children**.
-- A  **heavy path** is the path formed by a collection **heavy edges**.
-- A  **light path** is the path formed by a collection **light edges**.
+- A **heavy child** of a node is the child with the largest subtree size rooted
+  at the child.
+- A **light child** of a node is any child that is not a **heavy child**.
+- A **heavy edge** connects the current node to its **heavy child**.
+- A **light edge** connects the current node to any of its **light children**.
+- A **heavy path** is the path formed by a collection **heavy edges**.
+- A **light path** is the path formed by a collection **light edges**.
 
-**Properties:**
+## Properties:
 
-Given the definitions stated above, an important property can be derived (I will prove this a bit later).
+Given the definitions stated above, an important property can be derived (I will
+prove this a bit later).
 
-- Any path from node $x$ to node $y$ on the tree can pass through at most $\mathcal{O}(\log N)$ light edges.
+- Any path from node $x$ to node $y$ on the tree can pass through at most
+  $\mathcal{O}(\log N)$ light edges.
 
-Lets suppose the above property is true for a moment. Since a heavy path can only be broken by a light edge (or else the edge will be a part of the heavy path), we can know that there are at most $\mathcal{O}(\log N)$ heavy paths on any path from an arbitrary node $x$ to an arbitrary node $y$.
+Lets suppose the above property is true for a moment. Since a heavy path can
+only be broken by a light edge (or else the edge will be a part of the heavy
+path), we can know that there are at most $\mathcal{O}(\log N)$ heavy paths on
+any path from an arbitrary node $x$ to an arbitrary node $y$.
 
-In addition, by using segment trees (or any other RURQ data structure) we can calculate the value of any consecutive interval on any heavy path in $\mathcal{O}(\log N)$ time. 
+In addition, by using segment trees (or any other RURQ data structure) we can
+calculate the value of any consecutive interval on any heavy path in
+$\mathcal{O}(\log N)$ time.
 
-Since there are at most $\mathcal{O}(\log N)$ heavy paths and $\mathcal{O}(\log N)$ light edges, computing the value on the path from node $x$ to node $y$ will take $\mathcal{O}(\log^2 N + \log N)$ = $\mathcal{O}(\log^2 N)$ time. We can answer $Q$ queries in $\mathcal{O}(Q \log^2 N)$ time if the above property is true. This computational complexity allows us to pass questions where $N$ = $Q$ = $10^5$.
+Since there are at most $\mathcal{O}(\log N)$ heavy paths and
+$\mathcal{O}(\log N)$ light edges, computing the value on the path from node $x$
+to node $y$ will take $\mathcal{O}(\log^2 N + \log N)$ = $\mathcal{O}(\log^2 N)$
+time. We can answer $Q$ queries in $\mathcal{O}(Q \log^2 N)$ time if the above
+property is true.
 
-**Proof:**
+## Proof:
 
-Finally, we would need to prove the property above to conclude the tutorial. Consider a path from node $x$ to node $y$, this path can be broken down into a path from node $x$ to $LCA(x,y)$ and another path from node $y$ to $LCA(x,y)$. $LCA(x,y)$ must be an ancestor of both $x$ and $y$ by definition. Hence now we only need to prove that the path from any node to any of its ancestors can only pass through $\mathcal{O}(\log N)$ light edges to prove the property above. 
+Finally, we would need to prove the property above to conclude the tutorial.
+Consider a path from node $x$ to node $y$, this path can be broken down into a
+path from node $x$ to $LCA(x,y)$ and another path from node $y$ to $LCA(x,y)$.
+$LCA(x,y)$ must be an ancestor of both $x$ and $y$ by definition. Hence now we
+only need to prove that the path from any node to any of its ancestors can only
+pass through $\mathcal{O}(\log N)$ light edges to prove the property above.
 
-Suppose that a light edge connects node $x$ and node $y$, where $y$ is a child of $x$. By the definition of light edge, $y$ must be a light child of $x$. This means that there has to be another child of $x$ with a larger subtree size than $y$, or else $y$ will become the heavy child of $x$. Hence the size of the subtree rooted at $x$ must be at least two times of the size of the subtree rooted at $y$. Since the subtree size of a node can not exceed the total number of nodes $N$, the doubling process can only happen at most $\mathcal{O}(\log N)$ times when traversing up from an arbitrary node to its parent along a light edge. Given this, we now know that there could be at most $\mathcal{O}(\log N)$ light edges in both the path from $x$ to $LCA(x,y)$ and the path from $LCA(x,y)$ to $y$. Hence there are at most $\mathcal{O}(\log N + \log N)$ = $\mathcal{O}(\log N)$ light edges in the path from an arbitrary node $x$ to an arbitrary node $y$. 
+Suppose that a light edge connects node $x$ and node $y$, where $y$ is a child
+of $x$. By the definition of light edge, $y$ must be a light child of $x$. This
+means that there has to be another child of $x$ with a larger subtree size than
+$y$, or else $y$ will become the heavy child of $x$. Hence the size of the
+subtree rooted at $x$ must be at least two times of the size of the subtree
+rooted at $y$. Since the subtree size of a node can not exceed the total number
+of nodes $N$, the doubling process can only happen at most $\mathcal{O}(\log N)$
+times when traversing up from an arbitrary node to its parent along a light
+edge. Given this, we now know that there could be at most $\mathcal{O}(\log N)$
+light edges in both the path from $x$ to $LCA(x,y)$ and the path from $LCA(x,y)$
+to $y$. Hence there are at most $\mathcal{O}(\log N + \log N)$ =
+$\mathcal{O}(\log N)$ light edges in the path from an arbitrary node $x$ to an
+arbitrary node $y$.
 
-We can solve the focus problem "Subtrees & Paths" using Heavy Light Decomposition:
+We can solve the focus problem "Subtrees & Paths" using Heavy Light
+Decomposition:
 
 <LanguageSection>
 
@@ -88,19 +123,19 @@ int cnt;
 #define rc (p<<1)+1
 
 struct node{
-    int val;
+	int val;
     int l,r;
-    int lz;
+	int lz;
 }tree[maxN<<2];
 
 void pushup(int p){
-    tree[p].val = max(tree[lc].val,tree[rc].val);
+	tree[p].val = max(tree[lc].val,tree[rc].val);
     return;
 }
 
 void pushdown(int p){
     if(tree[p].l == tree[p].r)return; //This is a leaf node
-    tree[lc].val += tree[p].lz;
+	tree[lc].val += tree[p].lz;
     tree[rc].val += tree[p].lz;
     tree[lc].lz += tree[p].lz;
     tree[rc].lz += tree[p].lz;
@@ -121,7 +156,7 @@ void build(int p, int l, int r){
 void update(int p, int l, int r, int a, int b, int val){
     if(a > r || b < l)return;
     if(a <= l && r <= b){
-        tree[p].val += val;
+    	tree[p].val += val;
         tree[p].lz += val;
         return;
     }
@@ -168,8 +203,8 @@ void dfs2(int x, int par, int topf){
     dfn[x] = ++cnt;
     //val[dfn[x]] = a[x] is needed if the initial value of nodes on the tree is stored in array a
     top[x] = topf;
-    if(son[x] == 0)return; //node x is a leaf
-    dfs2(son[x],x,topf); //dfs to heavy children first
+	if(son[x] == 0)return; //node x is a leaf
+	dfs2(son[x],x,topf); //dfs to heavy children first
     for(int i = 0; i < adj[x].size(); ++i){
         int c = adj[x][i];
         if(c == par || c == son[x])continue;
