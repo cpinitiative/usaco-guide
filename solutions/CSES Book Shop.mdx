@@ -20,28 +20,28 @@ author: Sofia Yang
 ```java
 import java.io.*;
 import java.util.*;
- 
+
 public class bookShop {
 	public static void main(String[] args) throws IOException {
 		BufferedReader b = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(b.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int X = Integer.parseInt(st.nextToken());
- 
+
 		// Read in the cost array.
 		int[] costs = new int[N];
 		st = new StringTokenizer(b.readLine());
 		for (int i = 0; i < N; i++) {
 			costs[i] = Integer.parseInt(st.nextToken());
 		}
- 
+
 		// Read in the pages array.
 		int[] pages = new int[N];
 		st = new StringTokenizer(b.readLine());
 		for (int i = 0; i < N; i++) {
 			pages[i] = Integer.parseInt(st.nextToken());
 		}
- 
+
 		// dp[i][j] is how many pages you have from the first i books,
 		// after spending j money.
 		int[][] dp = new int[N + 5][X + 5];
@@ -50,15 +50,15 @@ public class bookShop {
 				dp[book+1][money] = dp[book][money];
 				int prev = money - costs[book];
 				if (prev >= 0) {
-					//The total number of pages we have if we buy this book.
+					// The total number of pages we have if we buy this book.
 					int newState = dp[book][prev] + pages[book];
 					dp[book+1][money] = Integer.max(dp[book+1][money], newState);
 				}
- 
+
 			}
 		}
- 
-		//Print the answer.
+
+		// Print the answer.
 		System.out.println(dp[N][X]);
 	}
 }
