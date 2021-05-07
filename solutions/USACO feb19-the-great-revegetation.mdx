@@ -2,12 +2,96 @@
 id: usaco-920
 source: USACO Silver 2019 February
 title: The Great Revegetation
-author: Sofia Yang
+author: Sofia Yang(Java), Atharva Adhav(C++)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_revegetate_silver_feb19.html)
 
 <LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define IOS ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+const int MAX_N = 1e5+2;
+vector<pair<int, int>> adj[MAX_N];
+vector<int> visited, color;
+bool bad; // If bad = true, not possible to plant grass with given constraints
+
+void dfs(int u, bool c) {
+    visited[u] = 1;
+    color[u] = c;
+    for(auto to : adj[u]) {
+        if(!visited[to.first]) {
+            if(to.second == 0)
+                dfs(to.first, c);
+            else
+                dfs(to.first, !c);
+        }
+        else {
+            //If same colors required but painted different colors beforehand
+            if(to.second == 0 && color[u] != color[to.first])
+                bad = 1;
+
+            //If different colors required but painted same colors beforehand
+            if(to.second == 1 && color[u] == color[to.first])
+                bad = 1; 
+        }
+    }
+}
+
+void solve() {
+    int N, M;
+    cin >> N >> M;
+    visited.resize(N+1); color.resize(N+1);
+    for(int i = 0; i < M; i++) {
+        int a, b; char ch;
+        cin >> ch >> a >> b;
+        if(ch == 'S') {
+            adj[a].push_back({b, 0});
+            adj[b].push_back({a, 0});
+        }
+        else {
+            adj[a].push_back({b, 1});
+            adj[b].push_back({a, 1});
+        }
+    }
+
+    int cnt = 0; // number of components
+    for(int i = 1; i <= N; i++) {
+        if(!visited[i]) {
+            cnt++;
+            dfs(i, 0);
+        }
+    }
+
+    // If not possible, answer is zero
+    if(bad) {
+        cout << 0 << '\n';
+        return;
+    }
+
+    // answer is 2^(number of components)
+    cout << 1;
+    for(int i = 0; i < cnt; i++) {
+        cout << 0;
+    } cout << '\n';
+}
+
+int main() 
+{
+    freopen("revegetate.in", "r", stdin);
+    freopen("revegetate.out", "w", stdout);
+    IOS;
+
+    solve();
+    return 0;
+}
+```
+</CPPSection>
 
 <JavaSection>
 
