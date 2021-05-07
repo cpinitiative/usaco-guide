@@ -177,7 +177,7 @@ using namespace std;
 int main() {
 	int n;
 	cin >> n;
-	while (n--) {
+	for (int i = 0; i < n; i++) {
 		int x;
 		int div_num = 0;
 		cin >> x;
@@ -192,6 +192,7 @@ int main() {
 ```
 
 </CPPSection>
+
 <JavaSection>
 
 ```java
@@ -220,6 +221,9 @@ public class Divisors {
 ```
 
 </JavaSection>
+
+<>
+
 </LanguageSection>
 
 This solution runs in $\mathcal{O}(n \sqrt x)$ time, which is just fast enough
@@ -347,6 +351,40 @@ public class Divisors {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+MAX_N = 10 ** 6
+
+# max_div[i] contains the largest prime that can go into i
+max_div = [0 for _ in range(MAX_N + 1)]
+for i in range(2, MAX_N + 1):
+    if max_div[i] == 0:
+        for j in range(i, MAX_N + 1, i):
+            max_div[j] = i
+
+ans = []
+for _ in range(int(input())):
+    n = int(input())
+    div_num = 1
+    while n != 1:
+		"""
+		get the largest prime that can divide x and see
+		how many times it goes into x (stored in count)
+		"""
+        largest = max_div[n]
+        count = 0
+        while n % largest == 0:
+            count += 1
+            n //= largest
+        div_num *= count + 1
+    ans.append(div_num)
+print('\n'.join(str(i) for i in ans))
+```
+
+</PySection>
+
 </LanguageSection>
 
 <Optional>
