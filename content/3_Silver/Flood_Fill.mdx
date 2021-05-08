@@ -540,11 +540,18 @@ for r in range(row_num):
 
 <Warning>
 
-Recursive implementations of flood fill can sometimes lead to a stack overflow (also see [adjusting stack sizes](/general/cpp-command#adjusting-stack-size)).
-To avoid that, we can use a stack data structure in an iterative implementation
-as follows:
+Recursive implementations of flood fill can sometimes lead to a stack overflow.
+This typically happens when:
+
+- You didn't include the appropriate compiler options for setting the stack size
+  (see [adjusting stack sizes](/general/cpp-command#adjusting-stack-size))
+- The grid is _really_ big and you get memory limit exceeded, since recursive
+  implementations generally use more memory than iterative ones.
 
 </Warning>
+
+To avoid memory limit exceeded / stack overflow errors, we can use a stack data
+structure in an iterative implementation as follows.
 
 <LanguageSection>
 
