@@ -1,0 +1,132 @@
+---
+id: cf-1359C
+source: CF
+title: Mixing Water
+author: Jesse Choe
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/78116)
+
+**Note: the $\mathcal{O}(1)$ solution for this problem is provided in the
+editorial (above).**
+
+Consider the following observations:
+
+- If the number of cups of hot water is equal to the number of cups of cold water in the barrel, then the minimum number of cups required to pour into the barrel is exactly $2$.
+- The number of cups of hot water must be greater than the number of cups of cold water if the previous condition isn't satisfied. Thus, there will be $c + 1$ cups of hot water and $c$ cups of cold water.
+- The two barrels with the closest temperature to $t$ will be the barrels with temperatures slightly more and slightly less than $t$. The two barrels will be $a$ and $b$, respectively.
+
+Binary search on the maximum number of cups $x$ with a temperature of at least $t$.
+
+$a$ will consist of $x$ cups poured, and $b$ will consist of $x + 2$ cups poured (from the second observation listed above, $x$ is guaranteed to be odd).
+
+The answer will be the barrel with a minimum $|t_b - t|$, which can either be the barrel with $2$, $x$, or $x + 2$ cups.
+
+**Time Complexity:** $\mathcal{O}(\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+double hot_water, cold_water, desired_temp;
+
+/*
+	This function checks whether pouring cupsPoured amount of cups achieves an average
+	barrel temperature greater than or equal to desired_temp. Technically, this represents
+	2 * cupsPoured + 1 cups
+*/
+
+bool works(int cupsPoured){
+
+	double totalBarrelTemperature = (hot_water * (cupsPoured + 1) + cold_water * (cupsPoured));
+	double totalCupsPoured = (double) (2 * cupsPoured + 1.0);
+	double avgBarrelTemperature = totalBarrelTemperature / totalCupsPoured;
+
+	return avgBarrelTemperature >= desired_temp;
+
+}
+
+void solve(){
+
+	/* maximumCups represents the the maximum number of cups such
+	that the barrel temperature is greater than desired_temp.
+	*/
+
+	cin >> hot_water >> cold_water >> desired_temp;
+
+	// Binary search on the answer for maximumCups.
+
+	int left = 0, right = 1e6 + 1, maximumCups = 0;
+
+	while(left <= right){
+		int mid = left + (right - left) / 2;
+		if(works(mid)){
+			maximumCups = mid;
+			left = mid + 1;
+		} else {
+			right = mid - 1;
+		}
+	}
+
+	// If it is impossible to find a temperature close to desired_temp, then print 2
+
+	if(maximumCups == 1e6 + 1){
+
+		cout << 2 << endl;
+
+	} else {
+
+		/*
+		   The solution must lie between barrel1 and barrel2 if the total number of cups
+		   is odd. barrel1 represents the barrel with an average temperature slightly
+		   greater than desired_temp. barrel2 represent the barrel with an average
+		   temperature slightly less than desired_temp. These two barrels will be the
+		   closest to desired_temp.
+		*/
+
+		double totalBarrel1 = (hot_water * (maximumCups + 1) + cold_water * (maximumCups));
+		double totalBarrel2 = (hot_water * (maximumCups + 2) + cold_water * (maximumCups + 1));
+		double barrel1Cups = (double)(2 * maximumCups + 1.0);
+		double barrel2Cups = (double)(2 * maximumCups + 3.0);
+		double avgBarrel1 = (totalBarrel1) / barrel1Cups;
+		double avgBarrel2 = (totalBarrel2) / barrel2Cups;
+		double hot_cold_avg = (hot_water + cold_water) / 2.0;
+
+		double minAbsDifference = min(abs(desired_temp - avgBarrel1),
+		min(abs(desired_temp - avgBarrel2),
+		abs(desired_temp - hot_cold_avg)));
+
+		/*
+		   If the minimum absolute difference from desired_temp is
+		   hot_cold_avg, then it suffices to print 2. Otherwise, print
+		   the barrel with the minimum absolute difference from desired_temp.
+		*/
+
+		if(minAbsDifference == abs(desired_temp - hot_cold_avg)){
+			cout << 2 << endl;
+		} else if(minAbsDifference == abs(desired_temp - avgBarrel1)){
+			cout << 2 * maximumCups + 1 << endl;
+		} else {
+			cout << 2 * maximumCups + 3 << endl;
+		}
+
+	}
+
+}
+
+int main(){
+	int t; cin >> t;
+	for(int i=1; i<=t; i++){
+		solve();
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
