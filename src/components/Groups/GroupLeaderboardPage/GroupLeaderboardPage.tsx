@@ -15,7 +15,7 @@ export default function GroupLeaderboardPage(): JSX.Element {
 
   const assignments = React.useMemo(() => {
     return posts
-      ?.filter(post => post.type === 'assignment')
+      ?.filter(post => post.type === 'assignment' && post.isPublished)
       .sort(sortPostsComparator);
   }, [posts]);
 
