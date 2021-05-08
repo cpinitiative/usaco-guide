@@ -1,49 +1,65 @@
 import { Transition } from '@headlessui/react';
+import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import { BookmarkIcon } from '@heroicons/react/solid';
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
-import { getPostTimestampString, PostData } from '../../../models/groups/posts';
+import {
+  getEarnedPointsForPost,
+  getPostTimestampString,
+  getTotalPointsOfPost,
+  PostData,
+} from '../../../models/groups/posts';
+import Tooltip from '../../Tooltip/Tooltip';
 
 const AnnouncementIcon = () => {
   return (
-    <svg
-      className="h-6 w-6 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-      />
-    </svg>
+    <div className="bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
+      <svg
+        className="h-6 w-6 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+        />
+      </svg>
+    </div>
   );
 };
 
-const AssignmentIcon = () => {
+const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
+  const fullySolved = pointsEarned === totalPoints && totalPoints > 0;
+  const inProgress = !fullySolved && pointsEarned > 0;
   return (
-    <svg
-      className="h-6 w-6 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-      />
-    </svg>
+    <Tooltip content={`${pointsEarned} / ${totalPoints} points earned`}>
+      <div
+        className={
+          (fullySolved
+            ? 'bg-green-600'
+            : inProgress
+            ? 'bg-orange-600'
+            : 'bg-light-blue-700') +
+          ' rounded-full p-2 inline-flex items-center justify-center'
+        }
+      >
+        {fullySolved ? (
+          <CheckIcon className="h-6 w-6 text-white" />
+        ) : (
+          <ClipboardListIcon className="h-6 w-6 text-white" />
+        )}
+      </div>
+    </Tooltip>
   );
 };
 
@@ -54,8 +70,9 @@ export default function FeedItem({
   group: GroupData;
   post: PostData;
 }): JSX.Element {
-  const showAdminSettings = useActiveGroup().showAdminView;
+  const { showAdminView, groupData } = useActiveGroup();
   const { updatePost, deletePost } = usePostActions(group.id);
+  const { firebaseUser } = useContext(UserDataContext);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const notifications = useNotificationSystem();
@@ -79,11 +96,18 @@ export default function FeedItem({
           to={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
-          <div className="flex-shrink-0 self-center bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
+          <div className="flex-shrink-0 self-center">
             {post.type === 'announcement' ? (
               <AnnouncementIcon />
             ) : (
-              <AssignmentIcon />
+              <AssignmentIcon
+                pointsEarned={getEarnedPointsForPost(
+                  groupData.leaderboard,
+                  post,
+                  firebaseUser.uid
+                )}
+                totalPoints={getTotalPointsOfPost(post)}
+              />
             )}
           </div>
           <div className="min-w-0 flex-1 py-4 sm:py-5">
@@ -102,7 +126,7 @@ export default function FeedItem({
             </p>
           </div>
         </Link>
-        {showAdminSettings && (
+        {showAdminView && (
           <div className="flex-shrink-0 self-center flex">
             <div className="relative inline-block text-left" ref={ref}>
               <button

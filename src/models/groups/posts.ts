@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
+import { Leaderboard } from './leaderboard';
 import {
   ExecutionStatus,
   ProblemData,
@@ -18,6 +19,9 @@ export type PostData = {
   isPinned: boolean;
   isPublished: boolean;
   isDeleted: boolean;
+  pointsPerProblem: {
+    [key: string]: number;
+  };
 } & (
   | {
       type: 'announcement';
@@ -75,6 +79,22 @@ export const getEarnedPointsForProblem = (
   return submissions.reduce(
     (oldScore, submission) =>
       Math.max(oldScore, getSubmissionEarnedPoints(submission, problem)),
+    0
+  );
+};
+export const getEarnedPointsForPost = (
+  leaderboard: Leaderboard,
+  post: PostData,
+  userId: string
+): number => {
+  return Object.keys(post.pointsPerProblem || {}).reduce(
+    (acc, cur) => acc + (leaderboard[post.id]?.[cur]?.[userId]?.bestScore || 0),
+    0
+  );
+};
+export const getTotalPointsOfPost = (post: PostData): number => {
+  return Object.keys(post.pointsPerProblem || {}).reduce(
+    (acc, cur) => acc + post.pointsPerProblem[cur],
     0
   );
 };

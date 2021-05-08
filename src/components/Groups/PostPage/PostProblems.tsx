@@ -1,5 +1,6 @@
 import { navigate } from 'gatsby';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
@@ -8,8 +9,22 @@ import ProblemListItem from '../ProblemListItem';
 
 export default function PostProblems({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();
-  const { createNewProblem } = usePostActions(activeGroup.activeGroupId);
+  const { createNewProblem, updatePost } = usePostActions(
+    activeGroup.activeGroupId
+  );
   const { problems, isLoading } = useActivePostProblems();
+
+  useEffect(() => {
+    updatePost(post.id, {
+      pointsPerProblem: Object.keys(problems || {}).reduce(
+        (acc, cur) => ({
+          ...acc,
+          [cur]: problems[cur].points,
+        }),
+        {}
+      ),
+    });
+  }, [problems]);
 
   return (
     <section className="mt-8 xl:mt-10">
