@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { sortPostsComparator } from '../../../models/groups/posts';
 import Tabs from '../../Tabs';
 import FeedItem from './FeedItem';
 
@@ -16,13 +17,8 @@ export default function Feed() {
       if (currentFeed === 'announcements') return post.type === 'announcement';
       throw 'unknown feed ' + this.currentFeed;
     })
-    .sort((a, b) => {
-      if (a.isPinned !== b.isPinned) {
-        return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
-      }
-
-      return (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0);
-    });
+    .sort(sortPostsComparator)
+    .reverse();
 
   return (
     <>

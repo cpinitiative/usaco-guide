@@ -78,3 +78,10 @@ export const getEarnedPointsForProblem = (
     0
   );
 };
+export const sortPostsComparator = (a: PostData, b: PostData): number => {
+  if (a.isPinned !== b.isPinned) {
+    return (a.isPinned ? 1 : 0) - (b.isPinned ? 1 : 0);
+  }
+
+  return (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0);
+};
