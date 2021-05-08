@@ -1,0 +1,112 @@
+---
+id: ioi-05-mountains
+source: IOI 2005
+title: Mountain
+author: Dustin Miao
+---
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+typedef int_fast64_t ll;
+#define PB push_back
+const ll inf = 20000000005;
+
+int N;
+
+struct node {
+	ll M, S, L;
+	int LC, RC;
+
+	node() : M(0), S(0), L(inf), LC(-1), RC(-1) {}
+};
+
+vector<node> T;
+
+void pushdown(int t, int tl, int tr) {
+	if (T[t].L != inf) {
+		if (T[t].LC == -1)
+			T[t].LC = T.size(), T.PB(node());
+		if (T[t].RC == -1)
+			T[t].RC = T.size(), T.PB(node());
+
+		int tm = (tl + tr) >> 1;
+		if (T[t].L < 0) {
+			T[T[t].LC].M = T[t].L;
+			T[T[t].RC].M = T[t].L;
+		}
+		else {
+			T[T[t].LC].M = (ll)(tm - tl + 1) * T[t].L;
+			T[T[t].RC].M = (ll)(tr - tm) * T[t].L;
+		}
+		T[T[t].LC].S = (ll)(tm - tl + 1) * T[t].L;
+		T[T[t].RC].S = (ll)(tr - tm) * T[t].L;
+
+		T[T[t].LC].L = T[T[t].RC].L = T[t].L;
+		T[t].L = inf;
+	}
+}
+
+void update(int l, int r, ll v, int t = 0, int tl = 1, int tr = N) {
+	if (r < tl || tr < l || tr < tl)
+		return;
+	if (l <= tl && tr <= r) {
+		if (v < 0) 
+			T[t].M = v;
+		else 
+			T[t].M = (tr - tl + 1) * v;
+		T[t].S = (tr - tl + 1) * v;
+		T[t].L = v;
+		return;
+	}
+	if (tl != tr)
+		pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	if (T[t].LC == -1)
+		T[t].LC = T.size(), T.PB(node());
+	update(l, r, v, T[t].LC, tl, tm);
+	if (T[t].RC == -1)
+		T[t].RC = T.size(), T.PB(node());
+	update(l, r, v, T[t].RC, tm + 1, tr);
+	T[t].M = max(T[T[t].LC].M, T[T[t].LC].S + T[T[t].RC].M);
+	T[t].S = T[T[t].LC].S + T[T[t].RC].S;
+}
+
+ll query(ll v, int t = 0, int tl = 1, int tr = N) {
+	if (tl == tr)
+		return tl;
+	else 
+		pushdown(t, tl, tr);
+	
+	int tm = (tl + tr) >> 1;
+	if (v < (T[t].LC == -1 ? 0 : T[T[t].LC].M))
+		return query(v, T[t].LC, tl, tm);
+	else if (v < (T[t].LC == -1 ? 0 : T[T[t].LC].S) + (T[t].RC == -1 ? 0 : T[T[t].RC].M))
+		return query(v - (T[t].LC == -1 ? 0 : T[T[t].LC].S), T[t].RC, tm + 1, tr);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	T.reserve(6000000); T.PB(node()); 
+	// reserve or possible of MLE
+
+	cin >> N;
+	while (true) {
+		char t; cin >> t;
+		if (t == 'I') {
+			ll a, b, d; cin >> a >> b >> d;
+			update(a, b, d);
+		}
+		else if (t == 'Q') {
+			ll h; cin >> h; 
+			cout << (T[0].M <= h ? N : query(h) - 1) << '\n';
+		}
+		else if (t == 'E')
+			break;
+	}
+}
+```
