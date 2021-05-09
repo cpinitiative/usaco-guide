@@ -22,6 +22,7 @@ import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
 import { EditorSidebar } from '../components/Editor/EditorSidebar';
 import EditorTabBar from '../components/Editor/EditorTabBar';
+import { fetchFileContent } from '../components/Editor/editorUtils';
 import {
   conf as mdxConf,
   language as mdxLang,
@@ -40,7 +41,6 @@ import {
 } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
-import { AlgoliaEditorFile } from '../models/algoliaEditorFile';
 import { ProblemMetadata, PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
 
 const RawMarkdownRenderer = React.lazy(
@@ -74,64 +74,52 @@ function getQueryVariable(query, variable) {
 
 export default function EditorPage(props: PageProps) {
   const id = '4kXuiTbiSlELsbgB8Gc9';
-  const filePath =
-    props.location?.search?.length > 0
-      ? getQueryVariable(props.location.search.slice(1), 'filepath')
-      : null;
-  const markdownStorageKey = 'guide:editor:markdown';
-  const problemsStorageKey = 'guide:editor:problems';
+  const markdownStorageKey = 'guide:editor:markdown2';
+  const problemsStorageKey = 'guide:editor:problems2';
+  const filesStorageKey = 'guide:editor:files';
+  const activeFileStorageKey = 'guide:editor:activeFile';
   // some issues w/ reloading w/ filepath & stuff
   // const [markdown, setMarkdown] = useStickyState('', markdownStorageKey, 5000);
   // const [problems, setProblems] = useStickyState('', problemsStorageKey, 5000);
-  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
-  const [problems, setProblems] = useStickyState('', problemsStorageKey);
+  const [files, setFiles] = useStickyState<{ path: string }[]>(
+    [],
+    filesStorageKey,
+    0,
+    null
+  );
+  const [activeFile, setActiveFile] = useStickyState<{ path: string } | null>(
+    null,
+    activeFileStorageKey
+  );
+  const isEditingSolution =
+    activeFile && activeFile.path.startsWith('solutions');
+
+  // todo somehow clean up old files? otherwise we might hit storage limit
+  const [allMarkdown, setAllMarkdown] = useStickyState({}, markdownStorageKey);
+  const [allProblems, setAllProblems] = useStickyState({}, problemsStorageKey);
+
+  const markdown = activeFile ? allMarkdown[activeFile.path] : '';
+  const setMarkdown = x =>
+    activeFile && setAllMarkdown({ ...allMarkdown, [activeFile.path]: x });
+  const problems = activeFile ? allProblems[activeFile.path] : '';
+  const setProblems = x =>
+    activeFile && setAllProblems({ ...allProblems, [activeFile.path]: x });
+
   const editor = useRef<any>();
   const [tab, setTab] = useState<'problems' | 'content'>('content');
 
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');
 
-    const githubURL = encodeURI(
-      `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath}`
-    );
+    const data = await fetchFileContent(filePath);
 
-    const result = await fetch(githubURL);
-    const text = await result.text();
-    setMarkdown(text);
-
-    const githubProblemsURL = encodeURI(
-      `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath.replace(
-        /\.mdx$/,
-        '.problems.json'
-      )}`
-    );
-    const problemResult = await fetch(githubProblemsURL);
-    if (!problemResult.ok) {
-      setProblems('');
-    } else {
-      const problemText = await problemResult.text();
-      setProblems(problemText);
-    }
+    setMarkdown(data.markdown);
+    setProblems(data.problems);
   };
-  React.useEffect(() => {
-    if (filePath) {
-      if (window.localStorage.getItem(markdownStorageKey)?.length > 0) {
-        if (
-          confirm(
-            'Load file from Github? Your local changes (if any) will be lost.'
-          )
-        ) {
-          loadContent(filePath);
-        }
-      } else {
-        loadContent(filePath);
-      }
-    }
-  }, [filePath]);
 
   const handleReloadContent = () => {
     if (confirm('Reload file from Github? Your local changes will be lost.')) {
-      loadContent(filePath);
+      loadContent(activeFile?.path);
     }
   };
 
@@ -228,14 +216,40 @@ export default function EditorPage(props: PageProps) {
     }
   };
 
-  const [files, setFiles] = useState<{ path: string }[]>([]);
-  const handleNewFile = (file: AlgoliaEditorFile) => {
-    console.log('Adding new file', file);
-    setFiles([...files, { path: file.path }]);
+  const handleNewFile = async (file: { path: string }) => {
+    if (files.find(f => f.path === file.path)) {
+      setActiveFile(file);
+    } else {
+      setFiles([...files, { path: file.path }]);
+      const data = await fetchFileContent(file.path);
+      setAllMarkdown(allMarkdown => ({
+        ...allMarkdown,
+        [file.path]: data.markdown,
+      }));
+      setAllProblems(allProblems => ({
+        ...allProblems,
+        [file.path]: data.problems,
+      }));
+      setActiveFile(file);
+    }
   };
   const handleOpenFile = (file: { path: string }) => {
-    console.log('Todo: open file', file);
+    setActiveFile(file);
   };
+
+  const defaultFilePath =
+    props.location?.search?.length > 0
+      ? getQueryVariable(props.location.search.slice(1), 'filepath')
+      : null;
+
+  React.useEffect(() => {
+    // files still loading from localStorage
+    console.log(files, defaultFilePath);
+    if (files === null) return;
+    if (defaultFilePath) {
+      handleNewFile({ path: defaultFilePath });
+    }
+  }, [defaultFilePath, files]);
 
   return (
     <Layout>
@@ -289,7 +303,7 @@ export default function EditorPage(props: PageProps) {
             {/*  Save*/}
             {/*</button>*/}
 
-            {filePath && (
+            {activeFile?.path && (
               <button
                 className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
                 onClick={handleReloadContent}
@@ -297,10 +311,10 @@ export default function EditorPage(props: PageProps) {
                 Reload Content from Github
               </button>
             )}
-            {filePath && (
+            {activeFile?.path && (
               <a
                 href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
-                  filePath
+                  activeFile?.path
                 )}`}
                 target="_blank"
                 className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
@@ -400,36 +414,57 @@ export default function EditorPage(props: PageProps) {
               <div className="flex items-stretch">
                 <EditorSidebar
                   className="h-full flex-shrink-0"
-                  files={files}
+                  activeFile={activeFile}
+                  files={files || []}
                   onOpenFile={handleOpenFile}
-                  onNewFile={handleNewFile}
+                  onNewFile={f => handleNewFile({ path: f.path })}
                 />
                 <div className="h-full tw-forms-disable-all-descendants flex-1 w-0">
                   <EditorTabBar
                     tabs={[
                       { label: 'module.mdx', value: 'module.mdx' },
-                      {
-                        label: 'module.problems.json',
-                        value: 'module.problems.json',
-                      },
+                      ...(!isEditingSolution
+                        ? [
+                            {
+                              label: 'module.problems.json',
+                              value: 'module.problems.json',
+                            },
+                          ]
+                        : []),
                     ]}
                     activeTab={
-                      tab == 'content' ? 'module.mdx' : 'module.problems.json'
+                      tab === 'content' || isEditingSolution
+                        ? 'module.mdx'
+                        : 'module.problems.json'
                     }
                     onTabSelect={tab =>
-                      setTab(tab.value == 'module.mdx' ? 'content' : 'problems')
+                      setTab(
+                        tab.value === 'module.mdx' ? 'content' : 'problems'
+                      )
                     }
                     onFormatCode={handleFormatCode}
                   />
                   <Editor
                     theme="vs-dark"
                     path={
-                      tab === 'content'
-                        ? 'inmemory://usaco-guide/module.mdx'
-                        : 'inmemory://usaco-guide/module.problems.json'
+                      activeFile === null
+                        ? 'NONE'
+                        : tab === 'content' || isEditingSolution
+                        ? activeFile.path
+                        : activeFile.path.replace(/\.mdx$/, '.problems.json')
                     }
-                    language={tab === 'content' ? 'custom-mdx' : 'json'}
-                    value={tab === 'content' ? markdown : problems}
+                    language={
+                      tab === 'content' || isEditingSolution
+                        ? 'custom-mdx'
+                        : 'json'
+                    }
+                    value={
+                      activeFile === null
+                        ? 'Open a file to begin'
+                        : tab === 'content' || isEditingSolution
+                        ? markdown
+                        : problems
+                    }
                     onChange={(v, e) =>
                       tab === 'content' ? setMarkdown(v) : setProblems(v)
                     }
