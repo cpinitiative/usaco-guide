@@ -15,20 +15,16 @@ frequency: 1
 
 ## Tutorial
 
-In some advanced problems on trees, the problem may ask you to support the
-following operations:
+Suppose that you want to support the following operations on a tree:
 
-- Update all nodes along the path from node $x$ to node $y$ (Note that this path
-  is unique due to properties of trees).
+- Update all nodes along the path from node $x$ to node $y$.
 
 - Find the sum, maximum, minimum (or any other operation that satisfies the
   associative property) along the path from node $x$ to node $y$.
 
-Heavy Light Decomposition (or HLD) is needed to support both operations efficiently.
+Heavy Light Decomposition (or HLD) supports both operations efficiently.
 
 ### Definitions
-
-To begin, here are some important definitions required to understand HLD:
 
 - A **heavy child** of a node is the child with the largest subtree size rooted
   at the child.
@@ -102,7 +98,7 @@ const int S = (1<<D);
 int n, q, v[N];
 vector<int> adj[N];
 
-int sz[N], p[N][D], dep[N];
+int sz[N], p[N], dep[N];
 int st[S], id[N], tp[N];
 
 void update(int idx, int val, int i=1, int l=1, int r=n) {
@@ -117,25 +113,23 @@ int query(int lo, int hi, int i=1, int l=1, int r=n) {
 	if(lo <= l && r <= hi) return st[i];
 	int m = (l+r)/2;
 	return max(query(lo, hi, i*2, l, m),
-			query(lo, hi, i*2+1, m+1, r));
+			   query(lo, hi, i*2+1, m+1, r));
 }
 
 int dfs_sz(int cur, int par) {
 	sz[cur] = 1;
+	p[cur] = par;
 	for(int chi : adj[cur]) {
 		if(chi == par) continue;
 		dep[chi] = dep[cur] + 1;
-		p[chi][0] = cur;
+		p[chi] = cur;
 		sz[cur] += dfs_sz(chi, cur);
 	}
 	return sz[cur];
 }
-void init_lca() {
-	for(int d=1; d<18; d++)
-	for(int i=1; i<=n; i++)
-		p[i][d] = p[p[i][d-1]][d-1];
-}
+
 int ct = 1;
+
 void dfs_hld(int cur, int par, int top) {
 	id[cur] = ct++;
 	tp[cur] = top;
@@ -155,43 +149,20 @@ void dfs_hld(int cur, int par, int top) {
 		dfs_hld(chi, cur, chi);
 	}
 }
-int lca(int a, int b) {
-	if(dep[a] < dep[b]) swap(a, b);
-	for(int d=D-1; d>=0; d--) {
-		if(dep[a] - (1<<d) >= dep[b]) {
-			a = p[a][d];
-		}
-	}
-	for(int d=D-1; d>=0; d--) {
-		if(p[a][d] != p[b][d]) {
-			a = p[a][d];
-			b = p[b][d];
-		}
-	}
-	if(a != b) {
-		a = p[a][0];
-		b = p[b][0];
-	}
-	return a;
-}
-int path(int chi, int par) {
+
+int path(int x, int y){
 	int ret = 0;
-	while(chi != par) {
-		if(tp[chi] == chi) {
-			ret = max(ret, v[chi]);
-			chi = p[chi][0];
-		} else if(dep[tp[chi]] > dep[par]) {
-			ret = max(ret, query(id[tp[chi]], id[chi]));
-			chi = p[tp[chi]][0];
-		} else {
-			ret = max(ret, query(id[par]+1, id[chi]));
-			break;
-		}
+	while(tp[x] != tp[y]){
+		if(dep[tp[x]] < dep[tp[y]])swap(x,y);
+		ret = max(ret, query(id[tp[x]],id[x]));
+		x = p[tp[x]];
 	}
+	if(dep[x] > dep[y])swap(x,y);
+	ret = max(ret, query(id[x],id[y]));
 	return ret;
 }
-int main() {
 
+int main() {
 	scanf("%d%d", &n, &q);
 	for(int i=1; i<=n; i++) scanf("%d", &v[i]);
 	for(int i=2; i<=n; i++) {
@@ -201,8 +172,6 @@ int main() {
 		adj[b].push_back(a);
 	}
 	dfs_sz(1, 1);
-	init_lca();
-	memset(st, 0, sizeof st);
 	dfs_hld(1, 1, 1);
 	while(q--) {
 		int t;
@@ -215,8 +184,7 @@ int main() {
 		} else {
 			int a, b;
 			scanf("%d%d", &a, &b);
-			int c = lca(a, b);
-			int res = max(max(path(a,c), path(b,c)), v[c]);
+			int res = path(a,b);
 			printf("%d ", res);
 		}
 	}
