@@ -7,7 +7,7 @@ author: Ananth Kashyap
 
 [Official Analysis](http://www.usaco.org/current/data/sol_whereami_bronze_dec19.html)
 
-## Implementation
+## Python Implementation
 
 **Time Complexity:** $\mathcal{O}(N^3)$
 
@@ -41,5 +41,61 @@ print(ans, file = open('whereami.out', 'w'))
 ```
 
 </PySection>
+
+</LanguageSection>
+
+
+## C++ Implementation
+
+**Time Complexity:** $\mathcal{O}(2N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+int main() {
+    freopen("whereami.in", "r", stdin);
+    freopen("whereami.out", "w", stdout);
+
+    map<string, int> m;
+    int N;
+    string pattern;
+    int min;
+
+    cin >> N;
+    cin >> pattern;
+
+    for (int dist = 1; dist < N+1; dist++) {
+        for (int charIndex = 0; charIndex < N; charIndex++) {
+            if (charIndex + dist > N) break;
+            string combination = pattern.substr(charIndex, dist);
+            m[combination] += 1;
+        }
+
+        bool valid = false;
+        for (auto pair: m) {
+            if (pair.second > 1) {
+                valid = true;
+                break;
+            }
+        }
+        if (!valid) {
+            cout << dist;
+            break;
+        }
+        m.clear();
+    }
+}
+```
+
+</CPPSection>
 
 </LanguageSection>
