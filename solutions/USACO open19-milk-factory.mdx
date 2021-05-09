@@ -7,6 +7,8 @@ author: Mrinall Umasudhan and Jesse Choe
 
 [Official Analysis](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
 
+## Solution 1
+
 This problem can also be solved using [Depth-First Search](/silver/dfs) (a
 Silver topic). Represent the factory as a directed unweighted graph with edges
 from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at
@@ -27,68 +29,68 @@ import java.io.*;
 import java.util.*;
 
 class Graph{
-     private int V;
-     private ArrayList<ArrayList<Integer>> adj;
-     Graph(int V){
-         this.V = V;
-         adj = new ArrayList<ArrayList<Integer>>(V);
-         for(int i = 0; i < V; i++){
-              adj.add(new ArrayList<Integer>()); // Creating the adjacency list
-         }
-     }
-     void addEdge(int u, int v){
-          adj.get(v).add(u); // Connecting the two factories.
-     }
+		 private int V;
+		 private ArrayList<ArrayList<Integer>> adj;
+		 Graph(int V){
+				 this.V = V;
+				 adj = new ArrayList<ArrayList<Integer>>(V);
+				 for(int i = 0; i < V; i++){
+							adj.add(new ArrayList<Integer>()); // Creating the adjacency list
+				 }
+		 }
+		 void addEdge(int u, int v){
+					adj.get(v).add(u); // Connecting the two factories.
+		 }
 
 
-     int DFSUtil(int v,boolean visited[]){
-         int ans = 0;
-         // Mark the current node as visited
-         visited[v] = true;
-         ans++;
+		 int DFSUtil(int v,boolean visited[]){
+				 int ans = 0;
+				 // Mark the current node as visited
+				 visited[v] = true;
+				 ans++;
 
-         // Recur for all the vertices adjacent to this vertex
-         Iterator<Integer> i = adj.get(v).listIterator();
-         while(i.hasNext()){
-             int n = i.next();
-             if(!visited[n]){
-                 ans += DFSUtil(n, visited); // recurse to the next edge/station in it's path and increase the number of stations visited.
-             }
-         }
-         return ans; // return number of visited stations.
-     }
+				 // Recur for all the vertices adjacent to this vertex
+				 Iterator<Integer> i = adj.get(v).listIterator();
+				 while(i.hasNext()){
+						 int n = i.next();
+						 if(!visited[n]){
+								 ans += DFSUtil(n, visited); // recurse to the next edge/station in it's path and increase the number of stations visited.
+						 }
+				 }
+				 return ans; // return number of visited stations.
+		 }
 
-     // The function to do DFS traversal. It uses recursive DFSUtil()
-     int DFS(int v){
-         // Mark all the vertices as not visited(set as false by default)
-         boolean visited[] = new boolean[V];
+		 // The function to do DFS traversal. It uses recursive DFSUtil()
+		 int DFS(int v){
+				 // Mark all the vertices as not visited(set as false by default)
+				 boolean visited[] = new boolean[V];
 
-         // Call the recursive helper function to print DFS traversal
-         return DFSUtil(v, visited);
-     }
+				 // Call the recursive helper function to print DFS traversal
+				 return DFSUtil(v, visited);
+		 }
  }
 
  public class factory{
-     public static void main(String[] args) throws IOException{
-         Scanner sc = new Scanner(new File("factory.in"));
-         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("factory.out")));
-         int N = sc.nextInt(); Graph  g = new Graph(N); boolean used = false;
-         for(int i = 0; i < N - 1; i++){
-             g.addEdge(sc.nextInt() - 1, sc.nextInt() - 1); // Meaning one can walk from station A to station B.
-         }
-         for(int i = 0; i < N; i++){
-              int ans = g.DFS(i);
-              if(ans == N){
-                   out.println(i + 1); // If the number of visited stations from the DFS is equal to the total number of stations then output.
-                   used = true;
-                   break;
-              }
-         }
-         if(!used){
-              out.println(-1); // If no such station exists then we print -1.
-         }
-         out.close();
-     }
+		 public static void main(String[] args) throws IOException{
+				 Scanner sc = new Scanner(new File("factory.in"));
+				 PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("factory.out")));
+				 int N = sc.nextInt(); Graph  g = new Graph(N); boolean used = false;
+				 for(int i = 0; i < N - 1; i++){
+						 g.addEdge(sc.nextInt() - 1, sc.nextInt() - 1); // Meaning one can walk from station A to station B.
+				 }
+				 for(int i = 0; i < N; i++){
+							int ans = g.DFS(i);
+							if(ans == N){
+									 out.println(i + 1); // If the number of visited stations from the DFS is equal to the total number of stations then output.
+									 used = true;
+									 break;
+							}
+				 }
+				 if(!used){
+							out.println(-1); // If no such station exists then we print -1.
+				 }
+				 out.close();
+		 }
  }
 ```
 
@@ -103,11 +105,11 @@ using namespace std;
 #define all(x) begin(x), end(x)
 
 void setIO(string name=""){ // FastIO See General -> Input/Output
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    if((int)name.size() > 0){
-        freopen((name+".in").c_str(), "r", stdin);
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+		ios_base::sync_with_stdio(0); cin.tie(0);
+		if((int)name.size() > 0){
+				freopen((name+".in").c_str(), "r", stdin);
+				freopen((name+".out").c_str(), "w", stdout);
+		}
 }
 
 vector<int> adj[101]; vector<bool> visited(101); int n;
@@ -152,4 +154,54 @@ int main(){
 ```
 
 </CPPSection>
+</LanguageSection>
+
+## Solution 2
+
+Since there are a total of $n-1$ conveyer belts and a total of $n$ factories, for there to exist a factory that can be traveled to from every other factory, this factory (which we will refer to as the 'special factory') must not have an outgoing conveyer belts. This is because there are a total of $n-i$ other factories that need an outgoing conveyer belt to reach the 'special factory', which leaves no other conveyer belts for the 'special factory' to have, as there are only $n-1$ total conveyer belts. But how do we check if there is a  'special factory'? If there is only one distinct station that appears as an incoming station and not as an outgoing station, then this station is a 'special station'. Otherwise, there is no 'special station', and we should output negative one.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<PySection>
+
+```py
+# Take in the input using standard Python file i/o system
+data = open('factory.in').read().strip().split('\n')
+n = int(data[0])
+conveyer_belts = [list(map(int, data[i + 1].split(' '))) for i in range(n - 1)]
+
+
+# Create two lists holding all stations with incoming conveyer belts
+# Create another list holding all stations with outgoing conveyer belts
+outgoing = []
+incoming = []
+
+for i in range(n - 1):
+		outgoing.append(conveyer_belts[i][0])
+		incoming.append(conveyer_belts[i][1])
+
+ans = -1
+counter = 0
+
+# Find out which station does not have any outgoing conveyer belts
+for i in range(n - 1):
+		if incoming[i] not in outgoing:
+				if incoming[i] != ans:
+						ans = incoming[i]
+						counter += 1
+
+# Make sure their is only one station with no outgoing belts
+if counter > 1:
+		ans = -1
+
+# Print the answer on the output file using Python file i/o system
+file_out = open('factory.out', 'w')
+file_out.write(str(ans))
+file_out.close()
+```
+
+</PySection>
 </LanguageSection>
