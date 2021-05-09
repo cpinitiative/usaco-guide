@@ -1,0 +1,44 @@
+---
+id: usaco-915
+source: USACO Bronze 2019 February
+title: Sleepy Cow Herding
+author: Ananth Kashyap
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_herding_bronze_feb19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+<PySection>
+
+```python
+# Created by Ananth Kashyap
+
+# Take in input using python file i/o system
+file_in = open('herding.in')
+data = file_in.read().strip().split('\n')
+cows = list(map(int, data[0].split(' ')))
+
+# Determine the min and max number of moves FJ needs to make
+if cows[2] - cows[0] == 2:
+		min = 0
+		max = 0
+elif cows[2] - cows[1] == 2 or cows[1] - cows[0] == 2:
+		min = 1
+		max = max(cows[2] - cows[1] - 1, cows[1] - cows[0] - 1)
+else:
+		min = 2
+		max = max(cows[2] - cows[1] - 1, cows[1] - cows[0] - 1)
+
+# Add min and max to output file using python file i/o system
+file_out = open('herding.out', 'w')
+file_out.write(str(min) + '\n')
+file_out.write(str(max))
+file_out.close()
+```
+
+</PySection>
+</LanguageSection>
