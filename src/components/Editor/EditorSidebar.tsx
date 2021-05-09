@@ -1,9 +1,21 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
+import { AlgoliaEditorFile } from '../../models/algoliaEditorFile';
+import { EditorFileModal } from './EditorFileModal';
 
-export const EditorSidebar: React.FC<{ className?: string }> = ({
-  className,
-}) => {
+export const EditorSidebar: React.FC<{
+  className?: string;
+  files: { path: string }[];
+  onOpenFile: (file: { path: string }) => void;
+  onNewFile: (file: AlgoliaEditorFile) => void;
+}> = ({ className, files, onOpenFile, onNewFile }) => {
+  const [isFileModalOpen, setIsFileModalOpen] = useState(false);
+
+  const handleFileSelect = (file: AlgoliaEditorFile) => {
+    setIsFileModalOpen(false);
+    onNewFile(file);
+  };
+
   return (
     <div
       className={classNames(
@@ -27,36 +39,34 @@ export const EditorSidebar: React.FC<{ className?: string }> = ({
         {/*</div>*/}
       </div>
       <div className="h-1" />
-      <div className="px-4 py-1 group hover:bg-gray-800 transition">
+      {files.map(file => (
         <div
-          className="cursor-pointer"
-          onClick={() => console.log('Open file?')}
+          className="px-4 py-1 group hover:bg-gray-800 transition"
+          key={file.path}
         >
-          <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
-            1_General/Contributing.mdx
-          </span>
+          <div className="cursor-pointer" onClick={() => onOpenFile(file)}>
+            <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
+              {file.path}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="px-4 py-1 group hover:bg-gray-800 transition">
-        <div
-          className="cursor-pointer"
-          onClick={() => console.log('Open file?')}
-        >
-          <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
-            1_General/About_MDX.mdx
-          </span>
-        </div>
-      </div>
+      ))}
       <div className="h-1" />
       <button
         className={classNames(
           'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
           'px-4 py-2 font-medium text-sm focus:outline-none transition w-full'
         )}
-        onClick={() => console.log('new file')}
+        onClick={() => setIsFileModalOpen(true)}
       >
-        New File
+        Open File
       </button>
+
+      <EditorFileModal
+        isOpen={isFileModalOpen}
+        onClose={() => setIsFileModalOpen(false)}
+        onSelect={handleFileSelect}
+      />
     </div>
   );
 };

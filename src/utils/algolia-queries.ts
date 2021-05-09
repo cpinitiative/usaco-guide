@@ -1,4 +1,9 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
+import {
+  AlgoliaEditorFile,
+  AlgoliaEditorModuleFile,
+  AlgoliaEditorSolutionFile,
+} from '../models/algoliaEditorFile';
 import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
 
@@ -50,6 +55,38 @@ const problemsQuery = `{
           url
           sketch
         }
+        module {
+          frontmatter {
+            id
+            title
+          }
+        }
+      }
+    }
+  }
+}`;
+
+export const filesQuery = `{
+  data: allXdm(filter: {fileAbsolutePath: {regex: "/(content)|(solutions)/"}}) {
+    edges {
+      node {
+        frontmatter {
+          title
+          id
+        }
+        parent {
+          ... on File {
+            relativePath
+            sourceInstanceName
+          }
+        }
+      }
+    }
+  }
+  problems: allProblemInfo {
+    edges {
+      node {
+        uniqueId
         module {
           frontmatter {
             id
@@ -124,6 +161,56 @@ const queries = [
       'problemModules',
       'solution',
     ],
+  },
+  {
+    query: filesQuery,
+    transformer: ({ data }): AlgoliaEditorFile[] => {
+      const moduleFiles: AlgoliaEditorModuleFile[] = [];
+      data.data.edges.forEach(({ node }) => {
+        if (node.parent.sourceInstanceName === 'content') {
+          moduleFiles.push({
+            title: node.frontmatter.title,
+            id: node.frontmatter.id,
+            path: `${node.parent.sourceInstanceName}/${node.parent.relativePath}`,
+          });
+        }
+      });
+      const solutionFiles: AlgoliaEditorSolutionFile[] = [];
+      data.data.edges.forEach(({ node }) => {
+        if (node.parent.sourceInstanceName !== 'solutions') return;
+        const problemInfoObjects = data.problems.edges.filter(
+          x => x.node.uniqueId === node.frontmatter.id
+        );
+        solutionFiles.push({
+          title: node.frontmatter.title,
+          id: node.frontmatter.id,
+          path: `${node.parent.sourceInstanceName}/${node.parent.relativePath}`,
+          problemModules: problemInfoObjects
+            .map(x =>
+              moduleFiles.find(f => f.id === x.node.module?.frontmatter.id)
+            )
+            .filter(x => !!x),
+        });
+      });
+      return [
+        ...moduleFiles.map<
+          { kind: 'module'; objectID: string } & AlgoliaEditorModuleFile
+        >(x => ({
+          ...x,
+          kind: 'module',
+          objectID: x.id,
+        })),
+        ...solutionFiles.map<
+          { kind: 'solution'; objectID: string } & AlgoliaEditorSolutionFile
+        >(x => ({
+          ...x,
+          kind: 'solution',
+          objectID: x.id,
+        })),
+      ];
+    },
+    indexName: process.env.ALGOLIA_INDEX_NAME + '_editorFiles',
+    matchFields: ['kind', 'title', 'id', 'path', 'problemModules'],
   },
 ];
 

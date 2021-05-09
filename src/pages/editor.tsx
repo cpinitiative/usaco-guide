@@ -20,6 +20,7 @@ import { useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import problemsSchema from '../../content/problems.schema.json';
+import { EditorSidebar } from '../components/Editor/EditorSidebar';
 import EditorTabBar from '../components/Editor/EditorTabBar';
 import {
   conf as mdxConf,
@@ -39,6 +40,7 @@ import {
 } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useStickyState from '../hooks/useStickyState';
+import { AlgoliaEditorFile } from '../models/algoliaEditorFile';
 import { ProblemMetadata, PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
 
 const RawMarkdownRenderer = React.lazy(
@@ -226,6 +228,15 @@ export default function EditorPage(props: PageProps) {
     }
   };
 
+  const [files, setFiles] = useState<{ path: string }[]>([]);
+  const handleNewFile = (file: AlgoliaEditorFile) => {
+    console.log('Adding new file', file);
+    setFiles([...files, { path: file.path }]);
+  };
+  const handleOpenFile = (file: { path: string }) => {
+    console.log('Todo: open file', file);
+  };
+
   return (
     <Layout>
       <SEO title="Editor" />
@@ -300,12 +311,6 @@ export default function EditorPage(props: PageProps) {
             )}
           </div>
           <div className="flex items-center">
-            {/*<ButtonGroup*/}
-            {/*  options={['cpp', 'java', 'py']}*/}
-            {/*  value={userSettings.lang}*/}
-            {/*  onChange={v => userSettings.setLang(v)}*/}
-            {/*  labelMap={LANGUAGE_LABELS}*/}
-            {/*/>*/}
             <nav className="flex space-x-1" aria-label="Tabs">
               {['cpp', 'java', 'py'].map((tab: Language) => (
                 <button
@@ -393,7 +398,12 @@ export default function EditorPage(props: PageProps) {
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div className="flex items-stretch">
-                {/*<EditorSidebar className="h-full flex-shrink-0" />*/}
+                <EditorSidebar
+                  className="h-full flex-shrink-0"
+                  files={files}
+                  onOpenFile={handleOpenFile}
+                  onNewFile={handleNewFile}
+                />
                 <div className="h-full tw-forms-disable-all-descendants flex-1 w-0">
                   <EditorTabBar
                     tabs={[
