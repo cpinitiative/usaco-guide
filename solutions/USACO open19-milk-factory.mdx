@@ -158,9 +158,11 @@ int main(){
 
 ## Solution 2
 
+This solution follows the logic outlined in the official solution.
+
 ## Implementation
 
-**Time Complexity**: $\mathcal{O}(N^2)$
+**Time Complexity**: $\mathcal{O}(N)$
 
 <LanguageSection>
 <PySection>
@@ -171,29 +173,33 @@ data = open('factory.in').read().strip().split('\n')
 n = int(data[0])
 conveyer_belts = [list(map(int, data[i + 1].split(' '))) for i in range(n - 1)]
 
-
 # Create two lists holding all stations with incoming conveyer belts
 # Create another list holding all stations with outgoing conveyer belts
 outgoing = []
 incoming = []
 
 for i in range(n - 1):
-		outgoing.append(conveyer_belts[i][0])
-		incoming.append(conveyer_belts[i][1])
+    outgoing.append(conveyer_belts[i][0])
+    incoming.append(conveyer_belts[i][1])
+
+outgoing_locations = [0]*max(outgoing)
+
+for i in range(n-1):
+    outgoing_locations[outgoing[i] - 1] += 1
 
 ans = -1
 counter = 0
 
 # Find out which station does not have any outgoing conveyer belts
 for i in range(n - 1):
-		if incoming[i] not in outgoing:
-				if incoming[i] != ans:
-						ans = incoming[i]
-						counter += 1
+    if outgoing_locations[incoming[i] - 1] == 0:
+        if incoming[i] != ans:
+            ans = incoming[i]
+            counter += 1
 
-# Make sure there is only one station with no outgoing belts
+# Make sure their is only one station with no outgoing belts
 if counter > 1:
-		ans = -1
+    ans = -1
 
 # Print the answer on the output file using Python file i/o system
 file_out = open('factory.out', 'w')
