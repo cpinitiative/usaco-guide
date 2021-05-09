@@ -5,8 +5,6 @@ title: Mixing Water
 author: Jesse Choe
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/78116)
-
 <Info title="Constant Time Solution">
 **Note: the $\mathcal{O}(1)$ solution for this problem is provided in the
 [official editorial](https://codeforces.com/blog/entry/78116).**
@@ -43,17 +41,14 @@ double hot_water, cold_water, desired_temp;
 	* 2 * cupsPoured + 1 cups
 */
 
-bool works(int cupsPoured){
-
+bool works(int cupsPoured) {
 	double totalBarrelTemperature = (hot_water * (cupsPoured + 1) + cold_water * (cupsPoured));
 	double totalCupsPoured = (double) (2 * cupsPoured + 1.0);
 	double avgBarrelTemperature = totalBarrelTemperature / totalCupsPoured;
 	return avgBarrelTemperature >= desired_temp;
-
 }
 
-void solve(){
-
+void solve() {
 	/* 
 	   * maximumCups represents the the maximum number of cups such
 	   * that the barrel temperature is greater than desired_temp.
@@ -62,31 +57,20 @@ void solve(){
 	// Binary search on the answer for maximumCups.
 	int left = 0, right = 1e6 + 1, maximumCups = 0;
 
-	while(left <= right){
-
+	while(left <= right) {
 		int mid = left + (right - left) / 2;
-
-		if(works(mid)){
-		
+		if(works(mid)) {
 			maximumCups = mid;
 			left = mid + 1;
-			
 		} else {
-		
 			right = mid - 1;
-			
 		}
-
 	}
 
 	// If it is impossible to find a temperature close to desired_temp, then print 2
-
-	if(maximumCups == 1e6 + 1){
-
+	if(maximumCups == 1e6 + 1) {
 		cout << 2 << endl;
-
 	} else {
-
 		/*
 		   * The solution must lie between barrel1 and barrel2 if the total number of cups
 		   * is odd. barrel1 represents the barrel with an average temperature slightly
@@ -94,7 +78,6 @@ void solve(){
 		   * temperature slightly less than desired_temp. These two barrels will be the
 		   * closest to desired_temp.
 		*/
-
 		double totalBarrel1 = (hot_water * (maximumCups + 1) + cold_water * (maximumCups));
 		double totalBarrel2 = (hot_water * (maximumCups + 2) + cold_water * (maximumCups + 1));
 		double barrel1Cups = (double)(2 * maximumCups + 1.0);
@@ -106,23 +89,20 @@ void solve(){
 		double minAbsDifference = min(abs(desired_temp - avgBarrel1),
 		min(abs(desired_temp - avgBarrel2),
 		abs(desired_temp - hot_cold_avg)));
-
+		
 		/*
 		   * If the minimum absolute difference from desired_temp is
 		   * hot_cold_avg, then it suffices to print 2. Otherwise, print
 		   * the barrel with the minimum absolute difference from desired_temp.
 		*/
-
-		if(minAbsDifference == abs(desired_temp - hot_cold_avg)){
+		if(minAbsDifference == abs(desired_temp - hot_cold_avg)) {
 			cout << 2 << endl;
-		} else if(minAbsDifference == abs(desired_temp - avgBarrel1)){
+		} else if(minAbsDifference == abs(desired_temp - avgBarrel1)) {
 			cout << 2 * maximumCups + 1 << endl;
 		} else {
 			cout << 2 * maximumCups + 3 << endl;
 		}
-
 	}
-
 }
 
 int main(){
