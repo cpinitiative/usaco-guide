@@ -2,7 +2,7 @@
 id: usaco-940
 source: USACO Bronze 2019 December
 title: Milk Factory
-author: Mrinall Umasudhan and Jesse Choe
+author: Mrinall Umasudhan, Jesse Choe, and Ananth Kashyap
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
@@ -173,28 +173,20 @@ data = open('factory.in').read().strip().split('\n')
 n = int(data[0])
 conveyer_belts = [list(map(int, data[i + 1].split(' '))) for i in range(n - 1)]
 
-# Create two lists holding all stations with incoming conveyer belts
-# Create another list holding all stations with outgoing conveyer belts
-outgoing = []
-incoming = []
-
-for i in range(n - 1):
-    outgoing.append(conveyer_belts[i][0])
-    incoming.append(conveyer_belts[i][1])
-
+# Create a list holding all factories that have an outgoing conveyer belts
 outgoing_locations = [0]*max(outgoing)
 
 for i in range(n-1):
-    outgoing_locations[outgoing[i] - 1] += 1
+    outgoing_locations[conveyer_belts[i][0] - 1] += 1
 
 ans = -1
 counter = 0
 
 # Find out which station does not have any outgoing conveyer belts
 for i in range(n - 1):
-    if outgoing_locations[incoming[i] - 1] == 0:
-        if incoming[i] != ans:
-            ans = incoming[i]
+    if outgoing_locations[conveyer_belts[i][1] - 1] == 0:
+        if conveyer_belts[i][1] != ans:
+            ans = conveyer_belts[i][1]
             counter += 1
 
 # Make sure their is only one station with no outgoing belts
