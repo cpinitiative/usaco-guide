@@ -11,6 +11,7 @@ Thank you to the following companies:
   hosting & continuous deployment
 - [Algolia](https://algolia.com/), search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
+- [Chromatic](https://www.chromatic.com/), visual testing
 - And [more](docs/Companies.md)!
 
 ## Documentation + Contributing
@@ -68,6 +69,8 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
+- [Storybook](https://storybook.js.org/) and
+  [Chromatic](https://www.chromatic.com/)
 - MDX (JSX in Markdown) with XDM compiler
 - Firebase
 - Deployed with

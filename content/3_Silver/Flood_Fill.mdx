@@ -8,8 +8,6 @@ description: 'Finding connected components in a graph represented by a grid.'
 frequency: 3
 ---
 
-<!-- Mooyo Mooyo: Not a sorting problem, but you can use sorting to simulate gravity. - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same. -->
-
 ## Resources
 
 <Resources>
@@ -53,7 +51,7 @@ connected cells with the same number.
 
 </center>
 
-Let's start the floodfill from the top-left cell. The color scheme will be red
+Let's start the flood fill from the top-left cell. The color scheme will be red
 for the node currently being processed, blue for nodes already visited, and
 uncolored for nodes not yet visited.
 
@@ -364,18 +362,18 @@ for _ in range(row_num):
 	 />
 </Resources> -->
 
-When doing floodfill, we will maintain an $N\times M$ array of booleans to keep
+When doing flood fill, we will maintain an $N\times M$ array of booleans to keep
 track of which squares have been visited, and a global variable to maintain the
 size of the current component we are visiting. Make sure to store the grid, the
 visited array, dimensions, and the current size variable globally.
 
 This means that we want to recursively call the search function for the squares
 above, below, and to the left and right of our current square. The algorithm to
-find the size of a connected component in a grid using floodfill is as follows
+find the size of a connected component in a grid using flood fill is as follows
 (we’ll also maintain a 2D visited array).
 
 The code below shows the global/static variables we need to maintain while doing
-floodfill, and the floodfill algorithm itself.
+flood fill and the flood fill algorithm itself:
 
 <LanguageSection>
 
@@ -400,7 +398,7 @@ void floodfill(int r, int c, int color){
 	visited[r][c] = true; // mark current square as visited
 	curr_size++; // increment the size for each square we visit
 
-	// recursively call floodfill for neighboring squares
+	// recursively call flood fill for neighboring squares
 	floodfill(r, c + 1, color);
 	floodfill(r, c - 1, color);
 	floodfill(r - 1, c, color);
@@ -416,7 +414,7 @@ int main() {
 			if (!visited[i][j]) {
 				curr_size = 0;
 				/*
-				 * start a floodfill if the square hasn't already been visited,
+				 * start a flood fill if the square hasn't already been visited,
 				 * and then store or otherwise use the component size
 				 * for whatever it's needed for
 				 */
@@ -449,7 +447,7 @@ public class Floodfill {
 				if(!visited[r][c]){
 					currSize = 0;
 					/*
-					 * start a floodfill if the square hasn't already been visited,
+					 * start a flood fill if the square hasn't already been visited,
 					 * and then store or otherwise use the component size
 					 * for whatever it's needed for
 					 */
@@ -469,7 +467,7 @@ public class Floodfill {
 		visited[r][c] = true; // mark current square as visited
 		currSize++; // increment the size for each square we visit
 
-		// recursively call floodfill for neighboring squares
+		// recursively call flood fill for neighboring squares
 		floodfill(r, c + 1, color);
 		floodfill(r, c - 1, color);
 		floodfill(r - 1, c, color);
@@ -507,7 +505,7 @@ def floodfill(r: int, c: int, color: int):
 	visited[r][c] = True  # mark current square as visited
 	curr_size += 1  # increment the size for each square we visit
 
-	# recursively call floodfill for neighboring squares
+	# recursively call flood fill for neighboring squares
 	floodfill(r, c + 1, color)
 	floodfill(r, c - 1, color)
 	floodfill(r - 1, c, color)
@@ -523,7 +521,7 @@ for r in range(row_num):
 		if not visited[r][c]:
 			curr_size = 0
 			"""
-			start a floodfill if the square hasn't already been visited,
+			start a flood fill if the square hasn't already been visited,
 			and then store or otherwise use the component size
 			for whatever it's needed for
 			"""
@@ -542,11 +540,18 @@ for r in range(row_num):
 
 <Warning>
 
-Recursive implementations of floodfill can sometimes lead to a stack overflow.
-To avoid that, we can use a stack data structure in an iterative implementation
-as follows:
+Recursive implementations of flood fill sometimes lead to
+
+- _Stack overflow_ if you didn't include the appropriate compiler options for
+  [adjusting the stack size](/general/cpp-command#adjusting-stack-size)
+- _Memory limit exceeded_ if you run the recursive implementation on a _really_
+  big grid (i.e., running the above code on a $4000\times 4000$ grid may exceed
+  256 MB)
+  - Non-recursive implementations generally use less memory than recursive ones.
 
 </Warning>
+
+A non-recursive implementation of flood fill follows:
 
 <LanguageSection>
 
@@ -560,8 +565,8 @@ as follows:
 using namespace std;
 
 const int MAX_N = 2500;
-const int R_CHANGE[] = {0, 1, 0, -1};
-const int C_CHANGE[] = {1, 0, -1, 0};
+const int R_CHANGE[]{0, 1, 0, -1};
+const int C_CHANGE[]{1, 0, -1, 0};
 
 int row_num;
 int col_num;

@@ -10,6 +10,8 @@ to the following companies for generously providing discounted or free services:
   hosting & continuous deployment
 - [Algolia](https://algolia.com/), free search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), hosting credits
+- [Chromatic](https://www.chromatic.com/) for providing the visual testing
+  platform that helps us review UI changes and catch visual regressions
 - [Google for Nonprofits](https://google.com/)
   - [G Suite](https://workspace.google.com/) Nonprofit Plan
   - Google Ad Grant
