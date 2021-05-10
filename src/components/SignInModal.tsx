@@ -146,7 +146,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                   {/*  >*/}
                   {/*    <g*/}
                   {/*      stroke="none"*/}
-                  {/*      strokeWidth="1"*/}e{/*      fill="none"*/}
+                  {/*      strokeWidth="1" fill="none"*/}
                   {/*      fillRule="evenodd"*/}
                   {/*    >*/}
                   {/*      <g transform="translate(-332.000000, -120.000000)">*/}
