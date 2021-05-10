@@ -1,0 +1,95 @@
+---
+id: cses-1670
+source: CSES
+title: Swap Game
+author: Maggie Liu
+---
+
+## Explanation
+
+Since there are only $9!$ states the grid can be in, we can do BFS to find the
+number of moves it takes to reach the sorted grid. We represent
+each $\texttt{State}$ as the $\texttt{grid}$: an array of $9$ numbers, and the
+$\texttt{dist}$: the number of moves needed to reach this $\texttt{grid}$.
+
+For each $\texttt{State}$, we can swap two horizontally adjacent squares or two
+vertically adjacent squares. If we haven't processed this new grid, we can push
+it into the queue and mark it as visited in the $\texttt{vis}$ array. When we
+reach the sorted grid, we print the $\texttt{dist}$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2!)$, where $N$ is the side length of the
+grid
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <array>
+#include <algorithm>
+using namespace std;
+
+struct State {
+	array<int, 9> grid;
+	int dist;
+};
+
+bool vis[9][9][9][9][9][9][9][9][9];
+int main()
+{
+	array<int, 9> grid;
+	for (int i = 0; i < 9; i++)
+	{
+		cin >> grid[i];
+		grid[i]--;
+	}
+	queue<State> q;
+	q.push({grid, 0});
+	while (!q.empty())
+	{
+		auto [g, dist] = q.front();
+		q.pop();
+		// if the grid is sorted, we can print the number of moves
+		if (is_sorted(g.begin(), g.end()))
+		{
+			cout << dist << endl;
+			return 0;
+		}
+		// swap two horizontally adjacent squares
+		for (int i = 0; i < 8; i++)
+		{
+			if (i % 3 == 2)
+			{
+				continue;
+			}
+			swap(g[i], g[i + 1]);
+			if (!vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]])
+			{
+				q.push({g, dist + 1});
+				vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]] = true;
+			}
+			swap(g[i], g[i + 1]);
+		}
+		// swap two vertically adjacent squares
+		for (int i = 0; i < 6; i++)
+		{
+			swap(g[i], g[i + 3]);
+			if (!vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]])
+			{
+				q.push({g, dist + 1});
+				vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]] = true;
+			}
+			swap(g[i], g[i + 3]);
+		}
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
