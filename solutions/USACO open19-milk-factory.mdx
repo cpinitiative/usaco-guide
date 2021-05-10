@@ -177,21 +177,21 @@ conveyer_belts = [list(map(int, data[i + 1].split(' '))) for i in range(n - 1)]
 outgoing_locations = [0]*max(outgoing)
 
 for i in range(n-1):
-    outgoing_locations[conveyer_belts[i][0] - 1] += 1
+	outgoing_locations[conveyer_belts[i][0] - 1] += 1
 
 ans = -1
 counter = 0
 
 # Find out which station does not have any outgoing conveyer belts
 for i in range(n - 1):
-    if outgoing_locations[conveyer_belts[i][1] - 1] == 0:
-        if conveyer_belts[i][1] != ans:
-            ans = conveyer_belts[i][1]
-            counter += 1
+	if outgoing_locations[conveyer_belts[i][1] - 1] == 0:
+		if conveyer_belts[i][1] != ans:
+			ans = conveyer_belts[i][1]
+			counter += 1
 
 # Make sure their is only one station with no outgoing belts
 if counter > 1:
-    ans = -1
+	ans = -1
 
 # Print the answer on the output file using Python file i/o system
 file_out = open('factory.out', 'w')
