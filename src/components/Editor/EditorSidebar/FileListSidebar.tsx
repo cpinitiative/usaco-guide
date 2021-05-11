@@ -1,3 +1,4 @@
+import { XIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { AlgoliaEditorFile } from '../../../models/algoliaEditorFile';
@@ -8,8 +9,9 @@ export const FileListSidebar: React.FC<{
   activeFile: { path: string } | null;
   files: string[];
   onOpenFile: (filePath: string) => void;
+  onCloseFile: (filePath: string) => void;
   onNewFile: (file: AlgoliaEditorFile) => void;
-}> = ({ className, files, activeFile, onOpenFile, onNewFile }) => {
+}> = ({ className, files, activeFile, onOpenFile, onCloseFile, onNewFile }) => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
 
   const handleFileSelect = (file: AlgoliaEditorFile) => {
@@ -42,16 +44,23 @@ export const FileListSidebar: React.FC<{
       <div className="h-1" />
       {files.map(file => (
         <div
-          className={`px-4 py-1 group hover:bg-gray-800 transition${
+          className={`flex items-center hover:bg-gray-800 text-gray-400 hover:text-gray-300 transition${
             activeFile?.path === file ? ' bg-gray-900' : ''
           }`}
           key={file}
         >
-          <div className="cursor-pointer" onClick={() => onOpenFile(file)}>
-            <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
-              {file}
-            </span>
+          <div
+            className="cursor-pointer flex-1 min-w-0 pl-4 py-1 break-all text-sm"
+            onClick={() => onOpenFile(file)}
+          >
+            {file}
           </div>
+          <button
+            className="flex-shrink-0 focus:outline-none py-1 px-2 text-gray-600 hover:text-gray-300 transition"
+            onClick={() => onCloseFile(file)}
+          >
+            <XIcon className="h-4 w-4" />
+          </button>
         </div>
       ))}
       <div className="h-1" />

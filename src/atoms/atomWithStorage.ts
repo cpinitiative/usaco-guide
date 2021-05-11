@@ -15,7 +15,11 @@ const defaultStorage: Storage<unknown> = {
     return JSON.parse(storedValue);
   },
   setItem: (key, newValue) => {
-    localStorage.setItem(key, JSON.stringify(newValue));
+    if (newValue === null) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(newValue));
+    }
   },
 };
 

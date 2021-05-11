@@ -61,6 +61,18 @@ export const createNewFileAtom = atom(
   }
 );
 
+export const closeFileAtom = atom(null, (get, set, filePath: string) => {
+  set(
+    filesListAtom,
+    get(filesListAtom).filter(file => file !== filePath)
+  );
+  if (get(activeFileAtom).path === filePath) {
+    const remainingFiles = get(filesListAtom);
+    set(activeFileAtom, remainingFiles.length > 0 ? remainingFiles[0] : null);
+  }
+  set(filesFamily(filePath), null);
+});
+
 const baseMonacoEditorInstanceAtom = atom({ monaco: null });
 export const monacoEditorInstanceAtom = atom(
   get => get(baseMonacoEditorInstanceAtom),
