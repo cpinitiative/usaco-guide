@@ -22,8 +22,6 @@ export const EditorOutput = (): JSX.Element => {
 
   const markdown: string | null = activeFile?.markdown;
   const problems: string | null = activeFile?.problems;
-  const setProblems = x =>
-    activeFile && saveFile({ ...activeFile, problems: x });
 
   const [
     markdownProblemListsProviderValue,
@@ -79,7 +77,13 @@ export const EditorOutput = (): JSX.Element => {
       parser: 'json',
       plugins: [babelParser],
     });
-    setProblems(formattedNewContent);
+    saveFile({
+      path: activeFile.path,
+      update: prev => ({
+        ...prev,
+        problems: formattedNewContent,
+      }),
+    });
   };
 
   return (

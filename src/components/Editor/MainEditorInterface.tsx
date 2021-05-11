@@ -25,11 +25,45 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
     activeFile && activeFile.path.startsWith('solutions');
 
   const markdown: string | null = activeFile?.markdown;
-  const setMarkdown = x =>
-    activeFile && saveFile({ ...activeFile, markdown: x });
+  const setMarkdown = (x: string | ((prev: string) => string)) => {
+    if (typeof x === 'string') {
+      saveFile({
+        path: activeFile.path,
+        update: prev => ({
+          ...prev,
+          markdown: x,
+        }),
+      });
+    } else {
+      saveFile({
+        path: activeFile.path,
+        update: prev => ({
+          ...prev,
+          markdown: x(prev.markdown),
+        }),
+      });
+    }
+  };
   const problems: string | null = activeFile?.problems;
-  const setProblems = x =>
-    activeFile && saveFile({ ...activeFile, problems: x });
+  const setProblems = (x: string | ((prev: string) => string)) => {
+    if (typeof x === 'string') {
+      saveFile({
+        path: activeFile.path,
+        update: prev => ({
+          ...prev,
+          problems: x,
+        }),
+      });
+    } else {
+      saveFile({
+        path: activeFile.path,
+        update: prev => ({
+          ...prev,
+          problems: x(prev.problems),
+        }),
+      });
+    }
+  };
 
   const handleFormatCode = () => {
     if (tab == 'content') {

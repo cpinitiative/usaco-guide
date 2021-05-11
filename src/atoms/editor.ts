@@ -20,9 +20,26 @@ export const filesFamily = atomFamily((path: string) => {
 /**
  * Saves a file atom based on its path as its identifier.
  */
-export const saveFileAtom = atom<null, EditorFile>(null, (get, set, file) => {
-  set(filesFamily(file.path), file);
-});
+export const saveFileAtom = atom(
+  null,
+  (
+    get,
+    set,
+    update:
+      | {
+          path: string;
+          update: (f: EditorFile) => EditorFile;
+        }
+      | EditorFile
+  ) => {
+    const file = update.hasOwnProperty('update')
+      ? (update as { update: (f: EditorFile) => EditorFile }).update(
+          get(filesFamily(update.path))
+        )
+      : (update as EditorFile);
+    set(filesFamily(file.path), file);
+  }
+);
 
 const baseActiveFileAtom = atomWithStorage(
   'guide:editor:activeFile',
