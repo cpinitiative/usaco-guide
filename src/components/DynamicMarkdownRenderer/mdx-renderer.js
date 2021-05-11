@@ -11,9 +11,17 @@ import customRehypeKatex from '../../mdx-plugins/rehype-math';
 import rehypeSnippets from '../../mdx-plugins/rehype-snippets';
 
 // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
-const compile = async markdown => {
+const compile = async ({ markdown, problems }) => {
   try {
     console.time('compile');
+
+    const parsedProblems = JSON.parse(problems || '{}');
+    const problemsList = Object.keys(parsedProblems)
+      .filter(key => key !== 'MODULE_ID')
+      .map(key => ({
+        listId: key,
+        problems: parsedProblems[key],
+      }));
 
     const tableOfContents = {};
     const compiledResult = await xdmCompile(
@@ -51,6 +59,7 @@ const compile = async markdown => {
 
     postMessage({
       compiledResult: code,
+      problemsList,
     });
 
     console.timeEnd('compile');
@@ -65,6 +74,5 @@ const compile = async markdown => {
 };
 
 onmessage = e => {
-  const markdown = e.data.markdown || '';
-  compile(markdown);
+  compile(e.data);
 };

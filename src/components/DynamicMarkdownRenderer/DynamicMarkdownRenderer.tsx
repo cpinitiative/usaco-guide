@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 // eslint-disable-next-line
 // @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
@@ -7,7 +8,6 @@ import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 // @ts-ignore
 import Worker from 'worker-loader!./mdx-renderer.js';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
-import { getProblemInfo } from '../../models/problem';
 import { components } from '../markdown/MDXComponents';
 
 class ErrorBoundary extends React.Component {
@@ -55,39 +55,51 @@ export default function DynamicMarkdownRenderer({
   problems: string;
 }): JSX.Element {
   const [mdxContent, setMdxContent] = useState(null);
-  const [markdownError, setMarkdownError] = useState(null);
-  const [problemError, setProblemError] = useState(null);
+  const [
+    markdownProblemListsProviderValue,
+    setMarkdownProblemListsProviderValue,
+  ] = useState([]);
+  const [error, setError] = useState(null);
   const workerRef = useRef(null);
-  const currentlyCompilingRef = useRef<string>(null);
-  const waitingToBeCompiledRef = useRef<string>(null);
+  const currentlyCompilingRef = useRef<{
+    markdown: string;
+    problems: string;
+  }>(null);
+  const waitingToBeCompiledRef = useRef<{
+    markdown: string;
+    problems: string;
+  }>(null);
 
   const requestMarkdownCompilation = () => {
     if (workerRef.current === null) return;
     if (currentlyCompilingRef.current !== null) return;
-    const markdown = waitingToBeCompiledRef.current;
-    if (markdown === null) return;
-    currentlyCompilingRef.current = markdown;
+    const data = waitingToBeCompiledRef.current;
+    if (data === null) return;
+    currentlyCompilingRef.current = data;
     waitingToBeCompiledRef.current = null;
-    workerRef.current.postMessage({ markdown });
+    workerRef.current.postMessage(data);
   };
 
   React.useEffect(() => {
     const worker = new Worker();
     worker.onmessage = ({ data }) => {
       currentlyCompilingRef.current = null;
-      if (data.compiledResult) {
-        setMdxContent(
-          new Function(data.compiledResult)({
-            Fragment,
-            jsx,
-            jsxs,
-          }).default({ components })
-        );
-        setMarkdownError(null);
-      } else {
-        setMarkdownError(data.error);
-        setMdxContent(null);
-      }
+      ReactDOM.unstable_batchedUpdates(() => {
+        if (data.compiledResult) {
+          setMdxContent(
+            new Function(data.compiledResult)({
+              Fragment,
+              jsx,
+              jsxs,
+            }).default({ components })
+          );
+          setMarkdownProblemListsProviderValue(data.problemsList);
+          setError(null);
+        } else {
+          setError(data.error);
+          setMdxContent(null);
+        }
+      });
       requestMarkdownCompilation();
     };
     workerRef.current = worker;
@@ -96,55 +108,20 @@ export default function DynamicMarkdownRenderer({
   }, []);
 
   useEffect(() => {
-    waitingToBeCompiledRef.current = markdown;
+    waitingToBeCompiledRef.current = {
+      markdown: markdown ?? '',
+      problems,
+    };
     requestMarkdownCompilation();
-  }, [markdown]);
+  }, [markdown, problems]);
 
-  const [
-    markdownProblemListsProviderValue,
-    setMarkdownProblemListsProviderValue,
-  ] = useState([]);
-  useEffect(() => {
-    try {
-      const parsedProblems = JSON.parse(problems || '{}');
-      const problemsList = Object.keys(parsedProblems)
-        .filter(key => key !== 'MODULE_ID')
-        .map(key => ({
-          listId: key,
-          problems: parsedProblems[key].map(problemMetadata =>
-            getProblemInfo(problemMetadata)
-          ),
-        }));
-      setMarkdownProblemListsProviderValue(problemsList);
-      setProblemError(null);
-    } catch (e) {
-      setProblemError(e);
-    }
-  }, [problems]);
-
-  if (markdownError) {
-    console.error(markdownError);
+  if (error) {
+    console.error(error);
     return (
       <div>
         An error occurred:
         <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
-          {markdownError.message || markdownError.toString()}
-        </p>
-        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
-          This error has also been logged to the console.
-        </p>
-      </div>
-    );
-  }
-
-  if (problemError) {
-    console.error(problemError);
-    return (
-      <div>
-        An error occurred while generating the problem solution info. This
-        typically indicates an error in the problems JSON file:
-        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
-          {problemError.toString()}
+          {error.message || error.toString()}
         </p>
         <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
           This error has also been logged to the console.
