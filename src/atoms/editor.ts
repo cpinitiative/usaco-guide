@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { fetchFileContent } from '../components/Editor/editorUtils';
 import { atomWithStorage } from './atomWithStorage';
 
 export type EditorFile = {
@@ -40,4 +41,30 @@ export const activeFileAtom = atom(
 export const filesListAtom = atomWithStorage<string[]>(
   'guide:editor:filesList',
   []
+);
+
+export const createNewFileAtom = atom(
+  null,
+  async (get, set, filePath: string) => {
+    if (get(filesListAtom).find(f => f === filePath)) {
+      set(activeFileAtom, filePath);
+    } else {
+      set(filesListAtom, prev => [...prev, filePath]);
+      const data = await fetchFileContent(filePath);
+      set(saveFileAtom, {
+        path: filePath,
+        markdown: data.markdown,
+        problems: data.problems,
+      });
+      set(activeFileAtom, filePath);
+    }
+  }
+);
+
+const baseMonacoEditorInstanceAtom = atom({ monaco: null });
+export const monacoEditorInstanceAtom = atom(
+  get => get(baseMonacoEditorInstanceAtom),
+  (get, _set, val) => {
+    get(baseMonacoEditorInstanceAtom).monaco = val;
+  }
 );

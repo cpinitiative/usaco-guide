@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { AlgoliaEditorFile } from '../../models/algoliaEditorFile';
-import { EditorFileModal } from './EditorFileModal';
+import { AlgoliaEditorFile } from '../../../models/algoliaEditorFile';
+import { EditorFileModal } from '../EditorFileModal';
 
-export const EditorSidebar: React.FC<{
+export const FileListSidebar: React.FC<{
   className?: string;
   activeFile: { path: string } | null;
   files: string[];
