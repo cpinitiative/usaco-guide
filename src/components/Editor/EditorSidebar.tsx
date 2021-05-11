@@ -6,8 +6,8 @@ import { EditorFileModal } from './EditorFileModal';
 export const EditorSidebar: React.FC<{
   className?: string;
   activeFile: { path: string } | null;
-  files: { path: string }[];
-  onOpenFile: (file: { path: string }) => void;
+  files: string[];
+  onOpenFile: (filePath: string) => void;
   onNewFile: (file: AlgoliaEditorFile) => void;
 }> = ({ className, files, activeFile, onOpenFile, onNewFile }) => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
@@ -43,13 +43,13 @@ export const EditorSidebar: React.FC<{
       {files.map(file => (
         <div
           className={`px-4 py-1 group hover:bg-gray-800 transition${
-            activeFile?.path === file.path ? ' bg-gray-900' : ''
+            activeFile?.path === file ? ' bg-gray-900' : ''
           }`}
-          key={file.path}
+          key={file}
         >
           <div className="cursor-pointer" onClick={() => onOpenFile(file)}>
             <span className="text-gray-400 group-hover:text-gray-300 text-sm transition">
-              {file.path}
+              {file}
             </span>
           </div>
         </div>
