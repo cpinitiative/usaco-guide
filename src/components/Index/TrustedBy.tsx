@@ -1,5 +1,4 @@
 import * as React from 'react';
-import useFirebase from '../../hooks/useFirebase';
 import { useEffect, useState } from 'react';
 
 export default function TrustedBy() {

@@ -1,11 +1,13 @@
+// todo: switch to https://github.com/react-syntax-highlighter/react-syntax-highlighter
+
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import * as React from 'react';
-import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
-import Prism from './SyntaxHighlighting/prism';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
+import { SpoilerContext } from '../Spoiler';
+import Highlight from './SyntaxHighlighting/Highlight';
+import Prism from './SyntaxHighlighting/prism';
 
 const Line = styled.div`
   display: table-row;
@@ -53,10 +55,12 @@ const CodeSnipButton = ({
   snipID,
   showSnip,
   onShowSnipChange,
+  buttonDir,
 }: {
   snipID: number;
   showSnip: boolean;
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
+  buttonDir: 'Up' | 'Down' | 'Left' | 'Right';
 }) => {
   return (
     <CodeSnipButtonIcon
@@ -65,7 +69,15 @@ const CodeSnipButton = ({
       stroke="currentColor"
       className={
         'transform transition translate-y-0.5 h-4 cursor-pointer' +
-        (!showSnip ? ' -rotate-90' : '')
+        (buttonDir == 'Up'
+          ? ' rotate-180'
+          : buttonDir == 'Down'
+          ? ''
+          : buttonDir == 'Left'
+          ? ' rotate-90'
+          : buttonDir == 'Right'
+          ? ' -rotate-90'
+          : '')
       }
       onClick={() => onShowSnipChange(snipID, !showSnip)}
     >
@@ -90,17 +102,20 @@ class CodeBlock extends React.Component<
   }
 > {
   codeSnips = [];
+  static contextType = SpoilerContext;
 
   constructor(props) {
     super(props);
+
     let i = 0;
     let prev = -1;
     let prevVal = '';
     let prevIndentation = '';
-    let codeSnipShowDefault = [];
-    for (let line of this.props.children.split('\n')) {
+    const codeSnipShowDefault = [];
+    const code = this.getCode();
+    for (const line of code.split('\n')) {
       if (prev == -1) {
-        const found = line.match(/^(\s*)\/\/BeginCodeSnip{(.*)}/); // BeginCodeSnip{...}
+        const found = line.match(/^(\s*).*?BeginCodeSnip{(.*?)}/); // BeginCodeSnip{...}
         if (found != null) {
           prev = i;
           prevVal = found[2]; // stuff inside curly brackets
@@ -130,13 +145,17 @@ class CodeBlock extends React.Component<
     this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
   }
 
+  getCode() {
+    return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, '');
+  }
+
   setCollapsed(_collapsed) {
     this.setState({ collapsed: _collapsed });
   }
 
   setCodeSnipShow(id, val) {
     this.setState(state => {
-      let codeSnipShow = state.codeSnipShow;
+      const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
       return { codeSnipShow: codeSnipShow };
     });
@@ -164,6 +183,7 @@ class CodeBlock extends React.Component<
                     onShowSnipChange={this.setCodeSnipShow}
                     snipID={curSnip}
                     showSnip={false}
+                    buttonDir={'Right'}
                   />{' '}
                   {/*this.state.codeSnipShow[curSnip] is false*/}
                 </LineSnip>
@@ -190,18 +210,25 @@ class CodeBlock extends React.Component<
       }
 
       //proceed as normal: (show must == true)
+      const isFirst =
+        curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
+      const isLast =
+        curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
       --maxLines;
       return (
         <Line key={i} {...getLineProps({ line, key: i })}>
           <LineNo data-line-number={i + delta} />
-          {curSnip < codeSnips.length &&
-          codeSnips[curSnip].begin < i &&
-          i < codeSnips[curSnip].end ? (
+          {isFirst || isLast ? (
             <LineSnip>
               <CodeSnipButton
                 onShowSnipChange={this.setCodeSnipShow}
                 snipID={curSnip}
                 showSnip={true}
+                buttonDir={
+                  isFirst
+                    ? 'Down'
+                    : 'Up' /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
+                }
               />{' '}
               {/*this.state.codeSnipShow[curSnip] is true*/}
             </LineSnip>
@@ -220,17 +247,23 @@ class CodeBlock extends React.Component<
   }
 
   render() {
-    const children = this.props.children;
+    const code = this.getCode();
     const className = this.props.className;
-    if (className === undefined) {
+    const linesOfCode =
+      code.split('\n').length +
+      1 -
+      this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
+    const isCodeBlockExpandable =
+      !this.context.expandCodeBlock && linesOfCode > 15;
+    const language = className?.replace(/language-/, '');
+    if (!language || language === 'bash') {
       // no styling, just a regular pre tag
       return (
-        <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
-          {children}
+        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
+          {code}
         </pre>
       );
     }
-    const language = className.replace(/language-/, '');
     /*const [codeSnips, setCodeSnips] = useState(
       for(let line of children.trim().split("\n"))
       {
@@ -239,7 +272,7 @@ class CodeBlock extends React.Component<
 
     // console.warn() if line length is > 80. uncomment to enable
     // Warning: Performance will be negatively impacted! Make sure to comment out before pushing
-    // You may want to comment out pages/liveupdate.tsx (see file for instructions) to speed up build times
+    // You may want to comment out pages/editor.tsx (see file for instructions) to speed up build times
     // let tooLong = false;
     // for (let line of children.trim().split("\n")) {
     //   if (line.length > 80) {
@@ -249,12 +282,10 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-
     return (
-      // @ts-ignore
       <Highlight
         Prism={Prism as any}
-        code={children}
+        code={code}
         language={language}
         theme={vsDark}
       >
@@ -262,16 +293,16 @@ class CodeBlock extends React.Component<
           <div className="gatsby-highlight" data-language={language}>
             <pre
               className={
-                '-mx-4 sm:-mx-6 lg:mx-0 lg:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
                 className
               }
               style={{ ...style }}
             >
-              {collapsed && tokens.length > 15
+              {isCodeBlockExpandable && collapsed && tokens.length > 15
                 ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                 : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {tokens.length > 15 && (
+              {isCodeBlockExpandable && tokens.length > 15 && (
                 <div
                   className={
                     (collapsed ? 'h-full' : 'h-12') +
@@ -285,7 +316,7 @@ class CodeBlock extends React.Component<
                       ' absolute inset-x-0 bottom-0 flex items-end justify-center'
                     }
                     style={
-                      collapsed
+                      collapsed && isCodeBlockExpandable
                         ? {
                             background:
                               'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',

@@ -4,95 +4,14 @@ title: 'Disjoint Set Union'
 author: Benjamin Qi, Michael Cao, Andrew Wang
 prerequisites:
   - dfs
-description: 'The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.'
+description:
+  'The Disjoint Set Union (DSU) data structure allows you to add edges to an
+  initially empty graph and test whether two vertices of the graph are
+  connected.'
 frequency: 3
 ---
 
-export const problems = {
-	sample: [
-		new Problem('YS', 'Union Find', 'unionfind', 'Easy', false, ['DSU'], ''),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Road Construction',
-			'1676',
-			'Easy',
-			false,
-			['DSU'],
-			'cses-1676'
-		),
-		new Problem(
-			'Gold',
-			'Closing the Farm',
-			'646',
-			'Easy',
-			false,
-			['DSU'],
-			'Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)'
-		),
-		new Problem('Gold', 'Mootube', '789', 'Easy', true, ['DSU'], 'usaco-789'),
-		new Problem(
-			'Silver',
-			'Wormhole Sort',
-			'992',
-			'Easy',
-			true,
-			['DSU'],
-			'usaco-992'
-		),
-		new Problem('Gold', 'Moocast', '669', 'Easy', false, ['DSU'], 'usaco-669'),
-		new Problem(
-			'CSA',
-			'Mountain Time',
-			'mountain-time',
-			'Normal',
-			false,
-			['DSU'],
-			''
-		),
-	],
-	harder: [
-		new Problem(
-			'Old Gold',
-			'Ski Course Rating',
-			'384',
-			'Hard',
-			false,
-			['DSU'],
-			''
-		),
-		new Problem(
-			'Baltic OI',
-			'2016 - Park',
-			'https://oj.uz/problem/view/BOI16_park',
-			'Very Hard',
-			false,
-			['DSU'],
-			'baltic-16-park'
-		),
-		new Problem(
-			'Gold',
-			'Favorite Colors',
-			'1042',
-			'Very Hard',
-			true,
-			['DSU'],
-			'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $mathcal{O}(1)$ time.'
-		),
-		new Problem(
-			'Plat',
-			'Valleys',
-			'950',
-			'Very Hard',
-			false,
-			['DSU'],
-			'usaco-950'
-		),
-	],
-};
-
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ## Resources
 
@@ -136,33 +55,34 @@ export const problems = {
 		source="CPC"
 		title="3 - Data Structures"
 		url="03_data_structures"
-	></Resource> -->
+	 /> -->
 
 <Optional title="DSU Complexity Proofs">
 
-- [$\log^* n$](<https://en.wikipedia.org/wiki/Proof_of_O(log*n)_time_complexity_of_union%E2%80%93find>)
-- [$\alpha (m,n)$](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
+- [$\underline{\log^* n}$](<https://en.wikipedia.org/wiki/Proof_of_O(log*n)_time_complexity_of_union%E2%80%93find>)
+- [$\underline{\alpha (m,n)}$](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
 
 </Optional>
 
 ## Implementations
 
-As the implementation is quite simple, you may prefer to use this in place of DFS for computing connected components.
+As the implementation is quite simple, you may prefer to use this in place of
+DFS for computing connected components.
 
 <LanguageSection>
 
 <CPPSection>
 
-Check PAPS for the explanation. `e[x]` contains the negation of the size of $x$'s component if $x$ is the representative of its component, and the parent of $x$ otherwise.
+Check PAPS for the explanation. `e[x]` contains the negation of the size of
+$x$'s component if $x$ is the representative of its component, and the parent of
+$x$ otherwise.
 
 <Resources>
 	<Resource
 		source="Benq (from KACTL)"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
 		title="DSU"
-	>
-		{' '}
-	</Resource>
+	/>
 </Resources>
 
 ```cpp
@@ -184,7 +104,8 @@ struct DSU {
 
 <JavaSection>
 
-This implementation assumes that `disjoint` is an array that starts such that `disjoint[i] = -1` for every $0 <= i < n$.
+This implementation assumes that `disjoint` is an array that starts such that
+`disjoint[i] = -1` for every $0 <= i < n$.
 
 ```java
 public static int disjoint[]; //0 indexed
@@ -221,9 +142,10 @@ public static void union(int u, int v) {
 
 ## Focus Problem Solution
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
-The solution below is more verbose than some of the templates above. Use whichever implementation you are most comfortable with.
+The solution below is more verbose than some of the templates above. Use
+whichever implementation you are most comfortable with.
 
 <LanguageSection>
 <CPPSection>
@@ -336,12 +258,14 @@ public class Main {
 
 ### Standard
 
-You should already be familiar with the DFS / Binary Search solutions to "Wormhole Sort" and "Moocast."
+You should already be familiar with the DFS / Binary Search solutions to
+"Wormhole Sort" and "Moocast."
 
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 ### Harder
 
-Don't worry about solving these if this is the first time you've encountered DSU.
+Don't worry about solving these if this is the first time you've encountered
+DSU.
 
-<Problems problems={problems.harder} />
+<Problems problems="harder" />

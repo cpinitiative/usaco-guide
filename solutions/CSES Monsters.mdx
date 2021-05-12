@@ -9,13 +9,22 @@ author: Isaac Noel
 
 ## Abstract
 
-We want to find if A can reach the edge of the maze without being touched by monsters by BFS. If possible, retrace and print its path.
+We want to find if A can reach the edge of the maze without being touched by
+monsters by BFS. If possible, retrace and print its path.
 
 ## Solution
 
-Because the monsters move optimally, if a monster can reach a location in the maze before A, then A may never move to that spot. Thus, for A to enter a spot, the distance from that location to A must be less than the distance from that location to the nearest monster. Knowing this, we may BFS to find all locations that are visitable by A. This will run in $N^2$ time because each location will be visited a constant amount of times.
+Because the monsters move optimally, if a monster can reach a location in the
+maze before A, then A may never move to that spot. Thus, for A to enter a spot,
+the distance from that location to A must be less than the distance from that
+location to the nearest monster. Knowing this, we may BFS to find all locations
+that are visitable by A. This will run in $N^2$ time because each location will
+be visited a constant amount of times.
 
-While conducting the bfs, store the previous location of every location ("from" array in code below). This way, once A reaches the edge, we can retrace A's path, following the path of previous locations and storing the direction traveled.
+While conducting the bfs, store the previous location of every location ("from"
+array in code below). This way, once A reaches the edge, we can retrace A's
+path, following the path of previous locations and storing the direction
+traveled.
 
 ```cpp
 #include <iostream>
@@ -45,7 +54,7 @@ void retrace(pii node){  // retrace from final node, adding direction from previ
 	if(origin.second == node.second+1) ans.push_back('L');
 	if(origin.second==node.second-1) ans.push_back('R');
 	retrace(origin);
-	
+
 }
 void check(pii origin, pii dest){ // check if the considered destination may be traveled to
 	int pl = paths[origin.first][origin.second];

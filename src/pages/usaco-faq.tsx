@@ -1,16 +1,5 @@
+import { graphql } from 'gatsby';
 import * as React from 'react';
-import { graphql, PageProps } from 'gatsby';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-
-// @ts-ignore
-import FAQ from '../faq.mdx';
-
-import { DiscussionEmbed } from 'disqus-react';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-
 import {
   FacebookIcon,
   FacebookShareButton,
@@ -21,47 +10,51 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share';
-import { components } from '../components/markdown/MDXProvider';
-import { MDXProvider } from '@mdx-js/react';
+import Layout from '../components/layout';
 import { OffsetAnchor } from '../components/markdown/HTMLComponents';
+import { components } from '../components/markdown/MDXComponents';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import FAQ from '../faq.mdx';
+
+const h1 = ({ id, children, ...props }) => (
+  <h1
+    {...props}
+    className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis "
+  >
+    <OffsetAnchor id={id} />
+    {children}
+  </h1>
+);
+const h2 = ({ id, children, ...props }) => (
+  <h2
+    className="leading-tight text-2xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis relative"
+    {...props}
+  >
+    <OffsetAnchor id={id} />
+    {children}
+  </h2>
+);
+const h3 = ({ id, children, ...props }) => (
+  <h3 {...props} className="leading-snug text-xl font-semibold mb-4 mt-8">
+    <OffsetAnchor id={id} />
+    {children}
+  </h3>
+);
 
 const customComponents = {
   ...components,
-
-  h1: ({ id, children, ...props }) => (
-    <h1
-      {...props}
-      className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis "
-    >
-      <OffsetAnchor id={id} />
-      {children}
-    </h1>
-  ),
-  h2: ({ id, children, ...props }) => (
-    <h2
-      className="leading-tight text-2xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis relative"
-      {...props}
-    >
-      <OffsetAnchor id={id} />
-      {children}
-    </h2>
-  ),
-  h3: ({ id, children, ...props }) => (
-    <h3 {...props} className="leading-snug text-xl font-semibold mb-4 mt-8">
-      <OffsetAnchor id={id} />
-      {children}
-    </h3>
-  ),
+  h1,
+  h2,
+  h3,
 };
 
-export default function USACOFAQPage(props: PageProps) {
-  const { darkMode } = useContext(UserDataContext);
-
+export default function USACOFAQPage(props: any) {
   const shareURL = 'https://usaco.guide/usaco-faq';
 
   const handleShare = platform => {
-    if (window.ga) {
-      window.ga('send', 'event', 'share', 'usaco-faq', platform);
+    if ((window as any).ga) {
+      (window as any).ga('send', 'event', 'share', 'usaco-faq', platform);
     }
   };
 
@@ -200,9 +193,7 @@ export default function USACOFAQPage(props: PageProps) {
       <div className="px-4 sm:px-6 lg:px-8 my-12 sm:my-16">
         <div className="max-w-3xl mx-auto">
           <div className="markdown">
-            <MDXProvider components={customComponents}>
-              <FAQ />
-            </MDXProvider>
+            <FAQ components={customComponents} />
           </div>
         </div>
       </div>

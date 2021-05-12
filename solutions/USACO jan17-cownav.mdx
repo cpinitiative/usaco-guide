@@ -5,13 +5,22 @@ title: Cow Navigation
 author: Michael Cao
 ---
 
-In this problem, Bessie stands on a grid and wants to go from the lower left corner to upper-right corner in as few moves as possible. An initial idea could be to model the grid as a graph, where adjacent cells are connected by edges, and run a BFS to find the shortest path.
+In this problem, Bessie stands on a grid and wants to go from the lower left
+corner to upper-right corner in as few moves as possible. An initial idea could
+be to model the grid as a graph, where adjacent cells are connected by edges,
+and run a BFS to find the shortest path.
 
-However, two additional constriants play a role in this problem: Bessie must be able to reach the destination regardless of which direction she starts in, and she can only move in the direction she is facing.
+However, two additional constraints play a role in this problem: Bessie must be
+able to reach the destination regardless of which direction she starts in, and
+she can only move in the direction she is facing.
 
-Let's imagine now that there are two cows standing on the cell $(1, 1)$, and both of them move the same way on each operation. Since $N \leq 20$, we can modify the original graph to support this new problem. Let's create a new graph $G'$ as follows:
+Let's imagine now that there are two cows standing on the cell $(1, 1)$, and
+both of them move the same way on each operation. Since $N \leq 20$, we can
+modify the original graph to support this new problem. Let's create a new graph
+$G'$ as follows:
 
-For each pair of cells in the grid, $(x, y)$ and $(x_2, y_2)$, add $16$ <!-- wow that's a lot --> nodes in the graph storing six parameters each:
+For each pair of cells in the grid, $(x, y)$ and $(x_2, y_2)$, add $16$ nodes in
+the graph storing six parameters each:
 
 - $x$ coordinate of cow $a$
 - $y$ coordinate of cow $a$
@@ -22,13 +31,18 @@ For each pair of cells in the grid, $(x, y)$ and $(x_2, y_2)$, add $16$ <!-- wow
 
 for all $4 ^ 2$ directions each cow could be facing.
 
-Given this new graph, we add edges between two "states" which are reachable from each other. For example, if we apply the "turn left" operation, we add an edge to the state where both cows directions turn left.
+Given this new graph, we add edges between two "states" which are reachable from
+each other. For example, if we apply the "turn left" operation, we add an edge
+to the state where both cows directions turn left.
 
-On this new graph, we can directly run a BFS, and retrieve the answer at the state $\{N, N, N, N, x, y\}$ where $x$ and $y$ represent directions.
+On this new graph, we can directly run a BFS, and retrieve the answer at the
+state $\{N, N, N, N, x, y\}$ where $x$ and $y$ represent directions.
 
 <Warning>
 
-Don't forget that once Bessie reaches the goal, she will ignore further commands. In the modified problem, if one of the two cows is at the goal, stop applying commands to her.
+Don't forget that once Bessie reaches the goal, she will ignore further
+commands. In the modified problem, if one of the two cows is at the goal, stop
+applying commands to her.
 
 </Warning>
 
@@ -38,28 +52,14 @@ Don't forget that once Bessie reaches the goal, she will ignore further commands
 
 ### Implementation
 
-
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
 //created by Oleksandr Gorpynich
-#pragma GCC optimize("O2")
-#include <fstream>
-#include <string>
-#include <iostream>
-#include <bitset>
-#include <math.h>
-#include <string>
-#include <algorithm>
-#include <assert.h>
 #include<bits/stdc++.h>
-#include <vector>
-#include <queue>
-#include<stdio.h>
-#include<ctype.h>
-#define ll long long
+using ll = long long;
 using namespace std;
 int n;
 struct state{

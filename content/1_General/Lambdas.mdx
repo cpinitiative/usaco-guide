@@ -1,7 +1,7 @@
 ---
 id: lambda
 title: (Optional) C++ - Lambda Expressions
-author: Benjamin Qi
+author: Benjamin Qi, Dong Liu
 description: 'Defining anonymous function objects.'
 ---
 
@@ -20,17 +20,17 @@ description: 'Defining anonymous function objects.'
 		url="http://www.umich.edu/~eecs381/handouts/Lambda.pdf"
 		title="Using C++ Lambdas"
 		starred
-	></Resource>
+	 />
 	<Resource
 		source="SO"
 		url="https://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11"
 		title="What is a lambda expression in C++11?"
-	></Resource>
+	 />
 	<Resource
 		source="Microsoft"
 		url="https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019"
 		title="Lambda Expressions in C++"
-	></Resource>
+	 />
 </Resources>
 
 Anything more beginner-friendly?
@@ -42,15 +42,17 @@ Anything more beginner-friendly?
 		source="SO"
 		url="https://stackoverflow.com/questions/41121441/type-of-a-lambda-function-using-auto"
 		title="Type of a lambda function using auto?"
-	></Resource>
+	 />
 	<Resource
 		source="SO"
 		url="https://stackoverflow.com/questions/11323811/what-is-meant-by-retain-state-in-c"
 		title="What is meant by 'retain state' in c++?"
-	></Resource>
+	 />
 </Resources>
 
 ## Recursive Lambdas
+
+### With `y_combinator`
 
 <Resources>
 	<Resource
@@ -58,12 +60,12 @@ Anything more beginner-friendly?
 		url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0200r0.html"
 		title="Y Combinator Proposal"
 		starred
-	></Resource>
+	 />
 	<Resource
 		source="RIP Tutorial"
 		url="https://riptutorial.com/cplusplus/example/8508/recursive-lambdas"
 		title="Recursive Lambdas"
-	></Resource>
+	 />
 </Resources>
 
 If we add the following from the link above in C++14:
@@ -102,4 +104,18 @@ int main() {
 }
 ```
 
-Looks like [ecnerwala](https://codeforces.com/contest/1375/submission/86008510) uses these a lot.
+Looks like [ecnerwala](https://codeforces.com/contest/1375/submission/86008510)
+uses these a lot.
+
+### Another way
+
+Change `auto` to `function<return_type(param)>`.
+
+```cpp
+int main() {
+	function<int(int, int)> gcd = [&](int a, int b) {
+		return b == 0 ? a : gcd(b, a % b);
+	};
+	cout << gcd(20, 30) << '\n'; // outputs 10
+}
+```

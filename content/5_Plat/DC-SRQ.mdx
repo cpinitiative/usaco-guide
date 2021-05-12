@@ -2,70 +2,18 @@
 id: DC-SRQ
 title: 'Divide & Conquer - SRQ'
 author: Benjamin Qi, Andi Qu
-description: 'Using Divide & Conquer to answer offline or online range queries on a static array.'
+description:
+  'Using Divide & Conquer to answer offline or online range queries on a static
+  array.'
 frequency: 1
-prerequisites:
-  - tree-euler
 ---
-
-export const problems = {
-	diviSample: [
-		new Problem(
-			'CSES',
-			'Static Range Minimum Queries',
-			'1647',
-			'Very Easy',
-			false,
-			[],
-			''
-		),
-	],
-	general: [
-		new Problem(
-			'JOI',
-			'2014 - Secret',
-			'JOI14_secret',
-			'Easy',
-			false,
-			[],
-			'joi-14-secret'
-		),
-		new Problem('CC', 'Product on Segment', 'SEGPROD', 'Easy', false, [], ''),
-		new Problem(
-			'Baltic OI',
-			'2017 - Toll',
-			'https://oj.uz/problem/view/BOI17_toll',
-			'Normal',
-			false,
-			[],
-			'baltic-17-toll'
-		),
-		new Problem(
-			'DMOJ',
-			'Continued Fractions',
-			'dmopc19c7p4',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'Plat',
-			'Non-Decreasing Subsequences',
-			'997',
-			'Hard',
-			false,
-			['Matrix', 'D&C'],
-			''
-		),
-	],
-};
 
 ## Static Array Queries
 
-<FocusProblem problem={problems.diviSample[0]} />
+<FocusProblem problem="diviSample" />
 
-Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form
+Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the
+form
 
 $$
 A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]
@@ -73,13 +21,18 @@ $$
 
 where $\ominus$ denotes an associative operation.
 
-In the [prerequisite module](/gold/tree-euler#sparse-tables), it was shown that we can get $\mathcal{O}(1)$ time queries with $\mathcal{O}(N\log N)$ time preprocessing when $\ominus$ denotes `min`. But how do we generalize to other associative operations?
+In a [previous module](/gold/tree-euler#sparse-tables), it was shown that we can
+get $\mathcal{O}(1)$ time queries with $\mathcal{O}(N\log N)$ time preprocessing
+when $\ominus$ denotes `min`. But how do we generalize to other associative
+operations?
 
-We can use **divide & conquer** to answer $Q$ queries offline in $\mathcal{O}((N+Q)\log N)$ time or online in $\mathcal{O}(N\log N+Q)$.
+We can use **divide & conquer** to answer $Q$ queries offline in
+$\mathcal{O}((N+Q)\log N)$ time or online in $\mathcal{O}(N\log N+Q)$.
 
 ## Offline Queries
 
-Suppose that all queries satisfy $L\le l\le r\le R$ (initially, $L=1$ and $R=N$). Letting $M=\left\lfloor \frac{L+R}{2}\right\rfloor$, we can compute
+Suppose that all queries satisfy $L\le l\le r\le R$ (initially, $L=1$ and
+$R=N$). Letting $M=\left\lfloor \frac{L+R}{2}\right\rfloor$, we can compute
 
 $$
 lef[l]=A[l]\ominus A[l+1]\ominus \cdots \ominus A[M]
@@ -91,13 +44,18 @@ $$
 rig[r]=A[M+1]\ominus A[M+2] \ominus \cdots\ominus A[r]
 $$
 
-for each $M< r\le R$. Then the answer for all queries satisfying $l\le M< r$ is simply $lef[l]\ominus rig[r]$ due to the associativity condition. After that, we recurse on all query intervals completely contained within $[L,M]$ and $[M+1,R]$ independently.
+for each $M< r\le R$. Then the answer for all queries satisfying $l\le M< r$ is
+simply $lef[l]\ominus rig[r]$ due to the associativity condition. After that, we
+recurse on all query intervals completely contained within $[L,M]$ and $[M+1,R]$
+independently.
 
-The code below should work if `min` is replaced by **any** associative operation.
+The code below should work if `min` is replaced by **any** associative
+operation.
 
 <Warning>
 
-Be careful to combine elements in the appropriate order if the operation is not commutative.
+Be careful to combine elements in the appropriate order if the operation is not
+commutative.
 
 </Warning>
 
@@ -147,7 +105,9 @@ int main() {
 
 ## Online Queries
 
-We do the same thing as above, except we store all computes values of `lef` and `rig` within a 2D array using $\mathcal{O}(N\log N)$ memory, similarly as sparse table.
+We do the same thing as above, except we store all computes values of `lef` and
+`rig` within a 2D array using $\mathcal{O}(N\log N)$ memory, similarly as sparse
+table.
 
 <Resources>
 	<Resource
@@ -161,7 +121,10 @@ We do the same thing as above, except we store all computes values of `lef` and 
 
 ### Solution - RMQ
 
-In the code below, `dat` performs the roles that both `lef` and `rig` do in the previous solution. Let `comb(l,r)` equal $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$. For example, if $n=20$ and we only consider levels $0$ and $1$ then we get
+In the code below, `dat` performs the roles that both `lef` and `rig` do in the
+previous solution. Let `comb(l,r)` equal
+$A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$. For example, if $n=20$ and we
+only consider levels $0$ and $1$ then we get
 
 - `dat[0][i]=comb(i,9)` for `i` in `[0,9]`
 - `dat[0][i]=comb(10,i)` for `i` in `[10,19]`
@@ -176,8 +139,12 @@ In the code below, `dat` performs the roles that both `lef` and `rig` do in the 
 
 Examples of queries:
 
-- To query `comb(0,16)` we first count the number of training zeroes in `mask[0]` XOR `mask[16]`, which is `0`. So our answer is `min(dat[0][0],dat[0][16])`.
-- To query `comb(12,18)` we first count the number of training zeroes in `mask[12]` XOR `mask[18]`, which is `1`. So our answer is `min(dat[1][12],dat[1][12])`.
+- To query `comb(0,16)` we first count the number of training zeroes in
+  `mask[0]` XOR `mask[16]`, which is `0`. So our answer is
+  `min(dat[0][0],dat[0][16])`.
+- To query `comb(12,18)` we first count the number of training zeroes in
+  `mask[12]` XOR `mask[18]`, which is `1`. So our answer is
+  `min(dat[1][12],dat[1][12])`.
 
 ```cpp
 int n,q;
@@ -214,7 +181,8 @@ int main() {
 
 <Optional title="Faster Preprocessing">
 
-A data structure known as **sqrt-tree** can speed up preprocessing time and memory to $\mathcal{O}(N\log \log N)$.
+A data structure known as **sqrt-tree** can speed up preprocessing time and
+memory to $\mathcal{O}(N\log \log N)$.
 
 - [CF Blog Pt 1](http://codeforces.com/blog/entry/57046)
 - [CF Blog Pt 2](http://codeforces.com/blog/entry/59092)
@@ -223,4 +191,4 @@ A data structure known as **sqrt-tree** can speed up preprocessing time and memo
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

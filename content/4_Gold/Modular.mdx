@@ -8,55 +8,6 @@ description: Working with remainders from division.
 frequency: 2
 ---
 
-export const problems = {
-	expo: [
-		new Problem(
-			'CSES',
-			'Exponentiation',
-			'1095',
-			'Easy',
-			false,
-			['Modular Arithmetic'],
-			'@Below'
-		),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Exponentiation II',
-			'1712',
-			'Easy',
-			true,
-			['Modular Arithmetic'],
-			'https://codeforces.com/blog/entry/82103'
-		),
-		new Problem(
-			'CF',
-			"Santa's Bot",
-			'contest/1279/problem/D',
-			'Easy',
-			false,
-			['Modular Arithmetic'],
-			''
-		),
-		new Problem(
-			'CSES',
-			'Divisor Analysis',
-			'2182',
-			'Normal',
-			true,
-			['Modular Arithmetic'],
-			'cses-2182'
-		),
-	],
-};
-
-<!-- new Problem('Kattis', 'Modular Arithmetic', 'modulararithmetic', 'Easy', true, ['Modular Arithmetic'], ''),
-
-non-prime moduli. Note that tests for multiplication and division have small mods (MOD^2 < LLONG_MAX) so you can just
-multiply as normal.
--->
-
 <!-- <Resource source="CF" title="CodeNCode - Number Theory Course" url="77137">lots of advanced stuff you don't need to know at this level</Resource>
    -->
 
@@ -72,8 +23,8 @@ multiply as normal.
 	>
 		plenty of examples from math contests
 	</Resource>
-	<Resource source="CPH" title="21.2 - Modular Arithmetic" starred></Resource>
-	<Resource source="PAPS" title="16.4 - Modular Arithmetic"></Resource>
+	<Resource source="CPH" title="21.2 - Modular Arithmetic" starred />
+	<Resource source="PAPS" title="16.4 - Modular Arithmetic" />
 	<Resource
 		source="CF"
 		title="Spheniscine - Modular Arithmetic for Beginners"
@@ -81,20 +32,25 @@ multiply as normal.
 	>
 		some practice probs
 	</Resource>
-    <Resource
-        source="MONT@Modern Olympiad Number Theory"
-        title="2, 5 - Modular Arithmetic"
-        url="https://artofproblemsolving.com/community/c6h2344755"
-        starred
-    >
-    </Resource>
+	<Resource
+		source="MONT@Modern Olympiad Number Theory"
+		title="2, 5 - Modular Arithmetic"
+		url="https://artofproblemsolving.com/community/c6h2344755"
+		starred
+	 />
 </Resources>
 
 ## Introduction
 
 <!-- Some silver problems involve $10^9+7$, should this be introduced in silver? -->
 
-In **modular arithmetic**, instead of working with integers themselves, we work with their remainders when divided by $m$. We call this taking modulo $m$. For example, if we take $m = 23$, then instead of working with $x = 247$, we use $x \bmod 23 = 17$. Usually, $m$ will be a large prime, given in the problem; the two most common values are $10^9 + 7$ and $998\,244\,353=119\cdot 2^{23}+1$. Modular arithmetic is used to avoid dealing with numbers that overflow built-in data types, because we can take remainders, according to the following formulas:
+In **modular arithmetic**, instead of working with integers themselves, we work
+with their remainders when divided by $m$. We call this taking modulo $m$. For
+example, if we take $m = 23$, then instead of working with $x = 247$, we use
+$x \bmod 23 = 17$. Usually, $m$ will be a large prime, given in the problem; the
+two most common values are $10^9 + 7$ and $998\,244\,353=119\cdot 2^{23}+1$.
+Modular arithmetic is used to avoid dealing with numbers that overflow built-in
+data types, because we can take remainders, according to the following formulas:
 
 $$
 (a+b) \bmod m = (a \bmod m + b \bmod m) \bmod m
@@ -114,7 +70,7 @@ $$
 
 ## Modular Exponentiation
 
-<FocusProblem problem={problems.expo[0]} />
+<FocusProblem problem="expo" />
 
 ### Resources
 
@@ -123,14 +79,19 @@ $$
 		source="cp-algo"
 		title="Binary Exponentiation"
 		url="algebra/binary-exp.html"
-	>
-		{' '}
-	</Resource>
+	/>
 </Resources>
 
-**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 2$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$.
+**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To
+do this, let's break down $x ^ n$ into binary components. For example,
+$5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 2$. Then, if we know $x ^ y$ for
+all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ ,
+$x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in
+$\mathcal{O}(\log n)$.
 
-To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
+To deal with $m$, observe that modulo doesn't affect multiplications, so we can
+directly implement the above "binary exponentiation" algorithm while adding a
+line to take results $\pmod m$.
 
 <!--
 Finally, since $x ^ y$ for some $y \neq 1$ equals $x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently.  -->
@@ -220,9 +181,12 @@ public class Exponentation
 
 ## Modular Inverse
 
-The **modular inverse** is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$. We'll only consider prime moduli $p$ here.
+The **modular inverse** is the equivalent of the reciprocal in real-number
+arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
+We'll only consider prime moduli $p$ here.
 
-For example, the inverse of $2$ modulo $p=10^9+7$ is $i=\frac{p+1}{2}=5\cdot 10^8+4$. This means that for any integer $x$,
+For example, the inverse of $2$ modulo $p=10^9+7$ is
+$i=\frac{p+1}{2}=5\cdot 10^8+4$. This means that for any integer $x$,
 
 $$
 (2x)\cdot i\equiv x\cdot (2i)\equiv x\pmod{10^9+7}.
@@ -234,7 +198,7 @@ For example, $10i\equiv 5\pmod{10^9+7}$.
 
 There aren't many good examples of Modular Inverses in USACO. One problem where it was useful was the platinum problem "Sprinkers 2".
 
-<FocusProblem problem={problems.dp[2]} />
+<FocusProblem problem="dp[2]" />
 
 For the sake of example, we'll skip the details of this problem. Also, if you want to attempt it yourself, you should probably do that first. In this problem, our DP transition relies on dividing our answer at some state by $2$, under a prime moduli.
 
@@ -256,7 +220,11 @@ To perform this, we'll instead multiply by $500000004$ or the modular inverse of
 
 ### With Exponentiation
 
-[**Fermat's Little Theorem**](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem) (not to be confused with Fermat's **Last** Theorem) states that all integers $a$ not divisible by $p$ satisfy $a^{p - 1} \equiv 1 \pmod{p}$. Consequently, $a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse of $a$ modulo $p$.
+[**Fermat's Little Theorem**](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem)
+(not to be confused with Fermat's **Last** Theorem) states that all integers $a$
+not divisible by $p$ satisfy $a^{p - 1} \equiv 1 \pmod{p}$. Consequently,
+$a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse
+of $a$ modulo $p$.
 
 <LanguageSection>
 
@@ -295,13 +263,19 @@ public class main
 
 </LanguageSection>
 
-Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo $p$, frequent use of division inside a loop can significantly increase the running time of a program. If the modular inverse of the same number(s) is/are being used many times, it is a good idea to precalculate it.
+Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo
+$p$, frequent use of division inside a loop can significantly increase the
+running time of a program. If the modular inverse of the same number(s) is/are
+being used many times, it is a good idea to precalculate it.
 
-Also, one must always ensure that they do not attempt to divide by 0. Be aware that after applying modulo, a nonzero number can become zero, so be very careful when dividing by non-constant values.
+Also, one must always ensure that they do not attempt to divide by 0. Be aware
+that after applying modulo, a nonzero number can become zero, so be very careful
+when dividing by non-constant values.
 
 <Optional title="Another Way to Compute Modular Inverses">
 
-We can also use the extended Euclidean algorithm. See the module in the [Advanced](/adv/extend-euclid) section.
+We can also use the extended Euclidean algorithm. See the module in the
+[Advanced](/adv/extend-euclid) section.
 
 </Optional>
 
@@ -312,9 +286,7 @@ We can also use the extended Euclidean algorithm. See the module in the [Advance
 		source="Benq"
 		title="ModInt"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/number-theory%20(11.1)/Modular%20Arithmetic/ModInt.h"
-	>
-		{' '}
-	</Resource>
+	/>
 	<Resource
 		source="Benq"
 		title="ModIntShort"
@@ -343,4 +315,4 @@ int main() {
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

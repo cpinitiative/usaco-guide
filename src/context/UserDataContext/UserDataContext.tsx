@@ -1,32 +1,38 @@
+import * as Sentry from '@sentry/browser';
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import * as React from 'react';
-import { createContext, useReducer, useState, useContext } from 'react';
+import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
-import useFirebase from '../../hooks/useFirebase';
-import UserLang, { UserLangAPI } from './properties/userLang';
-import UserDataPropertyAPI from './userDataPropertyAPI';
-import LastViewedModule, {
-  LastViewedModuleAPI,
-} from './properties/lastViewedModule';
-import HideTagsAndDifficulty, {
-  HideTagsAndDifficultyAPI,
-} from './properties/hideTagsAndDifficulty';
+import { useFirebaseApp } from '../../hooks/useFirebase';
+import { useNotificationSystem } from '../NotificationSystemContext';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import HideSols, { HideSolsAPI } from './properties/hideSols';
-import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import DarkMode, { DarkModeAPI } from './properties/darkMode';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
+import LastViewedModule, {
+  LastViewedModuleAPI,
+} from './properties/lastViewedModule';
+import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
+import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
   UserProgressOnModulesAPI,
 } from './properties/userProgressOnModules';
 import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
-import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
+import UserDataPropertyAPI from './userDataPropertyAPI';
+import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -87,50 +93,44 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
   new HideTagsAndDifficulty(),
-  new HideSols(),
   new DivisionTableQuery(),
   new ShowIgnored(),
-  new DarkMode(),
+  new ThemeProperty(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
-  new UserClassesProperty(),
+  new AdSettingsProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   HideTagsAndDifficultyAPI &
-  HideSolsAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
-  DarkModeAPI &
+  ThemePropertyAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
-  UserClassesAPI & {
-    firebaseUser: any;
-    signIn: Function;
-    signOut: Function;
+  AdSettingsAPI & {
+    firebaseUser: User;
+    signOut: () => Promise<void>;
     isLoaded: boolean;
     onlineUsers: number;
-    getDataExport: Function;
-    importUserData: Function;
+    getDataExport: () => Record<string, any>;
+    importUserData: (data: Record<string, any>) => boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
-  darkMode: false,
   firebaseUser: null,
-  getDataExport: () => {},
-  importUserData: () => {},
+  getDataExport: () => Promise.resolve(),
+  importUserData: () => true,
   hideTagsAndDifficulty: false,
-  hideSols: false,
   divisionTableQuery: {
     division: '',
     season: '',
-    showSols: false,
   },
   isLoaded: true,
   lang: 'cpp',
@@ -145,36 +145,62 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608192000000: 27,
     1608278400000: 82,
   },
-  setDarkMode: x => {},
-  setHideTagsAndDifficulty: x => {},
-  setHideSols: x => {},
-  setDivisionTableQuery: x => {},
-  setLang: x => {},
-  setLastReadAnnouncement: x => {},
-  setLastViewedModule: x => {},
-  setLastVisitDate: x => {},
-  setModuleProgress: (moduleID, progress) => {},
-  setShowIgnored: x => {},
-  setUserClasses: classes => {},
-  setUserProgressOnProblems: (problem, status) => {},
+  theme: 'system',
+  setTheme: x => {
+    // do nothing
+  },
+  setHideTagsAndDifficulty: x => {
+    // do nothing
+  },
+  setDivisionTableQuery: x => {
+    // do nothing
+  },
+  setLang: x => {
+    // do nothing
+  },
+  setLastReadAnnouncement: x => {
+    // do nothing
+  },
+  setLastViewedModule: x => {
+    // do nothing
+  },
+  setLastVisitDate: x => {
+    // do nothing
+  },
+  setModuleProgress: (moduleID, progress) => {
+    // do nothing/
+  },
+  setShowIgnored: x => {
+    // do nothing
+  },
+  setUserProgressOnProblems: (problemId, status) => {
+    // do nothing
+  },
   showIgnored: false,
-  signIn: () => {},
-  signOut: () => {},
-  userClasses: [],
-  userClassIds: [],
+  signOut: () => {
+    // do nothing
+    return Promise.resolve();
+  },
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},
   userProgressOnProblemsActivity: [],
+  adSettings: {
+    hideMarch2021: false,
+  },
+  setAdSettings: () => {
+    // do nothing
+  },
 });
 
-export const UserDataProvider = ({ children }) => {
-  const firebase = useFirebase();
+export const UserDataProvider = ({ children }: { children: ReactNode }) => {
+  const firebaseApp = useFirebaseApp();
+  const notifications = useNotificationSystem();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
     // when the firebase user changes, update all the API's
     const userDoc = user
-      ? firebase.firestore().collection('users').doc(user.uid)
+      ? doc(getFirestore(firebaseApp), 'users', user.uid)
       : null;
     UserDataContextAPIs.forEach(api => api.setFirebaseUserDoc(userDoc));
 
@@ -185,14 +211,15 @@ export const UserDataProvider = ({ children }) => {
 
   // const [onlineUsers, setOnlineUsers] = useState(0);
 
-  const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
+  const [, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
     api.setTriggerRerenderFunction(triggerRerender)
   );
 
   // Listen for firebase user sign in / sign out
-  useFirebase(firebase => {
-    return firebase.auth().onAuthStateChanged(user => {
+  useFirebaseApp(firebase => {
+    const auth = getAuth(firebase);
+    onAuthStateChanged(auth, user => {
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
@@ -209,7 +236,7 @@ export const UserDataProvider = ({ children }) => {
   //   // });
   // });
 
-  // just once, ask all API's to initialize their values from localStorage
+  // just once, ask all APIs to initialize their values from localStorage
   React.useEffect(() => {
     UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
   }, []);
@@ -217,11 +244,9 @@ export const UserDataProvider = ({ children }) => {
   // If the user is signed in, sync remote data with local data
   React.useEffect(() => {
     if (firebaseUser) {
-      return firebase
-        .firestore()
-        .collection('users')
-        .doc(firebaseUser.uid)
-        .onSnapshot(snapshot => {
+      const userDoc = doc(getFirestore(firebaseApp), 'users', firebaseUser.uid);
+      return onSnapshot(userDoc, {
+        next: snapshot => {
           let data = snapshot.data();
           if (!data) {
             const lastViewedModule = UserDataContextAPIs.find(
@@ -236,19 +261,16 @@ export const UserDataProvider = ({ children }) => {
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
-                firebase
-                  .firestore()
-                  .collection('users')
-                  .doc(firebaseUser.uid)
-                  .set(
-                    UserDataContextAPIs.reduce((acc, cur) => {
-                      return {
-                        ...acc,
-                        ...cur.exportValue(),
-                      };
-                    }, {}),
-                    { merge: true }
-                  );
+                setDoc(
+                  userDoc,
+                  UserDataContextAPIs.reduce((acc, cur) => {
+                    return {
+                      ...acc,
+                      ...cur.exportValue(),
+                    };
+                  }, {}),
+                  { merge: true }
+                );
               }
             }
           }
@@ -259,24 +281,26 @@ export const UserDataProvider = ({ children }) => {
             setIsLoaded(true);
             triggerRerender();
           });
-        });
+        },
+        error: error => {
+          notifications.showErrorNotification(error);
+          Sentry.captureException(error, {
+            extra: {
+              userId: firebaseUser.uid,
+            },
+          });
+        },
+      });
     }
   }, [firebaseUser]);
 
   const userData = {
     firebaseUser,
-    signIn: () => {
-      if (firebase)
-        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    },
-    signOut: () => {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
-        });
+    signOut: (): Promise<void> => {
+      return signOut(getAuth(firebaseApp)).then(() => {
+        UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
+        UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
+      });
     },
     isLoaded,
     onlineUsers: -1,
@@ -288,14 +312,14 @@ export const UserDataProvider = ({ children }) => {
       };
     }, {}),
 
-    getDataExport: () => {
+    getDataExport: (): Record<string, any> => {
       return UserDataContextAPIs.reduce(
         (acc, api) => ({ ...acc, ...api.exportValue() }),
         {}
       );
     },
 
-    importUserData: (data: JSON) => {
+    importUserData: (data: Record<string, any>): boolean => {
       if (
         confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
@@ -304,11 +328,10 @@ export const UserDataProvider = ({ children }) => {
         UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
         UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
         if (firebaseUser) {
-          firebase
-            .firestore()
-            .collection('users')
-            .doc(firebaseUser.uid)
-            .set(data);
+          setDoc(
+            doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
+            data
+          );
         }
         triggerRerender();
         return true;
@@ -319,7 +342,9 @@ export const UserDataProvider = ({ children }) => {
 
   return (
     <UserDataContext.Provider value={userData}>
-      {children}
+      <UserPermissionsContextProvider>
+        {children}
+      </UserPermissionsContextProvider>
     </UserDataContext.Provider>
   );
 };

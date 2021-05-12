@@ -1,5 +1,3 @@
-import { ModuleInfo } from './module';
-
 export class AnnouncementInfo {
   constructor(
     public id: string,

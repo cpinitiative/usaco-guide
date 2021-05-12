@@ -5,75 +5,11 @@ author: Benjamin Qi, Dong Liu
 prerequisites:
   - toposort
   - BCC-2CC
-description: Subsets of nodes in directed graphs where each node in a subset can reach each other node in the subset.
+description:
+  Subsets of nodes in directed graphs where each node in a subset can reach each
+  other node in the subset.
 frequency: 1
 ---
-
-
-
-export const problems = {
-	ex: [
-		new Problem('CSES', 'Planets & Kingdoms', '1683', 'Easy', false, ['SCC'], ''),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Coin Collector',
-			'1686',
-			'Easy',
-			false,
-			['SCC', 'DP'],
-			'cses-1686'
-		),
-		new Problem(
-			'POI',
-			'2018 - Bike paths',
-			'aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
-			'Easy',
-			false,
-			['SCC', 'dp'],
-			'Compress SCC and then run tree DP'
-		),
-		new Problem(
-			'Old Gold',
-			'Grass Cownoisseur',
-			'516',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'CF',
-			'Catowice City',
-			'contest/1239/problem/D',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'POI',
-			'2012 - Festival',
-			'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
-			'Hard',
-			false,
-			[],
-			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2012/editorial/fes.pdf'
-		),
-		new Problem(
-			'Kattis',
-			'Proving Equivalences',
-			'equivalences',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem('CSES', 'New Flight Routes', '1685', 'Hard', false, [], ''),
-	],
-	satEx: [new Problem('CSES', 'Giant Pizza', '1684', 'Normal', false, [], '')],
-};
 
 ## SCCs
 
@@ -84,24 +20,34 @@ export const problems = {
   - [Kosaraju](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
 
 <Resources>
-	<Resource source="CPH" title="17 - Strong Connectivity"></Resource>
-	<Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1"></Resource>
-	<Resource source="CP2" title="4.2.9 - Finding SCCs">
-		{' '}
-	</Resource>
-	<Resource source="Benq" title="Kosaraju's Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h">
+	<Resource source="CPH" title="17 - Strong Connectivity" />
+	<Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1" />
+	<Resource source="CP2" title="4.2.9 - Finding SCCs"/>
+	<Resource
+		source="Benq"
+		title="Kosaraju's Implementation"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h"
+	>
 		concise implementation of Kosaraju's Algorithm
 	</Resource>
-    <Resource source="Benq" title="Tarjan's Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h">
-        concise implementation of Tarjan's Algorithm
-    </Resource>
+	<Resource
+		source="Benq"
+		title="Tarjan's Implementation"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h"
+	>
+		concise implementation of Tarjan's Algorithm
+	</Resource>
 </Resources>
 
-<FocusProblem problem={problems.ex[0]} />
+<FocusProblem problem="ex" />
 
 ### Solution - Planets and Kingdoms
 
-Just run [Kosaraju's](https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h) or [Tarjan's](https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h) SCC algorithm on the graph. 
+Just run
+[Kosaraju's](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h>)
+or
+[Tarjan's](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h>)
+SCC algorithm on the graph.
 
 Then assign each component an $ID$ (starting from $1$).
 
@@ -113,9 +59,9 @@ Then assign each component an $ID$ (starting from $1$).
 
 ```cpp
 #include <bits/stdc++.h>
-using namespace std; 
+using namespace std;
 /**
- * Description: Kosaraju's Algorithm, DFS twice to generate 
+ * Description: Kosaraju's Algorithm, DFS twice to generate
  	* strongly connected components in topological order. $a,b$
  	* in same component if both $a\to b$ and $b\to a$ exist.
  * Time: O(N+M)
@@ -125,32 +71,32 @@ using namespace std;
 struct SCC {
 	int N; vector<vector<int>> adj, radj;
 	vector<int> todo, comp, comps; vector<bool> vis;
-	void init(int _N) { N = _N; 
-		adj.resize(N), radj.resize(N), comp = vector<int>(N,-1), vis.resize(N); 
+	void init(int _N) { N = _N;
+		adj.resize(N), radj.resize(N), comp = vector<int>(N,-1), vis.resize(N);
 	}
-	void ae(int x, int y) { 
-		adj[x].push_back(y), radj[y].push_back(x); 
+	void ae(int x, int y) {
+		adj[x].push_back(y), radj[y].push_back(x);
 	}
 	void dfs(int x) {
 		vis[x] = 1; for(int y : adj[x]) if (!vis[y]) dfs(y);
 		todo.push_back(x); }
 	void dfs2(int x, int v) {
-		comp[x] = v; 
-		for(int y : radj[x]) if (comp[y] == -1) dfs2(y,v); 
+		comp[x] = v;
+		for(int y : radj[x]) if (comp[y] == -1) dfs2(y,v);
 	}
 	void gen() { // fills allComp
 		for(int i=0; i<N; i++) if (!vis[i]) dfs(i);
-		reverse(begin(todo), end(todo)); 
+		reverse(begin(todo), end(todo));
 		for(int x : todo) if (comp[x] == -1) {
 			dfs2(x,x), comps.push_back(x);
 		}
 	}
 };
 
-int main() {	
-	int n, m, a, b; 
+int main() {
+	int n, m, a, b;
 	cin >> n >> m;
-	
+
 	SCC graph;
 	graph.init(n);
 	while(m--) {
@@ -188,7 +134,7 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 /**
- * Description: Tarjan's, DFS once to generate 
+ * Description: Tarjan's, DFS once to generate
  	* strongly connected components in topological order. $a,b$
  	* in same component if both $a\to b$ and $b\to a$ exist.
  	* Uses less memory than Kosaraju b/c doesn't store reverse edges.
@@ -200,18 +146,18 @@ using namespace std;
 struct SCC {
 	int N, ti = 0; vector<vector<int>> adj;
 	vector<int> disc, comp, st, comps;
-	void init(int _N) { 
-		N = _N; 
-		adj.resize(N), disc.resize(N), comp = vector<int>(N,-1); 
+	void init(int _N) {
+		N = _N;
+		adj.resize(N), disc.resize(N), comp = vector<int>(N,-1);
 	}
-	void ae(int x, int y) { 
-		adj[x].push_back(y); 
+	void ae(int x, int y) {
+		adj[x].push_back(y);
 	}
 	int dfs(int x) {
 		int low = disc[x] = ++ti; st.push_back(x); // disc[y] != 0 -> in stack
-		for(int y : adj[x]) if (comp[y] == -1) low = min(low, disc[y]?:dfs(y)); 
+		for(int y : adj[x]) if (comp[y] == -1) low = min(low, disc[y]?:dfs(y));
 		if (low == disc[x]) { // make new SCC, pop off stack until you find x
-			comps.push_back(x); for (int y = -1; y != x;) 
+			comps.push_back(x); for (int y = -1; y != x;)
 				comp[y = st.back()] = x, st.pop_back();
 		}
 		return low;
@@ -222,10 +168,10 @@ struct SCC {
 	}
 };
 
-int main() {	
-	int n, m, a, b; 
+int main() {
+	int n, m, a, b;
 	cin >> n >> m;
-	
+
 	SCC graph;
 	graph.init(n);
 	while(m--) {
@@ -255,18 +201,18 @@ int main() {
 
 ### Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 ## 2-SAT
 
-<Problems problems={problems.satEx} />
+<Problems problems="satEx" />
 
 (impl)
 
 ### Tutorial
 
 <Resources>
-	<Resource source="CF" title="2-SAT" url="16205"></Resource>
+	<Resource source="CF" title="2-SAT" url="16205" />
 </Resources>
 
 (KACTL at most one?)

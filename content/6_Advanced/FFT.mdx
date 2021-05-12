@@ -7,76 +7,9 @@ description: 'Quickly multiplying polynomials'
 frequency: 0
 ---
 
+<FocusProblem problem="sam" />
 
-
-export const problems = {
-	sam: [
-		new Problem(
-			'YS',
-			'Convolution Mod',
-			'convolution_mod',
-			'Easy',
-			false,
-			['FFT'],
-			''
-		),
-		new Problem(
-			'YS',
-			'Convolution Mod 10^9+7',
-			'convolution_mod_1000000007',
-			'Normal',
-			false,
-			['FFT'],
-			''
-		),
-	],
-	gen: [
-		new Problem(
-			'POI',
-			'2018 - Polynomial',
-			'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
-			'Easy',
-			false,
-			[],
-			''
-		),
-		new Problem('Kattis', 'K-Inversions', 'kinversions', 'Easy', false, [], ''),
-		new Problem('Kattis', 'Matchings', 'matchings', 'Normal', false, [], ''),
-		new Problem(
-			'Kattis',
-			'Alien Codebreaking',
-			'aliencodebreaking',
-			'Very Hard',
-			false,
-			[],
-			'base conversion in $\mathcal{O}(Nlog^2N)$'
-		),
-	],
-	tree: [
-		new Problem(
-			'YS',
-			'Frequency Table of Tree Distance',
-			'frequency_table_of_tree_distance',
-			'Hard',
-			false,
-			['Centroid', 'FFT'],
-			''
-		),
-		new Problem(
-			'DMOJ',
-			'Big Integer',
-			'bts17p8',
-			'Very Hard',
-			false,
-			['Centroid', 'FFT'],
-			'O(Nlog^2N)'
-		),
-	],
-};
-
-<FocusProblem problem={problems.sam[0]} />
-
-<FocusProblem problem={problems.sam[1]} />
+<FocusProblem problem="sam2" />
 
 ## Tutorial
 
@@ -95,16 +28,12 @@ export const problems = {
 		source="CSA"
 		url="https://csacademy.com/blog/fast-fourier-transform-and-variations-of-it/"
 		title="FFT and Variations"
-	>
-		{' '}
-	</Resource>
+	/>
 	<Resource
 		source="CF"
 		title="adamant - Lecture Notes"
 		url="http://codeforces.com/blog/entry/55572"
-	>
-		{' '}
-	</Resource>
+	/>
 	<Resource
 		source="CF"
 		title="FFT / NTT: The tough made simple Pt 1"
@@ -121,12 +50,15 @@ export const problems = {
 		source="Benq"
 		title="FFT"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/numerical/Polynomials/FFT.h"
-	>
-		{' '}
-	</Resource>
+	/>
 </Resources>
 
-Notice that $c_i=\sum_{j=0}^i a_jb_{i-j}$ is the coefficient if we were to treat $a$ and $b$ as polynomials. Recall that $ax^jbx^{i-j}=abx^i$ is the coefficient of one multiplication that leads to $c_i$. Thus, summing this up, we get the coefficient of each number of the polynomial. Since this happens to be the exact purpose of FFT, we can simply use our favorite FFT implementation to solve this problem.
+Notice that $c_i=\sum_{j=0}^i a_jb_{i-j}$ is the coefficient if we were to treat
+$a$ and $b$ as polynomials. Recall that $ax^jbx^{i-j}=abx^i$ is the coefficient
+of one multiplication that leads to $c_i$. Thus, summing this up, we get the
+coefficient of each number of the polynomial. Since this happens to be the exact
+purpose of FFT, we can simply use our favorite FFT implementation to solve this
+problem.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -141,8 +73,8 @@ using vi = vector<int>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -271,7 +203,8 @@ int main() {
 	</Resource>
 </Resources>
 
-Notice that this is the exact same problem as Convolution Mod, so simply changing the mod suffices.
+Notice that this is the exact same problem as Convolution Mod, so simply
+changing the mod suffices.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -286,8 +219,8 @@ using vi = vector<int>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -406,14 +339,15 @@ int main() {
 
 ### Note - FFT Killer
 
-The "multiplication with arbitrary modulus" described in cp-algo requires `long double` to pass.
+The "multiplication with arbitrary modulus" described in cp-algo requires
+`long double` to pass.
 
 ## Problems
 
 <!-- - [Counting Triplets](https://toph.co/p/counting-triplets) -->
 
-<Problems problems={problems.gen} />
+<Problems problems="gen" />
 
 ### On a Tree
 
-<Problems problems={problems.tree} />
+<Problems problems="tree" />

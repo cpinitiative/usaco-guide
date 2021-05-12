@@ -1,48 +1,13 @@
 import * as React from 'react';
-import { graphql, useStaticQuery } from 'gatsby';
-import Img from 'gatsby-image';
+import LogoSquare from './LogoSquare';
 
-export default function Logo(props) {
-  const data = useStaticQuery(graphql`
-    query {
-      dark: file(relativePath: { eq: "logo_dark.png" }) {
-        childImageSharp {
-          fixed(height: 36, quality: 100) {
-            ...GatsbyImageSharpFixed_noBase64
-          }
-        }
-      }
-      light: file(relativePath: { eq: "logo.png" }) {
-        childImageSharp {
-          fixed(height: 36, quality: 100) {
-            ...GatsbyImageSharpFixed_noBase64
-          }
-        }
-      }
-    }
-  `);
-  return props.noDarkMode ? (
-    <Img
-      fixed={data.light.childImageSharp.fixed}
-      alt="USACO Guide"
-      {...props}
-    />
-  ) : (
-    <>
-      <div className="dark:hidden">
-        <Img
-          fixed={data.light.childImageSharp.fixed}
-          alt="USACO Guide"
-          {...props}
-        />
+export default function Logo(): JSX.Element {
+  return (
+    <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap">
+      <div className="h-9 w-9 flex-shrink-0">
+        <LogoSquare />
       </div>
-      <div className="hidden dark:block">
-        <Img
-          fixed={data.dark.childImageSharp.fixed}
-          alt="USACO Guide"
-          {...props}
-        />
-      </div>
-    </>
+      <span className="font-bold text-xl tracking-tight">USACO Guide</span>
+    </div>
   );
 }

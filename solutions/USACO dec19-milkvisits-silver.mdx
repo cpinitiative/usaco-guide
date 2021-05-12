@@ -9,7 +9,9 @@ author: Qi Wang, Tanish Tyagi
 
 **Time Complexity:** $\mathcal{O}(N + M)$
 
-We can use a DFS to create connected components from an adjacency list (which is made when we process the roads between the farms). Each connected component will contain farms that all have the same breed. 
+We can use a DFS to create connected components from an adjacency list (which is
+made when we process the roads between the farms). Each connected component will
+contain farms that all have the same breed.
 
 Adjacency List based off sample test case:
 
@@ -24,26 +26,37 @@ $4\rightarrow 2$
 $5\rightarrow 1$
 
 There are three connected components of the same cow breed in this graph:
+
 - Component $1$: Farms $1$, $2$, and $4$
 - Component $2$: Farm $3$
 - Component $3$: Farm $5$
 
-Create an array $\texttt{comp}$ such that $\texttt{comp}[A]$ is the component of farm $A$.
+Create an array $\texttt{comp}$ such that $\texttt{comp}[A]$ is the component of
+farm $A$.
 
 $\texttt{comp} = [1, 1, 2, 1, 3]$ (1-indexed)
 
 We evaluate 3 conditions to check whether the farmer will be happy:
 
-1. Farms $A$ and $B$ are part of the same component.  This means the path between $A$ and $B$ only contains cows of the same breed. If the farmer prefers milk from this breed, then we should output $1$.
-2. Farms $A$ and $B$ are part of different components. This means that the farmer will always be satisfied because the path between $A$ and $B$ contains both breeds of cows. We should output $1$.
+1. Farms $A$ and $B$ are part of the same component. This means the path between
+   $A$ and $B$ only contains cows of the same breed. If the farmer prefers milk
+   from this breed, then we should output $1$.
+2. Farms $A$ and $B$ are part of different components. This means that the
+   farmer will always be satisfied because the path between $A$ and $B$ contains
+   both breeds of cows. We should output $1$.
 3. If cases $1$ and $2$ are not met, then we should output 0.
 
-Queries for Sample Test Case: 
-1. Farms $1$ and $4$ are in the same component, and since Farmer $1$'s preferred cow is Holstein, they will be satisfied. ($1$)
-2. Farms $1$ and $4$ are in the same component, but since Farmer $2$'s preferred cow is Guernsey, they will be unsatisfied. ($0$)
-3. Farms $1$ and $3$ are in different components, so Farmer $3$ will be satisfied. ($1$)
+Queries for Sample Test Case:
+
+1. Farms $1$ and $4$ are in the same component, and since Farmer $1$'s preferred
+   cow is Holstein, they will be satisfied. ($1$)
+2. Farms $1$ and $4$ are in the same component, but since Farmer $2$'s preferred
+   cow is Guernsey, they will be unsatisfied. ($0$)
+3. Farms $1$ and $3$ are in different components, so Farmer $3$ will be
+   satisfied. ($1$)
 4. Same logic as query $3$. ($1$)
-5. Farm $5$ is Guernsey, and Farmer $5$'s preferred cow is Holstein, they will be unsatisfied. ($0$) 
+5. Farm $5$ is Guernsey, and Farmer $5$'s preferred cow is Holstein, they will
+   be unsatisfied. ($0$)
 
 <LanguageSection>
 
@@ -55,16 +68,16 @@ Queries for Sample Test Case:
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef vector<int> vi; 
- 
+typedef vector<int> vi;
+
 #define FOR(i,a,b) for (int i = (a); i < (b); ++i)
 #define F0R(i,a) FOR(i,0,a)
 #define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
 #define R0F(i,a) ROF(i,0,a)
 #define trav(a,x) for (auto& a: x)
- 
+
 #define pb push_back
- 
+
 void setIO(string name) {
 	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen((name+".in").c_str(),"r",stdin);
@@ -76,13 +89,13 @@ const int MX = 100005;
 int N,M,comp[MX],num;
 bool col[MX];
 vi adj[MX];
- 
+
 void dfs(int x) {
 	if (comp[x]) return;
 	comp[x] = num;
 	trav(t,adj[x]) if (col[t] == col[x]) dfs(t);
 }
- 
+
 int main() {
 	setIO("milkvisits"); cin >> N >> M;
 	string s; cin >> s;

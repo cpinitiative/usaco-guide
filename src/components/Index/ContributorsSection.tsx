@@ -54,6 +54,7 @@ export default function ContributorsSection() {
             <a
               href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
               target="_blank"
+              rel="noreferrer"
               className="text-blue-600 dark:text-blue-400 font-bold"
             >
               Apply here.
@@ -65,10 +66,11 @@ export default function ContributorsSection() {
           </p>
           <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
             {contentAuthors.map(author => (
-              <li>
+              <li key={author.name}>
                 <a
                   href={`https://github.com/${author.githubUsername}`}
                   target="_blank"
+                  rel="noreferrer"
                   className="text-blue-600 dark:text-blue-400"
                 >
                   {author.name}
@@ -81,6 +83,7 @@ export default function ContributorsSection() {
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
+                rel="noreferrer"
                 className="text-blue-600 dark:text-blue-400"
               >
                 Apply here.

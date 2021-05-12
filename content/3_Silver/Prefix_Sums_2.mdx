@@ -1,120 +1,189 @@
 ---
 id: prefix-sums-2
 title: 'More on Prefix Sums'
-author: Darren Yao, Eric Wei, Neo Wang, Qi Wang
-description: 'Max subarray sum, prefix sums in two dimensions, and a more complicated example.'
+author: Darren Yao, Eric Wei, Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng
+description:
+  'Max subarray sum, prefix sums in two dimensions, and a more complicated
+  example.'
 prerequisites:
   - prefix-sums
 frequency: 2
 ---
 
-export const problems = {
-	maxsum: new Problem(
-		'CSES',
-		'Max Subarray Sum',
-		'1643',
-		'Easy',
-		false,
-		['Prefix Sums'],
-		'Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left'
-	),
-	sample2: [
-		new Problem(
-			'CSES',
-			'Forest Queries',
-			'1652',
-			'Easy',
-			false,
-			['2D Prefix Sums'],
-			'@B'
-		),
-	],
-	cum2: [
-		new Problem(
-			'Silver',
-			'Painting the Barn',
-			'919',
-			'Easy',
-			false,
-			['2D Prefix Sums'],
-			'usaco-919'
-		),
-		new Problem(
-			'Silver',
-			'Rectangular Pasture',
-			'1063',
-			'Hard',
-			false,
-			['2D Prefix Sums'],
-			''
-		),
-		new Problem(
-			'Gold',
-			'Painting the Barn',
-			'923',
-			'Hard',
-			true,
-			['2D Prefix Sums', 'Max Subarray Sum'],
-			'Treat areas that currently have K-1 layers of paint as having a value of 1, those having K layers of paint as having a value of -1, and the rest as having a value of 0. For each pair of x-coordinates, find the maximum subrectangle whose left side is located at the first x-coordinate and the right side is located at the second x-coordinate. This can be done with maximum subarray sum and prefix sums of each row. Do something similar with each pair of y-coordinates (fixing the top and bottom of the rectangle). Also notice that whenever two disjoint rectangles are drawn, there always exists a horizontal or vertical line separating them. Enumerate the location of the line, and find maximum subrectangle of each side using the information that we precalculated.'
-		),
-		new Problem(
-			'Plat',
-			'Modern Art',
-			'744',
-			'Very Hard',
-			false,
-			['2D Prefix Sums'],
-			''
-		),
-	],
-	complex: [
-		new Problem(
-			'KS@Google KickStart',
-			'Candies (Test Set 1)',
-			'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'kickstart-20-c-candies'
-		),
-		new Problem(
-			'AC',
-			'Multiple of 2019',
-			'https://atcoder.jp/contests/abc164/tasks/abc164_d',
-			'Hard',
-			false,
-			['Prefix Sums'],
-			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
-		),
-		new Problem(
-			'Plat',
-			'Sprinklers',
-			'794',
-			'Insane',
-			false,
-			['Prefix Sums'],
-			''
-		),
-	],
-};
-
 ## Max Subarray Sum
 
-<FocusProblem problem={problems.maxsum} />
+<FocusProblem problem="maxsum" />
 
-This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
+### Solution - Max Subarray Sum
 
-<Spoiler title="Why are the two methods equivalent?">
+<Spoiler title="Solution">
 
-Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
+Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
+$i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
+$p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
+
+For a fixed right bound $j$, the maximum subarray sum is
+
+$$
+p[j]-\min_{i\leq j}{p[i]}
+$$
+
+Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we
+iterate through $j$. This yields the maximum subarray sum for each possible
+right bound, and the maximum over all these values is our answer.
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+using ll = long long;
+
+int main(){
+	int n;
+	cin >> n;
+	vector<long long> pfx(n + 1);  // prefix sum array initially filled with 0's
+	for (int i = 1; i <= n; i++){
+		ll x;
+		cin >> x;
+		pfx[i] = pfx[i - 1] + x;  // compute the prefix sum at each element
+	}
+
+	ll max_subarray_sum = pfx[1];
+	ll min_prefix_sum = pfx[0];
+	for (int i = 1; i <= n; i++) {
+		// Max subarray sum is the maximum difference between two prefix sums
+		max_subarray_sum = max(max_subarray_sum, pfx[i] - min_prefix_sum);
+		min_prefix_sum = min(min_prefix_sum, pfx[i]);
+	}
+	cout << max_subarray_sum << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Java Implementation
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class MaxSubSum {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(
+			new InputStreamReader(System.in)
+		);
+		read.readLine();
+		int[] arr = Arrays.stream(read.readLine().split(" ")
+				.mapToInt(Integer::parseInt).toArray();
+
+		long maxSubSum = arr[0];
+		long runningPrefSum = 0;
+		long minPrefSum = 0;
+		for (int i : arr) {
+			runningPrefSum += i;
+			maxSubSum = Math.max(maxSubSum, runningPrefSum - minPrefSum);
+			minPrefSum = Math.min(minPrefSum, runningPrefSum);
+		}
+		System.out.println(maxSubSum);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+### Python Implementation
+
+```py
+size = int(input())
+arr = [int(i) for i in input().split()]
+assert len(arr) == size
+
+max_subarray_sum = arr[0]
+min_pref_sum = 0
+running_pref_sum = 0
+for i in arr:
+	running_pref_sum += i
+	max_subarray_sum = max(max_subarray_sum, running_pref_sum - min_pref_sum)
+	min_pref_sum = min(min_pref_sum, running_pref_sum)
+print(max_subarray_sum)
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title = "Alternative Solution - Kadane's Algorithm">
+
+Note: it is recommended that you **disregard** this solution since it is not
+required to solve this problem.
+
+Kadane's Algorithm finds the largest subarray sum using a greedy method.
+[Click here for more information](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<long long> x(n);
+	for (int i = 0; i < n; i++){
+		cin >> x[i];
+	}
+	ll current_sum = x[0];
+	ll max_subarray_sum = x[0];
+	for (int i = 1; i < n; i++){
+		/*
+		 * Continue the subarray sum or start a new
+		 * subarray sum beginning at the current element.
+		 */
+		current_sum = max(current_sum + x[i], x[i]);
+		// Store the maximum subarray sum at each iteration.
+		max_subarray_sum = max(max_subarray_sum, current_sum);
+	}
+	cout << max_subarray_sum << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 </Spoiler>
 
 ## 2D Prefix Sums
 
-<FocusProblem problem={problems.sample2[0]} />
+<FocusProblem problem="sample2" />
 
-Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of a 2D matrix with $N$ rows and $M$ columns? Let's assume both rows and columns are 1-indexed, and we use the following matrix as an example:
+Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of
+a 2D matrix with $N$ rows and $M$ columns? Let's assume both rows and columns
+are 1-indexed, and we use the following matrix as an example:
 
 <center>
 
@@ -165,7 +234,8 @@ Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of
 
 </center>
 
-Naively, each sum query would then take $\mathcal{O}(NM)$ time, for a total of $\mathcal{O}(QNM)$. This is too slow.
+Naively, each sum query would then take $\mathcal{O}(NM)$ time, for a total of
+$\mathcal{O}(QNM)$. This is too slow.
 
 Let's take the following example region, which we want to sum:
 
@@ -220,7 +290,11 @@ Let's take the following example region, which we want to sum:
 
 Manually summing all the cells, we have a submatrix sum of $7+11+9+6+1+3 = 37$.
 
-The first logical optimization would be to do one-dimensional prefix sums of each row. Then, we'd have the following row-prefix sum matrix. The desired subarray sum of each row in our desired region is simply the green cell minus the red cell in that respective row. We do this for each row to get $(28-1) + (14-4) = 37$.
+The first logical optimization would be to do one-dimensional prefix sums of
+each row. Then, we'd have the following row-prefix sum matrix. The desired
+subarray sum of each row in our desired region is simply the green cell minus
+the red cell in that respective row. We do this for each row to get
+$(28-1) + (14-4) = 37$.
 
 <center>
 
@@ -271,15 +345,21 @@ The first logical optimization would be to do one-dimensional prefix sums of eac
 
 </center>
 
-Now, if we wanted to find a submatrix sum, we could break up the submatrix into a subarray for each row, and then add their sums, which would be calculated using the prefix sums method described earlier. Since the matrix has $N$ rows, the time complexity of this is $\mathcal{O}(QN)$. This might be fast enough for $Q=10^5$ and $N=10^3$, but we can do better.
+Now, if we wanted to find a submatrix sum, we could break up the submatrix into
+a subarray for each row, and then add their sums, which would be calculated
+using the prefix sums method described earlier. Since the matrix has $N$ rows,
+the time complexity of this is $\mathcal{O}(QN)$. This might be fast enough for
+$Q=10^5$ and $N=10^3$, but we can do better.
 
-In fact, we can do two-dimensional prefix sums. In our two dimensional prefix sum array, we have
+In fact, we can do two-dimensional prefix sums. In our two dimensional prefix
+sum array, we have
 
 $$
 \texttt{prefix}[a][b]=\sum_{i=1}^{a} \sum_{j=1}^{b} \texttt{arr}[i][j].
 $$
 
-This can be calculated as follows for row index $1 \leq i \leq n$ and column index $1 \leq j \leq m$:
+This can be calculated as follows for row index $1 \leq i \leq n$ and column
+index $1 \leq j \leq m$:
 
 $$
 \begin{aligned}
@@ -290,13 +370,17 @@ $$
 
 ---
 
-Let's calculate $\texttt{prefix}[2][3]$. Try playing with the interactive widget below by clicking the buttons to see which numbers are added in each step. Notice how we overcount a subrectangle, and how we fix this by subtracting $\texttt{prefix}[i-1][j-1]$.
+Let's calculate $\texttt{prefix}[2][3]$. Try playing with the interactive widget
+below by clicking the buttons to see which numbers are added in each step.
+Notice how we overcount a subrectangle, and how we fix this by subtracting
+$\texttt{prefix}[i-1][j-1]$.
 
 <PrefixSumInteractive />
 
 ---
 
-The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be expressed as follows:
+The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be
+expressed as follows:
 
 $$
 \begin{aligned}
@@ -306,7 +390,9 @@ $$
 \end{aligned}
 $$
 
-Summing the blue region from above using the 2D prefix sums method, we add the value of the green square, subtract the values of the red squares, and then add the value of the gray square. In this example, we have
+Summing the blue region from above using the 2D prefix sums method, we add the
+value of the green square, subtract the values of the red squares, and then add
+the value of the gray square. In this example, we have
 
 $$
 65-23-6+1 = 37,
@@ -365,19 +451,23 @@ as expected.
 
 ---
 
-Try playing with the interactive widget below by clicking the buttons to see which numbers are added in each step.
+Try playing with the interactive widget below by clicking the buttons to see
+which numbers are added in each step.
 
 <PrefixSumInteractive demo2 />
 
 ---
 
-Since no matter the size of the submatrix we are summing, we only need to access four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query after an $\mathcal{O}(NM)$ preprocessing.
+Since no matter the size of the submatrix we are summing, we only need to access
+four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query
+after an $\mathcal{O}(NM)$ preprocessing.
 
 ### Solution - Forest Queries
 
 <Warning>
 
-We need to be cautious of off-by-one errors, as intervals can be inclusive, exclusive, 1-indexed, etc.
+We need to be cautious of off-by-one errors, as intervals can be inclusive,
+exclusive, 1-indexed, etc.
 
 </Warning>
 
@@ -386,53 +476,48 @@ We need to be cautious of off-by-one errors, as intervals can be inclusive, excl
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
-#define vt vector
-
-#define FOR(i, a, b) for(int i = (a); i < (b); i++)
-#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
-#define F0R(i, a) for(int i = 0; i < (a); i++)
-#define trav(a, x) for (auto& a : x)
-
-void setIn(string s) { freopen(s.c_str(),"r",stdin); }
-void setOut(string s) { freopen(s.c_str(),"w",stdout); }
-void setIO(string s = "") {
-	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-	if (!s.empty()) { setIn(s+".in"), setOut(s+".out"); }
-}
-
-int N, Q;
-int pfx[1001][1001], arr[1001][1001];
+constexpr int MAX_SIDE = 1000;
+int tree_pref[MAX_SIDE + 1][MAX_SIDE + 1];
+int forest[MAX_SIDE + 1][MAX_SIDE + 1];
 
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
 
+	int N;
+	int Q;
 	cin >> N >> Q;
-
-	// comments are for implementation without arr
-
-	F0R(i, N) {
-		F0R(j, N) {
-			char a; cin >> a;
-			if(a == '*') arr[i+1][j+1]++; // pfx[i+1][j+1]++
+	// read in the initial trees
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			char a;
+			cin >> a;
+			forest[i + 1][j + 1] += a == '*';
 		}
 	}
 
-	FOR(i, 1, N+1) {
-		FOR(j, 1, N+1){
-			pfx[i][j] = arr[i][j] + pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
-			// pfx[i][j] += pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
+	// build the prefix sum array
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			tree_pref[i][j] = forest[i][j]
+						+ tree_pref[i - 1][j]
+						+ tree_pref[i][j - 1]
+						- tree_pref[i - 1][j - 1];
 		}
 	}
 
-	F0R(i, Q) {
+	for (int q = 0; q < Q; q++) {
 		int x1, x2, y1, y2;
 		cin >> x1 >> y1 >> x2 >> y2;
-		cout << pfx[x2][y2] - pfx[x1-1][y2] - pfx[x2][y1-1] + pfx[x1-1][y1-1] << "\n";
+		cout << tree_pref[x2][y2]
+				- tree_pref[x1-1][y2]
+				- tree_pref[x2][y1-1]
+				+ tree_pref[x1-1][y1-1] << '\n';
 	}
 }
 ```
@@ -459,27 +544,35 @@ public class ForestQueries {
 		pfx = new int[N+1][N+1];
 		arr = new int[N+1][N+1];
 
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			String line = io.next();
-			for(int j = 0; j < N; j++) {
-				if(line.charAt(j) == '*') {
-					arr[i+1][j+1]++;
+			for (int j = 0; j < N; j++) {
+				if (line.charAt(j) == '*') {
+					arr[i + 1][j + 1]++;
 				}
 			}
 		}
 
-		for(int i = 1; i < N + 1; i++) {
-			for(int j = 1; j < N + 1; j++) {
-				pfx[i][j] = arr[i][j] + pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
+		for (int i = 1; i < N + 1; i++) {
+			for (int j = 1; j < N + 1; j++) {
+				pfx[i][j] = arr[i][j]
+						+ pfx[i-1][j]
+						+ pfx[i][j-1]
+						- pfx[i-1][j-1];
 			}
 		}
 
-		for(int i = 0; i < Q; i++) {
+		for (int i = 0; i < Q; i++) {
 			int x1 = io.nextInt();
 			int y1 = io.nextInt();
 			int x2 = io.nextInt();
 			int y2 = io.nextInt();
-			io.println(pfx[x2][y2] - pfx[x1-1][y2] - pfx[x2][y1-1] + pfx[x1-1][y1-1]);
+			io.println(
+					pfx[x2][y2]
+					- pfx[x1-1][y2]
+					- pfx[x2][y1-1]
+					+ pfx[x1-1][y1-1]
+			);
 		}
 		io.close();
 	}
@@ -490,157 +583,31 @@ public class ForestQueries {
 
 </JavaSection>
 
+<PySection>
+
+```py
+side_len, query_num = [int(i) for i in input().split()]
+tree_prefixes = [[0 for _ in range(side_len + 1)] for _ in range(side_len + 1)]
+for r in range(side_len):
+	for ci, c in enumerate(input()):
+		tree = c == '*'
+		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1]
+										 + tree_prefixes[r + 1][ci]
+										 - tree_prefixes[r][ci]
+										 + tree)
+
+for _ in range(query_num):
+	from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
+	print(tree_prefixes[to_row][to_col]
+		  - tree_prefixes[to_row][from_col - 1]
+		  - tree_prefixes[from_row - 1][to_col]
+		  + tree_prefixes[from_row - 1][from_col - 1])
+```
+
+</PySection>
+
 </LanguageSection>
-
-<!--
-
-### 2-Dimensional
-
-#### Point
-
-We can apply a similar concept to 2D matrices. Let $\texttt{prefix}[i][j]$ be the sum of the values in the rectangle between $(0,0)$ and $(i, j)$, or $\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j]$. $\texttt{prefix}[i][j]$ is equal to the sum of $\texttt{arr}[i][j]$ and all the values in the region formed by the union of rectangles $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$.
-
-To determine the sum of values in this region, we can add the sum of values in these rectangles ($\texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1]$) and subtract the double counted overlap $\texttt{prefix}[i-1][j-1]$. This can be expressed by
-
-$$
-\texttt{prefix}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
-$$
-
-Given the sample case in [Forest Queries](https://cses.fi/problemset/task/1652), the algorithm goes as follows:
-
-We first build array $\texttt{arr}$, which stores the locations of the trees, by incrementing every point by 1.
-
-<center>
-	<table className='text-center'>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>0</td>
-			<td>1</td>
-			<td>1</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-		</tr>
-	</table>
-</center>
-
-Then, we build the prefix sum array.
-
-$$
-\texttt{prefix}[i][j] = \sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
-$$
-
-For our example, we get
-
-<center>
-	<table className='text-center'>
-	<tr>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>0</td>
-		<td>1</td>
-		<td>1</td>
-		<td>1</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>1</td>
-		<td>2</td>
-		<td>3</td>
-		<td>4</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>2</td>
-		<td>4</td>
-		<td>5</td>
-		<td>6</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>3</td>
-		<td>6</td>
-		<td>8</td>
-		<td>10</td>
-	</tr>
-	</table>
-</center>
-
-Notice it is padded with zeroes, and all queries can now be processed using
-
-$$
-\texttt{prefix}[A][B] - \texttt{prefix}[a-1][B] - \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
-$$
-
-For example, if we query $(2, 2)$ to $(3, 4)$ we get $A=3, B=4, a=2, b=2$, and substituting into our equation, we get
-
-$$
-\texttt{prefix}[3][4] - \texttt{prefix}[1][4] - \texttt{prefix}[3][1] + \texttt{prefix}[1][1] = 6 - 1 - 2 + 0 = 3
-$$ -->
-
-<!-- #### Overlapping Rectangles
-
-Given a rectangle with endpoints $(x_1, y_1), (x_2, y_2)$, we can compute the "layers" of many such rectangles bounded together through the use of increment and decrement points. Since our endpoints are not inclusive (note how area is the space in-between the points), our increment points are $(x_1, y_1),(x_2, y_2)$, and decrement points are $(x_1, y_2), (x_2, y_1)$. Our prefix array construction remains the same as described in the previous section. -->
 
 ### Problems
 
-<Problems problems={problems.cum2} />
-
-## A More Complicated Example
-
-What if we want to quickly answer the following type of query?
-
-> Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
-
-In addition to taking prefix sums over $a_i$, we'll also need to take prefix sums over $i\cdot a_i$.
-
-First, define the following:
-
-$$
-\texttt{ps}[i] = a_1+a_2+a_3+a_4+\cdots+a_i
-$$
-
-$$
-\texttt{ips}[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i
-$$
-
-Then, we have:
-
-$$
-l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]
-$$
-
-$$
-(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
-$$
-
-And so,
-
-$$
-1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
-$$
-
-Which is what we were looking for!
-
-<Problems problems={problems.complex} />
+<Problems problems="cum2" />

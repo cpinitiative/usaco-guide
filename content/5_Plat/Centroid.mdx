@@ -4,7 +4,7 @@ title: 'Centroid Decomposition'
 author: Siyong Huang, Benjamin Qi
 prerequisites:
   - intro-tree
-description: 'Decomposing a tree to faciliate path computations.'
+description: 'Decomposing a tree to facilitate path computations.'
 frequency: 1
 ---
 
@@ -15,185 +15,87 @@ TODO:
 
 -->
 
-
-
-export const problems = {
-	sam: [
-		new Problem(
-			'CF',
-			'Xenia & Tree',
-			'problemset/problem/342/E',
-			'Normal',
-			false,
-			['Centroid'],
-			''
-		),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Finding a Centroid',
-			'2079',
-			'Very Easy',
-			false,
-			[],
-			'cses-2079'
-		),
-		new Problem(
-			'CF',
-			'Ciel the Commander',
-			'321/problem/C',
-			'Easy',
-			true,
-			['Centroid'],
-			'Keep setting the centroid to the next rank'
-		),
-		new Problem(
-			'Baltic OI',
-			'2020 - Village (Maximum)',
-			'https://codeforces.com/contest/1387/problem/B2',
-			'Easy',
-			true,
-			['Centroid'],
-			''
-		),
-		new Problem(
-			'CSES',
-			'Fixed-Length Paths I',
-			'2080',
-			'Easy',
-			true,
-			['Centroid'],
-			'cses-2080'
-		),
-		new Problem(
-			'CSES',
-			'Fixed-Length Paths II',
-			'2081',
-			'Easy',
-			false,
-			['Centroid', 'BIT'],
-			'cses-2081'
-		),
-		new Problem(
-			'IOI',
-			'2011 - Race',
-			'https://oj.uz/problem/view/IOI11_race',
-			'Normal',
-			true,
-			['Centroid', 'Merging'],
-			''
-		),
-		new Problem(
-			'Plat',
-			'New Barns',
-			'817',
-			'Normal',
-			true,
-			['Centroid'],
-			"Build centroid decomp on the whole tree first and perform updates for each 'root' as expected."
-		),
-		new Problem(
-			'CF',
-			"Sherlock's bet to Moriarty",
-			'776/problem/F',
-			'Normal',
-			false,
-			['Centroid'],
-			'Similar to Ceil the Commander, but annoying to interpret input and order regions'
-		),
-		new Problem(
-			'CF',
-			'Digit Tree',
-			'715/problem/C',
-			'Normal',
-			false,
-			['Centroid', 'NT'],
-			"M is coprime to 10, so use Euler's Theorem and maps storing mods to count pairs."
-		),
-		new Problem(
-			'CF',
-			'Double Tree',
-			'1140/problem/G',
-			'Normal',
-			false,
-			['Centroid', 'DP'],
-			'DP + Centroid'
-		),
-		new Problem(
-			'JOI',
-			'2014 - Factories',
-			'JOI14_factories',
-			'Normal',
-			false,
-			['Centroid'],
-			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2014/2014-open-d1-factories-review.pdf'
-		),
-		new Problem(
-			'DMOJ',
-			'Bob Equilibrium',
-			'dmopc19c7p6',
-			'Hard',
-			false,
-			['Centroid'],
-			'DMOJ-bob-equilibrium'
-		),
-		new Problem(
-			'DMOJ',
-			'Time Traveller Imaxblue',
-			'tc19summerh',
-			'Hard',
-			false,
-			['Centroid'],
-			'DMOJ-time-travel'
-		),
-		new Problem(
-			'JOI',
-			'2013 - Synchronization',
-			'JOI13_synchronization',
-			'Hard',
-			false,
-			['Centroid', 'Small to Large'],
-			'joi-13-sync'
-		),
-		new Problem(
-			'Plat',
-			'At Large',
-			'793',
-			'Very Hard',
-			false,
-			['Centroid'],
-			'tight time limit'
-		),
-	],
-};
-
-<!-- lol CHT hasn't been introduced yet
-
-new Problem(
-	'CF',
-	'Sum of Prefix Sums',
-	'1303/problem/G',
-	'Hard',
-	false,
-	['Centroid', 'CHT'],
-	"Maintain convex hull trick as you iterate through subtrees. It's easier to have a different dfs for querying and updating CHT. Also run forwards and backwards to account for direction of prefix sum."
-),
-new Problem(
-	'CF',
-	'Raining Season',
-	'1019/problem/E',
-	'Very Hard',
-	false,
-	['Centroid', 'CHT', 'Merging'],
-	'Merge a bunch of smaller convex hull tricks together to create the ultimate convex hull trick'
-), -->
-
 ## Introduction
 
-<FocusProblem problem={problems.sam[0]} />
+### Centroids
 
-**Centroid Decomposition** is a divide and conquer technique for trees. The **centroid** of a tree is a node which, if rooted, results in no other nodes having a subtree of size greater than $\frac{N}{2}$. **Centroid Decomposition** works by repeated splitting the tree and each of the resulting subgraphs at the centroid, producing $\mathcal{O}(\log N)$ layers of subgraphs.
+A **centroid** of a tree is defined as a node such that when the tree is rooted
+at it, no other nodes have a subtree of size greater than $\frac{N}{2}$.
+
+<FocusProblem problem="sam" />
+
+We can find a centroid in a tree by starting at the root. Each step, loop
+through all of its children. If all of its children have subtree size less than
+or equal to $\frac{N}{2}$, then it is a centroid. Otherwise, move to the child
+with a subtree size that is more than $\frac{N}{2}$ and repeat until you find a
+centroid.
+
+<LanguageSection>
+
+<CPPSection>
+
+### Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int maxn = 200010;
+
+int n;
+vector <int> adj[maxn];
+int subtree_size[maxn];
+
+int get_subtree_size(int node, int par = -1) {
+	int& res = subtree_size[node];
+	res = 1;
+	for (int i : adj[node]) {
+		if (i == par) continue;
+		res += get_subtree_size(i, node);
+	}
+	return res;
+}
+
+int get_centroid(int node, int par = -1) {
+	for (int i : adj[node]) {
+		if (i == par) continue;
+
+		if (subtree_size[i] * 2 > n) {
+			return get_centroid(i, node);
+		}
+	}
+	return node;
+}
+
+int main() {
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--; b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	get_subtree_size(0);
+	cout << get_centroid(0) + 1 << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Centroid decomposition
+
+<FocusProblem problem="sam2" />
+
+**Centroid Decomposition** is a divide and conquer technique for trees.
+**Centroid Decomposition** works by repeated splitting the tree and each of the
+resulting subgraphs at the centroid, producing $\mathcal{O}(\log N)$ layers of
+subgraphs.
 
 <Resources>
 	<Resource
@@ -204,14 +106,18 @@ new Problem(
 	>
 		how to solve above problem
 	</Resource>
-	<Resource source="CF" title="galen_colin - Centroid Decomposition" url="https://codeforces.com/blog/entry/81661">
+	<Resource
+		source="CF"
+		title="galen_colin - Centroid Decomposition"
+		url="https://codeforces.com/blog/entry/81661"
+	>
 		blog + video for above problem. LCA isn't necessary though.
 	</Resource>
 	<Resource
 		source="GFG"
 		title="Centroid Decomposition of Tree"
 		url="centroid-decomposition-of-tree"
-	></Resource>
+	 />
 </Resources>
 
 ## Implementation
@@ -266,37 +172,60 @@ void centroid(int n = 1)
 
 <JavaSection>
 
-<!-- Modified from above. I can't guarauntee it compiles and functions as expected -->
+<!-- I used the code on a successful submission to "Xenia and Tree" https://codeforces.com/contest/342/submission/113088188 -->
 
 ```java
-boolean[] r = new boolean[MN];//removed
-int[] s = new int[MN];//subtree size
-public int dfs(int n, int p)
-{
-	s[n] = 1;
-	for(int x : a[n])
-		if(x != p && !r[x])
-			s[n] += dfs(x, n);
-	return s[n];
-}
-public int get_centroid(int n, int ms, int p)//n = node, ms = size of tree, p = parent
-{
-	for(int x : a[n])
-		if(x != p && !r[x])
-			if(s[x]*2 > ms)
-				return get_centroid(x, ms, n);
-	return n;
-}
-public void centroid(int n)
-{
-	int C = get_centroid(n, dfs(n, 0), 0);
+private static class Centroid {
+	int n;
+	int[][] g;
+	int[] size;
+	int[] parent;
+	boolean[] seen;
 
-	//do something
+	Centroid(int n, int[][] g) {
+		this.n = n;
+		this.g = g;
+		size = new int[n];
+		parent = new int[n];
+		seen = new boolean[n];
+		initCentroid(0, -1);
+	}
 
-	r[C] = 1;
-	for(int x : a[C])
-		if(!r[x])
-			centroid(x);
+	private int getSize(int u, int v) {
+		if (seen[u]) {
+			return 0;
+		}
+		size[u] = 1;
+		for (int next : g[u]) {
+			if (next != v) {
+				size[u] += getSize(next, u);
+			}
+		}
+		return size[u];
+	}
+
+	private void initCentroid(int u, int v) {
+		getSize(u, v);
+		final int c = findCentroid(u, -1, size[u]);
+		seen[c] = true;
+		parent[c] = v;
+		for (int next : g[c]) {
+			if (!seen[next]) {
+				initCentroid(next, c);
+			}
+		}
+	}
+
+	private int findCentroid(int u, int v, int currSize) {
+		for (int x : g[u]) {
+			if (x != v) {
+				if (!seen[x] && size[x] > currSize / 2) {
+					return findCentroid(x, u, currSize);
+				}
+			}
+		}
+		return u;
+	}
 }
 ```
 
@@ -406,4 +335,4 @@ int main()
 
 <!-- Note: Unfortunately, it seems like constant factor is especially important for DMOJ.  -->
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

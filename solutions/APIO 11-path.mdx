@@ -1,13 +1,59 @@
 ---
-id: apio-11-path
+id: apio-11-FindThePath
 source: APIO 2011
 title: Find the Path
-author: Andi Qu
+author: Albert Ye, Andi Qu
 ---
 
-<IncompleteSection />
+## Solution
 
-## Implementation
+**Time complexity**: $\mathcal{O}(N^2 \log N)$
+
+The framing of the problem means that it is most likely a Dijkstra problem; the
+hardest part is designing the nodes and edges.
+
+To form the edges, we look at the possible movements that we can take. Firstly,
+we can jump off of the current rectangle and potentially reach a new rectangle.
+Secondly, we can move along our current rectangle.
+
+In this case, every point on the border of a Deehive is a vertex, and edges
+connect adjacent points on Deehives as well as jumps between Deehives. However,
+this would be too many (up to $10^9$) verticies and edges!
+
+To optimize, we can use coordinate compression. Consider the set of significant
+lattices lines: those passing through corners (and edges) of Deehives, the start
+point, or end point. Let significant lattice points be all intersections of
+these lines.
+
+It can be shown that any path (between two significant lattice points) through
+TooDee can be transformed to use only significant lattice lines without
+increasing the length of the path.
+
+<Spoiler title="Reasoning">
+
+Suppose a Dee were to perform a "jump" between two Deehives. This jump starts
+from a significant lattice line and ends at another parallel significant lattice
+line (This is because edges of deehives are significant). If the Dee does not
+already jump along a significant lattice line, then the jump must have occurred
+inside a $1 \times k$ rectangle of significant lattice squares.
+
+Consider the first and last corners of this rectangle visited by the Dee. There
+is no increase in distance if the Dee instead took the shortest route along the
+border of this rectangle, traversing only along significant lattice lines. Note
+that this will always be possible if the initial jump is possible, because no
+Deehive can cover the border of the $1 \times k$ rectangle without covering the
+internal region as well.
+
+</Spoiler>
+
+Build the graph along the significant lattice grid and run Dijkstra's algorithm
+to find the shortest path.
+
+## Code
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -162,3 +208,7 @@ int main() {
 	return 0;
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>

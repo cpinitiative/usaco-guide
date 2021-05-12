@@ -10,141 +10,12 @@ description: 'Using subtrees as subproblems.'
 frequency: 2
 ---
 
-export const problems = {
-	sample: [
-		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], '@B'),
-	],
-	usaco: [
-		new Problem(
-			'AC',
-			'Independent Set',
-			'https://atcoder.jp/contests/dp/tasks/dp_p',
-			'Easy',
-			true,
-			['Tree', 'DP'],
-			'AC-IndependentSet'	
-		),
-		new Problem(
-			'Gold',
-			'Barn Painting',
-			'766',
-			'Easy',
-			false,
-			['Tree', 'DP'],
-			'similar to independent set on tree'
-		),
-		new Problem(
-			'Baltic OI',
-			'2020 - Village (Minimum)',
-			'https://codeforces.com/contest/1387/problem/B1',
-			'Normal',
-			false,
-			['Tree', 'Greedy'],
-			''
-		),
-		new Problem(
-			'POI',
-			'Parade',
-			'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
-			'Normal',
-			false,
-			[],
-			'poi-16-par'
-		),
-		new Problem('Gold', 'Delegation', '1019', 'Hard', false, ['Greedy'], ''),
-		new Problem(
-			'POI',
-			'2004 - Spies',
-			'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
-			'Hard',
-			false,
-			['Functional Graph'],
-			'poi-04-szp'
-		),
-		new Problem(
-			'POI',
-			'2008 - Mafia',
-			'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
-			'Hard',
-			false,
-			['Functional Graph'],
-			'poi-08-maf'
-		),
-	],
-	insane: [
-		new Problem(
-			'COI',
-			'2016 - Torrent',
-			'https://oj.uz/problem/view/COI16_torrent',
-			'Very Hard',
-			false,
-			['DP', 'Tree'],
-			'coi-16-torrent'
-		),
-		new Problem(
-			'Plat',
-			'Delegation',
-			'1020',
-			'Very Hard',
-			false,
-			['DP', 'Tree', 'Binary Search'],
-			''
-		),
-		new Problem(
-			'CF',
-			'Boboniu and Jianghu',
-			'1394/problem/D',
-			'Very Hard',
-			false,
-			['DP', 'Tree'],
-			''
-		),
-		new Problem(
-			'IOI',
-			'2007 - Training',
-			'https://oj.uz/problem/view/IOI07_training',
-			'Insane',
-			true,
-			['DP', 'Tree'],
-			''
-		),
-		new Problem(
-			'CSES',
-			'Creating Offices',
-			'1752',
-			'Insane',
-			false,
-			['Tree', 'Greedy'],
-			'equivalent to Baltic OI - Cat in a Tree.'
-		),
-		new Problem(
-			'Baltic OI',
-			'2016 - Swap',
-			'https://oj.uz/problem/view/BOI16_swap',
-			'Insane',
-			false,
-			['Tree', 'DP'],
-			'baltic-16-swap'
-		),
-	],
-};
-
-<!-- new Problem(
-	'Infoarena',
-	'Countfefete',
-	'https://www.infoarena.ro/problema/countfefete',
-	'Hard',
-	false,
-	[],
-	''
-), -->
-
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ## Tutorial
 
 <Resources>
-	<Resource source="CF" title="DP on Trees" url="20935"></Resource>
+	<Resource source="CF" title="DP on Trees" url="20935" />
 	<Resource
 		source="Philippines"
 		title="DP on Trees and DAGs"
@@ -156,7 +27,9 @@ export const problems = {
 
 <Info title="Pro Tip">
 
-Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! Also, sometimes a greedy strategy suffices in place of DP.
+Don't just dive into trying to figure out a DP state and transitions -- make
+some observations if you don't see any obvious DP solution! Also, sometimes a
+greedy strategy suffices in place of DP.
 
 </Info>
 
@@ -164,15 +37,25 @@ Don't just dive into trying to figure out a DP state and transitions -- make som
 
 ### Solution 1
 
-In this problem, we're asked to find the maximum matching of a tree, or the largest set of edges such that no two edges share an endpoint. Let's use DP on trees to do this.
+In this problem, we're asked to find the maximum matching of a tree, or the
+largest set of edges such that no two edges share an endpoint. Let's use DP on
+trees to do this.
 
 Root the tree at node $1$, allowing us to define the subtree of each node.
 
-Let $dp_2[v]$ represent the maximum matching of the subtree of $v$ such that we don't take any edges leading to some child of $v$. Similarly, let $dp_1[v]$ represent the maximum matching of the subtree of $v$ such that we take one edge leading into a child of $v$. Note that we can't take more than one edge leading to a child, because then two edges would share an endpoint.
+Let $dp_2[v]$ represent the maximum matching of the subtree of $v$ such that we
+don't take any edges leading to some child of $v$. Similarly, let $dp_1[v]$
+represent the maximum matching of the subtree of $v$ such that we take one edge
+leading into a child of $v$. Note that we can't take more than one edge leading
+to a child, because then two edges would share an endpoint.
 
 #### Taking No Edges
 
-Since we will take no edges to a child of $v$, the children vertices of $v$ can all take an edge to some child, or not. Additionally, observe that the children of $v$ taking an edge to a child will not prevent other children of $v$ from doing the same. In other words, all of the children are independent. So, the transitions are:
+Since we will take no edges to a child of $v$, the children vertices of $v$ can
+all take an edge to some child, or not. Additionally, observe that the children
+of $v$ taking an edge to a child will not prevent other children of $v$ from
+doing the same. In other words, all of the children are independent. So, the
+transitions are:
 
 $$
 dp_2[v] = \sum_{u \in child(v)} \max(dp_1[u], dp_2[u])
@@ -180,25 +63,31 @@ $$
 
 #### Taking One Edge
 
-The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1[v]$ for the fixed $u$:
+The case where we take one child edge of $v$ is a bit trickier. Let's assume the
+edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate
+$dp_1[v]$ for the fixed $u$:
 
 $$
 dp_1[v] = dp_2[u] + 1 + dp_2[v] - \max(dp_2[u], dp_1[u])
 $$
 
-In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2[u] + 1$. Then, to deal with the other children, we add:
+In other words, we take the edge $v \rightarrow u$, but we can't take any
+children of $u$ in the matching, so we add $dp_2[u] + 1$. Then, to deal with the
+other children, we add:
 
 $$
 \sum_{w \in child(v), w \neq u} \max(dp_1[w], dp_2[w]).
 $$
 
-Fortunately, since we've calculated $dp_2[v]$ already, this expression simplifies to:
+Fortunately, since we've calculated $dp_2[v]$ already, this expression
+simplifies to:
 
 $$
 dp_2[v] - \max(dp_2[u], dp_1[u])
 $$
 
-Overall, to calculate the transitions for $dp_1[v]$ over all possible children $u$:
+Overall, to calculate the transitions for $dp_1[v]$ over all possible children
+$u$:
 
 $$
 dp_1[v] = \max_{u \in child(v)} (dp_2[u] + 1 + dp_2[v] - \max(dp_2[u], dp_1[u]))
@@ -206,7 +95,8 @@ $$
 
 <Warning>
 
-Loop through the children of $v$ twice to calculate $dp_1[v]$ and $dp_2[v]$ separately! You need to know $dp_2[v]$ to calculate $dp_1[v]$.
+Loop through the children of $v$ twice to calculate $dp_1[v]$ and $dp_2[v]$
+separately! You need to know $dp_2[v]$ to calculate $dp_1[v]$.
 
 </Warning>
 
@@ -410,7 +300,7 @@ public class TreeMatching {
 
 ### Easier
 
-<Problems problems={problems.usaco} />
+<Problems problems="usaco" />
 
 <Warning>
 
@@ -420,6 +310,7 @@ Memory limit for "Spies" is very tight.
 
 ### Harder
 
-These problems are not Gold level. You may wish to return to these once you're in Platinum.
+These problems are not Gold level. You may wish to return to these once you're
+in Platinum.
 
-<Problems problems={problems.insane} />
+<Problems problems="insane" />

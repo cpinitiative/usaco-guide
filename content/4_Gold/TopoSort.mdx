@@ -5,69 +5,30 @@ author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu, Andrew Wang
 prerequisites:
   - bfs
   - intro-dp
-description: 'An ordering of vertices in a directed acyclic graph that ensures that a node is visited before every node it has a directed edge to.'
+description:
+  'An ordering of vertices in a directed acyclic graph that ensures that a node
+  is visited before every node it has a directed edge to.'
 frequency: 1
 ---
 
-
-
-export const problems = {
-	sample: [new Problem('CSES', 'Course Schedule', '1679', 'Easy', false, [])],
-	dir: [new Problem('CSES', 'Round Trip II', '1678', 'Easy', false, ['Cycle'])],
-	dp: [new Problem('CSES', 'Longest Flight Route', '1680', 'Easy', false, [])],
-	general: [
-		new Problem(
-			'CSES',
-			'Game Routes',
-			'1681',
-			'Easy',
-			true,
-			['TopoSort'],
-			'cses-1681'
-		),
-		new Problem(
-			'Kattis',
-			'Quantum Superposition',
-			'quantumsuperposition',
-			'Easy',
-			true,
-			['TopoSort'],
-			'kattis-quantum'
-		),
-		new Problem(
-			'Gold',
-			'Timeline',
-			'1017',
-			'Easy',
-			false,
-			['TopoSort'],
-			'not explicitly given, but graph is a DAG'
-		),
-		new Problem('Gold', 'Milking Order', '838', 'Normal', false, [
-			'TopoSort',
-			'Binary Search',
-		]),
-		new Problem(
-			'CSES',
-			'Course Schedule II',
-			'1757',
-			'Hard',
-			false,
-			['TopoSort'],
-			'cses-1757'
-		),
-	],
-};
-
-To review, a **directed** graph consists of edges that can only be traversed in one direction. Additionally, a **acyclic** graph defines a graph which does not contain cycles, meaning you are unable to traverse across one or more edges and return to the node you started on. Putting these definitions together, a **directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has edges which can only be traversed in one direction and does not contain cycles.
+To review, a **directed** graph consists of edges that can only be traversed in
+one direction. Additionally, a **acyclic** graph defines a graph which does not
+contain cycles, meaning you are unable to traverse across one or more edges and
+return to the node you started on. Putting these definitions together, a
+**directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has
+edges which can only be traversed in one direction and does not contain cycles.
 
 ## Topological Sort
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
-A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed acyclic graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering.
+A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a
+directed acyclic graph is a linear ordering of its vertices such that for every
+directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in
+the ordering.
 
-There are two common ways to topologically sort, one involving DFS and the other involving BFS.
+There are two common ways to topologically sort, one involving DFS and the other
+involving BFS.
 
 <Resources>
 	<Resource
@@ -220,11 +181,17 @@ public class CourseSchedule {
 
 ### Finding a Cycle
 
-<FocusProblem problem={problems.dir[0]} />
+<FocusProblem problem="dir" />
 
-We can modify the algorithm above to return a directed cycle in the case where a topological sort does not exist. To find the cycle, we add each node we visit onto the stack until we detect a node already on the stack. 
+We can modify the algorithm above to return a directed cycle in the case where a
+topological sort does not exist. To find the cycle, we add each node we visit
+onto the stack until we detect a node already on the stack.
 
-For example, suppose that our stack currently consists of $s_1,s_2,\ldots,s_i$ and we then visit $u=s_j$ for some $j\le i$. Then $s_j\to s_{j+1}\to \cdots\to s_i\to s_j$ is a cycle. We can reconstruct the cycle without explicitly storing the stack by marking $u$ as not part of the stack and recursively backtracking until $u$ is reached again. 
+For example, suppose that our stack currently consists of $s_1,s_2,\ldots,s_i$
+and we then visit $u=s_j$ for some $j\le i$. Then
+$s_j\to s_{j+1}\to \cdots\to s_i\to s_j$ is a cycle. We can reconstruct the
+cycle without explicitly storing the stack by marking $u$ as not part of the
+stack and recursively backtracking until $u$ is reached again.
 
 <LanguageSection>
 
@@ -374,7 +341,8 @@ This code assumes that there are no self-loops.
 
 ## BFS
 
-The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
+The BFS version is known as
+[Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm).
 
 <LanguageSection>
 
@@ -444,33 +412,51 @@ static void topological_sort() {
 
 </LanguageSection>
 
+<Optional>
+
+We can also use Kahn's algorithm to extract the lexicographically minimum
+topological sort by breaking ties lexographically.
+
+Although the above code does not do this, one can simply replace the `queue`
+with a `priority_queue` to implement this extension.
+
+</Optional>
+
 ## Dynamic Programming
 
 <Resources>
-	<Resource source="CPH" title="16.2 - Dynamic Programming" starred></Resource>
+	<Resource source="CPH" title="16.2 - Dynamic Programming" starred />
 </Resources>
 
 <!-- 	<Resource source="PAPS" title="9.2 - Dynamic Programming">
 		Best Path in a DAG
 	</Resource> -->
 
-One useful property of directed acyclic graphs is, as the name suggests, that no cycles exist. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
+One useful property of directed acyclic graphs is, as the name suggests, that no
+cycles exist. If we consider each node in the graph as a state, we can perform
+dynamic programming on the graph if we process the states in an order that
+guarantees for every edge $u\to v$ that $u$ is processed before $v$.
+Fortunately, this is the exact definition of a topological sort!
 
-<FocusProblem problem={problems.dp[0]} />
+<FocusProblem problem="dp" />
 
 In this task, we must find the longest path in a DAG.
 
 <Spoiler title="Solution">
 
-Let $dp[v]$ denote the length of the longest path ending at the node $v$. Clearly
+Let $dp[v]$ denote the length of the longest path ending at the node $v$.
+Clearly
 
 $$
 dp[v]=\max_{\text{edge } u\to v \text{ exists}}dp[u]+1,
 $$
 
-or $1$ if $v$ is node $1$. If we process the states in topological order, it is guaranteed that $dp[u]$ will already have been computed before computing $dp[v]$.
+or $1$ if $v$ is node $1$. If we process the states in topological order, it is
+guaranteed that $dp[u]$ will already have been computed before computing
+$dp[v]$.
 
-Note that the implementation of this idea below uses Kahn's algorithm for topological sorting:
+Note that the implementation of this idea below uses Kahn's algorithm for
+topological sorting:
 
 <LanguageSection>
 
@@ -779,4 +765,4 @@ public class Main {
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

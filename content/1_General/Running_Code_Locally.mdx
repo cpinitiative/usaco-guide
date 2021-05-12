@@ -1,7 +1,9 @@
 ---
 id: running-code-locally
 title: Running Code Locally
-author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang, Shourya Bansal
+author:
+  Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang,
+  Shourya Bansal
 description: Options for running your language of choice locally.
 prerequisites:
   - running-code-online
@@ -9,11 +11,14 @@ prerequisites:
 
 <Info title="Which text editor or IDE should I use?">
 
-Depends on your personal preference. Try multiple and see which one you like best.
+Depends on your personal preference. Try multiple and see which one you like
+best.
 
 </Info>
 
-If you're just starting out, it's easier to begin by running code online and worry about running locally later. You can find more information about running code online [here](https://usaco.guide/general/running-code-online).
+If you're just starting out, it's easier to begin by running code online and
+worry about running locally later. You can find more information about running
+code online [here](https://usaco.guide/general/running-code-online).
 
 ## Using an IDE
 
@@ -45,7 +50,7 @@ Please let us know if you have trouble with installation!
 		url="https://code.visualstudio.com/"
 	>
 		More lightweight than Visual Studio Community, requires some configuration.
-		See <a href="http://www.csc.kth.se/~jsannemo/slask/main.pdf">PAPS 2.1</a>{' '}
+		See <a href="https://www.csc.kth.se/~jsannemo/slask/main.pdf#page=30">PAPS 2.1</a>{' '}
 		and the{' '}
 		<a href="https://code.visualstudio.com/docs/cpp/config-linux">docs</a> for
 		C++ setup instructions.
@@ -71,11 +76,9 @@ Please let us know if you have trouble with installation!
 		title="CLion"
 		url="https://www.jetbrains.com/clion/"
 	>
+    	<!-- prettier-ignore -->
 		Requires a license, but{' '}
-		<a href="https://www.jetbrains.com/community/education/#students">
-			free for students
-		</a>
-		.
+		<a href="https://www.jetbrains.com/community/education/#students">free for students</a>.
 	</Resource>
 </Resources>
 
@@ -91,15 +94,14 @@ Please let us know if you have trouble with installation!
 		source="Eclipse"
 		title="C/C++ IDE"
 		url="https://www.eclipse.org/downloads/packages/release/2020-06/r/eclipse-ide-cc-developers"
-	>
-		{' '}
-	</Resource> -->
+	/> -->
 
 </CPPSection>
 
 <JavaSection>
 
-It can be useful to use a Java IDE to take advantage of the powerful debugging features in Java.
+It can be useful to use a Java IDE to take advantage of the powerful debugging
+features in Java.
 
 <Resources>
 	<Resource
@@ -129,7 +131,11 @@ It can be useful to use a Java IDE to take advantage of the powerful debugging f
 
 <PySection>
 
-Python comes with a program, known as **IDLE** (Integrated Development and Learning Environment), that allows one to write and run Python code. It supports many features, such as syntax highlighting and automatic indentation, that one would normally expect from an IDE/text editor. However, feel free to use another editor or IDE if you want to.
+Python comes with a program, known as **IDLE** (Integrated Development and
+Learning Environment), that allows one to write and run Python code. It supports
+many features, such as syntax highlighting and automatic indentation, that one
+would normally expect from an IDE/text editor. However, feel free to use another
+editor or IDE if you want to.
 
 </PySection>
 
@@ -141,7 +147,8 @@ Python comes with a program, known as **IDLE** (Integrated Development and Learn
 
 <CPPSection>
 
-You can run your C++ programs from the command line and use a text editor of your choice.
+You can run your C++ programs from the command line and use a text editor of
+your choice.
 
 ### Text Editors
 
@@ -151,58 +158,102 @@ You can run your C++ programs from the command line and use a text editor of you
 		repeatedly ask you to purchase a license.
 	</Resource>
 	<Resource title="Vim" url="https://www.vim.org/">
-		Classic text editor, usually preinstalled on Linux. Also see Neovim, MacVim
+		Classic text editor, usually preinstalled on Linux. Also see Neovim, MacVim.
 	</Resource>
 	<Resource title="Atom" url="https://atom.io/">
 		From the makers of Github.
 	</Resource>
 </Resources>
 
-Vim is probably the easiest way to print syntax-highlighted code on Mac, see the response to [this post](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting).
+Vim is probably the easiest way to print syntax-highlighted code on Mac, see the
+response to
+[this post](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting).
 
 #### Sublime Text Notes (Ben)
 
-- I prefer the **Mariana** color scheme in place of the default.
-  - open command palette (Cmd-Shift-P) -> change color scheme
-- [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
-  - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
+I prefer Sublime Text because it opens instantly, it's simple to use, and it's
+easy on the eyes. Also, it's not too hard to write your own
+[custom commands](https://stackoverflow.com/questions/24276143/can-i-create-my-own-command-in-sublime-and-how-to-associate-python-implementatio)
+in Python.
+
+- I prefer the _Mariana_ color scheme in place of the default.
+  - From the command palette (Cmd-Shift-P), follow
+    `UI: Select Color Scheme -> Mariana`
 - [Package - Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
+
   - highlights compilation errors and warnings from `-Wall`
-  - can change compilation commands in `linter.py`
-- [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding) (I don't use)
+  - can use
+    [`PackageResourceViewer`](https://packagecontrol.io/packages/PackageResourceViewer)
+    to change linter settings. From the command palette, follow
+    `PackageResourceViewer -> Open Resource -> SublimeLinter-gcc -> linter.py`.
+    Now you can modify `linter.py` to compile with the same options that you
+    normally use. For example, my `linter.py` looks like the following:
+
+  ```py
+  class GPlusPlus(Linter):
+      name = "g++"
+      cmd = "g++ ${args} -"
+      regex = OUTPUT_RE
+      multiline = True
+      on_stderr = None
+
+      defaults = {
+          "selector": "source.c++",
+          "args": ["-c", "-DLOCAL", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wshadow", "-Wconversion", "-Wfloat-equal", "-Wduplicated-cond", "-Wlogical-op"],
+          "-I +": [],
+          "-x": "c++",
+          "-o": getGarbabgeFilePath(),
+      }
+  ```
+
+Here's what linting looks like:
+
+![sublime](running-code-img/sublime-ex.png)
+
+Additional notes:
+
+- I compile and run from the command line rather than building from within
+  sublime text (i.e., I don't use Cmd-B).
+- [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
+  - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X
+    Mojave.
+- [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding)
+  (I don't use)
   - test manager can be useful
   - linting is covered by the above
-  - stress testing is covered in [Debugging](/general/debugging-lang#stress-testing)
+  - stress testing is covered in
+    [Debugging](/general/debugging-lang#stress-testing)
   - can't get debug to work
-
-<!--    - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
-    - no need to do this if you just use command line to compile & run -->
 
 ### Further Instructions
 
-See [this module](/general/cpp-command) for information about installing, compiling, and running C++ from the command line.
+See [this module](/general/cpp-command) for information about installing,
+compiling, and running C++ from the command line.
 
 ## Including `<bits/stdc++.h>`
 
-You can use `#include <bits/stdc++.h>` in place of separately including libraries.
+You can use `#include <bits/stdc++.h>` in place of separately including
+libraries.
 
 <Resources>
-	<Resource source="CPH" title="1.1 - C++ Code Template" starred></Resource>
+	<Resource source="CPH" title="1.1 - C++ Code Template" starred />
 	<Resource
 		source="SO"
 		title="How does #include <bits/stdc++.h> work in C++?"
 		url="https://stackoverflow.com/questions/25311011/how-does-include-bits-stdc-h-work-in-c/25311052#25311052"
-	>
-		{' '}
-	</Resource>
-	<Resource source="GFG" title="GFG - <bits/stdc++.h>" url="bitsstdc-h-c">
-		{' '}
-	</Resource>
+	/>
+	<Resource source="GFG" title="GFG - <bits/stdc++.h>" url="bitsstdc-h-c" />
 </Resources>
 
 ### Usage
 
-This is usable with [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection). However, Mac OS X uses [Clang](https://en.wikipedia.org/wiki/Clang) while Windows uses [Microsoft Visual C++ (MVSC)](https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B) by default. `<bits/stdc++.h>` is **not** a standard header file, so it will not work with the latter two. This is one of the reasons why you should **not** use `<bits/stdc++.h>` outside of competitive programming.
+This is usable with
+[GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection). However, Mac OS X
+uses [Clang](https://en.wikipedia.org/wiki/Clang) while Windows uses
+[Microsoft Visual C++ (MVSC)](https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B)
+by default. `<bits/stdc++.h>` is **not** a standard header file, so it will not
+work with the latter two. This is one of the reasons why you should **not** use
+`<bits/stdc++.h>` outside of competitive programming.
 
 <Resources>
 	<Resource
@@ -217,10 +268,11 @@ This is usable with [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)
 		source="SO"
 		title="#include <bits/stdc++.h> with visual studio does not compile"
 		url="https://stackoverflow.com/questions/25337300/include-bits-stdc-h-with-visual-studio-does-not-compile"
-	></Resource>
+	 />
 </Resources>
 
-If you install GCC as described later in the module linked above, then you should be good to go.
+If you install GCC as described later in the module linked above, then you
+should be good to go.
 
 ## OS-Specific Recommendations
 
@@ -230,13 +282,22 @@ If you install GCC as described later in the module linked above, then you shoul
 
 ### Windows
 
-With the variety of software available for Windows, deciding what to use can be difficult. While the most popular options are Visual Studio Code, Geany, and CodeBlocks, any text editor or IDE that you feel comfortable using (as long as it works with C++) will work.
+With the variety of software available for Windows, deciding what to use can be
+difficult. While the most popular options are Visual Studio Code, Geany, and
+CodeBlocks, any text editor or IDE that you feel comfortable using (as long as
+it works with C++) will work.
 
-To get the full functionality of C++ on your Windows Machine, you should install one of the following compilers, from easiest to most difficult to set up and use:
+To get the full functionality of C++ on your Windows Machine, you should install
+one of the following compilers, from easiest to most difficult to set up and
+use:
 
 #### Simple: [MinGW](http://mingw.org/) (Minimalist GNU for Windows)
 
-If you want to keep the ease of use and simplicity of Linux C++, including the ability to use commands like `g++` and easily include `<bits/stdc++.h>`, you can install the compiler MinGW. This is a version of the `g++` compiler from Linux available on Windows. If you are using VS Code, setting up MinGW can be more difficult, but there are great guides to make the process easier.
+If you want to keep the ease of use and simplicity of Linux C++, including the
+ability to use commands like `g++` and easily include `<bits/stdc++.h>`, you can
+install the compiler MinGW. This is a version of the `g++` compiler from Linux
+available on Windows. If you are using VS Code, setting up MinGW can be more
+difficult, but there are great guides to make the process easier.
 
 <Resources>
 	<Resource
@@ -269,30 +330,42 @@ If you want to keep the ease of use and simplicity of Linux C++, including the a
 	</Resource>
 </Resources>
 
-Depending on the installer you used, installing MinGW could be a little complicated.
+Depending on the installer you used, installing MinGW could be a little
+complicated.
 
 **The Official Installer:**
 
-1.  First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/).
-2.  Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
-3.  Finally, Add it to your PATH following the latter half of [this tutorial](http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
+1.  First, download and run the
+    [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/).
+2.  Once it's installed, open the MinGW Installation Manager, click on Basic
+    Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+3.  Finally, Add it to your PATH following the latter half of
+    [this tutorial](http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
 
 **Microsoft's Mirror Installer:**
 
 1.  First, [download the installer](https://tinyurl.com/mingw-usaco)
 2.  When you run it, leave all settings at default except `Architecture`.
-	1. For `Architecture`, select `x86_64`.
-3.  After you click next, copy the `Destination Folder Path` for later and finish the installation.
+    1.  For `Architecture`, select `x86_64`.
+3.  After you click next, copy the `Destination Folder Path` for later and
+    finish the installation.
 4.  Now, you need to add MinGW to your `Path`. To do that:
-	1.  After the Installation has completed, search for `Environmental Variables` in the Windows Search Bar and click open
-	2.  Click the button `Environment Variables` at the bottom left.
-	3.  In the bottom half of the screen (under `System variables`), find the key `Path` and double click.
-	4.  Click `New` on the top right and paste the path you copied. Add `\bin` to the end of it. It should look something like this: `C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin`
-	5.  You're Good to Go!
+    1.  After the Installation has completed, search for
+        `Environmental Variables` in the Windows Search Bar and click open
+    2.  Click the button `Environment Variables` at the bottom left.
+    3.  In the bottom half of the screen (under `System variables`), find the
+        key `Path` and double click.
+    4.  Click `New` on the top right and paste the path you copied. Add `\bin`
+        to the end of it. It should look something like this:
+        `C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin`
+    5.  You're Good to Go!
 
 #### Moderate: Microsoft Compiler Toolset
 
-Microsoft's Visual C++ Compiler is the official compiler for compiling programs for Windows and can be installed either via installing the relevant packages with Visual Studio 2019 or the build tools from their website. More information on its installation can be found in their documentation.
+Microsoft's Visual C++ Compiler is the official compiler for compiling programs
+for Windows and can be installed either via installing the relevant packages
+with Visual Studio 2019 or the build tools from their website. More information
+on its installation can be found in their documentation.
 
 <Resources>
 	<Resource
@@ -304,7 +377,9 @@ Microsoft's Visual C++ Compiler is the official compiler for compiling programs 
 	</Resource>
 </Resources>
 
-In order to get a similar library to `<bits/stdc++.h>` you can use the following template, which automatically swaps between `<bits/stdc++.h>` and Microsoft's variant depending on the system running it:
+In order to get a similar library to `<bits/stdc++.h>` you can use the following
+template, which automatically swaps between `<bits/stdc++.h>` and Microsoft's
+variant depending on the system running it:
 
 ```cpp
 #ifdef _WIN32
@@ -316,17 +391,29 @@ In order to get a similar library to `<bits/stdc++.h>` you can use the following
 using namespace std;
 ```
 
-This checks if the compiler is compiling for windows (your local machine) or if it is compiling for the remote judge and subsequently includes the correct libraries for the system. This comes with the same consequences as using `<bits/stdc++.h>` for the same reasons.
+This checks if the compiler is compiling for windows (your local machine) or if
+it is compiling for the remote judge and subsequently includes the correct
+libraries for the system. This comes with the same consequences as using
+`<bits/stdc++.h>` for the same reasons.
 
-_Note: As USACO has now disallowed the use of templates during competitions, if you want to be able to get the functionality of `<bits/stdc++.h>` on your local machine, you should use MinGW instead._
+_Note: As USACO has now disallowed the use of templates during competitions, if
+you want to be able to get the functionality of `<bits/stdc++.h>` on your local
+machine, you should use MinGW instead._
 
 #### Difficult: [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 
-If you're already accustomed to the Linux Command line, this might be the best option for you.
+If you're already accustomed to the Linux Command line, this might be the best
+option for you.
 
-Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel (or an emulation layer, depending on which version you use) within you windows installation. This allows you to use Linux binaries without needing to use Linux as your main Operating System, meaning that you can install `g++`, use `g++`, and consequently include `<bits/stdc++.h>` in your Competitive Programming C++ files.
+Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel
+(or an emulation layer, depending on which version you use) within you windows
+installation. This allows you to use Linux binaries without needing to use Linux
+as your main Operating System, meaning that you can install `g++`, use `g++`,
+and consequently include `<bits/stdc++.h>` in your Competitive Programming C++
+files.
 
-Many people use WSL (such as Anthony), but it can be difficult to properly set up.
+Many people use WSL (such as Anthony), but it can be difficult to properly set
+up.
 
 <Resources>
 	<Resource
@@ -340,7 +427,8 @@ Many people use WSL (such as Anthony), but it can be difficult to properly set u
 
 If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
-To install the necessary tools after setting up WSL, you can run the following commands.
+To install the necessary tools after setting up WSL, you can run the following
+commands.
 
 On Debian based distributions like Ubuntu:
 
@@ -354,20 +442,23 @@ On Arch based distributions like Arch Linux:
 sudo pacman -Sy base-devel
 ```
 
-You can find many tutorials on how to style up WSL and make it feel more cozy. The first step is to use a proper terminal and not the default one that Windows provides. An easy to use option is Windows Terminal, which can be found on the [Microsoft Store](https://www.microsoft.com/store/productId/9N0DX20HK701).
+You can find many tutorials on how to style up WSL and make it feel more cozy.
+The first step is to use a proper terminal and not the default one that Windows
+provides. An easy to use option is Windows Terminal, which can be found on the
+[Microsoft Store](https://www.microsoft.com/store/productId/9N0DX20HK701).
 
 <Resources>
 	<Resource
 		title="Set Up and Customize Windows Terminal"
 		url="https://medium.com/@ajitsahoo29/the-ultimate-guide-to-install-and-customize-windows-terminal-2019-6963dfc06587"
 	>
-	Setting up your terminal
+		Setting up your terminal
 	</Resource>
 	<Resource
 		title="Make the command line look good"
 		url="https://medium.com/@shivam1/make-your-terminal-beautiful-and-fast-with-zsh-shell-and-powerlevel10k-6484461c6efb"
 	>
-	Get a beautiful command line interface
+		Get a beautiful command line interface
 	</Resource>
 </Resources>
 
@@ -377,7 +468,10 @@ XCode?
 
 #### Using `<bits/stdc++.h>` Without Installing GCC
 
-If you installed Clang on Mac, then you can download `stdc++.h` from [here](https://raw.githubusercontent.com/tekfyl/bits-stdc-.h-for-mac/master/stdc%2B%2B.h) and move it into a folder named `bits` that is located in the same directory as where all other C++ header files are located. However, this is not recommended.
+If you installed Clang on Mac, then you can download `stdc++.h` from
+[here](https://raw.githubusercontent.com/tekfyl/bits-stdc-.h-for-mac/master/stdc%2B%2B.h)
+and move it into a folder named `bits` that is located in the same directory as
+where all other C++ header files are located. However, this is not recommended.
 
 <Resources>
 	<Resource
@@ -397,7 +491,8 @@ If you installed Clang on Mac, then you can download `stdc++.h` from [here](http
 
 #### Linux
 
-First, you can check if you have Java already installed by running `java --version` in the terminal. If it returns something like this:
+First, you can check if you have Java already installed by running
+`java --version` in the terminal. If it returns something like this:
 
 ```
 openjdk 11.0.9.1 2020-11-04
@@ -405,35 +500,47 @@ OpenJDK Runtime Environment (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04)
 OpenJDK 64-Bit Server VM (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04, mixed mode, sharing)
 ```
 
-That means you have Java installed already. On the other hand, if you get something like this:
+That means you have Java installed already. On the other hand, if you get
+something like this:
 
 ```
 Command 'java' not found
 ```
 
-You will have to download and install JDK. On most Linux distros, the JDK can be downloaded via the built in package manager.
+You will have to download and install JDK. On most Linux distros, the JDK can be
+downloaded via the built in package manager.
 
 ##### Ubuntu/Debian
 
-On Ubuntu, Debian, and other Ubuntu/Debian based distos, the JDK can be installed via `apt`. You can install the Java JDK from the default repositories by running: `sudo apt install default-jdk`.
+On Ubuntu, Debian, and other Ubuntu/Debian based distos, the JDK can be
+installed via `apt`. You can install the Java JDK from the default repositories
+by running: `sudo apt install default-jdk`.
 
-After this finishes installing, if you run `java --version` again, you should get something like above.
+After this finishes installing, if you run `java --version` again, you should
+get something like above.
 
 ##### Arch
 
-On Arch and other Arch based distos (like Manjaro), the JDK can be installed via `pacman`. You can install the Java JDK from the default repositories by running: `sudo pacman -S jdk-openjdk`.
+On Arch and other Arch based distos (like Manjaro), the JDK can be installed via
+`pacman`. You can install the Java JDK from the default repositories by running:
+`sudo pacman -S jdk-openjdk`.
 
-After this finishes installing, if you run `java --version` again, you should get something like above.
+After this finishes installing, if you run `java --version` again, you should
+get something like above.
 
 ##### Fedora
 
-On Fedora and other Red Hat based distos, the JDK can be installed via `dnf`. You can install the Java JDK from the default repositories by running: `sudo dnf install java-openjdk-devel.x86_64`.
+On Fedora and other Red Hat based distos, the JDK can be installed via `dnf`.
+You can install the Java JDK from the default repositories by running:
+`sudo dnf install java-openjdk-devel.x86_64`.
 
-After this finishes installing, if you run `java --version` again, you should get something like above.
+After this finishes installing, if you run `java --version` again, you should
+get something like above.
 
 #### Windows
 
-First, can check if you already have Java installed by running `java --version` in `cmd`. If it returns something like this:
+First, can check if you already have Java installed by running `java --version`
+in `cmd`. If it returns something like this:
 
 ```
 openjdk 11.0.9.1 2020-11-04
@@ -441,20 +548,27 @@ OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
 ```
 
-That means that you have Java installed already. On the other hand, if you get something like this:
+That means that you have Java installed already. On the other hand, if you get
+something like this:
 
 ```
 'java' is not recognized as an internal or external command,
 operable program or batch file.
 ```
 
-You will have to download and install JDK from [here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_windows_hotspot_11.0.9.1_1.msi).
+You will have to download and install JDK from
+[here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_windows_hotspot_11.0.9.1_1.msi).
 
-After it finishes installing, if you run `java --version` again, you should get something like above. Note: the installer should automatically add Java into the system `PATH`, but in the event that it doesn't, you can find more information on how to do that [here](https://www.poftut.com/how-to-set-java-jre-and-jdk-home-path-and-environment-variables-on-windows).
+After it finishes installing, if you run `java --version` again, you should get
+something like above. Note: the installer should automatically add Java into the
+system `PATH`, but in the event that it doesn't, you can find more information
+on how to do that
+[here](https://www.poftut.com/how-to-set-java-jre-and-jdk-home-path-and-environment-variables-on-windows).
 
 #### macOS
 
-First, can check if you already have Java installed by running `java --version` in the terminal. If it returns something like this:
+First, can check if you already have Java installed by running `java --version`
+in the terminal. If it returns something like this:
 
 ```
 openjdk 11.0.9.1 2020-11-04
@@ -462,19 +576,23 @@ OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
 ```
 
-That means that you have Java installed already. On the other hand, if you get something like this:
+That means that you have Java installed already. On the other hand, if you get
+something like this:
 
 ```
 -bash: java: command not found
 ```
 
-You will have to download and install JDK from [here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_mac_hotspot_11.0.9.1_1.pkg).
+You will have to download and install JDK from
+[here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_mac_hotspot_11.0.9.1_1.pkg).
 
-After it finishes installing, if you run `java --version` again, you should get something like above.
+After it finishes installing, if you run `java --version` again, you should get
+something like above.
 
 ### Compiling and Running
 
-Running a Java file off of the command-line is relatively simple after the JDK is downloaded.
+Running a Java file off of the command-line is relatively simple after the JDK
+is downloaded.
 
 Consider this code of `Main.java` and assume it is in a file on your computer:
 
@@ -486,13 +604,15 @@ public class Main {
 }
 ```
 
-Use the `cd` command on your console to get to the directory that contains `Main.java`. Then, run the following command to compile the code:
+Use the `cd` command on your console to get to the directory that contains
+`Main.java`. Then, run the following command to compile the code:
 
 ```
 javac Main.java
 ```
 
-If it runs successfully, a file called `Main.class` will show up in the same directory, which can be executed with the next command:
+If it runs successfully, a file called `Main.class` will show up in the same
+directory, which can be executed with the next command:
 
 ```
 java Main
@@ -500,17 +620,30 @@ java Main
 
 If everything goes accordingly, the console should output `Hello World!`.
 
-If you do USACO-style file I/O, meaning that files are in the "local directory", then the files must be located in the same directory as the source code (if you use the above method). You can find a Java testing script for USACO [here](https://usaco.guide/general/debugging-lang#stress-testing).
+If you do USACO-style file I/O, meaning that files are in the "local directory",
+then the files must be located in the same directory as the source code (if you
+use the above method). You can find a Java testing script for USACO
+[here](https://usaco.guide/general/debugging-lang#stress-testing).
 
 </JavaSection>
 
 <PySection>
 
-Download Python through [the official website](https://python.org). On Windows and Mac, you can download executable files directly; on Linux, you must either download the Python source code and compile from source, or obtain Python through your package manager.
+Download Python through [the official website](https://python.org). On Windows
+and Mac, you can download executable files directly; on Linux, you must either
+download the Python source code and compile from source, or obtain Python
+through your package manager.
 
-Make sure that you are using the correct version of Python. Python 2 is quite different from Python 3 (but parts of the version number beyond 2. or 3. do not matter much). We generally recommend newcomers to use Python 3, but if you are used to programming in Python 2, that is OK too.
+Make sure that you are using the correct version of Python. Python 2 is quite
+different from Python 3 (but parts of the version number beyond 2. or 3. do not
+matter much). We generally recommend newcomers to use Python 3, but if you are
+used to programming in Python 2, that is OK too.
 
-**The Python version can matter when using the command line to run Python;** sometimes, `python3` must be used instead of `python` in order to run Python 3. Try both commands, and pay attention to the version that Python prints to determine if this is the case on your system. For example, running the following in Terminal on my computer produces:
+**The Python version can matter when using the command line to run Python;**
+sometimes, `python3` must be used instead of `python` in order to run Python 3.
+Try both commands, and pay attention to the version that Python prints to
+determine if this is the case on your system. For example, running the following
+in Terminal on my computer produces:
 
 ```
 python --version # prints Python 2.7.13

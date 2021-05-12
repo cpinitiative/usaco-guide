@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
-import LinksToEdit from './LinksToEdit';
 
 const TableOfContentsBlock = ({
   tableOfContents,
 }: {
   tableOfContents: TOCHeading[];
 }) => {
-  let links = genLinksFromTOCHeadings(
+  const links = genLinksFromTOCHeadings(
     tableOfContents,
     _ =>
       'block mb-2 transition text-gray-600 dark:text-dark-med-emphasis hover:underline hover:text-blue-600 dark:hover:text-dark-high-emphasis'
@@ -24,8 +23,6 @@ const TableOfContentsBlock = ({
         </>
       )}
       <hr className="my-6 dark:border-gray-700" />
-
-      <LinksToEdit className="group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />
 
       {/* <OutboundLink
         href="https://www.reddit.com/r/usaco/"

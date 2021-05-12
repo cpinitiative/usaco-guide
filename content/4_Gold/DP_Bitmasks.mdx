@@ -1,0 +1,164 @@
+---
+id: dp-bitmasks
+title: 'Bitmask DP'
+author: Michael Cao, Siyong Huang, Andrew Wang, Neo Wang
+prerequisites:
+  - intro-bitwise
+  - intro-dp
+description: DP problems that require iterating over subsets.
+frequency: 1
+redirects:
+  - /plat/dp-bitmasks
+---
+
+<Info title="Pro Tip">
+
+You can often use this to solve subtasks.
+
+</Info>
+
+## Bitmask DP
+
+<FocusProblem problem="sam" />
+
+### Tutorial
+
+<Resources>
+	<Resource
+		source="CPH"
+		title="10.5 - DP on Bits, 19.2 - Hamiltonian Paths"
+		starred
+	>
+		Elevator Rides, SOS, Hamiltonian
+	</Resource>
+	<Resource
+		source="NW@nwatx"
+		title="A Primer on Bitmask DP"
+		url="https://nwatx.me/post/dpbitmasks"
+		starred
+	/>
+	<Resource source="PAPS" title="9.4 - Subset DP">
+		example - similar to Hamiltonian
+	</Resource>
+	<Resource source="CF" title="DP Over Subsets" url="337">
+		Hamiltonian walks
+	</Resource>
+	<Resource
+		source="HE@HackerEarth"
+		title="DP and Bit Masking"
+		url="https://www.hackerearth.com/practice/algorithms/dynamic-programming/bit-masking/tutorial/"
+	/>
+</Resources>
+
+### Solution
+
+<Spoiler title = "Solution">
+
+Let $dp[S][i]$ be the number of routes that visit all the cities in the subset
+$S$ and end at city $i$. The transitions will then be:
+
+$$
+dp[S][i] = \sum_{x \in adj[i]} dp[S  \setminus \{i\}][x] \text{ if $x \in S$}
+$$
+
+where $S  \setminus \{i\}$ is the subset $S$ without city $i$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+
+const int MX = (1 << 20);
+ll dp[MX][21];
+vector<int> adj[21];
+const ll MOD = (ll)1e9+7;
+
+int main() {
+	int N, M; cin >> N >> M;
+	for(int i = 0; i < M; i++){
+		int a, b; cin >> a >> b;
+		adj[b].push_back(a);
+	}
+	dp[1][1] = 1;
+	for(int s = 2; s < 1 << N; s++){
+		if((s & (1 << (N-1))) && s != ((1 << N) - 1)) continue;
+		for(int i = 1; i <= N; i++){
+			if((s & (1 << (i-1))) == 0) continue;
+			for(int j : adj[i]){
+				if((s & (1 << (j-1)))){
+					dp[s][i] += dp[s - (1 << (i-1))][j]; dp[s][i] %= MOD;
+				}
+			}
+		}
+	}
+	cout << dp[(1 << N) - 1][N] % MOD << '\n';
+	return 0;
+}
+```
+
+</Spoiler>
+
+### Problems
+
+<Problems problems="general" />
+
+## Application - Bitmask over Primes
+
+### Rough Idea
+
+In some number theory problems, it helps to represent each number were
+represented by a bitmask of its prime divisors. For example, the set
+$\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in
+binary)<Asterisk>The $0b$ prefix simply means that the number is
+binary</Asterisk>, where the bits correspond to divisibility by $[2, 3, 5]$.
+
+Then, here are some equivalent operations between masks and these integers:
+
+- Bitwise AND is GCD
+- Bitwise OR is LCM
+- Iterating over bits is iterating over prime divisors
+- Iterating over submasks is iterating over divisors
+
+<!--
+In particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes.
+ -->
+
+Choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND
+to $0$. For example, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because
+$0b011 \& 0b101 = 0b001 \neq 0$. On the other hand, $\{6, 10, 15 \}$ has GCD $1$
+because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
+
+<!-- 
+Therefore, if we have a reasonably short list of primes (perhaps $\leq 20$), then we can simply represent numbers with their prime divisors bitmask and change the NT problem to a bitmask problem.
+(Similar ideas can be used to tackle Professional Layer/Nora's Toy Boxes)
+
+However, in less restricted cases, there are usually much more than just 20 bits.
+Suppose the upper limit on input integers is $100000$.
+There are $9592$ primes that are less than $100000$, and if each of those primes represents a bit, then we would have way too many possible bitmasks.
+However, with only $100000$ distinct integers, clearly we do not need to consider all $2^{9592}$ bitmasks.
+
+Notice how masks like $0b1100 \dots 000$ (which corresponds to $99991 \times 99989 = 9998000099$) exceed the maximum limit on the input.
+Thus, they would never actually be used. 
+In fact, the vast majority of the $2^{9592}$ masks are unusable in the same way;
+we only care about the masks which correspond to integers less than the upper limit, which in this case is $100000$.
+
+Additionally, bitmasks of length $9592$ are extraordinarily long.
+Since we know a conservative bound of $100000$ different bitmasks anyways, one may consider trying to assign each bitmask to an integer between $1$ and $100000$.
+In fact, the simplest way to do this is just to assign each bitmask to the integer it corresponds to -- ignoring the mask altogether!
+(Notice how not all integers actually correspond to a bitmask. The bitmask corresponding to $4$, for example, would be represented by the integer $2$)
+ -->
+
+<!-- Operating like this makes it easier to think about and apply PIE or SOS wrt numbers and GCDs. -->
+
+<!-- (Similar ideas can be used to tackle Gold Experience) -->
+
+<IncompleteSection>
+
+Maybe this is just standard NT, but I've always thought about it as a bitmask.
+Also, any tutorials or more problems of this type?
+
+</IncompleteSection>
+
+### Problems
+
+<Problems problems="bitmask_nt" />

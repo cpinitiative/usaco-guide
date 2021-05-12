@@ -7,32 +7,48 @@ author: Andi Qu
 
 There are two parts to the solution:
 
-1. Finding the array $F$ such that the substring $S[i:i + F_i]$ is a substring of $T$ and $F_i$ is maximal.
+1. Finding the array $F$ such that the substring $S[i:i + F_i]$ is a substring
+   of $T$ and $F_i$ is maximal.
 2. Binary searching for the answer.
 
 ## Part 1 - Finding $F$
 
-This is the hardest part of the problem. We will solve it using a suffix array and LCP.
+This is the hardest part of the problem. We will solve it using a suffix array
+and LCP.
 
-First, join $S$ and $T$ together with a `~` character and build the suffix array of the resulting string. Using this suffix array, we can then build the LCP array. (If you are unfamiliar with this, check out [this CodeForces course](https://codeforces.com/edu/course/2/lesson/2).)
+First, join $S$ and $T$ together with a `~` character and build the suffix array
+of the resulting string. Using this suffix array, we can then build the LCP
+array. (If you are unfamiliar with this, check out
+[this CodeForces course](https://codeforces.com/edu/course/2/lesson/2).)
 
-Recall that the LCP of two suffixes is the range minimum of the elements of the LCP array between those two suffixes.
+Recall that the LCP of two suffixes is the range minimum of the elements of the
+LCP array between those two suffixes.
 
-Since we want $F_i$ to be maximal, we thus only need to check two suffixes for each $i$ - the two closest suffixes to the suffix starting on $S[i]$! We can find the indices of these two suffixes using a `std::set`.
+Since we want $F_i$ to be maximal, we thus only need to check two suffixes for
+each $i$ - the two closest suffixes to the suffix starting on $S[i]$! We can
+find the indices of these two suffixes using a `std::set`.
 
-This part of the algorithm runs in $\mathcal{O}((N + M) \log (N + M))$ time (but slower suffix array constructions are fast enough to pass as well).
+This part of the algorithm runs in $\mathcal{O}((N + M) \log (N + M))$ time (but
+slower suffix array constructions are fast enough to pass as well).
 
 ## Part 2 - Binary Searching
 
-Binary search works because if we can achieve a minimum length $l$, then we can also achieve a minimum length $k < l$ (since we don't necessarily need a substring of length $k$; we only need the lengths of all substrings to be of length **at least** $k$.)
+Binary search works because if we can achieve a minimum length $l$, then we can
+also achieve a minimum length $k < l$ (since we don't necessarily need a
+substring of length $k$; we only need the lengths of all substrings to be of
+length **at least** $k$.)
 
 Here's how we check whether we can achieve a certain minimum length $l$:
 
-Let $dp[i]$ be whether we can make $S[i : N]$ using substrings from $T$ of size at least $l$. Clearly, if $dp[j]$ is true for any $j \in [i + l, i + F_i]$, then $dp[i]$ is also true.
+Let $dp[i]$ be whether we can make $S[i : N]$ using substrings from $T$ of size
+at least $l$. Clearly, if $dp[j]$ is true for any $j \in [i + l, i + F_i]$, then
+$dp[i]$ is also true.
 
-To check whether such a $j$ exists, we can store all indices where $dp[j]$ is true in a set and check whether any of them lie in the range $[i + l, i + F_i]$.
+To check whether such a $j$ exists, we can store all indices where $dp[j]$ is
+true in a set and check whether any of them lie in the range $[i + l, i + F_i]$.
 
-This part of the algorithm runs in $\mathcal{O}(N \log^2 N)$ time (or $\mathcal{O}(N \log N)$ time if you do the check in $\mathcal{O}(N)$).
+This part of the algorithm runs in $\mathcal{O}(N \log^2 N)$ time (or
+$\mathcal{O}(N \log N)$ time if you do the check in $\mathcal{O}(N)$).
 
 ## Implementation
 

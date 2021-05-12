@@ -1,5 +1,5 @@
 ---
-id: balkan-17-cityattractions
+id: balkan-17-CityAttractions
 source: Balkan OI 2017
 title: City Attractions
 author: Andi Qu
@@ -7,27 +7,43 @@ author: Andi Qu
 
 ## Introduction
 
-Let the node that Gigel goes to from node $i$ be $t_i$. Since the graph made from the directed edges $i \rightarrow t_i$ is a [functional graph](/silver/func-graphs), we can use [binary jumping](/plat/bin-jump) or any other efficient method to find the final node.
+Let the node that Gigel goes to from node $i$ be $t_i$. Since the graph made
+from the directed edges $i \rightarrow t_i$ is a
+[functional graph](/silver/func-graphs), we can use
+[binary jumping](/plat/bin-jump) or any other efficient method to find the final
+node.
 
-Now we only need to find all $t_i$ and we are done! However, this isn't as straightforward as it sounds...
+Now we only need to find all $t_i$ and we are done! However, this isn't as
+straightforward as it sounds...
 
 ## A simpler problem
 
-Let's consider a simpler problem: suppose we root the tree at node $1$ and Gigel can only move down the tree (don't worry about the leaves). In this problem, we can find all $t_i$ (and $a[t_i] - dist(i, t_i)$) using a simple tree DP:
+Let's consider a simpler problem: suppose we root the tree at node $1$ and Gigel
+can only move down the tree (don't worry about the leaves). In this problem, we
+can find all $t_i$ (and $a[t_i] - dist(i, t_i)$) using a simple tree DP:
 
-Let $dp[i]$ be the node in the subtree of $i$ (excluding $i$ itself) such that $a[dp[i]] - dist(i, dp[i])$ is maximized. Additionally, we store this value in the DP array. We can find $dp[i]$ by taking the best of $c$ and $dp[c]$ over all children $c$ of $i$.
+Let $dp[i]$ be the node in the subtree of $i$ (excluding $i$ itself) such that
+$a[dp[i]] - dist(i, dp[i])$ is maximized. Additionally, we store this value in
+the DP array. We can find $dp[i]$ by taking the best of $c$ and $dp[c]$ over all
+children $c$ of $i$.
 
 This algorithm runs in $\mathcal{O}(N)$ time.
 
 ## Finding all $t_i$
 
-Obviously, the solution to the simpler problem doesn't solve the general problem: we might need to move up into a node's parent!
+Obviously, the solution to the simpler problem doesn't solve the general
+problem: we might need to move up into a node's parent!
 
-To address this issue, we can first do a DFS to find $dp$ as defined above, and then do a second DFS to allow moving to a node's parent. See the [solving for all roots module](/gold/all-roots) if you're unfamiliar with this technique. Essentially, we find the best destination from $i$ if we move up into $i$'s parent and then compare that with $dp[i]$.
+To address this issue, we can first do a DFS to find $dp$ as defined above, and
+then do a second DFS to allow moving to a node's parent. See the
+[solving for all roots module](/gold/all-roots) if you're unfamiliar with this
+technique. Essentially, we find the best destination from $i$ if we move up into
+$i$'s parent and then compare that with $dp[i]$.
 
 After doing this, $dp[i]$ is simply $t_i$ as desired.
 
-These two DFSes run in $\mathcal{O}(N)$ time, so the final complexity is $\mathcal{O}(N + \log K)$ (from the binary jumping).
+These two DFSes run in $\mathcal{O}(N)$ time, so the final complexity is
+$\mathcal{O}(N + \log K)$ (from the binary jumping).
 
 ## Implementation
 

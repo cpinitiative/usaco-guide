@@ -9,11 +9,20 @@ author: Neo Wang (C++)
 
 ## Solution
 
-The main observation for this problem is that we only need to keep track of the number of games played $i$, the number of times switched so far $j$, and the current gesture $k$ in order to determine the largest number of previous games won for any game $i$.
+The main observation for this problem is that we only need to keep track of the
+number of games played $i$, the number of times switched so far $j$, and the
+current gesture $k$ in order to determine the largest number of previous games
+won for any game $i$.
 
-For every move, either Bessie can either switch or stay on her current gesture. If she changes her gesture, then the next game $i+1$ will have used $j+1$ gestures, which corresponds to the $\texttt{dp}$ state $\texttt{dp}[i+1][j+1][k]$. We can simulate this for all 3 gestures. Then, we just increment $\texttt{dp}[i][j][k]$ if Bessie wins at game $i$ with gesture $k$.
+For every move, either Bessie can either switch or stay on her current gesture.
+If she changes her gesture, then the next game $i+1$ will have used $j+1$
+gestures, which corresponds to the $\texttt{dp}$ state
+$\texttt{dp}[i+1][j+1][k]$. We can simulate this for all 3 gestures. Then, we
+just increment $\texttt{dp}[i][j][k]$ if Bessie wins at game $i$ with gesture
+$k$.
 
-Note that you can just compare the current gesture to `H, P, S` because there is always exactly one way to win. 
+Note that you can just compare the current gesture to `H, P, S` because there is
+always exactly one way to win.
 
 **Time Complexity:** $\mathcal{O}(NK)$
 
@@ -57,7 +66,7 @@ int main() {
 
 	cin >> N >> K;
 
-	for(int i = 0; i < N; i++) { 
+	for(int i = 0; i < N; i++) {
 		char a; cin >> a;
 		if(a == 'H') A[i] = 0;
 		if(a == 'P') A[i] = 1;
