@@ -71,9 +71,13 @@ const FileSearch = ({ hits, currentRefinement, refine, onSelect }) => {
                     <Highlight hit={hit} attribute="title" /> (
                     {hit.kind === 'module' ? 'Module' : 'Solution'})
                   </h3>
-                  <SearchResultDescription>
+                  <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
                     <Highlight hit={hit} attribute="id" /> -{' '}
-                    <Highlight hit={hit} attribute="path" />
+                    {hit.path == null ? (
+                      'Create New Internal Solution'
+                    ) : (
+                      <Highlight hit={hit} attribute="path" />
+                    )}
                   </SearchResultDescription>
                 </button>
               ))}

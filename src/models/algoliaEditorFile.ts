@@ -1,3 +1,5 @@
+import { ProblemSolutionInfo } from './problem';
+
 export type AlgoliaEditorModuleFile = {
   title: string;
   id: string;
@@ -8,8 +10,10 @@ export type AlgoliaEditorModuleFile = {
 export type AlgoliaEditorSolutionFile = {
   title: string;
   id: string;
-  path: string;
+  source: string;
+  path: string | null; // null if file doesn't yet exist
   problemModules: AlgoliaEditorModuleFile[];
+  solutions: ProblemSolutionInfo[];
 };
 
 export type AlgoliaEditorFile =

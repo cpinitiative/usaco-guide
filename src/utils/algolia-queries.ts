@@ -87,6 +87,15 @@ export const filesQuery = `{
     edges {
       node {
         uniqueId
+        name
+        source
+        solution {
+          kind
+          label
+          labelTooltip
+          url
+          sketch
+        }
         module {
           frontmatter {
             id
@@ -176,21 +185,35 @@ const queries = [
         }
       });
       const solutionFiles: AlgoliaEditorSolutionFile[] = [];
-      data.data.edges.forEach(({ node }) => {
-        if (node.parent.sourceInstanceName !== 'solutions') return;
-        const problemInfoObjects = data.problems.edges.filter(
-          x => x.node.uniqueId === node.frontmatter.id
+      data.problems.edges.forEach(({ node }) => {
+        const module = moduleFiles.find(
+          file => file.id === node.module?.frontmatter.id
         );
-        solutionFiles.push({
-          title: node.frontmatter.title,
-          id: node.frontmatter.id,
-          path: `${node.parent.sourceInstanceName}/${node.parent.relativePath}`,
-          problemModules: problemInfoObjects
-            .map(x =>
-              moduleFiles.find(f => f.id === x.node.module?.frontmatter.id)
-            )
-            .filter(x => !!x),
-        });
+        const relativePath = data.data.edges.find(
+          ({ node: fileNode }) =>
+            fileNode.parent.sourceInstanceName === 'solutions' &&
+            fileNode.frontmatter.id === node.uniqueId
+        )?.node.parent.relativePath;
+        const file: AlgoliaEditorSolutionFile = solutionFiles.find(
+          file => file.id === node.uniqueId
+        ) || {
+          id: node.uniqueId,
+          title: node.name,
+          source: node.source,
+          solutions: [],
+          path: relativePath ? `solutions/${relativePath}` : null,
+          problemModules: [],
+        };
+        if (solutionFiles.indexOf(file) !== -1) {
+          solutionFiles.splice(solutionFiles.indexOf(file), 1);
+        }
+        if (module !== null) {
+          file.problemModules.push(module);
+        }
+        if (node.solution !== null) {
+          file.solutions.push(node.solution);
+        }
+        solutionFiles.push(file);
       });
       return [
         ...moduleFiles.map<
@@ -210,7 +233,15 @@ const queries = [
       ];
     },
     indexName: process.env.ALGOLIA_INDEX_NAME + '_editorFiles',
-    matchFields: ['kind', 'title', 'id', 'path', 'problemModules'],
+    matchFields: [
+      'kind',
+      'title',
+      'id',
+      'source',
+      'solutions',
+      'path',
+      'problemModules',
+    ],
   },
 ];
 

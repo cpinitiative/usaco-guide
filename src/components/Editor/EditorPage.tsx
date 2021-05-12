@@ -15,8 +15,8 @@ import * as React from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import {
-  createNewFileAtom,
   monacoEditorInstanceAtom,
+  openOrCreateExistingFileAtom,
 } from '../../atoms/editor';
 import Layout from '../layout';
 import SEO from '../seo';
@@ -51,7 +51,7 @@ function getQueryVariable(query, variable) {
 
 export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
-  const createNewFile = useUpdateAtom(createNewFileAtom);
+  const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
 
   React.useEffect(() => {
     const defaultFilePath =
@@ -59,7 +59,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
         ? getQueryVariable(props.location.search.slice(1), 'filepath')
         : null;
     if (defaultFilePath) {
-      createNewFile(defaultFilePath);
+      openOrCreateExistingFile(defaultFilePath);
     }
   }, []);
 

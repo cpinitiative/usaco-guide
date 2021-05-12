@@ -4,15 +4,23 @@ import * as React from 'react';
 import {
   activeFileAtom,
   closeFileAtom,
-  createNewFileAtom,
+  createNewInternalSolutionFileAtom,
   filesListAtom,
+  openOrCreateExistingFileAtom,
 } from '../../../atoms/editor';
+import {
+  AlgoliaEditorFile,
+  AlgoliaEditorSolutionFile,
+} from '../../../models/algoliaEditorFile';
 import { FileListSidebar } from './FileListSidebar';
 
-export const EditorSidebar = props => {
+export const EditorSidebar = (props): JSX.Element => {
   const files = useAtomValue(filesListAtom);
   const [activeFile, setActiveFile] = useAtom(activeFileAtom);
-  const createNewFile = useUpdateAtom(createNewFileAtom);
+  const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
+  const createNewInternalSolutionFile = useUpdateAtom(
+    createNewInternalSolutionFileAtom
+  );
   const closeFile = useUpdateAtom(closeFileAtom);
 
   const handleOpenFile = (file: string) => {
@@ -29,6 +37,16 @@ export const EditorSidebar = props => {
     }
   };
 
+  const handleNewFile = (file: AlgoliaEditorFile) => {
+    if (file.path) {
+      // this file already exists
+      openOrCreateExistingFile(file.path);
+    } else {
+      // the user is trying to create a new internal solution
+      createNewInternalSolutionFile(file as AlgoliaEditorSolutionFile);
+    }
+  };
+
   return (
     <FileListSidebar
       {...props}
@@ -36,7 +54,7 @@ export const EditorSidebar = props => {
       files={files || []}
       onOpenFile={handleOpenFile}
       onCloseFile={handleCloseFile}
-      onNewFile={f => createNewFile(f.path)}
+      onNewFile={handleNewFile}
     />
   );
 };
