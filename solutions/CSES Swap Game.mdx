@@ -8,15 +8,13 @@ author: Maggie Liu
 ## Explanation
 
 Since there are only $9!$ states the grid can be in, we can use BFS to find the
-number of moves needed to reach the sorted grid from the starting grid. We
-represent each $\texttt{State}$ as the $\texttt{grid}$: an array of $9$ numbers,
-and the $\texttt{dist}$: the number of moves needed to reach this
-$\texttt{grid}$.
+number of moves needed to reach the $\texttt{target}$ from the starting grid. We
+represent each grid as a number in base $9$.
 
-For each $\texttt{State}$, we can swap two horizontally adjacent squares or two
-vertically adjacent squares. If we haven't processed this new grid yet, we can
-push it into the queue and mark it as visited in the $\texttt{vis}$ array. When
-we reach the sorted grid, we print the $\texttt{dist}$.
+For each grid, we can swap two horizontally adjacent squares or two vertically
+adjacent squares. If we haven't processed this new grid yet, we can push the new
+grid and distance into the queue and mark it as visited in the $\texttt{vis}$
+array. When we reach the sorted grid, we print the $\texttt{dist}$.
 
 ## Implementation
 
@@ -30,62 +28,75 @@ grid
 ```cpp
 #include <iostream>
 #include <queue>
-#include <array>
+#include <vector>
 #include <algorithm>
 using namespace std;
 
-struct State
-{
-	array<int, 9> grid;
-	int dist;
-};
+int powers[10];
 
-bool vis[9][9][9][9][9][9][9][9][9];
+// swaps two pieces
+int move(int grid, int i, int j)
+{
+	int a = grid % powers[i + 1] / powers[i];
+	int b = grid % powers[j + 1] / powers[j];
+	return grid - a * powers[i] - b * powers[j] + b * powers[i] + a * powers[j];
+}
+
 int main()
 {
-	array<int, 9> grid;
-	for (int i = 0; i < 9; i++)
+	powers[0] = 1;
+	for (int i = 1; i < 10; i++)
 	{
-		cin >> grid[i];
-		grid[i]--;
+		powers[i] = 9 * powers[i - 1];
 	}
-	queue<State> q;
+	vector<bool> vis(powers[9], false);
+	// the final grid we want to reach
+	int target = 0;
+	for (int i = 8; i >= 0; i--)
+	{
+		target += (8 - i) * powers[i];
+	}
+	int grid = 0, num;
+	for (int i = 8; i >= 0; i--)
+	{
+		cin >> num;
+		grid += (num - 1) * powers[i];
+	}
+	queue<pair<int, int>> q;
 	q.push({grid, 0});
 	while (!q.empty())
 	{
 		auto [g, dist] = q.front();
 		q.pop();
-		// if the grid is sorted, we can print the number of moves
-		if (is_sorted(g.begin(), g.end()))
+		// if we've reached the target, we can print the number of moves
+		if (g == target)
 		{
 			cout << dist << endl;
 			return 0;
 		}
-		// swap two horizontally adjacent squares
+		// swap two horizontally adjacent pieces
 		for (int i = 0; i < 8; i++)
 		{
 			if (i % 3 == 2)
 			{
 				continue;
 			}
-			swap(g[i], g[i + 1]);
-			if (!vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]])
+			int swapped = move(g, 8 - i, 8 - (i + 1));
+			if (!vis[swapped])
 			{
-				q.push({g, dist + 1});
-				vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]] = true;
+				q.push({swapped, dist + 1});
+				vis[swapped] = true;
 			}
-			swap(g[i], g[i + 1]);
 		}
-		// swap two vertically adjacent squares
+		// swap two vertically adjacent pieces
 		for (int i = 0; i < 6; i++)
 		{
-			swap(g[i], g[i + 3]);
-			if (!vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]])
+			int swapped = move(g, 8 - i, 8 - (i + 3));
+			if (!vis[swapped])
 			{
-				q.push({g, dist + 1});
-				vis[g[0]][g[1]][g[2]][g[3]][g[4]][g[5]][g[6]][g[7]][g[8]] = true;
+				q.push({swapped, dist + 1});
+				vis[swapped] = true;
 			}
-			swap(g[i], g[i + 3]);
 		}
 	}
 	return 0;
