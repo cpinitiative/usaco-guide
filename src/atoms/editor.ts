@@ -151,10 +151,6 @@ $\\texttt{func(var)}$
 
 </PySection>
 
-<JavaSection />
-
-<!-- if you have no java code -->
-
 </LanguageSection>`,
       problems: '',
     };
