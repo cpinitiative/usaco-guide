@@ -37,6 +37,16 @@ export const EditorSidebar = (props): JSX.Element => {
     }
   };
 
+  const handleCloseAllFiles = () => {
+    if (
+      confirm(
+        "Are you sure you want to close all files? You'll lose all your changes."
+      )
+    ) {
+      for (const file of files) closeFile(file);
+    }
+  };
+
   const handleNewFile = (file: AlgoliaEditorFile) => {
     if (file.path) {
       // this file already exists
@@ -54,6 +64,7 @@ export const EditorSidebar = (props): JSX.Element => {
       files={files || []}
       onOpenFile={handleOpenFile}
       onCloseFile={handleCloseFile}
+      onCloseAllFiles={handleCloseAllFiles}
       onNewFile={handleNewFile}
     />
   );

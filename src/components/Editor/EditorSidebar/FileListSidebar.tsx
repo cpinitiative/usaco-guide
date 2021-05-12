@@ -10,8 +10,17 @@ export const FileListSidebar: React.FC<{
   files: string[];
   onOpenFile: (filePath: string) => void;
   onCloseFile: (filePath: string) => void;
+  onCloseAllFiles: () => void;
   onNewFile: (file: AlgoliaEditorFile) => void;
-}> = ({ className, files, activeFile, onOpenFile, onCloseFile, onNewFile }) => {
+}> = ({
+  className,
+  files,
+  activeFile,
+  onOpenFile,
+  onCloseFile,
+  onCloseAllFiles,
+  onNewFile,
+}) => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
 
   const handleFileSelect = (file: AlgoliaEditorFile) => {
@@ -28,18 +37,17 @@ export const FileListSidebar: React.FC<{
     >
       <div className="text-gray-300 text-sm font-medium border-b border-gray-800 flex items-center justify-between">
         <span className="px-4 py-2">Files</span>
-        {/* todo: hide icon? */}
-        {/*<div className="flex-shrink-0">*/}
-        {/*  <button*/}
-        {/*    className={classNames(*/}
-        {/*      'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',*/}
-        {/*      'px-3 py-2 font-medium text-sm focus:outline-none transition'*/}
-        {/*    )}*/}
-        {/*    onClick={() => console.log('new file')}*/}
-        {/*  >*/}
-        {/*    New File*/}
-        {/*  </button>*/}
-        {/*</div>*/}
+        <div className="flex-shrink-0">
+          <button
+            className={classNames(
+              'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            )}
+            onClick={() => onCloseAllFiles()}
+          >
+            Close All
+          </button>
+        </div>
       </div>
       <div className="h-1" />
       {files.map(file => (
