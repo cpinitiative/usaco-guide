@@ -2,7 +2,7 @@
 id: usaco-856
 source: USACO Bronze 2018 December
 title: The Bucket List
-author: Ananth Kashyap
+author: Ananth Kashyap (Python) & Sathvik Chundru (Cpp)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
@@ -41,3 +41,42 @@ file_out.close()
 </PySection>
 
 </LanguageSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int event [1001];
+int main() {
+	freopen("blist.in", "r", stdin);
+	freopen("blist.out", "w", stdout); 
+	int maxtime = 1000;
+	int n; cin >> n;
+		
+		
+	for (int i = 0; i < n; i++) {
+		int start; cin >> start;
+		int end; cin >> end;
+		int amt; cin >> amt;
+		event[start] += amt;
+		event[end] -= amt;
+	}
+		
+		
+	int res = 0, cur = 0;
+	for (int i = 0; i <= maxtime; i++) {
+		cur += event[i];
+		res = max(res, cur);
+	}
+
+	cout << res << '\n';
+}
+```
+
+<LanguageSection>
+
+<CPPSection>
