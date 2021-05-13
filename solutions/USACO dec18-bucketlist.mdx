@@ -50,7 +50,7 @@ file_out.close()
 #include <iostream>
 #include <algorithm>
 using namespace std;
-int event[1001];
+int event[1001]; // declaring the array globaly to intialize all the elements to 0
 int main() {
 	freopen("blist.in", "r", stdin);
 	freopen("blist.out", "w", stdout); 
@@ -58,22 +58,22 @@ int main() {
 	int n; cin >> n;
 		
 		
-	for (int i = 0; i < n; i++) {
-		int start; cin >> start;
+	for (int i = 0; i < n; i++) { // iterating through the n lines to input the data in
+		int start; cin >> start; 
 		int end; cin >> end;
 		int amt; cin >> amt;
-		event[start] += amt;
-		event[end] -= amt;
+		event[start] += amt; // simulating the events by adding/subtracting the amount from si and ti
+		event[end] -= amt; // ^
 	}
 		
 		
-	int res = 0, cur = 0;
+	int res = 0, cur = 0; // keeping track of buckets being used starting from 0
 	for (int i = 0; i <= maxtime; i++) {
-		cur += event[i];
-		res = max(res, cur);
+		cur += event[i]; // adding the current bucket to event[i]
+		res = max(res, cur); // saving the curr in increasing order to get the highest value we can for the current bucket
 	}
 
-	cout << res << '\n';
+	cout << res << '\n'; // we should be left with total amount of buckets and we can just print it out here
 }
 ```
 
