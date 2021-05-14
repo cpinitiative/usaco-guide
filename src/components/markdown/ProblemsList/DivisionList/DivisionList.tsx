@@ -208,13 +208,15 @@ export function DivisionList(props): JSX.Element {
   for (const division of divisions) {
     for (const contest of Object.keys(contestToPoints[division])) {
       contestToFraction[division][contest] = [];
-      if (contestToPoints[division][contest])
-        for (const num of contestToPoints[division][contest])
+      if (contestToPoints[division][contest]) {
+        for (const num of contestToPoints[division][contest]) {
           contestToFraction[division][contest].push(num);
+        }
+      }
     }
   }
 
-  for (const division of divisions)
+  for (const division of divisions) {
     for (const probInfo of divToProbs[division]) {
       const contest = probInfo[1];
       let fraction = null;
@@ -250,6 +252,7 @@ export function DivisionList(props): JSX.Element {
       }
       divisionToSeasonToProbs[division][season].push(prob);
     }
+  }
   const userSettings = useContext(UserDataContext);
 
   let curDivision =

@@ -69,7 +69,10 @@ const submitProblemSuggestion = functions.https.onCall(
         'The filePath argument contained an unexpected value.'
       );
     }
-    const tagsArr = tags.split(/,\s*/g);
+    const tagsArr = tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
     const generatedProblemId = generateProblemUniqueId(source, name, link);
     const suggestedProblem: ProblemMetadata = {
       uniqueId: generatedProblemId,

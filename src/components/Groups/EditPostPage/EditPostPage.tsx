@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Link, navigate } from 'gatsby';
 import * as React from 'react';
@@ -7,7 +8,7 @@ import { useNotificationSystem } from '../../../context/NotificationSystemContex
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
-import useFirebase from '../../../hooks/useFirebase';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { PostData } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
@@ -31,7 +32,7 @@ export default function EditPostPage(props) {
     null
   );
   const { updatePost, deletePost } = usePostActions(groupId);
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const notifications = useNotificationSystem();
 
   React.useEffect(() => {
@@ -136,9 +137,7 @@ export default function EditPostPage(props) {
                     value={post.timestamp?.toDate()}
                     onChange={date =>
                       editPost({
-                        timestamp: firebase.firestore.Timestamp.fromDate(
-                          date[0]
-                        ),
+                        timestamp: Timestamp.fromDate(date[0]),
                       })
                     }
                     className="input"
@@ -172,9 +171,7 @@ export default function EditPostPage(props) {
                       value={post.dueTimestamp?.toDate()}
                       onChange={date =>
                         editPost({
-                          dueTimestamp: firebase.firestore.Timestamp.fromDate(
-                            date[0]
-                          ),
+                          dueTimestamp: Timestamp.fromDate(date[0]),
                         })
                       }
                       className="input"

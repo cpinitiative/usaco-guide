@@ -1,3 +1,4 @@
+import { setDoc } from 'firebase/firestore';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 
 export type LastVisitAPI = {
@@ -120,7 +121,8 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
         }
 
         if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
+          setDoc(
+            this.firebaseUserDoc,
             {
               ...changes,
               numPageviews: this.numPageviews,

@@ -1,7 +1,15 @@
+import {
+  collection,
+  getFirestore,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import * as React from 'react';
+import { useNotificationSystem } from '../../context/NotificationSystemContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { Submission, submissionConverter } from '../../models/groups/problem';
-import useFirebase from '../useFirebase';
+import { Submission } from '../../models/groups/problem';
+import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
 
 export default function useUserProblemSubmissions(
@@ -11,28 +19,40 @@ export default function useUserProblemSubmissions(
   const { firebaseUser } = React.useContext(UserDataContext);
   const [submissions, setSubmissions] = React.useState<Submission[]>(null);
   const activeGroup = useActiveGroup();
+  const notifications = useNotificationSystem();
 
-  useFirebase(
-    firebase => {
+  useFirebaseApp(
+    firebaseApp => {
       if (problemId && firebaseUser?.uid && activeGroup?.activeGroupId) {
-        return firebase
-          .firestore()
-          .collection('groups')
-          .doc(activeGroup.activeGroupId)
-          .collection('posts')
-          .doc(postId)
-          .collection('problems')
-          .doc(problemId)
-          .collection('submissions')
-          .where('userId', '==', firebaseUser.uid)
-          .withConverter(submissionConverter)
-          .onSnapshot(snap => {
-            setSubmissions(
-              snap.docs
-                .map(doc => doc.data())
-                .sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis())
-            );
-          });
+        return onSnapshot<Submission>(
+          query(
+            collection(
+              getFirestore(firebaseApp),
+              'groups',
+              activeGroup.activeGroupId,
+              'posts',
+              postId,
+              'problems',
+              problemId,
+              'submissions'
+            ),
+            where('userId', '==', firebaseUser.uid)
+          ),
+          {
+            next: snap => {
+              setSubmissions(
+                snap.docs
+                  .map(doc => ({ id: doc.id, ...doc.data() }))
+                  .sort(
+                    (a, b) => b.timestamp.toMillis() - a.timestamp.toMillis()
+                  )
+              );
+            },
+            error: error => {
+              notifications.showErrorNotification(error);
+            },
+          }
+        );
       }
     },
     [firebaseUser?.uid, postId, problemId, activeGroup?.activeGroupId]

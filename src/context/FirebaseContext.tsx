@@ -1,7 +1,9 @@
+import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
+import { getFunctions, useFunctionsEmulator } from 'firebase/functions';
 import * as React from 'react';
 import { createContext } from 'react';
 
-const FirebaseContext = createContext(null);
+export const FirebaseAppContext = createContext<FirebaseApp>(null);
 const firebaseConfig = {
   apiKey: 'AIzaSyAvm-cvPgEFer3MVQtCiKegFTc1E9RHGG4',
   authDomain: 'usaco-guide.firebaseapp.com',
@@ -13,30 +15,24 @@ const firebaseConfig = {
 };
 
 export const FirebaseProvider = ({ children }) => {
-  const [firebase, setFirebase] = React.useState(null);
+  const [firebaseApp, setFirebaseApp] = React.useState<FirebaseApp>(null);
 
   React.useEffect(() => {
-    if (!firebase && typeof window !== 'undefined') {
-      const app = import('firebase/app');
-      const auth = import('firebase/auth');
-      const firestore = import('firebase/firestore');
-      const functions = import('firebase/functions');
-      const database = import('firebase/database');
+    if (!firebaseApp && typeof window !== 'undefined') {
+      const firebaseApp =
+        getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+      setFirebaseApp(firebaseApp);
 
-      Promise.all([app, auth, firestore, database, functions]).then(values => {
-        const firebaseInstance = values[0].default;
-        firebaseInstance.initializeApp(firebaseConfig);
-        // firebaseInstance.functions().useEmulator('localhost', 5001);
-        setFirebase(firebaseInstance);
-      });
+      const shouldUseEmulator = false;
+      if (shouldUseEmulator) {
+        useFunctionsEmulator(getFunctions(firebaseApp), 'localhost', 5001);
+      }
     }
   }, []);
 
   return (
-    <FirebaseContext.Provider value={firebase}>
+    <FirebaseAppContext.Provider value={firebaseApp}>
       {children}
-    </FirebaseContext.Provider>
+    </FirebaseAppContext.Provider>
   );
 };
-
-export default FirebaseContext;

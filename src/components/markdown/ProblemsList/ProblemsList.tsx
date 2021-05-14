@@ -48,10 +48,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
     problems = markdownProblems.find(
       list => list.listId === unannotatedProps.problems
     )?.problems;
-    if (!problems)
+    if (!problems) {
       throw new Error(
         "Couldn't find the problem list with name " + unannotatedProps.problems
       );
+    }
   } else {
     problems = unannotatedProps.problems as DivisionProblemInfo[];
   }

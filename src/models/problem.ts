@@ -1,8 +1,8 @@
 import { slug } from 'github-slugger';
+import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { books } from '../utils/books';
-
 export const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
   CCO: ['DMOJ', 'Canadian Computing Olympiad'],
@@ -263,8 +263,124 @@ export function getProblemURL(
  * Ex: https://cses.fi/problemset/task/1652 yields 1652
  */
 const getTrailingCodeFromProblemURL = (url: string): number => {
-  const code = url.match(/([0-9]+)\/?$/)[1];
-  return parseInt(code);
+  const match = url.match(/([0-9]+)\/?$/);
+  if (match === null) {
+    throw new Error('Could not extract USACO / CSES code from URL.');
+  }
+  return parseInt(match[1]);
+};
+
+export const getProblemInfo = (
+  metadata: ProblemMetadata,
+  ordering?: any
+): ProblemInfo => {
+  // don't cache the ordering import, to make sure it gets re-fetched each time
+  if (!ordering) {
+    ordering = defaultOrdering;
+  }
+  const { solutionMetadata, ...info } = metadata;
+
+  if (
+    !info.source ||
+    !info.uniqueId ||
+    info.isStarred === null ||
+    info.isStarred === undefined ||
+    !info.name ||
+    !info.url
+  ) {
+    console.error("problem metadata isn't valid", metadata);
+    throw new Error('Bad problem metadata');
+  }
+
+  let sol: ProblemSolutionInfo;
+  if (solutionMetadata.kind === 'autogen-label-from-site') {
+    const site = solutionMetadata.site;
+    if (!probSources.hasOwnProperty(site) || probSources[site].length !== 3) {
+      console.error(metadata);
+      throw new Error(
+        "Couldn't autogenerate solution label from problem site " + site
+      );
+    }
+    sol = {
+      kind: 'label',
+      label: 'Check ' + site,
+      labelTooltip: probSources[site][2],
+    };
+  } else if (solutionMetadata.kind === 'internal') {
+    sol = {
+      kind: 'internal',
+    };
+  } else if (solutionMetadata.kind === 'link') {
+    sol = {
+      kind: 'link',
+      url: solutionMetadata.url,
+      label: 'External Sol',
+    };
+  } else if (solutionMetadata.kind === 'CPH') {
+    const getSec = (dictKey, book, sec) => {
+      let url = book;
+      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+      if (!/^\d.*$/.test(sec)) return url;
+      if (!(sec in PGS[dictKey])) {
+        throw `Could not find section ${sec} in source ${dictKey}`;
+      }
+      url += '#page=' + PGS[dictKey][sec];
+      return url;
+    };
+    const source = 'CPH';
+    const cphUrl = getSec(source, books[source][0], solutionMetadata.section);
+    sol = {
+      kind: 'link',
+      label: 'CPH ' + solutionMetadata.section,
+      url: cphUrl,
+    };
+  } else if (solutionMetadata.kind === 'USACO') {
+    if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
+      throw new Error(
+        "Couldn't find a corresponding USACO external solution for USACO problem ID " +
+          solutionMetadata.usacoId
+      );
+    }
+    sol = {
+      kind: 'link',
+      label: 'External Sol',
+      url:
+        `http://www.usaco.org/current/data/` +
+        id_to_sol[solutionMetadata.usacoId],
+    };
+  } else if (solutionMetadata.kind === 'IOI') {
+    const year = solutionMetadata.year;
+    const num = year - 1994 + 20;
+    sol = {
+      kind: 'link',
+      label: 'External Sol',
+      url: `https://ioinformatics.org/page/ioi-${year}/` + num.toString(),
+    };
+  } else if (solutionMetadata.kind === 'none') {
+    sol = null;
+  } else if (solutionMetadata.kind === 'in-module') {
+    sol = {
+      kind: 'link',
+      label: 'In Module',
+      url: `https://usaco.guide/${
+        ordering.moduleIDToSectionMap[solutionMetadata.moduleId]
+      }/${solutionMetadata.moduleId}#problem-${info.uniqueId}`,
+    };
+  } else if (solutionMetadata.kind === 'sketch') {
+    sol = {
+      kind: 'sketch',
+      sketch: solutionMetadata.sketch,
+    };
+  } else {
+    throw new Error(
+      'Unknown solution metadata ' + JSON.stringify(solutionMetadata)
+    );
+  }
+
+  return {
+    ...info,
+    solution: sol,
+  };
 };
 
 /*
@@ -461,18 +577,20 @@ export class Problem {
             this.url.startsWith('contest') ||
             this.url.startsWith('gym') ||
             this.url.startsWith('edu'))
-        )
+        ) {
           this.url = 'https://codeforces.com/' + this.url;
-        else this.url = probSources[this.source][0] + this.url;
+        } else this.url = probSources[this.source][0] + this.url;
       }
       this.tooltipHoverDescription = probSources[this.source][1];
     } else if (this.source in contests) {
-      if (!this.url.startsWith('http'))
+      if (!this.url.startsWith('http')) {
         this.url = probSources[contests[this.source][0]][0] + this.url;
+      }
       this.tooltipHoverDescription = contests[this.source][1];
     } else {
-      if (!this.url.startsWith('http'))
+      if (!this.url.startsWith('http')) {
         throw `URL ${this.id} is not valid. Did you make a typo in the problem source (${this.source}), or in the URL? Problem name: ${this.name}`;
+      }
       if (this.source.indexOf('@') != -1) {
         const ind = this.source.indexOf('@');
         this.tooltipHoverDescription = this.source.substring(
@@ -546,7 +664,7 @@ export class Problem {
         };
       } else {
         // this isn't necessary -- can just use hasOwnProperty instead of in
-        for (const source in probSources)
+        for (const source in probSources) {
           if (
             probSources[source].length == 3 &&
             this.url.startsWith(probSources[source][0])
@@ -562,6 +680,7 @@ export class Problem {
             };
             break;
           }
+        }
       }
     }
   }
@@ -614,8 +733,9 @@ export class Problem {
         let url = book;
         if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
         if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey]))
+        if (!(sec in PGS[dictKey])) {
           throw `Could not find section ${sec} in source ${dictKey}`;
+        }
         url += '#page=' + PGS[dictKey][sec];
         return url;
       };

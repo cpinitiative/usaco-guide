@@ -1,21 +1,19 @@
-import firebaseType from 'firebase';
+import { FirebaseApp } from 'firebase/app';
 import * as React from 'react';
-import FirebaseContext from '../context/FirebaseContext';
+import { FirebaseAppContext } from '../context/FirebaseContext';
 
-// from https://github.com/alexluong/gatsby-packages/blob/master/packages/gatsby-plugin-firebase/src/components/FirebaseContext.js
-
-export default function useFirebase(
-  fn: (firebase: typeof firebaseType) => void | (() => void | undefined) = null,
+export function useFirebaseApp(
+  fn: (firebaseApp: FirebaseApp) => void | (() => void | undefined) = null,
   dep = []
-): typeof firebaseType {
-  const firebase = React.useContext(FirebaseContext);
+): FirebaseApp {
+  const firebaseApp = React.useContext(FirebaseAppContext);
 
-  if (fn == null) return firebase;
+  if (fn == null) return firebaseApp;
 
   React.useEffect(() => {
-    if (!firebase) {
+    if (!firebaseApp) {
       return;
     }
-    return fn(firebase);
-  }, [firebase, ...dep]);
+    return fn(firebaseApp);
+  }, [firebaseApp, ...dep]);
 }

@@ -1,24 +1,62 @@
 ---
 id: contributing
 title: Contributing
-author: Nathan Wang, Benjamin Qi
+author: Nathan Wang, Benjamin Qi, Maggie Liu
 description: How to contribute!
 prerequisites:
-	- modules
+  - modules
 ---
 
-Note that the USACO Guide has a public
-[Github Repository](https://github.com/cpinitiative/usaco-guide). Feel free to
-contribute by submitting issues and Pull Requests!
+All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX) with the [XDM](https://github.com/wooorm/xdm) compiler.
+$\LaTeX$ is supported through [KaTeX](https://katex.org/), and the Guide uses a number of custom MDX
+components. If you are confused about something, or if there's a certain feature
+that you want to add, reach out to Nathan Wang.
 
-**Please help fix some of the
-[issues](https://github.com/cpinitiative/usaco-guide/issues) on our Github
-Repository!**
+## Quick Start
 
-<!--
-If you're interested in joining the team, please fill out this [Google form](https://docs.google.com/forms/d/e/1FAIpQLSew7yq-8osY-IAxHRXX0_g-C747t7778aDuz-Crz6f77AuABA/viewform?usp=sf_link). -->
+The USACO Guide has a public
+[Github Repository](https://github.com/cpinitiative/usaco-guide).
 
-<!-- Please use the "Contact Us" form to get started and mention **what specifically you intend to contribute**.  -->
+- If you're looking to add/modify modules, refer to the `content/` folder.
+- If you're looking to add/modify problem solutions, refer to the `solutions/`
+  folder.
+- (Almost) all the other files and folders are related to the front-end code.
+
+If you have any questions about how to contribute, feel free to just open an
+[issue](https://github.com/cpinitiative/usaco-guide/issues) or a
+[pull request](https://github.com/cpinitiative/usaco-guide/pulls) and a team
+member will be able to assist you. If you want, you can also
+[join our Discord server](https://discord.gg/UKbyewj2Ft).
+
+![Discord](https://img.shields.io/discord/717477028072521797?label=Discord&style=for-the-badge)
+
+### Using the Editor (recommended)
+
+The easiest way to edit content is to use our live [editor](/editor).
+
+### Running Site Locally
+
+You can also run a local version of the site in order to view your changes. This
+is useful if you need to use Tailwind CSS classes, which don't work with
+`/editor`.
+
+1. Set up your development environment.
+   - Install [node.js](https://nodejs.org/en/)
+     - [Gatsby docs](https://www.gatsbyjs.org/tutorial/part-zero/#install-nodejs-for-your-appropriate-operating-system)
+   - Install [yarn](https://classic.yarnpkg.com/en/)
+     - `npm install -g yarn`? might work
+2. Clone repo
+   - Via command line:
+     `git clone https://github.com/cpinitiative/usaco-guide.git`
+   - Or use [Github Desktop](https://desktop.github.com/)
+3. Install Dependencies
+   - `yarn`
+4. Run development server
+   - `yarn develop`
+
+See the
+[front end documentation](https://github.com/cpinitiative/usaco-guide/blob/master/docs/Front%20End%20Documentation.md)
+for more information.
 
 ## Ways to Contribute
 
@@ -33,7 +71,8 @@ Some examples:
   - If starred resource or editorial already has a good explanation, no need to
     repeat it.
 - Improve implementations.
-  - Include code handling input & output.
+  - Make sure code compiles, remove excessive macros, add codesnips around
+    templates.
   - Should be consistent across languages.
 - Adding modules!
 
@@ -44,262 +83,27 @@ Some examples:
 - Add problems that are good examples of the module topic (and remove those that
   are not).
 - Adding official editorial links.
-  - Those for USACO are automatically generated.
 - Adding editorials.
   - If no editorial exists, or if existing editorial could be improved.
   - Or solution code in a different language, etc.
 
-<!-- - Don't link CF if it's already included in "Contest Materials." -->
-
-## Writing Content
-
-All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX), with
-limited $\LaTeX$ support from [KaTeX](https://katex.org/) and some custom
-components. You can check how an `.mdx` file renders by pasting it in the
-[live editor](/editor).
-
-See the
-[Content Documentation](https://github.com/cpinitiative/usaco-guide/blob/master/docs/Content%20Documentation.md)
-for more info.
-
-### Useful Links
+## Markdown Resources
 
 - [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
 - [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
-- [StackEdit](https://stackedit.io/)
-  - nice markdown editor
-  - supports Katex
+
+Markdown Editors:
+
+- Using our [online editor](/editor) is probably best.
+- [Visual Studio Code](https://code.visualstudio.com/)
 - [Sublime Text](https://www.sublimetext.com/)
   - `.md` syntax highlighting is fine, is also ok for `.mdx`
   - You can open a `.mdx` file and set syntax highlighting to be the same as
     `.md` with
     `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
+- [StackEdit](https://stackedit.io/)
+  - Automatically compiles $\LaTeX$ (doesn't require an installation)
 - [Obsidian](https://obsidian.md/)
-  - Markdown editor
   - Automatically compiles $\LaTeX$ (doesn't require an installation)
 
-### Adding a Solution
-
-1. [Fork](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)
-   the GitHub repository.
-
-2. If it doesn't already exist, create a new `mdx` file in `solutions` including
-   frontmatter, ex. the following in
-   [`USACO jan17-cow-dance-show.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/USACO%20jan17-cow-dance-show.mdx):
-
-   ```
-   ---
-   id: usaco-690
-   source: USACO Silver 2017 January
-   title: Cow Dance Show
-   author: Óscar Garries
-   ---
-
-   [Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
-
-   ## Explanation
-
-   (add explanation here ...)
-
-   Use `\texttt{}` around variable names with length *greater than one*, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
-
-   $$
-   \texttt{arr}[i]=2\cdot (a+b+c+d+e)+\sum_{j=0}^{i-1}\texttt{arr}[j]
-   $$
-
-   Some additional text styles which you might consider using:
-
-   http://latexref.xyz/Font-styles.html
-
-   http://applied-r.com/latex-font-styles/
-
-   $func(var)$
-
-   $\textit{func(var)}$
-
-   $\textrm{func(var)}$
-
-   $\text{func(var)}$
-
-   $\textsf{func(var)}$
-
-   $\textbf{func(var)}$
-
-   $\texttt{func(var)}$
-
-   ## Implementation
-
-   **Time Complexity:** $\mathcal{O}(N\log^2N)$
-
-   ^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
-
-   <LanguageSection>
-
-   <CPPSection>
-
-   (add cpp code)
-
-   </CPPSection>
-
-   <PySection>
-
-   (if you have Python code)
-
-   </PySection>
-
-   <JavaSection />
-
-   <!-- if you have no Java code -->
-
-   </LanguageSection>
-   ```
-
-   Keep file names and solution IDs consistent; namely, USACO IDs should
-   correspond to the URL on
-   [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690).
-
-3. Add your implementation, following the conventions below. It is **not**
-   necessary to add an alternative implementation in the same language as the
-   official analysis (unless the alternative implementation takes a different
-   approach or is written better / differently from the official
-   implementation).
-
-4. Add the solution ID (ex. `usaco-690`) as the last argument of the `Problem`
-   constructor in the corresponding module (in this case,
-   [`Binary_Search_Ans.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search_Ans.mdx)).
-   Also add tags (if you want).
-
-```
-new Problem(
-  'Silver',
-  'Cow Dance Show',
-  '690',
-  'Easy',
-  false,
-  ['tag1', 'tag2'],
-  'usaco-690'
-),
-```
-
-5. Check that both the module and the solution render properly using the
-   [live editor](/editor/) before submitting a
-   [pull request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/about-pull-requests).
-
-### Code Conventions
-
-Since code for the USACO Guide is contributed from several authors, code style
-will **not** be uniform. Of course, we still strive for code that is readable
-and understandable. If any code does not compile or is hard to read, please
-contact us.
-
-Please read the following resource before contributing code (although you do not
-have to follow all of the recommendations):
-
-<!--
-<Resource
-	source="MIT"
-	title="Course Notes: Style"
-	url="https://py.mit.edu/fall20/notes/style"
-	starred
->
-	Python-specific (but still generally useful)
-</Resource>
--->
-
-<Resources>
-	<Resource
-		source="CF"
-		title="Swift - Competitive C++ Manifesto"
-		url="64218"
-		starred
-	>
-		C++ style guide
-	</Resource>
-</Resources>
-
-<IncompleteSection>
-
-additional resources about style?
-
-</IncompleteSection>
-
-Additional Notes:
-
-- Use _tabs_ to indent.
-- Lines should not exceed 80 characters.
-- Be _consistent_ about formatting your code, unlike the following snippet:
-
-  <br />
-
-  ```py
-  a,b = (0,1)
-  print(a+b)
-  print(a + b)
-  ```
-
-  We don't care about which one you use (`a+b` or `a + b`), but pick one and
-  stick with it!
-
-<LanguageSection>
-
-<CPPSection>
-
-#### C++ Template
-
-For Bronze through Gold, please only use the macros listed in the template below
-(see [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
-
-```cpp
-#include <bits/stdc++.h> // see /general/running-code-locally
-using namespace std;
-
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
-	if (sz(name)) {
-		freopen((name+".in").c_str(), "r", stdin); // see /general/io
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
-
-int main() {
-	setIO();
-
-}
-```
-
-You don't have to use the template, but avoid using additional macros beyond the
-ones listed above. In particular, for loop macros are highly discouraged.
-
-</CPPSection>
-
-<JavaSection>
-
-<Info title="Java I/O">
-
-`Scanner` is [significantly slower](/general/fast-io?lang=java#fast-input) than
-`BufferedReader` and should be avoided.
-
-To improve readability, Java solutions using `BufferedReader` should use a
-wrapper class around input (preferably
-[`Kattio`](/general/io?lang=java#io-template) for consistency, or use your own
-variant if you really want).
-
-</Info>
-
-</JavaSection>
-
-<PySection />
-
-</LanguageSection>
+<!-- - Don't link CF if it's already included in "Contest Materials." -->

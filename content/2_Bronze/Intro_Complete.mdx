@@ -167,6 +167,48 @@ Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you
 should stick with integers whenever possible.
 
 </CPPSection>
+<PySection>
+
+The following solution correctly stores the maximum distance in a floating point
+variable.
+
+<Warning>
+
+Make sure to run using PyPy 3. The program will run out of time and/or memory unless you do.
+
+</Warning>
+
+```py
+import math
+N = int(input())
+xpoints = list(map(int, input().split(" ")))
+ypoints = list(map(int, input().split(" ")))
+
+points = [[xpoints[i], ypoints[i]] for i in range(N)]
+MaxDistance = 0
+for i in range(N): #first point
+	for j in range(i + 1, N): #second point
+		dx = points[i][0] - points[j][0]
+		dy = points[i][1] - points[j][1]
+		square = dx ** 2 + dy ** 2
+		#pick maximum
+		MaxDistance = max(MaxDistance, math.sqrt(square))
+
+print(round(MaxDistance ** 2))
+```
+However, it still fails on the following test case (it outputs $12.999999999999998$, but the
+answer is $13$):
+
+```
+2
+0 3
+2 0
+```
+
+Rounding suffices (`round(MaxDistance ** 2)`), but the takeaway is that you
+should stick with integers whenever possible.
+
+</PySection>
 
 </LanguageSection>
 </Spoiler>

@@ -1,4 +1,4 @@
-import firebaseType from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 import { ExecutionStatus } from './problem';
 
 export type Leaderboard = {
@@ -10,7 +10,7 @@ export type Leaderboard = {
       [key: string]: {
         bestScore: number;
         bestScoreStatus: ExecutionStatus;
-        bestScoreTimestamp: firebaseType.firestore.Timestamp;
+        bestScoreTimestamp: Timestamp;
         bestScoreSubmissionId: string;
       };
     };

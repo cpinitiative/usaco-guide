@@ -1,8 +1,11 @@
+// todo: switch to https://github.com/react-syntax-highlighter/react-syntax-highlighter
+
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
 import vsDark from 'prism-react-renderer/themes/vsDark';
 import * as React from 'react';
 import styled from 'styled-components';
+import { SpoilerContext } from '../Spoiler';
 import Highlight from './SyntaxHighlighting/Highlight';
 import Prism from './SyntaxHighlighting/prism';
 
@@ -92,7 +95,6 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
-    isCodeBlockExpandable?: boolean;
   },
   {
     collapsed: boolean;
@@ -100,6 +102,7 @@ class CodeBlock extends React.Component<
   }
 > {
   codeSnips = [];
+  static contextType = SpoilerContext;
 
   constructor(props) {
     super(props);
@@ -246,7 +249,12 @@ class CodeBlock extends React.Component<
   render() {
     const code = this.getCode();
     const className = this.props.className;
-    const isCodeBlockExpandable = this.props.isCodeBlockExpandable ?? true;
+    const linesOfCode =
+      code.split('\n').length +
+      1 -
+      this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
+    const isCodeBlockExpandable =
+      !this.context.expandCodeBlock && linesOfCode > 15;
     const language = className?.replace(/language-/, '');
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag

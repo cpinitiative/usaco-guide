@@ -1,9 +1,11 @@
 import { RouteComponentProps } from '@reach/router';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { navigate } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
+import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import useFirebase from '../../hooks/useFirebase';
+import { useFirebaseApp } from '../../hooks/useFirebase';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
@@ -19,26 +21,28 @@ const getQuery = name => {
 };
 
 const JoinGroupPage = (props: RouteComponentProps) => {
-  const { firebaseUser, isLoaded, signIn } = useContext(UserDataContext);
+  const { firebaseUser, isLoaded } = useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
   const [groupName, setGroupName] = React.useState<string>(null);
   const [error, setError] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isJoining, setIsJoining] = React.useState(false);
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
 
   const joinKey = typeof window === 'undefined' ? '' : getQuery('key');
-  const showLoading = isLoading || !isLoaded || !firebase;
+  const showLoading = isLoading || !isLoaded || !firebaseApp;
   const showNotSignedInMessage = !showLoading && !firebaseUser?.uid;
 
-  useFirebase(
-    firebase => {
+  useFirebaseApp(
+    firebaseApp => {
       setError(null);
       setIsLoading(true);
-      firebase
-        .functions()
-        .httpsCallable('groups-getJoinKeyInfo')({
-          key: joinKey,
-        })
+      httpsCallable(
+        getFunctions(firebaseApp),
+        'groups-getJoinKeyInfo'
+      )({
+        key: joinKey,
+      })
         .then(
           ({
             data,
@@ -114,11 +118,12 @@ const JoinGroupPage = (props: RouteComponentProps) => {
                   type="button"
                   onClick={() => {
                     setIsJoining(true);
-                    firebase
-                      .functions()
-                      .httpsCallable('groups-join')({
-                        key: joinKey,
-                      })
+                    httpsCallable(
+                      getFunctions(firebaseApp),
+                      'groups-join'
+                    )({
+                      key: joinKey,
+                    })
                       .then(
                         ({
                           data,
