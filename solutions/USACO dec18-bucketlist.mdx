@@ -42,6 +42,10 @@ file_out.close()
 
 </LanguageSection>
 
+# Solution 2
+
+Similar to the second solution in the official editorial. 
+
 <LanguageSection>
 
 <CPPSection>
@@ -63,9 +67,10 @@ int main() {
 		int start; cin >> start; 
 		int end; cin >> end;
 		int amt; cin >> amt;
-		// if it's a start point si, we add bi to the number 
-		// of buckets in use, and if it's an end point 
-		// ti, we subtract bi. This technique is called a 
+		// at time start, cow i needs to be milked, so 
+		// we'll need amt additional buckets (hence adding amt). 
+		// at time end, cow i is done milking, so we can free up 
+		// amt buckets (hence deleted amt). This technique is called a 
 		// "sweep", because if you think of all the points
 		// on a horizontal number line, we are "sweeping" across 
 		// the line, processing each point that we come across.
@@ -73,21 +78,23 @@ int main() {
 		event[end] -= amt; 
 	}
 		
-	// res represents the amount of buckets and cur will help
-	// keep track of which number bucket we are on
+	// res represents the maximum number of buckets we'll need 
+	// to use at any given point in time and cur represents 
+	// how many buckets we need to use at the current 
+	// time we're processing
 	int res = 0, cur = 0;
 	for (int i = 0; i <= maxtime; i++) {
 		// at time i, the number of buckets in use changes by event[i]
-		// so we want to update the number of buckets we are currently using accordingly
+		// so we want to update the number of buckets 
+		// we are currently using accordingly
 		cur += event[i];
-		// saving the cur in increasing order to get the 
-		// highest value we can for the number of buckets used
+		// we want res to be the greatest number of buckets 
+		// we need to use at any given point in time
 		res = max(res, cur); 
 		
 	}
 	
-	// we should be left with total amount of buckets
-	// and we can just print it out here
+	
 	cout << res << '\n'; 
 	
 }
