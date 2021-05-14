@@ -249,7 +249,12 @@ class CodeBlock extends React.Component<
   render() {
     const code = this.getCode();
     const className = this.props.className;
-    const isCodeBlockExpandable = !this.context.expandCodeBlock;
+    const linesOfCode =
+      code.split('\n').length +
+      1 -
+      this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
+    const isCodeBlockExpandable =
+      !this.context.expandCodeBlock && linesOfCode > 15;
     const language = className?.replace(/language-/, '');
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag

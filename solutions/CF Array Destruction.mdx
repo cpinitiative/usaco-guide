@@ -1,0 +1,164 @@
+---
+id: cf-1474C
+source: CF
+title: Array Destruction
+author: Kevin Sheng, Jesse Choe
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/86933)
+
+# Solution 
+
+**Time Complexity:** $\mathcal{O}(N^2\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+// iostream, vector, set, and algorithm
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAX_SIZE = 2000;
+
+int arr_size;
+int arr[MAX_SIZE];
+
+vector<pair<int, int>> pair_to_remove;
+
+bool works(int initial_sum) {
+	pair_to_remove.clear();
+	// This multiset stores the all of the undestroyed elements
+	multiset<int> remaining;
+	for (int i = 0; i < arr_size; i++) {
+		remaining.insert(arr[i]);
+	}
+	while (remaining.size()) {
+		// The largest element that hasn't been removed
+		int curr = *remaining.rbegin();
+		remaining.erase(remaining.find(curr));
+		// If this condition is true, then it is impossible to destruct the array with the given initial sum
+		if (remaining.find(initial_sum - curr) == remaining.end()) {
+			return false;
+		}
+		remaining.erase(remaining.find(initial_sum - curr));
+		pair_to_remove.push_back({curr, initial_sum - curr});
+		initial_sum = curr;
+	}
+	return remaining.empty();
+}
+
+void solve() {
+	cin >> arr_size;
+	arr_size *= 2;
+	for(int i = 0; i < arr_size; i++){
+		cin >> arr[i];
+	} 
+	sort(arr, arr + arr_size);
+	for (int i = 0; i < arr_size - 1; i++) {
+		// The initial sum should be the largest element in the array and arr[i]
+		int initial_sum = arr[i] + arr[arr_size - 1];
+		/* 
+		 * It suffices to check if the initial sum could destruct the array.
+		 * Then, we should print out the initial sum and each of pair of elements we destruct.
+		 */
+		if (works(initial_sum)) {
+			cout << "YES" << endl;
+			cout << initial_sum << endl;
+			for (pair<int, int> x: pair_to_remove) {
+				cout << x.first << " " << x.second << endl;
+			}
+			return;
+		}
+	}
+	cout << "NO" << endl;
+}
+
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 1; i <= t; i++) {
+		solve();
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.TreeMap;
+
+public final class DestroyArray {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int halfSize = Integer.parseInt(read.readLine());
+			TreeMap<Integer, Integer> nums = new TreeMap<>();
+			for (int i : Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray()) {
+				nums.put(i, nums.getOrDefault(i, 0) + 1);
+			}
+			int validStart = -1;
+			ArrayList<int[]> validMoves = null;
+			for (int toRemove : nums.keySet()) {
+				int start = nums.lastKey() + toRemove;
+				int at = start;
+
+				TreeMap<Integer, Integer> remaining = new TreeMap<>(nums);
+				ArrayList<int[]> moves = new ArrayList<>();
+				for (int i = 0; i < halfSize; i++) {
+					int largest = remaining.lastKey();
+					remaining.put(largest, remaining.get(largest) - 1);
+					if (remaining.get(largest) == 0) {
+						remaining.remove(largest);
+					}
+
+					int other = at - largest;
+					if (!remaining.containsKey(other)) {
+						break;
+					}
+
+					at = largest;
+					remaining.put(other, remaining.get(other) - 1);
+					if (remaining.get(other) == 0) {
+						remaining.remove(other);
+					}
+					moves.add(new int[] {largest, other});
+				}
+
+				if (moves.size() == halfSize) {
+					validStart = start;
+					validMoves = moves;
+					break;
+				}
+			}
+
+			if (validMoves == null) {
+				System.out.println("NO");
+			} else {
+				System.out.printf("YES%n%d%n", validStart);
+				for (int[] m : validMoves) {
+					System.out.printf("%d %d%n", m[0], m[1]);
+				}
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
