@@ -23,14 +23,14 @@ signed main(){
        cin>>n>>w;
        pair<int, int> cows[n];
        for(int i=0; i<n; i++) cin>>cows[i].w>>cows[i].t;
-       vector<int> talent(1e6+10, inf); // talent[i] = min weight to make sum talent of i
+       vector<int> talent(1e6+10, inf);
        talent[0]=0;
        for(auto cow:cows)
               for(int i=250*1e3; i>=0; i--) // 250 * 10^3 is max total talent
-                     if(talent[i]!=inf) // if a talent sum of i can be made with some prefix of the cows (not including cur cow)
+                     if(talent[i]!=inf)
                             talent[i+cow.t]=min(talent[i+cow.t], talent[i]+cow.w);
-       for(double t=1; t<talent.size(); t++) // all talents are positive integers
-              if(talent[t] >= w && t / talent[t] > ans) ans = t / talent[t]; // talent : weight ratio
+       for(double t=1; t<talent.size(); t++)
+              if(talent[t] >= w && t / talent[t] > ans) ans = t / talent[t];
        cout<<(int)(1000*ans)<<endl;
 }
 ```
