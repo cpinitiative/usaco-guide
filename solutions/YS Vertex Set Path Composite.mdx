@@ -8,13 +8,13 @@ author: Andrew Cheng
 **Time Complexity:** $\mathcal{O}(N \log^2 N)$ from HLD
 
 **Main Idea:**
-Different from a classic HLD problem, the nesting of functions does not follow the associative property.
+Different from a classic HLD problem, the nesting of functions does not follow the commutative property.
 In other words, the answer of the query $1$ $u$ $v$ $x$ is different from the answer of the query $1$ $v$ $u$ $x$.
 
 To solve this problem, we can break down the path from node $u$ to node $v$ into two paths: from node $u$ to $LCA(u,v)$ and from $LCA(u,v)$ to node $v$.
 The path from node $u$ to $LCA(u,v)$ will decrease in depth, and the path from $LCA(u,v)$ to node $v$ will increase in depth.
 
-We can then maintain two segment trees that stores the equivalent function that results from moving from an arbitrary node $u$ to $v$ and from node $v$ to $u$ respectively.
+We can then maintain two segment trees
 
 The first segment tree will calculate the equivalent function that results from moving from node $u$ to $LCA(u,v)$. And the second segment tree
 will calculate the equivalent function that results from moving from $LCA(u,v)$ to node $v$. After this we can plug in the given $x$ into the two
@@ -90,7 +90,7 @@ pi merge(pi x, pi y){
 	return k;
 }
 
-inline void pushup(int p){
+void pushup(int p){
 	tree[p] = merge(tree[lc],tree[rc]);
 	tree2[p] = merge(tree2[rc],tree2[lc]);
 	return;
@@ -124,10 +124,7 @@ void update(int p, int l, int r, int a, int b){
 }
 
 pi query1(int p, int l, int r, int a, int b){ //Used to query tree
-	if(a > r || b < l){
-		pi k; k.fi = 1; k.se = 0;
-		return k;
-	}
+	if(a > r || b < l)return {1,0};
 	if(a <= l && r <= b)return tree[p];
 	int mid = (l+r)>>1;
 	pi left = query1(lc,l,mid,a,b);
@@ -136,10 +133,7 @@ pi query1(int p, int l, int r, int a, int b){ //Used to query tree
 }
 
 pi query2(int p, int l, int r, int a, int b){ //Used to query tree2
-	if(a > r || b < l){
-		pi k; k.fi = 1; k.se = 0;
-		return k;
-	}
+	if(a > r || b < l)return {1,0};
 	if(a <= l && r <= b)return tree2[p];
 	int mid = (l+r)>>1;
 	pi left = query2(lc,l,mid,a,b);
@@ -188,7 +182,7 @@ void dfs2(int x, int par, int topf){
 }
 
 pi pathQuery1(int x, int y){
-	pi res; res.fi = 1; res.se = 0;
+	pi res{1,0};
 	while(top[x] != top[y]){
 		if(dep[top[x]] < dep[top[y]])swap(x,y);
 		pi k = query1(1,1,N,dfn[top[x]],dfn[x]);
@@ -202,7 +196,7 @@ pi pathQuery1(int x, int y){
 }
 
 pi pathQuery2(int x, int y){
-	pi res; res.fi = 1; res.se = 0;
+	pi res{1,0};
 	while(top[x] != top[y]){
 		if(dep[top[x]] < dep[top[y]])swap(x,y);
 		pi k = query2(1,1,N,dfn[top[x]],dfn[x]);
