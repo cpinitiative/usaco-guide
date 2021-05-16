@@ -181,31 +181,7 @@ public class Exponentation
 
 ## Modular Inverse
 
-The **modular inverse** is the equivalent of the reciprocal in real-number
-arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
-We'll only consider prime moduli $p$ here.
-
-For example, the inverse of $2$ modulo $p=10^9+7$ is
-$i=\frac{p+1}{2}=5\cdot 10^8+4$. This means that for any integer $x$,
-
-$$
-(2x)\cdot i\equiv x\cdot (2i)\equiv x\pmod{10^9+7}.
-$$
-
-For example, $10i\equiv 5\pmod{10^9+7}$.
-
-<!-- #### Example: Sprinkers 2
-
-There aren't many good examples of Modular Inverses in USACO. One problem where it was useful was the platinum problem "Sprinkers 2".
-
-<FocusProblem problem="dp[2]" />
-
-For the sake of example, we'll skip the details of this problem. Also, if you want to attempt it yourself, you should probably do that first. In this problem, our DP transition relies on dividing our answer at some state by $2$, under a prime moduli.
-
-To perform this, we'll instead multiply by $500000004$ or the modular inverse of $2$, and take it under the prime moduli for the same result.
- -->
-
-<!-- To find a modular inverse of some number modulo $p$, simply raise it to the power of $p-2$. -->
+<FocusProblem problem="binomial" />
 
 <Resources>
 	<Resource
@@ -217,6 +193,33 @@ To perform this, we'll instead multiply by $500000004$ or the modular inverse of
 		Various ways to take modular inverse, we'll only discuss the second here
 	</Resource>
 </Resources>
+
+The **modular inverse** is the equivalent of the reciprocal in real-number
+arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
+We'll only consider prime moduli $p$ here.
+
+For example, the inverse of $2 \pmod{p}$ where $p=10^9+7$ is
+$$
+1\equiv p+1 \pmod{p}.
+$$
+
+$$
+2\cdot i\equiv p+1 \pmod{p}.
+$$
+
+$$
+i=\frac{p+1}{2}=5\cdot 10^8+4
+$$
+
+where $i$ is the modular inverse. This means that for any integer $x$,
+
+$$
+(2x)\cdot i\equiv x\cdot (2i)\equiv x\pmod{10^9+7}.
+$$
+
+For example, $10i\equiv 5\pmod{10^9+7}$.
+
+
 
 ### With Exponentiation
 
@@ -262,6 +265,65 @@ public class main
 </JavaSection>
 
 </LanguageSection>
+
+### Solution - Exponentiation
+
+
+
+<LanguageSection>
+
+<CPPSection>
+To calculate $a \choose b$, we can precalculate the factorials to speed up the calculation of $a!$, $b!$, and $(a-b)!$. $a \choose b$ is equivalent to
+
+$$
+\frac{a!}{b!(a-b)!} = a! \cdot b!^{-1} \cdot (a-b)!^{-1}.
+$$
+
+Thus, calculating the inverses of $b!$ and $(a-b)!$ is sufficient in finding $a \choose b$.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+using ll = long long;
+const int MOD = (int)1e9+7;
+ 
+ll inverse(ll num){
+    ll a = num; ll b = MOD-2;
+    //equivalent to num^(MOD-2)
+    ll res = 1;
+    while (b > 0) {
+        if (b % 2 == 1)
+            res = res * a % MOD;
+        a = a * a % MOD;
+        b /= 2;
+    }
+    return res;
+}
+ 
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    ll factorial[1000001];
+    factorial[0] = factorial[1] =1;
+    for (int i = 2; i<=1000000; i++) {
+        factorial[i]=(factorial[i-1]*i)%MOD;
+    }
+ 
+    ll n, a, b;
+    cin >> n;
+    for(int i = 0; i < n; i++) {
+        cin >> a >> b;
+        ll ans = (factorial[a] * inverse(factorial[b])) % MOD;
+        ans *= inverse(factorial[a-b]);
+        ans %= MOD;
+        cout << ans << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo
 $p$, frequent use of division inside a loop can significantly increase the
