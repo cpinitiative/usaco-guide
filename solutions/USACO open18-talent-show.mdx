@@ -1,0 +1,36 @@
+---
+id: usaco-839
+source: USACO Gold 2018 Open
+title: Talent Show
+author: Arpan Banerjee
+---
+
+## Solution 1
+Instead of using binary search as the official solution does, an simple knapsack can be done. An array of talents can be kept, where `talent[i]` is the minimum weight required to create a talent sum of i. To make sure each cow is used at most once and the order of the cows doesn't matter, the indices of `talent` are iterated though from greatest to least, and the `cows` are iterated though in the outer loop; the implementation should make this clear. This maximizes the ratio $t/w$ as desired. Then, the maximum ratio of $t_i / w_i$ can be easily found by going through `talent` and ignoring any $w_i$ that is less than $W$. 
+
+My $\mathcal{O}(250 \cdot 10^3 \cdot n)$ code is below:
+```cpp
+#include<bits/stdc++.h>
+#define w first
+#define t second
+using namespace std;
+
+const int inf=2e9;
+int n,w; double ans=0;
+
+signed main(){
+       ifstream cin("talent.in"); ofstream cout("talent.out");
+       cin>>n>>w;
+       pair<int, int> cows[n];
+       for(int i=0; i<n; i++) cin>>cows[i].w>>cows[i].t;
+       vector<int> talent(1e6+10, inf); // talent[i] = min weight to make sum talent of i
+       talent[0]=0;
+       for(auto cow:cows)
+              for(int i=250*1e3; i>=0; i--) // 250 * 10^3 is max total talent
+                     if(talent[i]!=inf) // if a talent sum of i can be made with some prefix of the cows (not including cur cow)
+                            talent[i+cow.t]=min(talent[i+cow.t], talent[i]+cow.w);
+       for(double t=1; t<talent.size(); t++) // all talents are positive integers
+              if(talent[t] >= w && t / talent[t] > ans) ans = t / talent[t]; // talent : weight ratio
+       cout<<(int)(1000*ans)<<endl;
+}
+```
