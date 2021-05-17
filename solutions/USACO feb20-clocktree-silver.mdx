@@ -49,11 +49,12 @@ void dfs(int i, int color, int par) {
     if (color == 0) {
         nodes0++;
         sum0 += A[i];
-    } else {
+    }
+    else {
         nodes1++;
         sum1 += A[i];
     }
-
+    
     for(int j = 0; j < edges[i].size(); j++) {
         if (edges[i][j] != par) {
             // swap colors for the child
@@ -65,7 +66,7 @@ void dfs(int i, int color, int par) {
 int main() {
     freopen("clocktree.in", "r", stdin);
     freopen("clocktree.out", "w", stdout);
-
+    
     int a, b;
     cin >> N;
 
@@ -79,22 +80,22 @@ int main() {
         edges[a].push_back(b);
         edges[b].push_back(a);
     }
-
+    
     dfs(0, 0, -1);
 
     // same mod means you can start anywhere
     if((sum0 % 12) == (sum1 % 12)) {
         cout << N;
     }
-        // if group0 is 1 smaller than group1, start from group1
+    // if group0 is 1 smaller than group1, start from group1
     else if((sum0 + 1) % 12 == (sum1 % 12)) {
         cout << nodes1;
     }
-        // if group1 is 1 smaller than group0, start from group0
+    // if group1 is 1 smaller than group0, start from group0
     else if((sum0 % 12) == ((sum1 + 1) % 12)) {
         cout << nodes0;
     }
-        // no way to get all 12
+    // no way to get all 12
     else {
         cout << 0;
     }
