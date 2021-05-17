@@ -589,18 +589,20 @@ import java.util.*;
 import java.io.*;
 
 public class DynamicRangeSumQueries {
+	static long[] bit;
+	static int n;
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-		int n = io.nextInt();
+		n = io.nextInt();
 		int q = io.nextInt();
 
 		// Note: we are using 1-based indexing for the BIT to function properly
 		// "arr" stores the value of each item in the array for convenient use
-		BinaryIndexTree bit = new BinaryIndexTree(n);
-		int[] arr = new int[n + 1];
+		bit = new long[n+1];
+		int[] arr = new int[n+1];
 		for (int i = 1; i <= n; i++) {
 			arr[i] = io.nextInt();
-			bit.add(i, arr[i]);
+			add(i, arr[i]);
 		}
 
 		for (int i = 0; i < q; i++) {
@@ -608,40 +610,30 @@ public class DynamicRangeSumQueries {
 			if (type == 1) {
 				int k = io.nextInt();
 				int u = io.nextInt();
-				bit.add(k, -arr[k]); // Remove the BIT's current value at "k"
+				add(k, -arr[k]); // Remove the BIT's current value at "k"
 				arr[k] = u;
-				bit.add(k, arr[k]); // Add the BIT's new value
+				add(k, arr[k]); // Add the BIT's new value
 			} else {
 				int a = io.nextInt();
 				int b = io.nextInt();
-				io.println(bit.query(b) - bit.query(a - 1));
+				io.println(query(b)-query(a-1));
 			}
 		}
 		io.close();
 	}
 
-	static class BinaryIndexTree {
-		final int n;
-		final long[] bit;
-
-		BinaryIndexTree(int n) {
-			this.n = n;
-			this.bit = new long[n + 1];
+	static void add(int j, long k) {
+		for (; j <= n; j += j & -j) {
+			bit[j] += k;
 		}
+	}
 
-		void add(int j, long k) {
-			for (; j <= n; j += j & -j) {
-				bit[j] += k;
-			}
+	static long query(int j) {
+		long res = 0;
+		for (; j > 0; j -= j & -j) {
+			res += bit[j];
 		}
-
-		long query(int j) {
-			long res = 0;
-			for (; j > 0; j -= j & -j) {
-				res += bit[j];
-			}
-			return res;
-		}
+		return res;
 	}
 
 	CodeSnip{Kattio}
