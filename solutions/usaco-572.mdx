@@ -59,6 +59,7 @@ int main() {
 
 ```java
 import java.io.*;
+import java.io.*;
 import java.util.StringTokenizer;
 
 public class BCount {
@@ -92,7 +93,7 @@ public class BCount {
 			}
 		}
 
-		StringBuilder ans = new StringBuilder();
+		PrintWriter writer = new PrintWriter("bcount.out");
 		for (int q = 0; q < queryNum; q++) {
 			StringTokenizer query = new StringTokenizer(read.readLine());
 			int start = Integer.parseInt(query.nextToken());
@@ -101,14 +102,9 @@ public class BCount {
 			int holstein = holsteins[end] - holsteins[start - 1];
 			int guernsey = guernseys[end] - guernseys[start - 1];
 			int jersey = jerseys[end] - jerseys[start - 1];
-			ans.append(holstein).append(' ')
-					.append(guernsey).append(' ')
-					.append(jersey).append('\n');
+			writer.println(holstein + " " + guernsey + " " + jersey);
 		}
 		read.close();
-
-		PrintWriter writer = new PrintWriter("bcount.out");
-		writer.print(ans);
 		writer.close();
 	}
 }
