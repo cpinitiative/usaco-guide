@@ -2,7 +2,7 @@
 id: usaco-987
 source: USACO Bronze 2020 January
 title: Word Processor
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Ananth Kashyap
 ---
 
 [Official Analysis (Python)](http://www.usaco.org/current/data/sol_word_bronze_jan20.html)
@@ -11,7 +11,7 @@ author: Danh Ta Chi Thanh
 
 <CPPSection>
 
-## Implementation
+## C++ Implementation
 
 ```cpp
 #include <iostream>
@@ -52,5 +52,49 @@ int main(){
 ```
 
 </CPPSection>
+
+<PySection>
+
+## Python Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```py
+# Take in the input using standard Python file i/o system
+file_in = open('word.in')
+data = file_in.read().strip().split('\n')
+n, k = map(int, data[0].split(' '))
+essay = data[1].split(' ')
+
+i = 0
+formatted_essay = ''
+line_count = 0
+line = ''
+
+while i < n:
+    # If the next word in the essay can't fit on the line, add it to a new one
+    # If it can, keep it on the same line
+    if line_count + len(essay[i]) > k:
+        formatted_essay += line
+        formatted_essay += '\n'
+        line_count = len(essay[i])
+        line = essay[i]
+        i += 1
+    else:
+        if line_count != 0:
+            line += ' '
+        line += essay[i]
+        line_count += len(essay[i])
+        i += 1
+    if i == n:
+        formatted_essay += line
+
+# Add the answer to the output file using standard Python file i/o system
+file_out = open('word.out', 'w')
+file_out.write(formatted_essay)
+file_out.close()
+```
+
+</PySection>
 
 </LanguageSection>

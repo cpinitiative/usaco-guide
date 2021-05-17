@@ -2,12 +2,16 @@
 id: usaco-1013
 source: USACO Bronze 2020 February
 title: Swap
-author: Benjamin Qi
+author: Benjamin Qi, Ananth Kashyap
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
 
-C++ Version of Second Solution:
+<LanguageSection>
+
+<CPPSection>
+
+## C++ Version of Second Solution:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -242,3 +246,52 @@ int main() {
 	for (int t: cur) cout << t+1 << "\n";
 }
 ```
+
+</CPPSection>
+
+<PySection>
+
+## Python Implementation
+
+**Time Complexity:** $\mathcal{O}(NK)$
+
+```py
+# Take in the input using standard Python file i/o system
+file_in = open('swap.in')
+data = file_in.read().strip().split('\n')
+n, k = map(int, data[0].split(' '))
+swaps = [list(map(int, data[i+1].split(' '))) for i in range(2)]
+
+cows_initial = [i+1 for i in range(n)]
+cows = [i+1 for i in range(n)]
+
+i = 0
+
+while i < k:
+    # Simulate the two swaps
+    mid = int((swaps[0][0] + swaps[0][1]) / 2)
+    for j in range(swaps[0][0] - 1, mid):
+        cows[j], cows[swaps[0][0] - 1 + swaps[0][1] - 1 - j] = cows[swaps[0][0] - 1 + swaps[0][1] - 1 - j], cows[j]
+
+    mid = int((swaps[1][0] + swaps[1][1]) / 2)
+    for j in range(swaps[1][0] - 1, mid):
+        cows[j], cows[swaps[1][0] - 1 + swaps[1][1] - 1 - j] = cows[swaps[1][0] - 1 + swaps[1][1] - 1 - j], cows[j]
+    i += 1
+    # Check if the list of cows ever returns to its original state
+    if cows == cows_initial:
+        k %= i
+        i = 0
+
+# Add the answer to the output file using standard Python file i/o system
+file_out = open('swap.out', 'w')
+for i in range(n - 1):
+    file_out.write(str(cows[i]) + '\n')
+file_out.write(str(cows[n - 1]))
+file_out.close()
+```
+
+</PySection>
+
+</LanguageSection>
+
+
