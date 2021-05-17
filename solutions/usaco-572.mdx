@@ -64,10 +64,11 @@ import java.util.StringTokenizer;
 public class BCount {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("bcount.in"));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("bcount.out")));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int cowNum = Integer.parseInt(initial.nextToken());
 		int queryNum = Integer.parseInt(initial.nextToken());
-
+		
 		int[] holsteins = new int[cowNum + 1];
 		int[] guernseys = new int[cowNum + 1];
 		int[] jerseys = new int[cowNum + 1];
@@ -75,41 +76,27 @@ public class BCount {
 			holsteins[i] += holsteins[i - 1];
 			guernseys[i] += guernseys[i - 1];
 			jerseys[i] += jerseys[i - 1];
-
+			
 			int breed = Integer.parseInt(read.readLine());
-			switch (breed) {
-				case 1:
-					holsteins[i]++;
-					break;
-				case 2:
-					guernseys[i]++;
-					break;
-				case 3:
-					jerseys[i]++;
-					break;
-				default:
-					throw new IllegalArgumentException("invalid cow breed given");
-			}
+			if(breed == 1)
+				holsteins[i]++;
+			if(breed == 2)
+				guernseys[i]++;
+			if(breed == 3)
+				jerseys[i]++;
 		}
-
-		StringBuilder ans = new StringBuilder();
+		
 		for (int q = 0; q < queryNum; q++) {
 			StringTokenizer query = new StringTokenizer(read.readLine());
 			int start = Integer.parseInt(query.nextToken());
 			int end = Integer.parseInt(query.nextToken());
-
+			
 			int holstein = holsteins[end] - holsteins[start - 1];
 			int guernsey = guernseys[end] - guernseys[start - 1];
 			int jersey = jerseys[end] - jerseys[start - 1];
-			ans.append(holstein).append(' ')
-					.append(guernsey).append(' ')
-					.append(jersey).append('\n');
+			out.println(holstein + " " + guernsey + " " + jersey);
 		}
-		read.close();
-
-		PrintWriter writer = new PrintWriter("bcount.out");
-		writer.print(ans);
-		writer.close();
+		out.close();
 	}
 }
 ```
