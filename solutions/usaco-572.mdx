@@ -38,7 +38,7 @@ int main() {
 		cin >> type;
 		if (type == 1) holsteins[c + 1]++;
 		else if (type == 2) guernseys[c + 1]++;
-		else jerseys[c + 1]++;
+		else if (type == 3) jerseys[c + 1]++;
 	}
 
 	for (int q = 0; q < query_num; q++) {
@@ -78,12 +78,13 @@ public class BCount {
 			jerseys[i] += jerseys[i - 1];
 			
 			int breed = Integer.parseInt(read.readLine());
-			if (breed == 1)
+			if (breed == 1) {
 				holsteins[i]++;
-			if (breed == 2)
+			} else if (breed == 2) {
 				guernseys[i]++;
-			if (breed == 3)
+			} else if (breed == 3) {
 				jerseys[i]++;
+			}
 		}
 
 		for (int q = 0; q < queryNum; q++) {
@@ -122,8 +123,6 @@ with open('bcount.in') as read:
 			guernseys[-1] += 1
 		elif cow == 3:
 			jerseys[-1] += 1
-		else:
-			raise ValueError(f'invalid cow type {cow}')
 
 	with open('bcount.out', 'w') as written:
 		for _ in range(query_num):
