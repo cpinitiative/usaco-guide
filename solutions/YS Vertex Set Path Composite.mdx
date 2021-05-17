@@ -14,7 +14,7 @@ In other words, the answer of the query $1$ $u$ $v$ $x$ is different from the an
 To solve this problem, we can break down the path from node $u$ to node $v$ into two paths: from node $u$ to $LCA(u,v)$ and from $LCA(u,v)$ to node $v$.
 The path from node $u$ to $LCA(u,v)$ will decrease in depth, and the path from $LCA(u,v)$ to node $v$ will increase in depth.
 
-We can then maintain two segment trees
+We can then maintain two segment trees.
 
 The first segment tree will calculate the equivalent function that results from moving from node $u$ to $LCA(u,v)$. And the second segment tree
 will calculate the equivalent function that results from moving from $LCA(u,v)$ to node $v$. After this we can plug in the given $x$ into the two
@@ -31,12 +31,12 @@ The update queries can be implemented using segment tree point updates on both s
 ```cpp
 
 #include <bits/stdc++.h>
-#define ll long long
+using ll = long long;
+using namespace std;
 #define pi pair<ll,ll>
 #define fi first
 #define se second
 #define pb push_back
-using namespace std;
 
 const int maxN = 2e5+5;
 const int height = 25;
@@ -93,34 +93,29 @@ pi merge(pi x, pi y){
 void pushup(int p){
 	tree[p] = merge(tree[lc],tree[rc]);
 	tree2[p] = merge(tree2[rc],tree2[lc]);
-	return;
 }
 
 void build(int p, int l, int r){
 	if(l == r){
-		tree[p].fi = tree2[p].fi = val[l].fi;
-		tree[p].se = tree2[p].se = val[l].se;
+        tree[p] = tree2[p] = val[l];
 		return;
 	}
 	int mid = (l+r)>>1;
 	build(lc,l,mid);
 	build(rc,mid+1,r);
 	pushup(p);
-	return;
 }
 
 void update(int p, int l, int r, int a, int b){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
-		tree[p].fi = tree2[p].fi = val[l].fi;
-		tree[p].se = tree2[p].se = val[l].se;
+        tree[p] = tree2[p] = val[l];
 		return;
 	}
 	int mid = (l+r)>>1;
 	update(lc,l,mid,a,b);
 	update(rc,mid+1,r,a,b);
 	pushup(p);
-	return;
 }
 
 pi query1(int p, int l, int r, int a, int b){ //Used to query tree
@@ -165,7 +160,6 @@ void dfs1(int x, int par, int depth){
 			son[x] = c;
 		}
 	}
-	return;
 }
 
 void dfs2(int x, int par, int topf){
@@ -178,7 +172,6 @@ void dfs2(int x, int par, int topf){
 		if(c == par || c == son[x])continue;
 		dfs2(c,x,c);
 	}
-	return;
 }
 
 pi pathQuery1(int x, int y){
