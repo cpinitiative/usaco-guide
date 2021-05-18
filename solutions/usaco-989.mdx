@@ -1,0 +1,54 @@
+---
+id: usaco-989
+source: USACO Bronze 2020 January
+title: Race
+author: Sathvik Chundru
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_race_bronze_jan20.html)
+
+<LanguageSection>
+ 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+class Main {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("race.in"));
+		PrintWriter pw = new PrintWriter(new File("race.out")); 
+		int k = sc.nextInt();
+		int n = sc.nextInt();
+		for(int i = 0; i < n; i++) {
+			int minspeed = sc.nextInt(); 
+			pw.println(solve(k, minspeed));
+		}
+		pw.close();
+	}
+
+	public static int solve(int dist, int minspeed) {
+		int lhstravel = 0;
+		int rhstravel = 0;
+		int timeused = 0;
+		for(int currspeed = 1;; currspeed++) {
+			lhstravel += currspeed;
+			timeused++;
+			if(lhstravel + rhstravel >= dist) { 
+				return timeused; 
+			}
+			if(currspeed >= minspeed) {
+				rhstravel += currspeed;
+				timeused++;
+				if(lhstravel + rhstravel >= dist) { 
+					return timeused; 
+				}
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
