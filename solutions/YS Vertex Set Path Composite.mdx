@@ -31,12 +31,12 @@ The update queries can be implemented using segment tree point updates on both s
 ```cpp
 
 #include <bits/stdc++.h>
-using ll = long long;
-using namespace std;
-#define pi pair<ll,ll>
 #define fi first
 #define se second
 #define pb push_back
+using namespace std;
+using ll = long long;
+using pi = pair<ll,ll>;
 
 const int maxN = 2e5+5;
 const int height = 25;
@@ -97,7 +97,7 @@ void pushup(int p){
 
 void build(int p, int l, int r){
 	if(l == r){
-        tree[p] = tree2[p] = val[l];
+		tree[p] = tree2[p] = val[l];
 		return;
 	}
 	int mid = (l+r)>>1;
@@ -109,7 +109,7 @@ void build(int p, int l, int r){
 void update(int p, int l, int r, int a, int b){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
-        tree[p] = tree2[p] = val[l];
+		tree[p] = tree2[p] = val[l];
 		return;
 	}
 	int mid = (l+r)>>1;
@@ -202,40 +202,51 @@ pi pathQuery2(int x, int y){
 	return res;
 }
 
-signed main(){
+signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 	cin >> N >> Q;
-	for(int i = 1; i <= N; ++i){
-		int a,b; cin >> a >> b;
-		ori[i].fi = a; ori[i].se = b;
+	for (int i = 1; i <= N; ++i) {
+		int a, b;
+		cin >> a >> b;
+		ori[i].fi = a;
+		ori[i].se = b;
 	}
-	for(int i = 1; i < N; ++i){
-		int a,b; cin >> a >> b; ++a; ++b; //Change coordinates from [0,N) to [1,N]
-		adj[a].pb(b); adj[b].pb(a);
+	for (int i = 1; i < N; ++i) {
+		int a, b;
+		cin >> a >> b;
+		++a;
+		++b; //Change coordinates from [0,N) to [1,N]
+		adj[a].pb(b);
+		adj[b].pb(a);
 	}
-	dfs1(1,0,1);
-	dfs2(1,0,1);
-	build(1,1,N);
-	for(int i = 1; i <= Q; ++i){
-		int k; cin >> k;
-		if(k == 0){
-			int p,c,d; cin >> p >> c >> d; ++p;
-			val[dfn[p]].fi = c; val[dfn[p]].se = d; //Potential Problem
-			update(1,1,N,dfn[p],dfn[p]);
-		}
-		else{
-			int u,v,x; cin >> u >> v >> x; ++u; ++v;
-			int t = LCA(u,v);
-			pi ansL = pathQuery1(u,t); //Excluding LCA going up
-			pi ansR = pathQuery2(t,v); //Including LCA going down
-			int res = ((ansL.fi * x)%MOD + ansL.se)%MOD;
-			res = ((ansR.fi * res)%MOD + ansR.se)%MOD;
+	dfs1(1, 0, 1);
+	dfs2(1, 0, 1);
+	build(1, 1, N);
+	for (int i = 1; i <= Q; ++i) {
+		int k;
+		cin >> k;
+		if (k == 0) {
+			int p, c, d;
+			cin >> p >> c >> d;
+			++p;
+			val[dfn[p]].fi = c;
+			val[dfn[p]].se = d; //Potential Problem
+			update(1, 1, N, dfn[p], dfn[p]);
+		} else {
+			int u, v, x;
+			cin >> u >> v >> x;
+			++u;
+			++v;
+			int t = LCA(u, v);
+			pi ansL = pathQuery1(u, t); //Excluding LCA going up
+			pi ansR = pathQuery2(t, v); //Including LCA going down
+			int res = ((ansL.fi * x) % MOD + ansL.se) % MOD;
+			res = ((ansR.fi * res) % MOD + ansR.se) % MOD;
 			cout << res << '\n';
 			assert(res >= 0);
 		}
 	}
-	return 0;
 }
 
 ```
