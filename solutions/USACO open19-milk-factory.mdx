@@ -9,6 +9,52 @@ author: Mrinall Umasudhan, Jesse Choe, and Ananth Kashyap
 
 ## Solution 1
 
+This solution follows the logic outlined in the official solution.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N)$
+
+<LanguageSection>
+<PySection>
+
+```py
+# Take in the input using standard Python file i/o system
+data = open('factory.in').read().strip().split('\n')
+n = int(data[0])
+conveyer_belts = [list(map(int, data[i + 1].split(' '))) for i in range(n - 1)]
+
+# Create a list holding all factories that have an outgoing conveyer belts
+outgoing_locations = [0] * max(outgoing)
+
+for i in range(n - 1):
+	outgoing_locations[conveyer_belts[i][0] - 1] += 1
+
+ans = -1
+counter = 0
+
+# Find out which station does not have any outgoing conveyer belts
+for i in range(n - 1):
+	if outgoing_locations[conveyer_belts[i][1] - 1] == 0:
+		if conveyer_belts[i][1] != ans:
+			ans = conveyer_belts[i][1]
+			counter += 1
+
+# Make sure there is only one station with no outgoing belts
+if counter > 1:
+	ans = -1
+
+# Print the answer on the output file using Python file i/o system
+file_out = open('factory.out', 'w')
+file_out.write(str(ans))
+file_out.close()
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2
+
 This problem can also be solved using [Depth-First Search](/silver/dfs) (a
 Silver topic). Represent the factory as a directed unweighted graph with edges
 from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at
@@ -160,48 +206,3 @@ int main(){
 </CPPSection>
 </LanguageSection>
 
-## Solution 2
-
-This solution follows the logic outlined in the official solution.
-
-## Implementation
-
-**Time Complexity**: $\mathcal{O}(N)$
-
-<LanguageSection>
-<PySection>
-
-```py
-# Take in the input using standard Python file i/o system
-data = open('factory.in').read().strip().split('\n')
-n = int(data[0])
-conveyer_belts = [list(map(int, data[i + 1].split(' '))) for i in range(n - 1)]
-
-# Create a list holding all factories that have an outgoing conveyer belts
-outgoing_locations = [0] * max(outgoing)
-
-for i in range(n - 1):
-	outgoing_locations[conveyer_belts[i][0] - 1] += 1
-
-ans = -1
-counter = 0
-
-# Find out which station does not have any outgoing conveyer belts
-for i in range(n - 1):
-	if outgoing_locations[conveyer_belts[i][1] - 1] == 0:
-		if conveyer_belts[i][1] != ans:
-			ans = conveyer_belts[i][1]
-			counter += 1
-
-# Make sure there is only one station with no outgoing belts
-if counter > 1:
-	ans = -1
-
-# Print the answer on the output file using Python file i/o system
-file_out = open('factory.out', 'w')
-file_out.write(str(ans))
-file_out.close()
-```
-
-</PySection>
-</LanguageSection>
