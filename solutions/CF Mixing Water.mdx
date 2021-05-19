@@ -14,13 +14,11 @@ Consider the following observations:
 
 - Case 1: pouring an equal number of cups of hot and cold water is equivalent to pouring one cup of each. Otherwise,
 - Case 2: there must be exactly one more cup of hot water poured than cold water poured. Thus, there will be $c + 1$ cups of hot water and $c$ cups of cold water for some $c \geq 0$.
-- The two barrels with the closest temperature to $t$ will be the barrels with temperatures slightly more and slightly less than $t$. The two barrels will be $a$ and $b$, respectively.
+- The temperature is l+(h-l)(c+1)/(2c+1) when c is odd. This can be proven to be a monotonically decreasing function. Since it's monotonic, we can binary search to approximate the best value for $c$, and test the odd integers aroudn it
 
-Binary search on the maximum number of cups $x$ with a temperature of at least $t$.
+Binary search on the maximum number of odd cups $c$ which gives a temperature of at least $t$.
 
-$a$ will consist of $x$ cups poured, and $b$ will consist of $x + 2$ cups poured (from the second observation listed above, $x$ is guaranteed to be odd).
-
-The answer will be the barrel with a minimum $|t_b - t|$, which can either be the barrel with $2$, $x$, or $x + 2$ cups.
+The answer will be either be the barrel with $2$, $c$, or $c + 2$ cups.
 
 **Time Complexity:** $\mathcal{O}(\log N)$
 
