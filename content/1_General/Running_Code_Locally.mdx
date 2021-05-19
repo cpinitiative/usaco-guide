@@ -3,7 +3,7 @@ id: running-code-locally
 title: Running Code Locally
 author:
   Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang,
-  Shourya Bansal
+  Shourya Bansal, Dong Liu
 description: Options for running your language of choice locally.
 prerequisites:
   - running-code-online
@@ -273,6 +273,50 @@ work with the latter two. This is one of the reasons why you should **not** use
 
 If you install GCC as described later in the module linked above, then you
 should be good to go.
+
+### Precompiling `<bits/stdc++.h>`
+
+<Resources>
+	<Resource
+		source="CF"
+		title="Speed up GCC Compile Time"
+		url="https://codeforces.com/blog/entry/53909"
+	 />
+</Resources>
+
+Using this trick speeds up compilation time to less than a second!
+
+Make sure to compile `stdc++.h` with the flags that you normally use to compile your C++ program.
+
+#### Option 1 (Mentioned in CF blog)
+
+```
+mkdir bits
+cp /usr/include/path_to/stdc++.h bits/
+cd bits
+g++ /usr/include/path_to/bits/stdc++.h
+```
+
+Then, change `#include <bits/stdc++.h>` to `#include "bits/stdc++.h"`. Changing this tells the compiler to look for the local version.
+
+#### Option 2
+
+```
+g++ /usr/include/path_to/bits/stdc++.h
+```
+Using this, you don't have to change `#include <bits/stdc++.h>` to `#include "bits/stdc++.h"`.
+
+#### `-Winvalid-pch`
+
+You may also want to add `-Winvalid-pch`; it gives you a warning if you used different flags.
+
+For example, if I compiled `stdc++.h` with `-std=c++17`, but I compiled my C++ program with `-std=c++11` and included `-Winvalid-pch`, it shows:
+
+```
+b.cpp:1:25: warning: bits/stdc++.h.gch: not used because `__cpp_nontype_template_parameter_auto' not defined [-Winvalid-pch]
+    1 | #include "bits/stdc++.h"
+      |                         ^
+```
 
 ## OS-Specific Recommendations
 
