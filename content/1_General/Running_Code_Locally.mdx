@@ -286,7 +286,7 @@ should be good to go.
 
 Using this trick speeds up compilation time to less than a second!
 
-Make sure to compile `stdc++.h` with the flags that you normally use to compile your C++ program.
+**Make sure to compile `stdc++.h` with the flags that you normally use to compile your C++ program.**
 
 #### Option 1 (Mentioned in CF blog)
 
@@ -297,6 +297,8 @@ cd bits
 g++ stdc++.h
 ```
 
+To get the path of `stdc++.h`, compile your C++ file (with `stdc++.h` included) with `g++ file.cpp -H` and it should generate a list of included libraries. The path to `stdc++.h` should be second in the list. You can also directly copy the `stdc++.h` file [here](https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/precompiled/stdc%2B%2B.h) into the `bits` directory instead of doing `cp /usr/include/path_to/stdc++.h bits/`.
+
 Then, change `#include <bits/stdc++.h>` to `#include "bits/stdc++.h"`. Changing this tells the compiler to look for the local version.
 
 #### Option 2
@@ -304,16 +306,11 @@ Then, change `#include <bits/stdc++.h>` to `#include "bits/stdc++.h"`. Changing 
 ```
 g++ /usr/include/path_to/bits/stdc++.h
 ```
+Note that you might also need to add `sudo` before `g++` since you're directly modifying the global header.
+
+To get the path of `stdc++.h`, compile your C++ file (with `stdc++.h` included) with `g++ file.cpp -H` and it should generate a list of included libraries. The path to `stdc++.h` should be second in the list.
+
 Using this, you don't have to change `#include <bits/stdc++.h>` to `#include "bits/stdc++.h"`.
-
-#### Option 2 (Linux)
-
-Tested on Ubuntu 20.04. Make sure to change `-std` header as needed.
-
-```
-cd /usr/include/x86_64-linux-gnu/c++/9/bits
-sudo g++ -std=c++17 -O2 stdc++.h
-```
 
 #### `-Winvalid-pch`
 
