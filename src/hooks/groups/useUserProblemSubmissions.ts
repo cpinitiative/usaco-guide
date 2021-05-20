@@ -44,7 +44,7 @@ export default function useUserProblemSubmissions(
                 snap.docs
                   .map(doc => ({ id: doc.id, ...doc.data() }))
                   .sort(
-                    (a, b) => b.timestamp.toMillis() - a.timestamp.toMillis()
+                    (a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis()
                   )
               );
             },
