@@ -25,13 +25,110 @@ When setting two people as enemies, we need to check if they are friends. We can
 ### setFriends
 If we want to set two people as friends, we first need to check if they are enemies, using the $\texttt{areEnemies}$ function. If they are not enemies, we can join $\texttt{xroot}$'s and $\texttt{yroot}$'s sets. The enemies of two sets of friends will also become friends, so we also join $\texttt{exroot}$'s and $\texttt{eyroot}$'s sets.
 
-**Time Complexity:** $\mathcal{O}(n\log n + Q)$, where $Q$ is the number of operations
-
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(n\log n + Q)$, where $Q$ is the number of operations
 
 <LanguageSection>
 
 <CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+int parent[20000];
+
+void init(int n)
+{
+	for (int i = 0; i < 2 * n; i++)
+	{
+		parent[i] = i;
+	}
+}
+
+int find(int a)
+{
+	while (a != parent[a])
+	{
+		int curr = parent[a];
+		parent[a] = parent[curr];
+		a = curr;
+	}
+	return a;
+}
+
+bool areFriends(int xroot, int yroot)
+{
+	return xroot == yroot;
+}
+
+bool areEnemies(int xroot, int yroot, int exroot, int eyroot)
+{
+	// x is friends with y's enemy
+	// or y is friends with x's enemy
+	return xroot == eyroot || yroot == exroot;
+}
+
+void setFriends(int xroot, int yroot, int exroot, int eyroot)
+{
+	if (areEnemies(xroot, yroot, exroot, eyroot))
+	{
+		cout << -1 << endl;
+		return;
+	};
+	// if x and y are friends, then
+	// x's enemies and y's enemies are also friends
+	parent[exroot] = parent[eyroot];
+	parent[xroot] = yroot;
+}
+
+void setEnemies(int xroot, int yroot, int exroot, int eyroot)
+{
+	if (areFriends(xroot, yroot))
+	{
+		cout << "-1" << endl;
+		return;
+	}
+	// if x and y are enemies, then
+	// x is friends with y's enemies
+	// y is friends with x's enemies
+	parent[xroot] = eyroot;
+	parent[yroot] = exroot;
+}
+
+int main() 
+{
+	int n, c, x, y;
+	cin >> n;
+	init(n);
+	while (cin >> c >> x >> y)
+	{
+		if (!c && !x && !y)
+		{
+			break;
+		}
+		int xroot = find(x), yroot = find(y);
+		int exroot = find(x + n), eyroot = find(y + n);
+		if (c == 1)
+		{
+			setFriends(xroot, yroot, exroot, eyroot);
+		}
+		else if (c == 2)
+		{
+			setEnemies(xroot, yroot, exroot, eyroot);
+		}
+		else if (c == 3)
+		{
+			cout << (areFriends(xroot, yroot) ? 1 : 0) << endl;
+		}
+		else
+		{
+			cout << (areEnemies(xroot, yroot, exroot, eyroot) ? 1 : 0) << endl;
+		}
+	}
+	return 0;
+}
+```
 
 </CPPSection>
 
