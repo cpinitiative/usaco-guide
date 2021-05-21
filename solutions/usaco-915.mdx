@@ -21,10 +21,29 @@ class Main {
 		int a = sc.nextInt();
 		int b = sc.nextInt();
 		int c = sc.nextInt();
-		
-		// we are arranging a, b, and c to be in ascending order
-		// the variable temp helps us swap
-		// a with b, b with c, and c with a as needed
+	
+		int[] ans = swap(a, b, c);
+		a = ans[0];
+		b = ans[1];
+		c = ans[2];
+
+		if (c == a + 2) {
+			pw.println(0); 
+		}
+		else if (b == a + 2 || c == b + 2) {
+			pw.println(1); 
+		}
+		else {
+			pw.println(2); 
+		}
+		pw.println(Math.max(b - a, c - b) - 1);
+		pw.close();
+	}
+	
+	// we are arranging a, b, and c to be in ascending order
+	// the variable temp helps us swap
+	// a with b, b with c, and c with a as needed
+	public static int[] swap(int a, int b, int c){
 		int temp;
 		if (a > b) {
 			temp = a;
@@ -41,19 +60,13 @@ class Main {
 			a = b;
 			b = temp;
 		}
-		
-		if (c == a + 2) {
-			pw.println(0); 
-		}
-		else if (b == a + 2 || c == b + 2) {
-			pw.println(1); 
-		}
-		else {
-			pw.println(2); 
-		}
-		pw.println(Math.max(b - a, c - b) - 1);
-		pw.close();
-	} 
+
+		int[] ans = new int[3];
+		ans[0] = a;
+		ans[1] = b;
+		ans[2] = c;
+		return(ans);
+	}
 }
 ```
 
