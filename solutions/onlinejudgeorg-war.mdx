@@ -78,13 +78,11 @@ void init(int n)
 
 int find(int a)
 {
-	while (a != parent[a])
+	if (a == parent[a])
 	{
-		int curr = parent[a];
-		parent[a] = parent[curr];
-		a = curr;
+		return a;
 	}
-	return a;
+	return find(parent[a]);
 }
 
 bool areFriends(int xroot, int yroot)
