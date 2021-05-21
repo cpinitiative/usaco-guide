@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import { sortPostsComparator } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 
-export default function GroupLeaderboardPage(props) {
+export default function GroupLeaderboardPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const posts = activeGroup.posts;
   const leaderboard = activeGroup.groupData.leaderboard;
 
   const assignments = React.useMemo(() => {
-    return posts?.filter(post => post.type === 'assignment');
+    return posts
+      ?.filter(post => post.type === 'assignment' && post.isPublished)
+      .sort(sortPostsComparator);
   }, [posts]);
 
   const members = getMemberInfoForGroup(activeGroup.groupData);
@@ -26,8 +29,9 @@ export default function GroupLeaderboardPage(props) {
       for (const problemID of Object.keys(leaderboard[post.id])) {
         for (const userID of Object.keys(leaderboard[post.id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = {};
-          if (!(post.id in leaderboardSum[userID]))
+          if (!(post.id in leaderboardSum[userID])) {
             leaderboardSum[userID][post.id] = 0;
+          }
           leaderboardSum[userID][post.id] +=
             leaderboard[post.id][problemID][userID].bestScore;
         }

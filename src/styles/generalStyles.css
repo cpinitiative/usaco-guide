@@ -48,11 +48,16 @@ html.transitioning-color-scheme * {
 }
 
 .markdown pre {
+  @apply mt-4 mb-4;
   font-size: 0.875rem;
 }
 
 .markdown > * + * {
   @apply mt-0 mb-4;
+}
+
+.markdown > *:first-child {
+  @apply mt-0;
 }
 
 .markdown li > p + p {
@@ -72,6 +77,17 @@ html.transitioning-color-scheme * {
   @apply font-bold;
 }
 
+.markdown {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply relative;
+  }
+}
+
 .markdown h5 {
   @apply leading-tight text-sm font-semibold mb-4 mt-6;
 }
@@ -88,24 +104,39 @@ html.transitioning-color-scheme * {
   @apply text-dark-high-emphasis border-dark-med-emphasis;
 }
 
-.markdown code.inline {
+.markdown code.inline-code {
   @apply text-sm;
 }
 
-.markdown h1 code.inline {
+.markdown h1 code.inline-code {
   @apply text-3xl;
 }
 
-.markdown h2 code.inline {
+.markdown h2 code.inline-code {
   @apply text-2xl;
 }
 
-.markdown h3 code.inline {
+.markdown h3 code.inline-code {
   @apply text-xl;
 }
 
-.markdown h4 code.inline {
+.markdown h4 code.inline-code {
   @apply text-lg;
+}
+
+.markdown code.inline-code {
+  @apply font-mono inline bg-gray-200 rounded px-1 py-0.5 dark:bg-gray-800;
+}
+
+.markdown table:not(.no-markdown) {
+  @apply text-base border-gray-600;
+  th,
+  td {
+    @apply border py-1 px-3;
+  }
+  & > *:last-child {
+    margin-bottom: 0 !important;
+  }
 }
 
 .markdown ul:not(.no-markdown) {
@@ -191,10 +222,6 @@ html.transitioning-color-scheme * {
   @apply text-blue-300;
 }
 
-.markdown code.inline-code {
-  @apply text-sm font-mono inline bg-gray-200 rounded px-1 py-0.5 dark:bg-gray-800;
-}
-
 .markdown kbd {
   @apply text-xs inline-block rounded border px-1 py-0.5 align-middle font-normal font-mono shadow;
 }
@@ -210,7 +237,7 @@ html.transitioning-color-scheme * {
 }
 
 .spoiler-body > pre:first-child {
-  margin-top: -1rem !important;
+  margin-top: -2rem !important;
 }
 .spoiler-body > pre:last-child {
   margin-bottom: -2rem !important;
@@ -277,7 +304,10 @@ html.transitioning-color-scheme * {
   @apply bg-red-100 dark:bg-red-800 dark:bg-opacity-50 dark:text-red-200;
 }
 
-.no-bottom-margin > *:last-child {
+.no-y-margin > *:first-child {
+  margin-top: 0 !important;
+}
+.no-y-margin > *:last-child {
   margin-bottom: 0 !important;
 }
 .tailwind-alert a {
@@ -370,4 +400,10 @@ html.transitioning-color-scheme * {
 
 .tw-forms-disable input {
   --tw-ring-color: transparent !important;
+}
+.tw-forms-disable-all-descendants * {
+  --tw-ring-color: transparent !important;
+}
+.gatsby-image-wrapper-rounded img {
+  @apply rounded-full;
 }

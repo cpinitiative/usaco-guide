@@ -1,0 +1,56 @@
+---
+id: lc-MatrixBlockSum
+source: LeetCode
+title: Matrix Block Sum
+author: Jesse Choe
+---
+
+**Time Complexity:** $\mathcal O(NM)$
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+class Solution {
+	public:
+		vector<vector<int>> matrixBlockSum(vector<vector<int>>& mat, int K) {
+			int n = mat.size(), m = mat[0].size();
+			vector<vector<int>> arr(n);
+			for(int i=0; i<n; i++){
+				for(int j=0; j<m; j++){
+					arr[i].push_back(mat[i][j]);
+				}
+			}
+			vector<vector<int>> dp(n+1);
+			for(int i=0; i<=n; i++){
+				for(int j=0; j<=m; j++){
+					dp[i].push_back(0);
+				}
+			}
+			for(int i=1; i<=n; i++){
+				for(int j=1; j<=m; j++){
+					dp[i][j]=dp[i-1][j]+dp[i][j-1]-dp[i-1][j-1]+arr[i-1][j-1];
+				}
+			}
+			vector<vector<int>> answer;
+			for(int i=1; i<=n; i++){
+				vector<int> cur;
+				for(int j=1; j<=m; j++){
+					int a=max(1, i-K), b=max(1, j-K);
+					int c=min(n, i+K), d=min(m, j+K);
+					int blockSum=dp[c][d]-dp[c][b-1]-dp[a-1][d]+dp[a-1][b-1];
+					cur.push_back(blockSum);
+				}
+				answer.push_back(cur);
+			}
+			return answer;
+		}
+};
+```
+
+</CPPSection>
+
+</LanguageSection>

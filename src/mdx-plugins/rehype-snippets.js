@@ -293,7 +293,7 @@ static class Kattio extends PrintWriter {
 \tpublic long nextLong() { return Long.parseLong(next()); }
 }
 //EndCodeSnip`,
-  TemplateShort: `//BeginCodeSnip{C++ Short Template}
+  'CPP Short Template': `//BeginCodeSnip{C++ Short Template}
 #include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
 

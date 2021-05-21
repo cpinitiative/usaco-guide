@@ -21,3 +21,9 @@ export const Primary = Template.bind({});
 Primary.args = {
   className: 'btn-primary',
 };
+
+export const Disabled = Template.bind({});
+Disabled.args = {
+  className: 'btn',
+  disabled: true,
+};

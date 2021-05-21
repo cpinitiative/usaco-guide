@@ -1,13 +1,21 @@
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getFirestore,
+  Timestamp,
+  updateDoc,
+} from 'firebase/firestore';
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import {
-  UserSolutionForProblem,
-  userSolutionForProblemConverter,
-} from '../models/userSolutionForProblem';
-import useFirebase from './useFirebase';
+import { UserSolutionForProblem } from '../models/userSolutionForProblem';
+import { useFirebaseApp } from './useFirebase';
 
 export default function useUserProblemSolutionActions() {
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const { firebaseUser } = useContext(UserDataContext);
 
   return {
@@ -17,53 +25,46 @@ export default function useUserProblemSolutionActions() {
         'userID' | 'userName' | 'id' | 'upvotes' | 'timestamp'
       >
     ) => {
-      await firebase
-        .firestore()
-        .collection('userProblemSolutions')
-        .withConverter(userSolutionForProblemConverter)
-        .add({
-          id: undefined, // the ID is ignored by userSolutionForProblemConverter; we add it here to fix typescript issue
+      await addDoc(
+        collection(getFirestore(firebaseApp), 'userProblemSolutions'),
+        {
           ...solution,
           userID: firebaseUser.uid,
           userName: firebaseUser.displayName,
           upvotes: [],
-          timestamp: firebase.firestore.Timestamp.now(),
-        });
+          timestamp: Timestamp.now(),
+        }
+      );
     },
     deleteSolution: async (solutionID: string) => {
-      await firebase
-        .firestore()
-        .collection('userProblemSolutions')
-        .doc(solutionID)
-        .delete();
+      await deleteDoc(
+        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID)
+      );
     },
     mutateSolution: async (
       solutionID: string,
       updates: Partial<UserSolutionForProblem>
     ) => {
-      await firebase
-        .firestore()
-        .collection('userProblemSolutions')
-        .doc(solutionID)
-        .update(updates);
+      await updateDoc(
+        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
+        updates
+      );
     },
     upvoteSolution: async (solutionID: string) => {
-      await firebase
-        .firestore()
-        .collection('userProblemSolutions')
-        .doc(solutionID)
-        .update({
-          upvotes: firebase.firestore.FieldValue.arrayUnion(firebaseUser.uid),
-        });
+      await updateDoc(
+        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
+        {
+          upvotes: arrayUnion(firebaseUser.uid),
+        }
+      );
     },
     undoUpvoteSolution: async (solutionID: string) => {
-      await firebase
-        .firestore()
-        .collection('userProblemSolutions')
-        .doc(solutionID)
-        .update({
-          upvotes: firebase.firestore.FieldValue.arrayRemove(firebaseUser.uid),
-        });
+      await updateDoc(
+        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
+        {
+          upvotes: arrayRemove(firebaseUser.uid),
+        }
+      );
     },
   };
 }
