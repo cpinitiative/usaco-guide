@@ -1,8 +1,7 @@
----
 id: ac-IndependentSet
 source: AtCoder DP Contest
 title: Independent Set
-author: Andrew Wang
+author: Andrew Wang, Sofia Yang
 ---
 
 ## Explanation
@@ -38,6 +37,10 @@ $$
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <iostream>
@@ -78,3 +81,74 @@ int main() {
 	return 0;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static ArrayList<Integer>[] adj;
+    public static boolean[] visited;
+    public static long[][] dp;
+    public static int MOD = (int) 1e9 + 7;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(r.readLine());
+        visited = new boolean[N];
+        adj = new ArrayList[N];
+        dp = new long[2][N];
+
+        for (int i = 0; i < N; i++) {
+            adj[i] = new ArrayList<>();
+        }
+
+        // Read in the edges.
+        for (int i = 0; i < N - 1; i++) {
+            StringTokenizer st = new StringTokenizer(r.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            adj[a].add(b);
+            adj[b].add(a);
+        }
+
+        dfs(0, -1);
+
+        /* Return the number of ways for the root to be black,
+           added to the number of ways for the root to be white. */
+        System.out.println((dp[0][0] + dp[1][0]) % MOD);
+
+    }
+
+    public static void dfs(int node, int par) {
+        dp[0][node] = 1;
+        dp[1][node] = 1;
+
+        //The node is painted white.
+        for (int next : adj[node]) {
+            if (next != par) {
+                dfs(next, node);
+                //Number of ways to paint the subtree.
+                long subtree = (dp[0][next] + dp[1][next]);
+                dp[0][node] = (dp[0][node] * subtree) % MOD;
+            }
+        }
+
+        //The node is painted black.
+        for (int next : adj[node]) {
+            if (next != par) {
+                //If this node is black, none of the children can be black.
+                dp[1][node] = (dp[1][node] * dp[0][next]) % MOD;
+            }
+        }
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
