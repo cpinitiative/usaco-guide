@@ -8,7 +8,7 @@ import { ProblemsList } from '../ProblemsList';
 import contestToPoints from './contest_to_points';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs';
-import id_to_sol from './id_to_sol';
+import idToSol from './id_to_sol';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -190,7 +190,6 @@ export function DivisionList(props): JSX.Element {
     probToTags[uniqueId] = [...new Set(allTags)];
     probToDifficulty[uniqueId] = problem.difficulty;
     // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
-    // console.log('NEW TAGS', probToTags[uniqueID]);
     probToSol[uniqueId] = problem.solution;
   }
   const divisionToSeasonToProbs: {
@@ -229,7 +228,7 @@ export function DivisionList(props): JSX.Element {
         solution: probToSol[id] || {
           kind: 'link',
           label: 'External Sol',
-          url: `http://www.usaco.org/current/data/${id_to_sol[probInfo[0]]}`,
+          url: `http://www.usaco.org/current/data/${idToSol[probInfo[0]]}`,
         },
         moduleLink: probToLink[id],
         percentageSolved: fraction,
