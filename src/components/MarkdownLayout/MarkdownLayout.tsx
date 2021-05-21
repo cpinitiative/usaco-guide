@@ -10,7 +10,7 @@ import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverCont
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import { setLangURLIfNone } from '../../context/UserDataContext/properties/userLang';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
@@ -68,7 +68,7 @@ export default function MarkdownLayout({
   );
   React.useEffect(() => {
     if (lang !== 'showAll') {
-      updateLangURL(lang);
+      setLangURLIfNone(lang);
     }
   }, [lang]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -101,7 +101,6 @@ export default function MarkdownLayout({
       url: moduleIDToURLMap[cur.node.frontmatter.id],
     }));
   }, [data.allXdm]);
-  // console.log(moduleLinks);
 
   const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {

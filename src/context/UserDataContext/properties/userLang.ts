@@ -68,13 +68,11 @@ const getLangFromUrl = () => {
   if (shouldLangParamApply() && window.location?.search?.length > 0) {
     const lang = getQueryVariable(window.location.search.slice(1), 'lang');
     if (lang === 'cpp' || lang === 'java' || lang === 'py') return lang;
-    return null;
-  } else {
-    return null;
   }
+  return null;
 };
 
-export function updateLangURL(newLang) {
+function updateLangURL(newLang: string) {
   if (shouldLangParamApply()) {
     window.history.replaceState(
       {},
@@ -83,6 +81,10 @@ export function updateLangURL(newLang) {
     );
   }
 } // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
+
+export function setLangURLIfNone(newLang: string): void {
+  if (getLangFromUrl() == null) updateLangURL(newLang);
+}
 
 export default class UserLang extends SimpleUserDataPropertyAPI {
   protected storageKey = 'lang';
