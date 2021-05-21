@@ -1,0 +1,137 @@
+---
+id: usaco-572
+source: USACO Silver 2015 December
+title: Breed Counting
+author: Óscar Garries, Owen Wang, Kevin Sheng
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_bcount_silver_dec15.html)
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("bcount.in", "r", stdin);
+	freopen("bcount.out", "w", stdout);
+
+	int cow_num;
+	int query_num;
+	cin >> cow_num >> query_num;
+
+	vector<int> holsteins(cow_num + 1);
+	vector<int> guernseys(cow_num + 1);
+	vector<int> jerseys(cow_num + 1);
+	for (int c = 0; c < cow_num; c++) {
+		holsteins[c + 1] = holsteins[c];
+		guernseys[c + 1] = guernseys[c];
+		jerseys[c + 1] = jerseys[c];
+
+		int type;
+		cin >> type;
+		if (type == 1) holsteins[c + 1]++;
+		else if (type == 2) guernseys[c + 1]++;
+		else if (type == 3) jerseys[c + 1]++;
+	}
+
+	for (int q = 0; q < query_num; q++) {
+		int start;
+		int end;
+		cin >> start >> end;
+		cout << holsteins[end] - holsteins[start - 1] << ' '
+			 << guernseys[end] - guernseys[start - 1] << ' '
+			 << jerseys[end] - jerseys[start - 1] << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+### Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BCount {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("bcount.in"));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("bcount.out")));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		int queryNum = Integer.parseInt(initial.nextToken());
+		
+		int[] holsteins = new int[cowNum + 1];
+		int[] guernseys = new int[cowNum + 1];
+		int[] jerseys = new int[cowNum + 1];
+		for (int i = 1; i <= cowNum; i++) {
+			holsteins[i] += holsteins[i - 1];
+			guernseys[i] += guernseys[i - 1];
+			jerseys[i] += jerseys[i - 1];
+			
+			int breed = Integer.parseInt(read.readLine());
+			if (breed == 1) {
+				holsteins[i]++;
+			} else if (breed == 2) {
+				guernseys[i]++;
+			} else if (breed == 3) {
+				jerseys[i]++;
+			}
+		}
+
+		for (int q = 0; q < queryNum; q++) {
+			StringTokenizer query = new StringTokenizer(read.readLine());
+			int start = Integer.parseInt(query.nextToken());
+			int end = Integer.parseInt(query.nextToken());
+			
+			int holstein = holsteins[end] - holsteins[start - 1];
+			int guernsey = guernseys[end] - guernseys[start - 1];
+			int jersey = jerseys[end] - jerseys[start - 1];
+			out.println(holstein + " " + guernsey + " " + jersey);
+		}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open('bcount.in') as read:
+	cow_num, query_num = [int(i) for i in read.readline().split()]
+	holsteins = [0]
+	guernseys = [0]
+	jerseys = [0]
+	for _ in range(cow_num):
+		holsteins.append(holsteins[-1])
+		guernseys.append(guernseys[-1])
+		jerseys.append(jerseys[-1])
+
+		cow = int(read.readline())
+		if cow == 1:
+			holsteins[-1] += 1
+		elif cow == 2:
+			guernseys[-1] += 1
+		elif cow == 3:
+			jerseys[-1] += 1
+
+	with open('bcount.out', 'w') as written:
+		for _ in range(query_num):
+			start, end = [int(i) for i in read.readline().split()]
+			holstein = holsteins[end] - holsteins[start - 1]
+			guernsey = guernseys[end] - guernseys[start - 1]
+			jersey = jerseys[end] - jerseys[start - 1]
+			written.write(f'{holstein} {guernsey} {jersey}\n')
+```
+
+</PySection>
+</LanguageSection>

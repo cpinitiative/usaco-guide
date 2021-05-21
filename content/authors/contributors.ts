@@ -60,4 +60,24 @@ export const contentAuthors: Contributor[] = [
     githubUsername: "truashamu",
     sinceDate: "Apr 2021",
   },
+  {
+    name: "Zhixin Wang",
+    githubUsername: "topazand",
+    sinceDate: "Apr 2021",
+  },
+  {
+    name: "Andrew Cheng",
+    githubUsername: "Qw3rTy827",
+    sinceDate: "Apr 2021",
+  },
+  {
+    name: "Nathan Gong",
+    githubUsername: "nathangong",
+    sinceDate: "Apr 2021",
+  },
+  {
+    name: "Melody Yu",
+    githubUsername: "cskitty",
+    sinceDate: "Apr 2021",
+  },
 ];

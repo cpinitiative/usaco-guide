@@ -1,4 +1,5 @@
-import { FirebaseApp, initializeApp } from 'firebase/app';
+import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
+import { getFunctions, useFunctionsEmulator } from 'firebase/functions';
 import * as React from 'react';
 import { createContext } from 'react';
 
@@ -18,8 +19,14 @@ export const FirebaseProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (!firebaseApp && typeof window !== 'undefined') {
-      const firebaseApp = initializeApp(firebaseConfig);
+      const firebaseApp =
+        getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
       setFirebaseApp(firebaseApp);
+
+      const shouldUseEmulator = false;
+      if (shouldUseEmulator) {
+        useFunctionsEmulator(getFunctions(firebaseApp), 'localhost', 5001);
+      }
     }
   }, []);
 

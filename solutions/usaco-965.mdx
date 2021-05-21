@@ -1,0 +1,91 @@
+---
+id: usaco-965
+source: USACO Bronze 2019 December
+title: Livestock Lineup
+author: Benjamin Qi
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lineup_bronze_dec19.html)
+
+## Solution w/ Graphs
+
+What if there were up to $10^5$ cows? Then neither of the solutions provided in
+the analysis would be fast enough.
+
+Say that we draw an edge between two cows if they must be adjacent. Then if a
+solution exists, the graph must be a union of paths.
+
+(insert diagram)
+
+We iterate over the cows in increasing lexicographical order. If a cow is not
+yet part of the answer and it is the endpoint of a path, then we add the entire
+path containing the cow to the answer.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// lambda expression - see https://usaco.guide/general/lambda
+vector<string> cows = []() {
+	vector<string> tmp{
+		"Bessie", "Buttercup", "Belinda", "Beatrice",
+		"Bella", "Blue", "Betsy", "Sue"
+	};
+	sort(begin(tmp), end(tmp));  // sort names lexicographically
+	return tmp;
+}();
+
+// Returns the index of the cow
+int index(string cow) {
+	return find(begin(cows), end(cows), cow) - begin(cows);
+}
+vector<int> adj[8];
+
+int main() {
+	// fastio
+	cin.tie(0);
+	ios::sync_with_stdio(0);
+	freopen("lineup.in", "r", stdin);
+	freopen("lineup.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		// Input Cow Values (excluding useless text)
+		string cow1, cow2, trash;
+		cin >> cow1 >> trash >> trash >> trash >> trash >> cow2;
+
+		// convert names to indices
+		int c1 = index(cow1);
+		int c2 = index(cow2);
+
+		// Add to Adjecency List
+		adj[c1].push_back(c2);
+		adj[c2].push_back(c1);
+	}
+
+	vector<int> seq;  // sequence of cow indices
+	vector<bool> done(8);
+	for (int i = 0; i < 8; i++) {
+		if (!done[i] && adj[i].size() <= 1) {
+			// add path to sequence
+			int cur = i;
+			while (adj[cur].size() == 1) {
+				seq.push_back(cur);
+				done[cur] = 1;
+				int nex = adj[cur][0];
+				adj[nex].erase(find(begin(adj[nex]), end(adj[nex]), cur));
+				cur = nex;
+			}
+			seq.push_back(cur);
+			done[cur] = 1;
+		}
+	}
+
+	// Print Output
+	for (int i = 0; i < seq.size(); i++) {
+		int t = seq[i];
+		cout << cows[t] << '\n';
+	}
+}
+```

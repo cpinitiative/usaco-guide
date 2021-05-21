@@ -11,6 +11,7 @@ Thank you to the following companies:
   hosting & continuous deployment
 - [Algolia](https://algolia.com/), search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
+- [Chromatic](https://www.chromatic.com/), visual testing
 - And [more](docs/Companies.md)!
 
 ## Documentation + Contributing
@@ -53,6 +54,10 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Kevin Sheng (Since Apr 2021)
 - Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
+- Zhixin Wang (Since Apr 2021)
+- Andrew Cheng (Since Apr 2021)
+- Nathan Gong (Since Apr 2021)
+- Melody Yu (Since Apr 2021)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
@@ -64,6 +69,8 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
+- [Storybook](https://storybook.js.org/) and
+  [Chromatic](https://www.chromatic.com/)
 - MDX (JSX in Markdown) with XDM compiler
 - Firebase
 - Deployed with
