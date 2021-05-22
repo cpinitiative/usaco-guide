@@ -61,14 +61,16 @@ export default function DynamicMarkdownRenderer({
   ] = useState([]);
   const [error, setError] = useState(null);
   const workerRef = useRef(null);
-  const currentlyCompilingRef = useRef<{
-    markdown: string;
-    problems: string;
-  }>(null);
-  const waitingToBeCompiledRef = useRef<{
-    markdown: string;
-    problems: string;
-  }>(null);
+  const currentlyCompilingRef =
+    useRef<{
+      markdown: string;
+      problems: string;
+    }>(null);
+  const waitingToBeCompiledRef =
+    useRef<{
+      markdown: string;
+      problems: string;
+    }>(null);
 
   const requestMarkdownCompilation = () => {
     if (workerRef.current === null) return;
