@@ -90,23 +90,33 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   protected storageKey = 'lang';
   protected defaultValue = 'cpp';
   protected setterFunctionName = 'setLang';
+  protected changedLang = false;
 
   public initializeFromLocalStorage = () => {
-    this.value =
-      getLangFromUrl() ||
-      this.getValueFromLocalStorage(
+    const langFromUrl = getLangFromUrl();
+    if (!this.changedLang && langFromUrl !== null) {
+      this.value = langFromUrl;
+      this.saveLocalStorageValue(this.storageKey, this.value); // save to localstorage
+    } else {
+      this.value = this.getValueFromLocalStorage(
         this.getLocalStorageKey(this.storageKey),
         this.defaultValue
       );
+    }
     updateLangURL(this.value);
   };
 
   public importValueFromObject = data => {
-    this.value =
-      getLangFromUrl() ||
-      (data.hasOwnProperty(this.storageKey) && data[this.storageKey] !== null
-        ? data[this.storageKey]
-        : this.defaultValue);
+    const langFromUrl = getLangFromUrl();
+    if (!this.changedLang && langFromUrl !== null) {
+      this.value = langFromUrl;
+      this.saveFirebaseValue(this.storageKey, this.value); // save to firebase
+    } else {
+      this.value =
+        data.hasOwnProperty(this.storageKey) && data[this.storageKey] !== null
+          ? data[this.storageKey]
+          : this.defaultValue;
+    }
     updateLangURL(this.value);
   };
 
@@ -115,6 +125,7 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
       [this.storageKey]: this.value,
       [this.setterFunctionName]: v => {
         if (v !== 'showAll') {
+          this.changedLang = true;
           this.value = v;
           updateLangURL(this.value);
           this.updateValueAndRerender(this.storageKey, v);
