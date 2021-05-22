@@ -810,30 +810,25 @@ The solution to Rectangular Pasture directly replaces coordinates with their com
 
 <FocusProblem problem="sample3" />
 
-This problem will require prefix sums and coordinate compression. However, the implementation of coordinate compression in this solution will also require it to remember the original values of what it compresses, and switch between compressed indices and their corresponding original values. If you just want to focus on the implementation of coordinate compression and how it can switch between compressed indices and original values, see the contracted code below. `indices` is a list of values that need to be compressed. After it gets sorted and has duplicate values removed, it is ready to use. The method `getCompressedIndex` takes in an original value, and [binary searches](/silver/binary-search) for its position in `indices` to get its corresponding compressed index. To get from a compressed index to an original value, the code can just access that index in `indices`.
+This problem will require prefix sums and coordinate compression. However, the implementation of coordinate compression in this solution will also require it to remember the original values in addition to being able to compress them, and switch between compressed indices and their corresponding original values. If you just want to focus on the implementation of coordinate compression and how it can switch between compressed indices and original values, see the contracted code below. `indices` is a list of values that need to be compressed. After it gets sorted and has duplicate values removed, it is ready to use. The method `getCompressedIndex` takes in an original value, and [binary searches](/silver/binary-search) for its position in `indices` to get its corresponding compressed index. To go from a compressed index to an original value, the code can just access that index in `indices`.
 
 We also provide a full solution:
 
 <Spoiler title = "Full Solution">
 
-First of all, let's figure out the value at each index in array a. It would be too slow to loop through every index in every update interval as well as every index in a query interval (The time complexity would be $O(N \cdot max_c + Q \cdot max_c)$ where $max_c$ is the maximum coordinate given in the input, which is up to $10^9$.). At the same time, that approach would take $O(max_c)$ memory, which is also too much. Instead, we make an observation that will make prefix sums paired with coordinate compression a viable option.
+First of all, let's figure out the value at each index in array $a$. It would be too slow to loop through every index in every update interval as well as every index in a query interval (The time complexity would be $O(N \cdot max_c + Q \cdot max_c)$ where $max_c$ is the maximum coordinate given in the input, which is up to $10^9$.). At the same time, that approach would take $O(max_c)$ memory, which is also too much. Instead, we make an observation that will make prefix sums paired with coordinate compression a viable option.
 
 Not every index in the whole range from $1...10^9$ is used in updates. In fact, there can be large intervals of indices that all have the same value. Call every index that is named in the input is a "special index." Now, note that the value at each index in the interval between two consecutive special indices is the same. This is because it is impossible for there to be an update that cuts in between two consecutive special indices as that would imply the existence of another special index between two consecutive special indices, i.e. a contradiction. We'll call the interval between two consecutive special indices a "special interval," and the "value of a special interval" will be the value that each of the elements take on inside it.
 
 Now, let's see how prefix sums (along with coordinate compression) helps.
 
-Temporarily forget about special indices. When an update asks us to add $+v$ to the interval $[l, r)$, we can mark index $l$ with $+v$ and index $r$ with $-v$ in a "difference array." We call it the difference array because it tells us the change in value when we go from one index to the next. Taking the prefix sums of the difference array will result in the actual values of the array a (Take some time to convince yourself of this before moving on).
+Temporarily forget about special indices. When an update asks us to add $+v$ to the interval $[l, r)$, we can mark index $l$ with $+v$ and index $r$ with $-v$ in a "difference array." We call it the difference array because it tells us the change in value when we go from one index to the next. Taking the prefix sums of the difference array will result in the actual values of the array $a$ (Take some time to convince yourself of this before moving on).
 
-Since the indices that we have to mark range from $0...10^9$, it'd take too much memory for us to use those indices directly. However, only special indices are ever actually used, so we're motivated to change the meaning of the difference array to save on memory (note that there are at most $2*(N+Q)$ special indices because $2$ indices are given for every update and query). Instead of the difference array representing the change in value from one special index to the next, let it represent the change in value from one special interval to the next. Taking the prefix sums of this difference array will give the values of all special intervals.
+Since the indices that we have to mark range from $0...10^9$, it'd take too much memory for us to use those indices directly. However, only special indices are ever actually used, so we're motivated to change the meaning of the difference array to save on memory (note that there are at most $2 \cdot (N+Q)$ special indices because $2$ indices are given for every update and query). Instead of the difference array representing the change in value from one special index to the next, let it represent the change in value from one special interval to the next. Now, it only has to have size $2 \cdot (N+Q)$. Taking the prefix sums of this difference array will give the values of all special intervals.
 
-We just have to coordinate compress the special indices so that we can conveniently use them as array indices for the difference array. We perform this coordinate compression by keeping a sorted list of all special indices, and using each special index's position in that list as its compressed index. To find a special index's position in the sorted list (a.k.a. its compressed index), we can [binary search](/silver/binary-search) on the list. To find a value based on its compressed index, we simply access that index in the sorted list.
+We just have to coordinate compress the special indices so that we can conveniently use them as array indices for the difference array. We perform this coordinate compression by keeping a sorted list of all special indices, and using each special index's position in that list as its compressed index. To find a special index's position in the sorted list (a.k.a. its compressed index), we can [binary search](/silver/binary-search) on the list. The next part of the solution will show why it was important for us to store the original indices.
 
-So, with prefix sums and coordinate compression, it is possible for us to find the value of each special interval.
-Now, let's finish the problem. Let the "sum of a special interval" be the sum of every element inside the special interval,
-or in other words, the interval's length times its value. We already know each special interval's value, but we can also get its length
-because we stored the original indices. The length of an interval is its right index minus its left index. When the problem queries us for the sum between two special indices,
-we find the total of the sums of the special intervals between those two special indices. Thus, if we create another
-prefix sum array on the sums of the special intervals, we can easily answer these range sum queries in O(1) each.
+So, with prefix sums and coordinate compression, it is possible for us to find the value of each special interval. Now, let's finish the problem. Let the "sum of a special interval" be the sum of every element inside the special interval, or in other words, the interval's length times its value. We already know each special interval's value, but we can also get its length because we stored the original indices. The length of an interval is its right index minus its left index, which we can find by accessing the sorted list. As a result, we can also find the sum of each special interval with the information we have. When the problem queries us for the sum between two special indices, we add up the sums of the special intervals between those two special indices. Thus, if we create another prefix sum array on the sums of the special intervals, we can easily answer these range sum queries in O(1) each.
 
 The code below can be expanded to show the full solution.
 
@@ -855,6 +850,7 @@ ll difference_array[400005]; //difference_array[i] = the difference of the value
 
 int widths[400005]; //width[i] = the length of special interval i
 ll interval_value[400005]; //interval_value[i] = the value of special interval i
+//the sum of a special interval is interval_value[i] * width[i]
 
 ll prefix_sums[400005]; //prefix_sums[i] = prefix sum of the sums of special intervals up to i
 
@@ -897,17 +893,17 @@ int main() {
 	sort(indices.begin(), indices.end());
 	indices.erase(unique(indices.begin(), indices.end()), indices.end());
 		/*
-		According to cplusplus.com[https://www.cplusplus.com/reference/algorithm/unique/],
+		According to [cplusplus.com](https://www.cplusplus.com/reference/algorithm/unique/]),
 		"unique" deletes all but the first element from every consecutive group of equivalent elements.
-		"unique" also returns an iterator to the new last element of the list after elements are deleted,
+		"unique" also returns an iterator to the last element of the list (which has shifted left) after elements are deleted,
 		so we erase the elements between the iterator returned by unique and the end of the vector as those elements are useless now.
 
-		Since our list is already sorted, the effect of unique is duplicates are removed. In total, these two lines
+		Since our list is already sorted, the effect of "unique" is duplicates are removed. In total, these two lines
 		give us a sorted list with duplicates removed.
 		*/
 	//========= COORDINATE COMPRESSION =======
 //BeginCodeSnip{Solution code}
-	//We create the difference array, using coordinate compression and binary search to get the index of each special interval
+	//We create the difference array, using coordinate compression and binary search to get the compressed index of each special index
 	//Note the 1-based indexing for convenience
 	for(int i = 0; i < N; i++) {
 		auto a = updates[i];
@@ -921,7 +917,7 @@ int main() {
 		widths[i+1] = indices[i+1] - indices[i];
 	}
 
-	//We use prefix sums of the difference array to get the actual value of the intervals
+	//We use prefix sums of the difference array to get the values of the intervals
 	for(int i = 1; i < indices.size(); i++) {
 		interval_value[i] = interval_value[i-1] + difference_array[i];
 	}
