@@ -46,6 +46,7 @@ export default function DashboardPage(props: PageProps) {
           url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
             problem.uniqueId
           }`,
+          moduleId: problem.module.frontmatter.id,
         };
       }
       return acc;
