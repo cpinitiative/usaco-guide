@@ -1,7 +1,7 @@
 ---
 id: modular
 title: 'Modular Arithmetic'
-author: Darren Yao, Michael Cao, Andi Qu, Benjamin Qi, Andrew Wang
+author: Darren Yao, Michael Cao, Andi Qu, Benjamin Qi, Andrew Wang, Kevin Sheng
 prerequisites:
   - divis
 description: Working with remainders from division.
@@ -112,13 +112,13 @@ using ll = long long;
 
 ll binpow(ll x, ll n, ll m) {
 	assert(n >= 0);
-	x %= m; //note: m*m must be less than 2^63 to avoid ll overflow
+	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 	ll res = 1;
 	while (n > 0) {
-		if (n % 2 == 1) //if n is odd
+		if (n % 2 == 1)  // if n is odd
 			res = res * x % m;
 		x = x * x % m;
-		n /= 2; //divide by two
+		n /= 2;  // divide by two
 	}
 	return res;
 }
@@ -151,20 +151,20 @@ public class Exponentation {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			long a = Long.parseLong(st.nextToken());
 			long b = Long.parseLong(st.nextToken());
-			out.println(binpow(a, b, (long)1e9+7));
+			out.println(binpow(a, b, (long) 1e9+7));
 		}
 		out.close();
 	}
 
 	public static long binpow(long x, long n, long m) {
 		assert(n >= 0);
-		x %= m; //note: m * m must be less than 2^63 to avoid ll overflow
+		x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 		long res = 1;
 		while (n > 0) {
-			if (n % 2 == 1) //if n is odd
+			if (n % 2 == 1)  // if n is odd
 				res = res * x % m;
 			x = x * x % m;
-			n /= 2; //divide by two
+			n /= 2;  // divide by two
 		}
 		return res;
 	}
@@ -322,13 +322,13 @@ Using BenQ's template, both of these do the same thing:
 int main() {
 	{
 		int a = 1e8, b = 1e8, c = 1e8;
-		cout << (ll) a * b % MOD * c % MOD << "\n"; // 49000000
+		cout << (ll) a * b % MOD * c % MOD << "\n";  // 49000000
 	}
 	{
 		mi a = 1e8, b = 1e8, c = 1e8;
-		// cout << a * b * c << "\n"; // doesn't work
+		// cout << a * b * c << "\n";  // doesn't work
 		// ^ not silently converted to int
-		cout << int(a * b * c) << "\n"; // 49000000
+		cout << int(a * b * c) << "\n";  // 49000000
 	}
 }
 ```
