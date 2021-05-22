@@ -1,8 +1,8 @@
 import { Transition } from '@headlessui/react';
+import { Timestamp } from 'firebase/firestore';
 import 'flatpickr/dist/themes/material_blue.css';
 import * as React from 'react';
 import Flatpickr from 'react-flatpickr';
-import useFirebase from '../../../hooks/useFirebase';
 import { JoinGroupLink } from '../../../models/groups/groups';
 import Switch from '../../elements/Switch';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -20,7 +20,6 @@ export default function EditJoinLinkModal({
 }) {
   const [link, setLink] = React.useState<JoinGroupLink>(initialLink);
   const [copied, setCopied] = React.useState(false);
-  const firebase = useFirebase();
 
   React.useEffect(() => {
     setLink(initialLink);
@@ -183,9 +182,7 @@ export default function EditJoinLinkModal({
                       onChange={b =>
                         editLink({
                           expirationTime: b
-                            ? firebase.firestore.Timestamp.fromDate(
-                                initialExpirationTime
-                              )
+                            ? Timestamp.fromDate(initialExpirationTime)
                             : null,
                         })
                       }
@@ -220,9 +217,7 @@ export default function EditJoinLinkModal({
                           value={link.expirationTime?.toDate()}
                           onChange={date =>
                             editLink({
-                              expirationTime: firebase.firestore.Timestamp.fromDate(
-                                date[0]
-                              ),
+                              expirationTime: Timestamp.fromDate(date[0]),
                             })
                           }
                           className="input"

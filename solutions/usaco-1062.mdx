@@ -1,0 +1,185 @@
+---
+id: usaco-1062
+source: USACO Silver 2020 December
+title: Cowntagion
+author: Kevin Sheng (Java, Python), Tanish Tyagi (C++), Melody Yu (Video)
+---
+
+[Official Editorial](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<Youtube id="8gZY9ARwLVI" />
+
+
+## Solution 1 - Math
+
+**Time Complexity**: $\mathcal O(N)$
+
+## Implementation
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Cowntagion {
+	@SuppressWarnings("unchecked")  // don't worry, i totally know what i'm doing
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int farmNum  = Integer.parseInt(read.readLine());
+		List<Integer>[] neighbors = new ArrayList[farmNum];
+		for (int f = 0; f < farmNum; f++) {
+			neighbors[f] = new ArrayList<>();
+		}
+		for (int i = 0; i < farmNum - 1; i++) {
+			StringTokenizer path = new StringTokenizer(read.readLine());
+			int farm1 = Integer.parseInt(path.nextToken()) - 1;
+			int farm2 = Integer.parseInt(path.nextToken()) - 1;
+			neighbors[farm1].add(farm2);
+			neighbors[farm2].add(farm1);
+		}
+
+		int minDays = 0;
+		boolean[] visited = new boolean[farmNum];
+		Queue<Integer> frontier = new ArrayDeque<>(Collections.singletonList(0));
+		visited[0] = true;
+		while (!frontier.isEmpty()) {
+			int current = frontier.poll();
+			// this stores all the farms that this farm should spread to for optimal spreading
+			int spreadTo = 0;
+			for (int n : neighbors[current]) {
+				if (!visited[n]) {
+					spreadTo++;
+					visited[n] = true;
+					frontier.add(n);
+				}
+			}
+			// the log base 2 is so enough superspreader events go around so that there are enough cows, and then we need to add the length of spreadTo so the cows can actually go to the other farms
+			minDays += ceilLog2(spreadTo + 1) + spreadTo;
+		}
+
+		System.out.println(minDays);
+	}
+
+	// returns the smallest x such that 2^x >= n
+	private static int ceilLog2(int n) {
+		int count = 0;
+		int so_far = 1;
+		while (so_far < n) {
+			so_far *= 2;
+			count++;
+		}
+		return count;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+from collections import deque
+
+# straight from stackoverflow
+def ceiLog2(x):  # returns the smallest n so that 2^n >= x
+	return 1 if x == 0 else (x - 1).bit_length()
+
+farmNum = int(input())
+neighbors = [[] for _ in range(farmNum)]
+for _ in range(farmNum - 1):
+	start, end = [int(i) - 1 for i in input().split()]
+	neighbors[start].append(end)
+	neighbors[end].append(start)
+
+minDays = 0
+visited = [False for _ in range(farmNum)]
+frontier = deque([0])
+visited[0] = True
+while frontier:
+	curr = frontier.popleft()
+	# this stores the number of neighboring farms this farm should spread to for optimal spreading
+	spreadTo = 0
+	for n in neighbors[curr]:
+		if not visited[n]:
+			spreadTo += 1
+			visited[n] = True
+			frontier.append(n)
+	# the log base 2 is so enough superspreader events go around so that there are enough cows, and then we need to add the length of spreadTo so the cows can actually go to the other farms
+	minDays += ceiLog2(spreadTo + 1) + spreadTo
+
+print(minDays)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Solution 2 - DFS
+
+**Time Complexity**: $\mathcal O(N)$
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define maxn 100005
+
+int n;
+vector<int> adj[maxn];
+
+int dfs(int start, int parent) {
+	int ans = 0;
+	int cows = adj[start].size();
+	if (parent == -1) {
+		//parent node is currently root node
+		cows++;
+	}
+
+	int currCows = 1;
+	int days = 0;
+	//count the number of superspreader events needed
+	while (currCows < cows) {
+		days++;
+		currCows *= 2;
+	}
+	//send one cow to each adjacent farm without a sick cow
+	ans += days;
+
+	for (auto next : adj[start]) {
+		if (next != parent) {
+			ans += dfs(next, start) + 1;
+		}
+	}
+	return ans;
+}
+
+int main() {
+	cin >> n;
+	for (int i = 0; i < n-1; i++) {
+		int a,b;
+		cin >> a >> b;
+		a--; b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	cout << dfs(0, -1) << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

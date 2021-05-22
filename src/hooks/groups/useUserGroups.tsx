@@ -1,8 +1,15 @@
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from 'firebase/firestore';
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { groupConverter, GroupData } from '../../models/groups/groups';
-import useFirebase from '../useFirebase';
+import { GroupData } from '../../models/groups/groups';
+import { useFirebaseApp } from '../useFirebase';
 
 const UserGroupsContext = React.createContext<{
   isLoading: boolean;
@@ -24,8 +31,8 @@ const UserGroupsProvider = ({
   const [groups, setGroups] = React.useState<null | GroupData[]>(null);
   const [updateCtr, setUpdateCtr] = React.useState(0);
 
-  useFirebase(
-    firebase => {
+  useFirebaseApp(
+    firebaseApp => {
       if (!firebaseUser?.uid) {
         setIsLoading(false);
         setGroups(null);
@@ -40,20 +47,19 @@ const UserGroupsProvider = ({
       };
 
       Object.keys(queries).forEach(key => {
-        firebase
-          .firestore()
-          .collection('groups')
-          .where(key, 'array-contains', firebaseUser?.uid)
-          .withConverter(groupConverter)
-          .get()
-          .then(snap => {
-            queries[key] = snap.docs.map(doc => doc.data());
+        getDocs<GroupData>(
+          query(
+            collection(getFirestore(firebaseApp), 'groups'),
+            where(key, 'array-contains', firebaseUser?.uid)
+          )
+        ).then(snap => {
+          queries[key] = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-            if (Object.keys(queries).every(x => queries[x] !== null)) {
-              setGroups(Object.values(queries).flat());
-              setIsLoading(false);
-            }
-          });
+          if (Object.keys(queries).every(x => queries[x] !== null)) {
+            setGroups(Object.values(queries).flat());
+            setIsLoading(false);
+          }
+        });
       });
     },
     [firebaseUser?.uid, updateCtr]

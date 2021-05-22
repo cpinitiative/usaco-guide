@@ -1,5 +1,5 @@
+import dayjs from 'dayjs';
 import { Link, navigate } from 'gatsby';
-import moment from 'moment';
 import * as React from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
@@ -174,13 +174,13 @@ export default function ProblemPage(props) {
                           problem.solutionReleaseMode == 'custom') && (
                           <p className="text-gray-600 dark:text-gray-400 italic">
                             The problem solution will be released on{' '}
-                            {moment(
+                            {dayjs(
                               (problem.solutionReleaseMode == 'due-date'
                                 ? post.dueTimestamp
                                 : problem.solutionReleaseMode == 'custom' &&
                                   problem.solutionReleaseTimestamp
                               ).toDate()
-                            ).format('MMMM Do h:mma')}
+                            ).format('MMMM DD h:mma')}
                             .
                           </p>
                         )

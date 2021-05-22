@@ -1,0 +1,81 @@
+---
+id: usaco-591
+source: USACO Bronze 2016 January
+title: Promotion Counting
+author: Danh Ta Chi Thanh, Lin Jiang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_promote_bronze_jan16.html)
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+int main(){
+	// initialize file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	freopen("promote.in","r",stdin);
+	freopen("promote.out","w",stdout);
+
+	// read in counts for bronze
+	int bronzeBefore, bronzeAfter;
+	cin >> bronzeBefore >> bronzeAfter;
+
+	// read in counts for silver
+	int silverBefore, silverAfter;
+	cin >> silverBefore >> silverAfter;
+
+	// read in counts for gold
+	int goldBefore, goldAfter;
+	cin >> goldBefore >> goldAfter;
+
+	// read in counts for platinum
+	int platinumBefore, platinumAfter;
+	cin >> platinumBefore >> platinumAfter;
+
+	// do the computations
+	int goldToPlatinum = platinumAfter - platinumBefore;
+	int silverToGold = goldAfter - goldBefore + platinumAfter - platinumBefore;
+	int bronzeToSilver = silverAfter - silverBefore + goldAfter - goldBefore + platinumAfter - platinumBefore;
+
+	// print the answers
+	cout << bronzeToSilver << "\n" << silverToGold << "\n" << goldToPlatinum;
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("promote.in", "r")
+sys.stdout = open("promote.out", "a")
+
+bronze = [int(a) for a in input().split(" ")]
+silver = [int(b) for b in input().split(" ")]
+gold = [int(c) for c in input().split(" ")]
+platinum = [int(d) for d in input().split(" ")]
+
+platinum_promotions = platinum[1] - platinum[0]
+gold_promotions = platinum_promotions + gold[1] - gold[0]
+silver_promotions = gold_promotions + silver[1] - silver[0]
+
+print(silver_promotions)
+print(gold_promotions)
+print(platinum_promotions)
+```
+
+</PySection>
+
+</LanguageSection>

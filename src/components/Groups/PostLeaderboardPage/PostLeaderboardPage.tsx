@@ -1,11 +1,12 @@
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import * as React from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import useFirebase from '../../../hooks/useFirebase';
-import { submissionConverter } from '../../../models/groups/problem';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
+import { Submission } from '../../../models/groups/problem';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TextTooltip from '../../Tooltip/TextTooltip';
@@ -22,7 +23,7 @@ export default function PostLeaderboardPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const { problems } = useActivePostProblems();
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const notifications = useNotificationSystem();
   const leaderboard = activeGroup.groupData.leaderboard;
 
@@ -56,21 +57,21 @@ export default function PostLeaderboardPage(props) {
     problemId: string,
     submissionId: string
   ) => {
-    console.log(problemId, submissionId);
-    firebase
-      .firestore()
-      .collection('groups')
-      .doc(activeGroup.activeGroupId)
-      .collection('posts')
-      .doc(postId)
-      .collection('problems')
-      .doc(problemId)
-      .collection('submissions')
-      .doc(submissionId)
-      .withConverter(submissionConverter)
-      .get()
+    getDoc<Submission>(
+      doc(
+        getFirestore(firebaseApp),
+        'groups',
+        activeGroup.activeGroupId,
+        'posts',
+        postId,
+        'problems',
+        problemId,
+        'submissions',
+        submissionId
+      )
+    )
       .then(doc => {
-        const submission = doc.data();
+        const submission = { id: doc.id, ...doc.data() };
         openProblemSubmissionPopup(submission);
       })
       .catch(e => {

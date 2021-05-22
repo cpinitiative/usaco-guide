@@ -1,9 +1,14 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
+import {
+  AlgoliaEditorFile,
+  AlgoliaEditorModuleFile,
+  AlgoliaEditorSolutionFile,
+} from '../models/algoliaEditorFile';
 import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
 
 const pageQuery = `{
-  pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
+  pages: allXdm(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
         frontmatter {
@@ -14,21 +19,21 @@ const pageQuery = `{
         fields {
           division
         }
-        mdxAST
+        mdast
       }
     }
   }
 }`;
 
 function pageToAlgoliaRecord({
-  node: { id, frontmatter, fields, mdxAST, ...rest },
+  node: { id, frontmatter, fields, mdast, ...rest },
 }) {
   return {
     objectID: frontmatter.id,
     ...frontmatter,
     ...fields,
     ...rest,
-    content: extractSearchableText(mdxAST),
+    content: extractSearchableText(JSON.parse(mdast)),
   };
 }
 
@@ -43,6 +48,47 @@ const problemsQuery = `{
         url
         isStarred
         difficulty
+        solution {
+          kind
+          label
+          labelTooltip
+          url
+          sketch
+        }
+        module {
+          frontmatter {
+            id
+            title
+          }
+        }
+      }
+    }
+  }
+}`;
+
+export const filesQuery = `{
+  data: allXdm(filter: {fileAbsolutePath: {regex: "/(content)|(solutions)/"}}) {
+    edges {
+      node {
+        frontmatter {
+          title
+          id
+        }
+        parent {
+          ... on File {
+            relativePath
+            sourceInstanceName
+          }
+        }
+      }
+    }
+  }
+  problems: allProblemInfo {
+    edges {
+      node {
+        uniqueId
+        name
+        source
         solution {
           kind
           label
@@ -123,6 +169,78 @@ const queries = [
       'tags',
       'problemModules',
       'solution',
+    ],
+  },
+  {
+    query: filesQuery,
+    transformer: ({ data }): AlgoliaEditorFile[] => {
+      const moduleFiles: AlgoliaEditorModuleFile[] = [];
+      data.data.edges.forEach(({ node }) => {
+        if (node.parent.sourceInstanceName === 'content') {
+          moduleFiles.push({
+            title: node.frontmatter.title,
+            id: node.frontmatter.id,
+            path: `${node.parent.sourceInstanceName}/${node.parent.relativePath}`,
+          });
+        }
+      });
+      const solutionFiles: AlgoliaEditorSolutionFile[] = [];
+      data.problems.edges.forEach(({ node }) => {
+        const module = moduleFiles.find(
+          file => file.id === node.module?.frontmatter.id
+        );
+        const relativePath = data.data.edges.find(
+          ({ node: fileNode }) =>
+            fileNode.parent.sourceInstanceName === 'solutions' &&
+            fileNode.frontmatter.id === node.uniqueId
+        )?.node.parent.relativePath;
+        const file: AlgoliaEditorSolutionFile = solutionFiles.find(
+          file => file.id === node.uniqueId
+        ) || {
+          id: node.uniqueId,
+          title: node.name,
+          source: node.source,
+          solutions: [],
+          path: relativePath ? `solutions/${relativePath}` : null,
+          problemModules: [],
+        };
+        if (solutionFiles.indexOf(file) !== -1) {
+          solutionFiles.splice(solutionFiles.indexOf(file), 1);
+        }
+        if (module !== null) {
+          file.problemModules.push(module);
+        }
+        if (node.solution !== null) {
+          file.solutions.push(node.solution);
+        }
+        solutionFiles.push(file);
+      });
+      return [
+        ...moduleFiles.map<
+          { kind: 'module'; objectID: string } & AlgoliaEditorModuleFile
+        >(x => ({
+          ...x,
+          kind: 'module',
+          objectID: x.id,
+        })),
+        ...solutionFiles.map<
+          { kind: 'solution'; objectID: string } & AlgoliaEditorSolutionFile
+        >(x => ({
+          ...x,
+          kind: 'solution',
+          objectID: x.id,
+        })),
+      ];
+    },
+    indexName: process.env.ALGOLIA_INDEX_NAME + '_editorFiles',
+    matchFields: [
+      'kind',
+      'title',
+      'id',
+      'source',
+      'solutions',
+      'path',
+      'problemModules',
     ],
   },
 ];

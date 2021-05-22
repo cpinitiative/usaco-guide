@@ -151,8 +151,9 @@ export default function ProblemStatusCheckbox({
     if (
       markdownLayoutContext === null ||
       !markdownLayoutContext.markdownLayoutInfo?.id
-    )
+    ) {
       return;
+    }
     const { markdownLayoutInfo } = markdownLayoutContext;
     const moduleProgress =
       (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
@@ -182,8 +183,9 @@ export default function ProblemStatusCheckbox({
               tippyRef.current.hide();
               setUserProgressOnProblems(problem.uniqueId, progress);
               const solved = x => x == 'Reviewing' || x == 'Solved';
-              if (progress == 'Solving' || solved(progress))
+              if (progress == 'Solving' || solved(progress)) {
                 updateModuleProgressToPracticing();
+              }
               if (!solved(status) && solved(progress)) {
                 showConfetti();
               }

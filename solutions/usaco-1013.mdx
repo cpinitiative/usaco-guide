@@ -1,0 +1,55 @@
+---
+id: usaco-1013
+source: USACO Bronze 2020 February
+title: Swap
+author: Benjamin Qi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
+
+C++ Version of Second Solution:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, K;
+pair<int, int> A, B;
+vector<int> ori, cur;
+
+vector<int> apply(vector<int> v) {
+	reverse(begin(v) + A.first, begin(v) + A.second + 1);
+	reverse(begin(v) + B.first, begin(v) + B.second + 1);
+	return v;
+}
+
+int main() {
+	// fastio
+	cin.tie(0);
+	ios::sync_with_stdio(0);
+	freopen("swap.in", "r", stdin);
+	freopen("swap.out", "w", stdout);
+
+	cin >> N >> K >> A.first >> A.second >> B.first >> B.second;
+	A.first--, A.second--, B.first--, B.second--;
+
+	ori.resize(N);
+
+	// Fill values in increasing order (ie [0, 1, 2, 3, etc])
+	iota(begin(ori), end(ori), 0);
+
+	cur = ori;
+	int period = 0;
+
+	do {
+		period++;
+		cur = apply(cur);
+	} while (cur != ori);
+
+	for (K %= period; K; K--) {
+		cur = apply(cur);
+	}
+
+	for (int t : cur) cout << t + 1 << "\n";
+}
+```
