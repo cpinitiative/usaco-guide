@@ -6,20 +6,19 @@ author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi, Nathan Chen
 prerequisites:
   - intro-sorting
   - intro-graphs
-description:
-  "Using a custom comparator to sort custom objects or values in a non-default order; Coordinate compressing values from a large range to a smaller one."
+description: 'Using a custom comparator to sort custom objects or values in a non-default order; Coordinate compressing values from a large range to a smaller one.'
 ---
 
 <Resources>
-	<Resource source="IUSACO" title="8 - Sorting & Comparators">
-		partially based off this
-	</Resource>
-	<Resource
-		source="CPH"
-		title="3.2 - User-Defined Structs, Comparison Functions"
-	>
-		short overview of what this module will cover
-	</Resource>
+  <Resource source="IUSACO" title="8 - Sorting & Comparators">
+    partially based off this
+  </Resource>
+  <Resource
+    source="CPH"
+    title="3.2 - User-Defined Structs, Comparison Functions"
+  >
+    short overview of what this module will cover
+  </Resource>
 </Resources>
 
 <br />
@@ -680,7 +679,7 @@ points:
 #include <algorithm>
 using namespace std;
 //EndCodeSnip
- 
+
 typedef pair<int,int> Point;
 bool ycomp(Point p, Point q) { return p.second < q.second; }
 
@@ -688,12 +687,12 @@ bool ycomp(Point p, Point q) { return p.second < q.second; }
 const int MAX_N = 2500;
 int N, Psum[MAX_N+1][MAX_N+1];
 Point P[MAX_N];
- 
+
 int rsum(int x1, int y1, int x2, int y2)
 {
 	return Psum[x2+1][y2+1] - Psum[x2+1][y1] - Psum[x1][y2+1] + Psum[x1][y1];
 }
- 
+
 int main(void)
 {
 	cin >> N;
@@ -704,9 +703,9 @@ int main(void)
 	}
 //EndCodeSnip
 
-	sort(P, P+N); 
+	sort(P, P+N);
 	for (int i=0; i<N; i++) P[i].first = i+1;
-	sort(P, P+N, ycomp); 
+	sort(P, P+N, ycomp);
 	for (int i=0; i<N; i++) P[i].second = i+1;
 
 //BeginCodeSnip{Solution code}
@@ -715,14 +714,14 @@ int main(void)
 		for (int j=1; j<=N; j++)
 			Psum[i][j] += Psum[i-1][j] + Psum[i][j-1] - Psum[i-1][j-1];
 	long long answer = 0;
-	for (int i=0; i<N; i++) 
+	for (int i=0; i<N; i++)
 		for (int j=i; j<N; j++) {
 			int x1 = min(P[i].first, P[j].first) - 1;
 			int x2 = max(P[i].first, P[j].first) - 1;
 			answer += rsum(0,i,x1,j) * rsum(x2,i,N-1,j);
 		}
 	cout << answer + 1 << "\n";
-	
+
 }
 //EndCodeSnip
 ```
