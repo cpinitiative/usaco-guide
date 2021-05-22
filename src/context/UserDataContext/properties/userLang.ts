@@ -72,7 +72,7 @@ const getLangFromUrl = () => {
   return null;
 };
 
-function updateLangURL(newLang: string) {
+export function updateLangURL(newLang: string): void {
   if (shouldLangParamApply()) {
     window.history.replaceState(
       {},
@@ -82,9 +82,9 @@ function updateLangURL(newLang: string) {
   }
 } // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
 
-export function setLangURLIfNone(newLang: string): void {
-  if (getLangFromUrl() == null) updateLangURL(newLang);
-}
+// export function setLangURLIfNone(newLang: string): void {
+//   if (getLangFromUrl() == null) updateLangURL(newLang);
+// }
 
 export default class UserLang extends SimpleUserDataPropertyAPI {
   protected storageKey = 'lang';
@@ -93,6 +93,7 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   protected changedLang = false;
 
   public initializeFromLocalStorage = () => {
+    // console.log('USERLANG: INIT FROM LOCALSTORAGE');
     const langFromUrl = getLangFromUrl();
     if (!this.changedLang && langFromUrl !== null) {
       this.value = langFromUrl;
@@ -107,6 +108,7 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   };
 
   public importValueFromObject = data => {
+    // console.log('USERLANG: IMPORT FROM OBJECT');
     const langFromUrl = getLangFromUrl();
     if (!this.changedLang && langFromUrl !== null) {
       this.value = langFromUrl;
