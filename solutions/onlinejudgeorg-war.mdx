@@ -56,8 +56,8 @@ $\texttt{eyroot}$'s sets.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n\log n + Q)$, where $Q$ is the number of
-operations
+**Time Complexity:** $\mathcal{O}(Q \cdot \alpha(n))$, where $Q$ is the number
+of operations
 
 <LanguageSection>
 
@@ -65,14 +65,16 @@ operations
 
 ```cpp
 #include <iostream>
+#include <algorithm>
 using namespace std;
-int parent[20000];
+int size[20000], parent[20000];
 
 void init(int n)
 {
 	for (int i = 0; i < 2 * n; i++)
 	{
 		parent[i] = i;
+		size[i] = 1;
 	}
 }
 
@@ -82,7 +84,17 @@ int find(int a)
 	{
 		return a;
 	}
-	return find(parent[a]);
+	return parent[a] = find(parent[a]);
+}
+
+void uniteRoot(int a, int b)
+{
+	if (size[a] > size[b])
+	{
+		swap(a, b);
+	}
+	size[b] += size[a];
+	parent[a] = b;
 }
 
 bool areFriends(int xroot, int yroot)
@@ -106,8 +118,8 @@ void setFriends(int xroot, int yroot, int exroot, int eyroot)
 	};
 	// if x and y are friends, then
 	// x's enemies and y's enemies are also friends
-	parent[exroot] = parent[eyroot];
-	parent[xroot] = yroot;
+	uniteRoot(exroot, eyroot);
+	uniteRoot(xroot, yroot);
 }
 
 void setEnemies(int xroot, int yroot, int exroot, int eyroot)
@@ -120,8 +132,8 @@ void setEnemies(int xroot, int yroot, int exroot, int eyroot)
 	// if x and y are enemies, then
 	// x is friends with y's enemies
 	// y is friends with x's enemies
-	parent[xroot] = eyroot;
-	parent[yroot] = exroot;
+	uniteRoot(xroot, eyroot);
+	uniteRoot(yroot, exroot);
 }
 
 int main()
