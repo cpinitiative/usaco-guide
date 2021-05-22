@@ -67,6 +67,7 @@ export default function MarkdownLayout({
     UserDataContext
   );
   React.useEffect(() => {
+    // console.log('FOUND USERLANG: ' + lang);
     if (lang !== 'showAll') {
       updateLangURL(lang);
     }
@@ -101,7 +102,6 @@ export default function MarkdownLayout({
       url: moduleIDToURLMap[cur.node.frontmatter.id],
     }));
   }, [data.allXdm]);
-  // console.log(moduleLinks);
 
   const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {

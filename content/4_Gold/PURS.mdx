@@ -158,12 +158,12 @@ public class segtree {
 	</Resource>
 </Resources>
 
-Note that `st.init(n+1)` allows us to update and query indices in the range
-`[0,n+1)=[0,n]`.
-
 <LanguageSection>
 
 <CPPSection>
+
+Note that `st.init(n+1)` allows us to update and query indices in the range
+`[0,n+1)=[0,n]`.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -282,7 +282,8 @@ public class DynamicRangeMinQueries {
 
 <CPPSection>
 
-Compared to the previous problem, all we need to change are `T`, `ID`, and `comb`.
+Compared to the previous problem, all we need to change are `T`, `ID`, and
+`comb`.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -326,7 +327,9 @@ int main() {
 
 <JavaSection>
 
-Compared to the previous problem, all we need to change is the way we aggregate values (change from `Math.min()` to summation) and the data type we use to store the query (`int` to `long`).
+Compared to the previous problem, all we need to change is the way we aggregate
+values (change from `Math.min()` to summation) and the data type we use to store
+the query (`int` to `long`).
 
 ```java
 import java.util.*;
@@ -469,7 +472,7 @@ public static void update(int i, long v) {
 
 </LanguageSection> -->
 
-### Solution - Range Sum Queries II
+### Solution - Dynamic Range Sum Queries (With a BIT)
 
 <LanguageSection>
 
@@ -578,6 +581,66 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class DynamicRangeSumQueries {
+	static long[] bit;
+	static int n;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		n = io.nextInt();
+		int q = io.nextInt();
+
+		// Note: we are using 1-based indexing for the BIT to function properly
+		// "arr" stores the value of each item in the array for convenient use
+		bit = new long[n+1];
+		int[] arr = new int[n+1];
+		for (int i = 1; i <= n; i++) {
+			arr[i] = io.nextInt();
+			add(i, arr[i]);
+		}
+
+		for (int i = 0; i < q; i++) {
+			int type = io.nextInt();
+			if (type == 1) {
+				int k = io.nextInt();
+				int u = io.nextInt();
+				add(k, -arr[k]); // Remove the BIT's current value at "k"
+				arr[k] = u;
+				add(k, arr[k]); // Add the BIT's new value
+			} else {
+				int a = io.nextInt();
+				int b = io.nextInt();
+				io.println(query(b)-query(a-1));
+			}
+		}
+		io.close();
+	}
+
+	static void add(int j, long k) {
+		for (; j <= n; j += j & -j) {
+			bit[j] += k;
+		}
+	}
+
+	static long query(int j) {
+		long res = 0;
+		for (; j > 0; j -= j & -j) {
+			res += bit[j];
+		}
+		return res;
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
