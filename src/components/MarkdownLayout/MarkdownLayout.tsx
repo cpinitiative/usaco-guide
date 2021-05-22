@@ -10,7 +10,7 @@ import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverCont
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { setLangURLIfNone } from '../../context/UserDataContext/properties/userLang';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
@@ -67,8 +67,9 @@ export default function MarkdownLayout({
     UserDataContext
   );
   React.useEffect(() => {
+    // console.log('FOUND USERLANG: ' + lang);
     if (lang !== 'showAll') {
-      setLangURLIfNone(lang);
+      updateLangURL(lang);
     }
   }, [lang]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
