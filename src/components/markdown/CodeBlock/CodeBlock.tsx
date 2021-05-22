@@ -6,7 +6,7 @@ import vsDark from 'prism-react-renderer/themes/vsDark';
 import * as React from 'react';
 import styled from 'styled-components';
 import { SpoilerContext } from '../Spoiler';
-import Highlight, { normalizeTokens } from './SyntaxHighlighting/Highlight';
+import Highlight from './SyntaxHighlighting/Highlight';
 import Prism from './SyntaxHighlighting/prism';
 
 const Line = styled.div`
@@ -265,41 +265,6 @@ class CodeBlock extends React.Component<
     });
   }
 
-  getCodeString(language: string, code: string): string {
-    // console.log('RENDERING TOKENS');
-    // console.log(tokens);
-    const grammar = Prism.languages[language];
-    const mixedTokens =
-      grammar !== undefined ? Prism.tokenize(code, grammar, language) : [code];
-    const tokens = normalizeTokens(mixedTokens);
-
-    const codeSnips = this.codeSnips;
-    let curSnip = 0;
-    const all_lines = tokens.map((line, i): string => {
-      if (curSnip < codeSnips.length && i >= codeSnips[curSnip].begin) {
-        // inside code snip
-        let res = `${codeSnips[curSnip].indentation}`;
-        if (i == codeSnips[curSnip].begin) {
-          res += `//BeginCodeSnip{`;
-          res += codeSnips[curSnip].value ? `${codeSnips[curSnip].value}` : '';
-          res += '}';
-          return res;
-        } else if (i == codeSnips[curSnip].end) {
-          res += '//EndCodeSnip';
-          ++curSnip;
-          return res;
-        }
-      }
-
-      //proceed as normal: (show must == true)
-      const contents = line.map(token => {
-        return token.content.replace(/ {4}/g, '\t');
-      });
-      return contents.join('');
-    });
-    return all_lines.join('\n');
-  }
-
   render(): JSX.Element {
     const code = this.getCode();
     const className = this.props.className;
@@ -336,14 +301,12 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-    const codeString: string = this.getCodeString(language, code);
-
     return (
       <RelativeDiv>
         <CopyButton
           type="button"
           onClick={() => {
-            navigator.clipboard.writeText(codeString);
+            navigator.clipboard.writeText(code);
           }}
           style={{
             '--chars': {
