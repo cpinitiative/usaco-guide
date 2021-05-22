@@ -1,6 +1,8 @@
-import * as React from 'react';
-import Transition from '../Transition';
-import { ModuleProgressOptions } from '../../models/module';
+import { Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import React, { Fragment } from 'react';
+import { ModuleProgress, ModuleProgressOptions } from '../../models/module';
 
 const MarkCompleteButton = ({
   state,
@@ -8,25 +10,9 @@ const MarkCompleteButton = ({
   dropdownAbove,
 }: {
   state: string;
-  onChange: Function;
+  onChange: (option: ModuleProgress) => void;
   dropdownAbove?: boolean;
-}) => {
-  const [show, setShow] = React.useState(false);
-
-  const handleClick = option => {
-    setShow(false);
-    onChange(option);
-  };
-  const ref = React.useRef();
-  React.useEffect(() => {
-    const handleClick = e => {
-      // @ts-ignore
-      if (ref.current.contains(e.target)) return;
-      setShow(false);
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+}): JSX.Element => {
   const icon = (status: string) => {
     switch (status) {
       case 'Reading':
@@ -103,80 +89,74 @@ const MarkCompleteButton = ({
   };
 
   return (
-    <div className="relative inline-block text-left" ref={ref}>
-      <div>
-        <span className="rounded-md shadow-sm">
-          <button
-            type="button"
-            className={`inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
-              state === 'Not Started' ? 'pl-4' : 'pl-3'
-            } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
-            id="options-menu"
-            aria-haspopup="true"
-            aria-expanded="true"
-            onClick={() => setShow(!show)}
-          >
-            {icon(state)}
-            <span
-              className={`flex-1${state === 'Not Started' ? '' : ' ml-1.5'}`}
+    <Menu as="div" className="relative inline-block text-left">
+      {({ open }) => (
+        <>
+          <div>
+            <Menu.Button
+              type="button"
+              className={`rounded-md shadow-sm inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
+                state === 'Not Started' ? 'pl-4' : 'pl-3'
+              } py-2 bg-white dark:bg-gray-900 dark:hover:bg-gray-800 text-sm leading-5 font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-surface`}
             >
-              {state}
-            </span>
+              {icon(state)}
+              <span
+                className={`flex-1${state === 'Not Started' ? '' : ' ml-1.5'}`}
+              >
+                {state}
+              </span>
 
-            <svg
-              className="-mr-1 ml-2 h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
+              <ChevronDownIcon
+                className="-mr-1 ml-2 h-5 w-5"
+                aria-hidden="true"
               />
-            </svg>
-          </button>
-        </span>
-      </div>
-
-      <Transition
-        show={show}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <div
-          className={`${
-            dropdownAbove
-              ? 'origin-bottom-right bottom-0 mb-12'
-              : 'origin-top-right'
-          } right-0 absolute z-10 mt-2 w-36 rounded-md shadow-lg`}
-        >
-          <div className="rounded-md bg-white shadow-xs">
-            <div
-              className="py-1"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="options-menu"
-            >
-              {ModuleProgressOptions.map(option => (
-                <button
-                  key={option}
-                  onClick={() => handleClick(option)}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                  role="menuitem"
-                >
-                  <span className="w-7">{icon(option)}</span>
-                  <span className="flex-1">{option}</span>
-                </button>
-              ))}
-            </div>
+            </Menu.Button>
           </div>
-        </div>
-      </Transition>
-    </div>
+
+          <Transition
+            show={open}
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items
+              static
+              className={`${
+                dropdownAbove
+                  ? 'origin-bottom-right bottom-0 mb-12'
+                  : 'origin-top-right'
+              } right-0 absolute z-10 mt-2 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+            >
+              <div className="py-1">
+                {ModuleProgressOptions.map(option => (
+                  <Menu.Item key={option}>
+                    {({ active }) => (
+                      <button
+                        onClick={() => onChange(option)}
+                        className={classNames(
+                          'flex items-center w-full text-left px-3 py-2 text-sm',
+                          active
+                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                            : 'text-gray-700 dark:text-gray-200'
+                        )}
+                        role="menuitem"
+                      >
+                        <span className="w-7">{icon(option)}</span>
+                        <span className="flex-1">{option}</span>
+                      </button>
+                    )}
+                  </Menu.Item>
+                ))}
+              </div>
+            </Menu.Items>
+          </Transition>
+        </>
+      )}
+    </Menu>
   );
 };
 

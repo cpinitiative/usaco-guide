@@ -1,14 +1,18 @@
-import useFirebase from '../useFirebase';
 import {
-  groupConverter,
-  GroupData,
-  isUserAdminOfGroup,
-} from '../../models/groups/groups';
+  collection,
+  doc,
+  getFirestore,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import * as React from 'react';
 import { ReactNode, useContext } from 'react';
-import { postConverter, PostData } from '../../models/groups/posts';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { GroupData, isUserAdminOfGroup } from '../../models/groups/groups';
+import { PostData } from '../../models/groups/posts';
+import { useFirebaseApp } from '../useFirebase';
 
 const ActiveGroupContext = React.createContext<{
   activeGroupId: string;
@@ -30,8 +34,8 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
   const notifications = useNotificationSystem();
 
-  useFirebase(
-    firebase => {
+  useFirebaseApp(
+    firebaseApp => {
       setGroupData(null);
       setPosts(null);
       setInStudentView(false);
@@ -44,48 +48,50 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
       let loadedPosts = false,
         loadedGroup = false;
-      const unsubscribePosts = firebase
-        .firestore()
-        .collection('groups')
-        .doc(activeGroupId)
-        .collection('posts')
-        .where('isDeleted', '==', false)
-        .withConverter(postConverter)
-        .onSnapshot(
-          snap => {
+      const unsubscribePosts = onSnapshot<PostData>(
+        query(
+          collection(
+            getFirestore(firebaseApp),
+            'groups',
+            activeGroupId,
+            'posts'
+          ),
+          where('isDeleted', '==', false)
+        ),
+        {
+          next: snap => {
             loadedPosts = true;
-            setPosts(snap.docs.map(doc => doc.data()));
+            setPosts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
             if (loadedGroup && loadedPosts) setIsLoading(false);
           },
-          error => {
+          error: error => {
             if (error.code === 'permission-denied') {
               setIsLoading(false);
               setPosts(null);
             } else {
               notifications.showErrorNotification(error);
             }
-          }
-        );
-      const unsubscribeGroup = firebase
-        .firestore()
-        .collection('groups')
-        .doc(activeGroupId)
-        .withConverter(groupConverter)
-        .onSnapshot(
-          doc => {
+          },
+        }
+      );
+      const unsubscribeGroup = onSnapshot<GroupData>(
+        doc(getFirestore(firebaseApp), 'groups', activeGroupId),
+        {
+          next: doc => {
             loadedGroup = true;
             setGroupData(doc.data());
             if (loadedGroup && loadedPosts) setIsLoading(false);
           },
-          error => {
+          error: error => {
             if (error.code === 'permission-denied') {
               setIsLoading(false);
               setGroupData(null);
             } else {
               notifications.showErrorNotification(error);
             }
-          }
-        );
+          },
+        }
+      );
       return () => {
         unsubscribeGroup();
         unsubscribePosts();

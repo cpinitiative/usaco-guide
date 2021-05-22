@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { ModuleInfo } from '../../models/module';
-import { SECTION_LABELS } from '../../../content/ordering';
-import SlideoverForm from './SlideoverForm';
 import { useContext, useEffect, useState } from 'react';
-import useStickyState from '../../hooks/useStickyState';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import useStickyState from '../../hooks/useStickyState';
+import { ModuleInfo } from '../../models/module';
+import SlideoverForm from './SlideoverForm';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -23,9 +23,9 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
           type="text"
           id={id}
           className={
-            'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700' +
+            'input' +
             (errorMsg
-              ? 'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
+              ? ' pr-10 border-red-300 dark:border-red-300 text-red-900 dark:text-red-300 placeholder-red-300 focus:border-red-300 dark:focus:border-red-300 focus:ring-red-300 dark:focus:ring-red-300'
               : '')
           }
           value={value}
@@ -57,7 +57,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
 };
 
 export function validateEmail(email) {
-  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
@@ -66,9 +66,9 @@ export default function ContactUsSlideover({
   onClose,
 }: {
   isOpen: boolean;
-  onClose: any;
+  onClose: () => void;
   activeModule?: ModuleInfo;
-}) {
+}): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -93,11 +93,11 @@ export default function ContactUsSlideover({
 
   React.useEffect(() => {
     const activeModule = markdownContext?.markdownLayoutInfo;
-    if (activeModule && activeModule instanceof ModuleInfo)
+    if (activeModule && activeModule instanceof ModuleInfo) {
       setLocation(
         `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
       );
-    else setLocation('');
+    } else setLocation('');
   }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);
@@ -132,7 +132,7 @@ export default function ContactUsSlideover({
       return;
     }
 
-    let data = new FormData();
+    const data = new FormData();
     data.append('name', name);
     data.append('email', email);
     data.append('location', location);
@@ -173,11 +173,7 @@ export default function ContactUsSlideover({
       footerButtons={
         <>
           <span className="inline-flex rounded-md shadow-sm">
-            <button
-              type="button"
-              className="py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md text-sm leading-5 font-medium text-gray-700 dark:text-dark-med-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition"
-              onClick={onClose}
-            >
+            <button type="button" className="btn" onClick={onClose}>
               Cancel
             </button>
           </span>
@@ -185,11 +181,7 @@ export default function ContactUsSlideover({
             <button
               type="submit"
               disabled={!submitEnabled}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white transition ${
-                submitEnabled
-                  ? 'bg-blue-600 dark:bg-blue-900 hover:bg-blue-500 dar-hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'
-                  : 'bg-blue-400 dark:bg-blue-800 focus:outline-none cursor-default'
-              }`}
+              className={`btn-primary`}
             >
               Contact Us
             </button>
@@ -213,7 +205,8 @@ export default function ContactUsSlideover({
               <a
                 href="https://forum.usaco.guide/"
                 target="_blank"
-                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                rel="noreferrer"
+                className="btn"
               >
                 Join Forum
               </a>
@@ -307,7 +300,7 @@ export default function ContactUsSlideover({
                           id={`contact_topic_${idx}`}
                           type="radio"
                           name="type"
-                          className="form-radio h-4 w-4 text-blue-600 transition dark:bg-gray-600"
+                          className="form-radio h-4 w-4 text-blue-600 dark:bg-gray-600 dark:focus:ring-offset-dark-surface"
                           checked={topic === t}
                           onChange={() => setTopic(t)}
                         />
@@ -337,9 +330,9 @@ export default function ContactUsSlideover({
                   id="contact_message"
                   rows={4}
                   className={
-                    'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700 ' +
+                    'textarea ' +
                     (showErrors && message === ''
-                      ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
+                      ? 'border-red-300 dark:border-red-300 text-red-900 dark:text-red-300 placeholder-red-300 focus:border-red-300 dark:focus:border-red-300  focus:ring-red-300 dark:focus:ring-red-300'
                       : '')
                   }
                   value={message}

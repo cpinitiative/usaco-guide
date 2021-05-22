@@ -1,15 +1,15 @@
+import { LinkIcon } from '@heroicons/react/solid';
 import * as React from 'react';
-import { PostData } from '../../../models/groups/posts';
-import SidebarDueDate from '../SidebarDueDate';
-import ProblemSubmissionsList from './ProblemSubmissionsList';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
+import { PostData } from '../../../models/groups/posts';
 import {
   getEarnedPointsForProblem,
   GroupProblemData,
-  ProblemData,
 } from '../../../models/groups/problem';
-import * as Icons from 'heroicons-react';
 import TextTooltip from '../../Tooltip/TextTooltip';
+import SidebarDueDate from '../SidebarDueDate';
+import ProblemSubmissionsList from './ProblemSubmissionsList';
+
 export default function ProblemSidebar({
   post,
   problem,
@@ -88,7 +88,7 @@ export default function ProblemSidebar({
         </div>
         {problem.usacoGuideId && (
           <div className="flex items-center space-x-2">
-            <Icons.Link className="h-5 w-5 text-gray-400 dark:text-gray-400" />
+            <LinkIcon className="h-5 w-5 text-gray-400 dark:text-gray-400" />
             <span className="text-gray-900 dark:text-gray-300 text-sm font-medium">
               <TextTooltip
                 content={

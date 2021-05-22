@@ -1,16 +1,10 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import {
-  Problem,
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemFeedback,
-  ProblemInfo,
-} from '../models/problem';
 import className from 'classnames';
-import ButtonGroup from './ButtonGroup';
+import * as React from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import { ProblemInfo } from '../models/problem';
+import ButtonGroup from './ButtonGroup';
 import TabIndentableTextarea from './elements/TabIndentableTextarea';
 
 export default function SubmitProblemSolutionModal({

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { Leaderboard } from '../../../models/groups/leaderboard';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import getMemberInfoForGroup, {
   MemberInfo,
@@ -50,15 +49,17 @@ export default function LeaderboardList({
   const activeGroup = useActiveGroup();
   const leaderboard = activeGroup.groupData?.leaderboard;
   const members = getMemberInfoForGroup(activeGroup.groupData);
+  const { firebaseUser } = React.useContext(UserDataContext);
+
   const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard || !members) return null;
+    if (!leaderboard || !members || !firebaseUser?.uid) return null;
 
     const leaderboardSum = {};
 
     const processPost = id => {
       if (!leaderboard.hasOwnProperty(id)) return;
-      for (let problemID of Object.keys(leaderboard[id])) {
-        for (let userID of Object.keys(leaderboard[id][problemID])) {
+      for (const problemID of Object.keys(leaderboard[id])) {
+        for (const userID of Object.keys(leaderboard[id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
           leaderboardSum[userID] +=
             leaderboard[id][problemID][userID].bestScore;
@@ -67,7 +68,7 @@ export default function LeaderboardList({
     };
 
     if (!postId) {
-      for (let postID of Object.keys(leaderboard)) {
+      for (const postID of Object.keys(leaderboard)) {
         processPost(postID);
       }
     } else {
@@ -79,17 +80,35 @@ export default function LeaderboardList({
         member: members.find(member => member.uid === id),
         points: leaderboardSum[id] ?? 0,
       }))
-      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
-    return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, activeGroup.groupData.memberIds, members?.length, postId]);
+      .filter(x => !!x.member) // filter is needed in case a member just joined and their data isn't available yet
+      .sort((a, b) => b.points - a.points)
+      .map((x, idx) => ({ ...x, place: idx + 1 }));
+    data = data.filter((x, idx) => {
+      // only show top 10, or the person above / at / below the user
+      return (
+        x.place <= 10 ||
+        (idx + 1 < data.length &&
+          data[idx + 1].member.uid === firebaseUser.uid) ||
+        (idx - 1 > 0 && data[idx - 1].member.uid === firebaseUser.uid) ||
+        x.member.uid === firebaseUser.uid
+      );
+    });
+    return data;
+  }, [
+    leaderboard,
+    activeGroup.groupData.memberIds,
+    members?.length,
+    postId,
+    firebaseUser?.uid,
+  ]);
 
   return (
     <ul>
       {leaderboardItems ? (
-        leaderboardItems.map((item, idx) => (
+        leaderboardItems.map(item => (
           <LeaderboardListItem
             key={item.member.uid}
-            place={idx + 1}
+            place={item.place}
             member={item.member}
             points={item.points}
           />

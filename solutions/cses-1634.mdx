@@ -1,0 +1,156 @@
+---
+id: cses-1634
+source: CSES
+title: Minimizing Coins
+author: Michael Cao, Sofia Yang
+---
+
+In this problem, we're asked the minimum number of coins of distinct weights
+needed to achieve some weight, $x$. You can read about the solution to this
+classical problem in [CPH Chapter 7](/CPH.pdf) under "Coin Problem".
+
+# Main Idea
+
+For this problem, we'll define $\texttt{dp[w]}$ as the minimum number of coins
+to achieve some weight, $w$. Then, at some $w$, we can try to use every coin.
+Using the $i$-th coin represents transitioning from the state
+$\texttt{dp[w - coins[i]]}$ where $\texttt{coins[i]}$ represents the value of
+the $i$-th coin. So, for $\texttt{dp[i]}$, the transition is:
+
+$$
+dp[w] = \min_{i=1}^n{(dp[w - coins[i]]) + 1}
+$$
+
+Finally, the base case would be $\texttt{dp[0]} = 0$, since it requires $0$
+coins to get a sum of $0$.
+
+<Warning>
+
+Remember to initialize the $\texttt{dp}$ array with some large value, since we
+are computing a minimum. Additionally, if $\texttt{dp}$ is an `int` array, don't
+initialize $\texttt{dp}$ with `INT_MAX`, since that could cause overflow when
+you add 1 for the transitions.
+
+</Warning>
+
+<Warning>
+
+Don't forget to check if $\texttt{dp[x]} = MX$, where $MX$ is the large value
+you used, and print $-1$ if so (since it's impossible to achieve a sum of $x$).
+
+</Warning>
+
+## Implementation
+
+**Time Complexity**: $\mathcal O(N\cdot X)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+ll dp[1000001];
+
+const int MOD = (int) 1e9 + 7;
+
+int main(){
+	int n, x; cin >> n >> x;
+	vi coins(n);
+	for (int i = 0; i < n; i++) {
+		cin >> coins[i];
+	}
+	for (int i = 0; i <= x; i++){
+		dp[i] = INT_MAX;
+	}
+	dp[0] = 0;
+	for (int i = 1; i <= n; i++) {
+		for (int weight = 0; weight <= x; weight++) {
+			if(weight - coins[i - 1] >= 0) {
+				dp[weight] = min(dp[weight], dp[weight - coins[i - 1]] + 1);
+			}
+		}
+	}
+	cout << (dp[x] == INT_MAX ? -1 : dp[x]) << '\n';
+}
+```
+
+</CPPSection>
+
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class cses1634 {
+	public static int MAX = (int) 10e6 + 2;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int X = Integer.parseInt(st.nextToken());
+
+		/* Read the coin weights. */
+		int[] coins = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			coins[i] = Integer.parseInt(st.nextToken());
+		}
+
+		/* Initialize DP. */
+		int[] dp = new int[X + 1];
+		for (int i = 0; i <= X; i++) {
+			dp[i] = MAX;
+		}
+		dp[0] = 0;
+
+		/* Loop through all coins and all weights
+		If the state curWeight - coin[i] is possible
+		DP[curWeight] = min(DP[curWeight], DP[curWeight - coin[i]] + 1). */
+		for (int i = 1; i <= N; i++) {
+			for (int sum = 0; sum <= X; sum++) {
+				if (sum - coins[i - 1] >= 0) {
+					dp[sum] = Integer.min(dp[sum], dp[sum - coins[i - 1]] + 1);
+				}
+			}
+		}
+
+		/* This state is not possible */
+		if (dp[X] == MAX) {
+			System.out.println(-1);
+			System.exit(0);
+		}
+
+		System.out.println(dp[X]);
+
+	}
+}
+
+```
+</JavaSection>
+
+</LanguageSection>

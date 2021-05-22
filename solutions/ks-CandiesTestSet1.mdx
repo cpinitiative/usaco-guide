@@ -1,0 +1,128 @@
+---
+id: ks-CandiesTestSet1
+source: Kick Start 2020 Round C
+title: Candies
+author: Eric Wei, Oscar Garries
+---
+
+## A More Complicated Example of Prefix Sums
+
+What if we want to quickly answer the following type of query?
+
+> Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
+
+In addition to taking prefix sums over $a_i$, we'll also need to take prefix
+sums over $i\cdot a_i$.
+
+First, define the following:
+
+$$
+\texttt{ps}[i] = a_1+a_2+a_3+a_4+\cdots+a_i
+$$
+
+$$
+\texttt{ips}[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i
+$$
+
+Then, we have:
+
+$$
+l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]
+$$
+
+$$
+(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
+$$
+
+And so,
+
+$$
+1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
+$$
+
+Which is what we were looking for!
+
+## Problem Solution
+
+This problem requires slight extensions of the above approach. See the
+[Official Analysis](https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d#analysis)
+for more information.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int maxN = 2e5 + 5;
+
+int n, q;
+int ar[maxN];
+vector<long long> ipsEven(maxN), ipsOdd(maxN),  psEven(maxN), psOdd(maxN);
+
+void updatePrefix (int j) {
+	for (int i = j; i < n; i++) {
+		if ((i + 1) % 2 == 0) {
+			psEven[i + 1] = psEven[i] + ar[i];
+			ipsEven[i + 1] = ipsEven[i] + ar[i] * (i + 1);
+			psOdd[i + 1] = psOdd[i];
+			ipsOdd[i + 1] = ipsOdd[i];
+		} else {
+			psOdd[i + 1] = psOdd[i] + ar[i];
+			ipsOdd[i + 1] = ipsOdd[i] + ar[i] * (i + 1);
+			psEven[i + 1] = psEven[i];
+			ipsEven[i + 1] = ipsEven[i];
+		}
+	}
+}
+
+int main () {
+	int t;
+	cin >> t;
+	for (int tt = 1; tt <= t; tt++) {
+
+		cin >> n >> q;
+
+		for (int i = 0; i < n; i++) {
+			cin >> ar[i];
+		}
+
+		updatePrefix(0);
+
+		long long sol = 0;
+
+		while (q--) {
+			char tipo;
+			cin >> tipo;
+
+			if (tipo == 'Q') {
+				int l, r;
+				cin >> l >> r;
+				long long resta, suma, cur = 0;
+				if (l % 2 == 0) {
+					cur += ipsEven[r] - ipsEven[l - 1];
+					cur -= ipsOdd[r] - ipsOdd[l - 1];
+					cur -= (psEven[r] - psEven[l - 1]) * (l - 1);
+					cur += (psOdd[r] - psOdd[l - 1]) * (l - 1);
+				} else {
+					cur -= ipsEven[r] - ipsEven[l - 1];
+					cur += ipsOdd[r] - ipsOdd[l - 1];
+					cur += (psEven[r] - psEven[l - 1]) * (l - 1);
+					cur -= (psOdd[r] - psOdd[l - 1]) * (l - 1);
+				}
+
+				sol += cur;
+			} else {
+				int u, v;
+				cin >> u >> v;
+				u--;
+				ar[u] = v;
+
+				updatePrefix(u);
+			}
+		}
+
+		cout << "Case #" << tt << ": "<< sol << '\n';
+	}
+}
+
+```

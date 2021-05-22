@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1131', '2021 US Open', 'Acowdemia I'],
+    ['1132', '2021 US Open', 'Acowdemia II'],
+    ['1133', '2021 US Open', 'Acowdemia III'],
     ['1107', '2021 February', 'Year of the Cow'],
     ['1108', '2021 February', 'Comfortable Cows'],
     ['1109', '2021 February', 'Clockwise Fence'],
@@ -71,6 +74,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1134', '2021 US Open', 'Maze Tac Toe'],
+    ['1135', '2021 US Open', 'Do You Know Your ABCs?'],
+    ['1136', '2021 US Open', 'Acowdemia'],
     ['1110', '2021 February', 'Comfortable Cows'],
     ['1111', '2021 February', 'Year of the Cow'],
     ['1112', '2021 February', 'Just Green Enough'],
@@ -142,6 +148,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1137', '2021 US Open', 'United Cows of Farmer John'],
+    ['1138', '2021 US Open', 'Portals'],
+    ['1139', '2021 US Open', 'Permutation'],
     ['1113', '2021 February', 'Stone Game'],
     ['1114', '2021 February', 'Modern Art 3'],
     ['1115', '2021 February', 'Count the Cows'],
@@ -212,6 +221,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1140', '2021 US Open', 'United Cows of Farmer John'],
+    ['1141', '2021 US Open', 'Routing Schemes'],
+    ['1142', '2021 US Open', 'Balanced Subsets'],
     ['1116', '2021 February', 'No Time to Dry'],
     ['1117', '2021 February', 'Minimizing Edges'],
     ['1118', '2021 February', 'Counting Graphs'],

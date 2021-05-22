@@ -1,41 +1,38 @@
+import * as Sentry from '@sentry/browser';
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import * as React from 'react';
-import {
-  createContext,
-  useReducer,
-  useState,
-  useContext,
-  ReactNode,
-} from 'react';
+import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
-import useFirebase from '../../hooks/useFirebase';
-import UserLang, { UserLangAPI } from './properties/userLang';
-import UserDataPropertyAPI from './userDataPropertyAPI';
-import LastViewedModule, {
-  LastViewedModuleAPI,
-} from './properties/lastViewedModule';
-import HideTagsAndDifficulty, {
-  HideTagsAndDifficultyAPI,
-} from './properties/hideTagsAndDifficulty';
+import { useFirebaseApp } from '../../hooks/useFirebase';
+import { useNotificationSystem } from '../NotificationSystemContext';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
+import LastViewedModule, {
+  LastViewedModuleAPI,
+} from './properties/lastViewedModule';
+import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
+import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
   UserProgressOnModulesAPI,
 } from './properties/userProgressOnModules';
 import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
-import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import firebaseType from 'firebase';
+import UserDataPropertyAPI from './userDataPropertyAPI';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
-import AdSettingsProperty, {
-  AdSettingsAPI,
-} from './properties/adSettingsProperty';
-import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -117,20 +114,19 @@ type UserDataContextAPI = UserLangAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
   AdSettingsAPI & {
-    firebaseUser: firebaseType.User;
-    signIn: Function;
-    signOut: Function;
+    firebaseUser: User;
+    signOut: () => Promise<void>;
     isLoaded: boolean;
     onlineUsers: number;
-    getDataExport: Function;
-    importUserData: Function;
+    getDataExport: () => Record<string, any>;
+    importUserData: (data: Record<string, any>) => boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
   firebaseUser: null,
-  getDataExport: () => {},
-  importUserData: () => {},
+  getDataExport: () => Promise.resolve(),
+  importUserData: () => true,
   hideTagsAndDifficulty: false,
   divisionTableQuery: {
     division: '',
@@ -181,11 +177,9 @@ const UserDataContext = createContext<UserDataContextAPI>({
     // do nothing
   },
   showIgnored: false,
-  signIn: () => {
-    // do nothing
-  },
   signOut: () => {
     // do nothing
+    return Promise.resolve();
   },
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
@@ -200,12 +194,13 @@ const UserDataContext = createContext<UserDataContextAPI>({
 });
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
+  const notifications = useNotificationSystem();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
     // when the firebase user changes, update all the API's
     const userDoc = user
-      ? firebase.firestore().collection('users').doc(user.uid)
+      ? doc(getFirestore(firebaseApp), 'users', user.uid)
       : null;
     UserDataContextAPIs.forEach(api => api.setFirebaseUserDoc(userDoc));
 
@@ -222,8 +217,9 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   );
 
   // Listen for firebase user sign in / sign out
-  useFirebase(firebase => {
-    return firebase.auth().onAuthStateChanged(user => {
+  useFirebaseApp(firebase => {
+    const auth = getAuth(firebase);
+    onAuthStateChanged(auth, user => {
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
@@ -248,11 +244,9 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   // If the user is signed in, sync remote data with local data
   React.useEffect(() => {
     if (firebaseUser) {
-      return firebase
-        .firestore()
-        .collection('users')
-        .doc(firebaseUser.uid)
-        .onSnapshot(snapshot => {
+      const userDoc = doc(getFirestore(firebaseApp), 'users', firebaseUser.uid);
+      return onSnapshot(userDoc, {
+        next: snapshot => {
           let data = snapshot.data();
           if (!data) {
             const lastViewedModule = UserDataContextAPIs.find(
@@ -267,19 +261,16 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
-                firebase
-                  .firestore()
-                  .collection('users')
-                  .doc(firebaseUser.uid)
-                  .set(
-                    UserDataContextAPIs.reduce((acc, cur) => {
-                      return {
-                        ...acc,
-                        ...cur.exportValue(),
-                      };
-                    }, {}),
-                    { merge: true }
-                  );
+                setDoc(
+                  userDoc,
+                  UserDataContextAPIs.reduce((acc, cur) => {
+                    return {
+                      ...acc,
+                      ...cur.exportValue(),
+                    };
+                  }, {}),
+                  { merge: true }
+                );
               }
             }
           }
@@ -290,28 +281,26 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
             setIsLoaded(true);
             triggerRerender();
           });
-        });
+        },
+        error: error => {
+          notifications.showErrorNotification(error);
+          Sentry.captureException(error, {
+            extra: {
+              userId: firebaseUser.uid,
+            },
+          });
+        },
+      });
     }
   }, [firebaseUser]);
 
   const userData = {
     firebaseUser,
-    signIn: (): Promise<void> => {
-      if (firebase) {
-        return firebase
-          .auth()
-          .signInWithPopup(new firebase.auth.GoogleAuthProvider());
-      }
-      return Promise.resolve();
-    },
     signOut: (): Promise<void> => {
-      return firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
-        });
+      return signOut(getAuth(firebaseApp)).then(() => {
+        UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
+        UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
+      });
     },
     isLoaded,
     onlineUsers: -1,
@@ -330,7 +319,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       );
     },
 
-    importUserData: (data: JSON) => {
+    importUserData: (data: Record<string, any>): boolean => {
       if (
         confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
@@ -339,11 +328,10 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
         UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
         UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
         if (firebaseUser) {
-          firebase
-            .firestore()
-            .collection('users')
-            .doc(firebaseUser.uid)
-            .set(data);
+          setDoc(
+            doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
+            data
+          );
         }
         triggerRerender();
         return true;

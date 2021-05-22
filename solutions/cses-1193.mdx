@@ -1,0 +1,212 @@
+---
+id: cses-1193
+source: CSES
+title: Labyrinth
+author: Nathan Wang, Sofia Yang
+---
+
+In this problem, we're asked to find and output the shortest path between two
+nodes. We can't use DFS here because we're looking for the _shortest_ path.
+Instead, we can use BFS to solve this problem.
+
+Below is a video solution for this problem by Jonathan Paulson. The video uses
+Python.
+
+<Youtube id="Xp6MwU5fGT8" />
+
+(Note: The video solution TLE's on one of the test cases. I think (??) it may be
+possible to get AC by setting `SEEN[rr][cc]` to `true` after line 42, and
+removing lines 23, 24, and 38. However, I haven't tested this.)
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ii pair<int, int>
+#define f first
+#define s second
+#define mp make_pair
+
+int n, m;
+char A[1000][1000];
+bool vis[1000][1000];
+
+// previousStep stores the previous direction that we moved in to arrive that this cell
+int previousStep[1000][1000];
+
+// 0 = up, 1 = right, 2 = down, 3 = left
+int dx[4] = { -1, 0, 1, 0 };
+int dy[4] = { 0, 1, 0, -1 };
+string stepDir = "URDL";
+
+int main() {
+	cin >> n >> m;
+
+	queue<ii> q;
+	ii begin, end;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cin >> A[i][j];
+			if (A[i][j] == 'A') {
+				begin = mp(i, j);
+			} else if (A[i][j] == 'B') {
+				end = mp(i, j);
+			}
+		}
+	}
+
+	q.push(begin);
+	vis[begin.f][begin.s] = true;
+
+	while (!q.empty()) {
+		ii u = q.front(); q.pop();
+		for (int i = 0; i < 4; i++) {
+			ii v = mp(u.f + dx[i], u.s + dy[i]);
+			if (v.f < 0 || v.f >= n || v.s < 0 || v.s >= m) continue;
+			if (A[v.f][v.s] == '#') continue;
+			if (vis[v.f][v.s]) continue;
+			vis[v.f][v.s] = true;
+			previousStep[v.f][v.s] = i;
+			q.push(v);
+		}
+	}
+
+	if (vis[end.f][end.s]) {
+		cout << "YES" << endl;
+		vector<int> steps;
+		while (end != begin) {
+			int p = previousStep[end.f][end.s];
+			steps.push_back(p);
+			// undo the previous step to get back to the previous square
+			// Notice how we subtract dx/dy, whereas we added dx/dy before
+			end = mp(end.f - dx[p], end.s - dy[p]);
+		}
+		reverse(steps.begin(), steps.end());
+
+		cout << steps.size() << endl;
+		for (char c : steps) {
+			cout << stepDir[c];
+		}
+		cout << endl;
+	} else {
+		cout << "NO" << endl;
+	}
+
+	return 0;
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class cses1193 {
+	public static int[] dX = {-1, 0, 0, 1};
+	public static int[] dY = {0, -1, 1, 0};
+	public static String dirs = "ULRD";
+
+	//Coordinates for points A and B.
+	public static point A = new point(-1, -1);
+	public static point B = new point(-1, -1);
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		boolean[][] blocked = new boolean[N][M];
+		boolean[][] visited = new boolean[N][M];
+		int[][] prevMove = new int[N][M];
+		
+		//Read in the grid.
+		for (int i = 0; i < N; i++) {
+			char[] S = br.readLine().toCharArray();
+			for (int j = 0; j < M; j++) {
+				if (S[j] == '#') {
+					blocked[i][j] = true;
+				} else {
+					blocked[i][j] = false;
+					if (S[j] == 'A') {
+						A = new point(i, j);
+					}
+
+					if (S[j] == 'B') {
+						B = new point(i, j);
+					}
+				}
+			}
+		}
+		Queue<point> q = new LinkedList<>();
+		q.add(A);
+
+		//BFS starting from point A.
+		while (!q.isEmpty()) {
+			point cur = q.poll();
+
+			for (int dir = 0; dir < 4; dir++) {
+				point next = new point(cur.x + dX[dir], cur.y + dY[dir]);
+				//Check if the next point is visit-able.
+				if (next.x < 0 || next.y < 0  || next.x >= N || next.y >= M) {
+					continue;
+				}
+				if (blocked[next.x][next.y]) {
+					continue;
+				}
+				if (visited[next.x][next.y]) {
+					continue;
+				}
+				visited[next.x][next.y] = true;
+				prevMove[next.x][next.y] = dir;
+				q.add(next);
+			}
+		}
+
+		if (visited[B.x][B.y]) {
+			pw.println("YES");
+			ArrayList<Integer> moves = new ArrayList<>();
+
+			//Now we can go backwards from B to find all the moves we made.
+			while ((A.x != B.x) || (A.y != B.y)) {
+				int prevDir = prevMove[B.x][B.y];
+				moves.add(prevDir);
+
+				B.x = B.x - dX[prevDir];
+				B.y = B.y - dY[prevDir];
+			}
+			Collections.reverse(moves);
+
+			pw.println(moves.size());
+			for (int i : moves) {
+				pw.print(dirs.charAt(i));
+			}
+
+		} else {
+			//We cannot reach point B.
+			pw.println("NO");
+		}
+		pw.close();
+	}
+
+	public static class point {
+		public int x, y;
+		public point(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

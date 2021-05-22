@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Link } from 'gatsby';
-import { PostData } from '../../models/groups/posts';
+import * as React from 'react';
 import { GroupData } from '../../models/groups/groups';
+import { PostData } from '../../models/groups/posts';
 
 export default function Breadcrumbs({
   className,

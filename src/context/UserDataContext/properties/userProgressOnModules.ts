@@ -1,6 +1,7 @@
-import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { ModuleProgress } from '../../../models/module';
+import { setDoc } from 'firebase/firestore';
 import { ModuleActivity } from '../../../models/activity';
+import { ModuleProgress } from '../../../models/module';
+import UserDataPropertyAPI from '../userDataPropertyAPI';
 
 export type UserProgressOnModulesAPI = {
   userProgressOnModules: { [key: string]: ModuleProgress };
@@ -16,7 +17,7 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
   private activityValue: ModuleActivity[] = [];
 
   initializeFromLocalStorage = () => {
-    let legacyValue = this.getValueFromLocalStorage(
+    const legacyValue = this.getValueFromLocalStorage(
       'guide:userData:progress',
       null
     );
@@ -64,7 +65,7 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     this.progressValue = data[this.progressStorageKey] || {};
     this.activityValue = data[this.activityStorageKey] || [];
   };
@@ -90,7 +91,8 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
         this.progressValue[moduleID] = progress;
 
         if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
+          setDoc(
+            this.firebaseUserDoc,
             {
               [this.progressStorageKey]: {
                 [moduleID]: progress,

@@ -1,16 +1,16 @@
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import * as React from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import useFirebase from '../../hooks/useFirebase';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
 import {
   UserPermissionInformation,
   UserPermissions,
-  useUserPermissions,
 } from '../../context/UserDataContext/UserPermissionsContext';
+import { useFirebaseApp } from '../../hooks/useFirebase';
 import Switch from '../elements/Switch';
 
 export default function AdminSettings() {
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const notifications = useNotificationSystem();
 
   const [email, setEmail] = React.useState('');
@@ -35,9 +35,12 @@ export default function AdminSettings() {
 
     setSearching(true);
     try {
-      const response = (await firebase.functions().httpsCallable('getUsers')({
+      const response = await (httpsCallable(
+        getFunctions(firebaseApp),
+        'getUsers'
+      )({
         users: [{ email }],
-      })) as any;
+      }) as any);
       if (response.data.users.length === 0) {
         notifications.addNotification({
           level: 'warning',
@@ -73,7 +76,10 @@ export default function AdminSettings() {
     setIsUpdating(true);
 
     try {
-      await firebase.functions().httpsCallable('setUserClaims')({
+      await httpsCallable(
+        getFunctions(firebaseApp),
+        'setUserClaims'
+      )({
         target: userData.uid,
         claims: userPermissions,
       });

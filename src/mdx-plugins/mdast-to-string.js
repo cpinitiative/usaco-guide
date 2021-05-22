@@ -1,3 +1,4 @@
+/*eslint-disable */
 // modified from https://github.com/syntax-tree/mdast-util-to-string/blob/main/index.js
 
 const katex = require('katex');
@@ -35,8 +36,8 @@ function toString(node) {
 }
 
 function all(values) {
-  var result = [];
-  var index = -1;
+  const result = [];
+  let index = -1;
 
   while (++index < values.length) {
     result[index] = toString(values[index]);

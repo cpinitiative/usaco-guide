@@ -1,15 +1,15 @@
 import * as React from 'react';
-import Transition from '../../Transition';
-import 'tippy.js/themes/light.css';
-
 import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import SuggestProblemRow from './SuggestProblemRow';
+import 'tippy.js/themes/light.css';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { ProblemInfo } from '../../../models/problem';
+import Transition from '../../Transition';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
-import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
-import { ProblemInfo } from '../../../models/problem';
+import SuggestProblemRow from './SuggestProblemRow';
+
 /* eslint-disable react/prop-types */
 
 type ProblemsListProps =
@@ -48,10 +48,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
     problems = markdownProblems.find(
       list => list.listId === unannotatedProps.problems
     )?.problems;
-    if (!problems)
+    if (!problems) {
       throw new Error(
         "Couldn't find the problem list with name " + unannotatedProps.problems
       );
+    }
   } else {
     problems = unannotatedProps.problems as DivisionProblemInfo[];
   }
@@ -76,7 +77,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
   return (
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
-      id={`problemlist-${props.problems}`}
+      id={`problemlist-${
+        props.isDivisionTable === false
+          ? props.tableName
+          : 'division-' + props.division
+      }`}
     >
       <div className="flex flex-col">
         <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">

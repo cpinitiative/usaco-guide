@@ -1,30 +1,32 @@
-import * as React from 'react';
 import { graphql, PageProps } from 'gatsby';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
+import * as React from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
   SECTION_LABELS,
 } from '../../content/ordering';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
-import {
-  getProblemsProgressInfo,
-  getModulesProgressInfo,
-} from '../utils/getProgressInfo';
+import Activity from '../components/Dashboard/Activity';
+import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
 import Announcements from '../components/Dashboard/Announcements';
+import DailyStreak from '../components/Dashboard/DailyStreak';
+import Card from '../components/Dashboard/DashboardCard';
+import DashboardProgress from '../components/Dashboard/DashboardProgress';
+import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
+import Layout from '../components/layout';
+import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { SignInContext } from '../context/SignInContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   AnnouncementInfo,
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
-import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
-import DailyStreak from '../components/Dashboard/DailyStreak';
-import Card from '../components/Dashboard/DashboardCard';
-import Activity from '../components/Dashboard/Activity';
+import {
+  getModulesProgressInfo,
+  getProblemsProgressInfo,
+} from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements, problems } = props.data as any;
@@ -34,7 +36,8 @@ export default function DashboardPage(props: PageProps) {
     return acc;
   }, {});
   const problemIDMap = React.useMemo(() => {
-    return problems.edges.reduce((acc, cur) => {
+    // 1. problems in modules
+    const res = problems.edges.reduce((acc, cur) => {
       const problem = cur.node;
       // ignore problems that don't have an associated module (extraProblems.json)
       if (problem.module) {
@@ -43,11 +46,25 @@ export default function DashboardPage(props: PageProps) {
           url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
             problem.uniqueId
           }`,
-          moduleId: problem.module.frontmatter.id,
         };
       }
       return acc;
     }, {});
+
+    // 2. problems in USACO monthly table
+    const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+    for (const division of divisions) {
+      for (const probInfo of divToProbs[division]) {
+        const id = `usaco-${probInfo[0]}`;
+        if (!(id in res)) {
+          res[id] = {
+            label: `${division}: ${probInfo[2]}`,
+            url: `/general/usaco-monthlies/#problem-${id}`,
+          };
+        }
+      }
+    }
+    return res;
   }, [problems]);
   const {
     lastViewedModule: lastViewedModuleID,
@@ -57,10 +74,10 @@ export default function DashboardPage(props: PageProps) {
     setLastReadAnnouncement,
     firebaseUser,
     consecutiveVisits,
-    signIn,
   } = React.useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
 
-  let showIgnored = userSettings.showIgnored;
+  const showIgnored = userSettings.showIgnored;
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -110,7 +127,7 @@ export default function DashboardPage(props: PageProps) {
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );
-  let allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
+  const allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
 
   const problemStatisticsIDs = React.useMemo(() => {
     return Object.keys(problemIDMap).filter(
@@ -280,7 +297,7 @@ export default function DashboardPage(props: PageProps) {
 
 export const pageQuery = graphql`
   query {
-    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+    modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
       edges {
         node {
           frontmatter {
@@ -304,7 +321,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    announcements: allMdx(
+    announcements: allXdm(
       filter: { fileAbsolutePath: { regex: "/announcements/" } }
       sort: { order: DESC, fields: frontmatter___order }
     ) {
