@@ -810,7 +810,7 @@ The solution to Rectangular Pasture directly replaces coordinates with their com
 
 <FocusProblem problem="sample3" />
 
-This problem will require prefix sums and coordinate compression. However, the implementation of coordinate compression in this solution will also require it to remember the original values in addition to being able to compress them, and switch between compressed indices and their corresponding original values. If you just want to focus on the implementation of coordinate compression and how it can switch between compressed indices and original values, see the contracted code below. `indices` is a list of values that need to be compressed. After it gets sorted and has duplicate values removed, it is ready to use. The method `getCompressedIndex` takes in an original value, and [binary searches](/silver/binary-search) for its position in `indices` to get its corresponding compressed index. To go from a compressed index to an original value, the code can just access that index in `indices`.
+This problem will require prefix sums and coordinate compression. However, the implementation of coordinate compression in this solution will also require remembering values in addition to compressing them (as opposed to just replacing the original values, as in the last problem). If you just want to focus on the implementation of coordinate compression and how it can switch between compressed indices and original values, see the contracted code below. `indices` is a list of values that need to be compressed. After it gets sorted and has duplicate values removed, it is ready to use. The method `getCompressedIndex` takes in an original value, and [binary searches](/silver/binary-search) for its position in `indices` to get its corresponding compressed index. To go from a compressed index to an original value, the code can just access that index in `indices`.
 
 We also provide a full solution:
 
@@ -893,10 +893,7 @@ int main() {
 	sort(indices.begin(), indices.end());
 	indices.erase(unique(indices.begin(), indices.end()), indices.end());
 		/*
-		According to [cplusplus.com](https://www.cplusplus.com/reference/algorithm/unique/]),
-		"unique" deletes all but the first element from every consecutive group of equivalent elements.
-		"unique" also returns an iterator to the last element of the list (which has shifted left) after elements are deleted,
-		so we erase the elements between the iterator returned by unique and the end of the vector as those elements are useless now.
+		You can find info on "unique" here: https://www.cplusplus.com/reference/algorithm/unique/
 
 		Since our list is already sorted, the effect of "unique" is duplicates are removed. In total, these two lines
 		give us a sorted list with duplicates removed.
@@ -938,6 +935,122 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+//BeginCodeSnip{Solution code}
+import java.util.*;
+import java.io.*;
+
+public class rangequeries {
+	
+	//custom class that stores a few integers (used for directly storing the queries and updates given in the input)
+	static class Query {
+		
+		int l, r, v;
+		public Query(int l, int r, int v) {
+			this.l = l;
+			this.r = r;
+			this.v = v;
+		}
+		
+		public Query(int l, int r) {
+			this.l = l;
+			this.r = r;
+		}
+		
+	}
+	
+	static long difference_array[]; //difference_array[i] = the difference of the values between special intervals i-1 and i
+
+	static int widths[]; //width[i] = the length of special interval i
+	static long interval_value[]; //interval_value[i] = the value of special interval i
+
+	static long prefix_sums[]; //prefix_sums[i] = prefix sum of the sums of special intervals up to i
+
+	static ArrayList<Integer> indices; //sorted list of special indices
+	static Query queries[]; //queries given in the input <l, r>
+	static Query updates[]; //updates in given in the input <l, r, v>
+//EndCodeSnip
+	//finds the "compressed index" of a special index (a.k.a. its position in the sorted list)
+	static int getCompressedIndex(int a) {
+		return Collections.binarySearch(indices, a);
+	}
+//BeginCodeSnip{Solution code}
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // A Scanner is too slow to solve this problem!
+		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
+		
+		indices = new ArrayList<Integer>();
+		queries = new Query[Q];
+		updates = new Query[N];
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken()), v = Integer.parseInt(st.nextToken());
+			indices.add(l);
+			indices.add(r);
+			updates[i] = new Query(l, r, v);
+		}
+		for(int i = 0; i < Q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken());
+			indices.add(l);
+			indices.add(r);
+			queries[i] = new Query(l, r);
+		}
+//EndCodeSnip
+		//========= COORDINATE COMPRESSION =======
+		TreeSet<Integer> temp = new TreeSet<Integer>(indices); //Since temp is a set, all duplicate elements are removed
+		indices.clear(); 
+		indices.addAll(temp); //The elements of temp will be added to indices in sorted order, since temp is a TreeSet
+		//The effect of these lines is to sort indices while removing duplicate elements. While this is not the only way to do it, it is one that requires little code.
+		//========= COORDINATE COMPRESSION =======
+//BeginCodeSnip{Solution code}
+		difference_array = new long[indices.size() + 5];
+		widths = new int[indices.size() + 5];
+		interval_value = new long[indices.size() + 5];
+		prefix_sums = new long[indices.size() + 5];
+		
+		//We create the difference array, using coordinate compression and binary search to get the index of each special interval
+		//Note the 1-based indexing for convenience
+		for(int i = 0; i < N; i++) {
+			Query a = updates[i];
+
+			difference_array[getCompressedIndex(a.l)+1] += a.v;
+			difference_array[getCompressedIndex(a.r)+1] -= a.v;
+		}
+
+		//By keeping track of the original values of the special indices, we can also figure out the lengths of each special interval
+		for(int i = 0; i < indices.size()-1; i++) {
+			widths[i+1] = indices.get(i+1) - indices.get(i);
+		}
+
+		//We use prefix sums of the difference array to get the actual value of the intervals
+		for(int i = 1; i < indices.size(); i++) {
+			interval_value[i] = interval_value[i-1] + difference_array[i];
+		}
+
+		//We use prefix sums over the sums of the special intervals to be able to answer queries quickly
+		for(int i = 1; i < indices.size(); i++) {
+			prefix_sums[i] = prefix_sums[i-1] + interval_value[i] * widths[i];
+		}
+
+		//Classic use of prefix sum array to answer range sum queries
+		for(int i = 0; i < Q; i++) {
+			System.out.println(prefix_sums[getCompressedIndex(queries[i].r)] - prefix_sums[getCompressedIndex(queries[i].l)]);
+		}
+		
+	}
+	
+}
+//EndCodeSnip
+```
+
+</JavaSection>
 
 </LanguageSection>
 
