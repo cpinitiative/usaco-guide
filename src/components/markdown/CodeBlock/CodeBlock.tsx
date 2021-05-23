@@ -57,10 +57,13 @@ const CopyButton = styled.button`
   background-color: hsla(240, 20%, 88%, 1);
   position: absolute;
   top: 0px;
-  right: calc(var(--chars) * 8px + 40px);
+  right: var(--right);
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  /* copy from tailwind defaults */
   &:hover {
     background-color: hsla(240, 20%, 75%, 1);
   }
@@ -301,6 +304,13 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
+    const charsMap = {
+      cpp: 3,
+      java: 4,
+      py: 6,
+    };
+    const right =
+      String(language in charsMap ? charsMap[language] * 8 + 40 : 16) + 'px';
     return (
       <RelativeDiv>
         <CopyButton
@@ -309,11 +319,7 @@ class CodeBlock extends React.Component<
             navigator.clipboard.writeText(code);
           }}
           style={{
-            '--chars': {
-              cpp: 3,
-              java: 4,
-              py: 6,
-            }[language],
+            '--right': right,
           }}
           className="focus:outline-none"
         >
