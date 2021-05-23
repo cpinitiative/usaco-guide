@@ -1,7 +1,7 @@
 ---
 id: bfs
 title: 'Breadth First Search (BFS)'
-author: Benjamin Qi, Michael Cao, Andi Qu, Neo Wang
+author: Benjamin Qi, Michael Cao, Andi Qu, Neo Wang, Qi Wang
 prerequisites:
   - dfs
   - ff
@@ -575,6 +575,134 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class tracks {
+    static final int[] dx = {0, 0, -1, 1};
+    static final int[] dy = {-1, 1, 0, 0};
+    static int N = 1, H, W;
+    static int[][] grid;
+    static int[][] count;
+    public static void main(String[] args) throws IOException {
+        FastIO io = new FastIO();
+
+        H = io.nextInt();
+        W = io.nextInt();
+        grid = new int[H][W];
+
+        for (int i = 0; i < H; i++) {
+            String line = io.next();
+            for (int j = 0; j < W; j++) {
+                grid[i][j] = (line.charAt(j) == 'F')?1:(line.charAt(j) == 'R')?2:-1;
+            }
+        }
+
+        io.println(bfs());
+        io.close();
+    }
+
+    private static int bfs() {
+        count = new int[H][W];
+
+        LinkedList<int[]> q = new LinkedList<>();
+        q.add(new int[]{0,0});
+        count[0][0] = 1;
+
+        while (!q.isEmpty()) {
+            int[] curr = q.poll();
+
+            N = Math.max(N, count[curr[0]][curr[1]]);
+
+            for (int i = 0; i < 4; i++) {
+                int nx = curr[0] + dx[i];
+                int ny = curr[1] + dy[i];
+
+                if(nx < 0 || ny < 0 || nx >= H || ny >= W) continue;
+                if(count[nx][ny] > 0) continue;
+                if(grid[nx][ny] == -1) continue;
+                if(grid[nx][ny] != grid[curr[0]][curr[1]]) {
+                    count[nx][ny] = count[curr[0]][curr[1]] + 1;
+                    q.addLast(new int[]{nx, ny});
+                }
+                else {
+                    count[nx][ny] = count[curr[0]][curr[1]];
+                    q.addFirst(new int[]{nx, ny});
+                }
+            }
+        }
+
+        return N;
+    }
+
+    private static class FastIO extends PrintWriter {
+        private InputStream stream;
+        private byte[] buf = new byte[1<<16];
+        private int curChar, numChars;
+
+        // standard input
+        public FastIO() { this(System.in,System.out); }
+        public FastIO(InputStream i, OutputStream o) {
+            super(o);
+            stream = i;
+        }
+        // file input
+        public FastIO(String i, String o) throws IOException {
+            super(new FileWriter(o));
+            stream = new FileInputStream(i);
+        }
+
+        // throws InputMismatchException() if previously detected end of file
+        private int nextByte() {
+            if (numChars == -1) throw new InputMismatchException();
+            if (curChar >= numChars) {
+                curChar = 0;
+                try {
+                    numChars = stream.read(buf);
+                } catch (IOException e) {
+                    throw new InputMismatchException();
+                }
+                if (numChars == -1) return -1; // end of file
+            }
+            return buf[curChar++];
+        }
+
+        // to read in entire lines, replace c <= ' '
+        // with a function that checks whether c is a line break
+        public String next() {
+            int c; do { c = nextByte(); } while (c <= ' ');
+            StringBuilder res = new StringBuilder();
+            do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+            return res.toString();
+        }
+        public int nextInt() { // nextLong() would be implemented similarly
+            int c; do { c = nextByte(); } while (c <= ' ');
+            int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+            int res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res = 10*res+c-'0';
+                c = nextByte();
+            } while (c > ' ');
+            return res * sgn;
+        }
+        public double nextDouble() { return Double.parseDouble(next()); }
+    }
+}
+```
+
+<Warning>
+
+Due to oj.uz's grading constraints for Java, this solution will TLE on the judge.
+
+</Warning>
+
+</JavaSection>
 
 </LanguageSection>
 
