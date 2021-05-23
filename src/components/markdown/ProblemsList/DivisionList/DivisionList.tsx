@@ -1,5 +1,5 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
 import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
 import { ProblemSolutionInfo } from '../../../../models/problem';
@@ -8,7 +8,7 @@ import { ProblemsList } from '../ProblemsList';
 import contestToPoints from './contest_to_points';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs';
-import id_to_sol from './id_to_sol';
+import idToSol from './id_to_sol';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -187,11 +187,9 @@ export function DivisionList(props): JSX.Element {
     probToURL[uniqueId] = problem.url;
     const prevTags = probToTags[uniqueId] || [];
     const allTags = prevTags.concat(problem.tags);
-    // console.log('ALL TAGS', allTags, prevTags, problem.tags);
     probToTags[uniqueId] = [...new Set(allTags)];
     probToDifficulty[uniqueId] = problem.difficulty;
     // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
-    // console.log('NEW TAGS', probToTags[uniqueID]);
     probToSol[uniqueId] = problem.solution;
   }
   const divisionToSeasonToProbs: {
@@ -230,7 +228,7 @@ export function DivisionList(props): JSX.Element {
         solution: probToSol[id] || {
           kind: 'link',
           label: 'External Sol',
-          url: `http://www.usaco.org/current/data/${id_to_sol[probInfo[0]]}`,
+          url: `http://www.usaco.org/current/data/${idToSol[probInfo[0]]}`,
         },
         moduleLink: probToLink[id],
         percentageSolved: fraction,
@@ -255,13 +253,36 @@ export function DivisionList(props): JSX.Element {
   }
   const userSettings = useContext(UserDataContext);
 
+  const [divisionHash, setDivisionHash] = React.useState('');
+  const [seasonHash, setSeasonHash] = React.useState('');
   let curDivision =
-    userSettings.divisionTableQuery && userSettings.divisionTableQuery.division;
+    divisionHash ||
+    (userSettings.divisionTableQuery &&
+      userSettings.divisionTableQuery.division);
   if (!divisions.includes(curDivision)) curDivision = divisions[0];
 
   let curSeason =
-    userSettings.divisionTableQuery && userSettings.divisionTableQuery.season;
+    seasonHash ||
+    (userSettings.divisionTableQuery && userSettings.divisionTableQuery.season);
   if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
+
+  useEffect(() => {
+    // https://dev.to/vvo/how-to-solve-window-is-not-defined-errors-in-react-and-next-js-5f97
+    // oops is this the correct way to do this
+    const hash = window.location.hash;
+    if (hash) {
+      for (const division of divisions) {
+        for (const season of seasons) {
+          for (const prob of divisionToSeasonToProbs[division][season]) {
+            if ('#problem-' + prob.uniqueId === hash) {
+              setDivisionHash(division);
+              setSeasonHash(season);
+            }
+          }
+        }
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -271,6 +292,8 @@ export function DivisionList(props): JSX.Element {
           state={curDivision}
           onChange={newDivision => {
             if (curDivision === newDivision) return;
+            setDivisionHash('');
+            setSeasonHash('');
             userSettings.setDivisionTableQuery({
               division: newDivision,
               season: curSeason,
@@ -282,6 +305,8 @@ export function DivisionList(props): JSX.Element {
           state={curSeason}
           onChange={newSeason => {
             if (curSeason === newSeason) return;
+            setDivisionHash('');
+            setSeasonHash('');
             userSettings.setDivisionTableQuery({
               division: curDivision,
               season: newSeason,

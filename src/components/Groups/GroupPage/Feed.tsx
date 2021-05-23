@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { sortPostsComparator } from '../../../models/groups/posts';
 import Tabs from '../../Tabs';
 import FeedItem from './FeedItem';
 
@@ -16,13 +17,8 @@ export default function Feed() {
       if (currentFeed === 'announcements') return post.type === 'announcement';
       throw 'unknown feed ' + this.currentFeed;
     })
-    .sort((a, b) => {
-      if (a.isPinned !== b.isPinned) {
-        return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
-      }
-
-      return (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0);
-    });
+    .sort(sortPostsComparator)
+    .reverse();
 
   return (
     <>
@@ -42,16 +38,11 @@ export default function Feed() {
         {group.isLoading && 'Loading posts...'}
         {!group.isLoading && (
           <ul className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
-            {feedPosts
-              .sort((a, b) => {
-                // timestamp can be null when the post is first created with timestamp set to the server value
-                return b.timestamp?.toMillis() - a.timestamp?.toMillis();
-              })
-              .map(post => (
-                <li key={post.id}>
-                  <FeedItem group={group.groupData} post={post} />
-                </li>
-              ))}
+            {feedPosts.map(post => (
+              <li key={post.id}>
+                <FeedItem group={group.groupData} post={post} />
+              </li>
+            ))}
           </ul>
         )}
       </div>

@@ -1,7 +1,7 @@
 ---
 id: divis
 title: 'Divisibility'
-author: Darren Yao, Michael Cao, Andi Qu
+author: Darren Yao, Michael Cao, Andi Qu, and Kevin Sheng
 prerequisites:
 description: Using the information that one integer evenly divides another.
 frequency: 1
@@ -168,85 +168,59 @@ for each $x$, find the number of divisors of $x$ in $\mathcal{O}(\sqrt x)$ time.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+
 using namespace std;
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	int n;
 	cin >> n;
-	while (n--) {
-		int x, ans = 0;
+	for (int q = 0; q < n; q++) {
+		int x;
+		int div_num = 0;
 		cin >> x;
 		for (int i = 1; i * i <= x; i++) {
 			if (x % i == 0) {
-				if (i * i == x) ans++;
-				else ans += 2;
+				div_num += i * i == x ? 1 : 2;
 			}
 		}
-		cout << ans << '\n';
+		cout << div_num << '\n';
 	}
-	return 0;
 }
 ```
 
 </CPPSection>
+
 <JavaSection>
 
 ```java
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-public class Main {
-	static int solve(int n) {
-		int divisors = 0;
-		for (int i = 1; i * i <= n; i++) {
-			if (n % i == 0) {
-				if (i * i == n) divisors++;
-				else divisors += 2;
-			}
-		}
-		return divisors;
-	}
-
-	public static void main(String[] args) {
-		int n = r.nextInt();
-		for (int i = 0; i < n; i++) {
-			int x = r.nextInt();
-			pw.println(solve(x));
-		}
-
-		pw.close(); // flushes the output once printing is done
-	}
-
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader(InputStream stream) {
-			reader = new BufferedReader(new InputStreamReader(stream), 32768);
-			tokenizer = null;
-		}
-		String next() { // reads in the next string
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
+public class Divisors {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int queryNum = Integer.parseInt(read.readLine());
+		StringBuilder ans = new StringBuilder();
+		for (int q = 0; q < queryNum; q++) {
+			int n = Integer.parseInt(read.readLine());
+			int divisors = 0;
+			for (int i = 1; i * i <= n; i++) {
+				if (n % i == 0) {
+					divisors += i * i == n ? 1 : 2;
 				}
 			}
-			return tokenizer.nextToken();
+			ans.append(divisors).append('\n');
 		}
-		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+		System.out.print(ans);
 	}
-	static InputReader r = new InputReader(System.in);
-	static PrintWriter pw = new PrintWriter(System.out);
 }
 ```
 
 </JavaSection>
+
+
 </LanguageSection>
 
 This solution runs in $\mathcal{O}(n \sqrt x)$ time, which is just fast enough
@@ -284,104 +258,130 @@ Alternatively, we can slightly modify the the prime factorization code above.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+
 using namespace std;
 
-int max_div[1000001];
+const int MAX_N = 1e6;
+// max_div[i] contains the largest prime that goes into i
+int max_div[MAX_N + 1];
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	for (int i = 2; i <= 1000000; i++) {
-		if (!max_div[i]) {
-			for (int j = i; j <= 1000000; j += i) {
+	for (int i = 2; i <= MAX_N; i++) {
+		if (max_div[i] == 0) {
+			for (int j = i; j <= MAX_N; j += i) {
 				max_div[j] = i;
 			}
 		}
 	}
+
 	int n;
 	cin >> n;
-	while (n--) {
-		int x; cin >> x;
-		int ans = 1;
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		int div_num = 1;
 		while (x != 1) {
-			int prime = max_div[x], count = 0;
+			/*
+			 * get the largest prime that can divide x and see
+			 * how many times it goes into x (stored in count)
+			 */
+			int prime = max_div[x];
+			int count = 0;
 			while (x % prime == 0) {
 				count++;
 				x /= prime;
 			}
-			ans *= count + 1;
+			div_num *= count + 1;
 		}
-		cout << ans << '\n';
+		cout << div_num << '\n';
 	}
 }
 ```
 
 </CPPSection>
+
 <JavaSection>
 
-<IncompleteSection>
-
-make java code consistent w/ C++ code ...
-
-</IncompleteSection>
-
 ```java
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-public class Main {
-	static int solve(int n) {
-		int divisors = 1;
-		for (int i = 2; i * i <= n; i++) {
-			int ct = 0;
-			while (n % i == 0) {
-				ct++;
-				n /= i;
-			}
-			divisors *= ct+1;
-		}
-		if (n > 1) divisors *= 2;
-		return divisors;
-	}
-
-	public static void main(String[] args) {
-		int n = r.nextInt();
-		for (int i = 0; i < n; i++) {
-			int x = r.nextInt();
-			pw.println(solve(x));
-		}
-
-		pw.close(); // flushes the output once printing is done
-	}
-
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader(InputStream stream) {
-			reader = new BufferedReader(new InputStreamReader(stream), 32768);
-			tokenizer = null;
-		}
-		String next() { // reads in the next string
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
+public class Divisors {
+	private static final int MAX_N = (int) Math.pow(10, 6);
+	public static void main(String[] args) throws IOException {
+		// maxDiv[i] contains the largest prime that can divide i
+		int[] maxDiv = new int[MAX_N + 1];
+		for (int i = 2; i <= MAX_N; i++) {
+			if (maxDiv[i] == 0) {
+				for (int j = i; j <= MAX_N; j += i) {
+					maxDiv[j] = i;
 				}
 			}
-			return tokenizer.nextToken();
+		}        
+
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int queryNum = Integer.parseInt(read.readLine());
+		StringBuilder ans = new StringBuilder();
+		for (int q = 0; q < queryNum; q++) {
+			int x = Integer.parseInt(read.readLine());
+			int factNum = 1;
+			while (x != 1) {
+				/*
+			 	 * get the largest prime that can divide x and see
+			 	 * how many times it goes into x (stored in count)
+			   	 */
+				int prime = maxDiv[x];
+				int count = 0;
+				while (x % prime == 0) {
+					count++;
+					x /= prime;
+				}
+				factNum *= count + 1;
+			}
+			ans.append(factNum).append('\n');
 		}
-		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+		System.out.print(ans);
 	}
-	static InputReader r = new InputReader(System.in);
-	static PrintWriter pw = new PrintWriter(System.out);
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+MAX_N = 10 ** 6
+
+# max_div[i] contains the largest prime that can go into i
+max_div = [0 for _ in range(MAX_N + 1)]
+for i in range(2, MAX_N + 1):
+	if max_div[i] == 0:
+		for j in range(i, MAX_N + 1, i):
+			max_div[j] = i
+
+ans = []
+for _ in range(int(input())):
+	n = int(input())
+	div_num = 1
+	while n != 1:
+		"""
+		get the largest prime that can divide x and see
+		how many times it goes into x (stored in count)
+		"""
+		largest = max_div[n]
+		count = 0
+		while n % largest == 0:
+			count += 1
+			n //= largest
+		div_num *= count + 1
+	ans.append(div_num)
+print('\n'.join(str(i) for i in ans))
+```
+
+</PySection>
+
 </LanguageSection>
 
 <Optional>
@@ -413,9 +413,8 @@ This algorithm is very easy to implement using a recursive function, as follows:
 <JavaSection>
 
 ```java
-public int gcd(int a, int b){
-	if (b == 0) return a;
-	return gcd(b, a % b);
+public int gcd(int a, int b) {
+	return b == 0 ? a : gcd(b, a % b);
 }
 ```
 
@@ -424,13 +423,17 @@ public int gcd(int a, int b){
 <CPPSection>
 
 ```cpp
-int gcd(int a, int b){
-	if (b == 0) return a;
-	return gcd(b, a % b);
+int gcd(int a, int b) {
+	return b == 0 ? a : gcd(b, a % b);
 }
 ```
 
 For C++14, you can use the built-in `__gcd(a,b)`.
+
+In C++17, there exists [`std::gcd`](https://en.cppreference.com/w/cpp/numeric/gcd)
+and [`std::lcm`](https://en.cppreference.com/w/cpp/numeric/lcm) in the
+[`<numeric>`](https://en.cppreference.com/w/cpp/header/numeric) header, so there's no
+need to code your own GCD and LCM if you're using that.
 
 </CPPSection>
 
@@ -438,9 +441,7 @@ For C++14, you can use the built-in `__gcd(a,b)`.
 
 ```py
 def gcd(a, b):
-	if b == 0:
-		return a
-	return gcd(b, a % b)
+	return a if b == 0 else gcd(b, a % b)
 ```
 
 </PySection>
@@ -448,7 +449,7 @@ def gcd(a, b):
 </LanguageSection>
 
 This function runs in $\mathcal{O}(\log ab)$ time because
-$a\le b \implies b\%a <\frac{b}{2}$.
+$a\le b \implies b\pmod a <\frac{b}{2}$.
 
 The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are
 consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In
@@ -488,6 +489,11 @@ $$
 \gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4))).
 $$
 
+## Problems
+
+<Problems problems="general" />
+
+<!--
 <LanguageSection>
 
 <CPPSection>
@@ -497,7 +503,6 @@ $$
 ```cpp
 ll gcd(ll a, ll b){ return b == 0 ? a : gcd(b,a%b); }
 ll lcm(ll a, ll b) { return a/gcd(a,b)*b; }
-
 int main() { cout << lcm(1000000000,999999999); } // output: 1808348672
 ```
 
@@ -515,7 +520,4 @@ earlier. However, C++17 has built in `gcd(a,b)` and `lcm(a,b)` ...
 <PySection />
 
 </LanguageSection>
-
-## Problems
-
-<Problems problems="general" />
+-->

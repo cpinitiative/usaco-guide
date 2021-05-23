@@ -1,13 +1,103 @@
 ---
-id: usaco-1013
-source: USACO Bronze 2020 February
-title: Swap
-author: Benjamin Qi
+id: cses-1142
+source: CSES
+title: Advertisement
+author: Andi Qu, Benjamin Qi, Andrew Wang
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
+<IncompleteSection>
 
-C++ Version of Second Solution:
+update solutions to reflect new problem
+
+</IncompleteSection>
+
+**Time Complexity:** $\mathcal O(N)$.
+
+## Solution 1
+
+The largest rectangle must have the same height as the shortest bar that it
+contains. For each $i$, consider the largest rectangle with height $H[i]$ such
+that bar $i$ is the shortest bar it contains. The answer is simply the largest
+of these $N$ rectangles.
+
+Since the heights of these rectangles are fixed, we just want them to be as wide
+as possible. Notice how the rectangle of bar $i$ is bounded by the the closest
+shorter bars on each side of bar $i$ (or the ends of the histogram if these bars
+don't exist).
+
+We can use a monotone stack twice to find the closest shorter bars on each side
+of each bar. See
+[the stacks module](https://usaco.guide/gold/stacks#application-nearest-smaller-element)
+for more details.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+	int largestRectangleArea(vector<int>& heights) {
+		int n = heights.size();
+		if (!n) return 0;
+		stack<int> stck;
+		vector<int> area(n, 0);
+		for (int i = 0; i < n; i++) {
+			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
+			int width = i - (stck.size() ? stck.top() : -1);
+			area[i] += width * heights[i];
+			stck.push(i);
+		}
+		while (stck.size()) stck.pop();
+		for (int i = n - 1; ~i; i--) {
+			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
+			int width = (stck.size() ? stck.top() : n) - i;
+			area[i] += (width - 1) * heights[i];
+			stck.push(i);
+		}
+		return *max_element(area.begin(), area.end());
+	}
+};
+```
+
+## Solution 2
+
+Actually, we only need to go through the heights in one direction. When we see
+`(i, heights[i])`, we process all rectangles with right end at `i-1` and height
+greater than `heights[i]`. Note how we process the rectangles that end at the
+last height by emptying the stack.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define pi pair<int, int>
+#define f first
+#define s second
+class Solution {
+public:
+	int largestRectangleArea(vector<int>& heights) {
+		int N = heights.size();
+		int maxa = 0;
+		stack<pi> sta;
+		for(int i = 0; i < N; i++){
+			int start = i;
+			while(!sta.empty() && heights[i] < sta.top().s){
+				pi cur = sta.top(); sta.pop();
+				start = cur.f;
+				maxa = max(maxa, (i-cur.f)*cur.s);
+			}
+			sta.push(make_pair(start, heights[i]));
+		}
+		while(!sta.empty()){
+			pi cur = sta.top(); sta.pop();
+			maxa = max(maxa, (N - cur.f)*cur.s);
+		}
+		return maxa;
+	}
+};
+```
+
+Alternative implementation: add `-1` to the list of `heights` so we don't have
+to treat rectangles that end at the last height in `heights` as a special case.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -215,30 +305,22 @@ void setIO(str s = "") {
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
 }
 
-#define f first
-#define s second
-
-int N,K;
-pair<int,int> A,B;
-vector<int> ori, cur;
-
-vector<int> apply(vector<int> v) {
-	reverse(begin(v)+A.f,begin(v)+A.s+1);
-	reverse(begin(v)+B.f,begin(v)+B.s+1);
-	return v;
-}
-
-int main() {
-	setIO("swap");
-	cin >> N >> K >> A.f >> A.s >> B.f >> B.s;
-	A.f --, A.s --, B.f --, B.s --;
-	ori.resize(N); iota(begin(ori),end(ori),0); cur = ori;
-	int period = 0;
-	do {
-		period ++;
-		cur = apply(cur);
-	} while (cur != ori);
-	for (K %= period; K; --K) cur = apply(cur);
-	for (int t: cur) cout << t+1 << "\n";
-}
+class Solution {
+public:
+	int largestRectangleArea(vector<int>& heights) {
+		heights.pb(-1);
+		vi st{-1};
+		int ans = 0;
+		F0R(i,sz(heights)) {
+			while (st.bk != -1 && heights[st.bk] >= heights[i]) {
+				// consider rectangle spanning columns end(st)[-2]+1 to i-1
+				// min height is heights[st.bk]
+				ckmax(ans,(i-1-end(st)[-2])*heights[st.bk]);
+				st.pop_back();
+			}
+			st.pb(i);
+		}
+		return ans;
+	}
+};
 ```
