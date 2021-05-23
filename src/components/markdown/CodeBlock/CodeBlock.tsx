@@ -57,7 +57,7 @@ const CopyButton = styled.button`
   background-color: hsla(240, 20%, 88%, 1);
   position: absolute;
   top: 0px;
-  right: var(--right);
+  right: var(--right-offset);
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
@@ -309,7 +309,7 @@ class CodeBlock extends React.Component<
       java: 4,
       py: 6,
     };
-    const right =
+    const rightOffset =
       String(language in charsMap ? charsMap[language] * 8 + 40 : 16) + 'px';
     return (
       <RelativeDiv>
@@ -319,7 +319,7 @@ class CodeBlock extends React.Component<
             navigator.clipboard.writeText(code);
           }}
           style={{
-            '--right': right,
+            '--right-offset': rightOffset,
           }}
           className="focus:outline-none"
         >
