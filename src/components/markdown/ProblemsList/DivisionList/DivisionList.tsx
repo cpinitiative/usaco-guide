@@ -328,13 +328,15 @@ export function DivisionList(props): JSX.Element {
             });
           }}
         />
-        <DivisionButton
-          options={sortOrders}
-          state={sortOrder}
-          onChange={newOrder => {
-            setSortOrder('Sort: ' + newOrder);
-          }}
-        />
+        {sortOrders.length > 1 && (
+          <DivisionButton
+            options={sortOrders}
+            state={sortOrder}
+            onChange={newOrder => {
+              setSortOrder('Sort: ' + newOrder);
+            }}
+          />
+        )}
       </div>
 
       <ProblemsList
