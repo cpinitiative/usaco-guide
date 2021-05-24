@@ -2,7 +2,7 @@
 id: usaco-963
 source: USACO Bronze 2019 December
 title: Cow Gymnastics
-author: Krish Thawani (Java), Hua Zhi Vee (C++)
+author: Krish Thawani (Java), Hua Zhi Vee (C++), Ananth Kashyap (Python)
 ---
 
 ## Video Solution (Jonathan Paulson)
@@ -14,7 +14,7 @@ author: Krish Thawani (Java), Hua Zhi Vee (C++)
 [Official Analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
 
 <LanguageSection>
-<CPPSection />
+
 <JavaSection>
 
 ```java
@@ -133,3 +133,43 @@ int main(){
 
 </CPPSection>
 </LanguageSection>
+
+## Official Solution with Slight Modification
+
+As in the official solution, we can go through every pair of cows in the first practice session, and determine whether or not they appear in the same order for every other practice session. We can create a value storing the number of pairs that do not fit this constraint. Then we can subtact this value from the total number of pairs, thus giving us the number of consistent pairs. 
+
+**Time Complexity:** $\mathcal{O}(KN^2)$
+
+<LanguageSection>
+<PySection>
+
+```py
+file_in = open('gymnastics.in')
+data = file_in.read().strip().split('\n')
+k, n = map(int, data[0].split(' '))
+
+cows = [list(map(int, data[i + 1].split(' '))) for i in range(k)]
+
+print(cows)
+
+bad_pairs = 0
+
+# Find the number of pairs of cows which appear out of order in any practice session
+for i in range(n - 1):
+  for j in range(i + 1, n):
+    for l in range(1, k):
+      if i == 0 and j == 1:
+        print(cows[l].index(cows[0][j]))
+        print(cows[l].index(cows[0][i]))
+      if cows[l].index(cows[0][j]) < cows[l].index(cows[0][i]):
+        bad_pairs += 1
+        break
+
+ans = int((n * (n - 1))/2) - bad_pairs
+
+print(str(ans), file=open('gymnastics.out', 'w'))
+```
+
+</PySection>
+</LanguageSection>
+
