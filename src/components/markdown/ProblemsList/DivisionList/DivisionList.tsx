@@ -287,17 +287,17 @@ export function DivisionList(props): JSX.Element {
 
   const problems: DivisionProblemInfo[] =
     divisionToSeasonToProbs[curDivision][curSeason];
-  const allHavePercent = problems.every(problem => !!problem.percentageSolved);
 
+  const allHavePercent = problems.every(problem => !!problem.percentageSolved);
   const sortOrders = ['By Contest'];
   if (allHavePercent) sortOrders.push('By Percent');
   const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
-  const getDisplayedProblems = () => {
-    if (!allHavePercent || !sortOrder.endsWith('Percent')) return problems;
+  const sortedProblems = React.useMemo(() => {
+    if (!allHavePercent) return problems;
     return [...problems].sort(
       (a, b) => b.percentageSolved - a.percentageSolved
     );
-  };
+  }, [problems]);
 
   return (
     <>
@@ -338,7 +338,7 @@ export function DivisionList(props): JSX.Element {
       </div>
 
       <ProblemsList
-        problems={getDisplayedProblems()}
+        problems={sortOrder.endsWith('Percent') ? sortedProblems : problems}
         division={curDivision}
         modules={true}
       />
