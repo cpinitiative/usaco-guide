@@ -78,6 +78,7 @@ const DivisionButton = ({
             aria-haspopup="true"
             aria-expanded="true"
             onClick={() => setShow(!show)}
+            disabled={options.length === 1}
           >
             {getCircle(state)}
 
@@ -284,6 +285,20 @@ export function DivisionList(props): JSX.Element {
     }
   }, []);
 
+  const problems: DivisionProblemInfo[] =
+    divisionToSeasonToProbs[curDivision][curSeason];
+
+  const allHavePercent = problems.every(problem => !!problem.percentageSolved);
+  const sortOrders = ['By Contest'];
+  if (allHavePercent) sortOrders.push('By Percent');
+  const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
+  const sortedProblems = React.useMemo(() => {
+    if (!allHavePercent) return problems;
+    return [...problems].sort(
+      (a, b) => b.percentageSolved - a.percentageSolved
+    );
+  }, [problems]);
+
   return (
     <>
       <div className="flex items-center space-x-4">
@@ -313,10 +328,19 @@ export function DivisionList(props): JSX.Element {
             });
           }}
         />
+        {sortOrders.length > 1 && (
+          <DivisionButton
+            options={sortOrders}
+            state={sortOrder}
+            onChange={newOrder => {
+              setSortOrder('Sort: ' + newOrder);
+            }}
+          />
+        )}
       </div>
 
       <ProblemsList
-        problems={divisionToSeasonToProbs[curDivision][curSeason]}
+        problems={sortOrder.endsWith('Percent') ? sortedProblems : problems}
         division={curDivision}
         modules={true}
       />
