@@ -113,6 +113,7 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
     if (!this.changedLang && langFromUrl !== null) {
       this.value = langFromUrl;
       this.saveFirebaseValue(this.storageKey, this.value); // save to firebase
+      this.changedLang = true;
     } else {
       this.value =
         data.hasOwnProperty(this.storageKey) && data[this.storageKey] !== null
@@ -127,7 +128,6 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
       [this.storageKey]: this.value,
       [this.setterFunctionName]: v => {
         if (v !== 'showAll') {
-          this.changedLang = true;
           this.value = v;
           updateLangURL(this.value);
           this.updateValueAndRerender(this.storageKey, v);
