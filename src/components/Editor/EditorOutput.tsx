@@ -51,10 +51,12 @@ export const EditorOutput = (): JSX.Element => {
 
     // sort the table such that the suggested problem is inserted below the bottommost
     // problem with the same difficulty as the suggested problem.
-    parsedOldFileData[listId] = ([
-      ...tableToEdit.map((el, i) => ({ index: i, data: el })),
-      { index: tableToEdit.length, data: problemMetadata },
-    ] as { index: number; data: ProblemMetadata }[])
+    parsedOldFileData[listId] = (
+      [
+        ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+        { index: tableToEdit.length, data: problemMetadata },
+      ] as { index: number; data: ProblemMetadata }[]
+    )
       .sort((a, b) => {
         const difficultyDiff =
           PROBLEM_DIFFICULTY_OPTIONS.indexOf(a.data.difficulty) -
