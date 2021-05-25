@@ -33,8 +33,14 @@ Since the constraints on edges (and nodes) is small, we can run
 we don't traverse that edge. If we can't visit some node, then the answer is
 "YES". Otherwise, if we're able to visit every node for each edge that gets
 removed, the answer is "NO" (notice the problem asks whether it's impossible to
-invite everyone). Check the code for more information on how to ignore an edge
-while DFS-ing.
+invite everyone). 
+
+## Ignoring Edges
+The easiest way to ignore edges in a graph is to represent the graph with an 
+adjacency matrix (we can do this because the number of nodes is very small). 
+To ignore an edge that connects two nodes $a$ and $b$, we can simply set 
+`adj[a][b]` and `adj[b][a]` to false. Later, when we want to add the edge back,
+we can update `adj[a][b]` and `adj[b][a]` to true.
 
 ## Implementation
 
@@ -64,7 +70,7 @@ void setIO(string name = "") { // name is nonempty for USACO file I/O
 }
 
 int n, m;
-// since # nodes is small, we can use an adjacency matrix to easily delete edges
+// Adjacency matrix
 bool adj[105][105];
 bool vis[105];
 
@@ -134,9 +140,7 @@ public class BirthdayParty {
 
 			if (p == 0 && c == 0) break;
 
-			// Since the p is small, we can use an adjacency matrix to store
-			// the graph (this makes it easy to delete edges)
-			// adj[a][b] = true if and only if there is an edge between a and b
+			// Adjacency matrix
 			adj = new boolean[p][p];
 			Edge[] edges = new Edge[c];
 			for (int i = 0; i < c; i++) {
