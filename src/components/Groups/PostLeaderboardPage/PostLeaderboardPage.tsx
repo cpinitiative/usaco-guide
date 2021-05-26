@@ -127,7 +127,7 @@ export default function PostLeaderboardPage(props) {
               points: item.points,
               items: item.problemDetails.map((details, idx) => ({
                 id: problems[idx].id,
-                value: parseFloat(details?.bestScore?.toFixed(1) || '0'),
+                value: details?.bestScore?.toFixed(1) || '0',
                 payload: activeGroup.showAdminView &&
                   details && {
                     problemId: problems[idx].id,
