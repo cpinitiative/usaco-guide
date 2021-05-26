@@ -51,6 +51,28 @@ const CodeSnippetLineContent = styled(LineContent)`
   }
 `;
 
+const CopyButton = styled.button`
+  padding: 1.6px 8px 1.6px 8px;
+  color: black;
+  background-color: hsla(240, 20%, 88%, 1);
+  position: absolute;
+  top: 0px;
+  right: var(--right-offset);
+  z-index: 99;
+  border-radius: 0px 0px 4px 4px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  /* copy from tailwind defaults */
+  &:hover {
+    background-color: hsla(240, 20%, 75%, 1);
+  }
+`;
+
+const RelativeDiv = styled.div`
+  position: relative;
+`;
+
 const CodeSnipButton = ({
   snipID,
   showSnip,
@@ -149,11 +171,11 @@ class CodeBlock extends React.Component<
     return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, '');
   }
 
-  setCollapsed(_collapsed) {
+  setCollapsed(_collapsed): void {
     this.setState({ collapsed: _collapsed });
   }
 
-  setCodeSnipShow(id, val) {
+  setCodeSnipShow(id, val): void {
     this.setState(state => {
       const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
@@ -161,7 +183,7 @@ class CodeBlock extends React.Component<
     });
   }
 
-  renderTokens(tokens, maxLines, getLineProps, getTokenProps) {
+  renderTokens(tokens, maxLines, getLineProps, getTokenProps): JSX.Element {
     const codeSnips = this.codeSnips;
     let curSnip = 0;
     let delta = 1;
@@ -246,7 +268,7 @@ class CodeBlock extends React.Component<
     });
   }
 
-  render() {
+  render(): JSX.Element {
     const code = this.getCode();
     const className = this.props.className;
     const linesOfCode =
@@ -282,71 +304,92 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
+    const charsMap = {
+      cpp: 3,
+      java: 4,
+      py: 6,
+    };
+    const rightOffset =
+      String(language in charsMap ? charsMap[language] * 8 + 40 : 16) + 'px';
     return (
-      <Highlight
-        Prism={Prism as any}
-        code={code}
-        language={language}
-        theme={vsDark}
-      >
-        {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <div className="gatsby-highlight" data-language={language}>
-            <pre
-              className={
-                '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
-                className
-              }
-              style={{ ...style }}
-            >
-              {isCodeBlockExpandable && collapsed && tokens.length > 15
-                ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
-                : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
-              {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {isCodeBlockExpandable && tokens.length > 15 && (
-                <div
-                  className={
-                    (collapsed ? 'h-full' : 'h-12') +
-                    ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
-                  }
-                  onClick={() => this.setCollapsed(!collapsed)}
-                >
+      <RelativeDiv>
+        <CopyButton
+          type="button"
+          onClick={() => {
+            navigator.clipboard.writeText(code);
+          }}
+          style={{
+            '--right-offset': rightOffset,
+          }}
+          className="focus:outline-none"
+        >
+          Copy
+        </CopyButton>
+        <Highlight
+          Prism={Prism as any}
+          code={code}
+          language={language}
+          theme={vsDark}
+        >
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <div className="gatsby-highlight" data-language={language}>
+              <pre
+                className={
+                  '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                  className
+                }
+                style={{ ...style }}
+              >
+                {isCodeBlockExpandable && collapsed && tokens.length > 15
+                  ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
+                  : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
+                {tokens.length > 15 && !collapsed && <div className="h-8" />}
+                {isCodeBlockExpandable && tokens.length > 15 && (
                   <div
                     className={
-                      (collapsed ? 'h-20' : 'h-12') +
-                      ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                      (collapsed ? 'h-full' : 'h-12') +
+                      ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
                     }
-                    style={
-                      collapsed && isCodeBlockExpandable
-                        ? {
-                            background:
-                              'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-                          }
-                        : null
-                    }
+                    onClick={() => this.setCollapsed(!collapsed)}
                   >
-                    <svg
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                    <div
                       className={
-                        'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
-                        (collapsed ? '' : 'rotate-180')
+                        (collapsed ? 'h-20' : 'h-12') +
+                        ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                      }
+                      style={
+                        collapsed && isCodeBlockExpandable
+                          ? {
+                              background:
+                                'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+                            }
+                          : null
                       }
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                      <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        className={
+                          'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
+                          (collapsed ? '' : 'rotate-180')
+                        }
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              )}
-            </pre>
-          </div>
-        )}
-      </Highlight>
+                )}
+              </pre>
+            </div>
+          )}
+        </Highlight>
+      </RelativeDiv>
     );
   }
 }

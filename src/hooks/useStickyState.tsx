@@ -12,13 +12,19 @@ const saveToLocalStorage = (key: string, value: any) =>
  * state itself will not be affected. If set to a number greater than 0, the
  * value will be saved to localstorage at most every `throttleAmt` ms, and each
  * value is guaranteed be saved to localStorage within `throttleAmt` ms.
+ * @param defaultValueBeforeLoaded - what to set the value to before it is loaded from localStorage. After it is loaded from localStorage, defaultValue will be used. This can't be undefined.
  */
 export default function useStickyState<S>(
   defaultValue: (() => S) | S,
   key: string,
-  throttleAmt?: number
+  throttleAmt?: number,
+  defaultValueBeforeLoaded?: S
 ): [S, React.Dispatch<React.SetStateAction<S>>] {
-  const [value, setValue] = React.useState<S>(defaultValue);
+  const [value, setValue] = React.useState<S>(
+    defaultValueBeforeLoaded !== undefined
+      ? defaultValueBeforeLoaded
+      : defaultValue
+  );
   const initialRender = React.useRef(true);
   const [throttledSaveToLocalStorage] = React.useState<
     throttle<(key: string, value: any) => void>
@@ -39,6 +45,10 @@ export default function useStickyState<S>(
         } catch (e) {
           console.error("Couldn't parse key", key);
         }
+      } else {
+        setValue(
+          defaultValue instanceof Function ? defaultValue() : defaultValue
+        );
       }
 
       initialRender.current = false;

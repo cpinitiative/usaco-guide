@@ -1,0 +1,251 @@
+---
+id: ys-VertexSetPathComposite
+source: YS
+title: Vertex Set Path Composite
+author: Andrew Cheng
+---
+
+**Time Complexity:** $\mathcal{O}(N \log^2 N)$ from HLD
+
+**Main Idea:**
+Different from a classic HLD problem, the nesting of functions does not follow the commutative property.
+In other words, the answer of the query $1$ $u$ $v$ $x$ is different from the answer of the query $1$ $v$ $u$ $x$.
+
+To solve this problem, we can break down the path from node $u$ to node $v$ into two paths: from node $u$ to $LCA(u,v)$ and from $LCA(u,v)$ to node $v$.
+The path from node $u$ to $LCA(u,v)$ will decrease in depth, and the path from $LCA(u,v)$ to node $v$ will increase in depth.
+
+We can then maintain two segment trees.
+
+The first segment tree will calculate the equivalent function that results from moving from node $u$ to $LCA(u,v)$. And the second segment tree
+will calculate the equivalent function that results from moving from $LCA(u,v)$ to node $v$. After this we can plug in the given $x$ into the two
+functions to get the answer of the query.
+
+It should be mentioned that the function at node $LCA(u,v)$ should only be calculated once. To avoid calculating the node twice, we can intentionally avoid $LCA(u,v)$ during
+exactly one of the two path queries.
+
+The update queries can be implemented using segment tree point updates on both segment trees.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+#define fi first
+#define se second
+#define pb push_back
+using namespace std;
+using ll = long long;
+using pi = pair<ll,ll>;
+
+const int maxN = 2e5+5;
+const int height = 25;
+const int MOD = 998244353;
+
+int N,Q;
+vector<int> adj[maxN];
+int dep[maxN];
+int top[maxN];
+int sz[maxN];
+int son[maxN];
+int fa[maxN];
+int dfn[maxN];
+int dp[maxN][height];
+pi ori [maxN];
+pi val [maxN];
+int cnt;
+
+//LCA
+int LCA(int x, int y){
+	if(dep[x] < dep[y])swap(x,y);
+	for(int i = height-1; i >= 0; --i){
+		if(dep[x] - (1<<i) >= dep[y]){
+			x = dp[x][i];
+		}
+	}
+	if(x == y)return x;
+	for(int i = height-1; i >= 0; --i){
+		if(dp[x][i] != dp[y][i]){
+			x = dp[x][i];
+			y = dp[y][i];
+		}
+	}
+	return dp[x][0];
+}
+
+//Segment Tree
+
+#define lc p<<1
+#define rc (p<<1)+1
+
+pi tree[maxN<<2]; //Going up
+pi tree2[maxN<<2]; //Going down
+
+pi merge(pi x, pi y){
+	//f(x) = ax + b; g(x) = cx + d
+	//Then f(g(x)) = a(cx+d) + b = ac*x + b + ad
+	pi k;
+	k.fi = (x.fi * y.fi)%MOD;
+	k.se = ((x.fi * y.se)%MOD + x.se)%MOD;
+	return k;
+}
+
+void pushup(int p){
+	tree[p] = merge(tree[lc],tree[rc]);
+	tree2[p] = merge(tree2[rc],tree2[lc]);
+}
+
+void build(int p, int l, int r){
+	if(l == r){
+		tree[p] = tree2[p] = val[l];
+		return;
+	}
+	int mid = (l+r)>>1;
+	build(lc,l,mid);
+	build(rc,mid+1,r);
+	pushup(p);
+}
+
+void update(int p, int l, int r, int a, int b){
+	if(a > r || b < l)return;
+	if(a <= l && r <= b){
+		tree[p] = tree2[p] = val[l];
+		return;
+	}
+	int mid = (l+r)>>1;
+	update(lc,l,mid,a,b);
+	update(rc,mid+1,r,a,b);
+	pushup(p);
+}
+
+pi query1(int p, int l, int r, int a, int b){ //Used to query tree
+	if(a > r || b < l)return {1,0};
+	if(a <= l && r <= b)return tree[p];
+	int mid = (l+r)>>1;
+	pi left = query1(lc,l,mid,a,b);
+	pi right = query1(rc,mid+1,r,a,b);
+	return merge(left,right);
+}
+
+pi query2(int p, int l, int r, int a, int b){ //Used to query tree2
+	if(a > r || b < l)return {1,0};
+	if(a <= l && r <= b)return tree2[p];
+	int mid = (l+r)>>1;
+	pi left = query2(lc,l,mid,a,b);
+	pi right = query2(rc,mid+1,r,a,b);
+	return merge(right,left);
+}
+
+#undef lc
+#undef rc
+
+//Heavy Light Decomposition
+
+void dfs1(int x, int par, int depth){
+	dp[x][0] = par;
+	dep[x] = depth;
+	fa[x] = par;
+	sz[x] = 1;
+	for(int i = 1; i < height; ++i){
+		dp[x][i] = dp[dp[x][i-1]][i-1];
+	}
+	int maxSon = -1;
+	for(int i = 0; i < adj[x].size(); ++i){
+		int c = adj[x][i];
+		if(c == par)continue;
+		dfs1(c,x,depth+1);
+		sz[x] += sz[c];
+		if(sz[c] > maxSon){
+			maxSon = sz[c];
+			son[x] = c;
+		}
+	}
+}
+
+void dfs2(int x, int par, int topf){
+	dfn[x] = ++cnt;
+	val[dfn[x]] = ori[x];
+	top[x] = topf;
+	if(son[x] != 0)dfs2(son[x],x,topf);
+	for(int i = 0; i < adj[x].size(); ++i){
+		int c = adj[x][i];
+		if(c == par || c == son[x])continue;
+		dfs2(c,x,c);
+	}
+}
+
+pi pathQuery1(int x, int y){
+	pi res{1,0};
+	while(top[x] != top[y]){
+		if(dep[top[x]] < dep[top[y]])swap(x,y);
+		pi k = query1(1,1,N,dfn[top[x]],dfn[x]);
+		res = merge(k,res);
+		x = fa[top[x]];
+	}
+	if(dep[x] > dep[y])swap(x,y);
+	pi k = query1(1,1,N,dfn[x]+1,dfn[y]);
+	res = merge(k,res);
+	return res;
+}
+
+pi pathQuery2(int x, int y){
+	pi res{1,0};
+	while(top[x] != top[y]){
+		if(dep[top[x]] < dep[top[y]])swap(x,y);
+		pi k = query2(1,1,N,dfn[top[x]],dfn[x]);
+		res = merge(res,k);
+		x = fa[top[x]];
+	}
+	if(dep[x] > dep[y])swap(x,y);
+	pi k = query2(1,1,N,dfn[x],dfn[y]);
+	res = merge(res,k);
+	return res;
+}
+
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	cin >> N >> Q;
+	for (int i = 1; i <= N; ++i) {
+		cin >> ori[i].fi >> ori[i].se;
+	}
+	for (int i = 1; i < N; ++i) {
+		int a, b;
+		cin >> a >> b;
+		++a;
+		++b; //Change coordinates from [0,N) to [1,N]
+		adj[a].pb(b);
+		adj[b].pb(a);
+	}
+	dfs1(1, 0, 1);
+	dfs2(1, 0, 1);
+	build(1, 1, N);
+	for (int i = 1; i <= Q; ++i) {
+		int k;
+		cin >> k;
+		if (k == 0) {
+			int p, c, d;
+			cin >> p >> c >> d; ++p;
+			val[dfn[p]].fi = c;
+			val[dfn[p]].se = d; //Potential Problem
+			update(1, 1, N, dfn[p], dfn[p]);
+		} else {
+			int u, v, x;
+			cin >> u >> v >> x;
+			++u;
+			++v;
+			int t = LCA(u, v);
+			pi ansL = pathQuery1(u, t); //Excluding LCA going up
+			pi ansR = pathQuery2(t, v); //Including LCA going down
+			int res = ((ansL.fi * x) % MOD + ansL.se) % MOD;
+			res = ((ansR.fi * res) % MOD + ansR.se) % MOD;
+			cout << res << '\n';
+			assert(res >= 0);
+		}
+	}
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
