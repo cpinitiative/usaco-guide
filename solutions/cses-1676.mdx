@@ -1,0 +1,140 @@
+---
+id: cses-1676
+source: CSES
+title: Road Construction
+author: Oscar Garries, Sofia Yang
+---
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+struct DSU {
+	vector<int> e;
+	void init (int n) { e = vector<int> (n, -1); }
+	int get (int x) { return (e[x] < 0 ? x : e[x] = get(e[x])); }
+	bool sameSet (int x, int y) { return get(x) == get(y); }
+	int size (int x) { return -e[get(x)]; }
+	bool unite (int x, int y) {
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
+		return 1;
+	}
+};
+
+int main () {
+	int n, m;
+	cin >> n >> m;
+	DSU dsu;
+	dsu.init(n);
+	int cc = n, large = 1;
+
+	while (m--) {
+		int x, y;
+		cin >> x >> y;
+		x--; y--;
+		if (dsu.unite(x, y)) {
+			large = max(large, dsu.size(x));
+			cc--;
+		}
+		cout<< cc << ' ' << large << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+## Implementation
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class cses1676 {
+	public static int[] disjoint;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		//Initialize.
+		disjoint = new int[N];
+		Arrays.fill(disjoint, -1);
+		//The size of the largest connected component.
+		int largestCC = 1;
+
+		//Read in the connections.
+		while (M-- > 0) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			int newSize = union(a, b);
+			if (newSize != 0) {
+				N--;
+				//Check which connected component is larger.
+				largestCC = Integer.max(largestCC, newSize);
+			}
+			pw.println(N + " " + largestCC);
+		}
+		pw.close();
+	}
+
+	/*Disjoint Set Union */
+
+	//Find the ancestor.
+	public static int find(int v) {
+		if (disjoint[v] < 0) {
+			return v;
+		}
+		disjoint[v] = find(disjoint[v]);
+		return disjoint[v];
+	}
+
+	public static int union(int u, int v) {
+		//Find the ancestor of both nodes
+		u = find(u);
+		v = find(v);
+
+		//They are in the same connected component.
+		if (u == v) {
+			return 0;
+		}
+
+		if (disjoint[u] < disjoint[v]) {
+			int tempU = u;
+			u = v;
+			v = tempU;
+		}
+		disjoint[v] += disjoint[u]; //Append u's children to v.
+		disjoint[u] = v; // Set v as u's parent.
+		return -disjoint[v];
+	}
+
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

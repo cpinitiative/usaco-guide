@@ -16,8 +16,8 @@ frequency: 2
 ## Queues & Deques
 
 <Resources>
-	<Resource source="CPH" title="4.5 - Queues, Deques"></Resource>
-	<Resource source="PAPS" title="3.2, 6.3 - Queues"></Resource>
+	<Resource source="CPH" title="4.5 - Queues, Deques" />
+	<Resource source="PAPS" title="3.2, 6.3 - Queues" />
 </Resources>
 
 ### Queues
@@ -143,7 +143,7 @@ deque.removeLast(); // [1, 3]
 		source="KA@KhanAcademy"
 		title="BFS and its uses"
 		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
-	></Resource>
+	 />
 	<Resource
 		source="Youtube"
 		title="Breadth First Search Algorithm"
@@ -154,11 +154,11 @@ deque.removeLast(); // [1, 3]
 </Resources>
 
 <!-- <Resource source="CPH" title="12.2 - Breadth-First Search">example, implementation</Resource>
-<Resource source="cp-algo" title="" url="graph/01_bfs.html"></Resource>
+<Resource source="cp-algo" title="" url="graph/01_bfs.html" />
 <Resource
 	source="IUSACO"
 	title="10.4 - Graph Traversal Algorithms"
-></Resource>
+ />
 <Resource source="CP2" title="4.2.2 - BFS" /> -->
 
 ### Solution - Message Route
@@ -323,6 +323,75 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+
+import java.util.*;
+
+
+public class Solution {
+	// CodeSnip{Kattio}
+
+	private static Map<Integer, LinkedList<Integer>> adj = new HashMap<>();
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt(), m = io.nextInt();
+		for(int i = 0; i < m; i++) {
+			int a = io.nextInt(), b = io.nextInt();
+			if(adj.get(a) == null) {
+				adj.put(a, new LinkedList<>());
+			}
+
+			if(adj.get(b) == null) {
+				adj.put(b, new LinkedList<>());
+			}
+
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] prev = new int[n+1], dist = new int[n+1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[1] = 1;
+
+		Queue<Integer> bfs = new LinkedList<>();
+		bfs.add(1);
+
+		while(!bfs.isEmpty()) {
+			int top = bfs.poll();
+			if(dist[top] == Integer.MAX_VALUE) continue;
+			if(adj.get(top) != null) {
+				for(int e : adj.get(top)) {
+					if(dist[e] == Integer.MAX_VALUE) {
+						dist[e] = dist[top] + 1;
+						prev[e] = top;
+						bfs.add(e);
+					}
+				}
+			}
+		}
+
+		if(dist[n] == Integer.MAX_VALUE) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			System.out.println(dist[n]);
+			int[] res = new int[dist[n]];
+			int i = dist[n]-1;
+			for(int x = n; x != 0; x = prev[x]) {
+				res[i--] = x;
+			}
+			for(int a : res) System.out.print(a + " ");
+		}
+	}
+}
+```
+
+</JavaSection>
 
 <!--
 <JavaSection>

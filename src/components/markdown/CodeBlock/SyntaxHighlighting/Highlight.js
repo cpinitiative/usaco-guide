@@ -69,7 +69,7 @@ var appendTypes = function (types, add) {
 // This is not recursive to avoid exceeding the call-stack limit, since it's unclear
 // how nested Prism's tokens can become
 
-var normalizeTokens = function (tokens) {
+export var normalizeTokens = function (tokens) {
   var typeArrStack = [[]];
   var tokenArrStack = [tokens];
   var tokenArrIndexStack = [0];

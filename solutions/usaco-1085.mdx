@@ -1,0 +1,48 @@
+---
+id: usaco-1085
+source: USACO Bronze 2021 January
+title: Just Stalling
+author: Ananth Kashyap
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob3_bronze_jan21.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<PySection>
+
+```python
+n = int(input())
+cows = list(map(int, input().split(" ")))
+stalls = list(map(int, input().split(" ")))
+
+cows.sort()
+stalls.sort()
+
+possible_places = [0] * n
+
+# Create a list containing the number of stalls each cow can use.
+for i in range(n):
+	for j in range(n):
+		if cows[i] <= stalls[j]:
+			possible_places[i] += 1
+
+# Initialize a cumulative product
+product = 1
+
+# For each cow, find out the number of stalls it can use in a valid permutation
+# Use the formula provided in the explanation
+# Multiply the cumulative product by this value
+for i in range(n - 1, -1, -1):
+	product *= (possible_places[i] - (n - i - 1))
+
+print(product)
+```
+
+</PySection>
+
+</LanguageSection>

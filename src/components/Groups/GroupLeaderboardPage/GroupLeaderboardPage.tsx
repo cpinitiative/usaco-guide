@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import { sortPostsComparator } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
-import TextTooltip from '../../Tooltip/TextTooltip';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
+import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 
-export default function GroupLeaderboardPage(props) {
+export default function GroupLeaderboardPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const posts = activeGroup.posts;
   const leaderboard = activeGroup.groupData.leaderboard;
 
   const assignments = React.useMemo(() => {
-    return posts?.filter(post => post.type === 'assignment');
+    return posts
+      ?.filter(post => post.type === 'assignment' && post.isPublished)
+      .sort(sortPostsComparator);
   }, [posts]);
 
   const members = getMemberInfoForGroup(activeGroup.groupData);
@@ -26,8 +29,9 @@ export default function GroupLeaderboardPage(props) {
       for (const problemID of Object.keys(leaderboard[post.id])) {
         for (const userID of Object.keys(leaderboard[post.id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = {};
-          if (!(post.id in leaderboardSum[userID]))
+          if (!(post.id in leaderboardSum[userID])) {
             leaderboardSum[userID][post.id] = 0;
+          }
           leaderboardSum[userID][post.id] +=
             leaderboard[post.id][problemID][userID].bestScore;
         }
@@ -48,8 +52,7 @@ export default function GroupLeaderboardPage(props) {
     return data.sort((a, b) => b.points - a.points);
   }, [leaderboard, members, assignments]);
 
-  const postCellStyles =
-    'w-16 text-center border-l border-gray-200 dark:border-gray-700 px-2';
+  const fullWidth = assignments?.length > 10;
 
   return (
     <Layout>
@@ -59,12 +62,16 @@ export default function GroupLeaderboardPage(props) {
 
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
-          className={`max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
+          className={`${
+            fullWidth ? '' : 'max-w-5xl w-full mx-auto'
+          } px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
           group={activeGroup.groupData}
         />
       </nav>
 
-      <div className="max-w-5xl mx-auto sm:px-6 lg:px-8">
+      <div
+        className={`${fullWidth ? '' : 'max-w-5xl mx-auto'} sm:px-6 lg:px-8`}
+      >
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex-1 min-w-0 px-4 sm:px-0">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
@@ -84,89 +91,21 @@ export default function GroupLeaderboardPage(props) {
         <div className="h-6" />
 
         <div className="flex flex-col">
-          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div className="overflow-hidden shadow border-b border-gray-200 dark:border-transparent sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-800">
-                    <tr>
-                      <th
-                        scope="col"
-                        className="py-3 text-center border-r border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-16"
-                      >
-                        #
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                      >
-                        Name
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                      >
-                        Points
-                      </th>
-                      {/*<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">*/}
-                      {/*  Last Submission Time*/}
-                      {/*</th>*/}
-                      {assignments?.map((post, idx) => (
-                        <th
-                          scope="col"
-                          className={
-                            postCellStyles +
-                            ' py-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider'
-                          }
-                          key={post.id}
-                        >
-                          <TextTooltip content={post.name}>
-                            P{idx + 1}
-                          </TextTooltip>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {leaderboardItems?.map((item, idx) => (
-                      <tr
-                        className={
-                          idx % 2 === 0
-                            ? 'bg-white dark:bg-gray-900'
-                            : 'bg-gray-50 dark:bg-gray-800'
-                        }
-                        key={item.member.uid}
-                      >
-                        <td className="text-center border-r border-gray-200 dark:border-gray-700 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 w-16">
-                          {idx + 1}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {item.member.displayName}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {item.points}
-                        </td>
-                        {/*<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">*/}
-                        {/*  MMMM Do YYYY, h:mm:ss a*/}
-                        {/*</td>*/}
-                        {item.postDetails.map((score, idx) => (
-                          <td
-                            className={
-                              postCellStyles +
-                              ' py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-medium'
-                            }
-                            key={assignments[idx].id}
-                          >
-                            {score}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <LeaderboardTable
+            columns={assignments?.map(post => ({
+              id: post.id,
+              tooltip: post.name,
+            }))}
+            rows={leaderboardItems?.map(item => ({
+              id: item.member.uid,
+              name: item.member.displayName,
+              points: item.points,
+              items: item.postDetails.map((score, idx) => ({
+                id: assignments[idx].id,
+                value: score,
+              })),
+            }))}
+          />
         </div>
       </div>
     </Layout>
