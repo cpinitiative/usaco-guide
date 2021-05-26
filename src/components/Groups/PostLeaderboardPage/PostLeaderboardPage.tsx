@@ -9,9 +9,9 @@ import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { Submission } from '../../../models/groups/problem';
 import Layout from '../../layout';
 import SEO from '../../seo';
-import TextTooltip from '../../Tooltip/TextTooltip';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
+import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 export default function PostLeaderboardPage(props) {
@@ -81,10 +81,6 @@ export default function PostLeaderboardPage(props) {
         });
       });
   };
-  console.log(leaderboardItems);
-
-  const problemCellStyles =
-    'w-16 text-center border-l border-gray-200 dark:border-gray-700';
 
   return (
     <Layout>
@@ -120,97 +116,29 @@ export default function PostLeaderboardPage(props) {
         <div className="h-6" />
 
         <div className="flex flex-col">
-          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div className="overflow-hidden shadow border-b border-gray-200 dark:border-transparent sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-800">
-                    <tr>
-                      <th
-                        scope="col"
-                        className="py-3 text-center border-r border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-16"
-                      >
-                        #
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                      >
-                        Name
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                      >
-                        Points
-                      </th>
-                      {/*<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">*/}
-                      {/*  Last Submission Time*/}
-                      {/*</th>*/}
-                      {problems?.map((problem, idx) => (
-                        <th
-                          scope="col"
-                          className={
-                            problemCellStyles +
-                            ' py-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider'
-                          }
-                          key={problem.id}
-                        >
-                          <TextTooltip content={problem.name}>
-                            P{idx + 1}
-                          </TextTooltip>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {leaderboardItems?.map((item, idx) => (
-                      <tr
-                        className={
-                          idx % 2 === 0
-                            ? 'bg-white dark:bg-gray-900'
-                            : 'bg-gray-50 dark:bg-gray-800'
-                        }
-                        key={item.member.uid}
-                      >
-                        <td className="text-center border-r border-gray-200 dark:border-gray-700 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 w-16">
-                          {idx + 1}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {item.member.displayName}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {item.points}
-                        </td>
-                        {/*<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">*/}
-                        {/*  MMMM Do YYYY, h:mm:ss a*/}
-                        {/*</td>*/}
-                        {item.problemDetails.map((details, idx) => (
-                          <td
-                            className={
-                              problemCellStyles +
-                              ' py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-medium' +
-                              (details ? ' cursor-pointer' : '')
-                            }
-                            key={problems[idx].id}
-                            onClick={() =>
-                              details &&
-                              handleOpenSubmissionsDetail(
-                                problems[idx].id,
-                                details.bestScoreSubmissionId
-                              )
-                            }
-                          >
-                            {parseFloat(details?.bestScore?.toFixed(1) || '0')}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <LeaderboardTable
+            columns={problems?.map(problem => ({
+              id: problem.id,
+              tooltip: problem.name,
+            }))}
+            rows={leaderboardItems?.map(item => ({
+              id: item.member.uid,
+              name: item.member.displayName,
+              points: item.points,
+              items: item.problemDetails.map((details, idx) => ({
+                id: problems[idx].id,
+                value: details?.bestScore?.toFixed(1) || '0',
+                payload: activeGroup.showAdminView &&
+                  details && {
+                    problemId: problems[idx].id,
+                    submissionId: details?.bestScoreSubmissionId,
+                  },
+              })),
+            }))}
+            onCellClick={(_, { problemId, submissionId }) => {
+              handleOpenSubmissionsDetail(problemId, submissionId);
+            }}
+          />
         </div>
       </div>
     </Layout>
