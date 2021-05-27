@@ -124,7 +124,7 @@ export const UnknownLanguage = Template.bind({});
 UnknownLanguage.args = {
   className: 'language-sh',
   children: `
-The copy button should still look acceptable.
+This shouldn't have syntax highlighting
 `,
 };
 
