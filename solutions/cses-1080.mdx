@@ -1,0 +1,22 @@
+---
+id: cses-1080
+source: CSES
+title: Empty String
+author: Dong Liu
+---
+
+Let $\texttt{dp}[i][j]$ is the number of ways to empty the substring $[i, j]$.
+
+To calculate $\texttt{dp}[i][j]$, we loop through points $k$ between $i$ and $j$ such that $s[i] = s[k]$.
+
+Then, if we choose to remove $s[i]$ and $s[k]$, we must remove the range $[i + 1, k 0 1]$ first (for s[i] and s[k] to be adjacent). Here, the number of ways to remove the range $[i + 1, k - 1]$ is $\texttt{dp}[i + 1][k - 1]$.
+
+We also need to remove $[k + 1, j]$ for the whole substring $[i, j]$ to be removed (the number of ways to do this is $dp[k + 1][j]$).
+
+Since we can remove the substring $[i + 1, k - 1]$ and $[k + 1, j]$ in any order, we also multiply this by ${(j - i - 1) / 2}\choose {(k - i + 1) / 2}$ (notice that we divide the sizes by two because we remove the letters in pairs).
+
+Thusm our transition would be $\sum{\texttt{dp}[i + 1][k - 1] * \texttt{dp}[k + 1][j] * {{(j - i - 1) / 2}\choose {(k - i + 1) / 2}}}$ such that $s[i] = s[k]$.
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<!-- todo: add code -->
