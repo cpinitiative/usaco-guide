@@ -2,16 +2,16 @@
 id: cses-1076
 source: CSES
 title: Sliding Median
-author: Isaac Noel
+author: Isaac Noel, Arpan Banerjee
 ---
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
-## Abstract
+## Abstract 1
 
 Finding the median of a sliding window by maintaining two multisets.
 
-## Solution
+## Solution 1
 
 To accomplish finding the sorted median of a sliding window, we can store the
 window within two sets: one containing the lower values of the window and the
@@ -87,3 +87,28 @@ int main() {
 	cout << endl;
 }
 ```
+
+## Solution 2
+(Arpan Banerjee)
+
+We can directly use an [order statistic tree ](https://codeforces.com/blog/entry/11080) (C++) to get the median while sliding the window across the array.
+```cpp
+#include<bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+#define ordered_set tree<int, null_type,less_equal<int>, rb_tree_tag,tree_order_statistics_node_update>
+ 
+signed main(){
+        int n,k; cin>>n>>k; int a[n];
+        ordered_set oset;
+        for(int i=0; i<n; i++){
+                int u; cin>>u; a[i]=u;
+                oset.insert(u);
+                if(i>=k) oset.erase(--oset.lower_bound(a[i-k]));
+                if(i>=k-1) cout<<*oset.find_by_order((int)(k/2.0-0.1))<<endl;
+        }
+}
+```
+Alternatively, if you do not use C++ (or if you do), you can use a fenwick tree to simulate the aforementioned order statistic tree/indexed set. Clearly, the values of the array would need to be compressed. There will also be an extra $\log$ factor resulting from binary searching on the fenwick tree, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. 
