@@ -61,6 +61,7 @@ const GroupPageWrapper = (props: any): ReactElement => {
       </Layout>
     );
   }
+  console.log(isLoading, groupData, groupData.id, props.groupId);
   if (isLoading || (groupData && groupData.id !== props.groupId)) {
     return (
       <Layout>
