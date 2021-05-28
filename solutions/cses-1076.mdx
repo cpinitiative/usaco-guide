@@ -5,13 +5,8 @@ title: Sliding Median
 author: Isaac Noel, Arpan Banerjee
 ---
 
+## Solution 1: Maintaining two multisets
 **Time Complexity:** $\mathcal{O}(N\log N)$
-
-## Abstract 1
-
-Finding the median of a sliding window by maintaining two multisets.
-
-## Solution 1
 
 To accomplish finding the sorted median of a sliding window, we can store the
 window within two sets: one containing the lower values of the window and the
@@ -88,10 +83,10 @@ int main() {
 }
 ```
 
-## Solution 2
+## Solution 2: Order Statistic Tree / Fenwick Tree
 (Arpan Banerjee)
 
-We can directly use an [order statistic tree ](https://codeforces.com/blog/entry/11080) (C++) to get the median while sliding the window across the array.
+We can directly use an [order statistic tree](https://codeforces.com/blog/entry/11080) (C++) to get the median while sliding the window across the array in $\mathcal{O}(n\log n)$ time.
 ```cpp
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
@@ -111,4 +106,12 @@ signed main(){
         }
 }
 ```
-Alternatively, if you do not use C++ (or if you do), you can use a fenwick tree to simulate the aforementioned order statistic tree/indexed set. Clearly, the values of the array would need to be compressed. There will also be an extra $\log$ factor resulting from binary searching on the fenwick tree, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. 
+Alternatively, if you do not use C++ (or if you do), you can use a [fenwick tree](https://usaco.guide/gold/PURS?lang=cpp#binary-indexed-tree) to simulate the aforementioned order statistic tree/indexed set:
+
+The fenwick array can be treated as a frequency array. For example, if `5` is inserted into the window, `fenwick_array[5]+=1`. This enables us to binary search for an integer $x$ such that 
+
+$$
+\sum_{i=1}^{x} \geq \lceil k/2 \rceil \text{ and } \sum_{i=1}^{x-1} \leq \lceil k/2 \rceil
+$$
+
+and find $k$ from there. Clearly, the values of the array would need to be compressed, as an array of size $10^9$ is infeasible. There will also be an extra $\log$ factor from using the fenwick tree `sum` operation, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. 
