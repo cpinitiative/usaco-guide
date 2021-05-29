@@ -2,23 +2,24 @@
 id: cses-1682
 source: CSES
 title: Flight Routes Check
-author: Michael Cao
+author: Michael Cao, Nathan Gong
 ---
 
 In this problem, given a directed graph with $n$ nodes and $m$ edges, we need to
 return "YES" if we can travel between all pairs of vertices $u, v$ or "NO" and
-give pair of vertices we can't travel between otherwise.
+give the pair of vertices we can't travel between otherwise.
 
 # Main Idea
 
 The theorem used here is that if one vertex can both reach and **be reached** by
 all others, then every vertex in this graph can reach all others.
 
-Let's say $\texttt{can[u][v]} = 1$ if you can go from vertex $u$ to vertex $v$.
-Additionally, let's define the directed graph given in the statement as $G$ and
-the reverse of it (where an edge $u \rightarrow v$ becomes $v \rightarrow u$) as
-$G'$. Then, if $\texttt{can[1][x]}$ for $1 \leq x \leq n$ in both $G$ and $G'$,
-the answer is "YES".
+Let's say $\texttt{can[u][v]}$ is $\texttt{true}$ if you can go from vertex $u$
+to vertex $v$ through a series of edges. Additionally, let's define the directed
+graph given in the statement as $G$ and the reverse of it (where an edge
+$u \rightarrow v$ becomes $v \rightarrow u$) as $G'$. Then, if
+$\texttt{can[1][x]}$ for $1 \leq x \leq n$ in both $G$ and $G'$, the answer is
+"YES".
 
 To compute $\texttt{can[1][x]}$, we can run a dfs from from vertex $1$ and check
 if you can reach vertex $x$ for all $1 \leq x \leq n$. If we can't, then print
@@ -35,9 +36,10 @@ $u \rightarrow 1 \rightarrow v$, which contradicts the statement that
 $\texttt{can[u][v]} = 0$. Thus, $\texttt{can[u][v]} = 1$ for all vertices
 $u, v$.
 
-# Example Code
+# Implementation
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -108,4 +110,85 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FlightRoutesCheck {
+	static int n, m;
+	static boolean[] vis;
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		n = io.nextInt();
+		m = io.nextInt();
+
+		// Stores the graph we are given (or G)
+		ArrayList<ArrayList<Integer>> adj1 = new ArrayList<>();
+		// Stores the reverse of the graph we are given (or G')
+		ArrayList<ArrayList<Integer>> adj2 = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			adj1.add(new ArrayList<>());
+			adj2.add(new ArrayList<>());
+		}
+
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt()-1;
+			int b = io.nextInt()-1;
+			adj1.get(a).add(b);
+			adj2.get(b).add(a);
+		}
+
+		// Run dfs to check if you can reach all other vertices from vertex 1
+		vis = new boolean[n];
+		dfs(0, adj1);
+		for (int i = 0; i < n; i++) {
+			// If some vertex wasn't visited, that means that we cannot reach
+			// all other vertices, so we return NO
+			if (!vis[i]) {
+				io.println("NO");
+				io.println(1 + " " + (i+1));
+				io.close();
+				return;
+			}
+		}
+
+		// Run dfs to check if you can reach vertex 1 from all other vertices
+		vis = new boolean[n];
+		dfs(0, adj2);
+		for(int i = 0; i < n; i++) {
+			// If some vertex wasn't visited, that means vertex 1 cannot be
+			// reached from all other vertices, so we return NO
+			if (!vis[i]) {
+				io.println("NO");
+				io.println((i+1) + " " + 1);
+				io.close();
+				return;
+			}
+		}
+
+		// If we haven't exited yet, that means the answer is YES
+		io.println("YES");
+		io.close();
+	}
+
+	static void dfs(int v, ArrayList<ArrayList<Integer>> adj) {
+		vis[v] = true;
+		for (int to : adj.get(v)) {
+			if (!vis[to]) {
+				dfs(to, adj);
+			}
+		}
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
