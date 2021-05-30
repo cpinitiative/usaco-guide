@@ -70,7 +70,6 @@ As the implementation is quite simple, you may prefer to use this in place of
 DFS for computing connected components.
 
 <LanguageSection>
-
 <CPPSection>
 
 Check PAPS for the explanation. `e[x]` contains the negation of the size of
@@ -86,106 +85,146 @@ $x$ otherwise.
 </Resources>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
 struct DSU {
-	vi e; void init(int N) { e = vi(N,-1); }
-	// get representive component, uses path compression
+	vector<int> e;
+	DSU(int N) { e = vector<int>(N, -1); }
+
+	// get representive component (uses path compression)
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-	bool sameSet(int a, int b) { return get(a) == get(b); }
+	
+	bool same_set(int a, int b) { return get(a) == get(b); }
+	
 	int size(int x) { return -e[get(x)]; }
-	bool unite(int x, int y) { // union by size
-		x = get(x), y = get(y); if (x == y) return 0;
-		if (e[x] > e[y]) swap(x,y);
-		e[x] += e[y]; e[y] = x; return 1;
+	
+	bool unite(int x, int y) {  // union by size
+		x = get(x), y = get(y);
+		if (x == y) return false;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y]; e[y] = x; return true;
 	}
 };
 ```
 
 </CPPSection>
-
 <JavaSection>
 
-This implementation assumes that `disjoint` is an array that starts such that
-`disjoint[i] = -1` for every $0 <= i < n$.
-
 ```java
-public static int disjoint[]; //0 indexed
-public static int size[];
-//finds the "representative" node in a's component
-public static int find(int v) {
-	if (disjoint[v] == -1) {
-		return v;
-	}
-	disjoint[v] = find(disjoint[v]);
-	return disjoint[v];
-}
+import java.util.Arrays;
 
-//returns whether the merge changed connectivity
-public static void union(int u, int v) {
-	int uroot = find(u);
-	int vroot = find(v);
-	if (uroot == vroot) {
-		return;
+public class DisjointSets {
+	int[] parents;  // 0-indexed
+	int[] sizes;
+	public DisjointSets(int size) {
+		sizes = new int[size];
+		parents = new int[size];
+		Arrays.fill(sizes, 1);
+		Arrays.fill(parents, -1);
 	}
-	if (size[uroot] < size[vroot]) {
-		disjoint[uroot] = vroot;
-		size[vroot] = size[uroot] + size[vroot];
-	} else {
-		disjoint[vroot] = uroot;
-		size[uroot] = size[uroot] + size[vroot];
+
+	// finds the "representative" node in a's component
+	public int find(int x) {
+		return parents[x] == -1 ? x : (parents[x] = find(parents[x]));
+	}
+
+	// returns whether the merge changed connectivity
+	public boolean union(int x, int y) {
+		int xRoot = find(x);
+		int yRoot = find(y);
+		if (xRoot == yRoot) {
+			return false;
+		}
+		if (sizes[xRoot] < sizes[yRoot]) {
+			parents[xRoot] = yRoot;
+			sizes[yRoot] = sizes[xRoot] + sizes[yRoot];
+		} else {
+			parents[yRoot] = xRoot;
+			sizes[xRoot] = sizes[xRoot] + sizes[yRoot];
+		}
+		return true;
 	}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+class DisjointSets:
+	def __init__(self, size: int) -> None:
+		self.parents = [-1 for _ in range(size)]
+		self.sizes = [1 for _ in range(size)]
+
+	# finds the "representative" node in a's component
+	def find(self, x: int) -> int:
+		if self.parents[x] == -1:
+			return x
+		self.parents[x] = self.find(self.parents[x])
+		return self.parents[x]
+
+	# returns whether the merge changed connectivity
+	def union(self, x: int, y: int) -> bool:
+		x_root = self.find(x)
+		y_root = self.find(y)
+		if x_root == y_root:
+			return False
+		
+		if self.sizes[x_root] < self.sizes(y_root):
+			x_root, y_root = y_root, x_root
+		self.parents[y_root] = x_root
+		self.sizes[x_root] += self.sizes[y_root]
+		return True
+```
+
+</PySection>
 </LanguageSection>
 
 ## Focus Problem Solution
 
 <FocusProblem problem="sample" />
 
-The solution below is more verbose than some of the templates above. Use
-whichever implementation you are most comfortable with.
-
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-// sz[i] = size of component i, defaults to 1
-// pa[i] = parent of component i. If i is the root component, then pa[i] = i.
-int sz[200000], pa[200000];
+struct DSU {
+	vector<int> e;
+	DSU(int N) { e = vector<int>(N, -1); }
 
-int get(int x) {
-	return x == pa[x] ? x : pa[x] = get(pa[x]);
-}
-
-void unite(int a, int b) {
-	a = get(a), b = get(b);
-	if (a == b) return;
-	if (sz[a] > sz[b]) swap(a, b);
-	pa[a] = b;
-	sz[b] += sz[a];
-}
+	// get representive component (uses path compression)
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+	
+	bool same_set(int a, int b) { return get(a) == get(b); }
+	
+	int size(int x) { return -e[get(x)]; }
+	
+	bool unite(int x, int y) {  // union by size
+		x = get(x), y = get(y);
+		if (x == y) return false;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y]; e[y] = x; return true;
+	}
+};
 
 int main() {
-	int n, q; cin >> n >> q;
-	for (int i = 0; i < n; i++) {
-		sz[i] = 1;
-		pa[i] = i;
-	}
-	for (int i = 0; i < q; i++) {
-		int t, u, v; cin >> t >> u >> v;
-		if (t == 0) {
-			unite(u, v);
+	int node_num, query_num;
+	cin >> node_num >> query_num;
+	DSU dsu(node_num);
+
+	for (int i = 0; i < query_num; i++) {
+		int type, u, v;
+		cin >> type >> u >> v;
+		if (type == 0) {
+			dsu.unite(u, v);
 		} else {
-			cout << (get(u) == get(v) ? 1 : 0) << endl;
+			cout << dsu.same_set(u, v) << endl;
 		}
 	}
-	return 0;
 }
 ```
 
@@ -197,49 +236,56 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int disjoint[]; //0 indexed
-	public static int size[];
-	public static int find(int v) {
-		if (disjoint[v] == -1) {
-			return v;
+	private static class DisjointSets {
+		int[] parents;  // 0-indexed
+		int[] sizes;
+		public DisjointSets(int size) {
+			sizes = new int[size];
+			parents = new int[size];
+			Arrays.fill(sizes, 1);
+			Arrays.fill(parents, -1);
 		}
-		disjoint[v] = find(disjoint[v]);
-		return disjoint[v];
+	
+		// finds the "representative" node in a's component
+		public int find(int x) {
+			return parents[x] == -1 ? x : (parents[x] = find(parents[x]));
+		}
+	
+		// returns whether the merge changed connectivity
+		public boolean union(int x, int y) {
+			int xRoot = find(x);
+			int yRoot = find(y);
+			if (xRoot == yRoot) {
+				return false;
+			}
+			if (sizes[xRoot] < sizes[yRoot]) {
+				parents[xRoot] = yRoot;
+				sizes[yRoot] = sizes[xRoot] + sizes[yRoot];
+			} else {
+				parents[yRoot] = xRoot;
+				sizes[xRoot] = sizes[xRoot] + sizes[yRoot];
+			}
+			return true;
+		}
 	}
 
-	public static void union(int u, int v) {
-		int uroot = find(u);
-		int vroot = find(v);
-		if (uroot == vroot) {
-			return;
-		}
-		if (size[uroot] < size[vroot]) {
-			disjoint[uroot] = vroot;
-			size[vroot] = size[uroot] + size[vroot];
-		} else {
-			disjoint[vroot] = uroot;
-			size[uroot] = size[uroot] + size[vroot];
-		}
-	}
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int n = Integer.parseInt(st.nextToken());
-		int q = Integer.parseInt(st.nextToken());
+		int size = Integer.parseInt(st.nextToken());
+		int queryNum = Integer.parseInt(st.nextToken());
 
-		disjoint = new int[n];
-		size = new int[n];
-		Arrays.fill(disjoint, -1);
-		for (int i = 0; i < q; i++) {
+		DisjointSets dsu = new DisjointSets(size);
+		for (int i = 0; i < queryNum; i++) {
 			st = new StringTokenizer(br.readLine());
-			int t = Integer.parseInt(st.nextToken());
+			int type = Integer.parseInt(st.nextToken());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			if (t == 0) {
-				union(a, b);
+			if (type == 0) {
+				dsu.union(a, b);
 			} else {
-				if (find(a) == find(b)) {
+				if (dsu.find(a) == dsu.find(b)) {
 					out.println(1);
 				} else {
 					out.println(0);
@@ -252,6 +298,47 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+class DisjointSets:
+	def __init__(self, size: int) -> None:
+		self.parents = [-1 for _ in range(size)]
+		self.sizes = [1 for _ in range(size)]
+
+	# finds the "representative" node in a's component
+	def find(self, x: int) -> int:
+		if self.parents[x] == -1:
+			return x
+		self.parents[x] = self.find(self.parents[x])
+		return self.parents[x]
+
+	# returns whether the merge changed connectivity
+	def union(self, x: int, y: int) -> bool:
+		x_root = self.find(x)
+		y_root = self.find(y)
+		if x_root == y_root:
+			return False
+		
+		if self.sizes[x_root] < self.sizes[y_root]:
+			x_root, y_root = y_root, x_root
+		self.parents[y_root] = x_root
+		self.sizes[x_root] += self.sizes[y_root]
+		return True
+
+
+size, query_num = [int(i) for i in input().split()]
+
+dsu = DisjointSets(size)
+for _ in range(query_num):
+	q_type, a, b = [int(i) for i in input().split()]
+	if q_type == 0:
+		dsu.union(a, b)
+	else:
+		print(1 if dsu.find(a) == dsu.find(b) else 0)
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
