@@ -2,14 +2,18 @@
 id: cses-1621
 source: CSES
 title: Distinct Numbers
-author: Andrew Wang
+author: Andrew Wang, Maggie Liu
 ---
 
-**Time Complexity:** $\mathcal{O}(N\log{N})$
+## Explanation
 
 Sort the array of numbers. Loop through the array and increment the answer for
 every distinct number. Distinct numbers can be found if the current number isn't
 equal to the previous number in the array.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
 
 <LanguageSection>
 
@@ -21,13 +25,13 @@ using namespace std;
 
 int main() {
 	int N; cin >> N;
-	int arr[N];
+	int arr[200000];
 	for (int i = 0; i < N; i++)
 		cin >> arr[i];
-	sort(arr, arr+N);
+	sort(arr, arr + N);
 	int ans = 1;
 	for (int i = 1; i < N; i++) {
-		ans += (arr[i] != arr[i-1]);
+		ans += (arr[i] != arr[i - 1]);
 	}
 	cout << ans << endl;
 	return 0;
@@ -54,8 +58,8 @@ public class DistinctNumbers {
 		}
 		Arrays.sort(arr);
 		int ans = 1;
-		for (int i = 1; i < n; i++){
-			if(arr[i] != arr[i-1]){
+		for (int i = 1; i < n; i++) {
+			if (arr[i] != arr[i - 1]) {
 				ans++;
 			}
 		}
@@ -65,5 +69,22 @@ public class DistinctNumbers {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+# create a sorted list of the numbers
+numbers = sorted(map(int, input().split()))
+ans = 1
+for i in range(1, n):
+	# if the current number is different from the previous
+	# it is a distinct number so we add 1 to the answer
+	if numbers[i] != numbers[i - 1]:
+		ans += 1
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
