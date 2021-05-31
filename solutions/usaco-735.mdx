@@ -2,7 +2,7 @@
 id: usaco-735
 source: USACO Bronze 2017 Open
 title: The Lost Cow
-author: Jesse Choe, Ananth Kashyap
+author: Jesse Choe, Ananth Kashyap, Brad Ma
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html)
@@ -163,5 +163,48 @@ file_out.close()
 ```
 
 </PySection>
+	
+<JavaSection>
+	
+## Implementation
+```Java
 
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class theLostCow {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("lostcow");
+		int x = io.nextInt();
+		int y = io.nextInt();
+
+		int direction = 1;
+		int totalDistance = 0;
+		int directionDistance = 1;
+
+		while (true) {
+			// found bessie
+			if ((direction == 1 && x <= y && y <= (x + directionDistance)) ||
+				(direction == -1 && y <= x && (x - directionDistance <= y))) {
+
+				totalDistance += Math.abs(y - x); // distance to bessie from original position
+				io.println(totalDistance);
+				break;
+			}
+			else { // did not find bessie yet
+				totalDistance += (directionDistance * 2); // add to the distance count
+				directionDistance *= 2; // double the distance
+				direction *= -1; // switch directions
+			}
+		}
+
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+
+```
+</JavaSection>
+	
 </LanguageSection>
