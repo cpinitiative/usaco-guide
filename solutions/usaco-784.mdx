@@ -2,16 +2,15 @@
 id: usaco-784
 source: USACO Bronze 2018 January
 title: Lifeguards
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Brad Ma
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_lifeguards_bronze_jan18.html)
 
 <LanguageSection>
-
 <CPPSection>
 
-## Implementation
+## C++ Implementation
 
 ```cpp
 #include <iostream>
@@ -63,5 +62,58 @@ int main(){
 ```
 
 </CPPSection>
+	
+<JavaSection>	
+
+## Java Implementation
+
+```java
+import java.util.*;
+import java.io.*;
+public class lifeguards {
+		public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("lifeguards");
+
+		int numGuards = io.nextInt();
+		int largest = 0;
+		int[][] guardTimes = new int[numGuards][2];
+
+		for (int x = 0; x < numGuards; x++) { // store the times
+			guardTimes[x][0] = io.nextInt();
+			guardTimes[x][1] = io.nextInt();
+		}
+
+		for (int x = 0; x < numGuards; x++) {    // try firing each cow
+			int[] coveredTimes = new int[1001]; // times covered if this cow is fired
+			for (int i = 0; i < numGuards; i++) { // loop through the other cows
+				if (i != x) { // make sure that it isn't the fired cow
+					int start = guardTimes[i][0];
+					int end = guardTimes[i][1];
+
+					for (int y = start; y < end; y++) { // 1's to mark a covered time
+						coveredTimes[y] = 1;
+					}
+				}
+			}
+
+			int count = 0;
+
+			for (int coveredTime : coveredTimes) { // count the time covered
+				if (coveredTime == 1) {
+				count++;
+				}
+			}
+
+			largest = Integer.max(largest, count); // keep track of the largest
+		}
+
+		io.println(largest);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}					  
+```
+</JavaSection>
 
 </LanguageSection>
