@@ -57,10 +57,13 @@ const CopyButton = styled.button`
   background-color: hsla(240, 20%, 88%, 1);
   position: absolute;
   top: 0px;
-  right: calc(var(--chars) * 8px + 40px);
+  right: var(--right-offset);
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  /* copy from tailwind defaults */
   &:hover {
     background-color: hsla(240, 20%, 75%, 1);
   }
@@ -274,8 +277,9 @@ class CodeBlock extends React.Component<
       this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
     const isCodeBlockExpandable =
       !this.context.expandCodeBlock && linesOfCode > 15;
-    const language = className?.replace(/language-/, '');
-    if (!language || language === 'bash') {
+    let language = className?.replace(/language-/, '');
+    if (language == 'py') language = 'python';
+    if (!['cpp', 'java', 'python'].includes(language)) {
       // no styling, just a regular pre tag
       return (
         <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
@@ -301,6 +305,7 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
+    const rightOffset = String(language.length * 8 + 40) + 'px';
     return (
       <RelativeDiv>
         <CopyButton
@@ -309,11 +314,7 @@ class CodeBlock extends React.Component<
             navigator.clipboard.writeText(code);
           }}
           style={{
-            '--chars': {
-              cpp: 3,
-              java: 4,
-              py: 6,
-            }[language],
+            '--right-offset': rightOffset,
           }}
           className="focus:outline-none"
         >

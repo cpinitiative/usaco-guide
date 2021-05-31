@@ -11,111 +11,154 @@ author: Melody Yu, Danh Ta Chi Thanh
 
 As described in the aforementioned editorial.
 
+## Implementation
+
 <LanguageSection>
 
 <CPPSection>
 
-## Implementation
-
 ```cpp
-
 #include <iostream>
 #include <cstdio>
+
 using namespace std;
 
 bool covered(int x, int y, int x1, int y1, int x2, int y2) {
-    // returns true if (x, y) is covered by the rectangle bounded by (x1, y1) and (x2, y2)
-    // returns false otherwise
-    return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+	/*
+	 * returns true if (x, y) is covered by the rectangle bounded by
+	 * (x1, y1) and (x2, y2) and falsle otherwise
+	 */
+	return x >= x1 && x <= x2 && y >= y1 && y <= y2;
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen("billboard.in","r",stdin);
 	freopen("billboard.out","w",stdout);
-	int x1,y1,x2,y2;
+
+	int x1, y1, x2, y2;
 	cin >> x1 >> y1 >> x2 >> y2;
-	int x3,y3,x4,y4;
+	int x3, y3, x4, y4;
 	cin >> x3 >> y3 >> x4 >> y4;
+
 	// count how many corners of the billboard are covered
-	int cornerCover = 0;
-	if(covered(x1, y1, x3, y3, x4, y4)) ++cornerCover;
-	if(covered(x1, y2, x3, y3, x4, y4)) ++cornerCover;
-	if(covered(x2, y1, x3, y3, x4, y4)) ++cornerCover;
-	if(covered(x2, y2, x3, y3, x4, y4)) ++cornerCover;
+	int corner_num = 0;
+	if (covered(x1, y1, x3, y3, x4, y4)) corner_num++;
+	if (covered(x1, y2, x3, y3, x4, y4)) corner_num++;
+	if (covered(x2, y1, x3, y3, x4, y4)) corner_num++;
+	if (covered(x2, y2, x3, y3, x4, y4)) corner_num++;
+
 	// if fewer than 2 corners are covered, the whole rectangle must be covered
-	if(cornerCover < 2) {
-		cout << (x2-x1)*(y2-y1);
-	}
-	// if all 4 corners are covered, then nothing needs to be covered
-	else if(cornerCover == 4) {
+	if (corner_num < 2) {
+		cout << (x2 - x1) * (y2 - y1);
+	} else if (corner_num == 4) {
+		// if all 4 corners are covered, then nothing needs to be covered
 		cout << 0;
-	}
-	else {
+	} else {
 		// we only need to cover some portion of the rectangle
 		// find the intersection of the two rectangles
-		int xL = max(x1, x3);
-		int xR = min(x2, x4);
-		int yL = max(y1, y3);
-		int yR = min(y2, y4);
+		int xl = max(x1, x3);
+		int xr = min(x2, x4);
+		int yl = max(y1, y3);
+		int yr = min(y2, y4);
 		// subtract away the area of the intersection
-		cout << (x2-x1)*(y2-y1) - (xR-xL)*(yR-yL);
+		cout << (x2 - x1) * (y2 - y1) - (xr - xl) * (yr - yl);
 	}
-	return 0;
 }
-
 ```
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Billboard {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("billboard.in"));
+		StringTokenizer badBoard = new StringTokenizer(read.readLine());
+		int x1 = Integer.parseInt(badBoard.nextToken());
+		int y1 = Integer.parseInt(badBoard.nextToken());
+		int x2 = Integer.parseInt(badBoard.nextToken());
+		int y2 = Integer.parseInt(badBoard.nextToken());
+		StringTokenizer goodBoard = new StringTokenizer(read.readLine());
+		int x3 = Integer.parseInt(goodBoard.nextToken());
+		int y3 = Integer.parseInt(goodBoard.nextToken());
+		int x4 = Integer.parseInt(goodBoard.nextToken());
+		int y4 = Integer.parseInt(goodBoard.nextToken());
+
+		// count how many corners of the billboard are covered
+		int corner_num = 0;
+		if (covered(x1, y1, x3, y3, x4, y4)) corner_num++;
+		if (covered(x1, y2, x3, y3, x4, y4)) corner_num++;
+		if (covered(x2, y1, x3, y3, x4, y4)) corner_num++;
+		if (covered(x2, y2, x3, y3, x4, y4)) corner_num++;
+
+		PrintWriter written = new PrintWriter("billboard.out");
+		// if fewer than 2 corners are covered, the whole rectangle must be covered
+		if (corner_num < 2) {
+			written.println((x2 - x1) * (y2 - y1));
+		} else if (corner_num == 4) {
+			// if all 4 corners are covered, then nothing needs to be covered
+			written.println(0);
+		} else {
+			// we only need to cover some portion of the rectangle
+			// find the intersection of the two rectangles
+			int xl = Math.max(x1, x3);
+			int xr = Math.min(x2, x4);
+			int yl = Math.max(y1, y3);
+			int yr = Math.min(y2, y4);
+			// subtract away the area of the intersection
+			written.println((x2 - x1) * (y2 - y1) - (xr - xl) * (yr - yl));
+		}
+		written.close();
+	}
+
+	private static boolean covered(int x, int y, int x1, int y1, int x2, int y2) {
+		/*
+		 * returns true if (x, y) is covered by the rectangle bounded by
+		 * (x1, y1) and (x2, y2) and falsle otherwise
+		 */
+		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+	}
+}
+```
+
+</JavaSection>
+
 <PySection>
-
-## Implementation
-
 ```py
-fIn, fOut = open("billboard.in"), open("billboard.out", "w")
+fin, fout = open("billboard.in"), open("billboard.out", "w")
 
-x1, y1, x2, y2 = map(lambda x: int(x), fIn.readline().split())
-x3, y3, x4, y4 = map(lambda x: int(x), fIn.readline().split())
+x1, y1, x2, y2 = map(int, fin.readline().split())
+x3, y3, x4, y4 = map(int, fin.readline().split())
 
-tlCorner = False
-trCorner = False
-brCorner = False
-blCorner = False
+# which corners are covered by the feed billboard
+tl_corner = x3 <= x1 and y4 >= y2
+tr_corner = y4 >= y2 and x4 >= x2
+br_corner = x4 >= x2 and y3 <= y1
+bl_corner = y3 <= y1 and x3 <= x1
 
-if y3 <= y1 and x3 <= x1:
-	blCorner = True
+corner_num = sum([tl_corner, tr_corner, br_corner, bl_corner])
+# if these two corners are covered, the lawnmower billboard is completely covered
+if bl_corner and tr_corner:
+	fout.write(str(0))
 
-if y4 >= y2 and x4 >= x2:
-	trCorner = True
+elif corner_num in [0, 1]:
+	fout.write(str(abs(x2 - x1) * abs(y2 - y1)))
 
-if x3 <= x1 and y4 >= y2:
-	tlCorner = True
+elif br_corner and tr_corner:
+	fout.write(str(abs(y2 - y1) * abs(x2 - x4)))
 
-if x4 >= x2 and y3 <= y1:
-	brCorner = True
+elif bl_corner and tl_corner:
+	fout.write(str(abs(y2 - y1) * abs(x2 - x4)))
 
+elif tr_corner and tl_corner:
+	fout.write(str(abs(x2 - x1) * abs(y3 - y1)))
 
-cornerCount = len(list(filter(lambda x:x, [blCorner, trCorner, brCorner, tlCorner])))
-
-if blCorner and trCorner:
-	fOut.write(str(0))
-
-elif cornerCount == 0 or cornerCount == 1:
-	fOut.write(str(abs(x2 - x1) * abs(y2 - y1)))
-
-elif brCorner and trCorner:
-	fOut.write(str(abs(y2 - y1) * abs(x2 - x4)))
-
-elif blCorner and tlCorner:
-	fOut.write(str(abs(y2 - y1) * abs(x2 - x4)))
-
-elif trCorner and tlCorner:
-	fOut.write(str(abs(x2 - x1) * abs(y3 - y1)))
-
-elif brCorner and blCorner:
-	fOut.write(str(abs(x2 - x1) * abs(y3 - y1)))
-
+elif br_corner and bl_corner:
+	fout.write(str(abs(x2 - x1) * abs(y3 - y1)))
 ```
 
 </PySection>
@@ -127,7 +170,7 @@ As the problem statement says, the remaining cow feed billboard is situated in
 front of the lawnmower billboard, potentially obscuring it; therefore, we can
 split it into six cases to consider.
 
-I will use the images to visualize the cases, so note these things: The red
+Images will be used to visualize the cases, so note these things: The red
 color shows the area covered by the second rectangle (whose borders are black),
 while the green one represents the area of the first rectangle (whose edges are
 blue). If two rectangles intersect, the red color will appear as the cow feed
@@ -173,45 +216,139 @@ The image below illustrates the case:
 
 ![](USACO-jan18-billboard-bronze/Corner_Case.png)
 
+## Implementation
+
 <LanguageSection>
 
 <CPPSection>
 
-## Implementation
-
 ```cpp
 #include <iostream>
 #include <cstdio>
+#include <vector>
+
 using namespace std;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("billboard.in","r",stdin);
-	freopen("billboard.out","w",stdout);
-	int x[5],y[5];
-	for (int i=1;i<=4;++i) {
+int main() {
+	freopen("billboard.in", "r", stdin);
+	freopen("billboard.out", "w", stdout);
+
+	vector<int> x(5);  // we'll be using 1-indexing
+	vector<int> y(5);
+	for (int i = 1; i <= 4; i++) {
 		cin >> x[i] >> y[i];
 	}
-	if (x[4]>=x[2] && x[3]<=x[1] && y[4]>=y[2] && y[3]<=y[1]) { // Case 1
+
+	// Case 1
+	if (x[4] >= x[2] && x[3] <= x[1] && y[4] >= y[2] && y[3] <= y[1]) {
 		cout << 0;
+	} 
+	// Case 2
+	else if (x[3] <= x[1] && y[3] <= y[1] && y[4] > y[1] && x[4] >= x[2]) {
+		cout << (x[2] - x[1]) * (y[2] - y[4]);
 	}
-	else if (x[3]<=x[1] && y[3]<=y[1] && y[4]>y[1] && x[4]>=x[2]) { // Case 2
-		cout << (x[2]-x[1])*(y[2]-y[4]);
+	// Case 3
+	else if (y[3] < y[2] && x[3] <= x[1] && y[4] >= y[2] && x[4] >= x[2]) {
+		cout << (x[2] - x[1]) * (y[3] - y[1]);
 	}
-	else if (y[3]<y[2] && x[3]<=x[1] && y[4]>=y[2] && x[4]>=x[2]) { // Case 3
-		cout << (x[2]-x[1])*(y[3]-y[1]);
+	// Case 4
+	else if (x[4] > x[1] && x[3] <= x[1] && y[4] >= y[2] && y[3] <= y[1]) {
+		cout << (x[2] - x[4]) * (y[2] - y[1]);
 	}
-	else if (x[4]>x[1] && x[3]<=x[1] && y[4]>=y[2] && y[3]<=y[1]) { // Case 4
-		cout << (x[2]-x[4])*(y[2]-y[1]);
+	// Case 5
+	else if (x[3] < x[2] && x[4] >= x[2] && y[4] >= y[2] && y[3] <= x[1]) {
+		cout << (x[3] - x[1]) * (y[2] - y[1]);
 	}
-	else if (x[3]<x[2] && x[4]>=x[2] && y[4]>=y[2] && y[3]<=x[1]) { // Case 5
-		cout << (x[3]-x[1])*(y[2]-y[1]);
+	// Case 6 and the corner case
+	else {
+		cout << (x[2] - x[1]) * (y[2] - y[1]);
 	}
-	else cout << (x[2]-x[1])*(y[2]-y[1]); // Case 6 and the corner case
-	return 0;
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.Scanner;
+
+public class Billboard {
+	public static void main(String[] args) throws IOException {
+		Scanner scanner = new Scanner(new FileReader("billboard.in"));
+		// we'll be using 1-indexing to make things more obvious
+		int[] x = new int[4 + 1];
+		int[] y = new int[4 + 1];
+		for (int i = 1; i <= 4; i++) {
+			x[i] = scanner.nextInt();
+			y[i] = scanner.nextInt();
+		}
+	
+		PrintWriter written = new PrintWriter("billboard.out");
+		// Case 1
+		if (x[4] >= x[2] && x[3] <= x[1] && y[4] >= y[2] && y[3] <= y[1]) {
+			written.println(0);
+		} 
+		// Case 2
+		else if (x[3] <= x[1] && y[3] <= y[1] && y[4] > y[1] && x[4] >= x[2]) {
+			written.println((x[2] - x[1]) * (y[2] - y[4]));
+		}
+		// Case 3
+		else if (y[3] < y[2] && x[3] <= x[1] && y[4] >= y[2] && x[4] >= x[2]) {
+			written.println((x[2] - x[1]) * (y[3] - y[1]));
+		}
+		// Case 4
+		else if (x[4] > x[1] && x[3] <= x[1] && y[4] >= y[2] && y[3] <= y[1]) {
+			written.println((x[2] - x[4]) * (y[2] - y[1]));
+		}
+		// Case 5
+		else if (x[3] < x[2] && x[4] >= x[2] && y[4] >= y[2] && y[3] <= x[1]) {
+			written.println((x[3] - x[1]) * (y[2] - y[1]));
+		}
+		// Case 6 and the corner case
+		else {
+			written.println((x[2] - x[1]) * (y[2] - y[1]));
+		}
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+fin, fout = open("billboard.in"), open("billboard.out", "w")
+
+x1, y1, x2, y2 = map(int, fin.readline().split())
+x3, y3, x4, y4 = map(int, fin.readline().split())
+
+# we'll be using one-indexing to make things more obvious
+x = [0, x1, x2, x3, x4]
+y = [0, y1, y2, y3, y4]
+
+# Case 1
+if x[4] >= x[2] and x[3] <= x[1] and y[4] >= y[2] and y[3] <= y[1]:
+	fout.write(str(0))
+# Case 2
+elif x[3] <= x[1] and y[3] <= y[1] and y[4] > y[1] and x[4] >= x[2]:
+	fout.write(str((x[2] - x[1]) * (y[2] - y[4])))
+# Case 3
+elif y[3] < y[2] and x[3] <= x[1] and y[4] >= y[2] and x[4] >= x[2]:
+	fout.write(str((x[2] - x[1]) * (y[3] - y[1])))
+# Case 4
+elif x[4] > x[1] and x[3] <= x[1] and y[4] >= y[2] and y[3] <= y[1]:
+	fout.write(str((x[2] - x[4]) * (y[2] - y[1])))
+# Case 5
+elif x[3] < x[2] and x[4] >= x[2] and y[4] >= y[2] and y[3] <= x[1]:
+	fout.write(str((x[3] - x[1]) * (y[2] - y[1])))
+# Case 6 and the corner case
+else:
+	fout.write(str((x[2] - x[1]) * (y[2] - y[1])))
+```
+
+</PySection>
 
 </LanguageSection>

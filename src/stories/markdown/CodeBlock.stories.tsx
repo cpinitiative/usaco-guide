@@ -103,3 +103,34 @@ void setIO(string name = "") {
 //EndCodeSnip
 `,
 };
+
+export const JavaLanguage = Template.bind({});
+JavaLanguage.args = {
+  className: 'language-java',
+  children: `
+Note the positioning of the copy block.
+`,
+};
+
+export const PyLanguage = Template.bind({});
+PyLanguage.args = {
+  className: 'language-py',
+  children: `
+Note the positioning of the copy block.
+`,
+};
+
+export const UnknownLanguage = Template.bind({});
+UnknownLanguage.args = {
+  className: 'language-sh',
+  children: `
+This shouldn't have syntax highlighting
+`,
+};
+
+export const NoLanguage = Template.bind({});
+NoLanguage.args = {
+  children: `
+This doesn't have any associated language.
+`,
+};

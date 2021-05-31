@@ -1,0 +1,175 @@
+---
+id: onlinejudgeorg-war
+source: onlinejudge.org
+title: War
+author: Maggie Liu
+---
+
+## Explanation
+
+Since the relation of friends is transitive, we can keep sets in which all the
+people in a set are friends. For each of these sets of friends, there will also
+be a set of enemies made up of the union of all the enemies of each person in
+the set of friends. Every person in this set of enemies will be an enemy of
+every person in the set of friends. To see why this is true, consider a person
+$a$ in the set of friends $F$. Their enemy is $b$ in the set of enemies $E$.
+Since an enemy of a friend is also an enemy, $b$ will be the enemy of all of
+$a$'s friends, which are the other people $F$. Furthermore, each person in $E$
+is friends with all other people in $E$, since they share a common enemy $a$.
+
+To represent this, sets $0 \dots n - 1$ in the code will be sets of friends,
+while each set $i$ in sets $n \dots 2n - 1$ will be be the enemies of set
+$i - n$.
+
+For each query, we let the two people be $x$ and $y$ and the root of $x$'s
+friends, $y$'s friends, $x$'s enemies and $y$'s enemies be $\texttt{xroot}$,
+$\texttt{yroot}$, $\texttt{exroot}$ and $\texttt{eyroot}$, respectively.
+
+### areEnemies
+
+If any of $x$'s friends are friends with any of $y$'s enemies, then $x$ will be
+friends with one of $y$'s enemies. Thus, $x$ and $y$ will be enemies. To check
+if this is the case, we check if $\texttt{xroot}$ is the same as
+$\texttt{eyroot}$ (which means that $x$'s friends are $y$'s enemies), or if
+$\texttt{yroot}$ is the same as $\texttt{exroot}$ (which means that $y$'s
+friends are $x$'s enemies).
+
+### areFriends
+
+If $x$ and $y$ are in the same set, then they are friends.
+
+### setEnemies
+
+When setting two people as enemies, we need to check if they are friends. We can
+use the $\texttt{areFriends}$ function to do this. If they are not friends, we
+join $\texttt{xroot}$'s set with $\texttt{eyroot}$'s set and join
+$\texttt{yroot}$'s set with $\texttt{exroot}$'s set, since the friend of an
+enemy is also an enemy.
+
+### setFriends
+
+If we want to set two people as friends, we first need to check if they are
+enemies, using the $\texttt{areEnemies}$ function. If they are not enemies, we
+can join $\texttt{xroot}$'s and $\texttt{yroot}$'s sets. The enemies of two sets
+of friends will also become friends, so we also join $\texttt{exroot}$'s and
+$\texttt{eyroot}$'s sets.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(Q \cdot \alpha(n))$, where $Q$ is the number
+of operations
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int size[20000], parent[20000];
+
+void init(int n)
+{
+	for (int i = 0; i < 2 * n; i++)
+	{
+		parent[i] = i;
+		size[i] = 1;
+	}
+}
+
+int find(int a)
+{
+	if (a == parent[a])
+	{
+		return a;
+	}
+	return parent[a] = find(parent[a]);
+}
+
+void uniteRoot(int a, int b)
+{
+	if (size[a] > size[b])
+	{
+		swap(a, b);
+	}
+	size[b] += size[a];
+	parent[a] = b;
+}
+
+bool areFriends(int xroot, int yroot)
+{
+	return xroot == yroot;
+}
+
+bool areEnemies(int xroot, int yroot, int exroot, int eyroot)
+{
+	// x is friends with y's enemy
+	// or y is friends with x's enemy
+	return xroot == eyroot || yroot == exroot;
+}
+
+void setFriends(int xroot, int yroot, int exroot, int eyroot)
+{
+	if (areEnemies(xroot, yroot, exroot, eyroot))
+	{
+		cout << -1 << endl;
+		return;
+	};
+	// if x and y are friends, then
+	// x's enemies and y's enemies are also friends
+	uniteRoot(exroot, eyroot);
+	uniteRoot(xroot, yroot);
+}
+
+void setEnemies(int xroot, int yroot, int exroot, int eyroot)
+{
+	if (areFriends(xroot, yroot))
+	{
+		cout << "-1" << endl;
+		return;
+	}
+	// if x and y are enemies, then
+	// x is friends with y's enemies
+	// y is friends with x's enemies
+	uniteRoot(xroot, eyroot);
+	uniteRoot(yroot, exroot);
+}
+
+int main()
+{
+	int n, c, x, y;
+	cin >> n;
+	init(n);
+	while (cin >> c >> x >> y)
+	{
+		if (!c && !x && !y)
+		{
+			break;
+		}
+		int xroot = find(x), yroot = find(y);
+		int exroot = find(x + n), eyroot = find(y + n);
+		if (c == 1)
+		{
+			setFriends(xroot, yroot, exroot, eyroot);
+		}
+		else if (c == 2)
+		{
+			setEnemies(xroot, yroot, exroot, eyroot);
+		}
+		else if (c == 3)
+		{
+			cout << (areFriends(xroot, yroot) ? 1 : 0) << endl;
+		}
+		else
+		{
+			cout << (areEnemies(xroot, yroot, exroot, eyroot) ? 1 : 0) << endl;
+		}
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
