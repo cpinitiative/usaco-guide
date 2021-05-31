@@ -7,31 +7,60 @@ author: Sofia Yang
 
 [Codeforces Editorial](https://codeforces.com/blog/entry/70018)
 
+<LanguageSection>
+
+<JavaSection>
+
+## Solution
+
 **Time Complexity:** $\mathcal{O}(N\cdot X)$
 
 ## Implementation
-
-
-<LanguageSection>
-
-
-<JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class cses1745 {
+public class MoneySums {
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+
 	public static int maxSum = (int) 1e5;
 
 	public static void main(String[] args) throws IOException {
-		Kattio k = new Kattio();
+		Kattio io = new Kattio();
 
-		int N = k.getInt();
+		int N = io.nextInt();
 
 		int[] value = new int[N + 1];
 		for (int i = 1; i <= N; i++) {
-			value[i] = k.getInt();
+			value[i] = io.nextInt();
 		}
 
 		// DP[i][j] is true, if it is possible to make a sum of j with i coins.
@@ -65,66 +94,10 @@ public class cses1745 {
 		}
 		System.out.println(possible.size());
 		for (int i : possible) {
-			System.out.print(i + " ");
+			io.print(i + " ");
 		}
-	}
-
-	static class Kattio extends PrintWriter {
-		public Kattio(InputStream i) {
-			super(new BufferedOutputStream(System.out));
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-		public Kattio(InputStream i, OutputStream o) {
-			super(new BufferedOutputStream(o));
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-
-		public boolean hasMoreTokens() {
-			return peekToken() != null;
-		}
-
-		public int getInt() {
-			return Integer.parseInt(nextToken());
-		}
-
-		public double getDouble() {
-			return Double.parseDouble(nextToken());
-		}
-
-		public long getLong() {
-			return Long.parseLong(nextToken());
-		}
-
-		public String getWord() {
-			return nextToken();
-		}
-
-		private BufferedReader r;
-		private String line;
-		private StringTokenizer st;
-		private String token;
-
-		private String peekToken() {
-			if (token == null)
-				try {
-					while (st == null || !st.hasMoreTokens()) {
-						line = r.readLine();
-						if (line == null) return null;
-						st = new StringTokenizer(line);
-					}
-					token = st.nextToken();
-				} catch (IOException e) { }
-			return token;
-		}
-
-		private String nextToken() {
-			String ans = peekToken();
-			token = null;
-			return ans;
-		}
+		io.close();
 	}
 }
 ```
 </JavaSection>
-
-</LanguageSection>
