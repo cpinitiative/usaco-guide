@@ -23,47 +23,47 @@ int N, A = 0;
 vector<int> positions;
 
 int getNum(int start, int direction) {
-    int radius = 1;
-    int prev = start;
+	int radius = 1;
+	int prev = start;
 
-    while(prev >= 0 && prev < N) {
-        int next = prev;
-        while(next + direction >= 0 && next + direction < N && abs(positions[next + direction] - positions[prev]) <= radius) {
-            next += direction;
-        }
+	while(prev >= 0 && prev < N) {
+		int next = prev;
+		while(next + direction >= 0 && next + direction < N && abs(positions[next + direction] - positions[prev]) <= radius) {
+			next += direction;
+		}
 
-        if(next == prev) {
-            break;
-        }
+		if(next == prev) {
+			break;
+		}
 
-        prev = next;
-        radius++;
-    }
+		prev = next;
+		radius++;
+	}
 
-    return abs(prev - start);
+	return abs(prev - start);
 }
 
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    freopen("angry.in","r",stdin);
-    freopen("angry.out","w",stdout);
+	cin.tie(0)->sync_with_stdio(0);
+	freopen("angry.in","r",stdin);
+	freopen("angry.out","w",stdout);
 
-    cin >> N;
+	cin >> N;
 
-    positions.resize(N);
+	positions.resize(N);
 
-    for(int i = 0; i < N; i++) {
-        cin >> positions[i];
-    }
+	for(int i = 0; i < N; i++) {
+		cin >> positions[i];
+	}
 
-    sort(positions.begin(), positions.end());
+	sort(positions.begin(), positions.end());
 
-    for (int i = 0; i < N; i++) {
-        A = max(A, getNum(i, -1) + getNum(i, 1) + 1);
-    }   
+	for (int i = 0; i < N; i++) {
+		A = max(A, getNum(i, -1) + getNum(i, 1) + 1);
+	}   
 
-    cout << A;
+	cout << A;
 }
 ```
 
