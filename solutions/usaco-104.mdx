@@ -50,21 +50,21 @@ int main () {
 ## Java Implementation
 
 ```java
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 class haybaleStacking {
-    public static void main (String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer input = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(input.nextToken());
-        int k = Integer.parseInt(input.nextToken());
-        int[] differenceArray = new int[n + 1]; 
+    public static void main (String[] args) {
+        Kattio io = new Kattio();
+
+        int n = io.nextInt();
+        int k = io.nextInt();
+        int[] differenceArray = new int[n + 1]; // differenceArray[n] is the difference between A[n + 1] and A[n]
+
 
         for (int x = 0; x < k; x++) { // read input and build differenceArray
-            StringTokenizer line = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(line.nextToken());
-            int b = Integer.parseInt(line.nextToken());
+            int a = io.nextInt();
+            int b = io.nextInt();
             a--; // make zero-indexed
             b--;
             differenceArray[a] = differenceArray[a] + 1;
@@ -77,11 +77,16 @@ class haybaleStacking {
             total += differenceArray[x];
             prefixSum[x] = total;
         }
-        Arrays.sort(prefixSum); // sort to get median
-        System.out.println(prefixSum[prefixSum.length / 2]); // output the median
+        Arrays.sort(prefixSum);
+        System.out.println(prefixSum[prefixSum.length / 2]);
     }
+
+    // CodeSnip{Kattio}
 }
-		
+
 ```
 
 </JavaSection>
+<LanguageSection>
+	
+
