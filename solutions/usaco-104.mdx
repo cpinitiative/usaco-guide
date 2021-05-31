@@ -54,28 +54,30 @@ import java.io.*;
 
 class haybaleStacking {
 	public static void main (String[] args) {
-        Kattio io = new Kattio();
+        	Kattio io = new Kattio();
 
-        int n = io.nextInt();
-        int k = io.nextInt();
-        int[] differenceArray = new int[n + 1]; // differenceArray[n] is the difference between A[n + 1] and A[n]
+        	int n = io.nextInt();
+        	int k = io.nextInt();
+        	int[] differenceArray = new int[n + 1]; // differenceArray[n] is the difference between A[n + 1] and A[n]
 
-        for (int x = 0; x < k; x++) { // read input and build differenceArray
-            int a = io.nextInt() - 1; // read and make zero-indexed
-            int b = io.nextInt() - 1;
+		for (int x = 0; x < k; x++) { // read input and build differenceArray
+			int a = io.nextInt() - 1; // read and make zero-indexed
+			int b = io.nextInt() - 1;
 
-            differenceArray[a] = differenceArray[a] + 1;
-            differenceArray[b + 1] = differenceArray[b + 1] - 1;
-        }
+			differenceArray[a] = differenceArray[a] + 1;
+			differenceArray[b + 1] = differenceArray[b + 1] - 1;
+        	}
 
-        int[] prefixSum = new int[n + 1];
-        int total = 0;
-        for (int x = 0; x < n; x++) { // build prefixSum array
-            total += differenceArray[x];
-            prefixSum[x] = total;
-        }
-        Arrays.sort(prefixSum);
-        io.println(prefixSum[prefixSum.length / 2]);
+        	int[] prefixSum = new int[n + 1];
+        	int total = 0;
+			      
+        	for (int x = 0; x < n; x++) { // build prefixSum array
+			total += differenceArray[x];
+			prefixSum[x] = total;
+        	}
+
+		Arrays.sort(prefixSum);
+		io.println(prefixSum[prefixSum.length / 2]);
     	}
 
 	// CodeSnip{Kattio}
