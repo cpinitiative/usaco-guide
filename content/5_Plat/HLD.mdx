@@ -102,20 +102,20 @@ int sz[N], p[N], dep[N];
 int st[S], id[N], tp[N];
 
 void update(int idx, int val) {
-    st[idx += n] = val;
-    for (idx /= 2; idx; idx /= 2)
-        st[idx] = max(st[2 * idx], st[2 * idx + 1]);
+	st[idx += n] = val;
+	for (idx /= 2; idx; idx /= 2)
+		st[idx] = max(st[2 * idx], st[2 * idx + 1]);
 }
 
 int query(int lo, int hi) {
-    int ra = 0, rb = 0;
-    for (lo += n, hi += n + 1; lo < hi; lo /= 2, hi /= 2) {
-        if (lo & 1)
-            ra = max(ra, st[lo++]);
-        if (hi & 1)
-            rb = max(rb, st[--hi]);
-    }
-    return max(ra, rb);
+	int ra = 0, rb = 0;
+	for (lo += n, hi += n + 1; lo < hi; lo /= 2, hi /= 2) {
+		if (lo & 1)
+			ra = max(ra, st[lo++]);
+		if (hi & 1)
+			rb = max(rb, st[--hi]);
+	}
+	return max(ra, rb);
 }
 
 int dfs_sz(int cur, int par) {
