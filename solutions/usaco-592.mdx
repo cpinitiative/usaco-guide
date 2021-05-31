@@ -2,22 +2,12 @@
 id: usaco-592
 source: USACO Bronze 2016 January
 title: Angry Cows
-author: Óscar Garries
+author: Qi Wang
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_angry_bronze_jan16.html)
 
-The official solution doesn't seem to work on the following test case:
-
-```cpp
-4
-1
-2
-4
-6
-```
-
-The answer should be `4`.
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 <CPPSection>
@@ -29,47 +19,51 @@ The answer should be `4`.
 
 using namespace std;
 
-typedef long long ll;
-typedef long double ld;
+int N, A = 0;
+vector<int> positions;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("angry.in", "r", stdin);
-	freopen("angry.out", "w", stdout);
-	int n;
-	cin >> n;
-	int a[n];
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
-	sort(a, a + n);
-	int sol = -1;
-	for (int i = 0; i < n; i++) {
-		int start = a[i];
-		int cur_sol = 1, t = 1, down = i - 1, up = i + 1;
-		bool idoup = true, idodown = true;
-		while (true) {
-			bool irbaj = false, irup = false;
-			int cur_sol_mas = a[up - 1] + t;
-			int cur_sol_menos = a[down + 1] - t;
-			while (down >= 0 && a[down] >= cur_sol_menos && idodown) {
-				irbaj = true;
-				down--;
-				cur_sol++;
-			}
-			while (up < n && a[up] <= cur_sol_mas && idoup) {
-				irup = true;
-				up++;
-				cur_sol++;
-			}
-			if (!irbaj) idodown = false;
-			if (!irup) idoup = false;
-			if (!idodown && !idoup) break;
-			t++;
-		}
-		sol = max(sol, cur_sol);
-	}
-	cout << sol << '\n';
+int getNum(int start, int direction) {
+    int radius = 1;
+    int prev = start;
+
+    while(prev >= 0 && prev < N) {
+        int next = prev;
+        while(next + direction >= 0 && next + direction < N && abs(positions[next + direction] - positions[prev]) <= radius) {
+            next += direction;
+        }
+
+        if(next == prev) {
+            break;
+        }
+
+        prev = next;
+        radius++;
+    }
+
+    return abs(prev - start);
+}
+
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    freopen("angry.in","r",stdin);
+    freopen("angry.out","w",stdout);
+
+    cin >> N;
+
+    positions.resize(N);
+
+    for(int i = 0; i < N; i++) {
+        cin >> positions[i];
+    }
+
+    sort(positions.begin(), positions.end());
+
+    for (int i = 0; i < N; i++) {
+        A = max(A, getNum(i, -1) + getNum(i, 1) + 1);
+    }   
+
+    cout << A;
 }
 ```
 
