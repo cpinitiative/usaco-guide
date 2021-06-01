@@ -2,7 +2,7 @@
 id: cses-1662
 source: CSES
 title: Subarray Divisibility
-author: Qi Wang
+author: Qi Wang, Brad Ma
 ---
 
 # Problem
@@ -44,6 +44,11 @@ The answer is just the sum of this quantity over all $i$.
 
 **Time Complexity:** $\mathcal{O}(N)$
 
+<LanguageSection>
+<CPPSection>
+
+### C++ Implementation
+	
 ```cpp
 #include <iostream>
 #include <vector>
@@ -80,5 +85,55 @@ int main() {
 	cout << ans << endl;
 }
 ```
+</CPPSection>
+	
+<JavaSection>
+	
+### Java Implementation
+	
+```java
 
+import java.util.*;
+import java.io.*;
+	
+// @Author Brad Ma
+
+public class subarrayDivisibility {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+
+		long[] M = new long[n];
+		long prefixSums = 0;
+		M[0] = 1;
+
+		for (int i = 0; i < n; i++) {
+			int a = io.nextInt();
+			prefixSums += a;
+			// remember to account for negative sums
+			M[((int) (prefixSums % n) + n) % n]++;
+			}
+
+		long answer = 0;
+		for (long x : M) {
+			/*
+			 *  calculating the # of pairs, this calculates the pairs without
+			 *  duplicates and reverse groups
+			 */
+
+			answer += x * (x - 1) / 2;
+		}
+
+		io.println(answer);
+		io.close();
+	}
+				      
+	//CodeSnip{Kattio}
+}
+
+```	
+</JavaSection>
+	
+</LanguageSection>
 </Spoiler>
