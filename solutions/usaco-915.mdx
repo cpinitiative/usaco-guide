@@ -17,55 +17,24 @@ import java.io.*;
 class Main {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(new File("herding.in"));
-		PrintWriter pw = new PrintWriter(new File("herding.out")); 
-		int a = sc.nextInt();
-		int b = sc.nextInt();
-		int c = sc.nextInt();
-	
-		int[] ans = swap(a, b, c);
-		a = ans[0];
-		b = ans[1];
-		c = ans[2];
+		PrintWriter pw = new PrintWriter(new File("herding.out"));
+		int[] ans = new int[3];
+		ans[0] = sc.nextInt();
+		ans[1] = sc.nextInt();
+		ans[2] = sc.nextInt();
+		Arrays.sort(ans);
 
-		if (c == a + 2) {
+		if (ans[2] == ans[0] + 2) {
 			pw.println(0); 
 		}
-		else if (b == a + 2 || c == b + 2) {
+		else if (ans[1] == ans[0] + 2 || ans[2] == ans[1] + 2) {
 			pw.println(1); 
 		}
 		else {
 			pw.println(2); 
 		}
-		pw.println(Math.max(b - a, c - b) - 1);
+		pw.println(Math.max(ans[1] - ans[0], ans[2] - ans[1]) - 1);
 		pw.close();
-	}
-	
-	// we are arranging a, b, and c to be in ascending order
-	// the variable temp helps us swap
-	// a with b, b with c, and c with a as needed
-	public static int[] swap(int a, int b, int c){
-		int temp;
-		if (a > b) {
-			temp = a;
-			a = b;
-			b = temp;
-		}
-		if (b > c) {
-			temp = b;
-			b = c;
-			c = temp;
-		}
-		if (a > b) {
-			temp = a;
-			a = b;
-			b = temp;
-		}
-
-		int[] ans = new int[3];
-		ans[0] = a;
-		ans[1] = b;
-		ans[2] = c;
-		return(ans);
 	}
 }
 ```
