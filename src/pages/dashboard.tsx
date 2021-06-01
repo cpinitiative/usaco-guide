@@ -14,6 +14,7 @@ import Card from '../components/Dashboard/DashboardCard';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import Layout from '../components/layout';
+import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { SignInContext } from '../context/SignInContext';
@@ -35,7 +36,8 @@ export default function DashboardPage(props: PageProps) {
     return acc;
   }, {});
   const problemIDMap = React.useMemo(() => {
-    return problems.edges.reduce((acc, cur) => {
+    // 1. problems in modules
+    const res = problems.edges.reduce((acc, cur) => {
       const problem = cur.node;
       // ignore problems that don't have an associated module (extraProblems.json)
       if (problem.module) {
@@ -49,6 +51,21 @@ export default function DashboardPage(props: PageProps) {
       }
       return acc;
     }, {});
+
+    // 2. problems in USACO monthly table
+    const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+    for (const division of divisions) {
+      for (const probInfo of divToProbs[division]) {
+        const id = `usaco-${probInfo[0]}`;
+        if (!(id in res)) {
+          res[id] = {
+            label: `${division}: ${probInfo[2]}`,
+            url: `/general/usaco-monthlies/#problem-${id}`,
+          };
+        }
+      }
+    }
+    return res;
   }, [problems]);
   const {
     lastViewedModule: lastViewedModuleID,

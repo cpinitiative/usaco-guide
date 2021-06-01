@@ -49,8 +49,10 @@ export default function LeaderboardList({
   const activeGroup = useActiveGroup();
   const leaderboard = activeGroup.groupData?.leaderboard;
   const members = getMemberInfoForGroup(activeGroup.groupData);
+  const { firebaseUser } = React.useContext(UserDataContext);
+
   const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard || !members) return null;
+    if (!leaderboard || !members || !firebaseUser?.uid) return null;
 
     const leaderboardSum = {};
 
@@ -73,22 +75,40 @@ export default function LeaderboardList({
       processPost(postId);
     }
 
-    const data = activeGroup.groupData.memberIds
+    let data = activeGroup.groupData.memberIds
       .map(id => ({
         member: members.find(member => member.uid === id),
         points: leaderboardSum[id] ?? 0,
       }))
-      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
-    return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, activeGroup.groupData.memberIds, members?.length, postId]);
+      .filter(x => !!x.member) // filter is needed in case a member just joined and their data isn't available yet
+      .sort((a, b) => b.points - a.points)
+      .map((x, idx) => ({ ...x, place: idx + 1 }));
+    data = data.filter((x, idx) => {
+      // only show top 10, or the person above / at / below the user
+      return (
+        x.place <= 10 ||
+        (idx + 1 < data.length &&
+          data[idx + 1].member.uid === firebaseUser.uid) ||
+        (idx - 1 > 0 && data[idx - 1].member.uid === firebaseUser.uid) ||
+        x.member.uid === firebaseUser.uid
+      );
+    });
+    return data;
+  }, [
+    leaderboard,
+    activeGroup.groupData.memberIds,
+    members?.length,
+    postId,
+    firebaseUser?.uid,
+  ]);
 
   return (
     <ul>
       {leaderboardItems ? (
-        leaderboardItems.map((item, idx) => (
+        leaderboardItems.map(item => (
           <LeaderboardListItem
             key={item.member.uid}
-            place={idx + 1}
+            place={item.place}
             member={item.member}
             points={item.points}
           />
