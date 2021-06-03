@@ -1,0 +1,79 @@
+---
+id: cf-616D
+source: CF
+title: Longest k-Good Segment
+author: Sofia Yang
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/22712)
+
+<LanguageSection>
+
+<JavaSection>
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+## Java Implementation
+
+```java
+public class kgood {
+	CodeSnip{Kattio}
+
+    public static int MAX = (int) 1e6;
+
+    public static void main(String[] args) throws IOException {
+        Kattio io = new Kattio();
+        int N = io.nextInt();
+        int K = io.nextInt();
+
+        int[] A = new int[MAX];
+        int[] freq = new int[MAX]; // Frequency of each number in the window.
+        int difVal = 0; // Number of different values in the window.
+        int left = 0;
+
+        int maxLen = 0;
+        int maxL = 0;
+        int maxR = 0;
+
+
+        for (int i = 0; i < N; i++) {
+            int x = A[i] = io.nextInt();
+            // Increment the frequency of the number.
+            if (freq[x] == 0) {
+                freq[x] = 1;
+                difVal++;
+            } else {
+                freq[x]++;
+            }
+
+            // If the window isn't valid, shift the left bound rightwards.
+            while (difVal > K) {
+                freq[A[left]]--;
+                if (freq[A[left]] == 0) {
+                    difVal--;
+                }
+                left++;
+            }
+
+            // Update the window length.
+            int curLen = i - left + 1;
+            if (curLen > maxLen) {
+                maxLen = curLen;
+                maxL = left;
+                maxR = i;
+            }
+        }
+
+        System.out.println((maxL + 1) + " " + (maxR + 1));
+
+    }
+
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
