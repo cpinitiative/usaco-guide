@@ -27,8 +27,8 @@ grid_by_rows = [list(map(int, input().split())) for _ in range(n)]
 # grid_by_cols[i] is the ith column
 grid_by_cols = zip(*grid_by_rows)
 
-rows_alternate = 0
-cols_alternate = 0
+rows_alternate = 0  # max beauty if each row alternates between cow and no cow
+cols_alternate = 0  # max beauty if each column alternates
 
 for i in range(n):
 	# each row has an alternating pattern of cow and no cow
@@ -39,8 +39,6 @@ for i in range(n):
 
 	# each column has an alternating pattern of cow and no cow
 	col = next(grid_by_cols)  # the ith column
-	# col[::2] is a list of every other element, starting with index 0
-	# col[1::2] is a list of every other element, starting with index 1
 	cols_alternate += max(sum(col[::2]), sum(col[1::2]))
 
 print(max(rows_alternate, cols_alternate))
