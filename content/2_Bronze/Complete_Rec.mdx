@@ -122,8 +122,10 @@ public class Main {
 			return Math.abs(s1_sum - s2_sum);
 		}
 
-		return Math.min(solve(index + 1, s1_sum + weights[index], s2_sum),
-						solve(index + 1, s1_sum, s2_sum + weights[index]));
+		return Math.min(
+					solve(index + 1, s1_sum + weights[index], s2_sum),
+					solve(index + 1, s1_sum, s2_sum + weights[index])
+				);
 	}
 
 	//see "Intro - FastIO"
@@ -345,7 +347,7 @@ public class Main {
 					s2 += weights[i];
 				}
 			}
-			ans = Math.min(ans, Math.abs(s1-s2));
+			ans = Math.min(ans, Math.abs(s1 - s2));
 		}
 
 		pw.println(ans);
@@ -573,10 +575,10 @@ void search() {
 int main() {
 	setIO();
 	cin >> S;
-	for (auto c : S) cnt[c - 'a']++;
+	for (char c : S) cnt[c - 'a']++;
 	search();
 	cout << sz(perms) << '\n';
-	for (auto t : perms) cout << t << '\n';
+	for (string t : perms) cout << t << '\n';
 }
 ```
 
@@ -1029,10 +1031,12 @@ void dfs(int r) { // place queen in r-th row
 		++ans; // found valid placement
 		return;
 	}
-	for (int i = 0; i < 8; ++i) if (g[r][i] == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
-		c[i] = sum[i + r] = dif[i - r + 7] = true;
-		dfs(r + 1);
-		c[i] = sum[i + r] = dif[i - r + 7] = false;
+	for (int i = 0; i < 8; ++i) {
+		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
+			c[i] = sum[i + r] = dif[i - r + 7] = true;
+			dfs(r + 1);
+			c[i] = sum[i + r] = dif[i - r + 7] = false;
+		}
 	}
 }
 
