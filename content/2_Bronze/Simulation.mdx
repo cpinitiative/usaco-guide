@@ -82,41 +82,45 @@ int main()
 ```java
 import java.util.*;
 import java.io.*;
-import java.lang.Math.*;
 
-public class shell
-{
-	public static Kattio io; // Refer to General - Input/Output
-	public static int N;
-	public static int['Simulation'] shell_at_position = new int[3], counter = new int[3];
-	/*
-	N stores the number of operations (as described in the problem statement)
-	shell_at_position[i] stores the label of the shell located at position i
-	counter[i] stores the number of times the shell with label i was picked
-	*/
-	public static void main(String['Simulation'] args) throws IOException
-	{
-		io=new Kattio("shell");
-		for(int i=0;i<3;++i)
-			shell_at_position[i]=i; // We arbitrarily place the shells down (In this case, I happen to be putting the shell with label i at position i)
-		N=io.nextInt();
-		for(int i=0;i<N;++i)
-		{
+public class Shell throws IOException {
+	public static void main(String[] args) throws {
+		Kattio io = new Kattio("shell");
+
+		/*
+		* N stores the number of operations (as described in problem)
+		* shellAtPosition[i] stores the label of the shell at position i
+		* counter[i] stores the number of times the shell i was picked
+		*/
+		int N = io.nextInt();
+		int[] shellAtPosition = new int[3];
+		int[] counter = new int[3];
+
+		// Arbitrarily place the shells down
+		// In this case, we happen to be putting the shell with label i at position i
+		for (int i = 0; i < 3; i++) {
+			shellAtPosition[i] = i;
+		}
+
+		for (int i = 0; i < N; i++) {
 			// Zero indexing: offset all positions by 1
-			int a=io.nextInt()-1;
-			int b=io.nextInt()-1;
-			int g=io.nextInt()-1;
+			int a = io.nextInt()-1;
+			int b = io.nextInt()-1;
+			int g = io.nextInt()-1;
 
 			// Perform Bessie's swapping operation
-			int t=shell_at_position[b];
-			shell_at_position[b]=shell_at_position[a];
-			shell_at_position[a]=t;
+			int t = shellAtPosition[b];
+			shellAtPosition[b] = shellAtPosition[a];
+			shellAtPosition[a] = t;
 
-			++counter[shell_at_position[g]]; // Count the number of times Elsie guesses each particular shell
+			counter[shellAtPosition[g]]++; // Count the number of times Elsie guesses each particular shell
 		}
+
 		io.println(Math.max(counter[0], Math.max(counter[1], counter[2])));
 		io.close();
 	}
+
+	CodeSnip{Kattio}
 }
 ```
 
@@ -214,39 +218,46 @@ int main()
 ```java
 import java.util.*;
 import java.io.*;
-import java.lang.Math.*;
 
-public class mixmilk
-{
-	public static Kattio io; // Refer to General - Input/Output
-	public static final int N = 3;
-	public static int['Simulation'] capacity = new int[N], milk = new int[N];
+public class MixMilk {
 	/*
-	N is the number of buckets (which happens to be a constant value of 3)
-	capacity[i] is the maximum capacity of bucket i
-	milk[i] is the current amount of milk in bucket i
+	* N is the number of buckets (which is 3)
+	* capacity[i] is the maximum capacity of bucket i
+	* milk[i] is the current amount of milk in bucket i
 	*/
-	public static void pour(int i, int j)
-	{
-		int amt=Math.min(milk[i], capacity[j]-milk[j]);
-		// Amount of milk to pour is the minimum of the remaining milk in bucket i and the available capacity in bucket j
-		milk[i]-=amt;
-		milk[j]+=amt;
+	static int N = 3;
+	static int[] capacity = new int[N];
+	static int[] milk = new int[N];
+
+	public static void pour(int i, int j) {
+		// Amount of milk to pour is the minimum of remaining milk in bucket i
+		// and the available capacity in bucket j
+		int amount = Math.min(milk[i], capacity[j] - milk[j]);
+		milk[i] -= amt;
+		milk[j] += amt;
 	}
-	public static void main(String['Simulation'] args) throws IOException
-	{
-		io = new Kattio("mixmilk");
-		for(int i=0;i<N;++i)
-		{
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("mixmilk");
+
+		for (int i = 0; i < N; i++) {
 			capacity[i] = io.nextInt();
 			milk[i] = io.nextInt();
 		}
-		for(int i=0;i<100;++i)
-			pour(i%N, (i+1)%N); // Pour milk from one bucket to the next
-		for(int i=0;i<N;++i)
+
+		// Simulate all 100 pour operations, where we pour milk from one bucket
+		// to the next
+		for (int i = 0; i < 100; i++) {
+			pour(i % N, (i + 1) % N);
+		}
+
+		for(int i=0; i < N; i++) {
 			io.println(milk[i]);
+		}
 		io.close();
 	}
+	
+	CodeSnip{Kattio}
 }
 ```
 

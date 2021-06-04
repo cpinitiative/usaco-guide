@@ -5,7 +5,7 @@ author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang, Benjamin Qi, Dong Liu
 description: 'Includes generating subsets and permutations.'
 frequency: 1
 prerequisites:
-  - intro-complete
+- intro-complete
 ---
 
 <Warning>
@@ -99,115 +99,35 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-
 	static int N;
 	static int weights[];
 
 	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in);  //See "Intro - FastIO" - this class acts similarly to Scanner, but faster
-		PrintWriter pw = new PrintWriter(System.out);
+		Kattio io = new Kattio();
 
-		N = sc.nextInt();
+		N = io.nextInt();
 		weights = new int[N];
 		for (int i = 0; i < N; i++) {
-			weights[i] = sc.nextInt();
+			weights[i] = io.nextInt();
 		}
 
-		pw.println(solve(0, 0, 0));
-		pw.close();
+		io.println(solve(0, 0, 0));
+		io.close();
 	}
 
-	static long solve(int index, long s1_sum, long s2_sum) {
-		if(index == N) {
-			return Math.abs(s1_sum - s2_sum);
+	static long solve(int index, long sum1, long sum2) {
+		if (index == N) {
+			return Math.abs(sum1 - sum2);
 		}
 
-		return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
+		return Math.min(
+			solve(index + 1, sum1 + weights[index], sum2), 
+			solve(index + 1, sum1, sum2 + weights[index])
+		);
 	}
 
-	//see "Intro - FastIO"
-	//this class acts similarly to Scanner, but faster
-	static class FastIO {
-
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
-
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
-
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
-
-		int nextInt() throws Exception {
-			int ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		long nextLong() throws Exception {
-			long ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
-
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
-
-			return ret.toString();
-		}
-
-	}
-
+	CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
@@ -222,7 +142,7 @@ def solve(i, s1, s2):
 	if i == n:
 		return abs(s2-s1)
 	return min(solve(i+1, s1+p[i], s2),
-			   solve(i+1, s1, s2+p[i]))
+			solve(i+1, s1, s2+p[i]))
 
 print(solve(0, 0, 0))
 ```
@@ -249,12 +169,12 @@ minimum difference between their sums.
 Note the fancy bitwise operations:
 
 - `1 << x` for an integer $x$ is another way of writing $2^x$, which, in binary,
-  has only the $x$'th bit turned on.
+has only the $x$'th bit turned on.
 - The `&` (and) operator will take two integers and return a new integer.
-  `a & b` for integers $a$ and $b$ will return a new integer whose $i$'th bit is
-  turned on if and only if the $i$'th bit is turned on for both $a$ and $b$.
-  Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is
-  turned on in $mask$.
+`a & b` for integers $a$ and $b$ will return a new integer whose $i$'th bit is
+turned on if and only if the $i$'th bit is turned on for both $a$ and $b$.
+Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is
+turned on in $mask$.
 
 <Info title="Bitwise Operations">
 
@@ -322,23 +242,21 @@ import java.io.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
-		PrintWriter pw = new PrintWriter(System.out);
+		Kattio io = new Kattio();
 
-		int N = sc.nextInt();
+		int N = io.nextInt();
 		int weights[] = new int[N];
 		for (int i = 0; i < N; i++) {
-			weights[i] = sc.nextInt();
+			weights[i] = io.nextInt();
 		}
 
 		long ans = Long.MAX_VALUE;
-
 		for (int bitmask = 0; bitmask < (1 << N); bitmask++) {
 			long s1 = 0;
 			long s2 = 0;
 
 			for (int i = 0; i < N; i++) {
-				if((bitmask & (1 << i)) > 0) {
+				if ((bitmask & (1 << i)) > 0) {
 					s1 += weights[i];
 				} else {
 					s2 += weights[i];
@@ -347,91 +265,11 @@ public class Main {
 			ans = Math.min(ans, Math.abs(s1-s2));
 		}
 
-		pw.println(ans);
-		pw.close();
+		io.println(ans);
+		io.close();
 	}
 
-
-	//See Intro - FastIO
-	//this class acts similarly to Scanner
-	static class FastIO {
-
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
-
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
-
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
-
-		int nextInt() throws Exception {
-			int ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		long nextLong() throws Exception {
-			long ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
-
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
-
-			return ret.toString();
-		}
-
-	}
+	CodeSnip{Kattio}
 }
 
 ```
@@ -544,11 +382,11 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 int N, cnt[26];
@@ -599,34 +437,38 @@ public class Main {
 		}
 		for (int i = 0; i < 26; ++i) {
 			if (cnt[i] > 0) {
-				--cnt[i];
-				perm += (char)(i + 'a');
+				cnt[i]--;
+				perm += (char) (i + 'a');
 				search();
-				++cnt[i];
-				perm = perm.substring(0, perm.length() - 1); //removes last character
+				cnt[i]++;
+
+                // removes last character
+				perm = perm.substring(0, perm.length() - 1);
 			}
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		s = br.readLine();
+		Kattio io = new Kattio();
+		s = io.next();
 		N = s.length();
 		cnt = new int[26];
 		perms = new ArrayList<String>();
 		perm = "";
-		for (int i = 0; i < N; ++i) {
+		for (int i = 0; i < N; i++) {
 			int index = (int)(s.charAt(i) - 'a');
-			++cnt[index];
+			cnt[index]++;
 		}
 		search();
 		Collections.sort(perms);
-		System.out.println(perms.size());
+		io.println(perms.size());
 		for (String i : perms) {
-			System.out.println(i);
+			io.println(i);
 		}
-		br.close();
+		io.close();
 	}
+
+    CodeSnip{Kattio}
 }
 ```
 
@@ -930,11 +772,11 @@ public class Chessboard {
 	public static ArrayList < Integer > perm = new ArrayList < Integer > ();
 	public static boolean[] chosen = new boolean[8];
 	public static int ans = 0;
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
+		Kattio io = new Kattio();
 		for (int i = 0; i < 8; i++) {
-			String str = br.readLine();
+			String str = io.next();
 			for (int j = 0; j < 8; j++) {
 				ok[i][j] = (str.charAt(j) == '.');
 			}
@@ -943,6 +785,7 @@ public class Chessboard {
 		out.println(ans);
 		out.close();
 	}
+	
 	public static void genperm() {
 		if (perm.size() == 8) {
 			boolean works = true;
@@ -1057,15 +900,15 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		Kattio io = new Kattio();
 		g = new String[8];
 		sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
 		for(int i = 0; i < 8; ++i) {
-			g[i] = br.readLine();
+			g[i] = io.next();
 		}
 		dfs(0);
-		System.out.println(ans);
-		br.close();
+		io.println(ans);
+		io.close();
 	}
 }
 ```
@@ -1081,17 +924,17 @@ d2 = [0] * 15
 c = [0] * 8
 ans = 0
 def dfs(r): # place queen in r-th row
-    if r == 8:
-        ans += 1
-    else:
-        for i in range(8):
-            if g[r][i] == '*':
-                continue
-            if c[i] or d1[r + i] or d2[i - r + 7]:
-                continue
-            c[i] = d1[r + i] = d2[i - r + 7] = 1
-            dfs(r + 1)
-            c[i] = d1[r + i] = d2[i - r + 7] = 0
+	if r == 8:
+		ans += 1
+	else:
+		for i in range(8):
+			if g[r][i] == '*':
+				continue
+			if c[i] or d1[r + i] or d2[i - r + 7]:
+				continue
+			c[i] = d1[r + i] = d2[i - r + 7] = 1
+			dfs(r + 1)
+			c[i] = d1[r + i] = d2[i - r + 7] = 0
 dfs(0)
 print(ans)
 ```
