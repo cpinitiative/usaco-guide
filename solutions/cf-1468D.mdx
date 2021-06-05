@@ -44,13 +44,13 @@ ll corridor_size;
 ll num_of_firecrackers;
 ll hooligan_location; 
 ll guard_location; 
-ll maxFirecrackers;
-ll timeBeforeCaught;
+ll max_firecrackers;
+ll time_before_caught;
 
-bool works(vl explodingTimes, ll firecrackers_exploded) {
+bool works(vl exploding_times, ll firecrackers_exploded) {
 	int current_time = 1;
 	for (int i = firecrackers_exploded - 1; i >= 0; i--) {
-		if(current_time + explodingTimes[i] > timeBeforeCaught){
+		if(current_time + exploding_times[i] > time_before_caught){
 			return false;
 		} else {
 			++current_time;
@@ -67,28 +67,28 @@ void solve() {
 		cin >> exploding_times[i];
 	}
 	sort(exploding_times.begin(), exploding_times.end());
-	maxFirecrackers = min(
+	max_firecrackers = min(
 		num_of_firecrackers,
 		abs(hooligan_location - guard_location) - 1
 	);
 	if (hooligan_location < guard_location) {
-		timeBeforeCaught = guard_location - 1;
+		time_before_caught = guard_location - 1;
 	} else if (hooligan_location > guard_location) {
-		timeBeforeCaught = corridor_size - guard_location;
+		time_before_caught = corridor_size - guard_location;
 	} else {
 		return;
 	}
-	ll left = 0, right = maxFirecrackers, maxExploded = 0;
+	ll left = 0, right = max_firecrackers, max_exploded = 0;
 	while (left <= right) {
 		ll mid = left + (right - left) / 2;
 		if (works(exploding_times, mid)) {
-			maxExploded = mid;
+			max_exploded = mid;
 			left = mid + 1;
 		} else {
 			right = mid - 1;
 		}
 	}
-	cout << maxExploded << endl;
+	cout << max_exploded << endl;
 }
 
 int main() {
