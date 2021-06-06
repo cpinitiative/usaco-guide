@@ -15,129 +15,129 @@ import java.io.*;
 import java.util.*;
 
 public class AtLarge {
-    static int N, K, A;
-    static List<Integer>[] adj;
-    static int[] depth, leaf, inDeg, parent;
-    public static void main(String[] args) throws Exception {
-        Kattio io = new Kattio("atlarge");
+	static int N, K, A;
+	static List<Integer>[] adj;
+	static int[] depth, leaf, inDeg, parent;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("atlarge");
 
-        N = io.nextInt();
-        K = io.nextInt();
+		N = io.nextInt();
+		K = io.nextInt();
 
-        adj = new List[N];
-        depth = new int[N];
-        leaf = new int[N];
-        inDeg = new int[N];
-        parent = new int[N];
+		adj = new List[N];
+		depth = new int[N];
+		leaf = new int[N];
+		inDeg = new int[N];
+		parent = new int[N];
 
-        Arrays.fill(depth, -1);
-        Arrays.fill(leaf, Integer.MAX_VALUE);
+		Arrays.fill(depth, -1);
+		Arrays.fill(leaf, Integer.MAX_VALUE);
 
-        for (int i = 0; i < N; i++) {
-            adj[i] = new ArrayList<>();
-        }
+		for (int i = 0; i < N; i++) {
+			adj[i] = new ArrayList<>();
+		}
 
-        for (int i = 0; i < N - 1; i++) {
-            int a = io.nextInt() - 1;
-            int b = io.nextInt() - 1;
+		for (int i = 0; i < N - 1; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
 
-            adj[a].add(b);
-            adj[b].add(a);
+			adj[a].add(b);
+			adj[b].add(a);
 
-            inDeg[a]++;
-            inDeg[b]++;
-        }
+			inDeg[a]++;
+			inDeg[b]++;
+		}
 
-        depth[K - 1] = 0;
-        dfs(K - 1);
+		depth[K - 1] = 0;
+		dfs(K - 1);
 
-        for (int i = 0; i < N; i++) {
-            if (inDeg[i] == 1) {
-                bfs(i);
-            }
-        }
+		for (int i = 0; i < N; i++) {
+			if (inDeg[i] == 1) {
+				bfs(i);
+			}
+		}
 
 
-        for (int i = 0; i < N; i++) {
-            if (i != K - 1) {
-                if (depth[parent[i]] < leaf[parent[i]] && depth[i] >= leaf[i]) {
+		for (int i = 0; i < N; i++) {
+			if (i != K - 1) {
+				if (depth[parent[i]] < leaf[parent[i]] && depth[i] >= leaf[i]) {
 //                    System.out.println(i);
-                    A++;
-                }
-            }
-        }
+					A++;
+				}
+			}
+		}
 
 //        System.out.println(Arrays.toString(leaf));
 //        System.out.println(Arrays.toString(depth));
-        io.println(A);
-        io.close();
-    }
+		io.println(A);
+		io.close();
+	}
 
-    public static void dfs(int n) {
-        for (Integer c : adj[n]) {
-            if(depth[c] != -1) continue;
+	public static void dfs(int n) {
+		for (Integer c : adj[n]) {
+			if(depth[c] != -1) continue;
 
-            depth[c] = depth[n] + 1;
-            parent[c] = n;
-            dfs(c);
-        }
-    }
+			depth[c] = depth[n] + 1;
+			parent[c] = n;
+			dfs(c);
+		}
+	}
 
-    public static void bfs(int l) {
-        Queue<Edge> q = new LinkedList<>();
-        q.add(new Edge(l, 0));
+	public static void bfs(int l) {
+		Queue<Edge> q = new LinkedList<>();
+		q.add(new Edge(l, 0));
 
-        while(!q.isEmpty()) {
-            Edge curr = q.poll();
+		while(!q.isEmpty()) {
+			Edge curr = q.poll();
 
-            leaf[curr.n] = Math.min(leaf[curr.n], curr.d);
+			leaf[curr.n] = Math.min(leaf[curr.n], curr.d);
 
-            for(Integer n : adj[curr.n]) {
-                if(leaf[n] < curr.d + 1) continue;
+			for(Integer n : adj[curr.n]) {
+				if(leaf[n] < curr.d + 1) continue;
 
-                q.add(new Edge(n, curr.d + 1));
-            }
-        }
-    }
+				q.add(new Edge(n, curr.d + 1));
+			}
+		}
+	}
 
-    private static class Edge {
-        int n, d;
-        public Edge(int a, int b) {
-            n = a;
-            d = b;
-        }
-    }
+	private static class Edge {
+		int n, d;
+		public Edge(int a, int b) {
+			n = a;
+			d = b;
+		}
+	}
 
-    private static class Kattio extends PrintWriter {
-        private BufferedReader r;
-        private StringTokenizer st;
+	private static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
 
-        // standard input
-        public Kattio() { this(System.in,System.out); }
-        public Kattio(InputStream i, OutputStream o) {
-            super(o);
-            r = new BufferedReader(new InputStreamReader(i));
-        }
-        // USACO-style file input
-        public Kattio(String problemName) throws IOException {
-            super(new FileWriter(problemName+".out"));
-            r = new BufferedReader(new FileReader(problemName+".in"));
-        }
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
 
-        // returns null if no more input
-        public String next() {
-            try {
-                while (st == null || !st.hasMoreTokens())
-                    st = new StringTokenizer(r.readLine());
-                return st.nextToken();
-            } catch (Exception e) {}
-            return null;
-        }
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
 
-        public int nextInt() { return Integer.parseInt(next()); }
-        public double nextDouble() { return Double.parseDouble(next()); }
-        public long nextLong() { return Long.parseLong(next()); }
-    }
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
 }
 ```
 
