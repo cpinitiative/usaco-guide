@@ -1,7 +1,7 @@
 ---
 id: prefix-sums-2
 title: 'More on Prefix Sums'
-author: Darren Yao, Eric Wei, Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng
+author: Darren Yao, Eric Wei, Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Brad Ma
 description:
   'Max subarray sum, prefix sums in two dimensions, and a more complicated
   example.'
@@ -172,6 +172,48 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+### Java Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+	
+public class MaxSubarraySumKadane {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+
+		long[] x = new long[n];
+
+		for (int i = 0; i < n; i++) { // read input
+			x[i] = io.nextInt();
+		}
+
+		long currentSum = x[0];
+		long maxSubarraySum = x[0];
+
+		for (int i = 1; i < n; i++) {
+			/*
+			 * Continue the subarray sum or start a new
+			 * subarray sum beginning at the current element.
+			 */
+			currentSum = Math.max(currentSum + x[i], x[i]);
+			// Store the maximum subarray sum at each iteration.
+			maxSubarraySum = Math.max(maxSubarraySum, currentSum);
+		}
+
+		io.println(maxSubarraySum);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+
+```
+</JavaSection>
 
 </LanguageSection>
 
