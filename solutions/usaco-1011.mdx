@@ -74,22 +74,20 @@ max_area = 0
 
 # Brute force through all possible triangles to find the largest possible area
 for i in range(n):
-	for j in range(n):
-		if i != j:
-			if vertices[j][1] == vertices[i][1]:
-				for k in range(n):
-					if k != j and k != i:
-						if vertices[i][0] == vertices[k][0]:
-							area = abs(vertices[k][1] - vertices[i][1]) * abs(vertices[j][0] - vertices[i][0])
-							max_area = max(max_area, area)
-			elif vertices[j][0] == vertices[i][0]:
-				for k in range(n):
-					if k != j and k != i:
-						if vertices[i][1] == vertices[k][1]:
-							area = abs(vertices[k][0] - vertices[i][0]) * abs(vertices[j][1] - vertices[i][1])
-							max_area = max(max_area, area)
+		for j in range(n):
+				if i != j and vertices[j][1] == vertices[i][1]:
+						for k in range(n):
+								if (k != j and k != i) and vertices[i][0] == vertices[k][0]:
+										area = abs(vertices[k][1] - vertices[i][1]) * abs(vertices[j][0] - vertices[i][0])
+										max_area = max(max_area, area)
+				elif i != j and vertices[j][0] == vertices[i][0]:
+						for k in range(n):
+								if (k != j and k != i) and vertices[i][1] == vertices[k][1]:
+										area = abs(vertices[k][0] - vertices[i][0]) * abs(vertices[j][1] - vertices[i][1])
+										max_area = max(max_area, area)
 
-print(str(max_area), file=open('herding.out', 'w'))
+print(str(max_area), file=open('triangles.out', 'w'))
+
 ```
 
 </PySection>
