@@ -231,7 +231,7 @@ inline namespace Output {
 \t// print w/ no spaces
 \ttemplate<class ...T> void pr(const T&... t) { pr_sep(cout,"",t...); } 
 \t// print w/ spaces, end with newline
-\tvoid ps() { cout << "\n"; }
+\tvoid ps() { cout << "\\n"; }
 \ttemplate<class ...T> void ps(const T&... t) { pr_sep(cout," ",t...); ps(); } 
 \t// debug to cerr
 \ttemplate<class ...T> void dbg_out(const T&... t) {
@@ -239,7 +239,7 @@ inline namespace Output {
 \tvoid loc_info(int line, str names) {
 \t\tcerr << "Line(" << line << ") -> [" << names << "]: "; }
 \ttemplate<int lev, class T> void dbgl_out(const T& t) {
-\t\tcerr << "\n\n" << ts_sep(ts_lev<lev>(t),"\n") << "\n" << endl; }
+\t\tcerr << "\\n\\n" << ts_sep(ts_lev<lev>(t),"\\n") << "\\n" << endl; }
 \t#ifdef LOCAL
 \t\t#define dbg(...) loc_info(__LINE__,#__VA_ARGS__), dbg_out(__VA_ARGS__)
 \t\t#define dbgl(lev,x) loc_info(__LINE__,#x), dbgl_out<lev>(x)
