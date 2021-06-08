@@ -251,7 +251,7 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">
               <summary>Show Tags</summary>
-              <p className="text-xs">{problem.tags.sort().join(', ')}</p>
+              <span className="text-xs">{problem.tags.sort().join(', ')}</span>
             </details>
           ) : null}
         </td>

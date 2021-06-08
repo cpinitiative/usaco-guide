@@ -4,10 +4,17 @@ import { useContext } from 'react';
 import Select from 'react-select';
 import { SECTION_LABELS } from '../../content/ordering';
 import { useDarkMode } from '../context/DarkModeContext';
+import { EditorContext } from '../context/EditorContext';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
-import { PROBLEM_DIFFICULTY_OPTIONS, probSources } from '../models/problem';
+import {
+  autoGenerateSolutionMetadata,
+  generateProblemUniqueId,
+  ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
+  probSources,
+} from '../models/problem';
 import ButtonGroup from './ButtonGroup';
 
 export default function ProblemSuggestionModal({
@@ -29,7 +36,13 @@ export default function ProblemSuggestionModal({
   const [createdIssueLink, setCreatedIssueLink] = React.useState(null);
 
   const submitSuggestion = useProblemSuggestionAction();
-  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
+  const editorActions = useContext(EditorContext);
+  const inEditor = editorActions.inEditor;
+
+  // will be null if in editor
+  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
+    ?.markdownLayoutInfo;
+
   const darkMode = useDarkMode();
 
   React.useEffect(() => {
@@ -53,6 +66,29 @@ export default function ProblemSuggestionModal({
     const problemTableLink =
       window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
+    if (editorActions.inEditor) {
+      const tagsArr = tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+      const generatedProblemId = generateProblemUniqueId(source, name, link);
+      const problemToAdd: ProblemMetadata = {
+        uniqueId: generatedProblemId,
+        name,
+        url: link,
+        source,
+        difficulty,
+        isStarred: false,
+        tags: tagsArr,
+        solutionMetadata: autoGenerateSolutionMetadata(source, name, link) || {
+          kind: 'none',
+        },
+      };
+      editorActions.addProblem(listName, problemToAdd);
+      setLoading(false);
+      onClose();
+      return;
+    }
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
@@ -74,7 +110,7 @@ export default function ProblemSuggestionModal({
         setCreatedIssueLink(response.data);
       })
       .catch(e => {
-        alert('Error: ' + e.message);
+        alert('Problem Suggestion Error: ' + e.message);
       })
       .finally(() => setLoading(false));
   };
@@ -240,7 +276,7 @@ export default function ProblemSuggestionModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Suggested Tags (separated with comma and space)
+          {!inEditor && 'Suggested '}Tags (separated with comma and space)
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input
@@ -253,26 +289,28 @@ export default function ProblemSuggestionModal({
           />
         </div>
       </div>
-      <div>
-        <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Additional Notes
-        </label>
+      {!inEditor && (
         <div>
-          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            In case there's anything else you want to let us know.
-          </p>
-          <div className="rounded-md shadow-sm">
-            <textarea
-              rows={3}
-              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
-              value={additionalNotes}
-              onChange={e => setAdditionalNotes(e.target.value)}
-              placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
-              disabled={loading}
-            />
+          <label className="block font-medium text-gray-700 dark:text-gray-200">
+            Additional Notes
+          </label>
+          <div>
+            <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+              In case there's anything else you want to let us know.
+            </p>
+            <div className="rounded-md shadow-sm">
+              <textarea
+                rows={3}
+                className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+                value={additionalNotes}
+                onChange={e => setAdditionalNotes(e.target.value)}
+                placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
+                disabled={loading}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 
@@ -314,7 +352,6 @@ export default function ProblemSuggestionModal({
       </div>
     </div>
   );
-
   return (
     <Transition
       show={isOpen}
@@ -385,22 +422,29 @@ export default function ProblemSuggestionModal({
               className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-headline"
             >
-              Suggest a Problem
+              {inEditor ? 'Add a Problem' : 'Suggest a Problem'}
             </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Help us improve the USACO Guide by suggesting a problem to add!
-              <br />
-              This will be submitted as a public{' '}
-              <a
-                href="https://github.com/cpinitiative/usaco-guide/issues"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-600 dark:text-blue-300 underline"
-              >
-                Github issue
-              </a>
-              .
-            </p>
+            {inEditor ? (
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                You're in the editor, so the problem will be automatically added
+                to problems.json.
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Help us improve the USACO Guide by suggesting a problem to add!
+                <br />
+                This will be submitted as a public{' '}
+                <a
+                  href="https://github.com/cpinitiative/usaco-guide/issues"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 dark:text-blue-300 underline"
+                >
+                  Github issue
+                </a>
+                .
+              </p>
+            )}
             <div className="mt-6 space-y-6">
               {createdIssueLink ? successMessage : form}
             </div>
@@ -427,7 +471,11 @@ export default function ProblemSuggestionModal({
                     }
                     disabled={loading}
                   >
-                    {loading ? 'Submitting...' : 'Submit Suggestion'}
+                    {inEditor
+                      ? 'Add Problem'
+                      : loading
+                      ? 'Submitting...'
+                      : 'Submit Suggestion'}
                   </button>
                 </span>
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

@@ -1,7 +1,7 @@
 import React from 'react';
 import HTMLComponents from '../../components/markdown/HTMLComponents';
 
-const MiscMarkdownContet = () => (
+const MiscMarkdownContent = () => (
   <>
     <HTMLComponents.p>
       This is a demonstration of a warning block. And here's a link:{' '}
@@ -17,12 +17,12 @@ const MiscMarkdownContet = () => (
     <HTMLComponents.p>
       You shouldn't modify sets when traversing it with set iterators like in
       any other iterators for{' '}
-      <HTMLComponents.inlineCode>Collections</HTMLComponents.inlineCode> (this{' '}
+      <HTMLComponents.code>Collections</HTMLComponents.code> (this{' '}
       <strong>INCLUDES</strong> when using a for-each loop). The only
       modification possible is using the iterator{' '}
-      <HTMLComponents.inlineCode>remove()</HTMLComponents.inlineCode> method
-      which can only be used once before calling the{' '}
-      <HTMLComponents.inlineCode>next()</HTMLComponents.inlineCode> method.
+      <HTMLComponents.code>remove()</HTMLComponents.code> method which can only
+      be used once before calling the{' '}
+      <HTMLComponents.code>next()</HTMLComponents.code> method.
     </HTMLComponents.p>
     <p>
       <a
@@ -37,11 +37,11 @@ const MiscMarkdownContet = () => (
       <HTMLComponents.p>
         A common mistake in implementing the Floyd–Warshall algorithm is to
         misorder the triply nested loops (The correct order is{' '}
-        <HTMLComponents.inlineCode>KIJ</HTMLComponents.inlineCode>). The
-        incorrect <HTMLComponents.inlineCode>IJK</HTMLComponents.inlineCode> and
-        <HTMLComponents.inlineCode>IKJ</HTMLComponents.inlineCode> algorithms do
-        not give correct solutions for some instance. However, we can prove that
-        if these are repeated three times, we obtain the correct solutions.
+        <HTMLComponents.code>KIJ</HTMLComponents.code>). The incorrect{' '}
+        <HTMLComponents.code>IJK</HTMLComponents.code> and
+        <HTMLComponents.code>IKJ</HTMLComponents.code> algorithms do not give
+        correct solutions for some instance. However, we can prove that if these
+        are repeated three times, we obtain the correct solutions.
       </HTMLComponents.p>
       <HTMLComponents.p>
         It would be emphasized that these fixes (repeating incorrect algorithms
@@ -58,4 +58,4 @@ const MiscMarkdownContet = () => (
   </>
 );
 
-export default MiscMarkdownContet;
+export default MiscMarkdownContent;

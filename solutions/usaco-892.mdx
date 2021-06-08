@@ -1,0 +1,42 @@
+---
+id: usaco-892
+source: USACO Bronze 2019 January
+title: Sleepy Cow Sorting
+author: Ananth Kashyap
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html)
+
+We can think about this problem by looking at the end of the array of cows. Notice that if the last $i$ elements in the array are sorted in increasing order, FJ can fully sort the cows in $n-i$ time steps. This is because the first $n-i$ elements are still to be sorted. Thus, we can find the last unsorted cow and output its position.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```python
+file_in = open('sleepy.in')
+data = file_in.read().strip().split('\n')
+
+n = int(data[0])
+cows = list(map(int, data[1].split(' ')))
+
+ans = 0
+
+# Find the number of strictly increasing values at the end of the list
+for i in range(n - 1, 0, -1):
+	if cows[i] < cows[i - 1]:
+		ans = i
+		break
+
+file_out = open('sleepy.out', 'w')
+file_out.write(str(ans))
+file_out.close()
+```
+
+</PySection>
+
+</LanguageSection>

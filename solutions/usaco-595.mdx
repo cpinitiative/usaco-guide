@@ -1,0 +1,131 @@
+---
+id: usaco-595
+source: USACO Silver 2016 January
+title: Subsequences Summing to Sevens
+author: Kevin Sheng, thetazero, Melody Yu (Video)
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_div7_silver_jan16.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<Youtube id="wXNhLjiuTgw" />
+
+<LanguageSection>
+
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MOD = 7;
+
+int main() {
+	freopen("div7.in", "r", stdin);
+	freopen("div7.out", "w", stdout);
+	int cow_num;
+	cin >> cow_num;
+
+	int longest_photo = 0;
+	// first[i] stores the index of the first time a prefix sum % 7 == i
+	vector<int> first(MOD, -1);
+	first[0] = 0;
+
+	int curr_remainder = 0;
+	for (int i = 1; i <= cow_num; i++) {
+		int cow;
+		cin >> cow;
+		
+		curr_remainder = (curr_remainder + cow) % MOD;
+		if (first[curr_remainder] == -1){
+			first[curr_remainder] = i;
+		} else {
+			longest_photo = max(longest_photo, i - first[curr_remainder]);
+		}
+	}
+	cout << longest_photo << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+
+public final class Div7 {
+	private static final int MOD = 7;
+	public static void main(String[] args) throws IOException {
+		long start = System.currentTimeMillis();
+		BufferedReader read = new BufferedReader(new FileReader("div7.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		
+		int maxLen = 0;
+		// first[i] stores the index of the first time a prefix sum % 7 == i
+		int[] first = new int[MOD];
+		Arrays.fill(first, -1);
+		first[0] = 0;
+
+		int runningMod = 0;
+		for (int c = 0; c < cowNum; c++) {
+			int cow = Integer.parseInt(read.readLine());
+			runningMod = (runningMod + cow) % MOD;
+			if (first[runningMod] == -1) {
+				first[runningMod] = c;
+			} else {
+				maxLen = Math.max(maxLen, c - first[runningMod]);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("div7.out");
+		written.println(maxLen);
+		written.close();
+		System.out.println(maxLen);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+## Python Implementation
+
+```py
+MOD = 7
+
+with open('div7.in') as read:
+	cows = [int(read.readline()) for _ in range(int(read.readline()))]
+
+best_photo = 0
+# first_occ[i] stores the index of the first time a prefix sum % 7 == i
+first_occ = [-1 for _ in range(MOD)]
+first_occ[0] = 0
+
+running_mod = 0
+for v, c in enumerate(cows):
+	running_mod = (running_mod + c) % MOD
+
+	if first_occ[running_mod] == -1:
+		first_occ[running_mod] = v
+	else:
+		best_photo = max(best_photo, v - first_occ[running_mod])
+
+print(best_photo)
+print(best_photo, file=open('div7.out', 'w'))
+```
+
+</PySection>
+
+</LanguageSection>

@@ -1,28 +1,34 @@
+import {
+  addDoc,
+  collection,
+  deleteField,
+  doc,
+  getFirestore,
+  serverTimestamp,
+  updateDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { PostData } from '../../models/groups/posts';
 import {
-  groupProblemConverter,
   GroupProblemData,
   Submission,
   SubmissionType,
 } from '../../models/groups/problem';
-import useFirebase from '../useFirebase';
+import { useFirebaseApp } from '../useFirebase';
 
 export function usePostActions(groupId: string) {
-  const firebase = useFirebase();
+  const firebaseApp = useFirebaseApp();
   const { firebaseUser, setUserProgressOnProblems } = useContext(
     UserDataContext
   );
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
-    await firebase
-      .firestore()
-      .collection('groups')
-      .doc(groupId)
-      .collection('posts')
-      .doc(postId)
-      .update(updatedData);
+    await updateDoc(
+      doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', postId),
+      updatedData
+    );
   };
 
   return {
@@ -33,6 +39,7 @@ export function usePostActions(groupId: string) {
         isPinned: false,
         body: '',
         isDeleted: false,
+        pointsPerProblem: {},
         type,
         ...(type === 'announcement'
           ? {}
@@ -40,38 +47,40 @@ export function usePostActions(groupId: string) {
               dueTimestamp: null,
             }),
       };
-      const doc = await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('posts')
-        .add({
-          ...defaultPost,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+      const doc = await addDoc(
+        collection(getFirestore(firebaseApp), 'groups', groupId, 'posts'),
+        { ...defaultPost, timestamp: serverTimestamp() }
+      );
       return doc.id;
     },
     deletePost: async (postId: string): Promise<void> => {
-      const batch = firebase.firestore().batch();
-      batch.update(
-        firebase
-          .firestore()
-          .collection('groups')
-          .doc(groupId)
-          .collection('posts')
-          .doc(postId),
-        {
-          isDeleted: true,
-        }
-      );
-      batch.update(firebase.firestore().collection('groups').doc(groupId), {
-        [`leaderboard.${postId}`]: firebase.firestore.FieldValue.delete(),
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+
+      batch.update(doc(firestore, 'groups', groupId, 'posts', postId), {
+        isDeleted: true,
+      });
+      batch.update(doc(firestore, 'groups', groupId), {
+        [`leaderboard.${postId}`]: deleteField(),
       });
       return batch.commit();
     },
     updatePost,
     createNewProblem: async (post: PostData, order = 10) => {
-      const defaultProblem: Omit<GroupProblemData, 'id'> = {
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          groupId,
+          'posts',
+          post.id,
+          'problems'
+        )
+      );
+      const defaultProblem: GroupProblemData = {
+        id: docRef.id,
         postId: post.id,
         name: 'Untitled Problem',
         body: '',
@@ -86,15 +95,15 @@ export function usePostActions(groupId: string) {
         solutionReleaseMode: 'due-date',
         order,
       };
-      const doc = await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('posts')
-        .doc(post.id)
-        .collection('problems')
-        .add(defaultProblem);
-      return doc.id;
+      batch.set(docRef, defaultProblem);
+      batch.update(
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
+        {
+          [`pointsPerProblem.${docRef.id}`]: defaultProblem.points,
+        }
+      );
+      await batch.commit();
+      return docRef.id;
     },
     saveProblem: async (post: PostData, problem: GroupProblemData) => {
       if (
@@ -106,34 +115,49 @@ export function usePostActions(groupId: string) {
         );
         return;
       }
-      await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('posts')
-        .doc(post.id)
-        .collection('problems')
-        .doc(problem.id)
-        .withConverter(groupProblemConverter)
-        .update(problem);
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        getFirestore(firebaseApp),
+        'groups',
+        groupId,
+        'posts',
+        post.id,
+        'problems',
+        problem.id
+      );
+      batch.update(docRef, problem);
+      batch.update(
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
+        {
+          [`pointsPerProblem.${docRef.id}`]: problem.points,
+        }
+      );
+      await batch.commit();
+      return docRef.id;
     },
     deleteProblem: async (post: PostData, problemId: string) => {
-      const batch = firebase.firestore().batch();
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
       batch.update(
-        firebase
-          .firestore()
-          .collection('groups')
-          .doc(groupId)
-          .collection('posts')
-          .doc(post.id)
-          .collection('problems')
-          .doc(problemId),
+        doc(
+          firestore,
+          'groups',
+          groupId,
+          'posts',
+          post.id,
+          'problems',
+          problemId
+        ),
         {
           isDeleted: true,
         }
       );
-      batch.update(firebase.firestore().collection('groups').doc(groupId), {
-        [`leaderboard.${post.id}.${problemId}`]: firebase.firestore.FieldValue.delete(),
+      batch.update(doc(firestore, 'groups', groupId), {
+        [`leaderboard.${post.id}.${problemId}`]: deleteField(),
+      });
+      batch.update(doc(firestore, 'groups', groupId, 'posts', post.id), {
+        [`pointsPerProblem.${problemId}`]: deleteField(),
       });
       await batch.commit();
     },
@@ -144,20 +168,23 @@ export function usePostActions(groupId: string) {
       if (problem.usacoGuideId) {
         setUserProgressOnProblems(problem.usacoGuideId, 'Solved');
       }
-      const doc = await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('posts')
-        .doc(problem.postId)
-        .collection('problems')
-        .doc(problem.id)
-        .collection('submissions')
-        .add({
+      const doc = await addDoc(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          groupId,
+          'posts',
+          problem.postId,
+          'problems',
+          problem.id,
+          'submissions'
+        ),
+        {
           ...submission,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          timestamp: serverTimestamp(),
           userId: firebaseUser.uid,
-        });
+        }
+      );
       return doc.id;
     },
   };

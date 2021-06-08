@@ -1,0 +1,79 @@
+---
+id: cses-1745
+source: CSES
+title: Money Sums
+author: Sofia Yang
+---
+
+[Codeforces Editorial](https://codeforces.com/blog/entry/70018)
+
+<LanguageSection>
+
+<JavaSection>
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N\cdot X)$
+
+## Java Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MoneySums {
+	CodeSnip{Kattio}
+
+	public static int maxSum = (int) 1e5;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+
+		int N = io.nextInt();
+
+		int[] value = new int[N + 1];
+		for (int i = 1; i <= N; i++) {
+			value[i] = io.nextInt();
+		}
+
+		// DP[i][j] is true, if it is possible to make a sum of j with i coins.
+		boolean[][] dp = new boolean[N + 1][maxSum + 1];
+
+		dp[0][0] = true;
+
+		/**
+		 * Loop through all coins and all possible sums.
+		 * 1. If it is possible to make the sum with less than i coins,
+		 * Then DP[i][sum] will be true.
+		 * 2. If it is possible to make a sum of (curSum - value[i])
+		 * DP[curSum] will also be true.
+		 */
+		for (int i = 1; i <= N; i++) {
+			for (int curSum = 0; curSum <= maxSum; curSum++) {
+				dp[i][curSum] = dp[i - 1][curSum];
+				int prevSum = curSum - value[i];
+				if (prevSum >= 0 && dp[i - 1][prevSum]) {
+					dp[i][curSum] = true;
+				}
+			}
+		}
+
+		// Check the number of possible sums.
+		ArrayList<Integer> possible = new ArrayList<>();
+		for (int sum = 1; sum <= maxSum; sum++) {
+			if (dp[N][sum]) {
+				possible.add(sum);
+			}
+		}
+		io.println(possible.size());
+		for (int i : possible) {
+			io.print(i + " ");
+		}
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

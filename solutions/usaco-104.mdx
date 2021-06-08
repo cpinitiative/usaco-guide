@@ -1,0 +1,91 @@
+---
+id: usaco-104
+source: USACO Bronze 2012 January
+title: Haybale Stacking
+author: Óscar Garries, Brad Ma
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_stacking.html)
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main () {
+	int n, k;
+	cin >> n >> k;
+	vector<int> diff(n + 1);
+	for (int i = 0; i < k; i++) { // read input and build difference array
+		int l, r;
+		cin >> l >> r;
+		l--; // make zero-indexed
+		r--;
+		diff[l]++;
+		diff[r + 1]--;
+	}
+
+	int sol[1000000];
+	int tot = 0;
+	for (int i = 0; i < n; i++) { // build prefix sum array
+		tot += diff[i];
+		sol[i] = tot;
+	}
+	sort (sol, sol + n); // sort to get median
+	cout << sol[n / 2] << '\n'; // output the median
+}
+```
+
+</CPPSection>
+	
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.util.*;
+import java.io.*;
+
+class haybaleStacking {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int k = io.nextInt();
+		int[] differenceArray = new int[n + 1]; 
+		// differenceArray[n] is the difference between A[n + 1] and A[n]
+
+		for (int x = 0; x < k; x++) { // read input and build differenceArray
+			int a = io.nextInt() - 1; // read and make zero-indexed
+			int b = io.nextInt() - 1;
+
+			differenceArray[a]++;
+			differenceArray[b + 1]--;
+		}
+
+		int[] prefixSum = new int[n + 1];
+		int total = 0;
+
+		for (int x = 0; x < n; x++) { // build prefixSum array
+			total += differenceArray[x];
+			prefixSum[x] = total;
+		}
+
+		Arrays.sort(prefixSum);
+		io.println(prefixSum[prefixSum.length / 2]);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+	
+</LanguageSection>
+	

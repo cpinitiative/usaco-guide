@@ -1,0 +1,147 @@
+---
+id: cses-1681
+source: CSES
+title: Game Routes
+author: Andrew Wang, Sofia Yang
+---
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+This problem is very similar to the "Longest Flight Route" problem discussed
+earlier in this module. Let $dp[v]$ denote the number of paths reaching $v$. We
+can see,
+
+$$
+dp[v]= \sum_{\text{edge } u\to v \text{ exists}}dp[u],
+$$
+
+with an exception of $dp[1]$, or the starting node, having a value of 1. We
+process the nodes topologically so $dp[u]$ will already have been computed
+before $dp[v]$.
+
+<LanguageSection>
+	
+<CPPSection>
+	
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+int n;
+vector<int> edge[100001];
+vector<int> backedge[100001];
+
+int main(){
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int m; cin >> n >> m;
+	int in_degree[n+1], dp[n+1];
+	for(int i = 0; i <= n; i++){
+		in_degree[i] = 0;
+		dp[i] = 0;
+	}
+	dp[1] = 1;
+	for(int i = 0; i < m; i++){
+		int a,b; cin >> a >> b;
+		edge[a].push_back(b);
+		backedge[b].push_back(a);
+		in_degree[b]++;
+	}
+	//uses Kahn's algorithm
+	queue<int> q;
+	for(int i = 0; i < n; i++) {
+		if(in_degree[i] == 0) {
+			q.push(i);
+		}
+	}
+
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+		for(int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+
+		for(int prev : backedge[node]) {
+			dp[node] = (dp[node] + dp[prev]) % 1000000007;
+		}
+	}
+	cout << dp[n] << endl;
+	return 0;
+}
+```
+			     
+</CPPSection>
+
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class cses1681 {
+	public static final int MOD = (int) 1e9 + 7;
+	public static ArrayList<Integer>[] forwards;
+	public static ArrayList<Integer>[] backwards;
+	public static int[] degree;
+	public static int[] dp;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		forwards = new ArrayList[N];
+		backwards = new ArrayList[N];
+		degree = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			forwards[i] = new ArrayList<>();
+			backwards[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(r.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			forwards[a].add(b);
+			backwards[b].add(a);
+			degree[b]++;
+		}
+
+		//dp[i] is the number of ways to get to node i.
+		dp = new int[N];
+		dp[0] = 1;
+
+		//Add source nodes with only outgoing edges to queue.
+		Queue<Integer> q = new LinkedList<>();
+		for (int i = 0; i < N; i++) {
+			if (degree[i] == 0) {
+				q.add(i);
+			}
+		}
+
+		while (!q.isEmpty()) {
+			//Remove the node from the queue and check its neighbors.
+			int cur = q.poll();
+			for (int next : forwards[cur]) {
+				degree[next]--;
+				//Add new sources to queue.
+				if (degree[next] == 0) {
+					q.add(next);
+				}
+			}
+
+			// Calculate the number of ways by checking backwards.
+			for (int prev : backwards[cur]) {
+				dp[cur] = (dp[cur] + dp[prev]) % MOD;
+			}
+		}
+		System.out.println(dp[N - 1]);
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

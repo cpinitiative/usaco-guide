@@ -1,7 +1,7 @@
 ---
 id: bfs
 title: 'Breadth First Search (BFS)'
-author: Benjamin Qi, Michael Cao, Andi Qu, Neo Wang
+author: Benjamin Qi, Michael Cao, Andi Qu, Neo Wang, Qi Wang
 prerequisites:
   - dfs
   - ff
@@ -16,8 +16,8 @@ frequency: 2
 ## Queues & Deques
 
 <Resources>
-	<Resource source="CPH" title="4.5 - Queues, Deques"></Resource>
-	<Resource source="PAPS" title="3.2, 6.3 - Queues"></Resource>
+	<Resource source="CPH" title="4.5 - Queues, Deques" />
+	<Resource source="PAPS" title="3.2, 6.3 - Queues" />
 </Resources>
 
 ### Queues
@@ -143,7 +143,7 @@ deque.removeLast(); // [1, 3]
 		source="KA@KhanAcademy"
 		title="BFS and its uses"
 		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
-	></Resource>
+	 />
 	<Resource
 		source="Youtube"
 		title="Breadth First Search Algorithm"
@@ -154,11 +154,11 @@ deque.removeLast(); // [1, 3]
 </Resources>
 
 <!-- <Resource source="CPH" title="12.2 - Breadth-First Search">example, implementation</Resource>
-<Resource source="cp-algo" title="" url="graph/01_bfs.html"></Resource>
+<Resource source="cp-algo" title="" url="graph/01_bfs.html" />
 <Resource
 	source="IUSACO"
 	title="10.4 - Graph Traversal Algorithms"
-></Resource>
+ />
 <Resource source="CP2" title="4.2.2 - BFS" /> -->
 
 ### Solution - Message Route
@@ -324,6 +324,75 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+
+import java.util.*;
+
+
+public class Solution {
+	// CodeSnip{Kattio}
+
+	private static Map<Integer, LinkedList<Integer>> adj = new HashMap<>();
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt(), m = io.nextInt();
+		for(int i = 0; i < m; i++) {
+			int a = io.nextInt(), b = io.nextInt();
+			if(adj.get(a) == null) {
+				adj.put(a, new LinkedList<>());
+			}
+
+			if(adj.get(b) == null) {
+				adj.put(b, new LinkedList<>());
+			}
+
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] prev = new int[n+1], dist = new int[n+1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[1] = 1;
+
+		Queue<Integer> bfs = new LinkedList<>();
+		bfs.add(1);
+
+		while(!bfs.isEmpty()) {
+			int top = bfs.poll();
+			if(dist[top] == Integer.MAX_VALUE) continue;
+			if(adj.get(top) != null) {
+				for(int e : adj.get(top)) {
+					if(dist[e] == Integer.MAX_VALUE) {
+						dist[e] = dist[top] + 1;
+						prev[e] = top;
+						bfs.add(e);
+					}
+				}
+			}
+		}
+
+		if(dist[n] == Integer.MAX_VALUE) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			System.out.println(dist[n]);
+			int[] res = new int[dist[n]];
+			int i = dist[n]-1;
+			for(int x = n; x != 0; x = prev[x]) {
+				res[i--] = x;
+			}
+			for(int a : res) System.out.print(a + " ");
+		}
+	}
+}
+```
+
+</JavaSection>
+
 <!--
 <JavaSection>
 
@@ -337,31 +406,31 @@ import java.io.*;
 
 class Main {
 
-    static ArrayList<Integer> edges[];
-    static int dist[];
-    static boolean visited[];
+	static ArrayList<Integer> edges[];
+	static int dist[];
+	static boolean visited[];
 
-    static void bfs(int startNode) {
-        Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation
-        // of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
-        q.add(startNode);
-        visited[startNode] = true;
-        dist[startNode] = 0;
+	static void bfs(int startNode) {
+		Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation
+		// of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
+		q.add(startNode);
+		visited[startNode] = true;
+		dist[startNode] = 0;
 
-        while(!q.isEmpty()) {
-            int currentNode = q.poll();
+		while(!q.isEmpty()) {
+			int currentNode = q.poll();
 
-            for(int adj : edges[currentNode]) {
-                if(!visited[adj]) {
-                    visited[adj] = true;
-                    dist[adj] = dist[currentNode]+1;
-                    q.add(adj);
-                }
-            }
-        }
-    }
+			for(int adj : edges[currentNode]) {
+				if(!visited[adj]) {
+					visited[adj] = true;
+					dist[adj] = dist[currentNode]+1;
+					q.add(adj);
+				}
+			}
+		}
+	}
 
-    public static void main (String[] args) throws Exception {
+	public static void main (String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -375,16 +444,16 @@ class Main {
 		dist = new int[N];
 		visited = new boolean[N];
 		for(int i = 0; i < N; i++) {
-		    edges[i] = new ArrayList<Integer>();
-		    dist[i] = -1;
+			edges[i] = new ArrayList<Integer>();
+			dist[i] = -1;
 		}
 
 		for(int i = 0; i < M; i++) {
-		    st = new StringTokenizer(br.readLine());
-		    int a = Integer.parseInt(st.nextToken());
-		    int b = Integer.parseInt(st.nextToken());
-		    a--; b--;
-		    edges[a].add(b);
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			a--; b--;
+			edges[a].add(b);
 		}
 
 		bfs(start);
@@ -392,8 +461,8 @@ class Main {
 		PrintWriter pw = new PrintWriter(System.out);
 
 		for(int i : dist) pw.print(i + " ");
-	    pw.println();
-	    pw.close();
+		pw.println();
+		pw.close();
 	}
 }
 ```
@@ -506,6 +575,135 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class tracks {
+	static final int[] dx = {0, 0, -1, 1};
+	static final int[] dy = {-1, 1, 0, 0};
+	static int N = 1, H, W;
+	static int[][] grid, count;
+	public static void main(String[] args) {
+		FastIO io = new FastIO();
+
+		H = io.nextInt();
+		W = io.nextInt();
+		grid = new int[H][W];
+
+		for (int i = 0; i < H; i++) {
+			String line = io.next();
+			for (int j = 0; j < W; j++) {
+				grid[i][j] = (line.charAt(j) == 'F')?1:(line.charAt(j) == 'R')?2:-1;
+			}
+		}
+
+		io.println(bfs());
+		io.close();
+	}
+
+	private static int bfs() {
+		count = new int[H][W];
+
+		LinkedList<int[]> q = new LinkedList<>();
+		q.add(new int[]{0,0});
+		count[0][0] = 1;
+
+		while (!q.isEmpty()) {
+			int[] curr = q.poll();
+
+			N = Math.max(N, count[curr[0]][curr[1]]);
+
+			for (int i = 0; i < 4; i++) {
+				int nx = curr[0] + dx[i];
+				int ny = curr[1] + dy[i];
+
+				if(nx < 0 || ny < 0 || nx >= H || ny >= W) continue;
+				if(count[nx][ny] > 0) continue;
+				if(grid[nx][ny] == -1) continue;
+				if(grid[nx][ny] != grid[curr[0]][curr[1]]) {
+					count[nx][ny] = count[curr[0]][curr[1]] + 1;
+					q.addLast(new int[]{nx, ny});
+				}
+				else {
+					count[nx][ny] = count[curr[0]][curr[1]];
+					q.addFirst(new int[]{nx, ny});
+				}
+			}
+		}
+
+		return N;
+	}
+
+	//BeginCodeSnip{FastIO}
+	private static class FastIO extends PrintWriter {
+		private InputStream stream;
+		private byte[] buf = new byte[1<<16];
+		private int curChar, numChars;
+
+		// standard input
+		public FastIO() { this(System.in,System.out); }
+		public FastIO(InputStream i, OutputStream o) {
+			super(o);
+			stream = i;
+		}
+		// file input
+		public FastIO(String i, String o) throws IOException {
+			super(new FileWriter(o));
+			stream = new FileInputStream(i);
+		}
+
+		// throws InputMismatchException() if previously detected end of file
+		private int nextByte() {
+			if (numChars == -1) throw new InputMismatchException();
+			if (curChar >= numChars) {
+				curChar = 0;
+				try {
+					numChars = stream.read(buf);
+				} catch (IOException e) {
+					throw new InputMismatchException();
+				}
+				if (numChars == -1) return -1; // end of file
+			}
+			return buf[curChar++];
+		}
+
+		// to read in entire lines, replace c <= ' '
+		// with a function that checks whether c is a line break
+		public String next() {
+			int c; do { c = nextByte(); } while (c <= ' ');
+			StringBuilder res = new StringBuilder();
+			do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+			return res.toString();
+		}
+		public int nextInt() { // nextLong() would be implemented similarly
+			int c; do { c = nextByte(); } while (c <= ' ');
+			int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+			int res = 0;
+			do {
+				if (c < '0' || c > '9')
+					throw new InputMismatchException();
+				res = 10*res+c-'0';
+				c = nextByte();
+			} while (c > ' ');
+			return res * sgn;
+		}
+		public double nextDouble() { return Double.parseDouble(next()); }
+	}
+	//EndCodeSnip
+}
+```
+
+<Warning>
+
+Due to oj.uz's grading constraints for Java, this solution will TLE on the judge.
+
+</Warning>
+
+</JavaSection>
 
 </LanguageSection>
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useContext } from 'react';
+import { SignInContext } from '../context/SignInContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
@@ -26,12 +27,15 @@ export default function ProblemSolutions({
     undoUpvoteSolution,
     mutateSolution,
   } = useUserProblemSolutionActions();
-  const { firebaseUser, signIn } = useContext(UserDataContext);
+  const { firebaseUser } = useContext(UserDataContext);
+  const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
   );
+
+  console.log(solutions, publicSolutions);
 
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
