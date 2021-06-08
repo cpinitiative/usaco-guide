@@ -203,23 +203,23 @@ stack and recursively backtracking until $u$ is reached again.
 #include <algorithm>
 using namespace std;
 
-bool visited[(int)10e5 + 5], on_stack[(int)10e5 + 5];
+bool visited[(int)10e5 + 5], onStack[(int)10e5 + 5];
 vector<int> adj[(int)10e5 + 5];
 vector<int> cycle;
 int N, M;
 bool dfs(int n) {
-	visited[n] = on_stack[n] = true;
+	visited[n] = onStack[n] = true;
 	for (int u : adj[n]) {
-		if(on_stack[u]) {
+		if(onStack[u]) {
 			cycle.push_back(n); // start cycle
-			on_stack[n] = on_stack[u] = false;
+			onStack[n] = onStack[u] = false;
 			return true;
 		}
 		else if(!visited[u]) {
 			if(dfs(u)) { // continue cycle
-				if(on_stack[n]) {
+				if(onStack[n]) {
 					cycle.push_back(n);
-					on_stack[n] = false;
+					onStack[n] = false;
 					return true;
 				} else { // found u again
 					cycle.push_back(n);
@@ -230,7 +230,7 @@ bool dfs(int n) {
 				return false;
 		}
 	}
-	on_stack[n] = false;
+	onStack[n] = false;
 	return false;
 }
 int main()
@@ -265,7 +265,7 @@ import java.util.*;
 
 public class cycle {
 	static List<Integer>[] adj;
-	static boolean[] visited, on_stack;
+	static boolean[] visited, onStack;
 	static List<Integer> cycle;
 	static int N, M;
 	public static void main(String[] args) throws IOException {
@@ -277,7 +277,7 @@ public class cycle {
 		adj = new List[N + 1];
 		cycle = new ArrayList<Integer>();
 		visited = new boolean[N + 1];
-		on_stack = new boolean[N + 1];
+		onStack = new boolean[N + 1];
 		for (int i = 0; i <= N; i++) {
 			adj[i] = new ArrayList<Integer>();
 		}
@@ -302,17 +302,17 @@ public class cycle {
 	}
 
 	public static boolean dfs(int n) {
-		visited[n] = on_stack[n] = true;
+		visited[n] = onStack[n] = true;
 		for (int u: adj[n]) {
-			if (on_stack[u]) {
+			if (onStack[u]) {
 				cycle.add(n);
-				on_stack[n] = on_stack[u] = false;
+				onStack[n] = onStack[u] = false;
 				return true;
 			} else if (!visited[u]) {
 				if (dfs(u)) {
-					if (on_stack[n]) {
+					if (onStack[n]) {
 						cycle.add(n);
-						on_stack[n] = false;
+						onStack[n] = false;
 						return true;
 					} else {
 						cycle.add(n);
@@ -323,7 +323,7 @@ public class cycle {
 					return false;
 			}
 		}
-		on_stack[n] = false;
+		onStack[n] = false;
 		return false;
 	}
 }
@@ -349,7 +349,7 @@ The BFS version is known as
 <CPPSection>
 
 ```cpp
-int in_degree[100000];
+int inDegree[100000];
 vector<int> edge[100000];
 
 int N; //number of nodes
@@ -357,7 +357,7 @@ int N; //number of nodes
 void compute() {
 	queue<int> q;
 	for (int i = 0; i < N; i++) {
-		if (in_degree[i] == 0) {
+		if (inDegree[i] == 0) {
 			q.push(i);
 		}
 	}
@@ -367,8 +367,8 @@ void compute() {
 		q.pop();
 
 		for (int next : edge[node]) {
-			in_degree[next]--;
-			if(in_degree[next] == 0) q.push(next);
+			inDegree[next]--;
+			if(inDegree[next] == 0) q.push(next);
 		}
 
 		// Put problem-specific processing here
@@ -383,7 +383,7 @@ void compute() {
 <JavaSection>
 
 ```java
-static int[] in_degree;
+static int[] inDegree;
 static List<Integer>[] edge; //adjacency list
 
 static int N; //number of nodes
@@ -391,7 +391,7 @@ static int N; //number of nodes
 static void topological_sort() {
 	Queue<Integer> q = new LinkedList<>();
 	for (int i = 0; i < N; i++) {
-		if (in_degree[i] == 0) {
+		if (inDegree[i] == 0) {
 			q.add(i);
 		}
 	}
@@ -400,8 +400,8 @@ static void topological_sort() {
 		int node = q.poll();
 
 		for (int next : edge[node]) {
-			in_degree[next]--;
-			if(in_degree[next] == 0) q.add(next);
+			inDegree[next]--;
+			if(inDegree[next] == 0) q.add(next);
 		}
 
 		// Put problem-specific processing here
@@ -478,7 +478,7 @@ using namespace std;
 
 int prev_flight[100000];
 int dist[100000];
-int in_degree[100000];
+int inDegree[100000];
 vector<int> edge[100000];
 vector<int> backEdge[100000];
 
@@ -488,7 +488,7 @@ int N, M;
 void compute() {
 	queue<int> q;
 	for(int i = 0; i < N; i++) {
-		if(in_degree[i] == 0) {
+		if(inDegree[i] == 0) {
 			q.push(i);
 		}
 	}
@@ -498,8 +498,8 @@ void compute() {
 		q.pop();
 
 		for(int next : edge[node]) {
-			in_degree[next]--;
-			if(in_degree[next] == 0) q.push(next);
+			inDegree[next]--;
+			if(inDegree[next] == 0) q.push(next);
 		}
 
 		//The below block computes the DP
@@ -528,14 +528,14 @@ int main() { //See "General - Fast I/O" for more information about the first two
 	for(int i = 0; i < N; i++) {
 		prev_flight[i] = -1;
 		dist[i] = -999999999;
-		in_degree[i] = 0;
+		inDegree[i] = 0;
 	}
 
 	for(int i = 0; i < M; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--, b--;
-		in_degree[b]++;
+		inDegree[b]++;
 		edge[a].push_back(b);
 
 		backEdge[b].push_back(a);
@@ -581,7 +581,7 @@ import java.io.*;
 
 //longest_path
 public class Main {
-	static int[] prev_flight, dist, in_degree;
+	static int[] prev_flight, dist, inDegree;
 	static List<Integer>[] edge;
 	static List<Integer>[] backEdge;
 	static int N, M;
@@ -590,7 +590,7 @@ public class Main {
 	static void compute() {
 		Queue<Integer> q = new ArrayDeque<Integer>();
 		for(int i = 0; i < N; i++) {
-			if(in_degree[i] == 0) {
+			if(inDegree[i] == 0) {
 				q.add(i);
 			}
 		}
@@ -599,8 +599,8 @@ public class Main {
 			int node = q.poll();
 
 			for(int next : edge[node]) {
-				in_degree[next]--;
-				if(in_degree[next] == 0) q.add(next);
+				inDegree[next]--;
+				if(inDegree[next] == 0) q.add(next);
 			}
 
 			//The below block computes the DP
@@ -627,14 +627,14 @@ public class Main {
 
 		prev_flight = new int[N];
 		dist = new int[N];
-		in_degree = new int[N];
+		inDegree = new int[N];
 		edge = new List[N];
 		backEdge = new List[N];
 
 		for(int i = 0; i < N; i++) {
 			prev_flight[i] = -1;
 			dist[i] = -999999999;
-			in_degree[i] = 0;
+			inDegree[i] = 0;
 			edge[i] = new ArrayList<>();
 			backEdge[i] = new ArrayList<>();
 		}
@@ -643,7 +643,7 @@ public class Main {
 			int a = sc.nextInt() - 1; 
 			int b = sc.nextInt() - 1;
 
-			in_degree[b]++;
+			inDegree[b]++;
 			edge[a].add(b);
 			backEdge[b].add(a);
 		}
