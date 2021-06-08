@@ -8,10 +8,10 @@ author: Jesse Choe
 [Official Editorial](https://assets.codeforces.com/rounds/1468/tutorials.pdf)
 
 We can initially attempt this problem by figuring out which firecrackers should explode. Obviously, we should attempt to explode the firecrackers with a minimal
-detonation time to increase the number of firecrackers exploded before eventually being caught. We can also observe that the firecrackers with a longer detonation 
+detonation time to increase the number of firecrackers exploded before eventually being caught. Also, observe that the firecrackers with a longer detonation 
 time should be dropped first.
 
-To find the maximum number of firecrackers before the hooligan gets caught by the guard, we can sort the detonation times in increasing order and figure out the
+To find the maximum number of firecrackers before the hooligan gets caught by the guard, sort the detonation times in increasing order and figure out the
 maximum number of firecrackers to drop before getting caught by applying binary search.
 
 If we can determine the amount of time before getting caught, then the binary search will be trivial.
@@ -50,7 +50,7 @@ ll time_before_caught;
 bool works(vl exploding_times, ll firecrackers_exploded) {
 	int current_time = 1;
 	for (int i = firecrackers_exploded - 1; i >= 0; i--) {
-		if(current_time + exploding_times[i] > time_before_caught){
+		if(current_time + exploding_times[i] > time_before_caught) {
 			return false;
 		} else {
 			++current_time;
