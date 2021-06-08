@@ -121,30 +121,30 @@ import java.util.*;
 import java.io.*;
 
 public class CourseSchedule {
-	public static ArrayList <Integer> g[];
-	public static ArrayList <Integer> topo = new ArrayList < Integer > ();
+	public static List<Integer>[] g;
+	public static List<Integer> topo = new ArrayList<Integer>();
 	public static int N;
-	public static boolean visited[];
+	public static boolean[] visited;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
-		g = new ArrayList[N];
+		g = new List[N];
 		visited = new boolean[N];
 		for (int i = 0; i < N; i++) {
-			g[i] = new ArrayList <Integer> ();
+			g[i] = new ArrayList<Integer>();
 		}
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			a--;
-			int b = Integer.parseInt(st.nextToken());
-			b--;
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
 			g[a].add(b);
 		}
+
 		compute();
-		int ind[] = new int[N];
+		int[] ind = new int[N];
+		
 		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
 		for (int i = 0; i < N; i++)
 			for (int j: g[i])
@@ -164,7 +164,7 @@ public class CourseSchedule {
 		Collections.reverse(topo);
 	}
 	public static void dfs(int v) { //not always lexigraphically least
-		for (Integer e: g[v]) {
+		for (Integer e : g[v]) {
 			if (!visited[e]) {
 				visited[e] = true;
 				dfs(e);
@@ -264,9 +264,9 @@ import java.io.*;
 import java.util.*;
 
 public class cycle {
-	public static ArrayList < Integer > [] adj;
-	public static boolean visited[], on_stack[];
-	public static ArrayList < Integer > cycle;
+	public static List<Integer>[] adj;
+	public static boolean[] visited, on_stack;
+	public static List<Integer> cycle;
 	public static int N, M;
 	public static void main(String[] args) throws IOException {
 		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
@@ -274,12 +274,12 @@ public class cycle {
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		adj = new ArrayList[N + 1];
-		cycle = new ArrayList < Integer > ();
+		adj = new List[N + 1];
+		cycle = new ArrayList<Integer>();
 		visited = new boolean[N + 1];
 		on_stack = new boolean[N + 1];
 		for (int i = 0; i <= N; i++) {
-			adj[i] = new ArrayList < Integer > ();
+			adj[i] = new ArrayList<Integer>();
 		}
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(sc.readLine());
@@ -372,6 +372,7 @@ void compute() {
 		}
 
 		// Put problem-specific processing here
+		// Push in value to current ordering if no need for processing
 	}
 
 }
@@ -382,13 +383,13 @@ void compute() {
 <JavaSection>
 
 ```java
-static int in_degree[];
-static ArrayList<Integer> edge[]; //adjacency list
+static int[] in_degree;
+static List<Integer>[] edge; //adjacency list
 
 static int N; //number of nodes
 
 static void topological_sort() {
-	Queue<Integer> q = new ArrayDeque<Integer>();
+	Queue<Integer> q = new LinkedList<>();
 	for (int i = 0; i < N; i++) {
 		if (in_degree[i] == 0) {
 			q.add(i);
@@ -404,6 +405,7 @@ static void topological_sort() {
 		}
 
 		// Put problem-specific processing here
+		// Push in value to current ordering if no need for processing
 	}
 }
 ```
@@ -411,6 +413,13 @@ static void topological_sort() {
 </JavaSection>
 
 </LanguageSection>
+
+<Info title="Pro Tip">
+
+If the array containing the end order does not equal to the number of elements that needed to be sorted, then 
+there is a cycle in the graph constructed by `edges`.
+
+</Info>
 
 <Optional>
 
@@ -573,9 +582,9 @@ import java.io.*;
 //longest_path
 public class Main {
 
-	static int prev_flight[], dist[], in_degree[];
-	static ArrayList<Integer> edge[];
-	static ArrayList<Integer> backEdge[];
+	static int[] prev_flight, dist, in_degree;
+	static List<Integer>[] edge;
+	static List<Integer>[] backEdge;
 
 	static int N, M;
 
@@ -621,20 +630,21 @@ public class Main {
 		prev_flight = new int[N];
 		dist = new int[N];
 		in_degree = new int[N];
-		edge = new ArrayList[N];
-		backEdge = new ArrayList[N];
+		edge = new List[N];
+		backEdge = new List[N];
 
 		for(int i = 0; i < N; i++) {
 			prev_flight[i] = -1;
 			dist[i] = -999999999;
 			in_degree[i] = 0;
-			edge[i] = new ArrayList<Integer>();
-			backEdge[i] = new ArrayList<Integer>();
+			edge[i] = new ArrayList<>();
+			backEdge[i] = new ArrayList<>();
 		}
 
 		for(int i = 0; i < M; i++) {
-			int a = sc.nextInt(), b = sc.nextInt();
-			a--; b--;
+			int a = sc.nextInt() - 1; 
+			int b = sc.nextInt() - 1;
+
 			in_degree[b]++;
 			edge[a].add(b);
 			backEdge[b].add(a);
@@ -644,7 +654,7 @@ public class Main {
 
 		PrintWriter pw = new PrintWriter(System.out);
 
-		ArrayDeque<Integer> answer = new ArrayDeque<Integer>(); //Acts as a Stack
+		ArrayDeque<Integer> answer = new ArrayDeque<>(); //Acts as a Stack
 		int temp = N-1;
 
 		boolean contains0 = false;
