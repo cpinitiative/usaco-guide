@@ -383,29 +383,31 @@ void compute() {
 <JavaSection>
 
 ```java
-static int[] inDegree;
-static List<Integer>[] edge; //adjacency list
+public class TopoSort {
+	static int[] inDegree;
+	static List<Integer>[] edge; //adjacency list
 
-static int N; //number of nodes
+	static int N; //number of nodes
 
-static void topological_sort() {
-	Queue<Integer> q = new LinkedList<>();
-	for (int i = 0; i < N; i++) {
-		if (inDegree[i] == 0) {
-			q.add(i);
-		}
-	}
-
-	while (!q.isEmpty()) {
-		int node = q.poll();
-
-		for (int next : edge[node]) {
-			inDegree[next]--;
-			if(inDegree[next] == 0) q.add(next);
+	static void topological_sort() {
+		Queue<Integer> q = new LinkedList<>();
+		for (int i = 0; i < N; i++) {
+			if (inDegree[i] == 0) {
+				q.add(i);
+			}
 		}
 
-		// Put problem-specific processing here
-		// Push in value to current ordering if no need for processing
+		while (!q.isEmpty()) {
+			int node = q.poll();
+
+			for (int next : edge[node]) {
+				inDegree[next]--;
+				if(inDegree[next] == 0) q.add(next);
+			}
+
+			// Put problem-specific processing here
+			// Push in value to current ordering if no need for processing
+		}
 	}
 }
 ```
