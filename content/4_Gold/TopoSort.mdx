@@ -476,7 +476,7 @@ topological sorting:
 
 using namespace std;
 
-int prev_flight[100000];
+int prevFlight[100000];
 int dist[100000];
 int inDegree[100000];
 vector<int> edge[100000];
@@ -514,7 +514,7 @@ void compute() {
 
 		dist[node] = mx;
 		if(node == 0) dist[node] = 1;
-		prev_flight[node] = mx_node;
+		prevFlight[node] = mx_node;
 	}
 
 }
@@ -526,7 +526,7 @@ int main() { //See "General - Fast I/O" for more information about the first two
 	cin >> N >> M;
 
 	for(int i = 0; i < N; i++) {
-		prev_flight[i] = -1;
+		prevFlight[i] = -1;
 		dist[i] = -999999999;
 		inDegree[i] = 0;
 	}
@@ -551,7 +551,7 @@ int main() { //See "General - Fast I/O" for more information about the first two
 
 	while(temp != -1 && dist[temp] >= 0) {
 		answer.push(temp);
-		temp = prev_flight[temp];
+		temp = prevFlight[temp];
 		if(temp == 0) contains0 = true;
 	}
 
@@ -581,7 +581,7 @@ import java.io.*;
 
 //longest_path
 public class Main {
-	static int[] prev_flight, dist, inDegree;
+	static int[] prevFlight, dist, inDegree;
 	static List<Integer>[] edge;
 	static List<Integer>[] backEdge;
 	static int N, M;
@@ -615,7 +615,7 @@ public class Main {
 
 			dist[node] = mx;
 			if(node == 0) dist[node] = 1;
-			prev_flight[node] = mx_node;
+			prevFlight[node] = mx_node;
 		}
 	}
 
@@ -625,14 +625,14 @@ public class Main {
 		N = sc.nextInt();
 		M = sc.nextInt();
 
-		prev_flight = new int[N];
+		prevFlight = new int[N];
 		dist = new int[N];
 		inDegree = new int[N];
 		edge = new List[N];
 		backEdge = new List[N];
 
 		for(int i = 0; i < N; i++) {
-			prev_flight[i] = -1;
+			prevFlight[i] = -1;
 			dist[i] = -999999999;
 			inDegree[i] = 0;
 			edge[i] = new ArrayList<>();
@@ -660,7 +660,7 @@ public class Main {
 
 		while(temp != -1 && dist[temp] >= 0) {
 			answer.push(temp);
-			temp = prev_flight[temp];
+			temp = prevFlight[temp];
 			if(temp == 0) contains0 = true;
 		}
 
