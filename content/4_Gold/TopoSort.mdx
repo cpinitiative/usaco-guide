@@ -203,23 +203,23 @@ stack and recursively backtracking until $u$ is reached again.
 #include <algorithm>
 using namespace std;
 
-bool visited[(int)10e5 + 5], onStack[(int)10e5 + 5];
+bool visited[(int)10e5 + 5], on_stack[(int)10e5 + 5];
 vector<int> adj[(int)10e5 + 5];
 vector<int> cycle;
 int N, M;
 bool dfs(int n) {
-	visited[n] = onStack[n] = true;
+	visited[n] = on_stack[n] = true;
 	for (int u : adj[n]) {
-		if(onStack[u]) {
+		if(on_stack[u]) {
 			cycle.push_back(n); // start cycle
-			onStack[n] = onStack[u] = false;
+			on_stack[n] = on_stack[u] = false;
 			return true;
 		}
 		else if(!visited[u]) {
 			if(dfs(u)) { // continue cycle
-				if(onStack[n]) {
+				if(on_stack[n]) {
 					cycle.push_back(n);
-					onStack[n] = false;
+					on_stack[n] = false;
 					return true;
 				} else { // found u again
 					cycle.push_back(n);
@@ -230,7 +230,7 @@ bool dfs(int n) {
 				return false;
 		}
 	}
-	onStack[n] = false;
+	on_stack[n] = false;
 	return false;
 }
 int main()
@@ -349,7 +349,7 @@ The BFS version is known as
 <CPPSection>
 
 ```cpp
-int inDegree[100000];
+int in_degree[100000];
 vector<int> edge[100000];
 
 int N; //number of nodes
@@ -357,7 +357,7 @@ int N; //number of nodes
 void compute() {
 	queue<int> q;
 	for (int i = 0; i < N; i++) {
-		if (inDegree[i] == 0) {
+		if (in_degree[i] == 0) {
 			q.push(i);
 		}
 	}
@@ -367,8 +367,8 @@ void compute() {
 		q.pop();
 
 		for (int next : edge[node]) {
-			inDegree[next]--;
-			if(inDegree[next] == 0) q.push(next);
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
 		}
 
 		// Put problem-specific processing here
@@ -478,9 +478,9 @@ topological sorting:
 
 using namespace std;
 
-int prevFlight[100000];
+int prev_flight[100000];
 int dist[100000];
-int inDegree[100000];
+int in_degree[100000];
 vector<int> edge[100000];
 vector<int> backEdge[100000];
 
@@ -490,7 +490,7 @@ int N, M;
 void compute() {
 	queue<int> q;
 	for(int i = 0; i < N; i++) {
-		if(inDegree[i] == 0) {
+		if(in_degree[i] == 0) {
 			q.push(i);
 		}
 	}
@@ -500,8 +500,8 @@ void compute() {
 		q.pop();
 
 		for(int next : edge[node]) {
-			inDegree[next]--;
-			if(inDegree[next] == 0) q.push(next);
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
 		}
 
 		//The below block computes the DP
@@ -516,7 +516,7 @@ void compute() {
 
 		dist[node] = mx;
 		if(node == 0) dist[node] = 1;
-		prevFlight[node] = mx_node;
+		prev_flight[node] = mx_node;
 	}
 
 }
@@ -528,16 +528,16 @@ int main() { //See "General - Fast I/O" for more information about the first two
 	cin >> N >> M;
 
 	for(int i = 0; i < N; i++) {
-		prevFlight[i] = -1;
+		prev_flight[i] = -1;
 		dist[i] = -999999999;
-		inDegree[i] = 0;
+		in_degree[i] = 0;
 	}
 
 	for(int i = 0; i < M; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--, b--;
-		inDegree[b]++;
+		in_degree[b]++;
 		edge[a].push_back(b);
 
 		backEdge[b].push_back(a);
@@ -553,7 +553,7 @@ int main() { //See "General - Fast I/O" for more information about the first two
 
 	while(temp != -1 && dist[temp] >= 0) {
 		answer.push(temp);
-		temp = prevFlight[temp];
+		temp = prev_flight[temp];
 		if(temp == 0) contains0 = true;
 	}
 
