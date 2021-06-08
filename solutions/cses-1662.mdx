@@ -2,15 +2,13 @@
 id: cses-1662
 source: CSES
 title: Subarray Divisibility
-author: Qi Wang
+author: Qi Wang, Brad Ma
 ---
 
 # Problem
 
 We are asked to find the number of subarrays that are divisible by its size
 given the array.
-
-<Spoiler title="Solution">
 
 With our prefix sums knowledge,
 
@@ -41,9 +39,12 @@ $$
 $$
 
 The answer is just the sum of this quantity over all $i$.
-
+## Implementation
 **Time Complexity:** $\mathcal{O}(N)$
 
+<LanguageSection>
+<CPPSection>
+	
 ```cpp
 #include <iostream>
 #include <vector>
@@ -80,5 +81,48 @@ int main() {
 	cout << ans << endl;
 }
 ```
+</CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
 
-</Spoiler>
+public class subarrayDivisibility {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+
+		long[] M = new long[n];
+		long prefixSums = 0;
+		M[0] = 1;
+
+		for (int i = 0; i < n; i++) {
+			int a = io.nextInt();
+			prefixSums += a;
+			// remember to account for negative sums
+			M[((int) (prefixSums % n) + n) % n]++;
+		}
+
+		long answer = 0;
+		for (long x : M) {
+			/*
+			 *  calculating the # of pairs, this calculates the pairs without
+			 *  duplicates and reverse groups
+			 */
+
+			answer += x * (x - 1) / 2;
+		}
+
+		io.println(answer);
+		io.close();
+	}
+				      
+	//CodeSnip{Kattio}
+}
+```	
+</JavaSection>
+	
+</LanguageSection>
