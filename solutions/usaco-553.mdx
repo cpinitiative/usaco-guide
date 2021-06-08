@@ -22,18 +22,20 @@ author: Maggie Liu
 #include <algorithm>
 using namespace std;
 
+const int MAX_N = 500;
+
 int main()
 {
 	freopen("palpath.in", "r", stdin);
 	freopen("palpath.out", "w", stdout);
 	int n;
 	cin >> n;
-	string grid[500];
+	string grid[MAX_N];
 	for (int i = 0; i < n; i++)
 	{
 		cin >> grid[i];
 	}
-	long long prev[500][500]{};
+	long long prev[MAX_N][MAX_N]{};
 	for (int i = 0; i < n; i++)
 	{
 		prev[i][i] = 1;
@@ -45,7 +47,7 @@ int main()
 		 * starting on row i and ending on row j
 		 * with the middle of the string on the diagonal
 		 */
-		long long dp[500][500]{};
+		long long dp[MAX_N][MAX_N]{};
 		for (int row1 = 0; row1 < n; row1++)
 		{
 			int col1 = n - 1 - row1 - a;
