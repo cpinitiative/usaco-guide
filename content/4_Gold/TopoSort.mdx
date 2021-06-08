@@ -121,7 +121,7 @@ import java.util.*;
 import java.io.*;
 
 public class CourseSchedule {
-	static List<Integer>[] g;
+	static List<Integer>[] graph;
 	static List<Integer> topo = new ArrayList<Integer>();
 	static int N;
 	static boolean[] visited;
@@ -130,16 +130,16 @@ public class CourseSchedule {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
-		g = new List[N];
+		graph = new List[N];
 		visited = new boolean[N];
 		for (int i = 0; i < N; i++) {
-			g[i] = new ArrayList<Integer>();
+			graph[i] = new ArrayList<Integer>();
 		}
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
 			int b = Integer.parseInt(st.nextToken()) - 1;
-			g[a].add(b);
+			graph[a].add(b);
 		}
 
 		compute();
@@ -147,7 +147,7 @@ public class CourseSchedule {
 		
 		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
 		for (int i = 0; i < N; i++)
-			for (int j : g[i])
+			for (int j : graph[i])
 				if (ind[j] <= ind[i]) {
 					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
 					System.exit(0);
@@ -164,7 +164,7 @@ public class CourseSchedule {
 		Collections.reverse(topo);
 	}
 	public static void dfs(int v) { //not always lexicographically least
-		for (Integer e : g[v]) {
+		for (Integer e : graph[v]) {
 			if (!visited[e]) {
 				visited[e] = true;
 				dfs(e);
