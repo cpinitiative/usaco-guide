@@ -2,7 +2,7 @@
 id: usaco-784
 source: USACO Bronze 2018 January
 title: Lifeguards
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Ananth Kashyap
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_lifeguards_bronze_jan18.html)
@@ -76,16 +76,16 @@ lifeguards = [list(map(int, data[i + 1].split(' '))) for i in range(n)]
 max_time_covered = 0
 
 # Simulate firing each cow and computing the total time covered by the remaining life guards
-# Compute the maximum of these covered times
+# Compute the maximum of these times
 for i in range(n):
-  time_covered = 0
-  for v in range(1, 1001):
-    for j in range(n):
-      if j != i:
-        if v >= lifeguards[j][0] and v < lifeguards[j][1]:
-          time_covered += 1
-          break
-  max_time_covered = max(time_covered, max_time_covered)
+	time_covered = 0
+	for v in range(1, 1001):
+		for j in range(n):
+			if j != i:
+				if v >= lifeguards[j][0] and v < lifeguards[j][1]:
+					time_covered += 1
+					break
+	max_time_covered = max(time_covered, max_time_covered)
 
 print(max_time_covered, file=open('lifeguards.out', 'w'))
 ```
