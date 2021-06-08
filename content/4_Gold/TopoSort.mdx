@@ -98,7 +98,7 @@ int main() {
 	int M; cin >> N >> M;
 	for (int i = 0; i < M; ++i) {
 		int a,b; cin >> a >> b;
-		graph[a-1].pb(b-1);
+		graph[a - 1].pb(b-1);
 	}
 	compute();
 	vector<int> ind(N);
@@ -203,13 +203,13 @@ stack and recursively backtracking until $u$ is reached again.
 #include <algorithm>
 using namespace std;
 
-bool visited[(int)10e5+5], on_stack[(int)10e5+5];
-vector<int> adj[(int)10e5+5];
+bool visited[(int)10e5 + 5], on_stack[(int)10e5 + 5];
+vector<int> adj[(int)10e5 + 5];
 vector<int> cycle;
 int N, M;
 bool dfs(int n) {
 	visited[n] = on_stack[n] = true;
-	for (int u:adj[n]) {
+	for (int u : adj[n]) {
 		if(on_stack[u]) {
 			cycle.push_back(n); // start cycle
 			on_stack[n] = on_stack[u] = false;
@@ -248,7 +248,7 @@ int main()
 		cout << "IMPOSSIBLE";
 	else {
 		reverse(cycle.begin(), cycle.end());
-		cout << cycle.size()+1 << "\n";
+		cout << cycle.size() + 1 << "\n";
 		for(int n : cycle) cout << n << " ";
 		cout << cycle.at(0);
 	}
@@ -556,9 +556,9 @@ int main() { //See "General - Fast I/O" for more information about the first two
 	}
 
 	if(contains0) {
-		cout << dist[N-1] << "\n";
+		cout << dist[N - 1] << "\n";
 		while(!answer.empty()) {
-			cout << answer.top()+1;
+			cout << answer.top() + 1;
 			answer.pop();
 			if(!answer.empty()) cout << " ";
 		}
@@ -653,7 +653,7 @@ public class Main {
 		PrintWriter pw = new PrintWriter(System.out);
 
 		ArrayDeque<Integer> answer = new ArrayDeque<>(); //Acts as a Stack
-		int temp = N-1;
+		int temp = N - 1;
 
 		boolean contains0 = false;
 		if(temp == 0) contains0 = true;
@@ -665,9 +665,9 @@ public class Main {
 		}
 
 		if(contains0) {
-			pw.println(dist[N-1]);
+			pw.println(dist[N - 1]);
 			while(!answer.isEmpty()) {
-				pw.print(answer.peekFirst()+1);
+				pw.print(answer.peekFirst() + 1);
 				answer.pop();
 				if(!answer.isEmpty()) pw.print(" ");
 			}
