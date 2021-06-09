@@ -9,9 +9,9 @@ author: Dong Liu
 
 Lets say that we can maintain an array $a$, which is sorted by height. To answer a query of type `C`, we can simply binary search on the enpoints of the query.
 
-Now, we just need to support updates. Lets first binary search the first position $l$ such that $a[l]\geq h$. Let $r = l + c - 1$. We just need to increment the range, $[l, r]$ by $1$. 
+Now, we just need to support updates. Lets first binary search the first position $l$ such that $a[l]\geq h$. Let $r = l + c - 1$. We just need to increment the range, $[l, r]$ by $1$ while maintaining a sorted order.
 
-However, we cannot just increment the range, $[l, r]$ by $1$ because this might break the sorted order. This happens iff there is some index inside $i\in [l, r]$, such that $a[i] = a[r+1]$; if we increment the range $[l, r]$, then $a[i] > a[r + 1]$, which is an inversion.
+However, we cannot just add $1$ to all elements in the range, $[l, r]$ because this might break the sorted order. This happens iff there is some index inside $i\in [l, r]$, such that $a[i] = a[r + 1]$; if we increment the range $[l, r]$, then $a[i] > a[r + 1]$, which is an inversion.
 
 To prevent this error, we find another range $[l', r']$, such that $a[i] = a[r]$ for all $i\in [l', r']$; this can be found with binary search. Since all $j < i$ sastify $a[j] < a[i]$, we can increment $[l, l' - 1]$ first. Then, since we need to increment a total of $c$ elements, we have $c - (l' - l)$ elements left. We increment the range $[r' - (c - (l' - l)) + 1, r']$ by one.
 
