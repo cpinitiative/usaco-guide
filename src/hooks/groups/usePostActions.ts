@@ -67,7 +67,20 @@ export function usePostActions(groupId: string) {
     },
     updatePost,
     createNewProblem: async (post: PostData, order = 10) => {
-      const defaultProblem: Omit<GroupProblemData, 'id'> = {
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          groupId,
+          'posts',
+          post.id,
+          'problems'
+        )
+      );
+      const defaultProblem: GroupProblemData = {
+        id: docRef.id,
         postId: post.id,
         name: 'Untitled Problem',
         body: '',
@@ -82,18 +95,6 @@ export function usePostActions(groupId: string) {
         solutionReleaseMode: 'due-date',
         order,
       };
-      const firestore = getFirestore(firebaseApp);
-      const batch = writeBatch(firestore);
-      const docRef = doc(
-        collection(
-          getFirestore(firebaseApp),
-          'groups',
-          groupId,
-          'posts',
-          post.id,
-          'problems'
-        )
-      );
       batch.set(docRef, defaultProblem);
       batch.update(
         doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),

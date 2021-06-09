@@ -63,10 +63,10 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const { userProgressOnModules, setModuleProgress, lang } = useContext(
-    UserDataContext
-  );
+  const { userProgressOnModules, setModuleProgress, lang } =
+    useContext(UserDataContext);
   React.useEffect(() => {
+    // console.log('FOUND USERLANG: ' + lang);
     if (lang !== 'showAll') {
       updateLangURL(lang);
     }
@@ -101,7 +101,6 @@ export default function MarkdownLayout({
       url: moduleIDToURLMap[cur.node.frontmatter.id],
     }));
   }, [data.allXdm]);
-  // console.log(moduleLinks);
 
   const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {

@@ -1,0 +1,97 @@
+---
+id: usaco-491
+source: USACO Silver 2014 December
+title: Piggy Back
+author: Qi Wang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_piggyback_silver.html)
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class PiggyBack {
+	static int B, E, P, N, M, A = Integer.MAX_VALUE;
+	static List<Integer>[] adj;
+	static int[][] dist;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("piggyback");
+
+		B = io.nextInt();
+		E = io.nextInt();
+		P = io.nextInt();
+		N = io.nextInt();
+		M = io.nextInt();
+
+		adj = new List[N];
+		dist = new int[3][N];
+
+		for (int i = 0; i < 3; i++) {
+			Arrays.fill(dist[i], -1);
+		}
+
+		for (int i = 0; i < N; i++) {
+			adj[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+
+		bfs(0, 0);
+		bfs(1, 1);
+		bfs(N-1, 2);
+
+		for (int i = 0; i < N; i++) {
+			A = Math.min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
+		}
+
+
+		io.println(A);
+		io.close();
+	}
+
+	private static void bfs(int s, int ix) {
+		Queue<Path> q = new LinkedList<>();
+		q.add(new Path(s, 0));
+		dist[ix][s] = 0;
+
+		while(!q.isEmpty()) {
+			Path curr = q.poll();
+
+			for (Integer n : adj[curr.i]) {
+				if(dist[ix][n] != -1) continue;
+				dist[ix][n] = curr.d + 1;
+
+				q.add(new Path(n, dist[ix][n]));
+			}
+		}
+	}
+
+	private static class Path {
+		int i, d;
+		public Path(int a, int b) {
+			i = a;
+			d = b;
+		}
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
