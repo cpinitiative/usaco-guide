@@ -104,7 +104,7 @@ export const Authors: Author[] = [
     photo: "Dong",
     name: "Bing-Dong Liu",
     title: "Content Manager",
-    blurb: "Bing-Dong Liu is a USACO Platinum competitor.",
+    blurb: "Bing-Dong Liu is a USACO Platinum competitor who creates USACO Training problems video editorials.",
     codeforces: "lunchbox",
     github: "dongliu0426",
     email: "dongliu0426@gmail.com",
