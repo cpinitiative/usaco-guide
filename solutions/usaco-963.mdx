@@ -2,7 +2,7 @@
 id: usaco-963
 source: USACO Bronze 2019 December
 title: Cow Gymnastics
-author: Krish Thawani (Java), Hua Zhi Vee (C++)
+author: Krish Thawani (Java), Hua Zhi Vee (C++), Ananth Kashyap (Python)
 ---
 
 ## Video Solution (Jonathan Paulson)
@@ -14,7 +14,7 @@ author: Krish Thawani (Java), Hua Zhi Vee (C++)
 [Official Analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
 
 <LanguageSection>
-<CPPSection />
+
 <JavaSection>
 
 ```java
@@ -132,4 +132,31 @@ int main(){
 ```
 
 </CPPSection>
+	
+<PySection>
+
+```py
+file_in = open('gymnastics.in')
+data = file_in.read().strip().split('\n')
+k, n = map(int, data[0].split())
+
+cows = [list(map(int, data[i + 1].split())) for i in range(k)]
+
+ans = 0
+
+# Find the number of pairs of cows which appear out of order in any practice session
+for i in range(n - 1):
+	for j in range(i + 1, n):
+		count = 0
+		for l in range(1, k):
+			if cows[l].index(cows[0][j]) > cows[l].index(cows[0][i]):
+				count += 1
+		if count == k - 1:
+			ans += 1
+
+
+print(str(ans), file=open('gymnastics.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
