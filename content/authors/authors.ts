@@ -59,6 +59,7 @@ export const Authors: Author[] = [
       'Darren Yao is a USACO Platinum competitor and author of the textbook "An Introduction to USACO."',
     website: 'http://darrenyao.com/',
     email: 'darren.yao@gmail.com',
+    codeforces: 'darren_yao',
     github: 'darren-yao',
   },
   {
