@@ -1,7 +1,7 @@
 ---
 id: toposort
 title: 'Topological Sort'
-author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu, Andrew Wang
+author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu, Andrew Wang, Qi Wang
 prerequisites:
   - bfs
   - intro-dp
@@ -98,7 +98,7 @@ int main() {
 	int M; cin >> N >> M;
 	for (int i = 0; i < M; ++i) {
 		int a,b; cin >> a >> b;
-		graph[a-1].pb(b-1);
+		graph[a - 1].pb(b - 1);
 	}
 	compute();
 	vector<int> ind(N);
@@ -121,33 +121,33 @@ import java.util.*;
 import java.io.*;
 
 public class CourseSchedule {
-	public static ArrayList <Integer> g[];
-	public static ArrayList <Integer> topo = new ArrayList < Integer > ();
-	public static int N;
-	public static boolean visited[];
+	static List<Integer>[] graph;
+	static List<Integer> topo = new ArrayList<Integer>();
+	static int N;
+	static boolean[] visited;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
-		g = new ArrayList[N];
+		graph = new List[N];
 		visited = new boolean[N];
 		for (int i = 0; i < N; i++) {
-			g[i] = new ArrayList <Integer> ();
+			graph[i] = new ArrayList<Integer>();
 		}
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			a--;
-			int b = Integer.parseInt(st.nextToken());
-			b--;
-			g[a].add(b);
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			graph[a].add(b);
 		}
+
 		compute();
-		int ind[] = new int[N];
+		int[] ind = new int[N];
+		
 		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
 		for (int i = 0; i < N; i++)
-			for (int j: g[i])
+			for (int j : graph[i])
 				if (ind[j] <= ind[i]) {
 					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
 					System.exit(0);
@@ -163,8 +163,8 @@ public class CourseSchedule {
 		}
 		Collections.reverse(topo);
 	}
-	public static void dfs(int v) { //not always lexigraphically least
-		for (Integer e: g[v]) {
+	public static void dfs(int v) { //not always lexicographically least
+		for (Integer e : graph[v]) {
 			if (!visited[e]) {
 				visited[e] = true;
 				dfs(e);
@@ -203,13 +203,13 @@ stack and recursively backtracking until $u$ is reached again.
 #include <algorithm>
 using namespace std;
 
-bool visited[(int)10e5+5], on_stack[(int)10e5+5];
-vector<int> adj[(int)10e5+5];
+bool visited[(int)10e5 + 5], on_stack[(int)10e5 + 5];
+vector<int> adj[(int)10e5 + 5];
 vector<int> cycle;
 int N, M;
 bool dfs(int n) {
 	visited[n] = on_stack[n] = true;
-	for (int u:adj[n]) {
+	for (int u : adj[n]) {
 		if(on_stack[u]) {
 			cycle.push_back(n); // start cycle
 			on_stack[n] = on_stack[u] = false;
@@ -248,7 +248,7 @@ int main()
 		cout << "IMPOSSIBLE";
 	else {
 		reverse(cycle.begin(), cycle.end());
-		cout << cycle.size()+1 << "\n";
+		cout << cycle.size() + 1 << "\n";
 		for(int n : cycle) cout << n << " ";
 		cout << cycle.at(0);
 	}
@@ -264,22 +264,22 @@ import java.io.*;
 import java.util.*;
 
 public class cycle {
-	public static ArrayList < Integer > [] adj;
-	public static boolean visited[], on_stack[];
-	public static ArrayList < Integer > cycle;
-	public static int N, M;
+	static List<Integer>[] adj;
+	static boolean[] visited, onStack;
+	static List<Integer> cycle;
+	static int N, M;
 	public static void main(String[] args) throws IOException {
 		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		adj = new ArrayList[N + 1];
-		cycle = new ArrayList < Integer > ();
+		adj = new List[N + 1];
+		cycle = new ArrayList<Integer>();
 		visited = new boolean[N + 1];
-		on_stack = new boolean[N + 1];
+		onStack = new boolean[N + 1];
 		for (int i = 0; i <= N; i++) {
-			adj[i] = new ArrayList < Integer > ();
+			adj[i] = new ArrayList<Integer>();
 		}
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(sc.readLine());
@@ -302,17 +302,17 @@ public class cycle {
 	}
 
 	public static boolean dfs(int n) {
-		visited[n] = on_stack[n] = true;
+		visited[n] = onStack[n] = true;
 		for (int u: adj[n]) {
-			if (on_stack[u]) {
+			if (onStack[u]) {
 				cycle.add(n);
-				on_stack[n] = on_stack[u] = false;
+				onStack[n] = onStack[u] = false;
 				return true;
 			} else if (!visited[u]) {
 				if (dfs(u)) {
-					if (on_stack[n]) {
+					if (onStack[n]) {
 						cycle.add(n);
-						on_stack[n] = false;
+						onStack[n] = false;
 						return true;
 					} else {
 						cycle.add(n);
@@ -323,7 +323,7 @@ public class cycle {
 					return false;
 			}
 		}
-		on_stack[n] = false;
+		onStack[n] = false;
 		return false;
 	}
 }
@@ -372,6 +372,7 @@ void compute() {
 		}
 
 		// Put problem-specific processing here
+		// Push in value to current ordering if no need for processing
 	}
 
 }
@@ -382,28 +383,31 @@ void compute() {
 <JavaSection>
 
 ```java
-static int in_degree[];
-static ArrayList<Integer> edge[]; //adjacency list
+public class TopoSort {
+	static int[] inDegree;
+	static List<Integer>[] edge; //adjacency list
 
-static int N; //number of nodes
+	static int N; //number of nodes
 
-static void topological_sort() {
-	Queue<Integer> q = new ArrayDeque<Integer>();
-	for (int i = 0; i < N; i++) {
-		if (in_degree[i] == 0) {
-			q.add(i);
-		}
-	}
-
-	while (!q.isEmpty()) {
-		int node = q.poll();
-
-		for (int next : edge[node]) {
-			in_degree[next]--;
-			if(in_degree[next] == 0) q.add(next);
+	static void topological_sort() {
+		Queue<Integer> q = new LinkedList<>();
+		for (int i = 0; i < N; i++) {
+			if (inDegree[i] == 0) {
+				q.add(i);
+			}
 		}
 
-		// Put problem-specific processing here
+		while (!q.isEmpty()) {
+			int node = q.poll();
+
+			for (int next : edge[node]) {
+				inDegree[next]--;
+				if(inDegree[next] == 0) q.add(next);
+			}
+
+			// Put problem-specific processing here
+			// Push in value to current ordering if no need for processing
+		}
 	}
 }
 ```
@@ -411,6 +415,13 @@ static void topological_sort() {
 </JavaSection>
 
 </LanguageSection>
+
+<Info title="Pro Tip">
+
+If the length of the array containing the end order does not equal the number of elements that need to be sorted, then 
+there is a cycle in the graph.
+
+</Info>
 
 <Optional>
 
@@ -547,9 +558,9 @@ int main() { //See "General - Fast I/O" for more information about the first two
 	}
 
 	if(contains0) {
-		cout << dist[N-1] << "\n";
+		cout << dist[N - 1] << "\n";
 		while(!answer.empty()) {
-			cout << answer.top()+1;
+			cout << answer.top() + 1;
 			answer.pop();
 			if(!answer.empty()) cout << " ";
 		}
@@ -572,18 +583,16 @@ import java.io.*;
 
 //longest_path
 public class Main {
-
-	static int prev_flight[], dist[], in_degree[];
-	static ArrayList<Integer> edge[];
-	static ArrayList<Integer> backEdge[];
-
+	static int[] prevFlight, dist, inDegree;
+	static List<Integer>[] edge;
+	static List<Integer>[] backEdge;
 	static int N, M;
 
 	//does a topological sort
 	static void compute() {
 		Queue<Integer> q = new ArrayDeque<Integer>();
 		for(int i = 0; i < N; i++) {
-			if(in_degree[i] == 0) {
+			if(inDegree[i] == 0) {
 				q.add(i);
 			}
 		}
@@ -592,8 +601,8 @@ public class Main {
 			int node = q.poll();
 
 			for(int next : edge[node]) {
-				in_degree[next]--;
-				if(in_degree[next] == 0) q.add(next);
+				inDegree[next]--;
+				if(inDegree[next] == 0) q.add(next);
 			}
 
 			//The below block computes the DP
@@ -608,7 +617,7 @@ public class Main {
 
 			dist[node] = mx;
 			if(node == 0) dist[node] = 1;
-			prev_flight[node] = mx_node;
+			prevFlight[node] = mx_node;
 		}
 	}
 
@@ -618,24 +627,25 @@ public class Main {
 		N = sc.nextInt();
 		M = sc.nextInt();
 
-		prev_flight = new int[N];
+		prevFlight = new int[N];
 		dist = new int[N];
-		in_degree = new int[N];
-		edge = new ArrayList[N];
-		backEdge = new ArrayList[N];
+		inDegree = new int[N];
+		edge = new List[N];
+		backEdge = new List[N];
 
 		for(int i = 0; i < N; i++) {
-			prev_flight[i] = -1;
+			prevFlight[i] = -1;
 			dist[i] = -999999999;
-			in_degree[i] = 0;
-			edge[i] = new ArrayList<Integer>();
-			backEdge[i] = new ArrayList<Integer>();
+			inDegree[i] = 0;
+			edge[i] = new ArrayList<>();
+			backEdge[i] = new ArrayList<>();
 		}
 
 		for(int i = 0; i < M; i++) {
-			int a = sc.nextInt(), b = sc.nextInt();
-			a--; b--;
-			in_degree[b]++;
+			int a = sc.nextInt() - 1; 
+			int b = sc.nextInt() - 1;
+
+			inDegree[b]++;
 			edge[a].add(b);
 			backEdge[b].add(a);
 		}
@@ -644,22 +654,22 @@ public class Main {
 
 		PrintWriter pw = new PrintWriter(System.out);
 
-		ArrayDeque<Integer> answer = new ArrayDeque<Integer>(); //Acts as a Stack
-		int temp = N-1;
+		ArrayDeque<Integer> answer = new ArrayDeque<>();  // Acts as a Stack
+		int temp = N - 1;
 
 		boolean contains0 = false;
 		if(temp == 0) contains0 = true;
 
 		while(temp != -1 && dist[temp] >= 0) {
 			answer.push(temp);
-			temp = prev_flight[temp];
+			temp = prevFlight[temp];
 			if(temp == 0) contains0 = true;
 		}
 
 		if(contains0) {
-			pw.println(dist[N-1]);
+			pw.println(dist[N - 1]);
 			while(!answer.isEmpty()) {
-				pw.print(answer.peekFirst()+1);
+				pw.print(answer.peekFirst() + 1);
 				answer.pop();
 				if(!answer.isEmpty()) pw.print(" ");
 			}
