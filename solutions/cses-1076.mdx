@@ -85,16 +85,61 @@ int main() {
 
 ## Solution 2: Fenwick Tree
 
-You can use a [Fenwick tree](/gold/PURS#binary-indexed-tree) to simulate an order statistic tree/indexed set.
+We can use a [Fenwick tree](/gold/PURS#binary-indexed-tree) to simulate an order statistic tree/indexed set.
 
-The Fenwick array can be treated as a frequency array. For example, if `5` is inserted into the window, `Fenwick_array[5]+=1`. This enables us to binary search for an integer $x$ such that 
+The Fenwick array (let's call it `fa`)can be treated as a frequency array. For example, if 5 is inserted into the window, `fa[5] += 1`. This enables us to binary search for an integer $x$ such that 
 
 $$
-\sum_{i=1}^{x} \geq \lceil k/2 \rceil \text{ and } \sum_{i=1}^{x-1} \leq \lceil k/2 \rceil
+\left(\sum_{i=1}^{x} \texttt{fa[i]}\right)\geq \lceil k/2 \rceil \text{ and } \left(\sum_{i=1}^{x-1}\texttt{fa[i]}\right) <\lceil k/2 \rceil
 $$
 
 and find $k$ from there. Clearly, the values of the array would need to be compressed, as an array of size $10^9$ is infeasible. There will also be an extra $\log$ factor from using the Fenwick tree `sum` operation, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. Note that a more precise upper bound is $O((n-k+1) \cdot \log^2{k} + n \log{n})$ (there are $(n-k+1)$ windows), but it's tricky to express the maximum value of this in terms of $n$ and $k$; therefore, $O(n \log^2{n})$ is better.
 
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int sz = 200005;
+int fa[sz], a[sz], bit[sz], n, k;
+map<int, int> compressed, decompress;
+
+int psum(int x, int sum = 0){
+	for (; x > 0; x -= x & -x) sum += bit[x]; return sum;
+}
+void add(int x, int val){
+	for (; x < sz; x += x & -x) bit[x] += val;
+}
+
+signed main(){
+	cin >> n >> k;
+	for (int i = 1; i <= n; i++){
+		cin >> a[i];
+		compressed[a[i]] = 0;
+	}
+	int index = 1;
+	for (auto& i : compressed){
+		i.second = index++;
+		decompress[i.second] = i.first;
+	}
+	for (int i = 1; i <= n; i++){
+		add(compressed[a[i]], 1);
+		if (i >= k + 1) add(compressed[a[i - k]], -1);
+		int mid = (k / 2) + (k & 1);
+		if (i >= k){
+			int lo = 1, hi = 200003, ans = -1;
+			while (lo <= hi){
+				int m = (lo + hi) / 2;
+				if (psum(m) >= mid && psum(m - 1) < mid){
+					ans = m; break;
+				}
+				else if (psum(m) < mid) lo = m + 1;
+				else hi = m - 1;
+			}
+			cout << decompress[ans] << endl;
+		}
+	}
+}
+```
 
 <LanguageSection>
 <CPPSection>
