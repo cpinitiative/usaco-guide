@@ -129,6 +129,23 @@ class CodeBlock extends React.Component<
   constructor(props) {
     super(props);
 
+    this.state = {
+      collapsed: true,
+      codeSnipShow: this.calculateCodeSnipShow(),
+    };
+
+    this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      this.codeSnips = [];
+      const codeSnipShow = this.calculateCodeSnipShow();
+      this.setState({ codeSnipShow });
+    }
+  }
+
+  calculateCodeSnipShow() {
     let i = 0;
     let prev = -1;
     let prevVal = '';
@@ -159,12 +176,7 @@ class CodeBlock extends React.Component<
       }
       ++i;
     }
-    //console.log(this.codeSnips);
-    //console.log(codeSnipShowDefault);
-    this.state = { collapsed: true, codeSnipShow: codeSnipShowDefault };
-
-    //bind
-    this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+    return codeSnipShowDefault;
   }
 
   getCode() {
