@@ -7,7 +7,7 @@ author: Dong Liu
 
 **Time Complexity**: $\mathcal O(N\log N + Q\log^2 N)$
 
-Lets say that we can maintain an array $a$, which is sorted by height. To answer a query of type `C`, we can simply binary search on the enpoints of the query.
+Let's say that we can maintain an array $a$, which is sorted by height. To answer a query of type `C`, we can simply binary search on the endpoints of the query.
 
 Now, we just need to support updates. Lets first binary search the first position $l$ such that $a[l]\geq h$. Let $r = l + c - 1$. We just need to increment the range, $[l, r]$ by $1$ while maintaining a sorted order.
 
@@ -15,7 +15,7 @@ However, we cannot just add $1$ to all elements in the range, $[l, r]$ because t
 
 To prevent this error, we find another range $[l', r']$, such that $a[i] = a[r]$ for all $i\in [l', r']$; this can be found with binary search. Since all $j < i$ sastify $a[j] < a[i]$, we can increment $[l, l' - 1]$ first. Then, since we need to increment a total of $c$ elements, we have $c - (l' - l)$ elements left. We increment the range $[r' - (c - (l' - l)) + 1, r']$ by one.
 
-Notice that this doesn't create any inversions because $a[r' + 1]$ is greater than $a[r']$ before the update; so after the update, the array would be non-decreasing.
+Notice that this doesn't create any inversions because $a[r' + 1]$ is greater than $a[r']$ before the update: after the update, the array would be non-decreasing.
 
 Updates and queries can be achievable with a Lazy Segment Tree but a Binary Indexed Tree would suffice since we only need point queries.
 
