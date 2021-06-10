@@ -47,19 +47,25 @@ bool cmp(Mountain a, Mountain b) {
 int main() {
 	setIO("mountains");
 	int n; cin >> n;
+	
 	vector<Mountain> mountains;
+	
 	for(int i=0; i<n; i++) {
 		int x, y; cin >> x >> y;
 		mountains.pb({x-y, x+y});
 	}
+	
 	sort(all(mountains), cmp);
+	
 	int rightMost = -1, ans = 0;
+	
 	for(int i = 0; i < n; i++) {
 		if(mountains[i].r > rightMost) {
 			ans++;
 			rightMost = mountains[i].r;
 		}
 	}
+	
 	cout << ans << endl;
 }
 ```
@@ -78,8 +84,10 @@ public class mountains {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("mountains.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("mountains.out"));
+	
 		int N = Integer.parseInt(br.readLine());
-		mountain[] arr = new mountain[N];
+		Mountain[] arr = new Mountain[N];
+	
 		for (int i = 0; i < N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int x = Integer.parseInt(st.nextToken());
@@ -105,15 +113,15 @@ public class mountains {
 	}
 }
 
-class mountain implements Comparable<mountain> {
+class Mountain implements Comparable<Mountain> {
 	public int s, e;
 	
-	public mountain(int s, int e) {
+	public Mountain(int s, int e) {
 		this.s = s;
 		this.e = e;
 	}
 	
-	public int compareTo(mountain other) {
+	public int compareTo(Mountain other) {
 		if (this.s != other.s) {
 			return Integer.compare(this.s, other.s);
 		} else {
