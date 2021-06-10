@@ -92,17 +92,15 @@ int main() {
 
 ```java
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Paint {
 	public static void main(String[] args) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader("paint.in"));
-		StringTokenizer first = new StringTokenizer(reader.readLine());
-		StringTokenizer second = new StringTokenizer(reader.readLine());
-		int a = Integer.parseInt(first.nextToken());
-		int b = Integer.parseInt(first.nextToken());
-		int c = Integer.parseInt(second.nextToken());
-		int d = Integer.parseInt(second.nextToken());
+		Kattio io = new Kattio("paint");
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		int d = io.nextInt();
 
 		// the sum of the two intervals
 		int total = (b - a) + (d - c);
@@ -110,10 +108,11 @@ public class Paint {
 		int intersection = Math.max(Math.min(b, d) - Math.max(a, c), 0);
 		int union = total - intersection;
 
-		PrintWriter writer = new PrintWriter("paint.out");
-		writer.println(union);
-		writer.close();
+		io.println(union);
+		io.close();
 	}
+
+	CodeSnip{Kattio}
 }
 ```
 
@@ -207,15 +206,16 @@ import java.util.*;
 
 public class Billboard {
 	private static final int MAX_POS = 2000;
+	
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("billboard.in"));
+		Kattio io = new Kattio("billboard");
 		int visible[][] = new int[MAX_POS][MAX_POS];
+
 		for (int i = 0; i < 3; ++i) {
-			StringTokenizer board = new StringTokenizer(br.readLine());
-			int x1 = Integer.parseInt(board.nextToken());
-			int y1 = Integer.parseInt(board.nextToken());
-			int x2 = Integer.parseInt(board.nextToken());
-			int y2 = Integer.parseInt(board.nextToken());
+			int x1 = io.nextInt();
+			int y1 = io.nextInt();
+			int x2 = io.nextInt();
+			int y2 = io.nextInt();
 			x1 += MAX_POS / 2;
 			y1 += MAX_POS / 2;
 			x2 += MAX_POS / 2;
@@ -233,10 +233,12 @@ public class Billboard {
 				ans += visible[x][y];
 			}
 		}
-		PrintWriter out = new PrintWriter(new FileWriter("billboard.out"));
-		out.println(ans);
-		out.close();
+
+		io.println(ans);
+		io.close();
 	}
+
+	CodeSnip{Kattio}
 }
 ```
 
