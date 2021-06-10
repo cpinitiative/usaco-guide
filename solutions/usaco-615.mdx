@@ -2,12 +2,48 @@
 id: usaco-615
 source: USACO Bronze 2016 February
 title: Milk Pails
-author: Danh Ta Chi Thanh
+author: Ryan Chou (Python), Danh Ta Chi Thanh (C++)
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_bronze_feb16.html)
 
 <LanguageSection>
+
+
+<PySection>
+
+```python
+
+# Code by Ryan Chou
+
+fin = open('pails.in', 'r')
+
+inputline = list(map(int, fin.readline().split()))
+
+buck1 = inputline[0]
+buck2 = inputline[1]
+buck3 = inputline[2]
+
+ans = 0
+
+# x and y below take care of all 
+# possible combinations of the two buckets.
+
+for x in range(1001):
+	if (buck1 * x) > buck3:
+		break
+	for y in range(1001):
+		current = (buck1 * x) + (buck2 * y)
+		if current > buck3:
+			break
+		ans = max(ans, current)
+
+with open('pails.out', 'w') as fout:
+	fout.write(str(ans) + '\n')
+
+```
+
+</PySection>
 
 <CPPSection>
 
