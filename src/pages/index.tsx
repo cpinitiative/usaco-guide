@@ -1,4 +1,4 @@
-import { Link, PageProps } from 'gatsby';
+import { Link } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -10,7 +10,7 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Video from '../components/Video';
 
-export default function IndexPage(props: PageProps) {
+export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
 
   return (
