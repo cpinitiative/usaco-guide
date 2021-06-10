@@ -15,6 +15,52 @@ find the maximum over all right triangles all in $\mathcal{O}(N^3)$ time.
 
 <LanguageSection>
  
+
+<PySection>
+
+```python
+
+from itertools import permutations
+# using itertools to generate all permutations
+
+fin = open('triangles.in', 'r')
+
+N = int(fin.readline().strip())
+points = []
+
+for _ in range(N):
+    points.append([int(p) for p in fin.readline().split()])
+
+pers = permutations(points, 3)
+
+pers = [x for x in pers]
+
+# generating all permutations of size 3, since a triangle consists of 3 points.
+
+area = 0
+
+for x in pers:
+
+	if x[0][1] == x[1][1] and x[1][0] == x[2][0]:
+		# checks if one of the sides is parallel to the x-axis and another is parallel to the y-axis.
+		side1 = x[0][0] * (x[1][1] - x[2][1])
+		side2 = x[1][0] * (x[2][1] - x[0][1])
+		side3 = x[2][0] * (x[0][1] - x[1][1])
+
+		area = max(area, abs(side1 + side2 + side3) / 2)
+
+		# is the area of this triangle larger than our current one?
+
+with open('triangles.out', 'w') as fout:
+    fout.write(str(int(area*2)) + '\n')
+
+	# the question tells us to return 2 times the maximum area of the triangle
+
+
+```
+
+</PySection>
+
 <JavaSection>
 
 ```java
