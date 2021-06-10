@@ -12,7 +12,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
       <p className="text-xl leading-6 mt-1 mb-2">
         {/* <Highlight hit={hit} attribute="name" /> */}
         <Link to={hit.url} target="_blank">
-          <h1 className="text-lg hover:underline cursor-pointer">{hit.name}</h1>
+          <h1 className="text-lg hover:underline inline">{hit.name}</h1>
         </Link>
         {hit.isStarred && (
           <svg
