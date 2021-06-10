@@ -17,35 +17,28 @@ author: Sofia Yang, Kevin Sheng
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
+using namespace std;
 
-using std::cout;
-using std::endl;
-using std::vector;
-using std::pair;
-
-// https://codeforces.com/contest/1316/problem/E (input ommitted due to length)
 int main() {
 	int pool_size;
 	int team_size;
 	int aud_size;
-	std::cin >> pool_size >> team_size >> aud_size;
+	cin >> pool_size >> team_size >> aud_size;
 	vector<pair<int, int>> aud_contrib(pool_size);
 	for (int i = 0; i < pool_size; i++) {
-		std::cin >> aud_contrib[i].first;
+		cin >> aud_contrib[i].first;
 		aud_contrib[i].second = i;
 	}
-	std::sort(
+	sort(
 		aud_contrib.begin(), aud_contrib.end(),
-		std::greater<pair<int, int>>()
+		greater<pair<int, int>>()
 	);
 	
 	vector<vector<int>> raw_team_contrib(pool_size, vector<int>(team_size));
 	for (int i = 0; i < pool_size; i++) {
 		for (int j = 0; j < team_size; j++) {
-			std::cin >> raw_team_contrib[i][j];
+			cin >> raw_team_contrib[i][j];
 		}
 	}
 	vector<vector<int>> team_contrib(pool_size, vector<int>(team_size));
@@ -62,7 +55,7 @@ int main() {
 		for (int subset = 0; subset < (1 << team_size); subset++) {
 			int curr_aud = up_to - __builtin_popcount(subset) - 1;
 			if (curr_aud < aud_size && max_strength[up_to - 1][subset] != -1) {
-				max_strength[up_to][subset] = std::max(
+				max_strength[up_to][subset] = max(
 					max_strength[up_to][subset],
 					max_strength[up_to - 1][subset] + aud_contrib[up_to - 1].first
 				);
@@ -74,7 +67,7 @@ int main() {
 						|| max_strength[up_to - 1][prev] == -1) {
 					continue;
 				}
-				max_strength[up_to][subset] = std::max(
+				max_strength[up_to][subset] = max(
 					max_strength[up_to][subset],
 					max_strength[up_to - 1][prev] + team_contrib[up_to - 1][t]
 				);
