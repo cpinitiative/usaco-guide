@@ -120,4 +120,14 @@ export const Authors: Author[] = [
     email: "harrynicomama@gmail.com",
     youtube: "https://www.youtube.com/c/RandomCoder",
   },
+  {
+    photo: "maggie",
+    name: "Maggie Liu",
+    title: "Content Manager",
+    blurb: "Maggie Liu is a USACO competitor who enjoys problem solving and teaching others programming and math.",
+    github: "maggie-j-liu",
+    codeforces: "ml1234",
+    email: "maggie.j.liu@gmail.com",
+    website: "https://maggieliu.dev",
+  },
 ];

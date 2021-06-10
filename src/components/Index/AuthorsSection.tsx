@@ -196,6 +196,9 @@ export default function AuthorsSection() {
             }
           />
         ))}
+        {Authors.length % 2 === 1 && (
+          <div className="border border-blue-900 dark:border-gray-700" />
+        )}
       </div>
     </section>
   );
