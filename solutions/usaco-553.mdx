@@ -1,0 +1,98 @@
+---
+id: usaco-553
+source: USACO Gold 2015 Open
+title: Palindromic Paths
+author: Maggie Liu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_palpath_gold.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+const int MAX_N = 500;
+
+int main()
+{
+	freopen("palpath.in", "r", stdin);
+	freopen("palpath.out", "w", stdout);
+	int n;
+	cin >> n;
+	string grid[MAX_N];
+	for (int i = 0; i < n; i++)
+	{
+		cin >> grid[i];
+	}
+	long long prev[MAX_N][MAX_N]{};
+	for (int i = 0; i < n; i++)
+	{
+		prev[i][i] = 1;
+	}
+	for (int a = 1; a < n; a++)
+	{
+		/*
+		 * dp[i][j] is the number of palindromes with length 2a + 1
+		 * starting on row1 and ending on row2
+		 * with the middle of the string on the diagonal
+		 */
+		long long dp[MAX_N][MAX_N]{};
+		for (int row1 = 0; row1 < n; row1++)
+		{
+			int col1 = n - 1 - row1 - a;
+			if (col1 < 0)
+			{
+				continue;
+			}
+			for (int row2 = 0; row2 < n; row2++)
+			{
+				int col2 = n - 1 - row2 + a;
+				if (col2 >= n)
+				{
+					continue;
+				}
+				/*
+				 * if the start and end of the string are not equal
+				 * it is not a palindrome so we continue
+				 */
+				if (grid[row1][col1] != grid[row2][col2])
+				{
+					continue;
+				}
+				dp[row1][row2] = prev[row1][row2];
+				if (row1 + 1 < n)
+				{
+					dp[row1][row2] += prev[row1 + 1][row2];
+				}
+				if (row2 - 1 >= 0)
+				{
+					dp[row1][row2] += prev[row1][row2 - 1];
+				}
+				if (row1 + 1 < n && row2 - 1 >= 0)
+				{
+					dp[row1][row2] += prev[row1 + 1][row2 - 1];
+				}
+				dp[row1][row2] %= (int)(1e9 + 7);
+			}
+		}
+		// assign the current dp array to the prev array
+		swap(prev, dp);
+	}
+	cout << prev[0][n - 1] << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
