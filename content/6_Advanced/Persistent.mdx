@@ -8,19 +8,13 @@ prerequisites:
 frequency: 1
 ---
 
-## Persistent Segment Tree
+## Persistent Array
 
-Persistent segment trees are very similar to sparse segment trees in the sense
-that we store child pointers. The key differences are that we have multiple
-roots and every time we "update" a node, we actually create a new node in its
-place (hence persistence).
+Persistent arrays are one of the simplest persistent data structures. A
+persistent array should be able to access and update its elements at given
+times.
 
-<FocusProblem problem="persistentSample" />
-
-### Persistent Array
-
-A simpler version of the persistent segment tree is the persistent array, where
-one only does **point** updates and queries.
+### Fat Nodes
 
 <LanguageSection>
 
@@ -64,7 +58,91 @@ Although easy to implement, fat nodes are only **partially persistent**, meaning
 that only the latest version of the data structure can be modified.
 
 For most competitive programming problems involving persistent data structures,
-we use **path copying** instead. You will be introduced to this technique below.
+we use **path copying** instead.
+
+### Path Copying
+
+One can implement path copying to run in $\mathcal O(\log N)$ time per query and
+update by using a binary-tree-like structure where array elements are the leaves.
+
+This is very similar to a sparse segment tree. The key differences are that we
+have multiple roots and every time we "update" a node, we actually create a new
+node in its place (hence persistence).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+struct Node {
+	int val;
+	Node *l, *r;
+
+	Node(ll x) : val(x), l(nullptr), r(nullptr) {}
+	Node(Node *ll, Node *rr) : val(0), l(ll), r(rr) {}
+	Node(Node *cp) : val(cp->val), l(cp->l), r(cp->r) {}
+};
+
+int n, a[100001]; // The initial array and its size
+Node* roots[100001]; // The persistent array's roots
+
+Node* build(int l = 0, int r = n - 1) {
+	if (l == r) return new Node(a[l]);
+	int mid = (l + r) / 2;
+	return new Node(build(l, mid), build(mid + 1, r));
+}
+
+Node* update(Node* node, int val, int pos, int l = 0, int r = n - 1) {
+	if (l == r) return new Node(val);
+	int mid = (l + r) / 2;
+	if (pos > mid) return new Node(node->l, update(node->r, val, pos, mid + 1, r));
+	else return new Node(update(node->l, val, pos, l, mid), node->r);
+}
+
+int query(Node* node, int pos, int l = 0, int r = n - 1) {
+	if (l == r) return node->val;
+	int mid = (l + r) / 2;
+	if (pos > mid) return query(node->r, pos, mid + 1, r);
+	return query(node->l, pos, l, mid);
+}
+
+int get_item(int index, int time) {
+	// Gets the array item at a given index and time
+	return query(roots[time], index);
+}
+
+void update_item(int index, int value, int prev_time, int curr_time) {
+	// Updates the array item at a given index and time
+	roots[curr_time] = new Node(roots[prev_time]); // First, copy the root
+	roots[curr_time] = update(roots[curr_time], index, value); // Then update it
+}
+
+void init_arr(int nn, int* init) {
+	// Initializes the persistent array, given an input array
+	n = nn;
+	for (int i = 0; i < n; i++)
+		a[i] = init[i];
+	roots[0] = build();
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+Path copying is **fully persistent**. 
+
+## Persistent Segment Tree
+
+Since persistent arrays with path copying are so similar to sparse segment
+trees, it's relatively straightforward to convert one into a persistent
+segment tree - just add range queries!
+
+However, note that it's not possible to support range updates with range queries
+in persistent segment trees, since lazy propagation doesn't play well with path
+copying.
+
+<FocusProblem problem="persistentSample" />
 
 ### Resources
 
