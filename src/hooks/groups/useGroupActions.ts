@@ -162,16 +162,10 @@ export function useGroupActions() {
         data
       );
     },
-    updatePostOrdering: async (
-      groupId: string,
-      ordering: string[]
-    ) => {
-      await updateDoc(
-        doc(getFirestore(firebaseApp), 'groups', groupId),
-        {
-          postOrdering: ordering
-        }
-      );
+    updatePostOrdering: async (groupId: string, ordering: string[]) => {
+      await updateDoc(doc(getFirestore(firebaseApp), 'groups', groupId), {
+        postOrdering: ordering,
+      });
     },
     removeMemberFromGroup: async (
       groupId: string,

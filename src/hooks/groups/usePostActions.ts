@@ -22,8 +22,9 @@ import { useFirebaseApp } from '../useFirebase';
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, setUserProgressOnProblems } =
-    useContext(UserDataContext);
+  const { firebaseUser, setUserProgressOnProblems } = useContext(
+    UserDataContext
+  );
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(
@@ -70,7 +71,7 @@ export function usePostActions(groupId: string) {
       });
       batch.update(doc(firestore, 'groups', groupId), {
         [`leaderboard.${postId}`]: deleteField(),
-        "postOrdering": arrayRemove(postId),
+        postOrdering: arrayRemove(postId),
       });
       return batch.commit();
     },
@@ -167,7 +168,7 @@ export function usePostActions(groupId: string) {
       });
       batch.update(doc(firestore, 'groups', groupId, 'posts', post.id), {
         [`pointsPerProblem.${problemId}`]: deleteField(),
-        "problemOrdering": arrayRemove(problemId)
+        problemOrdering: arrayRemove(problemId),
       });
       await batch.commit();
     },

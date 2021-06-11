@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   closestCenter,
-  DndContext, 
+  DndContext,
   DragOverlay,
   KeyboardSensor,
   PointerSensor,
@@ -90,11 +90,14 @@ export default function Feed(): JSX.Element {
       // Note: There's a small bug here and in PostProblems.tsx
       // where immediately after creating a new post the post ordering and post length will be off...
       setItems(
-        group.posts.filter(post => {
+        group.posts
+          .filter(post => {
             if (!group.showAdminView && !post.isPublished) return false;
             if (currentFeed === 'all') return true;
-            if (currentFeed === 'assignments') return post.type === 'assignment';
-            if (currentFeed === 'announcements') return post.type === 'announcement';
+            if (currentFeed === 'assignments')
+              return post.type === 'assignment';
+            if (currentFeed === 'announcements')
+              return post.type === 'announcement';
             throw 'unknown feed ' + this.currentFeed;
           })
           .sort(sortPostsComparator)
@@ -105,29 +108,29 @@ export default function Feed(): JSX.Element {
       setItems(group.groupData.postOrdering);
     }
   }, [group.groupData?.postOrdering, group.posts]);
-  
-  const handleDragStart = (event) => {
-    const {active} = event;
-    
+
+  const handleDragStart = event => {
+    const { active } = event;
+
     setActiveId(active.id);
-  }
-  
-  const handleDragEnd = (event) => {
-    const {active, over} = event;
-    
+  };
+
+  const handleDragEnd = event => {
+    const { active, over } = event;
+
     if (active.id !== over.id) {
-      setItems((items) => {
+      setItems(items => {
         const oldIndex = items.indexOf(active.id);
         const newIndex = items.indexOf(over.id);
-        
+
         const newArr = arrayMove(items, oldIndex, newIndex);
         updatePostOrdering(group.activeGroupId, newArr);
         return newArr;
       });
     }
-    
+
     setActiveId(null);
-  }
+  };
 
   return (
     <>
@@ -147,38 +150,50 @@ export default function Feed(): JSX.Element {
         {group.isLoading && 'Loading posts...'}
         {!group.isLoading &&
           (group.showAdminView ? (
-            <DndContext 
+            <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <SortableContext 
+              <SortableContext
                 items={items}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
-                  {items.map(id => <SortableItem key={id} id={id} group={group.groupData} post={group.posts.find(x => x.id === id)} isBeingDragged={activeId === id} />)}
+                  {items.map(id => (
+                    <SortableItem
+                      key={id}
+                      id={id}
+                      group={group.groupData}
+                      post={group.posts.find(x => x.id === id)}
+                      isBeingDragged={activeId === id}
+                    />
+                  ))}
                 </div>
               </SortableContext>
               <DragOverlay>
-                {activeId ? <FeedItem
-                  group={group.groupData}
-                  post={group.posts.find(x => x.id === activeId)}
-                  dragHandle={(
-                    <div
-                      className="self-stretch flex items-center px-2"
-                    >
-                      <MenuIcon className="h-5 w-5 text-gray-300" />
-                    </div>
-                  )}
-                /> : null}
+                {activeId ? (
+                  <FeedItem
+                    group={group.groupData}
+                    post={group.posts.find(x => x.id === activeId)}
+                    dragHandle={
+                      <div className="self-stretch flex items-center px-2">
+                        <MenuIcon className="h-5 w-5 text-gray-300" />
+                      </div>
+                    }
+                  />
+                ) : null}
               </DragOverlay>
             </DndContext>
           ) : (
             <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
               {items.map(id => (
-                <FeedItem group={group.groupData} post={group.posts.find(x => x.id === id)} key={id} />
+                <FeedItem
+                  group={group.groupData}
+                  post={group.posts.find(x => x.id === id)}
+                  key={id}
+                />
               ))}
             </div>
           ))}
