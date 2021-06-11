@@ -14,13 +14,13 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { PostData } from '../../../models/groups/posts';
 import ProblemListItem from '../ProblemListItem';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { GroupData } from '../../../models/groups/groups';
 import { ProblemData } from '../../../models/groups/problem';
 import { MenuIcon } from '@heroicons/react/solid';
@@ -31,6 +31,8 @@ function SortableItem(props: {
   post: PostData;
   problem: ProblemData;
 }) {
+  if (!props.problem) return null;
+
   const {
     attributes,
     listeners,

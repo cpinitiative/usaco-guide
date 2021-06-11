@@ -43,6 +43,7 @@ export function useGroupActions() {
         adminIds: [],
         memberIds: [],
         leaderboard: {},
+        postOrdering: [],
       };
       const groupDoc = doc(collection(getFirestore(firebaseApp), 'groups'));
       const group: GroupData = {
@@ -159,6 +160,17 @@ export function useGroupActions() {
       await updateDoc(
         doc(getFirestore(firebaseApp), 'group-join-links', id),
         data
+      );
+    },
+    updatePostOrdering: async (
+      groupId: string,
+      ordering: string[]
+    ) => {
+      await updateDoc(
+        doc(getFirestore(firebaseApp), 'groups', groupId),
+        {
+          postOrdering: ordering
+        }
       );
     },
     removeMemberFromGroup: async (

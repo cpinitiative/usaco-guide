@@ -16,6 +16,10 @@ export type PostData = {
    * Markdown string of the post content
    */
   body: string;
+  /**
+   * no longer needed since posts can be more easily reordered (?)
+   * @deprecated
+   */
   isPinned: boolean;
   isPublished: boolean;
   isDeleted: boolean;
