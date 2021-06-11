@@ -7,6 +7,7 @@ import {
   serverTimestamp,
   updateDoc,
   writeBatch,
+  arrayUnion
 } from 'firebase/firestore';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
@@ -39,8 +40,9 @@ export function usePostActions(groupId: string) {
         isPinned: false,
         body: '',
         isDeleted: false,
-        pointsPerProblem: {},
         type,
+        pointsPerProblem: {},
+        problemOrdering: [],
         ...(type === 'announcement'
           ? {}
           : {
@@ -66,7 +68,7 @@ export function usePostActions(groupId: string) {
       return batch.commit();
     },
     updatePost,
-    createNewProblem: async (post: PostData, order = 10) => {
+    createNewProblem: async (post: PostData) => {
       const firestore = getFirestore(firebaseApp);
       const batch = writeBatch(firestore);
       const docRef = doc(
@@ -93,13 +95,13 @@ export function usePostActions(groupId: string) {
         isDeleted: false,
         usacoGuideId: null,
         solutionReleaseMode: 'due-date',
-        order,
       };
       batch.set(docRef, defaultProblem);
       batch.update(
         doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
         {
           [`pointsPerProblem.${docRef.id}`]: defaultProblem.points,
+          [`problemOrdering`]: arrayUnion(post.id),
         }
       );
       await batch.commit();
@@ -160,6 +162,13 @@ export function usePostActions(groupId: string) {
         [`pointsPerProblem.${problemId}`]: deleteField(),
       });
       await batch.commit();
+    },
+    updateProblemOrdering: async (postId: string, ordering: string[]) => {
+      const firestore = getFirestore(firebaseApp);
+      console.log("updating", ordering);
+      updateDoc(doc(firestore, 'groups', groupId, 'posts', postId), {
+        'problemOrdering': ordering
+      });
     },
     submitSolution: async (
       problem: GroupProblemData,

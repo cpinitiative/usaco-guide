@@ -12,10 +12,6 @@ export interface ProblemData {
   solution: string | null;
   submissionType: SubmissionType;
   isDeleted: boolean;
-  /**
-   * Lower = appears first in problem list. Ties broken by name.
-   */
-  order: number;
 }
 export type GroupProblemData = ProblemData &
   (

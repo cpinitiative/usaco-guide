@@ -62,10 +62,6 @@ export function ActivePostProblemsProvider({
           setProblems(
             snap.docs
               .map(doc => ({ id: doc.id, ...doc.data() }))
-              .sort((a, b) => {
-                if (a.order === b.order) return a.name < b.name ? -1 : 1;
-                return a.order < b.order ? -1 : 1;
-              })
           );
           setIsLoading(false);
         },
@@ -91,7 +87,12 @@ export function ActivePostProblemsProvider({
   );
 }
 
-export function useActivePostProblems() {
+export function useActivePostProblems(): {
+  activePostId: string,
+  setActivePostId: (string) => void,
+  problems: GroupProblemData[],
+  isLoading: boolean,
+} {
   const context = React.useContext(ActivePostProblemsContext);
   if (context === null) {
     throw 'useActiveGroup must be used within a ActivePostProblemsProvider';
