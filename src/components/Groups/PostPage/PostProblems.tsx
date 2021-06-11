@@ -1,7 +1,7 @@
 import { navigate } from 'gatsby';
 import React, { useEffect } from 'react';
 import {
-  DndContext, 
+  DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
@@ -23,7 +23,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GroupData } from '../../../models/groups/groups';
 import { ProblemData } from '../../../models/groups/problem';
-import { MenuIcon } from "@heroicons/react/solid";
+import { MenuIcon } from '@heroicons/react/solid';
 
 function SortableItem(props: {
   id: string;
@@ -37,32 +37,42 @@ function SortableItem(props: {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({id: props.id});
-  
+  } = useSortable({ id: props.id });
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  
+
   return (
     <div ref={setNodeRef} style={style}>
       <ProblemListItem
         group={props.group}
         post={props.post}
         problem={props.problem}
-        dragHandle={(
-          <div className="self-stretch flex items-center px-2" {...attributes} {...listeners}>
+        dragHandle={
+          <div
+            className="self-stretch flex items-center px-2"
+            {...attributes}
+            {...listeners}
+          >
             <MenuIcon className="h-5 w-5 text-gray-300" />
           </div>
-        )}
+        }
       />
     </div>
   );
 }
 
-export default function PostProblems({ post }: { post: PostData }): JSX.Element {
+export default function PostProblems({
+  post,
+}: {
+  post: PostData;
+}): JSX.Element {
   const activeGroup = useActiveGroup();
-  const { createNewProblem, updateProblemOrdering } = usePostActions(activeGroup.activeGroupId);
+  const { createNewProblem, updateProblemOrdering } = usePostActions(
+    activeGroup.activeGroupId
+  );
   const { problems, isLoading } = useActivePostProblems();
 
   const [items, setItems] = React.useState([]);
@@ -92,18 +102,18 @@ export default function PostProblems({ post }: { post: PostData }): JSX.Element 
   }, [post.problemOrdering, problems]);
 
   const handleDragEnd = event => {
-    const {active, over} = event;
+    const { active, over } = event;
     if (active.id !== over.id) {
-      setItems((items) => {
+      setItems(items => {
         const oldIndex = items.indexOf(active.id);
         const newIndex = items.indexOf(over.id);
-        
+
         const newArr = arrayMove<string>(items, oldIndex, newIndex);
         updateProblemOrdering(post.id, newArr);
         return newArr;
       });
     }
-  }
+  };
 
   return (
     <section className="mt-8 xl:mt-10">
@@ -138,30 +148,30 @@ export default function PostProblems({ post }: { post: PostData }): JSX.Element 
           </div>
           <div>
             <div className="flow-root">
-              {!isLoading && (
-                activeGroup.showAdminView ? (
-                <DndContext 
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext 
-                    items={items}
-                    strategy={verticalListSortingStrategy}
+              {!isLoading &&
+                (activeGroup.showAdminView ? (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
                   >
-                    <div className="divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
-                      {items.map(problemId => (
-                        <SortableItem
-                          key={problemId}
-                          id={problemId}
-                          group={activeGroup.groupData}
-                          post={post}
-                          problem={problems.find(x => x.id === problemId)}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                    <SortableContext
+                      items={items}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
+                        {items.map(problemId => (
+                          <SortableItem
+                            key={problemId}
+                            id={problemId}
+                            group={activeGroup.groupData}
+                            post={post}
+                            problem={problems.find(x => x.id === problemId)}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 ) : (
                   <div className="divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
                     {items.map(problemId => (
@@ -173,8 +183,7 @@ export default function PostProblems({ post }: { post: PostData }): JSX.Element 
                       />
                     ))}
                   </div>
-                )
-              )}
+                ))}
             </div>
           </div>
         </div>

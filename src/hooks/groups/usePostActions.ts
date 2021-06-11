@@ -7,7 +7,7 @@ import {
   serverTimestamp,
   updateDoc,
   writeBatch,
-  arrayUnion
+  arrayUnion,
 } from 'firebase/firestore';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
@@ -165,9 +165,9 @@ export function usePostActions(groupId: string) {
     },
     updateProblemOrdering: async (postId: string, ordering: string[]) => {
       const firestore = getFirestore(firebaseApp);
-      console.log("updating", ordering);
+      console.log('updating', ordering);
       updateDoc(doc(firestore, 'groups', groupId, 'posts', postId), {
-        'problemOrdering': ordering
+        problemOrdering: ordering,
       });
     },
     submitSolution: async (

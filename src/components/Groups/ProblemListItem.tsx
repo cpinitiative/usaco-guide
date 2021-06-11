@@ -33,48 +33,52 @@ const ProblemListItem = ({
   return (
     <div className="flex items-center bg-white dark:bg-dark-surface">
       {dragHandle}
-      <div className={`flex-1 relative pr-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 sm:py-6 ${dragHandle ? "pl-2" : "pl-4 sm:pl-6 lg:pl-8 xl:pl-6"}`}>
+      <div
+        className={`flex-1 relative pr-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 sm:py-6 ${
+          dragHandle ? 'pl-2' : 'pl-4 sm:pl-6 lg:pl-8 xl:pl-6'
+        }`}
+      >
         <div className="flex items-center justify-between space-x-4">
           <div className="min-w-0 space-y-3">
-              <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3">
+              <span
+                className={`h-5 w-5 rounded-full flex items-center justify-center ${submissionCircleBorderColor[status]}`}
+                aria-hidden="true"
+              >
                 <span
-                  className={`h-5 w-5 rounded-full flex items-center justify-center ${submissionCircleBorderColor[status]}`}
-                  aria-hidden="true"
-                >
-                  <span
-                    className={`h-2.5 w-2.5 rounded-full ${submissionCircleColor[status]}`}
-                  />
-                </span>
+                  className={`h-2.5 w-2.5 rounded-full ${submissionCircleColor[status]}`}
+                />
+              </span>
 
-                <span className="block">
-                  <h2 className="font-medium leading-3">
-                    <Link
-                      to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
-                    >
-                      <span className="absolute inset-0" aria-hidden="true" />
-                      {problem.name}
-                    </Link>
-                  </h2>
-                </span>
-              </div>
-              <div className="relative group flex items-center space-x-2.5">
-                <svg
-                  className="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-sm text-gray-500 dark:text-gray-400 font-medium truncate">
-                  {pointsEarned} / {problem.points} points earned
-                </span>
-              </div>
+              <span className="block">
+                <h2 className="font-medium leading-3">
+                  <Link
+                    to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
+                  >
+                    <span className="absolute inset-0" aria-hidden="true" />
+                    {problem.name}
+                  </Link>
+                </h2>
+              </span>
             </div>
+            <div className="relative group flex items-center space-x-2.5">
+              <svg
+                className="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="text-sm text-gray-500 dark:text-gray-400 font-medium truncate">
+                {pointsEarned} / {problem.points} points earned
+              </span>
+            </div>
+          </div>
           <div className="sm:hidden">
             {/* Heroicon name: solid/chevron-right */}
             <svg

@@ -59,10 +59,7 @@ export function ActivePostProblemsProvider({
       );
       onSnapshot<GroupProblemData>(q, {
         next: snap => {
-          setProblems(
-            snap.docs
-              .map(doc => ({ id: doc.id, ...doc.data() }))
-          );
+          setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
           setIsLoading(false);
         },
         error: error => {
@@ -88,10 +85,10 @@ export function ActivePostProblemsProvider({
 }
 
 export function useActivePostProblems(): {
-  activePostId: string,
-  setActivePostId: (string) => void,
-  problems: GroupProblemData[],
-  isLoading: boolean,
+  activePostId: string;
+  setActivePostId: (string) => void;
+  problems: GroupProblemData[];
+  isLoading: boolean;
 } {
   const context = React.useContext(ActivePostProblemsContext);
   if (context === null) {
