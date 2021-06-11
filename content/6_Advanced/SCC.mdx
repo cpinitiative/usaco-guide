@@ -55,48 +55,28 @@ to find the strongly connected components on the graph. Once this is done, assig
 #include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
 
-using ll = long long;
-
 using vi = vector<int>;
 #define pb push_back
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
-	if (sz(name)) {
-		(void)!freopen((name+".in").c_str(), "r", stdin); // see /general/io
-		(void)!freopen((name+".out").c_str(), "w", stdout);
-	}
-}
 
 const int mx = 1e5+1;
 
-// adjacency list and transpose adjacency list
-vi adj[mx], adj_t[mx];
+vi adj[mx], adj_t[mx], S;
 bool vis[mx];
-vi S;
 int id[mx];
  
 void dfs(int x, int pass, int num = 0) {
 	vis[x] = true;
-	// pointer to either normal adj or transpose adj
 	vi &ad = (pass == 1) ? adj[x] : adj_t[x];
 	for(const int &e : ad) {
 		if(!vis[e]) dfs(e, pass, num);
 	}
 
 	S.pb(x);
-	if(pass == 2) id[x] = num; // assign id number
+	if(pass == 2) id[x] = num;
 }
  
 int main() {
-	setIO();
+	cin.tie(0)->sync_with_stdio(0);
 	
 	int n, m;
 	cin >> n >> m;
