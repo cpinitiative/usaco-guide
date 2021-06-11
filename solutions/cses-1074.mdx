@@ -2,7 +2,7 @@
 id: cses-1074
 source: CSES
 title: Stick Lengths
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Sofia Yang
 ---
 
 In this problem, we are given an array with $n$ elements. We want to find the
@@ -14,7 +14,12 @@ minimum cost to make all of the elements equal.
 
 [Another solution and some proofs](https://www.geeksforgeeks.org/make-array-elements-equal-minimum-cost/)
 
-Here is the code implemenation for the easiest approach.
+## Implementation
+Here is the code implementation for the easiest approach.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -48,3 +53,40 @@ int main(){
 	return 0;
 }
 ```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class StickLengths {
+	CodeSnip{Kattio}
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) {
+			arr[i] = io.nextInt();
+		}
+		Arrays.sort(arr);
+
+		/*
+		 * Take the median stick length,
+		 * and calculate the cost to change each stick length to the median.
+		 */
+		int median = arr[N / 2];
+		long costs = 0;
+		for (int i = 0; i < N; i++) {
+			costs += Math.abs(arr[i] - median);
+		}
+		io.println(costs);
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
