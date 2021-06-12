@@ -11,7 +11,8 @@ Notice that groups of intersections can **form strongly connected components.**
 Therefore, treat each component as a node with initial value equal to the size
 of the component. Since the resulting strongly connected components
 $\texttt{comp}$ form a directed acyclic graph, process the edges $e$ in reverse
-topographical order $c$ with the following relation:
+topographical order $c$ with the following relation where $\texttt{dp}[i]$ is
+the # of intersections that can be reached from component $i$:
 
 $$
 \texttt{dp}[\texttt{comp}[e]] = \texttt{dp}[\texttt{comp}[e]] +\sum_{e \in \texttt{radj}[c]} \texttt{dp}[\texttt{{comp}}[c]] : \texttt{comp}[c] \neq \texttt{comp}[e]
@@ -79,6 +80,7 @@ signed main() {
 	reverse(all(scc.todo));
 
 	each(c, scc.todo) {
+		// use reverse edges since we process in reverse order
 		each(e, scc.radj[c]) {
 			if(scc.comp[c] != scc.comp[e]) {
 				dp[scc.comp[e]] += dp[scc.comp[c]];
