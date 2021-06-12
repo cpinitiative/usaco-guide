@@ -35,7 +35,12 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const { activeGroupId, setActiveGroupId, isLoading, groupData } = useActiveGroup();
+  const {
+    activeGroupId,
+    setActiveGroupId,
+    isLoading,
+    groupData,
+  } = useActiveGroup();
   const { firebaseUser, isLoaded } = React.useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
 
@@ -61,7 +66,11 @@ const GroupPageWrapper = (props: any): ReactElement => {
       </Layout>
     );
   }
-  if (isLoading || activeGroupId !== props.groupId || (groupData && groupData.id !== props.groupId)) {
+  if (
+    isLoading ||
+    activeGroupId !== props.groupId ||
+    (groupData && groupData.id !== props.groupId)
+  ) {
     return (
       <Layout>
         <TopNavigationBar />
