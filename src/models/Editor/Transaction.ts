@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
+import { Blob } from 'blob-polyfill';
 
 /**
  * A transaction is a patch that describes the changes from one state to another state, as well as the time at which this change was made.

@@ -17,7 +17,7 @@ const plugins = [
   {
     resolve: 'gatsby-plugin-sitemap',
     options: {
-      exclude: ['/license/', '/editor/'],
+      excludes: ['/license/', '/editor/'],
     },
   },
   {
