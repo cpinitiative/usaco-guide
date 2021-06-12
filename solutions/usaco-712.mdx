@@ -2,7 +2,7 @@
 id: usaco-712
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road II
-author: Benjamin Qi, Danh Ta Chi Thanh
+author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)
@@ -62,7 +62,26 @@ Due to the low constraints, we can iterate over all $\mathcal{O}(N^4)$ possible
 pairs of intersecting paths and check whether they represent two cows.
 
 <LanguageSection>
+	
+<PySection>
+```py
+fin = open('circlecross.in', 'r')
+s = fin.readline().strip()
+ans = 0
 
+# Iterates through all possible pairs.
+for a in range(len(s)):
+	for b in range(a+1, len(s)):
+		for c in range(b+1, len(s)):
+			for d in range(c+1, len(s)):
+				ans += s[a] == s[c] and s[b] == s[d]
+
+fout = open('circlecross.out', 'w')
+fout.write(str(ans) + '\n')
+fout.close()
+```
+</PySection>
+	
 <CPPSection>
 
 ```cpp
