@@ -80,7 +80,6 @@ struct Node {
 
 	Node(ll x) : val(x), l(nullptr), r(nullptr) {}
 	Node(Node *ll, Node *rr) : val(0), l(ll), r(rr) {}
-	Node(Node *cp) : val(cp->val), l(cp->l), r(cp->r) {}
 };
 
 int n, a[100001]; // The initial array and its size
@@ -113,8 +112,7 @@ int get_item(int index, int time) {
 
 void update_item(int index, int value, int prev_time, int curr_time) {
 	// Updates the array item at a given index and time
-	roots[curr_time] = new Node(roots[prev_time]); // First, copy the root
-	roots[curr_time] = update(roots[curr_time], index, value); // Then update it
+	roots[curr_time] = update(roots[prev_time], index, value);
 }
 
 void init_arr(int nn, int* init) {
@@ -137,10 +135,6 @@ Path copying is **fully persistent**.
 Since persistent arrays with path copying are so similar to sparse segment
 trees, it's relatively straightforward to convert one into a persistent
 segment tree - just add range queries!
-
-However, note that it's not possible to support range updates with range queries
-in persistent segment trees, since lazy propagation doesn't play well with path
-copying.
 
 <FocusProblem problem="persistentSample" />
 
