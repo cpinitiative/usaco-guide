@@ -1,0 +1,121 @@
+---
+id: cf-472D
+source: Codeforces
+title: Design Tutorial Inverse the Problem
+author: Weiming Zhou
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/14028)
+
+**Time Complexity:** $\mathcal{O}(N^2\log N)$ with Kruskal's MST or $\mathcal{O}(N^2)$ with $N^2$ Prims.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// https://codeforces.com/contest/472/submission/117118910
+
+#include <bits/stdc++.h> 
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pii = pair<int,int>; //note pii, not pi
+#define f first
+#define s second
+#define mp make_pair
+
+const int MX = 2e3 + 10;
+ 
+int dist[MX][MX], n, par[MX], sz[MX];
+vector<pii> adj[MX];
+vector<pair<int, pii>> edges;
+ 
+int find(int x){
+	if(x != par[x]) par[x] = find(par[x]); 
+	return par[x];
+}
+ 
+void Union(int a, int b){
+	a = find(a), b = find(b);
+	if(a == b) return ;
+	if(sz[a] > sz[b]) swap(a, b);
+	par[b] = a;
+	sz[a] += sz[b];
+}
+	
+void mkdsu(){
+	for(int i = 0; i <= n; i++){
+		par[i] = i, sz[i] = 1;
+	}
+}
+ 
+bool cmp(const pair<int, pii> &a, const pair<int, pii>& b){
+	return a.f < b.f;
+}
+ 
+void kruskals(){
+	int tot = 0;
+	mkdsu();
+	sort(all(edges), cmp); 
+	for(const auto& e : edges){
+		if(tot == n) break;
+		int u = e.s.f, v = e.s.s, w = e.f;
+		if(find(u) != find(v)){
+			Union(u, v);
+			tot = max(tot, sz[find(u)]);
+			adj[u].pb(mp(v, w)); 
+			adj[v].pb(mp(u, w));
+		}
+	}
+}
+ 
+bool dfs(int u, int p, int src, int d){
+	if(dist[src][u] != d || (src != u && dist[src][u] == 0)) return false; 
+	bool ans = 1;
+	for(const auto& e : adj[u]){
+		if(e.f == p) continue;
+		ans &= dfs(e.f, u, src, d + e.s); 
+	}
+	return ans;
+}
+ 
+int main(){
+	cin.tie(0) -> sync_with_stdio(0);
+	bool ans = 1; 
+	cin >> n;
+	for(int i = 1; i <= n; i++){
+		for(int j = 1; j <= n; j++){
+			cin >> dist[i][j];
+			if(i != j){
+				if(j < i && dist[i][j] != dist[j][i]) ans = 0; 
+				if(i < j) edges.pb(mp(dist[i][j], mp(i, j)));
+			}else{
+				if(dist[i][j] != 0) ans = 0; 
+			}
+		}
+	}
+	
+	kruskals();
+	
+	for(int i = 1; i <= n; i++){
+		ans &= dfs(i, 0, i, 0);
+	}
+	
+	if(ans) cout << "YES\n";
+	else cout << "NO\n";
+	
+	return 0;
+}
+ 
+```
+
+</CPPSection>
+
+</LanguageSection>

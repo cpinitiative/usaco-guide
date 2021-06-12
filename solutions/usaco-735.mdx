@@ -1,0 +1,206 @@
+---
+id: usaco-735
+source: USACO Bronze 2017 Open
+title: The Lost Cow
+author: Jesse Choe, Ananth Kashyap, Brad Ma
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log|x-y|)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// Created by Jesse Choe - Bronze Template
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Type aliases
+
+using ll = long long;
+using str = string;
+using vi = vector<int>;
+using pi = pair<int,int>;
+using vpi = vector<pi>;
+using si = set<int>;
+
+// Vector Operations
+
+#define sz (int)(x).size()
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sor(x) sort(all(x))
+#define rev(x) reverse(all(x))
+#define del(x, i) erase(begin(x)+i)
+#define rem(x,i) erase(begin(x), begin(x)+i)
+
+// Pairs
+
+#define mp make_pair
+#define sec second
+#define fir first
+
+// Sets and Maps
+
+#define ins insert
+#define ez erase
+#define cnt count
+
+// Math
+
+#define MOD 1e9+7
+#define MAX_INT 1e18*9
+
+// Permutation
+
+#define possibilities(x) while(next_permutation(all(x))
+
+// Loops
+
+#define Trav(a,x) for (auto& a: x)
+#define For(i,a,b) for (int i = (a); i < (b); ++i)
+
+// Input/Output - s is basically the file name without the ".in" and ".out"
+
+void setIO(string s) {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen((s+".in").c_str(),"r",stdin);
+	freopen((s+".out").c_str(),"w",stdout);
+}
+
+int main(){
+
+	setIO("lostcow");
+
+	int x, y; cin >> x >> y;
+
+	vi zigzag;
+
+	if(x == y){
+		cout << 0 << endl;
+	} else if(x < y){
+		int dist = 1;
+
+		while(x+dist < y){
+			zigzag.pb(x+dist);
+			dist*=-2;
+		}
+
+		zigzag.pb(x+dist);
+
+		int ans = 1;
+
+		For(i, 0, zigzag.size()-1){
+			ans+=abs(zigzag[i] - zigzag[i+1]);
+		}
+		ans-=(zigzag[zigzag.size()-1]-y);
+		cout << ans << endl;
+	} else {
+		int dist = 1;
+
+		while(x+dist > y){
+			zigzag.pb(x+dist);
+			dist*=-2;
+		}
+
+		zigzag.pb(x+dist);
+
+		int ans = 1;
+
+		For(i, 0, zigzag.size()-1){
+			ans+=abs(zigzag[i] - zigzag[i+1]);
+		}
+		ans-=(y-zigzag[zigzag.size()-1]);
+		cout << ans << endl;
+	}
+
+}
+
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+# Take in the input data using python standard file I/O system
+file_in = open('lostcow.in')
+data = file_in.read().strip().split('\n')
+x, y = map(int, data[0].split(' '))
+
+# Compute the number of times Farmer John must change direction
+if y > x:
+	p = 0
+	while (2 ** p) + x < y:
+		p += 2
+else:
+	p = 1
+	while x - (2 ** p) > y:
+		p += 2
+
+total_distance = 0
+
+# Compute the total distance that farmer John must travel
+if p == 0:
+	print(1)
+else:
+	total_distance = 1
+	for i in range(1, p):
+		total_distance += (2 ** i) + (2 ** (i - 1))
+	total_distance += (2 ** (p - 1)) + abs(x - y)
+
+# Add the answer to the output file using python standard file I/O system
+file_out = open('lostcow.out', 'w')
+file_out.write(str(total_distance))
+file_out.close()
+```
+
+</PySection>
+	
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class theLostCow {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("lostcow");
+		int x = io.nextInt();
+		int y = io.nextInt();
+
+		int direction = 1;
+		int totalDistance = 0;
+		int directionDistance = 1;
+
+		while (true) {
+			// found bessie
+			if ((direction == 1 && x <= y && y <= (x + directionDistance)) ||
+				(direction == -1 && y <= x && (x - directionDistance <= y))) {
+
+				totalDistance += Math.abs(y - x); // distance to bessie from original position
+				io.println(totalDistance);
+				break;
+			}
+			else { // did not find bessie yet
+				totalDistance += (directionDistance * 2); // add to the distance count
+				directionDistance *= 2; // double the distance
+				direction *= -1; // switch directions
+			}
+		}
+
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+
+```
+</JavaSection>
+	
+</LanguageSection>

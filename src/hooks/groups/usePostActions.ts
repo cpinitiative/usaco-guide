@@ -1,5 +1,7 @@
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteField,
   doc,
@@ -40,17 +42,25 @@ export function usePostActions(groupId: string) {
         body: '',
         isDeleted: false,
         type,
+        pointsPerProblem: {},
+        problemOrdering: [],
         ...(type === 'announcement'
           ? {}
           : {
               dueTimestamp: null,
             }),
       };
-      const doc = await addDoc(
-        collection(getFirestore(firebaseApp), 'groups', groupId, 'posts'),
-        { ...defaultPost, timestamp: serverTimestamp() }
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        collection(getFirestore(firebaseApp), 'groups', groupId, 'posts')
       );
-      return doc.id;
+      batch.set(docRef, { ...defaultPost, timestamp: serverTimestamp() });
+      batch.update(doc(firestore, 'groups', groupId), {
+        postOrdering: arrayUnion(docRef.id),
+      });
+      await batch.commit();
+      return docRef.id;
     },
     deletePost: async (postId: string): Promise<void> => {
       const firestore = getFirestore(firebaseApp);
@@ -61,12 +71,26 @@ export function usePostActions(groupId: string) {
       });
       batch.update(doc(firestore, 'groups', groupId), {
         [`leaderboard.${postId}`]: deleteField(),
+        postOrdering: arrayRemove(postId),
       });
       return batch.commit();
     },
     updatePost,
-    createNewProblem: async (post: PostData, order = 10) => {
-      const defaultProblem: Omit<GroupProblemData, 'id'> = {
+    createNewProblem: async (post: PostData) => {
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          groupId,
+          'posts',
+          post.id,
+          'problems'
+        )
+      );
+      const defaultProblem: GroupProblemData = {
+        id: docRef.id,
         postId: post.id,
         name: 'Untitled Problem',
         body: '',
@@ -79,20 +103,17 @@ export function usePostActions(groupId: string) {
         isDeleted: false,
         usacoGuideId: null,
         solutionReleaseMode: 'due-date',
-        order,
       };
-      const doc = await addDoc(
-        collection(
-          getFirestore(firebaseApp),
-          'groups',
-          groupId,
-          'posts',
-          post.id,
-          'problems'
-        ),
-        defaultProblem
+      batch.set(docRef, defaultProblem);
+      batch.update(
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
+        {
+          [`pointsPerProblem.${docRef.id}`]: defaultProblem.points,
+          [`problemOrdering`]: arrayUnion(docRef.id),
+        }
       );
-      return doc.id;
+      await batch.commit();
+      return docRef.id;
     },
     saveProblem: async (post: PostData, problem: GroupProblemData) => {
       if (
@@ -104,18 +125,26 @@ export function usePostActions(groupId: string) {
         );
         return;
       }
-      await updateDoc(
-        doc(
-          getFirestore(firebaseApp),
-          'groups',
-          groupId,
-          'posts',
-          post.id,
-          'problems',
-          problem.id
-        ),
-        problem
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        getFirestore(firebaseApp),
+        'groups',
+        groupId,
+        'posts',
+        post.id,
+        'problems',
+        problem.id
       );
+      batch.update(docRef, problem);
+      batch.update(
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
+        {
+          [`pointsPerProblem.${docRef.id}`]: problem.points,
+        }
+      );
+      await batch.commit();
+      return docRef.id;
     },
     deleteProblem: async (post: PostData, problemId: string) => {
       const firestore = getFirestore(firebaseApp);
@@ -137,7 +166,18 @@ export function usePostActions(groupId: string) {
       batch.update(doc(firestore, 'groups', groupId), {
         [`leaderboard.${post.id}.${problemId}`]: deleteField(),
       });
+      batch.update(doc(firestore, 'groups', groupId, 'posts', post.id), {
+        [`pointsPerProblem.${problemId}`]: deleteField(),
+        problemOrdering: arrayRemove(problemId),
+      });
       await batch.commit();
+    },
+    updateProblemOrdering: async (postId: string, ordering: string[]) => {
+      const firestore = getFirestore(firebaseApp);
+      console.log('updating', ordering);
+      updateDoc(doc(firestore, 'groups', groupId, 'posts', postId), {
+        problemOrdering: ordering,
+      });
     },
     submitSolution: async (
       problem: GroupProblemData,

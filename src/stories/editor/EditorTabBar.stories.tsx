@@ -19,9 +19,11 @@ Default.args = {
   tabs: [
     {
       label: 'Contributing.mdx',
+      value: 'Contributing.mdx',
     },
     {
-      label: 'Prefix_Sums.mdx',
+      label: 'Contributing.problems.json',
+      value: 'Contributing.problems.json',
     },
   ],
   activeTab: 'Contributing.mdx',

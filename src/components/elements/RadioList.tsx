@@ -49,7 +49,9 @@ export default function RadioList({
                   )}
                   aria-hidden="true"
                 >
-                  <span className="rounded-full bg-white w-1.5 h-1.5" />
+                  {checked && (
+                    <span className="rounded-full bg-white w-1.5 h-1.5" />
+                  )}
                 </span>
                 <div className="ml-3 flex flex-col">
                   {/* On: "text-blue-900", Off: "text-gray-900" */}

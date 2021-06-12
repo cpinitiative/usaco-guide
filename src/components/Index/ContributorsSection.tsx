@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { contentAuthors } from '../../../content/authors/contributors';
 
-export default function ContributorsSection() {
+export default function ContributorsSection(): JSX.Element {
   return (
     <div className="relative py-16 bg-white dark:bg-dark-surface overflow-hidden">
       <div className="hidden lg:block lg:absolute lg:inset-y-0 lg:h-full lg:w-full">

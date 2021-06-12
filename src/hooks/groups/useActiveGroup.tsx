@@ -58,38 +58,34 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
           ),
           where('isDeleted', '==', false)
         ),
-        {
-          next: snap => {
-            loadedPosts = true;
-            setPosts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            if (loadedGroup && loadedPosts) setIsLoading(false);
-          },
-          error: error => {
-            if (error.code === 'permission-denied') {
-              setIsLoading(false);
-              setPosts(null);
-            } else {
-              notifications.showErrorNotification(error);
-            }
-          },
+        snap => {
+          loadedPosts = true;
+          setPosts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          if (loadedGroup && loadedPosts) setIsLoading(false);
+        },
+        error => {
+          if (error.code === 'permission-denied') {
+            setIsLoading(false);
+            setPosts(null);
+          } else {
+            notifications.showErrorNotification(error);
+          }
         }
       );
       const unsubscribeGroup = onSnapshot<GroupData>(
         doc(getFirestore(firebaseApp), 'groups', activeGroupId),
-        {
-          next: doc => {
-            loadedGroup = true;
-            setGroupData(doc.data());
-            if (loadedGroup && loadedPosts) setIsLoading(false);
-          },
-          error: error => {
-            if (error.code === 'permission-denied') {
-              setIsLoading(false);
-              setGroupData(null);
-            } else {
-              notifications.showErrorNotification(error);
-            }
-          },
+        doc => {
+          loadedGroup = true;
+          setGroupData(doc.data());
+          if (loadedGroup && loadedPosts) setIsLoading(false);
+        },
+        error => {
+          if (error.code === 'permission-denied') {
+            setIsLoading(false);
+            setGroupData(null);
+          } else {
+            notifications.showErrorNotification(error);
+          }
         }
       );
       return () => {

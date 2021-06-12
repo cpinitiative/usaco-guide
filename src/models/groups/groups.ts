@@ -9,6 +9,7 @@ export type GroupData = {
   adminIds: string[];
   memberIds: string[];
   leaderboard: Leaderboard;
+  postOrdering: string[];
 };
 
 export enum GroupPermission {
@@ -28,7 +29,10 @@ export type JoinGroupLink = {
   author: string;
 };
 
-export const isUserAdminOfGroup = (group: GroupData, userId: string) => {
+export const isUserAdminOfGroup = (
+  group: GroupData,
+  userId: string
+): boolean => {
   return (
     !!group?.adminIds.includes(userId) || !!group?.ownerIds.includes(userId)
   );

@@ -43,13 +43,17 @@ export function useGroupActions() {
         adminIds: [],
         memberIds: [],
         leaderboard: {},
+        postOrdering: [],
       };
       const groupDoc = doc(collection(getFirestore(firebaseApp), 'groups'));
-      const docId = groupDoc.id;
+      const group: GroupData = {
+        ...defaultGroup,
+        id: groupDoc.id,
+      };
 
-      await setDoc(groupDoc, defaultGroup).then(() => invalidateData());
+      await setDoc(groupDoc, group).then(() => invalidateData());
 
-      return docId;
+      return groupDoc.id;
     },
     deleteGroup: async (groupId: string) => {
       const firestore = getFirestore(firebaseApp);
@@ -157,6 +161,11 @@ export function useGroupActions() {
         doc(getFirestore(firebaseApp), 'group-join-links', id),
         data
       );
+    },
+    updatePostOrdering: async (groupId: string, ordering: string[]) => {
+      await updateDoc(doc(getFirestore(firebaseApp), 'groups', groupId), {
+        postOrdering: ordering,
+      });
     },
     removeMemberFromGroup: async (
       groupId: string,

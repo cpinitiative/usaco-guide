@@ -1,0 +1,197 @@
+---
+id: cses-1076
+source: CSES
+title: Sliding Median
+author: Isaac Noel, Arpan Banerjee
+---
+
+## Solution 1: Maintaining two multisets
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+To accomplish finding the sorted median of a sliding window, we can store the
+window within two sets: one containing the lower values of the window and the
+other containing the upper values. If we ensure that the size of the lower set
+is always greater than or equal to the size of the upper set, then the largest
+element in the lower set will be the median. This works for all sizes of
+windows. In odd windows, the size of the lower set will be one larger than the
+upper set, therefore its largest element will be the median. In even windows,
+the problem calls for the smallest of the two centermost values so this strategy
+still works.
+
+To implement, we need a function that will handle inserting and removing
+elements in the window. For inserting, compare the incoming value to the current
+median and place it in the upper set if it is greater than the median, put it in
+the lower set otherwise. If one set fills above its max size, transfer an
+element to the other set. Erasing is more simple, just find the element and
+erase it.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+long N, M;
+long arr[200010];
+multiset<long> up;
+multiset<long> low;
+
+void ins(long val){ // insert val into sets
+	long a = *low.rbegin(); // current median
+	if(a < val){
+		up.insert(val);
+		if(up.size() > M/2){
+			low.insert(*up.begin());
+			up.erase(up.find(*up.begin()));
+		}
+	}
+	else{
+		low.insert(val);
+		if(low.size() > (M + 1)/2){
+			up.insert(*low.rbegin());
+			low.erase(low.find(*low.rbegin()));
+		}
+	}
+}
+
+void er(long val){ // erase from sets
+	if(up.find(val) != up.end()) up.erase(up.find(val));
+	else low.erase(low.find(val));
+	if(low.empty()){
+		low.insert(*up.begin());
+		up.erase(up.find(*up.begin()));
+	}
+}
+
+int main() {
+	cin >> N >> M;
+	for(int i = 0; i < N; i++) cin >> arr[i];
+	low.insert(arr[0]); for(int i = 1; i < M; i++) ins(arr[i]);
+	cout << *low.rbegin() << " ";
+	for(long i = M; i < N; i++){
+		if(M == 1){
+			ins(arr[i]);
+			er(arr[i - M]);
+		}
+		else{
+			er(arr[i - M]);
+			ins(arr[i]);
+		}
+		cout << *low.rbegin() << " ";
+	}
+	cout << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Solution 2: Fenwick Tree
+
+We can use a [Fenwick tree](/gold/PURS#binary-indexed-tree) to simulate an order statistic tree/indexed set.
+
+The Fenwick array (let's call it `fa`)can be treated as a frequency array. For example, if 5 is inserted into the window, `fa[5] += 1`. This enables us to binary search for an integer $x$ such that 
+
+$$
+\left(\sum_{i=1}^{x} \texttt{fa[i]}\right)\geq \lceil k/2 \rceil \text{ and } \left(\sum_{i=1}^{x-1}\texttt{fa[i]}\right) <\lceil k/2 \rceil
+$$
+
+and find $k$ from there. Clearly, the values of the array would need to be compressed, as an array of size $10^9$ is infeasible. There will also be an extra $\log$ factor from using the Fenwick tree `sum` operation, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. Note that a more precise upper bound is $\mathcal{O}((n-k+1) \cdot \log^2{k} + n \log{n})$ (there are $(n-k+1)$ windows), but it's tricky to express the maximum value of this in terms of $n$ and $k$; therefore, $\mathcal{O}(n \log^2{n})$ is better.
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int sz = 200005;
+int fa[sz], a[sz], bit[sz], n, k;
+map<int, int> compressed, decompress;
+
+int psum(int x, int sum = 0){
+	for (; x > 0; x -= x & -x) sum += bit[x]; return sum;
+}
+void add(int x, int val){
+	for (; x < sz; x += x & -x) bit[x] += val;
+}
+
+signed main(){
+	cin >> n >> k;
+	for (int i = 1; i <= n; i++){
+		cin >> a[i];
+		compressed[a[i]] = 0;
+	}
+	int index = 1;
+	for (auto& i : compressed){
+		i.second = index++;
+		decompress[i.second] = i.first;
+	}
+	for (int i = 1; i <= n; i++){
+		add(compressed[a[i]], 1);
+		if (i >= k + 1) add(compressed[a[i - k]], -1);
+		int mid = (k / 2) + (k & 1);
+		if (i >= k){
+			int lo = 1, hi = 200003, ans = -1;
+			while (lo <= hi){
+				int m = (lo + hi) / 2;
+				if (psum(m) >= mid && psum(m - 1) < mid){
+					ans = m; break;
+				}
+				else if (psum(m) < mid) lo = m + 1;
+				else hi = m - 1;
+			}
+			cout << decompress[ans] << endl;
+		}
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+
+
+<LanguageSection>
+<CPPSection>
+
+## Solution 3: Order Statistic Tree
+
+We can directly use an [order statistic tree](https://codeforces.com/blog/entry/11080) (C++) to get the median while sliding the window across the array in $\mathcal{O}(n\log n)$ time.
+
+```cpp
+#include<bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+ 
+typedef tree <
+	pair<int, int>,
+	null_type,
+	less<pair<int, int>>,
+	rb_tree_tag,
+	tree_order_statistics_node_update> ordered_set;
+ 
+int n, k, t, a[200005];
+ 
+int main() {
+	cin >> n >> k;
+	ordered_set oset;
+	for (int i = 0; i < n; i++){
+		int u; cin >> u; a[i] = u;
+		oset.insert({u, t++});
+		if (i >= k){
+			oset.erase(oset.lower_bound({a[i - k], 0}));
+		}
+		if (i >= k - 1){
+			cout << (*oset.find_by_order((k - 1) / 2)).first << endl;
+		}
+	}
+}
+```
+	
+</CPPSection>
+</LanguageSection>

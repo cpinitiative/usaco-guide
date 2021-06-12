@@ -1,0 +1,140 @@
+---
+id: cses-1746
+source: CSES
+title: Array Description
+author: Andrew Wang, Sofia Yang
+---
+
+[Editorial (icecuber)](https://codeforces.com/blog/entry/70018)
+
+# Implementation
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+typedef long long ll;
+#define pb push_back
+#define pi pair<int, int>
+#define f first
+#define mp make_pair
+#define s second
+
+ll dp[100001][101];
+const ll MOD = (10e8)+7;
+int main() {
+		ios_base::sync_with_stdio(0);
+		cin.tie(0);
+		int n, m;
+		cin >> n >> m;
+		int arr[n];
+		for (int i = 0; i < n; i++) {
+				cin >> arr[i];
+		}
+		if(arr[0] == 0) {
+				fill(dp[0], dp[0]+101, 1);
+		} else{
+				dp[0][arr[0]] = 1;
+		}
+		for (int i = 1; i < n; i++) {
+				if(arr[i] == 0) {
+						for (int j = 1; j <= m; j++) {
+								dp[i][j] += dp[i-1][j];
+								if(j - 1 > 0) dp[i][j] += dp[i-1][j-1];
+								if(j + 1 <= m) dp[i][j] += dp[i-1][j+1];
+								dp[i][j] %= MOD;
+						}
+				} else {
+						dp[i][arr[i]] += dp[i-1][arr[i]];
+						if(arr[i] - 1 > 0) dp[i][arr[i]] += dp[i-1][arr[i]-1];
+						if(arr[i] + 1 <= m) dp[i][arr[i]] += dp[i-1][arr[i]+1];
+						dp[i][arr[i]] %= MOD;
+				}
+		}
+		ll ans = 0;
+		for (int i = 1; i <= m; i++) {
+				ans += dp[n-1][i];
+				ans %= MOD;
+		}
+		cout << ans;
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class ArrayDesc {
+	public static final int MOD = (int) 1e9 + 7;
+	public static void main(String args[]) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		// DP[i][j] is the number of ways
+		// to make a valid array from 0 to i, if the ith value is j.
+		int[][] dp = new int[N][M + 1];
+
+		// Process the first element in the array.
+		StringTokenizer arr = new StringTokenizer(r.readLine());
+		int first = Integer.parseInt(arr.nextToken());
+		// The first element can be anything.
+		if (first == 0) {
+			Arrays.fill(dp[0], 1);
+		} else {
+			// This is the only valid value.
+			dp[0][first] = 1;
+		}
+
+		for (int i = 1; i < N; i++) {
+			int A = Integer.parseInt(arr.nextToken());
+			// A free element.
+			if (A == 0) {
+				for (int j = 1; j <= M; j++) {
+					int[] neighborVals = new int[] {j - 1, j, j + 1};
+					for (int k : neighborVals) {
+						// Number of values,
+						// where the previous value is in the valid range.
+						if (1 <= k && k <= M) {
+							dp[i][j] += dp[i - 1][k];
+							dp[i][j] %= MOD;
+						}
+					}
+				}
+			} else {
+				// Find number of ways that the current value is valid.
+				int[] neighborVals = new int[] {A - 1, A, A + 1};
+				for (int k : neighborVals) {
+					if (1 <= k && k <= M) {
+						dp[i][A] += dp[i - 1][k];
+						dp[i][A] %= MOD;
+					}
+				}
+			}
+		}
+
+		//Aggregate the dp values.
+		int ans = 0;
+		for (int j = 1; j <= M; j++) {
+			ans += dp[N - 1][j];
+			ans %= MOD;
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

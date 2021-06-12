@@ -1,0 +1,121 @@
+---
+id: ac-matching
+source: AtCoder DP Contest
+title: Matching
+author: Neo Wang, Sofia Yang, Kevin Sheng
+---
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N\cdot 2^N)$
+
+If we define $\texttt{dp}[S]$ to be the number of matchings for females in the
+set $S$ to the first $|S|$ males, this problem boils down to the following:
+
+$$
+\texttt{dp}[S] = \sum \texttt{dp}[S\backslash x]:  \texttt{compatible}[|S|][x]
+$$
+
+(The `:` stands for "such that".)
+In English, this is equivalent to the following:
+
+> The number of matchings in a subset $S$ to include a certain female $x$ is
+> equivalent to the sum of all the matchings without female $x$ where female $x$
+> is compatible with the $|S|$-th male.
+
+Our base case is the empty set, which has a value of $1$ (the empty set can be
+considered as a single matching involving zero pairs).
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+	
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAX_N = 21;
+
+bool compat[MAX_N][MAX_N];
+int dp[1 << MAX_N];
+
+int main() {
+	int N;
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cin >> compat[i][j];
+		}
+	}
+
+	dp[0] = 1;
+	for (int s = 0; s < (1 << N); s++) {
+		int pair_num = __builtin_popcount(s);
+		for (int w = 0; w < N; w++) {
+			/*
+			 * check that
+			 * 1. this woman hasn't been paired already
+			 * 2. she's also compatible with the {pair_num + 1}th man
+			 */
+			if ((s & (1 << w)) || !compat[pair_num][w])
+				continue;
+			
+			// add the amount to future dp states
+			dp[s | (1 << w)] += dp[s];
+			dp[s | (1 << w)] %= MOD;
+		}
+	}
+
+   	cout << dp[(1 << N) - 1] << endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static final int MOD = (int) 1e9 + 7;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		boolean[][] compat = new boolean[N][N];
+		for (int m = 0; m < N; m++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int w = 0; w < N; w++) {
+				compat[m][w] = (Integer.parseInt(st.nextToken()) == 1);
+			}
+		}
+		
+		int[] dp = new int[1 << N];
+		dp[0] = 1;
+		for (int s = 0; s < (1 << N); s++) {
+			int pair_num = Integer.bitCount(s);
+			for (int w = 0; w < N; w++) {
+				/*
+				 * check that
+				 * 1. this woman hasn't been paired already
+				 * 2. she's also compatible with the {pair_num + 1}th man
+				 */
+				if ((s & (1 << w)) != 0 || !compat[pair_num][w])
+					continue;
+				
+				// add the amount to future dp states
+				dp[s | (1 << w)] += dp[s];
+				dp[s | (1 << w)] %= MOD;
+			}
+		}
+		System.out.println(dp[(1 << N) - 1]);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

@@ -1,0 +1,83 @@
+---
+id: cses-1080
+source: CSES
+title: Empty String
+author: Dong Liu
+---
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+Let $\texttt{dp}[i][j]$ represent the number of ways to empty the substring $[i, j]$.
+
+To calculate $\texttt{dp}[i][j]$, we loop through indices $k$ between $i$ and $j$ where $s[i] = s[k]$.
+
+Then, if we choose to remove $s[i]$ and $s[k]$, we must remove the range $[i + 1, k - 1]$ first (for $s[i]$ and $s[k]$ to be adjacent). Here, the number of ways to remove the range $[i + 1, k - 1]$ is $\texttt{dp}[i + 1][k - 1]$.
+
+We also need to remove $[k + 1, j]$ for the whole substring $[i, j]$ to be removed (the number of ways to do this is $dp[k + 1][j]$).
+
+Since we can remove the substring $[i, k]$ and $[k + 1, j]$ in any order, we also multiply this by ${(j - i + 1) / 2}\choose {(k - i + 1) / 2}$ (notice that we divide the sizes by two because we remove the letters in pairs).
+
+Thus our transition would be
+
+$$
+\texttt{dp}[i][j] = \sum{\texttt{dp}[i + 1][k - 1] * \texttt{dp}[k + 1][j] * {{(j - i + 1) / 2}\choose {(k - i + 1) / 2}}}
+$$
+
+such that $s[i] = s[k]$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define N	500
+#define MOD	1000000007
+ 
+int add(int a, int b) {
+	if ((a += b) >= MOD)
+		a -= MOD;
+	return a;
+}
+ 
+int mul(int a, int b) {
+	return int(1LL * a * b % MOD);
+}
+ 
+int main() {
+	ios::sync_with_stdio(false); cin.tie(NULL);
+ 
+	int n, i, j, k;
+	static int dp[N + 1][N + 1], choose[N / 2 + 1][N / 2 + 1];
+	static string s;
+ 
+	cin >> s;
+	n = (int) s.size();
+ 
+	choose[0][0] = 1;
+	for (i = 1; i <= n / 2; ++i) {
+		choose[i][0] = 1;
+		for (int j = 1; j <= i; ++j)
+			choose[i][j] = add(choose[i - 1][j], choose[i - 1][j - 1]);
+	}
+ 
+	for (i = 0; i + 1 <= n; ++i)
+		dp[i + 1][i] = 1;
+	for (i = n - 1; i >= 0; --i)
+		for (j = i + 1; j < n; j += 2) {
+			for (k = i + 1; k <= j; k += 2) 
+				if (s[i] == s[k]) {
+					int temp = mul(dp[i + 1][k - 1], dp[k + 1][j]);
+					temp = mul(temp, choose[(j - i + 1) / 2][(k - i + 1) / 2]);
+					dp[i][j] = add(dp[i][j], temp);
+				}
+		}
+	cout << dp[0][n - 1] << '\n';
+}
+```
+
+</CPPSection>
+  
+</LanguageSection>

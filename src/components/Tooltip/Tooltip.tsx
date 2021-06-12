@@ -47,7 +47,7 @@ const CompactTippy = styled(StyledTippy)`
   padding: 0rem;
 `;
 
-export interface TooltipProps extends Omit<TippyProps, 'placement'> {
+export interface TooltipProps extends Partial<Omit<TippyProps, 'placement'>> {
   position?: Placement;
   type?: 'normal' | 'asterisk' | 'compact';
 }

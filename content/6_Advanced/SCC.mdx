@@ -1,7 +1,7 @@
 ---
 id: SCC
 title: 'Strongly Connected Components'
-author: Benjamin Qi, Dong Liu
+author: Benjamin Qi, Dong Liu, Neo Wang
 prerequisites:
   - toposort
   - BCC-2CC
@@ -13,110 +13,87 @@ frequency: 1
 
 ## SCCs
 
-### Tutorial
-
-- Wikipedia
-  - [Tarjan](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-  - [Kosaraju](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
-
-<Resources>
-	<Resource source="CPH" title="17 - Strong Connectivity"></Resource>
-	<Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1"></Resource>
-	<Resource source="CP2" title="4.2.9 - Finding SCCs">
-		{' '}
-	</Resource>
-	<Resource
-		source="Benq"
-		title="Kosaraju's Implementation"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h"
-	>
-		concise implementation of Kosaraju's Algorithm
-	</Resource>
-	<Resource
-		source="Benq"
-		title="Tarjan's Implementation"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h"
-	>
-		concise implementation of Tarjan's Algorithm
-	</Resource>
-</Resources>
-
 <FocusProblem problem="ex" />
 
-### Solution - Planets and Kingdoms
+The definition of a kingdom in this problem is equivalent to the definition of a strongly connected component. We can compute these components using either **Kosaraju's** or **Tarjan's** algorithms, both of which are described below.
 
-Just run
-[Kosaraju's](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h>)
-or
-[Tarjan's](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h>)
-SCC algorithm on the graph.
+### Kosaraju's Algorithm
 
-Then assign each component an $ID$ (starting from $1$).
+<Resources>
+	<Resource source="CPH" title="17 - Strong Connectivity" />
+	<Resource source="Wikipedia" title="Kosaraju's Algorithm" url="https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm" />
+</Resources>
 
-<Spoiler title="Using Kosaraju's SCC">
+<!-- <Resource
+	source="Benq"
+	title="Kosaraju's Implementation"
+	url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h"
+>
+	concise implementation of Kosaraju's Algorithm
+</Resource> -->
+
+<Spoiler title="Solution (Kosaraju's)">
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
-/**
- * Description: Kosaraju's Algorithm, DFS twice to generate
- 	* strongly connected components in topological order. $a,b$
- 	* in same component if both $a\to b$ and $b\to a$ exist.
- * Time: O(N+M)
- * Source: Wikipedia
- * Verification: POI 8 peaceful commission
-*/
-struct SCC {
-	int N; vector<vector<int>> adj, radj;
-	vector<int> todo, comp, comps; vector<bool> vis;
-	void init(int _N) { N = _N;
-		adj.resize(N), radj.resize(N), comp = vector<int>(N,-1), vis.resize(N);
-	}
-	void ae(int x, int y) {
-		adj[x].push_back(y), radj[y].push_back(x);
-	}
-	void dfs(int x) {
-		vis[x] = 1; for(int y : adj[x]) if (!vis[y]) dfs(y);
-		todo.push_back(x); }
-	void dfs2(int x, int v) {
-		comp[x] = v;
-		for(int y : radj[x]) if (comp[y] == -1) dfs2(y,v);
-	}
-	void gen() { // fills allComp
-		for(int i=0; i<N; i++) if (!vis[i]) dfs(i);
-		reverse(begin(todo), end(todo));
-		for(int x : todo) if (comp[x] == -1) {
-			dfs2(x,x), comps.push_back(x);
-		}
-	}
-};
 
+using vi = vector<int>;
+#define pb push_back
+
+const int mx = 1e5+1;
+
+// adj_t is the transpose of adj
+vi adj[mx], adj_t[mx], S;
+bool vis[mx];
+int id[mx];
+ 
+void dfs(int x, int pass, int num = 0) {
+	vis[x] = true;
+	vi &ad = (pass == 1) ? adj[x] : adj_t[x];
+	for(const int &e : ad) {
+		if(!vis[e]) dfs(e, pass, num);
+	}
+
+	S.pb(x);
+	if(pass == 2) id[x] = num;
+}
+ 
 int main() {
-	int n, m, a, b;
+	cin.tie(0)->sync_with_stdio(0);
+	
+	int n, m;
 	cin >> n >> m;
-
-	SCC graph;
-	graph.init(n);
+ 
 	while(m--) {
-		cin >> a >> b;
-		graph.ae(--a, --b);
+		int a, b; cin >> a >> b;
+		adj[a].pb(b);
+		adj_t[b].pb(a);
 	}
-	graph.gen();
-	int ID[200000]{};
-	int ids = 0;
-	for(int i=0; i<n; i++) {
-		if(!ID[graph.comp[i]]) {
-			ID[graph.comp[i]] = ++ids;
+ 
+	for(int i = 1; i <= n; i++) {
+		if(!vis[i]) dfs(i, 1);
+	}
+ 
+	memset(vis, false, sizeof vis);
+ 
+	int components = 0;
+ 
+	for(int i = n - 1; i >= 0; i--) {
+		if(!vis[S[i]]) {
+			components++;
+			dfs(S[i], 2, components);
 		}
 	}
-	cout << ids << '\n';
-	for(int i=0; i<n; i++) {
-		cout << ID[graph.comp[i]] << " \n"[i==n-1];
-	}
+
+	cout << components << "\n";
+ 
+	for(int i = 1; i <= n; i++)
+		cout << id[i] << " ";
 }
 ```
 
@@ -126,7 +103,23 @@ int main() {
 
 </Spoiler>
 
-<Spoiler title="Using Tarjan's SCC">
+### Tarjan's Algorithm
+
+<Resources>
+	<Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1" />
+	<Resource source="CP2" title="4.2.9 - Finding SCCs"/>
+	<Resource source="Wikipedia" title="Tarjan's SCC Algorithm" url="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm" />
+</Resources>
+
+<!-- <Resource
+	source="Benq"
+	title="Tarjan's Implementation"
+	url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h"
+>
+	concise implementation of Tarjan's Algorithm
+</Resource> -->
+
+<Spoiler title="Solution (Tarjan's)">
 
 <LanguageSection>
 
@@ -207,14 +200,22 @@ int main() {
 
 ## 2-SAT
 
-<Problems problems="satEx" />
+<FocusProblem problem="satEx" />
 
-(impl)
+<IncompleteSection>
+
+implementation
+
+</IncompleteSection>
 
 ### Tutorial
 
 <Resources>
-	<Resource source="CF" title="2-SAT" url="16205"></Resource>
+	<Resource source="CF" title="2-SAT" url="16205" />
 </Resources>
 
-(KACTL at most one?)
+<IncompleteSection>
+
+mention KACTL - at most one
+
+</IncompleteSection>
