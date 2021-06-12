@@ -101,7 +101,10 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
     <ActiveGroupContext.Provider
       value={{
         activeGroupId,
-        setActiveGroupId,
+        setActiveGroupId: id => {
+          if (!groupData || groupData.id !== id) setIsLoading(true);
+          setActiveGroupId(id);
+        },
         groupData,
         posts,
         isLoading,

@@ -67,8 +67,6 @@ function SortableItem(props: {
 }
 
 export default function Feed(): JSX.Element {
-  const feedTabs = ['all', 'assignments', 'announcements'];
-  const [currentFeed, setCurrentFeed] = React.useState<string>('all');
   const group = useActiveGroup();
   const { updatePostOrdering } = useGroupActions();
 
@@ -93,12 +91,7 @@ export default function Feed(): JSX.Element {
         group.posts
           .filter(post => {
             if (!group.showAdminView && !post.isPublished) return false;
-            if (currentFeed === 'all') return true;
-            if (currentFeed === 'assignments')
-              return post.type === 'assignment';
-            if (currentFeed === 'announcements')
-              return post.type === 'announcement';
-            throw 'unknown feed ' + this.currentFeed;
+            return true;
           })
           .sort(sortPostsComparator)
           .reverse()
@@ -133,71 +126,57 @@ export default function Feed(): JSX.Element {
   };
 
   return (
-    <>
-      <div className="px-4 sm:px-0">
-        <Tabs
-          options={feedTabs}
-          labelMap={{
-            all: 'Feed',
-            assignments: 'Assignments',
-            announcements: 'Announcements',
-          }}
-          value={currentFeed}
-          onChange={setCurrentFeed}
-        />
-      </div>
-      <div className="mt-4">
-        {group.isLoading && 'Loading posts...'}
-        {!group.isLoading &&
-          (group.showAdminView ? (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
+    <div>
+      {group.isLoading && 'Loading posts...'}
+      {!group.isLoading &&
+        (group.showAdminView ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={items}
+              strategy={verticalListSortingStrategy}
             >
-              <SortableContext
-                items={items}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
-                  {items.map(id => (
-                    <SortableItem
-                      key={id}
-                      id={id}
-                      group={group.groupData}
-                      post={group.posts.find(x => x.id === id)}
-                      isBeingDragged={activeId === id}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-              <DragOverlay>
-                {activeId ? (
-                  <FeedItem
+              <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
+                {items.map(id => (
+                  <SortableItem
+                    key={id}
+                    id={id}
                     group={group.groupData}
-                    post={group.posts.find(x => x.id === activeId)}
-                    dragHandle={
-                      <div className="self-stretch flex items-center px-2">
-                        <MenuIcon className="h-5 w-5 text-gray-300" />
-                      </div>
-                    }
+                    post={group.posts.find(x => x.id === id)}
+                    isBeingDragged={activeId === id}
                   />
-                ) : null}
-              </DragOverlay>
-            </DndContext>
-          ) : (
-            <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
-              {items.map(id => (
+                ))}
+              </div>
+            </SortableContext>
+            <DragOverlay>
+              {activeId ? (
                 <FeedItem
                   group={group.groupData}
-                  post={group.posts.find(x => x.id === id)}
-                  key={id}
+                  post={group.posts.find(x => x.id === activeId)}
+                  dragHandle={
+                    <div className="self-stretch flex items-center px-2">
+                      <MenuIcon className="h-5 w-5 text-gray-300" />
+                    </div>
+                  }
                 />
-              ))}
-            </div>
-          ))}
-      </div>
-    </>
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+        ) : (
+          <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
+            {items.map(id => (
+              <FeedItem
+                group={group.groupData}
+                post={group.posts.find(x => x.id === id)}
+                key={id}
+              />
+            ))}
+          </div>
+        ))}
+    </div>
   );
 }
