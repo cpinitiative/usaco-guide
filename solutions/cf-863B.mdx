@@ -9,11 +9,11 @@ author: Danh Ta Chi Thanh
 
 **Time Complexity:** $\mathcal{O}(N^3)$
 
+## Implementation
+
 <LanguageSection>
 
 <CPPSection>
-
-## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -48,5 +48,59 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class Kayaking {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int N = io.nextInt();
+		N *= 2;
+
+		int[] W = new int[N];
+
+		for (int x = 0; x < W.length; x++) {
+			W[x] = io.nextInt();
+		}
+
+		Arrays.sort(W);
+
+		int minInstability = 2000000000;
+
+		for (int i = 0; i < N; i++) {
+			for (int j = i + 1; j < N; j++) {
+				ArrayList<Integer> a = new ArrayList<>();
+
+				for (int k = 0; k < N; k++) {
+					if ((k != i) && (k != j)) {
+						a.add(W[k]);
+					}
+				}
+
+				int totalInstability = 0;
+
+				for (int k = 0; k < (N - 2); k+= 2) {
+					totalInstability += (a.get(k + 1)  - a.get(k));
+				}
+
+				minInstability = Integer.min(minInstability, totalInstability);
+			}
+		}
+
+		System.out.println(minInstability);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+
+```
+	
+</JavaSection>
 
 </LanguageSection>
