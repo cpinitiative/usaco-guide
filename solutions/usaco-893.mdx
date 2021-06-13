@@ -1,0 +1,123 @@
+---
+id: usaco-893
+source: USACO Bronze 2019 January
+title: Guess the Animal
+author: Brad Ma
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/22712)
+
+<LanguageSection>
+  
+<CPPSection>
+  
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
+ 
+int N;
+vector<string> characteristics[100];
+
+// Official Analysis Code by Brian Dean
+ 
+int num_common(int i, int j)
+{
+	int count = 0;
+	vector<string> &v1 = characteristics[i], &v2 = characteristics[j];
+	for (int i=0; i<v1.size(); i++)
+	for (int j=0; j<v2.size(); j++)
+		if (v1[i] == v2[j]) count++;
+	return count;
+}
+ 
+int main(void)
+{
+	ifstream fin ("guess.in");
+	fin >> N;
+	string s;
+	for (int i=0; i<N; i++) {
+	int K;
+	fin >> s >> K;
+	for (int j=0; j<K; j++) {
+		fin >> s;
+		characteristics[i].push_back(s);
+		}
+	}
+    
+	int largest = 0;
+	for (int i=0; i<N; i++)
+		for (int j=i+1; j<N; j++)
+		largest = max(largest, num_common(i,j));
+ 
+	ofstream fout ("guess.out");
+	fout << largest+1 << "\n";
+	return 0;
+}
+  
+```
+  
+</CPPSection>
+
+<JavaSection>
+  
+```java
+import java.util.*;
+import java.io.*;
+
+public class GuessTheAnimal {
+	static ArrayList<String>[] characteristics;
+
+	static int numCommon (int i, int j) {
+		int count = 0;
+		ArrayList<String> one = characteristics[i];
+		ArrayList<String> two = characteristics[j];
+
+		for (int x = 0; x < one.size(); x++) {
+			for (int y = 0; y < two.size(); y++) {
+				if (one.get(x).equals(two.get(y))) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("guess");
+
+		int n = io.nextInt();
+
+		characteristics = new ArrayList[n];
+		for (int x = 0; x < characteristics.length; x++) { // initialize
+			characteristics[x] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < n; i++) {
+			String s = io.next();
+			int k = io.nextInt();
+
+			for (int x = 0; x < k; x++) {
+				String string = io.next();
+				characteristics[i].add(string);
+			}
+		}
+
+		int largest = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				largest = Integer.max(largest, numCommon(i, j));
+			}
+		}
+
+		io.println(largest + 1);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}  
+```
+</JavaSection>
+  
+</LanguageSection>
