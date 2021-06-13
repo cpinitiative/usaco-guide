@@ -1,0 +1,102 @@
+---
+id: usaco-856
+source: USACO Bronze 2018 December
+title: The Bucket List
+author: Ananth Kashyap (Python) and Sathvik Chundru (C++)
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```python
+file_in = open("blist.in")
+data = file_in.read().strip().split("\n")
+n = int(data[0])
+cows = [list(map(int, data[i + 1].split(" "))) for i in range(n)]
+
+# Initialize a variable to store the maximum number of buckets needed
+max_buckets = cows[0][2]
+
+# For each posssible time, check how many buckets are needed at that time
+# Set the maximum equal to that value if it is larger than the current maximum
+for i in range(1, 1001):
+	buckets_at_this_time = 0
+	for j in range(n):
+		if i >= cows[j][0] and i <= cows[j][1]:
+			buckets_at_this_time += cows[j][2]
+	max_buckets = max(max_buckets, buckets_at_this_time)
+
+file_out = open("blist.out", "w")
+file_out.write(str(max_buckets))
+file_out.close()
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Solution 2
+
+Similar to the second solution in the official editorial. 
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>  
+#include <cstdio>
+using namespace std;
+int event[1001]; // declaring the array globally to initialize all the elements to 0
+int main() {
+	freopen("blist.in", "r", stdin);
+	freopen("blist.out", "w", stdout); 
+	int maxtime = 1000;
+	int n; cin >> n;
+		
+		
+	for (int i = 0; i < n; i++) { // iterating through every cow
+		int start; cin >> start; 
+		int end; cin >> end;
+		int amt; cin >> amt;
+		// at time start, cow i needs to be milked, so 
+		// we'll need amt additional buckets (hence adding amt)
+		event[start] += amt;
+		// at time end, cow i is done milking, so we can free up 
+		// amt buckets (hence subtracting amt)
+		event[end] -= amt; 
+	}
+		
+	// res represents the maximum number of buckets we'll need 
+	// to use at any given time and cur represents 
+	// how many buckets we need to use at the current 
+	// time we're processing
+	int res = 0, cur = 0;
+	for (int i = 0; i <= maxtime; i++) {
+		// at time i, the number of buckets in use changes by event[i]
+		// so we want to update the number of buckets 
+		// we are currently using accordingly
+		cur += event[i];
+		// we want res to be the greatest number of buckets 
+		// we need to use at any given point in time
+		res = max(res, cur); 
+		
+	}
+	
+	
+	cout << res << '\n'; 
+	
+}
+```
+
+</CPPSection>
+
+</LanguageSection> 

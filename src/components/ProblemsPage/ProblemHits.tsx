@@ -11,7 +11,14 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         {hit.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
-        <Highlight hit={hit} attribute="name" />
+        <a
+          href={hit.url}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:underline"
+        >
+          <Highlight hit={hit} attribute="name" />
+        </a>
         {hit.isStarred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"

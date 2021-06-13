@@ -1,0 +1,150 @@
+---
+id: usaco-1065
+source: USACO Gold 2020 December
+title: Replication
+author: Nathan Gong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob1_gold_dec20.html)
+
+## Implementation
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Replication {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		PrintWriter out = new PrintWriter(System.out);
+		
+		int n = sc.nextInt();
+		int d = sc.nextInt();
+
+		char[][] grid = new char[n][n];
+		for (int i = 0; i < n; i++) {
+			String temp = sc.next();
+			for (int j = 0; j < n; j++) {
+				grid[i][j] = temp.charAt(j);
+			}
+		}
+
+		// BFS with rocks as sources
+		// Calculates the distance of each cell to the closest rock
+		int[][] rockDist = new int[n][n];
+		Queue<State> queue = new LinkedList<>();
+		for (int i = 0; i < n; i++) {
+			Arrays.fill(rockDist[i], -1);
+			for (int j = 0; j < n; j++) {
+				if (grid[i][j] == '#') {
+					queue.add(new State(i, j, 0));
+				}
+			} 
+		}
+		while (!queue.isEmpty()) {
+			State state = queue.remove();
+
+			// Skip if position out of bounds
+			if (state.i < 0 || state.i >= n || state.j < 0 || state.j >= n) {
+				continue;
+			}
+			// Skip if cell already visited
+			if (rockDist[state.i][state.j] != -1) {
+				continue;
+			}
+			rockDist[state.i][state.j] = state.distance;
+
+			for (int i = -1; i <= 1; i += 2) {
+				queue.add(new State(state.i + i, state.j, state.distance + 1));
+				queue.add(new State(state.i, state.j + i, state.distance + 1));
+			}
+		}
+
+		// BFS from the sources
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (grid[i][j] == 'S') {
+					queue.add(new State(i, j, 0));
+				}
+			}
+		}
+		// We represent a cluster by position of center robot and size
+		// A cell is "visited" if it gets occupied by a center robot
+		// "vis" stores the size of the cluster that visits each cell
+		// If cell is never visited, its value will be -1
+		int[][] vis = new int[n][n];
+		for (int i = 0; i < n; i++) Arrays.fill(vis[i], -1);
+		while (!queue.isEmpty()) {
+			State state = queue.remove();
+			int size = (state.distance - 1) / d;
+
+			// Skip if position out of bounds
+			if (state.i < 0 || state.i >= n || state.j < 0 || state.j >= n) {
+				continue; 
+			}
+			// Skip if cell already visited
+			if (vis[state.i][state.j] != -1) continue;
+			// Skip if cluster will collide with a rock
+			if (rockDist[state.i][state.j] <= size) continue;
+			
+			vis[state.i][state.j] = size; 
+			// Update size of robot cluster
+			size = (state.distance)/d;
+			// Check if new size collides with rocks
+			if (rockDist[state.i][state.j] <= size) {
+				continue;
+			}
+			// If not, continue BFS
+			vis[state.i][state.j] = size;
+
+			for (int i = -1; i <= 1; i += 2) {
+				queue.add(new State(state.i + i, state.j, state.distance + 1));
+				queue.add(new State(state.i, state.j + i, state.distance + 1));
+			}
+		}
+
+		// Set cell to 'x' if it can be occupied by a robot
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				for (int di = 0; di <= vis[i][j]; di++) {
+					for (int dj = 0; dj <= vis[i][j] - di; dj++) {
+						grid[i + di][j + dj] = 'x';
+						grid[i - di][j + dj] = 'x';
+						grid[i + di][j - dj] = 'x';
+						grid[i - di][j - dj] = 'x';
+					}
+				}
+			}
+		}
+		
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				ans += (grid[i][j] == 'x') ? 1 : 0;
+			}
+		}
+
+		out.println(ans);
+		out.close();
+	}
+
+	static class State {
+		int i, j;
+		int distance;
+
+		State(int i, int j, int distance) {
+			this.i = i;
+			this.j = j;
+			this.distance = distance;
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

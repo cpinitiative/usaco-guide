@@ -1,0 +1,124 @@
+---
+id: usaco-898
+source: USACO Gold 2019 January
+title: Sleepy Cow Sorting
+author: Nathan Gong, Melody Yu (Video)
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_sleepy_gold_jan19.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<Youtube id="6oyl7lTKdPY" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Sleepy {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("sleepy.in"));
+		PrintWriter out = new PrintWriter("sleepy.out");
+
+		int n = sc.nextInt();
+		int[] cows = new int[n];
+		for (int i = 0; i < n; i++) {
+			cows[i] = sc.nextInt()-1;
+		}
+
+		/*
+		 * To find K, we first need to calculate the length of the longest
+		 * suffix of the array that is already in order. 
+		 * 
+		 * Then, we can subtract that length from N to get K
+		 * 
+		 * Read the analysis of the bronze version of this problem to learn why
+		 * this is the case:
+		 * http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html
+		 */
+
+		int suffixLength = 1;
+		for (int i = n-1; i >= 0; i--) {
+			// If current cow is in order, increment suffix length and continue
+			// Otherwise, there has been an inversion so we break from the loop
+			if (cows[i] > cows[i-1]) {
+				suffixLength++;
+			} else {
+				break;
+			}
+		}
+		int k = n-suffixLegth;
+		out.println(k);
+
+		/* To calculate the minimum amount of paces each cow needs to make,
+		 * we first need to find the number of cows in the sorted region that 
+		 * are smaller than that cow (this is done through a segment tree).
+		 * 
+		 * Then, we can add that to the number of cows that the cow has to move
+		 * through to reach the sorted region of the array, or in other words,
+		 * the number of cows to the right of the current cow that are in the
+		 * unsorted region of the array.
+		 */
+
+		SegmentTree seg = new SegmentTree(n);
+		for (int i = k; i < n; i++) {
+			seg.add(cows[i], 1);
+		}
+		for (int i = 0; i < k; i++) {
+			// Takes the prefix sum up to cows[i] - 1, which calculates the
+			// number of cows smaller than the current cow
+			int smaller = seg.sum(0, cows[i]-1);
+
+			out.print(smaller + (k-i-1));
+			if (i < k-1) out.print(" ");
+			seg.add(cows[i], 1);
+		}
+		out.println();
+		out.close();
+	}
+
+	static class SegmentTree {
+		private int[] tree;
+		private int n;
+	
+		public SegmentTree(int n) {
+			this.n = n;
+			tree = new int[n*2];
+		}
+	
+		public int sum(int a, int b) {
+			a += n;
+			b += n;
+			int sum = 0;
+			while (a <= b) {
+				if (a%2 == 1) sum += tree[a++];
+				if (b%2 == 0) sum += tree[b--];
+				a /= 2;
+				b /= 2;
+			}
+			return sum;
+		}
+	
+		public void add(int index, int amount) {
+			index += n;
+			tree[index] += amount;
+			for (index /= 2; index >= 1; index /= 2) {
+				tree[index] = tree[2*index]+tree[2*index+1];
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

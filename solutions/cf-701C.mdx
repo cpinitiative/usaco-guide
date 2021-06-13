@@ -1,0 +1,166 @@
+---
+id: cf-701C
+source: CF
+title: They are Everywhere
+author: Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/46283)
+
+Let's iterate through all possible ending flats while keeping a variable ($\texttt{closest\_left}$ in the code) that keeps track of the closest starting point. When moving one to the right, we first add the new Pokemon to our list of caught Pokemon. Then, as long as the Pokemon at the starting point isn't unique, we move the starting point one flat forward. After processing each ending point, we update the total minimum flats travelled.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/**
+ * https://codeforces.com/problemset/problem/701/C
+ * 7
+ * bcAAcbc should output 3
+ * 6
+ * aaBCCe should output 5
+ */
+int main() {
+	int flat_num;
+	std::cin >> flat_num;
+	vector<char> flats(flat_num);
+	std::unordered_set<char> types;
+	for (char& p : flats) {
+		std::cin >> p;
+		types.insert(p);
+	}
+
+	int shortest_interval = INT32_MAX;
+	std::unordered_map<char, int> curr_pokemon;
+	int closest_left = 0;
+	for (int right = 0; right < flat_num; right++) {
+		curr_pokemon[flats[right]]++;
+		// check if removing the left one would remove a needed type
+		while (closest_left + 1 <= right
+				&& curr_pokemon.count(flats[closest_left])
+				&& curr_pokemon[flats[closest_left]] > 1) {
+			curr_pokemon[flats[closest_left]]--;
+			closest_left++;
+		}
+		/*
+		 * of course, it's a possibility the current arrangement
+		 * wasn't valid at all, so we need to check for that
+		 */
+		if (curr_pokemon.size() == types.size()) {
+			shortest_interval = std::min(shortest_interval, right - closest_left + 1);
+		}
+	}
+	cout << shortest_interval << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.HashSet;
+
+/**
+ * https://codeforces.com/problemset/problem/701/C
+ * 7
+ * bcAAcbc should output 3
+ * 6
+ * aaBCCe should output 5
+ */
+public class Everywhere {
+	public static void main(String[] args) throws IOException  {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int flatNum = Integer.parseInt(read.readLine());
+		String flats = read.readLine();
+
+		HashSet<Character> types = new HashSet<>();
+		for (int f = 0; f < flatNum; f++) {
+			types.add(flats.charAt(f));
+		}
+
+		int shortestInterval = Integer.MAX_VALUE;
+		int closestLeft = 0;
+		HashMap<Character, Integer> currCaught = new HashMap<>();
+		for (int right = 0; right < flatNum; right++) {
+			char newCaught = flats.charAt(right);
+			currCaught.put(newCaught, currCaught.getOrDefault(newCaught, 0) + 1);
+			// move the left pointer to the left only if it isn't unique
+			while (closestLeft + 1 <= right
+					&& currCaught.getOrDefault(flats.charAt(closestLeft), 0) > 1) {
+				currCaught.put(
+					flats.charAt(closestLeft),
+					currCaught.get(flats.charAt(closestLeft)) - 1
+				);
+				closestLeft++;
+			}
+			/*
+			 * of course, it could be that the config wasn't valid in the first place,
+			 * so we'll have to check for that
+			 */
+			if (currCaught.size() == types.size()) {
+				shortestInterval = Math.min(shortestInterval, right - closestLeft + 1);
+			}
+		}
+		System.out.println(shortestInterval);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+"""
+https://codeforces.com/contest/701/problem/C
+7
+bcAAcbc should output 3
+6
+aaBCCe should output 5
+"""
+flat_num = int(input())
+flats = input()
+types = set(flats)
+ 
+shortest_interval = float('inf')
+closest_left = 0
+curr_caught = {}
+for right, f in enumerate(flats):
+	if f not in curr_caught:
+		curr_caught[f] = 0
+	curr_caught[f] += 1
+ 
+	# move the left pointer to the left only if we've caught another one like it
+	while closest_left + 1 <= right and curr_caught.get(flats[closest_left], 0) > 1:
+		curr_caught[flats[closest_left]] -= 1
+		closest_left += 1
+ 
+	"""
+	of course, it could be that the config wasn't valid in the first place,
+	so we'll have to check for that
+	"""
+	if len(curr_caught) == len(types):
+		shortest_interval = min(shortest_interval, right - closest_left + 1)
+ 
+print(shortest_interval)
+```
+
+</PySection>
+
+</LanguageSection>

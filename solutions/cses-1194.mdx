@@ -1,0 +1,252 @@
+---
+id: cses-1194
+source: CSES
+title: Monsters
+author: Isaac Noel, Sofia Yang
+---
+
+## Abstract
+
+We want to find if A can reach the edge of the maze without being touched by
+monsters by BFS. If possible, retrace and print its path.
+
+## Solution
+
+Because the monsters move optimally, if a monster can reach a location in the
+maze before A, then A may never move to that spot. Thus, for A to enter a spot,
+the distance from that location to A must be less than the distance from that
+location to the nearest monster. Knowing this, we may BFS to find all locations
+that are visitable by A. This will run in $N^2$ time because each location will
+be visited a constant amount of times.
+
+While conducting the bfs, store the previous location of every location ("from"
+array in code below). This way, once A reaches the edge, we can retrace A's
+path, following the path of previous locations and storing the direction
+traveled.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+#include <cstring>
+#include <algorithm>
+#define pii pair<int, int>
+#define mn 1005
+using namespace std;
+
+int N, M;
+queue<pii> q;
+int paths[mn][mn];
+pii from[mn][mn];
+int oo = INT_MAX;
+pii A;
+string ans;
+bool possible = false;
+
+void retrace(pii node){  // retrace from final node, adding direction from previous node to a string. This string will be backwards but will be reversed before output.
+	pii origin = from[node.first][node.second];
+	if(origin ==  pii(0,0)) return;
+	if(origin.first == node.first+1) ans.push_back('U');
+	if(origin.first == node.first-1) ans.push_back('D');
+	if(origin.second == node.second+1) ans.push_back('L');
+	if(origin.second==node.second-1) ans.push_back('R');
+	retrace(origin);
+
+}
+void check(pii origin, pii dest){ // check if the considered destination may be traveled to
+	int pl = paths[origin.first][origin.second];
+	if(pl+1<paths[dest.first][dest.second]){
+		paths[dest.first][dest.second]  = pl+1;
+		q.push(dest);
+		from[dest.first][dest.second] = origin;
+	}
+}
+bool mora = false; // false if bfs for monsters, true if bfs for A
+void bfs(){
+	while(!q.empty()){
+		pii loc = q.front(), next; q.pop();
+		next = loc; next.first++; check(loc, next); // go through adjacent locations
+		next = loc; next.first--; check(loc, next);
+		next = loc; next.second++; check(loc, next);
+		next = loc; next.second--; check(loc, next);
+		if(mora && (loc.first == 1 || loc.second == 1 || loc.first == N || loc.second == M)){
+			cout << "YES" << endl;
+			cout << paths[loc.first][loc.second] << endl;
+			retrace(loc);
+			possible = true;
+			return;
+		}
+	}
+}
+int main() {
+	cin >> N >> M;
+	for(int i = 1; i <= N; i++){
+		string s;
+		cin >> s;
+		for(int j = 1; j <= M; j++){
+			paths[i][j] = oo;
+			if(s[j-1] == '#') paths[i][j] = 0;
+			if(s[j-1] == 'M') {q.push(pii(i,j)); paths[i][j]  = 0;}
+			if(s[j-1] == 'A') {A.first = i; A.second = j;}
+		}
+	}
+	bfs(); // monster bfs
+	mora = true; // change next bfs to A bfs
+	from[A.first][A.second] = pii(0,0); // give the retrace a terminating location
+	paths[A.first][A.second] = 0; q.push(A); // get ready for next bfs
+	bfs(); // bfs with A
+	if(possible){
+		reverse(ans.begin(), ans.end());
+		cout << ans << endl;
+	}
+	else cout << "NO" << endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class monsters {
+	public static int[] dX = {1, -1, 0, 0};
+	public static int[] dY = {0, 0, 1, -1};
+	public static String dirs = "DURL";
+	public static int N, M;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		char[][] grid = new char[N][M];
+		for (int i = 0; i < N; i++) {
+			grid[i] = br.readLine().toCharArray();
+		}
+
+		int[][] dist = new int[N][M]; //Distance grid for monsters.
+		boolean[][] visited = new boolean[N][M]; //Visited grid for monsters.
+
+		Queue<point> q = new LinkedList<>();
+		//Process the grid.
+		point start = new point(-1, -1);
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				//Add each monster to the queue.
+				if (grid[i][j] == 'M') {
+					q.add(new point(i, j));
+					dist[i][j] = 0;
+					visited[i][j] = true;
+				}
+				if (grid[i][j] == 'A') {
+					start = new point(i, j);
+				}
+			}
+		}
+
+		//Run a BFS for the monsters.
+		while (!q.isEmpty()) {
+			point cur = q.poll();
+			int x = cur.x;
+			int y = cur.y;
+			for (int i = 0; i < 4; i++) {
+				//The next location.
+				int x1 = x + dX[i];
+				int y1 = y + dY[i];
+				if (onGrid(x1, y1) && !visited[x1][y1] && grid[x1][y1] != '#') {
+					//Mark the location as visited.
+					visited[x1][y1] = true;
+					dist[x1][y1] = dist[x][y] + 1;
+					q.add(new point(x1, y1));
+				}
+			}
+		}
+
+		//Initialize for human BFS.
+		q = new LinkedList<>();
+		q.add(new point(start.x, start.y));
+		int[][] dist1 = new int[N][M]; //Distance grid for the human.
+		dist1[start.x][start.y] = 0;
+
+		boolean[][] visited1 = new boolean[N][M]; //Visited grid for the human.
+		visited1[start.x][start.y] = true;
+
+		//step[i][j] is the step direction that we take to reach point (i, j).
+		char[][] step = new char[N][M];
+		//prevLoc[i][j] is the previous point before reaching point (i, j).
+		point[][] prevLoc = new point[N][M];
+		prevLoc[start.x][start.y] = new point(-1, -1);
+
+		//Run a BFS for the human.
+		while (!q.isEmpty()) {
+			point cur = q.poll();
+			int x = cur.x;
+			int y = cur.y;
+			for (int i = 0; i < 4; i++) {
+				//The next location.
+				int x1 = x + dX[i];
+				int y1 = y + dY[i];
+				char d = dirs.charAt(i);
+
+				//Reached a boundary square.
+				if (!onGrid(x1, y1)) {
+					System.out.println("YES");
+					System.out.println(dist1[x][y]);
+					StringBuilder ans = new StringBuilder();
+					//Go backwards to print all the steps.
+					while (x != -1) {
+						if (prevLoc[x][y].x != -1) {
+							ans.append(step[x][y]);
+						}
+						int tmp = x;
+						x = prevLoc[x][y].x;
+						y = prevLoc[tmp][y].y;
+					}
+					System.out.println(ans.reverse());
+					return;
+				}
+
+				if (!visited1[x1][y1] && grid[x1][y1] != '#') {
+					if (visited[x1][y1] && dist[x1][y1] <= dist1[x][y] + 1) {
+						continue;
+					}
+					//Mark the location as visited.
+					visited1[x1][y1] = true;
+					dist1[x1][y1] = dist1[x][y] + 1;
+					q.add(new point(x1, y1));
+					prevLoc[x1][y1] = new point(x, y);
+					step[x1][y1] = d;
+				}
+			}
+		}
+		System.out.println("NO");
+	}
+
+	//Whether or not the point is on the grid.
+	public static boolean onGrid(int x, int y) {
+		return (x >= 0 && x < N && y >= 0 && y < M);
+	}
+
+	public static class point {
+		public int x, y;
+
+		public point(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+}
+
+```
+</JavaSection>
+</LanguageSection>

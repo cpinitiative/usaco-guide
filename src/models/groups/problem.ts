@@ -1,4 +1,4 @@
-import { default as firebase, default as firebaseType } from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 
 export interface ProblemData {
   id: string;
@@ -12,10 +12,6 @@ export interface ProblemData {
   solution: string | null;
   submissionType: SubmissionType;
   isDeleted: boolean;
-  /**
-   * Lower = appears first in problem list. Ties broken by name.
-   */
-  order: number;
 }
 export type GroupProblemData = ProblemData &
   (
@@ -26,7 +22,7 @@ export type GroupProblemData = ProblemData &
     | {
         usacoGuideId: string;
         solutionReleaseMode: 'custom';
-        solutionReleaseTimestamp: firebaseType.firestore.Timestamp;
+        solutionReleaseTimestamp: Timestamp;
       }
   );
 
@@ -60,7 +56,7 @@ export type Submission = {
   userId: string;
   code: string;
   language: 'cpp' | 'java' | 'py';
-  timestamp: firebase.firestore.Timestamp;
+  timestamp: Timestamp;
 } & (
   | {
       type: SubmissionType.SELF_GRADED;
@@ -88,40 +84,6 @@ export type TestCaseResult = {
    * Execution time in milliseconds
    */
   executionTime: number;
-};
-
-export const groupProblemConverter = {
-  toFirestore(problem: GroupProblemData): firebaseType.firestore.DocumentData {
-    const { id, ...data } = problem;
-    return data;
-  },
-
-  fromFirestore(
-    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
-    options: firebaseType.firestore.SnapshotOptions
-  ): GroupProblemData {
-    return {
-      ...snapshot.data(options),
-      id: snapshot.id,
-    } as GroupProblemData;
-  },
-};
-
-export const submissionConverter = {
-  toFirestore(submission: Submission): firebaseType.firestore.DocumentData {
-    const { id, ...data } = submission;
-    return data;
-  },
-
-  fromFirestore(
-    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
-    options: firebaseType.firestore.SnapshotOptions
-  ): Submission {
-    return {
-      ...snapshot.data(options),
-      id: snapshot.id,
-    } as Submission;
-  },
 };
 
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {

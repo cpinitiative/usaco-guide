@@ -1,0 +1,128 @@
+---
+id: cses-1662
+source: CSES
+title: Subarray Divisibility
+author: Qi Wang, Brad Ma
+---
+
+# Problem
+
+We are asked to find the number of subarrays that are divisible by its size
+given the array.
+
+With our prefix sums knowledge,
+
+$$
+\texttt{sum}(i, j) = \texttt{sum}(0, j) - \texttt{sum}(0, i-1).
+$$
+
+We can also transform any
+
+$$
+\texttt{sum}(i, j) = \texttt{quotient} \cdot N + \texttt{remainder}.
+$$
+
+From this we get that
+
+$$
+\texttt{sum}(i, j) = (\texttt{quotient2} - \texttt{quotient1}) \cdot N + (\texttt{remainder2} - \texttt{remainder1}).
+$$
+
+For this to be divisible by $N$, $\texttt{remainder2} - \texttt{remainder1}$
+must be equal to $0$.
+
+Define $\texttt{pmod}[i]$ to be the number of prefixes with remainder equivalent
+to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
+
+$$
+\texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1) / 2.
+$$
+
+The answer is just the sum of this quantity over all $i$.
+## Implementation
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+	
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+/**
+ * @author Qi Wang
+ * (detemplifying courtesy of Kevin Sheng)
+ */
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int N;
+	cin >> N;
+
+	vector<long long> M(N);
+	long long psums = 0;
+	M[psums] = 1;
+	for (int i = 0; i < N; i++) {
+		int a;
+		cin >> a;
+		psums += a;
+		// Remember to account for negative sums
+		M[(psums % N + N) % N]++;
+	}
+
+	long long ans = 0;
+	for (long long x : M) {
+		// Calculating the # of pairs. This calculates the pairs without duplicates and reverse groups.
+		ans += x * (x - 1) / 2;
+	}
+	cout << ans << endl;
+}
+```
+</CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class subarrayDivisibility {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+
+		long[] M = new long[n];
+		long prefixSums = 0;
+		M[0] = 1;
+
+		for (int i = 0; i < n; i++) {
+			int a = io.nextInt();
+			prefixSums += a;
+			// remember to account for negative sums
+			M[((int) (prefixSums % n) + n) % n]++;
+		}
+
+		long answer = 0;
+		for (long x : M) {
+			/*
+			 *  calculating the # of pairs, this calculates the pairs without
+			 *  duplicates and reverse groups
+			 */
+
+			answer += x * (x - 1) / 2;
+		}
+
+		io.println(answer);
+		io.close();
+	}
+				      
+	//CodeSnip{Kattio}
+}
+```	
+</JavaSection>
+	
+</LanguageSection>

@@ -11,19 +11,13 @@ Thank you to the following companies:
   hosting & continuous deployment
 - [Algolia](https://algolia.com/), search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
+- [Chromatic](https://www.chromatic.com/), visual testing
 - And [more](docs/Companies.md)!
 
-## Documentation
+## Documentation + Contributing
 
-- To get this site running locally, refer to the
-  [Front End Documentation](docs/Front%20End%20Documentation.md).
-- For information regarding Content Writing, refer to the
-  [Content Documentation](docs/Content%20Documentation.md).
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get
-started, simply pick an
+See the [contributing module](https://usaco.guide/general/contributing). All
+contributions are welcome! To get started, simply pick an
 [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work
 on, leave a comment, and submit a Pull Request!
 
@@ -47,15 +41,30 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Michael Cao
 - Nathan Chen
 
+### Content Managers
+
+- Qi Wang (since June 2021)
+- Dong Liu (since June 2021)
+- Maggie Liu (Since June 2021)
+
 ### Content Authors
 
+- Jeffrey Meng (since Oct 2020)
 - Óscar Garries Urbina (since Jan 2021)
-- Qi Wang (since Jan 2021)
-- Dong Liu (since Jan 2021)
 - Neo Wang (since Jan 2021)
 - Jesse Choe (since Feb 2021)
 - Mrinall Umasudhan (since Feb 2021)
-- Maggie Liu (Since Feb 2021)
+- Kevin Sheng (Since Apr 2021)
+- Ananth Kashyap (Since Apr 2021)
+- Sofia Yang (Since Apr 2021)
+- Zhixin Wang (Since Apr 2021)
+- Andrew Cheng (Since Apr 2021)
+- Nathan Gong (Since Apr 2021)
+- Melody Yu (Since Apr 2021)
+- Timothy Gao (Since May 2021)
+- Sathvik Chundru (Since May 2021)
+- Brad Ma (Since June 2021)
+- Albert Ye (Since June 2021)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
@@ -67,7 +76,9 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
-- MDX (JSX in Markdown)
+- [Storybook](https://storybook.js.org/) and
+  [Chromatic](https://www.chromatic.com/)
+- MDX (JSX in Markdown) with XDM compiler
 - Firebase
 - Deployed with
   [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)

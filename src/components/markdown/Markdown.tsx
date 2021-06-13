@@ -1,13 +1,18 @@
-import { MDXRenderer } from 'gatsby-plugin-mdx';
 import 'katex/dist/katex.min.css';
 import * as React from 'react';
+// eslint-disable-next-line
+// @ts-ignore
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
+import { components } from './MDXComponents';
 
 const Markdown = (props: { body: any }) => {
-  return (
-    <div className="markdown">
-      <MDXRenderer>{props.body}</MDXRenderer>
-    </div>
-  );
+  const mdxComponent = new Function(props.body)({
+    Fragment,
+    jsx,
+    jsxs,
+  }).default({ components });
+
+  return <div className="markdown">{mdxComponent}</div>;
 };
 
 export default React.memo(Markdown);
