@@ -749,6 +749,54 @@ sys.stdin = open("problemname.in", "r")
 sys.stdout = open("problemname.out", "w")
 ```
 
+A different approach to file I/O in Python is to still use the `open()` method, 
+but use the built-in functions `.readline()` or `.readlines()`. In Python, 
+`.readline()` will take the next line and return it as a string. This method 
+is useful for problems where you only have to read a short amount of lines
+but you still need to map each value to a variable. The `.readlines()` method 
+reads the entire file and returns a list of the file. Combined with a for loop, 
+this method provides a concise way to separate variables in the same line in a 
+problem. To write to the output file, you can use the `.write()` method. A 
+convienent way to convert a non-string value to a string value is to use 
+something called an f-string. An f-string is a really useful way to have 
+multiple types of objects in a string, all written in a single line. The 
+variables are encased in curly brackets, while the string part is written normally.
+See the code below for an example. 
+
+```py
+# Note: The second argument can be omitted in the open()
+      #	command for read-only files
+fin = open("problemname.in", "r") 
+fout = open("problemname.out", "w")
+
+# One way to read the file using .readline()
+line1 = fin.readline() 
+line2 = fin.readline()
+line3 = fin.readline() # The .readline() method will pick up where you left off
+
+# OR:
+# Use a for loop with the .readlines() method
+
+linelist = []
+for line in fin.readlines():
+	# Separate the values, etc here
+
+# printing linelist would give [line1, line2, line3]			
+
+# Output:
+fout.write(output_text) # Write to the output file
+
+# f-strings:
+variable = 1
+variable_2 = 2
+exampleString = f"Hello {variable} {variable_2} World"
+# printing exampleString would give us 
+# Hello 1 2 World
+
+
+
+```
+
 </PySection>
 
 </LanguageSection>
