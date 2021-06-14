@@ -59,9 +59,8 @@ public class Kayaking {
 	public static void main (String[] args) {
 		Kattio io = new Kattio();
 
-		int N = io.nextInt();
-		N *= 2;
-
+		int N = io.nextInt() * 2;
+		
 		int[] W = new int[N];
 
 		for (int x = 0; x < W.length; x++) {
@@ -74,18 +73,18 @@ public class Kayaking {
 
 		for (int i = 0; i < N; i++) {
 			for (int j = i + 1; j < N; j++) {
-				ArrayList<Integer> a = new ArrayList<>();
+				ArrayList<Integer> list = new ArrayList<>();
 
 				for (int k = 0; k < N; k++) {
 					if ((k != i) && (k != j)) {
-						a.add(W[k]);
+						list.add(W[k]);
 					}
 				}
 
 				int totalInstability = 0;
 
 				for (int k = 0; k < (N - 2); k+= 2) {
-					totalInstability += a.get(k + 1) - a.get(k);
+					totalInstability += list.get(k + 1) - a.get(k);
 				}
 
 				minInstability = Integer.min(minInstability, totalInstability);
