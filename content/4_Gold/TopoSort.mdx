@@ -1,7 +1,7 @@
 ---
 id: toposort
 title: 'Topological Sort'
-author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu, Andrew Wang, Qi Wang
+author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu, Andrew Wang, Qi Wang, Maggie Liu
 prerequisites:
   - bfs
   - intro-dp
@@ -12,7 +12,7 @@ frequency: 1
 ---
 
 To review, a **directed** graph consists of edges that can only be traversed in
-one direction. Additionally, a **acyclic** graph defines a graph which does not
+one direction. Additionally, an **acyclic** graph defines a graph which does not
 contain cycles, meaning you are unable to traverse across one or more edges and
 return to the node you started on. Putting these definitions together, a
 **directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has
@@ -97,7 +97,7 @@ void compute() {
 int main() {
 	int M; cin >> N >> M;
 	for (int i = 0; i < M; ++i) {
-		int a,b; cin >> a >> b;
+		int a, b; cin >> a >> b;
 		graph[a - 1].pb(b - 1);
 	}
 	compute();
@@ -107,7 +107,7 @@ int main() {
 		cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
 		exit(0);
 	}
-	for (int i: top_sort) cout << i+1 << " ";
+	for (int i : top_sort) cout << i + 1 << " ";
 	cout << "\n";
 }
 ```
@@ -144,7 +144,7 @@ public class CourseSchedule {
 
 		compute();
 		int[] ind = new int[N];
-		
+
 		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
 		for (int i = 0; i < N; i++)
 			for (int j : graph[i])
@@ -152,7 +152,7 @@ public class CourseSchedule {
 					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
 					System.exit(0);
 				}
-		for (int i: topo) System.out.print(i + 1 + " ");
+		for (int i : topo) System.out.print(i + 1 + " ");
 	}
 	public static void compute() {
 		for (int i = 0; i < N; i++) {
@@ -203,8 +203,8 @@ stack and recursively backtracking until $u$ is reached again.
 #include <algorithm>
 using namespace std;
 
-bool visited[(int)10e5 + 5], on_stack[(int)10e5 + 5];
-vector<int> adj[(int)10e5 + 5];
+bool visited[(int)1e5 + 5], on_stack[(int)1e5 + 5];
+vector<int> adj[(int)1e5 + 5];
 vector<int> cycle;
 int N, M;
 bool dfs(int n) {
@@ -242,7 +242,7 @@ int main()
 		cin >> a >> b;
 		adj[a].push_back(b);
 	}
-	for (int i = 1; cycle.empty() && i <= N;i++)
+	for (int i = 1; cycle.empty() && i <= N; i++)
 		dfs(i);
 	if(cycle.empty())
 		cout << "IMPOSSIBLE";
@@ -348,33 +348,69 @@ The BFS version is known as
 
 <CPPSection>
 
+### Course Schedule Solution
+
 ```cpp
-int in_degree[100000];
-vector<int> edge[100000];
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
 
-int N; //number of nodes
+const int MAX_N = 100000;
 
-void compute() {
+int main()
+{
+	int n, m;
+	cin >> n >> m;
+	vector<int> graph[MAX_N];
+	int indegree[MAX_N];
 	queue<int> q;
-	for (int i = 0; i < N; i++) {
-		if (in_degree[i] == 0) {
+	for (int i = 0; i < m; i++)
+	{
+		int a, b;
+		cin >> a >> b;
+		graph[a - 1].push_back(b - 1);
+		indegree[b - 1]++;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		// locate the nodes with indegree 0 and push them into the queue
+		if (indegree[i] == 0)
+		{
 			q.push(i);
 		}
 	}
-
-	while (!q.empty()) {
-		int node = q.front();
+	vector<int> order;
+	while (!q.empty())
+	{
+		int curr = q.front();
 		q.pop();
-
-		for (int next : edge[node]) {
-			in_degree[next]--;
-			if(in_degree[next] == 0) q.push(next);
+		// add the current node to the order
+		order.push_back(curr);
+		for (int next : graph[curr])
+		{
+			// remove the current node from the graph
+			indegree[next]--;
+			// push any new nodes with indegree 0 into the queue
+			if (indegree[next] == 0)
+			{
+				q.push(next);
+			}
 		}
-
-		// Put problem-specific processing here
-		// Push in value to current ordering if no need for processing
 	}
-
+	// if there isn't a valid topological sorting
+	if (order.size() != n)
+	{
+		cout << "IMPOSSIBLE" << endl;
+		return 0;
+	}
+	cout << order[0] + 1;
+	for (int i = 1; i < n; i++)
+	{
+		cout << " " << order[i] + 1;
+	}
+	cout << endl;
+	return 0;
 }
 ```
 
@@ -418,8 +454,8 @@ public class TopoSort {
 
 <Info title="Pro Tip">
 
-If the length of the array containing the end order does not equal the number of elements that need to be sorted, then 
-there is a cycle in the graph.
+If the length of the array containing the end order does not equal the number of
+elements that need to be sorted, then there is a cycle in the graph.
 
 </Info>
 
@@ -546,7 +582,7 @@ int main() { //See "General - Fast I/O" for more information about the first two
 	compute();
 
 	stack<int> answer;
-	int temp = N-1;
+	int temp = N - 1;
 
 	bool contains0 = false;
 	if(temp == 0) contains0 = true;
@@ -642,7 +678,7 @@ public class Main {
 		}
 
 		for(int i = 0; i < M; i++) {
-			int a = sc.nextInt() - 1; 
+			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
 
 			inDegree[b]++;
@@ -654,7 +690,7 @@ public class Main {
 
 		PrintWriter pw = new PrintWriter(System.out);
 
-		ArrayDeque<Integer> answer = new ArrayDeque<>();  // Acts as a Stack
+		ArrayDeque<Integer> answer = new ArrayDeque<>();  //Acts as a Stack
 		int temp = N - 1;
 
 		boolean contains0 = false;
@@ -680,6 +716,7 @@ public class Main {
 		pw.close();
 	}
 
+	//BeginCodeSnip{FastIO}
 	//practically a necessity for Java users on CSES
 	static class FastIO {
 
@@ -759,6 +796,7 @@ public class Main {
 		}
 
 	}
+	//EndCodeSnip
 }
 
 ```
