@@ -2,10 +2,102 @@
 id: usaco-696
 source: USACO Platinum 2017 January
 title: Promotion Counting
-author: Benjamin Qi
+author: Benjamin Qi, Timothy Gao
 ---
 
-## Merging Indexed Sets
+## Solution 1: Euler Tour
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+Recall from the euler tour module that each subtree is represented as a contiguous interval in it's euler tour. With this knowledge, we can compress the tree into an array. Now, the problem becomes for each node $i$, look for how many elements are less than $tour[i]$ from $i$ to $tout[i]$, where $tout[i]$ is the end of the subtree interval for node $i$. By processing the nodes in decreasing order, this is a problem we can solve in $\mathcal{O}(N\log N)$ time with a binary-indexed tree.
+
+```java
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class promote {
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("promote.in"));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("promote.out")));
+     
+        int N = Integer.parseInt(br.readLine());
+        int[][] ratings = new int[N][2];
+        for(int i = 0; i<N; i++){
+            ratings[i] = new int[]{i, Integer.parseInt(br.readLine())};
+        }
+        ArrayList<Integer>[] adj = new ArrayList[N];
+        
+        for (int i = 0; i < adj.length; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        
+        for(int i = 1; i<N; i++){
+            int par = Integer.parseInt(br.readLine())-1;
+            adj[par].add(i);
+        }
+        int[] ret = new int[N];
+        int[] tout = new int[N];
+        int[] bac = new int[N];
+        dfs(adj, tout, bac, 0, 0, -1);
+        BIT bit = new BIT(N);
+        Arrays.sort(ratings, (int[] a, int[] b) -> b[1] - a[1]);
+        
+        for(int i = 0; i<N;){
+            int j = i;
+            while(j < N && ratings[i][1] == ratings[j][1]){
+                int c = ratings[i][0];
+                ret[c] = bit.sum(tout[c]) - bit.sum(bac[c]-1);
+                j++;
+            }
+            for(int k = i; k<j; k++){
+                bit.update(tout[ratings[k][0]], 1);
+            }
+            i = j;
+        }
+        for(int i : ret) pw.println(i);
+        pw.close();
+        br.close();
+    }
+    
+    static int dfs(ArrayList<Integer>[] adj, int[] t, int[] l, int idx, int cur, int last){
+        l[cur] = idx;
+        for(int n : adj[cur]){
+            if(n == last) continue;
+            idx = dfs(adj, t, l, idx, n, cur);
+        }
+        t[cur] = idx;
+        return idx+1;
+    }
+    
+    static class BIT {
+        public int[] bit;
+        public BIT(int N) {
+            bit = new int[N + 1];
+        }
+
+        public int sum(int r) {
+            r++;
+            int ret = 0;
+            while (r > 0) {
+                ret += bit[r];
+                r -= r & -r;
+            }
+            return ret;
+        }
+
+        public void update(int idx, int v) {
+            idx++;
+            while (idx < bit.length) {
+                bit[idx] += v;
+                idx += idx & -idx;
+            }
+        }
+    }
+}
+```
+
+## Solution 2: Merging Indexed Sets
 
 **Time Complexity:** $\mathcal{O}(N\log ^2N)$
 
@@ -53,7 +145,7 @@ int main() {
 }
 ```
 
-Recall from the module that `std::swap(d[a],d[b])` will be too slow. However,
+Recall from the small-to-large merge module that `std::swap(d[a],d[b])` will be too slow. However,
 the following does (overloading `std::swap`):
 
 ```cpp
@@ -103,9 +195,3 @@ int main() {
 	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
 }
 ```
-
-<IncompleteSection>
-
-similar sol w/o indexed set
-
-</IncompleteSection>
