@@ -10,7 +10,8 @@ author: Neo Wang
 Notice that groups of intersections can **form strongly connected components.**
 Therefore, treat each component as a node with initial value equal to the size
 of the component. Since the resulting strongly connected components
-$\texttt{comp}$ form a directed acyclic graph (specifically a tree, because of the "justness" from the problem statement), process the edges $e$ in reverse
+$\texttt{comp}$ form a directed acyclic graph (specifically a tree, because of
+the "justness" from the problem statement), process the edges $e$ in reverse
 topographical order $c$ with the following relation where $\texttt{dp}[i]$ is
 the # of intersections that can be reached from component $i$:
 
@@ -20,6 +21,35 @@ $$
 
 The final answer for intersection $i$ is $\texttt{dp}[\texttt{comp}[i]] - 1$,
 since we exclude the starting intersection from the answer.
+
+<Warning>
+
+This solution _only_ works on a tree (and not a general DAG), because of over
+counting.
+
+Suppose we have a graph with $N=4$ nodes, and the edges
+
+```
+1 2
+1 3
+2 4
+3 4
+```
+
+which correspond to the edges
+$1 \rightarrow 2, 1 \rightarrow 3,2 \rightarrow 4,3 \rightarrow 4$.
+
+A valid topographical sort could be in the order $4, 2, 3, 1$, which would not
+work because node $4$ is counted twice. Our calls would be as follows:
+
+- $\texttt{dp}[4] = 1$
+- $\texttt{dp}[2] = 1 + \texttt{dp}[4] = 2$
+- $\texttt{dp}[3] = 1 + \texttt{dp}[4] = 2$
+- $\texttt{dp}[1] = 1 + \texttt{dp}[2] + \texttt{dp}[3] = 5$
+
+Evidently, $\texttt{dp}[4]$ is called twice.
+
+</Warning>
 
 ## Implementation
 
