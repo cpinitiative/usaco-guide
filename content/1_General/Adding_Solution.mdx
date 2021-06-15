@@ -1,7 +1,7 @@
 ---
 id: adding-solution
 title: Adding Solutions
-author: Nathan Wang, Benjamin Qi, Maggie Liu, Sathvik Chundru
+author: Nathan Wang, Benjamin Qi, Maggie Liu, Sathvik Chundru, Qi Wang
 description: 'How you can add your own solutions to the guide.'
 prerequisites:
   - contributing
@@ -15,7 +15,7 @@ See [Working With MDX](/general/working-mdx) for additional information.
     the GitHub repository.
 
 2.  If it doesn't already exist, create a new `mdx` file in `solutions/`
-    including frontmatter, ex. the following in
+    including frontmatter, e.g. the following in
     [`usaco-690.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/usaco-690.mdx):
 
     ```
@@ -87,38 +87,19 @@ See [Working With MDX](/general/working-mdx) for additional information.
     </LanguageSection>
     ```
 
-    Keep file names and solution IDs consistent; namely, USACO IDs should
-    correspond to the number at the very end of the URL on
-    [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690) and
-    file names should be the same as the solution's ID. See
+    Keep file names and solution IDs consistent. In particular, the ID for a
+    USACO problem (such as the one above) is the number at the very end of the
+    URL on
+    [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690). The
+    name of a solution file should match the ID of the solution it contains. See
     [Working With MDX](/general/working-mdx#problem-lists) for more examples of
     IDs.
 
-3.  Add your implementation, following these conventions and the conventions
-    [below](#code-conventions):
-
-    - Use _tabs_ to indent
-    <Info title="Pro Tip">
-	If your code is indented with spaces, use the [Guide Editor](/editor), copy-paste your code in, right-click, click "Command Palette" from the menu that pops up and then search for "Convert Indentation to Tabs". Once you see it, click on it and then copy that new code with the correct indentation into your Github pull request.
-    </Info>
-    
-    - Lines should not exceed 80 characters. If you need to, you can write comments across multiple lines to follow this rule.
-    - Add comments throughout your code to explain your logic. Feel free to copy-paste the official USACO solution and improve it by adding more descriptive variable names and helpful comments.
-    - Be _consistent_ about formatting your code, unlike the following snippet.
-      We don't care about which one you use (`a+b` or `a + b`), but pick one and stick with it throughout your entire code!
-
-     ```py
-      a,b = (0,1)
-      print(a+b)
-      print(a + b)
-      ```
-    - Use universally understandable variable names, especially for lower divisions (ie. Bronze and Silver). It is preferred to use longer / more descriptive variable names than what you would normally use in-contest since this is a learning resource.
-
-
-    It is **not** necessary to add an alternative implementation in the same
-    language as the official analysis (unless the alternative implementation
-    takes a different approach or is written better / differently from the
-    official implementation).
+3.  Add your implementation, following these conventions
+    [below](#code-conventions). It is **not** necessary to add an alternative
+    implementation in the same language as the official implementation unless
+    the alternative implementation takes a different approach or is better than
+    the official one.
 
 4.  In the module's `.problems.json` file (in this case,
     [`Binary_Search.problems.json`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search.problems.json)),
@@ -150,22 +131,48 @@ See [Working With MDX](/general/working-mdx) for additional information.
 
 Since code for the USACO Guide is contributed from several authors, code style
 will **not** be uniform. Of course, we still strive for code that is readable
-and understandable. If any code does not compile or is hard to read, please
-contact us.
+and understandable. If any code does not compile or is hard to read, contact us.
 
-Please read the following resource before contributing code (although you do not
-have to follow all of the recommendations):
+Read our guidelines below before contributing code.
 
-<!--
-<Resource
-  source="MIT"
-  title="Course Notes: Style"
-  url="https://py.mit.edu/fall20/notes/style"
-  starred
->
-  Python-specific (but still generally useful)
-</Resource>
--->
+### General
+
+- Use _tabs_ rather than spaces to indent.
+
+  <Info title="Pro Tip">
+  	If your code is indented with spaces, paste your code into the [Guide
+  	Editor](/editor), right-click, click "Command Palette" from the menu that
+  	pops up, and then search for "Convert Indentation to Tabs."
+  </Info>
+
+- Lines should not exceed 80 characters. If you need to, split comments across
+  multiple lines to follow this rule.
+- Add comments throughout your code to explain your logic. Feel free to
+  copy-paste the official USACO solution and improve it by adding more
+  descriptive variable names and helpful comments.
+- Be _consistent_ about formatting your code, unlike the following snippet. We
+  don't care about which one you use (`a+b` or `a + b`), but pick one and stick
+  with it throughout your entire code!
+
+```py
+ a,b = (0,1)
+ print(a+b)
+ print(a + b)
+```
+
+- Use universally understandable variable names, especially for Bronze and
+  Silver. Should be more descriptive than what you would normally use
+  in-contest.
+- If you use a I/O template, collapse it with
+  [`CodeSnip`](https://usaco.guide/general/working-mdx#code-blocks-and-code-snippets)s.
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++
+
+Optional reading:
 
 <Resources>
 	<Resource
@@ -178,20 +185,15 @@ have to follow all of the recommendations):
 	</Resource>
 </Resources>
 
-<IncompleteSection>
+- Do not use variable names that could conflict with `using namespace std`. For example, don't
+name a `std::set` "set."
+- Avoid variable-length arrays as described [here](/bronze/intro-ds?lang=cpp#dynamic-arrays).
 
-additional resources about style?
+#### Template/Macro Guidelines
 
-</IncompleteSection>
-
-<LanguageSection>
-
-<CPPSection>
-
-### C++
-
-For Bronze through Gold, please only use the macros listed in the template below
-(see [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
+For Bronze through Gold, avoid using additional macros (especially loop macros)
+beyond the ones listed below (see
+[Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
 
 ```cpp
 #include <bits/stdc++.h> // see /general/running-code-locally
@@ -223,26 +225,29 @@ int main() {
 }
 ```
 
-You don't have to use the template, but avoid using additional macros beyond the
-ones listed above. In particular, for loop macros are highly discouraged.
-
 </CPPSection>
 
 <JavaSection>
 
 ### Java
 
-Regarding input and output, `Scanner` is
-[significantly slower](/general/fast-io?lang=java#fast-input) than
-`BufferedReader` and should be avoided.
-
-To improve readability, Java solutions using `BufferedReader` should use a
-wrapper class around input (preferably
-[`Kattio`](/general/io?lang=java#io-template) for consistency, or use your own
-variant if you really want).
+- Regarding I/O, `Scanner` is
+  [significantly slower](/general/fast-io?lang=java#fast-input) than
+  `BufferedReader` and should be avoided. You may use your own I/O template, but
+  collapse it as described above.
+- It is good practice to not use constant size arrays in Java.
+- Use polymorphism when possible.
+  - For example, `List<Integer> list = new ArrayList<>()` instead of
+    `ArrayList<Integer> list = new ArrayList<>()`.
 
 </JavaSection>
 
-<PySection />
+<PySection>
+
+### Python
+
+- Use `snake_case` to name variables in your code.
+
+</PySection>
 
 </LanguageSection>
