@@ -12,8 +12,9 @@ class Canvas extends Component {
     if (
       this.props.width !== prevProps.width ||
       this.props.height !== prevProps.height
-    )
+    ) {
       this.scale();
+    }
     this.props.draw(this.ctx);
   }
 

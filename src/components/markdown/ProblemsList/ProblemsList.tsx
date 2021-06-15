@@ -17,6 +17,7 @@ type ProblemsListProps =
       title?: string;
       children?: React.ReactChildren;
       problems?: string;
+      hideSuggestProblemButton?: boolean;
     }
   | {
       title?: string;
@@ -32,6 +33,7 @@ type AnnotatedProblemsListProps =
       title?: string;
       children?: React.ReactChildren;
       problems?: ProblemInfo[];
+      hideSuggestProblemButton?: boolean;
     }
   | {
       isDivisionTable: true;
@@ -41,17 +43,18 @@ type AnnotatedProblemsListProps =
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
     };
-export function ProblemsList(unannotatedProps: ProblemsListProps) {
+export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const markdownProblems = useMarkdownProblemLists();
   let problems: ProblemInfo[] | DivisionProblemInfo[];
   if (typeof unannotatedProps.problems === 'string') {
     problems = markdownProblems.find(
       list => list.listId === unannotatedProps.problems
     )?.problems;
-    if (!problems)
+    if (!problems) {
       throw new Error(
         "Couldn't find the problem list with name " + unannotatedProps.problems
       );
+    }
   } else {
     problems = unannotatedProps.problems as DivisionProblemInfo[];
   }
@@ -131,7 +134,9 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
                         showPercent={shouldShowSolvePercentage}
                       />
                     ))}
-                    <SuggestProblemRow listName={props.tableName} />
+                    {!props.hideSuggestProblemButton && (
+                      <SuggestProblemRow listName={props.tableName} />
+                    )}
                   </>
                 )}
               </tbody>

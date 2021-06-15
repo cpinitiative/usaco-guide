@@ -1,26 +1,24 @@
 ---
 id: sorting-custom
-title: 'Sorting with Custom Comparators'
+title: 'Custom Comparators and Coordinate Compression'
 frequency: 3
-author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi
+author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi, Nathan Chen
 prerequisites:
   - intro-sorting
   - intro-graphs
-description:
-  "If we use custom objects or if we want to sort elements in an order other
-  than the default, then we'll need to define a custom comparator."
+description: 'Using a custom comparator to sort custom objects or values in a non-default order; Coordinate compressing values from a large range to a smaller one.'
 ---
 
 <Resources>
-	<Resource source="IUSACO" title="8 - Sorting & Comparators">
-		partially based off this
-	</Resource>
-	<Resource
-		source="CPH"
-		title="3.2 - User-Defined Structs, Comparison Functions"
-	>
-		short overview of what this module will cover
-	</Resource>
+  <Resource source="IUSACO" title="8 - Sorting & Comparators">
+    partially based off this
+  </Resource>
+  <Resource
+    source="CPH"
+    title="3.2 - User-Defined Structs, Comparison Functions"
+  >
+    short overview of what this module will cover
+  </Resource>
 </Resources>
 
 <br />
@@ -640,6 +638,430 @@ public class Sol {
 
 </LanguageSection>
 
+## Coordinate Compression
+
+Coordinate compression describes the process of mapping each value in a list to its index if that
+list was sorted. For example, the list $\{7, 3, 4, 1\}$ would be compressed to
+$\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the first list, so it
+becomes $0$, and $7$ is the greatest value, so it becomes $3$, the largest index
+in the list.
+
+When we have values from a large range, but we
+only care about their relative order (for example, if we have to know if one
+value is above another), coordinate compression is a simple way to help
+with implementation. For example, if we have a set of integers ranging from $0$ to $10^9$, we
+can't use them as array indices because we'd have to create an array of size
+$10^9$, which would surely cause a `Memory Limit Exceeded` verdict. However, if
+there are only $N \leq 10^6$ such integers, we can coordinate-compress their
+values, which guarantees that the values will all be in the range from $0$ to
+$N-1$, which _can_ be used as array indices.
+
+<FocusProblem problem="sample2" />
+
+### Example 1
+
+A good example of coordinate compression in action is in the solution of _USACO
+Rectangular Pasture._ Again, we won't delve into the full solution but instead
+discuss how coordinate compression is applied. Since the solution uses
+[2D-prefix](/silver/prefix-sums-2) sums (another Silver topic), it is helpful if
+all point coordinates are coordinate-compressed to the range $0$ to $N-1$ so
+they can be used as array indices. Without coordinate compression, creating a large enough array would result in a `Memory Limit Exceeded` verdict.
+
+Below you will find the solution to Rectangular Pasture, which uses
+coordinate compression at the beginning. Observe how a custom comparator is used to sort the
+points:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//BeginCodeSnip{Solution code}
+#include <iostream>
+#include <algorithm>
+using namespace std;
+//EndCodeSnip
+
+typedef pair<int,int> Point;
+bool ycomp(Point p, Point q) { return p.second < q.second; }
+
+//BeginCodeSnip{Solution code}
+const int MAX_N = 2500;
+int N, Psum[MAX_N+1][MAX_N+1];
+Point P[MAX_N];
+
+int rsum(int x1, int y1, int x2, int y2)
+{
+	return Psum[x2+1][y2+1] - Psum[x2+1][y1] - Psum[x1][y2+1] + Psum[x1][y1];
+}
+
+int main(void)
+{
+	cin >> N;
+	for (int i=0; i<N; i++) {
+		int x, y;
+		cin >> x >> y;
+		P[i] = make_pair(x,y);
+	}
+//EndCodeSnip
+
+	sort(P, P+N);
+	for (int i=0; i<N; i++) P[i].first = i+1;
+	sort(P, P+N, ycomp);
+	for (int i=0; i<N; i++) P[i].second = i+1;
+
+//BeginCodeSnip{Solution code}
+	for (int i=0; i<N; i++) Psum[P[i].first][P[i].second] = 1;
+	for (int i=1; i<=N; i++)
+		for (int j=1; j<=N; j++)
+			Psum[i][j] += Psum[i-1][j] + Psum[i][j-1] - Psum[i-1][j-1];
+	long long answer = 0;
+	for (int i=0; i<N; i++)
+		for (int j=i; j<N; j++) {
+			int x1 = min(P[i].first, P[j].first) - 1;
+			int x2 = max(P[i].first, P[j].first) - 1;
+			answer += rsum(0,i,x1,j) * rsum(x2,i,N-1,j);
+		}
+	cout << answer + 1 << "\n";
+
+}
+//EndCodeSnip
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//BeginCodeSnip{Solution code}
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+
+public class RectangularPasture {
+	static int[][] sums;
+
+	static int getSum(int fromX, int toX, int fromY, int toY) {
+		return sums[toX][toY] - sums[fromX - 1][toY] - sums[toX][fromY - 1] + sums[fromX - 1][fromY - 1];
+	}
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		int n = in.nextInt();
+		//EndCodeSnip
+
+		int[] xs = new int[n];
+		int[] ys = new int[n];
+
+		Integer[] cows = new Integer[n];
+		for (int j = 0; j < n; j++) {
+			xs[j] = in.nextInt();
+			ys[j] = in.nextInt();
+			cows[j] = j;
+		}
+
+		Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
+		for (int x = 1; x <= n; x++) {
+			xs[cows[x - 1]] = x;
+		}
+		Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
+		for (int y = 1; y <= n; y++) {
+			ys[cows[y - 1]] = y;
+		}
+
+//BeginCodeSnip{Solution code}
+		sums = new int[n + 1][n + 1];
+		for (int j = 0; j < n; j++) {
+			sums[xs[j]][ys[j]]++;
+		}
+		for (int x = 0; x <= n; x++) {
+			for (int y = 0; y <= n; y++) {
+				if (x > 0) {
+					sums[x][y] += sums[x - 1][y];
+				}
+				if (y > 0) {
+					sums[x][y] += sums[x][y - 1];
+				}
+				if (x > 0 && y > 0) {
+					sums[x][y] -= sums[x - 1][y - 1];
+				}
+			}
+		}
+		long answer = n + 1;
+		for (int j = 0; j < n; j++) {
+			for (int k = j + 1; k < n; k++) {
+				answer += getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), 1, Math.min(ys[j], ys[k]))
+					* getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), Math.max(ys[j], ys[k]), n);
+			}
+		}
+		System.out.println(answer);
+	}
+}
+//EndCodeSnip
+```
+
+The solution uses a [lambda](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) function as the custom comparator, which our guide
+didn't discuss, but it should be apparent which coordinate (`x` or `y`) that the
+comparator is sorting by.
+
+</JavaSection>
+
+</LanguageSection>
+
+The solution to Rectangular Pasture directly replaces coordinates with their compressed values, and forgets the real values of the coordinates because they are unnecessary. However, there may be problems for which we need to also remember the original values of coordinates that we compress.
+
+### Example 2
+
+<FocusProblem problem="sample3" />
+
+This problem will require prefix sums and coordinate compression. However, the implementation of coordinate compression in this solution will also require remembering values in addition to compressing them (as opposed to just replacing the original values, as in the last problem). If you just want to focus on the implementation of coordinate compression and how it can switch between compressed indices and original values, see the contracted code below. `indices` is a list of values that need to be compressed. After it gets sorted and has duplicate values removed, it is ready to use. The method `getCompressedIndex` takes in an original value, and [binary searches](/silver/binary-search) for its position in `indices` to get its corresponding compressed index. To go from a compressed index to an original value, the code can just access that index in `indices`.
+
+We also provide a full solution:
+
+<Spoiler title = "Full Solution">
+
+First of all, let's figure out the value at each index in array $a$. It would be too slow to loop through every index in every update interval as well as every index in a query interval (The time complexity would be $O(N \cdot max_c + Q \cdot max_c)$ where $max_c$ is the maximum coordinate given in the input, which is up to $10^9$.). At the same time, that approach would take $O(max_c)$ memory, which is also too much. Instead, we make an observation that will make prefix sums paired with coordinate compression a viable option.
+
+Not every index in the whole range from $1...10^9$ is used in updates. In fact, there can be large intervals of indices that all have the same value. Call every index that is named in the input is a "special index." Now, note that the value at each index in the interval between two consecutive special indices is the same. This is because it is impossible for there to be an update that cuts in between two consecutive special indices as that would imply the existence of another special index between two consecutive special indices, i.e. a contradiction. We'll call the interval between two consecutive special indices a "special interval," and the "value of a special interval" will be the value that each of the elements take on inside it.
+
+Now, let's see how prefix sums (along with coordinate compression) helps.
+
+Temporarily forget about special indices. When an update asks us to add $+v$ to the interval $[l, r)$, we can mark index $l$ with $+v$ and index $r$ with $-v$ in a "difference array." We call it the difference array because it tells us the change in value when we go from one index to the next. Taking the prefix sums of the difference array will result in the actual values of the array $a$ (Take some time to convince yourself of this before moving on).
+
+Since the indices that we have to mark range from $0...10^9$, it'd take too much memory for us to use those indices directly. However, only special indices are ever actually used, so we're motivated to change the meaning of the difference array to save on memory (note that there are at most $2 \cdot (N+Q)$ special indices because $2$ indices are given for every update and query). Instead of the difference array representing the change in value from one special index to the next, let it represent the change in value from one special interval to the next. Now, it only has to have size $2 \cdot (N+Q)$. Taking the prefix sums of this difference array will give the values of all special intervals.
+
+We just have to coordinate compress the special indices so that we can conveniently use them as array indices for the difference array. We perform this coordinate compression by keeping a sorted list of all special indices, and using each special index's position in that list as its compressed index. To find a special index's position in the sorted list (a.k.a. its compressed index), we can [binary search](/silver/binary-search) on the list. The next part of the solution will show why it was important for us to store the original indices.
+
+So, with prefix sums and coordinate compression, it is possible for us to find the value of each special interval. Now, let's finish the problem. Let the "sum of a special interval" be the sum of every element inside the special interval, or in other words, the interval's length times its value. We already know each special interval's value, but we can also get its length because we stored the original indices. The length of an interval is its right index minus its left index, which we can find by accessing the sorted list. As a result, we can also find the sum of each special interval with the information we have. When the problem queries us for the sum between two special indices, we add up the sums of the special intervals between those two special indices. Thus, if we create another prefix sum array on the sums of the special intervals, we can easily answer these range sum queries in O(1) each.
+
+The code below can be expanded to show the full solution.
+
+</Spoiler>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//BeginCodeSnip{Solution code}
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+ll difference_array[400005]; 
+//difference_array[i] = the difference of the values between special intervals i-1 and i
+
+int widths[400005]; //width[i] = the length of special interval i
+ll interval_value[400005]; //interval_value[i] = the value of special interval i
+//the sum of a special interval is interval_value[i] * width[i]
+
+ll prefix_sums[400005]; //prefix_sums[i] = prefix sum of the sums of special intervals up to i
+
+vector<int> indices; //sorted list of special indices
+pair<int, int> queries[100005]; //queries given in the input <l, r>
+pair<pair<int, int>, int> updates[100005]; //updates in given in the input <<l, r>, v>
+
+//EndCodeSnip
+
+//finds the "compressed index" of a special index (a.k.a. its position in the sorted list)
+int getCompressedIndex(int a) {
+	return lower_bound(indices.begin(), indices.end(), a) - indices.begin();
+}
+
+//BeginCodeSnip{Solution code}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N, Q;
+	cin >> N >> Q;
+
+	for(int i = 0; i < N; i++) {
+		int l, r, v;
+		cin >> l >> r >> v;
+		indices.push_back(l);
+		indices.push_back(r);
+		updates[i] = {{l, r}, v};
+	}
+	for(int i = 0; i < Q; i++) {
+		int l, r;
+		cin >> l >> r;
+		indices.push_back(l);
+		indices.push_back(r);
+		queries[i] = {l, r};
+	}
+//EndCodeSnip
+	//========= COORDINATE COMPRESSION =======
+	sort(indices.begin(), indices.end());
+	indices.erase(unique(indices.begin(), indices.end()), indices.end());
+		/*
+		You can find info on "unique" here: https://www.cplusplus.com/reference/algorithm/unique/
+
+		Since our list is already sorted, the effect of "unique" is duplicates are removed. In total, these two lines
+		give us a sorted list with duplicates removed.
+		*/
+	//========= COORDINATE COMPRESSION =======
+//BeginCodeSnip{Solution code}
+	//We create the difference array, using coordinate compression and binary search to get the compressed index of each special index
+	//Note the 1-based indexing for convenience
+	for(int i = 0; i < N; i++) {
+		auto a = updates[i];
+
+		difference_array[getCompressedIndex(a.first.first)+1] += a.second;
+		difference_array[getCompressedIndex(a.first.second)+1] -= a.second;
+	}
+
+	//By keeping track of the original values of the special indices, we can also figure out the lengths of each special interval
+	for(int i = 0; i < indices.size()-1; i++) {
+		widths[i+1] = indices[i+1] - indices[i];
+	}
+
+	//We use prefix sums of the difference array to get the values of the intervals
+	for(int i = 1; i < indices.size(); i++) {
+		interval_value[i] = interval_value[i-1] + difference_array[i];
+	}
+
+	//We use prefix sums over the sums of the special intervals to be able to answer queries quickly
+	for(int i = 1; i < indices.size(); i++) {
+		prefix_sums[i] = prefix_sums[i-1] + interval_value[i] * widths[i];
+	}
+
+	//Classic use of prefix sum array to answer range sum queries
+	for(int i = 0; i < Q; i++) {
+		cout << prefix_sums[getCompressedIndex(queries[i].second)] - prefix_sums[getCompressedIndex(queries[i].first)] << "\n";
+	}
+
+	return 0;
+}
+//EndCodeSnip
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//BeginCodeSnip{Solution code}
+import java.util.*;
+import java.io.*;
+
+public class rangequeries {
+	
+	//custom class that stores a few integers (used for directly storing the queries and updates given in the input)
+	static class Query {
+		
+		int l, r, v;
+		public Query(int l, int r, int v) {
+			this.l = l;
+			this.r = r;
+			this.v = v;
+		}
+		
+		public Query(int l, int r) {
+			this.l = l;
+			this.r = r;
+		}
+		
+	}
+	
+	static long difference_array[]; 
+	//difference_array[i] = the difference of the values between special intervals i-1 and i
+
+	static int widths[]; //width[i] = the length of special interval i
+	static long interval_value[]; //interval_value[i] = the value of special interval i
+
+	static long prefix_sums[]; //prefix_sums[i] = prefix sum of the sums of special intervals up to i
+
+	static ArrayList<Integer> indices; //sorted list of special indices
+	static Query queries[]; //queries given in the input <l, r>
+	static Query updates[]; //updates in given in the input <l, r, v>
+//EndCodeSnip
+	//finds the "compressed index" of a special index (a.k.a. its position in the sorted list)
+	static int getCompressedIndex(int a) {
+		return Collections.binarySearch(indices, a);
+	}
+//BeginCodeSnip{Solution code}
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // A Scanner is too slow to solve this problem!
+		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
+		
+		indices = new ArrayList<Integer>();
+		queries = new Query[Q];
+		updates = new Query[N];
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken()), v = Integer.parseInt(st.nextToken());
+			indices.add(l);
+			indices.add(r);
+			updates[i] = new Query(l, r, v);
+		}
+		for(int i = 0; i < Q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken());
+			indices.add(l);
+			indices.add(r);
+			queries[i] = new Query(l, r);
+		}
+//EndCodeSnip
+		//========= COORDINATE COMPRESSION =======
+		TreeSet<Integer> temp = new TreeSet<Integer>(indices); 
+		//Since temp is a set, all duplicate elements are removed
+		indices.clear(); 
+		indices.addAll(temp); //The elements of temp will be added to indices in sorted order, since temp is a TreeSet
+		//The effect of these lines is to sort indices while removing duplicate elements. 
+		//While this is not the only way to do it, it is one that requires little code.
+		//========= COORDINATE COMPRESSION =======
+//BeginCodeSnip{Solution code}
+		difference_array = new long[indices.size() + 5];
+		widths = new int[indices.size() + 5];
+		interval_value = new long[indices.size() + 5];
+		prefix_sums = new long[indices.size() + 5];
+		
+		//We create the difference array, using coordinate compression and binary search to get the index of each special interval
+		//Note the 1-based indexing for convenience
+		for(int i = 0; i < N; i++) {
+			Query a = updates[i];
+
+			difference_array[getCompressedIndex(a.l)+1] += a.v;
+			difference_array[getCompressedIndex(a.r)+1] -= a.v;
+		}
+
+		//By keeping track of the original values of the special indices, we can also figure out the lengths of each special interval
+		for(int i = 0; i < indices.size()-1; i++) {
+			widths[i+1] = indices.get(i+1) - indices.get(i);
+		}
+
+		//We use prefix sums of the difference array to get the actual value of the intervals
+		for(int i = 1; i < indices.size(); i++) {
+			interval_value[i] = interval_value[i-1] + difference_array[i];
+		}
+
+		//We use prefix sums over the sums of the special intervals to be able to answer queries quickly
+		for(int i = 1; i < indices.size(); i++) {
+			prefix_sums[i] = prefix_sums[i-1] + interval_value[i] * widths[i];
+		}
+
+		//Classic use of prefix sum array to answer range sum queries
+		for(int i = 0; i < Q; i++) {
+			System.out.println(prefix_sums[getCompressedIndex(queries[i].r)] - prefix_sums[getCompressedIndex(queries[i].l)]);
+		}
+		
+	}
+	
+}
+//EndCodeSnip
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 ## Problems
 
 <Info title="Pro Tip">
@@ -649,4 +1071,4 @@ Many of the problems below may use other Silver concepts, such as
 
 </Info>
 
-<Problems problems="general" />
+<Problems problems="general" hideSuggestProblemButton />

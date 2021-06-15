@@ -1,4 +1,3 @@
-import { MDXProvider } from '@mdx-js/react';
 import { graphql } from 'gatsby';
 import * as React from 'react';
 import {
@@ -13,7 +12,7 @@ import {
 } from 'react-share';
 import Layout from '../components/layout';
 import { OffsetAnchor } from '../components/markdown/HTMLComponents';
-import { components } from '../components/markdown/MDXProvider';
+import { components } from '../components/markdown/MDXComponents';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import FAQ from '../faq.mdx';
@@ -194,9 +193,7 @@ export default function USACOFAQPage(props: any) {
       <div className="px-4 sm:px-6 lg:px-8 my-12 sm:my-16">
         <div className="max-w-3xl mx-auto">
           <div className="markdown">
-            <MDXProvider components={customComponents}>
-              <FAQ />
-            </MDXProvider>
+            <FAQ components={customComponents} />
           </div>
         </div>
       </div>

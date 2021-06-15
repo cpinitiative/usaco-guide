@@ -13,9 +13,9 @@ import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { graphqlToModuleInfo } from '../utils/utils';
 
 export default function Template(props) {
-  const { mdx, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
-  const { body } = mdx;
-  const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
+  const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
+  const { body } = xdm;
+  const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
   const { setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
@@ -66,7 +66,7 @@ export default function Template(props) {
 
 export const pageQuery = graphql`
   query($id: String!) {
-    mdx(frontmatter: { id: { eq: $id } }) {
+    xdm(frontmatter: { id: { eq: $id } }) {
       body
       frontmatter {
         title

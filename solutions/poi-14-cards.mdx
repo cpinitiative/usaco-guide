@@ -1,0 +1,92 @@
+---
+id: poi-14-cards
+source: POI
+title: Cards
+author: Dong Liu
+---
+
+**Time Complexity:** $\mathcal O(N\log N)$
+
+## Explanation
+
+We can use a segment tree to solve this problem.
+
+For each segment tree node with the range $[l, r]$, we will store if it's possible to arrange the cards $l\dots r$ so that we either
+
+- don't flip card $l$ and card $r$
+- don't flip card $l$ and flip card $r$
+- flip card $l$ and don't flip card $r$
+- flip card $l$ and card $r$
+
+We can represent these states in a 2 by 2 matrix `bool[2][2]` where the first dimension stores whether we flip card $l$ and the second dimension stores whether we flip card $r$.
+
+To calculate the states for a specific segment tree node, we loop through all possible states of our left child node $(a, b)$ and all possible states of our right child node $(c, d)$. If the transition from $b$ to $c$ works, then $(a, d)$ works since we're only considering endpoints.
+
+To perform a swap operation with index $i$ and $j$, we simply swap the cards at $i$ and $j$. We can just recalculate all nodes in the segment tree that are related to either $i$ or $j$. Since there are around $\mathcal O(\log N)$ ranges in the segment tree that contain $i$ or $j$, this whole swap operation takes $\mathcal O(\log N)$.
+
+Additionally, we also have to print if we can form a non-decreasing list using the cards. To do this, if any states of the root node in our segment tree (which covers $[1, n]$) is possible, then our answer is yes (`TAK`), otherwise no (`NIE`).
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1 << 18;
+
+int n, q, aa[N][2];
+bool tt[N << 1][2][2];
+
+void pull(int i, int l, int r) {
+	memset(tt[i], 0, sizeof(tt[i]));
+	int j = i << 1, k = i << 1 | 1;
+	int m = (l + r) >> 1;
+	for (int a = 0; a < 2; ++a)
+		for (int b = 0; b < 2; ++b)
+			for (int c = 0; c < 2; ++c)
+				for (int d = 0; d < 2; ++d)
+					if (tt[j][a][b] && tt[k][c][d] && aa[m][b] <= aa[m + 1][c])
+						tt[i][a][d] = 1;
+}
+
+void build(int k = 1, int l = 0, int r = n - 1) {
+	if (l == r) { tt[k][0][0] = tt[k][1][1] = 1; return; }
+	int m = (l + r) >> 1;
+	build(k << 1, l, m);
+	build(k << 1 | 1, m + 1, r);
+	pull(k, l, r);
+}
+
+void update(int i, int k = 1, int l = 0, int r = n - 1) {
+	if (l == r) { tt[k][0][0] = tt[k][1][1] = 1; return; }
+	int m = (l + r) >> 1;
+	if (i <= m) update(i, k << 1, l, m);
+	else update(i, k << 1 | 1, m + 1, r);
+	pull(k, l, r);
+}
+
+int main() {
+	scanf("%d", &n);
+	for (int i = 0; i < n; ++i) {
+		scanf("%d%d", aa[i], aa[i] + 1); 
+	}
+	build();
+	scanf("%d", &q);
+	while (q--) {
+		int i, j;
+		scanf("%d%d", &i, &j);
+		swap(aa[--i], aa[--j]);
+		update(i), update(j);
+		bool ok = tt[1][0][0] || tt[1][0][1] || tt[1][1][0] || tt[1][1][1];
+		printf("%s\n", ok ? "TAK" : "NIE");
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

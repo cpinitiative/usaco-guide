@@ -1,0 +1,169 @@
+---
+id: cf-1316E
+source: CF
+title: Team Building
+author: Sofia Yang, Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/74493)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\cdot p\cdot 2^p)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int pool_size;
+	int team_size;
+	int aud_size;
+	cin >> pool_size >> team_size >> aud_size;
+	vector<pair<int, int>> aud_contrib(pool_size);
+	for (int i = 0; i < pool_size; i++) {
+		cin >> aud_contrib[i].first;
+		aud_contrib[i].second = i;
+	}
+	sort(
+		aud_contrib.begin(), aud_contrib.end(),
+		greater<pair<int, int>>()
+	);
+	
+	vector<vector<int>> raw_team_contrib(pool_size, vector<int>(team_size));
+	for (int i = 0; i < pool_size; i++) {
+		for (int j = 0; j < team_size; j++) {
+			cin >> raw_team_contrib[i][j];
+		}
+	}
+	vector<vector<int>> team_contrib(pool_size, vector<int>(team_size));
+	for (int i = 0; i < pool_size; i++) {
+		team_contrib[i] = raw_team_contrib[aud_contrib[i].second];
+	}
+
+	vector<vector<long long>> max_strength(
+		pool_size + 1, vector<long long>(1 << team_size, -1)
+	);
+	max_strength[0][0] = 0;
+	for (int up_to = 1; up_to <= pool_size; up_to++) {
+		max_strength[up_to] = max_strength[up_to - 1];
+		for (int subset = 0; subset < (1 << team_size); subset++) {
+			int curr_aud = up_to - __builtin_popcount(subset) - 1;
+			if (curr_aud < aud_size && max_strength[up_to - 1][subset] != -1) {
+				max_strength[up_to][subset] = max(
+					max_strength[up_to][subset],
+					max_strength[up_to - 1][subset] + aud_contrib[up_to - 1].first
+				);
+			}
+			
+			for (int t = 0; t < team_size; t++) {
+				int prev = subset & ~(1 << t);
+				if (!(subset & (1 << t))
+						|| max_strength[up_to - 1][prev] == -1) {
+					continue;
+				}
+				max_strength[up_to][subset] = max(
+					max_strength[up_to][subset],
+					max_strength[up_to - 1][prev] + team_contrib[up_to - 1][t]
+				);
+			}
+		}
+	}
+	cout << max_strength[pool_size][(1 << team_size) - 1] << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class TeamBuilding {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int poolSize = Integer.parseInt(st.nextToken());
+		int teamSize = Integer.parseInt(st.nextToken());
+		int audSize = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(br.readLine());
+		Pair[] audContrib = new Pair[poolSize];
+		for (int i = 0; i < poolSize; i++) {
+			audContrib[i] = new Pair(i, Integer.parseInt(st.nextToken()));
+		}
+		Arrays.sort(audContrib);
+
+		int[][] skill = new int[poolSize][teamSize];
+		for (int i = 0; i < poolSize; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < teamSize; j++) {
+				skill[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		long[][] dp = new long[poolSize + 1][(1 << teamSize)];
+		for (int i = 0; i <= poolSize; i++) {
+			Arrays.fill(dp[i], -1);
+		}
+		dp[0][0] = 0;
+		
+		for (int i = 1; i <= poolSize; i++) {
+			int ind = audContrib[i - 1].idx;
+			for (int m = 0; m < (1 << teamSize); m++) {
+				int bits = Integer.bitCount(m);
+
+				// Try adding the player to the audience.
+				int numAud = i - 1 - bits;
+				if (numAud < audSize) {
+					if (dp[i - 1][m] != -1) {
+						dp[i][m] = dp[i - 1][m] + audContrib[i - 1].val;
+					}
+				} else {
+					if (dp[i - 1][m] != -1) {
+						dp[i][m] = dp[i - 1][m];
+					}
+				}
+
+				// Try adding the player to the team.
+				for (int j = 0; j < teamSize; j++) {
+					if ((m & (1 << j)) != 0 && (dp[i - 1][m ^ (1 << j)]) != -1) {
+						dp[i][m] = Math.max(
+							dp[i][m],
+							dp[i - 1][m ^ (1 << j)] + skill[ind][j]
+						);
+					}
+				}
+			}
+		}
+		System.out.println(dp[poolSize][(1 << teamSize) - 1]);
+	}
+}
+
+class Pair implements Comparable<Pair> {
+	int idx;
+	int val;
+
+	public Pair(int idx, int val) {
+		this.idx = idx;
+		this.val = val;
+	}
+
+	public int compareTo(Pair other) {
+		return other.val - val;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+## Alternate Solution
+
+[Minimum Cost Flow Solution](https://codeforces.com/blog/entry/74493?#comment-586020)

@@ -1,4 +1,4 @@
-type DocumentReference = import('@firebase/firestore').DocumentReference;
+import { DocumentReference, setDoc } from 'firebase/firestore';
 
 /**
  * This class makes it easy to add new properties to UserDataContext.
@@ -105,7 +105,7 @@ export default abstract class UserDataPropertyAPI {
    */
   protected saveFirebaseValue = (key: string, value) => {
     if (this.firebaseUserDoc) {
-      this.firebaseUserDoc.set({ [key]: value }, { merge: true });
+      setDoc(this.firebaseUserDoc, { [key]: value }, { merge: true });
     }
   };
 

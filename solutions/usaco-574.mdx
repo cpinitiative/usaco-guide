@@ -1,0 +1,111 @@
+---
+id: usaco-574
+source: USACO Gold 2015 December
+title: Fruit Feast
+author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_feast_gold_dec15.html)
+
+## Solution - DP
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool dp[2][5000001];
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("feast.in","r",stdin);
+	freopen("feast.out","w",stdout);
+	int T,A,B;
+	cin >> T >> A >> B;
+	dp[0][0] = true;
+	for (int i = 0; i < T + 1; ++i) {
+		if (i-A>=0) dp[0][i] |= dp[0][i-A];
+		if (i-B>=0) dp[0][i] |= dp[0][i-B];
+		dp[1][i/2] |= dp[0][i];
+	}
+	for (int i = 0; i < T + 1; ++i) {
+		if (i-A>=0) dp[1][i] |= dp[1][i-A];
+		if (i-B>=0) dp[1][i] |= dp[1][i-B];
+	}
+	for (int i = T; i >= 0; --i) if (dp[1][i]) {
+		cout << i;
+		break;
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Alternative Implementation - BFS/DFS
+
+Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** attainable states and simply choose the one with maximum fullness. The scene can be thought of as a graph by defining each edge to be the transition from fullness $i$ to $j$. Each state is defined by fullness and whether Bessie has drank water. Since there are $2T$ states and each state is visited at most once, the time and space complexity of this solution is $\mathcal{O}(T)$. Below is a BFS implementation.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int maxn = 5e6 + 5;
+bool pass[maxn][2];
+
+struct node {
+	int val;
+	bool drunk;
+};
+
+int bfs(int t, int a, int b) {
+	int res = INT_MIN;
+	queue<node> q;
+	q.push({0, 0});
+
+	while (!q.empty()) {
+		int value = q.front().val;
+		bool drunk = q.front().drunk;
+		q.pop();
+		res = max(res, value);
+
+		if(value + a <= t && !pass[value + a][drunk]) {
+			q.push({value + a, drunk});
+			pass[value + a][drunk] = true;
+		}
+
+		if(value + b <= t && !pass[value + b][drunk]) {
+			q.push({value + b, drunk});
+			pass[value + b][drunk] = true;
+		}
+
+		if(!drunk && !pass[value / 2][1]) {
+			q.push({value / 2, 1});
+			pass[value / 2][1] = true;
+		}
+	}
+	return res;
+}
+
+int main() {
+	freopen("feast.in", "r", stdin);
+	freopen("feast.out", "w", stdout);
+
+	int t, a, b;
+	cin >> t >> a >> b;
+	cout << bfs(t, a, b);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

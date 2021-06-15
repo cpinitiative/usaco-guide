@@ -1,0 +1,128 @@
+---
+id: usaco-896
+source: USACO Silver 2019 January
+title: Mountain View
+author: Jesse Choe, Sofia Yang
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_mountains_silver_jan19.html)
+
+**Time Complexity:** $\mathcal{O}(n\log n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+## Sorting a Struct Using a Comparator Function
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define f first
+#define s second
+
+void setIO(string fileName = "") {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	if((int)fileName.size()) {
+		freopen((fileName+".in").c_str(), "r", stdin);
+		freopen((fileName+".out").c_str(), "w", stdout);
+	}
+}
+
+struct Mountain {
+	int l, r;
+};
+
+bool cmp(Mountain a, Mountain b) {
+	if(a.l == b.l) {
+		return a.r > b.r;
+	}
+	return a.l < b.l;
+}
+
+int main() {
+	setIO("mountains");
+	int n; cin >> n;
+	vector<Mountain> mountains;
+	for(int i=0; i<n; i++) {
+		int x, y; cin >> x >> y;
+		mountains.pb({x-y, x+y});
+	}
+	sort(all(mountains), cmp);
+	int rightMost = -1, ans = 0;
+	for(int i = 0; i < n; i++) {
+		if(mountains[i].r > rightMost) {
+			ans++;
+			rightMost = mountains[i].r;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class mountains {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("mountains.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("mountains.out"));
+		int N = Integer.parseInt(br.readLine());
+		mountain[] arr = new mountain[N];
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			int s = x - y;
+			int e = x + y;
+			arr[i] = new mountain(s, e);
+		}
+		Arrays.sort(arr);
+
+		int max = -1;
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			if (arr[i].e > max) {
+				ans++;
+				max = arr[i].e;
+			}
+		}
+		pw.println(ans);
+		pw.close();
+
+	}
+}
+
+class mountain implements Comparable<mountain> {
+
+	public int s, e;
+
+	public mountain(int s, int e) {
+		this.s = s;
+		this.e = e;
+	}
+
+	public int compareTo(mountain other) {
+		if (this.s != other.s) {
+			return Integer.compare(this.s, other.s);
+		} else {
+			return Integer.compare(other.e, this.e);
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

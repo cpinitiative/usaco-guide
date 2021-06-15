@@ -6,10 +6,11 @@ export default function extractSearchableText(node) {
     node.type === 'code' ||
     node.type === 'import' ||
     node.type === 'export' ||
-    node.type === 'jsx' ||
-    node.type === 'inlineMath'
-  )
+    node.type === 'inlineMath' ||
+    node.name === 'Resources'
+  ) {
     return '';
+  }
   return (
     (node.type === 'paragraph' || node.type === 'heading' ? ' ' : '') +
     ((node &&

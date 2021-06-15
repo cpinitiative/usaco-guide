@@ -1,0 +1,140 @@
+---
+id: usaco-568
+source: USACO Bronze 2015 December
+title: Speeding
+author: Jesse Choe, Kevin Sheng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_speeding_bronze_dec15.html)
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int LEN = 100;
+
+int main() {
+	freopen("speeding.in", "r", stdin);
+	freopen("speeding.out", "w", stdout);
+
+	int N, M;
+	cin >> N >> M;
+
+	int start = 0;
+	vector<int> limit(LEN);
+	for (int i = 0; i < N; i++) {
+		int length, speed;
+		cin >> length >> speed;
+		for (int j = start; j < start + length; j++) {
+			limit[j] = speed;
+		}
+		start += length;
+	}
+
+	start = 0;
+	vector<int> bessie(LEN);
+	for (int i = 0; i < M; i++) {
+		int length, speed;
+		cin >> length >> speed;
+		for (int j = start; j < start + length; j++) {
+			bessie[j] = speed;
+		}
+		start += length;
+	}
+
+	int worst = 0;
+	for (int i = 0; i < LEN; i++) {
+		worst = max(worst, bessie[i] - limit[i]);
+	}
+	cout << worst << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Speeding {
+	private static final int LEN = 100;
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("speeding.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int roadSegNum = Integer.parseInt(initial.nextToken());
+		int bessieSegNum = Integer.parseInt(initial.nextToken());
+		int[][] limitSegs = new int[roadSegNum][2];
+		for (int s = 0; s < roadSegNum; s++) {
+			limitSegs[s] = Arrays.stream(read.readLine().split(" "))
+								 .mapToInt(Integer::parseInt).toArray();
+		}
+		int[][] bessieSegs = new int[bessieSegNum][2];
+		for (int s = 0; s < bessieSegNum; s++) {
+			bessieSegs[s] = Arrays.stream(read.readLine().split(" "))
+								 .mapToInt(Integer::parseInt).toArray();
+		}
+
+		int[] limit = new int[LEN];
+		int start = 0;
+		for (int[] s : limitSegs) {
+			for (int i = 0; i < s[0]; i++) {
+				limit[start + i] = s[1];
+			}
+			start += s[0];
+		}
+
+		int[] bessie = new int[LEN];
+		start = 0;
+		for (int[] s : bessieSegs) {
+			for (int i = 0; i < s[0]; i++) {
+				bessie[start + i] = s[1];
+			}
+			start += s[0];
+		}
+
+		int worst = 0;
+		for (int p = 0; p < LEN; p++) {
+			worst = Math.max(worst, bessie[p] - limit[p]);
+		}
+		PrintWriter written = new PrintWriter("speeding.out");
+		written.println(worst);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open('speeding.in') as read:
+	road_seg_num, speed_seg_num = [int(i) for i in read.readline().split()]
+	limit_segs = [[int(i) for i in read.readline().split()]
+				   for _ in range(road_seg_num)]
+
+	bessie_segs = [[int(i) for i in read.readline().split()]
+					for _ in range(speed_seg_num)]
+
+limit = []
+for s in limit_segs:
+	for _ in range(s[0]):
+		limit.append(s[1])
+bessie = []
+for s in bessie_segs:
+	for _ in range(s[0]):
+		bessie.append(s[1])
+
+worst = 0
+for a, b in zip(limit, bessie):
+	worst = max(worst, b - a)
+print(worst, file=open('speeding.out', 'w'))
+```
+
+</PySection>
+</LanguageSection>

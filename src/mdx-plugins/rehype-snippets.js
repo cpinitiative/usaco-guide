@@ -231,7 +231,7 @@ inline namespace Output {
 \t// print w/ no spaces
 \ttemplate<class ...T> void pr(const T&... t) { pr_sep(cout,"",t...); } 
 \t// print w/ spaces, end with newline
-\tvoid ps() { cout << "\n"; }
+\tvoid ps() { cout << "\\n"; }
 \ttemplate<class ...T> void ps(const T&... t) { pr_sep(cout," ",t...); ps(); } 
 \t// debug to cerr
 \ttemplate<class ...T> void dbg_out(const T&... t) {
@@ -239,7 +239,7 @@ inline namespace Output {
 \tvoid loc_info(int line, str names) {
 \t\tcerr << "Line(" << line << ") -> [" << names << "]: "; }
 \ttemplate<int lev, class T> void dbgl_out(const T& t) {
-\t\tcerr << "\n\n" << ts_sep(ts_lev<lev>(t),"\n") << "\n" << endl; }
+\t\tcerr << "\\n\\n" << ts_sep(ts_lev<lev>(t),"\\n") << "\\n" << endl; }
 \t#ifdef LOCAL
 \t\t#define dbg(...) loc_info(__LINE__,#__VA_ARGS__), dbg_out(__VA_ARGS__)
 \t\t#define dbgl(lev,x) loc_info(__LINE__,#x), dbgl_out<lev>(x)
@@ -250,8 +250,8 @@ inline namespace Output {
 }
 
 inline namespace FileIO {
-\tvoid setIn(str s)  { freopen(s.c_str(),"r",stdin); }
-\tvoid setOut(str s) { freopen(s.c_str(),"w",stdout); }
+\tvoid setIn(str s)  { freopen(s.c_str(), "r", stdin); }
+\tvoid setOut(str s) { freopen(s.c_str(), "w", stdout); }
 \tvoid setIO(str s = "") {
 \t\tcin.tie(0)->sync_with_stdio(0); // unsync C / C++ I/O streams
 \t\t// cin.exceptions(cin.failbit);
@@ -267,15 +267,15 @@ static class Kattio extends PrintWriter {
 \tprivate StringTokenizer st;
 
 \t// standard input
-\tpublic Kattio() { this(System.in,System.out); }
+\tpublic Kattio() { this(System.in, System.out); }
 \tpublic Kattio(InputStream i, OutputStream o) {
 \t\tsuper(o);
 \t\tr = new BufferedReader(new InputStreamReader(i));
 \t}
 \t// USACO-style file input
 \tpublic Kattio(String problemName) throws IOException {
-\t\tsuper(new FileWriter(problemName+".out"));
-\t\tr = new BufferedReader(new FileReader(problemName+".in"));
+\t\tsuper(new FileWriter(problemName + ".out"));
+\t\tr = new BufferedReader(new FileReader(problemName + ".in"));
 \t}
 
 \t// returns null if no more input
@@ -284,7 +284,7 @@ static class Kattio extends PrintWriter {
 \t\t\twhile (st == null || !st.hasMoreTokens())
 \t\t\t\tst = new StringTokenizer(r.readLine());
 \t\t\treturn st.nextToken();
-\t\t} catch (Exception e) {}
+\t\t} catch (Exception e) { }
 \t\treturn null;
 \t}
 
@@ -293,7 +293,7 @@ static class Kattio extends PrintWriter {
 \tpublic long nextLong() { return Long.parseLong(next()); }
 }
 //EndCodeSnip`,
-  TemplateShort: `//BeginCodeSnip{C++ Short Template}
+  'CPP Short Template': `//BeginCodeSnip{C++ Short Template}
 #include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
 
@@ -302,7 +302,7 @@ using ll = long long;
 using vi = vector<int>;
 #define pb push_back
 #define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
+#define sz(x) (int) (x).size()
 
 using pi = pair<int,int>;
 #define f first

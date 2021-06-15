@@ -68,13 +68,11 @@ const getLangFromUrl = () => {
   if (shouldLangParamApply() && window.location?.search?.length > 0) {
     const lang = getQueryVariable(window.location.search.slice(1), 'lang');
     if (lang === 'cpp' || lang === 'java' || lang === 'py') return lang;
-    return null;
-  } else {
-    return null;
   }
+  return null;
 };
 
-export function updateLangURL(newLang) {
+export function updateLangURL(newLang: string): void {
   if (shouldLangParamApply()) {
     window.history.replaceState(
       {},
@@ -84,27 +82,44 @@ export function updateLangURL(newLang) {
   }
 } // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
 
+// export function setLangURLIfNone(newLang: string): void {
+//   if (getLangFromUrl() == null) updateLangURL(newLang);
+// }
+
 export default class UserLang extends SimpleUserDataPropertyAPI {
   protected storageKey = 'lang';
   protected defaultValue = 'cpp';
   protected setterFunctionName = 'setLang';
+  protected changedLang = false;
 
   public initializeFromLocalStorage = () => {
-    this.value =
-      getLangFromUrl() ||
-      this.getValueFromLocalStorage(
+    // console.log('USERLANG: INIT FROM LOCALSTORAGE');
+    const langFromUrl = getLangFromUrl();
+    if (!this.changedLang && langFromUrl !== null) {
+      this.value = langFromUrl;
+      this.saveLocalStorageValue(this.storageKey, this.value); // save to localstorage
+    } else {
+      this.value = this.getValueFromLocalStorage(
         this.getLocalStorageKey(this.storageKey),
         this.defaultValue
       );
+    }
     updateLangURL(this.value);
   };
 
   public importValueFromObject = data => {
-    this.value =
-      getLangFromUrl() ||
-      (data.hasOwnProperty(this.storageKey) && data[this.storageKey] !== null
-        ? data[this.storageKey]
-        : this.defaultValue);
+    // console.log('USERLANG: IMPORT FROM OBJECT');
+    const langFromUrl = getLangFromUrl();
+    if (!this.changedLang && langFromUrl !== null) {
+      this.value = langFromUrl;
+      this.saveFirebaseValue(this.storageKey, this.value); // save to firebase
+      this.changedLang = true;
+    } else {
+      this.value =
+        data.hasOwnProperty(this.storageKey) && data[this.storageKey] !== null
+          ? data[this.storageKey]
+          : this.defaultValue;
+    }
     updateLangURL(this.value);
   };
 

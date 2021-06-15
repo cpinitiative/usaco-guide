@@ -1,0 +1,162 @@
+---
+id: usaco-1088
+source: USACO Silver 2021 January
+title: Spaced Out
+author: Melody Yu (Video), Tyler Xiao (Video), Maggie Liu
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_prob3_silver_jan21.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in Java.
+<Youtube id="7eMHxpDQJEw" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+const int MAX_N = 1000;
+int grid[MAX_N][MAX_N];
+
+int main()
+{
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			cin >> grid[i][j];
+		}
+	}
+	// max beauty if each row alternates between cow and no cow
+	int rows_alternate = 0;
+	// max beauty if each column alternates
+	int cols_alternate = 0;
+
+	// each row has an alternating pattern of cow and no cow
+	for (int i = 0; i < n; i++)
+	{
+		int sum[2]{};
+		// there are two ways to alternate, odd index and even index
+		for (int j = 0; j < n; j++)
+		{
+			sum[j % 2] += grid[i][j];
+		}
+		rows_alternate += max(sum[0], sum[1]);
+	}
+
+	// each column has an alternating pattern of cow and no cow
+	for (int i = 0; i < n; i++)
+	{
+		int sum[2]{};
+		// two ways to alternate
+		for (int j = 0; j < n; j++)
+		{
+			sum[j % 2] += grid[j][i];
+		}
+		cols_alternate += max(sum[0], sum[1]);
+	}
+	
+	cout << max(rows_alternate, cols_alternate) << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SpacedOut
+{
+	public static void main(String[] args) throws IOException
+	{
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int[][] grid = new int[n][n];
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < n; j++)
+			{
+				grid[i][j] = io.nextInt();
+			}
+		}
+		// max beauty if each row alternates between cow and no cow
+		int rowsAlternate = 0;
+		// max beauty if each column alternates
+		int colsAlternate = 0;
+		// each row has an alternating pattern of cow and no cow
+		for (int i = 0; i < n; i++)
+		{
+			int[] sum = new int[2];
+			// there are two ways to alternate, odd index and even index
+			for (int j = 0; j < n; j++)
+			{
+				sum[j % 2] += grid[i][j];
+			}
+			rowsAlternate += Math.max(sum[0], sum[1]);
+		}
+
+		// each column has an alternating pattern of cow and no cow
+		for (int i = 0; i < n; i++)
+		{
+			int[] sum = new int[2];
+			// two ways to alternate
+			for (int j = 0; j < n; j++)
+			{
+				sum[j % 2] += grid[j][i];
+			}
+			colsAlternate += Math.max(sum[0], sum[1]);
+		}
+		io.println(Math.max(rowsAlternate, colsAlternate));
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+# grid_by_rows[i] is the ith row
+grid_by_rows = [list(map(int, input().split())) for _ in range(n)]
+# grid_by_cols[i] is the ith column
+grid_by_cols = zip(*grid_by_rows)
+
+rows_alternate = 0  # max beauty if each row alternates between cow and no cow
+cols_alternate = 0  # max beauty if each column alternates
+
+for i in range(n):
+	# each row has an alternating pattern of cow and no cow
+	row = grid_by_rows[i]  # the ith row
+	# row[::2] is a list of every other element, starting with index 0
+	# row[1::2] is a list of every other element, starting with index 1
+	rows_alternate += max(sum(row[::2]), sum(row[1::2]))
+
+	# each column has an alternating pattern of cow and no cow
+	col = next(grid_by_cols)  # the ith column
+	cols_alternate += max(sum(col[::2]), sum(col[1::2]))
+
+print(max(rows_alternate, cols_alternate))
+```
+
+</PySection>
+
+</LanguageSection>

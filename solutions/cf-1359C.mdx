@@ -1,0 +1,114 @@
+---
+id: cf-1359C
+source: CF
+title: Mixing Water
+author: Jesse Choe
+---
+
+<Info title="Constant Time Solution">
+**Note: the $\mathcal{O}(1)$ solution for this problem is provided in the
+[official editorial](https://codeforces.com/blog/entry/78116).**
+</Info>
+
+Consider the following observations:
+
+- Case 1: The number of cups of hot water poured is equal to the number of cups of cold water poured. Pouring an equal number of cups of hot and cold water is equivalent to pouring one cup of each. 
+- Case 2: Otherwise, there must be exactly one more cup of hot water poured than cold water poured. Thus, there will be $c_i + 1$ cups of hot water and $c_i$ cups of cold water for some $c_i \geq 0$.
+- It can be proven, using induction, that the average barrel temperatures when $c_i$ is odd is a monotonically decreasing function. Thus, we can binary search on the maximum number of odd cups $c_i$ which gives a temperature of at least $t$ by checking the odd integers around it.
+
+The answer will either be the barrel with $2$, $c_i$, or $c_i + 2$ cups.
+
+**Time Complexity:** $\mathcal{O}(\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+double hot_water, cold_water, desired_temp;
+
+/*
+ * This function checks whether pouring cupsPoured amount of cups achieves an average
+ * barrel temperature greater than or equal to desired_temp. Technically, this represents
+ * 2 * cupsPoured + 1 cups
+ */
+
+bool works (int cupsPoured) {
+	double totalBarrelTemperature = (hot_water * (cupsPoured + 1) + cold_water * (cupsPoured));
+	double totalCupsPoured = (double) (2 * cupsPoured + 1.0);
+	double avgBarrelTemperature = totalBarrelTemperature / totalCupsPoured;
+	return avgBarrelTemperature >= desired_temp;
+}
+
+void solve () {
+	/* 
+	 * maximumCups represents the the maximum number of cups such
+	 * that the barrel temperature is greater than desired_temp.
+	 */
+	cin >> hot_water >> cold_water >> desired_temp;
+	// Binary search on the answer for maximumCups.
+	int left = 0, right = 1e6 + 1, maximumCups = 0;
+
+	while (left <= right) {
+		int mid = left + (right - left) / 2;
+		if (works(mid)) {
+			maximumCups = mid;
+			left = mid + 1;
+		} else {
+			right = mid - 1;
+		}
+	}
+
+	// If it is impossible to find a temperature close to desired_temp, then print 2
+	if (maximumCups == 1e6 + 1) {
+		cout << 2 << endl;
+	} else {
+		/*
+		 * The solution must lie between barrel1 and barrel2 if the total number of cups
+		 * is odd. barrel1 represents the barrel with an average temperature slightly
+		 * greater than desired_temp. barrel2 represent the barrel with an average
+		 * temperature slightly less than desired_temp. These two barrels will be the
+		 * closest to desired_temp.
+		 */
+		double totalBarrel1 = (hot_water * (maximumCups + 1) + cold_water * maximumCups);
+		double totalBarrel2 = (hot_water * (maximumCups + 2) + cold_water * (maximumCups + 1));
+		double barrel1Cups = (double)(2 * maximumCups + 1.0);
+		double barrel2Cups = (double)(2 * maximumCups + 3.0);
+		double avgBarrel1 = totalBarrel1 / barrel1Cups;
+		double avgBarrel2 = totalBarrel2 / barrel2Cups;
+		double hot_cold_avg = (hot_water + cold_water) / 2.0;
+
+		double minAbsDifference = min({abs(desired_temp - avgBarrel1),
+										abs(desired_temp - avgBarrel2),
+										abs(desired_temp - hot_cold_avg)});
+		
+		/*
+		 * If the minimum absolute difference from desired_temp is
+		 * hot_cold_avg, then it suffices to print 2. Otherwise, print
+		 * the barrel with the minimum absolute difference from desired_temp.
+		 */
+		if (minAbsDifference == abs(desired_temp - hot_cold_avg)) {
+			cout << 2 << endl;
+		} else if (minAbsDifference == abs(desired_temp - avgBarrel1)) {
+			cout << 2 * maximumCups + 1 << endl;
+		} else {
+			cout << 2 * maximumCups + 3 << endl;
+		}
+	}
+}
+
+int main() {
+	int t; cin >> t;
+	for (int i = 1; i <= t; i++) {
+		solve();
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

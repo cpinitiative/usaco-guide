@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { setDoc, updateDoc } from 'firebase/firestore';
 import { ProblemActivity } from '../../../models/activity';
 import { ProblemProgress } from '../../../models/problem';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
@@ -62,7 +63,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     this.progressValue = migratedValue;
     this.writeValueToLocalStorage();
     if (this.firebaseUserDoc) {
-      this.firebaseUserDoc.update({
+      updateDoc(this.firebaseUserDoc, {
         [this.progressStorageKey]: migratedValue,
       });
     }
@@ -124,7 +125,8 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
           this.progressValue[problemId] = status;
 
           if (this.firebaseUserDoc) {
-            this.firebaseUserDoc.set(
+            setDoc(
+              this.firebaseUserDoc,
               {
                 [this.progressStorageKey]: {
                   [problemId]: status,

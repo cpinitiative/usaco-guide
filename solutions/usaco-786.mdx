@@ -1,0 +1,243 @@
+---
+id: usaco-786
+source: USACO Silver 2018 January
+title: Lifeguards
+author: Óscar Garries, Nathan Wang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_lifeguards_silver_jan18.html)
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation (With Sets)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+struct Event {
+	int time;
+	int cowId;
+	bool isStartOfInterval;
+};
+
+bool cmp (const Event& a, const Event& b) {
+	return a.time < b.time;
+}
+
+int main() {
+	freopen("lifeguards.in", "r", stdin);
+	freopen("lifeguards.out", "w", stdout);
+
+	int n;
+	cin >> n;
+	vector<Event> events;
+
+	for (int i = 0; i < n; i++) {
+		int l, r; cin >> l >> r;
+
+		// each cow interval can be represented by two events:
+		// one start event and one end event
+		events.push_back({ l, i, 1 });
+		events.push_back({ r, i, 0 });
+	}
+
+	sort(events.begin(), events.end(), cmp); // sort events by time
+
+	// how much time each cow spends alone
+	vector<int> aloneTime(n, 0);
+
+	// which cows are currently working during the time period [prevTime, curTime]
+	set<int> activeCows;
+
+	// The time of the previous event
+	int prevTime = 0;
+
+	// How much time is covered by all the cows together (assuming we don't need to fire anyone)
+	int totalTime = 0;
+
+	for (auto ev : events) {
+		int curTime = ev.time;
+
+		// 0. Update total time covered by all the cows
+		if (activeCows.size() > 0) {
+			totalTime += curTime - prevTime;
+		}
+
+		// 1. Check to see if there was only one cow in [prevTime, curTime]
+		if (activeCows.size() == 1) {
+			aloneTime[*activeCows.begin()] += curTime - prevTime;
+		}
+
+		// 2. Process the event
+		if (ev.isStartOfInterval) {
+			activeCows.insert(ev.cowId);
+		} else {
+			activeCows.erase(ev.cowId);
+		}
+
+		// 3. Update prevTime
+		prevTime = curTime;
+	}
+
+	int minAloneTime = 1e9;
+	for (int i = 0; i < n; i++) {
+		minAloneTime = min(minAloneTime, aloneTime[i]);
+	}
+
+	cout << totalTime - minAloneTime << endl;
+}
+```
+
+## Another Implementation (No Sets)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+struct Time {
+	int l, r;
+};
+
+bool cmp (const Time& a, const Time& b) {
+	return a.l < b.l;
+}
+
+int main() {
+	freopen("lifeguards.in", "r", stdin);
+	freopen("lifeguards.out", "w", stdout);
+
+	int n;
+	cin >> n;
+	vector<Time> ar(n);
+
+	for (int i = 0; i < n; i++) {
+		cin >> ar[i].l >> ar[i].r;
+	}
+
+	sort(ar.begin(), ar.end(), cmp); // sort lifeguards by start point
+	int tot = 0, left = 0, right = 0;
+	// tot = time that is covered if no lifeguards covered
+	// right = max ending point of lifeguards considered so far
+
+	for (int i = 0; i < n; i++) {
+		if (ar[i].r > right) {
+			left = max(right, ar[i].l);
+			tot += ar[i].r - left;
+			right = ar[i].r;
+		}
+	}
+
+	int res = tot; // res = min time to subtract if one lifeguard removed
+	Time last;
+	last.l = ar[n - 1].r;
+	ar.push_back(last);
+	right = 0;
+	for (int i = 0; i < n; i++) {
+		int curRes = min(ar[i + 1].l, ar[i].r) - max(ar[i].l, right);
+		res = min(res, curRes);
+		right = max(right, ar[i].r);
+	}
+
+	res = max(res, 0); // if res < 0 then answer = tot
+	cout << tot - res << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+## Implementation
+
+Lightly modified from the official editorial.
+
+```java
+import java.io.*;
+import java.util.*;
+public class lifeguards {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("lifeguards.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("lifeguards.out")));
+		// BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		// PrintWriter pw = new PrintWriter(System.out);
+
+		int n = Integer.parseInt(br.readLine());
+		Event[] events = new Event[2*n];
+		for(int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+
+            // each cow interval can be represented by two events:
+            // one start event and one end event
+			events[2*i] = new Event(start, i, 1);
+			events[2*i+1] = new Event(end, i, 0);
+		}
+		Arrays.sort(events); // sort events by time
+
+        // which cows are currently working during the time period [prevTime, curTime]
+		TreeSet<Integer> activeCows = new TreeSet<Integer>();
+
+	    // How much time is covered by all the cows together (assuming we don't need to fire anyone)
+		int totalTime = 0;
+
+        // how much time each cow spends alone
+		int[] aloneTime = new int[n];
+
+        // The time of the previous event
+        int prevTime = 0;
+
+		for(Event ev : events) {
+            int curTime = ev.time;
+
+            // 0. Update total time covered by all the cows
+            if (!activeCows.isEmpty()) {
+                totalTime += curTime - prevTime;
+            }
+
+            // 1. Check to see if there was only one cow in [prevTime, curTime]
+            if (activeCows.size() == 1) {
+                aloneTime[activeCows.first()] += curTime - prevTime;
+            }
+
+            // 2. Process the event
+            if (ev.isStartOfInterval == 1) {
+                activeCows.add(ev.cowId);
+            } else {
+                activeCows.remove(ev.cowId);
+            }
+
+            // 3. Update prevTime
+            prevTime = curTime;
+		}
+
+
+        int minAloneTime = 1000000000;
+        for (int i = 0; i < n; i++) {
+            minAloneTime = Math.min(minAloneTime, aloneTime[i]);
+        }
+
+		pw.println(totalTime - minAloneTime);
+		pw.close();
+	}
+
+	static class Event implements Comparable<Event> {
+		public int time, cowId, isStartOfInterval;
+		public Event(int a, int b, int c) {
+			time=a;
+			cowId=b;
+            isStartOfInterval = c;
+		}
+		public int compareTo(Event s) {
+			return time - s.time;
+		}
+	}
+
+}
+```
+
+</JavaSection>
+</LanguageSection>

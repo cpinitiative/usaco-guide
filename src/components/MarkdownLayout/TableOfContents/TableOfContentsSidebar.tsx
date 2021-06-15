@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { useActiveHash } from '../../../hooks/useActiveHash';
 import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
-import LinksToEdit from './LinksToEdit';
 
 const TableOfContentsSidebar = ({
   tableOfContents,
@@ -28,8 +27,6 @@ const TableOfContentsSidebar = ({
         Table of Contents
       </h2>
       {links}
-
-      <LinksToEdit className="group block mt-8 transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />
 
       {/* <OutboundLink
         href="https://www.reddit.com/r/usaco/"
