@@ -87,14 +87,18 @@ See [Working With MDX](/general/working-mdx) for additional information.
     </LanguageSection>
     ```
 
-    Keep file names and solution IDs consistent; namely, USACO IDs
-    correspond to the number at the very end of the URL on
-    [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690) and
-    the name of a solution file should match the ID of the solution it contains. See
+    Keep file names and solution IDs consistent; namely, The ID for a USACO
+    problem (such as the one above) is the number at the very end of the URL on
+    [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690). The
+    name of a solution file should match the ID of the solution it contains. See
     [Working With MDX](/general/working-mdx#problem-lists) for more examples of
     IDs.
 
-3.  Add your implementation, following these conventions [below](#code-conventions). It is **not** necessary to add an alternative implementation in the same language as the official analysis unless the alternative implementation takes a different approach or is written better / differently from the official implementation.
+3.  Add your implementation, following these conventions
+    [below](#code-conventions). It is **not** necessary to add an alternative
+    implementation in the same language as the official implementation unless
+    the alternative implementation takes a different approach or is better than
+    the official one.
 
 4.  In the module's `.problems.json` file (in this case,
     [`Binary_Search.problems.json`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search.problems.json)),
@@ -126,32 +130,42 @@ See [Working With MDX](/general/working-mdx) for additional information.
 
 Since code for the USACO Guide is contributed from several authors, code style
 will **not** be uniform. Of course, we still strive for code that is readable
-and understandable. If any code does not compile or is hard to read,
-contact us.
+and understandable. If any code does not compile or is hard to read, contact us.
 
 Read our guidelines below before contributing code.
 
 ### General
 
-
 - Use _tabs_ rather than spaces to indent.
-<Info title="Pro Tip">
-If your code is indented with spaces, paste your code into the [Guide Editor](/editor), right-click, click "Command Palette" from the menu that pops up, and then search for "Convert Indentation to Tabs." 
-</Info>
 
-- Lines should not exceed 80 characters. If you need to, split comments across multiple lines to follow this rule.
-- Add comments throughout your code to explain your logic. Feel free to copy-paste the official USACO solution and improve it by adding more descriptive variable names and helpful comments.
-- Be _consistent_ about formatting your code, unlike the following snippet.
-  We don't care about which one you use (`a+b` or `a + b`), but pick one and stick with it throughout your entire code!
+  <Info title="Pro Tip">
+  	If your code is indented with spaces, paste your code into the [Guide
+  	Editor](/editor), right-click, click "Command Palette" from the menu that
+  	pops up, and then search for "Convert Indentation to Tabs."
+  </Info>
 
- ```py
-  a,b = (0,1)
-  print(a+b)
-  print(a + b)
-  ```
-- Use universally understandable variable names, especially for lower divisions (i.e. Bronze and Silver). Preferably use longer / more descriptive variable names than what you would normally use in-contest.
-  - Do not name a data structure the data structure's name. For example, don't name `std::set` "set."
-- If you use a I/O template, make sure to collapse it with [`CodeSnip`](https://usaco.guide/general/working-mdx#code-blocks-and-code-snippets)s.
+- Lines should not exceed 80 characters. If you need to, split comments across
+  multiple lines to follow this rule.
+- Add comments throughout your code to explain your logic. Feel free to
+  copy-paste the official USACO solution and improve it by adding more
+  descriptive variable names and helpful comments.
+- Be _consistent_ about formatting your code, unlike the following snippet. We
+  don't care about which one you use (`a+b` or `a + b`), but pick one and stick
+  with it throughout your entire code!
+
+```py
+ a,b = (0,1)
+ print(a+b)
+ print(a + b)
+```
+
+- Use universally understandable variable names, especially for Bronze and
+  Silver. Should be more descriptive than what you would normally use
+  in-contest.
+  - Do not name a data structure the data structure's name. For example, don't
+    name a `std::set` "set."
+- If you use a I/O template, make sure to collapse it with
+  [`CodeSnip`](https://usaco.guide/general/working-mdx#code-blocks-and-code-snippets)s.
 
 <LanguageSection>
 
@@ -162,18 +176,19 @@ If your code is indented with spaces, paste your code into the [Guide Editor](/e
 Optional reading:
 
 <Resources>
-  <Resource
-    source="CF"
-    title="Swift - Competitive C++ Manifesto"
-    url="64218"
-    starred
-  >
-    C++ style guide
-  </Resource>
+	<Resource
+		source="CF"
+		title="Swift - Competitive C++ Manifesto"
+		url="64218"
+		starred
+	>
+		C++ style guide
+	</Resource>
 </Resources>
 
-For Bronze through Gold, avoid using additional macros beyond the
-ones listed below (see [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
+For Bronze through Gold, avoid using additional macros (especially loop macros)
+beyond the ones listed below (see
+[Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
 
 ```cpp
 #include <bits/stdc++.h> // see /general/running-code-locally
@@ -205,7 +220,8 @@ int main() {
 }
 ```
 
-In particular, avoid for loop macros (e.g., `#define FOR(i,a,b) for (int i = (a); i < (b); ++i)`).
+Furthermore, avoid variable-length arrays as described
+[here](/bronze/intro-ds?lang=cpp#dynamic-arrays).
 
 </CPPSection>
 
@@ -213,10 +229,14 @@ In particular, avoid for loop macros (e.g., `#define FOR(i,a,b) for (int i = (a)
 
 ### Java
 
-- Regarding I/O, `Scanner` is [significantly slower](/general/fast-io?lang=java#fast-input) than `BufferedReader` and should be avoided. You may use your own I/O template, but collapse it as described above.
+- Regarding I/O, `Scanner` is
+  [significantly slower](/general/fast-io?lang=java#fast-input) than
+  `BufferedReader` and should be avoided. You may use your own I/O template, but
+  collapse it as described above.
 - It is good practice to not use constant size arrays in Java.
 - Use polymorphism when possible.
-  - For example, `List<Integer> list = new ArrayList<>()` instead of `ArrayList<Integer> list = new ArrayList<>()`. 
+  - For example, `List<Integer> list = new ArrayList<>()` instead of
+    `ArrayList<Integer> list = new ArrayList<>()`.
 
 </JavaSection>
 
