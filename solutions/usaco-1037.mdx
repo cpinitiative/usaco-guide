@@ -22,18 +22,20 @@ import java.io.*;
 public class CowntactTracing {
 	static boolean[] cowEndsInfected;
 	static int n;
-	static int[] cowX = new int[251];
-	static int[] cowY = new int[251];
+	static int maxT = 250;
+	static int maxN = 100;
+	static int[] cowX = new int[maxT + 1];
+	static int[] cowY = new int[maxT + 1];
 
 	// this function simulates handshakes over time to see if data agrees
 	// with this choice of patient_zero and K
 	static boolean consistentWithData(int patientZero, int k) {
-		boolean[] infected = new boolean[101];
-		int[] numHandshakes = new int[101];
+		boolean[] infected = new boolean[maxN + 1];
+		int[] numHandshakes = new int[maxN + 1];
 
 		infected[patientZero] = true;
 
-		for (int t = 0; t <= 250; t++) {
+		for (int t = 0; t <= maxT; t++) {
 			int x = cowX[t];
 			int y = cowY[t];
 
@@ -81,8 +83,8 @@ public class CowntactTracing {
 			cowY[t] = io.nextInt();
 		}
 
-		boolean[] possibleI = new boolean[101];	
-		boolean[] possibleK = new boolean[252];
+		boolean[] possibleI = new boolean[maxN + 1];	
+		boolean[] possibleK = new boolean[maxT + 2];
 
 		for (int i = 1; i <= n; i++) { // loop through each pair
 			for (int k = 0; k <= 251; k++) {
@@ -93,17 +95,17 @@ public class CowntactTracing {
 			}
 		}
 
-		int lowerK = 251;
+		int lowerK = maxT + 1;
 		int upperK = 0;
 		int numPatientZero = 0;
 
-		for (int k = 0; k <= 251; k++) {
+		for (int k = 0; k <= (maxT + 1); k++) {
 			if (possibleK[k]) {
 				upperK = k;
 			}
 		}
 
-		for (int k = 251; k >= 0; k--) { 
+		for (int k = (maxT + 1); k >= 0; k--) { 
 			if (possibleK[k]) {
 				lowerK = k;
 			}
@@ -116,7 +118,7 @@ public class CowntactTracing {
 		}
 
 		io.print(numPatientZero + " " + lowerK + " "); // possible patient zeros, minimum of K
-		if (upperK == 251) {
+		if (upperK == maxT + 1) {
 			io.println("Infinity"); // infinity if K = T is possible
 		}
 		else {
