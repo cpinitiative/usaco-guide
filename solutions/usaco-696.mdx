@@ -8,7 +8,7 @@ author: Benjamin Qi, Timothy Gao
 ## Solution 1: Euler Tour
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
-Recall from the Euler tour module that each subtree is represented as a contiguous interval in its Euler tour. With this knowledge, we can compress the tree into an array. Now, the problem becomes for each node $i$, look for how many elements are less than $\texttt{tour}[i]$ from $i$ to $\texttt{tout}[i]$, where $\texttt{tout}[i]$ is the end of the subtree interval for node $i$. By processing the nodes in decreasing order, this is a problem we can solve in $\mathcal{O}(N \log N)$ time with a binary-indexed tree.
+Recall from the euler tour module that each subtree is represented as a contiguous interval in it's euler tour. With this knowledge, we can compress the tree into an array. Now, the problem becomes for each node $i$, look for how many elements are less than $tour[i]$ from $i$ to $tout[i]$, where $tout[i]$ is the end of the subtree interval for node $i$. By processing the nodes in decreasing order, this is a problem we can solve in $\mathcal{O}(N\log N)$ time with a binary-indexed tree.
 
 ```java
 import java.io.*;
@@ -26,7 +26,7 @@ public class promote {
         for(int i = 0; i<N; i++){
             ratings[i] = new int[]{i, Integer.parseInt(br.readLine())};
         }
-        List<Integer>[] adj = new List[N];
+        ArrayList<Integer>[] adj = new ArrayList[N];
         
         for (int i = 0; i < adj.length; i++) {
             adj[i] = new ArrayList<>();
@@ -60,13 +60,13 @@ public class promote {
         br.close();
     }
     
-    static int dfs(List<Integer>[] adj, int[] t, int[] l, int idx, int cur, int last){
-        l[cur] = idx;
+    static int dfs(ArrayList<Integer>[] adj, int[] tout, int[] left, int idx, int cur, int last){
+        left[cur] = idx;
         for(int n : adj[cur]){
             if(n == last) continue;
             idx = dfs(adj, t, l, idx, n, cur);
         }
-        t[cur] = idx;
+        tout[cur] = idx;
         return idx+1;
     }
     
@@ -195,3 +195,10 @@ int main() {
 	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
 }
 ```
+<IncompleteSection>
+
+Add Centroid Decomp/HLD Solution
+
+Sort nodes from largest to smallest value, do path updates from itself the root.
+
+</IncompleteSection>
