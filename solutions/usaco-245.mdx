@@ -1,0 +1,145 @@
+---
+id: usaco-245
+source: USACO Silver 2013 February
+title: Tractor
+author: Maggie Liu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_tractor.html)
+
+## Explanation
+
+We can create a graph where the cells of the field are vertices and two adjacent
+fields are connected by an edge. To find the connected component with at least
+$\lceil\frac{N^2}{2}\rceil$ vertices, we can use DSU to keep track of the
+components and add edges in increasing order of cost until we have a connected
+component that covers at least half of the vertices.
+
+First, iterate over every cell and add the edges between itself and its
+neighbors to the $\texttt{edges}$ vector. Only add an edge if the current cell
+has a greater height than its neighbor to prevent adding an edge twice. Then,
+sort the edges in increasing order of cost. For each edge, unite the sets of the
+two vertices and stop when the connected component's size is at least
+$\lceil\frac{N^2}{2}\rceil$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 \cdot \alpha(N))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+void init();
+bool unite(int a, int b);
+
+struct Cell
+{
+	int i, j;
+};
+struct Edge
+{
+	Cell from, to;
+	int cost;
+};
+
+const int MAX_N = 500;
+int parent[MAX_N * MAX_N];
+int comp_size[MAX_N * MAX_N]; // size of each component
+int n;
+
+int main()
+{
+	freopen("tractor.in", "r", stdin);
+	freopen("tractor.out", "w", stdout);
+	cin >> n;
+	int field[MAX_N][MAX_N];
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			cin >> field[i][j];
+		}
+	}
+	init();
+	vector<Edge> edges;
+	int di[]{-1, 0, 1, 0}, dj[]{0, 1, 0, -1};
+	for (int row = 0; row < n; row++)
+	{
+		for (int col = 0; col < n; col++)
+		{
+			for (int d = 0; d < 4; d++)
+			{
+				Cell to = {row + di[d], col + dj[d]};
+				// make sure the next cell is in bounds
+				// and has a lower height to prevent adding an edge twice
+				if (to.i >= 0 && to.i < n && to.j >= 0 && to.j < n
+						&& field[row][col] >= field[to.i][to.j])
+				{
+					edges.push_back({
+						{row, col}, to, field[row][col] - field[to.i][to.j]
+					});
+				}
+			}
+		}
+	}
+	// sort edges in increasing order of cost
+	sort(edges.begin(), edges.end(), [](Edge a, Edge b){
+		return a.cost < b.cost;
+	});
+
+	for (Edge edge : edges)
+	{
+		// if the connected component covers at least half the cells
+		if (unite(edge.from.i * n + edge.from.j, edge.to.i * n + edge.to.j))
+		{
+			cout << edge.cost << endl;
+			return 0;
+		}
+	}
+}
+
+void init()
+{
+	for (int i = 0; i < n * n; i++)
+	{
+		parent[i] = i;
+		comp_size[i] = 1;
+	}
+}
+
+int find(int a)
+{
+	if (a == parent[a])
+	{
+		return a;
+	}
+	return parent[a] = find(parent[a]);
+}
+
+bool unite(int a, int b)
+{
+	int root_a = find(a), root_b = find(b);
+	if (root_a == root_b)
+	{
+		return false;
+	}
+	if (comp_size[root_a] > comp_size[root_b])
+	{
+		swap(root_a, root_b);
+	}
+	parent[root_a] = root_b;
+	comp_size[root_b] += comp_size[root_a];
+	return comp_size[root_b] >= (n * n + 1) / 2;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
