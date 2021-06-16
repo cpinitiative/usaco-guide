@@ -60,13 +60,13 @@ public class promote {
         br.close();
     }
     
-    static int dfs(ArrayList<Integer>[] adj, int[] t, int[] l, int idx, int cur, int last){
-        l[cur] = idx;
+    static int dfs(ArrayList<Integer>[] adj, int[] tout, int[] back, int idx, int cur, int last){
+        back[cur] = idx;
         for(int n : adj[cur]){
             if(n == last) continue;
             idx = dfs(adj, t, l, idx, n, cur);
         }
-        t[cur] = idx;
+        tout[cur] = idx;
         return idx+1;
     }
     
@@ -195,3 +195,10 @@ int main() {
 	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
 }
 ```
+<IncompleteSection>
+
+Add Centroid Decomp/HLD Solution
+
+Sort nodes from largest to smallest value, do path updates from itself the root.
+
+</IncompleteSection>
