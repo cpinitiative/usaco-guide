@@ -72,9 +72,9 @@ using ll = long long;
 const int MAX_N = 20;
 const ll MOD = (ll) 1e9 + 7;
 
-ll dp[1 << MAX_N][MAX_N + 1];
+ll dp[1 << MAX_N][MAX_N];
 // adj[i] contains the cities that can fly to i
-vector<int> adj[MAX_N + 1];
+vector<int> come_from[MAX_N];
 
 int main() {
 	int city_num;
@@ -83,11 +83,10 @@ int main() {
 	for (int f = 0; f < flight_num; f++) {
 		int start, end;
 		cin >> start >> end;
-		adj[end].push_back(start);
+		come_from[--end].push_back(--start);
 	}
 	
-	// NOTE: the bitmask is 0-indexed, but the cities aren't
-	dp[1][1] = 1;
+	dp[1][0] = 1;
 	for (int s = 2; s < 1 << city_num; s++) {
 		// only consider subsets that have the first city
 		if ((s & (1 << 0)) == 0)
@@ -96,21 +95,21 @@ int main() {
 		if ((s & (1 << (city_num - 1))) && s != ((1 << city_num) - 1))
 			continue;
 
-		for (int end = 1; end <= city_num; end++) {
-			if ((s & (1 << (end - 1))) == 0)
+		for (int end = 0; end < city_num; end++) {
+			if ((s & (1 << end)) == 0)
 				continue;
 			
-			// the subset that didn't include the current end
-			int prev = s - (1 << (end - 1));
-			for (int j : adj[end]) {
-				if ((s & (1 << (j - 1)))) {
+			// the subset that doesn't include the current end
+			int prev = s - (1 << end);
+			for (int j : come_from[end]) {
+				if ((s & (1 << j))) {
 					dp[s][end] += dp[prev][j];
+					dp[s][end] %= MOD;
 				}
-			}
-			dp[s][end] %= MOD;
+			}	
 		}
 	}
-	cout << dp[(1 << city_num) - 1][city_num] << '\n';
+	cout << dp[(1 << city_num) - 1][city_num - 1] << '\n';
 }
 ```
 
