@@ -266,7 +266,7 @@ public class main
 
 </LanguageSection>
 
-### Solution - Binomial Coefficients
+### Solution - Binomial Coefficients $\mathcal{O}(N \log N)$
 
 In order to calculate $a \choose b$, we can precalculate the factorials to speed up the calculation of $a!$, $b!$, and $(a-b)!$. $a \choose b$ is equivalent to
 
@@ -324,15 +324,59 @@ int main() {
 
 </LanguageSection>
 
+### Solution - Binomial Coefficients $\mathcal{O}(N)$
 
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo
 $p$, frequent use of division inside a loop can significantly increase the
 running time of a program. If the modular inverse of the same number(s) is/are
-being used many times, it is a good idea to precalculate it. Note the above problem could also be solved by precalculating invererses by first calculating the inverse of n! for a large n then finding all previous values by multiplying in $O(n)$.
+being used many times, it is a good idea to precalculate it. Note the above problem could also be solved by precalculating invererses by finding the inverse of $N!$ for a large $N$ then calculating the inverses of $1...{N!-1}$ by multiplying each inverse starting from $N!$ with their respective values in $O(n)$.
 
 Also, one must always ensure that they do not attempt to divide by 0. Be aware
 that after applying modulo, a nonzero number can become zero, so be very careful
 when dividing by non-constant values.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+using ll = long long;
+const int MOD = (int)1e9+7;
+ 
+ll inverse(ll num){
+    ll a = num; ll b = MOD-2;
+    //equivalent to num^(MOD-2)
+    ll res = 1;
+    while (b > 0) {
+        if (b % 2 == 1)
+            res = res * a % MOD;
+        a = a * a % MOD;
+        b /= 2;
+    }
+    return res;
+}
+ 
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    ll factorial[1000001], inverses[1000001];
+    factorial[0] = factorial[1] =1;
+    for (int i = 2; i<=1000000; i++) {
+        factorial[i]=(factorial[i-1]*i)%MOD;
+    }
+	inverses[1000000] = inverse(factorial[1000000]);
+	for(int i = 999999; i >= 0; i--){
+		inverses[i] = (inverses[i+1]*(i+1)) % MOD;
+	}
+    ll n, a, b;
+    cin >> n;
+    for(int i = 0; i < n; i++) {
+        cin >> a >> b;
+        ll ans = (factorial[a] * inverses[b]) % MOD;
+        ans *= inverses[a-b];
+        ans %= MOD;
+        cout << ans << "\n";
+    }
+}
+```
 
 <Optional title="Another Way to Compute Modular Inverses">
 
