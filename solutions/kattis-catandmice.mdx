@@ -30,7 +30,8 @@ public final class CatAndMice {
 		int miceNum = Integer.parseInt(read.readLine());
 		int[][] mice = new int[miceNum][];
 		for (int m = 0; m < miceNum; m++) {
-			mice[m] = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			mice[m] = Arrays.stream(read.readLine().split(" "))
+							.mapToInt(Integer::parseInt).toArray();
 		}
 		double speedRed = Double.parseDouble(read.readLine());
 
@@ -50,10 +51,13 @@ public final class CatAndMice {
 		System.out.println(valid);
 	}
 
-	private static boolean allEatable(int[] start, int[][] mice, double speedRed, double initSpeed) {
+	private static boolean allEatable(
+		int[] start, int[][] mice, double speedRed, double initSpeed
+	) {
 		double[][] minTime = new double[1 << mice.length][mice.length];
 		for (int s = 0; s < (1 << mice.length); s++) {
-			Arrays.fill(minTime[s], Double.MAX_VALUE);  // MAX_VALUE will be used as a placeholder for invalid values
+			// MAX_VALUE will be used as a placeholder for invalid values
+			Arrays.fill(minTime[s], Double.MAX_VALUE);
 		}
 
 		for (int s = 1; s < (1 << mice.length); s++) {
@@ -65,7 +69,8 @@ public final class CatAndMice {
 				int prev = s & ~(1 << end);
 				if (prev == 0) {
 					double dist = dist(start, mice[end]);
-					minTime[s][end] = initSpeed * mice[end][2] >= dist ? dist / initSpeed : Double.MAX_VALUE;
+					minTime[s][end] = initSpeed * mice[end][2] >= dist
+									  ? dist / initSpeed : Double.MAX_VALUE;
 					continue;
 				}
 				for (int prevEnd = 0; prevEnd < mice.length; prevEnd++) {
