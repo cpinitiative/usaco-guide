@@ -1,7 +1,7 @@
 ---
 id: intro-complete
 title: 'Basic Complete Search'
-author: Darren Yao, Dong Liu
+author: Darren Yao, Dong Liu, Nathan Gong
 description: 'An easy example: iterating through all pairs.'
 frequency: 4
 ---
@@ -61,23 +61,44 @@ int main() {
 
 </CPPSection>
 
-<!-- <JavaSection>
+<JavaSection>
 
 ```java
-int max = 0; // storing the current maximum
-for(int i = 0; i < n; i++){ // for each first point
-	for(int j = i+1; j < n; j++){ // for each second point
-		int dx = x[i] - x[j];
-		int dy = y[i] - y[j];
-		max = Math.max(max, dx*dx + dy*dy);
-		// if the square of the distance between the two points is greater than
-		// our current maximum, then update the maximum
+import java.util.*;
+import java.io.*;
+
+public class MaximumDistance {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int[] x = new int[n];
+		int[] y = new int[n];
+		for (int i = 0; i < n; i++) {
+			x[i] = io.nextInt();
+		}
+		for (int i = 0; i < n; i++) {
+			y[i] = io.nextInt();
+		}
+
+		int max = 0; // storing the current maximum
+		for (int i = 0; i < n; i++) { // for each first point
+			for (int j = i + 1; j < n; j++) { // for each second point
+				int dx = x[i] - x[j];
+				int dy = y[i] - y[j];
+				// if the square of the distance between the two points is greater than
+				// our current maximum, then update the maximum
+				max = Math.max(max, dx*dx + dy*dy);
+			}
+		}
+		io.println(max);
+		io.close();
 	}
+
+	CodeSnip{Kattio}
 }
-io.println(max);
 ```
 
-</JavaSection> -->
+</JavaSection>
 
 <PySection>
 

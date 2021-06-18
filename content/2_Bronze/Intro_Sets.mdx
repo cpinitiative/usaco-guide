@@ -173,25 +173,22 @@ int main() {
 ```java
 // Source: Daniel
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class DistinctNumbers {
-
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		Kattio io = new Kattio();
+		int n = io.nextInt();
 		HashSet<Integer> set = new HashSet<Integer>();
 		for (int i = 0; i < n; i++) {
-			set.add(Integer.parseInt(st.nextToken()));
+			set.add(io.nextInt());
 		}
-		System.out.println(set.size());
+		io.println(set.size());
+		io.close();
 	}
 
+	CodeSnip{Kattio}
 }
 ```
 
@@ -363,7 +360,7 @@ This allows you to modify the values of the pairs stored in the map.
 To iterate over maps, you can use a `for` loop over the keys.
 
 ```java
-for (int k : m.keySet()){
+for (int k : m.keySet()) {
 	System.out.println(k + " " + m.get(k));
 }
 ```
@@ -673,10 +670,11 @@ unlikely to work, as it will probably cause a
 See the following snippet for an example:
 
 ```java
-void iterate_remove_set_BAD() {
+void iterateRemoveBad() {
 	Set<Integer> s = new TreeSet<Integer>();
+	// s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
-	for(Integer a : s) {
+	for (Integer a : s) {
 		s.remove(a); // ConcurrentModificationException thrown!!
 	}
 }
@@ -686,21 +684,22 @@ One work-around is to use `Iterator` and the `.remove()` method to remove
 elements while looping over them, like in the next code snippet:
 
 ```java
-void iterate_remove_set() {
+void iterateRemoveSet() {
 	Set<Integer> s = new TreeSet<Integer>();
-	//s starts as {0, 1, 2}
+	// s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
 
 	Iterator<Integer> iter = s.iterator();
-	while(iter.hasNext()) {
+	while (iter.hasNext()) {
 		int key = iter.next();
-		if(key == 0 || key == 2)
+		if (key == 0 || key == 2) {
 			iter.remove();
+		}
 	}
 
-	//s ends as {1}
+	// s ends as {1}
 	System.out.println("ENTRIES:");
-	for(Integer a : s) {
+	for (Integer a : s) {
 		System.out.println(a);
 	}
 }
@@ -720,21 +719,23 @@ method that you call on your original Collection. See the following code snippet
 for an example (it works equivalently to the code above):
 
 ```java
-void iterate_remove_set_good() {
+void iterateRemoveSetGood() {
 	Set<Integer> s = new TreeSet<Integer>();
-	//s starts as {0, 1, 2}
+	// s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
 
 	Set<Integer> toRemove = new TreeSet<Integer>();
-	for(Integer a : s) {
-		if(a == 0 || a == 2) toRemove.add(a);
+	for (Integer a : s) {
+		if (a == 0 || a == 2) {
+			toRemove.add(a);
+		}
 	}
 
 	s.removeAll(toRemove);
 
-	//s ends as {1}
+	// s ends as {1}
 	System.out.println("ENTRIES:");
-	for(Integer a : s) {
+	for (Integer a : s) {
 		System.out.println(a);
 	}
 }
