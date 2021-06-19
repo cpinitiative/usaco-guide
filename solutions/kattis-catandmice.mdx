@@ -66,7 +66,9 @@ public final class CatAndMice {
 				if ((s & (1 << end)) == 0) {
 					continue;
 				}
+				// the subset without the current end
 				int prev = s & ~(1 << end);
+				// handle the special case for when we just started
 				if (prev == 0) {
 					double dist = dist(start, mice[end]);
 					minTime[s][end] = initSpeed * mice[end][2] >= dist
@@ -78,6 +80,7 @@ public final class CatAndMice {
 						continue;
 					}
 					double dist = dist(mice[prevEnd], mice[end]);
+					// check if Cartesian Cat can reach the mouse in time
 					if (speed * (mice[end][2] - minTime[prev][prevEnd]) < dist) {
 						continue;
 					}
