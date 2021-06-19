@@ -320,6 +320,47 @@ public class subarraysumq {
 		pw.close();
 	}
  
+	static class segtree {
+
+        public segtree left;
+        public segtree right;
+        public long suf;
+        public long pref;
+        public long best;
+        public long sum;
+
+        public segtree(long[] nums, int l, int r) {
+            if (l == r) {
+                suf = pref = best = sum = nums[l];
+                return;
+            }
+            left = new segtree(nums, l, (l + r) / 2);
+            right = new segtree(nums, (l + r) / 2 + 1, r);
+            comb(left, right);
+        }
+
+        public long update(int idx, int up, int l, int r) {
+            if (l == r) {
+                suf = pref = best = sum = up;
+            } else {
+                if (idx <= (l + r) / 2) {
+                    left.update(idx, up, l, (l + r) / 2);
+                } else {
+                    right.update(idx, up, (l + r) / 2 + 1, r);
+                }
+                comb(left, right);
+            }
+            return best;
+        }
+
+        private void comb(segtree a, segtree b) { //associative
+            sum = a.sum + b.sum;
+            pref = Math.max(a.sum + b.pref, a.pref);
+            suf = Math.max(b.sum + a.suf, b.suf);
+            best = Math.max(a.best, Math.max(b.best, a.suf + b.pref));
+        }
+    }
+
 	BeginCodeSnip{FastIO}
 	static class Reader {
 
