@@ -10,7 +10,7 @@ author: Arpan Banerjee
 ## Incorrect Solution — Common Misconception
 Instead of using binary search as the official solution does, a knapsack can be done. An array of talents can be kept, where `talent[i]` is the minimum weight required to create a talent sum of i. To make sure each cow is used at most once and the order of the cows doesn't matter, the indices of `talent` are iterated though from greatest to least, and the `cows` are iterated though in the outer loop; the implementation should make this clear. This maximizes the ratio $t/w$ as desired. Then, the maximum ratio of $t_i / w_i$ can be easily found by going through `talent` and ignoring any $w_i$ that is less than $W$. 
 
-My $\mathcal{O}(250 \cdot 10^3 \cdot n)$ code is below:
+My $\mathcal{O}(\text{Total talent } \cdot n)$ code is below:
 
 <LanguageSection>
 <CPPSection>
@@ -31,7 +31,7 @@ signed main(){
        for(int i=0; i<n; i++) cin>>cows[i].w>>cows[i].t;
        vector<int> talent(1e6+10, inf); talent[0]=0;
        for(auto cow:cows)
-              for(int i=250*1e3; i>=0; i--) // 250 * 10^3 is max total talent
+              for(int i=250*1e3; i>=0; i--) // 250 * 10^3 is total talent
                      if(talent[i]!=inf)
                             talent[i+cow.t]=min(talent[i+cow.t], talent[i]+cow.w);
        for(double t=1; t<talent.size(); t++)
