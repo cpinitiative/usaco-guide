@@ -22,6 +22,7 @@ My $\mathcal{O}(\text{Total talent } \cdot n)$ code is below:
 using namespace std;
 
 const int inf=2e9;
+const int total_talent=250000;
 int n,w; double ans=0;
 
 signed main(){
@@ -31,7 +32,7 @@ signed main(){
        for(int i=0; i<n; i++) cin>>cows[i].w>>cows[i].t;
        vector<int> talent(1e6+10, inf); talent[0]=0;
        for(auto cow:cows)
-              for(int i=250*1e3; i>=0; i--) // 250 * 10^3 is total talent
+              for(int i=total_talent; i>=0; i--)
                      if(talent[i]!=inf)
                             talent[i+cow.t]=min(talent[i+cow.t], talent[i]+cow.w);
        for(double t=1; t<talent.size(); t++)
