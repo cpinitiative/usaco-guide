@@ -1,0 +1,45 @@
+---
+id: usaco-711
+source: USACO Bronze 2017 Third Contest
+title: Why Did the Cow Cross the Road
+author: Ananth Kashyap
+---
+
+## Solution 1
+
+[Official Analysis](http://www.usaco.org/current/data/sol_crossroad_bronze_feb17.html)
+
+## Solution 2
+In this problem, we want to find the total number of times that a cow crosses the road. We can think of this as going through the list of observations, and determining if the cow in that observation is in a different location than before. In order to do this, we need to store the current locations of every cow in a list, and when we look at an observation, check if the cow in question's previous location (which is stored in the list) is different from its location in the observation. In this case, we will increment the number of crossings, and update the cows current location in the list. To complete the problem, we just need to output the total number of crossings.
+
+<LanguageSection>
+<PySection>
+
+## Python Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```py
+data = open('crossroad.in').read().strip().split('\n')
+n = int(data[0])
+
+observations = [list(map(int, data[i + 1].split(' '))) for i in range(n)]
+
+locations = [''] * 10
+
+crossings = 0
+
+for i in range(n):
+    if locations[observations[i][0] - 1] == '':
+        locations[observations[i][0] - 1] = observations[i][1]
+    else:
+        if locations[observations[i][0] - 1] != observations[i][1]:
+            locations[observations[i][0] - 1] = observations[i][1]
+            crossings += 1
+
+print(crossings, file=open('crossroad.out', 'w'))
+```
+
+</PySection>
+
+</LanguageSection>
