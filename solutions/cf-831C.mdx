@@ -50,5 +50,53 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class JuryMarks {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int k = io.nextInt();
+		int n = io.nextInt();
+		int[] a = new int[k + 1];
+		int[] b = new int[n];
+
+		for (int x = 1; x <= k; x++) { // read k numbers
+			a[x] = io.nextInt();
+			a[x] += a[x - 1];
+		}
+		for (int x = 0; x < n; x++) { // read n numbers
+			b[x] = io.nextInt();
+		}
+		Set<Integer> init = new TreeSet<>();
+		for (int x = 1; x <= k; x++) { // add to set
+			init.add(b[0] - a[x]);
+		}
+		int answer = 0;
+		for (int x : init) { // for each number in the set
+			Set<Integer> points = new TreeSet<>(); // create a new set
+			for (int i = 1; i <= k; i++) {
+				points.add(x + a[i]);
+			}
+			boolean flag = true;
+			for (int p : b) {
+				flag &= points.contains(p);
+			}
+			if (flag == true) { // add one if it ends up being true
+				answer += 1;
+			}
+		}
+		io.println(answer);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
