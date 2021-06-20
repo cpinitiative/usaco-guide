@@ -55,6 +55,60 @@ We can then remove the $\texttt{left}$-indexed book from $\texttt{cur} and incre
 
 <CPPSection>
 
+
+```cpp
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int N, T, A=0;
+vi B;
+    
+int main() {
+    setIO();
+    cin >> N >> T;
+    B.resize(N);
+    for(int i = 0; i < N; i++){
+        cin >> B[i];
+    }
+
+    int left = 0, right = 0, cur = 0;
+    while(left < N && right < N) {
+        while(right < N) {
+            cur += B[right++];
+            if(cur > T) {
+                cur -= B[--right]; 
+                break;
+            }
+        }
+
+        A = max(A, right - left);
+        cur -= B[left++];
+    }
+
+    cout << A;
+}
+```
+
 </CPPSection>
 
 <JavaSection>
