@@ -2,18 +2,18 @@
 id: cf-863B
 source: CF
 title: Kayaking
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Brad Ma
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/54708)
+[Official Analysis](https://codeforces.com/blog/entry/54708)
 
+
+## Implementation
 **Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 
 <CPPSection>
-
-## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -48,5 +48,45 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class Kayaking {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt() * 2;
+		int[] W = new int[N];
+		for (int x = 0; x < W.length; x++) {
+			W[x] = io.nextInt();
+		}
+		Arrays.sort(W);
+		int minInstability = Integer.MAX_VALUE;
+		for (int i = 0; i < N; i++) {
+			for (int j = i + 1; j < N; j++) {
+				List<Integer> track = new ArrayList<>();
+				for (int k = 0; k < N; k++) {
+					if ((k != i) && (k != j)) {
+						track.add(W[k]);
+					}
+				}
+				int totalInstability = 0;
+				for (int k = 0; k < (N - 2); k += 2) {
+					totalInstability += track.get(k + 1) - a.get(k);
+				}
+				minInstability = Integer.min(minInstability, totalInstability);
+			}
+		}
+		io.println(minInstability);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
