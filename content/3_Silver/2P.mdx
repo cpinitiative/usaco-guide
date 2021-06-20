@@ -80,29 +80,29 @@ void setIO(string name = "") {
 	}
 }
 
-int N, T, A=0;
-vi B;
+int N, T, A = 0;
+vi books;
     
 int main() {
     setIO();
     cin >> N >> T;
-    B.resize(N);
+    books.resize(N);
     for(int i = 0; i < N; i++){
-        cin >> B[i];
+        cin >> books[i];
     }
 
     int left = 0, right = 0, cur = 0;
     while(left < N && right < N) {
         while(right < N) {
-            cur += B[right++];
+            cur += books[right++];
             if(cur > T) {
-                cur -= B[--right]; 
+                cur -= books[--right]; 
                 break;
             }
         }
 
         A = max(A, right - left);
-        cur -= B[left++];
+        cur -= books[left++];
     }
 
     cout << A;
@@ -112,6 +112,44 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+
+```java
+public class Books {
+    static int N, T, A = 0;
+    static int[] books;
+    public static void main(String[] args) {
+        Kattio io = new Kattio();
+
+        N = io.nextInt();
+        T = io.nextInt();
+
+        books = new int[N];
+
+        for(int i = 0; i < N; i++) {
+            books[i] = io.nextInt();
+        }
+
+        int left = 0, right = 0, cur = 0;
+        while(left < N && right < N) {
+            while(right < N) {
+                cur += books[right++];
+                if(cur > T) {
+                    cur -= books[--right]; 
+                    break;
+                }
+            }
+
+            A = max(A, right - left);
+            cur -= books[left++];
+        }
+
+        io.println(A);
+        io.close();
+    }
+
+    CodeSnip{Kattio}
+}
+```
 
 </JavaSection>
 
