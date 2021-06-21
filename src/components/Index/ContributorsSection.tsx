@@ -106,8 +106,7 @@ export default function ContributorsSection(): JSX.Element {
                   className="text-blue-600 dark:text-blue-400"
                 >
                   {author.name}
-                </a>{' '}
-                (since {author.sinceDate})
+                </a>
               </li>
             ))}
           </ul>
