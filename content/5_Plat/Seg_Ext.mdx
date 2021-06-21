@@ -68,28 +68,28 @@ using namespace std;
 const int MAXN = 200001;
 
 int n;
-int segtree[4 * MAXN], a[MAXN];
+int segTree[4 * MAXN], a[MAXN];
 
 void build(int l = 1, int r = n, int node = 1) {
-	if (l == r) segtree[node] = a[l];
+	if (l == r) segTree[node] = a[l];
 	else {
 		int mid = (l + r) / 2;
 		build(l, mid, node * 2);
 		build(mid + 1, r, node * 2 + 1);
-		segtree[node] = max(segtree[node * 2], segtree[node * 2 + 1]);
+		segTree[node] = max(segTree[node * 2], segTree[node * 2 + 1]);
 	}
 }
 
 void queryupdate(int val, int l = 1, int r = n, int node = 1) {
 	if (l == r) {
-		segtree[node] -= val;
+		segTree[node] -= val;
 		cout << l << ' ';
 	} else {
 		int mid = (l + r) / 2;
-		if (segtree[node * 2] >= val) queryupdate(val, l, mid, node * 2);
+		if (segTree[node * 2] >= val) queryupdate(val, l, mid, node * 2);
 		else queryupdate(val, mid + 1, r, node * 2 + 1);
 
-		segtree[node] = max(segtree[node * 2], segtree[node * 2 + 1]);
+		segTree[node] = max(segTree[node * 2], segTree[node * 2 + 1]);
 	}
 }
 
@@ -104,7 +104,7 @@ int main() {
 	while (q--) {
 		int x;
 		cin >> x;
-		if (segtree[1] < x) cout << "0 ";
+		if (segTree[1] < x) cout << "0 ";
 		else queryupdate(x);
 	}
 	return 0;
@@ -254,24 +254,24 @@ struct Node {
 };
 
 ll n, a[MAXN];
-Node segtree[4 * MAXN];
+Node segTree[4 * MAXN];
 
 void build(ll l = 1, ll r = n, ll node = 1) {
-	if (l == r) segtree[node] = {max(0ll, a[l]), max(0ll, a[l]), max(0ll, a[l]), a[l]};
+	if (l == r) segTree[node] = {max(0ll, a[l]), max(0ll, a[l]), max(0ll, a[l]), a[l]};
 	else {
 		ll mid = (l + r) / 2;
 		build(l, mid, node * 2);
 		build(mid + 1, r, node * 2 + 1);
-		segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+		segTree[node] = segTree[node * 2] + segTree[node * 2 + 1];
 	}
 }
 void update(ll pos, ll val, ll l = 1, ll r = n, ll node = 1) {
-	if (l == r) segtree[node] = {max(0ll, val), max(0ll, val), max(0ll, val), val};
+	if (l == r) segTree[node] = {max(0ll, val), max(0ll, val), max(0ll, val), val};
 	else {
 		ll mid = (l + r) / 2;
 		if (pos > mid) update(pos, val, mid + 1, r, node * 2 + 1);
 		else update(pos, val, l, mid, node * 2);
-		segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+		segTree[node] = segTree[node * 2] + segTree[node * 2 + 1];
 	}
 }
 
@@ -287,7 +287,7 @@ int main() {
 		ll x, y;
 		cin >> x >> y;
 		update(x, y);
-		cout << segtree[1].g_max << '\n';
+		cout << segTree[1].g_max << '\n';
 	}
 	return 0;
 }
@@ -308,7 +308,7 @@ public class subarraysumq {
 		for (int i = 0; i < n; i++) {
 			nums[i] = rd.nextInt();
 		}
-		segtree sgt = new segtree(nums, 0, nums.length - 1);
+		segTree sgt = new segTree(nums, 0, nums.length - 1);
 		for (int i = 0; i < q; i++) {
 			pw.println(Math.max(0, sgt.update(
 					rd.nextInt() - 1,
@@ -320,22 +320,22 @@ public class subarraysumq {
 		pw.close();
 	}
  
-	static class segtree {
+	static class segTree {
 
-        public segtree left;
-        public segtree right;
+        public segTree left;
+        public segTree right;
         public long suf;
         public long pref;
         public long best;
         public long sum;
 
-        public segtree(long[] nums, int l, int r) {
+        public segTree(long[] nums, int l, int r) {
             if (l == r) {
                 suf = pref = best = sum = nums[l];
                 return;
             }
-            left = new segtree(nums, l, (l + r) / 2);
-            right = new segtree(nums, (l + r) / 2 + 1, r);
+            left = new segTree(nums, l, (l + r) / 2);
+            right = new segTree(nums, (l + r) / 2 + 1, r);
             comb(left, right);
         }
 
@@ -353,7 +353,7 @@ public class subarraysumq {
             return best;
         }
 
-        private void comb(segtree a, segtree b) { //associative
+        private void comb(segTree a, segTree b) { //associative
             sum = a.sum + b.sum;
             pref = Math.max(a.sum + b.pref, a.pref);
             suf = Math.max(b.sum + a.suf, b.suf);
