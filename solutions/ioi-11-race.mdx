@@ -1,0 +1,84 @@
+---
+id: ioi-11-race.mdx
+source: IOI 2011
+title: Race
+author: Timothy Gao
+---
+
+[Official Analysis with Centroid Decomposition Downloaded Here](https://ioinformatics.org/page/ioi-2011/37)
+
+## Alternative Solution: Small to Large Merging
+
+Like many centroid decomposition problems, race is also solvable via the small-to-large merging technique. At each node, consider storing a map. Naively, storing pairs of Length : #_of_paths does not work, because when we move from a node to it's ancestor, all values in the map stored that node much be updated. To account for this, we can instead define all paths as global to the root. In other words, we store pairs of Length_from_root : height. This way, when we merge a smaller map to a larger one at node $u$, we can process the answer with the formulation 
+
+$\textit{min(answer, smallmapheight + largemap[K-smallmaplength] - 2*height[u])}$
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+
+```cpp
+#include <bits/stdc++.h>
+ 
+using namespace std;
+ 
+typedef long long ll;
+typedef pair<ll, ll> pii;
+ 
+#define pb push_back
+ 
+#define f first
+#define s second
+ 
+const int maxn = 2e5+20;
+vector<pii> adj[maxn];
+map<ll, ll> info[maxn]; 
+ll dist[maxn], height[maxn]; //define dist relative to root
+int N, K, u, v; ll ret;
+ 
+void dfs1(int u, int p, ll c, int h){
+    info[u][c] = h; 
+    dist[u] = c; height[u] = h;
+    for(auto n : adj[u]){
+        if(p == n.f) continue;
+        dfs1(n.f, u, c + n.s, h + 1);
+    }
+}
+ 
+void dfs(int u, int p){
+    ll target = K + 2*dist[u];
+    for(auto n : adj[u]){
+        if(n.f == p) continue;
+        dfs(n.f, u);
+        if(info[n.f].size() > info[u].size()){
+            swap(info[n.f], info[u]);
+        }
+        for(auto i : info[n.f]){
+            if(info[u].find(target - i.f) != info[u].end()){
+                ret = min(ret, info[u][target - i.f] + i.s - 2*height[u]);
+            }
+        }
+        for(auto i : info[n.f]){
+            if(info[u].find(i.f) == info[u].end()){
+                info[u].insert(i);
+            }else{
+                info[u][i.f] = min(info[u][i.f], i.s);
+            }
+        }
+    } 
+}
+
+int best_path(int n, int k, int edges[][2], int weights[]){
+    if(k == 1) return 0;
+    N = n; K = k; ret = INT_MAX;
+    for(int i = 0; i<n-1; i++){
+        u = edges[i][0]; v = edges[i][1];
+        adj[u].pb(pii(v, weights[i])); adj[v].pb(pii(u, weights[i]));
+    }
+    dfs1(0, -1, 0, 0);
+    dfs(0, -1);
+    return ret == INT_MAX ? -1 : ret;
+}
+```
