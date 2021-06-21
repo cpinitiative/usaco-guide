@@ -25,11 +25,11 @@ public class PairUp {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("pairup");
 		int N = io.nextInt();
-		ArrayList<pair> events = new ArrayList<>();
+		List<Pair> events = new ArrayList<>();
 		for (int i = 0; i < N; i++) {
 			int freq = io.nextInt();
 			int amt = io.nextInt();
-			events.add(new pair(freq, amt));
+			events.add(new Pair(freq, amt));
 		}
 
 		Collections.sort(events);
@@ -55,22 +55,20 @@ public class PairUp {
 				j--;
 			}
 		}
-	   io.println(ret);
+		io.println(ret);
 		io.close();
-
-
 	}
 }
 
-class pair implements Comparable<pair> {
+class Pair implements Comparable<Pair> {
 	public int freq, amt;
 
-	public pair(int freq, int amt) {
+	public Pair(int freq, int amt) {
 		this.freq = freq;
 		this.amt = amt;
 	}
 
-	public int compareTo(pair other) {
+	public int compareTo(Pair other) {
 		return Integer.compare(this.amt, other.amt);
 	}
 }
