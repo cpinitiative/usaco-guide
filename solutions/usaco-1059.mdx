@@ -8,6 +8,46 @@ author: Sathvik Chundru
 [Official Analysis](http://www.usaco.org/current/data/sol_prob1_bronze_dec20.html)
 
 <LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int nums[7];
+	for(int i=0; i<7; i++){
+		cin >> nums[i];
+	}
+
+	// We know from the problem statement that (A ≤ B ≤ C), and the rest of the 
+	// numbers are the sums of these 3 numbers, so logically we can deduct that
+	// the smallest 2 numbers are A and B and the greatest of the 7 numbers is 
+	// A + B + C. Every other number is irrelevent as we can simply find
+	// the greatest number and subtract A and B to find C
+  
+	// To find the greatest number and the smallest 2 numbers, 
+ 	// we will sort the array of numbers by least to greatest
+  
+	sort(nums, nums + 7);
+  
+	// The first number of this now sorted array is A, and the second is B.
+  
+	int a = nums[0];
+	int b = nums[1];
+  
+	// Like we mentioned before, A + B + C is the greatest number, so the last
+	// number of this sorted array is said number, and if we subtract A and B, 
+	// then we aquire C. This is a simple logic problem that we can solve using math.
+  
+	int c = nums[6] - a - b;
+	cout << a << " " << b << " " << c;
+}
+```
+
+</CPPSection>
   
 <JavaSection>
 
