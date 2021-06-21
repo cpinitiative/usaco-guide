@@ -11,11 +11,6 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'Oct 2020',
   },
   {
-    name: 'Óscar Garries Urbina',
-    githubUsername: 'Farrius',
-    sinceDate: 'Jan 2021',
-  },
-  {
     name: 'Neo Wang',
     githubUsername: 'nwatx',
     sinceDate: 'Jan 2021',
@@ -26,33 +21,13 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'Feb 2021',
   },
   {
-    name: 'Mrinall Umasudhan',
-    githubUsername: 'MrinallU',
-    sinceDate: 'Feb 2021',
-  },
-  {
     name: 'Kevin Sheng',
     githubUsername: 'sanspapyrus683',
     sinceDate: 'Apr 2021',
   },
   {
-    name: 'Ananth Kashyap',
-    githubUsername: 'AAkashyap1',
-    sinceDate: 'Apr 2021',
-  },
-  {
     name: "Sofia Yang",
     githubUsername: "truashamu",
-    sinceDate: "Apr 2021",
-  },
-  {
-    name: "Zhixin Wang",
-    githubUsername: "topazand",
-    sinceDate: "Apr 2021",
-  },
-  {
-    name: "Andrew Cheng",
-    githubUsername: "Qw3rTy827",
     sinceDate: "Apr 2021",
   },
   {
@@ -71,11 +46,6 @@ export const contentAuthors: Contributor[] = [
     sinceDate: "May 2021",
   },
   {
-    name: "Sathvik Chundru",
-    githubUsername: "sathu-beep",
-    sinceDate: "May 2021",
-  },
-  {
     name: "Brad Ma",
     githubUsername: "brad182",
     sinceDate: "June 2021",
@@ -84,5 +54,38 @@ export const contentAuthors: Contributor[] = [
     name: "Albert Ye",
     githubUsername: "xyzyzl",
     sinceDate: "June 2021",
+  }
+];
+
+export const pastContentAuthors: Contributor[] = [
+  {
+    name: 'Óscar Garries Urbina',
+    githubUsername: 'Farrius',
+    sinceDate: 'Jan 2021',
   },
+  {
+    name: 'Mrinall Umasudhan',
+    githubUsername: 'MrinallU',
+    sinceDate: 'Feb 2021',
+  },
+  {
+    name: 'Ananth Kashyap',
+    githubUsername: 'AAkashyap1',
+    sinceDate: 'Apr 2021',
+  },
+  {
+    name: "Andrew Cheng",
+    githubUsername: "Qw3rTy827",
+    sinceDate: "Apr 2021",
+  },
+  {
+    name: "Zhixin Wang",
+    githubUsername: "topazand",
+    sinceDate: "Apr 2021",
+  },
+  {
+    name: "Sathvik Chundru",
+    githubUsername: "sathu-beep",
+    sinceDate: "May 2021",
+  }
 ];
