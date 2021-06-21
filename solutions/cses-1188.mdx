@@ -5,21 +5,22 @@ title: Bit Inversions
 author: Dustin Miao
 ---
 
-We can use a Segment Tree over the given array of bits. In a node of the segment tree corresponding to range $[l, r]$, we will store three pieces of information:
-- The longest prefix of the same bit in the range $[l, r]$ (denote this as $P$)
-- The longest suffix of the same bit in the range $[l, r]$ (denote this as $S$)
-- The longest subarray of the same bit in the range $[l, r]$ (denote this as $A$)
+We can use a Segment Tree over the given array of bits. Assume, for now, that we are querying for the longest continuous subsegment of 1s. In a node of 
+the segment tree corresponding to range $[l, r]$, we will store three pieces of information:
+- The longest prefix of 1s in the range $[l, r]$ (denote this as $P$)
+- The longest suffix of 1s in the range $[l, r]$ (denote this as $S$)
+- The longest subarray of1s in the range $[l, r]$ (denote this as $A$)
 - The length of the subarray (equivalent to $r - l + 1$) (denote this as $L$)
 
-To merge left child $u$ and right child $v$ to make node $w$
-- If $u.P = u.L$, then $w.P = u.L + v.P$; otherwise, $w.P = u.P$
-- If $v.S = v.L$, then $w.S = v.S + u.S$; otherwise, $w.S = v.S$
-- $w.A = \max(u.A, v.A, u.S + v.P)$
-- $w.L = u.L + v.L$
+To merge left child $a$ and right child $b$ to make node $c$
+- If $a.P = u.L$, then $c.P = a.L + b.P$; otherwise, $c.P = a.P$
+- If $b.S = v.L$, then $c.S = b.S + a.S$; otherwise, $c.S = b.S$
+- $c.A = \max(a.A, b.A, a.S + b.P)$
+- $c.L = a.L + b.L$
 
-Clearly, a bit flip operation corresponds to a point update on the segment tree and a longest homogeneous subarray query corresponds to the $A$ value of 
-the root node. We can thus handle all operations efficiently. Note that using two segment trees (one for the 0s and one for the 1s) makes the implementation 
-easier. 
+A bit flip operation corresponds to a point update on the segment tree and a longest homogeneous subarray query corresponds to the $A$ value of 
+the root node. We can thus handle all operations efficiently. Note that using two segment trees that are inverses of each other (one for the 0s and one for the 1s)
+makes the implementation easier. 
 
 **Time Complexity:** $\mathcal{O}((N + Q)\log N)$
 
