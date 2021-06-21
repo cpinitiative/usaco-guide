@@ -84,29 +84,29 @@ void setIO(string name = "") {
 
 
 int main() {
-    setIO();
-    int n, t, ans = 0;
-    cin >> n >> t;
-    vi books(n);
-    for(int i = 0; i < n; i++){
-        cin >> books[i];
-    }
+	setIO();
+	int n, t, ans = 0;
+	cin >> n >> t;
+	vi books(n);
+	for(int i = 0; i < n; i++){
+		cin >> books[i];
+	}
 
-    int left = 0, right = 0, cur = 0;
-    while(left < n && right < n) {
-        while(right < n) {
-            cur += books[right++];
-            if(cur > t) {
-                cur -= books[--right]; 
-                break;
-            }
-        }
+	int left = 0, right = 0, cur = 0;
+	while(left < n && right < n) {
+		while(right < n) {
+			cur += books[right++];
+			if(cur > t) {
+				cur -= books[--right]; 
+				break;
+			}
+		}
 
-        ans = max(ans, right - left);
-        cur -= books[left++];
-    }
+		ans = max(ans, right - left);
+		cur -= books[left++];
+	}
 
-    cout << ans;
+	cout << ans;
 }
 ```
 
@@ -119,37 +119,37 @@ import java.util.*;
 import java.io.*;
 
 public class Books {
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
 
-        int n = io.nextInt();
-        int t = io.nextInt();
+		int n = io.nextInt();
+		int t = io.nextInt();
 
-        int[] books = new int[n];
+		int[] books = new int[n];
 
-        for(int i = 0; i < n; i++) {
-            books[i] = io.nextInt();
-        }
+		for(int i = 0; i < n; i++) {
+			books[i] = io.nextInt();
+		}
 
-        int left = 0, right = 0, cur = 0, ans = 0;
-        while(left < n && right < n) {
-            while(right < n) {
-                cur += books[right++];
-                if(cur > t) {
-                    cur -= books[--right]; 
-                    break;
-                }
-            }
+		int left = 0, right = 0, cur = 0, ans = 0;
+		while(left < n && right < n) {
+			while(right < n) {
+				cur += books[right++];
+				if(cur > t) {
+					cur -= books[--right]; 
+					break;
+				}
+			}
 
-            ans = Math.max(ans, right - left);
-            cur -= books[left++];
-        }
+			ans = Math.max(ans, right - left);
+			cur -= books[left++];
+		}
 
-        io.println(ans);
-        io.close();
-    }
+		io.println(ans);
+		io.close();
+	}
 
-    CodeSnip{Kattio}
+	CodeSnip{Kattio}
 }
 ```
 
