@@ -1,0 +1,30 @@
+---
+id: lc-MakeElementEqual
+source: LeetCode
+title: Minimum Moves to Equal Array Elements
+author: Dustin Miao
+---
+
+## Solution
+
+Because the problem does not specify which value we have to make all elements, note that only the relative values of the elements matter. Thus, increasing $n - 1$ b elements by one is the same as decreasing a single element by one. Solving this simplified problem is a matter of finding the minimum value in the array and transforming all other elements to match it, requiring a total of $sum - n \cdot min$ where $sum$ is the sum of the array and $min$ is the minimum value.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+```c++
+class Solution {
+public:
+	int minMoves(vector<int>& nums) {
+		int sum = 0, nim = 1000000005;
+		for (int x : nums) {
+			sum += x;
+			nim = min(nim, x);
+		}
+		return sum - nim * nums.size();
+	}
+};
+```
+</CPPSection>
+</LanguageSection>
