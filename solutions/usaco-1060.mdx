@@ -2,7 +2,7 @@
 id: usaco-1060
 source: USACO Bronze 2020 December
 title: Daisy Chains
-author: Sathvik Chundru [Java], Danh Ta Chi Thanh [CPP]
+author: Danh Ta Chi Thanh
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob2_bronze_dec20.html)
@@ -53,83 +53,5 @@ int main(){
 ```
 
 </CPPSection>
-
-<JavaSection>
-	
-```java
-// Created by Sathvik Chundru with help from Justin Chen
-import java.util.*;
-import java.io.*;
-class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int[] petals = new int[n];
-
-		for (int i = 0; i < n; i++) {
-
-			// storing each petal count in an array
-			// so we can keep track of which flower
-			// has how many petals based on the 
-			// index it is stored in
-
-			petals[i]=sc.nextInt();
-		}
-
-		int counter = 0;
-
-		// creating 2 nested arrays to brute force every 
-		// possible combination of flowers
-
-		for (int i = 0; i < n; i++) {
-			for (int j = i; j < n; j++) {
-
-				int flowerCount=j-i+1;
-				int sum=0;
-				for (int k = i; k <= j; k++) {
-					sum += petals[k];
-				}
-
-				// finding the sum of all petals up to 
-				// this point so we can find the average 
-
-				if (sum % flowerCount != 0) {
-					
-					// checking to see the average is integer;
-					// if not, we can save time and optimize
-					// by skipping this batch of flowers
-
-					continue;
-				}
-
-				// average = total sum of petals / total number 
-				// of flowers
-
-				int avg = sum / flowerCount;
-
-				for (int k = i; k <= j; k++) {
-					if (petals[k] == avg) {
-
-						// checking to see if any flowers 
-						// have the exact same number of 
-						// petals as the average; if they do, 
-						// then adding them to a counter
-
-						counter++;
-						break;
-					}
-				}
-			}
-		}
-						      
-		System.out.println(counter);
-		sc.close();
-	}
-
-}
-
-```
-				 
-</JavaSection>
 
 </LanguageSection>
