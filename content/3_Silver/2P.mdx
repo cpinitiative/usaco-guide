@@ -47,7 +47,7 @@ We want to find the longest continuous segment of books that can be read within 
 
 To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ as the start and end of the segment respectively.
 
-Since being able to read segment $\texttt{left} \dots \texttt{right}$ implies we can read segments $\texttt{left} \dots \texttt{right}-1$, we can use two-pointer (or, alternatively, [binary search](/silver/binary-search)).
+Since being able to read segment $\texttt{left} \dots \texttt{right}$ implies we can read segment $\texttt{left} \dots \texttt{right}-1$, we can use two-pointers (or, alternatively, [binary search](/silver/binary-search)).
 
 For every $\texttt{left}$ index, we need to increase our $\texttt{right}$ pointer until the total time for that segment exceeds $t$.
 
@@ -136,16 +136,14 @@ public class Books {
 
 		int n = io.nextInt();
 		int t = io.nextInt();
-
 		int[] books = new int[n];
-
 		for(int i = 0; i < n; i++) {
 			books[i] = io.nextInt();
 		}
 
 		int left = 0, right = 0, cur = 0, ans = 0;
-		while(left < n && right < n) {
-			while(right < n) {
+		while (left < n && right < n) {
+			while (right < n) {
 				cur += books[right++];
 				if (cur > t) {
 					cur -= books[--right]; 
