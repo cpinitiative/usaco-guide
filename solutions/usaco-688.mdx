@@ -1,0 +1,60 @@
+---
+id: usaco-688
+source: USACO Bronze 2017 January
+title: Hoof, Paper, Scissors
+author: Ryan Chou
+---
+
+## Solution 1
+[Official Analysis](http://www.usaco.org/current/data/sol_hps_bronze_jan17.html)
+
+## Solution 2 - Generating All Permutations
+
+We can map the games to every possible permutation of the moves (hoof, paper, scissors) and find the sequence which gives us the maximum wins. This works because $1 \leq N \leq 100$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<PySection> 
+
+```py
+from itertools import permutations
+import sys
+
+sys.stdin = open('hps.in', 'r')
+sys.stdout = open('hps.out', 'w')
+
+n = int(input())
+games = []
+
+games = [list(map(int, input().split())) for _ in range(n)]
+
+# 1 = Hoof, 2 = Paper, 3 = Scissors
+choices = [1, 2, 3]
+
+# in these cases, cow 1 wins
+# hoof -> scissors -> paper -> hoof
+scenarios = [[1, 3], [3, 2], [2, 1]]
+
+# generates all permutations
+pers = list(permutations(choices, 3))
+maxwins = 0
+	
+# for every permutation, we cycle through
+# each game and calculate the wins.
+for j in pers:
+	# resetting the wins counter
+	wins = 0
+	for i in games:
+		selection = [j[i[0] - 1], j[i[1] - 1]]
+		if selection in scenarios:
+			wins += 1
+	# refreshing the maximum
+	maxwins = max(maxwins, wins)
+
+print(maxwins)
+```
+</PySection>
+</LanguageSection>

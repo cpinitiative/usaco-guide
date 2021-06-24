@@ -40,7 +40,7 @@ export default function ProblemsPage(props: PageProps) {
             </div>
             <CustomRefinementList
               attribute="tags"
-              limit={100}
+              limit={500}
               searchable
               transformItems={items =>
                 items.sort((x, y) => x.label.localeCompare(y.label))

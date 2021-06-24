@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { contentAuthors } from '../../../content/authors/contributors';
+import {
+  contentAuthors,
+  pastContentAuthors,
+} from '../../../content/authors/contributors';
 
 export default function ContributorsSection(): JSX.Element {
   return (
@@ -64,7 +67,7 @@ export default function ContributorsSection(): JSX.Element {
           <p className="text-gray-500 dark:text-gray-400 mb-2">
             Current Content Authors:
           </p>
-          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
+          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">
             {contentAuthors.map(author => (
               <li key={author.name}>
                 <a
@@ -89,6 +92,23 @@ export default function ContributorsSection(): JSX.Element {
                 Apply here.
               </a>
             </li>
+          </ul>
+          <p className="text-gray-500 dark:text-gray-400 mb-2">
+            Past Content Authors:
+          </p>
+          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
+            {pastContentAuthors.map(author => (
+              <li key={author.name}>
+                <a
+                  href={`https://github.com/${author.githubUsername}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 dark:text-blue-400"
+                >
+                  {author.name}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
