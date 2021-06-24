@@ -25,7 +25,28 @@ represents $s_i$, since we can pick up one more of this letter on our path.
 **Time Complexity:** $\mathcal{O}(N + M)$
 
 ```cpp
-CodeSnip{Benq Template}
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		(void)!freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		(void)!freopen((name+".out").c_str(), "w", stdout);
+	}
+}
 
 /**
  * Description: sorts vertices such that if there exists an edge x->y, then x goes before y
@@ -35,15 +56,15 @@ CodeSnip{Benq Template}
 
 struct TopoSort {
 	int N; vi in, res;
-	V<vi> adj;
-	void init(int _N) { N = _N; in.rsz(N); adj.rsz(N); }
+	vector<vi> adj;
+	void init(int _N) { N = _N; in.resize(N); adj.resize(N); }
 	void ae(int x, int y) { adj[x].pb(y), in[y] ++; }
 	bool sort() {
-		queue<int> todo;
-		F0R(i,N) if (!in[i]) todo.push(i);
+		queue<int> todo; 
+		for(int i = 0; i < N; i++) if (!in[i]) todo.push(i);
 		while (sz(todo)) {
-			int x = todo.ft; todo.pop(); res.pb(x);
-			each(i,adj[x]) if (!(--in[i])) todo.push(i);
+			int x = todo.front(); todo.pop(); res.pb(x);
+			for(const int &i : adj[x]) if (!(--in[i])) todo.push(i);
 		}
 		return sz(res) == N;
 	}
@@ -57,41 +78,41 @@ int dp[mx][26];
 
 string A;
 
-signed main() {
+int main() {
 	setIO();
-	re(N, M, A);
+	cin >> N >> M >> A;
 
 	TopoSort ts;
 
 	ts.init(N);
 
-	rep(M) {
-		int1(a, b);
+	while(M--) {
+		int a, b; cin >> a >> b;
+		a--; b--;
 		ts.ae(a, b);
 	}
 
 	if(!ts.sort()) {
-		ps(-1);
+		cout << -1 << endl;
 	} else {
-		each(x, ts.res) {
+		for(const int &x : ts.res) {
 			dp[x][A[x] - 'a']++;
-			each(e, ts.adj[x]) {
-				F0R(i, 26) {
-					ckmax(dp[e][i], dp[x][i]);
+			for(const int &e : ts.adj[x]) {
+				for(int i = 0; i < 26; i++) {
+					dp[e][i] = max(dp[e][i], dp[x][i]);
 				}
 			}
 		}
 
 		int ret = 0;
 
-		F0R(i, N) {
-			rep(26) {
-				ckmax(ret, dp[i][_]);
+		for(int i = 0; i < N; i++) {
+			for(int _ = 0; _ < 26; _++) {
+				ret = max(ret, dp[i][_]);
 			}
 		}
 
-		ps(ret);
-
+		cout << ret << endl;
 	}
 }
 ```
