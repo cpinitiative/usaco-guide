@@ -1,0 +1,119 @@
+---
+id: cf-919D
+source: CF Substring
+title: Substring
+author: Neo Wang
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/57462)
+
+## Explanation
+
+Define $\texttt{dp}[i][j]$ as the maximum number of character $j$ for letter
+$i$. Then, sort the edges topographically in order to perform dynamic
+programming on the DAG. Our transition is simple:
+
+$$
+\texttt{dp}[i][j] = \max \texttt{dp}[k][j] : k \in adj[i]
+$$
+
+while also incrementing $\texttt{dp}[i][l]$ for the current node $i$ where $l$
+represents $s_i$, since we can pick up one more of this letter on our path.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+```cpp
+CodeSnip{Benq Template}
+
+/**
+ * Description: sorts vertices such that if there exists an edge x->y, then x goes before y
+ * Source: KACTL
+ * Verification: https://open.kattis.com/problems/quantumsuperposition
+ */
+
+struct TopoSort {
+	int N; vi in, res;
+	V<vi> adj;
+	void init(int _N) { N = _N; in.rsz(N); adj.rsz(N); }
+	void ae(int x, int y) { adj[x].pb(y), in[y] ++; }
+	bool sort() {
+		queue<int> todo;
+		F0R(i,N) if (!in[i]) todo.push(i);
+		while (sz(todo)) {
+			int x = todo.ft; todo.pop(); res.pb(x);
+			each(i,adj[x]) if (!(--in[i])) todo.push(i);
+		}
+		return sz(res) == N;
+	}
+};
+
+ll N, M;
+const int mx = 3e5+1;
+
+bool vis[mx];
+int dp[mx][26];
+
+string A;
+
+signed main() {
+	setIO();
+	re(N, M, A);
+
+	TopoSort ts;
+
+	ts.init(N);
+
+	rep(M) {
+		int1(a, b);
+		ts.ae(a, b);
+	}
+
+	if(!ts.sort()) {
+		ps(-1);
+	} else {
+		each(x, ts.res) {
+			dp[x][A[x] - 'a']++;
+			each(e, ts.adj[x]) {
+				F0R(i, 26) {
+					ckmax(dp[e][i], dp[x][i]);
+				}
+			}
+		}
+
+		int ret = 0;
+
+		F0R(i, N) {
+			rep(26) {
+				ckmax(ret, dp[i][_]);
+			}
+		}
+
+		ps(ret);
+
+	}
+}
+```
+
+<LanguageSection>
+
+<CPPSection>
+
+(add cpp code)
+
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+(if you have Java code)
+
+</JavaSection>
+
+</LanguageSection>
