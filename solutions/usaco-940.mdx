@@ -2,11 +2,48 @@
 id: usaco-940
 source: USACO Bronze 2019 Open
 title: Milk Factory
-author: Mrinall Umasudhan and Jesse Choe
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou
 ---
 
+## Solution 1
 [Official Analysis](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
 
+## Implementation
+<LanguageSection>
+<PySection>
+```py
+
+fin = open('factory.in', 'r')
+
+N = int(fin.readline())
+
+outgoing = [0] * 101
+incoming = [0] * 101
+for _ in range(N-1):
+	a, b = map(int, fin.readline().split())
+	# Counting number of outgoing and incoming walkways.
+	outgoing[a] += 1
+	incoming[b] += 1
+ans = -1
+for i in range(1, N+1):
+	# Found two meeting places. This won't work.
+	if outgoing[i] == 0 and ans != -1: 
+		ans = -1
+		break
+	# Found a meeting place, remember it.
+	if outgoing[i] == 0: 
+		ans = i
+
+fout = open('factory.out', 'w')
+
+fout.write(str(ans) + '\n')
+
+fout.close()
+```
+	
+</PySection>
+</LanguageSection>
+## Solution 2
 This problem can also be solved using [Depth-First Search](/silver/dfs) (a
 Silver topic). Represent the factory as a directed unweighted graph with edges
 from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at
