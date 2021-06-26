@@ -207,11 +207,12 @@ const queries = [
         if (solutionFiles.indexOf(file) !== -1) {
           solutionFiles.splice(solutionFiles.indexOf(file), 1);
         }
-        if (module !== null) {
+        if (module != null) {
           file.problemModules.push(module);
         }
-        if (node.solution !== null) {
-          file.solutions.push(node.solution);
+        if (node.solution != null) {
+          // for some reason not making a copy messes with algolia change detection
+          file.solutions.push({...node.solution});
         }
         solutionFiles.push(file);
       });
