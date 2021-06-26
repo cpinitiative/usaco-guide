@@ -17,56 +17,16 @@ Let's consider the following test case:
 1 1 1
 1 0 0
 ```
+There are 2 ways to solve this problem. One solution is to input all the ones and zeros into a two-d array
+and sort through them manually to see how many cases have two or more ones. The second simpler solution
+is to input three integers per row and check if their sum is greater than or equal to two. Both solutions 
+are implemented below. 
 
-The solution to finding how many of these problems that the group of friends
-will attempt is understanding exactly what the question is asking and what
-information we are given. If **two or more** friends think that they can solve
-the problems, then all three of them decide to attempt it. We know that the rows
-represent the problem and the columns represent each of the friends. A 1
-represents a problem that **one** friend feels they can do and a 0 represents a
-problem that **one** friend thinks they cannot solve. With this, we know that if
-a row contains two or more 1s, then the friends all will try that problem. We
-just need to save the total number of these types of cases and print it out at
-the end.
-
-The first solution that we will discuss is a simple as all it does is saving the
-1s and 0s into a 2-d array of size [n][3] since n represents the total number of
-problems (rows) and 3 the number of friends (columns). We can then write a for
-loop and create a temporary counter to iterate through the 2-d array n times and
-another for loop inside of it to iterate through each number on each row. If we
-find that a number is 1, we will add one to the temporary counter. At the end of
-the loop, we will check if the temporary counter is greater than or equal to
-two, and if it is, we will add one to the main counter that keeps track of
-number of problems they will attempt. Once the inner for loop resets (because
-the out for loop will have completed an iteration out of n) the temp counter
-resets back to 0, and so we can continue to reuse it. Once the outer for loop is
-done iteration, we can just print the main counter. Below are the CPP and Java
-implementations of this solution.
-
-There is another faster and simpler approach to this problem. Before you read
-the paragraph below this, think about what you can do to make this problem
-faster. What mathmatical properties were discussed in the previous solution that
-we can exploit? If you have a solid idea or are stuck, continue reading.
-
-The much simpler but more logic based solution would be to creat a for loop to
-iterate through n problems, input all 3 numbers as integers and write an if
-statement to check if the sum of the integers is greater than or equal to 2, and
-if it is, adding one to a main counter which we will then print out at the end,
-similar to the last approach. Below are the CPP and Java implementations of this
-solution.
-
-This is an example of using math to simplify and create an efficient program
-using math for greedy algorithms. Next time you ever think of an approach to
-solve a problem, consider any alternate simpler and faster algorithms you can
-create.
+## Implementation
 
 <LanguageSection>
 
 <CPPSection>
-
-## Implementation
-
-**_Method One_**
 
 ```CPP
 #include <iostream>
@@ -82,22 +42,24 @@ int main() {
 		cin >> problems[i][1];
 		cin >> problems[i][2];
 	}
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		int temp = 0;
-		for(int j = 0; j < 3; j++){
-			if(problems[i][j] == 1){
+		for (int j = 0; j < 3; j++) {
+			if (problems[i][j] == 1) {
 				temp++;
 			}
 		}
-		if(temp >= 2){
+		if (temp >= 2) {
 			num++;
 		}
 	}
 	cout << num << '\n';
 }
 ```
+	
+</CPPSection>
 
-**_Method Two_**
+<CPPSection>
 
 ```CPP
 #include <iostream>
@@ -107,9 +69,9 @@ int main() {
 	int num = 0;
 	int n;
 	cin >> n;
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		int a; int b; int c; cin >> a; cin >> b; cin >> c;
-		if(a + b + c >= 2){
+		if (a + b + c >= 2) {
 			num++;
 		}
 	}
@@ -121,8 +83,6 @@ int main() {
 	
 <JavaSection>
 	
-***Method One***
-
 ```java
 import java.util.*;
 import java.io.*;
@@ -142,14 +102,14 @@ public class Team {
 
         	int num = 0;
 
-        	for(int i = 0; i < n; i++) {
+        	for (int i = 0; i < n; i++) {
             		int temp = 0;
-            		for(int j = 0; j < 3; j++) {
-                		if(problems[i][j] == 1){
+            		for (int j = 0; j < 3; j++) {
+                		if (problems[i][j] == 1) {
                    			temp++;
                 		}
             		}
-            		if(temp >= 2){
+            		if (temp >= 2) {
                 		num++;
             		}
         	}
@@ -160,8 +120,10 @@ public class Team {
 }
 
 ```
+	
+</JavaSection>
 
-**_Method Two_**
+<JavaSection>
 
 ```java
 import java.util.*;
@@ -170,11 +132,11 @@ import java.io.*;
         	Kattio io = new Kattio();
 		int num = 0;
 		int n = io.nextInt();
-		for(int i = 0; i < n; i++){
+		for (int i = 0; i < n; i++) {
 			int a = io.nextInt();
 			int b = io.nextInt();
 			int c = io.nextInt();
-			if(a + b + c >= 2){
+			if (a + b + c >= 2) {
 				num++;
 			}
 		}
