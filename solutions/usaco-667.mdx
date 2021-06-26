@@ -1,0 +1,89 @@
+---
+id: usaco-667
+source: USACO Silver 2016 December
+title: Cities & States
+author: Benjamin Qi
+---
+
+[Official Editorial (Java)](http://www.usaco.org/current/data/sol_citystate_silver_dec16.html)
+
+<LanguageSection>
+
+<JavaSection></JavaSection>
+
+<CPPSection>
+
+As the editorial mentions, we can store the number of times a given four-letter
+string appears in a `map`.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$ with `map`, $\mathcal{O}(N)$ with
+`unordered_map`.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// detemplating courtesy of kevin sheng
+int main() {
+	ifstream read("citystate.in");
+	int N;
+	read >> N;
+	map<string, int> city_state;
+	long long total = 0;
+	for (int i = 0; i < N; i++) {
+		string city;
+		string state;
+		read >> city >> state;
+		city = city.substr(0, 2);
+		if (city != state) {
+			total += city_state[state + city];
+		}
+		city_state[city + state]++;
+	}
+	ofstream ("citystate.out") << total << endl;
+}
+```
+
+A faster solution is to convert each string into an integer in the range
+$[0,26^4)$ and use an array instead of a map.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int seen[26 * 26 * 26 * 26];
+
+int index(string s) {
+	int ind = 0;
+	for (char& c : s) {
+		ind = 26 * ind + c - 'A';
+	}
+	return ind;
+}
+
+int main() {
+	ifstream read("citystate.in");
+	int N;
+	read >> N;
+	long long total = 0;
+	for (int i = 0; i < N; i++) {
+		string city;
+		string state;
+		read >> city >> state;
+		city = city.substr(0,2);
+		if (city != state) {
+			total += seen[index(state + city)];
+		}
+		seen[index(city + state)]++;
+	}
+	ofstream("citystate.out") << total << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

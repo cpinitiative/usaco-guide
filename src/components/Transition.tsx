@@ -1,6 +1,7 @@
-import { CSSTransition as ReactCSSTransition } from 'react-transition-group';
+/*eslint-disable */
 import * as React from 'react';
-import { useRef, useEffect, useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
+import { CSSTransition as ReactCSSTransition } from 'react-transition-group';
 
 const TransitionContext = React.createContext({
   parent: {},
@@ -94,7 +95,6 @@ function Transition({ show, appear, ...rest }: any) {
 
   if (isChild) {
     return (
-      // @ts-ignore
       <CSSTransition
         appear={parent.appear || !parent.isInitialRender}
         show={parent.show}
@@ -114,8 +114,6 @@ function Transition({ show, appear, ...rest }: any) {
         },
       }}
     >
-      {/*
-      // @ts-ignore*/}
       <CSSTransition appear={appear} show={show} isParent={true} {...rest} />
     </TransitionContext.Provider>
   );

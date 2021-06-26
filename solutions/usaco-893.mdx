@@ -1,0 +1,125 @@
+---
+id: usaco-893
+source: USACO Bronze 2019 January
+title: Guess the Animal
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_guess_bronze_jan19.html)
+
+## Implementation
+
+<LanguageSection>
+  
+<CPPSection>
+  
+```cpp
+// Official Analysis Code by Brian Dean
+	
+#include <iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
+ 
+int N;
+vector<string> characteristics[100];
+ 
+int num_common(int i, int j)
+{
+	int count = 0;
+	vector<string> &v1 = characteristics[i], &v2 = characteristics[j];
+	for (int i = 0; i < v1.size(); i++)
+		for (int j = 0; j < v2.size(); j++)
+			if (v1[i] == v2[j]) count++; // if the same characteristic, add to count
+	return count;
+}
+ 
+int main(void)
+{
+	ifstream fin ("guess.in");
+	fin >> N;
+	string s;
+	for (int i = 0; i < N; i++) {
+		int K;
+		fin >> s >> K;
+		for (int j = 0; j < K; j++) {
+			fin >> s;
+			characteristics[i].push_back(s); // add to the array of vectors
+		}
+	}
+    
+	int largest = 0;
+	for (int i = 0; i < N; i++)
+		for (int j = i + 1; j < N; j++)
+			largest = max(largest, num_common(i, j)); // keep track of the largest
+ 
+	ofstream fout ("guess.out");
+	fout << largest + 1 << "\n"; // output one more than the largest
+	return 0;
+}
+  
+```
+  
+</CPPSection>
+
+<JavaSection>
+  
+```java
+import java.util.*;
+import java.io.*;
+
+public class GuessTheAnimal {
+	static List<String>[] characteristics;
+
+	static int numCommon (int i, int j) {
+		int count = 0;
+		List<String> one = characteristics[i];
+		List<String> two = characteristics[j];
+
+		for (int x = 0; x < one.size(); x++) {
+			for (int y = 0; y < two.size(); y++) {
+				if (one.get(x).equals(two.get(y))) { // if the same characteristic, add to count
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("guess");
+
+		int n = io.nextInt();
+
+		characteristics = new List[n];
+		for (int x = 0; x < characteristics.length; x++) { // initialize lists
+			characteristics[x] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < n; i++) { // read input
+			String s = io.next();
+			int k = io.nextInt();
+
+			for (int x = 0; x < k; x++) {
+				String adjective = io.next();
+				characteristics[i].add(adjective); // add to the array of lists
+			}
+		}
+
+		int largest = 0;
+		for (int i = 0; i < n; i++) { // loop through the combinations
+			for (int j = i + 1; j < n; j++) {
+				largest = Math.max(largest, numCommon(i, j)); // keep track of the largest
+			}
+		}
+
+		io.println(largest + 1); // output one more than the largest
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}  
+```
+</JavaSection>
+  
+</LanguageSection>

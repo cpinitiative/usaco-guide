@@ -1,0 +1,72 @@
+---
+id: usaco-615
+source: USACO Bronze 2016 February
+title: Milk Pails
+author: Danh Ta Chi Thanh, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_bronze_feb16.html)
+
+## Implementation
+
+<LanguageSection>
+	
+<PySection>
+
+```python
+fin = open('pails.in', 'r')
+
+buck1, buck2, buck3 = map(int, fin.readline().split())
+
+ans = 0
+
+# x and y below take care of all 
+# possible combinations of the two buckets.
+
+for x in range(1001):
+	if (buck1 * x) > buck3:
+		break
+	for y in range(1001):
+		current = (buck1 * x) + (buck2 * y)
+		if current > buck3:
+			break
+		ans = max(ans, current)
+
+with open('pails.out', 'w') as fout:
+	fout.write(str(ans) + '\n')
+```
+
+</PySection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+
+using namespace std;
+
+int main(){
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("pails.in","r",stdin);
+	freopen("pails.out","w",stdout);
+	int a,b,c,ans=0;
+	cin >> a >> b >> c;
+	for (int i = 0; i < 1001; ++i) {
+		if (a*i > c) break;
+		for (int j = 0; j < 1001; ++j) {
+			int n = a*i + b*j;
+			if (n > c) break;
+			ans = max(ans,n);
+		}
+	}
+	cout << ans;
+	return 0;
+}
+
+```
+
+</CPPSection>
+
+</LanguageSection>

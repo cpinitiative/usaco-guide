@@ -1,0 +1,151 @@
+---
+id: cses-1635
+source: CSES
+title: Coin Combinations I
+author: Michael Cao
+---
+
+In this problem, we are asked the number of ways to achieve some value, $x$,
+using $n$ coins of distinct values where the order of coins does not matter.
+This is known as the "Unordered Coin Change" problem, which you can read about
+in [CPH Chapter 7](/CPH.pdf) under "Counting the Number of Solutions".
+
+# Main Idea
+
+To solve this problem, let $\texttt{dp[w]}$ equal the number of ways to achieve
+the sum of values, $w$. Then, for some weight $w$, let's try to use each coin.
+For $\texttt{dp[w]}$, we'll transition from $\texttt{dp[w - coin[i]]}$ for all
+$i$, where $\texttt{coin[x]}$ defines the value of the $x$-th coin.
+
+So, the transitions are:
+
+$$
+dp[w] = \sum_{i=1}^n{(dp[w - coins[i]])}
+$$
+
+<Warning>
+
+Remember to take your answer mod $10^9 + 7$, as instructed in the problem
+statement.
+
+</Warning>
+
+## Example Code
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+ll dp[1000001];
+
+const int MOD = (int) 1e9 + 7;
+
+int main(){
+	int n, x; cin >> n >> x;
+	vi coins(n);
+	for (int i = 0; i < n; i++) {
+		cin >> coins[i];
+	}
+	dp[0] = 1;
+	for (int weight = 0; weight <= x; weight++) {
+		for (int i = 1; i <= n; i++) {
+			if(weight - coins[i - 1] >= 0) {
+				dp[weight] += dp[weight - coins[i - 1]];
+				dp[weight] %= MOD;
+			}
+		}
+	}
+	cout << dp[x] << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Info title="Note">
+
+An otherwise working solution that uses `dp[i] %= m;` instead of
+`if (dp[i] > M) dp[i] -= M;` may time out on CSES, but would work on USACO,
+which gives double time for Java (see line 32 of the solution).
+
+</Info>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CountingCoins1 {
+	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+	static PrintWriter pw = new PrintWriter(System.out);
+
+	public static void main(String[] args) throws IOException {
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
+		int M = 1000000007;
+		st = new StringTokenizer(r.readLine());
+		int[] coins = new int[n];
+		for (int i = 0; i < n; i++) {
+			coins[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(coins);
+
+		int[] dp = new int[x + 1];
+		dp[0] = 1;
+
+		for (int i = 1; i < dp.length; i++) {
+			dp[i] = 0;
+			for (int j = 0; j < n; j++) {
+				if (coins[j] > i) {
+					break;
+				}
+				dp[i] += dp[i - coins[j]];
+
+
+				// need to use -= M to pass for Java instead of %= M (which works in c++) to save time
+				// this is the same thing as dp[i] % m within the constraints of this problem (dp[i] can never be > 2*M since we are only adding)
+				// This wouldn't be a problem in USACO contests since USACO gives 2x time for java, but CSES doesn't
+				// dp[i] %= m;
+				if (dp[i] > M) dp[i] -= M;
+			}
+		}
+		pw.println(dp[x]);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+<IncompleteSection>
+
+We don't currently have a Python solution for this problem. Please switch to
+another language to view the solution code.
+
+</IncompleteSection>
+</PySection>
+
+</LanguageSection>

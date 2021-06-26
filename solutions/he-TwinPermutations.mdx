@@ -1,0 +1,74 @@
+---
+id: he-TwinPermutations
+source: HackerEarth
+title: Twin Permutations
+author: Andrew Wang
+---
+
+<Spoiler title =  "Solution">
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+For each $i \in [1, N]$, plot the point $(x_i, y_i)$ on the coordinate plane
+where $x_i$ is the index of $i$ in the second array and $y_i$ is the index of
+$i$ in the first array. For each query, the answer is the length of the query
+minus the amount of points within the rectangle, $L_2 \le x_i \le R_2$ and
+$L_1 \le y_i \le R_1$. We can sweep across the $x$-axis to answer queries
+offline by adding the $y$-coordinates of the points we come across to a BIT.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define f first
+#define s second
+#define pb push_back
+
+const int MX = 100005;
+int fwt[MX], y[MX], b[MX], ans[MX];
+vector<int> s[MX], e[MX];
+pair<int, int> queries[MX];
+
+void inc(int ind, int i){
+        while(ind < MX){
+                fwt[ind] += i;
+                ind += (ind & -ind);
+        }
+}
+int sum(int ind){
+	int ret = 0;
+	while(ind > 0){
+		ret += fwt[ind];
+		ind -= (ind & -ind);
+	}
+	return ret;
+}
+int main() {
+	int N, Q; cin >> N;
+	for(int i = 1; i <= N; i++){
+		int a; cin >> a;
+		y[a] = i;
+	}
+	for(int i = 1; i <= N; i++) cin >> b[i];
+	cin >> Q;
+	for(int q = 0; q < Q; q++){
+		int a, b, y1, y2; cin >> y1 >> y2 >> a >> b;
+		s[a].pb(q); e[b].pb(q);
+		queries[q] = {y1, y2};
+		ans[q] += b-a+1;
+	}
+
+	for(int i = 1; i <= N; i++){
+		for(int z : s[i]){
+			ans[z] += sum(queries[z].s) - sum(queries[z].f-1);
+		}
+		inc(y[b[i]], 1);
+		for(int z : e[i]){
+			ans[z] -= sum(queries[z].s) - sum(queries[z].f-1);
+		}
+	}
+	for(int i = 0; i < Q; i++) cout << ans[i] << endl;
+	return 0;
+}
+```
+
+</Spoiler>

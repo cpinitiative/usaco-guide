@@ -3,14 +3,22 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'content/**'
+      - 'solutions/**'
   pull_request:
     branches:
       - master
+    paths-ignore:
+      - 'content/**'
+      - 'solutions/**'
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Required to retrieve git history of Chromatic
 
       - name: Cache node modules
         uses: actions/cache@v2
@@ -23,9 +31,22 @@ jobs:
         run: yarn
 
       - name: Run tests
-        run: yarn test
+        run: yarn test --passWithNoTests
 
-  check-links:
+      - name: Check for typescript errors
+        run: yarn check-ts-errors
+
+      - name: Run eslint
+        run: yarn eslint --quiet
+
+      - name: Run chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: 6f3c58ad349c
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exitZeroOnChanges: true # don't fail the workflow if snapshots change
+
+  build-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,6 +68,40 @@ jobs:
 
       - name: Check Links
         run: $HOME/.pub-cache/bin/linkcheck --no-nice :5000
+
+      - name: Bundle Watch
+        run: yarn bundlewatch ./public/*.js
+        env:
+          BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
+          CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+
+  lhci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - run: yarn
+      - run: yarn build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.7.x
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
 #      - name: Check Links
 #        uses: wunderundfitzig/linkcheck-action@v1

@@ -2,7 +2,7 @@
 id: time-comp
 title: 'Time Complexity'
 author: Darren Yao, Benjamin Qi
-description: "Measuring the number of operations an algorithm performs."
+description: 'Measuring the number of operations an algorithm performs.'
 ---
 
 <Resources>
@@ -15,26 +15,49 @@ description: "Measuring the number of operations an algorithm performs."
 	<Resource source="PAPS" title="5 - Time Complexity">
 		More in-depth. In particular, 5.2 gives a formal definition of Big O.
 	</Resource>
-	<Resource source="Youtube" title="Introduction to Big-O" url="https://www.youtube.com/watch?v=zUUkiEllHG0">
+	<Resource
+		source="Youtube"
+		title="Introduction to Big-O"
+		url="https://www.youtube.com/watch?v=zUUkiEllHG0"
+	>
 		If you prefer watching a video instead
 	</Resource>
 </Resources>
 
 <Optional title="P vs. NP">
 
-If you're interested in learning more about P vs. NP, check out this [Youtube video](https://www.youtube.com/watch?v=YX40hbAHx3s). If you're just starting out, you may want to skip this video for now.
+If you're interested in learning more about P vs. NP, check out this
+[Youtube video](https://www.youtube.com/watch?v=YX40hbAHx3s). If you're just
+starting out, you may want to skip this video for now.
 
 </Optional>
 
 <br />
 
-In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $2$ seconds for C++ submissions, and $4$ seconds for Java/Python submissions. A conservative estimate for the number of <TextTooltip content={`You can think of an "operation" as one instruction for the computer. For example, multiplying two numbers together, reading in a number from the input, or outputting "Hello World" would all be considered "operations."`}>operations</TextTooltip> the grading server can handle per second is $10^8$, but it could be closer to $5 \cdot 10^8$ given good constant factors<Asterisk>If you don't know what constant factors are, don't worry -- we'll explain them below.</Asterisk>.
+In programming contests, your program needs to finish running within a certain
+timeframe in order to receive credit. For USACO, this limit is $2$ seconds for
+C++ submissions, and $4$ seconds for Java/Python submissions. A conservative
+estimate for the number of <TextTooltip
+content={`You can think of an "operation" as one instruction for the computer. For example, multiplying two numbers together, reading in a number from the input, or outputting "Hello World" would all be considered "operations."`}>operations</TextTooltip>
+the grading server can handle per second is $10^8$, but it could be closer to
+$5 \cdot 10^8$ given good constant factors<Asterisk>If you don't know what
+constant factors are, don't worry -- we'll explain them below.</Asterisk>.
 
 ## Complexity Calculations
 
-We want a method to calculate how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $\mathcal{O}(f(n))$, where constant factors and lower-order terms are generally omitted from $f(n)$. We'll see some examples of how this works, as follows.
+We want a method to calculate how many operations it takes to run each
+algorithm, in terms of the input size $n$. Fortunately, this can be done
+relatively easily using
+[Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses
+worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large.
+Complexity is an upper bound for the number of steps an algorithm requires as a
+function of the input size. In Big O notation, we denote the complexity of a
+function as $\mathcal{O}(f(n))$, where constant factors and lower-order terms
+are generally omitted from $f(n)$. We'll see some examples of how this works, as
+follows.
 
-The following code is $\mathcal{O}(1)$, because it executes a constant number of operations.
+The following code is $\mathcal{O}(1)$, because it executes a constant number of
+operations.
 
 <LanguageSection>
 <CPPSection>
@@ -69,9 +92,12 @@ d = a + b + c + 153
 </PySection>
 </LanguageSection>
 
-Input and output operations are also assumed to be $\mathcal{O}(1)$. In the following examples, we assume that the code inside the loops is $\mathcal{O}(1)$.
+Input and output operations are also assumed to be $\mathcal{O}(1)$. In the
+following examples, we assume that the code inside the loops is
+$\mathcal{O}(1)$.
 
-The time complexity of loops is the number of iterations that the loop runs. For example, the following code examples are both $\mathcal{O}(n)$.
+The time complexity of loops is the number of iterations that the loop runs. For
+example, the following code examples are both $\mathcal{O}(n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -111,8 +137,8 @@ while (i < n) {
 <PySection>
 
 ```py
-for i in range(1, n+1):
-	# constant time code here
+for i in range(1, n + 1):
+	pass # constant time code here
 ```
 
 ```py
@@ -125,13 +151,14 @@ while (i < n):
 </PySection>
 </LanguageSection>
 
-Because we ignore constant factors and lower order terms, the following examples are also $\mathcal{O}(n)$:
+Because we ignore constant factors and lower order terms, the following examples
+are also $\mathcal{O}(n)$:
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-for (int i = 1; i <= 5*n + 17; i++) {
+for (int i = 1; i <= 5 * n + 17; i++) {
 	// constant time code here
 }
 ```
@@ -146,7 +173,7 @@ for (int i = 1; i <= n + 457737; i++) {
 <JavaSection>
 
 ```java
-for (int i = 1; i <= 5*n + 17; i++) {
+for (int i = 1; i <= 5 * n + 17; i++) {
 	// constant time code here
 }
 ```
@@ -161,17 +188,19 @@ for (int i = 1; i <= n + 457737; i++) {
 <PySection>
 
 ```py
-for i in range(5*n + 17):
-	# constant time code here
+for i in range(5 * n + 17):
+	pass # constant time code here
 
 for i in range(n + 457737):
-	# constant time code here
+	pass # constant time code here
 ```
 
 </PySection>
 </LanguageSection>
 
-We can find the time complexity of multiple loops by multiplying together the time complexities of each loop. This example is $\mathcal{O}(nm)$, because the outer loop runs $\mathcal{O}(n)$ iterations and the inner loop $\mathcal{O}(m)$.
+We can find the time complexity of multiple loops by multiplying together the
+time complexities of each loop. This example is $\mathcal{O}(nm)$, because the
+outer loop runs $\mathcal{O}(n)$ iterations and the inner loop $\mathcal{O}(m)$.
 
 <LanguageSection>
 <CPPSection>
@@ -201,13 +230,18 @@ for (int i = 1; i <= n; i++) {
 ```py
 for i in range(n):
 	for j in range(m):
-		# constant time code here
+		pass # constant time code here
 ```
 
 </PySection>
 </LanguageSection>
 
-In this example, the outer loop runs $\mathcal{O}(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we treat the inner loop as a factor of $n$.<Asterisk> We can also do some math to calculate exactly how many times the code runs: 1+2+...+n = n\*(n+1)/2 = (n^2 + n)/2 = O(n^2)</Asterisk> Thus, this code is $\mathcal{O}(n^2)$.
+In this example, the outer loop runs $\mathcal{O}(n)$ iterations, and the inner
+loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$).
+Since Big O notation calculates worst-case time complexity, we treat the inner
+loop as a factor of $n$.<Asterisk> We can also do some math to calculate exactly
+how many times the code runs: 1+2+...+n = n\*(n+1)/2 = (n^2 + n)/2 =
+O(n^2)</Asterisk> Thus, this code is $\mathcal{O}(n^2)$.
 
 <LanguageSection>
 
@@ -238,13 +272,15 @@ for (int i = 1; i <= n; i++) {
 ```py
 for i in range(n):
 	for j in range(i, n):
-		# constant time code here
+		pass # constant time code here
 ```
 
 </PySection>
 </LanguageSection>
 
-If an algorithm contains multiple blocks, then its time complexity is the worst time complexity out of any block. For example, the following code is $\mathcal{O}(n^2)$.
+If an algorithm contains multiple blocks, then its time complexity is the worst
+time complexity out of any block. For example, the following code is
+$\mathcal{O}(n^2)$.
 
 <LanguageSection>
 <CPPSection>
@@ -280,16 +316,18 @@ for (int i = 1; i <= n + 58834; i++) {
 ```py
 for i in range(n):
 	for j in range(n):
-		# constant time code here
+		pass # constant time code here
 
 for i in range(n + 58834):
-	# more constant time code here
+	pass # more constant time code here
 ```
 
 </PySection>
 </LanguageSection>
 
-The following code is $\mathcal{O}(n^2 + m)$, because it consists of two blocks of complexity $\mathcal{O}(n^2)$ and $\mathcal{O}(m)$, and neither of them is a lower order function with respect to the other.
+The following code is $\mathcal{O}(n^2 + m)$, because it consists of two blocks
+of complexity $\mathcal{O}(n^2)$ and $\mathcal{O}(m)$, and neither of them is a
+lower order function with respect to the other.
 
 <LanguageSection>
 <CPPSection>
@@ -325,10 +363,10 @@ for (int i = i; j <= m; i++) {
 ```py
 for i in range(n):
 	for j in range(n):
-		# constant time code here
+		pass # constant time code here
 
 for i in range(m):
-	# more constant time code here
+	pass # more constant time code here
 ```
 
 </PySection>
@@ -336,48 +374,58 @@ for i in range(m):
 
 ## Common Complexities and Constraints
 
-Complexity factors that come from some common algorithms and data structures are as follows:
+Complexity factors that come from some common algorithms and data structures are
+as follows:
 
 <Warning>
 
-Don't worry if you don't recognize most of these! They will all be introduced later.
+Don't worry if you don't recognize most of these! They will all be introduced
+later.
 
 </Warning>
 
 - Mathematical formulas that just calculate an answer: $\mathcal{O}(1)$
 - Binary search: $\mathcal{O}(\log n)$
 - Ordered set/map or priority queue: $\mathcal{O}(\log n)$ per operation
-- Prime factorization of an integer, or checking primality or compositeness of an integer naively: $\mathcal{O}(\sqrt{n})$
+- Prime factorization of an integer, or checking primality or compositeness of
+  an integer naively: $\mathcal{O}(\sqrt{n})$
 - Reading in $n$ items of input: $\mathcal{O}(n)$
 - Iterating through an array or a list of $n$ elements: $\mathcal{O}(n)$
-- Sorting: usually $\mathcal{O}(n \log n)$ for default sorting algorithms (mergesort, `Collections.sort`, `Arrays.sort`)
+- Sorting: usually $\mathcal{O}(n \log n)$ for default sorting algorithms
+  (mergesort, `Collections.sort`, `Arrays.sort`)
 - Java Quicksort `Arrays.sort` function on primitives: $\mathcal{O}(n^2)$
   - See [Introduction to Data Structures](/bronze/intro-ds) for details.
-- Iterating through all subsets of size $k$ of the input elements: $\mathcal{O}(n^k)$. For example, iterating through all triplets is $\mathcal{O}(n^3)$.
+- Iterating through all subsets of size $k$ of the input elements:
+  $\mathcal{O}(n^k)$. For example, iterating through all triplets is
+  $\mathcal{O}(n^3)$.
 - Iterating through all subsets: $\mathcal{O}(2^n)$
 - Iterating through all permutations: $\mathcal{O}(n!)$
 
-Here are conservative upper bounds on the value of $n$ for each time complexity. You might get away with more than this, but this should allow you to quickly check whether an algorithm is viable.
+Here are conservative upper bounds on the value of $n$ for each time complexity.
+You might get away with more than this, but this should allow you to quickly
+check whether an algorithm is viable.
 
 <center>
 
-| $n$                  | Possible complexities              |
-| -------------------- | ---------------------------------- |
+| $n$                  | Possible complexities                                            |
+| -------------------- | ---------------------------------------------------------------- |
 | $n \le 10$           | $\mathcal{O}(n!)$, $\mathcal{O}(n^7)$, $\mathcal{O}(n^6)$        |
-| $n \le 20$           | $\mathcal{O}(2^n \cdot n)$, $\mathcal{O}(n^5)$         |
-| $n \le 80$           | $\mathcal{O}(n^4)$                           |
-| $n \le 400$          | $\mathcal{O}(n^3)$                           |
-| $n \le 7500$         | $\mathcal{O}(n^2)$                           |
-| $n \le 7 \cdot 10^4$ | $\mathcal{O}(n \sqrt n)$                     |
-| $n \le 5 \cdot 10^5$ | $\mathcal{O}(n \log n)$                      |
-| $n \le 5 \cdot 10^6$ | $\mathcal{O}(n)$                             |
+| $n \le 20$           | $\mathcal{O}(2^n \cdot n)$, $\mathcal{O}(n^5)$                   |
+| $n \le 80$           | $\mathcal{O}(n^4)$                                               |
+| $n \le 400$          | $\mathcal{O}(n^3)$                                               |
+| $n \le 7500$         | $\mathcal{O}(n^2)$                                               |
+| $n \le 7 \cdot 10^4$ | $\mathcal{O}(n \sqrt n)$                                         |
+| $n \le 5 \cdot 10^5$ | $\mathcal{O}(n \log n)$                                          |
+| $n \le 5 \cdot 10^6$ | $\mathcal{O}(n)$                                                 |
 | $n \le 10^{18}$      | $\mathcal{O}(\log^2 n)$, $\mathcal{O}(\log n)$, $\mathcal{O}(1)$ |
 
 </center>
 
 <Warning>
 
-A significant portion of Bronze problems will have $n\le 100$. This doesn't give much of a hint regarding the intended time complexity. The intended solution could still be $\mathcal{O}(n)$!
+A significant portion of Bronze problems will have $n\le 100$. This doesn't give
+much of a hint regarding the intended time complexity. The intended solution
+could still be $\mathcal{O}(n)$!
 
 </Warning>
 
@@ -385,9 +433,19 @@ A significant portion of Bronze problems will have $n\le 100$. This doesn't give
 
 <!-- The **constant factor** of an algorithm refers to the coefficient of the complexity of an algorithm. If an algorithm runs in $\mathcal{O}(kn)$ time, where $k$ is a constant and $n$ is the input size, then the "constant factor" would be $k$. -->
 
-**Constant factor** refers to the idea that different operations with the same complexity take slightly different amounts of time to run. For example, three addition operations take a bit longer than a single addition operation. Another example is that although binary search on an array and insertion into an ordered set are both $\mathcal{O}(\log n)$, binary search is noticeably faster.
+**Constant factor** refers to the idea that different operations with the same
+complexity take slightly different amounts of time to run. For example, three
+addition operations take a bit longer than a single addition operation. Another
+example is that although binary search on an array and insertion into an ordered
+set are both $\mathcal{O}(\log n)$, binary search is noticeably faster.
 
-**Constant factor** is entirely ignored in big-O notation. This is fine most of the time, but if the time limit is particularly tight, you may receive time limit exceeded (TLE) with the intended complexity. When this happens, it is important to keep the constant factor in mind. For example, a piece of code that iterates through all *ordered* triplets runs in $\mathcal{O}(n^3)$ time might be sped up by a factor of $6$ if we only need to iterate through all *unordered* triplets.
+**Constant factor** is entirely ignored in big-O notation. This is fine most of
+the time, but if the time limit is particularly tight, you may receive time
+limit exceeded (TLE) with the intended complexity. When this happens, it is
+important to keep the constant factor in mind. For example, a piece of code that
+iterates through all _ordered_ triplets runs in $\mathcal{O}(n^3)$ time might be
+sped up by a factor of $6$ if we only need to iterate through all _unordered_
+triplets.
 
 <!-- For example, if our code currently runs in $\mathcal{O}(n^2)$ time, perhaps we can modify our code to make it run in $\mathcal{O}(n^2/32)$ by using a bitset. (Of course, with big-O notation, $\mathcal{O}(n^2) = O(n^2/32)$.) -->
 <!-- Bitsets are significantly faster (and so are bitwise operations vs iterating through bits). I don't want to make it sound insignificant -->

@@ -1,0 +1,336 @@
+---
+id: cses-1147
+source: CSES
+title: Maximum Building I
+author: Benjamin Qi, Andrew Wang
+---
+
+<Spoiler title="Hint">
+
+Fix the bottom row of the rectangle. Then apply the solution for
+[Max Histogram Area](/solutions/lc-largest-rectangle-in-histogram).
+
+</Spoiler>
+
+<Spoiler title="Solution 1">
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+Update the nearest tree for every column for each new bottom row. Iterate from
+left to right and use a monotonic stack to calculate the area for every bottom
+row.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define pi pair<int, int>
+#define f first
+#define s second
+
+queue<int> col[1005];
+char grid[1005][1005];
+int main() {
+	int N, M; cin >> N >> M;
+	for(int i = 0; i < N; i++){
+		string str; cin >> str;
+		for(int j = 0; j < M; j++){
+			grid[j][i] = str[j];
+			if(grid[j][i] == '*'){
+				col[j].push(i);
+			}
+		}
+	}
+	for(int j = 0; j < M; j++) col[j].push(N);
+	int maxa = 0;
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < M; j++){
+			if(col[j].front() < i) col[j].pop(); //updates the nearest tree
+		}
+		stack<pi> sta;
+		for(int j = 0; j < M; j++){
+			int start = j;
+			while(!sta.empty() && col[j].front()-i < sta.top().s){
+				pi cur = sta.top(); sta.pop();
+				start = cur.f;
+				maxa = max(maxa, (j-cur.f)*cur.s);
+			}
+			sta.push(make_pair(start, col[j].front()-i));
+		}
+		while(!sta.empty()){
+			pi cur = sta.top(); sta.pop();
+			maxa = max(maxa, (M - cur.f)*cur.s);
+		}
+	}
+	cout << maxa << endl;
+	return 0;
+}
+```
+
+</Spoiler>
+
+<Spoiler title="Solution 2">
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+Same as solution 1, but we can use DSU instead of a monotonic stack.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+
+using pi = pair<int,int>;
+using pl = pair<ll,ll>;
+using pd = pair<db,db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template<class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
+tcT> using PR = pair<T,T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
+
+// loops
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i,a) ROF(i,0,a)
+#define trav(a,x) for (auto& a: x)
+
+const int MOD = 1e9+7; // 998244353;
+const int MX = 2e5+5;
+const ll INF = 1e18; // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
+
+ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
+ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
+
+tcT> bool ckmin(T& a, const T& b) {
+	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
+tcT> bool ckmax(T& a, const T& b) {
+	return a < b ? a = b, 1 : 0; }
+
+tcTU> T fstTrue(T lo, T hi, U f) {
+	hi ++; assert(lo <= hi); // assuming f is increasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+tcTU> T lstTrue(T lo, T hi, U f) {
+	lo --; assert(lo <= hi); // assuming f is decreasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo+1)/2;
+		f(mid) ? lo = mid : hi = mid-1;
+	}
+	return lo;
+}
+tcT> void remDup(vector<T>& v) { // sort and remove duplicates
+	sort(all(v)); v.erase(unique(all(v)),end(v)); }
+tcTU> void erase(T& t, const U& u) { // don't erase
+	auto it = t.find(u); assert(it != end(t));
+	t.erase(it); } // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class ...U
+tcT> void re(complex<T>& c);
+tcTU> void re(pair<T,U>& p);
+tcT> void re(V<T>& v);
+tcT, size_t SZ> void re(AR<T,SZ>& a);
+
+tcT> void re(T& x) { cin >> x; }
+void re(db& d) { str t; re(t); d = stod(t); }
+void re(ld& d) { str t; re(t); d = stold(t); }
+tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
+
+tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
+tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
+tcT> void re(V<T>& x) { trav(a,x) re(a); }
+tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
+tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1,c); }
+str ts(const char* s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+	#ifdef LOCAL
+		return b ? "true" : "false";
+	#else
+		return ts((int)b);
+	#endif
+}
+tcT> str ts(complex<T> c) {
+	stringstream ss; ss << c; return ss.str(); }
+str ts(V<bool> v) {
+	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
+	res += "}"; return res; }
+template<size_t SZ> str ts(bitset<SZ> b) {
+	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
+	return res; }
+tcTU> str ts(pair<T,U> p);
+tcT> str ts(T v) { // containers with begin(), end()
+	#ifdef LOCAL
+		bool fst = 1; str res = "{";
+		for (const auto& x: v) {
+			if (!fst) res += ", ";
+			fst = 0; res += ts(x);
+		}
+		res += "}"; return res;
+	#else
+		bool fst = 1; str res = "";
+		for (const auto& x: v) {
+			if (!fst) res += " ";
+			fst = 0; res += ts(x);
+		}
+		return res;
+
+	#endif
+}
+tcTU> str ts(pair<T,U> p) {
+	#ifdef LOCAL
+		return "("+ts(p.f)+", "+ts(p.s)+")";
+	#else
+		return ts(p.f)+" "+ts(p.s);
+	#endif
+}
+
+// OUTPUT
+tcT> void pr(T x) { cout << ts(x); }
+tcTUU> void pr(const T& t, const U&... u) {
+	pr(t); pr(u...); }
+void ps() { pr("\n"); } // print w/ spaces
+tcTUU> void ps(const T& t, const U&... u) {
+	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU> void DBG(const T& t, const U&... u) {
+	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
+	DBG(u...); }
+#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
+	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
+		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#else
+	#define dbg(...) 0
+	#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(),"r",stdin); }
+void setOut(str s) { freopen(s.c_str(),"w",stdout); }
+void setIO(str s = "") {
+	unsyncIO(); setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
+}
+
+template<int SZ> struct DSU {
+	int par[SZ], sz[SZ];
+	DSU() {
+		F0R(i,SZ) par[i] = -1, sz[i] = 1;
+	}
+
+	int get(int x) { // path compression
+		if (par[x] != x) par[x] = get(par[x]);
+		return par[x];
+	}
+
+	bool unite(int x, int y) { // union-by-rank
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (sz[x] < sz[y]) swap(x,y);
+		sz[x] += sz[y], par[y] = x;
+		return 1;
+	}
+};
+
+int n,m,cur[1000];
+char g[1000][1000];
+int ans = 0;
+
+void solve(int x) {
+	vi nex[m+1];
+	F0R(i,n) nex[cur[i]-x].pb(i);
+	DSU<1000> D;
+	R0F(i,m+1) for (int a: nex[i]) {
+		D.par[a] = a;
+		if (a > 0 && D.par[a-1] != -1) D.unite(a,a-1);
+		if (a < n-1 && D.par[a+1] != -1) D.unite(a,a+1);
+		ans = max(ans,i*D.sz[D.get(a)]);
+	}
+}
+
+int solve() {
+	F0R(i,n) cur[i] = m;
+	R0F(j,m) {
+		F0R(i,n) if (g[i][j] == '*') cur[i] = j;
+		solve(j);
+	}
+	return ans;
+}
+
+int main() {
+	setIO();
+	cin >> n >> m;
+	F0R(i,n) F0R(j,m) cin >> g[i][j];
+	cout << solve();
+}
+```
+
+</Spoiler>

@@ -1,0 +1,287 @@
+---
+id: usaco-620
+source: USACO Silver 2016 February
+title: Milk Pails
+author: Óscar Garries, Neo Wang, Nathan Gong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
+
+## Implementation (DFS)
+
+**Time Complexity:** $\mathcal O(XYK)$
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+bool vis[101][101][101];
+int x, y, k, m, sol;
+
+void ff (int curX, int curY, int curK) {
+	if (vis[curX][curY][curK] || curK > k) return;
+	vis[curX][curY][curK] = true;
+
+	sol = min (sol, abs(m - (curX + curY)));
+	//case 1
+	ff (x, curY, curK + 1);
+	ff (curX, y, curK + 1);
+	//case 2
+	ff (0, curY, curK + 1);
+	ff (curX, 0, curK + 1);
+	//case 3
+	int leftoverX = (curX + curY > y ? curX + curY - y : 0);
+	int leftoverY = (curY + curX > x ? curY + curX - x : 0);
+
+	ff (leftoverX, min(y, curY + curX), curK + 1);
+	ff (min(x, curX + curY), leftoverY, curK + 1);
+
+}
+
+int main () {
+	freopen("pails.in", "r", stdin);
+	freopen("pails.out", "w", stdout);
+
+	cin >> x >> y >> k >> m;
+	sol = m;
+	ff (0, 0, 0);
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class pails {
+	static int x, y, k, m, sol;
+	static boolean[][][] vis;
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("pails.in"));
+		PrintWriter out = new PrintWriter("pails.out");
+
+		x = sc.nextInt();
+		y = sc.nextInt();
+		k = sc.nextInt();
+		m = sc.nextInt();
+		sol = m;
+
+		vis = new boolean[x+1][y+1][k+1];
+		ff(0, 0, 0);
+
+		out.println(Math.abs(sol));
+		out.close();
+	}
+
+	static void ff(int curX, int curY, int curK) {
+		if (vis[curX][curY][curK]) return;
+		vis[curX][curY][curK] = true;
+
+		if (curK == k) {
+			sol = Math.min(sol, Math.abs(m - (curX + curY)));
+			return;
+		}
+
+		//case 1
+		ff(x, curY, curK+1);
+		ff(curX, y, curK+1);
+		//case 2
+		ff(0, curY, curK+1);
+		ff(curX, 0, curK+1);
+		//case 3
+		ff(Math.min(curX+curY, x), Math.max((curX+curY)-x, 0), curK+1);
+		ff(Math.max((curX+curY)-y, 0), Math.min(curX+curY, y), curK+1);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Alternate Solution: BFS
+
+**Time Complexity:** $\mathcal O(XY)$
+
+We can directly simulate all operations using BFS.
+
+In this problem, we care about states $(i, j)$ where pail $X$ has $i$ and pail
+$Y$ has $j$ units of milk. We can perform a BFS starting from base state
+$(0, 0)$ to compute $\texttt{dist}[i][j]$, the minimum number of steps to reach
+each state. Afterwards, compute the answer by iterating over all states where
+$\texttt{dist}[i][j] \le K$ and finding the minimum $|i+j-M|$.
+
+For every transition in the BFS, we simulate all possible actions.
+
+1. Fill either pail completely to the top: set $i$ to $X$ or $j$ to $Y$.
+2. Empty either pail: set $i$ or $j$ to $0$.
+3. Pour the contents of one pail into another without overflowing or running out
+   of milk.
+
+To perform operation 3, we can find the amount poured to be $\min(i, Y-j)$ or
+$\min(j, X-i)$ depending on which pail you pour from. Then add/subtract this
+quantity to each pail appropriately.
+
+Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and
+compute the minimum $|i+j-M|$.
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+int X, Y, K, M;
+
+const int MX = 101;
+const int INF = 1e9 + 7;
+
+int dist[MX][MX];
+
+void setIn(string s) { freopen(s.c_str(),"r",stdin); }
+void setOut(string s) { freopen(s.c_str(),"w",stdout); }
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	setIn("pails.in");
+	setOut("pails.out");
+
+	cin >> X >> Y >> K >> M;
+
+	F0R(i, MX) F0R(j, MX) dist[i][j] = INF;
+
+	queue<pair<int, int>> bfs;
+	bfs.push({0, 0});
+	dist[0][0] = 0;
+
+	while(!bfs.empty()) {
+		pair<int, int> top = bfs.front();
+		bfs.pop();
+		int ndist = dist[top.first][top.second]+1;
+
+		int pourX = min(top.first, Y - top.second);
+		int pourY = min(top.second, X - top.first);
+
+		int nx[] = {top.first, 0, X, top.first, top.first - pourX, top.first + pourY }; // all possible pours
+		int ny[] = {0, top.second, top.second, Y, top.second + pourX, top.second - pourY };
+
+		F0R(i, 6) {
+			if(ndist > K || dist[nx[i]][ny[i]] != INF) continue;
+			dist[nx[i]][ny[i]] = ndist;
+			bfs.push({nx[i], ny[i]});
+		}
+	}
+
+	int ret = INF;
+
+	F0R(i, MX) {
+		F0R(j, MX) {
+			if(dist[i][j] <= K) ret = min(ret, abs(i+j-M));
+		}
+	}
+
+	cout << ret << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class pails
+{
+	final static int MX = 101, INF = (int)1e9+7;
+	static int X, Y, K, M;
+	static int[][] dist;
+
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader reader = new BufferedReader(new FileReader("pails.in"));
+		PrintWriter writer = new PrintWriter("pails.out");
+
+		StringTokenizer st = new StringTokenizer(reader.readLine());
+		X = Integer.parseInt(st.nextToken());
+		Y = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		dist = new int[MX][MX];
+		for(int i=0;i<=X;++i)
+			for(int j=0;j<=Y;++j)
+				dist[i][j]=INF;
+
+		Queue<Pair<Integer, Integer> > bfs = new ArrayDeque<>();
+		bfs.add(new Pair<Integer, Integer>(0, 0));
+		dist[0][0]=0;
+
+		while(!bfs.isEmpty())
+		{
+			Pair<Integer, Integer> top = bfs.poll();
+			int ndist = dist[top.first][top.second]+1;
+
+			int pourX = Math.min(top.first, Y - top.second);
+			int pourY = Math.min(top.second, X - top.first);
+
+			//all 6 possible ways to pour
+			int nx[] = {top.first, 0, X, top.first, top.first-pourX, top.first+pourY};
+			int ny[] = {0, top.second, top.second, Y, top.second+pourX, top.second-pourY};
+
+			for(int i=0;i<6;++i)
+				if(ndist < dist[nx[i]][ny[i]])
+				{
+					dist[nx[i]][ny[i]] = ndist;
+					bfs.add(new Pair<Integer, Integer>(nx[i], ny[i]));
+				}
+		}
+
+		int ret = INF;
+		for(int i=0;i<=X;++i)
+			for(int j=0;j<=Y;++j)
+				if(dist[i][j] <= K)
+					ret = Math.min(ret, Math.abs(i+j-M));
+		writer.println(ret);
+
+		reader.close();
+		writer.close();
+	}
+
+	static class Pair<U, V>
+	{
+		public U first;
+		public V second;
+		Pair(U first, V second)
+		{
+			this.first = first;
+			this.second = second;
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

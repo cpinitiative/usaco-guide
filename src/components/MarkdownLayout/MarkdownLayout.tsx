@@ -1,28 +1,29 @@
+import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useContext, useState } from 'react';
-import { ModuleInfo } from '../../models/module';
-import { graphql, useStaticQuery } from 'gatsby';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { graphqlToModuleLinks } from '../../utils/utils';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
-import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
-import { SolutionInfo } from '../../models/solution';
-
-// import ModuleFeedback from './ModuleFeedback';
+import {
+  moduleIDToSectionMap,
+  moduleIDToURLMap,
+} from '../../../content/ordering';
 import ConfettiContext from '../../context/ConfettiContext';
-import ForumCTA from '../ForumCTA';
-import { SettingsModalProvider } from '../../context/SettingsModalContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
-import MobileSideNav from './MobileSideNav';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
+import ForumCTA from '../ForumCTA';
 import DesktopSidebar from './DesktopSidebar';
 import MobileAppBar from './MobileAppBar';
+import MobileSideNav from './MobileSideNav';
+import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
+import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
-import ModuleHeaders from './ModuleHeaders';
-import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
-import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
-import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
+import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -34,7 +35,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
           style={{ width: '20rem' }}
         />
         {tableOfContents.length > 1 && (
-          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+          <div className="hidden 2xl:block ml-6 mr-6 w-64 mt-48 flex-shrink-0 order-3">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
@@ -62,10 +63,10 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const { userProgressOnModules, setModuleProgress, lang } = useContext(
-    UserDataContext
-  );
+  const { userProgressOnModules, setModuleProgress, lang } =
+    useContext(UserDataContext);
   React.useEffect(() => {
+    // console.log('FOUND USERLANG: ' + lang);
     if (lang !== 'showAll') {
       updateLangURL(lang);
     }
@@ -80,31 +81,26 @@ export default function MarkdownLayout({
 
   const data = useStaticQuery(graphql`
     query {
-      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+      allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
             frontmatter {
               title
               id
-              author
-            }
-            fields {
-              division
-              gitAuthorTime
-            }
-            problems {
-              uniqueID
-              solID
             }
           }
         }
       }
     }
   `);
-  const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
-    data.allMdx,
-  ]);
-  // console.log(moduleLinks);
+  const moduleLinks = React.useMemo(() => {
+    return data.allXdm.edges.map(cur => ({
+      id: cur.node.frontmatter.id,
+      title: cur.node.frontmatter.title,
+      section: moduleIDToSectionMap[cur.node.frontmatter.id],
+      url: moduleIDToURLMap[cur.node.frontmatter.id],
+    }));
+  }, [data.allXdm]);
 
   const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {
@@ -125,92 +121,57 @@ export default function MarkdownLayout({
   //   return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   // }, []);
 
-  // console.log(markdownData)
-  // console.log(moduleLinks)
-  // console.log(userProgressOnProblems)
-  const problemIDs = [];
-  const activeIDs = [];
-  const appearsIn = [];
-  let uniqueID = '';
-  const probToModule = {};
-
-  for (const moduleLink of moduleLinks) {
-    for (const problem of moduleLink.probs) {
-      const uniqueID = problem.uniqueID;
-      probToModule[uniqueID] = module.id;
-    }
-  }
-
+  let activeIDs = [];
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
-    const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
-    // oops how to assert not -1
-    for (const problem of moduleLinks[ind].probs) {
-      const uniqueID = problem.uniqueID;
-      problemIDs.push(uniqueID);
-    }
   } else {
-    moduleLinks.forEach(link => {
-      for (const problem of link.probs) {
-        if (problem.solID === markdownData.id) {
-          activeIDs.push(link.id);
-          appearsIn.push(link.url);
-          uniqueID = problem.uniqueID;
-        }
-      }
-    });
+    const problemSolutionContext = React.useContext(ProblemSolutionContext);
+    activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 
-  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
         activeIDs,
-        appearsIn,
-        uniqueID,
+        uniqueID: null, // legacy, remove when classes is removed
         isMobileNavOpen,
         setIsMobileNavOpen,
         moduleProgress,
         handleCompletionChange,
       }}
     >
-      <SettingsModalProvider>
-        <ContactUsSlideoverProvider>
-          <ProblemFeedbackModalProvider>
-            <MobileSideNav />
-            <DesktopSidebar />
+      <ContactUsSlideoverProvider>
+        <ProblemSuggestionModalProvider>
+          <MobileSideNav />
+          <DesktopSidebar />
 
-            <div className="w-full">
-              <MobileAppBar />
+          <div className="w-full">
+            <MobileAppBar />
 
-              <ContentContainer tableOfContents={tableOfContents}>
-                <NotSignedInWarning />
+            <ContentContainer tableOfContents={tableOfContents}>
+              <NotSignedInWarning />
 
-                <ModuleHeaders
-                  problemIDs={problemIDs}
-                  moduleLinks={moduleLinks}
-                />
+              <ModuleHeaders moduleLinks={moduleLinks} />
 
-                <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
-                  <TableOfContentsBlock tableOfContents={tableOfContents} />
-                </div>
+              <div className={tableOfContents.length > 1 ? '2xl:hidden' : ''}>
+                <TableOfContentsBlock tableOfContents={tableOfContents} />
+              </div>
 
-                {children}
+              {children}
 
-                <ModuleProgressUpdateBanner />
+              <ModuleProgressUpdateBanner />
 
-                <ForumCTA />
+              <ForumCTA />
 
-                {/*<div className="my-8">*/}
-                {/*  <ModuleFeedback markdownData={markdownData} />*/}
-                {/*</div>*/}
-              </ContentContainer>
-            </div>
-          </ProblemFeedbackModalProvider>
-        </ContactUsSlideoverProvider>
-      </SettingsModalProvider>
+              {/*<div className="my-8">*/}
+              {/*  <ModuleFeedback markdownData={markdownData} />*/}
+              {/*</div>*/}
+            </ContentContainer>
+          </div>
+        </ProblemSuggestionModalProvider>
+      </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
   );
 }

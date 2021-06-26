@@ -1,0 +1,121 @@
+---
+id: cf-1427G
+source: CF Global Round 11
+title: One Billion Shades of Grey
+author: Benjamin Qi
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/83553)
+
+I assume that you've
+
+- heard of
+  [linear programming duality](https://en.wikipedia.org/wiki/Dual_linear_program)
+- read the parts of the editorial mentioning min-cost flow
+
+This explanation is meant to clarify how the min-cost flow graph is derived.
+
+Essentially, we want to find the best possible lower bound on the answer, which
+turns out to be equal to the answer by duality.
+
+As the editorial mentions, you want to minimize $\sum c_{u,v}$ subject to some
+inequalities of the form
+
+$$
+\text{Eq}(u,v)=\left[c_{u,v}\ge x_u-x_v\right].
+$$
+
+Each $c_{u,v}\ge 0$, and some $x_u$ are fixed (for tiles on the boundary) while
+the others are unbounded (if we ignore the constraint that each
+$x_i\in [1,10^9]$). Essentially, to find we want a linear combination of these
+equations
+
+$$
+\text{Eq}=\sum a_{u,v}\text{Eq}(u,v)
+$$
+
+such that the following conditions are satisfied.
+
+- Each $a_{u,v}$ corresponds to the flow on an edge of the min-cost flow graph,
+  so these must be non-negative.
+- On the LHS of $\text{Eq}$, no $c_{u,v}$ has coefficient greater than one. This
+  corresponds to $a_{u,v}+a_{v,u}\le 1$, meaning that the flow on each edge of
+  the min-cost flow graph is at most $1$.
+- The coefficients of each non-constant $x_u$ on the RHS of $\text{Eq}$ are
+  zero. This means that in the min-cost flow graph, each vertex (aside from the
+  source and the sink) has the same in-flow as out-flow.
+- The constant on the right side is maximized (we want the best possible lower
+  bound).
+
+**Example:** (should hopefully clarify the above)
+
+Suppose that
+
+$$
+c_{4,5}\ge x_4-x_5
+$$
+
+$$
+c_{2,5}\ge x_2-x_5
+$$
+
+$$
+c_{5,1}\ge x_5-x_1
+$$
+
+$$
+c_{5,3}\ge x_5-x_3
+$$
+
+and that $x_i=i$ for each $1\le i\le 4$ while $x_5$ is unbounded. What is the
+minimum possible value of
+
+$$
+\sum c_{u,v}=c_{4,5}+c_{2,5}+c_{5,1}+c_{5,3}?
+$$
+
+**Solution:** In this case, the answer is $4-1=3$. We can show that this is a
+lower bound by choosing
+
+$$
+a_{4,5}=1, a_{2,5}=0, a_{5,1}=1, a_{5,3}=0.
+$$
+
+Then we get the linear combination
+
+$$
+\text{Eq}=a_{4,5}\cdot \left[c_{4,5}\ge x_4-x_5\right]+a_{5,1}\cdot \left[c_{5,1}\ge x_5-x_1\right]
+$$
+
+$$
+1\cdot \left[c_{4,5}\ge x_4-x_5\right]+1\cdot \left[c_{5,1}\ge x_5-x_1\right]
+$$
+
+$$
+\text{Eq}=[c_{4,5}+c_{5,1}\ge x_4-x_1].
+$$
+
+It follows that
+
+$$
+\sum c_{u,v}\ge c_{4,5}+c_{5,1}\ge x_4-x_1=4-1=3.
+$$
+
+This corresponds to a min cost flow graph with $5$ vertices plus a source and a
+sink where all edges have capacity $1$.
+
+- Draw edges from $4$ to $5$, $2$ to $5$, $5$ to $1$, and $5$ to $3$ with cost
+  $0$.
+- Drawing edges from the source to vertex $4$ with cost $4$ and from the source
+  to vertex $2$ with cost $2$.
+- Drawing edges from vertex $3$ to the sink with cost $-3$ and from vertex $1$
+  to the sink with cost $-1$.
+- Finding the maximum cost flow from the source to the sink. In this case, we
+  just send one unit of flow from
+
+$$
+\text{source}\to 4\to 5\to 1\to \text{sink}.
+$$
+
+In the original problem the edges go both ways (not just one way), but the idea
+is similar.

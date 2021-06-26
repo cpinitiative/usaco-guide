@@ -1,0 +1,106 @@
+---
+id: usaco-919
+source: USACO Silver 2019 February
+title: Painting the Barn
+author: Qi Wang, Nathan Wang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_paintbarn_silver_feb19.html)
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+From the official analysis (with minor modifications):
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int psum[1001][1001];
+
+int main() {
+	freopen("paintbarn.in", "r", stdin);
+	freopen("paintbarn.out", "w", stdout);
+	int n, k;
+	cin >> n >> k;
+	while(n--) {
+		int a, b, c, d;
+		cin >> a >> b >> c >> d;
+		psum[a][b]++;
+		psum[a][d]--;
+		psum[c][b]--;
+		psum[c][d]++;
+	}
+	int ret = 0;
+	for(int i = 0; i < 1000; i++) {
+		for(int j = 0; j < 1000; j++) {
+			if (i) psum[i][j] += psum[i-1][j];
+			if (j) psum[i][j] += psum[i][j-1];
+			if (i && j) psum[i][j] -= psum[i-1][j-1];
+			if (psum[i][j] == k) ret++;
+		}
+	}
+	cout << ret << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class paintbarn {
+	static Kattio io;
+	static {
+		try {
+			io = new Kattio("paintbarn");
+		} catch(IOException e) {}
+	}
+
+	static int N, K, A=0;
+	static int[][] psum;
+	public static void main(String[] args) throws IOException {
+		N = io.nextInt();
+		K = io.nextInt();
+		psum = new int[1001][1001];
+
+		for (int i = 0; i < N; i++) {
+			int a, b, c, d;
+			a = io.nextInt()+1;
+			b = io.nextInt()+1;
+			c = io.nextInt()+1;
+			d = io.nextInt()+1;
+
+			// Setting up the prefix sums array with all the corners of the given rectangle
+			psum[a][b]++;
+			psum[c][d]++;
+			psum[a][d]--;
+			psum[c][b]--;
+		}
+
+		// Running 2D prefix sums on the array
+		for (int i = 1; i < 1001; i++) {
+			for (int j = 1; j < 1001; j++) {
+				psum[i][j] += psum[i][j-1] + psum[i-1][j] - psum[i-1][j-1];
+				if (psum[i][j] == K) {
+					A++;
+				}
+			}
+		}
+
+
+		io.println(A);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

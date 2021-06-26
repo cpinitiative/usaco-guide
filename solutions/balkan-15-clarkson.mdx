@@ -1,0 +1,144 @@
+---
+id: balkan-15-clarkson
+source: Balkan OI 2015
+title: Clarkson
+author: Andi Qu
+---
+
+There are two parts to the solution:
+
+1. Finding the array $F$ such that the substring $S[i:i + F_i]$ is a substring
+   of $T$ and $F_i$ is maximal.
+2. Binary searching for the answer.
+
+## Part 1 - Finding $F$
+
+This is the hardest part of the problem. We will solve it using a suffix array
+and LCP.
+
+First, join $S$ and $T$ together with a `~` character and build the suffix array
+of the resulting string. Using this suffix array, we can then build the LCP
+array. (If you are unfamiliar with this, check out
+[this CodeForces course](https://codeforces.com/edu/course/2/lesson/2).)
+
+Recall that the LCP of two suffixes is the range minimum of the elements of the
+LCP array between those two suffixes.
+
+Since we want $F_i$ to be maximal, we thus only need to check two suffixes for
+each $i$ - the two closest suffixes to the suffix starting on $S[i]$! We can
+find the indices of these two suffixes using a `std::set`.
+
+This part of the algorithm runs in $\mathcal{O}((N + M) \log (N + M))$ time (but
+slower suffix array constructions are fast enough to pass as well).
+
+## Part 2 - Binary Searching
+
+Binary search works because if we can achieve a minimum length $l$, then we can
+also achieve a minimum length $k < l$ (since we don't necessarily need a
+substring of length $k$; we only need the lengths of all substrings to be of
+length **at least** $k$.)
+
+Here's how we check whether we can achieve a certain minimum length $l$:
+
+Let $dp[i]$ be whether we can make $S[i : N]$ using substrings from $T$ of size
+at least $l$. Clearly, if $dp[j]$ is true for any $j \in [i + l, i + F_i]$, then
+$dp[i]$ is also true.
+
+To check whether such a $j$ exists, we can store all indices where $dp[j]$ is
+true in a set and check whether any of them lie in the range $[i + l, i + F_i]$.
+
+This part of the algorithm runs in $\mathcal{O}(N \log^2 N)$ time (or
+$\mathcal{O}(N \log N)$ time if you do the check in $\mathcal{O}(N)$).
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string s, t, u;
+int n, m, l;
+int ord[200005], nord[200005], suff[200005], rev[200005], p = 1;
+int lcp[200005][20], match[100000], h = 0;
+set<int> topgear;
+
+void build_suffix_arr() {
+	u = s + '~' + t;
+	l = n + m + 1;
+
+	ord[l] = -1;
+	for (int i = 0; i < l; i++) ord[i] = u[i], suff[i] = i;
+	auto cmp = [](int A, int B) {
+		if (ord[A] == ord[B]) return ord[A + p] < ord[B + p];
+		return ord[A] < ord[B];
+	};
+	while (p <= l) {
+		sort(suff, suff + l, cmp);
+		nord[suff[0]] = 0;
+		for (int i = 1; i < l; i++) {
+			nord[suff[i]] = nord[suff[i - 1]];
+			if (cmp(suff[i - 1], suff[i])) nord[suff[i]]++;
+		}
+		for (int i = 0; i < l; i++) ord[i] = nord[i];
+		p <<= 1;
+	}
+
+	for (int i = 0; i < l; i++) rev[suff[i]] = i;
+	for (int i = 0; i < l; i++) {
+		if (rev[i]) {
+			int j = suff[rev[i] - 1];
+			while (u[i + h] == u[j + h]) h++;
+			lcp[rev[i]][0] = h;
+		}
+		h = max(h - 1, 0);
+	}
+
+	for (int i = n + 1; i < l; i++) topgear.insert(rev[i]);
+	for (int j = 1; j < 20; j++) {
+		for (int i = 0; i <= l - (1 << j); i++) {
+			lcp[i][j] = min(lcp[i][j - 1], lcp[i + (1 << j - 1)][j - 1]);
+		}
+	}
+}
+
+int rmq(int l, int r) {
+	int level = 31 - __builtin_clz(r - l  + 1);
+	return min(lcp[l][level], lcp[r - (1 << level) + 1][level]);
+}
+
+bool check(int len) {
+	set<int> good;
+	good.insert(n);
+	for (int i = n - 1; ~i; i--) {
+		set<int>::iterator lb = good.lower_bound(i + len);
+		if (lb != good.end() && *lb <= i + match[i]) good.insert(i);
+	}
+	return !*good.begin();
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> s >> t;
+	n = s.size(), m = t.size();
+
+	build_suffix_arr();
+	for (int i = 0; i < n; i++) {
+		set<int>::iterator lb = topgear.lower_bound(rev[i]);
+		if (lb != topgear.end()) match[i] = max(match[i], rmq(rev[i] + 1, *lb));
+		if (lb != topgear.begin()) {
+			lb--;
+			match[i] = max(match[i], rmq(*lb + 1, rev[i]));
+		}
+	}
+
+	int l = 0, r = n;
+	while (l != r) {
+		int mid = (l + r + 1) / 2;
+		if (check(mid)) l = mid;
+		else r = mid - 1;
+	}
+	cout << (l ? l : -1);
+	return 0;
+}
+```

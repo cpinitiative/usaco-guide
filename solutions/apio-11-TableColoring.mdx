@@ -1,0 +1,132 @@
+---
+id: apio-11-TableColoring
+source: APIO 2011
+title: Table Coloring
+author: Andi Qu
+---
+
+## Explanation
+
+### TL;DR
+
+If we view the grid as a graph, we get $K$ connected components. The answer is
+then either $2^{K - 1}$ or $0$ and we use DSU or DFS to determine which one it
+is.
+
+### Intuition
+
+Let $c(x, y) = 1$ if the cell $(x, y)$ is blue and $0$ otherwise. For
+convenience, also add a row 0 and column 0.
+
+Firstly, notice that if we already know the color of 3 cells in a $2 \times 2$
+table, then we also know the last color.
+
+From this, we get the recurrence
+
+$$
+c(x, y) = \lnot (c(x - 1, y - 1) \oplus c(x - 1, y) \oplus c(x, y - 1))
+$$
+
+for all $x, y > 1$.
+
+After analysing this recurrence, we find that we actually have
+
+$$
+c(x, y) = \lnot (c(0, 0) \oplus c(0, y) \oplus c(x, 0) \oplus ((x \cdot y) \% 2))
+$$
+
+I made a
+[helpful spreadsheet](https://docs.google.com/spreadsheets/d/1cSNyb3wBq39R2FsSD-kuPpfBsLXCVxSXKsqllo2sUs0/edit?usp=sharing)
+for you to visualise this.
+
+### Counting the colorings
+
+Without loss of generality, let the cell $(0, 0)$ be red (since its color
+doesn't change the answer). This means that without any already-colored cells,
+all cells $(x, 0)$ and $(0, y)$ are independent.
+
+However, an already-colored cell $(x, y)$ makes the 2 cells $(x, 0)$ and
+$(0, y)$ depend on each other.
+
+View the grid as a graph:
+
+- All cells $(x, 0)$ and $(0, y)$ are nodes.
+- For each already-colored cell $(x, y)$, add an edge between $(x, 0)$ and
+  $(0, y)$.
+
+This creates $K$ connected components. The answer is thus either $2^{K - 1}$ or
+$0$. This is because each node in a connected component is dependent on the
+other nodes in that component and all connected components are independent. If
+it simply isn't possible to color the table, the answer is $0$.
+
+### Checking Whether the Answer is $0$
+
+Since each already-colored cell $(x, y)$ determines whether the colors of the
+cells $(x, 0)$ and $(0, y)$ are the same, we can instead split each node in our
+graph into 2 nodes (one for each color) and create edges between nodes we know
+must be the same color.
+
+This problem then becomes checking whether there is an odd cycle in the
+resulting graph, which we can answer efficiently using DSU or DFS.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+typedef long long ll;
+using namespace std;
+
+const int MOD = 1e9;
+
+int x[100001], y[100001], cmp[400001];
+
+int find(int A) {
+	while (A != cmp[A]) cmp[A] = cmp[cmp[A]], A = cmp[A];
+	return A;
+}
+void onion(int A, int B) { cmp[find(A)] = cmp[find(B)]; }
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m, k;
+	cin >> n >> m >> k;
+	FOR(i, 0, 2 * (n + m)) cmp[i] = i;
+
+	FOR(i, 0, k) {
+		int c;
+		cin >> x[i] >> y[i] >> c;
+		c ^= (x[i] & 1) && (y[i] & 1);
+
+		if (c) {
+			onion(x[i], y[i] + n);
+			onion(x[i] + m + n, y[i] + 2 * n + m);
+		} else {
+			onion(x[i] + m + n, y[i] + n);
+			onion(x[i], y[i] + 2 * n + m);
+		}
+	}
+
+	int cnt = -1;
+	FOR(i, 0, n + m) {
+		if (find(i) == find(i + n + m)) return cout << "0", 0;
+		if (find(i) == i) cnt++;
+	}
+
+	int ans = 1;
+	FOR(i, 0, cnt) ans = (ans * 2) % MOD;
+	cout << ans;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

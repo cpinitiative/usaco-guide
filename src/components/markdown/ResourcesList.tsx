@@ -1,25 +1,25 @@
 import * as React from 'react';
-import Tooltip from '../Tooltip/Tooltip';
-import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import PGS from './PGS';
 import { books } from '../../utils/books';
+import TextTooltip from '../Tooltip/TextTooltip';
+import Tooltip from '../Tooltip/Tooltip';
+import PGS from './PGS';
 
 export function ResourcesList(props) {
   return (
-    <div className="-mx-4 sm:-mx-6 lg:mx-0">
+    <div className="-mx-4 sm:-mx-6 md:mx-0">
       <div className="flex flex-col mb-4">
-        <div className={`overflow-x-auto lg:-mx-4 lg:px-4 -my-2 py-2`}>
+        <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
           <div
-            className={`align-middle inline-block min-w-full shadow overflow-hidden lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent`}
+            className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200 dark:border-transparent`}
           >
-            <table className="min-w-full">
+            <table className="min-w-full no-markdown">
               <thead>
                 <tr>
                   <th
                     colSpan={4}
-                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-purple-800 bg-purple-50 text-purple-500 dark:bg-purple-900 dark:text-purple-200`}
+                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-25 dark:text-purple-200`}
                   >
                     Resources{props.title ? `: ${props.title}` : ''}
                   </th>
@@ -87,8 +87,9 @@ export function Resource(props) {
         let sec = parts[0];
         if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
         if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey]))
+        if (!(sec in PGS[dictKey])) {
           throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+        }
         url += '#page=' + PGS[dictKey][sec];
         return url;
       };
@@ -114,8 +115,9 @@ export function Resource(props) {
     if (!url.startsWith('http')) url = moduleSources[source][0] + url;
     des = moduleSources[source][1];
   } else {
-    if (!url.startsWith('http'))
+    if (!url.startsWith('http')) {
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
+    }
     if (source.indexOf('@') != -1) {
       const ind = source.indexOf('@');
       des = source.substring(ind + 1, source.length);
@@ -159,7 +161,7 @@ export function Resource(props) {
           </a>
         </div>
       </td>
-      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
         {props.children}
       </td>
     </tr>

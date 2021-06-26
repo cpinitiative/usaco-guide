@@ -1,0 +1,166 @@
+---
+id: usaco-695
+source: USACO Gold 2017 January
+title: Cow Navigation
+author: Michael Cao
+---
+
+In this problem, Bessie stands on a grid and wants to go from the lower left
+corner to upper-right corner in as few moves as possible. An initial idea could
+be to model the grid as a graph, where adjacent cells are connected by edges,
+and run a BFS to find the shortest path.
+
+However, two additional constraints play a role in this problem: Bessie must be
+able to reach the destination regardless of which direction she starts in, and
+she can only move in the direction she is facing.
+
+Let's imagine now that there are two cows standing on the cell $(1, 1)$, and
+both of them move the same way on each operation. Since $N \leq 20$, we can
+modify the original graph to support this new problem. Let's create a new graph
+$G'$ as follows:
+
+For each pair of cells in the grid, $(x, y)$ and $(x_2, y_2)$, add $16$ nodes in
+the graph storing six parameters each:
+
+- $x$ coordinate of cow $a$
+- $y$ coordinate of cow $a$
+- $x$ coordinate of cow $b$
+- $y$ coordinate of cow $b$
+- direction of cow $a$
+- direction of cow $b$
+
+for all $4 ^ 2$ directions each cow could be facing.
+
+Given this new graph, we add edges between two "states" which are reachable from
+each other. For example, if we apply the "turn left" operation, we add an edge
+to the state where both cows directions turn left.
+
+On this new graph, we can directly run a BFS, and retrieve the answer at the
+state $\{N, N, N, N, x, y\}$ where $x$ and $y$ represent directions.
+
+<Warning>
+
+Don't forget that once Bessie reaches the goal, she will ignore further
+commands. In the modified problem, if one of the two cows is at the goal, stop
+applying commands to her.
+
+</Warning>
+
+<!-- (Ben - equivalent to existing editorial) -->
+
+<!-- You can change it, but keep the section on making modifications to graphs before. Maybe replace with a problem w/o a good editorial? -->
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//created by Oleksandr Gorpynich
+#include<bits/stdc++.h>
+using ll = long long;
+using namespace std;
+int n;
+struct state{
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+	int dir;
+	int dist;
+};
+char arr[21][21];
+int visited[21][21][21][21][4];
+//x1, y1, x2, y2, dir
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+//up, left, down, right
+//test if a cell is possible to visit
+bool inside(int x, int y){
+	if (x >= 0 && x < n && y >= 0 && y < n){
+		if (arr[x][y] != 'H'){
+			return true;
+		}
+	}
+	return false;
+}
+//set a state as visited
+bool setvisited(state cur){
+	visited[cur.x1][cur.y1][cur.x2][cur.y2][cur.dir] = 1;
+}
+//check if a state has been visited
+bool free(state cur){
+	if (visited[cur.x1][cur.y1][cur.x2][cur.y2][cur.dir] == -1){
+		return true;
+	}
+	return false;
+}
+int main(){
+	ifstream in("cownav.in");
+	ofstream out("cownav.out");
+	in >> n;
+	for (int x = 0; x < n; x++){
+		for (int y = 0; y < n; y++){
+			in >> arr[x][y];
+		}
+	}
+	memset(visited, -1, sizeof visited);
+	queue<state> q;
+	q.push({n - 1, 0, n - 1, 0});
+	while(q.size() > 0){
+		state cur = q.front();
+		q.pop();
+		state ncur = cur;
+		bool reachedend1 = false;
+		bool reachedend2 = false;
+		//check if reached the end
+		if (cur.x1 == 0 && cur.y1 == n - 1){
+			reachedend1 = true;
+		}
+		if (cur.x2 == 0 && cur.y2 == n - 1){
+			reachedend2 = true;
+		}
+		if (reachedend1 && reachedend2){
+			out << ncur.dist << "\n";
+			return 0;
+		}
+		//turn clockwise
+		ncur = cur;
+
+		ncur.dir = (cur.dir + 1) % 4;
+		ncur.dist += 1;
+		if (free(ncur)){
+			setvisited(ncur);
+			q.push(ncur);
+		}
+		//turn counter clockwise
+		ncur = cur;
+		ncur.dir = (cur.dir - 1) == -1?3:(cur.dir - 1);
+		ncur.dist += 1;
+		if (free(ncur)){
+			setvisited(ncur);
+			q.push(ncur);
+		}
+		//go forward
+		ncur = cur;
+		if (inside(ncur.x1 + dx[ncur.dir], ncur.y1 + dy[ncur.dir]) && !reachedend1){
+			ncur.x1 += dx[ncur.dir];
+			ncur.y1 += dy[ncur.dir];
+		}
+		if (inside(ncur.x2 + dx[(ncur.dir + 1) % 4], ncur.y2 + dy[(ncur.dir + 1) % 4]) && !reachedend2){
+			ncur.x2 += dx[(ncur.dir + 1) % 4];
+			ncur.y2 += dy[(ncur.dir + 1) % 4];
+		}
+		ncur.dist += 1;
+		if (free(ncur)){
+			setvisited(ncur);
+			q.push(ncur);
+		}
+	}
+	out << -1 << "\n";
+}
+```
+
+</CPPSection>
+</LanguageSection>

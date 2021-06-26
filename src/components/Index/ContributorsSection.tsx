@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { contentAuthors } from '../../../content/authors/contributors';
+import {
+  contentAuthors,
+  pastContentAuthors,
+} from '../../../content/authors/contributors';
 
-export default function ContributorsSection() {
+export default function ContributorsSection(): JSX.Element {
   return (
     <div className="relative py-16 bg-white dark:bg-dark-surface overflow-hidden">
       <div className="hidden lg:block lg:absolute lg:inset-y-0 lg:h-full lg:w-full">
@@ -54,6 +57,7 @@ export default function ContributorsSection() {
             <a
               href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
               target="_blank"
+              rel="noreferrer"
               className="text-blue-600 dark:text-blue-400 font-bold"
             >
               Apply here.
@@ -63,12 +67,13 @@ export default function ContributorsSection() {
           <p className="text-gray-500 dark:text-gray-400 mb-2">
             Current Content Authors:
           </p>
-          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
+          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">
             {contentAuthors.map(author => (
-              <li>
+              <li key={author.name}>
                 <a
                   href={`https://github.com/${author.githubUsername}`}
                   target="_blank"
+                  rel="noreferrer"
                   className="text-blue-600 dark:text-blue-400"
                 >
                   {author.name}
@@ -81,11 +86,29 @@ export default function ContributorsSection() {
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
+                rel="noreferrer"
                 className="text-blue-600 dark:text-blue-400"
               >
                 Apply here.
               </a>
             </li>
+          </ul>
+          <p className="text-gray-500 dark:text-gray-400 mb-2">
+            Past Content Authors:
+          </p>
+          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
+            {pastContentAuthors.map(author => (
+              <li key={author.name}>
+                <a
+                  href={`https://github.com/${author.githubUsername}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 dark:text-blue-400"
+                >
+                  {author.name}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

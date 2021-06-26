@@ -1,0 +1,112 @@
+---
+id: apio-14-palindrome
+source: APIO 2014
+title: Palindrome
+author: Andi Qu
+---
+
+## Solution
+
+First, construct the
+[palindromic tree](http://adilet.org/blog/palindromic-tree/) from the string.
+There are $\mathcal{O}(N)$ distinct palindromes, so our tree will have
+$\mathcal{O}(N)$ nodes.
+
+In addition to the standard information about a node's palindrome that we store
+in it (e.g. length and suffix link), store the number of times each node's
+palindrome was the maximum suffix. Let this number be $C_i$ for the $i$-th node.
+
+Since each node's palindrome is a substring of the palindromes of the nodes in
+its subtree, the sum of $C_i$ in node $i$'s subtree gives us the number of
+occurrences of node $i$'s palindrome in the string.
+
+We can then do a DFS to find the number of occurrences of each distinct
+palindrome in the string and then we simply check which one has the greatest
+occurrence value.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+**Memory Complexity:** $\mathcal{O}(N)$
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+typedef long long ll;
+using namespace std;
+
+struct Node {
+	int nxt[26], sufflink;
+	ll len, cnt;
+	vector<int> edges;
+} tree[303030];
+
+string s;
+int suff, num;
+ll ans = 0;
+
+void add_letter(int pos) {
+	int curr = suff, curr_len = 0;
+	int letter = s[pos] - 'a';
+
+	while (true) {
+		curr_len = tree[curr].len;
+		if (pos - 1 - curr_len > -1 && s[pos - 1 - curr_len] == s[pos])
+			break;
+		curr = tree[curr].sufflink;
+	}
+	if (tree[curr].nxt[letter]) {
+		suff = tree[curr].nxt[letter];
+		tree[suff].cnt++;
+		return;
+	}
+
+	suff = ++num;
+	tree[num].len = tree[curr].len + 2;
+	tree[num].cnt = 1;
+	tree[curr].nxt[letter] = num;
+
+	if (tree[num].len == 1) {
+		tree[num].sufflink = 2;
+		tree[2].edges.push_back(num);
+		return;
+	}
+
+	while (true) {
+		curr = tree[curr].sufflink;
+		curr_len = tree[curr].len;
+		if (pos - 1 - curr_len > -1 && s[pos - 1 - curr_len] == s[pos]) {
+			tree[num].sufflink = tree[curr].nxt[letter];
+			tree[tree[curr].nxt[letter]].edges.push_back(num);
+			break;
+		}
+	}
+}
+
+void init() {
+	num = 2, suff = 2;
+	tree[1].len = -1, tree[1].sufflink = 1;
+	tree[2].len = 0, tree[2].sufflink = 1;
+	tree[1].edges.push_back(2);
+}
+
+void dfs(int node = 1) {
+	for (int i : tree[node].edges) {
+		dfs(i);
+		tree[node].cnt += tree[i].cnt;
+	}
+	ans = max(ans, tree[node].len * tree[node].cnt);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> s;
+	init();
+	FOR(i, 0, s.size()) add_letter(i);
+	dfs();
+	cout << ans;
+	return 0;
+}
+```

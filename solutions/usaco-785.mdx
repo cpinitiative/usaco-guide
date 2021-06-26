@@ -1,0 +1,71 @@
+---
+id: usaco-785
+source: USACO Bronze 2018 January
+title: Out of Place
+author: Maggie Liu, Ryan Chou
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_outofplace_bronze_jan18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+	
+```py
+fin = open('outofplace.in', 'r')
+N = int(fin.readline())
+
+order = [int(fin.readline()) for _ in range(N)]
+ordsort = sorted(order)
+
+swaps = 0
+for i in range(N):
+	if order[i] != ordsort[i]:
+		swaps += 1
+
+print(swaps - 1, file=open('outofplace.out', 'w'))
+```	
+	
+</PySection>
+<CPPSection>
+
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+	freopen("outofplace.in", "r", stdin);
+	freopen("outofplace.out", "w", stdout);
+	int n;
+	cin >> n;
+	int cows[100], sorted[100];
+	for (int i = 0; i < n; i++)
+	{
+		cin >> cows[i];
+		sorted[i] = cows[i];
+	}
+	sort(sorted, sorted + n);
+	int swaps = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if (cows[i] != sorted[i])
+		{
+			swaps++;
+		}
+	}
+	cout << swaps - 1 << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

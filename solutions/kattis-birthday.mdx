@@ -1,0 +1,205 @@
+---
+id: kattis-birthday
+source: VT HSPC 2014
+title: Birthday Party
+author: Michael Cao, Nathan Gong
+---
+
+In this problem, we're given some people who have others numbers, and are asked
+whether if some pair of friends lose each others numbers it will be impossible
+to invite everyone.
+
+## Generating the Graph
+
+Once we've dissected the text in the problem statement, we can apply the
+following definitions:
+
+- Define a person $x$ as a node.
+
+- If two nodes $a$ and $b$ have each other's numbers, connect them with an
+  undirected edge.
+
+- Everyone can be invited to the party if there exists exactly one connected
+  component in the graph.
+
+Now the problem becomes: given a graph with $p \: (1 \leq p \leq 100)$ nodes and
+$c \: (0 \leq c \leq 5000)$ edges, can you remove some edge to break the graph
+into more than one connected component?
+
+## Applying DFS
+
+Since the constraints on edges (and nodes) is small, we can run
+[DFS](/silver/dfs/) on the graph. For each edge, let's run a DFS while ensuring
+we don't traverse that edge. If we can't visit some node, then the answer is
+"YES". Otherwise, if we're able to visit every node for each edge that gets
+removed, the answer is "NO" (notice the problem asks whether it's impossible to
+invite everyone). 
+
+## Ignoring Edges
+The easiest way to ignore edges in a graph is to represent the graph with an 
+adjacency matrix (we can do this because the number of nodes is very small). 
+To ignore an edge that connects two nodes $a$ and $b$, we can simply set 
+`adj[a][b]` and `adj[b][a]` to false. Later, when we want to add the edge back,
+we can update `adj[a][b]` and `adj[b][a]` to true.
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int n, m;
+// Adjacency matrix
+bool adj[105][105];
+bool vis[105];
+
+void dfs(int v) {
+	vis[v] = true;
+	for (int to = 0; to < n; to++) {
+		if (adj[v][to] && !vis[to]) {
+			dfs(to);
+		}
+	}
+}
+
+void solve() {
+	memset(adj, false, sizeof(adj));
+	vector<pi> edges;
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u][v] = true;
+		adj[v][u] = true;
+		edges.pb(mp(u, v));
+	}
+	for (pi x : edges) {
+		adj[x.f][x.s] = false;
+		adj[x.s][x.f] = false;
+		memset(vis, false, sizeof(vis));
+		dfs(0);
+		for (int i = 0; i < n; i++) {
+			if (!vis[i]) {
+				cout << "Yes" << '\n';
+				return;
+			}
+		}
+		adj[x.f][x.s] = true;
+		adj[x.s][x.f] = true;
+	}
+	cout << "No" << '\n';
+}
+
+int main() {
+	setIO();
+	while (cin >> n >> m && (n || m)) {
+		solve();
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class BirthdayParty {
+	static int p, c;
+	static boolean[][] adj;
+	static boolean[] vis;
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		while (true) {
+			boolean allConnected = true;
+			p = sc.nextInt();
+			c = sc.nextInt();
+
+			if (p == 0 && c == 0) break;
+
+			// Adjacency matrix
+			adj = new boolean[p][p];
+			Edge[] edges = new Edge[c];
+			for (int i = 0; i < c; i++) {
+				int a = sc.nextInt();
+				int b = sc.nextInt();
+				adj[a][b] = true;
+				adj[b][a] = true;
+				edges[i] = new Edge(a, b);
+			}
+
+			for (Edge edge : edges) {
+				// Remove the current edge we're looking at from the graph
+				adj[edge.a][edge.b] = false;
+				adj[edge.b][edge.a] = false;
+
+				vis = new boolean[p];
+				dfs(0);
+
+				for (int i = 0; i < p; i++) {
+					// If a node wasn't visited after the dfs, that means that
+					// the nodes aren't all in one connected component
+					if (!vis[i]) {
+						allConnected = false;
+					}
+				}
+
+				// Add the edge back to the graph
+				adj[edge.a][edge.b] = true;
+				adj[edge.b][edge.a] = true;
+			}
+
+			if (allConnected) {
+				System.out.println("No");
+			} else {
+				System.out.println("Yes");
+			}
+		}
+	}
+
+	static void dfs(int pos) {
+		vis[pos] = true;
+		for (int to = 0; to < p; to++) {
+			if (adj[pos][to] && !vis[to]) {
+				dfs(to);
+			}
+		}
+	}
+
+	static class Edge {
+		int a, b;
+
+		Edge(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

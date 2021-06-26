@@ -1,19 +1,19 @@
+import { PageProps } from 'gatsby';
 import * as React from 'react';
-import { graphql, PageProps } from 'gatsby';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import {
-  InstantSearch,
-  connectSearchBox,
   connectHits,
   connectRefinementList,
+  connectSearchBox,
+  InstantSearch,
   PoweredBy,
 } from 'react-instantsearch-dom';
-import { searchClient } from '../utils/algoliaSearchClient';
+import Layout from '../components/layout';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
-import SearchBox from '../components/ProblemsPage/SearchBox';
 import RefinementList from '../components/ProblemsPage/RefinementList';
+import SearchBox from '../components/ProblemsPage/SearchBox';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { searchClient } from '../utils/algoliaSearchClient';
 
 const indexName =
   process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
@@ -40,7 +40,7 @@ export default function ProblemsPage(props: PageProps) {
             </div>
             <CustomRefinementList
               attribute="tags"
-              limit={100}
+              limit={500}
               searchable
               transformItems={items =>
                 items.sort((x, y) => x.label.localeCompare(y.label))

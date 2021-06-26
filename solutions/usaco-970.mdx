@@ -1,0 +1,611 @@
+---
+id: usaco-970
+source: USACO Gold 2019 December
+title: Milk Visits
+author: Benjamin Qi
+---
+
+[Official Analysis (Offline)](http://www.usaco.org/current/data/sol_milkvisits_gold_dec19.html)
+
+To solve this problem _online_, we need efficiently find the closest ancestor of
+a farm $x$ with a certain milk type. Here are several ways to do this.
+
+## Method 1
+
+Run the same DFS mentioned in the analysis. For each milk type, store the Euler
+tour indices at which the answer changes. Then we can get the answer for a
+vertex using a single `lower_bound` operation on the vector for the
+corresponding milk type.
+
+**Time Complexity:** $\mathcal{O}(\log N)$ per query.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+
+using pi = pair<int,int>;
+using pl = pair<ll,ll>;
+using pd = pair<db,db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template<class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
+tcT> using PR = pair<T,T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
+
+// loops
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i,a) ROF(i,0,a)
+#define trav(a,x) for (auto& a: x)
+
+const int MOD = 1e9+7; // 998244353;
+const int MX = 2e5+5;
+const ll INF = 1e18; // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
+
+ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
+ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
+
+tcT> bool ckmin(T& a, const T& b) {
+	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
+tcT> bool ckmax(T& a, const T& b) {
+	return a < b ? a = b, 1 : 0; }
+
+tcTU> T fstTrue(T lo, T hi, U f) {
+	hi ++; assert(lo <= hi); // assuming f is increasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+tcTU> T lstTrue(T lo, T hi, U f) {
+	lo --; assert(lo <= hi); // assuming f is decreasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo+1)/2;
+		f(mid) ? lo = mid : hi = mid-1;
+	}
+	return lo;
+}
+tcT> void remDup(vector<T>& v) { // sort and remove duplicates
+	sort(all(v)); v.erase(unique(all(v)),end(v)); }
+tcTU> void erase(T& t, const U& u) { // don't erase
+	auto it = t.find(u); assert(it != end(t));
+	t.erase(it); } // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class ...U
+tcT> void re(complex<T>& c);
+tcTU> void re(pair<T,U>& p);
+tcT> void re(V<T>& v);
+tcT, size_t SZ> void re(AR<T,SZ>& a);
+
+tcT> void re(T& x) { cin >> x; }
+void re(db& d) { str t; re(t); d = stod(t); }
+void re(ld& d) { str t; re(t); d = stold(t); }
+tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
+
+tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
+tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
+tcT> void re(V<T>& x) { trav(a,x) re(a); }
+tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
+tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1,c); }
+str ts(const char* s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+	#ifdef LOCAL
+		return b ? "true" : "false";
+	#else
+		return ts((int)b);
+	#endif
+}
+tcT> str ts(complex<T> c) {
+	stringstream ss; ss << c; return ss.str(); }
+str ts(V<bool> v) {
+	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
+	res += "}"; return res; }
+template<size_t SZ> str ts(bitset<SZ> b) {
+	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
+	return res; }
+tcTU> str ts(pair<T,U> p);
+tcT> str ts(T v) { // containers with begin(), end()
+	#ifdef LOCAL
+		bool fst = 1; str res = "{";
+		for (const auto& x: v) {
+			if (!fst) res += ", ";
+			fst = 0; res += ts(x);
+		}
+		res += "}"; return res;
+	#else
+		bool fst = 1; str res = "";
+		for (const auto& x: v) {
+			if (!fst) res += " ";
+			fst = 0; res += ts(x);
+		}
+		return res;
+
+	#endif
+}
+tcTU> str ts(pair<T,U> p) {
+	#ifdef LOCAL
+		return "("+ts(p.f)+", "+ts(p.s)+")";
+	#else
+		return ts(p.f)+" "+ts(p.s);
+	#endif
+}
+
+// OUTPUT
+tcT> void pr(T x) { cout << ts(x); }
+tcTUU> void pr(const T& t, const U&... u) {
+	pr(t); pr(u...); }
+void ps() { pr("\n"); } // print w/ spaces
+tcTUU> void ps(const T& t, const U&... u) {
+	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU> void DBG(const T& t, const U&... u) {
+	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
+	DBG(u...); }
+#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
+	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
+		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#else
+	#define dbg(...) 0
+	#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(),"r",stdin); }
+void setOut(str s) { freopen(s.c_str(),"w",stdout); }
+void setIO(str s = "") {
+	unsyncIO(); setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
+}
+
+int T[MX];
+
+template<int SZ> struct LCA {
+	static const int BITS = 32-__builtin_clz(SZ);
+	int N, R = 1, cnt = 0, label[SZ];
+	vi adj[SZ], cur[SZ];
+	vpi CUR[SZ];
+	int par[BITS][SZ], depth[SZ];
+	// INITIALIZE
+	void addEdge(int u, int v) { adj[u].pb(v), adj[v].pb(u); }
+	void dfs(int u, int prev) {
+		label[u] = cnt++;
+		cur[T[u]].pb(u);
+		CUR[T[u]].pb({label[u],u});
+		par[0][u] = prev;
+		depth[u] = depth[prev]+1;
+		trav(v,adj[u]) if (v != prev) dfs(v, u);
+		cur[T[u]].pop_back();
+		CUR[T[u]].pb({cnt,sz(cur[T[u]])?cur[T[u]].back():0});
+	}
+	void init(int _N) {
+		N = _N; dfs(R, 0);
+		FOR(k,1,BITS) FOR(i,1,N+1)
+			par[k][i] = par[k-1][par[k-1][i]];
+	}
+	// QUERY
+	int getPar(int a, int b) {
+		R0F(k,BITS) if (b&(1<<k)) a = par[k][a];
+		return a;
+	}
+	int lca(int u, int v){
+		if (depth[u] < depth[v]) swap(u,v);
+		u = getPar(u,depth[u]-depth[v]);
+		R0F(k,BITS) if (par[k][u] != par[k][v])
+			u = par[k][u], v = par[k][v];
+		return u == v ? u : par[0][u];
+	}
+	int dist(int u, int v) {
+		return depth[u]+depth[v]-2*depth[lca(u,v)];
+	}
+	int last(int a, int c) {
+		auto it = ub(all(CUR[c]),mp(label[a],MOD));
+		if (it == begin(CUR[c])) return 0;
+		return prev(it)->s;
+	}
+};
+
+LCA<MX> L;
+int N,M,co;
+
+int main() {
+	setIO("milkvisits");
+	re(N,M); FOR(i,1,N+1) re(T[i]);
+	F0R(i,N-1) {
+		int X,Y; re(X,Y);
+		L.addEdge(X,Y);
+	}
+	L.init(N);
+	F0R(i,M) {
+		int A,B,C; re(A,B,C);
+		int z = L.lca(A,B);
+		int a = L.last(A,C);
+		if (a && L.depth[a] >= L.depth[z]) {
+			pr(1);
+			continue;
+		}
+		a = L.last(B,C);
+		if (a && L.depth[a] >= L.depth[z]) {
+			pr(1);
+			continue;
+		}
+		pr(0);
+	}
+	// you should actually read the stuff at the bottom
+}
+```
+
+## Method 2
+
+Generate a [persistent array](https://en.wikipedia.org/wiki/Persistent_array)
+for each vertex where the indices of the array correspond to the milk types.
+
+**Time Complexity:** $\mathcal{O}(\log N)$ per query. Apparently this is doable
+in $\mathcal{O}(\log \log N)$ per query
+([paper](http://fox.ucw.cz/papers/perarray/perarray.pdf)). Is this bound optimal
+for this problem?
+
+## Method 3
+
+Use HLD. We can check whether there exists a farm in the path from a vertex $x$
+to the root of the heavy path containing $x$ ($\texttt{root}[x]$) with the
+desired milk type in $\mathcal{O}(1)$ time using an unordered map. Note that we
+only need to do two `upper_bound` operations per query.
+
+**Time Complexity:** $\mathcal{O}(\log N)$ per query.
+
+In the solution below, I refer to milk types as "colors."
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+
+using pi = pair<int,int>;
+using pl = pair<ll,ll>;
+using pd = pair<db,db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template<class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
+tcT> using PR = pair<T,T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
+
+// loops
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i,a) ROF(i,0,a)
+#define trav(a,x) for (auto& a: x)
+
+const int MOD = 1e9+7; // 998244353;
+const int MX = 2e5+5;
+const ll INF = 1e18; // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
+
+ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
+ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
+
+tcT> bool ckmin(T& a, const T& b) {
+	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
+tcT> bool ckmax(T& a, const T& b) {
+	return a < b ? a = b, 1 : 0; }
+
+tcTU> T fstTrue(T lo, T hi, U f) {
+	hi ++; assert(lo <= hi); // assuming f is increasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+tcTU> T lstTrue(T lo, T hi, U f) {
+	lo --; assert(lo <= hi); // assuming f is decreasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo+1)/2;
+		f(mid) ? lo = mid : hi = mid-1;
+	}
+	return lo;
+}
+tcT> void remDup(vector<T>& v) { // sort and remove duplicates
+	sort(all(v)); v.erase(unique(all(v)),end(v)); }
+tcTU> void erase(T& t, const U& u) { // don't erase
+	auto it = t.find(u); assert(it != end(t));
+	t.erase(it); } // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class ...U
+tcT> void re(complex<T>& c);
+tcTU> void re(pair<T,U>& p);
+tcT> void re(V<T>& v);
+tcT, size_t SZ> void re(AR<T,SZ>& a);
+
+tcT> void re(T& x) { cin >> x; }
+void re(db& d) { str t; re(t); d = stod(t); }
+void re(ld& d) { str t; re(t); d = stold(t); }
+tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
+
+tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
+tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
+tcT> void re(V<T>& x) { trav(a,x) re(a); }
+tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
+tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1,c); }
+str ts(const char* s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+	#ifdef LOCAL
+		return b ? "true" : "false";
+	#else
+		return ts((int)b);
+	#endif
+}
+tcT> str ts(complex<T> c) {
+	stringstream ss; ss << c; return ss.str(); }
+str ts(V<bool> v) {
+	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
+	res += "}"; return res; }
+template<size_t SZ> str ts(bitset<SZ> b) {
+	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
+	return res; }
+tcTU> str ts(pair<T,U> p);
+tcT> str ts(T v) { // containers with begin(), end()
+	#ifdef LOCAL
+		bool fst = 1; str res = "{";
+		for (const auto& x: v) {
+			if (!fst) res += ", ";
+			fst = 0; res += ts(x);
+		}
+		res += "}"; return res;
+	#else
+		bool fst = 1; str res = "";
+		for (const auto& x: v) {
+			if (!fst) res += " ";
+			fst = 0; res += ts(x);
+		}
+		return res;
+
+	#endif
+}
+tcTU> str ts(pair<T,U> p) {
+	#ifdef LOCAL
+		return "("+ts(p.f)+", "+ts(p.s)+")";
+	#else
+		return ts(p.f)+" "+ts(p.s);
+	#endif
+}
+
+// OUTPUT
+tcT> void pr(T x) { cout << ts(x); }
+tcTUU> void pr(const T& t, const U&... u) {
+	pr(t); pr(u...); }
+void ps() { pr("\n"); } // print w/ spaces
+tcTUU> void ps(const T& t, const U&... u) {
+	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU> void DBG(const T& t, const U&... u) {
+	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
+	DBG(u...); }
+#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
+	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
+		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#else
+	#define dbg(...) 0
+	#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(),"r",stdin); }
+void setOut(str s) { freopen(s.c_str(),"w",stdout); }
+void setIO(str s = "") {
+	unsyncIO(); setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
+}
+
+int N,M,T[MX];
+
+/**
+ * Description: Heavy-Light Decomposition, add val to verts
+ 	* and query sum in path/subtree.
+ * Time: any tree path is split into $\mathcal{O}(\log N)$ parts
+ * Source: http://codeforces.com/blog/entry/22072, https://codeforces.com/blog/entry/53170
+ * Verification: *
+ */
+
+template<int SZ> struct HLD {
+	int N; vi adj[SZ];
+	int par[SZ], root[SZ], depth[SZ], sz[SZ], ti;
+	int pos[SZ]; vi rpos; // rpos not used, but could be useful
+	map<int,int> all_of_col[SZ];
+	unordered_map<int,int> first_cols[SZ];
+	void ae(int x, int y) { adj[x].pb(y), adj[y].pb(x); }
+	void dfsSz(int x) {
+		sz[x] = 1;
+		trav(y,adj[x]) {
+			par[y] = x; depth[y] = depth[x]+1;
+			adj[y].erase(find(all(adj[y]),x)); // remove parent from adj list
+			dfsSz(y); sz[x] += sz[y];
+			if (sz[y] > sz[adj[x][0]]) swap(y,adj[x][0]);
+		}
+	}
+	void dfsHld(int x) {
+		pos[x] = ti++; rpos.pb(x);
+		all_of_col[T[x]][pos[x]] = depth[x];
+		if (!first_cols[root[x]].count(T[x]))
+			first_cols[root[x]][T[x]] = depth[x];
+		trav(y,adj[x]) {
+			root[y] = (y == adj[x][0] ? root[x] : y);
+			dfsHld(y); }
+	}
+	void init(int _N, int R = 0) { N = _N;
+		par[R] = depth[R] = ti = 0; dfsSz(R);
+		root[R] = R; dfsHld(R);
+	}
+	int lca(int x, int y) {
+		for (; root[x] != root[y]; y = par[root[y]])
+			if (depth[root[x]] > depth[root[y]]) swap(x,y);
+		return depth[x] < depth[y] ? x : y;
+	}
+	/// int dist(int x, int y) { // # edges on path
+	/// 	return depth[x]+depth[y]-2*depth[lca(x,y)]; }
+	int closest_anc(int x, int col) { // depth of closest ancestor with desired color
+		while (x) {
+			auto it = first_cols[root[x]].find(col);
+			// check if there exists vertex above (or equal to x) in same heavy path with desired color
+			if (it != end(first_cols[root[x]]) && it->s <= depth[x])
+				return prev(all_of_col[col].ub(pos[x]))->s;
+			// if so, return its depth using upper_bound
+			x = par[root[x]];
+		}
+		return -1;
+	}
+	bool exists(int x, int y, int col) {
+		return closest_anc(x,col) >= depth[y];
+	}
+};
+
+HLD<MX> H;
+
+int main() {
+	setIO("milkvisits"); re(N,M);
+	F0R(i,N) re(T[i]);
+	F0R(_,N-1) {
+		int x,y; re(x,y); --x,--y;
+		H.ae(x,y);
+	}
+	H.init(N);
+	F0R(_,M) {
+		int A,B,C; re(A,B,C); --A,--B;
+		int L = H.lca(A,B);
+		if (H.exists(A,L,C) || H.exists(B,L,C)) pr(1);
+		else pr(0);
+	}
+}
+```

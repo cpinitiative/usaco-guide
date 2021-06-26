@@ -1,0 +1,85 @@
+---
+id: usaco-693
+source: USACO Gold 2017 January
+title: Balanced Photo
+author: Andy Wang
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_bphoto_gold_jan17.html)
+
+The official solution uses a
+[binary indexed tree](/gold/PURS/#binary-indexed-tree).
+
+An alternative solution uses an order statistic tree. This is provided in C++
+with the PBDS data structure; in Java you'll have to implement your own.
+
+## Solution (C++ only)
+
+**Time Complexity:** $\mathcal O(N \log N)$
+
+We aim to quickly determine, for each cow, the number of _taller_ cows to its
+left and right.
+
+To do this, we can sweep through the cows from left to right and maintain two
+balanced binary search trees: one for storing the heights of cows on each side
+of the current cow. Then, use binary search to count the number of heights in
+each set that are greater than the height of the current cow.
+
+We can use [order statistic trees](/gold/PURS/#order-statistic-tree) to achieve
+this in $\mathcal O(N \log N)$ time.
+
+<Warning>
+
+We may **not** use [`std::set`](http://www.cplusplus.com/reference/set/set/)
+because it does not support indexing. Additionally, since BBSTs do _not_ support
+random access, using operations such as
+[`std::distance`](http://www.cplusplus.com/reference/iterator/distance/) to
+index takes linear time.
+
+</Warning>
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp> // for policy-based data structures
+using namespace __gnu_pbds;				 // for policy-based data structures
+using namespace std;
+
+typedef tree<int, null_type, less<int>, rb_tree_tag,
+			 tree_order_statistics_node_update>
+	indexed_set; // indexed_set -> order_of_key & find_by_order
+int N, h, ans;
+vector<int> height;
+indexed_set cow; // store height of cows on the right
+indexed_set woc; // store height of cows on the left
+int main()
+{
+	FILE *in, *out;
+	in = fopen("bphoto.in", "r");
+	out = fopen("bphoto.out", "w");
+	fscanf(in, "%d", &N);
+	for (int i = 0; i < N; i++)
+	{
+		fscanf(in, "%d", &h);
+		cow.insert(h);
+		height.push_back(h);
+	}
+	for (int i : height)
+	{
+		cow.erase(i);							   //remove current cow from right
+		int le = woc.size() - woc.order_of_key(i); // order_of_key counts the number of elements in the set that are strictly less than i
+		int ri = cow.size() - cow.order_of_key(i); // we want to count the number of elemtns that are larger than i
+		woc.insert(i);							   //add current cow to left
+		if (max(le, ri) > 2 * min(le, ri))
+			ans++;
+	}
+	fprintf(out, "%d\n", ans);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

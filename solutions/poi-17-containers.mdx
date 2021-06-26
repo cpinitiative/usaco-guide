@@ -1,0 +1,81 @@
+---
+id: poi-17-containers
+source: POI 2017
+title: Containers
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O((K + N) \sqrt N)$.
+
+Let's consider two naive solutions and try to combine them! (In general, this is
+a good idea for square-root-decomposition problems.)
+
+## Naive solution 1 - slow update; fast query
+
+Keep an array that stores the number of containers on each position. When we
+process a crane, we can simply increment the positions that it puts containers
+on.
+
+Querying the final answer only takes $\mathcal O(N)$ time, but processing all of
+the cranes can potentially take $\mathcal O(KN)$ time in total.
+
+This solution would work well if **all $d_i$ were large**, as processing each
+crane takes $\mathcal O(N / d_i)$ time.
+
+## Naive solution 2 - fast update; slow query
+
+Let $dp[x][y]$ denote the prefix sum of the number of cranes with $d_i = y$ and
+$x \equiv a_i \pmod{y}$. When we process a crane, we change exactly two values
+in the DP array. The answer for position $p$ is simply
+
+$$
+\sum_{y = 0}^{\max(d_i)} \sum_{x \leq p \land x \equiv p \pmod{y}}dp[x][y].
+$$
+
+Processing all of the cranes now only takes only $\mathcal O(K)$ time, but
+querying the final answer can potentially take $\mathcal O(NK)$ time.
+
+This solution would work well if **all $d_i$ were small**, as we querying the
+solution takes $\mathcal O(N \cdot \max(d_i))$ time.
+
+## Model solution - fast(ish) update; fast(ish) query
+
+When $d_i \geq \sqrt N$, then apply solution 1. Otherwise, apply solution 2.
+
+After processing all the cranes, we can simply add the results from the two
+solutions.
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+using namespace std;
+
+const int k = 300;
+int containers[100001];
+int dp[100001 + k][k];
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int n, q;
+	cin >> n >> q;
+	while (q--) {
+		int a, l, d;
+		cin >> a >> l >> d;
+		if (d >= k)
+			FOR(i, 0, l) containers[a + i * d]++;
+		else {
+			dp[a][d]++;
+			dp[a + (l * d)][d]--;
+		}
+	}
+
+	FOR(j, 1, k) FOR(i, j, n + 1) dp[i][j] += dp[i - j][j];
+
+	FOR(i, 1, n + 1) {
+		FOR(j, 1, k) containers[i] += dp[i][j];
+		cout << containers[i] << ' ';
+	}
+	return 0;
+}
+```

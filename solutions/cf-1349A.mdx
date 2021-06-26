@@ -1,0 +1,107 @@
+---
+id: cf-1349A
+source: CF
+title: Orac & LCM
+author: Benjamin Qi, Timothy Gao
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/77284)
+
+## Solution: Prime Factorization
+
+For each prime, the second-to-lowest exponent of the prime that occurs in any of
+the numbers in the input is the exponent of this prime that will appear in the
+final answer.
+
+Here's a short solution that accomplishes this without explicitly computing any
+prime factorizations!
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+ll a,b;
+// a stores minimum exponents (gcd of all numbers seen so far)
+// b stores second minimum exponents
+int n;
+
+void red() { // restore invariant mentioned above
+	ll g = __gcd(a,b);
+	tie(a,b) = make_pair(g,a/g*b); // a/g*b = lcm(a,b)
+}
+
+int main() {
+	cin >> n >> a >> b;
+	red();
+	for (int i = 2; i < n; i++) {
+		ll x; cin >> x;
+		b = __gcd(b,x);
+		red();
+	}
+	cout << b << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class oraclcm {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int[] nums = new int[N];
+
+		for(int i=0; i<N; i++){
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+
+		long gcd = gcd(nums[0], nums[1]);
+		long ret = nums[0]/gcd * nums[1];
+		for(int i = 2; i<N; gcd = gcd(gcd, nums[i]), i++){
+			ret = gcd(ret, lcm(nums[i], gcd));
+		}
+		System.out.println(ret);
+	}
+
+	static long lcm(long a, long b){
+		return a/gcd(a,b) * b;
+	}
+
+	static long gcd(long a, long b){
+		return b == 0 ? a : gcd(b, a % b);
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+If it's hard to understand what exactly this code is doing at first glance, a
+good first step is to simulating the code in the case where each $a_i$ is a
+power of the same prime (say, $2^k$). If the algorithm works for this case, then
+it will also work in the general case since the contributions of different
+primes are computed independently and multiplied together.
+
+<!-- the GCD function is [multiplicative](https://en.wikipedia.org/wiki/Multiplicative_function). -->
+
+Here's another way of thinking about this:
+
+For a fixed $j$,
+
+$$
+\gcd_{0\le i<j}\left[\text{lcm}(a_i,a_j)\right]=\text{lcm}(a_j,\gcd_{0\le i<j}(a_i)),
+$$
+
+and we can update $\gcd_{0\le i<j}(a_i)$ when $j$ increases by one. Taking the
+GCD of the results for each $j$ gives the answer.

@@ -1,25 +1,26 @@
-import * as React from 'react';
 import { graphql } from 'gatsby';
-import Layout from '../components/layout';
-
-import Markdown from '../components/markdown/Markdown';
-import { SECTION_LABELS } from '../../content/ordering';
-import { graphqlToModuleInfo } from '../utils/utils';
-import SEO from '../components/seo';
-import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
+import * as React from 'react';
 import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Helmet } from 'react-helmet';
+import { SECTION_LABELS } from '../../content/ordering';
+import Layout from '../components/layout';
+import Markdown from '../components/markdown/Markdown';
+import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
+import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
+import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { graphqlToModuleInfo } from '../utils/utils';
 
 export default function Template(props) {
-  const { mdx } = props.data; // data.markdownRemark holds your post data
-  const { body } = mdx;
-  const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
+  const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
+  const { body } = xdm;
+  const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
   const { setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
   }, []);
+
   return (
     <Layout>
       <SEO title={`${module.title}`} description={module.description} />
@@ -49,18 +50,23 @@ export default function Template(props) {
       </Helmet>
 
       <ConfettiProvider>
-        <MarkdownLayout markdownData={module}>
-          <div className="py-4">
-            <Markdown body={body} />
-          </div>
-        </MarkdownLayout>
+        <MarkdownProblemListsProvider
+          value={moduleProblemLists?.problemLists || []}
+        >
+          <MarkdownLayout markdownData={module}>
+            <div className="py-4">
+              <Markdown body={body} />
+            </div>
+          </MarkdownLayout>
+        </MarkdownProblemListsProvider>
       </ConfettiProvider>
     </Layout>
   );
 }
+
 export const pageQuery = graphql`
   query($id: String!) {
-    mdx(frontmatter: { id: { eq: $id } }) {
+    xdm(frontmatter: { id: { eq: $id } }) {
       body
       frontmatter {
         title
@@ -95,6 +101,27 @@ export const pageQuery = graphql`
           depth
           value
           slug
+        }
+      }
+    }
+    moduleProblemLists(moduleId: { eq: $id }) {
+      problemLists {
+        listId
+        problems {
+          uniqueId
+          name
+          url
+          source
+          difficulty
+          isStarred
+          tags
+          solution {
+            kind
+            label
+            labelTooltip
+            url
+            sketch
+          }
         }
       }
     }

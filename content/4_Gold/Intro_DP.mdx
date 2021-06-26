@@ -9,108 +9,14 @@ description: 'Speeding up naive recursive solutions with memoization.'
 frequency: 4
 ---
 
-export const problems = {
-	usacoEasy: [
-		new Problem(
-			'Gold',
-			'Hoof Paper Scissors',
-			'694',
-			'Easy',
-			false,
-			['DP'],
-			'usaco-694'
-		),
-		new Problem(
-			'Gold',
-			'Time is Mooney',
-			'993',
-			'Easy',
-			true,
-			['DP'],
-			'dp[time][city] -> money'
-		),
-		new Problem(
-			'Gold',
-			'Teamwork',
-			'863',
-			'Normal',
-			false,
-			['DP'],
-			'let dp[i] -> max sum of skill levels for the first i cows, then precompute subarray maximums'
-		),
-		new Problem(
-			'Gold',
-			'Snakes',
-			'945',
-			'Normal',
-			false,
-			['DP'],
-			'dp[i][j] -> minimum sum of net sizes needed to catch m snakes with k changes, precompute maximums'
-		),
-	],
-	usacoPast: [
-		new Problem(
-			'Gold',
-			'Circular Barn Revisited',
-			'622',
-			'Hard',
-			true,
-			['DP'],
-			''
-		),
-		new Problem(
-			'Gold',
-			'Taming the Herd',
-			'815',
-			'Hard',
-			false,
-			['DP'],
-			'dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes'
-		),
-		new Problem(
-			'Gold',
-			'Moortal Cowmbat',
-			'971',
-			'Hard',
-			false,
-			['DP', 'Prefix Sums', 'Floyd-Warshall'],
-			''
-		),
-		new Problem('Plat', 'Team Building', '673', 'Hard', false, ['DP'], ''),
-		new Problem(
-			'Gold',
-			'Stamp Painting',
-			'791',
-			'Very Hard',
-			false,
-			['DP'],
-			'must be K consectutive of same color, complimetary counting for dp[up to position i][number of consecutive] -> number of ways, find closed form to reduce runtime'
-		),
-		new Problem(
-			'Gold',
-			'Bovine Genetics',
-			'1066',
-			'Very Hard',
-			false,
-			['DP'],
-			''
-		),
-	],
-};
+**Dynamic Programming** (DP) is an important algorithmic technique in
+Competitive Programming from the gold division to competitions like the
+International Olympiad of Informatics. By breaking down the full task into
+sub-problems, DP avoids the redundant computations of brute force solutions.
 
-<!-- 	new Problem(
-		'Gold',
-		'Moortal Cowmbat',
-		'971',
-		'Hard',
-		true,
-		['DP', 'Prefix Sums', 'All Pairs Shortest Path'],
-		'dp[first i letters form valid combo][last letter] -> time, Floyd Warshall on alphabet, then use prefix sums to speed up transitions.'
-	), -->
-
-**Dynamic Programming** (DP) is an important algorithmic technique in Competitive Programming from the gold division to competitions like the International Olympiad of Informatics. By breaking down the full task into sub-problems, DP avoids the redundant computations of brute force solutions.
-
-Although it is not too difficult to grasp the general ideas behind DP, the technique can be used in a diverse range of problems and is a must-know idea for competitors in the USACO Gold division.
+Although it is not too difficult to grasp the general ideas behind DP, the
+technique can be used in a diverse range of problems and is a must-know idea for
+competitors in the USACO Gold division.
 
 ## General Resources
 
@@ -124,23 +30,20 @@ Although it is not too difficult to grasp the general ideas behind DP, the techn
 		title="DP from Novice to Advanced"
 		url="dynamic-programming-from-novice-to-advanced"
 	>
-		great for all skill levels
+		General tutorial, great for all skill levels
 	</Resource>
 	<Resource source="CPC" title="6 - DP" url="06_dynamic_programming">
-		examples with nonclassical problems
+		Contains examples with nonclassical problems
 	</Resource>
 	<Resource source="CP2" title="3.5 - DP">
-		describes many ways to solve example problem, additional classical examples
+		Describes many ways to solve the example problem + additional classical examples
 	</Resource>
 	<Resource
 		source="HR@HackerRank"
 		title="DP"
 		url="https://www.hackerrank.com/topics/dynamic-programming"
 	>
-		also covers many classical problems
-	</Resource>
-	<Resource source="PAPS" title="9 - DP">
-		starts with DAGs, which are covered in "Topological Sort"
+		Covers classical problems
 	</Resource>
 </Resources>
 
@@ -152,40 +55,51 @@ If you prefer watching videos instead, here are some options:
 		title="Errichto DP #1 - Fibonacci, iteration vs recursion"
 		url="https://www.youtube.com/watch?v=YBSt1jYwVfU"
 	>
-		Great Introductory Errichto DP Video
+		Great introduction video
 	</Resource>
 	<Resource
 		source="Youtube"
 		title="Errichto DP #2 - Coin change, double counting"
 		url="https://www.youtube.com/watch?v=1mtvm2ubHCY"
 	>
-		Another Errichto DP video regarding coin change
+		Errichto DP video regarding coin change
 	</Resource>
 	<Resource
 		source="Youtube"
 		title="Errichto DP #3 - Line of Wines"
 		url="https://www.youtube.com/watch?v=pwpOC1dph6U"
 	>
-		Another Errichto DP video
+		Errichto DP problem editorial
 	</Resource>
 	<Resource
 		source="Youtube"
 		title="WilliamFiset DP Videos"
 		url="https://www.youtube.com/watch?v=_tur2nPkIKo&list=PLDV1Zeh2NRsAsbafOroUBnNV8fhZa7P4u"
 	>
-		more DP videos, but some are more related to interview questions than CP
+		Animated DP videos that pertain to interview questions
 	</Resource>
 </Resources>
 
 <Info title="Pro Tip">
 
-It's usually a good idea to write a slower solution first. For example, if the complexity required for full points is $\mathcal{O}(N)$ and you come up with a simple $\mathcal{O}(N^2)$ solution, then you should definitely type that up first and earn some partial credit. Afterwards, you can rewrite parts of your slow solution until it is of the desired complexity. The slow solution might also serve as something to [stress test](/general/debugging-lang#stress-testing) against.
+It's usually a good idea to write a slower solution first. For example, if the
+complexity required for full points is $\mathcal{O}(N)$ and you come up with a
+simple $\mathcal{O}(N^2)$ solution, then you should definitely type that up
+first and earn some partial credit. Afterwards, you can rewrite parts of your
+slow solution until it is of the desired complexity. The slow solution might
+also serve as something to [stress test](/general/debugging-lang#stress-testing)
+against.
 
 </Info>
 
 ## Classical Problems
 
-The next few modules provide examples of some classical problems, or Dynamic Programming problems which are well known. However, classical doesn't necessarily mean common. Since so many competitors know about these problems, problemsetters rarely set direct applications of them. <!-- Solutions for most of these problems can be found in Chapter 7 of CPH.
+The next few modules provide examples of some classical problems: Dynamic
+Programming problems which are well known. However, classical doesn't
+necessarily mean common. Since so many competitors know about these problems,
+problemsetters rarely set direct applications of them.
+
+<!-- Solutions for most of these problems can be found in Chapter 7 of CPH.
  -->
 
 ### Problemsets
@@ -211,7 +125,7 @@ The next few modules provide examples of some classical problems, or Dynamic Pro
 		url="https://atcoder.jp/contests/dp/tasks"
 		starred
 	>
-		Some tasks are beyond the scope of Gold.
+		Some tasks are beyond the scope of Gold. Editorials for problems A to U can be found [here](https://nwatx.me/post/atcoderdp).
 	</Resource>
 	<Resource
 		source="CF@Codeforces"
@@ -219,12 +133,13 @@ The next few modules provide examples of some classical problems, or Dynamic Pro
 		url="https://codeforces.com/blog/entry/86532"
 	>
 		Beginner-friendly classical problems. Some tasks requires input/output
-		files. You can check the solutions
-		{' '}
-		<a href="https://github.com/Farrius/cp/tree/master/codeforces/gym_contest/dp_div3_practice">
-			Here
-		</a>
-		.
+		files. The solutions can be found <a href="https://github.com/Farrius/div3_dp_practice">here</a> 
+	</Resource>
+	<Resource
+		source="CF@Codeforces"
+		title="DP Practice Problems"
+		url="https://codeforces.com/blog/entry/67679">
+		Good practice problems. You should be able to do most of these after completing the Gold DP module. Some problems might be out of the scope for gold. 
 	</Resource>
 </Resources>
 
@@ -236,11 +151,14 @@ Easier USACO problems that don't require many optimizations or complex states.
 
 <Info title="Note - Ordering of DP Modules">
 
-You are **not** expected to complete all of the problems below before starting the other DP modules. In particular, we recommend that you begin with the "easy" problems from the [knapsack](/gold/knapsack) module if this is your first encounter with DP.
+You are **not** expected to complete all of the problems below before starting
+the other DP modules. In particular, we recommend that you begin with the "easy"
+problems from the [knapsack](/gold/knapsack) module if this is your first
+encounter with DP.
 
 </Info>
 
-<Problems problems={problems.usacoEasy} />
+<Problems problems="usacoEasy" />
 
 ## Harder USACO
 
@@ -252,4 +170,4 @@ You are **not** expected to complete all of the problems below before starting t
 
 <!-- so skip around if you want. -->
 
-<Problems problems={problems.usacoPast} />
+<Problems problems="usacoPast" />

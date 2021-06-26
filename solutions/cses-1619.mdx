@@ -1,0 +1,242 @@
+---
+id: cses-1619
+source: CSES
+title: Restaurant Customers
+author: Michael Cao, Neo Wang
+---
+
+In this problem, we're given $n$ intervals with distinct start and end points,
+and we want to find the maximum number of intervals overlapping some point.
+
+## Solution
+
+We can use prefix sums to determine the number of intervals that cover any
+particular point, and then find the maximum number in the sum.
+
+A naïve approach is to create an array $\texttt{ctr}$, where $\texttt{ctr}[i]$
+is the number of intervals that cover each point $i$. We can do this by looping
+through each interval $[a,b]$ and increasing $\texttt{ctr}[i]$ by $1$ for each
+index in $a \leq i \leq b$.
+
+This results in a $\mathcal{O}(nV)$ time complexity (where
+$0 \leq a \leq b \leq V$), which easily times out (think what happens when the
+interval $[0, V]$ is queried $n$ times).
+
+We can do better. It's easy to see that an increment of $x$ (before computation)
+in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...V]$ (after
+computation) to increase by $x$. We can also "undo" this operation by adding
+$-x$ to $\texttt{arr}[i]$. This concept can be conceptualized through increment
+and decrement points. An increment point increases (and decrement decreases) all
+subsequent cells. Note that our decrement point is located at $B+1$ because the
+interval is inclusive - decrementing at point $B$ turns the interval to
+$[A, B)$.
+
+**Example 1**: Add two to each point in the interval $[2, 4]$
+
+Our array after adding 2 at our increment (start) point (before computation)
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">2</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+	</table>
+</center>
+
+Our prefix sum after adding 2 at our increment (start) point (and computing).
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">2</td>
+			<td>2</td>
+			<td>2</td>
+			<td>2</td>
+		</tr>
+	</table>
+</center>
+
+Our prefix sum after subtracting 2 at our decrement point (and computing).
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>2</td>
+			<td>2</td>
+			<td>2</td>
+			<td className="bg-red-200 dark:bg-red-800">0</td>
+		</tr>
+	</table>
+</center>
+
+Observe that this works for multiple intervals.
+
+**Example 2**: Add two to each point in $[2, 4]$ and one to each point in
+$[1, 3]$
+
+Adding interval $[2, 4]$ with increment point at $2$ and decrement at $4+1=5$
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">2</td>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">-2</td>
+		</tr>
+	</table>
+</center>
+
+Adding interval $[1, 3]$ with increment point at $1$ and decrement at $3+1=4$
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">1</td>
+			<td>2</td>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">-1</td>
+			<td>-2</td>
+		</tr>
+	</table>
+</center>
+
+After computation
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>3</td>
+			<td>3</td>
+			<td>2</td>
+			<td>0</td>
+		</tr>
+	</table>
+</center>
+
+In this problem, our $x$ is fixed at $1$. As a result, when we encounter a
+starting point, we can increment by $1$, and for an endpoint, decrement by $1$.
+We actually cannot compute the prefix sum array directly since $V \leq 10^9$,
+and we will run out of memory when creating an array of size $V$.
+
+Instead, we can either coordinate compress and compute the prefix sum over
+interesting intervals or sweep over the intervals while maintaining a running
+prefix sum.
+
+## Implementation 1
+
+If we put the start and end points into a list and sort them, all we need to do
+is find the max sum of values over all prefixes of the list.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+int main(){
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+
+	int n; cin >> n;
+	vector<pi> vals;
+	for (int i = 0; i < n; i++) {
+		int l, r;
+		cin >> l >> r;
+		vals.pb(mp(l, 1));
+		vals.pb(mp(r, -1));
+	}
+
+	sort(all(vals));
+
+	int sum = 0;
+	int ans = 0;
+	for (auto x : vals) {
+		sum += x.s;
+		ans = max(ans, sum);
+	}
+	cout << ans << '\n';
+}
+```
+
+## Implementation 2
+
+Coordinate compress interval endpoints and only compute the prefix sum array for
+interesting intervals.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> customers;
+	for (int i = 0; i < N; ++i) {
+		int a, b; cin >> a >> b;
+		customers.push_back({a, 1});
+		customers.push_back({b + 1, -1});
+	}
+
+	sort(customers.begin(), customers.end());
+
+	int curr = 0;
+	int l = 0;
+	vector<long long> pfx(2*N + 1); // prefix sum array
+	vector<int> arr(2*N);
+
+	for (int i = 0; i < 2*N; ++i) { // coordinate compression
+		if(i == 0) { customers[i].first = 0; }
+		else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
+		arr[l+1] += customers[i].second;
+		// pfx[l+1] += customers[i].second; implementation without arr, merges all interval end and starts here
+	}
+
+	for (int i = 1; i < 2*N + 1; ++i) {
+		pfx[i] = arr[i] + pfx[i-1];
+		// pfx[i] += pfx[i-1]; implementation without arr
+	}
+
+	long long ret = 0;
+
+	for (int i = 0; i < 2*N + 1; ++i)
+		ret = max(ret, pfx[i]); // find our maximum value
+	cout << ret << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

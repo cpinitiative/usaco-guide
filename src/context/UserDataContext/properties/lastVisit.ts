@@ -1,3 +1,4 @@
+import { setDoc } from 'firebase/firestore';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 
 export type LastVisitAPI = {
@@ -71,7 +72,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
     this.consecutiveVisits = data['consecutiveVisits'] || 1;
     this.numPageviews = data['numPageviews'] || 0;
@@ -85,8 +86,8 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       numPageviews: this.numPageviews,
       pageviewsPerDay: this.pageviewsPerDay,
       setLastVisitDate: (today: number) => {
-        let timeSinceLastVisit = today - this.lastVisitDate;
-        let oneDay = 1000 * 60 * 60 * 20,
+        const timeSinceLastVisit = today - this.lastVisitDate;
+        const oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 
         let newLastVisit = null,
@@ -110,9 +111,9 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
         }
 
         this.numPageviews++;
-        let todayDate = new Date(today);
+        const todayDate = new Date(today);
         todayDate.setHours(0, 0, 0, 0);
-        let todayDateTimestamp = todayDate.getTime();
+        const todayDateTimestamp = todayDate.getTime();
         if (todayDateTimestamp in this.pageviewsPerDay) {
           this.pageviewsPerDay[todayDateTimestamp]++;
         } else {
@@ -120,7 +121,8 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
         }
 
         if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
+          setDoc(
+            this.firebaseUserDoc,
             {
               ...changes,
               numPageviews: this.numPageviews,

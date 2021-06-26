@@ -1,0 +1,113 @@
+---
+id: ioi-19-transfer
+source: IOI 2019
+title: Data Transfer
+author: Andi Qu
+---
+
+Let's just focus on subtask 2, since subtask 1's solution is essentially the
+same.
+
+<Spoiler title="Hint 1">
+
+$9 = \log_2{256} + 1$. This means we can append 8 bits (to store an integer less
+than 256) and an extra bit.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+XOR is your friend in problems involving bitwise operations.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+The extra bit can't store any meaningful information about the original 255
+bits. Can it store something meaningful about the first 8 bits that we append?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Let $x$ initially be 0. Iterate through the original 255 bits and if the $i$-th
+bit is 1, then XOR $x$ with $i$. We can then append the 8 bits of $x$ to the
+data.
+
+This is convenient because we can use $x$ to determine whether any of the first
+263 bits of data that we send have been corrupted, since at most one bit is
+corrupted.
+
+If any of those bits are corrupted though, how do we tell whether it's the first
+255 bits or $x$ that has been corrupted?
+
+Consider the number of 1s in $x$'s bitwise representation. If this number is
+odd, we append 1 to the data as the extra bit, and 0 otherwise. We can then
+compare this extra bit to $x$ if we know that there is a corruption.
+
+```cpp
+#include "transfer.h"
+
+std::vector<int> get_attachment(std::vector<int> source) {
+	std::vector<int> v;
+	int x = 0;
+	for (int i = 0; i < source.size(); i++)
+		if (source[i]) x ^= (i + 1);
+
+	int last = 0;
+	if (source.size() < 64) {
+		for (int i = 0; i < 6; i++) {
+			v.push_back(x & 1);
+			if (x & 1) last = 1 - last;
+			x >>= 1;
+		}
+	} else {
+		for (int i = 0; i < 8; i++) {
+			v.push_back(x & 1);
+			if (x & 1) last = 1 - last;
+			x >>= 1;
+		}
+	}
+	v.push_back(last);
+	return v;
+}
+
+std::vector<int> retrieve(std::vector<int> data) {
+	int last = data.back();
+	data.pop_back();
+	int actual_last = 0, x = 0;
+	if (data.size() < 71) {
+		for (int i = 0; i < 6; i++) {
+			x <<= 1;
+			x += data.back();
+			if (data.back()) actual_last = 1 - actual_last;
+			data.pop_back();
+		}
+	} else {
+		for (int i = 0; i < 8; i++) {
+			x <<= 1;
+			x += data.back();
+			if (data.back()) actual_last = 1 - actual_last;
+			data.pop_back();
+		}
+	}
+
+	if (actual_last != last) return std::vector<int>(data.begin(), data.end());
+
+	int actual_x = 0;
+	for (int i = 0; i < data.size(); i++) {
+		if (data[i]) actual_x ^= (i + 1);
+	}
+
+	int error = actual_x ^ x;
+	if (error == 0) return data;
+
+	data[error - 1] = 1 - data[error - 1];
+	return data;
+}
+```
+
+</Spoiler>
+
+We're essentially just creating a
+[Hamming code](https://en.wikipedia.org/wiki/Hamming_code).

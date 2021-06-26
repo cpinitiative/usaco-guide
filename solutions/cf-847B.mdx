@@ -1,0 +1,58 @@
+---
+id: cf-847B
+source: CF
+title: Preparing for Mergesort
+author: Andi Qu
+---
+
+Simply simulating the process described is potentially $\mathcal{O}(N^2)$, so we
+can't just do that. What if instead of finding the sequences one at a time, we
+find them all at the same time?
+
+Imagine that we already know the sequences for the first $i - 1$ numbers and we
+would like to insert the $i$-th number into one of the sequences.
+
+Which sequence should we insert this number into? We should insert it into the
+first sequence where the last number of this sequence is less than the $i$-th
+number.
+
+The key observation in this problem is that the last numbers of the existing
+sequences form a non-increasing sequence. (To prove this, use a proof by
+contradiction - what if there is an increase at some point?)
+
+This means that we can simply binary search for the sequence that we should
+insert the $i$-th number into!
+
+This algorithm runs in $\mathcal{O}(N \log N)$ time.
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	vector<vector<int>> ans;
+	while (n--) {
+		int a;
+		cin >> a;
+		int l = 0, r = ans.size();
+		while (l != r) {
+			int mid = (l + r) / 2;
+			if (ans[mid].back() < a) r = mid;
+			else l = mid + 1;
+		}
+		if (l == ans.size()) ans.push_back({a});
+		else ans[l].push_back(a);
+	}
+	for (vector<int> i : ans) {
+		for (int j : i) cout << j << ' ';
+		cout << '\n';
+	}
+	return 0;
+}
+```

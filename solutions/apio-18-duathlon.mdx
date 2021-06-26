@@ -1,0 +1,122 @@
+---
+id: apio-18-duathlon
+source: APIO 2018
+title: Duathlon
+author: Andi Qu
+---
+
+## TL;DR
+
+Split the graph into its biconnected components. Then use complementary counting
+and subtract the number of bad triples from the total.
+
+## Intuition
+
+Instead of finding the number of good triples, find the number of bad triples
+and subtract that from the number of all triples. This is called **complementary
+counting** and is useful in many counting problems.
+
+What makes a bad triple? A triple $(S, C, F)$ is bad if the paths from $S$ to
+$C$ and $C$ to $F$ both pass through some bottleneck.
+
+This suggests that our solution will involve articulation points. Since this
+problem is about reachability, we'll probably use biconnected components as
+well.
+
+## Splitting into BCCs
+
+Imagine we have a second graph where:
+
+- Each biconnected component is also a node.
+- Each node in the original graph has an edge going to all biconnected
+  components it's a part of.
+- There are no other edges.
+
+Notice how this graph is a tree - if there is a cycle, then the biconnected
+components that are part of that cycle form a larger biconnected component by
+definition.
+
+## Counting the Bad Triples
+
+Consider some articulation point $P$ that is part of some BCC $B$.
+
+If we remove $P$ from the graph, we are left with the smaller tree containing
+$B$ and several other smaller trees.
+
+If $S$ and $F$ are both in the same smaller tree that doesn't contain $B$, then
+$C$ can't be in the smaller tree containing $B$.
+
+The sum of such pairs $(S, F)$ is thus the number of bad triples each pair
+$(B, P)$ contributes to the total number of bad triples.
+
+We can do a DFS to count these pairs.
+
+## Complexity
+
+Time: $\mathcal{O}(N + M)$.
+
+Memory: $\mathcal{O}(N + M)$.
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+typedef long long ll;
+using namespace std;
+
+ll n, m, N, ans, sz[200001];
+vector<int> graph[100001], bcc_graph[200001], stck;
+int low[100001], tin[100001], timer = 1, bccs = 1;
+
+void dfs(int node, int parent = 0) {
+	low[node] = tin[node] = timer++;
+	stck.push_back(node);
+	N++;
+	for (int i : graph[node]) if (i != parent) {
+		if (tin[i]) low[node] = min(low[node], tin[i]);
+		else {
+			dfs(i, node);
+			low[node] = min(low[node], low[i]);
+			if (low[i] >= tin[node]) {
+				bcc_graph[node].push_back(n + bccs);
+				while (!bcc_graph[n + bccs].size() || bcc_graph[n + bccs].back() != i) {
+					bcc_graph[n + bccs].push_back(stck.back());
+					stck.pop_back();
+				}
+				bccs++;
+			}
+		}
+	}
+}
+
+void dfs2(int node) {
+	sz[node] = (node <= n);
+	for (int i : bcc_graph[node]) {
+		dfs2(i);
+		sz[node] += sz[i];
+		if (node > n) ans -= bcc_graph[node].size() * sz[i] * (sz[i] - 1);
+	}
+	if (node > n) ans -= bcc_graph[node].size() * (N - sz[node]) * (N - sz[node] - 1);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n >> m;
+	while (m--) {
+		int u, v;
+		cin >> u >> v;
+		graph[u].push_back(v);
+		graph[v].push_back(u);
+	}
+	FOR(i, 1, n + 1) if (!tin[i]) {
+		N = 0;
+		dfs(i);
+		ans += N * (N - 1) * (N - 2);
+		dfs2(i);
+	}
+	cout << ans;
+	return 0;
+}
+```

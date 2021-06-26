@@ -1,0 +1,235 @@
+---
+id: lmio-19-triusis
+source: LMIO 2019
+title: Rabbit Carrot
+author: Benjamin Qi, Kevin Sheng
+---
+
+<Spoiler title="Hint">
+
+Instead of minimizing the # of poles whose heights we change, let's maximize
+the # of poles whose heights we do **not** change.
+
+</Spoiler>
+
+<Spoiler title="Condition">
+
+Let the heights of the poles be $a_1,\ldots,a_N$. If the heights of the poles
+numbered $i_1<i_2<\cdots<i_k$ do **not** change, then we should have
+
+$$
+a_{i_j}\le M\cdot i_j
+$$
+
+$$
+a_{i_{j+1}}\le a_{i_j}+M\cdot (i_{j+1}-i_j)
+$$
+
+for all $1\le j<k$.
+
+</Spoiler>
+
+<Spoiler title="Final Steps">
+
+We can rewrite these inequalities above as
+
+$$
+0\le M\cdot i_1-a_{i_1}
+$$
+
+$$
+M\cdot i_j-a_{i_j}\le M\cdot i_{j+1}-a_{i_{j+1}}
+$$
+
+Letting $b_i=M\cdot i-a_i$ for each $1\le i\le N$, it follows that
+
+$$
+0\le b_{i_1}
+$$
+
+$$
+b_{i_j}\le b_{i_{j+1}}
+$$
+
+so we've reduced the problem to finding the longest non-decreasing subsequence
+of $b$!
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int longest_nondec_subseq(const vector<int>& seq) {
+	vector<int> min_endings;
+	for (int i : seq) {
+		// note that we use upper_bound instead of lower_bound bc it just has to be nondecreasing
+		int pos = std::upper_bound(min_endings.begin(), min_endings.end(), i) - min_endings.begin();
+		// standard LIS protocol
+		if (pos == min_endings.size()) {
+			min_endings.push_back(i);
+		} else {
+			min_endings[pos] = i;
+		}
+	}
+	return min_endings.size();
+}
+
+int main() {
+	int pole_num;
+	int jump_height;
+	std::cin >> pole_num >> jump_height;
+	vector<int> poles(pole_num);
+	for (int p = 0; p < pole_num; p++) {
+		std::cin >> poles[p];
+	}
+
+	vector<int> poss_unchanged;
+	for (int i = 1; i <= pole_num; i++) {
+		// only add if it has any hope of being unchanged
+		if (i * jump_height >= poles[i - 1]) {
+			poss_unchanged.push_back(i * jump_height - poles[i - 1]);
+		}
+	}
+	cout << pole_num - longest_nondec_subseq(poss_unchanged) << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.util.ArrayList;
+
+public class triusis {  // any other name breaks the grader lmao
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer inital = new StringTokenizer(read.readLine());
+		int poleNum = Integer.parseInt(inital.nextToken());
+		int jumpHeight = Integer.parseInt(inital.nextToken());
+
+		ArrayList<Integer> possUnchanged = new ArrayList<>();
+		for (int p = 0; p < poleNum; p++) {
+			int pole = Integer.parseInt(read.readLine());
+			// only add if it has any hope of being unchanged
+			if ((p + 1) * jumpHeight >= pole) {
+				possUnchanged.add((p + 1) * jumpHeight - pole);
+			}
+		}
+		System.out.println(poleNum - longestNondecSubseq(possUnchanged));
+	}
+
+	private static int longestNondecSubseq(ArrayList<Integer> arr) {
+		ArrayList<Integer> minEndings = new ArrayList<>();
+		for (int i : arr) {
+			// find the latest spot we can insert it (because it just has to be nondecreasing)
+			int pos = bisectRight(minEndings, i);
+			// standard LIS protocol
+			if (pos == minEndings.size()) {
+				minEndings.add(i);
+			} else {
+				minEndings.set(pos, i);
+			}
+		}
+		return minEndings.size();
+	}
+
+	private static int bisectRight(ArrayList<Integer> arr, int x) {
+		int lo = 0;
+		int hi = arr.size();
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (x < arr.get(mid)) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		return lo;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+from typing import List
+from bisect import bisect_right
+
+
+def longest_nondec_subseq(arr: List[int]) -> int:
+	min_endings = []
+	for i in arr:
+		# bisect_right not left because it just has to be nondecreasing
+		pos = bisect_right(min_endings, i)
+		# standard LIS protocol
+		if pos == len(min_endings):
+			min_endings.append(i)
+		else:
+			min_endings[pos] = i
+	return len(min_endings)
+
+
+pole_num, jump_height = [int(i) for i in input().split()]
+poles = [int(input()) for _ in range(pole_num)]
+
+poss_unchanged = []
+for i, p in enumerate(poles):
+	if (i + 1) * jump_height >= p:
+		poss_unchanged.append((i + 1) * jump_height - p)
+
+print(pole_num - longest_nondec_subseq(poss_unchanged))
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+**Bonus**: Can you solve the case where the rabbit can jump at most $M$ units
+down and at most $M$ units up?
+
+<Spoiler title="Spoiler">
+
+Let $b_i$ be as defined above, and let $c_i=M\cdot i+a_i$. Then we should have
+both $b_{i_j}\le b_{i_{j+1}}$ and $c_{i_j}\le c_{i_{j+1}}$.
+
+So it suffices to find the maximum number of distinct triples of the form
+$(i,b_i,c_i)$ such that
+
+$$
+(i_1,b_{i_1},c_{i_1})\ll (i_2,b_{i_2},c_{i_2})\ll \cdots \ll (i_k,b_{i_k},c_{i_k}),
+$$
+
+where $(x_1,x_2,x_3)\ll (y_1,y_2,y_3)$ means that $x_j\le y_j$ for $j\in [1,3]$.
+First, let's drop the first element of each triple. The answer remains the same
+as if we kept the first element since $b_{i_j}\le b_{i_{j+1}}$ and
+$c_{i_j}\le c_{i_{j+1}}$ together imply that $i_j\le i_{j+1}$.
+
+So now the problem is to find the maximum number of distinct pairs of the form
+$(b_i,c_i)$ such that
+
+$$
+(b_{i_1},c_{i_1})\ll (b_{i_2},c_{i_2})\ll \cdots \ll (b_{i_k},c_{i_k}),
+$$
+
+This can be done by sorting the points $(b_i,c_i)$ in increasing order of
+$b$-coordinate (tiebreaking by $c$-coordinate), and running an LIS algorithm on
+the $c$-coordinates.
+
+</Spoiler>

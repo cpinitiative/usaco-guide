@@ -1,0 +1,67 @@
+---
+id: usaco-665
+source: USACO Bronze 2016 December
+title: The Cow-Signal
+author: Benjamin Qi, Jesse Choe
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowsignal_bronze_dec16.html)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    if(name.size()){
+        freopen((name+".in").c_str(), "r", stdin);
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int main(){
+
+	setIO("cowsignal");
+
+	int M, N, K; cin >> M >> N >> K;
+
+	for(int i = 0; i < M; i++){
+		string signal; cin >> signal;
+		for(int it = 0; it < K; it++){
+			for(int j = 0; j < N; j++){
+				for(int k = 0; k < K; k++){
+					cout << signal[j];
+				}
+			}
+			cout << endl;
+		}
+	}
+
+}
+
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("cowsignal.in","r")
+sys.stdout = open("cowsignal.out","w")
+
+M,N,K = map(int,input().split())
+g = [input() for _ in range(M)]
+for i in range(K*M):
+	for j in range(K*N):
+		print(g[i//K][j//K],end='')
+	print()
+```
+
+</PySection>
+
+</LanguageSection>

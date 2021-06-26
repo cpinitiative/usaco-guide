@@ -1,0 +1,76 @@
+---
+id: joi-16-matryoshka
+source: JOISC 2016
+title: Matryoshka
+author: Andi Qu
+---
+
+**Time Complexity**: $\mathcal O((N + Q) \log N)$
+
+First, let's consider a single query - what's the minimum number of dolls left
+over? A single nested doll consists of some dolls of increasing $R_i$ and $H_i$.
+If we sort the dolls by $H_i$ and only consider their $R_i$, then the answer is
+the minimum number of increasing subsequences needed to "cover" all the dolls.
+
+It's well-known that the minimum number of increasing subsequences is equal to
+the longest non-increasing subsequence (see
+[the LIS module](/gold/lis/#application-2---minimum-number-of-increasing-sequences)
+for more details.) This gives us a way to answer a single query in
+$\mathcal O(N \log N)$ time!
+
+But what if we need to answer multiple queries?
+
+Since we don't have to answer the queries online, let's sort them in decreasing
+order of $A_i$. If $B_i = \infty$ for each query, then we can simply do a line
+sweep on the dolls and queries, inserting dolls into the sequence and updating
+the longest non-increasing subsequence as we get to them.
+
+For variable $B_i$s, we only want the longest non-increasing subsequence for
+some prefixes of the sequence of dolls (not the whole sequence like before). We
+can thus binary search on the DP array from finding the longest non-increasing
+subsequence to find this answer. This is because the DP array stores, for each
+$l$, the doll with the smallest $R_j$ with a non-increasing subsequence ending
+on it with length $l$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+pair<int, int> doll[200000];
+pair<pair<int, int>, int> query[200000];
+int ans[200000];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, q;
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		cin >> doll[i].first >> doll[i].second;
+		doll[i].second = -doll[i].second;
+	}
+	for (int i = 0; i < q; i++) {
+		cin >> query[i].first.first >> query[i].first.second;
+		query[i].second = i;
+	}
+	sort(doll, doll + n, greater<pair<int, int>>());
+	sort(query, query + q, greater<pair<pair<int, int>, int>>());
+
+	vector<pair<int, int>> dp;
+	for (int i = 0, j = 0; i < q; i++) {
+		while (j < n && doll[j].first >= query[i].first.first) {
+			int lds = upper_bound(dp.begin(), dp.end(),
+						make_pair(-doll[j].second, INT_MAX))
+						- dp.begin();
+			if (lds == dp.size()) dp.push_back({-doll[j].second, doll[j].first});
+			else dp[lds] = {-doll[j].second, doll[j].first};
+			j++;
+		}
+		ans[query[i].second] = upper_bound(dp.begin(), dp.end(),
+								make_pair(query[i].first.second, INT_MAX))
+								- dp.begin();
+	}
+
+	for (int i = 0; i < q; i++) cout << ans[i] << '\n';
+	return 0;
+}
+```

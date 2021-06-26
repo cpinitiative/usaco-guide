@@ -4,117 +4,11 @@ title: 'More Operations on Ordered Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
 prerequisites:
   - intro-sets
-description: 'Using iterators with sets, finding the next element smaller or larger than a specified key in a set.'
+description:
+  'Using iterators with sets, finding the next element smaller or larger than a
+  specified key in a set.'
 frequency: 2
 ---
-
-export const problems = {
-	standard: [
-		new Problem(
-			'CSES',
-			'Concert Tickets',
-			'1091',
-			'Easy',
-			false,
-			['Ordered Set'],
-			'cses-1091'
-		),
-		new Problem(
-			'CF',
-			'Cellular Network',
-			'https://codeforces.com/contest/702/problem/C',
-			'Easy',
-			false,
-			['Ordered Set'],
-			'cellular-network'
-		),
-		new Problem(
-			'CSES',
-			'Traffic Lights',
-			'1163',
-			'Normal',
-			true,
-			['Ordered Set'],
-			'cses-1163'
-		),
-		new Problem(
-			'CSES',
-			'Room Allocation',
-			'1164',
-			'Normal',
-			true,
-			['Ordered Set'],
-			'cses-1164'
-		),
-	],
-	sample: [
-		new Problem(
-			'CSES',
-			'Bit Inversions',
-			'1188',
-			'Hard',
-			false,
-			['Ordered Set'],
-			'@B'
-		),
-	],
-	general: [
-		new Problem(
-			'Silver',
-			'Milk Measurement',
-			'763',
-			'Normal',
-			false,
-			['Ordered Set'],
-			'usaco-763'
-		),
-		new Problem(
-			'Silver',
-			'Convention II',
-			'859',
-			'Normal',
-			true,
-			['Ordered Set'],
-			''
-		),
-		new Problem(
-			'Gold',
-			'Snow Boots',
-			'813',
-			'Hard',
-			true,
-			['Linked List', 'Ordered Set'],
-			'usaco-813'
-		),
-		new Problem(
-			'CF',
-			'Mahmoud & Ehab & Function',
-			'contest/862/problem/E',
-			'Very Hard',
-			false,
-			['Ordered Set'],
-			''
-		),
-		new Problem(
-			'CF',
-			'Tournament',
-			'contest/878/problem/C',
-			'Insane',
-			false,
-			['Ordered Set'],
-			''
-		),
-		new Problem(
-			'SAPO',
-			'2018 - Stadium',
-			'https://saco-evaluator.org.za/cms/sapo2018z',
-			'Insane',
-			false,
-			['2P', 'Ordered Set'],
-			'sapo-18-stadium'
-		),
-	],
-};
 
 <!-- Hard, would recommend skipping (1700 on CF) -->
 <!-- Hard, do not attempt until Gold/Plat (2100 on CF) -->
@@ -152,7 +46,8 @@ export const problems = {
 
 <br />
 
-In sets and maps where keys (or elements) are stored in sorted order, accessing or removing the next key higher or lower than some input key `k` is supported.
+In sets and maps where keys (or elements) are stored in sorted order, accessing
+or removing the next key higher or lower than some input key `k` is supported.
 
 ## Using Iterators
 
@@ -163,7 +58,7 @@ In Bronze, we avoided discussion of any set operations involving iterators.
 <CPPSection>
 
 <Resources>
-	<Resource source="CPH" title="4.4 - Set Iterators" starred></Resource>
+	<Resource source="CPH" title="4.4 - Set Iterators" starred />
 </Resources>
 
 </CPPSection>
@@ -196,7 +91,8 @@ while(it.hasNext()){
 }
 ```
 
-Instead of creating an iterator and looping with it like in C++, Java provides a for-each loop which creates a hidden iterator and loops with it automatically:
+Instead of creating an iterator and looping with it like in C++, Java provides a
+for-each loop which creates a hidden iterator and loops with it automatically:
 
 ```java
 Set<Integer> set = new TreeSet<Integer>();
@@ -208,7 +104,10 @@ for (int i : set){
 
 <Warning>
 
-You shouldn't modify sets when traversing it with set iterators like in any other iterators for `Collections` (this **INCLUDES** when using a for-each loop). The only modification possible is using the iterator `remove()` method which can only be used once before calling the `next()` method.
+You shouldn't modify sets when traversing it with set iterators like in any
+other iterators for `Collections` (this **INCLUDES** when using a for-each
+loop). The only modification possible is using the iterator `remove()` method
+which can only be used once before calling the `next()` method.
 
 </Warning>
 
@@ -224,8 +123,10 @@ You shouldn't modify sets when traversing it with set iterators like in any othe
 
 The ordered `set` also allows:
 
-- `lower_bound`: returns an iterator to the least element greater than or equal to some element `k`
-- `upper_bound`: returns an iterator to the least element strictly greater than some element `k`.
+- `lower_bound`: returns an iterator to the least element greater than or equal
+  to some element `k`
+- `upper_bound`: returns an iterator to the least element strictly greater than
+  some element `k`.
 
 ```cpp
 set<int> s;
@@ -245,7 +146,11 @@ s.erase(s.upper_bound(6)); // [1, 2, 14]
 
 <Warning>
 
-Suppose that we replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)`, which was the syntax that we used for vectors in the prerequisite module. This will still output the expected results, but its time complexity is linear in the size of the set `s` rather than logarithmic, so make sure to avoid it!
+Suppose that we replace `s.upper_bound(7)` with
+`upper_bound(begin(s),end(s),7)`, which was the syntax that we used for vectors
+in the prerequisite module. This will still output the expected results, but its
+time complexity is linear in the size of the set `s` rather than logarithmic, so
+make sure to avoid it!
 
 </Warning>
 
@@ -274,14 +179,17 @@ System.out.println(set.lower(5)); // 2
 System.out.println(set.first()); // 1
 System.out.println(set.last()); // 14
 set.remove(set.higher(6)); // [1, 2, 14]
-System.out.println(set.higher(23); // ERROR, no such element exists
+System.out.println(set.higher(23)); // ERROR, no such element exists
 ```
 
 </JavaSection>
 
 </LanguageSection>
 
-One limitation of ordered sets is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. In C++, these operations can be handled using a data structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
+One limitation of ordered sets is that we can't efficiently access the $k^{th}$
+largest element in the set, or find the number of elements in the set greater
+than some arbitrary $x$. In C++, these operations can be handled using a data
+structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
 
 ## Ordered Maps
 
@@ -291,8 +199,10 @@ One limitation of ordered sets is that we can't efficiently access the $k^{th}$ 
 
 The ordered `map` also allows:
 
-- `lower_bound`: returns the iterator pointing to the lowest entry not less than the specified key
-- `upper_bound`: returns the iterator pointing to the lowest entry strictly greater than the specified key respectively.
+- `lower_bound`: returns the iterator pointing to the lowest entry not less than
+  the specified key
+- `upper_bound`: returns the iterator pointing to the lowest entry strictly
+  greater than the specified key respectively.
 
 ```cpp
 map<int, int> m;
@@ -312,7 +222,11 @@ if (m.upper_bound(10) == m.end())
 
 <JavaSection>
 
-The ordered map additionally supports `firstKey` / `firstEntry` and `lastKey` / `lastEntry`, returning the lowest key/entry and the highest key/entry, as well as `higherKey` / `higherEntry` and `lowerKey` / `lowerEntry`, returning the lowest key/entry strictly higher than the specified key, or the highest key/entry strictly lower than the specified key.
+The ordered map additionally supports `firstKey` / `firstEntry` and `lastKey` /
+`lastEntry`, returning the lowest key/entry and the highest key/entry, as well
+as `higherKey` / `higherEntry` and `lowerKey` / `lowerEntry`, returning the
+lowest key/entry strictly higher than the specified key, or the highest
+key/entry strictly lower than the specified key.
 
 ```java
 TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
@@ -342,8 +256,12 @@ A **multiset** is a sorted set that allows multiple copies of the same element.
 
 In addition to all of the regular set operations,
 
-- the `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest.
-- If you want to remove a value _once_, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove _all_ instances of `val`.
+- the `count()` method returns the number of times an element is present in the
+  multiset. However, this method takes time **linear** in the number of matches
+  so you shouldn't use it in a contest.
+- If you want to remove a value _once_, make sure to use
+  `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The
+  latter will remove _all_ instances of `val`.
 
 ```cpp
 multiset<int> ms;
@@ -366,7 +284,12 @@ cout << ms.count(9) << '\n'; // 0
 
 <JavaSection>
 
-While there is no multiset in Java, we can implement one using the `TreeMap` from values to their respective frequencies. We declare the `TreeMap` implementation globally so that we can write functions for adding and removing elements from it. The `first`, `last`, `higher`, and `lower` operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
+While there is no multiset in Java, we can implement one using the `TreeMap`
+from values to their respective frequencies. We declare the `TreeMap`
+implementation globally so that we can write functions for adding and removing
+elements from it. The `first`, `last`, `higher`, and `lower` operations still
+function as intended; just use `firstKey`, `lastKey`, `higherKey`, and
+`lowerKey` respectively.
 
 ```java
 static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
@@ -399,15 +322,21 @@ static void remove(int x){
 
 <Warning>
 
-Priority queues are **not** implemented in the same way as sets and multisets, but they are included in this section because the operations that they perform can also be performed with sets.
+Priority queues are **not** implemented in the same way as sets and multisets,
+but they are included in this section because the operations that they perform
+can also be performed with sets.
 
 </Warning>
 
 <Resources>
-	<Resource source="CSA" url="heaps" title="Heaps"></Resource>
+	<Resource source="CSA" url="heaps" title="Heaps" />
 </Resources>
 
-A **priority queue** (or **heap**) supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $\mathcal{O}(\log N)$ time according to the number of elements in the priority queue. Priority queues are simpler and faster than sets, so you should use them instead whenever possible.
+A **priority queue** (or **heap**) supports the following operations: insertion
+of elements, deletion of the element considered highest priority, and retrieval
+of the highest priority element, all in $\mathcal{O}(\log N)$ time according to
+the number of elements in the priority queue. Priority queues are simpler and
+faster than sets, so you should use them instead whenever possible.
 
 <LanguageSection>
 
@@ -433,7 +362,8 @@ pq.push(6); // [1, 2, 6]
 
 ### Java
 
-In Java, we delete and retrieve the element of **lowest** rather than highest priority.
+In Java, we delete and retrieve the element of **lowest** rather than highest
+priority.
 
 ```java
 PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
@@ -453,11 +383,11 @@ pq.add(6); // [7, 6, 5]
 
 ## Introductory Problems
 
-<Problems problems={problems.standard} />
+<Problems problems="standard" />
 
 ## Harder Example - Bit Inversions
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ### Solution
 
@@ -465,15 +395,22 @@ We'll use iterators extensively.
 
 <Spoiler title="Solution">
 
-Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the elements of `dif` are $0=dif_1<dif_2<\cdots<dif_k=n$, then the longest length is equal to
+Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store
+all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the
+elements of `dif` are $0=dif_1<dif_2<\cdots<dif_k=n$, then the longest length is
+equal to
 
 $$
 \max(dif_2-dif_1,dif_3-dif_2,\ldots,dif_k-dif_{k-1}).
 $$
 
-We can store each of these differences in a multiset `ret`; after each inversion, we'll need to output the maximum element of `ret`.
+We can store each of these differences in a multiset `ret`; after each
+inversion, we'll need to output the maximum element of `ret`.
 
-Inverting a bit at a 0-indexed position `x` corresponds to inserting `x` into `dif` if it not currently present or removing `x` if it is, and then doing the same with `x+1`. Whenever we insert or remove an element of `dif`, we should update `ret` accordingly.
+Inverting a bit at a 0-indexed position `x` corresponds to inserting `x` into
+`dif` if it not currently present or removing `x` if it is, and then doing the
+same with `x+1`. Whenever we insert or remove an element of `dif`, we should
+update `ret` accordingly.
 
 <LanguageSection>
 
@@ -603,9 +540,9 @@ class BitInversion{
 
 </LanguageSection>
 
-<br />
-
-Note that multiset has a high constant factor, so replacing `ret` with a priority queue and an array that stores the number of times each integer occurs in the priority queue reduces the runtime by a factor of 2.
+Note that multiset has a high constant factor, so replacing `ret` with a
+priority queue and an array that stores the number of times each integer occurs
+in the priority queue reduces the runtime by a factor of 2.
 
 <LanguageSection>
 
@@ -728,4 +665,4 @@ class BitInversion{
 
 ## Harder Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

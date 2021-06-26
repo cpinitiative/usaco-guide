@@ -1,0 +1,214 @@
+---
+id: apio-11-FindThePath
+source: APIO 2011
+title: Find the Path
+author: Albert Ye, Andi Qu
+---
+
+## Solution
+
+**Time complexity**: $\mathcal{O}(N^2 \log N)$
+
+The framing of the problem means that it is most likely a Dijkstra problem; the
+hardest part is designing the nodes and edges.
+
+To form the edges, we look at the possible movements that we can take. Firstly,
+we can jump off of the current rectangle and potentially reach a new rectangle.
+Secondly, we can move along our current rectangle.
+
+In this case, every point on the border of a Deehive is a vertex, and edges
+connect adjacent points on Deehives as well as jumps between Deehives. However,
+this would be too many (up to $10^9$) verticies and edges!
+
+To optimize, we can use coordinate compression. Consider the set of significant
+lattices lines: those passing through corners (and edges) of Deehives, the start
+point, or end point. Let significant lattice points be all intersections of
+these lines.
+
+It can be shown that any path (between two significant lattice points) through
+TooDee can be transformed to use only significant lattice lines without
+increasing the length of the path.
+
+<Spoiler title="Reasoning">
+
+Suppose a Dee were to perform a "jump" between two Deehives. This jump starts
+from a significant lattice line and ends at another parallel significant lattice
+line (This is because edges of deehives are significant). If the Dee does not
+already jump along a significant lattice line, then the jump must have occurred
+inside a $1 \times k$ rectangle of significant lattice squares.
+
+Consider the first and last corners of this rectangle visited by the Dee. There
+is no increase in distance if the Dee instead took the shortest route along the
+border of this rectangle, traversing only along significant lattice lines. Note
+that this will always be possible if the initial jump is possible, because no
+Deehive can cover the border of the $1 \times k$ rectangle without covering the
+internal region as well.
+
+</Spoiler>
+
+Build the graph along the significant lattice grid and run Dijkstra's algorithm
+to find the shortest path.
+
+## Code
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+typedef long long ll;
+using namespace std;
+
+struct Rect {
+	int x1, y1, x2, y2;
+	Rect(int a = 0, int b = 0, int c = 0, int d = 0): x1(a), y1(b), x2(c), y2(d) {
+		if (x1 > x2) swap(x1, x2);
+		if (y1 > y2) swap(y1, y2);
+	}
+} rects[1005];
+
+vector<int> xs, ys;
+
+int idx(int val, vector<int> vec) { return lower_bound(vec.begin(), vec.end(), val) - vec.begin(); }
+
+struct Node {
+	int x, y;
+	operator int() const { return x * ys.size() + y; }
+	Node(int a = 0, int b = 0): x(a), y(b) {}
+};
+
+bool cmp_x(pair<Node, int> a, pair<Node, int> b) {
+	if (a.first.y == b.first.y) return a.first.x < b.first.x;
+	return a.first.y < b.first.y;
+}
+bool cmp_y(pair<Node, int> a, pair<Node, int> b) {
+	if (a.first.x == b.first.x) return a.first.y < b.first.y;
+	return a.first.x < b.first.x;
+}
+
+ll dist(Node a, Node b) { return abs(xs[a.x] - xs[b.x]) + abs(ys[a.y] - ys[b.y]); }
+
+vector<Node> graph[5000001];
+bool visited[5000001];
+
+ll dijkstra(Node src, Node dest) {
+	priority_queue<pair<ll, Node>> pq;
+	pq.push({0, src});
+	while (pq.size()) {
+		ll d = pq.top().first;
+		Node curr = pq.top().second;
+		pq.pop();
+		if (curr == dest) return -d;
+		if (!visited[curr]) {
+			visited[curr] = true;
+			for (Node i : graph[curr]) pq.push({d - dist(curr, i), i});
+		}
+	}
+	return -1;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int t;
+	cin >> t;
+	while (t--) {
+		int sx, sy, dx, dy;
+		cin >> sx >> sy >> dx >> dy;
+		int n;
+		cin >> n;
+		FOR(i, 0, n) {
+			int a, b, c, d;
+			cin >> a >> b >> c >> d;
+			rects[i] = Rect(a, b, c, d);
+		}
+		rects[n++] = Rect(sx, sy, sx, sy);
+		rects[n++] = Rect(dx, dy, dx, dy);
+
+		// Coordinate compression
+		xs.clear(); ys.clear();
+		FOR(i, 0, n) {
+			xs.push_back(rects[i].x1); xs.push_back(rects[i].x2);
+			ys.push_back(rects[i].y1); ys.push_back(rects[i].y2);
+		}
+		sort(xs.begin(), xs.end());
+		xs.erase(unique(xs.begin(), xs.end()), xs.end());
+		sort(ys.begin(), ys.end());
+		ys.erase(unique(ys.begin(), ys.end()), ys.end());
+
+		FOR(i, 0, n) {
+			rects[i].x1 = idx(rects[i].x1, xs);
+			rects[i].x2 = idx(rects[i].x2, xs);
+			rects[i].y1 = idx(rects[i].y1, ys);
+			rects[i].y2 = idx(rects[i].y2, ys);
+		}
+		sx = idx(sx, xs); sy = idx(sy, ys);
+		dx = idx(dx, xs); dy = idx(dy, ys);
+
+		// Reset the graph
+		FOR(i, 0, xs.size() * ys.size()) {
+			graph[i].clear();
+			visited[i] = false;
+		}
+
+		// Connect adjancent points on rectangles
+		FOR(i, 0, n) {
+			FOR(x, rects[i].x1, rects[i].x2) for (int y : {rects[i].y1, rects[i].y2}) {
+				graph[Node(x, y)].push_back(Node(x + 1, y));
+				graph[Node(x + 1, y)].push_back(Node(x, y));
+			}
+			FOR(y, rects[i].y1, rects[i].y2) for (int x : {rects[i].x1, rects[i].x2}) {
+				graph[Node(x, y)].push_back(Node(x, y + 1));
+				graph[Node(x, y + 1)].push_back(Node(x, y));
+			}
+		}
+
+		// Line sweep to connect points between different rectangles
+		vector<pair<Node, int>> x_events;
+		FOR(i, 0, n) {
+			FOR(y, rects[i].y1, rects[i].y2 + 1) {
+				x_events.push_back({{rects[i].x1, y}, 1});
+				x_events.push_back({{rects[i].x2, y}, -1});
+			}
+		}
+		sort(x_events.begin(), x_events.end(), cmp_x);
+		int cnt = 0;
+		FOR(i, 0, x_events.size()) {
+			if (!cnt && i && x_events[i].first.y == x_events[i - 1].first.y) {
+				graph[x_events[i].first].push_back(x_events[i - 1].first);
+				graph[x_events[i - 1].first].push_back(x_events[i].first);
+			}
+			cnt += x_events[i].second;
+		}
+
+		vector<pair<Node, int>> y_events;
+		FOR(i, 0, n) {
+			FOR(x, rects[i].x1, rects[i].x2 + 1) {
+				y_events.push_back({{x, rects[i].y1}, 1});
+				y_events.push_back({{x, rects[i].y2}, -1});
+			}
+		}
+		sort(y_events.begin(), y_events.end(), cmp_y);
+		cnt = 0;
+		FOR(i, 0, y_events.size()) {
+			if (!cnt && i && y_events[i].first.x == y_events[i - 1].first.x) {
+				graph[y_events[i].first].push_back(y_events[i - 1].first);
+				graph[y_events[i - 1].first].push_back(y_events[i].first);
+			}
+			cnt += y_events[i].second;
+		}
+
+		// Dijkstra
+		ll ans = dijkstra({sx, sy}, {dx, dy});
+		if (~ans) cout << ans << '\n';
+		else cout << "No Path\n";
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

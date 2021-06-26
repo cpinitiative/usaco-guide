@@ -5,7 +5,9 @@ author: Benjamin Qi
 description: '?'
 ---
 
-[Pragmas](https://gcc.gnu.org/onlinedocs/cpp/Pragmas.html) provide additional information to the compiler. Sometimes you'll see the following lines at the beginning of a program.
+[Pragmas](https://gcc.gnu.org/onlinedocs/cpp/Pragmas.html) provide additional
+information to the compiler. Sometimes you'll see the following lines at the
+beginning of a program.
 
 ```cpp
 #pragma GCC optimize ("Ofast")
@@ -19,28 +21,22 @@ description: '?'
 		source="GCC"
 		title="3.11 - Optimization Options"
 		url="https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html"
-	>
-		{' '}
-	</Resource>
+	/>
 	<Resource
 		source="KACTL"
 		title="10.5.2 - Pragmas"
 		url="https://github.com/kth-competitive-programming/kactl/blob/master/kactl.pdf"
-	></Resource>
+	 />
 	<Resource
 		source="CF"
 		title="What do SSE/AVX do?"
 		url="https://codeforces.com/blog/entry/54682?#comment-387553"
-	>
-		{' '}
-	</Resource>
+	/>
 	<Resource
 		source="CF"
 		title="Speeding Up for Naive Algorithm"
 		url="https://codeforces.com/blog/entry/66279"
-	>
-		{' '}
-	</Resource>
+	/>
 	<Resource
 		source="CodinGame"
 		title="SSE & AVX Vectorization"
@@ -52,16 +48,23 @@ description: '?'
 
 According to KACTL:
 
-- `#pragma GCC optimize ("Ofast")` will make GCC auto-vectorize for loops and optimizes floating points better (assumes associativity and turns off [denormals](https://en.wikipedia.org/wiki/Denormal_number)).
-- `#pragma GCC target ("avx,avx2")` can double performance of vectorized code, but causes crashes on old machines.
+- `#pragma GCC optimize ("Ofast")` will make GCC auto-vectorize for loops and
+  optimizes floating points better (assumes associativity and turns off
+  [denormals](https://en.wikipedia.org/wiki/Denormal_number)).
+- `#pragma GCC target ("avx,avx2")` can double performance of vectorized code,
+  but causes crashes on old machines.
 
  <!-- - Also consider the older `#pragma GCC target ("sse4")`. -->
 
 According to CodinGame,
 
-> Modern CPUs can execute up to four instructions at the same time if they are independent.
+> Modern CPUs can execute up to four instructions at the same time if they are
+> independent.
 
-Can also check Wikipedia articles about [SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) and [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) (AVX is the more advanced version).
+Can also check Wikipedia articles about
+[SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) and
+[AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) (AVX is the more
+advanced version).
 
 <!-- <IncompleteSection>
 
@@ -80,9 +83,12 @@ The occasional Div 1 E is trivialized by this!
   - [no pragmas](https://codeforces.com/contest/855/submission/89815214): TLE 30
   - [`O3`](https://codeforces.com/contest/855/submission/89815479): 3509ms
   - [`Ofast`](https://codeforces.com/contest/855/submission/89815327): 3525ms
-  - [`Ofast`, `avx`](https://codeforces.com/contest/855/submission/72962496): 2339ms
-  - [`Ofast`, `avx2`](https://codeforces.com/contest/855/submission/72962508): 1544ms
-  - [`Ofast`, `sse4`](https://codeforces.com/contest/855/submission/72962469): 2479ms
+  - [`Ofast`, `avx`](https://codeforces.com/contest/855/submission/72962496):
+    2339ms
+  - [`Ofast`, `avx2`](https://codeforces.com/contest/855/submission/72962508):
+    1544ms
+  - [`Ofast`, `sse4`](https://codeforces.com/contest/855/submission/72962469):
+    2479ms
 - [Welcome home, Chtholly](https://codeforces.com/contest/896/submission/47824007)
   - only `Ofast`: TLE
   - `avx`: 2354ms
@@ -94,19 +100,29 @@ The occasional Div 1 E is trivialized by this!
 
 ### Where Can I Use These?
 
-Whether these pragmas are supported depends on the computer architecture (see [here](https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#x86-Options)).
+Whether these pragmas are supported depends on the computer architecture (see
+[here](https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#x86-Options)).
 
 - `Ofast` with `avx2` works on CF and DMOJ.
-- `sse4` and `avx` cause runtime errors on InfoArena and [Szkopuł](https://szkopul.edu.pl/). However, `#pragma GCC optimize("unroll-loops")` seems to work on InfoArena (compare [TLE](https://www.infoarena.ro/job_detail/2641920) and [AC](https://www.infoarena.ro/job_detail/2641921)).
+- `sse4` and `avx` cause runtime errors on InfoArena and
+  [Szkopuł](https://szkopul.edu.pl/). However,
+  `#pragma GCC optimize("unroll-loops")` seems to work on InfoArena (compare
+  [TLE](https://www.infoarena.ro/job_detail/2641920) and
+  [AC](https://www.infoarena.ro/job_detail/2641921)).
 - I don't have reason to believe that these work for USACO.
 
 ### Why Should I _Not_ Use These?
 
 From [this comment](https://codeforces.com/blog/entry/66279?#comment-502965):
 
-> To everyone who doesn't know what's going on here: seems that topicstarter doesn't know it either, and it looks like some magic for him.
+> To everyone who doesn't know what's going on here: seems that topicstarter
+> doesn't know it either, and it looks like some magic for him.
 
-It's **not** a good idea to include these pragmas at the start of every program. As mentioned above, these pragmas cause RE on some sites. Other times, they are just ignored by the compiler, or even worse, they might make your code slower instead of faster (ex. see [here](https://stackoverflow.com/questions/28875325/gcc-optimization-flag-o3-makes-code-slower-than-o2)).
+It's **not** a good idea to include these pragmas at the start of every program.
+As mentioned above, these pragmas cause RE on some sites. Other times, they are
+just ignored by the compiler, or even worse, they might make your code slower
+instead of faster (ex. see
+[here](https://stackoverflow.com/questions/28875325/gcc-optimization-flag-o3-makes-code-slower-than-o2)).
 
 <!-- Anyways, keep in mind that these rarely make a difference in competitive programming. -->
 

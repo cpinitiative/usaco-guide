@@ -1,0 +1,135 @@
+---
+id: joi-18-airline
+source: JOI 2018
+title: Airline Map
+author: Andi Qu
+---
+
+<Spoiler title="Hint 1">
+
+There is no limit on the number of edges in the graph we send.
+
+Since extracting edge data is so difficult, we probably want to send the
+original graph plus some extra vertices. Now, the main problem becomes
+identifying the node numbers.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+$2^{10} \approx 1000$, so this suggests that we should encode bitwise data
+somehow.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+$\frac{N}{2} > N - 512$ when $N \leq 1000$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+In addition to the original graph, send 10 extra "bit-nodes", where bit-node $i$
+and node $j$ are connected only if the $i$-th bit of $j$ is 1. If we can
+identify these bit-nodes and their numbers, then we are done.
+
+Connect bit-node $i$ with bit-node $i + 1$ to form a "chain" so that we can
+order them if we can find them.
+
+We still have two extra nodes to send, so do the following:
+
+- Connect the first extra node with each non-bit-node.
+- Connect the second extra node with the first extra node.
+
+The degree of the first extra node will be $N + 1$ while the degree of the
+second extra node will be 1. This means that we can uniquely identify them and
+thus also the bit-nodes!
+
+We still need to be able to deduce which end of the bit-node "chain" is bit-node
+1 though. The key observation here is that bit-node 1 will always have a greater
+degree than bit-node 10. We can thus identify both the bit-nodes and their
+numbers.
+
+This solution sends exactly 12 extra nodes.
+
+`Anna.cpp`
+
+```cpp
+#include <vector>
+#include "Alicelib.h"
+
+void Alice(int N, int M, int A[], int B[]) {
+	std::vector<std::pair<int, int>> edges;
+	// Original graph
+	for (int i = 0; i < M; i++) edges.push_back({A[i], B[i]});
+	// Bit nodes to find node numbers
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < N; j++) {
+			if (j & (1 << i)) edges.push_back({N + i, j});
+		}
+		if (i < 9) edges.push_back({N + i, N + i + 1});
+	}
+	// Special vertex connected to all nodes but bit nodes
+	for (int i = 0; i < N; i++) edges.push_back({N + 10, i});
+	// Other vertex to identify the special vertex
+	edges.push_back({N + 11, N + 10});
+	// Send the graph
+	InitG(N + 12, edges.size());
+	for (int i = 0; i < edges.size(); i++)
+		MakeG(i, edges[i].first, edges[i].second);
+}
+```
+
+`Bob.cpp`
+
+```cpp
+#include <vector>
+#include "Boblib.h"
+
+std::vector<int> graph[1012];
+bool adj[1012][1012], is_bit[1012], visited[1012];
+int actual[1012];
+
+void Bob(int V, int U, int C[], int D[]) {
+	for (int i = 0; i < U; i++) {
+		graph[C[i]].push_back(D[i]);
+		graph[D[i]].push_back(C[i]);
+		adj[C[i]][D[i]] = adj[D[i]][C[i]] = true;
+	}
+	// Find the 2 special vertices
+	int special;
+	for (int i = 0; i < V; i++) {
+		if (graph[i].size() == 1 && graph[graph[i][0]].size() == V - 11) {
+			special = graph[i][0];
+			break;
+		}
+	}
+	is_bit[special] = true;
+	// Identify the bit vertices
+	int last_bit = special;
+	for (int i = 0; i < V; i++) {
+		if (i != special && !adj[i][special]) {
+			is_bit[i] = true;
+			if (graph[i].size() <= graph[last_bit].size()) last_bit = i;
+		}
+	}
+	for (int i = 9; ~i; i--) {
+		visited[last_bit] = true;
+		for (int j : graph[last_bit]) actual[j] += 1 << i;
+		for (int j : graph[last_bit]) if (is_bit[j] && !visited[j]) {
+			last_bit = j;
+			break;
+		}
+	}
+	// Construct the graph again
+	std::vector<std::pair<int, int>> edges;
+	for (int i = 0; i < V; i++) for (int j = i + 1; j < V; j++) {
+		if (adj[i][j] && !is_bit[i] && !is_bit[j]) edges.push_back({actual[i], actual[j]});
+	}
+	InitMap(V - 12, edges.size());
+	for (std::pair<int, int> i : edges) MakeMap(i.first, i.second);
+}
+```
+
+</Spoiler>

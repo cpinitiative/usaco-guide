@@ -1,80 +1,22 @@
 ---
 id: intro-greedy
 title: Introduction to Greedy Algorithms
-author: Darren Yao, Melody Yu, Benjamin Qi
-description: 'Selecting the choice that seems to be the best at the moment at every step of your algorithm.'
+author: Darren Yao, Benjamin Qi
+description:
+  'Selecting the choice that seems to be the best at the moment at every step of
+  your algorithm.'
 frequency: 2
 prerequisites:
   - ad-hoc
   - intro-ds
 ---
 
-export const problems = {
-	tutorial: [
-		new Problem(
-			'Bronze',
-			'Mad Scientist',
-			'1012',
-			'Easy',
-			false,
-			['Greedy'],
-			'See below.'
-		),
-	],
-	general: [
-		new Problem(
-			'Bronze',
-			'Cow Tipping',
-			'689',
-			'Normal',
-			false,
-			['Greedy'],
-			'usaco-689'
-		),
-		new Problem(
-			'Bronze',
-			'Even More Odd Photos',
-			'1084',
-			'Normal',
-			false,
-			['Greedy'],
-			''
-		),
-		new Problem(
-			'Bronze',
-			'Out of Place',
-			'785',
-			'Hard',
-			true,
-			['Greedy'],
-			'usaco-785'
-		),
-		new Problem(
-			'Bronze',
-			'Race',
-			'989',
-			'Very Hard',
-			true,
-			['Greedy'],
-			'Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K.'
-		),
-		new Problem(
-			'Silver',
-			'Rest Stops',
-			'810',
-			'Very Hard',
-			true,
-			['Greedy'],
-			''
-		),
-	],
-};
-
-<!-- new Problem('Bronze', 'Social Distancing 1', '1035', 'Hard', false, [], ''), -->
-
 ## Greedy Algorithms
 
-Some USACO Bronze problems that appear to be ad hoc can actually be solved using **greedy** algorithms. This idea will be covered in a future [module](/silver/greedy-sorting), but we'll introduce the general mindset in this section.
+Some USACO Bronze problems that appear to be ad hoc can actually be solved using
+**greedy** algorithms. This idea will be covered in a future
+[module](/silver/greedy-sorting), but we'll introduce the general mindset in
+this section.
 
 <Resources>
 	<Resource source="CPH" title="6.1 - Coin Problem" starred>
@@ -84,35 +26,118 @@ Some USACO Bronze problems that appear to be ad hoc can actually be solved using
 
 <Warning>
 
-True **"greedy"** problems start to show up in silver, though the greedy mindset can be very helpful for bronze problems.
+True **"greedy"** problems start to show up in silver, though the greedy mindset
+can be very helpful for bronze problems.
 
 </Warning>
 
 From the above:
 
-> A **greedy** algorithm constructs a solution to the problem by always making a choice that looks the best at the moment. A greedy algorithm never takes back its choices, but directly constructs the final solution. For this reason, greedy algorithms are usually very efficient.
+> A **greedy** algorithm constructs a solution to the problem by always making a
+> choice that looks the best at the moment. A greedy algorithm never takes back
+> its choices, but directly constructs the final solution. For this reason,
+> greedy algorithms are usually very efficient.
 
-**Greedy** does not refer to a single algorithm, but rather a way of thinking that is applied to problems; there's no one way to do greedy algorithms. Hence, we use a selection of well-known examples to help you understand the greedy paradigm.
+**Greedy** does not refer to a single algorithm, but rather a way of thinking
+that is applied to problems; there's no one way to do greedy algorithms. Hence,
+we use a selection of well-known examples to help you understand the greedy
+paradigm.
 
-### Example: Mad Scientist
+### Example - Mad Scientist
 
-<FocusProblem problem={problems.tutorial[0]} />
+<FocusProblem problem="tutorial" />
 
 Try to come up with a greedy algorithm for problem above.
 
 <Spoiler title="Correct Greedy Algorithm">
 
-In this problem, the correct greedy solution is to continually flip the longest possible ranges of mismatching cows.
+In this problem, the correct greedy solution is to continually flip the longest
+possible ranges of mismatching cows.
 
-Mad Scientist has an excellent [editorial](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html) with a video solution and intuitive proof.
+Mad Scientist has an excellent
+[editorial](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html)
+with a video solution and intuitive proof.
 
-It is highly recommended you read it to gain a better understanding of the greedy algorithm.
+It is highly recommended you read it to gain a better understanding of the
+greedy algorithm.
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
 <LanguageSection>
+
+<CPPSection>
+
+From the
+[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+using ll = long long;
+
+int main() {
+	freopen("breedflip.in", "r", stdin);
+	freopen("breedflip.out", "w", stdout);
+	ll n;
+	cin >> n;
+	string A;
+	string B;
+	cin >> A >> B;
+	ll ans = 0;
+	bool mismatched = false;
+	for(ll i=0; i<n; i++) {
+		if(A[i] != B[i]) {
+			if(!mismatched) {
+				mismatched = true;
+				ans++;
+			}
+		} else {
+			mismatched = false;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+From the
+[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
+
+```java
+import java.io.*;
+import java.util.*;
+public class Solution {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("breedflip.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("breedflip.out")));
+		int n = Integer.parseInt(br.readLine());
+		char[] a = br.readLine().toCharArray();
+		char[] b = br.readLine().toCharArray();
+		int ret = 0;
+		while(!new String(a).equals(new String(b))) {
+			ret++;
+			int lhs = 0;
+			while(a[lhs] == b[lhs]) lhs++;
+			int rhs = n-1;
+			while(a[rhs] == b[rhs]) rhs--;
+			for(int i = lhs; i <= rhs; i++) {
+				if(a[i] == 'G') a[i] = 'H';
+				else a[i] = 'G';
+			}
+		}
+		pw.println(ret);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
 
 <PySection>
 
@@ -127,46 +152,21 @@ s = [False]+[x != y for x,y in zip(a,b)] # difference list
 print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:])))
 ```
 
-<!--
-```python
-fin, fout = open('breedflip.in'), open('breedflip.out', 'w')
-
-n = int(fin.readline())
-
-a = fin.readline()
-b = fin.readline()
-
-s = []
-for x in range(n):
-	if a[x] != b[x]:
-		s.append(1)
-	else:
-		s.append(0)
-
-def count(x,s):
-	count = 0
-	for f in range(len(s) - 1):
-		if s[f] == int(x[0]) and s[f+ 1] == int(x[1]):
-			count += 1
-
-	return count
-
-s = [0] + s + [0]
-fout.write(str((count('01', s) + count('10', s))//2))
-```
- -->
-
 </PySection>
 
 </LanguageSection>
 
 </Spoiler>
 
-Note that not all greedy problems necessarily require mathematical proofs of correctness. It is often sufficent to intuitively convince yourself your algorithm is correct.
+Note that not all greedy problems necessarily require mathematical proofs of
+correctness. It is often sufficent to intuitively convince yourself your
+algorithm is correct.
 
 <Info title="Pro Tip">
 
-Sometimes, if the algorithm is easy enough to implement, you don't even need to convince yourself it's correct; just code it and see if it passes. Competitive programmers refer to this as "Proof by AC," or "Proof by Accepted."
+Sometimes, if the algorithm is easy enough to implement, you don't even need to
+convince yourself it's correct; just code it and see if it passes. Competitive
+programmers refer to this as "Proof by AC," or "Proof by Accepted."
 
 <!-- Don't overuse it though? -->
 
@@ -174,6 +174,6 @@ Sometimes, if the algorithm is easy enough to implement, you don't even need to 
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 <!-- Anything else major that needs to be added? Bronze Ad Hoc is not very complicated. -->

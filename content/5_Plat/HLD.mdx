@@ -1,7 +1,7 @@
 ---
 id: hld
 title: 'Heavy-Light Decomposition'
-author: Benjamin Qi
+author: Benjamin Qi, Andrew Cheng
 prerequisites:
   - tree-euler
   - RURQ
@@ -9,112 +9,194 @@ description: Path and subtree updates and queries.
 frequency: 1
 ---
 
-export const problems = {
-	sample: [
-		new Problem(
-			'CSES',
-			'Company Queries II',
-			'1688',
-			'Easy',
-			false,
-			['LCA'],
-			"Pure implementation; see Benq's library code, it has a function for LCA. Though this problem can be solved with binary lifting as well, you should do it with HLD to get practice."
-		),
-		new Problem(
-			'HR',
-			'Subtrees & Paths',
-			'https://www.hackerrank.com/challenges/subtrees-and-paths',
-			'Easy',
-			false,
-			['HLD', 'RURQ'],
-			"See adamant's blog."
-		),
-	],
-	no: [
-		new Problem(
-			'Gold',
-			'Milk Visits',
-			'970',
-			'Easy',
-			false,
-			['HLD'],
-			"This has a linear time solution, but it's easier to make modifications to the HLD template."
-		),
-		new Problem('Gold', 'Cow Land', '921', 'Easy', false, ['PURS', 'HLD'], ''),
-		new Problem('Plat', 'Disruption', '842', 'Normal', false, ['HLD'], ''),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Path Queries II',
-			'2134',
-			'Easy',
-			false,
-			[],
-			'cses-2134'
-		),
-		new Problem(
-			'Old Gold',
-			'Grass Planting',
-			'102',
-			'Normal',
-			false,
-			['HLD', 'PURS'],
-			''
-		),
-		new Problem(
-			'YS',
-			'Vertex Set Path Composite',
-			'vertex_set_path_composite',
-			'Normal',
-			false,
-			['HLD', 'SegTree'],
-			'Function order matters! Maintain two segment trees, one for going up and the other for going down the tree.'
-		),
-		new Problem(
-			'CF',
-			'Tree Queries',
-			'contest/1254/problem/D',
-			'Hard',
-			false,
-			['HLD'],
-			'maybe hard to see why this applies here, gives $\mathcal{O}(N\\log N)$ while most people solved it with some factor of $\\sqrt N$'
-		),
-		new Problem(
-			'TLX',
-			'Tree Game',
-			'https://tlx.toki.id/problems/troc-14/H/',
-			'Hard',
-			false,
-			[],
-			'@@'
-		),
-		new Problem(
-			'JOI',
-			'2013 - Synchronization',
-			'https://oj.uz/problem/view/JOI13_synchronization',
-			'Hard',
-			false,
-			['HLD'],
-			'$\mathcal{O}(N\\log N)$ :D'
-		),
-		new Problem(
-			'JOI',
-			'2018 - Cats or Dogs',
-			'https://oj.uz/problem/view/JOI18_catdog',
-			'Very Hard',
-			false,
-			['HLD'],
-			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2018/2018-open-catdog-sol-en.pdf'
-		),
-	],
-};
+<FocusProblem problem="sample" />
 
-<FocusProblem problem={problems.sample[0]} />
-
-<FocusProblem problem={problems.sample[1]} />
+<FocusProblem problem="sample2" />
 
 ## Tutorial
+
+Suppose that you want to support the following operations on a tree:
+
+- Update all nodes along the path from node $x$ to node $y$.
+
+- Find the sum, maximum, minimum (or any other operation that satisfies the
+  associative property) along the path from node $x$ to node $y$.
+
+Heavy Light Decomposition (or HLD) supports both operations efficiently.
+
+### Definitions
+
+- A **heavy child** of a node is the child with the largest subtree size rooted
+  at the child.
+- A **light child** of a node is any child that is not a **heavy child**.
+- A **heavy edge** connects a node to its **heavy child**.
+- A **light edge** connects a node to any of its **light children**.
+- A **heavy path** is the path formed by a collection **heavy edges**.
+- A **light path** is the path formed by a collection **light edges**.
+
+### Properties
+
+**Any path from node $x$ to node $y$ on the tree can pass through at most
+  $\mathcal{O}(\log N)$ light edges.**
+
+<Spoiler title="Proof">
+
+Consider a path from node $x$ to node $y$, this path can be broken down into a
+path from node $x$ to $LCA(x,y)$ and another path from node $y$ to $LCA(x,y)$.
+
+$LCA(x,y)$ must be an ancestor of both $x$ and $y$ by definition. Hence now we
+only need to prove that the path from any node to any of its ancestors can only
+pass through $\mathcal{O}(\log N)$ light edges to prove the property above.
+
+Suppose that a light edge connects node $x$ and node $y$, where $y$ is a child
+of $x$. By the definition of light edge, $y$ must be a light child of $x$. This
+means that there has to be another child of $x$ with a larger subtree size than
+$y$, or else $y$ will become the heavy child of $x$. Hence the size of the
+subtree rooted at $x$ must be at least two times of the size of the subtree
+rooted at $y$. 
+
+Since the subtree size of a node can not exceed the total number
+of nodes $N$, the doubling process can only happen at most $\mathcal{O}(\log N)$
+times when traversing up from an arbitrary node to its parent along a light
+edge. Given this, we now know that there could be at most $\mathcal{O}(\log N)$
+light edges in both the path from $x$ to $LCA(x,y)$ and the path from $LCA(x,y)$
+to $y$. Hence there are at most $\mathcal{O}(\log N + \log N)$ =
+$\mathcal{O}(\log N)$ light edges in the path from an arbitrary node $x$ to an
+arbitrary node $y$.
+
+</Spoiler>
+
+Since a heavy path can only be broken by a light edge (or else the edge will be a part of the heavy
+path), we can know that there are at most $\mathcal{O}(\log N)$ heavy paths on
+any path from an arbitrary node $x$ to an arbitrary node $y$.
+
+In addition, by using segment trees (or any other RURQ data structure) we can
+calculate the value of any consecutive interval on any heavy path in
+$\mathcal{O}(\log N)$ time.
+
+Since there are at most $\mathcal{O}(\log N)$ heavy paths and
+$\mathcal{O}(\log N)$ light edges, computing the value on the path from node $x$
+to node $y$ will take $\mathcal{O}(\log^2 N + \log N)$ = $\mathcal{O}(\log^2 N)$
+time. We can answer $Q$ queries in $\mathcal{O}(Q \log^2 N)$ time.
+
+We can solve the focus problem "Path Queries II" using Heavy Light
+Decomposition:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include "bits/stdc++.h"
+using namespace std;
+
+const int N = 2e5+5;
+const int D = 19;
+const int S = (1<<D);
+
+int n, q, v[N];
+vector<int> adj[N];
+
+int sz[N], p[N], dep[N];
+int st[S], id[N], tp[N];
+
+void update(int idx, int val) {
+	st[idx += n] = val;
+	for (idx /= 2; idx; idx /= 2)
+		st[idx] = max(st[2 * idx], st[2 * idx + 1]);
+}
+
+int query(int lo, int hi) {
+	int ra = 0, rb = 0;
+	for (lo += n, hi += n + 1; lo < hi; lo /= 2, hi /= 2) {
+		if (lo & 1)
+			ra = max(ra, st[lo++]);
+		if (hi & 1)
+			rb = max(rb, st[--hi]);
+	}
+	return max(ra, rb);
+}
+
+int dfs_sz(int cur, int par) {
+	sz[cur] = 1;
+	p[cur] = par;
+	for(int chi : adj[cur]) {
+		if(chi == par) continue;
+		dep[chi] = dep[cur] + 1;
+		p[chi] = cur;
+		sz[cur] += dfs_sz(chi, cur);
+	}
+	return sz[cur];
+}
+
+int ct = 1;
+
+void dfs_hld(int cur, int par, int top) {
+	id[cur] = ct++;
+	tp[cur] = top;
+	update(id[cur], v[cur]);
+	int h_chi = -1, h_sz = -1;
+	for(int chi : adj[cur]) {
+		if(chi == par) continue;
+		if(sz[chi] > h_sz) {
+			h_sz = sz[chi];
+			h_chi = chi;
+		}
+	}
+	if(h_chi == -1) return;
+	dfs_hld(h_chi, cur, top);
+	for(int chi : adj[cur]) {
+		if(chi == par || chi == h_chi) continue;
+		dfs_hld(chi, cur, chi);
+	}
+}
+
+int path(int x, int y){
+	int ret = 0;
+	while(tp[x] != tp[y]){
+		if(dep[tp[x]] < dep[tp[y]])swap(x,y);
+		ret = max(ret, query(id[tp[x]],id[x]));
+		x = p[tp[x]];
+	}
+	if(dep[x] > dep[y])swap(x,y);
+	ret = max(ret, query(id[x],id[y]));
+	return ret;
+}
+
+int main() {
+	scanf("%d%d", &n, &q);
+	for(int i=1; i<=n; i++) scanf("%d", &v[i]);
+	for(int i=2; i<=n; i++) {
+		int a, b;
+		scanf("%d%d", &a, &b);
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	dfs_sz(1, 1);
+	dfs_hld(1, 1, 1);
+	while(q--) {
+		int t;
+		scanf("%d", &t);
+		if(t == 1) {
+			int s, x;
+			scanf("%d%d", &s, &x);
+			v[s] = x;
+			update(id[s], v[s]);
+		} else {
+			int a, b;
+			scanf("%d%d", &a, &b);
+			int res = path(a,b);
+			printf("%d ", res);
+		}
+	}
+}
+
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Resources>
 	<Resource
@@ -125,7 +207,11 @@ export const problems = {
 	>
 		For an alternate implementation, see below
 	</Resource>
-	<Resource source="CF" title="galen_colin - HLD" url="https://codeforces.com/blog/entry/81317">
+	<Resource
+		source="CF"
+		title="galen_colin - HLD"
+		url="https://codeforces.com/blog/entry/81317"
+	>
 		blog + video for USACO Cowland. Binary jumping isn't necessary though.
 	</Resource>
 	<Resource
@@ -139,7 +225,8 @@ export const problems = {
 
 <Optional title="Tree Queries in O(NQ)">
 
-[This](https://codeforces.com/blog/entry/82211?#comment-691472) is why you don't set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
+[This](https://codeforces.com/blog/entry/82211?#comment-691472) is why you don't
+set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
 
 </Optional>
 
@@ -175,20 +262,11 @@ export const problems = {
 
 ## Problems
 
-### A
-
-There are better solutions than HLD (but it works)!
-
-<Problems problems={problems.no} />
-
-### B
-
-HLD is intended.
-
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 <Warning>
 
-"Grass Planting" isn't submittable on the USACO website. Use [this link](https://www.acmicpc.net/problem/5916) to submit.
+"Grass Planting" isn't submittable on the USACO website. Use
+[this link](https://www.acmicpc.net/problem/5916) to submit.
 
 </Warning>

@@ -1,0 +1,191 @@
+---
+id: izho-14-bank
+source: IZhO 2014
+title: Bank
+author: Kevin Sheng
+---
+
+## Explanation
+
+We do dynamic programming on all subsets of the notes.
+
+Let $\texttt{covered}[S]$ be the maximum prefix of people we can pay off using the notes defined in the subset, and $\texttt{leftover}[S]$ be the leftover amount of money we have after we pay off the prefix of the people.
+
+When transitioning, iterate over all possible "ending" banknotes and see how each of them would fit in when you put them onto the leftovers of the previous subset.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M2^M)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int people_num;
+	int note_num;
+	std::cin >> people_num >> note_num;
+	vector<int> people(people_num);
+	vector<int> banknotes(note_num);
+	for (int& p : people) {
+		std::cin >> p;
+	}
+	for (int& b : banknotes) {
+		std::cin >> b;
+	}
+
+	vector<int> leftover(1 << note_num, -1);
+	vector<int> people_covered(1 << note_num, -1);
+	leftover[0] = 0;
+	people_covered[0] = 0;
+	for (int s = 0; s < (1 << note_num); s++) {
+		for (int last = 0; last < note_num; last++) {
+			if ((s & (1 << last)) == 0) {
+				continue;
+			}
+			int prev = s & ~(1 << last);
+			if (people_covered[prev] == -1) {
+				continue;
+			}
+
+			int new_amt = leftover[prev] + banknotes[last];
+			// the salary of the current person we're going to try to pay
+			int curr_target = people[people_covered[prev]];
+			// if it's still not enough, just increment the leftover pile
+			if (new_amt < curr_target) {
+				people_covered[s] = people_covered[prev];
+				leftover[s] = new_amt;
+			}
+			/*
+			 * or it's exactly right, in which case reset the leftover count
+			 * and increment the covered amount
+			 */
+			else if (new_amt == curr_target) {
+				people_covered[s] = people_covered[prev] + 1;
+				leftover[s] = 0;
+			}
+		}
+		// we've covered all the people!
+		if (people_covered[s] == people_num) {
+			cout << "YES" << endl;
+			return 0;
+		}
+	}
+	cout << "NO" << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Bank {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int peopleNum = Integer.parseInt(initial.nextToken());
+		int noteNum = Integer.parseInt(initial.nextToken());
+		int[] people = Arrays.stream(read.readLine().split(" "))
+							 .mapToInt(Integer::parseInt).toArray();
+		int[] banknotes = Arrays.stream(read.readLine().split(" "))
+							 .mapToInt(Integer::parseInt).toArray();
+
+		int[] leftover = new int[1 << noteNum];
+		int[] peopleCovered = new int[1 << noteNum];
+		Arrays.fill(leftover, -1);
+		Arrays.fill(peopleCovered, -1);
+		leftover[0] = 0;
+		peopleCovered[0] = 0;
+		for (int s = 0; s < (1 << noteNum); s++) {
+			for (int last = 0; last < noteNum; last++) {
+				if ((s & (1 << last)) == 0) {
+					continue;
+				}
+				int prev = s & ~(1 << last);
+				if (peopleCovered[prev] == -1) {
+					continue;
+				}
+
+				int new_amt = leftover[prev] + banknotes[last];
+				// the salary of the current person we're going to try to pay
+				int curr_target = people[peopleCovered[prev]];
+				// if it's still not enough, just increment the leftover pile
+				if (new_amt < curr_target) {
+					peopleCovered[s] = peopleCovered[prev];
+					leftover[s] = new_amt;
+				}
+				/*
+		 		 * or it's exactly right, in which case reset the leftover count
+		 		 * and increment the covered amount
+		 		 */
+				else if (new_amt == curr_target) {
+					peopleCovered[s] = peopleCovered[prev] + 1;
+					leftover[s] = 0;
+				}
+			}
+			// we've covered all the people!
+			if (peopleCovered[s] == peopleNum) {
+				System.out.println("YES");
+				return;
+			}
+		}
+		System.out.println("NO");
+	}
+}
+```
+</JavaSection>
+<PySection>
+The following code runs in time only if you submit with PyPy.
+
+```py
+from sys import exit
+
+people_num, note_num = [int(i) for i in input().split()]
+people = [int(i) for i in input().split()]
+banknotes = [int(i) for i in input().split()]
+
+leftover = [-1 for _ in range(1 << note_num)]
+people_covered = [-1 for _ in range(1 << note_num)]
+leftover[0] = 0
+people_covered[0] = 0
+for s in range(1, 1 << note_num):
+	for last in range(note_num):
+		if (s & (1 << last)) == 0:
+			continue
+		prev = s & ~(1 << last)
+		if people_covered[prev] == -1:
+			continue
+		
+		new_amt = leftover[prev] + banknotes[last]
+		# the salary of the current person we're going to try to pay
+		curr_target = people[people_covered[prev]]
+		# if it's still not enough, just increment the leftover pile
+		if new_amt < curr_target:
+			people_covered[s] = people_covered[prev]
+			leftover[s] = new_amt
+		"""
+		or it's exactly right, in which case reset the leftover count
+		and increment the covered amount
+		"""
+		elif new_amt == curr_target:
+			people_covered[s] = people_covered[prev] + 1
+			leftover[s] = 0
+
+	# we've covered all the people!
+	if people_covered[s] == people_num:
+		print("YES")
+		exit()
+print("NO")
+```
+</PySection>
+</LanguageSection>

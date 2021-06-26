@@ -1,0 +1,145 @@
+---
+id: poi-14-hotels
+source: POI 2014
+title: Hotels
+author: Andi Qu
+---
+
+The following two hints apply for all three approaches:
+
+<Spoiler title="Hint 1">
+
+For any three nodes $a$, $b$, and $c$, the three paths $a \rightarrow b$,
+$b \rightarrow c$, and $c \rightarrow a$ only have one common node.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Let the aforementioned common node be $r$. The triple $(a, b, c)$ is good if and
+only if the lengths of the paths $r \rightarrow a$, $r \rightarrow b$, and
+$r \rightarrow c$ are equal.
+
+</Spoiler>
+
+## Approach 1 - Prefix/Suffix Sums
+
+<Spoiler title="Hint 3">
+
+Do you think you have an $\mathcal{O}(N^3)$ solution that doesn't involve
+looping through all triples of nodes? If so, is it really $\mathcal{O}(N^3)$ or
+is it actually amortized $\mathcal{O}(N^2)$?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Since $N$ is small, we can afford to calculate the number of good triples with
+common node $r$, for all $r$ from 1 to $N$.
+
+For some $r$, root the tree at $r$. We can then perform DFSes to find the depths
+of the subtrees of $r$'s children, and the number of nodes at each depth in each
+subtree. Let $\texttt{at\_depth}_i[d]$ be the number of nodes at depth $d$ in
+child $i$'s subtree.
+
+Each node in a good triple must be at the same depth and in different subtrees,
+so the number of good triples that depth $d$ of subtree $i$ contributes is thus:
+
+$$
+\left(\sum_{j < i}\texttt{at\_depth}_j[d]\right) \cdot \texttt{at\_depth}_i[d] \cdot \left(\sum_{j > i}\texttt{at\_depth}_j[d]\right)
+$$
+
+We can loop through each **valid** pair $(i, d)$ in amortized $\mathcal{O}(N)$
+time, since each pair corresponds to at least one node in the tree.
+
+But how can we compute $\sum_{j < i}\texttt{at\_depth}_j[d]$ and
+$\sum_{j > i}\texttt{at\_depth}_j[d]$ quickly?
+
+Notice how we only have to compute one of these sums, and that they look awfully
+similar to prefix/suffix sums. In my solution, I compute
+$\sum_{j > i}\texttt{at\_depth}_j[d]$ using suffix sums. Let's call this value
+$\texttt{after}_i[d]$.
+
+Since we only care about $\texttt{after}_i[d]$ for **valid** pairs $(i, d)$, we
+can just keep a global array storing the maximum values of $\texttt{after}_i[d]$
+so far (with all elements as 0 initially). This allows us to compute all
+interesting $\texttt{after}_i[d]$ in $\mathcal{O}(N)$ time!
+
+Alternatively, we can sort the children of $r$ by their depths and then compute
+$\texttt{after}_i[d]$ directly, which is still fast enough to pass.
+
+The final complexity of this code is $\mathcal{O}(N^2)$ time with
+$\mathcal{O}(N)$ memory.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> graph[5001];
+
+void find_dep(int node, int parent, pair<int, vector<int>> &root, int depth = 0) {
+	if (depth == root.first) {
+		root.first++;
+		root.second.push_back(1);
+	} else root.second[depth]++;
+	for (int i : graph[node]) if (i != parent) find_dep(i, node, root, depth + 1);
+}
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	for (int i = 1; i < n; i++) {
+		int a, b;
+		scanf("%d %d", &a, &b);
+		graph[a].push_back(b);
+		graph[b].push_back(a);
+	}
+
+	if (n < 4) {
+		printf("0\n");
+		return 0;
+	}
+
+	long long ans = 0;
+	for (int i = 1; i <= n; i++) {
+		int m = graph[i].size();
+		vector<pair<int, vector<int>>> dep(m);
+		vector<vector<int>> aft(m);
+		for (int j = 0; j < m; j++) find_dep(graph[i][j], i, dep[j]);
+		vector<int> tot(max_element(dep.begin(), dep.end())->first, 0);
+
+		for (int j = m - 1; ~j; j--) {
+			aft[j].resize(dep[j].first);
+			for (int k = 0; k < dep[j].first; k++) {
+				aft[j][k] = tot[k];
+				tot[k] += dep[j].second[k];
+			}
+		}
+
+		for (int j = 0; j < m; j++) {
+			for (int k = 0; k < dep[j].first; k++) {
+				ans += (tot[k] - dep[j].second[k] - aft[j][k]) * dep[j].second[k] * aft[j][k];
+			}
+		}
+	}
+
+	printf("%lld\n", ans);
+	return 0;
+}
+```
+
+Be sure to use `std::vector`s to ensure $\mathcal{O}(N)$ memory!
+
+</Spoiler>
+
+## Approach 2 - DP
+
+<IncompleteSection></IncompleteSection>
+
+## Bonus - An $\mathcal{O}(N \log N)$ Solution
+
+<IncompleteSection></IncompleteSection>
+
+See
+[the Polish editorial](https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2014/editorial/hot.pdf)
+for more details.

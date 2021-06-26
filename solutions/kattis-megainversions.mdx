@@ -1,0 +1,106 @@
+---
+id: kattis-megainversions
+source: Kattis
+title: Mega Inversions
+author: Benjamin Qi, Oscar Garries
+---
+
+For each $j$, compute number of $i$ and $k$ independently.
+
+## With Indexed Sets
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+typedef long long ll;
+typedef vector<int> vi;
+typedef pair<int, int> pii;
+template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+
+#define FOR(i, a, b) for (int i=a; i<(b); i++)
+#define F0R(i, a) for (int i=0; i<(a); i++)
+#define FORd(i,a,b) for (int i = (b)-1; i >= a; i--)
+#define F0Rd(i,a) for (int i = (a)-1; i >= 0; i--)
+
+#define sz(x) (int)(x).size()
+#define mp make_pair
+#define pb push_back
+#define f first
+#define s second
+#define lb lower_bound
+#define ub upper_bound
+
+const int MOD = 1000000007;
+
+int n;
+ll hi[100000], lo[100000];
+vi z;
+ll ans = 0;
+
+int main() {
+	ios_base::sync_with_stdio(0);cin.tie(0);
+	cin >> n; z.resize(n);
+	F0R(i,n) cin >> z[i];
+
+	Tree<pii> T1;
+	F0R(i,n) {
+		hi[i] = T1.size()-T1.order_of_key({z[i],MOD});
+		T1.insert({z[i],i});
+	}
+	Tree<pii> T2;
+	F0Rd(i,n) {
+		lo[i] = T2.order_of_key({z[i],-MOD});
+		T2.insert({z[i],i});
+	}
+	F0R(i,n) ans += lo[i]*hi[i];
+	cout << ans;
+}
+```
+
+## With BITs
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+const int MX = 2e5 + 5;
+
+ll bit2[MX], bit1[MX];
+int n;
+
+void upd (int i, int val, ll ar[]) {
+	for (; i <= n; i += i&(-i)) {
+		ar[i] += val;
+	}
+}
+
+ll query (int i, ll ar[]) {
+	ll res = 0;
+	for (; i; i -= i&(-i)) {
+		res += ar[i];
+	}
+	return res;
+}
+
+int main () {
+	cin >> n;
+	vector<int> ar(n);
+	for (int i = 0; i < n; i++) {
+		cin >> ar[i];
+	}
+
+	ll sol = 0;
+	for (int i = n - 1; i >= 0; i--) {
+		sol += query(ar[i] - 1, bit2);
+		ll uno = query(ar[i] - 1, bit1);
+		upd(ar[i], 1, bit1);
+		upd(ar[i], uno, bit2);
+	}
+	cout << sol << '\n';
+}
+```

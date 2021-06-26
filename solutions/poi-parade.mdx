@@ -1,0 +1,80 @@
+---
+id: poi-parade
+source: POI 2016
+title: Parade
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O(N)$.
+
+We want to find a path in the tree with the maximum number of adjacent edges
+that aren't part of the path.
+
+Any simple path in a rooted tree follows one of two general shapes:
+
+1. It only goes up toward the root (from the lowest to the highest node in the
+   path).
+2. It goes up toward the root and then down again.
+
+Since each path has a single highest node, we can check for each node $v$, what
+the best paths are for each case if $v$ is the highest node in that path. We
+will do this with dynamic programming.
+
+Let $dp_1[v]$ and $dp_2[v]$ be the maximum number of adjacent edges for each
+case with $v$ as the highest node. If $C$ is the set of children of $v$, then
+the following recurrences hold:
+
+1. $dp_1[v] = \max_{u \in C}(dp_1[u]) + (\text{Degree of }v) - 2$
+2. $dp_2[v] = \max_{u \neq w \in C}(dp_1[u] + dp_1[w]) + (\text{Degree of }v) - 3$
+
+We can calculate both of these values efficiently by keeping track of the two
+best values of $dp_1[u]$ while iterating through $C$.
+
+Since the path must have a non-zero length though, we also need to subtract 1
+from the answer if the graph is a star (i.e. a tree with $N - 1$ leaves).
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> graph[200001];
+int dp[2][200001];
+
+void dfs(int node = 1, int parent = 0) {
+	int mx1 = 1, mx2 = 1;
+	for (int i : graph[node]) if (i != parent) {
+		dfs(i, node);
+		if (dp[0][i] >= mx1) {
+			mx2 = mx1;
+			mx1 = dp[0][i];
+		} else mx2 = max(mx2, dp[0][i]);
+	}
+	dp[0][node] = mx1 + graph[node].size() - 2;
+	dp[1][node] = mx1 + mx2 + graph[node].size() - 3;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 1; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+		graph[a].push_back(b);
+		graph[b].push_back(a);
+	}
+
+	int leaves = 0;
+	for (int i = 1; i <= n; i++) if (graph[i].size() == 1) leaves++;
+
+	dfs();
+	int ans = 0;
+	for (int i = 1; i <= n; i++) {
+		if (graph[i].size() > 1) ans = max(ans, max(dp[1][i], dp[0][i]) + 1);
+	}
+	// Check if the graph is a star to minus 1
+	cout << ans - (leaves == n - 1);
+	return 0;
+}
+```

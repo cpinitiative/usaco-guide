@@ -1,0 +1,183 @@
+---
+id: usaco-645
+source: USACO Gold 2016 Open
+title: Splitting the Field
+author: Óscar Garries, Benjamin Qi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_split_gold_open16.html)
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MX = 5e4;
+int n, x[MX], y[MX], ar[MX];
+
+bool cmp (int a, int b) {
+	if (x[a] == x[b]) return y[a] < y[b];
+	return x[a] < x[b];
+}
+
+bool cmp1 (int a, int b) {
+	if (y[a] == y[b]) return x[a] < x[b];
+	return y[a] < y[b];
+}
+
+int main () {
+	freopen("split.in", "r", stdin);
+	freopen("split.out", "w", stdout);
+	cin >> n;
+	multiset<int> allX, allY, leftX, leftY, rightX, rightY;
+	for (int i = 0; i < n; i++) {
+		ar[i] = i;
+		cin >> x[i] >> y[i];
+		allX.insert(x[i]);
+		allY.insert(y[i]);
+	}
+	sort (ar, ar + n, cmp);
+	int x1 = *allX.rbegin(), x2 = *allX.begin(), y1 = *allY.rbegin(), y2 = *allY.begin();
+	long long area = (x1 - x2) * 1LL * (y1 - y2); // original area
+	long long sol = 0; // maximum difference
+
+	for (int k = 0; k <= 1; k++) {
+		rightX = allX;
+		rightY = allY;
+		leftX.clear();
+		leftY.clear();
+		for (int i = 0; i < n; i++) {
+			int j = ar[i];
+			long long areaL = 0, areaR = 0;
+
+			leftX.insert(x[j]);
+			leftY.insert(y[j]);
+			rightX.erase(rightX.find(x[j]));
+			rightY.erase(rightY.find(y[j]));
+
+			x1 = *leftX.begin();
+			y1 = *leftY.begin();
+			x2 = *leftX.rbegin();
+			y2 = *leftY.rbegin();
+			areaL = (x2 - x1) * 1LL * (y2 - y1);
+			if (!rightX.empty()) {
+				x1 = *rightX.begin();
+				y1 = *rightY.begin();
+				x2 = *rightX.rbegin();
+				y2 = *rightY.rbegin();
+				areaR = (x2 - x1) * 1LL * (y2 - y1);
+			}
+			sol = max (sol, area - (areaR + areaL));
+		}
+		sort (ar, ar + n, cmp1);
+	}
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Alternative
+
+From the analysis:
+
+> Note that it is also possible to dispense with the binary search trees
+> entirely and just keep running mins and maxes in $y$.
+
+```cpp
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+//vectors
+using vi = vector<int>;
+#define all(x) begin(x), end(x)
+#define sz(x) int((x).size())
+#define pb push_back
+
+//pairs
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+//constant initialization
+const ll INF = 1e18; //Not too close to LLONG_MAX
+
+//variables used for the current problem
+int N;
+ll ans = 0;
+vector<pi> v;
+
+void tri() {
+	sort(all(v));
+	vector<pi> lef(N), rig(N);
+	auto comb = [](pi a, int b) -> pi { return mp(min(a.f,b),max(a.s,b)); };
+	lef[0] = {v[0].s,v[0].s};
+	for (int i = 1; i < N; ++i) lef[i] = comb(lef[i-1],v[i].s);
+	rig[N-1] = mp(v[N-1].s,v[N-1].s);
+	for (int i = N-2; i >= 0; --i) rig[i] = comb(rig[i+1],v[i].s);
+	ll area = (ll)(v.back().f-v.front().f)*(lef.back().s-lef.back().f);
+	ll best = INF;
+	for (int i = 0; i < N-1; ++i) if (v[i].f != v[i+1].f)
+		best = min(best,(ll)(v[i].f-v[0].f)*(lef[i].s-lef[i].f)
+			+(ll)(v.back().f-v[i+1].f)*(rig[i+1].s-rig[i+1].f));
+	ans = max(ans,area-best);
+}
+
+int main() {
+	setIO("split");
+	cin >> N;
+	v.resize(N);
+	for (pi& t : v) cin >> t.f >> t.s;
+	tri();
+	for (pi& t : v) swap(t.f,t.s);
+	tri();
+	cout << ans;
+	return 0;
+}
+```
+
+## Note - Weak Test Data
+
+The above codes give different outputs on the following test case:
+
+The right answer should be $6$.
+
+```
+17
+0 0
+0 1
+0 2
+1 0
+1 1
+1 2
+2 0
+2 1
+2 2
+2 3
+2 4
+3 2
+3 3
+3 4
+4 2
+4 3
+4 4
+```

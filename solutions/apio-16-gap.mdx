@@ -1,0 +1,83 @@
+---
+id: apio-16-gap
+source: APIO 2016
+title: Gap
+author: Andi Qu
+---
+
+## Subtask 1
+
+We can find the minimum and maximum elements of $a$ in some range $[l, r]$ by
+simply querying `MinMax(l, r, &mn, &mx)`. This lets us "whittle down" the range
+and reconstruct $a$ with $M \leq \frac{N + 1}{2}$.
+
+We can then sweep throught $a$ and find the largest gap.
+
+## Subtask 2
+
+We don't necessarily need to reconstruct $a$ entirely to find the largest gap.
+Notice how if we know a lowerbound $x$ on the answer and the range of all $a_i$,
+then we can simply query the range in blocks of size $x - 1$ to find the answer.
+This works because the largest gap will always span at least two blocks.
+
+So what is the lowerbound on the answer? If there are $N$ elements that span a
+range of size $L$, then the lowerbound is $\frac{L + N - 1}{N - 1}$ by the
+pigeonhole principle. (This is a similar idea to the $\alpha = 1/2$ solution for
+IMO 2020 P6).
+
+Our algorithm thus looks like:
+
+- Find the range that $a$ spans in 1 query. This contributes $N + 1$ to $M$.
+- Find $x$ (the lowerbound on the answer) from the formula above.
+- Query the range in blocks of size $x - 1$. Since there are $N - 1$ of these
+  blocks and each $a_i$ is included in exactly 1 of these blocks, this
+  contributes $2N - 1$ to $M$.
+
+This allows us to find the largest gap with $M \leq 3N$.
+
+## Implementation
+
+```cpp
+#include "gap.h"
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+const ll MAXN = 1e18;
+
+ll a[100000], j = 0;
+
+ll findGap(int T, int N) {
+	if (T == 1) {
+		ll l = 1, r = MAXN;
+		ll mn, mx;
+		vector<ll> v;
+		for (ll i = 0; i < (N + 1) / 2; i++) {
+			MinMax(l, r, &mn, &mx);
+			a[j++] = mn;
+			a[j++] = mx;
+			l = mn + 1, r = mx - 1;
+		}
+		sort(a, a + N);
+		ll ans = 0;
+		for (ll i = 0; i < N - 1; i++) ans = max(ans, a[i + 1] - a[i]);
+		return ans;
+	} else {
+		ll mn, mx;
+		MinMax(1, MAXN, &mn, &mx);
+		ll step = (mx - mn + N - 2) / (N - 1);
+		ll ans = step, x, y, l = mn, i;
+		for (i = mn; i + step < mx; i += step + 1) {
+			MinMax(i, i + step, &x, &y);
+			if (x != -1) {
+				ans = max(ans, x - l);
+				l = y;
+			}
+		}
+		MinMax(i, mx, &x, &y);
+		if (x != -1) ans = max(ans, x - l);
+		return ans;
+	}
+}
+```

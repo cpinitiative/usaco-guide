@@ -1,0 +1,91 @@
+---
+id: kattis-quantumsuperposition
+source: Kattis
+title: Quantum Superposition
+author: Andrew Wang, Benjamin Qi
+---
+
+**Time Complexity:** $\mathcal{O}(\sum NM)$
+
+**Main Idea:** Find all possible lengths of routes in both universes. Then we
+can preprocess all possible sums of lengths to answer each query in
+$\mathcal{O}(1)$ time.
+
+## Finding All Possible Lengths of Routes
+
+For each node, store all possible lengths of a route that ends at it in a set.
+We can do this via DP on the topological sort. When we consider a node, we can
+add 1 to all the lengths reaching a previous node and insert them into the set
+for the current node. Using a `bitset` rather than a `set` is faster (and gives
+slightly shorter code).
+
+We can repeat this process for both universes to find the total lengths of all
+paths reaching the end node.
+
+## Finding All Possible Sums
+
+Once we know all possible path lengths for each universe, we can find all
+possible sums of lengths. Just loop through both universe's route lengths and
+add them together.
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <bitset>
+using namespace std;
+
+int n[2], m[2];
+vector<int> g[2][1001];
+vector<int> back[2][1001];
+bitset<2001> dp[2][1001];
+
+void gen(int x) {
+	int in_degree[1001] = {};
+	for(int i = 0; i < m[x]; i++){
+		int a, b; cin >> a >> b;
+		g[x][a].push_back(b);
+		back[x][b].push_back(a);
+		in_degree[b]++;
+	}
+	//finding length of routes of first universe
+	queue<int> q;
+	for(int i = 0; i <= n[x]; i++){
+		if(in_degree[i] == 0){
+			q.push(i);
+		}
+	}
+	while(!q.empty()){
+		int node = q.front(); q.pop();
+		//using dp while processing the nodes topologically
+		if(back[x][node].empty()) dp[x][node][0] = 1;
+		for (int before : back[x][node])
+			dp[x][node] |= dp[x][before]<<1;
+		for(int next: g[x][node]){
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+	}
+}
+
+int main(){
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n[0] >> n[1] >> m[0] >> m[1];
+	gen(0); gen(1);
+	//preprocessing all possible sums between the universes
+	bitset<2001> ans;
+	for(int i = 0; i < 1001; i++) if (dp[0][n[0]][i])
+		ans |= dp[1][n[1]]<<i;
+	int Q; cin >> Q;
+	for(int i = 0; i < Q; i++){
+		int a; cin >> a;
+		if(ans[a]){
+			cout << "Yes" << endl;
+		}
+		else{
+			cout << "No" << endl;
+		}
+	}
+	return 0;
+}
+```

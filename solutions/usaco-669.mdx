@@ -1,0 +1,178 @@
+---
+id: usaco-669
+source: USACO Gold 2016 December
+title: Moocast
+author: Neo Wang, Óscar Garries
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_moocast_gold_dec16.html)
+
+<LanguageSection>
+<CPPSection>
+
+### Implementation (DSU)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define vt vector
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+struct UF {
+	vt<int> e;
+	UF(int n) : e(n, -1) {}
+	bool sameSet(int a, int b) { return find(a) == find(b); }
+	int size(int x) { return -e[find(x)]; }
+	int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+	bool join(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) return false;
+		if (e[a] > e[b]) swap(a, b);
+		e[a] += e[b]; e[b] = a;
+		return true;
+	}
+};
+
+struct Edge {
+	int i, j, w;
+};
+
+bool comp(Edge a, Edge b) {
+	return a.w < b.w;
+}
+
+const int MX = 1000;
+
+int N;
+int x[MX];
+int y[MX];
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	freopen("moocast.in", "r", stdin);
+	freopen("moocast.out", "w", stdout);
+
+	cin >> N;
+
+	UF uf(N);
+
+	F0R(i, N) {
+		cin >> x[i];
+		cin >> y[i];
+	}
+
+	vt<Edge> edges;
+
+	F0R(i, N) {
+		F0R(j, i) {
+			int d = (x[i]-x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
+			edges.push_back({i, j, d});
+		}
+	}
+
+	sort(edges.begin(), edges.end(), comp);
+
+	int lastWeight = 0;
+	int numComponents = N;
+
+	trav(curr, edges) {
+		if(!uf.sameSet(curr.i, curr.j)) {
+			uf.join(curr.i, curr.j);
+			lastWeight = curr.w;
+			if(--numComponents == 1) {
+				break;
+			}
+		}
+	}
+
+	cout << lastWeight;
+}
+```
+
+### Implementation (Binary Search + DFS)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+const int maxN = 1e3;
+
+vector<int> x(maxN), y(maxN);
+vector<bool> visited(maxN);
+vector<vector<bool>> g(maxN, vector<bool>(maxN, false));
+int n;
+
+int dfs (int v) {
+	visited[v] = true;
+
+	int curCows = 0;
+
+	for (int i = 0; i < n; i++) {
+		if (visited[i] || !g[v][i]) continue;
+		curCows += dfs(i);
+	}
+
+	return (curCows + 1);
+}
+
+bool ok (ll mid) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			g[i][j] = false;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			ll dist = (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
+			if (dist <= mid) g[i][j] = true;
+		}
+	}
+
+	fill (visited.begin(), visited.end(), false);
+
+	int cows = dfs(0);
+
+	return (cows == n);
+}
+
+int main () {
+	freopen("moocast.in", "r", stdin);
+	freopen("moocast.out", "w", stdout);
+
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		 cin >> x[i] >> y[i];
+	}
+
+	ll lo = 1, hi = 1e10;
+	ll sol = hi;
+
+	while (lo <= hi) {
+		ll mid = lo + (hi - lo)/2LL;
+
+		if (ok(mid)) {
+			sol = min (sol, mid);
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+</LanguageSection>

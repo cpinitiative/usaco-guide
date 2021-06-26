@@ -1,0 +1,324 @@
+---
+id: cf-847E
+source: CF
+title: Packmen
+author: Kevin Sheng
+---
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+Binary search on the minimum time it will take for all the Packmen to eat all
+the pellets. In that case, we would have to check whether the Packmen can eat
+all the pellets in $d$ units of time.
+
+First, notice a few observations:
+
+- Each Packman will eat a continuous subarray of the pellets, because a Packman
+  will visit all pellets between the leftmost and rightmost ones, and thus can
+  eat all pellets between them with no additional time penalty.
+- No two Packmen need to eat overlapping subarrays, as the region of overlap can
+  be assigned to one of the Packman and be ignored by the other.
+- The leftmost Packman will eat the leftmost subarray of pellets, because if
+  this were not the case, the leftmost Packman will definitely cross over
+  another Packman. If this occurs, simply simulate (prevent) the crossing by
+  reversing the directions of both Packmen instead. This ensures the leftmost
+  Packman is always to the left of all other Packmen, and thus will eat a
+  subarray of pellets to the left of all others.
+
+We can repeatedly greedily assign the leftmost unprocessed Packman to the
+largest possible subarray of pellets that includes the leftmost uneaten pellet.
+Using this strategy, we can check whether all pellets can be eaten when the
+Packmen are limited to $d$ units of time.
+
+In the below solution, we keep a sorted deque of all the pellet positions. For
+each Packman, we calculate the maximum number of pellets it can eat so that no
+pellets to the left are uneaten, and then we remove the eaten pellets from the
+deque.
+
+However, if a Packman can't eat the leftmost uneaten pellet, then the time $d$
+would be invalid, as we have shown previously that given a valid time $d$ there
+must exist an assignment where the leftmost Packman does eat the leftmost
+uneaten pellet.
+
+There are two main cases we consider for each Packman: one where the Packman
+first goes to the right and then to the left, and another where the Packman
+first goes to the _left_ and then to the right. We calculate the subarray of
+pellets eaten in both of these cases and assign the larger one to the Packman.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+
+// assumes packmen and food are all sorted and distinct (ALL the elements)
+bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
+	for (int p : packmen) {
+		vector<int> have_to_eat;
+		while (!food.empty() && food[0] < p) {
+			have_to_eat.push_back(food[0]);
+			food.pop_front();
+		}
+
+		if (have_to_eat.empty()) {
+			// ok, don't have to eat anything to the left, let's to the right as much as possible
+			while (!food.empty() && food[0] - p <= time) {
+				food.pop_front();
+			}
+		} else {
+			if (p - have_to_eat[0] > time) {
+				// oof, we can't eat the leftmost pellet, so we can't eat all of them
+				return false;
+			}
+
+			int left_time = p - have_to_eat[0];
+			int right_free_time = time - 2 * left_time;  // test for if we went to the left first
+			int left_first = -1;
+			while (left_first + 1 < food.size() && food[left_first + 1] - p <= right_free_time) {
+				left_first++;
+			}
+
+			right_free_time = time - left_time;  // test for if we went to the right first
+			int right_first = -1;
+			while (right_first + 1 < food.size() && (food[right_first + 1] - p) * 2 <= right_free_time) {
+				right_first++;
+			}
+
+			// take the maximum
+			for (int i = 0; i < std::max(left_first, right_first) + 1; i++) {
+				food.pop_front();
+			}
+		}
+
+		if (food.empty()) {
+			return true;
+		}
+	}
+	return food.empty();
+}
+
+/**
+ * https://codeforces.com/contest/847/problem/E
+ * 7
+ * *..P*P* should output 3
+ * 10
+ * .**PP.*P.* should output 2
+ */
+int main() {
+	int field_len;
+	cin >> field_len;
+	std::string field;
+	cin >> field;
+	for (char& c: field) {
+		c = toupper(c);
+	}
+
+	vector<int> packmen;
+	std::deque<int> food;
+	for (int i = 0; i < field.length(); i++) {
+		if (field[i] == 'P') {
+			packmen.push_back(i);
+		} else if (field[i] == '*') {
+			food.push_back(i);
+		}
+	}
+
+	int lo = 0;
+	int hi = field.length() * 2;
+	int valid = -1;
+	while (lo <= hi) {
+		int mid = (lo + hi) / 2;
+		if (all_eatable(packmen, food, mid)) {
+			valid = mid;
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	cout << valid << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+public class Packmen {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		read.readLine();
+		char[] field = read.readLine().toUpperCase().toCharArray();
+		ArrayList<Integer> packmen = new ArrayList<>();
+		ArrayList<Integer> food = new ArrayList<>();
+		for (int i = 0; i < field.length; i++) {
+			if (field[i] == 'P') {
+				packmen.add(i);
+			} else if (field[i] == '*') {
+				food.add(i);
+			}
+		}
+
+		int lo = 0;
+		int hi = field.length * 2;
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (allEatable(packmen, food, mid)) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		System.out.println(valid);
+	}
+
+	// assumes everything is like sorted and distinct so my life is easier
+	private static boolean allEatable(ArrayList<Integer> packmen, ArrayList<Integer> food, int time) {
+		/*
+		 * because java deques don't allow indexing, we instead keep a
+		 * pointer to the leftmost uneaten pellet and move it accordingly
+		*/
+		int foodPointer = 0;
+		int foodAmt = food.size();  // shorthand
+		for (int p : packmen) {
+			ArrayList<Integer> haveToEat = new ArrayList<>();
+			while (foodPointer < foodAmt && food.get(foodPointer) < p) {
+				haveToEat.add(food.get(foodPointer++));
+			}
+
+			if (haveToEat.isEmpty()) {
+				// ok, don't have to eat anything to the left, let's to the right as much as possible
+				while (foodPointer < foodAmt && food.get(foodPointer) - p <= time) {
+					foodPointer++;
+				}
+			} else {
+				// oof, we can't eat the leftmost pellet, so we can't eat all of them
+				if (p - haveToEat.get(0) > time) {
+					return false;
+				}
+				int leftTime = p - haveToEat.get(0);
+				// try going to the left first then going to the right
+				int rightFreeTime = time - 2 * leftTime;
+				int leftFirst = -1;
+				while (foodPointer + leftFirst + 1 < foodAmt && food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
+					leftFirst++;
+				}
+
+				// try going to the left first
+				rightFreeTime = time - leftTime;
+				int rightFirst = -1;
+				while (foodPointer + rightFirst + 1 < foodAmt && 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
+					rightFirst++;
+				}
+
+				foodPointer += Math.max(leftFirst, rightFirst) + 1;
+			}
+			if (foodPointer >= foodAmt) {
+				return true;
+			}
+		}
+		return foodPointer >= foodAmt;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+"""
+DISCLAIMER:
+THIS SOLUTION ONLY WORKS IF YOU SUBMIT WITH PYPY
+NORMAL PYTHON FAILS ON TEST CASE 60
+https://codeforces.com/contest/847/problem/E
+7
+*..P*P* should output 3
+10
+.**PP.*P.* should output 2
+"""
+from typing import List
+
+
+# assumes the positions are sorted, as well that the positions are distinct
+# a deque is also usable (it is used in the c++ version), but this method was found to be faster
+def eatable_in_time(food: List[int], packmen: List[int], time: int) -> bool:
+	food_pointer = 0
+	food_amt = len(food)  # convenient shorthand
+	for p in packmen:
+		have_to_eat = []
+		# just assign this packmen all the ones to its left which haven't been eaten
+		while food_pointer < food_amt and food[food_pointer] < p:
+			have_to_eat.append(food[food_pointer])
+			food_pointer += 1
+
+		if not have_to_eat:
+			while food_pointer < food_amt and food[food_pointer] - p <= time:
+				food_pointer += 1
+
+		else:
+			if p - have_to_eat[0] > time:  # can't eat all of the pellets if we can't eat the leftmost one
+				return False
+
+			# try 2 diff strats- go to the left first and switch back or go to the right and switch back
+			left_time = p - have_to_eat[0]
+			right_free_time = time - 2 * left_time
+			left_first = -1
+			while food_pointer + left_first + 1 < food_amt and food[food_pointer + left_first + 1] - p <= right_free_time:
+				left_first += 1
+
+			right_free_time = time - left_time
+			right_first = -1
+			while food_pointer + right_first + 1 < food_amt and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
+				right_first += 1
+			food_pointer += max(left_first, right_first) + 1
+
+		if food_pointer >= food_amt:  # ok all the food's been eaten
+			return True
+	return food_pointer >= food_amt
+
+
+input()
+field = input().upper()
+
+all_food = []
+all_packmen = []
+for v, c in enumerate(field):
+	if c == 'P':
+		all_packmen.append(v)
+	elif c == '*':
+		all_food.append(v)
+
+lo = 0
+hi = len(field) * 2
+valid = -1
+while lo <= hi:
+	mid = (lo + hi) // 2
+	if eatable_in_time(all_food, all_packmen, mid):
+		valid = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
+print(valid)
+```
+
+</PySection>
+
+</LanguageSection>

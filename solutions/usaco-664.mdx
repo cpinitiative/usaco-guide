@@ -1,0 +1,86 @@
+---
+id: usaco-664
+source: USACO Bronze 2016 December
+title: Block Game
+author: Óscar Garries, tickox, Dong Liu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_blocks_bronze_dec16.html)
+
+<LanguageSection>
+	
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+constexpr int nb_letter = 26;
+using arr = array<int, nb_letter>;
+
+void count_freq(const string &s, arr &freq) {
+	for (char c: s) {
+		freq[c - 'a']++;
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	freopen("blocks.in", "r", stdin);
+	freopen("blocks.out", "w", stdout);
+	int n;
+	cin >> n;
+	arr ans{};
+	while (n--) {
+		string s1, s2;
+		cin >> s1 >> s2;
+		arr freq1{}, freq2{};
+		count_freq(s1, freq1); count_freq(s2, freq2);
+		for (int i = 0; i < nb_letter; i++) {
+			ans[i] += max(freq1[i], freq2[i]);
+		}
+	}
+	for (int i: ans) {
+		cout << i << '\n';
+	}
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("blocks.in", "r")
+sys.stdout = open("blocks.out", "w")
+
+def countfreq(s):
+	freqs = [0]*26
+	for c in s:
+		freqs[ord(c)-ord('a')] += 1
+	return freqs
+
+n = int(input())
+
+ans = [0]*26
+for i in range (n):
+	s1, s2 = input().split()
+	freq1, freq2 = countfreq(s1), countfreq(s2)
+	for j in range(26):
+		ans[j] += max(freq1[j], freq2[j])
+
+for i in ans:
+	print(i)
+```
+
+</PySection>
+
+</LanguageSection>

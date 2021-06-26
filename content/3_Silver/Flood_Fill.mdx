@@ -1,122 +1,12 @@
 ---
 id: ff
 title: Flood Fill
-author: Darren Yao
+author: Darren Yao, Kevin Sheng
 prerequisites:
   - dfs
 description: 'Finding connected components in a graph represented by a grid.'
 frequency: 3
 ---
-
-export const problems = {
-	sample: [
-		new Problem(
-			'CSES',
-			'Counting Rooms',
-			'1192',
-			'Easy',
-			false,
-			['Flood Fill'],
-			'@B'
-		),
-	],
-	general: [
-		new Problem(
-			'Silver',
-			'Icy Perimeter',
-			'895',
-			'Easy',
-			true,
-			['Flood Fill'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Switching on the Lights',
-			'570',
-			'Normal',
-			false,
-			['Flood Fill'],
-			'usaco-570'
-		),
-		new Problem(
-			'Silver',
-			'Build Gates',
-			'596',
-			'Normal',
-			false,
-			['Flood Fill'],
-			'usaco-596'
-		),
-		new Problem(
-			'Silver',
-			'Milk Pails',
-			'620',
-			'Normal',
-			false,
-			['Flood Fill'],
-			'usaco-620'
-		),
-		new Problem(
-			'Silver',
-			"Where's Bessie?",
-			'740',
-			'Normal',
-			true,
-			['Flood Fill'],
-			'usaco-740'
-		),
-		new Problem(
-			'Silver',
-			'Why Did the Cow Cross the Road III',
-			'716',
-			'Normal',
-			true,
-			['Flood Fill'],
-			'usaco-716'
-		),
-		new Problem(
-			'Silver',
-			'Mooyo Mooyo',
-			'860',
-			'Normal',
-			false,
-			['Flood Fill'],
-			''
-		),
-		new Problem(
-			'CCO',
-			'Escape Room',
-			'ccc20s2',
-			'Normal',
-			false,
-			['Flood Fill'],
-			'ccc-20-escape'
-		),
-		new Problem(
-			'Silver',
-			'Snow Boots',
-			'811',
-			'Hard',
-			false,
-			['Flood Fill'],
-			'usaco-811'
-		),
-		new Problem(
-			'Silver',
-			'Multiplayer Moo',
-			'836',
-			'Hard',
-			false,
-			['Flood Fill'],
-			''
-		),
-	],
-};
-
-<!-- new Problem("LC", "Flood Fill", "https://leetcode.com/problems/flood-fill/", "Intro|Easy", false, []), -->
-
-<!-- Mooyo Mooyo: Not a sorting problem, but you can use sorting to simulate gravity. - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same. -->
 
 ## Resources
 
@@ -131,9 +21,11 @@ export const problems = {
 
 ## Introduction
 
-**Flood fill** is an algorithm that identifies and labels the connected component that a particular cell belongs to in a multidimensional array.
+**Flood fill** is an algorithm that identifies and labels the connected
+component that a particular cell belongs to in a multidimensional array.
 
-For example, suppose that we want to split the following grid into components of connected cells with the same number.
+For example, suppose that we want to split the following grid into components of
+connected cells with the same number.
 
 <center>
 
@@ -159,10 +51,14 @@ For example, suppose that we want to split the following grid into components of
 
 </center>
 
-Let's start the floodfill from the top-left cell. The color scheme will be red for the node currently being processed, blue for nodes already visited, and uncolored for nodes not yet visited.
+Let's start the flood fill from the top-left cell. The color scheme will be red
+for the node currently being processed, blue for nodes already visited, and
+uncolored for nodes not yet visited.
 
 <center>
 
+<div className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 sm:gap-y-12 justify-evenly place-items-center max-w-lg">
+
 <table className="text-center">
 	<tbody>
 		<tr>
@@ -183,8 +79,6 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 	</tbody>
 </table>
 
-<br />
-
 <table className="text-center">
 	<tbody>
 		<tr>
@@ -204,8 +98,6 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 		</tr>
 	</tbody>
 </table>
-
-<br />
 
 <table className="text-center">
 	<tbody>
@@ -227,8 +119,6 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 	</tbody>
 </table>
 
-<br />
-
 <table className="text-center">
 	<tbody>
 		<tr>
@@ -248,7 +138,66 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 		</tr>
 	</tbody>
 </table>
-<br />
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td className="bg-red-200 dark:bg-red-800">2</td>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td className="bg-red-200 dark:bg-red-800">2</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-red-200 dark:bg-red-800">2</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
 
 <table className="text-center">
 	<tbody>
@@ -270,7 +219,25 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 	</tbody>
 </table>
 
-<br />
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-red-200 dark:bg-red-800">2</td>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td className="bg-blue-200 dark:bg-blue-800">2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
 
 <table className="text-center">
 	<tbody>
@@ -291,12 +258,22 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 		</tr>
 	</tbody>
 </table>
+
+</div>
 
 </center>
 
-As opposed to an explicit graph where the edges are given, a grid is an implicit graph. This means that the neighbors are just the nodes directly adjacent in the four cardinal directions.
+As opposed to an explicit graph where the edges are given, a grid is an implicit
+graph. This means that the neighbors are just the nodes directly adjacent in the
+four cardinal directions.
 
-Usually, grids given in problems will be $N$ by $M$, so the first line of the input contains the numbers $N$ and $M$. In this example, we will use an two-dimensional integer array to store the grid, but depending on the problem, a two-dimensional character array or a two-dimensional boolean array may be more appropriate. Then, there are $N$ rows, each with $M$ numbers containing the contents of each square in the grid. Example input might look like the following (varies between problems):
+Usually, grids given in problems will be $N$ by $M$, so the first line of the
+input contains the numbers $N$ and $M$. In this example, we will use a
+two-dimensional integer array to store the grid, but depending on the problem, a
+two-dimensional character array or a two-dimensional boolean array may be more
+appropriate. Then, there are $N$ rows, each with $M$ numbers containing the
+contents of each square in the grid. Example input might look like the following
+(varies between problems):
 
 ```
 3 4
@@ -312,17 +289,23 @@ And we’ll want to input the grid as follows:
 <CPPSection>
 
 ```cpp
-int grid[MAXN][MAXM];
-int n, m;
+#include <iostream>
 
-int main(){
-	cin >> n >> m;
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m; j++){
-			cin >> grid[i][j];
+using namespace std;
+
+const int MAX_N = 1000;
+
+int grid[MAX_N][MAX_N];
+int row_num;
+int col_num;
+
+int main() {
+	cin >> row_num >> col_num;
+	for (int r = 0; r < row_num; r++) {
+		for (int c = 0; c < col_num; c++) {
+			cin >> grid[r][c];
 		}
 	}
-	return 0;
 }
 ```
 
@@ -331,22 +314,40 @@ int main(){
 <JavaSection>
 
 ```java
-static int[][] grid;
-static int n, m;
+import java.io.*;
+import java.util.StringTokenizer;
 
-public static void main(String[] args){
-	int n = r.nextInt();
-	int m = r.nextInt();
-	grid = new int[n][m];
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m; j++){
-			grid[i][j] = r.nextInt();
+public class Floodfill {
+	private static int[][] grid;
+	private static int rowNum;
+	private static int colNum;
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer dims = new StringTokenizer(read.readLine());
+		rowNum = Integer.parseInt(dims.nextToken());
+		colNum = Integer.parseInt(dims.nextToken());
+		grid = new int[rowNum][colNum];
+		for (int r = 0; r < rowNum; r++) {
+			grid[r] = Arrays.stream(read.readLine().split(" "))
+					.mapToInt(Integer::parseInt)
+					.toArray();
 		}
 	}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+row_num, col_num = [int(i) for i in input().split()]
+grid = []
+for _ in range(row_num):
+	grid.append([int(i) for i in input().split()])
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -358,51 +359,66 @@ public static void main(String[] args){
 		source="GFG"
 		title="Flood Fill"
 		url="flood-fill-algorithm-implement-fill-paint"
-	></Resource>
+	 />
 </Resources> -->
 
-When doing floodfill, we will maintain an $N\times M$ array of booleans to keep track of which squares have been visited, and a global variable to maintain the size of the current component we are visiting. Make sure to store the grid, the visited array, dimensions, and the current size variable globally.
+When doing flood fill, we will maintain an $N\times M$ array of booleans to keep
+track of which squares have been visited, and a global variable to maintain the
+size of the current component we are visiting. Make sure to store the grid, the
+visited array, dimensions, and the current size variable globally.
 
-This means that we want to recursively call the search function from the squares above, below, and to the left and right of our current square. The algorithm to find the size of a connected component in a grid using floodfill is as follows (we’ll also maintain a 2D visited array).
+This means that we want to recursively call the search function for the squares
+above, below, and to the left and right of our current square. The algorithm to
+find the size of a connected component in a grid using flood fill is as follows
+(we’ll also maintain a 2D visited array).
 
-The code below shows the global/static variables we need to maintain while doing floodfill, and the floodfill algorithm itself.
+The code below shows the global/static variables we need to maintain while doing
+flood fill and the flood fill algorithm itself:
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int grid[MAXN][MAXM]; // the grid itself
-int n, m; // grid dimensions, rows and columns
-bool visited[MAXN][MAXM]; // keeps track of which nodes have been visited
-int currentSize = 0; // reset to 0 each time we start a new component
+const int MAX_N = 1000;
+
+int grid[MAX_N][MAX_N];  // the grid itself
+int row_num;
+int col_num;
+bool visited[MAX_N][MAX_N];  // keeps track of which nodes have been visited
+int curr_size = 0;  // reset to 0 each time we start a new component
 
 void floodfill(int r, int c, int color){
-	if(r < 0 || r >= n || c < 0 || c >= m) return; // if outside grid
-	if(grid[r][c] != color) return; // wrong color
-	if(visited[r][c]) return; // already visited this square
+	if (
+		(r < 0 || r >= row_num || c < 0 || c >= col_num)  // if out of bounds
+		|| grid[r][c] != color  // wrong color
+		|| visited[r][c]  // already visited this square
+	) return;
+
 	visited[r][c] = true; // mark current square as visited
-	currentSize++; // increment the size for each square we visit
-	// recursively call floodfill for neighboring squares
-	floodfill(r, c+1, color);
-	floodfill(r, c-1, color);
-	floodfill(r-1, c, color);
-	floodfill(r+1, c, color);
+	curr_size++; // increment the size for each square we visit
+
+	// recursively call flood fill for neighboring squares
+	floodfill(r, c + 1, color);
+	floodfill(r, c - 1, color);
+	floodfill(r - 1, c, color);
+	floodfill(r + 1, c, color);
 }
 
-int main(){
-	/**
-	* input code and other problem-specific stuff here
-	*/
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m; j++){
-			if(!visited[i][j]){
-				currentSize = 0;
+int main() {
+	/*
+	 * input code and other problem-specific stuff here
+	 */
+	for (int i = 0; i < row_num; i++) {
+		for (int j = 0; j < col_num; j++) {
+			if (!visited[i][j]) {
+				curr_size = 0;
+				/*
+				 * start a flood fill if the square hasn't already been visited,
+				 * and then store or otherwise use the component size
+				 * for whatever it's needed for
+				 */
 				floodfill(i, j, grid[i][j]);
-				// start a floodfill if the square hasn't
-				// already been visited, and then
-				// store or otherwise use the component size for whatever
-				// it's needed for
 			}
 		}
 	}
@@ -415,85 +431,184 @@ int main(){
 <JavaSection>
 
 ```java
-static int[][] grid; // the grid itself
-static int n, m; // grid dimensions, rows and columns
-static boolean[][] visited; // keeps track of which nodes have been visited
-static int currentSize = 0; // reset to 0 each time we start a new component
+public class Floodfill {
+	private static int[][] grid;  // the grid itself
+	private static int rowNum;
+	private static int colNum;  // grid dimensions, rows and columns
+	private static boolean[][] visited;  // keeps track of which nodes have been visited
+	private static int currSize = 0;  // reset to 0 each time we start a new component
 
-public static void main(String[] args){
-	/**
-	* input code and other problem-specific stuff here
-	*/
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m; j++){
-			if(!visited[i][j]){
-				currentSize = 0;
-				floodfill(i, j, grid[i][j]);
-				// start a floodfill if the square hasn't already been visited,
-				// and then store or otherwise use the component size
-				// for whatever it's needed for
+	public static void main(String[] args) {
+		/*
+		 * input code and other problem-specific stuff here
+		 */
+		for (int r = 0; r < rowNum; r++){
+			for (int c = 0; c < colNum; c++){
+				if(!visited[r][c]){
+					currSize = 0;
+					/*
+					 * start a flood fill if the square hasn't already been visited,
+					 * and then store or otherwise use the component size
+					 * for whatever it's needed for
+					 */
+					floodfill(r, c, grid[r][c]);
+				}
 			}
 		}
 	}
-}
 
-static void floodfill(int r, int c, int color){
-	if(r < 0 || r >= n || c < 0 || c >= m) return; // if outside grid
-	if(grid[r][c] != color) return; // wrong color
-	if(visited[r][c]) return; // already visited this square
-	visited[r][c] = true; // mark current square as visited
-	currentSize++; // increment the size for each square we visit
-	// recursively call floodfill for neighboring squares
-	floodfill(r, c+1, color);
-	floodfill(r, c-1, color);
-	floodfill(r-1, c, color);
-	floodfill(r+1, c, color);
+	private static void floodfill(int r, int c, int color) {
+		if (
+			(r < 0 || r >= rowNum || c < 0 || c >= colNum)  // if out of bounds
+			|| grid[r][c] != color  // wrong color
+			|| visited[r][c]  // already visited this square
+		) return;
+
+		visited[r][c] = true; // mark current square as visited
+		currSize++; // increment the size for each square we visit
+
+		// recursively call flood fill for neighboring squares
+		floodfill(r, c + 1, color);
+		floodfill(r, c - 1, color);
+		floodfill(r - 1, c, color);
+		floodfill(r + 1, c, color);
+	}
 }
 ```
 
 </JavaSection>
 
+<PySection>
+
+```py
+import sys
+
+MAX_N = 100
+sys.setrecursionlimit(2 ** 30)  # pretty much disable the recurion limit
+
+row_num = MAX_N
+col_num = MAX_N
+grid = [[0 for _ in range(col_num)] for _ in range(row_num)]
+visited = [[False for _ in range(col_num)] for _ in range(row_num)]
+curr_size = 0
+
+
+def floodfill(r: int, c: int, color: int):
+	global curr_size
+
+	if (
+		(r < 0 or r >= row_num or c < 0 or c >= col_num)  # if out of bounds
+		or grid[r][c] != color  # wrong color
+		or visited[r][c]  # already visited this square
+	): return
+
+	visited[r][c] = True  # mark current square as visited
+	curr_size += 1  # increment the size for each square we visit
+
+	# recursively call flood fill for neighboring squares
+	floodfill(r, c + 1, color)
+	floodfill(r, c - 1, color)
+	floodfill(r - 1, c, color)
+	floodfill(r + 1, c, color)
+
+
+"""
+input code and other problem-specific stuff here
+"""
+
+for r in range(row_num):
+	for c in range(col_num):
+		if not visited[r][c]:
+			curr_size = 0
+			"""
+			start a flood fill if the square hasn't already been visited,
+			and then store or otherwise use the component size
+			for whatever it's needed for
+			"""
+			floodfill(r, c, grid[r][c])
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Example - Counting Rooms
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ### Implementation
+
+<Warning>
+
+Recursive implementations of flood fill sometimes lead to
+
+- _Stack overflow_ if you didn't include the appropriate compiler options for
+  [adjusting the stack size](/general/cpp-command#adjusting-stack-size)
+- _Memory limit exceeded_ if you run the recursive implementation on a _really_
+  big grid (i.e., running the above code on a $4000\times 4000$ grid may exceed
+  256 MB)
+  - Non-recursive implementations generally use less memory than recursive ones.
+
+</Warning>
+
+A non-recursive implementation of flood fill follows:
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <stack>
+
 using namespace std;
 
-#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
-#define F0R(i,a) FOR(i,0,a)
+const int MAX_N = 2500;
+const int R_CHANGE[]{0, 1, 0, -1};
+const int C_CHANGE[]{1, 0, -1, 0};
 
-const int xd[4] = {0,1,0,-1}, yd[4] = {1,0,-1,0};
+int row_num;
+int col_num;
+string building[MAX_N];
+bool visited[MAX_N][MAX_N];
 
-int n,m;
-string g[2500];
-bool vis[2500][2500];
+void floodfill(int r, int c) {
+	// Note: you can also use a queue and pop from the front for a BFS-based approach
+	stack<pair<int, int>> frontier;
+	frontier.push({r, c});
+	while(!frontier.empty()) {
+		r = frontier.top().first;
+		c = frontier.top().second;
+		frontier.pop();
 
-void ff(int x, int y) { // flood fill!
-	if (x < 0 || x >= n || y < 0 || y >= m || g[x][y] == '#' || vis[x][y]) return;
-	vis[x][y] = 1;
-	F0R(i,4) ff(x+xd[i],y+yd[i]);
+		if (r < 0 || r >= row_num || c < 0 || c >= col_num
+				|| building[r][c] == '#' || visited[r][c])
+			continue;
+
+		visited[r][c] = true;
+		for (int i = 0; i < 4; i++){
+			frontier.push({r + R_CHANGE[i], c + C_CHANGE[i]});
+		}
+	}
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	cin >> n >> m;
-	F0R(i,n) cin >> g[i];
-	int ans = 0;
-	F0R(i,n) F0R(j,m) if (g[i][j] == '.' && !vis[i][j]) {
-		ff(i,j);
-		ans ++;
+	cin >> row_num >> col_num;
+	for (int i = 0; i < row_num; i++) {
+		cin >> building[i];
 	}
-	cout << ans;
+
+	int room_num = 0;
+	for (int i = 0; i < row_num; i++) {
+		for (int j = 0; j < col_num; j++) {
+			if (building[i][j] == '.' && !visited[i][j]) {
+				floodfill(i, j);
+				room_num++;
+			}
+		}
+	}
+	cout << room_num << endl;
 }
 ```
 
@@ -501,77 +616,121 @@ int main() {
 
 <JavaSection>
 
-<Warning>
-
-Recursive implementations of floodfill in Java can sometimes lead to StackOverflowError. To avoid Stack Overflow, use your own stack in an iterative implementation like the one below.
-
-</Warning>
-
 ```java
 import java.io.*;
 import java.util.*;
 
-public class test{
-	public static boolean[][] v;
-	public static char[][] g;
-	public static final int xd[] = {0,1,0,-1}, yd[] = {1,0,-1,0};
-	public static int N, M;
-	static class Pair{
-		public int a, b;
-		public Pair(int a, int b){
-			this.a = a;
-			this.b = b;
-		}
-	}
-	public static void ff(int x, int y){
-		Stack<Pair> s = new Stack<Pair>();
-		s.push(new Pair(x, y));
-		while(!s.isEmpty()){
-			Pair p = s.pop();
-			x = p.a; y = p.b;
-			if (x < 0 || x >= N || y < 0 || y >= M || g[x][y] == '#' || v[x][y])
+public class RoomCount {
+	public static final int R_CHANGE[] = {0, 1, 0, -1};
+	public static final int C_CHANGE[] = {1, 0, -1, 0};
+
+	private static boolean[][] visited;
+	private static char[][] building;
+	private static int rowNum;
+	private static int colNum;
+
+	public static void floodfill(int row, int col) {
+		// Note: you can also use a queue and pop from the front for a BFS-based approach
+		Stack<Pos> frontier = new Stack<>();
+		frontier.push(new Pos(row, col));
+		while(!frontier.isEmpty()){
+			Pos curr = frontier.pop();
+			row = curr.row;
+			col = curr.col;
+
+			if (row < 0 || row >= rowNum || col < 0 || col >= colNum
+					|| building[row][col] == '#' || visited[row][col])
 				continue;
-			v[x][y] = true;
-			for (int i = 0; i < 4; i++){
-				int nx = x+xd[i]; int ny = y+yd[i];
-				s.add(new Pair(nx,ny));
+
+			visited[row][col] = true;
+			for (int i = 0; i < 4; i++) {
+				frontier.add(new Pos(row + R_CHANGE[i], col + C_CHANGE[i]));
 			}
 		}
 	}
-	public static void main(String[] args) throws IOException
-	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		g = new char[N][M];
-		for (int i = 0; i < N; i++){
-			String str = br.readLine();
-			for (int j = 0; j < M; j++){
-				g[i][j] = str.charAt(j);
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer dims = new StringTokenizer(read.readLine());
+		rowNum = Integer.parseInt(dims.nextToken());
+		colNum = Integer.parseInt(dims.nextToken());
+
+		building = new char[rowNum][colNum];
+		for (int r = 0; r < rowNum; r++){
+			String row = read.readLine();
+			for (int j = 0; j < colNum; j++){
+				building[r][j] = row.charAt(j);
 			}
 		}
-		v = new boolean[N][M];
-		int ans = 0;
-		for (int i = 0; i < N; i++){
-			for (int j = 0; j < M; j++){
-				if(g[i][j] == '.' && !v[i][j]) {
-					ff(i,j);
-					ans++;
+
+		visited = new boolean[rowNum][colNum];
+		int roomNum = 0;
+		for (int i = 0; i < rowNum; i++){
+			for (int j = 0; j < colNum; j++){
+				if (building[i][j] == '.' && !visited[i][j]) {
+					floodfill(i, j);
+					roomNum++;
 				}
 			}
 		}
-		out.println(ans);
-		out.close();
+		System.out.println(roomNum);
+	}
+}
+
+class Pos {
+	int row;
+	int col;
+	public Pos(int row, int col) {
+		this.row = row;
+		this.col = col;
 	}
 }
 ```
 
 </JavaSection>
 
+<PySection>
+
+```py
+row_num, col_num = [int(i) for i in input().split()]
+grid = [input() for _ in range(row_num)]
+visited = [[False for _ in range(col_num)] for _ in range(row_num)]
+
+
+def floodfill(r: int, c: int):
+	global visited
+
+	"""
+	Note: you can also use queue and pop from the
+	front (as opposed to popping from the back) for a BFS-based approach
+	"""
+	frontier = [(r, c)]
+	while frontier:
+		r, c = frontier.pop()
+		if (r < 0 or r >= row_num or c < 0 or c >= col_num
+				or visited[r][c] or grid[r][c] == '#'):
+			continue
+
+		visited[r][c] = True
+		frontier.append((r - 1, c))
+		frontier.append((r, c - 1))
+		frontier.append((r + 1, c))
+		frontier.append((r, c + 1))
+
+
+room_num = 0
+for row in range(row_num):
+	for col in range(col_num):
+		if not visited[row][col] and grid[row][col] == '.':
+			floodfill(row, col)
+			room_num += 1
+print(room_num)
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" hideSuggestProblemButton />

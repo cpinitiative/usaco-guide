@@ -1,143 +1,18 @@
 ---
 id: PURS
 title: 'Point Update Range Sum'
-author: Benjamin Qi, Andrew Wang, Dong Liu
+author: Benjamin Qi, Andrew Wang, Dong Liu, Nathan Gong
 prerequisites:
   - prefix-sums
-description: 'Introduces Segment Tree, Binary Indexed Tree, and C++ Order Statistic Tree.'
+description:
+  'Introduces Segment Tree, Binary Indexed Tree, and C++ Order Statistic Tree.'
 frequency: 3
 ---
 
+<FocusProblem problem="sample" />
 
-
-export const problems = {
-	sample: [
-		new Problem(
-			'CSES',
-			'Dynamic Range Sum Queries',
-			'1648',
-			'Easy',
-			false,
-			['PURS'],
-			'Can also do range XOR queries w/ update.'
-		),
-	],
-	segSam: [
-		new Problem(
-			'CSES',
-			'Dynamic Range Minimum Queries',
-			'1649',
-			'Easy',
-			false,
-			['PURQ'],
-			''
-		),
-	],
-	inv: [
-		new Problem('SPOJ', 'Inversion Counting', 'INVCNT', 'Easy', false, [
-			'PURS',
-		]),
-	],
-	practice: [
-		new Problem(
-			'CSES',
-			'Range Update Queries',
-			'1651',
-			'Easy',
-			true,
-			['PURS'],
-			'cses-1651'
-		),
-		new Problem(
-			'Kattis',
-			'Mega Inversions',
-			'megainversions',
-			'Easy',
-			false,
-			['PURS', 'Inversions'],
-			'kattis-megainversions'
-		),
-		new Problem(
-			'CSES',
-			'List Removals',
-			'1749',
-			'Easy',
-			false,
-			['PURS'],
-			'cses-1749'
-		),
-		new Problem(
-			'CSES',
-			'Salary Queries',
-			'1144',
-			'Easy',
-			false,
-			['PURS', 'Coordinate Compress'],
-			'cses-1144'
-		),
-		new Problem(
-			'CSES',
-			'Increasing Subsequence II',
-			'1748',
-			'Easy',
-			false,
-			['PURS', 'Coordinate Compress'],
-			'cses-1748'
-		),
-		new Problem(
-			'CSES',
-			'Distinct Values Queries',
-			'1734',
-			'Normal',
-			true,
-			['PURS', 'Offline'],
-			'cses-1734'
-		),
-	],
-	usaco: [
-		new Problem('Gold', 'Haircut', '1041', 'Easy', true, ['PURS', 'Inversions'], 'usaco-1041'),
-		new Problem('Gold', 'Balanced Photo', '693', 'Easy', false, ['PURS', 'Inversions'], 'usaco-693'),
-		new Problem('Gold', 'Circle Cross', '719', 'Easy', false, ['PURS', 'Inversions'], ''),
-		new Problem('Gold', 'Sleepy Cow Sort',
-			'898',
-			'Easy',
-			false,
-			['PURS'],
-			''
-		),
-		new Problem('Plat', 'Mincross', '720', 'Easy', false, ['PURS', 'Inversions'], ''),
-		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, ['PURS'], ''),
-	],
-};
-
-
-<!-- 	new Problem(
-		'YS',
-		'Point Add Range Sum',
-		'point_add_range_sum',
-		'Easy',
-		false,
-		['PURS'],
-		''
-	), -->
-
-<!-- 	new Problem(
-		'Silver',
-		'Out of Sorts',
-		'834',
-		'Normal',
-		false,
-		undefined,
-		"aka Sorting Steps: https://csacademy.com/contest/round-42/task/sorting-steps/ -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier."
-	),
-	new Problem('Gold', 'Out of Sorts', '837', 'Hard', false, undefined, ''),
-	new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''), -->
-
-<FocusProblem problem={problems.sample[0]} />
-
-<br />
-
-Most gold range query problems require you to support following tasks in $\mathcal{O}(\log N)$ time each on an array of size $N$:
+Most gold range query problems require you to support following tasks in
+$\mathcal{O}(\log N)$ time each on an array of size $N$:
 
 - Update the element at a single position (point).
 - Query the sum of some consecutive subarray.
@@ -146,21 +21,30 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 ## Segment Tree
 
-<FocusProblem problem={problems.segSam[0]} />
+<FocusProblem problem="segSam" />
 
-A **segment tree** allows you to do point update and range query in $\mathcal{O}(\log N)$ time each for **any** associative operation, not just summation.
-
+A **segment tree** allows you to do point update and range query in
+$\mathcal{O}(\log N)$ time each for **any** associative operation, not just
+summation.
 
 ### Resources
 
 <Info title="Pro Tip">
 
-You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](/plat/seg-ext).
+You can skip more advanced applications such as **lazy propagation** for now.
+They will be covered in [platinum](/plat/seg-ext).
 
 </Info>
 
 <Resources>
-	<Resource source="CF" title="EDU: Segment Tree Pt 1 Steps 1, 3, 4" url="https://codeforces.com/edu/course/2/lesson/4/1" starred>basic operations, inversion counting</Resource>
+	<Resource
+		source="CF"
+		title="EDU: Segment Tree Pt 1 Steps 1, 3, 4"
+		url="https://codeforces.com/edu/course/2/lesson/4/1"
+		starred
+	>
+		basic operations, inversion counting
+	</Resource>
 	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
 		Interactive updates.
 	</Resource>
@@ -179,7 +63,7 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 	</Resource>
 </Resources>
 
-<!-- <Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource> -->
+<!-- <Resource source="PAPS" title="11.2.3 - Segment Trees" /> -->
 
 <!-- ### Implementations
 
@@ -274,11 +158,12 @@ public class segtree {
 	</Resource>
 </Resources>
 
-Note that `st.init(n+1)` allows us to update and query indices in the range `[0,n+1)=[0,n]`.
-
 <LanguageSection>
 
 <CPPSection>
+
+Note that `st.init(n+1)` allows us to update and query indices in the range
+`[0,n+1)=[0,n]`.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -320,15 +205,85 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class DynamicRangeMinQueries {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int q = io.nextInt();
+
+		SegmentTree seg = new SegmentTree(n);
+		for (int i = 0; i < n; i++) {
+			seg.set(i, io.nextInt());
+		}
+
+		for (int i = 0; i < q; i++) {
+			int type = io.nextInt();
+			if (type == 1) {
+				int k = io.nextInt()-1;
+				int u = io.nextInt();
+				seg.set(k, u);
+			} else {
+				int a = io.nextInt()-1;
+				int b = io.nextInt()-1;
+				io.println(seg.min(a, b));
+			}
+		}
+		io.close();
+	}
+
+	public static class SegmentTree {
+		private int[] tree;
+		private int n;
+
+		public SegmentTree(int n) {
+			this.n = n;
+			tree = new int[n*2];
+		}
+
+		public int min(int a, int b) {
+			a += n;
+			b += n;
+			int min = Integer.MAX_VALUE;
+			while (a <= b) {
+				if (a%2 == 1) min = Math.min(min, tree[a++]);
+				if (b%2 == 0) min = Math.min(min, tree[b--]);
+				a /= 2;
+				b /= 2;
+			}
+			return min;
+		}
+
+		public void set(int index, int val) {
+			index += n;
+			tree[index] = val;
+			for (index /= 2; index >= 1; index /= 2) {
+				tree[index] = Math.min(tree[2*index], tree[2*index+1]);
+			}
+		}
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ### Solution - Dynamic Range Sum Queries
 
-Compared to the previous problem, all we need to change are `T`, `ID`, and `comb`.
-
 <LanguageSection>
 
 <CPPSection>
+
+Compared to the previous problem, all we need to change are `T`, `ID`, and
+`comb`.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -370,11 +325,85 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+Compared to the previous problem, all we need to change is the way we aggregate
+values (change from `Math.min()` to summation) and the data type we use to store
+the query (`int` to `long`).
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class DynamicRangeSumQueries {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int q = io.nextInt();
+
+		SegmentTree seg = new SegmentTree(n);
+		for (int i = 0; i < n; i++) {
+			seg.set(i, io.nextInt());
+		}
+
+		for (int i = 0; i < q; i++) {
+			int type = io.nextInt();
+			if (type == 1) {
+				int k = io.nextInt()-1;
+				int u = io.nextInt();
+				seg.set(k, u);
+			} else {
+				int a = io.nextInt()-1;
+				int b = io.nextInt()-1;
+				io.println(seg.sum(a, b));
+			}
+		}
+		io.close();
+	}
+
+	static class SegmentTree {
+		private long[] tree;
+		private int n;
+
+		public SegmentTree(int n) {
+			this.n = n;
+			tree = new long[n*2];
+		}
+
+		public long sum(int a, int b) {
+			a += n;
+			b += n;
+			long sum = 0;
+			while (a <= b) {
+				if (a%2 == 1) sum += tree[a++];
+				if (b%2 == 0) sum += tree[b--];
+				a /= 2;
+				b /= 2;
+			}
+			return sum;
+		}
+
+		public void set(int index, int val) {
+			index += n;
+			tree[index] = val;
+			for (index /= 2; index >= 1; index /= 2) {
+				tree[index] = tree[2*index] + tree[2*index+1];
+			}
+		}
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Binary Indexed Tree
 
-Implementation is shorter than segment tree, but maybe more confusing at first glance.
+Implementation is shorter than segment tree, but maybe more confusing at first
+glance.
 
 ### Resources
 
@@ -396,10 +425,10 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 		source="TC"
 		title="Binary Indexed Trees"
 		url="binary-indexed-trees"
-	></Resource>
+	 />
 </Resources>
 
-<!-- 
+<!--
 
 ### Implementations
 
@@ -443,7 +472,7 @@ public static void update(int i, long v) {
 
 </LanguageSection> -->
 
-### Solution - Range Sum Queries II
+### Solution - Dynamic Range Sum Queries (With a BIT)
 
 <LanguageSection>
 
@@ -499,7 +528,7 @@ Writing a BIT this way has the advantage of generalizing to multiple dimensions.
 		title="mouse_wireless - Multi-dimensional BITs with Templates"
 		url="https://codeforces.com/blog/entry/64914"
 		starred
-	></Resource>
+	 />
 	<Resource
 		source="Benq"
 		title="BIT"
@@ -527,11 +556,11 @@ template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
 	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
 		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
 	template<typename... Args> T sum(int r, Args... args) {
-		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...); 
+		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...);
 		return res; }
-	template<typename... Args> T query(int l, int r, Args... 
+	template<typename... Args> T query(int l, int r, Args...
 		args) { return sum(r,args...)-sum(l-1,args...); }
-}; 
+};
 
 BIT<ll,MX> B;
 int N,Q;
@@ -553,14 +582,77 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class DynamicRangeSumQueries {
+	static long[] bit;
+	static int n;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		n = io.nextInt();
+		int q = io.nextInt();
+
+		// Note: we are using 1-based indexing for the BIT to function properly
+		// "arr" stores the value of each item in the array for convenient use
+		bit = new long[n+1];
+		int[] arr = new int[n+1];
+		for (int i = 1; i <= n; i++) {
+			arr[i] = io.nextInt();
+			add(i, arr[i]);
+		}
+
+		for (int i = 0; i < q; i++) {
+			int type = io.nextInt();
+			if (type == 1) {
+				int k = io.nextInt();
+				int u = io.nextInt();
+				add(k, -arr[k]); // Remove the BIT's current value at "k"
+				arr[k] = u;
+				add(k, arr[k]); // Add the BIT's new value
+			} else {
+				int a = io.nextInt();
+				int b = io.nextInt();
+				io.println(query(b)-query(a-1));
+			}
+		}
+		io.close();
+	}
+
+	static void add(int j, long k) {
+		for (; j <= n; j += j & -j) {
+			bit[j] += k;
+		}
+	}
+
+	static long query(int j) {
+		long res = 0;
+		for (; j > 0; j -= j & -j) {
+			res += bit[j];
+		}
+		return res;
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Finding $k$-th Element
 
-Suppose that we want a data structure that supports all the operations as a `set` in C++ in addition to the following:
+Suppose that we want a data structure that supports all the operations as a
+`set` in C++ in addition to the following:
 
-- `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`.
-- `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
+- `order_of_key(x)`: counts the number of elements in the set that are strictly
+  less than `x`.
+- `find_by_order(k)`: similar to `find`, returns the iterator corresponding to
+  the `k`-th lowest element in the set (0-indexed).
 
 ### Order Statistic Tree
 
@@ -572,7 +664,7 @@ Luckily, such a built-in data structure already exists in C++.
 		url="11080"
 		title="adamant - Policy Based Data Structures"
 		starred
-	></Resource>
+	 />
 	<Resource source="CPH" title="4.5 - Policy Based Data Structures">
 		brief overview with find_by_order and order_of_key
 	</Resource>
@@ -585,7 +677,8 @@ Luckily, such a built-in data structure already exists in C++.
 	</Resource>
 </Resources>
 
-To use indexed set locally, you need to [install GCC](/general/cpp-command#installing-gcc).
+To use indexed set locally, you need to
+[install GCC](/general/cpp-command#installing-gcc).
 
 ### With a BIT
 
@@ -593,8 +686,7 @@ Assumes all updates are in the range $[1,N]$.
 
 <Resources>
 	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
-		{' '}
-		log N{' '}
+		log N
 	</Resource>
 </Resources>
 
@@ -606,7 +698,7 @@ Covered in [Platinum](/plat/seg-ext).
 
 ## Example - Inversion Counting
 
-<FocusProblem problem={problems.inv[0]} />
+<FocusProblem problem="inv" />
 
 ### Solution
 
@@ -622,7 +714,6 @@ Using indexed set, we can solve this in just a few lines.
 #include <bits/stdc++.h>
 using namespace std;
 
-#include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 template <class T> using Tree = tree<T, null_type, less<T>,
@@ -643,13 +734,17 @@ int main() {
 }
 ```
 
-Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
+Note that if it were not the case that all elements of the input array were
+distinct, then this code would be incorrect since `Tree<int>` would remove
+duplicates. Instead, we would use an indexed set of pairs
+(`Tree<pair<int,int>>`), where the first element of each pair would denote the
+value while the second would denote the position of the value in the array.
 
 </CPPSection>
 
 <JavaSection>
 
-Using a binary indexed tree, we can count the number of inversions. 
+Using a binary indexed tree, we can count the number of inversions.
 
 ```java
 import java.util.*;
@@ -701,18 +796,22 @@ public class Main {
 
 <Info title="Coordinate Compression">
 
-If the coordinates are large (say, up to $10^9$), then you should apply [coordinate compression](https://www.quora.com/What-is-coordinate-compression-and-what-is-it-used-for) before using a BIT or segment tree (though [sparse segment trees](/plat/sparse-seg) do exist).
+If the coordinates are large (say, up to $10^9$), then you should apply
+[coordinate compression](https://www.quora.com/What-is-coordinate-compression-and-what-is-it-used-for)
+before using a BIT or segment tree (though
+[sparse segment trees](/plat/sparse-seg) do exist).
 
 </Info>
 
 ### General
 
-<Problems problems={problems.practice} />
+<Problems problems="practice" />
 
 ### USACO
 
 <!-- Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting. -->
 
-<Problems problems={problems.usaco} />
+<Problems problems="usaco" />
 
-A hint regarding Sleepy Cow Sort: All USACO problems (aside from some special exceptions) have only one possible output.
+A hint regarding Sleepy Cow Sort: All USACO problems (aside from some special
+exceptions) have only one possible output.

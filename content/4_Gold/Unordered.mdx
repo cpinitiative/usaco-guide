@@ -1,7 +1,7 @@
 ---
 id: unordered
 title: (Optional) Unordered Sets & Maps
-author: Darren Yao, Benjamin Qi
+author: Darren Yao, Benjamin Qi, Neo Wang
 description: 'Maintaining collections of distinct elements with hashing.'
 frequency: 1
 prerequisites:
@@ -11,7 +11,8 @@ prerequisites:
 
 <Warning>
 
-You can (almost always) use the sets introduced in the prerequisite module instead, but it's good to know that these exist.
+You can (almost always) use the sets introduced in the prerequisite module
+instead, but it's good to know that these exist.
 
 </Warning>
 
@@ -23,21 +24,31 @@ You can (almost always) use the sets introduced in the prerequisite module inste
 
 ## Hashing
 
-**Hashing** refers to assigning a unique code to every variable/object which allows insertions, deletions, and searches in $\mathcal{O}(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order.
+**Hashing** refers to assigning a unique code to every variable/object which
+allows insertions, deletions, and searches in $\mathcal{O}(1)$ time, albeit with
+a high constant factor, as hashing requires a large constant number of
+operations. However, as the name implies, elements are not ordered in any
+meaningful way, so traversals of an unordered set will return elements in some
+arbitrary order.
 
-(more in-depth explanation?)
+Oftentimes, `unordered_map` and `unordered_set` can be used as a drop-in
+replacement for their `map` and `set` counterparts, as long as the key does not require custom hashing.
 
-<IncompleteSection>
+The operations for `unordered_map` include:
 
-Introduce `unordered_set`, `unordered_map`, but no need to repeat code from previous module.
+- `insert`, `erase`, `count`, which all function the same as
+  [sorted sets](/bronze/intro-sets)
+- `find`, which returns the iterator to an element
 
-</IncompleteSection>
-
-All of these operations are $\mathcal{O}(1)$, but again, due to the hashing, this has a high constant factor.
+All of these operations are $\mathcal{O}(1)$, but again, due to the hashing,
+this has a high constant factor.
 
 ## Custom Hashing
 
-There is no built in method for hashing pairs or vectors. Namely, `unordered_set<vector<int>>` does not work. In this case, we can use an [ordered map](/silver/intro-ordered) (which supports all of the functions used in the code above) or declare our own hash function.
+There is no built in method for hashing pairs or vectors. Namely,
+`unordered_set<vector<int>>` does not work. In this case, we can use an
+[ordered map](/silver/intro-ordered) (which supports all of the functions used
+in the code above) or declare our own hash function.
 
 <LanguageSection>
 
@@ -54,8 +65,8 @@ There is no built in method for hashing pairs or vectors. Namely, `unordered_set
 	</Resource>
 </Resources>
 
-The link provides an example of hashing pairs of strings. More examples (for pairs of ints)
-
+The link provides an example of hashing pairs of strings, as well as other data
+structures like pairs.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -71,7 +82,6 @@ struct hashPi {
 
 int main() {
 	unordered_map<pi,int,hashPi> um;
-
 }
 ```
 
@@ -91,7 +101,6 @@ namespace std {
 
 int main() {
 	unordered_map<pi,int> um;
-
 }
 ```
 
@@ -99,11 +108,13 @@ int main() {
 
 <JavaSection>
 
-Java has its own hash functions for objects. If we wanted to override it, we can define the function `hashCode()` and set our own custom hash function that will be used in `HashMaps`.
+Java has its own hash functions for objects. If we wanted to override it, we can
+define the function `hashCode()` and set our own custom hash function that will
+be used in `HashMaps`.
 
 ```java
-import java.io.*; 
-import java.util.*; 
+import java.io.*;
+import java.util.*;
 
 public class HashTest{
 	public static HashMap<Pair, Integer> map;
@@ -128,18 +139,24 @@ public class HashTest{
 
 </LanguageSection>
 
-
-However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so it would easily be **hacked**).
+However, this hash function is quite bad; if we insert
+$(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so
+it would easily be **hacked**).
 
 ## Hacking
 
 <Warning>
 
-You don't need to know this for USACO, but you will need this to pass some of the problems in this module.
+You don't need to know this for USACO, but you will need this to pass some of
+the problems in this module.
 
 </Warning>
 
-In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. Apparently [Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not vulnerable to this, however.
+In USACO contests, unordered sets and maps generally fine, but the built-in
+hashing algorithm for C++ is vulnerable to pathological data sets causing
+abnormally slow runtimes. Apparently
+[Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not
+vulnerable to this, however.
 
 <LanguageSection>
 
@@ -151,7 +168,8 @@ In USACO contests, unordered sets and maps generally fine, but the built-in hash
 	</Resource>
 </Resources>
 
-Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above in place of `unordered_map<int, int>`.
+Essentially, use `unordered_map<int, int, custom_hash>` defined in the blog above
+in place of `unordered_map<int, int>`.
 
 ### Another Hash Function
 
@@ -161,9 +179,7 @@ Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above
 		title="HashMap"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h"
 		starred
-	>
-		{' '}
-	</Resource>
+	/>
 </Resources>
 
 ```cpp

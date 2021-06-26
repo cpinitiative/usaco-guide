@@ -1,0 +1,181 @@
+---
+id: balkan-15-happiness
+source: Balkan OI 2015
+title: Happiness
+author: Andi Qu, Benjamin Qi
+---
+
+Isn't it convenient how the problem statement tells us what we have to do? (Try
+to prove the necessary condition described in the statement yourself.)
+
+We need a data structure that supports the following:
+
+- Insert numbers into a multiset $M$.
+- Erase numbers from $M$.
+- Check whether there exists some number $x < \sum_{i \in M} i$ such that
+  $\sum_{i \in M, i \leq x}i < x$.
+
+## Solution 1 - Sparse Segment Tree
+
+Since we want to handle range queries with updates, the obvious option would be
+to use a BIT or segment tree.
+
+However, the numbers that we want to insert can get very large (up to
+$10^{12}$). Since we have to answer queries online, using a BIT is out of the
+question.
+
+Luckily, we can simply use a sparse segment tree instead!
+
+We still need to find a way to check whether the $x$ described above exists
+though.
+
+The key observation is that if we know that
+
+$$
+k \leq \sum_{i \in M, i \leq k}i
+$$
+
+for some $k$, then we also know that
+
+$$
+l \leq \sum_{i \in M, i \leq l}i
+$$
+
+for all $l \in (k, \sum_{i \in M, i \leq k}i]$. This is true because
+
+$$
+l \leq \sum_{i \in M, i \leq k}i \leq \sum_{i \in M, i \leq l}i
+$$
+
+This means that the next number we need to check is
+$\sum_{i \in M, i \leq k}i + 1$.
+
+If we choose the numbers that we check this way, then we will only check
+$\mathcal{O}(\log 10^{12})$ numbers for each query (since the $i$-th number we
+check is always at least $2^i - 1$).
+
+The complexity of this algorithm is thus $\mathcal{O}(KQ \log^2 10^{12})$.
+
+### Code
+
+```cpp
+#include "happiness.h"
+
+struct Node {
+	long long l, r, val;
+	Node *lc, *rc;
+
+	Node(long long L, long long R): l(L), r(R), val(0), lc(nullptr), rc(nullptr) {}
+
+	void update(long long p, long long v) {
+		val += v;
+		if (l != r) {
+			long long mid = (l + r) / 2;
+			if (p > mid) {
+				if (!rc) rc = new Node(mid + 1, r);
+				rc->update(p, v);
+			} else {
+				if (!lc) lc = new Node(l, mid);
+				lc->update(p, v);
+			}
+		}
+	}
+
+	long long query(long long a, long long b) {
+		if (r < a || l > b) return 0;
+		if (r <= b && l >= a) return val;
+		long long ret = 0;
+		if (lc) ret += lc->query(a, b);
+		if (rc) ret += rc->query(a, b);
+		return ret;
+	}
+};
+
+Node *root;
+
+bool check() {
+	long long curr = 1, sm = root->val;
+	while (curr < sm) {
+		long long t = root->query(1, curr);
+		if (t < curr) return false;
+		curr = t + 1;
+	}
+	return true;
+}
+
+bool init(int coinsCount, long long maxCoinSize, long long coins[]) {
+	root = new Node(1, maxCoinSize);
+	for (int i = 0; i < coinsCount; i++) root->update(coins[i], coins[i]);
+	return check();
+}
+
+bool is_happy(int event, int coinsCount, long long coins[]) {
+	for (int i = 0; i < coinsCount; i++) root->update(coins[i], event * coins[i]);
+	return check();
+}
+```
+
+## Solution 2 - Buckets
+
+A smarter solution is to split the elements of $M$ into the buckets
+$[2^i, 2^{i + 1})$ for each $i$ from 0 to $\log 10^{12}$. Notice how there are
+exactly $\log 10^{12} + 1$ buckets.
+
+Why is this convenient?
+
+Firstly, only the two least elements in each bucket could potentially be bad
+(since $(2^k + a) + (2^k + b) \geq 2^{k + 1}$). This narrows down the number of
+elements we need to check significantly.
+
+Secondly, we can store the sum of the elements in each bucket and be able to
+find the prefix sums of buckets in $\mathcal{O}(\log 10^{12})$ time.
+
+We can use multisets to store the elements in the buckets, so the complexity of
+this algorithm is $\mathcal{O}(KQ (\log 10^{12} + \log KQ))$. In practice, this
+solution runs faster than the first solution.
+
+### Code
+
+```cpp
+#include "happiness.h"
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using ll = long long;
+multiset<ll> todo[40];
+ll SUM[40];
+
+void ad(ll x, int b) {
+	int p = 0; while ((1LL<<(p+1)) <= x) p ++;
+	if (b == 1) {
+		todo[p].insert(x), SUM[p] += x;
+	} else {
+		todo[p].erase(todo[p].find(x)), SUM[p] -= x;
+	}
+}
+
+bool ok() {
+	ll sum = 0;
+	for (int i = 0; i < 40; ++i) if (todo[i].size() > 0) {
+		ll x = *begin(todo[i]);
+		if (sum+1 < x) return 0;
+		if (todo[i].size() > 1 && sum+x+1 < *next(begin(todo[i]))) return 0;
+		sum += SUM[i];
+	}
+	return 1;
+}
+
+bool init(int coinsCount, long long maxCoinSize, long long coins[]) {
+	for (int i = 0; i < coinsCount; ++i) ad(coins[i],1);
+	return ok();
+}
+
+bool is_happy(int event, int coinsCount, long long coins[]) {
+	for (int i = 0; i < coinsCount; ++i) {
+		if (event == -1) ad(coins[i],-1);
+		else ad(coins[i],1);
+	}
+	return ok();
+}
+```

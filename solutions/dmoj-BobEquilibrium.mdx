@@ -1,0 +1,390 @@
+---
+id: dmoj-BobEquilibrium
+source: DMOJ
+title: Bob Equilibrium
+author: Benjamin Qi
+---
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+Using centroid decomposition, we can
+
+- Update the value at some vertex $v$ in $\mathcal{O}(\log N)$ time
+- Query the sum of the values of all vertices that are distance exactly $d$ away
+  from some vertex $v$ in $\mathcal{O}(\log N)$ time.
+
+You can check the second approach for
+[USACO At Large](http://www.usaco.org/current/data/sol_atlarge_platinum_jan18.html)
+for an explanation of how to do this.
+
+What we need for this problem is slightly different; first we need to process
+some number of updates of the following form:
+
+- Add 1 to the values of all vertices at most $d$ away from some vertex $v$.
+
+And then output the values at all vertices at the end. We can use prefix sums
+for this.
+
+(Note: quite close to TL ...)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+
+using pi = pair<int,int>;
+using pl = pair<ll,ll>;
+using pd = pair<db,db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template<class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
+tcT> using PR = pair<T,T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
+
+// loops
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i,a) ROF(i,0,a)
+#define trav(a,x) for (auto& a: x)
+
+const int MOD = 1e9+7; // 998244353;
+const int MX = 2e5+5;
+const ll INF = 1e18; // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
+
+ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
+ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
+
+tcT> bool ckmin(T& a, const T& b) {
+	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
+tcT> bool ckmax(T& a, const T& b) {
+	return a < b ? a = b, 1 : 0; }
+
+tcTU> T fstTrue(T lo, T hi, U f) {
+	hi ++; assert(lo <= hi); // assuming f is increasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+tcTU> T lstTrue(T lo, T hi, U f) {
+	lo --; assert(lo <= hi); // assuming f is decreasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo+1)/2;
+		f(mid) ? lo = mid : hi = mid-1;
+	}
+	return lo;
+}
+tcT> void remDup(vector<T>& v) { // sort and remove duplicates
+	sort(all(v)); v.erase(unique(all(v)),end(v)); }
+tcTU> void erase(T& t, const U& u) { // don't erase
+	auto it = t.find(u); assert(it != end(t));
+	t.erase(it); } // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class ...U
+tcT> void re(complex<T>& c);
+tcTU> void re(pair<T,U>& p);
+tcT> void re(V<T>& v);
+tcT, size_t SZ> void re(AR<T,SZ>& a);
+
+tcT> void re(T& x) { cin >> x; }
+void re(db& d) { str t; re(t); d = stod(t); }
+void re(ld& d) { str t; re(t); d = stold(t); }
+tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
+
+tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
+tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
+tcT> void re(V<T>& x) { trav(a,x) re(a); }
+tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
+tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1,c); }
+str ts(const char* s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+	#ifdef LOCAL
+		return b ? "true" : "false";
+	#else
+		return ts((int)b);
+	#endif
+}
+tcT> str ts(complex<T> c) {
+	stringstream ss; ss << c; return ss.str(); }
+str ts(V<bool> v) {
+	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
+	res += "}"; return res; }
+template<size_t SZ> str ts(bitset<SZ> b) {
+	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
+	return res; }
+tcTU> str ts(pair<T,U> p);
+tcT> str ts(T v) { // containers with begin(), end()
+	#ifdef LOCAL
+		bool fst = 1; str res = "{";
+		for (const auto& x: v) {
+			if (!fst) res += ", ";
+			fst = 0; res += ts(x);
+		}
+		res += "}"; return res;
+	#else
+		bool fst = 1; str res = "";
+		for (const auto& x: v) {
+			if (!fst) res += " ";
+			fst = 0; res += ts(x);
+		}
+		return res;
+
+	#endif
+}
+tcTU> str ts(pair<T,U> p) {
+	#ifdef LOCAL
+		return "("+ts(p.f)+", "+ts(p.s)+")";
+	#else
+		return ts(p.f)+" "+ts(p.s);
+	#endif
+}
+
+// OUTPUT
+tcT> void pr(T x) { cout << ts(x); }
+tcTUU> void pr(const T& t, const U&... u) {
+	pr(t); pr(u...); }
+void ps() { pr("\n"); } // print w/ spaces
+tcTUU> void ps(const T& t, const U&... u) {
+	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU> void DBG(const T& t, const U&... u) {
+	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
+	DBG(u...); }
+#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
+	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
+		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#else
+	#define dbg(...) 0
+	#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(),"r",stdin); }
+void setOut(str s) { freopen(s.c_str(),"w",stdout); }
+void setIO(str s = "") {
+	unsyncIO(); setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
+}
+
+void ad(vi& a, int b) {
+	ckmin(b,sz(a)-1); if (b < 0) return;
+	a[b] ++;
+}
+int get(vi& a, int b) {
+	assert(b >= 0 && b < sz(a));
+	return a[b]; }
+void prop(vi& a) { R0F(i,sz(a)-1) a[i] += a[i+1]; }
+
+vi adj[MX];
+
+template<int SZ> struct Centroid {
+	int N;
+	bool done[SZ]; // processed as centroid yet
+	int sub[SZ], cen[SZ], lev[SZ], mn[SZ]; // subtree size
+	vi stor[SZ], STOR[SZ]; // STOR removes overcount
+	void dfs(int x, int p) { sub[x] = 1;
+		trav(y,adj[x]) if (!done[y] && y != p) {
+			dfs(y,x); sub[x] += sub[y]; }
+	}
+	int centroid(int x) {
+		dfs(x,-1);
+		for (int sz = sub[x];;) {
+			pi mx = {0,0};
+			trav(y,adj[x]) if (!done[y] && sub[y] < sub[x])
+				ckmax(mx,{sub[y],y});
+			if (mx.f*2 <= sz) return x;
+			x = mx.s;
+		}
+	}
+	vector<vi> dist; // dists to all centroid ancs
+	void genDist(int x, int p, int lev) {
+		dist[lev][x] = dist[lev][p]+1;
+		trav(y,adj[x]) if (!done[y] && y != p) genDist(y,x,lev);
+	} // CEN = {centroid above x, label of centroid subtree}
+	void gen(int CEN, int _x) {
+		int x = centroid(_x); done[x] = 1;
+		cen[x] = CEN; sub[x] = sub[_x];
+		lev[x] = (CEN == -1 ? 0 : lev[CEN]+1);
+		stor[x].rsz(sub[x]), STOR[x].rsz(sub[x]+1); dbg("HA",x,sub[x]);
+		if (lev[x] >= sz(dist)) dist.eb(N+1,-1);
+		dist[lev[x]][x] = 0; mn[x] = MOD;
+		trav(y,adj[x]) if (!done[y]) genDist(y,x,lev[x]);
+		trav(y,adj[x]) if (!done[y]) gen(x,y);
+	}
+	void init(int _N) { N = _N; gen(-1,1); } // start with vertex 1
+	void upd(int x, int y) {
+		int cur = x, pre = -1;
+		R0F(i,lev[x]+1) {
+			ad(stor[cur],y-dist[i][x]);
+			if (pre != -1) ad(STOR[pre],y-dist[i][x]);
+			if (i > 0) pre = cur, cur = cen[cur];
+		}
+	}
+	void propAll() {
+		FOR(i,1,N+1) prop(stor[i]), prop(STOR[i]);
+	}
+	int query(int x) { // query value at vertex
+		int cur = x, pre = -1, ans = 0;
+		R0F(i,lev[x]+1) {
+			ans += get(stor[cur],dist[i][x]);
+			if (pre != -1) ans -= get(STOR[pre],dist[i][x]);
+			if (i > 0) pre = cur, cur = cen[cur];
+		}
+		return ans;
+	}
+};
+
+/**
+ * Description: Calculates least common ancestor in tree
+ 	* with root $R$ using binary jumping.
+ * Time: O(N\log N) build, O(\log N) query
+ * Source: USACO Camp
+ * Verification: Debug the Bugs
+ */
+
+template<int SZ> struct LCA {
+	static const int BITS = 32-__builtin_clz(SZ);
+	int N, R = 1, par[BITS][SZ], depth[SZ]; // vi adj[SZ];
+	/// INITIALIZE
+	void ae(int u, int v) { adj[u].pb(v), adj[v].pb(u); }
+	void dfs(int u, int prv){
+		depth[u] = depth[par[0][u] = prv]+1;
+		trav(v,adj[u]) if (v != prv) dfs(v,u); }
+	void init(int _N) {
+		N = _N; dfs(R,0);
+		FOR(k,1,BITS) FOR(i,1,N+1)
+			par[k][i] = par[k-1][par[k-1][i]];
+	}
+	/// QUERY
+	int getPar(int a, int b) {
+		R0F(k,BITS) if (b&(1<<k)) a = par[k][a];
+		return a; }
+	int lca(int u, int v){
+		if (depth[u] < depth[v]) swap(u,v);
+		u = getPar(u,depth[u]-depth[v]);
+		R0F(k,BITS) if (par[k][u] != par[k][v])
+			u = par[k][u], v = par[k][v];
+		return u == v ? u : par[0][u];
+	}
+	int dist(int u, int v) { // # edges on path
+		return depth[u]+depth[v]-2*depth[lca(u,v)]; }
+};
+
+LCA<MX> L;
+Centroid<MX> C;
+int close[MX];
+int N,K;
+
+void dfs1(int x, int p = 0) {
+	trav(t,adj[x]) if (t != p) {
+		dfs1(t,x);
+		ckmin(close[x],close[t]+1);
+	}
+}
+
+void dfs2(int x, int p = 0) {
+	trav(t,adj[x]) if (t != p) {
+		ckmin(close[t],close[x]+1);
+		dfs2(t,x);
+	}
+}
+
+void init() {
+	setIO(); re(N,K);
+	F0R(i,N-1) {
+		int x,y; re(x,y);
+		adj[x].pb(y), adj[y].pb(x);
+	}
+	L.init(N); C.init(N);
+	FOR(i,1,N+1) close[i] = MOD;
+	vi a(K); re(a);
+	trav(t,a) close[t] = 0;
+	dfs1(1); dfs2(1);
+}
+
+int main() {
+	init();
+	FOR(i,1,N+1) {
+		int f,p; re(f,p);
+		int d = L.dist(i,f);
+		if (d <= close[i]+p) {
+			C.upd(i,d-p-1);
+		} else {
+			C.upd(i,close[i]);
+		}
+	}
+	C.propAll();
+	FOR(i,1,N+1) {
+		int t = C.query(i);
+		pr(t,' ');
+	}
+	ps();
+}
+```

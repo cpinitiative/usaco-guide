@@ -1,11 +1,13 @@
+// todo: switch to https://github.com/react-syntax-highlighter/react-syntax-highlighter
+
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import * as React from 'react';
-import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
-import Prism from './SyntaxHighlighting/prism';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
+import { SpoilerContext } from '../Spoiler';
+import Highlight from './SyntaxHighlighting/Highlight';
+import Prism from './SyntaxHighlighting/prism';
 
 const Line = styled.div`
   display: table-row;
@@ -49,14 +51,38 @@ const CodeSnippetLineContent = styled(LineContent)`
   }
 `;
 
+const CopyButton = styled.button`
+  padding: 1.6px 8px 1.6px 8px;
+  color: black;
+  background-color: hsla(240, 20%, 88%, 1);
+  position: absolute;
+  top: 0px;
+  right: var(--right-offset);
+  z-index: 99;
+  border-radius: 0px 0px 4px 4px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  /* copy from tailwind defaults */
+  &:hover {
+    background-color: hsla(240, 20%, 75%, 1);
+  }
+`;
+
+const RelativeDiv = styled.div`
+  position: relative;
+`;
+
 const CodeSnipButton = ({
   snipID,
   showSnip,
   onShowSnipChange,
+  buttonDir,
 }: {
   snipID: number;
   showSnip: boolean;
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
+  buttonDir: 'Up' | 'Down' | 'Left' | 'Right';
 }) => {
   return (
     <CodeSnipButtonIcon
@@ -65,7 +91,15 @@ const CodeSnipButton = ({
       stroke="currentColor"
       className={
         'transform transition translate-y-0.5 h-4 cursor-pointer' +
-        (!showSnip ? ' -rotate-90' : '')
+        (buttonDir == 'Up'
+          ? ' rotate-180'
+          : buttonDir == 'Down'
+          ? ''
+          : buttonDir == 'Left'
+          ? ' rotate-90'
+          : buttonDir == 'Right'
+          ? ' -rotate-90'
+          : '')
       }
       onClick={() => onShowSnipChange(snipID, !showSnip)}
     >
@@ -90,17 +124,37 @@ class CodeBlock extends React.Component<
   }
 > {
   codeSnips = [];
+  static contextType = SpoilerContext;
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      collapsed: true,
+      codeSnipShow: this.calculateCodeSnipShow(),
+    };
+
+    this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      this.codeSnips = [];
+      const codeSnipShow = this.calculateCodeSnipShow();
+      this.setState({ codeSnipShow });
+    }
+  }
+
+  calculateCodeSnipShow() {
     let i = 0;
     let prev = -1;
     let prevVal = '';
     let prevIndentation = '';
-    let codeSnipShowDefault = [];
-    for (let line of this.props.children.split('\n')) {
+    const codeSnipShowDefault = [];
+    const code = this.getCode();
+    for (const line of code.split('\n')) {
       if (prev == -1) {
-        const found = line.match(/^(\s*)\/\/BeginCodeSnip{(.*)}/); // BeginCodeSnip{...}
+        const found = line.match(/^(\s*).*?BeginCodeSnip{(.*?)}/); // BeginCodeSnip{...}
         if (found != null) {
           prev = i;
           prevVal = found[2]; // stuff inside curly brackets
@@ -122,27 +176,26 @@ class CodeBlock extends React.Component<
       }
       ++i;
     }
-    //console.log(this.codeSnips);
-    //console.log(codeSnipShowDefault);
-    this.state = { collapsed: true, codeSnipShow: codeSnipShowDefault };
-
-    //bind
-    this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+    return codeSnipShowDefault;
   }
 
-  setCollapsed(_collapsed) {
+  getCode() {
+    return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, '');
+  }
+
+  setCollapsed(_collapsed): void {
     this.setState({ collapsed: _collapsed });
   }
 
-  setCodeSnipShow(id, val) {
+  setCodeSnipShow(id, val): void {
     this.setState(state => {
-      let codeSnipShow = state.codeSnipShow;
+      const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
       return { codeSnipShow: codeSnipShow };
     });
   }
 
-  renderTokens(tokens, maxLines, getLineProps, getTokenProps) {
+  renderTokens(tokens, maxLines, getLineProps, getTokenProps): JSX.Element {
     const codeSnips = this.codeSnips;
     let curSnip = 0;
     let delta = 1;
@@ -164,6 +217,7 @@ class CodeBlock extends React.Component<
                     onShowSnipChange={this.setCodeSnipShow}
                     snipID={curSnip}
                     showSnip={false}
+                    buttonDir={'Right'}
                   />{' '}
                   {/*this.state.codeSnipShow[curSnip] is false*/}
                 </LineSnip>
@@ -190,18 +244,25 @@ class CodeBlock extends React.Component<
       }
 
       //proceed as normal: (show must == true)
+      const isFirst =
+        curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
+      const isLast =
+        curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
       --maxLines;
       return (
         <Line key={i} {...getLineProps({ line, key: i })}>
           <LineNo data-line-number={i + delta} />
-          {curSnip < codeSnips.length &&
-          codeSnips[curSnip].begin < i &&
-          i < codeSnips[curSnip].end ? (
+          {isFirst || isLast ? (
             <LineSnip>
               <CodeSnipButton
                 onShowSnipChange={this.setCodeSnipShow}
                 snipID={curSnip}
                 showSnip={true}
+                buttonDir={
+                  isFirst
+                    ? 'Down'
+                    : 'Up' /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
+                }
               />{' '}
               {/*this.state.codeSnipShow[curSnip] is true*/}
             </LineSnip>
@@ -219,18 +280,25 @@ class CodeBlock extends React.Component<
     });
   }
 
-  render() {
-    const children = this.props.children;
+  render(): JSX.Element {
+    const code = this.getCode();
     const className = this.props.className;
-    if (className === undefined) {
+    const linesOfCode =
+      code.split('\n').length +
+      1 -
+      this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
+    const isCodeBlockExpandable =
+      !this.context.expandCodeBlock && linesOfCode > 15;
+    let language = className?.replace(/language-/, '');
+    if (language == 'py') language = 'python';
+    if (!['cpp', 'java', 'python'].includes(language)) {
       // no styling, just a regular pre tag
       return (
-        <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
-          {children}
+        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
+          {code}
         </pre>
       );
     }
-    const language = className.replace(/language-/, '');
     /*const [codeSnips, setCodeSnips] = useState(
       for(let line of children.trim().split("\n"))
       {
@@ -239,7 +307,7 @@ class CodeBlock extends React.Component<
 
     // console.warn() if line length is > 80. uncomment to enable
     // Warning: Performance will be negatively impacted! Make sure to comment out before pushing
-    // You may want to comment out pages/liveupdate.tsx (see file for instructions) to speed up build times
+    // You may want to comment out pages/editor.tsx (see file for instructions) to speed up build times
     // let tooLong = false;
     // for (let line of children.trim().split("\n")) {
     //   if (line.length > 80) {
@@ -249,73 +317,86 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-
+    const rightOffset = String(language.length * 8 + 40) + 'px';
     return (
-      // @ts-ignore
-      <Highlight
-        Prism={Prism as any}
-        code={children}
-        language={language}
-        theme={vsDark}
-      >
-        {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <div className="gatsby-highlight" data-language={language}>
-            <pre
-              className={
-                '-mx-4 sm:-mx-6 lg:mx-0 lg:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
-                className
-              }
-              style={{ ...style }}
-            >
-              {collapsed && tokens.length > 15
-                ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
-                : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
-              {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {tokens.length > 15 && (
-                <div
-                  className={
-                    (collapsed ? 'h-full' : 'h-12') +
-                    ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
-                  }
-                  onClick={() => this.setCollapsed(!collapsed)}
-                >
+      <RelativeDiv>
+        <CopyButton
+          type="button"
+          onClick={() => {
+            navigator.clipboard.writeText(code);
+          }}
+          style={{
+            '--right-offset': rightOffset,
+          }}
+          className="focus:outline-none"
+        >
+          Copy
+        </CopyButton>
+        <Highlight
+          Prism={Prism as any}
+          code={code}
+          language={language}
+          theme={vsDark}
+        >
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <div className="gatsby-highlight" data-language={language}>
+              <pre
+                className={
+                  '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                  className
+                }
+                style={{ ...style }}
+              >
+                {isCodeBlockExpandable && collapsed && tokens.length > 15
+                  ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
+                  : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
+                {tokens.length > 15 && !collapsed && <div className="h-8" />}
+                {isCodeBlockExpandable && tokens.length > 15 && (
                   <div
                     className={
-                      (collapsed ? 'h-20' : 'h-12') +
-                      ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                      (collapsed ? 'h-full' : 'h-12') +
+                      ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
                     }
-                    style={
-                      collapsed
-                        ? {
-                            background:
-                              'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-                          }
-                        : null
-                    }
+                    onClick={() => this.setCollapsed(!collapsed)}
                   >
-                    <svg
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                    <div
                       className={
-                        'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
-                        (collapsed ? '' : 'rotate-180')
+                        (collapsed ? 'h-20' : 'h-12') +
+                        ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                      }
+                      style={
+                        collapsed && isCodeBlockExpandable
+                          ? {
+                              background:
+                                'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+                            }
+                          : null
                       }
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                      <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        className={
+                          'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
+                          (collapsed ? '' : 'rotate-180')
+                        }
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              )}
-            </pre>
-          </div>
-        )}
-      </Highlight>
+                )}
+              </pre>
+            </div>
+          )}
+        </Highlight>
+      </RelativeDiv>
     );
   }
 }

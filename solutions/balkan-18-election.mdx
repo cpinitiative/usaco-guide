@@ -1,0 +1,139 @@
+---
+id: balkan-18-election
+source: Balkan OI 2018
+title: Election
+author: Andi Qu, Benjamin Qi
+---
+
+# Method 1 (Offline)
+
+Consider the greedy strategy: iterate from left to right and change `T`s to
+satisfy the increasing condition, then do the same from right to left.
+
+We can solve this problem offline by simulating this process.
+
+https://oj.uz/submission/61836
+
+<IncompleteSection />
+
+# Method 2 (Online)
+
+## A simpler case
+
+Consider the case where we only care about counting votes from left to right.
+
+Let a `C` vote count as $-1$ and a `T` vote count as $+1$ in an array $V$.
+
+The answer to a query on the range $[l, r]$ is simply the maximum prefix sum in
+that range. (i.e. The largest $V_l + V_{l + 1} + \dots + V_k$)
+
+If we count votes from right to left though, the answer is the maximum suffix
+sum instead.
+
+We can use a segment tree to answer both of these types of queries efficiently.
+
+## Combining values
+
+It would be really convenient if we could just calculate the maximum prefix and
+suffix sums and add them. However, we would count some nullified votes twice if
+we do this.
+
+In each node of the segment tree that stores information about the range
+$[l, r]$ we store the following information:
+
+- The maximum prefix sum in the range $[l, r]$. (Let this be $L$)
+- The maximum suffix sum in the range $[l, r]$. (Let this be $R$)
+- The total sum of the range. (Let this be $S$)
+- The answer to a query on the range $[l, r]$. (Let this be $A$)
+
+When we combine two nodes $u$ (left child) and $v$ (right child) to make node
+$w$,
+
+- $w.L = \max(u.L, u.S + v.L)$
+- $w.R = \max(u.R + v.S, v.R)$
+- $w.S = u.S + v.S$
+
+Finding $w.A$ is a bit more tricky though. We will show that it is equal to
+
+$$
+w.A=\max(\max(u.A + v.S, u.S + v.A), u.L + v.R)
+$$
+
+For a range of length $L$, this calculates
+$\max_i\left(\max(\text{first }i\text{ prefix sums})+\max(\text{last }L-i\text{ suffix sums})\right)$
+
+**Claim 1:** This is a lower bound on the answer.
+
+We can say that the increasing condition must hold for the first $i$ votes and
+the decreasing condition must hold for the rest of the votes in the range.
+
+**Claim 2:** This lower bound can be attained.
+
+Consider the greedy strategy mentioned in method 1. Then equality holds when we
+set $i$ equal to one less than the position of the leftmost `T` removed when
+doing the right to left iteration.
+
+Therefore, this is a lower bound and it can be attained.
+
+The final complexity of this algorithm is $\mathcal{O}((N + Q) \log N)$.
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+typedef long long ll;
+using namespace std;
+
+struct Node {
+	int l_max, r_max, tot, ans;
+
+	Node operator+(Node b) {
+		Node ret;
+		ret.l_max = max(l_max, b.l_max + tot);
+		ret.r_max = max(r_max + b.tot, b.r_max);
+		ret.tot = tot + b.tot;
+		ret.ans = max(max(ans + b.tot, b.ans + tot), l_max + b.r_max);
+		return ret;
+	}
+};
+
+Node segtree[2000001];
+char s[500001];
+int n;
+
+void build(int node = 1, int l = 1, int r = n) {
+	if (l == r) {
+		if (s[l] == 'T') segtree[node] = {1, 1, 1, 1};
+		else segtree[node] = {0, 0, -1, 0};
+	} else {
+		int mid = (l + r) / 2;
+		build(node * 2, l, mid);
+		build(node * 2 + 1, mid + 1, r);
+		segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+	}
+}
+
+Node query(int a, int b, int node = 1, int l = 1, int r = n) {
+	if (l > b || r < a) return {0, 0, 0, 0};
+	if (l >= a && r <= b) return segtree[node];
+	int mid = (l + r) / 2;
+	return query(a, b, node * 2, l, mid) + query(a, b, node * 2 + 1, mid + 1, r);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n;
+	FOR(i, 1, n + 1) cin >> s[i];
+	build();
+	int q;
+	cin >> q;
+	while (q--) {
+		int a, b;
+		cin >> a >> b;
+		cout << query(a, b).ans << '\n';
+	}
+	return 0;
+}
+```

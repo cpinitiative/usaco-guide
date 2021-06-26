@@ -1,0 +1,169 @@
+---
+id: usaco-643
+source: USACO Silver 2016 Open
+title: Diamond Collector
+author: Nathan Wang, Albert Ye
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_diamond_silver_open16.html)
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("diamond.in", "r", stdin);
+	freopen("diamond.out", "w", stdout);
+
+	int n, k; cin >> n >> k;
+	int A[n];
+	for (int i = 0; i < n; i++) cin >> A[i];
+
+	sort(A, A+n);
+
+	// how many diamonds we can take
+	// assuming i is the leftmost diamond
+	int canTakeLeft[n];
+	int l = 0, r = 0;
+	for (; l < n; l++) {
+		while (r < n && A[r] - A[l] <= k) r++;
+		canTakeLeft[l] = r - l;
+	}
+
+	// maxValAfterI[i] = max value of canTakeLeft[x] for some x >= i.
+	int maxValAfterI[n+1];
+	maxValAfterI[n] = 0;
+	for (int i = n-1; i >= 0; i--) {
+		maxValAfterI[i] = max(maxValAfterI[i+1], canTakeLeft[i]);
+	}
+
+	int ans = 0;
+	for (int l = 0; l < n; l++) {
+		ans = max(ans, canTakeLeft[l] + maxValAfterI[l + canTakeLeft[l]]);
+	}
+	cout << ans << endl;
+
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+## Implementation
+
+Source: Nick Wu, from the official USACO editorial
+
+```java
+import java.io.*;
+import java.util.*;
+public class diamondS {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("diamond.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("diamond.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+		int[] list = new int[n];
+		for(int i = 0; i < n; i++) {
+			list[i] = Integer.parseInt(br.readLine());
+		}
+		Arrays.sort(list);
+		// leftmostIndex[i] stores the index of the smallest diamond that can be included given that
+		// the largest diamond in the case has size list[i].
+		int[] leftmostIndex = getLeftmost(list, k);
+		// leftSize[i] stores the maximum number of diamonds given that all diamonds have size at most list[i].
+		int[] leftSize = new int[n];
+		for(int i = 0; i < n; i++) {
+			leftSize[i] = i - leftmostIndex[i] + 1;
+			if(i > 0) {
+				leftSize[i] = Math.max(leftSize[i], leftSize[i-1]);
+			}
+		}
+		// rightmostIndex[i] stores the index of the smallest diamond that can be included given that
+		// the smallest diamond in the case has size list[i].
+		int[] rightmostIndex = getRightmost(list, k);
+		// leftSize[i] stores the maximum number of diamonds given that all diamonds have size at least list[i].
+		int[] rightSize = new int[n];
+		for(int i = n-1; i >= 0; i--) {
+			rightSize[i] = rightmostIndex[i] - i + 1;
+			if(i < n-1) {
+				rightSize[i] = Math.max(rightSize[i], rightSize[i+1]);
+			}
+		}
+		int ret = 0;
+		for(int i = 0; i < n-1; i++) {
+			ret = Math.max(ret, leftSize[i] + rightSize[i+1]);
+		}
+		pw.println(ret);
+		pw.close();
+	}
+
+	public static int[] getRightmost(int[] list, int k) {
+		int[] ret = new int[list.length];
+		int j = list.length-1;
+		for(int i = list.length-1; i >= 0; i--) {
+			while(j >= 0 && list[j] - list[i] > k) {
+				j--;
+			}
+			ret[i] = j;
+		}
+		return ret;
+	}
+
+	public static int[] getLeftmost(int[] list, int k) {
+		int[] ret = new int[list.length];
+		int j = 0;
+		for(int i = 0; i < list.length; i++) {
+			while(j < list.length && list[i] - list[j] > k) {
+				j++;
+			}
+			ret[i] = j;
+		}
+		return ret;
+	}
+
+}
+```
+
+</JavaSection>
+<PySection>
+
+## Implementation
+
+```python
+import sys
+
+sys.stdin = open("diamond.in", "r")
+sys.stdout = open("diamond.out", "w")
+
+n, k = map(int,input().split())
+a = sorted([int(input()) for i in range(n)])
+
+mx = [0]*(n+1) # maximum number of diamonds assuming i is the smallest diamond
+j = 0
+for i in range(n) :
+	while j < n and a[j]-a[i] <= k :
+		j += 1
+	j -= 1
+	mx[i] = j-i+1
+
+smx = [0 for i in range(n+1)] # suffix maximum
+smx[n-1] = mx[n-1]
+for i in range(n-2, -1, -1) :
+	smx[i] = max(mx[i], smx[i+1])
+
+ans = 0
+for i in range(n) :
+	ans = max(ans, mx[i] + smx[i+mx[i]])
+print(ans)
+```
+
+</PySection>
+</LanguageSection>

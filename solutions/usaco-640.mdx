@@ -1,0 +1,149 @@
+---
+id: usaco-640
+source: USACO Bronze 2016 Open
+title: Bull in a China Shop
+author: Maggie Liu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_bcs_bronze_open16.html)
+
+We can loop through all possible pairs of pieces and shift them to check if they
+can make the original figurine. Since we cannot shift a piece so any '#' fall
+outside the $N \times N$ grid, we need to find the sides of the pieces to
+determine how far to shift them.
+
+<Warning>
+
+The official solution doesn't check if any '#' fall outside the $N \times N$
+grid.
+
+</Warning>
+
+As we iterate the pieces, we find the left, right, top and bottom sides of the
+piece and store them in the $s$ array. When we are shifting, we shift
+$\texttt{piece[i]}$ $\texttt{idy}$ units to the left and $\texttt{idx}$ units
+up, and shift $\texttt{piece[j]}$ $\texttt{jdy}$ units to the left and
+$\texttt{jdx}$ units up. This will send the piece at
+$(x + \texttt{idx}, y + \texttt{idy})$ to $(x, y)$ and the piece at
+$(x + \texttt{jdx}, y + \texttt{jdy})$ to $(x, y)$. So, we see that
+$\texttt{idy}$ must be bounded by $\texttt{right} - n + 1$ and $\texttt{left}$,
+and $\texttt{idx}$ must be bounded by $\texttt{bottom} - n + 1$ and
+$\texttt{top}$, with $\texttt{jdy}$ and $\texttt{jdx}$ bounded similarly.
+Because of that, every '#' will fall inside the $N \times N$ grid.
+
+Once we have shifted the pieces, if there are two '#' in the same place, or if
+the result of superimposing the pieces is not the same as the original figurine
+($\texttt{pieces[0]}$), then this shift will not work.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K^2 \cdot N^6)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <vector>
+using namespace std;
+bool check(int piece, int x, int y);
+
+int n;
+bool pieces[11][8][8];
+vector<int> s[11];
+int main()
+{
+	freopen("bcs.in", "r", stdin);
+	freopen("bcs.out", "w", stdout);
+	int k;
+	cin >> n >> k;
+	char c;
+	int left, right, top, bottom;
+	for (int i = 0; i <= k; i++)
+	{
+		left = n - 1;
+		right = 0;
+		top = n - 1;
+		bottom = 0;
+		for (int j = 0; j < n; j++)
+		{
+			for (int l = 0; l < n; l++)
+			{
+				cin >> c;
+				pieces[i][j][l] = (c == '#');
+				//find the sides of the piece
+				if (pieces[i][j][l])
+				{
+					bottom = max(bottom, j);
+					top = min(top, j);
+					right = max(right, l);
+					left = min(left, l);
+				}
+			}
+		}
+		s[i] = {left, right, top, bottom};
+	}
+
+	//try all the pieces and shifts to find the correct one
+	for (int i = 1; i <= k; i++)
+	{
+		for (int j = i + 1; j <= k; j++)
+		{
+			for (int idx = s[i][3] - n + 1; idx <= s[i][2]; idx++)
+			{
+				for (int idy = s[i][1] - n + 1; idy <= s[i][0]; idy++)
+				{
+					for (int jdx = s[j][3] - n + 1; jdx <= s[j][2]; jdx++)
+					{
+						for (int jdy = s[j][1] - n + 1; jdy <= s[j][0]; jdy++)
+						{
+							bool good = true;
+							for (int x = 0; x < n; x++)
+							{
+								for (int y = 0; y < n; y++)
+								{
+									bool ipiece = check(i, x + idx, y + idy);
+									bool jpiece = check(j, x + jdx, y + jdy);
+									//two '#' are in the same place
+									if (ipiece && jpiece)
+									{
+										good = false;
+										break;
+									}
+									//the result doesn't match the figurine
+									if (pieces[0][x][y] != (ipiece || jpiece))
+									{
+										good = false;
+										break;
+									}
+								}
+								if (!good)
+								{
+									break;
+								}
+							}
+							if (good)
+							{
+								cout << i << " " << j << endl;
+								return 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//check if a piece is in bounds and is '#'
+bool check(int piece, int x, int y)
+{
+	return x >= 0 && x < n && y >= 0 && y < n && pieces[piece][x][y];
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

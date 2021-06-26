@@ -1,17 +1,19 @@
+import { FirebaseApp } from 'firebase/app';
 import * as React from 'react';
-import FirebaseContext from '../context/FirebaseContext';
+import { FirebaseAppContext } from '../context/FirebaseContext';
 
-// from https://github.com/alexluong/gatsby-packages/blob/master/packages/gatsby-plugin-firebase/src/components/FirebaseContext.js
+export function useFirebaseApp(
+  fn: (firebaseApp: FirebaseApp) => void | (() => void | undefined) = null,
+  dep = []
+): FirebaseApp {
+  const firebaseApp = React.useContext(FirebaseAppContext);
 
-export default function useFirebase(fn = null, dep = []) {
-  const firebase = React.useContext(FirebaseContext);
-
-  if (fn == null) return firebase;
+  if (fn == null) return firebaseApp;
 
   React.useEffect(() => {
-    if (!firebase) {
+    if (!firebaseApp) {
       return;
     }
-    return fn(firebase);
-  }, [firebase, ...dep]);
+    return fn(firebaseApp);
+  }, [firebaseApp, ...dep]);
 }

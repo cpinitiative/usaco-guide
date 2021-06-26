@@ -8,160 +8,7 @@ description: 'Introducing a special type of graph: trees.'
 frequency: 1
 ---
 
-export const problems = {
-	treeSam: [
-		new Problem('CSES', 'Subordinates', '1674', 'Easy', false, ['Tree'], '@B'),
-	],
-	tree: [
-		new Problem(
-			'CF',
-			'PolandBall & Forest',
-			'contest/755/problem/C',
-			'Easy',
-			false,
-			['Tree', 'Connected Components', 'Diameter'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Mootube',
-			'788',
-			'Easy',
-			true,
-			['Tree', 'Connected Components'],
-			'usaco-788'
-		),
-		new Problem(
-			'CF',
-			'Journey',
-			'contest/839/problem/C',
-			'Easy',
-			false,
-			['Tree'],
-			''
-		),
-		new Problem(
-			'IOI',
-			'2010 - Traffic',
-			'https://oj.uz/problem/view/IOI10_traffic',
-			'Easy',
-			true,
-			['Tree'],
-			'ioi-10-traffic'
-		),
-		new Problem(
-			'Silver',
-			'Milk Visits',
-			'968',
-			'Easy',
-			true,
-			['Tree', 'Connected Components'],
-			'usaco-968'
-		),
-		new Problem(
-			'Silver', 
-			'Cowntagion', 
-			'1062', 
-			'Easy', 
-			false, 
-			['Greedy', 'Tree'], 
-			'usaco-1062'
-		),
-		new Problem(
-			'CSES',
-			'Tree Diameter',
-			'1131',
-			'Normal',
-			true,
-			['Tree'],
-			'@CPH 14.2'
-		),
-		new Problem(
-			'CSES',
-			'Tree Distances I',
-			'1132',
-			'Normal',
-			false,
-			['Tree'],
-			'cses-1132'
-		),
-		new Problem(
-			'CSES',
-			'Tree Distances II',
-			'1133',
-			'Normal',
-			false,
-			['Tree'],
-			'cses-1133'
-		),
-		new Problem(
-			'POI',
-			'2017 - Sabotage',
-			'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
-			'Normal',
-			false,
-			['Tree'],
-			'poi-17-sab'
-		),
-		new Problem(
-			'CCC',
-			'Phenomenal Reviews',
-			'ccc16s3',
-			'Normal',
-			false,
-			['Tree'],
-			'ccc-reviews'
-		),
-		new Problem(
-			'Silver',
-			'Clock Tree',
-			'1016',
-			'Normal',
-			false,
-			['Tree', 'Bipartite'],
-			''
-		),
-		new Problem(
-			'POI',
-			'2014 - Hotels',
-			'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
-			'Hard',
-			false,
-			['Tree', 'Prefix Sums'],
-			'poi-14-hot'
-		),
-		new Problem(
-			'CSES',
-			'Even Outdegree Edges',
-			'2179',
-			'Hard',
-			true,
-			['DFS', 'Spanning Tree'],
-			'cses-2179'
-		),
-		new Problem(
-			'CF',
-			"Wizard's Tour",
-			'860/problem/D',
-			'Hard',
-			false,
-			['DFS', 'Spanning Tree'],
-			'wizards-tour'
-		),
-	],
-};
-
-<!-- 		new Problem(
-			'HE',
-			'Birthday Gifts',
-			'https://www.hackerearth.com/practice/math/combinatorics/inclusion-exclusion/practice-problems/algorithm/mancunian-and-birthday-gifts-d44faa15/description/',
-			'Normal',
-			false,
-			['Tree', 'PIE'],
-			''
-		), -->
-
-<FocusProblem problem={problems.treeSam[0]} />
+<FocusProblem problem="treeSam" />
 
 <br />
 
@@ -177,9 +24,7 @@ export const problems = {
 		source="SecondThread"
 		title="Tree Basics - Tree Diameter"
 		url="https://codeforces.com/blog/entry/81527"
-	>
-		{' '}
-	</Resource>
+	/>
 </Resources>
 
 <!--
@@ -188,27 +33,36 @@ export const problems = {
 
 Some properties/definitions of trees:
 
-- A graph is a **tree** iff it is connected and contains $N$ nodes and $N-1$ edges
-- A graph is a **tree** iff every pair of nodes has exactly one simple path between them
+- A graph is a **tree** iff it is connected and contains $N$ nodes and $N-1$
+  edges
+- A graph is a **tree** iff every pair of nodes has exactly one simple path
+  between them
 - A graph is a **tree** iff it is connected and does not contain any cycles
 
 General Tree Terminology:
 
 - A **leaf** of a tree is any node in the tree with degree $1$
-  - If the tree is rooted, the **root** with a single child is _not_ typically considered a leaf, but depending on the problem, this is not always the case
-- A **star graph** has two common definitions. Try to understand what they mean - they typically appear in subtasks.
+  - If the tree is rooted, the **root** with a single child is _not_ typically
+    considered a leaf, but depending on the problem, this is not always the case
+- A **star graph** has two common definitions. Try to understand what they
+  mean - they typically appear in subtasks.
   - Definition 1: Only one node has degree greater than $1$
   - Definition 2: Only one node has degree greater than $2$
 - A **forest** is a graph such that each **connected component** is a tree
 
 Rooted Tree Terminology:
 
-- A **root** of a tree is any node of the tree that is considered to be at the 'top'
-- A **parent** of a node $n$ is the first node along the path from $n$ to the **root**
-  - The **root** does not have a **parent**. This is typically done in code by setting the **parent** of the **root** to be $-1$.
+- A **root** of a tree is any node of the tree that is considered to be at the
+  'top'
+- A **parent** of a node $n$ is the first node along the path from $n$ to the
+  **root**
+  - The **root** does not have a **parent**. This is typically done in code by
+    setting the **parent** of the **root** to be $-1$.
 - The **ancestors** of a node are its **parent** and **parent's** **ancestors**
-  - Typically, a node is considered its own ancestor as well (such as in the subtree definition)
-- The **subtree** of a node $n$ are the set of nodes that have $n$ as an ancestor
+  - Typically, a node is considered its own ancestor as well (such as in the
+    subtree definition)
+- The **subtree** of a node $n$ are the set of nodes that have $n$ as an
+  ancestor
   - A node is typically considered to be in its own subtree
   - Note: This is easily confused with **subgraph**
 - The **depth**, or **level**, of a node is its distance from the root
@@ -219,7 +73,10 @@ Rooted Tree Terminology:
 
 <!-- Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.  -->
 
-In this problem we are given the parent of each node of a rooted tree, and we want to compute the subtree size for each node. A subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's childrens' subtrees.
+In this problem we are given the parent of each node of a rooted tree, and we
+want to compute the subtree size for each node. A subtree is composed of a root
+node and the subtrees of the root's children. Thus, the size of a subtree is one
+plus the size of the root's childrens' subtrees.
 
 <LanguageSection>
 
@@ -269,7 +126,9 @@ int main() {
 
 <Warning>
 
-Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
+Because Java is so slow, an adjacency list using lists/arraylists results in
+TLE. Instead, the Java sample code will use the
+[Chinese edge representation](https://codeforces.com/blog/entry/67883).
 
 </Warning>
 
@@ -407,4 +266,4 @@ For the last two problems, try solving them on a tree first.
 
 </Info> -->
 
-<Problems problems={problems.tree} />
+<Problems problems="tree" hideSuggestProblemButton />

@@ -1,0 +1,183 @@
+---
+id: balkan-17-CityAttractions
+source: Balkan OI 2017
+title: City Attractions
+author: Andi Qu
+---
+
+## Introduction
+
+Let the node that Gigel goes to from node $i$ be $t_i$. Since the graph made
+from the directed edges $i \rightarrow t_i$ is a
+[functional graph](/silver/func-graphs), we can use
+[binary jumping](/plat/bin-jump) or any other efficient method to find the final
+node.
+
+Now we only need to find all $t_i$ and we are done! However, this isn't as
+straightforward as it sounds...
+
+## A simpler problem
+
+Let's consider a simpler problem: suppose we root the tree at node $1$ and Gigel
+can only move down the tree (don't worry about the leaves). In this problem, we
+can find all $t_i$ (and $a[t_i] - dist(i, t_i)$) using a simple tree DP:
+
+Let $dp[i]$ be the node in the subtree of $i$ (excluding $i$ itself) such that
+$a[dp[i]] - dist(i, dp[i])$ is maximized. Additionally, we store this value in
+the DP array. We can find $dp[i]$ by taking the best of $c$ and $dp[c]$ over all
+children $c$ of $i$.
+
+This algorithm runs in $\mathcal{O}(N)$ time.
+
+## Finding all $t_i$
+
+Obviously, the solution to the simpler problem doesn't solve the general
+problem: we might need to move up into a node's parent!
+
+To address this issue, we can first do a DFS to find $dp$ as defined above, and
+then do a second DFS to allow moving to a node's parent. See the
+[solving for all roots module](/gold/all-roots) if you're unfamiliar with this
+technique. Essentially, we find the best destination from $i$ if we move up into
+$i$'s parent and then compare that with $dp[i]$.
+
+After doing this, $dp[i]$ is simply $t_i$ as desired.
+
+These two DFSes run in $\mathcal{O}(N)$ time, so the final complexity is
+$\mathcal{O}(N + \log K)$ (from the binary jumping).
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+int a[300001], nxt[2][300001];
+pair<int, int> dp[300001], pdp[300001];
+vector<int> graph[300001];
+
+void dfs1(int node = 1, int parent = 0) {
+	dp[node] = {INT_MAX / 2, 0};
+	for (int i : graph[node]) if (i != parent) {
+		dfs1(i, node);
+		dp[node] = min({dp[node], {dp[i].first + 1, dp[i].second}, {1 - a[i], i}});
+	}
+}
+
+void dfs2(int node = 1, int parent = 0) {
+	dp[node] = min(dp[node], pdp[node]);
+	pair<int, int> tmp = {pdp[node].first + 1, pdp[node].second};
+	tmp = min(tmp, {1 - a[node], node});
+	for (int i : graph[node]) if (i != parent) {
+		pdp[i] = min(pdp[i], tmp);
+		tmp = min({tmp, {dp[i].first + 2, dp[i].second}, {2 - a[i], i}});
+	}
+	reverse(graph[node].begin(), graph[node].end());
+	tmp = {pdp[node].first + 1, pdp[node].second};
+	tmp = min(tmp, {1 - a[node], node});
+	for (int i : graph[node]) if (i != parent) {
+		pdp[i] = min(pdp[i], tmp);
+		tmp = min({tmp, {dp[i].first + 2, dp[i].second}, {2 - a[i], i}});
+	}
+	for (int i : graph[node]) if (i != parent) dfs2(i, node);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	ll k;
+	cin >> n >> k;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		pdp[i] = {INT_MAX / 2, 0};
+	}
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		graph[u].push_back(v);
+		graph[v].push_back(u);
+	}
+	dfs1();
+	dfs2();
+
+	for (int i = 1; i <= n; i++) nxt[0][i] = dp[i].second;
+	int curr = (k & 1 ? nxt[0][1] : 1);
+	for (int i = 1; i < 63; i++) {
+		for (int j = 1; j <= n; j++) nxt[i & 1][j] = nxt[i - 1 & 1][nxt[i - 1 & 1][j]];
+		if (k & (1ll << i)) curr = nxt[i & 1][curr];
+	}
+	cout << curr << '\n';
+	return 0;
+}
+```
+
+## Alternative Code (Ben)
+
+```cpp
+const int MX = 3e5+5;
+
+int N; ll K;
+array<pi,2> bes[MX]; // for each x,
+// get best two a[y]-d(x,y), possibly including x itself
+vi adj[MX];
+int nex[MX], vis[MX];
+
+array<pi,2> comb(array<pi,2> a, array<pi,2> b) {
+	trav(t,b) t.f --;
+	vpi res, tmp;
+	F0R(i,2) res.pb(a[i]), res.pb(b[i]);
+	sort(rall(res));
+	set<int> ind;
+	trav(t,res) {
+		if (ind.count(t.s)) continue; // ignore repeated indices
+		ind.insert(t.s); tmp.pb(t);
+	}
+	array<pi,2> ans; F0R(i,2) ans[i] = tmp[i];
+	return ans;
+}
+
+void dfsUp(int a, int b) {
+	trav(t,adj[a]) if (t != b) {
+		dfsUp(t,a);
+		bes[a] = comb(bes[a],bes[t]);
+	}
+}
+
+void dfsDown(int a, int b) {
+	trav(t,adj[a]) if (t != b) {
+		bes[t] = comb(bes[t],bes[a]);
+		dfsDown(t,a);
+	}
+}
+
+int main() {
+	setIO(); re(N,K);
+	FOR(i,1,N+1) {
+		int A; re(A);
+		bes[i] = {{{A,-i},{-MOD,MOD}}};
+	}
+	F0R(i,N-1) {
+		int a,b; re(a,b);
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	dfsUp(1,0); dfsDown(1,0);
+	FOR(i,1,N+1) {
+		nex[i] = -bes[i][0].s;
+		if (nex[i] == i) nex[i] = -bes[i][1].s;
+	}
+	FOR(i,1,N+1) vis[i] = -1;
+	vis[1] = 0;
+	int cur = 1, ti = 0;
+	bool flag = 0;
+	while (K) {
+		cur = nex[cur]; ti ++; K --;
+		if (!flag && vis[cur] != -1) {
+			int cycLen = ti-vis[cur];
+			K %= cycLen; flag = 1;
+		}
+		vis[cur] = ti;
+	}
+	ps(cur);
+}
+```

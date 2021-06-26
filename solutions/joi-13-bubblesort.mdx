@@ -1,0 +1,136 @@
+---
+id: joi-13-bubblesort
+source: JOI 2013
+title: Bubblesort
+author: Andi Qu
+---
+
+## Intuition
+
+In this problem, we're asked to find the maximum decrease in the number of
+inversions of the array.
+
+Firstly, unless the array is already sorted, we can always decrease the number
+of inversions. We can also assume that we only ever swap $a_i$ and $a_j$
+($i < j$) if $a_i > a_j$. (Could you prove this formally?)
+
+After playing around with some swaps and arrays, we find that the only array
+elements that contribute to that change if we swap $a_i$ and $a_j$ ($i < j$) are
+the $a_k$ such that $i \leq k \leq j$ and $a_i \geq a_k \geq a_j$.
+
+This condition feels similar to the inequalities defining a rectangle. Could we
+possibly find a geometric interpretation of this problem?
+
+## Turning the Problem into Geometry
+
+Plot the points $(i, a_i)$ on the Cartesian plane.
+
+Notice how if we swap $a_i$ and $a_j$ ($i < j$), the change in the number of
+inversions is equal to:
+
+$$
+(\text{No. of points strictly inside the rectangle }(i, a_i, j, a_j)) + (\text{No. of points in or on the rectangle }(i, a_i, j, a_j)) - 1
+$$
+
+From this, we also find that if we have $x < y$ and $a_x \geq a_y$, then $y$
+can't be the left index in the optimal swap.
+
+This means that we can simply consider a set of $i$ with strictly increasing
+$a_i$ as candidates for the left index in the optimal swap!
+
+## Using the D&C Optimization
+
+Let $opt_i$ be the index such that if we must swap $a_i$ with something to its
+right, then swapping it with $a_{opt_i}$ is optimal.
+
+Since $a_i$ is strictly increasing in our set of candidates, we can prove that
+$opt_i \geq opt_{i - 1}$ for all $i$ in our set.
+
+This means that we can use the D&C optimization to find all $opt_i$!
+
+We can use a BIT or any other suitable data structure to query the number of
+points in a rectangle efficiently.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log^2 N)$
+
+**Memory Complexity:** $\mathcal{O}(N)$
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+typedef long long ll;
+using namespace std;
+
+ll ans = 0, bit[100001];
+int n, a[100001], b[100001];
+vector<int> cand;
+
+void update(int pos, ll val) {
+	for (; pos <= n; pos += pos & (-pos)) bit[pos] += val;
+}
+
+ll query(int x, int y) {
+	ll ans = 0;
+	for (; y; y -= y & (-y)) ans += bit[y];
+	for (x--; x; x -= x & (-x)) ans -= bit[x];
+	return ans;
+}
+
+void divide_conquer(int l = 0, int r = cand.size() - 1, int l_opt = 0, int r_opt = n - 1) {
+	int mid = (l + r) / 2, opt = -1;
+	ll best_delta = 1;
+	FOR(i, max(l_opt, cand[mid]), r_opt + 1) {
+		update(a[i], 1);
+		int inv = 1 - query(a[i] + 1, a[cand[mid]] - 1) - query(a[i], a[cand[mid]]);
+		if (inv <= best_delta) best_delta = inv, opt = i;
+	}
+	ans = min(ans, best_delta);
+
+	if (mid != r) {
+		FOR(i, cand[mid], cand[(mid + r + 1) / 2]) update(a[i], -1);
+		FOR(i, max(opt, cand[(mid + r + 1) / 2]), r_opt + 1) update(a[i], -1);
+		divide_conquer(mid + 1, r, opt, r_opt);
+		FOR(i, cand[mid], cand[(mid + r + 1) / 2]) update(a[i], 1);
+		FOR(i, max(opt, cand[(mid + r + 1) / 2]), r_opt + 1) update(a[i], 1);
+	}
+
+	if (mid != l) {
+		FOR(i, cand[(mid + l - 1) / 2], min(l_opt, cand[mid])) update(a[i], 1);
+		FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], -1);
+		divide_conquer(l, mid - 1, l_opt, opt);
+		FOR(i, cand[(mid + l - 1) / 2], min(l_opt, cand[mid])) update(a[i], -1);
+		FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], 1);
+	}
+
+	FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], -1);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n;
+	bool sorted = true, distinct = true;
+	FOR(i, 0, n) {
+		cin >> a[i];
+		b[i] = a[i];
+		if (i) sorted &= (a[i] >= a[i - 1]), distinct &= (a[i] != a[i - 1]);
+	}
+	if (sorted) return cout << distinct << '\n', 0;
+
+	sort(b, b + n);
+	FOR(i, 0, n) {
+		a[i] = lower_bound(b, b + n, a[i]) - b + 1;
+		if (!i || a[i] > a[cand.back()]) cand.push_back(i);
+	}
+
+	divide_conquer();
+	for (int i = n - 1; ~i; i--) {
+		update(a[i], 1);
+		ans += query(1, a[i] - 1);
+	}
+	cout << ans << '\n';
+	return 0;
+}
+```

@@ -1,0 +1,60 @@
+---
+id: cco-EscapeRoom
+source: CCC 2020
+title: 'J5 / S2: Escape Room'
+author: Benjamin Qi
+---
+
+<!-- No need to prime factorize! -->
+
+Define `grid[r][c]` to be the integer in the $r$-th row of the $c$-th column of
+the input grid. Let `done[x]=true` if we can reach any cell $(r,c)$ such that
+$r\cdot c=x$ and `false` otherwise. If `done[x]` is `true`, then we also know
+that `done[grid[r][c]]` is `true` for all cells $(r,c)$ such that $r\cdot c=x$.
+
+So we essentially have a directed graph with vertices $1\ldots 10^6$ where there
+exists a directed edge from `x` to `grid[r][c]` whenever $r\cdot c=x$. We want
+to test whether there exists a path from $1$ to $N\cdot M$ in this graph.
+
+Thus, we can simply start DFSing from vertex $1$ and mark all the vertices that
+we visit in the boolean array `done`. If we set `done[N*M]=true`, then a path
+exists, and we can terminate after printing "yes." Note that in the code below,
+`todo[x]` denotes the adjacency list of `x`.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int M, N;
+vector<int> todo[1000005];
+bool done[1000005];
+
+void dfs(int x) {
+	if (done[x]) {
+		return;
+	}
+	if (x == N * M) {
+		cout << "yes" << endl;
+		exit(0);
+	}
+	done[x] = 1;
+	for (int& t : todo[x]) {
+		dfs(t);
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> M >> N;
+	for (int i = 1; i <= M; i++) {
+		for (int j = 1; j <= N; j++) {
+			int x;
+			cin >> x;
+			todo[i * j].push_back(x);
+		}
+	}
+	dfs(1);
+	cout << "no" << endl;
+}
+```

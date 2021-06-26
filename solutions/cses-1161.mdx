@@ -1,0 +1,58 @@
+---
+id: cses-1161
+source: CSES
+title: Stick Divisions
+author: Dong Liu, Benjamin Qi
+---
+
+In this problem, we're asked to find the minimum cost to divide a stick with
+length $x$ into $n$ sticks with given lengths. It helps to work backwards; what
+if we start with sticks of lengths $d_1,\ldots,d_n$ and merge them into one?
+
+It turns out that this can be solved using
+[Huffman Coding](https://usaco.guide/CPH.pdf#page=73) (also see
+[Wikipedia](https://en.wikipedia.org/wiki/Huffman_coding#Basic_technique)). The
+algorithm is simple; take the two shortest sticks, merge them into one, and
+repeat.
+
+If you're wondering why Huffman Coding always produces an optimal solution, see
+[here](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/readings/MIT6_02F12_chap03.pdf#page=6).
+
+## Implementation
+
+<LanguageSection>
+    
+<CPPSection>
+
+In C++, this can be done easily with a
+[priority queue](http://www.cplusplus.com/reference/queue/priority_queue/).
+
+```cpp
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main(){
+		ios_base::sync_with_stdio(0); cin.tie(0);
+		int x, n; cin >> x >> n;
+		priority_queue<int, vector<int>, greater<int> > PQ;
+		for(int i=0; i<n; i++) {
+			int a; cin >> a;
+			PQ.push(a);
+		}
+		long long ans=0;
+		for(int i=1; i<n; i++) {
+			int a=PQ.top(); PQ.pop();
+			int b=PQ.top(); PQ.pop();
+			PQ.push(a+b);
+			ans += a+b;
+		}
+
+		cout << ans <<"\n";
+		return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

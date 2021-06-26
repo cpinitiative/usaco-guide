@@ -1,0 +1,81 @@
+---
+id: usaco-639
+source: USACO Bronze 2016 Open
+title: Diamond Collector
+author: Danh Ta Chi Thanh, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_diamond_bronze_open16.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main(){
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("diamond.in","r",stdin);
+	freopen("diamond.out","w",stdout);
+	int n,k;
+	cin >> n >> k;
+	vector<int> a;
+	a.resize(n);
+	for (int i=0;i<n;++i) {
+		cin >> a[i];
+	}
+	sort(a.begin(),a.end());
+	int ans=0;
+	for (int i=0;i<n;++i) {
+		int cnt=1;
+		for (int j=i+1;j<n;++j) {
+			if (a[j]-a[i]<=k) ++cnt;
+			else break;
+		}
+		ans=max(cnt,ans);
+	}
+	cout << ans;
+	return 0;
+}
+
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+fin = open('diamond.in', 'r')
+
+N, K = map(int, fin.readline().split())
+
+diamonds = []
+
+for _ in range(N):
+	diamonds.append(int(fin.readline()))
+
+largest = 0
+curlargest = 0
+for x in range(N):
+	for y in range(N):
+		if diamonds[y] >= diamonds[x] and diamonds[y] <= diamonds[x] + K:
+			curlargest += 1
+	largest = max(largest, curlargest)
+	curlargest = 0
+
+print(largest, file=open('diamond.out', 'w'))
+```
+
+</PySection>
+
+</LanguageSection>
