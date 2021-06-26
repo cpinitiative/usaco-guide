@@ -17,46 +17,57 @@ Let's consider the following test case:
 1 1 1
 1 0 0
 ```
-The solution to finding how many of these problems that the group of friends will attempt is understanding
-exactly what the question is asking and what information we are given. If **two or more** friends think that
-they can solve the problems, then all three of them decide to attempt it. We know that the rows represent
-the problem and the columns represent each of the friends. A 1 represents a problem that **one** friend
-feels they can do and a 0 represents a problem that **one** friend thinks they cannot solve. With this, we 
-know that if a row contains two or more 1s, then the friends all will try that problem. We just need to
-save the total number of these types of cases and print it out at the end. 
 
-The first solution that we will discuss is a simple as all it does is saving the 1s and 0s into a 2-d array 
-of size [n][3] since n represents the total number of problems (rows) and 3 the number of friends (columns).
-We can then write a for loop and create a temporary counter to iterate through the 2-d array n times and 
-another for loop inside of it to iterate through each number on each row. If we find that a number is 1,
-we will add one to the temporary counter. At the end of the loop, we will check if the temporary counter
-is greater than or equal to two, and if it is, we will add one to the main counter that keeps track
-of number of problems they will attempt. Once the inner for loop resets (because the out for loop will 
-have completed an iteration out of n) the temp counter resets back to 0, and so we can continue to reuse it. 
-Once the outer for loop is done iteration, we can just print the main counter. 
-Below are the CPP and Java implementations of this solution. 
+The solution to finding how many of these problems that the group of friends
+will attempt is understanding exactly what the question is asking and what
+information we are given. If **two or more** friends think that they can solve
+the problems, then all three of them decide to attempt it. We know that the rows
+represent the problem and the columns represent each of the friends. A 1
+represents a problem that **one** friend feels they can do and a 0 represents a
+problem that **one** friend thinks they cannot solve. With this, we know that if
+a row contains two or more 1s, then the friends all will try that problem. We
+just need to save the total number of these types of cases and print it out at
+the end.
 
-There is another faster and simpler approach to this problem. Before you read the paragraph below this, 
-think about what you can do to make this problem faster. What mathmatical properties were discussed in 
-the previous solution that we can exploit? If you have a solid idea or are stuck, continue reading.
+The first solution that we will discuss is a simple as all it does is saving the
+1s and 0s into a 2-d array of size [n][3] since n represents the total number of
+problems (rows) and 3 the number of friends (columns). We can then write a for
+loop and create a temporary counter to iterate through the 2-d array n times and
+another for loop inside of it to iterate through each number on each row. If we
+find that a number is 1, we will add one to the temporary counter. At the end of
+the loop, we will check if the temporary counter is greater than or equal to
+two, and if it is, we will add one to the main counter that keeps track of
+number of problems they will attempt. Once the inner for loop resets (because
+the out for loop will have completed an iteration out of n) the temp counter
+resets back to 0, and so we can continue to reuse it. Once the outer for loop is
+done iteration, we can just print the main counter. Below are the CPP and Java
+implementations of this solution.
 
-The much simpler but more logic based solution would be to creat a for loop to iterate through n problems, 
-input all 3 numbers as integers and write an if statement to check if the sum of the integers is greater than 
-or equal to 2, and if it is, adding one to a main counter which we will then print out at the end, 
-similar to the last approach. Below are the CPP and Java implementations of this solution. 
+There is another faster and simpler approach to this problem. Before you read
+the paragraph below this, think about what you can do to make this problem
+faster. What mathmatical properties were discussed in the previous solution that
+we can exploit? If you have a solid idea or are stuck, continue reading.
 
-This is an example of using math to simplify and create an efficient program using math for greedy algorithms. 
-Next time you ever think of an approach to solve a problem, consider any alternate simpler and faster algorithms
-you can create. 
+The much simpler but more logic based solution would be to creat a for loop to
+iterate through n problems, input all 3 numbers as integers and write an if
+statement to check if the sum of the integers is greater than or equal to 2, and
+if it is, adding one to a main counter which we will then print out at the end,
+similar to the last approach. Below are the CPP and Java implementations of this
+solution.
+
+This is an example of using math to simplify and create an efficient program
+using math for greedy algorithms. Next time you ever think of an approach to
+solve a problem, consider any alternate simpler and faster algorithms you can
+create.
 
 <LanguageSection>
 
 <CPPSection>
 
 ## Implementation
-	
-***Method One***
-	
+
+**_Method One_**
+
 ```CPP
 #include <iostream>
 using namespace std;
@@ -82,11 +93,11 @@ int main() {
 		}
 	}
 	cout << num << '\n';
-} 
+}
 ```
 
-***Method Two***
-	
+**_Method Two_**
+
 ```CPP
 #include <iostream>
 using namespace std;
@@ -101,7 +112,7 @@ int main() {
 		}
 	}
 	cout << num << '\n';
-} 
+}
 ```
 
 </CPPSection>
@@ -113,14 +124,14 @@ int main() {
 ```java
 import java.util.*;
 import java.io.*;
-	
+
 public class Main {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
         	int n = io.nextInt();
         	int[][] problems = new int[n][3];
-        
+
         	for (int i = 0; i < n; i++) {
             		problems[i][0] = io.nextInt();
             		problems[i][1] = io.nextInt();
@@ -141,14 +152,15 @@ public class Main {
             		}
         	}
      		System.out.println(num);
-        	io.close();                  
+        	io.close();
 	}
 	//CodeSnip{Kattio}
 }
 
 ```
-***Method Two***
-	
+
+**_Method Two_**
+
 ```java
 import java.util.*;
 import java.io.*;
@@ -157,7 +169,7 @@ import java.io.*;
 		int num = 0;
 		int n = io.nextInt();
 		for(int i = 0; i < n; i++){
-			int a = io.nextInt(); 
+			int a = io.nextInt();
 			int b = io.nextInt();
 			int c = io.nextInt();
 			if(a + b + c >= 2){
@@ -165,12 +177,12 @@ import java.io.*;
 			}
 		}
      		System.out.println(num);
-        	io.close();                  
+        	io.close();
     	}
 	//CodeSnip{Kattio}
 }
 ```
-	
+
 </JavaSection>
 
 </LanguageSection>
