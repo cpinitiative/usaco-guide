@@ -5,7 +5,7 @@ title: Team
 author: Sathvik Chundru
 ---
 
-[Official Analysis (CPP)](https://codeforces.com/blog/entry/5486)
+[Official Analysis (C++)](https://codeforces.com/blog/entry/5486)
 
 ## Solution (Greedy)
 
@@ -18,11 +18,8 @@ Let's consider the following test case:
 1 0 0
 ```
 
-There are 2 ways to solve this problem. One solution is to input all the ones
-and zeros into a two-d array and sort through them manually to see how many
-cases have two or more ones. The second simpler solution is to input three
-integers per row and check if their sum is greater than or equal to two. Both
-solutions are implemented below.
+The simplest solution is to input three integers per row and check 
+if their sum is greater than or equal to two. 
 
 ## Implementation
 
@@ -30,40 +27,7 @@ solutions are implemented below.
 
 <CPPSection>
 
-```CPP
-#include <iostream>
-using namespace std;
-
-int main() {
-	int num = 0;
-	int n;
-	cin >> n;
-	int problems[n][3];
-	for (int i = 0; i < n; i++) {
-		cin >> problems[i][0];
-		cin >> problems[i][1];
-		cin >> problems[i][2];
-	}
-	for (int i = 0; i < n; i++) {
-		int temp = 0;
-		for (int j = 0; j < 3; j++) {
-			if (problems[i][j] == 1) {
-				temp++;
-			}
-		}
-		if (temp >= 2) {
-			num++;
-		}
-	}
-	cout << num << '\n';
-}
-```
-
-</CPPSection>
-
-<CPPSection>
-
-```CPP
+```cpp
 #include <iostream>
 using namespace std;
 
@@ -72,7 +36,8 @@ int main() {
 	int n;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
-		int a; int b; int c; cin >> a; cin >> b; cin >> c;
+		int a, b, c; 
+		cin >> a >> b >> c;
 		if (a + b + c >= 2) {
 			num++;
 		}
@@ -83,48 +48,6 @@ int main() {
 
 </CPPSection>
 	
-<JavaSection>
-	
-```java
-import java.util.*;
-import java.io.*;
-
-public class Team { public static void main(String[] args) { Kattio io = new
-Kattio();
-
-        	int n = io.nextInt();
-        	int[][] problems = new int[n][3];
-
-        	for (int i = 0; i < n; i++) {
-            		problems[i][0] = io.nextInt();
-            		problems[i][1] = io.nextInt();
-            		problems[i][2] = io.nextInt();
-        	}
-
-        	int num = 0;
-
-        	for (int i = 0; i < n; i++) {
-            		int temp = 0;
-            		for (int j = 0; j < 3; j++) {
-                		if (problems[i][j] == 1) {
-                   			temp++;
-                		}
-            		}
-            		if (temp >= 2) {
-                		num++;
-            		}
-        	}
-     		System.out.println(num);
-        	io.close();
-    }
-    //CodeSnip{Kattio}
-
-}
-
-````
-
-</JavaSection>
-
 <JavaSection>
 
 ```java
@@ -147,7 +70,7 @@ import java.io.*;
     	}
 	//CodeSnip{Kattio}
 }
-````
+```
 
 </JavaSection>
 
