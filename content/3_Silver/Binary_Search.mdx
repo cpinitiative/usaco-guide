@@ -112,7 +112,8 @@ range `[lo,hi]`.
 using namespace std;
 
 int lastTrue(int lo, int hi, function<bool(int)> f) {
-	for (--lo; lo < hi; ) {
+	--lo;
+	while (lo < hi) {
 		int mid = lo+(hi-lo+1)/2;
 		// find the middle of the current range (rounding up)
 		if (f(mid)) lo = mid;
@@ -153,7 +154,8 @@ public class BinarySearch {
 	}
 
 	public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
-		for (--lo; lo < hi; ) {
+		--lo;
+		while (lo < hi) {
 			int mid = lo+(hi-lo+1)/2;
 			// find the middle of the current range (rounding up)
 			if (f.test(mid)) lo = mid;
@@ -227,8 +229,11 @@ to the target element. We use powers of 2, very similiar to
 ```cpp
 int lastTrue(int lo, int hi, function<bool(int)> f) {
 	--lo;
-	for (int dif = hi-lo; dif; dif /= 2)
-		while (lo+dif <= hi && f(lo+dif)) lo += dif;
+	for (int dif = hi - lo; dif > 0; dif /= 2) {
+		while (lo + dif <= hi && f(lo + dif)) {
+			lo += dif;
+		}
+	}
 	return lo;
 }
 ```
@@ -238,10 +243,14 @@ int lastTrue(int lo, int hi, function<bool(int)> f) {
 <JavaSection>
 
 ```java
+// f is the function
 public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 	--lo;
-	for (int dif = hi-lo; dif > 0; dif /= 2)
-		while (lo+dif <= hi && f.test(lo+dif)) lo += dif; //f is the function
+	for (int dif = hi - lo; dif > 0; dif /= 2) {
+		while (lo + dif <= hi && f.test(lo + dif)) {
+			lo += dif;
+		}
+	}
 	return lo;
 }
 ```
@@ -274,10 +283,11 @@ cut the right part, and when it's not, the left part will be cut.
 using namespace std;
 
 int firstTrue(int lo, int hi, function<bool(int)> f) {
-	for (hi ++; lo < hi; ) {
-		int mid = lo+(hi-lo)/2;
+	++hi;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
 		if (f(mid)) hi = mid;
-		else lo = mid+1;
+		else lo = mid + 1;
 	}
 	return lo;
 }
@@ -304,7 +314,8 @@ public class BinarySearch {
 	}
 
 	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
-		for (hi ++; lo < hi; ) {
+		++hi;
+		while (lo < hi) {
 			int mid = lo+(hi-lo)/2;
 			if (f.test(mid)) hi = mid;
 			else lo = mid+1;
@@ -376,7 +387,8 @@ function returns `false`.
 using namespace std;
 
 int lastTrue(int lo, int hi, function<bool(int)> f) {
-	for (--lo; lo < hi; ) {
+	--lo;
+	while (lo < hi) {
 		int mid = lo+(hi-lo+1)/2;
 		if (f(mid)) lo = mid;
 		else hi = mid-1;
@@ -435,7 +447,8 @@ public class BinarySearch{
 	}
 
 	public static int lastTrue(int lo, int hi) {
-		for (--lo; lo < hi; ) {
+		--lo;
+		while (lo < hi) {
 			int mid = lo+(hi-lo+1)/2;
 			if (f(mid)) lo = mid;
 			else hi = mid-1;
@@ -702,7 +715,8 @@ of down.
 
 ```cpp
 int firstTrue(int lo, int hi, function<bool(int)> f) {
-	for (hi ++; lo < hi; ) {
+	++hi;
+	while (lo < hi) {
 		int mid = lo+(hi-lo)/2;
 		if (f(mid)) hi = mid;
 		else lo = mid+1;
