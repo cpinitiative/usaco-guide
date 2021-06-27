@@ -93,16 +93,26 @@ void ff(int i, int j)
 	}
 }
 ```
-## Alternate Faster Solution - Time Complexity $\mathcal{O}(N\log N)$
+
+</CPPSection>
+
+</LanguageSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+## Alternate Faster Solution
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 It is possible to make the following 2 observations:
 
 1. For each contiguous closed region, there must be 1 gate. In a minimum state, each region has exactly 1 gate.
-2. Each time FJ comes across a node he has visited along an edge he has not crossed in either direction, he creates exactly 1 new region. In other words, FJ creates exactly 1 new contiguous close region if:
-	* FJ walks along an edge from point a to b
-	* He did not walk from a to b in the past
-	* He did not walk from b to a in the past
-	* b is a point he had already visited
+2. Each time FJ comes across a node he has visited along an edge he has not crossed in either direction, he creates exactly 1 new region. In other words, FJ creates exactly 1 new contiguous close region if all of these conditions are met:
+	* FJ walks along an edge from point $a$ to $b$
+	* He did not walk from $a$ to $b$ in the past
+	* He did not walk from $b$ to $a$ in the past
+	* $b$ is a point he had already visited
 
 Under these observations, we can use a set of visited edges and visited nodes, and keep track of the number of contiguous closed regions. This solution is almost 10 times faster, and works in $\mathcal{O}(N\log N)$ due to $\log N$ set lookup and insertion. 
 
@@ -111,46 +121,46 @@ Under these observations, we can use a set of visited edges and visited nodes, a
 using namespace::std;
 
 int main() {
-    freopen("gates.in", "r", stdin);
-    freopen("gates.out", "w", stdout);
+	freopen("gates.in", "r", stdin);
+	freopen("gates.out", "w", stdout);
 	
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
-    int n; cin >> n;
-    string s; cin >> s;
+	int n; cin >> n;
+	string s; cin >> s;
 	
-    set<pair<pair<int, int>, pair<int, int>>> visedge;
-    set<pair<int, int>> visnode;
-    int ans = 0;
-    pair<int, int> prev = {0, 0};
-    visnode.insert(prev);
+	set<pair<pair<int, int>, pair<int, int>>> visedge;
+	set<pair<int, int>> visnode;
+	int ans = 0;
+	pair<int, int> prev = {0, 0};
+	visnode.insert(prev);
 	
-    for (int i = 0; i < n; i++) {
-        int x = prev.first; int y = prev.second;
-        if (s[i]=='N') {
-            x++;
-        } else if (s[i]=='S') {
-            x--;
-        } else if (s[i]=='E') {
-            y--;
-        } else {
-            y++;
-        }
+	for (int i = 0; i < n; i++) {
+		int x = prev.first; int y = prev.second;
+		if (s[i] == 'N') {
+			x++;
+		} else if (s[i] == 'S') {
+			x--;
+		} else if (s[i] == 'E') {
+			y--;
+		} else {
+			y++;
+		}
 			  
-        if (visedge.find({{x, y}, prev})==visedge.end() && visnode.find({x, y})!=visnode.end()) {
-            ans++;
-        }
+		if (visedge.find({{x, y}, prev}) == visedge.end() && visnode.find({x, y}) != visnode.end()) {
+			ans++;
+		}
 			  
-        visedge.insert({{x, y}, prev});
-        visedge.insert({prev, {x, y}});
-        visnode.insert({x, y});
+		visedge.insert({{x, y}, prev});
+		visedge.insert({prev, {x, y}});
+        	visnode.insert({x, y});
 			  
-        prev.first = x;
-        prev.second = y;
-    }
+		prev.first = x;
+		prev.second = y;
+	}
 			  
-    cout << ans << "\n";
+	cout << ans << "\n";
 }
 ```
 </CPPSection>
