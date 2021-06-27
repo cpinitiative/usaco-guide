@@ -53,7 +53,9 @@ export const difficultyClasses = {
   Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
 };
 
-export default function ProblemsListItem(props: ProblemsListItemProps) {
+export default function ProblemsListItem(
+  props: ProblemsListItemProps
+): JSX.Element {
   const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
@@ -206,6 +208,18 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
               >
                 {copied ? 'Copied!' : 'Copy Permalink'}
               </button>
+              {divisionTable && (
+                <a
+                  className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+                  href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
+                    problem.uniqueId.indexOf('-') + 1
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open in IDE
+                </a>
+              )}
             </div>
           </div>
         }
