@@ -22,14 +22,16 @@ public class IcyPerimeter {
 	public static void main (String[] args) throws IOException {
 		Kattio io = new Kattio("perimeter");
 		n = io.nextInt();
+	
+		// we do n + 2 because there is an extra outer ring for flood fill
 		numberedMatrix = new int[n + 2][n + 2];
 
-		for (int x = 1; x <= n; x++) { // read matrix
+		for (int x = 1; x <= n; x++) {  // read matrix
 			String line = io.next();
 			for (int y = 1; y <= n; y++) {
 				String character = Character.toString(line.charAt(y - 1));
 				if (character.equals("#")) {
-					numberedMatrix[x][y] = -1; // mark # as -1
+					numberedMatrix[x][y] = -1;  // mark # as -1
 				}
 			}
 		}
@@ -38,25 +40,24 @@ public class IcyPerimeter {
 		int markNumber = 1;
 		for (int x = 1; x <= n; x++) {
 			for (int y = 1; y <= n; y++) {
-				if(numberedMatrix[x][y] == -1) { // not visited
+				if(numberedMatrix[x][y] == -1) {  // not visited
 					floodfill(x, y, markNumber);
 					markNumber++;
 				}
 			}
 		}
 
-		int[] rowMovement = {0, 1, 0, -1}; // dx dy arrays
+		int[] rowMovement = {0, 1, 0, -1};  // dx dy arrays
 		int[] columnMovement = {1, 0, -1, 0};
 
 		// tracks the perimeter of each connected component
 		int[] perimeters = new int[most]; 
 
-		// we do n + 2 because there is an extra outer ring for flood fill
 		for (int x = 0; x < (n + 2); x++) {
 			for (int y = 0; y < (n + 2); y++) {
 				// if part of a connected component
 				if (numberedMatrix[x][y] > 0) {
-					for (int i = 0; i < 4; i++) { // try all directions
+					for (int i = 0; i < 4; i++) {  // try all directions
 						// no need to check for out of bounds because of our outer ring
 						// if there is a zero, that means that we can add one to the perimeter
 						if (numberedMatrix[x + rowMovement[i]][y + columnMovement[i]] == 0) {
