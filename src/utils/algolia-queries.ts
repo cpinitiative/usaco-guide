@@ -212,7 +212,7 @@ const queries = [
         }
         if (node.solution != null) {
           // for some reason not making a copy messes with algolia change detection
-          file.solutions.push({...node.solution});
+          file.solutions.push({ ...node.solution });
         }
         solutionFiles.push(file);
       });

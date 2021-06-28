@@ -51,9 +51,8 @@ export default function EditProblemPage(props) {
     if (!problem && originalProblem) editProblem(originalProblem);
   }, [originalProblem, post]);
 
-  const canEditPoints = !activeGroup.groupData.leaderboard[post.id]?.[
-    problemId
-  ];
+  const canEditPoints =
+    !activeGroup.groupData.leaderboard[post.id]?.[problemId];
 
   const handleDeleteProblem = () => {
     if (confirm('Are you sure you want to delete this problem?')) {
