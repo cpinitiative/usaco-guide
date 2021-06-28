@@ -66,9 +66,16 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
 export default function FeedItem({
   group,
   post,
+  dragHandle,
+  isBeingDragged = false,
 }: {
   group: GroupData;
   post: PostData;
+  dragHandle?: JSX.Element;
+  /**
+   * If true, the feed item will be grayed out to show that it's being dragged
+   */
+  isBeingDragged?: boolean;
 }): JSX.Element {
   const { showAdminView, groupData } = useActiveGroup();
   const { updatePost, deletePost } = usePostActions(group.id);
@@ -89,9 +96,16 @@ export default function FeedItem({
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 hover:bg-cyan-50 dark:hover:bg-cyan-900 px-4 shadow sm:px-6 sm:rounded-lg transition block`}
+      className={`${
+        isBeingDragged
+          ? 'bg-gray-200 dark:bg-gray-900'
+          : 'bg-white dark:bg-gray-800 hover:bg-cyan-50 dark:hover:bg-cyan-900'
+      } shadow ${
+        dragHandle ? 'pr-4 sm:pr-6' : 'px-4 sm:px-6'
+      } sm:rounded-lg transition flex`}
     >
-      <div className="flex">
+      {dragHandle}
+      <div className="flex flex-1">
         <Link
           to={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
@@ -165,7 +179,8 @@ export default function FeedItem({
                 aria-labelledby="options-menu-0"
               >
                 <div className="py-1">
-                  <button
+                  {/* Pinning is no longer needed now that posts can be reordered easily */}
+                  {/* <button
                     type="button"
                     onClick={() =>
                       updatePost(post.id, { isPinned: !post.isPinned })
@@ -175,7 +190,7 @@ export default function FeedItem({
                   >
                     <BookmarkIcon className="mr-3 h-5 w-5 text-gray-400" />
                     <span>{post.isPinned ? 'Unpin Post' : 'Pin Post'}</span>
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() =>

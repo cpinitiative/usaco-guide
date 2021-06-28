@@ -1,13 +1,14 @@
 import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
-import { useGroupActions } from '../../hooks/groups/useGroupActions';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
-import Layout from '../layout';
-import SEO from '../seo';
-import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useUserGroups } from '../../../hooks/groups/useUserGroups';
+import Layout from '../../layout';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import { GroupCard } from './GroupCard';
 
 const GroupSelectPage = (props: { path: string }) => {
   const { firebaseUser, isLoaded } = useContext(UserDataContext);
@@ -29,7 +30,7 @@ const GroupSelectPage = (props: { path: string }) => {
       <SEO title="My Groups" />
       <TopNavigationBar />
       <main>
-        <div className="max-w-3xl px-2 sm:px-4 lg:px-8 mx-auto py-16">
+        <div className="max-w-3xl px-4 lg:px-8 mx-auto py-16">
           <div className="flex items-center justify-between">
             <h1 className="text-xl md:text-3xl font-bold">My Groups</h1>
             {permissions.canCreateGroups && (
@@ -55,14 +56,7 @@ const GroupSelectPage = (props: { path: string }) => {
           {groups.isSuccess &&
             (groups.data?.length > 0 ? (
               groups.data.map(group => (
-                <div key={group.id}>
-                  <Link
-                    to={`/groups/${group.id}/`}
-                    className="text-blue-600 dark:text-blue-300 underline"
-                  >
-                    {group.name}
-                  </Link>
-                </div>
+                <GroupCard key={group.id} group={group} />
               ))
             ) : (
               <div>

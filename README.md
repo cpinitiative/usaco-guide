@@ -65,6 +65,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Sathvik Chundru (Since May 2021)
 - Brad Ma (Since June 2021)
 - Albert Ye (Since June 2021)
+- Arpan Banerjee (Since June 2021)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 

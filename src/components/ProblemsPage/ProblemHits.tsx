@@ -1,5 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
+import { Highlight } from 'react-instantsearch-dom';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
@@ -10,10 +11,14 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         {hit.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
-        {/* <Highlight hit={hit} attribute="name" /> */}
-        <Link to={hit.url} target="_blank">
-          <h1 className="text-lg hover:underline cursor-pointer">{hit.name}</h1>
-        </Link>
+        <a
+          href={hit.url}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:underline"
+        >
+          <Highlight hit={hit} attribute="name" />
+        </a>
         {hit.isStarred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
@@ -86,10 +91,10 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         ))}
       </ul>
 
-      <div className="pt-4 space-x-2">
+      <div className="pt-4">
         {hit.tags?.map(tag => (
           <span
-            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
+            className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
             key={tag}
           >
             {tag}

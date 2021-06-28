@@ -16,12 +16,19 @@ export type PostData = {
    * Markdown string of the post content
    */
   body: string;
+  /**
+   * no longer needed since posts can be more easily reordered (?)
+   * @deprecated
+   */
   isPinned: boolean;
   isPublished: boolean;
   isDeleted: boolean;
+  // oops typescript is hard -- pointsPerProblem and problemOrdering should be type assignment only...
   pointsPerProblem: {
     [key: string]: number;
   };
+  // array of problem IDs
+  problemOrdering: string[] | null;
 } & (
   | {
       type: 'announcement';

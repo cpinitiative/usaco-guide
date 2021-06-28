@@ -1,108 +1,119 @@
 ---
 id: kattis-catandmice
 source: Kattis
-title: Cat and Mice
-author: Kevin Sheng
+title: Cat & Mice
+author: Ian Zhang
 ---
+Official Analysis:
+[Solution Outline](https://cs.baylor.edu/~hamerly/icpc/qualifier_2017/naq17_slides.pdf#page=54)
 
 ## Explanation
 
-Binary search on the minimum possible speed of Cartesian Cat.
+First, we binary search on the initial velocity.
 
-For each speed, let $\texttt{mintime}[S][e]$ be the minimum time to go from the start to end $e$, eating each mouse in the set $S$ along the way.
-If it is impossible to do so, the value will be defined as infinity.
-When processing each state, go through all the possible previous ending points and see if it's possible to reach the defined end given the previous ending time. Calculate the minimum time for the state over all valid previous endings.
+Then, we use bitmask dp to check whether an initial velocity is valid. Let $\texttt{dp}[i][j]$ be
+the minimum possible time to reach visit every mice in subset $i$ with $j$ as the last visited mouse.
+If it is not possible to reach subset $i$ with $j$ as the last visited mice, let $\texttt{dp}[i][j] = \infty$.
+
+When transitioning, iterate through every mouse not in the current subset and try adding it to the current subset.
+
+Finally, an initial velocity is possible iff there is an index $i$ such that $\texttt{dp}[2^{n}-1][i] \neq\infty$.
 
 ## Implementation
 
-Complexity: $\mathcal{O}(\log{ans}\cdot 2^N \cdot N^2)$
+**Time Complexity:** $\mathcal{O}(\log(M)N^2\cdot2^N)$, where $M$ is the maximum possible velocity.
 
 <LanguageSection>
-<JavaSection>
-```java
-import java.io.*;
-import java.util.*;
 
-public final class CatAndMice {
-	private static final long PRECISION = (long) 1e4;
-	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-		int miceNum = Integer.parseInt(read.readLine());
-		int[][] mice = new int[miceNum][];
-		for (int m = 0; m < miceNum; m++) {
-			mice[m] = Arrays.stream(read.readLine().split(" "))
-							.mapToInt(Integer::parseInt).toArray();
-		}
-		double speedRed = Double.parseDouble(read.readLine());
+<CPPSection>
 
-		long lo = 0;
-		long hi = Long.MAX_VALUE / 2;  // this should be large enough
-		double valid = -1;
-		while (lo <= hi) {
-			long mid = (lo + hi) / 2;
-			double toTest = (double) mid / PRECISION;
-			if (allEatable(new int[] {0, 0}, mice, speedRed, toTest)) {
-				hi = mid - 1;
-				valid = toTest;
-			} else {
-				lo = mid + 1;
-			}
-		}
-		System.out.println(valid);
-	}
+```cpp
+#include <bits/stdc++.h>
 
-	private static boolean allEatable(
-		int[] start, int[][] mice, double speedRed, double initSpeed
-	) {
-		double[][] minTime = new double[1 << mice.length][mice.length];
-		for (int s = 0; s < (1 << mice.length); s++) {
-			// MAX_VALUE will be used as a placeholder for invalid values
-			Arrays.fill(minTime[s], Double.MAX_VALUE);
-		}
+using namespace std;
 
-		for (int s = 1; s < (1 << mice.length); s++) {
-			double speed = Math.pow(speedRed, Integer.bitCount(s) - 1) * initSpeed;
-			for (int end = 0; end < mice.length; end++) {
-				if ((s & (1 << end)) == 0) {
-					continue;
-				}
-				// the subset without the current end
-				int prev = s & ~(1 << end);
-				// handle the special case for when we just started
-				if (prev == 0) {
-					double dist = dist(start, mice[end]);
-					minTime[s][end] = initSpeed * mice[end][2] >= dist
-									  ? dist / initSpeed : Double.MAX_VALUE;
-					continue;
-				}
-				for (int prevEnd = 0; prevEnd < mice.length; prevEnd++) {
-					if (minTime[prev][prevEnd] == Double.MAX_VALUE) {
-						continue;
-					}
-					double dist = dist(mice[prevEnd], mice[end]);
-					// check if Cartesian Cat can reach the mouse in time
-					if (speed * (mice[end][2] - minTime[prev][prevEnd]) < dist) {
-						continue;
-					}
-					minTime[s][end] = Math.min(
-							minTime[s][end],
-							minTime[prev][prevEnd] + dist / speed
-					);
-				}
-			}
-		}
-		for (double time : minTime[(1 << mice.length) - 1]) {
-			if (time != Double.MAX_VALUE) {
-				return true;
-			}
-		}
-		return false;
-	}
+const int maxn = 15;
+const long double eps = 1e-3, inf = 1e18;
+long double dp[1 << maxn][maxn], p[maxn]; // p[i] = pow(m,i)
 
-	private static double dist(int[] p1, int[] p2) {
-		return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
-	}
+struct mouse {
+	long double x, y, s;
+};
+
+long double dist(mouse a, mouse b) {
+	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
+int n;
+long double m;
+vector<mouse> a;
+mouse orig = {0, 0, 0};
+bool check(long double v) {
+	for (auto &i : dp) {
+		for (long double &j : i) {
+			j = inf;
+		}
+	}
+	for (int i = 0; i < n; ++i) {
+		long double time = dist(orig, a[i]) / v;
+		if (time <= a[i].s) {
+			dp[1 << i][i] = time;
+		}
+	}
+	for (int mask = 1; mask < (1 << n); ++mask) {
+		int num_mice = __builtin_popcount(mask) - 1;
+		for (int i = 0; i < n; ++i) {
+			if (mask & (1 << i)) {
+				int pre = mask ^ (1 << i);
+				for (int j = 0; j < n; ++j) {
+					if (pre & (1 << j)) {
+						long double cur_v = v * p[num_mice];
+						long double time = dp[pre][j] + dist(a[j], a[i]) / cur_v;
+						if (dp[pre][j] != inf && time <= a[i].s) {
+							dp[mask][i] = min(dp[mask][i], time);
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < n; ++i) {
+		if (dp[(1 << n) - 1][i] != inf) {
+			return true;
+		}
+	}
+	return false;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cin.exceptions(istream::failbit);
+	cin >> n;
+	a.resize(n);
+	for (int i = 0; i < n; ++i) {
+		cin >> a[i].x >> a[i].y >> a[i].s;
+	}
+	cin >> m;
+	p[0] = 1;
+	for (int i = 1; i < maxn; ++i) {
+		p[i] = p[i - 1] * m;
+	}
+	long double l = 0, r = 1e9;
+	while (r - l > eps) {
+		long double mid = (l + r) / 2;
+		if (check(mid)) {
+			r = mid;
+		} else {
+			l = mid;
+		}
+	}
+	cout << fixed << setprecision(16) << l << "\n";
+	return 0;
+}
+
+
 ```
-</JavaSection>
+
+</CPPSection>
+
 </LanguageSection>

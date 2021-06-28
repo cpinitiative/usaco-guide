@@ -6,7 +6,7 @@ import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
 import GroupLeaderboardPage from '../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
 import GroupPage from '../components/Groups/GroupPage/GroupPage';
-import GroupSelectPage from '../components/Groups/GroupSelectPage';
+import GroupSelectPage from '../components/Groups/GroupSelectPage/GroupSelectPage';
 import JoinGroupPage from '../components/Groups/JoinGroupPage';
 import JoinLinksPage from '../components/Groups/JoinLinksPage/JoinLinksPage';
 import MembersPage from '../components/Groups/MembersPage/MembersPage';
@@ -35,7 +35,12 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const { setActiveGroupId, isLoading, groupData } = useActiveGroup();
+  const {
+    activeGroupId,
+    setActiveGroupId,
+    isLoading,
+    groupData,
+  } = useActiveGroup();
   const { firebaseUser, isLoaded } = React.useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
 
@@ -61,7 +66,11 @@ const GroupPageWrapper = (props: any): ReactElement => {
       </Layout>
     );
   }
-  if (isLoading || (groupData && groupData.id !== props.groupId)) {
+  if (
+    isLoading ||
+    activeGroupId !== props.groupId ||
+    (groupData && groupData.id !== props.groupId)
+  ) {
     return (
       <Layout>
         <TopNavigationBar />

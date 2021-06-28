@@ -9,6 +9,7 @@ export type GroupData = {
   adminIds: string[];
   memberIds: string[];
   leaderboard: Leaderboard;
+  postOrdering: string[];
 };
 
 export enum GroupPermission {

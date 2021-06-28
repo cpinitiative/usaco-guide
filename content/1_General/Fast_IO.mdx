@@ -116,14 +116,35 @@ further reduces the runtime.
 <Spoiler title="91ms">
 
 ```cpp
-using namespace FastIO;
+#include <bits/stdc++.h>
+using namespace std;
+
+//BeginCodeSnip{FastIO}
+inline namespace FastIO {
+	const int BSZ = 1<<15; ////// INPUT
+	char ibuf[BSZ]; int ipos, ilen;
+	char nc() { // next char
+		if (ipos == ilen) {
+			ipos = 0; ilen = fread(ibuf,1,BSZ,stdin);
+			if (!ilen) return EOF;
+		}
+		return ibuf[ipos++];
+	}
+	template<class T> void ri(T& x) { // read int or ll
+		char ch; int sgn = 1;
+		while (!isdigit(ch = nc())) if (ch == '-') sgn *= -1;
+		x = ch-'0'; while (isdigit(ch = nc())) x = x*10+(ch-'0');
+		x *= sgn;
+	}
+}
+//EndCodeSnip
 
 vector<int> P[100000];
 
 int main() {
 	freopen("roboherd.in","r",stdin);
 	freopen("roboherd.out","w",stdout);
-	int N,K; ri(N,K);
+	int N,K; ri(N); ri(K);
 	for (int i = 0; i < N; ++i) {
 		int M; ri(M); P[i].resize(M);
 		for (int j = 0; j < M; ++j) ri(P[i][j]);
@@ -398,6 +419,7 @@ Based off several sources, including `Kattio`,
 import java.io.*;
 import java.util.*;
 
+//BeginCodeSnip{FastIO}
 class FastIO extends PrintWriter {
 	private InputStream stream;
 	private byte[] buf = new byte[1<<16];
@@ -452,6 +474,7 @@ class FastIO extends PrintWriter {
 	}
 	public double nextDouble() { return Double.parseDouble(next()); }
 }
+//EndCodeSnip
 
 public class Main {
 	static int P[][] = new int[100000][];
