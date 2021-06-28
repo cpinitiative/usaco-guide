@@ -31,8 +31,6 @@ we can print $\texttt{ans}$.
 #include <algorithm>
 #include <vector>
 using namespace std;
-void init(int n);
-bool unite(int a, int b);
 
 const int MAX_N = 2000;
 int parent[MAX_N];
@@ -41,6 +39,43 @@ struct Edge
 {
 	int from, to, weight;
 };
+
+// BeginCodeSnip{Standard DSU operations}
+void init(int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		parent[i] = i;
+		compsize[i] = 1;
+	}
+}
+
+int find(int a)
+{
+	if (a == parent[a])
+	{
+		return a;
+	}
+	return parent[a] = find(parent[a]);
+}
+
+bool unite(int a, int b)
+{
+	int roota = find(a), rootb = find(b);
+	if (roota == rootb)
+	{
+		return false;
+	}
+	if (compsize[roota] > compsize[rootb])
+	{
+		swap(roota, rootb);
+	}
+	parent[roota] = rootb;
+	compsize[rootb] += compsize[roota];
+	return true;
+}
+// EndCodeSnip
+
 int main()
 {
 	freopen("superbull.in", "r", stdin);
@@ -81,41 +116,6 @@ int main()
 			}
 		}
 	}
-}
-
-// standard DSU operations
-void init(int n)
-{
-	for (int i = 0; i < n; i++)
-	{
-		parent[i] = i;
-		compsize[i] = 1;
-	}
-}
-
-int find(int a)
-{
-	if (a == parent[a])
-	{
-		return a;
-	}
-	return parent[a] = find(parent[a]);
-}
-
-bool unite(int a, int b)
-{
-	int roota = find(a), rootb = find(b);
-	if (roota == rootb)
-	{
-		return false;
-	}
-	if (compsize[roota] > compsize[rootb])
-	{
-		swap(roota, rootb);
-	}
-	parent[roota] = rootb;
-	compsize[rootb] += compsize[roota];
-	return true;
 }
 ```
 
