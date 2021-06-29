@@ -27,6 +27,8 @@ $\max(\texttt{deg}[i])+1$ colors.
 
 using namespace std;
 
+#define MAX_N 10000
+
 // USACO-style file input
 void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
 	ios_base::sync_with_stdio(0); cin.tie(0);
@@ -39,18 +41,18 @@ void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
 int main() {
 	setIO("planting");
 
-	int n; cin >> n;
-	int deg[n+1];
-	memset(deg, 0, sizeof(deg)); // Initialize all degrees to 0
+	int n; 
+	cin >> n;
+	int deg[MAX_N + 1] = {}; // initialize with 0s
 	int u, v;
 	int maxDeg = INT_MIN;  // tracking maxDegree
-	for(int i=1;i<n;i++){
-		cin>>u>>v;
+	for(int i = 1; i < n; i++){
+		cin >> u >> v;
 		deg[u]++;
 		deg[v]++;
 		maxDeg = max(maxDeg, max(deg[u], deg[v]));
 	}
-	cout << (maxDeg+1) << "\n";
+	cout << maxDeg + 1 << "\n";
 	return 0;
 }
 ```
@@ -134,6 +136,8 @@ valid assignment of grass types in the $\texttt{ans}$ array.
 
 using namespace std;
 
+#define MAX_N 10000
+
 // USACO-style file input
 void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
 	ios_base::sync_with_stdio(0); cin.tie(0);
@@ -143,30 +147,32 @@ void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
 	}
 }
 
-bool visited[10001];
-int ans[10001];
-vector<int> adjList[10001];
+bool visited[MAX_N + 1];
+int ans[MAX_N + 1];
+vector<int> adjList[MAX_N + 1];
 
 void dfs(int self, int parent){
 	int len = adjList[self].size();
 	int g = 1;
 	for (int i : adjList[self]) {
 		if (i != parent) {
-			while (g == ans[self] || g == ans[parent]) g++;
-				ans[i] = g;
-				dfs(i, self);
+			while (g == ans[self] || g == ans[parent]) 
 				g++;
-			}
+			ans[i] = g;
+			dfs(i, self);
+			g++;
 		}
+	}
 }
 
 int main() {
 	setIO("planting");
 
-	int n; cin >> n;
+	int n; 
+	cin >> n;
 	int u, v;
-	for(int i=1;i<n;i++){
-		cin>>u>>v;
+	for(int i = 1; i < n; i++){
+		cin >> u >> v;
 		adjList[u].push_back(v);
 		adjList[v].push_back(u);
 	}
