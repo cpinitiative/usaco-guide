@@ -16,25 +16,28 @@ author: Mrinall Umasudhan, Jesse Choe, Ryan Chou
 fin = open('factory.in', 'r')
 N = int(fin.readline())
 
-outgoing = [0] * 101
-incoming = [0] * 101
-for _ in range(N-1):
+outgoing = [0] * N
+incoming = [0] * N
+for _ in range(N - 1):
 	a, b = map(int, fin.readline().split())
 	# Counting number of outgoing and incoming walkways.
 	outgoing[a] += 1
 	incoming[b] += 1
 
 ans = -1
-for i in range(1, N+1):
+for i in range(1, N + 1):
 	# Found two meeting places. This won't work.
+	# (we have to find a unique walkway)
 	if outgoing[i] == 0 and ans != -1: 
 		ans = -1
 		break
-	# Found a meeting place, remember it.
+	# Found a meeting place, save it.
+	# (found a walkway which has only
+	# has walkways leading into it.)
 	if outgoing[i] == 0: 
 		ans = i
 
-print(ans, file=open('factory.out', 'w'))
+print(ans, file = open('factory.out', 'w'))
 ```
 	
 </PySection>
