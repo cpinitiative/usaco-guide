@@ -30,18 +30,18 @@ int size, exponent;
  */
 vector<pi> factor(int number){
 	map<int, int> factors;
-	for(int i = 2; i * i <= number; i++){
-		while(number % i == 0){
+	for (int i = 2; i * i <= number; i++) {
+		while (number % i == 0) {
 			number /= i;
 			factors[i]++;
 		}
 	}
-	if(number > 1){
+	if (number > 1) {
 		factors[number]++;
 	}
 	vector<pi> prime_factorization;
-	for(pi primes: factors){
-		if(primes.second % exponent > 0){
+	for (pi primes: factors) {
+		if (primes.second % exponent > 0) {
 			prime_factorization.push_back({primes.first, primes.second % exponent});
 		}
 	}
@@ -58,7 +58,7 @@ vector<pi> factor(int number){
 vector<pi> find_factor_inverse(vector<pi> original){
 	int number_of_primes = original.size();
 	vector<pi> inverse(size);
-	for(int i = 0; i < number_of_primes; i++){
+	for (int i = 0; i < number_of_primes; i++) {
 		inverse[i].first = original[i].first;
 		inverse[i].second = exponent - original[i].second;
 	}
@@ -75,13 +75,13 @@ int main(){
 	 */
 	map<vector<pi>, int> factor_frequency;
 	vector<int> arr(size);
-	for(int i = 0; i < size; i++){
+	for (int i = 0; i < size; i++) {
 		cin >> arr[i];
 		factor_frequency[factor(arr[i])]++;
 	}
 	ll num_of_pairs = 0;
-	for(int i = 0; i < size; i++){
-		if(factor(arr[i]) == find_factor_inverse(factor(arr[i]))){
+	for (int i = 0; i < size; i++) {
+		if (factor(arr[i]) == find_factor_inverse(factor(arr[i]))) {
 			num_of_pairs += (factor_frequency[factor(arr[i])] - 1);
 			// We don't want to count itself, so we do the frequency - 1
 		} else {
