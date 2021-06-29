@@ -54,23 +54,23 @@ int main(){
 	 * of the first k coprimes, where k is the end of the
 	 * subarray.
 	 */
-	for(int i = 1; i < number_of_coprimes; i++){
+	for (int i = 1; i < number_of_coprimes; i++) {
 		prefix_mod[i] = (prefix_mod[i - 1] * coprimes[i]) % n;
 	}
 	int length_of_longest_subarray = 1;
-	for(int i = 0; i < number_of_coprimes; i++){
+	for (int i = 0; i < number_of_coprimes; i++) {
 		/* 
 		 * If a given subarray has a product of 
 		 * 1 modulo n, update the length of the 
 		 * longest subsequence with product 1
 		 * modulo n.
 		 */
-		if(prefix_mod[i] == 1){
+		if (prefix_mod[i] == 1) {
 			length_of_longest_subarray = i + 1;
 		}
 	}
 	cout << length_of_longest_subarray << endl;
-	for(int i = 0; i < length_of_longest_subarray; i++){
+	for (int i = 0; i < length_of_longest_subarray; i++){
 		cout << coprimes[i] << " ";
 	}
 	cout << endl;
