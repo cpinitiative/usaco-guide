@@ -106,7 +106,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   ),
   adv: (
     <>
-      Some these topics have not appeared in Platinum and probably never will
+      Some of these topics have not appeared in Platinum and probably never will
       (ex. Matroid Intersection).
       <br />
       Others have appeared in Old Gold or Platinum very infrequently (ex. BCC,
