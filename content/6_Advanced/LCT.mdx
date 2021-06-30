@@ -55,16 +55,16 @@ frequency: 1
 #include <bits/stdc++.h>
 using namespace std;
 
-struct node {
+struct Node {
 	int x;
-	node *l = 0;
-	node *r = 0;
-	node *p = 0;
+	Node *l = 0;
+	Node *r = 0;
+	Node *p = 0;
 	bool rev = false;
 
-	node() = default;
+	Node() = default;
 
-	node(int v) {
+	Node(int v) {
 		x = v;
 	}
 
@@ -82,16 +82,16 @@ struct node {
 	}
 };
 
-struct lct {
-	vector<node> a;
+struct LCT {
+	vector<Node> a;
 
-	lct(int n) {
+	LCT(int n) {
 		a.resize(n+1);
 		for(int i = 1; i <= n; ++i)
 		a[i].x = i;
 	}
 
-	void rot(node* c) {
+	void rot(Node* c) {
 		auto p = c->p;
 		auto g = p->p;
 
@@ -115,7 +115,7 @@ struct lct {
 		c->p = g;
 	}
 
-	void splay(node* c) {
+	void splay(Node* c) {
 		while(!c->is_root()) {
 			auto p = c->p;
 			auto g = p->p;
@@ -126,10 +126,10 @@ struct lct {
 		c->push();
 	}
 
-	node* access(int v) {
-		node* last = 0;
-		node* c = &a[v];
-		for(node* p = c; p; p = p->p) {
+	Node* access(int v) {
+		Node* last = 0;
+		Node* c = &a[v];
+		for(Node* p = c; p; p = p->p) {
 			splay(p);
 			p->r = last;
 			last = p;
@@ -147,7 +147,7 @@ struct lct {
 
 	void link(int u, int v) {
 		make_root(v);
-		node* c = &a[v];
+		Node* c = &a[v];
 		c->p = &a[u];
 	}
 
@@ -174,7 +174,7 @@ int main() {
 
 	cin >> N >> M;
 
-	lct lc(N);
+	LCT lc(N);
 
 	while(M--) {
 		string a; cin >> a;
