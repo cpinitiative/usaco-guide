@@ -229,7 +229,7 @@ export type ProblemSolutionMetadata =
     };
 
 // Checks if a given source is USACO
-const isUsaco = source => {
+export const isUsaco = source => {
   const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
   for (let ind = 0; ind < posi.length; ++ind) {
     if (source.includes(posi[ind])) return true;
