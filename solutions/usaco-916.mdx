@@ -1,0 +1,57 @@
+---
+id: usaco-916
+source: USACO Bronze 2019 February
+title: The Great Revegetation
+author: Ryan Chou
+---
+## Solution 1
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_revegetate_bronze_feb19.html)
+
+## Solution 2
+We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal.
+We'll also cycle through the previous favorite pastures to make sure that our new alteration doesn't interfere with any of the other cow's favorite pastures.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^2\log{}N)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+sys.stdin = open('revegetate.in', 'r')
+sys.stdout = open('revegetate.out', 'w')
+
+n, m = map(int, input().split())
+pastures = []
+ans = [1] * n
+
+for _ in range(m):
+	past1, past2 = sorted(map(int,input().split()))
+	# subtract one so that the indexes start from 0
+	pastures.append([past1 - 1, past2 - 1])
+
+# assign the pastures at the front first.
+pastures.sort()
+
+for a, b in pastures:
+	# If they're not unique.
+	if ans[a] == ans[b]:
+		# Increment one to the pasture closer to the end.
+		# 100 is larger than 001.
+		smallest_pos = max(a, b)
+		ans[smallest_pos] += 1
+
+		# All favorite pastures up to the current one.
+		for i, j in pastures[:pastures.index([a, b])]:
+			# Increment again if requirement isn't satisfied.
+			if ans[i] == ans[j]:
+				smallest_pos = max(a, b)
+				ans[smallest_pos] += 1
+print(''.join(map(str, ans)))
+```
+
+</PySection>
+
+</LanguageSection>
+
