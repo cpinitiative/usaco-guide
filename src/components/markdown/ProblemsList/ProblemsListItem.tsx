@@ -12,6 +12,7 @@ import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+import { isUsaco } from '../../../models/problem';
 
 type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
@@ -208,7 +209,7 @@ export default function ProblemsListItem(
               >
                 {copied ? 'Copied!' : 'Copy Permalink'}
               </button>
-              {divisionTable && (
+              {isUsaco(problem.source) && (
                 <a
                   className="!font-normal focus:outline-none block w-full text-left px-4 py-2 text-sm !text-gray-700 dark:!text-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800 hover:!text-gray-900"
                   href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
