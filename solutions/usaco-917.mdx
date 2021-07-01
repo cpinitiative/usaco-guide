@@ -96,9 +96,13 @@ import java.util.StringTokenizer;
 public class traffic {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("traffic.in"));
+        // N stores the number of one-mile segments
         int N = Integer.parseInt(br.readLine());
+        // A stores lower bound of each range
         int [] A = new int [100];
+        // B stores upper bound of each range
         int [] B = new int [100];
+        // T stores "none", "off", or "on" for each range
         String [] T = new String [100];
         for (int i = 0; i < N; i++) {
             StringTokenizer s = new StringTokenizer(br.readLine());
@@ -119,10 +123,10 @@ public class traffic {
             if (T[i].equals("none")) { a = Math.max(a, A[i]); b = Math.min(b, B[i]); }
 
             // if there is an off-ramp with range (a',b'), the new range of possible traffic flows is (a+a',b+b')
-            if (T[i] .equals( "off")) { a += A[i]; b += B[i]; }
+            if (T[i].equals( "off")) { a += A[i]; b += B[i]; }
 
             // if there is an on-ramp with range (a',b'), the new range of possible traffic flows is (a-b',b-a')
-            if (T[i] .equals( "on")) { a -= B[i]; b -= A[i]; a = Math.max(0,a); }
+            if (T[i].equals( "on")) { a -= B[i]; b -= A[i]; a = Math.max(0,a); }
         }
         // Output the range of possible initial traffic flows.
         out.println(a + " "+b);
@@ -133,13 +137,13 @@ public class traffic {
         a = -999999999; b = 999999999;
         for (int i=0; i<N; i++) {
             // if there is no ramp, the possible range (a,b) is narrowed to the range given by the sensor.
-            if (T[i] .equals( "none")) { a = Math.max(a, A[i]); b = Math.min(b, B[i]); }
+            if (T[i].equals( "none")) { a = Math.max(a, A[i]); b = Math.min(b, B[i]); }
 
             // if there is an on-ramp with range (a',b'), the new range of possible traffic flows is (a+a',b+b')
-            if (T[i] .equals( "on")) { a += A[i]; b += B[i]; }
+            if (T[i].equals( "on")) { a += A[i]; b += B[i]; }
 
             // if there is an off-ramp with range (a',b'), the new range of possible traffic flows is (a-b',b-a')
-            if (T[i] .equals( "off")) { a -= B[i]; b -= A[i]; a = Math.max(0,a); }
+            if (T[i].equals( "off")) { a -= B[i]; b -= A[i]; a = Math.max(0,a); }
         }
         out.println(a + " "+b);
         out.close();
