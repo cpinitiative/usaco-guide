@@ -25,36 +25,64 @@ Predicting the range of possible initial flows is similar and essentially symmet
 #include <iostream>
 #include <fstream>
 using namespace std;
-     
+
 int main(void)
 {
-  int N, A[100], B[100];
-  string T[100];
-     
-  ifstream fin ("traffic.in");
-  fin >> N;
-  for (int i=0; i<N; i++) fin >> T[i] >> A[i] >> B[i];
-     
-  ofstream fout ("traffic.out");  
-     
-  int a = -999999999, b = 999999999;
-  for (int i=N-1; i>=0; i--) {
-    if (T[i] == "none") { a = max(a, A[i]); b = min(b, B[i]); }
-    if (T[i] == "off") { a += A[i]; b += B[i]; }
-    if (T[i] == "on") { a -= B[i]; b -= A[i]; a = max(0,a); }
-  }
-  fout << a << " " << b << "\n";
-     
-  a = -999999999, b = 999999999;
-  for (int i=0; i<N; i++) {
-    if (T[i] == "none") { a = max(a, A[i]); b = min(b, B[i]); }
-    if (T[i] == "on") { a += A[i]; b += B[i]; }
-    if (T[i] == "off") { a -= B[i]; b -= A[i]; a = max(0,a); }
-  }
-  fout << a << " " << b << "\n";
- 
+
+// A stores lower bound of each range
+// B stores upper bound of each range
+// N stores the number of one-mile segments
+    int N, A[100], B[100];
+
+// T stores "none", "off", or "on" for each range
+    string T[100];
+
+    ifstream fin ("traffic.in");
+    fin >> N;
+    for (int i=0; i<N; i++) fin >> T[i] >> A[i] >> B[i];
+
+    ofstream fout ("traffic.out");
+
+// Below is the initial range (a,b).  We will narrow/modify this range as we scan through
+// the highway components from mile N to mile 1.  The resulting range will be the range of
+// possible initial traffic flows.
+    int a = -999999999, b = 999999999;
+
+// Note that we are scanning backwards from mile N to mile 1 here.
+    for (int i=N-1; i>=0; i--) {
+
+        // if there is no ramp, the possible range (a,b) is narrowed to the range given by the sensor.
+        if (T[i] == "none") { a = max(a, A[i]); b = min(b, B[i]); }
+
+        // if there is an off-ramp with range (a',b'), the new range of possible traffic flows is (a+a',b+b')
+        if (T[i] == "off") { a += A[i]; b += B[i]; }
+
+        // if there is an on-ramp with range (a',b'), the new range of possible traffic flows is (a-b',b-a')
+        if (T[i] == "on") { a -= B[i]; b -= A[i]; a = max(0,a); }
+    }
+
+    // Output the range of possible initial traffic flows.
+    fout << a << " " << b << "\n";
+
+// Below is the initial range (lo,hi).  We will narrow/modify this range as we scan through
+// the highway components from mile 1 to mile N.  The resulting range will be the range of
+// possible final traffic flows.
+    a = -999999999, b = 999999999;
+    for (int i=0; i<N; i++) {
+        // if there is no ramp, the possible range (a,b) is narrowed to the range given by the sensor.
+        if (T[i] == "none") { a = max(a, A[i]); b = min(b, B[i]); }
+
+        // if there is an on-ramp with range (a',b'), the new range of possible traffic flows is (a+a',b+b')
+        if (T[i] == "on") { a += A[i]; b += B[i]; }
+
+        // if there is an off-ramp with range (a',b'), the new range of possible traffic flows is (a-b',b-a')
+        if (T[i] == "off") { a -= B[i]; b -= A[i]; a = max(0,a); }
+    }
+    fout << a << " " << b << "\n";
+
   return 0;
 }
+
 ```
 
 </CPPSection>
