@@ -51,6 +51,7 @@ export default function EditProblemPage(props) {
     if (!problem && originalProblem) editProblem(originalProblem);
   }, [originalProblem, post]);
 
+  // todo
   const canEditPoints =
     !activeGroup.groupData.leaderboard[post.id]?.[problemId];
 

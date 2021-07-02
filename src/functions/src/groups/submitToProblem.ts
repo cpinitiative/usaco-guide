@@ -26,8 +26,8 @@ export default functions.firestore
       return;
     }
     const groupRef = admin.firestore().collection('groups').doc(groupId);
-    const postRef = groupRef.collection('posts').doc(postId);
-    const problemRef = postRef.collection('problems').doc(problemId);
+    const userRef = groupRef.collection('leaderboard').doc(data.userId);
+    const problemRef = groupRef.collection('posts').doc(postId).collection('problems').doc(problemId);
     const submissionRef = problemRef
       .collection('submissions')
       .doc(submissionId);
@@ -38,30 +38,52 @@ export default functions.firestore
       }),
 
       admin.firestore().runTransaction(async transaction => {
-        const postDoc = await transaction.get(postRef);
         const problemDoc = await transaction.get(problemRef);
-        if (!postDoc.exists || !problemDoc.exists) {
+        const userDoc = await transaction.get(userRef);
+        if (!problemDoc.exists) {
           throw new Error(
             "The post, group, or problem being submitted to couldn't be found."
           );
         }
 
-        const oldProblemScore =
-          (postDoc.data()?.leaderboard &&
-            postDoc.data()?.leaderboard[data.problemId] &&
-            postDoc.data()?.leaderboard[data.problemId][data.userId]) ||
-          0;
+        const oldProblemScore = userDoc.data()?.[postId]?.[problemId] || 0;
         const points = data.result * problemDoc.data().points;
         if (points < oldProblemScore) {
           return;
         }
-        await transaction.update(groupRef, {
-          [`leaderboard.${postId}.${problemId}.${data.userId}`]: {
+        const userData = userDoc.data() || {};
+
+        if (!userData[postId]) {
+          userData[postId] = {
+            totalPoints: 0
+          };
+        }
+        userData[postId][problemId] = points;
+        userData[postId].totalPoints = Object.keys(userData[postId])
+          .filter(x => x !== 'totalPoints')
+          .reduce(
+            (acc, cur) =>
+              acc + userData[postId][cur],
+            0
+          );
+        userData.totalPoints = Object.keys(userData)
+          .filter(x => x !== 'totalPoints')
+          .reduce(
+            (acc, cur) =>
+              acc + userData[cur].totalPoints,
+            0
+          );
+
+        await transaction.update(userRef, {
+          [`details.${postId}.${problemId}`]: {
             bestScore: points,
             bestScoreStatus: status,
             bestScoreTimestamp: data.timestamp,
             bestScoreSubmissionId: submissionId,
           },
+          [`${postId}.${problemId}`]: points,
+          totalPoints: userData.totalPoints,
+          [`${postId}.totalPoints`]: userData[postId].totalPoints,
         });
       }),
     ]);

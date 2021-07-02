@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -23,11 +23,14 @@ import FeedItem from './FeedItem';
 import { MenuIcon } from '@heroicons/react/solid';
 import { GroupData } from '../../../models/groups/groups';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 
 function SortableItem(props: {
   id: string;
   group: GroupData;
   post: PostData;
+  userPoints: number | null;
   isBeingDragged: boolean;
 }) {
   // probably post was just deleted before items updated
@@ -46,6 +49,7 @@ function SortableItem(props: {
       <FeedItem
         group={props.group}
         post={props.post}
+        userPoints={props.userPoints}
         isBeingDragged={props.isBeingDragged}
         dragHandle={
           <div
@@ -62,6 +66,7 @@ function SortableItem(props: {
 }
 
 export default function Feed(): JSX.Element {
+  const { firebaseUser } = useContext(UserDataContext);
   const group = useActiveGroup();
   const { updatePostOrdering } = useGroupActions();
 
@@ -120,6 +125,8 @@ export default function Feed(): JSX.Element {
     setActiveId(null);
   };
 
+  const userLeaderboardData = useUserLeaderboardData(group.activeGroupId, firebaseUser.uid);
+
   return (
     <div>
       {group.isLoading && 'Loading posts...'}
@@ -142,6 +149,7 @@ export default function Feed(): JSX.Element {
                     id={id}
                     group={group.groupData}
                     post={group.posts.find(x => x.id === id)}
+                    userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
                     isBeingDragged={activeId === id}
                   />
                 ))}
@@ -152,6 +160,7 @@ export default function Feed(): JSX.Element {
                 <FeedItem
                   group={group.groupData}
                   post={group.posts.find(x => x.id === activeId)}
+                  userPoints={userLeaderboardData?.[activeId]?.totalPoints ?? null}
                   dragHandle={
                     <div className="self-stretch flex items-center px-2">
                       <MenuIcon className="h-5 w-5 text-gray-300" />
@@ -167,6 +176,7 @@ export default function Feed(): JSX.Element {
               <FeedItem
                 group={group.groupData}
                 post={group.posts.find(x => x.id === id)}
+                userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
                 key={id}
               />
             ))}

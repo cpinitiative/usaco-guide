@@ -89,16 +89,6 @@ export const getEarnedPointsForProblem = (
     0
   );
 };
-export const getEarnedPointsForPost = (
-  leaderboard: Leaderboard,
-  post: PostData,
-  userId: string
-): number => {
-  return Object.keys(post.pointsPerProblem || {}).reduce(
-    (acc, cur) => acc + (leaderboard[post.id]?.[cur]?.[userId]?.bestScore || 0),
-    0
-  );
-};
 export const getTotalPointsOfPost = (post: PostData): number => {
   return Object.keys(post.pointsPerProblem || {}).reduce(
     (acc, cur) => acc + post.pointsPerProblem[cur],
