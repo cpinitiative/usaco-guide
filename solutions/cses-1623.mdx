@@ -1,0 +1,127 @@
+---
+id: cses-1623
+source: CSES
+title: Apple Division
+author: Nikhil Chatterjee
+---
+
+Brute force solution: Generate all possible combinations of apples, keep track of the smallest difference between the sum of the weights of the apples that are part of the current combination and the sum of the weights that are part of the complement combination. In order to go through all of the cominations, we use backtracking to go through both adding the current index and not adding it for each index in the input array.
+
+Time complexity: O(2^{N}\timesN) because we are going through each of the 2^{N} combinations
+
+<LanguageSection>
+<JavaSection>
+import java.util.*;
+import java.io.*;
+
+class Sol {
+    private static ArrayList<Integer> currentSubset = new ArrayList<Integer>();
+    private static double result = Integer.MAX_VALUE; // initialize result to max value because we want to get the minimum result
+    private static long total = 0;
+
+    public static void main(String[] args) {
+        Kattio kattio = new Kattio();
+        int N = kattio.nextInt();
+        int[] weights = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            weights[i] = kattio.nextInt();
+	    total += weights[i]; // calculate the total weight of all apples
+        }
+
+        completeSearch(weights, 0, N, 0);
+	System.out.println((int)(result * 2));
+    }
+
+    public static void completeSearch(int[] weights, int i, int N, long currentSum) {
+        if (i == N) {
+	    result = Math.min(result, Math.abs((total - currentSum) - currentSum) / 2.0);
+        } else {
+	    // option 1: not adding current index
+            completeSearch(weights, i + 1, N, currentSum);
+
+	    // option 2: adding current index
+            currentSubset.add(i);
+	    currentSum += weights[i];
+            completeSearch(weights, i + 1, N, currentSum);
+	    // undo option 2
+	    currentSum -= currentSubset.get(currentSubset.size() - 1);
+            currentSubset.remove(currentSubset.size() - 1);
+        }
+    }
+    CodeSnip{Kattio}
+}
+</JavaSection>
+
+<CPPSection>
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> currentSubset;
+double result = INT_MAX; // initialize result to max value because we want to get the minimum result
+long int total = 0;
+
+void completeSearch(vector<int> &weights, int i, int N, long int currentSum) {
+    if (i == N) {
+        result = min(result, abs((total - currentSum) - currentSum) / 2.0);
+    } else {
+        // option 1: not adding current index
+        completeSearch(weights, i + 1, N, currentSum);
+
+	// option 2: adding current index
+        currentSubset.push_back(i);
+        currentSum += weights[i];
+        completeSearch(weights, i + 1, N, currentSum);
+	// undo option 2
+        currentSum -= currentSubset[currentSubset.size() - 1];
+        currentSubset.pop_back();
+    }
+}
+
+int main() {
+    int N; cin >> N;
+    vector<int> weights(N);
+
+    for (int i = 0; i < N; i++) {
+        cin >> weights[i];
+	total += weights[i]; // calculate the total weight of all apples
+    }
+
+    completeSearch(weights, 0, N, 0);
+    cout << (int)(result * 2) << '\n';
+}
+</CPPSection>
+
+<PySection>
+currentSubset = []
+result = 1e9 # initialize result to max value because we want to get the minimum result
+total = 0
+
+def completeSearch(weights, i, N, currentSum):
+  global currentSubset
+  global result
+  global total
+  if i == N:
+    result = min(result, abs((total - currentSum) - currentSum) / 2.0);
+  else:
+    # option 1: not adding current index
+    completeSearch(weights, i + 1, N, currentSum);
+    # option 2: adding current index
+    currentSubset.append(i);
+    currentSum += weights[i];
+    completeSearch(weights, i + 1, N, currentSum);
+    # undo option 2
+    currentSum -= currentSubset[len(currentSubset) - 1];
+    currentSubset.pop();
+
+N = int(input())
+weights = []
+
+for i in input().split(' '):
+    weights.append(int(i))
+    total += weights[len(weights)-1] # calculate the total weight of all apples
+
+completeSearch(weights, 0, N, 0)
+print((int)(result * 2))
+</PySection>
+</LanguageSection>
