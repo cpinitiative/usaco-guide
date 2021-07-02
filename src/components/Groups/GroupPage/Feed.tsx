@@ -36,8 +36,13 @@ function SortableItem(props: {
   // probably post was just deleted before items updated
   if (!props.post) return null;
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: props.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -125,7 +130,10 @@ export default function Feed(): JSX.Element {
     setActiveId(null);
   };
 
-  const userLeaderboardData = useUserLeaderboardData(group.activeGroupId, firebaseUser.uid);
+  const userLeaderboardData = useUserLeaderboardData(
+    group.activeGroupId,
+    firebaseUser.uid
+  );
 
   return (
     <div>
@@ -160,7 +168,9 @@ export default function Feed(): JSX.Element {
                 <FeedItem
                   group={group.groupData}
                   post={group.posts.find(x => x.id === activeId)}
-                  userPoints={userLeaderboardData?.[activeId]?.totalPoints ?? null}
+                  userPoints={
+                    userLeaderboardData?.[activeId]?.totalPoints ?? null
+                  }
                   dragHandle={
                     <div className="self-stretch flex items-center px-2">
                       <MenuIcon className="h-5 w-5 text-gray-300" />

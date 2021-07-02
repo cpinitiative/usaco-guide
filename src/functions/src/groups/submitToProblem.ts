@@ -27,7 +27,11 @@ export default functions.firestore
     }
     const groupRef = admin.firestore().collection('groups').doc(groupId);
     const userRef = groupRef.collection('leaderboard').doc(data.userId);
-    const problemRef = groupRef.collection('posts').doc(postId).collection('problems').doc(problemId);
+    const problemRef = groupRef
+      .collection('posts')
+      .doc(postId)
+      .collection('problems')
+      .doc(problemId);
     const submissionRef = problemRef
       .collection('submissions')
       .doc(submissionId);
@@ -55,24 +59,16 @@ export default functions.firestore
 
         if (!userData[postId]) {
           userData[postId] = {
-            totalPoints: 0
+            totalPoints: 0,
           };
         }
         userData[postId][problemId] = points;
         userData[postId].totalPoints = Object.keys(userData[postId])
           .filter(x => x !== 'totalPoints')
-          .reduce(
-            (acc, cur) =>
-              acc + userData[postId][cur],
-            0
-          );
+          .reduce((acc, cur) => acc + userData[postId][cur], 0);
         userData.totalPoints = Object.keys(userData)
           .filter(x => x !== 'totalPoints')
-          .reduce(
-            (acc, cur) =>
-              acc + userData[cur].totalPoints,
-            0
-          );
+          .reduce((acc, cur) => acc + userData[cur].totalPoints, 0);
 
         await transaction.update(userRef, {
           [`details.${postId}.${problemId}`]: {

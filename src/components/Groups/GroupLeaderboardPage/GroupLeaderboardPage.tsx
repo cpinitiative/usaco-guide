@@ -70,9 +70,9 @@ export default function GroupLeaderboardPage(): JSX.Element {
               id: item.userInfo.uid,
               name: item.userInfo.displayName,
               points: item.totalPoints,
-              items: assignments.map((postData) => ({
+              items: assignments.map(postData => ({
                 id: postData.id,
-                value: "" + (item[postData.id]?.totalPoints ?? 0),
+                value: '' + (item[postData.id]?.totalPoints ?? 0),
               })),
             }))}
           />

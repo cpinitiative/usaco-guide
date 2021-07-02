@@ -78,21 +78,25 @@ const db = admin.firestore();
                         bestScoreSubmissionId: submissionDoc.id,
                       };
                     }
-                    leaderboardData[data.userId][postDoc.id][data.problemId] =
-                      Math.max(
-                        data.result * problemDoc.data().points,
-                        leaderboardData[data.userId][postDoc.id][
-                          data.problemId
-                        ] ?? 0
+                    leaderboardData[data.userId][postDoc.id][
+                      data.problemId
+                    ] = Math.max(
+                      data.result * problemDoc.data().points,
+                      leaderboardData[data.userId][postDoc.id][
+                        data.problemId
+                      ] ?? 0
+                    );
+                    leaderboardData[data.userId][
+                      postDoc.id
+                    ].totalPoints = Object.keys(
+                      leaderboardData[data.userId][postDoc.id]
+                    )
+                      .filter(x => x !== 'totalPoints')
+                      .reduce(
+                        (acc, cur) =>
+                          acc + leaderboardData[data.userId][postDoc.id][cur],
+                        0
                       );
-                    leaderboardData[data.userId][postDoc.id].totalPoints =
-                      Object.keys(leaderboardData[data.userId][postDoc.id])
-                        .filter(x => x !== 'totalPoints')
-                        .reduce(
-                          (acc, cur) =>
-                            acc + leaderboardData[data.userId][postDoc.id][cur],
-                          0
-                        );
                     leaderboardData[data.userId].totalPoints = Object.keys(
                       leaderboardData[data.userId]
                     )
