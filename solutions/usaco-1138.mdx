@@ -89,15 +89,15 @@ int main()
 		return a.cost < b.cost;
 	});
 	
-	int ans = 0;
+	int min_cost = 0;
 	for (Edge edge : edges)
 	{
 		if (unite(edge.from, edge.to))
 		{
-			ans += edge.cost;
+			min_cost += edge.cost;
 		}
 	}
-	cout << ans << endl;
+	cout << min_cost << endl;
 }
 ```
 
@@ -150,7 +150,7 @@ int main()
 	}
 	pq.push({0, 0});
 	bool visited[2 * MAX_N]{};
-	int ans = 0;
+	int min_cost = 0;
 	// use Prim's to find the MST
 	while (!pq.empty())
 	{
@@ -161,7 +161,7 @@ int main()
 			continue;
 		}
 		visited[curr] = true;
-		ans += cost;
+		min_cost += cost;
 		// add edges from the current, visited vertex to unvisited vertices
 		for (Node next : adj[curr])
 		{
@@ -171,7 +171,7 @@ int main()
 			}
 		}
 	}
-	cout << ans << endl;
+	cout << min_cost << endl;
 }
 ```
 
