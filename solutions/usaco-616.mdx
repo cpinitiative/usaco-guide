@@ -2,7 +2,7 @@
 id: usaco-616
 source: USACO Bronze 2016 February
 title: Circular Barn
-author: Óscar Garries
+author: Varun Ragunath
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_cbarn_bronze_feb16.html)
@@ -17,42 +17,36 @@ author: Óscar Garries
 using namespace std;
 
 int main() {
-  freopen("cbarn.in", "r", stdin);
-  freopen("cbarn.out", "w", stdout);
-  cin.sync_with_stdio(0); cin.tie(0);
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+	cin.sync_with_stdio(0); cin.tie(0);
 
-  // input
+	int n;
+	cin >> n;
 
-  // have the number of cows and desired positions of each cow
+	vector<int> cows(n);
 
-  int n;
-  cin >> n;
+	for(int i = 0; i < n; i++) {
+		cin >> cows[i];
+	}
 
-  vector<int> cows(n);
+	// run a simple brute force algo, checking each possible barn we can open
 
-  for(int i = 0; i < n; i++) {
-    cin >> cows[i];
-  }
+	int ret = (int)1e9; // stores the current answer
+	// initially set to an abnormally large number
 
-  // simple brute force
-
-  // check each possible barn we can open
-
-  int ret = (int)1e9; // stores the current answer
-  // initially set to an abnormally large number
-
-  for(int open_barn = 0; open_barn < n; open_barn++) {
-    int curdist = 0; // stores the current distance if barn i was the opened barn
-    for(int pos = 0; pos < n; pos++) {
-      // the current barn we are processing is open_barn + pos
-      // however, since it is a circular array 
-      // the position may wrap around
-      // index = open_barn + pos
-      curdist += pos * cows[(open_barn + pos) % n];
-    }
-    // update the answer
-    ret = min(ret, curdist);
-  }
+	for(int open_barn = 0; open_barn < n; open_barn++) {
+		int curdist = 0; 
+		// stores the current distance if barn i was the opened barn
+		for(int pos = 0; pos < n; pos++) {
+			// the current barn we are processing is open_barn + pos
+			// however, since it is a circular array 
+			// the position may wrap around
+			// index = open_barn + pos
+			curdist += pos * cows[(open_barn + pos) % n];
+		}
+		ret = min(ret, curdist);
+	}
 
   cout << ret << '\n';
 
@@ -72,13 +66,11 @@ import java.io.*;
 import java.util.*;
 public class cbarn {
 	public static void main(String[] args) throws IOException {
-		// initialize file I/O
 		BufferedReader br = new BufferedReader(new FileReader("cbarn.in"));
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("cbarn.out")));
-		// read in N
+		
 		int n = Integer.parseInt(br.readLine());
 		int[] cows = new int[n];
-		// read in how many cows need to be in each room
 		for(int i = 0; i < n; i++) {
 			cows[i] = Integer.parseInt(br.readLine());
 		}
@@ -89,16 +81,13 @@ public class cbarn {
 			int currentDistance = 0;
 			for(int offset = 0; offset < n; offset++) {
 				// count how many cows have to walk a distance of "offset"
-				currentDistance += offset * cows[(unlock + offset) % n];
+				currentDistance += offset * cows[(unlock+offset)%n];
 			}
-			// update the answer
 			if(currentDistance < ans) {
 				ans = currentDistance;
 			}
 		}
-		// print the answer
 		pw.println(ans);
-		// close output stream
 		pw.close();
 		br.close();
 	}
