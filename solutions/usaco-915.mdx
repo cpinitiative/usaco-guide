@@ -73,4 +73,33 @@ class Main {
 
 </JavaSection>
 
+<CPPSection>
+#include <bits/stdc++.h>
+
+using namespace std;
+int main(int argc, char **argv) {
+  string prog_name = "herding";
+  freopen((prog_name + ".in").c_str(), "r", stdin);
+  freopen((prog_name + ".out").c_str(), "w", stdout);
+  
+  int cows[3]; cin >> cows[0] >> cows[1] >> cows[2];
+  sort(cows, cows+3);
+  
+  int a = cows[0], b = cows[1], c = cows[2];
+
+  if (cows[2] == cows[0] + 2) {
+     cout << 0 << '\n';
+  }
+  else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
+    cout << 1 << '\n';
+  }
+  else {
+    cout << 2 << '\n';
+  }
+  cout << max(cows[1] - cows[0], cows[2] - cows[1]) - 1 << '\n';
+  
+  return 0;
+}
+</CPPSection>
+
 </LanguageSection>
