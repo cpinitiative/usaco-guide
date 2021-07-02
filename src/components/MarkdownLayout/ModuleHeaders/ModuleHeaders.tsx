@@ -105,10 +105,17 @@ export default function ModuleHeaders({
             {markdownData.title}
           </h1>
           {markdownData.author && (
-            <p className={`text-gray-500 dark:text-dark-med-emphasis`}>
+            <p className={`text-gray-500 dark:text-dark-med-emphasis mt-1`}>
               Author
               {markdownData.author.indexOf(',') !== -1 ? 's' : ''}:{' '}
               {markdownData.author}
+            </p>
+          )}
+          {markdownData instanceof ModuleInfo && markdownData.contributors && (
+            <p className={`text-gray-500 dark:text-dark-med-emphasis text-xs`}>
+              Contributor
+              {markdownData.contributors.indexOf(',') !== -1 ? 's' : ''}:{' '}
+              {markdownData.contributors}
             </p>
           )}
         </div>
