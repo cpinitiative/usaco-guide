@@ -17,44 +17,45 @@ author: Varun Ragunath
 using namespace std;
 
 int main() {
-  freopen("cbarn.in", "r", stdin);
-  freopen("cbarn.out", "w", stdout);
-  cin.sync_with_stdio(0); cin.tie(0);
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+	cin.sync_with_stdio(0); cin.tie(0);
 
-  // input
+	// input
 
-  // have the number of cows and desired positions of each cow
+	// have the number of cows and desired positions of each cow
 
-  int n;
-  cin >> n;
+	int n;
+	cin >> n;
 
-  vector<int> cows(n);
+	vector<int> cows(n);
 
-  for(int i = 0; i < n; i++) {
-    cin >> cows[i];
-  }
+	for(int i = 0; i < n; i++) {
+		cin >> cows[i];
+	}
 
-  // simple brute force
+	// simple brute force
 
-  // check each possible barn we can open
+	// check each possible barn we can open
 
-  int ret = (int)1e9; // stores the current answer
-  // initially set to an abnormally large number
+	int ret = (int)1e9; // stores the current answer
+	// initially set to an abnormally large number
 
-  for(int open_barn = 0; open_barn < n; open_barn++) {
-    int curdist = 0; // stores the current distance if barn i was the opened barn
-    for(int pos = 0; pos < n; pos++) {
-      // the current barn we are processing is open_barn + pos
-      // however, since it is a circular array 
-      // the position may wrap around
-      // index = (open_barn + pos)
-      curdist += pos * cows[(open_barn + pos)%n];
-    }
-    // update the answer
-    ret = min(ret, curdist);
-  }
+	for(int open_barn = 0; open_barn < n; open_barn++) {
+		int curdist = 0; 
+		// stores the current distance if barn i was the opened barn
+		for(int pos = 0; pos < n; pos++) {
+			// the current barn we are processing is open_barn + pos
+			// however, since it is a circular array 
+			// the position may wrap around
+			// index = open_barn + pos
+			curdist += pos * cows[(open_barn + pos) % n];
+		}
+		// update the answer
+		ret = min(ret, curdist);
+	}
 
-  cout << ret << '\n';
+  	cout << ret << '\n';
 
   return 0;
 }
