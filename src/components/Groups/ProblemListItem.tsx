@@ -24,10 +24,12 @@ const ProblemListItem = ({
 }): JSX.Element => {
   const { firebaseUser } = React.useContext(UserDataContext);
   // todo optimize reads...?
-  const userLeaderboardData = useUserLeaderboardData(group.id, firebaseUser.uid);
+  const userLeaderboardData = useUserLeaderboardData(
+    group.id,
+    firebaseUser.uid
+  );
   const bestSubmission =
-    (userLeaderboardData?.details?.[post.id]?.[problem.id]) ||
-    null;
+    userLeaderboardData?.details?.[post.id]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;
   const status = bestSubmission?.bestScoreStatus || ExecutionStatus.WA;
 

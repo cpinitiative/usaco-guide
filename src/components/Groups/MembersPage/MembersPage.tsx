@@ -13,7 +13,7 @@ export default function MembersPage() {
   const memberInfo = getMemberInfoForGroup(activeGroup.groupData);
   const leaderboard = useLeaderboardData({
     groupId: activeGroup.activeGroupId,
-    maxResults: 200
+    maxResults: 200,
   });
   const [activeMemberId, setActiveMemberId] = React.useState<string>(null);
 
@@ -31,7 +31,9 @@ export default function MembersPage() {
   }, []);
 
   const getTotalPointsForMember = (memberId: string) => {
-    return leaderboard.find(x => x.userInfo?.uid === memberId)?.totalPoints ?? 0;
+    return (
+      leaderboard.find(x => x.userInfo?.uid === memberId)?.totalPoints ?? 0
+    );
   };
 
   if (!activeGroup.showAdminView) {

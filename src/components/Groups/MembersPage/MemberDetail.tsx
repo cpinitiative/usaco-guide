@@ -14,7 +14,10 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const {
     firebaseUser: { uid: userId },
   } = useContext(UserDataContext);
-  const userLeaderboardData = useUserLeaderboardData(activeGroup.activeGroupId, member.uid);
+  const userLeaderboardData = useUserLeaderboardData(
+    activeGroup.activeGroupId,
+    member.uid
+  );
 
   if (!member) {
     return (
