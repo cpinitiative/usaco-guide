@@ -2,7 +2,7 @@
 id: usaco-738
 source: USACO Silver 2017 US Open
 title: Paired Up
-author: Melody Yu
+author: Melody Yu (Video)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_pairup_silver_open17.html)
@@ -11,3 +11,64 @@ author: Melody Yu
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <Youtube id="yIoUWlzH_7w" />
+
+**Time Complexity:** $\mathcal{O}(Nlog(N))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define f first
+#define s second
+
+ll N;
+
+int main() { 
+    ifstream cin ("pairup.in");
+    ofstream cout ("pairup.out");
+    
+    cin >> N;
+    
+    vector<pair<ll, ll>> cows(N);
+    
+    for (int i = 0; i < N; i++) {
+        int a, b;
+        cin >> a >> b;
+        cows[i] = {a, b};
+    }
+    
+    int currL = 0;
+    int countL = 0; 
+    int currR = N - 1;
+    int countR = 0;
+    ll ans = 0;
+    
+    sort(cows.begin(), cows.end(), [](pair<ll, ll> a, pair<ll, ll> b) {return a.s < b.s;});
+    
+    while (currL <= currR) {
+        ans = max(ans, cows[currL].s + cows[currR].s);
+        countL++, countR++;
+        if (countL > cows[currL].f) {
+            currL++; 
+            countL = 0;
+        }
+        if (countR > cows[currR].f) {
+            currR--; 
+            countR = 0;
+        }
+    }
+    
+    cout << ans;
+}
+```
+
+</CPPSection>
+
+
+</LanguageSection>
+
