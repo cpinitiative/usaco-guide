@@ -36,13 +36,12 @@ export default functions.firestore
       .collection('submissions')
       .doc(submissionId);
     const status = data.result === 1 ? 'AC' : 'WA';
-    await Promise.all([
-      submissionRef.update({
-        status: status,
-      }),
-
-      admin.firestore().runTransaction(async transaction => {
-        const problemDoc = await transaction.get(problemRef);
+    const groupDoc = await groupRef.get();
+    
+    if (groupDoc.data().memberIds.includes(data.userId)) {
+      const problemDoc = await problemRef.get();
+      const userAuth = await admin.auth().getUser(data.userId);
+      await admin.firestore().runTransaction(async transaction => {
         const userDoc = await transaction.get(userRef);
         if (!problemDoc.exists) {
           throw new Error(
@@ -67,10 +66,12 @@ export default functions.firestore
           .filter(x => x !== 'totalPoints')
           .reduce((acc, cur) => acc + userData[postId][cur], 0);
         userData.totalPoints = Object.keys(userData)
-          .filter(x => x !== 'totalPoints')
+          .filter(
+            x => x !== 'totalPoints' && x !== 'details' && x !== 'userInfo'
+          )
           .reduce((acc, cur) => acc + userData[cur].totalPoints, 0);
 
-        await transaction.update(userRef, {
+        transaction.update(userRef, {
           [`details.${postId}.${problemId}`]: {
             bestScore: points,
             bestScoreStatus: status,
@@ -80,7 +81,19 @@ export default functions.firestore
           [`${postId}.${problemId}`]: points,
           totalPoints: userData.totalPoints,
           [`${postId}.totalPoints`]: userData[postId].totalPoints,
+          userInfo: {
+            uid: userAuth.uid,
+            displayName: userAuth.displayName,
+            photoURL: userAuth.photoURL,
+          },
         });
-      }),
-    ]);
+        transaction.update(submissionRef, {
+          status: status,
+        });
+      });
+    } else {
+      await submissionRef.update({
+        status: status,
+      });
+    }
   });
