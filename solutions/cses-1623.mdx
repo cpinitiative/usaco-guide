@@ -7,11 +7,17 @@ author: Nikhil Chatterjee
 
 ### Explanation
 
-Brute force solution: Generate all possible combinations of apples, keep track of the smallest difference between the sum of the weights of the apples that are part of the current combination and the sum of the weights that are part of the complement combination. In order to go through all of the cominations, we use backtracking to go through both adding the current index and not adding it for each index in the input array.
+Brute force solution: Generate all possible combinations of apples, keep track
+of the smallest difference between the sum of the weights of the apples that
+are part of the current combination and the sum of the weights that are part of
+the complement combination. In order to go through all of the cominations, we
+use backtracking to go through both adding the current index and not adding it
+for each index in the input array.
 
 ### Implementation
 
-**Time complexity:** O(2^{N}) because we are doing one update to the result for each of the 2^{N} combinations
+**Time complexity:** O(2^{N}) because we are doing one update to the result
+for each of the 2^{N} combinations
 
 <LanguageSection>
 <JavaSection>
@@ -21,7 +27,8 @@ import java.io.*;
 
 class Sol {
     private static ArrayList<Integer> currentSubset = new ArrayList<Integer>();
-    private static double result = Integer.MAX_VALUE; // initialize result to max value because we want to get the minimum result
+    // initialize result to max value because we want to get the minimum result
+    private static double result = Integer.MAX_VALUE;
     private static long total = 0;
 
     public static void main(String[] args) {
@@ -38,9 +45,11 @@ class Sol {
 	System.out.println((int)(result * 2));
     }
 
-    public static void completeSearch(int[] weights, int i, int N, long currentSum) {
+    public static void completeSearch(int[] weights, int i, int N,
+    	   long currentSum) {
         if (i == N) {
-	    result = Math.min(result, Math.abs((total - currentSum) - currentSum) / 2.0);
+	    result = Math.min(result, Math.abs((total - currentSum)
+	    	   - currentSum) / 2.0);
         } else {
 	    // option 1: not adding current index
             completeSearch(weights, i + 1, N, currentSum);
@@ -65,7 +74,8 @@ class Sol {
 using namespace std;
 
 vector<int> currentSubset;
-double result = INT_MAX; // initialize result to max value because we want to get the minimum result
+// initialize result to max value because we want to get the minimum result
+double result = INT_MAX;
 long int total = 0;
 
 void completeSearch(vector<int> &weights, int i, int N, long int currentSum) {
@@ -103,7 +113,8 @@ int main() {
 <PySection>
 ```py
 currentSubset = []
-result = 1e9 # initialize result to max value because we want to get the minimum result
+# initialize result to max value because we want to get the minimum result
+result = 1e9
 total = 0
 
 def completeSearch(weights, i, N, currentSum):
@@ -112,6 +123,8 @@ def completeSearch(weights, i, N, currentSum):
   global total
   if i == N:
     result = min(result, abs((total - currentSum) - currentSum) / 2.0);
+    # update the final result with absolute value of the difference between
+    # half of the total and the current sum
   else:
     # option 1: not adding current index
     completeSearch(weights, i + 1, N, currentSum);
