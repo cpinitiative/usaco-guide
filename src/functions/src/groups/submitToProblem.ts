@@ -37,7 +37,7 @@ export default functions.firestore
       .doc(submissionId);
     const status = data.result === 1 ? 'AC' : 'WA';
     const groupDoc = await groupRef.get();
-    
+
     if (groupDoc.data().memberIds.includes(data.userId)) {
       const problemDoc = await problemRef.get();
       const userAuth = await admin.auth().getUser(data.userId);
