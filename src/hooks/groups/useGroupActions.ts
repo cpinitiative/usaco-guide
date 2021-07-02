@@ -103,14 +103,14 @@ export function useGroupActions() {
     },
     updateGroup,
     leaveGroup: async (groupId: string, userId: string) => {
-      const leaveResult = ((
+      const leaveResult = (
         await httpsCallable(
           getFunctions(firebaseApp),
           'groups-leave'
         )({
           groupId,
         })
-      ).data as never) as
+      ).data as never as
         | { success: true }
         | { success: false; errorCode: string };
       console.log(leaveResult);
@@ -171,7 +171,7 @@ export function useGroupActions() {
       groupId: string,
       targetUid: string
     ): Promise<void> => {
-      const removeResult = ((
+      const removeResult = (
         await httpsCallable(
           getFunctions(firebaseApp),
           'groups-removeMember'
@@ -179,7 +179,7 @@ export function useGroupActions() {
           groupId,
           targetUid,
         })
-      ).data as never) as
+      ).data as never as
         | { success: true }
         | { success: false; errorCode: string };
       if (removeResult.success === true) {
@@ -206,7 +206,7 @@ export function useGroupActions() {
       targetUid: string,
       newPermissionLevel: 'OWNER' | 'ADMIN' | 'MEMBER'
     ): Promise<void> => {
-      const updateResult = ((
+      const updateResult = (
         await httpsCallable(
           getFunctions(firebaseApp),
           'groups-updateMemberPermissions'
@@ -215,7 +215,7 @@ export function useGroupActions() {
           targetUid,
           newPermissionLevel,
         })
-      ).data as never) as
+      ).data as never as
         | { success: true }
         | { success: false; errorCode: string };
       if (updateResult.success === true) {

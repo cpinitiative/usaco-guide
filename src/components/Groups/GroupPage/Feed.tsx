@@ -33,13 +33,8 @@ function SortableItem(props: {
   // probably post was just deleted before items updated
   if (!props.post) return null;
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: props.id });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: props.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),

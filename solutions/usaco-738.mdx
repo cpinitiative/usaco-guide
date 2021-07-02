@@ -1,0 +1,82 @@
+---
+id: usaco-738
+source: USACO Silver 2017 US Open
+title: Paired Up
+author: Sofia Yang
+
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_pairup_silver_open17.html)
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+(Because it requires sorting the input, which is $\mathcal{O}(N\log N)$). 
+
+
+<LanguageSection>
+
+<JavaSection>
+
+
+``` java
+import java.io.*;
+import java.util.*;
+
+public class PairUp {
+	CodeSnip{Kattio}
+	
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("pairup");
+		int N = io.nextInt();
+		List<Pair> events = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			int freq = io.nextInt();
+			int amt = io.nextInt();
+			events.add(new Pair(freq, amt));
+		}
+
+		Collections.sort(events);
+		int ret = 0;
+		int left = 0, right = N - 1;
+		while (left <= right) {
+			/*
+			 * Pair up the cows with the least output
+			 * with the cows with the highest output.
+			 */
+			int numPaired = Integer.min(events.get(left).freq, events.get(right).freq);
+			if (left == right) {
+				numPaired /= 2;
+			}
+			// Update the maximum time used, and remove the paired cows.
+			ret = Integer.max(ret, events.get(left).amt + events.get(right).amt);
+			events.get(left).freq -= numPaired;
+			events.get(right).freq -= numPaired;
+			if (events.get(left).freq == 0) {
+				left++;
+			}
+			if (events.get(right).freq == 0) {
+				right--;
+			}
+		}
+		io.println(ret);
+		io.close();
+	}
+}
+
+class Pair implements Comparable<Pair> {
+	public int freq, amt;
+
+	public Pair(int freq, int amt) {
+		this.freq = freq;
+		this.amt = amt;
+	}
+
+	public int compareTo(Pair other) {
+		return Integer.compare(this.amt, other.amt);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
