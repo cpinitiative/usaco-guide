@@ -10,7 +10,6 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
 import {
-  getEarnedPointsForPost,
   getPostTimestampString,
   getTotalPointsOfPost,
   PostData,
@@ -66,11 +65,13 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
 export default function FeedItem({
   group,
   post,
+  userPoints,
   dragHandle,
   isBeingDragged = false,
 }: {
   group: GroupData;
   post: PostData;
+  userPoints: number | null;
   dragHandle?: JSX.Element;
   /**
    * If true, the feed item will be grayed out to show that it's being dragged
@@ -115,11 +116,7 @@ export default function FeedItem({
               <AnnouncementIcon />
             ) : (
               <AssignmentIcon
-                pointsEarned={getEarnedPointsForPost(
-                  groupData.leaderboard,
-                  post,
-                  firebaseUser.uid
-                )}
+                pointsEarned={userPoints ?? 0}
                 totalPoints={getTotalPointsOfPost(post)}
               />
             )}

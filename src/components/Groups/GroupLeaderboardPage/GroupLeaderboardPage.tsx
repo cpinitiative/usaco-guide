@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import { sortPostsComparator } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
@@ -11,46 +11,16 @@ import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 export default function GroupLeaderboardPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const posts = activeGroup.posts;
-  const leaderboard = activeGroup.groupData.leaderboard;
+  const leaderboard = useLeaderboardData({
+    groupId: activeGroup.activeGroupId,
+    maxResults: 50,
+  });
 
   const assignments = React.useMemo(() => {
     return posts
       ?.filter(post => post.type === 'assignment' && post.isPublished)
       .sort(sortPostsComparator);
   }, [posts]);
-
-  const members = getMemberInfoForGroup(activeGroup.groupData);
-  const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard || !members || !assignments) return null;
-
-    const leaderboardSum = {};
-    for (const post of assignments) {
-      if (!leaderboard.hasOwnProperty(post.id)) continue;
-      for (const problemID of Object.keys(leaderboard[post.id])) {
-        for (const userID of Object.keys(leaderboard[post.id][problemID])) {
-          if (!(userID in leaderboardSum)) leaderboardSum[userID] = {};
-          if (!(post.id in leaderboardSum[userID])) {
-            leaderboardSum[userID][post.id] = 0;
-          }
-          leaderboardSum[userID][post.id] +=
-            leaderboard[post.id][problemID][userID].bestScore;
-        }
-      }
-    }
-    const data = activeGroup.groupData.memberIds
-      .map(id => ({
-        member: members.find(member => member.uid === id),
-        postDetails: assignments.map(
-          post => leaderboardSum[id]?.[post.id] || 0
-        ),
-        points: Object.keys(leaderboardSum[id] || {}).reduce(
-          (acc, cur) => acc + leaderboardSum[id][cur],
-          0
-        ),
-      }))
-      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
-    return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, members, assignments]);
 
   const fullWidth = assignments?.length > 10;
 
@@ -96,13 +66,13 @@ export default function GroupLeaderboardPage(): JSX.Element {
               id: post.id,
               tooltip: post.name,
             }))}
-            rows={leaderboardItems?.map(item => ({
-              id: item.member.uid,
-              name: item.member.displayName,
-              points: item.points,
-              items: item.postDetails.map((score, idx) => ({
-                id: assignments[idx].id,
-                value: score,
+            rows={leaderboard?.map(item => ({
+              id: item.userInfo.uid,
+              name: item.userInfo.displayName,
+              points: item.totalPoints,
+              items: assignments.map(postData => ({
+                id: postData.id,
+                value: '' + (item[postData.id]?.totalPoints ?? 0),
               })),
             }))}
           />
