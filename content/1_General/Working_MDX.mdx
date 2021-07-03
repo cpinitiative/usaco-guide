@@ -9,9 +9,10 @@ prerequisites:
   - modules
 ---
 
-We're using [MDX](https://mdxjs.com/), a superset of Markdown, using the [XDM compiler](https://github.com/wooorm/xdm). HTML and React
-components are supported, so it is possible to add interactivity / custom
-components to each module.
+We're using [MDX](https://mdxjs.com/), a superset of Markdown, using the
+[XDM compiler](https://github.com/wooorm/xdm). HTML and React components are
+supported, so it is possible to add interactivity / custom components to each
+module.
 
 ## Frontmatter
 
@@ -25,6 +26,8 @@ written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
   based off this.
 - **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
+- **Contributors**: _Optional_. The people who contributed code and/or short
+  explanations to the module.
 - **Description**: _Required_. A short description of the module, similar to
   what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has
   in their syllabus. Markdown/Latex does not work in the description field.
@@ -84,11 +87,19 @@ Markdown. Keep this in mind when formatting your module.
 <Optional title="XDM and MDX">
 We use the [XDM compiler](https://github.com/wooorm/xdm), which has a few differences from MDX v1:
 
-- Markdown interleaved in JSX is fully supported; ie. this works as expected: `<Info>some **markdown**</Info>`
-- As an extension of (1), indentation is fully supported. You can indent the markdown nested in JSX tags. This also means that indenting text with four spaces doesn't make it a code block; explicitly wrap the code block with three backticks instead.
+- Markdown interleaved in JSX is fully supported; ie. this works as expected:
+  `<Info>some **markdown**</Info>`
+- As an extension of (1), indentation is fully supported. You can indent the
+  markdown nested in JSX tags. This also means that indenting text with four
+  spaces doesn't make it a code block; explicitly wrap the code block with three
+  backticks instead.
 - `<` and `>` need to be escaped with backslashes; ie. `\<`
 
-Note that JSX comments (`{/* ... */}`) don't work well with Prettier, so use [HTML comments](https://www.w3schools.com/html/html_comments.asp) instead. Internally we map HTML comments to JSX comments before passing the markdown to XDM. Don't worry if you don't understand all of this yet.
+Note that JSX comments (`{/* ... */}`) don't work well with Prettier, so use
+[HTML comments](https://www.w3schools.com/html/html_comments.asp) instead.
+Internally we map HTML comments to JSX comments before passing the markdown to
+XDM. Don't worry if you don't understand all of this yet.
+
 </Optional>
 
 Some components are globally available in every module (without having to be
@@ -320,11 +331,12 @@ author: Nathan Wang
 ```
 
 The ID of the solution frontmatter must be the same as the unique ID of the
-problem. Make sure to also update the `kind` of the `solutionMetadata` to `'internal'` for any
-associated problems. We assume that if there is an internal solution, we should
-use it; therefore, the build will throw an error if there is an internal
-solution but the `solutionMetadata`'s `kind` isn't set to `'internal'`. The
-[next module](/general/adding-solution) describes how to add a new solution.
+problem. Make sure to also update the `kind` of the `solutionMetadata` to
+`'internal'` for any associated problems. We assume that if there is an internal
+solution, we should use it; therefore, the build will throw an error if there is
+an internal solution but the `solutionMetadata`'s `kind` isn't set to
+`'internal'`. The [Adding Solutions module](/general/adding-solution) describes
+how to add a new solution.
 
 ### Focus Problem
 

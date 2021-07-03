@@ -5,6 +5,7 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
@@ -13,19 +14,10 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const {
     firebaseUser: { uid: userId },
   } = useContext(UserDataContext);
-  const getTotalPointsForMember = (memberId: string) => {
-    let total = 0;
-    Object.keys(activeGroup.groupData.leaderboard || {}).forEach(postId => {
-      Object.keys(activeGroup.groupData.leaderboard[postId]).forEach(
-        problemId => {
-          total +=
-            activeGroup.groupData.leaderboard[postId][problemId][memberId]
-              ?.bestScore || 0;
-        }
-      );
-    });
-    return total;
-  };
+  const userLeaderboardData = useUserLeaderboardData(
+    activeGroup.activeGroupId,
+    member.uid
+  );
 
   if (!member) {
     return (
@@ -63,7 +55,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
               {member.displayName}
             </h1>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
-              {getTotalPointsForMember(member.uid)} Points Earned
+              {userLeaderboardData?.totalPoints ?? 0} Points Earned
             </p>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserLeaderboardData } from '../../hooks/groups/useLeaderboardData';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 import {
@@ -22,11 +23,13 @@ const ProblemListItem = ({
   dragHandle?: JSX.Element;
 }): JSX.Element => {
   const { firebaseUser } = React.useContext(UserDataContext);
+  // todo optimize reads...?
+  const userLeaderboardData = useUserLeaderboardData(
+    group.id,
+    firebaseUser.uid
+  );
   const bestSubmission =
-    (post.id in group.leaderboard &&
-      problem.id in group.leaderboard[post.id] &&
-      group.leaderboard[post.id][problem.id][firebaseUser.uid]) ||
-    null;
+    userLeaderboardData?.details?.[post.id]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;
   const status = bestSubmission?.bestScoreStatus || ExecutionStatus.WA;
 

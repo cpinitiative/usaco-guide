@@ -1,9 +1,9 @@
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import * as React from 'react';
+import React from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
-import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import { usePost } from '../../../hooks/groups/usePost';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { Submission } from '../../../models/groups/problem';
@@ -25,32 +25,11 @@ export default function PostLeaderboardPage(props) {
   const { problems } = useActivePostProblems();
   const firebaseApp = useFirebaseApp();
   const notifications = useNotificationSystem();
-  const leaderboard = activeGroup.groupData.leaderboard;
-
-  const members = getMemberInfoForGroup(activeGroup.groupData);
-  const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard || !members || !problems) return null;
-
-    const leaderboardSum = {};
-    const postID = post.id;
-    for (const problemID of Object.keys(leaderboard[postID] || {})) {
-      for (const userID of Object.keys(leaderboard[postID][problemID] || {})) {
-        if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
-        leaderboardSum[userID] +=
-          leaderboard[postID][problemID][userID].bestScore;
-      }
-    }
-    const data = activeGroup.groupData.memberIds
-      .map(id => ({
-        member: members.find(member => member.uid === id),
-        problemDetails: problems.map(
-          problem => leaderboard[postID]?.[problem.id]?.[id] || null
-        ),
-        points: leaderboardSum[id] ?? 0,
-      }))
-      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
-    return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, members, problems]);
+  const leaderboard = useLeaderboardData({
+    groupId: activeGroup.activeGroupId,
+    postId: postId,
+    maxResults: 50,
+  });
 
   const openProblemSubmissionPopup = useProblemSubmissionPopupAction();
   const handleOpenSubmissionsDetail = (
@@ -121,17 +100,20 @@ export default function PostLeaderboardPage(props) {
               id: problem.id,
               tooltip: problem.name,
             }))}
-            rows={leaderboardItems?.map(item => ({
-              id: item.member.uid,
-              name: item.member.displayName,
-              points: item.points,
-              items: item.problemDetails.map((details, idx) => ({
-                id: problems[idx].id,
-                value: details?.bestScore?.toFixed(1) || '0',
+            rows={leaderboard?.map(item => ({
+              id: item.userInfo.uid,
+              name: item.userInfo.displayName,
+              points: item[postId]?.totalPoints ?? 0,
+              items: problems?.map(problem => ({
+                id: problem.id,
+                value:
+                  item.details[postId]?.[problem.id]?.bestScore?.toFixed(1) ||
+                  '0',
                 payload: activeGroup.showAdminView &&
-                  details && {
-                    problemId: problems[idx].id,
-                    submissionId: details?.bestScoreSubmissionId,
+                  item.details[postId]?.[problem.id] && {
+                    problemId: problem.id,
+                    submissionId:
+                      item.details[postId]?.[problem.id]?.bestScoreSubmissionId,
                   },
               })),
             }))}

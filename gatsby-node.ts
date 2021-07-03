@@ -439,6 +439,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       id: String
       title: String
       author: String
+      contributors: String
       description: String
       prerequisites: [String]
       redirects: [String]
