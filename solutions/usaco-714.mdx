@@ -2,7 +2,7 @@
 id: usaco-714
 source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road I
-author: Benjamin Qi
+author: Benjamin Qi, Brad Ma
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_helpcross_silver_feb17.html)
@@ -11,6 +11,9 @@ There is more than one possible greedy strategy (though all of them involve
 sorting the animals by time). Here, we follow the approach described by the
 analysis.
 
+<LanguageSection>
+	
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -238,3 +241,57 @@ int main() {
 	ps(ans);
 }
 ```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.util.*;
+import java.io.*;
+
+public class WhyDidTheCowCrossTheRoad {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("helpcross");
+
+		int numChickens = io.nextInt();
+		int numCows = io.nextInt();
+
+		int[] chicken = new int[numChickens]; // where the chicken are located
+		int[] a = new int[numCows];
+		int[] b = new int[numCows];
+		int[] marked = new int[numCows];
+
+		for (int x = 0; x < numChickens; x++) {
+			chicken[x] = io.nextInt();
+		}
+		for (int x = 0; x < numCows; x++){
+			a[x] = io.nextInt();
+			b[x] = io.nextInt();
+		}
+		Arrays.sort(chicken);
+		int count = 0;
+
+		for (int x = 0; x < numChickens; x++) { // loop through each chicken
+			int smallest = -1;
+			// find the cow that ends the soonest that the chicken is in its range
+			for(int y = 0; y < numCows; y++){
+				// the cow has not crossed the road yet and the 
+				// chicken's position is able to help the cow cross
+				if(marked[y] == 0 && chicken[x] >= a[y] && chicken[x] <= b[y]){ 
+					if(smallest < 0 || b[y] < b[smallest]){
+						smallest = y;
+					}
+				}
+			}
+			if (smallest != -1) {
+				marked[smallest] = 1;
+				count++;
+			}
+		}
+		io.println(count);
+		io.close();
+	}
+}
+```									       
+</JavaSection>
+	
+</LanguageSection>	
