@@ -2,20 +2,70 @@
 id: usaco-808
 source: USACO Bronze 2018 February
 title: Hoofball
-author: Ryan Chou
+author: Arpan Banerjee, Ryan Chou
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_hoofball_bronze_feb18.html)
 
 ## Explanation
 
-Find all source cows and cows which only pass to each other, and give a ball to each one.
+Let's consider the basic structure of the hoofball tournament and see if we can extract a solution from there. Assuming some cow has a ball, she passes to *exactly* one cow directly beside her. Furthermore, if some cow has a ball, she *must* pass it to another cow. We can get three important facts from this:
+
+1. The leftmost cow in the line always passes to the cow just to the right of her
+2. The rightmost cow in the line always passes to the cow just to the left of her
+3. If for some cow, no ball can be passed to her by either of it's neighbors, Farmer John *must* initially give a ball to her
+
+This leads us to the solution: for each cow, count the number of cows that can pass to her. Call this `reach[i]` for a cow `i`. Then the answer is the number of cows with $0$ cows passing to her (the number of `i` such that `reach[i]=0`). However, we forgot the case where there are exactly two adjacent cows passing to each other, and they each have exactly one cow passing to them. In that case, the number of cows passing to each of them is nonzero, but they need $1$ ball from Farmer John initially since they are secluded from the passings of the rest of the cows. To do this, we can keep an array `to` to keep track of which cow `to[i]` each cow `i` passes to. My (C++) code below takes $\mathcal{O}(n\log{n})$ time, but $\mathcal{O}(N^2)$ passes as well (the Python solution) . 
 
 ## Implementation
-**Time Complexity:** $\mathcal{O}(N^2)$
-<LanguageSection>
-<PySection> 
 
+<LanguageSection>
+<CPPSection>
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+int n, cows[100], reach[100], to[100];
+
+// reach[i] is how many cows pass the ball to cow i
+// to[i] is where does cow i pass the ball
+
+int main(){
+	ifstream cin("hoofball.in"); ofstream cout("hoofball.out");
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> cows[i];
+	if (n <= 2){
+		cout << 1 << endl;
+		return 0;
+	}
+	sort(cows, cows + n); // O(nlogn) 
+	reach[1]++; reach[n - 2]++;
+	to[0] = 1; to[n - 1] = n - 2;
+	for (int i = 1; i < n-1; i++){
+		if (cows[i] - cows[i - 1] <= cows[i + 1] - cows[i]){
+			reach[i - 1]++;
+			to[i] = i - 1;
+		}
+		else{
+			reach[i + 1]++;
+			to[i] = i + 1;
+		}
+	}
+	int num_islands = 0;
+	if (reach[0] == 1 && reach[1] == 1 && to[2]!=1) num_islands++;
+	if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2) num_islands++;
+	
+	for (int i = 2; i < n - 3; i++){
+		if (reach[i] == 1 && reach[i + 1] == 1 && to[i + 2] != i + 1 && to[i - 1] != i){
+			num_islands++;
+		}
+	}
+	cout << count(reach, reach + n, 0) + num_islands << endl;
+}
+```
+</CPPSection>
+
+<PySection> 
 ```py
 import sys
 
