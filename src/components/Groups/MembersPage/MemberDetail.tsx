@@ -1,3 +1,4 @@
+import { navigate } from 'gatsby-link';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
@@ -151,6 +152,18 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                     newPermission.substring(1).toLowerCase()}
                 </button>
               ))}
+            <button
+              className="btn"
+              onClick={() => {
+                alert(
+                  'Viewing group as member. Do not submit any problems. Reload the page to undo.'
+                );
+                activeGroup.setActiveUserId(member.uid);
+                navigate(`/groups/${activeGroup.activeGroupId}`);
+              }}
+            >
+              View Group as Member
+            </button>
           </div>
         )}
         <hr className="dark:border-gray-700 my-6" />

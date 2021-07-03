@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useActiveGroup } from '../../hooks/groups/useActiveGroup';
 import { useUserLeaderboardData } from '../../hooks/groups/useLeaderboardData';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
@@ -22,12 +22,9 @@ const ProblemListItem = ({
   problem: ProblemData;
   dragHandle?: JSX.Element;
 }): JSX.Element => {
-  const { firebaseUser } = React.useContext(UserDataContext);
+  const { activeUserId } = useActiveGroup();
   // todo optimize reads...?
-  const userLeaderboardData = useUserLeaderboardData(
-    group.id,
-    firebaseUser.uid
-  );
+  const userLeaderboardData = useUserLeaderboardData(group.id, activeUserId);
   const bestSubmission =
     userLeaderboardData?.details?.[post.id]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;

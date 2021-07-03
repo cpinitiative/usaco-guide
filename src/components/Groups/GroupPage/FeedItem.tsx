@@ -2,10 +2,8 @@ import { Transition } from '@headlessui/react';
 import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import { BookmarkIcon } from '@heroicons/react/solid';
 import { Link } from 'gatsby';
-import * as React from 'react';
-import { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
@@ -78,9 +76,8 @@ export default function FeedItem({
    */
   isBeingDragged?: boolean;
 }): JSX.Element {
-  const { showAdminView, groupData } = useActiveGroup();
+  const { showAdminView } = useActiveGroup();
   const { updatePost, deletePost } = usePostActions(group.id);
-  const { firebaseUser } = useContext(UserDataContext);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const notifications = useNotificationSystem();

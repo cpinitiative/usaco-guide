@@ -71,7 +71,6 @@ function SortableItem(props: {
 }
 
 export default function Feed(): JSX.Element {
-  const { firebaseUser } = useContext(UserDataContext);
   const group = useActiveGroup();
   const { updatePostOrdering } = useGroupActions();
 
@@ -132,7 +131,7 @@ export default function Feed(): JSX.Element {
 
   const userLeaderboardData = useUserLeaderboardData(
     group.activeGroupId,
-    firebaseUser.uid
+    group.activeUserId
   );
 
   return (

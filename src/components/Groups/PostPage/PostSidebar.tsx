@@ -20,10 +20,9 @@ export default function PostSidebar({
 }): JSX.Element {
   const { problems } = useActivePostProblems();
   const activeGroup = useActiveGroup();
-  const { firebaseUser } = useContext(UserDataContext);
   const userLeaderboardData = useUserLeaderboardData(
     activeGroup.activeGroupId,
-    firebaseUser.uid
+    activeGroup.activeUserId
   );
 
   return (

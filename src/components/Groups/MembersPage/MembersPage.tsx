@@ -8,7 +8,7 @@ import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import MemberDetail from './MemberDetail';
 
-export default function MembersPage() {
+export default function MembersPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const memberInfo = getMemberInfoForGroup(activeGroup.groupData);
   const leaderboard = useLeaderboardData({
@@ -32,7 +32,7 @@ export default function MembersPage() {
 
   const getTotalPointsForMember = (memberId: string) => {
     return (
-      leaderboard.find(x => x.userInfo?.uid === memberId)?.totalPoints ?? 0
+      leaderboard?.find(x => x.userInfo?.uid === memberId)?.totalPoints ?? 0
     );
   };
 

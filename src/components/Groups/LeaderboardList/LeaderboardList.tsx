@@ -1,5 +1,4 @@
 import * as React from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
@@ -13,7 +12,7 @@ const LeaderboardListItem = ({
   member: MemberInfo;
   points: number;
 }) => {
-  const { firebaseUser } = React.useContext(UserDataContext);
+  const { activeUserId } = useActiveGroup();
   return (
     <li className="py-3">
       <div className="flex items-center lg:space-x-4">
@@ -28,7 +27,7 @@ const LeaderboardListItem = ({
             {points} points
           </p>
         </div>
-        {firebaseUser?.uid === member.uid && (
+        {activeUserId === member.uid && (
           <div>
             <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100">
               Me

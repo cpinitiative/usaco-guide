@@ -22,6 +22,13 @@ const ActiveGroupContext = React.createContext<{
   isLoading: boolean;
   showAdminView: boolean;
   setInStudentView: (inStudentView: boolean) => void;
+  /**
+   * Who to view the group as. Usually it's just firebaseUser.uid, but sometimes
+   * (ie if parent wants to view child's progress, or if owner views member's progress)
+   * it could be different
+   */
+  activeUserId: string;
+  setActiveUserId: (id: string | null) => void;
 }>(null);
 
 export function ActiveGroupProvider({ children }: { children: ReactNode }) {
@@ -29,6 +36,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const [activeGroupId, setActiveGroupId] = React.useState<string>(null);
   const [posts, setPosts] = React.useState<PostData[]>(null);
   const [inStudentView, setInStudentView] = React.useState(false);
+  const [activeUserId, setActiveUserId] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [groupData, setGroupData] = React.useState<GroupData>();
 
@@ -96,20 +104,31 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
     [activeGroupId, firebaseUser?.uid]
   );
 
-  const isUserAdmin = isUserAdminOfGroup(groupData, firebaseUser?.uid);
+  const isUserAdmin = isUserAdminOfGroup(
+    groupData,
+    activeUserId ?? firebaseUser?.uid
+  );
   return (
     <ActiveGroupContext.Provider
       value={{
         activeGroupId,
         setActiveGroupId: id => {
-          if (!groupData || groupData.id !== id) setIsLoading(true);
+          if (!groupData || groupData.id !== id) {
+            setIsLoading(true);
+            setActiveUserId(null);
+          }
           setActiveGroupId(id);
         },
         groupData,
         posts,
         isLoading,
         showAdminView: isUserAdmin && !inStudentView,
-        setInStudentView: setInStudentView,
+        setInStudentView: newVal => {
+          setInStudentView(newVal);
+          if (!newVal) setActiveUserId(null);
+        },
+        activeUserId: activeUserId ?? firebaseUser?.uid,
+        setActiveUserId,
       }}
     >
       {children}
