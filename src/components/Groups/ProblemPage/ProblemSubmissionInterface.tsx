@@ -32,7 +32,7 @@ export default function ProblemSubmissionInterface({
 }: {
   problem: GroupProblemData;
 }) {
-  const { lang } = React.useContext(UserDataContext);
+  const { lang, firebaseUser } = React.useContext(UserDataContext);
   if (problem.submissionType !== SubmissionType.SELF_GRADED) {
     throw new Error(
       "Problem submission interface doesn't support CCC problems yet"
@@ -71,6 +71,15 @@ export default function ProblemSubmissionInterface({
       };
     },
   });
+
+  if (activeGroup.activeUserId !== firebaseUser?.uid) {
+    // this suggests the parent is viewing the child's account
+    // or a group owner is viewing the group as a group member. either way
+    // don't allow submissions.
+    return (
+      <p className="italic">Submission disabled while viewing another user's account.</p>
+    );
+  }
 
   return (
     <form

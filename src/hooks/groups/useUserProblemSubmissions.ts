@@ -16,14 +16,13 @@ export default function useUserProblemSubmissions(
   postId: string,
   problemId: string
 ) {
-  const { firebaseUser } = React.useContext(UserDataContext);
   const [submissions, setSubmissions] = React.useState<Submission[]>(null);
   const activeGroup = useActiveGroup();
   const notifications = useNotificationSystem();
 
   useFirebaseApp(
     firebaseApp => {
-      if (problemId && firebaseUser?.uid && activeGroup?.activeGroupId) {
+      if (problemId && activeGroup.activeUserId && activeGroup?.activeGroupId) {
         return onSnapshot<Submission>(
           query(
             collection(
@@ -36,7 +35,7 @@ export default function useUserProblemSubmissions(
               problemId,
               'submissions'
             ),
-            where('userId', '==', firebaseUser.uid)
+            where('userId', '==', activeGroup.activeUserId)
           ),
           {
             next: snap => {
@@ -55,7 +54,7 @@ export default function useUserProblemSubmissions(
         );
       }
     },
-    [firebaseUser?.uid, postId, problemId, activeGroup?.activeGroupId]
+    [activeGroup.activeUserId, postId, problemId, activeGroup?.activeGroupId]
   );
 
   return submissions;

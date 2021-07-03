@@ -119,7 +119,7 @@ const PostPageWrapper = (props: any): ReactElement => {
   );
 };
 
-export default function GroupsRouter() {
+export default function GroupsRouter(): JSX.Element {
   return (
     <ActiveGroupProvider>
       <ActivePostProblemsProvider>
