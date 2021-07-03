@@ -77,7 +77,9 @@ export default function ProblemSubmissionInterface({
     // or a group owner is viewing the group as a group member. either way
     // don't allow submissions.
     return (
-      <p className="italic">Submission disabled while viewing another user's account.</p>
+      <p className="italic">
+        Submission disabled while viewing another user's account.
+      </p>
     );
   }
 

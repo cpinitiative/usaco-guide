@@ -24,10 +24,7 @@ const ProblemListItem = ({
 }): JSX.Element => {
   const { activeUserId } = useActiveGroup();
   // todo optimize reads...?
-  const userLeaderboardData = useUserLeaderboardData(
-    group.id,
-    activeUserId
-  );
+  const userLeaderboardData = useUserLeaderboardData(group.id, activeUserId);
   const bestSubmission =
     userLeaderboardData?.details?.[post.id]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;

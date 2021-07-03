@@ -131,7 +131,7 @@ export default function Feed(): JSX.Element {
 
   const userLeaderboardData = useUserLeaderboardData(
     group.activeGroupId,
-    group.activeUserId,
+    group.activeUserId
   );
 
   return (

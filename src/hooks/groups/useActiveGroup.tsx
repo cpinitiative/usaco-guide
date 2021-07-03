@@ -104,7 +104,10 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
     [activeGroupId, firebaseUser?.uid]
   );
 
-  const isUserAdmin = isUserAdminOfGroup(groupData, activeUserId ?? firebaseUser?.uid);
+  const isUserAdmin = isUserAdminOfGroup(
+    groupData,
+    activeUserId ?? firebaseUser?.uid
+  );
   return (
     <ActiveGroupContext.Provider
       value={{

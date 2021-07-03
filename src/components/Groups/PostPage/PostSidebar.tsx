@@ -22,7 +22,7 @@ export default function PostSidebar({
   const activeGroup = useActiveGroup();
   const userLeaderboardData = useUserLeaderboardData(
     activeGroup.activeGroupId,
-    activeGroup.activeUserId,
+    activeGroup.activeUserId
   );
 
   return (
