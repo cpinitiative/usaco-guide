@@ -20,15 +20,15 @@ import java.io.*;
 
 public class Loan {
 	// our checking function in the binary search
-	static boolean isOk (long numGallons, long withinDays, long atLeast, long x) {
+	static boolean isOk (long numGallons, long withinDays, long atLeast, long checkNumber) {
 		long g = 0;
 		while (withinDays > 0 && g < numGallons) {
-			long y = (numGallons - g) / x;
+			long y = (numGallons - g) / checkNumber;
 			if (y < atLeast) {
 				long leftover = ((numGallons - g) + (atLeast - 1)) / atLeast;
 				return leftover <= withinDays;
 			}
-			long maxMatch = numGallons - (x * y);
+			long maxMatch = numGallons - (checkNumber * y);
 			long numDays = (maxMatch - g) / y + 1;
 			if (numDays > withinDays) {  // take a maximum
 				numDays = withinDays;
