@@ -109,10 +109,9 @@ Since there are only two options, we can use recursion to compute what would
 happen if we jumped either $1$ stone, or $2$ stones. There are two
 possibilities, so recursively computing would require computing both a left and
 right subtree. Therefore, for every additional jump, each branch splits into
-two, which results in an exponential time complexity. However, this can sped
-up with dynamic programming by keeping track of "optimal states" in order
-to avoid such expensive calculations - in this case, the minimum cost to
-reach stone $i$.
+two, which results in an exponential time complexity. However, this can sped up
+with dynamic programming by keeping track of "optimal states" in order to avoid
+such expensive calculations - in this case, the minimum cost to reach stone $i$.
 
 ### With Dynamic Programming
 
@@ -127,12 +126,12 @@ $i$ must be:
 - Jump one stone, incurring a cost of $|h_i - h_{i+1}|$:
 
   $$
-  \texttt{dp}[i + 1] = \min(\texttt{dp}[i + 1], \texttt{dp}[i] + |\texttt{H}[i] - \texttt{H}[i + 1]|)
+  \texttt{dp}[i + 1] = \min(\texttt{dp}[i + 1], \texttt{dp}[i] + |h_i - h_{i + 1}|)
   $$
 
 - Jump two stones, incurring a cost of $|h_i - h_{i + 2}|$:
   $$
-  \texttt{dp}[i + 2] = \min(\texttt{dp}[i + 2], \texttt{dp}[i] + |\texttt{H}[i] - \texttt{H}[i + 2]|)
+  \texttt{dp}[i + 2] = \min(\texttt{dp}[i + 2], \texttt{dp}[i] + |h_i - h_{i + 2}|)
   $$
 
 We can start with the base case that $\texttt{dp}[1] = 0$, since the frog is
@@ -159,21 +158,61 @@ int main() {
 	int N; cin >> N;
 	for(int i = 1; i <= N; ++i) {
 		cin >> H[i];
-		dp[i] = 1e9 + 7;
+		dp[i] = 1e9 + 7; // initially set our values to INF
 	}
 
-	dp[1] = 0;
+	dp[1] = 0; // base case: 0 cost for the first stone
+
 	for(int i = 1; i <= N; ++i) {
 		if(i + 1 <= N) dp[i + 1] = min(dp[i + 1], dp[i] + abs(H[i] - H[i + 1]));
 		if(i + 2 <= N) dp[i + 2] = min(dp[i + 2], dp[i] + abs(H[i] - H[i + 2]));
 	}
-	cout << dp[N] << endl;
+
+	cout << dp[N] << endl; // dp[N] is the minimum cost to get to stone N
 }
 ```
 
 <!-- Thoughts on including frog 2? -->
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+
+import java.util.*;
+
+
+public class Main {
+	// CodeSnip{Kattio}
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int N = io.nextInt();
+		int[] H = new int[N + 1], dp = new int[N + 1];
+
+		for(int i = 1; i <= N; ++i) {
+			H[i] = io.nextInt();
+			dp[i] = Integer.MAX_VALUE; // initially set our values to INF
+		}
+
+		dp[1] = 0; // base case: 0 cost for the first stone
+
+		for(int i = 1; i <= N; ++i) {
+			if(i + 1 <= N)
+				dp[i + 1] = Math.min(dp[i + 1], dp[i] + Math.abs(H[i] - H[i + 1]));
+			if(i + 2 <= N)
+				dp[i + 2] = Math.min(dp[i + 2], dp[i] + Math.abs(H[i] - H[i + 2]));
+		}
+
+		// dp[N] is the minimum cost to get to stone N
+		System.out.println(dp[N]);
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
