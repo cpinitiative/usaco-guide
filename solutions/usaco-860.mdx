@@ -20,20 +20,21 @@ import java.util.*;
 import java.io.*;
 
 public class MooyoMooyo {
-	static int n, k;
+	static int n, m, k;
 	static int[][] grid, region;
 	
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("mooyomooyo");
 
 		n = io.nextInt();
+		m = 10;
 		k = io.nextInt();
-		grid = new int[n][10];
-		region = new int[n][10];
+		grid = new int[n][m];
+		region = new int[n][m];
 
 		for (int i = 0; i < n; i++) {
 			String row = io.next();
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < m; j++) {
 				grid[i][j] = Character.getNumericValue(row.charAt(j));
 			}
 		}
@@ -43,11 +44,11 @@ public class MooyoMooyo {
 			// Stores the current region we're on
 			int r = 1;
 			// Reset region matrix
-			region = new int[n][10];
+			region = new int[n][m];
 
 			HashSet<Integer> largeRegions = new HashSet<>();
 			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < 10; j++) {
+				for (int j = 0; j < m; j++) {
 					// Floodfill only if the current square isn't empty
 					// and hasn't been visited (if it already has, region[i][j]
 					// would be nonzero)
@@ -68,7 +69,7 @@ public class MooyoMooyo {
 
 			// Delete squares that are part of a large region
 			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < 10; j++) {
+				for (int j = 0; j < m; j++) {
 					if (largeRegions.contains(region[i][j])) {
 						grid[i][j] = 0;
 					}
@@ -79,7 +80,7 @@ public class MooyoMooyo {
 			// zeros to the top
 			// Here's a good source explaining a similar concept:
 			// https://www.geeksforgeeks.org/move-zeroes-end-array/
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < m; j++) {
 				int count = n - 1;
 				for (int i = n - 1; i >= 0; i--) {
 					if (grid[i][j] != 0) {
@@ -94,7 +95,7 @@ public class MooyoMooyo {
 		}
 
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < m; j++) {
 				io.print(grid[i][j]);
 			}
 			io.println();
@@ -107,7 +108,7 @@ public class MooyoMooyo {
 	static int floodfill(int i, int j, int r, int color) {
 		// Exit if out of bounds, already visited, or if the current square
 		// has a different color
-		if (i < 0 || i >= n || j < 0 || j >= 10) return 0;
+		if (i < 0 || i >= n || j < 0 || j >= m) return 0;
 		if (region[i][j] != 0) return 0;
 		if (grid[i][j] != color) return 0;
 		
