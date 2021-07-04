@@ -34,22 +34,15 @@ for i in range(n):
 
 allchars = list(allchars)
 
-def solve():
-	# iterating through every pair of characteristics.
-	for i in range(len(allchars)):
-		for j in range(i + 1, len(allchars)):
-			if scan(i, j):
-				print('no')
-				return 0
-	print('yes')
-	return 0
-
+# check if the tree is evolutionarily proper relative to characteristics a and b
 def scan(a, b):
 	""""
 	If we find a cow which has the characteristic a, 
 	another cow which has the characteristic b, and 
 	another cow with both characteristics a and b, then 
 	the tree isn't evolutionarily proper.
+	
+	Returns a boolean
 	"""
 	onlya, onlyb, both = 0, 0, 0
 	# Iterating through every branch.
@@ -69,7 +62,19 @@ def scan(a, b):
 			both = 1
 	return onlya and onlyb and both
 
-solve()
+impossible = False
+	
+# iterating through every pair of characteristics.
+for i in range(len(allchars)):
+	if impossible:
+		break
+	for j in range(i + 1, len(allchars)):
+		if scan(i, j):
+			print('no')
+			impossible = True
+			break
+if not impossible:
+	print('yes')
 ```
 </PySection>
 </LanguageSection>
