@@ -96,12 +96,24 @@ against.
 
 ## Solution - Frog 1
 
-**Time Complexity:** $\mathcal{O}(N)$
-
 The problem asks us to compute the minimum total cost it takes for a frog to
 travel from stone $1$ to stone $N (N \le 10^5)$ given that the frog can only
 jump a distance of one or two. The cost to travel between any two stones $i$ and
 $j$ is given by $|h_i - h_j|$, where $h_i$ represents the height of stone $i$.
+
+### Without Dynamic Programming
+
+**Time Complexity:** $\mathcal{O}(2^N)$
+
+Since there are only two options, we can use recursion to compute what would
+happen if we jumped either $1$ stone, or $2$ stones. There are two
+possibilities, so recursively computing would require computing both a left and
+right subtree. Therefore, for every additional jump, each branch splits into
+two, which results in an exponential time complexity.
+
+### With Dynamic Programming
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 There are only two options: jumping once, or jumping twice. Define
 $\texttt{dp}[i]$ as the minimum cost to reach stone $i$. Therefore,
