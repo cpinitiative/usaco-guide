@@ -1,13 +1,15 @@
 ---
 id: intro-dp
 title: 'Introduction to DP'
-author: Michael Cao, Benjamin Qi
+author: Michael Cao, Benjamin Qi, Neo Wang
 prerequisites:
   - complete-rec
   - modular
 description: 'Speeding up naive recursive solutions with memoization.'
 frequency: 4
 ---
+
+<FocusProblem problem='focus' />
 
 **Dynamic Programming** (DP) is an important algorithmic technique in
 Competitive Programming from the gold division to competitions like the
@@ -92,6 +94,77 @@ against.
 
 </Info>
 
+## Solution - Frog 1
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+The problem asks us to compute the minimum total cost it takes for a frog to
+travel from stone $1$ to stone $N (N \le 10^5)$ given that the frog can only
+jump a distance of one or two. The cost to travel between any two stones $i$ and
+$j$ is given by $|h_i - h_j|$, where $h_i$ represents the height of stone $i$.
+
+There are only two options: jumping once, or jumping twice. Define
+$\texttt{dp}[i]$ as the minimum cost to reach stone $i$. Therefore,
+$\texttt{dp}[i+1]$ must represent the next stone, and $\texttt{dp}[i+2]$ must
+represent the stone after that. Then, our transitions are as follows at stone
+$i$ must be:
+
+- Jump one stone, incurring a cost of $|h_i - h_{i+1}|$:
+
+  $$
+  \texttt{dp}[i + 1] = \min(\texttt{dp}[i + 1], \texttt{dp}[i] + |\texttt{H}[i] - \texttt{H}[i + 1]|)
+  $$
+
+- Jump two stones, incurring a cost of $|h_i - h_{i + 2}|$:
+  $$
+  \texttt{dp}[i + 2] = \min(\texttt{dp}[i + 2], \texttt{dp}[i] + |\texttt{H}[i] - \texttt{H}[i + 2]|)
+  $$
+
+We can start with the base case that $\texttt{dp}[1] = 0$, since the frog is
+already on that square, and proceed to calculate
+$\texttt{dp}[1], \texttt{dp}[2], \ldots \texttt{dp}[N]$. Note that in the code
+we ignore $\texttt{dp}[i]$ if $i>N$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAX_N = 1e5+1;
+
+int H[MAX_N], dp[MAX_N];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	int N; cin >> N;
+
+	for(int i = 1; i <= N; ++i) {
+		cin >> H[i];
+		dp[i] = 1e9 + 7;
+	}
+
+	dp[1] = 0;
+
+	for(int i = 1; i <= N; ++i) {
+		if(i + 1 <= N) dp[i + 1] = min(dp[i + 1], dp[i] + abs(H[i] - H[i + 1]));
+		if(i + 2 <= N) dp[i + 2] = min(dp[i + 2], dp[i] + abs(H[i] - H[i + 2]));
+	}
+
+	cout << dp[N] << endl;
+}
+```
+
+<!-- Thoughts on including frog 2? -->
+
+</CPPSection>
+
+</LanguageSection>
+
 ## Classical Problems
 
 The next few modules provide examples of some classical problems: Dynamic
@@ -125,7 +198,7 @@ problemsetters rarely set direct applications of them.
 		url="https://atcoder.jp/contests/dp/tasks"
 		starred
 	>
-		Some tasks are beyond the scope of Gold. Editorials for problems A to U can be found [here](https://nwatx.me/post/atcoderdp).
+		Some tasks are beyond the scope of Gold. Editorials are available [here](https://nwatx.me/post/atcoderdp).
 	</Resource>
 	<Resource
 		source="CF@Codeforces"
