@@ -1,6 +1,6 @@
 ---
 id: noisg-19-feast
-source: NOI
+source: NOI.sg
 title: 2019 - Feast
 author: Dong Liu
 ---
@@ -12,15 +12,15 @@ author: Dong Liu
 <CPPSection>
 
 Like a normal Aliens Trick problem, we're going to binary search on the maximum
-$\texttt{lambda}$ where the number of subarrays used is $\geq k$.
+$\lambda$ where the number of subarrays used is $\geq k$.
 
-Now, for a given lambda, we're going to calculate the number of people in an
-optimal food arrangement such that we subtract $\texttt{lambda}$ for every
+Now, for a given $\lambda$, we're going to calculate the number of people in an
+optimal food arrangement such that we subtract $\lambda$ for every
 person.
 
 Let's have $\texttt{dp}[i][j:\{0,1\}]$ represent the maximum sum of satisfaction
 of an arrangement of the first $i$ plates, given that $j=0/1$ implies whether
-person $i$ is being used. Let $\texttt{cnt}[i][j]$ represent the number of
+plate $i$ is being used. Let $\texttt{cnt}[i][j]$ represent the number of
 people used in an optimal arrangement of $\texttt{dp}[i][j]$.
 
 For our $\texttt{dp}$ transitions, we have
@@ -36,7 +36,7 @@ and
 
 $$
 \{\texttt{dp}[i][1], \texttt{cnt}[i][1]\} =
-\max\begin{cases}\{\texttt{dp}[i - 1][0] + a[i] - \texttt{lambda}, \texttt{cnt}[i - 1][0] + 1\}\\
+\max\begin{cases}\{\texttt{dp}[i - 1][0] + a[i] - \lambda, \texttt{cnt}[i - 1][0] + 1\}\\
 \{\texttt{dp}[i - 1][1] + a[i], \texttt{cnt}[i - 1][1]\}\end{cases}
 $$
 
