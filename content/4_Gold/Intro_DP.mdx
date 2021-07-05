@@ -111,7 +111,9 @@ possibilities, so recursively computing would require computing both a left and
 right subtree. Therefore, for every additional jump, each branch splits into
 two, which results in an exponential time complexity. However, this can sped up
 with dynamic programming by keeping track of "optimal states" in order to avoid
-such expensive calculations - in this case, the minimum cost to reach stone $i$.
+redundant calculations. For example, recursively calculating jumps of length
+$1,2,1$ and $2,1,2$ reuses the state of stone $3$. Dynamic programming provides
+the mechanism to cache such states.
 
 ### With Dynamic Programming
 
@@ -123,15 +125,16 @@ $\texttt{dp}[i+1]$ must represent the next stone, and $\texttt{dp}[i+2]$ must
 represent the stone after that. Then, our transitions are as follows at stone
 $i$ must be:
 
-- Jump one stone, incurring a cost of $|h_i - h_{i+1}|$:
+- Jump one stone, incurring a cost of $|\text{height}_i - \text{height}_{i+1}|$:
 
   $$
-  \texttt{dp}[i + 1] = \min(\texttt{dp}[i + 1], \texttt{dp}[i] + |h_i - h_{i + 1}|)
+  \texttt{dp}[i + 1] = \min(\texttt{dp}[i + 1], \texttt{dp}[i] + |\text{height}_i - \text{height}_{i + 1}|)
   $$
 
-- Jump two stones, incurring a cost of $|h_i - h_{i + 2}|$:
+- Jump two stones, incurring a cost of
+  $|\text{height}_i - \text{height}_{i + 2}|$:
   $$
-  \texttt{dp}[i + 2] = \min(\texttt{dp}[i + 2], \texttt{dp}[i] + |h_i - h_{i + 2}|)
+  \texttt{dp}[i + 2] = \min(\texttt{dp}[i + 2], \texttt{dp}[i] + |\text{height}_i - \text{height}_{i + 2}|)
   $$
 
 We can start with the base case that $\texttt{dp}[1] = 0$, since the frog is
