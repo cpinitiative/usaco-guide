@@ -150,22 +150,24 @@ using namespace std;
 
 const int MAX_N = 1e5+1;
 
-int H[MAX_N], dp[MAX_N];
+int height[MAX_N], dp[MAX_N];
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 
 	int N; cin >> N;
 	for(int i = 1; i <= N; ++i) {
-		cin >> H[i];
+		cin >> height[i];
 		dp[i] = 1e9 + 7; // initially set our values to INF
 	}
 
 	dp[1] = 0; // base case: 0 cost for the first stone
 
 	for(int i = 1; i <= N; ++i) {
-		if(i + 1 <= N) dp[i + 1] = min(dp[i + 1], dp[i] + abs(H[i] - H[i + 1]));
-		if(i + 2 <= N) dp[i + 2] = min(dp[i + 2], dp[i] + abs(H[i] - H[i + 2]));
+		if(i + 1 <= N)
+			dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]));
+		if(i + 2 <= N)
+			dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]));
 	}
 
 	cout << dp[N] << endl; // dp[N] is the minimum cost to get to stone N
@@ -190,10 +192,10 @@ public class Main {
 		Kattio io = new Kattio();
 
 		int N = io.nextInt();
-		int[] H = new int[N + 1], dp = new int[N + 1];
+		int[] height = new int[N + 1], dp = new int[N + 1];
 
 		for(int i = 1; i <= N; ++i) {
-			H[i] = io.nextInt();
+			height[i] = io.nextInt();
 			dp[i] = Integer.MAX_VALUE; // initially set our values to INF
 		}
 
@@ -201,9 +203,9 @@ public class Main {
 
 		for(int i = 1; i <= N; ++i) {
 			if(i + 1 <= N)
-				dp[i + 1] = Math.min(dp[i + 1], dp[i] + Math.abs(H[i] - H[i + 1]));
+				dp[i + 1] = Math.min(dp[i + 1], dp[i] + Math.abs(height[i] - height[i + 1]));
 			if(i + 2 <= N)
-				dp[i + 2] = Math.min(dp[i + 2], dp[i] + Math.abs(H[i] - H[i + 2]));
+				dp[i + 2] = Math.min(dp[i + 2], dp[i] + Math.abs(height[i] - height[i + 2]));
 		}
 
 		// dp[N] is the minimum cost to get to stone N
