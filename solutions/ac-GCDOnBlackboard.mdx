@@ -5,19 +5,20 @@ title: GCD On Blackboard
 author: Andrew Cheng
 ---
 
-**Time Complexity**: $\mathcal{O}(N \log N)$ (GCD operations take $\mathcal{O}(\log N)$ time)
+## Time Complexity
+$\mathcal{O}(N \log N)$ (GCD operations take $\mathcal{O}(\log N)$ time)
 
-**Main Idea:**
-The question in its essence asks us to find the maximum possible GCD of the remaining $N-1$ numbers
-after taking any one of them away. Though naively trying every single combination will result in a
+## Solution
+The question asks us to find the maximum possible GCD of the remaining $N-1$ numbers
+after taking any one of them away. Naively trying every single combination will result in a
 complexity of $\mathcal{O}(N^2)$ as there are $N$ different ways to take away a number and calculating
 the GCD will take $\mathcal{O}(N)$ time per case. 
 
-To speed this process up, we can utilize a prefix sum and a suffix sum. Let $l[i]$ = $GCD_{j=1}^{i} a[j]$ and $r[i]$ = $GCD_{j=i}^{N} a[j]$.
-Then the answer is the maximum of $GCD(l[i-1],r[i+1]),$ $i \in [2,N-1]$. Though remember to check for the case
-where the first or the last number is replaced. (line 25 of code)
+To speed this process up, we can utilize a prefix sum and a suffix sum. Let $l[i]$ = $\gcd_{j=1}^{i} a[j]$ and $r[i]$ = $\gcd_{j=i}^{N} a[j]$.
+Then the answer is the maximum of $\gcd(l[i-1],r[i+1]),$ $i \in [2,N-1]$. Though remember to check for the case
+where the first or the last number is replaced (line 25).
 
-**Solution:**
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -27,31 +28,40 @@ where the first or the last number is replaced. (line 25 of code)
 #include <bits/stdc++.h>
 using namespace std;
 
-const int maxN = 1e5+5;
+const int maxN = 1e5+1;
 
-int a[maxN];
-int l[maxN]; //l[i] = GCD of a1,a2, ..., ai
-int r[maxN]; //r[i] = GCD of ai, ai+1, ..., an
+int arr[maxN];
+int prefGcd[maxN]; //prefGcd[i] = GCD of a1,a2, ..., ai
+int suffGcd[maxN]; //suffGcd[i] = GCD of ai, ai+1, ..., an
 int N;
 
 int gcd(int a, int b){
-	if(b == 0)return a;
-	return gcd(b,a%b);
+	return b == 0 ? a : gcd(b,a%b);
 }
 
-signed main(){
+int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 	cin >> N;
-	for(int i = 1; i <= N; ++i)cin >> a[i];
-	l[1] = a[1]; r[N] = a[N];
-	for(int i = 2; i <= N; ++i)l[i] = gcd(l[i-1],a[i]);
-	for(int i = N-1; i >= 1; --i)r[i] = gcd(r[i+1],a[i]);
+	for(int i = 1; i <= N; ++i)cin >> arr[i];
+
+	prefGcd[1] = arr[1];
+	suffGcd[N] = arr[N];
+
+	for(int i = 2; i <= N; ++i){
+		prefGcd[i] = gcd(prefGcd[i-1],arr[i]);
+	}
+
+	for(int i = N-1; i >= 1; --i){
+		suffGcd[i] = gcd(suffGcd[i+1],arr[i]);
+	}
+
 	int res = 0;
-	res = max(l[N-1],r[2]);
-	for(int i = 2; i < N; ++i)res = max(res, gcd(l[i-1],r[i+1]));
+	res = max(prefGcd[N-1],suffGcd[2]);
+	for(int i = 2; i < N; ++i){
+		res = max(res, gcd(prefGcd[i-1],suffGcd[i+1]));
+	}
 	cout << res << '\n';
-	return 0;
 }
 
 ```
