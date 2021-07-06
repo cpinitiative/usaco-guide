@@ -72,11 +72,14 @@ export default function FocusProblem({
           <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 !mb-0 sm:pb-3">
             Focus Problem – read through this problem before continuing!
           </p>
-          {problem.solution.kind === "internal" && (
-          <a href={`${getProblemURL(problem)}/solution`} className="text-xs italic !text-gray-400 !font-normal py-3 px-4 sm:px-6 !mb-0 inline-flex hover:underline">
-            <span className="mr-1">View Internal Solution</span>
-            <ExternalLinkIcon className="h-4 w-4" />
-          </a>
+          {problem.solution.kind === 'internal' && (
+            <a
+              href={`${getProblemURL(problem)}/solution`}
+              className="text-xs italic !text-gray-400 !font-normal py-3 px-4 sm:px-6 !mb-0 inline-flex hover:underline"
+            >
+              <span className="mr-1">View Internal Solution</span>
+              <ExternalLinkIcon className="h-4 w-4" />
+            </a>
           )}
         </div>
       </div>
