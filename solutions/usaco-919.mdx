@@ -103,4 +103,42 @@ public class paintbarn {
 ```
 
 </JavaSection>
+<PySection>
+
+```
+data = open('paintbarn.in').read().strip().split('\n')
+n, k = map(int, data[0].split(' '))
+
+coords = [list(map(int, data[i + 1].split(' '))) for i in range(n)]
+
+dp = [[0]*1001 for i in range(1001)]
+
+for i in range(n):
+    x1 = coords[i][0]
+    y1 = coords[i][1]
+    x2 = coords[i][2]
+    y2 = coords[i][3]
+
+    dp[x1][y1] += 1
+    dp[x1][y2] -= 1
+    dp[x2][y1] -= 1
+    dp[x2][y2] += 1
+
+ans = 0
+
+for i in range(1001):
+    for j in range(1001):
+        if i > 0:
+            dp[i][j] += dp[i-1][j]
+        if j > 0:
+            dp[i][j] += dp[i][j-1]
+        if i > 0 and j > 0:
+            dp[i][j] -= dp[i-1][j-1]
+        if dp[i][j] == k:
+            ans += 1
+
+print(ans, file=open('paintbarn.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
