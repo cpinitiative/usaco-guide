@@ -251,21 +251,19 @@ import java.io.*;
 public class HelpCross {
 	public static void main (String[] args) throws IOException {
 		Kattio io = new Kattio("helpcross");
-
 		int numChickens = io.nextInt();
 		int numCows = io.nextInt();
-
 		int[] chicken = new int[numChickens]; // where the chicken are located
-		int[] a = new int[numCows];
-		int[] b = new int[numCows];
-		int[] marked = new int[numCows];
+		int[] earliest = new int[numCows];
+		int[] latest = new int[numCows];
+		boolean[] marked = new boolean[numCows];
 
 		for (int x = 0; x < numChickens; x++) {
 			chicken[x] = io.nextInt();
 		}
 		for (int x = 0; x < numCows; x++){
-			a[x] = io.nextInt();
-			b[x] = io.nextInt();
+			earliest[x] = io.nextInt();
+			latest[x] = io.nextInt();
 		}
 		Arrays.sort(chicken);
 		
@@ -273,17 +271,17 @@ public class HelpCross {
 		for (int x = 0; x < numChickens; x++) { // loop through each chicken
 			int smallest = -1;
 			// find the cow that ends the soonest that the chicken is in its range
-			for(int y = 0; y < numCows; y++){
+			for (int y = 0; y < numCows; y++) {
 				// the cow has not crossed the road yet and the 
 				// chicken's position is able to help the cow cross
-				if(marked[y] == 0 && chicken[x] >= a[y] && chicken[x] <= b[y]){ 
-					if(smallest < 0 || b[y] < b[smallest]){
+				if (! marked[y] && chicken[x] >= earliest[y] && chicken[x] <= latest[y]) { 
+					if(smallest < 0 || latest[y] < latest[smallest]){
 						smallest = y;
 					}
 				}
 			}
 			if (smallest != -1) {
-				marked[smallest] = 1;
+				marked[smallest] = true;
 				count++;
 			}
 		}
