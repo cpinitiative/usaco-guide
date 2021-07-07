@@ -62,27 +62,27 @@ public class JuryMarks {
 		Kattio io = new Kattio();
 		int numJury = io.nextInt();
 		int numScores = io.nextInt();
-		int[] a = new int[numJury + 1];
-		int[] b = new int[n];
+		int[] marks = new int[numJury + 1];
+		int[] scores = new int[n];
 
 		for (int x = 1; x <= numJury; x++) {  // read k numbers
-			a[x] = io.nextInt() + a[x - 1];
+			marks[x] = io.nextInt() + marks[x - 1];
 		}
 		for (int x = 0; x < numScores; x++) {  // read n numbers
-			b[x] = io.nextInt();
+			scores[x] = io.nextInt();
 		}
 		Set<Integer> init = new TreeSet<>();
 		for (int x = 1; x <= numJury; x++) { // add to set
-			init.add(b[0] - a[x]);
+			init.add(scores[0] - marks[x]);
 		}
 		int answer = 0;
 		for (int x : init) {  // for each number in the set
 			Set<Integer> points = new TreeSet<>();  // create a new set
 			for (int i = 1; i <= numJury; i++) {
-				points.add(x + a[i]);
+				points.add(x + marks[i]);
 			}
 			boolean flag = true;
-			for (int p : b) {
+			for (int p : scores) {
 				flag &= points.contains(p);
 			}
 			if (flag == true) {  // add one if it ends up being true
