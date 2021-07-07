@@ -51,11 +51,7 @@ const GroupsCodeBlock = ({
               😨
             </button>
           </span>
-          <input
-            id="email-address"
-            name="email"
-            type="email"
-            autoComplete="email"
+          <textarea
             required
             className="text-sm w-full mt-3 sm:mt-0 px-2 py-2 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md mr-2"
             placeholder="Feedback..."
