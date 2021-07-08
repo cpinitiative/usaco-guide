@@ -131,12 +131,11 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                         newPermission
                       )
                         .then(() =>
-                          notifications.addNotification({
-                            level: 'success',
-                            message: `${member.displayName} now has permission level ${newPermission}.`,
-                          })
+                          toast.success(
+                            `${member.displayName} now has permission level ${newPermission}.`
+                          )
                         )
-                        .catch(notifications.showErrorNotification);
+                        .catch(e => toast.error(e));
                     }
                   }}
                 >

@@ -87,7 +87,7 @@ export default function AdminSettings() {
       );
       handleSearch(null);
     } catch (e) {
-      notifications.showErrorNotification(e);
+      toast.error(e.message);
     }
 
     setIsUpdating(false);
