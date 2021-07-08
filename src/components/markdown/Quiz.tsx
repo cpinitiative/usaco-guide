@@ -145,7 +145,7 @@ const ActualQuiz = props => {
   );
 };
 
-export default function Quiz(props): JSX.Element {
+const Quiz = (props): JSX.Element => {
   return (
     <Provider scope={quizScope}>
       <ActualQuiz {...props} />
@@ -156,3 +156,5 @@ export default function Quiz(props): JSX.Element {
 Quiz.Question = QuizQuestion;
 Quiz.Answer = QuizMCAnswer;
 Quiz.Explanation = QuizAnswerExplanation;
+
+export default Quiz;
