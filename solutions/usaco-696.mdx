@@ -9,6 +9,8 @@ author: Benjamin Qi, Timothy Gao
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 Recall from the Euler tour module that each subtree is represented as a contiguous interval in its Euler tour. With this knowledge, we can compress the tree into an array. Now, the problem becomes for each node $i$, look for how many elements are less than $tour[i]$ from $i$ to $tout[i]$, where $tout[i]$ is the end of the subtree interval for node $i$. By processing the nodes in decreasing order, this is a problem we can solve in $\mathcal{O}(N\log N)$ time with a binary-indexed tree.
+<LanguageSection>
+<JavaSection>
 
 ```java
 import java.io.*;
@@ -96,58 +98,17 @@ public class promote {
 	}
 }
 ```
+</JavaSection>
+</LanguageSection>
 
 ## Solution 2: Merging Indexed Sets
 
-**Time Complexity:** $\mathcal{O}(N\log ^2N)$
-
-```cpp
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-
-using namespace std;
-using namespace __gnu_pbds;
-
-template<class T> using Tree = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
-
-const int MX = 1e5+5;
-#define sz(x) (int)(x).size()
-
-int N, a[MX], ind[MX], ans[MX], ret;
-vector<int> child[MX];
-Tree<int> d[MX];
-
-void comb(int a, int b) {
-	if (sz(d[a]) < sz(d[b])) d[a].swap(d[b]);
-	for (int i: d[b]) d[a].insert(i);
-}
-
-void dfs(int x) {
-	ind[x] = x;
-	for (int i: child[x]) {
-		dfs(i);
-		comb(x,i);
-	}
-	ans[x] = sz(d[x])-d[x].order_of_key(a[x]);
-	d[x].insert(a[x]);
-}
-
-int main() {
-	freopen("promote.in","r",stdin);
-	freopen("promote.out","w",stdout);
-	cin >> N; for (int i = 1; i <= N; ++i) cin >> a[i];
-	for (int i = 2; i <= N; ++i) {
-		int p; cin >> p;
-		child[p].push_back(i);
-	}
-	dfs(1);
-	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
-}
-```
 
 Recall from the small-to-large merging module that `std::swap(d[a],d[b])` will be too slow. However,
 the following does (overloading `std::swap`):
 
+<LanguageSection>
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
@@ -195,6 +156,10 @@ int main() {
 	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
 }
 ```
+</CPPSection>
+</LanguageSection>
+
+
 <IncompleteSection>
 
 Add Centroid Decomp/HLD Solution
