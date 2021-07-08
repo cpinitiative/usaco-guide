@@ -1,7 +1,7 @@
 import { updateProfile } from 'firebase/auth';
 import React from 'react';
+import toast from 'react-hot-toast';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import toast from "react-hot-toast";
 
 export default function Profile() {
   const { firebaseUser } = React.useContext(UserDataContext);
@@ -20,7 +20,7 @@ export default function Profile() {
     e.preventDefault();
     updateProfile(firebaseUser, { displayName: name });
 
-    toast.success("Username updated");
+    toast.success('Username updated');
   };
 
   return (

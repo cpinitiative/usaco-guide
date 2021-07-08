@@ -6,7 +6,7 @@ export default function Feedback(): JSX.Element {
   const baseClasses =
     'rounded-full border h-8 w-8 text-xl transform transition focus:outline-none';
   const unselectedClasses = 'hover:scale-110 border-gray-200';
-  const selectedClasses = 'scale-110 border-teal-600';
+  const selectedClasses = 'scale-110 border-cyan-600';
 
   const [selected, setSelected] = useState<
     'terrible' | 'bad' | 'good' | 'great' | null
@@ -89,13 +89,13 @@ export default function Feedback(): JSX.Element {
         <>
           <textarea
             required
-            className="text-sm w-full mt-4 px-2 py-2 placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 border-gray-300 rounded-md mr-2"
+            className="text-sm w-full mt-4 px-2 py-2 placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500 border-gray-300 rounded-md mr-2"
             placeholder="Give Additional Video Feedback"
           />
 
           <button
             type="submit"
-            className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
+            className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
           >
             Submit Additional Feedback
           </button>
