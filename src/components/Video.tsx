@@ -2,7 +2,7 @@ import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import Youtube from './markdown/Youtube';
-export default function Video() {
+export default function Video(): JSX.Element {
   const [showVideo, setShowVideo] = React.useState(false);
   const data = useStaticQuery(graphql`
     {
