@@ -151,7 +151,7 @@ const Quiz = (props): JSX.Element => {
       <ActualQuiz {...props} />
     </Provider>
   );
-}
+};
 
 Quiz.Question = QuizQuestion;
 Quiz.Answer = QuizMCAnswer;
