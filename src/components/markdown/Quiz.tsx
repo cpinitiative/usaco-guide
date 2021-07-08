@@ -17,7 +17,11 @@ const QuizAnswerExplanation = props => {
   if (chosenAnswer === null) {
     return null;
   }
-  return <div className="text-sm text-gray-700 dark:text-gray-400 no-y-margin">{props.children}</div>;
+  return (
+    <div className="text-sm text-gray-700 dark:text-gray-400 no-y-margin">
+      {props.children}
+    </div>
+  );
 };
 
 const QuizMCAnswer = props => {
@@ -37,8 +41,14 @@ const QuizMCAnswer = props => {
           isSelected
             ? 'ring-2 ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900 text-gray-100 dark:text-gray-900 font-bold'
             : 'border border-gray-600 text-gray-800 dark:border-gray-500 dark:text-gray-300',
-            isSelected && showCorrect && (props.correct ? 'ring-green-600 bg-green-600 dark:ring-green-300 dark:bg-green-300' : 'ring-red-600 bg-red-600 dark:ring-red-300 dark:bg-red-300'),
-            isSelected && !showCorrect && 'ring-gray-600 bg-gray-600 dark:ring-gray-300 dark:bg-gray-300',
+          isSelected &&
+            showCorrect &&
+            (props.correct
+              ? 'ring-green-600 bg-green-600 dark:ring-green-300 dark:bg-green-300'
+              : 'ring-red-600 bg-red-600 dark:ring-red-300 dark:bg-red-300'),
+          isSelected &&
+            !showCorrect &&
+            'ring-gray-600 bg-gray-600 dark:ring-gray-300 dark:bg-gray-300'
         )}
       >
         {props.number}
@@ -107,20 +117,25 @@ const ActualQuiz = props => {
           <ArrowLeftIcon className="-ml-0.5 mr-2 h-4 w-4" /> Previous
         </button>
         <span>
-          Question {currentQuestion + 1} of {React.Children.count(props.children)}
+          Question {currentQuestion + 1} of{' '}
+          {React.Children.count(props.children)}
         </span>
         <button
           className="btn"
-          disabled={selectedAnswer === null || (chosenAnswer !== null && currentQuestion === num - 1)}
+          disabled={
+            selectedAnswer === null ||
+            (chosenAnswer !== null && currentQuestion === num - 1)
+          }
           onClick={() => {
             if (chosenAnswer === null) {
               setChosenAnswer(selectedAnswer);
             } else {
-              handleQuestionChange(currentQuestion + 1)
+              handleQuestionChange(currentQuestion + 1);
             }
           }}
         >
-          {chosenAnswer ? "Next" : "Submit"} <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />
+          {chosenAnswer ? 'Next' : 'Submit'}{' '}
+          <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
