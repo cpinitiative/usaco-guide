@@ -57,7 +57,7 @@ const QuizMCAnswer = props => {
     </button>
   );
 };
-QuizMCAnswer.displayName = "QuizMCAnswer";
+QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
   const currentQuestion = useAtomValue(currentQuestionAtom);
@@ -81,7 +81,7 @@ const QuizQuestion = props => {
     </div>
   );
 };
-QuizQuestion.displayName = "QuizQuestion";
+QuizQuestion.displayName = 'QuizQuestion';
 
 // needed to use scoped provider
 const ActualQuiz = props => {
