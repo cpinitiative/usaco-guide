@@ -57,6 +57,7 @@ const QuizMCAnswer = props => {
     </button>
   );
 };
+QuizMCAnswer.displayName = "QuizMCAnswer";
 
 const QuizQuestion = props => {
   const currentQuestion = useAtomValue(currentQuestionAtom);
@@ -69,7 +70,7 @@ const QuizQuestion = props => {
   return (
     <div className="space-y-2">
       {React.Children.map(props.children, child => {
-        if (child?.type?.name === 'QuizMCAnswer') {
+        if (child?.type?.displayName === 'QuizMCAnswer') {
           return React.cloneElement(child, {
             number: num++,
           });
@@ -80,6 +81,7 @@ const QuizQuestion = props => {
     </div>
   );
 };
+QuizQuestion.displayName = "QuizQuestion";
 
 // needed to use scoped provider
 const ActualQuiz = props => {
@@ -97,7 +99,8 @@ const ActualQuiz = props => {
   return (
     <div className="quiz">
       {React.Children.map(props.children, child => {
-        if (child?.type?.name === 'QuizQuestion') {
+        console.log(child);
+        if (child?.type?.displayName === 'QuizQuestion') {
           return React.cloneElement(child, {
             number: num++,
           });
