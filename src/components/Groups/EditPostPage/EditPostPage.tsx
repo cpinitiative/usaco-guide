@@ -7,7 +7,7 @@ import Flatpickr from 'react-flatpickr';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { PostData } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';

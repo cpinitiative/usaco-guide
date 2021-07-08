@@ -1,6 +1,6 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import React from 'react';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { GroupData } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 
@@ -49,7 +49,7 @@ export default function getMemberInfoForGroup(group: GroupData) {
                 data: d.data,
               };
             } else {
-              toast.error("Error: Failed to fetch member info for leaderboard");
+              toast.error('Error: Failed to fetch member info for leaderboard');
             }
           })
           .catch(e => {

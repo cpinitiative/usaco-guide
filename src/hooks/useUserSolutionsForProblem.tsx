@@ -14,10 +14,12 @@ import { UserSolutionForProblem } from '../models/userSolutionForProblem';
 import { useFirebaseApp } from './useFirebase';
 
 export default function useUserSolutionsForProblem(problem: ProblemInfo) {
-  const [solutions, setSolutions] =
-    React.useState<UserSolutionForProblem[]>(null);
-  const [currentUserSolutions, setCurrentUserSolutions] =
-    React.useState<UserSolutionForProblem[]>(null);
+  const [solutions, setSolutions] = React.useState<UserSolutionForProblem[]>(
+    null
+  );
+  const [currentUserSolutions, setCurrentUserSolutions] = React.useState<
+    UserSolutionForProblem[]
+  >(null);
   const { firebaseUser } = useContext(UserDataContext);
 
   useFirebaseApp(

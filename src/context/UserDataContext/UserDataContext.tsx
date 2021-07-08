@@ -32,7 +32,7 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import UserDataPropertyAPI from './userDataPropertyAPI';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
 // Object for counting online users
 // var Gathering = (function () {

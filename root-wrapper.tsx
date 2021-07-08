@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toaster } from "react-hot-toast";
+import { Toaster } from 'react-hot-toast';
 import { DarkModeProvider } from './src/context/DarkModeProvider';
 import { EditorContext } from './src/context/EditorContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';

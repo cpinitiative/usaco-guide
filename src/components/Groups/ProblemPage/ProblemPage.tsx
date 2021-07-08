@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Link, navigate } from 'gatsby';
 import React from 'react';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';

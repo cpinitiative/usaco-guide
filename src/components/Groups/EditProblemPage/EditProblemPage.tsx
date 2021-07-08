@@ -31,7 +31,7 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {

@@ -1,6 +1,6 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import React from 'react';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { unstable_batchedUpdates } from 'react-dom';
 import {
   UserPermissionInformation,
@@ -82,8 +82,8 @@ export default function AdminSettings() {
       toast(
         'Updated user permissions! The target user may have to sign out and sign back in to complete the changes.',
         {
-          duration: 6000
-        },
+          duration: 6000,
+        }
       );
       handleSearch(null);
     } catch (e) {

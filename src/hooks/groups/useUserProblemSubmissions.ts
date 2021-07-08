@@ -6,7 +6,7 @@ import {
   where,
 } from 'firebase/firestore';
 import * as React from 'react';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { Submission } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';

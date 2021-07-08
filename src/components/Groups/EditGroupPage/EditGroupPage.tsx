@@ -1,5 +1,5 @@
 import { Link, navigate } from 'gatsby';
-import  React from 'react';
+import React from 'react';
 import { useReducer } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
@@ -8,7 +8,7 @@ import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
 export default function EditGroupPage(props) {
   const { groupId } = props as {

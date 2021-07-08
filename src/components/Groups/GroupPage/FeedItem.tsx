@@ -3,7 +3,7 @@ import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import { BookmarkIcon } from '@heroicons/react/solid';
 import { Link } from 'gatsby';
 import React, { useState } from 'react';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
@@ -216,9 +216,7 @@ export default function FeedItem({
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        deletePost(post.id).catch(e =>
-                          toast.error(e.message)
-                        );
+                        deletePost(post.id).catch(e => toast.error(e.message));
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

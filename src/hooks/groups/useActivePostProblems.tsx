@@ -7,7 +7,7 @@ import {
 } from 'firebase/firestore';
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
