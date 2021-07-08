@@ -1,105 +1,149 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+} from 'firebase/firestore';
+import React, { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseApp } from '../../hooks/useFirebase';
 
-export default function Feedback(): JSX.Element {
+export default function Feedback({ videoId }): JSX.Element {
+  const firebaseApp = useFirebaseApp();
+  const db = getFirestore(firebaseApp);
+  const {
+    firebaseUser: { uid },
+  } = useContext(UserDataContext);
   const baseClasses =
     'rounded-full border h-8 w-8 text-xl transform transition focus:outline-none';
   const unselectedClasses = 'hover:scale-110 border-gray-200';
   const selectedClasses = 'scale-110 border-cyan-600';
 
   const [selected, setSelected] = useState<
-    'terrible' | 'bad' | 'good' | 'great' | null
+    'very_bad' | 'bad' | 'good' | 'great' | null
   >(null);
-
-  const submitFeedback = feedback => {
-    if (selected === feedback) {
-      setSelected(null);
-      // todo reset feedback
-    } else {
-      toast.promise(
-        (() =>
-          new Promise(resolve => {
-            // todo save feedback
-            setTimeout(resolve, 100);
-          }))(),
-        {
-          loading: 'Submitting...',
-          success: 'Thanks for the feedback!',
-          error: 'Error submitting feedback.',
-        }
-      );
-      setSelected(feedback);
-    }
-  };
+  const [comment, setComment] = useState('');
+  const [showAdditionalFeedback, setShowAdditionalFeedback] = useState(false);
+  useEffect(() => {
+    getDoc(doc(db, 'videos', videoId, 'feedback', uid)).then(data => {
+      setSelected(data.data()?.rating || null);
+    });
+  }, [uid, db]);
 
   return (
     <>
       <div className="text-center">
-        <div className="font-medium">How was the video?</div>
-        <span className="flex items-center space-x-2 justify-center">
-          <button
-            type="button"
-            title={'Rate video as Terrible'}
-            className={classNames(
-              baseClasses,
-              selected === 'terrible' ? selectedClasses : unselectedClasses
-            )}
-            onClick={() => submitFeedback('terrible')}
-          >
-            😨
-          </button>
-          <button
-            type="button"
-            title={'Rate video as Bad'}
-            className={classNames(
-              baseClasses,
-              selected === 'bad' ? selectedClasses : unselectedClasses
-            )}
-            onClick={() => submitFeedback('bad')}
-          >
-            🤨
-          </button>
-          <button
-            type="button"
-            title={'Rate video as Good'}
-            className={classNames(
-              baseClasses,
-              selected === 'good' ? selectedClasses : unselectedClasses
-            )}
-            onClick={() => submitFeedback('good')}
-          >
-            😀
-          </button>
-          <button
-            title={'Rate video as Great'}
-            type="button"
-            className={classNames(
-              baseClasses,
-              selected === 'great' ? selectedClasses : unselectedClasses
-            )}
-            onClick={() => submitFeedback('great')}
-          >
-            😍
-          </button>
+        <span className="flex items-center space-x-2 justify-left">
+          <div className="font-medium">How was the video?</div>
+          {[
+            ['😨', 'very_bad', 'very bad'],
+            ['🤨', 'bad'],
+            ['😀', 'good'],
+            ['😍', 'great'],
+          ].map(
+            ([emoji, key, name]: [
+              string,
+              'very_bad' | 'bad' | 'good' | 'great',
+              string
+            ]) => (
+              <button
+                key={key}
+                type="button"
+                title={`Rate video as ${name || key}`}
+                className={classNames(
+                  baseClasses,
+                  selected === key ? selectedClasses : unselectedClasses
+                )}
+                onClick={() => {
+                  if (selected === key) {
+                    setSelected(null);
+                    updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
+                      rating: null,
+                    });
+                  } else {
+                    setSelected(key);
+                    if (key == 'very_bad' || key == 'bad') {
+                      setShowAdditionalFeedback(true);
+                    }
+                    toast.promise(
+                      updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
+                        rating: key,
+                      }),
+                      {
+                        loading: 'Submitting...',
+                        success: 'Thanks for the feedback!',
+                        error: 'Error submitting feedback.',
+                      }
+                    );
+                  }
+                }}
+              >
+                {emoji}
+              </button>
+            )
+          )}
+          {!showAdditionalFeedback && (
+            <button
+              title={'Write us a private comment'}
+              type="button"
+              className={classNames(
+                'rounded-full border h-8 px-2 ml-4 text-sm transform transition focus:outline-none hover:border-cyan-600'
+              )}
+              onClick={() => setShowAdditionalFeedback(true)}
+            >
+              Comment
+            </button>
+          )}
         </span>
       </div>
-      <div className="h-4" />
-      {selected !== null && (
-        <>
+      {showAdditionalFeedback && (
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            setShowAdditionalFeedback(false);
+            const originalComment = comment;
+            setComment('');
+            toast.promise(
+              updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
+                comments: arrayUnion(originalComment),
+              }),
+              {
+                loading: 'Submitting...',
+                success: 'Thanks for your comment!',
+                error: 'Error submitting comment.',
+              }
+            );
+          }}
+        >
           <textarea
             required
+            style={{
+              height: '4rem',
+              minHeight: '4rem',
+            }}
             className="text-sm w-full mt-4 px-2 py-2 placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500 border-gray-300 rounded-md mr-2"
-            placeholder="Give Additional Video Feedback"
+            placeholder="Tell us how you felt about the video..."
+            value={comment}
+            onChange={e => setComment(e.target.value)}
           />
 
           <button
             type="submit"
             className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
           >
-            Submit Additional Feedback
+            Submit Private Comment
           </button>
-        </>
+          <button
+            type="button"
+            onClick={() => setShowAdditionalFeedback(false)}
+            className="ml-2 items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+          >
+            Close
+          </button>
+        </form>
       )}
     </>
   );

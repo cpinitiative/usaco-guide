@@ -5,6 +5,24 @@ import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 import Youtube from '../markdown/Youtube';
 import Feedback from './Feedback';
 
+const VideoComponent = ({ link }) => {
+  const getParameterByName = (name: string, url = window.location.href) => {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  };
+  const id = getParameterByName('v', link.trim());
+  return (
+    <>
+      <Youtube id={id} />
+      <div className="h-4" />
+      <Feedback videoId={id} />
+    </>
+  );
+};
 const GroupsCodeBlock = ({
   language,
   value,
@@ -13,21 +31,7 @@ const GroupsCodeBlock = ({
   value: string;
 }) => {
   if (language === 'video') {
-    const getParameterByName = (name: string, url = window.location.href) => {
-      name = name.replace(/[\[\]]/g, '\\$&');
-      const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
-      if (!results) return null;
-      if (!results[2]) return '';
-      return decodeURIComponent(results[2].replace(/\+/g, ' '));
-    };
-    return (
-      <>
-        <Youtube id={getParameterByName('v', value.trim())} />
-        <div className="h-4" />
-        <Feedback />
-      </>
-    );
+    return <VideoComponent link={value} />;
   }
   return <CodeBlock className={`language-${language}`}>{value}</CodeBlock>;
 };
