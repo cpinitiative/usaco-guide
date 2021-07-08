@@ -1,6 +1,6 @@
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React from 'react';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
@@ -24,7 +24,6 @@ export default function PostLeaderboardPage(props) {
   const post = usePost(postId);
   const { problems } = useActivePostProblems();
   const firebaseApp = useFirebaseApp();
-  const notifications = useNotificationSystem();
   const leaderboard = useLeaderboardData({
     groupId: activeGroup.activeGroupId,
     postId: postId,
@@ -54,10 +53,7 @@ export default function PostLeaderboardPage(props) {
         openProblemSubmissionPopup(submission);
       })
       .catch(e => {
-        notifications.addNotification({
-          level: 'error',
-          message: "Couldn't get submission: " + e.message,
-        });
+        toast.error("Couldn't get submission: " + e.message);
       });
   };
 

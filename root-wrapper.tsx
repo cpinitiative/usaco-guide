@@ -1,15 +1,15 @@
-import * as React from 'react';
+import React from 'react';
+import { Toaster } from "react-hot-toast";
 import { DarkModeProvider } from './src/context/DarkModeProvider';
 import { EditorContext } from './src/context/EditorContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';
 import GlobalErrorBoundary from './src/context/GlobalErrorBoundary';
-import { NotificationSystemProvider } from './src/context/NotificationSystemContext';
 import { SignInProvider } from './src/context/SignInContext';
 import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
 import { UserGroupsProvider } from './src/hooks/groups/useUserGroups';
 
-export const wrapRootElement = ({ element }) => (
-  <NotificationSystemProvider>
+export const wrapRootElement = ({ element }): JSX.Element => (
+  <>
     <GlobalErrorBoundary>
       <FirebaseProvider>
         <UserDataProvider>
@@ -25,5 +25,6 @@ export const wrapRootElement = ({ element }) => (
         </UserDataProvider>
       </FirebaseProvider>
     </GlobalErrorBoundary>
-  </NotificationSystemProvider>
+    <Toaster position="top-right" />
+  </>
 );

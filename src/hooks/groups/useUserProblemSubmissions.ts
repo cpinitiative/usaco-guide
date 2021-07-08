@@ -6,8 +6,7 @@ import {
   where,
 } from 'firebase/firestore';
 import * as React from 'react';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import toast from "react-hot-toast";
 import { Submission } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
@@ -18,7 +17,6 @@ export default function useUserProblemSubmissions(
 ) {
   const [submissions, setSubmissions] = React.useState<Submission[]>(null);
   const activeGroup = useActiveGroup();
-  const notifications = useNotificationSystem();
 
   useFirebaseApp(
     firebaseApp => {
@@ -48,7 +46,7 @@ export default function useUserProblemSubmissions(
               );
             },
             error: error => {
-              notifications.showErrorNotification(error);
+              toast.error(error.message);
             },
           }
         );

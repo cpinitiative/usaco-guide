@@ -5,7 +5,6 @@ import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useFirebaseApp } from '../../hooks/useFirebase';
-import { useNotificationSystem } from '../NotificationSystemContext';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
@@ -33,6 +32,7 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import UserDataPropertyAPI from './userDataPropertyAPI';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
+import toast from "react-hot-toast";
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -195,7 +195,6 @@ const UserDataContext = createContext<UserDataContextAPI>({
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const firebaseApp = useFirebaseApp();
-  const notifications = useNotificationSystem();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
     // when the firebase user changes, update all the API's
@@ -283,7 +282,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
           });
         },
         error: error => {
-          notifications.showErrorNotification(error);
+          toast.error(error.message);
           Sentry.captureException(error, {
             extra: {
               userId: firebaseUser.uid,

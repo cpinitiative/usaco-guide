@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 import Youtube from '../markdown/Youtube';
+import Feedback from './Feedback';
 
 const GroupsCodeBlock = ({
   language,
@@ -23,50 +24,8 @@ const GroupsCodeBlock = ({
     return (
       <>
         <Youtube id={getParameterByName('v', value.trim())} />
-        <div className="mt-3">
-          <span className="relative z-0 inline-flex shadow-sm rounded-md">
-            <button
-              type="button"
-              title={'Rate video as Terrible'}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              😨
-            </button>
-            <button
-              type="button"
-              title={'Rate video as Bad'}
-              className="-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              🤨
-            </button>
-            <button
-              type="button"
-              title={'Rate video as Good'}
-              className="-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              😀
-            </button>
-            <button
-              title={'Rate video as Great'}
-              type="button"
-              className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              😍
-            </button>
-          </span>
-        </div>
-        <textarea
-          required
-          className="text-sm w-full mt-4 px-2 py-2 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md mr-2"
-          placeholder="Give Additional Video Feedback... (Optional)"
-        />
-
-        <button
-          type="submit"
-          className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-        >
-          Submit Additional Feedback
-        </button>
+        <div className="h-4" />
+        <Feedback />
       </>
     );
   }
