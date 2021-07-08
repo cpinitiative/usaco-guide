@@ -15,6 +15,7 @@ import Optional from './Optional';
 import PrefixSumInteractive from './PrefixSumInteractive';
 import { DivisionList } from './ProblemsList/DivisionList/DivisionList';
 import { ProblemsList } from './ProblemsList/ProblemsList';
+import Quiz from './Quiz';
 import { Resource, ResourcesList } from './ResourcesList';
 import Spoiler from './Spoiler';
 import Warning from './Warning';
@@ -58,6 +59,7 @@ export const components = {
   Asterisk,
   Youtube,
   PrefixSumInteractive,
+  Quiz,
   MATHDIV,
   MATHSPAN,
 
