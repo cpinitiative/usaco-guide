@@ -2,7 +2,7 @@
 id: ac-MultipleOf2019
 source: AtCoder Beginner Contest
 title: Multiple of 2019
-author: Maggie Liu
+author: Maggie Liu, Brad Ma
 ---
 
 [Official Analysis](https://img.atcoder.jp/abc164/editorial.pdf#page=10)
@@ -47,5 +47,41 @@ int main()
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class MultipleOf2019 {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		String numberString = io.next();
+		int num = 0;
+		int stringLength = numberString.length();
+		int pow = 1;
+		int[] count = new int[2019];
+		count[0] = 1;
+
+		for (int i = stringLength - 1; i >= 0; i--) {
+			//find the remainder of the current number mod 2019
+			num = (num + pow * (numberString.charAt(i) - '0')) % 2019;
+			//increment the count of this remainder
+			count[num]++;
+			pow = pow * 10 % 2019;
+		}
+		long answer = 0;
+		for (int i = 0; i < 2019; i++) {
+			//there are nC2 ways to pair the numbers with the same remainder
+			answer += (long) count[i] * (count[i] - 1) / 2;
+		}
+		io.println(answer);
+		io.close();
+	}
+}
+```
+					 
+</JavaSection>
 
 </LanguageSection>
