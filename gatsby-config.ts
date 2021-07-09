@@ -103,7 +103,8 @@ const plugins = [
   {
     resolve: '@sentry/gatsby',
     options: {
-      dsn: 'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
+      dsn:
+        'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
       denyUrls: [/extensions\//i, /^chrome:\/\//i],
       ...(process.env.NODE_ENV === 'production'
         ? {}
