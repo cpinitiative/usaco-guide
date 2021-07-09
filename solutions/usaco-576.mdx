@@ -1,0 +1,103 @@
+---
+id: usaco-576
+source: USACO Platinum 2015 December
+title: Max Flow
+author: Dustin Miao
+---
+
+**Time Complexity**: $\mathcal O(m\log n + n)$
+
+For each path $(a, b)$, we can split it into two paths: $(a, lca(a, b)), (b, lca(a, b))$. We 
+can find the LCA with any method, but the easiest is with binary lifting. For each node, 
+keep track of the number paths that begin at that node and the number that end at that node. 
+
+If $k$ is the number of paths coming from a node's children, $s$ is the number of paths 
+starting at the current node, and $e$ is the number of paths ending at the current node, 
+then the answer for that node is $k + s - e / 2$. The $e / 2$ is because by splitting up
+the paths, we double count the lca for each path. The number of paths going to the node's
+parent is $k + s - e$. Thus, we can process all the paths at once using a single post-order 
+traversal of the tree. 
+
+<LanguageSection>
+
+<CPPSection>
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int N, M;
+vector<int> adj[50005];
+
+int dep[50005], par[50005][20];
+
+void init_bl(int u, int p, int d) {
+    dep[u] = d;
+    par[u][0] = p;
+    for (int v : adj[u])
+        if (v != p)
+            init_bl(v, u, d + 1);
+}
+
+void init_bl() {
+    init_bl(1, 1, 0);
+    for (int k = 1; (1 << k) <= N; k++)
+        for (int i = 1; i <= N; i++)
+            par[i][k] = par[par[i][k - 1]][k - 1];
+}
+
+int query_lca(int a, int b) {
+    if (dep[a] > dep[b])
+        swap(a, b);
+    for (int k = 19; k >= 0; k--)
+        if (dep[b] - (1 << k) >= dep[a])
+            b = par[b][k];
+    if (a == b)
+        return a;
+    for (int k = 19; k >= 0; k--)
+        if (par[a][k] != par[b][k])
+            a = par[a][k], b = par[b][k];
+    return par[a][0];
+} 
+
+int ans[50005], S[50005], E[50005];
+
+int dfs_ans(int u, int p) {
+    int sum = 0;
+    for (int v : adj[u])
+        if (v != p)
+            sum += dfs_ans(v, u);
+    ans[u] = sum + S[u] - E[u] / 2;
+    return sum + S[u] - E[u];
+}
+
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    freopen("maxflow.in", "r", stdin);
+    freopen("maxflow.out", "w", stdout);
+    
+    cin >> N >> M;
+    for (int i = 1; i < N; i++) {
+        int a, b; cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    init_bl();
+    while (M--) {
+        int a, b; cin >> a >> b;
+        S[a]++, S[b]++, E[query_lca(a, b)] += 2;
+    }
+
+    dfs_ans(1, 0);
+
+    int ans0 = 0;
+    for (int i = 1; i <= N; i++) 
+        ans0 = max(ans0, ans[i]);
+    cout << ans0 << '\n';
+}
+
+
+</CPPSection>
+
+</LanguageSection>
