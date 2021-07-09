@@ -1,0 +1,349 @@
+---
+id: cses-1625
+source: CSES (TODO -- convert to something like `USACO Silver 2017 January`)
+title: Grid Paths
+author: Vivian Han
+---
+
+## Explanation
+
+Adapted from https://usaco.guide/CPH.pdf#page=61 
+
+*Please note: the running times and number of recursive calls listed are for a separate but very similar problem (#paths from upper left to *lower right* corner on a 7x7 grid); they may not be entirely accurate, but they illustrate the effect of each optimization. The numbers are also C++ specific, so Java and Python users will experience significantly different runtimes, which will be addressed later in the explanation.*
+
+**Basic Algorithm**
+
+The first version of the algorithm does not contain any optimizations. We simply use backtracking to generate all possible paths from the upper-left corner to the lower-right corner and count the number of such paths.
+
+• running time: 483 seconds
+
+• number of recursive calls: 76 billion
+
+**Optimization 1**
+
+If the path reaches the lower-right square before it has visited all other squares of the grid, it is clear that it will not be possible to complete the solution. Using this observation, we can terminate the search immediately if we reach the lower-right square too early.
+
+• running time: 119 seconds
+
+• number of recursive calls: 20 billion
+
+
+**Optimization 2**
+
+If the path touches a wall and can turn either left or right, the grid splits into two parts that contain unvisited squares. In this case, we cannot visit all squares anymore, so we can terminate the search.
+
+• running time: 1.8 seconds
+
+• number of recursive calls: 221 million
+
+**Optimization 3**
+
+The idea of Optimization 3 can be generalized: if the path cannot continue forward but can turn either left or right, the grid splits into two parts that both contain unvisited squares. It is clear that we cannot visit all squares anymore, so we can terminate the search.
+
+• running time: 0.6 seconds
+
+• number of recursive calls: 69 million
+
+Now is a good moment to stop optimizing the algorithm and see what we have
+achieved. The running time of the original algorithm was 483 seconds, and now
+after the optimizations, the running time is only 0.6 seconds. Thus, the algorithm
+became nearly 1000 times faster after the optimizations.
+This is a usual phenomenon in backtracking, because the search tree is usually
+large and even simple observations can effectively prune the search. Especially
+useful are optimizations that occur during the first steps of the algorithm, i.e., at
+the top of the search tree.
+
+For C++ users, this will be enough pruning to make the program run in time under worst case conditions. However, for Java and Python users, this is still too slow (Java takes around 1.2 seconds for the worst case). Thus, we will need to further optimize our search.
+
+**Optimization 4**
+
+If the path creates a dead end that is not the bottom left corner, either the path will fail to visit all squares (the path may stop at the dead end or pass over it, sealing a square off) or the path will end in the wrong location. Thus we want to avoid creating dead ends. For example, if the square to the left of our current location is blocked on three sides (including our current location), then the next step must be to the left in order to avoid creating a dead end. After this optimization, the program runs in under 1 second.
+
+## Implementation
+
+
+^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
+
+<LanguageSection>
+
+<CPPSection>
+
+```
+#include <iostream>
+using namespace std;
+    
+int dr[4] = {-1, 0, 1, 0};
+int dc[4] = {0, 1, 0, -1};
+int p[48];
+bool onPath[9][9];
+int tryPath(int pathIdx, int curR, int curC);
+
+int main()
+{
+	string line;
+	getline(cin, line);
+	
+	//convert path to ints
+	for (int i = 0; i < 48; i++) {
+		char cur = line[i];
+
+		if (cur == 'U') {
+			p[i] = 0;
+		}
+		else if (cur == 'R') {
+			p[i] = 1;
+		}
+		else if (cur == 'D') {
+			p[i] = 2;
+		}
+		else if (cur == 'L') {
+			p[i] = 3;
+		}
+		else {
+			p[i] = 4;
+		}
+	}
+
+	//set borders of grid
+	for (int i = 0; i < 9; i++) {
+		onPath[0][i] = true;
+		onPath[8][i] = true;
+		onPath[i][0] = true;
+		onPath[i][8] = true;
+	}
+	for (int i = 1; i <= 7; i++) {
+		for (int j = 1; j <= 7; j++) {
+			onPath[i][j] = false;
+		}
+	}
+
+	int startIdx = 0;
+	int startR = 1;
+	int startC = 1;
+	int ans = tryPath(startIdx, startR, startC);
+	cout << ans << endl;
+	return 0;
+}
+
+int tryPath(int pathIdx, int curR, int curC)
+{
+	if ((onPath[curR][curC-1] && onPath[curR][curC+1])
+			&& (!onPath[curR-1][curC] && !onPath[curR+1][curC])) return 0;
+	if ((onPath[curR-1][curC] && onPath[curR+1][curC])
+	                && (!onPath[curR][curC-1] && !onPath[curR][curC+1])) return 0;
+
+	if (curR == 7 && curC == 1) { //reached endpoint before visiting all
+		if (pathIdx == 48) {
+			return 1;
+		}
+		return 0;
+	}
+
+	if (pathIdx == 48) {
+		return 0;
+	}
+
+	int ret = 0;
+	onPath[curR][curC] = true;
+
+	//turn already determined:
+	if (p[pathIdx] < 4) {
+		int nxtR = curR + dr[p[pathIdx]];
+		int nxtC = curC + dc[p[pathIdx]];
+		if (!onPath[nxtR][nxtC]) {
+			ret += tryPath(pathIdx + 1, nxtR, nxtC);
+		}
+	} /* //this next bit is not necessary for C++, but I left it in for reference
+	else if ((curC > 2) && onPath[curR][curC-2]
+			&& (onPath[curR-1][curC-1] || onPath[curR+1][curC-1])
+			&& (!onPath[curR][curC-1]))
+	{ //potential dead end on the left:
+		int nxtR = curR;
+		int nxtC = curC-1;
+		ret += tryPath(pathIdx+1, nxtR, nxtC);
+	}
+	else if ((curC < 6) && onPath[curR][curC+2]
+			&& (onPath[curR-1][curC+1] || onPath[curR+1][curC+1] )
+			&& (!onPath[curR][curC+1]))
+	{ //potential dead end on the right:
+		int nxtR = curR;
+		int nxtC = curC +1;
+		ret += tryPath(pathIdx+1, nxtR, nxtC);
+	}
+	else if ((curR > 2) && onPath[curR-2][curC] && onPath[curR-1][curC-1]
+			&& (!onPath[curR-1][curC]))
+	{ //potential dead end upwards
+		int nxtR = curR-1;
+		int nxtC = curC;
+		ret += tryPath(pathIdx+1, nxtR, nxtC);
+	} */
+	else { //iterate through all four possible turns
+		for (int i = 0; i < 4; i++) {
+			int nxtR = curR + dr[i];
+			int nxtC = curC + dc[i];
+			if (onPath[nxtR][nxtC]) continue;
+			ret += tryPath(pathIdx+1, nxtR, nxtC);
+		}
+	}
+	//reset and return
+	onPath[curR][curC] = false;
+	return ret;
+}
+
+```
+
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+```
+import java.util.Scanner;
+
+public class GridPaths4 {
+
+    static boolean[][] onPath = new boolean[9][9];
+    static int[] dr = {-1, 0, 1, 0};
+    static int[] dc = {0, 1, 0, -1};
+    static int[] p = new int[48];
+
+    public static void main(String[] args) {
+        try {
+//            this is to figure out how long it takes for the program to run
+//            long start = System.currentTimeMillis();
+
+            Scanner in = new Scanner(System.in);
+            String line = in.nextLine();
+
+            //convert path to ints
+            for (int i = 0; i < 48; i++) {
+                char cur = line.charAt(i);
+
+                if (cur == 'U') {
+                    p[i] = 0;
+                }
+                else if (cur == 'R') {
+                    p[i] = 1;
+                }
+                else if (cur == 'D') {
+                    p[i] = 2;
+                }
+                else if (cur == 'L') {
+                    p[i] = 3;
+                }
+                else {
+                    p[i] = 4;
+                }
+            }
+
+            //set borders of grid
+            for (int i = 0; i < 9; i++) {
+                onPath[0][i] = true;
+                onPath[8][i] = true;
+                onPath[i][0] = true;
+                onPath[i][8] = true;
+            }
+
+//            long mid = System.currentTimeMillis();
+//            System.out.println("add borders: " + (mid-start));
+
+            int ans = tryPath(0, 1, 1);
+            System.out.println(ans);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static int tryPath(int pathIdx, int curR, int curC) {
+        if ((onPath[curR][curC-1] && onPath[curR][curC+1])
+                && (!onPath[curR-1][curC] && !onPath[curR+1][curC])) return 0;
+        if ((onPath[curR-1][curC] && onPath[curR+1][curC])
+                && (!onPath[curR][curC-1] && !onPath[curR][curC+1])) return 0;
+
+        if (curR == 7 && curC == 1) { //reached endpoint before visiting all
+            if (pathIdx == 48) {
+                return 1;
+            }
+            return 0;
+        }
+        //dbug("<>. <> <> ", pathIdx, curR, curC);
+        if (pathIdx == 48) {
+            return 0;
+        }
+
+        int ret = 0;
+        onPath[curR][curC] = true;
+
+        //turn already determined:
+        if (p[pathIdx] < 4) {
+            int nxtR = curR + dr[p[pathIdx]];
+            int nxtC = curC + dc[p[pathIdx]];
+            if (!onPath[nxtR][nxtC]) {
+                ret += tryPath(pathIdx + 1, nxtR, nxtC);
+            }
+        }
+        else if ((curC > 2) && onPath[curR][curC-2]
+                && (onPath[curR-1][curC-1] || onPath[curR+1][curC-1])
+                && (!onPath[curR][curC-1]))
+        { //potential dead end on the left:
+            int nxtR = curR;
+            int nxtC = curC-1;
+            ret += tryPath(pathIdx+1, nxtR, nxtC);
+        }
+        else if ((curC < 6) && onPath[curR][curC+2]
+                && (onPath[curR-1][curC+1] || onPath[curR+1][curC+1] )
+                && (!onPath[curR][curC+1]))
+        { //potential dead end on the right:
+            int nxtR = curR;
+            int nxtC = curC +1;
+            ret += tryPath(pathIdx+1, nxtR, nxtC);
+        }
+        else if ((curR > 2) && onPath[curR-2][curC] && onPath[curR-1][curC-1]
+                && (!onPath[curR-1][curC]))
+        { //potential dead end upwards
+        // note: I didn't include all possible scenarios because 
+        // it wasn't necessary in order for the program to run in time
+            int nxtR = curR-1;
+            int nxtC = curC;
+            ret += tryPath(pathIdx+1, nxtR, nxtC);
+        }
+        else { //iterate through all four possible turns
+            for (int i = 0; i < 4; i++) {
+                int nxtR = curR + dr[i];
+                int nxtC = curC + dc[i];
+                if (onPath[nxtR][nxtC]) continue;
+                ret += tryPath(pathIdx+1, nxtR, nxtC);
+            }
+        }
+        //reset and return
+        onPath[curR][curC] = false;
+        return ret;
+    }
+
+
+    public static void dbug(String s, long...a) { ///*
+        String[] f = s.split("<>");
+        for (int i = 0; i < a.length; i++) {
+            System.out.print(f[i] + a[i]);
+        }
+        System.out.println(f[a.length]); // */
+    }
+
+    public static void print(int[] a) { /*
+        for (int i = 0; i < a.length; i++) {
+            System.out.print(a[i] + " ");
+        }
+        System.out.println(); // */
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
