@@ -47,7 +47,7 @@ export type ProblemHint = {
 
 export enum SubmissionType {
   SELF_GRADED = 'Self Graded',
-  COMPCS_API = 'CompCS API',
+  ONLINE_JUDGE = 'Online Judge',
 }
 
 export type Submission = {
@@ -57,16 +57,27 @@ export type Submission = {
   code: string;
   language: 'cpp' | 'java' | 'py';
   timestamp: Timestamp;
+  result: number;
 } & (
   | {
       type: SubmissionType.SELF_GRADED;
-      result: number;
       status: ExecutionStatus;
     }
-  | {
-      type: SubmissionType.COMPCS_API;
-      result: TestCaseResult[];
-    }
+  | ({
+      type: SubmissionType.ONLINE_JUDGE;
+      gradingStatus: 'waiting' | 'in_progress' | 'done';
+      judgeProblemId: string;
+    } & (
+      | {
+          compilationError: false;
+          testCases?: TestCaseResult[];
+        }
+      | {
+          compilationError: true;
+          compilationErrorMessage: string;
+        }
+      | Record<string, never>
+    ))
 );
 
 export enum ExecutionStatus {

@@ -1,3 +1,5 @@
+import type firebaseType from 'firebase/firestore';
+import { getFirestore, doc } from 'firebase/firestore';
 import * as React from 'react';
 import { useReducer } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -5,6 +7,7 @@ import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/use
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
 import {
   ExecutionStatus,
   GroupProblemData,
@@ -13,6 +16,7 @@ import {
 } from '../../../models/groups/problem';
 import ButtonGroup from '../../ButtonGroup';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
+import OnlineJudgeSubmission from '../OnlineJudgeSubmission/OnlineJudgeSubmission';
 
 // const ScoreInput = styled.input`
 //   &::-webkit-outer-spin-button,
@@ -72,6 +76,10 @@ export default function ProblemSubmissionInterface({
     },
   });
 
+  const firebaseApp = useFirebaseApp();
+  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
+    React.useState<firebaseType.DocumentReference | null>(null);
+
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
     // or a group owner is viewing the group as a group member. either way
@@ -83,24 +91,98 @@ export default function ProblemSubmissionInterface({
     );
   }
 
+  // todo remove
+  const isCPIClass =
+    '2i0ZZTfYhlxGi9OEIjy2' === activeGroup.activeGroupId ||
+    'd7eYGfddXq3m2trXG2xt' === activeGroup.activeGroupId ||
+    'UyefpawGOgGFh14ptihn' === activeGroup.activeGroupId; // todo remove (mvcpc club)
+  // todo add ys?
+  const cannotSubmit =
+    isCPIClass &&
+    !(
+      problem.usacoGuideId?.startsWith('usaco') ||
+      problem.usacoGuideId?.startsWith('cses')
+    );
+
+  if (cannotSubmit) {
+    return (
+      <div>
+        <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
+          Submit Code
+        </h2>
+        <div className="mt-1 text-gray-900 dark:text-gray-300">
+          Unfortunately, we don't support built-in code submissions for this
+          problem yet. Submit this problem directly from the problem statement
+          website. For CodeForces problems, you may need to make a CodeForces
+          account first.
+        </div>
+      </div>
+    );
+  }
+
+  const handleSubmitSolution = async e => {
+    e.preventDefault();
+    if (isCPIClass) {
+      const submissionID = await submitSolution(problem, {
+        ...submission,
+        type: SubmissionType.ONLINE_JUDGE,
+        judgeProblemId: problem.usacoGuideId, // todo update
+        gradingStatus: "waiting",
+      });
+      setOnlineJudgeSubmissionDoc(
+        doc(
+          getFirestore(firebaseApp),
+          'groups',
+          activeGroup.activeGroupId,
+          'posts',
+          problem.postId,
+          'problems',
+          problem.id,
+          'submissions',
+          submissionID
+        )
+      );
+    } else {
+      submitSolution(problem, submission);
+      editSubmission(emptySubmission);
+    }
+  };
+
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault();
-        submitSolution(problem, submission);
-        editSubmission(emptySubmission);
-      }}
-    >
+    <form onSubmit={handleSubmitSolution}>
       <div>
         <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
           Submit Code
         </h2>
       </div>
       <div className="text-sm mt-1 text-gray-900 dark:text-gray-300">
-        <b>Self-graded problem:</b> Use the Problem Statement link above to test
-        your code. Submit your <i>working</i> code below. Group admins will
-        manually verify your code to ensure that your code works.
+        {isCPIClass ? (
+          <>
+            All problems submitted through this website use standard
+            input/output. Report any issues to{' '}
+            <a
+              href="mailto:classes@joincpi.org"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              classes@joincpi.org
+            </a>
+            .
+          </>
+        ) : (
+          <>
+            <b>Self-graded problem:</b> Use the Problem Statement link above to
+            test your code. Submit your <i>working</i> code below. Group admins
+            will manually verify your code to ensure that your code works.
+          </>
+        )}
       </div>
+      {onlineJudgeSubmissionDoc && (
+        <div className="mt-4">
+          <OnlineJudgeSubmission submissionDoc={onlineJudgeSubmissionDoc} />
+        </div>
+      )}
       {/*<div className="mt-4">*/}
       {/*  <label*/}
       {/*    htmlFor="score"*/}
