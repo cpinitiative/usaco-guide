@@ -65,19 +65,22 @@ export type Submission = {
     }
   | ({
       type: SubmissionType.ONLINE_JUDGE;
-      gradingStatus: 'waiting' | 'in_progress' | 'done' | 'error';
       errorMessage?: string;
       judgeProblemId: string;
     } & (
       | {
+          gradingStatus: 'waiting' | 'in_progress' | 'error';
+        }
+      | {
+          gradingStatus: 'done';
           compilationError: false;
           testCases?: TestCaseResult[];
         }
       | {
+          gradingStatus: 'done';
           compilationError: true;
           compilationErrorMessage: string;
         }
-      | Record<string, never>
     ))
 );
 
