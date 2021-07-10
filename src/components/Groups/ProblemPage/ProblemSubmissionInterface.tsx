@@ -111,8 +111,8 @@ export default function ProblemSubmissionInterface({
   // todo remove
   const isCPIClass =
     '2i0ZZTfYhlxGi9OEIjy2' === activeGroup.activeGroupId ||
-    'd7eYGfddXq3m2trXG2xt' === activeGroup.activeGroupId ||
-    'UyefpawGOgGFh14ptihn' === activeGroup.activeGroupId; // todo remove (mvcpc club)
+    'd7eYGfddXq3m2trXG2xt' === activeGroup.activeGroupId;
+  // 'UyefpawGOgGFh14ptihn' === activeGroup.activeGroupId; // todo remove (mvcpc club)
   // todo add ys?
   const cannotSubmit =
     isCPIClass &&
