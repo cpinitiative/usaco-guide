@@ -58,7 +58,7 @@ export type Submission = {
   language: 'cpp' | 'java' | 'py';
   timestamp: Timestamp;
   result: number;
-  status?: ExecutionStatus;
+  status: ExecutionStatus;
 } & (
   | {
       type: SubmissionType.SELF_GRADED;
@@ -118,6 +118,27 @@ export type TestCaseResult = { caseId: number } & (
     }
 );
 
+export const getTestCaseSymbol = (testCase: TestCaseResult): string => {
+  if (testCase.pass === true) {
+    return '*';
+  }
+  switch (testCase.error) {
+    case TestResultError.COMPILE_TIMEOUT:
+    case TestResultError.COMPILE_ERROR:
+      return 'c';
+    case TestResultError.RUNTIME_ERROR:
+      return '!';
+    case TestResultError.TIME_LIMIT_EXCEEDED:
+      return 't';
+    case TestResultError.EMPTY_MISSING_OUTPUT:
+      return 'e';
+    case TestResultError.WRONG_ANSWER:
+      return 'x';
+    case TestResultError.INTERNAL_ERROR:
+      return '?';
+  }
+};
+
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {
   AC: 'text-green-800 dark:text-green-200',
   WA: 'text-red-800 dark:text-red-200',
@@ -162,11 +183,7 @@ export const getSubmissionEarnedPoints = (
   submission: Submission,
   problem: ProblemData
 ) => {
-  if (submission.type === SubmissionType.SELF_GRADED) {
-    return parseFloat((submission.result * problem.points).toFixed(1));
-  }
-  // todo actually implement
-  return problem.points;
+  return parseFloat((submission.result * problem.points).toFixed(1));
 };
 export const getEarnedPointsForProblem = (
   problem: ProblemData,

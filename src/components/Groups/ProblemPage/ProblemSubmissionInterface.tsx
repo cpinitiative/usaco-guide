@@ -1,5 +1,5 @@
 import type firebaseType from 'firebase/firestore';
-import { doc, getFirestore } from 'firebase/firestore';
+import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
 import * as React from 'react';
 import { useReducer } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -79,6 +79,23 @@ export default function ProblemSubmissionInterface({
   const firebaseApp = useFirebaseApp();
   const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
     React.useState<firebaseType.DocumentReference | null>(null);
+  const [submissionResult, setSubmissionResult] = React.useState<
+    (Submission & { type: SubmissionType.ONLINE_JUDGE }) | null
+  >(null);
+
+  React.useEffect(() => {
+    if (!onlineJudgeSubmissionDoc || !firebaseApp) {
+      setSubmissionResult(null);
+      return;
+    }
+
+    const unsub = onSnapshot(onlineJudgeSubmissionDoc, doc => {
+      setSubmissionResult(
+        doc.data() as Submission & { type: SubmissionType.ONLINE_JUDGE }
+      );
+    });
+    return unsub;
+  }, [onlineJudgeSubmissionDoc, firebaseApp]);
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
@@ -160,7 +177,8 @@ export default function ProblemSubmissionInterface({
         {isCPIClass ? (
           <>
             All problems submitted through this website use standard
-            input/output. Report any issues to{' '}
+            input/output. When using Java, make sure to name your class Main.
+            Report any issues to{' '}
             <a
               href="mailto:classes@joincpi.org"
               target="_blank"
@@ -179,9 +197,9 @@ export default function ProblemSubmissionInterface({
           </>
         )}
       </div>
-      {onlineJudgeSubmissionDoc && (
+      {submissionResult && (
         <div className="mt-4">
-          <OnlineJudgeSubmission submissionDoc={onlineJudgeSubmissionDoc} />
+          <OnlineJudgeSubmission submission={submissionResult} />
         </div>
       )}
       {/*<div className="mt-4">*/}
@@ -254,7 +272,11 @@ export default function ProblemSubmissionInterface({
         </button>{' '}
         to select a file.
       </div>
-      <button type="submit" className="mt-4 btn">
+      <button
+        type="submit"
+        className="mt-4 btn"
+        disabled={submissionResult?.status === ExecutionStatus.PENDING}
+      >
         Submit Code
       </button>
     </form>
