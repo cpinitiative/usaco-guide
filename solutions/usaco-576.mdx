@@ -29,10 +29,19 @@ traversal of the tree.
 using namespace std;
 
 int N, M;
-vector<int> adj[50005];
+vector<int> adj[50005];	// adj[u] = neighbors of u
 
-int dep[50005], par[50005][20];
+int dep[50005];		// dep[u] = depth of u
+int par[50005][20];	// par[u][k] = 2^k parent of u
+	
+int ans[50005];		// ans[u] = amount of milk through u
+int S[50005];		// S[u] = # of paths starting at u
+int E[50005];		// E[u] = # of paths ending at u
 
+// initializes (direct) parent and depth 
+// u = current node
+// p = parent of u (parent of root is root)
+// d = depth of u
 void init_bl(int u, int p, int d) {
 	dep[u] = d;
 	par[u][0] = p;
@@ -41,6 +50,7 @@ void init_bl(int u, int p, int d) {
 			init_bl(v, u, d + 1);
 }
 
+// initializes binary lift
 void init_bl() {
 	init_bl(1, 1, 0);
 	for (int k = 1; (1 << k) <= N; k++)
@@ -48,6 +58,9 @@ void init_bl() {
 			par[i][k] = par[par[i][k - 1]][k - 1];
 }
 
+// queries the least common ancestor of two nodes
+// a = node 1
+// b = node 2
 int query_lca(int a, int b) {
 	if (dep[a] > dep[b])
 		swap(a, b);
@@ -62,8 +75,9 @@ int query_lca(int a, int b) {
 	return par[a][0];
 } 
 
-int ans[50005], S[50005], E[50005];
-
+// initializes ans
+// u = current node
+// p = parent of u
 int dfs_ans(int u, int p) {
 	int sum = 0;
 	for (int v : adj[u])
@@ -84,6 +98,7 @@ int main() {
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
+	
 	init_bl();
 	while (M--) {
 		int a, b; cin >> a >> b;
@@ -92,10 +107,10 @@ int main() {
 
 	dfs_ans(1, 0);
 
-	int ans0 = 0;
+	int maxAns = 0;
 	for (int i = 1; i <= N; i++) 
-		ans0 = max(ans0, ans[i]);
-	cout << ans0 << '\n';
+		maxAns = max(maxAns, ans[i]);
+	cout << maxAns << '\n';
 }
 
 ```
