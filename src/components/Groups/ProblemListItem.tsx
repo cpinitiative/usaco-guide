@@ -30,6 +30,8 @@ const ProblemListItem = ({
   const pointsEarned = bestSubmission?.bestScore || 0;
   const status = bestSubmission?.bestScoreStatus || ExecutionStatus.WA;
 
+  if (!problem) return null; // this shouldn't happen...
+
   return (
     <div className="flex items-center bg-white dark:bg-dark-surface">
       {dragHandle}
