@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TestCaseResult = ({ data }: { data: any }): JSX.Element => {

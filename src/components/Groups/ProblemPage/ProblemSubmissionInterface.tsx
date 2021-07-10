@@ -77,8 +77,10 @@ export default function ProblemSubmissionInterface({
   });
 
   const firebaseApp = useFirebaseApp();
-  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
-    React.useState<firebaseType.DocumentReference | null>(null);
+  const [
+    onlineJudgeSubmissionDoc,
+    setOnlineJudgeSubmissionDoc,
+  ] = React.useState<firebaseType.DocumentReference | null>(null);
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
@@ -127,7 +129,7 @@ export default function ProblemSubmissionInterface({
         ...submission,
         type: SubmissionType.ONLINE_JUDGE,
         judgeProblemId: problem.usacoGuideId, // todo update
-        gradingStatus: "waiting",
+        gradingStatus: 'waiting',
       });
       setOnlineJudgeSubmissionDoc(
         doc(
