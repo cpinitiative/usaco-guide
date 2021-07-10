@@ -7,60 +7,139 @@ author: Vivian Han
 
 [Official Analysis](http://www.usaco.org/current/data/sol_reststops_silver_feb18.html)
 
-## Explanation
-
-(add explanation here ...)
-
-Use `\texttt{}` around variable names with length *greater than one*, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
-
-$$
-\texttt{arr}[i]=2\cdot (a+b+c+d+e)+\sum_{j=0}^{i-1}\texttt{arr}[j]
-$$
-
-Some additional text styles which you might consider using:
-
-http://latexref.xyz/Font-styles.html
-
-http://applied-r.com/latex-font-styles/
-
-$func(var)$
-
-$\textit{func(var)}$
-
-$\textrm{func(var)}$
-
-$\text{func(var)}$
-
-$\textsf{func(var)}$
-
-$\textbf{func(var)}$
-
-$\texttt{func(var)}$
-
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
-
-^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 
 <CPPSection>
 
-(add cpp code)
+```cpp
+#include <iostream>
+#include <fstream>
+using namespace std;
 
+int32_t trailLen, stopNum, fRate, bRate;
+int32_t x[100000];
+int32_t c[100000];
+bool good[100000];
+
+int main()
+{
+
+	ifstream in;
+	in.open("reststops.in");
+	in >> trailLen >> stopNum >> fRate >> bRate;
+//	scan in rest stop data
+	for (int i = 0 ; i < stopNum; i++) {
+		in >> x[i] >> c[i];
+	}
+
+	//find all "best" stops
+	int32_t max = 0;
+	for (int i = stopNum-1; i >= 0; i--) {
+		good[i] = false;
+		if (c[i] > max) { //there are no stops after stop i that are "better"
+			good[i] = true;
+			max = c[i];
+		}
+	}
+
+	//simulate the whole trail
+	long long prevStopPos = 0;
+	long long ans = 0;
+	for (int i = 0; i < stopNum; i++) {
+		if (good[i]) {
+			long long travelDist = x[i] - prevStopPos;
+			long long fTime = travelDist * fRate;
+			long long bTime = travelDist * bRate;
+			long long restTime = fTime - bTime;
+			ans += restTime * c[i];
+			prevStopPos = x[i];
+		}
+	}
+// */
+	ofstream out;
+	out.open("reststops.out");
+	out << ans << endl;
+	out.close();
+
+	//cout << ans << endl;
+
+	return 0;
+}
+```
 </CPPSection>
 
 <PySection>
-
-(if you have Python code)
 
 </PySection>
 
 <JavaSection>
 
-(if you have Java code)
+```java
+import java.io.*;
 
+public class RestStops {
+
+    static int[] x, c;
+    static boolean[] good;
+
+    public static void main(String[] args) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
+            String[] line = br.readLine().split(" ");
+            int trailLen = Integer.parseInt(line[0]); //this value is never used...
+            int stopNum = Integer.parseInt(line[1]);
+            int fRate = Integer.parseInt(line[2]);
+            int bRate = Integer.parseInt(line[3]);
+
+            x = new int[stopNum];
+            c = new int[stopNum];
+            good = new boolean[stopNum];
+
+            //scan in rest stop data
+            for (int i = 0 ; i < stopNum; i++) {
+                line = br.readLine().split(" ");
+                x[i] = Integer.parseInt(line[0]);
+                c[i] = Integer.parseInt(line[1]);
+            }
+            br.close();
+
+            //find all "best" stops
+            int max = 0;
+            for (int i = stopNum-1; i >= 0; i--) {
+                if (c[i] > max) { //there are no stops after stop i that are "better"
+                    good[i] = true;
+                    max = c[i];
+                }
+            }
+
+            //simulate the whole trail
+            int prevStopPos = 0;
+            long ans = 0;
+            for (int i = 0; i < stopNum; i++) {
+                if (good[i]) {
+                    long travelDist = x[i] - prevStopPos;
+                    long fTime = travelDist * fRate;
+                    long bTime = travelDist * bRate;
+                    long restTime = fTime - bTime;
+                    ans += restTime * c[i];
+                    prevStopPos = x[i];
+                }
+            }
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
+            bw.write(ans + "\n");
+            bw.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+```
 </JavaSection>
 
 </LanguageSection>
