@@ -21,20 +21,22 @@ using pi = pair<ll, ll>;
 void solve(){
 	int n; cin >> n;
 	vector<int> dp(n+1, 0);
-	for(int i=1; i<=n; i++){
+	for(int i=1; i<=n; i++){  // put into array
 		char c; cin >> c;
 		dp[i]=c-'0';
 	}
-	for(int i=1; i<=n; i++){
+	for(int i=1; i<=n; i++){  // build prefix sums
 		dp[i]+=dp[i-1];
 	}
 	map<int, ll> sumDist;
-	for(int i=0; i<=n; i++){
+	for(int i=0; i<=n; i++){  // build map
 		sumDist[dp[i]-i]++;
 	}
 	ll goodArrays=0;
 	for(pi p: sumDist){
 		ll f=p.second;
+		// this uses the formula n * (n - 1) / 2, and it gets
+            	// the sum of all the positive integers up to and including n
 		goodArrays+=f*(f-1)/2;
 	}
 	cout << goodArrays << endl;
@@ -42,12 +44,62 @@ void solve(){
 
 int main(){
 	int t; cin >> t;
-	for(int i=0; i<t; i++){
+	for(int i=0; i<t; i++){  // each test case
 		solve();
 	}
 }
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class GoodSubarrays {
+	static long solve (int arrayLength, String stringArray) {
+		int[] array = new int[arrayLength + 1];
+		for (int x = 1; x <= arrayLength; x++) {  // put into array
+			array[x] = stringArray.charAt(x - 1) - '0';
+		}
+		for (int x = 1; x <= arrayLength; x++) {  // build prefix sums
+			array[x] += array[x - 1];
+		}
+		Map<Integer, Long> sumDist = new HashMap<>();
+		for (int x = 0; x <= arrayLength; x++) {  // build map
+			if (sumDist.containsKey(array[x] - x)) {  // already in map
+				// add one on to what is already there
+				sumDist.put(array[x] - x, sumDist.get(array[x] - x) + 1);
+			}
+			else {  // not in the map yet, put 1
+				sumDist.put(array[x] - x, (long) 1);
+			}
+		}
+		long goodArrays = 0;
+		for (int key : sumDist.keySet()) {  // for each key
+			long f = sumDist.get(key);
+			// this uses the formula n * (n - 1) / 2, and it gets
+			// the sum of all the positive integers up to and including n
+			goodArrays += f * (f - 1) / 2;
+		}
+		return goodArrays;
+	}
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int t = io.nextInt();
+		for (int x = 0; x < t; x++) {  // each test case
+			int arrayLength = io.nextInt();
+			String array = io.next();
+			io.println(solve(arrayLength, array));
+		}
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
 
 </LanguageSection>
