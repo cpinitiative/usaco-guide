@@ -1,7 +1,11 @@
 import React from 'react';
 import { TestCaseResult as TestCaseResultType } from '../../../models/groups/problem';
 
-const TestCaseResult = ({ data }: { data: TestCaseResultType }): JSX.Element => {
+const TestCaseResult = ({
+  data,
+}: {
+  data: TestCaseResultType;
+}): JSX.Element => {
   const containerClasses =
     data.title === 'Correct answer'
       ? 'bg-green-700 border-green-700'

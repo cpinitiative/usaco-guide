@@ -77,8 +77,10 @@ export default function ProblemSubmissionInterface({
   });
 
   const firebaseApp = useFirebaseApp();
-  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
-    React.useState<firebaseType.DocumentReference | null>(null);
+  const [
+    onlineJudgeSubmissionDoc,
+    setOnlineJudgeSubmissionDoc,
+  ] = React.useState<firebaseType.DocumentReference | null>(null);
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account

@@ -41,18 +41,18 @@ const OnlineJudgeSubmission = ({
         {submission.gradingStatus === 'done' &&
           (submission.compilationError ? 'Compilation Error' : 'Done')}
       </div>
-        {submission.compilationError === true && (
-          <pre className="text-red-800 dark:text-red-200">
-            {submission.compilationErrorMessage}
-          </pre>
-        )}
-        {submission.compilationError === false && (
-          <div>
-            {submission.testCases.map(tc => (
-              <TestCaseResult data={tc} key={tc.caseId} />
-            ))}
-          </div>
-        )}
+      {submission.compilationError === true && (
+        <pre className="text-red-800 dark:text-red-200">
+          {submission.compilationErrorMessage}
+        </pre>
+      )}
+      {submission.compilationError === false && (
+        <div>
+          {submission.testCases.map(tc => (
+            <TestCaseResult data={tc} key={tc.caseId} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
