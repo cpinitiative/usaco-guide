@@ -58,16 +58,16 @@ export default functions.https.onCall(
     }
 
     // 5. Validate the transaction details are as expected
-    if (order.result.purchase_units[0].amount.value !== '100.00') {
+    if (order.result.purchase_units[0].amount.value !== '25.00') {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'The value of the order was not $100.'
+        'The value of the order was not $25.'
       );
     }
     const ref = admin
       .firestore()
       .collection('classes-registration')
-      .doc('2021march')
+      .doc('usacobronze')
       .collection('registrations')
       .doc();
     await Promise.all([

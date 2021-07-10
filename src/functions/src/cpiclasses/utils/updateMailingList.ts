@@ -57,7 +57,7 @@ export default async function updateMailingList({
         ...(existingFields?.merge_fields || {}),
         FNAME: firstName,
         LNAME: lastName,
-        PROGLANG: preferredLanguage === 'java' ? 'Java' : 'C++',
+        PROGLANG: preferredLanguage === 'java' ? 'Java' : preferredLanguage === 'cpp' ? 'C++' : 'Python',
       },
     };
 
@@ -77,15 +77,13 @@ export default async function updateMailingList({
       {
         tags: [
           {
-            name: `March 2021 ${
-              level == 'beginner' ? 'Beginner' : 'Intermediate'
-            } Class`,
+            name: `Bronze Video Class`,
             status: 'active',
           },
           ...(fullFinancialAid
             ? [
                 {
-                  name: `March 2021 Full Financial Aid`,
+                  name: `Bronze Video Class Full Financial Aid`,
                   status: 'active',
                 },
               ]
