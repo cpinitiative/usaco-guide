@@ -1,0 +1,70 @@
+---
+id: cses-2428
+source: CSES
+title: Subarray Distinct Values
+author: Sofia Yang
+---
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+
+<LanguageSection>
+
+<JavaSection>
+
+
+``` java
+import java.io.*;
+import java.util.*;
+CodeSnip{Kattio}
+public class cses2428 {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int K = io.nextInt();
+		int[] A = new int[N];
+		for (int i = 0; i < N; i++) {
+			A[i] = io.nextInt();
+		}
+
+		int l = 0, r = 0;
+		long ans = 0;
+		int distinct = 0;
+
+		HashMap<Integer, Integer> freq = new HashMap<>();
+		while (l < N) {
+			while (r < N && (distinct + (freq.containsKey(A[r]) ? 0 : 1) <= K)) {
+				// Put the new array element in the map.
+				if (!freq.containsKey(A[r])) {
+					freq.put(A[r], 1);
+					distinct++;
+				} else {
+					freq.put(A[r], freq.get(A[r]) + 1);
+				}
+				r++;
+			}
+			// Add the new subarrays.
+			ans += (r - l);
+
+			// Slide the window rightwards.
+			if (freq.get(A[l]) == 1) {
+				distinct--;
+				freq.remove(A[l]);
+			}
+			else {
+				freq.put(A[l], freq.get(A[l]) - 1);
+			}
+			l++;
+		}
+
+		io.println(ans);
+		io.close();
+
+	}
+
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
