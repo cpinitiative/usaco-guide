@@ -8,18 +8,20 @@ author: Albert Ye
 ## Solution
 **Time Complexity: $\mathcal{O}(n\log n)$**
 
-In this question, we have range updates and range queries, but
-the updates are of a strange format: incrementing the first number
-in interval by $1$, the second by $2$, etc. However, despite the
-strange operations we can still use a segment tree with lazy propagation
+Despite the strange operations we can still use a segment tree with lazy propagation
 to solve this problem.
 
-The range queries should be similar to in other lazy problems: we finish
-the lazy propagation to all needed nodes and find the range query. However,
-the range updates are different. 
+The range queries are vanilla lazy propagation, so we should focus more on the updates.
 
-When we update, we want to keep 2 lazy values: one (`lz`) stores the starting value
-and the other (`lz2`) stores the increment. When we propagate, the value of `lz` for
+We can split the "update" operation into two operations. One would be a basic range addition,
+and the other would be an incremental addition. Therefore, for each index $a_i$, we will need
+to keep track of two points: the total sum $s_i$ given only the range sums without increments,
+and a value $t_i$ which contains the sum of all increments from the incremental steps.
+
+When we update, we want to keep two lazy values: one (`lz`) stores the unapplied change in $s_i$,
+much like regular lazy prop,
+and the other (`lz2`) stores the unapplied change from the incremental sum $t_i$.
+When we propagate, the value of `lz` for
 a node `nd` containing segment $[i, j]$ when updating $[l, r]$ can be found by calculating $i-l$.
 When we update increments for any node `nd` we always add 1 to `lz2[nd]` as per the 
 problem statement.
