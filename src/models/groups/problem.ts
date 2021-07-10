@@ -58,14 +58,15 @@ export type Submission = {
   language: 'cpp' | 'java' | 'py';
   timestamp: Timestamp;
   result: number;
+  status?: ExecutionStatus;
 } & (
   | {
       type: SubmissionType.SELF_GRADED;
-      status: ExecutionStatus;
     }
   | ({
       type: SubmissionType.ONLINE_JUDGE;
-      gradingStatus: 'waiting' | 'in_progress' | 'done';
+      gradingStatus: 'waiting' | 'in_progress' | 'done' | 'error';
+      errorMessage?: string;
       judgeProblemId: string;
     } & (
       | {
@@ -86,16 +87,36 @@ export enum ExecutionStatus {
   TLE = 'TLE',
   MLE = 'MLE',
   RTE = 'RTE',
+  CE = 'CE',
+  INTERNAL_ERROR = "INTERNAL_ERROR",
   PENDING = 'Pending',
 }
 
-export type TestCaseResult = {
-  status: ExecutionStatus;
-  /**
-   * Execution time in milliseconds
-   */
-  executionTime: number;
-};
+export enum TestResultError {
+  COMPILE_TIMEOUT = "compile_timeout",
+  COMPILE_ERROR = "compile_error",
+  RUNTIME_ERROR = "runtime_error",
+  TIME_LIMIT_EXCEEDED = "time_limit_exceeded",
+  EMPTY_MISSING_OUTPUT = "empty_missing_output",
+  WRONG_ANSWER = "wrong_answer",
+  INTERNAL_ERROR = "internal_error",
+}
+export type TestCaseResult = { caseId: number } & (
+  | {
+      pass: false;
+      error: TestResultError;
+    }
+  | {
+      pass: true;
+
+      // in milliseconds:
+      time: number;
+      wallTime: number;
+
+      // in kb?
+      memory: number;
+    }
+);
 
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {
   AC: 'text-green-800 dark:text-green-200',
@@ -103,6 +124,8 @@ export const submissionTextColor: { [key in ExecutionStatus]: string } = {
   TLE: 'text-red-800 dark:text-red-200',
   MLE: 'text-red-800 dark:text-red-200',
   RTE: 'text-red-800 dark:text-red-200',
+  CE: 'text-red-800 dark:text-red-200',
+  INTERNAL_ERROR: 'text-red-800 dark:text-red-200',
   Pending: 'text-gray-800 dark:text-gray-200',
 };
 
@@ -112,6 +135,8 @@ export const submissionCircleColor: { [key in ExecutionStatus]: string } = {
   TLE: 'bg-red-400 dark:bg-red-500',
   MLE: 'bg-red-400 dark:bg-red-500',
   RTE: 'bg-red-400 dark:bg-red-500',
+  CE: 'bg-red-400 dark:bg-red-500',
+  INTERNAL_ERROR: 'bg-red-400 dark:bg-red-500',
   Pending: 'bg-gray-400 dark:bg-gray-500',
 };
 
@@ -123,6 +148,8 @@ export const submissionCircleBorderColor: {
   TLE: 'bg-red-100 dark:bg-red-800',
   MLE: 'bg-red-100 dark:bg-red-800',
   RTE: 'bg-red-100 dark:bg-red-800',
+  CE: 'bg-red-100 dark:bg-red-800',
+  INTERNAL_ERROR: 'bg-red-100 dark:bg-red-800',
   Pending: 'bg-gray-100 dark:bg-gray-800',
 };
 
