@@ -2,7 +2,7 @@
 id: cf-1365D
 source: CF
 title: Solve the Maze
-author: Daniel Suh
+author: Daniel Suh, Brad Ma
 ---
 
 [Official Analysis](https://codeforces.com/blog/entry/78504)
@@ -134,5 +134,106 @@ int32_t main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java	
+import java.util.*;
+import java.io.*;
+
+public class SolveTheMaze {
+	static int[] rowMovement = {0, 1, 0, -1};  // right, down, left, up
+	static int[] columnMovement = {1, 0, -1, 0};
+	static char[][] grid;
+	static boolean[][] visited;
+	static int numRows;
+	static int numColumns;
+
+	static void floodfill (int row, int column) {
+		visited[row][column] = true;
+
+		for (int x = 0; x < 4; x++) {  // the 4 directions
+			int newRow = row + rowMovement[x];
+			int newColumn = column + columnMovement[x];
+			if (newRow >= 0 && newRow < numRows && newColumn >= 0 && newColumn < numColumns) {  // in boundaries
+				if (! visited[newRow][newColumn] && grid[newRow][newColumn] != '#') {  // not visited, and not #
+					floodfill(newRow, newColumn);
+				}
+			}
+		}
+	}
+
+	static String solve () {
+		boolean ok = true;
+		// surround the bad
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				if (grid[i][j] == 'B') {
+					for (int x = 0; x < 4; x++) {  // the 4 directions
+						int newRow = i + rowMovement[x];
+						int newColumn = j + columnMovement[x];
+						// check if it is in the boundaries
+						if (newRow >= 0 && newRow < numRows && newColumn >= 0 && newColumn < numColumns) {
+							if (grid[newRow][newColumn] == 'G') {  // make false
+								ok = false;
+							}
+							if (grid[newRow][newColumn] == '.') {  // turn it into #
+								grid[newRow][newColumn] = '#';
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (ok == false) {
+			return "No";
+		}
+		ok = true;
+
+		if (grid[numRows - 1][numColumns - 1] != '#') {
+			floodfill(numRows - 1, numColumns - 1);  // floodfill it
+		}
+
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				// make false if we find an unvisited G
+				if (grid[i][j] == 'G' && !visited[i][j]) {
+					ok = false;
+					break;
+				}
+			}
+		}
+
+		if (!ok) {
+			return "No";
+		}
+		return "Yes";
+	}
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int numTestCases = io.nextInt();
+		for (int x = 0; x < numTestCases; x++) {
+			numRows = io.nextInt();
+			numColumns = io.nextInt();
+			grid = new char[numRows][numColumns];
+			visited = new boolean[numRows][numColumns];
+
+			for (int row = 0; row < numRows; row++) {  // read grid
+				String line = io.next();
+				for (int column = 0; column < numColumns; column++) {
+					grid[row][column] = line.charAt(column);
+				}
+			}
+			io.println(solve());
+		}
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
