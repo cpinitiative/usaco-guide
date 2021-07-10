@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getFirestore,
+  setDoc,
   updateDoc,
 } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
@@ -28,6 +29,7 @@ export default function Feedback({ videoId }): JSX.Element {
   const [comment, setComment] = useState('');
   const [showAdditionalFeedback, setShowAdditionalFeedback] = useState(false);
   useEffect(() => {
+    if (!db || !uid) return;
     getDoc(doc(db, 'videos', videoId, 'feedback', uid)).then(data => {
       setSelected(data.data()?.rating || null);
     });
@@ -69,13 +71,20 @@ export default function Feedback({ videoId }): JSX.Element {
                       setShowAdditionalFeedback(true);
                     }
                     toast.promise(
-                      updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
-                        rating: key,
-                      }),
+                      setDoc(
+                        doc(db, 'videos', videoId, 'feedback', uid),
+                        {
+                          rating: key,
+                        },
+                        { merge: true }
+                      ),
                       {
                         loading: 'Submitting...',
                         success: 'Thanks for the feedback!',
-                        error: 'Error submitting feedback.',
+                        error: err => {
+                          console.log(err);
+                          return 'Error submitting feedback.';
+                        },
                       }
                     );
                   }
@@ -107,13 +116,20 @@ export default function Feedback({ videoId }): JSX.Element {
             const originalComment = comment;
             setComment('');
             toast.promise(
-              updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
-                comments: arrayUnion(originalComment),
-              }),
+              setDoc(
+                doc(db, 'videos', videoId, 'feedback', uid),
+                {
+                  comments: arrayUnion(originalComment),
+                },
+                { merge: true }
+              ),
               {
                 loading: 'Submitting...',
                 success: 'Thanks for your comment!',
-                error: 'Error submitting comment.',
+                error: err => {
+                  console.log(err);
+                  return 'Error submitting comment.';
+                },
               }
             );
           }}
