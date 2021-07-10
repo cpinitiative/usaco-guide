@@ -156,11 +156,7 @@ export const submissionCircleBorderColor: {
 export const getSubmissionTimestampString = (submission: Submission) =>
   submission?.timestamp?.toDate().toString().substr(0, 24);
 export const getSubmissionStatus = (submission: Submission) => {
-  if (submission.type === SubmissionType.SELF_GRADED) {
-    return submission.status;
-  }
-  // todo actually implement
-  return ExecutionStatus.AC;
+  return submission.status;
 };
 export const getSubmissionEarnedPoints = (
   submission: Submission,

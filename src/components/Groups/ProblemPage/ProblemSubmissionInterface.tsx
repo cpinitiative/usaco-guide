@@ -1,5 +1,5 @@
 import type firebaseType from 'firebase/firestore';
-import { getFirestore, doc } from 'firebase/firestore';
+import { doc, getFirestore } from 'firebase/firestore';
 import * as React from 'react';
 import { useReducer } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -77,10 +77,8 @@ export default function ProblemSubmissionInterface({
   });
 
   const firebaseApp = useFirebaseApp();
-  const [
-    onlineJudgeSubmissionDoc,
-    setOnlineJudgeSubmissionDoc,
-  ] = React.useState<firebaseType.DocumentReference | null>(null);
+  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
+    React.useState<firebaseType.DocumentReference | null>(null);
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
@@ -130,6 +128,7 @@ export default function ProblemSubmissionInterface({
         type: SubmissionType.ONLINE_JUDGE,
         judgeProblemId: problem.usacoGuideId, // todo update
         gradingStatus: 'waiting',
+        result: -1, // todo write a rule for this?
       });
       setOnlineJudgeSubmissionDoc(
         doc(

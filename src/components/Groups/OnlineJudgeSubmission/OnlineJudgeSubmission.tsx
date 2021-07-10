@@ -3,6 +3,7 @@ import { onSnapshot } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { Submission, SubmissionType } from '../../../models/groups/problem';
+import TestCaseResult from './TestCaseResult';
 
 const OnlineJudgeSubmission = ({
   submissionDoc,
@@ -21,6 +22,7 @@ const OnlineJudgeSubmission = ({
     }
 
     const unsub = onSnapshot(submissionDoc, doc => {
+      console.log(submissionDoc.id, doc.data());
       setSubmission(
         doc.data() as Submission & { type: SubmissionType.ONLINE_JUDGE }
       );
@@ -39,6 +41,18 @@ const OnlineJudgeSubmission = ({
         {submission.gradingStatus === 'done' &&
           (submission.compilationError ? 'Compilation Error' : 'Done')}
       </div>
+        {submission.compilationError === true && (
+          <pre className="text-red-800 dark:text-red-200">
+            {submission.compilationErrorMessage}
+          </pre>
+        )}
+        {submission.compilationError === false && (
+          <div>
+            {submission.testCases.map(tc => (
+              <TestCaseResult data={tc} key={tc.caseId} />
+            ))}
+          </div>
+        )}
     </div>
   );
 };

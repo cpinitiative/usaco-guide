@@ -1,7 +1,7 @@
 import React from 'react';
+import { TestCaseResult as TestCaseResultType } from '../../../models/groups/problem';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TestCaseResult = ({ data }: { data: any }): JSX.Element => {
+const TestCaseResult = ({ data }: { data: TestCaseResultType }): JSX.Element => {
   const containerClasses =
     data.title === 'Correct answer'
       ? 'bg-green-700 border-green-700'
