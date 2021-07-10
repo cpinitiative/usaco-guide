@@ -77,10 +77,8 @@ export default function ProblemSubmissionInterface({
   });
 
   const firebaseApp = useFirebaseApp();
-  const [
-    onlineJudgeSubmissionDoc,
-    setOnlineJudgeSubmissionDoc,
-  ] = React.useState<firebaseType.DocumentReference | null>(null);
+  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
+    React.useState<firebaseType.DocumentReference | null>(null);
   const [submissionResult, setSubmissionResult] = React.useState<
     (Submission & { type: SubmissionType.ONLINE_JUDGE }) | null
   >(null);
@@ -180,7 +178,16 @@ export default function ProblemSubmissionInterface({
           <>
             All problems submitted through this website use standard
             input/output. When using Java, make sure to name your class Main.
-            Report any issues to{' '}
+            You can use{' '}
+            <a
+              href="https://ide.usaco.guide/"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              ide.usaco.guide
+            </a>{' '}
+            to test your code online. Report any issues to{' '}
             <a
               href="mailto:classes@joincpi.org"
               target="_blank"
