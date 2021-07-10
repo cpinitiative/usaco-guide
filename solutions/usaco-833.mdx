@@ -2,12 +2,108 @@
 id: usaco-833
 source: USACO Bronze 2018 Open
 title: Family Tree
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Ryan Chou
 ---
 
 ## Solution
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_family_bronze_open18.html)
+
+By finding the closest common ancestor and the distances from the ancestor to the two cows, we can uniquely identify their relationship.
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+
+<LanguageSection>
+<PySection>
+	
+```py
+import sys
+
+sys.stdin = open('family.in', 'r')
+sys.stdout = open('family.out', 'w')
+
+n, a, b = input().split()
+relations = []
+
+for i in range(int(n)):     
+	relations.append(input().split())
+
+# gets the mother of the cow (if it exists)
+def mother(cow):
+	for i in relations:
+		if i[1] == cow:
+			return i[0]
+	return None
+
+# finds if cow is a direct ancestor of cow2 by repeatedly 
+# getting the mother of cow2.
+def direct_anc(cow, cow2):
+	counter = 0
+	while cow2 != None:
+		if cow == cow2:
+			return counter
+		cow2 = mother(cow2)
+		counter += 1
+	return -1
+
+# distance from a to the common ancestor
+da = 0
+cow = a
+
+while cow != None:
+	# if we found a common ancestor
+	if direct_anc(cow, b) != -1:
+		break
+	cow = mother(cow)
+	da += 1
+
+# if a common ancestor does not exist
+if cow == None:
+	print('NOT RELATED')
+	sys.exit()
+
+"""
+since we found a common ancestor, cow.
+we can call direct_anc() to get the distance
+from b to the common ancestor.
+"""
+db = direct_anc(cow, b)
+	
+"""
+if they're related by a common ancestor, 
+but not by a mother or aunt, we can return
+COUSINS.
+"""
+if da > 1 and db > 1:
+	print('COUSINS')
+	sys.exit()
+
+# if the distance from each cow to their common 
+# ancestor is one, they're siblings,
+elif da == 1 and db == 1:
+	print('SIBLINGS')
+	sys.exit()
+else:
+	if da > db:
+		da, db = db, da
+		b, a = a, b
+	print(a, 'is the ', end='')
+
+	# we subtract two because 1 is in place of mother
+	# and 2 is in place of grandmother
+	for _ in range(db - 2):
+		print("great-", end='')
+	if da == 0 and db > 1:
+		print('grand-', end='')
+	if da == 0:
+		print('mother ', end='')
+	else:
+		print('aunt ', end='')
+	print('of', b)
+```
+</PySection>
+</LanguageSection>
 
 ## Alternative Solution - BFS
 
@@ -28,7 +124,6 @@ this solution if you find it unfamiliar and come back later.
 </Warning>
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
