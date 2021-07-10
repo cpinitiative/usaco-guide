@@ -89,6 +89,7 @@ export default functions.firestore
               "The post, group, or problem being submitted to couldn't be found."
             );
           }
+          if (!userDoc.exists) transaction.set(userRef, {});
 
           const oldProblemScore = userDoc.data()?.[postId]?.[problemId] || 0;
           const points = data.result * problemDoc.data().points;
