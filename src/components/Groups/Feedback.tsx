@@ -28,6 +28,7 @@ export default function Feedback({ videoId }): JSX.Element {
   const [comment, setComment] = useState('');
   const [showAdditionalFeedback, setShowAdditionalFeedback] = useState(false);
   useEffect(() => {
+    if (!db || !uid) return;
     getDoc(doc(db, 'videos', videoId, 'feedback', uid)).then(data => {
       setSelected(data.data()?.rating || null);
     });
