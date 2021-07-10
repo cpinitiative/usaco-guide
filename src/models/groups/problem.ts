@@ -47,7 +47,7 @@ export type ProblemHint = {
 
 export enum SubmissionType {
   SELF_GRADED = 'Self Graded',
-  COMPCS_API = 'CompCS API',
+  ONLINE_JUDGE = 'Online Judge',
 }
 
 export type Submission = {
@@ -57,16 +57,28 @@ export type Submission = {
   code: string;
   language: 'cpp' | 'java' | 'py';
   timestamp: Timestamp;
+  result: number;
+  status: ExecutionStatus;
 } & (
   | {
       type: SubmissionType.SELF_GRADED;
-      result: number;
-      status: ExecutionStatus;
     }
-  | {
-      type: SubmissionType.COMPCS_API;
-      result: TestCaseResult[];
-    }
+  | ({
+      type: SubmissionType.ONLINE_JUDGE;
+      gradingStatus: 'waiting' | 'in_progress' | 'done' | 'error';
+      errorMessage?: string;
+      judgeProblemId: string;
+    } & (
+      | {
+          compilationError: false;
+          testCases?: TestCaseResult[];
+        }
+      | {
+          compilationError: true;
+          compilationErrorMessage: string;
+        }
+      | Record<string, never>
+    ))
 );
 
 export enum ExecutionStatus {
@@ -75,15 +87,56 @@ export enum ExecutionStatus {
   TLE = 'TLE',
   MLE = 'MLE',
   RTE = 'RTE',
+  CE = 'CE',
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
   PENDING = 'Pending',
 }
 
-export type TestCaseResult = {
-  status: ExecutionStatus;
-  /**
-   * Execution time in milliseconds
-   */
-  executionTime: number;
+export enum TestResultError {
+  COMPILE_TIMEOUT = 'compile_timeout',
+  COMPILE_ERROR = 'compile_error',
+  RUNTIME_ERROR = 'runtime_error',
+  TIME_LIMIT_EXCEEDED = 'time_limit_exceeded',
+  EMPTY_MISSING_OUTPUT = 'empty_missing_output',
+  WRONG_ANSWER = 'wrong_answer',
+  INTERNAL_ERROR = 'internal_error',
+}
+export type TestCaseResult = { caseId: number } & (
+  | {
+      pass: false;
+      error: TestResultError;
+    }
+  | {
+      pass: true;
+
+      // in milliseconds:
+      time: number;
+      wallTime: number;
+
+      // in kb?
+      memory: number;
+    }
+);
+
+export const getTestCaseSymbol = (testCase: TestCaseResult): string => {
+  if (testCase.pass === true) {
+    return '*';
+  }
+  switch (testCase.error) {
+    case TestResultError.COMPILE_TIMEOUT:
+    case TestResultError.COMPILE_ERROR:
+      return 'c';
+    case TestResultError.RUNTIME_ERROR:
+      return '!';
+    case TestResultError.TIME_LIMIT_EXCEEDED:
+      return 't';
+    case TestResultError.EMPTY_MISSING_OUTPUT:
+      return 'e';
+    case TestResultError.WRONG_ANSWER:
+      return 'x';
+    case TestResultError.INTERNAL_ERROR:
+      return '?';
+  }
 };
 
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {
@@ -92,6 +145,8 @@ export const submissionTextColor: { [key in ExecutionStatus]: string } = {
   TLE: 'text-red-800 dark:text-red-200',
   MLE: 'text-red-800 dark:text-red-200',
   RTE: 'text-red-800 dark:text-red-200',
+  CE: 'text-red-800 dark:text-red-200',
+  INTERNAL_ERROR: 'text-red-800 dark:text-red-200',
   Pending: 'text-gray-800 dark:text-gray-200',
 };
 
@@ -101,6 +156,8 @@ export const submissionCircleColor: { [key in ExecutionStatus]: string } = {
   TLE: 'bg-red-400 dark:bg-red-500',
   MLE: 'bg-red-400 dark:bg-red-500',
   RTE: 'bg-red-400 dark:bg-red-500',
+  CE: 'bg-red-400 dark:bg-red-500',
+  INTERNAL_ERROR: 'bg-red-400 dark:bg-red-500',
   Pending: 'bg-gray-400 dark:bg-gray-500',
 };
 
@@ -112,27 +169,21 @@ export const submissionCircleBorderColor: {
   TLE: 'bg-red-100 dark:bg-red-800',
   MLE: 'bg-red-100 dark:bg-red-800',
   RTE: 'bg-red-100 dark:bg-red-800',
+  CE: 'bg-red-100 dark:bg-red-800',
+  INTERNAL_ERROR: 'bg-red-100 dark:bg-red-800',
   Pending: 'bg-gray-100 dark:bg-gray-800',
 };
 
 export const getSubmissionTimestampString = (submission: Submission) =>
   submission?.timestamp?.toDate().toString().substr(0, 24);
 export const getSubmissionStatus = (submission: Submission) => {
-  if (submission.type === SubmissionType.SELF_GRADED) {
-    return submission.status;
-  }
-  // todo actually implement
-  return ExecutionStatus.AC;
+  return submission.status;
 };
 export const getSubmissionEarnedPoints = (
   submission: Submission,
   problem: ProblemData
 ) => {
-  if (submission.type === SubmissionType.SELF_GRADED) {
-    return parseFloat((submission.result * problem.points).toFixed(1));
-  }
-  // todo actually implement
-  return problem.points;
+  return parseFloat((submission.result * problem.points).toFixed(1));
 };
 export const getEarnedPointsForProblem = (
   problem: ProblemData,
