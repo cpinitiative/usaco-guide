@@ -88,18 +88,18 @@ export enum ExecutionStatus {
   MLE = 'MLE',
   RTE = 'RTE',
   CE = 'CE',
-  INTERNAL_ERROR = "INTERNAL_ERROR",
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
   PENDING = 'Pending',
 }
 
 export enum TestResultError {
-  COMPILE_TIMEOUT = "compile_timeout",
-  COMPILE_ERROR = "compile_error",
-  RUNTIME_ERROR = "runtime_error",
-  TIME_LIMIT_EXCEEDED = "time_limit_exceeded",
-  EMPTY_MISSING_OUTPUT = "empty_missing_output",
-  WRONG_ANSWER = "wrong_answer",
-  INTERNAL_ERROR = "internal_error",
+  COMPILE_TIMEOUT = 'compile_timeout',
+  COMPILE_ERROR = 'compile_error',
+  RUNTIME_ERROR = 'runtime_error',
+  TIME_LIMIT_EXCEEDED = 'time_limit_exceeded',
+  EMPTY_MISSING_OUTPUT = 'empty_missing_output',
+  WRONG_ANSWER = 'wrong_answer',
+  INTERNAL_ERROR = 'internal_error',
 }
 export type TestCaseResult = { caseId: number } & (
   | {

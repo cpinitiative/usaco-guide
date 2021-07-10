@@ -62,11 +62,15 @@ export default functions.firestore
               case TestResultError.INTERNAL_ERROR:
                 return ExecutionStatus.INTERNAL_ERROR;
               default:
-                throw new Error("this should never happen either. recalculateLeaderboard should only be called once the execution finishes.");
+                throw new Error(
+                  'this should never happen either. recalculateLeaderboard should only be called once the execution finishes.'
+                );
             }
           }, ExecutionStatus.AC);
         } else {
-          throw new Error('this should never happen. recalculateLeaderboard should only be called once the execution finishes.');
+          throw new Error(
+            'this should never happen. recalculateLeaderboard should only be called once the execution finishes.'
+          );
         }
       } else {
         throw new Error(
@@ -155,7 +159,7 @@ export default functions.firestore
             // unable to start grading because of malformed post request or malformed submission
             await change.after.ref.update({
               gradingStatus: 'error',
-              errorMessage: "Malformed POST request or malformed submission?"
+              errorMessage: 'Malformed POST request or malformed submission?',
             });
           } else {
             // started grading (if there's a compilation error or runtime error, etc, success is still true
@@ -165,7 +169,7 @@ export default functions.firestore
           // server probably down
           await change.after.ref.update({
             gradingStatus: 'error',
-            errorMessage: "Is the judge server down?"
+            errorMessage: 'Is the judge server down?',
           });
         }
       }
