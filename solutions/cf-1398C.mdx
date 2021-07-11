@@ -2,7 +2,7 @@
 id: cf-1398C
 source: CF
 title: Good Subarrays
-author: Jesse Choe
+author: Jesse Choe, Brad Ma
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/81506)
@@ -21,22 +21,22 @@ using pi = pair<ll, ll>;
 void solve(){
 	int n; cin >> n;
 	vector<int> dp(n+1, 0);
-	for(int i=1; i<=n; i++){  // put into array
+	for(int i=1; i<=n; i++){ 
 		char c; cin >> c;
 		dp[i]=c-'0';
 	}
-	for(int i=1; i<=n; i++){  // build prefix sums
+	for(int i=1; i<=n; i++){ 
 		dp[i]+=dp[i-1];
 	}
 	map<int, ll> sumDist;
-	for(int i=0; i<=n; i++){  // build map
+	for(int i=0; i<=n; i++){  
 		sumDist[dp[i]-i]++;
 	}
 	ll goodArrays=0;
 	for(pi p: sumDist){
 		ll f=p.second;
 		// this uses the formula n * (n - 1) / 2, and it gets
-            	// the sum of all the positive integers up to and including n
+            	// the sum of all the positive integers up to n
 		goodArrays+=f*(f-1)/2;
 	}
 	cout << goodArrays << endl;
@@ -61,14 +61,14 @@ import java.util.*;
 public class GoodSubarrays {
 	static long solve (int arrayLength, String stringArray) {
 		int[] array = new int[arrayLength + 1];
-		for (int x = 1; x <= arrayLength; x++) {  // put into array
+		for (int x = 1; x <= arrayLength; x++) {  
 			array[x] = stringArray.charAt(x - 1) - '0';
 		}
-		for (int x = 1; x <= arrayLength; x++) {  // build prefix sums
+		for (int x = 1; x <= arrayLength; x++) { 
 			array[x] += array[x - 1];
 		}
 		Map<Integer, Long> sumDist = new HashMap<>();
-		for (int x = 0; x <= arrayLength; x++) {  // build map
+		for (int x = 0; x <= arrayLength; x++) {  
 			if (sumDist.containsKey(array[x] - x)) {  // already in map
 				// add one on to what is already there
 				sumDist.put(array[x] - x, sumDist.get(array[x] - x) + 1);
@@ -90,7 +90,7 @@ public class GoodSubarrays {
 	public static void main (String[] args) {
 		Kattio io = new Kattio();
 		int t = io.nextInt();
-		for (int x = 0; x < t; x++) {  // each test case
+		for (int x = 0; x < t; x++) { 
 			int arrayLength = io.nextInt();
 			String array = io.next();
 			io.println(solve(arrayLength, array));
