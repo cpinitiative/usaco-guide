@@ -19,6 +19,10 @@ const OnlineJudgeSubmission = ({
         {submission.gradingStatus === 'in_progress' && 'Grading in progress'}
         {submission.gradingStatus === 'done' &&
           (submission.compilationError ? 'Compilation Error' : 'Done')}
+        {submission.gradingStatus === 'error' &&
+          (submission.errorMessage
+            ? 'Error: ' + submission.errorMessage
+            : 'Error')}
       </div>
       {submission.gradingStatus === 'done' &&
         submission.status !== ExecutionStatus.AC && (
