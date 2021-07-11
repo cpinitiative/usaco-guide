@@ -1,15 +1,20 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import MemberDetail from './MemberDetail';
 
-export default function MembersPage() {
+export default function MembersPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const memberInfo = getMemberInfoForGroup(activeGroup.groupData);
+  const leaderboard = useLeaderboardData({
+    groupId: activeGroup.activeGroupId,
+    maxResults: 200,
+  });
   const [activeMemberId, setActiveMemberId] = React.useState<string>(null);
 
   React.useEffect(() => {
@@ -26,17 +31,9 @@ export default function MembersPage() {
   }, []);
 
   const getTotalPointsForMember = (memberId: string) => {
-    let total = 0;
-    Object.keys(activeGroup.groupData.leaderboard || {}).forEach(postId => {
-      Object.keys(activeGroup.groupData.leaderboard[postId]).forEach(
-        problemId => {
-          total +=
-            activeGroup.groupData.leaderboard[postId][problemId][memberId]
-              ?.bestScore || 0;
-        }
-      );
-    });
-    return total;
+    return (
+      leaderboard?.find(x => x.userInfo?.uid === memberId)?.totalPoints ?? 0
+    );
   };
 
   if (!activeGroup.showAdminView) {

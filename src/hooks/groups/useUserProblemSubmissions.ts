@@ -6,8 +6,7 @@ import {
   where,
 } from 'firebase/firestore';
 import * as React from 'react';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import toast from 'react-hot-toast';
 import { Submission } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
@@ -16,14 +15,12 @@ export default function useUserProblemSubmissions(
   postId: string,
   problemId: string
 ) {
-  const { firebaseUser } = React.useContext(UserDataContext);
   const [submissions, setSubmissions] = React.useState<Submission[]>(null);
   const activeGroup = useActiveGroup();
-  const notifications = useNotificationSystem();
 
   useFirebaseApp(
     firebaseApp => {
-      if (problemId && firebaseUser?.uid && activeGroup?.activeGroupId) {
+      if (problemId && activeGroup.activeUserId && activeGroup?.activeGroupId) {
         return onSnapshot<Submission>(
           query(
             collection(
@@ -36,7 +33,7 @@ export default function useUserProblemSubmissions(
               problemId,
               'submissions'
             ),
-            where('userId', '==', firebaseUser.uid)
+            where('userId', '==', activeGroup.activeUserId)
           ),
           {
             next: snap => {
@@ -49,13 +46,13 @@ export default function useUserProblemSubmissions(
               );
             },
             error: error => {
-              notifications.showErrorNotification(error);
+              toast.error(error.message);
             },
           }
         );
       }
     },
-    [firebaseUser?.uid, postId, problemId, activeGroup?.activeGroupId]
+    [activeGroup.activeUserId, postId, problemId, activeGroup?.activeGroupId]
   );
 
   return submissions;

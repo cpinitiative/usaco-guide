@@ -1,3 +1,4 @@
+import { UserIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
@@ -117,6 +118,17 @@ const JoinLinksPage = () => {
                                 </i>
                               </p>
                             </div>
+                            {link.author.startsWith('REGISTRATION_') && (
+                              <>
+                                <span className="mx-2">&middot;</span>
+                                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                                  <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                                  <p>
+                                    {link.author.replace('REGISTRATION_', '')}
+                                  </p>
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>

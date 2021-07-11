@@ -71,6 +71,7 @@ export const pageQuery = graphql`
       frontmatter {
         title
         author
+        contributors
         id
         prerequisites
         description

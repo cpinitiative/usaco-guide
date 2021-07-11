@@ -1,0 +1,41 @@
+---
+id: usaco-711
+source: USACO Bronze 2017 February
+title: Why Did the Cow Cross the Road
+author: Ananth Kashyap
+---
+
+## Solution
+
+[Official Analysis](http://www.usaco.org/current/data/sol_crossroad_bronze_feb17.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<PySection>
+
+```py
+data = open('crossroad.in').read().strip().split('\n')
+n = int(data[0])
+
+observations = [list(map(int, data[i + 1].split(' '))) for i in range(n)]
+
+locations = [''] * 10
+
+crossings = 0
+
+for i in range(n):
+	if locations[observations[i][0] - 1] == '':
+		locations[observations[i][0] - 1] = observations[i][1]
+	elif locations[observations[i][0] - 1] != observations[i][1]:
+		locations[observations[i][0] - 1] = observations[i][1]
+		crossings += 1
+
+print(crossings, file=open('crossroad.out', 'w'))
+```
+
+</PySection>
+
+</LanguageSection>

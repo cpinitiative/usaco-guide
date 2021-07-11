@@ -2,7 +2,7 @@
 id: cf-831C
 source: CF
 title: Jury Marks
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Brad Ma
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/53302)
@@ -50,5 +50,52 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class JuryMarks {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int numJury = io.nextInt();
+		int numScores = io.nextInt();
+		int[] marks = new int[numJury + 1];
+		int[] scores = new int[numScores];
+
+		for (int x = 1; x <= numJury; x++) {  // read k numbers
+			marks[x] = io.nextInt() + marks[x - 1];
+		}
+		for (int x = 0; x < numScores; x++) {  // read n numbers
+			scores[x] = io.nextInt();
+		}
+		Set<Integer> init = new TreeSet<>();
+		for (int x = 1; x <= numJury; x++) { // add to set
+			init.add(scores[0] - marks[x]);
+		}
+		int answer = 0;
+		for (int x : init) {  // for each number in the set
+			Set<Integer> points = new TreeSet<>();  // create a new set
+			for (int i = 1; i <= numJury; i++) {
+				points.add(x + marks[i]);
+			}
+			boolean pointsContainsScore = true;
+			for (int p : scores) {
+				flag &= points.contains(p);
+			}
+			if (pointsContainsScore) {  // add one if it ends up being true
+				answer += 1;
+			}
+		}
+		io.println(answer);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>

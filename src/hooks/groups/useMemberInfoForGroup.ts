@@ -1,6 +1,6 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import * as React from 'react';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import React from 'react';
+import toast from 'react-hot-toast';
 import { GroupData } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 
@@ -17,7 +17,6 @@ let cachedData: {
 
 export default function getMemberInfoForGroup(group: GroupData) {
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>(null);
-  const notifications = useNotificationSystem();
 
   useFirebaseApp(
     firebaseApp => {
@@ -50,14 +49,11 @@ export default function getMemberInfoForGroup(group: GroupData) {
                 data: d.data,
               };
             } else {
-              notifications.addNotification({
-                level: 'error',
-                message: 'Error: Failed to fetch member info for leaderboard',
-              });
+              toast.error('Error: Failed to fetch member info for leaderboard');
             }
           })
           .catch(e => {
-            notifications.showErrorNotification(e);
+            toast.error(e.message);
           });
       }
     },

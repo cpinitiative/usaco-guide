@@ -7,42 +7,40 @@ author: Qi Wang, Brad Ma
 
 # Problem
 
-We are asked to find the number of subarrays that are divisible by its size
-given the array.
+We are asked to find the number of subarrays that are divisible by $N$. In other
+words, we're supposed to find the number of subarrays with sum equal to
+$0 \pmod N$.
+
+Notice that **any** sum of a subarray can be represented as the difference of
+two prefixes.
+
+First, let $\texttt{sum}$ represent the prefix sum of array $a$ modulo $N$.
 
 With our prefix sums knowledge,
 
 $$
-\texttt{sum}(i, j) = \texttt{sum}(0, j) - \texttt{sum}(0, i-1).
+\texttt{sum}(i, j) = \texttt{sum}(0, j) - \texttt{sum}(0, i-1)
 $$
 
-We can also transform any
+Since we want to calculate the number of $\texttt{sum}(i, j)$ that equals to
+$0\pmod N$, $\texttt{sum}(0, j)$ must be equal to $\texttt{sum}(0, i-1)$ for their
+difference to be $0$.
+
+Now, we calculate $\texttt{pmod}[i]$, the number of prefixes with remainder
+equivalent to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
 
 $$
-\texttt{sum}(i, j) = \texttt{quotient} \cdot N + \texttt{remainder}.
-$$
-
-From this we get that
-
-$$
-\texttt{sum}(i, j) = (\texttt{quotient2} - \texttt{quotient1}) \cdot N + (\texttt{remainder2} - \texttt{remainder1}).
-$$
-
-For this to be divisible by $N$, $\texttt{remainder2} - \texttt{remainder1}$
-must be equal to $0$.
-
-Define $\texttt{pmod}[i]$ to be the number of prefixes with remainder equivalent
-to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
-
-$$
-\texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1) / 2.
+{\texttt{pmod}[i]\choose{2}} = \texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1) / 2
 $$
 
 The answer is just the sum of this quantity over all $i$.
+
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+
 <CPPSection>
 	
 ```cpp
@@ -75,16 +73,21 @@ int main() {
 
 	long long ans = 0;
 	for (long long x : M) {
-		// Calculating the # of pairs. This calculates the pairs without duplicates and reverse groups.
+		/*
+		 * Calculating the # of pairs.
+		 * This calculates the pairs without
+		 * duplicates and reverse groups.
+		 */
 		ans += x * (x - 1) / 2;
 	}
 	cout << ans << endl;
 }
 ```
+
 </CPPSection>
-	
+
 <JavaSection>
-	
+
 ```java
 import java.util.*;
 import java.io.*;
@@ -119,10 +122,10 @@ public class subarrayDivisibility {
 		io.println(answer);
 		io.close();
 	}
-				      
+
 	//CodeSnip{Kattio}
 }
-```	
+```
 </JavaSection>
 	
 </LanguageSection>
