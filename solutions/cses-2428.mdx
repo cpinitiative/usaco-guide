@@ -21,39 +21,39 @@ public class cses2428 {
 		Kattio io = new Kattio();
 		int N = io.nextInt();
 		int K = io.nextInt();
-		int[] A = new int[N];
+		int[] arr = new int[N];
 		for (int i = 0; i < N; i++) {
-			A[i] = io.nextInt();
+			arr[i] = io.nextInt();
 		}
 
-		int l = 0, r = 0;
+		int left = 0, right = 0;
 		long ans = 0;
 		int distinct = 0;
 
 		Map<Integer, Integer> freq = new HashMap<>();
-		while (l < N) {
-			while (r < N && (distinct + (freq.containsKey(A[r]) ? 0 : 1) <= K)) {
+		while (left < N) {
+			while (right < N && (distinct + (freq.containsKey(arr[right]) ? 0 : 1) <= K)) {
 				// Put the new array element in the map.
-				if (!freq.containsKey(A[r])) {
-					freq.put(A[r], 1);
+				if (!freq.containsKey(arr[right])) {
+					freq.put(arr[right], 1);
 					distinct++;
 				} else {
-					freq.put(A[r], freq.get(A[r]) + 1);
+					freq.put(arr[right], freq.get(arr[right]) + 1);
 				}
-				r++;
+				right++;
 			}
 			// Add the new subarrays.
-			ans += (r - l);
+			ans += (right - left);
 
 			// Slide the window rightwards.
-			if (freq.get(A[l]) == 1) {
+			if (freq.get(arr[left]) == 1) {
 				distinct--;
-				freq.remove(A[l]);
+				freq.remove(arr[left]);
 			}
 			else {
-				freq.put(A[l], freq.get(A[l]) - 1);
+				freq.put(arr[left], freq.get(arr[left]) - 1);
 			}
-			l++;
+			left++;
 		}
 
 		io.println(ans);
