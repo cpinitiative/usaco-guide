@@ -1,0 +1,102 @@
+---
+id: usaco-944
+source: USACO Silver 2019 US Open
+title: Fence Planning
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_fenceplan_silver_open19.html)
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+  
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class FencePlan {
+	static Cow[] cows;
+	static List<Integer>[] graph;
+	static boolean[] visited;
+	static int lowX = Integer.MAX_VALUE;
+	static int highX = Integer.MIN_VALUE;
+	static int lowY = Integer.MAX_VALUE;
+	static int highY = Integer.MIN_VALUE;
+
+	static class Cow {  // class to keep track of the x and y
+		int x;
+		int y;
+	}
+
+	static void floodfill (int currentCow) {  // dfs flood fill
+		visited[currentCow] = true;  // mark as visited
+		Cow cow = cows[currentCow];
+
+		lowX = Integer.min(lowX, cow.x);  // take minimum and maximums
+		highX = Integer.max(highX, cow.x);
+		lowY = Integer.min(lowY, cow.y);
+		highY = Integer.max(highY, cow.y);
+
+		for (int connectedCow : graph[currentCow]) {  // for each connected cow
+			if (!visited[connectedCow]) {
+				floodfill(connectedCow);
+			}
+		}
+	}
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("fenceplan");
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		visited = new boolean[n + 1];  // one-indexed
+		cows = new Cow[n + 1];
+
+		for (int x = 1; x <= n; x++) {  // read cow coordinates
+			Cow cow = new Cow();
+			cow.x = io.nextInt();
+			cow.y = io.nextInt();
+			cows[x] = cow;
+		}
+
+		graph = new ArrayList[n + 1];  // one indexed
+		for (int x = 0; x < graph.length; x++) {  // initialize
+			graph[x] = new ArrayList<>();
+		}
+
+		for (int x = 0; x < m; x++) {  // read connections
+			int a = io.nextInt();
+			int b = io.nextInt();
+			graph[a].add(b);  // add to the bi-directional unweighted graph
+			graph[b].add(a);
+		}
+
+		int lowestPerimeter = Integer.MAX_VALUE;
+		for (int cow = 1; cow <= n; cow++) {  // go through each connected component
+			if (!visited[cow]) {
+				floodfill(cow);
+
+				// calculate the perimeter
+				int perimeter = ((highX - lowX) + (highY - lowY)) * 2; 
+				lowestPerimeter = Math.min(lowestPerimeter, perimeter);  // track lowest
+
+				lowX = Integer.MAX_VALUE;  // reset values
+				highX = Integer.MIN_VALUE;
+				lowY = Integer.MAX_VALUE;
+				highY = Integer.MIN_VALUE;
+			}
+		}
+		io.println(lowestPerimeter);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+  
+</JavaSection>
+  
+</LanguageSection>

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  ExecutionStatus,
   getSubmissionEarnedPoints,
   getSubmissionStatus,
   getSubmissionTimestampString,
@@ -51,7 +52,11 @@ const SubmissionListItem = ({
               submissionTextColor[getSubmissionStatus(submission)]
             }`}
           >
-            {getSubmissionEarnedPoints(submission, problem)} / {problem.points}
+            {submission.result < 0 ||
+            submission.status === ExecutionStatus.PENDING
+              ? '-'
+              : getSubmissionEarnedPoints(submission, problem)}{' '}
+            / {problem.points}
           </span>
           <svg
             className="h-5 w-5 text-gray-400"

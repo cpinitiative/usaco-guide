@@ -1,0 +1,69 @@
+---
+id: usaco-808
+source: USACO Bronze 2018 February
+title: Hoofball
+author: Ryan Chou
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_hoofball_bronze_feb18.html)
+
+## Explanation
+
+Find all source cows and cows which only pass to each other, and give a ball to each one.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^2)$
+<LanguageSection>
+<PySection> 
+
+```py
+import sys
+
+sys.stdin = open('hoofball.in', 'r')
+sys.stdout = open('hoofball.out', 'w')
+
+n = int(input())
+cows = sorted(list(map(int, input().strip().split())))
+balls = [0] * n
+ans = 0
+
+def nearestneighbor(ind):
+	lnbr, rnbr = -1, -1
+	ldist, rdist = 1000, 1000
+	for i in range(n):
+		"""
+		If the cow we're looking at is on the left
+		and it's closer to the target than the previous one.
+		"""
+		if cows[i] < cows[ind] and cows[ind] - cows[i] < ldist:
+			lnbr = i
+			ldist = cows[ind] - cows[i]
+	for i in range(n):
+		# same thing, but for the right.
+		if cows[i] > cows[ind] and cows[i] - cows[ind] < rdist:
+			rnbr = i
+			rdist = cows[i] - cows[ind]
+	return lnbr if ldist <= rdist else rnbr
+    
+for i in range(n):
+	# all cows who receive a ball
+	balls[nearestneighbor(i)] += 1
+for i in range(n):
+	"""
+	if the cow isn't passed to by any of the neighbors,
+	then we have to give it a ball.
+	"""
+	if balls[i] == 0:
+		ans += 1
+	"""
+	If we find two cows which only pass to each other,
+	we have to give them one as well.
+	"""
+	if (i < nearestneighbor(i) and nearestneighbor(nearestneighbor(i)) == i
+		and balls[i] == 1 and balls[nearestneighbor(i)] == 1):
+		ans += 1
+    
+print(ans)
+```
+</PySection>
+</LanguageSection>

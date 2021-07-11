@@ -40,8 +40,9 @@ export default function ProblemSuggestionModal({
   const inEditor = editorActions.inEditor;
 
   // will be null if in editor
-  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
-    ?.markdownLayoutInfo;
+  const markdownLayoutInfo = useContext(
+    MarkdownLayoutContext
+  )?.markdownLayoutInfo;
 
   const darkMode = useDarkMode();
 
@@ -435,12 +436,12 @@ export default function ProblemSuggestionModal({
                 <br />
                 This will be submitted as a public{' '}
                 <a
-                  href="https://github.com/cpinitiative/usaco-guide/issues"
+                  href="https://github.com/cpinitiative/usaco-guide/pulls"
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 dark:text-blue-300 underline"
                 >
-                  Github issue
+                  Github pull request
                 </a>
                 .
               </p>

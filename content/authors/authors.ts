@@ -95,7 +95,7 @@ export const Authors: Author[] = [
     name: 'Andrew Wang',
     title: 'Core Team',
     blurb:
-      'Andrew Wang is a USACO competitor who competes in multiple languages fluently.',
+      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
     codeforces: 'a.wang',
     github: 'andrewwangva',
     email: 'andrewwangva@gmail.com',

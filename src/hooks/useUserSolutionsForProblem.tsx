@@ -7,7 +7,7 @@ import {
 } from 'firebase/firestore';
 import * as React from 'react';
 import { useContext } from 'react';
-import { useNotificationSystem } from '../context/NotificationSystemContext';
+import toast from 'react-hot-toast';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { ProblemInfo } from '../models/problem';
 import { UserSolutionForProblem } from '../models/userSolutionForProblem';
@@ -21,7 +21,6 @@ export default function useUserSolutionsForProblem(problem: ProblemInfo) {
     UserSolutionForProblem[]
   >(null);
   const { firebaseUser } = useContext(UserDataContext);
-  const notifications = useNotificationSystem();
 
   useFirebaseApp(
     firebaseApp => {
@@ -43,7 +42,7 @@ export default function useUserSolutionsForProblem(problem: ProblemInfo) {
               );
             },
             error: error => {
-              notifications.showErrorNotification(error);
+              toast.error(error.message);
             },
           }
         );
@@ -61,7 +60,7 @@ export default function useUserSolutionsForProblem(problem: ProblemInfo) {
                   );
                 },
                 error: error => {
-                  notifications.showErrorNotification(error);
+                  toast.error(error.message);
                 },
               }
             )

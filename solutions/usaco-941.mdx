@@ -2,9 +2,74 @@
 id: usaco-941
 source: USACO Bronze 2019 Open
 title: Cow Evolution
-author: Jesse Choe
+author: Jesse Choe, Ryan Chou
 ---
 
+## Solution 
 [Official Analysis](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
 
-[Video Analysis](https://youtu.be/4YTijr0BbrA)
+## Video Solution
+<Youtube id="4YTijr0BbrA" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<PySection>
+  
+```py
+import sys
+sys.stdin = open('evolution.in', 'r')
+sys.stdout = open('evolution.out', 'w')
+
+n = int(input())
+cows = []
+allchars = set()
+
+for i in range(n):
+	line = input().split()
+	chars = list(line[1:])
+	cows.append(chars)
+	allchars.update(chars)
+
+allchars = list(allchars)
+
+# Check if the tree is evolutionarily proper relative to characteristics a and b
+def scan(a, b):
+	""""
+	If we find a cow which has the characteristic a, 
+	another cow which has the characteristic b, and 
+	another cow with both characteristics a and b, then 
+	the tree isn't evolutionarily proper.
+	
+	Returns a boolean
+	"""
+	onlya, onlyb, both = 0, 0, 0
+	# Iterating through every branch.
+	for i in range(n):
+		hasa, hasb = 0, 0
+		# Iterating through the characteristics of that branch.
+		for j in range(len(cows[i])):
+			if cows[i][j] == allchars[a]:
+				hasa = 1
+			if cows[i][j] == allchars[b]:
+				hasb = 1
+		if hasa and not hasb: 
+			onlya = 1
+		if hasb and not hasa:
+			onlyb = 1
+		if hasa and hasb:
+			both = 1
+	return onlya and onlyb and both
+	
+# Iterating through every pair of characteristics.
+for i in range(len(allchars)):
+	for j in range(i + 1, len(allchars)):
+		if scan(i, j):
+			print('no')
+			sys.exit()
+print('yes')
+```
+</PySection>
+</LanguageSection>

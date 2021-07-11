@@ -1,0 +1,56 @@
+---
+id: usaco-916
+source: USACO Bronze 2019 February
+title: The Great Revegetation
+author: Ryan Chou
+---
+## Solution 1
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_revegetate_bronze_feb19.html)
+
+## Solution 2
+We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal. All pastures start with 
+the seed choice as one, this makes it so that we don't have to worry about decreasing or increasing more to a certain pasture. We'll also cycle through the 
+previous favorite pastures to make sure that our new alteration doesn't interfere with any of the other cow's favorite pastures.
+
+## Implementation - Solution 2
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+sys.stdin = open('revegetate.in', 'r')
+sys.stdout = open('revegetate.out', 'w')
+
+pasture_num, cow_num = map(int, input().split())
+pastures = []
+ans = [1] * pasture_num
+
+for _ in range(cow_num):
+	past1, past2 = sorted(map(int, input().split()))
+	# Subtract one so that the indexes start from 0
+	pastures.append([past1 - 1, past2 - 1])
+
+# Assign the pastures at the front first.
+pastures.sort()
+for a, b in pastures:
+	# If they're not unique.
+	if ans[a] == ans[b]:
+		# Increment one to the pasture closer to the end.
+		# 100 is larger than 001.
+		ans[b] += 1
+
+		# All favorite pastures up to the current one.
+		for i, j in pastures[:pastures.index([a, b])]:
+			# Increment again if requirement isn't satisfied.
+			# This also means that either i == b or j == b, 
+			# since the only reason they would become equal again	
+			# is if they had a pasture in common.
+			if ans[i] == ans[j]:
+				ans[b] += 1
+print(''.join(map(str, ans)))
+```
+
+</PySection>
+</LanguageSection>
