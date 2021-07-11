@@ -7,7 +7,7 @@ author: Vivian Han
 
 ## Explanation
 
-Adapted from https://usaco.guide/CPH.pdf#page=61 
+Adapted from https://usaco.guide/CPH.pdf#page=61
 
 <Warning title="Run times">
 Please note: the running times and number of recursive calls listed are for a separate but very similar problem (# paths from upper left to *lower right* corner on a 7x7 grid). 
@@ -18,7 +18,9 @@ The consequences of this discrepancy which will be addressed later in the explan
 
 ### Basic Algorithm
 
-The first version of the algorithm does not contain any optimizations. We simply use backtracking to generate all possible paths from the upper-left corner to the lower-right corner and count the number of such paths.
+The first version of the algorithm does not contain any optimizations. We simply
+use backtracking to generate all possible paths from the upper-left corner to
+the lower-right corner and count the number of such paths.
 
 • running time: 483 seconds
 
@@ -26,16 +28,20 @@ The first version of the algorithm does not contain any optimizations. We simply
 
 ### Optimization 1
 
-If the path reaches the lower-right square before it has visited all other squares of the grid, it is clear that it will not be possible to complete the solution. Using this observation, we can terminate the search immediately if we reach the lower-right square too early.
+If the path reaches the lower-right square before it has visited all other
+squares of the grid, it is clear that it will not be possible to complete the
+solution. Using this observation, we can terminate the search immediately if we
+reach the lower-right square too early.
 
 • running time: 119 seconds
 
 • number of recursive calls: 20 billion
 
-
 ### Optimization 2
 
-If the path touches a wall and can turn either left or right, the grid splits into two parts that contain unvisited squares. In this case, we cannot visit all squares anymore, so we can terminate the search.
+If the path touches a wall and can turn either left or right, the grid splits
+into two parts that contain unvisited squares. In this case, we cannot visit all
+squares anymore, so we can terminate the search.
 
 • running time: 1.8 seconds
 
@@ -43,7 +49,10 @@ If the path touches a wall and can turn either left or right, the grid splits in
 
 ### Optimization 3
 
-The idea of Optimization 3 can be generalized: if the path cannot continue forward but can turn either left or right, the grid splits into two parts that both contain unvisited squares. It is clear that we cannot visit all squares anymore, so we can terminate the search.
+The idea of Optimization 3 can be generalized: if the path cannot continue
+forward but can turn either left or right, the grid splits into two parts that
+both contain unvisited squares. It is clear that we cannot visit all squares
+anymore, so we can terminate the search.
 
 • running time: 0.6 seconds
 
@@ -51,8 +60,8 @@ The idea of Optimization 3 can be generalized: if the path cannot continue forwa
 
 Now is a good moment to stop optimizing the algorithm and see what we have
 achieved. The running time of the original algorithm was 483 seconds, and now
-after the optimizations, the running time is only 0.6 seconds. Thus, the algorithm
-became nearly 1000 times faster after the optimizations.
+after the optimizations, the running time is only 0.6 seconds. Thus, the
+algorithm became nearly 1000 times faster after the optimizations.
 
 <Info title="">
 This is a usual phenomenon in backtracking, because the search tree is usually
@@ -61,11 +70,20 @@ useful are optimizations that occur during the first steps of the algorithm, i.e
 the top of the search tree.
 </Info>
 
-For C++ users, this will be enough pruning to make the program run in time under worst case conditions. However, for Java and Python users, this is still too slow (Java takes around 1.2 seconds for the worst case). Thus, we will need to further optimize our search.
+For C++ users, this will be enough pruning to make the program run in time under
+worst case conditions. However, for Java and Python users, this is still too
+slow (Java takes around 1.2 seconds for the worst case). Thus, we will need to
+further optimize our search.
 
 ### Optimization 4
 
-If the path creates a dead end that is not the bottom left corner, either the path will fail to visit all squares (the path may stop at the dead end or pass over it, sealing a square off) or the path will end in the wrong location. Thus we want to avoid creating dead ends. For example, if the square to the left of our current location is blocked on three sides (including our current location), then the next step must be to the left in order to avoid creating a dead end. After this optimization, the program runs in under 1 second.
+If the path creates a dead end that is not the bottom left corner, either the
+path will fail to visit all squares (the path may stop at the dead end or pass
+over it, sealing a square off) or the path will end in the wrong location. Thus
+we want to avoid creating dead ends. For example, if the square to the left of
+our current location is blocked on three sides (including our current location),
+then the next step must be to the left in order to avoid creating a dead end.
+After this optimization, the program runs in under 1 second.
 
 ## Implementation
 
@@ -76,7 +94,7 @@ If the path creates a dead end that is not the bottom left corner, either the pa
 ```cpp
 #include <iostream>
 using namespace std;
-    
+
 int dr[4] = {-1, 0, 1, 0};
 int dc[4] = {0, 1, 0, -1};
 int p[48];
@@ -87,7 +105,7 @@ int main()
 {
 	string line;
 	getline(cin, line);
-	
+
 	//convert path to ints
 	for (int i = 0; i < 48; i++) {
 		char cur = line[i];
@@ -132,10 +150,10 @@ int main()
 
 int tryPath(int pathIdx, int curR, int curC)
 {
-	if ((onPath[curR][curC-1] && onPath[curR][curC+1])
-			&& (!onPath[curR-1][curC] && !onPath[curR+1][curC])) return 0;
-	if ((onPath[curR-1][curC] && onPath[curR+1][curC])
-	                && (!onPath[curR][curC-1] && !onPath[curR][curC+1])) return 0;
+	if ((onPath[curR][curC - 1] && onPath[curR][curC + 1])
+			&& (!onPath[curR - 1][curC] && !onPath[curR + 1][curC])) return 0;
+	if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
+	                && (!onPath[curR][curC - 1] && !onPath[curR][curC + 1])) return 0;
 
 	if (curR == 7 && curC == 1) { //reached endpoint before visiting all
 		if (pathIdx == 48) {
@@ -159,13 +177,13 @@ int tryPath(int pathIdx, int curR, int curC)
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 	} /* //this next bit is not necessary for C++, but I left it in for reference
-	else if ((curC > 2) && onPath[curR][curC-2]
-			&& (onPath[curR-1][curC-1] || onPath[curR+1][curC-1])
-			&& (!onPath[curR][curC-1]))
+	else if ((curC > 2) && onPath[curR][curC - 2]
+			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
+			&& (!onPath[curR][curC - 1]))
 	{ //potential dead end on the left:
 		int nxtR = curR;
 		int nxtC = curC - 1;
-		ret += tryPath(pathIdx+1, nxtR, nxtC);
+		ret += tryPath(pathIdx + 1, nxtR, nxtC);
 	}
 	else if ((curC < 6) && onPath[curR][curC + 2]
 			&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
@@ -173,21 +191,21 @@ int tryPath(int pathIdx, int curR, int curC)
 	{ //potential dead end on the right:
 		int nxtR = curR;
 		int nxtC = curC + 1;
-		ret += tryPath(pathIdx + 1, nxtR, nxtC);
+		ret += tryPath(pathId x +1, nxtR, nxtC);
 	}
 	else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
 			&& (!onPath[curR - 1][curC]))
 	{ //potential dead end upwards
-		int nxtR = curR-1;
+		int nxtR = curR - 1;
 		int nxtC = curC;
-		ret += tryPath(pathIdx+1, nxtR, nxtC);
+		ret += tryPath(pathIdx + 1, nxtR, nxtC);
 	} */
 	else { //iterate through all four possible turns
 		for (int i = 0; i < 4; i++) {
 			int nxtR = curR + dr[i];
 			int nxtC = curC + dc[i];
 			if (onPath[nxtR][nxtC]) continue;
-			ret += tryPath(pathIdx+1, nxtR, nxtC);
+			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 	}
 	//reset and return
@@ -260,10 +278,10 @@ public class GridPaths4 {
     }
 
     public static int tryPath(int pathIdx, int curR, int curC) {
-        if ((onPath[curR][curC-1] && onPath[curR][curC+1])
-                && (!onPath[curR-1][curC] && !onPath[curR+1][curC])) return 0;
-        if ((onPath[curR-1][curC] && onPath[curR+1][curC])
-                && (!onPath[curR][curC-1] && !onPath[curR][curC+1])) return 0;
+        if ((onPath[curR][curC - 1] && onPath[curR][curC+1])
+                && (!onPath[curR - 1][curC] && !onPath[curR+1][curC])) return 0;
+        if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
+                && (!onPath[curR][curC - 1] && !onPath[curR][curC + 1])) return 0;
 
         if (curR == 7 && curC == 1) { //reached endpoint before visiting all
             if (pathIdx == 48) {
@@ -271,7 +289,6 @@ public class GridPaths4 {
             }
             return 0;
         }
-        //dbug("<>. <> <> ", pathIdx, curR, curC);
         if (pathIdx == 48) {
             return 0;
         }
@@ -287,58 +304,42 @@ public class GridPaths4 {
                 ret += tryPath(pathIdx + 1, nxtR, nxtC);
             }
         }
-        else if ((curC > 2) && onPath[curR][curC-2]
-                && (onPath[curR-1][curC-1] || onPath[curR+1][curC-1])
-                && (!onPath[curR][curC-1]))
+        else if ((curC > 2) && onPath[curR][curC - 2]
+                && (onPath[curR - 1][curC - 1] || onPath[curR+1][curC-1])
+                && (!onPath[curR][curC - 1]))
         { //potential dead end on the left:
             int nxtR = curR;
-            int nxtC = curC-1;
-            ret += tryPath(pathIdx+1, nxtR, nxtC);
+            int nxtC = curC - 1;
+            ret += tryPath(pathIdx + 1, nxtR, nxtC);
         }
-        else if ((curC < 6) && onPath[curR][curC+2]
-                && (onPath[curR-1][curC+1] || onPath[curR+1][curC+1] )
-                && (!onPath[curR][curC+1]))
+        else if ((curC < 6) && onPath[curR][curC + 2]
+                && (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
+                && (!onPath[curR][curC + 1]))
         { //potential dead end on the right:
             int nxtR = curR;
-            int nxtC = curC +1;
-            ret += tryPath(pathIdx+1, nxtR, nxtC);
+            int nxtC = curC + 1;
+            ret += tryPath(pathIdx + 1, nxtR, nxtC);
         }
-        else if ((curR > 2) && onPath[curR-2][curC] && onPath[curR-1][curC-1]
-                && (!onPath[curR-1][curC]))
+        else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
+                && (!onPath[curR - 1][curC]))
         { //potential dead end upwards
-        // note: I didn't include all possible scenarios because 
+        // note: I didn't include all possible scenarios because
         // it wasn't necessary in order for the program to run in time
-            int nxtR = curR-1;
+            int nxtR = curR - 1;
             int nxtC = curC;
-            ret += tryPath(pathIdx+1, nxtR, nxtC);
+            ret += tryPath(pathIdx + 1, nxtR, nxtC);
         }
         else { //iterate through all four possible turns
             for (int i = 0; i < 4; i++) {
                 int nxtR = curR + dr[i];
                 int nxtC = curC + dc[i];
                 if (onPath[nxtR][nxtC]) continue;
-                ret += tryPath(pathIdx+1, nxtR, nxtC);
+                ret += tryPath(pathIdx + 1, nxtR, nxtC);
             }
         }
         //reset and return
         onPath[curR][curC] = false;
         return ret;
-    }
-
-
-    public static void dbug(String s, long...a) { ///*
-        String[] f = s.split("<>");
-        for (int i = 0; i < a.length; i++) {
-            System.out.print(f[i] + a[i]);
-        }
-        System.out.println(f[a.length]); // */
-    }
-
-    public static void print(int[] a) { /*
-        for (int i = 0; i < a.length; i++) {
-            System.out.print(a[i] + " ");
-        }
-        System.out.println(); // */
     }
 }
 ```
