@@ -74,6 +74,7 @@ public class MaximumDistance {
 		int n = io.nextInt();
 		int[] x = new int[n];
 		int[] y = new int[n];
+
 		for (int i = 0; i < n; i++) {
 			x[i] = io.nextInt();
 		}
@@ -82,6 +83,7 @@ public class MaximumDistance {
 		}
 
 		int max = 0; // storing the current maximum
+
 		for (int i = 0; i < n; i++) { // for each first point
 			for (int j = i + 1; j < n; j++) { // for each second point
 				int dx = x[i] - x[j];
@@ -94,7 +96,6 @@ public class MaximumDistance {
 		io.println(max);
 		io.close();
 	}
-
 	CodeSnip{Kattio}
 }
 ```
@@ -175,9 +176,10 @@ int main() {
 	cout << (int)pow(max_dist,2);
 }
 ```
-
+<Warning>
 However, it still fails on the following test case (it outputs 12, but the
 answer is 13):
+</Warning>
 
 ```
 2
@@ -189,6 +191,64 @@ Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you
 should stick with integers whenever possible.
 
 </CPPSection>
+	
+<JavaSection>
+
+The following solution correctly stores the maximum distance in a floating point
+variable.
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class MaximumDistance2 {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int[] x = new int[n];
+		int[] y = new int[n];
+
+		for (int i = 0; i < n; i++) {
+			x[i] = io.nextInt();
+		}
+		for (int i = 0; i < n; i++) {
+			y[i] = io.nextInt();
+		}
+
+		double maxSquare = 0; // storing the current maximum
+		for (int i = 0; i < n; i++) {  // for each first point
+			for(int j = i + 1; j < n; j++){ // for each second point
+				int dx = x[i] - x[j];
+				int dy = y[i] - y[j];
+				int  square = dx * dx + dy * dy;
+				// if the square of the distance between the two points is greater than
+				// our current maximum, then update the maximum
+				maxSquare = Math.max(maxSquare, Math.sqrt(square));
+			}
+		}
+		io.println((int) Math.pow(maxSquare, 2));
+		io.close();
+	}
+}
+
+```
+<Warning>
+However, it still fails on the following test case (it outputs 12, but the
+answer is 13):
+</Warning>
+	
+```
+2
+0 3
+2 0
+```
+
+Rounding suffices (`(int) Math.round(Math.pow(maxSquare, 2))`), but the takeaway is that you
+should stick with integers whenever possible.
+
+</JavaSection>
+
 <PySection>
 
 The following solution correctly stores the maximum distance in a floating point
@@ -218,8 +278,10 @@ for i in range(N): #first point
 
 print(round(MaxDistance ** 2))
 ```
+<Warning>
 However, it still fails on the following test case (it outputs $12.999999999999998$, but the
 answer is $13$):
+</Warning>
 
 ```
 2
