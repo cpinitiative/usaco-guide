@@ -151,7 +151,11 @@ export default functions.firestore
         if (change.before.data().result !== change.after.data().result) {
           // if result changed, recalculate leaderboard
           await recalculateLeaderboard(change.after.data() as Submission);
-        }
+        } else if (change.before.data().gradingStatus !== change.after.data().gradingStatus && change.after.data().gradingStatus === "error") {
+          await change.after.ref.update({
+            status: ExecutionStatus.INTERNAL_ERROR,
+          });
+        };
       } else {
         // submit submission
         try {
