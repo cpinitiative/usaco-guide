@@ -15,16 +15,19 @@ The range queries are vanilla lazy propagation, so we should focus more on the u
 
 We can split the "update" operation into two operations. One would be a basic range addition,
 and the other would be an incremental addition. Therefore, for each index $a_i$, we will need
-to keep track of two points: the total sum $s_i$ given only the range sums without increments,
-and a value $t_i$ which contains the sum of all increments from the incremental steps.
+to keep track of two points: the total offset $s_i$ given only the offset sum (without increments),
+and the total increment $t_i$ which contains the sum of all increments from the incremental steps.
 
-When we update, we want to keep two lazy values: one (`lz`) stores the unapplied change in $s_i$,
-much like regular lazy prop,
-and the other (`lz2`) stores the unapplied change from the incremental sum $t_i$.
-When we propagate, the value of `lz` for
-a node `nd` containing segment $[i, j]$ when updating $[l, r]$ can be found by calculating $i-l$.
-When we update increments for any node `nd` we always add 1 to `lz2[nd]` as per the 
-problem statement.
+When we propagate, the values of $s_i$ and $t_i$ for
+a node $k$ representing segment $[i, j]$ 
+when updating segment $[l, r]$ can be found by calculating $i-l$, as follows.
+
+- $s_k = s_k + (i-l)$ because we must add an increment $i-l$ to the value of $s_k$ because we are starting at $l + (i-l)$.
+- $t_k = t_k + 1$ because the increment increases by 1 during each update.
+
+And when we update the segment tree, the range sum is the sum of the offset and the total increment across the range. Assuming our range is $L$ 
+and the range sum for node $k$ is $st[k]$, $st[k] = s_k \cdot L + t_k \cdot \frac{L(L+1)}{2}$. In this case, $s_k \cdot L$ is the sum of all the
+offsets in the range, and $t_k \cdot \frac{L(L+1)}{2}$ is the sum of $t_k \cdot (i-l)$ for each $i$ in the range.
 
 ## Implementation
 <LanguageSection>
@@ -33,7 +36,7 @@ problem statement.
 ```cpp
 #include <bits/stdc++.h>
  
-using namespace std;
+using namespace st;
 using ll = long long;
  
 const int MAXN = 200005;
@@ -46,6 +49,8 @@ struct ST
 {
 	int n;
 	vector<ll> a;
+	// lz = stores changes in s_i
+	// lz2 = stores changes in t_i
 	vector<ll> st, lz, lz2;
 	ST()
 	{
