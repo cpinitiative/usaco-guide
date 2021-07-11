@@ -6,13 +6,13 @@ author: Andrew Cheng
 ---
 
 **Time Complexity:**
-$\mathcal{O}(N+\log(max \ a_i))$
+$\mathcal{O}(N+\log(\max a_i))$
 
 ## Solution
 The problem asks us to find the maximum possible GCD of the remaining $N-1$ numbers
 after taking any one of them away. Naively trying every single combination will result in a
-complexity of $\mathcal{O}(N^2 + N \log(max \ a_i))$ as there are $N$ different ways to take away a number and calculating
-the GCD will take $\mathcal{O}(N+\log(max \ a_i))$ time per case. 
+complexity of $\mathcal{O}(N^2 + N \log(\max a_i))$ as there are $N$ different ways to take away a number and calculating
+the GCD will take $\mathcal{O}(N+\log(\max a_i))$ time per case. 
 
 To speed this process up, we can calculate the GCDs of every prefix and suffix. Let $l[i] = \gcd_{j=1}^{i} a[j]$ and $r[i] = \gcd_{j=i}^{N} a[j]$.
 Then the answer is the maximum of $\gcd(l[i-1],r[i+1]),$ $i \in [1,N]$. 
