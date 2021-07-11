@@ -1,0 +1,71 @@
+---
+id: usaco-991
+source: USACO Silver 2020 January
+title: Loan Repayment
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_loan_silver_jan20.html)
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(\sqrt{N} \cdot \log{N})$
+
+<LanguageSection>
+  
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Loan {
+	// our checking function in the binary search
+	static boolean isOk (long numGallons, long withinDays, long atLeast, long checkNumber) {
+		long g = 0;
+		while (withinDays > 0 && g < numGallons) {
+			long y = (numGallons - g) / checkNumber;
+			if (y < atLeast) {
+				long leftover = ((numGallons - g) + (atLeast - 1)) / atLeast;
+				return leftover <= withinDays;
+			}
+			long maxMatch = numGallons - (checkNumber * y);
+			long numDays = (maxMatch - g) / y + 1;
+			if (numDays > withinDays) {  // take a maximum
+				numDays = withinDays;
+			}
+			g += y * numDays;  // update values
+			withinDays -= numDays;
+		}
+		return g >= numGallons;
+	}
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("loan");
+		long numGallons = io.nextLong();
+		long withinDays = io.nextLong();
+		long atLeast = io.nextLong();
+
+		long low = 1;
+		long high = 1000000000000L;
+
+		while (low < high) {
+			long mid = (low + high + 1) / 2;
+			// we can exclude everything up to but not including mid
+			if (isOk(numGallons, withinDays, atLeast, mid)) {
+				low = mid;
+			}
+			else {  // we can exclude everything including mid
+				high = mid - 1;
+			}
+		}
+		// low and high are the same so we can output either one
+		io.println(low);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+  
+</JavaSection>
+  
+</LanguageSection>
