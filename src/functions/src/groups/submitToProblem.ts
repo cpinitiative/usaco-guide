@@ -179,7 +179,7 @@ export default functions.firestore
           // server probably down
           await change.after.ref.update({
             gradingStatus: 'error',
-            errorMessage: 'Is the judge server down?',
+            errorMessage: 'The server is currently unavailable. Please try again later, or contact us at onlinejudge@joincpi.org.',
           });
         }
       }
