@@ -1,7 +1,7 @@
 ---
 id: sqrt
 title: 'Square Root Decomposition'
-author: Benjamin Qi
+author: Benjamin Qi, Neo Wang
 description: Splitting up data into smaller chunks to speed up processing.
 frequency: 1
 ---
@@ -29,116 +29,172 @@ approaches. Both run in $\mathcal{O}((N+Q)\sqrt N)$ time.
 <!-- partitioning into sqrt blocks (each block can have some sort of data structure ...)
  -->
 
-See the first example in CPH.
+We partition the array into $\sqrt N)$ blocks, where each block covers an
+interval of size $\sqrt{N}$. For each block, there exists a corresponding
+`update` and `query` operation.
+
+**Update Queries:** $\mathcal{O}(1)$
+
+To update an element at location $x$, we can find the corresponding block using
+the formula $\frac{x}{\texttt{blocksz}}$, and apply the corresponding difference
+between the element currently stored at $x$, and the element we want to change
+it to.
+
+**Sum Queries:** $\mathcal{O}(\sqrt{N})$
+
+To perform a sum query from $[0...r]$, calculate
+
+$$
+\sum_{i = 0}^{r} \texttt{blocks}[i]
+$$
+
+where $\texttt{blocks}[i]$ represents the total sum of the $i$-th block. Since
+each of these blocks are of size $\sqrt{N}$, there can be at most $\sqrt{N}$
+blocks.
+
+Finally, to find our total difference between $[l, r]$, we can calculate
+
+$$
+\sum_{i = 0}^{r} \texttt{blocks}[i] - \sum_{i = 0}^{l - 1} \texttt{blocks}[i] = \sum_{i = l}^{r} \texttt{blocks}[i]
+$$
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
-int n,q;
-vi x;
-ll block[450];
-int BLOCK;
+//CodeSnip{CPP Short Template}
 
-ll sum(int a) { // sum of first a elements of array in O(sqrt(n)) time
-	ll ans = 0;
-	F0R(i,a/BLOCK) ans += block[i];
-	FOR(i,a/BLOCK*BLOCK,a) ans += x[i];
-	return ans;
+ll blocks[450]; // 450^2 > 2e5
+int nums[(int)(2e5 + 1)];
+int block_sz;
+
+void upd(int x, int v) { // O(1) update
+	blocks[x / block_sz] -= nums[x];
+	nums[x] = v;
+	blocks[x / block_sz] += nums[x];
 }
 
-void upd(int a, int b) { // O(1) query
-	block[a/BLOCK] -= x[a];
-	x[a] = b;
-	block[a/BLOCK] += x[a];
+ll query(int r) {
+	ll ret = 0;
+	for(int i = 0; i < r / block_sz; i++) ret += blocks[i];
+	for(int i = r / block_sz * block_sz; i < r; i++) ret += nums[i];
+	return ret;
+}
+
+ll query(int l, int r) {
+	return query(r) - query(l - 1);
 }
 
 int main() {
-	setIO(); re(n,q); x.rsz(n); re(x);
-	BLOCK = sqrt(n);
-	F0R(i,n) block[i/BLOCK] += x[i];
-	F0R(i,q) {
-		int t,a,b; re(t,a,b);
-		if (t == 1) upd(a-1,b);
-		else ps(sum(b)-sum(a-1));
+	setIO();
+
+	int n, q; cin >> n >> q;
+	block_sz = (int) sqrt(n);
+
+	for(int i = 0; i < n; ++i) cin >> nums[i];
+	for(int i = 0; i < n; ++i) blocks[i / block_sz] += nums[i];
+	for(int i = 0; i < q; ++i) {
+		int t, l, r; cin >> t >> l >> r;
+		if (t == 1) upd(l - 1, r);
+		else cout << query(l, r) << "\n";
 	}
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 ## Batching
 
-See the CPH section on "batch processing."
+See the CPH section on [batch processing](https://usaco.guide/CPH.pdf#page=263).
 
 Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each
 sum query can be calculated with prefix sums and by examining each update within
 the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and
 recalculate prefix sums.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
-int n,q;
+//CodeSnip{CPP Short Template}
+
+int n, q;
 vi x;
-vl cum;
+vector<long long> cum;
 
 void build() {
 	cum = {0};
-	trav(t,x) cum.pb(cum.bk+t);
+	for(const auto &t : x) cum.pb(cum.back() + t);
 }
 
 int main() {
-	setIO(); re(n,q);
-	x.rsz(n); re(x);
+	setIO(); cin >> n >> q;
+	x.resize(n); for(int i = 0; i < n; i++) cin >> x[i];
 	build();
-	vpi upd;
-	F0R(i,q) {
-		int t,a,b; re(t,a,b);
+	vector<pair<int, int>> upd;
+	while(q--) {
+		int t, a, b; cin >> t >> a >> b;
 		if (t == 1) {
 			a --;
-			upd.pb({a,b-x[a]}); x[a] = b;
+			upd.pb({a, b - x[a]}); x[a] = b;
 		} else {
-			ll ans = cum[b]-cum[a-1]; a --, b--;
-			trav(u,upd) if (a <= u.f && u.f <= b) ans += u.s;
-			ps(ans);
+			ll ans = cum[b] - cum[a - 1];
+			a--, b--;
+			for(const auto &u : upd) {
+				if (a <= u.f && u.f <= b) ans += u.s;
+			}
+			cout << ans << "\n";
 		}
-		if (sz(upd)*sz(upd) >= n) upd.clear(), build();
+		if (sz(upd) * sz(upd) >= n) upd.clear(), build();
 	}
 }
 ```
 
-## Mo's Algorithm
+</CPPSection>
 
-See CPH 27.3 and the CF link above.
+</LanguageSection>
+
+## Mo's Algorithm
 
 <Resources>
 	<Resource source="CF" title="Mo's Algorithm" url="7383">
 		<i>very</i> brief description
 	</Resource>
+	<Resource source="CPH" title="Mo's Algorithm - 27.3" url="https://usaco.guide/CPH.pdf#page=265"/>
 </Resources>
 
 <!-- [A2OJ](https://a2oj.com/category?ID=318) -->
 
 ## Additional Notes
 
-Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s)
-can be signs that sqrt decomp is intended.
+- Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than
+  2s) can be signs that square root decomposition is intended.
 
-[CPH 262](/CPH.pdf#page=262):
+- [CPH 262](/CPH.pdf#page=262):
 
-> In practice, it is not necessary to use the exact value of $\sqrt n$ as a
-> parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is
-> different from $\sqrt n$. The optimal parameter depends on the problem and
-> input. For example, if an algorithm often goes through the blocks but rarely
-> inspects single elements inside the blocks, it may be a good idea to divide
-> the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$
-> elements.
+- > In practice, it is not necessary to use the exact value of $\sqrt n$ as a
+  > parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is
+  > different from $\sqrt n$. The optimal parameter depends on the problem and
+  > input. For example, if an algorithm often goes through the blocks but rarely
+  > inspects single elements inside the blocks, it may be a good idea to divide
+  > the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$
+  > elements.
 
-As another example, if an update takes time proportional to the size of one
-block ($\mathcal{O}(n/k)$) while a query takes time proportional to the number
-of blocks times $\log n$ ($\mathcal{O}(k\log n)$) then we can set
-$k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time
-$\mathcal{O}(\sqrt{n\log n})$.
+- If an update takes time proportional to the size of one block
+  ($\mathcal{O}(n/k)$) while a query takes time proportional to the number of
+  blocks times $\log n$ ($\mathcal{O}(k\log n)$) then we can set
+  $k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time
+  $\mathcal{O}(\sqrt{n\log n})$.
 
-Solutions with worse complexities are not necessarily slower (at least for
-problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an
-instance where a fast $\mathcal{O}(n\sqrt n\log n)$ solution passed (where
-$\log n$ came from a BIT) while an $\mathcal{O}(n\sqrt n)$ solution did not ...
-So constant factors are important!
+- Solutions with worse complexities are not necessarily slower (at least for
+  problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an
+  instance where a fast $\mathcal{O}(n\sqrt n\log n)$ solution passed (where
+  $\log n$ came from a BIT) while an $\mathcal{O}(n\sqrt n)$ solution did not.
+  Constant factors are important!
 
 ## On Trees
 
@@ -150,7 +206,7 @@ mention.
 	<Resource source="CF" title="Block Tree" url="46843" />
 </Resources>
 
-Some more discussion about how sqrt decomp can be used:
+Some more discussion about how square root decomposition can be used:
 
 <Resources>
 	<Resource
@@ -164,14 +220,14 @@ Some more discussion about how sqrt decomp can be used:
 
 ## Problems
 
-### A
+### Set A
 
-Problems where the best solution I know of involves sqrt decomp.
+Problems where the best solution involves square root decomposition.
 
 <Problems problems="fst" />
 
-### B
+### Set B
 
-Problems that can be solved without it. But you might as well try to use it!!
+Problems that can be solved without it. But you might as well try to use it!
 
 <Problems problems="bad" />
