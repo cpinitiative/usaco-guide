@@ -1,5 +1,9 @@
 import React from 'react';
-import { Submission, SubmissionType } from '../../../models/groups/problem';
+import {
+  ExecutionStatus,
+  Submission,
+  SubmissionType,
+} from '../../../models/groups/problem';
 import TestCaseResult from './TestCaseResult';
 
 const OnlineJudgeSubmission = ({
@@ -17,17 +21,24 @@ const OnlineJudgeSubmission = ({
           (submission.compilationError ? 'Compilation Error' : 'Done')}
       </div>
       {submission.gradingStatus === 'done' &&
-        (submission.compilationError === true ? (
-          <pre className="text-red-800 dark:text-red-200 overflow-auto">
-            {submission.compilationErrorMessage}
-          </pre>
-        ) : (
-          <div>
-            {submission.testCases.map(tc => (
-              <TestCaseResult data={tc} key={tc.caseId} />
-            ))}
-          </div>
-        ))}
+        submission.status !== ExecutionStatus.AC && (
+          <p>
+            Common issues: Java users should name their class Main. Remember to
+            use standard input/output instead of file input/output.
+          </p>
+        )}
+      {submission.compilationError === true && (
+        <pre className="text-red-800 dark:text-red-200 overflow-auto">
+          {submission.compilationErrorMessage}
+        </pre>
+      )}
+      {submission.compilationError === false && (
+        <div>
+          {submission.testCases.map(tc => (
+            <TestCaseResult data={tc} key={tc.caseId} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

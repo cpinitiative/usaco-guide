@@ -77,8 +77,8 @@ export type Submission = {
           compilationError: true;
           compilationErrorMessage: string;
         }
-        // NOTE: while gradingStatus is waiting compilationError is undefined, not false or true
-        // but I can't get the typescript working >:-(
+      // NOTE: while gradingStatus is waiting compilationError is undefined, not false or true
+      // but I can't get the typescript working >:-(
     ))
 );
 
