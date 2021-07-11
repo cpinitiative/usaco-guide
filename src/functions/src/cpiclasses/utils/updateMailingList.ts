@@ -60,7 +60,7 @@ export default async function updateMailingList({
         FNAME: firstName,
         LNAME: lastName,
         PROGLANG: preferredLanguage === 'java' ? 'Java' : preferredLanguage === 'cpp' ? 'C++' : 'Python',
-        BRVIDJOINLINK: joinLink,
+        BRVCJOINLK: joinLink,
       },
     };
 
