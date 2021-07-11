@@ -2,7 +2,7 @@
 id: usaco-940
 source: USACO Bronze 2019 Open
 title: Milk Factory
-author: Mrinall Umasudhan, Jesse Choe, Ryan Chou
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang
 ---
 
 ## Solution 1
@@ -42,6 +42,51 @@ print(ans, file = open('factory.out', 'w'))
 ```
 	
 </PySection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Solver {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("factory.in"));
+		PrintWriter out = new PrintWriter("factory.out");
+
+		int N = Integer.parseInt(in.readLine());
+		int[] outgoing = new int[N];
+		// N - 1 walkways
+		for (int i = 0; i < N - 1; i++) {
+			StringTokenizer st = new StringTokenizer(in.readLine());
+			// count the outdegree of this station
+			// Array index begins with 0, station begins with 1, so -1
+			outgoing[Integer.parseInt(st.nextToken()) - 1]++;
+		}
+		in.close();
+
+		int ans = -1;
+		for (int i = 0; i < N; i++) {
+			// only stations with outdegree 0 could be the sink
+			if (outgoing[i] == 0) {
+				if (ans == -1)
+					// found the sink
+					ans = i + 1; // Array index begins with 0
+				else {
+					// found two sinks 
+					// so it's impossible to get from one to another
+					ans = -1;
+					break;
+				}
+			}
+		}
+
+		out.println(ans);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 ## Solution 2
 This problem can also be solved using [Depth-First Search](/silver/dfs) (a
