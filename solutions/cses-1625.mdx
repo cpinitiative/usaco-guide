@@ -1,6 +1,6 @@
 ---
 id: cses-1625
-source: CSES
+source: CSES (TODO -- convert to something like `USACO Silver 2017 January`)
 title: Grid Paths
 author: Vivian Han
 ---
@@ -16,7 +16,7 @@ The data is also C++ specific, so Java and Python users will experience signific
 The consequences of this discrepancy which will be addressed later in the explanation.
 </Warning>
 
-**Basic Algorithm**
+### Basic Algorithm
 
 The first version of the algorithm does not contain any optimizations. We simply use backtracking to generate all possible paths from the upper-left corner to the lower-right corner and count the number of such paths.
 
@@ -24,7 +24,7 @@ The first version of the algorithm does not contain any optimizations. We simply
 
 • number of recursive calls: 76 billion
 
-**Optimization 1**
+### Optimization 1
 
 If the path reaches the lower-right square before it has visited all other squares of the grid, it is clear that it will not be possible to complete the solution. Using this observation, we can terminate the search immediately if we reach the lower-right square too early.
 
@@ -33,7 +33,7 @@ If the path reaches the lower-right square before it has visited all other squar
 • number of recursive calls: 20 billion
 
 
-**Optimization 2**
+### Optimization 2
 
 If the path touches a wall and can turn either left or right, the grid splits into two parts that contain unvisited squares. In this case, we cannot visit all squares anymore, so we can terminate the search.
 
@@ -41,7 +41,7 @@ If the path touches a wall and can turn either left or right, the grid splits in
 
 • number of recursive calls: 221 million
 
-**Optimization 3**
+### Optimization 3
 
 The idea of Optimization 3 can be generalized: if the path cannot continue forward but can turn either left or right, the grid splits into two parts that both contain unvisited squares. It is clear that we cannot visit all squares anymore, so we can terminate the search.
 
@@ -53,19 +53,21 @@ Now is a good moment to stop optimizing the algorithm and see what we have
 achieved. The running time of the original algorithm was 483 seconds, and now
 after the optimizations, the running time is only 0.6 seconds. Thus, the algorithm
 became nearly 1000 times faster after the optimizations.
+
+<Info title="">
 This is a usual phenomenon in backtracking, because the search tree is usually
 large and even simple observations can effectively prune the search. Especially
 useful are optimizations that occur during the first steps of the algorithm, i.e., at
 the top of the search tree.
+</Info>
 
 For C++ users, this will be enough pruning to make the program run in time under worst case conditions. However, for Java and Python users, this is still too slow (Java takes around 1.2 seconds for the worst case). Thus, we will need to further optimize our search.
 
-**Optimization 4**
+### Optimization 4
 
 If the path creates a dead end that is not the bottom left corner, either the path will fail to visit all squares (the path may stop at the dead end or pass over it, sealing a square off) or the path will end in the wrong location. Thus we want to avoid creating dead ends. For example, if the square to the left of our current location is blocked on three sides (including our current location), then the next step must be to the left in order to avoid creating a dead end. After this optimization, the program runs in under 1 second.
 
 ## Implementation
-
 
 <LanguageSection>
 
