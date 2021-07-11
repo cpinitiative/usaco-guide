@@ -67,20 +67,18 @@ export type Submission = {
       type: SubmissionType.ONLINE_JUDGE;
       errorMessage?: string;
       judgeProblemId: string;
+      gradingStatus: 'waiting' | 'in_progress' | 'done' | 'error';
     } & (
       | {
-          gradingStatus: 'waiting' | 'in_progress' | 'error';
-        }
-      | {
-          gradingStatus: 'done';
           compilationError: false;
           testCases?: TestCaseResult[];
         }
       | {
-          gradingStatus: 'done';
           compilationError: true;
           compilationErrorMessage: string;
         }
+        // NOTE: while gradingStatus is waiting compilationError is undefined, not false or true
+        // but I can't get the typescript working >:-(
     ))
 );
 

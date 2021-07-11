@@ -64,6 +64,20 @@ export default functions.https.onCall(
         'The value of the order was not $25.'
       );
     }
+
+    // create bronze class join link
+    const joinLinkRef = admin.firestore().collection('group-join-links').doc();
+    await joinLinkRef.set({
+      groupId: 'd7eYGfddXq3m2trXG2xt',
+      revoked: false,
+      numUses: 0,
+      maxUses: 1,
+      expirationTime: null,
+      usedBy: [],
+      author: "REGISTRATION_" + email,
+      id: joinLinkRef.id,
+    });
+
     const ref = admin
       .firestore()
       .collection('classes-registration')
@@ -96,6 +110,7 @@ export default functions.https.onCall(
         ip: context.rawRequest.ip,
         level,
         fullFinancialAid: false,
+        joinLink: `https://usaco.guide/groups/join?key=${joinLinkRef.id}`
       }),
     ]);
 

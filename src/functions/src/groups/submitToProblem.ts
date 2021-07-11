@@ -41,7 +41,12 @@ export default functions.firestore
       if (data.type === SubmissionType.SELF_GRADED) {
         status = data.result === 1 ? ExecutionStatus.AC : ExecutionStatus.WA;
       } else if (data.type === SubmissionType.ONLINE_JUDGE) {
-        if (data.compilationError) {
+        if (data.gradingStatus !== "done") {
+          throw new Error(
+            'recalculateLeaderboard should only be called once the online judge has finished grading.'
+          );
+        }
+        if (data.compilationError === true) {
           status = ExecutionStatus.CE;
         } else if (data.compilationError === false) {
           status = data.testCases?.reduce((oldStatus, r) => {
@@ -69,7 +74,7 @@ export default functions.firestore
           }, ExecutionStatus.AC);
         } else {
           throw new Error(
-            'this should never happen. recalculateLeaderboard should only be called once the execution finishes.'
+            'this should never happen. gradingstatus is done but compilationError is neither true nor false.'
           );
         }
       } else {

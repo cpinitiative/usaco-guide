@@ -25,6 +25,19 @@ export default functions.https.onCall(
       );
     }
 
+    // create bronze class join link
+    const joinLinkRef = admin.firestore().collection('group-join-links').doc();
+    await joinLinkRef.set({
+      groupId: 'd7eYGfddXq3m2trXG2xt',
+      revoked: false,
+      numUses: 0,
+      maxUses: 1,
+      expirationTime: null,
+      usedBy: [],
+      author: "REGISTRATION_" + email,
+      id: joinLinkRef.id,
+    });
+
     await Promise.all([
       updateMailingList({
         email,
@@ -34,6 +47,7 @@ export default functions.https.onCall(
         ip: context.rawRequest.ip,
         level,
         fullFinancialAid: true,
+        joinLink: `https://usaco.guide/groups/join?key=${joinLinkRef.id}`
       }),
       admin
         .firestore()
