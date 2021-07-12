@@ -24,6 +24,7 @@ import { EditorOutput } from './EditorOutput';
 import { EditorSidebar } from './EditorSidebar/EditorSidebar';
 import { EditorTopNav } from './EditorTopNav';
 import { MainEditorInterface } from './MainEditorInterface';
+import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
 
 const StyledSplit = styled(Split)`
   & > div,
@@ -64,39 +65,41 @@ export default function EditorPage(props: PageProps): JSX.Element {
   }, []);
 
   return (
-    <Layout>
-      <SEO title="Editor" />
+    <QuizGeneratorProvider>
+      <Layout>
+        <SEO title="Editor" />
 
-      <div className="h-screen flex flex-col min-w-[768px]">
-        <EditorTopNav />
+        <div className="h-screen flex flex-col min-w-[768px]">
+          <EditorTopNav />
 
-        {typeof window !== 'undefined' && (
-          <React.Suspense
-            fallback={
-              <div className="text-center mt-6 font-bold text-2xl">Loading</div>
-            }
-          >
-            <StyledSplit
-              className="h-full relative flex-1 overflow-hidden"
-              onDrag={() => {
-                if (editor.monaco !== null) editor.monaco.layout();
-              }}
-              minSize={[600, 10]}
+          {typeof window !== 'undefined' && (
+            <React.Suspense
+              fallback={
+                <div className="text-center mt-6 font-bold text-2xl">Loading</div>
+              }
             >
-              {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
-              <div className="flex items-stretch">
-                <EditorSidebar className="h-full flex-shrink-0" />
-                <MainEditorInterface className="h-full w-0 flex-1" />
-              </div>
-              <div className="flex flex-col">
-                <div className="overflow-y-auto relative flex-1">
-                  <EditorOutput />
+              <StyledSplit
+                className="h-full relative flex-1 overflow-hidden"
+                onDrag={() => {
+                  if (editor.monaco !== null) editor.monaco.layout();
+                }}
+                minSize={[600, 10]}
+              >
+                {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
+                <div className="flex items-stretch">
+                  <EditorSidebar className="h-full flex-shrink-0" />
+                  <MainEditorInterface className="h-full w-0 flex-1" />
                 </div>
-              </div>
-            </StyledSplit>
-          </React.Suspense>
-        )}
-      </div>
-    </Layout>
+                <div className="flex flex-col">
+                  <div className="overflow-y-auto relative flex-1">
+                    <EditorOutput />
+                  </div>
+                </div>
+              </StyledSplit>
+            </React.Suspense>
+          )}
+        </div>
+      </Layout>
+    </QuizGeneratorProvider>
   );
 }
