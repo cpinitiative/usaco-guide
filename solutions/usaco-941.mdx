@@ -61,49 +61,49 @@ vector<string> all_characteristics;
 // Do two sets "cross" -- I.e., are there elements in A, B, and A intersect B?
 bool crossing(int a, int b)
 {
-  int A=0, B=0, AB=0;
-  for (int i=0; i<N; i++) {
-    vector<string> &v = characteristics[i];
-    bool has_a = false, has_b = false;
-    for (int j=0; j<v.size(); j++) {
-      if (v[j]==all_characteristics[a]) has_a = true;
-      if (v[j]==all_characteristics[b]) has_b = true;
-    }
-    if (has_a && has_b) AB++;
-    else if (has_a) A++;
-    else if (has_b) B++;
+	int A=0, B=0, AB=0;
+	for (int i=0; i<N; i++) {
+	vector<string> &v = characteristics[i];
+	bool has_a = false, has_b = false;
+	for (int j=0; j<v.size(); j++) {
+	  if (v[j]==all_characteristics[a]) has_a = true;
+	  if (v[j]==all_characteristics[b]) has_b = true;
+	}
+	if (has_a && has_b) AB++;
+	else if (has_a) A++;
+	else if (has_b) B++;
   }
   return AB>0 && A>0 && B>0;
 }
  
 int main(void)
 {
-  ifstream fin ("evolution.in");
-  fin >> N;
-  string s;
-  for (int i=0; i<N; i++) {
-    int K;
-    fin >> K;
-    for (int j=0; j<K; j++) {
-      fin >> s;
-      characteristics[i].push_back(s);
-      bool found = false;
-      for (int k=0; k<all_characteristics.size(); k++)
+	ifstream fin ("evolution.in");
+	fin >> N;
+	string s;
+	for (int i=0; i<N; i++) {
+	int K;
+	fin >> K;
+	for (int j=0; j<K; j++) {
+		fin >> s;
+		characteristics[i].push_back(s);
+		bool found = false;
+		for (int k=0; k<all_characteristics.size(); k++)
 	if (all_characteristics[k] == s) found = true;
-      if (!found) all_characteristics.push_back(s);
-    }
+		if (!found) all_characteristics.push_back(s);
+	}
   }
-    
-  int M = all_characteristics.size();
-  bool ok = true;
-  for (int a=0; a<M; a++)
-    for (int b=a+1; b<M; b++)
-      if (crossing(a, b)) ok = false;
+	
+	int M = all_characteristics.size();
+	bool ok = true;
+	for (int a=0; a<M; a++)
+	for (int b=a+1; b<M; b++)
+		if (crossing(a, b)) ok = false;
  
-  ofstream fout ("evolution.out");
-  if (ok) fout << "yes\n";
-  else fout << "no\n";
-  return 0;
+	ofstream fout ("evolution.out");
+	if (ok) fout << "yes\n";
+	else fout << "no\n";
+	return 0;
 }
 ```
 
@@ -116,49 +116,49 @@ import java.util.*;
 
 public class Evolution {
 
-    static boolean[][] hasChar = new boolean[25][125];
-    static Map<String, Integer> convert = new HashMap<>();
+	static boolean[][] hasChar = new boolean[25][125];
+	static Map<String, Integer> convert = new HashMap<>();
 
-    public static void main(String[] args) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("evolution.in"));
-            int popNum = Integer.parseInt(br.readLine());
-            int nxtIdx = 0;
-            for (int i = 0 ; i < popNum; i++) {
-                String[] line = br.readLine().split(" ");
-                for (int j = 1; j < line.length; j++) {
-                    if (!convert.containsKey(line[j])) {
-                        convert.put(line[j], nxtIdx++);
-                    }
-                    int idx = convert.get(line[j]);
-                    hasChar[i][idx] = true;
-                }
-            }
-            br.close();
+	public static void main(String[] args) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("evolution.in"));
+			int popNum = Integer.parseInt(br.readLine());
+			int nxtIdx = 0;
+			for (int i = 0 ; i < popNum; i++) {
+				String[] line = br.readLine().split(" ");
+				for (int j = 1; j < line.length; j++) {
+					if (!convert.containsKey(line[j])) {
+						convert.put(line[j], nxtIdx++);
+					}
+					int idx = convert.get(line[j]);
+					hasChar[i][idx] = true;
+				}
+			}
+			br.close();
 
-            boolean works = true;
-            for (int a = 0; a < nxtIdx && works; a++) {
-                for (int b = 0; b < a && works; b++) {
-                    int aNum = 0;
-                    int bNum = 0;
-                    int abNum = 0;
-                    for (int i = 0; i < popNum; i++) {
-                        if (hasChar[i][a] && hasChar[i][b]) abNum++;
-                        else if (hasChar[i][a]) aNum++;
-                        else if (hasChar[i][b]) bNum++;
-                    }
-                    works = works && !(aNum>0 && bNum>0 && abNum>0);
-                }
-            }
+			boolean works = true;
+			for (int a = 0; a < nxtIdx && works; a++) {
+				for (int b = 0; b < a && works; b++) {
+					int aNum = 0;
+					int bNum = 0;
+					int abNum = 0;
+					for (int i = 0; i < popNum; i++) {
+						if (hasChar[i][a] && hasChar[i][b]) abNum++;
+						else if (hasChar[i][a]) aNum++;
+						else if (hasChar[i][b]) bNum++;
+					}
+					works = works && !(aNum>0 && bNum>0 && abNum>0);
+				}
+			}
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter("evolution.out"));
-            bw.write((works)? "yes\n": "no\n");
-            bw.close();
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+			BufferedWriter bw = new BufferedWriter(new FileWriter("evolution.out"));
+			bw.write((works)? "yes\n": "no\n");
+			bw.close();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
 }
 ```
 </JavaSection>
