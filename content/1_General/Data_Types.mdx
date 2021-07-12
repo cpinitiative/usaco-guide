@@ -63,11 +63,36 @@ prerequisites:
 
 <br />
 
+<CPPSection>
 | Types             | int                     | long long               | float                    | double                     | bool               | char            | string              |
 | ----------------- | ----------------------- | ----------------------- | ------------------------ | -------------------------- | ------------------ | --------------- | ------------------- |
-| Description (g++) | 32-bit integer          | 64-bit integer          | Single-precision float   | Double-precision float     | True/False value   | 8-bit character | Note: not primitive |
+| Description (g++) | 32-bit integer          | 64-bit integer          | Single-precision float   | Double-precision float     | True/False value   | 8-bit character | String (Note: not primitive) |
 | Size (bytes, g++) | 4                       | 8                       | 4                        | 8                          | 1                  | 1               | Variable            |
 | Range (g++)       | $-2^{32}$ to $2^{32}-1$ | $-2^{64}$ to $2^{64}-1$ | `-3.4E+38` to `+3.4E+38` | `-1.7E+308` to `+1.7E+308` | 0, 1 or true/false | $-128$ to $127$ | Not applicable      |
+</CPPSection>
+
+<JavaSection>
+
+| Types       | int                     | long                    | float                    | double                     | boolean          | char                           | String         | BigInteger             |
+| ----------- | ----------------------- | ----------------------- | ------------------------ | -------------------------- | ---------------- | ------------------------------ | -------------- | ---------------------- |
+| Description | 32-bit integer          | 64-bit integer          | Single-precision float   | Double-precision float     | True/False value | 8-bit character                | String         | Arbitrary-size integer |
+| Size (bits) | 32                      | 64                      | 32                       | 64                         | 1(\*)            | 16                             | Variable       | Unlimited              |
+| Range       | $-2^{32}$ to $2^{32}-1$ | $-2^{64}$ to $2^{64}-1$ | `-3.4E+38` to `+3.4E+38` | `-1.7E+308` to `+1.7E+308` | true/false       | `\u0000` to `\uffff` (0-65535) | Not applicable | Unlimited              |
+
+\*Note: It's unlikely that booleans will actually use only 1 bit of memory, as
+in most cases data types must be aligned to bytes. However, only one bit of
+information can be stored in them.
+
+</JavaSection>
+
+<PySection>
+
+| Types       | int                    | float                                    | bool             | str                |
+| ----------- | ---------------------- | ---------------------------------------- | ---------------- | ------------------ |
+| Description | Arbitrary-size integer | Double-precision (64 bit) IEEE 754 float | True/False value | String             |
+| Values      | Any integer            | `-1.7E+308` to `+1.7E+308`               | true/false       | Any length of text |
+
+</PySection>
 
 There are several main **data types** that are used in contests: integers,
 floating point numbers, booleans, characters, and strings. Assuming that you are
@@ -128,7 +153,10 @@ exactly one accepted invitation, rounded down to the nearest integer." (ex.
 
 **Boolean** variables have two possible states: `true` and `false`. We'll
 usually use booleans to mark whether a certain process is done, and arrays of
-booleans to mark which components of an algorithm have finished.
+booleans to mark which components of an algorithm have finished. Booleans
+require 1 byte (8 bits) of storage, not 1 bit, wasting the other 7 bits of
+storage. To use less memory, one can use bitsets (std::bitset in C++ / BitSet in
+Java).
 
 **Character** variables represent a single character. They are returned when you
 access the character at a certain index within a string. Characters are
