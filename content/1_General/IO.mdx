@@ -601,8 +601,10 @@ printed to a file called `problemname.out`.
 
 <FocusProblem problem="fence" />
 
-You must rename the `.in` and `.out` files depending on the problem. For
-example, in the above problem you would use `paint.in` and `paint.out`.
+You must use the correct file names when opening the `.in` and `.out` files,
+depending on the problem. The file names are given on USACO problems which
+require file opening. For example, you would open `paint.in` and `paint.out`
+in the above problem.
 
 <LanguageSection>
 
@@ -750,19 +752,8 @@ sys.stdout = open("problemname.out", "w")
 ```
 
 A different approach to file I/O in Python is to still use the `open()` method, 
-but use the built-in functions `.readline()` or `.readlines()`. In Python, 
-`.readline()` will take the next line and return it as a string. This method 
-is useful for problems where you only have to read a short amount of lines
-but you still need to map each value to a variable. The `.readlines()` method 
-reads the entire file and returns a list of the file. Combined with a for loop, 
-this method provides a concise way to separate variables in the same line in a 
-problem. To write to the output file, you can use the `.write()` method. A 
-convienent way to convert a non-string value to a string value is to use 
-an f-string. An f-string is a really useful way to have 
-multiple types of objects in a string, all written in a single line. The 
-variables are encased in curly brackets, while the string part is written normally.
-See the code below for an example. 
-
+but use the built-in functions `.readline()` or `.readlines()`:
+	
 ```py
 # Note: The second argument can be omitted in the open()
       #	command for read-only files
@@ -792,10 +783,24 @@ variable_2 = 2
 exampleString = f"Hello {variable} {variable_2} World"
 # printing exampleString would give us 
 # Hello 1 2 World
-
-
-
 ```
+
+* `fin.readline()` will return the next line as a string. This method 
+is useful for problems where you only have to read a short amount of lines
+but you still need to map each value to a variable.
+
+* `fin.readlines()` returns all of the file's content as a list, separated by newlines (`"\n"`).
+Combined with a for loop, this method provides a concise way to separate variables in the same
+line in a problem. Keep in mind that each line entry in the list will still have a `"\n"` at the end.
+
+* `fout.write(data)` will write the variable `data` to the file. `data` must be a string,
+and you can convert non-string variables with `str(my_var)`. The `write` method will NOT write
+a new line at the end. You must also run `fout.write("\n")` if you wish to write a new line.
+
+* f-strings were added in Python 3.6, and generally look nicer than concatenating (adding) strings.
+To define an f-string, simply add the letter "f" right before the start of the string, and any
+variables or expressions enclosed in curly braces (`{}`) will be put into the string. As an example,
+`fout.write(f"{var1} {var2} {var3+var4}")` looks much cleaner than `fout.write(str(var1)+" "+str(var2)+" "+str(var3+var4))`
 
 </PySection>
 
