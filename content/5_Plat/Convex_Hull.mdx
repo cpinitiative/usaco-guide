@@ -1,7 +1,7 @@
 ---
 id: convex-hull
 title: 'Convex Hull'
-author: Benjamin Qi, Neo Wang
+author: Benjamin Qi, Neo Wang, Chuyang Wang
 description: Smallest convex polygon containing a set of points on a grid.
 prerequisites:
   - geo-pri
@@ -282,6 +282,38 @@ At the end, we have traversed the points in the counterclockwise order. To do th
 This algorithm takes $\mathcal{O}(n \log n)$ time to sort the points and $\mathcal{O}(n)$ time to calculate the hull, giving a final time complexity of $\mathcal{O}(n \log n)$. 
 
 
+<Spoiler title="Worked Example">
+
+Let's consider the same example from the Graham Algorithm. 
+
+> Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0),(6,2)$.
+
+Following the steps of the Monotone Chain algorithm:
+
+1. Sorting the given points primarily by their $x$ coordinates and secondarily by their $y$ coordinates. The sorted list would be $(1,2)$, $(2,0)$, $(2,3)$, $(3,5)$, $(5,3)$, $(6,2)$
+
+2. Find the lower hull:
+
+   Firstly, we add the first two points into the hull. The list representing the hull would now contain these two elements $[(1,2), (2,0)]$. Let's start iterate through the rest of the points. Our $P_k$ now is $(2,3)$. The cross product, $((2,0) - (1,2)) \times ((2,3) - (1,2)) = (1,-2) \times (1,1) = (1 \cdot 1) - (-2 \cdot 1 ) = 3$, is more than 0, which tells us that there is no right turn, and we can move to our next point, $(3,5)$. The list now contains $[(1,2), (2,0), (2,3)]$. 
+	 
+	 The cross product $((2,0) - (2,3)) \times ((2,0) - (3,5)) = -3$ is less than zero, meaning there is a right turn from $(2,0)(2,3)$ to $(2,3)(3,5)$. Therefore, we remove point $(2,3)$ from our hull. The hull now contains $[(1,2), (2,0)]$. We then test the cross product $((1,2) - (2,0)) \times ((1,2) - (3,5)) = 7$, which is positive, so we add point $(3,5)$ to our hull. The hull now contains $[(1,2), (2,0), (3,5)]$. 
+
+	 We keep testing the remaining points. We want to know if there is a right turn from $(2,0)(3,5)$ to $(3,5)(5,3)$, and there is, so we remove point $(3,5)$. Next, we test the two segments, $(1,2)(2,0)$ and $(2,0)(5,3)$. There is a left turn, so we add point $(5,3)$ and move to the next point. Our list looks now like this:  $[(1,2), (2,0), (5,3)]$. 
+
+	 Then, we test the segments $(2,0)(5,3)$ and $(5,3)(6,2)$. The cross product $((5,3) - (2,0)) \times ((6,2) - (2,0))$ is negative, so there is a right turn. We remove $(5,3)$ from the list and now test the segments $(1,2)(2,0)$ and $(2,0)(6,2)$. There is a left turn, so we add point $(6,2)$ to our hull. The hull now contains $[(1,2), (2,0), (6,2)]$. As point $(6,2)$ is the last element in the list, we have found the lower hull of the given set of points. 
+
+3. Find the upper hull: 
+
+   We first add the point $(5,3)$ to the end of the list and inspect the point $(3,5)$. The cross product for $((6,2) - (5,3)) \times ((6,2) - (3,5))$ is zero, meaning these three points are collinear. Therefore, we remove point $(5,3)$ from the list. As there is no enough points left in the upper hull, we add point $(3,5)$ to the list. The hull contains $[(1,2), (2,0), (6,2), (3,5)]$. Note the points $[(1,2), (2,0), (6,2)]$ belong to the lower hull and the point $(6,2)$ as the end point also belongs to the upper hull.  
+
+	 Then we inspect the next point $(2,3)$. The segments $(6,2)(3,5)$ and $(3,5)(2,3)$ form a left turn, so we can add point $(2,3)$ to our hull. The list contains $[(1,2), (2,0), (6,2), (3,5), (2,3)]$. 
+
+	 The next point is $(2,0)$. The segments $(3,5)(2,3)$ and $(2,3)(2,0)$ form a left turn, so we can add point $(2,3)$ to our hull. The list contains $[(1,2), (2,0), (6,2), (3,5), (2,3), (2,0)]$.
+
+	The next point is $(1,2)$. There is a right turn from $(2,3)(2,0)$ to $(2,0)(1,2)$, so we remove point $(2,0)$ from the list. The list contains $[(1,2), (2,0), (6,2), (3,5), (2,3)]$. We test again for segments $(3,5)(2,3)$ and $(2,3)(1,2)$. There is a right turn, so we remove point $(2,3)$. The list contains $[(1,2), (2,0), (6,2), (3,5)]$. We once again test segments $(6,2)(3,5)$ and $(3,5)(1,2)$. There is a left turn, so we add point $(1,2)$ to the list. We have reached the beginning of our list so we can terminate here. As $(1,2)$ was added while calculating the lower hull, we then remove the last element, i.e. the added point $(1,2)$, from the list. Now, we have the upper hull calculated as well. The final result is $[(1,2), (2,0), (6,2), (3,5)]$. These are the vertices of our convex hull in counterclockwise order. 
+
+</Spoiler>
+	
 <LanguageSection>
 
 <JavaSection>
