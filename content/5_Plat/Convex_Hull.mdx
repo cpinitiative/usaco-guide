@@ -267,7 +267,160 @@ int main()
 
 ### Solution
 
-<IncompleteSection />
+With the Monotone Chain algorithm, we start by sorting the given $n$ points in ascending order with respect to their $x$ coordinates. If two points have the same $x$ value, then we will look at the $y$ coordinate. 
+
+Next, we will calculate the convex hull in two parts - the upper and the lower hull. Firstly, we observe that the starting and ending points of both upper and lower hulls are the same. They are the points with the lowest and highest $x$ value, $P_0$ and $P_{n-1}$. We primarily add $P_0$ and $P_1$ to the hull. Note that $P_1$ doesn't necessarily have to be a point of the convex hull at the end. Then, starting from $P_2$, we iterate through the sorted points and add them to the hull. Let's denote the current point being inspected as $P_{k}$ and the last point in the hull as $P_{i}$. While adding new points, we want to make sure that there is no right turn among all segments of the hull, just like in the Graham Algorithm discussed above. To achieve this, the segment $P_{i-1}P_i$ should always be on the left side of the segment $P_{i-1}P_k$. This can be calculated by a cross product trick: 
+
+- If $(P_i - P_{i-1}) \times (P_k - P_{i-1}) < 0$, the point $P_i$ lies on the left side of the segment $P_{i-1}P_k$. In this case, we have to remove point $P_i$ from the hull and repeat this check. 
+- If $(P_i - P_{i-1}) \times (P_k - P_{i-1}) = 0$, the point $P_i$ lies on the segment $P_{i-1}P_k$. Whether to include multiple collinear points depends on the question, but to the given question above, we will remove the point $P_i$ as well and repeat the check. 
+- Otherwise, the point $P_i$ lies on the right side of the segment $P_{i-1}P_k$. So we are good to inspect the next point $P_{k+1}$ from the given point list. 
+
+After all points being examined, we have calculated the lower hull and will begin to find the upper hull in the same manner. This time, we add point $P_{n-2}$ to the hull and iterate from the end of the points, $P_{n-3}$, to the starting point $P_0$. The Point $P_{n-2}$ doesn't have to be the convex hull and could be removed if it causes a right turn. 
+
+At the end, we have traversed the points in the counterclockwise order. To do this in the clockwise order, one only has to change the condition for $(P_i - P_{i-1}) \times (P_k - P_{i-1})$ from more than 0 to less than 0. In this case, the upper hull will be found first and then the lower hull. 
+
+This algorithm takes $\mathcal{O}(n \log n)$ time to sort the points and $\mathcal{O}(n)$ time to calculate the hull, giving a final time complexity of $\mathcal{O}(n \log n)$. 
+
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class ConvexHull {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+		int N = Integer.parseInt(in.readLine());
+		while (N > 0) {
+			// use a hashset to distinct the points
+			Set<V2> input = new HashSet<V2>(N);
+			for (int i = 0; i < N; i++) {
+				StringTokenizer st = new StringTokenizer(in.readLine());
+				input.add(new V2(Integer.parseInt(st.nextToken()), 
+					Integer.parseInt(st.nextToken())));
+			}
+			V2[] points = new V2[input.size()];
+			input.toArray(points);
+			var hull = monotoneChain(points);
+
+			System.out.println(hull.size());
+			for (V2 p : hull) {
+				System.out.println(String.format("%d %d", p.X, p.Y));
+			}
+
+			N = Integer.parseInt(in.readLine());
+		}
+		in.close();
+	}
+
+	// calculation the convex hull of given points in counterclockwise order
+	private static List<V2> monotoneChain(V2[] P) {
+		// for the set with less than 3 points the set of these points is already
+		// the convex hull
+		if (P.length < 3) {
+			return Arrays.asList(P);
+		}
+
+		List<V2> hull = new ArrayList<V2>();
+		// sort the points with respect to their x value in ascending order. In case
+		// of a tie, sort by their y values
+		Arrays.sort(P);
+
+		// Bottom Hull
+		for (int i = 0; i < P.length; i++) {
+			// if the last point in hull is on the left side of the current point, i.e.
+			// it forms a right turn, then we can remove the last point until there are
+			// only left turns
+			while (hull.size() > 1 && 
+						sign(hull.get(hull.size() - 2), hull.get(hull.size() - 1), P[i]) <= 0)
+				hull.remove(hull.size() - 1);
+			hull.add(P[i]);
+		}
+
+		// Top Hull
+		int k = hull.size();
+		for (int i = P.length - 2; i >= 0; i--) {
+			while (hull.size() > k && 
+						sign(hull.get(hull.size() - 2), hull.get(hull.size() - 1), P[i]) <= 0) {
+				hull.remove(hull.size() - 1);
+			}
+			hull.add(P[i]);
+		}
+		// The first point was added twice, so remove it
+		hull.remove(hull.size() - 1);
+
+		return hull;
+	}
+
+	// returns -1 if segment OP is on the left side of segment OQ 
+	// and returns 1 vice versa
+	// returns 0 if O, P and Q are colinear
+	private static int sign(V2 O, V2 P, V2 Q) {
+		int area = area(O, P, Q);
+		if (area < 0)
+			return -1;
+		else if (area > 0)
+			return 1;
+		return 0;
+	}
+
+	// cross product trick, the signed area of these there points
+	private static int area(V2 O, V2 P, V2 Q) {
+		return P.minus(O).cross(Q.minus(O));
+	}
+
+	private static class V2 implements Comparable<V2> {
+		public int X;
+		public int Y;
+
+		public V2(int x, int y) {
+			X = x;
+			Y = y;
+		}
+
+		public V2 minus(V2 other) {
+			return new V2(X - other.X, Y - other.Y);
+		}
+
+		// "cross" (wedge) product of 2d vector. if you are not familiar with this, 
+		// you might want to do some research at first
+		public int cross(V2 o) {
+			return X * o.Y - Y * o.X;
+		}
+
+		@Override
+		public int compareTo(ConvexHull.V2 o) {
+			int r = X - o.X;
+			if (r == 0)
+				return Y - o.Y;
+			return r;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null || !getClass().equals(obj.getClass()))
+				return false;
+			return ((V2) obj).X == this.X && ((V2) obj).Y == this.Y;
+		}
+
+		@Override
+		public int hashCode() {
+			int hash = 17;
+			hash = hash * 13 + X;
+			hash = hash * 13 + Y;
+			return hash;
+		}
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
 
 ## Rotating Caliphers
 
