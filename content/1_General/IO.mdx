@@ -794,13 +794,28 @@ Combined with a for loop, this method provides a concise way to separate variabl
 line in a problem. Keep in mind that each line entry in the list will still have a `"\n"` at the end.
 
 * `fout.write(data)` will write the variable `data` to the file. `data` must be a string,
-and you can convert non-string variables with `str(my_var)`. The `write` method will NOT write
+and you can convert non-string variables with `str(my_var)`. The `write()` method will NOT write
 a new line at the end. You must also run `fout.write("\n")` if you wish to write a new line.
 
 * f-strings were added in Python 3.6, and generally look nicer than concatenating (adding) strings.
-To define an f-string, simply add the letter "f" right before the start of the string, and any
+To define an f-string, simply add the letter `f` right before the start of the string, and any
 variables or expressions enclosed in curly braces (`{}`) will be put into the string. As an example,
 `fout.write(f"{var1} {var2} {var3+var4}")` looks much cleaner than `fout.write(str(var1)+" "+str(var2)+" "+str(var3+var4))`
+
+After you read a line, you may wish to process it further. Python has many built-in string
+methods and functions:
+
+* `str.strip()` removes any trailing or leading whitespace. You should always run this method
+after reading a line, to ensure that there is no extra whitespace: `line = fin.readline().strip()`
+
+* `map(func, iterable)` will run a function (the `func` argument) against each element of an iterable
+(list) you pass it. This is useful for changing a list of strings into a list of ints:
+`nums = list(map(int, ["1", "2", "3"]))`. Please note that `map()` returns a Map object, and you need
+to convert it into a list with `list()`.
+
+* `str.split(delim)` will split the string. If no argument is passed, it will split by space.
+This is useful if you want to separate a string of space-separated integers into ints:
+`nums = list(map(int, line.split()))`
 
 </PySection>
 
