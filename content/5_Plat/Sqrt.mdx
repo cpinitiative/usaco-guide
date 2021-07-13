@@ -45,18 +45,17 @@ it to.
 To perform a sum query from $[0\ldots r]$, calculate
 
 $$
-\sum_{i = 0}^{r} \texttt{blocks}[i]
+\sum_{i = 0}^{R} \texttt{blocks}[i] + \sum_{\lfloor R \rfloor \cdot \texttt{blocksz}}^r \texttt{nums}[i]
 $$
 
-where $\texttt{blocks}[i]$ represents the total sum of the $i$-th block. Since
-each of these blocks are of size $\sqrt{N}$, there can be at most $\sqrt{N}$
-blocks.
+where $\texttt{blocks}[i]$ represents the total sum of the $i$-th block, and $R$
+represents $\frac{r}{\texttt{blocksz}}$. Since each of these blocks are of size
+$\sqrt{N}$, there can be at most $\sqrt{N}$ blocks.
 
-Finally, to find our total difference between $[l, r]$, we can calculate
-
-$$
-\sum_{i = 0}^{r} \texttt{blocks}[i] - \sum_{i = 0}^{l - 1} \texttt{blocks}[i] = \sum_{i = l}^{r} \texttt{blocks}[i]
-$$
+Finally, to find our total difference between $[l, r]$, we can perform two sum
+queries for the quantity
+$\sum_{0}^{r}\texttt{nums}[i] - \sum_{0}^{l-1}\texttt{nums}[i]$ which produces
+the answer of $\sum_{l}^{r} \texttt{nums}[i]$
 
 <LanguageSection>
 
