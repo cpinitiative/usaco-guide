@@ -42,12 +42,12 @@ number line?) never explicitly mentioned in module
 
 We will use a divide and conquer algorithm. Sort the points by x-coordinate. Let $P$ be the subarray of points in the current step. Partition $P$ into two groups $L$ and $R$ representing the left and right halves of $P$. Let $\delta_l$ and $\delta_r$ be the answer of $L$ and $R$ respectively, and define $\delta$ as $\min(\delta_l, \delta_r)$. 
 
-$\delta$ is the upperbound of the answer. If a more optimal answer exists, it must bridge the two halves of the array (ie one of its endpoints is in $L$ and the other is in $R$). Let $mx$ be the x-coordinate of any median of $P$. Define two sets $L'$ and $R'$ such that $L' = p_i | x_i \leq mx, mx - x_i \leq \delta$ and $R' = p_i | x_i \geq mx, x_i - mx \leq \delta$
+$\delta$ is the upperbound of the answer. If a more optimal answer exists, it must bridge the two halves of the array (ie one of its endpoints is in $L$ and the other is in $R$). Let $mx$ be the x-coordinate of any median of $P$. Define two sets $L'$ and $R'$ such that $L' = {p_i | x_i \leq mx, mx - x_i \leq \delta}$ and $R' = {p_i | x_i \geq mx, x_i - mx \leq \delta}$
 
-A brute force matching algorithm that computed $
-\texttt{dist}(p, q)$ for all $p \in L'$, $q \in R'$ would have a worst-case runtime of $(\frac n 2)^2 = \mathcal{O}(n^2)$ (recall that $L'$ and $R'$ may have up to $\frac N 2$ points). However, because we are searching for distances of at most $\delta$, it suffices for each $p \in L'$ to check all points $q | q \in R', p.y - \delta \leq q.y \leq p.y + \delta$. 
+A brute force matching algorithm that computes $
+\texttt{dist}(p, q)$ for all $p \in L'$, $q \in R'$ would have a worst-case runtime of $(\frac n 2)^2 = \mathcal{O}(n^2)$ (recall that $L'$ and $R'$ may have up to $\frac N 2$ points). However, because we are searching for distances of at most $\delta$, it suffices for each $p \in L'$ to check all points ${q | q \in R', p.y - \delta \leq q.y \leq p.y + \delta}$. 
 
-It can be shown that for each point $p$, there is $\mathcal{O}(1)$ points that satisfy this property. Because each point in $R'$ is at least $\delta_r \geq \delta$ apart, arranging the points in the worst case would result in 6 and spoints in the corners and sides of the bounding rectangle.
+It can be shown that for each point $p$, there is $\mathcal{O}(1)$ points that satisfy this property. Because each point in $R'$ is at least $\delta_r \geq \delta$ apart, arranging the points in the worst case would result in 6 points in the corners and sides of the bounding rectangle.
 
 To achieve the desired $\mathcal{O}(n)$  complexity per layer, we need to be able to efficiently get the points sorted by both x-coordinate (for dividing $P$) and y-coordinate (for matching between $L'$ and $R'$). This can be achieved by taking advantage of the merge-sort like algorithm. Sort by x-coordinate in the beginning, then for each step, merge the y-coordinates recursively. 
 
