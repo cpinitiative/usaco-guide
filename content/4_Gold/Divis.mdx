@@ -220,7 +220,6 @@ public class Divisors {
 
 </JavaSection>
 
-
 </LanguageSection>
 
 This solution runs in $\mathcal{O}(n \sqrt x)$ time, which is just fast enough
@@ -319,7 +318,7 @@ public class Divisors {
 					maxDiv[j] = i;
 				}
 			}
-		}        
+		}
 
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int queryNum = Integer.parseInt(read.readLine());
@@ -430,10 +429,11 @@ int gcd(int a, int b) {
 
 For C++14, you can use the built-in `__gcd(a,b)`.
 
-In C++17, there exists [`std::gcd`](https://en.cppreference.com/w/cpp/numeric/gcd)
-and [`std::lcm`](https://en.cppreference.com/w/cpp/numeric/lcm) in the
-[`<numeric>`](https://en.cppreference.com/w/cpp/header/numeric) header, so there's no
-need to code your own GCD and LCM if you're using that.
+In C++17, there exists
+[`std::gcd`](https://en.cppreference.com/w/cpp/numeric/gcd) and
+[`std::lcm`](https://en.cppreference.com/w/cpp/numeric/lcm) in the
+[`<numeric>`](https://en.cppreference.com/w/cpp/header/numeric) header, so
+there's no need to code your own GCD and LCM if you're using that.
 
 </CPPSection>
 
@@ -448,19 +448,10 @@ def gcd(a, b):
 
 </LanguageSection>
 
-This function runs in $\mathcal{O}(\log ab)$ time because
-$a\le b \implies b\pmod a <\frac{b}{2}$.
+This function runs in $\mathcal{O}(\log a + \log b)$ time because
+$a\le b \implies b \mod a < \frac{a + (b \mod a)}{2} < \frac{b}{2}$.
 
-The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are
-consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In
-this case, the algorithm will calculate
-$\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means
-that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional
-to $\log \left(F_n F_{n+1}\right)$.
-
-<!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
-<!-- ^ this doesn't seem very helpful -->
-<!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $\mathcal{O}(\log ab)$. -->
+The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log F_n + \log F_{n+1}$.
 
 ### LCM
 
@@ -502,7 +493,7 @@ $$
 
 ```cpp
 ll gcd(ll a, ll b){ return b == 0 ? a : gcd(b,a%b); }
-ll lcm(ll a, ll b) { return a/gcd(a,b)*b; }
+ll lcm(ll a, ll b)1 { return a/gcd(a,b)*b; }
 int main() { cout << lcm(1000000000,999999999); } // output: 1808348672
 ```
 
