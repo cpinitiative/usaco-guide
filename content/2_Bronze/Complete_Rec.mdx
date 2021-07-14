@@ -370,51 +370,50 @@ Just a slight modification of method 1 from CPH.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	if(sz(name)){
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
 
-int N, cnt[26];
-string S, perm;
+string s;
 vector<string> perms;
+int char_count[26];
 
-void search() {
-	if (sz(perm) == sz(S)) {
-		perms.pb(perm);
+void search(string curr)
+{
+	// we've finished creating a permutation
+	if (curr.size() == s.size())
+	{
+		perms.push_back(curr);
 		return;
 	}
-	for (int i = 0; i < 26; ++i) if (cnt[i]) {
-		--cnt[i];
-		perm += char('a' + i);
-		search();
-		++cnt[i];
-		perm.pop_back();
+	for (int i = 0; i < 26; i++)
+	{
+		// for all available characters
+		if (char_count[i] > 0)
+		{
+			// add it to the current string and search
+			char_count[i]--;
+			search(curr + (char)('a' + i));
+			char_count[i]++;
+		}
 	}
 }
 
-int main() {
-	setIO();
-	cin >> S;
-	for (char c : S) cnt[c - 'a']++;
-	search();
-	cout << sz(perms) << '\n';
-	for (string t : perms) cout << t << '\n';
+int main()
+{
+	cin >> s;
+	for (char c : s)
+	{
+		char_count[c - 'a']++;
+	}
+	search("");
+	cout << perms.size() << endl;
+	for (string perm : perms)
+	{
+		cout << perm << endl;
+	}
+	return 0;
 }
 ```
 
@@ -423,53 +422,54 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class Main {
-	static String s, perm;
-	static List<String> perms;
-	static int N, cnt[];
+public class CreatingStrings1
+{
+	static String s;
+	static ArrayList<String> perms = new ArrayList<String>();
+	static int[] charCount = new int[26];
 
-	static void search() {
-		if (perm.length() == s.length()) {
-			perms.add(perm);
+	static void search(String curr)
+	{
+		// we've finished creating a permutation
+		if (curr.length() == s.length())
+		{
+			perms.add(curr);
 			return;
 		}
-		for (int i = 0; i < 26; ++i) {
-			if (cnt[i] > 0) {
-				cnt[i]--;
-				perm += (char) (i + 'a');
-				search();
-				cnt[i]++;
-
-				// removes last character
-				perm = perm.substring(0, perm.length() - 1);
+		for (int i = 0; i < 26; i++)
+		{
+			// for all available characters
+			if (charCount[i] > 0)
+			{
+				// add it to the current string and search
+				charCount[i]--;
+				search(curr + (char)(i + 'a'));
+				charCount[i]++;
 			}
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException
+	{
 		Kattio io = new Kattio();
 		s = io.next();
-		N = s.length();
-		cnt = new int[26];
-		perms = new ArrayList<String>();
-		perm = "";
-		for (int i = 0; i < N; i++) {
-			int index = (int)(s.charAt(i) - 'a');
-			cnt[index]++;
+		for (int i = 0; i < s.length(); i++)
+		{
+			charCount[s.charAt(i) - 'a']++;
 		}
-		search();
-		Collections.sort(perms);
+		search("");
 		io.println(perms.size());
-		for (String i : perms) {
-			io.println(i);
+		for (String perm : perms)
+		{
+			io.println(perm);
 		}
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -478,30 +478,30 @@ public class Main {
 <PySection>
 
 ```py
-S = input()
-cnt = [0] * 26
-perm = ""
+s = input()
 perms = []
-def search():
-	global perm
-	if len(perm) == len(S):
-		perms.append(perm)
+char_count = [0] * 26
+
+def search(curr):
+	# we've finished creating a permutation
+	if len(curr) == len(s):
+		perms.append(curr)
 		return
 	for i in range(26):
-		if cnt[i] == 0:
-			continue
-		cnt[i] -= 1
-		perm += chr(ord('a') + i)
-		search()
-		cnt[i] += 1
-		perm = perm[:-1] # this removes the last character
+		# for all available characters
+		if char_count[i] > 0:
+			# add it to the current string and search
+			char_count[i] -= 1
+			search(curr + chr(ord('a') + i))
+			char_count[i] += 1
 
-for ch in S:
-	cnt[ord(ch) - ord('a')] += 1
-search()
+for c in s:
+	char_count[ord(c) - ord('a')] += 1
+
+search("")
 print(len(perms))
-for t in perms:
-	print(t)
+for perm in perms:
+	print(perm)
 ```
 
 </PySection>
@@ -555,38 +555,28 @@ smaller than the initial string won't be generated.
 </Warning>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	if(sz(name)){
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
 
-int main() {
-	setIO();
-	string s; cin >> s;
-	vector<string> out;
-	sort(all(s));
-	do {
-		out.pb(s);
-	} while(next_permutation(all(s)));
-	cout << sz(out) << "\n";
-	for(int i = 0; i < sz(out); i++){
-		cout << out[i] << "\n";
+int main() 
+{
+	string s;
+	cin >> s;
+	vector<string> perms;
+	sort(s.begin(), s.end());
+	do
+	{
+		perms.push_back(s);
 	}
+	while (next_permutation(s.begin(), s.end()));
+	cout << perms.size() << endl;
+	for (string perm : perms)
+	{
+		cout << perm << endl;
+	}
+	return 0;
 }
 ```
 
