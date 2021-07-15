@@ -2,7 +2,7 @@
 id: usaco-833
 source: USACO Bronze 2018 Open
 title: Family Tree
-author: Danh Ta Chi Thanh, Ryan Chou
+author: Danh Ta Chi Thanh, Ryan Chou, Chuyang Wang
 ---
 
 ## Solution
@@ -124,6 +124,111 @@ this solution if you find it unfamiliar and come back later.
 </Warning>
 
 <LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FamilyTree {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("family.in"));
+		PrintWriter out = new PrintWriter("family.out");
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		String X = st.nextToken(), Y = st.nextToken();
+		Map<String, String> adjacencyList = new HashMap<String, String>();
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(in.readLine());
+			String mother = st.nextToken(), child = st.nextToken();
+			// store the mother-child relationship as a directed graph
+			// in an adjacency list, where the arrow points to the mother
+			// e.g.: child --> mother --> grandmother
+			// note that the outdegree of each node is maximal 1 in this question
+			adjacencyList.put(child, mother);
+		}
+		in.close();
+
+		// distance from node X and node Y to other nodes
+		// e.g.: xDistance.get(node) = the distance between node and x
+		Map<String, Integer> xDistance = new HashMap<String, Integer>(), 
+			yDistance = new HashMap<String, Integer>();
+		xDistance.put(X, 0);
+		yDistance.put(Y, 0);
+
+		// calculate the distances between X and its ancestors
+		String current = X;
+		while (adjacencyList.containsKey(current)) {
+			String mother = adjacencyList.get(current);
+			xDistance.put(mother, xDistance.get(current) + 1);
+			current = mother;
+		}
+
+		// cf. above, this time for Y
+		current = Y;
+		while (adjacencyList.containsKey(current)) {
+			String mother = adjacencyList.get(current);
+			yDistance.put(mother, yDistance.get(current) + 1);
+			current = mother;
+		}
+
+		// minimum distance between shared ancestors of X and Y
+		int minXDist = Integer.MAX_VALUE, minYDist = Integer.MAX_VALUE;
+		String ancestor = null;
+		// iterate through the ancestors of X
+		// and test if Y also has this node as ancestor
+		for (var pair : xDistance.entrySet()) {
+			if (yDistance.containsKey(pair.getKey())
+					// we update the minimum distance if there is an ancestor
+					// with less distance to X or Y than current minimum
+					&& (minXDist > pair.getValue() || minYDist > yDistance.get(pair.getKey()))) {
+				ancestor = pair.getKey();
+				minXDist = pair.getValue();
+				minYDist = yDistance.get(pair.getKey());
+			}
+		}
+
+		// if there's no shared ancestor, then X and Y are not related
+		if (ancestor == null)
+			out.println("NOT RELATED");
+		// if X or Y itself is the ancestor, then it's a mother-child relationship
+		else if (ancestor.equals(X) || ancestor.equals(Y)) { 
+			out.print(String.format("%s is the ", ancestor));
+			for (int i = 0; i < (ancestor.equals(X) ? minYDist : minXDist) - 2; i++)
+				out.print("great-");
+			if ((ancestor.equals(X) ? minYDist : minXDist) > 1)
+				out.print("grand-");
+			out.println(String.format("mother of %s", ancestor.equals(X) ? Y : X));
+		} else {
+			if (minXDist == 1 || minYDist == 1) {
+				// if X and Y both have a distance 1 to their ancestor,
+				// then the ancestor is their mother, so they are siblings
+				if (minXDist == 1 && minYDist == 1)
+					out.println("SIBLINGS");
+				// if the distance between the ancestor and X or Y is only 1,
+				// then it's an aunt relationship
+				else {
+					boolean auntIsX = minXDist == 1;
+					out.print(String.format("%s is the ", auntIsX ? X : Y));
+					for (int i = 0; i < (auntIsX ? minYDist : minXDist) - 2; i++)
+						out.print("great-");
+					out.println(String.format("aunt of %s", auntIsX ? Y : X));
+				}
+				// otherwise, they are cousins as defined in the question
+			} else
+				out.println("COUSINS");
+		}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
+
 <CPPSection>
 
 ```cpp
