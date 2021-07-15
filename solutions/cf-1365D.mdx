@@ -149,15 +149,27 @@ public class SolveTheMaze {
 	static int numRows;
 	static int numColumns;
 
+	static boolean inBoundaries (int newRow, int newColumn) {
+		if (newRow >= 0 && newRow < numRows) {
+			if (newColumn >= 0 && newColumn < numColumns) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	static void floodfill (int row, int column) {
 		visited[row][column] = true;
 
 		for (int x = 0; x < 4; x++) {  // the 4 directions
 			int newRow = row + rowMovement[x];
 			int newColumn = column + columnMovement[x];
-			if (newRow >= 0 && newRow < numRows && newColumn >= 0 && newColumn < numColumns) {  // in boundaries
-				if (! visited[newRow][newColumn] && grid[newRow][newColumn] != '#') {  // not visited, and not #
-					floodfill(newRow, newColumn);
+			if (inBoundaries(newRow, newColumn)) {  // in boundaries
+				// not visited, and not #
+				if (! visited[newRow][newColumn]) {
+					if (grid[newRow][newColumn] != '#') {
+						floodfill(newRow, newColumn);
+					}
 				}
 			}
 		}
@@ -173,11 +185,12 @@ public class SolveTheMaze {
 						int newRow = i + rowMovement[x];
 						int newColumn = j + columnMovement[x];
 						// check if it is in the boundaries
-						if (newRow >= 0 && newRow < numRows && newColumn >= 0 && newColumn < numColumns) {
-							if (grid[newRow][newColumn] == 'G') {  // make false
+						if (inBoundaries(newRow, newColumn)) {
+							if (grid[newRow][newColumn] == 'G') {
 								ok = false;
 							}
-							if (grid[newRow][newColumn] == '.') {  // turn it into #
+							if (grid[newRow][newColumn] == '.') {
+								// turn it into #
 								grid[newRow][newColumn] = '#';
 							}
 						}
@@ -192,7 +205,8 @@ public class SolveTheMaze {
 		ok = true;
 
 		if (grid[numRows - 1][numColumns - 1] != '#') {
-			floodfill(numRows - 1, numColumns - 1);  // floodfill it
+			// floodfill it
+			floodfill(numRows - 1, numColumns - 1);
 		}
 
 		for (int i = 0; i < numRows; i++) {
