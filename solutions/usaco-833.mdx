@@ -103,6 +103,103 @@ else:
 	print('of', b)
 ```
 </PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FamilyTree {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("family.in"));
+		PrintWriter out = new PrintWriter("family.out");
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		String X = st.nextToken(), Y = st.nextToken();
+		String[][] pairs = new String[N][];
+		for (int i = 0; i < N; i++) {
+			pairs[i] = in.readLine().split(" ");
+		}
+		in.close();
+
+		// minimum distance between shared ancestors and X and Y
+		int minXDist = 0, minYDist = 0;
+		String commonAncestor = X;
+		// iterate through all ancestors of X
+		// stop when hit the end or a common ancestor with Y is found
+		while (commonAncestor != null) {
+			if (getAncestorDistance(commonAncestor, Y, pairs) != -1) {
+				minYDist = getAncestorDistance(commonAncestor, Y, pairs);
+				break;
+			}
+			commonAncestor = getMother(commonAncestor, pairs);
+			minXDist++;
+		}
+
+		// if X and Y don't have common ancestors, they are not related
+		if (commonAncestor == null)
+			out.println("NOT RELATED");
+		// if their distances to their common ancestors are both more than 1
+		// then they are classified as cousins
+		else if (minXDist > 1 && minYDist > 1)
+			out.println("COUSINS");
+		// both distances of 1 implies a sibling relationship
+		// since the common ancestor is their mother
+		else if (minXDist == 1 && minYDist == 1)
+			out.println("SIBLINGS");
+		// if X or Y itself is the common ancestor
+		// then it's a (great-...grand-)mother-child relationship
+		else if (minXDist == 0 || minYDist == 0) {
+			boolean xIsAncestor = minXDist == 0;
+			out.print(String.format("%s is the ", commonAncestor));
+			for (int i = 0; i < (xIsAncestor ? minYDist : minXDist) - 2; i++)
+				out.print("great-");
+			if ((xIsAncestor ? minYDist : minXDist) > 1)
+				out.print("grand-");
+			out.println(String.format("mother of %s", xIsAncestor ? Y : X));
+		}
+		// otherwise, i.e. minXDist == 1 or minYDist == 1,
+		// there is a (great-...great-)aunt relationship
+		else {
+			boolean auntIsX = minXDist == 1;
+			out.print(String.format("%s is the ", auntIsX ? X : Y));
+			for (int i = 0; i < (auntIsX ? minYDist : minXDist) - 2; i++)
+				out.print("great-");
+			out.println(String.format("aunt of %s", auntIsX ? Y : X));
+		}
+		out.close();
+	}
+
+	// finds the mother of given child among those pairs
+	// if the child doesn't have a mother, return null
+	private static String getMother(String child, String[][] pairs) {
+		for (String[] pair : pairs) {
+			if (child.equals(pair[1]))
+				return pair[0];
+		}
+		return null;
+	}
+
+	// calculate the distance between the given node start and the given end
+	// if end is indeed an ancestor of start, otherwise, return -1
+	private static int getAncestorDistance(String end, String start, 
+	String[][] pairs) {
+		int count = 0;
+		while (start != null) {
+			if (start.equals(end))
+				return count;
+			count++;
+			start = getMother(start, pairs);
+		}
+		return -1;
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Alternative Solution - BFS
