@@ -1,0 +1,123 @@
+---
+id: lambda-funcs
+redirects:
+  - /general/lambda
+title: (Optional) C++ - Lambda Expressions
+author: Benjamin Qi, Dong Liu
+description: 'Defining anonymous function objects.'
+---
+
+## Introduction
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="https://en.cppreference.com/w/cpp/language/lambda"
+		title="Lambda expressions"
+	>
+		reference
+	</Resource>
+	<Resource
+		source="UMich"
+		url="http://www.umich.edu/~eecs381/handouts/Lambda.pdf"
+		title="Using C++ Lambdas"
+		starred
+	 />
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11"
+		title="What is a lambda expression in C++11?"
+	 />
+	<Resource
+		source="Microsoft"
+		url="https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019"
+		title="Lambda Expressions in C++"
+	 />
+</Resources>
+
+Anything more beginner-friendly?
+
+<IncompleteSection />
+
+<Resources title="FAQ">
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/41121441/type-of-a-lambda-function-using-auto"
+		title="Type of a lambda function using auto?"
+	 />
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/11323811/what-is-meant-by-retain-state-in-c"
+		title="What is meant by 'retain state' in c++?"
+	 />
+</Resources>
+
+## Recursive Lambdas
+
+### With `y_combinator`
+
+<Resources>
+	<Resource
+		source="open-std"
+		url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0200r0.html"
+		title="Y Combinator Proposal"
+		starred
+	 />
+	<Resource
+		source="RIP Tutorial"
+		url="https://riptutorial.com/cplusplus/example/8508/recursive-lambdas"
+		title="Recursive Lambdas"
+	 />
+</Resources>
+
+If we add the following from the link above in C++14:
+
+```cpp
+namespace std {
+
+template<class Fun>
+class y_combinator_result {
+	Fun fun_;
+public:
+	template<class T>
+	explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
+
+	template<class ...Args>
+	decltype(auto) operator()(Args &&...args) {
+		return fun_(std::ref(*this), std::forward<Args>(args)...);
+	}
+};
+
+template<class Fun>
+decltype(auto) y_combinator(Fun &&fun) {
+	return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
+}
+
+} // namespace std
+```
+
+Then we can have code like the following!
+
+```cpp
+int main() {
+	cout << y_combinator([](auto gcd, int a, int b) -> int {
+		return b == 0 ? a : gcd(b, a % b);
+	})(20,30) << "\n"; // outputs 10
+}
+```
+
+Looks like [ecnerwala](https://codeforces.com/contest/1375/submission/86008510)
+uses these a lot.
+
+### Another way
+
+Change `auto` to `function<return_type(param)>`.
+
+```cpp
+int main() {
+	function<int(int, int)> gcd = [&](int a, int b) {
+		return b == 0 ? a : gcd(b, a % b);
+	};
+	cout << gcd(20, 30) << '\n'; // outputs 10
+}
+```
