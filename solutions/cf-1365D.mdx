@@ -187,7 +187,7 @@ public class SolveTheMaze {
 						// check if it is in the boundaries
 						if (inBoundaries(newRow, newColumn)) {
 							if (grid[newRow][newColumn] == 'G') {
-								ok = false;
+								return "No";
 							}
 							if (grid[newRow][newColumn] == '.') {
 								// turn it into #
@@ -199,11 +199,6 @@ public class SolveTheMaze {
 			}
 		}
 
-		if (ok == false) {
-			return "No";
-		}
-		ok = true;
-
 		if (grid[numRows - 1][numColumns - 1] != '#') {
 			// floodfill it
 			floodfill(numRows - 1, numColumns - 1);
@@ -213,14 +208,9 @@ public class SolveTheMaze {
 			for (int j = 0; j < numColumns; j++) {
 				// make false if we find an unvisited G
 				if (grid[i][j] == 'G' && !visited[i][j]) {
-					ok = false;
-					break;
+					return "No";
 				}
 			}
-		}
-
-		if (!ok) {
-			return "No";
 		}
 		return "Yes";
 	}
