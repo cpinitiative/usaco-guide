@@ -2,15 +2,18 @@
 id: usaco-760
 source: USACO Bronze 2017 December
 title: The Bovine Shuffle
-author: Jesse Choe
+author: Jesse Choe, Ananth Kashyap
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
-
-<LanguageSection>
-<CPPSection>
+[Official Analysis (Java and C++)](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
 
 ## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 ```cpp
 // Created by Jesse Choe - Bronze Template
@@ -117,4 +120,34 @@ int main(){
 ```
 
 </CPPSection>
+	
+<PySection>
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```py
+data = open('shuffle.in').read().strip().split('\n')
+n = int(data[0])
+moves = list(map(int, data[1].split(' ')))
+order = data[2].split(' ')
+
+for i in range(3):
+    # Create a temp array to hold the order one shuffle back in time
+    temp = [''] * n
+    for j in range(n):
+        temp[j] = order[moves[j] - 1]
+    # Set this temporary array to the order of cows
+    order = temp
+
+ans = ''
+for i in range(n):
+    if i != n - 1:
+        ans += order[i] + '\n'
+    else:
+        ans += order[i]
+
+print(ans, file=open('shuffle.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
