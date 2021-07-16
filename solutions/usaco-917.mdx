@@ -1,0 +1,73 @@
+---
+id: usaco-917
+source: USACO Bronze 2019 Febuary
+title: Measuring Traffic
+author: Sathvik Chundru
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_traffic_bronze_feb19.html)
+
+<LanguageSection>
+
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("traffic");
+		int n = io.nextInt();
+		int[] A = new int[100];
+		int[] B = new int[100];
+		String[] T = new String[100];
+		for(int i = 0; i < n; i++){
+			T[i] = io.next();
+			A[i] = io.nextInt();
+			B[i] = io.nextInt();
+		}
+		int a = -999999999;
+		int b = 999999999;
+		for(int i = n - 1; i >= 0; i--){
+			if(T[i].equals("none")){
+				a = Math.max(a, A[i]);
+				b = Math.min(b, B[i]);
+			}
+			if(T[i].equals("off")){
+				a += A[i];
+				b += B[i];
+			}
+			if(T[i].equals("on")){
+				a -= B[i];
+				b -= A[i];
+				a = Math.max(0,a);
+			}
+		}
+		io.println(a + " " + b);
+		a = -999999999; 
+		b = 999999999;
+		for (int i = 0; i < n; i++) {
+			if(T[i].equals("none")){ 
+				a = Math.max(a, A[i]); 
+				b = Math.min(b, B[i]); 
+				}
+			if (T[i].equals("on")){ 
+				a += A[i]; 
+				b += B[i]; 
+			}
+			if (T[i].equals("off")){
+				a -= B[i]; 
+				b -= A[i]; 
+				a = Math.max(0,a); 
+			}
+		}
+	io.println(a + " " + b);
+	io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```                
+				 
+</JavaSection>
+
+</LanguageSection>
