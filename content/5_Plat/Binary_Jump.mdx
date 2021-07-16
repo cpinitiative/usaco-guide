@@ -1,0 +1,415 @@
+---
+id: binary-jump
+redirects:
+  - /plat/bin-jump
+title: 'Binary Jumping'
+author: Benjamin Qi, Neo Wang, Qi Wang
+description:
+  'Introduces the problems of finding level ancestors in a tree and computing
+  the lowest common ancestors.'
+frequency: 3
+prerequisites:
+---
+
+## Binary Jumping
+
+<FocusProblem problem="sample" />
+
+### Tutorial
+
+<Resources>
+	<Resource source="CPH" title="18.1 - Finding Ancestors" />
+	<Resource
+		source="AryanshS"
+		title="Binary Lifting"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1"
+	/>
+	<Resource
+		source="SecondThread"
+		title="Tree Basics - Binary Lifting"
+		url="https://codeforces.com/blog/entry/81527"
+	/>
+</Resources>
+
+<Info title="Pro Tip">
+
+Binary jumping is more commonly referred to as "binary lifting."
+
+</Info>
+
+### Solution
+
+To solve this problem, we can use a standard binary lifting implementation where
+`jmp(int x, int d)` corresponds to the $d$-th ancestor of $x$.
+
+In our `jmp(int x, int d)` if our final value of $x$ is $0$, then such a node
+does not exist and we can simply return $-1$. This is because the lowest number
+a node can be is $1$ (the root of the tree).
+
+In our implementation, we test if we jump in powers of two by using the $\&$
+operator. If the $i$th bit on the right is toggled, then we jump. For example, a
+jump of $13$ would correspond to the binary number $1101$. We would jump 3 times
+on bits $0, 2, 3$ (in that order) counting from the right.
+
+<Spoiler title="Illustration of the jump method">
+
+![Binary Lifting Diagram](./assets/binaryliftingjump.png)
+
+</Spoiler>
+
+To calculate the rows required for the `int up[MS][MX]` array, use the formula
+$\lceil \log_2{N} \rceil$ which in our case simplifies to
+$\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
+
+<Info title="Pro Tip">
+
+It never hurts to add additional rows - or columns, depending on your
+implementation - (as long as it's reasonable)!
+
+</Info>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+int N, Q;
+
+const int MX = 2e5+5; // maximum N
+const int MS = 18; // 18 is calculated by $\log_2 2e5$
+
+int up[MS][MX];
+
+int jmp(int x, int d) {
+	F0R(i, MS) if((d >> i) & 1) x = up[i][x];
+	return x ?: -1; // modfication to return -1 if not found
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	cin >> N >> Q;
+
+	FOR(i, 2, N+1) {
+		int a; cin >> a;
+		up[0][i] = a;
+	}
+
+	FOR(i, 1, MS) FOR(j, 1, N+1) up[i][j] = up[i-1][up[i-1][j]]; // construct our parent array
+
+	// uncomment below if you want to see the parent array
+
+	// F0R(i, MS) {
+	//     FOR(j, 1, N+1) {
+	//         cerr << setfill(' ') << setw(2) << up[i][j] << " ";
+	//     }
+	//     cerr << "\n";
+	// }
+
+	F0R(i, Q) {
+		int a, b;
+		cin >> a >> b;
+		cout << jmp(a, b) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems="binJump" />
+
+## Lowest Common Ancestor
+
+<FocusProblem problem="lca" />
+
+<FocusProblem problem="lca2" />
+
+### Solution (Company Queries II)
+
+<Resources>
+	<Resource source="CPH" title="18.3 - LCA Method 1">
+		brief description
+	</Resource>
+	<Resource
+		source="Benq"
+		title="LCAjump"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Trees%20(10)/LCAjump.h"
+	>
+		alternative implementation
+	</Resource>
+</Resources>
+
+To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to
+the same depth as the other. Then, we lift both nodes up decrementally. At the
+end, the parent of either node is the LCA of the two.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+CodeSnip{Benq Template}
+
+int N, Q, T = 1;
+int depth[200005];
+int up[200005][20];
+vi adj[200005];
+
+void dfs(int v) {
+	FOR(i, 1, 20) {
+		up[v][i] = up[up[v][i-1]][i-1];
+	}
+
+	for(int x : adj[v]) {
+		if(x != up[v][0]) {
+			depth[x] = depth[up[x][0] = v]+1;
+			dfs(x);
+		}
+	}
+}
+
+int jump(int x, int d) {
+	F0R(i, 20) {
+		if((d >> i) & 1)
+			x = up[x][i];
+	}
+	return x;
+}
+
+int LCA(int a, int b) {
+	if(depth[a] < depth[b]) swap(a, b);
+
+	a = jump(a, depth[a] - depth[b]);
+	if(a == b) return a;
+
+	R0F(i, 20) {
+		int aT = up[a][i], bT = up[b][i];
+		if(aT != bT) a = aT, b = bT;
+	}
+
+	return up[a][0];
+}
+
+int main() {
+	re(N, Q);
+
+	rep(N-1) {
+		int b; re(b); --b;
+		adj[b].pb(i+1);
+	}
+
+	up[0][0] = 0, depth[0] = 0;
+	dfs(0);
+
+	rep(Q) {
+		int a, b; re(a, b); --a; --b;
+		ps(LCA(a, b)+1);
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Alternative Solution (Company Queries II)
+
+As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let
+$\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor
+table for all nodes in the tree.
+
+These can be filled with a DFS traversal. $\texttt{up}$ can be generated because
+DFS allows the ancestors to be filled first before traversing the current node.
+
+With this information, we can declare node $a$ an ancestor of $b$ if
+$\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$.
+
+We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the
+answer will be $a$ or $b$ respectively. Otherwise, we lift one of the nodes up
+(in this case, $a$) decrementally while it is not the ancestor of $b$.
+Therefore, if $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$
+to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower
+common ancestor. Afterwards, our answer is the parent of $a$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+CodeSnip{Benq Template}
+
+int N, Q, T = 1;
+vi st, en;
+int up[200005][20];
+vi adj[200005];
+
+void dfs(int v, int p) {
+	st[v] = T++;
+	up[v][0] = p;
+
+	FOR(i, 1, 20) {
+		up[v][i] = up[up[v][i-1]][i-1];
+	}
+
+	for(int x : adj[v]) if(x != p) dfs(x, v);
+
+	en[v] = T-1;
+}
+
+bool anc(int a, int b) {
+	return st[a] <= st[b] && en[a] >= en[b];
+}
+
+int LCA(int a, int b) {
+	if(anc(a, b)) return a;
+	if(anc(b, a)) return b;
+
+	R0F(i, 20) {
+		if(!anc(up[a][i], b))
+			a = up[a][i];
+	}
+	return up[a][0];
+}
+
+int main() {
+	re(N, Q);
+	st.resize(N); en.resize(N);
+
+	rep(N-1) {
+		int b; re(b); --b;
+		adj[b].pb(i+1);
+	}
+
+	dfs(0,0);
+
+	rep(Q) {
+		int a, b; re(a, b); --a; --b;
+		ps(LCA(a, b)+1);
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="LCA with Binary Lifting"
+		url="graph/lca_binary_lifting.html"
+	/>
+</Resources>
+
+<Optional title="Improvements">
+
+- [CF: $\mathcal{O}(\log N)$ queries and $\mathcal{O}(N)$ memory](https://codeforces.com/blog/entry/74847)
+- [MIT: $\mathcal{O}(1)$ queries and $\mathcal{O}(N)$ memory](https://courses.csail.mit.edu/6.851/spring21/scribe/lec15.pdf)
+
+</Optional>
+
+### Solution (Distance Queries)
+
+Find LCA of node $a$ and $b$ as described above. Then, the distance between the
+two nodes would be the
+$\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+CodeSnip{Benq Template}
+
+int N, Q, T = 1;
+int depth[200005];
+int up[200005][20];
+vi adj[200005];
+
+void dfs(int v) {
+	FOR(i, 1, 20) {
+		up[v][i] = up[up[v][i-1]][i-1];
+	}
+
+	for(int x : adj[v]) {
+		if(x != up[v][0]) {
+			depth[x] = depth[up[x][0] = v]+1;
+			dfs(x);
+		}
+	}
+}
+
+int jump(int x, int d) {
+	F0R(i, 20) {
+		if((d>>i)&1)
+			x = up[x][i];
+	}
+	return x;
+}
+
+int LCA(int a, int b) {
+	if(depth[a] < depth[b]) swap(a, b);
+
+	a = jump(a, depth[a] - depth[b]);
+	if(a == b) return a;
+
+	R0F(i, 20) {
+		int aT = up[a][i]; int bT = up[b][i];
+		if(aT != bT) a = aT, b = bT;
+	}
+
+	return up[a][0];
+}
+
+int main() {
+	re(N, Q);
+
+	rep(N-1) {
+		int a, b; re(a, b); --a,--b;
+		adj[b].pb(a);
+		adj[a].pb(b);
+	}
+
+	up[0][0] = 0, depth[0] = 0;
+	dfs(0);
+
+	rep(Q) {
+		int a, b; re(a, b); --a; --b;
+		ps(depth[a] + depth[b] - 2 * depth[lca(a, b)]);
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Problems
+
+#### USACO
+
+<Problems problems="usaco" />
+
+#### General
+
+<Problems problems="general" />
+
+<IncompleteSection>
+
+figure out a better way to order these, difficulties aren't really accurate
+
+</IncompleteSection>

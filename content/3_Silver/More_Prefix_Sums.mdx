@@ -1,0 +1,658 @@
+---
+id: more-prefix-sums
+redirects:
+  - /silver/prefix-sums-2
+title: 'More on Prefix Sums'
+author: Darren Yao, Neo Wang, Qi Wang
+contributors: Jesse Choe, Kevin Sheng, Brad Ma
+description:
+  'Max subarray sum, prefix sums in two dimensions, and a more complicated
+  example.'
+prerequisites:
+  - prefix-sums
+frequency: 2
+---
+
+## Max Subarray Sum
+
+<FocusProblem problem="maxsum" />
+
+### Solution - Max Subarray Sum
+
+<Spoiler title="Solution">
+
+Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
+$i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
+$p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
+
+For a fixed right bound $j$, the maximum subarray sum is
+
+$$
+p[j]-\min_{i\leq j}{p[i]}
+$$
+
+Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we
+iterate through $j$. This yields the maximum subarray sum for each possible
+right bound, and the maximum over all these values is our answer.
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+using ll = long long;
+
+int main(){
+	int n;
+	cin >> n;
+	vector<long long> pfx(n + 1);  // prefix sum array initially filled with 0's
+	for (int i = 1; i <= n; i++){
+		ll x;
+		cin >> x;
+		pfx[i] = pfx[i - 1] + x;  // compute the prefix sum at each element
+	}
+
+	ll max_subarray_sum = pfx[1];
+	ll min_prefix_sum = pfx[0];
+	for (int i = 1; i <= n; i++) {
+		// Max subarray sum is the maximum difference between two prefix sums
+		max_subarray_sum = max(max_subarray_sum, pfx[i] - min_prefix_sum);
+		min_prefix_sum = min(min_prefix_sum, pfx[i]);
+	}
+	cout << max_subarray_sum << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Java Implementation
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class MaxSubSum {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(
+			new InputStreamReader(System.in)
+		);
+		read.readLine();
+		int[] arr = Arrays.stream(read.readLine().split(" ")
+				.mapToInt(Integer::parseInt).toArray();
+
+		long maxSubSum = arr[0];
+		long runningPrefSum = 0;
+		long minPrefSum = 0;
+		for (int i : arr) {
+			runningPrefSum += i;
+			maxSubSum = Math.max(maxSubSum, runningPrefSum - minPrefSum);
+			minPrefSum = Math.min(minPrefSum, runningPrefSum);
+		}
+		System.out.println(maxSubSum);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+### Python Implementation
+
+```py
+size = int(input())
+arr = [int(i) for i in input().split()]
+assert len(arr) == size
+
+max_subarray_sum = arr[0]
+min_pref_sum = 0
+running_pref_sum = 0
+for i in arr:
+	running_pref_sum += i
+	max_subarray_sum = max(max_subarray_sum, running_pref_sum - min_pref_sum)
+	min_pref_sum = min(min_pref_sum, running_pref_sum)
+print(max_subarray_sum)
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title = "Alternative Solution - Kadane's Algorithm">
+
+Note: it is recommended that you **disregard** this solution since it is not
+required to solve this problem.
+
+Kadane's Algorithm finds the largest subarray sum using a greedy method.
+[Click here for more information](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<long long> x(n);
+	for (int i = 0; i < n; i++){
+		cin >> x[i];
+	}
+	ll current_sum = x[0];
+	ll max_subarray_sum = x[0];
+	for (int i = 1; i < n; i++){
+		/*
+		 * Continue the subarray sum or start a new
+		 * subarray sum beginning at the current element.
+		 */
+		current_sum = max(current_sum + x[i], x[i]);
+		// Store the maximum subarray sum at each iteration.
+		max_subarray_sum = max(max_subarray_sum, current_sum);
+	}
+	cout << max_subarray_sum << endl;
+}
+```
+
+</CPPSection>
+	
+<JavaSection>
+	
+### Java Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+	
+public class MaxSubarraySumKadane {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+
+		long[] x = new long[n];
+
+		for (int i = 0; i < n; i++) { // read input
+			x[i] = io.nextInt();
+		}
+
+		long currentSum = x[0];
+		long maxSubarraySum = x[0];
+
+		for (int i = 1; i < n; i++) {
+			/*
+			 * Continue the subarray sum or start a new
+			 * subarray sum beginning at the current element.
+			 */
+			currentSum = Math.max(currentSum + x[i], x[i]);
+			// Store the maximum subarray sum at each iteration.
+			maxSubarraySum = Math.max(maxSubarraySum, currentSum);
+		}
+
+		io.println(maxSubarraySum);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+
+```
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## 2D Prefix Sums
+
+<FocusProblem problem="sample2" />
+
+Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of
+a 2D matrix with $N$ rows and $M$ columns? Let's assume both rows and columns
+are 1-indexed, and we use the following matrix as an example:
+
+<center>
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>5</td>
+			<td>6</td>
+			<td>11</td>
+			<td>8</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>7</td>
+			<td>11</td>
+			<td>9</td>
+			<td>4</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>4</td>
+			<td>6</td>
+			<td>1</td>
+			<td>3</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>7</td>
+			<td>5</td>
+			<td>4</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</tbody>
+</table>
+
+</center>
+
+Naively, each sum query would then take $\mathcal{O}(NM)$ time, for a total of
+$\mathcal{O}(QNM)$. This is too slow.
+
+Let's take the following example region, which we want to sum:
+
+<center>
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>5</td>
+			<td>6</td>
+			<td>11</td>
+			<td>8</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td className="bg-blue-100 dark:bg-blue-800">7</td>
+			<td className="bg-blue-100 dark:bg-blue-800">11</td>
+			<td className="bg-blue-100 dark:bg-blue-800">9</td>
+			<td>4</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>4</td>
+			<td className="bg-blue-100 dark:bg-blue-800">6</td>
+			<td className="bg-blue-100 dark:bg-blue-800">1</td>
+			<td className="bg-blue-100 dark:bg-blue-800">3</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>7</td>
+			<td>5</td>
+			<td>4</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</tbody>
+</table>
+
+</center>
+
+Manually summing all the cells, we have a submatrix sum of $7+11+9+6+1+3 = 37$.
+
+The first logical optimization would be to do one-dimensional prefix sums of
+each row. Then, we'd have the following row-prefix sum matrix. The desired
+subarray sum of each row in our desired region is simply the green cell minus
+the red cell in that respective row. We do this for each row to get
+$(28-1) + (14-4) = 37$.
+
+<center>
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>6</td>
+			<td>12</td>
+			<td>23</td>
+			<td>31</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">1</td>
+			<td>8</td>
+			<td>19</td>
+			<td className="bg-green-200 dark:bg-green-800">28</td>
+			<td>32</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">4</td>
+			<td>10</td>
+			<td>11</td>
+			<td className="bg-green-200 dark:bg-green-800">14</td>
+			<td>16</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>7</td>
+			<td>12</td>
+			<td>16</td>
+			<td>18</td>
+			<td>21</td>
+		</tr>
+	</tbody>
+</table>
+
+</center>
+
+Now, if we wanted to find a submatrix sum, we could break up the submatrix into
+a subarray for each row, and then add their sums, which would be calculated
+using the prefix sums method described earlier. Since the matrix has $N$ rows,
+the time complexity of this is $\mathcal{O}(QN)$. This might be fast enough for
+$Q=10^5$ and $N=10^3$, but we can do better.
+
+In fact, we can do two-dimensional prefix sums. In our two dimensional prefix
+sum array, we have
+
+$$
+\texttt{prefix}[a][b]=\sum_{i=1}^{a} \sum_{j=1}^{b} \texttt{arr}[i][j].
+$$
+
+This can be calculated as follows for row index $1 \leq i \leq n$ and column
+index $1 \leq j \leq m$:
+
+$$
+\begin{aligned}
+\texttt{prefix}[i][j] =& \, \texttt{prefix}[i-1][j]+ \texttt{prefix}[i][j-1] \\
+	&- \texttt{prefix}[i-1][j-1]+ \texttt{arr}[i][j]
+\end{aligned}
+$$
+
+---
+
+Let's calculate $\texttt{prefix}[2][3]$. Try playing with the interactive widget
+below by clicking the buttons to see which numbers are added in each step.
+Notice how we overcount a subrectangle, and how we fix this by subtracting
+$\texttt{prefix}[i-1][j-1]$.
+
+<PrefixSumInteractive />
+
+---
+
+The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be
+expressed as follows:
+
+$$
+\begin{aligned}
+\sum_{i=a}^{A} \sum_{j=b}^{B} \texttt{arr}[i][j]=&\,\texttt{prefix}[A][B]
+		- \texttt{prefix}[a-1][B] \\
+		&- \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
+\end{aligned}
+$$
+
+Summing the blue region from above using the 2D prefix sums method, we add the
+value of the green square, subtract the values of the red squares, and then add
+the value of the gray square. In this example, we have
+
+$$
+65-23-6+1 = 37,
+$$
+
+as expected.
+
+<center>
+
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-gray-200 dark:bg-gray-700">1</td>
+			<td>6</td>
+			<td>12</td>
+			<td className="bg-red-200 dark:bg-red-800">23</td>
+			<td>31</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>2</td>
+			<td>14</td>
+			<td>31</td>
+			<td>51</td>
+			<td>63</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">6</td>
+			<td>24</td>
+			<td>42</td>
+			<td className="bg-green-200 dark:bg-green-800">65</td>
+			<td>79</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>13</td>
+			<td>36</td>
+			<td>58</td>
+			<td>83</td>
+			<td>100</td>
+		</tr>
+	</tbody>
+</table>
+
+</center>
+
+---
+
+Try playing with the interactive widget below by clicking the buttons to see
+which numbers are added in each step.
+
+<PrefixSumInteractive demo2 />
+
+---
+
+Since no matter the size of the submatrix we are summing, we only need to access
+four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query
+after an $\mathcal{O}(NM)$ preprocessing.
+
+### Solution - Forest Queries
+
+<Warning>
+
+We need to be cautious of off-by-one errors, as intervals can be inclusive,
+exclusive, 1-indexed, etc.
+
+</Warning>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+constexpr int MAX_SIDE = 1000;
+int tree_pref[MAX_SIDE + 1][MAX_SIDE + 1];
+int forest[MAX_SIDE + 1][MAX_SIDE + 1];
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int N;
+	int Q;
+	cin >> N >> Q;
+	// read in the initial trees
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			char a;
+			cin >> a;
+			forest[i + 1][j + 1] += a == '*';
+		}
+	}
+
+	// build the prefix sum array
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			tree_pref[i][j] = forest[i][j]
+						+ tree_pref[i - 1][j]
+						+ tree_pref[i][j - 1]
+						- tree_pref[i - 1][j - 1];
+		}
+	}
+
+	for (int q = 0; q < Q; q++) {
+		int x1, x2, y1, y2;
+		cin >> x1 >> y1 >> x2 >> y2;
+		cout << tree_pref[x2][y2]
+				- tree_pref[x1-1][y2]
+				- tree_pref[x2][y1-1]
+				+ tree_pref[x1-1][y1-1] << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class ForestQueries {
+	static int N;
+	static int Q;
+	static int[][] pfx;
+	static int[][] arr;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		N = io.nextInt();
+		Q = io.nextInt();
+
+		pfx = new int[N+1][N+1];
+		arr = new int[N+1][N+1];
+
+		for (int i = 0; i < N; i++) {
+			String line = io.next();
+			for (int j = 0; j < N; j++) {
+				if (line.charAt(j) == '*') {
+					arr[i + 1][j + 1]++;
+				}
+			}
+		}
+
+		for (int i = 1; i < N + 1; i++) {
+			for (int j = 1; j < N + 1; j++) {
+				pfx[i][j] = arr[i][j]
+						+ pfx[i-1][j]
+						+ pfx[i][j-1]
+						- pfx[i-1][j-1];
+			}
+		}
+
+		for (int i = 0; i < Q; i++) {
+			int x1 = io.nextInt();
+			int y1 = io.nextInt();
+			int x2 = io.nextInt();
+			int y2 = io.nextInt();
+			io.println(
+					pfx[x2][y2]
+					- pfx[x1-1][y2]
+					- pfx[x2][y1-1]
+					+ pfx[x1-1][y1-1]
+			);
+		}
+		io.close();
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+side_len, query_num = [int(i) for i in input().split()]
+tree_prefixes = [[0 for _ in range(side_len + 1)] for _ in range(side_len + 1)]
+for r in range(side_len):
+	for ci, c in enumerate(input()):
+		tree = c == '*'
+		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1]
+										 + tree_prefixes[r + 1][ci]
+										 - tree_prefixes[r][ci]
+										 + tree)
+
+for _ in range(query_num):
+	from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
+	print(tree_prefixes[to_row][to_col]
+		  - tree_prefixes[to_row][from_col - 1]
+		  - tree_prefixes[from_row - 1][to_col]
+		  + tree_prefixes[from_row - 1][from_col - 1])
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems="cum2" hideSuggestProblemButton />

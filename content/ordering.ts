@@ -26,8 +26,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'resources-learning-to-code',
         'running-code-online',
         'data-types',
-        'io',
-        'expected',
+        'input-output',
+        'expected-knowledge',
       ],
     },
     {
@@ -44,7 +44,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'contest-strategy',
         'resources-cp',
         'contests',
-        'oly',
+        'olympiads',
       ],
     },
     {
@@ -56,8 +56,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'cpp-command',
         'debugging-lang',
         'fast-io',
-        'generic',
-        'lambda',
+        'generic-code',
+        'lambda-funcs',
         'notes-cpp-ds',
       ],
     },
@@ -98,13 +98,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   silver: [
     {
       name: 'Prefix Sums',
-      items: ['prefix-sums', 'prefix-sums-2'],
+      items: ['prefix-sums', 'more-prefix-sums'],
     },
     {
       name: 'Sorting & Searching',
       items: [
         'sorting-custom',
-        '2P',
+        'two-pointers',
         'intro-ordered',
         'custom-cpp-stl',
         'greedy-sorting',
@@ -115,7 +115,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Graphs',
       description:
         'Every (?) Silver - Plat contest has at least one graph problem.',
-      items: ['dfs', 'ff', 'intro-tree', 'func-graphs'],
+      items: ['dfs', 'flood-fill', 'intro-tree', 'func-graphs'],
     },
     {
       name: 'Conclusion',
@@ -125,7 +125,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   gold: [
     {
       name: 'Introductory Number Theory',
-      items: ['divis', 'modular'],
+      items: ['divisibility', 'modular'],
     },
     {
       name: 'Dynamic Programming',
@@ -142,11 +142,11 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Graphs',
-      items: ['bfs', 'dsu', 'toposort', 'sp', 'mst'],
+      items: ['bfs', 'dsu', 'toposort', 'shortest-paths', 'mst'],
     },
     {
       name: 'Data Structures',
-      items: ['stacks', 'sliding', 'PURS'],
+      items: ['stacks', 'sliding-window', 'PURS'],
     },
     {
       name: 'Trees',
@@ -155,7 +155,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Hashing',
       description: 'Rarely required at this level, but still good to know.',
-      items: ['string-hashing', 'unordered', 'faster-hashmap'],
+      items: ['string-hashing', 'unordered-map', 'faster-hashmap'],
     },
     {
       name: 'Misc. Topics',
@@ -172,10 +172,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description:
         'It seems that no Platinum contest is complete without a segment tree ...',
       items: [
-        'seg-ext',
+        'segtree-ext',
         'range-sweep',
         'RURQ',
-        'sparse-seg',
+        'sparse-segtree',
         '2DRQ',
         'DC-SRQ',
         'sqrt',
@@ -184,16 +184,16 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Trees',
       description: '... or a tree!',
-      items: ['bin-jump', 'merging', 'hld', 'centroid'],
+      items: ['binary-jump', 'merging', 'hld', 'centroid'],
     },
     {
       name: 'Geometry',
       description: 'More advanced concepts in computational geometry.',
-      items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
+      items: ['geo-pri', 'sweep-line', 'convex-hull', 'convex-hull-trick'],
     },
     {
       name: 'Misc. Topics',
-      items: ['mat-exp', 'bitsets', 'DC-DP'],
+      items: ['matrix-expo', 'bitsets', 'DC-DP'],
     },
     {
       name: 'Conclusion',
@@ -206,7 +206,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'springboards',
         'wavelet',
-        'CntMin',
+        'count-min',
         'segtree-beats',
         'persistent',
         'treaps',
@@ -214,7 +214,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Convexity',
-      items: ['LC', 'lagrange', 'slope'],
+      items: ['line-container', 'lagrange', 'slope-trick'],
     },
     {
       name: 'Graphs',
@@ -226,7 +226,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'offline-del',
         'eulers-formula',
         'critical',
-        'LCT',
+        'link-cut-tree',
       ],
     },
     {
@@ -250,7 +250,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'extend-euclid',
         'xor-basis',
-        'fracture',
+        'fracturing-search',
         'game-theory',
         'multiplicative',
         'matroid-isect',

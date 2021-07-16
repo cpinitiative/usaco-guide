@@ -91,12 +91,21 @@ exports.onCreateNode = async api => {
       );
     }
 
+    const freshOrdering = importFresh<any>('./content/ordering');
+    if (!isExtraProblems && !(moduleId in freshOrdering.moduleIDToSectionMap)) {
+      throw new Error(
+        '.problems.json moduleId does not correspond to module: ' +
+          moduleId +
+          ', path: ' +
+          node.absolutePath
+      );
+    }
+
     Object.keys(parsedContent).forEach(tableId => {
       if (tableId === 'MODULE_ID') return;
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           const freshOrdering = importFresh<any>('./content/ordering');
-
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
@@ -153,6 +162,14 @@ exports.onCreateNode = async api => {
     node.fileAbsolutePath.includes('content')
   ) {
     const ordering = importFresh<any>('./content/ordering');
+    if (!(node.frontmatter.id in ordering.moduleIDToSectionMap)) {
+      throw new Error(
+        'module id does not show up in ordering: ' +
+          node.frontmatter.id +
+          ', path: ' +
+          node.absolutePath
+      );
+    }
     createNodeField({
       name: 'division',
       node,
@@ -203,10 +220,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             frontmatter {
               id
               redirects
+              prerequisites
             }
             fields {
               division
             }
+            fileAbsolutePath
           }
         }
       }
@@ -273,7 +292,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       );
     }
     if (problemInfo.hasOwnProperty(node.uniqueId)) {
-      let a = node,
+      const a = node,
         b = problemInfo[node.uniqueId];
       // Some problems with no corresponding module gets put into extraProblems.json.
       // If a problem has a module, then it should be removed from extraProblems.json.
@@ -337,6 +356,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         id: node.frontmatter.id,
       },
     });
+
+    const freshOrdering = importFresh<any>('./content/ordering');
+    if (node.frontmatter.prerequisites)
+      for (const prereq of node.frontmatter.prerequisites) {
+        if (!(prereq in freshOrdering.moduleIDToSectionMap)) {
+          console.warn(
+            'Module ' +
+              node.fileAbsolutePath +
+              ': Prerequisite "' +
+              prereq +
+              '" is not a module'
+          );
+        }
+      }
   });
   const solutionTemplate = require.resolve(
     `./src/templates/solutionTemplate.tsx`
@@ -477,6 +510,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       difficulty: String
       tags: [String]
       solution: ProblemSolutionInfo
+      inModule: Boolean!
       module: Xdm @link(by: "frontmatter.id")
     }
     

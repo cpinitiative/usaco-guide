@@ -1,0 +1,302 @@
+---
+id: segtree-ext
+redirects:
+  - /plat/seg-ext
+title: 'More Applications of Segment Tree'
+author: Benjamin Qi, Andi Qu
+prerequisites:
+  - PURS
+description: 'Walking on a Segment Tree, Non-Commutative Combiner Functions'
+frequency: 3
+---
+
+<Resources>
+	<Resource
+		source="CF"
+		title="EDU: Segment Tree Pt 1 Step 2"
+		url="https://codeforces.com/edu/course/2/lesson/4/2"
+		starred
+	>
+		both of these topics
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Segment Tree - More complex queries"
+		url="data_structures/segment_tree.html#toc-tgt-8"
+		starred
+	>
+		Includes these two applications and more.
+	</Resource>
+</Resources>
+
+## Walking on a Segment Tree
+
+<FocusProblem problem="walkSam" />
+
+You want to support queries of the following form on an array $a_1,\ldots,a_N$
+(along with point updates).
+
+> Find the first $i$ such that $a_i\ge x$.
+
+Of course, you can do this in $\mathcal{O}(\log^2N)$ time with a max segment
+tree and binary searching on the first $i$ such that
+$\max(a_1,\ldots,a_i)\ge x$. But try to do this in $\mathcal{O}(\log N)$ time.
+
+### Solution - Hotel Queries
+
+<Spoiler title="Solution">
+
+Instead of binary searching and querying the segment tree separately, let's do
+them together!
+
+Assume that you know that the answer is in some range $[l, r]$. Let
+$mid = \left \lfloor{\frac{l + r}{2}}\right \rfloor$.
+
+If $\max(a_l, \dots, a_{mid}) \geq x$, then we know that the answer is in the
+range $[l, mid]$. Otherwise, the answer is in the range $[mid + 1, r]$.
+
+Imagine that the segment tree is a decision tree. We start at the root and move
+down. When we're at some node that contains $\max(a_l, \dots, a_r)$ and we know
+that the answer is in the range $[l, r]$, we move to the left child if
+$\max(a_l, \dots, a_{mid}) \geq x$; otherwise, we move to the right child.
+
+This is convenient because $\max(a_l, \dots, a_{mid})$ is already stored in the
+left child, so we can find it in $\mathcal{O}(1)$ time.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200001;
+
+int n;
+int segtree[4 * MAXN], a[MAXN];
+
+void build(int l = 1, int r = n, int node = 1) {
+	if (l == r) segtree[node] = a[l];
+	else {
+		int mid = (l + r) / 2;
+		build(l, mid, node * 2);
+		build(mid + 1, r, node * 2 + 1);
+		segtree[node] = max(segtree[node * 2], segtree[node * 2 + 1]);
+	}
+}
+
+void queryupdate(int val, int l = 1, int r = n, int node = 1) {
+	if (l == r) {
+		segtree[node] -= val;
+		cout << l << ' ';
+	} else {
+		int mid = (l + r) / 2;
+		if (segtree[node * 2] >= val) queryupdate(val, l, mid, node * 2);
+		else queryupdate(val, mid + 1, r, node * 2 + 1);
+
+		segtree[node] = max(segtree[node * 2], segtree[node * 2 + 1]);
+	}
+}
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int q;
+	cin >> n >> q;
+	for (int i = 1; i <= n; i++) cin >> a[i];
+	build();
+
+	while (q--) {
+		int x;
+		cin >> x;
+		if (segtree[1] < x) cout << "0 ";
+		else queryupdate(x);
+	}
+	return 0;
+}
+```
+
+</Spoiler>
+
+### Problems
+
+<Problems problems="walk" />
+
+## Non-Commutative Combiner Functions
+
+Previously, we only considered commutative operations like `+` and `max`.
+However, segment trees allow you to answer range queries for any associative
+operation.
+
+<FocusProblem problem="combSam" />
+
+<FocusProblem problem="combSam2" />
+
+### Solution - Point Set Range Composite
+
+The segment tree from the prerequisite module should suffice. You can also use
+two BITs as described
+[here](https://ioinformatics.org/journal/v9_2015_39_44.pdf), although it's more
+complicated.
+
+```cpp
+using T = AR<mi,2>;
+T comb(const T& a, const T& b) { return {a[0]*b[0],a[1]*b[0]+b[1]}; }
+
+template<class T> struct BIT {
+	const T ID = {1,0};
+	int SZ = 1; V<T> x, bit[2];
+	void init(int N) {
+		while (SZ <= N) SZ *= 2;
+		x = V<T>(SZ+1,ID); F0R(i,2) bit[i] = x;
+		FOR(i,1,N+1) re(x[i]);
+		build();
+	}
+	void build() {
+		FOR(i,1,SZ) {
+			bit[0][i] = comb(bit[0][i],x[i]);
+			int j = i+(i&-i); assert(j <= SZ);
+			bit[0][j] = comb(bit[0][j],bit[0][i]);
+		}
+		ROF(i,1,SZ) {
+			bit[1][i] = comb(x[i],bit[1][i]);
+			int j = i-(i&-i);
+			bit[1][j] = comb(bit[1][i],bit[1][j]);
+		}
+	}
+	void upd0(int p) {
+		T lans = ID, rans = ID;
+		for (int P = p, lo = p-1, hi = p+1; P < SZ; P += P&-P) {
+			for (;hi < P;hi += hi&-hi) rans = comb(rans,bit[1][hi]);
+			for(;lo > P-(P&-P);lo -= lo&-lo) lans = comb(bit[0][lo],lans);
+			assert(lo == P-(P&-P));
+			bit[0][P] = comb(lans,x[p]);
+			if (p != P) bit[0][P] = comb(bit[0][P],comb(rans,x[P]));
+		}
+	}
+	void upd1(int p) {
+		T lans = ID, rans = ID;
+		for (int P = p, lo = p-1, hi = p+1; P; P -= P&-P) {
+			for (;hi < P+(P&-P); hi += hi&-hi) rans = comb(rans,bit[1][hi]);
+			for (;lo > P; lo -= lo&-lo) lans = comb(bit[0][lo],lans);
+			assert(hi == P+(P&-P));
+			bit[1][P] = comb(x[p],rans);
+			if (p != P) bit[1][P] = comb(comb(x[P],lans),bit[1][P]);
+		}
+	}
+	void upd(int p, T u) { assert(0 < p && p < SZ);
+		x[p] = u; upd0(p); upd1(p); }
+	T query(int a, int b) { assert(0 < a && a <= b && b < SZ);
+		T lans = ID, rans = ID;
+		for (int A; (A = a+(a&-a)) <= b; a = A) lans = comb(lans,bit[1][a]);
+		for (int B; (B = b-(b&-b)) >= a; b = B) rans = comb(bit[0][b],rans);
+		assert(a == b); return comb(comb(lans,x[a]),rans);
+	}
+};
+
+BIT<T> B;
+int N,Q;
+
+int main() {
+	setIO(); re(N,Q);
+	B.init(N);
+	F0R(i,Q) {
+		int t,p,c,d; re(t,p,c,d); ++p;
+		if (t == 0) {
+			B.upd(p,{c,d});
+		} else {
+			T res = B.query(p,c);
+			ps(res[0]*d+res[1]);
+		}
+	}
+}
+```
+
+### Solution - Subarray Sum Queries
+
+Hint: In each node of the segment tree, you'll need to store four pieces of
+information.
+
+<Spoiler title="Solution">
+
+In each node of the segment tree that stores information about the range
+$[l, r]$ we store the following information:
+
+- The maximum subarray sum in the range $[l, r]$. (Let this be $G$)
+- The maximum subarray sum in the range $[l, r]$ if it must contain $a_l$. (Let
+  this be $L$)
+- The maximum subarray sum in the range $[l, r]$ if it must contain $a_r$. (Let
+  this be $R$)
+- The total sum of the range. (Let this be $S$)
+
+When we combine two nodes $u$ (left child) and $v$ (right child) to make node
+$w$,
+
+- $w.G = \max(u.G, v.G, u.R + v.L)$
+- $w.L = \max(u.L, u.S + v.L)$
+- $w.R = \max(u.R + v.S, v.R)$
+- $w.S = u.S + v.S$
+
+We can thus handle updates and queries efficiently.
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+const ll MAXN = 200001;
+
+struct Node {
+	ll g_max, l_max, r_max, sum;
+	Node operator +(Node b) {
+		return {
+			max(max(g_max, b.g_max), r_max + b.l_max),
+			max(l_max, sum + b.l_max),
+			max(b.r_max, r_max + b.sum),
+			sum + b.sum
+		};
+	}
+};
+
+ll n, a[MAXN];
+Node segtree[4 * MAXN];
+
+void build(ll l = 1, ll r = n, ll node = 1) {
+	if (l == r) segtree[node] = {max(0ll, a[l]), max(0ll, a[l]), max(0ll, a[l]), a[l]};
+	else {
+		ll mid = (l + r) / 2;
+		build(l, mid, node * 2);
+		build(mid + 1, r, node * 2 + 1);
+		segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+	}
+}
+void update(ll pos, ll val, ll l = 1, ll r = n, ll node = 1) {
+	if (l == r) segtree[node] = {max(0ll, val), max(0ll, val), max(0ll, val), val};
+	else {
+		ll mid = (l + r) / 2;
+		if (pos > mid) update(pos, val, mid + 1, r, node * 2 + 1);
+		else update(pos, val, l, mid, node * 2);
+		segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+	}
+}
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	ll q;
+	cin >> n >> q;
+	for (int i = 1; i <= n; i++) cin >> a[i];
+	build();
+
+	while (q--) {
+		ll x, y;
+		cin >> x >> y;
+		update(x, y);
+		cout << segtree[1].g_max << '\n';
+	}
+	return 0;
+}
+```
+
+</Spoiler>
+
+### Problems
+
+<Problems problems="comb" />

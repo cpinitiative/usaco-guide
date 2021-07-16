@@ -38,7 +38,7 @@ using pi = pair<int,int>;
 void setIO(string name = "") {
 \tcin.tie(0)->sync_with_stdio(0); // see /general/fast-io
 \tif (sz(name)) {
-\t\tfreopen((name+".in").c_str(), "r", stdin); // see /general/io
+\t\tfreopen((name+".in").c_str(), "r", stdin); // see /general/input-output
 \t\tfreopen((name+".out").c_str(), "w", stdout);
 \t}
 }
@@ -96,7 +96,7 @@ using pi = pair<int,int>;
 void setIO(string name = "") {
 \tcin.tie(0)->sync_with_stdio(0); // see /general/fast-io
 \tif (sz(name)) {
-\t\tfreopen((name+".in").c_str(), "r", stdin); // see /general/io
+\t\tfreopen((name+".in").c_str(), "r", stdin); // see /general/input-output
 \t\tfreopen((name+".out").c_str(), "w", stdout);
 \t}
 }

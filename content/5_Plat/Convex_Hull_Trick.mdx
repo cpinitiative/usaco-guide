@@ -1,0 +1,152 @@
+---
+id: convex-hull-trick
+redirects:
+  - /plat/cht
+title: 'Convex Hull Trick'
+author: Andi Qu
+description:
+  A way to find the maximum or minimum value of several convex functions at
+  given points.
+prerequisites:
+  - convex-hull
+  - intro-dp
+frequency: 2
+---
+
+We wish to solve problems that are of the following form:
+
+> Consider a set of functions $\{f_i(x)\}$ on some range $[l,r]$ such that for
+> any two functions $f_i$ and $f_j$, there exists some $m$ such that
+>
+> - For all $x \in [l,m]$, $f_i(x)\le f_j(x)$
+> - For all $x \in [m,r]$, $f_i(x)\ge f_j(x)$
+>
+> Answer queries of the form "what is the maximum/minimum $f_i(x)$ for some
+> given $x\in [l,r]$," given that we have a way of finding $m$ efficiently.
+
+A sufficient (but not necessary) set of conditions:
+
+- All the functions are continuous along the range $[l,r]$.
+- No two functions intersect at more than one point.
+
+The most common case is where each $f_i(x)$ is of the form $a_ix+b_i$. Given two
+lines $f_i(x)=a_ix+b_i$ and $f_j(x)=a_jx+b_j$ such that $a_i<a_j$, their
+intersection point at $m=\frac{b_i-b_j}{a_j-a_i}$ can be found in
+$\mathcal{O}(1)$ time. Then it's clear that
+
+- For all $x\le m$, $f_i(x)\ge f_j(x)$.
+- For all $x\ge m$, $f_i(x)\le f_j(x)$.
+
+The linear case is known as the **convex hull trick** because $\max_i(f_i(x))$
+as a function of $x$ is concave up (similarly, $\min_i(f_i(x))$ as a function of
+$x$ is concave down). Check the images from the CF tutorial below if you don't
+know what this means.
+
+Some possible nonlinear forms of $f_i(x)$:
+
+- $f_i(x)=x^2+a_ix+b_i$
+  - Reduces to the linear case, since we can ignore the $x^2$ term when
+    comparing two functions.
+- $f_i(x) = \sqrt{x - a_i} + b_i$
+  - If this function is defined for all $x\in [l,r]$.
+  - Note that when $a_i<a_j$, $\sqrt{x-a_i}-\sqrt{x-a_j}$ is strictly decreasing
+    over the range $x\in [a_j,\infty)$.
+
+In this module, we'll focus on the special case of CHT where "slopes" of
+functions are monotonic. This specific case is solvable in $\mathcal{O}(N)$
+using a `std::deque` in C++. For the more general $\mathcal{O}(N \log N)$ CHT
+(which involves a `std::set`), see [the LineContainer module](/adv/LC).
+
+<FocusProblem problem="sample" />
+
+## Tutorial
+
+<Resources>
+	<Resource
+		source="CF"
+		title="Convex Hull Trick - Geo Being Useful"
+		url="63823"
+		starred
+	>
+		solves problem above
+	</Resource>
+	<Resource source="GCP" title="15.4.1 - Convex Hull Trick"/>
+	<Resource
+		source="Jeffrey Xiao"
+		title="Convex Hull Trick"
+		url="https://jeffreyxiao.me/blog/convex-hull-trick"
+	 />
+</Resources>
+
+## Solution - The Fair Nut and Rectangles
+
+I won't analyse this problem in great detail since the Codeforces blog in the
+resources already does so, but essentially, we sort the rectangles by
+$x$-coordinate and get the following DP recurrence:
+
+$$
+dp[i] = p_i \cdot q_i - a_i + \max_{j < i}(-p_j \cdot q_i + dp[j])
+$$
+
+Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a
+straight line $y = mx + c$.
+
+Since we sorted the rectangles and no two rectangles are nested, the slopes of
+the lines we insert are strictly increasing. The query positions are also
+strictly increasing.
+
+This means we can solve this problem using CHT in $\mathcal{O}(N)$ time! Here is
+my implementation:
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+struct Rect {
+	ll x, y, a;
+	bool operator<(Rect B) { return x < B.x; }
+};
+
+Rect a[1000001];
+ll dp[1000001];
+
+double slope(int i, int j) { return (double)(dp[i] - dp[j]) / (a[i].x - a[j].x); }
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	ll n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i].x >> a[i].y >> a[i].a;
+	}
+	sort(a + 1, a + n + 1);
+
+	deque<ll> q;
+	q.push_back(0);
+	for (int i = 1; i <= n; i++) {
+		while (q.size() > 1 && slope(q[0], q[1]) >= a[i].y)
+			q.pop_front();
+
+		ll j = q.front();
+		dp[i] = max(dp[i - 1], a[i].x * a[i].y - a[i].a + dp[j] - a[j].x * a[i].y);
+
+		while (q.size() > 1 && slope(q[q.size() - 2], q.back()) <= slope(q.back(), i)) q.pop_back();
+		q.push_back(i);
+	}
+
+	cout << dp[n];
+	return 0;
+}
+```
+
+## Problems
+
+<Info title="Alternative Solution">
+
+Some of these problems can also be solved using [divide & conquer](/plat/DC-DP).
+
+</Info>
+
+<Problems problems="general" />
