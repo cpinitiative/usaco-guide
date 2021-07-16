@@ -8,7 +8,7 @@ author: Benjamin Qi
 Same thing as "Tree Matching" but on a functional graph. We can use the same
 greedy strategy of repeatedly matching a leaf to an adjacent vertex.
 
-MLE:
+Here's an implementation that uses `vector` and `boolean` arrays, which recieves MLE:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -262,7 +262,10 @@ int main() {
 }
 ```
 
-OK:
+To avoid this, we can make a few memory optimizations.
+
+1. Since this is a functional graph, each node is directed towards one other node. Instead of `vector`, we can use an `int` array to store each node's successor as the adjacency list.
+2. We can use `bitset` instead of boolean arrays to reduce the memory by a constant factor. For more information, see the [module on bitsets](https://usaco.guide/plat/bitsets?lang=cpp).
 
 ```cpp
 #include <bits/stdc++.h>
