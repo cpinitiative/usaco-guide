@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Select from 'react-select';
 import SECTIONS from '../../../content/ordering'
+import { useDarkMode } from '../../context/DarkModeContext';
 
 const items = [
   { label: 'General', value: SECTIONS.general },
@@ -11,6 +12,7 @@ const items = [
   { label: 'Advanced', value: SECTIONS.adv },
 ]
 export default function Section({ refine }) { 
+  const darkMode = useDarkMode()
   
   const handleChange = e => {
     let refinements = [];
@@ -32,8 +34,57 @@ export default function Section({ refine }) {
       isMulti
       isSearchable={false}
       options={items}
-      className="text-black"
+      className={
+        !darkMode ? "text-black" : "text-white" 
+      }
       classNamePrefix="select"
+      styles={
+        !darkMode
+          ? undefined
+          : {
+              control: provided => ({
+                ...provided,
+                backgroundColor: '#111827',
+                borderColor: '#374151',
+              }),
+              menuList: provided => ({
+                ...provided,
+                borderColor: '#374151',
+                borderWidth: '1px',
+                borderRadius: '6px',
+              }),
+              menu: provided => ({
+                ...provided,
+                backgroundColor: '#111827',
+              }),
+              indicatorSeparator: provided => ({
+                ...provided,
+                backgroundColor: '#374151',
+              }),
+              indicatorsContainer: provided => ({
+                ...provided,
+                color: '#374151',
+              }),
+              singleValue: provided => ({
+                ...provided,
+                color: 'rgba(255, 255, 255, 0.87)',
+              }),
+              input: provided => ({
+                ...provided,
+                color: 'rgba(255, 255, 255, 0.87)',
+              }),
+              option: (provided, { isFocused, isSelected }) => ({
+                ...provided,
+                ...(isFocused
+                  ? {
+                      backgroundColor: '#4d94ff',
+                    }
+                  : isSelected
+                  ? { backgroundColor: '#0063e6' }
+                  : {}),
+              }),
+            }
+      }
     />
   )
 }
