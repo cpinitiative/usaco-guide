@@ -68,13 +68,16 @@ public class cbarn {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("cbarn.in"));
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("cbarn.out")));
+	
+		cbarn.Kattio io = new cbarn.Kattio("cbarn");
 		
-		int n = Integer.parseInt(br.readLine());
+		int n = io.nextInt();
 		int[] cows = new int[n];
 		for(int i = 0; i < n; i++) {
-			cows[i] = Integer.parseInt(br.readLine());
+			cows[i] = io.nextInt();
 		}
-		// the answer cannot exceed N * N * 100, since there are at most 100N cows, each of which can move at most N
+		// the answer cannot exceed N * N * 100, 
+		// since there are at most 100N cows, each of which can move at most N
 		int ans = n * n * 100;
 		for(int unlock = 0; unlock < n; unlock++) {
 			// assume we unlock the door at index "unlock", compute the distance all cows travel
@@ -83,13 +86,41 @@ public class cbarn {
 				// count how many cows have to walk a distance of "offset"
 				currentDistance += offset * cows[(unlock+offset)%n];
 			}
-			if(currentDistance < ans) {
-				ans = currentDistance;
-			}
+			ans = Math.min(ans, currentDistance);
 		}
-		pw.println(ans);
-		pw.close();
-		br.close();
+		io.println(ans);
+		io.close();
+	}
+	// https://usaco.guide/general/io?lang=java#io-template
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in, System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+				super(o);
+				r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+				super(new FileWriter(problemName + ".out"));
+				r = new BufferedReader(new FileReader(problemName + ".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+				try {
+						while (st == null || !st.hasMoreTokens())
+								st = new StringTokenizer(r.readLine());
+						return st.nextToken();
+				} catch (Exception e) {}
+				return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
 	}
 }
 ```
