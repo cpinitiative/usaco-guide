@@ -29,15 +29,16 @@ approaches. Both run in $\mathcal{O}(Q\sqrt N)$ time.
 <!-- partitioning into sqrt blocks (each block can have some sort of data structure ...)
  -->
 
-We partition the array into size $\sqrt N$ blocks. For each block, there exists a
+We partition the array into $\sqrt N)$ blocks, where each block covers an
+interval of size $\texttt{blocksz}=\lfloor \sqrt{N} \rfloor$. For each block, there exists a
 corresponding `update` and `query` operation.
 
 **Update Queries:** $\mathcal{O}(1)$
 
-To update an element at location $x$, we can find the corresponding block using
+To update an element at location $x$, first find the corresponding block using
 the formula $\frac{x}{\texttt{blocksz}}$, where
-$\texttt{blocksz} = \lfloor \sqrt{N} \rfloor$ and apply the corresponding
-difference between the element currently stored at $x$, and the element we want
+Then apply the corresponding
+difference between the element currently stored at $x$ and the element we want
 to change it to.
 
 **Sum Queries:** $\mathcal{O}(\sqrt{N})$
@@ -51,7 +52,7 @@ $$
 where $\texttt{blocks}[i]$ represents the total sum of the $i$-th block and the
 $i$-th block represents the sum of the elements from the range
 $[i\sqrt{N},{(i + 1)}\sqrt{N})$, and $R$ represents
-$\frac{r}{\texttt{blocksz}}$.
+$R=\frac{r}{\texttt{blocksz}}$.
 
 Finally, $\sum_{i=l}^{r} \texttt{nums}[i]$ is the difference between the two
 prefix sums $\sum_{i=0}^{r}\texttt{nums}[i]$.
