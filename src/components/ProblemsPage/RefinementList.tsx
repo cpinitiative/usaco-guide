@@ -4,10 +4,11 @@ export default function RefinementList({ items, refine, createURL }) {
   return (
     <div className="text-left ml-1">
       {items.map(item => (
-        <div>
+        <div
+          key={item.label}
+        >
           <a
             href={createURL(item.value)}
-            key={item.label}
             className={`${
               item.isRefined
                 ? 'text-gray-700 dark:text-blue-500 font-medium'
