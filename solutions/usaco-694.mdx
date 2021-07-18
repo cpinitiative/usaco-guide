@@ -120,10 +120,8 @@ public class HoofPaperScissors {
 		StringTokenizer inputLine = new StringTokenizer(br.readLine());
 		int numGames = Integer.parseInt(inputLine.nextToken());
 		int maximumSwitches = Integer.parseInt(inputLine.nextToken());
-		// dp[game][switches][type] = maximum number of wins
-		// at that game with at most that amount
-		// of switches and that with that type active
 		moves = new int[numGames + 1];
+	
 		for (int x = 1; x <= numGames; x++) {
 			char c = br.readLine().charAt(0);
 			// set H as 0, P as 1, S as 2
@@ -138,7 +136,11 @@ public class HoofPaperScissors {
 			}
 		}
 
-		int[][][] dp = new int[numGames + 1][maximumSwitches + 2][3];  
+		int[][][] dp = new int[numGames + 1][maximumSwitches + 2][3];
+		// dp[game][switches][type] = maximum number of wins
+		// at that game with at most that amount
+		// of switches and that with that type active
+					     
 		int maximum = 0;
 
 		for (int currentGame = 1; currentGame <= numGames; currentGame++) {  // for each game
