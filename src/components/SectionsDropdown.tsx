@@ -10,7 +10,7 @@ export default function SectionsDropdown({
   sidebarNav = false,
   onSelect = null,
   noDarkMode = false,
-}) {
+}): JSX.Element {
   return (
     <Menu as="div" className="inline-flex items-center">
       {({ open }) => (
