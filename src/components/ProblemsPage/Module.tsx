@@ -44,6 +44,10 @@ export default function Module({ items, refine }) {
                 ...provided,
                 backgroundColor: '#111827',
               }),
+              multiValue: provided => ({
+                ...provided,
+                backgroundColor: '#2563EB',
+              }),
               indicatorSeparator: provided => ({
                 ...provided,
                 backgroundColor: '#374151',
