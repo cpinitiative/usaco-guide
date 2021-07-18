@@ -68,16 +68,15 @@ public class GoodSubarrays {
 		}
 		Map<Integer, Long> sumDist = new HashMap<>();
 		for (int x = 0; x <= arrayLength; x++) {  
-			if (sumDist.containsKey(array[x] - x)) {  // already in map
-				// add one on to what is already there
+			if (sumDist.containsKey(array[x] - x)) {  
 				sumDist.put(array[x] - x, sumDist.get(array[x] - x) + 1);
 			}
-			else {  // not in the map yet, put 1
+			else {  
 				sumDist.put(array[x] - x, (long) 1);
 			}
 		}
 		long goodArrays = 0;
-		for (int key : sumDist.keySet()) {  // for each key
+		for (int key : sumDist.keySet()) {  
 			long f = sumDist.get(key);
 			// sum of all positive integers less than f
 			goodArrays += f * (f - 1) / 2;
