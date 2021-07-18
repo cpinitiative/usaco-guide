@@ -84,7 +84,7 @@ export function Resource({
   url?: string;
   starred?: boolean;
   title?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }): JSX.Element {
   const userSettings = useContext(UserDataContext);
   source = source ?? '';
