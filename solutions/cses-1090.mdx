@@ -44,7 +44,8 @@ const int maxn=2e5+10;
 
 //variables used for the current problem
 int n,x,p[maxn],i,j,ans;
-bool have_gondola_yet[maxn]; //A boolean array which counts the number of children who have had their own bondola
+//keeps track of the number of children who have had their own gondola
+bool have_gondola_yet[maxn];
 
 void solve() {
 	cin >> n >> x;
@@ -84,48 +85,44 @@ int main(){
 
 <JavaSection>
 
-<Warning>
-Java will TLE on test case #10.
-</Warning>
-
 ```java
-import java.io.*;
 import java.util.*;
 
 public class FerrisWheel {
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 
-        int n = io.nextInt();
-        int x = io.nextInt();
+		int n = sc.nextInt();
+		int x = sc.nextInt();
+		sc.nextLine();
 
-        int[] weights = new int[n];
-        for (int i = 0; i < n; i++) {
-            weights[i] = io.nextInt();
-        }
-        Arrays.sort(weights);
+		// Read in weights of children (this optimization is necessary to pass 
+		// all test cases)
+		String[] weightsStr = sc.nextLine().split(" ");
+		Integer[] weights = new Integer[n];
+		for (int i = 0; i < n; i++) {
+			weights[i] = Integer.parseInt(weightsStr[i]);
+		}
+		Arrays.sort(weights);
 
-        int ans = 0;
-        int i = 0;  // left pointer
-        int j = n - 1;  // right pointer
-        while (i <= j) {
-            ans++;  // Increment number of gondolas used
-            if (i == j) break;
-            // If total weight is too large, move to lighter child
-            if (weights[i] + weights[j] > x) {
-                j--;
-            }
-            // Otherwise, we pair the two children and move on
-            else {
-                i++;
-                j--;
-            }
-        }
-        io.println(ans);
-        io.close();
-    }
-
-    // CodeSnip{Kattio}
+		int ans = 0;
+		int i = 0;  // left pointer
+		int j = n-1;  // right pointer
+		while (i <= j) {
+			ans++;  // Increment number of gondolas used
+			if (i == j) break;
+			// If total weight is too large, move to lighter child
+			if (weights[i] + weights[j] > x) {
+				j--;
+			}
+			// Otherwise, we pair the two children and move on
+			else {
+				i++;
+				j--;
+			}
+		}
+		System.out.println(ans);
+	}
 }
 ```
 
