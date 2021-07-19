@@ -2,7 +2,7 @@
 id: usaco-857
 source: USACO Bronze 2018 December
 title: Back and Forth
-author: Benjamin Qi
+author: Benjamin Qi, Ryan Chou
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_backforth_bronze_dec18.html)
@@ -14,6 +14,46 @@ functions ...
 
 Similar to the second solution from the analysis.
 
+<LanguageSection>
+<PySection>
+	
+```py
+import sys
+
+sys.stdin = open('backforth.in', 'r')
+sys.stdout = open('backforth.out', 'w')
+
+possible = set()
+
+def transfer(day, a_tank, a_buck, b_tank, b_buck):
+	# Last day, add the amount of milk in the first tank.
+	if day == 4:
+		possible.add(a_tank)
+		return
+		
+	# This transfers every possible bucket from barn x to barn y.
+	for i in range(len(a_buck)):
+
+		# Bucket to transfer.
+		t = a_buck[i]
+
+		# Creates a new copy of available buckets, and transfers the ith one.
+		A, B = a_buck[:], b_buck[:]
+		A.remove(A[i]) ; B.append(a_buck[i])
+
+		# Recursively call the function with the new buckets and tank amounts.
+		transfer(day + 1, b_tank + t, B, a_tank - t, A)
+
+a = list(map(int, input().split()))
+b = list(map(int, input().split()))
+
+transfer(0, 1000, a, 1000, b)
+
+print(len(possible))
+```
+</PySection>
+<CPPSection>
+	
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -29,14 +69,19 @@ void setIO(string name = "") { // See General -> Input/Output
 set<int> possible;
 
 void search(int day, pair<int, vector<int>> x, pair<int, vector<int>> y) {
+	// Last day, add the amount of milk in the first tank.
 	if (day == 4) {
 		possible.insert(x.first);
 		return;
 	}
+	// This transfers every possible bucket from barn x to barn y.
 	for(int i = 0; i < int((x.second).size()); i++) {
+		// Bucket to transfer.
 		int t = x.second[i];
+		// Creates a new copy of available buckets, and transfers the ith one.
 		vector<int> X = x.second; X.erase(begin(X) + i);
 		vector<int> Y = y.second; Y.push_back(t);
+		// Recursively call the function with the new buckets and tank amounts.
 		search(day + 1, {y.first + t, Y}, {x.first - t, X});
 	}
 }
@@ -52,3 +97,5 @@ int main() {
 	cout << int(possible.size()) << endl;
 }
 ```
+</CPPSection>
+</LanguageSection>
