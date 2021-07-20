@@ -5,9 +5,6 @@ title: GCD On Blackboard
 author: Andrew Cheng
 ---
 
-**Time Complexity:**
-$\mathcal{O}(N+\log(\max a_i))$
-
 ## Solution
 The problem asks us to find the maximum possible GCD of the remaining $N-1$ numbers
 after taking any one of them away. Naively trying every single combination will result in a
@@ -16,6 +13,9 @@ the GCD will take $\mathcal{O}(N+\log(\max a_i))$ time per case.
 
 To speed this process up, we can calculate the GCDs of every prefix and suffix. Let $l[i] = \gcd_{j=1}^{i} a[j]$ and $r[i] = \gcd_{j=i}^{N} a[j]$.
 Then the answer is the maximum of $\gcd(l[i-1],r[i+1]),$ $i \in [1,N]$. 
+
+**Time Complexity:**
+$\mathcal{O}(N+\log(\max a_i))$
 
 <Spoiler title="Time Complexity Proof">
 
@@ -50,11 +50,11 @@ int prefGcd[maxN]; //prefGcd[i] = GCD of a1,a2, ..., ai
 int suffGcd[maxN]; //suffGcd[i] = GCD of ai, ai+1, ..., an
 int N;
 
-int main() {
+int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 	cin >> N;
-	for(int i = 1; i <= N; ++i) cin >> arr[i];
+	for(int i = 1; i <= N; ++i)cin >> arr[i];
 
 	prefGcd[0] = 0;
 	suffGcd[N + 1] = 0;
