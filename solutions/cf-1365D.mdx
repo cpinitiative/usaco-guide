@@ -87,7 +87,8 @@ void solve()
 					{
 						if (grid[newRow][newColumn] == 'G')
 						{
-							ok = false;
+							cout << "No" << "\n";
+							return;
 						}
 						if (grid[newRow][newColumn] == '.')
 						{ 
@@ -98,13 +99,6 @@ void solve()
 			}
 		}
 	}
-	if (!ok)
-	{
-		cout << "No"
-			 << "\n";
-		return;
-	}
-	ok = 1;
 	floodfill(N - 1, M - 1);
 	for (int i = 0; i < N; i++)
 	{
@@ -112,15 +106,10 @@ void solve()
 		{
 			if (grid[i][j] == 'G' && !visited[i][j])
 			{
-				ok = false;
-				break;
+				cout << "No" << "\n";
+				return;
 			}
 		}
-	}
-	if (!ok)
-	{
-		cout << "No" << "\n";
-		return;
 	}
 	cout << "Yes" << "\n";
 }
