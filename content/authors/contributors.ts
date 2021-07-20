@@ -59,6 +59,11 @@ export const contentAuthors: Contributor[] = [
     name: "Arpan Banerjee",
     githubUsername: "ar492",
     sinceDate: "June 2021",
+  },
+  {
+    name: "Ryan Chou",
+    githubUsername: "ryanchou-dev",
+    sinceDate: "July 2021",
   }
 ];
 
