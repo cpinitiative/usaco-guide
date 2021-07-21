@@ -106,6 +106,7 @@ int main() {
 </CPPSection>
 	
 <JavaSection>
+	
 ```java
 import java.io.*;
 import java.util.*;
@@ -120,8 +121,10 @@ public class HoofPaperScissors {
 		StringTokenizer inputLine = new StringTokenizer(br.readLine());
 		int numGames = Integer.parseInt(inputLine.nextToken());
 		int maximumSwitches = Integer.parseInt(inputLine.nextToken());
+		// dp[game][switches][type] = maximum number of wins
+		// at that game with at most that amount
+		// of switches and that with that type active
 		moves = new int[numGames + 1];
-	
 		for (int x = 1; x <= numGames; x++) {
 			char c = br.readLine().charAt(0);
 			// set H as 0, P as 1, S as 2
@@ -137,45 +140,46 @@ public class HoofPaperScissors {
 		}
 
 		int[][][] dp = new int[numGames + 1][maximumSwitches + 2][3];
-		// dp[game][switches][type] = maximum number of wins
-		// at that game with at most that amount
-		// of switches and that with that type active
-					     
 		int maximum = 0;
 
-		for (int currentGame = 1; currentGame <= numGames; currentGame++) {  // for each game
+		/*
+		c = current game number
+		n = number of switches
+		 */
+
+		for (int c = 1; c <= numGames; c++) {  // for each game
 			// for each switch amount
-			for (int numberOfSwitches = 1; numberOfSwitches < maximumSwitches + 2; numberOfSwitches++) {  
+			for (int n = 1; n < maximumSwitches + 2; n++) {
 				// try switching to the three possibilities
 				int add1 = 0;
-				if (moves[currentGame] == 0) {
+				if (moves[n] == 0) {
 					add1 = 1;
 				}
 				// take the maximum of the game before + add (win or lose)
-				// and switching from the other two options 
-				dp[currentGame][numberOfSwitches][0] = Math.max(dp[currentGame - 1][numberOfSwitches][0] 
-				+ add1, Math.max(dp[currentGame - 1][numberOfSwitches - 1][1] + add1, 
-				dp[currentGame - 1][numberOfSwitches - 1][2] + add1));
+				// and switching from the other two options
+				dp[c][n][0] = Math.max(dp[c - 1][n][0]
+				+ add1, Math.max(dp[c - 1][n - 1][1] + add1,
+				dp[c - 1][n - 1][2] + add1));
 
 				int add2 = 0;
-				if (moves[currentGame] == 1) {
+				if (moves[c] == 1) {
 					add2 = 1;
 				}
-				dp[currentGame][numberOfSwitches][1] = Math.max(dp[currentGame - 1][numberOfSwitches][1] 
-				+ add2, Math.max(dp[currentGame - 1][numberOfSwitches - 1][0] + add2, 
-				dp[currentGame - 1][numberOfSwitches - 1][2] + add2));
+				dp[c][n][1] = Math.max(dp[c - 1][n][1]
+				+ add2, Math.max(dp[c - 1][n - 1][0] + add2,
+				dp[c - 1][n - 1][2] + add2));
 
 				int add3 = 0;
-				if (moves[currentGame] == 2) {
+				if (moves[c] == 2) {
 					add3 = 1;
 				}
-				dp[currentGame][numberOfSwitches][2] = Math.max(dp[currentGame - 1][numberOfSwitches][2] + 
-				add3, Math.max(dp[currentGame - 1][numberOfSwitches - 1][0] 
-				+ add3, dp[currentGame - 1][numberOfSwitches - 1][1] + add3));
+				dp[c][n][2] = Math.max(dp[c - 1][n][2] +
+				add3, Math.max(dp[c - 1][n - 1][0]
+				+ add3, dp[c - 1][n - 1][1] + add3));
 
-				if (currentGame == numGames) {  // check maximum if it is the last row
-					maximum = Math.max(maximum, Math.max(dp[numGames][numberOfSwitches][0], 
-					Math.max(dp[numGames][numberOfSwitches][1], dp[numGames][numberOfSwitches][2])));
+				if (c == numGames) {  // check maximum if it is the last row
+					maximum = Math.max(maximum, Math.max(dp[numGames][n][0],
+					Math.max(dp[numGames][n][1], dp[numGames][n][2])));
 				}
 			}
 		}
