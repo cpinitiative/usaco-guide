@@ -9,6 +9,78 @@ author: Sofia Yang
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int maxN = 1e5+5;
+
+bool conflict;
+int N,M;
+int fields[maxN]; //1 represents color 1, 2 represents color 2, 0 represents untouched
+vector<int> Same[maxN];
+vector<int> Diff[maxN];
+
+void setIO(string s) {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    freopen((s+".in").c_str(),"r",stdin);
+    freopen((s+".out").c_str(),"w",stdout);
+}
+
+void visit(int x, int y) {
+    fields[x] = y;
+    for(int n: Same[x]) {
+        if (n == x){continue;}
+        if (fields[n] == 3-y){conflict = true;}
+        if (fields[n] == 0){visit(n,y);}
+    }
+    for(int n: Diff[x]) {
+        if (n == x){continue;}
+        if (fields[n] == y){conflict = true;}
+        if(fields[n] == 0){visit(n,3-y);}
+    }
+}
+
+int main(){
+    setIO("revegetate");
+    cin >> N >> M;
+    string S;
+    int a,b;
+    for(int i = 0; i < M; i++){
+        cin >> S >> a >> b;
+        if (S == "S"){
+            Same[a].push_back(b);
+            Same[b].push_back(a);
+        }
+        else {
+            Diff[a].push_back(b);
+            Diff[b].push_back(a);
+        }
+    }
+    conflict = false;
+    int ans = 0;
+    for(int i = 1; i <= N; i++){
+		//ans = the number of connected components in this graph
+        if (fields[i] == 0){
+        	visit(i,1);
+        	++ans;
+        }
+    }
+    if (conflict == true){cout << 0 << "\n";}
+    else {
+        cout << 1;
+        for(int i = 0; i < ans; i++){cout << 0;}
+        cout << "\n";
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+
 <JavaSection>
 
 ```java
