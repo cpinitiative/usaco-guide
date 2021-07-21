@@ -26,6 +26,11 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'Apr 2021',
   },
   {
+    name: 'Ananth Kashyap',
+    githubUsername: 'AAkashyap1',
+    sinceDate: 'Apr 2021',
+  },
+  {
     name: "Sofia Yang",
     githubUsername: "truashamu",
     sinceDate: "Apr 2021",
@@ -77,11 +82,6 @@ export const pastContentAuthors: Contributor[] = [
     name: 'Mrinall Umasudhan',
     githubUsername: 'MrinallU',
     sinceDate: 'Feb 2021',
-  },
-  {
-    name: 'Ananth Kashyap',
-    githubUsername: 'AAkashyap1',
-    sinceDate: 'Apr 2021',
   },
   {
     name: "Andrew Cheng",
