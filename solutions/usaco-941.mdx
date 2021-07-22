@@ -64,13 +64,13 @@ vector<string> all_characteristics;
 // Do two sets "cross" -- I.e., are there elements in A, B, and A intersect B?
 bool crossing(int a, int b)
 {
-	int A=0, B=0, AB=0;
+	int A = 0, B = 0, AB = 0;
 	for (int i=0; i<N; i++) {
 	vector<string> &v = characteristics[i];
 	bool has_a = false, has_b = false;
 	for (int j=0; j<v.size(); j++) {
-	  if (v[j]==all_characteristics[a]) has_a = true;
-	  if (v[j]==all_characteristics[b]) has_b = true;
+	  if (v[j] == all_characteristics[a]) has_a = true;
+	  if (v[j] == all_characteristics[b]) has_b = true;
 	}
 	if (has_a && has_b) AB++;
 	else if (has_a) A++;
@@ -91,7 +91,7 @@ int main(void)
 		fin >> s;
 		characteristics[i].push_back(s);
 		bool found = false;
-		for (int k=0; k<all_characteristics.size(); k++)
+		for (int k = 0; k < all_characteristics.size(); k++)
 	if (all_characteristics[k] == s) found = true;
 		if (!found) all_characteristics.push_back(s);
 	}
@@ -99,8 +99,8 @@ int main(void)
 	
 	int M = all_characteristics.size();
 	bool ok = true;
-	for (int a=0; a<M; a++)
-	for (int b=a+1; b<M; b++)
+	for (int a = 0; a < M; a++)
+	for (int b = a+1; b < M; b++)
 		if (crossing(a, b)) ok = false;
  
 	ofstream fout ("evolution.out");
