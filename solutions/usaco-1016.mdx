@@ -1,0 +1,182 @@
+---
+id: usaco-1016
+source: USACO Silver 2020 February
+title: Clock Tree
+author: Melody Yu, Nathan Gong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_clocktree_silver_feb20.html)
+
+We can build a graph with the rooms as nodes and corridors as edges. Consider a simple case: there are 2 nodes in the graph and one edge.
+Bessie can start from one of the rooms, go to its neighbor, increase the clock, go back, and increase the starting room's clock.
+During this process of moving back and forth, notice that the difference between two rooms' clock readings may only change by 1.
+If the starting clock readings differ by one, Bessie can start from the bigger clock reading room and travel back and forth until both of the clocks point to 12.
+If the starting clock readings differ by more than one, it is impossible for Bessie to make both clocks point to 12.
+
+If there are more nodes, we can treat it similar to the two node case by considering the two groups in a bipartite partition. As all trees are bipartite graphs, this partition always exists.
+
+The first time Bessie visits a neighbor node, the sum of clocks of the first group increases by 1.
+Then Bessie visits another neighbor node, the sum of clocks of the second group increases by 1.
+As both sums increase by one, the difference between the sums does not change.
+This process repeats until all clocks reach 12.
+
+We can check the initial sum difference between the two groups (mod 12) to figure out the final clock numbers, where we define $\texttt{group0}$ and $\texttt{group1}$ as the sums of the clocks in each of the two groups of the bipartite partition.
+
+1. If $\texttt{group0}$ is the same as $\texttt{group1}$ (mod 12), Bessie can start from any node.
+2. If $\texttt{group0}$ is 1 smaller than $\texttt{group1}$ (mod 12), Bessie can start from any node in $\texttt{group1}$.
+3. If $\texttt{group1}$ is 1 smaller than $\texttt{group0}$ (mod 12), Bessie can start from any node in $\texttt{group0}$.
+4. If $\texttt{group0}$ and $\texttt{group1}$ differ by at least 2 (mod 12), there's no way to get all clocks to point to 12.
+
+## Video Solution
+
+<Youtube id="vMA54A2AT0I" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+vector<int> edges[100000];
+int A[100000];
+int sum0, sum1, nodes0, nodes1;
+
+void dfs(int i, int color, int par) {
+	// update color/sum
+	if (color == 0) {
+		nodes0++;
+		sum0 += A[i];
+	}
+	else {
+		nodes1++;
+		sum1 += A[i];
+	}
+	
+	for (int j : edges[i]) {				   
+		if (j != par) {
+			// swap colors for the child
+			dfs(j, 1 - color, i);
+		}
+	}
+}
+
+int main() {
+	freopen("clocktree.in", "r", stdin);
+	freopen("clocktree.out", "w", stdout);
+
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		cin >> A[i];
+	}
+
+	for (int i = 1; i < N; i++) {	
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		edges[a].push_back(b);
+		edges[b].push_back(a);
+	}
+	
+	dfs(0, 0, -1);
+
+	// same mod means you can start anywhere
+	if ((sum0 % 12) == (sum1 % 12)) {
+		cout << N;
+	}
+	// if group0 is 1 smaller than group1, we must start from group1
+	else if ((sum0 + 1) % 12 == (sum1 % 12)) {
+		cout << nodes1;
+	}
+	// if group1 is 1 smaller than group0, we must start from group0
+	else if ((sum0 % 12) == ((sum1 + 1) % 12)) {
+		cout << nodes0;
+	}
+	// no way to get all clocks pointing to 12
+	else {
+		cout << 0;
+	}
+
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public class ClockTree {
+	static int[] clocks;
+	static List<List<Integer>> adj;
+	static int sum0 = 0, sum1 = 0, nodes0 = 0, nodes1 = 0;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("clocktree");
+		
+		int n = io.nextInt();
+		clocks = new int[n];
+		adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			clocks[i] = io.nextInt();
+			adj.add(new ArrayList<>());
+		}
+		for (int i = 0; i < n - 1; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		dfs(0, 0, -1);
+
+		// same mod means you can start anywhere
+		if ((sum0 % 12) == (sum1 % 12)) {
+			io.println(n);
+		}
+		// if group0 is 1 smaller than group1, we must start from group1
+		else if ((sum0 + 1) % 12 == (sum1 % 12)) {
+			io.println(nodes1);
+		}
+		// if group1 is 1 smaller than group0, we must start from group0
+		else if ((sum0 % 12) == ((sum1 + 1) % 12)) {
+			io.println(nodes0);
+		}
+		// no way to get all clocks pointing to 12
+		else {
+			io.println(0);
+		}
+		io.close();
+	}
+
+	static void dfs(int i, int color, int par) {
+		// update color/sum
+		if (color == 0) {
+			nodes0++;
+			sum0 += clocks[i];
+		} else {
+			nodes1++;
+			sum1 += clocks[i];
+		}
+		
+		for (int j : adj.get(i)) {				   
+			if (j != par) {
+				// swap colors for the child
+				dfs(j, 1 - color, i);
+			}
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
