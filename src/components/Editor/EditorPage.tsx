@@ -18,13 +18,13 @@ import {
   monacoEditorInstanceAtom,
   openOrCreateExistingFileAtom,
 } from '../../atoms/editor';
+import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
 import Layout from '../layout';
 import SEO from '../seo';
 import { EditorOutput } from './EditorOutput';
 import { EditorSidebar } from './EditorSidebar/EditorSidebar';
 import { EditorTopNav } from './EditorTopNav';
 import { MainEditorInterface } from './MainEditorInterface';
-import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
 
 const StyledSplit = styled(Split)`
   & > div,
@@ -75,7 +75,9 @@ export default function EditorPage(props: PageProps): JSX.Element {
           {typeof window !== 'undefined' && (
             <React.Suspense
               fallback={
-                <div className="text-center mt-6 font-bold text-2xl">Loading</div>
+                <div className="text-center mt-6 font-bold text-2xl">
+                  Loading
+                </div>
               }
             >
               <StyledSplit

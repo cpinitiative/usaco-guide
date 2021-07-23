@@ -99,8 +99,8 @@ export const EditorOutput = (): JSX.Element => {
       >
         <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
           <ProblemSuggestionModalProvider>
-              <RawMarkdownRenderer markdown={markdown} problems={problems} />
-              <QuizGeneratorModal />
+            <RawMarkdownRenderer markdown={markdown} problems={problems} />
+            <QuizGeneratorModal />
           </ProblemSuggestionModalProvider>
         </MarkdownProblemListsProvider>
       </EditorContext.Provider>
