@@ -28,7 +28,10 @@ const OnlineJudgeSubmission = ({
         submission.status !== ExecutionStatus.AC && (
           <p>
             Common issues: Java users should name their class Main. Remember to
-            use standard input/output instead of file input/output.
+            use standard input/output instead of file input/output. Finally, our
+            grader currently has an issue that requires you to output an endline
+            (ex. \n or endl) at the end of the output. This is a bug (it works
+            on USACO without the endline) that we're working on fixing.
           </p>
         )}
       {submission.compilationError === true && (

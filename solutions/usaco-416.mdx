@@ -1,0 +1,87 @@
+---
+id: usaco-416
+source: USACO Silver 2014 March
+title: The Lazy Cow
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lazy_silver.html)
+
+## Implementation
+
+**Time Complexity** $\mathcal{O}(K \cdot N ^ 2)$
+
+<LanguageSection>
+  
+<JavaSection>
+  
+<Warning>
+Depending on how you implement this problem, Java code may have trouble 
+passing the last testcase even though the algorithm is correct.
+</Warning>
+  
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class TheLazyCow {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("lazy");
+		int n = io.nextInt();
+		int k = io.nextInt();
+		int[][] matrix = new int[2 * n + 1][2 * n + 1];
+
+		// read input and store it rotated by 45 degrees
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				matrix[i + j][n - i + j - 1] = io.nextInt();
+			}
+		}
+
+		// the 45 degree rotation expands the size of the matrix
+		// it also includes the cells with half distance
+		int t = (n + 1) % 2;  
+		// t is used to avoid non-lattice points and it ensures that 
+		// dummy 0's do not affect anything
+		n = n * 2 - 1;
+		int best = 0;
+
+		for (int i = 0; i < n; i++, t = 1 - t) {
+			/*  
+			 *  you can go at most k steps, but we do 2k because we set 
+			 *  zeros in between which doubles the distance
+			 *  also, Bessie can only be positioned in lattice points
+			 */
+				      
+			int sum = 0;
+			for (int a = Math.max(i - k, 0); a < n && a <= i + k; a++) {
+				for (int b = Math.max(t - k, 0); b < n && b <= t + k; b++) {
+					sum += matrix[a][b];
+				}
+			}
+			best = Math.max(best, sum)
+
+			// slide the region
+			for (int j = t + 1; j + k < n; j++) {
+				for (int a = Math.max(i - k, 0); a < n && a <= i + k; a++) {
+					if (j - k - 1 >= 0) {
+						sum -= matrix[a][j - k - 1];
+					}
+					sum += matrix[a][j + k];
+				}
+				// update the sum only in lattice points
+				if (j % 2 == t && best < sum) {
+					best = sum;
+				}
+			}
+		}
+		io.println(best);
+		io.close();
+	}
+ 	//CodeSnip{Kattio}
+}
+```
+  
+</JavaSection>
+  
+</LanguageSection>
