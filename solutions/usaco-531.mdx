@@ -2,7 +2,7 @@
 id: usaco-531
 source: USACO Silver 2015 February
 title: Superbull
-author: Maggie Liu
+author: Maggie Liu, Sofia Yang
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_superbull_silver.html)
@@ -121,103 +121,59 @@ int main()
 
 </CPPSection>
 
-<CPPSection>
+<JavaSection>
 
-```cpp
-#include <iostream>
-#include <cstdio>
-#include <algorithm>
-#include <vector>
-using namespace std;
+```java
+import java.io.*;
 
-const int MAX_N = 2000;
-int parent[MAX_N];
-int compsize[MAX_N];
-struct Edge
-{
-	int from, to, weight;
-};
-
-// BeginCodeSnip{Standard DSU operations}
-void init(int n)
-{
-	for (int i = 0; i < n; i++)
-	{
-		parent[i] = i;
-		compsize[i] = 1;
-	}
-}
-
-int find(int a)
-{
-	if (a == parent[a])
-	{
-		return a;
-	}
-	return parent[a] = find(parent[a]);
-}
-
-bool unite(int a, int b)
-{
-	int roota = find(a), rootb = find(b);
-	if (roota == rootb)
-	{
-		return false;
-	}
-	if (compsize[roota] > compsize[rootb])
-	{
-		swap(roota, rootb);
-	}
-	parent[roota] = rootb;
-	compsize[rootb] += compsize[roota];
-	return true;
-}
-// EndCodeSnip
-
-int main()
-{
-	freopen("superbull.in", "r", stdin);
-	freopen("superbull.out", "w", stdout);
-	int n;
-	cin >> n;
-	int ids[MAX_N];
-	for (int i = 0; i < n; i++)
-	{
-		cin >> ids[i];
-	}
-	vector<Edge> edges;
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = i + 1; j < n; j++)
-		{
-			edges.push_back({i, j, ids[i] ^ ids[j]});
+public class superbull {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("superbull");
+		int N = io.nextInt();
+		//Read in the input array.
+		int[] inp = new int[N];
+		for (int i = 0; i < N; i++) {
+			inp[i] = io.nextInt();
 		}
-	}
-	init(n);
-	// sort edges in decreasing order of weight
-	sort(edges.begin(), edges.end(), [](Edge a, Edge b){
-		return a.weight > b.weight;
-	});
-	int eliminated = 0;
-	long long ans = 0;
-	for (Edge e : edges)
-	{
-		if (unite(e.from, e.to))
-		{
-			eliminated++;
-			ans += e.weight;
-			// if all but 1 team has been eliminated
-			if (eliminated == n - 1)
-			{
-				cout << ans << endl;
-				return 0;
+
+		long ans = 0;
+		boolean[] visited = new boolean[N];
+		int[] score = new int[N];
+
+		// Loop through possible choices for the first team.
+		for (int team1 = 0; team1 < N; team1++) {
+			int team2 = -1;
+
+			// Loop through possible choices of the next team.
+			for (int i = 0; i < N; i++) {
+				if (visited[i]) {
+					continue;
+				}
+				if (team2 == -1 || (score[i] > score[team2])) {
+					team2 = i;
+				}
+			}
+
+			// Pair team1 and team2.
+			ans += score[team2];
+			visited[team2] = true;
+
+			// Re-evaluate all pair scores.
+			for (int i = 0; i < N; i++) {
+				score[i] = Integer.max(score[i], (inp[team2] ^ inp[i]));
 			}
 		}
+
+		pw.println(ans);
+		pw.close();
+
 	}
+	// CodeSnip{Kattio}
 }
+
 ```
 
-</CPPSection>
+</JavaSection>
 
 
 </LanguageSection>
