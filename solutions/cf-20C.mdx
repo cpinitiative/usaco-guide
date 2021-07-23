@@ -31,33 +31,34 @@ const ll INF = 1e11;
 int main() {
 	priority_queue<pi, vector<pi>, greater<pi>> pq;
 	int n, m; cin >> n >> m;
-	for(int i = 0; i < m; i++){
+	for (int i = 0; i < m; i++) {
 		int a, b, w; cin >> a >> b >> w;
-		a--, b--; adj[a].push_back({w, b}), adj[b].push_back({w, a});
+		a--, b--; 
+		adj[a].push_back({w, b}), adj[b].push_back({w, a});
 	}
 	vector<ll> dist(n, INF); dist[0] = 0;
 	vector<bool> visited(n, false);
 	pq.push({0, 0});
-	while(!pq.empty()){
+	while (!pq.empty()) {
 		pi a = pq.top();
 		pq.pop();
 		if(visited[a.s]) continue;
 		visited[a.s] = true;
-		for(pi vertices: adj[a.s]){
-			if(dist[a.s] + vertices.f < dist[vertices.s]){
+		for (pi vertices: adj[a.s]) {
+			if (dist[a.s] + vertices.f < dist[vertices.s]) {
 				dist[vertices.s] = dist[a.s] + vertices.f;
 				pq.push({dist[vertices.s], vertices.s});
 			}
 		}
 	}
-	if(dist[n - 1] == INF){
+	if (dist[n - 1] == INF) {
 		cout << -1 << endl;
 	} else {
 		vector<int> path; 
 		int v = n - 1; path.push_back(v + 1);
-		while(v != 0){
-			for(pi u: adj[v]){
-				if(dist[v] - u.f == dist[u.s]){
+		while (v != 0) {
+			for (pi u: adj[v]) {
+				if (dist[v] - u.f == dist[u.s]) {
 					v = u.s;
 					path.push_back(v + 1);
 					break;
@@ -65,7 +66,7 @@ int main() {
 			}
 		}
 		reverse(all(path));
-		for(int node: path){
+		for (int node: path) {
 			cout << node << " ";
 		}
 		cout << endl;
