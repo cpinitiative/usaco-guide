@@ -154,11 +154,11 @@ export default function QuizGeneratorModal(): JSX.Element {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block w-full max-w-4xl p-8 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+            <div className="inline-block w-full max-w-4xl p-8 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-black shadow-xl rounded-2xl">
               <div className={'flex justify-between items-center'}>
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
                 >
                   Quiz Generator
                 </Dialog.Title>
@@ -170,7 +170,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                 {quiz.map((question, idx) => (
                   <div
                     key={idx}
-                    className="flex border-l-4 focus-within:border-blue-500 dark:focus-within:border-gray-700"
+                    className="flex border-l-4 focus-within:border-blue-500 dark:border-gray-800 dark:focus-within:border-blue-900"
                   >
                     <div className={'mx-2'}>
                       <button onClick={() => deleteQuestion(idx)}>
@@ -303,7 +303,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                         setCopyText('Copy');
                       }, 3000);
                     }}
-                    className="bg-gray-200 focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-none absolute right-3 top-2 px-2 py-1"
+                    className="bg-gray-200 dark:text-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600  focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-none absolute right-3 top-2 px-2 py-1"
                   >
                     {copyText}
                   </button>
