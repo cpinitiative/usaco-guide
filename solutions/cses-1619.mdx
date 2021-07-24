@@ -2,7 +2,7 @@
 id: cses-1619
 source: CSES
 title: Restaurant Customers
-author: Michael Cao, Neo Wang
+author: Michael Cao, Neo Wang, Brad Ma
 ---
 
 In this problem, we're given $n$ intervals with distinct start and end points,
@@ -142,6 +142,10 @@ prefix sum.
 If we put the start and end points into a list and sort them, all we need to do
 is find the max sum of values over all prefixes of the list.
 
+<LanguageSection>
+	
+<CPPSection>
+	
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -183,6 +187,70 @@ int main(){
 	cout << ans << '\n';
 }
 ```
+
+</CPPSection>
+	
+<JavaSection>
+	
+<Warning>
+Java solutions using this implementation will TLE on test case #6.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RestaurantCustomers {
+	static class CustomerData {
+		int time;
+		int type;
+	}
+
+	static class comparator implements Comparator<CustomerData> {
+		public int compare (CustomerData one, CustomerData two) {
+			// use Integer.compare to avoid writing if statements
+			return Integer.compare(one.time, two.time);
+		}
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		CustomerData[] data = new CustomerData[2 * n];
+
+		for (int x = 0; x < n; x++) {
+			CustomerData cd1 = new CustomerData();
+			cd1.time = io.nextInt();
+			cd1.type = 1;
+
+			CustomerData cd2 = new CustomerData();
+			cd2.time = io.nextInt();
+			cd2.type = -1;
+
+			data[2 * x] = cd1;
+			data[2 * x + 1] = cd2;
+		}
+
+		Arrays.sort(data, new comparator());
+
+		int sum = 0;
+		int answer = 0;
+		for (CustomerData cd : data) {
+			// if it is an arrival, add 1
+			// if it is a departure, subtract 1
+			sum += cd.type;
+			answer = Math.max(answer, sum);
+		}
+		io.println(answer);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}	
+```
+	
+</JavaSection>
+	
+</LanguageSection>
 
 ## Implementation 2
 
