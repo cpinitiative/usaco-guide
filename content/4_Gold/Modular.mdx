@@ -198,7 +198,8 @@ The **modular inverse** is the equivalent of the reciprocal in real-number
 arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
 We'll only consider prime moduli $p$ here.
 
-For example, $i$, the modular inverse of $2$ where $p=10^9+7$ is 
+For example, $i$, the modular inverse of $2$ where $p=10^9+7$ is
+
 $$
 1\equiv p+1 \pmod{p}.
 $$
@@ -208,18 +209,16 @@ $$
 $$
 
 $$
-i=\frac{p+1}{2}=5\cdot 10^8+4
+i=\frac{p+1}{2}=5\cdot 10^8+4.
 $$
 
-where $i$ is the modular inverse. This means that for any integer $x$,
+This means that for any integer $x$,
 
 $$
 (2x)\cdot i\equiv x\cdot (2i)\equiv x\pmod{10^9+7}.
 $$
 
 For example, $10i\equiv 5\pmod{10^9+7}$.
-
-
 
 ### With Exponentiation
 
@@ -268,13 +267,15 @@ public class main
 
 ### Solution - Binomial Coefficients $\mathcal{O}(N \log N)$
 
-In order to calculate $a \choose b$, we can precalculate the factorials to speed up the calculation of $a!$, $b!$, and $(a-b)!$. $a \choose b$ is equivalent to
+In order to calculate $a \choose b$, we can precalculate the factorials to speed
+up the calculation of $a!$, $b!$, and $(a-b)!$. $a \choose b$ is equivalent to
 
 $$
 \frac{a!}{b!(a-b)!} = a! \cdot b!^{-1} \cdot (a-b)!^{-1}.
 $$
 
-Thus, calculating the inverses of $b!$ and $(a-b)!$ is sufficient in finding $a \choose b$.
+Thus, calculating the inverses of $b!$ and $(a-b)!$ is sufficient in finding
+$a \choose b$.
 
 <LanguageSection>
 
@@ -283,12 +284,12 @@ Thus, calculating the inverses of $b!$ and $(a-b)!$ is sufficient in finding $a 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 const int MOD = (int)1e9+7;
- 
+
 ll inverse(ll num){
-    ll a = num; ll b = MOD-2;
+	ll a = num; ll b = MOD-2;
     //equivalent to num^(MOD-2)
     ll res = 1;
     while (b > 0) {
@@ -299,7 +300,7 @@ ll inverse(ll num){
     }
     return res;
 }
- 
+
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     ll factorial[1000001];
@@ -307,7 +308,7 @@ int main() {
     for (int i = 2; i<=1000000; i++) {
         factorial[i]=(factorial[i-1]*i)%MOD;
     }
- 
+
     ll n, a, b;
     cin >> n;
     for(int i = 0; i < n; i++) {
@@ -329,7 +330,12 @@ int main() {
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo
 $p$, frequent use of division inside a loop can significantly increase the
 running time of a program. If the modular inverse of the same number(s) is/are
-being used many times, it is a good idea to precalculate it. Note the above problem could also be solved by precalculating invererses. First, find the inverse of $N!$ for a large $N$, then calculate the inverses of $1...{N!-1}$ by multiplying each inverse starting from $N!$ with their respective values in $\mathcal{O}(N)$.
+being used many times, it is a good idea to precalculate it. 
+
+To precalculate the inverses of $1...{(N-1)!}$, first, find the
+inverse of $N!$ for a large $N$. Then calculate the inverses of ${(N-1)!}, {(N-2)!},...1$ by
+multiplying each inverse starting from $N!$ with their respective values in
+$\mathcal{O}(N)$.
 
 Also, one must always ensure that they do not attempt to divide by 0. Be aware
 that after applying modulo, a nonzero number can become zero, so be very careful
@@ -338,10 +344,10 @@ when dividing by non-constant values.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 const int MOD = (int)1e9+7;
- 
+
 ll inverse(ll num){
     ll a = num; ll b = MOD-2;
     //equivalent to num^(MOD-2)
@@ -354,7 +360,7 @@ ll inverse(ll num){
     }
     return res;
 }
- 
+
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     ll factorial[1000001], inverses[1000001];
