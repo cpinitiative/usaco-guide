@@ -290,34 +290,34 @@ const int MOD = (int)1e9+7;
 
 ll inverse(ll num){
 	ll a = num; ll b = MOD-2;
-    //equivalent to num^(MOD-2)
-    ll res = 1;
-    while (b > 0) {
-        if (b % 2 == 1)
-            res = res * a % MOD;
-        a = a * a % MOD;
-        b /= 2;
-    }
-    return res;
+	//equivalent to num^(MOD-2)
+	ll res = 1;
+	while (b > 0) {
+		if (b % 2 == 1)
+			res = res * a % MOD;
+		a = a * a % MOD;
+		b /= 2;
+	}
+	return res;
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    ll factorial[1000001];
-    factorial[0] = factorial[1] =1;
-    for (int i = 2; i<=1000000; i++) {
-        factorial[i]=(factorial[i-1]*i)%MOD;
-    }
+	cin.tie(0)->sync_with_stdio(0);
+	ll factorial[1000001];
+	factorial[0] = factorial[1] =1;
+	for (int i = 2; i<=1000000; i++) {
+		factorial[i]=(factorial[i-1]*i)%MOD;
+	}
 
-    ll n, a, b;
-    cin >> n;
-    for(int i = 0; i < n; i++) {
-        cin >> a >> b;
-        ll ans = (factorial[a] * inverse(factorial[b])) % MOD;
-        ans *= inverse(factorial[a-b]);
-        ans %= MOD;
-        cout << ans << "\n";
-    }
+	ll n, a, b;
+	cin >> n;
+	for(int i = 0; i < n; i++) {
+		cin >> a >> b;
+		ll ans = (factorial[a] * inverse(factorial[b])) % MOD;
+		ans *= inverse(factorial[a-b]);
+		ans %= MOD;
+		cout << ans << "\n";
+	}
 }
 ```
 
@@ -349,38 +349,38 @@ using ll = long long;
 const int MOD = (int)1e9+7;
 
 ll inverse(ll num){
-    ll a = num; ll b = MOD-2;
-    //equivalent to num^(MOD-2)
-    ll res = 1;
-    while (b > 0) {
-        if (b % 2 == 1)
-            res = res * a % MOD;
-        a = a * a % MOD;
-        b /= 2;
-    }
-    return res;
+	ll a = num; ll b = MOD-2;
+	//equivalent to num^(MOD-2)
+	ll res = 1;
+	while (b > 0) {
+		if (b % 2 == 1)
+			res = res * a % MOD;
+		a = a * a % MOD;
+		b /= 2;
+	}
+	return res;
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    ll factorial[1000001], inverses[1000001];
-    factorial[0] = factorial[1] =1;
-    for (int i = 2; i<=1000000; i++) {
-        factorial[i]=(factorial[i-1]*i)%MOD;
-    }
+	cin.tie(0)->sync_with_stdio(0);
+	ll factorial[1000001], inverses[1000001];
+	factorial[0] = factorial[1] =1;
+	for (int i = 2; i<=1000000; i++) {
+		factorial[i]=(factorial[i-1]*i)%MOD;
+	}
 	inverses[1000000] = inverse(factorial[1000000]);
 	for(int i = 999999; i >= 0; i--){
 		inverses[i] = (inverses[i+1]*(i+1)) % MOD;
 	}
-    ll n, a, b;
-    cin >> n;
-    for(int i = 0; i < n; i++) {
-        cin >> a >> b;
-        ll ans = (factorial[a] * inverses[b]) % MOD;
-        ans *= inverses[a-b];
-        ans %= MOD;
-        cout << ans << "\n";
-    }
+	ll n, a, b;
+	cin >> n;
+	for(int i = 0; i < n; i++) {
+		cin >> a >> b;
+		ll ans = (factorial[a] * inverses[b]) % MOD;
+		ans *= inverses[a-b];
+		ans %= MOD;
+		cout << ans << "\n";
+	}
 }
 ```
 
