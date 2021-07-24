@@ -126,6 +126,25 @@ int main()
 
 ## Prim's Implementation
 
+	
+### Explanation
+
+We can treat the different teams as nodes in a graph, and treat each possible pairing of two teams as an edge.
+
+For each edge, its weight is equal to the XOR of the two node ids.
+
+So, we would like to find the maximum spanning tree in this graph by connecting the edges with the weights.
+
+There are 2 steps in doing so:
+
+
+
+1. Find an unvisited node with the greatest weight, and add it to the MST.
+2. Re-evaluate all the edge weights from the MST  to the other unvisited nodes.
+
+We can repeat these 2 steps until all N nodes are in the maximum spanning tree.
+
+
 **Time Complexity:** $\mathcal{O}(N^2)$
 	
 <LanguageSection>
@@ -135,12 +154,12 @@ int main()
 ```java
 import java.io.*;
 import java.util.*;
-	
+
 public class Superbull {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("superbull");
 		int N = io.nextInt();
-		// Read in the input array.
+
 		int[] ids = new int[N];
 		for (int i = 0; i < N; i++) {
 			ids[i] = io.nextInt();
@@ -150,27 +169,27 @@ public class Superbull {
 		boolean[] visited = new boolean[N];
 		int[] score = new int[N];
 
-		// Loop through possible choices for the first team.
-		for (int team1 = 0; team1 < N; team1++) {
-			int team2 = -1;
+		for (int i = 0; i < N; i++) {
+			int node = -1;
 
-			// Loop through possible choices of the next team.
-			for (int i = 0; i < N; i++) {
-				if (visited[i]) {
+			// Find an unvisited node with the highest score.
+			for (int j = 0; j < N; j++) {
+				if (visited[j]) {
 					continue;
 				}
-				if (team2 == -1 || (score[i] > score[team2])) {
-					team2 = i;
+				if (node == -1 || (score[i] > score[node])) {
+					node = j;
 				}
 			}
 
-			// Pair team1 and team2.
-			max_cost += score[team2];
-			visited[team2] = true;
+			// Add this node to the MST.
+			max_cost += score[node];
+			visited[node] = true;
+			System.out.println(node);
 
-			// Re-evaluate all pair scores.
-			for (int i = 0; i < N; i++) {
-				score[i] = Integer.max(score[i], (ids[team2] ^ ids[i]));
+			// Re-evaluate all other node scores.
+			for (int j = 0; j < N; j++) {
+				score[j] = Integer.max(score[j], (ids[node] ^ ids[j]));
 			}
 		}
 		io.println(max_cost);
