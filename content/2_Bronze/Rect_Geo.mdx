@@ -317,17 +317,19 @@ class Rect {
 }
 
 public class Billboard {
-	public static void main (String[] args) throws IOException{
-		Scanner sc = new Scanner(new File("billboard.in"));
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("billboard");
 		
 		Rect a = new Rect(), b = new Rect(), t = new Rect();
-		a.x1 = sc.nextInt(); a.y1 = sc.nextInt(); a.x2 = sc.nextInt(); a.y2 = sc.nextInt();
-		b.x1 = sc.nextInt(); b.y1 = sc.nextInt(); b.x2 = sc.nextInt(); b.y2 = sc.nextInt();
-		t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
+		a.x1 = io.nextInt(); a.y1 = io.nextInt();
+		a.x2 = io.nextInt(); a.y2 = io.nextInt();
+		b.x1 = io.nextInt(); b.y1 = io.nextInt();
+		b.x2 = io.nextInt(); b.y2 = io.nextInt();
+		t.x1 = io.nextInt(); t.y1 = io.nextInt();
+		t.x2 = io.nextInt(); t.y2 = io.nextInt();
 
-		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-		pw.println(a.area() + b.area() - intersect(a, t) - intersect(b, t));
-		pw.close();
+		io.println(a.area() + b.area() - intersect(a, t) - intersect(b, t));
+		io.close();
 	}
 
 	static int intersect(Rect p, Rect q) {
@@ -335,6 +337,8 @@ public class Billboard {
 		int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
 		return xOverlap * yOverlap;
 	}
+
+	CodeSnip{Kattio}
 }
 ```
 
@@ -345,7 +349,8 @@ We can also use the built-in
 class. To create a new rectangle, use the following constructor:
 
 ```java
-// creates a rectangle with upper-left corner at (x,y) with a specified width and height
+// creates a rectangle with upper-left corner at (x,y) with a specified width
+// and height
 Rectangle newRect = new Rectangle(x, y, width, height);
 ```
 
@@ -379,36 +384,40 @@ the solution below will work if all occurences of `-y2` are replaced with `y1`.
 With Built-in `Rectangle` class:
 
 ```java
-import java.awt.Rectangle;  // needed to use Rectangle class
+import java.awt.Rectangle; // needed to use Rectangle class
 import java.io.*;
 import java.util.*;
 
 public class Billboard {
 	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner(new File("billboard.in"));
+		Kattio io = new Kattio("billboard");
 
 		int x1, y1, x2, y2;
-		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		x1 = io.nextInt(); y1 = io.nextInt();
+		x2 = io.nextInt(); y2 = io.nextInt();
 		Rectangle firstRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 		
-		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		x1 = io.nextInt(); y1 = io.nextInt();
+		x2 = io.nextInt(); y2 = io.nextInt();
 		Rectangle secondRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
-		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		x1 = io.nextInt(); y1 = io.nextInt();
+		x2 = io.nextInt(); y2 = io.nextInt();
 		Rectangle truck = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
 		long firstIntersect = getArea(firstRect.intersection(truck));
 		long secondIntersect = getArea(secondRect.intersection(truck));
 
-		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-		pw.println(getArea(firstRect) + getArea(secondRect)
+		io.println(getArea(firstRect) + getArea(secondRect)
 						- firstIntersect - secondIntersect);
-		pw.close();
+		io.close();
 	}
 
 	public static long getArea(Rectangle r) {
 		return r.isEmpty() ? 0 : (long) r.getHeight() * (long) r.getWidth();
 	}
+
+	CodeSnip{Kattio}
 }
 ```
 

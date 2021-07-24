@@ -2,10 +2,14 @@
 id: usaco-712
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road II
-author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou
+author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou, Ananth Kashyap
 ---
 
+## Solution 1
+
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$, where $N$ is the number of cows.
 
@@ -54,12 +58,14 @@ int main() {
 
 </LanguageSection>
 
-## Alternative Implementation
-
-**Time Complexity:** $\mathcal{O}(N^4)$
+## Solution 2
 
 Due to the low constraints, we can iterate over all $\mathcal{O}(N^4)$ possible
 pairs of intersecting paths and check whether they represent two cows.
+	
+### Implementation
+	
+**Time Complexity:** $\mathcal{O}(N^4)$
 
 <LanguageSection>
 	
@@ -106,5 +112,46 @@ int main() {
 ```
 
 </CPPSection>
+
+</LanguageSection>
+
+## Solution 3
+
+For every cow (say cow $N$), we can check which cows have one entry/exit point between both of cow $N$'s entry and exit points. Then, we can add each of these cows as a pair with cows $N$ to a list of crossings, making sure we have no repeats. Then we can just output the length of this list of crossings to get our final answer.
+
+### Implementation
+	
+**Time Complexity:** $\mathcal{O}(T^3)$, where $T$ represents the total number of characters in Farmer John's string.
+
+<LanguageSection>
+	
+<PySection>
+	
+```python
+TOTAL = 52
+	
+recordings = open('circlecross.in').read().strip()
+crossings = []
+for i in range(TOTAL):
+	if i == recordings.index(recordings[i]):
+		# First appearance of letter
+		continue
+	else:
+		appearances = []
+		# Make a list of all cows that have an entry/exit point between the entry and exit point of the current cow
+		for j in range(recordings.index(recordings[i]) + 1, i):
+			if recordings[j] in appearances:
+				appearances.remove(recordings[j])
+			else:
+				appearances.append(recordings[j])
+		# Add all pairs to the crossings list if not already in it
+		for k in appearances:
+			if [recordings[i], k] not in crossings and [k, recordings[i]] not in crossings:
+				crossings.append([recordings[i], k])
+
+print(len(crossings), file=open('circlecross.out', 'w'))
+```
+	
+</PySection>
 
 </LanguageSection>
