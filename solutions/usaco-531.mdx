@@ -139,12 +139,12 @@ public class Superbull {
 		Kattio io = new Kattio("superbull");
 		int N = io.nextInt();
 		// Read in the input array.
-		int[] inp = new int[N];
+		int[] ids = new int[N];
 		for (int i = 0; i < N; i++) {
-			inp[i] = io.nextInt();
+			ids[i] = io.nextInt();
 		}
 
-		long ans = 0;
+		long max_cost = 0;
 		boolean[] visited = new boolean[N];
 		int[] score = new int[N];
 
@@ -163,15 +163,15 @@ public class Superbull {
 			}
 
 			// Pair team1 and team2.
-			ans += score[team2];
+			max_cost += score[team2];
 			visited[team2] = true;
 
 			// Re-evaluate all pair scores.
 			for (int i = 0; i < N; i++) {
-				score[i] = Integer.max(score[i], (inp[team2] ^ inp[i]));
+				score[i] = Integer.max(score[i], (ids[team2] ^ ids[i]));
 			}
 		}
-		pw.println(ans);
+		pw.println(max_cost);
 		pw.close();
 
 	}
