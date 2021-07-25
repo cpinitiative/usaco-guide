@@ -68,10 +68,9 @@ struct BIT {
 		}
 };
 
-const int maxn = 2e5+69;
+const int maxn = 2e5+6;
 int tour[maxn], color[maxn], answer[maxn], lend[maxn];
 //euler tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
-//range of each color, [l,r]
 vector<int> adj[maxn];
 int idx = 0;
 
@@ -99,15 +98,21 @@ int main(){
 	BIT<int> bit(N);
 	map<int, int> last;
 	//this map stores the rightmost(most recent) occurance of each color
+
 	for(int i = 0; i<N; i++){
 		if(last.count(color[tour[i]])){ //if we ever considered the color of tour[i]
+
 			bit.update(last[color[tour[i]]], -1);
 			//the last time the color of tour[i] appeared, we make that 0 again
+
 		}
 		last[color[tour[i]]] = i; //we change the last occurance of the color of tour[i]
+
 		bit.update(i, 1); //we reflect that change in our BIT
+
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
 		//the answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the euler tour
+
 	}
 	for(int i = 1; i<=N; i++){
 		cout << answer[i] << " ";
