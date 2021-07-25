@@ -1,0 +1,119 @@
+---
+id: cses-1139
+source: CSES
+title: Distinct Colors
+author: Timothy Gao
+---
+
+## Editorial
+
+Let us consider the euler tour of the tree. We flatten the tree into an arary, where each node corresponds to a range 
+in this array. Now, we are essentially tasked the find the number of distinct values in a range $N$ times(for each node).
+
+There are a variety of ways to approach the problem from here.
+
+**Solution 1: PURS**
+
+One such solution is with a PURS structure. Let us consider iterating through the euler tour array from left to right. 
+When we consider a node at index i in the euler tour array, it will have it's subtree range be $[j, i]$, where $j<=i$.
+Now, let's focus on a single color. Notice that if there are multiple of color $c$ to the left of a certain index $i$,
+we really only care about $c$'s most recent(rightmost) occurance. This is because any none-rightmost occurance of $c$
+from $i$ must include the right most occurance of $c$. If that's confusing to you, we're essentially saying that 
+any segment $[l, r]$ must contains $i$ if $l <= i <= r$. 
+
+With this observation, we can essentially reduce the distinct colors queries to a simple range query. As we iterate
+ through the euler tour from left to right, mark the current index as 1, and if the color of the node at current index 
+ has occured before, make it 0 in the BIT(by updating with -1). We can find the solution to every node by doing a sum query
+ as we iterate.
+
+**Time Complexity:** $\mathcal O(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+ 
+using namespace std;
+ 
+typedef pair<int, int> pii;
+ 
+#define pb push_back
+ 
+#define f first
+#define s second
+
+template <typename T>
+struct BIT {
+		vector<T> bit;
+		int n;
+		BIT(int n) {
+				this->n = n + 1;
+				bit.resize(n+1);
+		}
+		T sum(int r) {
+				r++;
+				T ret = 0;
+				while (r > 0) {
+						ret += bit[r];
+						r -= r & -r;
+				}
+				return ret;
+		}
+		void update(int idx, T v) {
+				idx++;
+				while (idx < n) {
+						bit[idx] += v;
+						idx += idx & -idx;
+				}
+		}
+};
+
+const int maxn = 2e5+69;
+int tour[maxn], color[maxn], answer[maxn], lend[maxn];
+//euler tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
+//range of each color, [l,r]
+vector<int> adj[maxn];
+int idx = 0;
+
+void dfs(int u, int par = 0){
+	lend[u] = idx;
+	for(int n : adj[u]){
+		if(n == par) continue;
+		dfs(n, u);
+	}
+	tour[idx] = u; idx++;
+}
+
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(0);
+	int N, u, v; cin >> N;
+	for(int i = 1; i<=N; i++){
+		cin >> color[i];
+	}
+	for(int i = 0; i<N-1; i++){
+		cin >> u >> v;
+		adj[u].pb(v);
+		adj[v].pb(u);
+	}
+	dfs(1);
+	BIT<int> bit(N);
+	map<int, int> last;
+	//this map stores the rightmost(most recent) occurance of each color
+	for(int i = 0; i<N; i++){
+		if(last.count(color[tour[i]])){ //if we ever considered the color of tour[i]
+			bit.update(last[color[tour[i]]], -1);
+			//the last time the color of tour[i] appeared, we make that 0 again
+		}
+		last[color[tour[i]]] = i; //we change the last occurance of the color of tour[i]
+		bit.update(i, 1); //we reflect that change in our BIT
+		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
+		//the answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the euler tour
+	}
+	for(int i = 1; i<=N; i++){
+		cout << answer[i] << " ";
+	}
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
