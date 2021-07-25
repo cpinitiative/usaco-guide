@@ -34,13 +34,7 @@ With this observation, we can essentially reduce the distinct colors queries to 
 #include <bits/stdc++.h>
  
 using namespace std;
- 
-typedef pair<int, int> pii;
- 
 #define pb push_back
- 
-#define f first
-#define s second
 
 struct BIT {
 		vector<int> bit;
@@ -101,18 +95,18 @@ int main(){
 // This map stores the rightmost occurance of each color
 
 	for(int i = 0; i < N; i++){
-		if(last.count(color[tour[i]])){ //if we ever considered the color of tour[i]
+		if(last.count(color[tour[i]])){ //If we ever considered the color of tour[i]
 
 			bit.update(last[color[tour[i]]], -1);
-			//the last time the color of tour[i] appeared, we make that 0 again
+			//The last time the color of tour[i] appeared, we make that 0 again
 
 		}
-		last[color[tour[i]]] = i; //we change the last occurance of the color of tour[i]
+		last[color[tour[i]]] = i; //We change the last occurance of the color of tour[i]
 
-		bit.update(i, 1); //we reflect that change in our BIT
+		bit.update(i, 1); //We reflect that change in our BIT
 
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
-		//the answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
+		//The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
 	}
 	for(int i = 1; i <= N; i++){
 		cout << answer[i] << " ";
