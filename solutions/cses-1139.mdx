@@ -7,8 +7,8 @@ author: Timothy Gao
 
 ## Editorial
 
-Let us consider the euler tour of the tree. We flatten the tree into an arary, where each node corresponds to a range 
-in this array. Now, we are essentially tasked the find the number of distinct values in a range $N$ times(for each node).
+Let us consider the Euler Tour of the tree. We flatten the tree into an arary, where each node corresponds to a range 
+in this array. Now, we are essentially tasked the find the number of distinct values in a range $N$ times(once for each node).
 
 There are a variety of ways to approach the problem from here.
 
@@ -22,7 +22,7 @@ from $i$ must include the right most occurance of $c$. If that's confusing to yo
 any segment $[l, r]$ must contains $i$ if $l <= i <= r$. 
 
 With this observation, we can essentially reduce the distinct colors queries to a simple range query. As we iterate
- through the euler tour from left to right, mark the current index as 1, and if the color of the node at current index 
+ through the Euler Tour from left to right, mark the current index(in the BIT) as 1, and if the color of the node at current index 
  has occured before, make it 0 in the BIT(by updating with -1). We can find the solution to every node by doing a sum query
  as we iterate.
 
@@ -42,24 +42,23 @@ typedef pair<int, int> pii;
 #define f first
 #define s second
 
-template <typename T>
 struct BIT {
-		vector<T> bit;
+		vector<int> bit;
 		int n;
 		BIT(int n) {
 				this->n = n + 1;
 				bit.resize(n+1);
 		}
-		T sum(int r) {
+		int sum(int r) {
 				r++;
-				T ret = 0;
+				int ret = 0;
 				while (r > 0) {
 						ret += bit[r];
 						r -= r & -r;
 				}
 				return ret;
 		}
-		void update(int idx, T v) {
+		void update(int idx, int v) {
 				idx++;
 				while (idx < n) {
 						bit[idx] += v;
@@ -68,9 +67,11 @@ struct BIT {
 		}
 };
 
-const int maxn = 2e5+6;
+const int maxn = 2e5+1;
+
+//Euler Tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
 int tour[maxn], color[maxn], answer[maxn], lend[maxn];
-//euler tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
+
 vector<int> adj[maxn];
 int idx = 0;
 
@@ -95,7 +96,7 @@ int main(){
 		adj[v].pb(u);
 	}
 	dfs(1);
-	BIT<int> bit(N);
+	BIT bit(N);
 	map<int, int> last;
 // This map stores the rightmost occurance of each color
 
@@ -111,7 +112,7 @@ int main(){
 		bit.update(i, 1); //we reflect that change in our BIT
 
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
-		//the answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the euler tour
+		//the answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
 	}
 	for(int i = 1; i <= N; i++){
 		cout << answer[i] << " ";
