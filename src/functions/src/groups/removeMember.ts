@@ -57,15 +57,21 @@ export default functions.https.onCall(
       };
     }
 
-    await admin
-      .firestore()
-      .collection('groups')
-      .doc(groupId)
-      .update({
-        [getMembershipKey(
-          targetPermissionLevel
-        )]: admin.firestore.FieldValue.arrayRemove(targetUid),
-      });
+    const batch = admin.firestore().batch();
+    batch.update(admin.firestore().collection('groups').doc(groupId), {
+      [getMembershipKey(targetPermissionLevel)]:
+        admin.firestore.FieldValue.arrayRemove(targetUid),
+    });
+    batch.delete(
+      admin
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('leaderboard')
+        .doc(targetUid)
+    );
+
+    await batch.commit();
 
     return { success: true };
   }

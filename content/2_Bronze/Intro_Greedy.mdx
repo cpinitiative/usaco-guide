@@ -107,33 +107,35 @@ int main() {
 <JavaSection>
 
 From the
-[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
+[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html)
+(with Kattio added):
 
 ```java
 import java.io.*;
 import java.util.*;
 public class Solution {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("breedflip.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("breedflip.out")));
-		int n = Integer.parseInt(br.readLine());
-		char[] a = br.readLine().toCharArray();
-		char[] b = br.readLine().toCharArray();
+		Kattio io = new Kattio("breedflip");
+		int n = io.nextInt();
+		char[] a = io.next().toCharArray();
+		char[] b = io.next().toCharArray();
 		int ret = 0;
-		while(!new String(a).equals(new String(b))) {
+		while (!new String(a).equals(new String(b))) {
 			ret++;
 			int lhs = 0;
-			while(a[lhs] == b[lhs]) lhs++;
+			while (a[lhs] == b[lhs]) lhs++;
 			int rhs = n-1;
-			while(a[rhs] == b[rhs]) rhs--;
-			for(int i = lhs; i <= rhs; i++) {
-				if(a[i] == 'G') a[i] = 'H';
+			while (a[rhs] == b[rhs]) rhs--;
+			for (int i = lhs; i <= rhs; i++) {
+				if (a[i] == 'G') a[i] = 'H';
 				else a[i] = 'G';
 			}
 		}
-		pw.println(ret);
-		pw.close();
+		io.println(ret);
+		io.close();
 	}
+
+	CodeSnip{Kattio}
 }
 ```
 

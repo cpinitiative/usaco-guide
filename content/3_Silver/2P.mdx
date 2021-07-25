@@ -1,7 +1,7 @@
 ---
 id: 2P
 title: 'Two Pointers'
-author: Darren Yao
+author: Darren Yao, Qi Wang
 prerequisites:
   - sorting-custom
 description:
@@ -30,6 +30,118 @@ frequency: 2
 		video explanation of two pointers
 	</Resource>
 </Resources>
+
+## Two Pointers
+
+The two pointers method iterates two pointers across an array, to track the start and end
+of an interval. It can also be used to track two values in an array as shown in [CPH's 2SUM](https://usaco.guide/CPH.pdf#page=87) solution. 
+
+<FocusProblem problem="book" />
+
+## Solution - Books
+
+We want to find the longest contiguous segment of books that can be read within $t$ minutes. 
+
+To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ as the start and end of the segment respectively and use two pointers to track the interval.
+
+For every $\texttt{left}$ index, we need to increase our $\texttt{right}$ pointer until the total time for that segment is the maximum while being less than $t$.
+
+We will keep track of the max segment size with $\texttt{ans}$, and take the maximum $\texttt{right} - \texttt{left}$ value.
+
+We can then continually increment $\texttt{left}$ by 1.
+
+**The $\texttt{right}$ pointer does not restart after an iteration, it simply keeps moving right; therefore, since both pointers will move at most $N$ times, the overall time complexity is $\mathcal{O}(N)$.**
+
+<Info title="Pro Tip">
+
+You can visualize these pointers as maintaining a sliding window of books for this problem.
+
+</Info>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+CodeSnip{CPP Short Template}
+
+int main() {
+	setIO();
+	int n, t, ans = 0;
+	cin >> n >> t;
+	vi books(n);
+	for (int i = 0; i < n; i++){
+		cin >> books[i];
+	}
+
+	int left = 0, right = 0, cur = 0;
+	while (left < n && right < n) {
+		// Finding the maximum right for which cur is less than t.
+		while (right < n) {
+			cur += books[right++];
+			// Subtracting the exceeded book from cur.
+			if (cur > t) {
+				cur -= books[--right]; 
+				break;
+			}
+		}
+
+		ans = max(ans, right - left);
+		cur -= books[left++];
+	}
+
+	cout << ans;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Books {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int t = io.nextInt();
+		int[] books = new int[n];
+		for (int i = 0; i < n; i++) {
+			books[i] = io.nextInt();
+		}
+
+		int left = 0, right = 0, cur = 0, ans = 0;
+		while (left < n && right < n) {
+			// Finding the maximum right for which cur is less than t.
+			while (right < n) {
+				cur += books[right++];
+				// Subtracting the exceeded book from cur.
+				if (cur > t) {
+					cur -= books[--right]; 
+					break;
+				}
+			}
+
+			ans = Math.max(ans, right - left);
+			cur -= books[left++];
+		}
+
+		io.println(ans);
+		io.close();
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 ## Problems
 

@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 import * as React from 'react';
 import { ReactNode, useContext } from 'react';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import toast from 'react-hot-toast';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { GroupData, isUserAdminOfGroup } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
@@ -39,8 +39,6 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const [activeUserId, setActiveUserId] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [groupData, setGroupData] = React.useState<GroupData>();
-
-  const notifications = useNotificationSystem();
 
   useFirebaseApp(
     firebaseApp => {
@@ -76,7 +74,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
             setIsLoading(false);
             setPosts(null);
           } else {
-            notifications.showErrorNotification(error);
+            toast.error(error.message);
           }
         }
       );
@@ -92,7 +90,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
             setIsLoading(false);
             setGroupData(null);
           } else {
-            notifications.showErrorNotification(error);
+            toast.error(error.message);
           }
         }
       );

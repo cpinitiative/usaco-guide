@@ -12,7 +12,6 @@ import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
 import Flatpickr from 'react-flatpickr';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
@@ -32,6 +31,7 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
+import toast from 'react-hot-toast';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -53,7 +53,6 @@ export default function EditProblemPage(props) {
     originalProblem
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
-  const notifications = useNotificationSystem();
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -87,7 +86,7 @@ export default function EditProblemPage(props) {
             replace: true,
           });
         })
-        .catch(e => notifications.showErrorNotification(e));
+        .catch(e => toast.error(e.message));
     }
   };
   const handleSaveProblem = () => {

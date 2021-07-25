@@ -1,7 +1,7 @@
 import { navigate } from 'gatsby-link';
 import * as React from 'react';
 import { useContext } from 'react';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import toast from 'react-hot-toast';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
@@ -11,7 +11,6 @@ import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
-  const notifications = useNotificationSystem();
   const {
     firebaseUser: { uid: userId },
   } = useContext(UserDataContext);
@@ -96,13 +95,11 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                 ) {
                   removeMemberFromGroup(activeGroup.activeGroupId, member.uid)
                     .then(() =>
-                      notifications.addNotification({
-                        level: 'success',
-                        message:
-                          'This member has been successfully removed from the group.',
-                      })
+                      toast.success(
+                        'This member has been successfully removed from the group.'
+                      )
                     )
-                    .catch(notifications.showErrorNotification);
+                    .catch(e => toast.error(e));
                 }
               }}
             >
@@ -134,12 +131,11 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                         newPermission
                       )
                         .then(() =>
-                          notifications.addNotification({
-                            level: 'success',
-                            message: `${member.displayName} now has permission level ${newPermission}.`,
-                          })
+                          toast.success(
+                            `${member.displayName} now has permission level ${newPermission}.`
+                          )
                         )
-                        .catch(notifications.showErrorNotification);
+                        .catch(e => toast.error(e));
                     }
                   }}
                 >

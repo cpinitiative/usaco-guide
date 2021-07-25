@@ -1,7 +1,7 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import * as React from 'react';
+import React from 'react';
+import toast from 'react-hot-toast';
 import { unstable_batchedUpdates } from 'react-dom';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
 import {
   UserPermissionInformation,
   UserPermissions,
@@ -11,7 +11,6 @@ import Switch from '../elements/Switch';
 
 export default function AdminSettings() {
   const firebaseApp = useFirebaseApp();
-  const notifications = useNotificationSystem();
 
   const [email, setEmail] = React.useState('');
   const [searching, setSearching] = React.useState(false);
@@ -42,10 +41,7 @@ export default function AdminSettings() {
         users: [{ email }],
       }) as any);
       if (response.data.users.length === 0) {
-        notifications.addNotification({
-          level: 'warning',
-          message: 'The user with email ' + email + ' could not be found.',
-        });
+        toast.error('The user with email ' + email + ' could not be found.');
       } else {
         console.log('Got user: ', response.data.users[0]);
         unstable_batchedUpdates(() => {
@@ -54,7 +50,7 @@ export default function AdminSettings() {
         });
       }
     } catch (e) {
-      notifications.showErrorNotification(e);
+      toast.error(e.message);
     }
 
     setSearching(false);
@@ -83,14 +79,15 @@ export default function AdminSettings() {
         target: userData.uid,
         claims: userPermissions,
       });
-      notifications.addNotification({
-        level: 'success',
-        message:
-          'Updated user permissions! The target user may have to sign out and sign back in to complete the changes.',
-      });
+      toast(
+        'Updated user permissions! The target user may have to sign out and sign back in to complete the changes.',
+        {
+          duration: 6000,
+        }
+      );
       handleSearch(null);
     } catch (e) {
-      notifications.showErrorNotification(e);
+      toast.error(e.message);
     }
 
     setIsUpdating(false);

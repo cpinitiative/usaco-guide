@@ -4,11 +4,10 @@ import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
 import Flatpickr from 'react-flatpickr';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useFirebaseApp } from '../../../hooks/useFirebase';
+import toast from 'react-hot-toast';
 import { PostData } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
@@ -32,8 +31,6 @@ export default function EditPostPage(props) {
     null
   );
   const { updatePost, deletePost } = usePostActions(groupId);
-  const firebaseApp = useFirebaseApp();
-  const notifications = useNotificationSystem();
 
   React.useEffect(() => {
     // we need to check for timestamp -- ServerValue is null initially
@@ -207,7 +204,7 @@ export default function EditPostPage(props) {
                       .then(() =>
                         navigate(`/groups/${groupId}`, { replace: true })
                       )
-                      .catch(e => notifications.showErrorNotification(e));
+                      .catch(e => toast.error(e.message));
                   }
                 }}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-red-500"

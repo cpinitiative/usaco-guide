@@ -45,15 +45,22 @@ export default functions.https.onCall(
         errorCode: 'SOLE_OWNER',
       };
     }
-    await admin
-      .firestore()
-      .collection('groups')
-      .doc(groupId)
-      .update({
-        [getMembershipKey(
-          permissionLevel
-        )]: admin.firestore.FieldValue.arrayRemove(callerUid),
-      });
+
+    const batch = admin.firestore().batch();
+    batch.update(admin.firestore().collection('groups').doc(groupId), {
+      [getMembershipKey(permissionLevel)]:
+        admin.firestore.FieldValue.arrayRemove(callerUid),
+    });
+    batch.delete(
+      admin
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('leaderboard')
+        .doc(callerUid)
+    );
+
+    await batch.commit();
 
     return { success: true };
   }

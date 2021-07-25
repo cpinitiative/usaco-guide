@@ -1,8 +1,4 @@
 module.exports = {
-  // Temporary workaround for bug https://github.com/storybookjs/storybook/issues/15067
-  typescript: {
-    reactDocgen: 'none',
-  },
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
     '@storybook/addon-links',

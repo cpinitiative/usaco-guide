@@ -103,7 +103,8 @@ const plugins = [
   {
     resolve: '@sentry/gatsby',
     options: {
-      dsn: 'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
+      dsn:
+        'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
       denyUrls: [/extensions\//i, /^chrome:\/\//i],
       ...(process.env.NODE_ENV === 'production'
         ? {}
@@ -129,12 +130,12 @@ const plugins = [
   },
   // devMode currently has some sketchy output
   // See https://github.com/JimmyBeldone/gatsby-plugin-webpack-bundle-analyser-v2/issues/343
-  {
-    resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
-    options: {
-      devMode: false,
-    },
-  },
+  // {
+  //   resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
+  //   options: {
+  //     devMode: false,
+  //   },
+  // },
   // {
   //   resolve: `gatsby-plugin-hotjar`,
   //   options: {
