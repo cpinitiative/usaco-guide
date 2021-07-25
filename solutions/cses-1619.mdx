@@ -201,13 +201,15 @@ import java.io.*;
 import java.util.*;
 
 public class RestaurantCustomers {
-	static class CustomerData {
+	static class Customer {
 		int time;
+		// a type of 1 means that it is an arrival
+		// and a type of 2 means that it is a departure
 		int type;
 	}
 
-	static class comparator implements Comparator<CustomerData> {
-		public int compare (CustomerData one, CustomerData two) {
+	static class customerComparator implements Comparator<Customer> {
+		public int compare (Customer one, Customer two) {
 			// use Integer.compare to avoid writing if statements
 			return Integer.compare(one.time, two.time);
 		}
@@ -216,29 +218,29 @@ public class RestaurantCustomers {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
-		CustomerData[] data = new CustomerData[2 * n];
+		Customer[] data = new Customer[2 * n];
 
 		for (int x = 0; x < n; x++) {
-			CustomerData cd1 = new CustomerData();
+			Customer c1 = new Customer();
 			cd1.time = io.nextInt();
 			cd1.type = 1;
 
-			CustomerData cd2 = new CustomerData();
+			Customer c2 = new Customer();
 			cd2.time = io.nextInt();
 			cd2.type = -1;
 
-			data[2 * x] = cd1;
-			data[2 * x + 1] = cd2;
+			data[2 * x] = c1;
+			data[2 * x + 1] = c2;
 		}
 
-		Arrays.sort(data, new comparator());
+		Arrays.sort(data, new customerComparator());
 
 		int sum = 0;
 		int answer = 0;
-		for (CustomerData cd : data) {
+		for (Customer customer : data) {
 			// if it is an arrival, add 1
 			// if it is a departure, subtract 1
-			sum += cd.type;
+			sum += customer.type;
 			answer = Math.max(answer, sum);
 		}
 		io.println(answer);
