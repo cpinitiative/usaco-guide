@@ -69,47 +69,47 @@ class SubmultiplesOfN {
 import java.util.Arrays;
 
 public final class SubmultiplesOfN {
-    private static final int MOD = (int) 1e9 + 7;
-    public static int count(String strNum, int div) {
-        int[] num = new int[strNum.length()];
-        for (int i = 0; i < strNum.length(); i++) {
-            num[i] = Character.getNumericValue(strNum.charAt(i));
-            if (num[i] < 0 || num[i] > 9) {
-                throw new IllegalArgumentException("invalid number given for argument num");
-            }
-        }
+	private static final int MOD = (int) 1e9 + 7;
+	public static int count(String strNum, int div) {
+		int[] num = new int[strNum.length()];
+		for (int i = 0; i < strNum.length(); i++) {
+			num[i] = Character.getNumericValue(strNum.charAt(i));
+			if (num[i] < 0 || num[i] > 9) {
+				throw new IllegalArgumentException("invalid number given for argument num");
+			}
+		}
 
-        
-        int[][] earliestOcc = new int[num.length][10];
-        for (int i = 0; i < num.length; i++) {
-            Arrays.fill(earliestOcc[i], -1);
-        }
-        for (int i = num.length - 1; i >= 0; i--) {
-            for (int j = 0; j <= i; j++) {
-                earliestOcc[j][num[i]] = i;
-            }
-        }
+		
+		int[][] earliestOcc = new int[num.length][10];
+		for (int i = 0; i < num.length; i++) {
+			Arrays.fill(earliestOcc[i], -1);
+		}
+		for (int i = num.length - 1; i >= 0; i--) {
+			for (int j = 0; j <= i; j++) {
+				earliestOcc[j][num[i]] = i;
+			}
+		}
 
-        long[][] modSubseqNum = new long[num.length][div];
-        for (int d = 1; d < 10; d++) {
-            if (earliestOcc[0][d] != -1) {
-                modSubseqNum[earliestOcc[0][d]][d % div] = 1;
-            }
-        }
-        for (int i = 0; i < num.length - 1; i++) {
-            for (int m = 0; m < div; m++) {
-                for (int d = 0; d < 10; d++) {
-                    int gotoInd = earliestOcc[i + 1][d];
-                    if (gotoInd == -1) {
-                        continue;
-                    }
-                    int nextM = (10 * m + d) % div;
-                    modSubseqNum[gotoInd][nextM] = (modSubseqNum[gotoInd][nextM] + modSubseqNum[i][m]) % MOD;
-                }
-            }
-        }
-        return (int) (Arrays.stream(modSubseqNum).mapToLong(i -> i[0]).sum() % MOD);
-    }
+		long[][] modSubseqNum = new long[num.length][div];
+		for (int d = 1; d < 10; d++) {
+			if (earliestOcc[0][d] != -1) {
+				modSubseqNum[earliestOcc[0][d]][d % div] = 1;
+			}
+		}
+		for (int i = 0; i < num.length - 1; i++) {
+			for (int m = 0; m < div; m++) {
+				for (int d = 0; d < 10; d++) {
+					int gotoInd = earliestOcc[i + 1][d];
+					if (gotoInd == -1) {
+						continue;
+					}
+					int nextM = (10 * m + d) % div;
+					modSubseqNum[gotoInd][nextM] = (modSubseqNum[gotoInd][nextM] + modSubseqNum[i][m]) % MOD;
+				}
+			}
+		}
+		return (int) (Arrays.stream(modSubseqNum).mapToLong(i -> i[0]).sum() % MOD);
+	}
 }
 ```
 
