@@ -77,10 +77,8 @@ export default function ProblemSubmissionInterface({
   });
 
   const firebaseApp = useFirebaseApp();
-  const [
-    onlineJudgeSubmissionDoc,
-    setOnlineJudgeSubmissionDoc,
-  ] = React.useState<firebaseType.DocumentReference | null>(null);
+  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
+    React.useState<firebaseType.DocumentReference | null>(null);
   const [submissionResult, setSubmissionResult] = React.useState<
     (Submission & { type: SubmissionType.ONLINE_JUDGE }) | null
   >(null);
