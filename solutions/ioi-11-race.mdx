@@ -10,13 +10,15 @@ author: Timothy Gao
 ## Alternative Solution: Small to Large Merging
 
 In this problem, we are looking for the minimum number of edges needed to create a path weighted $v$.
-Consider rooting the tree arbitrarily. All paths in this tree must have some lca at a node in the rooted tree(note that a path can have no nodes)
+Consider rooting the tree arbitrarily. All paths in this tree must have a unique lowest node in the rooted tree
 As a result, we can break any path in the tree into two paths from nodes to the root. Consider for each node,
 computing it's distance from the root(number of edges used) and the weight of its path from the root.
 We can store this in a map, with key to value pairs of weight : distance
 Now, consider doing small to large merging on the nodes. When we combine a smaller map s to a larger map b at node u,
 as we iterate through each key $a$ the map in s, we want a path weight of exactly $(K+2*path[u]-a)$, where
 $path[u]$ indicates the weight of the path from root to u.
+The motivation behind this is that through the process of small to large merging, we can effectively consider every node as being
+ that "unique lowest node" as mentioned earlier.
 Note that in the code below, height is the distance, and dist is the weight of the path for each node.
 
 
