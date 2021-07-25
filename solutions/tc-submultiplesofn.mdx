@@ -108,7 +108,12 @@ public final class SubmultiplesOfN {
 				}
 			}
 		}
-		return (int) (Arrays.stream(modSubseqNum).mapToLong(i -> i[0]).sum() % MOD);
+
+		long validSubseqs = 0;
+		for (int i = 0; i < num.length; i++) {
+			validSubseqs = (validSubseqs + modSubseqNum[i][0]) % MOD;
+		}
+		return (int) validSubseqs;
 	}
 }
 ```
