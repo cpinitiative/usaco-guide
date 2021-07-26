@@ -60,7 +60,7 @@ export default function ProblemsPage(props: PageProps) {
                 searchable
               />
             </div>
-            <div className="py-0.5 px-6 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8 col-span-5 overflow-y-auto">
+            <div className="py-0.5 px-1 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8 col-span-5 overflow-y-auto">
               <div className="flex mb-4 items-center grid grid-cols-2 lg:grid-cols-6 md:gird-cols-3 sm:gird-cols-3 gap-x-5 gap-y-3">
                 <div className="col-span-2">
                   <CustomDifficultySelection 
