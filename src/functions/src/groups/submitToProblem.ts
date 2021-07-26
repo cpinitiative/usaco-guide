@@ -41,7 +41,7 @@ export default functions.firestore
       if (data.type === SubmissionType.SELF_GRADED) {
         status = data.result === 1 ? ExecutionStatus.AC : ExecutionStatus.WA;
       } else if (data.type === SubmissionType.ONLINE_JUDGE) {
-        if (data.gradingStatus !== "done") {
+        if (data.gradingStatus !== 'done') {
           throw new Error(
             'recalculateLeaderboard should only be called once the online judge has finished grading.'
           );
@@ -151,11 +151,15 @@ export default functions.firestore
         if (change.before.data().result !== change.after.data().result) {
           // if result changed, recalculate leaderboard
           await recalculateLeaderboard(change.after.data() as Submission);
-        } else if (change.before.data().gradingStatus !== change.after.data().gradingStatus && change.after.data().gradingStatus === "error") {
+        } else if (
+          change.before.data().gradingStatus !==
+            change.after.data().gradingStatus &&
+          change.after.data().gradingStatus === 'error'
+        ) {
           await change.after.ref.update({
             status: ExecutionStatus.INTERNAL_ERROR,
           });
-        };
+        }
       } else {
         // submit submission
         try {
@@ -179,7 +183,8 @@ export default functions.firestore
           // server probably down
           await change.after.ref.update({
             gradingStatus: 'error',
-            errorMessage: 'The server is currently unavailable. Please try again later, or contact us at onlinejudge@joincpi.org.',
+            errorMessage:
+              'The server is currently unavailable. Please try again later, or contact us at onlinejudge@joincpi.org.',
           });
         }
       }
