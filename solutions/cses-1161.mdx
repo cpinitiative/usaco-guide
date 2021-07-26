@@ -20,12 +20,11 @@ If you're wondering why Huffman Coding always produces an optimal solution, see
 
 ## Implementation
 
+This can be done easily with a priority queue.
+
 <LanguageSection>
     
 <CPPSection>
-
-In C++, this can be done easily with a
-[priority queue](http://www.cplusplus.com/reference/queue/priority_queue/).
 
 ```cpp
 #include <iostream>
@@ -57,8 +56,6 @@ int main(){
 
 <JavaSection>
 
-In Java, this can be done with a [PriorityQueue](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/PriorityQueue.html) as well. 
-
 ```java
 import java.util.*;
 import java.io.*;
@@ -68,7 +65,10 @@ public class StickDivision {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(in.readLine());
 
-		int x = Integer.parseInt(st.nextToken()), n = Integer.parseInt(st.nextToken());
+		// with our algorithm the variable x will not be used at all
+		// since it is guaranteed by problem constraints that all values add up to x
+		int x = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
 		Queue<Integer> sticks = new PriorityQueue<Integer>();
 		st = new StringTokenizer(in.readLine());
 		for (int i = 0; i < n; i++) {
@@ -82,7 +82,6 @@ public class StickDivision {
 			sticks.add(a + b);
 			costs += a + b;
 		}
-
 		System.out.println(costs);
 	}
 }
