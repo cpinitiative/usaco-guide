@@ -2,7 +2,7 @@
 id: cses-1161
 source: CSES
 title: Stick Divisions
-author: Dong Liu, Benjamin Qi
+author: Dong Liu, Benjamin Qi, Chuyang Wang
 ---
 
 In this problem, we're asked to find the minimum cost to divide a stick with
@@ -54,5 +54,40 @@ int main(){
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+In Java, this can be done with a [PriorityQueue](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/PriorityQueue.html) as well. 
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class StickDivision {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		int x = Integer.parseInt(st.nextToken()), n = Integer.parseInt(st.nextToken());
+		Queue<Integer> sticks = new PriorityQueue<Integer>();
+		st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++) {
+			sticks.add(Integer.valueOf(st.nextToken()));
+		}
+		in.close();
+
+		long costs = 0;
+		while (sticks.size() > 1) {
+			int a = sticks.poll(), b = sticks.poll();
+			sticks.add(a + b);
+			costs += a + b;
+		}
+
+		System.out.println(costs);
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
