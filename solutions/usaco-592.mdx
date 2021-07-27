@@ -28,18 +28,18 @@ int getNum(int start, int direction) {
 
 	while(true) {
 		int next = prev;
-		//Getting the furthest explosion index without exceeding the current radius
+		// Getting the furthest explosion index without exceeding the current radius
 		while(next + direction >= 0 && next + direction < N 
 			&& abs(positions[next + direction] - positions[prev]) <= radius) {
 			next += direction;
 		}
 
-		//We didn't find a new haybale, so the chain explosion is over
+		// We didn't find a new haybale, so the chain explosion is over
 		if(next == prev) {
 			break;
 		}
 
-		//Update our previous explosion and increment radius
+		// Update our previous explosion and increment radius
 		prev = next;
 		radius++;
 	}
@@ -63,9 +63,8 @@ int main() {
 
 	sort(positions.begin(), positions.end());
 
-
 	for (int i = 0; i < N; i++) {
-		//Computing answer
+		// Computing answer
 		A = max(A, getNum(i, -1) + getNum(i, 1) + 1);
 	}   
 
@@ -81,7 +80,7 @@ int main() {
 import java.util.*;
 import java.io.*;
 
-public class angrycowsB {
+public class Angry {
 	static int N, A = 0;
 	static int[] positions;
 	public static void main(String[] args) throws Exception {
@@ -97,7 +96,7 @@ public class angrycowsB {
 		Arrays.sort(positions);
 
 		for (int i = 0; i < N; i++) {
-			//Computing answer
+			// Computing answer
 			A = Math.max(A, getNum(i,-1) + getNum(i, 1) + 1);
 		}
 
@@ -111,18 +110,18 @@ public class angrycowsB {
 
 		while(true) {
 			int next = prev;
-			//Getting the furthest explosion index without exceeding radius
+			// Getting the furthest explosion index without exceeding radius
 			while(next + direction >= 0 && next + direction < N 
 				&& Math.abs(positions[next + direction] - positions[prev]) <= radius) {
 				next += direction;
 			}
 
-			//We didn't find a new haybale, so the chain explosion is over
+			// We didn't find a new haybale, so the chain explosion is over
 			if(next == prev) {
 				break;
 			}
 
-			//Update our previous explosion and increment radius
+			// Update our previous explosion and increment radius
 			prev = next;
 			radius++;
 		}
