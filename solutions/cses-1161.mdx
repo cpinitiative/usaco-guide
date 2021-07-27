@@ -20,9 +20,9 @@ If you're wondering why Huffman Coding always produces an optimal solution, see
 
 ## Implementation
 
-As we want to selete both shortest sticks and then insert the combined new stick, we will want to have a data structure where we can get the smallest value in the collection and add new value to it. The insert operation can be done easily with a priority queue in $\mathcal{O}(\log n)$ time while getting the smallest value takes constant time.
+As we want to select both shortest sticks and then insert the combined new stick, we will want to have a data structure where we are able to get the smallest value in the collection, remove it and add new values to the collection. The insert and remove operations can be done easily with a priority queue in $\mathcal{O}(\log n)$ time, while getting the smallest value takes constant time.
 
-This gives us a time complexity of $\mathcal{O}(n \log n)$ in total. 
+**Time Complexity:** $\mathcal{O}(n \log n)$
 
 <LanguageSection>
     
@@ -80,8 +80,8 @@ public class StickDivision {
 		// we keep combining two smallest sticks a and b
 		// until there is only one stick remaining, which will have the length x
 		while (sticks.size() > 1) {
-			int a = sticks.poll();
-			int b = sticks.poll();
+			int a = sticks.remove();
+			int b = sticks.remove();
 			sticks.add(a + b);
 			// the length of the combined stick is the cost for dividing them into
 			// the seperated sticks a and b
