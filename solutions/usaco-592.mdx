@@ -22,11 +22,6 @@ using namespace std;
 int N, A = 0;
 vector<int> positions;
 
-void setPrec() { cout << fixed << setprecision(15); }
-void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
-void setIn(string s) { freopen(s.c_str(),"r",stdin); }
-void setOut(string s) { freopen(s.c_str(),"w",stdout); }
-
 int getNum(int start, int direction) {
 	int radius = 1;
 	int prev = start;
@@ -34,7 +29,8 @@ int getNum(int start, int direction) {
 	while(true) {
 		int next = prev;
 		//Getting the furthest explosion index without exceeding the current radius
-		while(next + direction >= 0 && next + direction < N && abs(positions[next + direction] - positions[prev]) <= radius) {
+		while(next + direction >= 0 && next + direction < N 
+			&& abs(positions[next + direction] - positions[prev]) <= radius) {
 			next += direction;
 		}
 
@@ -48,10 +44,6 @@ int getNum(int start, int direction) {
 		radius++;
 	}
 
-	//[start, ...., prev]
-	//...., prev
-	//[prev, ...., start]
-	//prev, ....
 	return abs(prev - start);
 }
 
@@ -120,7 +112,8 @@ public class angrycowsB {
 		while(true) {
 			int next = prev;
 			//Getting the furthest explosion index without exceeding radius
-			while(next + direction >= 0 && next + direction < N && Math.abs(positions[next + direction] - positions[prev]) <= radius) {
+			while(next + direction >= 0 && next + direction < N 
+				&& Math.abs(positions[next + direction] - positions[prev]) <= radius) {
 				next += direction;
 			}
 
@@ -134,8 +127,6 @@ public class angrycowsB {
 			radius++;
 		}
 
-		// [start, ...., prev]
-		// ..., prev
 		return Math.abs(prev - start);
 	}
 
