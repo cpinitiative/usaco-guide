@@ -8,12 +8,12 @@ const options = [
   { label: 'Solved', value: 'Solved' },
   { label: 'Reviewing', value: 'Reviewing' },
   { label: 'Skipped', value: 'Skipped' },
-]
+];
 
-export default function Difficulty({ refine }) { 
-  const darkMode = useDarkMode()
+export default function Difficulty({ refine }) {
+  const darkMode = useDarkMode();
   const data = useContext(UserDataContext).userProgressOnProblems;
-  
+
   const handleChange = e => {
     let refinements = [];
     for (const status of e) {
@@ -24,7 +24,7 @@ export default function Difficulty({ refine }) {
       }
     }
     refine(refinements);
-  }
+  };
 
   return (
     <Select
@@ -34,9 +34,7 @@ export default function Difficulty({ refine }) {
       isMulti
       isSearchable={false}
       options={options}
-      className={
-        !darkMode ? "text-black" : "text-white" 
-      }
+      className={!darkMode ? 'text-black' : 'text-white'}
       classNamePrefix="select"
       styles={
         !darkMode
@@ -90,5 +88,5 @@ export default function Difficulty({ refine }) {
             }
       }
     />
-  )
+  );
 }

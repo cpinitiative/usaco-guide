@@ -3,19 +3,19 @@ import Select from 'react-select';
 import { useDarkMode } from '../../context/DarkModeContext';
 
 const labelToDisplay = {
-  'true': 'Yes', 
-  'false': 'No'
-}
+  true: 'Yes',
+  false: 'No',
+};
 
-export default function Starred({ items, refine }) { 
-  const darkMode = useDarkMode()
+export default function Starred({ items, refine }) {
+  const darkMode = useDarkMode();
 
-  items.forEach((item) => item.refinement = item.label);
-  items.forEach((item) => item.label = labelToDisplay[item.label]);
+  items.forEach(item => (item.refinement = item.label));
+  items.forEach(item => (item.label = labelToDisplay[item.label]));
 
   const handleChange = e => {
     e == null ? refine([]) : refine(e.refinement);
-  }
+  };
 
   return (
     <Select
@@ -24,9 +24,7 @@ export default function Starred({ items, refine }) {
       placeholder="Starred"
       isSearchable={false}
       options={items.filter(item => item.isRefined == false)}
-      className={
-        !darkMode ? "text-black" : "text-white" 
-      }
+      className={!darkMode ? 'text-black' : 'text-white'}
       styles={
         !darkMode
           ? undefined
@@ -79,5 +77,5 @@ export default function Starred({ items, refine }) {
             }
       }
     />
-  )
+  );
 }

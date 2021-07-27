@@ -1,12 +1,10 @@
 import * as React from 'react';
 
-export default function RefinementList({ items, refine, createURL }) {  
+export default function RefinementList({ items, refine, createURL }) {
   return (
     <div className="text-left ml-1">
       {items.map(item => (
-        <div
-          key={item.label}
-        >
+        <div key={item.label}>
           <a
             href={createURL(item.value)}
             className={`${

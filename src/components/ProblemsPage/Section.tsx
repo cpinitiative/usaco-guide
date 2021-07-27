@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Select from 'react-select';
-import SECTIONS from '../../../content/ordering'
+import SECTIONS from '../../../content/ordering';
 import { useDarkMode } from '../../context/DarkModeContext';
 
 const items = [
@@ -10,10 +10,10 @@ const items = [
   { label: 'Gold', value: SECTIONS.gold },
   { label: 'Platinum', value: SECTIONS.plat },
   { label: 'Advanced', value: SECTIONS.adv },
-]
-export default function Section({ refine }) { 
-  const darkMode = useDarkMode()
-  
+];
+export default function Section({ refine }) {
+  const darkMode = useDarkMode();
+
   const handleChange = e => {
     let refinements = [];
     for (const section of e) {
@@ -24,7 +24,7 @@ export default function Section({ refine }) {
       }
     }
     refine(refinements);
-  }
+  };
 
   return (
     <Select
@@ -34,9 +34,7 @@ export default function Section({ refine }) {
       isMulti
       isSearchable={false}
       options={items}
-      className={
-        !darkMode ? "text-black" : "text-white" 
-      }
+      className={!darkMode ? 'text-black' : 'text-white'}
       classNamePrefix="select"
       styles={
         !darkMode
@@ -90,5 +88,5 @@ export default function Section({ refine }) {
             }
       }
     />
-  )
+  );
 }

@@ -2,8 +2,8 @@ import * as React from 'react';
 import Select from 'react-select';
 import { useDarkMode } from '../../context/DarkModeContext';
 
-export default function Difficulty({ items, refine }) { 
-  const darkMode = useDarkMode()
+export default function Difficulty({ items, refine }) {
+  const darkMode = useDarkMode();
 
   const handleChange = e => {
     let refinements = [];
@@ -11,7 +11,7 @@ export default function Difficulty({ items, refine }) {
       refinements.push(difficulty.label);
     }
     refine(refinements);
-  }
+  };
 
   return (
     <Select
@@ -21,9 +21,7 @@ export default function Difficulty({ items, refine }) {
       isMulti
       isSearchable={false}
       options={items.filter(item => item.isRefined == false)}
-      className={
-        !darkMode ? "text-black" : "text-white" 
-      }
+      className={!darkMode ? 'text-black' : 'text-white'}
       classNamePrefix="select"
       styles={
         !darkMode
@@ -77,5 +75,5 @@ export default function Difficulty({ items, refine }) {
             }
       }
     />
-  )
+  );
 }

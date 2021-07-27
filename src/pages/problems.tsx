@@ -49,28 +49,24 @@ export default function ProblemsPage(props: PageProps) {
               <CustomSearchBox />
             </div>
           </div>
-          <div className="flex mt-4 mb-1 mx-9 justify-center" >
+          <div className="flex mt-4 mb-1 mx-9 justify-center">
             <PoweredBy />
-          </div> 
+          </div>
           <div className="pt-3 px-9 pb-4 grid grid-cols-10">
             <div className="sm:col-span-4 md:col-span-3 lg:col-span-2 xl:col-span-2 col-span-5 overflow-y-auto">
-              <CustomRefinementList
-                attribute="tags"
-                limit={500}
-                searchable
-              />
+              <CustomRefinementList attribute="tags" limit={500} searchable />
             </div>
             <div className="py-0.5 px-1 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8 col-span-5 overflow-y-auto">
               <div className="flex mb-4 items-center grid grid-cols-2 lg:grid-cols-6 md:gird-cols-3 sm:gird-cols-3 gap-x-5 gap-y-3">
                 <div className="col-span-2">
-                  <CustomDifficultySelection 
+                  <CustomDifficultySelection
                     attribute="difficulty"
                     limit={500}
                     searchable
                   />
                 </div>
                 <div className="col-span-2 md:col-span-3 lg:col-span-4 tw-forms-disable-all-descendants">
-                  <CustomModuleSelection 
+                  <CustomModuleSelection
                     attribute="problemModules.title"
                     limit={500}
                     searchable
@@ -84,14 +80,14 @@ export default function ProblemsPage(props: PageProps) {
                   />
                 </div>
                 <div className="col-span-2">
-                  <CustomSectionSelection 
+                  <CustomSectionSelection
                     attribute="problemModules.id"
                     limit={500}
                     searchable
                   />
                 </div>
                 <div className="col-span-2 md:col-span-2">
-                  <CustomStatusSelection 
+                  <CustomStatusSelection
                     attribute="objectID"
                     limit={500}
                     searchable
