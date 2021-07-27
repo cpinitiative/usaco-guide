@@ -7,23 +7,20 @@ author: Timothy Gao
 
 ## Editorial
 
-Let us consider the Euler Tour of the tree. We flatten the tree into an arary, where each node corresponds to a range 
-in this array. Now, we are essentially tasked the find the number of distinct values in a range $N$ times(once for each node).
+Let us consider the Euler Tour of the tree. We flatten the tree into an array, where each node corresponds to a range in this array. Now, we are essentially tasked the find the number of distinct values in a range $N$ times(once for each node).
 
 There are a variety of ways to approach the problem from here.
 
 **Solution: BIT**
 
 One such solution is with a binary indexed tree. Let us consider iterating through the Euler tour array from left to right. 
-When we consider a node at index $i$ in the Euler tour array, it's subtree range will be $[j, i]$, where $j<=i$.
-Now, let's focus on a single color. Notice that if there are multiple of colors $c$ to the left of a certain index $i$,
-only $c$'s most rightmost occurance is relevant. This is because any non-rightmost occurance of $c$
-from $i$ must include the rightmost occurance of $c$. More formally, 
+When we consider a node at index $i$ in the Euler tour array, its subtree range will be $[j, i]$, where $j<=i$.
+Now, let's focus on a single color. Notice that if there are multiple colors $c$ to the left of a certain index $i$,
+only $c$'s most rightmost occurrence is relevant. This is because any non-rightmost occurrence of $c$
+from $i$ must include the rightmost occurrence of $c$. More formally, 
 any segment $[l, r]$ must contains $i$ if $l <= i <= r$. 
 
-With this observation, we can essentially reduce the distinct colors queries to a simple range query. As we iterate
- through the Euler Tour from left to right, mark the current index(in the BIT) as 1, and if the color of the node at current index 
-has occured before, make it 0 in the BIT. We can find the solution to every node by doing a sum query
+With this observation, we can essentially reduce the distinct colors queries to a simple range query. As we iterate through the Euler Tour from left to right, mark the current index(in the BIT) as 1, and if the color of the node at the current index has occurred before, make it 0 in the BIT. We can find the solution to every node by doing a sum query
  as we iterate.
 
 **Time Complexity:** $\mathcal O(N\log N)$
@@ -61,12 +58,12 @@ struct BIT {
 		}
 };
 
-const int maxn = 2e5+1;
+const int MAXN = 2e5+1;
 
 //Euler Tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
-int tour[maxn], color[maxn], answer[maxn], lend[maxn];
+int tour[MAXN], color[MAXN], answer[MAXN], lend[MAXN];
 
-vector<int> adj[maxn];
+vector<int> adj[MAXN];
 int idx = 0;
 
 void dfs(int u, int par = 0){
@@ -92,13 +89,13 @@ int main(){
 	dfs(1);
 	BIT bit(N);
 	map<int, int> last;
-// This map stores the rightmost occurance of each color
+// This map stores the rightmost occurrence of each color
 	for(int i = 0; i < N; i++){
 		if(last.count(color[tour[i]])){ //If we ever considered the color of tour[i]
 			bit.update(last[color[tour[i]]], -1);
 			//The last time the color of tour[i] appeared, we make that 0 again
 		}
-		last[color[tour[i]]] = i; //We change the last occurance of the color of tour[i]
+		last[color[tour[i]]] = i; //We change the last occurrence of the color of tour[i]
 		bit.update(i, 1); //We reflect that change in our BIT
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
 		//The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
