@@ -60,7 +60,7 @@ struct BIT {
 
 const int MAXN = 2e5+1;
 
-//Euler Tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
+// Euler Tour, color of each node, answer for each node, left endpoint of each node(as explained in editorial)
 int tour[MAXN], color[MAXN], answer[MAXN], lend[MAXN];
 
 vector<int> adj[MAXN];
@@ -89,16 +89,20 @@ int main(){
 	dfs(1);
 	BIT bit(N);
 	map<int, int> last;
-// This map stores the rightmost occurrence of each color
+	// This map stores the rightmost occurrence of each color
+
 	for(int i = 0; i < N; i++){
-		if(last.count(color[tour[i]])){ //If we ever considered the color of tour[i]
-			bit.update(last[color[tour[i]]], -1);
-			//The last time the color of tour[i] appeared, we make that 0 again
+		// If we ever considered the color of tour[i]
+		if(last.count(color[tour[i]])){ 
+			// The last time the color of tour[i] appeared, we make that 0 again
+			bit.update(last[color[tour[i]]], -1); 
 		}
-		last[color[tour[i]]] = i; //We change the last occurrence of the color of tour[i]
-		bit.update(i, 1); //We reflect that change in our BIT
+		// We change the last occurrence of the color of tour[i]
+		last[color[tour[i]]] = i; 
+		// We reflect that change in our BIT
+		bit.update(i, 1); 
+		// The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
-		//The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
 	}
 	for(int i = 1; i <= N; i++){
 		cout << answer[i] << " ";
