@@ -16,14 +16,14 @@ There are a variety of ways to approach the problem from here.
 
 One such solution is with a binary indexed tree. Let us consider iterating through the Euler tour array from left to right. 
 When we consider a node at index $i$ in the Euler tour array, it's subtree range will be $[j, i]$, where $j<=i$.
-Now, let's focus on a single color. Notice that if there are multiple of color $c$ to the left of a certain index $i$,
-we really only care about $c$'s most recent(rightmost) occurance. This is because any none-rightmost occurance of $c$
-from $i$ must include the right most occurance of $c$. If that's confusing to you, we're essentially saying that 
+Now, let's focus on a single color. Notice that if there are multiple of colors $c$ to the left of a certain index $i$,
+only $c$'s most rightmost occurance is relevant. This is because any non-rightmost occurance of $c$
+from $i$ must include the rightmost occurance of $c$. More formally, 
 any segment $[l, r]$ must contains $i$ if $l <= i <= r$. 
 
 With this observation, we can essentially reduce the distinct colors queries to a simple range query. As we iterate
  through the Euler Tour from left to right, mark the current index(in the BIT) as 1, and if the color of the node at current index 
- has occured before, make it 0 in the BIT(by updating with -1). We can find the solution to every node by doing a sum query
+has occured before, make it 0 in the BIT. We can find the solution to every node by doing a sum query
  as we iterate.
 
 **Time Complexity:** $\mathcal O(N\log N)$
@@ -93,18 +93,13 @@ int main(){
 	BIT bit(N);
 	map<int, int> last;
 // This map stores the rightmost occurance of each color
-
 	for(int i = 0; i < N; i++){
 		if(last.count(color[tour[i]])){ //If we ever considered the color of tour[i]
-
 			bit.update(last[color[tour[i]]], -1);
 			//The last time the color of tour[i] appeared, we make that 0 again
-
 		}
 		last[color[tour[i]]] = i; //We change the last occurance of the color of tour[i]
-
 		bit.update(i, 1); //We reflect that change in our BIT
-
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
 		//The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
 	}
