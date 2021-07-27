@@ -28,56 +28,56 @@ void setIn(string s) { freopen(s.c_str(),"r",stdin); }
 void setOut(string s) { freopen(s.c_str(),"w",stdout); }
 
 int getNum(int start, int direction) {
-    int radius = 1;
-    int prev = start;
+	int radius = 1;
+	int prev = start;
 
-    while(true) {
-        int next = prev;
-        //Getting the furthest explosion index without exceeding the current radius
-        while(next + direction >= 0 && next + direction < N && abs(positions[next + direction] - positions[prev]) <= radius) {
-            next += direction;
-        }
+	while(true) {
+		int next = prev;
+		//Getting the furthest explosion index without exceeding the current radius
+		while(next + direction >= 0 && next + direction < N && abs(positions[next + direction] - positions[prev]) <= radius) {
+			next += direction;
+		}
 
-        //We didn't find a new haybale, so the chain explosion is over
-        if(next == prev) {
-            break;
-        }
+		//We didn't find a new haybale, so the chain explosion is over
+		if(next == prev) {
+			break;
+		}
 
-        //Update our previous explosion and increment radius
-        prev = next;
-        radius++;
-    }
+		//Update our previous explosion and increment radius
+		prev = next;
+		radius++;
+	}
 
-    //[start, ...., prev]
-    //...., prev
-    //[prev, ...., start]
-    //prev, ....
-    return abs(prev - start);
+	//[start, ...., prev]
+	//...., prev
+	//[prev, ...., start]
+	//prev, ....
+	return abs(prev - start);
 }
 
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    freopen("angry.in","r",stdin);
-    freopen("angry.out","w",stdout);
+	cin.tie(0)->sync_with_stdio(0);
+	freopen("angry.in","r",stdin);
+	freopen("angry.out","w",stdout);
 
-    cin >> N;
+	cin >> N;
 
-    positions.resize(N);
+	positions.resize(N);
 
-    for(int i = 0; i < N; i++) {
-        cin >> positions[i];
-    }
+	for(int i = 0; i < N; i++) {
+		cin >> positions[i];
+	}
 
-    sort(positions.begin(), positions.end());
+	sort(positions.begin(), positions.end());
 
 
-    for (int i = 0; i < N; i++) {
-        //Computing answer
-        A = max(A, getNum(i, -1) + getNum(i, 1) + 1);
-    }   
+	for (int i = 0; i < N; i++) {
+		//Computing answer
+		A = max(A, getNum(i, -1) + getNum(i, 1) + 1);
+	}   
 
-    cout << A;
+	cout << A;
 }
 ```
 
@@ -90,56 +90,56 @@ import java.util.*;
 import java.io.*;
 
 public class angrycowsB {
-    static int N, A = 0;
-    static int[] positions;
-    public static void main(String[] args) throws Exception {
-        Kattio io = new Kattio("angry");
+	static int N, A = 0;
+	static int[] positions;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("angry");
 
-        N = io.nextInt();
-        positions = new int[N];
+		N = io.nextInt();
+		positions = new int[N];
 
-        for (int i = 0; i < N; i++) {
-            positions[i] = io.nextInt();
-        }
+		for (int i = 0; i < N; i++) {
+			positions[i] = io.nextInt();
+		}
 
-        Arrays.sort(positions);
+		Arrays.sort(positions);
 
-        for (int i = 0; i < N; i++) {
-            //Computing answer
-            A = Math.max(A, getNum(i,-1) + getNum(i, 1) + 1);
-        }
+		for (int i = 0; i < N; i++) {
+			//Computing answer
+			A = Math.max(A, getNum(i,-1) + getNum(i, 1) + 1);
+		}
 
-        io.println(A);
-        io.close();
-    }
+		io.println(A);
+		io.close();
+	}
 
-    public static int getNum(int start, int direction) {
-        int radius = 1;
-        int prev = start;
+	public static int getNum(int start, int direction) {
+		int radius = 1;
+		int prev = start;
 
-        while(true) {
-            int next = prev;
-            //Getting the furthest explosion index without exceeding radius
-            while(next + direction >= 0 && next + direction < N && Math.abs(positions[next + direction] - positions[prev]) <= radius) {
-                next += direction;
-            }
+		while(true) {
+			int next = prev;
+			//Getting the furthest explosion index without exceeding radius
+			while(next + direction >= 0 && next + direction < N && Math.abs(positions[next + direction] - positions[prev]) <= radius) {
+				next += direction;
+			}
 
-            //We didn't find a new haybale, so the chain explosion is over
-            if(next == prev) {
-                break;
-            }
+			//We didn't find a new haybale, so the chain explosion is over
+			if(next == prev) {
+				break;
+			}
 
-            //Update our previous explosion and increment radius
-            prev = next;
-            radius++;
-        }
+			//Update our previous explosion and increment radius
+			prev = next;
+			radius++;
+		}
 
-        // [start, ...., prev]
-        // ..., prev
-        return Math.abs(prev - start);
-    }
+		// [start, ...., prev]
+		// ..., prev
+		return Math.abs(prev - start);
+	}
 
-    //CodeSnip
+	//CodeSnip
 }
 ```
 
