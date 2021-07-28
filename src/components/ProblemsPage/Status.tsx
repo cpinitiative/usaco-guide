@@ -4,10 +4,12 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useDarkMode } from '../../context/DarkModeContext';
 
 const options = [
+  { label: 'Not Attempted', value: 'Not Attempted' },
   { label: 'Solving', value: 'Solving' },
   { label: 'Solved', value: 'Solved' },
   { label: 'Reviewing', value: 'Reviewing' },
   { label: 'Skipped', value: 'Skipped' },
+  { label: 'Ignored', value: 'Ignored' },
 ]
 
 export default function Difficulty({ refine }) { 
