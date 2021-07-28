@@ -52,7 +52,8 @@ const SubmissionListItem = ({
               submissionTextColor[getSubmissionStatus(submission)]
             }`}
           >
-            {submission.status === ExecutionStatus.PENDING
+            {submission.result < 0 ||
+            submission.status === ExecutionStatus.PENDING
               ? '-'
               : getSubmissionEarnedPoints(submission, problem)}{' '}
             / {problem.points}

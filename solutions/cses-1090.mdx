@@ -5,29 +5,30 @@ title: Ferris Wheel
 author: Danh Ta Chi Thanh, Kenny Cho
 ---
 
-## Solution
-
 [Unofficial Editorial](https://codeforces.com/blog/entry/83295)
 
 Since each gondola can contain either 1 or 2 children, for each gondola, we can
-either
+do one of two things:
 
-1. pair the lightest child with the heaviest child possible without exceeding
-   the weight limit; if pairing isn't possible, we
-2. only include the lightest child.
+1. Pair the lightest child with the heaviest child possible without exceeding
+   the weight limit.
+2. If the pairing isn't possible, we only include the lightest child.
 
 Those left unpaired each get their own gondola. The implementation below uses
-this method.
+the above method.
 
-Alternatively, for each gondola, we can either
+Alternatively, for each gondola, we can also
 
-1. pair the heaviest child with the lightest child if possible; or
-2. only include the heaviest child.
+1. Pair the heaviest child with the lightest child if possible.
+2. Otherwise, only include the heaviest child.
 
 Both pairing methods can be achieved in $\mathcal{O}(n)$ time using two
-pointers, though sorting is more expensive.
+pointers, and sorting brings the overall time complexity to 
+$\mathcal{O}(n\log n)$.
 
-**Overall Time Complexity:** $\mathcal{O}(n\log n)$ (from sorting)
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n\log n)$
 
 <LanguageSection>
 
@@ -38,12 +39,12 @@ pointers, though sorting is more expensive.
 
 using namespace std;
 
-//constant initialization
 const int maxn=2e5+10;
 
-//variables used for the current problem
+// Variables used for the current problem
 int n,x,p[maxn],i,j,ans;
-bool have_gondola_yet[maxn]; //A boolean array which counts the number of children who have had their own bondola
+// Keeps track of the number of children who have had their own gondola
+bool have_gondola_yet[maxn];
 
 void solve() {
 	cin >> n >> x;
@@ -52,20 +53,20 @@ void solve() {
 	i=0;j=n-1;
 	while (i<j){
 		if (p[i]+p[j]>x){
-			//If the total weight of two children exceeds x
-			//Then we move to the lighter child.
+			// If the total weight of two children exceeds x
+			// Then we move to the lighter child.
 			--j;
 		}
-		else{ //If it satisfies the condition.
-			++ans; //Increment the number of gondolas used
-			//Mark that they have had their gondola
+		else{ // If it satisfies the condition.
+			++ans; // Increment the number of gondolas used
+			// Mark that they have had their gondola
 			have_gondola_yet[i]=have_gondola_yet[j]=true;
 			++i; --j; //Move to the next children.
 		}
 	}
 	for (int i=0;i<n;++i){
-		//Calculate the number of children not having gondolas yet
-		//to get the total number of gondolas needed for the problem.
+		// Calculate the number of children not having gondolas yet
+		// to get the total number of gondolas needed for the problem.
 		ans+= have_gondola_yet[i] == false;
 	}
 	cout << ans << "\n";
@@ -80,5 +81,52 @@ int main(){
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class FerrisWheel {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int n = sc.nextInt();
+		int x = sc.nextInt();
+		sc.nextLine();
+
+		// Read in weights of children (this optimization is necessary to pass 
+		// all test cases)
+		String[] weightsStr = sc.nextLine().split(" ");
+		// weights is of type Integer to prevent having to cast the result from
+		// Integer.parseInt() to an int, saving time (part of optimization)
+		Integer[] weights = new Integer[n];
+		for (int i = 0; i < n; i++) {
+			weights[i] = Integer.parseInt(weightsStr[i]);
+		}
+		Arrays.sort(weights);
+
+		int ans = 0;
+		int i = 0;  // left pointer
+		int j = n - 1;  // right pointer
+		while (i <= j) {
+			ans++;  // Increment number of gondolas used
+			if (i == j) break;
+			// If total weight is too large, move to lighter child
+			if (weights[i] + weights[j] > x) {
+				j--;
+			}
+			// Otherwise, we pair the two children and move on
+			else {
+				i++;
+				j--;
+			}
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>

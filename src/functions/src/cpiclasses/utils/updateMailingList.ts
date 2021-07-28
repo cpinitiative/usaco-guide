@@ -11,6 +11,7 @@ export default async function updateMailingList({
   ip,
   level,
   fullFinancialAid,
+  joinLink,
 }: {
   email: string;
   firstName: string;
@@ -19,6 +20,7 @@ export default async function updateMailingList({
   ip: string;
   level: string;
   fullFinancialAid: boolean;
+  joinLink: string;
 }) {
   try {
     const listID = 'e122c7f3eb';
@@ -57,7 +59,13 @@ export default async function updateMailingList({
         ...(existingFields?.merge_fields || {}),
         FNAME: firstName,
         LNAME: lastName,
-        PROGLANG: preferredLanguage === 'java' ? 'Java' : preferredLanguage === 'cpp' ? 'C++' : 'Python',
+        PROGLANG:
+          preferredLanguage === 'java'
+            ? 'Java'
+            : preferredLanguage === 'cpp'
+            ? 'C++'
+            : 'Python',
+        BRVCJOINLK: joinLink,
       },
     };
 

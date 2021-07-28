@@ -11,6 +11,7 @@ import {
   ProblemMetadata,
   PROBLEM_DIFFICULTY_OPTIONS,
 } from '../../models/problem';
+import QuizGeneratorModal from '../QuizGeneratorModal';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../DynamicMarkdownRenderer/DynamicMarkdownRenderer')
@@ -99,6 +100,7 @@ export const EditorOutput = (): JSX.Element => {
         <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
           <ProblemSuggestionModalProvider>
             <RawMarkdownRenderer markdown={markdown} problems={problems} />
+            <QuizGeneratorModal />
           </ProblemSuggestionModalProvider>
         </MarkdownProblemListsProvider>
       </EditorContext.Provider>

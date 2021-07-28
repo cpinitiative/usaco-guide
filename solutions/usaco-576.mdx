@@ -1,0 +1,126 @@
+---
+id: usaco-576
+source: USACO Platinum 2015 December
+title: Max Flow
+author: Dustin Miao
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_maxflow_platinum_dec15.html)
+
+## Alternative Solution
+
+**Time Complexity**: $\mathcal O((n+m)\log n)$
+
+For each path $(a, b)$, we can split it into two paths: $(a, lca(a, b)), (b, lca(a, b))$. We 
+can find the lca with any method, but the easiest is with binary lifting. For each node, 
+keep track of the number of paths that begin at that node and the number that end at that node. 
+
+If $k$ is the number of paths coming from a node's children, $s$ is the number of paths 
+starting at the current node, and $e$ is the number of paths ending at the current node, 
+then the answer for that node is $k + s - e / 2$. The $e / 2$ is because by splitting up
+the paths, we double count the lca for each path. The number of paths going to the node's
+parent is $k + s - e$. Thus, we can process all the paths at once using a single post-order 
+traversal of the tree. 
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+	
+const int MAXN = 50001;
+const int LOGN = 20;
+
+int N, M;
+vector<int> adj[MAXN];	// adj[u] = neighbors of u
+
+int dep[MAXN];		// dep[u] = depth of u
+int par[MAXN][LOGN];	// par[u][k] = 2^k parent of u
+	
+int ans[MAXN];		// ans[u] = amount of milk through u
+int S[MAXN];		// S[u] = # of paths starting at u
+int E[MAXN];		// E[u] = # of paths ending at u
+
+// initializes (direct) parent and depth 
+// u = current node
+// p = parent of u (parent of root is root)
+// d = depth of u
+void init_bl(int u, int p, int d) {
+	dep[u] = d;
+	par[u][0] = p;
+	for (int v : adj[u])
+		if (v != p)
+			init_bl(v, u, d + 1);
+}
+
+// initializes binary lift
+void init_bl() {
+	init_bl(1, 1, 0);
+	for (int k = 1; (1 << k) <= N; k++)
+		for (int i = 1; i <= N; i++)
+			par[i][k] = par[par[i][k - 1]][k - 1];
+}
+
+// queries the least common ancestor of two nodes
+// a = node 1
+// b = node 2
+int query_lca(int a, int b) {
+	if (dep[a] > dep[b])
+		swap(a, b);
+	for (int k = LOGN - 1; k >= 0; k--)
+		if (dep[b] - (1 << k) >= dep[a])
+			b = par[b][k];
+	if (a == b)
+		return a;
+	for (int k = LOGN - 1; k >= 0; k--)
+		if (par[a][k] != par[b][k])
+			a = par[a][k], b = par[b][k];
+	return par[a][0];
+} 
+
+// initializes ans
+// u = current node
+// p = parent of u
+int dfs_ans(int u, int p) {
+	int sum = 0;
+	for (int v : adj[u])
+		if (v != p)
+			sum += dfs_ans(v, u);
+	ans[u] = sum + S[u] - E[u] / 2;
+	return sum + S[u] - E[u];
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("maxflow.in", "r", stdin);
+	freopen("maxflow.out", "w", stdout);
+	
+	cin >> N >> M;
+	for (int i = 1; i < N; i++) {
+		int a, b; cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	
+	init_bl();
+	while (M--) {
+		int a, b; cin >> a >> b;
+		S[a]++, S[b]++, E[query_lca(a, b)] += 2;
+	}
+
+	dfs_ans(1, 0);
+
+	int maxAns = 0;
+	for (int i = 1; i <= N; i++) 
+		maxAns = max(maxAns, ans[i]);
+	cout << maxAns << '\n';
+}
+
+```
+</CPPSection>
+
+</LanguageSection>
