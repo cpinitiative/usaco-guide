@@ -37,7 +37,7 @@ export default function ProblemsPage(props: PageProps) {
     <Layout>
       <SEO title="All Problems" />
 
-      <div className="bg-gray-100 dark:bg-dark-surface">
+      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
         <TopNavigationBar />
 
         <InstantSearch searchClient={searchClient} indexName={indexName}>
