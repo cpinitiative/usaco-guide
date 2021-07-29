@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Select from 'react-select';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useDarkMode } from '../../context/DarkModeContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 const options = [
   { label: 'Not Attempted', value: 'Not Attempted' },
@@ -10,14 +10,14 @@ const options = [
   { label: 'Reviewing', value: 'Reviewing' },
   { label: 'Skipped', value: 'Skipped' },
   { label: 'Ignored', value: 'Ignored' },
-]
+];
 
-export default function Difficulty({ refine }) { 
-  const darkMode = useDarkMode()
+export default function Difficulty({ refine }): JSX.Element {
+  const darkMode = useDarkMode();
   const data = useContext(UserDataContext).userProgressOnProblems;
-  
+
   const handleChange = e => {
-    let refinements = [];
+    const refinements = [];
     for (const status of e) {
       for (const key of Object.keys(data)) {
         if (data[key] == status.label) {
@@ -26,7 +26,7 @@ export default function Difficulty({ refine }) {
       }
     }
     refine(refinements);
-  }
+  };
 
   return (
     <Select
@@ -36,9 +36,7 @@ export default function Difficulty({ refine }) {
       isMulti
       isSearchable={false}
       options={options}
-      className={
-        !darkMode ? "text-black" : "text-white" 
-      }
+      className={!darkMode ? 'text-black' : 'text-white'}
       classNamePrefix="select"
       styles={
         !darkMode
@@ -92,5 +90,5 @@ export default function Difficulty({ refine }) {
             }
       }
     />
-  )
+  );
 }
