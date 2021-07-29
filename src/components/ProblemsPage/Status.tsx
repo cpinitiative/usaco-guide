@@ -1,21 +1,23 @@
 import React, { useContext } from 'react';
 import Select from 'react-select';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useDarkMode } from '../../context/DarkModeContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 const options = [
+  { label: 'Not Attempted', value: 'Not Attempted' },
   { label: 'Solving', value: 'Solving' },
   { label: 'Solved', value: 'Solved' },
   { label: 'Reviewing', value: 'Reviewing' },
   { label: 'Skipped', value: 'Skipped' },
+  { label: 'Ignored', value: 'Ignored' },
 ];
 
-export default function Difficulty({ refine }) {
+export default function Difficulty({ refine }): JSX.Element {
   const darkMode = useDarkMode();
   const data = useContext(UserDataContext).userProgressOnProblems;
 
   const handleChange = e => {
-    let refinements = [];
+    const refinements = [];
     for (const status of e) {
       for (const key of Object.keys(data)) {
         if (data[key] == status.label) {
