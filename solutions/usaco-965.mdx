@@ -7,6 +7,9 @@ authors: Benjamin Qi, Ananth Kashyap
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_lineup_bronze_dec19.html)
 
+
+<LanguageSection>
+<CPPSection>
 ## Solution w/ Graphs
 
 What if there were up to $10^5$ cows? Then neither of the solutions provided in
@@ -89,15 +92,26 @@ int main() {
 	}
 }
 ```
+</CPPSection>
 
+<PySection>
+## Brute Force with Itertools
+
+<Warning>
+Due to the brute force nature of this solution, it is very slow and is not the optimal solution.
+</Warning>
+We can easily iterate through every possible permutation of cows in lexographic order using Itertools. Then we can check for the first permutation that meets the adjacency constraints and this will be our answer. 
+
+**Time Complexity:** $\mathcal{O}(NC*C!)$, where $C$ represents the number of cows 
 ```py
+NUM_COWS = 8
 from itertools import permutations
 
 data = open('lineup.in').read().strip().split('\n')
 n = int(data[0])
 
-cows = sorted(['Bessie', 'Buttercup', 'Belinda',
-              'Beatrice', 'Bella', 'Blue', 'Betsy', 'Sue'])
+cows = sorted(['Bessie', 'Buttercup', 'Belinda', 'Beatrice', 
+				'Bella', 'Blue', 'Betsy', 'Sue'])
 adjacents = []
 
 for i in range(n):
@@ -114,7 +128,7 @@ for i in orderings:
         if abs(i.index(j[0]) - i.index(j[1])) == 1:
             count += 1
     if count == n:
-        for k in range(8):
+        for k in range(NUM_COWS):
             if k != 7:
                 ans += (i[k] + '\n')
             else:
@@ -122,5 +136,6 @@ for i in orderings:
         break
 
 print(ans, file=open('lineup.out', 'w'))
-
 ```
+</PySection>
+</LanguageSection>
