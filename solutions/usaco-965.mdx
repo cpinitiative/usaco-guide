@@ -112,27 +112,27 @@ data = open('lineup.in').read().strip().split('\n')
 n = int(data[0])
 
 cows = sorted(['Bessie', 'Buttercup', 'Belinda', 'Beatrice', 
-						'Bella', 'Blue', 'Betsy', 'Sue'])
+		'Bella', 'Blue', 'Betsy', 'Sue'])
 adjacents = []
 
 for i in range(n):
-		temp = data[i + 1].split(' ')
-		adjacents.append([temp[0], temp[-1]])
+	temp = data[i + 1].split(' ')
+	adjacents.append([temp[0], temp[-1]])
 
 ans = ''
 orderings = [list(permutation) for permutation in list(permutations(cows))]
 for i in orderings:
-		count = 0
-		for j in adjacents:
-				if abs(i.index(j[0]) - i.index(j[1])) == 1:
-						count += 1
-		if count == n:
-				for k in range(NUM_COWS):
-						if k != 7:
-								ans += (i[k] + '\n')
-						else:
-								ans += i[k]
-				break
+	count = 0
+	for j in adjacents:
+		if abs(i.index(j[0]) - i.index(j[1])) == 1:
+			count += 1
+	if count == n:
+		for k in range(NUM_COWS):
+			if k != 7:
+				ans += (i[k] + '\n')
+			else:
+				ans += i[k]
+		break
 
 print(ans, file=open('lineup.out', 'w'))
 ```
