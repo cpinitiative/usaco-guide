@@ -76,4 +76,45 @@ int main(){
 
 ```
 </CPPSection>
+	
+<JavaSolution>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(input.readLine());
+        int[] nums = new int[N];
+        String[] line2 = input.readLine().split(" ");
+        for (int i = 0; i < N; i++) nums[i] = Integer.parseInt(line2[i]);
+        input.close();
+
+        int[] prefixGCD = new int[N + 1], suffixGCD = new int[N + 1];
+
+        for (int i = 1; i <= N; i++)
+            prefixGCD[i] = gcd(prefixGCD[i - 1], nums[i - 1]);
+
+        for (int i = N - 1; i >= 0; i--)
+            suffixGCD[i] = gcd(suffixGCD[i + 1], nums[i]);
+
+        int res = 0;
+        for (int i = 1; i <= N; i++)
+            res = Math.max(res, gcd(prefixGCD[i - 1], suffixGCD[i]));
+
+        System.out.println(res);
+    }
+
+    private static int gcd(int a, int b) {
+        return a == 0 ? b : gcd(b % a, a);
+    }
+}
+
+```
+
+</JavaSolution>
+
 </LanguageSection>
