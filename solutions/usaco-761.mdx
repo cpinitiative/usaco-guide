@@ -7,7 +7,7 @@ author: Ryan Chou
 
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_measurement_bronze_dec17.html)
 
-## Solution
+## Explanation
 
 Since there are only $3$ cows and $N \leq 1000$, we can sort all of the entries by date and update the selected cow's milk value for each entry.
 
@@ -16,7 +16,7 @@ Since there are only $3$ cows and $N \leq 1000$, we can sort all of the entries 
 **Time Complexity:** $\mathcal{O}(N)$
 <LanguageSection>
 <PySection>
-  
+
 ```py
 import sys
 sys.stdin = open('measurement.in', 'r')
@@ -53,24 +53,24 @@ for i in logs:
 	elif i[1] == "Mildred":
 		mildred += i[2]
 
-    # Find the maximum amount of milk that's being produced.
+	# Find the maximum amount of milk that's being produced.
 		curmax = max(bessie, max(elsie, mildred))
-	
-    # Duplicate the current display, this will be used to 
-    # see whether the top cows stay the same.
+
+	# Duplicate the current display, this will be used to 
+	# see whether the top cows stay the same.
 	tmp_display = display.copy()
 
-    # If Bessie is producing the maximum,
+	# If Bessie is producing the maximum,
 	if bessie == curmax:
-        # add her to the display.
+	# add her to the display.
 		display.add('b')
 	else:
-        # If she isn't producing the maximum and she's currently 
-        # in the display, remove her.
+	# If she isn't producing the maximum and she's currently 
+	# in the display, remove her.
 		if 'b' in display:
 			display.remove('b')
-    
-    # Same for Elsie.
+
+	# Same for Elsie.
 	if elsie == curmax:
 		display.add('e')
 	else:
@@ -83,7 +83,7 @@ for i in logs:
 	else:
 		if 'm' in display:
 			display.remove('m')
-    
+
 	# If the display has changed, FJ needs to update it.
 	if sorted(list(display)) != sorted(list(tmp_display)):
 		ans += 1
