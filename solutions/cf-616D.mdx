@@ -6,18 +6,21 @@ author: Sofia Yang, Mohammad Nour Massri
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/22712)
-## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
+
+## Implementation
+
 <LanguageSection>
 <CPPSection>
 ```cpp 
 
 #include <bits/stdc++.h>
 using namespace std;
+const int N = 5e5+9,MAX_Ai = 1e6+9;
 int n,k;
-int a[500009];
-int frequency[1000009];//frequency of each number in the window
+int a[N];
+int frequency[MAX_Ai];//frequency of each number in the window
 int maxSegment,leftMaxSegment,rightMaxSegment;//max size of the segment and its ends
 
 int main(){
@@ -34,18 +37,20 @@ int main(){
 
     for(int l=0;l<n;l++){//l is the left end of the window
 
-        //we can expand the window [l,r] to [l,r+1] if these 2 conditions hold:
-        //1. r < n-1 making sure we don't go beyond the array's boundaries
-        //2. adding the value a[r+1] to the window does not increase the
-        //number of different values in the window to be larger than k
-
+        /*
+	we can expand the window [l,r] to [l,r+1] if these 2 conditions hold:
+        1. r < n-1 making sure we don't go beyond the array's boundaries
+        2. adding the value a[r+1] to the window does not increase the
+        number of different values in the window to be larger than k
+	*/
+		  
         while(r<n-1 && cntDifVal+(frequency[a[r+1]]==0) <= k){
             cntDifVal += frequency[a[r+1]]==0;//update the number of different values
             frequency[a[r+1]]++;//update the frequency array
             r++;//update the right end of the current window
         }
 
-		//update the answer if we find a larger segment
+	//update the answer if we find a larger segment
         if(r-l+1 > maxSegment){
             maxSegment = r-l+1;
             leftMaxSegment = l;
@@ -56,7 +61,7 @@ int main(){
         frequency[a[l]]--;//update the frequency
         cntDifVal -= frequency[a[l]] == 0;//update the number of different values
     }
-    // we add one because the answer should be 1-indexed
+    //we add one because the answer should be 1-indexed
     printf("%d %d\n",leftMaxSegment+1,rightMaxSegment+1);
 }
 
