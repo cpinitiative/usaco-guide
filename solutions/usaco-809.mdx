@@ -17,15 +17,15 @@ author: Sathvik Chundru
 import java.util.*;
 import java.io.*;
 
-public class Taming{
-	public static void main(String[] args) throws IOException{
+public class Taming {
+	public static void main(String[] args) {
 		Kattio io = new Kattio("taming");
 		int n = io.nextInt();
 		int[] log = new int[100000];
-		for(int i = 0; i < n; i++){
+		for (int i = 0; i < n; i++) {
 			log[i] = io.nextInt();
 		}
-		if(log[0] > 0){
+		if (log[0] > 0) {
 			io.println(-1);
 			io.close();
 			System.exit(0);
@@ -34,25 +34,25 @@ public class Taming{
 		int t = -1;
 		int req = 0;
 		int pos = 0;
-		for(int i = n - 1; i >= 0; i--){
-			if(t != -1 && log[i] != -1 && log[i] != t){
+		for (int i = n - 1; i >= 0; i--) {
+			if (t != -1 && log[i] != -1 && log[i] != t) {
 				io.println(-1);
 				io.close();
 				System.exit(0);
 			}
-			if(t == -1){
+			if (t == -1) {
 				t = log[i];
 			}
-			if(log[i] == -1){
+			if (log[i] == -1) {
 				log[i] = t;
 			}
-			if(log[i] == 0){
+			if (log[i] == 0) {
 				req++;
 			}
-			if(log[i] == -1){
+			if (log[i] == -1) {
 				pos++;
 			}
-			if(t > -1){
+			if (t > -1) {
 				t--;
 			}
 		}
