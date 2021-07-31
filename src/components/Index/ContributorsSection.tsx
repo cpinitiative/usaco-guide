@@ -53,7 +53,7 @@ export default function ContributorsSection() {
                         </a>{' '}
                       </div>
                       <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
-                        (since {author.sinceDate})
+                        since {author.sinceDate}
                       </p>
                     </div>
                   </div>
@@ -84,7 +84,7 @@ export default function ContributorsSection() {
                         </a>{' '}
                       </div>
                       <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
-                        (since {author.sinceDate})
+                        since {author.sinceDate}
                       </p>
                     </div>
                   </div>
