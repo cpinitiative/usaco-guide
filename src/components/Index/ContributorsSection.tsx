@@ -38,7 +38,7 @@ export default function ContributorsSection() {
                   <div className="space-y-4">
                     <img
                       className="mx-auto h-20 w-20 rounded-full lg:w-24 lg:h-24"
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP6_17NG8ANxEYFEoILSNK6tn6YGc5Iyixww&usqp=CAU"
+                      src="https://i5.walmartimages.com/asr/be185d13-7b20-4595-bcdd-23bbe85f0074_1.d8c962e9921cd7f824d40d2f70adec30.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff"
                       alt=""
                     />
                     <div className="space-y-2">
@@ -69,7 +69,7 @@ export default function ContributorsSection() {
                   <div className="space-y-4">
                     <img
                       className="mx-auto h-20 w-20 rounded-full lg:w-24 lg:h-24"
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP6_17NG8ANxEYFEoILSNK6tn6YGc5Iyixww&usqp=CAU"
+                      src="https://i5.walmartimages.com/asr/be185d13-7b20-4595-bcdd-23bbe85f0074_1.d8c962e9921cd7f824d40d2f70adec30.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff"
                       alt=""
                     />
                     <div className="space-y-2">
