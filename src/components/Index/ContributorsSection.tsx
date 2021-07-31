@@ -76,7 +76,6 @@ export default function ContributorsSection() {
                           className="text-blue-600 dark:text-blue-400"
                         >
                           <h3>{author.name}</h3>
-                    
                         </a>{' '}
                       </div>
                       (since {author.sinceDate})
