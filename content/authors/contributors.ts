@@ -6,29 +6,14 @@ export type Contributor = {
 
 export const contentAuthors: Contributor[] = [
   {
-    name: "Albert Ye",
-    githubUsername: "xyzyzl",
-    sinceDate: "June 2021",
-  },
-  {
-    name: 'Ananth Kashyap',
-    githubUsername: 'AAkashyap1',
-    sinceDate: 'Apr 2021',
-  },
-  {
-    name: "Arpan Banerjee",
-    githubUsername: "ar492",
-    sinceDate: "June 2021",
-  },
-  {
-    name: "Brad Ma",
-    githubUsername: "brad182",
-    sinceDate: "June 2021",
-  },
-  {
     name: 'Jeffrey Meng',
     githubUsername: 'jeffreymeng',
     sinceDate: 'Oct 2020',
+  },
+  {
+    name: 'Neo Wang',
+    githubUsername: 'nwatx',
+    sinceDate: 'Jan 2021',
   },
   {
     name: 'Jesse Choe',
@@ -41,8 +26,13 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'Apr 2021',
   },
   {
-    name: "Melody Yu",
-    githubUsername: "cskitty",
+    name: 'Ananth Kashyap',
+    githubUsername: 'AAkashyap1',
+    sinceDate: 'Apr 2021',
+  },
+  {
+    name: "Sofia Yang",
+    githubUsername: "truashamu",
     sinceDate: "Apr 2021",
   },
   {
@@ -51,32 +41,42 @@ export const contentAuthors: Contributor[] = [
     sinceDate: "Apr 2021",
   },
   {
-    name: 'Neo Wang',
-    githubUsername: 'nwatx',
-    sinceDate: 'Jan 2021',
-  },
-  {
-    name: "Ryan Chou",
-    githubUsername: "ryanchou-dev",
-    sinceDate: "July 2021",
-  },
-  {
-    name: "Sofia Yang",
-    githubUsername: "truashamu",
+    name: "Melody Yu",
+    githubUsername: "cskitty",
     sinceDate: "Apr 2021",
   },
   {
     name: "Timothy Gao",
     githubUsername: "timothygao8710",
     sinceDate: "May 2021",
+  },
+  {
+    name: "Brad Ma",
+    githubUsername: "brad182",
+    sinceDate: "June 2021",
+  },
+  {
+    name: "Albert Ye",
+    githubUsername: "xyzyzl",
+    sinceDate: "June 2021",
+  },
+  {
+    name: "Arpan Banerjee",
+    githubUsername: "ar492",
+    sinceDate: "June 2021",
+  },
+  {
+    name: "Ryan Chou",
+    githubUsername: "ryanchou-dev",
+    sinceDate: "July 2021",
   }
 ];
 
 export const pastContentAuthors: Contributor[] = [
   {
-    name: "Andrew Cheng",
-    githubUsername: "Qw3rTy827",
-    sinceDate: "Apr 2021",
+    name: 'Óscar Garries Urbina',
+    githubUsername: 'Farrius',
+    sinceDate: 'Jan 2021',
   },
   {
     name: 'Mrinall Umasudhan',
@@ -84,18 +84,18 @@ export const pastContentAuthors: Contributor[] = [
     sinceDate: 'Feb 2021',
   },
   {
-    name: 'Óscar Garries Urbina',
-    githubUsername: 'Farrius',
-    sinceDate: 'Jan 2021',
-  },
-  {
-    name: "Sathvik Chundru",
-    githubUsername: "sathu-beep",
-    sinceDate: "May 2021",
+    name: "Andrew Cheng",
+    githubUsername: "Qw3rTy827",
+    sinceDate: "Apr 2021",
   },
   {
     name: "Zhixin Wang",
     githubUsername: "topazand",
     sinceDate: "Apr 2021",
+  },
+  {
+    name: "Sathvik Chundru",
+    githubUsername: "sathu-beep",
+    sinceDate: "May 2021",
   }
 ];
