@@ -29,9 +29,7 @@ export default function ContributorsSection() {
               </a>{' '}
               If you're in the United States, you can earn volunteer hours too!
             </p>
-          <h6>
-            Current Content Authors:
-          </h6>
+            <h6>Current Content Authors:</h6>
             <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {contentAuthors.map(author => (
                 <li key={author.name}>
@@ -52,15 +50,15 @@ export default function ContributorsSection() {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">(since {author.sinceDate})</p>
+                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">
+                        (since {author.sinceDate})
+                      </p>
                     </div>
                   </div>
                 </li>
               ))}
             </ul>
-           <h6>
-            Past Content Authors:
-            </h6>
+            <h6>Past Content Authors:</h6>
             <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
@@ -81,7 +79,9 @@ export default function ContributorsSection() {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                     <p className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">(since {author.sinceDate})</p>
+                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">
+                        (since {author.sinceDate})
+                      </p>
                     </div>
                   </div>
                 </li>
