@@ -55,5 +55,6 @@ export default function ContributorsSection() {
         </div>
       </div>
     </div>
+   </div>
   )
 }
