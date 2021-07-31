@@ -9,7 +9,7 @@ export default function ContributorsSection() {
     <div className="bg-white">
       <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
         <div className="space-y-8 sm:space-y-12">
-          <div className="text-lg max-w-prose mx-auto">
+          <div className="text-lg mx-auto">
             <p className="text-base text-center leading-6 text-blue-600 dark:text-blue-300 font-semibold tracking-wide uppercase">
               Contributors
             </p>
