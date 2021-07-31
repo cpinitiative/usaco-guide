@@ -4,7 +4,7 @@ title: 'Persistent Data Structures'
 author: Andi Qu, Benjamin Qi
 description: 'What if data structures could time travel?'
 prerequisites:
-  - sparse-seg
+  - sparse-segtree
 frequency: 1
 ---
 
@@ -20,8 +20,8 @@ times.
 
 <CPPSection>
 
-In C++, one can implement this to run in $\mathcal O(\log N)$ time per
-query and $\mathcal O(1)$ time per update by using an array of `vector`s.
+In C++, one can implement this to run in $\mathcal O(\log N)$ time per query and
+$\mathcal O(1)$ time per update by using an array of `vector`s.
 
 ```cpp
 vector<pair<int, int>> arr[100001]; // The persistent array
@@ -63,7 +63,8 @@ we use **path copying** instead.
 ### Path Copying
 
 One can implement path copying to run in $\mathcal O(\log N)$ time per query and
-update by using a binary-tree-like structure where array elements are the leaves.
+update by using a binary-tree-like structure where array elements are the
+leaves.
 
 This is very similar to a sparse segment tree. The key differences are that we
 have multiple roots and every time we "update" a node, we actually create a new
@@ -128,13 +129,13 @@ void init_arr(int nn, int* init) {
 
 </LanguageSection>
 
-Path copying is **fully persistent**. 
+Path copying is **fully persistent**.
 
 ## Persistent Segment Tree
 
 Since persistent arrays with path copying are so similar to sparse segment
-trees, it's relatively straightforward to convert one into a persistent
-segment tree - just add range queries!
+trees, it's relatively straightforward to convert one into a persistent segment
+tree - just add range queries!
 
 <FocusProblem problem="persistentSample" />
 
@@ -146,7 +147,7 @@ segment tree - just add range queries!
 		url="https://drive.google.com/file/d/0BwGLW04WRv0ITEZjRWlMSFc2bk0/view"
 		title="PSeg Slides"
 		starred
-	 />
+	/>
 	<Resource
 		source="Anudeep2011"
 		url="https://blog.anudeep2011.com/persistent-segment-trees-explained-with-spoj-problems/"
@@ -276,7 +277,7 @@ Consider the following problem:
 > $N, Q \leq 10^5$.
 
 Since each interval has two dimensions (i.e. left and right endpoints $l_i$ and
-$r_i$), we can view it as a *point* on the number line at $l_i$ with "value"
+$r_i$), we can view it as a _point_ on the number line at $l_i$ with "value"
 $r_i - l_i$ that was inserted at time $r_i$.
 
 Now, each query becomes "what is the most valuable point in the range $[x, y]$

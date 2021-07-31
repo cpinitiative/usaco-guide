@@ -59,7 +59,12 @@ export default async function updateMailingList({
         ...(existingFields?.merge_fields || {}),
         FNAME: firstName,
         LNAME: lastName,
-        PROGLANG: preferredLanguage === 'java' ? 'Java' : preferredLanguage === 'cpp' ? 'C++' : 'Python',
+        PROGLANG:
+          preferredLanguage === 'java'
+            ? 'Java'
+            : preferredLanguage === 'cpp'
+            ? 'C++'
+            : 'Python',
         BRVCJOINLK: joinLink,
       },
     };

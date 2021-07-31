@@ -1,0 +1,345 @@
+---
+id: dmoj-bots
+source: Bubble Cup
+title: Bots
+author: Kevin Sheng
+---
+
+[Official Editorial](https://bubblecup.org/Content/Media/Booklet2015.pdf#page=28)
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cassert>
+#include <vector>
+
+const int MOD = 1e9 + 7;
+
+long long pow(long long base, long long exp) {
+	assert(exp >= 0);
+	base %= MOD;
+	long long res = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1)  // if n is odd
+			res = res * base % MOD;
+		base = base * base % MOD;
+		exp /= 2;
+	}
+	return res;
+}
+
+long long mod_inv(long long n) {
+	return pow(n, MOD - 2);
+}
+
+int main() {
+	int max_moves;
+	std::cin >> max_moves;
+
+	long long total_states = 1;
+	long long curr_level = 1;
+	for (int l = 1; l <= max_moves; l++) {
+		curr_level = (curr_level * 2) % MOD;
+		total_states = (total_states + curr_level) % MOD;
+	}
+
+	// we have to multiply by 2 to get the actual # of one-child vertices
+	long long half_one_child_num = 1;
+	for (int l = max_moves + 1; l <= 2 * max_moves; l++) {
+		curr_level = (2 * curr_level - 2 * half_one_child_num) % MOD;
+		total_states = (total_states + curr_level) % MOD;
+
+		half_one_child_num = (half_one_child_num * l) % MOD;
+		half_one_child_num = (half_one_child_num * mod_inv(l - max_moves)) % MOD;
+	}
+	std::cout << (total_states + MOD) % MOD << std::endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class Bots {
+	private static final int MOD = (int) Math.pow(10, 9) + 7;
+	public static void main(String[] args) throws IOException {
+		int max_moves = Integer.parseInt(
+			new BufferedReader(new InputStreamReader(System.in)).readLine()
+		);
+
+		long total_states = 1;
+		long curr_level = 1;
+		for (int l = 1; l <= max_moves; l++) {
+			curr_level = (curr_level * 2) % MOD;
+			total_states = (total_states + curr_level) % MOD;
+		}
+
+		// we have to multiply by 2 to get the actual # of one-child vertices
+		long half_one_child_num = 1;
+		for (int l = max_moves + 1; l <= 2 * max_moves; l++) {
+			curr_level = (2 * curr_level - 2 * half_one_child_num) % MOD;
+			total_states = (total_states + curr_level) % MOD;
+
+			half_one_child_num = (half_one_child_num * l) % MOD;
+			half_one_child_num = (half_one_child_num * modInv((long) l - max_moves)) % MOD;
+		}
+		System.out.println((total_states + MOD) % MOD);
+	}
+
+	private static long modInv(long n) {
+		return pow(n, MOD - 2);
+	}
+
+	private static long pow(long base, long exp) {
+		assert exp >= 0;
+		base %= MOD;
+		long res = 1;
+		while (exp > 0) {
+			if (exp % 2 == 1)  // if n is odd
+				res = res * base % MOD;
+			base = base * base % MOD;
+			exp /= 2;  // divide by two
+		}
+		return res;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+Due to Python's slow speed, the below code only passes all test cases if you sumbit with PyPy.
+</Warning>
+
+```py
+MOD = int(1e9) + 7
+
+
+def mod_inv(n: int):
+	return pow(n, MOD - 2, MOD)
+
+
+max_moves = int(input())
+
+total_states = 1
+curr_level = 1
+for l in range(1, max_moves + 1):
+	curr_level = (curr_level * 2) % MOD
+	total_states = (total_states + curr_level) % MOD
+
+# we have to multiply by 2 to get the actual # of one-child vertices
+half_one_child_num = 1
+for l in range(max_moves + 1, 2 * max_moves + 1):
+	curr_level = (2 * curr_level - 2 * half_one_child_num) % MOD
+	total_states = (total_states + curr_level) % MOD
+	half_one_child_num = (half_one_child_num * l * mod_inv(l - max_moves)) % MOD
+
+print(total_states)
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2
+
+Let us first define a DP recurrence relation, with $\texttt{dp}[b][r]$ being the number of unique states where the blue bot has made $b$ moves and the red bot has made $r$ moves:
+$$
+\texttt{dp}[b][r]=\texttt{dp}[b - 1][r] + \texttt{dp}[b][r - 1]
+$$
+It follows that the answer is the sum of all the elements in $\texttt{dp}$.
+
+This is what $\texttt{dp}$ might look like for $n=4$:
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>3</td>
+			<td>6</td>
+			<td>10</td>
+			<td>15</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>4</td>
+			<td>10</td>
+			<td>20</td>
+			<td>35</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>5</td>
+			<td>15</td>
+			<td>35</td>
+			<td>70</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+Note that these numbers are exactly the same as the ones in Pascal's triangle, only rotated a bit! These numbers form a rotated square of length $n+1$ (henceforth referred to as $x$), and we can express its sum as
+$$
+\sum_{i=0}^{x-1} \sum_{j=i}^{x+i-1} {j \choose i}
+$$
+Using the [hockey stick identity](https://brilliant.org/wiki/hockey-stick-identity/), we see that this equals
+$$
+\begin{align*}
+&\sum_{i=0}^{x-1} {x+i \choose i+1}\\
+=&\sum_{i=1}^{x} {x+i-1 \choose i}
+\end{align*}
+$$
+We also know from the hockey stick identity that $\sum\limits_{i=0}^{a} {a+i-1 \choose i} = {a+2 \choose a}$. Thus, we get that
+$$
+\begin{align*}
+&\sum_{i=1}^{x-1} {x+i-1 \choose i}\\
+=&\sum_{i=0}^{x-1} {x+i-1 \choose i} - {x+i-1 \choose 0}\\
+=&{2x \choose x} - 1\\
+=&{2n+2 \choose n+1} - 1
+\end{align*}
+$$
+
+
+## Implementation 2
+
+**Time Complexity:**: $\mathcal{O}(N \log MOD)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cassert>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+
+const int MOD = 1e9 + 7;
+
+long long pow(long long base, long long exp) {
+	assert(exp >= 0);
+	base %= MOD;
+	long long res = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1)  // if n is odd
+			res = res * base % MOD;
+		base = base * base % MOD;
+		exp /= 2;
+	}
+	return res;
+}
+
+long long mod_inv(long long n) {
+	return pow(n, MOD - 2);
+}
+
+int main() {
+	int max_moves;
+	std::cin >> max_moves;
+	
+	pair<int, int> res_binom{max_moves * 2 + 2, max_moves + 1};
+	long long res_num = 1;
+	for (int i = res_binom.first; i > res_binom.first - res_binom.second; i--) {
+		res_num = res_num * i % MOD;
+	}
+	for (int i = 1; i <= res_binom.second; i++) {
+		res_num = res_num * mod_inv(i) % MOD;
+	}
+	cout << res_num - 1 << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class Bots {
+	private static final int MOD = (int) Math.pow(10, 9) + 7;
+	public static void main(String[] args) throws IOException {
+		int maxMoves = Integer.parseInt(
+			new BufferedReader(new InputStreamReader(System.in)).readLine()
+		);
+
+		int[] resBinom = new int[] {2 * maxMoves + 2, maxMoves + 1};
+		long resNum = 1;
+		for (int i = resBinom[0]; i > resBinom[0] - resBinom[1]; i--) {
+			resNum = resNum * i % MOD;
+		}
+		for (int i = 1; i <= resBinom[1]; i++) {
+			resNum = resNum * modInv(i) % MOD;
+		}
+		System.out.println(resNum - 1);
+	}
+
+	private static long modInv(long n) {
+		return pow(n, MOD - 2);
+	}
+
+	private static long pow(long base, long exp) {
+		assert exp >= 0;
+		base %= MOD;
+		long res = 1;
+		while (exp > 0) {
+			if (exp % 2 == 1)  // if n is odd
+				res = res * base % MOD;
+			base = base * base % MOD;
+			exp /= 2;  // divide by two
+		}
+		return res;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+Due to Python's slow speed, the below code only passes all test cases if you sumbit with PyPy.
+</Warning>
+
+```py
+MOD = int(1e9) + 7
+
+
+def mod_inv(n: int):
+	return pow(n, MOD - 2, MOD)
+
+
+max_moves = int(input())
+
+res_binom = [2 * max_moves + 2, max_moves + 1]
+res_num = 1
+for i in range(res_binom[0], res_binom[0] - res_binom[1], -1):
+	res_num = (res_num * i) % MOD
+for i in range(1, res_binom[1] + 1):
+	res_num = (res_num * mod_inv(i)) % MOD
+
+print(res_num - 1)
+```
+
+</PySection>
+</LanguageSection>

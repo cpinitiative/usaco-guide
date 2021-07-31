@@ -34,7 +34,7 @@ export default functions.https.onCall(
       maxUses: 1,
       expirationTime: null,
       usedBy: [],
-      author: "REGISTRATION_" + email,
+      author: 'REGISTRATION_' + email,
       id: joinLinkRef.id,
     });
 
@@ -47,7 +47,7 @@ export default functions.https.onCall(
         ip: context.rawRequest.ip,
         level,
         fullFinancialAid: true,
-        joinLink: `https://usaco.guide/groups/join?key=${joinLinkRef.id}`
+        joinLink: `https://usaco.guide/groups/join?key=${joinLinkRef.id}`,
       }),
       admin
         .firestore()
