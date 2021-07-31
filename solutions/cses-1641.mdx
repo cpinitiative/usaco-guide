@@ -2,9 +2,10 @@
 id: cses-1641
 source: CSES
 title: Sum of Three Values
-author: Andrew Wang
+author: Andrew Wang, Brad Ma
 ---
 
+## Implementation
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 This problem is an extension of the two sum problem except now with three
@@ -16,6 +17,10 @@ third pointer and check if all three pointers add up to the target amount, $x$,
 while having distinct positions. We can maintain the original positions of all
 values by storing the pairs `{a[i],i}`.
 
+<LanguageSection>
+
+<CPPSection>
+	
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -51,3 +56,77 @@ int main(){
 	cout << "IMPOSSIBLE" << endl;
 }
 ```
+	
+<CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class SumOfThreeValues {
+	static class comparator implements Comparator<Group> {
+		public int compare (Group one, Group two) {
+			return Integer.compare(one.value, two.value);
+		}
+	}
+
+	static class Group {
+		int value;
+		int index;
+	}
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int x = io.nextInt();
+		Group[] data = new Group[n];
+
+		for (int i = 1; i <= n; i++) {
+			// store the input in a class that has a value and an index
+			Group group = new Group();
+			group.value = io.nextInt();
+			group.index = i;
+
+			data[i - 1] = group;
+		}
+
+		Arrays.sort(data, new comparator());  // make the values in increasing order
+
+		for (int i = 0; i < n; i++) {
+			int left = 0;
+			int right = n - 1;
+
+			while (left != right) {
+				int target = x - data[i].value;
+				// if the left and the right are not i, their values sum up to the target
+				if (left != i && right != i && data[left].value + data[right].value == target) {
+					// we have an answer, output it
+					io.println(data[i].index + " " + data[left].index + " " + data[right].index);
+
+					io.close();
+					System.exit(0);  // can end the program now
+				}
+				// not equal to target, increase left if the sums are lower
+				if (data[left].value + data[right].value < target) {
+					left++;
+				}
+				// not equal to target, decrease right if the sums
+				// are greater than target
+				else {
+					right--;
+				}
+			}
+		}
+
+		// output impossible if you reach the end with no answer
+		io.println("IMPOSSIBLE");
+		io.close();
+	}
+}
+```
+	
+</JavaSection>
+	
+</LanguageSection>
