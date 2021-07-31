@@ -54,6 +54,34 @@ export default function ContributorsSection() {
                 </li>
               ))}
             </ul>
+            <h3 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10">
+              Past Content Authors
+            </h1>
+            <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
+              {pastContentAuthors.map(author => (
+                <li key={author.name}>
+                  <div className="space-y-4">
+                    <img
+                      className="mx-auto h-20 w-20 rounded-full lg:w-24 lg:h-24"
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP6_17NG8ANxEYFEoILSNK6tn6YGc5Iyixww&usqp=CAU"
+                      alt=""
+                    />
+                    <div className="space-y-2">
+                      <div className="text-xs font-medium lg:text-sm">
+                        <a
+                          href={`https://github.com/${author.githubUsername}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 dark:text-blue-400"
+                        >
+                          <h3>{author.name}</h3>
+                        </a>{' '}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
