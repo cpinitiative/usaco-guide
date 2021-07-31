@@ -6,7 +6,7 @@ import {
 
 export default function ContributorsSection() {
   return (
-    <div>
+    <div className="bg-white dark:bg-dark-surface">
       <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
         <div className="space-y-8 sm:space-y-12">
           <div className="text-lg max-w-prose mx-auto">
