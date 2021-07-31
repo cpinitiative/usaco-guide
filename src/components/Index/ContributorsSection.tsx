@@ -48,7 +48,7 @@ export default function ContributorsSection() {
                         >
                           <h3>{author.name}</h3>
                         </a>{' '}
-                       (since {author.sinceDate})
+                        (since {author.sinceDate})
                       </div>
                     </div>
                   </div>
