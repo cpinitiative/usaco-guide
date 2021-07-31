@@ -48,8 +48,8 @@ export default function ContributorsSection() {
                         >
                           <h3>{author.name}</h3>
                         </a>{' '}
-                        (since {author.sinceDate})
                       </div>
+                      (since {author.sinceDate})
                     </div>
                   </div>
                 </li>
@@ -76,9 +76,10 @@ export default function ContributorsSection() {
                           className="text-blue-600 dark:text-blue-400"
                         >
                           <h3>{author.name}</h3>
-                          (since {author.sinceDate})
+                    
                         </a>{' '}
                       </div>
+                      (since {author.sinceDate})
                     </div>
                   </div>
                 </li>
