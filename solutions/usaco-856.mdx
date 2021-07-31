@@ -2,12 +2,12 @@
 id: usaco-856
 source: USACO Bronze 2018 December
 title: The Bucket List
-author: Ananth Kashyap (Python) and Sathvik Chundru (C++)
+author: Ananth Kashyap, Sathvik Chundru, Brad Ma
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
 
-## Implementation
+## Implementation 1 - Brute Force
 
 **Time Complexity:** $\mathcal{O}(N)$
 
@@ -39,6 +39,54 @@ file_out.close()
 ```
 
 </PySection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class TheBucketList1 {
+	static final int maxTime = 1000;
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("blist");
+		int n = io.nextInt();
+
+		int[] startTimes = new int[n + 1];
+		int[] endTimes = new int[n + 1];
+		int[] bucketsNeeded = new int[n + 1];
+
+		for (int x = 1; x <= n; x++) {
+			startTimes[x] = io.nextInt();
+			endTimes[x] = io.nextInt();
+			bucketsNeeded[x] = io.nextInt();
+		}
+
+		// keep track of the maximum buckets in all of the times
+		int maxBuckets = 0;
+
+		// loop through each time and get the buckets needed
+		for (int time = 1; time <= maxTime; time++) {
+			int bucketsAtTime = 0;
+
+			// loop through and sum up the buckets for those with
+			// times in the range
+			for (int i = 1; i <= n; i++) {
+				if (startTimes[i] <= time && time <= endTimes[i]) {
+					bucketsAtTime += bucketsNeeded[i];
+				}
+			}
+			maxBuckets = Math.max(maxBuckets, bucketsAtTime);
+		}
+
+		io.println(maxBuckets);
+		io.close();
+	}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
 
