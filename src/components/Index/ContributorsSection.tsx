@@ -56,7 +56,7 @@ export default function ContributorsSection() {
             </ul>
             <h3 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10">
               Past Content Authors
-            </h1>
+            </h3>
             <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
