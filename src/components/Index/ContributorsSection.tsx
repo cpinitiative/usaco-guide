@@ -52,7 +52,7 @@ export default function ContributorsSection() {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside sm:text-xs space-y-2 mb-6">
+                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs sm:text-base space-y-2 mb-6">
                         (since {author.sinceDate})
                       </p>
                     </div>
@@ -83,7 +83,7 @@ export default function ContributorsSection() {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside sm:text-xs space-y-2 mb-6">
+                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs sm:text-base space-y-2 mb-6">
                         (since {author.sinceDate})
                       </p>
                     </div>
