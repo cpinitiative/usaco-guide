@@ -33,7 +33,6 @@ export default function ContributorsSection() {
               {contentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-4">
-                    // author.imageUrl
                     <img
                       className="mx-auto h-20 w-20 rounded-full lg:w-24 lg:h-24"
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP6_17NG8ANxEYFEoILSNK6tn6YGc5Iyixww&usqp=CAU"
@@ -49,7 +48,6 @@ export default function ContributorsSection() {
                         >
                           <h3>{author.name}</h3>
                         </a>{' '}
-                        // <p className="text-indigo-600">{person.role}</p>
                       </div>
                     </div>
                   </div>
