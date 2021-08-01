@@ -29,75 +29,74 @@ using vi = vector<int>;
 // return: first: possible or not, second: if possible, the schedule for the jobs
 pair<bool, vector<vi>> isFeasible(const vector<pi> &jobs, int N, int D, int machineCount)
 {
-  vector<vi> res(N);
-  int reqNum = 0;
-  for (int day = 1; day <= N; day++)
-  {
-    for (int j = 0; j < machineCount; j++)
-    {
-      // if all jobs before and on this day are finished,
-      // we can go to the next day, even if there are usable machines left
-      if (jobs.at(reqNum).first > day)
-        break;
-			
-      // if the current date is before the deadline for the job
-      if (jobs.at(reqNum).first + D >= day)
-        res[day - 1].push_back(jobs.at(reqNum++).second);
-      // otherwise, it is not feasible due to deadline
-      else
-        return mp(false, res);
+	vector<vi> res(N);
+	int reqNum = 0;
+	for (int day = 1; day <= N; day++)
+	{
+		for (int j = 0; j < machineCount; j++)
+		{
+			// if all jobs before and on this day are finished,
+			// we can go to the next day, even if there are usable machines left
+			if (jobs.at(reqNum).first > day)
+				break;
+			// if the current date is before the deadline for the job
+			if (jobs.at(reqNum).first + D >= day)
+				res[day - 1].push_back(jobs.at(reqNum++).second);
+			// otherwise, it is not feasible due to deadline
+			else
+				return mp(false, res);
 
-      // if we have processed all the requests, we have found a feasible sol
-      if (reqNum == jobs.size())
-        return mp(true, res);
-    }
-  }
-  // if not all the requests can be processed within the given N days,
-  // then it is not feasible
-  return mp(false, res);
+			// if we have processed all the requests, we have found a feasible sol
+			if (reqNum == jobs.size())
+				return mp(true, res);
+		}
+	}
+	// if not all the requests can be processed within the given N days,
+	// then it is not feasible
+	return mp(false, res);
 }
 
 int main()
 {
-  cin.tie(0)->sync_with_stdio(false);
+	cin.tie(0)->sync_with_stdio(false);
 
-  int N, D, M;
-  cin >> N >> D >> M;
-  vector<pi> jobs(M);
-  for (int i = 0; i < M; i++)
-  {
-    int day;
-    cin >> day;
-    // first: request date, second: index [1..M]
-    jobs[i] = mp(day, i + 1);
-  }
-  sort(all(jobs));
+	int N, D, M;
+	cin >> N >> D >> M;
+	vector<pi> jobs(M);
+	for (int i = 0; i < M; i++)
+	{
+		int day;
+		cin >> day;
+		// first: request date, second: index [1..M]
+		jobs[i] = mp(day, i + 1);
+	}
+	sort(all(jobs));
 
-  vector<vi> result;
-  // binary search on the number of machines
-  int l = 1, r = M / D + 1;
-  while (l < r)
-  {
-    int mid = (l + r) / 2;
-    pair<bool, vector<vi>> cur = isFeasible(jobs, N, D, mid);
-    if (cur.first)
-    {
-      r = mid;
-      result = cur.second;
-    }
-    else
-      l = mid + 1;
-  }
+	vector<vi> result;
+	// binary search on the number of machines
+	int l = 1, r = M / D + 1;
+	while (l < r)
+	{
+		int mid = (l + r) / 2;
+		pair<bool, vector<vi>> cur = isFeasible(jobs, N, D, mid);
+		if (cur.first)
+		{
+			r = mid;
+			result = cur.second;
+		}
+		else
+			l = mid + 1;
+	}
 
-  cout << l << "\n";
-  for (int i = 0; i < N; i++)
-  {
-    for (int &idx : result[i])
-      cout << idx << " ";
-    cout << 0 << "\n";
-  }
+	cout << l << "\n";
+	for (int i = 0; i < N; i++)
+	{
+		for (int &idx : result[i])
+			cout << idx << " ";
+		cout << 0 << "\n";
+	}
 
-  return 0;
+	return 0;
 }
 ```
 
