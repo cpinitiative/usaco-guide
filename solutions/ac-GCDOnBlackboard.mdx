@@ -85,36 +85,48 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(input.readLine());
-        int[] nums = new int[N];
-        String[] line2 = input.readLine().split(" ");
-        for (int i = 0; i < N; i++) nums[i] = Integer.parseInt(line2[i]);
-        input.close();
+	public static void main(String[] args) throws IOException {
+		// Open System.in and read data
+		BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(input.readLine()); // N is the length of the array
+		int[] nums = new int[N]; // The nums array (read from input)
+		String[] stringNums = input.readLine().split(" "); // The string representation of nums
+		
+		// Convert string nums into integers
+		for (int i = 0; i < N; i++) {
+			nums[i] = Integer.parseInt(stringNums[i]);
+		}
+		input.close(); // Close input
 
-        int[] prefixGCD = new int[N + 1], suffixGCD = new int[N + 1];
+		// Prefix GCD array, and suffixGCD array
+		int[] prefixGCD = new int[N + 1], suffixGCD = new int[N + 1];
 
-        for (int i = 1; i <= N; i++)
-            prefixGCD[i] = gcd(prefixGCD[i - 1], nums[i - 1]);
+		// Calculate prefix GCD (build from last prefixGCD)
+		for (int i = 1; i <= N; i++) {
+			prefixGCD[i] = gcd(prefixGCD[i - 1], nums[i - 1]);
+		}
 
-        for (int i = N - 1; i >= 0; i--)
-            suffixGCD[i] = gcd(suffixGCD[i + 1], nums[i]);
+		// Calculate suffix GCD (build from forward suffixGCD)
+		for (int i = N - 1; i >= 0; i--) {
+			suffixGCD[i] = gcd(suffixGCD[i + 1], nums[i]);
+		}
 
-        int res = 0;
-        for (int i = 1; i <= N; i++)
-            res = Math.max(res, gcd(prefixGCD[i - 1], suffixGCD[i]));
+		// Find the maximum GCD
+		int maxGCD = 0;
+		for (int i = 1; i <= N; i++) {
+			maxGCD = Math.max(maxGCD, gcd(prefixGCD[i - 1], suffixGCD[i]));
+		}
 
-        System.out.println(res);
-    }
+		// Output
+		System.out.println(maxGCD);
+	}
 
-    private static int gcd(int a, int b) {
-        return a == 0 ? b : gcd(b % a, a);
-    }
+	// Euclidian algorithm to calculate GCD
+	private static int gcd(int a, int b) {
+		return a == 0 ? b : gcd(b % a, a);
+	}
 }
-
 ```
-
 </JavaSection>
 
 </LanguageSection>
