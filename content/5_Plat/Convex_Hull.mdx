@@ -269,15 +269,15 @@ int main()
 
 With the Monotone Chain algorithm, we start by sorting the given $n$ points in ascending order with respect to their $x$ coordinates. If two points have the same $x$ coordinate, then we will look at the $y$ coordinate. 
 
-Next, we will calculate the convex hull in two parts - the upper and the lower hull. Firstly, we observe that the starting and ending points of both upper and lower hulls are the same. They are the points with the lowest and highest $x$ value respectively, $P_0$ and $P_{n-1}$. We start by adding $P_0$ and $P_1$ to the hull. (Note that $P_1$ doesn't necessarily have to be on the convex hull at the end). Then, starting from $P_2$, we iterate through the sorted points and add them to the hull. Let's denote the current point being added as $P_{k}$ and the last point still on the hull as $P_{i}$. When adding new points, we want to make sure that there is no right turn among all segments of the hull, just like in the Graham Scan algorithm discussed above. To achieve this, the segment $P_{i-1}P_i$ should always be on the left side of the segment $P_{i-1}P_k$. This can be calculated by using a cross-product: 
+Next, we will calculate the convex hull in two parts - the upper and the lower hull. Firstly, we observe that the starting and ending points of both upper and lower hulls are the same. They are the points with the lowest and highest $x$ value respectively, $P_0$ and $P_{n-1}$. We start by adding $P_0$ and $P_1$ to the hull. (Note that $P_1$ doesn't necessarily have to be on the convex hull at the end). Then, starting from $P_2$, we iterate through the sorted points and add them to the hull. Let's denote the current point being added as $P_{k}$ and the last point still on the hull as $P_{i}$. When adding new points, we want to make sure that there is no right turn among all segments of the hull, just like in the Graham Scan algorithm discussed above. To achieve this, the segment $P_{i-1}P_i$ should always be on the right side of the segment $P_{i-1}P_k$. This can be calculated by using a cross-product: 
 
 - If $(P_i - P_{i-1}) \times (P_k - P_{i-1}) < 0$, the point $P_i$ lies on the left side of the segment $P_{i-1}P_k$. In this case, we have to remove point $P_i$ from the hull and repeat this check. 
 - If $(P_i - P_{i-1}) \times (P_k - P_{i-1}) = 0$, the point $P_i$ lies on the segment $P_{i-1}P_k$. Whether to include multiple collinear points depends on the question, but for the given question above, we will remove the point $P_i$ as well and repeat the check. 
-- Otherwise, the point $P_i$ lies on the right side of the segment $P_{i-1}P_k$. In this case, we can process the next point $P_{k+1}$ from the given point list. 
+- Otherwise, the point $P_i$ lies on the right side of the segment $P_{i-1}P_k$. In this case, we can add &P_k& to the hull and process the next point $P_{k+1}$ from the given point list. 
 
 After all the points have been processed, we have found the lower hull and will begin to find the upper hull in the same manner. This time, we add point $P_{n-2}$ to the hull and iterate from the end of the points, $P_{n-3}$, to the starting point $P_0$. (The point $P_{n-2}$ also doesn't necessarily have to be the convex hull and could be removed if it causes a right turn). 
 
-At the end, we have traversed the points in the counterclockwise order. To do this in the clockwise order, one only has to change the condition for $(P_i - P_{i-1}) \times (P_k - P_{i-1})$ from more than 0 to less than 0. In this case, the upper hull will be found first and then the lower hull. 
+At the end, we have got all points of the convex hull in the counterclockwise order. To do this in the clockwise order, one only has to change the condition for $(P_i - P_{i-1}) \times (P_k - P_{i-1})$ from more than 0 to less than 0. In this case, the upper hull will be found first and then the lower hull. 
 
 This algorithm takes $\mathcal{O}(n \log n)$ time to sort the points and $\mathcal{O}(n)$ time to calculate the hull, giving a final time complexity of $\mathcal{O}(n \log n)$. 
 
@@ -304,9 +304,9 @@ Following the steps of the Monotone Chain algorithm:
 
 3. Find the upper hull: 
 
-   We first add the point $(5,3)$ to the end of the list and inspect the point $(3,5)$. The cross product for $((6,2) - (5,3)) \times ((6,2) - (3,5))$ is zero, meaning these three points are collinear. Therefore, we remove point $(5,3)$ from the list. As there is no enough points left in the upper hull, we add point $(3,5)$ to the list. The hull contains $[(1,2), (2,0), (6,2), (3,5)]$. Note the points $[(1,2), (2,0), (6,2)]$ belong to the lower hull and the point $(6,2)$ as the end point also belongs to the upper hull.  
+   We first add the point $(5,3)$ to the end of the list and process the point $(3,5)$. The cross product for $((6,2) - (5,3)) \times ((6,2) - (3,5))$ is zero, meaning these three points are collinear. Therefore, we remove point $(5,3)$ from the list. As there is no enough points left in the upper hull, we add point $(3,5)$ to the list. The hull contains $[(1,2), (2,0), (6,2), (3,5)]$. Note the points $[(1,2), (2,0), (6,2)]$ belong to the lower hull and the point $(6,2)$ as the end point also belongs to the upper hull.  
 
-	 Then we inspect the next point $(2,3)$. The segments $(6,2)(3,5)$ and $(3,5)(2,3)$ form a left turn, so we can add point $(2,3)$ to our hull. The list contains $[(1,2), (2,0), (6,2), (3,5), (2,3)]$. 
+	 Then we process the next point $(2,3)$. The segments $(6,2)(3,5)$ and $(3,5)(2,3)$ form a left turn, so we can add point $(2,3)$ to our hull. The list contains $[(1,2), (2,0), (6,2), (3,5), (2,3)]$. 
 
 	 The next point is $(2,0)$. The segments $(3,5)(2,3)$ and $(2,3)(2,0)$ form a left turn, so we can add point $(2,3)$ to our hull. The list contains $[(1,2), (2,0), (6,2), (3,5), (2,3), (2,0)]$.
 
