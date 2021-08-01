@@ -229,7 +229,7 @@ export type ProblemSolutionMetadata =
     };
 
 // Checks if a given source is USACO
-export const isUsaco = source => {
+export const isUsaco = (source: string): boolean => {
   const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
   for (let ind = 0; ind < posi.length; ++ind) {
     if (source.includes(posi[ind])) return true;
@@ -359,6 +359,11 @@ export const getProblemInfo = (
   } else if (solutionMetadata.kind === 'none') {
     sol = null;
   } else if (solutionMetadata.kind === 'in-module') {
+    if (!(solutionMetadata.moduleId in ordering.moduleIDToSectionMap)) {
+      throw new Error(
+        `Problem ${metadata.uniqueId} - solution in nonexistent module: ${solutionMetadata.moduleId}`
+      );
+    }
     sol = {
       kind: 'link',
       label: 'In Module',
