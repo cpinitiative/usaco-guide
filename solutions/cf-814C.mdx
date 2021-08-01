@@ -31,12 +31,12 @@ int main() {
 
 	for (int i = 0; i < query_num; i++) {
 		int max_repaint;
-		int koyomity = 0;
 		char color;
 		cin >> max_repaint >> color;
 
 		int l = 0;
 		int r = 0;
+		int koyomity = 0;
 		while (l < garland_len && r < garland_len) {
 			while (r < garland_len) {
 				if (garland[r] != color) {
@@ -78,31 +78,31 @@ const int MAX_N = 1500;
 int dp[26][MAX_N + 1];
 
 int main() {
-	int n;
-	string s;
-	cin >> n >> s;
-	for (int i = 1; i <= n; i++) {
-		int color = s[i - 1] - 'a';
+	int garland_len;
+	string garland;
+	cin >> garland_len >> garland;
+	for (int i = 1; i <= garland_len; i++) {
+		int color = garland[i - 1] - 'a';
 		dp[color][i]++;
 	}
 
 	for (int i = 0; i < 26; i++) {
-		for (int j = 1; j <= n; j++) {
+		for (int j = 1; j <= garland_len; j++) {
 			dp[i][j] = dp[i][j - 1] + dp[i][j];
 		}
 	}
 	
-	int q;
-	cin >> q;
-	for (int i = 0; i < q; i++) {
-		int m;
-		char c;
-		cin >> m >> c;
-		c -= 'a';
+	int query_num;
+	cin >> query_num;
+	for (int i = 0; i < query_num; i++) {
+		int max_repaint;
+		char color;
+		cin >> max_repaint >> color;
+		color -= 'a';
 		
 		int l = 1, r = 1, koyomity = 1;
-		while (r <= n) {
-			int c_count = dp[c][r] - dp[c][l - 1] + m;
+		while (r <= garland_len) {
+			int c_count = dp[color][r] - dp[color][l - 1] + max_repaint;
 			if (c_count < r - l + 1) {
 				l++;
 			} else {
@@ -171,46 +171,49 @@ using namespace std;
 const int MAX_N = 1500;
 
 int dp[MAX_N + 1][MAX_N + 1][26];
-int s[MAX_N + 1];
+int garland[MAX_N + 1];
 
 int main() {
-	int n;
-	cin >> n;
-	for (int i = 0; i < n; i++) {
+	int garland_len;
+	cin >> garland_len;
+	for (int i = 0; i < garland_len; i++) {
 		char a;
 		cin >> a;
-		s[i] = (int) (a - 'a');
+		garland[i] = (int) (a - 'a');
 	}
 
 	// i = length of string
 	// j = amount painting
 	// k = character
 	for (int k = 0; k < 26; k++) {  // lower case characters
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
+		for (int i = 0; i < garland_len; i++) {
+			for (int j = 0; j < garland_len; j++) {
 				// appending a character
 				dp[i + 1][j + 1][k] = max(dp[i + 1][j + 1][k], dp[i][j][k] + 1);
 				// if we can "save"
-				if (s[i] == k)
+				if (garland[i] == k)
 					dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k] + 1);
 			}
 		}
 	}
 
 	// take the current best and translate it
-	for (int k = 0; k < 26; k++)
-		for (int i = 0; i < n; i++)
-			for (int j = 0; j < n; j++)
+	for (int k = 0; k < 26; k++) {
+		for (int i = 0; i < garland_len; i++) {
+			for (int j = 0; j < garland_len; j++) {
 				dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k]);
+			}
+		}
+	}
 	
-	int q;
-	cin >> q;
-	for (int i = 0; i < q; i++) {
-		int m;
-		char c;
-		cin >> m >> c;
-		c -= 'a';
-		cout << dp[n][m][(int) c] << '\n';
+	int query_num;
+	cin >> query_num;
+	for (int i = 0; i < query_num; i++) {
+		int max_repaint;
+		char color;
+		cin >> max_repaint >> color;
+		color -= 'a';
+		cout << dp[garland_len][max_repaint][(int) color] << '\n';
 	}
 }
 ```
