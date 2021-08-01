@@ -1,0 +1,107 @@
+---
+id: ceoi-12-JobScheduling
+source: CEOI 2012
+title: Job Scheduling
+author: Chuyang Wang
+---
+
+We can use binary search to easily find the minimum number of machines needed for finishing the jobs within the given deadline. 
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define all(x) begin(x), end(x)
+#define mp make_pair
+
+using pi = pair<int, int>;
+using vi = vector<int>;
+
+// test if it is possible to finish the jobs using given # of machines
+// return: first: possible or not, second: if possible, the schedule for the jobs
+pair<bool, vector<vi>> isFeasible(const vector<pi> &jobs, int N, int D, int machineCount)
+{
+  vector<vi> res(N);
+  int reqNum = 0;
+  for (int day = 1; day <= N; day++)
+  {
+    for (int j = 0; j < machineCount; j++)
+    {
+      // if all jobs before and on this day are finished,
+      // we can go to the next day, even if there are usable machines left
+      if (jobs.at(reqNum).first > day)
+        break;
+			
+      // if the current date is before the deadline for the job
+      if (jobs.at(reqNum).first + D >= day)
+        res[day - 1].push_back(jobs.at(reqNum++).second);
+      // otherwise, it is not feasible due to deadline
+      else
+        return mp(false, res);
+
+      // if we have processed all the requests, we have found a feasible sol
+      if (reqNum == jobs.size())
+        return mp(true, res);
+    }
+  }
+  // if not all the requests can be processed within the given N days,
+  // then it is not feasible
+  return mp(false, res);
+}
+
+int main()
+{
+  cin.tie(0)->sync_with_stdio(false);
+
+  int N, D, M;
+  cin >> N >> D >> M;
+  vector<pi> jobs(M);
+  for (int i = 0; i < M; i++)
+  {
+    int day;
+    cin >> day;
+    // first: request date, second: index [1..M]
+    jobs[i] = mp(day, i + 1);
+  }
+  sort(all(jobs));
+
+  vector<vi> result;
+  // binary search on the number of machines
+  int l = 1, r = M / D + 1;
+  while (l < r)
+  {
+    int mid = (l + r) / 2;
+    pair<bool, vector<vi>> cur = isFeasible(jobs, N, D, mid);
+    if (cur.first)
+    {
+      r = mid;
+      result = cur.second;
+    }
+    else
+      l = mid + 1;
+  }
+
+  cout << l << "\n";
+  for (int i = 0; i < N; i++)
+  {
+    for (int &idx : result[i])
+      cout << idx << " ";
+    cout << 0 << "\n";
+  }
+
+  return 0;
+}
+```
+
+</CPPSection>
+
+
+</LanguageSection>
