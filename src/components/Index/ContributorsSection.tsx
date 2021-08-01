@@ -13,7 +13,7 @@ export default function ContributorsSection() {
             <p className="text-base text-center leading-6 text-blue-600 dark:text-blue-300 font-semibold tracking-wide uppercase">
               Contributors
             </p>
-            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10  max-w-prose">
+            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 mx-auto">
               By the Community, for the Community.
             </h1>
             <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6">
@@ -53,7 +53,7 @@ export default function ContributorsSection() {
                         </a>{' '}
                       </div>
                       <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
-                        since {author.sinceDate}
+                        Since {author.sinceDate}
                       </p>
                     </div>
                   </div>
