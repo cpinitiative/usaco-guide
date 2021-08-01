@@ -16,7 +16,7 @@ export default function ContributorsSection() {
             <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10">
               By the Community, for the Community.
             </h1>
-            <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6">
+            <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 max-w-prose">
               Interested in joining the USACO Guide team? We are recruiting
               Content Authors to help us improve the USACO Guide!{' '}
               <a
