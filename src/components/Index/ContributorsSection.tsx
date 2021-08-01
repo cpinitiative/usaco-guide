@@ -18,7 +18,7 @@ export default function ContributorsSection() {
             </h1>
             <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto">
               Interested in joining the USACO Guide team? We are recruiting
-              Content Authors to help us improve the USACO Guide!{' '}
+              Content Authors to <br>help us improve the USACO Guide!{' '}
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
@@ -27,7 +27,7 @@ export default function ContributorsSection() {
               >
                 Apply here.
               </a>{' '}
-              If you're in the United States, you can earn volunteer hours too!
+              If you're in the United States, you can <br>earn volunteer hours too!
             </p>
             <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-xl sm:leading-10">
               Current Content Authors:
