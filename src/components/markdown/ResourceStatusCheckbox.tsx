@@ -3,15 +3,15 @@ import * as React from 'react';
 import { useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 import 'tippy.js/themes/light.css';
-import ConfettiContext from '../../../context/ConfettiContext';
-import { useDarkMode } from '../../../context/DarkModeContext';
-import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import ConfettiContext from '../../context/ConfettiContext';
+import { useDarkMode } from '../../context/DarkModeContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
-  ProblemInfo,
-  ProblemProgress,
-  PROBLEM_PROGRESS_OPTIONS,
-} from '../../../models/problem';
+  ResourceInfo,
+  ResourceProgress,
+  ResourceProgressOptions,
+} from '../../models/resource';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -20,33 +20,29 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
+  const [activeProgress, setActiveProgress] = useState<ResourceProgress>(
     currentProgress
   );
 
-  const icon = (status: ProblemProgress, equal: boolean) => {
-    const colorMap: { [key in ProblemProgress]: string } = {
-      'Not Attempted': '',
-      Solving: 'text-orange-500',
-      Solved: 'text-green-400',
-      Reviewing: 'text-red-500',
+  const icon = (status: ResourceProgress, equal: boolean) => {
+    const colorMap: { [key in ResourceProgress]: string } = {
+      'Not Started': '',
+      Reading: 'text-yellow-300',
+      Practicing: 'text-orange-500',
+      Complete: 'text-green-400',
       Skipped: 'text-blue-400',
       Ignored: 'text-purple-400',
     };
-    const pathMap: { [key in ProblemProgress]: JSX.Element } = {
-      'Not Attempted': <> </>,
-      Solving: (
+    const pathMap: { [key in ResourceProgress]: JSX.Element } = {
+      'Not Started': <> </>,
+      Reading: (
+        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+      ),
+      Practicing: (
         <path d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" />
       ),
-      Solved: (
+      Complete: (
         <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-      ),
-      Reviewing: (
-        <path
-          fillRule="evenodd"
-          d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z"
-          clipRule="evenodd"
-        />
       ),
       Skipped: (
         <>
@@ -87,7 +83,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
       tabIndex={-1}
       className="rounded-md py-1 text-base leading-6 overflow-auto focus:outline-none sm:text-sm sm:leading-5 no-markdown"
     >
-      {PROBLEM_PROGRESS_OPTIONS.map(progress => (
+      {ResourceProgressOptions.map(progress => (
         <li
           role="option"
           className={`${
@@ -132,11 +128,11 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   );
 };
 
-export default function ProblemStatusCheckbox({
-  problem,
+export default function ResourcestatusCheckbox({
+  resource,
   size = 'small',
 }: {
-  problem: ProblemInfo;
+  resource: ResourceInfo;
   size?: 'small' | 'large';
 }): JSX.Element {
   const darkMode = useDarkMode();
@@ -144,10 +140,10 @@ export default function ProblemStatusCheckbox({
   const { userProgressOnModules, setModuleProgress } = useContext(
     UserDataContext
   );
-  const { userProgressOnProblems, setUserProgressOnProblems } = useContext(
+  const { userProgressOnResources, setUserProgressOnResources } = useContext(
     UserDataContext
   );
-  const updateModuleProgressToPracticing = () => {
+  const updateResourceProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
       !markdownLayoutContext.markdownLayoutInfo?.id
@@ -159,17 +155,17 @@ export default function ProblemStatusCheckbox({
       (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
       'Not Started';
     if (moduleProgress !== 'Not Started') return;
-    setModuleProgress(markdownLayoutInfo.id, 'Practicing');
+    setModuleProgress(markdownLayoutInfo.id, 'Reading');
   };
-  const status: ProblemProgress =
-    userProgressOnProblems[problem.uniqueId] || 'Not Attempted';
-  const color: { [key in ProblemProgress]: string } = {
-    'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
-    Solving: 'bg-orange-400 dark:bg-orange-400',
-    Solved: 'bg-green-500 dark:bg-green-600',
-    Reviewing: 'bg-red-500 dark:bg-red-600',
-    Ignored: 'bg-red-100 dark:bg-red-900',
+  const status: ResourceProgress =
+    userProgressOnResources[resource.url] || 'Not Started';
+  const color: { [key in ResourceProgress]: string } = {
+    'Not Started': 'bg-gray-200 dark:bg-gray-700',
+    Reading: 'bg-yellow-300 dark:bg-yellow-500',
+    Practicing: 'bg-orange-400 dark:bg-orange-600',
+    Complete: 'bg-green-500 dark:bg-green-600',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
+    Ignored: 'bg-red-100 dark:bg-red-900',
   };
   const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
@@ -181,12 +177,12 @@ export default function ProblemStatusCheckbox({
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
-              setUserProgressOnProblems(problem.uniqueId, progress);
-              const solved = x => x == 'Reviewing' || x == 'Solved';
-              if (progress == 'Solving' || solved(progress)) {
-                updateModuleProgressToPracticing();
+              setUserProgressOnResources(resource.url, progress);
+              const Practicing = x => x == 'Complete' || x == 'Practicing';
+              if (progress == 'Reading' || Practicing(progress)) {
+                updateResourceProgressToPracticing();
               }
-              if (!solved(status) && solved(progress)) {
+              if (!Practicing(status) && Practicing(progress)) {
                 showConfetti();
               }
             }}

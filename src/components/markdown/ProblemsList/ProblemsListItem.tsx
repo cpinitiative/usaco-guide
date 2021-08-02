@@ -6,13 +6,17 @@ import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
 import { useDarkMode } from '../../../context/DarkModeContext';
-import { contests, ProblemInfo, probSources } from '../../../models/problem';
+import {
+  contests,
+  isUsaco,
+  ProblemInfo,
+  probSources,
+} from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
-import { isUsaco } from '../../../models/problem';
 
 type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
@@ -98,7 +102,6 @@ export default function ProblemsListItem(
     if (parts[1] === 'US') parts[1] = 'open';
     else parts[1] = parts[1].toLowerCase().substring(0, 3);
     resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
-    // console.log('SOURCE', problem.source, resultsUrl);
   }
   const sourceCol = divisionTable ? (
     <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
