@@ -1,0 +1,82 @@
+---
+id: usaco-809
+source: USACO Bronze 2018 Febuary
+title: Taming the Herd
+author: Sathvik Chundru
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_bronze_feb18.html)
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class Taming {
+	public static void main(String[] args) {
+		Kattio io = new Kattio("taming");
+		int n = io.nextInt();
+		int[] log = new int[n];
+		for (int i = 0; i < n; i++) {
+			log[i] = io.nextInt();
+		}
+		/*
+		 * The first entry in the log is a special case, 
+		 * since Farmer John already knows the cows broke out on that day.
+		 */
+		if (log[0] > 0) {
+			io.println(-1);
+			io.close();
+			System.exit(0);
+		}
+		// If it is a missing entry, we can set it to 0.
+		log[0] = 0;
+		int t = -1;
+		int req = 0;
+		int pos = 0;
+		/*
+		 * If we ever come across a contradiction, then the 
+		 * log is necessarily inconsistent, so we can just output −1. 
+		 * Otherwise, the log must consist of several streaks 0,1,2,…,k 
+		 * of various lengths, with possibly some −1s between 
+		 * streaks - entries which we could not uniquely deduce. 
+		 * We know that the first streak starts on the first day.
+		 */
+		for (int i = n - 1; i >= 0; i--) {
+			if (t != -1 && log[i] != -1 && log[i] != t) {
+				io.println(-1);
+				io.close();
+				System.exit(0);
+			}
+			if (t == -1) {
+				t = log[i];
+			}
+			if (log[i] == -1) {
+				log[i] = t;
+			}
+			if (log[i] == 0) {
+				req++;
+			}
+			if (log[i] == -1) {
+				pos++;
+			}
+			if (t > -1) {
+				t--;
+			}
+		}
+		int sum = req + pos;
+		io.println(req + " " + sum);
+		io.close();
+	}
+	CodeSnip{Kattio}
+}
+```
+				 
+</JavaSection>
+
+</LanguageSection>
