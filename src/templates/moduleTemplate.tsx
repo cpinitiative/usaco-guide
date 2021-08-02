@@ -1,6 +1,6 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import { useContext, useLayoutEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { SECTION_LABELS } from '../../content/ordering';
 import Layout from '../components/layout';
@@ -16,12 +16,12 @@ export default function Template(props): JSX.Element {
   const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
   const { body } = xdm;
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
-  const { lang: userLang, setLastViewedModule } = useContext(UserDataContext);
+  const { isLoaded, setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // source: https://miguelpiedrafita.com/snippets/scrollToHash
     const { hash } = location;
     if (!hash) return;
@@ -34,7 +34,7 @@ export default function Template(props): JSX.Element {
         console.error(e);
       }
     });
-  }, [userLang]);
+  }, [isLoaded]);
 
   return (
     <Layout>
@@ -80,7 +80,7 @@ export default function Template(props): JSX.Element {
 }
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  query ($id: String!) {
     xdm(frontmatter: { id: { eq: $id } }) {
       body
       frontmatter {
