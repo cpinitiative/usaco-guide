@@ -34,7 +34,7 @@ export default function Template(props): JSX.Element {
         console.error(e);
       }
     });
-  });
+  }, []);
 
   return (
     <Layout>
