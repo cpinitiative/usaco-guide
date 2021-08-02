@@ -1,1 +1,104 @@
+---
+id: dmoj-phidias
+source: DMOJ
+title: phidias
+author: Andrew Cheng
+---
 
+## Solution
+
+Let $f[i][j]$ be the amount of waste material for a rectangle with width $i$ and height $j$. This rectangle of width $i$ and height $j$ can be split into two smaller rectangles (marked in red and green) after removing a plate that Phidias wants (marked in blue). There are two different possible ways to split the remaining shape into two rectangles.
+
+Case1: 
+
+<center>
+
+<table>
+    <tbody>
+        <tr>
+            <td className="bg-red-100 dark:bg-red-800">  1  </td>
+            <td className="bg-red-100 dark:bg-red-800">  1  </td>
+        </tr>
+        <tr>
+            <td className="bg-green-100 dark:bg-green-800">  2  </td>
+            <td className="bg-blue-100 dark:bg-blue-800">  3  </td>
+        </tr>
+    </tbody>
+</table>
+
+</center>
+
+Case2: 
+
+<center>
+
+<table>
+    <tbody>
+        <tr>
+            <td className="bg-red-100 dark:bg-red-800">  1  </td>
+            <td className="bg-green-100 dark:bg-green-800">  2  </td>
+        </tr>
+        <tr>
+            <td className="bg-red-100 dark:bg-red-800">  1  </td>
+            <td className="bg-blue-100 dark:bg-blue-800">  3  </td>
+        </tr>
+    </tbody>
+</table>
+
+</center>
+
+We loop through all $N$ possible marble plates for each $i$ and $j$. Mathematically, the transition formula is as follows:
+
+$f[i][j] = min_k (f[i][j], f[i][j-k.h] + f[i-k.w][k.h], f[i-k.w][j] + f[k.w][j-k.h])$
+
+where $k$ is current marble plate under consideration.
+
+**Time Complexity:**
+$\mathcal{O}(NWH)$
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+#define pi pair<int,int>
+#define fi first
+#define se second
+using namespace std;
+
+const int maxW = 605;
+const int maxN = 205;
+
+pi a[maxN];
+int f[maxW][maxW];
+int N,W,H;
+
+signed main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	cin >> W >> H >> N;
+	for(int i = 1; i <= N; ++i)cin >> a[i].fi >> a[i].se;
+	for(int i = 1; i <= W; ++i){
+		for(int j = 1; j <= H; ++j){
+			f[i][j] = i * j;
+		}
+	}
+	for(int i = 1; i <= N; ++i)f[a[i].fi][a[i].se] = 0;
+	for(int i = 1; i <= W; ++i){
+		for(int j = 1; j <= H; ++j){
+			for(int k = 1; k <= N; ++k){
+				if(i < a[k].fi || j < a[k].se)continue;
+				f[i][j] = min(f[i][j],f[i][j-a[k].se] + f[i-a[k].fi][a[k].se]);
+				f[i][j] = min(f[i][j],f[i-a[k].fi][j] + f[a[k].fi][j-a[k].se]);
+			}
+		}
+	}
+	cout << f[W][H] << '\n';
+}
+
+```
+</CPPSection>
+</LanguageSection>
