@@ -7,7 +7,7 @@ author: Andrew Cheng
 
 ## Solution
 
-Let $f[i][j]$ be the amount of waste material for a rectangle with width $i$ and height $j$. This rectangle of width $i$ and height $j$ can be split into two smaller rectangles (marked in red and green) after removing a plate that Phidias wants (marked in blue). There are two different possible ways to split the remaining shape into two rectangles.
+Let $dp[i][j]$ be the amount of waste material for a rectangle with width $i$ and height $j$. This rectangle of width $i$ and height $j$ can be split into two smaller rectangles (marked in red and green) after removing a plate that Phidias wants (marked in blue). There are two different possible ways to split the remaining shape into two rectangles.
 
 Case1: 
 
@@ -49,7 +49,7 @@ Case2:
 
 We loop through all $N$ possible marble plates for each $i$ and $j$. Mathematically, the transition formula is as follows:
 
-$f[i][j] = min_k (f[i][j], f[i][j-k.h] + f[i-k.w][k.h], f[i-k.w][j] + f[k.w][j-k.h])$
+$dp[i][j] = min_k (dp[i][j], dp[i][j-k.h] + dp[i-k.w][k.h], dp[i-k.w][j] + dp[k.w][j-k.h])$
 
 where $k$ is current marble plate under consideration.
 
@@ -65,38 +65,42 @@ $\mathcal{O}(NWH)$
 
 #include <bits/stdc++.h>
 #define pi pair<int,int>
-#define fi first
-#define se second
+#define f first
+#define s second
 using namespace std;
 
 const int maxW = 605;
 const int maxN = 205;
 
 pi a[maxN];
-int f[maxW][maxW];
+int dp[maxW][maxW];
 int N,W,H;
 
-signed main(){
+int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 	cin >> W >> H >> N;
-	for(int i = 1; i <= N; ++i)cin >> a[i].fi >> a[i].se;
+	for(int i = 1; i <= N; ++i){
+        cin >> a[i].f >> a[i].s;
+    }
 	for(int i = 1; i <= W; ++i){
 		for(int j = 1; j <= H; ++j){
-			f[i][j] = i * j;
+			dp[i][j] = i * j;
 		}
 	}
-	for(int i = 1; i <= N; ++i)f[a[i].fi][a[i].se] = 0;
+	for(int i = 1; i <= N; ++i){
+        dp[a[i].f][a[i].s] = 0;
+    }
 	for(int i = 1; i <= W; ++i){
 		for(int j = 1; j <= H; ++j){
 			for(int k = 1; k <= N; ++k){
-				if(i < a[k].fi || j < a[k].se)continue;
-				f[i][j] = min(f[i][j],f[i][j-a[k].se] + f[i-a[k].fi][a[k].se]);
-				f[i][j] = min(f[i][j],f[i-a[k].fi][j] + f[a[k].fi][j-a[k].se]);
+				if(i < a[k].f || j < a[k].s)continue;
+				dp[i][j] = min(dp[i][j], dp[i][j -a[k].s] + dp[i - a[k].f][a[k].s]);
+				dp[i][j] = min(dp[i][j], dp[i - a[k].f][j] + dp[a[k].f][j - a[k].s]);
 			}
 		}
 	}
-	cout << f[W][H] << '\n';
+	cout << dp[W][H] << '\n';
 }
 
 ```
