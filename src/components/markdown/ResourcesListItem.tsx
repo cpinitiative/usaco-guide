@@ -38,7 +38,7 @@ export default function ResourcesListItem({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
-  const id = `resource-${resource.url}`;
+  const id = `resource-${encodeURIComponent(resource.url)}`;
 
   React.useEffect(() => {
     const hashHandler = (): void => {
@@ -130,9 +130,7 @@ export default function ResourcesListItem({
                   e.preventDefault();
                   setCopied(true);
                   navigator.clipboard.writeText(
-                    window.location.href.split(/[?#]/)[0] +
-                      '#resource-' +
-                      resource.url
+                    window.location.href.split(/[?#]/)[0] + id
                   );
                 }}
               >
