@@ -1,6 +1,6 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext, useLayoutEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { SECTION_LABELS } from '../../content/ordering';
 import Layout from '../components/layout';
@@ -21,7 +21,7 @@ export default function Template(props): JSX.Element {
     setLastViewedModule(module.id);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // source: https://miguelpiedrafita.com/snippets/scrollToHash
     const { hash } = location;
     if (!hash) return;
