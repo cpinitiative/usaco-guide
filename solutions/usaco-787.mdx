@@ -129,8 +129,8 @@ public class rental {
         Arrays.sort(rent, Collections.reverseOrder());
         Arrays.sort(shops, (a, b) -> b.price - a.price);
         Arrays.sort(production, Collections.reverseOrder());
-        int iShop = 0; // stores the number of shops already processed
-        int iRent = 0; // stores the number of rentals already processed
+        int iShop = 0; // stores the index of the current shop we're focusing on
+        int iRent = 0; // stores the index of the current rental price we're focusing on
         int i = 0; // indicates the index of the current cow
         long sol = 0;
         while (i < n) {
@@ -149,25 +149,22 @@ public class rental {
                     curI++;
                 }
             }
-            System.out.println(i + " " + moneyT);
             if (iRent >= r || moneyT > rent[iRent]) { // if we get more money by milking the cow
-                System.out.println("shop");
                 sol += moneyT;
                 iShop = curI;
                 if (iShop < m) shops[iShop].numGal -= last;
                 i++;
             } else { // if we get more money by renting the cow
-                System.out.println("rent");
                 sol += rent[iRent];
                 n--;
                 iRent++;
             }
-            System.out.println(sol);
         }
         out.println(sol);
         out.close();
     }
 }
+
 ```
 </JavaSection>
 </LanguageSection>
