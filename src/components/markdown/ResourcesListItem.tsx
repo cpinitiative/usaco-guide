@@ -1,10 +1,11 @@
 import Tippy from '@tippyjs/react';
 import * as React from 'react';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
 import { useDarkMode } from '../../context/DarkModeContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
@@ -36,6 +37,7 @@ export default function ResourcesListItem({
 }: {
   resource: ResourceInfo;
 }): JSX.Element {
+  const { lang: userLang } = useContext(UserDataContext);
   const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const id = `resource-${encodeURIComponent(resource.url)}`;
@@ -51,7 +53,7 @@ export default function ResourcesListItem({
     window.addEventListener('hashchange', hashHandler, false);
     return (): void =>
       window.removeEventListener('hashchange', hashHandler, false);
-  }, []);
+  }, [userLang]); // hashes can change depending on lang
 
   const statusCol = (
     <td className="pl-8 whitespace-nowrap text-sm font-medium">
@@ -130,7 +132,7 @@ export default function ResourcesListItem({
                   e.preventDefault();
                   setCopied(true);
                   navigator.clipboard.writeText(
-                    window.location.href.split(/[?#]/)[0] + id
+                    window.location.href.split(/[?#]/)[0] + '#' + id
                   );
                 }}
               >
