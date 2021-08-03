@@ -17,7 +17,8 @@ export default function ContributorsSection(): JSX.Element {
               By the Community, for the Community.
             </h1>
             <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto">
-              Interested in joining the USACO Guide team? We are recruiting Content Authors to help us improve the USACO Guide!{' '}
+              Interested in joining the USACO Guide team? We are recruiting
+              Content Authors to help us improve the USACO Guide!{' '}
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
