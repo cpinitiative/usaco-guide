@@ -272,7 +272,7 @@ int main() {
 <JavaSection>
 ```java
 public class balancing {
-	static final int maxY = 1_000_001;
+	static final int MAX_Y = 1_000_001;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -285,8 +285,8 @@ public class balancing {
 			coords[i] = new int[] { Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()) };
 		}
 
-		BIT left = new BIT(maxY);
-		BIT right = new BIT(maxY);
+		BIT left = new BIT(MAX_Y);
+		BIT right = new BIT(MAX_Y);
 		for (int[] i : coords) {
 			right.update(i[1], 1);
 		}
@@ -303,7 +303,7 @@ public class balancing {
 			i = j;
 
 			int l = 0;
-			int r = (maxY - 1) / 2;
+			int r = (MAX_Y - 1) / 2;
 			while (l <= r) {
 				int mid = (l + r) / 2;
 				int up = Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
@@ -324,9 +324,7 @@ public class balancing {
 	}
 
 	static class BIT {
-
 		public int[] bit;
-
 		public BIT(int N) {
 			bit = new int[N + 1];
 		}
