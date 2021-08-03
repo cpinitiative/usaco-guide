@@ -115,7 +115,7 @@ public class rental {
                 int m = Integer.parseInt(s.nextToken());
                 int r = Integer.parseInt(s.nextToken());
 
-                //  Integer instead of int is used because Collections.reverseOrder() is used later in Arrays.sort()
+                // Integer instead of int is used because Collections.reverseOrder() is used later in Arrays.sort()
                 Integer[] production = new Integer[n];
                 for (int i = 0; i < n; i++) {
                         production[i] = Integer.parseInt(br.readLine());
@@ -136,15 +136,15 @@ public class rental {
                 Arrays.sort(shops, (a, b) -> b.price - a.price);
                 Arrays.sort(production, Collections.reverseOrder());
 
-                int iShop = 0; // stores the number of shops already processed
-                int iRent = 0; // stores the number of rentals already processed
-                int i = 0; // indicates the index of the current cow
+                int iShop = 0;  // stores the number of shops already processed
+                int iRent = 0;  // stores the number of rentals already processed
+                int i = 0;  // indicates the index of the current cow
                 long sol = 0;
 
                 while (i < n) {
-                        int litres = production[i]; //  stores the amt of litres of milk available in the current cow
-                        int moneyT = 0; //  stores the amount of money that can be gained milking the cow
-                        int curI = iShop; //  stores the index of the current (or last store) being processed
+                        int litres = production[i];  // stores the amt of litres of milk available in the current cow
+                        int moneyT = 0;  // stores the amount of money that can be gained milking the cow
+                        int curI = iShop;  // stores the index of the current (or last store) being processed
                         int last = 0;
 
                         while (curI < m) {
@@ -159,12 +159,12 @@ public class rental {
                                 }
                         }
 
-                        if (iRent >= r || moneyT > rent[iRent]) { //  if we get more money by milking the cow
+                        if (iRent >= r || moneyT > rent[iRent]) {  // if we get more money by milking the cow
                                 sol += moneyT;
                                 iShop = curI;
                                 if (iShop < m) shops[iShop].numGal -= last;
                                 i++;
-                        } else { //  if we get more money by renting the cow
+                        } else {  // if we get more money by renting the cow
                                 sol += rent[iRent];
                                 n--;
                                 iRent++;
