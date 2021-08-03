@@ -57,7 +57,7 @@ export default function ContributorsSection(): JSX.Element {
             <ul className="mb-4 mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {contentAuthors.map(author => (
                 <li key={author.name}>
-                  <div className="space-y-1">
+                  <div className="space-y-3">
                     <div className="w-36 h-36 sm:h-28 sm:w-28 md:h-36 md:w-36 xl:h-32 xl:w-32 mx-auto">
                       <GatsbyImage
                         image={
@@ -70,7 +70,7 @@ export default function ContributorsSection(): JSX.Element {
                         style={{ width: '100%', height: '100%' }}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <div className="text-sm font-medium lg:text-sm">
                         <a
                           href={`https://github.com/${author.githubUsername}`}
