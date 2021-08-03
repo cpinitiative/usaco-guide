@@ -81,7 +81,7 @@ export default function ContributorsSection(): JSX.Element {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mb-6">
                         Since {author.sinceDate}
                       </p>
                     </div>
