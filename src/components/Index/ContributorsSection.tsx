@@ -14,8 +14,8 @@ export default function ContributorsSection(): JSX.Element {
           node {
             childImageSharp {
               gatsbyImageData(
-                width: 192
-                height: 192
+                width: 100
+                height: 100
                 quality: 100
                 transformOptions: { cropFocus: CENTER }
                 layout: FIXED
