@@ -17,9 +17,7 @@ export default function ContributorsSection(): JSX.Element {
               By the Community, for the Community.
             </h1>
             <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto">
-              Interested in joining the USACO Guide team? We are recruiting
-              Content Authors to <br></br>
-              help us improve the USACO Guide!{' '}
+              Interested in joining the USACO Guide team? We are recruiting Content Authors to help us improve the USACO Guide!{' '}
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
@@ -28,8 +26,7 @@ export default function ContributorsSection(): JSX.Element {
               >
                 Apply here.
               </a>{' '}
-              If you're in the United States, you can <br></br>
-              earn volunteer hours too!
+              If you're in the United States, you can earn volunteer hours too!
             </p>
             <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-xl sm:leading-10">
               Current Content Authors:
@@ -44,7 +41,7 @@ export default function ContributorsSection(): JSX.Element {
                       alt=""
                     />
                     <div className="space-y-2">
-                      <div className="text-xs font-medium lg:text-sm">
+                      <div className="text-sm font-medium lg:text-sm">
                         <a
                           href={`https://github.com/${author.githubUsername}`}
                           target="_blank"
@@ -75,7 +72,7 @@ export default function ContributorsSection(): JSX.Element {
                       alt=""
                     />
                     <div className="space-y-2">
-                      <div className="text-xs font-medium lg:text-sm">
+                      <div className="text-sm font-medium lg:text-sm">
                         <a
                           href={`https://github.com/${author.githubUsername}`}
                           target="_blank"
@@ -85,7 +82,7 @@ export default function ContributorsSection(): JSX.Element {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 text-xs space-y-2 mb-6">
+                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
                         Since {author.sinceDate}
                       </p>
                     </div>
