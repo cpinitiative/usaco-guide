@@ -309,26 +309,29 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int size = sc.nextInt();
-		int queryNum = sc.nextInt();
+		Kattio io = new Kattio();
+		int size = io.nextInt();
+		int queryNum = io.nextInt();
 
 		DisjointSets dsu = new DisjointSets(size);
 		for (int i = 0; i < queryNum; i++) {
-			int type = sc.nextInt();
-			int u = sc.nextInt();
-			int v = sc.nextInt();
+			int type = io.nextInt();
+			int u = io.nextInt();
+			int v = io.nextInt();
 			if (type == 0) {
 				dsu.union(u, v);
 			} else {
 				if (dsu.connected(u, v)) {
-					System.out.println(1);
+					io.println(1);
 				} else {
-					System.out.println(0);
+					io.println(0);
 				}
 			}
 		}
+		io.close();
 	}
+	
+	// CodeSnip{Kattio}
 }
 ```
 
