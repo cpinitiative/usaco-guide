@@ -1,0 +1,76 @@
+---
+id: usaco-1114
+source: USACO Gold 2021 February
+title: Modern Art 3
+author: Neo Wang
+---
+
+[Official Editorial](http://www.usaco.org/current/data/sol_prob2_gold_feb21.html)
+
+## Explanation
+
+Define $\texttt{dp}[i][j]$ as the minimum number of paintings to paint the range
+$[i, j]$. Then, one of two things can happen when combining ranges
+$[i, j], [j + 1][k]$:
+
+1. $A[i] == A[k]$. This means that the range $[i, k]$ has a common color for the
+   endpoint. Therefore, we can "save" a color when merging the two ranges.
+   $$
+   \texttt{dp}[i][k] = \min(\texttt{dp}[i][j] + \texttt{dp}[j + 1][k] - 1)
+   $$
+2. $A[i] \neq A[k]$. This means that there is no common color for the endpoint.
+   Since we cannot "save" a color when merging the two intervals, simply add
+   them together.
+
+$$
+\texttt{dp}[i][k] = \min(\texttt{dp}[i][k], \texttt{dp}[i][j] + \texttt{dp}[j+1][k])
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//CodeSnip{CPP Short Template}
+
+const int MAX_N = 301;
+
+int A[MAX_N], dp[MAX_N][MAX_N];
+
+int main() {
+	setIO();
+	
+	int n; cin >> n;
+
+	for(int i = 0; i < n; i++) cin >> A[i];
+
+	for(int i = 0; i <= n; i++) {
+		for(int j = 0; j <= n; j++) {
+			dp[i][j] = MAX_N + 1;
+		}
+	}
+
+	for(int i = 0; i < MAX_N; i++) dp[i][i] = 1;
+
+	for(int s = 1; s <= n; s++) {
+		for(int i = 0; i <= n - s; i++) {
+			for(int j = i; j < i + s; j++) {
+				int k = i + s - 1;
+				if(A[i] == A[k])
+					dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
+				dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k]);
+			}
+		}
+	}
+
+	cout << dp[0][n - 1] << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
