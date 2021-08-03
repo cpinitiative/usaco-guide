@@ -1,3 +1,5 @@
+import { graphql, useStaticQuery } from 'gatsby';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import {
   contentAuthors,
@@ -5,6 +7,26 @@ import {
 } from '../../../content/authors/contributors';
 
 export default function ContributorsSection(): JSX.Element {
+  const data = useStaticQuery(graphql`
+    {
+      allFile(filter: { relativePath: { regex: "/^authors/images/.*/" } }) {
+        edges {
+          node {
+            childImageSharp {
+              gatsbyImageData(
+                width: 192
+                height: 192
+                quality: 100
+                transformOptions: { cropFocus: CENTER }
+                layout: FIXED
+              )
+            }
+            name
+          }
+        }
+      }
+    }
+  `);
   return (
     <div className="bg-white dark:bg-dark-surface">
       <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
@@ -36,11 +58,18 @@ export default function ContributorsSection(): JSX.Element {
               {contentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-4">
-                    <img
-                      className="mx-auto h-20 w-20 rounded-full lg:w-24 lg:h-24"
-                      src="https://i5.walmartimages.com/asr/be185d13-7b20-4595-bcdd-23bbe85f0074_1.d8c962e9921cd7f824d40d2f70adec30.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff"
-                      alt=""
-                    />
+                    <div className="w-36 h-36 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
+                      <GatsbyImage
+                        image={
+                          (data as any).allFile.edges.find(
+                            x => x.node.name === author.photo
+                          ).node.childImageSharp.gatsbyImageData
+                        }
+                        className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+                        alt={author.name}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
                     <div className="space-y-2">
                       <div className="text-sm font-medium lg:text-sm">
                         <a
