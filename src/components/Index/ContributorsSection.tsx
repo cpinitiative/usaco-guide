@@ -4,7 +4,7 @@ import {
   pastContentAuthors,
 } from '../../../content/authors/contributors';
 
-export default function ContributorsSection() {
+export default function ContributorsSection(): JSX.Element {
   return (
     <div className="bg-white dark:bg-dark-surface">
       <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
