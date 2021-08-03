@@ -91,7 +91,7 @@ export const pastContentAuthors: Contributor[] = [
     name: 'Óscar Garries Urbina',
     githubUsername: 'Farrius',
     sinceDate: 'Jan 2021',
-    photo = 'oscar'
+    photo: 'oscar'
   },
   {
     name: 'Mrinall Umasudhan',
