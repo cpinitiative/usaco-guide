@@ -13,13 +13,13 @@ to solve this problem.
 The range queries are vanilla lazy propagation, so we should focus more on the updates.
 
 We can split the "update" operation into two operations. One would be a basic range addition,
-and the other would be an incremental addition. Therefore, for each index $a_i$, we will need
-to keep track of two points: the total offset $s_i$ given only the offset sum (without increments),
+and the other would be an incremental addition. Therefore, over each segment we'll need to keep
+track of the total offset $s_i$ given only the offset sum (without increments),
 and the total increment $t_i$ which contains the sum of all increments from the incremental steps.
 
 When we propagate, the values of $s_i$ and $t_i$ for
 a node $k$ representing segment $[i, j]$ 
-when updating segment $[l, r]$ can be found by calculating $i-l$, as follows.
+when updating subarray $[l, r]$ can be found by calculating $i-l$, as follows.
 
 - $s_k = s_k + (i-l)$ because we must add an increment $i-l$ to the value of $s_k$ because we are starting at $l + (i-l)$.
 - $t_k = t_k + 1$ because the increment increases by 1 during each update.
