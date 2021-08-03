@@ -13,12 +13,11 @@ export default function ContributorsSection(): JSX.Element {
             <p className="text-base text-center leading-6 text-blue-600 dark:text-blue-300 font-semibold tracking-wide uppercase">
               Contributors
             </p>
-            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10">
+            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 max-w-prose">
               By the Community, for the Community.
             </h1>
-            <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto">
-              Interested in joining the USACO Guide team? We are recruiting
-              Content Authors to help us improve the USACO Guide!{' '}
+            <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto max-w-prose">
+              Interested in joining the USACO Guide team? We are recruiting Content Authors to help us improve the USACO Guide!{' '}
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
