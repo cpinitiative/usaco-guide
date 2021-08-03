@@ -97,83 +97,82 @@ import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class rental {
-    static class Shop {
-        int price;
-        int numGal;
-        public Shop (int numGal, int price) {
-            this.price = price;
-            this.numGal = numGal;
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("rental.in"));
-        PrintWriter out = new PrintWriter("rental.out");
-        StringTokenizer s = new StringTokenizer(br.readLine());
-        
-        int n = Integer.parseInt(s.nextToken());
-        int m = Integer.parseInt(s.nextToken());
-        int r = Integer.parseInt(s.nextToken());
-
-        Integer[] production = new Integer[n];
-        for (int i = 0; i < n; i++) {
-            production[i] = Integer.parseInt(br.readLine());
-        }
-
-        Shop[] shops = new Shop[m];
-        for (int i = 0; i < m; i++) {
-            s = new StringTokenizer(br.readLine());
-            shops[i] = new Shop(Integer.parseInt(s.nextToken()), Integer.parseInt(s.nextToken()));
-        }
-
-        Integer[] rent = new Integer[r];
-        for (int i = 0; i < r; i++) {
-            rent[i] = Integer.parseInt(br.readLine());
-        }
-
-        Arrays.sort(rent, Collections.reverseOrder());
-        Arrays.sort(shops, (a, b) -> b.price - a.price);
-        Arrays.sort(production, Collections.reverseOrder());
-
-        int iShop = 0;  // stores the number of shops already processed
-        int iRent = 0;  // stores the number of rentals already processed
-        int i = 0;  // indicates the index of the current cow
-        long sol = 0;
-
-        while (i < n) {
-            int litres = production[i];  // stores the amt of litres of milk available in the current cow
-            int moneyT = 0;  // stores the amount of money that can be gained milking the cow
-            int curI = iShop;  // stores the index of the current (or last store) being processed
-            int last = 0;
-
-            while (curI < m) {
-                int rest = Math.min(litres, shops[curI].numGal);
-                moneyT += shops[curI].price * rest;
-                litres -= rest;
-                if (litres == 0) {
-                    last = rest;
-                    break;
-                } else {
-                    curI++;
+        static class Shop {
+                int price;
+                int numGal;
+                public Shop(int numGal, int price) {
+                        this.price = price;
+                        this.numGal = numGal;
                 }
-            }
-
-            if (iRent >= r || moneyT > rent[iRent]) {  // if we get more money by milking the cow
-                sol += moneyT;
-                iShop = curI;
-                if (iShop < m) shops[iShop].numGal -= last;
-                i++;
-            }
-
-            else {  // if we get more money by renting the cow
-                sol += rent[iRent];
-                n--;
-                iRent++;
-            }
         }
-        out.println(sol);
-        out.close();
-    }
+
+        public static void main(String[] args) throws IOException {
+                BufferedReader br = new BufferedReader(new FileReader("rental.in"));
+                PrintWriter out = new PrintWriter("rental.out");
+                StringTokenizer s = new StringTokenizer(br.readLine());
+
+                int n = Integer.parseInt(s.nextToken());
+                int m = Integer.parseInt(s.nextToken());
+                int r = Integer.parseInt(s.nextToken());
+
+                // Integer instead of int is used because Collections.reverseOrder() is used later in Arrays.sort()
+                Integer[] production = new Integer[n];
+                for (int i = 0; i < n; i++) {
+                        production[i] = Integer.parseInt(br.readLine());
+                }
+
+                Shop[] shops = new Shop[m];
+                for (int i = 0; i < m; i++) {
+                        s = new StringTokenizer(br.readLine());
+                        shops[i] = new Shop(Integer.parseInt(s.nextToken()), Integer.parseInt(s.nextToken()));
+                }
+
+                Integer[] rent = new Integer[r];
+                for (int i = 0; i < r; i++) {
+                        rent[i] = Integer.parseInt(br.readLine());
+                }
+
+                Arrays.sort(rent, Collections.reverseOrder());
+                Arrays.sort(shops, (a, b) -> b.price - a.price);
+                Arrays.sort(production, Collections.reverseOrder());
+
+                int iShop = 0; // stores the number of shops already processed
+                int iRent = 0; // stores the number of rentals already processed
+                int i = 0; // indicates the index of the current cow
+                long sol = 0;
+
+                while (i < n) {
+                        int litres = production[i]; // stores the amt of litres of milk available in the current cow
+                        int moneyT = 0; // stores the amount of money that can be gained milking the cow
+                        int curI = iShop; // stores the index of the current (or last store) being processed
+                        int last = 0;
+
+                        while (curI < m) {
+                                int rest = Math.min(litres, shops[curI].numGal);
+                                moneyT += shops[curI].price * rest;
+                                litres -= rest;
+                                if (litres == 0) {
+                                        last = rest;
+                                        break;
+                                } else {
+                                        curI++;
+                                }
+                        }
+
+                        if (iRent >= r || moneyT > rent[iRent]) { // if we get more money by milking the cow
+                                sol += moneyT;
+                                iShop = curI;
+                                if (iShop < m) shops[iShop].numGal -= last;
+                                i++;
+                        } else { // if we get more money by renting the cow
+                                sol += rent[iRent];
+                                n--;
+                                iRent++;
+                        }
+                }
+                out.println(sol);
+                out.close();
+        }
 }
 
 
