@@ -14,8 +14,8 @@ export default function ContributorsSection(): JSX.Element {
           node {
             childImageSharp {
               gatsbyImageData(
-                width: 150
-                height: 150
+                width: 128
+                height: 128
                 quality: 100
                 transformOptions: { cropFocus: CENTER }
                 layout: FIXED
@@ -58,7 +58,7 @@ export default function ContributorsSection(): JSX.Element {
               {contentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-1">
-                    <div className="w-36 h-36 md:h-36 md:w-36 lg:h-24 lg:w-24 xl:h-36 xl:w-36">
+                    <div className="w-36 h-36 sm:h-28 sm:w-28 md:h-36 md:w-36 xl:h-32 xl:w-32 mx-auto">
                       <GatsbyImage
                         image={
                           (data as any).allFile.edges.find(
@@ -96,7 +96,7 @@ export default function ContributorsSection(): JSX.Element {
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-2">
-                    <div className="w-36 h-36 md:h-36 md:w-36 lg:h-24 lg:w-24 xl:h-36 xl:w-36">
+                    <div className="w-36 h-36 sm:h-28 sm:w-28 md:h-36 md:w-36 xl:h-32 xl:w-32 mx-auto">
                       <GatsbyImage
                         image={
                           (data as any).allFile.edges.find(
