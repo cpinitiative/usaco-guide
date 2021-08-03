@@ -118,7 +118,7 @@ export default function ContributorsSection(): JSX.Element {
                           className="text-blue-600 dark:text-blue-400"
                         >
                           <h3>{author.name}</h3>
-                        </a>{' '}
+                        </a>
                       </div>
                     </div>
                   </div>
