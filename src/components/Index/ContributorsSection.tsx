@@ -96,11 +96,16 @@ export default function ContributorsSection(): JSX.Element {
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-4">
-                    <img
-                      className="mx-auto h-20 w-20 rounded-full lg:w-24 lg:h-24"
-                      src="https://i5.walmartimages.com/asr/be185d13-7b20-4595-bcdd-23bbe85f0074_1.d8c962e9921cd7f824d40d2f70adec30.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff"
-                      alt=""
-                    />
+                    <GatsbyImage
+                        image={
+                          (data as any).allFile.edges.find(
+                            x => x.node.name === author.photo
+                          ).node.childImageSharp.gatsbyImageData
+                        }
+                        className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+                        alt={author.name}
+                        style={{ width: '100%', height: '100%' }}
+                      />
                     <div className="space-y-2">
                       <div className="text-sm font-medium lg:text-sm">
                         <a
