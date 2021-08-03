@@ -57,8 +57,8 @@ export default function ContributorsSection(): JSX.Element {
             <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {contentAuthors.map(author => (
                 <li key={author.name}>
-                  <div className="space-y-4">
-                    <div className="w-27 h-27 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
+                  <div className="space-y-1">
+                    <div className="w-36 h-36 md:h-36 md:w-36 lg:h-24 lg:w-24 xl:h-36 xl:w-36">
                       <GatsbyImage
                         image={
                           (data as any).allFile.edges.find(
@@ -95,8 +95,8 @@ export default function ContributorsSection(): JSX.Element {
             <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
-                  <div className="space-y-4">
-                    <div className="w-27 h-27 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
+                  <div className="space-y-2">
+                    <div className="w-36 h-36 md:h-36 md:w-36 lg:h-24 lg:w-24 xl:h-36 xl:w-36">
                       <GatsbyImage
                         image={
                           (data as any).allFile.edges.find(
