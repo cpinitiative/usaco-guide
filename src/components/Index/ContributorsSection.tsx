@@ -54,7 +54,7 @@ export default function ContributorsSection(): JSX.Element {
             <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-xl sm:leading-10">
               Current Content Authors:
             </h1>
-            <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
+            <ul className="mb-4 mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {contentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-1">
@@ -89,6 +89,7 @@ export default function ContributorsSection(): JSX.Element {
                 </li>
               ))}
             </ul>
+
             <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-xl sm:leading-10">
               Past Content Authors:
             </h1>
@@ -119,9 +120,6 @@ export default function ContributorsSection(): JSX.Element {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
-                        Since {author.sinceDate}
-                      </p>
                     </div>
                   </div>
                 </li>
