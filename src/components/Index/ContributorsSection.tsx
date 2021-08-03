@@ -70,7 +70,7 @@ export default function ContributorsSection(): JSX.Element {
                         style={{ width: '100%', height: '100%' }}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <div className="text-sm font-medium lg:text-sm">
                         <a
                           href={`https://github.com/${author.githubUsername}`}
