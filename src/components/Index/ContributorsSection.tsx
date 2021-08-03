@@ -96,16 +96,18 @@ export default function ContributorsSection(): JSX.Element {
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-4">
-                    <GatsbyImage
-                      image={
-                        (data as any).allFile.edges.find(
-                          x => x.node.name === author.photo
-                        ).node.childImageSharp.gatsbyImageData
-                      }
-                      className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
-                      alt={author.name}
-                      style={{ width: '75%', height: '75%' }}
-                    />
+                    <div className="w-27 h-27 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
+                      <GatsbyImage
+                        image={
+                          (data as any).allFile.edges.find(
+                            x => x.node.name === author.photo
+                          ).node.childImageSharp.gatsbyImageData
+                        }
+                        className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+                        alt={author.name}
+                        style={{ width: '75%', height: '75%' }}
+                      />
+                    </div>
                     <div className="space-y-2">
                       <div className="text-sm font-medium lg:text-sm">
                         <a
