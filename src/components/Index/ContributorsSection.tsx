@@ -58,7 +58,7 @@ export default function ContributorsSection(): JSX.Element {
               {contentAuthors.map(author => (
                 <li key={author.name}>
                   <div className="space-y-4">
-                    <div className="w-36 h-36 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
+                    <div className="w-27 h-27 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
                       <GatsbyImage
                         image={
                           (data as any).allFile.edges.find(
