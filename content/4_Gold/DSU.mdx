@@ -195,29 +195,18 @@ class DisjointSets:
 
 ## Solution - Focus Problem
 
-### Without Union Find (Floodfill)
-
-**Time Complexity:** $\mathcal{O}(NQ)$
-
-One approach to this problem would be to represent the graph with an adjacency
-list. Whenever the operation to create an edge between vertices $u_i$ and $v_i$
-is called, we can connect them in $\mathcal{O}(1)$ time. Whenever the operation
-to determine if $u_i$ is connected to $v_i$ is called, we can run a floodfill
-starting with $u_i$ and check if it eventually visits $v_i$. If it does, $u_i$
-and $v_i$ are in the same connected component. Otherwise, they are not
-connected. This operation is a lot slower, taking $\mathcal{O}(N)$ time to
-complete. Since there are $Q$ operations in total, this results in an overall
-time complexity of $\mathcal{O}(NQ)$, which is rather slow.
-
-### With Union Find
-
 **Time Complexity:** $\mathcal{O}(Q \log ^*N)$
 
-By representing the graph with the **union find** data structure, we can use its
-methods to both _unite_ vertices and _find_ if two vertices are connected in
-just $\mathcal{O}(\log^*N)$ time. This reduces the overall time complexity to
-$\mathcal{O}(Q \log ^*N)$, which is a substantial improvement and allows us to
-pass all test cases.
+Without union find, we would have to represent the graph with an adjacency list
+and use [flood fill](https://usaco.guide/silver/flood-fill) to calculate
+connected components. This approach takes $\mathcal{O}(NQ)$ time, which is too
+slow, motivating us to use **union find**.
+
+By representing the graph with the union find data structure, we can use its
+methods to both _unite_ vertices and _find_ if two vertices $u_i$ and $v_i$ are
+in the same connected component using only $\mathcal{O}(\log^*N)$ time. This
+reduces the overall time complexity to $\mathcal{O}(Q \log ^*N)$, which is a
+substantial improvement and allows us to pass all test cases.
 
 <LanguageSection>
 <CPPSection>
@@ -330,7 +319,7 @@ public class Main {
 		}
 		io.close();
 	}
-	
+
 	// CodeSnip{Kattio}
 }
 ```
