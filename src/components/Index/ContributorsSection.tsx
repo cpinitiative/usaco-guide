@@ -97,15 +97,15 @@ export default function ContributorsSection(): JSX.Element {
                 <li key={author.name}>
                   <div className="space-y-4">
                     <GatsbyImage
-                        image={
-                          (data as any).allFile.edges.find(
-                            x => x.node.name === author.photo
-                          ).node.childImageSharp.gatsbyImageData
-                        }
-                        className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
-                        alt={author.name}
-                        style={{ width: '100%', height: '100%' }}
-                      />
+                      image={
+                        (data as any).allFile.edges.find(
+                          x => x.node.name === author.photo
+                        ).node.childImageSharp.gatsbyImageData
+                      }
+                      className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+                      alt={author.name}
+                      style={{ width: '100%', height: '100%' }}
+                    />
                     <div className="space-y-2">
                       <div className="text-sm font-medium lg:text-sm">
                         <a
