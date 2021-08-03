@@ -14,8 +14,8 @@ export default function ContributorsSection(): JSX.Element {
           node {
             childImageSharp {
               gatsbyImageData(
-                width: 100
-                height: 100
+                width: 192
+                height: 192
                 quality: 100
                 transformOptions: { cropFocus: CENTER }
                 layout: FIXED
@@ -67,7 +67,7 @@ export default function ContributorsSection(): JSX.Element {
                         }
                         className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
                         alt={author.name}
-                        style={{ width: '100%', height: '100%' }}
+                        style={{ width: '75%', height: '75%' }}
                       />
                     </div>
                     <div className="space-y-2">
@@ -104,7 +104,7 @@ export default function ContributorsSection(): JSX.Element {
                       }
                       className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
                       alt={author.name}
-                      style={{ width: '100%', height: '100%' }}
+                      style={{ width: '75%', height: '75%' }}
                     />
                     <div className="space-y-2">
                       <div className="text-sm font-medium lg:text-sm">
