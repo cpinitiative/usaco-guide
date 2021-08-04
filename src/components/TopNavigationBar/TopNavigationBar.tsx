@@ -131,29 +131,26 @@ export default function TopNavigationBar({
                   getProps={({ isCurrent }) => ({
                     className: isCurrent
                       ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition',
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300  focus:outline-none focus:text-gray-700 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
                   })}
                 >
                   Problems
                 </Link>
-                <Popover.Group
-                  as="nav"
-                  className="group inline-flex items-center border-b-2 border-transparent hover:border-gray-300 focus-within:border-gray-300 transition"
-                >
-                  <Popover>
+                <Popover.Group as="nav" className="h-full">
+                  <Popover className="h-full">
                     {({ open }) => (
                       <>
                         <Popover.Button
                           className={classNames(
                             open ? 'text-gray-900' : 'text-gray-500',
-                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium group-hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300  transition ease-in-out duration-150 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500'
                           )}
                         >
-                          <span>Resources</span>
+                          <span className="mt-0.5">Resources</span>
                           <ChevronDownIcon
                             className={classNames(
-                              open ? 'text-gray-600' : 'text-gray-400',
-                              'ml-2 h-5 w-5 group-hover:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis'
+                              open ? 'text-gray-500' : 'text-gray-400',
+                              'mt-0.5 ml-2 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
                             )}
                             aria-hidden="true"
                           />
@@ -259,7 +256,7 @@ export default function TopNavigationBar({
                   </Popover>
                 </Popover.Group>
                 <button
-                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 dark:text-dark-high-emphasis transition focus:outline-none focus:text-gray-900 focus:border-gray-300 transition"
+                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us

@@ -12,34 +12,27 @@ export default function SectionsDropdown({
   noDarkMode = false,
 }): JSX.Element {
   return (
-    <Menu
-      as="div"
-      className={`inline-flex items-center ${
-        !sidebarNav &&
-        'group border-b-2 border-transparent hover:border-gray-300 focus-within:border-gray-300 transition'
-      }}`}
-    >
+    <Menu as="div">
       {({ open }) => (
-        <div className="relative">
-          <div>
+        <div className="relative h-full">
+          <div className="h-full">
             <Menu.Button
               className={`group ${
-                open || sidebarNav
-                  ? 'text-gray-900 hover:text-gray-900'
-                  : 'text-gray-500 group-hover:text-gray-900'
-              } inline-flex items-center space-x-2 text-base leading-6 px-0.5 py-1 font-medium focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 ${
-                !noDarkMode && 'dark:text-dark-high-emphasis'
+                open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
+              } inline-flex items-center h-full space-x-2 text-base leading-6 px-0.5 py-1 border-b-2 border-transparent font-medium hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 transition ease-in-out duration-150 ${
+                !noDarkMode &&
+                'dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500'
               }`}
             >
-              <span>
+              <span className="mt-0.5">
                 {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
               </span>
               <ChevronDownIcon
                 className={`${
-                  open ? 'text-gray-600' : 'text-gray-400'
-                } h-5 w-5 group-hover:text-gray-500 transition ease-in-out duration-150 ${
+                  open ? 'text-gray-500' : 'text-gray-400'
+                } mt-0.5 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150 ${
                   !noDarkMode &&
-                  'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis'
+                  'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'
                 }`}
                 aria-hidden="true"
               />
@@ -57,7 +50,7 @@ export default function SectionsDropdown({
           >
             <Menu.Items
               static
-              className="origin-top-left absolute z-20 left-0 mt-2 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none"
+              className="origin-top-left absolute z-20 left-0 w-56 -mt-2 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none"
             >
               <div className="py-1">
                 {SECTIONS.map(section =>
