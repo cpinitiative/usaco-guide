@@ -142,8 +142,10 @@ export default function TopNavigationBar({
                       <>
                         <Popover.Button
                           className={classNames(
-                            open ? 'text-gray-900' : 'text-gray-500',
-                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300  transition ease-in-out duration-150 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500'
+                            open
+                              ? 'text-gray-900'
+                              : 'text-gray-500 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500',
+                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
                           )}
                         >
                           <span className="mt-0.5">Resources</span>
