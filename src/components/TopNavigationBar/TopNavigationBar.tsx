@@ -184,7 +184,7 @@ export default function TopNavigationBar({
                                   getProps={({ isCurrent }) => ({
                                     className: isCurrent
                                       ? '-m-3 p-3 flex flex-col justify-between rounded-lg bg-gray-100 dark:bg-gray-800'
-                                      : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition',
+                                      : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition',
                                   })}
                                 >
                                   <div className="flex md:h-full lg:flex-col">
