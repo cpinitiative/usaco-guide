@@ -124,7 +124,7 @@ export default function TopNavigationBar({
                   <Logo />
                 </div>
               </Link>
-              <div className={`hidden lg:ml-8 lg:flex space-x-6`}>
+              <div className={`hidden lg:ml-8 lg:flex space-x-8`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
@@ -136,14 +136,17 @@ export default function TopNavigationBar({
                 >
                   Problems
                 </Link>
-                <Popover.Group as="nav" className="inline-flex items-center">
+                <Popover.Group
+                  as="nav"
+                  className="group inline-flex items-center border-b-2 border-transparent hover:border-gray-300 focus-within:border-gray-300 transition"
+                >
                   <Popover>
                     {({ open }) => (
                       <>
                         <Popover.Button
                           className={classNames(
                             open ? 'text-gray-900' : 'text-gray-500',
-                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium px-2 py-1 rounded-md hover:text-gray-900 focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium group-hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 dark:text-dark-high-emphasis'
                           )}
                         >
                           <span>Resources</span>
@@ -183,8 +186,8 @@ export default function TopNavigationBar({
                                   to="/groups/"
                                   getProps={({ isCurrent }) => ({
                                     className: isCurrent
-                                      ? '-m-3 p-3 flex flex-col justify-between rounded-lg bg-gray-100 dark:bg-gray-800'
-                                      : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition',
+                                      ? '-m-3 p-3 flex flex-col justify-between rounded-lg bg-gray-100 dark:bg-gray-700'
+                                      : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition',
                                   })}
                                 >
                                   <div className="flex md:h-full lg:flex-col">
@@ -256,7 +259,7 @@ export default function TopNavigationBar({
                   </Popover>
                 </Popover.Group>
                 <button
-                  className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 dark:text-dark-high-emphasis transition focus:outline-none focus:text-gray-900 focus:border-gray-300 transition"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
