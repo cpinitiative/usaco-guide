@@ -81,7 +81,7 @@ export default function ContributorsSection(): JSX.Element {
                           <h3>{author.name}</h3>
                         </a>{' '}
                       </div>
-                      <p className="text-gray-500 dark:text-gray-400 list-disc list-inside text-xs space-y-2 mb-6">
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mb-6">
                         Since {author.sinceDate}
                       </p>
                     </div>
@@ -96,7 +96,7 @@ export default function ContributorsSection(): JSX.Element {
             <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
               {pastContentAuthors.map(author => (
                 <li key={author.name}>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div className="w-36 h-36 sm:h-28 sm:w-28 md:h-36 md:w-36 xl:h-32 xl:w-32 mx-auto">
                       <GatsbyImage
                         image={
@@ -118,7 +118,7 @@ export default function ContributorsSection(): JSX.Element {
                           className="text-blue-600 dark:text-blue-400"
                         >
                           <h3>{author.name}</h3>
-                        </a>{' '}
+                        </a>
                       </div>
                     </div>
                   </div>

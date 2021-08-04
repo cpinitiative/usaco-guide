@@ -10,7 +10,7 @@ export const contentAuthors: Contributor[] = [
     name: 'Jeffrey Meng',
     githubUsername: 'jeffreymeng',
     sinceDate: 'Oct 2020',
-    photo: 'jeffery',
+    photo: 'jeffrey',
   },
   {
     name: 'Neo Wang',
