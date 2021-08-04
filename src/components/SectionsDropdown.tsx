@@ -18,10 +18,15 @@ export default function SectionsDropdown({
           <div className="h-full">
             <Menu.Button
               className={`group ${
-                open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } inline-flex items-center h-full space-x-2 text-base leading-6 px-0.5 py-1 border-b-2 border-transparent font-medium hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 transition ease-in-out duration-150 ${
+                open || sidebarNav
+                  ? 'text-gray-900'
+                  : 'text-gray-500 focus:border-gray-300 hover:border-gray-300'
+              } inline-flex items-center h-full space-x-2 text-base leading-6 px-0.5 py-1 border-b-2 border-transparent font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 ${
                 !noDarkMode &&
-                'dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500'
+                `dark:text-dark-high-emphasis ${
+                  !sidebarNav &&
+                  'dark:hover:border-gray-500 dark:focus:border-gray-500'
+                }`
               }`}
             >
               <span className="mt-0.5">
@@ -50,7 +55,9 @@ export default function SectionsDropdown({
           >
             <Menu.Items
               static
-              className="origin-top-left absolute z-20 left-0 w-56 -mt-2 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none"
+              className={`origin-top-left absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none ${
+                sidebarNav ? 'mt-2' : '-mt-2'
+              }`}
             >
               <div className="py-1">
                 {SECTIONS.map(section =>
