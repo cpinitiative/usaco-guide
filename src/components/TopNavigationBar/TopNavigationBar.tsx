@@ -124,7 +124,7 @@ export default function TopNavigationBar({
                   <Logo />
                 </div>
               </Link>
-              <div className={`hidden lg:ml-8 lg:flex space-x-8`}>
+              <div className={`hidden lg:ml-8 lg:flex space-x-7`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
