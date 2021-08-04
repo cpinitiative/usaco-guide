@@ -143,7 +143,7 @@ export default function TopNavigationBar({
                         <Popover.Button
                           className={classNames(
                             open ? 'text-gray-900' : 'text-gray-500',
-                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium px-0.5 py-1 hover:text-gray-900 focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:rounded-md transition ease-in-out duration-150 dark:text-dark-high-emphasis'
                           )}
                         >
                           <span>Resources</span>
@@ -256,7 +256,7 @@ export default function TopNavigationBar({
                   </Popover>
                 </Popover.Group>
                 <button
-                  className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition focus:outline-none"
+                  className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
