@@ -19,7 +19,7 @@ export default function SectionsDropdown({
             <Menu.Button
               className={`group ${
                 open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } inline-flex items-center space-x-2 text-base leading-6 px-0.5 py-1 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:rounded-md transition ease-in-out duration-150 ${
+              } inline-flex items-center space-x-2 text-base leading-6 p-1 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:rounded-md transition ease-in-out duration-150 ${
                 !noDarkMode && 'dark:text-dark-high-emphasis'
               }`}
             >
