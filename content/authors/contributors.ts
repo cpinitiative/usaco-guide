@@ -34,7 +34,7 @@ export const contentAuthors: Contributor[] = [
     name: 'Ananth Kashyap',
     githubUsername: 'AAkashyap1',
     sinceDate: 'Apr 2021',
-    photo: 'anath',
+    photo: 'ananth',
   },
   {
     name: "Sofia Yang",
