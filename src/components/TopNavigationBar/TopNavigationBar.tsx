@@ -124,7 +124,7 @@ export default function TopNavigationBar({
                   <Logo />
                 </div>
               </Link>
-              <div className={`hidden lg:ml-8 lg:flex space-x-7`}>
+              <div className={`hidden lg:ml-8 lg:flex space-x-6`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
@@ -143,7 +143,7 @@ export default function TopNavigationBar({
                         <Popover.Button
                           className={classNames(
                             open ? 'text-gray-900' : 'text-gray-500',
-                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium p-1 rounded-md hover:text-gray-900 focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                            'group inline-flex items-center space-x-2 text-base leading-6 font-medium px-2 py-1 rounded-md hover:text-gray-900 focus:outline-none focus:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 transition ease-in-out duration-150 dark:text-dark-high-emphasis'
                           )}
                         >
                           <span>Resources</span>
