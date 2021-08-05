@@ -15,26 +15,19 @@ export default function SectionsDropdown({
     <Menu as="div">
       {({ open }) => (
         <div className="relative h-full">
-          <div className="h-full">
+          {sidebarNav ? (
             <Menu.Button
               className={`group ${
                 open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } ${
-                !sidebarNav &&
-                'border-b-2 border-transparent focus:border-gray-300 hover:border-gray-300'
               } inline-flex items-center h-full space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 ${
-                !noDarkMode &&
-                `dark:text-dark-high-emphasis ${
-                  !sidebarNav &&
-                  'dark:hover:border-gray-500 dark:focus:border-gray-500'
-                }`
+                !noDarkMode && `dark:text-dark-high-emphasis`
               }`}
             >
-              <span className={!sidebarNav && 'mt-0.5'}>
+              <span>
                 {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
               </span>
               <ChevronDownIcon
-                className={`${!sidebarNav && 'mt-0.5'} ${
+                className={`${
                   open ? 'text-gray-500' : 'text-gray-400'
                 } h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150 ${
                   !noDarkMode &&
@@ -43,7 +36,29 @@ export default function SectionsDropdown({
                 aria-hidden="true"
               />
             </Menu.Button>
-          </div>
+          ) : (
+            <Menu.Button
+              className={`group ${
+                open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
+              } inline-flex items-center h-full space-x-2 border-b-2 border-transparent text-base leading-6 font-medium hover:text-gray-900 hover:border-gray-300  focus:outline-none focus:text-gray-900 focus:border-gray-300 transition ease-in-out duration-150 ${
+                !noDarkMode &&
+                `dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500`
+              }`}
+            >
+              <span className="mt-0.5">
+                {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
+              </span>
+              <ChevronDownIcon
+                className={`${
+                  open ? 'text-gray-500' : 'text-gray-400'
+                } h-5 w-5 mt-0.5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150 ${
+                  !noDarkMode &&
+                  'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'
+                }`}
+                aria-hidden="true"
+              />
+            </Menu.Button>
+          )}
           <Transition
             show={open}
             as={React.Fragment}
