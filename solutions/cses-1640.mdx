@@ -2,7 +2,7 @@
 id: cses-1640
 source: CSES
 title: Sum of Two Values
-author: Michael Cao, DRGSH, Benjamin Qi
+author: Michael Cao, DRGSH, Benjamin Qi, Brad Ma
 ---
 
 Given an array of $n$ elements, you are asked to find two values which sum to
@@ -118,6 +118,48 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+public class SumOfTwoValues {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int target = io.nextInt();
+		int[] values = new int[n];
+		// use a map to avoid using a very large array
+		Map <Integer, Integer> map = new HashMap<>();
+
+		for (int i = 0; i < n; i++) {
+			values[i] = io.nextInt();
+		}
+
+		for (int i = 0; i < n; i++) {
+			// target minus a number is the other number
+			if (map.containsKey(target - values[i])) {
+				io.println(i + 1 + " " + map.get(target - values[i]));
+				// remember to close here before exiting to avoid
+				// blank output
+				io.close();
+				System.exit(0);
+			}
+			map.put(values[i], i + 1);
+		}
+
+		io.println("IMPOSSIBLE");
+		io.close();
+	}
+}	
+```
+	
+</JavaSection>
 
 <PySection>
 
