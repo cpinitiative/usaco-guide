@@ -1,0 +1,172 @@
+---
+id: cses-2431
+source: CSES
+title: Digit Queries
+author: Nathan Gong
+---
+
+Since $k$ can be as big as $10^{18}$, there is no way we can approach this
+problem through brute force. Instead, we'll need to work out an algorithm that
+can answer queries in logarithmic time.
+
+Let's group numbers by the amount of digits they have. An observation we can
+make is that for any $n \geq 1$, there are $9 \cdot 10^{n-1}$ numbers in the
+group with numbers of length $n$. Additionally, for each group, the amount of
+digits from all of the group's numbers combined is $n$ times the amount of
+numbers in the group. For instance:
+
+- Length $1$ numbers: $1$...$9$ -> $9$ numbers -> $1\cdot9=9$ digits total
+- Length $2$ numbers: $10...99$ -> $90$ numbers -> $2\cdot90=180$ digits total
+- Length $3$ numbers: $100...999$ -> $900$ numbers -> $3\cdot900=2700$ digits
+  total
+- And so on...
+
+To find which group the number that contains the $k$th digit is in, we can
+iterate through groups until the sum of total the number of digits from all
+groups we've processed becomes greater than or equal to $k$. In other words, we
+continue increasing the number of groups we look at (starting from $1$-digit
+numbers) until the following is true:
+
+$$
+\sum^{\text{\# of groups}}_{n=1}{n\cdot9\cdot10^{n-1}\geq k}
+$$
+
+Once the condition becomes true, we know that the $k$th digit must fall into the
+last group used in the sum. From there, we can calculate the exact number that
+the $k$th digit is in, which we can then use to find the value of the $k$th
+digit using modular arithmetic.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(q\log{k})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int q;
+ll k;
+
+static ll pow10(int exp) {
+	ll product = 1;
+	for (int i = 0; i < exp; i++) {
+		product *= 10;
+	}
+	return product;
+}
+
+int main() {
+	cin >> q;
+
+	for (int i = 0; i < q; i++) {
+		cin >> k;
+
+		/*
+		 * Subtract k by sizes of groups until k becomes smaller than the size
+		 * of the current group. This produces the same effect as summing group
+		 * sizes until k becomes less than or equal to the sum.
+		 */
+		int n = 1;
+		while (k > n * 9 * pow10(n - 1)) {
+			k -= n * 9 * pow10(n - 1);
+			n++;
+		}
+
+		// The exact number the kth digit is in
+		long num = (k - 1) / n + pow10(n - 1);
+		// The location in num of the kth digit
+		int loc = (int) ((k - 1) % n);
+		// Determine answer by converting num to string and indexing at loc
+		cout << to_string(num).at(loc) << endl;
+	}
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class DigitQueries {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int q = io.nextInt();
+		for (int i = 0; i < q; i++) {
+			long k = io.nextLong();
+
+			/*
+			 * Subtract k by sizes of groups until k becomes smaller than the
+			 * size of the current group. This produces the same effect as
+			 * summing group sizes until k becomes less than or equal to the sum.
+			 */
+			int n = 1;
+			while (k > n * 9 * pow10(n - 1)) {
+				k -= n * 9 * pow10(n - 1);
+				n++;
+			}
+
+			// The exact number the kth digit is in
+			long num = (k - 1) / n + pow10(n - 1);
+			// The location in num of the kth digit
+			int loc = (int) ((k - 1) % n);
+			// Determine answer by converting num to string and indexing at loc
+			io.println(Long.toString(num).charAt(loc));
+		}
+		io.close();
+	}
+
+	// Returns 10 to the power of exponent
+	static long pow10(int exponent) {
+		long product = 1;
+		for (int i = 0; i < exponent; i++) {
+			product *= 10;
+		}
+		return product;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+q = int(input())
+
+for _ in range(q):
+	k = int(input())
+	n = 1
+
+	"""
+	Subtract k by sizes of groups until k becomes smaller than the size of the
+	current group. This produces the same effect as summing group sizes until
+	k becomes less than or equal to the sum.
+	"""
+	while k > n * 9 * 10**(n - 1):
+		k -= n * 9 * 10**(n - 1)
+		n += 1
+
+	# The exact number the kth digit is in
+	num = (k - 1) // n + 10**(n - 1)
+	# The location in num of the kth digit
+	loc = (k - 1) % n
+	# Determine answer by converting num to string and indexing at loc
+	print(str(num)[loc])
+```
+
+</PySection>
+
+</LanguageSection>
