@@ -363,8 +363,7 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you encounter an issue while using the guide (website
-                      bug, typo, broken link, unclear explanation, etc), use the
-                      "Contact Us" button. Alternatively, email us at{' '}
+                      bug, typo, broken link, unclear explanation, etc), email us at{' '}
                       <a
                         href="mailto:usacoguide@gmail.com"
                         className="text-blue-600 dark:text-blue-400 underline"
