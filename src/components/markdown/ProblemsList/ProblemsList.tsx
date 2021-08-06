@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import 'tippy.js/themes/light.css';
+import { EditorContext } from '../../../context/EditorContext';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemInfo } from '../../../models/problem';
@@ -76,6 +77,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     props.isDivisionTable &&
     props.problems.every(problem => !!problem.percentageSolved);
 
+  const { inEditor } = useContext(EditorContext);
   return (
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
@@ -134,9 +136,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                         showPercent={shouldShowSolvePercentage}
                       />
                     ))}
-                    {/* {!props.hideSuggestProblemButton && (
+                    {/* !props.hideSuggestProblemButton */}
+                    {inEditor && (
                       <SuggestProblemRow listName={props.tableName} />
-                    )} */}
+                    )}
                   </>
                 )}
               </tbody>
