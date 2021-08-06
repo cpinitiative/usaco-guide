@@ -18,7 +18,7 @@ export default function ProblemListItemSolution(
     contents = (
       <div className="px-4 py-2 text-sm text-gray-300 dark:text-gray-500">
         <Tooltip
-          content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
+          content={`We haven't written a solution for this problem yet.`}
         >
           <span>View Solution</span>
         </Tooltip>
