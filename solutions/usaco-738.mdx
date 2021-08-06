@@ -34,10 +34,9 @@ n = int(input())
 all_cows = []
 
 for _ in range(n):
-    num_cows, milk_time = map(int, input().split())
-    all_cows.append([milk_time, num_cows])
+	num_cows, milk_time = map(int, input().split())
+	all_cows.append([milk_time, num_cows])
 
-# sort by the amount of time the cows take to milk.
 all_cows.sort()
 
 left, right = 0, n - 1
@@ -45,23 +44,17 @@ left, right = 0, n - 1
 ans = 0 
 
 while left <= right:
-    # how many cows have been grouped together.
-    sub = min(all_cows[left][1], all_cows[right][1])
-    """
-    since we have to take account of the total time
-    to milk all cows, we're getting the maximum time
-    out of all the milkings.
-    """
-    ans = max(ans, all_cows[left][0] + all_cows[right][0])
-    if left == right:
-        sub /= 2
-    all_cows[left][1] -= sub
-    all_cows[right][1] -= sub
-    # if there are no more cows which have this milk output,
-    # we can increment/decrement the left/right pointer(s).
-    if all_cows[left][1] == 0: left += 1
-    if all_cows[right][1] == 0: right -= 1
-
+	# how many cows have been grouped together.
+	sub = min(all_cows[left][1], all_cows[right][1])
+	ans = max(ans, all_cows[left][0] + all_cows[right][0])
+	if left == right:
+		sub /= 2
+	all_cows[left][1] -= sub
+	all_cows[right][1] -= sub
+	# If there are no more cows which have this milk output,
+	# we can increment/decrement the left/right pointer.
+	if all_cows[left][1] == 0: left += 1
+	if all_cows[right][1] == 0: right -= 1
 print(ans)
 ```
 </PySection>
