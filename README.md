@@ -68,6 +68,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
 ### Past Content Authors
+
 - Óscar Garries Urbina
 - Mrinall Umasudhan
 - Andrew Cheng
