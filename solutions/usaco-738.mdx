@@ -117,16 +117,15 @@ print(ans)
 import java.io.*;
 import java.util.*;
 
-public class PairUp {
-	CodeSnip{Kattio}
-	
+public class Main {
 	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("pairup");
-		int N = io.nextInt();
+		BufferedReader io = new BufferedReader(new FileReader("pairup.in"));
+		int N = Integer.parseInt(io.readLine().trim());
 		List<Pair> events = new ArrayList<>();
 		for (int i = 0; i < N; i++) {
-			int freq = io.nextInt();
-			int amt = io.nextInt();
+			StringTokenizer tok = new StringTokenizer(io.readLine());
+			int freq = Integer.parseInt(tok.nextToken());
+			int amt = Integer.parseInt(tok.nextToken());
 			events.add(new Pair(freq, amt));
 		}
 
@@ -134,18 +133,17 @@ public class PairUp {
 		int ret = 0;
 		int left = 0, right = N - 1;
 		while (left <= right) {
-			/*
-			 * Pair up the cows with the least output
-			 * with the cows with the highest output.
-			 */
+			// how many cows have been grouped together.
 			int numPaired = Integer.min(events.get(left).freq, events.get(right).freq);
 			if (left == right) {
 				numPaired /= 2;
 			}
-			// Update the maximum time used, and remove the paired cows.
 			ret = Integer.max(ret, events.get(left).amt + events.get(right).amt);
 			events.get(left).freq -= numPaired;
 			events.get(right).freq -= numPaired;
+			
+			// If there are no more cows which have this milk output,
+			// we can increment/decrement the left/right pointer.
 			if (events.get(left).freq == 0) {
 				left++;
 			}
@@ -153,8 +151,9 @@ public class PairUp {
 				right--;
 			}
 		}
-		io.println(ret);
-		io.close();
+		PrintWriter out = new PrintWriter(new FileWriter("pairup.out"));
+		out.println(ret);
+		out.close();
 	}
 }
 
@@ -165,7 +164,6 @@ class Pair implements Comparable<Pair> {
 		this.freq = freq;
 		this.amt = amt;
 	}
-
 	public int compareTo(Pair other) {
 		return Integer.compare(this.amt, other.amt);
 	}
