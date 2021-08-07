@@ -1,5 +1,7 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
+import { useContext } from 'react';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { TOCHeading } from '../../../models/module';
 
 export default function genLinksFromTOCHeadings(
@@ -8,6 +10,7 @@ export default function genLinksFromTOCHeadings(
 ) {
   const indentationLevels = ['0', '1.5rem', '3rem', '4.5rem'];
   const links: React.ReactNode[] = [];
+  const { lang } = useContext(UserDataContext);
   let curDepth = -1;
   let indentIdx = 0;
   headings.forEach((heading, idx) => {
@@ -21,7 +24,7 @@ export default function genLinksFromTOCHeadings(
     links.push(
       <Link
         key={heading.slug}
-        to={'#' + heading.slug}
+        to={'?lang=' + lang + '#' + heading.slug}
         className={getClasses(heading)}
         style={{
           marginLeft: indentationLevels[indentIdx],
