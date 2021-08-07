@@ -32,7 +32,53 @@ We should always pair up the greatest value ($C$), with the smallest value ($A$)
 
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+typedef pair<int,int> pii;
+vector<pii> V;
+int N;
+
+int main(void) {
+	ifstream fin ("pairup.in");
+	ofstream fout ("pairup.out");
+	fin >> N;
+	for (int i = 0; i < N; i++) {
+		int x, y;
+		fin >> x >> y;
+		V.push_back(pii(y, x));
+	}
+	sort(V.begin(), V.end());
+	int M = 0, left = 0, right = N - 1;
+
+	while (left <= right) {
+		// the maximum amount of cows we can group together.
+		int sub = min(V[left].second, V[right].second);
+		if (left == right) sub /= 2;
+
+		// update our answer to be the maximum time out of all 
+		// the milkings.
+		M = max(M, V[left].first + V[right].first);
+		V[left].second -= sub;
+		V[right].second -= sub;
+		
+		// once there are no more cows available in our 
+		// pair, we can increment/decrement the left/right
+		// pointer(s).
+		if (V[left].second == 0) left++;
+		if (V[right].second == 0) right--;
+	}
+  fout << M << "\n";
+}
+```  
+</CPPSection>
 <PySection>
 ```py
 import sys
