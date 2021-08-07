@@ -138,7 +138,7 @@ export default function ProblemStatusCheckbox({
 }: {
   problem: ProblemInfo;
   size?: 'small' | 'large';
-}) {
+}): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
   const { userProgressOnModules, setModuleProgress } = useContext(
@@ -165,9 +165,9 @@ export default function ProblemStatusCheckbox({
     userProgressOnProblems[problem.uniqueId] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
-    Solving: 'bg-yellow-300 dark:bg-yellow-500',
-    Reviewing: 'bg-red-500 dark:bg-red-600',
+    Solving: 'bg-orange-400 dark:bg-orange-400',
     Solved: 'bg-green-500 dark:bg-green-600',
+    Reviewing: 'bg-red-500 dark:bg-red-600',
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };

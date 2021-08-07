@@ -514,7 +514,7 @@ export class Problem {
   public tooltipHoverDescription: string | null;
   public solutionMetadata: any;
 
-  get uniqueID() {
+  get uniqueID(): string {
     let id;
     if (
       ['Bronze', 'Silver', 'Gold', 'Plat'].some(

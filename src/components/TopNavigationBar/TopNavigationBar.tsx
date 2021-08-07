@@ -1,4 +1,12 @@
-import { SearchIcon } from '@heroicons/react/solid';
+import { Popover, Transition } from '@headlessui/react';
+import {
+  ChatAlt2Icon,
+  ChevronDownIcon,
+  SearchIcon,
+  TerminalIcon,
+  UserGroupIcon,
+} from '@heroicons/react/solid';
+import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext, useState } from 'react';
@@ -27,6 +35,21 @@ export default function TopNavigationBar({
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const userGroups = useUserGroups();
+  const resources = [
+    {
+      name: 'USACO Forum',
+      description: 'An unofficial Q&A forum for USACO contestants.',
+      href: 'https://forum.usaco.guide/',
+      icon: ChatAlt2Icon,
+    },
+    {
+      name: 'USACO IDE',
+      description:
+        'A realtime collaborative online IDE designed for competitive programming and USACO.',
+      href: 'https://ide.usaco.guide/',
+      icon: TerminalIcon,
+    },
+  ];
   const mobileLinks = [
     {
       label: 'Dashboard',
@@ -108,33 +131,134 @@ export default function TopNavigationBar({
                   getProps={({ isCurrent }) => ({
                     className: isCurrent
                       ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition',
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300  focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
                   })}
                 >
                   Problems
                 </Link>
-                {userGroups.data?.length > 0 && (
-                  <Link
-                    to="/groups/"
-                    getProps={({ isCurrent }) => ({
-                      className: isCurrent
-                        ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
-                        : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition',
-                    })}
-                  >
-                    Groups
-                  </Link>
-                )}
-                <a
-                  href="https://forum.usaco.guide/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition"
-                >
-                  Forum
-                </a>
+                <Popover.Group as="nav" className="h-full">
+                  <Popover className="h-full">
+                    {({ open }) => (
+                      <>
+                        <Popover.Button
+                          className={classNames(
+                            open
+                              ? 'text-gray-900'
+                              : 'text-gray-500 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500',
+                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                          )}
+                        >
+                          <span className="mt-0.5">Resources</span>
+                          <ChevronDownIcon
+                            className={classNames(
+                              open ? 'text-gray-500' : 'text-gray-400',
+                              'mt-0.5 ml-2 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
+                            )}
+                            aria-hidden="true"
+                          />
+                        </Popover.Button>
+
+                        <Transition
+                          show={open}
+                          as={React.Fragment}
+                          enter="transition ease-out duration-200"
+                          enterFrom="opacity-0 -translate-y-1"
+                          enterTo="opacity-100 translate-y-0"
+                          leave="transition ease-in duration-150"
+                          leaveFrom="opacity-100 translate-y-0"
+                          leaveTo="opacity-0 -translate-y-1"
+                        >
+                          <Popover.Panel
+                            static
+                            className="hidden md:block absolute z-20 top-full inset-x-0 transform shadow-lg bg-white dark:bg-gray-900"
+                          >
+                            <div
+                              className={classNames(
+                                indexPage
+                                  ? 'max-w-6xl px-2 lg:px-6'
+                                  : 'max-w-7xl px-2 sm:px-4 lg:px-8',
+                                'mx-auto grid gap-y-6 py-6 sm:grid-cols-2 sm:gap-8 sm:px-6 sm:py-8 lg:grid-cols-4 lg:px-8 lg:py-12'
+                              )}
+                            >
+                              {userGroups.data?.length > 0 && (
+                                <Link
+                                  to="/groups/"
+                                  getProps={({ isCurrent }) => ({
+                                    className: isCurrent
+                                      ? '-m-3 p-3 flex flex-col justify-between rounded-lg bg-gray-100 dark:bg-gray-700'
+                                      : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition',
+                                  })}
+                                >
+                                  <div className="flex md:h-full lg:flex-col">
+                                    <div className="flex-shrink-0">
+                                      <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                        <UserGroupIcon
+                                          className="h-6 w-6"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                    </div>
+                                    <div className="ml-4 md:flex-1 md:flex md:flex-col md:justify-between lg:ml-0 lg:mt-4">
+                                      <div>
+                                        <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
+                                          Groups
+                                        </p>
+                                        <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
+                                          A Learning Management System fully
+                                          integrated with the USACO Guide.
+                                        </p>
+                                      </div>
+                                      <p className="mt-2 text-sm font-medium text-blue-600 lg:mt-4">
+                                        Open{' '}
+                                        <span aria-hidden="true">&rarr;</span>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </Link>
+                              )}
+                              {resources.map(item => (
+                                <a
+                                  key={item.name}
+                                  href={item.href}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                  className="-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                                >
+                                  <div className="flex md:h-full lg:flex-col">
+                                    <div className="flex-shrink-0">
+                                      <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                        <item.icon
+                                          className="h-6 w-6"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                    </div>
+                                    <div className="ml-4 md:flex-1 md:flex md:flex-col md:justify-between lg:ml-0 lg:mt-4">
+                                      <div>
+                                        <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
+                                          {item.name}
+                                        </p>
+                                        <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
+                                          {item.description}
+                                        </p>
+                                      </div>
+                                      <p className="mt-2 text-sm font-medium text-blue-600 lg:mt-4">
+                                        Open in new tab{' '}
+                                        <span aria-hidden="true">&rarr;</span>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </a>
+                              ))}
+                            </div>
+                          </Popover.Panel>
+                        </Transition>
+                      </>
+                    )}
+                  </Popover>
+                </Popover.Group>
                 <button
-                  className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition focus:outline-none"
+                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
@@ -270,6 +394,22 @@ export default function TopNavigationBar({
                 {link.label}
               </Link>
             ))}
+            <a
+              href="https://forum.usaco.guide/"
+              target="_blank"
+              rel="noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+            >
+              Forum
+            </a>
+            <a
+              href="https://ide.usaco.guide/"
+              target="_blank"
+              rel="noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+            >
+              IDE
+            </a>
             <button
               className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
               onClick={() => setIsContactUsActive(true)}
