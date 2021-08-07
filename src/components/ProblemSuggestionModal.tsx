@@ -40,8 +40,9 @@ export default function ProblemSuggestionModal({
   const inEditor = editorActions.inEditor;
 
   // will be null if in editor
-  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
-    ?.markdownLayoutInfo;
+  const markdownLayoutInfo = useContext(
+    MarkdownLayoutContext
+  )?.markdownLayoutInfo;
 
   const darkMode = useDarkMode();
 
@@ -61,6 +62,10 @@ export default function ProblemSuggestionModal({
     event.preventDefault();
     if (!difficulty) {
       alert('Please set the problem difficulty.');
+      return;
+    }
+    if (!source) {
+      alert('Please set the problem source.');
       return;
     }
 
