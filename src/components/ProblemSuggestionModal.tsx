@@ -40,9 +40,8 @@ export default function ProblemSuggestionModal({
   const inEditor = editorActions.inEditor;
 
   // will be null if in editor
-  const markdownLayoutInfo = useContext(
-    MarkdownLayoutContext
-  )?.markdownLayoutInfo;
+  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
+    ?.markdownLayoutInfo;
 
   const darkMode = useDarkMode();
 
@@ -60,6 +59,14 @@ export default function ProblemSuggestionModal({
 
   const handleSubmit = event => {
     event.preventDefault();
+    if (!difficulty) {
+      alert('Please set the problem difficulty.');
+      return;
+    }
+    if (!source) {
+      alert('Please set the problem source.');
+      return;
+    }
 
     setLoading(true);
 
@@ -72,7 +79,17 @@ export default function ProblemSuggestionModal({
         .split(',')
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0);
-      const generatedProblemId = generateProblemUniqueId(source, name, link);
+      let generatedProblemId = '';
+      try {
+        generatedProblemId = generateProblemUniqueId(source, name, link);
+      } catch (e) {
+        console.log(e);
+        alert(
+          'Error generating problem ID from URL. Check console for details.'
+        );
+        setLoading(false);
+        return;
+      }
       const problemToAdd: ProblemMetadata = {
         uniqueId: generatedProblemId,
         name,
