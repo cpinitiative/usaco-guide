@@ -158,6 +158,8 @@ static arrays much of the time. However, we can also have dynamic arrays of
 dynamic arrays (e.g. `vector<vector<int>>`) static arrays of dynamic arrays
 (e.g. `array<vector<int>,5>`), dynamic arrays of static arrays (e.g.
 `vector<array<int,5>>`), and so on.
+
+## Doubly-Linked Lists
 	
 An alternative for variable-length arrays are "doubly-linked lists." They are implemented by "linking" or pointing each element to the element before and after it. We recommend you look at [this Wikipedia article](https://en.wikipedia.org/wiki/Doubly_linked_list) for more information. These support $\mathcal{O}(1)$ insertion and removal, if you have access to the pointer of the element beforehand.
 	
@@ -171,6 +173,66 @@ The C++ object for a doubly-linked list is the `list` object.
 list<int> li
 ```
 
+Alternatively, you could implement such a list on your own:
+	
+```cpp
+struct Node {
+    int value = NULL;
+    Node *prev = NULL;
+    Node *next = NULL;
+};
+
+void insert(Node* node, int value) {
+    struct Node* new_node = new Node;
+    new_node->value = value;
+    new_node->next = node->next;
+    new_node->prev = node;
+    node->next = new_node;
+    if (new_node->next != NULL) new_node->next->prev = new_node;
+}
+
+void remove(Node* node) {
+    if (node->prev != NULL) node->prev->next = node->next;
+    if (node->next != NULL) node->next->prev = node->prev;
+}
+```
+A sample implementation of this is provided below:
+
+```cpp
+int main() {
+    Node* start = new Node;
+    start->value = 5;
+	
+    insert(start, 6);
+    Node* next = start->next;
+	
+    insert(next, 7);
+    next = next->next;
+	
+    insert(next, 8);
+	
+    remove(next);
+	
+    Node* cur = start;
+    while (cur != NULL) {
+        cout << cur->value << endl;
+        cur = cur->next;
+    }
+
+    // Infinite Loop
+    next = next->next;
+    next->next = start;
+	
+    cur = start;
+    while (cur != NULL) {
+        cout << cur->value << endl;
+        cur = cur->next;
+    }
+}
+```
+
+Notice how you can create infinite loops with doubly-linked lists. In fact, doubly-linked lists are a great way to represent functional graphs. You can read more about functional graphs [here.](https://usaco.guide/silver/func-graphs)
+	
 ### Iterating
 
 <Resources>
