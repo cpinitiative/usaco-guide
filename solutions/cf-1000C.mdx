@@ -66,14 +66,14 @@ int main() {
 		freq[i] += freq[i - 1];
 	}
 
-	vector<ll> ans(n + 1); // This is equivalent to the cnt array. ans[i] stores cnt[i]
+	vector<ll> cnt(n + 1);
 	for (int i = 1; i < coords.size(); i++) {
 		// We add r - l to the number of points for a given frequency since we compressed the coordinates
-		ans[freq[i - 1]] += coords[i] - coords[i - 1];
+		cnt[freq[i - 1]] += coords[i] - coords[i - 1];
 	}
 
 	for (int i = 1; i <= n; i++) {
-		cout << ans[i] << " "; // Print out the answer here
+		cout << cnt[i] << " "; // Print out the answer here
 	}
 	cout << endl;
 }
