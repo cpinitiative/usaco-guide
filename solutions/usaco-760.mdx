@@ -22,17 +22,17 @@ sys.stdin = open("shuffle.in", 'r')
 sys.stdout = open("shuffle.out", 'w')
 
 n = int(input())
-order = list(map(int, input().split()))
+shuffle = list(map(int, input().split()))
 ids = list(map(int, input().split()))
-fin = [0] * n
+past_order = [0] * n
 
 # three shuffles.
 for _ in range(3):
-	for i in range(len(order)):
-		fin[i] = ids[order[i] - 1]
-	ids = fin.copy()
+	for i in range(n):
+		past_order[i] = ids[shuffle[i] - 1]
+	ids = past_order.copy()
 	
-for i in fin:
+for i in past_order:
 	print(i)
 ```
 </PySection>
