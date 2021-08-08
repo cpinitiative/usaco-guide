@@ -10,13 +10,14 @@ author: Daniel Qiu
 
 
 ## Explanation
+## Solution 1 - Faster DFS
 
 Doing a standard DFS would be too slow. To speed it up, we have to do two
 optimizations.
 
 ### Optimization 1
 
-You can store whether there is no edge between two nodes using an array of sets.
+You can store whether there is no edge between two nodes using an array of sets, instead of a adjacency list. If the input tells you that nodes $a$ and $b$ do node have an edge between them, you would insert node $a$ at $array[b]$, and node $b$ and $array[a]$ 
 This way you can find if there is no edge between two nodes in
 $\mathcal{O}(\log N)$ time. Using an adjacency matrix would take too much
 memory.
@@ -36,40 +37,7 @@ node is visited it cannot be revisited. Therefore you will always visit $N$ node
 non-edge skips two nodes). Therefore the overall complexity will be
 $O(N\log N+M\log N)$.
 
-## Another Solution
-
-Let $N =$ number of nodes in the graph
-
-$n =$ an abitrary node 
-
-$\texttt{degree}(n)=$ the the number of neighbooring nodes (number of different nodes $n$ is directly connected to). 
-
-<br></br>
-
-We know that the size of the component containing node $n$ must be at least
-$\texttt{degree}(n)+1$ ($\texttt{degree}(n)$ doesn't include $n$).
-
-If $\texttt{degree}(n_1)+1>\dfrac{N}2$ and $\texttt{degree}(n_2)+1>\dfrac{N}2$, 
-$n_1$ and $n_2$ must intersect, otherwise the graph must be greater than $N$.  
-
-Given this, we can just put all nodes with $\texttt{degree} +1 > \dfrac{N}2$
-into the same group in $O(N)$ time.
-
-Now we can just process all nodes with $\texttt{degree}+1\le\dfrac{N}2$, with DFS.
-
-### Proof
-
-We can handle all nodes with $\texttt{degree}+1>\dfrac{N}2$ in $O(N)$ time. 
-
-Given that $N'$ nodes have at most $\dfrac{N}2 -1 ˜ \dfrac{N}2$ edges, they also must have at least $\dfrac{N}2$ non-edges. Therefore, there must be at least $\dfrac{N'\cdot\dfrac{N}2}2 = \dfrac{N\cdot N'}4$ non-edges (each edge accounts for two nodes).
-
-The input states that the number of edges is less than $2 \cdot 10^5$, therefore $\dfrac{N \cdot N'}4\le2\cdot10^5$, therefore $N \cdot N' \le8\cdot10^5$. 
-
-Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O}(NN' \log N+ \log M)$, which would fit under the time limit. The $\log N$ comes from checking if two nodes are connected using an array of sets and the $\log M$ comes from processing input. Therefore, this runs under the time limit.
-
-
 <LanguageSection>
-
 <CPPSection>
 
 ## Implementation
@@ -134,6 +102,45 @@ int main(){
 	cout<<endl;
 }
 ```
+</CPPSection>
+</LanguageSection>
+
+## Solution 2 - Selective DFS
+
+Let $N =$ number of nodes in the graph
+
+$n =$ an abitrary node 
+
+$\texttt{degree}(n)=$ the number of neighbooring nodes (number of different nodes $n$ is directly connected to). 
+
+<br></br>
+
+We know that the size of the component containing node $n$ must be at least
+$\texttt{degree}(n)+1$ ($\texttt{degree}(n)$ doesn't include $n$).
+
+If $\texttt{degree}(n_1)+1>\dfrac{N}2$ and $\texttt{degree}(n_2)+1>\dfrac{N}2$, 
+$n_1$ and $n_2$ must intersect, otherwise the graph must be greater than $N$.  
+
+Given this, we can just put all nodes with $\texttt{degree} +1 > \dfrac{N}2$
+into the same group in $O(N)$ time.
+
+Now we can just process all nodes with $\texttt{degree}+1\le\dfrac{N}2$, with DFS.
+
+### Proof
+
+We can handle all nodes with $\texttt{degree}+1>\dfrac{N}2$ in $O(N)$ time. 
+
+Given that $N'$ nodes have at most $\dfrac{N}2 -1 ≈ \dfrac{N}2$ edges, they also must have at least $\dfrac{N}2$ non-edges. Therefore, there must be at least $\dfrac{N'\cdot\dfrac{N}2}2 = \dfrac{N\cdot N'}4$ non-edges (each edge accounts for two nodes).
+
+The input states that the number of edges is less than $2 \cdot 10^5$, therefore $\dfrac{N \cdot N'}4\le2\cdot10^5$, therefore $N \cdot N' \le8\cdot10^5$. 
+
+Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O}(NN' \log N+ \log M)$, which would fit under the time limit. The $\log N$ comes from checking if two nodes are connected using an array of sets and the $\log M$ comes from processing input. Therefore, this runs under the time limit.
+
+
+<LanguageSection>
+
+<CPPSection>
+
 ## Alternate Solution Implementation
 **Time Complexity:** $\mathcal{O}(NN' \log N+ \log M)$
 ```cpp
