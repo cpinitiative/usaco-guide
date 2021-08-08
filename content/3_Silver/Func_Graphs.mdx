@@ -2,6 +2,7 @@
 id: func-graphs
 title: (Optional) Introduction to Functional Graphs
 author: Siyong Huang, Benjamin Qi, Andrew Wang
+contributors: Chuyang Wang
 prerequisites:
   - intro-tree
 description:
@@ -444,7 +445,7 @@ Try simulating the algorithm on the following directed graph in CSAcademy's
 
 ### Solution 2
 
-`go(x)` generates answers for all vertices in the connected component containing
+`floyd(x)` generates answers for all vertices in the connected component containing
 `x`. Requires reverse adjacency lists (`radj`).
 
 <LanguageSection>
@@ -452,42 +453,168 @@ Try simulating the algorithm on the following directed graph in CSAcademy's
 <CPPSection>
 
 ```cpp
-int N;
-vi P,ans;
-V<vi> radj;
+#include <bits/stdc++.h>
+using namespace std;
 
-void fill_radj(int x) {
-	trav(t,radj[x]) if (ans[t] == -1) {
-		ans[t] = ans[x];
-		fill_radj(t);
+int N;
+vector<int> adj, ans;
+vector<vector<int>> radj;
+
+void fill_radj(int x)
+{
+	for (auto &child : radj[x])
+	{
+		// as all nodes in the cycle are processed in function floyd,
+		// the recursive call will only start at the nodes which
+		// combine the cycle with the acyclic part of the connected component
+		// where one of its outgoing arrows points to the node that is not processed yet
+		if (ans[child] == -1)
+		{
+			ans[child] = ans[x];
+			fill_radj(child);
+		}
 	}
 }
 
-void go(int x) {
+void floyd(int x)
+{
 	int y = x;
-	do { // find a cycle using Floyd's algo
-		x = P[x];
-		y = P[P[y]];
+	do
+	{ // find a cycle using Floyd's algorithm
+		x = adj[x];
+		y = adj[adj[y]];
 	} while (y != x);
-	do { // set ans[x] = x for all x along cycle
+	do
+	{ // set ans[x] = x for all x along cycle
 		ans[x] = x;
-		x = P[x];
+		x = adj[x];
 	} while (y != x);
-	do { // set ans'es for all x not along cycle
+	do
+	{ // set ans'es for all x not along cycle
 		fill_radj(x);
-		x = P[x];
+		x = adj[x];
 	} while (y != x);
 }
 
-int main() {
-	setIO(); rv(N,P); trav(t,P) --t;
-	radj.rsz(N); F0R(i,N) radj[P[i]].pb(i);
-	ans = vi(N,-1); F0R(i,N) if (ans[i] == -1) go(i);
-	trav(t,ans) pr(t+1,' ');
+int main()
+{
+	cin.tie(0)->sync_with_stdio(false);
+	cin >> N;
+
+	adj.assign(N, -1);
+	for (auto &e : adj)
+	{
+		cin >> e;
+		e--;
+	}
+
+	// we need vector of vectors since at nodes combining the cycle with other
+	// part of the connected component,
+	// there would be more than one outgoing arrows in the reversed adjacency list
+	radj.assign(N, {});
+	for (int i = 0; i < N; i++)
+		radj[adj[i]].push_back(i);
+
+	ans.assign(N, -1);
+	// we run the Floyd's algorithm for each connected component
+	for (int i = 0; i < N; i++)
+		if (ans[i] == -1)
+			floyd(i);
+
+	for (auto &a : ans)
+		cout << a + 1 << " ";
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Badge {
+	static Integer[] adj, ans;
+	/*
+	 * we need list of lists for the reversed adjacency list since at nodes
+	 * combining the cycle with other part of the connected component, there would
+	 * be more than one outgoing arrows in the reversed adjacency list
+	 */
+	static List<List<Integer>> radj;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+		int N = Integer.parseInt(in.readLine().trim());
+		adj = new Integer[N];
+		ans = new Integer[N];
+		radj = new ArrayList<>();
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < N; i++) {
+			adj[i] = Integer.valueOf(st.nextToken()) - 1;
+			ans[i] = -1;
+			radj.add(new ArrayList<>());
+		}
+
+		for (int i = 0; i < N; i++)
+			radj.get(adj[i]).add(Integer.valueOf(i));
+
+		for (int i = 0; i < N; i++) {
+			// run Floyd's algorithm on every connected component
+			if (ans[i] == -1)
+				floyd(i);
+		}
+
+		for (Integer i : ans) {
+			System.out.print(i + 1);
+			System.out.print(" ");
+		}
+	}
+
+	private static void floyd(int x) {
+		int a = adj[x];
+		int b = adj[adj[x]];
+
+		// find a cycle using Floyd's algorithm
+		while (a != b) {
+			a = adj[a];
+			b = adj[adj[b]];
+		}
+
+		// for each node a in the cycle, the answer ans[a] will be a as well
+		do {
+			ans[a] = a;
+			a = adj[a];
+		} while (a != b);
+
+		// for each node a that has outgoing arrow(s) pointing to the acyclic part
+		// we set their answers with fillRadj
+		do {
+			fillRadj(a);
+			a = adj[a];
+		} while (a != b);
+	}
+
+	private static void fillRadj(int x) {
+		for (Integer child : radj.get(x)) {
+			/*
+			 * as all nodes in the cycle are processed in method floyd, the recursive call
+			 * will only start at the nodes which combine the cycle with the acyclic part of
+			 * the connected component, where one of its outgoing arrows points to the node
+			 * that is not processed yet
+			 */
+			if (ans[child] == -1) {
+				ans[child] = ans[x];
+				fillRadj(child);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -567,8 +694,8 @@ public class badge2{
 
 ## $K$-th Successor
 
-As described briefly in CPH 16.3, can be found in $\mathcal{O}(\log K)$ time
-using **binary jumping**. See the Platinum [module](/plat/bin-jump) for details.
+As described briefly in CPH 16.3, the $k$-th successor of a certain node in a functional graph can be found in $\mathcal{O}(\log K)$ time
+using **binary jumping**, given $\mathcal{O}(n \log u)$ time of preprocessing where $u$ is the maximum length of each jump. See the Platinum [module](/plat/bin-jump) for details.
 
 ## Problems
 
