@@ -17,7 +17,7 @@ optimizations.
 
 ### Optimization 1
 
-You can store whether there is no edge between two nodes using an array of sets, instead of a adjacency list. If the input tells you that nodes $a$ and $b$ do node have an edge between them, you would insert node $a$ at $array[b]$, and node $b$ and $array[a]$ 
+You can store whether there is no edge between two nodes using an array of sets, instead of a adjacency list. If the input tells you that nodes $a$ and $b$ do node have an edge between them, you would insert node $a$ at $\texttt{array}[b]$, and node $b$ and $\texttt{array}[a]$ 
 This way you can find if there is no edge between two nodes in
 $\mathcal{O}(\log N)$ time. Using an adjacency matrix would take too much
 memory.
@@ -57,7 +57,7 @@ int cur = 0;
 void dfs(int x){
 	sz[cur]++;
 	auto it = unvis.begin();
-	while(it!=unvis.end()){
+	while(it != unvis.end()){
 		//if there is no edge between x and *it, skip
 		if(adj[x].count(*it)){
 			it++;
@@ -74,32 +74,32 @@ void dfs(int x){
 }
 int main(){
 	int n, m;
-	cin>>n>>m;
-	for(int i = 0; i<m; i++){
+	cin >> n >> m;
+	for(int i = 0; i < m; i++){
 		int a, b;
-		cin>>a>>b;
+		cin >> a >> b;
 		a--;
 		b--;
 		adj[a].insert(b);
 		adj[b].insert(a);
 	}
-	for(int i = 0; i<n; i++){
+	for(int i = 0; i < n; i++){
 		unvis.insert(i);
 	}
-	for(int i = 0; i<n; i++){
+	for(int i = 0; i < n; i++){
 		auto it = unvis.find(i);
-		if(it!=unvis.end()){
+		if(it != unvis.end()){
 			unvis.erase(it);
 			dfs(i);
 			cur++;
 		}
 	}
-	cout<<cur<<endl;
-	sort(sz, sz+cur);
-	for(int i = 0; i<cur; i++){
-		cout<<sz[i]<<' ';
+	cout << cur << endl;
+	sort(sz, sz + cur);
+	for(int i = 0; i < cur; i++){
+		cout << sz[i] << ' ';
 	}
-	cout<<endl;
+	cout << endl;
 }
 ```
 </CPPSection>
@@ -107,9 +107,7 @@ int main(){
 
 ## Solution 2 - Selective DFS
 
-Let $N =$ the number of nodes in the graph
-
-$n =$ an abitrary node 
+Let $N =$ the number of nodes in the graph and $n =$ an abitrary node 
 
 $\texttt{degree}(n)=$ the number of neighbooring nodes (number of different nodes $n$ is directly connected to). 
 
@@ -186,7 +184,7 @@ void dfs(int x){
 }
 int main(){
 	cin >> n >> m;
-	for(int i = 0; i<m; i++){
+	for(int i = 0; i < m; i++){
 		int a, b;
 		cin >> a >> b;
 		a--;
