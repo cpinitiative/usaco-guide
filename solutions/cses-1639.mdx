@@ -27,7 +27,7 @@ public class EditDistance {
 		char[] str2 = io.next().toCharArray();
 
 		/*
-		 * dp[i][j] is the number of moves to change the first i letters
+		 * dp[i][j] is the minimum number of moves to change the first i letters
 		 * of the string into the first j letters of result.
 		 */
 		int[][] dp = new int[str1.length + 1][str2.length + 1];
@@ -39,20 +39,17 @@ public class EditDistance {
 			for (int j = 0; j <= str2.length; j++) {
 				if (i != 0) {
 					// Delete letter i - 1 from the string.
-					dp[i][j] = Integer.min(dp[i][j], dp[i - 1][j] + 1);
+					dp[i][j] = Math.min(dp[i][j], dp[i - 1][j] + 1);
 				}
 				if (j != 0) {
 					// Add letter j - 1 of the result to the string.
-					dp[i][j] = Integer.min(dp[i][j], dp[i][j - 1] + 1);
+					dp[i][j] = Math.min(dp[i][j], dp[i][j - 1] + 1);
 				}
 
 				// Make letter i - 1 equal to letter j - 1 of the result.
 				if (i != 0 && j != 0) {
-					int sum = dp[i - 1][j - 1];
-					if ((str1[i - 1] != str2[j - 1])) {
-						sum++;
-					}
-					dp[i][j] = Integer.min(dp[i][j], sum);
+					int newCost = dp[i - 1][j - 1] + ((str1[i - 1] == str2[j - 1]) ? 0 : 1);
+					dp[i][j] = Math.min(dp[i][j], newCost);
 				}
 			}
 		}
