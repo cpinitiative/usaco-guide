@@ -17,9 +17,9 @@ optimizations.
 
 ### Optimization 1
 
-You can store whether there is no edge between two nodes using an array of sets, instead of a adjacency list. If the input tells you that nodes $a$ and $b$ do node have an edge between them, you would insert node $a$ at $\texttt{array}[b]$, and node $b$ and $\texttt{array}[a]$ 
+You can store whether there is no edge between two nodes using an array of hashsets, instead of a adjacency list. If the input tells you that nodes $a$ and $b$ do node have an edge between them, you would insert node $a$ at $\texttt{array}[b]$, and node $b$ and $\texttt{array}[a]$ 
 This way you can find if there is no edge between two nodes in
-$\mathcal{O}(\log N)$ time. Using an adjacency matrix would take too much
+$\mathcal{O}(1)$ time. Using an adjacency matrix would take too much
 memory.
 
 ### Optimization 2
@@ -33,21 +33,21 @@ node it is pointing to being destroyed when you remove it from the unvisited set
 ### Proof
 
 We know that a node can either be skipped or visited. We also know that once a
-node is visited it cannot be revisited. Therefore you will always visit $N$ nodes once. We also know that the sum of skips can be at most $2M$ (each        
+node is visited it cannot be revisited. Therefore you will always visit $N$ nodes once. We also know that the sum of skips can be at most $2M$ (each
 non-edge skips two nodes). Therefore the overall complexity will be
-$O(N\log N+M\log N)$.
+$O(N\log N+M)$.
 
 <LanguageSection>
 <CPPSection>
 
 ## Implementation
-**Time Complexity:** $\mathcal{O}(N\log N+M\log N)$
+**Time Complexity:** $\mathcal{O}(N\log N+M)$
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-set<int> adj[200000];
+unordered_set<int> adj[200000];
 //the set of nodes that have not been visited
 set<int> unvis;
 // sz[i] = size of the ith connected component
@@ -131,7 +131,7 @@ Given that $N'$ nodes have at most $\dfrac{N}2 -1 ≈ \dfrac{N}2$ edges, they al
 
 The input states that the number of edges is less than $2 \cdot 10^5$, therefore $\dfrac{N \cdot N'}4\le2\cdot10^5$, therefore $N \cdot N' \le8\cdot10^5$. 
 
-Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O}(NN' \log N+ \log M)$, which would fit under the time limit. The $\log N$ comes from checking if two nodes are connected using an array of sets and the $\log M$ comes from processing input. Therefore, this runs under the time limit.
+Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O}(NN'+ \log M)$, which would fit under the time limit. The $\log M$ comes from processing input. Therefore, this runs under the time limit.
 
 
 <LanguageSection>
@@ -139,14 +139,14 @@ Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O
 <CPPSection>
 
 ## Implementation
-**Time Complexity:** $\mathcal{O}(NN' \log N+ \log M)$
+**Time Complexity:** $\mathcal{O}(NN'+ \log M)$
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 using vi = vector<int>;
 #define pb push_back
 
-set<int> adj[200005];
+unordered_set<int> adj[200005];
 //group[i] = the group of the ith node
 //group[i] = 0 if the ith node hasn't been assigned a group yet
 int group[200005];
