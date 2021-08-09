@@ -37,11 +37,11 @@ non-edge skips two nodes). Therefore the overall complexity will be
 $O(N\log N+M)$.
 
 ## Implementation
+**Time Complexity:** $\mathcal{O}(N\log N+M)$
 
 <LanguageSection>
 <CPPSection>
 
-**Time Complexity:** $\mathcal{O}(N\log N+M)$
 
 ```cpp
 #include <bits/stdc++.h>
@@ -51,15 +51,15 @@ unordered_set<int> adj[MAX_N];
 // the set of nodes that have not been visited
 set<int> unvis;
 // sz[i] = size of the ith connected component
-int sz[200000];
+int sz[MAX_N];
 // current amount of groups
 int cur = 0;
 void dfs(int x) {
 	sz[cur]++;
 	auto it = unvis.begin();
-	while(it != unvis.end()) {
+	while (it != unvis.end()) {
 		// if there is no edge between x and *it, skip
-		if(adj[x].count(*it)) {
+		if (adj[x].count(*it)) {
 			it++;
 		} else {
 			// there is a edge between last and x
@@ -75,7 +75,7 @@ void dfs(int x) {
 int main() {
 	int n, m;
 	cin >> n >> m;
-	for(int i = 0; i < m; i++) {
+	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--;
@@ -83,12 +83,12 @@ int main() {
 		adj[a].insert(b);
 		adj[b].insert(a);
 	}
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		unvis.insert(i);
 	}
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		auto it = unvis.find(i);
-		if(it != unvis.end()) {
+		if (it != unvis.end()) {
 			unvis.erase(it);
 			dfs(i);
 			cur++;
@@ -96,7 +96,7 @@ int main() {
 	}
 	cout << cur << endl;
 	sort(sz, sz + cur);
-	for(int i = 0; i < cur; i++) {
+	for (int i = 0; i < cur; i++) {
 		cout << sz[i] << ' ';
 	}
 	cout << endl;
@@ -107,9 +107,7 @@ int main() {
 
 ## Solution 2 - Selective DFS
 
-Let $N =$ the number of nodes in the graph and $n =$ an abitrary node 
-
-$\texttt{degree}(n)=$ the number of neighbooring nodes (number of different nodes $n$ is directly connected to). 
+Let $N =$ the number of nodes in the graph and $n =$ an abitrary node and $\texttt{degree}(n)=$ the number of neighbooring nodes (number of different nodes $n$ is directly connected to). 
 
 
 We know that the size of the component containing node $n$ must be at least
@@ -133,13 +131,14 @@ The input states that the number of edges is less than $2 \cdot 10^5$, therefore
 
 Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O}(NN'+ \log M)$, which would fit under the time limit. The $\log M$ comes from processing input. Therefore, this runs under the time limit.
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NN'+ \log M)$
 
 <LanguageSection>
 
 <CPPSection>
 
-## Implementation
-**Time Complexity:** $\mathcal{O}(NN'+ \log M)$
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -149,32 +148,32 @@ const int MAX_N = 200000;
 unordered_set<int> adj[MAX_N];
 // group[i] = the group of the ith node
 // group[i] = 0 if the ith node hasn't been assigned a group yet
-int group[200005];
+int group[MAX_N];
 // the nodes in the current component
 vi currentcomponent;
 // curgroup = the group of the current component
 // curgroup is always either cur or 1
 int curgroup;
-bool vis[200005];
+bool vis[MAX_N];
 int n, m;
 // sz[i] = size of group i
-int sz[200005];
+int sz[MAX_N];
 
-void dfs(int x) {
+void dfs (int x) {
 	// if x can be reached, it is part of the current component
 	currentcomponent.pb(x);
 	vis[x] = true;
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		// if there is no, non-edge between x and i, i can be visited
-		if(x != i && adj[x].find(i) == adj[x].end()) {
+		if (x != i && adj[x].find(i) == adj[x].end()) {
 			// if you can visit a node from group one every node in
 			// the current component can visit group 1 and you dont
 			// have to create a new component
-			if(group[i] == 1) {
+			if (group[i] == 1) {
 				curgroup = 1;
 				continue;
 			} else {
-				if(!vis[i]) {
+				if (!vis[i]) {
 					dfs(i);
 				}
 			}
@@ -183,7 +182,7 @@ void dfs(int x) {
 }
 int main() {
 	cin >> n >> m;
-	for(int i = 0; i < m; i++) {
+	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--;
@@ -192,9 +191,9 @@ int main() {
 		adj[b].insert(a);
 	}
 	int cur = 1; // current number of groups+1
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		// if any two nodes have degree+1 >n/2, they are part of the same component
-		if(n - adj[i].size() > n / 2) {
+		if (n - adj[i].size() > n / 2) {
 			// assign ith node to component 1
 			group[i] = 1;
 			// increase the size of component 1
@@ -203,25 +202,25 @@ int main() {
 			cur = 2;
 		}
 	}
-	for(int i = 0; i < n; i++) {
-		if(!group[i]) {
+	for (int i = 0; i < n; i++) {
+		if (!group[i]) {
 			// curgroup's default is cur
 			curgroup = cur;
 			dfs(i);
-			for(int j : currentcomponent) {
+			for (int j : currentcomponent) {
 				group[j] = curgroup;
 				sz[curgroup]++;
 			}
 			currentcomponent.clear();
 			// if a new group has been created, e.g. curgroup =cur, increase cur
-			if(curgroup == cur) {
+			if (curgroup == cur) {
 				cur++;
 			}
 		}
 	}
 	cout << cur - 1 << endl;
 	sort(sz, sz + cur);
-	for(int i = 1; i < cur; i++) {
+	for (int i = 1; i < cur; i++) {
 		cout << sz[i] << ' ';
 	}
 	cout << endl;
