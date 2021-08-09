@@ -91,54 +91,68 @@ This problem can actually be solved using the first answer to “Badge.” In th
 ## Alternative Implementation
 	
 ```cpp
-int n, p[INF], ans[INF];
-bool in_cycle = false;
+// n - number of cows
+// p - outgoing edges
+// cycle: -2 = unvisited, -1 = currently being visited, else = visited
+int n, p[INF], cycle[INF];
 
+bool in_cycle = false;
 void dfs(int node) {
-   if (ans[node] != -2) {
-       if (ans[node] == -1) {
-           in_cycle = true;
-           ans[node] = node;
-       }
-       return;
-   }
-   ans[node] = -1;
-   dfs(p[node]);
-   if (ans[node] != -1) {
-       in_cycle = false;
-       return;
-   }
-   if (in_cycle) {
-       ans[node] = node;
-   } else {
-       ans[node] = ans[p[node]];
-   }
+    // seen this node before
+    if (cycle[node] != -2) {
+        // currently being visited - found a cycle
+        if (cycle[node] == -1) {
+            in_cycle = true;
+            // node will cycle back to itself
+            cycle[node] = node;
+        }
+        return;
+    }
+    // set this node to "currently visited"
+    cycle[node] = -1;
+    // visit the next node
+    dfs(p[node]);
+    // you've exited the cycle
+    if (cycle[node] != -1) {
+        in_cycle = false;
+        return;
+    }
+    // node will cycle back to itself 
+    if (in_cycle) {
+        cycle[node] = node;
+    } 
+    // node is out of the cycle
+    // so it will cycle back to the first node
+    // it visits in the cycle
+    else {
+        cycle[node] = cycle[p[node]];
+    }
 }
 
-int main()
-{
-   std::ios_base::sync_with_stdio(false); cin.tie(0);
+int main() {
+    std::ios_base::sync_with_stdio(false); cin.tie(0);
 
-   ifstream cin("shuffle.in");
-   ofstream cout("shuffle.out");
+//    ifstream cin("shuffle.in");
+//    ofstream cout("shuffle.out");
 
-   cin >> n;
-   for (int i = 0; i < n; i++) {
-       cin >> p[i];
-       p[i]--;
-   }
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> p[i];
+        p[i]--;
+    }
+    
+    fill(cycle, cycle + n, -2);
 
-   fill(ans, ans + n, -2);
+    for (int i = 0; i < n; i++) dfs(i);
 
-   for (int i = 0; i < n; i++) dfs(i);
-  
-   int count = 0;
-   for (int i = 0; i < n; i++) {
-       if (ans[i] == i) count++;
-   }
-   cout << count << '\n';
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        // if this node cycles back to itself, it means it is never empty
+        if (cycle[i] == i) ans++;
+    }
+    cout << ans << '\n';
 
-   return 0;
+    return 0;
 }
 ```
 	
