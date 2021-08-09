@@ -3,7 +3,7 @@ id: shortest-paths
 redirects:
   - /gold/sp
 title: 'Shortest Paths with Non-Negative Edge Weights'
-author: Benjamin Qi, Andi Qu, Qi Wang
+author: Benjamin Qi, Andi Qu, Qi Wang, Neo Wang
 prerequisites:
   - bfs
   - custom-cpp-stl
@@ -25,8 +25,6 @@ idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
 ## Floyd-Warshall
 
 <!-- All Pairs Shortest Path (APSP) -->
-
-<FocusProblem problem="apspSam" />
 
 ### Tutorial
 
@@ -66,6 +64,111 @@ idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
 
 </Optional>
 
+### Problem
+
+<FocusProblem problem="apspSam" />
+
+#### Explanation
+
+This problem asks us to compute shortest paths between any two vertices. Hence,
+Floyd-Warshall is suitable because of the low $N (N \le 500)$, and the inclusion of negative weights.
+
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//CodeSnip{CPP Short Template}
+
+ll INF = 1e18;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m, q;
+	cin >> n >> m >> q;
+
+	vector<vector<ll>> mat(n, vector<ll>(n, INF));
+
+	for (int i = 0; i < m; i++) {
+		int u, v, w;
+		cin >> u >> v >> w, u--, v--;
+		if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
+	}
+
+	for (int k = 0; k < n; k++)
+		for (int i = 0; i < n; i++)
+			for (int j = i + 1; j < n; j++)
+				if (mat[i][k] + mat[k][j] < mat[i][j])
+					mat[i][j] = mat[j][i] = mat[i][k] + mat[k][j];
+
+	while (q--) {
+		int u, v;
+		cin >> u >> v, u--, v--;
+		if (u == v) mat[u][v] = 0;
+		if (mat[u][v] == INF) mat[u][v] = -1;
+		cout << mat[u][v] << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+	// CodeSnip{Kattio}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt(), m = io.nextInt(), q = io.nextInt();
+
+		long[][] mat = new long[n][n];
+		long INF = (long)1e18;
+
+		for(long[] row : mat) {
+			Arrays.fill(row, INF);
+		}
+
+		for (int i = 0; i < m; i++) {
+			int u = io.nextInt(), v = io.nextInt(), w = io.nextInt();
+			u--; v--;
+			if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
+		}
+
+		for (int k = 0; k < n; k++)
+			for (int i = 0; i < n; i++)
+				for (int j = i + 1; j < n; j++)
+					if (mat[i][k] + mat[k][j] < mat[i][j])
+						mat[i][j] = mat[j][i] = mat[i][k] + mat[k][j];
+
+		while (q-- > 0) {
+			int u = io.nextInt(), v = io.nextInt();
+			u--; v--;
+			if (u == v) mat[u][v] = 0;
+			if (mat[u][v] == INF) mat[u][v] = -1;
+			io.println(mat[u][v]);
+		}
+
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 ### Problems
 
 Used as the first step of the following:
@@ -74,12 +177,9 @@ Used as the first step of the following:
 
 ## Dijkstra
 
-<FocusProblem problem="sample" />
+### Tutorial
 
-### $\mathcal{O}(N^2)$
-
-The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although
-this is rarely used nowadays.
+#### $\mathcal{O}(N^2)$
 
 <Resources>
 	<Resource
@@ -89,7 +189,7 @@ this is rarely used nowadays.
 	/>
 </Resources>
 
-### $\mathcal{O}(M\log N)$
+#### $\mathcal{O}(M\log N)$
 
 <Resources>
 	<Resource source="CPH" title="13.2 - Dijkstra" starred>
@@ -104,7 +204,7 @@ this is rarely used nowadays.
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph" />
 </Resources>
 
-### $\mathcal{O}(M\log N)$ Implementation
+#### $\mathcal{O}(M\log N)$ Implementation
 
 <Resources>
 	<Resource
@@ -113,6 +213,14 @@ this is rarely used nowadays.
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Basics/Dijkstra%20(7.3).h"
 	/>
 </Resources>
+
+### Problem
+
+<FocusProblem problem="sample" />
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M\log N)$
 
 <LanguageSection>
 
