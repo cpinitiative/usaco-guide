@@ -16,23 +16,22 @@ optimizations.
 
 ### Optimization 1
 
-You can store whether there is no edge between two nodes using an array of hashsets, instead of a adjacency list. If the input tells you that nodes $a$ and $b$ do not have an edge between them, you would add $a$ to $\texttt{adj}[b]$, and $b$ to $\texttt{adj}[a]$ 
-This way you can find if there is no edge between two nodes in
+We can store whether non-existant edges using an array of hashsets, instead of a adjacency list. This way we can find if there is no edge between two nodes in
 $\mathcal{O}(1)$ time. Using an adjacency matrix would take too much
 memory.
 
 ### Optimization 2
 
-Rather than using a standard boolean array to check if a node has not yet been visited, you
-can use a set of unvisited nodes. This way you only loop through the nodes that
-have not been visited yet and can find the next unvisited node in $\mathcal{O}(\log N)$. You need to use ```upper_bound``` to find
+Rather than using a standard boolean array to check if a node has not yet been visited, we
+can use a set of unvisited nodes. This way we only loop through the nodes that
+have not been visited yet and can find the next unvisited node in $\mathcal{O}(\log N)$. We need to use ```upper_bound``` to find
 the next unvisited node after a DFS - an iterator may be invalidated due to the
-node it is pointing to being destroyed when you remove it from the unvisited set.
+node it is pointing to being destroyed when we remove it from the unvisited set.
 
 ### Proof
 
 We know that a node can either be skipped or visited. We also know that once a
-node is visited it cannot be revisited. Therefore you will always visit $N$ nodes once. We also know that the sum of skips can be at most $2M$ (each
+node is visited it cannot be revisited. Therefore we will always visit $N$ nodes once. We also know that the sum of skips can be at most $2M$ (each
 non-edge skips two nodes). Therefore the overall complexity will be
 $O(N\log N+M)$.
 
@@ -166,8 +165,8 @@ void dfs (int x) {
 	for (int i = 0; i < n; i++) {
 		// if there is no, non-edge between x and i, i can be visited
 		if (x != i && adj[x].find(i) == adj[x].end()) {
-			// if you can visit a node from group one every node in
-			// the current component can visit group 1 and you dont
+			// if we can visit a node from group one every node in
+			// the current component can visit group 1 and we dont
 			// have to create a new component
 			if (group[i] == 1) {
 				curgroup = 1;
