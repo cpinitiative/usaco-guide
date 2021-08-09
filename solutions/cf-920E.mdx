@@ -46,36 +46,36 @@ $O(N\log N+M)$.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-unordered_set<int> adj[200000];
-//the set of nodes that have not been visited
+const int MAX_N = 200000;
+unordered_set<int> adj[MAX_N];
+// the set of nodes that have not been visited
 set<int> unvis;
 // sz[i] = size of the ith connected component
 int sz[200000];
-//current amount of groups
+// current amount of groups
 int cur = 0;
-void dfs(int x){
+void dfs(int x) {
 	sz[cur]++;
 	auto it = unvis.begin();
-	while(it != unvis.end()){
-		//if there is no edge between x and *it, skip
-		if(adj[x].count(*it)){
+	while(it != unvis.end()) {
+		// if there is no edge between x and *it, skip
+		if(adj[x].count(*it)) {
 			it++;
-		}else{
-			//there is a edge between last and x
+		} else {
+			// there is a edge between last and x
 			int last = *it;
-			//note it = unvis.erase(it) doenst work here because it could be erased later
+			// note it = unvis.erase(it) doenst work here because it could be erased later
 			unvis.erase(it);
 			dfs(last);
-			//find the node after last
+			// find the node after last
 			it = unvis.upper_bound(last);
 		}
 	}
 }
-int main(){
+int main() {
 	int n, m;
 	cin >> n >> m;
-	for(int i = 0; i < m; i++){
+	for(int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--;
@@ -83,12 +83,12 @@ int main(){
 		adj[a].insert(b);
 		adj[b].insert(a);
 	}
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < n; i++) {
 		unvis.insert(i);
 	}
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < n; i++) {
 		auto it = unvis.find(i);
-		if(it != unvis.end()){
+		if(it != unvis.end()) {
 			unvis.erase(it);
 			dfs(i);
 			cur++;
@@ -96,7 +96,7 @@ int main(){
 	}
 	cout << cur << endl;
 	sort(sz, sz + cur);
-	for(int i = 0; i < cur; i++){
+	for(int i = 0; i < cur; i++) {
 		cout << sz[i] << ' ';
 	}
 	cout << endl;
@@ -145,45 +145,45 @@ Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O
 using namespace std;
 using vi = vector<int>;
 #define pb push_back
-
-unordered_set<int> adj[200005];
-//group[i] = the group of the ith node
-//group[i] = 0 if the ith node hasn't been assigned a group yet
+const int MAX_N = 200000;
+unordered_set<int> adj[MAX_N];
+// group[i] = the group of the ith node
+// group[i] = 0 if the ith node hasn't been assigned a group yet
 int group[200005];
-//the nodes in the current component
+// the nodes in the current component
 vi currentcomponent;
-//curgroup = the group of the current component
-//curgroup is always either cur or 1
+// curgroup = the group of the current component
+// curgroup is always either cur or 1
 int curgroup;
 bool vis[200005];
 int n, m;
-//sz[i] = size of group i
+// sz[i] = size of group i
 int sz[200005];
 
-void dfs(int x){
-	//if x can be reached, it is part of the current component
+void dfs(int x) {
+	// if x can be reached, it is part of the current component
 	currentcomponent.pb(x);
 	vis[x] = true;
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < n; i++) {
 		// if there is no, non-edge between x and i, i can be visited
-		if(x != i && adj[x].find(i) == adj[x].end()){
-			//if you can visit a node from group one every node in
-			//the current component can visit group 1 and you dont
-			//have to create a new component
-			if(group[i] == 1){
+		if(x != i && adj[x].find(i) == adj[x].end()) {
+			// if you can visit a node from group one every node in
+			// the current component can visit group 1 and you dont
+			// have to create a new component
+			if(group[i] == 1) {
 				curgroup = 1;
 				continue;
-			}else{
-				if(!vis[i]){
+			} else {
+				if(!vis[i]) {
 					dfs(i);
 				}
 			}
 		}
 	}
 }
-int main(){
+int main() {
 	cin >> n >> m;
-	for(int i = 0; i < m; i++){
+	for(int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--;
@@ -191,37 +191,37 @@ int main(){
 		adj[a].insert(b);
 		adj[b].insert(a);
 	}
-	int cur = 1;//current number of groups+1
-	for(int i = 0; i < n; i++){
-		//if any two nodes have degree+1 >n/2, they are part of the same component
-		if(n - adj[i].size() > n / 2){
-			//assign ith node to component 1
+	int cur = 1; // current number of groups+1
+	for(int i = 0; i < n; i++) {
+		// if any two nodes have degree+1 >n/2, they are part of the same component
+		if(n - adj[i].size() > n / 2) {
+			// assign ith node to component 1
 			group[i] = 1;
-			//increase the size of component 1
+			// increase the size of component 1
 			sz[1]++;
-			//there is at least one group
+			// there is at least one group
 			cur = 2;
 		}
 	}
-	for(int i = 0; i < n; i++){
-		if(!group[i]){
-			//curgroup's default is cur
+	for(int i = 0; i < n; i++) {
+		if(!group[i]) {
+			// curgroup's default is cur
 			curgroup = cur;
 			dfs(i);
-			for(int j : currentcomponent){
+			for(int j : currentcomponent) {
 				group[j] = curgroup;
 				sz[curgroup]++;
 			}
 			currentcomponent.clear();
-			//if a new group has been created, e.g. curgroup =cur, increase cur
-			if(curgroup == cur){
+			// if a new group has been created, e.g. curgroup =cur, increase cur
+			if(curgroup == cur) {
 				cur++;
 			}
 		}
 	}
 	cout << cur - 1 << endl;
 	sort(sz, sz + cur);
-	for(int i = 1; i < cur; i++){
+	for(int i = 1; i < cur; i++) {
 		cout << sz[i] << ' ';
 	}
 	cout << endl;
