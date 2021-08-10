@@ -83,31 +83,31 @@ int main(){
 from math import gcd
 n = int(input())
 ans = 0
-Arr = list(map(int, input().split()))
+arr = list(map(int, input().split()))
 
-PrefixGCD = [0] * n
-PrefixGCD[0] = Arr[0]
+prefix_gcd = [0] * n
+prefix_gcd[0] = arr[0]
 
-SuffixGCD = [0]*n
-SuffixGCD[n-1] = Arr[n-1]
+suffix_gcd = [0] * n
+suffix_gcd[n-1] = arr[n-1]
 
-# PrefixGCD[i] = gcd(Arr[0], Arr[1], Arr[i])
+# prefix_gcd[i] = GCD of a[0], a[1], ..., a[i]
 for i in range(1, n):
-	PrefixGCD[i] = gcd(PrefixGCD[i-1], Arr[i])
+	prefix_gcd[i] = gcd(prefix_gcd[i-1], arr[i])
 
-#SuffixGCD[i] = gcd(Arr[n-1],Arr[n-2],,,Arr[i])
+#suffix_gcd[i] = GCD of a[i], a[i+1], ..., a[n-1]
 for i in range(n-2, -1, -1):
-	SuffixGCD[i] = gcd(SuffixGCD[i+1], Arr[i])
+	suffix_gcd[i] = gcd(suffix_gcd[i+1], arr[i])
 
 #Calculate the answer if we replace an element with index between 1 and n-2
 for i in range(1, n-1):
-	ans = max(ans, gcd(PrefixGCD[i-1], SuffixGCD[i+1]))
+	ans = max(ans, gcd(prefix_gcd[i-1], suffix_gcd[i+1]))
 
 #Calculate the answer if we replace the first element in the array
-ans = max(ans, SuffixGCD[1])
+ans = max(ans, suffix_gcd[1])
 
 #Calculate the answer if we replace the last element in the array
-ans = max(ans, PrefixGCD[n-2])
+ans = max(ans, prefix_gcd[n-2])
 
 print(ans)
 ```
