@@ -15,5 +15,5 @@ export {
   incrementUsers,
   cpiclasses,
   groups,
-  submitContactForm
+  submitContactForm,
 };
