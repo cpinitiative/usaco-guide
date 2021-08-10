@@ -14,7 +14,7 @@ import { SECTIONS, SECTION_LABELS } from '../../../content/ordering';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
+// import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
@@ -32,7 +32,7 @@ export default function TopNavigationBar({
   const { firebaseUser, signOut, isLoaded } = useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [isContactUsActive, setIsContactUsActive] = useState(false);
+  // const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const userGroups = useUserGroups();
   const resources = [
@@ -257,12 +257,12 @@ export default function TopNavigationBar({
                     )}
                   </Popover>
                 </Popover.Group>
-                <button
+                {/* <button
                   className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
-                </button>
+                </button> */}
               </div>
             </div>
             <div
@@ -410,12 +410,12 @@ export default function TopNavigationBar({
             >
               IDE
             </a>
-            <button
+            {/* <button
               className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
               onClick={() => setIsContactUsActive(true)}
             >
               Contact Us
-            </button>
+            </button> */}
             <Link
               className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
               to="/settings"
@@ -441,10 +441,10 @@ export default function TopNavigationBar({
         </div>
       </nav>
 
-      <ContactUsSlideover
+      {/* <ContactUsSlideover
         isOpen={isContactUsActive}
         onClose={() => setIsContactUsActive(false)}
-      />
+      /> */}
 
       <SearchModal
         isOpen={isSearchOpen}
