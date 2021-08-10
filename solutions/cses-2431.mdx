@@ -7,6 +7,8 @@ author: Nathan Gong
 
 ## Explanation
 
+_Note that this is very tricky for a bronze problem!_
+
 Since $k$ can be as big as $10^{18}$, there is no way we can approach this
 problem through brute force. Instead, we'll need to work out an algorithm that
 can answer queries in logarithmic time.
@@ -36,9 +38,50 @@ $$
 $$
 
 Once the condition becomes true, we know that the $k$-th digit must fall into
-the last group used in the sum. From there, we can calculate the exact number
-that the $k$th digit is in, which we can then use to find the value of the $k$th
-digit with modular arithmetic.
+the last group used in the sum. We can now calculate the $k$-th digit's position
+in the group by subtracting $k$ by the total number of digits from all groups
+before it. We'll call this relative position $j$:
+
+$$
+j=k-1-\sum^{\text{\# of groups}-1}_{n=1}{n\cdot9\cdot10^{n-1}}
+$$
+
+Note that we subtract $1$ from the result in order to make $j$ $0$-based (which
+makes it more convenient to solve the rest of the problem). For example, if
+$j=0$, that would mean the $k$-th digit is the first digit in the group. If
+$j=100$, that would mean the $k$-th digit is the $99$-th digit in the group,
+etc. From there, we can divide $j$ by $n$ (the length of the numbers in the
+group), which gives us the position of the number that contains the $k$-th digit
+within the group (also $0$-based).
+
+To calculate the exact number the $k$-th digit is in, we can add the position of
+the number within the group to the value of the first number in the group, which
+is just $10^{n-1}$ (you can find this pattern from the beginning example). Now,
+all that's left is finding the position of the $k$-th digit within the number
+that it's in. We can calculate that by taking $j \bmod n$, which finds the
+remainder of $j$ when divided by $n$. For example, let's look at the first $12$
+digits in the group with length $3$ numbers:
+
+<center>
+
+| Digit Sequence | $1$ | $0$ | $1$ | $1$ | $0$ | $2$ | $1$ | $0$ | $3$ | $1$ | $0$  | $4$  |
+| -------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- |
+| **Position**   | $0$ | $1$ | $2$ | $3$ | $4$ | $5$ | $6$ | $7$ | $8$ | $9$ | $10$ | $11$ |
+
+</center>
+
+As you can see, for each $3$-digit number in the digit sequence, the first digit
+is always at a position that's a multiple of $3$, meaning the position modulo
+$3$ equals $0$. Similarly, the second digit in each number is always at a
+position that's $1$ plus a multiple of $3$, meaning its position modulo $3$
+equals $1$. Finally, the third digit in each number is always $2$ plus a
+multiple of $3$, meaning that its position modulo $3$ equals $2$. This pattern
+extends for numbers of all sizes, and it is thus why we can use the modulo
+operator to determine the $k$-th digit's $0$-based position within the number
+it's inside.
+
+Finally, we can calculate our answer by converting the number that the $k$-th
+digit is in into a string and indexing it at the position we've just found.
 
 ## Implementation
 
@@ -73,7 +116,8 @@ int main() {
 		/*
 		 * Subtract k by sizes of groups until k becomes smaller than the size
 		 * of the current group. This produces the same effect as summing group
-		 * sizes until k becomes less than or equal to the sum.
+		 * sizes until k becomes less than or equal to the sum. By the time the
+		 * while loop ends, k - 1 will equal j.
 		 */
 		int n = 1;
 		while (k > n * 9 * pow10(n - 1)) {
@@ -109,7 +153,8 @@ public class DigitQueries {
 			/*
 			 * Subtract k by sizes of groups until k becomes smaller than the
 			 * size of the current group. This produces the same effect as
-			 * summing group sizes until k becomes less than or equal to the sum.
+			 * summing group sizes until k becomes less than or equal to the
+			 * sum. By the time the while loop ends, k - 1 will equal j.
 			 */
 			int n = 1;
 			while (k > n * 9 * pow10(n - 1)) {
@@ -151,7 +196,8 @@ for _ in range(int(input())):
 	"""
 	Subtract k by sizes of groups until k becomes smaller than the size of the
 	current group. This produces the same effect as summing group sizes until
-	k becomes less than or equal to the sum.
+	k becomes less than or equal to the sum. By the time the while loop ends,
+	k - 1 will equal j.
 	"""
 	n = 1
 	while k > n * 9 * 10 ** (n - 1):
