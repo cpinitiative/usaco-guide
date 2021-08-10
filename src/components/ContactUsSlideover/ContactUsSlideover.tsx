@@ -164,7 +164,21 @@ export default function ContactUsSlideover({
       isOpen={isOpen}
       onClose={onClose}
       title="Contact Us"
-      subtitle="Contact us about anything: suggestions, bugs, assistance, and more!"
+      subtitle={
+        <>
+          Contact us about anything: suggestions, bugs, assistance, and more!
+          This will be submitted as a public{' '}
+          <a
+            href="https://github.com/cpinitiative/usaco-guide/issues"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            Github issue
+          </a>
+          .
+        </>
+      }
       footerButtons={
         <>
           <span className="inline-flex rounded-md shadow-sm">
@@ -261,7 +275,7 @@ export default function ContactUsSlideover({
         {!showSuccess && (
           <div className="space-y-6 pb-5">
             <Field
-              label="Name"
+              label="Name (will not be shown publicly)"
               id="contact_name"
               value={name}
               onChange={e => setName(e.target.value)}
@@ -270,7 +284,7 @@ export default function ContactUsSlideover({
               }
             />
             <Field
-              label="Email"
+              label="Email (will not be shown publicly)"
               id="contact_email"
               value={email}
               onChange={e => setEmail(e.target.value)}
