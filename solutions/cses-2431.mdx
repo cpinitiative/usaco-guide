@@ -11,16 +11,18 @@ Since $k$ can be as big as $10^{18}$, there is no way we can approach this
 problem through brute force. Instead, we'll need to work out an algorithm that
 can answer queries in logarithmic time.
 
-Let's group numbers by how many digits they have. An observation we can
-make is that for any $n \geq 1$, there are $9 \cdot 10^{n-1}$ numbers in the
-group with numbers of length $n$. Additionally, for each group, the total count of
-digits from all of the group's numbers combined is $n$ times how many numbers
-are in the group. For instance:
+Let's group numbers by how many digits they have. An observation we can make is
+that for any $n \geq 1$, there are $9 \cdot 10^{n-1}$ numbers in the group with
+numbers of length $n$. Additionally, for each group, the total count of digits
+from all of the group's numbers combined is $n$ times how many numbers are in
+the group. For instance:
 
-- Length $1$ numbers: $1$...$9$ -> $9$ numbers -> $1\cdot9=9$ digits total
-- Length $2$ numbers: $10...99$ -> $90$ numbers -> $2\cdot90=180$ digits total
-- Length $3$ numbers: $100...999$ -> $900$ numbers -> $3\cdot900=2700$ digits
-  total
+- Length $1$ numbers: $1\dots 9\rightarrow$ $9$ numbers $\rightarrow1\cdot9=9$
+  digits total
+- Length $2$ numbers: $10\dots 99\rightarrow$ $90$ numbers
+  $\rightarrow2\cdot90=180$ digits total
+- Length $3$ numbers: $100\dots 999\rightarrow$ $900$ numbers
+  $\rightarrow3\cdot900=2700$ digits total
 - And so on...
 
 To find which group the number that contains the $k$-th digit is in, we can
@@ -33,9 +35,9 @@ $$
 \sum^{\text{\# of groups}}_{n=1}{n\cdot9\cdot10^{n-1}\geq k}
 $$
 
-Once the condition becomes true, we know that the $k$-th digit must fall into the
-last group used in the sum. From there, we can calculate the exact number that
-the $k$th digit is in, which we can then use to find the value of the $k$th
+Once the condition becomes true, we know that the $k$-th digit must fall into
+the last group used in the sum. From there, we can calculate the exact number
+that the $k$th digit is in, which we can then use to find the value of the $k$th
 digit with modular arithmetic.
 
 ## Implementation
@@ -63,7 +65,7 @@ ll pow10(int exp) {
 
 int main() {
 	int q;
-	ll k;	
+	ll k;
 	cin >> q;
 
 	for (int i = 0; i < q; i++) {
