@@ -1,4 +1,3 @@
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useCallback } from 'react';
 import { useFirebaseApp } from './useFirebase';
@@ -27,26 +26,16 @@ export default function useContactFormAction() {
         getFunctions(firebaseApp),
         'submitContactForm'
       );
-      const response = await submitProblemSuggestion({
+
+      return submitProblemSuggestion({
         name,
+        email,
         moduleName,
+        url,
+        lang,
         topic,
         message,
       });
-      await addDoc(
-        collection(getFirestore(firebaseApp), 'contactFormSubmissions'),
-        {
-          name: name,
-          email: email,
-          moduleName: moduleName,
-          url: url,
-          lang: lang,
-          topic: topic,
-          message: message,
-          issueNumber: (response.data as any).number,
-        }
-      );
-      return (response.data as any).url;
     },
     [firebaseApp]
   );

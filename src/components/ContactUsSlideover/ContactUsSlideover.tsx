@@ -138,7 +138,7 @@ export default function ContactUsSlideover({
     }
     setSubmitEnabled(false);
     try {
-      const issueUrl = await submitForm({
+      const response = await submitForm({
         name,
         email,
         moduleName: location,
@@ -150,7 +150,7 @@ export default function ContactUsSlideover({
       setTopic('');
       setMessage('');
       setShowSuccess(true);
-      setIssueLink(issueUrl);
+      setIssueLink(response.data as string);
     } catch (e) {
       setSubmitEnabled(true);
       alert('Form submission failed: ' + e.message);

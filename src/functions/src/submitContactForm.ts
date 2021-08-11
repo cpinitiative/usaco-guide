@@ -7,8 +7,8 @@ if (admin.apps.length === 0) {
 }
 
 const submitContactForm = functions.https.onCall(async data => {
-  const { name, moduleName, topic, message } = data;
-  if (!name || !topic || !message) {
+  const { name, email, moduleName, url, lang, topic, message } = data;
+  if (!name || !topic || !message || !email) {
     throw new functions.https.HttpsError(
       'invalid-argument',
       'One or more required arguments were not passed.'
@@ -36,10 +36,17 @@ const submitContactForm = functions.https.onCall(async data => {
       body: body,
     }
   );
+  await admin.firestore().collection('contactFormSubmissions').add({
+    name: name,
+    email: email,
+    moduleName: moduleName,
+    url: url,
+    lang: lang,
+    topic: topic,
+    message: message,
+    issueNumber: createdIssue.data.number,
+  });
 
-  return {
-    url: createdIssue.data.html_url,
-    number: createdIssue.data.number,
-  };
+  return createdIssue.data.html_url;
 });
 export default submitContactForm;
