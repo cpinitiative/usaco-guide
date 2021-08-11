@@ -2,7 +2,7 @@
 id: cf-702C
 source: CF
 title: Cellular Network
-author: Nathan Wang, Benjamin Qi, Maggie Liu
+author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
@@ -59,9 +59,118 @@ int main() {
 	cout << minR << endl;
 }
 ```
+			    
+</CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class CellularNetwork {
+
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in, System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName + ".out"));
+			r = new BufferedReader(new FileReader(problemName + ".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) { }
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+
+	static final int TWO_BILLION = 2000000000;
+
+	// returns the first index in the array that is >= value,
+	// or towers.length if no such index exists
+	static int firstAtLeast(int[] towers, int value) {
+		int low = 0, high = towers.length;
+		while (low < high) {
+			int mid = (low + high) / 2;
+			if (towers[mid] >= value) {
+				high = mid;
+			}
+			else {
+				low = mid + 1;
+			}
+		}
+		return low;
+	}
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		int[] cities = new int[n];
+		int[] towers = new int[m];
+
+		for (int i = 0; i < n; i++) {
+			cities[i] = io.nextInt();
+		}
+
+		for (int i = 0; i < m; i++) {
+			towers[i] = io.nextInt();
+		}
+
+		int minR = 0;
+		for (int i = 0; i < n; i++) {
+			int towerRight = firstAtLeast(towers, cities[i]);
+			int towerLeft = towerRight - 1;
+
+			int minRForThisCity = TWO_BILLION;
+			// make sure that an index actually exists,
+			// if not, it will return the length of the
+			// array which is equal to m
+			if (towerRight < m) {
+				minRForThisCity = Math.min(minRForThisCity, towers[towerRight] - cities[i]);
+			}
+			if (towerLeft >= 0) {
+				minRForThisCity = Math.min(minRForThisCity, cities[i] - towers[towerLeft]);
+			}
+
+			minR = Math.max(minR, minRForThisCity);
+		}
+
+		io.println(minR);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
+	
+</LanguageSection>
 
 ## Solution 2 - Two Pointers
 
+<LanguageSection>
+	
+<CPPSection>
+	
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -109,6 +218,10 @@ int main() {
 }
 ```
 
+</CPPSection>
+	
+</LanguageSection>
+
 ## Solution 3 - Using a Set
 
 We use the set $\texttt{towers}$ to store the coordinates of the cellular
@@ -125,6 +238,10 @@ the beginning of the set, the previous tower in the set will be the tower to the
 left of the city. Define $\texttt{dist}$ to be the minimum of the distance to
 the tower on the right and the distance to the tower on the left. Then, set $r$
 to be the maximum of itself and $\texttt{dist}$.
+	
+<LanguageSection>
+	
+<CPPSection>
 
 ```cpp
 #include <iostream>
