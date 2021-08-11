@@ -82,15 +82,10 @@ $j < i$.
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-using vi = vector<int>;
 #define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
 #define f first
 #define s second
-#define mp make_pair
+	
 void setIO(string name = "") { // name is nonempty for USACO file I/O
 	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
 	if(sz(name)){
@@ -161,7 +156,7 @@ public class SumOfTwoValues {
 		N = fs.nextInt();
 		X = fs.nextInt();
 
-		ArrayList<Pair> a = new ArrayList<Pair>();
+		List<Pair> a = new ArrayList<Pair>();
 		for (int i = 0; i < N; i++) {
 			long x = fs.nextInt();
 			a.add(new Pair(x, i + 1));
@@ -170,12 +165,12 @@ public class SumOfTwoValues {
 		int i = 0, j = (int) N - 1;
 		while (i < j) {
 			if (a.get(i).f() + a.get(j).f() > X)
-			j--;
+				j--;
 			else if (a.get(i).f() + a.get(j).f() < X)
-			i++;
+				i++;
 			else if (a.get(i).f() + a.get(j).f() == X) {
-			System.out.println(a.get(i).s() + " " + a.get(j).s());
-			return;
+				System.out.println(a.get(i).s() + " " + a.get(j).s());
+				return;
 			}
 		}
 		System.out.println("IMPOSSIBLE");
@@ -189,7 +184,7 @@ public class SumOfTwoValues {
 		for (int i = 0; i < a.length; i++)
 			a[i] = l.get(i);
 	}
-
+	//BeginCodeSnip{FastScanner}
 	static class FastScanner {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer("");
@@ -219,26 +214,27 @@ public class SumOfTwoValues {
 			return Long.parseLong(next());
 		}
 	}
+	//EndCodeSnip
 
-  static class Pair implements Comparable<Pair> {
-	long x, y;
+	static class Pair implements Comparable<Pair> {
+		long x, y;
 
-	public Pair(long x, long y) {
-	  this.x = x;
-	  this.y = y;
-	}
+		public Pair(long x, long y) {
+			this.x = x;
+	  		this.y = y;
+		}
 
-	public int compareTo(Pair o) {
-	  return -Long.compare(o.x, x);
-	}
+		public int compareTo(Pair o) {
+	  		return -Long.compare(o.x, x);
+		}
 
-	public long f() {
-	return x;
-	}
+		public long f() {
+			return x;
+		}
 
-	public long s() {
-	  return y;
-	}
+		public long s() {
+	  		return y;
+		}
   }
 }
 ```
@@ -256,35 +252,31 @@ using ll = long long;
 #define f first
 #define s second
 
-void solve() {
+int main() {
 	ll N, X;
 	cin >> N >> X;
 	vector<pair<int,int>> a;
-	for(int i = 0; i < N; i++)
-	{
+	
+	for(int i = 0; i < N; i++) {
 		ll x;
 		cin >> x;
-		a.pb({x, i+1});
+		a.pb({x, i + 1});
 	}
+	
 	sort(a.begin(), a.end());
-
-	int i=0, j = N - 1;
-	while(i < j)
-	{
+	int i = 0, j = N - 1;
+	
+	while(i < j) {
 		if(a[i].f + a[j].f > X)
 			j--;
 		else if(a[i].f + a[j].f < X)
 			i++;
-		else if(a[i].f + a[j].f == X)
-		{
+		else if(a[i].f + a[j].f == X) {
 			cout << a[i].s << " " << a[j].s;
 			return;
 		}
 	}
 	cout << "IMPOSSIBLE" << endl;
-}
-int main(){
-	solve();
 }
 ```
 </CPPSection>
