@@ -86,56 +86,57 @@ import java.io.*;
 import java.util.*;
 
 public class ConcertTickets {
-    public static void main(String[] args) throws IOException {
-        Kattio io = new Kattio();
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
 
-        int ticketNum = io.nextInt();
-        int peopleNum = io.nextInt();
-        // No multiset in java so we'll have to use a TreeMap
-        TreeMap<Integer, Integer> ticketMultiset = new TreeMap<>();
-        Map.Entry<Integer, Integer> val;
+		int ticketNum = io.nextInt();
+		int peopleNum = io.nextInt();
+		// No multiset in java so we'll have to use a TreeMap
+		TreeMap<Integer, Integer> ticketMultiset = new TreeMap<>();
+		Map.Entry<Integer, Integer> val;
 
-        for (int i = 0; i < ticketNum; i++) {
-            int priceOfTicket = io.nextInt();
-            /*
-             * If the set already contains the same key value, just create another pair 
-             * right next to it
-             */
-            if (ticketMultiset.containsKey(priceOfTicket)) {
-                ticketMultiset.put(priceOfTicket, ticketMultiset.get(priceOfTicket) + 1);
-            } else {
-                ticketMultiset.put(priceOfTicket, 1);
-            }
-        }
+		for (int i = 0; i < ticketNum; i++) {
+			int priceOfTicket = io.nextInt();
+			/*
+			 * If the set already contains the same key value, just create another pair 
+			 * right next to it
+			 */
+			if (ticketMultiset.containsKey(priceOfTicket)) {
+				ticketMultiset.put(priceOfTicket, ticketMultiset.get(priceOfTicket) + 1);
+			} else {
+				ticketMultiset.put(priceOfTicket, 1);
+			}
+		}
 
-        for (int i = 0; i < peopleNum; i++) {
-            int customerMaxPrice = io.nextInt();
-            /*
-             * Get the optimal ticket for this customer 
-             * We add 1 because lowerEntry returns the highest *strictly* lower entry
-             */
-            val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
-            /*
-             * If there is no lower price, the answer will be null, 
-             * so there's no possible prices, so we can exit and return -1
-             */
-            if (val != null) {
-                io.println(val.getKey());
-                /*
-                 * If there's more than one set with the key value, then replace
-                 * the current set with the next-lowest set with the same key 
-                 */
-                if (val.getValue() == 1) {
-                    ticketMultiset.remove(val.getKey());
-                } else {
-                    ticketMultiset.put(val.getKey(), val.getValue() - 1);
-                }
-            } else
-                io.println(-1);
-        }
-        io.close();
-    }
-    //CodeSnip{Kattio}
+		for (int i = 0; i < peopleNum; i++) {
+			int customerMaxPrice = io.nextInt();
+			/*
+			 * Get the optimal ticket for this customer 
+			 * We add 1 because lowerEntry returns the highest *strictly* lower entry
+			 */
+			val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
+			/*
+			 * If there is no lower price, the answer will be null, 
+			 * so there's no possible prices, so we can exit and return -1
+			 */
+			if (val != null) {
+				io.println(val.getKey());
+				/*
+				 * If there's more than one set with the key value, then replace
+				 * the current set with the next-lowest set with the same key 
+				 */
+				if (val.getValue() == 1) {
+					ticketMultiset.remove(val.getKey());
+
+				} else {
+					ticketMultiset.put(val.getKey(), val.getValue() - 1);
+				}
+			} else
+				io.println(-1);
+		}
+		io.close();
+	}
+	//CodeSnip{Kattio}
 }
 ```
 </JavaSection>
