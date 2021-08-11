@@ -4,8 +4,8 @@ import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
+import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
-import { useNotificationSystem } from '../NotificationSystemContext';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
@@ -31,6 +31,9 @@ import UserProgressOnModulesProperty, {
 import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
+import UserProgressOnResourcesProperty, {
+  UserProgressOnResourcesAPI,
+} from './properties/userProgressOnResources';
 import UserDataPropertyAPI from './userDataPropertyAPI';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
@@ -99,6 +102,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
+  new UserProgressOnResourcesProperty(),
   new LastVisitProperty(),
   new AdSettingsProperty(),
 ];
@@ -112,6 +116,7 @@ type UserDataContextAPI = UserLangAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
+  UserProgressOnResourcesAPI &
   LastVisitAPI &
   AdSettingsAPI & {
     firebaseUser: User;
@@ -146,34 +151,37 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608278400000: 82,
   },
   theme: 'system',
-  setTheme: x => {
+  setTheme: _x => {
     // do nothing
   },
-  setHideTagsAndDifficulty: x => {
+  setHideTagsAndDifficulty: _x => {
     // do nothing
   },
-  setDivisionTableQuery: x => {
+  setDivisionTableQuery: _x => {
     // do nothing
   },
-  setLang: x => {
+  setLang: _x => {
     // do nothing
   },
-  setLastReadAnnouncement: x => {
+  setLastReadAnnouncement: _x => {
     // do nothing
   },
-  setLastViewedModule: x => {
+  setLastViewedModule: _x => {
     // do nothing
   },
-  setLastVisitDate: x => {
+  setLastVisitDate: _x => {
     // do nothing
   },
-  setModuleProgress: (moduleID, progress) => {
+  setModuleProgress: (_moduleID, _progress) => {
     // do nothing/
   },
-  setShowIgnored: x => {
+  setShowIgnored: _x => {
     // do nothing
   },
-  setUserProgressOnProblems: (problemId, status) => {
+  setUserProgressOnProblems: (_problemId, _status) => {
+    // do nothing
+  },
+  setUserProgressOnResources: (_moduleId, _status) => {
     // do nothing
   },
   showIgnored: false,
@@ -185,6 +193,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},
   userProgressOnProblemsActivity: [],
+  userProgressOnResources: {},
   adSettings: {
     hideMarch2021: false,
   },
@@ -193,9 +202,12 @@ const UserDataContext = createContext<UserDataContextAPI>({
   },
 });
 
-export const UserDataProvider = ({ children }: { children: ReactNode }) => {
+export const UserDataProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}): JSX.Element => {
   const firebaseApp = useFirebaseApp();
-  const notifications = useNotificationSystem();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
     // when the firebase user changes, update all the API's
@@ -283,7 +295,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
           });
         },
         error: error => {
-          notifications.showErrorNotification(error);
+          toast.error(error.message);
           Sentry.captureException(error, {
             extra: {
               userId: firebaseUser.uid,

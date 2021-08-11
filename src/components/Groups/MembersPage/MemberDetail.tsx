@@ -1,31 +1,23 @@
+import { navigate } from 'gatsby-link';
 import * as React from 'react';
 import { useContext } from 'react';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import toast from 'react-hot-toast';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
-  const notifications = useNotificationSystem();
   const {
     firebaseUser: { uid: userId },
   } = useContext(UserDataContext);
-  const getTotalPointsForMember = (memberId: string) => {
-    let total = 0;
-    Object.keys(activeGroup.groupData.leaderboard || {}).forEach(postId => {
-      Object.keys(activeGroup.groupData.leaderboard[postId]).forEach(
-        problemId => {
-          total +=
-            activeGroup.groupData.leaderboard[postId][problemId][memberId]
-              ?.bestScore || 0;
-        }
-      );
-    });
-    return total;
-  };
+  const userLeaderboardData = useUserLeaderboardData(
+    activeGroup.activeGroupId,
+    member.uid
+  );
 
   if (!member) {
     return (
@@ -63,7 +55,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
               {member.displayName}
             </h1>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
-              {getTotalPointsForMember(member.uid)} Points Earned
+              {userLeaderboardData?.totalPoints ?? 0} Points Earned
             </p>
           </div>
         </div>
@@ -103,13 +95,11 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                 ) {
                   removeMemberFromGroup(activeGroup.activeGroupId, member.uid)
                     .then(() =>
-                      notifications.addNotification({
-                        level: 'success',
-                        message:
-                          'This member has been successfully removed from the group.',
-                      })
+                      toast.success(
+                        'This member has been successfully removed from the group.'
+                      )
                     )
-                    .catch(notifications.showErrorNotification);
+                    .catch(e => toast.error(e));
                 }
               }}
             >
@@ -141,12 +131,11 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                         newPermission
                       )
                         .then(() =>
-                          notifications.addNotification({
-                            level: 'success',
-                            message: `${member.displayName} now has permission level ${newPermission}.`,
-                          })
+                          toast.success(
+                            `${member.displayName} now has permission level ${newPermission}.`
+                          )
                         )
-                        .catch(notifications.showErrorNotification);
+                        .catch(e => toast.error(e));
                     }
                   }}
                 >
@@ -159,6 +148,18 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                     newPermission.substring(1).toLowerCase()}
                 </button>
               ))}
+            <button
+              className="btn"
+              onClick={() => {
+                alert(
+                  'Viewing group as member. Do not submit any problems. Reload the page to undo.'
+                );
+                activeGroup.setActiveUserId(member.uid);
+                navigate(`/groups/${activeGroup.activeGroupId}`);
+              }}
+            >
+              View Group as Member
+            </button>
           </div>
         )}
         <hr className="dark:border-gray-700 my-6" />

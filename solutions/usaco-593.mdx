@@ -2,15 +2,77 @@
 id: usaco-593
 source: USACO Bronze 2016 January
 title: Mowing the Field
-author: Óscar Garries
+author: Óscar Garries, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_mowing_bronze_jan16.html)
-
-<LanguageSection>
-<CPPSection>
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_mowing_bronze_jan16.html)
 
 ## Implementation
+We can simulate Farmer John's movements across his field and update our answer if he ever comes across the same patch of grass.
+
+**Time Complexity:** $\mathcal{O}(NS)$
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+sys.stdin = open('mowing.in', 'r')
+sys.stdout = open('mowing.out', 'w')
+
+# Make a hashmap, and mark off steps.
+# We'll first mark off his starting position.
+visits = {1000 * 1000 + 1000: 0}
+
+# FJ's starting position.
+currX = 1000
+currY = 1000
+currentTime = 0
+ans = 100 * 10 + 1
+
+n = int(input())
+
+for _ in range(n):
+	direction, numSteps = map(str, input().split())
+	dirX = 0
+	dirY = 0
+	# Get the direction Farmer John is moving.
+	if direction == "N":
+		dirX = 1
+		dirY = 0
+	elif direction == "W":
+		dirX = 0
+		dirY = 1
+	elif direction == "E":
+		dirX = 0
+		dirY = -1
+	else:
+		dirX = -1
+		dirY = 0
+	for j in range(int(numSteps)):
+		# Update our curent position.
+		currX += dirX
+		currY += dirY
+		currentTime += 1
+		# Store the time FJ has been to this patch of grass with 
+		# a unique id.
+		id = 1000 * currX + currY
+
+		# If FJ has been to the current patch of grass before,
+		# update our answer.
+		if id in visits:
+			ans = min(ans, currentTime - visits[id])
+		# Make an entry in the hashmap if FJ has not come 
+		# across this patch of grass yet.
+		visits[id] = currentTime
+
+# If FJ has never gone back to the same patch of grass.
+if ans == 100 * 10 + 1:
+	ans = -1
+print(ans)
+```
+
+</PySection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>

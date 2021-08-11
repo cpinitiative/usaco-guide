@@ -1,7 +1,6 @@
 import { Link, navigate } from 'gatsby';
-import * as React from 'react';
+import React from 'react';
 import { useReducer } from 'react';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { GroupData } from '../../../models/groups/groups';
@@ -9,6 +8,7 @@ import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
+import toast from 'react-hot-toast';
 
 export default function EditGroupPage(props) {
   const { groupId } = props as {
@@ -25,7 +25,6 @@ export default function EditGroupPage(props) {
     originalGroup
   );
   const { deleteGroup, updateGroup } = useGroupActions();
-  const notifications = useNotificationSystem();
 
   React.useEffect(() => {
     if (!group && originalGroup) editGroup(originalGroup);
@@ -128,7 +127,7 @@ export default function EditGroupPage(props) {
                   ) {
                     deleteGroup(groupId)
                       .then(() => navigate(`/groups/`, { replace: true }))
-                      .catch(e => notifications.showErrorNotification(e));
+                      .catch(e => toast.error(e.message));
                   }
                 }}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-red-500"

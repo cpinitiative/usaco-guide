@@ -44,6 +44,7 @@ export default functions.https.onCall(
         success: false,
         errorCode: 'ALREADY_IN_GROUP',
         message: "You're already in this group, so you can't join it again.",
+        groupId: keyData.groupId,
       };
     }
     await Promise.all([

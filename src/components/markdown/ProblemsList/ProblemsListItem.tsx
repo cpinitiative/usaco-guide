@@ -6,7 +6,12 @@ import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
 import { useDarkMode } from '../../../context/DarkModeContext';
-import { contests, ProblemInfo, probSources } from '../../../models/problem';
+import {
+  contests,
+  isUsaco,
+  ProblemInfo,
+  probSources,
+} from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -53,7 +58,9 @@ export const difficultyClasses = {
   Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
 };
 
-export default function ProblemsListItem(props: ProblemsListItemProps) {
+export default function ProblemsListItem(
+  props: ProblemsListItemProps
+): JSX.Element {
   const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
@@ -95,7 +102,6 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
     if (parts[1] === 'US') parts[1] = 'open';
     else parts[1] = parts[1].toLowerCase().substring(0, 3);
     resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
-    // console.log('SOURCE', problem.source, resultsUrl);
   }
   const sourceCol = divisionTable ? (
     <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
@@ -206,6 +212,18 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
               >
                 {copied ? 'Copied!' : 'Copy Permalink'}
               </button>
+              {isUsaco(problem.source) && (
+                <a
+                  className="!font-normal focus:outline-none block w-full text-left px-4 py-2 text-sm !text-gray-700 dark:!text-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800 hover:!text-gray-900"
+                  href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
+                    problem.uniqueId.indexOf('-') + 1
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open in IDE
+                </a>
+              )}
             </div>
           </div>
         }

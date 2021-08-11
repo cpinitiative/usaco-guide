@@ -35,8 +35,12 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const { activeGroupId, setActiveGroupId, isLoading, groupData } =
-    useActiveGroup();
+  const {
+    activeGroupId,
+    setActiveGroupId,
+    isLoading,
+    groupData,
+  } = useActiveGroup();
   const { firebaseUser, isLoaded } = React.useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
 
@@ -119,7 +123,7 @@ const PostPageWrapper = (props: any): ReactElement => {
   );
 };
 
-export default function GroupsRouter() {
+export default function GroupsRouter(): JSX.Element {
   return (
     <ActiveGroupProvider>
       <ActivePostProblemsProvider>

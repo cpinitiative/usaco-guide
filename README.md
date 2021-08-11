@@ -47,18 +47,14 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Dong Liu (since June 2021)
 - Maggie Liu (Since June 2021)
 
-### Content Authors
+### Current Content Authors
 
 - Jeffrey Meng (since Oct 2020)
-- Óscar Garries Urbina (since Jan 2021)
 - Neo Wang (since Jan 2021)
 - Jesse Choe (since Feb 2021)
-- Mrinall Umasudhan (since Feb 2021)
 - Kevin Sheng (Since Apr 2021)
 - Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
-- Zhixin Wang (Since Apr 2021)
-- Andrew Cheng (Since Apr 2021)
 - Nathan Gong (Since Apr 2021)
 - Melody Yu (Since Apr 2021)
 - Timothy Gao (Since May 2021)
@@ -66,8 +62,17 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Brad Ma (Since June 2021)
 - Albert Ye (Since June 2021)
 - Arpan Banerjee (Since June 2021)
+- Ryan Chou (Since July 2021)
+- Aadit Ambadkar (Since August 2021)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
+
+### Past Content Authors
+
+- Óscar Garries Urbina
+- Mrinall Umasudhan
+- Andrew Cheng
+- Zhixin Wang
 
 ## Tech Stack
 

@@ -50,6 +50,7 @@ export class ModuleInfo extends ModuleLinkInfo {
     public title: string,
     public body: any,
     public author: string,
+    public contributors: string,
     public prerequisites: string[],
     public description: string,
     public frequency: ModuleFrequency,
