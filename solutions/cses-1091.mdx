@@ -85,67 +85,63 @@ Due to the way CSES's grader works (allowing 1 second for all problems + being s
 import java.io.*;
 import java.util.*;
 
+import java.io.*;
+import java.util.*;
+
 public class ConcertTickets {
 
     public static void main(String[] args) throws IOException {
         Kattio io = new Kattio();
 
-        int numberOfTickets = io.nextInt();
-        int numberOfPeople = io.nextInt();
-        /*
-         * Since Java doesn't have its own multiset method like C++, we'll have
-         * to use a regular ordered set
-         */
-        TreeMap<Integer, Integer> ticketMultiset = new TreeMap<Integer, Integer>();
+        int ticketNum = io.nextInt();
+        int peopleNum = io.nextInt();
+        // No multiset in java so we'll have to use a TreeMap
+        TreeMap<Integer, Integer> ticketMultiset = new TreeMap<>();
         Map.Entry<Integer, Integer> val;
 
-        // Read the ticket prices into the multiset
-        for (int i = 0; i < numberOfTickets; i++) {
+        for (int i = 0; i < ticketNum; i++) {
             int priceOfTicket = io.nextInt();
             /*
-             * If the set already contains the same key value, just create another pair
+             * If the set already contains the same key value, just create another pair 
              * right next to it
              */
-            if (ticketMultiset.containsKey(priceOfTicket))
+            if (ticketMultiset.containsKey(priceOfTicket)) {
                 ticketMultiset.put(priceOfTicket, ticketMultiset.get(priceOfTicket) + 1);
-            else
+            } else {
                 ticketMultiset.put(priceOfTicket, 1);
+            }
         }
 
-        for (int i = 0; i < numberOfPeople; i++) {
+        for (int i = 0; i < peopleNum; i++) {
             int customerMaxPrice = io.nextInt();
             /*
-             * Of all ticket prices, get the pair of the greatest possible
-             * ticket price less than the maximum.
-             * We add 1 to customerMaxPrice just in case the maximum price is
-             * the price of a ticket, as lowerEntry only returns sets with
-             * strictly lower entries.
-             * We're using an ordered map here since we're using a multiset,
-             * which means we have to manually remove each set with identical
-             * keys. We'll need the entire set to do that, though, so we get it here.
+             * Get the optimal ticket for this customer 
+             * We add 1 because lowerEntry returns the highest *strictly* lower entry
              */
-            val = ticketMultiset.lowerEntry(customerMaxPrice + 1);
+            val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
             /*
-             * If there is no lower price, the answer will be null,
+             * If there is no lower price, the answer will be null, 
              * so there's no possible prices, so we can exit and return -1
              */
             if (val != null) {
                 io.println(val.getKey());
-                /**
+                /*
                  * If there's more than one set with the key value, then replace
-                 * the current set with the next-lowest set with the same key
+                 * the current set with the next-lowest set with the same key 
                  */
-                if (val.getValue() == 1)
+                if (val.getValue() == 1) {
                     ticketMultiset.remove(val.getKey());
-                else
+
+                } else {
                     ticketMultiset.put(val.getKey(), val.getValue() - 1);
+                }
             } else
                 io.println(-1);
         }
         io.close();
     }
     //CodeSnip{Kattio}
-
+}
 ```
 </JavaSection>
 
