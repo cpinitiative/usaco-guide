@@ -5,6 +5,10 @@ title: Concert Tickets
 author: Danh Ta Chi Thanh
 ---
 
+<LanguageSection>
+	
+<CPPSection>
+
 ## Solution
 
 [Unofficial Editorial](https://codeforces.com/blog/entry/83295)
@@ -51,3 +55,100 @@ int main(){
 	return 0;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+## Implementation
+
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
+
+**Time Complexity:** $\mathcal{O}(n+ m)$
+
+For each customer, we want to find the maximum possible ticket price they will
+accept from the available tickets. If the customer's maximum price is too low,
+so that no ticket price is below it, we can return -1. If not, we find the
+greatest ticket price less than or equal to the maximum price, and then remove
+that price as specified by the problem.
+
+We use, at least in theory, a multiset for this. A
+[multiset](https://en.wikipedia.org/wiki/Multiset) is basically an ordered set
+that allows multiple pairs of the same key. But Java doesn't have a defined
+multiset method, so we have to use a regular ordered set with some special
+modifications, using values as a counter of the number of identical sets. This
+allows us to distinguish between sets, and remove each set once.
+
+<Warning>
+Due to the way CSES's grader works (allowing 1 second for all problems + being slow), test cases 5 and 8 TLE (time limit exceeded). USACO gives Java test cases 4 seconds, so this isn't representative of what competing with Java will be like. 
+</Warning>
+```java
+import java.io.*;
+import java.util.*;
+
+public class ConcertTickets {
+
+    public static void main(String[] args) throws IOException {
+        Kattio io = new Kattio();
+
+        int numberOfTickets = io.nextInt();
+        int numberOfPeople = io.nextInt();
+        /*
+         * Since Java doesn't have its own multiset method like C++, we'll have
+         * to use a regular ordered set
+         */
+        TreeMap<Integer, Integer> ticketMultiset = new TreeMap<Integer, Integer>();
+        Map.Entry<Integer, Integer> val;
+
+        // Read the ticket prices into the multiset
+        for (int i = 0; i < numberOfTickets; i++) {
+            int priceOfTicket = io.nextInt();
+            /*
+             * If the set already contains the same key value, just create another pair
+             * right next to it
+             */
+            if (ticketMultiset.containsKey(priceOfTicket))
+                ticketMultiset.put(priceOfTicket, ticketMultiset.get(priceOfTicket) + 1);
+            else
+                ticketMultiset.put(priceOfTicket, 1);
+        }
+
+        for (int i = 0; i < numberOfPeople; i++) {
+            int customerMaxPrice = io.nextInt();
+            /*
+             * Of all ticket prices, get the pair of the greatest possible
+             * ticket price less than the maximum.
+             * We add 1 to customerMaxPrice just in case the maximum price is
+             * the price of a ticket, as lowerEntry only returns sets with
+             * strictly lower entries.
+             * We're using an ordered map here since we're using a multiset,
+             * which means we have to manually remove each set with identical
+             * keys. We'll need the entire set to do that, though, so we get it here.
+             */
+            val = ticketMultiset.lowerEntry(customerMaxPrice + 1);
+            /*
+             * If there is no lower price, the answer will be null,
+             * so there's no possible prices, so we can exit and return -1
+             */
+            if (val != null) {
+                io.println(val.getKey());
+                /**
+                 * If there's more than one set with the key value, then replace
+                 * the current set with the next-lowest set with the same key
+                 */
+                if (val.getValue() == 1)
+                    ticketMultiset.remove(val.getKey());
+                else
+                    ticketMultiset.put(val.getKey(), val.getValue() - 1);
+            } else
+                io.println(-1);
+        }
+        io.close();
+    }
+    //CodeSnip{Kattio}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
