@@ -8,7 +8,7 @@ author: Michael Cao, DRGSH, Benjamin Qi
 Given an array of $n$ elements, you are asked to find two values which sum to
 $x$.
 
-# Main Idea
+## Solution 1 - Dictionary/Map
 
 Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given
 one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case
@@ -21,18 +21,18 @@ exist?
 
 <PySection>
 
-# Using a Dictionary
+## Using a Dictionary
 
 </PySection>
 <CPPSection>
 
-# Using a Map
+## Using a Map
 
 </CPPSection>
 
 <JavaSection>
 
-# Using a Map
+## Using a Map
 
 </JavaSection>
 </LanguageSection>
@@ -141,3 +141,185 @@ print("IMPOSSIBLE")
 </PySection>
 
 </LanguageSection>
+
+## Solution 2 - Two Pointers
+
+By keeping two pointers, one at each end of the list. We can find the two indices in $\mathcal{O}(N)$ time.
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class SumOfTwoValues {
+
+	public static void main(String[] args) {
+		FastScanner fs = new FastScanner();
+		long N, X;
+		N = fs.nextInt();
+		X = fs.nextInt();
+
+		ArrayList<Pair> a = new ArrayList<Pair>();
+		for (int i = 0; i < N; i++) {
+			long x = fs.nextInt();
+			a.add(new Pair(x, i + 1));
+		}
+		Collections.sort(a);
+		int i = 0, j = (int) N - 1;
+		while (i < j) {
+			if (a.get(i).f() + a.get(j).f() > X)
+			j--;
+			else if (a.get(i).f() + a.get(j).f() < X)
+			i++;
+			else if (a.get(i).f() + a.get(j).f() == X) {
+			System.out.println(a.get(i).s() + " " + a.get(j).s());
+			return;
+			}
+		}
+		System.out.println("IMPOSSIBLE");
+	}
+
+	static void sort(int[] a) {
+		ArrayList<Integer> l = new ArrayList<>();
+		for (int i : a)
+			l.add(i);
+		Collections.sort(l);
+		for (int i = 0; i < a.length; i++)
+			a[i] = l.get(i);
+	}
+
+	static class FastScanner {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer("");
+
+		String next() {
+			while (!st.hasMoreTokens())
+			try {
+				st = new StringTokenizer(br.readLine());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return st.nextToken();
+		}
+
+		int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		int[] readArray(int n) {
+			int[] a = new int[n];
+			for (int i = 0; i < n; i++)
+			a[i] = nextInt();
+			return a;
+		}
+
+		long nextLong() {
+			return Long.parseLong(next());
+		}
+	}
+
+  static class Pair implements Comparable<Pair> {
+	long x, y;
+
+	public Pair(long x, long y) {
+	  this.x = x;
+	  this.y = y;
+	}
+
+	public int compareTo(Pair o) {
+	  return -Long.compare(o.x, x);
+	}
+
+	public long f() {
+	return x;
+	}
+
+	public long s() {
+	  return y;
+	}
+  }
+}
+```
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+#define pb push_back
+#define f first
+#define s second
+
+void solve() {
+	ll N, X;
+	cin >> N >> X;
+	vector<pair<int,int>> a;
+	for(int i = 0; i < N; i++)
+	{
+		ll x;
+		cin >> x;
+		a.pb({x, i+1});
+	}
+	sort(a.begin(), a.end());
+
+	int i=0, j = N - 1;
+	while(i < j)
+	{
+		if(a[i].f + a[j].f > X)
+			j--;
+		else if(a[i].f + a[j].f < X)
+			i++;
+		else if(a[i].f + a[j].f == X)
+		{
+			cout << a[i].s << " " << a[j].s;
+			return;
+		}
+	}
+	cout << "IMPOSSIBLE" << endl;
+}
+int main(){
+	solve();
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+nums = list(map(int, input().split()))
+a = []
+
+# append element and index.
+for i in range(n):
+	a.append([nums[i], i + 1])
+
+a.sort()
+ans = []
+left, right = 0, n - 1
+
+while left < right:
+	sumlr = a[left][0] + a[right][0]
+	if sumlr == x:
+		ans.append(str(a[right][1]))
+		ans.append(str(a[left][1]))
+		break
+	elif sumlr > x:
+		right -= 1
+	else:
+		left += 1
+
+# while loop terminated and couldn't find a pair.
+if ans == []:
+	print("IMPOSSIBLE")
+else:
+	print(" ".join(ans))
+```
+</PySection>
+
+</LanguageSection> 
