@@ -21,18 +21,18 @@ exist?
 
 <PySection>
 
-## Using a Dictionary
+### Using a Dictionary
 
 </PySection>
 <CPPSection>
 
-## Using a Map
+### Using a Map
 
 </CPPSection>
 
 <JavaSection>
 
-## Using a Map
+### Using a Map
 
 </JavaSection>
 </LanguageSection>
@@ -134,7 +134,7 @@ By keeping two pointers, one at each end of the list, we can find the two indice
 import java.io.*;
 import java.util.*;
 
-public class SumOfTwoValues {
+public class Main {
 	public static void main(String[] args) {
 		FastScanner fs = new FastScanner();
 		long N, X;
@@ -152,12 +152,12 @@ public class SumOfTwoValues {
 		int i = 0, j = (int) N - 1;
 		while (i < j) {
 			// adjust the left and right pointers.
-			if (a.get(i).f() + a.get(j).f() > X)
+			if (a.get(i).val + a.get(j).val > X)
 				j--;
-			else if (a.get(i).f() + a.get(j).f() < X)
+			else if (a.get(i).val + a.get(j).val < X)
 				i++;
-			else if (a.get(i).f() + a.get(j).f() == X) {
-				System.out.println(a.get(i).s() + " " + a.get(j).s());
+			else if (a.get(i).val + a.get(j).val == X) {
+				System.out.println(a.get(i).index + " " + a.get(j).index);
 				return;
 			}
 		}
@@ -205,23 +205,15 @@ public class SumOfTwoValues {
 	//EndCodeSnip
 
 	static class Pair implements Comparable<Pair> {
-		long x, y;
+		long val, index;
 
 		public Pair(long x, long y) {
-			this.x = x;
-	  		this.y = y;
+			this.val = x;
+	  		this.index = y;
 		}
 
 		public int compareTo(Pair o) {
-	  		return -Long.compare(o.x, x);
-		}
-
-		public long f() {
-			return x;
-		}
-
-		public long s() {
-	 		return y;
+	  		return -Long.compare(o.val, val);
 		}
 	}
 }
