@@ -30,11 +30,15 @@ or equal to $\frac{N}{2}$, then it is a centroid. Otherwise, move to the child
 with a subtree size that is more than $\frac{N}{2}$ and repeat until you find a
 centroid.
 
+
+
+
+
+### Implementation
+
 <LanguageSection>
 
 <CPPSection>
-
-### Implementation
 
 ```cpp
 #include <iostream>
@@ -85,6 +89,69 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class cses2709 {
+	public static int[] subSize;
+	public static ArrayList<Integer>[] adj;
+	public static int N;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		N = io.nextInt();
+		adj = new ArrayList[N];
+		for (int i=0; i< N; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		subSize = new int[N];
+
+		for (int i = 0; i < N - 1; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		subtreeSize(0, -1);
+		System.out.println(getCentroid(0, -1) + 1);
+
+	}
+
+	// Find the size of the subtree under this node.
+	public static int subtreeSize(int node, int par) {
+		int res = 1;
+		for (int next : adj[node]) {
+			if (next == par) {
+				continue;
+			}
+			res += subtreeSize(next, node);
+		}
+		return (subSize[node] = res);
+	}
+
+	// Find the centroid of the tree (the subtree with <= N/2 nodes)
+	public static int getCentroid(int node, int par) {
+		for (int next : adj[node]) {
+			if (next == par) {
+				continue;
+			}
+
+			if ((subSize[next] * 2) > N) {
+				return getCentroid(next, node);
+			}
+		}
+		return node;
+	}
+	// Codesnip{Kattio}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
