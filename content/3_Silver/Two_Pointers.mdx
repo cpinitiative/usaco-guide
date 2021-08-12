@@ -44,7 +44,7 @@ of an interval. It can also be used to track two values in an array as shown in 
 
 We want to find the longest contiguous segment of books that can be read within $t$ minutes. 
 
-To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ both at the start of the segment respectively and use two pointers to track the interval.
+To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ to **represent** the beggining and end of the **segment**. However, both will start at the beggining of the array. These numbers can be thought of as pointers, hence the name "two pointers".
 
 For every $\texttt{left}$ index, we need to increase our $\texttt{right}$ pointer until the total time for that segment is the maximum while being less than $t$.
 
@@ -55,7 +55,7 @@ We can then continually increment $\texttt{left}$ by 1. After incrementing the l
 **The $\texttt{right}$ pointer does not restart after an iteration, it simply keeps moving right; therefore, since both pointers will move at most $N$ times, the overall time complexity is $\mathcal{O}(N)$.**
 
 As an example, consider the first case in the sample inputs:
-
+<center>
 <table>
 	<tbody>
 		<tr>
@@ -85,9 +85,9 @@ As an example, consider the first case in the sample inputs:
 		</tr>
 	</tbody>
 </table>
-
+</center>
 We can move the right pointer only to index $1$:
-
+<center>
 <table>
 	<tbody>
 		<tr>
@@ -117,9 +117,9 @@ We can move the right pointer only to index $1$:
 		</tr>
 	</tbody>
 </table>
-
+</center>
 The sum of the values in this range is 4, and there are 2 values. So, the current maximum is 2. Now, moving the left pointer up by 1, we can subtract 3 from the sum of values, to get 1. So, the current sum of values is 1. The array then looks like:
-
+<center>
 <table>
 	<tbody>
 		<tr>
@@ -149,9 +149,9 @@ The sum of the values in this range is 4, and there are 2 values. So, the curren
 		</tr>
 	</tbody>
 </table>
-
+</center>
 Now, we can move the right pointer up by $2$, to the end. This makes the sum of values precisely $5$ (since $1$ (previous cur val) $+2+1=5$, and has a length of 3. So, the maximum is now $3$.
-
+<center>
 <table>
 	<tbody>
 		<tr>
@@ -181,7 +181,7 @@ Now, we can move the right pointer up by $2$, to the end. This makes the sum of 
 		</tr>
 	</tbody>
 </table>
-
+</center>
 At this point we are done, since the right pointer has hit the end. So, the answer is $3$.
 
 <Info title="Pro Tip">
