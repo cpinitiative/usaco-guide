@@ -1,0 +1,140 @@
+---
+id: usaco-739
+source: USACO Silver 2017 US Open 
+title: Bovine Genomics
+author: Brad Ma
+---
+
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_cownomics_silver_open17.html)
+
+## Solution
+
+<LanguageSection>
+  
+<JavaSection>
+  
+<Warning>
+This implementation uses sets, which has not been covered yet.
+</Warning>
+  
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class BovineGenomics {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio();
+		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		//PrintWriter pw = new PrintWriter(System.out);
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		int[][] spotted = new int[n][m];
+		for (int x = 0; x < n; x++) {  // read spotted
+			StringBuilder line = new StringBuilder();
+			line.append(io.next());
+
+			for (int y = 0; y < m; y++) {
+				// using base 4 will assign a unique
+				// number to every string
+				// A -> 1, C -> 4, T -> 16, G -> 64
+				if (line.charAt(y) == 'A') {
+					spotted[x][y] = 0;
+				}
+				else if (line.charAt(y) == 'C') {
+					spotted[x][y] = 1;
+				}
+				else if (line.charAt(y) == 'T') {
+					spotted[x][y] = 2;
+				}
+				else {
+					spotted[x][y] = 3;
+				}
+			}
+		}
+
+		int[][] plain = new int[n][m];
+		for (int x = 0; x < n; x++) {  // read plain
+			StringBuilder line = new StringBuilder();
+			line.append(io.next());
+
+			for (int y = 0; y < m; y++) {
+				// A -> 1, C -> 4, T -> 16, G -> 64
+				if (line.charAt(y) == 'A') {
+					plain[x][y] = 0;
+				}
+				else if (line.charAt(y) == 'C') {
+					plain[x][y] = 1;
+				}
+				else if (line.charAt(y) == 'T') {
+					plain[x][y] = 2;
+				}
+				else {
+					plain[x][y] = 3;
+				}
+			}
+		}
+
+		int count = 0;
+
+		for (int a = 0; a < m; a++) {  // loop through every possible group of 3
+			for (int b = a + 1; b < m; b++) {
+				for (int c = b + 1; c < m; c++) {
+					boolean[] visited = new boolean[193];  // 64 * 3 + 1
+					for (int x = 0; x < n; x++) {
+						// get the base 4 number
+						int total = spotted[x][a] * 16 + spotted[x][b] * 4 + spotted[x][c] * 1;
+						visited[total] = true;
+					}
+
+					boolean add = true;
+					for (int x = 0; x < n; x++) {
+						// get the base 4 number
+						int total = plain[x][a] * 16 + plain[x][b] * 4 + plain[x][c] * 1;
+						if (visited[total]) {  // can't explain, don't add
+							add = false;
+							break;
+						}
+					}
+
+					if (add) {
+						count++;
+					}
+				}
+			}
+		}
+
+		io.println(count);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}  
+```
+  
+</JavaSection>
+  
+</LanguageSection>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
