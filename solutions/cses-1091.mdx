@@ -98,8 +98,8 @@ public class ConcertTickets {
 		for (int i = 0; i < ticketNum; i++) {
 			int priceOfTicket = io.nextInt();
 			/*
-			 * If the set already contains the same key value, just create another pair 
-			 * right next to it
+			 * If the set already contains the same key value, create another pair 
+			 * next to it
 			 */
 			if (ticketMultiset.containsKey(priceOfTicket)) {
 				ticketMultiset.put(priceOfTicket, ticketMultiset.get(priceOfTicket) + 1);
@@ -115,10 +115,7 @@ public class ConcertTickets {
 			 * We add 1 because lowerEntry returns the highest *strictly* lower entry
 			 */
 			val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
-			/*
-			 * If there is no lower price, the answer will be null, 
-			 * so there's no possible prices, so we can exit and return -1
-			 */
+			// If there are no possible prices, we can exit and return -1
 			if (val != null) {
 				io.println(val.getKey());
 				/*
