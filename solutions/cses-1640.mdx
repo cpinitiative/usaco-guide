@@ -2,13 +2,13 @@
 id: cses-1640
 source: CSES
 title: Sum of Two Values
-author: Michael Cao, DRGSH, Benjamin Qi
+author: Michael Cao, DRGSH, Benjamin Qi, Ryan Chou, David Zhang
 ---
 
 Given an array of $n$ elements, you are asked to find two values which sum to
 $x$.
 
-# Main Idea
+## Solution 1 - Dictionary/Map
 
 Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given
 one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case
@@ -21,18 +21,18 @@ exist?
 
 <PySection>
 
-# Using a Dictionary
+### Using a Dictionary
 
 </PySection>
 <CPPSection>
 
-# Using a Map
+### Using a Map
 
 </CPPSection>
 
 <JavaSection>
 
-# Using a Map
+### Using a Map
 
 </JavaSection>
 </LanguageSection>
@@ -79,25 +79,7 @@ $j < i$.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	if(sz(name)){
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
+//CodeSnip{CPP Short Template}
 
 int main() {
 	int n, x; cin >> n >> x;
@@ -141,3 +123,128 @@ print("IMPOSSIBLE")
 </PySection>
 
 </LanguageSection>
+
+## Solution 2 - Two Pointers
+
+By keeping two pointers, one at each end of the list, we can greedily move the left and right pointers if the sum of the two elements are less than or greater than the target sum, finding the two indices in $\mathcal{O}(N)$ time.
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TwoSum {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int X = io.nextInt();
+
+		List<Pair> a = new ArrayList<>();
+						  
+		// append the element and its index
+		for (int i = 0; i < N; i++) {
+			int x = io.nextInt();
+			a.add(new Pair(x, i + 1));
+		}
+		Collections.sort(a);
+		int i = 0, j = (int) N - 1;
+		while (i < j) {
+			// adjust the left and right pointers.
+			if (a.get(i).val + a.get(j).val > X)
+				j--;
+			else if (a.get(i).val + a.get(j).val < X)
+				i++;
+			else if (a.get(i).val + a.get(j).val == X) {
+				io.println(a.get(i).index + " " + a.get(j).index);
+				io.close();
+				return;
+			}
+		}
+		io.println("IMPOSSIBLE");
+		io.close();					 
+	}
+
+	static class Pair implements Comparable<Pair> {
+		int val, index;
+
+		public Pair(int x, int y) {
+			this.val = x;
+			this.index = y;
+		}
+
+		public int compareTo(Pair o) {
+			return -Integer.compare(o.val, val);
+		}
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<CPPSection>
+
+```cpp
+//CodeSnip{CPP Short Template}
+
+int main() {
+	ll N, X;
+	cin >> N >> X;
+	vector<pair<int,int>> a;
+	
+	// append the element and its index
+	for (int i = 0; i < N; i++) {
+		ll x;
+		cin >> x;
+		a.pb({x, i + 1});
+	}
+	
+	sort(a.begin(), a.end());
+	int i = 0, j = N - 1;
+	
+	while (i < j) {
+		// adjust left and right pointers.
+		if(a[i].f + a[j].f > X)
+			j--;
+		else if (a[i].f + a[j].f < X)
+			i++;
+		else if (a[i].f + a[j].f == X) {
+			cout << a[i].s << " " << a[j].s;
+			return;
+		}
+	}
+	cout << "IMPOSSIBLE" << endl;
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+nums = list(map(int, input().split()))
+a = []
+
+# append element and index.
+for i in range(n):
+	a.append([nums[i], i + 1])
+
+a.sort()
+ans = []
+left, right = 0, n - 1
+
+while left < right:
+	sumlr = a[left][0] + a[right][0]
+	if sumlr == x:
+		ans.append(str(a[right][1]))
+		ans.append(str(a[left][1]))
+		break
+	elif sumlr > x:
+		right -= 1
+	else:
+		left += 1
+
+# print IMPOSSIBLE if we haven't found a pair
+print(" ".join(ans) if ans else "IMPOSSIBLE")
+```
+</PySection>
+
+</LanguageSection> 
