@@ -188,6 +188,74 @@ int main() {
 
 </CPPSection>
 	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class CellularNetwork2 {
+	static final int MOD = 1000000007;
+	static final int MAXIMUM_SIZE = 100000;
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int[] dist = new int[MAXIMUM_SIZE];
+
+		Arrays.fill(dist, 2 * MOD);
+
+		int[] a = new int[n];
+		int[] b = new int[m];
+
+		for (int x = 0; x < n; x++) {
+			a[x] = io.nextInt();
+		}
+
+		for (int x = 0; x < m; x++) {
+			b[x] = io.nextInt();
+		}
+
+		int pointer1 = 0;
+
+		// pointer going left to right
+		for (int i = 0; i < n; i++) {
+			while (pointer1 < (m - 1) && b[pointer1 + 1] <= a[i]) {
+				// keep on incrementing
+				pointer1++;
+			}
+			dist[i] = Math.min(dist[i], Math.abs(a[i] - b[pointer1]));
+		}
+
+		pointer1 = m - 1;
+
+		// pointer going right to left
+		for (int i = n - 1; i >= 0; i--) {
+			while (pointer1 > 0 && b[pointer1-1] >= a[i]) {
+				// keep on decrementing
+				pointer1--;
+			}
+			dist[i] = Math.min(dist[i], Math.abs(a[i] - b[pointer1]));
+		}
+
+		int answer = 0;
+		// the maximum in the array is the answer
+		for (int i = 0; i < n; i++) {
+			answer = Math.max(answer, dist[i]);
+		}
+
+		io.println(answer);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}	
+```
+	
+</JavaSection>
+	
 </LanguageSection>
 
 ## Solution 3 - Using a Set
