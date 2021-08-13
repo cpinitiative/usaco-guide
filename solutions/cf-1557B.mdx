@@ -237,9 +237,6 @@ Sorting Requires $\mathcal{O}(N\log N)$, and repeated map insertions also requir
 using namespace::std;
 
 typedef long long ll;
-#define F0R(i, n) for (int i = 0; i < n; i++)
-#define R0F(i, n) for (int i = n-1; i >= 0; i--)
-#define FOR(i, a, n) for (int i = a; i < n; i++)
 #define pb push_back
 #define fastio ios::sync_with_stdio(0); cin.tie(0)
 #define MOD 1000000007
@@ -250,21 +247,21 @@ void solve() {
 	int n, k; cin >> n >> k;
 	int arr[n];
 	int sarr[n];
-	F0R(i, n) {
+	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 		sarr[i] = arr[i];
 	}
 	map<int, int> next;
 	sort(sarr, sarr + n);
-	F0R(i, n - 1) {
+	for (int i = 0; i < n - 1; i++) {
 		next[sarr[i]]=sarr[i+1];
 	}
-	next[sarr[n-1]]=MOD; // Ridiculously Large Number
+	next[sarr[n-1]] = MOD; // Ridiculously Large Number
 	int ans = 1;
-	FOR(i, 1, n) {
+	for (int i = 1; i < n; i++) {
 		if (next[arr[i-1]]!=arr[i]) ans++;
 	}
-	if (ans<=k) cout << "YES\n";
+	if (ans <= k) cout << "YES\n";
 	else cout << "NO\n";
 }
  
@@ -301,16 +298,16 @@ public class scrap {
 					      
 			TreeMap<Integer, Integer> next = new TreeMap<>();
 			for (int i = 0; i < n - 1; i++) {
-				next.put(sarr[i], sarr[i+1]);
+				next.put(sarr[i], sarr[i + 1]);
 			}
-			next.put(sarr[n-1], (int)1e9);
+			next.put(sarr[n - 1], (int) 1e9);
 								       
 			int ans = 1;
 			for (int i = 1; i < n; i++) {
-				if (next.get(arr[i-1])!=arr[i]) ans++;
+				if (next.get(arr[i - 1]) != arr[i]) ans++;
 			}
 	
-			if (ans<=k) System.out.println("YES");
+			if (ans <= k) System.out.println("YES");
 			else System.out.println("NO");
 		}
 	}
@@ -329,16 +326,16 @@ for _ in range(int(input())):
 	sarr.sort()
 	
 	next = {}
-	for i in range(n-1):
-		next[sarr[i]] = sarr[i+1]
+	for i in range(n - 1):
+		next[sarr[i]] = sarr[i + 1]
 	
-	next[sarr[n-1]] = int(1e9)
+	next[sarr[n - 1]] = int(1e9)
 	ans = 1
 	for i in range(1, n):
-		if next[arr[i-1]] != arr[i]:
+		if next[arr[i - 1]] != arr[i]:
 			ans+=1
 
-	if ans<=k:
+	if ans <= k:
 		print("YES")
 	else:
 		print("NO")
