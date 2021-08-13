@@ -274,4 +274,48 @@ int main() {
 }
 ```
 </CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+public class scrap {
+	public static void main (String[] args) throws IOException {
+		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(f.readLine());
+	
+		int t = Integer.parseInt(st.nextToken());
+		while (t-->0) {
+			st = new StringTokenizer(f.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int k = Integer.parseInt(st.nextToken());
+			
+			int[] arr = new int[n];
+			int[] sarr = new int[n];
+	
+			st = new StringTokenizer(f.readLine());
+			for (int i = 0; i < n; i++) {
+				arr[i] = Integer.parseInt(st.nextToken());
+				sarr[i] = arr[i];
+			}
+			Arrays.sort(sarr);
+					      
+			TreeMap<Integer, Integer> next = new TreeMap<>();
+			for (int i = 0; i < n - 1; i++) {
+				next.put(sarr[i], sarr[i+1]);
+			}
+			next.put(sarr[n-1], (int)1e9);
+								       
+			int ans = 1;
+			for (int i = 1; i < n; i++) {
+				if (next.get(arr[i-1])!=arr[i]) ans++;
+			}
+	
+			if (ans<=k) System.out.println("YES");
+			else System.out.println("NO");
+		}
+	}
+}
+
+```
+</JavaSection>
 </LanguageSection>
