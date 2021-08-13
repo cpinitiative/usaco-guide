@@ -152,64 +152,62 @@ We have to use some nonstandard io (input/output) to pass all test cases in the 
 import java.io.*;
 import java.util.*;
 
-public class TrafficLights { public static void main(String[] args) throws IOException { 
-	//BeginCodeSnip{io inits} BufferedReader r = new
-	BufferedReader(new InputStreamReader(System.in)); PrintWriter pw = new
-	PrintWriter(System.out); StringTokenizer st = new StringTokenizer(r.readLine());
-	//EndCodeSnip{}
+public class TrafficLights {
+	public static void main(String[] args) throws IOException {
+		//BeginCodeSnip{io inits}
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		//EndCodeSnip{}
+		int streetLength = Integer.parseInt(st.nextToken());
+		int trafficLights = Integer.parseInt(st.nextToken());
 
-    	// Just reading in the variables, we do this instead of Kattio for speed
-    	int streetLength = Integer.parseInt(st.nextToken());
-    	int trafficLights = Integer.parseInt(st.nextToken());
+		// Using an array to read values since we can't get values from sets in Java
+		int[] opArray = new int[trafficLights];
+		TreeSet<Integer> streetPositions = new TreeSet<>();
+		// Initialize the set with beginning and ending values
+		streetPositions.add(0);
+		streetPositions.add(streetLength);
+		st = new StringTokenizer(r.readLine());
 
-    	// Using an array to read values since we can't get values from sets in Java
-    	int[] opArray = new int[trafficLights];
-    	TreeSet<Integer> streetPositions = new TreeSet<>();
-    	// Initialize the set with beginning and ending values
-    	streetPositions.add(0);
-    	streetPositions.add(streetLength);
-    	st = new StringTokenizer(r.readLine());
+		for (int i = 0; i < trafficLights; i++) {
+			int nextTrafficLight = Integer.parseInt(st.nextToken());
+			opArray[i] = nextTrafficLight;
+			streetPositions.add(nextTrafficLight);
+		}
+		//BeginCodeSnip{More io fiddling}
+		r.close();
+		//EndCodeSnip{}
 
-    	// Fill the set with all street light locations
-    	for (int i = 0; i < trafficLights; i++) {
-    		int nextTrafficLight = Integer.parseInt(st.nextToken());
-    		opArray[i] = nextTrafficLight;
-    		streetPositions.add(nextTrafficLight);
-    	}
-    	//BeginCodeSnip{More io fiddling}
-    	r.close();
-    	//EndCodeSnip{}
-
-    	int[] answer = new int[trafficLights];
-    	int prev = 0;
-    	int maxGap = 0;
-    	// Find the longest passage once all the streetlights are added
-    	for (int i : streetPositions) {
-    		maxGap = Math.max(i - prev, maxGap);
-    		prev = i;
-    	}
-    	answer[trafficLights - 1] = maxGap;
-    	/*
-    	 * Remove the streetlights in reverse order to how they were added, then find
-    	 * the gap created by removing each. Find the biggest current gap, and
-    	 * add it to the next lowest index in answer.
-    	 */
-    	for (int i = trafficLights - 1; i > 0; i--) {
-    		streetPositions.remove(opArray[i]);
-    		int low = streetPositions.lower(opArray[i]);
-    		int high = streetPositions.higher(opArray[i]);
-    		maxGap = Math.max(maxGap, high - low);
-    		answer[i - 1] = maxGap;
-    	}
-    	//BeginCodeSnip{Print out the array indexes quickly}
-    	StringBuilder sb = new StringBuilder();
-    	for (int i : answer) {
-    		sb.append(i).append(" ");
-    	}
-    	pw.println(sb);
-    	pw.close();
-    	//EndCodeSnip{}
-    }
+		int[] gapsArray = new int[trafficLights];
+		int prev = 0;
+		int maxGap = 0;
+		// Find the longest passage once all the streetlights are added
+		for (int i : streetPositions) {
+			maxGap = Math.max(i - prev, maxGap);
+			prev = i;
+		}
+		gapsArray[trafficLights - 1] = maxGap;
+		/*
+		 * Remove the streetlights in reverse order to how they were added, then find
+		 * the gap created by removing each. Find the biggest current gap, and 
+		 * add it to the next lowest index in answer.
+		 */
+		for (int i = trafficLights - 1; i > 0; i--) {
+			streetPositions.remove(opArray[i]);
+			int low = streetPositions.lower(opArray[i]);
+			int high = streetPositions.higher(opArray[i]);
+			maxGap = Math.max(maxGap, high - low);
+			gapsArray[i - 1] = maxGap;
+		}
+		//  Print out the array indexes quickly
+		StringBuilder sb = new StringBuilder();
+		for (int i : gapsArray) {
+			sb.append(i).append(" ");
+		}
+		pw.println(sb);
+		pw.close();
+	}
 }
 
 ```
