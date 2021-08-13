@@ -318,4 +318,30 @@ public class scrap {
 
 ```
 </JavaSection>
+	
+<PySection>
+```python
+for _ in range(int(input())):
+	n, k = map(int, input().split())
+	arr = list(map(int, input().split()))
+
+	sarr = arr.copy()
+	sarr.sort()
+	
+	next = {}
+	for i in range(n-1):
+		next[sarr[i]] = sarr[i+1]
+	
+	next[sarr[n-1]] = int(1e9)
+	ans = 1
+	for i in range(1, n):
+		if next[arr[i-1]] != arr[i]:
+			ans+=1
+
+	if ans<=k:
+		print("YES")
+	else:
+		print("NO")
+```
+</PySection>
 </LanguageSection>
