@@ -177,23 +177,23 @@ Alternatively, you could implement such a list on your own:
 	
 ```cpp
 struct Node {
-    int value = NULL;
-    Node *prev = NULL;
-    Node *next = NULL;
+	int value = NULL;
+	Node *prev = NULL;
+	Node *next = NULL;
 };
 
 void insert(Node* node, int value) {
-    struct Node* new_node = new Node;
-    new_node->value = value;
-    new_node->next = node->next;
-    new_node->prev = node;
-    node->next = new_node;
-    if (new_node->next != NULL) new_node->next->prev = new_node;
+	struct Node* new_node = new Node;
+	new_node->value = value;
+	new_node->next = node->next;
+	new_node->prev = node;
+	node->next = new_node;
+	if (new_node->next != NULL) new_node->next->prev = new_node;
 }
 
 void remove(Node* node) {
-    if (node->prev != NULL) node->prev->next = node->next;
-    if (node->next != NULL) node->next->prev = node->prev;
+	if (node->prev != NULL) node->prev->next = node->next;
+	if (node->next != NULL) node->next->prev = node->prev;
 }
 ```
 A sample implementation of this is provided below:
@@ -201,33 +201,33 @@ A sample implementation of this is provided below:
 ```cpp
 int main() {
 	Node* start = new Node;
-	    start->value = 5;
+	start->value = 5;
 	
-	    insert(start, 6);
-	    Node* next = start->next;
+	insert(start, 6);
+	Node* next = start->next;
 	
-	    insert(next, 7);
-	    next = next->next;
+	insert(next, 7);
+	next = next->next;
 	
-	    insert(next, 8);
+	insert(next, 8);
 	
-	    remove(next);
+	remove(next);
 	
-	    Node* cur = start;
-	    while (cur != NULL) {
-			cout << cur->value << endl;
-			cur = cur->next;
-	    }
+	Node* cur = start;
+	while (cur != NULL) {
+		cout << cur->value << endl;
+		cur = cur->next;
+	}
 
-	    // Infinite Loop
-	    next = next->next;
-	    next->next = start;
+	// Infinite Loop
+	next = next->next;
+	next->next = start;
 	
-	    cur = start;
-	    while (cur != NULL) {
-			cout << cur->value << endl;
-			cur = cur->next;
-	    }
+	cur = start;
+	while (cur != NULL) {
+		cout << cur->value << endl;
+		cur = cur->next;
+	}
 }
 ```
 
