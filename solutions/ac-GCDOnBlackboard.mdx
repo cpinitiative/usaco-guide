@@ -98,11 +98,9 @@ public class Main {
 		// prefixGCD[i] = GCD of nums[0], nums[1], ..., nums[i]
 		// suffixGCD[i] = GCD of nums[i], nums[i + 1], ..., nums[N - 1]
 		int[] prefixGCD = new int[N + 1], suffixGCD = new int[N + 1];
-
 		for (int i = 1; i <= N; i++) {
 			prefixGCD[i] = gcd(prefixGCD[i - 1], nums[i - 1]);
 		}
-
 		for (int i = N - 1; i >= 0; i--) {
 			suffixGCD[i] = gcd(suffixGCD[i + 1], nums[i]);
 		}
@@ -112,7 +110,6 @@ public class Main {
 		for (int i = 1; i <= N; i++) {
 			maxGCD = Math.max(maxGCD, gcd(prefixGCD[i - 1], suffixGCD[i]));
 		}
-
 		System.out.println(maxGCD);
 	}
 
