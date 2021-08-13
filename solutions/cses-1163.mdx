@@ -2,9 +2,11 @@
 id: cses-1163
 source: CSES
 title: Traffic Lights
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Ben Dodge
 ---
 
+<LanguageSection>
+<CPPSection>
 In this problem, we are given an empty interval of length $x$ spanning from 0 to
 $x$, and $n$ points are added to the interval chronologically. We want to find
 the largest gap between the points after each step.
@@ -105,3 +107,113 @@ int main(){
 	return 0;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+## Implementation
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+For each traffic light that is added, we want to find the largest current gap
+between traffic lights.
+
+First, let's get our values. We'll use a set to represent the street itself, its
+starting and ending points, and every traffic light along it. We'll also use an
+integer array to store and read the positions of the traffic lights, since we
+can't read values from sets in Java. We'll store our outputs in another array
+too.
+
+Now, to actually solve the problem! We'll start by trying to find the maximum
+gap once all the traffic lights are added. This is the last thing we'll output,
+so we'll add it to the end of our output array. Then, we'll remove traffic
+lights in the reverse order to how they were added, and find the gap each
+removal creates.
+
+This gap is just the distance between the two street coordinates (either a
+traffic light or the beginning or ending of the street) next to a given traffic
+light stored in our set, so we can use our set to find these values and subtract
+them to get our gap.
+
+But this gap may not be the maximum gap. We'll compare this to the gap we found
+once all the traffic lights are added, and set the max gap to the greater value.
+We'll then set the next lowest element in the output array to this value, which
+will represent the greatest gap prior to adding the traffic light we just
+removed.
+
+Once we've gone through and removed every traffic light and added every max gap
+to our output array, we'll iterate through the output array and print out each
+element. Boom-we're done!
+
+<Warning>
+We have to use some nonstandard io (input/output) to pass all test cases in the allowed time on CSES, due to it's slow grader. These are collapsed, and not particularily relevent to the overall function of the program.
+</Warning>
+```java
+import java.io.*;
+import java.util.*;
+
+public class TrafficLights { public static void main(String[] args) throws IOException { 
+	//BeginCodeSnip{io inits} BufferedReader r = new
+	BufferedReader(new InputStreamReader(System.in)); PrintWriter pw = new
+	PrintWriter(System.out); StringTokenizer st = new StringTokenizer(r.readLine());
+	//EndCodeSnip{}
+
+    	// Just reading in the variables, we do this instead of Kattio for speed
+    	int streetLength = Integer.parseInt(st.nextToken());
+    	int trafficLights = Integer.parseInt(st.nextToken());
+
+    	// Using an array to read values since we can't get values from sets in Java
+    	int[] opArray = new int[trafficLights];
+    	TreeSet<Integer> streetPositions = new TreeSet<>();
+    	// Initialize the set with beginning and ending values
+    	streetPositions.add(0);
+    	streetPositions.add(streetLength);
+    	st = new StringTokenizer(r.readLine());
+
+    	// Fill the set with all street light locations
+    	for (int i = 0; i < trafficLights; i++) {
+    		int nextTrafficLight = Integer.parseInt(st.nextToken());
+    		opArray[i] = nextTrafficLight;
+    		streetPositions.add(nextTrafficLight);
+    	}
+    	//BeginCodeSnip{More io fiddling}
+    	r.close();
+    	//EndCodeSnip{}
+
+    	int[] answer = new int[trafficLights];
+    	int prev = 0;
+    	int maxGap = 0;
+    	// Find the longest passage once all the streetlights are added
+    	for (int i : streetPositions) {
+    		maxGap = Math.max(i - prev, maxGap);
+    		prev = i;
+    	}
+    	answer[trafficLights - 1] = maxGap;
+    	/*
+    	 * Remove the streetlights in reverse order to how they were added, then find
+    	 * the gap created by removing each. Find the biggest current gap, and
+    	 * add it to the next lowest index in answer.
+    	 */
+    	for (int i = trafficLights - 1; i > 0; i--) {
+    		streetPositions.remove(opArray[i]);
+    		int low = streetPositions.lower(opArray[i]);
+    		int high = streetPositions.higher(opArray[i]);
+    		maxGap = Math.max(maxGap, high - low);
+    		answer[i - 1] = maxGap;
+    	}
+    	//BeginCodeSnip{Print out the array indexes quickly}
+    	StringBuilder sb = new StringBuilder();
+    	for (int i : answer) {
+    		sb.append(i).append(" ");
+    	}
+    	pw.println(sb);
+    	pw.close();
+    	//EndCodeSnip{}
+    }
+}
+
+```
+
+</JavaSection>
+</LanguageSection>
+
