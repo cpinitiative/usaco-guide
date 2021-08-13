@@ -5,23 +5,24 @@ title: Concert Tickets
 author: Danh Ta Chi Thanh, Ben Dodge
 ---
 
+## Implementation
+
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
+
+**Time Complexity:** $\mathcal{O}(n+ m)$
+
+For each customer, we want to find the maximum possible ticket price they will
+accept from the available tickets. If the customer's maximum price is too low,
+so that no ticket price is below it, we can return -1. If not, we find the
+greatest ticket price less than or equal to the maximum price, and then remove
+that price as specified by the problem.
+
+We use a multiset for this. A
+[multiset](https://en.wikipedia.org/wiki/Multiset) is basically an ordered set
+that allows multiple elements of the same value. We do this because different tickets can have the same price. 
+
 <LanguageSection>
-	
 <CPPSection>
-
-## Solution
-
-[Unofficial Editorial](https://codeforces.com/blog/entry/83295)
-
-Another way of solving the problem is to use the `multiset::upper_bound`
-function to find the lowest-priced ticket that exceeds the maximum price for the
-current customer. When we have found the iterator pointing to the upper bound,
-we just decrement the iterator to get the maximum price possible for that
-current customer. Note that if the initial iterator points to the beginning of
-the multiset, we can infer that there is no ticket that works for the customer.
-
-([Proof for my solution](https://stackoverflow.com/questions/9989731/algorithm-function-for-finding-last-item-less-than-or-equal-to-like-lower-bou/9989773#9989773))
-
 ```cpp
 #include <bits/stdc++.h>
 
@@ -59,27 +60,10 @@ int main(){
 </CPPSection>
 
 <JavaSection>
-## Implementation
-
-[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
-
-**Time Complexity:** $\mathcal{O}(n+ m)$
-
-For each customer, we want to find the maximum possible ticket price they will
-accept from the available tickets. If the customer's maximum price is too low,
-so that no ticket price is below it, we can return -1. If not, we find the
-greatest ticket price less than or equal to the maximum price, and then remove
-that price as specified by the problem.
-
-We use, at least in theory, a multiset for this. A
-[multiset](https://en.wikipedia.org/wiki/Multiset) is basically an ordered set
-that allows multiple pairs of the same key. But Java doesn't have a defined
-multiset method, so we have to use a regular ordered set with some special
-modifications, using values as a counter of the number of identical sets. This
-allows us to distinguish between sets, and remove each set once.
-
 <Warning>
 Due to the way CSES's grader works (allowing 1 second for all problems + being slow), test cases 5 and 8 TLE (time limit exceeded). USACO gives Java test cases 4 seconds, so this isn't representative of what competing with Java will be like. 
+	
+Also, Java doesn't have a defined multiset function, so we have to use an ordered map with some special modifications, using values as a counter of the number of identical sets. This allows us to distinguish between sets, and remove each set once.
 </Warning>
 ```java
 import java.io.*;
@@ -137,5 +121,4 @@ public class ConcertTickets {
 }
 ```
 </JavaSection>
-
 </LanguageSection>
