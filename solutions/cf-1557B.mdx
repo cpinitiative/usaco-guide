@@ -327,14 +327,14 @@ for _ in range(int(input())):
 	sarr = arr.copy()
 	sarr.sort()
 	
-	next = {}  # Map (dict) from one value to the value after it in the sorted array
+	after = {}  # Map (dict) from one value to the value after it in the sorted array
 	for i in range(n - 1):
-		next[sarr[i]] = sarr[i + 1]
+		after[sarr[i]] = sarr[i + 1]
 	
-	next[sarr[n - 1]] = int(1e9)
+	after[sarr[n - 1]] = int(1e9)
 	ans = 1
 	for i in range(1, n):
-		if next[arr[i - 1]] != arr[i]:
+		if after[arr[i - 1]] != arr[i]:
 			# If the previous element in the unsorted array is not the same 
 			# as the previous element in the sorted array, we need at least 1 more segment
 			ans += 1
