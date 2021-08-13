@@ -115,16 +115,7 @@ int main(){
 
 **Time Complexity:** $\mathcal{O}(n)$
 
-For each traffic light that is added, we want to find the largest current gap
-between traffic lights.
-
-First, let's get our values. We'll use a set to represent the street itself, its
-starting and ending points, and every traffic light along it. We'll also use an
-integer array to store and read the positions of the traffic lights, since we
-can't read values from sets in Java. We'll store our outputs in another array
-too.
-
-Now, to actually solve the problem! We'll start by trying to find the maximum
+We'll start by trying to find the maximum
 gap once all the traffic lights are added. This is the last thing we'll output,
 so we'll add it to the end of our output array. Then, we'll remove traffic
 lights in the reverse order to how they were added, and find the gap each
@@ -141,12 +132,8 @@ We'll then set the next lowest element in the output array to this value, which
 will represent the greatest gap prior to adding the traffic light we just
 removed.
 
-Once we've gone through and removed every traffic light and added every max gap
-to our output array, we'll iterate through the output array and print out each
-element. Boom-we're done!
-
 <Warning>
-We have to use some nonstandard io (input/output) to pass all test cases in the allowed time on CSES, due to it's slow grader. These are collapsed, and not particularily relevent to the overall function of the program.
+We have to use some nonstandard io (input/output) to pass all test cases in the allowed time on CSES, because of its slow grader. 
 </Warning>
 ```java
 import java.io.*;
@@ -154,32 +141,29 @@ import java.util.*;
 
 public class TrafficLights {
 	public static void main(String[] args) throws IOException {
-		//BeginCodeSnip{io inits}
 		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(r.readLine());
-		//EndCodeSnip{}
+
 		int streetLength = Integer.parseInt(st.nextToken());
-		int trafficLights = Integer.parseInt(st.nextToken());
+		int lightNum = Integer.parseInt(st.nextToken());
 
 		// Using an array to read values since we can't get values from sets in Java
-		int[] opArray = new int[trafficLights];
+		int[] opArray = new int[lightNum];
 		TreeSet<Integer> streetPositions = new TreeSet<>();
 		// Initialize the set with beginning and ending values
 		streetPositions.add(0);
 		streetPositions.add(streetLength);
 		st = new StringTokenizer(r.readLine());
 
-		for (int i = 0; i < trafficLights; i++) {
+		for (int i = 0; i < lightNum; i++) {
 			int nextTrafficLight = Integer.parseInt(st.nextToken());
 			opArray[i] = nextTrafficLight;
 			streetPositions.add(nextTrafficLight);
 		}
-		//BeginCodeSnip{More io fiddling}
 		r.close();
-		//EndCodeSnip{}
 
-		int[] gapsArray = new int[trafficLights];
+		int[] gapsArray = new int[lightNum];
 		int prev = 0;
 		int maxGap = 0;
 		// Find the longest passage once all the streetlights are added
@@ -187,13 +171,13 @@ public class TrafficLights {
 			maxGap = Math.max(i - prev, maxGap);
 			prev = i;
 		}
-		gapsArray[trafficLights - 1] = maxGap;
+		gapsArray[lightNum - 1] = maxGap;
 		/*
 		 * Remove the streetlights in reverse order to how they were added, then find
 		 * the gap created by removing each. Find the biggest current gap, and 
 		 * add it to the next lowest index in answer.
 		 */
-		for (int i = trafficLights - 1; i > 0; i--) {
+		for (int i = lightNum - 1; i > 0; i--) {
 			streetPositions.remove(opArray[i]);
 			int low = streetPositions.lower(opArray[i]);
 			int high = streetPositions.higher(opArray[i]);
