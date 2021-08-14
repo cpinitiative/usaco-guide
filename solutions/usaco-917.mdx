@@ -1,0 +1,97 @@
+---
+id: usaco-917
+source: USACO Bronze February 2019
+title: Measuring Traffic
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_traffic_bronze_feb19.html)
+
+## Implementation
+**Time Complexity** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<JavaSection>
+	
+<Warning>
+Using `Integer.MIN_VALUE` and `INTEGER.MAX_VALUE` for the initial 
+low and high settings will cause integer overflow because the max
+and min will not necessarily execute first.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MeasuringTraffic {
+	static final int infinity = 999999999;
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("traffic");
+		int numMiles = io.nextInt();
+		String[] segmentType = new String[numMiles];
+		int[] start = new int[numMiles];
+		int[] end = new int[numMiles];
+
+		for (int x = 0; x < numMiles; x++) {
+			segmentType[x] = io.next();
+			start[x] = io.nextInt();
+			end[x] = io.nextInt();
+		}
+
+		// initially, set an extremely large range 
+		int low = -infinity;
+		int high = infinity;
+
+		for (int i = numMiles - 1; i >= 0; i--) {
+			if (segmentType[i].equals("none")) {
+				// new range based on sensor
+				low = Math.max(low, start[i]);
+				high = Math.min(high, end[i]);
+			}
+			if (segmentType[i].equals("off")) {
+				// update range of possible traffic flows
+				low += start[i];
+				high += end[i];
+			}
+			if (segmentType[i].equals("on")) {
+				low -= end[i];
+				high -= start[i];
+				// set to zero if low becomes negative
+				low = Math.max(0, low);
+			}
+		}
+
+		io.println(low + " " + high);
+
+		low = -infinity;
+		high = infinity;
+
+		// process again but this time scanning the other way
+		for (int i = 0; i < numMiles; i++) {
+			if (segmentType[i].equals("none")) {
+				low = Math.max(low, start[i]);
+				high = Math.min(high, end[i]);
+			}
+			if (segmentType[i].equals("on")) {
+				low += start[i];
+				high += end[i];
+			}
+			if (segmentType[i].equals("off")) {
+				low -= end[i];
+				high -= start[i];
+				low = Math.max(0, low);
+			}
+		}
+
+		io.println(low + " " + high);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}  
+```
+  
+</JavaSection>
+  
+</LanguageSection>

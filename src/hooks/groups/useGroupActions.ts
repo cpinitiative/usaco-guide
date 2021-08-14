@@ -42,7 +42,6 @@ export function useGroupActions() {
         ownerIds: [firebaseUser.uid],
         adminIds: [],
         memberIds: [],
-        leaderboard: {},
         postOrdering: [],
       };
       const groupDoc = doc(collection(getFirestore(firebaseApp), 'groups'));

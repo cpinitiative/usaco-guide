@@ -7,7 +7,7 @@ import {
 } from 'firebase/firestore';
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import toast from 'react-hot-toast';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
@@ -31,12 +31,10 @@ export function ActivePostProblemsProvider({
   const [isLoading, setIsLoading] = React.useState(true);
   const [problems, setProblems] = React.useState<GroupProblemData[]>();
 
-  const notifications = useNotificationSystem();
-
   useFirebaseApp(
     firebaseApp => {
-      setProblems(null);
       setIsLoading(true);
+      setProblems(null);
       if (activePostId === null || !firebaseUser?.uid) {
         return;
       }
@@ -63,7 +61,7 @@ export function ActivePostProblemsProvider({
           setIsLoading(false);
         },
         error: error => {
-          notifications.showErrorNotification(error);
+          toast.error(error.message);
         },
       });
     },

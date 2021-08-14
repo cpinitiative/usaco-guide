@@ -1,0 +1,134 @@
+---
+id: usaco-860
+source: USACO Silver 2018 December
+title: Mooyo Mooyo
+author: Nathan Gong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_mooyomooyo_silver_dec18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class MooyoMooyo {
+	static int n, m, k;
+	static int[][] grid, region;
+	
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("mooyomooyo");
+
+		n = io.nextInt();
+		m = 10;
+		k = io.nextInt();
+		grid = new int[n][m];
+		region = new int[n][m];
+
+		for (int i = 0; i < n; i++) {
+			String row = io.next();
+			for (int j = 0; j < m; j++) {
+				grid[i][j] = Character.getNumericValue(row.charAt(j));
+			}
+		}
+
+		// Loop until game ends (when there are no more regions to delete)
+		while (true) {
+			// Stores the current region we're on
+			int r = 1;
+			// Reset region matrix
+			region = new int[n][m];
+
+			Set<Integer> largeRegions = new HashSet<>();
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					/* 
+					 * Floodfill only if the current square isn't empty
+					 * and hasn't been visited (if it already has, region[i][j]
+					 * would be nonzero)
+					 */
+					if (grid[i][j] != 0 && region[i][j] == 0) {
+						int size = floodfill(i, j, r, grid[i][j]);
+						if (size >= k) {
+							largeRegions.add(r);
+						}
+						r++;
+					}
+				}
+			}
+
+			// Stop simulation if there are no more regions to delete
+			if (largeRegions.size() == 0) {
+				break;
+			}
+
+			// Delete squares that are part of a large region
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					if (largeRegions.contains(region[i][j])) {
+						grid[i][j] = 0;
+					}
+				}
+			}
+			
+			/* 
+			 * Apply gravity; In other words, for each column, we move all the
+			 * zeros to the top
+			 * Here's a good source explaining a similar concept:
+			 * https://www.geeksforgeeks.org/move-zeroes-end-array/
+			 */
+			for (int j = 0; j < m; j++) {
+				int count = n - 1;
+				for (int i = n - 1; i >= 0; i--) {
+					if (grid[i][j] != 0) {
+						grid[count--][j] = grid[i][j];
+					}
+				}
+
+				while (count >= 0) {
+					grid[count--][j] = 0;
+				}
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				io.print(grid[i][j]);
+			}
+			io.println();
+		}
+		io.close();
+	}
+
+	// Returns the size of the region containing square (i, j)
+	static int floodfill(int i, int j, int r, int color) {
+		// Exit if out of bounds, already visited, or if the current square
+		// has a different color
+		if (i < 0 || i >= n || j < 0 || j >= m) return 0;
+		if (region[i][j] != 0) return 0;
+		if (grid[i][j] != color) return 0;
+		
+		// If we haven't exited, we can continue with floodfill
+		region[i][j] = r;
+		int size = 1;
+		size += floodfill(i + 1, j, r, color);
+		size += floodfill(i - 1, j, r, color);
+		size += floodfill(i, j + 1, r, color);
+		size += floodfill(i, j - 1, r, color);
+		return size;
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

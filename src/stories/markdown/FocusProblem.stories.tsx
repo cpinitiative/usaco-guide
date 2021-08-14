@@ -32,6 +32,25 @@ const problemLists: {
       },
     ],
   },
+  {
+    listId: 'focus2',
+    problems: [
+      {
+        uniqueId: 'cfgym-102951A',
+        name: 'Maximum Distance',
+        url: 'https://codeforces.com/gym/102951/problem/A',
+        source: 'CF',
+        difficulty: 'Easy',
+        isStarred: false,
+        tags: [],
+        solution: {
+          kind: 'link',
+          label: 'In Module',
+          url: `https://usaco.guide/bronze/intro-complete/#problem-cfgym-102951A`,
+        },
+      },
+    ],
+  },
 ];
 
 const Template: Story<ComponentProps<typeof FocusProblem>> = args => (
@@ -42,5 +61,10 @@ const Template: Story<ComponentProps<typeof FocusProblem>> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
+  problem: 'focus2',
+};
+
+export const WithInternalSolution = Template.bind({});
+WithInternalSolution.args = {
   problem: 'focus',
 };

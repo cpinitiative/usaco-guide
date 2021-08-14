@@ -138,6 +138,9 @@ const JoinGroupPage = (props: RouteComponentProps) => {
                           if (data.success) {
                             navigate(`/groups/${data.groupId}`);
                           } else {
+                            if (data.errorCode === "ALREADY_IN_GROUP") {
+                              navigate(`/groups/${data.groupId}`);
+                            }
                             setError({
                               errorCode: data.errorCode,
                               message: data.message,

@@ -1,7 +1,7 @@
 ---
 id: intro-sets
 title: Introduction to Sets & Maps
-author: Darren Yao, Benjamin Qi, Allen Li, DRGSH
+author: Darren Yao, Benjamin Qi, Allen Li
 description:
   'Maintaining collections of distinct elements in sorted order with ordered
   sets.'
@@ -49,7 +49,7 @@ set<int> s;
 s.insert(1); // [1]
 s.insert(4); // [1, 4]
 s.insert(2); // [1, 2, 4]
-s.insert(1); // [1, 2, 4]
+	
 // the add method did nothing because 1 was already in the set
 cout << s.count(1) << endl; // 1
 s.erase(1); // [2, 4]
@@ -73,7 +73,7 @@ already present, `remove`, which deletes an element if it exists, and
 `contains`, which checks whether the set contains that element.
 
 ```java
-Set<Integer> set = new TreeSet<Integer>();
+Set<Integer> set = new TreeSet<>();
 set.add(1); // [1]
 set.add(4); // [1, 4]
 set.add(2); // [1, 2, 4]
@@ -85,7 +85,7 @@ System.out.println(set.contains(5)); // false
 set.remove(0); // [2, 4]
 // if the element to be removed does not exist, nothing happens
 
-for(int element : set){
+for (int element : set) {
 	System.out.println(element);
 }
 // You can iterate through an set in sorted order
@@ -173,25 +173,22 @@ int main() {
 ```java
 // Source: Daniel
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class DistinctNumbers {
-
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		HashSet<Integer> set = new HashSet<Integer>();
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		Set<Integer> set = new HashSet<>();
 		for (int i = 0; i < n; i++) {
-			set.add(Integer.parseInt(st.nextToken()));
+			set.add(io.nextInt());
 		}
-		System.out.println(set.size());
+		io.println(set.size());
+		io.close();
 	}
 
+	CodeSnip{Kattio}
 }
 ```
 
@@ -363,7 +360,7 @@ This allows you to modify the values of the pairs stored in the map.
 To iterate over maps, you can use a `for` loop over the keys.
 
 ```java
-for (int k : m.keySet()){
+for (int k : m.keySet()) {
 	System.out.println(k + " " + m.get(k));
 }
 ```
@@ -673,10 +670,11 @@ unlikely to work, as it will probably cause a
 See the following snippet for an example:
 
 ```java
-void iterate_remove_set_BAD() {
-	Set<Integer> s = new TreeSet<Integer>();
+void iterateRemoveBad() {
+	Set<Integer> s = new TreeSet<>();
+	// s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
-	for(Integer a : s) {
+	for (Integer a : s) {
 		s.remove(a); // ConcurrentModificationException thrown!!
 	}
 }
@@ -686,21 +684,22 @@ One work-around is to use `Iterator` and the `.remove()` method to remove
 elements while looping over them, like in the next code snippet:
 
 ```java
-void iterate_remove_set() {
-	Set<Integer> s = new TreeSet<Integer>();
-	//s starts as {0, 1, 2}
+void iterateRemoveSet() {
+	Set<Integer> s = new TreeSet<>();
+	// s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
 
 	Iterator<Integer> iter = s.iterator();
-	while(iter.hasNext()) {
+	while (iter.hasNext()) {
 		int key = iter.next();
-		if(key == 0 || key == 2)
+		if (key == 0 || key == 2) {
 			iter.remove();
+		}
 	}
 
-	//s ends as {1}
+	// s ends as {1}
 	System.out.println("ENTRIES:");
-	for(Integer a : s) {
+	for (Integer a : s) {
 		System.out.println(a);
 	}
 }
@@ -720,21 +719,23 @@ method that you call on your original Collection. See the following code snippet
 for an example (it works equivalently to the code above):
 
 ```java
-void iterate_remove_set_good() {
-	Set<Integer> s = new TreeSet<Integer>();
-	//s starts as {0, 1, 2}
+void iterateRemoveSetGood() {
+	Set<Integer> s = new TreeSet<>();
+	// s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
 
-	Set<Integer> toRemove = new TreeSet<Integer>();
-	for(Integer a : s) {
-		if(a == 0 || a == 2) toRemove.add(a);
+	Set<Integer> toRemove = new TreeSet<>();
+	for (Integer a : s) {
+		if (a == 0 || a == 2) {
+			toRemove.add(a);
+		}
 	}
 
 	s.removeAll(toRemove);
 
-	//s ends as {1}
+	// s ends as {1}
 	System.out.println("ENTRIES:");
-	for(Integer a : s) {
+	for (Integer a : s) {
 		System.out.println(a);
 	}
 }
