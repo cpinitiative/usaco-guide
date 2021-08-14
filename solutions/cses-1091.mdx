@@ -5,21 +5,19 @@ title: Concert Tickets
 author: Danh Ta Chi Thanh, Ben Dodge
 ---
 
-## Implementation
-
 [Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
 
-**Time Complexity:** $\mathcal{O}(n+ m)$
+
+## Explanation
 
 For each customer, we want to find the maximum possible ticket price they will
 accept from the available tickets. If the customer's maximum price is too low,
 so that no ticket price is below it, we can return -1. If not, we find the
 greatest ticket price less than or equal to the maximum price, and then remove
-that price as specified by the problem.
+that price as specified by the problem. We use a multiset for this.
 
-We use a multiset for this. A
-[multiset](https://en.wikipedia.org/wiki/Multiset) is basically an ordered set
-that allows multiple elements of the same value. We do this because different tickets can have the same price. 
+## Implementation 
+**Time Complexity:** $\mathcal{O}(n+ m)$
 
 <LanguageSection>
 <CPPSection>
@@ -60,18 +58,14 @@ int main(){
 </CPPSection>
 
 <JavaSection>
-<Warning>
-Due to the way CSES's grader works (allowing 1 second for all problems + being slow), test cases 5 and 8 TLE (time limit exceeded). USACO gives Java test cases 4 seconds, so this isn't representative of what competing with Java will be like. 
-	
-Also, Java doesn't have a defined multiset function, so we have to use an ordered map with some special modifications, using values as a counter of the number of identical sets. This allows us to distinguish between sets, and remove each set once.
-</Warning>
 ```java
 import java.io.*;
 import java.util.*;
 
 public class ConcertTickets {
 	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio();
+		Reader io = new Reader();
+		PrintWriter pw = new PrintWriter(System.out);
 
 		int ticketNum = io.nextInt();
 		int peopleNum = io.nextInt();
@@ -101,7 +95,7 @@ public class ConcertTickets {
 			val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
 			// If there are no possible prices, we can exit and return -1
 			if (val != null) {
-				io.println(val.getKey());
+				pw.println(val.getKey());
 				/*
 				 * If there's more than one set with the key value, then replace
 				 * the current set with the next-lowest set with the same key 
@@ -112,12 +106,67 @@ public class ConcertTickets {
 				} else {
 					ticketMultiset.put(val.getKey(), val.getValue() - 1);
 				}
-			} else
-				io.println(-1);
+			} else {
+				pw.println(-1);
+			}
 		}
 		io.close();
+		pw.close();
 	}
-	//CodeSnip{Kattio}
+	//BeginCodeSnip{Fast Reader}
+	static class Reader
+	{
+		final private int BUFFER_SIZE = 1 << 16;
+		private DataInputStream din;
+		private byte[] buffer;
+		private int bufferPointer, bytesRead;
+ 
+		public Reader()
+		{
+			din = new DataInputStream(System.in);
+			buffer = new byte[BUFFER_SIZE];
+			bufferPointer = bytesRead = 0;
+		}
+		private void fillBuffer() throws IOException
+		{
+			bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+			if (bytesRead == -1)
+				buffer[0] = -1;
+		}
+ 
+		private byte read() throws IOException
+		{
+			if (bufferPointer == bytesRead)
+				fillBuffer();
+			return buffer[bufferPointer++];
+		}
+ 
+		public void close() throws IOException
+		{
+			if (din == null)
+				return;
+			din.close();
+		}
+		public int nextInt() throws IOException
+		{
+			int ret = 0;
+			byte c = read();
+			while (c <= ' ')
+				c = read();
+			boolean neg = (c == '-');
+			if (neg)
+				c = read();
+			do
+			{
+				ret = ret * 10 + c - '0';
+			}  while ((c = read()) >= '0' && c <= '9');
+ 
+			if (neg)
+				return -ret;
+			return ret;
+		}
+	}
+	//EndCodeSnip{}
 }
 ```
 </JavaSection>
