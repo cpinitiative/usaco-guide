@@ -1,0 +1,50 @@
+---
+id: usaco-966
+source: USACO Silver 2019 December
+title: MooBuzz
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_moobuzz_silver_dec19.html)
+
+For every $15$ numbers, there are only $8$ numbers where the cows moo. (see below)
+
+$ [\underline{1}, \underline{2}, 3, \underline{4}, 5, 6, \underline{7}, \underline{8}, 9, 10, \underline{11}, 12, \underline{13}, \underline{14}, 15] $
+
+$ [\underline{16}, \underline{17}, 18, \underline{19}, 20, 21, \underline{22}, \underline{23}, 24, 25, \underline{26}, 27, \underline{28}, \underline{29}, 30] $
+
+Therefore, we can just get the distance away $N$ is from the first $8$ by calculating  $\lfloor \frac{N}{8} \rfloor \times 15$, since we have to add $15$ for every grouping of $15$. 
+
+Now it's just a matter of adding the corresponding first $8$ to the answer. 
+
+## Implementation
+
+**Time Complexity:** $ \mathcal{O}(1)$
+<LanguageSection>
+<PySection>
+```py
+import sys
+
+sys.stdin = open('moobuzz.in', 'r')
+sys.stdout = open('moobuzz.out', 'w')
+
+N = int(input())
+
+# Lists the first 8. 
+# 14 is in the zeroth position since if were trying to find the 
+# eighth number, 8 % 8 = 0.
+first8 = [14, 1, 2, 4, 7, 8, 11, 13]
+
+# Finds the group.
+ans = (N - 1) // 8 
+
+# Distance away N is from the first 8.
+ans *= 15
+
+# Adds the corresponding element.
+ans += first8[N % 8]
+
+print(ans)
+```
+</PySection>
+</LanguageSection>

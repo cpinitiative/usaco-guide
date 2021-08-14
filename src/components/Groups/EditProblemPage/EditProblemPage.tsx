@@ -1,15 +1,22 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
-import { Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  Timestamp,
+} from 'firebase/firestore';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
 import Flatpickr from 'react-flatpickr';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupProblemData } from '../../../models/groups/problem';
 import {
   AlgoliaProblemInfo,
@@ -24,6 +31,7 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
+import toast from 'react-hot-toast';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -33,6 +41,7 @@ export default function EditProblemPage(props) {
     postId: string;
     problemId: string;
   };
+  const firebaseApp = useFirebaseApp();
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const originalProblem = useProblem(problemId);
@@ -44,16 +53,30 @@ export default function EditProblemPage(props) {
     originalProblem
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
-  const notifications = useNotificationSystem();
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
   }, [originalProblem, post]);
 
-  const canEditPoints = !activeGroup.groupData.leaderboard[post.id]?.[
-    problemId
-  ];
+  const [canEditPoints, setCanEditPoints] = React.useState(false);
+  React.useEffect(() => {
+    setCanEditPoints(false);
+    if (!firebaseApp || !postId || !problemId) return;
+    getDocs(
+      query(
+        collection(
+          getFirestore(firebaseApp),
+          `groups/${groupId}/posts/${postId}/problems/${problemId}/submissions`
+        ),
+        limit(1)
+      )
+    ).then(resp => {
+      if (resp.docs.length === 0) {
+        setCanEditPoints(true);
+      }
+    });
+  }, [firebaseApp, postId, problemId]);
 
   const handleDeleteProblem = () => {
     if (confirm('Are you sure you want to delete this problem?')) {
@@ -63,7 +86,7 @@ export default function EditProblemPage(props) {
             replace: true,
           });
         })
-        .catch(e => notifications.showErrorNotification(e));
+        .catch(e => toast.error(e.message));
     }
   };
   const handleSaveProblem = () => {

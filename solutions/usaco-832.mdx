@@ -1,0 +1,88 @@
+---
+id: usaco-832
+source: USACO Bronze 2018 Open
+title: Milking Order
+author: Ananth Kashyap
+---
+
+## Solution 1
+
+[Official Analysis](http://www.usaco.org/current/data/sol_milkorder_bronze_open18.html)
+
+## Solution 2
+
+In this problem, there are three cases that we have to consider:
+1. Cow $1$ is fixed: In this case, the solution is simple, as we just output its fixed position.
+2. Cow $1$ is in the given hierarchy of cows: In this case, we want to place every cow in the hierarchy as early as possible.
+3. Cow $1$ is neither fixed nor in the hierarchy: In this case, we would want to place every cow in the hierarchy as late as possible, such that cow $1$ gets the earliest possible position.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N(M + N))$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+file_in = open('milkorder.in')
+data = file_in.read().strip().split('\n')
+n, m, k = map(int, data[0].split(' '))
+hierarchy = list(map(int, data[1].split(' ')))
+fixed = [list(map(int, data[i + 2].split(' '))) for i in range(k)]
+
+cows = [0 for i in range(n)]
+
+for i in range(k):
+  	cows[fixed[i][1] - 1] = fixed[i][0]
+
+if 1 in cows:
+	# Case 1
+ 	ans = cows.index(1) + 1
+else:
+	if 1 not in hierarchy:
+		# Case 2
+		i = n - 1
+		pointer = m - 1
+		while pointer >= 0:
+			if hierarchy[pointer] in cows:
+				i = cows.index(hierarchy[pointer]) - 1
+				pointer -= 1
+			else:
+				if cows[i] == 0:
+					cows[i] = hierarchy[pointer]
+					i -= 1
+					pointer -= 1
+				else:
+					i -= 1
+
+		for i in range(n):
+			if cows[i] == 0:
+				ans = i + 1
+				break
+	else:
+		# Case 3
+		i = 0
+		pointer = 0
+		while pointer <= m - 1:
+			if hierarchy[pointer] in cows:
+				i = cows.index(hierarchy[pointer]) + 1
+				pointer += 1
+			else:
+				if cows[i] == 0:
+					cows[i] = hierarchy[pointer]
+					i += 1
+					pointer += 1
+				else:
+					i += 1
+		for i in range(n):
+			if cows[i] == 1:
+				ans = i + 1
+				break
+
+print(ans, file=open('milkorder.out', 'w'))
+```
+
+</PySection>
+
+</LanguageSection>

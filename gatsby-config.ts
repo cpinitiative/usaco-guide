@@ -130,12 +130,12 @@ const plugins = [
   },
   // devMode currently has some sketchy output
   // See https://github.com/JimmyBeldone/gatsby-plugin-webpack-bundle-analyser-v2/issues/343
-  {
-    resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
-    options: {
-      devMode: false,
-    },
-  },
+  // {
+  //   resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
+  //   options: {
+  //     devMode: false,
+  //   },
+  // },
   // {
   //   resolve: `gatsby-plugin-hotjar`,
   //   options: {

@@ -1,6 +1,7 @@
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
-import { ProblemInfo } from '../../models/problem';
+import { getProblemURL, ProblemInfo } from '../../models/problem';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 
 export default function FocusProblem({
@@ -35,7 +36,7 @@ export default function FocusProblem({
       id={'problem-' + problem.uniqueId}
     >
       <div className="border-t-4 border-blue-600">
-        <div className="flex items-center px-6">
+        <div className="flex items-center px-4 sm:px-6">
           <div className="flex-1 mr-4">
             <div className="flex items-center">
               <a
@@ -46,7 +47,7 @@ export default function FocusProblem({
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                <div className="text-xl font-medium text-black flex items-center dark:text-dark-high-emphasis">
+                <div className="text-lg sm:text-xl font-medium text-black flex items-center dark:text-dark-high-emphasis">
                   {problem.name}
                   <svg
                     className="text-gray-300 h-5 w-5 ml-1"
@@ -67,9 +68,20 @@ export default function FocusProblem({
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
-        <p className="text-xs italic text-gray-400 font-normal py-3 border-t border-gray-100 dark:border-gray-700 px-6">
-          Focus Problem – read through this problem before continuing!
-        </p>
+        <div className="border-t border-gray-100 dark:border-gray-700 sm:flex sm:justify-between">
+          <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 !mb-0 sm:pb-3">
+            Focus Problem – read through this problem before continuing!
+          </p>
+          {problem.solution?.kind === 'internal' && (
+            <a
+              href={`${getProblemURL(problem)}/solution`}
+              className="text-xs italic !text-gray-400 !font-normal py-3 px-4 sm:px-6 !mb-0 inline-flex hover:underline"
+            >
+              <span className="mr-1">View Internal Solution</span>
+              <ExternalLinkIcon className="h-4 w-4" />
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

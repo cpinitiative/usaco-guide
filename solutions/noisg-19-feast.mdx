@@ -1,0 +1,93 @@
+---
+id: noisg-19-feast
+source: NOI.sg
+title: 2019 - Feast
+author: Dong Liu
+---
+
+**Time Complexity:** $\mathcal{O}(N\log{\sum a[i]})$.
+
+<LanguageSection>
+
+<CPPSection>
+
+Like a normal Aliens Trick problem, we're going to binary search on the maximum
+$\lambda$ where the number of subarrays used is $\geq k$.
+
+Now, for a given $\lambda$, we're going to calculate the number of people in an
+optimal food arrangement such that we subtract $\lambda$ for every
+person.
+
+Let's have $\texttt{dp}[i][j:\{0,1\}]$ represent the maximum sum of satisfaction
+of an arrangement of the first $i$ plates, given that $j=0/1$ implies whether
+plate $i$ is being used. Let $\texttt{cnt}[i][j]$ represent the number of
+people used in an optimal arrangement of $\texttt{dp}[i][j]$.
+
+For our $\texttt{dp}$ transitions, we have
+
+$$
+\{\texttt{dp}[i][0], \texttt{cnt}[i][0]\} =
+\max\begin{cases} \{\texttt{dp}[i - 1][0], \texttt{cnt}[i - 1][0]\}\\
+\{\texttt{dp}[i - 1][1], \texttt{cnt}[i - 1][1]\}
+\end{cases}
+$$
+
+and
+
+$$
+\{\texttt{dp}[i][1], \texttt{cnt}[i][1]\} =
+\max\begin{cases}\{\texttt{dp}[i - 1][0] + a[i] - \lambda, \texttt{cnt}[i - 1][0] + 1\}\\
+\{\texttt{dp}[i - 1][1] + a[i], \texttt{cnt}[i - 1][1]\}\end{cases}
+$$
+
+because we either begin a new subarray or we continue an existing subarray.
+
+Since calculating $\texttt{dp}$ takes $\mathcal O(N)$ time, and we're binary
+searching on the range $[0, \sum a[i]]$, the time complexity is
+$\mathcal{O}(N\log{\sum a[i]})$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 300000;
+const long long INF = (long long) 300000 * 1000000000;
+const long double EPS = 1e-3;
+
+int n, k, a[N + 1];
+pair<long double, int> dp[N + 1][2];
+
+bool check(long double lambda) {
+	dp[0][0] = {0, 0}, dp[0][1] = {-INF, 0};
+	for (int i = 1; i <= n; ++i) {
+		dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
+		dp[i][1] = max(
+			make_pair(dp[i - 1][1].first + a[i], dp[i - 1][1].second),
+			make_pair(dp[i - 1][0].first + a[i] - lambda, dp[i - 1][0].second + 1)
+		);
+	}
+	return max(dp[n][0], dp[n][1]).second >= k;
+};
+
+int main() {
+	scanf("%d%d", &n, &k);
+	for (int i = 1; i <= n; ++i)
+		scanf("%d", a + i);
+	long double lower = 0, upper = INF;
+	while (lower + EPS < upper) {
+		long double mid = (lower + upper) / 2;
+		if (check(mid)) {
+			lower = mid;
+		} else {
+			upper = mid;
+		}
+	}
+	long double lambda = lower;
+	check(lambda);
+	printf("%lld\n", (long long) round(lambda * k + max(dp[n][0], dp[n][1]).first));
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

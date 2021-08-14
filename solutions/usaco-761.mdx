@@ -1,0 +1,90 @@
+---
+id: usaco-761
+source: USACO Bronze 2017 December
+title: Milk Measurement
+author: Ryan Chou
+---
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_measurement_bronze_dec17.html)
+
+## Explanation
+
+Since there are only $3$ cows and $N \leq 1000$, we can sort all of the entries by date and update the selected cow's milk value for each entry.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+sys.stdin = open('measurement.in', 'r')
+sys.stdout = open('measurement.out', 'w')
+
+n = int(input())
+INIT_MILK = 7
+logs = []
+# Every cow starts off producing 7 gallons of milk each.
+bessie, elsie, mildred = INIT_MILK, INIT_MILK, INIT_MILK
+
+"""
+Since all cows produce the same amount of milk,
+they'll all be on the display at the beginning.
+"""
+display = {'b', 'e', 'm'}
+
+"""
+This will store the past display,
+so we can judge whether FJ needs to change his display.
+"""
+tmp_display = {}
+ans = 0
+for _ in range(n):
+	time, name, addition = input().split()
+	logs.append([int(time), name, int(addition)])
+
+logs.sort()
+for i in logs:
+	if i[1] == 'Bessie':
+		bessie += i[2]
+	elif i[1] == 'Elsie':
+		elsie += i[2]
+	elif i[1] == "Mildred":
+		mildred += i[2]
+	# Find the maximum amount of milk that's being produced.
+	curmax = max(bessie, max(elsie, mildred))
+
+	# Duplicate the current display, this will be used to 
+	# see whether the top cows stay the same.
+	tmp_display = display.copy()
+
+	# If Bessie is producing the maximum,
+	if bessie == curmax:
+	# add her to the display.
+		display.add('b')
+	elif 'b' in display:
+		# If she isn't producing the maximum and she's currently 
+		# in the display, remove her.
+		display.remove('b')
+
+	# Same for Elsie.
+	if elsie == curmax:
+		display.add('e')
+	elif 'e' in display:
+		display.remove('e')
+
+	# Same for Mildred.
+	if mildred == curmax:
+		display.add('m')
+	elif 'm' in display:
+		display.remove('m')
+
+	# If the display has changed, FJ needs to update it.
+	if sorted(list(display)) != sorted(list(tmp_display)):
+		ans += 1
+print(ans)
+```
+</PySection>
+
+</LanguageSection>

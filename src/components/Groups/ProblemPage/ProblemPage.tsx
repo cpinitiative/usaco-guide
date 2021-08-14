@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Link, navigate } from 'gatsby';
-import * as React from 'react';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import React from 'react';
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
@@ -26,7 +26,6 @@ export default function ProblemPage(props) {
   const post = usePost(postId);
   const problem = useProblem(problemId);
   const { deleteProblem } = usePostActions(activeGroup.groupData?.id);
-  const notifications = useNotificationSystem();
 
   if (!problem || post.type !== 'assignment' || activeGroup.isLoading) {
     return null;
@@ -78,7 +77,7 @@ export default function ProblemPage(props) {
                                 }
                               );
                             })
-                            .catch(e => notifications.showErrorNotification(e));
+                            .catch(e => toast.error(e.message));
                         }
                       }}
                       className="btn"

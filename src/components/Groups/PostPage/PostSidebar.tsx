@@ -1,8 +1,9 @@
 import { Link } from 'gatsby';
-import * as React from 'react';
+import React, { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
+import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import {
   getTotalPointsFromProblems,
   PostData,
@@ -16,21 +17,13 @@ export default function PostSidebar({
 }: {
   post: PostData;
   isMobile?: boolean;
-}) {
-  const { groupData } = useActiveGroup();
+}): JSX.Element {
   const { problems } = useActivePostProblems();
-  const { firebaseUser } = React.useContext(UserDataContext);
-
-  const leaderboard = groupData.leaderboard;
-  const totalLeaderboardPoints = React.useMemo(() => {
-    if (!leaderboard || !problems) return 0;
-    let sum = 0;
-    problems.forEach(problem => {
-      sum +=
-        leaderboard[post.id]?.[problem.id]?.[firebaseUser.uid]?.bestScore || 0;
-    });
-    return sum;
-  }, [firebaseUser.uid, leaderboard[post.id], post.id, problems]);
+  const activeGroup = useActiveGroup();
+  const userLeaderboardData = useUserLeaderboardData(
+    activeGroup.activeGroupId,
+    activeGroup.activeUserId
+  );
 
   return (
     <>
@@ -50,7 +43,7 @@ export default function PostSidebar({
             />
           </svg>
           <span className="text-green-700 dark:text-green-400 text-sm font-medium">
-            {totalLeaderboardPoints} /{' '}
+            {userLeaderboardData?.[post.id]?.totalPoints ?? 0} /{' '}
             {problems && getTotalPointsFromProblems(problems)} points earned
           </span>
         </div>

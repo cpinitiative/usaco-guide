@@ -1,3 +1,5 @@
+import { graphql, useStaticQuery } from 'gatsby';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import {
   contentAuthors,
@@ -5,111 +7,125 @@ import {
 } from '../../../content/authors/contributors';
 
 export default function ContributorsSection(): JSX.Element {
+  const data = useStaticQuery(graphql`
+    {
+      allFile(filter: { relativePath: { regex: "/^authors/images/.*/" } }) {
+        edges {
+          node {
+            childImageSharp {
+              gatsbyImageData(
+                width: 128
+                height: 128
+                quality: 100
+                transformOptions: { cropFocus: CENTER }
+                layout: FIXED
+              )
+            }
+            name
+          }
+        }
+      }
+    }
+  `);
   return (
-    <div className="relative py-16 bg-white dark:bg-dark-surface overflow-hidden">
-      <div className="hidden lg:block lg:absolute lg:inset-y-0 lg:h-full lg:w-full">
-        <div className="relative h-full text-lg max-w-prose mx-auto">
-          <svg
-            className="absolute top-12 left-full transform translate-x-32"
-            width="404"
-            height="384"
-            fill="none"
-            viewBox="0 0 404 384"
-          >
-            <defs>
-              <pattern
-                id="74b3fd99-0a6f-4271-bef2-e80eeafdf357"
-                x="0"
-                y="0"
-                width="20"
-                height="20"
-                patternUnits="userSpaceOnUse"
-              >
-                <rect
-                  x="0"
-                  y="0"
-                  width="4"
-                  height="4"
-                  className="text-gray-200 dark:text-gray-800"
-                  fill="currentColor"
-                />
-              </pattern>
-            </defs>
-            <rect
-              width="404"
-              height="384"
-              fill="url(#74b3fd99-0a6f-4271-bef2-e80eeafdf357)"
-            />
-          </svg>
-        </div>
-      </div>
-      <div className="relative px-4 sm:px-6 lg:px-8">
-        <div className="text-lg max-w-prose mx-auto">
-          <p className="text-base text-center leading-6 text-blue-600 dark:text-blue-300 font-semibold tracking-wide uppercase">
-            Contributors
-          </p>
-          <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10">
-            By the Community, for the Community.
-          </h1>
-          <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6">
-            Interested in joining the USACO Guide team? We are recruiting
-            Content Authors to help us improve the USACO Guide!{' '}
-            <a
-              href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-600 dark:text-blue-400 font-bold"
-            >
-              Apply here.
-            </a>{' '}
-            If you're in the United States, you can earn volunteer hours too!
-          </p>
-          <p className="text-gray-500 dark:text-gray-400 mb-2">
-            Current Content Authors:
-          </p>
-          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2 mb-6">
-            {contentAuthors.map(author => (
-              <li key={author.name}>
-                <a
-                  href={`https://github.com/${author.githubUsername}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-600 dark:text-blue-400"
-                >
-                  {author.name}
-                </a>{' '}
-                (since {author.sinceDate})
-              </li>
-            ))}
-            <li className="italic">
-              This could be you!{' '}
+    <div className="bg-white dark:bg-dark-surface">
+      <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
+        <div className="space-y-8 sm:space-y-12">
+          <div className="text-lg mx-auto">
+            <p className="text-base text-center leading-6 text-blue-600 dark:text-blue-300 font-semibold tracking-wide uppercase">
+              Contributors
+            </p>
+            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 max-w-prose">
+              By the Community, for the Community.
+            </h1>
+            <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto max-w-prose">
+              Interested in joining the USACO Guide team? We are recruiting
+              Content Authors to help us improve the USACO Guide!{' '}
               <a
                 href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-600 dark:text-blue-400"
+                className="text-blue-600 dark:text-blue-400 font-bold"
               >
                 Apply here.
-              </a>
-            </li>
-          </ul>
-          <p className="text-gray-500 dark:text-gray-400 mb-2">
-            Past Content Authors:
-          </p>
-          <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
-            {pastContentAuthors.map(author => (
-              <li key={author.name}>
-                <a
-                  href={`https://github.com/${author.githubUsername}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-600 dark:text-blue-400"
-                >
-                  {author.name}
-                </a>
-              </li>
-            ))}
-          </ul>
+              </a>{' '}
+              If you're in the United States, you can earn volunteer hours too!
+            </p>
+            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-xl sm:leading-10">
+              Current Content Authors:
+            </h1>
+            <ul className="mb-4 mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
+              {contentAuthors.map(author => (
+                <li key={author.name}>
+                  <div className="space-y-3">
+                    <div className="w-36 h-36 sm:h-28 sm:w-28 md:h-36 md:w-36 xl:h-32 xl:w-32 mx-auto">
+                      <GatsbyImage
+                        image={
+                          (data as any).allFile.edges.find(
+                            x => x.node.name === author.photo
+                          ).node.childImageSharp.gatsbyImageData
+                        }
+                        className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+                        alt={author.name}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm font-medium lg:text-sm">
+                        <a
+                          href={`https://github.com/${author.githubUsername}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 dark:text-blue-400"
+                        >
+                          <h3>{author.name}</h3>
+                        </a>{' '}
+                      </div>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mb-6">
+                        Since {author.sinceDate}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-xl sm:leading-10">
+              Past Content Authors:
+            </h1>
+            <ul className="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6">
+              {pastContentAuthors.map(author => (
+                <li key={author.name}>
+                  <div className="space-y-3">
+                    <div className="w-36 h-36 sm:h-28 sm:w-28 md:h-36 md:w-36 xl:h-32 xl:w-32 mx-auto">
+                      <GatsbyImage
+                        image={
+                          (data as any).allFile.edges.find(
+                            x => x.node.name === author.photo
+                          ).node.childImageSharp.gatsbyImageData
+                        }
+                        className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+                        alt={author.name}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium lg:text-sm">
+                        <a
+                          href={`https://github.com/${author.githubUsername}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 dark:text-blue-400"
+                        >
+                          <h3>{author.name}</h3>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

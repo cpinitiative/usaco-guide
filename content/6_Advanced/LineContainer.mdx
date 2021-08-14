@@ -1,0 +1,210 @@
+---
+id: line-container
+redirects:
+  - /adv/LC
+title: 'LineContainer'
+author: Benjamin Qi, Andi Qu
+description: Convex Containers
+prerequisites:
+  - convex-hull-trick
+  - springboards
+frequency: 1
+---
+
+## Half-Plane Intersection
+
+<Resources>
+	<Resource
+		source="CF"
+		title="Blogewoosh - Half-Plane Intersection w/ Ternary Search"
+		url="61710"
+		starred
+	/>
+	<Resource
+		source="Petr"
+		title="Linear Half-Plane Intersection"
+		url="https://petr-mitrichev.blogspot.com/2016/07/a-half-plane-week.html"
+		starred
+	>
+		Expected linear time!
+	</Resource>
+</Resources>
+
+<IncompleteSection>Example problem + implementation?</IncompleteSection>
+
+<Problems problems="half" />
+
+## LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
+
+<Problems problems="sample" />
+
+<Resources>
+	<Resource
+		source="KACTL"
+		title="LineContainer"
+		url="https://github.com/kth-competitive-programming/kactl/blob/master/content/data-structures/LineContainer.h"
+		starred
+	>
+		source of code that I (Ben) use
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Li-Chao Tree"
+		url="geometry/convex_hull_trick.html"
+		starred
+	>
+		related topic (but not the same)
+	</Resource>
+</Resources>
+
+<!-- 	<Resource
+		source="CF"
+		title="retrograd - Half-Plane Set"
+		url="61710?#comment-457662"
+	>
+		Code
+	</Resource> -->
+
+### Example Problem
+
+<FocusProblem problem="sample_cht" />
+
+#### Analysis
+
+Instead of focusing on the pillars that should be destroyed, let's instead focus
+on the pillars that remain.
+
+The total cost consists of the cost due to height differences plus the cost of
+destroying unused pillars. The latter cost is equal to the cost to destroy all
+pillars minus the cost to destroy the remaining pillars.
+
+Since the cost to destroy all pillars is constant, we can thus turn the problem
+into one about building pillars instead of destroying them!
+
+From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to
+build the bridge so that the last build pillar is pillar $i$.
+
+$dp[1] = -w_1$ and the following recurrence holds:
+
+$$
+\begin{aligned}
+	dp[i] &= \min_{j < i}(dp[j] + (h_j - h_i)^2 - w_i)\\
+		  &= \min_{j < i}(dp[j] + h_j^2 - 2h_ih_j) + h_i^2 - w_i
+\end{aligned}
+$$
+
+Notice how
+
+$$
+dp[j] + h_j^2 - 2h_ih_j
+$$
+
+effectively describes a linear function $y = mx + c$, where $m = -2h_j$,
+$x = h_i$, and $c = dp[j] + h_j^2$
+
+This means that we can use CHT to compute $dp[i]$ efficiently!
+
+However, since $m$ is not monotonic, we can't use linear CHT using a deque, so
+we must settle with $\mathcal{O}(N \log N)$.
+
+<Spoiler title="Code">
+
+I implemented CHT using a `std::set` here, but other implementations using
+things like the Li-Chao tree should work similarly.
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+struct Line {
+	bool type;
+	double x;
+	ll m, c;
+};
+
+bool operator<(Line l1, Line l2) {
+	if (l1.type || l2.type) return l1.x < l2.x;
+	return l1.m > l2.m;
+}
+
+set<Line> cht;
+ll h[100001], w[100001], tot = 0, dp[100001];
+
+bool has_prev(set<Line>::iterator it) {
+	return it != cht.begin();
+}
+bool has_next(set<Line>::iterator it) {
+	return it != cht.end() && next(it) != cht.end();
+}
+
+double intersect(set<Line>::iterator l1, set<Line>::iterator l2) {
+	return (double)(l1->c - l2->c) / (l2->m - l1->m);
+}
+
+void calc_x(set<Line>::iterator it) {
+	if (has_prev(it)) {
+		Line l = *it;
+		l.x = intersect(prev(it), it);
+		cht.insert(cht.erase(it), l);
+	}
+}
+
+bool bad(set<Line>::iterator it) {
+	if (has_next(it) && next(it)->c <= it->c) return true;
+	return (has_prev(it) && has_next(it) &&
+			intersect(prev(it), next(it)) <= intersect(prev(it), it));
+}
+
+void add_line(ll m, ll c) {
+	set<Line>::iterator it;
+
+	it = cht.lower_bound({0, 0, m, c});
+	if (it != cht.end() && it->m == m) {
+		if (it->c <= c) return;
+		cht.erase(it);
+	}
+
+	it = cht.insert({0, 0, m, c}).first;
+	if (bad(it)) cht.erase(it);
+	else {
+		while (has_prev(it) && bad(prev(it))) cht.erase(prev(it));
+		while (has_next(it) && bad(next(it))) cht.erase(next(it));
+
+		if (has_next(it)) calc_x(next(it));
+		calc_x(it);
+	}
+}
+
+ll query(ll h) {
+	Line l = *prev(cht.upper_bound({1, (double)h, 0, 0}));
+	return l.m * h + l.c;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) cin >> h[i];
+	for (int i = 1; i <= n; i++) {
+		cin >> w[i];
+		tot += w[i];
+	}
+
+	dp[1] = -w[1];
+	for (int i = 2; i <= n; i++) {
+		add_line(-2 * h[i - 1], dp[i - 1] + h[i - 1] * h[i - 1]);
+		dp[i] = query(h[i]) - w[i] + h[i] * h[i];
+	}
+
+	cout << tot + dp[n];
+	return 0;
+}
+```
+
+</Spoiler>
+
+## Problems
+
+<Problems problems="lc_probs" />

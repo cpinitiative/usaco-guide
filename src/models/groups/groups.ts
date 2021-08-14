@@ -1,5 +1,4 @@
 import { Timestamp } from 'firebase/firestore';
-import { Leaderboard } from './leaderboard';
 
 export type GroupData = {
   id: string;
@@ -8,7 +7,6 @@ export type GroupData = {
   ownerIds: string[];
   adminIds: string[];
   memberIds: string[];
-  leaderboard: Leaderboard;
   postOrdering: string[];
 };
 

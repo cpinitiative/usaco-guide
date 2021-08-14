@@ -2,9 +2,145 @@
 id: usaco-941
 source: USACO Bronze 2019 Open
 title: Cow Evolution
-author: Jesse Choe
+author: Jesse Choe, Ryan Chou, Chuyang Wang
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
+## Solution 
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
 
-[Video Analysis](https://youtu.be/4YTijr0BbrA)
+## Video Solution
+<Youtube id="4YTijr0BbrA" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<PySection>
+  
+```py
+import sys
+sys.stdin = open('evolution.in', 'r')
+sys.stdout = open('evolution.out', 'w')
+
+n = int(input())
+cows = []
+allchars = set()
+
+for i in range(n):
+	line = input().split()
+	chars = list(line[1:])
+	cows.append(chars)
+	allchars.update(chars)
+
+allchars = list(allchars)
+
+# Check if the tree is evolutionarily proper relative to characteristics a and b
+def scan(a, b):
+	""""
+	If we find a cow which has the characteristic a, 
+	another cow which has the characteristic b, and 
+	another cow with both characteristics a and b, then 
+	the tree isn't evolutionarily proper.
+	
+	Returns a boolean
+	"""
+	onlya, onlyb, both = 0, 0, 0
+	# Iterating through every branch.
+	for i in range(n):
+		hasa, hasb = 0, 0
+		# Iterating through the characteristics of that branch.
+		for j in range(len(cows[i])):
+			if cows[i][j] == allchars[a]:
+				hasa = 1
+			if cows[i][j] == allchars[b]:
+				hasb = 1
+		if hasa and not hasb: 
+			onlya = 1
+		if hasb and not hasa:
+			onlyb = 1
+		if hasa and hasb:
+			both = 1
+	return onlya and onlyb and both
+	
+# Iterating through every pair of characteristics.
+for i in range(len(allchars)):
+	for j in range(i + 1, len(allchars)):
+		if scan(i, j):
+			print('no')
+			sys.exit()
+print('yes')
+```
+</PySection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class CowEvolution {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("evolution.in"));
+		PrintWriter out = new PrintWriter("evolution.out");
+
+		int N = Integer.parseInt(in.readLine());
+		// cows with their characteristics
+		String[][] cows = new String[N][];
+		// a distinct set of characteristics from all cows
+		Set<String> characteristics = new HashSet<String>();
+		for (int i = 0; i < N; i++) {
+			String[] line = in.readLine().split(" ");
+			cows[i] = Arrays.copyOfRange(line, 1, line.length);
+			Collections.addAll(characteristics, cows[i]);
+		}
+		in.close();
+
+		String[] characs = characteristics.toArray(new String[0]);
+		// iterate through every pair of characteristics
+		for (int a = 0; a < characs.length; a++) {
+			for (int b = a + 1; b < characs.length; b++) {
+				if (existsOverlap(characs[a], characs[b], cows)) {
+					out.println("no");
+					out.close();
+					return;
+				}
+			}
+		}
+		out.println("yes");
+		out.close();
+	}
+
+	// tests for each pair of characteristics (a, b),
+	// whether there exists at least three cows with characteristic a, b, and ab.
+	// if it's the case, then there is no proper evolutional tree
+	// as explained in the official editorial
+	private static boolean existsOverlap(String a, String b, String[][] cows) {
+		boolean onlyA = false, onlyB = false, both = false;
+		// interate through every cow
+		for (int i = 0; i < cows.length; i++) {
+			boolean hasA = false, hasB = false;
+			// and their characteristics
+			for (String charac : cows[i]) {
+				if (charac.equals(a))
+					hasA = true;
+				if (charac.equals(b))
+					hasB = true;
+			}
+
+			if (hasA) {
+				if (hasB)
+					both = true;
+				else
+					onlyA = true;
+			} else if (hasB)
+				onlyB = true;
+		}
+
+		return onlyA && onlyB && both;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
