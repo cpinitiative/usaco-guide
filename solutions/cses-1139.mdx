@@ -9,12 +9,12 @@ author: Timothy Gao
 
 Let us consider the Euler Tour of the tree. We flatten the tree into an array, where each node corresponds to a range in this array. Now, we are essentially tasked to find the number of distinct values in a range $N$ times(once for each node).
 
-There are a variety of ways to approach the problem from here.
+There are a variety of ways to approach the problem from here. We could use [small-to-large merging](https://usaco.guide/plat/merging?lang=cpp), but simply using BIT suffices.
 
 <h3>Solution: BIT</h3>
 
 One such solution is with a binary indexed tree. Let us consider iterating through the Euler tour array from left to right. 
-When we consider a node at index $i$ in the Euler tour array, its subtree range will be $[j, i]$, where $j<=i$.
+When we consider a node at index $i$ in the Euler tour array, its subtree range will be $[j, i]$, where $j\leq i$.
 Now, let's focus on a single color. Notice that if there are multiple colors $c$ to the left of a certain index $i$,
 only $c$'s most rightmost occurrence is relevant. This is because any non-rightmost occurrence of $c$
 from $i$ must include the rightmost occurrence of $c$. More formally, 
