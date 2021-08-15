@@ -1,0 +1,63 @@
+---
+id: usaco-891
+source: USACO Bronze 2019 January
+title: Shell Game
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_shell_bronze_jan19.html)
+
+## Explanation
+
+Since $N \leq 100$ and there are only $3$ shells	, we can simulate all possible starting positions of the shell.
+## Implementation
+
+<LanguageSection>
+
+<PySection>
+
+```py
+fin = open('shell.in', 'r')
+
+N = int(fin.readline())
+# matrix containing all sub steps
+swaps = []
+
+for _ in range(N):
+	swaps.append([int(i) - 1 for i in fin.readline().split()])
+
+# Setting up layouts and tracking scores for every iteration
+points1, points2, points3 = 0, 0, 0
+lay1, lay2, lay3 = [1, 0, 0], [0, 1, 0], [0, 0, 1]
+
+
+for i in range(len(swaps)):
+	
+	# if pebble is under first shell
+
+	# swap 
+	lay1[swaps[i][0]], lay1[swaps[i][1]] = lay1[swaps[i][1]], lay1[swaps[i][0]]
+	
+	# if elsie guessed correctly
+	if lay1[swaps[i][2]]:
+		points1 += 1
+
+	# if pebble is under second shell
+	lay2[swaps[i][0]], lay2[swaps[i][1]] = lay2[swaps[i][1]], lay2[swaps[i][0]]
+	
+	if lay2[swaps[i][2]]:
+		points2 += 1
+
+	# if pebble is under third shell
+	lay3[swaps[i][0]], lay3[swaps[i][1]] = lay3[swaps[i][1]], lay3[swaps[i][0]]
+
+	if lay3[swaps[i][2]]:
+		points3 += 1
+
+with open('shell.out', 'w') as fout:
+	fout.write(str(max(points1, points2, points3)))
+```
+
+</PySection>
+
+</LanguageSection>
