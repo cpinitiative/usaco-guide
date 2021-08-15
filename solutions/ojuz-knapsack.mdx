@@ -1,7 +1,7 @@
 ---
 id: ojuz-knapsack
 source: Singapore NOI
-title: knapsack
+title: Knapsack
 author: Kevin Sheng
 ---
 
@@ -10,9 +10,16 @@ author: Kevin Sheng
 Note that the bound on S is rather small and that $1 \leq W_i \leq S$, so we can group the items together by weight.  
 After this, we can implement the knapsack problem on the grouped together items. We also sort items of the same weight by reverse value, as it is always optimal to select the item with greater value among two items of the same weight.  
 
+Note that you only need to consider the most valuable $\lfloor\frac{S}{i}\rfloor$
+items for the set of all objects with weight $i$.
+So in total you will need to consider $\sum_{i=1}^S \lfloor\frac{S}{i}\rfloor$ items.
+This expression approximates to $\mathcal{O}(S \log S)$ as $\ln(1+S) < \sum_{i=1}^S \frac{1}{i} < 1 + \ln(S)$.
+Each item weight takes $\mathcal{O}(S)$ to process, making the total time
+complexity $\mathcal{O}(S^2 \log S)$.
+
 ## Implemention
 
-**Time Complexity:** $\mathcal{O}(S^2 \cdot \log S)$
+**Time Complexity:** $\mathcal{O}(S^2 \log S)$
 
 <LanguageSection>
 <CPPSection>
