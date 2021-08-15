@@ -156,10 +156,8 @@ public class StuckInARut {
 		int[] stoppedLocations = new int[n];
 		Arrays.fill(stoppedLocations, -1);
 		// check every combination of cows
-		for (int[] northCow :
-				northCows) {
-			for (int[] eastCow :
-					eastCows) {
+		for (int[] northCow : northCows) {
+			for (int[] eastCow : eastCows) {
 				/*
 				* The north cows can't move down, and the east cows
 				* can't move backwards, so a north cow's x coordinate must
@@ -206,8 +204,7 @@ public class StuckInARut {
 		// Tracks distance traveled.
 		int[] distances = new int[n];
 		Arrays.fill(distances, -1);
-		for (int[] northCow :
-				northCows) {
+		for (int[] northCow : northCows) {
 			/*
 			* If this array element hasn't been touched, 
 			* the cow never stops and eats forever.
@@ -220,16 +217,14 @@ public class StuckInARut {
 
 		}
 
-		for (int[] eastCow :
-				eastCows) {
+		for (int[] eastCow : eastCows) {
 			if (stoppedLocations[eastCow[2]] != -1) {
 				distances[eastCow[2]] = 
 					stoppedLocations[eastCow[2]] - eastCow[0];
 			}
 		}
 
-		for (int x :
-				distances) {
+		for (int x : distances) {
 			pw.println(x == -1 ? "Infinity" : x);
 		}
 		pw.close();
