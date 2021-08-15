@@ -131,8 +131,8 @@ public class StuckInARut {
 			int y = Integer.parseInt(st.nextToken());
 
 			/*
-			Also append i since we have to return them
-			in the same order they were given to us.
+			* Also append i since we have to return them
+			* in the same order they were given to us.
 			*/
 			if (dir.equals("N")) {
 				northCows.add(new int[]{x, y, i});
@@ -141,14 +141,14 @@ public class StuckInARut {
 			}
 		}
 		/*
-		https:docs.oracle.com/javase/8/docs/api/java/util/Comparator.html
-		sort east cows by comparing x positions
-		(first element in array)
+		* https:docs.oracle.com/javase/8/docs/api/java/util/Comparator.html
+		* sort east cows by comparing x positions
+		* (first element in array)
 		*/
 		eastCows.sort(Comparator.comparingInt(o -> o[1]));
 		/*
-		sort east cows by comparing y positions
-		(second element in array)
+		* sort east cows by comparing y positions
+		* (second element in array)
 		*/
 		northCows.sort(Comparator.comparingInt(o -> o[0]));
 
@@ -161,41 +161,41 @@ public class StuckInARut {
 			for (int[] eastCow :
 					eastCows) {
 				/*
-				The north cows can't move down, and the east cows
-				can't move backwards, so a north cow's x coordinate must
-				be less than an east cow's x coordinate, and a north
-				cow's y coordinate must be less than an east cow's y coordinate
-				for them to collide.
+				* The north cows can't move down, and the east cows
+				* can't move backwards, so a north cow's x coordinate must
+				* be less than an east cow's x coordinate, and a north
+				* cow's y coordinate must be less than an east cow's y coordinate
+				* for them to collide.
 				 */
 				if (northCow[0] > eastCow[0] && northCow[1] < eastCow[1]) {
 					// Distance they travel
 					int northDistance = eastCow[1] - northCow[1];
 					int eastDistance = northCow[0] - eastCow[0];
 					/*
-					If the north cow gets to the meeting place before
-					the east cow and the east cow has not been stopped
-					already,
+					* If the north cow gets to the meeting place before
+					* the east cow and the east cow has not been stopped
+					* already,
 					 */
 					if (northDistance < eastDistance && 
 						stoppedLocations[eastCow[2]] == -1) {
 						/*
-						then we can set the east cow's stopping point.
-						We only save the x coordinate because the y coordinate
-						stays constant.
+						* then we can set the east cow's stopping point.
+						* We only save the x coordinate because the y coordinate
+						* stays constant.
 						*/
 						stoppedLocations[eastCow[2]] = northCow[0];
 					}
 
 					/*
-					If the east cow gets there before, 
-					we can save the north cow's position.
+					* If the east cow gets there before, 
+					* we can save the north cow's position.
 					*/
 					if (northDistance > eastDistance && 
 						stoppedLocations[eastCow[2]] == -1) {
 						stoppedLocations[northCow[2]] = eastCow[1];
 						/*
-						We iterate per north cow, so we can move on to the
-						next north cow if this cow can't move anymore
+						* We iterate per north cow, so we can move on to the
+						* next north cow if this cow can't move anymore
 						*/
 						break;
 					}
@@ -209,11 +209,11 @@ public class StuckInARut {
 		for (int[] northCow :
 				northCows) {
 			/*
-			If this array element hasn't been touched, 
-			the cow never stops and eats forever.
+			* If this array element hasn't been touched, 
+			* the cow never stops and eats forever.
 			*/
 			if (stoppedLocations[northCow[2]] != -1) {
-				// Eaten is (current position - original position)
+				// Eaten is (current position - original position) 
 				distances[northCow[2]] = 
 					stoppedLocations[northCow[2]] - northCow[1];
 			}
