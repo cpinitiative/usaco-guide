@@ -97,6 +97,44 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Jazz {
+	public static final int MAXN = 500;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		char[] inp = io.next().toCharArray();
+
+		// DP[i][j] is the min number of additions to get "jazz" from index i to j
+		int[][] dp = new int[MAXN][MAXN];
+		for (int j = 0; j <= inp.length; j++) {
+			for (int i = 0; i < inp.length - j; i++) {
+				// Base case: duplicate the ith letter.
+				dp[i][i + j] = dp[i + 1][i + j] + 1;
+
+				for (int k = i + 1; k <= i + j; k++) {
+					if (inp[k] == inp[i]) { // Try to match letters i and k.
+						dp[i][i + j] = Math.min(
+							dp[i][i + j],
+							dp[i + 1][k - 1] + dp[k + 1][i + j]
+						);
+					}
+				}
+			}
+		}
+		io.println(dp[0][inp.length - 1]);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Problems
