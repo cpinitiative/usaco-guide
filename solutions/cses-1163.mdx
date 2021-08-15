@@ -99,12 +99,10 @@ import java.util.*;
 
 public class TrafficLights {
 	public static void main(String[] args) throws IOException {
-		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(r.readLine());
-
-		int streetLength = Integer.parseInt(st.nextToken());
-		int lightNum = Integer.parseInt(st.nextToken());
+		Kattio io = new Kattio(); 
+	
+		int streetLength = io.nextInt();
+		int lightNum = io.nextInt();
 
 		// Using an array to read values since we can't get values from sets in Java
 		int[] opArray = new int[lightNum];
@@ -112,10 +110,9 @@ public class TrafficLights {
 		// Initialize the set with beginning and ending values
 		streetPositions.add(0);
 		streetPositions.add(streetLength);
-		st = new StringTokenizer(r.readLine());
 
 		for (int i = 0; i < lightNum; i++) {
-			int nextTrafficLight = Integer.parseInt(st.nextToken());
+			int nextTrafficLight = io.nextInt();
 			opArray[i] = nextTrafficLight;
 			streetPositions.add(nextTrafficLight);
 		}
@@ -145,10 +142,12 @@ public class TrafficLights {
 		for (int i : gapsArray) {
 			sb.append(i).append(" ");
 		}
-		pw.println(sb);
-		pw.close();
+		io.println(sb);
+		io.close();
 	}
+	CodeSnip{Kattio}
 }
+	
 ```
 	
 </JavaSection>
