@@ -132,7 +132,11 @@ export default function ResourcesListItem({
                   e.preventDefault();
                   setCopied(true);
                   navigator.clipboard.writeText(
-                    window.location.href.split(/[?#]/)[0] + '#' + id
+                    window.location.href.split(/[?#]/)[0] +
+                      '?lang=' +
+                      userLang +
+                      '#' +
+                      id
                   );
                 }}
               >

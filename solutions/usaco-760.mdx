@@ -2,16 +2,41 @@
 id: usaco-760
 source: USACO Bronze 2017 December
 title: The Bovine Shuffle
-author: Jesse Choe
+author: Jesse Choe, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
 
-<LanguageSection>
-<CPPSection>
+If the $i$th cow moves to $a_i$ after one shuffle, then the cow at $a_i$ was at $i$ one shuffle ago.
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}(N)$
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("shuffle.in", 'r')
+sys.stdout = open("shuffle.out", 'w')
+
+n = int(input())
+shuffle = list(map(int, input().split()))
+ids = list(map(int, input().split()))
+past_order = [0] * n
+
+# three shuffles.
+for _ in range(3):
+	for i in range(n):
+		past_order[i] = ids[shuffle[i] - 1]
+	ids = past_order.copy()
+	
+for i in past_order:
+	print(i)
+```
+</PySection>
+<CPPSection>
 ```cpp
 // Created by Jesse Choe - Bronze Template
 
