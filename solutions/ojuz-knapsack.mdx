@@ -1,0 +1,79 @@
+---
+id: ojuz-knapsack
+source: ojuz
+title: knapsack
+author: Andrew Cheng
+---
+
+## Solution
+
+### Subtask 1-4
+
+For each item with $k$ copies, we can separate them into $\mathcal{O}(\log k)$ items using the binary representation of $k$.
+Then we can apply a regular 01 knapsack to this problem.
+
+**Time Complexity:**
+$\mathcal{O}(NS \log K_{max})$
+
+### Subtask 5
+
+However, the above method is too slow for $N = 10^5$. To solve subtask 5, we need the following observation:
+
+**for all products with a weight of $i$, we will only need to consider the most valuable $ \lfloor S/i \rfloor $ items of this weight.**
+
+This means that we will only need to consider at most $\sum_{i=1}^{S} \lfloor S/i \rfloor$ items. This expression approximates to $\mathcal{O}(S \log S)$. 
+As each item will take $\mathcal{O}(S)$ time to process using 01 knapsack, the total time complexity after adding in the sorting cost will be
+$\mathcal{O}(S^2 \log S + N \log N)$. 
+
+**Time Complexity:**
+$\mathcal{O}(S^2 \log S + N \log N)$
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using ll = long long;
+#define pb push_back
+using namespace std;
+
+const int maxV = 2e3+5;
+
+vector<ll> d[maxV];
+int S,N;
+ll f[maxV];
+
+int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	cin >> S >> N;
+	for(int i = 1; i <= N; ++i){
+		ll v,w,k; cin >> v >> w >> k;
+		for(int j = 1; j <= k; j <<= 1){
+			if(w * j > S)break;
+			k -= j;
+			d[w*j].pb(v*j);
+		}
+		if(k > 0 && w * k <= S)d[w*k].pb(v*k);
+	}
+	for(int i = 1; i <= S; ++i){
+		if(d[i].size()){ //for each group of objects w/ weight = i
+			sort(d[i].begin(),d[i].end(),greater<int>());
+			//Consider only the first floor(S/W) objects
+			int num = min(S/i,(int)(d[i].size()));
+			for(int j = 0; j < num; ++j){
+				for(int k = S; k >= i; --k){
+					f[k] = max(f[k],f[k-i] + d[i][j]);
+				}
+			}
+		}
+	}
+	cout << f[S] << '\n';
+}
+
+```
+</CPPSection>
+</LanguageSection>
