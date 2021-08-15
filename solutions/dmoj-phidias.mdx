@@ -69,11 +69,11 @@ $\mathcal{O}(NWH)$
 #define s second
 using namespace std;
 
-const int maxW = 600;
-const int maxN = 200;
+const int max_W = 600;
+const int max_N = 200;
 
-pi a[maxN+1];
-int dp[maxW+1][maxW+1];
+pi a[max_N+1];
+int dp[max_W+1][max_W+1]; //dp[i][j] = minimum waste for a rectangle with width i and height j 
 int N,W,H;
 
 int main(){
@@ -83,6 +83,8 @@ int main(){
 	for(int i = 1; i <= N; ++i){
         cin >> a[i].f >> a[i].s;
     }
+
+    //DP Initialization
 	for(int i = 1; i <= W; ++i){
 		for(int j = 1; j <= H; ++j){
 			dp[i][j] = i * j;
@@ -91,10 +93,13 @@ int main(){
 	for(int i = 1; i <= N; ++i){
         dp[a[i].f][a[i].s] = 0;
     }
+    
 	for(int i = 1; i <= W; ++i){
 		for(int j = 1; j <= H; ++j){
 			for(int k = 1; k <= N; ++k){
+                //If the rectangle is not big enough
 				if(i < a[k].f || j < a[k].s)continue;
+                //Divide the larger rectangle into three parts as illustrated previously
 				dp[i][j] = min(dp[i][j], dp[i][j -a[k].s] + dp[i - a[k].f][a[k].s]);
 				dp[i][j] = min(dp[i][j], dp[i - a[k].f][j] + dp[a[k].f][j - a[k].s]);
 			}
