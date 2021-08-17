@@ -7,12 +7,81 @@ author: Ananth Kashyap
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_photo_bronze_jan20.html)
 
+Since $N \leq 1000$, we can simulate every ordering and pick the first valid permutation (since that would be the lexicographical minimum).
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^3)$
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+	freopen("photo.in", "r", stdin);
+	freopen("photo.out", "w", stdout);
+
+	int n; cin >> n;
+	vector<int> order;
+
+	for (int i = 1; i < n; i++) {
+		int a; cin >> a;
+		order.push_back(a);
+	}
+	
+	// count represents the first element.
+	int count = 1;
+	vector<int> ans; ans.push_back(count);
+	
+	while (true) {
+		
+		for (int i = 0; i < order.size(); i++) {
+			// append the next element which follows the order.
+			ans.push_back(order.at(i) - ans.at(ans.size() - 1));
+		}
+
+		bool flag = false;
+
+		for (int i = 0; i < ans.size(); i++) {
+			if (ans.at(i) <= 0 || ans.at(i) > n) {
+				flag = true;
+				break;
+			}
+		}
+
+		if (!(unique(ans.begin(), ans.end()) == ans.end()) || flag) {
+			// permutation invalid, try the next one.
+			ans.clear();
+			count++;
+			ans.push_back(count);
+		}
+
+		else {
+			// permutation valid, print out the vector.
+			for (int i = 0; i < ans.size(); i++) {
+				if (i != ans.size() - 1) {
+					cout << ans.at(i) << " ";
+				}
+				else {
+					cout << ans.at(i);
+				}
+			}
+			break;
+		}
+		
+	}
+}
+
+
+
+```
+</CPPSection>
 <PySection>
 
 ```py
