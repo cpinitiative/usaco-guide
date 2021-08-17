@@ -55,8 +55,8 @@ int main() {
 		// Assign c to cur, where cur is our compressed coordinate for "a".
 		compressed[c] = cur;
 		/*
-			We still need to remember our original endpoints so 
-			we can retransform the compressed coordinates
+		 * We still need to remember our original endpoints so 
+		 * we can retransform the compressed coordinates
 		 */
 		coords.push_back(c);
 		cur++;
@@ -64,8 +64,8 @@ int main() {
 	vi freq(2 * n); // This stores the frequency of a given endpoint.
 	for (int i = 0; i < n; i++) {
 		/*
-			A segment starts from [l*, r*], so we should end the segment 
-			at r* + 1 to ensure that r* is included into the segment.
+		 * A segment starts from [l*, r*], so we should end the segment 
+		 * at r* + 1 to ensure that r* is included into the segment.
 		 */
 		freq[compressed[segments[i].f]]++;
 		freq[compressed[segments[i].s + 1]]--;
@@ -78,8 +78,8 @@ int main() {
 	vector<ll> cnt(n + 1);
 	for (int i = 1; i < coords.size(); i++) {
 		/*
-			We add r - l to the number of points for a given 
-			frequency since we compressed the coordinates.		  
+		 * We add r - l to the number of points for a given 
+		 * frequency since we compressed the coordinates.		  
 		 */			  
 		cnt[freq[i - 1]] += coords[i] - coords[i - 1];
 	}
