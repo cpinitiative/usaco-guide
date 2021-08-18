@@ -8,13 +8,15 @@ author: Ananth Kashyap
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_photo_bronze_jan20.html)
 
 Since $N \leq 1000$, we can simulate every ordering and pick the first valid permutation (since that would be the lexicographical minimum).
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 
 <CPPSection>
+
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 ```cpp 
 #include <iostream>
@@ -46,14 +48,13 @@ int main() {
 
 		bool flag = false;
 		for (int i = 0; i < ans.size(); i++) {
-			// all cows have to be in the range 1 - N.
 			if (ans.at(i) <= 0 || ans.at(i) > n) {
 				flag = true;
 				break;
 			}
 		}
 
-		if (unique(ans.begin(), ans.end()) != ans.end() || flag) {
+		if (!unique(ans.begin(), ans.end() == ans.end()) || flag) {
 			// permutation invalid, try the next one.
 			ans.clear();
 			count++;
@@ -74,6 +75,12 @@ int main() {
 ```
 </CPPSection>
 <PySection>
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<Info title="Time Complexity">
+Since the `in` operator in Python takes $\mathcal{O}(N)$ time, this solution is slower than the C++ version.
+</Info>
 
 ```py
 data = open('photo.in').read().strip().split('\n')
