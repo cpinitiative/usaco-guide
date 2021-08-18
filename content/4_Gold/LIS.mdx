@@ -2,7 +2,7 @@
 id: lis
 title: 'Longest Increasing Subsequence'
 author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
-contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava
+contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Eric Xu
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
@@ -113,26 +113,26 @@ Thus, $L_i[j]$ has to be greater than $L_i[j - 1]$. From that, we can write this
 equation: $L_i[j - 1] \leq a_{j-1} < a_j = L_i[j]$, which is exactly what we
 wanted.
 
-**Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least
-index $j$ (with 0-indexing) such that $L_i[j] \geq A[i + 1]$.
+**Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to $j+1$, where $j$ is the least
+index (with 0-indexing) such that $L_i[j] \geq A[i + 1]$.
 
-**Proof:** Let $j$ be defined as it is in the statement. First of all, since
-$A[i + 1] > L_i[j - 1]$, there is an increasing sequence of length $j$ ending on
-$A[i + 1]$, as we can append $A[i + 1]$ to the end of the sequence of length
-$j$. By Lemma 1, $L_i$ is strictly increasing, so $L_i[k] \geq A[i + 1]$ for all
+**Proof:** Let $j$ be defined as it is in the statement. Since $L_i$ is strictly increasing, 
+$A[i + 1] > L_i[j - 1]$ (with $j>0$). From this, we can see that there is an increasing sequence of length $j+1$ ending on
+$A[i + 1]$, as we can append $A[i + 1]$ to the end of the existing sequence $L_i[j - 1]$, which has length
+$j$. Note that if $j=0$, it means that we cannot append $A[i+1]$ to any existing sequence. In that case, we can simply create a new LIS of length 1, so the lemma still holds. By Lemma 1, $L_i$ is strictly increasing, so $L_i[k] \geq A[i + 1]$ for all
 $k \geq j$. This means that there cannot be a LIS ending at $A[i + 1]$ longer
 than $j + 1$.
 
 **Lemma 3:** At most 1 element differs between $L_i$ and $L_{i + 1}$.
 
-**Proof:** Let $j$ be defined as it was in Lemma 2. We need to set
-$L_{i + 1}[j]$ to be $A[i + 1]$ since $A[i + 1] \leq L_i[j]$.
+**Proof:** Let $j$ be defined as it was in Lemma 2. We can update
+$L_{i + 1}[j]$ to $A[i + 1]$ using Lemma 2 and the fact that $A[i + 1] \leq L_i[j]$.
 $L_{i + 1}[k] = L_i[k]$ for all $k \neq j$, though, since $A[i + 1] > L_i[k]$
 for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ for
 $k > j$.
 
 To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
-list with binary search, or we can use an ordered set (as demonstrated in the
+list with binary search or an ordered set (as demonstrated in the
 solution for PCB).
 
 <LanguageSection>
