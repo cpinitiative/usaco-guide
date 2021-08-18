@@ -29,44 +29,45 @@ using namespace std;
 int main() {
 	freopen("photo.in", "r", stdin);
 	freopen("photo.out", "w", stdout);
-
 	int n; cin >> n;
-	vector<int> order;
+	int order[1000];
 
 	for (int i = 1; i < n; i++) {
 		int a; cin >> a;
-		order.push_back(a);
+		order[i] = a;
 	}
-	
 	// count represents the first element.
 	int count = 1;
-	vector<int> ans{count};
+	int ans[1000];
+	ans[0] = count;
+
 	while (true) {
-		for (int i = 0; i < order.size(); i++) {
+		for (int i = 1	; i < n; i++) {
 			// append the next element that follows the order.
-			ans.push_back(order.at(i) - ans.at(ans.size() - 1));
+			ans[i] = order[i] - ans[i - 1];
 		}
 
 		bool flag = false;
-		for (int i = 0; i < ans.size(); i++) {
-			if (ans.at(i) <= 0 || ans.at(i) > n) {
+		for (int i = 0; i < n; i++) {
+			// all cows have to be in the range 1 - N.
+			if (ans[i] <= 0 || ans[i] > n) {
 				flag = true;
 				break;
 			}
 		}
 
-		if (!unique(ans.begin(), ans.end() == ans.end()) || flag) {
+		if (unique(begin(ans), begin(ans) + n) != begin(ans) + n || flag) {
 			// permutation invalid, try the next one.
-			ans.clear();
+			fill_n(begin(ans), n, 0);
 			count++;
-			ans.push_back(count);
+			ans[0] = count;
 		} else {
 			// permutation valid, print out the vector.
-			for (int i = 0; i < ans.size(); i++) {
-				if (i != ans.size() - 1) {
-					cout << ans.at(i) << " ";
+			for (int i = 0; i < n; i++) {
+				if (i != n - 1) {
+					cout << ans[i] << " ";
 				} else {
-					cout << ans.at(i);
+					cout << ans[i];
 				}
 			}
 			break;
