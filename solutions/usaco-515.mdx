@@ -74,7 +74,8 @@ int main() {
 		for (int j = 0; j < N; j++) {
 			if (i == j) continue;
 			for (int ii = 0; ii < schedule[i].size(); ii++) {
-				next_show[i][j].push_back(find_show_time(schedule[i][ii] + length[i], j));
+				next_show[i][j].push_back(
+				   find_show_time(schedule[i][ii] + length[i], j));
 			}
 		}
 	}
@@ -102,11 +103,13 @@ int main() {
 			if (x != -1) {
 				// subset including j
 				if (dp[subset].first == -1 ||
-					schedule[dp[subset].first][dp[subset].second] + length[dp[subset].first] <
-					schedule[j][x] + length[j]) {
-					dp[subset] = {j, x};
+					schedule[dp[subset].first][dp[subset].second]
+				           + length[dp[subset].first] < schedule[j][x]
+					   + length[j]) {
+					   dp[subset] = {j, x};
 				}
-				if (schedule[dp[subset].first][dp[subset].second] + length[dp[subset].first] >= L) {
+				if (schedule[dp[subset].first][dp[subset].second]
+					+ length[dp[subset].first] >= L) {
 					ans = min(ans, pct(subset));
 				}
 			}
