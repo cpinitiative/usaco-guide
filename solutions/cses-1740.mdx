@@ -1,0 +1,87 @@
+---
+id: cses-1740
+source: CSES
+title: Intersection Points
+author: Dustin Miao
+---
+
+## Solution
+
+Because the problem guarentees that parallel segments do not intersect, all intersections occur between a horizontal and a vertical segment. Thus, it suffices to count the number of intersecting horizontal segments for each vertical segment. 
+
+Let us define an **event** as one of the following cases:
+
+1. The start of a horizontal segment
+2. The end of a horizontal segment
+3. A vertical segment
+
+Because each event is characterized by exactly one x-coordinate, we sort the events by their x-coordinate and sweep over them. Imagine we have a data structure $\mathcal{D}$ that supports the following operations:
+- Insert a number
+- Remove a number
+- Query the number of numbers in a continuous range
+
+The requirements for $\mathcal{D}$ correspond to the types of an event. For an event of type 1, we insert its y-coordinate into $\mathcal{D}$. Likewise, for an event of type 2, we simply remove its y-coordinate from $\mathcal{D}$. For an event of type 3, we query for the number of horizontal segments with y-coordinates in between the bounds of the vertical segment and add this to the final answer. 
+
+One candidate for $\mathcal{D}$ is a [point set range query](https://usaco.guide/gold/PURS?lang=cpp) data structure like a Segment Tree or a BIT. An easier way would be to use an [order-statistics tree](https://codeforces.com/blog/entry/11080), which is conveniently included in GNU. 
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+<LanguageSection>
+
+<CPPSection>
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+// for ordered set
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds;
+template<class K, class V> 
+using ordered_map = tree<K, V, less<K>, rb_tree_tag, tree_order_statistics_node_update>; 
+ 
+template<class K> 
+using ordered_set = ordered_map<K, null_type>; 
+ 
+int N;
+ 
+struct event {
+    int t;      // 1 for x begin, 2 for x end, 3 for y
+    int x;      // x coord for sorting
+    int y0, y1; 
+};
+vector<event> T;
+ 
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    
+    cin >> N;
+    for (int i = 0, x0, y0, x1, y1; i < N; i++) {
+        cin >> x0 >> y0 >> x1 >> y1;
+        if (x0 == x1) 
+            T.push_back({3, x0, min(y0, y1), max(y0, y1)});
+        else {
+            T.push_back({1, x0, y0, -1});
+            T.push_back({2, x1, y0, -1});
+        }
+    } 
+ 
+    sort(T, [](const event &a, const event &b) { 
+        return a.x == b.x ? a.t < b.t : a.x < b.x; 
+    });
+ 
+    ordered_set<int> S;
+    ll ans = 0;
+    for (event &e : T) {
+        if (e.t == 3) 
+            ans += S.order_of_key(e.y1 + 1) - S.order_of_key(e.y0);
+        else if (e.t == 1)
+            S.insert(e.y0);
+        else if (e.t == 2)
+            S.erase(e.y0);
+    }
+    cout << ans << '\n';
+}
+```
+</CPPSection>
+
+</LanguageSection>
