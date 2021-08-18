@@ -13,6 +13,7 @@ import {
   probSources,
 } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+import TakeProblemNotesModal from '../../TakeProblemNotesModal';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
@@ -274,52 +275,50 @@ export default function ProblemsListItem(
   };
 
   return (
-    <div>
-      <StyledProblemRow id={id} isActive={isActive}>
-        {statusCol}
-        {sourceCol}
-        {nameCol}
-        {props.showTagsAndDifficulty &&
-          (divisionTable
-            ? props.showPercent && (
-                <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                  <UsacoTableProgress completed={problem.percentageSolved} />
-                </td>
-              )
-            : difficultyCol)}
-        {props.showTagsAndDifficulty && (
-          <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
-            {problem.tags && problem.tags.length ? (
-              <details className="text-gray-500 dark:text-dark-med-emphasis">
-                <summary>Show Tags</summary>
-                <span className="text-xs">
-                  {problem.tags.sort().join(', ')}
-                </span>
-              </details>
-            ) : null}
-          </td>
-        )}
-        {props.modules && (
-          <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
-            {problem.moduleLink ? (
-              <Anchor
-                href={problem.moduleLink}
-                target="_blank"
-                className="pl-6"
-              >
-                Link
-              </Anchor>
-            ) : (
-              <Tooltip content={`This problem isn't in a module yet.`}>
-                <span className="text-gray-300 dark:text-gray-600 pl-6">
-                  None
-                </span>
-              </Tooltip>
-            )}
-          </td>
-        )}
-        <td className="text-center pr-2 md:pr-3">{more}</td>
-      </StyledProblemRow>
-    </div>
+    <StyledProblemRow id={id} isActive={isActive}>
+      {statusCol}
+      {sourceCol}
+      {nameCol}
+      {props.showTagsAndDifficulty &&
+        (divisionTable
+          ? props.showPercent && (
+              <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                <UsacoTableProgress completed={problem.percentageSolved} />
+              </td>
+            )
+          : difficultyCol)}
+      {props.showTagsAndDifficulty && (
+        <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+          {problem.tags && problem.tags.length ? (
+            <details className="text-gray-500 dark:text-dark-med-emphasis">
+              <summary>Show Tags</summary>
+              <span className="text-xs">{problem.tags.sort().join(', ')}</span>
+            </details>
+          ) : null}
+        </td>
+      )}
+      {props.modules && (
+        <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
+          {problem.moduleLink ? (
+            <Anchor href={problem.moduleLink} target="_blank" className="pl-6">
+              Link
+            </Anchor>
+          ) : (
+            <Tooltip content={`This problem isn't in a module yet.`}>
+              <span className="text-gray-300 dark:text-gray-600 pl-6">
+                None
+              </span>
+            </Tooltip>
+          )}
+        </td>
+      )}
+
+      <TakeProblemNotesModal
+        isOpen={notesModalIsopen}
+        onClose={handleCloseNotesModal}
+      />
+
+      <td className="text-center pr-2 md:pr-3">{more}</td>
+    </StyledProblemRow>
   );
 }
