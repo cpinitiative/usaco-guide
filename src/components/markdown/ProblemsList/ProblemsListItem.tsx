@@ -13,7 +13,6 @@ import {
   probSources,
 } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
-import TakeProblemNotesModal from '../../TakeProblemNotesModal';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
@@ -276,11 +275,6 @@ export default function ProblemsListItem(
 
   return (
     <div>
-      <TakeProblemNotesModal
-        isOpen={notesModalIsopen}
-        onClose={handleCloseNotesModal}
-      />
-
       <StyledProblemRow id={id} isActive={isActive}>
         {statusCol}
         {sourceCol}
