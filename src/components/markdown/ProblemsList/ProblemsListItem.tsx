@@ -212,6 +212,16 @@ export default function ProblemsListItem(
               >
                 {copied ? 'Copied!' : 'Copy Permalink'}
               </button>
+              <button
+                type="button"
+                className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+                onClick={e => {
+                  e.preventDefault();
+                  // open notes modal
+                }}
+              >
+                Take Notes
+              </button>
               {isUsaco(problem.source) && (
                 <a
                   className="!font-normal focus:outline-none block w-full text-left px-4 py-2 text-sm !text-gray-700 dark:!text-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800 hover:!text-gray-900"
