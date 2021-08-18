@@ -13,7 +13,6 @@ import {
   probSources,
 } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
-import TakeProblemNotesModal from '../../TakeProblemNotesModal';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
@@ -26,6 +25,7 @@ type ProblemsListItemProps = {
   isDivisionTable?: boolean; // only if is division table
   modules?: boolean; // only if is division table
   showPercent?: boolean; // only if is division table
+  toggleNoteModal: (arg: boolean) => void;
 };
 
 export const Anchor = styled.a`
@@ -65,6 +65,7 @@ export default function ProblemsListItem(
   const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
+  const toggleNoteModal = props.toggleNoteModal;
   const id = `problem-${problem.uniqueId}`;
 
   const divisionTable = !!props.isDivisionTable;
@@ -219,7 +220,7 @@ export default function ProblemsListItem(
                 onClick={e => {
                   e.preventDefault();
                   // open notes modal
-                  handleShowNotesModal();
+                  toggleNoteModal(true);
                 }}
               >
                 Take Notes
@@ -263,17 +264,6 @@ export default function ProblemsListItem(
     </div>
   );
 
-  const [notesModalIsopen, setNotesModalIsOpen] = React.useState(false);
-
-  const handleShowNotesModal = () => {
-    setNotesModalIsOpen(true);
-  };
-
-  const handleCloseNotesModal = noteState => {
-    // save noteState
-    setNotesModalIsOpen(false);
-  };
-
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -312,11 +302,6 @@ export default function ProblemsListItem(
           )}
         </td>
       )}
-
-      <TakeProblemNotesModal
-        isOpen={notesModalIsopen}
-        onClose={handleCloseNotesModal}
-      />
 
       <td className="text-center pr-2 md:pr-3">{more}</td>
     </StyledProblemRow>

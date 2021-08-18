@@ -5,6 +5,7 @@ import { EditorContext } from '../../../context/EditorContext';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemInfo } from '../../../models/problem';
+import TakeProblemNotesModal from '../../TakeProblemNotesModal';
 import Transition from '../../Transition';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
@@ -72,12 +73,18 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
+  const [showNotesModal, setShowNotesModal] = React.useState(false);
 
   const shouldShowSolvePercentage =
     props.isDivisionTable &&
     props.problems.every(problem => !!problem.percentageSolved);
 
   const { inEditor } = useContext(EditorContext);
+
+  function handleCloseNotesModal() {
+    setShowNotesModal(false);
+  }
+
   return (
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
@@ -118,6 +125,9 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                         isDivisionTable={props.isDivisionTable}
                         modules={props.modules}
                         showPercent={shouldShowSolvePercentage}
+                        toggleNoteModal={status => {
+                          setShowNotesModal(status);
+                        }}
                       />
                     );
                   })}
@@ -134,6 +144,9 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                         }}
                         isDivisionTable={props.isDivisionTable}
                         showPercent={shouldShowSolvePercentage}
+                        toggleNoteModal={status => {
+                          setShowNotesModal(status);
+                        }}
                       />
                     ))}
                     {/* !props.hideSuggestProblemButton */}
@@ -219,6 +232,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           </Transition>
         </div>
       </Transition>
+
+      <TakeProblemNotesModal
+        isOpen={showNotesModal}
+        onClose={handleCloseNotesModal}
+      />
     </div>
   );
 }
