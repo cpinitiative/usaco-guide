@@ -244,16 +244,18 @@ void solve() {
 		cin >> arr[i];
 		sarr[i] = arr[i];
 	}
-	map<int, int> next;  // Map from one value to the value after it in the sorted array
+	// Map from one value to the value after it in the sorted array
+	map<int, int> next;  
 	sort(sarr, sarr + n);
 	for (int i = 0; i < n - 1; i++) {
 		next[sarr[i]] = sarr[i + 1];
 	}
 	next[sarr[n - 1]] = INT32_MAX;  // Ridiculously Large Number
 	int ans = 1;
+
+	// If the previous element in the unsorted array is not the same 
+	// as the previous element in the sorted array, we need at least 1 more segment
 	for (int i = 1; i < n; i++) {
-		// If the previous element in the unsorted array is not the same 
-		// as the previous element in the sorted array, we need at least 1 more segment
 		if (next[arr[i - 1]] != arr[i]) ans++; 
 	}
 	cout << (ans <= k ? "YES" : "NO") << endl;
@@ -302,9 +304,10 @@ public class MoamenSubarrays {
 			next.put(sarr[n - 1], Integer.MAX_VALUE);
 								       
 			int ans = 1;
+			// If the previous element in the unsorted array is not the same 
+			// as the previous element in the sorted array, we need at least 1 more segment
 			for (int i = 1; i < n; i++) {
-				// If the previous element in the unsorted array is not the same 
-				// as the previous element in the sorted array, we need at least 1 more segment
+				
 				if (next.get(arr[i - 1]) != arr[i]) ans++;
 			}
 			System.out.println(ans <= k ? "YES" : "NO");
