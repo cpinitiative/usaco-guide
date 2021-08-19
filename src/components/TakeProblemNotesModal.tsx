@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
 import { EditorState } from 'draft-js';
-import { Editor } from 'draft-js-editor';
+import Editor from 'draft-js-editor';
 import * as React from 'react';
 import { Fragment } from 'react';
 
