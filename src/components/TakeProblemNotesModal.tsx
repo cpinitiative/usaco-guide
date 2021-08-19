@@ -2,8 +2,20 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
 import { EditorState } from 'draft-js';
 import * as React from 'react';
-import { Fragment } from 'react';
-import RichTextEditor from 'react-rte';
+import { Fragment, useMemo, useState } from 'react';
+import { BaseEditor, createEditor } from 'slate';
+import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+
+type CustomElement = { type: 'paragraph'; children: CustomText[] };
+type CustomText = { text: string };
+
+declare module 'slate' {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
 
 export default function TakeProblemNotesModal({
   isOpen,
@@ -16,10 +28,13 @@ export default function TakeProblemNotesModal({
     EditorState.createEmpty()
   );
   const [loading, setLoading] = React.useState(false);
-  const editor = React.useRef(null);
+  const noteEditor = React.useRef(null);
   function focusEditor() {
-    editor.current.focus();
+    noteEditor.current.focus();
   }
+
+  const editor = useMemo(() => withReact(createEditor()), []);
+  const [value, setValue] = useState([]);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -110,21 +125,13 @@ export default function TakeProblemNotesModal({
                 {/*     Description*/}
                 {/*  </p>*/}
                 {/*</div>*/}
-                <div
-                  style={{
-                    border: '1px solid black',
-                    minHeight: '6em',
-                    cursor: 'text',
-                  }}
-                  onClick={focusEditor}
+                <Slate
+                  editor={editor}
+                  value={value}
+                  onChange={newValue => setValue(newValue)}
                 >
-                  <RichTextEditor
-                    ref={editor}
-                    editorState={editorState}
-                    onChange={setEditorState}
-                    placeholder="Write something!"
-                  />
-                </div>
+                  <Editable />
+                </Slate>
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
