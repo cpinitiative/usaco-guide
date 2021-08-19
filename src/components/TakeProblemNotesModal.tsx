@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
-import { EditorState } from 'draft-js';
+import { Editor, EditorState } from 'draft-js';
 import * as React from 'react';
 import { Fragment } from 'react';
 
@@ -98,15 +98,19 @@ export default function TakeProblemNotesModal({
                   as="h3"
                   className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200"
                 >
-                  Sign In
+                  Problem Notes
                 </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Signing in allows you to sync your data with our servers
-                    (highly recommended). If this is your first time signing in,
-                    you will have the option to upload your local data to the
-                    server.
-                  </p>
+                {/*<div className="mt-2">*/}
+                {/*  <p className="text-sm text-gray-500 dark:text-gray-400">*/}
+                {/*     Description*/}
+                {/*  </p>*/}
+                {/*</div>*/}
+                <div>
+                  <Editor
+                    editorState={editorState}
+                    onChange={setEditorState}
+                    placeholder="Write something!"
+                  />
                 </div>
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
