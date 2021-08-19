@@ -1,0 +1,70 @@
+---
+id: cf-977F
+source: CF
+title: Consecutive Subsequence
+author: Sofia Yang
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/59281)
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N\cdot)$
+
+## Implementation
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class conSub {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) {
+			arr[i] = io.nextInt();
+		}
+
+		HashMap<Integer, Integer> dp = new HashMap<>();
+		for (int i = N - 1; i >= 0; i--) {
+			// If the next number exists, we can continue the subsequence.
+			if (dp.containsKey(arr[i] + 1)) {
+				dp.put(arr[i], dp.get(arr[i] + 1) + 1);
+			} else {
+				// Start a new subsequence.
+				dp.put(arr[i], 1);
+			}
+		}
+
+		int idx = 0;
+		int maxLen = 0;
+		for (int i : dp.keySet()) {
+			// Find the largest length.
+			if (dp.get(i) > maxLen) {
+				idx = i;
+				maxLen = dp.get(i);
+			}
+		}
+		io.println(maxLen);
+
+		// Print the indices of the subsequence.
+		for (int i = 0; i < N; i++) {
+			if (arr[i] == idx) {
+				io.print((i + 1) + " ");
+				idx++;
+			}
+		}
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
