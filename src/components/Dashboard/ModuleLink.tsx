@@ -161,12 +161,12 @@ function time_ago(time) {
   return time;
 }
 
-function timeAgoString(time) {
+function timeAgoString(time): string {
   const res = time_ago(time);
   return res && `Updated: ${res}`;
 }
 
-const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
+const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
   const { userProgressOnModules } = useContext(UserDataContext);
   const progress = userProgressOnModules[link.id] || 'Not Started';
 

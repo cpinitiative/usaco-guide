@@ -13,7 +13,7 @@ export default function ButtonGroup({
   onChange: (string) => void;
   labelMap?: { [key: string]: string };
   disabled?: boolean;
-}) {
+}): JSX.Element {
   const leftButtonClasses = 'rounded-l-md';
   const middleButtonClasses = '-ml-px';
   const rightButtonClasses = '-ml-px rounded-r-md';

@@ -1,7 +1,7 @@
 ---
 id: dsu
-title: 'Disjoint Set Union'
-author: Benjamin Qi, Andrew Wang
+title: Disjoint Set Union
+author: Benjamin Qi, Andrew Wang, Nathan Gong
 contributors: Michael Cao
 prerequisites:
   - dfs
@@ -65,7 +65,7 @@ frequency: 3
 
 </Optional>
 
-## Implementations
+## Implementation
 
 As the implementation is quite simple, you may prefer to use this in place of
 DFS for computing connected components.
@@ -95,11 +95,11 @@ struct DSU {
 
 	// get representive component (uses path compression)
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-	
+
 	bool same_set(int a, int b) { return get(a) == get(b); }
-	
+
 	int size(int x) { return -e[get(x)]; }
-	
+
 	bool unite(int x, int y) {  // union by size
 		x = get(x), y = get(y);
 		if (x == y) return false;
@@ -114,11 +114,12 @@ struct DSU {
 <JavaSection>
 
 ```java
-import java.util.Arrays;
+import java.util.*;
 
 public class DisjointSets {
 	int[] parents;  // 0-indexed
 	int[] sizes;
+
 	public DisjointSets(int size) {
 		sizes = new int[size];
 		parents = new int[size];
@@ -147,6 +148,11 @@ public class DisjointSets {
 		}
 		return true;
 	}
+
+	// returns whether two nodes are in the same connected component
+	public boolean connected(int x, int y) {
+		return find(x) == find(y);
+	}
 }
 ```
 
@@ -172,20 +178,35 @@ class DisjointSets:
 		y_root = self.find(y)
 		if x_root == y_root:
 			return False
-		
-		if self.sizes[x_root] < self.sizes(y_root):
+
+		if self.sizes[x_root] < self.sizes[y_root]:
 			x_root, y_root = y_root, x_root
 		self.parents[y_root] = x_root
 		self.sizes[x_root] += self.sizes[y_root]
 		return True
+
+	# returns whether two nodes are in the same connected component
+	def connected(self, x: int, y: int) -> bool:
+		return self.find(x) == self.find(y)
 ```
 
 </PySection>
 </LanguageSection>
 
-## Focus Problem Solution
+## Solution - Focus Problem
 
-<FocusProblem problem="sample" />
+**Time Complexity:** $\mathcal{O}(Q \log ^*N)$
+
+Without union find, we would have to represent the graph with an adjacency list
+and use [flood fill](https://usaco.guide/silver/flood-fill) to calculate
+connected components. This approach takes $\mathcal{O}(NQ)$ time, which is too
+slow, motivating us to use **union find**.
+
+By representing the graph with the union find data structure, we can use its
+methods to both _unite_ vertices and check if two vertices $u_i$ and $v_i$ are
+in the same connected component using only $\mathcal{O}(\log^*N)$ time. This
+reduces the overall time complexity to $\mathcal{O}(Q \log ^*N)$, which is a
+substantial improvement and allows us to pass all test cases.
 
 <LanguageSection>
 <CPPSection>
@@ -200,11 +221,11 @@ struct DSU {
 
 	// get representive component (uses path compression)
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-	
+
 	bool same_set(int a, int b) { return get(a) == get(b); }
-	
+
 	int size(int x) { return -e[get(x)]; }
-	
+
 	bool unite(int x, int y) {  // union by size
 		x = get(x), y = get(y);
 		if (x == y) return false;
@@ -247,12 +268,12 @@ public class Main {
 			Arrays.fill(sizes, 1);
 			Arrays.fill(parents, -1);
 		}
-	
+
 		// finds the "representative" node in a's component
 		public int find(int x) {
 			return parents[x] == -1 ? x : (parents[x] = find(parents[x]));
 		}
-	
+
 		// returns whether the merge changed connectivity
 		public boolean union(int x, int y) {
 			int xRoot = find(x);
@@ -269,33 +290,37 @@ public class Main {
 			}
 			return true;
 		}
+
+		// returns whether two nodes are in the same connected component
+		public boolean connected(int x, int y) {
+			return find(x) == find(y);
+		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int size = Integer.parseInt(st.nextToken());
-		int queryNum = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int size = io.nextInt();
+		int queryNum = io.nextInt();
 
 		DisjointSets dsu = new DisjointSets(size);
 		for (int i = 0; i < queryNum; i++) {
-			st = new StringTokenizer(br.readLine());
-			int type = Integer.parseInt(st.nextToken());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
+			int type = io.nextInt();
+			int u = io.nextInt();
+			int v = io.nextInt();
 			if (type == 0) {
-				dsu.union(a, b);
+				dsu.union(u, v);
 			} else {
-				if (dsu.find(a) == dsu.find(b)) {
-					out.println(1);
+				if (dsu.connected(u, v)) {
+					io.println(1);
 				} else {
-					out.println(0);
+					io.println(0);
 				}
 			}
 		}
-		out.close();
+		io.close();
 	}
+
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -321,23 +346,27 @@ class DisjointSets:
 		y_root = self.find(y)
 		if x_root == y_root:
 			return False
-		
+
 		if self.sizes[x_root] < self.sizes[y_root]:
 			x_root, y_root = y_root, x_root
 		self.parents[y_root] = x_root
 		self.sizes[x_root] += self.sizes[y_root]
 		return True
 
+	# returns whether two nodes are in the same connected component
+	def connected(self, x: int, y: int) -> bool:
+		return self.find(x) == self.find(y)
+
 
 size, query_num = [int(i) for i in input().split()]
 
 dsu = DisjointSets(size)
 for _ in range(query_num):
-	q_type, a, b = [int(i) for i in input().split()]
+	q_type, u, v = [int(i) for i in input().split()]
 	if q_type == 0:
-		dsu.union(a, b)
+		dsu.union(u, v)
 	else:
-		print(1 if dsu.find(a) == dsu.find(b) else 0)
+		print(1 if dsu.connected(u, v) else 0)
 ```
 
 </PySection>

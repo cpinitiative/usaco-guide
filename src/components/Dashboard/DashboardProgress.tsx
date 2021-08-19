@@ -40,13 +40,21 @@ const FancyNumber = ({ number, text, textColor, bgColor }) => (
   </div>
 );
 
+type ProgressCounts = {
+  completed: number;
+  inProgress: number;
+  skipped: number;
+  notStarted: number;
+  total: number;
+};
+
 export default function DashboardProgress({
   completed,
   inProgress,
   skipped,
   notStarted,
   total,
-}) {
+}: ProgressCounts): JSX.Element {
   return (
     <div>
       <div className="grid grid-cols-4 gap-2 mb-4">
@@ -116,9 +124,8 @@ export function DashboardProgressSmall({
   completed,
   inProgress,
   skipped,
-  notStarted,
   total,
-}) {
+}: ProgressCounts): JSX.Element {
   return (
     <ProgressBarSmall
       text={completed + '/' + total}
@@ -129,7 +136,11 @@ export function DashboardProgressSmall({
   );
 }
 
-export function UsacoTableProgress({ completed }) {
+export function UsacoTableProgress({
+  completed,
+}: {
+  completed: number;
+}): JSX.Element {
   let green = completed * 100;
   let yellow = 0;
   let blue = 0;

@@ -1,0 +1,123 @@
+---
+id: tc-submultiplesofn
+source: TopCoder
+title: Submultiples of N
+author: Kevin Sheng
+---
+
+[Official Editorial](https://www.topcoder.com/blog/single-round-match-805-editorials/#:~:text=Submultiplesofn)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <vector>
+#include <string>
+
+using std::vector;
+
+const int MOD = 1e9 + 7;
+
+class SubmultiplesOfN {
+	public:
+		int count(const std::string& numStr, int div) {
+			vector<int> num(numStr.size());
+			for (int i = 0; i < numStr.size(); i++) {
+				num[i] = numStr[i] - '0';  // convert the characters to their numeric values
+			}
+
+			vector<vector<int>> earliest_occ(num.size(), vector<int>(10, -1));
+			for (int i = num.size() - 1; i >= 0; i--) {
+				for (int j = 0; j <= i; j++) {
+					earliest_occ[j][num[i]] = i;
+				}
+			}
+
+			vector<vector<long long>> mod_subseq_num(num.size(), vector<long long>(div));
+			for (int d = 1; d < 10; d++) {
+				if (earliest_occ[0][d] != -1) {
+					mod_subseq_num[earliest_occ[0][d]][d % div] = 1;
+				}
+			}
+			for (int i = 0; i < num.size() - 1; i++) {
+				for (int m = 0; m < div; m++) {
+					for (int d = 0; d < 10; d++) {
+						int goto_ind = earliest_occ[i + 1][d];
+						if (goto_ind == -1) {
+							continue;
+						}
+						int next_m = (10 * m + d) % div;
+						mod_subseq_num[goto_ind][next_m] += mod_subseq_num[i][m];
+						mod_subseq_num[goto_ind][next_m] %= MOD;
+					}
+				}
+			}
+			
+			long long total_unique = 0;
+			for (int i = 0; i < num.size(); i++) {
+				total_unique = (total_unique + mod_subseq_num[i][0]) % MOD;
+			}
+			return (int) total_unique;
+		}
+};
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.Arrays;
+
+public final class SubmultiplesOfN {
+	private static final int MOD = (int) 1e9 + 7;
+	public static int count(String strNum, int div) {
+		int[] num = new int[strNum.length()];
+		for (int i = 0; i < strNum.length(); i++) {
+			num[i] = Character.getNumericValue(strNum.charAt(i));
+			if (num[i] < 0 || num[i] > 9) {
+				throw new IllegalArgumentException("invalid number given for argument num");
+			}
+		}
+
+		
+		int[][] earliestOcc = new int[num.length][10];
+		for (int i = 0; i < num.length; i++) {
+			Arrays.fill(earliestOcc[i], -1);
+		}
+		for (int i = num.length - 1; i >= 0; i--) {
+			for (int j = 0; j <= i; j++) {
+				earliestOcc[j][num[i]] = i;
+			}
+		}
+
+		long[][] modSubseqNum = new long[num.length][div];
+		for (int d = 1; d < 10; d++) {
+			if (earliestOcc[0][d] != -1) {
+				modSubseqNum[earliestOcc[0][d]][d % div] = 1;
+			}
+		}
+		for (int i = 0; i < num.length - 1; i++) {
+			for (int m = 0; m < div; m++) {
+				for (int d = 0; d < 10; d++) {
+					int gotoInd = earliestOcc[i + 1][d];
+					if (gotoInd == -1) {
+						continue;
+					}
+					int nextM = (10 * m + d) % div;
+					modSubseqNum[gotoInd][nextM] += modSubseqNum[i][m];
+					modSubseqNum[gotoInd][nextM] %= MOD;
+				}
+			}
+		}
+
+		long validSubseqs = 0;
+		for (int i = 0; i < num.length; i++) {
+			validSubseqs = (validSubseqs + modSubseqNum[i][0]) % MOD;
+		}
+		return (int) validSubseqs;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

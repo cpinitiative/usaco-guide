@@ -34,7 +34,7 @@ export default function ActiveItems({
 }: {
   type: 'problems' | 'modules';
   items: ActiveItem[];
-}) {
+}): JSX.Element {
   items.sort((a, b) => {
     // sort active modules in order of section
     const strcmp = (x, y) => {
