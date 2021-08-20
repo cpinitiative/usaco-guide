@@ -2,7 +2,7 @@
 id: cf-1560B
 source: CF
 title: Who's Opposite?
-author: Ryan Chou
+author: Ryan Chou, Nathan Gong
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/94009)
@@ -57,9 +57,54 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
+	
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WhosOpposite {
+	static long solve(long a, long b, long c) {
+		long numGroup = Math.abs(a - b) * 2;
+	
+		if (a > numGroup || b > numGroup || c > numGroup) {
+			return -1;
+		} else {
+			long ans = c + Math.abs(a - b);
+			/*
+			* If the answer is greater than the number
+			* of people in the group, then we should 
+			* subtract the number of people between a and b
+			* to find the answer (since this creates a circle).
+			*/
+			if (ans > numGroup) ans -= (Math.abs(a - b) * 2);
+			return ans;
+		}
+	}
+	
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		for (int i = 0; i < n; i++) {
+			long a = io.nextInt();
+			long b = io.nextInt();
+			long c = io.nextInt();
+			io.println(solve(a, b, c));
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 
 <PySection>
+
 ```py
 def solve(a, b, c):
 	num_group = abs(a - b) * 2
@@ -82,5 +127,7 @@ for _ in range(n):
 	a, b, c = map(int, input().split())
 	print(solve(a, b, c))
 ```
+
 </PySection>
+
 </LanguageSection>
