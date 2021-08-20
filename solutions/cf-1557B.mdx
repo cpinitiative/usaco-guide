@@ -1,0 +1,345 @@
+---
+id: cf-1557B
+source: CF
+title: Moamen and k-subarrays
+author: Aadit Ambadkar
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/93703)
+
+## Solution
+
+Consider the minimum number of needed subarrays. If this number is less than or equal to $k$ it is solvable using $k$ subarrays.
+To find the minimum number of subarrays, we can look for a configuration of subarrays where the number of subarrays is minimal. (Remember that the subarrays must be contiguous)
+Specifically, in this configuration, picture a single subarray. The order of the elements inside the subarray never change, so the order of the elements inside the subarray is the same before and after reordering the subarrays.
+This means that if we know the order of the sorted elements beforehand, we can apply a greedy algorithm which tries to maximize the size of the previous subarray.
+
+For example, in the first testcase, the ordering of the elements is like so:
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th>0</th>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>6</td>
+			<td>3</td>
+			<td>4</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+After sorting the list looks like so:
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th>0</th>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>6</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+We may then create a map mapping each element to the element which should be before it:
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>value</th>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+			<th>6</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{map}[\texttt{value}]$</td>
+			<td>$\infty$</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+With this map in mind, we generate the subsets as shown:
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th className="bg-yellow-100 dark:bg-yellow-800">0</th>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>6</td>
+			<td>3</td>
+			<td>4</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th className="bg-yellow-100 dark:bg-yellow-800">0</th>
+			<th className="bg-green-100 dark:bg-green-800">1</th>
+			<th>2</th>
+			<th>3</th>
+			<th>4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>6</td>
+			<td>3</td>
+			<td>4</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th className="bg-yellow-100 dark:bg-yellow-800">0</th>
+			<th className="bg-green-100 dark:bg-green-800">1</th>
+			<th className="bg-green-100 dark:bg-green-800">2</th>
+			<th>3</th>
+			<th>4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>6</td>
+			<td>3</td>
+			<td>4</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th className="bg-yellow-100 dark:bg-yellow-800">0</th>
+			<th className="bg-green-100 dark:bg-green-800">1</th>
+			<th className="bg-green-100 dark:bg-green-800">2</th>
+			<th className="bg-red-100 dark:bg-red-800">3</th>
+			<th>4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>6</td>
+			<td>3</td>
+			<td>4</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>Index:</th>
+			<th className="bg-yellow-100 dark:bg-yellow-800">0</th>
+			<th className="bg-green-100 dark:bg-green-800">1</th>
+			<th className="bg-green-100 dark:bg-green-800">2</th>
+			<th className="bg-red-100 dark:bg-red-800">3</th>
+			<th className="bg-blue-100 dark:bg-blue-800">4</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>6</td>
+			<td>3</td>
+			<td>4</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+Thus, we need 4 subarrays at minimum.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<Spoiler title="Time Complexity Proof">
+Sorting Requires $\mathcal{O}(N\log N)$, and repeated map insertions also require $\mathcal{O}(N\log N)$. Hence the overall time complexity is $\mathcal{O}(N\log N)$.
+</Spoiler>
+	
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+void solve() {
+	int n, k; cin >> n >> k;
+	int arr[(int)1e5 + 5];
+	int sarr[(int)1e5 + 5];
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		sarr[i] = arr[i];
+	}
+	// Map from one value to the value after it in the sorted array
+	map<int, int> next;  
+	sort(sarr, sarr + n);
+	for (int i = 0; i < n - 1; i++) {
+		next[sarr[i]] = sarr[i + 1];
+	}
+	next[sarr[n - 1]] = INT32_MAX;  // Ridiculously Large Number
+	int ans = 1;
+
+	// If the previous element in the unsorted array is not the same 
+	// as the previous element in the sorted array, we need at least 1 more segment
+	for (int i = 1; i < n; i++) {
+		if (next[arr[i - 1]] != arr[i]) ans++; 
+	}
+	cout << (ans <= k ? "YES" : "NO") << endl;
+}
+ 
+int main() {
+	ios::sync_with_stdio(0); 
+	cin.tie(0);
+	int t; 
+	cin >> t; 
+	while (t--) solve();
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class MoamenSubarrays {
+	public static void main (String[] args) throws IOException {
+		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(f.readLine());
+	
+		int testNum = Integer.parseInt(st.nextToken());
+		for (int t = 0; t < testNum; t++) {
+			st = new StringTokenizer(f.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int k = Integer.parseInt(st.nextToken());
+			
+			int[] arr = new int[n];
+			int[] sarr = new int[n];
+	
+			st = new StringTokenizer(f.readLine());
+			for (int i = 0; i < n; i++) {
+				arr[i] = Integer.parseInt(st.nextToken());
+				sarr[i] = arr[i];
+			}
+			Arrays.sort(sarr);
+	
+			// Map from one value to the value after it in the sorted array
+			TreeMap<Integer, Integer> next = new TreeMap<>(); 
+			for (int i = 0; i < n - 1; i++) {
+				next.put(sarr[i], sarr[i + 1]);
+			}
+			next.put(sarr[n - 1], Integer.MAX_VALUE);
+								       
+			int ans = 1;
+			// If the previous element in the unsorted array is not the same 
+			// as the previous element in the sorted array, we need at least 1 more segment
+			for (int i = 1; i < n; i++) {
+				
+				if (next.get(arr[i - 1]) != arr[i]) ans++;
+			}
+			System.out.println(ans <= k ? "YES" : "NO");
+		}
+	}
+}
+
+```
+</JavaSection>
+	
+<PySection>
+```python
+for _ in range(int(input())):
+	n, k = map(int, input().split())
+	arr = list(map(int, input().split()))
+
+	sarr = arr.copy()
+	sarr.sort()
+	
+	after = {}  # Map (dict) from one value to the value after it in the sorted array
+	for i in range(n - 1):
+		after[sarr[i]] = sarr[i + 1]
+	
+	after[sarr[n - 1]] = float('inf')
+	ans = 1
+	for i in range(1, n):
+		if after[arr[i - 1]] != arr[i]:
+			# If the previous element in the unsorted array is not the same 
+			# as the previous element in the sorted array, we need at least 1 more segment
+			ans += 1
+
+	print("YES" if ans <= k else "NO")
+```
+</PySection>
+</LanguageSection>
