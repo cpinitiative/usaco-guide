@@ -1,0 +1,87 @@
+---
+id: cf-1560B
+source: CF
+title: Who's Opposite?
+author: Ryan Chou
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/94009)
+
+## Explanation
+
+Since the number of people left of $a$ and the number of people right of $b$ must be equal, we can find the total number of people in the circle with $abs(a - b) * 2$. 
+
+From here, we can see if this circle is possible with $a, b, c > numGroup$, 
+
+If any of these exceed the number of people in the circle, they can't have a partner. 
+
+Otherwise, we can subtract or add $abs(a - b)$ from $c$ to find the answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+int solve(long a, long b, long c) {
+	long numGroup = abs(a - b) * 2;
+	
+	if (a > numGroup || b > numGroup || c > numGroup) {
+		return -1;
+	} else {
+		long ans = c + abs(a - b);
+		/*
+		* If the answer is greater than the number
+		* of people in the group, then we should 
+		* subtract the number of people between a and b
+		* to find the answer (since this creates a circle).
+		*/
+		if (ans > numGroup) ans -= (abs(a - b) * 2);
+		return ans;
+	}
+
+}
+
+int main() {
+	int n; cin >> n;
+	for (int i = 0; i < n; i++) {
+		long a, b, c; cin >> a >> b >> c;
+		cout << solve(a, b, c) << endl;
+	}
+}
+```
+
+</CPPSection>
+
+<PySection>
+```py
+def solve(a, b, c):
+	num_group = abs(a - b) * 2
+
+	if a > num_group or b > num_group or c > num_group:
+		return -1
+	else:
+		ans = c + abs(a - b)
+		"""
+		If the answer is greater than the number
+		of people in the group, then we should 
+		subtract the number of people between a and b
+		to find the answer (since this creates a circle).
+		"""
+		if ans > num_group: ans -= (abs(a - b) * 2)
+		return ans
+
+n = int(input())
+for _ in range(n):
+	a, b, c = map(int, input().split())
+	print(solve(a, b, c))
+```
+</PySection>
+</LanguageSection>
