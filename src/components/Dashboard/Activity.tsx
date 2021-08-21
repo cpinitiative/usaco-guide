@@ -32,7 +32,6 @@ export default function Activity() {
     ) {
       const newDate = new Date(activity.timestamp);
       newDate.setHours(0, 0, 0, 0);
-      console.log('moduleIDs', moduleIDs);
       if (
         moduleIDs.some(
           m => m[0] === activity.moduleID && m[1] === newDate.getTime()
