@@ -96,6 +96,12 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'August 2021',
     photo: 'aadit',
   },
+  {
+    name: 'Dustin Miao',
+    githubUsername: 'dutinmeow',
+    sinceDate: 'August 2021',
+    photo: 'dustin'
+  }
 ];
 
 export const pastContentAuthors: Contributor[] = [
