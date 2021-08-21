@@ -20,8 +20,9 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] =
-    useState<ResourceProgress>(currentProgress);
+  const [activeProgress, setActiveProgress] = useState<ResourceProgress>(
+    currentProgress
+  );
 
   const icon = (status: ResourceProgress, equal: boolean) => {
     const colorMap: { [key in ResourceProgress]: string } = {
@@ -136,10 +137,12 @@ export default function ResourcestatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
-  const { userProgressOnModules, setModuleProgress } =
-    useContext(UserDataContext);
-  const { userProgressOnResources, setUserProgressOnResources } =
-    useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress } = useContext(
+    UserDataContext
+  );
+  const { userProgressOnResources, setUserProgressOnResources } = useContext(
+    UserDataContext
+  );
   const updateResourceProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
