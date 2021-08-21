@@ -153,19 +153,15 @@ public class CowEvolution {
 			boolean hasA = false, hasB = false;
 			// and their characteristics
 			for (String charac : cows[i]) {
-				if (charac.equals(a))
-					hasA = true;
-				if (charac.equals(b))
-					hasB = true;
+				if (charac.equals(a)) hasA = true;
+				if (charac.equals(b)) hasB = true;
 			}
 
 			if (hasA) {
-				if (hasB)
-					both = true;
-				else
-					onlyA = true;
-			} else if (hasB)
-				onlyB = true;
+				if (hasB) both = true;
+				else onlyA = true;
+			} 
+			else if (hasB) onlyB = true;
 		}
 
 		return onlyA && onlyB && both;
@@ -220,7 +216,7 @@ int main(void)
 			characteristics[i].push_back(s);
 			bool found = false;
 			for (int k = 0; k < all_characteristics.size(); k++)
-				if (all_characteristics[k] == s) found = true;
+			if (all_characteristics[k] == s) found = true;
 			if (!found) all_characteristics.push_back(s);
 		}
 	}
@@ -228,8 +224,8 @@ int main(void)
 	int M = all_characteristics.size();
 	bool ok = true;
 	for (int a = 0; a < M; a++)
-		for (int b = a + 1; b < M; b++)
-			if (crossing(a, b)) ok = false;
+	for (int b = a + 1; b < M; b++)
+		if (crossing(a, b)) ok = false;
  
 	ofstream fout ("evolution.out");
 	if (ok) fout << "yes\n";
