@@ -19,18 +19,18 @@ $\texttt{population1: A } \\
 \texttt{population2: B } \\
 \texttt{population3: A B}$
 
-In other words, we have a population with just trait A, a population with just trait B, and a population with both. If we want to build a tree out of this input, we would need to split on either A or B at the root, but then the remaining two subtrees would both need to have an edge that adds the other characteristic. For example, if the root split into "A" and "not A" branches, then both branches would need to contain an edge that adds the B trait.
+In other words, we have a population with just trait $A$, a population with just trait $B$, and a population with both. If we want to build a tree out of this input, we would need to split on either $A$ or $B$ at the root, but then the remaining two subtrees would both need to have an edge that adds the other characteristic. For example, if the root split into "$A$" and "not $A$" branches, then both branches would need to contain an edge that adds the $B$ trait.
 
 It will help to actually look at things from the viewpoint of the characteristics instead of from the viewpoint of the populations, so let's "transpose" the input above:
 
 $\texttt{A: population1 population3 } \\
 \texttt{B: population2 population3}$
 
-The fundamental problem here is that there are populations in A only, populations in B only, and populations in both A and B. If we look at the Venn diagram for the sets A and B, the picture therefore looks like this:
+The fundamental problem here is that there are populations in $A$ only, populations in $B$ only, and populations in both $A$ and $B$. If we look at the Venn diagram for the sets $A$ and $B$, the picture therefore looks like this:
 
 ![Venn Diagram 1](usaco-941-diagrams/venn_1.png)
 
-Let's call this situation a "crossing" pair of sets. In general, two sets can be disjoint (no overlap), nesting (one inside the other), or crossing (overlap but not nesting). If any two of the characteristics A and B in our instance represent crossing sets as above, then we cannot build a proper tree. On the other hand, if all the characteristics represent sets that don't cross (they are either disjoint or nested), then we get a Venn diagram like this:
+Let's call this situation a "crossing" pair of sets. In general, two sets can be disjoint (no overlap), nesting (one inside the other), or crossing (overlap but not nesting). If any two of the characteristics $A$ and $B$ in our instance represent crossing sets as above, then we cannot build a proper tree. On the other hand, if all the characteristics represent sets that don't cross (they are either disjoint or nested), then we get a Venn diagram like this:
 
 ![Venn Diagram 2](usaco-941-diagrams/venn_2.png)
 
@@ -38,7 +38,7 @@ If you look at this picture carefully, hopefully you see a tree formed by the ne
 
 ![Evolution tree diagram](usaco-914-diagrams/tree_1.png)
 
-A tree like this is easy to convert into a proper evolutionary tree. E.g., if we have three children A, B, and C, we could just make three sequential two-way splits that add the A, B and C characteristics.
+A tree like this is easy to convert into a proper evolutionary tree. E.g., if we have three children $A$, $B$, and $C$, we could just make three sequential two-way splits that add the $A$, $B$ and $C$ characteristics.
 
 So we actually don't need to build a proper evolutionary tree, but we just need to test if any of our characteristics represent crossing sets; if so (and only if so), a proper tree is impossible to build. This leads to probably the easiest solution of the problem, shown in my code below where I build all the sets of populations having each characteristic and then just test if any pair of these sets is crossing.
 
