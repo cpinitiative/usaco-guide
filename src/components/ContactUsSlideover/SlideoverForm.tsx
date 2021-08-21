@@ -35,7 +35,7 @@ export default function SlideoverForm(props: SlideoverProps): JSX.Element {
             <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 transition-opacity" />
           </Transition.Child>
 
-          <div className="fixed inset-y-0 pl-16 max-w-full right-0 flex">
+          <div className="fixed inset-y-0 pl-16 max-w-xl right-0 flex">
             <Transition.Child
               as={Fragment}
               enter="transform transition ease-in-out duration-500 sm:duration-700"

@@ -1,0 +1,178 @@
+---
+id: noi-18-knapsack
+source: Singapore NOI
+title: Knapsack
+author: Kevin Sheng
+---
+
+## Explanation
+
+Note that the bound on $S$ is rather small and that $1 \leq W_i \leq S$, so we can group the items together by weight.  
+After this, we can implement the knapsack problem on the grouped together items. We also sort items of the same weight by reverse value, as it is always optimal to select the item with greater value among two items of the same weight.  
+
+Note that you only need to consider the most valuable $\lfloor\frac{S}{i}\rfloor$
+items for the set of all objects with weight $i$.
+So in total you will need to consider $\sum_{i=1}^S \lfloor\frac{S}{i}\rfloor$ items.
+This expression approximates to $\mathcal{O}(S \log S)$ as $\ln(1+S) < \sum_{i=1}^S \frac{1}{i} < 1 + \ln(S)$.
+Each item weight takes $\mathcal{O}(S)$ to process, making the total time
+complexity $\mathcal{O}(S^2 \log S)$.
+
+## Implemention
+
+**Time Complexity:** $\mathcal{O}(S^2 \log S)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+
+int main() {
+	int limit;
+	int type_num;
+	std::cin >> limit >> type_num;
+	
+	std::map<int, vector<pair<int, int>>> by_weight;
+	for (int t = 0; t < type_num; t++) {
+		int value;
+		int weight;
+		int amt;
+		std::cin >> value >> weight >> amt;
+		if (weight <= limit && amt > 0) {
+			by_weight[weight].push_back({value, amt});
+		}
+	}
+	
+	/*
+	 * best[i][j] contains the most value we can
+	 * get using j weight and the first i weight types
+	 */
+	vector<vector<long long>> best(
+		by_weight.size() + 1, vector<long long>(limit + 1, INT32_MIN)
+	);
+	best[0][0] = 0;
+	int at = 1;
+	for (auto& [w, items] : by_weight) {
+		// sort items in reverse order by value
+		std::sort(items.begin(), items.end(), std::greater<pair<int, int>>());
+		for (int i = 0; i <= limit; i++) {
+			best[at][i] = best[at - 1][i];
+			int copies = 0;
+			int type_at = 0;
+			int curr_used = 0;
+			long long profit = 0;
+			// go through as many items until we run out of items or usable weight
+			while ((copies + 1) * w <= i && type_at < items.size()) {
+				copies++;
+				profit += items[type_at].first;
+				if (best[at - 1][i - copies * w] != INT32_MIN) {
+					best[at][i] = std::max(
+						best[at][i],
+						best[at - 1][i - copies * w] + profit
+					);
+				}
+				
+				curr_used++;
+				if (curr_used == items[type_at].second) {
+					curr_used = 0;
+					type_at++;
+				}
+			}
+		}
+		at++;
+	}
+	cout << *std::max_element(best.back().begin(), best.back().end()) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+Due to Java's (relatively) slow speed, this solution will often TLE on the last subtask.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class knapsack {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int limit = Integer.parseInt(initial.nextToken());
+		int typeNum = Integer.parseInt(initial.nextToken());
+		HashMap<Integer, ArrayList<int[]>> byWeight = new HashMap<>();
+		for (int t = 0; t < typeNum; t++) {
+			StringTokenizer item = new StringTokenizer(read.readLine());
+			int value = Integer.parseInt(item.nextToken());
+			int weight = Integer.parseInt(item.nextToken());
+			int amt = Integer.parseInt(item.nextToken());
+			if (weight <= limit && amt > 0) {
+				if (!byWeight.containsKey(weight)) {
+					byWeight.put(weight, new ArrayList<>());
+				}
+				byWeight.get(weight).add(new int[] {value, amt});
+			}
+		}
+
+		/*
+		 * best[i][j] contains the most value we can
+		 * get using j weight and the first i weight types
+		 */
+		long[][] best = new long[byWeight.size() + 1][limit + 1];
+		for (long[] row : best) {
+			Arrays.fill(row, Integer.MIN_VALUE);
+		}
+		best[0][0] = 0;
+		int at = 1;
+		for (var pair : byWeight.entrySet()) {
+			int w = pair.getKey();
+			ArrayList<int[]> items = pair.getValue();
+			// sort items in reverse order by value
+			items.sort(Comparator.comparingInt(i -> -i[0]));
+			for (int i = 0; i <= limit; i++) {
+				best[at][i] = best[at - 1][i];
+				int copies = 0;
+				int typeAt = 0;
+				int currUsed = 0;
+				long profit = 0;
+				// go through as many items until we run out of items or usable weight
+				while ((copies + 1) * w <= i && typeAt < items.size()) {
+					copies++;
+					profit += items.get(typeAt)[0];
+					if (best[at - 1][i - copies * w] != Integer.MIN_VALUE) {
+						best[at][i] = Math.max(
+							best[at][i],
+							best[at - 1][i - copies * w] + profit
+						);
+					}
+					currUsed++;
+					if (currUsed == items.get(typeAt)[1]) {
+						currUsed = 0;
+						typeAt++;
+					}
+				}
+			}
+			at++;
+		}
+
+		long mostValue = 0;
+		for (int i = 0; i <= limit; i++) {
+			mostValue = Math.max(mostValue, best[byWeight.size()][i]);
+		}
+		System.out.println(mostValue);
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

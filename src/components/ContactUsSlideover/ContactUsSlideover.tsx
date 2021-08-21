@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import useContactFormAction from '../../hooks/useContactFormAction';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
 import SlideoverForm from './SlideoverForm';
@@ -86,10 +87,12 @@ export default function ContactUsSlideover({
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [issueLink, setIssueLink] = useState('');
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [showErrors, setShowErrors] = useState(false);
 
   const markdownContext = useContext(MarkdownLayoutContext);
+  const submitForm = useContactFormAction();
 
   React.useEffect(() => {
     const activeModule = markdownContext?.markdownLayoutInfo;
@@ -127,35 +130,26 @@ export default function ContactUsSlideover({
       name === '' ||
       email === '' ||
       !validateEmail(email) ||
+      topic === '' ||
       message === ''
     ) {
       return;
     }
-
-    const data = new FormData();
-    data.append('name', name);
-    data.append('email', email);
-    data.append('location', location);
-    data.append('url', window.location.href);
-    data.append('lang', userSettings.lang);
-    data.append('topic', topic);
-    data.append('message', message);
-    data.append(
-      '_subject',
-      `[Contact Us] ${topic || 'Other'} ${location ? `- ${location} ` : ''} - ${
-        email || 'Unknown Email'
-      }`
-    );
     setSubmitEnabled(false);
     try {
-      await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {
-        method: 'POST',
-        mode: 'no-cors',
-        body: data,
+      const response = await submitForm({
+        name,
+        email,
+        moduleName: location,
+        url: window.location.href,
+        lang: userSettings.lang,
+        topic,
+        message,
       });
       setTopic('');
       setMessage('');
       setShowSuccess(true);
+      setIssueLink(response.data as string);
     } catch (e) {
       setSubmitEnabled(true);
       alert('Form submission failed: ' + e.message);
@@ -169,7 +163,21 @@ export default function ContactUsSlideover({
       isOpen={isOpen}
       onClose={onClose}
       title="Contact Us"
-      subtitle="Contact us about anything: suggestions, bugs, assistance, and more!"
+      subtitle={
+        <>
+          Contact us about anything: suggestions, bugs, assistance, and more!
+          This will be submitted as a public{' '}
+          <a
+            href="https://github.com/cpinitiative/usaco-guide/issues"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            Github issue
+          </a>
+          .
+        </>
+      }
       footerButtons={
         <>
           <span className="inline-flex rounded-md shadow-sm">
@@ -218,7 +226,7 @@ export default function ContactUsSlideover({
         {showSuccess && (
           <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="flex-grow-0">
                 <svg
                   className="h-5 w-5 text-green-400"
                   viewBox="0 0 20 20"
@@ -237,8 +245,16 @@ export default function ContactUsSlideover({
                 </h3>
                 <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
                   <p>
-                    We will try our best to respond (if one is needed) within a
-                    week.
+                    Your message has been submitted as an issue in our GitHub
+                    repository. You can track the issue here:{' '}
+                    <a
+                      href={issueLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-semibold hover:underline"
+                    >
+                      {issueLink}
+                    </a>
                   </p>
                   {/* <p className="pt-2">
                     For urgent requests, please feel free to email{' '}
@@ -258,7 +274,7 @@ export default function ContactUsSlideover({
         {!showSuccess && (
           <div className="space-y-6 pb-5">
             <Field
-              label="Name"
+              label="Name (will not be shown publicly)"
               id="contact_name"
               value={name}
               onChange={e => setName(e.target.value)}
@@ -267,7 +283,7 @@ export default function ContactUsSlideover({
               }
             />
             <Field
-              label="Email"
+              label="Email (will not be shown publicly)"
               id="contact_email"
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -282,7 +298,7 @@ export default function ContactUsSlideover({
               }
             />
             <Field
-              label="Module (If Applicable)"
+              label="Module (if applicable)"
               id="contact_module"
               value={location}
               onChange={e => setLocation(e.target.value)}
@@ -316,6 +332,11 @@ export default function ContactUsSlideover({
                     </div>
                   </div>
                 ))}
+                {showErrors && topic === '' && (
+                  <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                    This field is required.
+                  </p>
+                )}
               </div>
             </fieldset>
             <div className="space-y-1">
@@ -323,7 +344,7 @@ export default function ContactUsSlideover({
                 htmlFor="contact_message"
                 className="block text-sm font-medium leading-5 text-gray-900 dark:text-dark-high-emphasis"
               >
-                Message
+                Message (markdown is supported)
               </label>
               <div className="relative rounded-md shadow-sm">
                 <textarea
