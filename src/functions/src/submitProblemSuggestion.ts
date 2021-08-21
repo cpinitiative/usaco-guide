@@ -10,12 +10,12 @@ import {
 } from '../../models/problem';
 
 const problemSuggestionReviewers = {
-  general: ['thecodingwizard'],
-  bronze: ['caoash'],
-  silver: ['andrewwangva'],
-  gold: ['caoash'],
-  plat: ['nchn27'],
-  adv: ['bqi343'],
+  general: [],
+  bronze: [],
+  silver: [],
+  gold: [],
+  plat: [],
+  adv: [],
 };
 
 if (admin.apps.length === 0) {

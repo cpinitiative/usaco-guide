@@ -30,7 +30,7 @@ written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
   explanations to the module.
 - **Description**: _Required_. A short description of the module, similar to
   what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has
-  in their syllabus. Markdown/Latex does not work in the description field.
+  in their syllabus. Markdown/LaTeX does not work in the description field.
 - **Prerequisites**: _Optional_. Any prerequisites for this module. If you want
   to reference a module as a prerequisite, list it as a module ID. A link will
   be auto-generated.
@@ -336,6 +336,7 @@ problem. Make sure to also update the `kind` of the `solutionMetadata` to
 `'internal'` for any associated problems. We assume that if there is an internal
 solution, we should use it; therefore, the build will throw an error if there is
 an internal solution but the `solutionMetadata`'s `kind` isn't set to
+
 `'internal'`. The [Adding Solutions module](/general/adding-solution) describes
 how to add a new solution.
 
@@ -433,16 +434,40 @@ can be hovered over.
 ### Code Blocks and Code Snippets
 
 Code blocks are separated by three backticks, just like in normal markdown.
-Additionally, we have support for collapsible code snippets:
+Additionally, we have support for collapsible code snippets. An example for how
+to use them can be found below:
 
-```cpp
+**With title**
+
+```
+Before
 //BeginCodeSnip{Optional Code Snippet Title}
-My snippet code goes here
+Code snippet goes here
 You can indent the entire BeginCodeSnip block (including the BeginCodeSnip line) and it will function as expected
 //EndCodeSnip
+After
+```
 
-Another example of a snippet without titles:
+```cpp
+Before
+//BeginCodeSnip{Optional Code Snippet Title}
+Code snippet goes here
+You can indent the entire BeginCodeSnip block (including the BeginCodeSnip line) and it will function as expected
+//EndCodeSnip
+After
+```
 
+**Without title:**
+
+```
+//BeginCodeSnip{}
+Code snippet goes here
+//EndCodeSnip
+
+Other code goes here
+```
+
+```cpp
 //BeginCodeSnip{}
 My snippet code goes here
 //EndCodeSnip
