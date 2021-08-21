@@ -36,9 +36,15 @@ public class BovineGenomics {
 			line.append(io.next());
 
 			for (int y = 0; y < m; y++) {
-				// using base 4 will assign a unique
-				// number to every string
-				// A -> 1, C -> 4, T -> 16, G -> 64
+				/*
+				 * using base 4 will assign a unique
+				 * number to every string, we set to 
+				 * 0, 1, 2, and 3 here but we will multiply later on 
+				 * and get // A -> 1, C -> 4, T -> 16, G -> 64 so that there
+				 * is a unique base 4 number for every combination
+				 */ 
+	
+				// A -> 0, C -> 1, T -> 2, G -> 3
 				if (line.charAt(y) == 'A') {
 					spotted[x][y] = 0;
 				}
@@ -60,7 +66,6 @@ public class BovineGenomics {
 			line.append(io.next());
 
 			for (int y = 0; y < m; y++) {
-				// A -> 1, C -> 4, T -> 16, G -> 64
 				if (line.charAt(y) == 'A') {
 					plain[x][y] = 0;
 				}
@@ -91,6 +96,7 @@ public class BovineGenomics {
 					boolean add = true;
 					for (int x = 0; x < n; x++) {
 						// get the base 4 number
+						// A -> 1, C -> 4, T -> 16, G -> 64
 						int total = plain[x][a] * 16 + plain[x][b] * 4 + plain[x][c] * 1;
 						if (visited[total]) {  // FJ can't explain with this combination of 3, so don't add
 							add = false;
