@@ -7,7 +7,7 @@ author: Vivian Han
 
 ## Explanation
 
-Suppose that early in the hike there is a rest stop with tastiness $c$, but later there is a rest stop with tastiness $C$ where $C>c$. Then, it is never optimal for Bessie to spend any time at the first rest stop with tastiness $c$. If she did, she could spend the same amount of time at the later rest stop instead and earn more tastiness units; she would still never be behind Farmer John. So, the only rest stops which Bessie might stop at are the ones which have more tastiness than any subsequent rest stops.
+Suppose that early in the hike there is a rest stop with tastiness $A$, but later there is a rest stop with tastiness $B$ where $B>A$. Then, it is never optimal for Bessie to spend any time at the first rest stop with tastiness $A$. If she did, she could spend the same amount of time at the later rest stop instead and earn more tastiness units; she would still never be behind Farmer John. So, the only rest stops which Bessie might stop at are the ones which have more tastiness than any subsequent rest stops.
 
 We can find these "right-maximal" rest stops in a single right-to-left (or end-to-start) scan, keeping track of the largest tastiness seen so far. If the current stop exceeds the largest value seen so far, it is "right-maximal".
 
@@ -28,14 +28,14 @@ To see correctness of this greedy algorithm, suppose Bessie did not spend as lon
 #include <fstream>
 using namespace std;
 
-int32_t trailLen, stopNum, fRate, bRate;
 const int maxTrailLen = 100000;
-int32_t x[maxTrailLen];
-int32_t c[maxTrailLen];
+int x[maxTrailLen]; // x: position of each stop
+int c[maxTrailLen]; // c: tastiness value of each stop
 bool good[maxTrailLen];
 
 int main()
 {
+	int trailLen, stopNum, fRate, bRate;
 	ifstream in("reststops.in");
 	in >> trailLen >> stopNum >> fRate >> bRate;
 	// scan in rest stop data
@@ -44,7 +44,7 @@ int main()
 	}
 
 	// find all "best" stops
-	int32_t max = 0;
+	int max = 0;
 	for (int i = stopNum-1; i >= 0; i--) {
 		good[i] = false;
 		if (c[i] > max) { // there are no stops after stop i that are "better"
@@ -83,7 +83,9 @@ import java.io.*;
 
 public class RestStops {
 
-	static int[] x, c;
+	static int[] x, c; 
+	// x: position of each stop
+	// c: tastiness value of each stop
 	static boolean[] good; // tracks whether each stop is right-maximal or not
 
 	public static void main(String[] args) {
