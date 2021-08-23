@@ -57,7 +57,7 @@ const CopyButton = styled.button`
   background-color: hsla(240, 20%, 88%, 1);
   position: absolute;
   top: 0px;
-  right: var(--right-offset);
+  right: calc(var(--right-offset) + var(--left-offset));
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
@@ -66,6 +66,14 @@ const CopyButton = styled.button`
   /* copy from tailwind defaults */
   &:hover {
     background-color: hsla(240, 20%, 75%, 1);
+  }
+  /* -mx-4 sm:-mx-6 md:mx-0 */
+  --left-offset: -4 * 0.25rem;
+  @media (min-width: 640px) {
+    --left-offset: -6 * 0.25rem;
+  }
+  @media (min-width: 768px) {
+    --left-offset: 0rem;
   }
 `;
 

@@ -2,12 +2,10 @@
 id: ac-DivGame
 source: AtCoder Beginner Contest
 title: Div Game
-author: Maggie Liu
+author: Maggie Liu, Mohammad Nour Massri
 ---
 
 [Official Analysis](https://img.atcoder.jp/abc169/editorial.pdf#page=12)
-
-**Time Complexity:** $\mathcal{O}(\sqrt{N})$
 
 We can prime factorize $N$ as $N = p_1^{e_1} \cdot p_2^{e_2} \cdots p_k^{e_k}$.
 To achieve the maximum number of operations, for each prime $p_i$, we should
@@ -17,11 +15,14 @@ As we prime factorize and find the exponent of each prime, we can decrement the
 exponent by $1$, then $2$, and so on, as long as the exponent stays nonnegative.
 Each time we decrement the exponent, we can add $1$ to the answer.
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\sqrt{N})$
+
 <LanguageSection>
 
 <CPPSection>
 
-## Implementation
 
 ```cpp
 #include <iostream>
@@ -58,5 +59,27 @@ int main()
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+n = int(input())
+ans = 0
+# prime factorization for n
+for p in range(2, int(n ** 0.5)):
+	e = 0
+	while n % p == 0:
+		n /= p
+		e += 1
+	# here p^e divides n 
+	i = 1
+	# taking p^1 then p^2 and so on until e < i
+	while e >= i:
+		e -= i
+		ans += 1
+		i += 1
+    
+ans += n > 1  # if n > 1 then it is a prime factor with e = 1
+print(ans)
+```
+</PySection>
 </LanguageSection>

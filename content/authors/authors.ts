@@ -76,7 +76,7 @@ export const Authors: Author[] = [
     photo: 'siyong1',
     name: 'Siyong Huang',
     title: 'Core Team',
-    blurb: 'Siyong Huang is a three-time USACO Finalist.',
+    blurb: 'Siyong Huang is an IOI gold medalist and three-time USACO Finalist.',
     codeforces: 'frodakcin',
     github: 'frodakcin',
   },
@@ -98,7 +98,7 @@ export const Authors: Author[] = [
       'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
     codeforces: 'a.wang',
     github: 'andrewwangva',
-    email: 'andrewwangva@gmail.com',
+    email: 'andrewwangva.biz@gmail.com',
   },
   {
     photo: "Dong",

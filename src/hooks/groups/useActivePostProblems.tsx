@@ -33,8 +33,8 @@ export function ActivePostProblemsProvider({
 
   useFirebaseApp(
     firebaseApp => {
-      setProblems(null);
       setIsLoading(true);
+      setProblems(null);
       if (activePostId === null || !firebaseUser?.uid) {
         return;
       }

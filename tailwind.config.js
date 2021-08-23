@@ -16,7 +16,7 @@ module.exports = {
         cyan: colors.cyan,
         teal: colors.teal,
         orange: colors.orange,
-        'light-blue': colors.lightBlue,
+        'light-blue': colors.sky,
       },
       boxShadow: {
         xs: '0 0 0 1px rgba(0, 0, 0, 0.05)',
@@ -96,19 +96,6 @@ module.exports = {
       }),
     },
   },
-  variants: {
-    extend: {
-      backgroundColor: ['group-focus', 'active', 'disabled', 'checked'],
-      borderColor: ['group-focus'],
-      boxShadow: ['group-focus'],
-      opacity: ['group-focus'],
-      textColor: ['group-focus', 'active', 'disabled'],
-      textDecoration: ['group-focus'],
-      display: ['dark'],
-      backgroundOpacity: ['dark'],
-      typography: ['dark'],
-    },
-  },
   darkMode: 'class',
   plugins: [
     require('@tailwindcss/forms'),
@@ -118,12 +105,8 @@ module.exports = {
   purge: {
     safelist: ['dark'],
     content: [
-      './src/**/*.js',
-      './src/**/*.ts',
-      './src/**/*.tsx',
-      './content/**/*.mdx',
-      './content/**/*.ts',
-      './content/**/*.tsx',
+      './src/**/*.{js,ts,tsx}',
+      './content/**/*.{mdx,ts,tsx}',
       './gatsby-browser.tsx',
       './.storybook/preview.js',
     ],

@@ -29,9 +29,7 @@ Default.args = {
         title="The Tortoise and the Hare (Floyd's Algorithm)"
         url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"
       />
-      <Resource source="CP2" title="5.7 - Cycle-Finding">
-        {' '}
-      </Resource>
+      <Resource source="CP2" title="5.7 - Cycle-Finding" />
       <Resource
         source="VisuAlgo"
         title="Floyd's Algorithm Visualization"

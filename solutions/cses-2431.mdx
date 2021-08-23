@@ -1,0 +1,219 @@
+---
+id: cses-2431
+source: CSES
+title: Digit Queries
+author: Nathan Gong
+---
+
+## Explanation
+
+_Note that this is very tricky for a bronze problem!_
+
+Since $k$ can be as big as $10^{18}$, there is no way we can approach this
+problem through brute force. Instead, we'll need to work out an algorithm that
+can answer queries in logarithmic time.
+
+Let's group numbers by how many digits they have. An observation we can make is
+that for any $n \geq 1$, there are $9 \cdot 10^{n-1}$ numbers in the group with
+numbers of length $n$. Additionally, for each group, the total count of digits
+from all of the group's numbers combined is $n$ times how many numbers are in
+the group. For instance:
+
+- Length $1$ numbers: $1\dots 9\rightarrow$ $9$ numbers $\rightarrow1\cdot9=9$
+  digits total
+- Length $2$ numbers: $10\dots 99\rightarrow$ $90$ numbers
+  $\rightarrow2\cdot90=180$ digits total
+- Length $3$ numbers: $100\dots 999\rightarrow$ $900$ numbers
+  $\rightarrow3\cdot900=2700$ digits total
+- And so on...
+
+To find which group the number that contains the $k$-th digit is in, we can
+iterate through groups until the sum of the total number of digits from all the
+groups we've processed becomes greater than or equal to $k$. In other words, we
+continue increasing the number of groups we look at (starting from $1$-digit
+numbers) until the following is true:
+
+$$
+\sum^{\text{\# of groups}}_{n=1}{n\cdot9\cdot10^{n-1}\geq k}
+$$
+
+Once the condition becomes true, we know that the $k$-th digit must fall into
+the last group used in the sum. We can now calculate the $k$-th digit's position
+in the group by subtracting $k$ by the total number of digits from all groups
+before it. We'll call this relative position $j$:
+
+$$
+j=k-1-\sum^{\text{\# of groups}-1}_{n=1}{n\cdot9\cdot10^{n-1}}
+$$
+
+Note that we subtract $1$ from the result in order to make $j$ $0$-based (which
+makes it more convenient to solve the rest of the problem). For example, if
+$j=0$, that would mean the $k$-th digit is the first digit in the group. If
+$j=100$, that would mean the $k$-th digit is the $99$-th digit in the group,
+etc. From there, we can divide $j$ by $n$ (the length of the numbers in the
+group), which gives us the position of the number that contains the $k$-th digit
+within the group (also $0$-based). Similarly as before, a position of $0$ means
+that the number is the first number in the group, and a position of $100$ means
+that the number is the $99$-th number in the group.
+
+To calculate the exact number the $k$-th digit is in, we can add the position of
+the number within the group (which we just found) to the value of the first 
+number of the group, which is just $10^{n-1}$ (you can find this pattern from the 
+beginning example). Now, all that's left is finding the position of the $k$-th 
+digit within the number that it's in. We can calculate that by taking 
+$j \bmod n$, which finds the remainder of $j$ when divided by $n$. For example, 
+let's look at the first $12$ digits in the group with length $3$ numbers:
+
+<center>
+
+| Digit Sequence | $1$ | $0$ | $0$ | $1$ | $0$ | $1$ | $1$ | $0$ | $2$ | $1$ | $0$  | $3$  |
+| -------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- |
+| **Position**   | $0$ | $1$ | $2$ | $3$ | $4$ | $5$ | $6$ | $7$ | $8$ | $9$ | $10$ | $11$ |
+
+</center>
+
+As you can see, for each $3$-digit number in the digit sequence, the first digit
+is always at a position that's a multiple of $3$, meaning the position modulo
+$3$ equals $0$. Similarly, the second digit in each number is always at a
+position that's $1$ plus a multiple of $3$, meaning its position modulo $3$
+equals $1$. Finally, the third digit in each number is always $2$ plus a
+multiple of $3$, meaning that its position modulo $3$ equals $2$. This pattern
+extends for numbers of all sizes, and it is thus why we can use the modulo
+operator to determine the $k$-th digit's $0$-based position within the number
+it's inside.
+
+Now, we can calculate our answer by converting the number that the $k$-th digit
+is in into a string and indexing it at the position we've just found.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(q\log{k})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+// Returns 10 to the power of "exp"
+// Not using pow() because it can be inaccurate for large powers
+ll pow10(int exp) {
+	ll product = 1;
+	for (int i = 0; i < exp; i++) {
+		product *= 10;
+	}
+	return product;
+}
+
+int main() {
+	int q;
+	ll k;
+	cin >> q;
+
+	for (int i = 0; i < q; i++) {
+		cin >> k;
+		/*
+		 * Subtract k by sizes of groups until k becomes smaller than the size
+		 * of the current group. This produces the same effect as summing group
+		 * sizes until k becomes less than or equal to the sum. By the time the
+		 * while loop ends, k - 1 will equal j.
+		 */
+		int n = 1;
+		while (k > n * 9 * pow10(n - 1)) {
+			k -= n * 9 * pow10(n - 1);
+			n++;
+		}
+
+		// The exact number the kth digit is in
+		long num = (k - 1) / n + pow10(n - 1);
+		// The location in num of the kth digit
+		int loc = (int) ((k - 1) % n);
+		// Determine answer by converting num to string and indexing at loc
+		cout << to_string(num)[loc] << endl;
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class DigitQueries {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int q = io.nextInt();
+		for (int i = 0; i < q; i++) {
+			long k = io.nextLong();
+			/*
+			 * Subtract k by sizes of groups until k becomes smaller than the
+			 * size of the current group. This produces the same effect as
+			 * summing group sizes until k becomes less than or equal to the
+			 * sum. By the time the while loop ends, k - 1 will equal j.
+			 */
+			int n = 1;
+			while (k > n * 9 * pow10(n - 1)) {
+				k -= n * 9 * pow10(n - 1);
+				n++;
+			}
+
+			// The exact number the kth digit is in
+			long num = (k - 1) / n + pow10(n - 1);
+			// The location in num of the kth digit
+			int loc = (int) ((k - 1) % n);
+			// Determine answer by converting num to string and indexing at loc
+			io.println(Long.toString(num).charAt(loc));
+		}
+		io.close();
+	}
+
+	// Returns 10 to the power of "exp"
+	// Not using Math.pow() because it can be inaccurate for large powers
+	static long pow10(int exp) {
+		long product = 1;
+		for (int i = 0; i < exp; i++) {
+			product *= 10;
+		}
+		return product;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+for _ in range(int(input())):
+	k = int(input())
+	"""
+	Subtract k by sizes of groups until k becomes smaller than the size of the
+	current group. This produces the same effect as summing group sizes until
+	k becomes less than or equal to the sum. By the time the while loop ends,
+	k - 1 will equal j.
+	"""
+	n = 1
+	while k > n * 9 * 10 ** (n - 1):
+		k -= n * 9 * 10 ** (n - 1)
+		n += 1
+
+	# The exact number the kth digit is in
+	num = (k - 1) // n + 10 ** (n - 1)
+	# The location in num of the kth digit
+	loc = (k - 1) % n
+	# Determine answer by converting num to string and indexing at loc
+	print(str(num)[loc])
+```
+
+</PySection>
+
+</LanguageSection>
