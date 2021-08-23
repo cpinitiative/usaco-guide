@@ -153,15 +153,24 @@ public class CowEvolution {
 			boolean hasA = false, hasB = false;
 			// and their characteristics
 			for (String charac : cows[i]) {
-				if (charac.equals(a)) hasA = true;
-				if (charac.equals(b)) hasB = true;
+				if (charac.equals(a)) {
+					hasA = true;
+				}
+				if (charac.equals(b)) {
+					hasB = true;
+				}
 			}
 
 			if (hasA) {
-				if (hasB) both = true;
-				else onlyA = true;
-			} 
-			else if (hasB) onlyB = true;
+				if (hasB) {
+					both = true;
+				}
+				else {
+					onlyA = true;
+				}
+			} else if (hasB) {
+				onlyB = true;
+			}
 		}
 
 		return onlyA && onlyB && both;
@@ -193,12 +202,20 @@ bool crossing(int a, int b)
 		vector<string> &v = characteristics[i];
 		bool has_a = false, has_b = false;
 		for (int j = 0; j < v.size(); j++) {
-			if (v[j] == all_characteristics[a]) has_a = true;
-			if (v[j] == all_characteristics[b]) has_b = true;
+			if (v[j] == all_characteristics[a]) {
+				has_a = true;
+			}
+			if (v[j] == all_characteristics[b]) {
+				has_b = true;
+			}
 		}
-		if (has_a && has_b) AB++;
-		else if (has_a) A++;
-		else if (has_b) B++;
+		if (has_a && has_b) {
+			AB++;
+		} else if (has_a) {
+			A++;
+		} else if (has_b) {
+			B++;
+		}
 	}
 	return AB > 0 && A > 0 && B > 0;
 }
@@ -216,8 +233,12 @@ int main(void)
 			characteristics[i].push_back(s);
 			bool found = false;
 			for (int k = 0; k < all_characteristics.size(); k++)
-			if (all_characteristics[k] == s) found = true;
-			if (!found) all_characteristics.push_back(s);
+				if (all_characteristics[k] == s) {
+					found = true;
+				}
+				if (!found) {
+					all_characteristics.push_back(s);
+				}
 		}
 	}
 	
@@ -225,11 +246,12 @@ int main(void)
 	bool ok = true;
 	for (int a = 0; a < M; a++)
 	for (int b = a + 1; b < M; b++)
-		if (crossing(a, b)) ok = false;
+		if (crossing(a, b)) {
+			ok = false;
+		}
  
 	ofstream fout ("evolution.out");
-	if (ok) fout << "yes\n";
-	else fout << "no\n";
+	fout << (ok ? "yes\n" : "no\n");
 }
 ```
 
