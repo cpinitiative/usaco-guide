@@ -15,8 +15,10 @@ export default function Activity() {
     setStartDate(d);
   }, []);
 
-  const { userProgressOnModulesActivity, userProgressOnProblemsActivity } =
-    useContext(UserDataContext);
+  const {
+    userProgressOnModulesActivity,
+    userProgressOnProblemsActivity,
+  } = useContext(UserDataContext);
 
   if (!startDate) return null;
 
