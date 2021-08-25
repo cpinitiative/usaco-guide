@@ -1,0 +1,127 @@
+---
+id: cf-977F
+source: CF
+title: Consecutive Subsequence
+author: Sofia Yang, Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/59281)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ConsecutiveSubsequence {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) {
+			arr[i] = io.nextInt();
+		}
+
+		Map<Integer, Integer> dp = new HashMap<>();
+		for (int i = N - 1; i >= 0; i--) {
+			// If the next number exists, we can continue the subsequence.
+			if (dp.containsKey(arr[i] + 1)) {
+				dp.put(arr[i], dp.get(arr[i] + 1) + 1);
+			} else {
+				// If not we can just start a new subsequence.
+				dp.put(arr[i], 1);
+			}
+		}
+
+		int idx = 0;
+		int maxLen = 0;
+		for (int i : dp.keySet()) {
+			// Find the largest length.
+			if (dp.get(i) > maxLen) {
+				idx = i;
+				maxLen = dp.get(i);
+			}
+		}
+		io.println(maxLen);
+
+		for (int i = 0; i < N; i++) {
+			if (arr[i] == idx) {
+				io.print((i + 1) + " ");
+				idx++;
+			}
+		}
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+ 
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+ 
+int main() {
+	int size;
+	std::cin >> size;
+	vector<int> arr(size);
+	for (int& i : arr) {
+		std::cin >> i;
+	}
+ 
+	int best_len = 1;
+	// given the ending limit, stores the longest consecutive sequence
+	std::map<int, pair<int, int>> ending_max_len;
+	std::map<int, int> come_from;
+	for (int i = 0; i < size; i++) {
+		int n = arr[i];
+		if (!ending_max_len.count(n - 1)) {
+			ending_max_len[n] = {1, i};
+			come_from[i] = -1;
+		} else {
+			int new_len = ending_max_len[n - 1].first + 1;
+			if (!ending_max_len.count(n) || ending_max_len[n].first < new_len) {
+				ending_max_len[n] = {new_len, i};
+				best_len = std::max(best_len, new_len);
+				come_from[i] = ending_max_len[n - 1].second;
+			}
+		}
+	}
+ 
+	int at_ind = -1;
+	for (const pair<int, pair<int, int>>& end : ending_max_len) {
+		if (end.second.first == best_len) {
+			at_ind = end.second.second;
+		}
+	}
+	vector<int> reverse_inds;
+	for (int i = 0; i < best_len; i++) {
+		reverse_inds.push_back(at_ind);
+		at_ind = come_from[at_ind];
+	}
+ 
+	cout << best_len << endl;
+	for (int i = best_len - 1; i > 0; i--) {
+		cout << reverse_inds[i] + 1 << ' ';
+	}
+	cout << reverse_inds.front() + 1 << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
