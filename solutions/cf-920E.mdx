@@ -1,0 +1,223 @@
+---
+id: cf-920E
+source: CF
+title: Connected Components?
+author: Daniel Qiu
+---
+
+
+[Official Editorial](https://codeforces.com/blog/entry/57516)
+
+
+## Solution 1 - Faster DFS
+
+Doing a standard DFS would be too slow. There can be at most $\frac{N(N-1)}2$ edges, which would result in $\mathcal{O}(N^2)$ time complexity. To speed it up, we have to do two optimizations.
+
+### Optimization 1
+
+We can store whether edges are non-existent using an array of hashsets instead of an adjacency list. This way we can find if there is no edge between two nodes in $\mathcal{O}(1)$ time. Using an adjacency matrix would take too much
+memory.
+
+### Optimization 2
+
+Rather than using a standard boolean array to check if a node has not yet been visited, we can use a set of unvisited nodes. This way we only loop through the nodes that have not been visited yet and can find the next unvisited node in $\mathcal{O}(\log N)$. We need to use ```upper_bound``` to find
+the next unvisited node after a DFS - an iterator may be invalidated due to the
+node it is pointing to being destroyed when we remove it from the unvisited set.
+
+### Proof
+
+We know that a node can either be skipped or visited. We also know that once a
+node is visited, it cannot be revisited. Therefore we will always visit $N$ nodes once. We also know that the sum of skips can be at most $2M$ (each
+non-edge skips two nodes). Therefore the overall complexity will be
+$O(N\log N+M)$.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N\log N+M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 200000;
+unordered_set<int> adj[MAX_N];
+set<int> unvis; // the set of nodes that have not been visited
+int sz[MAX_N]; // sz[i] = size of the ith connected component
+int cur = 0; // current amount of groups
+void dfs(int x) {
+	sz[cur]++;
+	auto it = unvis.begin();
+	while (it != unvis.end()) {
+		// if there is no edge between x and *it, skip
+		if (adj[x].count(*it)) {
+			it++;
+		} else {
+			// there is a edge between last and x
+			int last = *it;
+			// note it = unvis.erase(it) doesn't work here because it could be erased later
+			unvis.erase(it);
+			dfs(last);
+			// find the node after last
+			it = unvis.upper_bound(last);
+		}
+	}
+}
+int main() {
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].insert(b);
+		adj[b].insert(a);
+	}
+	for (int i = 0; i < n; i++) {
+		unvis.insert(i);
+	}
+	for (int i = 0; i < n; i++) {
+		auto it = unvis.find(i);
+		if (it != unvis.end()) {
+			unvis.erase(it);
+			dfs(i);
+			cur++;
+		}
+	}
+	cout << cur << endl;
+	sort(sz, sz + cur);
+	for (int i = 0; i < cur; i++) {
+		cout << sz[i] << ' ';
+	}
+	cout << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+## Solution 2 - Selective DFS
+
+Let $N =$ the number of nodes in the graph, $n =$ an arbitrary node, and $\texttt{degree}(n)=$ the number of neighboring nodes (nodes that are directly connected to $n$). 
+
+
+We know that the size of the component containing node $n$ must be at least
+$\texttt{degree}(n)+1$ ($\texttt{degree}(n)$ doesn't include $n$).
+
+If $\texttt{degree}(n_1)+1>\dfrac{N}2$ and $\texttt{degree}(n_2)+1>\dfrac{N}2$, 
+$n_1$ and $n_2$ must intersect, otherwise the graph must have more than $N$ nodes.  
+
+Given this, we can just put all nodes with $\texttt{degree} +1 > \dfrac{N}2$
+into the same group in $O(N)$ time.
+
+Now we can just process all nodes with $\texttt{degree}+1\le\dfrac{N}2$, with DFS.
+
+### Proof
+
+We can handle all nodes with $\texttt{degree}+1>\dfrac{N}2$ in $O(N)$ time. 
+
+Let there be $N'$ nodes that have at most $\dfrac{N}2 -1 ≈ \dfrac{N}2$ edges. Then, they also must have at least $\dfrac{N}2$ non-edges. Therefore, there must be at least $\dfrac{N'\cdot\dfrac{N}2}2 = \dfrac{N\cdot N'}4$ non-edges (each edge accounts for two nodes).
+
+The input states that the number of edges is less than $2 \cdot 10^5$, therefore $\dfrac{N \cdot N'}4\le2\cdot10^5$, therefore $N \cdot N' \le8\cdot10^5$. 
+
+Doing a simple DFS and checking whether two nodes intersect would be $\mathcal{O}(NN'+ \log M)$, which would fit under the time limit. The $\log M$ comes from processing input. Therefore, this runs under the time limit.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NN'+ \log M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using vi = vector<int>;
+#define pb push_back
+
+const int MAX_N = 200000;
+unordered_set<int> adj[MAX_N];
+// group[i] = the group of the ith node
+// group[i] = 0 if the ith node hasn't been assigned a group yet
+int group[MAX_N];
+vi currentcomponent; // the nodes in the current component
+// curgroup = the group of the current component
+// curgroup is always either cur or 1
+int curgroup;
+bool vis[MAX_N];
+int n, m;
+// sz[i] = size of group i
+int sz[MAX_N];
+
+void dfs (int x) {
+	// if x can be reached, it is part of the current component
+	currentcomponent.pb(x);
+	vis[x] = true;
+	for (int i = 0; i < n; i++) {
+		// if there is no, non-edge between x and i, i can be visited
+		if (x != i && adj[x].find(i) == adj[x].end()) {
+			// if we can visit a node from group one every node in
+			// the current component can visit group 1 and we don't
+			// have to create a new component
+			if (group[i] == 1) {
+				curgroup = 1;
+				continue;
+			} else {
+				if (!vis[i]) {
+					dfs(i);
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].insert(b);
+		adj[b].insert(a);
+	}
+	int cur = 1; // current number of groups + 1
+	for (int i = 0; i < n; i++) {
+		// if any two nodes have degree+1 > n/2, they are part of the same component
+		if (n - adj[i].size() > n / 2) {
+			group[i] = 1; // assign ith node to component 1
+			sz[1]++; // increase the size of component 1
+			
+			cur = 2; // there is at least one group
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		if (!group[i]) {
+			// curgroup's default is cur
+			curgroup = cur;
+			dfs(i);
+			for (int j : currentcomponent) {
+				group[j] = curgroup;
+				sz[curgroup]++;
+			}
+			currentcomponent.clear();
+			// if a new group has been created, e.g. curgroup = cur, increase cur
+			if (curgroup == cur) {
+				cur++;
+			}
+		}
+	}
+	cout << cur - 1 << endl;
+	sort(sz, sz + cur);
+	for (int i = 1; i < cur; i++) {
+		cout << sz[i] << ' ';
+	}
+	cout << endl;
+}
+
+```
+</CPPSection>
+
+</LanguageSection>
