@@ -13,12 +13,6 @@ export const contentAuthors: Contributor[] = [
     photo: 'jeffrey',
   },
   {
-    name: 'Neo Wang',
-    githubUsername: 'nwatx',
-    sinceDate: 'Jan 2021',
-    photo: 'neo',
-  },
-  {
     name: 'Jesse Choe',
     githubUsername: 'jessechoe10',
     sinceDate: 'Feb 2021',
