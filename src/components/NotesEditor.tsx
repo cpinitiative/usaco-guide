@@ -3,9 +3,8 @@
 import React, { Component } from 'react';
 import ReactQuill from 'react-quill';
 
-type MyProps = { val: number };
 type MyState = { text: string };
-class NotesEditor extends Component<MyProps, MyState> {
+class NotesEditor extends Component<any, MyState> {
   constructor(props) {
     super(props);
     this.state = {
