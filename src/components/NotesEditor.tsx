@@ -38,10 +38,10 @@ function NotesEditor() {
 
   console.log(`reached before render`);
 
-  const isBrowser = typeof window !== 'undefined';
-  if (!isBrowser) {
+  if (typeof window === 'undefined' || !window.document) {
     return;
   }
+
   return <ReactQuill theme="snow" formats={formats} modules={modules} />;
 }
 
