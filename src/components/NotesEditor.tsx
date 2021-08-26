@@ -1,9 +1,11 @@
 //https://codepen.io/FLCcrakers/pen/JZVeZE?editors=0111
 
+import Loadable from '@loadable/component';
 import React, { Component } from 'react';
 import ReactQuill from 'react-quill';
 
 type MyState = { text: string };
+
 class NotesEditor extends Component<any, MyState> {
   constructor(props) {
     super(props);
@@ -56,5 +58,5 @@ class NotesEditor extends Component<any, MyState> {
     );
   }
 }
-
-export default NotesEditor;
+const Editor = Loadable(() => import('./NotesEditor'));
+export default Editor;
