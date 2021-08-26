@@ -28,7 +28,7 @@ const formats = [
 
 function NotesEditor() {
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.document) {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
       console.log(
         `bailing out of the useeffect. Going to continue to render??`
       );
@@ -38,7 +38,7 @@ function NotesEditor() {
 
   console.log(`reached before render`);
 
-  if (typeof window === 'undefined' || !window.document) {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
     return;
   }
 
