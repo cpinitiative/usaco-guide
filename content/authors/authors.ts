@@ -94,9 +94,10 @@ export const Authors: Author[] = [
     photo: 'neo',
     name: "Neo Wang",
     title: "Content Manager",
-    blurb: "[fill this in]",
+    blurb: "Neo Wang is a competitive programmer who also writes contests, creates websites, and competes in robotics.",
     github: "nwatx",
-    youtube: "https://www.youtube.com/c/RandomCoder",
+    website: "https://nwatx.me",
+    email: "neowangatx@gmail.com",
   },
   {
     photo: 'benq',
