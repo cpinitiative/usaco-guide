@@ -1,21 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
-import { EditorState } from 'draft-js';
-import * as React from 'react';
-import { Fragment, useMemo, useState } from 'react';
-import { BaseEditor, createEditor } from 'slate';
-import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-
-type CustomElement = { type: 'paragraph'; children: CustomText[] };
-type CustomText = { text: string };
-
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
+import React, { Fragment } from 'react';
+import NotesEditor from './NotesEditor';
 
 export default function TakeProblemNotesModal({
   isOpen,
@@ -24,57 +10,7 @@ export default function TakeProblemNotesModal({
   isOpen: boolean;
   onClose: any;
 }) {
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createEmpty()
-  );
-  const [loading, setLoading] = React.useState(false);
-  const noteEditor = React.useRef(null);
-  function focusEditor() {
-    noteEditor.current.focus();
-  }
-
-  const editor = useMemo(() => withReact(createEditor()), []);
-  const [value, setValue] = useState([]);
-
-  React.useEffect(() => {
-    if (isOpen) {
-      setLoading(false);
-    }
-  }, [isOpen]);
-
   return (
-    // <Transition
-    //   show={isOpen}
-    //   className="fixed z-30 inset-0 h-full overflow-y-auto"
-    // >
-    //   <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
-    //     <button
-    //       type="button"
-    //       onClick={() => onClose(editorState)} // pass in the current problem note state
-    //       className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none"
-    //     >
-    //       <span className="sr-only">Close</span>
-    //       {/* Heroicon name: x */}
-    //       <svg
-    //         className="h-6 w-6"
-    //         xmlns="http://www.w3.org/2000/svg"
-    //         fill="none"
-    //         viewBox="0 0 24 24"
-    //         stroke="currentColor"
-    //         aria-hidden="true"
-    //       >
-    //         <path
-    //           strokeLinecap="round"
-    //           strokeLinejoin="round"
-    //           strokeWidth="2"
-    //           d="M6 18L18 6M6 6l12 12"
-    //         />
-    //       </svg>
-    //     </button>
-    //   </div>
-    //   Take some notes!
-    // </Transition>
-
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
         as="div"
@@ -125,13 +61,8 @@ export default function TakeProblemNotesModal({
                 {/*     Description*/}
                 {/*  </p>*/}
                 {/*</div>*/}
-                <Slate
-                  editor={editor}
-                  value={value}
-                  onChange={newValue => setValue(newValue)}
-                >
-                  <Editable />
-                </Slate>
+
+                <NotesEditor />
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
