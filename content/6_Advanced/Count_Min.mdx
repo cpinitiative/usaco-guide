@@ -3,37 +3,212 @@ id: count-min
 redirects:
   - /adv/CntMin
 title: 'Counting Minimums with Segment Tree'
-author: Benjamin Qi
+author: Benjamin Qi, Dustin Miao
 prerequisites:
   - RURQ
-description: "?"
+description: "Query for the minimum and number of occurences of minimum in a range"
 frequency: 0
 ---
 
-## Implementation
+<FocusProblem problem = "sam" />
 
-segment tree that keeps track of minimum and # of minimums
+<Resources>
+	<Resource source = "cp-algo" title = "Finding max and number of occurences" url = "data_structures/segment_tree.html#toc-tgt-8" starred />
+</Resources>
 
-## Application - Rectangle Union
+We can use a normal segment tree to handle range queries, but slightly modify each node and the merge operation. Let each node be a pair of values $(\texttt{val}, \texttt{cnt})$, where $\texttt{val}$ is the minimum value and $\texttt{cnt}$ is the number occurences of the minimum value. 
 
-<FocusProblem problem="sam" />
+If node $c$ has two children $a$ and $b$, then
+- if $a.\texttt{val} < b.\texttt{val}$, then $c = a$
+- if $a.\texttt{val} > b.\texttt{val}$, then $c = b$
+- if $a.\texttt{val} = b.\texttt{val}$, then $c = \{a.\texttt{val}, a.\texttt{cnt} + b.\texttt{cnt}\}$
 
-<Spoiler title="Hint">
+### Implementation
 
-For each $x$-coordinate, count the number of squares that are covered by
-**none** of the input rectangles.
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MAXN = 200005;
+const int INF = numeric_limits<int>::infinity();
+
+struct node {
+	int val = INF, cnt = 1;
+} T[2 * MAXN];
+
+// combines two segment tree nodes
+node merge(node a, node b) {
+	if (a.val < b.val)
+		return a;
+	if (a.val > b.val)
+		return b;
+	return {a.val, a.cnt + b.cnt};
+}
+
+// updates the ith value to v
+void update(int i, int v) {
+	for (T[i += MAXN] = {v, 1}; i > 1; i >>= 1)
+		T[i >> 1] = merge(T[i], T[i ^ 1]);
+}
+
+// returns the minimum and occurences between indices l and r
+node query(int l, int r) {
+	node res;
+	for (l += MAXN, r += MAXN + 1; l < r; l >>= 1, r >>= 1) {
+		if (l & 1) res = merge(res, T[l++]);
+		if (r & 1) res = merge(res, T[--r]);
+	}
+	return res;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Solution - Area of Rectangles
+
+<Spoiler title = "Hint 1">
+
+Count the number of squares that are covered by **none** of the input rectangles.
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+Sort the rectangles by x-coordinate and run a sweep-line.
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
-<IncompleteSection>
+We can use techniques introduced in [Range Queries with Sweep Line](https://usaco.guide/plat/range-sweep?lang=cpp)
 
-describe
+We sweep from left to right over the $x$-coordinates, maintaining two events for each rectangle: one for the left boundry and one for the right boundry. Maintain a Lazy Segment Tree over the $y$-coordinates. 
+- When we run into a left boundry of some rectangle with $y$-coordinates $(y_0, y_1)$, increase each index $i \in [y_0, y_1]$ by 1
+- When we run into a right boundry of some rectangle with $y$-coordinates $(y_0, y_1)$, decrease each index $i \in [y_0, y_1]$ by 1
 
-</IncompleteSection>
+Then, for each $x$, we simply need to count the number of non-zero indices which corresponds to indices that are covered by at least one rectangle. How can we do this?
+
+Instead of counting the area covered by at least one rectangle, let's count the amount of space covered by no rectangles. We can subtract this amount from the total number of indices to get the value we want. 
+
+We can use a Segment Tree that counts the number of occurences of the minimum value. Because the minimum value is at least zero (there can't be a negative number of rectangles at a position) the number of uncovered squares is equal to the number of squares with value 0.
 
 </Spoiler>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <array>
+#include <vector>
+using namespace std;
+ 
+using ll = long long;
+using pll = pair<ll, ll>;
+ 
+#define FF first
+#define SS second
+#define MP make_pair
+#define PB push_back
+ 
+struct event {
+	int t, x, y0, y1;
+ 
+	bool operator<(const event& e) { return x < e.x; }
+};
+ 
+int N;
+vector<event> E;
+array<pll, 8000005> T;
+array<int, 8000005> L;
+ 
+pll merge(pll a, pll b) {
+	if (a.FF < b.FF)
+		return a;
+	if (a.FF > b.FF)
+		return b;
+	return MP(a.FF, a.SS + b.SS);
+}
+ 
+void pushdown(int t) {
+	if (L[t]) {
+		T[t << 1].FF += L[t];
+		L[t << 1] += L[t];
+		T[t << 1 | 1].FF += L[t];
+		L[t << 1 | 1] += L[t];
+		L[t] = 0;
+	}
+}
+ 
+void build(int t = 1, int tl = 0, int tr = 2000000) {
+	if (tl == tr) {
+		T[t] = MP(0, 1);
+		return;
+	}
+	int tm = (tl + tr) >> 1;
+	build(t << 1, tl, tm);
+	build(t << 1 | 1, tm + 1, tr);
+	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+}
+ 
+void update(int l, int r, int v, int t = 1, int tl = 0, int tr = 2000000) {
+	if (r < tl || tr < l)
+		return;
+	if (l <= tl && tr <= r) {
+		T[t].FF += v;
+		L[t] += v;
+		return;
+	}
+	if (tl != tr)
+		pushdown(t);
+	int tm = (tl + tr) >> 1;
+	update(l, r, v, t << 1, tl, tm);
+	update(l, r, v, t << 1 | 1, tm + 1, tr);
+	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+}
+ 
+ll query() {
+	return 2000001 - T[1].SS;
+} 
+ 
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+ 
+	cin >> N; 
+	build();
+	E.reserve(2 * N);
+	for (int i = 0; i < N; i++) {
+		int x0, y0, x1, y1;
+		cin >> x0 >> y0 >> x1 >> y1;
+		x0 += 1000000, y0 += 1000000;
+		x1 += 1000000, y1 += 1000000;
+		E.PB({1, x0, y0, y1 - 1});
+		E.PB({-1, x1, y0, y1 - 1});
+	}
+	
+	sort(E.begin(), E.end());
+	
+	ll ans = 0;
+	update(E[0].y0, E[0].y1, 1);
+	for (int i = 1; i < 2 * N; i++) {
+		ans += query() * (E[i].x - E[i - 1].x);
+		update(E[i].y0, E[i].y1, E[i].t);
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 
 ## Problems
 
