@@ -26,10 +26,9 @@ This leads us to the solution: for each cow, count the number of cows that can p
 #include<bits/stdc++.h>
 using namespace std;
 
-int n, cows[100], reach[100], to[100];
-
 // reach[i] is how many cows pass the ball to cow i
 // to[i] is where does cow i pass the ball
+int n, cows[100], reach[100], to[100];
 
 int main() {
 	ifstream cin("hoofball.in");
@@ -40,7 +39,7 @@ int main() {
 		cout << 1 << endl;
 		return 0;
 	}
-	sort(cows, cows + n); // O(nlogn) 
+	sort(cows, cows + n);  // O(nlogn) 
 	reach[1]++; reach[n - 2]++;
 	to[0] = 1; to[n - 1] = n - 2;
 	for (int i = 1; i < n - 1; i++){
@@ -71,7 +70,7 @@ int main() {
 import java.util.*;
 import java.io.*;
 
-class Main {
+public class Hoofball
 	static BufferedReader in;
 	static PrintWriter out;
 	static {
@@ -81,7 +80,6 @@ class Main {
 		} catch (IOException e) {}
 	}
 	public static void main(String[] args) throws IOException{
-
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int[] cows = new int[n];
@@ -99,12 +97,11 @@ class Main {
 		int[] to = new int [n]; // to[i] is where does cow i pass the ball
 		reach[1]++; reach[n - 2]++;
 		to[0] = 1; to[n - 1] = n - 2;
-		for (int i = 1; i < n - 1; i++){
+		for (int i = 1; i < n - 1; i++) {
 			if (cows[i] - cows[i - 1] <= cows[i + 1] - cows[i]){
 				reach[i - 1]++;
 				to[i] = i - 1;
-			}
-			else{
+			} else {
 				reach[i + 1]++;
 				to[i] = i + 1;
 			}
