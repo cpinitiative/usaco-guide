@@ -38,7 +38,7 @@ export const Authors: Author[] = [
     photo: "melody",
     name: "Melody Yu",
     title: "Executive",
-    blurb: "Melody Yu is a USACO Platinum competitor who enjoys teaching programming and investing.",
+    blurb: "Melody Yu is a USACO Platinum competitor and founder of Project Starcoder.",
     github: "cskitty",
     website: "https://starcoder.org/",
     email: "ocmelodyyu@gmail.com",
