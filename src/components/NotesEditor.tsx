@@ -1,48 +1,9 @@
-//https://codepen.io/FLCcrakers/pen/JZVeZE?editors=0111
-
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-const modules = {
-  toolbar: [
-    [{ header: [1, 2, false] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image'],
-  ],
-};
+export default function NotesEditor() {
+  const [value, setValue] = useState('');
 
-const formats = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'link',
-  'image',
-];
-
-function NotesEditor() {
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      console.log(
-        `bailing out of the useeffect. Going to continue to render??`
-      );
-      return;
-    }
-  }, []);
-
-  console.log(`reached before render`);
-
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return;
-  }
-
-  return <ReactQuill theme="snow" formats={formats} modules={modules} />;
+  return <ReactQuill theme="snow" value={value} onChange={setValue} />;
 }
-
-export default NotesEditor;
