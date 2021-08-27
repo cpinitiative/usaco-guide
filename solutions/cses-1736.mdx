@@ -24,12 +24,12 @@ when updating subarray $[l, r]$ can be found by calculating $i-l$, as follows.
 - $s_k = s_k + (i-l)$ because we must add an increment $i-l$ to the value of $s_k$ because we are starting at $l + (i-l)$.
 - $t_k = t_k + 1$ because the increment increases by 1 during each update.
 
-And when we update the segment tree, the range sum is the sum of the offset and the total increment across the range. Assuming our range is $L$ 
+And when we update the segment tree, the range sum is the sum of the offset and the total increment across the range. Assuming our range has length $L$ 
 and the range sum for node $k$ is $\texttt{st}[k]$, $\texttt{st}[k] = s_k \cdot L + t_k \cdot \frac{L(L+1)}{2}$. In this case, $s_k \cdot L$ is the sum of all the
 offsets in the range, and $t_k \cdot \frac{L(L+1)}{2}$ is the sum of $t_k \cdot (i-l)$ for each $i$ in the range.
 
 ## Implementation
-**Time Complexity:** $\mathcal{O}(n\log n)$
+**Time Complexity:** $\mathcal{O}(Q\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -53,9 +53,6 @@ struct ST
 	// lz = stores changes in s_i
 	// lz2 = stores changes in t_i
 	vector<ll> st, lz, lz2;
-	ST()
-	{
-	}
 	ST(int n, vector<ll> a)
 	{
 		this->n = n;
@@ -125,8 +122,8 @@ struct ST
 		ll q = rmq(2 * nd + 1, d + 1, j, l, r);
 		return p + q;
 	}
-} st1;
- 
+};
+
 int main()
 {
 	cin >> n >> q;
@@ -135,7 +132,7 @@ int main()
 	{
 		cin >> x[i];
 	}
-	st1 = ST(n, x);
+	ST st1 = ST(n, x);
 	st1.build(1, 0, n-1);
 	while (q--)
 	{
