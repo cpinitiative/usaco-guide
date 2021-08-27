@@ -34,6 +34,16 @@ export const Authors: Author[] = [
     email: "maggie.j.liu@gmail.com",
     website: "https://maggieliu.dev",
   },
+  {
+    photo: "melody",
+    name: "Melody Yu",
+    title: "Executive",
+    blurb: "Melody Yu is a USACO Platinum competitor who enjoys teaching programming and investing.",
+    github: "cskitty",
+    website: "https://starcoder.org/",
+    email: "ocmelodyyu@gmail.com",
+    youtube: "https://www.youtube.com/channel/UCPkhk5gFov8vIPXj0zHyxEQ",
+  },
   // {
   //   photo: 'briancdean',
   //   name: 'Brian C. Dean',
