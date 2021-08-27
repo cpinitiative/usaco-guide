@@ -41,9 +41,9 @@ Content Authors to join our team to help us improve the Guide! Learn more
 
 ### Content Managers
 
-- Qi Wang (since June 2021)
-- Dong Liu (since June 2021)
-- Neo Wang (since Aug 2021)
+- Qi Wang (Since June 2021)
+- Dong Liu (Since June 2021)
+- Neo Wang (Since Aug 2021)
 
 ### Former Core Team
 
@@ -54,8 +54,8 @@ Content Authors to join our team to help us improve the Guide! Learn more
 
 ### Current Content Authors
 
-- Jeffrey Meng (since Oct 2020)
-- Jesse Choe (since Feb 2021)
+- Jeffrey Meng (Since Oct 2020)
+- Jesse Choe (Since Feb 2021)
 - Kevin Sheng (Since Apr 2021)
 - Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
