@@ -30,22 +30,27 @@ The USACO Guide is run by the
 Content Authors to join our team to help us improve the Guide! Learn more
 [here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit).
 
-### Core Staff
+### Core Team
 
-- Benjamin Qi
 - Nathan Wang
+- Maggie Liu (Since Aug 2021)
+- Melody Yu (Since Aug 2021)
 - Andi Qu
 - Siyong Huang
 - Darren Yao
-- Andrew Wang
-- Michael Cao
-- Nathan Chen
 
 ### Content Managers
 
 - Qi Wang (since June 2021)
 - Dong Liu (since June 2021)
-- Maggie Liu (Since June 2021)
+- Neo Wang (since Aug 2021)
+
+### Former Core Team
+
+- Benjamin Qi
+- Andrew Wang
+- Michael Cao
+- Nathan Chen
 
 ### Current Content Authors
 
@@ -56,7 +61,6 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
 - Nathan Gong (Since Apr 2021)
-- Melody Yu (Since Apr 2021)
 - Timothy Gao (Since May 2021)
 - Sathvik Chundru (Since May 2021)
 - Brad Ma (Since June 2021)
