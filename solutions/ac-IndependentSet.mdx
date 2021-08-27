@@ -151,5 +151,46 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+# to solve Runtime Error problem with recursion in python
+from sys import setrecursionlimit
+setrecursionlimit(10**9)
+
+n = int(input())
+mod = 10**9 + 7
+
+# representing the tree in an adjacency list
+adj = [[] for i in range(n)]
+
+for i in range(n-1):
+	x, y = map(int, input().split())
+	x -= 1
+	y -= 1
+	adj[x].append(y)
+	adj[y].append(x)
+
+# 0 is white
+# 1 is black
+
+dp = [[0]*2 for i in range(n)]
+
+def dfs(u, parent):
+	dp[u][0] = dp[u][1] = 1
+	for v in adj[u]:
+		if v != parent:
+			dfs(v, u)
+			dp[u][1] *= dp[v][0]
+			dp[u][1] %= mod
+			dp[u][0] *= (dp[v][0] + dp[v][1]) % mod
+			dp[u][0] %= mod
+
+dfs(0, -1)
+
+ans = (dp[0][0] + dp[0][1]) % mod
+print(ans)
+
+```
+</PySection>
 </LanguageSection>
