@@ -49,12 +49,6 @@ export const contentAuthors: Contributor[] = [
     photo: 'nathang',
   },
   {
-    name: 'Melody Yu',
-    githubUsername: 'cskitty',
-    sinceDate: 'Apr 2021',
-    photo: 'melody',
-  },
-  {
     name: 'Timothy Gao',
     githubUsername: 'timothygao8710',
     sinceDate: 'May 2021',
