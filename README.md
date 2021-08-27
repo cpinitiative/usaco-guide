@@ -55,7 +55,6 @@ Content Authors to join our team to help us improve the Guide! Learn more
 ### Current Content Authors
 
 - Jeffrey Meng (since Oct 2020)
-- Neo Wang (since Jan 2021)
 - Jesse Choe (since Feb 2021)
 - Kevin Sheng (Since Apr 2021)
 - Ananth Kashyap (Since Apr 2021)
