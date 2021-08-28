@@ -6,21 +6,20 @@ const modules = {
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }],
     [{ size: [] }],
-    ['code-block', 'formula', 'code'],
-    ['bold', 'italic', 'underline', { background: [] }],
+    ['bold', 'italic', 'underline', { background: [] }, 'blockquote'],
     [
       { list: 'ordered' },
       { list: 'bullet' },
       { indent: '-1' },
       { indent: '+1' },
     ],
+    ['code', 'clean'],
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
-
 const formats = [
   'header',
   'font',
@@ -35,6 +34,7 @@ const formats = [
   'indent',
   'link',
   'image',
+  'video',
   'code-block',
   'formula',
   'background',
