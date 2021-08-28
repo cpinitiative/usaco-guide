@@ -13,7 +13,7 @@ const modules = {
       { indent: '-1' },
       { indent: '+1' },
     ],
-    ['code-block', 'image'],
+    ['code-block', { background: [] }],
     ['clean'],
   ],
   clipboard: {
@@ -37,6 +37,7 @@ const formats = [
   'image',
   'video',
   'code-block',
+  'background',
 ];
 
 export default class NotesEditor extends Component<any, any> {
