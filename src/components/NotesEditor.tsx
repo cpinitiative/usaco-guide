@@ -36,7 +36,9 @@ const formats = [
   'indent',
   'link',
   'image',
-  'video',
+  'code-block',
+  'formula',
+  'background',
 ];
 
 export default class NotesEditor extends Component<any, any> {
@@ -61,7 +63,12 @@ export default class NotesEditor extends Component<any, any> {
           modules={modules}
           formats={formats}
           bounds={'.app'}
-          placeholder="Start typing..."
+          placeholder="
+
+
+
+
+"
         />
       );
     } else {
