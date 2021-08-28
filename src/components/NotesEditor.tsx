@@ -6,7 +6,6 @@ const modules = {
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }],
     [{ size: [] }],
-    ['code-block', 'clean', { background: [] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [
       { list: 'ordered' },
@@ -14,6 +13,9 @@ const modules = {
       { indent: '-1' },
       { indent: '+1' },
     ],
+    ['link', 'image', 'video'],
+    ['code', 'image'],
+    ['clean'],
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
@@ -36,8 +38,6 @@ const formats = [
   'image',
   'video',
   'code-block',
-  'formula',
-  'background',
 ];
 
 export default class NotesEditor extends Component<any, any> {
