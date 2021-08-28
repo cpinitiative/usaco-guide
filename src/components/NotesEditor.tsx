@@ -6,6 +6,7 @@ const modules = {
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }],
     [{ size: [] }],
+    ['code-block', 'formula'],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [
       { list: 'ordered' },
@@ -14,7 +15,6 @@ const modules = {
       { indent: '+1' },
     ],
     ['link', 'image'],
-    ['clean'],
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
