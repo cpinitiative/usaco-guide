@@ -178,10 +178,12 @@ dp = [[0]*2 for i in range(n)]
 
 def dfs(u, parent):
 	dp[u][0] = dp[u][1] = 1
-	for v in adj[u]:
-		if v != parent:
-			dfs(v, u)
-			dp[u][1] *= dp[v][0]
+	for v in adj[u]: # traversing the adjacency list of node u
+		if v != parent: # v should be a child for u not its parent
+			dfs(v, u) # recursively calculate the dp values for child v 
+			# accumulate the children dp values to the dp of node u 
+			# don't forget to take the values mod 1e9+7
+			dp[u][1] *= dp[v][0] 
 			dp[u][1] %= mod
 			dp[u][0] *= (dp[v][0] + dp[v][1]) % mod
 			dp[u][0] %= mod
