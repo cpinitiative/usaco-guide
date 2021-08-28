@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-let ReactQuill;
 const modules = {
   toolbar: [
     [{ header: [1, 2, false] }],
@@ -30,15 +31,9 @@ const formats = [
   'code',
 ];
 
-export default class FormHtmlEditor extends Component {
-  componentDidMount() {
-    require.ensure([], function (require) {
-      ({ ReactQuill } = require('react-quill'));
-    });
-  }
-
+export default class NotesEditor extends Component {
   render() {
-    if (typeof window !== 'undefined' && ReactQuill) {
+    if (typeof window !== 'undefined' && document) {
       console.log('Quill Active');
       return (
         <ReactQuill

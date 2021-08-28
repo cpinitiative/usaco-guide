@@ -61,8 +61,7 @@ export default function TakeProblemNotesModal({
                 {/*     Description*/}
                 {/*  </p>*/}
                 {/*</div>*/}
-
-                <NotesEditor />
+                {typeof window !== 'undefined' && document && <NotesEditor />}
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
