@@ -4,7 +4,8 @@ import 'react-quill/dist/quill.snow.css';
 
 const modules = {
   toolbar: [
-    [{ header: [1, 2, false] }],
+    [{ header: '1' }, { header: '2' }, { font: [] }],
+    [{ size: [] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [
       { list: 'ordered' },
@@ -12,13 +13,19 @@ const modules = {
       { indent: '-1' },
       { indent: '+1' },
     ],
-    ['link', 'code'],
+    ['link', 'image', 'video'],
     ['clean'],
   ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
 };
 
 const formats = [
   'header',
+  'font',
+  'size',
   'bold',
   'italic',
   'underline',
@@ -28,19 +35,33 @@ const formats = [
   'bullet',
   'indent',
   'link',
-  'code',
+  'image',
+  'video',
 ];
 
-export default class NotesEditor extends Component {
+export default class NotesEditor extends Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = { editorHtml: '' };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(html) {
+    this.setState({ editorHtml: html });
+  }
+
   render() {
     if (typeof window !== 'undefined' && document) {
       console.log('Quill Active');
       return (
         <ReactQuill
           theme="snow"
-          value="Hello"
+          onChange={this.handleChange}
+          value={this.state.editorHtml}
           modules={modules}
           formats={formats}
+          bounds={'.app'}
+          placeholder="Start typing..."
         />
       );
     } else {
