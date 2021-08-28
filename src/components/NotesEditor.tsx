@@ -13,7 +13,7 @@ const modules = {
       { indent: '-1' },
       { indent: '+1' },
     ],
-    ['code', 'image'],
+    ['code-block', 'image'],
     ['clean'],
   ],
   clipboard: {
