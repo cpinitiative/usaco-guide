@@ -1,7 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
+import loadable from '@loadable/component';
 import React, { Fragment } from 'react';
-import NotesEditor from './NotesEditor';
+const NotesEditor = loadable(() => import('./NotesEditor'));
 
 export default function TakeProblemNotesModal({
   isOpen,
@@ -61,7 +62,7 @@ export default function TakeProblemNotesModal({
                 {/*     Description*/}
                 {/*  </p>*/}
                 {/*</div>*/}
-                {typeof window !== 'undefined' && document && <NotesEditor />}
+                <NotesEditor />
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
