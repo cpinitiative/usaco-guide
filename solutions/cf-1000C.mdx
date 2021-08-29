@@ -1,0 +1,96 @@
+---
+id: cf-1000C
+source: CF
+title: Covered Points Count
+author: Jesse Choe
+---
+
+[Official Editorial](http://codeforces.com/blog/entry/60288)
+
+
+# Solution (Coordinate Compression)
+
+Due to the large constraints on $l_i$ and $r_i$, it is impossible to brute force the number of intersecting segments for each point on the coordinate line. However, notice that we can compress the coordinates and "pretend" as if the coordinates were between $1$ and $n$.
+
+This allows us to apply prefix sums on each point in our compressed number line and retransform these compressed coordinates to the original endpoints $l_i$ and $r_i$. To compress the coordinates, we can either sort the coordinates or use an ordered map.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+using pi = pair<int, int>;
+
+#define f first
+#define s second
+#define all(x) begin(x), end(x)
+
+int main() {
+	int n;
+	cin >> n;
+	// This stores the original endpoints to use in our frequency array later
+	vector<pair<ll, ll>> segments(n); 
+	// This stores only the unique endpoints (also, the endpoints will be in sorted order).
+	set<ll> points; 
+	for (int i = 0; i < n; i++) {
+		cin >> segments[i].f >> segments[i].s; // Read in the endpoints of the i-th segment
+		// This ensures that only the unique points are stored
+		points.insert(segments[i].f);
+		points.insert(segments[i].s + 1); 
+	}
+	
+	int cur = 0;
+	map<ll, int> compressed; // This map stores the compressed coordinates.
+	vector<ll> coords;
+	for (auto& c: points) {
+		// Assign c to cur, where cur is our compressed coordinate for "a".
+		compressed[c] = cur;
+		/*
+		 * We still need to remember our original endpoints so 
+		 * we can retransform the compressed coordinates
+		 */
+		coords.push_back(c);
+		cur++;
+	}
+	vi freq(2 * n); // This stores the frequency of a given endpoint.
+	for (int i = 0; i < n; i++) {
+		/*
+		 * A segment starts from [l*, r*], so we should end the segment 
+		 * at r* + 1 to ensure that r* is included into the segment.
+		 */
+		freq[compressed[segments[i].f]]++;
+		freq[compressed[segments[i].s + 1]]--;
+	}
+	// This counts how many points are at a given compressed endpoint using prefix sums.
+	for (int i = 1; i < 2 * n; i++) {
+		freq[i] += freq[i - 1];
+	}
+
+	vector<ll> cnt(n + 1);
+	for (int i = 1; i < coords.size(); i++) {
+		/*
+		 * We add r - l to the number of points for a given 
+		 * frequency since we compressed the coordinates.		  
+		 */			  
+		cnt[freq[i - 1]] += coords[i] - coords[i - 1];
+	}
+
+	for (int i = 1; i <= n; i++) {
+		cout << cnt[i] << " "; // Print out the answer here
+	}
+	cout << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
