@@ -68,7 +68,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     problems,
   } as AnnotatedProblemsListProps;
   const userSettings = useContext(UserDataContext);
-  const showTagsAndDifficulty = !userSettings.hideTagsAndDifficulty;
+  const showTags = !userSettings.hideTags;
+  const showDifficulty = !userSettings.hideDifficulty;
 
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
@@ -93,7 +94,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
             <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
               <thead>
                 <ProblemsListHeader
-                  showTagsAndDifficulty={showTagsAndDifficulty}
+                  showTags={showTags}
+                  showDifficulty={showDifficulty}
                   isDivisionTable={props.isDivisionTable}
                   showSolvePercentage={shouldShowSolvePercentage}
                   showPlatinumSolvePercentageMessage={
@@ -110,7 +112,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                       <ProblemsListItem
                         key={problem.uniqueId}
                         problem={problem}
-                        showTagsAndDifficulty={showTagsAndDifficulty}
+                        showTags={showTags}
+                        showDifficulty={showDifficulty}
                         onShowSolutionSketch={problem => {
                           setProblem(problem);
                           setShowModal(true);
@@ -127,7 +130,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                       <ProblemsListItem
                         key={problem.uniqueId}
                         problem={problem}
-                        showTagsAndDifficulty={showTagsAndDifficulty}
+                        showTags={showTags}
+                        showDifficulty={showDifficulty}
                         onShowSolutionSketch={problem => {
                           setProblem(problem);
                           setShowModal(true);
