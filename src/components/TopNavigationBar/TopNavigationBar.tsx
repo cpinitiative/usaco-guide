@@ -1,7 +1,10 @@
 import { Popover, Transition } from '@headlessui/react';
 import {
+  AcademicCapIcon,
+  ChartBarIcon,
   ChatAlt2Icon,
   ChevronDownIcon,
+  CogIcon,
   SearchIcon,
   TerminalIcon,
   UserGroupIcon,
@@ -48,6 +51,34 @@ export default function TopNavigationBar({
         'A realtime collaborative online IDE designed for competitive programming and USACO.',
       href: 'https://ide.usaco.guide/',
       icon: TerminalIcon,
+    },
+    {
+      name: 'Classes',
+      description:
+        'Learn USACO through high-quality classes with a curriculum developed by past USACO Finalists',
+      href: 'https://joincpi.org/classes',
+      icon: AcademicCapIcon,
+    },
+    {
+      name: 'Clubs',
+      description:
+        'Get access to curriculum, problemsets, and contests tailored for competitive programming clubs.',
+      href: 'https://joincpi.org/clubs',
+      icon: UserGroupIcon,
+    },
+    {
+      name: 'Contests',
+      description:
+        'Participate in high-quality programming contests targeted towards pre-college students!',
+      href: 'https://joincpi.org/contests',
+      icon: ChartBarIcon,
+    },
+    {
+      name: 'Workshops',
+      description:
+        'Access exlusive workshops providing you everything you need to know about USACO.',
+      href: 'https://joincpi.org/workshop',
+      icon: CogIcon,
     },
   ];
   const mobileLinks = [
@@ -409,6 +440,38 @@ export default function TopNavigationBar({
               className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
             >
               IDE
+            </a>
+            <a
+              href="https://joincpi.org/classes"
+              target="_blank"
+              rel="noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+            >
+              Classes
+            </a>
+            <a
+              href="https://joincpi.org/clubs"
+              target="_blank"
+              rel="noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+            >
+              Clubs
+            </a>
+            <a
+              href="https://joincpi.org/contests"
+              target="_blank"
+              rel="noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+            >
+              Contests
+            </a>
+            <a
+              href="https://joincpi.org/workshop"
+              target="_blank"
+              rel="noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+            >
+              Workshops
             </a>
             <button
               className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
