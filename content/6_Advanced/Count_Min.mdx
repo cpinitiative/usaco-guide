@@ -34,15 +34,15 @@ If node $c$ has two children $a$ and $b$, then
 <CPPSection>
 
 ```cpp
-const int MAXN = 200005;
-const int INF = numeric_limits<int>::infinity();
+const int MAXN = 2e5;
+const int INF = INT32_MAX;
 
-struct node {
+struct Node {
 	int val = INF, cnt = 1;
 } T[2 * MAXN];
 
 // combines two segment tree nodes
-node merge(node a, node b) {
+Node merge(Node a, Node b) {
 	if (a.val < b.val)
 		return a;
 	if (a.val > b.val)
@@ -57,8 +57,8 @@ void update(int i, int v) {
 }
 
 // returns the minimum and occurences between indices l and r
-node query(int l, int r) {
-	node res;
+Node query(int l, int r) {
+	Node res;
 	for (l += MAXN, r += MAXN + 1; l < r; l >>= 1, r >>= 1) {
 		if (l & 1) res = merge(res, T[l++]);
 		if (r & 1) res = merge(res, T[--r]);
@@ -111,8 +111,8 @@ We can use a Segment Tree that counts the number of occurences of the minimum va
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXX = 1e6;
-const int MAXN = 2 * MAXX + 5;
+const int MAXX = 1e6 + 5;
+const int MAXN = 2 * MAXX;
  
 struct Event {
 	int t, x, y0, y1;
