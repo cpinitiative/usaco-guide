@@ -110,8 +110,9 @@ We can use a Segment Tree that counts the number of occurences of the minimum va
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-	
-const int MAXN = 2e6 + 5;
+
+const int MAXX = 1e6;
+const int MAXN = 2 * MAXX + 5;
  
 struct Event {
 	int t, x, y0, y1;
@@ -184,9 +185,11 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		int x0, y0, x1, y1;
 		cin >> x0 >> y0 >> x1 >> y1;
+	
 		// make coordinates positive
-		x0 += 1000000, y0 += 1000000;
-		x1 += 1000000, y1 += 1000000;
+		x0 += MAXX, y0 += MAXX;
+		x1 += MAXX, y1 += MAXX;
+	
 		E.push_back({1, x0, y0, y1 - 1});
 		E.push_back({-1, x1, y0, y1 - 1});
 	}
