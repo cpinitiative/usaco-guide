@@ -1,0 +1,394 @@
+---
+id: shortest-paths
+redirects:
+  - /gold/sp
+title: 'Shortest Paths with Non-Negative Edge Weights'
+author: Benjamin Qi, Andi Qu, Qi Wang, Neo Wang
+prerequisites:
+  - bfs
+  - custom-cpp-stl
+description: 'Introduces Bellman-Ford, Floyd-Warshall, Dijkstra.'
+frequency: 3
+---
+
+Nearly all Gold shortest path problems involve Dijkstra. However, it's a good
+idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
+
+## Bellman-Ford
+
+<Resources>
+	<Resource source="CPH" title="13.1 - Bellman-Ford">
+		up to but not including "Negative Cycles"
+	</Resource>
+</Resources>
+
+## Floyd-Warshall
+
+<!-- All Pairs Shortest Path (APSP) -->
+
+### Tutorial
+
+<Resources>
+	<Resource source="CPH" title="13.3 - Floyd-Warshall" starred>
+		example calculation, code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Floyd-Warshall"
+		url="graph/all-pair-shortest-path-floyd-warshall.html"
+		starred
+	>
+		code, why it works
+	</Resource>
+	<Resource source="PAPS" title="12.3.3 - Floyd-Warshall">
+		code, why it works
+	</Resource>
+	<Resource source="CP2" title="4.5 - All-Pairs Shortest Paths" />
+</Resources>
+
+<Optional title="Incorrect Floyd-Warshall">
+
+[Paper](https://arxiv.org/pdf/1904.01210.pdf)
+
+> A common mistake in implementing the Floyd–Warshall algorithm is to misorder
+> the triply nested loops (The correct order is `KIJ`). The incorrect `IJK` and
+> `IKJ` algorithms do not give correct solutions for some instance. However, we
+> can prove that if these are repeated three times, we obtain the correct
+> solutions.
+>
+> It would be emphasized that these fixes (repeating incorrect algorithms three
+> times) have the same time complexity as the correct Floyd–Warshall algorithm
+> up to constant factors. Therefore, our results suggest that, if one is
+> confused by the order of the triply nested loops, one can repeat the procedure
+> three times just to be safe.
+
+</Optional>
+
+### Problem
+
+<FocusProblem problem="apspSam" />
+
+#### Explanation
+
+This problem asks us to compute shortest paths between any two vertices. Hence,
+Floyd-Warshall is suitable because of the low $N (N \le 500)$, and the inclusion of negative weights.
+
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//CodeSnip{CPP Short Template}
+
+ll INF = 1e18;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m, q;
+	cin >> n >> m >> q;
+
+	vector<vector<ll>> mat(n, vector<ll>(n, INF));
+
+	for (int i = 0; i < m; i++) {
+		int u, v, w;
+		cin >> u >> v >> w, u--, v--;
+		if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
+	}
+
+	// floyd-warshall
+	for (int k = 0; k < n; k++)
+		for (int i = 0; i < n; i++)
+			for (int j = i + 1; j < n; j++)
+				if (mat[i][k] + mat[k][j] < mat[i][j])
+					mat[i][j] = mat[j][i] = mat[i][k] + mat[k][j];
+
+	while (q--) {
+		int u, v;
+		cin >> u >> v, u--, v--;
+		if (u == v) mat[u][v] = 0;
+		if (mat[u][v] == INF) mat[u][v] = -1;
+		cout << mat[u][v] << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+	// CodeSnip{Kattio}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt(), m = io.nextInt(), q = io.nextInt();
+
+		long[][] mat = new long[n][n];
+		long INF = (long)1e18;
+
+		for(long[] row : mat) {
+			Arrays.fill(row, INF);
+		}
+
+		for (int i = 0; i < m; i++) {
+			int u = io.nextInt(), v = io.nextInt(), w = io.nextInt();
+			u--; v--;
+			if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
+		}
+
+		// floyd-warshall
+		for (int k = 0; k < n; k++)
+			for (int i = 0; i < n; i++)
+				for (int j = i + 1; j < n; j++)
+					if (mat[i][k] + mat[k][j] < mat[i][j])
+						mat[i][j] = mat[j][i] = mat[i][k] + mat[k][j];
+
+		while (q-- > 0) {
+			int u = io.nextInt(), v = io.nextInt();
+			u--; v--;
+			if (u == v) mat[u][v] = 0;
+			if (mat[u][v] == INF) mat[u][v] = -1;
+			io.println(mat[u][v]);
+		}
+
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Problems
+
+Used as the first step of the following:
+
+<Problems problems="apsp" />
+
+## Dijkstra
+
+### Tutorial
+
+#### $\mathcal{O}(N^2)$
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Dijkstra (Dense Graphs)"
+		url="graph/dijkstra.html"
+	/>
+</Resources>
+
+#### $\mathcal{O}(M\log N)$
+
+<Resources>
+	<Resource source="CPH" title="13.2 - Dijkstra" starred>
+		code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Dijkstra (Sparse Graphs)"
+		url="graph/dijkstra_sparse.html"
+	/>
+	<Resource source="CPC" title="8 - Shortest Paths" url="08_graphs_2" />
+	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph" />
+</Resources>
+
+#### $\mathcal{O}(M\log N)$ Implementation
+
+<Resources>
+	<Resource
+		source="Benq"
+		title="Dijkstra"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Basics/Dijkstra%20(7.3).h"
+	/>
+</Resources>
+
+### Problem
+
+<FocusProblem problem="sample" />
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+Recall from the second prerequisite module that we can use `greater<>` to make
+the top element of a priority queue the least instead of the greatest.
+Alternatively, you can negate distances before placing them into the priority
+queue, but that's more confusing.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+#define pb push_back
+
+vector<pair<int, int>> graph[100000];
+// Adjacency list of (neighbour, edge weight)
+ll dist[100000];
+int N;
+
+void dijkstra(int src) { // Source and destination
+	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX;
+	// Set all distances to infinity
+
+	using T = pair<ll,int>; priority_queue<T,vector<T>,greater<T>> pq;
+	dist[src] = 0; // The shortest path from a node to itself is 0
+	pq.push({0, src});
+
+	while (pq.size()) {
+		ll cdist; int node; tie(cdist, node) = pq.top(); pq.pop();
+		if (cdist != dist[node]) continue;
+		for (pair<int, int> i : graph[node]) {
+			// If we can reach a neighbouring node faster,
+			// we update its minimum distance
+			if (cdist+i.second < dist[i.first]) {
+				pq.push({dist[i.first] = cdist+i.second, i.first});
+			}
+		}
+	}
+}
+
+int main() {
+	int M; cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int a,b,c; cin >> a >> b >> c;
+		graph[a-1].pb({b-1,c});
+	}
+	dijkstra(0);
+	for (int i = 0; i < N; ++i) cout << dist[i] << " ";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class test {
+	static class Pair<K, V> {
+		public K a;
+		public V b;
+		public Pair(K a, V b) {
+			this.a = a;
+			this.b = b;
+		}
+		public K getKey() {
+			return a;
+		}
+		public V getValue() {
+			return b;
+		}
+	}
+	static ArrayList<Pair<Integer, Integer>> graph[];
+	static long dist[];
+	static int N;
+
+	static void dijkstra(int src) {
+		//Set all distances to infinity
+		for (int i = 0; i < N; ++i)
+			dist[i] = Long.MAX_VALUE;
+		PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<Pair<Long, Integer>>
+			((a, b) -> Long.compare(a.getKey(), b.getKey()));
+		dist[src] = 0; // The shortest path from a node to itself is 0
+		pq.add(new Pair<Long, Integer>(0L, src));
+		while(!pq.isEmpty()) {
+			Pair<Long, Integer> p = pq.poll();
+			long cdist = p.getKey();
+			int node = p.getValue();
+			if(cdist != dist[node])
+				continue;
+			for (Pair<Integer, Integer> i : graph[node]) {
+				// If we can reach a neighbouring node faster,
+				// we update its minimum distance
+				if(cdist+i.getValue() < dist[i.getKey()]) {
+					dist[i.getKey()] = cdist + i.getValue();
+					pq.add(new Pair<Long, Integer>(dist[i.getKey()], i.getKey()));
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		graph = new ArrayList[N];
+		dist = new long[N];
+		for (int i = 0; i < N; i++) {
+			graph[i] = new ArrayList<Pair<Integer, Integer>>();
+		}
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+			graph[a - 1].add(new Pair<Integer, Integer>(b - 1, c));
+		}
+		dijkstra(0);
+		for (int i = 0; i < N; i++) {
+			System.out.print(dist[i] + " ");
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<Warning>
+
+It's important to include `continue`. This ensures that when all edge weights
+are non-negative, we will never go through the adjacency list of any vertex more
+than once. Removing it will cause TLE on the last test case of the above
+problem!
+
+The last test case contains 100000 destinations and 149997 flights. City 1 has
+flights to cities 2 through 50000. Cities 2 through 50000 have flights to
+city 50001. City 50001 has flights to cities 50002 through 100000. Without the
+`continue`, after the program pops cities 1 through 50000 off the queue, the
+priority queue will contain 49999 routes that end at city 50001. Every one of
+the 49999 times city 50001 is popped off the queue and processed, we must
+iterate over all of its outgoing flights (to cities 50002 through 100000). This
+results in a runtime of $\Theta(N^2\log N)$, which will TLE.
+
+On the other hand, if we did include the `continue`, the program will never
+iterate through the adjacency list of city 50001 after processing it for the
+first time.
+
+</Warning>
+
+<Optional title="Faster Dijkstra">
+
+Can be done in $\mathcal{O}(M+N\log N)$ with
+[Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice
+though, this is rarely faster, since the Fibonacci heap has a bad constant
+factor.
+
+</Optional>
+
+### Problems
+
+<Problems problems="dijk" hideSuggestProblemButton />

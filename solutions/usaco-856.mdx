@@ -2,14 +2,14 @@
 id: usaco-856
 source: USACO Bronze 2018 December
 title: The Bucket List
-author: Ananth Kashyap (Python) and Sathvik Chundru (C++)
+author: Ananth Kashyap, Sathvik Chundru, Brad Ma
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
 
-## Implementation
+## Implementation 1 - Brute Force
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(N \cdot T)$, T is the maximum time
 
 <LanguageSection>
 
@@ -39,12 +39,65 @@ file_out.close()
 ```
 
 </PySection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class TheBucketList {
+	static final int MAX_TIME = 1000;
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("blist");
+		int n = io.nextInt();
+
+		int[] startTimes = new int[n + 1];
+		int[] endTimes = new int[n + 1];
+		int[] bucketsNeeded = new int[n + 1];
+
+		for (int x = 1; x <= n; x++) {
+			startTimes[x] = io.nextInt();
+			endTimes[x] = io.nextInt();
+			bucketsNeeded[x] = io.nextInt();
+		}
+
+		// keep track of the maximum buckets in all of the times
+		int maxBuckets = 0;
+
+		// loop through each time and get the buckets needed
+		for (int time = 1; time <= MAX_TIME; time++) {
+			int bucketsAtTime = 0;
+
+			// the buckets for those with
+			// times in the range
+			for (int i = 1; i <= n; i++) {
+				if (startTimes[i] <= time && time <= endTimes[i]) {
+					bucketsAtTime += bucketsNeeded[i];
+				}
+			}
+			maxBuckets = Math.max(maxBuckets, bucketsAtTime);
+		}
+
+		io.println(maxBuckets);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
 
-## Solution 2
+## Implementation 2 - Sweep
+	
+**Time Complexity** $\mathcal{O}(N)$
 
-Similar to the second solution in the official editorial. 
+A faster solution than Implementation 1 where you do not need to 
+recount the buckets for every time. This is similar to the second 
+solution in in the official analysis. 
 
 <LanguageSection>
 
@@ -98,5 +151,62 @@ int main() {
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class TheBucketList2 {
+	static final int maxTime = 1000;
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("blist");
+		int n = io.nextInt();
+
+		int[] startTimes = new int[n + 1];
+		int[] endTimes = new int[n + 1];
+		int[] bucketsNeeded = new int[n + 1];
+
+		// these track when the cows start
+		int[] cowStart = new int[maxTime + 1];
+		int[] cowEnd = new int[maxTime + 1];
+
+		for (int x = 1; x <= n; x++) {
+			startTimes[x] = io.nextInt();
+			endTimes[x] = io.nextInt();
+			bucketsNeeded[x] = io.nextInt();
+
+			cowStart[startTimes[x]] = x;
+			cowEnd[endTimes[x]] = x;
+		}
+
+		int maxBuckets = 0;
+		int countBuckets = 0;
+
+		for (int t = 1; t <= 1000; t++) {
+			// is a start, increase the bucket count
+			if (cowStart[t] > 0) {
+				countBuckets += bucketsNeeded[cowStart[t]];
+			}
+			
+			// keep track of the maximum buckets needed at any time
+			maxBuckets = Math.max(maxBuckets, countBuckets);
+			
+			// is an end, decrease the bucket count
+			if (cowEnd[t] > 0) {
+				countBuckets -= bucketsNeeded[cowEnd[t]];
+			}
+		}
+
+		io.println(maxBuckets);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}	
+```
+	
+</JavaSection>
 
 </LanguageSection> 

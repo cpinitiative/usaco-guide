@@ -1,0 +1,192 @@
+---
+id: ioi-00-walls
+source: IOI 2000
+title: Walls
+author: Kevin Sheng
+---
+
+## Explanation
+
+Rather than treating the towns as nodes, instead treat the regions themselves as nodes with
+the walls as the edges still.
+We perform BFS from each node, logging the minimum distance from every region to every other region.
+Finally, we try all meeting regions and print out the one that minimizes the number of walls the members have to cross.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M^2 L)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+
+int main() {
+	int region_num;
+	int town_num;
+	int member_num;
+	std::cin >> region_num >> town_num >> member_num;
+
+	vector<int> members(member_num);
+	for (int& m : members) {
+		std::cin >> m;
+		m--;
+	}
+	vector<vector<int>> town_regions(town_num);
+	// contains the walls (represented as a pair of towns) for each region
+	vector<vector<pair<int, int>>> regions(region_num);
+	for (int r = 0; r < region_num; r++) {
+		int border_num;
+		std::cin >> border_num;
+		vector<int> towns(border_num);
+		for (int& t : towns) {
+			std::cin >> t;
+			t--;
+			town_regions[t].push_back(r);
+		}
+		for (int t = 0; t < border_num; t++) {
+			regions[r].push_back({towns[t], towns[(t + 1) % border_num]});
+		}
+	}
+	// the walls previously processed (along with their associated regions)
+	std::map<pair<int, int>, int> prev_walls;
+	vector<vector<int>> neighbors(region_num);
+	for (int r = 0; r < region_num; r++) {
+		for (const pair<int, int>& w : regions[r]) {
+			// if we've seen this wall before, add that associated region
+			if (prev_walls.count(w)) {
+				// dupes might happen but that doesn't really matter
+				neighbors[r].push_back(prev_walls[w]);
+				neighbors[prev_walls[w]].push_back(r);
+			} else {
+				prev_walls[w] = r;
+				pair<int, int> reverse{w.second, w.first};
+				prev_walls[reverse] = r;
+			}
+		}
+	}
+
+	vector<vector<int>> min_crossings(region_num, vector<int>(region_num));
+	// BFS from each region and log the minimum distances
+	for (int start = 0; start < region_num; start++) {
+		int moves = 0;
+		vector<bool> visited(region_num);
+		vector<int> frontier{start};
+		visited[start] = true;
+		while (!frontier.empty()) {
+			vector<int> in_line;
+			moves++;
+			for (int r : frontier) {
+				for (int n : neighbors[r]) {
+					if (!visited[n]) {
+						min_crossings[start][n] = moves;
+						visited[n] = true;
+						in_line.push_back(n);
+					}
+				}
+			}
+			frontier = in_line;
+		}
+	}
+
+	// get the best meeting region through brute force
+	int min_crossing_sum = INT32_MAX;
+	int best_region = -1;
+	for (int meeting = 0; meeting < region_num; meeting++) {
+		int this_min_cross = 0;
+		for (int m : members) {
+			int m_min_crossings = INT32_MAX;
+			for (int t : town_regions[m]) {
+				m_min_crossings = std::min(m_min_crossings, min_crossings[t][meeting]);
+			}
+			this_min_cross += m_min_crossings;
+		}
+		if (this_min_cross < min_crossing_sum) {
+			min_crossing_sum = this_min_cross;
+			best_region = meeting;
+		}
+	}
+	cout << min_crossing_sum << endl << best_region + 1 << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+region_num = int(input())
+town_num = int(input())
+member_num = int(input())
+members = [int(i) - 1 for i in input().split()]
+assert member_num == len(members)
+
+town_regions = [[] for _ in range(town_num)]
+# contains the walls (represented as a pair of towns) for each region
+regions = [[] for _ in range(region_num)]
+for r in range(region_num):
+	border_num = int(input())
+	border_towns = [int(i) - 1 for i in input().split()]
+	assert border_num == len(border_towns)
+	for t in border_towns:
+		town_regions[t].append(r)
+	for t in range(border_num):
+		regions[r].append((border_towns[t], border_towns[(t + 1) % border_num]))
+
+# the walls previously processed (along with their associated regions)
+prev_walls = {}
+neighbors = [[] for _ in range(region_num)]
+for r in range(region_num):
+	for w in regions[r]:
+		if w in prev_walls:
+			# dupes might happen but that doesn't really matter
+			neighbors[r].append(prev_walls[w])
+			neighbors[prev_walls[w]].append(r)
+		else:
+			prev_walls[w] = r
+			prev_walls[(w[1], w[0])] = r
+
+# list multiplication is a bit faster than list comprehension
+min_crossings = [[0] * region_num for _ in range(region_num)]
+# BFS from each region and log the minimum distances
+for start in range(region_num):
+	moves = 0
+	visited = [False] * region_num
+	visited[start] = True
+	frontier = [start]
+	while frontier:
+		in_line = []
+		moves += 1
+		for r in frontier:
+			for n in neighbors[r]:
+				if not visited[n]:
+					min_crossings[start][n] = moves
+					visited[n] = True
+					in_line.append(n)
+		frontier = in_line
+
+# get the best meeting region through brute force
+min_crossing_sum = float('inf')
+best_region = -1
+for meeting in range(region_num):
+	this_min_cross = sum(
+		min([min_crossings[t][meeting] for t in town_regions[m]]) for m in members
+	)
+	if this_min_cross < min_crossing_sum:
+		min_crossing_sum = this_min_cross
+		best_region = meeting
+
+print(min_crossing_sum)
+print(best_region + 1)  # +1 because the region is 1-indexed
+```
+
+</PySection>
+</LanguageSection>

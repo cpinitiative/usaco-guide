@@ -11,6 +11,7 @@ import {
   ProblemMetadata,
   PROBLEM_DIFFICULTY_OPTIONS,
 } from '../../models/problem';
+import QuizGeneratorModal from '../QuizGeneratorModal';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../DynamicMarkdownRenderer/DynamicMarkdownRenderer')
@@ -51,12 +52,10 @@ export const EditorOutput = (): JSX.Element => {
 
     // sort the table such that the suggested problem is inserted below the bottommost
     // problem with the same difficulty as the suggested problem.
-    parsedOldFileData[listId] = (
-      [
-        ...tableToEdit.map((el, i) => ({ index: i, data: el })),
-        { index: tableToEdit.length, data: problemMetadata },
-      ] as { index: number; data: ProblemMetadata }[]
-    )
+    parsedOldFileData[listId] = ([
+      ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+      { index: tableToEdit.length, data: problemMetadata },
+    ] as { index: number; data: ProblemMetadata }[])
       .sort((a, b) => {
         const difficultyDiff =
           PROBLEM_DIFFICULTY_OPTIONS.indexOf(a.data.difficulty) -
@@ -99,6 +98,7 @@ export const EditorOutput = (): JSX.Element => {
         <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
           <ProblemSuggestionModalProvider>
             <RawMarkdownRenderer markdown={markdown} problems={problems} />
+            <QuizGeneratorModal />
           </ProblemSuggestionModalProvider>
         </MarkdownProblemListsProvider>
       </EditorContext.Provider>

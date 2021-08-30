@@ -5,6 +5,7 @@ import * as groups from './groups';
 import incrementUsers from './incrementUsers';
 import setUserClaims from './setUserClaims';
 import submitProblemSuggestion from './submitProblemSuggestion';
+import submitContactForm from './submitContactForm';
 
 export {
   setUserClaims,
@@ -14,4 +15,5 @@ export {
   incrementUsers,
   cpiclasses,
   groups,
+  submitContactForm,
 };

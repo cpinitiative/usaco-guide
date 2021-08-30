@@ -2,7 +2,7 @@
 id: cses-1161
 source: CSES
 title: Stick Divisions
-author: Dong Liu, Benjamin Qi
+author: Dong Liu, Benjamin Qi, Chuyang Wang
 ---
 
 In this problem, we're asked to find the minimum cost to divide a stick with
@@ -20,12 +20,13 @@ If you're wondering why Huffman Coding always produces an optimal solution, see
 
 ## Implementation
 
+As we want to select both shortest sticks and then insert the combined new stick, we will want to have a data structure where we are able to get the smallest value in the collection, remove it and add new values to the collection. The insert and remove operations can be done easily with a priority queue in $\mathcal{O}(\log n)$ time, while retrieving the smallest value takes constant time.
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
 <LanguageSection>
     
 <CPPSection>
-
-In C++, this can be done easily with a
-[priority queue](http://www.cplusplus.com/reference/queue/priority_queue/).
 
 ```cpp
 #include <iostream>
@@ -54,5 +55,43 @@ int main(){
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class StickDivision {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		// with our algorithm the variable x will not be used at all
+		// since it is guaranteed by problem constraints that all values add up to x
+		int x = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		Queue<Integer> sticks = new PriorityQueue<Integer>();
+		st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++)
+			sticks.add(Integer.valueOf(st.nextToken()));
+
+		long costs = 0;
+		// we keep combining two smallest sticks a and b
+		// until there is only one stick remaining, which will have the length x
+		while (sticks.size() > 1) {
+			int a = sticks.remove();
+			int b = sticks.remove();
+			sticks.add(a + b);
+			// the length of the combined stick is the cost for dividing them into
+			// the seperated sticks a and b
+			costs += a + b;
+		}
+		System.out.println(costs);
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
