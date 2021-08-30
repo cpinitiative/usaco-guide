@@ -110,17 +110,21 @@ We can use a Segment Tree that counts the number of occurences of the minimum va
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+	
+const int MAXN = 2e6 + 5;
  
-struct event {
+struct Event {
 	int t, x, y0, y1;
- 
-	bool operator<(const event& e) { return x < e.x; }
+	// t = 1 for left bound, -1 for right bound
+	bool operator<(const Event &e) { return x < e.x; }
 };
  
 int N;
-vector<event> E;
-array<pair<long long, long long>, 8000005> T;
-array<int, 8000005> L;
+vector<Event> E;
+	
+// segment tree
+pair<long long, long long> T[MAXN * 4];
+int L[MAXN * 4];
  
 pair<long long, long long> merge(pair<long long, long long> a, pair<long long, long long> b) {
 	if (a.first < b.first)
@@ -140,7 +144,7 @@ void pushdown(int t) {
 	}
 }
  
-void build(int t = 1, int tl = 0, int tr = 2000000) {
+void build(int t = 1, int tl = 0, int tr = MAXN) {
 	if (tl == tr) {
 		T[t] = MP(0, 1);
 		return;
@@ -151,7 +155,7 @@ void build(int t = 1, int tl = 0, int tr = 2000000) {
 	T[t] = merge(T[t << 1], T[t << 1 | 1]);
 }
  
-void update(int l, int r, int v, int t = 1, int tl = 0, int tr = 2000000) {
+void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
 	if (r < tl || tr < l)
 		return;
 	if (l <= tl && tr <= r) {
@@ -168,18 +172,19 @@ void update(int l, int r, int v, int t = 1, int tl = 0, int tr = 2000000) {
 }
  
 long long query() {
-	return 2000001 - T[1].second;
+	// always maintain one element with value of zero
+	// so we don't have to check if zero is the minimum
+	return MAXN + 1 - T[1].second;
 } 
  
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
- 
 	cin >> N; 
 	build();
 	E.reserve(2 * N);
 	for (int i = 0; i < N; i++) {
 		int x0, y0, x1, y1;
 		cin >> x0 >> y0 >> x1 >> y1;
+		// make coordinates positive
 		x0 += 1000000, y0 += 1000000;
 		x1 += 1000000, y1 += 1000000;
 		E.push_back({1, x0, y0, y1 - 1});
