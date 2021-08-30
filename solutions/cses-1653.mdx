@@ -18,16 +18,12 @@ import java.io.*;
 import java.util.*;
 
 public class ElevatorRides {
-	public static int people, maxWeight;
-	public static int[] weight;
-	public static State[] dp;
-
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-		people = io.nextInt();
-		maxWeight = io.nextInt();
+		int people = io.nextInt();
+		int maxWeight = io.nextInt();
 
-		weight = new int[people];
+		int[] weight = new int[people];
 		for (int i = 0; i < people; i++) {
 			weight[i] = io.nextInt();
 		}
@@ -38,7 +34,7 @@ public class ElevatorRides {
 		 * The bitmask is used to represent whether the people have used the elevator.
 		 * If the ith bit is set, it means the ith person has used the elevator.
 		 */
-		dp = new State[1 << people];
+		State[] dp = new State[1 << people];
 		dp[0] = new State(1, 0);
 
 		for (int mask = 1; mask < (1 << people); mask++) {
