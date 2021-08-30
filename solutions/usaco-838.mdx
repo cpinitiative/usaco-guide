@@ -2,7 +2,7 @@
 id: usaco-838
 source: USACO Gold 2018 Open
 title: Milking Order
-author: Qi Wang, Melody Yu
+author: Timothy Gao, Qi Wang, Melody Yu
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_milkorder_gold_open18.html)
@@ -11,6 +11,12 @@ author: Qi Wang, Melody Yu
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <Youtube id="OaL9vEkShyk" />
+
+## Explanation
+
+Denote each cow as a node in a graph. Let's draw a directed edge from each node $u$ to another node $v$ if $u$ must come before $v$. Note that this can be done when we process the $M$ observations. Now, notice that an ordering is valid only if the resulting graph is a DAG. Additionally, we can use a priority queue (instead of a queue) with topological sort to generate the lexicographically minimum topological ordering. It remains to find how many observations we can follow starting from the first observation, which we can binary search for.
+
+Note that the idea of using a priority queue during topological sort is also used [here](https://cses.fi/problemset/task/1757)
 
 **Time Complexity:** $\mathcal{O}((E + N \log N) \log M)$
 

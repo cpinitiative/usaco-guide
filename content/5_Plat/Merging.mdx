@@ -2,6 +2,7 @@
 id: merging
 title: Small-To-Large Merging
 author: Michael Cao, Benjamin Qi
+contributors: Neo Wang
 prerequisites:
   - intro-tree
   - PURS
@@ -79,41 +80,49 @@ root), each element will be moved at most $\mathcal{O}(\log N$) times.
 
 using namespace std;
 
-const int MX = 200005;
+const int MAX_N = 2e5;
 
-vector<int> adj[MX]; set<int> col[MX]; long long ans[MX];
-void dfs(int v, int p){
-    for(int e : adj[v]){
-        if(e != p){
-           dfs(e, v);
-           if(col[v].size() < col[e].size()){
-               swap(col[v], col[e]);
-           }
-           for(int a : col[e]){
-               col[v].insert(a);
-           }
-           col[e].clear();
-        }
-    }
-    ans[v] = col[v].size();
+// nodes will be 1-indexed like in the problem
+vector<int> adj[MAX_N + 1];
+
+set<int> colors[MAX_N + 1];
+int distinct_num[MAX_N + 1];
+
+void process_colors(int curr, int parent) {
+	for (int n : adj[curr]) {
+		if (n != parent) {
+			process_colors(n, curr);
+			// make x the larger set always
+			if (colors[curr].size() < colors[n].size()) {
+				swap(colors[curr], colors[n]);
+			}
+			for (int item : colors[n]) {
+				colors[curr].insert(item);
+			}
+		}
+	}
+	distinct_num[curr] = colors[curr].size();
 }
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    int n; cin >> n;
-    for(int i = 0; i < n; i++){
-        int x; cin >> x;
-        col[i].insert(x);
-    }
-    for(int i = 0; i < n - 1; i++){
-        int u,v; cin >> u >> v;
-        u--; v--;
-        adj[u].push_back(v); adj[v].push_back(u);
-    }
-    dfs(0,-1);
-    for(int i = 0; i < n; i++){
-        cout << ans[i] << " ";
-    }
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		colors[i].insert(a);
+	}
+	for (int i = 1; i < n; i++) {
+		int a;
+		int b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	process_colors(1, 0);
+	for (int i = 1; i <= n; i++) {
+		cout << distinct_num[i] << (i < n ? " " : "\n");
+	}
 }
 ```
 

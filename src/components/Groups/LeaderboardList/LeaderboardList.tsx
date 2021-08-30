@@ -24,7 +24,7 @@ const LeaderboardListItem = ({
             {place}. {member.displayName}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-            {points} points
+            {Math.round(points)} points
           </p>
         </div>
         {activeUserId === member.uid && (

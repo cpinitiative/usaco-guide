@@ -88,7 +88,7 @@ export const LeaderboardTable = (props: LeaderboardTableProps): JSX.Element => {
                     {person.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {person.points}
+                    {Math.round(person.points)}
                   </td>
                   {/*<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">*/}
                   {/*  MMMM Do YYYY, h:mm:ss a*/}
@@ -109,7 +109,7 @@ export const LeaderboardTable = (props: LeaderboardTableProps): JSX.Element => {
                         props.onCellClick(idx, payload)
                       }
                     >
-                      {value}
+                      {Math.round(parseFloat(value))}
                     </td>
                   ))}
                 </tr>
