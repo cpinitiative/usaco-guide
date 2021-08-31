@@ -8,6 +8,7 @@ import {
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 import { GroupData } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 
@@ -30,6 +31,7 @@ const UserGroupsProvider = ({
   const [isLoading, setIsLoading] = React.useState(!!firebaseUser?.uid);
   const [groups, setGroups] = React.useState<null | GroupData[]>(null);
   const [updateCtr, setUpdateCtr] = React.useState(0);
+  const { isAdmin } = useUserPermissions();
 
   useFirebaseApp(
     firebaseApp => {
@@ -47,16 +49,27 @@ const UserGroupsProvider = ({
       };
 
       Object.keys(queries).forEach(key => {
-        getDocs<GroupData>(
-          query(
-            collection(getFirestore(firebaseApp), 'groups'),
-            where(key, 'array-contains', firebaseUser?.uid)
-          )
-        ).then(snap => {
-          queries[key] = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const docQuery = !isAdmin
+          ? getDocs<GroupData>(
+              query(
+                collection(getFirestore(firebaseApp), 'groups'),
+                // queries gruops that the current user is in
+                where(key, 'array-contains', firebaseUser?.uid)
+              )
+            )
+          : getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
 
+        docQuery.then(snap => {
+          // with the resulting collection snapshot
+          queries[key] = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          // if all queries are done
           if (Object.keys(queries).every(x => queries[x] !== null)) {
             setGroups(Object.values(queries).flat());
+            console.log(Object.values(queries).flat());
             setIsLoading(false);
           }
         });
