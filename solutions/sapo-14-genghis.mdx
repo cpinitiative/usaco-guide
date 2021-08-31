@@ -37,23 +37,22 @@ int main() {
 		std::cin >> h;
 		assert(0 < h && h <= horse_num);
 	}
-	// add two "out-of-bounds" horses for later reasons
+	// add two "out-of-bounds" horses
 	stable_horses.push_back(0);
 	stable_horses.push_back(horse_num + 1);
 
 	std::sort(stable_horses.begin(), stable_horses.end());
 	
 	/*
-	 * this[i][j] = min operations if we only consider horses
+	 * lowest_ops[i][j] = min operations if we only consider horses
 	 * from that exist in the index interval (i, j)
-	 * ex: this[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
+	 * ex: lowest_ops[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
 	 *     means that we only consider horses from (1, 10)
 	 */
 	vector<vector<int>> lowest_ops(
 		stable_num + 2, vector<int>(stable_num + 2, INT32_MAX)
 	);
 	for (int i = 0; i < stable_num + 2; i++) {
-		// not sure if the first two assignments are necessary
 		lowest_ops[i][i] = 0;
 		if (i + 1 < stable_num + 2) {
 			lowest_ops[i][i + 1] = stable_horses[i + 1] - stable_horses[i] - 1;
@@ -99,7 +98,6 @@ int main() {
 	cout << lowest_ops[0][stable_num + 1] << endl;
 }
 ```
-
 </CPPSection>
 <JavaSection>
 
@@ -125,9 +123,9 @@ public final class genghis {
 		Arrays.sort(stableHorses);
 
 		/*
- 		 * this[i][j] = min operations if we only consider horses
+ 		 * lowestOps[i][j] = min operations if we only consider horses
 		 * from that exist in the index interval (i, j)
-		 * ex: this[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
+		 * ex: lowestOps[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
 		 *     means that we only consider horses from (1, 10)
 		 */
 		int[][] lowestOps = new int[stableNum + 2][stableNum + 2];
@@ -179,7 +177,6 @@ public final class genghis {
 	}
 }
 ```
-
 </JavaSection>
 <PySection>
 
@@ -189,9 +186,9 @@ stable_num = int(input())
 stable_horses = sorted([0, horse_num + 1] + [int(input()) for _ in range(stable_num)])
 
 """
-this[i][j] = min operations if we only consider horses
+lowest_ops[i][j] = min operations if we only consider horses
 from that exist in the index interval (i, j)
-ex: this[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
+ex: lowest_ops[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
 	means that we only consider horses from (1, 10)
 """
 lowest_ops = [[float('inf') for _ in range(stable_num + 2)] for _ in range(stable_num + 2)]
