@@ -147,7 +147,7 @@ public class RangeUpdateQueries {
 
 		public SegmentTree(int n) {
 			this.n = n;
-			tree = new long[n*2];
+			tree = new long[n * 2];
 		}
 
 		public long sum(int a, int b) {
@@ -155,8 +155,8 @@ public class RangeUpdateQueries {
 			b += n;
 			long sum = 0;
 			while (a <= b) {
-				if (a%2 == 1) sum += tree[a++];
-				if (b%2 == 0) sum += tree[b--];
+				if (a % 2 == 1) sum += tree[a++];
+				if (b % 2 == 0) sum += tree[b--];
 				a /= 2;
 				b /= 2;
 			}
@@ -167,7 +167,7 @@ public class RangeUpdateQueries {
 			index += n;
 			tree[index] += amount;
 			for (index /= 2; index >= 1; index /= 2) {
-				tree[index] = tree[2*index]+tree[2*index+1];
+				tree[index] = tree[2 * index] + tree[2 * index + 1];
 			}
 		}
 	}
