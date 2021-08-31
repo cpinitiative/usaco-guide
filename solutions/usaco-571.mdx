@@ -24,7 +24,6 @@ You can see the algorithm in action with the test set below:
 ```cpp
 #include <iostream>
 #include <vector>
-#include <unordered_set>
 #include <algorithm>
 #include <cstdio>
 
@@ -34,14 +33,17 @@ int main() {
 	freopen("highcard.in", "r", stdin);
 	freopen("highcard.out", "w", stdout);
 
-	unordered_set<int> elsieHas;
+	bool elsieHas[100000];
+	for (int i = 0; i <= 100000; i++) {
+		elsieHas[i] = false;
+	}
 	int n;
 	cin >> n;
 
-	for (int i  = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		int card;
 		cin >> card;
-		elsieHas.insert(card);
+		elsieHas[card] = true;
 	}
 
 	vector<int> elsie;
@@ -50,11 +52,11 @@ int main() {
 	// Because we loop over the values in increasing order,
 	// the two lists will be in sorted order.
 	for (int i = 1; i <= n * 2; i++) {
-		// If Elsie doesn't have the card:
-		if (elsieHas.find(i) == elsieHas.end()) {
-			bessie.push_back(i);
-		} else {
+		// If Elsie has this card:
+		if (elsieHas[i]) {
 			elsie.push_back(i);
+		} else {
+			bessie.push_back(i);
 		}
 	}
 	
