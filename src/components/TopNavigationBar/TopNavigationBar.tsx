@@ -55,14 +55,14 @@ export default function TopNavigationBar({
     {
       name: 'Classes',
       description:
-        'Learn USACO through high-quality classes with a curriculum developed by past USACO Finalists',
+        'Learn USACO through high-quality classes with material developed by past USACO Finalists',
       href: 'https://joincpi.org/classes',
       icon: AcademicCapIcon,
     },
     {
       name: 'Clubs',
       description:
-        'Get access to curriculum, problemsets, and contests tailored for competitive programming clubs.',
+        'Get access to a curriculum tailored for competitive programming clubs.',
       href: 'https://joincpi.org/clubs',
       icon: UserGroupIcon,
     },
@@ -208,7 +208,7 @@ export default function TopNavigationBar({
                                 indexPage
                                   ? 'max-w-6xl px-2 lg:px-6'
                                   : 'max-w-7xl px-2 sm:px-4 lg:px-8',
-                                'mx-auto grid gap-y-6 py-6 sm:grid-cols-2 sm:gap-8 sm:px-6 sm:py-8 lg:grid-cols-4 lg:px-8 lg:py-12'
+                                'mx-auto grid gap-y-6 py-2 sm:grid-cols-2 sm:gap-8 sm:px-6 sm:py-8 lg:grid-cols-6 lg:px-8 lg:py-6'
                               )}
                             >
                               {userGroups.data?.length > 0 && (
@@ -257,7 +257,7 @@ export default function TopNavigationBar({
                                 >
                                   <div className="flex md:h-full lg:flex-col">
                                     <div className="flex-shrink-0">
-                                      <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                      <span className="inline-flex justify-center items-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
                                         <item.icon
                                           className="h-6 w-6"
                                           aria-hidden="true"
@@ -273,10 +273,6 @@ export default function TopNavigationBar({
                                           {item.description}
                                         </p>
                                       </div>
-                                      <p className="mt-2 text-sm font-medium text-blue-600 lg:mt-4">
-                                        Open in new tab{' '}
-                                        <span aria-hidden="true">&rarr;</span>
-                                      </p>
                                     </div>
                                   </div>
                                 </a>
