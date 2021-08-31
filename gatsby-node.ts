@@ -25,7 +25,7 @@ try {
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
 
 exports.onCreateNode = async api => {
-  const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
+  const { node, actions, loadNodeContent, createContentDigest, createNodeId, } =
     api;
 
   const { createNodeField, createNode, createParentChildLink } = actions;
