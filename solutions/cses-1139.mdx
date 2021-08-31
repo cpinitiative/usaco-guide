@@ -66,22 +66,22 @@ int tour[MAXN], color[MAXN], answer[MAXN], lend[MAXN];
 vector<int> adj[MAXN];
 int idx = 0;
 
-void dfs(int u, int par = 0){
+void dfs(int u, int par = 0) {
 	lend[u] = idx;
-	for(int n : adj[u]){
+	for(int n : adj[u]) {
 		if(n == par) continue;
 		dfs(n, u);
 	}
 	tour[idx] = u; idx++;
 }
 
-int main(){
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
 	int N, u, v; cin >> N;
-	for(int i = 1; i <= N; i++){
+	for(int i = 1; i <= N; i++) {
 		cin >> color[i];
 	}
-	for(int i = 0; i < N-1; i++){
+	for(int i = 0; i < N-1; i++) {
 		cin >> u >> v;
 		adj[u].pb(v);
 		adj[v].pb(u);
@@ -91,9 +91,9 @@ int main(){
 	map<int, int> last;
 	// This map stores the rightmost occurrence of each color
 
-	for(int i = 0; i < N; i++){
+	for(int i = 0; i < N; i++) {
 		// If we ever considered the color of tour[i]
-		if(last.count(color[tour[i]])){ 
+		if(last.count(color[tour[i]])) { 
 			// The last time the color of tour[i] appeared, we make that 0 again
 			bit.update(last[color[tour[i]]], -1); 
 		}
@@ -104,7 +104,7 @@ int main(){
 		// The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
 	}
-	for(int i = 1; i <= N; i++){
+	for(int i = 1; i <= N; i++) {
 		cout << answer[i] << " ";
 	}
 }
