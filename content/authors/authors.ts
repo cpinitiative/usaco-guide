@@ -52,6 +52,16 @@ export const Authors: Author[] = [
   //   email: 'bcdean@clemson.edu',
   // },
   {
+    photo: 'michael',
+    name: 'Michael Cao',
+    title: 'Core Team',
+    blurb:
+      'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
+    codeforces: 'caoash',
+    email: 'caoash@gmail.com',
+    github: 'caoash',
+  },
+  {
     photo: 'darren',
     name: 'Darren Yao',
     title: 'Core Team',
@@ -118,16 +128,6 @@ export const Authors: Author[] = [
     codeforces: 'Benq',
     email: 'bqi343@gmail.com',
     github: 'bqi343',
-  },
-  {
-    photo: 'michael',
-    name: 'Michael Cao',
-    title: 'Former Core Team',
-    blurb:
-      'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
-    codeforces: 'caohash',
-    email: 'cao.michael14@gmail.com',
-    github: 'caoash',
   },
   {
     photo: 'nathanc',
