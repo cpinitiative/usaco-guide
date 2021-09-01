@@ -208,7 +208,10 @@ export default function TopNavigationBar({
                                 indexPage
                                   ? 'max-w-6xl px-2 lg:px-6'
                                   : 'max-w-7xl px-2 sm:px-4 lg:px-8',
-                                'mx-auto grid gap-y-6 py-2 sm:grid-cols-2 sm:gap-8 sm:px-6 sm:py-8 lg:grid-cols-6 lg:px-8 lg:py-6'
+                                userGroups.data?.length > 0 
+                                  ? 'lg:grid-cols-7' 
+                                  : 'lg:grid-cols-6',
+                                'mx-auto grid gap-y-6 py-2 sm:grid-cols-2 sm:gap-8 sm:px-6 sm:py-8 lg:px-8 lg:py-6'
                               )}
                             >
                               {userGroups.data?.length > 0 && (
@@ -233,16 +236,13 @@ export default function TopNavigationBar({
                                       <div>
                                         <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
                                           Groups
+                                          <span className="ml-2 text-blue-600" aria-hidden="true">&rarr;</span>
                                         </p>
                                         <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
                                           A Learning Management System fully
                                           integrated with the USACO Guide.
                                         </p>
                                       </div>
-                                      <p className="mt-2 text-sm font-medium text-blue-600 lg:mt-4">
-                                        Open{' '}
-                                        <span aria-hidden="true">&rarr;</span>
-                                      </p>
                                     </div>
                                   </div>
                                 </Link>
@@ -268,6 +268,7 @@ export default function TopNavigationBar({
                                       <div>
                                         <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
                                           {item.name}
+                                          <span className="ml-2 text-blue-600" aria-hidden="true">&rarr;</span>
                                         </p>
                                         <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
                                           {item.description}
