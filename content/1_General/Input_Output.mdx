@@ -69,7 +69,7 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are
+In most websites (such as CodeForces and CSES), and in USACO problems after December 2020, input and output are
 **standard**.
 
 <LanguageSection>
@@ -384,26 +384,52 @@ faster method of input.
 
 <PySection>
 
-### Python
-
+### Method 1 - [`input()`](https://docs.python.org/3/library/functions.html#input) and [`print()`](https://docs.python.org/3/library/functions.html#print)
 The most intuitive way to do input/output is using the built in
-[`input()`](https://docs.python.org/3/library/functions.html#input) and
-[`print()`](https://docs.python.org/3/library/functions.html#print) methods. The
+`input()` and
+`print()` methods. The
 `input()` method will return the next line, and can be processed using different
 python methods. The `print()` method takes in a string and an optional string
 `end` (defaults to `'\n'`). Below is an annotated demonstration on different
 input/output scenarios.
 
+
 ```py
 # read in a string
-myStr = input()
+my_str = input()
 # prints the string on its own line
-print(myStr)
+print(my_str)
 
 # take in an integer n on a single line
 n = int(input())
 # prints integer n with " test" after it
 print(n, end=" test")
+```
+### Method 2 - [`stdin`](https://docs.python.org/3/library/sys.html#sys.stdin) and [`stdout`](https://docs.python.org/3/library/sys.html#sys.stdout)
+
+The first method of reading input can be far slower than using `stdin` (Hundreds of times slower!). Coupled with python's relatively slow execution speed, reading input efficienctly becomes incredibly important. 
+
+```py
+# import the sys module to use std in/out
+import sys 
+# sys.stdin/stdout is similar to a file, in that we read lines for input/output
+my_str = sys.stdin.readline()
+sys.stdout.write(str(myStr) + '\n')
+# renaming the read/write methods
+input = sys.stdin.readline
+print = sys.stdout.write
+
+# taking an integer as input
+my_int = int(input())
+# sys.stdout.write requires you to format code manually
+print(str(my_int) + '\n')
+
+# for larger inputs, you can buffer the problem's input, and sort through it yourself. Fastest input method for python.
+all_data = sys.stdin.read().split('\n')
+
+
+
+
 ```
 
 We can also [`split`](https://docs.python.org/3/library/stdtypes.html#str.split)
@@ -412,10 +438,14 @@ along with [`map`](https://docs.python.org/3/library/functions.html#map) or a
 to read in multiple integers on the same line (separated by whitespace).
 
 ```py
+import sys
 # read in a series of numbers on one line into a list
 nums = [int(x) for x in input().split()]
 # does the same thing
 nums = list(map(int, input().split()))
+
+# stdin/stdout, just replace input() with sys.stdin.readline()
+nums = list(map(int, sys.stdin.readline().split()))
 ```
 
 We can use something similar to the above if we are unpacking a fixed number of
@@ -426,20 +456,21 @@ integers.
 n, m = [int(x) for x in input().split()]
 # does the same thing
 n, m = map(int, input().split())
+
+#stdin and stdout
+n, m = map(int, sys.stdin.readline().split())
 ```
 
-So taking three integers as input and printing their sum is quite simple:
+So taking three integers as input and printing their sum is quite simple. On a larger scale (thousands of integers), using stdin and stdout become far more important for speed:
 
 ```py
 a,b,c = map(int, input().split())
 print("sum is",a+b+c)
+
+# stdin and stdout
+a,b,c = map(int, sys.stdin.readline().split())
+print("sum is",a+b+c)
 ```
-
-<IncompleteSection>
-
-is there some other source which covers this?
-
-</IncompleteSection>
 
 </PySection>
 
