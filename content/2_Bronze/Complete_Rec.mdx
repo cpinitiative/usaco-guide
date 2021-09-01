@@ -122,7 +122,7 @@ public class Main {
 		}
 
 		return Math.min(
-			solve(index + 1, sum1 + weights[index], sum2), 
+			solve(index + 1, sum1 + weights[index], sum2),
 			solve(index + 1, sum1, sum2 + weights[index])
 		);
 	}
@@ -365,7 +365,12 @@ validity.
 
 Just a slight modification of method 1 from CPH.
 
-We'll use the recursive function $\texttt{search}$ to find all the permutations of the string $s$. First, keep track of how many of each character there are in $s$. For each function call, add an available character to the current string, and call $\texttt{search}$ with that string. When the current string has the same size as $s$, we've found a permutation and can add it to the list of $\texttt{perms}$.
+We'll use the recursive function $\texttt{search}$ to find all the permutations
+of the string $s$. First, keep track of how many of each character there are in
+$s$. For each function call, add an available character to the current string,
+and call $\texttt{search}$ with that string. When the current string has the
+same size as $s$, we've found a permutation and can add it to the list of
+$\texttt{perms}$.
 
 <LanguageSection>
 
@@ -561,7 +566,7 @@ smaller than the initial string won't be generated.
 #include <algorithm>
 using namespace std;
 
-int main() 
+int main()
 {
 	string s;
 	cin >> s;
@@ -790,7 +795,7 @@ public class Chessboard {
 		io.println(ans);
 		io.close();
 	}
-	
+
 	public static void genperm() {
 		if (perm.size() == 8) {
 			boolean works = true;
@@ -825,7 +830,7 @@ public class Chessboard {
 			}
 		}
 	}
-	
+
 	CodeSnip{Kattio}
 }
 ```
@@ -894,7 +899,7 @@ public class Main {
 	static String g[];
 	static boolean sum[], dif[], c[];
 	static int ans = 0;
-	
+
 	static void dfs(int r) { //place queen in row r
 		if (r == 8) {
 			++ans;
@@ -920,7 +925,7 @@ public class Main {
 		io.println(ans);
 		io.close();
 	}
-	
+
 	CodeSnip{Kattio}
 }
 ```
@@ -985,3 +990,145 @@ appear much less frequently then they once did.
 make code consistent, improve some of these explanations
 
 </IncompleteSection>
+
+<Quiz>
+  <Quiz.Question>
+    What is the time complexity of going through all the permutations of an array of length $n$?
+    <Quiz.Answer>
+      $\mathcal{O}(n)$
+      <Quiz.Explanation>
+        Consider how many permutations there are in total
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(2^n)$
+      <Quiz.Explanation>
+        Remember that permutations and subsets are different
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n!)$
+      <Quiz.Explanation>
+        It also takes time to generate the permutations
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(n! \cdot n)$
+      <Quiz.Explanation>
+        Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    How many times will the following code print "Hello World"?
+    ```c++
+    int A[] = {5, 4, 3, 1, 2};
+    do {
+    	printf("Hello World\n");
+    } while (next_permutation(A, A + 5));
+    ```
+    <Quiz.Answer>
+      120
+      <Quiz.Explanation>
+        Recall that for $\texttt{next\_permutation}$ to work as intended, the array needs be sorted
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      720
+      <Quiz.Explanation>
+        There are only $5! = 120$ different permutations of 5 numbers
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      2
+      <Quiz.Explanation>
+        This is a common mistake when generating permutations. Make sure to sort the array before using $\texttt{next\_permutation}$ !
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      1
+      <Quiz.Explanation>
+        Remember that it's a $\texttt{do-while}$ loop, so you also have to count the initial permutation
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    The following code is meant to generate all subsets of a given array:
+    ```c++
+    int A[] = {1, 2, 3, 4, 5};
+    
+    void generateSubsets(int i, vector<int> &subset) {
+    	if (i == 5) {
+    		for (int x : subset)
+    			cout << x << ' ';
+    		cout << '\n';
+    	}
+    
+    	subset.push_back(A[i]);
+    	generateSubsets(i + 1, subset);
+    	subset.pop_back();
+    	generateSubsets(i + 1, subset);
+    }
+    ```
+    There is an error with this code that causes it to crash. What does the corrected code look like?
+    <Quiz.Answer>
+      ```c++
+      void generateSubsets(int i, vector<int> &subset) {
+      	if (i == 5) {
+      		for (int x : subset)
+      			cout << x << ' ';
+      		cout << '\n';
+      	}
+		
+		// must always go to empty subset first
+      	generateSubsets(i + 1, subset);
+      	subset.push_back(A[i]);
+      	generateSubsets(i + 1, subset);
+      }
+      ```
+      <Quiz.Explanation>
+        This is another way of generating subsets, but it's not the error!
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```c++
+      void generateSubsets(int i, vector<int> &subset) {
+      	if (i == 4) { // incorrect ending index
+      		for (int x : subset)
+      			cout << x << ' ';
+      		cout << '\n';
+      	}
+      
+      	subset.push_back(A[i]);
+      	generateSubsets(i + 1, subset);
+      	subset.pop_back();
+      	generateSubsets(i + 1, subset);
+      }
+      ```
+      
+      <Quiz.Explanation>
+        This doesn't stop the error and prevents us from adding the last number to any subset
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      ```c++
+      void generateSubsets(int i, vector<int> &subset) {
+      	if (i == 5) {
+      		for (int x : subset)
+      			cout << x << ' ';
+      		cout << '\n';
+      		return; // missing return statement
+      	}
+      
+      	subset.push_back(A[i]);
+      	generateSubsets(i + 1, subset);
+      	subset.pop_back();
+      	generateSubsets(i + 1, subset);
+      }
+      ```
+      <Quiz.Explanation>
+        After we finish printing (or checking) the subset, remember to always return immediately. Otherwise, it causes nasty errors that often crashes the program.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
