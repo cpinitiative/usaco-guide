@@ -24,28 +24,28 @@ All that is left to do is to efficiently query for the minimum node on a tree pa
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+	
+const int MAXN = 2e5;
+const int LOGN = 18;
  
-// Simple DSU class
+// Simple DSU class with Small to Large merging
 template<size_t N> struct UnionFind {
 	int par[N], sze[N], max_size;
  
 	UnionFind(int n = N) { init(n); }
  
-	/** Complexity: O(n) */ 
 	void init(int n = N) {
 		iota(par, par + n, 0);
 		fill(sze, sze + n, 1);
 		max_size = 1;
 	}
  
-	/** Complexity: O(alpha(n)) */ 
 	int find(int a) {
 		if (a == par[a])
 			return a;
 		return par[a] = find(par[a]);
 	}
  
-	/** Complexity: O(alpha(n)) */ 
 	bool merge(int a, int b) {
 		a = find(a), b = find(b);
 		if (a == b) 
@@ -64,18 +64,17 @@ template<size_t N> struct UnionFind {
 		return 1;
 	}
  
-	/** Complexity: O(alpha(n)) */ 
 	int size(int a) { 
 		return sze[find(a)]; 
 	}
 };
  
 int N, M, Q;
-vector<pair<int, int>> G[200005];
-UnionFind<200005> dsu;
+vector<pair<int, int>> G[MAXN];
+UnionFind<MAXN> dsu;
  
 namespace LCA {
-	int dep[200005], par[200005][18], val[200005][18];
+	int dep[MAXN], par[MAXN][LOGN], val[MAXN][LOGN];
  
 	void dfs_init(int u, int p, int d) {
 		dep[u] = d;
@@ -137,7 +136,6 @@ namespace LCA {
  
  
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
 	dsu.init();
  
 	cin >> N >> M >> Q;
