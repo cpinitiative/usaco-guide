@@ -5,15 +5,15 @@ title: Distinct Colors
 author: Timothy Gao
 ---
 
-## Editorial
+## Solution 1 - Small to Large Merging
+
+See [here](/plat/merging#merging-data-structures).
+
+## Solution 2 - PURS
 
 Let us consider the Euler Tour of the tree. We flatten the tree into an array, where each node corresponds to a range in this array. Now, we are essentially tasked to find the number of distinct values in a range $N$ times (once for each node).
 
-There are a variety of ways to approach the problem from here. We could use [small-to-large merging](/plat/merging), but using BIT suffices.
-
-### Solution: PURS
-
-One such solution is with a Binary Indexed Tree. Let us consider iterating through the Euler Tour array from left to right. 
+Let us consider iterating through the Euler Tour array from left to right. 
 When we consider a node at index $i$ in the Euler Tour array, its subtree range will be $[j, i]$, where $j\leq i$.
 Now, let's focus on a single color. Notice that if there are multiple colors $c$ to the left of a certain index $i$,
 only $c$'s most rightmost occurrence is relevant. This is because any non-rightmost occurrence of $c$
