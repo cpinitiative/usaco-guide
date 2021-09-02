@@ -7,6 +7,9 @@ author: Ananth Kashyap
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_photo_bronze_jan20.html)
 
+We'll start by saying that for each $i$ in range $[1, N]$, $a_1 = i.$ For all other values of $a_i,$ we're given $b_i = a_i + a_{i+1}$ for $[1, N)$, or $a_i = b_{i -1} - a_{i - 1}$ for $[2, N]$. We'll then see if these values of $a_i$ produce a valid permutation. 
+
+
 Since $N \leq 1000$, we can simulate every ordering and pick the first valid permutation (since that would be the lexicographical minimum).
 
 ## Implementation
@@ -112,4 +115,65 @@ print(ans, file=open('photo.out', 'w'))
 ```
 
 </PySection>
+<JavaSection>
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class Photoshoot {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("photo");
+
+		int N = io.nextInt();
+		int[] bessieList = new int[N];
+		int[] correctList = new int[N];
+		// Used to prevent repeated values in our permutation, which isn't right
+		List<Integer> isItThere = new ArrayList<>();
+
+		for (int i = 1; i < N; i++) {
+			bessieList[i] = io.nextInt();
+		}
+
+		// Iterate through every possible starting cow, and see if we can
+		// construct a permutation based on that.
+		for (int i = 1; i <= N; i++) {
+			correctList[0] = i;
+			isItThere = new ArrayList<>();
+			for (int j = 1; j < N; j++) {
+				correctList[j] = bessieList[j] - correctList[j - 1];
+			}
+			boolean bad = false;
+			for (int k = 0; k < N; k++) {
+				// Our permutation isn't valid-there are unacceptable values
+				// So, we can stop searching. 
+				if (isItThere.contains(correctList[k]) || correctList[k] > N 
+					|| correctList[k] <= 0) {
+					bad = true;
+					break;
+				}
+				isItThere.add(correctList[k]);
+			}
+			// We've found a valid permutation-since we started from 1, the 
+			// first one we find will be the lexicographically minimum one
+			if (!bad) {
+				for (int j = 0; j < N; j++) {
+					io.print(correctList[j]);
+					if (j < N - 1) {
+						io.print(" ");
+					}
+				}
+				io.print("\n");
+				io.close();
+			}
+		}
+	}
+	CodeSnip{Kattio}
+}
+
+```
+</JavaSection>
+	
 </LanguageSection>
