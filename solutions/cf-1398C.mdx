@@ -101,15 +101,11 @@ public class GoodSubarrays {
 
 <PySection>
 ```py
-import sys
-input = sys.stdin.readline
-print = sys.stdout.write
 # pretty much the official editorial sol
 t_cases = int(input())
 for i in range(t_cases):
 	len_nums = int(input())
 	nums = input().strip()
-	# start with 0 at the head of list
 	record = {0: 1}
 	ans, prefix_sum = 0, 0
 
@@ -120,10 +116,10 @@ for i in range(t_cases):
 			record[val] = 0
 		record[val] += 1
 
-	for id in record:
-	# sum of positive integers less than 'f'
-		ans += (record[id] * (record[id] - 1)) // 2 
-	print(str(ans) + '\n')
+	for key in record:
+	# sum of positive integers less than 'record[key]'
+		ans += (record[key] * (record[key] - 1)) // 2 
+	print(str(ans))
 ```
 </PySection>
 
