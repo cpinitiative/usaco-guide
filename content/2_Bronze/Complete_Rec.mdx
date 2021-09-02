@@ -1020,35 +1020,50 @@ make code consistent, improve some of these explanations
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    How many times will the following code print "Hello World"?
-    ```cpp
-    int A[] = {5, 4, 3, 1, 2};
-    do {
-    	printf("Hello World\n");
-    } while (next_permutation(A, A + 5));
-    ```
+    For what size of $n$ could we expect a solution that runs through all of the subsets of an array of length $n$ under reasonable time constraints?
     <Quiz.Answer>
-      120
+      $n \leq 10^9$
       <Quiz.Explanation>
-        Recall that for $\texttt{next\_permutation}$ to work as intended, the array needs be sorted
+        There are $2^n$ subsets of $n$ numbers. $2^{10^9}$ has around 301030000 digits which would take well until the heat death of the universe to finish generating all the subsets. 
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      720
+      $n \leq 10^4$
       <Quiz.Explanation>
-        There are only $5! = 120$ different permutations of 5 numbers
+        $n = 10^4$ is still too large
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer correct>
-      2
+      $n \leq 22$
       <Quiz.Explanation>
-        This is a common mistake when generating permutations. Make sure to sort the array before using $\texttt{next\_permutation}$ !
+        This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$). 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $n \leq 10$
+      <Quiz.Explanation>
+        It's definitely possible to run a $2^n$ solution for $n \leq 10$, but you might consider easier methods such as solutions that generate all permutations
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
+    <Quiz.Answer>
+      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
+      <Quiz.Explanation>
+        A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      Iterative methods are easier to implement and are often faster and less buggy. 
+      <Quiz.Explanation>
+        Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      1
+      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
       <Quiz.Explanation>
-        Remember that it's a $\texttt{do-while}$ loop, so you also have to count the initial permutation
+        Although recursion is slowing than iterative methods, it's still fast enough to past most problems
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
