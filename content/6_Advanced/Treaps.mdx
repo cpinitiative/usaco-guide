@@ -1,8 +1,8 @@
 ---
 id: treaps
 title: 'Treaps'
-author: Benjamin Qi
-description: '?'
+author: Benjamin Qi, Dustin Miao
+description: 'A randomized binary search tree'
 prerequisites:
   - RURQ
   - 2DRQ
@@ -10,18 +10,119 @@ frequency: 2
 ---
 
 <Resources>
-	<Resource source="GCP" title="15.3 - Treaps" starred>
-		splitting & merging with code
+	<Resource 
+		source = "GCP" 
+		title = "15.3 - Treaps" 
+	>
+		Splitting and merging with code
+	</Resource>
+	<Resource 
+		source = "cp-algo" 
+		title = "Treap" 
+		url = "/data_structures/treap.html"
+		starred
+	>
+		Description and code
+	</Resource>
+	<Resource
+		source = "Algorithm Tutorial"
+		title = "Treaps : One Tree to Rule ’em all"
+		url = "https://tanujkhattar.wordpress.com/2016/01/10/treaps-one-tree-to-rule-em-all-part-1/"
+	>
+		Code and diagrams
+	</Resource>
+	<Resource
+		source = "Benq"
+		title = "Treap presentation"
+		url = "https://cp-algorithms.com/data_structures/treap.html#toc-tgt-6">
+		Description of Split and Merge
+	</Resource>
+	<Resource
+		source = "CF"
+		title = "Merging BSTs"
+		url = "https://codeforces.com/blog/entry/67980"
+	>
+		Proof of time complexity for merging treaps
 	</Resource>
 </Resources>
 
+# Treaps
+
+<FocusProblem problem="treeRot2"/>
+
+Like a regular binary search tree, treaps contain keys that can be inserted, erased, and searched for in $\mathcal{\Theta}(\log n)$ time. However, regular binary search trees suffer from imbalancing, which causes the tree to have up to an $\mathcal{O}(n)$ depth and blows up the time complexity. 
+
+![Unbalanced Binary Search Tree](./unbalanced_bst.png)
+
+A treap is a randomized binary search tree that stores two numbers in its nodes: a value and a priority. The values of a treap will satisfy the binary search tree property (where all the nodes in the left subtree are strictly smaller than the current node and all the nodes in the right subtree are strictly greater than the current node), and the priorities will satisfy the heap property (where all descendants of a node will have smaller or equal priorities). 
+
+![Treap](./treap.png)
+
+Treaps have two main operations: splitting and merging. Other operations like insert, erase, and searching can be implemented in terms of these operations. 
+
 ## Splitting
+
+The `split` method takes in a pointer to the root of a treap $\texttt{root}$ and a value $x$, and returns two treaps denoted as $\texttt{left}$ and $\texttt{right}$. Like the name suggests, it splits the tree such that all nodes in $\texttt{left}$ have keys less than or equal to $x$ and all nodes in $\texttt{right}$ have keys greater than $x$. 
+
+We can now implement it recursively. Let the left child of a node $n$ be denoted as $n.\texttt{left}$ and the right child as $n.\texttt{right}$.
+- If $\texttt{root} \leq x$, then both the root and the left subtree belong to $\texttt{left}$. We now consider a call to `split` on $\texttt{root.right}$ and note its results as $\texttt{left'}$ and $\texttt{right'}$. Finally, $\texttt{left}$ contains $\texttt{left'}$ and $\texttt{right} = \texttt{right'}$
+- If $\texttt{root} > x$, then both the root and the right subtree belong to $\texttt{right}$. We now consider a call to `split` on $\texttt{root.left}$ and note its results as $\texttt{left'}$ and $\texttt{right'}$. Finally, $\texttt{right}$ contains $\texttt{right'}$ and $\texttt{left} = \texttt{left'}$
 
 ## Merging
 
-## Merging (Arbitrary Keys)
+The `merge` method inverts the `split` method by taking in two treaps $\texttt{left}$ and $\texttt{right}$ and returns a single treap that has the nodes of both treaps. It works under the assuption that all keys $x \in \texttt{left}$ are strictly smaller than all keys $y \in \texttt{right}$. Furthermore, we need to merge these two treaps such that the resultant treap still satisfies the max heap property. 
 
-<Problems problems="treeRot" />
+We root the resultant treap at the root node that has the higher priority, and recursively call `merge` on the other tree and the corresponding subtree of the chosen tree. 
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+struct Node {
+	int val, pri;
+	Node *left, *right;
+
+	Node(int _val) : val(_val), pri(rand()), left(NULL), right(NULL) {};
+} *root;
+
+void split(Node *root, int x, Node &*left, Node &*right) {
+	if (!root) {
+		left = right = NULL;
+		return;
+	}
+
+	if (root->val <= x) {
+		split(root->right, x, root->right, right);
+		left = root;
+	}
+	else {
+		split(root->left, x, left, root->left);
+		right = root;
+	}
+}
+
+void merge(Node &*root, Node *left, Node *right) {
+	if (!l || !r) {
+		root = l ? l : r;
+		return;
+	}
+
+	if (left->pri > r->pri) {
+		merge(left->right, left->right, right);
+		root = left
+	}
+	else {
+		merge(right->left, left, right->left);
+		root = right;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Spoiler title="Tree Rotations 2 Solution">
 
@@ -92,34 +193,18 @@ int main() {
 </Spoiler>
 
 <Optional>
-
-[This](https://codeforces.com/blog/entry/67980) CF post describes a more general
-version of the problem above.
-
+For speed / memory, use arrays of fixed size rather than pointers.
 </Optional>
 
-## Tutorial
-
-- [Quora](https://tanujkhattar.wordpress.com/2016/01/10/treaps-one-tree-to-rule-em-all-part-1/)
-- [PPT](https://docs.google.com/presentation/d/14xgtdDWnIBwmJRAuIdZ8FvLZcX9uRxnNoGOGAQRDIvc/edit?usp=sharing)
-- Samuel Hsiang Guide (see resources)
-
-## Notes
-
-- For speed / memory, use arrays of fixed size rather than pointers.
-
 ## Problems
-
+- [NOI - Maintaining a Sequence](https://dmoj.ca/problem/noi05p2)
 - [Old Gold - Airplane Boarding](http://www.usaco.org/index.php?page=viewproblem2&cpid=402)
-- [Strings](https://csacademy.com/contest/archive/task/strings/)
-- [Points & Distances](https://www.hackerearth.com/problem/algorithm/septembereasy-points-and-distances-d30d0e6b/description/)
+- [CSA - Strings](https://csacademy.com/contest/archive/task/strings/)
+- [HE - Points & Distances](https://www.hackerearth.com/problem/algorithm/septembereasy-points-and-distances-d30d0e6b/description/)
+- [IOI 2013 - Game](https://oj.uz/submission/242393)
 
-### Nested
-
-IOI 2013 Game - https://oj.uz/submission/242393
-
-A2OJ: https://a2oj.com/category?ID=14
-
-https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement
-
-?
+<IncompleteSection>
+- Add [Implicit Treaps](https://cp-algorithms.com/data_structures/treap.html#toc-tgt-6)
+- Add merging treaps
+- Format problems
+</IncompleteSection>
