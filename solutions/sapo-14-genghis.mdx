@@ -5,6 +5,8 @@ title: The Stables of Genghis Khan
 author: Kevin Sheng
 ---
 
+## Solution
+
 Let's define $\texttt{lowestOps}[a][b]$ as the minimum number of operations to see if each horse is in the stables or not, given that we only consider horses in the interval $(\texttt{stableHorses[a]}, \texttt{stableHorses[b]})$, with $\texttt{stableHorses}$ being a sorted list of all the horses that are in the stables.
 
 Why use an open interval? It's to account for the horses with ID's that aren't contained in the range of the ID's of the horses of the stable. For example, if we had a horse with ID $4$, and the horses in the stables were $[6, 7, 10]$, then there would be no way for $\texttt{lowestOps}$ to account for that horse.
@@ -14,6 +16,10 @@ To solve this, we can add two more hypothetical horses that are just out of boun
 Then, to calculate the value for an interval, we go through all possible roots we can use for the tree of that interval. If we're calculating $\texttt{lowestOps}[a][b]$ with $b-a\geq3$ and we're using a root $c$ ($a<c<b$), then we have the following recurrence relation:
 
 $$\texttt{lowestOps}[a][b]=\texttt{lowestOps}[a][c]+\texttt{lowestOps}[c][b]+(stableHorses[b]-stableHorses[a]-1)$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 <CPPSection>
