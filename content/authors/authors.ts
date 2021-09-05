@@ -25,6 +25,16 @@ export const Authors: Author[] = [
     github: 'thecodingwizard',
   },
   {
+    photo: 'benq',
+    name: 'Benjamin Qi',
+    title: 'Content Director',
+    blurb:
+      'Benjamin Qi is a two-time IOI winner, USACO Problemsetter, and part of the MIT Class of 2023.',
+    codeforces: 'Benq',
+    email: 'bqi343@gmail.com',
+    github: 'bqi343',
+  },
+  {
     photo: "maggie",
     name: "Maggie Liu",
     title: "Executive",
@@ -118,16 +128,6 @@ export const Authors: Author[] = [
     github: "nwatx",
     website: "https://nwatx.me",
     email: "neowangatx@gmail.com",
-  },
-  {
-    photo: 'benq',
-    name: 'Benjamin Qi',
-    title: 'Former Content Director',
-    blurb:
-      'Benjamin Qi is a two-time IOI winner, USACO Problemsetter, and part of the MIT Class of 2023.',
-    codeforces: 'Benq',
-    email: 'bqi343@gmail.com',
-    github: 'bqi343',
   },
   {
     photo: 'nathanc',
