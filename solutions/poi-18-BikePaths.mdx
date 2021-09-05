@@ -1,0 +1,128 @@
+---
+id: poi-18-BikePaths
+source: POI
+title: 2018 - Bike Paths
+author: Neo Wang
+---
+
+## Explanation
+
+Notice that groups of intersections can **form strongly connected components.**
+Therefore, treat each component as a node with initial value equal to the size
+of the component. Since the resulting strongly connected components
+$\texttt{comp}$ form a directed acyclic graph (specifically a tree, because of
+the "justness" from the problem statement), process the edges $e$ in reverse
+topographical order $c$ with the following relation where $\texttt{dp}[i]$ is
+the # of intersections that can be reached from component $i$:
+
+$$
+\texttt{dp}[\texttt{comp}[e]] = \texttt{dp}[\texttt{comp}[e]] +\sum_{e \in \texttt{radj}[c]} \texttt{dp}[\texttt{{comp}}[c]] : \texttt{comp}[c] \neq \texttt{comp}[e]
+$$
+
+The final answer for intersection $i$ is $\texttt{dp}[\texttt{comp}[i]] - 1$,
+since we exclude the starting intersection from the answer.
+
+<Warning>
+
+This solution _only_ works on a tree (and not a general DAG), because of over
+counting.
+
+Suppose we have a graph with $N=4$ nodes, and the edges
+
+```
+1 2
+1 3
+2 4
+3 4
+```
+
+which correspond to the edges
+$1 \rightarrow 2, 1 \rightarrow 3,2 \rightarrow 4,3 \rightarrow 4$.
+
+A valid topographical sort could be in the order $4, 2, 3, 1$, which would not
+work because node $4$ is counted twice. Our calls would be as follows:
+
+- $\texttt{dp}[4] = 1$
+- $\texttt{dp}[2] = 1 + \texttt{dp}[4] = 2$
+- $\texttt{dp}[3] = 1 + \texttt{dp}[4] = 2$
+- $\texttt{dp}[1] = 1 + \texttt{dp}[2] + \texttt{dp}[3] = 5$
+
+Evidently, $\texttt{dp}[4]$ is counted twice in $\texttt{dp}[1]$.
+
+</Warning>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// CodeSnip{Benq Template}
+
+/**
+ * Description: Kosaraju's Algorithm, DFS twice to generate
+	 * strongly connected components in topological order. $a,b$
+	 * in same component if both $a\to b$ and $b\to a$ exist.
+ * Time: O(N+M)
+ * Source: Wikipedia
+ * Verification: POI 8 peaceful commission
+ */
+struct SCC {
+	int N; vector<vi> adj, radj;
+	vi todo, comp, comps; vector<bool> vis;
+	void init(int _N) { N = _N;
+		adj.rsz(N), radj.rsz(N), comp = vi(N,-1), vis.rsz(N); }
+	void ae(int x, int y) { adj[x].pb(y), radj[y].pb(x); }
+	void dfs(int x) {
+		vis[x] = 1; each(y,adj[x]) if (!vis[y]) dfs(y);
+		todo.pb(x); }
+	void dfs2(int x, int v) {
+		comp[x] = v;
+		each(y,radj[x]) if (comp[y] == -1) dfs2(y,v); }
+	void gen() { // fills allComp
+		F0R(i,N) if (!vis[i]) dfs(i);
+		reverse(all(todo));
+		each(x,todo) if (comp[x] == -1) dfs2(x,x), comps.pb(x);
+	}
+};
+
+int N, M;
+
+int dp[100001];
+
+int main() {
+	setIO();
+
+	re(N, M);
+	SCC scc; scc.init(N);
+	F0R(i, M) {
+		int1(a, b);
+		scc.ae(a, b);
+	}
+
+	scc.gen();
+
+	F0R(i, N) { dp[scc.comp[i]]++; } // component size
+	reverse(all(scc.todo));
+
+	each(c, scc.todo) {
+		// use reverse edges since we process in reverse order
+		each(e, scc.radj[c]) {
+			if(scc.comp[c] != scc.comp[e]) {
+				dp[scc.comp[e]] += dp[scc.comp[c]];
+			}
+		}
+	}
+
+	F0R(i, N) {
+		ps(dp[scc.comp[i]] - 1);
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

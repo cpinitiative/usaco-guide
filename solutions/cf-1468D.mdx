@@ -1,0 +1,110 @@
+---
+id: cf-1468D
+source: CF
+title: Firecrackers
+author: Jesse Choe
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/85951)
+
+We can initially attempt this problem by figuring out which firecrackers should explode. Obviously, we should attempt to explode the firecrackers with a minimal
+detonation time to increase the number of firecrackers exploded before eventually being caught. Also, observe that the firecrackers with a longer detonation 
+time should be dropped first.
+
+To find the maximum number of firecrackers before the hooligan gets caught by the guard, sort the detonation times in increasing order and figure out the
+maximum number of firecrackers to drop before getting caught by applying binary search.
+
+If we can determine the amount of time before getting caught, then the binary search will be trivial.
+
+There are two cases which determine the amount of time before getting caught:
+
+1. It can be proven that if $a < b$, then the amount of time before getting caught is precisely $b - 1$ seconds.
+2. It can be proven that if $a > b$, then the amount of time before getting caught is precisely $n - b$ seconds.
+
+**Note: these times are computed by assuming that both the hooligan and guard act optimally.**
+
+After computing the amount of time before getting caught, we can simulate whether a particular firecracker will explode in time.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+
+ll corridor_size;
+ll num_of_firecrackers;
+ll hooligan_location; 
+ll guard_location; 
+ll max_firecrackers;
+ll time_before_caught;
+
+bool works(vl exploding_times, ll firecrackers_exploded) {
+	int current_time = 1;
+	for (int i = firecrackers_exploded - 1; i >= 0; i--) {
+		/* Check whether a given firecracker could be exploded 
+		 * before being caught by the guard. */
+		if(current_time + exploding_times[i] > time_before_caught) {
+			return false;
+		} else {
+			++current_time;
+		}
+	}
+	return true;
+}
+
+void solve() {
+	cin >> corridor_size >> num_of_firecrackers
+		>> hooligan_location >> guard_location;
+	vl exploding_times(num_of_firecrackers);
+	for (int i = 0; i < num_of_firecrackers; i++) {
+		cin >> exploding_times[i];
+	}
+	sort(exploding_times.begin(), exploding_times.end());
+	max_firecrackers = min(
+		num_of_firecrackers,
+		abs(hooligan_location - guard_location) - 1
+	);
+	/* 
+	 * Compute the maximum time before the guard catches the
+	 * hooligan given their initial positions.
+	 */
+	if (hooligan_location < guard_location) {
+		time_before_caught = guard_location - 1;
+	} else if (hooligan_location > guard_location) {
+		time_before_caught = corridor_size - guard_location;
+	} else {
+		return;
+	}
+	ll left = 0, right = max_firecrackers, max_exploded = 0;
+	while (left <= right) {
+		ll mid = left + (right - left) / 2;
+		if (works(exploding_times, mid)) {
+			max_exploded = mid;
+			left = mid + 1;
+		} else {
+			right = mid - 1;
+		}
+	}
+	cout << max_exploded << endl;
+}
+
+int main() {
+	int t; cin >> t;
+	for (int i = 0; i < t; i++) {
+		solve();
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

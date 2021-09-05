@@ -1,0 +1,94 @@
+---
+id: usaco-718
+source: USACO Gold 2017 February
+title: Why Did the Cow Cross The Road II
+author: Brad Ma
+---
+ 
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_nocross_gold_feb17.html)
+
+The recursive approach where you try all configurations of crosswalks has the 
+time complexity $\mathcal{O}(2 ^ N)$, which is extremely slow. We observe that we have 
+many duplicate recursive calls where the configuration has been solved already, so by 
+using a top down dynamic progamming approach with memoization we can significantly reduce 
+the time complexity to $\mathcal{O}(N ^ 2)$. 
+
+In this approach, we store our answers such that if there ever is a call to it again, 
+the function uses the cached answer instead of recomputing it. A bottom up dynamic 
+progamming approach without recursion can run faster because function calls have a 
+large constant, but it is more difficult to implement and is not necessary to pass all 
+test cases.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N ^ 2)$
+
+<LanguageSection>
+  
+<JavaSection>
+  
+```java
+import java.io.*;
+import java.util.*;
+
+public class NoCross {
+	static int[] firstSide;
+	static int[] secondSide;
+	static int[][] memoization;
+
+	static boolean friendly(int cow1, int cow2) {
+		if (Math.abs(firstSide[cow1] - secondSide[cow2]) <= 4) {
+			return true;
+		}
+		return false;
+	}
+
+	static int solve (int n, int m) {
+		if (n < 0 || m < 0) {  // base case
+			return 0;
+		}
+		// if already computed, just return the value
+		if (memoization[n][m] != -1) {  
+			return memoization[n][m];
+		}
+
+		if (friendly(n, m)) {  // they are friendly, connect
+			int answer =  1 + solve(n - 1, m - 1);
+			memoization[n][m] = answer;
+			return answer;
+		}
+		// we can skip either the cow on the left side or the cow on the right
+		else {  
+			int answer = Math.max(solve(n - 1, m), solve(n, m - 1));
+			memoization[n][m] = answer;
+			return answer;
+		}
+	}
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("nocross");
+
+		int n = io.nextInt();
+		firstSide = new int[n];
+		secondSide = new int[n];
+		memoization = new int[n][n];
+
+		for (int[] memo: memoization) {  // fill matrix with -1
+			Arrays.fill(memo, -1);
+		}
+		for (int x = 0; x < n; x++) {
+			firstSide[x] = io.nextInt();
+		}
+		for (int x = 0; x < n; x++) {
+			secondSide[x] = io.nextInt();
+		}
+		io.println(solve(n - 1, n - 1));
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+                          
+</JavaSection>
+  
+</LanguageSection>

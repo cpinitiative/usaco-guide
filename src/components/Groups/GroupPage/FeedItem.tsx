@@ -2,15 +2,12 @@ import { Transition } from '@headlessui/react';
 import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import { BookmarkIcon } from '@heroicons/react/solid';
 import { Link } from 'gatsby';
-import * as React from 'react';
-import { useContext, useState } from 'react';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
 import {
-  getEarnedPointsForPost,
   getPostTimestampString,
   getTotalPointsOfPost,
   PostData,
@@ -66,16 +63,23 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
 export default function FeedItem({
   group,
   post,
+  userPoints,
+  dragHandle,
+  isBeingDragged = false,
 }: {
   group: GroupData;
   post: PostData;
+  userPoints: number | null;
+  dragHandle?: JSX.Element;
+  /**
+   * If true, the feed item will be grayed out to show that it's being dragged
+   */
+  isBeingDragged?: boolean;
 }): JSX.Element {
-  const { showAdminView, groupData } = useActiveGroup();
+  const { showAdminView } = useActiveGroup();
   const { updatePost, deletePost } = usePostActions(group.id);
-  const { firebaseUser } = useContext(UserDataContext);
 
   const [showDropdown, setShowDropdown] = useState(false);
-  const notifications = useNotificationSystem();
   const ref = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
@@ -89,9 +93,16 @@ export default function FeedItem({
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 hover:bg-cyan-50 dark:hover:bg-cyan-900 px-4 shadow sm:px-6 sm:rounded-lg transition block`}
+      className={`${
+        isBeingDragged
+          ? 'bg-gray-200 dark:bg-gray-900'
+          : 'bg-white dark:bg-gray-800 hover:bg-cyan-50 dark:hover:bg-cyan-900'
+      } shadow ${
+        dragHandle ? 'pr-4 sm:pr-6' : 'px-4 sm:px-6'
+      } sm:rounded-lg transition flex`}
     >
-      <div className="flex">
+      {dragHandle}
+      <div className="flex flex-1">
         <Link
           to={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
@@ -101,11 +112,7 @@ export default function FeedItem({
               <AnnouncementIcon />
             ) : (
               <AssignmentIcon
-                pointsEarned={getEarnedPointsForPost(
-                  groupData.leaderboard,
-                  post,
-                  firebaseUser.uid
-                )}
+                pointsEarned={userPoints ?? 0}
                 totalPoints={getTotalPointsOfPost(post)}
               />
             )}
@@ -165,7 +172,8 @@ export default function FeedItem({
                 aria-labelledby="options-menu-0"
               >
                 <div className="py-1">
-                  <button
+                  {/* Pinning is no longer needed now that posts can be reordered easily */}
+                  {/* <button
                     type="button"
                     onClick={() =>
                       updatePost(post.id, { isPinned: !post.isPinned })
@@ -175,7 +183,7 @@ export default function FeedItem({
                   >
                     <BookmarkIcon className="mr-3 h-5 w-5 text-gray-400" />
                     <span>{post.isPinned ? 'Unpin Post' : 'Pin Post'}</span>
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() =>
@@ -208,9 +216,7 @@ export default function FeedItem({
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        deletePost(post.id).catch(e =>
-                          notifications.showErrorNotification(e)
-                        );
+                        deletePost(post.id).catch(e => toast.error(e.message));
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

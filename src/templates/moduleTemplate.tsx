@@ -1,6 +1,6 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { SECTION_LABELS } from '../../content/ordering';
 import Layout from '../components/layout';
@@ -12,14 +12,29 @@ import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsCon
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { graphqlToModuleInfo } from '../utils/utils';
 
-export default function Template(props) {
+export default function Template(props): JSX.Element {
   const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
   const { body } = xdm;
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
-  const { setLastViewedModule } = useContext(UserDataContext);
+  const { isLoaded, setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
   }, []);
+
+  useEffect(() => {
+    // source: https://miguelpiedrafita.com/snippets/scrollToHash
+    const { hash } = location;
+    if (!hash) return;
+    window.requestAnimationFrame(() => {
+      try {
+        const anchor = document.getElementById(hash.substring(1));
+        const offset = anchor.getBoundingClientRect().top + window.scrollY;
+        window.scroll({ top: offset, left: 0 });
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }, [isLoaded]);
 
   return (
     <Layout>
@@ -71,6 +86,7 @@ export const pageQuery = graphql`
       frontmatter {
         title
         author
+        contributors
         id
         prerequisites
         description

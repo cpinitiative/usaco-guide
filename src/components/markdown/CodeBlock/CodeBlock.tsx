@@ -57,7 +57,7 @@ const CopyButton = styled.button`
   background-color: hsla(240, 20%, 88%, 1);
   position: absolute;
   top: 0px;
-  right: var(--right-offset);
+  right: calc(var(--right-offset) + var(--left-offset));
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
@@ -66,6 +66,14 @@ const CopyButton = styled.button`
   /* copy from tailwind defaults */
   &:hover {
     background-color: hsla(240, 20%, 75%, 1);
+  }
+  /* -mx-4 sm:-mx-6 md:mx-0 */
+  --left-offset: -4 * 0.25rem;
+  @media (min-width: 640px) {
+    --left-offset: -6 * 0.25rem;
+  }
+  @media (min-width: 768px) {
+    --left-offset: 0rem;
   }
 `;
 
@@ -129,6 +137,23 @@ class CodeBlock extends React.Component<
   constructor(props) {
     super(props);
 
+    this.state = {
+      collapsed: true,
+      codeSnipShow: this.calculateCodeSnipShow(),
+    };
+
+    this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      this.codeSnips = [];
+      const codeSnipShow = this.calculateCodeSnipShow();
+      this.setState({ codeSnipShow });
+    }
+  }
+
+  calculateCodeSnipShow() {
     let i = 0;
     let prev = -1;
     let prevVal = '';
@@ -159,12 +184,7 @@ class CodeBlock extends React.Component<
       }
       ++i;
     }
-    //console.log(this.codeSnips);
-    //console.log(codeSnipShowDefault);
-    this.state = { collapsed: true, codeSnipShow: codeSnipShowDefault };
-
-    //bind
-    this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+    return codeSnipShowDefault;
   }
 
   getCode() {

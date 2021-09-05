@@ -1,0 +1,216 @@
+---
+id: usaco-1037
+source: USACO Bronze 2020 US Open
+title: Cowntact Tracing
+author: Brad Ma, Ryan Chou
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_tracing_bronze_open20.html)
+
+By simulating handshakes for all values of $K$, we can find the minimum, maximum, and number of possible values of $K$ which are vaild.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot T^2)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open('tracing.in', 'r')
+sys.stdout = open('tracing.out', 'w')
+
+n, t = map(int, input().split())
+
+infected = [int(i) for i in input().strip()]
+shakes = []
+
+for _ in range(t):
+	shakes.append(list(map(int, input().split())))
+
+# sorts by the first element (time)
+shakes.sort()
+
+ans_mink = float('inf')
+ans_maxk = -float('inf')
+num_possible = 0
+
+def simulate(cow_zero):
+	mink = float('inf')
+	maxk = -float('inf')
+	for k in range(251):
+		cur_infected = [False] * n
+		cur_infected[cow_zero] = True
+		time = [0] * n
+		for i in range(len(shakes)):
+			# Subtract one for a zero-indexed index.
+			cow1, cow2 = shakes[i][1] - 1, shakes[i][2] - 1
+
+			# If any of the two cows are infected, increase their time infected by 1
+			if cur_infected[cow1]:
+				time[cow1] += 1
+			if cur_infected[cow2]:
+				time[cow2] += 1
+
+			# cow1 infects cow2
+			if cur_infected[cow1] and not cur_infected[cow2] and time[cow1] <= k:
+				cur_infected[cow2] = True
+			
+			# cow2 infects cow1
+			if cur_infected[cow2] and not cur_infected[cow1] and time[cow2] <= k:
+				cur_infected[cow1] = True
+		"""
+		Does our resulting array of infected cows equal the one 
+		that was given?
+		"""
+		if infected == cur_infected:
+			mink = min(mink, k)
+			maxk = max(maxk, k)
+	return [mink, maxk]
+			
+
+			
+for i in range(len(infected)):
+	"""
+	Since infected cows stay infected, only infected cows can 
+	qualify as "cow zero"
+	"""
+	if infected[i]:
+		result = simulate(i)
+		# At least one value of K worked.
+		if result[0] != float('inf'):
+			ans_mink = min(ans_mink, result[0])
+			ans_maxk = max(ans_maxk, result[1])
+			num_possible += 1
+
+# Worked for every possible value of K.
+if ans_maxk == 250:
+	ans_maxk = 'Infinity'
+
+print(num_possible, ans_mink, ans_maxk)
+```
+
+</PySection>
+<JavaSection>
+```java
+import java.util.*;
+import java.io.*;
+
+public class CowntactTracing {
+	static boolean[] cowEndsInfected;
+	static int n;
+	static int maxT = 250;
+	static int maxN = 100;
+	static int[] cowX = new int[maxT + 1];
+	static int[] cowY = new int[maxT + 1];
+
+	// this function simulates handshakes over time to see if data agrees
+	// with this choice of patient_zero and K
+	static boolean consistentWithData(int patientZero, int k) {
+		boolean[] infected = new boolean[maxN + 1];
+		int[] numHandshakes = new int[maxN + 1];
+
+		infected[patientZero] = true;
+
+		for (int t = 0; t <= maxT; t++) {
+			int x = cowX[t];
+			int y = cowY[t];
+
+			if (x > 0) {
+				if (infected[x]) {
+					numHandshakes[x]++;
+				}
+				if (infected[y]) {
+					numHandshakes[y]++;
+				}
+				if (numHandshakes[x] <= k && infected[x]) {
+					infected[y] = true;
+				}
+				if (numHandshakes[y] <= k && infected[y]) {
+					infected[x] = true;
+				}
+			}
+		}
+
+		for (int i = 1; i <= n; i++) {
+			if (infected[i] != cowEndsInfected[i]) {
+				return false;
+			}
+		}
+
+		return true; // return true at the end
+	}
+
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("tracing");
+
+		n = io.nextInt();
+		int T = io.nextInt();
+		String s = io.next();
+		
+		cowEndsInfected = new boolean[n + 1];
+
+		for (int x = 1; x <= n; x++) {
+			cowEndsInfected[x] = (s.charAt(x - 1) == '1'); // marks infected cows as true
+		}
+
+		for (int i = 0; i < T; i++) { // read input and store into array
+			int t = io.nextInt();
+			cowX[t] = io.nextInt();
+			cowY[t] = io.nextInt();
+		}
+
+		boolean[] possibleI = new boolean[maxN + 1];	
+		boolean[] possibleK = new boolean[maxT + 2];
+
+		for (int i = 1; i <= n; i++) { // loop through each pair
+			for (int k = 0; k <= 251; k++) {
+				if (consistentWithData(i, k)) {
+					possibleI[i] = true;
+					possibleK[k] = true;
+				}
+			}
+		}
+
+		int lowerK = maxT + 1;
+		int upperK = 0;
+		int numPatientZero = 0;
+
+		for (int k = 0; k <= maxT + 1; k++) {
+			if (possibleK[k]) {
+				upperK = k;
+			}
+		}
+
+		for (int k = maxT + 1; k >= 0; k--) { 
+			if (possibleK[k]) {
+				lowerK = k;
+			}
+		}
+
+		for (int i = 0; i <= n; i++) { // count number of patient zeros
+			if (possibleI[i]) {
+				numPatientZero++;
+			}
+		}
+
+		io.print(numPatientZero + " " + lowerK + " "); // possible patient zeros, minimum of K
+		if (upperK == maxT + 1) {
+			io.println("Infinity"); // infinity if K = T is possible
+		}
+		else {
+			io.println(upperK);
+		}
+
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}   
+```
+	
+</JavaSection>
+	
+</LanguageSection>

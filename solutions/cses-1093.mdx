@@ -1,0 +1,72 @@
+---
+id: cses-1093
+source: CSES
+title: Two Sets II
+author: Sofia Yang
+---
+[Official Editorial](https://codeforces.com/blog/entry/70018)
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+## Implementation
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TwoSets {
+	static final int MOD = (int) 1e9 + 7;
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		// The total sum of all N elements.
+		int totalSum = N * (N + 1) / 2;
+
+		// This cannot be partitioned into 2 equal subsets.
+		if (totalSum % 2 != 0) {
+			io.println(0);
+			io.close();
+			System.exit(0);
+		}
+		totalSum /= 2;
+
+		/*
+		 * DP[i][j] is the number of ways to make sum j with the first i elements.
+		 * The range of 'idx' is from 0 to N-1 because if all elements are used,
+		 * the subsets will be double counted.
+		 */
+		int[][] dp = new int[N][totalSum + 1];
+		dp[0][0] = 1;
+		for (int idx = 0; idx < N; idx++) {
+			for (int curSum = 0; curSum <= totalSum; curSum++) {
+				/*
+				 * If the state (curSum - current element) is possible
+				 * DP[curSum] += DP[current element - 1][curSum - current element]
+				 */
+				if (idx >= 1) {
+					dp[idx][curSum] = dp[idx - 1][curSum];
+					int prev = curSum - idx;
+					if (prev >= 0) {
+						dp[idx][curSum] += dp[idx - 1][prev];
+						dp[idx][curSum] %= MOD;
+					}
+				}
+			}
+		}
+		io.println(dp[N - 1][totalSum]);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+
+}
+```
+</JavaSection>
+
+</LanguageSection>

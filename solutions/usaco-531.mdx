@@ -1,0 +1,205 @@
+---
+id: usaco-531
+source: USACO Silver 2015 February
+title: Superbull
+author: Maggie Liu, Sofia Yang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_superbull_silver.html)
+
+## Solution 1 - Kruskal
+
+### Explanation
+
+We can use Kruskal's to find the maximum spanning tree of the graph formed by
+the teams. First, add all possible edges between two teams to the vector
+$\texttt{edges}$ and sort it in decreasing order of edge weight. For each edge,
+if we can unite the connected components of the two vertices, then we have
+eliminated one team. Increment $\texttt{eliminated}$ by $1$ and add the edge
+weight to our answer, $\texttt{ans}$. Once $n - 1$ teams have been eliminated,
+we can print $\texttt{ans}$.
+
+### Kruskal's Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+const int MAX_N = 2000;
+int parent[MAX_N];
+int compsize[MAX_N];
+struct Edge
+{
+	int from, to, weight;
+};
+
+// BeginCodeSnip{Standard DSU operations}
+void init(int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		parent[i] = i;
+		compsize[i] = 1;
+	}
+}
+
+int find(int a)
+{
+	if (a == parent[a])
+	{
+		return a;
+	}
+	return parent[a] = find(parent[a]);
+}
+
+bool unite(int a, int b)
+{
+	int roota = find(a), rootb = find(b);
+	if (roota == rootb)
+	{
+		return false;
+	}
+	if (compsize[roota] > compsize[rootb])
+	{
+		swap(roota, rootb);
+	}
+	parent[roota] = rootb;
+	compsize[rootb] += compsize[roota];
+	return true;
+}
+// EndCodeSnip
+
+int main()
+{
+	freopen("superbull.in", "r", stdin);
+	freopen("superbull.out", "w", stdout);
+	int n;
+	cin >> n;
+	int ids[MAX_N];
+	for (int i = 0; i < n; i++)
+	{
+		cin >> ids[i];
+	}
+	vector<Edge> edges;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = i + 1; j < n; j++)
+		{
+			edges.push_back({i, j, ids[i] ^ ids[j]});
+		}
+	}
+	init(n);
+	// sort edges in decreasing order of weight
+	sort(edges.begin(), edges.end(), [](Edge a, Edge b){
+		return a.weight > b.weight;
+	});
+	int eliminated = 0;
+	long long ans = 0;
+	for (Edge e : edges)
+	{
+		if (unite(e.from, e.to))
+		{
+			eliminated++;
+			ans += e.weight;
+			// if all but 1 team has been eliminated
+			if (eliminated == n - 1)
+			{
+				cout << ans << endl;
+				return 0;
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+	
+## Solution 2 - Prim
+
+### Explanation
+
+We can treat the different teams as nodes in a graph, and treat each possible pairing of two teams as an edge.
+
+For each edge, its weight is equal to the XOR of the two node ids.
+
+So, we would like to find the maximum spanning tree in this graph by connecting the edges with the weights.
+
+There are 2 steps in doing so:
+
+1. Find an unvisited node with the greatest weight, and add it to the MST.
+2. Re-evaluate all the edge weights from the MST to the other unvisited nodes.
+
+We can repeat these 2 steps until all N nodes are in the maximum spanning tree.
+	
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+	
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Superbull {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("superbull");
+		int N = io.nextInt();
+
+		int[] ids = new int[N];
+		for (int i = 0; i < N; i++) {
+			ids[i] = io.nextInt();
+		}
+
+		long max_cost = 0;
+		boolean[] visited = new boolean[N];
+		int[] score = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			int node = -1;
+
+			// Find an unvisited node with the highest score.
+			for (int j = 0; j < N; j++) {
+				if (visited[j]) {
+					continue;
+				}
+				if (node == -1 || (score[i] > score[node])) {
+					node = j;
+				}
+			}
+
+			// Add this node to the MST.
+			max_cost += score[node];
+			visited[node] = true;
+			System.out.println(node);
+
+			// Re-evaluate all other node scores.
+			for (int j = 0; j < N; j++) {
+				score[j] = Integer.max(score[j], (ids[node] ^ ids[j]));
+			}
+		}
+		io.println(max_cost);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+
+```
+
+</JavaSection>
+
+
+</LanguageSection>

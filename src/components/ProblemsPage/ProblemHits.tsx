@@ -6,12 +6,19 @@ import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
 function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   return (
-    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 sm:rounded-lg">
+    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
         {hit.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
-        <Highlight hit={hit} attribute="name" />
+        <a
+          href={hit.url}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:underline"
+        >
+          <Highlight hit={hit} attribute="name" />
+        </a>
         {hit.isStarred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
@@ -84,10 +91,10 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         ))}
       </ul>
 
-      <div className="pt-4 space-x-2">
+      <div className="pt-4">
         {hit.tags?.map(tag => (
           <span
-            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
+            className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
             key={tag}
           >
             {tag}
@@ -100,7 +107,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
 
 export default function ProblemHits({ hits }) {
   return (
-    <div className="grid sm:p-4 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {hits.map(hit => (
         <ProblemHit hit={hit} key={hit.objectID} />
       ))}

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import 'tippy.js/themes/light.css';
+import { EditorContext } from '../../../context/EditorContext';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemInfo } from '../../../models/problem';
@@ -17,6 +18,7 @@ type ProblemsListProps =
       title?: string;
       children?: React.ReactChildren;
       problems?: string;
+      hideSuggestProblemButton?: boolean;
     }
   | {
       title?: string;
@@ -32,6 +34,7 @@ type AnnotatedProblemsListProps =
       title?: string;
       children?: React.ReactChildren;
       problems?: ProblemInfo[];
+      hideSuggestProblemButton?: boolean;
     }
   | {
       isDivisionTable: true;
@@ -41,7 +44,7 @@ type AnnotatedProblemsListProps =
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
     };
-export function ProblemsList(unannotatedProps: ProblemsListProps) {
+export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const markdownProblems = useMarkdownProblemLists();
   let problems: ProblemInfo[] | DivisionProblemInfo[];
   if (typeof unannotatedProps.problems === 'string') {
@@ -74,6 +77,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
     props.isDivisionTable &&
     props.problems.every(problem => !!problem.percentageSolved);
 
+  const { inEditor } = useContext(EditorContext);
   return (
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
@@ -132,7 +136,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
                         showPercent={shouldShowSolvePercentage}
                       />
                     ))}
-                    <SuggestProblemRow listName={props.tableName} />
+                    {/* !props.hideSuggestProblemButton */}
+                    {inEditor && (
+                      <SuggestProblemRow listName={props.tableName} />
+                    )}
                   </>
                 )}
               </tbody>

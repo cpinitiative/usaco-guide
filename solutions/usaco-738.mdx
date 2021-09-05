@@ -1,0 +1,181 @@
+---
+id: usaco-738
+source: USACO Silver 2017 US Open
+title: Paired Up
+author: Sofia Yang, Ryan Chou, Melody Yu
+
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_pairup_silver_open17.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<Youtube id="yIoUWlzH_7w" />
+
+
+In the sample input, we have the following cows:
+$8, 5, 5, 2$, and there's two ways to pair these up.
+<ol>
+<li>$(8, 5), (5, 2)$</li>
+<li>$(8, 2), (5, 5)$</li>
+</ol>
+
+The first case would take $13$ time units to finish milking all cows.
+
+The second case would take $10$ time units to finish milking all cows.
+
+This test case consists of 3 distinct values: $8, 5, 2$, let's call them $A, B, C$. These would follow the paradigm $A < B < C$.
+
+Therefore, $A+C < B + C$.
+
+We should always pair up the greatest value ($C$), with the smallest value ($A$), in order to achieve the most optimal milking time.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+(Because it requires sorting the input, which is $\mathcal{O}(N\log N)$). 
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+typedef pair<int,int> pii;
+
+int main() {
+	ifstream fin ("pairup.in");
+	ofstream fout ("pairup.out");
+	int N;
+	vector<pii> V;
+	fin >> N;
+	for (int i = 0; i < N; i++) {
+		int num_cows, milk_time;
+		fin >> num_cows >> milk_time;
+		V.push_back(pii(milk_time, num_cows));
+	}
+	sort(V.begin(), V.end());
+	int M = 0, left = 0, right = N - 1;
+
+	while (left <= right) {
+		// the maximum amount of cows we can group together.
+		int sub = min(V[left].second, V[right].second);
+		if (left == right) sub /= 2;
+		M = max(M, V[left].first + V[right].first);
+		V[left].second -= sub;
+		V[right].second -= sub;
+		
+		// once there are no more cows available in our 
+		// pair, we can increment/decrement the left/right
+		// pointer(s).
+		if (V[left].second == 0) left++;
+		if (V[right].second == 0) right--;
+	}
+	fout << M << "\n";
+}
+```  
+</CPPSection>
+<PySection>
+	
+```py
+import sys
+
+sys.stdin = open("pairup.in", 'r')
+sys.stdout = open("pairup.out", 'w')
+
+n = int(input())
+all_cows = []
+for _ in range(n):
+	num_cows, milk_time = map(int, input().split())
+	all_cows.append([milk_time, num_cows])
+
+all_cows.sort()
+left, right = 0, n - 1
+ans = 0
+	
+while left <= right:
+	# how many cows have been grouped together.
+	sub = min(all_cows[left][1], all_cows[right][1])
+	ans = max(ans, all_cows[left][0] + all_cows[right][0])
+	if left == right:
+		sub /= 2
+	all_cows[left][1] -= sub
+	all_cows[right][1] -= sub
+	# If there are no more cows which have this milk output,
+	# we can increment/decrement the left/right pointer.
+	if all_cows[left][1] == 0: left += 1
+	if all_cows[right][1] == 0: right -= 1
+
+print(ans)
+```
+</PySection>
+<JavaSection>
+
+
+``` java
+import java.io.*;
+import java.util.*;
+
+public class PairUp {
+	public static void main(String[] args) throws IOException {
+		BufferedReader io = new BufferedReader(new FileReader("pairup.in"));
+		int N = Integer.parseInt(io.readLine().trim());
+		List<Pair> events = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			StringTokenizer tok = new StringTokenizer(io.readLine());
+			int freq = Integer.parseInt(tok.nextToken());
+			int amt = Integer.parseInt(tok.nextToken());
+			events.add(new Pair(freq, amt));
+		}
+
+		Collections.sort(events);
+		int ret = 0;
+		int left = 0, right = N - 1;
+		while (left <= right) {
+			// how many cows have been grouped together.
+			int numPaired = Integer.min(events.get(left).freq, events.get(right).freq);
+			if (left == right) {
+				numPaired /= 2;
+			}
+			ret = Integer.max(ret, events.get(left).amt + events.get(right).amt);
+			events.get(left).freq -= numPaired;
+			events.get(right).freq -= numPaired;
+			
+			// If there are no more cows which have this milk output,
+			// we can increment/decrement the left/right pointer.
+			if (events.get(left).freq == 0) {
+				left++;
+			}
+			if (events.get(right).freq == 0) {
+				right--;
+			}
+		}
+		PrintWriter out = new PrintWriter(new FileWriter("pairup.out"));
+		out.println(ret);
+		out.close();
+	}
+}
+
+class Pair implements Comparable<Pair> {
+	public int freq, amt;
+
+	public Pair(int freq, int amt) {
+		this.freq = freq;
+		this.amt = amt;
+	}
+	public int compareTo(Pair other) {
+		return Integer.compare(this.amt, other.amt);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

@@ -1,10 +1,11 @@
 ---
 id: bfs
 title: 'Breadth First Search (BFS)'
-author: Benjamin Qi, Michael Cao, Andi Qu, Neo Wang, Qi Wang
+author: Benjamin Qi, Andi Qu, Neo Wang 
+contributors: Qi Wang
 prerequisites:
   - dfs
-  - ff
+  - flood-fill
 description:
   'Traversing a graph in a way such that vertices closer to the starting vertex
   are processed first.'
@@ -31,9 +32,9 @@ operations, all in $\mathcal{O}(1)$ time.
 
 #### [C++](http://www.cplusplus.com/reference/queue/queue/)
 
-- `push`: insertion at the back of the queue
-- `pop`: deletion from the front of the queue
-- `front`: which retrieves the element at the front without removing it.
+- `push`: inserts at the back of the queue
+- `pop`: deletes from the front of the queue
+- `front`: retrieves the element at the front without removing it.
 
 ```cpp
 queue<int> q;
@@ -67,6 +68,32 @@ System.out.println(q.peek()); // 3
 ```
 
 </JavaSection>
+
+<PySection>
+
+#### Python
+
+Python has a `queue` built-in module.
+
+- `Queue.put(n)`: Inserts element to the back of the queue.
+- `Queue.get()`: Gets and removes the front element. If the queue
+  is empty, this will wait forever, creating a TLE error.
+- `Queue.queue[n]`: Gets the nth element without removing it. Set
+  n to 0 for the first element.
+
+```py
+from queue import Queue
+
+q = Queue()      # []
+q.put(1)         # [1]
+q.put(2)         # [1, 2]
+v = q.queue[0]   # v = 1, q = [1, 2]
+v = q.get()      # v = 1, q = [2]
+v = q.get()      # v = 2, q = []
+v = q.get()      # Code waits forever, creating TLE error.
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -722,4 +749,4 @@ Now, we're given a weighted graph and we need to find the shortest path. Since t
 
 ## Problems
 
-<Problems problems="general" />
+<Problems problems="general" hideSuggestProblemButton />

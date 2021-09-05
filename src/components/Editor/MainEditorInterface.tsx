@@ -20,9 +20,10 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useUpdateAtom(saveFileAtom);
   const setMonacoEditorInstance = useUpdateAtom(monacoEditorInstanceAtom);
-  const [tab, setTab] = useState<'problems' | 'content'>('content');
+  const [_tab, setTab] = useState<'problems' | 'content'>('content');
   const isEditingSolution =
     activeFile && activeFile.path.startsWith('solutions');
+  const tab = isEditingSolution ? 'content' : _tab;
 
   const markdown: string | null = activeFile?.markdown;
   const setMarkdown = (x: string | ((prev: string) => string)) => {
@@ -66,7 +67,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   };
 
   const handleFormatCode = () => {
-    if (tab == 'content') {
+    if (tab === 'content') {
       setMarkdown(old =>
         prettier.format(old, {
           endOfLine: 'lf',
@@ -112,11 +113,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
               ]
             : []),
         ]}
-        activeTab={
-          tab === 'content' || isEditingSolution
-            ? 'module.mdx'
-            : 'module.problems.json'
-        }
+        activeTab={tab === 'content' ? 'module.mdx' : 'module.problems.json'}
         onTabSelect={tab =>
           setTab(tab.value === 'module.mdx' ? 'content' : 'problems')
         }
@@ -127,17 +124,15 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
         path={
           activeFile === null
             ? 'NONE'
-            : tab === 'content' || isEditingSolution
+            : tab === 'content'
             ? activeFile.path
             : activeFile.path.replace(/\.mdx$/, '.problems.json')
         }
-        language={
-          tab === 'content' || isEditingSolution ? 'custom-mdx' : 'json'
-        }
+        language={tab === 'content' ? 'custom-mdx' : 'json'}
         value={
           activeFile === null
             ? 'Open a file to begin'
-            : tab === 'content' || isEditingSolution
+            : tab === 'content'
             ? markdown
             : problems
         }

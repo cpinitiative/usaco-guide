@@ -1,0 +1,72 @@
+---
+id: cf-546A
+source: CF
+title: Soldier and Bananas
+author: Ryan Chou
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/18034)
+
+## Explanation
+
+We can find the total cost of $w$ bananas by calculating the sum of numbers from $1 - W$ and multiplying by the price of the first banana, $k$.
+
+Now, we can just compare how much money is needed to buy the bananas.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+first, money, num = map(int, input().split())
+
+cost = num * (num + 1) // 2
+cost *= first
+
+print(max(0, cost - money))
+```
+</PySection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	int first, num;
+	long long money;
+	cin >> first >> money >> num;
+
+	int cost = num * (num + 1) / 2;
+	cost *= first;
+
+	cout << (max(0, cost - money));
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class SoldierBananas {
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		int first = input.nextInt();
+		long money = input.nextInt();
+		int num = input.nextInt();
+	
+		long cost = num * (num + 1) / 2;
+		cost *= first;
+
+		System.out.println(Math.max(cost - money, 0));
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

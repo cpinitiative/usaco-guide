@@ -2,6 +2,7 @@
 id: knapsack
 title: 'Knapsack DP'
 author: Nathan Chen, Michael Cao, Benjamin Qi
+contributors: Neo Wang
 prerequisites:
   - intro-dp
 description:
@@ -23,12 +24,12 @@ frequency: 2
 		title="Errichto DP #2 - Coin change, double counting"
 		url="https://www.youtube.com/watch?v=1mtvm2ubHCY"
 	>
-		If you find videos helpful
+		Videos for common knapsack variations
 	</Resource>
 </Resources>
 
 **Knapsack** problems generally involve filling a limited container with a
-subset of items, and we want to count or optimize some quantity associated with
+subset of items where we want to count or optimize some quantity associated with
 the items. Almost every time, you can think of each item as having a positive
 weight, and the total weight of the items we choose must not exceed the capacity
 of the container, which is some number. Some variations of knapsack-type
@@ -36,11 +37,11 @@ problems include:
 
 - The
   [0/1 Knapsack problem](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/):
-  Choosing a subset of items such that we maximize their total value, and their
+  Choosing a subset of items such that we maximize their total value and their
   total weight does not exceed the capacity of the container
 - Finding all the possible total weights that we can achieve from any subset of
-  items, and their total weight does not exceed the capacity of the container
-  (in the chapter of CPH linked above)
+  items such that their total weight does not exceed the capacity of the
+  container (in the chapter of CPH linked above)
 - Counting how many sequences of items will fill the container completely,
   meaning the total weight is exactly the capacity of the container (the order
   may or may not matter)
@@ -52,8 +53,10 @@ problems will be given twists, disguises, and extra state information involved.
 
 ## Solution - Dice Combinations
 
-The problem asks us how many sequences of dice rolls exist such that sum of the
-top faces is $N$ ($N \leq 10^6$). To keep up with the knapsack analogy, that
+**Time Complexity:** $\mathcal{O}(N)$
+
+The problem asks us how many sequences of dice rolls exist such that the sum of
+the top faces is $N$ ($N \leq 10^6$). To keep up with the knapsack analogy, that
 means we have infinite numbers of items of weights $1$ through $6$, and we want
 to count how many sequences of items exist such that if we put items into the
 container while following the sequence, the container becomes completely full.
@@ -94,19 +97,19 @@ $\texttt{dp}[x]$ if $x < 0$.
 
 using namespace std;
 
-typedef long long ll;
+long long dp[1000001];
 
 int main() {
 	int n;
 	cin >> n;
-	ll dp[n+1]{}; dp[0] = 1;
-	for (int i = 1; i<= n; i++) {
-		for (int j = 1; j <= 6; j++) {
-			if (i-j >= 0) {
-				dp[i] += dp[i-j];
-				dp[i] %= 1000000007;
+	dp[0] = 1;
+	for(int i = 1; i <= n; i++) {
+		for(int j = 1; j <= 6; j++) {
+			if(i - j >= 0) {
+				dp[i] += dp[i - j];
 			}
 		}
+		dp[i] %= 1000000007;
 	}
 	cout << dp[n] << "\n";
 }
@@ -128,13 +131,13 @@ public class Main {
 
 		long dp[] = new long[n+1];
 		dp[0] = 1;
-		for(int i = 1; i<= n; i++) {
+		for(int i = 1; i <= n; i++) {
 			for(int j = 1; j <= 6; j++) {
-				if(i-j >= 0) {
-					dp[i] += dp[i-j];
-					dp[i] %= 1000000007;
+				if(i - j >= 0) {
+					dp[i] += dp[i - j];
 				}
 			}
+			dp[i] %= 1000000007;
 		}
 
 		System.out.println(dp[n]);
@@ -146,7 +149,16 @@ public class Main {
 
 </JavaSection>
 
-<PySection />
+<PySection>
+
+```py
+dp = [1]
+for i in range(int(input())):
+	dp.append(sum(dp[-6:]) % (10 ** 9 + 7))
+print(dp[-1])
+```
+
+</PySection>
 
 </LanguageSection>
 

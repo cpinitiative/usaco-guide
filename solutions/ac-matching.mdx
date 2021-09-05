@@ -2,7 +2,7 @@
 id: ac-matching
 source: AtCoder DP Contest
 title: Matching
-author: Neo Wang, Sofia Yang
+author: Neo Wang, Sofia Yang, Kevin Sheng
 ---
 
 ## Solution
@@ -16,6 +16,7 @@ $$
 \texttt{dp}[S] = \sum \texttt{dp}[S\backslash x]:  \texttt{compatible}[|S|][x]
 $$
 
+(The `:` stands for "such that".)
 In English, this is equivalent to the following:
 
 > The number of matchings in a subset $S$ to include a certain female $x$ is
@@ -35,115 +36,84 @@ considered as a single matching involving zero pairs).
 #include <bits/stdc++.h>
 using namespace std;
 
-bool compat[21][21];
-int dp[1 << 21];
+const int MOD = 1e9 + 7;
+const int MAX_N = 21;
 
-int N;
+bool compat[MAX_N][MAX_N];
+int dp[1 << MAX_N];
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
+	int N;
 	cin >> N;
-	for(int i = 0; i < N; i++) for(int j = 0; j < N; j++) cin >> compat[i][j];
-
-	dp[0] = 1;
-
-	for(int s = 0; s < (1 << N); s++) {
-		int v = __builtin_popcount(s);
-		for(int x = 0; x < N; x++) {
-			if((s & (1 << x)) || !compat[v][x]) continue;
-			dp[s | (1 << x)] += dp[s];
-			dp[s | (1 << x)] %= (int)1e9+7;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cin >> compat[i][j];
 		}
 	}
 
-   	cout << dp[(1 << N) - 1];
-}
+	dp[0] = 1;
+	for (int s = 0; s < (1 << N); s++) {
+		int pair_num = __builtin_popcount(s);
+		for (int w = 0; w < N; w++) {
+			/*
+			 * check that
+			 * 1. this woman hasn't been paired already
+			 * 2. she's also compatible with the {pair_num + 1}th man
+			 */
+			if ((s & (1 << w)) || !compat[pair_num][w])
+				continue;
+			
+			// add the amount to future dp states
+			dp[s | (1 << w)] += dp[s];
+			dp[s | (1 << w)] %= MOD;
+		}
+	}
 
+   	cout << dp[(1 << N) - 1] << endl;
+}
 ```
 </CPPSection>
 
 <JavaSection>
 	
 ```java
-
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N;
-	public static int MAXN = 21;
-	public static int mod = (int) 1e9 + 7;
-	public static boolean[][] comp = new boolean[MAXN][MAXN];
-	public static long[][] dp = new long[MAXN][1 << MAXN];
-
+	public static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-
-		/* Initialize. */
-		for (int i = 0; i < dp.length; i++) {
-			Arrays.fill(dp[i],-1);
-		}
-
-		/* Read the compatibility matrix. */
-		for (int i = 0; i < N; i++) {
+		int N = Integer.parseInt(br.readLine());
+		boolean[][] compat = new boolean[N][N];
+		for (int m = 0; m < N; m++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < N; j++) {
-				comp[i][j] = (Integer.parseInt(st.nextToken()) == 1);
+			for (int w = 0; w < N; w++) {
+				compat[m][w] = (Integer.parseInt(st.nextToken()) == 1);
 			}
 		}
-
-		/* When all men are available,
-		   and all the women are available (women are saved in a bitmask). */
-		long answer = solve(N, (1 << N) - 1);
-
-		System.out.println(answer);
-	}
-
-
-	/* The number of available men, and the number of available women. */
-	public static long solve(int men, int women) {
-		long curAns = 0;
-
-		/* This already has a value. */
-		if (dp[men - 1][women] != -1) {
-			return dp[men - 1][women];
-		}
-
-		if (men == 1) {
-			for (int j = 0; j < N; j++) {
-				/* Check if the jth women is left. */
-				if (((1 << j) & women) > 0) {
-					if (comp[men - 1][j]) {
-						/* If they're compatible,
-						   there's one way to pair them. */
-						dp[men - 1][women] = 1;
-						return 1;
-					} else {
-						dp[N - 1][women] = 0;
-						return 0;
-					}
-				}
+		
+		int[] dp = new int[1 << N];
+		dp[0] = 1;
+		for (int s = 0; s < (1 << N); s++) {
+			int pair_num = Integer.bitCount(s);
+			for (int w = 0; w < N; w++) {
+				/*
+				 * check that
+				 * 1. this woman hasn't been paired already
+				 * 2. she's also compatible with the {pair_num + 1}th man
+				 */
+				if ((s & (1 << w)) != 0 || !compat[pair_num][w])
+					continue;
+				
+				// add the amount to future dp states
+				dp[s | (1 << w)] += dp[s];
+				dp[s | (1 << w)] %= MOD;
 			}
 		}
-
-		for (int i = 0; i < N; i++) {
-			/* If the ith woman is available. */
-			if (((1 << i) & women) > 0) {
-				if (comp[men - 1][i]) {
-					/* Recursively calculate the number of ways,
-					   if the man is paired with this woman. */
-					curAns += solve(men - 1, women - (1 << i));
-				}
-			}
-		}
-		curAns = curAns % mod;
-		dp[men - 1][women] = curAns;
-		return dp[men - 1][women];
-
+		System.out.println(dp[(1 << N) - 1]);
 	}
 }
-
 ```
 
 </JavaSection>

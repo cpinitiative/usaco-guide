@@ -1,0 +1,193 @@
+---
+id: sparse-segtree
+redirects:
+  - /plat/sparse-seg
+title: Sparse Segment Trees
+author: Andi Qu
+prerequisites:
+  - RURQ
+description: 'Querying big ranges.'
+frequency: 1
+---
+
+<FocusProblem problem="sparseSample" />
+
+<br />
+
+In problems where the query range is at most something like $10^6$, a normal
+segment tree suffices. However, as soon as we move to bigger ranges ($10^{12}$
+in some cases), a normal segment tree results in MLE.
+
+Luckily, we can still use a segment tree to solve these types of problems.
+
+## Resources
+
+The main idea is that we don't have to store all the nodes at all times - we
+create nodes only when needed. In a normal segment tree, an update only affects
+$\mathcal{O}(\log N)$ nodes, so in a sparse segment tree, we only store
+$\mathcal{O}(Q \log N)$ nodes!
+
+We can implement this efficiently using pointers to a node's children - just
+like a trie! (Then again, a segment tree is basically a fancier binary trie.)
+
+<IncompleteSection />
+
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SparseSeg%20(9.2).h"
+		title="Implementation"
+	/>
+</Resources>
+
+<Info title="Pro Tip">
+
+Sparse Segment Tree is more commonly referred to as "Dynamic Segment Tree."
+
+</Info>
+
+## Solution
+
+We need to support two operations on a range:
+
+- Count the number of red-ripe trees in a range (range sum)
+- Set all trees in a range to red-ripe (range paint)
+
+We can use a segment tree with lazy propagation to solve this, but the query
+range is up to $10^9$, so we have to use a sparse segment tree.
+
+Luckily, lazy propagation still works here.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#pragma GCC optimize("O3")
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+#define MOD 1000000007
+typedef long long ll;
+using namespace std;
+
+struct Node {
+	int sum, lazy, tl, tr, l, r;
+	Node() : sum(0), lazy(0), l(-1), r(-1) {}
+};
+
+const int MAXN = 123456;
+Node segtree[64 * MAXN];
+int cnt = 2;
+
+void push_lazy(int node) {
+	if (segtree[node].lazy) {
+		segtree[node].sum = segtree[node].tr - segtree[node].tl + 1;
+		int mid = (segtree[node].tl + segtree[node].tr) / 2;
+		if (segtree[node].l == -1) {
+			segtree[node].l = cnt++;
+			segtree[segtree[node].l].tl = segtree[node].tl;
+			segtree[segtree[node].l].tr = mid;
+		}
+		if (segtree[node].r == -1) {
+			segtree[node].r = cnt++;
+			segtree[segtree[node].r].tl = mid + 1;
+			segtree[segtree[node].r].tr = segtree[node].tr;
+		}
+		segtree[segtree[node].l].lazy = segtree[segtree[node].r].lazy = 1;
+		segtree[node].lazy = 0;
+	}
+}
+
+void update(int node, int l, int r) {
+	push_lazy(node);
+	if (l == segtree[node].tl && r == segtree[node].tr) {
+		segtree[node].lazy = 1;
+		push_lazy(node);
+	} else {
+		int mid = (segtree[node].tl + segtree[node].tr) / 2;
+		if (segtree[node].l == -1) {
+			segtree[node].l = cnt++;
+			segtree[segtree[node].l].tl = segtree[node].tl;
+			segtree[segtree[node].l].tr = mid;
+		}
+		if (segtree[node].r == -1) {
+			segtree[node].r = cnt++;
+			segtree[segtree[node].r].tl = mid + 1;
+			segtree[segtree[node].r].tr = segtree[node].tr;
+		}
+
+		if (l > mid) update(segtree[node].r, l, r);
+		else if (r <= mid) update(segtree[node].l, l, r);
+		else {
+			update(segtree[node].l, l, mid);
+			update(segtree[node].r, mid + 1, r);
+		}
+
+		push_lazy(segtree[node].l);
+		push_lazy(segtree[node].r);
+		segtree[node].sum = segtree[segtree[node].l].sum + segtree[segtree[node].r].sum;
+	}
+}
+
+int query(int node, int l, int r) {
+	push_lazy(node);
+	if (l == segtree[node].tl && r == segtree[node].tr) return segtree[node].sum;
+	else {
+		int mid = (segtree[node].tl + segtree[node].tr) / 2;
+		if (segtree[node].l == -1) {
+			segtree[node].l = cnt++;
+			segtree[segtree[node].l].tl = segtree[node].tl;
+			segtree[segtree[node].l].tr = mid;
+		}
+		if (segtree[node].r == -1) {
+			segtree[node].r = cnt++;
+			segtree[segtree[node].r].tl = mid + 1;
+			segtree[segtree[node].r].tr = segtree[node].tr;
+		}
+
+		if (l > mid) return query(segtree[node].r, l, r);
+		else if (r <= mid) return query(segtree[node].l, l, r);
+		else return query(segtree[node].l, l, mid) + query(segtree[node].r, mid + 1, r);
+	}
+}
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int m;
+	cin >> m;
+
+	segtree[1].sum = 0; segtree[1].lazy = 0;
+	segtree[1].tl = 1; segtree[1].tr = 1e9;
+
+	int c = 0;
+	FOR(_, 0, m) {
+		int d, x, y;
+		cin >> d >> x >> y;
+		if (d == 1) {
+			c = query(1, x + c, y + c);
+			cout << c << '\n';
+		} else update(1, x + c, y + c);
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+<Optional>
+
+It's possible to reduce the memory of a sparse segment tree to $\mathcal{O}(N)$,
+as described [here](https://codeforces.com/blog/entry/83969).
+
+</Optional>
+
+### Problems
+
+Some of these problems are solvable with a normal segment tree if you use
+coordinate compression. Sparse segment trees are rarely ever _required_ to solve
+a particular problem, but they can make things a lot more convenient.
+
+<Problems problems="sparseGeneral" />
