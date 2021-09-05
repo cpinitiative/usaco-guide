@@ -24,6 +24,26 @@ export const Authors: Author[] = [
     email: 'nathan.r.wang@gmail.com',
     github: 'thecodingwizard',
   },
+  {
+    photo: "maggie",
+    name: "Maggie Liu",
+    title: "Executive",
+    blurb: "Maggie Liu is a USACO competitor who enjoys problem solving and teaching others programming and math.",
+    github: "maggie-j-liu",
+    codeforces: "ml1234",
+    email: "maggie.j.liu@gmail.com",
+    website: "https://maggieliu.dev",
+  },
+  {
+    photo: "melody",
+    name: "Melody Yu",
+    title: "Executive",
+    blurb: "Melody Yu is a USACO Platinum competitor and founder of Project Starcoder.",
+    github: "cskitty",
+    website: "https://melodyyu.com",
+    email: "ocmelodyyu@gmail.com",
+    youtube: "https://www.youtube.com/channel/UCPkhk5gFov8vIPXj0zHyxEQ",
+  },
   // {
   //   photo: 'briancdean',
   //   name: 'Brian C. Dean',
@@ -32,23 +52,13 @@ export const Authors: Author[] = [
   //   email: 'bcdean@clemson.edu',
   // },
   {
-    photo: 'benq',
-    name: 'Benjamin Qi',
-    title: 'Content Director',
-    blurb:
-      'Benjamin Qi is a two-time IOI winner, USACO Problemsetter, and part of the MIT Class of 2023.',
-    codeforces: 'Benq',
-    email: 'bqi343@gmail.com',
-    github: 'bqi343',
-  },
-  {
     photo: 'michael',
     name: 'Michael Cao',
     title: 'Core Team',
     blurb:
       'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
-    codeforces: 'caohash',
-    email: 'cao.michael14@gmail.com',
+    codeforces: 'caoash',
+    email: 'caoash@gmail.com',
     github: 'caoash',
   },
   {
@@ -61,16 +71,6 @@ export const Authors: Author[] = [
     email: 'darren.yao@gmail.com',
     codeforces: 'darren_yao',
     github: 'darren-yao',
-  },
-  {
-    photo: 'nathanc',
-    name: 'Nathan Chen',
-    title: 'Core Team',
-    blurb:
-      'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently.',
-    codeforces: 'nchn27',
-    github: 'nchn27',
-    email: 'nchn27@gmail.com',
   },
   {
     photo: 'siyong1',
@@ -89,16 +89,6 @@ export const Authors: Author[] = [
     github: 'dolphingarlic',
     email: 'andi@andiqu.com',
     website: 'https://andiqu.com',
-  },
-  {
-    photo: 'Andrew',
-    name: 'Andrew Wang',
-    title: 'Core Team',
-    blurb:
-      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
-    codeforces: 'a.wang',
-    github: 'andrewwangva',
-    email: 'andrewwangva.biz@gmail.com',
   },
   {
     photo: "Dong",
@@ -121,13 +111,42 @@ export const Authors: Author[] = [
     youtube: "https://www.youtube.com/c/RandomCoder",
   },
   {
-    photo: "maggie",
-    name: "Maggie Liu",
+    photo: 'neo',
+    name: "Neo Wang",
     title: "Content Manager",
-    blurb: "Maggie Liu is a USACO competitor who enjoys problem solving and teaching others programming and math.",
-    github: "maggie-j-liu",
-    codeforces: "ml1234",
-    email: "maggie.j.liu@gmail.com",
-    website: "https://maggieliu.dev",
+    blurb: "Neo Wang is a competitive programmer who also writes contests, creates websites, and competes in robotics.",
+    github: "nwatx",
+    website: "https://nwatx.me",
+    email: "neowangatx@gmail.com",
+  },
+  {
+    photo: 'benq',
+    name: 'Benjamin Qi',
+    title: 'Former Content Director',
+    blurb:
+      'Benjamin Qi is a two-time IOI winner, USACO Problemsetter, and part of the MIT Class of 2023.',
+    codeforces: 'Benq',
+    email: 'bqi343@gmail.com',
+    github: 'bqi343',
+  },
+  {
+    photo: 'nathanc',
+    name: 'Nathan Chen',
+    title: 'Former Core Team',
+    blurb:
+      'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently.',
+    codeforces: 'nchn27',
+    github: 'nchn27',
+    email: 'nchn27@gmail.com',
+  },
+  {
+    photo: 'Andrew',
+    name: 'Andrew Wang',
+    title: 'Former Core Team',
+    blurb:
+      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
+    codeforces: 'a.wang',
+    github: 'andrewwangva',
+    email: 'andrewwangva.biz@gmail.com',
   },
 ];

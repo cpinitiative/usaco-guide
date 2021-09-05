@@ -4,6 +4,7 @@ redirects:
  - /silver/2P
 title: 'Two Pointers'
 author: Darren Yao, Qi Wang
+contributors: Aadit Ambadkar
 prerequisites:
   - sorting-custom
 description:
@@ -44,15 +45,146 @@ of an interval. It can also be used to track two values in an array as shown in 
 
 We want to find the longest contiguous segment of books that can be read within $t$ minutes. 
 
-To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ as the start and end of the segment respectively and use two pointers to track the interval.
+To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ to represent the beginning and end of the segment. Both will start at the beginning of the array. These numbers can be thought of as pointers, hence the name "two pointers."
 
-For every $\texttt{left}$ index, we need to increase our $\texttt{right}$ pointer until the total time for that segment is the maximum while being less than $t$.
+For every value of $\texttt{left}$ in increasing order, let's increase $\texttt{right}$ until the total time for the segment is maximized while being less than or equal to $t$.
 
-We will keep track of the max segment size with $\texttt{ans}$, and take the maximum $\texttt{right} - \texttt{left}$ value.
+$\texttt{ans}$ will store the maximum value of $\texttt{right} - \texttt{left}+1$ (segment size) that we have encountered so far.
 
-We can then continually increment $\texttt{left}$ by 1.
+After incrementing $\texttt{left}$ by one, the time used decreases, hence the right pointer never has to move leftwards. Thus:
 
-**The $\texttt{right}$ pointer does not restart after an iteration, it simply keeps moving right; therefore, since both pointers will move at most $N$ times, the overall time complexity is $\mathcal{O}(N)$.**
+**Since both pointers will move at most $N$ times, the overall time complexity is $\mathcal{O}(N)$.**
+
+As an example, consider the first case in the sample inputs:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+We can move the right pointer to index $1$:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+The sum of the values in this range is $4$, and there are $2$ values. So, the current maximum segment length is $\texttt{ans}=2$. By incrementing the left pointer by $1$, we can subtract $3$ from the sum of values to get $1$. The array then looks like:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+Now, we can move the right pointer to the end. This makes the sum of values $1+2+1=4$ and the length of the segment equal to $3$. So, $\texttt{ans}$ is now $3$.
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+Since the right pointer has reached the end of the array, we are done at this point. This leaves us with $\texttt{ans}=3$.
 
 <Info title="Pro Tip">
 
