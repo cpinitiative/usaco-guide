@@ -13,7 +13,6 @@ import { useContext, useState } from 'react';
 import { SECTIONS, SECTION_LABELS } from '../../../content/ordering';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
@@ -34,7 +33,6 @@ export default function TopNavigationBar({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const userGroups = useUserGroups();
   const resources = [
     {
       name: 'USACO Forum',
@@ -63,14 +61,10 @@ export default function TopNavigationBar({
       label: 'Problems',
       url: '/problems/',
     },
-    ...(userGroups.data?.length > 0
-      ? [
-          {
-            label: 'Groups',
-            url: '/groups',
-          },
-        ]
-      : []),
+    {
+      label: 'Groups',
+      url: '/groups',
+    },
   ];
 
   return (
@@ -180,42 +174,40 @@ export default function TopNavigationBar({
                                 'mx-auto grid gap-y-6 py-6 sm:grid-cols-2 sm:gap-8 sm:px-6 sm:py-8 lg:grid-cols-4 lg:px-8 lg:py-12'
                               )}
                             >
-                              {userGroups.data?.length > 0 && (
-                                <Link
-                                  to="/groups/"
-                                  getProps={({ isCurrent }) => ({
-                                    className: isCurrent
-                                      ? '-m-3 p-3 flex flex-col justify-between rounded-lg bg-gray-100 dark:bg-gray-700'
-                                      : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition',
-                                  })}
-                                >
-                                  <div className="flex md:h-full lg:flex-col">
-                                    <div className="flex-shrink-0">
-                                      <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
-                                        <UserGroupIcon
-                                          className="h-6 w-6"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </div>
-                                    <div className="ml-4 md:flex-1 md:flex md:flex-col md:justify-between lg:ml-0 lg:mt-4">
-                                      <div>
-                                        <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
-                                          Groups
-                                        </p>
-                                        <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
-                                          A Learning Management System fully
-                                          integrated with the USACO Guide.
-                                        </p>
-                                      </div>
-                                      <p className="mt-2 text-sm font-medium text-blue-600 lg:mt-4">
-                                        Open{' '}
-                                        <span aria-hidden="true">&rarr;</span>
+                              <Link
+                                to="/groups/"
+                                getProps={({ isCurrent }) => ({
+                                  className: isCurrent
+                                    ? '-m-3 p-3 flex flex-col justify-between rounded-lg bg-gray-100 dark:bg-gray-700'
+                                    : '-m-3 p-3 flex flex-col justify-between rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition',
+                                })}
+                              >
+                                <div className="flex md:h-full lg:flex-col">
+                                  <div className="flex-shrink-0">
+                                    <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                      <UserGroupIcon
+                                        className="h-6 w-6"
+                                        aria-hidden="true"
+                                      />
+                                    </span>
+                                  </div>
+                                  <div className="ml-4 md:flex-1 md:flex md:flex-col md:justify-between lg:ml-0 lg:mt-4">
+                                    <div>
+                                      <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
+                                        Groups
+                                      </p>
+                                      <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
+                                        A Learning Management System fully
+                                        integrated with the USACO Guide.
                                       </p>
                                     </div>
+                                    <p className="mt-2 text-sm font-medium text-blue-600 lg:mt-4">
+                                      Open{' '}
+                                      <span aria-hidden="true">&rarr;</span>
+                                    </p>
                                   </div>
-                                </Link>
-                              )}
+                                </div>
+                              </Link>
                               {resources.map(item => (
                                 <a
                                   key={item.name}
