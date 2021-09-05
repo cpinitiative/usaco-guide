@@ -103,12 +103,12 @@ void split(Node *root, int x, Node &*left, Node &*right) {
 }
 
 void merge(Node &*root, Node *left, Node *right) {
-	if (!l || !r) {
-		root = l ? l : r;
+	if (!left || !right) {
+		root = left ? left : right;
 		return;
 	}
 
-	if (left->pri > r->pri) {
+	if (left->pri > right->pri) {
 		merge(left->right, left->right, right);
 		root = left;
 	} else {
