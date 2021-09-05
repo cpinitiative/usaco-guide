@@ -64,7 +64,7 @@ const UserGroupsProvider = ({
             )
           : getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
 
-        // console.log(permissions, docQuery);
+        console.log(permissions, docQuery);
 
         docQuery.then(snap => {
           // with the resulting collection snapshot
