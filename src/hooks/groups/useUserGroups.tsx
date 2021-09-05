@@ -31,7 +31,9 @@ const UserGroupsProvider = ({
   const [isLoading, setIsLoading] = React.useState(!!firebaseUser?.uid);
   const [groups, setGroups] = React.useState<null | GroupData[]>(null);
   const [updateCtr, setUpdateCtr] = React.useState(0);
-  const { isAdmin } = useUserPermissions();
+  const permissions = useUserPermissions();
+
+  console.log(permissions);
 
   useFirebaseApp(
     firebaseApp => {
@@ -48,8 +50,11 @@ const UserGroupsProvider = ({
         adminIds: null,
       };
 
-      Object.keys(queries).forEach(key => {
-        const docQuery = !isAdmin
+      // loops once rather than 3 times
+      const toQuery = Object.keys(queries);
+
+      toQuery.forEach(key => {
+        const docQuery = !permissions?.isAdmin
           ? getDocs<GroupData>(
               query(
                 collection(getFirestore(firebaseApp), 'groups'),
@@ -58,6 +63,8 @@ const UserGroupsProvider = ({
               )
             )
           : getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
+
+        // console.log(permissions, docQuery);
 
         docQuery.then(snap => {
           // with the resulting collection snapshot
@@ -68,15 +75,22 @@ const UserGroupsProvider = ({
 
           // if all queries are done
           if (Object.keys(queries).every(x => queries[x] !== null)) {
-            setGroups(Object.values(queries).flat());
-            console.log(Object.values(queries).flat());
+            const queryResults = Object.values(queries).flat();
+            if (permissions.isAdmin)
+              // slice / 3 since there are 3 keys in object.keys that are redundant
+              setGroups(queryResults.slice(0, queryResults.length / 3));
+            else setGroups(queryResults);
             setIsLoading(false);
           }
         });
+
+        // if(permissions.isAdmin) return false;
       });
     },
-    [firebaseUser?.uid, updateCtr]
+    [firebaseUser?.uid, permissions, updateCtr]
   );
+
+  console.log(groups);
 
   return (
     <UserGroupsContext.Provider
