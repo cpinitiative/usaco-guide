@@ -159,7 +159,7 @@ from sys import setrecursionlimit
 setrecursionlimit(10**9)
 
 n = int(input())
-mod = 10**9 + 7
+MOD = 10**9 + 7
 
 # representing the tree in an adjacency list
 adj = [[] for i in range(n)]
@@ -182,15 +182,15 @@ def dfs(u, parent):
 		if v != parent: # v should be a child for u not its parent
 			dfs(v, u) # recursively calculate the dp values for child v 
 			# accumulate the children dp values to the dp of node u 
-			# don't forget to take the values mod 1e9+7
+			# don't forget to take the values MOD 1e9+7
 			dp[u][1] *= dp[v][0] 
-			dp[u][1] %= mod
-			dp[u][0] *= (dp[v][0] + dp[v][1]) % mod
-			dp[u][0] %= mod
+			dp[u][1] %= MOD
+			dp[u][0] *= (dp[v][0] + dp[v][1]) % MOD
+			dp[u][0] %= MOD
 
 dfs(0, -1)
 
-ans = (dp[0][0] + dp[0][1]) % mod
+ans = (dp[0][0] + dp[0][1]) % MOD
 print(ans)
 
 ```
