@@ -2,7 +2,7 @@
 id: ac-MultipleOf2019
 source: AtCoder Beginner Contest
 title: Multiple of 2019
-author: Maggie Liu, Brad Ma
+author: Maggie Liu, Brad Ma, Mohammad Nour Massri
 ---
 
 [Official Analysis](https://img.atcoder.jp/abc164/editorial.pdf#page=10)
@@ -84,5 +84,31 @@ public class MultipleOf2019 {
 ```
 					 
 </JavaSection>
+<PySection>
+```py
 
+MOD = 2019
+s = input()
+
+cnt = [0]*MOD
+cnt[0] = 1
+
+cur = 0
+power = 1
+for c in reversed(s):
+    # find the remainder of the current number MOD 2019
+    cur = (int(c)*power + cur) % MOD
+    # increase the power of 10
+    power = (power*10) % MOD
+    # increase the count of this remainder
+    cnt[cur] += 1
+
+ans = 0
+for rep in cnt:
+    # when remainder i repeats rep times then there is C(rep,2) valid pairs
+    ans += (rep*(rep-1))//2
+print(ans)
+
+```
+</PySection>
 </LanguageSection>
