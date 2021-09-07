@@ -83,10 +83,16 @@ We root the resultant treap at the root node that has the higher priority, and r
 struct Node {
 	int val, pri;
 	Node *left, *right;
+	// pointer to left and right child
+	// NULL means no child
 
 	Node(int _val) : val(_val), pri(rand()), left(NULL), right(NULL) {};
 } *root;
 
+// pass in root as pointer, left and right as references 
+// to a node pointer so we can modify them 
+// (alternatively, we can return left and right pointers
+// as an std::pair)
 void split(Node *root, int x, Node &*left, Node &*right) {
 	if (!root) {
 		left = right = NULL;
@@ -102,6 +108,9 @@ void split(Node *root, int x, Node &*left, Node &*right) {
 	}
 }
 
+// merge left and right pointers into root which 
+// is a reference to a pointer to enable 
+// modification within the function
 void merge(Node &*root, Node *left, Node *right) {
 	if (!left || !right) {
 		root = left ? left : right;
