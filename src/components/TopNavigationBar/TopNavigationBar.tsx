@@ -200,11 +200,11 @@ export default function TopNavigationBar({
                       >
                         <Popover.Panel static className="hidden md:block z-20 shadow-lg absolute left-1/2 transform -translate-x-1/2 -mt-2 px-2 w-screen max-w-md sm:px-0 lg:max-w-3xl">
                           <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-                            <div className="relative grid gap-6 bg-white dark:bg-gray-900 px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2">
+                            <div className="relative grid gap-6 bg-white dark:bg-gray-800 px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2">
                               {userGroups.data?.length > 0 && (
                                 <Link
                                   to="/groups/"
-                                  className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-800 hover:bg-gray-100 transition ease-in-out duration-150"
+                                  className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
                                 >
                                   <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
                                     <UserGroupIcon className="h-6 w-6" aria-hidden="true" />
@@ -226,7 +226,7 @@ export default function TopNavigationBar({
                                   href={item.href}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-800 hover:bg-gray-100 transition ease-in-out duration-150"
+                                  className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
                                 >
                                   <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
                                     <item.icon className="h-6 w-6" aria-hidden="true" />
