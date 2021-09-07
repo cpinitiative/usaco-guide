@@ -17,7 +17,6 @@ import { useContext, useState, Fragment } from 'react';
 import { SECTIONS, SECTION_LABELS } from '../../../content/ordering';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
@@ -38,7 +37,6 @@ export default function TopNavigationBar({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const userGroups = useUserGroups();
   const resources = [
     {
       name: 'USACO Forum',
@@ -95,14 +93,10 @@ export default function TopNavigationBar({
       label: 'Problems',
       url: '/problems/',
     },
-    ...(userGroups.data?.length > 0
-      ? [
-          {
-            label: 'Groups',
-            url: '/groups',
-          },
-        ]
-      : []),
+    {
+      label: 'Groups',
+      url: '/groups',
+    },
   ];
 
   return (
