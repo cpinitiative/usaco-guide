@@ -2,7 +2,7 @@
 id: usaco-944
 source: USACO Silver 2019 US Open
 title: Fence Planning
-author: Brad Ma
+author: Brad Ma, Ananth Kashyap (C++)
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_fenceplan_silver_open19.html)
@@ -98,5 +98,88 @@ public class FencePlan {
 ```
   
 </JavaSection>
+
+<CPPSection>
+
+We can take a DFS (depth-first search) approach to this problem. Each moo network 
+is equivalent to a connected component within the graph of the cows. We can 
+create a list that holds all connected components within the graph, and the cows 
+in each one. Then, to find our answer, we can iterate through each of our connected 
+components and calculate the minimum perimeter of a fence needed to encapsulate 
+all of the cows within that connected component. 
+
+```cpp
+
+#include <fstream>
+#include <algorithm>
+#include <vector>
+#define f first
+#define s second
+using namespace std;
+
+ifstream fin("fenceplan.in");
+ofstream fout("fenceplan.out");
+
+int n, m;
+
+vector<int> adj[100001];
+vector<bool> visited(100001, false);
+vector<vector<int>> components;
+vector<int> curr;
+
+void dfs(int node) {
+	visited[node] = true;
+	curr.push_back(node);
+	for (auto u : adj[node]) {
+		if (visited[u]) continue;
+		dfs(u);
+	}
+}
+
+void connected_components() {
+	for (int i = 1; i < n + 1; i++) {
+		curr.resize(0);
+		if (visited[i]) continue;
+		dfs(i);
+		components.push_back(curr);
+	}
+}
+
+int main() {
+	fin >> n >> m;
+	vector<pair<long long, long long>> coords(n + 1, {0, 0});
+	vector<pair<int, int>> connections(m, {0, 0});
+	for (int i = 1; i < n + 1; i++) {
+		fin >> coords[i].f >> coords[i].s;
+	}
+	for (int i = 0; i < m; i++) {
+		fin >> connections[i].f >> connections[i].s;
+	}
+	for (int i = 0; i < m; i++) {
+		adj[connections[i].f].push_back(connections[i].s);
+		adj[connections[i].s].push_back(connections[i].f);
+	}
+
+	connected_components();
+	long long min_perimeter = 10000000000;
+	long long min_x, max_x, min_y, max_y;
+	for (int i = 0; i < components.size(); i++) {
+		max_x = 0;
+		max_y = 0;
+		min_x = 10000000000;
+		min_y = 10000000000;
+		for (int j = 0; j < components[i].size(); j++) {
+			max_x = max(max_x, coords[components[i][j]].f);
+			min_x = min(min_x, coords[components[i][j]].f);
+			max_y = max(max_y, coords[components[i][j]].s);
+			min_y = min(min_y, coords[components[i][j]].s);
+		}
+		min_perimeter = min(min_perimeter, 2*(max_x - min_x) + 2*(max_y - min_y));
+	}	
+	fout << min_perimeter;
+}
+
+```
+</CPPSection>
   
 </LanguageSection>
