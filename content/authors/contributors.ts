@@ -89,6 +89,12 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'dutinmeow',
     sinceDate: 'August 2021',
     photo: 'dustin'
+  },
+  {
+    name: 'Ben Dodge',
+    githubUsername: 'Navigator365',
+    sinceDate: 'August 2021',
+    photo: 'ben'
   }
 ];
 
