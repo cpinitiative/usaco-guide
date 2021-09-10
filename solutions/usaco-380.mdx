@@ -131,5 +131,118 @@ public class CrossCountrySkiing {
 
 </JavaSection>
 
+<CPPSection>
+
+```cpp
+// @author: ascyrax
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define endl "\n"
+
+#define pb push_back
+
+int r, c;
+vector<vector<int>> grid;     //grid stores the elevation
+vector<vector<bool>> visited; //this will be true if the corresponding location of the grid has been visited atleast once
+
+//right bottom left top
+int drow[4] = {0, 1, 0, -1};
+int dcol[4] = {1, 0, -1, 0};
+vector<pair<int, int>> wpts; //this will contain all the waypoint
+
+
+void dfs(int row, int col, int mid)
+{
+        // cout << row << " " << col << " " << mid << endl;
+        if (row < 0 || col >= c)
+        {
+                return;
+        }
+        visited[row][col] = true;
+        for (int i = 0; i <= 3; i++)
+        {
+                int newRow = row + drow[i];
+                int newCol = col + dcol[i];
+                if ((newRow >= 0 && newRow < r && newCol >= 0 && newCol < c) && !visited[newRow][newCol] && (abs(grid[newRow][newCol] - grid[row][col]) <= mid))
+                        dfs(newRow, newCol, mid);
+        }
+        return;
+}
+
+bool check()
+{
+        for (auto i : wpts)
+        {
+                if (visited[i.first][i.second] == false) //checking if all the waypoints were visited in the last dfs, or not
+                        return false;
+        }
+        return true;
+}
+
+
+int main()
+{
+
+        freopen("ccski.in", "r", stdin);
+        freopen("ccski.out", "w", stdout);
+
+        cin >> r >> c;
+
+        grid = vector<vector<int>>(r, vector<int>(c));
+        visited = vector<vector<bool>>(r, vector<bool>(c, false));
+
+        for (int i = 0; i < r; i++)
+        {
+                for (int j = 0; j < c; j++)
+                {
+                        cin >> grid[i][j];
+                }
+        }
+
+        for (int i = 0; i < r; i++)
+        {
+                for (int j = 0; j < c; j++)
+                {
+                        int x;
+                        cin >> x;
+                        if (x == 1)
+                                wpts.pb(make_pair(i, j)); //wpts contains all the waypoints
+                }
+        }
+
+        // Binary search for the minimum possible value of d that works
+        // We can set "hi" to 1e9 because that will be the
+        // maximum value of d we need to try
+
+        int lo = 0, hi = 1e9;
+        while (lo < hi)
+        {
+                int mid = lo + (hi - lo) / 2;
+
+                //mid is the maximum absolute elevation difference
+                dfs(0, 0, mid);
+
+                if (check()) //checking if all the waypoints were visited or not
+                {
+                        hi = mid;
+                }
+                else
+                        lo = mid + 1;
+
+                visited = vector<vector<bool>>(r, vector<bool>(c, false));
+        }
+
+        cout << lo << endl;
+
+        return 0;
+}
+
+```
+
+</CPPSection>
+
 </LanguageSection>
 
