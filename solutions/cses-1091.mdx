@@ -2,22 +2,25 @@
 id: cses-1091
 source: CSES
 title: Concert Tickets
-author: Danh Ta Chi Thanh
+author: Danh Ta Chi Thanh, Ben Dodge
 ---
 
-## Solution
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
 
-[Unofficial Editorial](https://codeforces.com/blog/entry/83295)
 
-Another way of solving the problem is to use the `multiset::upper_bound`
-function to find the lowest-priced ticket that exceeds the maximum price for the
-current customer. When we have found the iterator pointing to the upper bound,
-we just decrement the iterator to get the maximum price possible for that
-current customer. Note that if the initial iterator points to the beginning of
-the multiset, we can infer that there is no ticket that works for the customer.
+## Explanation
 
-([Proof for my solution](https://stackoverflow.com/questions/9989731/algorithm-function-for-finding-last-item-less-than-or-equal-to-like-lower-bou/9989773#9989773))
+For each customer, we want to find the maximum possible ticket price they will
+accept from the available tickets. If the customer's maximum price is too low,
+so that no ticket price is below it, we can return -1. If not, we find the
+greatest ticket price less than or equal to the maximum price, and then remove
+that price as specified by the problem. We use a multiset for this.
 
+## Implementation 
+**Time Complexity:** $\mathcal{O}((n+ m)\log n)$
+
+<LanguageSection>
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 
@@ -51,3 +54,124 @@ int main(){
 	return 0;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class ConcertTickets {
+	public static void main(String[] args) throws IOException {
+		Reader io = new Reader();
+		PrintWriter pw = new PrintWriter(System.out);
+
+		int ticketNum = io.nextInt();
+		int peopleNum = io.nextInt();
+		// No multiset in java so we'll have to use a TreeMap
+		NavigableMap<Integer, Integer> ticketMultiset = new TreeMap<>();
+		Map.Entry<Integer, Integer> val;
+
+		for (int i = 0; i < ticketNum; i++) {
+			int priceOfTicket = io.nextInt();
+			/*
+			 * If the set already contains the same key value, 
+			 * create another pair next to it
+			 */
+			if (ticketMultiset.containsKey(priceOfTicket)) {
+				ticketMultiset.put(priceOfTicket, 
+									ticketMultiset.get(priceOfTicket) + 1);
+			} else {
+				ticketMultiset.put(priceOfTicket, 1);
+			}
+		}
+
+		for (int i = 0; i < peopleNum; i++) {
+			int customerMaxPrice = io.nextInt();
+			/*
+			 * Get the optimal ticket for this customer 
+			 * We add 1 because lowerEntry returns the highest 
+			 * *strictly* lower entry
+			 */
+			val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
+			// If there are no possible prices, we can exit and return -1
+			if (val != null) {
+				pw.println(val.getKey());
+				/*
+				 * If there's more than one set with the key value, 
+				 * then replace the current set with 
+				 * the next-lowest set with the same key 
+				 */
+				if (val.getValue() == 1) {
+					ticketMultiset.remove(val.getKey());
+
+				} else {
+					ticketMultiset.put(val.getKey(), val.getValue() - 1);
+				}
+			} else {
+				pw.println(-1);
+			}
+		}
+		io.close();
+		pw.close();
+	}
+	// Kattio is too slow
+	//BeginCodeSnip{Fast Reader}
+	static class Reader
+	{
+		final private int BUFFER_SIZE = 1 << 16;
+		private DataInputStream din;
+		private byte[] buffer;
+		private int bufferPointer, bytesRead;
+ 
+		public Reader()
+		{
+			din = new DataInputStream(System.in);
+			buffer = new byte[BUFFER_SIZE];
+			bufferPointer = bytesRead = 0;
+		}
+		private void fillBuffer() throws IOException
+		{
+			bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+			if (bytesRead == -1)
+				buffer[0] = -1;
+		}
+ 
+		private byte read() throws IOException
+		{
+			if (bufferPointer == bytesRead)
+				fillBuffer();
+			return buffer[bufferPointer++];
+		}
+ 
+		public void close() throws IOException
+		{
+			if (din == null)
+				return;
+			din.close();
+		}
+		public int nextInt() throws IOException
+		{
+			int ret = 0;
+			byte c = read();
+			while (c <= ' ')
+				c = read();
+			boolean neg = (c == '-');
+			if (neg)
+				c = read();
+			do
+			{
+				ret = ret * 10 + c - '0';
+			}  while ((c = read()) >= '0' && c <= '9');
+ 
+			if (neg)
+				return -ret;
+			return ret;
+		}
+	}
+	//EndCodeSnip{}
+}
+```
+</JavaSection>
+</LanguageSection>

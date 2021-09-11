@@ -2,7 +2,7 @@
 id: cses-1202
 source: CSES
 title: Investigation
-author: Andrew Wang
+author: Andrew Wang, Chuyang Wang
 ---
 
 ## Explanation
@@ -99,5 +99,106 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Investigation {
+	static final int MOD = 1000000007;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		List<List<Pair>> adj = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			adj.add(new ArrayList<>());
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(in.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			int cost = Integer.parseInt(st.nextToken());
+			adj.get(a).add(new Pair(cost, b));
+		}
+
+		long[] dist = new long[n];
+		long[] num = new long[n];
+		for (int i = 0; i < n; i++) {
+			dist[i] = Long.MAX_VALUE;
+			num[i] = 1;
+		}
+
+		// maximum number of flights in the minimum-price route
+		int[] maxf = new int[n];
+		// minimum number of flights in the minimum-price route
+		int[] minf = new int[n];
+
+		Queue<Pair> toVisit = new PriorityQueue<>();
+		// distance to the start node itself is 0
+		dist[0] = 0;
+		// f: distance to current node, s: current node
+		toVisit.add(new Pair(0, 0));
+		while (!toVisit.isEmpty()) {
+			Pair node = toVisit.remove();
+			long nodeDist = node.f;
+			int nodeIdx = node.s;
+			// if the node is already visited, we ignore it
+			if (dist[nodeIdx] != nodeDist)
+				continue;
+
+			// child: f: cost, s: chlid node
+			for (Pair child : adj.get(nodeIdx)) {
+				long cost = child.f;
+				int childNode = child.s;
+				num[childNode] %= MOD;
+				// if found shorter path, reset num, maxf and minf for child
+				if (cost + dist[nodeIdx] < dist[childNode]) {
+					dist[childNode] = cost + dist[nodeIdx];
+					num[childNode] = num[nodeIdx];
+					maxf[childNode] = maxf[nodeIdx] + 1;
+					minf[childNode] = minf[nodeIdx] + 1;
+					toVisit.add(new Pair(dist[childNode], childNode));
+				// with equivalent distance, update num, maxf and minf
+				} else if (cost + dist[nodeIdx] == dist[childNode]) {
+					num[childNode] += num[nodeIdx];
+					maxf[childNode] = Integer.max(maxf[childNode], maxf[nodeIdx] + 1);
+					minf[childNode] = Integer.min(minf[childNode], minf[nodeIdx] + 1);
+				}
+			}
+		}
+
+		num[n - 1] %= MOD;
+		out.println(
+			String.format("%d %d %d %d", dist[n - 1], num[n - 1], minf[n - 1], maxf[n - 1]));
+		out.close();
+	}
+
+	private static class Pair implements Comparable<Pair> {
+		long f;
+		int s;
+
+		public Pair(long x, int y) {
+			f = x;
+			s = y;
+		}
+
+		@Override
+		public int compareTo(Pair o) {
+			int dx = Long.compare(f, o.f);
+			if (dx == 0)
+				return s - o.s;
+			else return dx;
+		}
+	}
+}
+```
+</JavaSection>
 
 </LanguageSection>

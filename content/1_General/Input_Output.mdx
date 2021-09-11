@@ -69,7 +69,7 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are
+In most websites (such as CodeForces and CSES), and in USACO problems after December 2020, input and output are
 **standard**.
 
 <LanguageSection>
@@ -384,26 +384,49 @@ faster method of input.
 
 <PySection>
 
-### Python
-
+### Method 1 - [`input()`](https://docs.python.org/3/library/functions.html#input) and [`print()`](https://docs.python.org/3/library/functions.html#print)
 The most intuitive way to do input/output is using the built in
-[`input()`](https://docs.python.org/3/library/functions.html#input) and
-[`print()`](https://docs.python.org/3/library/functions.html#print) methods. The
+`input()` and
+`print()` methods. The
 `input()` method will return the next line, and can be processed using different
 python methods. The `print()` method takes in a string and an optional string
 `end` (defaults to `'\n'`). Below is an annotated demonstration on different
 input/output scenarios.
 
+
 ```py
 # read in a string
-myStr = input()
+my_str = input()
 # prints the string on its own line
-print(myStr)
+print(my_str)
 
 # take in an integer n on a single line
 n = int(input())
 # prints integer n with " test" after it
 print(n, end=" test")
+```
+### Method 2 - [`stdin`](https://docs.python.org/3/library/sys.html#sys.stdin) and [`stdout`](https://docs.python.org/3/library/sys.html#sys.stdout)
+
+The first method of reading input can be far slower than using `stdin` (Hundreds of times slower!). Coupled with python's relatively slow execution speed, reading input efficiently becomes incredibly important. 
+
+```py
+# import the sys module to use std in/out
+import sys
+	
+# sys.stdin/stdout is similar to a file, in that we read lines for input/output
+my_str = sys.stdin.readline()
+sys.stdout.write(str(myStr) + '\n')
+# renaming the read/write methods
+input = sys.stdin.readline
+print = sys.stdout.write
+
+# taking an integer as input
+my_int = int(input())
+# sys.stdout.write requires you to format code manually
+print(str(my_int) + '\n')
+
+# for larger inputs, you can buffer the problem's input, and sort through it yourself. Fastest input method for python.
+all_data = sys.stdin.read().split('\n')
 ```
 
 We can also [`split`](https://docs.python.org/3/library/stdtypes.html#str.split)
@@ -412,34 +435,44 @@ along with [`map`](https://docs.python.org/3/library/functions.html#map) or a
 to read in multiple integers on the same line (separated by whitespace).
 
 ```py
+import sys
+	
 # read in a series of numbers on one line into a list
 nums = [int(x) for x in input().split()]
 # does the same thing
 nums = list(map(int, input().split()))
+
+# stdin/stdout, just replace input() with sys.stdin.readline()
+nums = list(map(int, sys.stdin.readline().split()))
 ```
 
 We can use something similar to the above if we are unpacking a fixed number of
 integers.
 
 ```py
+import sys
+	
 # read in integers n and m, both on the same line
 n, m = [int(x) for x in input().split()]
 # does the same thing
 n, m = map(int, input().split())
+
+# stdin and stdout
+n, m = map(int, sys.stdin.readline().split())
 ```
 
-So taking three integers as input and printing their sum is quite simple:
+So taking three integers as input and printing their sum is quite simple. On a larger scale (thousands of integers), using stdin and stdout becomes far more important for speed:
 
 ```py
-a,b,c = map(int, input().split())
-print("sum is",a+b+c)
+import sys
+	
+a, b, c = map(int, input().split())
+print("sum is", a + b + c)
+
+# stdin and stdout
+a, b, c = map(int, sys.stdin.readline().split())
+print("sum is", a + b + c)
 ```
-
-<IncompleteSection>
-
-is there some other source which covers this?
-
-</IncompleteSection>
 
 </PySection>
 
@@ -603,8 +636,10 @@ printed to a file called `problemname.out`.
 
 <FocusProblem problem="fence" />
 
-You must rename the `.in` and `.out` files depending on the problem. For
-example, in the above problem you would use `paint.in` and `paint.out`.
+You must use the correct file names when opening the `.in` and `.out` files,
+depending on the problem. The file names are given on USACO problems which
+require file opening. For example, you would open `paint.in` and `paint.out`
+in the above problem.
 
 <LanguageSection>
 
@@ -752,19 +787,8 @@ sys.stdout = open("problemname.out", "w")
 ```
 
 A different approach to file I/O in Python is to still use the `open()` method, 
-but use the built-in functions `.readline()` or `.readlines()`. In Python, 
-`.readline()` will take the next line and return it as a string. This method 
-is useful for problems where you only have to read a short amount of lines
-but you still need to map each value to a variable. The `.readlines()` method 
-reads the entire file and returns a list of the file. Combined with a for loop, 
-this method provides a concise way to separate variables in the same line in a 
-problem. To write to the output file, you can use the `.write()` method. A 
-convienent way to convert a non-string value to a string value is to use 
-an f-string. An f-string is a really useful way to have 
-multiple types of objects in a string, all written in a single line. The 
-variables are encased in curly brackets, while the string part is written normally.
-See the code below for an example. 
-
+but use the built-in functions `.readline()` or `.readlines()`:
+	
 ```py
 # Note: The second argument can be omitted in the open()
       #	command for read-only files
@@ -794,10 +818,39 @@ variable_2 = 2
 exampleString = f"Hello {variable} {variable_2} World"
 # printing exampleString would give us 
 # Hello 1 2 World
-
-
-
 ```
+
+* `fin.readline()` will return the next line as a string. This method 
+  is useful for problems where you only have to read a short amount of lines
+  but you still need to map each value to a variable.
+
+* `fin.readlines()` returns all of the file's content as a list, separated by newlines (`"\n"`).
+  Combined with a for loop, this method provides a concise way to separate variables in the same
+  line in a problem. Keep in mind that each line entry in the list will still have a `"\n"` at the end.
+
+* `fout.write(data)` will write the variable `data` to the file. `data` must be a string,
+  and you can convert non-string variables with `str(my_var)`. The `write()` method will NOT write
+  a new line at the end. You must also run `fout.write("\n")` if you wish to write a new line.
+
+* f-strings were added in Python 3.6, and generally look nicer than concatenating (adding) strings.
+  To define an f-string, simply add the letter `f` right before the start of the string, and any
+  variables or expressions enclosed in curly braces (`{}`) will be put into the string. As an example,
+  `fout.write(f"{var1} {var2} {var3+var4}")` looks much cleaner than `fout.write(str(var1)+" "+str(var2)+" "+str(var3+var4))`
+
+After you read a line, you may wish to process it further. Python has many built-in string
+methods and functions:
+
+* `str.strip()` removes any trailing or leading whitespace. You should always run this method
+  after reading a line, to ensure that there is no extra whitespace: `line = fin.readline().strip()`
+
+* `map(func, iterable)` will run a function (the `func` argument) against each element of an iterable
+  (list) you pass it. This is useful for changing a list of strings into a list of ints:
+  `nums = list(map(int, ["1", "2", "3"]))`. Please note that `map()` returns a Map object, and you need
+  to convert it into a list with `list()`.
+
+* `str.split(delim)` will split the string. If no argument is passed, it will split by space.
+  This is useful if you want to separate a string of space-separated integers into ints:
+  `nums = list(map(int, line.split()))`
 
 </PySection>
 

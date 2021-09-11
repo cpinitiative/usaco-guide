@@ -1,0 +1,126 @@
+---
+id: usaco-515
+source: USACO Gold 2015 January
+title: Moovie Mooving
+author: Melody Yu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_movie_gold.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<Youtube id="oKm_GZD9u1E" />
+
+## Implementation
+**Time Complexity:** $\mathcal{O}((2^N+CN)N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, L;
+vector<vector<int>> schedule;
+vector<vector<vector<int>>> next_show;
+vector<int> length;
+vector<pair<int, int>> dp;
+
+//BeginCodeSnip{bit operations}
+int pct(int x) { return __builtin_popcount(x); }
+int setbit(int n, int k) { return (n | (1 << k)); }
+int getbit(int n, int k) { return (n & (1 << k)) >> k; }
+//EndCodeSnip
+
+int find_show_time(int t, int m) {
+	auto it = upper_bound(schedule[m].begin(), schedule[m].end(), t);
+	if (it == schedule[m].begin()) {
+		return -1;
+	}
+
+	int start = *(it - 1);
+	if (start + length[m] < t || start > t) {
+		return -1;
+	}
+
+	return (it - 1) - schedule[m].begin();
+}
+
+int main() {
+	ifstream cin("movie.in");
+	ofstream cout("movie.out");
+	cin >> N >> L;
+
+	length.resize(N);
+	schedule.resize(N);
+	next_show.resize(N, vector<vector<int>>(N, vector<int>(0, -1)));
+
+	for (int i = 0; i < N; i++) {
+		int t, v;
+		cin >> t >> v;
+		length[i] = t;
+		int a;
+		while(v) {
+			cin >> a;
+			schedule[i].push_back(a);
+			v--;
+		}
+	}
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (i == j) continue;
+			for (int ii = 0; ii < schedule[i].size(); ii++) {
+				next_show[i][j].push_back(
+				   find_show_time(schedule[i][ii] + length[i], j));
+			}
+		}
+	}
+
+	// dp[x] = {last_movie, last_move_schedule_index}
+	dp.resize(1 << N, {-1, -1});
+
+	int ans = N + 1;
+	dp[0] = {0, 0};
+
+	// schedule subset loop
+	for (int i = 0; i < 1 << N; i++) {
+		if (dp[i].first == -1) continue;
+		for (int j = 0; j < N; j++) {
+			// has movie j already been watched?
+			if (getbit(i, j)) continue;
+			int subset = setbit(i, j);
+
+			int x;
+			if (i == 0) {
+				x = schedule[j][0] == 0 ? 0:-1;
+			} else {
+				x = next_show[dp[i].first][j][dp[i].second];
+			}
+			if (x != -1) {
+				// subset including j
+				if (dp[subset].first == -1 ||
+					schedule[dp[subset].first][dp[subset].second]
+				           + length[dp[subset].first] < schedule[j][x]
+					   + length[j]) {
+					   dp[subset] = {j, x};
+				}
+				if (schedule[dp[subset].first][dp[subset].second]
+					+ length[dp[subset].first] >= L) {
+					ans = min(ans, pct(subset));
+				}
+			}
+		}
+	}
+
+	cout << (ans == N + 1 ? -1 : ans) << endl;
+}
+```
+
+</CPPSection>
+
+
+</LanguageSection>
