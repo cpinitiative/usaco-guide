@@ -15,11 +15,7 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 ## Solution
 
-We can binary search on the last valid value of $M$ such that the ordering can
-be satisfied. For each iteration of the binary search, we only check if the
-interval of times $[0, x)$ is valid. Finally, to
-find the lexicographically smallest topological sort, we use a priority queue to process
-the ids from least to greatest.
+Denote each cow as a node in a graph. Let's draw a directed edge from each node $u$ to another node $v$ if $u$ must come before $v$. Note that this can be done when we process the $M$ observations. Now, notice that an ordering is valid only if the resulting graph is a DAG. Additionally, we can use a priority queue (instead of a queue) with topological sort to generate the lexicographically minimum topological ordering. It remains to find how many observations we can follow starting from the first observation, which we can binary search for.
 
 ## Implementation
 
