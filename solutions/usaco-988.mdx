@@ -84,7 +84,7 @@ int main() {
 **Time Complexity:** $\mathcal{O}(N^3)$
 
 <Info title="Time Complexity">
-Since the `in` operator in Python takes $\mathcal{O}(N)$ time, this solution is $\mathcal{O}(N^3)$.
+Since the `in` operator in Python takes $\mathcal{O}(N)$ time, this solution is slower than the C++ version.
 </Info>
 
 ```py
@@ -131,7 +131,7 @@ public class Photoshoot {
 		int[] bessieList = new int[N];
 		int[] correctList = new int[N];
 		// Used to prevent repeated values in our permutation
-		boolean[] isItThere = new boolean[N];
+		boolean[] used = new boolean[N];
 
 		for (int i = 1; i < N; i++) {
 			bessieList[i] = io.nextInt();
@@ -141,7 +141,7 @@ public class Photoshoot {
 		// construct a permutation based on that.
 		for (int i = 1; i <= N; i++) {
 			correctList[0] = i;
-			isItThere = new boolean[N];
+			used = new boolean[N];
 			for (int j = 1; j < N; j++) {
 				correctList[j] = bessieList[j] - correctList[j - 1];
 			}
@@ -152,15 +152,13 @@ public class Photoshoot {
 				if (k > N || k <= 0) {
 					bad = true;
 					break;
-				}
-				else {
+				} else {
 					// Our permutation isn't valid because some elements repeat
-					if (isItThere[k - 1]) {
+					if (used[k - 1]) {
 						bad = true;
 						break;
-					}
-					else {
-						isItThere[k - 1] = true;
+					} else {
+						used[k - 1] = true;
 					}
 				}
 			}
