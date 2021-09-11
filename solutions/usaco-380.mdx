@@ -141,18 +141,21 @@ using namespace std;
 #define pb push_back
 
 int r, c;
-vector<vector<int>> grid;     //grid stores the elevation
-vector<vector<bool>> visited; //this will be true if the corresponding location of the grid has been visited atleast once
+vector<vector<int>> grid; // grid stores the elevation
+
+// this will be true if the corresponding location
+// of the grid has been visited atleast once
+vector<vector<bool>> visited;
 
 // right bottom left top
-int drow[4] = {0, 1, 0, -1};
-int dcol[4] = {1, 0, -1, 0};
-vector<pair<int, int>> wpts; // this will contain all the waypoint
+int dy[4] = {0, 1, 0, -1};
+int dx[4] = {1, 0, -1, 0};
 
+// this will contain all the waypoints
+vector<pair<int, int>> wpts;
 
 void dfs(int row, int col, int mid)
 {
-        // cout << row << " " << col << " " << mid << endl;
         if (row < 0 || col >= c)
         {
                 return;
@@ -160,10 +163,15 @@ void dfs(int row, int col, int mid)
         visited[row][col] = true;
         for (int i = 0; i <= 3; i++)
         {
-                int newRow = row + drow[i];
-                int newCol = col + dcol[i];
-                if ((newRow >= 0 && newRow < r && newCol >= 0 && newCol < c) && !visited[newRow][newCol] && (abs(grid[newRow][newCol] - grid[row][col]) <= mid))
-                        dfs(newRow, newCol, mid);
+                int newRow = row + dy[i];
+                int newCol = col + dx[i];
+
+                // all three conditions below need to be met simultaneously
+
+                if (newRow >= 0 && newRow < r && newCol >= 0 && newCol < c)
+                        if (abs(grid[newRow][newCol] - grid[row][col]) <= mid)
+				if (!visited[newRow][newCol])
+                                        dfs(newRow, newCol, mid);
         }
         return;
 }
@@ -172,7 +180,8 @@ bool check()
 {
         for (auto i : wpts)
         {
-                if (visited[i.first][i.second] == false) //checking if all the waypoints were visited in the last dfs, or not
+                // checking if all the wpts were visited in the last dfs, or not
+                if (visited[i.first][i.second] == false)
                         return false;
         }
         return true;
@@ -204,8 +213,8 @@ int main()
                 {
                         int x;
                         cin >> x;
-                        if (x == 1)
-                                wpts.pb(make_pair(i, j)); //wpts contains all the waypoints
+                        if (x == 1)// wpts contains all the waypoints
+                                wpts.pb(make_pair(i, j)); 
                 }
         }
 
@@ -218,10 +227,11 @@ int main()
         {
                 int mid = lo + (hi - lo) / 2;
 
-                //mid is the maximum absolute elevation difference
+                // mid is the maximum absolute elevation difference
                 dfs(0, 0, mid);
 
-                if (check()) //checking if all the waypoints were visited or not
+                // checking if all the waypoints were visited or not
+                if (check())
                 {
                         hi = mid;
                 }
