@@ -2,7 +2,7 @@
 id: cf-1158A
 source: CF
 title: The Party and Sweets
-author: Jesse Choe
+author: Jesse Choe, Brad Ma
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/66993)
@@ -97,5 +97,61 @@ int main(){
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java	
+import java.io.*;
+import java.util.*;
+
+public class ThePartyAndSweets {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		int[] b = new int[n];
+		int[] g = new int[m];
+		long res = 0;
+
+		for (int x = 0; x < n; x++) {
+			b[x] = io.nextInt();
+			res += b[x];
+		}
+
+		for (int x = 0; x < m; x++) {
+			g[x] = io.nextInt();
+		}
+
+		// Initial lower bound on answer
+		res *= m;
+
+		Arrays.sort(b);
+		Arrays.sort(g);
+
+		// If it's impossible to satisfy the constraints
+		if (b[n - 1] > g[0]) {
+			io.println(-1);
+			io.close();
+			System.exit(0);
+		}
+
+		for (int i = 0; i < m; i++) {
+			res += (g[i] - b[n - 1]);
+		}
+
+		if (g[0] != b[n - 1]) {
+			res += (g[0] - b[n - 2]);
+		}
+
+		io.println(res);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}	
+```
+	
+</JavaSection>
 
 </LanguageSection>
