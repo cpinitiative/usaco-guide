@@ -1,4 +1,5 @@
 import { DatabaseIcon } from '@heroicons/react/outline';
+import classNames from 'classnames';
 import { Link } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import * as React from 'react';
@@ -79,7 +80,12 @@ export default function IndexPage(): JSX.Element {
 
             <div className="flex justify-center">
               <GlowingRing>
-                <button className={whiteButtonClasses}>Get Started</button>
+                <Link
+                  to="/dashboard"
+                  className={classNames(whiteButtonClasses, 'inline-block')}
+                >
+                  Get Started
+                </Link>
               </GlowingRing>
             </div>
           </div>
