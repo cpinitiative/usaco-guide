@@ -16,6 +16,9 @@ module.exports = {
         cyan: colors.cyan,
         teal: colors.teal,
         orange: colors.orange,
+        gray: colors.gray,
+        sky: colors.sky,
+        purple: colors.purple,
         'light-blue': colors.sky,
       },
       boxShadow: {

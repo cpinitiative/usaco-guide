@@ -2,13 +2,25 @@ import { Link } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import * as React from 'react';
 import { useRef } from 'react';
+import { GlowingRing } from '../components/elements/landing/GlowingRing';
+import { GlowingText } from '../components/elements/landing/GlowingText';
+import { GradientText } from '../components/elements/landing/GradientText';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import Video from '../components/Video';
+
+/*
+Classes:
+- Header
+- Subtext
+- Button
+*/
+
+const whiteButtonClasses =
+  'text-xl bg-white px-8 py-4 rounded-lg font-medium text-gray-900 relative';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -23,75 +35,105 @@ export default function IndexPage(): JSX.Element {
       {/*>*/}
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
-      <TopNavigationBar indexPage />
+      <div className="dark">
+        <TopNavigationBar />
+      </div>
 
       {/* Begin Hero */}
-      <div className="relative bg-white dark:bg-gray-900 overflow-hidden">
-        <div className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32">
-          <main className="mt-8 mx-auto max-w-6xl px-4 sm:mt-12 sm:px-6 md:mt-20 xl:mt-24">
-            <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-              <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:flex-col lg:justify-center">
-                <div>
-                  <OutboundLink
-                    href="https://github.com/cpinitiative/usaco-guide/?ref=top_badge"
-                    target="_blank"
-                    className="text-sm font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300 sm:text-base lg:text-sm xl:text-base transition"
-                  >
-                    Open Source!
-                  </OutboundLink>
-                </div>
-                <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 dark:text-gray-100 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
-                  USACO{' '}
-                  <span className="text-blue-600 dark:text-blue-200">
-                    Guide
-                  </span>
-                </h2>
-                <p className="mt-3 text-base text-gray-500 dark:text-gray-400 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  A free collection of <b>curated, high-quality resources</b> to
-                  take you from Bronze to Platinum and beyond.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Link
-                      to="/dashboard/"
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white dark:text-blue-50 bg-blue-600 dark:bg-blue-700 hover:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition md:py-4 md:text-lg md:px-10"
-                    >
-                      View Guide
-                    </Link>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <a
-                      href="#learn-more"
-                      onClick={e => {
-                        e.preventDefault();
-                        learnMoreRef.current.scrollIntoView({
-                          behavior: 'smooth',
-                        });
-                      }}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 dark:text-blue-200 bg-blue-100 dark:bg-blue-900 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 dark:focus:border-blue-800 transition md:py-4 md:text-lg md:px-10"
-                    >
-                      Learn More
-                    </a>
-                  </div>
-                </div>
+      <div className="-mt-16 bg-gray-900">
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-1 flex flex-col justify-center">
+            <div className="h-24"></div>
+
+            <div className="flex justify-center">
+              <GlowingText className="text-center font-black tracking-tight text-9xl text-white mt-4">
+                USACO Guide
+              </GlowingText>
+            </div>
+
+            <div className="h-12"></div>
+
+            <p
+              className="
+              text-center text-4xl
+              font-medium
+              max-w-4xl
+              mx-auto
+              leading-[3rem]
+              text-gray-300
+            "
+            >
+              A free collection of{' '}
+              <GradientText>curated, high-quality resources</GradientText> to
+              take you from Bronze to Platinum and beyond.
+            </p>
+
+            <div className="h-12"></div>
+
+            <div className="flex justify-center">
+              <GlowingRing>
+                <button className={whiteButtonClasses}>Get Started</button>
+              </GlowingRing>
+            </div>
+          </div>
+
+          <div className="flex justify-center text-xl text-gray-400 py-16">
+            <a
+              href="https://joincpi.org/"
+              className="inline-flex items-center space-x-4"
+            >
+              <div className="h-9 w-9">
+                <svg
+                  className="inline-block"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 100 100"
+                >
+                  <g>
+                    <path
+                      className="fill-current text-[#6600af]"
+                      d="M50,5A45,45,0,1,1,5,50,45.05,45.05,0,0,1,50,5m0-5a50,50,0,1,0,50,50A50,50,0,0,0,50,0Z"
+                    ></path>
+                  </g>
+                  <line
+                    className="stroke-current stroke-[7px] text-[#be5eff]"
+                    style={{ strokeMiterlimit: 10 }}
+                    x1="50"
+                    y1="27"
+                    x2="73.29"
+                    y2="65.64"
+                  ></line>
+                  <line
+                    className="stroke-current stroke-[7px] text-[#be5eff]"
+                    style={{ strokeMiterlimit: 10 }}
+                    x1="50"
+                    y1="27"
+                    x2="26.71"
+                    y2="67"
+                  ></line>
+                  <circle
+                    className="fill-current text-[#961be8]"
+                    cx="50"
+                    cy="27"
+                    r="10"
+                  ></circle>
+                  <circle
+                    className="fill-current text-[#961be8]"
+                    cx="26.71"
+                    cy="67"
+                    r="10"
+                  ></circle>
+                  <circle
+                    className="fill-current text-[#961be8]"
+                    cx="73.29"
+                    cy="67"
+                    r="10"
+                  ></circle>
+                </svg>
               </div>
 
-              <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
-                <svg
-                  viewBox="0 0 200 200"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible lg:visible absolute transform translate-x-32 text-blue-50 dark:text-gray-800"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M60,-32.3C73.6,-11,77.7,18.1,66.1,39.4C54.5,60.8,27.3,74.4,1.3,73.7C-24.7,72.9,-49.5,57.9,-57,38.9C-64.5,19.9,-54.7,-3,-42.3,-23.5C-29.9,-44.1,-15,-62.3,4.1,-64.6C23.2,-67,46.3,-53.6,60,-32.3Z"
-                    transform="translate(100 100)"
-                  />
-                </svg>
-                <Video />
-              </div>
-            </div>
-          </main>
+              <span>Created by the CP Initiative</span>
+            </a>
+          </div>
         </div>
       </div>
       {/* End Hero */}
