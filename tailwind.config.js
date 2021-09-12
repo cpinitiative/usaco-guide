@@ -97,6 +97,27 @@ module.exports = {
           ],
         },
       }),
+
+      animation: {
+        blob1: 'blob 9s infinite',
+        blob2: 'blob 9s infinite 2s',
+      },
+      keyframes: {
+        blob: {
+          '0%': {
+            transform: 'scale(1)',
+          },
+          '33%': {
+            transform: 'scale(1.1) translateX(8rem) translateY(3rem)',
+          },
+          '66%': {
+            transform: 'scale(0.9) translateX(-8rem) translateY(-3rem)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+          },
+        },
+      },
     },
   },
   darkMode: 'class',
