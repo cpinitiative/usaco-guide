@@ -174,12 +174,26 @@ export default function IndexPage(): JSX.Element {
             icon={DatabaseIcon}
             iconClasses="from-cyan-400 to-sky-500"
             title="Curated Resources"
-            blobClasses="??"
+            blobClasses="bg-sky-200"
             feature={<ResourcesFeature />}
             featurePosition="left"
           >
             Learn new topics from a vetted list of high-quality resources. If
             one resource doesn't click, look at another!
+          </Feature>
+
+          <div className="h-36"></div>
+
+          <Feature
+            icon={DatabaseIcon}
+            iconClasses="from-purple-400 to-indigo-500"
+            title="Extensive Problemsets"
+            blobClasses="bg-purple-300"
+            feature={<ResourcesFeature />}
+            featurePosition="right"
+          >
+            Practice each topic with extensive problemsets and solutions
+            covering a wide range of difficulties.
           </Feature>
         </div>
         <div className="h-36"></div>
