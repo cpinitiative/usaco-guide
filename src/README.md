@@ -7,6 +7,7 @@
 
 ## Development speedup tips
 
-1. Delete src/functions/node_modules (messes with tailwind JIT)
-2. Delete pages/editor.tsx and pages/groups.tsx (or have them return an empty
-   component). These pages have a lot of dependencies that slow down webpack.
+Delete pages/editor.tsx and pages/groups.tsx (or have them return an empty
+component). These pages have a lot of dependencies that slow down webpack.
+
+On my personal computer, I have hot reload times of ~1.5 seconds

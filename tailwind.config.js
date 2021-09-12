@@ -129,7 +129,13 @@ module.exports = {
   purge: {
     safelist: ['dark'],
     content: [
-      './src/**/*.{js,ts,tsx}',
+      './src/components/**/*.{js,ts,tsx}',
+      './src/context/**/*.{js,ts,tsx}',
+      './src/hooks/**/*.{js,ts,tsx}',
+      './src/models/**/*.{js,ts,tsx}',
+      './src/pages/**/*.{js,ts,tsx}',
+      './src/stories/**/*.{js,ts,tsx}',
+      './src/templates/**/*.{js,ts,tsx}',
       './content/**/*.{mdx,ts,tsx}',
       './gatsby-browser.tsx',
       './.storybook/preview.js',
