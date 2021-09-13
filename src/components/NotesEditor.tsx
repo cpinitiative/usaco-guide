@@ -48,6 +48,7 @@ export default class NotesEditor extends Component<any, any> {
   }
 
   handleChange(html) {
+    this.props.save(html);
     this.setState({ editorHtml: html });
   }
 

@@ -81,7 +81,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const { inEditor } = useContext(EditorContext);
 
-  function handleCloseNotesModal() {
+  function handleCloseNotesModal(data) {
+    // save the data
+    console.log(data);
+
     setShowNotesModal(false);
   }
 

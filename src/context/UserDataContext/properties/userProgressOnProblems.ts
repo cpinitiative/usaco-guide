@@ -10,7 +10,8 @@ export type UserProgressOnProblemsAPI = {
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
     problemId: string,
-    status: ProblemProgress
+    status: ProblemProgress,
+    notes: any
   ) => void;
 };
 
@@ -20,6 +21,9 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
 
   private activityStorageKey = 'userProgressOnProblemsActivity';
   private activityValue: ProblemActivity[] = [];
+
+  private notesStorageKey = 'userNotesOnProblems';
+  private notesValue = {};
 
   initializeFromLocalStorage = () => {
     const currentValue = this.getValueFromLocalStorage(
@@ -33,11 +37,23 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       this.progressValue = currentValue;
     }
 
+    const currentNotesValue = this.getValueFromLocalStorage(
+      this.getLocalStorageKey(this.progressStorageKey),
+      { version: 2 }
+    );
+
+    if (!currentNotesValue.version || currentNotesValue.version < 2) {
+      this.migrateLegacyValue(currentNotesValue);
+    } else {
+      this.notesValue = currentNotesValue;
+    }
+
     this.activityValue = this.getValueFromLocalStorage(
       this.getLocalStorageKey(this.activityStorageKey),
       []
     );
   };
+
   migrateLegacyValue = legacyValue => {
     localStorage.setItem(
       'guide:userData:userProgressOnProblems:backups:' + new Date().getTime(),
@@ -69,11 +85,18 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     }
     return migratedValue;
   };
+
   writeValueToLocalStorage = () => {
     this.saveLocalStorageValue(
       this.getLocalStorageKey(this.progressStorageKey),
       this.progressValue
     );
+
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey(this.notesStorageKey),
+      this.notesValue
+    );
+
     this.saveLocalStorageValue(
       this.getLocalStorageKey(this.activityStorageKey),
       this.activityValue
@@ -84,6 +107,11 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     window.localStorage.removeItem(
       this.getLocalStorageKey(this.progressStorageKey)
     );
+
+    window.localStorage.removeItem(
+      this.getLocalStorageKey(this.notesStorageKey)
+    );
+
     window.localStorage.removeItem(
       this.getLocalStorageKey(this.activityStorageKey)
     );
@@ -92,6 +120,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
   exportValue = (): any => {
     return {
       [this.progressStorageKey]: this.progressValue,
+      [this.notesStorageKey]: this.notesValue,
       [this.activityStorageKey]: this.activityValue,
     };
   };
@@ -102,6 +131,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       pendingProgressValue = this.migrateLegacyValue(pendingProgressValue);
     }
     this.progressValue = pendingProgressValue;
+    this.notesValue = data[this.notesStorageKey] || [];
     this.activityValue = data[this.activityStorageKey] || [];
   };
 
@@ -109,7 +139,9 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     return {
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
-      setUserProgressOnProblems: (problemId, status) => {
+      userNotesOnProblemsActivity: this.notesValue,
+
+      setUserProgressOnProblems: (problemId, status, note) => {
         if (!this.firebaseUserDoc) {
           // if the user isn't using firebase, it is possible that they
           // have multiple tabs open, which can result in localStorage
@@ -121,8 +153,10 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
             timestamp: Date.now(),
             problemID: problemId,
             problemProgress: status,
+            notes: note,
           });
           this.progressValue[problemId] = status;
+          this.notesValue[problemId] = note;
 
           if (this.firebaseUserDoc) {
             setDoc(
@@ -130,6 +164,9 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
               {
                 [this.progressStorageKey]: {
                   [problemId]: status,
+                },
+                [this.notesStorageKey]: {
+                  [problemId]: note,
                 },
                 [this.activityStorageKey]: this.activityValue,
               },
@@ -145,9 +182,13 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
               status,
               problemId,
               activityValue: this.activityValue,
+              noteValue: this.notesValue,
               fbData: {
                 [this.progressStorageKey]: {
                   [problemId]: status,
+                },
+                [this.notesStorageKey]: {
+                  [problemId]: note,
                 },
                 [this.activityStorageKey]: this.activityValue,
               },

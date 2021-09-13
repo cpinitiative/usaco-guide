@@ -799,6 +799,7 @@ export class Problem {
     }
   }
 }
+export type ProblemNotes = any;
 
 export type ProblemProgress =
   | 'Not Attempted'
