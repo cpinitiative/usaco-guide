@@ -3,9 +3,11 @@ import React from 'react';
 
 export const GlowingText = ({
   className,
+  extraGlow = false,
   children,
 }: {
   className: string;
+  extraGlow?: boolean;
   children: string;
 }): JSX.Element => (
   <div className="relative group">
@@ -20,6 +22,18 @@ export const GlowingText = ({
     >
       {children}
     </span>
+    {extraGlow && (
+      <span
+        className={classNames(
+          className,
+          '-z-10 absolute inset-0',
+          'bg-gradient-to-r from-sky-700 to-purple-700',
+          'bg-clip-text text-transparent blur-xl'
+        )}
+      >
+        {children}
+      </span>
+    )}
     <span
       className={classNames(
         className,

@@ -18,6 +18,7 @@ module.exports = {
         orange: colors.orange,
         gray: colors.gray,
         sky: colors.sky,
+        fuchsia: colors.fuchsia,
         purple: colors.purple,
         'light-blue': colors.sky,
       },

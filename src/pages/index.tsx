@@ -1,8 +1,13 @@
 import {
+  AcademicCapIcon,
+  ChartBarIcon,
   ChatAlt2Icon,
   ClipboardListIcon,
+  CogIcon,
   DatabaseIcon,
   LightningBoltIcon,
+  TerminalIcon,
+  UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { Link } from 'gatsby';
@@ -16,6 +21,7 @@ import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
+import { CPIProjectCard } from '../components/Index/CPIProjectCard';
 import { Feature } from '../components/Index/Feature';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
@@ -39,8 +45,10 @@ const subtextClasses =
 const headerClassesDark = 'text-6xl font-black text-white';
 const subtextClassesDark =
   'text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
-const whiteButtonClasses =
+const whiteButtonClassesBig =
   'text-xl bg-white px-8 py-4 rounded-lg font-medium text-gray-900 relative';
+const whiteButtonClasses =
+  'text-xl bg-white px-6 py-3 rounded-lg font-medium text-gray-900 relative';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -94,7 +102,7 @@ export default function IndexPage(): JSX.Element {
               <GlowingRing>
                 <Link
                   to="/dashboard"
-                  className={classNames(whiteButtonClasses, 'inline-block')}
+                  className={classNames(whiteButtonClassesBig, 'inline-block')}
                 >
                   Get Started
                 </Link>
@@ -265,7 +273,7 @@ export default function IndexPage(): JSX.Element {
       <div className="bg-black">
         <div className="h-36"></div>
         <div className={containerClasses}>
-          <GlowingText className={headerClassesDark}>
+          <GlowingText className={headerClassesDark} extraGlow>
             Trusted by thousands.
           </GlowingText>
           <div className="h-12"></div>
@@ -293,6 +301,176 @@ export default function IndexPage(): JSX.Element {
           </div>
           <div className="h-36"></div>
         </div>
+      </div>
+
+      <div className="bg-white">
+        <div className="h-36"></div>
+        <div className="px-4 sm:px-6 lg:px-8 xl:px-16">
+          <h2 className={classNames(headerClasses, 'text-center')}>
+            Created by the CP Initiative.
+          </h2>
+          <div className="h-8"></div>
+          <p className={classNames(subtextClasses, 'text-center mx-auto')}>
+            Here are some of our other projects you might find useful!
+          </p>
+
+          <div className="h-24"></div>
+
+          <div className="grid grid-cols-3 gap-8">
+            <CPIProjectCard
+              title="USACO Classes"
+              icon={AcademicCapIcon}
+              iconClasses="from-fuchsia-500 to-purple-600"
+              url="https://joincpi.org/classes"
+            >
+              Learn USACO through affordable, high-quality classes with a
+              curriculum designed and developed by past USACO Finalists.
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="USACO IDE"
+              icon={TerminalIcon}
+              iconClasses="from-orange-400 to-pink-600"
+              url="https://ide.usaco.guide/"
+            >
+              A realtime collaborative online IDE designed for competitive
+              programming and USACO.
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="USACO Groups"
+              icon={AcademicCapIcon}
+              iconClasses="from-green-400 to-cyan-500"
+              url="https://usaco.guide/groups"
+            >
+              A Learning Management System fully integrated with the USACO
+              Guide. Perfect for clubs or group study sessions.
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="Club Curriculum"
+              icon={UserGroupIcon}
+              iconClasses="from-purple-500 to-indigo-500"
+              url="https://joincpi.org/clubs"
+            >
+              Join our competitive programming club network to get access to
+              exclusive club curriculum and resources!
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="Competitive Programming Contests"
+              icon={ChartBarIcon}
+              iconClasses="from-cyan-400 to-sky-500"
+              url="https://joincpi.org/contests"
+            >
+              Participate in high-quality programming contests targeted towards
+              pre-college students!
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="Competitive Programming Workshops"
+              icon={CogIcon}
+              iconClasses="from-yellow-400 to-orange-500"
+              url="https://joincpi.org/workshops"
+            >
+              Access workshops providing everything you need to know about
+              USACO.
+            </CPIProjectCard>
+          </div>
+        </div>
+        <div className="h-24"></div>
+      </div>
+
+      <div className="bg-black">
+        <div className="h-48"></div>
+
+        <div className={containerClasses}>
+          <GlowingText className={headerClassesDark} extraGlow>
+            Join our Team.
+          </GlowingText>
+          <div className="h-12"></div>
+          <p className={subtextClassesDark}>
+            The Competitive Programming Initiative is a student-run organization
+            dedicated to promoting competitive programming. Join us in our
+            mission, and{' '}
+            <GradientText>
+              earn PVSA volunteer hours and leadership positions
+            </GradientText>{' '}
+            along the way!
+          </p>
+          <div className="h-12"></div>
+
+          <div className="relative group inline-block">
+            <GlowingRing>
+              <a
+                href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(whiteButtonClasses, 'inline-block')}
+              >
+                Apply Now
+              </a>
+            </GlowingRing>
+          </div>
+
+          <hr className="my-24 border-gray-800" />
+
+          <GlowingText className={headerClassesDark} extraGlow>
+            Or, help us financially!
+          </GlowingText>
+          <div className="h-12"></div>
+          <p className={subtextClassesDark}>
+            We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
+            — all donations are tax deductible. Since our inception in September
+            2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
+            students across our various initiatives.
+          </p>
+          <div className="h-12"></div>
+
+          <div className="flex items-center">
+            <GlowingRing>
+              <a
+                href="mailto:sponsorship@joincpi.org"
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(whiteButtonClasses, 'inline-block')}
+              >
+                Sponsor Us
+              </a>
+            </GlowingRing>
+            <span className="text-lg font-medium text-gray-400 ml-6">
+              or{' '}
+              <a href="http://ww2.jeffkmeng.com/" className="text-blue-400">
+                Donate via PayPal
+              </a>
+            </span>
+          </div>
+
+          <div className="h-20"></div>
+
+          <p className="uppercase text-gray-400 font-medium text-xl">
+            Our Sponsors
+          </p>
+
+          <div className="mt-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:mt-6 text-gray-400">
+            <div className="col-span-1">
+              <a
+                href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <svg
+                  className="max-h-12"
+                  viewBox="0 0 4438 1000"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2223.75 250C2051.25 250 1926.87 362.5 1926.87 531.25C1926.87 700 2066.72 812.5 2239.38 812.5C2343.59 812.5 2435.47 771.25 2492.34 701.719L2372.81 632.656C2341.25 667.188 2293.28 687.344 2239.38 687.344C2164.53 687.344 2100.94 648.281 2077.34 585.781H2515.16C2518.59 568.281 2520.63 550.156 2520.63 531.094C2520.63 362.5 2396.41 250 2223.75 250ZM2076.09 476.562C2095.62 414.219 2149.06 375 2223.75 375C2298.59 375 2352.03 414.219 2371.41 476.562H2076.09ZM2040.78 78.125L1607.81 828.125L1174.69 78.125H1337.03L1607.66 546.875L1878.28 78.125H2040.78ZM577.344 0L1154.69 1000H0L577.344 0ZM3148.75 531.25C3148.75 625 3210 687.5 3305 687.5C3369.38 687.5 3417.66 658.281 3442.5 610.625L3562.5 679.844C3512.81 762.656 3419.69 812.5 3305 812.5C3132.34 812.5 3008.13 700 3008.13 531.25C3008.13 362.5 3132.5 250 3305 250C3419.69 250 3512.66 299.844 3562.5 382.656L3442.5 451.875C3417.66 404.219 3369.38 375 3305 375C3210.16 375 3148.75 437.5 3148.75 531.25ZM4437.5 78.125V796.875H4296.88V78.125H4437.5ZM3906.25 250C3733.75 250 3609.38 362.5 3609.38 531.25C3609.38 700 3749.38 812.5 3921.88 812.5C4026.09 812.5 4117.97 771.25 4174.84 701.719L4055.31 632.656C4023.75 667.188 3975.78 687.344 3921.88 687.344C3847.03 687.344 3783.44 648.281 3759.84 585.781H4197.66C4201.09 568.281 4203.12 550.156 4203.12 531.094C4203.12 362.5 4078.91 250 3906.25 250ZM3758.59 476.562C3778.13 414.219 3831.41 375 3906.25 375C3981.09 375 4034.53 414.219 4053.91 476.562H3758.59ZM2961.25 265.625V417.031C2945.63 412.5 2929.06 409.375 2911.25 409.375C2820.47 409.375 2755 471.875 2755 565.625V796.875H2614.38V265.625H2755V409.375C2755 330 2847.34 265.625 2961.25 265.625Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-48"></div>
       </div>
 
       {/* Begin FAQ */}
