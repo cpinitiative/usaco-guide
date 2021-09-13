@@ -53,6 +53,12 @@ export default class NotesEditor extends Component<any, any> {
     this.setState({ editorHtml: html });
   }
 
+  componentDidMount() {
+    this.setState({
+      editorHtml: '',
+    });
+  }
+
   render() {
     if (typeof window !== 'undefined' && document) {
       console.log('Quill Active');
