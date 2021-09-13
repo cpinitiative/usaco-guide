@@ -1,7 +1,13 @@
-import { DatabaseIcon } from '@heroicons/react/outline';
+import {
+  ChatAlt2Icon,
+  ClipboardListIcon,
+  DatabaseIcon,
+  LightningBoltIcon,
+} from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { Link } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { useRef } from 'react';
 import { GlowingRing } from '../components/elements/landing/GlowingRing';
@@ -11,6 +17,8 @@ import { HighlightedText } from '../components/elements/landing/HighlightedText'
 import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import { Feature } from '../components/Index/Feature';
+import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
+import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
@@ -185,15 +193,65 @@ export default function IndexPage(): JSX.Element {
           <div className="h-36"></div>
 
           <Feature
-            icon={DatabaseIcon}
+            icon={ClipboardListIcon}
             iconClasses="from-purple-400 to-indigo-500"
             title="Extensive Problemsets"
             blobClasses="bg-purple-300"
-            feature={<ResourcesFeature />}
+            feature={<ProblemsetsFeature />}
             featurePosition="right"
           >
             Practice each topic with extensive problemsets and solutions
             covering a wide range of difficulties.
+          </Feature>
+
+          <div className="h-36"></div>
+
+          <Feature
+            icon={LightningBoltIcon}
+            iconClasses="from-yellow-400 to-orange-500"
+            title="Progress Tracking"
+            blobClasses="bg-orange-200"
+            feature={<ProgressTrackingFeature />}
+            featurePosition="left"
+            fade="none"
+          >
+            Use our progress-tracking tools to track your progress in the Guide
+            and stay motivated.
+          </Feature>
+
+          <div className="h-36"></div>
+
+          <Feature
+            icon={ChatAlt2Icon}
+            iconClasses="from-green-400 to-cyan-500"
+            title="Help when you need it"
+            blobClasses="bg-green-200"
+            feature={
+              <div className="shadow-lg rounded-lg">
+                <StaticImage
+                  src="../assets/forum-screenshot.png"
+                  alt="USACO Forum Screenshot"
+                  placeholder="blurred"
+                  layout="fixed"
+                  width={560}
+                />
+              </div>
+            }
+            featurePosition="right"
+            fade="none"
+          >
+            <div className="mb-8">
+              Get help from other community members in the USACO Forum.
+            </div>
+
+            <a
+              href="https://forum.usaco.guide/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 transition hover:text-purple-600"
+            >
+              View Forum &rarr;
+            </a>
           </Feature>
         </div>
         <div className="h-36"></div>

@@ -8,6 +8,7 @@ export const Feature = ({
   blobClasses,
   feature,
   featurePosition,
+  fade = 'right',
   children,
 }: {
   icon: React.ElementType;
@@ -16,6 +17,7 @@ export const Feature = ({
   blobClasses: string;
   feature: JSX.Element;
   featurePosition: 'left' | 'right';
+  fade?: 'none' | 'right';
   children: React.ReactNode;
 }): JSX.Element => {
   return (
@@ -23,16 +25,19 @@ export const Feature = ({
       <div
         className={classNames(
           'flex-1 w-0 relative',
-          featurePosition === 'left' ? 'pr-24' : 'pl-24'
+          featurePosition === 'left' && 'pr-24'
         )}
       >
         <div className="relative z-10">{feature}</div>
-        <div
-          className={classNames(
-            'absolute top-0 bottom-0 w-48 bg-gradient-to-r from-transparent to-white z-20',
-            featurePosition === 'left' ? 'right-24' : 'right-0'
-          )}
-        ></div>
+
+        {fade !== 'none' && (
+          <div
+            className={classNames(
+              'absolute top-0 bottom-0 w-48 bg-gradient-to-r from-transparent to-white z-20',
+              featurePosition === 'left' ? 'right-24' : 'right-0'
+            )}
+          />
+        )}
 
         <div
           className={classNames(
@@ -44,7 +49,7 @@ export const Feature = ({
       <div
         className={classNames(
           'flex-1',
-          featurePosition === 'right' && 'order-first'
+          featurePosition === 'right' && 'order-first pr-24'
         )}
       >
         <div>
