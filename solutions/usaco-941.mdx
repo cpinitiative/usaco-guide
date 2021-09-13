@@ -107,73 +107,52 @@ print('yes')
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class CowEvolution {
-	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader("evolution.in"));
-		PrintWriter out = new PrintWriter("evolution.out");
+public class Evolution {
 
-		int N = Integer.parseInt(in.readLine());
-		// cows with their characteristics
-		String[][] cows = new String[N][];
-		// a distinct set of characteristics from all cows
-		Set<String> characteristics = new HashSet<String>();
-		for (int i = 0; i < N; i++) {
-			String[] line = in.readLine().split(" ");
-			cows[i] = Arrays.copyOfRange(line, 1, line.length);
-			Collections.addAll(characteristics, cows[i]);
-		}
-		in.close();
+    static boolean[][] hasChar = new boolean[25][125];
+    static Map<String, Integer> convert = new HashMap<>();
 
-		String[] characs = characteristics.toArray(new String[0]);
-		// iterate through every pair of characteristics
-		for (int a = 0; a < characs.length; a++) {
-			for (int b = a + 1; b < characs.length; b++) {
-				if (existsOverlap(characs[a], characs[b], cows)) {
-					out.println("no");
-					out.close();
-					return;
-				}
-			}
-		}
-		out.println("yes");
-		out.close();
-	}
+    public static void main(String[] args) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("evolution.in"));
+            int popNum = Integer.parseInt(br.readLine());
+            int nxtIdx = 0;
+            for (int i = 0 ; i < popNum; i++) {
+                String[] line = br.readLine().split(" ");
+                for (int j = 1; j < line.length; j++) {
+                    if (!convert.containsKey(line[j])) convert.put(line[j], nxtIdx++);
+                    int idx = convert.get(line[j]);
+                    hasChar[i][idx] = true;
+                }
+            }
+            br.close();
 
-	// tests for each pair of characteristics (a, b),
-	// whether there exists at least three cows with characteristic a, b, and ab.
-	// if it's the case, then there is no proper evolutional tree
-	// as explained in the official editorial
-	private static boolean existsOverlap(String a, String b, String[][] cows) {
-		boolean onlyA = false, onlyB = false, both = false;
-		// interate through every cow
-		for (int i = 0; i < cows.length; i++) {
-			boolean hasA = false, hasB = false;
-			// and their characteristics
-			for (String charac : cows[i]) {
-				if (charac.equals(a)) {
-					hasA = true;
-				}
-				if (charac.equals(b)) {
-					hasB = true;
-				}
-			}
+            boolean works = true;
+            for (int a = 0; a < nxtIdx && works; a++) {
+                for (int b = 0; b < a && works; b++) {
+                    int aNum = 0;
+                    int bNum = 0;
+                    int abNum = 0;
+                    for (int i = 0; i < popNum; i++) {
+                        if (hasChar[i][a] && hasChar[i][b]) abNum++;
+                        else if (hasChar[i][a]) aNum++;
+                        else if (hasChar[i][b]) bNum++;
+                    }
+                    works = works && !(aNum>0 && bNum>0 && abNum>0);
+                }
+            }
 
-			if (hasA) {
-				if (hasB) {
-					both = true;
-				} else {
-					onlyA = true;
-				}
-			} else if (hasB) {
-				onlyB = true;
-			}
-		}
-
-		return onlyA && onlyB && both;
-	}
+            BufferedWriter bw = new BufferedWriter(new FileWriter("evolution.out"));
+            bw.write((works)? "yes\n": "no\n");
+            bw.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
 ```
 
