@@ -20,6 +20,7 @@ import { Feature } from '../components/Index/Feature';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
+import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
@@ -35,6 +36,9 @@ const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses = 'text-6xl font-black text-black';
 const subtextClasses =
   'text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
+const headerClassesDark = 'text-6xl font-black text-white';
+const subtextClassesDark =
+  'text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
 const whiteButtonClasses =
   'text-xl bg-white px-8 py-4 rounded-lg font-medium text-gray-900 relative';
 
@@ -52,11 +56,11 @@ export default function IndexPage(): JSX.Element {
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
       <div className="dark">
-        <TopNavigationBar />
+        <TopNavigationBar transparent />
       </div>
 
       {/* Begin Hero */}
-      <div className="-mt-16 bg-gray-900">
+      <div className="-mt-16 bg-black">
         <div className="min-h-screen flex flex-col">
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-24"></div>
@@ -257,6 +261,39 @@ export default function IndexPage(): JSX.Element {
         <div className="h-36"></div>
       </div>
       {/* End Learn USACO. Efficiently. */}
+
+      <div className="bg-black">
+        <div className="h-36"></div>
+        <div className={containerClasses}>
+          <GlowingText className={headerClassesDark}>
+            Trusted by thousands.
+          </GlowingText>
+          <div className="h-12"></div>
+
+          <p className={subtextClassesDark}>
+            This guide is written by{' '}
+            <GradientText>top USACO contestants,</GradientText> including
+            two-time IOI winner and USACO Problemsetter Benjamin Qi.
+          </p>
+          <div className="h-12"></div>
+
+          <TrustedBy />
+
+          <div className="h-16"></div>
+
+          <div className="relative group inline-block">
+            <GlowingRing>
+              <Link
+                to="/dashboard"
+                className={classNames(whiteButtonClasses, 'inline-block')}
+              >
+                View Guide
+              </Link>
+            </GlowingRing>
+          </div>
+          <div className="h-36"></div>
+        </div>
+      </div>
 
       {/* Begin FAQ */}
       <div className="bg-white dark:bg-dark-surface">

@@ -28,6 +28,7 @@ import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
 export default function TopNavigationBar({
+  transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
   hideClassesPromoBar = false,
@@ -134,7 +135,12 @@ export default function TopNavigationBar({
         </div>
       )}
 
-      <nav className="bg-white dark:bg-gray-900 shadow relative z-20">
+      <nav
+        className={classNames(
+          !transparent && 'bg-white dark:bg-gray-900 shadow',
+          'relative z-20'
+        )}
+      >
         <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto">
           <div className="flex justify-between h-16">
             <div className="flex px-2 lg:px-0">
