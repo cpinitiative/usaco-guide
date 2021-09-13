@@ -112,47 +112,44 @@ import java.util.*;
 
 public class Evolution {
 
-    static boolean[][] hasChar = new boolean[25][125];
-    static Map<String, Integer> convert = new HashMap<>();
+	static boolean[][] hasChar = new boolean[25][125];
+	static Map<String, Integer> convert = new HashMap<>();
 
-    public static void main(String[] args) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("evolution.in"));
-            int popNum = Integer.parseInt(br.readLine());
-            int nxtIdx = 0;
-            for (int i = 0 ; i < popNum; i++) {
-                String[] line = br.readLine().split(" ");
-                for (int j = 1; j < line.length; j++) {
-                    if (!convert.containsKey(line[j])) convert.put(line[j], nxtIdx++);
-                    int idx = convert.get(line[j]);
-                    hasChar[i][idx] = true;
-                }
-            }
-            br.close();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("evolution.in"));
+		int popNum = Integer.parseInt(br.readLine());
+		int nxtIdx = 0;
+		for (int i = 0 ; i < popNum; i++) {
+			String[] line = br.readLine().split(" ");
+			for (int j = 1; j < line.length; j++) {
+				if (!convert.containsKey(line[j])) {
+					convert.put(line[j], nxtIdx++);
+				}
+				int idx = convert.get(line[j]);
+				hasChar[i][idx] = true;
+			}
+		}
+		br.close();
 
-            boolean works = true;
-            for (int a = 0; a < nxtIdx && works; a++) {
-                for (int b = 0; b < a && works; b++) {
-                    int aNum = 0;
-                    int bNum = 0;
-                    int abNum = 0;
-                    for (int i = 0; i < popNum; i++) {
-                        if (hasChar[i][a] && hasChar[i][b]) abNum++;
-                        else if (hasChar[i][a]) aNum++;
-                        else if (hasChar[i][b]) bNum++;
-                    }
-                    works = works && !(aNum>0 && bNum>0 && abNum>0);
-                }
-            }
+		boolean works = true;
+		for (int a = 0; a < nxtIdx && works; a++) {
+			for (int b = 0; b < a && works; b++) {
+				int aNum = 0;
+				int bNum = 0;
+				int abNum = 0;
+				for (int i = 0; i < popNum; i++) {
+					if (hasChar[i][a] && hasChar[i][b]) abNum++;
+					else if (hasChar[i][a]) aNum++;
+					else if (hasChar[i][b]) bNum++;
+				}
+				works = works && !(aNum>0 && bNum>0 && abNum>0);
+			}
+		}
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter("evolution.out"));
-            bw.write((works)? "yes\n": "no\n");
-            bw.close();
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+		BufferedWriter bw = new BufferedWriter(new FileWriter("evolution.out"));
+		bw.write((works)? "yes\n": "no\n");
+		bw.close();
+	}
 }
 ```
 
