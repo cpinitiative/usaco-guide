@@ -15,7 +15,7 @@ import { OffsetAnchor } from '../components/markdown/HTMLComponents';
 import { components } from '../components/markdown/MDXComponents';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import FAQ from '../faq.mdx';
+import FAQ from '../../content/1_General/Faq.mdx';
 
 const h1 = ({ id, children, ...props }) => (
   <h1
