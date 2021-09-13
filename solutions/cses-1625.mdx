@@ -125,29 +125,7 @@ int tryPath(int pathIdx, int curR, int curC) {
 		int nxtC = curC + dc[p[pathIdx]];
 		if (!onPath[nxtR][nxtC]) ret += tryPath(pathIdx + 1, nxtR, nxtC);
 	} 
-  // this next bit is not necessary for C++, but I left it in for reference
-	/*
-  else if ((curC > 2) && onPath[curR][curC - 2]
-			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
-			&& (!onPath[curR][curC - 1])) { // potential dead end on the left:
-		int nxtR = curR;
-		int nxtC = curC - 1;
-		ret += tryPath(pathIdx + 1, nxtR, nxtC);
-	}
-	else if ((curC < 6) && onPath[curR][curC + 2]
-			&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1])
-			&& (!onPath[curR][curC + 1])) { // potential dead end on the right:
-		int nxtR = curR;
-		int nxtC = curC + 1;
-		ret += tryPath(pathId x +1, nxtR, nxtC);
-	}
-	else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
-			&& (!onPath[curR - 1][curC])) { // potential dead end upwards
-		int nxtR = curR - 1;
-		int nxtC = curC;
-		ret += tryPath(pathIdx + 1, nxtR, nxtC);
-	} 
-  */
+  // see Java solution for optimization 4 implementation
 	else { // iterate through all four possible turns
 		for (int i = 0; i < 4; i++) {
 			int nxtR = curR + dr[i];
@@ -212,9 +190,6 @@ public class GridPaths {
 	static int[] p = new int[48];
 
 	public static void main(String[] args) {
-		// this is to figure out how long it takes for the program to run
-		// long start = System.currentTimeMillis();
-
 		Scanner in = new Scanner(System.in);
 		String line = in.nextLine();
 
