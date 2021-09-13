@@ -81,62 +81,56 @@ int main() {
 import java.io.*;
 
 public class RestStops {
-	static int[] x, c; 
-	// x: position of each stop
-	// c: tastiness value of each stop
-	static boolean[] good; // tracks whether each stop is right-maximal or not
 
-	public static void main(String[] args) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
-			String[] line = br.readLine().split(" ");
-			int trailLen = Integer.parseInt(line[0]); // this value is never used...
-			int stopNum = Integer.parseInt(line[1]);
-			int fRate = Integer.parseInt(line[2]);
-			int bRate = Integer.parseInt(line[3]);
+	static int[] x, c;
+	static boolean[] good;
 
-			x = new int[stopNum];
-			c = new int[stopNum];
-			good = new boolean[stopNum];
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
+		String[] line = br.readLine().split(" ");
+		int trailLen = Integer.parseInt(line[0]); //this value is never used...
+		int stopNum = Integer.parseInt(line[1]);
+		int fRate = Integer.parseInt(line[2]);
+		int bRate = Integer.parseInt(line[3]);
 
-			// scan in rest stop data
-			for (int i = 0 ; i < stopNum; i++) {
-				line = br.readLine().split(" ");
-				x[i] = Integer.parseInt(line[0]);
-				c[i] = Integer.parseInt(line[1]);
-			}
-			br.close();
+		x = new int[stopNum];
+		c = new int[stopNum];
+		good = new boolean[stopNum];
 
-			// find all "best" stops
-			int max = 0;
-			for (int i = stopNum - 1; i >= 0; i--) {
-					if (c[i] > max) { // there are no stops after stop i that are "better"
-						good[i] = true;
-						max = c[i];
-					}
-			}
-
-			// simulate the whole trail
-			int prevStopPos = 0;
-			long ans = 0;
-			for (int i = 0; i < stopNum; i++) {
-				if (good[i]) {
-					long travelDist = x[i] - prevStopPos;
-					long fTime = travelDist * fRate;
-					long bTime = travelDist * bRate;
-					long restTime = fTime - bTime;
-					ans += restTime * c[i];
-					prevStopPos = x[i];
-				}
-			}
-
-			BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
-			bw.write(ans + "\n");
-			bw.close();
+		//scan in rest stop data
+		for (int i = 0 ; i < stopNum; i++) {
+			line = br.readLine().split(" ");
+			x[i] = Integer.parseInt(line[0]);
+			c[i] = Integer.parseInt(line[1]);
 		}
-		catch (Exception e) {
-			System.out.println(e.getMessage());
+		br.close();
+
+		//find all "best" stops
+		int max = 0;
+		for (int i = stopNum-1; i >= 0; i--) {
+			if (c[i] > max) { //there are no stops after stop i that are "better"
+				good[i] = true;
+				max = c[i];
+			}
 		}
+
+		//simulate the whole trail
+		int prevStopPos = 0;
+		long ans = 0;
+		for (int i = 0; i < stopNum; i++) {
+			if (good[i]) {
+				long travelDist = x[i] - prevStopPos;
+				long fTime = travelDist * fRate;
+				long bTime = travelDist * bRate;
+				long restTime = fTime - bTime;
+				ans += restTime * c[i];
+				prevStopPos = x[i];
+			}
+		}
+
+		BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
+		bw.write(ans + "\n");
+		bw.close();
 	}
 }
 ```
