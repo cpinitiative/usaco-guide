@@ -49,6 +49,7 @@ export default class NotesEditor extends Component<any, any> {
   }
 
   handleChange(html) {
+    html = html !== '<p><br></p>' ? html : '';
     this.props.save(html);
     this.setState({ editorHtml: html });
   }
@@ -66,7 +67,7 @@ export default class NotesEditor extends Component<any, any> {
         <ReactQuill
           theme="snow"
           onChange={this.handleChange}
-          value={this.state.editorHtml}
+          defaultValue={this.state.editorHtml}
           modules={this.modules}
           formats={this.formats}
           placeholder=""
