@@ -20,7 +20,8 @@ import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 
 type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
-  showTagsAndDifficulty: boolean;
+  showTags: boolean;
+  showDifficulty: boolean;
   onShowSolutionSketch: (problem: ProblemInfo) => void;
   isDivisionTable?: boolean; // only if is division table
   modules?: boolean; // only if is division table
@@ -256,7 +257,7 @@ export default function ProblemsListItem(
       {statusCol}
       {sourceCol}
       {nameCol}
-      {props.showTagsAndDifficulty &&
+      {props.showDifficulty &&
         (divisionTable
           ? props.showPercent && (
               <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
@@ -264,7 +265,7 @@ export default function ProblemsListItem(
               </td>
             )
           : difficultyCol)}
-      {props.showTagsAndDifficulty && (
+      {props.showTags && (
         <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">

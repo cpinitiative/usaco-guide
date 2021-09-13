@@ -2,7 +2,8 @@ import * as React from 'react';
 import TextTooltip from '../../Tooltip/TextTooltip';
 
 type ProblemsListHeaderProps = {
-  showTagsAndDifficulty: boolean;
+  showTags: boolean;
+  showDifficulty: boolean;
 } & (
   | {
       isDivisionTable: true;
@@ -14,7 +15,9 @@ type ProblemsListHeaderProps = {
     }
 );
 
-export default function ProblemsListHeader(props: ProblemsListHeaderProps) {
+export default function ProblemsListHeader(
+  props: ProblemsListHeaderProps
+): JSX.Element {
   return (
     <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
       <th className="pl-4 py-3 text-xs leading-4 font-medium uppercase tracking-wider text-center">
@@ -29,7 +32,7 @@ export default function ProblemsListHeader(props: ProblemsListHeaderProps) {
         Problem Name
       </th>
 
-      {props.showTagsAndDifficulty &&
+      {props.showDifficulty &&
         (props.isDivisionTable ? (
           props.showSolvePercentage && (
             <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
@@ -52,7 +55,7 @@ export default function ProblemsListHeader(props: ProblemsListHeaderProps) {
           </th>
         ))}
 
-      {props.showTagsAndDifficulty && (
+      {props.showTags && (
         <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
           Tags
         </th>

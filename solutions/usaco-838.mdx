@@ -2,7 +2,7 @@
 id: usaco-838
 source: USACO Gold 2018 Open
 title: Milking Order
-author: Timothy Gao, Qi Wang, Melody Yu
+author: Timothy Gao, Qi Wang, Melody Yu, Neo Wang
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_milkorder_gold_open18.html)
@@ -10,21 +10,94 @@ author: Timothy Gao, Qi Wang, Melody Yu
 ## Video Solution
 
 Note: The video solution might not be the same as other solutions. Code in C++.
+
 <Youtube id="OaL9vEkShyk" />
 
-## Explanation
+## Solution
 
 Denote each cow as a node in a graph. Let's draw a directed edge from each node $u$ to another node $v$ if $u$ must come before $v$. Note that this can be done when we process the $M$ observations. Now, notice that an ordering is valid only if the resulting graph is a DAG. Additionally, we can use a priority queue (instead of a queue) with topological sort to generate the lexicographically minimum topological ordering. It remains to find how many observations we can follow starting from the first observation, which we can binary search for.
 
-Note that the idea of using a priority queue during topological sort is also used [here](https://cses.fi/problemset/task/1757)
+## Implementation
 
 **Time Complexity:** $\mathcal{O}((E + N \log N) \log M)$
 
 <LanguageSection>
 
-<JavaSection>
+<CPPSection>
 
-## Java Implementation
+```cpp
+//CodeSnip{CPP Short Template}
+//BeginCodeSnip{Topological Sort}
+/*
+  * Description: sorts vertices such that if there exists an edge x->y, then x goes before y
+  * Source: KACTL
+  * Verification: https://open.kattis.com/problems/quantumsuperposition
+  */
+
+struct TopoSort {
+	int N; vi in, res;
+	vector<vi> adj;
+	void init(int _N) { N = _N; in.resize(N); adj.resize(N); }
+	void ae(int x, int y) { adj[x].pb(y), in[y]++; }
+	bool sort() {
+		priority_queue<int, vi, greater<int>> todo;
+		for (int i = 1; i < N; i++)
+			if (!in[i]) todo.push(i);
+		while (sz(todo)) {
+			int x = todo.top(); todo.pop(); res.pb(x);
+			for (const int &i : adj[x])
+				if (!(--in[i])) todo.push(i);
+		}
+		return sz(res) == N - 1;
+	}
+};
+//EndCodeSnip{Topological Sort}
+
+vi ret;
+vector<vi> order;
+int n, m;
+
+bool check(int x) {
+	TopoSort T; T.init(n + 1);
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < sz(order[i]) - 1; j++) {
+			T.ae(order[i][j], order[i][j + 1]);
+		}
+	}
+	bool ans = T.sort();
+	if (ans)
+		ret = T.res;
+	return ans;
+}
+
+int main() {
+	setIO("milkorder");
+	cin >> n >> m;
+	order.resize(m);
+
+	for (int i = 0; i < m; i++) {
+		int k; cin >> k;
+		vi v(k);
+		for (int j = 0; j < k; j++)
+			cin >> v[j];
+		order[i] = v;
+	}
+
+	int lo = 0, hi = m;
+	while (lo < hi) {  // find the last successful check()
+		int mid = lo + (hi - lo + 1) / 2;
+		check(mid) ? lo = mid : hi = mid - 1;
+	}
+
+	for (int i = 0; i < n; i++) {
+		cout << ret[i] << (i != n - 1 ? " " : "");
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
 
 ```java
 import java.io.*;

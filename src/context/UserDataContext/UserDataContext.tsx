@@ -12,9 +12,8 @@ import AdSettingsProperty, {
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import HideTagsAndDifficulty, {
-  HideTagsAndDifficultyAPI,
-} from './properties/hideTagsAndDifficulty';
+import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
+import HideTags, { HideTagsAPI } from './properties/hideTags';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -95,7 +94,8 @@ import { UserPermissionsContextProvider } from './UserPermissionsContext';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTagsAndDifficulty(),
+  new HideTags(),
+  new HideDifficulty(),
   new DivisionTableQuery(),
   new ShowIgnored(),
   new ThemeProperty(),
@@ -109,7 +109,8 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAndDifficultyAPI &
+  HideTagsAPI &
+  HideDifficultyAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
   ThemePropertyAPI &
@@ -132,7 +133,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
   importUserData: () => true,
-  hideTagsAndDifficulty: false,
+  hideTags: false,
+  hideDifficulty: false,
   divisionTableQuery: {
     division: '',
     season: '',
@@ -154,7 +156,10 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setTheme: _x => {
     // do nothing
   },
-  setHideTagsAndDifficulty: _x => {
+  setHideTags: _x => {
+    // do nothing
+  },
+  setHideDifficulty: _x => {
     // do nothing
   },
   setDivisionTableQuery: _x => {

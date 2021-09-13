@@ -13,12 +13,6 @@ export const contentAuthors: Contributor[] = [
     photo: 'jeffrey',
   },
   {
-    name: 'Neo Wang',
-    githubUsername: 'nwatx',
-    sinceDate: 'Jan 2021',
-    photo: 'neo',
-  },
-  {
     name: 'Jesse Choe',
     githubUsername: 'jessechoe10',
     sinceDate: 'Feb 2021',
@@ -47,12 +41,6 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'nathangong',
     sinceDate: 'Apr 2021',
     photo: 'nathang',
-  },
-  {
-    name: 'Melody Yu',
-    githubUsername: 'cskitty',
-    sinceDate: 'Apr 2021',
-    photo: 'melody',
   },
   {
     name: 'Timothy Gao',
@@ -101,6 +89,12 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'dutinmeow',
     sinceDate: 'August 2021',
     photo: 'dustin'
+  },
+  {
+    name: 'Ben Dodge',
+    githubUsername: 'Navigator365',
+    sinceDate: 'August 2021',
+    photo: 'ben'
   }
 ];
 
