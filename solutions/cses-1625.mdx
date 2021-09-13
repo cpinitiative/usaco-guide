@@ -103,23 +103,18 @@ int p[pathLen];
 const int gridSize = 9;
 bool onPath[gridSize][gridSize];
 
-int tryPath(int pathIdx, int curR, int curC)
-{
+int tryPath(int pathIdx, int curR, int curC) {
 	if ((onPath[curR][curC - 1] && onPath[curR][curC + 1])
 			&& (!onPath[curR - 1][curC] && !onPath[curR + 1][curC])) return 0;
 	if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
 					&& (!onPath[curR][curC - 1] && !onPath[curR][curC + 1])) return 0;
 
 	if (curR == 7 && curC == 1) { // reached endpoint before visiting all
-		if (pathIdx == 48) {
-			return 1;
-		}
+		if (pathIdx == 48) return 1;
 		return 0;
 	}
 
-	if (pathIdx == 48) {
-		return 0;
-	}
+	if (pathIdx == 48) return 0;
 
 	int ret = 0;
 	onPath[curR][curC] = true;
@@ -128,33 +123,31 @@ int tryPath(int pathIdx, int curR, int curC)
 	if (p[pathIdx] < 4) {
 		int nxtR = curR + dr[p[pathIdx]];
 		int nxtC = curC + dc[p[pathIdx]];
-		if (!onPath[nxtR][nxtC]) {
-			ret += tryPath(pathIdx + 1, nxtR, nxtC);
-		}
-	} /* // this next bit is not necessary for C++, but I left it in for reference
-	else if ((curC > 2) && onPath[curR][curC - 2]
+		if (!onPath[nxtR][nxtC]) ret += tryPath(pathIdx + 1, nxtR, nxtC);
+	} 
+  // this next bit is not necessary for C++, but I left it in for reference
+	/*
+  else if ((curC > 2) && onPath[curR][curC - 2]
 			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
-			&& (!onPath[curR][curC - 1]))
-	{ // potential dead end on the left:
+			&& (!onPath[curR][curC - 1])) { // potential dead end on the left:
 		int nxtR = curR;
 		int nxtC = curC - 1;
 		ret += tryPath(pathIdx + 1, nxtR, nxtC);
 	}
 	else if ((curC < 6) && onPath[curR][curC + 2]
 			&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
-			&& (!onPath[curR][curC + 1]))
-	{ // potential dead end on the right:
+			&& (!onPath[curR][curC + 1])) { // potential dead end on the right:
 		int nxtR = curR;
 		int nxtC = curC + 1;
 		ret += tryPath(pathId x +1, nxtR, nxtC);
 	}
 	else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
-			&& (!onPath[curR - 1][curC]))
-	{ // potential dead end upwards
+			&& (!onPath[curR - 1][curC])) { // potential dead end upwards
 		int nxtR = curR - 1;
 		int nxtC = curC;
 		ret += tryPath(pathIdx + 1, nxtR, nxtC);
-	} */
+	} 
+  */
 	else { // iterate through all four possible turns
 		for (int i = 0; i < 4; i++) {
 			int nxtR = curR + dr[i];
@@ -168,8 +161,7 @@ int tryPath(int pathIdx, int curR, int curC)
 	return ret;
 }
 
-int main()
-{
+int main() {
 	string line;
 	getline(cin, line);
 
@@ -274,23 +266,20 @@ public class GridPaths {
 		}
 		else if ((curC > 2) && onPath[curR][curC - 2]
 				&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
-				&& (!onPath[curR][curC - 1]))
-		{ // potential dead end on the left:
+				&& (!onPath[curR][curC - 1])) { // potential dead end on the left:
 			int nxtR = curR;
 			int nxtC = curC - 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 		else if ((curC < 6) && onPath[curR][curC + 2]
 				&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
-				&& (!onPath[curR][curC + 1]))
-		{ // potential dead end on the right:
+				&& (!onPath[curR][curC + 1])) { // potential dead end on the right:
 			int nxtR = curR;
 			int nxtC = curC + 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 		else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
-				&& (!onPath[curR - 1][curC]))
-		{ // potential dead end upwards
+				&& (!onPath[curR - 1][curC])) { // potential dead end upwards
 		// note: I didn't include all possible scenarios because
 		// it wasn't necessary in order for the program to run in time
 			int nxtR = curR - 1;
