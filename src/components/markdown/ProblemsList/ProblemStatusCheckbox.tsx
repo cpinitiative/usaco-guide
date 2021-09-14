@@ -140,6 +140,7 @@ export default function ProblemStatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
+
   const { userProgressOnModules, setModuleProgress } =
     useContext(UserDataContext);
   const {
@@ -147,6 +148,7 @@ export default function ProblemStatusCheckbox({
     setUserProgressOnProblems,
     userNotesOnProblems,
   } = useContext(UserDataContext);
+
   const updateModuleProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
