@@ -1,14 +1,49 @@
+import {
+  AcademicCapIcon,
+  ChartBarIcon,
+  ChatAlt2Icon,
+  ClipboardListIcon,
+  CogIcon,
+  DatabaseIcon,
+  LightningBoltIcon,
+  TerminalIcon,
+  UserGroupIcon,
+} from '@heroicons/react/outline';
+import classNames from 'classnames';
 import { Link } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { useRef } from 'react';
+import { GlowingRing } from '../components/elements/landing/GlowingRing';
+import { GlowingText } from '../components/elements/landing/GlowingText';
+import { GradientText } from '../components/elements/landing/GradientText';
+import { HighlightedText } from '../components/elements/landing/HighlightedText';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
+import { CPIProjectCard } from '../components/Index/CPIProjectCard';
+import { Feature } from '../components/Index/Feature';
+import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
+import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
+import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import Video from '../components/Video';
+
+const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
+const headerClasses = 'text-4xl md:text-5xl 2xl:text-6xl font-black text-black';
+const subtextClasses =
+  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
+const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
+const headerClassesDark =
+  'text-4xl md:text-5xl 2xl:text-6xl font-black text-white';
+const subtextClassesDark =
+  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
+const whiteButtonClassesBig =
+  'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
+const whiteButtonClasses =
+  'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -23,299 +58,444 @@ export default function IndexPage(): JSX.Element {
       {/*>*/}
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
-      <TopNavigationBar indexPage />
+      <div className="dark bg-black">
+        <TopNavigationBar transparent />
+      </div>
 
       {/* Begin Hero */}
-      <div className="relative bg-white dark:bg-gray-900 overflow-hidden">
-        <div className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32">
-          <main className="mt-8 mx-auto max-w-6xl px-4 sm:mt-12 sm:px-6 md:mt-20 xl:mt-24">
-            <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-              <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:flex-col lg:justify-center">
-                <div>
-                  <OutboundLink
-                    href="https://github.com/cpinitiative/usaco-guide/?ref=top_badge"
-                    target="_blank"
-                    className="text-sm font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300 sm:text-base lg:text-sm xl:text-base transition"
-                  >
-                    Open Source!
-                  </OutboundLink>
-                </div>
-                <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 dark:text-gray-100 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
-                  USACO{' '}
-                  <span className="text-blue-600 dark:text-blue-200">
-                    Guide
-                  </span>
-                </h2>
-                <p className="mt-3 text-base text-gray-500 dark:text-gray-400 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  A free collection of <b>curated, high-quality resources</b> to
-                  take you from Bronze to Platinum and beyond.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Link
-                      to="/dashboard/"
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white dark:text-blue-50 bg-blue-600 dark:bg-blue-700 hover:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition md:py-4 md:text-lg md:px-10"
-                    >
-                      View Guide
-                    </Link>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <a
-                      href="#learn-more"
-                      onClick={e => {
-                        e.preventDefault();
-                        learnMoreRef.current.scrollIntoView({
-                          behavior: 'smooth',
-                        });
-                      }}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 dark:text-blue-200 bg-blue-100 dark:bg-blue-900 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 dark:focus:border-blue-800 transition md:py-4 md:text-lg md:px-10"
-                    >
-                      Learn More
-                    </a>
-                  </div>
-                </div>
+      <div className="-mt-16 bg-black">
+        <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
+          <div className="h-6 sm:h-12"></div>
+
+          <div className="flex-1 flex flex-col justify-center">
+            <div className="h-24"></div>
+
+            <div className="flex md:justify-center">
+              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-white mt-4">
+                USACO Guide
+              </GlowingText>
+            </div>
+
+            <div className="h-6 sm:h-8"></div>
+
+            <p
+              className="
+                md:text-center
+                text-xl
+                sm:text-2xl
+                2xl:text-3xl
+                font-medium
+                leading-snug
+                md:!leading-normal
+                text-gray-300
+              "
+            >
+              A free collection of{' '}
+              <GradientText>curated, high-quality resources</GradientText>{' '}
+              <br className="hidden md:block" />
+              to take you from Bronze to Platinum and beyond.
+            </p>
+
+            <div className="h-8 sm:h-12"></div>
+
+            <div className="flex md:justify-center">
+              <GlowingRing>
+                <Link
+                  to="/dashboard"
+                  className={classNames(whiteButtonClassesBig, 'inline-block')}
+                >
+                  Get Started
+                </Link>
+              </GlowingRing>
+            </div>
+          </div>
+
+          <div className="h-16 sm:h-24"></div>
+
+          <div className="flex md:justify-center md:text-xl text-gray-400">
+            <a
+              href="https://joincpi.org/"
+              className="inline-flex items-center space-x-3 md:space-x-4"
+            >
+              <div className="h-9 w-9">
+                <svg
+                  className="inline-block"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 100 100"
+                >
+                  <g>
+                    <path
+                      className="fill-current text-[#6600af]"
+                      d="M50,5A45,45,0,1,1,5,50,45.05,45.05,0,0,1,50,5m0-5a50,50,0,1,0,50,50A50,50,0,0,0,50,0Z"
+                    ></path>
+                  </g>
+                  <line
+                    className="stroke-current stroke-[7px] text-[#be5eff]"
+                    style={{ strokeMiterlimit: 10 }}
+                    x1="50"
+                    y1="27"
+                    x2="73.29"
+                    y2="65.64"
+                  ></line>
+                  <line
+                    className="stroke-current stroke-[7px] text-[#be5eff]"
+                    style={{ strokeMiterlimit: 10 }}
+                    x1="50"
+                    y1="27"
+                    x2="26.71"
+                    y2="67"
+                  ></line>
+                  <circle
+                    className="fill-current text-[#961be8]"
+                    cx="50"
+                    cy="27"
+                    r="10"
+                  ></circle>
+                  <circle
+                    className="fill-current text-[#961be8]"
+                    cx="26.71"
+                    cy="67"
+                    r="10"
+                  ></circle>
+                  <circle
+                    className="fill-current text-[#961be8]"
+                    cx="73.29"
+                    cy="67"
+                    r="10"
+                  ></circle>
+                </svg>
               </div>
 
-              <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
-                <svg
-                  viewBox="0 0 200 200"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible lg:visible absolute transform translate-x-32 text-blue-50 dark:text-gray-800"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M60,-32.3C73.6,-11,77.7,18.1,66.1,39.4C54.5,60.8,27.3,74.4,1.3,73.7C-24.7,72.9,-49.5,57.9,-57,38.9C-64.5,19.9,-54.7,-3,-42.3,-23.5C-29.9,-44.1,-15,-62.3,4.1,-64.6C23.2,-67,46.3,-53.6,60,-32.3Z"
-                    transform="translate(100 100)"
-                  />
-                </svg>
-                <Video />
-              </div>
-            </div>
-          </main>
+              <span>Created by the CP Initiative</span>
+            </a>
+          </div>
+          <div className="h-4 sm:h-6 md:h-16"></div>
         </div>
       </div>
       {/* End Hero */}
 
-      <TrustedBy />
+      {/* Learn USACO. Efficiently. */}
+      <div className="bg-white">
+        <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
-      <div
-        className="py-12 dark:bg-dark-surface"
-        id="learn-more"
-        ref={learnMoreRef}
-      >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <p className="text-base leading-6 text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase">
-              About This Guide
-            </p>
-            <h3 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-200 sm:text-4xl sm:leading-10">
-              Not Just Another Resource.
-            </h3>
-            <p className="mt-4 max-w-4xl text-xl leading-7 text-gray-500 dark:text-gray-400 lg:mx-auto">
-              This is more than "just another resource." This is a
-              comprehensive, organized roadmap carefully designed and crafted
-              for USACO contestants – available to everyone, for free.
-            </p>
-
-            <div className="inline-flex mx-auto rounded-md bg-yellow-50 dark:bg-yellow-700 dark:bg-opacity-25 p-4 mt-8">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    className="h-5 w-5 text-yellow-400 dark:text-yellow-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm leading-5 text-yellow-700 dark:text-yellow-300 text-left">
-                    This guide is not an official syllabus. Topics on this guide
-                    reflect <i>past</i> problems, not future problems.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-16">
-            <ul className="md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-              <li>
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-700 text-white dark:text-blue-100">
-                      <svg
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
-                      Experienced Authors
-                    </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
-                      This guide is written by top USACO contestants, including
-                      two-time IOI winner and USACO Problemsetter{' '}
-                      <a
-                        href="https://github.com/bqi343"
-                        className="underline text-blue-500 dark:text-blue-400"
-                      >
-                        Benjamin Qi
-                      </a>
-                      .
-                    </p>
-                  </div>
-                </div>
-              </li>
-              <li className="mt-10 md:mt-0">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-700 text-white dark:text-blue-100">
-                      <svg
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
-                      Calibrated Difficulty
-                    </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
-                      This guide is targeted towards all contestants, regardless
-                      of their division. You'll find problems suitable for you.
-                    </p>
-                  </div>
-                </div>
-              </li>
-              <li className="mt-10 md:mt-0">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-700 text-white dark:text-blue-100">
-                      <svg
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
-                      Improve Faster
-                    </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Stop wasting time learning topics you already know. Skip
-                      over easy topics or delve deeper into difficult ones; the
-                      choice is yours.
-                    </p>
-                  </div>
-                </div>
-              </li>
-              <li className="mt-10 md:mt-0">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-700 text-white dark:text-blue-100">
-                      <svg
-                        className="h-6 w-6"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
-                      Stay Motivated
-                    </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Use our progress-tracking tools to track your progress in
-                      the Guide and stay motivated.
-                    </p>
-                  </div>
-                  {/*<div className="ml-4">*/}
-                  {/*  <h4 className="text-lg leading-6 font-medium text-gray-900">*/}
-                  {/*    Officially Recognized*/}
-                  {/*  </h4>*/}
-                  {/*  <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">*/}
-                  {/*    This guide is developed in collaboration with USACO Staff*/}
-                  {/*    and USACO Director Dr. Brian Dean.*/}
-                  {/*  </p>*/}
-                  {/*</div>*/}
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-gradient-to-b from-blue-900 to-purple-900 dark:from-dark-surface dark:to-blue-900">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:text-center">
-          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-200 dark:text-blue-300 space-y-2 sm:space-y-0">
-            <p>Unsure how to get started?</p>
-            <p>Overwhelmed by too many resources?</p>
-            <p>Looking to take your CP skills to the next level?</p>
-          </div>
-
-          <p className="leading-9 sm:leading-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white dark:text-gray-100 mt-8">
-            This is the guide for you.
+        <div className={containerClasses}>
+          <h2 className={headerClasses}>
+            Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
+          </h2>
+          <div className={headerSubtextSpacerClasses}></div>
+          <p className={subtextClasses}>
+            Stop wasting time searching for problems and tutorials. The USACO
+            Guide provides a{' '}
+            <b className="text-black">comprehensive, organized roadmap</b>{' '}
+            carefully designed and crafted for USACO contestants – available to
+            everyone, for free.
           </p>
 
-          <div className="mt-8 flex sm:justify-center">
-            <div className="rounded-md shadow">
+          <div className="h-12 md:h-20 2xl:h-36"></div>
+
+          <Feature
+            icon={DatabaseIcon}
+            iconClasses="from-cyan-400 to-sky-500"
+            title="Curated Resources"
+            blobClasses="bg-sky-200 hidden xl:block"
+            feature={<ResourcesFeature />}
+            featurePosition="left"
+          >
+            Learn new topics from a vetted list of high-quality resources. If
+            one resource doesn't click, look at another!
+          </Feature>
+
+          <div className="h-12 md:h-20 2xl:h-36"></div>
+
+          <Feature
+            icon={ClipboardListIcon}
+            iconClasses="from-purple-400 to-indigo-500"
+            title="Extensive Problemsets"
+            blobClasses="bg-purple-300"
+            feature={<ProblemsetsFeature />}
+            featurePosition="right"
+          >
+            Practice each topic with extensive problemsets and solutions
+            covering a wide range of difficulties.
+          </Feature>
+
+          <div className="h-12 md:h-20 2xl:h-36"></div>
+
+          <Feature
+            icon={LightningBoltIcon}
+            iconClasses="from-yellow-400 to-orange-500"
+            title="Progress Tracking"
+            blobClasses="bg-orange-200"
+            feature={<ProgressTrackingFeature />}
+            featurePosition="left"
+            fade="none"
+          >
+            Use our progress-tracking tools to track your progress in the Guide
+            and stay motivated.
+          </Feature>
+
+          <div className="h-12 md:h-20 2xl:h-36"></div>
+
+          <Feature
+            icon={ChatAlt2Icon}
+            iconClasses="from-green-400 to-cyan-500"
+            title="Help when you need it"
+            blobClasses="bg-green-200"
+            feature={
+              <div className="shadow-lg rounded-lg">
+                <StaticImage
+                  src="../assets/forum-screenshot.png"
+                  alt="USACO Forum Screenshot"
+                  placeholder="blurred"
+                  layout="constrained"
+                  width={560}
+                />
+              </div>
+            }
+            featurePosition="right"
+            fade="none"
+          >
+            <div className="mb-4 md:mb-8">
+              Get help from other community members in the USACO Forum.
+            </div>
+
+            <a
+              href="https://forum.usaco.guide/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 transition hover:text-purple-600"
+            >
+              View Forum &rarr;
+            </a>
+          </Feature>
+        </div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
+      </div>
+      {/* End Learn USACO. Efficiently. */}
+
+      <div className="bg-black">
+        <div className="h-16 md:h-20 2xl:h-36"></div>
+        <div className={containerClasses}>
+          <GlowingText className={headerClassesDark} extraGlow>
+            Trusted by thousands.
+          </GlowingText>
+          <div className={headerSubtextSpacerClasses}></div>
+
+          <p className={subtextClassesDark}>
+            This guide is written by{' '}
+            <GradientText>top USACO contestants,</GradientText> including
+            two-time IOI winner and USACO Problemsetter Benjamin Qi.
+          </p>
+          <div className="h-4 2xl:h-12"></div>
+
+          <TrustedBy />
+
+          <div className="h-8 md:h-12 2xl:h-16"></div>
+
+          <div className="relative group inline-block">
+            <GlowingRing>
               <Link
-                to="/dashboard/"
-                className="w-full flex items-center justify-center px-6 py-2 sm:px-8 sm:py-3 md:py-4 md:text-lg md:px-10 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 dark:bg-blue-800 hover:bg-blue-500 dark:hover:bg-blue-700 focus:outline-none focus:border-blue-700 dark:focus:border-blue-800 focus:shadow-outline-blue transition"
+                to="/dashboard"
+                className={classNames(whiteButtonClasses, 'inline-block')}
               >
                 View Guide
               </Link>
+            </GlowingRing>
+          </div>
+        </div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
+      </div>
+
+      <div className="bg-white">
+        <div className="h-16 md:h-20 2xl:h-36"></div>
+        <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
+          <h2 className={classNames(headerClasses, 'md:text-center')}>
+            Created by the CP Initiative.
+          </h2>
+          <div className="h-4 md:h-8"></div>
+          <p className={classNames(subtextClasses, 'md:text-center mx-auto')}>
+            Here are some of our other projects you might find useful!
+          </p>
+
+          <div className="h-12 md:h-16 2xl:24"></div>
+
+          <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <CPIProjectCard
+              title="USACO Classes"
+              icon={AcademicCapIcon}
+              iconClasses="from-fuchsia-500 to-purple-600"
+              url="https://joincpi.org/classes"
+            >
+              Learn USACO through affordable, high-quality classes with a
+              curriculum designed and developed by past USACO Finalists.
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="USACO IDE"
+              icon={TerminalIcon}
+              iconClasses="from-orange-400 to-pink-600"
+              url="https://ide.usaco.guide/"
+            >
+              A realtime collaborative online IDE designed for competitive
+              programming and USACO.
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="USACO Groups"
+              icon={AcademicCapIcon}
+              iconClasses="from-green-400 to-cyan-500"
+              url="https://usaco.guide/groups"
+            >
+              A Learning Management System fully integrated with the USACO
+              Guide. Perfect for clubs or group study sessions.
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="Club Curriculum"
+              icon={UserGroupIcon}
+              iconClasses="from-purple-500 to-indigo-500"
+              url="https://joincpi.org/clubs"
+            >
+              Join our competitive programming club network to get access to
+              exclusive club curriculum and resources!
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="Competitive Programming Contests"
+              icon={ChartBarIcon}
+              iconClasses="from-cyan-400 to-sky-500"
+              url="https://joincpi.org/contests"
+            >
+              Participate in high-quality programming contests targeted towards
+              pre-college students!
+            </CPIProjectCard>
+            <CPIProjectCard
+              title="Competitive Programming Workshops"
+              icon={CogIcon}
+              iconClasses="from-yellow-400 to-orange-500"
+              url="https://joincpi.org/workshops"
+            >
+              Access workshops providing everything you need to know about
+              USACO.
+            </CPIProjectCard>
+          </div>
+        </div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
+      </div>
+
+      <div className="bg-black">
+        <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
+
+        <div className={containerClasses}>
+          <GlowingText className={headerClassesDark} extraGlow>
+            Join our Team.
+          </GlowingText>
+          <div className={headerSubtextSpacerClasses}></div>
+          <p className={subtextClassesDark}>
+            The{' '}
+            <a
+              href="https://joincpi.org/"
+              target="_blank"
+              rel="noreferrer"
+              className="underline transition hover:text-blue-400"
+            >
+              Competitive Programming Initiative
+            </a>{' '}
+            is a student-run organization dedicated to promoting competitive
+            programming. Join us in our mission, and{' '}
+            <GradientText>
+              earn PVSA volunteer hours and leadership positions
+            </GradientText>{' '}
+            along the way!
+          </p>
+          <div className="h-8 md:h-12"></div>
+
+          <div className="relative group inline-block">
+            <GlowingRing>
+              <a
+                href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(whiteButtonClasses, 'inline-block')}
+              >
+                Apply Now
+              </a>
+            </GlowingRing>
+          </div>
+
+          <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
+
+          <GlowingText className={headerClassesDark} extraGlow>
+            Or, help us financially!
+          </GlowingText>
+          <div className={headerSubtextSpacerClasses}></div>
+          <p className={subtextClassesDark}>
+            We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
+            — all donations are tax deductible. Since our inception in September
+            2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
+            students across our various initiatives.
+          </p>
+          <div className="h-8 md:h-12"></div>
+
+          <div className="flex items-center">
+            <GlowingRing>
+              <a
+                href="mailto:sponsorship@joincpi.org"
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(whiteButtonClasses, 'inline-block')}
+              >
+                Sponsor Us
+              </a>
+            </GlowingRing>
+            <span className="text-lg font-medium text-gray-400 ml-4 md:ml-6">
+              or{' '}
+              <a
+                href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-400 transition hover:text-purple-400"
+              >
+                Donate via PayPal
+              </a>
+            </span>
+          </div>
+
+          <div className="h-12 md:h-20"></div>
+
+          <p className="uppercase text-gray-400 font-medium text-lg md:text-xl">
+            Our Sponsors
+          </p>
+
+          <div className="mt-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:mt-6 text-gray-400">
+            <div className="col-span-1">
+              <a
+                href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <svg
+                  className="max-h-12"
+                  viewBox="0 0 4438 1000"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2223.75 250C2051.25 250 1926.87 362.5 1926.87 531.25C1926.87 700 2066.72 812.5 2239.38 812.5C2343.59 812.5 2435.47 771.25 2492.34 701.719L2372.81 632.656C2341.25 667.188 2293.28 687.344 2239.38 687.344C2164.53 687.344 2100.94 648.281 2077.34 585.781H2515.16C2518.59 568.281 2520.63 550.156 2520.63 531.094C2520.63 362.5 2396.41 250 2223.75 250ZM2076.09 476.562C2095.62 414.219 2149.06 375 2223.75 375C2298.59 375 2352.03 414.219 2371.41 476.562H2076.09ZM2040.78 78.125L1607.81 828.125L1174.69 78.125H1337.03L1607.66 546.875L1878.28 78.125H2040.78ZM577.344 0L1154.69 1000H0L577.344 0ZM3148.75 531.25C3148.75 625 3210 687.5 3305 687.5C3369.38 687.5 3417.66 658.281 3442.5 610.625L3562.5 679.844C3512.81 762.656 3419.69 812.5 3305 812.5C3132.34 812.5 3008.13 700 3008.13 531.25C3008.13 362.5 3132.5 250 3305 250C3419.69 250 3512.66 299.844 3562.5 382.656L3442.5 451.875C3417.66 404.219 3369.38 375 3305 375C3210.16 375 3148.75 437.5 3148.75 531.25ZM4437.5 78.125V796.875H4296.88V78.125H4437.5ZM3906.25 250C3733.75 250 3609.38 362.5 3609.38 531.25C3609.38 700 3749.38 812.5 3921.88 812.5C4026.09 812.5 4117.97 771.25 4174.84 701.719L4055.31 632.656C4023.75 667.188 3975.78 687.344 3921.88 687.344C3847.03 687.344 3783.44 648.281 3759.84 585.781H4197.66C4201.09 568.281 4203.12 550.156 4203.12 531.094C4203.12 362.5 4078.91 250 3906.25 250ZM3758.59 476.562C3778.13 414.219 3831.41 375 3906.25 375C3981.09 375 4034.53 414.219 4053.91 476.562H3758.59ZM2961.25 265.625V417.031C2945.63 412.5 2929.06 409.375 2911.25 409.375C2820.47 409.375 2755 471.875 2755 565.625V796.875H2614.38V265.625H2755V409.375C2755 330 2847.34 265.625 2961.25 265.625Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
             </div>
           </div>
         </div>
+
+        <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
       </div>
 
       {/* Begin FAQ */}
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
-          <h2 className="text-3xl leading-9 font-extrabold text-gray-900 dark:text-gray-100">
+          <h2 className={classNames(headerClasses, 'dark:text-gray-100')}>
             Frequently asked questions
           </h2>
-          <div className="mt-6 border-t-2 border-gray-100 dark:border-gray-700 pt-10">
+          <div className="pt-10 md:pt-16">
             <dl className="md:grid md:grid-cols-2 md:gap-8">
               <div>
                 <div>

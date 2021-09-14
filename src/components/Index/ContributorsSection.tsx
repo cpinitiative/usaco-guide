@@ -42,7 +42,7 @@ export default function ContributorsSection(): JSX.Element {
               Interested in joining the USACO Guide team? We are recruiting
               Content Authors to help us improve the USACO Guide!{' '}
               <a
-                href="https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit"
+                href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
                 target="_blank"
                 rel="noreferrer"
                 className="text-blue-600 dark:text-blue-400 font-bold"

@@ -1,3 +1,4 @@
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getFirestore,
@@ -29,9 +30,12 @@ export default function useUserSolutionsForProblem(problem: ProblemInfo) {
         setSolutions(null);
         setCurrentUserSolutions(null);
         const firestore = getFirestore(firebaseApp);
-        const unsubscribe1 = onSnapshot<UserSolutionForProblem>(
+        const unsubscribe1 = onSnapshot(
           query(
-            collection(firestore, 'userProblemSolutions'),
+            collection(
+              firestore,
+              'userProblemSolutions'
+            ) as CollectionReference<UserSolutionForProblem>,
             where('isPublic', '==', true),
             where('problemID', '==', id)
           ),
@@ -47,9 +51,12 @@ export default function useUserSolutionsForProblem(problem: ProblemInfo) {
           }
         );
         const unsubscribe2 = firebaseUser
-          ? onSnapshot<UserSolutionForProblem>(
+          ? onSnapshot(
               query(
-                collection(firestore, 'userProblemSolutions'),
+                collection(
+                  firestore,
+                  'userProblemSolutions'
+                ) as CollectionReference<UserSolutionForProblem>,
                 where('problemID', '==', id),
                 where('userID', '==', firebaseUser.uid)
               ),
