@@ -20,8 +20,9 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] =
-    useState<ProblemProgress>(currentProgress);
+  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
+    currentProgress
+  );
 
   const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
@@ -140,10 +141,12 @@ export default function ProblemStatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
-  const { userProgressOnModules, setModuleProgress } =
-    useContext(UserDataContext);
-  const { userProgressOnProblems, setUserProgressOnProblems } =
-    useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress } = useContext(
+    UserDataContext
+  );
+  const { userProgressOnProblems, setUserProgressOnProblems } = useContext(
+    UserDataContext
+  );
   const updateModuleProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
