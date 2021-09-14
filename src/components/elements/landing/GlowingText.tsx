@@ -17,8 +17,9 @@ export const GlowingText = ({
         className,
         '-z-10 absolute inset-0',
         'bg-gradient-to-r from-sky-700 to-purple-700',
-        'bg-clip-text text-transparent blur-xl'
+        'bg-clip-text text-transparent blur-xl select-none'
       )}
+      aria-hidden="true"
     >
       {children}
     </span>
@@ -28,8 +29,9 @@ export const GlowingText = ({
           className,
           '-z-10 absolute inset-0',
           'bg-gradient-to-r from-sky-700 to-purple-700',
-          'bg-clip-text text-transparent blur-xl'
+          'bg-clip-text text-transparent blur-xl select-none'
         )}
+        aria-hidden="true"
       >
         {children}
       </span>
@@ -39,9 +41,10 @@ export const GlowingText = ({
         className,
         '-z-10 absolute inset-0',
         'bg-gradient-to-r from-sky-700 to-purple-700',
-        'bg-clip-text text-transparent blur-xl',
+        'bg-clip-text text-transparent blur-xl select-none',
         'opacity-0 transition duration-1000 group-hover:opacity-100'
       )}
+      aria-hidden="true"
     >
       {children}
     </span>
