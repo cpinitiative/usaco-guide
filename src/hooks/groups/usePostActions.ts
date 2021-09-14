@@ -136,7 +136,8 @@ export function usePostActions(groupId: string) {
         'problems',
         problem.id
       );
-      batch.update(docRef, problem);
+      // no clue why this throws a typescript error without it...
+      batch.update(docRef, problem as any);
       batch.update(
         doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
         {

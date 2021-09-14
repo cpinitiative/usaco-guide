@@ -7,6 +7,20 @@
 
 ## Development speedup tips
 
-1. Delete src/functions/node_modules (messes with tailwind JIT)
-2. Delete pages/editor.tsx and pages/groups.tsx (or have them return an empty
-   component). These pages have a lot of dependencies that slow down webpack.
+Delete pages/editor.tsx and pages/groups.tsx (or have them return an empty
+component). These pages have a lot of dependencies that slow down webpack.
+
+On my personal computer, I have hot reload times of ~1.5 seconds.
+
+To make development even faster, you can take advantage of tailwind incremental
+builds (which don't seem to work with the default postcss setup for some
+reason).
+
+1. In `gatsby-browser.tsx`, change the css import to `./build.css` instead of
+   `./src/styles/main.css`.
+2. Run
+   `npx cross-env TAILWIND_MODE=watch postcss src/styles/main.css -o build.css --watch`
+   (or the equivalent on your platform)
+3. Run `gatsby develop`
+
+I get a consistent 1s hot reload with this

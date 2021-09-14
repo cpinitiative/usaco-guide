@@ -1,3 +1,4 @@
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getDocs,
@@ -47,9 +48,12 @@ const UserGroupsProvider = ({
       };
 
       Object.keys(queries).forEach(key => {
-        getDocs<GroupData>(
+        getDocs(
           query(
-            collection(getFirestore(firebaseApp), 'groups'),
+            collection(
+              getFirestore(firebaseApp),
+              'groups'
+            ) as CollectionReference<GroupData>,
             where(key, 'array-contains', firebaseUser?.uid)
           )
         ).then(snap => {

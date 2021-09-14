@@ -1,3 +1,4 @@
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getFirestore,
@@ -17,9 +18,12 @@ export default function useGroupJoinLinks(groupId: string) {
       setLinks(null);
       if (!groupId) return;
 
-      return onSnapshot<JoinGroupLink>(
+      return onSnapshot(
         query(
-          collection(getFirestore(firebaseApp), 'group-join-links'),
+          collection(
+            getFirestore(firebaseApp),
+            'group-join-links'
+          ) as CollectionReference<JoinGroupLink>,
           where('groupId', '==', groupId)
         ),
         {

@@ -1,3 +1,4 @@
+import type { DocumentReference } from 'firebase/firestore';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -35,7 +36,7 @@ export default function PostLeaderboardPage(props) {
     problemId: string,
     submissionId: string
   ) => {
-    getDoc<Submission>(
+    getDoc(
       doc(
         getFirestore(firebaseApp),
         'groups',
@@ -46,7 +47,7 @@ export default function PostLeaderboardPage(props) {
         problemId,
         'submissions',
         submissionId
-      )
+      ) as DocumentReference<Submission>
     )
       .then(doc => {
         const submission = { id: doc.id, ...doc.data() };

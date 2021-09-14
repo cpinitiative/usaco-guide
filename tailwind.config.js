@@ -16,6 +16,10 @@ module.exports = {
         cyan: colors.cyan,
         teal: colors.teal,
         orange: colors.orange,
+        gray: colors.gray,
+        sky: colors.sky,
+        fuchsia: colors.fuchsia,
+        purple: colors.purple,
         'light-blue': colors.sky,
       },
       boxShadow: {
@@ -94,6 +98,27 @@ module.exports = {
           ],
         },
       }),
+
+      animation: {
+        blob1: 'blob 9s infinite',
+        blob2: 'blob 9s infinite 2s',
+      },
+      keyframes: {
+        blob: {
+          '0%': {
+            transform: 'scale(1)',
+          },
+          '33%': {
+            transform: 'scale(1.1) translateX(8rem) translateY(3rem)',
+          },
+          '66%': {
+            transform: 'scale(0.9) translateX(-8rem) translateY(-3rem)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+          },
+        },
+      },
     },
   },
   darkMode: 'class',
@@ -105,7 +130,13 @@ module.exports = {
   purge: {
     safelist: ['dark'],
     content: [
-      './src/**/*.{js,ts,tsx}',
+      './src/components/**/*.{js,ts,tsx}',
+      './src/context/**/*.{js,ts,tsx}',
+      './src/hooks/**/*.{js,ts,tsx}',
+      './src/models/**/*.{js,ts,tsx}',
+      './src/pages/**/*.{js,ts,tsx}',
+      './src/stories/**/*.{js,ts,tsx}',
+      './src/templates/**/*.{js,ts,tsx}',
       './content/**/*.{mdx,ts,tsx}',
       './gatsby-browser.tsx',
       './.storybook/preview.js',
