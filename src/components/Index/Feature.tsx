@@ -21,11 +21,11 @@ export const Feature = ({
   children: React.ReactNode;
 }): JSX.Element => {
   return (
-    <div className="flex items-center">
+    <div className="flex flex-col md:flex-row md:items-center">
       <div
         className={classNames(
-          'flex-1 w-0 relative',
-          featurePosition === 'left' && 'pr-24'
+          'hidden md:block md:flex-1 md:w-0 relative',
+          featurePosition === 'left' && 'md:pr-12 lg:pr-24'
         )}
       >
         <div className="relative z-10">{feature}</div>
@@ -34,7 +34,9 @@ export const Feature = ({
           <div
             className={classNames(
               'absolute top-0 bottom-0 w-48 bg-gradient-to-r from-transparent to-white z-20',
-              featurePosition === 'left' ? 'right-24' : 'right-0'
+              featurePosition === 'left'
+                ? 'right-0 md:right-12 lg:right-24'
+                : 'right-0'
             )}
           />
         )}
@@ -48,8 +50,8 @@ export const Feature = ({
       </div>
       <div
         className={classNames(
-          'flex-1',
-          featurePosition === 'right' && 'order-first pr-24'
+          'md:flex-1',
+          featurePosition === 'right' && 'md:order-first md:pr-12 lg:pr-24'
         )}
       >
         <div>
@@ -62,8 +64,8 @@ export const Feature = ({
             <Icon className="h-6 w-6" />
           </div>
         </div>
-        <h3 className="font-bold text-3xl text-gray-900">{title}</h3>
-        <p className="text-lg mt-4 text-gray-600">{children}</p>
+        <h3 className="font-bold text-xl md:text-3xl text-gray-900">{title}</h3>
+        <p className="md:text-lg mt-2 md:mt-4 text-gray-600">{children}</p>
       </div>
     </div>
   );

@@ -16,10 +16,10 @@ const TableRow = ({
 }) => {
   return (
     <tr className={className}>
-      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 text-gray-500">
+      <td className="pl-4 sm:pl-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-500">
         {source}
       </td>
-      <td className="pl-2 sm:pl-6 pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-800">
+      <td className="pl-2 sm:pl-6 pr-4 sm:pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-800">
         <div className="flex items-center">
           <svg
             className={classNames(
@@ -34,7 +34,7 @@ const TableRow = ({
           <span className="pl-1 sm:pl-2">{title}</span>
         </div>
       </td>
-      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 no-y-margin">
+      <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 no-y-margin">
         {children}
       </td>
     </tr>
@@ -45,11 +45,11 @@ export const ResourcesFeature = (): JSX.Element => {
   return (
     <div className="max-w-full overflow-hidden -mx-4">
       <div className="min-w-[52rem] px-4">
-        <div className="-mx-4 sm:-mx-6 md:mx-0">
+        <div>
           <div className="flex flex-col mb-4">
-            <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
+            <div className={`overflow-x-auto -mx-4 px-4 -my-2 py-2`}>
               <div
-                className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200`}
+                className={`align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-gray-200`}
               >
                 <table className="min-w-full no-markdown">
                   <thead>

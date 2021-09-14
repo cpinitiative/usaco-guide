@@ -31,24 +31,19 @@ import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
-/*
-Classes:
-- Header
-- Subtext
-- Button
-*/
-
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
-const headerClasses = 'text-6xl font-black text-black';
+const headerClasses = 'text-4xl md:text-5xl 2xl:text-6xl font-black text-black';
 const subtextClasses =
-  'text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
-const headerClassesDark = 'text-6xl font-black text-white';
+  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
+const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
+const headerClassesDark =
+  'text-4xl md:text-5xl 2xl:text-6xl font-black text-white';
 const subtextClassesDark =
-  'text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
+  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
 const whiteButtonClassesBig =
-  'text-xl bg-white px-8 py-4 rounded-lg font-medium text-gray-900 relative';
+  'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
 const whiteButtonClasses =
-  'text-xl bg-white px-6 py-3 rounded-lg font-medium text-gray-900 relative';
+  'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -63,42 +58,48 @@ export default function IndexPage(): JSX.Element {
       {/*>*/}
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
-      <div className="dark">
+      <div className="dark bg-black">
         <TopNavigationBar transparent />
       </div>
 
       {/* Begin Hero */}
       <div className="-mt-16 bg-black">
-        <div className="min-h-screen flex flex-col">
+        <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
+          <div className="h-6 sm:h-12"></div>
+
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-24"></div>
 
-            <div className="flex justify-center">
-              <GlowingText className="text-center font-black tracking-tight text-9xl text-white mt-4">
+            <div className="flex md:justify-center">
+              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl xl:text-8xl 2xl:text-9xl text-white mt-4">
                 USACO Guide
               </GlowingText>
             </div>
 
-            <div className="h-12"></div>
+            <div className="h-6 sm:h-8 2xl:h-12"></div>
 
             <p
               className="
-              text-center text-4xl
-              font-medium
-              max-w-4xl
-              mx-auto
-              leading-[3rem]
-              text-gray-300
-            "
+                md:text-center
+                text-xl
+                sm:text-2xl
+                xl:text-3xl
+                2xl:text-4xl
+                font-medium
+                leading-snug
+                md:!leading-normal
+                text-gray-300
+              "
             >
               A free collection of{' '}
-              <GradientText>curated, high-quality resources</GradientText> to
-              take you from Bronze to Platinum and beyond.
+              <GradientText>curated, high-quality resources</GradientText>{' '}
+              <br className="hidden md:block" />
+              to take you from Bronze to Platinum and beyond.
             </p>
 
-            <div className="h-12"></div>
+            <div className="h-8 sm:h-12 2xl:h-16"></div>
 
-            <div className="flex justify-center">
+            <div className="flex md:justify-center">
               <GlowingRing>
                 <Link
                   to="/dashboard"
@@ -110,10 +111,12 @@ export default function IndexPage(): JSX.Element {
             </div>
           </div>
 
-          <div className="flex justify-center text-xl text-gray-400 py-16">
+          <div className="h-16 sm:h-24"></div>
+
+          <div className="flex md:justify-center md:text-xl text-gray-400">
             <a
               href="https://joincpi.org/"
-              className="inline-flex items-center space-x-4"
+              className="inline-flex items-center space-x-3 md:space-x-4"
             >
               <div className="h-9 w-9">
                 <svg
@@ -167,19 +170,20 @@ export default function IndexPage(): JSX.Element {
               <span>Created by the CP Initiative</span>
             </a>
           </div>
+          <div className="h-4 sm:h-6 md:h-16"></div>
         </div>
       </div>
       {/* End Hero */}
 
       {/* Learn USACO. Efficiently. */}
       <div className="bg-white">
-        <div className="h-48"></div>
+        <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
           <h2 className={headerClasses}>
             Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
           </h2>
-          <div className="h-12"></div>
+          <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
             Stop wasting time searching for problems and tutorials. The USACO
             Guide provides a{' '}
@@ -188,13 +192,13 @@ export default function IndexPage(): JSX.Element {
             everyone, for free.
           </p>
 
-          <div className="h-36"></div>
+          <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
             icon={DatabaseIcon}
             iconClasses="from-cyan-400 to-sky-500"
             title="Curated Resources"
-            blobClasses="bg-sky-200"
+            blobClasses="bg-sky-200 hidden xl:block"
             feature={<ResourcesFeature />}
             featurePosition="left"
           >
@@ -202,7 +206,7 @@ export default function IndexPage(): JSX.Element {
             one resource doesn't click, look at another!
           </Feature>
 
-          <div className="h-36"></div>
+          <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
             icon={ClipboardListIcon}
@@ -216,7 +220,7 @@ export default function IndexPage(): JSX.Element {
             covering a wide range of difficulties.
           </Feature>
 
-          <div className="h-36"></div>
+          <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
             icon={LightningBoltIcon}
@@ -231,7 +235,7 @@ export default function IndexPage(): JSX.Element {
             and stay motivated.
           </Feature>
 
-          <div className="h-36"></div>
+          <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
             icon={ChatAlt2Icon}
@@ -244,7 +248,7 @@ export default function IndexPage(): JSX.Element {
                   src="../assets/forum-screenshot.png"
                   alt="USACO Forum Screenshot"
                   placeholder="blurred"
-                  layout="fixed"
+                  layout="constrained"
                   width={560}
                 />
               </div>
@@ -252,7 +256,7 @@ export default function IndexPage(): JSX.Element {
             featurePosition="right"
             fade="none"
           >
-            <div className="mb-8">
+            <div className="mb-4 md:mb-8">
               Get help from other community members in the USACO Forum.
             </div>
 
@@ -266,28 +270,28 @@ export default function IndexPage(): JSX.Element {
             </a>
           </Feature>
         </div>
-        <div className="h-36"></div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
       {/* End Learn USACO. Efficiently. */}
 
       <div className="bg-black">
-        <div className="h-36"></div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
           <GlowingText className={headerClassesDark} extraGlow>
             Trusted by thousands.
           </GlowingText>
-          <div className="h-12"></div>
+          <div className={headerSubtextSpacerClasses}></div>
 
           <p className={subtextClassesDark}>
             This guide is written by{' '}
             <GradientText>top USACO contestants,</GradientText> including
             two-time IOI winner and USACO Problemsetter Benjamin Qi.
           </p>
-          <div className="h-12"></div>
+          <div className="h-4 2xl:h-12"></div>
 
           <TrustedBy />
 
-          <div className="h-16"></div>
+          <div className="h-8 md:h-12 2xl:h-16"></div>
 
           <div className="relative group inline-block">
             <GlowingRing>
@@ -299,24 +303,24 @@ export default function IndexPage(): JSX.Element {
               </Link>
             </GlowingRing>
           </div>
-          <div className="h-36"></div>
         </div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
       <div className="bg-white">
-        <div className="h-36"></div>
-        <div className="px-4 sm:px-6 lg:px-8 xl:px-16">
-          <h2 className={classNames(headerClasses, 'text-center')}>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
+        <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
+          <h2 className={classNames(headerClasses, 'md:text-center')}>
             Created by the CP Initiative.
           </h2>
-          <div className="h-8"></div>
-          <p className={classNames(subtextClasses, 'text-center mx-auto')}>
+          <div className="h-4 md:h-8"></div>
+          <p className={classNames(subtextClasses, 'md:text-center mx-auto')}>
             Here are some of our other projects you might find useful!
           </p>
 
-          <div className="h-24"></div>
+          <div className="h-12 md:h-16 2xl:24"></div>
 
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <CPIProjectCard
               title="USACO Classes"
               icon={AcademicCapIcon}
@@ -373,17 +377,17 @@ export default function IndexPage(): JSX.Element {
             </CPIProjectCard>
           </div>
         </div>
-        <div className="h-24"></div>
+        <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
       <div className="bg-black">
-        <div className="h-48"></div>
+        <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
           <GlowingText className={headerClassesDark} extraGlow>
             Join our Team.
           </GlowingText>
-          <div className="h-12"></div>
+          <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClassesDark}>
             The Competitive Programming Initiative is a student-run organization
             dedicated to promoting competitive programming. Join us in our
@@ -393,7 +397,7 @@ export default function IndexPage(): JSX.Element {
             </GradientText>{' '}
             along the way!
           </p>
-          <div className="h-12"></div>
+          <div className="h-8 md:h-12"></div>
 
           <div className="relative group inline-block">
             <GlowingRing>
@@ -408,19 +412,19 @@ export default function IndexPage(): JSX.Element {
             </GlowingRing>
           </div>
 
-          <hr className="my-24 border-gray-800" />
+          <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
 
           <GlowingText className={headerClassesDark} extraGlow>
             Or, help us financially!
           </GlowingText>
-          <div className="h-12"></div>
+          <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClassesDark}>
             We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
             — all donations are tax deductible. Since our inception in September
             2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
             students across our various initiatives.
           </p>
-          <div className="h-12"></div>
+          <div className="h-8 md:h-12"></div>
 
           <div className="flex items-center">
             <GlowingRing>
@@ -433,7 +437,7 @@ export default function IndexPage(): JSX.Element {
                 Sponsor Us
               </a>
             </GlowingRing>
-            <span className="text-lg font-medium text-gray-400 ml-6">
+            <span className="text-lg font-medium text-gray-400 ml-4 md:ml-6">
               or{' '}
               <a href="http://ww2.jeffkmeng.com/" className="text-blue-400">
                 Donate via PayPal
@@ -441,9 +445,9 @@ export default function IndexPage(): JSX.Element {
             </span>
           </div>
 
-          <div className="h-20"></div>
+          <div className="h-12 md:h-20"></div>
 
-          <p className="uppercase text-gray-400 font-medium text-xl">
+          <p className="uppercase text-gray-400 font-medium text-lg md:text-xl">
             Our Sponsors
           </p>
 
@@ -470,16 +474,16 @@ export default function IndexPage(): JSX.Element {
           </div>
         </div>
 
-        <div className="h-48"></div>
+        <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
       </div>
 
       {/* Begin FAQ */}
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
-          <h2 className="text-3xl leading-9 font-extrabold text-gray-900 dark:text-gray-100">
+          <h2 className={classNames(headerClasses, 'dark:text-gray-100')}>
             Frequently asked questions
           </h2>
-          <div className="mt-6 border-t-2 border-gray-100 dark:border-gray-700 pt-10">
+          <div className="pt-10 md:pt-16">
             <dl className="md:grid md:grid-cols-2 md:gap-8">
               <div>
                 <div>
