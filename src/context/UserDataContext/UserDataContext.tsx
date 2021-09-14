@@ -128,6 +128,7 @@ type UserDataContextAPI = UserLangAPI &
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
+  userNotesOnProblems: {},
   consecutiveVisits: 0,
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
