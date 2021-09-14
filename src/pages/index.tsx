@@ -389,9 +389,17 @@ export default function IndexPage(): JSX.Element {
           </GlowingText>
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClassesDark}>
-            The Competitive Programming Initiative is a student-run organization
-            dedicated to promoting competitive programming. Join us in our
-            mission, and{' '}
+            The{' '}
+            <a
+              href="https://joincpi.org/"
+              target="_blank"
+              rel="noreferrer"
+              className="underline transition hover:text-blue-400"
+            >
+              Competitive Programming Initiative
+            </a>{' '}
+            is a student-run organization dedicated to promoting competitive
+            programming. Join us in our mission, and{' '}
             <GradientText>
               earn PVSA volunteer hours and leadership positions
             </GradientText>{' '}
@@ -439,7 +447,12 @@ export default function IndexPage(): JSX.Element {
             </GlowingRing>
             <span className="text-lg font-medium text-gray-400 ml-4 md:ml-6">
               or{' '}
-              <a href="http://ww2.jeffkmeng.com/" className="text-blue-400">
+              <a
+                href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-400 transition hover:text-purple-400"
+              >
                 Donate via PayPal
               </a>
             </span>
