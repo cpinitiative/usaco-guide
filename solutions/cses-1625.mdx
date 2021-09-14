@@ -125,7 +125,7 @@ int tryPath(int pathIdx, int curR, int curC) {
 		int nxtC = curC + dc[p[pathIdx]];
 		if (!onPath[nxtR][nxtC]) ret += tryPath(pathIdx + 1, nxtR, nxtC);
 	} 
-  // see Java solution for optimization 4 implementation
+	// see Java solution for optimization 4 implementation
 	else { // iterate through all four possible turns
 		for (int i = 0; i < DIR_LEN; i++) {
 			int nxtR = curR + dr[i];
@@ -161,7 +161,7 @@ int main() {
 		onPath[i][0] = true;
 		onPath[i][8] = true;
 	}
-  //initialize the inside of the grid to be completely empty
+	//initialize the inside of the grid to be completely empty
 	for (int i = 1; i <= 7; i++) {
 		for (int j = 1; j <= 7; j++) {
 			onPath[i][j] = false;
@@ -240,7 +240,7 @@ public class GridPaths {
 				ret += tryPath(pathIdx + 1, nxtR, nxtC);
 			}
 		}
-    // now search for dead ends (Optimization 4)
+		// now search for dead ends (Optimization 4)
 		else if ((curC > 2) && onPath[curR][curC - 2]
 			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
 			&& (!onPath[curR][curC - 1])) { // potential dead end on the left:
@@ -263,7 +263,7 @@ public class GridPaths {
 			int nxtC = curC;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
-    // iterate through all four possible turns
+		// iterate through all four possible turns
 		else { 
 			for (int i = 0; i < 4; i++) {
 				int nxtR = curR + dr[i];
