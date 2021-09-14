@@ -1,3 +1,4 @@
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getFirestore,
@@ -21,7 +22,7 @@ export default function useUserProblemSubmissions(
   useFirebaseApp(
     firebaseApp => {
       if (problemId && activeGroup.activeUserId && activeGroup?.activeGroupId) {
-        return onSnapshot<Submission>(
+        return onSnapshot(
           query(
             collection(
               getFirestore(firebaseApp),
@@ -32,7 +33,7 @@ export default function useUserProblemSubmissions(
               'problems',
               problemId,
               'submissions'
-            ),
+            ) as CollectionReference<Submission>,
             where('userId', '==', activeGroup.activeUserId)
           ),
           {

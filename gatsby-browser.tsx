@@ -3,6 +3,7 @@
 import { wrapRootElement as wrap } from './root-wrapper';
 import 'katex/dist/katex.min.css';
 import './src/styles/main.css';
+// import './build.css';
 
 export const wrapRootElement = wrap;
 
