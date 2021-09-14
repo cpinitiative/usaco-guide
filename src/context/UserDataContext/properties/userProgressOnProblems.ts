@@ -7,7 +7,7 @@ import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
-  userNotesOnProblems: ProblemNotes[];
+  userNotesOnProblems: { [key: string]: ProblemNotes };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
     problemId: string,
@@ -39,7 +39,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     }
 
     const currentNotesValue = this.getValueFromLocalStorage(
-      this.getLocalStorageKey(this.progressStorageKey),
+      this.getLocalStorageKey(this.notesStorageKey),
       { version: 2 }
     );
 
