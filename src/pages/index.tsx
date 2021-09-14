@@ -71,20 +71,19 @@ export default function IndexPage(): JSX.Element {
             <div className="h-24"></div>
 
             <div className="flex md:justify-center">
-              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl xl:text-8xl 2xl:text-9xl text-white mt-4">
+              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-white mt-4">
                 USACO Guide
               </GlowingText>
             </div>
 
-            <div className="h-6 sm:h-8 2xl:h-12"></div>
+            <div className="h-6 sm:h-8"></div>
 
             <p
               className="
                 md:text-center
                 text-xl
                 sm:text-2xl
-                xl:text-3xl
-                2xl:text-4xl
+                2xl:text-3xl
                 font-medium
                 leading-snug
                 md:!leading-normal
@@ -97,7 +96,7 @@ export default function IndexPage(): JSX.Element {
               to take you from Bronze to Platinum and beyond.
             </p>
 
-            <div className="h-8 sm:h-12 2xl:h-16"></div>
+            <div className="h-8 sm:h-12"></div>
 
             <div className="flex md:justify-center">
               <GlowingRing>
