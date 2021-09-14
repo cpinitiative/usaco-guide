@@ -178,7 +178,11 @@ export default function ProblemStatusCheckbox({
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
-              setUserProgressOnProblems(problem.uniqueId, progress);
+              setUserProgressOnProblems(
+                problem.uniqueId,
+                progress,
+                'place holder'
+              );
               const solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress)) {
                 updateModuleProgressToPracticing();

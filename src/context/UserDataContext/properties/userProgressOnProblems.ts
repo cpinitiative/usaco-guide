@@ -1,12 +1,13 @@
 import * as Sentry from '@sentry/browser';
 import { setDoc, updateDoc } from 'firebase/firestore';
 import { ProblemActivity } from '../../../models/activity';
-import { ProblemProgress } from '../../../models/problem';
+import { ProblemNotes, ProblemProgress } from '../../../models/problem';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
+  userNotesOnProblems: { [key: string]: ProblemNotes };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
     problemId: string,
