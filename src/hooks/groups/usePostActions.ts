@@ -22,9 +22,8 @@ import { useFirebaseApp } from '../useFirebase';
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, setUserProgressOnProblems } = useContext(
-    UserDataContext
-  );
+  const { firebaseUser, setUserProgressOnProblems } =
+    useContext(UserDataContext);
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(
@@ -136,7 +135,8 @@ export function usePostActions(groupId: string) {
         'problems',
         problem.id
       );
-      batch.update(docRef, problem);
+      // no clue why this throws a typescript error without it...
+      batch.update(docRef, problem as any);
       batch.update(
         doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
         {
