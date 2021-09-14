@@ -1,6 +1,8 @@
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   doc,
+  DocumentReference,
   getFirestore,
   onSnapshot,
   query,
@@ -54,14 +56,14 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
       let loadedPosts = false,
         loadedGroup = false;
-      const unsubscribePosts = onSnapshot<PostData>(
+      const unsubscribePosts = onSnapshot(
         query(
           collection(
             getFirestore(firebaseApp),
             'groups',
             activeGroupId,
             'posts'
-          ),
+          ) as CollectionReference<PostData>,
           where('isDeleted', '==', false)
         ),
         snap => {
@@ -78,8 +80,12 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
           }
         }
       );
-      const unsubscribeGroup = onSnapshot<GroupData>(
-        doc(getFirestore(firebaseApp), 'groups', activeGroupId),
+      const unsubscribeGroup = onSnapshot(
+        doc(
+          getFirestore(firebaseApp),
+          'groups',
+          activeGroupId
+        ) as DocumentReference<GroupData>,
         doc => {
           loadedGroup = true;
           setGroupData(doc.data());
