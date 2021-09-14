@@ -7,12 +7,12 @@ import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
-  userNotesOnProblems: { [key: string]: ProblemNotes };
+  userNotesOnProblems: ProblemNotes[];
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
     problemId: string,
     status: ProblemProgress,
-    notes: any
+    notes: ProblemNotes
   ) => void;
 };
 

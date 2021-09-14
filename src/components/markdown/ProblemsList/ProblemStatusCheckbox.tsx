@@ -142,8 +142,11 @@ export default function ProblemStatusCheckbox({
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
   const { userProgressOnModules, setModuleProgress } =
     useContext(UserDataContext);
-  const { userProgressOnProblems, setUserProgressOnProblems } =
-    useContext(UserDataContext);
+  const {
+    userProgressOnProblems,
+    setUserProgressOnProblems,
+    userNotesOnProblems,
+  } = useContext(UserDataContext);
   const updateModuleProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
@@ -168,6 +171,7 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
+  const currentNotes = userNotesOnProblems[problem.uniqueId];
   const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
@@ -181,7 +185,7 @@ export default function ProblemStatusCheckbox({
               setUserProgressOnProblems(
                 problem.uniqueId,
                 progress,
-                'place holder'
+                currentNotes
               );
               const solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress)) {
