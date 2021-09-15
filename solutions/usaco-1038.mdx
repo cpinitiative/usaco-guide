@@ -22,40 +22,39 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 ```cpp
 #include <bits/stdc++.h>
-#define MAXN 100005
-#define MOD 107
-#define ll long long
-#define mp make_pair
-#define sz(x) (int) (x).size() 
-#define pb push_back
- 
+
 using namespace std;
 
-void setIO(string prob = "") {
-	if (sz(prob)) {
+void setIO(string prob="") {
+	if (!prob.empty()) {
 		freopen((prob + ".in").c_str(), "r", stdin);
 		freopen((prob + ".out").c_str(), "w", stdout);
 	}
 }
 
-pair<ll,ll> intervals[MAXN];
+const int MAX_N = 1e5;
+
+pair<long long, long long> intervals[MAX_N];
 
 int main() {
 	setIO("socdist");
 	
-	int n, m; cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 	for (int i = 0; i < m; i++) {
 		cin >> intervals[i].first >> intervals[i].second;
 	}
 	sort(intervals, intervals + m);
-	
-	// binary search
-	ll lo = 0, hi = intervals[m - 1].second - intervals[0].first + 1;
+
+	long long lo = 0;
+	long long hi = intervals[m - 1].second - intervals[0].first + 1;
 	while (lo < hi) {
-		// greedy algorithm
-		ll mid = lo + (hi - lo + 1) / 2;
-		int count = 1, intervalCount = 0;
-		ll current = intervals[0].first;
+		long long mid = lo + (hi - lo + 1) / 2;
+		int count = 1;
+		int intervalCount = 0;
+		long long current = intervals[0].first;
+
+		// try to fit the next cow into the earliest patch of grass that's available
 		while ((current + mid) < intervals[m - 1].second) {
 			while (current + mid > intervals[intervalCount].second) {
 				intervalCount++;
@@ -64,11 +63,11 @@ int main() {
 			count++;
 			if (count == n) break;
 		}
+		
 		if (count >= n) lo = mid;
 		else hi = mid - 1;
 	}
 	cout << lo << '\n';
-	return 0;
 }
 ```
 
@@ -80,8 +79,7 @@ int main() {
 import java.util.*;
 import java.io.*;
 
-public class socdist {
-	
+public class SocDist {
 	static class Pair implements Comparable<Pair> {
 		long first, second;
 
@@ -91,14 +89,15 @@ public class socdist {
 		}
 
 		public int compareTo(Pair x) {
-			if (this.first == x.first) return (int) (this.second - x.second);
+			if (this.first == x.first)
+				return (int) (this.second - x.second);
 			return (int) (this.first - x.first);
 		}
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("socdist.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("socdist.out")));
+		PrintWriter pw = new PrintWriter("socdist.out");
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		
 		int n = Integer.parseInt(st.nextToken());
@@ -107,27 +106,34 @@ public class socdist {
 		Pair intervals[] = new Pair[m];
 		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(in.readLine());
-			intervals[i] = new Pair(Long.parseLong(st.nextToken()), Long.parseLong(st.nextToken()));
+			intervals[i] = new Pair(
+				Long.parseLong(st.nextToken()),
+				Long.parseLong(st.nextToken())
+			);
 		}
 		
 		Arrays.sort(intervals);
-		// binary search
-		long lo = 0, hi = intervals[m - 1].second - intervals[0].first + 1;
+		long lo = 0;
+		long hi = intervals[m - 1].second - intervals[0].first + 1;
 		while (lo < hi) {
-			// greedy algorithm
 			long mid = lo + (hi - lo + 1) / 2;
-			int count = 1, intervalCount = 0;
+			int count = 1;
+			int intervalCount = 0;
 			long current = intervals[0].first;
+			// try to fit the next cow into the earliest patch of grass that's available
 			while ((current + mid) < intervals[m - 1].second) {
 				while (current + mid > intervals[intervalCount].second) {
 					intervalCount++;
 				}
 				current = Math.max(intervals[intervalCount].first, current + mid);
 				count++;
-				if (count == n) break;
+				if (count == n)
+					break;
 			}
-			if (count >= n) lo = mid;
-			else hi = mid - 1;
+			if (count >= n)
+				lo = mid;
+			else
+				hi = mid - 1;
 		}
 		pw.println(lo);
 		pw.close();
