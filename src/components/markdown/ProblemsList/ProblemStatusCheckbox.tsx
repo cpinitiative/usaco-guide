@@ -20,9 +20,8 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
-    currentProgress
-  );
+  const [activeProgress, setActiveProgress] =
+    useState<ProblemProgress>(currentProgress);
 
   const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
@@ -142,9 +141,8 @@ export default function ProblemStatusCheckbox({
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
 
-  const { userProgressOnModules, setModuleProgress } = useContext(
-    UserDataContext
-  );
+  const { userProgressOnModules, setModuleProgress } =
+    useContext(UserDataContext);
   const {
     userProgressOnProblems,
     setUserProgressOnProblems,
@@ -175,7 +173,8 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
-  const currentNotes = userNotesOnProblems[problem.uniqueId];
+  const currentNotes =
+    userNotesOnProblems[problem.uniqueId] || '<p> placeholder </p>';
   const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
