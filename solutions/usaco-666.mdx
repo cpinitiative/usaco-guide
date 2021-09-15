@@ -17,38 +17,35 @@ author: Albert Zhu
 
 ```cpp
 #include <bits/stdc++.h>
-#define MAXN 100005
-#define MOD 1000000007
-#define ll long long
-#define mp make_pair
-#define sz(x) (int) (x).size() 
-#define pb push_back
 
 using namespace std;
 
-void setIO(string prob = "") {
-	if (sz(prob)) {
+void setIO(string prob="") {
+	if (!prob.empty()) {
 		freopen((prob + ".in").c_str(), "r", stdin);
 		freopen((prob + ".out").c_str(), "w", stdout);
 	}
 }
 
-int haybales[MAXN];
+const int MAX_N = 1e5;
+
+int haybales[MAX_N];
 
 int main() {
 	setIO("haybales");
 	
-	int n, q; cin >> n >> q;
+	int n, q;
+	cin >> n >> q;
 	for (int i = 0; i < n; i++) cin >> haybales[i];
 	
 	sort(haybales, haybales + n);
 	for (int i = 0; i < q; i++) {
-		int a, b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		int left = lower_bound(haybales, haybales + n, a) - haybales;
 		int right = upper_bound(haybales, haybales + n, b) - haybales;
 		cout << right - left << '\n';
 	}
-	return 0;
 }
 ```
 
@@ -60,11 +57,10 @@ int main() {
 import java.util.*;
 import java.io.*;
 
-public class haybales {
-
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+public class Haybales {
+	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("haybales.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
+		PrintWriter pw = new PrintWriter("haybales.out");
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		
 		int n = Integer.parseInt(st.nextToken());
@@ -85,16 +81,21 @@ public class haybales {
 			int lo = 0, hi = n;
 			while (lo < hi) {
 				int mid = lo + (hi - lo) / 2;
-				if (haybales[mid] >= a) hi = mid;
-				else lo = mid + 1;
+				if (haybales[mid] >= a)
+					hi = mid;
+				else
+					lo = mid + 1;
 			}
 			int left = lo;
 			
-			lo = 0; hi = n;
+			lo = 0;
+			hi = n;
 			while (lo < hi) {
 				int mid = lo + (hi - lo) / 2;
-				if (haybales[mid] > b) hi = mid;
-				else lo = mid + 1;
+				if (haybales[mid] > b)
+					hi = mid;
+				else
+				lo = mid + 1;
 			}
 			int right = lo;
 			
