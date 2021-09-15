@@ -16,99 +16,52 @@ author: Albert Zhu
 
 ```cpp
 #include <bits/stdc++.h>
-#define MAXN 100005
-#define MOD 1000000007
-#define ll long long
-#define mp make_pair
-#define sz(x) (int) (x).size() 
-#define pb push_back
 
 using namespace std;
 
-void setIO(string prob = "") {
-	if (sz(prob)) {
+void setIO(string prob="") {
+	if (!prob.empty()) {
 		freopen((prob + ".in").c_str(), "r", stdin);
 		freopen((prob + ".out").c_str(), "w", stdout);
 	}
 }
 
-struct Fence {
-	// heightsum is the sum of the heights of all the triangles
-	// that use this fence as an anchor point, basesum is the
-	// sum of the bases of all the triangles that use this
-	// fence as an anchor point; recall that the anchor point
-	// of a right triangle is the vertex where the right
-	// angle is.
-	int x, y;
-	ll heightsum, basesum;
-};
+const int MAX_N = 1e5;
 
-// fences are our fences, xcoords represents all of the possible
-// x coordinates of our fences, ycoords represents all of the
-// possible y coordinates of our fences
-Fence fences[MAXN];
-vector<pair<int,int>> xcoords[20001];
-vector<pair<int,int>> ycoords[20001];
+pair<long long, long long> intervals[MAX_N];
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	setIO("triangles");
-
-	int n; cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> fences[i].x >> fences[i].y;
-		// we add 100000 to make all of our coordinates positive
-		// so that we won't have negative indices
-		xcoords[fences[i].x + 10000].pb(mp(fences[i].y, i));
-		ycoords[fences[i].y + 10000].pb(mp(fences[i].x, i));
+	setIO("socdist");
+	
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		cin >> intervals[i].first >> intervals[i].second;
 	}
+	sort(intervals, intervals + m);
 
-	for (int i = 0; i <= 20000; i++) {
-		if (sz(xcoords[i]) > 0) {
-			// cur is the value of the current s_i
-			ll cur = 0;
-			// first we sort all of the y coordinates of each set
-			// of points with the same x coordinate
-			sort(xcoords[i].begin(), xcoords[i].end());
-			// then we compute the value s_1 of this set:
-			// the sum of the heights of all the triangles that
-			// have anchor point at (i, xcoords[i][0].first)
-			for (int j = 1; j < sz(xcoords[i]); j++) {
-				cur+= xcoords[i][j].first - xcoords[i][0].first;
+	long long lo = 0;
+	long long hi = intervals[m - 1].second - intervals[0].first + 1;
+	while (lo < hi) {
+		long long mid = lo + (hi - lo + 1) / 2;
+		int count = 1;
+		int intervalCount = 0;
+		long long current = intervals[0].first;
+
+		// try to fit the next cow into the earliest patch of grass that's available
+		while ((current + mid) < intervals[m - 1].second) {
+			while (current + mid > intervals[intervalCount].second) {
+				intervalCount++;
 			}
-			fences[xcoords[i][0].second].heightsum = cur;
-			// then we compute the rest of the s_i for this set
-			for (int j = 1; j < sz(xcoords[i]); j++) {
-				cur+= (2 * j - sz(xcoords[i])) * (xcoords[i][j].first - xcoords[i][j - 1].first);
-				fences[xcoords[i][j].second].heightsum = cur;
-			}
+			current = max(intervals[intervalCount].first, current + mid);
+			count++;
+			if (count == n) break;
 		}
+		
+		if (count >= n) lo = mid;
+		else hi = mid - 1;
 	}
-
-	// we do the sums of bases in exactly the same way
-	for (int i = 0; i <= 20000; i++) {
-		if (sz(ycoords[i]) > 0) {
-			ll cur = 0;
-			sort(ycoords[i].begin(), ycoords[i].end());
-			for (int j = 1; j < sz(ycoords[i]); j++) {
-				cur+= ycoords[i][j].first - ycoords[i][0].first;
-			}
-			fences[ycoords[i][0].second].basesum = cur;
-			for (int j = 1; j < sz(ycoords[i]); j++) {
-				cur+= (2 * j - sz(ycoords[i])) * (ycoords[i][j].first - ycoords[i][j - 1].first);
-				fences[ycoords[i][j].second].basesum = cur;
-			}
-		}
-	}
-
-	// finally we compute the total area
-	ll ret = 0;
-	for (int i = 0; i < n; i++) {
-		ret+= fences[i].heightsum * fences[i].basesum % MOD;
-		ret%= MOD;
-	}
-	cout << ret << '\n';
-	return 0;
+	cout << lo << '\n';
 }
 ```
 
