@@ -21,8 +21,9 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] =
-    useState<ProblemProgress>(currentProgress);
+  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
+    currentProgress
+  );
 
   const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
@@ -142,8 +143,9 @@ export default function ProblemStatusCheckbox({
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
 
-  const { userProgressOnModules, setModuleProgress } =
-    useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress } = useContext(
+    UserDataContext
+  );
   const {
     userProgressOnProblems,
     setUserProgressOnProblems,
