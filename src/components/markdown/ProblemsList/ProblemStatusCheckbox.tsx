@@ -181,8 +181,8 @@ export default function ProblemStatusCheckbox({
         ? '<p> placeholder </p>'
         : userNotesOnProblems[problem.uniqueId];
   } catch (e) {
-    userNotesOnProblems[problem.uniqueId] = '<p> placeholder </p>';
-    currentNotes = userNotesOnProblems[problem.uniqueId];
+    userNotesOnProblems[problem.uniqueId.toString()] = '<p> placeholder </p>';
+    currentNotes = userNotesOnProblems[problem.uniqueId.toString()];
   }
   console.log(currentNotes);
   const tippyRef = useRef<any>();
