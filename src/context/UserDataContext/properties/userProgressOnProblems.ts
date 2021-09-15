@@ -24,7 +24,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
   private activityValue: ProblemActivity[] = [];
 
   private notesStorageKey = 'userNotesOnProblems';
-  private notesValue: unknown;
+  private notesValue: [];
 
   initializeFromLocalStorage = () => {
     const currentValue = this.getValueFromLocalStorage(
@@ -140,7 +140,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     return {
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
-      userNotesOnProblemsActivity: this.notesValue,
+      userNotesOnProblems: this.notesValue,
 
       setUserProgressOnProblems: (problemId, status, note) => {
         if (!this.firebaseUserDoc) {
