@@ -6,7 +6,7 @@ import UserDataPropertyAPI from '../userDataPropertyAPI';
 import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
-  userProgressOnProblems: { [key: string]: ProblemProgress };
+  userProgressOnProblems: ProblemProgress[];
   userNotesOnProblems: { [key: string]: ProblemNotes };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
