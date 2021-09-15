@@ -2,7 +2,7 @@
 id: usaco-760
 source: USACO Bronze 2017 December
 title: The Bovine Shuffle
-author: Jesse Choe, Ryan Chou
+author: Sathvik Chundru, Jesse Choe, Ryan Chou
 ---
 
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
@@ -36,110 +36,63 @@ for i in past_order:
 	print(i)
 ```
 </PySection>
+	
 <CPPSection>
+	
 ```cpp
-// Created by Jesse Choe - Bronze Template
-
 #include <bits/stdc++.h>
 using namespace std;
+#define ln '\n'
 
-// Type aliases
+// Instantiating swapOrder array as global for easy access for custom find function 
+int swapOrder[100];
 
-using ll = long long;
-using str = string;
-using vi = vector<int>;
-using pi = pair<int,int>;
-using vpi = vector<pi>;
-using si = set<int>;
+/*
+ * Returns the index of the element that contains j from the swapOrder array.
+ * We need the index to know where the j-th cow came from while we work backwards.
+ */
+int find(int n, int x){
+	for(int i = 0; i < n; i++){
+		if(swapOrder[i] == x) return i;
+	}
+	return 0;
+}
+ 
+void solve(){
+	int n; cin >> n;
+	int cowID[n];
+	for(int i = 0; i < n; i++) cin >> swapOrder[i];
+	for(int i = 0; i < n; i++) cin >> cowID[i];
 
-// Vector Operations
+	// For loop iterates 3 times and simulates each swap backwards during every iteration
+	for(int i = 0; i < 3; i++){
+		// Temporary array to assist with the swapping as not to change the values of the cowID array
+		int temp[n];
+		for(int j = 1; j <= n; j++){
+			int e = find(n, j);
+			/* 
+			 * Once we find the element that the j-th cow came from, all we need 
+			 * to do is simulate the swap by placing the cowID into the temp array 
+			 * at the index that the j-th cow came from, essentially "undo-ing" the swap.
+			 */
+			temp[e] = cowID[j-1];
+		}
+		// Change all the values of cowID array to get ready for the next iteration
+		for(int j = 0; j < n; j++) cowID[j] = temp[j]; 
+	}
 
-#define sz (int)(x).size()
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sor(x) sort(all(x))
-#define rev(x) reverse(all(x))
-#define del(x, i) erase(begin(x)+i)
-#define rem(x,i) erase(begin(x), begin(x)+i)
-
-// Pairs
-
-#define mp make_pair
-#define sec second
-#define fir first
-
-// Sets and Maps
-
-#define ins insert
-#define ez erase
-#define cnt count
-
-// Math
-
-#define MOD 1e9+7
-#define MAX_INT 1e18*9
-
-// Permutation
-
-#define possibilities(x) while(next_permutation(all(x))
-
-// Loops
-
-#define Trav(a,x) for (auto& a: x)
-#define For(i,a,b) for (int i = (a); i < (b); ++i)
-
-// Input/Output - s is basically the file name without the ".in" and ".out"
-
-void setIO(string s) {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen((s+".in").c_str(),"r",stdin);
-	freopen((s+".out").c_str(),"w",stdout);
+	for(int i = 0; i < n; i++) cout << cowID[i] << ln; 
 }
 
-int main(){
-
-	setIO("shuffle");
-
-	int N; cin >> N;
-
-	vi a(N);
-
-	For(i, 0, N){
-		cin >> a[i];
-	}
-
-	vi id(N);
-
-	For(i, 0, N){
-		cin >> id[i];
-	}
-
-	// Perform the backwards swap
-
-	vi correct(N);
-
-	For(i, 0, 3){
-		for(int j=0; j<N; j++){
-			int idx;
-			for(int k=0; k<N; k++){
-				if(j+1 == a[k]){
-					idx = k;
-					break;
-				}
-			}
-			correct[idx] = id[j];
-		}
-		for(int j=0; j<N; j++){
-			id[j] = correct[j];
-		}
-	}
-
-	For(i, 0, N){
-		cout << id[i] << endl;
-	}
-
+int main() {
+	#ifndef ONLINE_JUDGE
+	freopen("shuffle.in", "r", stdin);
+	freopen("shuffle.out", "w", stdout);
+	#endif
+	solve();
 }
+	
 ```
-
 </CPPSection>
+
 </LanguageSection>
