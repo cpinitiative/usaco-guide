@@ -17,8 +17,6 @@ author: Albert Zhu
 ```cpp
 #include <bits/stdc++.h>
 
-#define MAXN 100001
-
 using namespace std;
 
 void setIO(string prob) {
@@ -26,17 +24,21 @@ void setIO(string prob) {
 	freopen((prob + ".out").c_str(), "w", stdout);
 }
 
-int sigs[MAXN];
-int presum[MAXN];
+const int MAX_N = 1e5;
+
+int sigs[MAX_N];
+int presum[MAX_N];
 
 int main() {
 	setIO("maxcross");
-	int x, n, k, b, ret = INT_MAX;
+	int n, k, b;
 	cin >> n >> k >> b;
 	
-	//input broken signals
+	//i nput broken signals
 	for (int i = 0; i < b; i++) {
-		cin >> x; sigs[x]++;
+		int x;
+		cin >> x;
+		sigs[x]++;
 	}
 	
 	// prefix sums precomputation
@@ -44,12 +46,12 @@ int main() {
 		presum[i + 1] = sigs[i + 1] + presum[i];
 	}
 
+	int ret = INT_MAX;
 	// find the answer
 	for (int i = 0; i <= n - k; i++) {
 		ret = min(ret, presum[i + k] - presum[i]);
 	}
 	cout << ret << '\n';
-	return 0;
 }
 ```
 
@@ -61,25 +63,22 @@ int main() {
 import java.util.*;
 import java.io.*;
 
-public class maxcross {
-
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+public class MaxCross {
+	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("maxcross.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("maxcross.out")));
+		PrintWriter pw = new PrintWriter("maxcross.out");
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
-		int ret = n + 1;
+		
 		int[] sigs = new int[n + 1];
 		int[] presum = new int[n + 1];
 
 		// input broken signals
 		for (int i = 0; i < b; i++) {
-			st = new StringTokenizer(in.readLine());
-			int x = Integer.parseInt(st.nextToken());
-			sigs[x]++;
+			sigs[Integer.parseInt(in.readLine())]++;
 		}
 
 		// prefix sums precomputation
@@ -87,6 +86,7 @@ public class maxcross {
 			presum[i + 1] = sigs[i + 1] + presum[i];
 		}
 
+		int ret = n + 1;
 		// find the answer
 		for (int i = 0; i <= n - k; i++) {
 			ret = Math.min(ret, presum[i + k] - presum[i]);
