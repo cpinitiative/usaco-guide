@@ -11,7 +11,9 @@ export const GradientText = ({
   <span
     className={classNames(
       className,
-      'bg-gradient-to-r from-sky-400 to-purple-400 text-transparent bg-clip-text'
+      // We have to use decoration-clone here due to some dumb iOS safari bug
+      // https://stackoverflow.com/questions/32084460/safari-doesnt-render-css-gradient-text
+      'bg-gradient-to-r decoration-clone from-sky-400 to-purple-400 text-transparent bg-clip-text'
     )}
   >
     {children}

@@ -2,6 +2,7 @@
 id: intro-graphs
 title: Introduction to Graphs
 author: Darren Yao, Benjamin Qi
+contributors: Nathan Gong
 description:
   'Visualizing problems as graphs with resources covering basic terminology.'
 frequency: 3
@@ -74,3 +75,180 @@ Knowing [DFS](/silver/dfs) can be helpful but it should not be required.
 ## Problems
 
 <Problems problems="general" />
+
+## Check Your Understanding
+
+<Quiz>
+  <Quiz.Question>
+    How many connected components are in the following graph?
+    ![Graph](./assets/graphs_quiz_1.png)
+    <Quiz.Answer>
+      1
+      <Quiz.Explanation>
+        
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      2
+      <Quiz.Explanation>
+        
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      3
+      <Quiz.Explanation>
+        Correct. The connected components consist of $\{0, 1\}, \{2, 3, 4, 5\}, \{6, 7, 8\}$
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      8
+      <Quiz.Explanation>
+        There are 8 nodes, but not 8 connected components.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+
+  <Quiz.Question>
+    How would we represent the following graph with an adjacency list?
+    ![Graph](./assets/graphs_quiz_2.png)
+    <Quiz.Answer>
+      $
+      \begin{pmatrix}
+      1 & 1 & 0 & 0 & 0 & 1\\
+      1 & 1 & 0 & 0 & 0 & 0\\
+      0 & 0 & 1 & 1 & 1 & 0\\
+      0 & 0 & 0 & 1 & 0 & 1\\
+      0 & 0 & 0 & 0 & 1 & 1\\
+      0 & 0 & 0 & 0 & 0 & 1\\
+      \end{pmatrix}
+      $
+      <Quiz.Explanation>
+        Incorrect. This is an adjacency matrix representation of the graph, not an adjacency list.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $0: [1, 5]$
+
+      $1: [0]$
+
+      $2: [3, 4]$
+
+      $3: [2, 5]$
+
+      $4: [2, 5]$
+
+      $5: [0, 3, 4]$
+      <Quiz.Explanation>
+        Incorrect. This adjacency list representation assumes that all edges are undirected, which isn't the case.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $0: [1, 5]$
+
+      $1: [0]$
+
+      $2: [3, 4]$
+
+      $3: [5]$
+
+      $4: [5]$
+
+      $5: []$
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $
+      \begin{pmatrix}
+      1 & 1 & 0 & 0 & 0 & 1\\
+      1 & 1 & 0 & 0 & 0 & 0\\
+      0 & 0 & 1 & 1 & 1 & 0\\
+      0 & 0 & 1 & 1 & 0 & 1\\
+      0 & 0 & 1 & 0 & 1 & 1\\
+      1 & 0 & 0 & 1 & 1 & 1\\
+      \end{pmatrix}
+      $
+      <Quiz.Explanation>
+        Incorrect. This is an adjacency matrix representation of the undirected version of the graph.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which characteristic does a tree NOT have?
+    <Quiz.Answer>
+      There is one unique path between any pair of nodes.
+    </Quiz.Answer>
+    <Quiz.Answer>
+      There are $n-1$ edges, where $n$ is the total number of nodes in the tree.
+    </Quiz.Answer>
+    <Quiz.Answer>
+      It is fully connected.
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      It has at least one cycle.
+    <Quiz.Explanation>
+        Correct. Trees are always acyclic.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What is the space complexity for adjacency lists and adjacency matrices respectively? Let $n$ be the total number of nodes and $m$ be the total number of edges.
+    <Quiz.Answer correct>
+      $\mathcal{O}(n + m)$ and $\mathcal{O}(n^2)$
+      <Quiz.Explanation>
+        Correct. An adjacency list consists of $n$ dynamic arrays, where the total sum of their lengths is $m$. Thus, since there are $n$ references and $m$ total elements for each edge, it has a space complexity of $\mathcal{O}(n+m)$. An adjacency matrix is an $n \times n$ matrix, leading us to an $\mathcal{O}(n^2)$ space complexity.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(m^2)$ and $\mathcal{O}(n + m)$
+      <Quiz.Explanation>
+        See explanation for correct answer.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n^2)$ and $\mathcal{O}(n + m)$
+      <Quiz.Explanation>
+        Incorrect. It's the other way around.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(m)$ and $\mathcal{O}(n^2)$
+      <Quiz.Explanation>
+        An adjacency list also contains $n$ references for each list, so its space complexity is $\mathcal(O)(n+m)$
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What is the degree of node 1 in the following graph?
+    ![Graph](./assets/graphs_quiz_3.png)
+    <Quiz.Answer>
+      0
+    </Quiz.Answer>
+    <Quiz.Answer>
+      1
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      2
+      <Quiz.Explanation>
+        Correct. Node 1 is connected to 2 other nodes.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      3
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    True or false: there is a cycle in the following graph.
+    ![Graph](./assets/graphs_quiz_4.png)
+    <Quiz.Answer correct>
+      True
+      <Quiz.Explanation>
+        Correct. Nodes 0, 4, and 5 form a cycle.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      False
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
