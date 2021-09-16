@@ -2,7 +2,7 @@
 id: ac-IndependentSet
 source: AtCoder DP Contest
 title: Independent Set
-author: Andrew Wang, Sofia Yang
+author: Andrew Wang, Sofia Yang, Mohammad Nour Massri
 ---
 
 ## Explanation
@@ -151,5 +151,48 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+# to solve Runtime Error problem with recursion in python
+from sys import setrecursionlimit
+setrecursionlimit(10**9)
+
+n = int(input())
+MOD = 10**9 + 7
+
+# representing the tree in an adjacency list
+adj = [[] for i in range(n)]
+
+for i in range(n-1):
+	x, y = map(int, input().split())
+	x -= 1
+	y -= 1
+	adj[x].append(y)
+	adj[y].append(x)
+
+# 0 is white
+# 1 is black
+
+dp = [[0] * 2 for i in range(n)]
+
+def dfs(u, parent):
+	dp[u][0] = dp[u][1] = 1
+	for v in adj[u]: # traversing the adjacency list of node u
+		if v != parent: # v should be a child for u not its parent
+			dfs(v, u) # recursively calculate the dp values for child v 
+			# accumulate the children dp values to the dp of node u 
+			# don't forget to take the values MOD 1e9+7
+			dp[u][1] *= dp[v][0] 
+			dp[u][1] %= MOD
+			dp[u][0] *= (dp[v][0] + dp[v][1]) % MOD
+			dp[u][0] %= MOD
+
+dfs(0, -1)
+
+ans = (dp[0][0] + dp[0][1]) % MOD
+print(ans)
+
+```
+</PySection>
 </LanguageSection>

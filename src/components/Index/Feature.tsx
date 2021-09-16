@@ -33,7 +33,7 @@ export const Feature = ({
         {fade !== 'none' && (
           <div
             className={classNames(
-              'absolute top-0 bottom-0 w-48 bg-gradient-to-r from-transparent to-white z-20',
+              'absolute top-0 bottom-0 w-36 bg-gradient-to-l from-white z-20',
               featurePosition === 'left'
                 ? 'right-0 md:right-12 lg:right-24'
                 : 'right-0'
