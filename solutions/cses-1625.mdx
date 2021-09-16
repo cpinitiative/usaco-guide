@@ -94,9 +94,9 @@ using namespace std;
 const int DIR_LEN = 4;
 int dr[DIR_LEN] = {-1, 0, 1, 0};
 int dc[DIR_LEN] = {0, 1, 0, -1};
-const int PATH_LEN = 48; //length of all possible paths
+const int PATH_LEN = 48;  // length of all possible paths
 int p[PATH_LEN];
-const int GRID_SIZE = 9; //added border to all four sides so a 7x7 becomes a 9x9
+const int GRID_SIZE = 9;  // added border to all four sides so a 7x7 becomes a 9x9
 bool onPath[GRID_SIZE][GRID_SIZE];
 
 int tryPath(int pathIdx, int curR, int curC) {
@@ -105,7 +105,7 @@ int tryPath(int pathIdx, int curR, int curC) {
 	if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
 		&& (!onPath[curR][curC - 1] && !onPath[curR][curC + 1])) return 0;
 
-	if (curR == 7 && curC == 1) { // reached endpoint before visiting all
+	if (curR == 7 && curC == 1) {  // reached endpoint before visiting all
 		if (pathIdx == PATH_LEN) return 1;
 		return 0;
 	}
@@ -122,7 +122,7 @@ int tryPath(int pathIdx, int curR, int curC) {
 		if (!onPath[nxtR][nxtC]) ret += tryPath(pathIdx + 1, nxtR, nxtC);
 	} 
 	// see Java solution for optimization 4 implementation
-	else { // iterate through all four possible turns
+	else {  // iterate through all four possible turns
 		for (int i = 0; i < DIR_LEN; i++) {
 			int nxtR = curR + dr[i];
 			int nxtC = curC + dc[i];
@@ -157,7 +157,7 @@ int main() {
 		onPath[i][0] = true;
 		onPath[i][8] = true;
 	}
-	//initialize the inside of the grid to be completely empty
+	// initialize the inside of the grid to be completely empty
 	for (int i = 1; i <= 7; i++) {
 		for (int j = 1; j <= 7; j++) {
 			onPath[i][j] = false;
@@ -166,7 +166,7 @@ int main() {
 
 	int startIdx = 0;
 	int startR = 1;
-	int startC = 1; //always start path at (1, 1)
+	int startC = 1;  // always start path at (1, 1)
 	int ans = tryPath(startIdx, startR, startC);
 	cout << ans << endl;
 }
@@ -181,10 +181,10 @@ import java.util.Scanner;
 
 public class GridPaths {
 
-	static boolean[][] onPath = new boolean[9][9]; //added border to all four sides so a 7x7 becomes a 9x9
-	static int[] dr = {-1, 0, 1, 0}; //transitions to up, right, down, left
-	static int[] dc = {0, 1, 0, -1}; //for row and column, respectively
-	static int[] p = new int[48]; //all possible paths have length 48
+	static boolean[][] onPath = new boolean[9][9];  // added border to all four sides so a 7x7 becomes a 9x9
+	static int[] dr = {-1, 0, 1, 0};  // transitions to up, right, down, left
+	static int[] dc = {0, 1, 0, -1};  // for row and column, respectively
+	static int[] p = new int[48];  // all possible paths have length 48
 
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
@@ -219,13 +219,13 @@ public class GridPaths {
 		if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
 			&& (!onPath[curR][curC - 1] && !onPath[curR][curC + 1])) return 0;
 
-		if (curR == 7 && curC == 1) { // reached endpoint
-			if (pathIdx == p.length) return 1; //visited every cell -> valid!
-			return 0; //didn't visit every cell (path length is too short)
+		if (curR == 7 && curC == 1) {  // reached endpoint
+			if (pathIdx == p.length) return 1;  // visited every cell -> valid!
+			return 0;  // didn't visit every cell (path length is too short)
 		}
-		if (pathIdx == p.length) return 0; //visited all cells, but didn't end up in the correct locaiton
+		if (pathIdx == p.length) return 0;  // visited all cells, but didn't end up in the correct locaiton
 
-		int ret = 0; //cumulative count for this "starting position"
+		int ret = 0;  // cumulative count for this "starting position"
 		onPath[curR][curC] = true;
 
 		// turn already determined, try going in that direction
@@ -239,20 +239,20 @@ public class GridPaths {
 		// now search for dead ends (Optimization 4)
 		else if ((curC > 2) && onPath[curR][curC - 2]
 			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
-			&& (!onPath[curR][curC - 1])) { // potential dead end on the left:
+			&& (!onPath[curR][curC - 1])) {  // potential dead end on the left:
 			int nxtR = curR;
 			int nxtC = curC - 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 		else if ((curC < 6) && onPath[curR][curC + 2]
 			&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
-			&& (!onPath[curR][curC + 1])) { // potential dead end on the right:
+			&& (!onPath[curR][curC + 1])) {  // potential dead end on the right:
 			int nxtR = curR;
 			int nxtC = curC + 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 		else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
-			&& (!onPath[curR - 1][curC])) { // potential dead end upwards
+			&& (!onPath[curR - 1][curC])) {  // potential dead end upwards
 		// note: I didn't include all possible scenarios because
 		// it wasn't necessary in order for the program to run in time
 			int nxtR = curR - 1;
