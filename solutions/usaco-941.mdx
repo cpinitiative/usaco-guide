@@ -111,13 +111,16 @@ import java.io.*;
 import java.util.*;
 
 public class Evolution {
-	static boolean[][] hasChar = new boolean[25][125];
-	static Map<String, Integer> convert = new HashMap<>();
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("evolution.in"));
 		int popNum = Integer.parseInt(br.readLine());
 		int nxtIdx = 0;
+
+		boolean[][] hasChar = new boolean[25][125];
+		// hasChar[i][j] = true if population i has characteristic j
+		Map<String, Integer> convert = new HashMap<>();  // convert each characteristic to a number
+
 		for (int i = 0; i < popNum; i++) {
 			String[] line = br.readLine().split(" ");
 			for (int j = 1; j < line.length; j++) {
@@ -132,16 +135,18 @@ public class Evolution {
 
 		boolean works = true;
 		for (int a = 0; a < nxtIdx && works; a++) {
-			for (int b = 0; b < a && works; b++) {
-				int aNum = 0;
-				int bNum = 0;
-				int abNum = 0;
+			for (int b = 0; b < a && works; b++) {  // iterate over all pairs of characteristics a and b
+				int aNum = 0;  // keep track of the # pops with only a
+				int bNum = 0;  // only b 
+				int abNum = 0;  // both a and b
 				for (int i = 0; i < popNum; i++) {
 					if (hasChar[i][a] && hasChar[i][b]) abNum++;
 					else if (hasChar[i][a]) aNum++;
 					else if (hasChar[i][b]) bNum++;
 				}
-				works = works && !(aNum > 0 && bNum > 0 && abNum > 0);
+				// if there are pops with only a, only b, AND both a and b, then the tree doesn't work
+				// (see explanation if this doesn't make sense)
+				works = works && !(aNum>0 && bNum>0 && abNum>0);
 			}
 		}
 
@@ -164,14 +169,14 @@ public class Evolution {
 using namespace std;
  
 int N;
-const int maxChars = 25;
-vector<string> characteristics[maxChars];
-vector<string> all_characteristics;
+const int MAX_CHAR = 25;
+vector<string> characteristics[MAX_CHAR];  // store characteristics of each pop
+vector<string> all_characteristics;  // list all characteristics mentioned
  
 // Do two sets "cross" -- I.e., are there elements in A, B, and A intersect B?
 bool crossing(int a, int b) {
-	int A = 0, B = 0, AB = 0;
-	for (int i = 0; i < N; i++) {
+	int A = 0, B = 0, AB = 0; // keep track of the # pops with only A, only B, both A and B
+	for (int i = 0; i < N; i++) {  // check whether pop i has A and B
 		vector<string> &v = characteristics[i];
 		bool has_a = false, has_b = false;
 		for (int j = 0; j < v.size(); j++) {
@@ -181,7 +186,7 @@ bool crossing(int a, int b) {
 			if (v[j] == all_characteristics[b]) {
 				has_b = true;
 			}
-		}
+		}  // update counts
 		if (has_a && has_b) {
 			AB++;
 		} else if (has_a) {
