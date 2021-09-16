@@ -29,8 +29,8 @@ To see correctness of this greedy algorithm, suppose Bessie did not spend as lon
 using namespace std;
 
 const int MAX_LEN = 100000;
-int x[MAX_LEN]; // x: position of each stop
-int c[MAX_LEN]; // c: tastiness value of each stop
+int x[MAX_LEN];  // x: position of each stop
+int c[MAX_LEN];  // c: tastiness value of each stop
 bool good[MAX_LEN];
 
 int main() {
@@ -46,7 +46,7 @@ int main() {
 	int max = 0;
 	for (int i = stopNum-1; i >= 0; i--) {
 		good[i] = false;
-		if (c[i] > max) { // there are no stops after stop i that are "better"
+		if (c[i] > max) {  // there are no stops after stop i that are "better"
 			good[i] = true;
 			max = c[i];
 		}
@@ -88,7 +88,7 @@ public class RestStops {
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
 		String[] line = br.readLine().split(" ");
-		int trailLen = Integer.parseInt(line[0]); //this value is never used...
+		int trailLen = Integer.parseInt(line[0]);  // this value is never used...
 		int stopNum = Integer.parseInt(line[1]);
 		int fRate = Integer.parseInt(line[2]);
 		int bRate = Integer.parseInt(line[3]);
@@ -97,7 +97,7 @@ public class RestStops {
 		c = new int[stopNum];
 		good = new boolean[stopNum];
 
-		//scan in rest stop data
+		// scan in rest stop data
 		for (int i = 0 ; i < stopNum; i++) {
 			line = br.readLine().split(" ");
 			x[i] = Integer.parseInt(line[0]);
@@ -105,16 +105,16 @@ public class RestStops {
 		}
 		br.close();
 
-		//find all "best" stops
+		// find all "best" stops
 		int max = 0;
 		for (int i = stopNum-1; i >= 0; i--) {
-			if (c[i] > max) { //there are no stops after stop i that are "better"
+			if (c[i] > max) {  // there are no stops after stop i that are "better"
 				good[i] = true;
 				max = c[i];
 			}
 		}
 
-		//simulate the whole trail
+		// simulate the whole trail
 		int prevStopPos = 0;
 		long ans = 0;
 		for (int i = 0; i < stopNum; i++) {
