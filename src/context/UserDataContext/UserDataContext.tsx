@@ -128,7 +128,6 @@ type UserDataContextAPI = UserLangAPI &
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
-  userNotesOnProblems: {},
   consecutiveVisits: 0,
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
@@ -179,7 +178,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setShowIgnored: _x => {
     // do nothing
   },
-  setUserProgressOnProblems: (_problemId, _status, _note) => {
+  setUserProgressOnProblems: (_problemId, _status) => {
     // do nothing
   },
   setUserProgressOnResources: (_moduleId, _status) => {

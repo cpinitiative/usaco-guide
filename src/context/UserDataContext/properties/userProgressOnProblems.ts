@@ -1,18 +1,16 @@
 import * as Sentry from '@sentry/browser';
 import { setDoc, updateDoc } from 'firebase/firestore';
 import { ProblemActivity } from '../../../models/activity';
-import { ProblemNotes, ProblemProgress } from '../../../models/problem';
+import { ProblemProgress } from '../../../models/problem';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
-  userNotesOnProblems: { [key: string]: ProblemNotes };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
     problemId: string,
-    status: ProblemProgress,
-    notes: ProblemNotes
+    status: ProblemProgress
   ) => void;
 };
 
@@ -22,9 +20,6 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
 
   private activityStorageKey = 'userProgressOnProblemsActivity';
   private activityValue: ProblemActivity[] = [];
-
-  private notesStorageKey = 'userNotesOnProblems';
-  private notesValue: [];
 
   initializeFromLocalStorage = () => {
     const currentValue = this.getValueFromLocalStorage(
@@ -36,17 +31,6 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       this.migrateLegacyValue(currentValue);
     } else {
       this.progressValue = currentValue;
-    }
-
-    const currentNotesValue = this.getValueFromLocalStorage(
-      this.getLocalStorageKey(this.notesStorageKey),
-      { version: 2 }
-    );
-
-    if (!currentNotesValue.version || currentNotesValue.version < 2) {
-      this.migrateLegacyValue(currentNotesValue);
-    } else {
-      this.notesValue = currentNotesValue;
     }
 
     this.activityValue = this.getValueFromLocalStorage(
@@ -94,11 +78,6 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     );
 
     this.saveLocalStorageValue(
-      this.getLocalStorageKey(this.notesStorageKey),
-      this.notesValue
-    );
-
-    this.saveLocalStorageValue(
       this.getLocalStorageKey(this.activityStorageKey),
       this.activityValue
     );
@@ -110,10 +89,6 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     );
 
     window.localStorage.removeItem(
-      this.getLocalStorageKey(this.notesStorageKey)
-    );
-
-    window.localStorage.removeItem(
       this.getLocalStorageKey(this.activityStorageKey)
     );
   };
@@ -121,7 +96,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
   exportValue = (): any => {
     return {
       [this.progressStorageKey]: this.progressValue,
-      [this.notesStorageKey]: this.notesValue,
+
       [this.activityStorageKey]: this.activityValue,
     };
   };
@@ -132,7 +107,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       pendingProgressValue = this.migrateLegacyValue(pendingProgressValue);
     }
     this.progressValue = pendingProgressValue;
-    this.notesValue = data[this.notesStorageKey] || [];
+
     this.activityValue = data[this.activityStorageKey] || [];
   };
 
@@ -140,9 +115,8 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     return {
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
-      userNotesOnProblems: this.notesValue,
 
-      setUserProgressOnProblems: (problemId, status, note) => {
+      setUserProgressOnProblems: (problemId, status) => {
         if (!this.firebaseUserDoc) {
           // if the user isn't using firebase, it is possible that they
           // have multiple tabs open, which can result in localStorage
@@ -154,10 +128,8 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
             timestamp: Date.now(),
             problemID: problemId,
             problemProgress: status,
-            notes: note,
           });
           this.progressValue[problemId] = status;
-          this.notesValue[problemId] = note;
 
           if (this.firebaseUserDoc) {
             setDoc(
@@ -166,9 +138,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
                 [this.progressStorageKey]: {
                   [problemId]: status,
                 },
-                [this.notesStorageKey]: {
-                  [problemId]: note,
-                },
+
                 [this.activityStorageKey]: this.activityValue,
               },
               { merge: true }
@@ -183,13 +153,10 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
               status,
               problemId,
               activityValue: this.activityValue,
-              noteValue: this.notesValue,
+
               fbData: {
                 [this.progressStorageKey]: {
                   [problemId]: status,
-                },
-                [this.notesStorageKey]: {
-                  [problemId]: note,
                 },
                 [this.activityStorageKey]: this.activityValue,
               },

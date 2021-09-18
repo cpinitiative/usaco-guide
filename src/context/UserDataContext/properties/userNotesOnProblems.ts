@@ -1,15 +1,25 @@
 import * as Sentry from '@sentry/browser';
+import { collection, getFirestore } from 'firebase/firestore';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
 
 // keeping notes separate as it is not in the user docs, but rather in a individual notes doc
 export default class UserNotesAPI {
   userNotesValue: Map<string, string>;
 
-  getNote = (problemName: string) => {};
+  getNote = (problemId: string) => {
+    return this.userNotesValue.get(problemId);
+  };
 
-  initNotes = () => {};
+  initNotes = () => {
+    const firebaseApp = useFirebaseApp();
+    const dbNotes = collection(getFirestore(firebaseApp), 'notes');
+    console.log(dbNotes);
+  };
 
   setNote = (problemId: string, noteContent: string) => {
     try {
+      this.userNotesValue.delete(problemId);
+      this.userNotesValue.set(problemId, noteContent);
       console.log('logged');
     } catch (e) {
       Sentry.captureException(e, {

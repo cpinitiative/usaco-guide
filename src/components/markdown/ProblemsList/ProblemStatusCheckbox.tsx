@@ -9,7 +9,6 @@ import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import {
   ProblemInfo,
-  ProblemNotes,
   ProblemProgress,
   PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
@@ -21,9 +20,8 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
-    currentProgress
-  );
+  const [activeProgress, setActiveProgress] =
+    useState<ProblemProgress>(currentProgress);
 
   const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
@@ -143,14 +141,10 @@ export default function ProblemStatusCheckbox({
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
 
-  const { userProgressOnModules, setModuleProgress } = useContext(
-    UserDataContext
-  );
-  const {
-    userProgressOnProblems,
-    setUserProgressOnProblems,
-    userNotesOnProblems,
-  } = useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress } =
+    useContext(UserDataContext);
+  const { userProgressOnProblems, setUserProgressOnProblems } =
+    useContext(UserDataContext);
 
   const updateModuleProgressToPracticing = () => {
     if (
@@ -176,17 +170,7 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
-  let currentNotes: ProblemNotes;
-  try {
-    currentNotes =
-      typeof userNotesOnProblems[problem.uniqueId] === 'undefined'
-        ? '<p> placeholder </p>'
-        : userNotesOnProblems[problem.uniqueId];
-  } catch (e) {
-    userNotesOnProblems[problem.uniqueId.toString()] = '<p> placeholder </p>';
-    currentNotes = userNotesOnProblems[problem.uniqueId.toString()];
-  }
-  console.log(currentNotes);
+
   const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
@@ -197,11 +181,7 @@ export default function ProblemStatusCheckbox({
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
-              setUserProgressOnProblems(
-                problem.uniqueId,
-                progress,
-                currentNotes
-              );
+              setUserProgressOnProblems(problem.uniqueId, progress);
               const solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress)) {
                 updateModuleProgressToPracticing();
