@@ -81,7 +81,7 @@ import java.util.*;
 
 public class ModernArt3 {
 	public static final int MAXN = 301;
-	public static int[] inp = new int[MAXN];
+	public static int[] painting = new int[MAXN];
 	public static int[][] dp = new int[MAXN][MAXN];
 
 	public static void main(String[] args) throws IOException {
@@ -89,7 +89,7 @@ public class ModernArt3 {
 		int N = Integer.parseInt(in.readLine());
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		for (int i = 0; i < N; i++) {
-			inp[i] = Integer.parseInt(st.nextToken());
+			painting[i] = Integer.parseInt(st.nextToken());
 		}
 
 		for (int i = 0; i <= N; i++) {
@@ -104,7 +104,7 @@ public class ModernArt3 {
 			for(int i = 0; i <= N - s; i++) {
 				for(int j = i; j < i + s; j++) {
 					int k = i + s - 1;
-					if(inp[i] == inp[k]) {
+					if(painting[i] == painting[k]) {
 						dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 					}
 					dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k]);
