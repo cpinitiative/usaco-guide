@@ -97,14 +97,14 @@ public class ModernArt3 {
 				dp[i][j] = MAXN + 1;
 			}
 		}
-		for(int i = 0; i < MAXN; i++) {
+		for (int i = 0; i < MAXN; i++) {
 			dp[i][i] = 1;
 		}
 		for (int s = 1; s <= N; s++) {
-			for(int i = 0; i <= N - s; i++) {
-				for(int j = i; j < i + s; j++) {
+			for (int i = 0; i <= N - s; i++) {
+				for (int j = i; j < i + s; j++) {
 					int k = i + s - 1;
-					if(painting[i] == painting[k]) {
+					if (painting[i] == painting[k]) {
 						dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 					}
 					dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k]);
