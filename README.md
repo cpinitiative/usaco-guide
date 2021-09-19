@@ -38,6 +38,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Andi Qu
 - Siyong Huang
 - Darren Yao
+- Michael Cao
 
 ### Content Managers
 
@@ -49,7 +50,6 @@ Content Authors to join our team to help us improve the Guide! Learn more
 
 - Benjamin Qi
 - Andrew Wang
-- Michael Cao
 - Nathan Chen
 
 ### Current Content Authors
@@ -68,6 +68,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Ryan Chou (Since July 2021)
 - Aadit Ambadkar (Since August 2021)
 - Dustin Miao (Since August 2021)
+- Ben Dodge (Since August 2021)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 

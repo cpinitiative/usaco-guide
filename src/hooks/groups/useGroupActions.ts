@@ -158,7 +158,8 @@ export function useGroupActions() {
       const { id: _, ...data } = linkData;
       await updateDoc(
         doc(getFirestore(firebaseApp), 'group-join-links', id),
-        data
+        // no clue why this throws a typescript error without it...
+        data as any
       );
     },
     updatePostOrdering: async (groupId: string, ordering: string[]) => {

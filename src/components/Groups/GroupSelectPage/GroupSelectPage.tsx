@@ -1,4 +1,4 @@
-import { Link, navigate } from 'gatsby';
+import { navigate } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
@@ -33,10 +33,19 @@ const GroupSelectPage = (props: { path: string }) => {
         <div className="max-w-3xl px-4 lg:px-8 mx-auto py-16">
           <div className="flex items-center justify-between">
             <h1 className="text-xl md:text-3xl font-bold">My Groups</h1>
-            {permissions.canCreateGroups && (
+            {permissions.canCreateGroups ? (
               <button className="btn" onClick={handleCreateNewGroup}>
                 Create New Group
               </button>
+            ) : (
+              <a
+                className="btn"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSemoYwALeum82x_emoZcliKgTiAjHJdJJVKJTkHIWgxp5NPag/viewform"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Request Access to Create Groups
+              </a>
             )}
           </div>
           <hr className="mt-6 mb-8 dark:border-gray-700" />

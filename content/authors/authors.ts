@@ -25,6 +25,16 @@ export const Authors: Author[] = [
     github: 'thecodingwizard',
   },
   {
+    photo: 'benq',
+    name: 'Benjamin Qi',
+    title: 'Content Director',
+    blurb:
+      'Benjamin Qi is a two-time IOI winner, USACO Problemsetter, and part of the MIT Class of 2023.',
+    codeforces: 'Benq',
+    email: 'bqi343@gmail.com',
+    github: 'bqi343',
+  },
+  {
     photo: "maggie",
     name: "Maggie Liu",
     title: "Executive",
@@ -51,6 +61,16 @@ export const Authors: Author[] = [
   //   blurb: 'Brian Christopher Dean is the director of USACO.',
   //   email: 'bcdean@clemson.edu',
   // },
+  {
+    photo: 'michael',
+    name: 'Michael Cao',
+    title: 'Core Team',
+    blurb:
+      'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
+    codeforces: 'caoash',
+    email: 'caoash@gmail.com',
+    github: 'caoash',
+  },
   {
     photo: 'darren',
     name: 'Darren Yao',
@@ -108,26 +128,6 @@ export const Authors: Author[] = [
     github: "nwatx",
     website: "https://nwatx.me",
     email: "neowangatx@gmail.com",
-  },
-  {
-    photo: 'benq',
-    name: 'Benjamin Qi',
-    title: 'Former Content Director',
-    blurb:
-      'Benjamin Qi is a two-time IOI winner, USACO Problemsetter, and part of the MIT Class of 2023.',
-    codeforces: 'Benq',
-    email: 'bqi343@gmail.com',
-    github: 'bqi343',
-  },
-  {
-    photo: 'michael',
-    name: 'Michael Cao',
-    title: 'Former Core Team',
-    blurb:
-      'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
-    codeforces: 'caohash',
-    email: 'cao.michael14@gmail.com',
-    github: 'caoash',
   },
   {
     photo: 'nathanc',

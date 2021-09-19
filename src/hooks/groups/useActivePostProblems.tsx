@@ -1,3 +1,4 @@
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getFirestore,
@@ -52,10 +53,10 @@ export function ActivePostProblemsProvider({
           'posts',
           activePostId,
           'problems'
-        ),
+        ) as CollectionReference<GroupProblemData>,
         where('isDeleted', '==', false)
       );
-      onSnapshot<GroupProblemData>(q, {
+      onSnapshot(q, {
         next: snap => {
           setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
           setIsLoading(false);
