@@ -67,12 +67,12 @@ Now we sort the array by clock rate in reverse, resulting in this:
 			<td>Clock rate</td>
 			<td>Profit change</td>
 		</tr>
-        <tr>
+		<tr>
 			<td>20</td>
 			<td>2550</td>
 			<td>-9999</td>
 		</tr>
-        <tr>
+		<tr>
 			<td>-3</td>
 			<td>2400</td>
 			<td>4550</td>
@@ -82,12 +82,12 @@ Now we sort the array by clock rate in reverse, resulting in this:
 			<td>2200</td>
 			<td>-700</td>
 		</tr>
-        <tr>
+		<tr>
 			<td>4</td>
 			<td>2000</td>
 			<td>-750</td>
 		</tr>
-        <tr>
+		<tr>
 			<td>-6</td>
 			<td>1900</td>
 			<td>1500</td>
@@ -124,60 +124,60 @@ using std::endl;
 using std::vector;
 
 struct Transaction {
-    int cores;
-    int rate;
-    int price;
+	int cores;
+	int rate;
+	int price;
 };
 
 int main() {
-    vector<Transaction> poss_transactions;
-    int max_computers = 0;
-    int comp_num;
-    std::cin >> comp_num;
-    for (int c = 0; c < comp_num; c++) {
-        Transaction trans;
-        std::cin >> trans.cores >> trans.rate >> trans.price;
-        trans.price = -trans.price;
-        poss_transactions.push_back(trans);
-        max_computers += trans.cores;
-    }
-    int order_num;
-    std::cin >> order_num;
-    for (int o = 0; o < order_num; o++) {
-        Transaction trans;
-        std::cin >> trans.cores >> trans.rate >> trans.price;
-        trans.cores = -trans.cores;
-        poss_transactions.push_back(trans);
-    }
-    /*
-     * if we sort like this, then the entire clock rate issue
-     * goes away as long as we process them in order
-     */
-    std::sort(
-        poss_transactions.begin(), poss_transactions.end(),
-        [] (const Transaction& a, const Transaction& b) -> bool {
-            return a.rate != b.rate ? a.rate > b.rate : a.price < b.price;
-        }
-    );
+	vector<Transaction> poss_transactions;
+	int max_computers = 0;
+	int comp_num;
+	std::cin >> comp_num;
+	for (int c = 0; c < comp_num; c++) {
+		Transaction trans;
+		std::cin >> trans.cores >> trans.rate >> trans.price;
+		trans.price = -trans.price;
+		poss_transactions.push_back(trans);
+		max_computers += trans.cores;
+	}
+	int order_num;
+	std::cin >> order_num;
+	for (int o = 0; o < order_num; o++) {
+		Transaction trans;
+		std::cin >> trans.cores >> trans.rate >> trans.price;
+		trans.cores = -trans.cores;
+		poss_transactions.push_back(trans);
+	}
+	/*
+	 * if we sort like this, then the entire clock rate issue
+	 * goes away as long as we process them in order
+	 */
+	std::sort(
+		poss_transactions.begin(), poss_transactions.end(),
+		[] (const Transaction& a, const Transaction& b) -> bool {
+			return a.rate != b.rate ? a.rate > b.rate : a.price < b.price;
+		}
+	);
 
-    /*
-     * max_profits[t][c] = the maximum profit we can gain from the first
-     * t transactions given that we have $c$ cores left
-     */
-    vector<long long> max_profits(max_computers + 1, INT64_MIN);
-    max_profits[0] = 0;
-    for (const Transaction& t : poss_transactions) {
-        vector<long long> new_max(max_profits);
-        for (int c = 0; c <= max_computers; c++) {
-            int prev_comp = c - t.cores;
-            if (0 <= prev_comp && prev_comp <= max_computers
-                    && max_profits[prev_comp] != INT64_MIN) {
-                new_max[c] = std::max(new_max[c], max_profits[prev_comp] + t.price);
-            }
-        }
-        max_profits = new_max;
-    }
-    cout << *std::max_element(max_profits.begin(), max_profits.end()) << endl;
+	/*
+	 * max_profits[t][c] = the maximum profit we can gain from the first
+	 * t transactions given that we have $c$ cores left
+	 */
+	vector<long long> max_profits(max_computers + 1, INT64_MIN);
+	max_profits[0] = 0;
+	for (const Transaction& t : poss_transactions) {
+		vector<long long> new_max(max_profits);
+		for (int c = 0; c <= max_computers; c++) {
+			int prev_comp = c - t.cores;
+			if (0 <= prev_comp && prev_comp <= max_computers
+					&& max_profits[prev_comp] != INT64_MIN) {
+				new_max[c] = std::max(new_max[c], max_profits[prev_comp] + t.price);
+			}
+		}
+		max_profits = new_max;
+	}
+	cout << *std::max_element(max_profits.begin(), max_profits.end()) << endl;
 }
 ```
 
