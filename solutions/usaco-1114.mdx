@@ -37,7 +37,7 @@ $$
 ```cpp
 //CodeSnip{CPP Short Template}
 
-const int MAX_N = 300;
+const int MAX_N = 301;
 
 int A[MAX_N], dp[MAX_N][MAX_N];
 
@@ -45,29 +45,80 @@ int main() {
 	setIO();
 	
 	int n; cin >> n;
-	for (int i = 0; i < n; i++) cin >> A[i];
-	for (int i = 0; i <= n; i++) {
-		for (int j = 0; j <= n; j++) {
+
+	for(int i = 0; i < n; i++) cin >> A[i];
+
+	for(int i = 0; i <= n; i++) {
+		for(int j = 0; j <= n; j++) {
 			dp[i][j] = MAX_N + 1;
 		}
 	}
 
-	for (int i = 0; i < n; i++) dp[i][i] = 1;
-	for (int s = 1; s <= n; s++) {
-		for (int i = 0; i <= n - s; i++) {
-			for (int j = i; j < i + s; j++) {
+	for(int i = 0; i < MAX_N; i++) dp[i][i] = 1;
+
+	for(int s = 1; s <= n; s++) {
+		for(int i = 0; i <= n - s; i++) {
+			for(int j = i; j < i + s; j++) {
 				int k = i + s - 1;
-				// explained in editorial
-				if (A[i] == A[k])
+				if(A[i] == A[k])
 					dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 				dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k]);
 			}
 		}
 	}
+
 	cout << dp[0][n - 1] << endl;
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class ModernArt3 {
+public static final int MAXN = 301;
+public static int[] inp = new int[MAXN];
+public static int[][] DP = new int[MAXN][MAXN];
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(in.readLine());
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < N; i++) {
+			inp[i] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i <= N; i++) {
+			for (int j = 0; j <= N; j++) {
+				DP[i][j] = MAXN + 1;
+			}
+		}
+
+		for(int i = 0; i < MAXN; i++) {
+			DP[i][i] = 1;
+		}
+
+		for(int s = 1; s <= N; s++) {
+			for(int i = 0; i <= N - s; i++) {
+				for(int j = i; j < i + s; j++) {
+					int k = i + s - 1;
+					if(inp[i] == inp[k]) {
+						DP[i][k] = Math.min(DP[i][k], DP[i][j] + DP[j + 1][k] - 1);
+					}
+					DP[i][k] = Math.min(DP[i][k], DP[i][j] + DP[j + 1][k]);
+				}
+			}
+		}
+
+		System.out.println(DP[0][N - 1]);
+	}
+}
+
+```
+</JavaSection>
 
 </LanguageSection>
