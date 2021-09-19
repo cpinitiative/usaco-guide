@@ -1,0 +1,87 @@
+---
+id: usaco-743
+source: USACO Silver 2017 Open
+title: Modern Art 2
+author: Sofia Yang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_art2_gold_open17.html)
+
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class ModernArt2 {
+	public static final int INF = 2000000000;
+	public static final int MAXN = 100005;
+	public static int[] color = new int[MAXN];
+	public static int[] start = new int[MAXN];
+	public static int[] end = new int[MAXN];
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("art2.in"));
+		PrintWriter out = new PrintWriter(new FileWriter("art2.out"));
+		int N = Integer.parseInt(in.readLine());
+		Arrays.fill(start, INF);
+		Arrays.fill(end, -INF);
+
+		color[0] = color[N + 1] = 0;
+
+		for (int i = 1; i <= N; i++) {
+			color[i] = Integer.parseInt(in.readLine());
+		}
+
+		for (int i = 0; i <= N + 1; i++) {
+			// Update the first and last appearance of the color.
+			start[color[i]] = Integer.min(start[color[i]], i);
+			end[color[i]] = Integer.max(end[color[i]], i);
+		}
+
+		int ans = 0;
+		// Stack represents number of 'open' segments we have.
+		Stack<Integer> stack = new Stack<>();
+		for (int idx = 0; idx <= N + 1; idx++) {
+			int curColor = color[idx];
+
+			// Process the start point of the color segment.
+			if (idx == start[curColor]) {
+				stack.push(curColor);
+				ans = Integer.max(ans, stack.size());
+			}
+
+			/*
+			Invalid because there are 2 partially intersecting segments.
+			For instance if we have a finished painting of 1 1 2 1 2,
+			it is impossible if we can only paint 1 once.
+			*/
+			if (stack.get(stack.size() - 1) != curColor) {
+				out.println(-1);
+				out.close();
+				System.exit(0);
+			}
+
+			// Remove the color from the stack since the segment has closed.
+			if (idx == end[curColor]) {
+				stack.pop();
+			}
+		}
+
+		// Subtract the color '0' segment.
+		out.println(ans - 1);
+		out.close();
+	}
+}
+
+```
+
+</JavaSection>
+</LanguageSection>
