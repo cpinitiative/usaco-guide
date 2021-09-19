@@ -12,11 +12,10 @@ export default function Template(props) {
   const { xdm, allProblemInfo, problemInfo } = props.data;
   const { body } = xdm;
 
-  const modulesThatHaveProblem: [
-    { id: string; title: string }
-  ] = allProblemInfo.edges
-    .filter(x => !!x.node.module)
-    .map(x => x.node.module.frontmatter);
+  const modulesThatHaveProblem: [{ id: string; title: string }] =
+    allProblemInfo.edges
+      .filter(x => !!x.node.module)
+      .map(x => x.node.module.frontmatter);
   // Above: We need to filter to make sure x.node.module is defined because problems listed under extraProblems.json don't have a corresponding module
 
   const markdownData = React.useMemo(() => {
@@ -71,7 +70,7 @@ export default function Template(props) {
 }
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  query ($id: String!) {
     xdm(frontmatter: { id: { eq: $id } }) {
       body
       frontmatter {

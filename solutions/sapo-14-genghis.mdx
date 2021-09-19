@@ -1,0 +1,244 @@
+---
+id: sapo-14-genghis
+source: SAPO 2014
+title: The Stables of Genghis Khan
+author: Kevin Sheng
+---
+
+## Solution
+
+Let's define $\texttt{lowestOps}[a][b]$ as the minimum number of operations to see if each horse is in the stables or not, given that we only consider horses in the interval $(\texttt{stableHorses[a]}, \texttt{stableHorses[b]})$, with $\texttt{stableHorses}$ being a sorted list of all the horses that are in the stables.
+
+Why use an open interval? It's to account for the horses with ID's that aren't contained in the range of the ID's of the horses of the stable. For example, if we had a horse with ID $4$, and the horses in the stables were $[6, 7, 10]$, then there would be no way for $\texttt{lowestOps}$ to account for that horse.
+
+To solve this, we can add two more hypothetical horses that are just out of bounds of all the other horses: one at the front and one at the end. This along with the open interval ensures that we can account for all horses excluding the hypothetical ones we've added.
+
+Then, to calculate the value for an interval, we go through all possible roots we can use for the tree of that interval. If we're calculating $\texttt{lowestOps}[a][b]$ with $b-a\geq3$ and we're using a root $c$ ($a<c<b$), then we have the following recurrence relation:
+
+$$\texttt{lowestOps}[a][b]=\texttt{lowestOps}[a][c]+\texttt{lowestOps}[c][b]+(\texttt{stableHorses}[b]-\texttt{stableHorses}[a]-1)$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cassert>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int horse_num;
+	int stable_num;
+	std::cin >> horse_num >> stable_num;
+	vector<int> stable_horses(stable_num);
+	for (int& h : stable_horses) {
+		std::cin >> h;
+		assert(0 < h && h <= horse_num);
+	}
+	// add two "out-of-bounds" horses
+	stable_horses.push_back(0);
+	stable_horses.push_back(horse_num + 1);
+
+	std::sort(stable_horses.begin(), stable_horses.end());
+	
+	/*
+	 * lowest_ops[i][j] = min operations if we only consider horses
+	 * from that exist in the index interval (i, j)
+	 * ex: lowest_ops[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
+	 *     means that we only consider horses from (1, 10)
+	 */
+	vector<vector<int>> lowest_ops(
+		stable_num + 2, vector<int>(stable_num + 2, INT32_MAX)
+	);
+	for (int i = 0; i < stable_num + 2; i++) {
+		lowest_ops[i][i] = 0;
+		if (i + 1 < stable_num + 2) {
+			lowest_ops[i][i + 1] = stable_horses[i + 1] - stable_horses[i] - 1;
+		}
+		if (i + 2 < stable_num + 2) {
+			lowest_ops[i][i + 2] = stable_horses[i + 2] - stable_horses[i] - 1;
+		}
+	}
+	for (int num = 4; num <= stable_num + 2; num++) {
+		for (int start = 0; start + num - 1 < stable_num + 2; start++) {
+			int end = start + num - 1;
+			/*
+			 * first handle the beginning and ending edge cases,
+			 * where the smallest or largest element has become the root
+			 */
+			lowest_ops[start][end] = std::min(
+				lowest_ops[start][end],
+				lowest_ops[start][start + 1]
+				+ lowest_ops[start + 1][end]
+				+ stable_horses[end] - stable_horses[start + 1]
+			);
+			lowest_ops[start][end] = std::min(
+				lowest_ops[start][end],
+				lowest_ops[end - 1][end]
+				+ lowest_ops[start][end - 1]
+				+ stable_horses[end - 1] - stable_horses[start]
+			);
+
+			/*
+			 * then get to the actual part where we combine
+			 * two parts with top being the root
+			 */
+			for (int top = start + 2; top < end - 1; top++) {
+				lowest_ops[start][end] = std::min(
+					lowest_ops[start][end],
+					lowest_ops[start][top]
+					+ lowest_ops[top][end]
+					+ stable_horses[end] - stable_horses[start] - 1
+				);
+			}
+		}
+	}
+	cout << lowest_ops[0][stable_num + 1] << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.Arrays;
+
+public final class genghis {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int horseNum = Integer.parseInt(read.readLine());
+		int stableNum = Integer.parseInt(read.readLine());
+		int[] stableHorses = new int[stableNum + 2];
+		for (int i = 1; i <= stableNum; i++) {
+			stableHorses[i] = Integer.parseInt(read.readLine());
+			if (stableHorses[i] < 1 || horseNum < stableHorses[i]) {
+				throw new IllegalArgumentException("this horse shouldn't exist");
+			}
+		}
+		// add the "out-of-bounds" horses
+		stableHorses[0] = 0;
+		stableHorses[stableNum + 1] = horseNum + 1;
+		Arrays.sort(stableHorses);
+
+		/*
+ 		 * lowestOps[i][j] = min operations if we only consider horses
+		 * from that exist in the index interval (i, j)
+		 * ex: lowestOps[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
+		 *     means that we only consider horses from (1, 10)
+		 */
+		int[][] lowestOps = new int[stableNum + 2][stableNum + 2];
+		for (int i = 0; i < stableNum + 2; i++) {
+			Arrays.fill(lowestOps[i], Integer.MAX_VALUE);
+			lowestOps[i][i] = 0;
+			if (i + 1 < stableNum + 2) {
+				lowestOps[i][i + 1] = stableHorses[i + 1] - stableHorses[i] - 1;
+			}
+			if (i + 2 < stableNum + 2) {
+				lowestOps[i][i + 2] = stableHorses[i + 2] - stableHorses[i] - 1;
+			}
+		}
+		for (int num = 4; num <= stableNum + 2; num++) {
+			for (int start = 0; start + num - 1 < stableNum + 2; start++) {
+				int end =  start + num - 1;
+				/*
+				 * first handle the beginning and ending edge cases,
+				 * where the smallest or largest element has become the root
+				 */
+				lowestOps[start][end] = Math.min(
+						lowestOps[start][end],
+						lowestOps[start][start + 1]
+								+ lowestOps[start + 1][end]
+								+ stableHorses[end] - stableHorses[start + 1]
+				);
+				lowestOps[start][end] = Math.min(
+						lowestOps[start][end],
+						lowestOps[end - 1][end]
+								+ lowestOps[start][end - 1]
+								+ stableHorses[end - 1] - stableHorses[start]
+				);
+
+				/*
+				 * then get to the actual part where we combine
+				 * two parts with top being the root
+				 */
+				for (int top = start + 2; top < end - 1; top++) {
+					lowestOps[start][end] = Math.min(
+							lowestOps[start][end],
+							lowestOps[start][top]
+									+ lowestOps[top][end]
+									+ stableHorses[end] - stableHorses[start] - 1
+					);
+				}
+			}
+		}
+		System.out.println(lowestOps[0][stableNum + 1]);
+	}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+horse_num = int(input())
+stable_num = int(input())
+stable_horses = sorted([0, horse_num + 1] + [int(input()) for _ in range(stable_num)])
+
+"""
+lowest_ops[i][j] = min operations if we only consider horses
+from that exist in the index interval (i, j)
+ex: lowest_ops[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
+	means that we only consider horses from (1, 10)
+"""
+lowest_ops = [[float('inf') for _ in range(stable_num + 2)] for _ in range(stable_num + 2)]
+for i in range(stable_num + 2):
+	lowest_ops[i][i] = 0
+	if i + 1 < stable_num + 2:
+		lowest_ops[i][i + 1] = stable_horses[i + 1] - stable_horses[i] - 1
+	if i + 2 < stable_num + 2:
+		lowest_ops[i][i + 2] = stable_horses[i + 2] - stable_horses[i] - 1
+
+for num in range(4, stable_num + 2 + 1):
+	for start in range(0, (stable_num + 2) - (num - 1)):
+		end = start + num - 1
+		"""
+		first handle the beginning and ending edge cases,
+		where the smallest or largest element has become the root
+		"""
+		lowest_ops[start][end] = min(
+			lowest_ops[start][end],
+			lowest_ops[start][start + 1]
+			+ lowest_ops[start + 1][end]
+			+ stable_horses[end] - stable_horses[start + 1]
+		)
+		lowest_ops[start][end] = min(
+			lowest_ops[start][end],
+			lowest_ops[end - 1][end]
+			+ lowest_ops[start][end - 1]
+			+ stable_horses[end - 1] - stable_horses[start]
+		)
+
+		"""
+		then get to the actual part where we combine
+		two parts with top being the root
+		"""
+		for top in range(start + 2, end - 1):
+			lowest_ops[start][end] = min(
+				lowest_ops[start][end],
+				lowest_ops[start][top]
+				+ lowest_ops[top][end]
+				+ stable_horses[end] - stable_horses[start] - 1
+			)
+
+print(lowest_ops[0][stable_num + 1])
+```
+
+</PySection>
+</LanguageSection>
