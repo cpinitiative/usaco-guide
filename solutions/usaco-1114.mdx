@@ -82,6 +82,7 @@ import java.util.*;
 public class ModernArt3 {
 	public static final int MAXN = 300;
 	public static int[] painting = new int[MAXN];
+	// dp[i][j] is the number of moves to paint from i to j.
 	public static int[][] dp = new int[MAXN][MAXN];
 
 	public static void main(String[] args) throws IOException {
@@ -104,9 +105,11 @@ public class ModernArt3 {
 			for (int i = 0; i <= N - s; i++) {
 				for (int j = i; j < i + s; j++) {
 					int k = i + s - 1;
+					// Merge the 2 ranges
 					if (painting[i] == painting[k]) {
 						dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 					}
+					// Sum of the both parts
 					dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k]);
 				}
 			}
