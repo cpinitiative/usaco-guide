@@ -17,6 +17,7 @@ export default functions.https.onCall(
         'OjLKRTTzNyQgMifAExQKUA4MtfF2',
         'v8NK8mHCZnbPQKaPnEs5lKNc3rv2',
         'BKFOe33Ym7Pc7aQuET57MiljpF03',
+        '5IXfZDX1j2ZOftqfYiBcmmStmn93'
       ].includes(context.auth.uid)
     ) {
       throw new functions.https.HttpsError(
