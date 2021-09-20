@@ -48,18 +48,18 @@ int main() {
 
 	for (int i = 0; i < n; i++) cin >> A[i];
 
-	for (int i = 0; i <= n; i++) {
-		for (int j = 0; j <= n; j++) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
 			dp[i][j] = MAX_N + 1;
 		}
 	}
 
 	for (int i = 0; i < MAX_N; i++) dp[i][i] = 1;
 
-	for (int s = 1; s <= n; s++) {
-		for (int i = 0; i <= n - s; i++) {
+	for (int s = 0; s < n; s++) {
+		for (int i = 0; i < n - s; i++) {
 			for (int j = i; j < i + s; j++) {
-				int k = i + s - 1;
+				int k = i + s;
 				if (A[i] == A[k])
 					dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 				dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k]);
@@ -93,18 +93,18 @@ public class ModernArt3 {
 			painting[i] = Integer.parseInt(st.nextToken());
 		}
 
-		for (int i = 0; i <= N; i++) {
-			for (int j = 0; j <= N; j++) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
 				dp[i][j] = MAXN + 1;
 			}
 		}
-		for (int i = 0; i < MAXN; i++) {
+		for (int i = 0; i < N; i++) {
 			dp[i][i] = 1;
 		}
-		for (int s = 1; s <= N; s++) {
-			for (int i = 0; i <= N - s; i++) {
+		for (int s = 0; s < N; s++) {
+			for (int i = 0; i < N - s; i++) {
 				for (int j = i; j < i + s; j++) {
-					int k = i + s - 1;
+					int k = i + s;
 					// Merge the 2 ranges
 					if (painting[i] == painting[k]) {
 						dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
