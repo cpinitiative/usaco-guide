@@ -43,9 +43,11 @@ export default async function updateLiveMailingList({
         console.log('Mailchimp Existing Fields GET Error');
         // the user probably doesn't exist
         // so just assume there is no previous data
-        if (e.status !== 404) {
+        if (e.response?.status !== 404) {
           console.log(e?.toJSON());
         }
+
+        // return empty object
         return Promise.resolve({});
       });
     const data = {
@@ -78,7 +80,7 @@ export default async function updateLiveMailingList({
         tags: [
           {
             name: `October 2021 ${
-              level == 'beginner' ? 'Beginner' : 'Intermediate'
+              level === 'beginner' ? 'Beginner' : 'Intermediate'
             } Class`,
             status: 'active',
           },

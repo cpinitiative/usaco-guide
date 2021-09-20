@@ -45,9 +45,11 @@ export default async function updateMailingList({
         console.log('Mailchimp Existing Fields GET Error');
         // the user probably doesn't exist
         // so just assume there is no previous data
-        if (e.status !== 404) {
+        if (e.response?.status !== 404) {
           console.log(e?.toJSON());
         }
+
+        // return empty object
         return Promise.resolve({});
       });
     const data = {
