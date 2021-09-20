@@ -142,28 +142,24 @@ import java.util.*;
 
 public class CowGymnastics {
 	public static void main(String[] args) throws IOException {
-		BufferedReader r = new BufferedReader(new FileReader("gymnastics.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("gymnastics.out"));
-		StringTokenizer st = new StringTokenizer(r.readLine());
+		Kattio io = new Kattio("gymnastics");
 
 		int maxCows = 20; 
 		boolean[][] completePairs = new boolean[maxCows][maxCows];
-		int k = Integer.parseInt(st.nextToken());
-		int n = Integer.parseInt(st.nextToken());
+		int k = io.nextInt();
+		int n = io.nextInt();
 		int[] line = new int[n];
 		int count = 0;
 
-		for (; k > 0; k--) {
-			st = new StringTokenizer(r.readLine());
-
-			for (int i = 0; i < n; i++) {
-				line[i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < k; I++) {
+			for (int j = 0; j < n; j++) {
+				line[j] = io.nextInt();
 			}
 
 			// Working from highest to lowest rank, create each pair
-			for (int i = 0; i < n; i++) {
-				for (int j = i + 1; j < n; j++) {
-					completePairs[line[i] - 1][line[j] - 1] = true;
+			for (int j = 0; j < n; j++) {
+				for (int m = j + 1; m < n; m++) {
+					completePairs[line[j] - 1][line[m] - 1] = true;
 				}
 			}
 		}
@@ -178,9 +174,10 @@ public class CowGymnastics {
 			}
 		}
 
-		pw.println(count);
-		pw.close();
+		io.println(count);
+		io.close();
 	}
+	CodeSnip{Kattio}
 }
 ```
 </JavaSection>
