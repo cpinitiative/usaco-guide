@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import updateLiveMailingList from './utils/updateLiveMailingList';
+import { classRegistrationAdministrators } from './utils/permissions';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
@@ -13,12 +14,7 @@ export default functions.https.onCall(
   ) => {
     if (
       !context.auth ||
-      ![
-        'OjLKRTTzNyQgMifAExQKUA4MtfF2',
-        'v8NK8mHCZnbPQKaPnEs5lKNc3rv2',
-        'BKFOe33Ym7Pc7aQuET57MiljpF03',
-        'YF9ObmH1SUR1MKJGTrO8DfBQUG13',
-      ].includes(context.auth.uid)
+      !classRegistrationAdministrators.includes(context.auth.uid)
     ) {
       throw new functions.https.HttpsError(
         'permission-denied',
