@@ -2,17 +2,20 @@
 id: usaco-1060
 source: USACO Bronze 2020 December
 title: Daisy Chains
-author: Sathvik Chundru, Danh Ta Chi Thanh
+author: Sathvik Chundru, Danh Ta Chi Thanh, Ryan Chou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob2_bronze_dec20.html)
 
-<LanguageSection>
-
-<CPPSection>
+Due to the low constraints of the problem, we can iterate through every possible photo.
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+	
 ```cpp
 #include <iostream>
 #include <algorithm>
@@ -123,5 +126,31 @@ class Main {
 ```
 				 
 </JavaSection>
+<PySection>
 
+```py
+N = int(input())
+flowers = list(map(int, input().split()))
+ans = 0
+
+def search(i, j):
+	# find average petals in the range i - j
+	avg_petals = sum(flowers[i:j + 1]) / len(flowers[i : j + 1])
+	# since a flower can't have a decimal amount of petals, we can return if the average is a float 
+	if int(avg_petals) != avg_petals:
+		return False
+
+	for index in range(i, j + 1):
+		if flowers[index] == avg_petals:
+			# we found an average flower
+			return True
+	return False
+
+for i in range(N):
+	for j in range(i, N):
+		ans += search(i, j)
+
+print(ans)
+```
+</PySection>
 </LanguageSection>
