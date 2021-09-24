@@ -16,7 +16,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
       {({ open }) => (
         <>
           <div>
-            <Menu.Button className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition">
+            <Menu.Button className="flex text-sm border-2 border-transparent rounded-full focus:outline-none dark:focus:border-white focus:border-blue-500 transition">
               <span className="sr-only">Open user menu</span>
               <img
                 className="h-8 w-8 rounded-full"
