@@ -70,7 +70,9 @@ export default functions.https.onCall(
       .doc('2021october')
       .collection('registrations')
       .doc();
-    console.log(`========== Processing registration ${ref.id} / ${firstName} ${lastName} / ${email} ==========`);
+    console.log(
+      `========== Processing registration ${ref.id} / ${firstName} ${lastName} / ${email} ==========`
+    );
     await Promise.all([
       ref.set({
         financialAid: false,
