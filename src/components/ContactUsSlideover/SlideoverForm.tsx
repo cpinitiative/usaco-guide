@@ -18,7 +18,7 @@ export default function SlideoverForm(props: SlideoverProps): JSX.Element {
       <Dialog
         as="div"
         static
-        className="fixed z-10 inset-0 overflow-hidden"
+        className="fixed z-20 inset-0 overflow-hidden"
         open={props.isOpen}
         onClose={() => props.onClose()}
       >
