@@ -25,7 +25,7 @@ export const FirebaseProvider = ({ children }) => {
         getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
       setFirebaseApp(firebaseApp);
 
-      const shouldUseEmulator = !false;
+      const shouldUseEmulator = false;
       if (shouldUseEmulator) {
         useAuthEmulator(getAuth(firebaseApp), 'http://localhost:9099');
         useFirestoreEmulator(getFirestore(firebaseApp), 'localhost', 8080);
