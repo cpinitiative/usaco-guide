@@ -33,8 +33,6 @@ const UserGroupsProvider = ({
   const [updateCtr, setUpdateCtr] = React.useState(0);
   const permissions = useUserPermissions();
 
-  console.log(permissions);
-
   useFirebaseApp(
     firebaseApp => {
       if (!firebaseUser?.uid) {
@@ -79,6 +77,7 @@ const UserGroupsProvider = ({
           }
         });
 
+        // only query once if admin
         if (permissions.isAdmin) break;
       }
     },
