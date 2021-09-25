@@ -58,7 +58,7 @@ const UserGroupsProvider = ({
           ? getDocs<GroupData>(
               query(
                 collection(getFirestore(firebaseApp), 'groups'),
-                // queries gruops that the current user is in
+                // queries groups that the current user is in
                 where(key, 'array-contains', firebaseUser?.uid)
               )
             )
@@ -84,8 +84,6 @@ const UserGroupsProvider = ({
     },
     [firebaseUser?.uid, permissions, updateCtr]
   );
-
-  console.log(groups);
 
   return (
     <UserGroupsContext.Provider
