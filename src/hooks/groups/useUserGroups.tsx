@@ -1,4 +1,3 @@
-import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getDocs,
@@ -9,6 +8,7 @@ import {
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 import { GroupData } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 
@@ -31,6 +31,7 @@ const UserGroupsProvider = ({
   const [isLoading, setIsLoading] = React.useState(!!firebaseUser?.uid);
   const [groups, setGroups] = React.useState<null | GroupData[]>(null);
   const [updateCtr, setUpdateCtr] = React.useState(0);
+  const permissions = useUserPermissions();
 
   useFirebaseApp(
     firebaseApp => {
@@ -47,26 +48,40 @@ const UserGroupsProvider = ({
         adminIds: null,
       };
 
-      Object.keys(queries).forEach(key => {
-        getDocs(
-          query(
-            collection(
-              getFirestore(firebaseApp),
-              'groups'
-            ) as CollectionReference<GroupData>,
-            where(key, 'array-contains', firebaseUser?.uid)
-          )
-        ).then(snap => {
-          queries[key] = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // loops once rather than 3 times
+      const toQuery = Object.keys(queries);
 
+      for (const key of toQuery) {
+        const docQuery = !permissions?.isAdmin
+          ? getDocs<GroupData>(
+              query(
+                collection(getFirestore(firebaseApp), 'groups'),
+                // queries groups that the current user is in
+                where(key, 'array-contains', firebaseUser?.uid)
+              )
+            )
+          : getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
+
+        docQuery.then(snap => {
+          // with the resulting collection snapshot
+          queries[key] = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          // if all queries are done
           if (Object.keys(queries).every(x => queries[x] !== null)) {
-            setGroups(Object.values(queries).flat());
+            const queryResults = Object.values(queries).flat();
+            setGroups(queryResults);
             setIsLoading(false);
           }
         });
-      });
+
+        // only query once if admin
+        if (permissions.isAdmin) break;
+      }
     },
-    [firebaseUser?.uid, updateCtr]
+    [firebaseUser?.uid, permissions, updateCtr]
   );
 
   return (
