@@ -54,14 +54,14 @@ const UserGroupsProvider = ({
       for (const key of toQuery) {
         const docQuery = !permissions?.isAdmin
           ? getDocs<GroupData>(
-              // @ts-ignore
+              // @typescript-eslint/ban-ts-comment
               query(
                 collection(getFirestore(firebaseApp), 'groups'),
                 // queries groups that the current user is in
                 where(key, 'array-contains', firebaseUser?.uid)
               )
             )
-          : // @ts-ignore
+          : // @typescript-eslint/ban-ts-comment
             getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
 
         docQuery.then(snap => {
