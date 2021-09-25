@@ -53,7 +53,7 @@ const UserGroupsProvider = ({
       // loops once rather than 3 times
       const toQuery = Object.keys(queries);
 
-      toQuery.forEach(key => {
+      for (const key of toQuery) {
         const docQuery = !permissions?.isAdmin
           ? getDocs<GroupData>(
               query(
@@ -63,8 +63,6 @@ const UserGroupsProvider = ({
               )
             )
           : getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
-
-        console.log(permissions, docQuery);
 
         docQuery.then(snap => {
           // with the resulting collection snapshot
@@ -76,16 +74,13 @@ const UserGroupsProvider = ({
           // if all queries are done
           if (Object.keys(queries).every(x => queries[x] !== null)) {
             const queryResults = Object.values(queries).flat();
-            if (permissions.isAdmin)
-              // slice / 3 since there are 3 keys in object.keys that are redundant
-              setGroups(queryResults.slice(0, queryResults.length / 3));
-            else setGroups(queryResults);
+            setGroups(queryResults);
             setIsLoading(false);
           }
         });
 
-        // if(permissions.isAdmin) return false;
-      });
+        if (permissions.isAdmin) break;
+      }
     },
     [firebaseUser?.uid, permissions, updateCtr]
   );
