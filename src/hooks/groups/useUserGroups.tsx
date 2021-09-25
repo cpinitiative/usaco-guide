@@ -54,13 +54,15 @@ const UserGroupsProvider = ({
       for (const key of toQuery) {
         const docQuery = !permissions?.isAdmin
           ? getDocs<GroupData>(
+              // @ts-ignore
               query(
                 collection(getFirestore(firebaseApp), 'groups'),
                 // queries groups that the current user is in
                 where(key, 'array-contains', firebaseUser?.uid)
               )
             )
-          : getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
+          : // @ts-ignore
+            getDocs<GroupData>(collection(getFirestore(firebaseApp), 'groups'));
 
         docQuery.then(snap => {
           // with the resulting collection snapshot
