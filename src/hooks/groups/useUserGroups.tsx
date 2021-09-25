@@ -81,7 +81,7 @@ const UserGroupsProvider = ({
           }
         });
 
-        if(permissions.isAdmin) break;
+        if (permissions.isAdmin) break;
       }
     },
     [firebaseUser?.uid, permissions, updateCtr]
