@@ -83,52 +83,45 @@ print(ans)
 #include <iostream>
 #include <fstream>
 using namespace std;
-
 int N, cows[100], cowsPassingTo[100];                                                                      
-
 // Which cow does a given cow pass to?
-public static int passToCow(int cow) {
-		int leftCows = -1;
-		int rightCows = -1;
-		int leftRange = 1000;
-		int rightRange = 1000;
-
-		// For each cow, find closest cows to it on the left and right
-		for (int i = 0; i < N; i++) {
-			if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
-				leftCows = i;
-				leftRange = cows[cow] - cows[i];
-			}
-			if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
-				rightCows = i;
-				rightRange = cows[i] - cows[cow];
-			}
+int passToCow(int cow) {
+	int leftCows = -1;
+	int rightCows = -1;
+	int leftRange = 1000;
+	int rightRange = 1000;
+	// For each cow, find closest cows to it on the left and right
+	for (int i = 0; i < N; i++) {
+		if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
+			leftCows = i;
+			leftRange = cows[cow] - cows[i];
 		}
-
-		// Return number of cows passing to the given cow
-		if (leftRange <= rightRange) {
-			return leftCows;
+		if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
+			rightCows = i;
+			rightRange = cows[i] - cows[cow];
 		}
-		return rightCows;
 	}
-
+	// Return number of cows passing to the given cow
+	if (leftRange <= rightRange) {
+		return leftCows;
+	}		
+	return rightCows;
+}
 int main(void)
 {
 	ifstream fin ("hoofball.in");
 	ofstream fout ("hoofball.out");
   	fin >> N;
 	int ballsNeeded = 0;
-
   	for (int i=0; i<N; i++) {
 		fin >> cows[i];
 	}
   	for (int i=0; i<N; i++) {
-		cowsPassingTo[target(i)]++;
+		cowsPassingTo[passToCow(i)]++;
 	}
-
   	for (int i=0; i<N; i++) {
 		// This is a source cow, so give it a ball
-   		if (passto[i] == 0) { 
+   		if (cowsPassingTo[i] == 0) { 
 			ballsNeeded++;
 		}
 		// This cow only passes to 1 other cow forever, so give it a ball
@@ -136,10 +129,9 @@ int main(void)
 			ballsNeeded++;
 		}
   	}
-
  	fout << ballsNeeded << "\n";
   	return 0;
-}	
+}
 ```
 
 </CPPSection>
