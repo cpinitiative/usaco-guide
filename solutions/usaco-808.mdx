@@ -2,19 +2,26 @@
 id: usaco-808
 source: USACO Bronze 2018 February
 title: Hoofball
-author: Ryan Chou
+author: Ryan Chou, Ben Dodge
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_hoofball_bronze_feb18.html)
 
 ## Explanation
 
-Find all source cows and cows which only pass to each other, and give a ball to each one.
+First, let's realize that Farmer John will need another ball in one of two cases: 
+1. A cow is a source cow, or a cow that Farmer John first passses to. 
+2. Two cows are close together, so they pass a ball back and forth endlessly and another ball is needed for other cows to hold. 
+
+So, each time this occurs, we can count it, and return this total count as our answer once we're done. 
+We can do this first by finding the number of times every cow passes a ball. 
+
+<LanguageSection>
+<PySection> 
 
 ## Implementation
 **Time Complexity:** $\mathcal{O}(N^2)$
-<LanguageSection>
-<PySection> 
+
 
 ```py
 import sys
@@ -66,4 +73,152 @@ for i in range(n):
 print(ans)
 ```
 </PySection>
+<CPPSection>
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+	
+```cpp
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int N, cows[100], cowsPassingTo[100];                                                                      
+
+// Which cow does a given cow pass to?
+public static int passToCow(int cow) {
+		int leftCows = -1;
+		int rightCows = -1;
+		int leftRange = 1000;
+		int rightRange = 1000;
+
+		// For each cow, find closest cows to it on the left and right
+		for (int i = 0; i < N; i++) {
+			if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
+				leftCows = i;
+				leftRange = cows[cow] - cows[i];
+			}
+			if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
+				rightCows = i;
+				rightRange = cows[i] - cows[cow];
+			}
+		}
+
+		// Return number of cows passing to the given cow
+		if (leftRange <= rightRange) {
+			return leftCows;
+		}
+		return rightCows;
+	}
+
+int main(void)
+{
+	ifstream fin ("hoofball.in");
+	ofstream fout ("hoofball.out");
+  	fin >> N;
+	int ballsNeeded = 0;
+
+  	for (int i=0; i<N; i++) {
+		fin >> cows[i];
+	}
+  	for (int i=0; i<N; i++) {
+		cowsPassingTo[target(i)]++;
+	}
+
+  	for (int i=0; i<N; i++) {
+		// This is a source cow, so give it a ball
+   		if (passto[i] == 0) { 
+			ballsNeeded++;
+		}
+		// This cow only passes to 1 other cow forever, so give it a ball
+   		if (i < passToCow(i) && passToCow(passToCow(i)) == i && cowsPassingTo[i] == 1 && cowsPassingTo[passToCow(i)] == 1) {
+			ballsNeeded++;
+		}
+  	}
+
+ 	fout << ballsNeeded << "\n";
+  	return 0;
+}	
+```
+
+</CPPSection>
+	
+<JavaSection>
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^2)$
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class Hoofball {
+	static int N;
+	static int[] cows;
+
+	// Which cow does a given cow pass to?
+	public static int passToCow(int cow) {
+		int leftCows = -1;
+		int rightCows = -1;
+		int leftRange = 1000;
+		int rightRange = 1000;
+
+		// For each cow, find closest cows to it on the left and right
+		for (int i = 0; i < N; i++) {
+			if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
+				leftCows = i;
+				leftRange = cows[cow] - cows[i];
+			}
+			if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
+				rightCows = i;
+				rightRange = cows[i] - cows[cow];
+			}
+		}
+
+		// Return number of cows passing to the given cow
+		if (leftRange <= rightRange) {
+			return leftCows;
+		}
+		return rightCows;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("hoofball");
+
+		N = io.nextInt();
+		cows = new int[N];
+		int ballsNeeded = 0;
+		int[] cowsPassingTo = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			cows[i] = io.nextInt();
+		}
+
+		// Let's classify each cow  
+		for (int i = 0; i < N; i++) {
+			cowsPassingTo[passToCow(i)]++;
+		}
+
+		for (int i = 0; i < N; i++) {
+			// This is a source cow, so give it a ball
+			if (cowsPassingTo[i] == 0) {
+				ballsNeeded++;
+			}
+			// This cow only passes to 1 other cow forever, so give it a ball
+			if (i < passToCow(i) && passToCow(passToCow(i)) == i && 
+				cowsPassingTo[i] == 1 && cowsPassingTo[passToCow(i)] == 1) {
+				ballsNeeded++;
+			}
+		}
+
+		io.println(ballsNeeded);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+	
+```	
+</JavaSection>
+	
 </LanguageSection>
