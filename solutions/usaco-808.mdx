@@ -14,7 +14,7 @@ First, let's realize that Farmer John will need another ball in one of two cases
 2. Two cows are close together, so they pass a ball back and forth endlessly and another ball is needed for other cows to hold. 
 
 So, each time this occurs we can count it and return this total count as our answer once we're done. 
-We can do this first by finding the number of times every cow passes a ball. 
+We can do this first by finding which cow, if any, every cow passes the ball to. 
 
 <LanguageSection>
 <PySection> 
@@ -91,26 +91,26 @@ int N, cows[MAX_N], cowsPassingTo[MAX_N];
 
 // Which cow does a given cow pass to?
 int passToCow(int cow) {
-    int leftCows = -1;
-    int rightCows = -1;
+    int leftCow = -1;
+    int rightCow = -1;
     int leftRange = MAX_X;
     int rightRange = MAX_X;
     // For each cow, find closest cows to it on the left and right
     for (int i = 0; i < N; i++) {
         if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
-            leftCows = i;
+            leftCow = i;
             leftRange = cows[cow] - cows[i];
         }
         if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
-            rightCows = i;
+            rightCow = i;
             rightRange = cows[i] - cows[cow];
         }
     }
-    // Return number of cows passing to the given cow
+    // Return the position identifier of cow that the given cow passes to
     if (leftRange <= rightRange) {
-        return leftCows;
+        return leftCow;
     }        
-    return rightCows;
+    return rightCow;
 }
 
 int main() {
@@ -162,28 +162,28 @@ public class Hoofball {
 
 	// Which cow does a given cow pass to?
 	public static int passToCow(int cow) {
-		int leftCows = -1;
-		int rightCows = -1;
+		int leftCow = -1;
+		int rightCow = -1;
 		int leftRange = MAX_X;
 		int rightRange = MAX_X;
 
 		// For each cow, find closest cows to it on the left and right
 		for (int i = 0; i < N; i++) {
 			if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
-				leftCows = i;
+				leftCow = i;
 				leftRange = cows[cow] - cows[i];
 			}
 			if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
-				rightCows = i;
+				rightCow = i;
 				rightRange = cows[i] - cows[cow];
 			}
 		}
 
-		// Return number of cows passing to the given cow
+    		// Return the position identifier of cow that the given cow passes to
 		if (leftRange <= rightRange) {
-			return leftCows;
+			return leftCow;
 		}
-		return rightCows;
+		return rightCow;
 	}
 
 	public static void main(String[] args) throws IOException {
