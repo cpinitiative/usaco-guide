@@ -65,6 +65,8 @@ const GroupsCodeBlock = ({
   language: string;
   value: string;
 }) => {
+  console.log(language);
+  console.log(value);
   if (language === 'video') {
     return <VideoComponent link={value} />;
   }
