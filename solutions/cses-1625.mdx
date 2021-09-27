@@ -48,7 +48,7 @@ squares anymore, so we can terminate the search.
 
 ### Optimization 3
 
-The idea of Optimization 3 can be generalized: if the path cannot continue
+The idea of Optimization 2 can be generalized: if the path cannot continue
 forward but can turn either left or right, the grid splits into two parts that
 both contain unvisited squares. It is clear that we cannot visit all squares
 anymore, so we can terminate the search.
@@ -103,6 +103,7 @@ const int GRID_SIZE = 9;
 bool onPath[GRID_SIZE][GRID_SIZE];
 
 int tryPath(int pathIdx, int curR, int curC) {
+	// Optimization 3
 	if ((onPath[curR][curC - 1] && onPath[curR][curC + 1])
 		&& (!onPath[curR - 1][curC] && !onPath[curR + 1][curC])) return 0;
 	if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
@@ -218,17 +219,19 @@ public class GridPaths {
 	}
 
 	public static int tryPath(int pathIdx, int curR, int curC) {
+		// Optimization 3
 		if ((onPath[curR][curC - 1] && onPath[curR][curC + 1])
 			&& (!onPath[curR - 1][curC] && !onPath[curR+1][curC])) return 0;
 		if ((onPath[curR - 1][curC] && onPath[curR + 1][curC])
 			&& (!onPath[curR][curC - 1] && !onPath[curR][curC + 1])) return 0;
 
+		// Optimization 1
 		if (curR == 7 && curC == 1) {  // reached endpoint
 			if (pathIdx == p.length) return 1;  // visited every cell -> valid!
 			return 0;  // didn't visit every cell (path length is too short)
 		}  
-		if (pathIdx == p.length) return 0;  // visited all cells, but didn't
-											// end up in the correct locaiton
+		// visited all cells, but didn't end up in the correct locaiton
+		if (pathIdx == p.length) return 0;
 
 		int ret = 0;  // cumulative count for this "starting position"
 		onPath[curR][curC] = true;
@@ -245,7 +248,7 @@ public class GridPaths {
 		else if ((curC > 2) && onPath[curR][curC - 2]
 			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
 			&& (!onPath[curR][curC - 1])) { 
-		// potential dead end on the left:
+			// potential dead end on the left:
 			int nxtR = curR;
 			int nxtC = curC - 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
@@ -253,16 +256,16 @@ public class GridPaths {
 		else if ((curC < 6) && onPath[curR][curC + 2]
 			&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
 			&& (!onPath[curR][curC + 1])) {  
-		// potential dead end on the right:
+			// potential dead end on the right:
 			int nxtR = curR;
 			int nxtC = curC + 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 		else if ((curR > 2) && onPath[curR - 2][curC] 
 			&& onPath[curR - 1][curC - 1] && (!onPath[curR - 1][curC])) {  
-		// potential dead end upwards
-		// note: I didn't include all possible scenarios because
-		// it wasn't necessary in order for the program to run in time
+			// potential dead end upwards
+			// note: I didn't include all possible scenarios because
+			// it wasn't necessary in order for the program to run in time
 			int nxtR = curR - 1;
 			int nxtC = curC;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
