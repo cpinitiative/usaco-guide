@@ -12,13 +12,10 @@ Adapted from https://usaco.guide/CPH.pdf#page=61
 <Warning title="Run times">
 Please note: the running times and number of recursive calls listed are for a 
 separate but very similar problem (# paths from upper left to *lower right* 
-corner on a 7x7 grid). 
-They may not be entirely accurate, but they illustrate the effect of each 
-optimization. 
-The data is also C++ specific, so Java and Python users will experience 
-significantly different runtimes.
-The consequences of this discrepancy which will be addressed later in the 
-explanation.
+corner on a 7x7 grid). They may not be entirely accurate, but they illustrate 
+the effect of each optimization. The data is also C++ specific, so Java and 
+Python users will experience significantly different runtimes. The consequences 
+of this discrepancy which will be addressed later in the explanation.
 </Warning>
 
 ### Basic Algorithm
@@ -27,8 +24,8 @@ The first version of the algorithm does not contain any optimizations. We simply
 use backtracking to generate all possible paths from the upper-left corner to
 the lower-right corner and count the number of such paths.
 
-- running time: 483 seconds
--  number of recursive calls: 76 billion
+-  Running time: $483$ seconds
+-  Number of recursive calls: $76$ billion
 
 ### Optimization 1
 
@@ -37,8 +34,8 @@ squares of the grid, it is clear that it will not be possible to complete the
 solution. Using this observation, we can terminate the search immediately if we
 reach the lower-right square too early.
 
-- running time: 119 seconds
-- number of recursive calls: 20 billion
+- Running time: $119$ seconds
+- Number of recursive calls: $20$ billion
 
 ### Optimization 2
 
@@ -46,8 +43,8 @@ If the path touches a wall and can turn either left or right, the grid splits
 into two parts that contain unvisited squares. In this case, we cannot visit all
 squares anymore, so we can terminate the search.
 
-- running time: 1.8 seconds
-- number of recursive calls: 221 million
+- Running time: $1.8$ seconds
+- Number of recursive calls: $221$ million
 
 ### Optimization 3
 
@@ -56,13 +53,13 @@ forward but can turn either left or right, the grid splits into two parts that
 both contain unvisited squares. It is clear that we cannot visit all squares
 anymore, so we can terminate the search.
 
-- running time: 0.6 seconds
-- number of recursive calls: 69 million
+- Running time: $0.6$ seconds
+- Number of recursive calls: $69$ million
 
 Now is a good moment to stop optimizing the algorithm and see what we have
-achieved. The running time of the original algorithm was 483 seconds, and now
-after the optimizations, the running time is only 0.6 seconds. Thus, the
-algorithm became nearly 1000 times faster after the optimizations.
+achieved. The running time of the original algorithm was $483$ seconds, and now
+after the optimizations, the running time is only $0.6$ seconds. Thus, the
+algorithm became nearly $1000$ times faster after the optimizations.
 
 <Info>
 In backtracking, the search tree is usually
@@ -73,7 +70,7 @@ i.e., at the top of the search tree.
 
 For C++ users, this will be enough pruning to make the program run in time under
 worst case conditions. However, for Java and Python users, this is still too
-slow (Java takes around 1.2 seconds for the worst case). Thus, we will need to
+slow (Java takes around $1.2$ seconds for the worst case). Thus, we will need to
 further optimize our search.
 
 ### Optimization 4
@@ -84,7 +81,7 @@ over it, sealing a square off) or the path will end in the wrong location. Thus,
 we want to avoid creating dead ends. For example, if the square to the left of
 our current location is blocked on three sides (including our current location),
 then the next step must be to the left in order to avoid creating a dead end.
-After this optimization, the program runs in under 1 second.
+After this optimization, the program runs in under $1$ second.
 
 ## Implementation
 
