@@ -7,14 +7,17 @@ import Feedback from './Feedback';
 
 const VideoComponent = ({ link }: { link: string }) => {
   const getParameterByName = (name: string, url = window.location.href) => {
+    console.log(name);
     name = name.replace(/[\[\]]/g, '\\$&');
     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
       results = regex.exec(url);
+    console.log(results);
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
   };
   let id = '';
+  console.log(id);
   if (link.indexOf('youtube.com') !== -1) {
     id = getParameterByName('v', link.trim());
   } else if (link.indexOf('youtu.be') !== -1) {
