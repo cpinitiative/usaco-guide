@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import updateMailingList from './utils/updateMailingList';
+import updateLiveMailingList from './utils/updateLiveMailingList';
 import { classRegistrationAdministrators } from './utils/permissions';
 
 if (admin.apps.length === 0) {
@@ -22,21 +22,8 @@ export default functions.https.onCall(
       );
     }
 
-    // create bronze class join link
-    const joinLinkRef = admin.firestore().collection('group-join-links').doc();
-    await joinLinkRef.set({
-      groupId: 'd7eYGfddXq3m2trXG2xt',
-      revoked: false,
-      numUses: 0,
-      maxUses: 1,
-      expirationTime: null,
-      usedBy: [],
-      author: 'REGISTRATION_' + email,
-      id: joinLinkRef.id,
-    });
-
     await Promise.all([
-      updateMailingList({
+      updateLiveMailingList({
         email,
         firstName,
         lastName,
@@ -44,12 +31,11 @@ export default functions.https.onCall(
         ip: context.rawRequest.ip,
         level,
         fullFinancialAid: true,
-        joinLink: `https://usaco.guide/groups/join?key=${joinLinkRef.id}`,
       }),
       admin
         .firestore()
         .collection('classes-registration')
-        .doc('usacobronze')
+        .doc('2021october')
         .collection('registrations')
         .doc(registrationId)
         .update({

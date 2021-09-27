@@ -3,7 +3,7 @@ import * as crypto from 'crypto';
 import * as functions from 'firebase-functions';
 const MAILCHIMP_API_KEY = functions.config().mailchimp.apikey;
 
-export default async function updateMailingList({
+export default async function updateLiveMailingList({
   email,
   firstName,
   lastName,
@@ -11,7 +11,6 @@ export default async function updateMailingList({
   ip,
   level,
   fullFinancialAid,
-  joinLink,
 }: {
   email: string;
   firstName: string;
@@ -20,7 +19,6 @@ export default async function updateMailingList({
   ip: string;
   level: string;
   fullFinancialAid: boolean;
-  joinLink: string;
 }) {
   try {
     const listID = 'e122c7f3eb';
@@ -61,13 +59,7 @@ export default async function updateMailingList({
         ...(existingFields?.merge_fields || {}),
         FNAME: firstName,
         LNAME: lastName,
-        PROGLANG:
-          preferredLanguage === 'java'
-            ? 'Java'
-            : preferredLanguage === 'cpp'
-            ? 'C++'
-            : 'Python',
-        BRVCJOINLK: joinLink,
+        PROGLANG: preferredLanguage === 'java' ? 'Java' : 'C++',
       },
     };
 
@@ -87,13 +79,15 @@ export default async function updateMailingList({
       {
         tags: [
           {
-            name: `Bronze Video Class`,
+            name: `October 2021 ${
+              level === 'beginner' ? 'Beginner' : 'Intermediate'
+            } Class`,
             status: 'active',
           },
           ...(fullFinancialAid
             ? [
                 {
-                  name: `Bronze Video Class Full Financial Aid`,
+                  name: `October 2021 Full Financial Aid`,
                   status: 'active',
                 },
               ]

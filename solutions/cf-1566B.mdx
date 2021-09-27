@@ -1,0 +1,68 @@
+---
+id: cf-1566B
+source: CF
+title: MIN-MEX Cut
+author: Ryan Chou
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/94803)
+
+
+# Explanation
+
+Since the MEX can be at most 2 when there is a substring that contains a 0 and 1, there's only 3 possible cases. If there are no zeros, then the MEX is 0, since all substrings would be missing a 0.  If all zeros are adjacent to one another, we can cut the entire sequence out, leaving a MEX of 1. The other groups, all comprised of ones would have a MEX of 0. Leaving the answer to be $max(0, 1) = 1$. Lastly, if there are zeros and they're not adjacent to one another, then a substring like ${0, 1}$ must exist, resulting in a MEX of 2.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 0; i < t; i++) {
+		string s;
+		cin >> s;
+		// find the number of zeros
+		int zeros = count(s.begin(), s.end(), '0');
+
+		// no zeros, the answer is 0
+		if (zeros == 0) {
+			cout << 0 << endl;
+		} else {
+			// first and last occurences of zero
+			int l = s.find('0');
+			int r = s.rfind('0');
+			
+			// if they're all adjacent to one another.
+			cout << ((r - l + 1 == zeros) ? 1 : 2) << endl;
+		}
+	}
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+for _ in range(int(input())):
+	s = input()
+	zeros = s.count("0")
+
+	if zeros == 0:
+		print(0)
+	else:
+		l = s.find("0")
+		r = s.rfind("0")
+  
+		print(1 if r - l + 1 == zeros else 2)
+```
+</PySection>
+</LanguageSection>

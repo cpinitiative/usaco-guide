@@ -369,7 +369,7 @@ export default function IndexPage(): JSX.Element {
               title="Competitive Programming Workshops"
               icon={CogIcon}
               iconClasses="from-yellow-400 to-orange-500"
-              url="https://joincpi.org/workshops"
+              url="https://joincpi.org/workshop"
             >
               Access workshops providing everything you need to know about
               USACO.
