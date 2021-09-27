@@ -189,7 +189,7 @@ if you're not familiar with the `Predicate` interface used.
 from typing import Callable
 
 
-def last_true(lo: int, hi: int, test: Callable[[int], bool]):
+def lastTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
 	"""
 	Binary Search
 	:param lo: lower bound
@@ -212,12 +212,12 @@ def last_true(lo: int, hi: int, test: Callable[[int], bool]):
 
 
 # all numbers satisfy the condition
-print(last_true(2, 10, lambda x: True))  # outputs 10
+print(lastTrue(2, 10, lambda x: True))  # outputs 10
 
-print(last_true(2, 10, lambda x: x * x <= 30))  # outputs 5
+print(lastTrue(2, 10, lambda x: x * x <= 30))  # outputs 5
 
 # no numbers satisfy the condition
-print(last_true(2, 10, lambda x: False)) #  outputs 1
+print(lastTrue(2, 10, lambda x: False)) #  outputs 1
 ```
 
 See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if
@@ -277,7 +277,7 @@ public static int lastTrue(int lo, int hi, Predicate<Integer> test) {
 from typing import Callable
 
 
-def lastTrue(lo: int, hi: int, test: Callable[[int], bool]):
+def lastTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
 	"""
 	Binary Search
 	:param lo: lower bound
@@ -378,7 +378,7 @@ public class BinarySearch {
 from typing import Callable
 
 
-def firstTrue(lo: int, hi: int, test: Callable[[int], bool]):
+def firstTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
 	hi += 1
 	while lo < hi:
 		mid = (lo + hi) // 2
@@ -434,27 +434,38 @@ function returns `false`.
 #include <bits/stdc++.h>
 using namespace std;
 
-int lastTrue(int lo, int hi, function<bool(int)> f) {
-	for (--lo; lo < hi; ) {
-		int mid = lo+(hi-lo+1)/2;
-		if (f(mid)) lo = mid;
-		else hi = mid-1;
+int lastTrue(int lo, int hi, function<bool(int)> test) {
+	lo--;
+	while (lo < hi) {
+		int mid = lo + (hi - lo + 1) / 2;
+		if (test(mid)) {
+			lo = mid;
+		} else {
+			hi = mid - 1;
+		}
 	}
 	return lo;
 }
 
 int main() {
-	size_t n; int k; cin >> n >> k;
-	vector<int> a(n);
-	for (int& t: a) cin >> t;
-	sort(a.begin(), a.end());
-	cout << lastTrue(1, 2e9,[&](int x) {
-		// returns true if median can be raised to x
-		long long operationsNeeded = 0;
-		for (size_t i = (n-1)/2; i < n; ++i)
-			operationsNeeded += max(0, x-a[i]);
-		return operationsNeeded <= k;
-	});
+	int size;
+	int maxOps;
+	cin >> size >> maxOps;
+	vector<int> arr(size);
+	for (int& i: arr) {
+		cin >> i;
+	}
+	
+	sort(arr.begin(), arr.end());
+	// Use 2e9 instead of INT32_MAX to avoid overflow
+	cout << lastTrue(1, 2e9, [&] (int x) {
+		// Returns true if the median can be raised to x
+		long long opsNeeded = 0;
+		for (int i = (size - 1) / 2; i < size; i++) {
+			opsNeeded += max(0, x - arr[i]);
+		}
+		return opsNeeded <= maxOps;
+	}) << endl;
 }
 ```
 
@@ -469,69 +480,49 @@ Here we write the check function as a
 import java.io.*;
 import java.util.*;
 
-public class BinarySearch{
-	static int n, k;
-	static List<Integer> v = new ArrayList<>();
+public class MaxMed {
+	static int size;
+	static int maxOps;
+	static int[] arr;
 	public static void main(String[] args){
 		Kattio io = new Kattio();
 
-		n = io.nextInt(); k = io.nextInt();
-		for(int i = 0; i < n; i++){
-			int t = io.nextInt();
-			v.add(t);
+		size = io.nextInt();
+		maxOps = io.nextInt();
+		arr = new int[size];
+		for (int i = 0; i < size; i++) {
+			arr[i] = io.nextInt();
 		}
-		Collections.sort(v);
-		io.println(lastTrue(1, (int)2e9));
+		Arrays.sort(arr);
+
+		// Use 2e9 instead of Integer.MAX_VALUE to avoid overflow
+		io.println(lastTrue(1, (int) 2e9));
 		io.close();
 	}
 
-	public static boolean f(int x){
-		// returns true if median can be raised to x
-		long operationsNeeded = 0;
-		for (int i = (n-1)/2; i < n; i++)
-			operationsNeeded += Math.max(0, x-v.get(i));
-		return operationsNeeded <= k;
+	public static boolean medReachable(int x) {
+		// Returns true if median can be raised to x
+		long opsNeeded = 0;
+		for (int i = (size - 1) / 2; i < size; i++)
+			opsNeeded += Math.max(0, x - arr[i]);
+		return opsNeeded <= maxOps;
 	}
 
 	public static int lastTrue(int lo, int hi) {
-		for (--lo; lo < hi; ) {
-			int mid = lo+(hi-lo+1)/2;
-			if (f(mid)) lo = mid;
-			else hi = mid-1;
+		lo--;
+		while (lo < hi) {
+			int mid = lo + (hi - lo + 1) / 2;
+			if (medReachable(mid)) {
+				lo = mid;
+			}
+			else {
+				hi = mid - 1;
+			}
 		}
 		return lo;
 	}
 
-	static class Kattio extends PrintWriter {
-		private BufferedReader r;
-		private StringTokenizer st;
-
-		// standard input
-		public Kattio() { this(System.in,System.out); }
-		public Kattio(InputStream i, OutputStream o) {
-			super(o);
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-		// USACO-style file input
-		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
-		}
-
-		// returns null if no more input
-		public String next() {
-			try {
-				while (st == null || !st.hasMoreTokens())
-					st = new StringTokenizer(r.readLine());
-				return st.nextToken();
-			} catch (Exception e) {}
-			return null;
-		}
-
-		public int nextInt() { return Integer.parseInt(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-	}
+	//CodeSnip{Kattio}
 }
 ```
 
@@ -540,34 +531,35 @@ public class BinarySearch{
 <PySection>
 
 ```python
-# checks whether the number of given operations is sufficient
-# to raise the median of the array to x
-def f(x):
-	operationsNeeded = 0
-	for i in range((n-1)//2,n):
-		operationsNeeded += max(0, x-v[i])
-	if operationsNeeded <= k:
-		return True
-	else:
-		return False
+from typing import Callable
+
+
+def medReachable(x: int) -> bool:
+	"""
+	Checks whether the number of given operations is sufficient
+	to raise the median of the array to x.
+	"""
+	opsNeeded = 0
+	for i in range((size - 1) // 2, size):
+		opsNeeded += max(0, x - arr[i])
+	return opsNeeded <= maxOps
+
+
 # binary searches for the correct answer
-def search(lo, hi):
-	lo-=1
+def lastTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+	lo -= 1
 	while lo < hi:
-		mid = lo+(hi-lo+1)//2;
-		if f(mid):
+		mid = lo + (hi - lo + 1) // 2;
+		if test(mid):
 			lo = mid
 		else:
-			hi = mid-1
-
+			hi = mid - 1
 	return lo
 
 
-v=[]
-n, k = map(int, input().split())
-v = list(map(int, input().split()))
-v.sort()
-print(search(1, 2E9))
+size, maxOps = map(int, input().split())
+arr = sorted(list(map(int, input().split())))
+print(lastTrue(1, int(2e9), medReachable))
 ```
 
 </PySection>
@@ -588,20 +580,22 @@ Consider the code from CSAcademy's
 <CPPSection>
 
 ```cpp
-long long f(int x) {
-	return (long long)x * x;
+long long test(int x) {
+	return (long long) x * x;
 }
-int square_root(int x) {
-	int left = 0, right = x;
-	while (left < right) {
-		int middle = (left + right) / 2;
-		if (f(middle) <= x) {
-			left = middle;
+
+int sqrt(int x) {
+	int lo = 0;
+	int hi = x;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (test(mid) <= x) {
+			lo = mid;
 		} else {
-			right = middle - 1;
+			hi = mid - 1;
 		}
 	}
-	return left;
+	return lo;
 }
 ```
 
@@ -610,20 +604,22 @@ int square_root(int x) {
 <JavaSection>
 
 ```java
-public static long f(int x) {
-	return (long)x * x;
+public static long test(int x) {
+	return (long) x * x;
 }
-public static int square_root(int x) {
-	int left = 0, right = x;
-	while (left < right) {
-		int middle = (left + right) / 2;
-		if (f(middle) <= x) {
-			left = middle;
+
+public static int sqrt(int x) {
+	int lo = 0;
+	int hi = x;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (test(mid) <= x) {
+			lo = mid;
 		} else {
-			right = middle - 1;
+			hi = mid - 1;
 		}
 	}
-	return left;
+	return lo;
 }
 ```
 
@@ -632,19 +628,19 @@ public static int square_root(int x) {
 <PySection>
 
 ```python
-def f(x):
-	return x*x
+def test(x: int) -> int:
+	return x * x
 
-def square_root(x):
-	left = 0
-	right = 0
-	while left < right:
-		middle = (left + right) // 2
-		if f(middle) <= x:
-			left = middle
+def sqrt(x: int) -> int:
+	lo = 0
+	hi = 0
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if test(mid) <= x:
+			lo = mid
 		else:
-			right = middle - 1
-	return left
+			hi = mid - 1
+	return lo
 ```
 
 </PySection>
@@ -663,11 +659,19 @@ Consider a slightly modified version of `firstTrue`:
 <CPPSection>
 
 ```cpp
-int firstTrue(int lo, int hi, function<bool(int)> f) {
-	for (hi ++; lo < hi; ) {
-		int mid = (lo+hi)/2;
-		if (f(mid)) hi = mid;
-		else lo = mid+1;
+#include <functional>
+
+using namespace std;
+
+int firstTrue(int lo, int hi, function<bool(int)> test) {
+	hi++;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
 	}
 	return lo;
 }
@@ -678,11 +682,15 @@ int firstTrue(int lo, int hi, function<bool(int)> f) {
 <JavaSection>
 
 ```java
-public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
-	for (hi ++; lo < hi; ) {
-		int mid = (lo+hi)/2;
-		if (f.test(mid)) hi = mid;
-		else lo = mid+1;
+public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
+	hi++;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (test.test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
 	}
 	return lo;
 }
@@ -693,14 +701,17 @@ public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 <PySection>
 
 ```python
-def firstTrue(lo, hi, f):
-	hi+=1
+from typing import Callable
+
+
+def firstTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+	hi += 1
 	while lo < hi:
-		mid = (lo+hi)//2
-		if f(mid):
+		mid = (lo + hi) // 2
+		if test(mid):
 			hi = mid
 		else:
-			lo = mid+1
+			lo = mid + 1
 	return lo
 ```
 
@@ -717,10 +728,11 @@ example:
 
 ```cpp
 int main() {
-	cout << firstTrue(-10,-10,[](int x) { return false; }) << "\n";
-	// -8, should be -9
-	cout << firstTrue(-10,-10,[](int x) { return true; }) << "\n";
-	// infinite loop
+	// outputs -8 instead of -9
+	cout << firstTrue(-10, -10, [] (int x) { return false; }) << "\n";
+	
+	// causes an infinite loop
+	cout << firstTrue(-10, -10, [] (int x) { return true; }) << "\n";
 }
 ```
 
@@ -730,10 +742,11 @@ int main() {
 
 ```java
 public static void main(String[] args) {
-	System.out.println(firstTrue(-10,-10,(x) -> false));
-	// -8, should be -9
-	System.out.println(firstTrue(-10,-10,(x) -> true));
-	// infinite loop
+	// outputs -8 instead of -9
+	System.out.println(firstTrue(-10, -10, (x) -> false));
+
+	// causes an infinite loop
+	System.out.println(firstTrue(-10, -10, (x) -> true));
 }
 ```
 
@@ -742,10 +755,11 @@ public static void main(String[] args) {
 <PySection>
 
 ```python
-print(firstTrue(-10,-10,lambda x: False))
-# -8, should be -9
-print(firstTrue(-10,-10,lambda x: True))
-# infinite loop
+# outputs -8 instead of -9
+print(firstTrue(-10, -10, lambda x: False))
+
+# causes an infinite loop
+print(firstTrue(-10, -10, lambda x: True))
 ```
 
 </PySection>
@@ -760,11 +774,19 @@ of down.
 <CPPSection>
 
 ```cpp
-int firstTrue(int lo, int hi, function<bool(int)> f) {
-	for (hi ++; lo < hi; ) {
-		int mid = lo+(hi-lo)/2;
-		if (f(mid)) hi = mid;
-		else lo = mid+1;
+#include <functional>
+
+using namespace std;
+
+int firstTrue(int lo, int hi, function<bool(int)> test) {
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
 	}
 	return lo;
 }
@@ -775,11 +797,15 @@ int firstTrue(int lo, int hi, function<bool(int)> f) {
 <JavaSection>
 
 ```java
-public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
-	for (hi ++; lo < hi; ) {
-		int mid = lo+(hi-lo)/2;
-		if (f.test(mid)) hi = mid;
-		else lo = mid+1;
+public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (test.test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
 	}
 	return lo;
 }
@@ -790,14 +816,17 @@ public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 <PySection>
 
 ```python
-def firstTrue(lo, hi, f):
-	hi+=1
+from typing import Callable
+
+
+def firstTrue(lo: int, hi: NotImplemented, test: Callable[[int], bool]) -> int:
+	hi += 1
 	while lo < hi:
-		mid = lo+(hi-lo)/2
-		if f(mid):
+		mid = lo + (hi - lo) // 2
+		if test(mid):
 			hi = mid
 		else:
-			lo = mid+1
+			lo = mid + 1
 	return lo
 ```
 
@@ -894,37 +923,32 @@ functions.
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+void setIO(string name="") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
-	if (sz(name)) {
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+	if (!name.empty()) {
+		freopen((name+".in").c_str(), "r", stdin);  // see Input & Output
 		freopen((name+".out").c_str(), "w", stdout);
 	}
 }
 
 int main() {
 	setIO("haybales");
-	int N,Q; cin >> N >> Q;
-	vector<int> v(N);
-	for (int i = 0; i < N; ++i) cin >> v[i];
-	sort(begin(v),end(v));
-	for (int i = 0; i < Q; ++i) {
-		int A,B; cin >> A >> B;
-		cout << upper_bound(begin(v),end(v),B)-lower_bound(begin(v),end(v),A) << "\n";
+	int baleNum;
+	int queryNum;
+	cin >> baleNum >> queryNum;
+	vector<int> bales(baleNum);
+	for (int i = 0; i < baleNum; i++) {
+		cin >> bales[i];
+	}
+	
+	sort(begin(bales), end(bales));
+	for (int i = 0; i < queryNum; i++) {
+		int qStart;
+		int qEnd;
+		cin >> qStart >> qEnd;
+		cout << upper_bound(begin(bales), end(bales), qEnd) 
+					- lower_bound(begin(bales), end(bales), qStart) << "\n";
 	}
 }
 ```
@@ -938,42 +962,45 @@ We can use the builtin
 function.
 
 ```java
-
 import java.io.*;
 import java.util.*;
 
-public class haybales{
-	public static void main(String[] args) throws IOException
-	{
+public class Haybales {
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
+		PrintWriter out = new PrintWriter("haybales.out");
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int Q = Integer.parseInt(st.nextToken());
-		int[] arr = new int[N];
+
+		int baleNum = Integer.parseInt(st.nextToken());
+		int queryNum = Integer.parseInt(st.nextToken());
+		int[] bales = new int[baleNum];
 		st = new StringTokenizer(br.readLine());
-		for(int i = 0; i < N; i++){
-			arr[i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < baleNum; i++) {
+			bales[i] = Integer.parseInt(st.nextToken());
 		}
-		Arrays.sort(arr);
-		for(int i = 0; i < Q; i++){
+		
+		Arrays.sort(bales);
+		for (int i = 0; i < queryNum; i++) {
 			st = new StringTokenizer(br.readLine());
-			int low = Integer.parseInt(st.nextToken());
-			int high = Integer.parseInt(st.nextToken());
-			int bi = Arrays.binarySearch(arr, low);
-			if(bi < 0){
-				bi = Math.abs(bi+1);
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+			
+			// Get the left-est bale that's still in the interval
+			int bi = Arrays.binarySearch(bales, start);
+			if (bi < 0) {
+				bi = Math.abs(bi + 1);
 			}
-			int ti = Arrays.binarySearch(arr, high);
-			if(ti < 0){
-				ti = Math.abs(ti+2);
+
+			// And also get the right-est bale that's still in the interval
+			int ti = Arrays.binarySearch(bales, end);
+			if (ti < 0) {
+				ti = Math.abs(ti + 2);
 			}
-			out.println(ti-bi+1);
+			out.println(ti - bi + 1);
 		}
 		out.close();
 	}
 }
-
 ```
 
 </JavaSection>
@@ -985,28 +1012,23 @@ We can use the builtin
 function.
 
 ```py
-
 from bisect import bisect
 
-inp = open("haybales.in", 'r')
-out = open("haybales.out", 'w')
+inp = open("haybales.in", "r")
+out = open("haybales.out", "w")
 
-N, Q = map(int, inp.readline().split())
-arr = sorted(list(map(int, inp.readline().split())))
-
-for i in range(Q):
-	a, b = map(int, inp.readline().split())
-	print(bisect(arr, b) - bisect(arr, a-1), file=out)
-
-inp.close()
-out.close()
+baleNum, queryNum = map(int, inp.readline().split())
+bales = sorted(list(map(int, inp.readline().split())))
+for _ in range(queryNum):
+	start, end = map(int, inp.readline().split())
+	print(bisect(bales, end) - bisect(bales, start - 1), file=out)
 ```
 
 </PySection>
 
 </LanguageSection>
 
-### Without Built-in Function
+### Without Using Built-in Functions
 
 <LanguageSection>
 
@@ -1016,46 +1038,46 @@ out.close()
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+void setIO(string name="") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
-	if (sz(name)) {
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+	if (!name.empty()) {
+		freopen((name+".in").c_str(), "r", stdin);  // see Input & Output
 		freopen((name+".out").c_str(), "w", stdout);
 	}
 }
 
 int main() {
 	setIO("haybales");
-	int N,Q; cin >> N >> Q;
-	vector<int> v(N);
-	for (int& t: v) cin >> t;
-	sort(begin(v),end(v));
-	auto at_most = [&](int x) { // returns # of elements <= x
-		int lo = 0, hi = sz(v);
+	int baleNum;
+	int queryNum;
+	cin >> baleNum >> queryNum;
+	vector<int> bales(baleNum);
+	for (int& i: bales) {
+		cin >> i;
+	}
+
+	sort(begin(bales), end(bales));
+	// Returns the number of elements that are at most x
+	auto atMost = [&] (int x) {
+		int lo = 0;
+		int hi = bales.size();
 		while (lo < hi) {
-			int mid = (lo+hi)/2;
-			if (v[mid] <= x) lo = mid+1;
-			else hi = mid;
+			int mid = (lo + hi) / 2;
+			if (bales[mid] <= x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
 		}
 		return lo;
 	};
-	for (int i = 0; i < Q; ++i) {
-		int A,B; cin >> A >> B;
-		cout << at_most(B)-at_most(A-1) << "\n";
+
+	for (int i = 0; i < queryNum; ++i) {
+		int qStart;
+		int qEnd;
+		cin >> qStart >> qEnd;
+		cout << atMost(qEnd) - atMost(qStart - 1) << "\n";
 	}
 }
 ```
@@ -1068,72 +1090,73 @@ int main() {
 import java.util.*;
 import java.io.*;
 
-public class Haybales{
-	static int N, Q;
-	public static void main(String[] args) throws IOException{
+public class Haybales {
+	static int[] bales;
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("haybales");
-		N = io.nextInt();
-		Q = io.nextInt();
-		List<Integer> v = new ArrayList<>();
-		for (int i = 0; i < N; i++) {
-			int t = io.nextInt();
-			v.add(t);
+		int baleNum = io.nextInt();
+		int queryNum = io.nextInt();
+		bales = new int[baleNum];
+		for (int i = 0; i < baleNum; i++) {
+			bales[i] = io.nextInt();
 		}
-		Collections.sort(v);
+		Arrays.sort(bales);
 
-		for (int i = 0; i < Q; ++i) {
-			int A = io.nextInt();
-			int B = io.nextInt();
-			io.println(at_most(B)-at_most(A-1));
+		for (int i = 0; i < queryNum; ++i) {
+			int start = io.nextInt();
+			int end = io.nextInt();
+			io.println(atMost(end) - atMost(start - 1));
 		}
-
 		io.close();
 	}
 
-	public static int at_most(int x){ // returns # of elements <= x
-		int lo = 0, hi = v.size();
+	// Returns the number of elements that are at most x
+	public static int atMost(int x) {
+		int lo = 0;
+		int hi = bales.length;
 		while (lo < hi) {
-			int mid = (lo+hi)/2;
-			if (v.get(mid) <= x) lo = mid+1;
-			else hi = mid;
+			int mid = (lo + hi) / 2;
+			if (bales[mid] <= x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
 		}
 		return lo;
 	}
 
-	static class Kattio extends PrintWriter {
-		private BufferedReader r;
-		private StringTokenizer st;
-
-		// standard input
-		public Kattio() { this(System.in,System.out); }
-		public Kattio(InputStream i, OutputStream o) {
-			super(o);
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-		// USACO-style file input
-		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
-		}
-
-		// returns null if no more input
-		public String next() {
-			try {
-				while (st == null || !st.hasMoreTokens())
-					st = new StringTokenizer(r.readLine());
-				return st.nextToken();
-			} catch (Exception e) {}
-			return null;
-		}
-
-		public int nextInt() { return Integer.parseInt(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-	}
+	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+def atMost(x: int) -> int:
+	lo = 0
+	hi = len(bales)
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if bales[mid] <= x:
+			lo = mid + 1
+		else:
+			hi = mid
+	return lo
+
+
+inp = open("haybales.in", "r")
+out = open("haybales.out", "w")
+
+baleNum, queryNum = map(int, inp.readline().split())
+bales = sorted(list(map(int, inp.readline().split())))
+for _ in range(queryNum):
+	start, end = map(int, inp.readline().split())
+	print(atMost(end) - atMost(start - 1), file=out)
+```
+
+</PySection>
 
 </LanguageSection>
 
