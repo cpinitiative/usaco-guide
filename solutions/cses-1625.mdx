@@ -10,10 +10,15 @@ author: Vivian Han
 Adapted from https://usaco.guide/CPH.pdf#page=61
 
 <Warning title="Run times">
-Please note: the running times and number of recursive calls listed are for a separate but very similar problem (# paths from upper left to *lower right* corner on a 7x7 grid). 
-They may not be entirely accurate, but they illustrate the effect of each optimization. 
-The data is also C++ specific, so Java and Python users will experience significantly different runtimes.
-The consequences of this discrepancy which will be addressed later in the explanation.
+Please note: the running times and number of recursive calls listed are for a 
+separate but very similar problem (# paths from upper left to *lower right* 
+corner on a 7x7 grid). 
+They may not be entirely accurate, but they illustrate the effect of each 
+optimization. 
+The data is also C++ specific, so Java and Python users will experience 
+significantly different runtimes.
+The consequences of this discrepancy which will be addressed later in the 
+explanation.
 </Warning>
 
 ### Basic Algorithm
@@ -60,10 +65,10 @@ after the optimizations, the running time is only 0.6 seconds. Thus, the
 algorithm became nearly 1000 times faster after the optimizations.
 
 <Info>
-This is a usual phenomenon in backtracking, because the search tree is usually
+In backtracking, the search tree is usually
 large and even simple observations can effectively prune the search. Especially
-useful are optimizations that occur during the first steps of the algorithm, i.e., at
-the top of the search tree.
+useful are optimizations that occur during the first steps of the algorithm, 
+i.e., at the top of the search tree.
 </Info>
 
 For C++ users, this will be enough pruning to make the program run in time under
@@ -96,7 +101,8 @@ int dr[DIR_LEN] = {-1, 0, 1, 0};
 int dc[DIR_LEN] = {0, 1, 0, -1};
 const int PATH_LEN = 48;  // length of all possible paths
 int p[PATH_LEN];
-const int GRID_SIZE = 9;  // added border to all four sides so a 7x7 becomes a 9x9
+const int GRID_SIZE = 9;  
+// added border to all four sides so a 7x7 becomes a 9x9
 bool onPath[GRID_SIZE][GRID_SIZE];
 
 int tryPath(int pathIdx, int curR, int curC) {
@@ -181,7 +187,8 @@ import java.util.Scanner;
 
 public class GridPaths {
 
-	static boolean[][] onPath = new boolean[9][9];  // added border to all four sides so a 7x7 becomes a 9x9
+	static boolean[][] onPath = new boolean[9][9];  
+	// added border to all four sides so a 7x7 becomes a 9x9
 	static int[] dr = {-1, 0, 1, 0};  // transitions to up, right, down, left
 	static int[] dc = {0, 1, 0, -1};  // for row and column, respectively
 	static int[] p = new int[48];  // all possible paths have length 48
@@ -198,7 +205,7 @@ public class GridPaths {
 			else if (cur == 'R') p[i] = 1;
 			else if (cur == 'D') p[i] = 2;
 			else if (cur == 'L') p[i] = 3;
-			else p[i] = 4; // cur == '?'
+			else p[i] = 4; //cur == '?'
 		}
 
 		// set borders of grid
@@ -222,8 +229,9 @@ public class GridPaths {
 		if (curR == 7 && curC == 1) {  // reached endpoint
 			if (pathIdx == p.length) return 1;  // visited every cell -> valid!
 			return 0;  // didn't visit every cell (path length is too short)
-		}
-		if (pathIdx == p.length) return 0;  // visited all cells, but didn't end up in the correct locaiton
+		}  
+		if (pathIdx == p.length) return 0;  // visited all cells, but didn't
+											// end up in the correct locaiton
 
 		int ret = 0;  // cumulative count for this "starting position"
 		onPath[curR][curC] = true;
@@ -239,20 +247,23 @@ public class GridPaths {
 		// now search for dead ends (Optimization 4)
 		else if ((curC > 2) && onPath[curR][curC - 2]
 			&& (onPath[curR - 1][curC - 1] || onPath[curR + 1][curC - 1])
-			&& (!onPath[curR][curC - 1])) {  // potential dead end on the left:
+			&& (!onPath[curR][curC - 1])) { 
+		// potential dead end on the left:
 			int nxtR = curR;
 			int nxtC = curC - 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
 		else if ((curC < 6) && onPath[curR][curC + 2]
 			&& (onPath[curR - 1][curC + 1] || onPath[curR + 1][curC + 1] )
-			&& (!onPath[curR][curC + 1])) {  // potential dead end on the right:
+			&& (!onPath[curR][curC + 1])) {  
+		// potential dead end on the right:
 			int nxtR = curR;
 			int nxtC = curC + 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
 		}
-		else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1]
-			&& (!onPath[curR - 1][curC])) {  // potential dead end upwards
+		else if ((curR > 2) && onPath[curR - 2][curC] 
+			&& onPath[curR - 1][curC - 1] && (!onPath[curR - 1][curC])) {  
+		// potential dead end upwards
 		// note: I didn't include all possible scenarios because
 		// it wasn't necessary in order for the program to run in time
 			int nxtR = curR - 1;
