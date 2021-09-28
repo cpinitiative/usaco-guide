@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import 'tippy.js/themes/light.css';
 import { EditorContext } from '../../../context/EditorContext';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
+import UserNotesAPI from '../../../context/UserDataContext/properties/userNotesOnProblems';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemInfo } from '../../../models/problem';
 import TakeProblemNotesModal from '../../TakeProblemNotesModal';
@@ -80,11 +81,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     props.problems.every(problem => !!problem.percentageSolved);
 
   const { inEditor } = useContext(EditorContext);
-
-  function handleCloseNotesModal(data) {
+  const notesApi = new UserNotesAPI();
+  function handleCloseNotesModal(data, id) {
     // save the data
     console.log(data);
-
+    notesApi.setNote(id, data);
     setShowNotesModal(false);
   }
 
@@ -239,6 +240,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
       <TakeProblemNotesModal
         isOpen={showNotesModal}
         onClose={handleCloseNotesModal}
+        problem={problem.uniqueId}
+        content={notesApi.getNote(problem.uniqueId)}
       />
     </div>
   );

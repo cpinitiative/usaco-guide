@@ -44,7 +44,7 @@ export default class NotesEditor extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = { editorHtml: '' };
+    this.state = { editorHtml: this.props.initialContent };
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -70,7 +70,7 @@ export default class NotesEditor extends Component<any, any> {
           defaultValue={this.state.editorHtml}
           modules={this.modules}
           formats={this.formats}
-          placeholder=""
+          placeholder={this.state.editorHtml}
         />
       );
     } else {

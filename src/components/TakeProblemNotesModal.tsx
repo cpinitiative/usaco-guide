@@ -7,9 +7,13 @@ const NotesEditor = loadable(() => import('./NotesEditor'));
 export default function TakeProblemNotesModal({
   isOpen,
   onClose,
+  problem,
+  content,
 }: {
   isOpen: boolean;
   onClose: any;
+  problem: string;
+  content: string;
 }) {
   const [noteState, setNoteState] = React.useState(null);
 
@@ -24,7 +28,7 @@ export default function TakeProblemNotesModal({
         static
         className="fixed z-10 inset-0 overflow-y-auto"
         open={isOpen}
-        onClose={() => onClose()}
+        onClose={() => onClose(noteState, problem)}
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -62,7 +66,7 @@ export default function TakeProblemNotesModal({
                 {/*     Description*/}
                 {/*  </p>*/}
                 {/*</div>*/}
-                <NotesEditor save={save} />
+                <NotesEditor save={save} intialContent {...content} />
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
