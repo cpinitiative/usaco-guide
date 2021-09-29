@@ -66,7 +66,7 @@ const GroupsCodeBlock = ({
   if (className === 'language-video') {
     return <VideoComponent link={value} />;
   }
-  return <CodeBlock className={`language-${className}`}>{value}</CodeBlock>;
+  return <CodeBlock className={className}>{value}</CodeBlock>;
 };
 
 const renderers = {
