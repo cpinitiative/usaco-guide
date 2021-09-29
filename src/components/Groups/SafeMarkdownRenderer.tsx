@@ -59,18 +59,18 @@ const VideoComponent = ({ link }: { link: string }) => {
   );
 };
 const GroupsCodeBlock = ({
-  language,
-  value,
+  className, // language
+  props,
 }: {
-  language: string;
-  value: string;
+  className: string;
+  props;
 }) => {
-  console.log(language);
-  console.log(value);
-  if (language === 'video') {
-    return <VideoComponent link={value} />;
+  console.log(className);
+  console.log(props);
+  if (className === 'video') {
+    return <VideoComponent link={props} />;
   }
-  return <CodeBlock className={`language-${language}`}>{value}</CodeBlock>;
+  return <CodeBlock className={`language-${className}`}>{props}</CodeBlock>;
 };
 
 const renderers = {
