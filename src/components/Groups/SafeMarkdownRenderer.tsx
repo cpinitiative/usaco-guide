@@ -75,7 +75,7 @@ const renderers = {
 
 export default function SafeMarkdownRenderer({ children }) {
   return (
-    <div className="prose dark:prose-light max-w-none">
+    <div className="max-w-none">
       {/* @ts-expect-error https://github.com/rehypejs/rehype/discussions/63 */}
       <ReactMarkdown components={renderers} plugins={[gfm]} linkTarget="_blank">
         {children}
