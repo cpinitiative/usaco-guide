@@ -7,17 +7,14 @@ import Feedback from './Feedback';
 
 const VideoComponent = ({ link }: { link: string }) => {
   const getParameterByName = (name: string, url = window.location.href) => {
-    console.log(name);
     name = name.replace(/[\[\]]/g, '\\$&');
     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
       results = regex.exec(url);
-    console.log(results);
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
   };
   let id = '';
-  console.log(id);
   if (link.indexOf('youtube.com') !== -1) {
     id = getParameterByName('v', link.trim());
   } else if (link.indexOf('youtu.be') !== -1) {
@@ -63,14 +60,13 @@ const GroupsCodeBlock = ({
   children,
 }: {
   className: string;
-  children;
+  children: Array<string>;
 }) => {
-  console.log(className);
-  console.log(children);
+  const value = children[0];
   if (className === 'language-video') {
-    return <VideoComponent link={children} />;
+    return <VideoComponent link={value} />;
   }
-  return <CodeBlock className={`language-${className}`}>{children}</CodeBlock>;
+  return <CodeBlock className={`language-${className}`}>{value}</CodeBlock>;
 };
 
 const renderers = {
