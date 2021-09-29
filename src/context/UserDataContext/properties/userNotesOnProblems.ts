@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser';
-import admin from 'firebase-admin';
 import { collection, getFirestore, query, where } from 'firebase/firestore';
 import React from 'react';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
@@ -7,13 +6,15 @@ import UserDataContext from '../UserDataContext';
 
 // keeping notes separate as it is not in the user docs, but rather in a individual notes doc
 export default class UserNotesAPI {
-  userNotesValue: Map<string, string>;
+  userNotesValue: Map<string, string> = new Map<string, string>();
   q: any;
 
   getNote = (problemId: string) => {
     try {
+      console.log(problemId);
       return this.userNotesValue.get(problemId);
     } catch (e) {
+      console.log(problemId);
       this.userNotesValue.set(problemId, 'Type here!');
     }
   };
@@ -39,8 +40,6 @@ export default class UserNotesAPI {
     try {
       this.userNotesValue.delete(problemId);
       this.userNotesValue.set(problemId, noteContent);
-
-      const db = admin.firestore();
 
       console.log('logged');
     } catch (e) {

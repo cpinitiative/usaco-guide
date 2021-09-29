@@ -56,7 +56,7 @@ export default class NotesEditor extends Component<any, any> {
 
   componentDidMount() {
     this.setState({
-      editorHtml: '',
+      editorHtml: this.props.initialContent,
     });
   }
 

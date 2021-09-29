@@ -240,8 +240,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
       <TakeProblemNotesModal
         isOpen={showNotesModal}
         onClose={handleCloseNotesModal}
-        problem={problem.uniqueId}
-        content={notesApi.getNote(problem.uniqueId)}
+        problem={problem?.uniqueId}
+        content={notesApi.getNote(problem?.uniqueId)}
       />
     </div>
   );

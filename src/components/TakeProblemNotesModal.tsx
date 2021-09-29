@@ -66,7 +66,7 @@ export default function TakeProblemNotesModal({
                 {/*     Description*/}
                 {/*  </p>*/}
                 {/*</div>*/}
-                <NotesEditor save={save} intialContent {...content} />
+                <NotesEditor save={save} intialContent={content} />
               </div>
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
