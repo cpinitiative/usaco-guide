@@ -36,12 +36,13 @@ To efficiently handle transitions in $\mathcal{O}(\log n)$ or $\mathcal{O}(1)$, 
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-
+// source: https://github.com/kth-competitive-programming/kactl/blob/main/content/data-structures/LineContainer.h
+// supports insertion of linear functions and querying of MAXIMUM value of x for a given x
 inline namespace _LineContainer {
     bool _Line_Comp_State; 
     struct Line {
-        mutable long long k, m, p;
+        // k is slope, m is intercept, p is intersection point
+        mutable ll k, m, p;
         bool operator<(const Line& o) const {
             return _Line_Comp_State ? p < o.p : k < o.k;
         }
@@ -51,7 +52,7 @@ inline namespace _LineContainer {
         const long long inf = LLONG_MAX;
  
         inline long long div(long long a, long long b) { return a / b - ((a ^ b) < 0 && a % b); }
- 
+        
         bool isect(iterator x, iterator y) {
             if (y == end()) { 
                 x->p = inf; 
@@ -64,10 +65,6 @@ inline namespace _LineContainer {
             return x->p >= y->p;
         }
 
-        /**
-         * @param k Slope
-         * @param m Y-Intercept
-         */ 
         void add(long long k, long long m) {
             auto z = insert({k, m, 0}), y = z++, x = y;
             while (isect(y, z)) 
@@ -95,7 +92,7 @@ int main() {
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     cin >> N >> A >> B >> C;
-    ll P = 0, a, dp = 0;
+    long long P = 0, a, dp = 0;
     for (int i = 1; i <= N; i++) {
         lc.add(-2 * A * P, dp + A * P * P - B * P);
         cin >> a; P += a;
