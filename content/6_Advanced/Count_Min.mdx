@@ -48,17 +48,20 @@ struct Node {
 
 // combines two segment tree nodes
 Node merge(Node a, Node b) {
-	if (a.val < b.val)
+	if (a.val < b.val) {
 		return a;
-	if (a.val > b.val)
+	}
+	else if (a.val > b.val) {
 		return b;
+	}
 	return {a.val, a.cnt + b.cnt};
 }
 
 // updates the ith value to v
 void update(int i, int v) {
-	for (T[i += MAXN] = {v, 1}; i > 1; i >>= 1)
+	for (T[i += MAXN] = {v, 1}; i > 1; i >>= 1) {
 		T[i >> 1] = merge(T[i], T[i ^ 1]);
+	}
 }
 
 // returns the minimum and occurences between indices l and r
@@ -133,13 +136,16 @@ pair<long long, long long> T[MAXN * 4];
 int L[MAXN * 4];
  
 pair<long long, long long> merge(pair<long long, long long> a, pair<long long, long long> b) {
-	if (a.first < b.first)
+	if (a.first < b.first) {
 		return a;
-	if (a.first > b.first)
+	}
+	if (a.first > b.first) {
 		return b;
+	}
 	return MP(a.first, a.second + b.second);
 }
  
+// pushes updates down
 void pushdown(int t) {
 	if (L[t]) {
 		T[t << 1].first += L[t];
@@ -149,7 +155,8 @@ void pushdown(int t) {
 		L[t] = 0;
 	}
 }
- 
+
+// constructs the segment tree
 void build(int t = 1, int tl = 0, int tr = MAXN) {
 	if (tl == tr) {
 		T[t] = MP(0, 1);
@@ -160,7 +167,8 @@ void build(int t = 1, int tl = 0, int tr = MAXN) {
 	build(t << 1 | 1, tm + 1, tr);
 	T[t] = merge(T[t << 1], T[t << 1 | 1]);
 }
- 
+
+// adds v to indices l to r 
 void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
 	if (r < tl || tr < l)
 		return;
@@ -176,7 +184,8 @@ void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
 	update(l, r, v, t << 1 | 1, tm + 1, tr);
 	T[t] = merge(T[t << 1], T[t << 1 | 1]);
 }
- 
+
+// queries min and count of entire segment tree
 long long query() {
 	// always maintain one element with value of zero
 	// so we don't have to check if zero is the minimum
