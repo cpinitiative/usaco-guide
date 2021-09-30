@@ -38,6 +38,8 @@ using namespace std;
 
 // source: https://github.com/kth-competitive-programming/kactl/blob/main/content/data-structures/LineContainer.h
 // supports insertion of linear functions and querying of MAXIMUM value of x for a given x
+// for details on internal implementation, see LineContainer module
+// alternatively, learn Li Chao Tree
 inline namespace _LineContainer {
     bool _Line_Comp_State; 
     struct Line {
@@ -49,17 +51,15 @@ inline namespace _LineContainer {
     };
     
     struct LineContainer : multiset<Line> {
-        const long long inf = LLONG_MAX;
- 
         inline long long div(long long a, long long b) { return a / b - ((a ^ b) < 0 && a % b); }
         
         bool isect(iterator x, iterator y) {
             if (y == end()) { 
-                x->p = inf; 
+                x->p = LLONG_MAX; 
                 return false; 
             }
             if (x->k == y->k) 
-                x->p = x->m > y->m ? inf : -inf;
+                x->p = x->m > y->m ? LLONG_MAX : -LLONG_MAX;
             else 
                 x->p = div(y->m - x->m, x->k - y->k);
             return x->p >= y->p;
