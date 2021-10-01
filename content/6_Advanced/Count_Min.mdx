@@ -44,7 +44,7 @@ const int INF = INT32_MAX;
 
 struct Node {
 	int val = INF, cnt = 1;
-} T[2 * MAXN];
+} Tree[2 * MAXN];
 
 // combines two segment tree nodes
 Node merge(Node a, Node b) {
@@ -58,8 +58,8 @@ Node merge(Node a, Node b) {
 
 // updates the ith value to v
 void update(int i, int v) {
-	for (T[i += MAXN] = {v, 1}; i > 1; i >>= 1) {
-		T[i >> 1] = merge(T[i], T[i ^ 1]);
+	for (Tree[i += MAXN] = {v, 1}; i > 1; i >>= 1) {
+		Tree[i >> 1] = merge(Tree[i], Tree[i ^ 1]);
 	}
 }
 
@@ -67,8 +67,8 @@ void update(int i, int v) {
 Node query(int l, int r) {
 	Node res;
 	for (l += MAXN, r += MAXN + 1; l < r; l >>= 1, r >>= 1) {
-		if (l & 1) res = merge(res, T[l++]);
-		if (r & 1) res = merge(res, T[--r]);
+		if (l & 1) res = merge(res, Tree[l++]);
+		if (r & 1) res = merge(res, Tree[--r]);
 	}
 	return res;
 }
@@ -131,8 +131,8 @@ int N;
 vector<Event> E;
 	
 // segment tree
-pair<long long, long long> T[MAXN * 4];
-int L[MAXN * 4];
+pair<long long, long long> Tree[MAXN * 4];
+int Lazy[MAXN * 4];
  
 pair<long long, long long> merge(pair<long long, long long> a, pair<long long, long long> b) {
 	if (a.first < b.first) {
@@ -146,25 +146,25 @@ pair<long long, long long> merge(pair<long long, long long> a, pair<long long, l
  
 // pushes updates down
 void pushdown(int t) {
-	if (L[t]) {
-		T[t << 1].first += L[t];
-		L[t << 1] += L[t];
-		T[t << 1 | 1].first += L[t];
-		L[t << 1 | 1] += L[t];
-		L[t] = 0;
+	if (Lazy[t]) {
+		Tree[t << 1].first += L[t];
+		Lazy[t << 1] += L[t];
+		Tree[t << 1 | 1].first += L[t];
+		Lazy[t << 1 | 1] += L[t];
+		Lazy[t] = 0;
 	}
 }
 
 // constructs the segment tree
 void build(int t = 1, int tl = 0, int tr = MAXN) {
 	if (tl == tr) {
-		T[t] = MP(0, 1);
+		Tree[t] = MP(0, 1);
 		return;
 	}
 	int tm = (tl + tr) >> 1;
 	build(t << 1, tl, tm);
 	build(t << 1 | 1, tm + 1, tr);
-	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+	Tree[t] = merge(Tree[t << 1], Tree[t << 1 | 1]);
 }
 
 // adds v to indices l to r 
@@ -172,8 +172,8 @@ void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
 	if (r < tl || tr < l)
 		return;
 	if (l <= tl && tr <= r) {
-		T[t].first += v;
-		L[t] += v;
+		Tree[t].first += v;
+		Lazy[t] += v;
 		return;
 	}
 	if (tl != tr)
@@ -181,7 +181,7 @@ void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
 	int tm = (tl + tr) >> 1;
 	update(l, r, v, t << 1, tl, tm);
 	update(l, r, v, t << 1 | 1, tm + 1, tr);
-	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+	Tree[t] = merge(Tree[t << 1], Tree[t << 1 | 1]);
 }
 
 // queries min and count of entire segment tree
