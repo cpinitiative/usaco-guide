@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
+import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 import Youtube from '../markdown/Youtube';
 import Feedback from './Feedback';
 
@@ -65,7 +66,7 @@ const GroupsCodeBlock = ({
   if (className === 'language-video') {
     return <VideoComponent link={value} />;
   }
-  return <>value</>;
+  return <CodeBlock className={className}>{value}</CodeBlock>;
 };
 
 const renderers = {

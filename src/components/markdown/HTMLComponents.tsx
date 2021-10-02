@@ -51,6 +51,9 @@ const li = ({ children, ...props }): JSX.Element => (
     <div className="flex-1">{children}</div>
   </li>
 );
+const code = ({ children, ...props }): JSX.Element => (
+  <div {...props}>{children}</div>
+);
 const inlineCode = (props): JSX.Element => (
   <code {...props} className="inline-code" />
 );
@@ -95,7 +98,8 @@ const HTMLComponents = {
   h4,
   p,
   li,
-  code: inlineCode,
+  code,
+  inlineCode,
   pre,
   a,
   HeaderLink,
