@@ -7,7 +7,7 @@ author: Óscar Garries, Ryan Chou
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowqueue_bronze_feb17.html)
 
-We can naively step through all of the cow entries.
+Since the time the cows arrive and need for questioning can be up to $10^6$, we should traverse through the times as steps.
 
 ## Implementation
 
@@ -27,16 +27,15 @@ int main() {
 	freopen("cowqueue.in", "r", stdin);
 	freopen("cowqueue.out", "w", stdout);
 	
-	int n, curTime = 0; 
+	int n;
+	int curTime = 0; 
 	cin >> n;
 	
 	vector<pair<int, int>> cows(n);
 	for (int i = 0; i < n; i++)
 		cin >> cows[i].first >> cows[i].second;
 	
-	sort(cows.begin(), cows.end(), [](auto &left, auto &right) {
-		return left.first < right.first;
-	});
+	sort(cows.begin(), cows.end());
 
 	for (int i = 0; i < n; i++) {
 		// this cow was already waiting, add questioning time to current time.
