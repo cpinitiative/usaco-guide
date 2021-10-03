@@ -94,49 +94,50 @@ public class Factory {
 using namespace std;
 
 int main(){
-    // uncomment before submitting to usaco
-    // freopen("factory.in", "r", stdin);
-    // freopen("factory.out", "w", stdout);
+	// uncomment before submitting to usaco
+	freopen("factory.in", "r", stdin);
+	freopen("factory.out", "w", stdout);
 
-    // number of nodes
-    int n;cin>>n;
-    
-    //outgoing bool array, stores if we go out from this array or not,initialised with false
-    vector<bool> outgoing(n,false);
+	// number of nodes
+	int n;cin >> n;
 
-    //take in input
-    for(int i = 0; i  < n - 1; i++){
-        int u,v;cin>>u>>v;
-        //making nodes zero-indexed
-        u--,v--;
+	// outgoing bool array, stores if we go out from this array or not,initialised with false
+	vector<bool> outgoing( n , false );
 
-        //we can go out from u
-        outgoing[u] = true;
-    }
+	// take in input
+	for(int i = 0; i  < n - 1; i++){
+		int u,v;
+		cin >> u >> v;
+		//making nodes zero-indexed
+		u--,v--;
 
-    //if there is exactly one node which we cant get out of, we say thats the answer
-    
-    //answer node
-    int ans = -1;
+		//we can go out from u
+		outgoing[u] = true;
+	}
 
-    //checking nodes
-    for(int i = 0; i < n; i++){
-        //if not outgoing
-        if(!outgoing[i]){
-            if(ans == -1){
-                //first node to have 0 outgoing edges
-                ans = i+1;//1-based so i + 1 
-            }else{
-                //second node to have 0 outgoing edges so, there are 2 sinks, so no answer
-                cout<<-1;
-                return 0;
-            }
-        }
-    }
+	// logic
+	// if there is exactly one node which we cant get out of, we say thats the answer
+	
+	// answer node
+	int ans = -1;
 
-    cout<<ans;
+	// checking nodes
+	for(int i = 0; i < n; i++){
+		// if not outgoing
+		if(!outgoing[i]){
+			if(ans == -1){
+				// first node to have 0 outgoing edges
+				ans = i+1;// 1-based so i + 1 
+			}else{
+				// second node to have 0 outgoing edges so, there are 2 sinks, so no answer
+				cout<<-1;
+				return 0;
+			}
+		}
+	}
+
+	cout<<ans;
 }
-
 ```
 
 </CPPSection>
