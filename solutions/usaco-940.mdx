@@ -93,25 +93,25 @@ public class Factory {
 #include<bits/stdc++.h>
 using namespace std;
 
-int main(){
+int main() {
 	// uncomment before submitting to usaco
 	freopen("factory.in", "r", stdin);
 	freopen("factory.out", "w", stdout);
 
 	// number of nodes
-	int n;cin >> n;
+	int n;
+	cin >> n;
 
 	// outgoing bool array, stores if we go out from this array or not,initialised with false
-	vector<bool> outgoing( n , false );
+	vector<bool> outgoing(n, false);
 
 	// take in input
-	for(int i = 0; i  < n - 1; i++){
-		int u,v;
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
 		cin >> u >> v;
-		//making nodes zero-indexed
-		u--,v--;
-
-		//we can go out from u
+		// making nodes zero-indexed
+		u--, v--;
+		// we can go out from u
 		outgoing[u] = true;
 	}
 
@@ -122,15 +122,15 @@ int main(){
 	int ans = -1;
 
 	// checking nodes
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		// if not outgoing
-		if(!outgoing[i]){
-			if(ans == -1){
+		if (!outgoing[i]) {
+			if (ans == -1) {
 				// first node to have 0 outgoing edges
-				ans = i+1;// 1-based so i + 1 
-			}else{
-				// second node to have 0 outgoing edges so, there are 2 sinks, so no answer
-				cout<<-1;
+				ans = i + 1;// 1-based so i + 1 
+			} else {
+				// second node to have 0 outgoing edges so there are 2 sinks - answer
+				cout << -1 << endl;
 				return 0;
 			}
 		}
