@@ -9,7 +9,7 @@ author: Dustin Miao
 
 Let $\texttt{dp}[i]$ denote the maximum effectiveness of the prefix of length $i$ of the unit. The transitions are defined as $$\texttt{dp}[i] = \max_{0 \leq j < i} \{\texttt{dp}[j] + ax^2+bx+c\}$$, where $x = \texttt{sum}(j + 1, i) = \sum_{k = j + 1}^i x_k$. Define a prefix sum array $\texttt{pre}[i] = \sum_{k = 1}^i x_k$. We can then express $x$ as $\texttt{pre}(i) - \texttt{pre}(j)$. 
 
-Evaluate the first equation with our new value of $x = \texttt{pre}(i) - \texttt{pre}(j)$
+Evaluate the first equation with our new value of $x = \texttt{pre}(i) - \texttt{pre}(j)$:
 - $\texttt{dp}(i) = \max_{1 \leq j < i} \{\texttt{dp}[j] + ax^2+bx+c\}$
 - $\texttt{dp}(i) = \max_{1 \leq j < i} \{\texttt{dp}[j] + a[\texttt{pre}(i) - \texttt{pre}(j)]^2+b[\texttt{pre}(i) - \texttt{pre}(j)]+c\}$
 - $\texttt{dp}(i) = \max_{1 \leq j < i} \{\texttt{dp}[j] + [a\cdot\texttt{pre}(i)^2 - 2a\cdot\texttt{pre}(i)\texttt{pre}(j) + a\cdot\texttt{pre}(j)^2] + b\cdot\texttt{pre}(i)-b\cdot\texttt{pre}(j)+c\}$
