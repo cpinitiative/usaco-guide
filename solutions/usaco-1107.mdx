@@ -74,14 +74,15 @@ import java.io.*;
 import java.util.*;
 
 public class YearOfTheCow {
-	static String[] animals = {"Ox", "Tiger", "Rabbit", "Dragon", "Snake", 
-	"Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"};
+	static String[] animals = {
+		"Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
+		"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
+	};
 
 	static Map<String, Integer> when_born = new TreeMap<>();
 
 	// given a year, return what animal the year is
-	static String getAnimal(int year)
-	{
+	static String getAnimal(int year) {
 		int a = 0, y = 2021;
 		while (y < year) {
 			y++;
@@ -102,22 +103,21 @@ public class YearOfTheCow {
 
 	public static void main (String[] args) {
 		Kattio io = new Kattio();
-		int n;
-		n = io.nextInt();
+		int n = io.nextInt();
 		when_born.put("Bessie", 2021);
 
-		String cowa, born, in, relation, animal, year, from, cowb;
+		String cowA, born, in, relation, animal, year, from, cowB;
 		for (int i = 0; i < n; i++) {
-			cowa = io.next();
+			cowA = io.next();
 			born = io.next();
 			in = io.next();
 			relation = io.next();
 			animal = io.next();
 			year = io.next();
 			from = io.next();
-			cowb = io.next();
+			cowB = io.next();
 
-			when_born.put(cowa, when_born.get(cowb));
+			when_born.put(cowA, when_born.get(cowB));
 
 			/*
 			 * make sure that the loop is executed at least once and
@@ -126,11 +126,11 @@ public class YearOfTheCow {
 			 */
 			do {
 				if (relation.equals("previous")) {
-					when_born.put(cowa, when_born.get(cowa) - 1);
+					when_born.put(cowA, when_born.get(cowA) - 1);
 				} else {
-					when_born.put(cowa, when_born.get(cowa) + 1);
+					when_born.put(cowA, when_born.get(cowA) + 1);
 				}
-			} while (!getAnimal(when_born.get(cowa)).equals(animal));
+			} while (!getAnimal(when_born.get(cowA)).equals(animal));
 		}
 
 		int diff = when_born.get("Bessie") - when_born.get("Elsie");
