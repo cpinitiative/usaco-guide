@@ -1,0 +1,111 @@
+---
+id: usaco-666
+source: USACO Silver 2016 December
+title: Counting Haybales
+author: Albert Zhu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_haybales_silver_dec16.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void setIO(string prob="") {
+	if (!prob.empty()) {
+		freopen((prob + ".in").c_str(), "r", stdin);
+		freopen((prob + ".out").c_str(), "w", stdout);
+	}
+}
+
+const int MAX_N = 1e5;
+
+int haybales[MAX_N];
+
+int main() {
+	setIO("haybales");
+	
+	int n, q;
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) cin >> haybales[i];
+	
+	sort(haybales, haybales + n);
+	for (int i = 0; i < q; i++) {
+		int a, b;
+		cin >> a >> b;
+		int left = lower_bound(haybales, haybales + n, a) - haybales;
+		int right = upper_bound(haybales, haybales + n, b) - haybales;
+		cout << right - left << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Haybales {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("haybales.in"));
+		PrintWriter pw = new PrintWriter("haybales.out");
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+		
+		int haybales[] = new int[n];
+		st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++) {
+			haybales[i] = Integer.parseInt(st.nextToken());
+		}
+		
+		Arrays.sort(haybales);
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(in.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			
+			int lo = 0, hi = n;
+			while (lo < hi) {
+				int mid = lo + (hi - lo) / 2;
+				if (haybales[mid] >= a)
+					hi = mid;
+				else
+					lo = mid + 1;
+			}
+			int left = lo;
+			
+			lo = 0;
+			hi = n;
+			while (lo < hi) {
+				int mid = lo + (hi - lo) / 2;
+				if (haybales[mid] > b)
+					hi = mid;
+				else
+				lo = mid + 1;
+			}
+			int right = lo;
+			
+			pw.println(right - left);
+		}
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

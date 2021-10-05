@@ -2,7 +2,7 @@
 id: cses-2422
 source: CSES
 title: Multiplication Table
-author: Maggie Liu
+author: Maggie Liu, Brad Ma
 ---
 
 ## Explanation
@@ -43,6 +43,8 @@ int main()
 	long long n;
 	cin >> n;
 	long long low = 1, high = n * n, mid, leq;
+	
+	// binary search to get the median
 	while (low < high)
 	{
 		mid = (low + high) / 2;
@@ -66,5 +68,44 @@ int main()
 ```
 
 </CPPSection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class MultiplicationTable {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		long n = io.nextInt();
+		long low = 1, high = n * n, mid, leq;
+
+		// binary search to find the median
+		while (low < high)
+		{
+			mid = (low + high) / 2;
+			leq = 0;
+			for (int i = 1; i <= n; i++)
+			{
+				leq += Math.min(n, mid / i);
+			}
+			if (leq >= (n * n + 1) / 2)
+			{
+				high = mid;
+			}
+			else
+			{
+				low = mid + 1;
+			}
+		}
+
+		io.println(high);
+		io.close();
+	}
+}	
+```
+	
+</JavaSection>
 
 </LanguageSection>
