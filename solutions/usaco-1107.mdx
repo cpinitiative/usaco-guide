@@ -79,32 +79,32 @@ public class YearOfTheCow {
 		"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
 	};
 
-	static Map<String, Integer> when_born = new TreeMap<>();
+	static Map<String, Integer> whenBorn = new TreeMap<>();
 
 	// given a year, return what animal the year is
 	static String getAnimal(int year) {
-		int a = 0, y = 2021;
-		while (y < year) {
-			y++;
-			a++;
-			if (a == 12) {  // reset once you reach 12
-				a = 0;
+		int currAnimal = 0, currYear = 2021;
+		while (currYear < year) {
+			currYear++;
+			currAnimal++;
+			if (currAnimal == 12) {  // end of a 12 year cycle
+				currAnimal = 0;
 			}
 		}
-		while (y > year) {
-			y--;
-			a--;
-			if (a == -1) {
-				a = 11;
+		while (currYear > year) {
+			currYear--;
+			currAnimal--;
+			if (currAnimal == -1) {  // end of a 12 year cycle
+				currAnimal = 11;
 			}
 		}
-		return animals[a];
+		return animals[currAnimal];
 	}
 
 	public static void main (String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
-		when_born.put("Bessie", 2021);
+		whenBorn.put("Bessie", 2021);
 
 		String cowA, born, in, relation, animal, year, from, cowB;
 		for (int i = 0; i < n; i++) {
@@ -117,7 +117,7 @@ public class YearOfTheCow {
 			from = io.next();
 			cowB = io.next();
 
-			when_born.put(cowA, when_born.get(cowB));
+			whenBorn.put(cowA, whenBorn.get(cowB));
 
 			/*
 			 * make sure that the loop is executed at least once and
@@ -126,14 +126,14 @@ public class YearOfTheCow {
 			 */
 			do {
 				if (relation.equals("previous")) {
-					when_born.put(cowA, when_born.get(cowA) - 1);
+					whenBorn.put(cowA, whenBorn.get(cowA) - 1);
 				} else {
-					when_born.put(cowA, when_born.get(cowA) + 1);
+					whenBorn.put(cowA, whenBorn.get(cowA) + 1);
 				}
-			} while (!getAnimal(when_born.get(cowA)).equals(animal));
+			} while (!getAnimal(whenBorn.get(cowA)).equals(animal));
 		}
 
-		int diff = when_born.get("Bessie") - when_born.get("Elsie");
+		int diff = whenBorn.get("Bessie") - whenBorn.get("Elsie");
 		diff = Math.abs(diff);  // we want the difference so take the absolute value
 
 		io.println(diff);
