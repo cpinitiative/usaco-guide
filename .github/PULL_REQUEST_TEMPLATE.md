@@ -1,4 +1,4 @@
-*If any of the below doesn't apply to this Pull Request, delete it.*
+_If any of the below doesn't apply to this Pull Request, delete it._
 
 - [ ] I have tested my code
 - [ ] I have followed the code style guidelines mentioned [here](https://usaco.guide/general/adding-solution/#code-conventions)
