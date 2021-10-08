@@ -1,4 +1,4 @@
-_If any of the below doesn't apply to this Pull Request, delete it._
+_If any of the below doesn't apply to this Pull Request, mark the checkbox as done._
 
 - [ ] I have tested my code
 - [ ] I have followed the code style guidelines mentioned [here](https://usaco.guide/general/adding-solution/#code-conventions)
