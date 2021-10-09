@@ -116,7 +116,8 @@ export default function TopNavigationBar({
                   Register for our interview of the EGOI team!
                 </span>
                 <span className="hidden md:inline">
-                  Want to learn from the Experience & Tips of the EGOI team? Reigster for our CPI Workshop!
+                  Want to learn from the Experience & Tips of the EGOI team?
+                  Reigster for our CPI Workshop!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
