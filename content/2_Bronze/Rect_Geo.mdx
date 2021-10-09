@@ -516,6 +516,44 @@ print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - inters
 
 </Spoiler>
 
+## Common Formulas
+
+Certain tasks show up often in rectangle geometry problems. For example, many problems
+involve finding the overlapping area of two or more rectangles based on their coordinate points, 
+or determining whether two rectangles intersect. Here, we'll discuss these formulas. 
+	
+<Info title="Insert Title Here">
+Since we're just discussing formulas here, we won't use code,
+though each of these should be easy to implement in each language.
+</Info>
+
+	
+### Finding intersection
+
+First, we notice that rectangles can be represented by $2$ points each, the top left and 
+the bottom right. We'll call these points $tr_a$ and $tr_b$, and $bl_a$ and $bl_b$, for rectangles 
+$a$ and $b$. 
+	
+There are only two cases where the rectangles do not intersect: 
+
+1. $tr_{a_y}$ $<$ $bl_{b_y}$ or $bl_{a_y}$ $>$ $tr_{a_y}$.  
+2. $bl_{a_x}$ $>$ $tr_{b_x}$ or $tr_{a_x}$ $<$ $bl_{b_x}$. 
+
+In all other cases, the rectangles intersect. 
+					 
+### Finding area
+					 
+We'll assume that the shape formed by the intersection of two rectangles is itself a rectangle.
+
+First, we'll find this rectangle's $x$ and $y$ coordinates. 
+$x$ = min($tr_{a_x}$, $tr_{b_x}$) - max($bl_{a_x}$, $bl_{b_x}$). 
+$y$ = min($tr_{a_y}$, $tr_{b_y}$) - max($bl_{a_y}$, $bl_{b_y}$).
+	
+If either of these values are negative, the rectangles do not intersect. 
+If they are zero, the rectangles intersect at a single point. 
+Multiply the $x$ and $y$ values together to find the overlapping area. 
+
+
 ## Problems
 
 <Problems problems="general" />
