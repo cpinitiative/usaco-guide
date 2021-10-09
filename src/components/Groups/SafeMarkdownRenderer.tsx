@@ -56,7 +56,7 @@ const VideoComponent = ({ link }: { link: string }) => {
   );
 };
 const GroupsCodeBlock = ({
-  className, // language
+  className,
   children,
 }: {
   className: string;
