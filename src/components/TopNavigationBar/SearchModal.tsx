@@ -22,7 +22,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       <Dialog
         as="div"
         static
-        className="fixed z-7 inset-20 overflow-y-auto"
+        className="fixed z-10 inset-10 overflow-y-auto"
         open={isOpen}
         onClose={() => onClose()}
         initialFocus={loadingFocusRef}
