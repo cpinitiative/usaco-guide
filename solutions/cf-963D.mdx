@@ -38,7 +38,7 @@ struct SuffixAuto {
 	struct State {
 		int len, link, pos;
 		int next[26];
-		State(int _len = 0, int _link = -1, int _pos = -1) : len(_len), link(_link), pos(_pos) {
+		State(int len = 0, int link = -1, int pos = -1) : len(len), link(link), pos(pos) {
 			memset(next, -1, sizeof(next));
 		}
 	};
@@ -109,7 +109,7 @@ SuffixAuto sa;
  
 int Q, ans[MAXN];	 // answer for query
 vector<pii> Z[MAXN];     // queries per state
-vector<int> T[MAXN * 2]; // suffix link tree
+vector<int> T[MAXN * 2]; // suffix link tree (at most 2 * |S| nodes)
  
 vector<int> ord;	   // visited nodes in dfs
  
