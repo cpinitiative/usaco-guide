@@ -114,12 +114,12 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 		dp[u] = 0;
 		stk[stk_max++] = {0, 0}; 
 	} else {
-		dp[u] = line_min(V[u]) + d * V[u] + S[u];   // get dp value by querying convex hull
-		Line l(-d, dp[u]);						  // construct new line that might be added into hull
-		prev_max = stk_max;						 // store previous hull size
-		prev_pos = stk_max = remove_pos(l);		 // update hull size to include new line
-		prev_line = stk[stk_max];				   // store previous line at replacement position
-		stk[stk_max++] = l;						 // update replacement position to new line
+		dp[u] = line_min(V[u]) + d * V[u] + S[u];  // get dp value by querying convex hull
+		Line l(-d, dp[u]);			   // construct new line that might be added into hull
+		prev_max = stk_max;			   // store previous hull size
+		prev_pos = stk_max = remove_pos(l);	   // update hull size to include new line
+		prev_line = stk[stk_max];		   // store previous line at replacement position
+		stk[stk_max++] = l;			   // update replacement position to new line
 	}
 
 	// recurse to children
@@ -131,8 +131,8 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 
 	// reset any changes made at this step
 	if (u != 1) {
-		stk_max = prev_max;						 // reset convex hull size 
-		stk[prev_pos] = prev_line;				  // reset replacement position
+		stk_max = prev_max;			   // reset convex hull size 
+		stk[prev_pos] = prev_line;		   // reset replacement position
 	}
 }
 
