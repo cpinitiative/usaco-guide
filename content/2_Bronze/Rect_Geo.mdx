@@ -523,7 +523,7 @@ involve finding the overlapping area of two or more rectangles based on their co
 or determining whether two rectangles intersect. Here, we'll discuss these formulas. 
 	
 <Info title="To Code or Not To Code">
-Since we're just discussing formulas here, we won't use code,
+Since we're just discussing formulas here, we won't focus on the code,
 though each of these should be easy to implement in each language.
 </Info>
 
@@ -538,25 +538,34 @@ The formula for finding the area of an individual rectangle is $w \cdot l$, so w
 ## Implementation
 
 <LanguageSection>
-<CPPSection>
+	<CPPSection>
 
-	```cpp
-	long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
-		long long length = tr_y - bl_y;
-		long long width = tr_x - bl_x;
-		return length * width;
-	}
-	```
-</CPPSection>
-<PySection>
+		```cpp
+		long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
+			long long length = tr_y - bl_y;
+			long long width = tr_x - bl_x;
+			return length * width;
+		}
+		```
+	</CPPSection>
+	<PySection>
 
-	```py
-	def area(bl_x, bl_y, tr_x, tr_y):
-		length = tr_y - bl_y
-		width = tr_x - bl_x
-		return length * width
-	```
-</PySection>
+		```py
+		def area(bl_x, bl_y, tr_x, tr_y):
+			length = tr_y - bl_y
+			width = tr_x - bl_x
+			return length * width
+		```
+	</PySection>
+	<JavaSection>
+		```java
+		int area(int bl_x, int bl_y, int tr_x, int tr_y) {
+			int length = tr_y - bl_y;
+			int width = tr_x * bl_x;
+			return length * width;
+		}
+		```
+	</JavaSection>
 </LanguageSection>
 ### Checking if rectangles intersect
 
@@ -603,6 +612,22 @@ In all other cases, the rectangles intersect.
 				return True
 		```
 	</PySection>
+	<JavaSection>
+		```java
+		boolean intersect(int[] s1, int[] s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+			
+			// no overlap
+			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
+			|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		```
+	</JavaSection>
 </LanguageSection>			 
 ### Finding area of intersection
 					 
@@ -623,13 +648,13 @@ Multiply the $x$ and $y$ values together to find the overlapping area.
 	<CPPSection>
 	
 		```cpp
-int inter_area(vector<int> s1, vector<int> s2) {
+		int inter_area(vector<int> s1, vector<int> s2) {
 			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
 			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
 
 			return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) 
 					* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y));
-}
+		}
 		```
 	</CPPSection>
 	<PySection>
@@ -643,6 +668,17 @@ int inter_area(vector<int> s1, vector<int> s2) {
 					* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
 		```
 	</PySection>
+	<JavaSection>
+		```java
+		int inter_area(int[] s1, int[] s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
+			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+
+			return (Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) 
+				* (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y));
+		}
+		```
+	</JavaSection>
 </LanguageSection>
 ## Problems
 
