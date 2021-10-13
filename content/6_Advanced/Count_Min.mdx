@@ -40,10 +40,9 @@ If node $c$ has two children $a$ and $b$, then
 
 ```cpp
 const int MAXN = 2e5;
-const int INF = INT32_MAX;
 
 struct Node {
-	int val = INF, cnt = 1;
+	int val = INT32_MAX, cnt = 1;
 } tree[2 * MAXN];
 
 // combines two segment tree nodes
@@ -161,6 +160,7 @@ void build(int t = 1, int tl = 0, int tr = MAXN) {
 		tree[t] = MP(0, 1);
 		return;
 	}
+	
 	int tm = (tl + tr) >> 1;
 	build(t << 1, tl, tm);
 	build(t << 1 | 1, tm + 1, tr);
@@ -169,15 +169,16 @@ void build(int t = 1, int tl = 0, int tr = MAXN) {
 
 // adds v to indices l to r 
 void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
-	if (r < tl || tr < l)
+	if (r < tl || tr < l) {
 		return;
+	}
 	if (l <= tl && tr <= r) {
 		tree[t].first += v;
 		lazy[t] += v;
 		return;
 	}
-	if (tl != tr)
-		pushdown(t);
+	pushdown(t);
+	
 	int tm = (tl + tr) >> 1;
 	update(l, r, v, t << 1, tl, tm);
 	update(l, r, v, t << 1 | 1, tm + 1, tr);
