@@ -118,17 +118,17 @@ void pushdown(int t, int tl, int tr) {
 	if (Lazy[t] != -1) {
 		int tm = (tl + tr) >> 1;
  
-		Tsum[t << 1] = Lazy[t] * (tm - tl + 1);
-		Tmax[t << 1] = Lazy[t];
-		Tmin[t << 1] = Lazy[t];
-		Lazy[t << 1] = Lazy[t];
+		Tsum[t << 1] = Lazy[t] * (tm - tl + 1);  // sum set update
+		Tmax[t << 1] = Lazy[t];                  // max set update
+		Tmin[t << 1] = Lazy[t];                  // min set update
+		Lazy[t << 1] = Lazy[t];                  // propogate tag
  
-		Tsum[t << 1 | 1] = Lazy[t] * (tr - tm);
-		Tmax[t << 1 | 1] = Lazy[t];
-		Tmin[t << 1 | 1] = Lazy[t];
-		Lazy[t << 1 | 1] = Lazy[t];
+		Tsum[t << 1 | 1] = Lazy[t] * (tr - tm);  // sum set update
+		Tmax[t << 1 | 1] = Lazy[t];              // max set update
+		Tmin[t << 1 | 1] = Lazy[t];              // min set update
+		Lazy[t << 1 | 1] = Lazy[t];              // propogate tag
  
-		Lazy[t] = -1;
+		Lazy[t] = -1;                            // reset lazy tag
 	}
 }
  
