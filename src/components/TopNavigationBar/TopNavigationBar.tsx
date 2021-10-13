@@ -113,14 +113,15 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:hidden">
-                  Register for live online USACO classes!
+                  Register for our interview of the EGOI team!
                 </span>
                 <span className="hidden md:inline">
-                  Want to improve at USACO? Register for live online classes!
+                  Want to learn from the Experience & Tips of the EGOI team?
+                  Register for our CPI Workshop!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/classes"
+                    href="https://joincpi.org/workshop/egoi"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
