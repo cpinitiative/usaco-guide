@@ -48,7 +48,8 @@ def dfs(node):
 	visited[node] = True
 	
 	for u in adj[node]:
-		if not visited[u]: dfs(u)
+		if not visited[u]: 
+			dfs(u)
 
 # Read in adjacency list.
 for i in range(m):
@@ -60,6 +61,11 @@ for i in range(n):
 	order.append(int(input()))
 
 dfs(1)
+
+"""
+The farm is initially connected if we've visited every node 
+before any of the farms are closed.
+"""
 print("YES") if nodes == n else print("NO")
 
 for i in range(n - 1):
@@ -71,7 +77,10 @@ for i in range(n - 1):
 	dfs(order[n - 1])
 
 	# Have we visited all the unclosed barns?
-	print("YES") if nodes == n - i - 1 else print("NO")
+	if nodes == n - i - 1:
+		print("YES")
+	else:
+		print("NO")
 ```
 </PySection>
 <CPPSection>
@@ -118,8 +127,16 @@ int main() {
 	for (int i = 0; i < n; i++) cin >> ord[i];
 
 	dfs(1);
-	if (nodes == n) cout << "YES\n";
-	else cout << "NO\n";
+	
+	/*
+	 * The farm is initially connected if we've visited every node 
+	 * before any of the farms are closed.
+	 */
+	if (nodes == n) {
+		cout << "YES\n";
+	} else {
+		cout << "NO\n";
+	}
 	
 	for (int i = 0; i < n - 1; i++) {
 		nodes = 0;
@@ -130,8 +147,11 @@ int main() {
 		dfs(ord[n - 1]);
 
 		// Have we visited all the unclosed barns?
-		if (nodes == n - i - 1) cout << "YES" << "\n";
-		else cout << "NO" << "\n";
+		if (nodes == n - i - 1) {
+			cout << "YES" << "\n";
+		} else {
+			cout << "NO" << "\n";
+		}
 	}
 }
 ```
