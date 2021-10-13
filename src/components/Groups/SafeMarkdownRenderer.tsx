@@ -59,8 +59,8 @@ const GroupsCodeBlock = ({
   className,
   children,
 }: {
-  className: string;
-  children: Array<string>;
+  className?: string;
+  children: React.ReactNode;
 }) => {
   const value = children[0];
   if (className === 'language-video') {
