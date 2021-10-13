@@ -44,7 +44,7 @@ const int INF = INT32_MAX;
 
 struct Node {
 	int val = INF, cnt = 1;
-} Tree[2 * MAXN];
+} tree[2 * MAXN];
 
 // combines two segment tree nodes
 Node merge(Node a, Node b) {
@@ -58,8 +58,8 @@ Node merge(Node a, Node b) {
 
 // updates the ith value to v
 void update(int i, int v) {
-	for (Tree[i += MAXN] = {v, 1}; i > 1; i >>= 1) {
-		Tree[i >> 1] = merge(Tree[i], Tree[i ^ 1]);
+	for (tree[i += MAXN] = {v, 1}; i > 1; i >>= 1) {
+		tree[i >> 1] = merge(tree[i], tree[i ^ 1]);
 	}
 }
 
@@ -67,8 +67,8 @@ void update(int i, int v) {
 Node query(int l, int r) {
 	Node res;
 	for (l += MAXN, r += MAXN + 1; l < r; l >>= 1, r >>= 1) {
-		if (l & 1) res = merge(res, Tree[l++]);
-		if (r & 1) res = merge(res, Tree[--r]);
+		if (l & 1) res = merge(res, tree[l++]);
+		if (r & 1) res = merge(res, tree[--r]);
 	}
 	return res;
 }
