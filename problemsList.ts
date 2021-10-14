@@ -644,7 +644,7 @@ let data: any = {
                 id: 'contest/1326/problem/F2',
                 difficulty: 'Insane',
                 starred: false,
-                tags: ['Bitmasks', 'DP', 'SOS'],
+                tags: ['Bitmasks', 'DP', 'SOS DP'],
                 solID:
                   'Solve the case where for each binary string s, a 1 means that the adjacent men know each other, and the 0 means nothing: they can know each other or not.',
                 solQuality: 'ok',
