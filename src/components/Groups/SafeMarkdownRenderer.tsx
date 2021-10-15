@@ -69,7 +69,7 @@ const GroupsCodeBlock = ({
     return <VideoComponent link={value} />;
   }
   if (inline) {
-    return <code>value</code>;
+    return <code>{value}</code>;
   }
   return <CodeBlock className={className}>{value}</CodeBlock>;
 };
