@@ -28,11 +28,16 @@ $$
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-const ll MOD = 1e9 + 7;
+using namespace std;
 
-template <class T> struct Matrix {
+const long long MOD = 1e9 + 7;
+
+template <class T>
+struct Matrix {
 	vector<vector<T>> v;
 	void init(int n, int m) {
 		v = vector<vector<T>>(n, vector<T>(m));
@@ -55,39 +60,41 @@ template <class T> struct Matrix {
 };
 
 int main() {
-	ll n, m; cin >> n >> m;
+	long long n, m;
+	cin >> n >> m;
 	m--;
-	vector<ll> v(n);
+	vector<long long> v(n);
 	for (int i = 0; i < n; i++) cin >> v[i];
-
-	Matrix<ll> A, B;
-	A.init(n, n); B.init(n, n);
-
-
+	Matrix<long long> A, B;
+	A.init(n, n);
+	B.init(n, n);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			if (__builtin_popcountll(v[i] ^ v[j]) % 3 == 0) A.v[i][j] = 1;
+			if (__builtin_popcountll(v[i] ^ v[j]) % 3 == 0) {
+				A.v[i][j] = 1;
+			}
 		}
 	}
-
-
-	Matrix<ll> ret; ret.init(n, n);
-	for (int i = 0 ; i < n ; i++) ret.v[i][i] = 1;
-
+	
+	Matrix<long long> ret;
+	ret.init(n, n);
+	for (int i = 0 ; i < n ; i++) {
+		ret.v[i][i] = 1;
+	}
 	for (; m > 0; m /= 2) {
-		if(m & 1) ret = ret * A;
+		if (m & 1) {
+			ret = ret * A;
+		}
 		A = A * A;
 	}
 
-	ll ans = 0;
-
+	long long ans = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			ans += ret.v[i][j];
 			ans %= MOD;
 		}
 	}
-
 	cout << ans << '\n';
 }
 ```
