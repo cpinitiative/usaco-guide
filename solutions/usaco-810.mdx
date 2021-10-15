@@ -1,0 +1,164 @@
+---
+id: usaco-810
+source: USACO Silver 2018 Silver
+title: Rest Stops
+author: Vivian Han
+---
+
+## Explanation
+
+Suppose that early in the hike, there is a rest stop with tastiness $A$,
+but later there is a rest stop with tastiness $B$ where $B>A$. Then, it is never 
+optimal for Bessie to spend any time at the first rest stop with tastiness $A$. 
+If she did, she could spend the same amount of time at the later rest stop 
+instead and earn more tastiness units; she would still never be behind Farmer 
+John. So, the only rest stops that Bessie might stop at are those that have
+more tastiness than any subsequent rest stops.
+
+We can find these "right-maximal" rest stops in a single right-to-left (or end-to-start)
+scan, keeping track of the largest tastiness seen so far.
+If the current stop exceeds the largest value seen so far, it is "right-maximal."
+
+Now, we can perform a greedy algorithm: never stop at non-right-maximal 
+rest stops. Bessie should stop at a right-maximal rest stop as long as possible
+(i.e., until Farmer John catches up with her). Then she proceeds until the next
+right-maximal rest stop.
+
+To see the correctness of this greedy algorithm, suppose Bessie did not spend as 
+long as possible at some right-maximal rest stop $R$. Then she would leave this 
+rest stop $t$ seconds early, for some positive $t$. Suppose the next place 
+Bessie stops is rest stop $r$. We could improve Bessie's tastiness intake by 
+having her spend $1$ less second at $r$, and $1$ more second at rest stop $R$. 
+It can be verified that Bessie will still never be behind Farmer John, and 
+since the tastiness at $R$ is greater than the tastiness at $r$, we improved 
+Bessie's outcome. Therefore no optimal solution will leave a right-maximal rest 
+stop early, and our greedy algorithm is correct.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+const int MAX_LEN = 100000;
+int x[MAX_LEN];  // x: position of each stop
+int c[MAX_LEN];  // c: tastiness value of each stop
+bool good[MAX_LEN];
+
+int main() {
+	int trailLen, stopNum, fRate, bRate;
+	ifstream in("reststops.in");
+	in >> trailLen >> stopNum >> fRate >> bRate;
+	// scan in rest stop data
+	for (int i = 0 ; i < stopNum; i++) {
+		in >> x[i] >> c[i];
+	}
+
+	// find all "best" stops
+	int max = 0;
+	for (int i = stopNum-1; i >= 0; i--) {
+		good[i] = false;
+		if (c[i] > max) {  
+			// there are no stops after stop i that are "better"
+			good[i] = true;
+			max = c[i];
+		}
+	}
+
+	// simulate the whole trail
+	long long prevStopPos = 0;
+	long long ans = 0;
+	for (int i = 0; i < stopNum; i++) {
+		if (good[i]) {
+			long long travelDist = x[i] - prevStopPos;
+			long long fTime = travelDist * fRate;
+			long long bTime = travelDist * bRate;
+			long long restTime = fTime - bTime;
+			ans += restTime * c[i];
+			prevStopPos = x[i];
+		}
+	}
+
+	ofstream out;
+	out.open("reststops.out");
+	out << ans << endl;
+	out.close();
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class RestStops {
+
+	static int[] x, c;
+	// x: position of each stop
+	// c: tastiness value of each stop
+	static boolean[] good;
+
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
+		String[] line = br.readLine().split(" ");
+		int trailLen = Integer.parseInt(line[0]);  
+		// trail length is never used...
+		int stopNum = Integer.parseInt(line[1]);
+		int fRate = Integer.parseInt(line[2]);
+		int bRate = Integer.parseInt(line[3]);
+
+		x = new int[stopNum];
+		c = new int[stopNum];
+		good = new boolean[stopNum];
+
+		// scan in rest stop data
+		for (int i = 0 ; i < stopNum; i++) {
+			line = br.readLine().split(" ");
+			x[i] = Integer.parseInt(line[0]);
+			c[i] = Integer.parseInt(line[1]);
+		}
+		br.close();
+
+		// find all "best" stops
+		int max = 0;
+		for (int i = stopNum-1; i >= 0; i--) {
+			if (c[i] > max) {  
+				// there are no stops after stop i that are "better"
+				good[i] = true;
+				max = c[i];
+			}
+		}
+
+		// simulate the whole trail
+		int prevStopPos = 0;
+		long ans = 0;
+		for (int i = 0; i < stopNum; i++) {
+			if (good[i]) {
+				long travelDist = x[i] - prevStopPos;
+				long fTime = travelDist * fRate;
+				long bTime = travelDist * bRate;
+				long restTime = fTime - bTime;
+				ans += restTime * c[i];
+				prevStopPos = x[i];
+			}
+		}
+
+		BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
+		bw.write(ans + "\n");
+		bw.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
