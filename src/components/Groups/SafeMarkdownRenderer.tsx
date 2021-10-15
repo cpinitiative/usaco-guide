@@ -58,13 +58,18 @@ const VideoComponent = ({ link }: { link: string }) => {
 const GroupsCodeBlock = ({
   className,
   children,
+  inline,
 }: {
   className?: string;
   children: React.ReactNode;
+  inline?: boolean;
 }) => {
   const value = children[0];
   if (className === 'language-video') {
     return <VideoComponent link={value} />;
+  }
+  if (inline) {
+    return <code>value</code>;
   }
   return <CodeBlock className={className}>{value}</CodeBlock>;
 };
