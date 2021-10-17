@@ -65,7 +65,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'USA',
       description:
         'Information specific to USACO as well as USA camps and contests.',
-      items: ['usaco-monthlies', 'usaco-camp', 'resources-usa'],
+      items: ['usaco-faq', 'usaco-monthlies', 'usaco-camp', 'resources-usa'],
     },
   ],
   bronze: [
