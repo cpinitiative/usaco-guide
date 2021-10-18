@@ -120,7 +120,7 @@ export default function TopNavigationBar({
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSed_EHivwc1Z3LoaqQZhu813_3uNNousvN1QWmNt_q-6I6b8A/viewform?usp=sf_link"
+                    href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
