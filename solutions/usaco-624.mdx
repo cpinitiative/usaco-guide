@@ -47,87 +47,99 @@ find the minimum point for $f$.
 #include <bits/stdc++.h>
 using namespace std;
 
-#define X first #define Y second
+#define X first
+#define Y second
 
 const int MAXN = 1e5;
 
-int N; pair<int, int> A[MAXN];
+int N;
+pair<int, int> A[MAXN];
 
-struct SegTree { int T[MAXN * 2];
+struct SegTree {
+	int T[MAXN * 2];
 
-    void update(int i, int v) {
-    	for (T[i += N] += v; i > 1; i >>= 1)
-    		T[i >> 1] = T[i] + T[i ^ 1];
-    }
+	void update(int i, int v) {
+		for (T[i += N] += v; i > 1; i >>= 1)
+			T[i >> 1] = T[i] + T[i ^ 1];
+	}
 
-    int query(int l, int r) {
-    	int res = 0;
-    	for (l += N, r += N + 1; l < r; l >>= 1, r >>= 1) {
-    		if (l & 1) res += T[l++];
-    		if (r & 1) res += T[--r];
-    	}
-    	return res;
-    }
+	int query(int l, int r) {
+		int res = 0;
+		for (l += N, r += N + 1; l < r; l >>= 1, r >>= 1) {
+			if (l & 1) res += T[l++];
+			if (r & 1) res += T[--r];
+		}
+		return res;
+	}
 
-    int operator()(int x) {
-    	return max(query(0, x), query(x + 1, N - 1));
-    }
-
+	int operator()(int x) {
+		return max(query(0, x), query(x + 1, N - 1));
+	}
 } L, R;
 
-// minimize the value of max{L[:x], L[:x], R[:x], R[x:]} int ternary_search() {
-int l = 0, r = N - 1; while ((r - l) >= 3) { int m1 = l + (r - l) / 3; int f1 =
-max(L(m1), R(m1)); int m2 = r - (r - l) / 3; int f2 = max(L(m2), R(m2)); if
-(f1 > f2) l = m1; if (f1 < f2) r = m2; if (f1 == f2) l = m1, r = m2; }
+// minimize the value of max{L[:x], L[:x], R[:x], R[x:]}
+int ternary_search() {
+	int l = 0, r = N - 1;
+	while ((r - l) >= 3) {
+		int m1 = l + (r - l) / 3;
+		int f1 = max(L(m1), R(m1));
+		int m2 = r - (r - l) / 3;
+		int f2 = max(L(m2), R(m2));
+		if (f1 > f2)
+			l = m1;
+		if (f1 < f2)
+			r = m2;
+		if (f1 == f2)
+			l = m1, r = m2;
+	}
 
-    int res = N;
-    for (int i = l; i < r; i++)
-    	res = min(res, max(L(i), R(i)));
-    return res;
-
+	int res = N;
+	for (int i = l; i < r; i++)
+		res = min(res, max(L(i), R(i)));
+	return res;
 }
 
-int main() { freopen("balancing.in", "r", stdin); freopen("balancing.out", "w",
-stdout);
+int main() {
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
 
-    cin >> N;
-    for (int i = 0; i < N; i++)
-    	cin >> A[i].X >> A[i].Y;
+	cin >> N;
+	for (int i = 0; i < N; i++)
+		cin >> A[i].X >> A[i].Y;
+	
+	{  // x-coordinate compression
+		map<int, int> m;
+		for (int i = 0; i < N; i++)
+			m[A[i].X] = 0;
+		int c = 0;
+		for (auto &t : m)
+			t.second = c++;
+		for (int i = 0; i < N; i++)
+			A[i].X = m[A[i].X];
+	}
+	{  // y-coordinate compression
+		map<int, int> m;
+		for (int i = 0; i < N; i++)
+			m[A[i].Y] = 0;
+		int c = 0;
+		for (auto &t : m)
+			t.second = c++;
+		for (int i = 0; i < N; i++)
+			A[i].Y = m[A[i].Y];
+	}
 
-    {  // x-coordinate compression
-    	map<int, int> m;
-    	for (int i = 0; i < N; i++)
-    		m[A[i].X] = 0;
-    	int c = 0;
-    	for (auto &t : m)
-    		t.second = c++;
-    	for (int i = 0; i < N; i++)
-    		A[i].X = m[A[i].X];
-    }
-    {  // y-coordinate compression
-    	map<int, int> m;
-    	for (int i = 0; i < N; i++)
-    		m[A[i].Y] = 0;
-    	int c = 0;
-    	for (auto &t : m)
-    		t.second = c++;
-    	for (int i = 0; i < N; i++)
-    		A[i].Y = m[A[i].Y];
-    }
+	sort(A, A + N);
 
-    sort(A, A + N);
-
-    int ans = N;
-    for (int i = 0; i < N; i++)
-    	R.update(A[i].Y, 1);
-    for (int i = 0; i < N - 1; i++) {
-    	L.update(A[i].Y, 1);
-    	R.update(A[i].Y, -1);
-    	if (A[i].X != A[i + 1].X)
-    		ans = min(ans, ternary_search());
-    }
-    cout << ans << '\n';
-
+	int ans = N;
+	for (int i = 0; i < N; i++)
+		R.update(A[i].Y, 1);
+	for (int i = 0; i < N - 1; i++) {
+		L.update(A[i].Y, 1);
+		R.update(A[i].Y, -1);
+		if (A[i].X != A[i + 1].X)
+			ans = min(ans, ternary_search());
+	}
+	cout << ans << '\n';
 }
 
 ```
