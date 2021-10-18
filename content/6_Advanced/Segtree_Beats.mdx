@@ -105,43 +105,42 @@ $\mathcal{O}(n \log a + q_p \log a) = \mathcal{O}((n + q)\log a)$.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 using ll = long long;
 
 int N;
-ll Tsum[400005];  // Sum tag
-ll Tmax[400005];  // Max tag
-ll Tmin[400005];  // Min tag
-ll Lazy[400005];  // Lazy updates
+ll tsum[400005];  // Sum tag
+ll tmax[400005];  // Max tag
+ll tmin[400005];  // Min tag
+ll lazy[400005];  // Lazy updates
  
 void pushdown(int t, int tl, int tr) {
-	if (Lazy[t] != -1) {
+	if (lazy[t] != -1) {
 		int tm = (tl + tr) >> 1;
  
-		Tsum[t << 1] = Lazy[t] * (tm - tl + 1);  // sum set update
-		Tmax[t << 1] = Lazy[t];                  // max set update
-		Tmin[t << 1] = Lazy[t];                  // min set update
-		Lazy[t << 1] = Lazy[t];                  // propogate tag
+		tsum[t << 1] = lazy[t] * (tm - tl + 1);  // sum set update
+		tmax[t << 1] = lazy[t];                  // max set update
+		tmin[t << 1] = lazy[t];                  // min set update
+		lazy[t << 1] = lazy[t];                  // propogate tag
  
-		Tsum[t << 1 | 1] = Lazy[t] * (tr - tm);  // sum set update
-		Tmax[t << 1 | 1] = Lazy[t];              // max set update
-		Tmin[t << 1 | 1] = Lazy[t];              // min set update
-		Lazy[t << 1 | 1] = Lazy[t];              // propogate tag
+		tsum[t << 1 | 1] = lazy[t] * (tr - tm);  // sum set update
+		tmax[t << 1 | 1] = lazy[t];              // max set update
+		tmin[t << 1 | 1] = lazy[t];              // min set update
+		lazy[t << 1 | 1] = lazy[t];              // propogate tag
  
-		Lazy[t] = -1;                            // reset lazy tag
+		lazy[t] = -1;                            // reset lazy tag
 	}
 }
  
 void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
-	if (r < tl || tr < l || Tmax[t] < v) {
+	if (r < tl || tr < l || tmax[t] < v) {
 		return;
 	}
-	if (l <= tl && tr <= r && Tmax[t] == Tmin[t]) {
-		ll val = Tmax[t] % v;
-		Tsum[t] = (tr - tl + 1) * val;
-		Tmax[t] = val;
-		Tmin[t] = val;
-		Lazy[t] = val;
+	if (l <= tl && tr <= r && tmax[t] == tmin[t]) {
+		ll val = tmax[t] % v;
+		tsum[t] = (tr - tl + 1) * val;
+		tmax[t] = val;
+		tmin[t] = val;
+		lazy[t] = val;
 		return;
 	}
 	pushdown(t, tl, tr);
@@ -150,14 +149,14 @@ void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
 	update(l, r, v, t << 1, tl, tm);
 	update(l, r, v, t << 1 | 1, tm + 1, tr);
  
-	Tsum[t] = Tsum[t << 1] + Tsum[t << 1 | 1];
-	Tmax[t] = max(Tmax[t << 1], Tmax[t << 1 | 1]);
-	Tmin[t] = min(Tmin[t << 1], Tmin[t << 1 | 1]);
+	tsum[t] = tsum[t << 1] + tsum[t << 1 | 1];
+	tmax[t] = max(tmax[t << 1], tmax[t << 1 | 1]);
+	tmin[t] = min(tmin[t << 1], tmin[t << 1 | 1]);
 }
  
 void update(int i, ll v, int t = 1, int tl = 1, int tr = N) {
 	if (tl == tr) {
-		Tsum[t] = Tmax[t] = Tmin[t] = v;
+		tsum[t] = tmax[t] = tmin[t] = v;
 		return;
 	}
 	pushdown(t, tl, tr);
@@ -170,9 +169,9 @@ void update(int i, ll v, int t = 1, int tl = 1, int tr = N) {
 		update(i, v, t << 1 | 1, tm + 1, tr);
 	}
 	
-	Tsum[t] = Tsum[t << 1] + Tsum[t << 1 | 1];
-	Tmax[t] = max(Tmax[t << 1], Tmax[t << 1 | 1]);
-	Tmin[t] = min(Tmin[t << 1], Tmin[t << 1 | 1]);
+	tsum[t] = tsum[t << 1] + tsum[t << 1 | 1];
+	tmax[t] = max(tmax[t << 1], tmax[t << 1 | 1]);
+	tmin[t] = min(tmin[t << 1], tmin[t << 1 | 1]);
 }
  
 ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
@@ -180,7 +179,7 @@ ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
 		return 0LL;
 	}
 	if (l <= tl && tr <= r) {
-		return Tsum[t];
+		return tsum[t];
 	}
 	pushdown(t, tl, tr);
  
@@ -190,7 +189,7 @@ ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
  
 int main() {
 	ios_base::sync_with_stdio(0); cin.tie(0);
-	memset(Lazy, -1, sizeof(Lazy));
+	memset(lazy, -1, sizeof(lazy));
 	
 	int Q;
  
