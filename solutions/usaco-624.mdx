@@ -94,8 +94,9 @@ int ternary_search() {
 	}
 
 	int res = N;
-	for (int i = l; i < r; i++)
+	for (int i = l; i < r; i++) {
 		res = min(res, max(L.f(i), L.f(i)));
+	}
 	return res;
 }
 
@@ -104,40 +105,49 @@ int main() {
 	freopen("balancing.out", "w", stdout);
 
 	cin >> N;
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++) {
 		cin >> A[i].X >> A[i].Y;
+	}
 	
 	{  // x-coordinate compression
 		map<int, int> m;
-		for (int i = 0; i < N; i++)
+		for (int i = 0; i < N; i++) {
 			m[A[i].X] = 0;
+		}
 		int c = 0;
-		for (auto &t : m)
+		for (auto &t : m) {
 			t.second = c++;
-		for (int i = 0; i < N; i++)
+		}
+		for (int i = 0; i < N; i++) {
 			A[i].X = m[A[i].X];
+		}
 	}
 	{  // y-coordinate compression
 		map<int, int> m;
-		for (int i = 0; i < N; i++)
+		for (int i = 0; i < N; i++) {
 			m[A[i].Y] = 0;
+		}
 		int c = 0;
-		for (auto &t : m)
+		for (auto &t : m) {
 			t.second = c++;
-		for (int i = 0; i < N; i++)
+		}
+		for (int i = 0; i < N; i++) {
 			A[i].Y = m[A[i].Y];
+		}
 	}
 
 	sort(A, A + N);
 
 	int ans = N;
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++) {
 		R.update(A[i].Y, 1);
+	}
 	for (int i = 0; i < N - 1; i++) {
 		L.update(A[i].Y, 1);
 		R.update(A[i].Y, -1);
-		if (A[i].X != A[i + 1].X)
+		if (A[i].X != A[i + 1].X) {
 			ans = min(ans, ternary_search());
+		}
 	}
 	cout << ans << '\n';
 }
