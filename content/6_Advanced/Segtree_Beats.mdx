@@ -107,11 +107,13 @@ $\mathcal{O}(n \log a + q_p \log a) = \mathcal{O}((n + q)\log a)$.
 using namespace std;
 using ll = long long;
 
+const int MAXN = 100000 + 1;  // 1-based
+
 int N;
-ll tsum[400005];  // Sum tag
-ll tmax[400005];  // Max tag
-ll tmin[400005];  // Min tag
-ll lazy[400005];  // Lazy updates
+ll tsum[MAXN * 4];  // Sum tag
+ll tmax[MAXN * 4];  // Max tag
+ll tmin[MAXN * 4];  // Min tag
+ll lazy[MAXN * 4];  // Lazy updates
  
 void pushdown(int t, int tl, int tr) {
 	if (lazy[t] != -1) {
@@ -271,11 +273,12 @@ Store three more variables $\texttt{min}_1$, $\texttt{min}_2$, and $\texttt{min}
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 using ll = long long;
 
+const int MAXN = 200001; // 1-based
+
 int N;
-ll A[200005];
+ll A[MAXN];
 
 struct Node {
 	ll sum, max1, max2, maxc, min1, min2, minc, lazy;
@@ -287,7 +290,7 @@ struct Node {
 	// min2 - Second Min value
 	// minc - Min value count
 	// lazy - lazy tag
-} T[800005];
+} T[MAXN * 4];
 
 void merge(int t) {
 	// sum
@@ -505,7 +508,6 @@ int main() {
 		}
 	}
 }
-
 ```
 
 ## Problems
