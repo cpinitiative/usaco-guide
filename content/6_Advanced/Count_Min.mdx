@@ -140,16 +140,16 @@ pair<long long, long long> merge(pair<long long, long long> a, pair<long long, l
 	if (a.first > b.first) {
 		return b;
 	}
-	return MP(a.first, a.second + b.second);
+	return {a.first, a.second + b.second};
 }
  
 // pushes lazy updates down to children
 void pushdown(int t) {
 	if (lazy[t]) {
-		tree[t << 1].first += L[t];
-		lazy[t << 1] += L[t];
-		tree[t << 1 | 1].first += L[t];
-		lazy[t << 1 | 1] += L[t];
+		tree[t << 1].first += lazy[t];
+		lazy[t << 1] += lazy[t];
+		tree[t << 1 | 1].first += lazy[t];
+		lazy[t << 1 | 1] += lazy[t];
 		lazy[t] = 0;
 	}
 }
@@ -157,7 +157,7 @@ void pushdown(int t) {
 // constructs the segment tree
 void build(int t = 1, int tl = 0, int tr = MAXN) {
 	if (tl == tr) {
-		tree[t] = MP(0, 1);
+		tree[t] = {0, 1};
 		return;
 	}
 	
@@ -182,7 +182,7 @@ void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
 	int tm = (tl + tr) >> 1;
 	update(l, r, v, t << 1, tl, tm);
 	update(l, r, v, t << 1 | 1, tm + 1, tr);
-	tree[t] = merge(Tree[t << 1], tree[t << 1 | 1]);
+	tree[t] = merge(tree[t << 1], tree[t << 1 | 1]);
 }
 
 // queries min and count of entire segment tree
@@ -195,7 +195,6 @@ long long query() {
 int main() {
 	cin >> N; 
 	build();
-	E.reserve(2 * N);
 	for (int i = 0; i < N; i++) {
 		int x0, y0, x1, y1;
 		cin >> x0 >> y0 >> x1 >> y1;
