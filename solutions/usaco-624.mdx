@@ -63,7 +63,7 @@ struct SegTree {
 			T[i >> 1] = T[i] + T[i ^ 1];
 	}
 
-	int query(int l, int r) {
+	int f(int l, int r) {
 		int res = 0;
 		for (l += N, r += N + 1; l < r; l >>= 1, r >>= 1) {
 			if (l & 1) res += T[l++];
@@ -72,7 +72,7 @@ struct SegTree {
 		return res;
 	}
 
-	int operator()(int x) {
+	int eval(int x) {
 		return max(query(0, x), query(x + 1, N - 1));
 	}
 } L, R;
@@ -82,9 +82,9 @@ int ternary_search() {
 	int l = 0, r = N - 1;
 	while ((r - l) >= 3) {
 		int m1 = l + (r - l) / 3;
-		int f1 = max(L(m1), R(m1));
+		int f1 = max(L.f(m1), R.f(m1));
 		int m2 = r - (r - l) / 3;
-		int f2 = max(L(m2), R(m2));
+		int f2 = max(L.f(m2), R.f(m2));
 		if (f1 > f2)
 			l = m1;
 		if (f1 < f2)
@@ -95,7 +95,7 @@ int ternary_search() {
 
 	int res = N;
 	for (int i = l; i < r; i++)
-		res = min(res, max(L(i), R(i)));
+		res = min(res, max(L.f(i), L.f(i)));
 	return res;
 }
 
