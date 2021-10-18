@@ -264,7 +264,7 @@ efficient than treaps). However, with implicit treaps, we can efficiently
 perform operations on a regular array in fashion similar to segment trees and
 fenwick trees. The following operations are supported by implicit treaps:
 
-- Insert an element $x%$ at position $i$
+- Insert an element $x$ at position $i$
 - Delete the element at position $i$
 - Performing interval queries (sum, min, max, etc.)
 - Perform interval updates (add, set, reverse, etc.)
@@ -287,6 +287,10 @@ so we simply maintain a running count of the size left subtree.
 
 An implementation of the split operation may look something like:
 
+<LanguageSection>
+	
+<CPPSection>
+
 ```cpp
 void split(Node *treap, Node *&left, Node *&right, int val, int add = 0) {
 	if (!treap) {
@@ -305,11 +309,19 @@ void split(Node *treap, Node *&left, Node *&right, int val, int add = 0) {
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
 ```
+	
+</LanguageSectino>
+	
+</CPPSection>	
 
 In the split operation, because we are always comparing $\texttt{cur\_size}$ to
 $\texttt{val}$, we can simply eliminate the $\texttt{add}$ parameter by
 subtracting from $\texttt{val}$ each time. Our new code looks like:
 
+<LanguageSection>
+	
+<CPPSection>
+	
 ```cpp
 void split(Node *treap, Node *&left, Node *&right, int val) {
 	if (!treap) {
@@ -327,6 +339,10 @@ void split(Node *treap, Node *&left, Node *&right, int val) {
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
 ```
+	
+</LanguageSectino>
+	
+</CPPSection>	
 
 ## Implementation
 
