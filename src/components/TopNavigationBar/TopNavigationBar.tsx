@@ -113,15 +113,14 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:hidden">
-                  Register for our interview of the EGOI team!
+                  Apply to be a web developer!
                 </span>
                 <span className="hidden md:inline">
-                  Want to learn from the Experience & Tips of the EGOI team?
-                  Register for our CPI Workshop!
+                  We're looking for web developers to join our team!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/workshop/egoi"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSed_EHivwc1Z3LoaqQZhu813_3uNNousvN1QWmNt_q-6I6b8A/viewform?usp=sf_link"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
