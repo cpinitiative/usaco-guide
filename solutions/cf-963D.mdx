@@ -61,7 +61,6 @@ struct SuffixAuto {
 			states[P].next[c] = cur;
 			P = states[P].link;
 		}
-
 		if (P == -1)
 			states[cur].link = 0;
 		else {
@@ -80,7 +79,6 @@ struct SuffixAuto {
 		}
 		last = cur;
 	}
-
 	int run(string &P) {
 		int s = 0;
 		for (char _c : P) {
@@ -102,15 +100,14 @@ private:
 		return states.size() - 1;
 	}
 };
-
 const int MAXN = 1e5 + 1;
 	
 string S;
 SuffixAuto sa;
  
 int Q, ans[MAXN];         // answer for query
-vector<pii> Z[MAXN];      // queries per state
-vector<int> T[MAXN * 2];  // suffix link tree (at most 2 * |S| nodes)
+vector<pii> queries[MAXN];      // queries per state
+vector<int> suffix_link_tree[MAXN * 2];  // suffix link tree (at most 2 * |S| nodes)
  
 vector<int> ord;  // visited nodes in dfs
  
@@ -118,12 +115,12 @@ void dfs(int u = 0) {
 	int l = ord.size();
 	if (sa.states[u].pos != -1)
 		ord.PB(sa.states[u].pos);
-	for (int v : T[u])
+	for (int v : suffix_link_tree[u])
 		dfs(v);
-	if (!!Z[u].size()) {
+	if (!!queries[u].size()) {
 		int r = ord.size();
 		sort(ord.begin() + l, ord.end()); 
-		for (auto [q, K] : Z[u]) {
+		for (auto [q, K] : queries[u]) {
 			int t = INT_MAX;
 			for (int i = l; i + K - 1 < r; i++) 
 				t = min(t, ord[i + K - 1] - ord[i]);
@@ -139,7 +136,7 @@ int main() {
 	cin >> S >> Q;
 	sa.init(S);
 	for (int i = 1; i < sa.states.size(); i++) 
-		T[sa.states[i].link].PB(i);
+		suffix_link_tree[sa.states[i].link].push_back(i);
 	for (int i = 0; i < Q; i++) {
 		int K; string P;
 		cin >> K >> P;
@@ -147,7 +144,7 @@ int main() {
 		if (s == -1)
 			ans[i] = -1;
 		else {
-			Z[s].EB(i, K);
+			queries[s].EB(i, K);
 			ans[i] = P.size();
 		}
 	}
