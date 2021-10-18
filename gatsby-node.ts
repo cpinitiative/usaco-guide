@@ -25,13 +25,8 @@ try {
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
 
 exports.onCreateNode = async api => {
-  const {
-    node,
-    actions,
-    loadNodeContent,
-    createContentDigest,
-    createNodeId,
-  } = api;
+  const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
+    api;
 
   const { createNodeField, createNode, createParentChildLink } = actions;
 
@@ -389,9 +384,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         );
       }
       // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
-      const problemsThatAreMissingInternalSolution = problemsForThisSolution.filter(
-        x => x.node.solution?.kind !== 'internal'
-      );
+      const problemsThatAreMissingInternalSolution =
+        problemsForThisSolution.filter(
+          x => x.node.solution?.kind !== 'internal'
+        );
       if (problemsThatAreMissingInternalSolution.length > 0) {
         problemsThatAreMissingInternalSolution.forEach(({ node }) => {
           console.error(

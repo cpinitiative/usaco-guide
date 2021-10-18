@@ -59,9 +59,8 @@ export default functions.https.onCall(
 
     const batch = admin.firestore().batch();
     batch.update(admin.firestore().collection('groups').doc(groupId), {
-      [getMembershipKey(
-        targetPermissionLevel
-      )]: admin.firestore.FieldValue.arrayRemove(targetUid),
+      [getMembershipKey(targetPermissionLevel)]:
+        admin.firestore.FieldValue.arrayRemove(targetUid),
     });
     batch.delete(
       admin
