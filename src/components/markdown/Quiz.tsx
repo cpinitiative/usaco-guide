@@ -138,7 +138,7 @@ const ActualQuiz = props => {
           }}
         >
           {chosenAnswer ? 'Next' : 'Submit'}{' '}
-          <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />
+          {chosenAnswer && <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />}
         </button>
       </div>
     </div>

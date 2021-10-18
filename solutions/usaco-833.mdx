@@ -23,37 +23,37 @@ import sys
 sys.stdin = open('family.in', 'r')
 sys.stdout = open('family.out', 'w')
 
-n, a, b = input().split()
+rel_num, cow_a, cow_b = input().split()
 relations = []
 
-for i in range(int(n)):     
+for i in range(int(rel_num)):     
 	relations.append(input().split())
+
 
 # gets the mother of the cow (if it exists)
 def mother(cow):
-	for i in relations:
-		if i[1] == cow:
-			return i[0]
+	for r in relations:
+		if r[1] == cow:
+			return r[0]
 	return None
 
-# finds if cow is a direct ancestor of cow2 by repeatedly 
-# getting the mother of cow2.
-def direct_anc(cow, cow2):
-	counter = 0
+# returns the distance between cow and cow2 (-1 if no relation)
+def direct_anc_dist(cow, cow2):
+	dist = 0
 	while cow2 != None:
 		if cow == cow2:
-			return counter
+			return dist
 		cow2 = mother(cow2)
-		counter += 1
+		dist += 1
 	return -1
+
 
 # distance from a to the common ancestor
 da = 0
-cow = a
-
+cow = cow_a
 while cow != None:
 	# if we found a common ancestor
-	if direct_anc(cow, b) != -1:
+	if direct_anc_dist(cow, cow_b) != -1:
 		break
 	cow = mother(cow)
 	da += 1
@@ -68,7 +68,7 @@ since we found a common ancestor, cow.
 we can call direct_anc() to get the distance
 from b to the common ancestor.
 """
-db = direct_anc(cow, b)
+db = direct_anc_dist(cow, cow_b)
 	
 """
 if they're related by a common ancestor, 
@@ -87,8 +87,8 @@ elif da == 1 and db == 1:
 else:
 	if da > db:
 		da, db = db, da
-		b, a = a, b
-	print(a, 'is the ', end='')
+		cow_b, cow_a = cow_a, cow_b
+	print(cow_a, 'is the ', end='')
 
 	# we subtract two because 1 is in place of mother
 	# and 2 is in place of grandmother
@@ -100,7 +100,7 @@ else:
 		print('mother ', end='')
 	else:
 		print('aunt ', end='')
-	print('of', b)
+	print('of', cow_b)
 ```
 </PySection>
 
@@ -116,85 +116,88 @@ public class FamilyTree {
 		PrintWriter out = new PrintWriter("family.out");
 
 		StringTokenizer st = new StringTokenizer(in.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		String X = st.nextToken(), Y = st.nextToken();
-		String[][] pairs = new String[N][];
-		for (int i = 0; i < N; i++) {
-			pairs[i] = in.readLine().split(" ");
+		int relNum = Integer.parseInt(st.nextToken());
+		String cowX = st.nextToken();
+		String cowY = st.nextToken();
+		String[][] relations = new String[relNum][];
+		for (int i = 0; i < relNum; i++) {
+			relations[i] = in.readLine().split(" ");
 		}
 		in.close();
 
-		// minimum distance between shared ancestors and X and Y
-		int minXDist = 0, minYDist = 0;
-		String commonAncestor = X;
-		// iterate through all ancestors of X
-		// stop when hit the end or a common ancestor with Y is found
+		// minimum distance between the shared ancestor and X and Y
+		int minXDist = 0;
+		int minYDist = 0;
+		String commonAncestor = cowX;
+		// try to find the common ancestor of X and Y (or if there isn't one)
 		while (commonAncestor != null) {
-			if (getAncestorDistance(commonAncestor, Y, pairs) != -1) {
-				minYDist = getAncestorDistance(commonAncestor, Y, pairs);
+			if (getAncestorDistance(commonAncestor, cowY, relations) != -1) {
+				minYDist = getAncestorDistance(commonAncestor, cowY, relations);
 				break;
 			}
-			commonAncestor = getMother(commonAncestor, pairs);
+			commonAncestor = getMother(commonAncestor, relations);
 			minXDist++;
 		}
 
-		// if X and Y don't have common ancestors, they are not related
-		if (commonAncestor == null)
+		// if X and Y don't have common ancestors, they aren't related
+		if (commonAncestor == null) {
 			out.println("NOT RELATED");
-		// if their distances to their common ancestors are both more than 1
-		// then they are classified as cousins
-		else if (minXDist > 1 && minYDist > 1)
+		}
+		// if both distances are greater than one they're cousins
+		else if (minXDist > 1 && minYDist > 1) {
 			out.println("COUSINS");
-		// both distances of 1 implies a sibling relationship
-		// since the common ancestor is their mother
-		else if (minXDist == 1 && minYDist == 1)
+		}
+		// both distances of 1 means they're siblings
+		else if (minXDist == 1 && minYDist == 1) {
 			out.println("SIBLINGS");
-		// if X or Y itself is the common ancestor
-		// then it's a (great-...grand-)mother-child relationship
+		}
+		// if one itself is the ancestor then it's a (great-...) mother relationship
 		else if (minXDist == 0 || minYDist == 0) {
 			boolean xIsAncestor = minXDist == 0;
 			out.print(String.format("%s is the ", commonAncestor));
-			for (int i = 0; i < (xIsAncestor ? minYDist : minXDist) - 2; i++)
+			for (int i = 0; i < (xIsAncestor ? minYDist : minXDist) - 2; i++) {
 				out.print("great-");
-			if ((xIsAncestor ? minYDist : minXDist) > 1)
+			}
+			if ((xIsAncestor ? minYDist : minXDist) > 1) {
 				out.print("grand-");
-			out.println(String.format("mother of %s", xIsAncestor ? Y : X));
+			}
+			out.println(String.format("mother of %s", xIsAncestor ? cowY : cowX));
 		}
-		// otherwise, i.e. minXDist == 1 or minYDist == 1,
-		// there is a (great-...great-)aunt relationship
+		// otherwise, there's a (great-great-...) aunt relationship
 		else {
 			boolean auntIsX = minXDist == 1;
-			out.print(String.format("%s is the ", auntIsX ? X : Y));
-			for (int i = 0; i < (auntIsX ? minYDist : minXDist) - 2; i++)
+			out.print(String.format("%s is the ", auntIsX ? cowX : cowY));
+			for (int i = 0; i < (auntIsX ? minYDist : minXDist) - 2; i++) {
 				out.print("great-");
-			out.println(String.format("aunt of %s", auntIsX ? Y : X));
+			}
+			out.println(String.format("aunt of %s", auntIsX ? cowY : cowX));
 		}
 		out.close();
 	}
 
-	// finds the mother of given child among those pairs
-	// if the child doesn't have a mother, return null
-	private static String getMother(String child, String[][] pairs) {
-		for (String[] pair : pairs) {
-			if (child.equals(pair[1]))
+	// finds the mother of given child among those pairs (returns null if no mother)
+	private static String getMother(String child, String[][] relations) {
+		for (String[] pair : relations) {
+			if (child.equals(pair[1])) {
 				return pair[0];
+			}
 		}
 		return null;
 	}
 
-	// calculate the distance between the given node start and the given end
-	// if end is indeed an ancestor of start, otherwise, return -1
+	// returns the distance between start and end (-1 if no relation)
 	private static int getAncestorDistance(
+		String start,
 		String end, 
-		String start, 
-		String[][] pairs
+		String[][] relations
 	) {
-		int count = 0;
-		while (start != null) {
-			if (start.equals(end))
-				return count;
-			count++;
-			start = getMother(start, pairs);
+		int dist = 0;
+		while (end != null) {
+			if (end.equals(start)) {
+				return dist;
+			}
+			dist++;
+			end = getMother(end, relations);
 		}
 		return -1;
 	}
@@ -202,6 +205,108 @@ public class FamilyTree {
 ```
 
 </JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <string>
+#include <vector>
+
+using std::vector;
+using std::string;
+using Relation = std::pair<string, string>;
+
+// finds the mother of given child among those pairs (returns null if no mother)
+string mother(const string& child, const vector<Relation>& relations) {
+	for (const Relation& r : relations) {
+		if (r.second == child) {
+			return r.first;
+		}
+	}
+	return "";
+}
+
+// returns the distance between start and end (-1 if no relation)
+int ancestor_dist(
+	const string& start,
+	string end,  // we're going to reassign this variable so no reference
+	const vector<Relation>& relations) {
+	int dist = 0;
+	while (end != "") {
+		if (end == start) {
+			return dist;
+		}
+		dist++;
+		end = mother(end, relations);
+	}
+	return -1;
+}
+
+int main() {
+	std::ifstream read("family.in");
+	int rel_num;
+	string cow_x;
+	string cow_y;
+	read >> rel_num >> cow_x >> cow_y;
+	vector<Relation> relations(rel_num);
+	for (int r = 0; r < rel_num; r++) {
+		read >> relations[r].first >> relations[r].second;
+	}
+
+	// minimum distance between the shared ancestor and X and Y
+	int min_x_dist = 0;
+	int min_y_dist = 0;
+	string common_ancestor = cow_x;
+	// try to find the common ancestor of X and Y (or if there isn't one)
+	while (!common_ancestor.empty()) {
+		if (ancestor_dist(common_ancestor, cow_y, relations) != -1) {
+			min_y_dist = ancestor_dist(common_ancestor, cow_y, relations);
+			break;
+		}
+		common_ancestor = mother(common_ancestor, relations);
+		min_x_dist++;
+		// written << common_ancestor << '\n';
+	}
+
+	std::ofstream written("family.out");
+	// if X and Y don't have common ancestors, they aren't related
+	if (common_ancestor.empty()) {
+		written << "NOT RELATED\n";
+	}
+	// if both distances are greater than one they're cousins
+	else if (min_x_dist > 1 && min_y_dist > 1) {
+		written << "COUSINS\n";
+	}
+	// both distances of 1 means they're siblings
+	else if (min_x_dist == 1 && min_y_dist == 1) {
+		written << "SIBLINGS\n";
+	}
+	// if one itself is the ancestor then it's a (great-...) mother relationship
+	else if (min_x_dist == 0 || min_y_dist == 0) {
+		bool x_is_ancestor = min_x_dist == 0;
+		int ancestor_dist = x_is_ancestor ? min_y_dist : min_x_dist;
+		written << (x_is_ancestor ? cow_x : cow_y) << " is the ";
+		for (int i = 0; i < ancestor_dist - 2; i++) {
+			written << "great-";
+		}
+		if (ancestor_dist > 1) {
+			written << "grand-";
+		}
+		written << "mother of " << (x_is_ancestor ? cow_y : cow_x) << '\n';
+	}
+	// otherwise, there's a (great-great-...) aunt relationship
+	else {
+		bool x_is_aunt = min_x_dist == 1;
+		written << (x_is_aunt ? cow_x : cow_y) << " is the ";
+		for (int i = 0; i < (x_is_aunt ? min_y_dist : min_x_dist) - 2; i++) {
+			written << "great-";
+		}
+		written << "aunt of " << (x_is_aunt ? cow_y : cow_x) << '\n';
+	}
+}
+```
+</CPPSection>
 
 </LanguageSection>
 

@@ -2,17 +2,17 @@
 id: usaco-644
 source: USACO Silver 2016 Open
 title: Closing the Farm
-author: Jesse Choe, Maggie Liu, Nathan Gong
+author: Jesse Choe, Maggie Liu, Nathan Gong, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_closing_silver_open16.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_closing_silver_open16.html)
 
 In this problem, we are asked to determine if all remaining barns are connected
-as the barns close one at a time. To check this, we can run a depth-first search
-(DFS) starting from the barn that will close last. To simulate the closure of
+as the barns close one at a time. To check this, we can run a [depth-first search
+(DFS)](https://usaco.guide/silver/dfs) starting from the barn that will close last. To simulate the closure of
 each barn, we can store a boolean array and set each barn in the iteration to be
 "closed". Then, we can run the DFS and check how many nodes have been visited.
-If all the unclosed nodes have been visited, then we print "YES"; otherwise, we
+If all the unclosed nodes have been visited, then we print "YES" otherwise, we
 print "NO".
 
 ## Implementation
@@ -20,158 +20,144 @@ print "NO".
 **Time Complexity:** $\mathcal{O}(N^2 + NM)$
 
 <LanguageSection>
+<PySection>
+<Warning title="Time Limit Exceeded">
+Since Python is slow, it exceeds the time limit on test cases 8 and 10 even though the solution is the intended one.
+</Warning>
 
-<CPPSection>
+```py
+import sys
 
-```cpp
-#include <bits/stdc++.h>
+sys.stdin = open("closing.in", "r")
+sys.stdout = open("closing.out", "w")
 
-using namespace std;
-using ll = long long;
-using vl = vector<ll>;
-using vb = vector<bool>;
-using pl = pair<ll, ll>;
-using vpl = vector<pl>;
-using vc = vector<char>;
-using vs = vector<string>;
-using str = string;
+n, m = map(int, input().split())
 
-#define FastIO ios_base::sync_with_stdio(0); cin.tie(0)
-#define pb push_back
-#define mp make_pair
-#define all(x) begin(x), end(x)
-#define sor(x) sort(all(x))
-#define ins insert
-#define f first
-#define s second
-#define sz(x) (ll)(x).size()
-#define len(x) (ll)(x).length()
-#define FOR(i, a, b) for(ll i=a; i<b; ++i)
-#define ROF(i, b, a) for(ll i=(b)-1; i>=a; --i)
-#define EACH(a, x) for(auto& a: x)
-#define lb(a, x) lower_bound(all(a), x) - begin(a)
-#define ub(a, x) upper_bound(all(a), x) - begin(a)
+adj, order = {}, []
+for i in range(1, n + 1): adj[i] = []
 
-void setIO(string fileName = ""){
-	FastIO;
-	if(len(fileName)){
-		freopen((fileName+".in").c_str(), "r", stdin);
-		freopen((fileName+".out").c_str(), "w", stdout);
-	}
-}
+visited, closed = [False] * (n + 1), [False] * (n + 1)
+nodes = 0
 
-vl adj[3001], order(3001); ll nodes;
-vb visited(3001), closed(3001);
+def dfs(node):
+	global nodes
+	if visited[node] or closed[node]: return
 
-// Store the global variables, including the number of nodes visited and the boolean closed array.
+	# Visit this node if it isn't closed and we haven't visited it yet.
+	nodes += 1
+	visited[node] = True
+	
+	for u in adj[node]:
+		if not visited[u]: 
+			dfs(u)
 
-void DFS(ll node){
-	if(visited[node] || closed[node]) return;
-	// Increase the number of nodes if and only if they haven't been closed.
-	nodes++;
-	visited[node] = true;
-	EACH(u, adj[node]){
-		if(!visited[u]){
-			DFS(u);
-		}
-	}
-}
+# Read in adjacency list.
+for i in range(m):
+	a, b = map(int, input().split())
+	adj[a].append(b)
+	adj[b].append(a)
 
-int main(){
-	setIO("closing");
-	ll n, m; cin >> n >> m;
-	FOR(i, 0, m){
-		ll a, b; cin >> a >> b;
-		adj[a].pb(b);
-		adj[b].pb(a);
-	}
-	FOR(i, 0, n){
-		cin >> order[i];
-	}
-	// Check the first line which indicates whether the initial farm is fully connected.
-	DFS(1);
-	if(nodes == n) cout << "YES" << endl;
-	else cout << "NO" << endl;
-	FOR(i, 0, n-1){
-		fill(all(visited), false);
-		nodes = 0;
-		closed[order[i]] = true;
-		DFS(order[n-1]); // DFS from the barn that will close last
-	// Have all the unclosed barns been visited?
-		(nodes == n-i-1) ? cout << "YES" << endl: cout << "NO" << endl;
-	}
-}
+for i in range(n):
+	order.append(int(input()))
+
+dfs(1)
+
+"""
+The farm is initially connected if we've visited every node 
+before any of the farms are closed.
+"""
+print("YES") if nodes == n else print("NO")
+
+for i in range(n - 1):
+	visited = [False] * (n + 1)
+	nodes = 0
+	closed[order[i]] = True
+
+	# Start DFS from the barn that will close last.
+	dfs(order[n - 1])
+
+	# Have we visited all the unclosed barns?
+	if nodes == n - i - 1:
+		print("YES")
+	else:
+		print("NO")
 ```
-
-## Alternate Implementation
+</PySection>
+<CPPSection>
 
 ```cpp
 #include <iostream>
 #include <cstdio>
 #include <vector>
 using namespace std;
-void dfs(int barn);
 
-vector<bool> visited(3000, false);
-vector<bool> open(3000, true);
-vector<int> graph[3000];
-int main()
-{
-	freopen("closing.in", "r", stdin);
-	freopen("closing.out", "w", stdout);
-	int n, m;
-	cin >> n >> m;
-	int a, b;
-	for (int i = 0; i < m; i++)
-	{
-		cin >> a >> b;
-		graph[a - 1].push_back(b - 1);
-		graph[b - 1].push_back(a - 1);
+int n, m;
+const int MAX_N = 3000;
+
+vector<vector<int>> adj(MAX_N);
+vector<int> vis(MAX_N);
+vector<int> closed(MAX_N);
+int nodes = 0;
+
+
+void dfs(int node) {
+	if (vis[node] || closed[node]) return;
+
+	// Visit this node if it isn't closed and we haven't visited it yet.
+	nodes++;
+	vis[node] = true;
+	
+	for (int u : adj[node]) {
+		if (!vis[u]) dfs(u);
 	}
-	bool connected = true;
-	int barn;
-	for (int i = 0; i < n; i++)
-	{
-		visited.assign(n, false);
-		//find first open barn and run dfs
-		for (int i = 0; i < n; i++)
-		{
-			if (open[i])
-			{
-				dfs(i);
-				break;
-			}
-		}
-		connected = true;
-		//if any barn is open but not visited, the farm is not connected
-		for (int i = 0; i < n; i++)
-		{
-			if (!visited[i] && open[i])
-			{
-				connected = false;
-			}
-		}
-		cout << (connected ? "YES" : "NO") << endl;
-		cin >> barn;
-		open[barn - 1] = false;
-	}
-	return 0;
 }
 
-void dfs(int barn)
-{
-	if (visited[barn] || !open[barn])
-	{
-		return;
+int main() {
+	freopen("closing.in", "r", stdin);
+	freopen("closing.out", "w", stdout);
+
+	cin >> n >> m;
+
+	// Read in adjacency list.
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
 	}
-	visited[barn] = true;
-	for (int i = 0; i < graph[barn].size(); i++)
-	{
-		dfs(graph[barn][i]);
+	
+	vector<int> ord(n);
+	for (int i = 0; i < n; i++) cin >> ord[i];
+
+	dfs(1);
+	
+	/*
+	 * The farm is initially connected if we've visited every node 
+	 * before any of the farms are closed.
+	 */
+	if (nodes == n) {
+		cout << "YES\n";
+	} else {
+		cout << "NO\n";
+	}
+	
+	for (int i = 0; i < n - 1; i++) {
+		nodes = 0;
+		closed[ord[i]] = true;
+		fill(vis.begin(), vis.end(), false);
+
+		// Start DFS from the barn that will close last.
+		dfs(ord[n - 1]);
+
+		// Have we visited all the unclosed barns?
+		if (nodes == n - i - 1) {
+			cout << "YES" << "\n";
+		} else {
+			cout << "NO" << "\n";
+		}
 	}
 }
 ```
-
 </CPPSection>
 
 <JavaSection>

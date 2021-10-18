@@ -1,0 +1,160 @@
+---
+id: cses-2101
+source: CSES
+title: New Roads Queries
+author: Dustin Miao
+---
+
+If we construct a graph where edges have weights equal to the time they are added, the problem boils down to efficiently finding the path with the minimum maximum edge for each query. 
+
+Let's consider a single query between nodes $u, v$. One way of approaching this is to sort the edge weights from smallest to largest, and then add edges one by one until $u$ and $v$ are connected. If we use a [disjoint set union](/gold/dsu), the time complexity for each query is $\mathcal{O}(m \cdot \alpha(n))$, which is too slow.
+
+However, this hints at a faster solution. Note that our slow approach bears many similarities with [Kruskal's MST algorithm](/gold/mst/#kruskals), which implies that the path between $u$ and $v$ on any minimum spanning tree will minimize the maximum edge weight. For a more formal proof, see [here](https://www.geeksforgeeks.org/minimum-bottleneck-spanning-treembst/). 
+
+All that is left to do is to efficiently query for the maximum edge on a tree path. One way to do this is with [binary jumping](/plat/binary-jump). 
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(m \cdot \alpha(n) + n\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+	
+const int MAXN = 2e5;
+const int LOGN = 18; // log of MAXN base 2
+ 
+// Simple DSU class with Small to Large merging
+template<size_t N> struct UnionFind {
+	int par[N], sze[N], max_size;
+ 
+	UnionFind(int n=N) { init(n); }
+ 
+	void init(int n=N) {
+		iota(par, par + n, 0);
+		fill(sze, sze + n, 1);
+		max_size = 1;
+	}
+ 
+	int find(int a) {
+		if (a == par[a])
+			return a;
+		return par[a] = find(par[a]);
+	}
+ 
+	bool merge(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) 
+			return 0;
+		
+		if (sze[a] > sze[b]) {
+			par[b] = a;
+			sze[a] += sze[b];
+			max_size = max(max_size, sze[a]);
+		}
+		else {
+			par[a] = b;
+			sze[b] += sze[a];
+			max_size = max(max_size, sze[b]);
+		}
+		return 1;
+	}
+ 
+	int size(int a) { 
+		return sze[find(a)]; 
+	}
+};
+ 
+int N, M, Q;
+vector<pair<int, int>> G[MAXN];
+UnionFind<MAXN> dsu;
+ 
+namespace LCA {
+	int dep[MAXN], par[MAXN][LOGN], val[MAXN][LOGN];
+ 
+	void dfs_init(int u, int p, int d) {
+		dep[u] = d;
+		par[u][0] = p;
+		for (auto [v, w] : G[u]) 
+			if (p != v) {
+				val[v][0] = w;
+				dfs_init(v, u, d + 1);
+			}
+	}
+ 
+	void init() {
+		memset(dep, -1, sizeof(dep));
+		memset(par, 0, sizeof(par));
+		memset(val, 0, sizeof(val));
+ 
+		for (int i = 1; i <= N; i++)
+			if (dep[i] == -1)
+				dfs_init(i, i, 0);
+		for (int k = 1; k < LOGN; k++)
+			for (int i = 1; i <= N; i++) {
+				par[i][k] = par[par[i][k - 1]][k - 1];
+				val[i][k] = max(val[i][k - 1], val[par[i][k - 1]][k - 1]);
+			}
+	}
+ 
+	int query(int a, int b) {
+		if (dep[a] > dep[b])
+			swap(a, b);
+		
+		// gets a and b to the same depth
+		int ans = 0;
+		for (int d = LOGN - 1; d >= 0; d--)
+			if (dep[b] - (1 << d) >= dep[a]) {
+				ans = max(ans, val[b][d]);
+				b = par[b][d];
+			}
+ 
+		assert(dep[a] == dep[b]);
+ 
+		if (a == b) 
+			return ans;
+ 
+		for (int d = LOGN - 1; d >= 0; d--) 
+			if (par[a][d] != par[b][d]) {
+				ans = max(ans, val[a][d]);
+				a = par[a][d];
+				ans = max(ans, val[b][d]);
+				b = par[b][d];
+			}
+		if (par[a][0] != par[b][0])
+			return -1;
+		ans = max(ans, val[a][0]);
+		ans = max(ans, val[b][0]);
+ 
+		return ans;
+	}
+}
+ 
+ 
+int main() {
+	dsu.init();
+ 
+	cin >> N >> M >> Q;
+	for (int i = 1; i <= M; i++) {
+		int u, v;
+		cin >> u >> v;
+		if (dsu.merge(u, v)) {
+			G[u].emplace_back(v, i);
+			G[v].emplace_back(u, i);
+		}
+	}
+ 
+	LCA::init();
+ 
+	while (Q--) {
+		int u, v;
+		cin >> u >> v;
+		cout << LCA::query(u, v) << '\n';
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
