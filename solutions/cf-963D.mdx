@@ -30,6 +30,7 @@ using namespace std;
  
 using pii = pair<int, int>;
 
+//BeginCodeSnip{Suffix Automaton}
 /**
  * Generates the Suffix Automaton of a given string
  * Complexity: O(|S|)
@@ -50,24 +51,25 @@ struct SuffixAuto {
 	void init(const string &S) {
 		states.reserve(2 * S.size());
 		last = state();
-		for (char c : S)
+		for (char c : S) {
 			extend(c);
+		}
 	}
  
-	void extend(char _c) {
-		int c = encode(_c); 
+	void extend(char l) {
+		int c = encode(l); 
 		int cur = state(states[last].len + 1, -1, states[last].len), P = last; 
 		while (P != -1 && states[P].next[c] == -1) {
 			states[P].next[c] = cur;
 			P = states[P].link;
 		}
-		if (P == -1)
+		if (P == -1) {
 			states[cur].link = 0;
-		else {
+		} else {
 			int Q = states[P].next[c];
-			if (states[P].len + 1 == states[Q].len)
+			if (states[P].len + 1 == states[Q].len) {
 				states[cur].link = Q;
-			else {
+			} else {
 				int C = state(states[P].len + 1, states[Q].link, -1);
 				copy(states[Q].next, states[Q].next + 26, states[C].next);
 				while (P != -1 && states[P].next[c] == Q) {
@@ -84,8 +86,9 @@ struct SuffixAuto {
 		for (char _c : P) {
 			int c = encode(_c);
 			s = states[s].next[c];
-			if (s == -1)
+			if (s == -1) {
 				return -1;
+			}
 		}
 		return s;
 	}
@@ -100,6 +103,8 @@ private:
 		return states.size() - 1;
 	}
 };
+//EndCodeSnip
+
 const int MAXN = 1e5 + 1;
 	
 string S;
@@ -113,21 +118,28 @@ vector<int> ord;  // visited nodes in dfs
  
 void dfs(int u = 0) {
 	int l = ord.size();
-	if (sa.states[u].pos != -1)
+	if (sa.states[u].pos != -1) {
 		ord.PB(sa.states[u].pos);
-	for (int v : suffix_link_tree[u])
+	}
+
+	for (int v : suffix_link_tree[u]) {
 		dfs(v);
+	}
+
 	if (!!queries[u].size()) {
 		int r = ord.size();
 		sort(ord.begin() + l, ord.end()); 
 		for (auto [q, K] : queries[u]) {
 			int t = INT_MAX;
-			for (int i = l; i + K - 1 < r; i++) 
+			for (int i = l; i + K - 1 < r; i++) {
 				t = min(t, ord[i + K - 1] - ord[i]);
-			if (t != INT_MAX)
+			}
+			if (t != INT_MAX) {
 				ans[q] += t;
-			else 
+			}
+			else {
 				ans[q] = -1;
+			}
 		}
 	}  
 } 
@@ -135,15 +147,16 @@ void dfs(int u = 0) {
 int main() {
 	cin >> S >> Q;
 	sa.init(S);
-	for (int i = 1; i < sa.states.size(); i++) 
+	for (int i = 1; i < sa.states.size(); i++) {
 		suffix_link_tree[sa.states[i].link].push_back(i);
+	}
 	for (int i = 0; i < Q; i++) {
 		int K; string P;
 		cin >> K >> P;
 		int s = sa.run(P);
-		if (s == -1)
+		if (s == -1) {
 			ans[i] = -1;
-		else {
+		} else {
 			queries[s].EB(i, K);
 			ans[i] = P.size();
 		}
@@ -151,8 +164,9 @@ int main() {
  
 	dfs();
  
-	for (int i = 0; i < Q; i++)
+	for (int i = 0; i < Q; i++) {
 		cout << ans[i] << '\n';
+	}
 }
 ```
 
