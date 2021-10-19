@@ -13,25 +13,37 @@ $$f(a, b) = T - W[a] \cdot (D[b] - D[a]) - W[b] \cdot (D[n + 1] - D[b])$$
 
 If we hold $b$ as constant, we can rearrange the equation into:
 
-$$f(a, b) = T - W[a] \cdot D[b] + W[a] \cdot D[a] - W[b] \cdot D[n + 1] + W[b] \cdot D[b]$$
+$$
+f(a, b) = T - W[a] \cdot D[b] + W[a] \cdot D[a] - W[b] \cdot D[n + 1] + W[b] \cdot D[b]
+$$
 
-$$f(a, b) = \{(T + W[a] \cdot D[a]) - W[a] \cdot D[b]\} - W[b] \cdot D[n +1] + W[b] \cdot D[b]$$
+$$
+f(a, b) = \{(T + W[a] \cdot D[a]) - W[a] \cdot D[b]\} - W[b] \cdot D[n +1] + W[b] \cdot D[b]
+$$
 
 Thus, $f$ can be decomposed into four parts: $y_a = T + W[a] \cdot D[a]$, $m_a = -W[a]$, $x = D[b]$, $c = -W[b] \cdot D[n + 1] + W[b] \cdot D[b]$. Thus, 
 
-$$f(a, b) = (y_a + m_ax) + c$$
+$$
+f(a, b) = (y_a + m_ax) + c
+$$
 
 Define another function $g(b)$ that denotes the minimum cost if we place the second sawmill at $b$. This can simply be expressed in terms of $f(a,b)$.
 
-$g(b) = \min_{1 \leq a < b} (y_a + m_a x) + c$
+$$
+g(b) = \min_{1 \leq a < b} (y_a + m_a x) + c
+$$
 
 Because $x$ and $c$ are functions of $b$, we can hold them constant. Note that $y_a + m_a x$ forms a linear function of $x$. We can use [convex hull trick](https://usaco.guide/plat/convex-hull-trick?lang=cpp) to efficiently query the minimum value of a group of linear functions. The answer is simply $\max_{2 \leq b \leq N}g(b)$. 
 
 The last thing that remains is to efficiently calculate $T$. 
 
-$$T = w_1(d_1 + d_2 + ... + d_n) + w_2(d_2 + d_3 + ... + d_n) + ... + w_n(d_n)$$
+$$
+T = w_1(d_1 + d_2 + ... + d_n) + w_2(d_2 + d_3 + ... + d_n) + ... + w_n(d_n)
+$$
 
-$$T = \sum_{1 \leq k \leq n} W[k] \cdot d_k$$
+$$
+T = \sum_{1 \leq k \leq n} W[k] \cdot d_k
+$$
 
 **Time Complexity:** $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$ depending on the implementation of CHT. Because the following solution uses [LineContainer](https://usaco.guide/adv/line-container), it runs in $\mathcal{O}(n \log n)$.
 
@@ -45,19 +57,26 @@ $$T = \sum_{1 \leq k \leq n} W[k] \cdot d_k$$
 #include <bits/stdc++.h>
 using namespace std;
 
-// source: https://usaco.guide/adv/line-container
+//BeginCodeSnip{Line Container}
+/**
+ * - Source: https://usaco.guide/adv/line-container?lang=cpp
+ * - Supports insertion of linear functions and querying
+ * of the maximum value of any function at some given x
+ * - Useful for Convex Hull Trick
+ * - Similar to LiChao Tree
+*/
 inline namespace _LineContainer {
 	bool _Line_Comp_State; 
 	struct Line {
 		// k is slope, m is intercept, p is intersection point
-		mutable ll k, m, p;
+		mutable long long k, m, p;
 		bool operator<(const Line& o) const {
 			return _Line_Comp_State ? p < o.p : k < o.k;
 		}
 	};
 	
 	struct LineContainer : multiset<Line> {
-		inline long long div(long long a, long long b) { return a / b - ((a ^ b) < 0 && a % b); }
+		long long div(long long a, long long b) { return a / b - ((a ^ b) < 0 && a % b); }
 		
 		bool isect(iterator x, iterator y) {
 			if (y == end()) { 
@@ -83,13 +102,13 @@ inline namespace _LineContainer {
 		long long query(long long x) {
 			assert(!empty());
 			_Line_Comp_State = 1; 
-			auto l = *lower_bound({0,0,x}); 
+			auto l = *lower_bound({0, 0, x}); 
 			_Line_Comp_State = 0;
 			return l.k * x + l.m;
 		}
 	};
 }
-
+//EndCodeSnip
 int N;
 long long W[20005], D[20005], T;
 
