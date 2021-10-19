@@ -28,7 +28,8 @@ $$
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
 const long long MOD = 1e9 + 7;
 
@@ -40,9 +41,12 @@ struct Matrix {
 	}
 
 	Matrix operator*(Matrix b) {
-		int x = sz(v), y = sz(v[0]), z = sz(b.v[0]);
+		int x = v.size();
+		int y = v[0].size();
+		int z = b.v[0].size();
 		assert(y == sz(b.v));
-		Matrix<T> ret; ret.init(x, z);
+		Matrix<T> ret;
+		ret.init(x, z);
 		for (int i = 0; i < x; i++) {
 			for (int j = 0; j < y; j++) {
 				for (int k = 0; k < z; k++) {
