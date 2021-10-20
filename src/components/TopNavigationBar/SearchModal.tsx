@@ -22,7 +22,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       <Dialog
         as="div"
         static
-        className="fixed z-10 inset-0 overflow-y-auto"
+        // z-20 is on the top navigation bar
+        className="fixed z-30 inset-0 overflow-y-auto"
         open={isOpen}
         onClose={() => onClose()}
         initialFocus={loadingFocusRef}
