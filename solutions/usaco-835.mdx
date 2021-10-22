@@ -2,19 +2,52 @@
 id: usaco-835
 source: USACO Silver 2018 Open
 title: Lemonade Line
-author: Mrinall Umasudhan
+author: Mrinall Umasudhan, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_lemonade_silver_open18.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lemonade_silver_open18.html)
 
-### Implementation
+The greedy strategy is to have cows with a smaller waiting time to be at the back of the line.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
+	
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
-See official editorial:
-http://www.usaco.org/current/data/sol_lemonade_silver_open18.html
+int main() {
+	freopen("lemonade.in", "r", stdin);
+	freopen("lemonade.out", "w", stdout);
 
+	int n;
+	cin >> n;
+
+	vector<int> cows(n);
+	for (int i = 0; i < n; i++) {
+		cin >> cows[i];
+	}
+	
+	int ans = 0;
+	sort(cows.begin(), cows.end(), greater<int>());
+	
+	for (int i = 0; i < n; i++) {
+		if (i <= cows[i]) {
+			ans++;
+		} else {
+			break;
+		}
+	}
+	cout << ans << "\n";
+}
+
+```
 </CPPSection>
 <JavaSection>
 
@@ -60,6 +93,27 @@ public class lemonade{
 	}
 }
 ```
-
 </JavaSection>
+<PySection>
+	
+```py
+import sys
+
+sys.stdin = open("lemonade.in", "r")
+sys.stdout = open("lemonade.out", "w")
+
+n = int(input())
+cows = list(map(int, input().split()))
+cows.sort(reverse=True)
+ans = 0
+
+for i in range(n):
+	if (i <= cows[i]):
+		ans += 1
+	else:
+		break
+
+print(ans)
+```
+</PySection>	
 </LanguageSection>
