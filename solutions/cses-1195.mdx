@@ -37,7 +37,7 @@ public class FlightDiscount {
 	static class Pair implements Comparable<Pair> {
 		public int first;
 		public long second;
-		public Pair(int to, long cost) {
+		public Pair(int first, long second) {
 			this.first = to;
 			this.second = cost;
 		}
@@ -86,6 +86,29 @@ public class FlightDiscount {
 		}
 		io.print(totalMin);
 		io.close();
+	}
+
+	static long[] minCost(int from, ArrayList<Pair>[] neighbors) {
+		long[] minCost = new long[neighbors.length];
+		Arrays.fill(minCost, Long.MAX_VALUE);
+		minCost[from] = 0;
+		PriorityQueue<Pair> frontier = new PriorityQueue<>();
+		frontier.add(new Pair(from, 0));
+		while (!frontier.isEmpty()) {
+			Pair currState = frontier.poll();
+			int curr = currState.first;
+			if (minCost[curr] != currState.second) {
+				continue;
+			}
+			for (Pair p : neighbors[curr]) {
+				long newCost = minCost[curr] + p.second;
+				if (newCost < minCost[p.first]) {
+					minCost[p.first] = newCost;
+					frontier.add(new Pair(p.first, newCost));
+				}
+			}
+		}
+		return minCost;
 	}
 
 	// CodeSnip{Kattio}
