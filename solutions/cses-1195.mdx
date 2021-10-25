@@ -79,14 +79,14 @@ public class FlightDiscount {
 
 		long[] dis1 = minDist(0, neighbors);
 		long[] dis2 = minDist(cityNum - 1, reverseNeighbors);
-		long min_cost = Long.MAX_VALUE;
+		long minCost = Long.MAX_VALUE;
 		for (int c = 0; c < cityNum; c++) {
 			// Go through all flights and see what the min cost is
 			for (Flight e : neighbors.get(c)) {
-				min_cost = Math.min(min_cost, dis1[c] + dis2[e.to] + e.cost / 2);
+				minCost = Math.min(minCost, dis1[c] + dis2[e.to] + e.cost / 2);
 			}
 		}
-		System.out.println(min_cost);
+		System.out.println(minCost);
 	}
 
 	public static long[] minDist(int start, ArrayList<ArrayList<Flight>> neighbors) {
