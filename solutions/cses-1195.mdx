@@ -90,7 +90,7 @@ public class FlightDiscount {
 	}
 
 	public static long[] minDist(int start, ArrayList<ArrayList<Flight>> neighbors) {
-		long[] min_dist = new long[neighbors.size()];
+		long[] minDist = new long[neighbors.size()];
 		boolean[] visited = new boolean[neighbors.size()];
 		PriorityQueue<Pos> frontier = new PriorityQueue<>();
 		frontier.add(new Pos(start, 0));
@@ -100,12 +100,12 @@ public class FlightDiscount {
 				continue;
 			}
 			visited[curr.pos] = true;
-			min_dist[curr.pos] = curr.cost;
+			minDist[curr.pos] = curr.cost;
 			for (Flight e : neighbors.get(curr.pos)) {
 				frontier.add(new Pos(e.to, curr.cost + e.cost));
 			}
 		}
-		return min_dist;
+		return minDist;
 	}
 }
 ```
