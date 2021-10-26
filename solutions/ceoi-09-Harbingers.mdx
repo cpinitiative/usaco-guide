@@ -38,8 +38,6 @@ struct Line {
 	friend ld intersect(Line l1, Line l2) { 
 		return (ld)(l2.b - l1.b) / (ld)(l1.m - l2.m); 
 	}
-
-	~Line() {}
 };
 
 int N;
@@ -146,13 +144,15 @@ int main() {
 		T[u].emplace_back(v, w);
 		T[v].emplace_back(u, w);
 	}
-	for (int i = 2; i <= N; i++)
+	for (int i = 2; i <= N; i++) {
 		cin >> S[i] >> V[i];
+	}
 
 	dfs();
 
-	for (int i = 2; i <= N; i++)
+	for (int i = 2; i <= N; i++) {
 		cout << min_time[i] << ' ';
+	}
 	cout << '\n';
 }
 ```
