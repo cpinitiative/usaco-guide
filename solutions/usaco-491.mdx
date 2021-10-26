@@ -11,6 +11,86 @@ author: Qi Wang
 
 <LanguageSection>
 <JavaSection>
+	
+
+## C++ Implementation
+
+```C++
+	#include <bits/stdc++.h>
+
+	using namespace std;
+
+	typedef long long ll;
+	typedef long double ld;
+	typedef unsigned long long ull;
+	#define pb push_back
+	#define F first
+	#define S second
+	#define ii pair<ll,ll>
+	const long double eps=1e-16;
+	const ll N = 3e5 + 5, M = 3e5 + 50, LOG = 21, mod = 1000000007, INF = 1e18;
+	const ld EPS = 1e-16;
+	int n,m;
+
+	vector<int> adj[N];
+
+	int arr[N];
+	int vis[N];
+	int vid=0;
+	int dis[3][N];
+	int cost[3];
+	int st[3]{0,1,0};
+	int main() {
+	//    ios_base::sync_with_stdio(0); cin.tie(0);cout.tie(0);
+	    freopen("piggyback.in","r",stdin);
+	    freopen("piggyback.out","w",stdout);
+	    ll tt = 1;
+	//    cin >>tt;
+	    while (tt--) {
+		int x,y;
+		int b,e,p;
+		cin >> cost[0]>>cost[1]>>cost[2]>>n >> m;
+		st[2]=n-1;
+		for (int i = 0; i < m; ++i) {
+		    int a,b;
+		    cin >>a>>b;
+		    a--,b--;
+		    adj[a].push_back(b);
+		    adj[b].push_back(a);
+		}
+		int ans=m;
+		for (int i = 0; i < 3; ++i) {
+		    queue<int>qu;
+		    vid++;
+		    qu.push(st[i]);
+		    vis[st[i]]=vid;
+		    dis[i][st[i]]=0;
+		    while(!qu.empty()){
+			auto cur=qu.front();
+			qu.pop();
+			for(auto e:adj[cur]){
+			    if(vis[e]!=vid){
+				qu.push(e);
+				vis[e]=vid;
+				dis[i][e]=dis[i][cur]+cost[i];
+			    }
+			}
+		    }
+
+		}
+		int mn=1e9;
+		for(int i=0;i<n;i++){
+	//            cout << dis[0][i]+dis[1][i]+dis[2][i]<<endl;
+		    mn=min(mn,dis[0][i]+dis[1][i]+dis[2][i]);
+		}
+		cout <<mn <<endl;
+
+
+
+
+	    }
+	}
+```
 
 ## Java Implementation
 
