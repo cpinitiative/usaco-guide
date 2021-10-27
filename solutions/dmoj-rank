@@ -1,0 +1,125 @@
+---
+id: dmoj-rank
+source: DMOJ
+title: Rank
+author: Ryan Chou
+---
+
+## Explanation
+We can use the games to construct a directed graph. If $a$ wins against $b$ then we can construct an arc from $b$ to $a$. Since the bounds of $N$ and $M$ are small, after processing the input, we can start a DFS from every vertex. If we reach that vertex again, then we can mark that vertex as “cyclic”.
+
+## Implementation
+$\mathcal{O}(N^2 + M)$ time
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<vector<int>> adj(21);
+bool vis[21], cyclic[21];
+
+int original_node;
+
+void dfs(int node) {
+	if (vis[node]) return;
+	vis[node] = true;
+
+	// found a cycle
+	if (node == original_node) {
+		cyclic[node] = true;
+		return;
+	}
+
+	for (int u : adj[node]) {
+		if (!vis[u]) dfs(u);
+	}
+}
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+	
+	// process directed graph
+	for (int i = 0; i < k; i++) {
+		int a, b, sa, sb;
+		cin >> a >> b >> sa >> sb;
+
+		if (sa > sb) {
+			adj[b].push_back(a);
+		} else if (sa < sb) {
+			adj[a].push_back(b);
+		}
+	}
+
+	for (int i = 1; i <= n; i++) {
+		original_node = i;
+		fill(begin(vis), end(vis), false);
+
+		for (int u : adj[i]) {
+			dfs(u);
+		}
+	}
+
+	// count number of cyclic nodes.
+	int ans = 0;
+	for (int i = 1; i <= n; i++) {
+		if (cyclic[i]) ans++;
+	}
+	
+	cout << ans;
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+n, m = map(int, input().split())
+
+adj = [[] for _ in range(n + 1)]
+vis, cyclic = [False for _ in range(n + 1)], [False for _ in range(n + 1)]
+original_node = -1
+
+def dfs(node):
+	if vis[node]: 
+		return 0
+
+	vis[node] = True
+
+	# found a cycle
+	if node == original_node:
+		cyclic[node] = True
+
+	for u in adj[node]:
+		if not vis[u]: 
+			dfs(u)
+
+# process directed graph
+for i in range(m):
+	a, b, sa, sb = map(int, input().split())
+
+	if sa > sb:
+		adj[b].append(a)
+	elif sb > sa:
+		adj[a].append(b)
+
+for i in range(1, n + 1):
+	original_node = i
+	vis = [False for _ in range(n + 1)]
+
+	for u in adj[i]:
+		dfs(u)
+
+ans = 0
+for i in range(1, n + 1):
+	if cyclic[i]:
+		ans += 1
+
+print(ans)
+```
+</PySection>
+</LanguageSection>
