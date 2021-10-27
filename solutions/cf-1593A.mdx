@@ -1,0 +1,99 @@
+---
+id: cf-1593A
+source: CF
+title: Elections
+author: Aadit Ambadkar
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/96034)
+
+## Explanation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+This problem asks us to find the number that should be added to another number so that it is strictly greater than 2 other numbers. 
+In other words, letting $a,b,c$ be the values of the $3$ given numbers and $n$ be the number that will be added, we get the following equation:
+
+$$a+n=\max(b,c)+1$$
+
+Solving this, we get $n=max(b,x)+1-a$. With this, we can calculate $n$ for each of $a$, $b$, and $c$. However, it is important to note that if $n<0$, then we should output $0$, since the value to add can't be negative.
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+	for (int tc = 0; tc < t; tc++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+	
+		/*
+		 * Calculate the value which must be passed
+		 * in order for that person to win the election.
+		 * For example, max(b,c) gives the amount which
+		 * needs to be surpassed by a in order to win.
+		 */
+		int maxa = max(b, c);
+		int maxb = max(a, c);
+		int maxc = max(a, b);
+
+		cout << max(0, maxa + 1 - a) << " " << max(0, maxb + 1 - b) << " " << max(0, maxc + 1 - c) << endl;
+	}
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Election {
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int t = io.nextInt();
+		for (int tc = 0; tc < t; tc++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			int c = io.nextInt();
+
+			/*
+			 * Calculate the value which must be passed
+			 * in order for that person to win the election.
+			 * For example, max(b,c) gives the amount which
+			 * needs to be surpassed by a in order to win.
+			 */
+			int maxa = Math.max(b, c);
+			int maxb = Math.max(a, c);
+			int maxc = Math.max(a, b);
+			System.out.println(Math.max(0, maxa + 1 - a) 
+					+ " " + Math.max(0, maxb + 1 - b) 
+					+ " " + Math.max(0, maxc + 1 - c));
+		}
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	a, b, c = map(int, input().split());
+	maxa = max(b, c)
+	maxb = max(a, c)
+	maxc = max(a, b)
+
+	print(max(0, maxa + 1 - a), max(0, maxb + 1 - b), max(0, maxc + 1 - c))
+```
+</PySection>
+</LanguageSection>
