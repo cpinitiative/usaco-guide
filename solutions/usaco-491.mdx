@@ -15,7 +15,7 @@ author: Qi Wang
 
 ## C++ Implementation
 
-```C++
+```cpp
 	#include <bits/stdc++.h>
 
 	using namespace std;
@@ -45,11 +45,11 @@ author: Qi Wang
 	    freopen("piggyback.in","r",stdin);
 	    freopen("piggyback.out","w",stdout);
 	    ll tt = 1;
-	//    cin >>tt;
 	    while (tt--) {
 		int x,y;
 		int b,e,p;
 		cin >> cost[0]>>cost[1]>>cost[2]>>n >> m;
+	
 		st[2]=n-1;
 		for (int i = 0; i < m; ++i) {
 		    int a,b;
@@ -58,7 +58,10 @@ author: Qi Wang
 		    adj[a].push_back(b);
 		    adj[b].push_back(a);
 		}
+	// The soultion is about trying to choose the meeting point
+	// So the will spend some x*E + y*B + z*P
 		int ans=m;
+	// Run bfs to get the distance to every node
 		for (int i = 0; i < 3; ++i) {
 		    queue<int>qu;
 		    vid++;
@@ -80,14 +83,9 @@ author: Qi Wang
 		}
 		int mn=1e9;
 		for(int i=0;i<n;i++){
-	//            cout << dis[0][i]+dis[1][i]+dis[2][i]<<endl;
 		    mn=min(mn,dis[0][i]+dis[1][i]+dis[2][i]);
 		}
 		cout <<mn <<endl;
-
-
-
-
 	    }
 	}
 ```
