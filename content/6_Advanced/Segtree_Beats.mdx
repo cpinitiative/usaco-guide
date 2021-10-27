@@ -31,6 +31,7 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	let right_child = 2 * tree_node + 1
 	update(upd_left, upd_right, upd_value, left_child, tree_left, tree_mid)
 	update(upd_left, upd_right, upd_value, right_child, tree_mid + 1, tree_right)
+	merge values from children
 ```
 
 At first, this problem may seem like an ordinary lazy segment tree problem, but
@@ -74,6 +75,7 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	let right_child = 2 * tree_node + 1
 	update(upd_left, upd_right, upd_value, left_child, tree_left, tree_mid)
 	update(upd_left, upd_right, upd_value, right_child, tree_mid + 1, tree_right)
+	merge values from children
 ```
 
 We can store $\texttt{cur\_max}$ and $\texttt{cur\_min}$ to compute them
@@ -91,7 +93,7 @@ However, not all hope is lost.
 
 Define the entropy of the array to be $\sum_{k = 1}^n \lceil \log a_k \rceil$,
 or equivalently, the maximum number of modulo operations to decrease the array
-to its base state of all 1s. If there are no point updates, then the time
+to its base state of all 0s. If there are no point updates, then the time
 complexity is linear to the entropy, which has a maximum value of $n \log a$.
 Each point update increases the entropy by a fixed amount
 $\lceil \log a \rceil$. If there are $q_p$ point updates, then the total entropy
@@ -99,6 +101,15 @@ over all updates is bounded by $n \log a + q_p \log a$. If we factor out these
 point update operations, each modulo update is still bounded by the total
 entropy. This means that even with point updates, our solution still runs in
 $\mathcal{O}(n \log a + q_p \log a) = \mathcal{O}((n + q)\log a)$.
+
+<Info title="Pro Tip">
+
+It's possible to solve this problem without a $\texttt{min}$ tag, but using 
+both a $\texttt{min}$ and a $\texttt{max}$ allows range updates, which 
+aren't strictly pertinent to this particular problem but is still 
+a useful thing to know. 
+
+</Info>
 
 # Implementation - The Child and Sequence
 
@@ -253,6 +264,7 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	let right_child = 2 * tree_node + 1
 	update(upd_left, upd_right, upd_value, left_child, tree_left, tree_mid)
 	update(upd_left, upd_right, upd_value, right_child, tree_mid + 1, tree_right)
+	merge values from children
 ```
 
 To prove that this runs in $\mathcal{O}((n + q) \log n)$, we need to define a variable $\delta$ that represents the sum of the number of distinct elements over all intervals in the segment tree. This number is bounded by $n \log n$, which is the sum of the sizes of every interval. 
