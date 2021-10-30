@@ -131,20 +131,20 @@ void pushdown(int t, int tl, int tr) {
 		int tm = (tl + tr) >> 1;
  
 		tsum[t << 1] = lazy[t] * (tm - tl + 1);  // sum set update
-		tmax[t << 1] = lazy[t];                  // max set update
-		tmin[t << 1] = lazy[t];                  // min set update
-		lazy[t << 1] = lazy[t];                  // propogate tag
+		tmax[t << 1] = lazy[t];  // max set update
+		tmin[t << 1] = lazy[t];  // min set update
+		lazy[t << 1] = lazy[t];  // propogate tag
  
 		tsum[t << 1 | 1] = lazy[t] * (tr - tm);  // sum set update
-		tmax[t << 1 | 1] = lazy[t];              // max set update
-		tmin[t << 1 | 1] = lazy[t];              // min set update
-		lazy[t << 1 | 1] = lazy[t];              // propogate tag
+		tmax[t << 1 | 1] = lazy[t];  // max set update
+		tmin[t << 1 | 1] = lazy[t];  // min set update
+		lazy[t << 1 | 1] = lazy[t];  // propogate tag
  
-		lazy[t] = -1;                            // reset lazy tag
+		lazy[t] = -1;  // reset lazy tag
 	}
 }
  
-void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
+void update(int l, int r, ll v, int t=1, int tl=1, int tr=N) {
 	if (r < tl || tr < l || tmax[t] < v) {
 		return;
 	}
@@ -167,7 +167,7 @@ void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
 	tmin[t] = min(tmin[t << 1], tmin[t << 1 | 1]);
 }
  
-void update(int i, ll v, int t = 1, int tl = 1, int tr = N) {
+void update(int i, ll v, int t=1, int tl=1, int tr=N) {
 	if (tl == tr) {
 		tsum[t] = tmax[t] = tmin[t] = v;
 		return;
@@ -186,7 +186,7 @@ void update(int i, ll v, int t = 1, int tl = 1, int tr = N) {
 	tmin[t] = min(tmin[t << 1], tmin[t << 1 | 1]);
 }
  
-ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
+ll query(int l, int r, int t=1, int tl=1, int tr=N) {
 	if (r < tl || tr < l) {
 		return 0LL;
 	}
@@ -207,7 +207,8 @@ int main() {
  
 	cin >> N >> Q;
 	for (int i = 1; i <= N; i++) {
-		ll a; cin >> a;
+		ll a; 
+		cin >> a;
 		update(i, a);
 	}
 	while (Q--) {
@@ -287,20 +288,20 @@ Store three more variables $\texttt{min}_1$, $\texttt{min}_2$, and $\texttt{min}
 using namespace std;
 using ll = long long;
 
-const int MAXN = 200001; // 1-based
+const int MAXN = 200001;  // 1-based
 
 int N;
 ll A[MAXN];
 
 struct Node {
 	ll sum;  // Sum tag
-	ll max1; // Max value
-	ll max2; // Second Max value
-	ll maxc; // Max value count
-	ll min1; // Min value
-	ll min2; // Second Min value
-	ll minc; // Min value count
-	ll lazy; // Lazy tag
+	ll max1;  // Max value
+	ll max2;  // Second Max value
+	ll maxc;  // Max value count
+	ll min1;  // Min value
+	ll min2;  // Second Min value
+	ll minc;  // Min value count
+	ll lazy;  // Lazy tag
 } T[MAXN * 4];
 
 void merge(int t) {
@@ -414,7 +415,7 @@ void pushdown(int t, int tl, int tr) {
 	push_min(t << 1 | 1, T[t].min1, tm + 1 == tr);
 }
 
-void build(int t = 1, int tl = 0, int tr = N - 1) {
+void build(int t=1, int tl=0, int tr=N-1) {
 	T[t].lazy = 0;
 	if (tl == tr) {
 		T[t].sum = T[t].max1 = T[t].min1 = A[tl];
@@ -430,7 +431,7 @@ void build(int t = 1, int tl = 0, int tr = N - 1) {
 	merge(t);
 }
 
-void update_add(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
+void update_add(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
 	if (r < tl || tr < l) {
 		return;
 	}
@@ -446,7 +447,7 @@ void update_add(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
 	merge(t);
 }
 
-void update_chmin(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
+void update_chmin(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
 	if (r < tl || tr < l || v >= T[t].max1) {
 		return;
 	}
@@ -462,7 +463,7 @@ void update_chmin(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
 	merge(t);
 }
 
-void update_chmax(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
+void update_chmax(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
 	if (r < tl || tr < l || v <= T[t].min1) {
 		return;
 	}
@@ -478,7 +479,7 @@ void update_chmax(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
 	merge(t);
 }
 
-ll query_sum(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
+ll query_sum(int l, int r, int t=1, int tl=0, int tr=N-1) {
 	if (r < tl || tr < l) {
 		return 0;
 	}
@@ -495,21 +496,25 @@ int main() {
 	int Q;
 	
 	cin >> N >> Q;
-	for (int i = 0; i < N; i++) 
+	for (int i = 0; i < N; i++) {
 		cin >> A[i];
+	}
 	build();
-	while (Q--) {
+	for (int q = 0; q < Q; q++) {
 		int t; cin >> t;
 		if (t == 0) {
-			int l, r; ll x;
+			int l, r; 
+			ll x;
 			cin >> l >> r >> x;
 			update_chmin(l, r - 1, x);
 		} else if (t == 1) {
-			int l, r; ll x;
+			int l, r; 
+			ll x;
 			cin >> l >> r >> x;
 			update_chmax(l, r - 1, x);
 		} else if (t == 2) {
-			int l, r; ll x;
+			int l, r; 
+			ll x;
 			cin >> l >> r >> x;
 			update_add(l, r - 1, x);
 		} else if (t == 3) {
