@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as crypto from 'crypto';
 import * as functions from 'firebase-functions';
 const MAILCHIMP_API_KEY = functions.config().mailchimp.apikey;
-import "firebase-functions/lib/logger/compat";
+import 'firebase-functions/lib/logger/compat';
 
 export default async function updateMailingList({
   email,
@@ -24,7 +24,7 @@ export default async function updateMailingList({
   joinLink: string;
 }) {
   try {
-    functions.logger.warn("Updating Mailing List")
+    functions.logger.warn('Updating Mailing List');
     const listID = 'e122c7f3eb';
     const emailHash = crypto
       .createHash('md5')
@@ -44,7 +44,9 @@ export default async function updateMailingList({
         return resp.data;
       })
       .catch(e => {
-        functions.logger.warn('No Mailchimp Existing Fields Found (or an error occurred)');
+        functions.logger.warn(
+          'No Mailchimp Existing Fields Found (or an error occurred)'
+        );
         // the user probably doesn't exist
         // so just assume there is no previous data
         if (e.response?.status !== 404) {
@@ -54,7 +56,7 @@ export default async function updateMailingList({
         // return empty object
         return Promise.resolve({});
       });
-    functions.logger.warn("done getting existing fields")
+    functions.logger.warn('done getting existing fields');
     const data = {
       email_address: email,
       status: 'subscribed',
@@ -73,7 +75,7 @@ export default async function updateMailingList({
         BRVCJOINLK: joinLink,
       },
     };
-    functions.logger.warn("data", data)
+    functions.logger.warn('data', data);
     await axios.put(
       `https://us2.api.mailchimp.com/3.0/lists/${listID}/members/${emailHash}`,
       data,
@@ -84,7 +86,7 @@ export default async function updateMailingList({
         },
       }
     );
-    functions.logger.warn("posting mailchimp")
+    functions.logger.warn('posting mailchimp');
     await axios.post(
       `https://us2.api.mailchimp.com/3.0/lists/${listID}/members/${emailHash}/tags`,
       {
@@ -110,7 +112,7 @@ export default async function updateMailingList({
         },
       }
     );
-    functions.logger.warn("done posting to mailchimp")
+    functions.logger.warn('done posting to mailchimp');
   } catch (error) {
     functions.logger.warn('INTERNAL ERROR', error);
     throw new functions.https.HttpsError(
