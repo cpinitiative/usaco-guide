@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as payPalClient from './utils/payPalClient';
 import updateMailingList from './utils/updateMailingList';
+import "firebase-functions/lib/logger/compat";
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
@@ -23,6 +24,7 @@ export default functions.https.onCall(
     },
     context
   ) => {
+    functions.logger.warn("start process registration")
     const orderID = orderData.orderID;
 
     if (
@@ -42,6 +44,7 @@ export default functions.https.onCall(
       );
     }
 
+    functions.logger.warn("start get reg details")
     // 3. Call PayPal to get the transaction details
     const request = new checkoutNodeJssdk.orders.OrdersGetRequest(orderID);
 
@@ -56,7 +59,7 @@ export default functions.https.onCall(
         'An internal error occurred while trying to verify the order.'
       );
     }
-
+    functions.logger.warn("start validate transaction details")
     // 5. Validate the transaction details are as expected
     if (order.result.purchase_units[0].amount.value !== '25.00') {
       throw new functions.https.HttpsError(
@@ -64,7 +67,7 @@ export default functions.https.onCall(
         'The value of the order was not $25.'
       );
     }
-
+    functions.logger.warn("start make join link")
     // create bronze class join link
     const joinLinkRef = admin.firestore().collection('group-join-links').doc();
     await joinLinkRef.set({
@@ -84,6 +87,7 @@ export default functions.https.onCall(
       .doc('usacobronze')
       .collection('registrations')
       .doc();
+    functions.logger.warn("start update mailing list")
     await Promise.all([
       ref.set({
         financialAid: false,
@@ -102,6 +106,7 @@ export default functions.https.onCall(
         },
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
       }),
+
       updateMailingList({
         email,
         firstName,
@@ -113,7 +118,7 @@ export default functions.https.onCall(
         joinLink: `https://usaco.guide/groups/join?key=${joinLinkRef.id}`,
       }),
     ]);
-
+    functions.logger.warn("onbeforereturn")
     return {
       registrationId: ref.id,
       paymentId: orderID,

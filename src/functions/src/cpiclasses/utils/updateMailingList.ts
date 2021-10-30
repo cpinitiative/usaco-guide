@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as crypto from 'crypto';
 import * as functions from 'firebase-functions';
 const MAILCHIMP_API_KEY = functions.config().mailchimp.apikey;
+import "firebase-functions/lib/logger/compat";
 
 export default async function updateMailingList({
   email,
@@ -23,6 +24,7 @@ export default async function updateMailingList({
   joinLink: string;
 }) {
   try {
+    functions.logger.warn("Updating Mailing List")
     const listID = 'e122c7f3eb';
     const emailHash = crypto
       .createHash('md5')
@@ -42,16 +44,17 @@ export default async function updateMailingList({
         return resp.data;
       })
       .catch(e => {
-        console.log('Mailchimp Existing Fields GET Error');
+        functions.logger.warn('No Mailchimp Existing Fields Found (or an error occurred)');
         // the user probably doesn't exist
         // so just assume there is no previous data
         if (e.response?.status !== 404) {
-          console.log(e?.toJSON());
+          functions.logger.warn(e?.toJSON());
         }
 
         // return empty object
         return Promise.resolve({});
       });
+    functions.logger.warn("done getting existing fields")
     const data = {
       email_address: email,
       status: 'subscribed',
@@ -70,7 +73,7 @@ export default async function updateMailingList({
         BRVCJOINLK: joinLink,
       },
     };
-
+    functions.logger.warn("data", data)
     await axios.put(
       `https://us2.api.mailchimp.com/3.0/lists/${listID}/members/${emailHash}`,
       data,
@@ -81,7 +84,7 @@ export default async function updateMailingList({
         },
       }
     );
-
+    functions.logger.warn("posting mailchimp")
     await axios.post(
       `https://us2.api.mailchimp.com/3.0/lists/${listID}/members/${emailHash}/tags`,
       {
@@ -107,8 +110,9 @@ export default async function updateMailingList({
         },
       }
     );
+    functions.logger.warn("done posting to mailchimp")
   } catch (error) {
-    console.log('INTERNAL ERROR', error);
+    functions.logger.warn('INTERNAL ERROR', error);
     throw new functions.https.HttpsError(
       'internal',
       'An internal error occurred while trying to send the order confirmation email.'

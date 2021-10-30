@@ -145,20 +145,21 @@ export default function Feedback({ videoId }): JSX.Element {
             value={comment}
             onChange={e => setComment(e.target.value)}
           />
-
-          <button
-            type="submit"
-            className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
-          >
-            Submit Private Comment
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowAdditionalFeedback(false)}
-            className="ml-2 items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
-          >
-            Close
-          </button>
+          <div className="block">
+            <button
+              type="submit"
+              className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+            >
+              Submit Private Comment
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAdditionalFeedback(false)}
+              className="ml-2 items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+            >
+              Close
+            </button>
+          </div>
         </form>
       )}
     </>

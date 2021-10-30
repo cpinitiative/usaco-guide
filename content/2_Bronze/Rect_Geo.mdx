@@ -1,8 +1,8 @@
 ---
 id: rect-geo
 title: 'Rectangle Geometry'
-author: Darren Yao, Michael Cao, Benjamin Qi
-contributors: Allen Li, Andrew Wang, Dong Liu
+author: Darren Yao, Michael Cao, Benjamin Qi, Ben Dodge
+contributors: Allen Li, Andrew Wang, Dong Liu, Ryan Chou
 description:
   'Problems involving rectangles whose sides are parallel to the coordinate
   axes.'
@@ -516,6 +516,165 @@ print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - inters
 
 </Spoiler>
 
+## Common Formulas
+
+Certain tasks show up often in rectangle geometry problems. For example, many problems
+involve finding the overlapping area of two or more rectangles based on their coordinate points, 
+or determining whether two rectangles intersect. Here, we'll discuss these formulas. 
+
+### Finding area
+	
+The formula for finding the area of an individual rectangle is $w \cdot l$, so we can just retrieve these lengths with our coordinates. 
+	
+1. $w = tr_x - bl_x$
+2. $l = tr_y - bl_y$
+3. $area = w \cdot l$
+
+## Implementation
+
+<LanguageSection>
+	<CPPSection>
+
+		```cpp
+		long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
+			long long length = tr_y - bl_y;
+			long long width = tr_x - bl_x;
+			return length * width;
+		}
+		```
+	</CPPSection>
+	<PySection>
+
+		```py
+		def area(bl_x, bl_y, tr_x, tr_y):
+			length = tr_y - bl_y
+			width = tr_x - bl_x
+			return length * width
+		```
+	</PySection>
+	<JavaSection>
+		```java
+		int area(int bl_x, int bl_y, int tr_x, int tr_y) {
+			int length = tr_y - bl_y;
+			int width = tr_x * bl_x;
+			return length * width;
+		}
+		```
+	</JavaSection>
+</LanguageSection>
+### Checking if rectangles intersect
+
+First, we notice that rectangles can be represented by $2$ points each, the top right and 
+the bottom left. We'll call these points $tr_a$ and $tr_b$, and $bl_a$ and $bl_b$, for rectangles 
+$a$ and $b$. 
+	
+There are only two cases where the rectangles do not intersect: 
+
+1. $tr_{a_y}$ $\leq$ $bl_{b_y}$ or $bl_{a_y}$ $\geq$ $tr_{b_y}$.  
+2. $bl_{a_x}$ $\geq$ $tr_{b_x}$ or $tr_{a_x}$ $\leq$ $bl_{b_x}$. 
+
+In all other cases, the rectangles intersect. 
+ ## Implementation
+	
+<LanguageSection>
+	<CPPSection>
+		```cpp
+		vector<int> intersect(vector<int> s1, vector<int> s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+			
+			// no overlap
+			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
+			|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		```
+	</CPPSection>
+	<PySection>
+		```py
+		def intersect(s1, s2):
+			bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
+			bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
+			
+			# no overlap
+			if (bl_a_x >= tr_b_x or tr_a_x <= bl_b_x \
+			or bl_a_y >= tr_b_y or tr_a_y or bl_b_y):
+				return False
+			else:
+				return True
+		```
+	</PySection>
+	<JavaSection>
+		```java
+		boolean intersect(int[] s1, int[] s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+			
+			// no overlap
+			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
+			|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		```
+	</JavaSection>
+</LanguageSection>			 
+### Finding area of intersection
+					 
+We'll assume that the shape formed by the intersection of two rectangles is itself a rectangle.
+
+First, we'll find this rectangle's $x$ and $y$ coordinates. 
+$x$ = min($tr_{a_x}$, $tr_{b_x}$) - max($bl_{a_x}$, $bl_{b_x}$). 
+$y$ = min($tr_{a_y}$, $tr_{b_y}$) - max($bl_{a_y}$, $bl_{b_y}$).
+	
+If either of these values are negative, the rectangles do not intersect. 
+If they are zero, the rectangles intersect at a single point. 
+Multiply the $x$ and $y$ values together to find the overlapping area. 
+
+
+## Implementation
+
+<LanguageSection>
+	<CPPSection>
+	
+		```cpp
+		int interArea(vector<int> s1, vector<int> s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
+			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+
+			return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) 
+					* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y));
+		}
+		```
+	</CPPSection>
+	<PySection>
+
+		```py
+		def interArea(s1, s2):
+			bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
+			bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
+			
+			return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) \
+					* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
+		```
+	</PySection>
+	<JavaSection>
+		```java
+		int interArea(int[] s1, int[] s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
+			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+
+			return (Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) 
+				* (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y));
+		}
+		```
+	</JavaSection>
+</LanguageSection>
 ## Problems
 
 <Problems problems="general" />

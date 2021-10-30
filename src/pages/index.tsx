@@ -514,7 +514,7 @@ export default function IndexPage(): JSX.Element {
                       </OutboundLink>
                       . Check out the{' '}
                       <Link
-                        to="/usaco-faq"
+                        to="/general/usaco-faq"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         USACO FAQ Page

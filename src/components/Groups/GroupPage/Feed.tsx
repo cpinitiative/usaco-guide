@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useContext } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -12,19 +11,18 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
+  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { PostData, sortPostsComparator } from '../../../models/groups/posts';
-import Tabs from '../../Tabs';
-import FeedItem from './FeedItem';
 import { MenuIcon } from '@heroicons/react/solid';
-import { GroupData } from '../../../models/groups/groups';
+import React, { useEffect, useState } from 'react';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
+import { GroupData } from '../../../models/groups/groups';
+import { PostData, sortPostsComparator } from '../../../models/groups/posts';
+import FeedItem from './FeedItem';
 
 function SortableItem(props: {
   id: string;
@@ -36,13 +34,8 @@ function SortableItem(props: {
   // probably post was just deleted before items updated
   if (!props.post) return null;
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: props.id });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: props.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -181,14 +174,18 @@ export default function Feed(): JSX.Element {
           </DndContext>
         ) : (
           <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
-            {items.map(id => (
-              <FeedItem
-                group={group.groupData}
-                post={group.posts.find(x => x.id === id)}
-                userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
-                key={id}
-              />
-            ))}
+            {items.map(id => {
+              const post = group.posts.find(x => x.id === id);
+              if (!post.isPublished) return null;
+              return (
+                <FeedItem
+                  group={group.groupData}
+                  post={post}
+                  userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
+                  key={id}
+                />
+              );
+            })}
           </div>
         ))}
     </div>

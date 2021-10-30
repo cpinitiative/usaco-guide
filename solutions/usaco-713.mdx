@@ -2,87 +2,80 @@
 id: usaco-713
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road III
-author: Óscar Garries, tickox
+author: Óscar Garries, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_cowqueue_bronze_feb17.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowqueue_bronze_feb17.html)
 
-## Solution 1
+Since the time the cows arrive and need for questioning can be up to $10^6$, we should traverse through the times as steps.
 
-<LanguageSection>
-<CPPSection>
+## Implementation
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-typedef long double ld;
-#define f first
-#define s second
-#define len(x) (int)x.size()
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("cowqueue.in", "r", stdin);
-	freopen("cowqueue.out", "w", stdout);
-	int n;
-	cin >> n;
-	int time = 0;
-	pair<int, int> a[n];
-	for (auto &x: a) {
-		cin >> x.f >> x.s;
-	}
-	sort(a, a + n);
-	for (auto x: a) {
-		if (time >= x.f) {
-			time += x.s;
-		} else {
-			time += x.f - time;
-			time += x.s;
-		}
-	}
-	cout << time << '\n';
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-## Solution 2
+**Time Complexity**: $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-
+#include <iostream>
+#include <cstdio>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
 	freopen("cowqueue.in", "r", stdin);
 	freopen("cowqueue.out", "w", stdout);
+	
 	int n;
+	int curTime = 0; 
 	cin >> n;
-	vector<pair<int, int>> arr(n);
-	for (auto& i: arr) {
-		cin >> i.first >> i.second;
-	}
-	sort(begin(arr), end(arr));
-	int ans = arr[0].first + arr[0].second, delta = arr[0].second;
-	for (int i = 1; i < n; i++) {
-		if (arr[i].first - arr[i - 1].first >= delta) {
-			ans = arr[i].first + arr[i].second;
-			delta = arr[i].second;
+	
+	vector<pair<int, int>> cows(n);
+	for (int i = 0; i < n; i++)
+		cin >> cows[i].first >> cows[i].second;
+	
+	sort(cows.begin(), cows.end());
+
+	for (int i = 0; i < n; i++) {
+		// this cow was already waiting, add questioning time to current time.
+		if (curTime > cows[i].first) {
+			curTime += cows[i].second;
 		} else {
-			delta += arr[i].second - (arr[i].first - arr[i - 1].first);
-			ans += arr[i].second;
+			// the last cow finished before this one arrived,
+			// set the current time to when this cow finishes.
+			curTime = cows[i].first + cows[i].second;
 		}
 	}
-	cout << ans;
-	return 0;
+
+	cout << curTime << "\n";
 }
 ```
-
 </CPPSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("cowqueue.in", "r")
+sys.stdout = open("cowqueue.out", "w")
+
+n = int(input())
+cur_time = 0
+cows = []
+
+for i in range(n): 
+	cows.append(list(map(int, input().split())))
+
+cows.sort()
+
+for cow in cows:
+	if cur_time > cow[0]:
+		cur_time += cow[1]
+	else:
+		cur_time = cow[0] + cow[1]
+
+print(cur_time)
+```
+</PySection>
 </LanguageSection>

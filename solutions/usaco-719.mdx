@@ -1,0 +1,101 @@
+---
+id: usaco-719
+source: USACO Gold 2017 February
+title: Why Did the Cow Cross The Road III
+author: Nathan Gong
+---
+ 
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_circlecross_gold_feb17.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+  
+<JavaSection>
+  
+```java
+import java.io.*;
+import java.util.*;
+
+public class CircleCross {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("circlecross.in"));
+		PrintWriter out = new PrintWriter("circlecross.out");
+		
+		int n = sc.nextInt();
+		int[] points = new int[n * 2];
+		for (int i = 0; i < n * 2; i++) {
+			points[i] = sc.nextInt() - 1;
+		}
+
+		// we define an entry point as "active" if it has been processed, but
+		// its corresponding exit point hasn't been processed yet
+
+		// seg[i] == 1 if i is an active entry point
+		SegmentTree seg = new SegmentTree(n * 2);
+		// stores active entry points, maps cowId -> entry point location
+		Map<Integer, Integer> active = new HashMap<>(); 
+		int ans = 0;
+		// iterate through each point
+		for (int i = 0; i < n * 2; i++) {
+			// the point is an entry point
+			if (!active.containsKey(points[i])) {
+				// activate the entry point
+				seg.add(i, 1);
+				active.put(points[i], i);
+			} 
+			// the point is an exit point
+			else {
+				/*
+				 * increment ans by number of active entry points between
+				 * the cow's entry and exit points - the cow will form
+				 * crossing points with those cows
+				 */
+				ans += seg.sum(active.get(points[i]) + 1, i - 1);
+
+				// the cow's entry point is no longer active, deactivate it
+				seg.add(active.get(points[i]), -1);
+				active.remove(points[i]);
+			}
+		}
+		out.println(ans);
+		out.close();
+	}
+
+	static class SegmentTree {
+		private int[] tree;
+		private int n;
+	
+		public SegmentTree(int n) {
+			this.n = n;
+			tree = new int[n * 2];
+		}
+	
+		public int sum(int a, int b) {
+			a += n;
+			b += n;
+			int sum = 0;
+			while (a <= b) {
+				if (a % 2 == 1) sum += tree[a++];
+				if (b % 2 == 0) sum += tree[b--];
+				a /= 2;
+				b /= 2;
+			}
+			return sum;
+		}
+	
+		public void add(int index, int amount) {
+			index += n;
+			tree[index] += amount;
+			for (index /= 2; index >= 1; index /= 2) {
+				tree[index] = tree[2 * index] + tree[2 * index + 1];
+			}
+		}
+	}
+}
+```
+</JavaSection>
+  
+</LanguageSection>

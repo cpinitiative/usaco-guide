@@ -25,8 +25,7 @@ let data: any = {
                 solID:
                   'Split the graph into its biconnected components. See Infoarena - Biconex for how to do this.',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/two_edge_connected_components',
+                url: 'https://judge.yosupo.jp/problem/two_edge_connected_components',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/two_edge_connected_components',
                 tableID: 'sam2',
@@ -40,8 +39,7 @@ let data: any = {
                 tags: ['Merging'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 tableID: 'disrupt',
@@ -95,8 +93,7 @@ let data: any = {
                 solID:
                   'Instead of counting the number of bad pairs, count the number of good pairs and subtract that from the total number of all pairs. Notice how if we remove a node, we get several connected components. We can then use biconnected components to determine the sizes of these components and so we can count the number of good pairs after removing each node.',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/eDt8w290owtatmCjad0O0ywk/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/eDt8w290owtatmCjad0O0ywk/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/eDt8w290owtatmCjad0O0ywk/site/?key=statement',
                 tableID: 'gen',
@@ -123,8 +120,7 @@ let data: any = {
                 tags: ['BCC'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/YY6-3ua-C1rt7q-97laWc0UP/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/YY6-3ua-C1rt7q-97laWc0UP/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/YY6-3ua-C1rt7q-97laWc0UP/site/',
                 tableID: 'gen',
@@ -164,8 +160,7 @@ let data: any = {
                 tags: ['BCC'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=769',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=769',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=769',
                 tableID: 'gen',
@@ -316,15 +311,13 @@ let data: any = {
               {
                 source: 'HR',
                 name: 'Strange Tree',
-                id:
-                  'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
+                id: 'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
                 difficulty: 'Hard',
                 starred: false,
                 tags: ['Lazy SegTree'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
+                url: 'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
                 uniqueID:
                   'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
                 tableID: 'lazySegCnt',
@@ -372,15 +365,13 @@ let data: any = {
               {
                 source: 'CF',
                 name: 'MCO - Magical Teleporter',
-                id:
-                  'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
+                id: 'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
+                url: 'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
                 uniqueID:
                   'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
                 tableID: 'connected_component',
@@ -459,8 +450,7 @@ let data: any = {
                 tags: ['Broken Profile'],
                 solID: 'usaco-949',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=949',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=949',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=949',
                 tableID: 'broken',
@@ -527,8 +517,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://csacademy.com/contest/archive/task/matching-substrings',
+                url: 'https://csacademy.com/contest/archive/task/matching-substrings',
                 uniqueID:
                   'https://csacademy.com/contest/archive/task/matching-substrings',
                 tableID: 'general',
@@ -753,8 +742,7 @@ let data: any = {
                 tags: ['Generating Functions'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=974',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=974',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=974',
                 tableID: 'general',
@@ -788,15 +776,13 @@ let data: any = {
               {
                 source: 'CF',
                 name: 'Diverse Singing',
-                id:
-                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
+                id: 'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
+                url: 'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
                 uniqueID:
                   'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
                 tableID: 'lower',
@@ -830,15 +816,13 @@ let data: any = {
               {
                 source: 'AC',
                 name: 'Multi-Path Story',
-                id:
-                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
+                id: 'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
+                url: 'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
                 uniqueID:
                   'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
                 tableID: 'lower',
@@ -891,8 +875,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
                 tableID: 'e2',
@@ -900,15 +883,13 @@ let data: any = {
               {
                 source: 'Kattis',
                 name: 'Island Archipelago',
-                id:
-                  'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
+                id: 'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: ["Euler's Formula", 'DSU'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
+                url: 'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
                 uniqueID:
                   'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
                 tableID: 'other',
@@ -948,8 +929,7 @@ let data: any = {
                 tags: ["Euler's Formula"],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1094',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1094',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1094',
                 tableID: 'other',
@@ -989,8 +969,7 @@ let data: any = {
                 tags: ['FFT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/convolution_mod_1000000007',
+                url: 'https://judge.yosupo.jp/problem/convolution_mod_1000000007',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/convolution_mod_1000000007',
                 tableID: 'sam',
@@ -998,15 +977,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2018 - Polynomial',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
                 difficulty: 'Easy',
                 starred: false,
                 tags: [],
                 solID: 'poi-18-wie',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
                 tableID: 'gen',
@@ -1059,8 +1036,7 @@ let data: any = {
                 tags: ['Centroid', 'FFT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/frequency_table_of_tree_distance',
+                url: 'https://judge.yosupo.jp/problem/frequency_table_of_tree_distance',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/frequency_table_of_tree_distance',
                 tableID: 'tree',
@@ -1136,15 +1112,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2004 - Cave',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
                 tableID: 'general',
@@ -1152,15 +1126,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2016 - Not Nim',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
                 tableID: 'general',
@@ -1168,15 +1140,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2016 - Hydrocontest',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
                 tableID: 'general',
@@ -1203,8 +1173,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
                 tableID: 'sample',
@@ -1336,8 +1305,7 @@ let data: any = {
                 tags: ['LCT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum',
+                url: 'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum',
                 tableID: 'pathSam',
@@ -1351,8 +1319,7 @@ let data: any = {
                 tags: ['LCT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite',
+                url: 'https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite',
                 tableID: 'path',
@@ -1373,15 +1340,13 @@ let data: any = {
               {
                 source: 'HR',
                 name: 'Balanced Tokens',
-                id:
-                  'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
+                id: 'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['LCT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
+                url: 'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
                 uniqueID:
                   'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
                 tableID: 'path',
@@ -1488,8 +1453,7 @@ let data: any = {
                 tags: ['LCT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_subtree_sum',
+                url: 'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_subtree_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_subtree_sum',
                 tableID: 'subSam',
@@ -1516,8 +1480,7 @@ let data: any = {
                 tags: ['LCT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/dynamic_tree_subtree_add_subtree_sum',
+                url: 'https://judge.yosupo.jp/problem/dynamic_tree_subtree_add_subtree_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_subtree_add_subtree_sum',
                 tableID: 'sub',
@@ -1982,15 +1945,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2014 - Supercomputer',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['DP', 'Convex'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
                 tableID: 'lc_probs',
@@ -2017,8 +1978,7 @@ let data: any = {
                 tags: ['DP', 'Convex'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
+                url: 'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
                 uniqueID:
                   'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
                 tableID: 'lc_probs',
@@ -2059,8 +2019,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
                 tableID: 'lc_probs',
@@ -2179,8 +2138,7 @@ let data: any = {
                 tags: ['DSUrb'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum',
+                url: 'https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum',
                 tableID: 'sam',
@@ -2339,8 +2297,7 @@ let data: any = {
                 tags: ['SCC', 'dp'],
                 solID: 'Compress SCC and then run tree DP',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
                 tableID: 'general',
@@ -2354,8 +2311,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=516',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=516',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=516',
                 tableID: 'general',
@@ -2376,16 +2332,14 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2012 - Festival',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
                 difficulty: 'Hard',
                 starred: false,
                 tags: [],
                 solID:
                   'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2012/editorial/fes.pdf',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
                 tableID: 'general',
@@ -2543,8 +2497,7 @@ let data: any = {
                 tags: ['SegTreeBeats'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum',
+                url: 'https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum',
                 tableID: 'segTreeBeats',
@@ -2795,8 +2748,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://www.facebook.com/codingcompetitions/hacker-cup/2015/round-3/problems/C',
+                url: 'https://www.facebook.com/codingcompetitions/hacker-cup/2015/round-3/problems/C',
                 uniqueID:
                   'https://www.facebook.com/codingcompetitions/hacker-cup/2015/round-3/problems/C',
                 tableID: 'cut',
@@ -2823,8 +2775,7 @@ let data: any = {
                 tags: ['PURQ'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
                 tableID: 'sample',
@@ -2838,8 +2789,7 @@ let data: any = {
                 tags: ['PURQ'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
                 tableID: 'problems',
@@ -2945,8 +2895,7 @@ let data: any = {
                 tags: ['Slope Trick'],
                 solID: 'Equivalent Problem: GP of Wroclaw 20 J',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
                 tableID: 'landscaping',
@@ -3084,15 +3033,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2011 - Tree Rotations 2',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
                 tableID: 'treeRot',
@@ -3133,8 +3080,7 @@ let data: any = {
                 solID:
                   'https://github.com/thecodingwizard/competitive-programming/blob/master/POI/POI%2006-Periods.cpp',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/k9UKIj11V6iPRc3LaiYQYHyi/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/k9UKIj11V6iPRc3LaiYQYHyi/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/k9UKIj11V6iPRc3LaiYQYHyi/site/?key=statement',
                 tableID: 'KMP',
@@ -3169,15 +3115,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2005 - Template',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
                 difficulty: 'Hard',
                 starred: true,
                 tags: ['Strings', 'KMP'],
                 solID: 'poi-05-sza',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
                 tableID: 'KMP',
@@ -3185,16 +3129,14 @@ let data: any = {
               {
                 source: 'CEOI',
                 name: '2011 - Matching',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
                 difficulty: 'Hard',
                 starred: true,
                 tags: ['KMP'],
                 solID:
                   'https://oi.edu.pl/static/attachment/20110713/ceoi-2011.pdf#page=16',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
                 tableID: 'KMP',
@@ -3202,15 +3144,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2012 - Prefixuffix',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: ['KMP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
                 tableID: 'KMP',
@@ -3218,15 +3158,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2011 - Periodicity',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: ['KMP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
                 tableID: 'KMP',
@@ -3442,8 +3380,7 @@ let data: any = {
                 tags: ['Strings'],
                 solID: 'Build aho-corasick over all censored words',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=533',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=533',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=533',
                 tableID: 'aho',
@@ -3523,8 +3460,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
                 tableID: 'auto',
@@ -3538,8 +3474,7 @@ let data: any = {
                 tags: ['Suffix Structures'],
                 solID: 'Try building suffix tree/automaton and converting!',
                 solQuality: 'ok',
-                url:
-                  'https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/problem/A',
+                url: 'https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/problem/A',
                 uniqueID:
                   'https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/problem/A',
                 tableID: 'general_suffix',
@@ -3561,15 +3496,13 @@ let data: any = {
               {
                 source: 'onlinejudge.org',
                 name: 'I Love Strings!!',
-                id:
-                  'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
+                id: 'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
                 difficulty: 'Easy',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
+                url: 'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
                 uniqueID:
                   'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
                 tableID: 'general_suffix',
@@ -3604,15 +3537,13 @@ let data: any = {
               {
                 source: 'HE',
                 name: 'Power of String 3',
-                id:
-                  'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
+                id: 'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Suffix Structures'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
+                url: 'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
                 uniqueID:
                   'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
                 tableID: 'general_suffix',
@@ -3796,8 +3727,7 @@ let data: any = {
                 tags: ['Suffix Array'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
                 tableID: 'lcp',
@@ -3945,15 +3875,13 @@ let data: any = {
               {
                 source: 'AC',
                 name: 'AB=C',
-                id:
-                  'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
+                id: 'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
+                url: 'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
                 uniqueID:
                   'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
                 tableID: 'general',
@@ -3961,16 +3889,14 @@ let data: any = {
               {
                 source: 'TC',
                 name: 'Tale Of Two Squares',
-                id:
-                  'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
+                id: 'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
                 difficulty: 'Insane',
                 starred: false,
                 tags: [],
                 solID:
                   'https://codeforces.com/blog/entry/82495?#comment-694343',
                 solQuality: 'ok',
-                url:
-                  'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
+                url: 'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
                 uniqueID:
                   'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
                 tableID: 'general',
@@ -4114,8 +4040,7 @@ let data: any = {
                 tags: ['2DRQ', 'BIT'],
                 solID: 'usaco-722',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=722',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=722',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=722',
                 tableID: 'off',
@@ -4129,8 +4054,7 @@ let data: any = {
                 tags: ['2DRQ', 'BIT'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=601',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=601',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=601',
                 tableID: 'off',
@@ -4151,16 +4075,14 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2006 - Tetris 3D',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
                 difficulty: 'Hard',
                 starred: false,
                 tags: ['2DRQ', 'Lazy SegTree'],
                 solID:
                   'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2006/editorial/tet.pdf',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
                 tableID: 'seg',
@@ -4227,8 +4149,7 @@ let data: any = {
                 tags: ['PIE', 'Bitset'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=862',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=862',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=862',
                 tableID: 'cow',
@@ -4242,8 +4163,7 @@ let data: any = {
                 tags: ['Geometry', 'Bitset'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=672',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=672',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=672',
                 tableID: 'lots',
@@ -4257,8 +4177,7 @@ let data: any = {
                 tags: ['DSU'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://csacademy.com/contest/archive/task/substring-restrictions',
+                url: 'https://csacademy.com/contest/archive/task/substring-restrictions',
                 uniqueID:
                   'https://csacademy.com/contest/archive/task/substring-restrictions',
                 tableID: 'bfs',
@@ -4327,8 +4246,7 @@ let data: any = {
                 solID:
                   'Again, the intended solution runs in $mathcal{O}(N^3)$. Of course, it is still possible to pass $mathcal{O}(N^4)$ solutions with bitset! See the analysis [here](http://www.usaco.org/current/data/sol_triangles_platinum_feb20.html).',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1021',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1021',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1021',
                 tableID: 'ad',
@@ -4486,8 +4404,7 @@ let data: any = {
                 solID:
                   "Build centroid decomp on the whole tree first and perform updates for each 'root' as expected.",
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 tableID: 'general',
@@ -4595,8 +4512,7 @@ let data: any = {
                 tags: ['Centroid'],
                 solID: 'tight time limit',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 tableID: 'general',
@@ -4682,15 +4598,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2010 - Frog',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: 'poi-10-zab',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
                 tableID: 'binJump',
@@ -4744,8 +4658,7 @@ let data: any = {
                 tags: ['Binary Jumping'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
                 tableID: 'binJump',
@@ -4773,8 +4686,7 @@ let data: any = {
                 solID:
                   'First, split each path A-B into the 2 paths A-lca(A, B) and B-lca(A, B). We can then use a Fenwick tree to increment the values of each edge on those paths.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
                 tableID: 'usaco',
@@ -4788,8 +4700,7 @@ let data: any = {
                 tags: ['LCA'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 tableID: 'usaco',
@@ -4803,8 +4714,7 @@ let data: any = {
                 tags: ['LCA'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
                 tableID: 'usaco',
@@ -4819,8 +4729,7 @@ let data: any = {
                 solID:
                   'Copy of CF Brain Network "Hard": https://codeforces.com/contest/690/problem/C3',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 tableID: 'usaco',
@@ -4834,8 +4743,7 @@ let data: any = {
                 tags: ['LCA'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
                 tableID: 'usaco',
@@ -4849,8 +4757,7 @@ let data: any = {
                 tags: ['LCA'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
                 tableID: 'usaco',
@@ -4916,8 +4823,7 @@ let data: any = {
                 tags: ['LCA'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://csacademy.com/contest/archive/task/root-lca-queries',
+                url: 'https://csacademy.com/contest/archive/task/root-lca-queries',
                 uniqueID:
                   'https://csacademy.com/contest/archive/task/root-lca-queries',
                 tableID: 'general',
@@ -5018,15 +4924,13 @@ let data: any = {
               {
                 source: 'CEOI',
                 name: '2004 - Two Sawmills',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 difficulty: 'Easy',
                 starred: false,
                 tags: ['DP', 'Convex'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 tableID: 'general',
@@ -5073,15 +4977,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2011 - Lightning Conductor',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['DP', 'Convex'],
                 solID: 'poi-11-pio',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
                 tableID: 'general',
@@ -5089,15 +4991,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2006 - Frogs',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['DP', 'Convex'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
                 tableID: 'general',
@@ -5111,8 +5011,7 @@ let data: any = {
                 tags: ['DP', 'Convex'],
                 solID: 'usaco-626',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
                 tableID: 'general',
@@ -5126,8 +5025,7 @@ let data: any = {
                 tags: ['Convex'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=998',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=998',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=998',
                 tableID: 'general',
@@ -5207,8 +5105,7 @@ let data: any = {
                 tags: ['Convex'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
                 tableID: 'general',
@@ -5235,8 +5132,7 @@ let data: any = {
                 tags: ['Convex'],
                 solID: 'testing whether points are inside hull',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
                 tableID: 'general',
@@ -5289,8 +5185,7 @@ let data: any = {
                 tags: ['D&C', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
                 tableID: 'dnc_sample',
@@ -5298,15 +5193,13 @@ let data: any = {
               {
                 source: 'CEOI',
                 name: '2004 - Two Sawmills',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['D&C', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 tableID: 'dnc_general',
@@ -5354,15 +5247,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2014 - Solar Lamps',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: ['D&C', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
                 tableID: 'dnc_general',
@@ -5389,8 +5280,7 @@ let data: any = {
                 tags: ['D&C', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=926',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=926',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=926',
                 tableID: 'dnc_general',
@@ -5496,8 +5386,7 @@ let data: any = {
                 tags: ['Matrix', 'D&C'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
                 tableID: 'general',
@@ -5563,8 +5452,7 @@ let data: any = {
                 tags: ['Bitmasks', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=494',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=494',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=494',
                 tableID: 'general',
@@ -5578,8 +5466,7 @@ let data: any = {
                 tags: ['Bitmasks', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1089',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1089',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1089',
                 tableID: 'general',
@@ -5593,8 +5480,7 @@ let data: any = {
                 tags: ['Bitmasks', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=515',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=515',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=515',
                 tableID: 'general',
@@ -5772,15 +5658,13 @@ let data: any = {
               {
                 source: 'SAPO',
                 name: '2015 - Space Jazz',
-                id:
-                  'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
+                id: 'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
                 difficulty: 'Easy',
                 starred: false,
                 tags: ['Range DP'],
                 solID: '@below',
                 solQuality: 'ok',
-                url:
-                  'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
+                url: 'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
                 uniqueID:
                   'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
                 tableID: 'sample',
@@ -5794,8 +5678,7 @@ let data: any = {
                 tags: ['Range DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
                 tableID: 'general',
@@ -5809,8 +5692,7 @@ let data: any = {
                 tags: ['Range DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1114',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1114',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1114',
                 tableID: 'general',
@@ -5844,15 +5726,13 @@ let data: any = {
               {
                 source: 'SAPO',
                 name: '2014 - The Stables of Genghis Khan',
-                id:
-                  'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
+                id: 'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Range DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
+                url: 'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
                 uniqueID:
                   'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
                 tableID: 'general',
@@ -5879,8 +5759,7 @@ let data: any = {
                 tags: ['Range DP'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=972',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=972',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=972',
                 tableID: 'general',
@@ -5894,8 +5773,7 @@ let data: any = {
                 tags: ['Range DP'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=698',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=698',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=698',
                 tableID: 'general',
@@ -5909,8 +5787,7 @@ let data: any = {
                 tags: ['Range DP'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=602',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=602',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=602',
                 tableID: 'general',
@@ -5950,8 +5827,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
                 tableID: 'sample',
@@ -6167,8 +6043,7 @@ let data: any = {
                 solID:
                   "This has a linear time solution, but it's easier to make modifications to the HLD template.",
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
                 tableID: 'no',
@@ -6182,8 +6057,7 @@ let data: any = {
                 tags: ['PURS', 'HLD'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
                 tableID: 'no',
@@ -6197,8 +6071,7 @@ let data: any = {
                 tags: ['HLD'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 tableID: 'no',
@@ -6225,8 +6098,7 @@ let data: any = {
                 tags: ['HLD', 'PURS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=102',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=102',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=102',
                 tableID: 'general',
@@ -6241,8 +6113,7 @@ let data: any = {
                 solID:
                   'Function order matters! Maintain two segment trees, one for going up and the other for going down the tree.',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/vertex_set_path_composite',
+                url: 'https://judge.yosupo.jp/problem/vertex_set_path_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/vertex_set_path_composite',
                 tableID: 'general',
@@ -6454,8 +6325,7 @@ let data: any = {
                 tags: ['Matrix', 'Exponentiation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
                 tableID: 'probs',
@@ -6508,8 +6378,7 @@ let data: any = {
                 tags: ['Merging', 'Indexed Set'],
                 solID: 'usaco-696',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
                 tableID: 'general',
@@ -6523,8 +6392,7 @@ let data: any = {
                 tags: ['Merging'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 tableID: 'general',
@@ -6532,16 +6400,14 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2011 - Tree Rotations',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Merging', 'Indexed Set'],
                 solID:
                   'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2011/editorial/rot.pdf',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
                 tableID: 'general',
@@ -6699,8 +6565,7 @@ let data: any = {
                 tags: ['Lazy SegTree'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=578',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=578',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=578',
                 tableID: 'lazySegTree',
@@ -6714,8 +6579,7 @@ let data: any = {
                 tags: ['Lazy SegTree'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=418',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=418',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=418',
                 tableID: 'lazySegTree',
@@ -6768,8 +6632,7 @@ let data: any = {
                 tags: ['Lazy SegTree'],
                 solID: 'Can use lazy seg in place of two BITs',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
                 tableID: 'lazySegTree',
@@ -6836,8 +6699,7 @@ let data: any = {
                 tags: ['PURQ'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
                 tableID: 'sample',
@@ -6845,15 +6707,13 @@ let data: any = {
               {
                 source: 'HE',
                 name: 'Twin Permutations',
-                id:
-                  'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
+                id: 'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
                 difficulty: 'Easy',
                 starred: false,
                 tags: ['PURS'],
                 solID: 'HE-twin-permutations',
                 solQuality: 'ok',
-                url:
-                  'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
+                url: 'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
                 uniqueID:
                   'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
                 tableID: 'sweep',
@@ -6867,8 +6727,7 @@ let data: any = {
                 tags: ['PURQ'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=816',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=816',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=816',
                 tableID: 'sweep',
@@ -6935,8 +6794,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=865',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=865',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=865',
                 tableID: 'numLIS',
@@ -6976,8 +6834,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=231',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=231',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=231',
                 tableID: 'walk',
@@ -6991,8 +6848,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
                 tableID: 'walk',
@@ -7006,8 +6862,7 @@ let data: any = {
                 tags: ['PURQ'],
                 solID: 'Order of operations matters!',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/point_set_range_composite',
+                url: 'https://judge.yosupo.jp/problem/point_set_range_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/point_set_range_composite',
                 tableID: 'combSam',
@@ -7047,8 +6902,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=495',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=495',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=495',
                 tableID: 'comb',
@@ -7062,8 +6916,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=365',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=365',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=365',
                 tableID: 'comb',
@@ -7071,15 +6924,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2014 - Cards',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
                 tableID: 'comb',
@@ -7093,8 +6944,7 @@ let data: any = {
                 tags: ['PURQ', 'Greedy'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=577',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=577',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=577',
                 tableID: 'comb',
@@ -7225,8 +7075,7 @@ let data: any = {
                 tags: ['DP', 'Tree'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=814',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=814',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=814',
                 tableID: 'roots',
@@ -7240,8 +7089,7 @@ let data: any = {
                 tags: ['DP', 'Tree'],
                 solID: 'usaco-793',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 tableID: 'roots',
@@ -7359,8 +7207,7 @@ let data: any = {
                 tags: ['Sqrt'],
                 solID: 'poi-17-kon',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/oNnWY6ZuzzhvG-jCmijiXkIk/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/oNnWY6ZuzzhvG-jCmijiXkIk/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/oNnWY6ZuzzhvG-jCmijiXkIk/site/?key=statement',
                 tableID: 'fst',
@@ -7368,15 +7215,13 @@ let data: any = {
               {
                 source: 'YS',
                 name: 'Static Range Inversions Query',
-                id:
-                  'https://judge.yosupo.jp/problem/static_range_inversions_query',
+                id: 'https://judge.yosupo.jp/problem/static_range_inversions_query',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Sqrt'],
                 solID: 'static-range-inv',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/static_range_inversions_query',
+                url: 'https://judge.yosupo.jp/problem/static_range_inversions_query',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/static_range_inversions_query',
                 tableID: 'fst',
@@ -7416,8 +7261,7 @@ let data: any = {
                 tags: ['Sqrt'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=841',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=841',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=841',
                 tableID: 'fst',
@@ -7483,8 +7327,7 @@ let data: any = {
                 tags: ['Sqrt'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 tableID: 'bad',
@@ -7538,8 +7381,7 @@ let data: any = {
                 tags: ['Convex Hull'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
                 tableID: 'bad',
@@ -7579,8 +7421,7 @@ let data: any = {
                 tags: ['Sqrt'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 tableID: 'bad',
@@ -7646,8 +7487,7 @@ let data: any = {
                 tags: ['Tree', 'DP'],
                 solID: 'similar to independent set on tree',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=766',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=766',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=766',
                 tableID: 'usaco',
@@ -7668,15 +7508,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: 'Parade',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: [],
                 solID: 'poi-16-par',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
                 tableID: 'usaco',
@@ -7690,8 +7528,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1019',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1019',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1019',
                 tableID: 'usaco',
@@ -7699,15 +7536,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2004 - Spies',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
                 difficulty: 'Hard',
                 starred: false,
                 tags: ['Functional Graph'],
                 solID: 'poi-04-szp',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
                 tableID: 'usaco',
@@ -7715,15 +7550,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2008 - Mafia',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
                 difficulty: 'Hard',
                 starred: false,
                 tags: ['Functional Graph'],
                 solID: 'poi-08-maf',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
                 tableID: 'usaco',
@@ -7750,8 +7583,7 @@ let data: any = {
                 tags: ['DP', 'Tree', 'Binary Search'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1020',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1020',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1020',
                 tableID: 'insane',
@@ -7908,8 +7740,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=491',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=491',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=491',
                 tableID: 'general',
@@ -7923,8 +7754,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: 'usaco-620',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
                 tableID: 'general',
@@ -7938,8 +7768,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: 'usaco-671',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=671',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=671',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=671',
                 tableID: 'general',
@@ -7953,8 +7782,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=790',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=790',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=790',
                 tableID: 'general',
@@ -7968,8 +7796,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=282',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=282',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=282',
                 tableID: 'general',
@@ -7983,8 +7810,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: 'usaco-1090',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1090',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1090',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1090',
                 tableID: 'general',
@@ -7998,8 +7824,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: 'usaco-695',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=695',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=695',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=695',
                 tableID: 'general',
@@ -8013,8 +7838,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=575',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=575',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=575',
                 tableID: 'general',
@@ -8028,8 +7852,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1065',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1065',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1065',
                 tableID: 'general',
@@ -8043,8 +7866,7 @@ let data: any = {
                 tags: ['BFS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=765',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=765',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=765',
                 tableID: 'general',
@@ -8098,8 +7920,7 @@ let data: any = {
                 solID:
                   'Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
                 tableID: 'general',
@@ -8113,8 +7934,7 @@ let data: any = {
                 tags: ['DSU'],
                 solID: 'usaco-789',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
                 tableID: 'general',
@@ -8128,8 +7948,7 @@ let data: any = {
                 tags: ['DSU'],
                 solID: 'usaco-992',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 tableID: 'general',
@@ -8143,8 +7962,7 @@ let data: any = {
                 tags: ['DSU'],
                 solID: 'usaco-669',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
                 tableID: 'general',
@@ -8172,8 +7990,7 @@ let data: any = {
                 tags: ['DSU'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
                 tableID: 'harder',
@@ -8201,8 +8018,7 @@ let data: any = {
                 solID:
                   'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $mathcal{O}(1)$ time.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
                 tableID: 'harder',
@@ -8216,8 +8032,7 @@ let data: any = {
                 tags: ['DSU'],
                 solID: 'usaco-950',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
                 tableID: 'harder',
@@ -8335,8 +8150,7 @@ let data: any = {
                 tags: ['Sweep Line'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
                 tableID: 'segSam',
@@ -8350,8 +8164,7 @@ let data: any = {
                 tags: ['Sweep Line'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
                 tableID: 'seg',
@@ -8464,15 +8277,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2018 - Stone',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
+                id: 'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Radial Sweep'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
+                url: 'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
                 tableID: 'radial',
@@ -8525,8 +8336,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: 'usaco-694',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
                 tableID: 'usacoEasy',
@@ -8540,8 +8350,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: 'dp[time][city] -> money',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
                 tableID: 'usacoEasy',
@@ -8556,8 +8365,7 @@ let data: any = {
                 solID:
                   'let dp[i] -> max sum of skill levels for the first i cows, then precompute subarray maximums',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
                 tableID: 'usacoEasy',
@@ -8572,8 +8380,7 @@ let data: any = {
                 solID:
                   'dp[i][j] -> minimum sum of net sizes needed to catch m snakes with k changes, precompute maximums',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
                 tableID: 'usacoEasy',
@@ -8587,8 +8394,7 @@ let data: any = {
                 tags: ['DP', '2P', 'Binary Search'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
                 tableID: 'usacoEasy',
@@ -8602,8 +8408,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
                 tableID: 'usacoPast',
@@ -8618,8 +8423,7 @@ let data: any = {
                 solID:
                   'dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
                 tableID: 'usacoPast',
@@ -8633,8 +8437,7 @@ let data: any = {
                 tags: ['DP', 'Prefix Sums', 'Floyd-Warshall'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
                 tableID: 'usacoPast',
@@ -8648,8 +8451,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
                 tableID: 'usacoPast',
@@ -8664,8 +8466,7 @@ let data: any = {
                 solID:
                   'must be K consectutive of same color, complimetary counting for dp[up to position i][number of consecutive] -> number of ways, find closed form to reduce runtime',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
                 tableID: 'usacoPast',
@@ -8679,8 +8480,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
                 tableID: 'usacoPast',
@@ -8707,8 +8507,7 @@ let data: any = {
                 tags: ['Prefix Sums'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=994',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=994',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=994',
                 tableID: 'three',
@@ -8852,8 +8651,7 @@ let data: any = {
                 tags: ['DP', 'Knapsack'],
                 solID: 'usaco-574',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
                 tableID: 'usaco',
@@ -8868,8 +8666,7 @@ let data: any = {
                 solID:
                   'binary search on optimal ratio, then do knapsack on weight',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
                 tableID: 'usaco',
@@ -8883,8 +8680,7 @@ let data: any = {
                 tags: ['Knapsack'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
                 tableID: 'usaco',
@@ -8913,8 +8709,7 @@ let data: any = {
                 solID:
                   'First consider the case where there are only two lines with the same class.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
                 tableID: 'nt',
@@ -8928,8 +8723,7 @@ let data: any = {
                 tags: ['Knapsack', 'Prime Factorization'],
                 solID: 'Prime factorize $K$.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
                 tableID: 'nt',
@@ -8937,15 +8731,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2004 - Maximal',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Knapsack', 'Prime Factorization'],
                 solID: 'poi-04-mak',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
                 tableID: 'nt',
@@ -8959,8 +8751,7 @@ let data: any = {
                 tags: ['Knapsack', 'Prime Factorization'],
                 solID: 'Prime factorize $K$.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
                 tableID: 'nt',
@@ -9039,8 +8830,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: 'Direct application of longest increasing subsequence',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=496',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=496',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=496',
                 tableID: 'lis',
@@ -9133,8 +8923,7 @@ let data: any = {
                 tags: ['MST'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
                 tableID: 'general',
@@ -9148,8 +8937,7 @@ let data: any = {
                 tags: ['MST'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
                 tableID: 'general',
@@ -9163,8 +8951,7 @@ let data: any = {
                 tags: ['MST'],
                 solID: 'usaco-946',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
                 tableID: 'general',
@@ -9172,15 +8959,13 @@ let data: any = {
               {
                 source: 'HR',
                 name: 'Spanning Tree Fraction',
-                id:
-                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                id: 'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['MST', 'Binary Search'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                url: 'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
                 uniqueID:
                   'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
                 tableID: 'general',
@@ -9208,8 +8993,7 @@ let data: any = {
                 tags: ['MST'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
                 tableID: 'general',
@@ -9457,8 +9241,7 @@ let data: any = {
                 tags: ['PURS', 'Inversions'],
                 solID: 'usaco-1041',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
                 tableID: 'usaco',
@@ -9472,8 +9255,7 @@ let data: any = {
                 tags: ['PURS', 'Inversions'],
                 solID: 'usaco-693',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
                 tableID: 'usaco',
@@ -9487,8 +9269,7 @@ let data: any = {
                 tags: ['PURS', 'Inversions'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
                 tableID: 'usaco',
@@ -9502,8 +9283,7 @@ let data: any = {
                 tags: ['PURS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
                 tableID: 'usaco',
@@ -9517,8 +9297,7 @@ let data: any = {
                 tags: ['PURS', 'Inversions'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
                 tableID: 'usaco',
@@ -9532,8 +9311,7 @@ let data: any = {
                 tags: ['PURS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
                 tableID: 'usaco',
@@ -9587,8 +9365,7 @@ let data: any = {
                 tags: ['SP'],
                 solID: 'usaco-969',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
                 tableID: 'dijk',
@@ -9602,8 +9379,7 @@ let data: any = {
                 tags: ['SP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
                 tableID: 'dijk',
@@ -9617,8 +9393,7 @@ let data: any = {
                 tags: ['SP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
                 tableID: 'dijk',
@@ -9632,8 +9407,7 @@ let data: any = {
                 tags: ['SP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
                 tableID: 'dijk',
@@ -9777,8 +9551,7 @@ let data: any = {
                 tags: ['APSP', 'DP'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
                 tableID: 'apsp',
@@ -9819,8 +9592,7 @@ let data: any = {
                 solID:
                   'dp[first i characters in first string][first j characters in second string] -> longest common subsequence, transition if s[i] = t[j] for strings s and t',
                 solQuality: 'ok',
-                url:
-                  'https://leetcode.com/problems/longest-common-subsequence/',
+                url: 'https://leetcode.com/problems/longest-common-subsequence/',
                 uniqueID:
                   'https://leetcode.com/problems/longest-common-subsequence/',
                 tableID: 'pathSam',
@@ -9860,8 +9632,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: 'usaco-670',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=670',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=670',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=670',
                 tableID: 'pathsGrid',
@@ -9875,8 +9646,7 @@ let data: any = {
                 tags: ['DP'],
                 solID: 'usaco-598',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=598',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=598',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=598',
                 tableID: 'pathsGrid',
@@ -9891,8 +9661,7 @@ let data: any = {
                 solID:
                   'dp[up to ith field on left side][up to jth field on right side] = maximum number of disjoint crosswalks',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=718',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=718',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=718',
                 tableID: 'pathsGrid',
@@ -9907,8 +9676,7 @@ let data: any = {
                 solID:
                   'start from the middle, dp[row i][row j][length] = number of strings of length 2 * length + 1 with ends at row i and j',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=553',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=553',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=553',
                 tableID: 'pathsGrid',
@@ -10014,8 +9782,7 @@ let data: any = {
                 tags: ['Set', 'Sliding Window'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=767',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=767',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=767',
                 tableID: 'general',
@@ -10042,8 +9809,7 @@ let data: any = {
                 tags: ['Sliding Window'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
                 tableID: 'general',
@@ -10057,8 +9823,7 @@ let data: any = {
                 tags: ['Sliding Window'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=600',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=600',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=600',
                 tableID: 'general',
@@ -10113,8 +9878,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://judge.yosupo.jp/problem/queue_operate_all_composite',
+                url: 'https://judge.yosupo.jp/problem/queue_operate_all_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/queue_operate_all_composite',
                 tableID: 'queue',
@@ -10167,8 +9931,7 @@ let data: any = {
                 tags: ['Stack'],
                 solID: 'lc-largest-rectangle-in-histogram',
                 solQuality: 'ok',
-                url:
-                  'https://leetcode.com/problems/largest-rectangle-in-histogram',
+                url: 'https://leetcode.com/problems/largest-rectangle-in-histogram',
                 uniqueID:
                   'https://leetcode.com/problems/largest-rectangle-in-histogram',
                 tableID: 'general',
@@ -10182,8 +9945,7 @@ let data: any = {
                 tags: ['Stack'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=743',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=743',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=743',
                 tableID: 'general',
@@ -10197,8 +9959,7 @@ let data: any = {
                 tags: ['Stack'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=922',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=922',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=922',
                 tableID: 'general',
@@ -10358,8 +10119,7 @@ let data: any = {
                 tags: ['Hashing'],
                 solID: 'usaco-741',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=741',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=741',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=741',
                 tableID: 'general',
@@ -10373,8 +10133,7 @@ let data: any = {
                 tags: ['Hashing', 'Simulation'],
                 solID: 'usaco-599',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=599',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=599',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=599',
                 tableID: 'general',
@@ -10382,15 +10141,13 @@ let data: any = {
               {
                 source: 'RMI',
                 name: '2017 - Hangman 2',
-                id:
-                  'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
+                id: 'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Hashing'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
+                url: 'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
                 uniqueID:
                   'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
                 tableID: 'general',
@@ -10565,8 +10322,7 @@ let data: any = {
                 tags: ['TopoSort'],
                 solID: 'not explicitly given, but graph is a DAG',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
                 tableID: 'general',
@@ -10580,8 +10336,7 @@ let data: any = {
                 tags: ['TopoSort', 'Binary Search'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
                 tableID: 'general',
@@ -10687,8 +10442,7 @@ let data: any = {
                 tags: ['Euler-Tree', 'PURS', 'HLD'],
                 solID: 'usaco-921',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
                 tableID: 'problems',
@@ -10702,8 +10456,7 @@ let data: any = {
                 tags: ['Euler-Tree', 'LCA'],
                 solID: 'usaco-970',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
                 tableID: 'problems',
@@ -10717,8 +10470,7 @@ let data: any = {
                 tags: ['Euler-Tree', 'PURS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
                 tableID: 'problems',
@@ -10745,8 +10497,7 @@ let data: any = {
                 tags: ['Euler-Tree', 'PURS'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
                 tableID: 'problems',
@@ -10838,8 +10589,7 @@ let data: any = {
                 tags: ['2P', 'Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=738',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=738',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=738',
                 tableID: 'ad',
@@ -10866,8 +10616,7 @@ let data: any = {
                 tags: ['2P', 'Sorting'],
                 solID: 'usaco-643',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=643',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=643',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=643',
                 tableID: 'ad',
@@ -10881,8 +10630,7 @@ let data: any = {
                 tags: ['2P', 'Sorting'],
                 solID: 'usaco-918',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=918',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=918',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=918',
                 tableID: 'ad',
@@ -10948,8 +10696,7 @@ let data: any = {
                 tags: ['Binary Search', 'Ordered Set'],
                 solID: 'usaco-690',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
                 tableID: 'usaco',
@@ -10963,8 +10710,7 @@ let data: any = {
                 tags: ['Binary Search', 'Sorting'],
                 solID: 'usaco-858',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
                 tableID: 'usaco',
@@ -10978,8 +10724,7 @@ let data: any = {
                 tags: ['Binary Search', 'Sorting'],
                 solID: 'usaco-594',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
                 tableID: 'usaco',
@@ -10993,8 +10738,7 @@ let data: any = {
                 tags: ['Binary Search', 'Sorting'],
                 solID: 'usaco-1038',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
                 tableID: 'usaco',
@@ -11008,8 +10752,7 @@ let data: any = {
                 tags: ['Binary Search', 'Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
                 tableID: 'usaco',
@@ -11024,8 +10767,7 @@ let data: any = {
                 solID:
                   'requires some rather tricky analysis to speed up naive $mathcal{O}(Nlog N)$ solution',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
                 tableID: 'usaco',
@@ -11039,8 +10781,7 @@ let data: any = {
                 tags: ['Binary Search', 'Sorting'],
                 solID: 'usaco-624',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
                 tableID: 'usaco',
@@ -11054,8 +10795,7 @@ let data: any = {
                 tags: ['Binary Search'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
                 tableID: 'count',
@@ -11227,8 +10967,7 @@ let data: any = {
                 tags: ['Connected Components'],
                 solID: 'usaco-644',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=644',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=644',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=644',
                 tableID: 'general',
@@ -11242,8 +10981,7 @@ let data: any = {
                 tags: ['Directed Graph'],
                 solID: 'usaco-668',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=668',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=668',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=668',
                 tableID: 'general',
@@ -11257,8 +10995,7 @@ let data: any = {
                 tags: ['Connected Components'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=944',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=944',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=944',
                 tableID: 'general',
@@ -11298,8 +11035,7 @@ let data: any = {
                 tags: ['Connected Components', 'Binary Search'],
                 solID: 'usaco-669',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
                 tableID: 'general',
@@ -11313,8 +11049,7 @@ let data: any = {
                 tags: ['Connected Components', 'Binary Search'],
                 solID: 'usaco-992',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 tableID: 'general',
@@ -11322,15 +11057,13 @@ let data: any = {
               {
                 source: 'Kattis',
                 name: 'Lane Switching',
-                id:
-                  'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+                id: 'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: ['Connected Components', 'Binary Search'],
                 solID: 'kattis-laneswitching',
                 solQuality: 'ok',
-                url:
-                  'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+                url: 'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
                 uniqueID:
                   'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
                 tableID: 'general',
@@ -11370,8 +11103,7 @@ let data: any = {
                 tags: ['Bipartite'],
                 solID: 'usaco-920',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=920',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=920',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=920',
                 tableID: 'bip',
@@ -11437,8 +11169,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-895',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=895',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=895',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=895',
                 tableID: 'general',
@@ -11452,8 +11183,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-570',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=570',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=570',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=570',
                 tableID: 'general',
@@ -11467,8 +11197,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-596',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=596',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=596',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=596',
                 tableID: 'general',
@@ -11482,8 +11211,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-620',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
                 tableID: 'general',
@@ -11497,8 +11225,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-740',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=740',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=740',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=740',
                 tableID: 'general',
@@ -11512,8 +11239,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-716',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=716',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=716',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=716',
                 tableID: 'general',
@@ -11527,8 +11253,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=860',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=860',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=860',
                 tableID: 'general',
@@ -11555,8 +11280,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1110',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1110',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1110',
                 tableID: 'general',
@@ -11570,8 +11294,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: 'usaco-811',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=811',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=811',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=811',
                 tableID: 'general',
@@ -11585,8 +11308,7 @@ let data: any = {
                 tags: ['Flood Fill'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=836',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=836',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=836',
                 tableID: 'general',
@@ -11640,8 +11362,7 @@ let data: any = {
                 tags: ['Functional Graph'],
                 solID: 'usaco-764',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
                 tableID: 'probs',
@@ -11811,8 +11532,7 @@ let data: any = {
                 tags: ['Greedy', 'Sorting'],
                 solID: 'usaco-835',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=835',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=835',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=835',
                 tableID: 'other',
@@ -11826,8 +11546,7 @@ let data: any = {
                 tags: ['Greedy', 'Sorting', 'Ordered Set'],
                 solID: 'usaco-571',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=571',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=571',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=571',
                 tableID: 'other',
@@ -11841,8 +11560,7 @@ let data: any = {
                 tags: ['Greedy', 'Sorting', 'Ordered Set'],
                 solID: 'usaco-573',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=573',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=573',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=573',
                 tableID: 'other',
@@ -11869,8 +11587,7 @@ let data: any = {
                 tags: ['Greedy', 'Ordered Set'],
                 solID: 'usaco-714',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=714',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=714',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=714',
                 tableID: 'other',
@@ -11884,8 +11601,7 @@ let data: any = {
                 tags: ['Sorting', 'Greedy'],
                 solID: 'usaco-990',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=990',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=990',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=990',
                 tableID: 'other',
@@ -11977,8 +11693,7 @@ let data: any = {
                 tags: ['Ordered Set'],
                 solID: 'usaco-763',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=763',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=763',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=763',
                 tableID: 'general',
@@ -11992,8 +11707,7 @@ let data: any = {
                 tags: ['Ordered Set'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=859',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=859',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=859',
                 tableID: 'general',
@@ -12007,8 +11721,7 @@ let data: any = {
                 tags: ['Linked List', 'Ordered Set'],
                 solID: 'usaco-813',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=813',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=813',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=813',
                 tableID: 'general',
@@ -12100,8 +11813,7 @@ let data: any = {
                 tags: ['Tree', 'Connected Components'],
                 solID: 'usaco-788',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
                 tableID: 'tree',
@@ -12141,8 +11853,7 @@ let data: any = {
                 tags: ['Tree', 'Connected Components'],
                 solID: 'usaco-968',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
                 tableID: 'tree',
@@ -12156,8 +11867,7 @@ let data: any = {
                 tags: ['Greedy', 'Tree'],
                 solID: 'usaco-1062',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
                 tableID: 'tree',
@@ -12204,15 +11914,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2017 - Sabotage',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
                 tags: ['Tree'],
                 solID: 'poi-17-sab',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
                 tableID: 'tree',
@@ -12239,8 +11947,7 @@ let data: any = {
                 tags: ['Tree', 'Bipartite'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
                 tableID: 'tree',
@@ -12248,15 +11955,13 @@ let data: any = {
               {
                 source: 'POI',
                 name: '2014 - Hotels',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                id: 'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
                 difficulty: 'Hard',
                 starred: false,
                 tags: ['Tree', 'Prefix Sums'],
                 solID: 'poi-14-hot',
                 solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                url: 'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
                 tableID: 'tree',
@@ -12335,8 +12040,7 @@ let data: any = {
                 tags: ['Prefix Sums'],
                 solID: 'usaco-572',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
                 tableID: 'cum',
@@ -12350,8 +12054,7 @@ let data: any = {
                 tags: ['Prefix Sums'],
                 solID: 'usaco-595',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
                 tableID: 'cum',
@@ -12365,8 +12068,7 @@ let data: any = {
                 tags: ['Prefix Sums'],
                 solID: 'usaco-691',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
                 tableID: 'cum',
@@ -12406,8 +12108,7 @@ let data: any = {
                 tags: ['Prefix Sums'],
                 solID: 'usaco-715',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
                 tableID: 'cum',
@@ -12434,8 +12135,7 @@ let data: any = {
                 tags: ['Prefix Sums'],
                 solID: 'usaco-104',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
                 tableID: 'cum',
@@ -12443,15 +12143,13 @@ let data: any = {
               {
                 source: 'KS',
                 name: 'Candies (Test Set 1)',
-                id:
-                  'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
+                id: 'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
                 difficulty: 'Hard',
                 starred: true,
                 tags: ['Prefix Sums'],
                 solID: 'kickstart-20-c-candies',
                 solQuality: 'ok',
-                url:
-                  'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
+                url: 'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
                 uniqueID:
                   'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
                 tableID: 'cum',
@@ -12518,8 +12216,7 @@ let data: any = {
                 tags: ['2D Prefix Sums'],
                 solID: 'usaco-919',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=919',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=919',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=919',
                 tableID: 'cum2',
@@ -12533,8 +12230,7 @@ let data: any = {
                 tags: ['2D Prefix Sums'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1063',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1063',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1063',
                 tableID: 'cum2',
@@ -12549,8 +12245,7 @@ let data: any = {
                 solID:
                   'Treat areas that currently have K-1 layers of paint as having a value of 1, those having K layers of paint as having a value of -1, and the rest as having a value of 0. For each pair of x-coordinates, find the maximum subrectangle whose left side is located at the first x-coordinate and the right side is located at the second x-coordinate. This can be done with maximum subarray sum and prefix sums of each row. Do something similar with each pair of y-coordinates (fixing the top and bottom of the rectangle). Also notice that whenever two disjoint rectangles are drawn, there always exists a horizontal or vertical line separating them. Enumerate the location of the line, and find maximum subrectangle of each side using the information that we precalculated.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
                 tableID: 'cum2',
@@ -12564,8 +12259,7 @@ let data: any = {
                 tags: ['2D Prefix Sums'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=744',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=744',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=744',
                 tableID: 'cum2',
@@ -12604,8 +12298,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 tableID: 'sample',
@@ -12632,8 +12325,7 @@ let data: any = {
                 tags: ['Sorting', 'Prefix Sums'],
                 solID: 'usaco-786',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=786',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=786',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=786',
                 tableID: 'general',
@@ -12647,8 +12339,7 @@ let data: any = {
                 tags: ['Sorting', 'Prefix Sums'],
                 solID: 'usaco-787',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=787',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=787',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=787',
                 tableID: 'general',
@@ -12662,8 +12353,7 @@ let data: any = {
                 tags: ['Sorting'],
                 solID: 'usaco-896',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=896',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=896',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=896',
                 tableID: 'general',
@@ -12677,8 +12367,7 @@ let data: any = {
                 tags: ['Sorting'],
                 solID: 'usaco-1064',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1064',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1064',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1064',
                 tableID: 'general',
@@ -12692,8 +12381,7 @@ let data: any = {
                 tags: ['Sorting', 'Prefix Sums'],
                 solID: 'usaco-645',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=645',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=645',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=645',
                 tableID: 'general',
@@ -12707,8 +12395,7 @@ let data: any = {
                 tags: ['Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1015',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1015',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1015',
                 tableID: 'general',
@@ -12722,8 +12409,7 @@ let data: any = {
                 tags: ['Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=834',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=834',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=834',
                 tableID: 'general',
@@ -12737,8 +12423,7 @@ let data: any = {
                 tags: ['Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=967',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=967',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=967',
                 tableID: 'general',
@@ -12777,8 +12462,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
                 tableID: 'general',
@@ -12792,8 +12476,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
                 tableID: 'general',
@@ -12807,8 +12490,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
                 tableID: 'general',
@@ -12822,8 +12504,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
                 tableID: 'general',
@@ -12837,8 +12518,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
                 tableID: 'general',
@@ -12852,8 +12532,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
                 tableID: 'general',
@@ -12932,8 +12611,7 @@ let data: any = {
                 tags: ['Complete Search', 'Recursion', 'Permutation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
                 tableID: 'gen',
@@ -12947,8 +12625,7 @@ let data: any = {
                 tags: ['Complete Search', 'Recursion'],
                 solID: 'usaco-857',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
                 tableID: 'gen',
@@ -12962,8 +12639,7 @@ let data: any = {
                 tags: ['Complete Search', 'Recursion', 'Permutation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
                 tableID: 'gen',
@@ -13003,8 +12679,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-615',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=615',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=615',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=615',
                 tableID: 'probs',
@@ -13018,8 +12693,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-639',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=639',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=639',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=639',
                 tableID: 'probs',
@@ -13033,8 +12707,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-1060',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1060',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1060',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1060',
                 tableID: 'probs',
@@ -13048,8 +12721,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-963',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=963',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=963',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=963',
                 tableID: 'probs',
@@ -13063,8 +12735,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-736',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=736',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=736',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=736',
                 tableID: 'probs',
@@ -13078,8 +12749,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-1011',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1011',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1011',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1011',
                 tableID: 'probs',
@@ -13093,8 +12763,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-784',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=784',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=784',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=784',
                 tableID: 'probs',
@@ -13108,8 +12777,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-712',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=712',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=712',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=712',
                 tableID: 'probs',
@@ -13123,8 +12791,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=893',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=893',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=893',
                 tableID: 'probs',
@@ -13139,8 +12806,7 @@ let data: any = {
                 solID:
                   'Loop over each position. Then, loop over each non-spotty cow in a nested loop and check whether a spotty cow has the same character as a non-spotty cow to figure out whether the position explains spottiness.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=739',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=739',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=739',
                 tableID: 'probs',
@@ -13154,8 +12820,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-617',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=617',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=617',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=617',
                 tableID: 'probs',
@@ -13169,8 +12834,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-569',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=569',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=569',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=569',
                 tableID: 'probs',
@@ -13184,8 +12848,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1037',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1037',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1037',
                 tableID: 'probs',
@@ -13199,8 +12862,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-640',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=640',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=640',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=640',
                 tableID: 'probs',
@@ -13214,8 +12876,7 @@ let data: any = {
                 tags: ['Complete Search'],
                 solID: 'usaco-619',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=619',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=619',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=619',
                 tableID: 'probs',
@@ -13242,8 +12903,7 @@ let data: any = {
                 tags: ['Tree', 'Coloring'],
                 solID: 'usaco-894',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=894',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=894',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=894',
                 tableID: 'general',
@@ -13258,8 +12918,7 @@ let data: any = {
                 solID:
                   "Color each vertex a color that is not used by any of it's adjacent vertices. Since each vertex has at most three neighbors, there will always be a valid color.",
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=916',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=916',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=916',
                 tableID: 'general',
@@ -13273,8 +12932,7 @@ let data: any = {
                 tags: ['Tree', 'DFS'],
                 solID: 'usaco-940',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=940',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=940',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=940',
                 tableID: 'general',
@@ -13288,8 +12946,7 @@ let data: any = {
                 tags: ['Path', 'Permutation'],
                 solID: 'usaco-965',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
                 tableID: 'general',
@@ -13303,8 +12960,7 @@ let data: any = {
                 tags: ['Permutation', 'Cycle'],
                 solID: 'usaco-1013',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1013',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1013',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1013',
                 tableID: 'general',
@@ -13318,8 +12974,7 @@ let data: any = {
                 tags: ['Tree', 'DFS'],
                 solID: 'usaco-941',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=941',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=941',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=941',
                 tableID: 'general',
@@ -13333,8 +12988,7 @@ let data: any = {
                 tags: ['Tree'],
                 solID: 'usaco-833',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=833',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=833',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=833',
                 tableID: 'general',
@@ -13361,8 +13015,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: 'See below.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
                 tableID: 'tutorial',
@@ -13376,8 +13029,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: 'usaco-689',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
                 tableID: 'general',
@@ -13391,8 +13043,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
                 tableID: 'general',
@@ -13406,8 +13057,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: 'usaco-785',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
                 tableID: 'general',
@@ -13422,8 +13072,7 @@ let data: any = {
                 solID:
                   'Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
                 tableID: 'general',
@@ -13437,8 +13086,7 @@ let data: any = {
                 tags: ['Greedy'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
                 tableID: 'general',
@@ -13517,8 +13165,7 @@ let data: any = {
                 solID:
                   'Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice.',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
                 tableID: 'standard',
@@ -13532,8 +13179,7 @@ let data: any = {
                 tags: ['Simulation', 'Set'],
                 solID: 'usaco-831',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
                 tableID: 'standard',
@@ -13547,8 +13193,7 @@ let data: any = {
                 tags: ['Map'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
                 tableID: 'standard',
@@ -13562,8 +13207,7 @@ let data: any = {
                 tags: ['Map', 'Sorting'],
                 solID: 'usaco-687',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
                 tableID: 'standard',
@@ -13577,8 +13221,7 @@ let data: any = {
                 tags: ['Map'],
                 solID: 'usaco-667',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
                 tableID: 'standard',
@@ -13612,15 +13255,13 @@ let data: any = {
               {
                 source: 'HR',
                 name: 'Bubble Sort',
-                id:
-                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
+                id: 'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
                 difficulty: 'Very Easy',
                 starred: false,
                 tags: ['Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
+                url: 'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
                 uniqueID:
                   'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
                 tableID: 'bubble',
@@ -13660,8 +13301,7 @@ let data: any = {
                 tags: ['Sorting', 'Simulation'],
                 solID: 'usaco-713',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
                 tableID: 'dis',
@@ -13675,8 +13315,7 @@ let data: any = {
                 tags: ['Simulation', 'Sorting'],
                 solID: 'usaco-592',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
                 tableID: 'dis',
@@ -13715,8 +13354,7 @@ let data: any = {
                 tags: ['Rectangle'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
                 tableID: 'fence',
@@ -13730,8 +13368,7 @@ let data: any = {
                 tags: ['Rectangle'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=759',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=759',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=759',
                 tableID: 'sam',
@@ -13745,8 +13382,7 @@ let data: any = {
                 tags: ['Rectangle'],
                 solID: 'usaco-663',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=663',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=663',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=663',
                 tableID: 'general',
@@ -13760,8 +13396,7 @@ let data: any = {
                 tags: ['Rectangle'],
                 solID: 'usaco-759',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=783',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=783',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=783',
                 tableID: 'general',
@@ -13801,8 +13436,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
                 tableID: 'example',
@@ -13816,8 +13450,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'just pour 100 times',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
                 tableID: 'example',
@@ -13831,8 +13464,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'usaco-665',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
                 tableID: 'easier',
@@ -13846,8 +13478,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'usaco-568',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
                 tableID: 'easier',
@@ -13861,8 +13492,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
                 tableID: 'easier',
@@ -13876,8 +13506,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
                 tableID: 'easier',
@@ -13891,8 +13520,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
                 tableID: 'harder',
@@ -13906,8 +13534,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'usaco-616',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
                 tableID: 'harder',
@@ -13921,8 +13548,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'usaco-664',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
                 tableID: 'harder',
@@ -13936,8 +13562,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'usaco-831',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
                 tableID: 'harder',
@@ -13951,8 +13576,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: 'usaco-593',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
                 tableID: 'harder',
@@ -13966,8 +13590,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
                 tableID: 'harder',
@@ -13981,8 +13604,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
                 tableID: 'harder',
@@ -13996,8 +13618,7 @@ let data: any = {
                 tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
                 tableID: 'harder',
@@ -14108,8 +13729,7 @@ let data: any = {
                 tags: [],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=807',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=807',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=807',
                 tableID: 'general',
@@ -14123,8 +13743,7 @@ let data: any = {
                 tags: [],
                 solID: 'usaco-591',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=591',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=591',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=591',
                 tableID: 'general',
@@ -14138,8 +13757,7 @@ let data: any = {
                 tags: ['Sorting'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059',
                 tableID: 'general',
@@ -14153,8 +13771,7 @@ let data: any = {
                 tags: ['Single Loop'],
                 solID: 'usaco-987',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=987',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=987',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=987',
                 tableID: 'general',
@@ -14168,8 +13785,7 @@ let data: any = {
                 tags: ['Nested Loop'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=939',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=939',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=939',
                 tableID: 'general',
@@ -14196,8 +13812,7 @@ let data: any = {
                 tags: null,
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
                 tableID: 'roboherd',
@@ -14250,8 +13865,7 @@ let data: any = {
                 tags: null,
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
+                url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
                 tableID: 'fence',
@@ -14284,15 +13898,13 @@ let data: any = {
               {
                 source: 'Kattis',
                 name: 'Basketball One on One',
-                id:
-                  'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
+                id: 'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
                 difficulty: 'Very Easy',
                 starred: null,
                 tags: null,
                 solID: null,
                 solQuality: 'ok',
-                url:
-                  'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
+                url: 'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
                 uniqueID:
                   'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
                 tableID: 'general',

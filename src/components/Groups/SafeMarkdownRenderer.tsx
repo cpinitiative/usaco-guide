@@ -56,16 +56,22 @@ const VideoComponent = ({ link }: { link: string }) => {
   );
 };
 const GroupsCodeBlock = ({
-  language,
-  value,
+  className,
+  children,
+  inline,
 }: {
-  language: string;
-  value: string;
+  className?: string;
+  children: React.ReactNode;
+  inline?: boolean;
 }) => {
-  if (language === 'video') {
+  const value = children[0];
+  if (className === 'language-video') {
     return <VideoComponent link={value} />;
   }
-  return <CodeBlock className={`language-${language}`}>{value}</CodeBlock>;
+  if (inline) {
+    return <code>{value}</code>;
+  }
+  return <CodeBlock className={className}>{value}</CodeBlock>;
 };
 
 const renderers = {
@@ -75,8 +81,13 @@ const renderers = {
 export default function SafeMarkdownRenderer({ children }) {
   return (
     <div className="prose dark:prose-light max-w-none">
-      {/* @ts-expect-error https://github.com/rehypejs/rehype/discussions/63 */}
-      <ReactMarkdown renderers={renderers} plugins={[gfm]} linkTarget="_blank">
+      <ReactMarkdown
+        components={renderers}
+        /* @ts-expect-error https://github.com/rehypejs/rehype/discussions/63 */
+        plugins={[gfm]}
+        linkTarget="_blank"
+        className="react-markdown"
+      >
         {children}
       </ReactMarkdown>
     </div>

@@ -2,7 +2,7 @@
 id: usaco-1107
 source: USACO Bronze 2021 February
 title: Year of the Cow
-author: Ananth Kashyap
+author: Ananth Kashyap, Brad Ma
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_prob1_bronze_feb21.html)
@@ -66,5 +66,83 @@ print(abs(ans))
 ```
 
 </PySection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+import java.util.*;
+
+public class YearOfTheCow {
+	static String[] animals = {
+		"Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
+		"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
+	};
+
+	static Map<String, Integer> whenBorn = new TreeMap<>();
+
+	// given a year, return what animal the year is
+	static String getAnimal(int year) {
+		int currAnimal = 0, currYear = 2021;
+		while (currYear < year) {
+			currYear++;
+			currAnimal++;
+			if (currAnimal == 12) {  // end of a 12 year cycle
+				currAnimal = 0;
+			}
+		}
+		while (currYear > year) {
+			currYear--;
+			currAnimal--;
+			if (currAnimal == -1) {  // end of a 12 year cycle
+				currAnimal = 11;
+			}
+		}
+		return animals[currAnimal];
+	}
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		whenBorn.put("Bessie", 2021);
+
+		String cowA, born, in, relation, animal, year, from, cowB;
+		for (int i = 0; i < n; i++) {
+			cowA = io.next();
+			born = io.next();
+			in = io.next();
+			relation = io.next();
+			animal = io.next();
+			year = io.next();
+			from = io.next();
+			cowB = io.next();
+
+			whenBorn.put(cowA, whenBorn.get(cowB));
+
+			/*
+			 * make sure that the loop is executed at least once and
+			 * keep on updating the birth year until it
+			 * matches the animal we want
+			 */
+			do {
+				if (relation.equals("previous")) {
+					whenBorn.put(cowA, whenBorn.get(cowA) - 1);
+				} else {
+					whenBorn.put(cowA, whenBorn.get(cowA) + 1);
+				}
+			} while (!getAnimal(whenBorn.get(cowA)).equals(animal));
+		}
+
+		// we want the positive difference so take the absolute value
+		int diff = Math.abs(whenBorn.get("Bessie") - whenBorn.get("Elsie"));
+
+		io.println(diff);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
