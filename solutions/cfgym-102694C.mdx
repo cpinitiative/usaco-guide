@@ -60,7 +60,6 @@ public class slothNaptime {
 
 		dfs(1, 0);
 		int Q = io.nextInt();
-
 		for (int i = 1; i <= Q; i++) {
 			int start = io.nextInt();
 			int end = io.nextInt();
@@ -126,7 +125,6 @@ public class slothNaptime {
 				b = newB;
 			}
 		}
-
 		return anc[a][0];
 	}
 	
@@ -152,7 +150,6 @@ vector<int> adj[MAXN + 1];
 
 void dfs(int node, int par) {
 	depth[node] = depth[anc[node][0] = par] + 1;
-
 	// initializes binary jumping for the current node.
 	for (int i = 1; i < LOGN; i++) {
 		anc[node][i] = anc[anc[node][i - 1]][i - 1];
@@ -179,7 +176,6 @@ int LCA(int a, int b) {
 	if (depth[a] < depth[b]) {
 		swap(a, b);
 	}
-
 	a = jump(a, depth[a] - depth[b]);
 	if (a == b) {
 		return a;
@@ -207,7 +203,6 @@ int main() {
 
 	dfs(1, 0);
 	cin >> Q;
-
 	for (int i = 1; i <= Q; i++) {
 		int start, end, energy;
 		cin >> start >> end >> energy;
@@ -217,12 +212,10 @@ int main() {
 		if (energy <= path1) {
 			// moves up from start towards the lca.
 			cout << jump(start, energy) << "\n";
-		}
-		else if (energy <= path1 + path2) {
+		} else if (energy <= path1 + path2) {
 			// moves up from start to the lca, then goes down towards end.
 			cout << jump(end, path2 - (energy - path1)) << "\n";
-		}
-		else {
+		} else {
 			// reaches the end.
 			cout << end << "\n";
 		}
