@@ -2,13 +2,16 @@
 id: cses-1132
 source: CSES
 title: Tree Distances I
-author: Nathan Wang, Benjamin Qi, Abhishek Singh
+author: Nathan Wang, Benjamin Qi, Abhishek Singh, Brad Ma
 ---
 
 ## Solution 1
 
 Described in [CPH 14.3](https://usaco.guide/CPH.pdf#page=147).
 
+<LanguageSection>
+	
+<CPPSection>	
 ```cpp
 // source -> https://cses.fi/problemset/task/1132/
 
@@ -80,7 +83,98 @@ int main() {
 	}
 	return 0;
 }
+```				 
+</CPPSection>
+	
+<JavaSection>
+	
+<Warning>
+Java exceeds the time limit on two test cases.
+</Warning>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class TreeDistancesI {
+	// source -> https://cses.fi/problemset/task/1132/
+
+	static ArrayList<Integer>[] adj;
+	static int [] d1 = new int[200001];  // to store first-max length.
+	static int [] d2 = new int[200001]; // to store second-max length.
+	static int [] c = new int[200001]; // to store child for path of max length.
+
+	public static void dfs(int v, int p) {
+		d1[v] = 0;
+		d2[v] = 0;
+		for (int x : adj[v]) {
+			if (x == p)continue;
+			dfs(x, v);
+			if (d1[x] + 1 > d1[v]) {
+				d2[v] = d1[v];
+				d1[v] = d1[x] + 1;
+				c[v] = x;
+			}
+			else if (d1[x] + 1 > d2[v]) {
+				d2[v] = d1[x] + 1;
+			}
+		}
+	}
+
+	public static void dfs2(int v, int p) {
+		for (int x : adj[v]) {
+			if (x == p) continue;
+			if (c[v] == x) {
+				if (d1[x] < d2[v] + 1) {
+					d2[x] = d1[x];
+					d1[x] = d2[v] + 1;
+					c[x] = v;
+				}
+				else {
+					d2[x] = Math.max(d2[x], d2[v] + 1);
+				}
+			}
+			else {
+				d2[x] = d1[x];
+				d1[x] =  d1[v] + 1;
+				c[x] = v;
+			}
+			dfs2(x, v);
+		}
+	}
+
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+		int n, u, v;
+		n = io.nextInt();
+		adj = new ArrayList[n + 1];
+		for (int x = 0; x < adj.length; x++) {
+			adj[x] = new ArrayList();
+		}
+
+		for (int i = 0; i < n - 1; i++) {
+			u = io.nextInt();
+			v = io.nextInt();
+			adj[u].add(v);
+			adj[v].add(u);
+		}
+
+		// METHOD-I- All longest paths-given in CPH ~~~ (O(n))- 2-DFS
+		dfs(1, -1);
+		dfs2(1, -1);
+
+		for (int i = 1; i <= n; i++) {
+			io.print(d1[i] + " ");
+		}
+
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
 ```
+</JavaSection>
+				 
+</LanguageSection>
 
 ## Solution 2
 
