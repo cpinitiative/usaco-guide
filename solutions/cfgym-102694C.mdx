@@ -45,7 +45,7 @@ the sloth will reach.
 
 import java.io.*;
 import java.util.*;
-public class SlothNaptime {
+public class slothNaptime {
 	public static final int MAXN = (int) 3e5 + 5;
 	public static final int LOGN = (int) (Math.log(MAXN) / Math.log(2)) + 1;
 	public static ArrayList<Integer>[] adj = new ArrayList[MAXN];
@@ -75,16 +75,18 @@ public class SlothNaptime {
 			int lca = LCA(start, end);
 			int moveUpLen = depth[start] - depth[lca];
 			int moveDownLen = depth[end] - depth[lca];
+			int result;
 			if (energy <= moveUpLen) {
 				// moves up from start towards the lca.
-				System.out.println(jump(start, energy) + 1);
+				result = jump(start, energy) + 1;
 			} else if (energy <= moveUpLen + moveDownLen) {
 				// moves up from start to the lca, then goes down towards end.
-				System.out.println(jump(end, moveDownLen - (energy - moveUpLen)) + 1);
+				result = jump(end, moveDownLen - (energy - moveUpLen)) + 1;
 			} else {
 				// reaches the end.
-				System.out.println(end + 1) ;
+				result = end + 1;
 			}
+			System.out.println(result);
 		}
 	}
 
@@ -135,6 +137,8 @@ public class SlothNaptime {
 		}
 		return anc[a][0];
 	}
+
+	//CodeSnip{Kattio}
 
 }
 
