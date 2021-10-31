@@ -73,14 +73,14 @@ public class SlothNaptime
     		int end = io.nextInt();
     		int energy = io.nextInt();
     		int lca = LCA(start, end);
-    		int path1 = depth[start] - depth[lca];
-    		int path2 = depth[end] - depth[lca];
-    		if (energy <= path1) {
+    		int moveUpLen = depth[start] - depth[lca];
+    		int moveDownLen = depth[end] - depth[lca];
+    		if (energy <= moveUpLen) {
     			// moves up from start towards the lca.
     			System.out.println(jump(start, energy));
-    		} else if (energy <= path1 + path2) {
+    		} else if (energy <= moveUpLen + moveDownLen) {
     			// moves up from start to the lca, then goes down towards end.
-    			System.out.println(jump(end, path2 - (energy - path1)));
+    			System.out.println(jump(end, moveDownLen - (energy - moveUpLen)));
     		} else {
     			// reaches the end.
     			System.out.println(end);
