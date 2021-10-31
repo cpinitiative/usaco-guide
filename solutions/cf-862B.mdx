@@ -26,28 +26,27 @@ To find the number of colored and uncolored nodes, we can run a [DFS](https://us
 import java.util.*;
 import java.io.*;
 
-public class Bipartiteness {
+public class Main {
 	public static ArrayList<Integer> adj[];
 	
 	// counters for colored and uncolored nodes
-	public static long[] cnt = {0, 0};
+	public static long[] count = {0, 0};
 
 	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
+		Kattio io = new Kattio();
 
-		int n = Integer.parseInt(br.readLine());
+		int n = io.nextInt();
 
 		// +1 for 1-indexed nodes
 		adj = new ArrayList[n + 1];
 		
-		for (int i = 0; i <= n; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i <= n; i++) {
+			adj[i] = new ArrayList<Integer>();
+		}
 
-		StringTokenizer s;
 		for (int i = 0; i < n - 1; i++) {
-			s = new StringTokenizer(br.readLine());
-			int u = Integer.parseInt(s.nextToken());
-			int v = Integer.parseInt(s.nextToken());
+			int u = io.nextInt();
+			int v = io.nextInt();
 			
 			adj[u].add(v);
 			adj[v].add(u);
@@ -55,14 +54,15 @@ public class Bipartiteness {
 		
 		dfs(1, 0, false);
 		
-		long ans = (cnt[0] * cnt[1]) - (n - 1); 
+		// ans = (all possible edges) - (existing edges)
+		long ans = (count[0] * count[1]) - (n - 1); 
 		
-		out.println(ans);
-		out.close();
+		io.println(ans);
+		io.close();
 	}
 
 	public static void dfs(int node, int parent, boolean color) {
-		cnt[color ? 1 : 0]++;
+		count[color ? 0 : 1]++;
 
 		for (int u : adj[node]) {
 			// if the adjacent node isn't the parent,
@@ -73,6 +73,36 @@ public class Bipartiteness {
 		}
 	}
 }
+
+//BeginCodeSnip{Kattio}
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st;
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException {
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+	// returns null if no more input
+	public String next() {
+		try {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(r.readLine());
+			return st.nextToken();
+		} catch (Exception e) {}
+		return null;
+	}
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+//EndCodeSnip
 ```
 </JavaSection>
 <CPPSection>
