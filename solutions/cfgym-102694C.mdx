@@ -9,34 +9,42 @@ author: Sofia Yang
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
-The sloth will always try to move upwards from the start node $(st)$ to the least common ancestor of the start and end nodes $(lca)$ and then move
-downwards from the least common ancestor towards the end node $(end)$.
+The sloth will always try to move upwards from the start node $(st)$ to the
+least common ancestor of the start and end nodes $(lca)$ and then move downwards
+from the least common ancestor towards the end node $(end)$.
 
 Let $dist(i, j)$ be the distance from node i to node j.
 
 So if the sloth has energy amount $e$, there are 3 separate cases:
 
-1. $e ≥ dist(st, end)$. In this case the result will be the sloth reaching the end.
+1. $e ≥ dist(st, end)$. In this case the result will be the sloth reaching the
+   end.
 
-2. $e < dist(st, end)$ and $e < dist(st, lca)$ in which the result will be the sloth reaching the $e$th parent of $st$.
+2. $e < dist(st, end)$ and $e < dist(st, lca)$ in which the result will be the
+   sloth reaching the $e$th parent of $st$.
 
-3. $e < dist(st, end)$ and $e >= dist(st, lca)$ in which the result will be the sloth reaching the $(e - dist(st, lca))$th parent of $end$.
+3. $e < dist(st, end)$ and $e >= dist(st, lca)$ in which the result will be the
+   sloth reaching the $(e - dist(st, lca))$th parent of $end$.
 
 So first, we can can run DFS once to find the depth of every node.
 
-Then we can create a matrix $anc$ to store the ancestors of each node,
-where $anc[i][j]$ is the $2^j$th ancestor of node $i$.
+Then we can create a matrix $anc$ to store the ancestors of each node, where
+$anc[i][j]$ is the $2^j$th ancestor of node $i$.
 
-After that, we can use binary lifting to answer each query by finding the least common ancestor of the start and end nodes, and then finding the right node that the sloth will reach.
+After that, we can use binary lifting to answer each query by finding the least
+common ancestor of the start and end nodes, and then finding the right node that
+the sloth will reach.
 
 ## Implementation
+
 <LanguageSection>
 
 <JavaSection>
+
 ```java
+
 import java.io.*;
 import java.util.*;
-// CodeSnippet{Kattio}
 public class slothNaptime {
 	public static final int MAXN = (int) 3e5 + 5;
 	public static final int LOGN = 20;
@@ -45,99 +53,101 @@ public class slothNaptime {
 	public static int[][] anc = new int[MAXN][LOGN];
 	public static int[] depth = new int[MAXN];
 
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio();
-		int N = io.nextInt();
-		for (int i = 0; i < MAXN; i++) {
-			adj[i] = new ArrayList<>();
-		}
-		for (int i = 0; i < N-1; i++) {
-			int a = io.nextInt();
-			int b = io.nextInt();
-			adj[a].add(b);
-			adj[b].add(a);
-		}
+    public static void main(String[] args) throws IOException {
+    	Kattio io = new Kattio();
+    	int N = io.nextInt();
+    	for (int i = 0; i < MAXN; i++) {
+    		adj[i] = new ArrayList<>();
+    	}
+    	for (int i = 0; i < N-1; i++) {
+    		int a = io.nextInt();
+    		int b = io.nextInt();
+    		adj[a].add(b);
+    		adj[b].add(a);
+    	}
 
-		dfs(1, 0);
-		int Q = io.nextInt();
-		for (int i = 1; i <= Q; i++) {
-			int start = io.nextInt();
-			int end = io.nextInt();
-			int energy = io.nextInt();
-			int lca = LCA(start, end);
-			int path1 = depth[start] - depth[lca];
-			int path2 = depth[end] - depth[lca];
-			if (energy <= path1) {
-				// moves up from start towards the lca.
-				System.out.println(jump(start, energy));
-			} else if (energy <= path1 + path2) {
-				// moves up from start to the lca, then goes down towards end.
-				System.out.println(jump(end, path2 - (energy - path1)));
-			} else {
-				// reaches the end.
-				System.out.println(end);
-			}
-		}
-	}
+    	dfs(1, 0);
+    	int Q = io.nextInt();
+    	for (int i = 1; i <= Q; i++) {
+    		int start = io.nextInt();
+    		int end = io.nextInt();
+    		int energy = io.nextInt();
+    		int lca = LCA(start, end);
+    		int path1 = depth[start] - depth[lca];
+    		int path2 = depth[end] - depth[lca];
+    		if (energy <= path1) {
+    			// moves up from start towards the lca.
+    			System.out.println(jump(start, energy));
+    		} else if (energy <= path1 + path2) {
+    			// moves up from start to the lca, then goes down towards end.
+    			System.out.println(jump(end, path2 - (energy - path1)));
+    		} else {
+    			// reaches the end.
+    			System.out.println(end);
+    		}
+    	}
+    }
 
-	public static void dfs(int node, int par) {
-		anc[node][0] = par;
-		depth[node] = depth[anc[node][0]] + 1;
+    public static void dfs(int node, int par) {
+    	anc[node][0] = par;
+    	depth[node] = depth[anc[node][0]] + 1;
 
-		// initializes binary jumping for the current node.
-		for (int lvl = 1; lvl < LOGN; lvl++) {
-			anc[node][lvl] = anc[anc[node][lvl - 1]][lvl - 1];
-		}
-		for (int next : adj[node]) {
-			if (next != par) {
-				dfs(next, node);
-			}
-		}
-	}
+    	// initializes binary jumping for the current node.
+    	for (int lvl = 1; lvl < LOGN; lvl++) {
+    		anc[node][lvl] = anc[anc[node][lvl - 1]][lvl - 1];
+    	}
+    	for (int next : adj[node]) {
+    		if (next != par) {
+    			dfs(next, node);
+    		}
+    	}
+    }
 
-	// jump(i, j) returns jth ancestor of node i.
-	public static int jump(int node, int level) {
-		for (int i = 0; i < LOGN; i++) {
-			if ((level & (1 << i)) > 0) {
-				node = anc[node][i];
-			}
-		}
-		return (node > 0) ? node : 1;
-	}
+    // jump(i, j) returns jth ancestor of node i.
+    public static int jump(int node, int level) {
+    	for (int i = 0; i < LOGN; i++) {
+    		if ((level & (1 << i)) > 0) {
+    			node = anc[node][i];
+    		}
+    	}
+    	return (node > 0) ? node : 1;
+    }
 
     // lca(i, j) returns least common ancestor of nodes i and j.
-	public static int LCA(int a, int b) {
-		if (depth[a] < depth[b]) {
-			int tempA = a;
-			a = b;
-			b = tempA;
-		}
+    public static int LCA(int a, int b) {
+    	if (depth[a] < depth[b]) {
+    		int tempA = a;
+    		a = b;
+    		b = tempA;
+    	}
 
-		a = jump(a, depth[a] - depth[b]);
-		if (a == b) {
-			return a;
-		}
-		for (int i = LOGN - 1; i >= 0; i--) {
-			int newA = anc[a][i];
-			int newB = anc[b][i];
-			if (newA != newB) {
-				a = newA;
-				b = newB;
-			}
-		}
-		return anc[a][0];
-	}
-	
+    	a = jump(a, depth[a] - depth[b]);
+    	if (a == b) {
+    		return a;
+    	}
+    	for (int i = LOGN - 1; i >= 0; i--) {
+    		int newA = anc[a][i];
+    		int newB = anc[b][i];
+    		if (newA != newB) {
+    			a = newA;
+    			b = newB;
+    		}
+    	}
+    	return anc[a][0];
+    }
+
+    //CodeSnip{Kattio}
 
 }
 
-
-```
+````
 
 </JavaSection>
 
 <CPPSection>
+
 ```cpp
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -223,9 +233,9 @@ int main() {
 
 
 }
-```
+````
 
 </CPPSection>
-	
+
 
 </LanguageSection>
