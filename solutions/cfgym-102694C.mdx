@@ -159,7 +159,8 @@ int anc[MAXN + 1][LOGN];
 vector<int> adj[MAXN + 1];
 
 void dfs(int node, int par) {
-	depth[node] = depth[anc[node][0] = par] + 1;
+	anc[node][0] = par;
+	depth[node] = depth[anc[node][0]] + 1;
 	// initializes binary jumping for the current node.
 	for (int i = 1; i < LOGN; i++) {
 		anc[node][i] = anc[anc[node][i - 1]][i - 1];
