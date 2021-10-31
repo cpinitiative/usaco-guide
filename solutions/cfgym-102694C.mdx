@@ -53,90 +53,88 @@ public class SlothNaptime {
 	public static int[][] anc = new int[MAXN][LOGN];
 	public static int[] depth = new int[MAXN];
 
-    public static void main(String[] args) throws IOException {
-    	Kattio io = new Kattio();
-    	int N = io.nextInt();
-    	for (int i = 0; i < MAXN; i++) {
-    		adj[i] = new ArrayList<>();
-    	}
-    	for (int i = 0; i < N-1; i++) {
-    		int a = io.nextInt();
-    		int b = io.nextInt();
-    		adj[a].add(b);
-    		adj[b].add(a);
-    	}
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		for (int i = 0; i < MAXN; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < N-1; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
 
-    	dfs(1, 0);
-    	int Q = io.nextInt();
-    	for (int i = 1; i <= Q; i++) {
-    		int start = io.nextInt();
-    		int end = io.nextInt();
-    		int energy = io.nextInt();
-    		int lca = LCA(start, end);
-    		int moveUpLen = depth[start] - depth[lca];
-    		int moveDownLen = depth[end] - depth[lca];
-    		if (energy <= moveUpLen) {
-    			// moves up from start towards the lca.
-    			System.out.println(jump(start, energy));
-    		} else if (energy <= moveUpLen + moveDownLen) {
-    			// moves up from start to the lca, then goes down towards end.
-    			System.out.println(jump(end, moveDownLen - (energy - moveUpLen)));
-    		} else {
-    			// reaches the end.
-    			System.out.println(end);
-    		}
-    	}
-    }
+		dfs(0, 0);
+		int Q = io.nextInt();
+		for (int i = 1; i <= Q; i++) {
+			int start = io.nextInt() - 1;
+			int end = io.nextInt() - 1;
+			int energy = io.nextInt();
+			int lca = LCA(start, end);
+			int moveUpLen = depth[start] - depth[lca];
+			int moveDownLen = depth[end] - depth[lca];
+			if (energy <= moveUpLen) {
+				// moves up from start towards the lca.
+				System.out.println(jump(start, energy) + 1);
+			} else if (energy <= moveUpLen + moveDownLen) {
+				// moves up from start to the lca, then goes down towards end.
+				System.out.println(jump(end, moveDownLen - (energy - moveUpLen)) + 1);
+			} else {
+				// reaches the end.
+				System.out.println(end + 1) ;
+			}
+		}
+	}
 
-    public static void dfs(int node, int par) {
-    	anc[node][0] = par;
-    	depth[node] = depth[anc[node][0]] + 1;
+	public static void dfs(int node, int par) {
+		anc[node][0] = par;
+		depth[node] = depth[anc[node][0]] + 1;
 
-    	// initializes binary jumping for the current node.
-    	for (int lvl = 1; lvl < LOGN; lvl++) {
-    		anc[node][lvl] = anc[anc[node][lvl - 1]][lvl - 1];
-    	}
-    	for (int next : adj[node]) {
-    		if (next != par) {
-    			dfs(next, node);
-    		}
-    	}
-    }
+		// initializes binary jumping for the current node.
+		for (int lvl = 1; lvl < LOGN; lvl++) {
+			anc[node][lvl] = anc[anc[node][lvl - 1]][lvl - 1];
+		}
+		for (int next : adj[node]) {
+			if (next != par) {
+				dfs(next, node);
+			}
+		}
+	}
 
-    // jump(i, j) returns jth ancestor of node i.
-    public static int jump(int node, int level) {
-    	for (int i = 0; i < LOGN; i++) {
-    		if ((level & (1 << i)) > 0) {
-    			node = anc[node][i];
-    		}
-    	}
-    	return (node > 0) ? node : 1;
-    }
+	// jump(i, j) returns jth ancestor of node i.
+	public static int jump(int node, int level) {
+		for (int i = 0; i < LOGN; i++) {
+			if ((level & (1 << i)) > 0) {
+				node = anc[node][i];
+			}
+		}
+		return (node > -1) ? node : 0;
+	}
 
-    // lca(i, j) returns least common ancestor of nodes i and j.
-    public static int LCA(int a, int b) {
-    	if (depth[a] < depth[b]) {
-    		int tempA = a;
-    		a = b;
-    		b = tempA;
-    	}
+	// lca(i, j) returns least common ancestor of nodes i and j.
+	public static int LCA(int a, int b) {
+		if (depth[a] < depth[b]) {
+			int tempA = a;
+			a = b;
+			b = tempA;
+		}
 
-    	a = jump(a, depth[a] - depth[b]);
-    	if (a == b) {
-    		return a;
-    	}
-    	for (int i = LOGN - 1; i >= 0; i--) {
-    		int newA = anc[a][i];
-    		int newB = anc[b][i];
-    		if (newA != newB) {
-    			a = newA;
-    			b = newB;
-    		}
-    	}
-    	return anc[a][0];
-    }
-
-    //CodeSnip{Kattio}
+		a = jump(a, depth[a] - depth[b]);
+		if (a == b) {
+			return a;
+		}
+		for (int i = LOGN - 1; i >= 0; i--) {
+			int newA = anc[a][i];
+			int newB = anc[b][i];
+			if (newA != newB) {
+				a = newA;
+				b = newB;
+			}
+		}
+		return anc[a][0];
+	}
 
 }
 
