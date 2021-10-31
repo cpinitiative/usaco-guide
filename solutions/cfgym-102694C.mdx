@@ -149,8 +149,8 @@ public class SlothNaptime {
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 3e5;
-const int LOGN = (int) log2(MAXN) + 1;
+const int MAXN = 3e5 + 5;
+const int LOGN = log2(MAXN) + 1;
 int depth[MAXN + 1];
 // anc[i][j] is the 2^j-th parent of i.
 int anc[MAXN + 1][LOGN];
@@ -177,7 +177,7 @@ int jump(int node, int level) {
 			node = anc[node][i];
 		}
 	}
-	return (node > 0) ? node : 1;
+	return (node > -1) ? node : 0;
 }
 
 // lca(i, j) returns least common ancestor of nodes i and j.
@@ -206,30 +206,37 @@ int main() {
 	for (int i = 0; i < N - 1; i++) {
 		int a; int b;
 		cin >> a >> b;
+		a--;
+		b--;
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
 
-	dfs(1, 0);
+	dfs(0, 0);
 	cin >> Q;
 	for (int i = 1; i <= Q; i++) {
 		int start, end, energy;
 		cin >> start >> end >> energy;
+		start--;
+		end--;
 		int lca = LCA(start, end);
 		int path1 = depth[start] - depth[lca];
 		int path2 = depth[end] - depth[lca];
+		int result;
 		if (energy <= path1) {
 			// moves up from start towards the lca.
-			cout << jump(start, energy) << "\n";
-		} else if (energy <= path1 + path2) {
-			// moves up from start to the lca, then goes down towards end.
-			cout << jump(end, path2 - (energy - path1)) << "\n";
-		} else {
-			// reaches the end.
-			cout << end << "\n";
+			result = jump(start, energy) + 1;
 		}
+		else if (energy <= path1 + path2) {
+			// moves up from start to the lca, then goes down towards end.
+			result = jump(end, path2 - (energy - path1)) + 1;
+		}
+		else {
+			// reaches the end.
+			result = end + 1;
+		}
+		cout << result << "\n";
 	}
-
 
 }
 ````
