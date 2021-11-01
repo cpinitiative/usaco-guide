@@ -116,33 +116,14 @@ int main() {
 		for (int j = 0; j < n; j++) {
 			for (int k = 0; k < n; k++) {
 				// Check to see if both points are parallel to the X and Y axis
-				if (y[i] ==y [j] && x[i] == x[k]) {
-					/** 
-					 * Since we need to output two times the
-					 * area and the formula for the area
-					 * of a triangle is 1/2 * base * height, 
-					 * we can omit the 1/2 because it anyways
-					 * gets multiplied by 2, which cancels it out. 
-					 * Finding the base is the difference
-					 * between both x points and the height is 
-					 * the difference between both y points;
-					 * it is a right triangle because both 
-					 * sides are parallel to the x and y axis,
-					 * so no advanced math is required to find 
-					 * the height.
-					 */
-					int area = (x[j] - x[i]) * (y[k] - y[i]);
-					if (area < 0) {
-						area *= -1;
-					}
-					if (area > ans) {
-						ans = area;
-					}
+				if (y[i] == y[j] && x[i] == x[k]) {
+					int area = abs((x[j] - x[i]) * (y[k] - y[i]));
+					ans = max(ans, area);
 				}
 			}
 		}
 	}
-	cout << ans;
+	cout << ans << endl;
 }
 	
 ```
