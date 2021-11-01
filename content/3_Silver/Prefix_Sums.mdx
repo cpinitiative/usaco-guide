@@ -393,7 +393,7 @@ for i in range(Q):
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    **Challenge Problem**: With the idea of prefix sums in mind, at first glance it may seem logical to apply this method to return range products in constant time. Instead of adding, we multiply, and instead of subtracting, we divide. Assume that we calculate the answer modulo a large prime ($10^9 + 7$, for instance). What additional challenges may we face?
+    **Challenge Problem**: With the idea of prefix sums in mind, at first glance it may seem logical to apply this method to return range products in constant time. Instead of adding, we multiply, and instead of subtracting, we divide. Assume that we calculate the answer modulo a large prime ($10^9 + 7$, for instance), and the array has normal constraints ($N \leq 10^5$, $1 \leq a_i \leq 10^9$). What additional challenges may we face?
     <Quiz.Answer>
       **Integer Overflow**: Even if we use modulo, the numbers will grow too quickly when multiplying, to the point where they may not fit within a 64-bit integer.
       <Quiz.Explanation>
@@ -403,7 +403,7 @@ for i in range(Q):
     <Quiz.Answer>
       **Time Limit**: Multiplying, dividing, and modulo are relatively slow operations, and this will make the prefix product just as fast as iterating through the array.
       <Quiz.Explanation>
-        Incorrect. While it is true that multiplying and dividing are relatively slow, this difference is hardly enough to impact the runtime by a significant amount. 
+        Incorrect. While it is true that multiplying and dividing are relatively slow, this difference is hardly enough to impact the runtime to the extent of causing TLE. 
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
@@ -419,9 +419,7 @@ for i in range(Q):
 $$
 \frac a b \mod m \neq \frac {a \mod m} b \mod m
 $$
-Because the problem statement specifies that $m$ is prime, we can circumvent this problem by multiplying by $b^{-1} \mod m$ instead of dividing by $b$. For more information about this, see the [Modular Arithmetic Module](https://usaco.guide/gold/modular?lang=cpp). Note that knowledge of number theory  is generally not needed to score well on silver. 
-
-Another possible problem that could occur is if any of the values are $0$.
+In short, modular division is not as straight forward as modular addition, subtraction, or multiplication. However because the problem states that the modulo is prime, this is still possible using the modulo inverse (although this knowledge isn't necessary for silver). See the [Modulo Arithmatic](https://usaco.guide/gold/modular?lang=cpp) module for more details.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
