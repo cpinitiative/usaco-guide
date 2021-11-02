@@ -323,14 +323,15 @@ this trick usually speeds up compilation time to less than a second.
     where `-add-flags-here` includes the compilation flags you normally use (ex.
     `-std=c++17 -O2`)
 
-3.  Recompile your C++ file:
+3.  Recompile your C++ file. Should be faster this time since the precompiled
+    header will be used.
 
     ```
     g++ -add-flags-here -Winvalid-pch file.cpp
     ```
 
-    The `-Winvalid-pch` will warn you if the precompiled header is not used. For
-    example, if I precompiled `stdc++.h` with `-std=c++17`, but I compiled my
+    The `-Winvalid-pch` will warn you if the precompiled header is _not_ used.
+    For example, if I precompiled `stdc++.h` with `-std=c++17` but I compiled my
     C++ program with `-std=c++11 -Winvalid-pch`, I would get a warning such as
     the following:
 
