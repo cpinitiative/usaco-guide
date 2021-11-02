@@ -2,7 +2,9 @@
 id: cpp-command
 title: C++ With the Command Line
 author: Many
-contributors: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Michael Lan, Arpan Banerjee
+contributors:
+  Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Michael
+  Lan, Arpan Banerjee
 description:
   'OS-specific instructions for installing and running C++ via the command line.'
 prerequisites:
@@ -58,7 +60,7 @@ haven't already.
 		title="Intro to OS X Command Line"
 		url="https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line"
 		starred
-	 />
+	/>
 	<Resource
 		source="Rahul Saigal"
 		title="Mac Terminal Cheat Sheet"
@@ -70,7 +72,7 @@ haven't already.
 		source="Armin Briegel"
 		title="Moving to zsh"
 		url="https://scriptingosx.com/2019/06/moving-to-zsh/"
-	 />
+	/>
 </Resources>
 
 ### Windows
@@ -90,7 +92,7 @@ haven't already.
 	/>
 </Resources>
 
-## Installing GCC
+## Installing `g++`
 
 [USACO](http://www.usaco.org/index.php?page=instructions) (and most contests)
 use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s `g++` to
@@ -110,12 +112,6 @@ whereis g++
 
 If it is not preinstalled, you can probably install it using your distro's
 package manager.
-
-### On Windows
-
-There are multiple ways to install C++ command line tools on windows, depending
-on your needs. To find more information, go to
-[Running Code Locally with Windows](/general/running-code-locally#windows).
 
 ### On Mac
 
@@ -184,22 +180,182 @@ on your needs. To find more information, go to
     that will almost surely cause problems. Don't worry if you don't know what
     those terms mean.
 
-<!-- <Resources>
+### On Windows
+
+To get the full functionality of C++ on your Windows Machine, you should install
+one of the following compilers, from easiest to most difficult to set up and
+use:
+
+#### Simplest: [MinGW](http://mingw.org/) (Minimalist GNU for Windows)
+
+If you want to keep the ease of use and simplicity of Linux C++, including the
+ability to use commands like `g++` and easily include `<bits/stdc++.h>`, you can
+install the compiler MinGW. This is a version of the `g++` compiler from Linux
+available on Windows. If you are using VS Code, setting up MinGW can be more
+difficult, but there are great guides to make the process easier.
+
+<Resources>
 	<Resource
-		source="Benq"
-		title="My Template"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/template.cpp"
+		source="MinGW"
+		title="MinGW Installation (Official)"
+		url="https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe"
 	>
+		The Official MinGW Installer
 	</Resource>
 	<Resource
-		source="caoash"
-		title="Shorter Template"
-		url="https://github.com/caoash/competitive-programming/blob/master/template.cpp"
+		source="Microsoft"
+		title="MinGW Installation (Easier)"
+		url="https://tinyurl.com/mingw-usaco"
 	>
-		A shorter alternative to Ben's template that you could more reasonably type
-		out yourself during a USACO contest.
+		Microsoft's Simpler MinGW Installer
 	</Resource>
-</Resources> -->
+	<Resource
+		source="Microsoft"
+		title="MinGW with VS Code"
+		url="https://code.visualstudio.com/docs/cpp/config-mingw"
+	>
+		Setting Up MinGW with VS Code
+	</Resource>
+	<Resource
+		source="Jetbrains"
+		title="Configuring CLion on Windows"
+		url="https://www.jetbrains.com/help/clion/quick-tutorial-on-configuring-clion-on-windows.html#MinGW"
+	>
+		Setting up MinGW with CLion
+	</Resource>
+</Resources>
+
+Depending on the installer you used, installing MinGW could be a little
+complicated.
+
+**The Official Installer:**
+
+1.  First, download and run the
+    [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/).
+2.  Once it's installed, open the MinGW Installation Manager, click on Basic
+    Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+3.  Finally, Add it to your PATH following the latter half of
+    [this tutorial](http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
+
+**Microsoft's Mirror Installer:**
+
+1.  First, [download the installer](https://tinyurl.com/mingw-usaco)
+2.  When you run it, leave all settings at default except `Architecture`.
+    1.  For `Architecture`, select `x86_64`.
+3.  After you click next, copy the `Destination Folder Path` for later and
+    finish the installation.
+4.  Now, you need to add MinGW to your `Path`. To do that:
+    1.  After the Installation has completed, search for
+        `Environmental Variables` in the Windows Search Bar and click open
+    2.  Click the button `Environment Variables` at the bottom left.
+    3.  In the bottom half of the screen (under `System variables`), find the
+        key `Path` and double click.
+    4.  Click `New` on the top right and paste the path you copied. Add `\bin`
+        to the end of it. It should look something like this:
+        `C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin`
+    5.  You're Good to Go!
+
+#### Moderate: Microsoft Compiler Toolset
+
+Microsoft's Visual C++ Compiler is the official compiler for compiling programs
+for Windows and can be installed either via installing the relevant packages
+with Visual Studio 2019 or the build tools from their website. More information
+on its installation can be found in their documentation.
+
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="Microsoft Compiler Toolset Documentation"
+		url="https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160"
+	>
+		The Visual Studio Documentation
+	</Resource>
+</Resources>
+
+In order to get a similar library to `<bits/stdc++.h>` you can use the following
+template, which automatically swaps between `<bits/stdc++.h>` and Microsoft's
+variant depending on the system running it:
+
+```cpp
+#ifdef _WIN32
+#include <__msvc_all_public_headers.hpp>
+#endif
+#ifdef __linux__
+#include <bits/stdc++.h>
+#endif
+using namespace std;
+```
+
+This checks if the compiler is compiling for windows (your local machine) or if
+it is compiling for the remote judge and subsequently includes the correct
+libraries for the system. This comes with the same consequences as using
+`<bits/stdc++.h>` for the same reasons.
+
+_Note: As USACO has now disallowed the use of templates during competitions, if
+you want to be able to get the functionality of `<bits/stdc++.h>` on your local
+machine, you should use MinGW instead._
+
+#### Difficult: [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
+
+If you're already accustomed to the Linux Command line, this might be the best
+option for you.
+
+Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel
+(or an emulation layer, depending on which version you use) within you windows
+installation. This allows you to use Linux binaries without needing to use Linux
+as your main Operating System, meaning that you can install `g++`, use `g++`,
+and consequently include `<bits/stdc++.h>` in your Competitive Programming C++
+files.
+
+Many people use WSL (such as Anthony), but it can be difficult to properly set
+up.
+
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="VSCode - GCC on WSL"
+		url="https://code.visualstudio.com/docs/cpp/config-wsl"
+	>
+		difficult for beginners
+	</Resource>
+</Resources>
+
+If you want to code in (neo)vim, you can install WSL and code through WSL bash.
+
+To install the necessary tools after setting up WSL, you can run the following
+commands.
+
+On Debian based distributions like Ubuntu:
+
+```sh
+sudo apt-get install build-essential
+```
+
+On Arch based distributions like Arch Linux:
+
+```sh
+sudo pacman -Sy base-devel
+```
+
+You can find many tutorials on how to style up WSL and make it feel more cozy.
+The first step is to use a proper terminal and not the default one that Windows
+provides. An easy to use option is Windows Terminal, which can be found on the
+[Microsoft Store](https://www.microsoft.com/store/productId/9N0DX20HK701).
+
+<Resources>
+	<Resource
+		title="Set Up and Customize Windows Terminal"
+		url="https://medium.com/@ajitsahoo29/the-ultimate-guide-to-install-and-customize-windows-terminal-2019-6963dfc06587"
+	>
+		Setting up your terminal
+	</Resource>
+	<Resource
+		title="Make the command line look good"
+		url="https://medium.com/@shivam1/make-your-terminal-beautiful-and-fast-with-zsh-shell-and-powerlevel10k-6484461c6efb"
+	>
+		Get a beautiful command line interface
+	</Resource>
+</Resources>
 
 ## C++ with the Command Line
 
@@ -263,8 +419,8 @@ They can also be used in conjunction, as shown below:
 ./name < inp.txt > out.txt
 ```
 
-See [Input & Output](/general/input-output) for how to do file input and output within the
-program.
+See [Input & Output](/general/input-output) for how to do file input and output
+within the program.
 
 ### [Compiler Options (aka Flags)](https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html)
 
@@ -307,12 +463,12 @@ don't need to type them every time!
 		url="https://jonsuh.com/blog/bash-command-line-shortcuts/"
 		title="Aliases in Terminal"
 		starred
-	 />
+	/>
 	<Resource
 		source="SO"
 		url="https://unix.stackexchange.com/questions/71253/what-should-shouldnt-go-in-zshenv-zshrc-zlogin-zprofile-zlogout"
 		title="What should / shouldn't go in .zshenv, .zshrc, ..."
-	 />
+	/>
 </Resources>
 
 First, create your `.zshrc` if it doesn't already exist.
@@ -346,7 +502,7 @@ Now you can easily compile and run `name.cpp` from the command line with
 the function are replaced with `name.cpp`, while `${1%.*}` removes the file
 extension from `$1` to produce `name`.
 
-### What is `& fg` for?
+#### What is `& fg` for?
 
 <Resources>
 	<Resource
@@ -528,7 +684,7 @@ this doesn't work for higher numbers.
 		url="https://codeforces.com/blog/entry/60999?#comment-449312"
 		title="Terminal Command on Mac"
 	>
-		looks like people complain about FHC every year!
+		people complain about FHC *every* year
 	</Resource>
 </Resources>
 
@@ -543,11 +699,17 @@ to the manual for
 > number with an optional leading 0x. The size should be a multiple of the
 > architecture's page size (4KB or 16KB).
 
-So including `-Wl,-stack_size -Wl,0x10000000` as part of your compilation
-command will set the maximum stack size to $16^7$ bytes $\approx$ $256$
-megabytes, which is usually sufficient. However, running the first program above
-with `200000` replaced by `1e7` still gives an error. In this case, you can
-further increase the maximum stack size (ex. by adding another `0` to the end).
+So including `-Wl,-stack_size,0x10000000` as part of your compilation command
+will set the maximum stack size to $16^7$ bytes $\approx 256$ megabytes, which
+is usually sufficient. However, running the first program above with `200000`
+replaced by `1e7` still gives an error. In this case, you can further increase
+the maximum stack size (ex. changing `0x10000000` to `0xF0000000`).
 
 #### For Windows
-Changing the stack size is relatively easy on Windows. Simply adding `-Wl,--stack,268435456` as a part of your compilation flags should do the trick. The `268435456` corresponds to `268435456` bytes, or `256` megabytes. If you are using Windows PowerShell, make sure to wrap it in quotations (like so: `"-Wl,--stack,268435456"`), since commas are considered to be special characters. 
+
+Changing the stack size is relatively easy on Windows. Simply adding
+`-Wl,--stack,268435456` as a part of your compilation flags should do the trick.
+The `268435456` corresponds to `268435456` bytes, or `256` megabytes. If you are
+using Windows PowerShell, make sure to wrap it in quotations (like so:
+`"-Wl,--stack,268435456"`), since commas are considered to be special
+characters.
