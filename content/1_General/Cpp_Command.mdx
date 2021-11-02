@@ -182,33 +182,9 @@ package manager.
 
 ### On Windows
 
-To get the full functionality of C++ on your Windows Machine, you should install
-one of the following compilers, from easiest to most difficult to set up and
-use:
-
-#### Simplest: [MinGW](http://mingw.org/) (Minimalist GNU for Windows)
-
-If you want to keep the ease of use and simplicity of Linux C++, including the
-ability to use commands like `g++` and easily include `<bits/stdc++.h>`, you can
-install the compiler MinGW. This is a version of the `g++` compiler from Linux
-available on Windows. If you are using VS Code, setting up MinGW can be more
-difficult, but there are great guides to make the process easier.
+#### Simpler: [Mingw-w64](https://www.mingw-w64.org/) (Minimalist GNU for Windows)
 
 <Resources>
-	<Resource
-		source="MinGW"
-		title="MinGW Installation (Official)"
-		url="https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe"
-	>
-		The Official MinGW Installer
-	</Resource>
-	<Resource
-		source="Microsoft"
-		title="MinGW Installation (Easier)"
-		url="https://tinyurl.com/mingw-usaco"
-	>
-		Microsoft's Simpler MinGW Installer
-	</Resource>
 	<Resource
 		source="Microsoft"
 		title="MinGW with VS Code"
@@ -225,87 +201,15 @@ difficult, but there are great guides to make the process easier.
 	</Resource>
 </Resources>
 
-Depending on the installer you used, installing MinGW could be a little
-complicated.
-
-**The Official Installer:**
-
-1.  First, download and run the
-    [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/).
-2.  Once it's installed, open the MinGW Installation Manager, click on Basic
-    Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
-3.  Finally, Add it to your PATH following the latter half of
-    [this tutorial](http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
-
-**Microsoft's Mirror Installer:**
-
-1.  First, [download the installer](https://tinyurl.com/mingw-usaco)
-2.  When you run it, leave all settings at default except `Architecture`.
-    1.  For `Architecture`, select `x86_64`.
-3.  After you click next, copy the `Destination Folder Path` for later and
-    finish the installation.
-4.  Now, you need to add MinGW to your `Path`. To do that:
-    1.  After the Installation has completed, search for
-        `Environmental Variables` in the Windows Search Bar and click open
-    2.  Click the button `Environment Variables` at the bottom left.
-    3.  In the bottom half of the screen (under `System variables`), find the
-        key `Path` and double click.
-    4.  Click `New` on the top right and paste the path you copied. Add `\bin`
-        to the end of it. It should look something like this:
-        `C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin`
-    5.  You're Good to Go!
-
-#### Moderate: Microsoft Compiler Toolset
-
-Microsoft's Visual C++ Compiler is the official compiler for compiling programs
-for Windows and can be installed either via installing the relevant packages
-with Visual Studio 2019 or the build tools from their website. More information
-on its installation can be found in their documentation.
-
-<Resources>
-	<Resource
-		source="Microsoft"
-		title="Microsoft Compiler Toolset Documentation"
-		url="https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160"
-	>
-		The Visual Studio Documentation
-	</Resource>
-</Resources>
-
-In order to get a similar library to `<bits/stdc++.h>` you can use the following
-template, which automatically swaps between `<bits/stdc++.h>` and Microsoft's
-variant depending on the system running it:
-
-```cpp
-#ifdef _WIN32
-#include <__msvc_all_public_headers.hpp>
-#endif
-#ifdef __linux__
-#include <bits/stdc++.h>
-#endif
-using namespace std;
-```
-
-This checks if the compiler is compiling for windows (your local machine) or if
-it is compiling for the remote judge and subsequently includes the correct
-libraries for the system. This comes with the same consequences as using
-`<bits/stdc++.h>` for the same reasons.
-
-_Note: As USACO has now disallowed the use of templates during competitions, if
-you want to be able to get the functionality of `<bits/stdc++.h>` on your local
-machine, you should use MinGW instead._
-
-#### Difficult: [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
+#### Harder: [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 
 If you're already accustomed to the Linux Command line, this might be the best
 option for you.
 
 Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel
-(or an emulation layer, depending on which version you use) within you windows
+(or an emulation layer, depending on which version you use) within your windows
 installation. This allows you to use Linux binaries without needing to use Linux
-as your main Operating System, meaning that you can install `g++`, use `g++`,
-and consequently include `<bits/stdc++.h>` in your Competitive Programming C++
-files.
+as your main Operating System.
 
 Many people use WSL (such as Anthony), but it can be difficult to properly set
 up.
@@ -443,9 +347,7 @@ g++ -std=c++17 -O2 name.cpp -o name -Wall
 
 You should always compile with these flags.
 
-## Mac-Specific
-
-### Adding Shortcuts
+### Adding Shortcuts (Mac)
 
 <Info title="For Users of Linux & Windows">
 
@@ -454,8 +356,8 @@ get these shortcuts, or you can install WSL (mentioned above).
 
 </Info>
 
-Retyping the flags above can get tedious. You should define shortcuts so you
-don't need to type them every time!
+Retyping the compiler flags above can get tedious. You should define shortcuts
+so you don't need to type them every time!
 
 <Resources>
 	<Resource
@@ -539,7 +441,7 @@ lines):
 zsh: segmentation fault  ./${1%.*}
 ```
 
-### Measuring Time & Memory Usage
+### Measuring Time & Memory Usage (Mac)
 
 <Resources>
 	<Resource
@@ -605,7 +507,13 @@ Then `co prog.cpp && gtime -v ./prog` gives the following:
 Note that $10^7$ integers require $4\cdot 10^7\cdot 10^{-3}\approx 40000$
 kilobytes of memory, which is close to $40216$ in the above output as expected.
 
-### Adjusting Stack Size
+### Adjusting Stack Size (Mac)
+
+<Warning>
+
+This section might be out of date.
+
+</Warning>
 
 Let `A.cpp` denote the following program:
 
@@ -705,11 +613,8 @@ is usually sufficient. However, running the first program above with `200000`
 replaced by `1e7` still gives an error. In this case, you can further increase
 the maximum stack size (ex. changing `0x10000000` to `0xF0000000`).
 
-#### For Windows
-
-Changing the stack size is relatively easy on Windows. Simply adding
-`-Wl,--stack,268435456` as a part of your compilation flags should do the trick.
-The `268435456` corresponds to `268435456` bytes, or `256` megabytes. If you are
-using Windows PowerShell, make sure to wrap it in quotations (like so:
-`"-Wl,--stack,268435456"`), since commas are considered to be special
-characters.
+On windows, adding `-Wl,--stack,268435456` as a part of your compilation flags
+should do the trick. The `268435456` corresponds to `268435456` bytes, or `256`
+megabytes. If you are using Windows PowerShell, make sure to wrap it in
+quotations (like so: `"-Wl,--stack,268435456"`), since commas are considered to
+be special characters.
