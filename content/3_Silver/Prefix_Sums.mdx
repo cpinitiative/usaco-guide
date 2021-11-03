@@ -393,7 +393,7 @@ for i in range(Q):
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    **Challenge Problem**: With the idea of prefix sums in mind, at first glance it may seem logical to apply this method to return range products in constant time. Instead of adding, we multiply, and instead of subtracting, we divide. Assume that we calculate the answer modulo a large prime ($10^9 + 7$, for instance), and the array has normal constraints ($N \leq 10^5$, $1 \leq a_i \leq 10^9$). What additional challenges may we face?
+    **Challenge Problem**: With the idea of prefix sums in mind, at first glance it may seem logical to apply this method to return range products in constant time. Instead of adding, we multiply, and instead of subtracting, we divide. Assume that we calculate the answer modulo a given $M$ and the array has normal constraints ($N \leq 10^5$, $1 \leq a_i \leq 10^9$). What additional challenges may we face?
     <Quiz.Answer>
       **Integer Overflow**: Even if we use modulo, the numbers will grow too quickly when multiplying, to the point where they may not fit within a 64-bit integer.
       <Quiz.Explanation>
@@ -415,11 +415,7 @@ for i in range(Q):
     <Quiz.Answer correct>
       **Division under Modulo**: We cannot directly use division as a substitute for subtraction, because division is not distributive under modulo. 
       <Quiz.Explanation>
-        Correct! This is to say, for some $a, b$ such that $a$ is divisible by $b$, 
-$$
-\frac a b \mod m \neq \frac {a \mod m} b \mod m
-$$
-In short, modular division is not as straight forward as modular addition, subtraction, or multiplication. However because the problem states that the modulo is prime, this is still possible using the modulo inverse (although this knowledge isn't necessary for silver). See the [Modulo Arithmatic](https://usaco.guide/gold/modular?lang=cpp) module for more details.
+        Correct! Division under modulo is not the same as addition, subtraction, or multiplication. To divide involves multiplying by the modulo inverse, which may or may not exist depending on $M$ and the value to be divided (the two should be relatively prime for there to be one). One way we could conceivably do this is if $M$ is prime itself. See [here](https://usaco.guide/gold/modular) for more details
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
