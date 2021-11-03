@@ -1,0 +1,248 @@
+---
+id: cfgym-102694C
+source: CF
+title: Sloth Naptime
+author: Sofia Yang
+---
+
+[Announcement With Official Editorial](https://codeforces.com/blog/entry/81527)
+
+## Explanation
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+Basically the problem statement asks if given a path from a start node to an end
+node on a tree, how far the sloth will travel if it has a set amount of energy,
+and each edge on the path has an energy cost.
+
+We know that the sloth will always try to move upwards from the start node $\texttt{st}$ to
+the least common ancestor of the start and end nodes $\texttt{lca}$, and then
+move downwards from the least common ancestor towards the end node
+$\texttt{end}$.
+
+Let $\texttt{dist}(i, j)$ be the distance from node $i$ to node $j$.
+
+So if the sloth has energy amount $e$, there are 3 separate cases:
+
+1. $e \geq \texttt{dist}(dist(\texttt{st}, \texttt{end})$. In this case the result will be the sloth reaching the end.
+
+2. $e < \texttt{dist(\texttt{st}, \texttt{end})}$ and
+	$e < \texttt{dist(\texttt{st}, \texttt{lca})}$ in which the result will be the
+	sloth reaching the $e$th parent of $\texttt{st}$.
+
+3. $e < \texttt{dist(\texttt{st}, \texttt{end})}$ and
+	$e \geq \texttt{dist(\texttt{st}, \texttt{lca})}$ in which the result will be
+	the sloth reaching the $(e - \texttt{dist(\texttt{st}, \texttt{lca}))}$th
+	parent of $\texttt{end}$.
+
+So first, we can can run DFS once to find the depth of every node.
+
+Then we can create a matrix $\texttt{anc}$ to store the ancestors of each node, where
+$\texttt{anc[i][j]}$ is the $2^j$th ancestor of node $i$.
+
+After that, we can use binary lifting to answer each query by finding the least
+common ancestor of the start and end nodes, and then finding the right node that
+the sloth will reach.
+
+## Implementation
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+public class SlothNaptime {
+	public static final int MAXN = (int) 3e5 + 5;
+	public static final int LOGN = (int) (Math.log(MAXN) / Math.log(2)) + 1;
+	public static ArrayList<Integer>[] adj = new ArrayList[MAXN];
+	// anc[i][j] is the 2^j-th parent of i.
+	public static int[][] anc = new int[MAXN][LOGN];
+	public static int[] depth = new int[MAXN];
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		for (int i = 0; i < MAXN; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < N-1; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		dfs(0, 0);
+		int Q = io.nextInt();
+		for (int i = 1; i <= Q; i++) {
+			int start = io.nextInt() - 1;
+			int end = io.nextInt() - 1;
+			int energy = io.nextInt();
+			int lca = LCA(start, end);
+			int moveUpLen = depth[start] - depth[lca];
+			int moveDownLen = depth[end] - depth[lca];
+			int result;
+			if (energy <= moveUpLen) {
+				// moves up from start towards the lca.
+				result = jump(start, energy) + 1;
+			} else if (energy <= moveUpLen + moveDownLen) {
+				// moves up from start to the lca, then goes down towards end.
+				result = jump(end, moveDownLen - (energy - moveUpLen)) + 1;
+			} else {
+				// reaches the end.
+				result = end + 1;
+			}
+			System.out.println(result);
+		}
+	}
+
+	public static void dfs(int node, int par) {
+		anc[node][0] = par;
+		depth[node] = depth[anc[node][0]] + 1;
+
+		// initializes binary jumping for the current node.
+		for (int lvl = 1; lvl < LOGN; lvl++) {
+			anc[node][lvl] = anc[anc[node][lvl - 1]][lvl - 1];
+		}
+		for (int next : adj[node]) {
+			if (next != par) dfs(next, node);
+		}
+	}
+
+	// jump(i, j) returns jth ancestor of node i.
+	public static int jump(int node, int level) {
+		for (int i = 0; i < LOGN; i++) {
+			if ((level & (1 << i)) > 0) {
+				node = anc[node][i];
+			}
+		}
+		return (node > -1) ? node : 0;
+	}
+
+	// lca(i, j) returns least common ancestor of nodes i and j.
+	public static int LCA(int a, int b) {
+		if (depth[a] < depth[b]) {
+			int tempA = a;
+			a = b;
+			b = tempA;
+		}
+
+		a = jump(a, depth[a] - depth[b]);
+		if (a == b) {
+			return a;
+		}
+		for (int i = LOGN - 1; i >= 0; i--) {
+			int newA = anc[a][i];
+			int newB = anc[b][i];
+			if (newA != newB) {
+				a = newA;
+				b = newB;
+			}
+		}
+		return anc[a][0];
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 3e5 + 5;
+const int LOGN = log2(MAXN) + 1;
+
+int depth[MAXN];
+// anc[i][j] is the 2^j-th parent of i.
+int anc[MAXN][LOGN];
+vector<int> adj[MAXN];
+
+void dfs(int node, int par) {
+	anc[node][0] = par;
+	depth[node] = depth[anc[node][0]] + 1;
+	// initializes binary jumping for the current node.
+	for (int i = 1; i < LOGN; i++) {
+		anc[node][i] = anc[anc[node][i - 1]][i - 1];
+	}
+	for (int next : adj[node]) {
+		if (next != par) {
+			dfs(next, node);
+		}
+	}
+}
+
+// jump(i, j) returns jth ancestor of node i
+int jump(int node, int level) {
+	for (int i = 0; i < LOGN; i++) {
+		if (level & (1 << i)) {
+			node = anc[node][i];
+		}
+	}
+	return (node > -1) ? node : 0;
+}
+
+// lca(i, j) returns least common ancestor of nodes i and j.
+int LCA(int a, int b) {
+	if (depth[a] < depth[b]) {
+		swap(a, b);
+	}
+	a = jump(a, depth[a] - depth[b]);
+	if (a == b) {
+		return a;
+	}
+	for (int i = LOGN - 1; i >= 0; i--) {
+		int newA = anc[a][i];
+		int newB = anc[b][i];
+		if (newA != newB) {
+			a = newA, b = newB;
+		}
+	}
+	return anc[a][0];
+}
+
+
+int main() {
+	int N; int Q;
+	cin >> N;
+	for (int i = 0; i < N - 1; i++) {
+		int a; int b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	dfs(0, 0);
+	cin >> Q;
+	for (int i = 1; i <= Q; i++) {
+		int start, end, energy;
+		cin >> start >> end >> energy;
+		start--;
+		end--;
+		int lca = LCA(start, end);
+		int path1 = depth[start] - depth[lca];
+		int path2 = depth[end] - depth[lca];
+		int result;
+		if (energy <= path1) {
+			// moves up from start towards the lca.
+			result = jump(start, energy) + 1;
+		} else if (energy <= path1 + path2) {
+			// moves up from start to the lca, then goes down towards end.
+			result = jump(end, path2 - (energy - path1)) + 1;
+		} else {
+			// reaches the end.
+			result = end + 1;
+		}
+		cout << result << "\n";
+	}
+
+}
+```
+
+</CPPSection>
+</LanguageSection>
