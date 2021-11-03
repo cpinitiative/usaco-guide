@@ -1,7 +1,7 @@
 ---
 id: intro-ds
 title: Introduction to Data Structures
-author: Darren Yao, Benjamin Qi, Allen Li
+author: Darren Yao, Benjamin Qi, Allen Li, Neo Wang
 contributors: Nathan Wang, Abutalib Namazov
 description:
   'Introduces the concept of a data structure, (dynamic) arrays, pairs, tuples.'
@@ -32,10 +32,9 @@ This creates a `vector` structure that only stores objects of type `string`.
 For our examples below, we will primarily use the `int` data type, but note that
 you can use any data type including `string` and user-defined structures.
 
-Essentially, every standard library data structure supports the `size()` method,
-which returns the number of elements in the data structure, and the `empty()`
-method, which returns `true` if the data structure is empty, and `false`
-otherwise.
+Every standard library data structure supports the `size()` method, which
+returns the number of elements in the data structure, and the `empty()` method,
+which returns `true` if the data structure is empty, and `false` otherwise.
 
 </CPPSection>
 <JavaSection />
@@ -49,9 +48,9 @@ otherwise.
 
 <Warning>
 
-Technically, you can solve all Bronze problems without using anything from this
-module aside from arrays. So the rest of this module isn't strictly necessary
-for Bronze (although highly recommended).
+You can solve all Bronze problems without using anything from this module aside
+from arrays. The rest of this module isn't strictly necessary for Bronze
+(although highly recommended).
 
 </Warning>
 
@@ -708,6 +707,118 @@ See [here](/general/notes-cpp-ds).
 <JavaSection />
 <PySection />
 
+</LanguageSection>
+
+## Quiz
+
+<LanguageSection>
+<CPPSection>
+<Quiz>
+  <Quiz.Question>
+    How do you count the number of items in an `std::vector`? Suppose we named the vector `v`.
+    <Quiz.Answer correct>
+      `v.size()`
+      <Quiz.Explanation>
+        Correct. `size()` returns the number of elements in the data structure!
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `v.length()`
+      <Quiz.Explanation>
+        Incorrect. The property `length()` does not exist on an `std::vector`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `v.count()` 
+      <Quiz.Explanation>
+        Incorrect. The property `count()` does not exist on an `std::vector`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `v.resize()`
+      <Quiz.Explanation>
+        Incorrect. The property `resize()` resizes the vector to the specified number of elements
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following would print out `5`?
+    <Quiz.Answer correct>
+      ```cpp
+      int a = 3, b = 4, c = 5;
+      tuple<int, int, int> t = tie(a, b, c);
+      cout << get<2>(t);
+	  ```
+      <Quiz.Explanation>
+        Correct. `get<i>(t)`: Returns the $i$-th element of the tuple `t`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```cpp
+      int a = 3, b = 4, c = 5;
+      tuple<int, int, int> t = tie(a, b, c);
+      cout << t.get(2);
+	  ```
+      <Quiz.Explanation>
+        Incorrect. `t.get()` is not a valid method.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      ```cpp
+      vector<int> v;
+      v.push_back(2);
+      v.push_back(3);
+      v.push_back(7);
+      v.push_back(5);
+      cout << v[3];
+      ```
+      <Quiz.Explanation>
+        Correct. The array is $0$-indexed, which means that `v[3]` corresponds to the "fourth" element in the vector, which is $5$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```cpp
+      vector<int> v;
+      v.push_back(2);
+      v.push_back(3);
+      v.push_back(7);
+      v.push_back(5);
+      cout << v[4];
+      ```
+      <Quiz.Explanation>
+        Incorrect. The array is $0$-indexed, which means that `v[3]` corresponds to the "fourth" element in the vector, which is $5$. `v[4]` is out of bounds.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Why are data structures useful?
+    <Quiz.Answer correct>
+      Data structures can provide efficient operations on certain types of data.
+      <Quiz.Explanation>
+        
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      Correct. Data structures can store different types of data.
+      <Quiz.Explanation>
+        
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      They provide a step-by-step set of rules to solve a problem.
+      <Quiz.Explanation>
+        Incorrect. This is an algorithm.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Data structures are sometimes inefficient.
+      <Quiz.Explanation>
+        Incorrect. Data structures are not useful for this reason.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
+</CPPSection>
 </LanguageSection>
 
 ## Problems
