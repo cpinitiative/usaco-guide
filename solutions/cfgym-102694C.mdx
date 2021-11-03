@@ -9,27 +9,30 @@ author: Sofia Yang
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
-The sloth will always try to move upwards from the start node $(st)$ to the
-least common ancestor of the start and end nodes $(lca)$ and then move downwards
-from the least common ancestor towards the end node $(end)$.
+The sloth will always try to move upwards from the start node $\texttt{st}$ to
+the least common ancestor of the start and end nodes $\texttt{lca}$ and then
+move downwards from the least common ancestor towards the end node
+$\texttt{end}$.
 
-Let \texttt{dist(i, j)} be the distance from node i to node j.
+Let $\texttt{dist}(i, j)$ be the distance from node i to node j.
 
 So if the sloth has energy amount $e$, there are 3 separate cases:
 
-1. $e \geq \texttt{dist(\texttt{st}, \texttt{end})}. In this case the result will be the sloth reaching the
-   end.
+1. $e \geq \texttt{dist}(dist(\texttt{st}, \texttt{end})$. In this case the result will be the sloth reaching the end.
 
-2. $e < \texttt{dist(\texttt{st}, \texttt{end})} and $e < \texttt{dist(\texttt{st}}, \texttt{lca})$ in which the result will be the
-   sloth reaching the $e$th parent of $st$.
+2. $e < \texttt{dist(\texttt{st}, \texttt{end})}$ and
+	$e < \texttt{dist(\texttt{st}, \texttt{lca})}$ in which the result will be the
+	sloth reaching the $e$th parent of $\texttt{st}$.
 
-3. $e < dist(\texttt{st}, \texttt{end})$ and $e \geq \texttt{dist(\texttt{st}, \texttt{lca})} in which the result will be the
-   sloth reaching the $(e - \texttt{dist(\texttt{st}, \texttt{lca}))}$th parent of \texttt{end$}.
+3. $e < \texttt{dist(\texttt{st}, \texttt{end})}$ and
+	$e \geq \texttt{dist(\texttt{st}, \texttt{lca})}$ in which the result will be
+	the sloth reaching the $(e - \texttt{dist(\texttt{st}, \texttt{lca}))}$th
+	parent of $\texttt{end}$.
 
 So first, we can can run DFS once to find the depth of every node.
 
 Then we can create a matrix $anc$ to store the ancestors of each node, where
-$anc[i][j]$ is the $2^j$th ancestor of node $i$.
+$\texttt{anc[i][j]}$ is the $2^j$th ancestor of node $i$.
 
 After that, we can use binary lifting to answer each query by finding the least
 common ancestor of the start and end nodes, and then finding the right node that
@@ -139,6 +142,7 @@ public class SlothNaptime {
 	//CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
 <CPPSection>
 
@@ -236,5 +240,6 @@ int main() {
 
 }
 ```
+
 </CPPSection>
 </LanguageSection>
