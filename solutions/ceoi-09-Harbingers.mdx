@@ -31,10 +31,14 @@ struct Line {
 
 	Line(ll m = 0, ll b = 0) : m(m), b(b) {}
 
-	/** Evaluates the linear function at position x */ 
+	/** 
+	 * Evaluates the linear function at position x 
+	 */ 
 	ll operator()(ll x) { return m * x + b; }
 
-	/** Returns the x-coordinate of the intersection of two lines */ 
+	/** 
+	 * Returns the x-coordinate of the intersection of two lines 
+	 */ 
 	friend ld intersect(Line l1, Line l2) { 
 		return (ld)(l2.b - l1.b) / (ld)(l1.m - l2.m); 
 	}
@@ -62,10 +66,11 @@ ll line_min(ll x) {
 	int l = 0, r = stk_max - 1;
 	while (l < r) {
 		int m = (l + r) / 2;
-		if (intersect(stk[m], stk[m + 1]) < x)
+		if (intersect(stk[m], stk[m + 1]) < x) {
 			l = m + 1;
-		else 
+		} else {
 			r = m;
+		}
 	}
 	return stk[l](x);
 }
@@ -85,17 +90,19 @@ ll line_min(ll x) {
 ll remove_pos(Line line) {
 	// check if hull is trivial or if line belongs at the end
 	if (stk_max < 2 || 
-		intersect(line, stk[stk_max - 1]) >= intersect(stk[stk_max - 1], stk[stk_max - 2]))
+		intersect(line, stk[stk_max - 1]) >= intersect(stk[stk_max - 1], stk[stk_max - 2])) {
 		return stk_max;
+	}
 
 	// begin at l = 1 because we need to check intersection between k and k - 1
 	int l = 1, r = stk_max - 1;
 	while (l < r) {
 		int m = (l + r) / 2;
-		if (intersect(line, stk[m]) < intersect(stk[m], stk[m - 1])) 
+		if (intersect(line, stk[m]) < intersect(stk[m], stk[m - 1])) {
 			r = m;
-		else 
+		} else {
 			l = m + 1;
+		}
 	}
 	return l;
 }
@@ -115,11 +122,11 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 		stk[stk_max++] = {0, 0}; 
 	} else {
 		min_time[u] = line_min(V[u]) + d * V[u] + S[u];  // get dp value by querying convex hull
-		Line l(-d, min_time[u]);			   // construct new line that might be added into hull
-		prev_max = stk_max;			   // store previous hull size
-		prev_pos = stk_max = remove_pos(l);	   // update hull size to include new line
-		prev_line = stk[stk_max];		   // store previous line at replacement position
-		stk[stk_max++] = l;			   // update replacement position to new line
+		Line l(-d, min_time[u]);  // construct new line that might be added into hull
+		prev_max = stk_max;  // store previous hull size
+		prev_pos = stk_max = remove_pos(l);  // update hull size to include new line
+		prev_line = stk[stk_max];  // store previous line at replacement position
+		stk[stk_max++] = l;  // update replacement position to new line
 	}
 
 	// recurse to children
@@ -131,8 +138,8 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 
 	// reset any changes made at this step
 	if (u != 1) {
-		stk_max = prev_max;			   // reset convex hull size 
-		stk[prev_pos] = prev_line;		   // reset replacement position
+		stk_max = prev_max;  // reset convex hull size 
+		stk[prev_pos] = prev_line;  // reset replacement position
 	}
 }
 
