@@ -67,22 +67,23 @@ const ll MOD = 1e9 + 7;
 
 Matrix multiply(const Matrix &a, const Matrix &b) {
 	return {(a[0][0] * b[0][0] + a[0][1] * b[1][0]) % MOD, 
-			(a[0][0] * b[0][1] + a[0][1] * b[1][1]) % MOD,
-			(a[1][0] * b[0][0] + a[1][1] * b[1][0]) % MOD,
-			(a[1][0] * b[0][1] + a[1][1] * b[1][1]) % MOD};
+		(a[0][0] * b[0][1] + a[0][1] * b[1][1]) % MOD,
+		(a[1][0] * b[0][0] + a[1][1] * b[1][0]) % MOD,
+		(a[1][0] * b[0][1] + a[1][1] * b[1][1]) % MOD};
 }
 
 pll multiply(const pll &a, const Matrix &b) {
 	return {(a.FF * b[0][0] + a.SS * b[1][0]) % MOD, 
-			(a.FF * b[0][1] + a.SS * b[1][1]) % MOD};
+		(a.FF * b[0][1] + a.SS * b[1][1]) % MOD};
 }
 
 Matrix pow(ll n) { 
 	Matrix res = {1, 0, 0, 1};
 	Matrix base = {0, 1, 1, 1};
 	for (; n; n >>= 1) {
-		if (n & 1)
+		if (n & 1) {
 			res = multiply(res, base);
+		}
 		base = multiply(base, base);
 	}
 	return res;
@@ -107,8 +108,9 @@ void pushdown(int t) {
 }
 
 void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
-	if (r < tl || tr < l)
+	if (r < tl || tr < l) {
 		return;
+	}
 	if (l <= tl && tr <= r) {
 		tree[t] = multiply(tree[t], pow(v));
 		lazy[t] += v;
@@ -123,10 +125,12 @@ void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
 }
 
 ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
-	if (r < tl || tr < l)
+	if (r < tl || tr < l) {
 		return 0;
-	if (l <= tl && tr <= r)
+	}
+	if (l <= tl && tr <= r) {
 		return tree[t].FF;
+	}
 	pushdown(t);
 
 	int tm = (tl + tr) >> 1;
@@ -137,12 +141,14 @@ int main() {
 	cin >> N >> Q;
 	fill_n(tree, 400005, pll{0, 1});
 	for (int i = 1; i <= N; i++) {
-		ll a; cin >> a;
+		ll a; 
+		cin >> a;
 		update(i, i, a);
 	}
 
 	while (Q--) {
-		int t; cin >> t;
+		int t; 
+		cin >> t;
 		if (t == 1) {
 			int l, r; ll v;
 			cin >> l >> r >> v;
