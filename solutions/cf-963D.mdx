@@ -45,10 +45,10 @@ struct SuffixAuto {
 	};
  
 	vector<State> states;
+	
+	SuffixAuto() {}
  
-	SuffixAuto() { }
- 
-	void init(const string &S) {
+	SuffixAuto(const string &S) { 
 		states.reserve(2 * S.size());
 		last = state();
 		for (char c : S) {
@@ -146,7 +146,7 @@ void dfs(int u = 0) {
  
 int main() {
 	cin >> S >> Q;
-	sa.init(S);
+	sa = SuffixAuto(S);
 	for (int i = 1; i < sa.states.size(); i++) {
 		suffix_link_tree[sa.states[i].link].push_back(i);
 	}
