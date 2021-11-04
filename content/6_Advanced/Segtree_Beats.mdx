@@ -12,6 +12,8 @@ frequency: 1
 
 <FocusProblem problem="sam" />
 
+Consider an extention to this problem such that operation 3 could be range set updates instead of point set. 
+
 ## Solution - The Child and Sequence
 
 First consider a lazy segment tree. A pseudocode for the update function looks
@@ -19,9 +21,9 @@ something like:
 
 ```
 function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
-	if upd_right < tree_left or tree_right < query_left
+	if upd_right < tree_left or tree_right < upd_left
 		return
-	if query_left ≤ tree_left and tree_right ≤ query_right
+	if upd_left ≤ tree_left and tree_right ≤ upd_right
 		apply update
 		return
 	push lazy updates down
@@ -60,15 +62,13 @@ update function to encorporate these optimizations.
 
 ```
 function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
-	let cur_max = maximum value in current node
-	let cur_min = minimum value in current node
+	let cur_max = the maximum element in [tree_left, tree_right]
 
-	if upd_right < tree_left or tree_right < query_left or cur_max < upd_value
+	if upd_right < tree_left or tree_right < upd_left or cur_max < upd_value
 		return
-	if query_left ≤ tree_left and tree_right ≤ query_right and cur_max = cur_min
+	if upd_left = upd_right
 		apply update
 		return
-	push lazy updates down
 
 	let tree_mid = (tree_left + tree_right) / 2
 	let left_child = 2 * tree_node
@@ -78,18 +78,13 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	merge values from children
 ```
 
-We can store $\texttt{cur\_max}$ and $\texttt{cur\_min}$ to compute them
-quickly (similar to a max/min segment tree). For a given node, if
-$\texttt{cur\_max} = \texttt{cur\_min}$, that means all elements in the range
-are the same, which means the sum can be easily computed and updated. Note that
-it is still necessary to maintain a lazy tag to propagate updates. Clearly, this
-solution runs in $\mathcal{O}((n + q)\log a)$ where $a$ is the maximum initial
-value of an element.
+**Note:** Because we are no longer doing range updates with lazy propogation, there is no need for a lazy tag.
+
+We will store $\texttt{cur_max} in a seperate array as a seperate (mergable) value. Although it is possible that a single query processes $\mathcal{O}(n)$ nodes, over all queries this amortizes to the acceptable time complexity of $\mathcal{O}((n + q)\log a)$. 
 
 Consider adding in operations of type 3. Although the implementation is
-relatively straightforward, the proof of complexity from the previous section
+relatively straightforward (simply a point update on segment tree), the proof of complexity from the previous section
 falls apart because elements can be increased back to their maximum value.
-However, not all hope is lost.
 
 Define the entropy of the array to be $\sum_{k = 1}^n \lceil \log a_k \rceil$,
 or equivalently, the maximum number of modulo operations to decrease the array
@@ -102,139 +97,111 @@ point update operations, each modulo update is still bounded by the total
 entropy. This means that even with point updates, our solution still runs in
 $\mathcal{O}(n \log a + q_p \log a) = \mathcal{O}((n + q)\log a)$.
 
-<Info title="Pro Tip">
-
-It's possible to solve this problem without a $\texttt{min}$ tag, but using 
-both a $\texttt{min}$ and a $\texttt{max}$ allows range updates, which 
-isn't strictly pertinent to this particular problem but is still 
-a useful thing to know. 
-
-</Info>
+Although strictly speaking, **The Child and Sequence** is not a segment tree beats problem, the techniques used in it are extremely similar. 
 
 ## Implementation - The Child and Sequence
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
-const int MAXN = 100000 + 1;  // 1-based
-
-int N;
-ll tsum[MAXN * 4];  // Sum tag
-ll tmax[MAXN * 4];  // Max tag
-ll tmin[MAXN * 4];  // Min tag
-ll lazy[MAXN * 4];  // Lazy updates
+const int MAXN = 100001;
  
-void pushdown(int t, int tl, int tr) {
-	if (lazy[t] != -1) {
-		int tm = (tl + tr) >> 1;
+int N, Q;
+long long tsum[MAXN * 4], tmax[MAXN * 4];
  
-		tsum[t << 1] = lazy[t] * (tm - tl + 1);  // sum set update
-		tmax[t << 1] = lazy[t];  // max set update
-		tmin[t << 1] = lazy[t];  // min set update
-		lazy[t << 1] = lazy[t];  // propogate tag
+void update_mod(int l, int r, long long v, int t = 1, int tl = 1, int tr = N) {
+    if (r < tl || tr < l || tmax[t] < v) {
+        return;
+    }
+    else if (tl == tr) {
+        int val = tmax[t] % v;
+        tsum[t] = tmax[t] = val;
+        return;
+    }
  
-		tsum[t << 1 | 1] = lazy[t] * (tr - tm);  // sum set update
-		tmax[t << 1 | 1] = lazy[t];  // max set update
-		tmin[t << 1 | 1] = lazy[t];  // min set update
-		lazy[t << 1 | 1] = lazy[t];  // propogate tag
- 
-		lazy[t] = -1;  // reset lazy tag
-	}
+    int tm = (tl + tr) / 2;
+    update_mod(l, r, v, t * 2, tl, tm);
+    update_mod(l, r, v, t * 2 + 1, tm + 1, tr);
+    tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
+    tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
 }
  
-void update(int l, int r, ll v, int t=1, int tl=1, int tr=N) {
-	if (r < tl || tr < l || tmax[t] < v) {
-		return;
-	}
-	if (l <= tl && tr <= r && tmax[t] == tmin[t]) {
-		ll val = tmax[t] % v;
-		tsum[t] = (tr - tl + 1) * val;
-		tmax[t] = val;
-		tmin[t] = val;
-		lazy[t] = val;
-		return;
-	}
-	pushdown(t, tl, tr);
+void update_set(int i, long long v, int t = 1, int tl = 1, int tr = N) {
+    if (tl == tr) {
+        tsum[t] = tmax[t] = v;
+        return;
+    }
  
-	int tm = (tl + tr) >> 1;
-	update(l, r, v, t << 1, tl, tm);
-	update(l, r, v, t << 1 | 1, tm + 1, tr);
- 
-	tsum[t] = tsum[t << 1] + tsum[t << 1 | 1];
-	tmax[t] = max(tmax[t << 1], tmax[t << 1 | 1]);
-	tmin[t] = min(tmin[t << 1], tmin[t << 1 | 1]);
+    int tm = (tl + tr) / 2;
+    if (i <= tm) {
+        update_set(i, v, t * 2, tl, tm);
+    }
+    else {
+        update_set(i, v, t * 2 + 1, tm + 1, tr);
+    }
+    tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
+    tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
 }
  
-void update(int i, ll v, int t=1, int tl=1, int tr=N) {
-	if (tl == tr) {
-		tsum[t] = tmax[t] = tmin[t] = v;
-		return;
-	}
-	pushdown(t, tl, tr);
- 
-	int tm = (tl + tr) >> 1;
-	if (i <= tm) {
-		update(i, v, t << 1, tl, tm);
-	} else {
-		update(i, v, t << 1 | 1, tm + 1, tr);
-	}
-	
-	tsum[t] = tsum[t << 1] + tsum[t << 1 | 1];
-	tmax[t] = max(tmax[t << 1], tmax[t << 1 | 1]);
-	tmin[t] = min(tmin[t << 1], tmin[t << 1 | 1]);
-}
- 
-ll query(int l, int r, int t=1, int tl=1, int tr=N) {
-	if (r < tl || tr < l) {
-		return 0LL;
-	}
-	if (l <= tl && tr <= r) {
-		return tsum[t];
-	}
-	pushdown(t, tl, tr);
- 
-	int tm = (tl + tr) >> 1;
-	return query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr);
+long long query(int l, int r, int t = 1, int tl = 1, int tr = N) {
+    if (r < tl || tr < l) {
+        return 0;
+    }
+    else if (l <= tl && tr <= r) {
+        return tsum[t];
+    }
+    
+    int tm = (tl + tr) / 2;
+    return query(l, r, t * 2, tl, tm) + query(l, r, t * 2 + 1, tm + 1, tr);
 }
  
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	memset(lazy, -1, sizeof(lazy));
-	
-	int Q;
- 
-	cin >> N >> Q;
-	for (int i = 1; i <= N; i++) {
-		ll a; 
-		cin >> a;
-		update(i, a);
-	}
-	while (Q--) {
-		int t; cin >> t;
-		if (t == 1) {
-			int l, r;
-			cin >> l >> r;
-			cout << query(l, r) << '\n';
-		} else if (t == 2) {
-			int l, r; ll x;
-			cin >> l >> r >> x;
-			update(l, r, x);
-		} else if (t == 3) {
-			int k; ll x;
-			cin >> k >> x;
-			update(k, x);
-		}
-	}
+    cin >> N >> Q;
+    for (int i = 1; i <= N; i++) {
+        long long a;
+        cin >> a;
+        update_set(i, a);
+    }
+    for (int q = 0; q < Q; q++) {
+        int t;
+        cin >> t;
+        if (t == 1) {
+            int l, r;
+            cin >> l >> r;
+            cout << query(l, r) << '\n';
+        }
+        else if (t == 2) {
+            int l, r;
+            long long x;
+            cin >> l >> r >> x;
+            update_mod(l, r, x);
+        }
+        else if (t == 3) {
+            int i;
+            long long x;
+            cin >> i >> x;
+            update_set(i, x);
+        }
+    }
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Resources>
 	<Resource source="CF" title="Intro to Segment Tree Beats" url="57319" />
 </Resources>
 
-<FocusProblem problem="sam2" />
+<FocusProblem problem="sam2"/>
+
+# Solution - Range Chmin Chmax Add Set Sum
 
 The solution to `The Child and Sequence` uses a simplified but similar solution to segment tree beats. For the problem above, let us divide it into three subtasks:
 1. Allow only operations 0 and 3
@@ -270,7 +237,7 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 
 To prove that this runs in $\mathcal{O}((n + q) \log n)$, we need to define a variable $\delta$ that represents the sum of the number of distinct elements over all intervals in the segment tree. This number is bounded by $n \log n$, which is the sum of the sizes of every interval. 
 
-Why are queries slow? Because they could visit up to $n$ nodes in any given query. Define an _extra operation_ to be when a query is passed onto a node's children dispite being in the query range. In other words, when a node satisfies ```query_left ≤ tree_left and tree_right ≤ query_right and upd_value ≤ max2```, an extra operation is performed. 
+Why are queries slow? Because they could visit up to $n$ nodes in any given query. Define an _extra operation_ to be when a query is passed onto a node's children dispite being in the query range. In other words, when a node satisfies `query_left ≤ tree_left and tree_right ≤ query_right and upd_value ≤ max2`, an extra operation is performed. 
 
 Each time an extra operation is performed, $\delta$ decreases by at least 1, because both the $\texttt{max}_1$ and $\texttt{max}_2$ elements are decreased to $x$. Because $\delta$ does not increase, the complexity is bounded by $\max \delta = \mathcal{O}(n \log n)$
 
@@ -283,6 +250,11 @@ Sum range updates can be added without much modification to the existing code, b
 Store three more variables $\texttt{min}_1$, $\texttt{min}_2$, and $\texttt{min}_c$. These will be implemented similar to their $\texttt{max}$ counterparts. Take note of the edge case when $\texttt{min}_1 = \texttt{max}_2$ or vice versa. 
 
 # Implementation - Range Chmin Chmax Add Range Sum
+
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -525,6 +497,9 @@ int main() {
 	}
 }
 ```
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 
