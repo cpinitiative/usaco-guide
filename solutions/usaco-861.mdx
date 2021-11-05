@@ -1,0 +1,127 @@
+---
+id: usaco-861
+source: USACO Gold 2018 December
+title: Fine Dining
+author: Nathan Gong
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_dining_gold_dec18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M\log N)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class FineDining {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("dining.in"));
+		PrintWriter out = new PrintWriter("dining.out");
+		
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		int k = sc.nextInt();
+		List<List<Edge>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+		for (int i = 0; i < m; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			int time = sc.nextInt();
+			adj.get(a).add(new Edge(b, time));
+			adj.get(b).add(new Edge(a, time));
+		}
+		int[] haybales = new int[n];
+		Arrays.fill(haybales, -1);
+		for (int i = 0; i < k; i++) {
+			haybales[sc.nextInt() - 1] = sc.nextInt();
+		}
+
+		/*
+		 * dist[i][0] - the shortest distance from cow i to the barn given
+		 * that it doesn't eat any haybales.
+		 * 
+		 * dist[i][1] - the shortest distance given that it eats one haybale.
+		 * This distance is subtracted by the yuminess of the haybale the cow
+		 * eats.
+		 */
+		int[][] dist = new int[n][2];
+		for (int i = 0; i < n; i++) {
+			dist[i][0] = -1;
+			dist[i][1] = -1;
+		}
+
+		// run djiskstra's to find the shortest distances
+		PriorityQueue<State> pq = new PriorityQueue<>();
+		pq.add(new State(n - 1, 0, 0));
+		while (!pq.isEmpty()) {
+			State state = pq.remove();
+			if (dist[state.pos][state.eaten] != -1) {
+				continue;
+			}
+			dist[state.pos][state.eaten] = state.time;
+
+			// add all the neighbors
+			for (Edge e : adj.get(state.pos)) {
+				pq.add(new State(e.other, state.time + e.time, state.eaten));
+			}
+
+			// if there's a haybale and the cow hasn't eaten any yet, eat the
+			// haybale and update the state accordingly
+			if (haybales[state.pos] != -1 && state.eaten == 0) {
+				state.time -= haybales[state.pos];
+				pq.add(new State(state.pos, state.time, 1));
+			}
+		}
+
+		for (int i = 0; i < n - 1; i++) {
+			// output 1 if it's better for cow to eat haybale along its path
+			if (dist[i][1] <= dist[i][0]) {
+				out.println(1);
+			} else {
+				out.println(0);
+			}
+		}
+		out.close();
+	}
+
+	static class Edge {
+		int other, time;
+
+		Edge(int other, int time) {
+			this.other = other;
+			this.time = time;
+		}
+	}
+
+	static class State implements Comparable<State> {
+		int pos, time;
+		int eaten;  // 1 if true, 0 if false
+
+		State(int pos, int time, int eaten) {
+			this.pos = pos;
+			this.time = time;
+			this.eaten = eaten;
+		}
+
+		@Override
+		public int compareTo(State other) {
+			// we have to prioritize cows that haven't eaten yet so that we
+			// calculate all of dist[i][0] before calculating dist[i][1]
+			if (this.eaten != other.eaten) {
+				return this.eaten - other.eaten;
+			}
+			return this.time - other.time;
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
