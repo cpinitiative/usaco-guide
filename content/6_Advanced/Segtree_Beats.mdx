@@ -80,7 +80,7 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 
 **Note:** Because we are no longer doing range updates with lazy propogation, there is no need for a lazy tag.
 
-We will store $\texttt{cur_max}$ in a seperate array as a seperate (mergable) value. Although it is possible that a single query processes $\mathcal{O}(n)$ nodes, over all queries this amortizes to the acceptable time complexity of $\mathcal{O}((n + q)\log a)$. 
+We will store $\texttt{cur\_max}$ in a seperate array as a seperate (mergable) value. Although it is possible that a single query processes $\mathcal{O}(n)$ nodes, over all queries this amortizes to the acceptable time complexity of $\mathcal{O}((n + q)\log a)$. 
 
 Consider adding in operations of type 3. Although the implementation is
 relatively straightforward (simply a point update on segment tree), the proof of complexity from the previous section
@@ -88,16 +88,16 @@ falls apart because elements can be increased back to their maximum value.
 
 Define the entropy of the array to be $\sum_{k = 1}^n \lceil \log a_k \rceil$,
 or equivalently, the maximum number of modulo operations to decrease the array
-to its base state of all 0s. If there are no point updates, then the time
-complexity is linear to the entropy, which has a maximum value of $n \log a$.
+to its base state of all 0s. Note that each update operation runs in $\mathcal{\Omega}(\log n)$, so if there are no point updates, then the time
+complexity is $\mathcal{O}(n \log a \log n)$.
 Each point update increases the entropy by a fixed amount
 $\lceil \log a \rceil$. If there are $q_p$ point updates, then the total entropy
 over all updates is bounded by $n \log a + q_p \log a$. If we factor out these
 point update operations, each modulo update is still bounded by the total
 entropy. This means that even with point updates, our solution still runs in
-$\mathcal{O}(n \log a + q_p \log a) = \mathcal{O}((n + q)\log a)$.
+$\mathcal{O}(n \log a \log n + q_p \log a) = \mathcal{O}((n \log n + q)\log a)$.
 
-Although strictly speaking, **The Child and Sequence** is not a segment tree beats problem, the techniques used in it are extremely similar. 
+Although strictly speaking, **The Child and Sequence** is not a segment tree beats problem, the techniques used in it are closely related. 
 
 ## Implementation - The Child and Sequence
 
@@ -505,4 +505,4 @@ int main() {
 
 <Problems problems="segTreeBeats" />
 
-<!-- (300iq insane problem??!!!!) -->
+<!-- (300iq insane problem??) -->
