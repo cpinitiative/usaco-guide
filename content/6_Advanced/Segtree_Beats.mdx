@@ -38,8 +38,8 @@ At first, this problem may seem like an ordinary lazy segment tree problem, but
 the range modulo updates prevent updates from stacking. That is, for a given
 node, it is difficult to calculate what the sum value of the node will be after
 an update. Furthermore, in the lazy array, modulo, unlike sum, does not satisfy
-$x \mod a \mod b \neq x \mod (a + b)$ or any other simple identity. How do we
-get around this?
+$x \mod a \mod b = x \mod (a + b)$ or any other simple identity. How do we get
+around this?
 
 As it turns out, we can take advantage of an important property of modulo.
 **Modulo either does not affect a number, or decreases it by at least half of
@@ -47,10 +47,10 @@ what it was**. If the number in question is $x$, and the modulo was by $m$, then
 this can be proved using casework:
 
 - If $m > x$, then $x$ is unaffected by $m$
-- If $m \le x / 2$, then after the modulo operation $x$ must be strictly less than
-  $m$
-- If $x / 2 < m \leq x$, then $x \mod m = x - m$. This then reduces to
-  the second case.
+- If $m \le x / 2$, then after the modulo operation $x$ must be strictly less
+  than $m$
+- If $x / 2 < m \leq x$, then $x \mod m = x - m$. This then reduces to the
+  second case.
 
 Let us ignore operations of type 3 for the time being. Because of this property
 of modulo, an element with value $a$ will get decreased at most
@@ -76,26 +76,36 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	merge values from children
 ```
 
-**Note:** Because we are no longer doing range updates with lazy propogation, there is no need for a lazy tag.
+**Note:** Because we are no longer doing range updates with lazy propogation,
+there is no need for a lazy tag.
 
-We will store $\texttt{cur\_max}$ in a seperate array as a seperate (mergable) value. Although it is possible that a single query processes $\mathcal{O}(n)$ nodes, over all queries this amortizes to the acceptable time complexity of $\mathcal{O}((n + q)\log a)$. 
+We will store $\texttt{cur\_max}$ in a seperate array as a seperate (mergable)
+value. Although it is possible that a single query processes $\mathcal{O}(n)$
+nodes, over all queries this amortizes to the acceptable time complexity of
+$\mathcal{O}((n + q)\log a)$.
 
 Consider adding in operations of type 3. Although the implementation is
-relatively straightforward (simply a point update on segment tree), the proof of complexity from the previous section
-falls apart because elements can be increased back to their maximum value.
+relatively straightforward (simply a point update on segment tree), the proof of
+complexity from the previous section falls apart because elements can be
+increased back to their maximum value.
 
 Define the entropy of the array to be $\sum_{k = 1}^n \lceil \log a_k \rceil$,
 or equivalently, the maximum number of modulo operations to decrease the array
-to its base state of all 0s. Note that each update operation runs in $\mathcal{\Omega}(\log n)$, so if there are no point updates, then the time
-complexity is $\mathcal{O}(n \log a \log n)$.
-Each point update increases the entropy by a fixed amount
-$\lceil \log a \rceil$. If there are $q_p$ point updates, then the total entropy
-over all updates is bounded by $n \log a + q_p \log a$. If we factor out these
-point update operations, each modulo update is still bounded by the total
-entropy. This means that even with point updates, our solution still runs in
+to its base state of all 0s. Note that each update operation runs in
+$\mathcal{\Omega}(\log n)$, so if there are no point updates, then the time
+complexity is $\mathcal{O}(n \log a \log n)$. Each point update increases the
+entropy by a fixed amount $\lceil \log a \rceil$. If there are $q_p$ point
+updates, then the total entropy over all updates is bounded by
+$n \log a + q_p \log a$. If we factor out these point update operations, each
+modulo update is still bounded by the total entropy. This means that even with
+point updates, our solution still runs in
 $\mathcal{O}(n \log a \log n + q_p \log a) = \mathcal{O}((n + q)\log n \log a)$.
 
-Although strictly speaking, **The Child and Sequence** is not a segment tree beats problem, the techniques used in it are closely related. In short, segment tree beats is a technique that allows a non-polylogarithmic range update complexity that amortizes to $\mathcal{O}(n \log n)$ or $\mathcal{O}(n \log^2 n)$
+Although strictly speaking, **The Child and Sequence** is not a segment tree
+beats problem, the techniques used in it are closely related. In short, segment
+tree beats is a technique that allows a non-polylogarithmic range update
+complexity that amortizes to $\mathcal{O}(n \log n)$ or
+$\mathcal{O}(n \log^2 n)$.
 
 ### Implementation - The Child and Sequence
 
@@ -108,10 +118,10 @@ Although strictly speaking, **The Child and Sequence** is not a segment tree bea
 using namespace std;
 
 const int MAXN = 100001;
- 
+
 int N, Q;
 long long tsum[MAXN * 4], tmax[MAXN * 4];
- 
+
 void update_mod(int l, int r, long long v, int t = 1, int tl = 1, int tr = N) {
     if (r < tl || tr < l || tmax[t] < v) {
         return;
@@ -121,20 +131,20 @@ void update_mod(int l, int r, long long v, int t = 1, int tl = 1, int tr = N) {
         tsum[t] = tmax[t] = val;
         return;
     }
- 
+
     int tm = (tl + tr) / 2;
     update_mod(l, r, v, t * 2, tl, tm);
     update_mod(l, r, v, t * 2 + 1, tm + 1, tr);
     tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
     tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
 }
- 
+
 void update_set(int i, long long v, int t = 1, int tl = 1, int tr = N) {
     if (tl == tr) {
         tsum[t] = tmax[t] = v;
         return;
     }
- 
+
     int tm = (tl + tr) / 2;
     if (i <= tm) {
         update_set(i, v, t * 2, tl, tm);
@@ -145,7 +155,7 @@ void update_set(int i, long long v, int t = 1, int tl = 1, int tr = N) {
     tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
     tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
 }
- 
+
 long long query(int l, int r, int t = 1, int tl = 1, int tr = N) {
     if (r < tl || tr < l) {
         return 0;
@@ -153,11 +163,11 @@ long long query(int l, int r, int t = 1, int tl = 1, int tr = N) {
     else if (l <= tl && tr <= r) {
         return tsum[t];
     }
-    
+
     int tm = (tl + tr) / 2;
     return query(l, r, t * 2, tl, tm) + query(l, r, t * 2 + 1, tm + 1, tr);
 }
- 
+
 int main() {
     cin >> N >> Q;
     for (int i = 1; i <= N; i++) {
@@ -201,20 +211,36 @@ int main() {
 
 ## Solution - Range Chmin Chmax Add Set Sum
 
-The solution to `The Child and Sequence` uses a simplified but similar solution to segment tree beats. For the problem above, let us divide it into three subtasks:
+The solution to `The Child and Sequence` uses a simplified but similar solution
+to segment tree beats. For the problem above, let us divide it into three
+subtasks:
+
 1. Allow only operations 0 and 3
 2. Allow only operations 0, 2, and 3
 3. All operations are allowed
 
 ### Subtask 1
 
-Build a segment tree over the range. In each node of the segment tree, maintain four values: $\texttt{sum}$, $\texttt{max}_1$, $\texttt{max}_2$, and $\texttt{max}_c$, which correspond respectively to the sum of the elements of said range, the strict maximum value, the strict second largest value (if there is no such value, $-\infty$), and the number of occurences of the maximum element. We would like to perform the following operations:
-- For each $i \in [l, r]$, let $A[i] = \min(A[i], x)$ (this operation will henceforth be referred as _chmin_)
+Build a segment tree over the range. In each node of the segment tree, maintain
+four values: $\texttt{sum}$, $\texttt{max}_1$, $\texttt{max}_2$, and
+$\texttt{max}_c$, which correspond respectively to the sum of the elements of
+said range, the strict maximum value, the strict second largest value (if there
+is no such value, $-\infty$), and the number of occurences of the maximum
+element. We would like to perform the following operations:
+
+- For each $i \in [l, r]$, let $A[i] = \min(A[i], x)$ (this operation will
+  henceforth be referred as _chmin_)
 - Query $\sum_{i = l}^r A[i]$
 
-The issue, again, is that in lazy propogation, it is difficult to update the sum to reflect the chmin update. We will use a similar strategy to the previous task where we build a seemingly slow solution, and then optimize it to pass in time. 
+The issue, again, is that in lazy propogation, it is difficult to update the sum
+to reflect the chmin update. We will use a similar strategy to the previous task
+where we build a seemingly slow solution, and then optimize it to pass in time.
 
-Firstly, if the update value is larger than the maximum value in the range (stored in $\texttt{max}_1$), then we can return as the update will not effect any element in the range. Secondly, if the update value is between $\texttt{max}_1$ and $\texttt{max}_2$, the new sum can be easily calculated using $\texttt{max}_c$. 
+Firstly, if the update value is larger than the maximum value in the range
+(stored in $\texttt{max}_1$), then we can return as the update will not effect
+any element in the range. Secondly, if the update value is between
+$\texttt{max}_1$ and $\texttt{max}_2$, the new sum can be easily calculated
+using $\texttt{max}_c$.
 
 ```
 function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
@@ -233,19 +259,36 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	merge values from children
 ```
 
-To prove that this runs in $\mathcal{O}((n + q) \log n)$, we need to define a variable $\delta$ that represents the sum of the number of distinct elements over all intervals in the segment tree. This number is bounded by $n \log n$, which is the sum of the sizes of every interval. 
+To prove that this runs in $\mathcal{O}((n + q) \log n)$, we need to define a
+variable $\delta$ that represents the sum of the number of distinct elements
+over all intervals in the segment tree. This number is bounded by $n \log n$,
+which is the sum of the sizes of every interval.
 
-Why are queries slow? Because they could visit up to $n$ nodes in any given query. Define an _extra operation_ to be when a query is passed onto a node's children dispite being in the query range. In other words, when a node satisfies `query_left ≤ tree_left and tree_right ≤ query_right and upd_value ≤ max2`, an extra operation is performed. 
+Why are queries slow? Because they could visit up to $n$ nodes in any given
+query. Define an _extra operation_ to be when a query is passed onto a node's
+children dispite being in the query range. In other words, when a node satisfies
+`query_left ≤ tree_left and tree_right ≤ query_right and upd_value ≤ max2`, an
+extra operation is performed.
 
-Each time an extra operation is performed, $\delta$ decreases by at least 1, because both the $\texttt{max}_1$ and $\texttt{max}_2$ elements are decreased to $x$. Because $\delta$ does not increase, the complexity is bounded by $\max \delta = \mathcal{O}(n \log n)$
+Each time an extra operation is performed, $\delta$ decreases by at least 1,
+because both the $\texttt{max}_1$ and $\texttt{max}_2$ elements are decreased to
+$x$. Because $\delta$ does not increase, the complexity is bounded by
+$\max \delta = \mathcal{O}(n \log n)$.
 
 ### Subtask 2
 
-Sum range updates can be added without much modification to the existing code, by simply adding another lazy tag. The proof of the time complexity from the previous part breaks down, but a tentative upper bound of the algorithm is $\mathcal{O}((n + q) \log^2 n)$. A complete proof can be found [here](https://codeforces.com/blog/entry/57319#part-3-the-time-complexity). 
+Sum range updates can be added without much modification to the existing code,
+by simply adding another lazy tag. The proof of the time complexity from the
+previous part breaks down, but a tentative upper bound of the algorithm is
+$\mathcal{O}((n + q) \log^2 n)$. A complete proof can be found
+[here](https://codeforces.com/blog/entry/57319#part-3-the-time-complexity).
 
 ### Subtask 3
 
-Store three more variables $\texttt{min}_1$, $\texttt{min}_2$, and $\texttt{min}_c$. These will be implemented similar to their $\texttt{max}$ counterparts. Take note of the edge case when $\texttt{min}_1 = \texttt{max}_2$ or vice versa. 
+Store three more variables $\texttt{min}_1$, $\texttt{min}_2$, and
+$\texttt{min}_c$. These will be implemented similar to their $\texttt{max}$
+counterparts. Take note of the edge case when $\texttt{min}_1 = \texttt{max}_2$
+or vice versa.
 
 ### Implementation - Range Chmin Chmax Add Range Sum
 
@@ -464,7 +507,7 @@ ll query_sum(int l, int r, int t=1, int tl=0, int tr=N-1) {
 
 int main() {
 	int Q;
-	
+
 	cin >> N >> Q;
 	for (int i = 0; i < N; i++) {
 		cin >> A[i];
@@ -473,17 +516,17 @@ int main() {
 	for (int q = 0; q < Q; q++) {
 		int t; cin >> t;
 		if (t == 0) {
-			int l, r; 
+			int l, r;
 			ll x;
 			cin >> l >> r >> x;
 			update_chmin(l, r - 1, x);
 		} else if (t == 1) {
-			int l, r; 
+			int l, r;
 			ll x;
 			cin >> l >> r >> x;
 			update_chmax(l, r - 1, x);
 		} else if (t == 2) {
-			int l, r; 
+			int l, r;
 			ll x;
 			cin >> l >> r >> x;
 			update_add(l, r - 1, x);
@@ -495,6 +538,7 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 
 </LanguageSection>
