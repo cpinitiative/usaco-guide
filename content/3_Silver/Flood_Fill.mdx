@@ -744,18 +744,32 @@ print(room_num)
 
 <Quiz>
 	<Quiz.Question>
-		What would be a valid function header for DFS on an undirected graph to work *without* any other variables?
+		What would be a valid function header for DFS on an undirected tree to work in linear time *without* any other variables?
 		<Quiz.Answer correct>
 			`void dfs(int v, int p, vector<vector<int> >& adj)`
+			<Quiz.Explanation>
+				For a tree, we do not need a visited array. We only need to check if we are revisiting the parent node, so `v` as a current node and `p` as a parent node would work.
+
+				Calling `adj` as a `vector<vector<int> >&` instead of just `vector<vector<int> >` ensures that the pointer is copied over each time, which takes constant instead of linear time. Therefore, the entire DFS would take linear time.
+			</Quiz.Explanation>
 		</Quiz.Answer>
 		<Quiz.Answer>
 			`void dfs(int v, int p, vector<vector<int> > adj)`
+			<Quiz.Explanation>
+				This would not work in linear time because `adj` would be copied in $O(n)$ time every time DFS is called. As DFS is called $n$ times, this runs in $O(n^2)$.
+			</Quiz.Explanation>
 		</Quiz.Answer>
 		<Quiz.Answer>
 			`void dfs(int v, vector<vector<int> > adj)`
+			<Quiz.Explanation>
+				This DFS function cannot check for a parent node, and therefore would never terminate.
+			</Quiz.Explanation>
 		</Quiz.Answer>
 		<Quiz.Answer>
 			`void dfs(vector<vector<int> > adj)`
+			<Quiz.Explanation>
+				This DFS function cannot track the current node, therefore it cannot even run.
+			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
 </Quiz>
