@@ -585,3 +585,64 @@ public class BuildingTeams
 ### Problems
 
 <Problems problems="bip" hideSuggestProblemButton />
+
+## Quiz
+<Quiz>
+	<Quiz.Question>
+		What would be a valid function header for DFS on an undirected tree to work in linear time *without* any other variables?
+		<Quiz.Answer correct>
+			`void dfs(int v, int p, vector<vector<int> >& adj)`
+			<Quiz.Explanation>
+				For a tree, we do not need a visited array. We only need to check if we are revisiting the parent node, so `v` as a current node and `p` as a parent node would work.
+
+				Calling `adj` as a `vector<vector<int> >&` instead of just `vector<vector<int> >` ensures that the pointer is copied over each time, which takes constant instead of linear time. Therefore, the entire DFS would take linear time.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			`void dfs(int v, int p, vector<vector<int> > adj)`
+			<Quiz.Explanation>
+				This would not work in linear time because `adj` would be copied in $O(n)$ time every time DFS is called. As DFS is called $n$ times, this runs in $O(n^2)$.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			`void dfs(int v, vector<vector<int> > adj)`
+			<Quiz.Explanation>
+				This DFS function cannot check for a parent node, and therefore would never terminate.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			`void dfs(vector<vector<int> > adj)`
+			<Quiz.Explanation>
+				This DFS function cannot track the current node, therefore it cannot even run.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+	</Quiz.Question>
+	
+	<Quiz.Question>
+		How is a preorder traversal found for a binary tree?
+		<Quiz.Answer correct>
+			Add the current node to the list, and then run DFS on all child nodes of the current node.
+			<Quiz.Explanation>
+				Adding the current node first is preorder traversal. Adding it between the two child nodes is inorder, and adding it after the two child nodes is postorder.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Run DFS on the left node, add the current node to the list, and then run DFS on the right node.
+			<Quiz.Explanation>
+				This is inorder traversal.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Run DFS on the right node, add the current node to the list, and then run DFS on the left node.
+			<Quiz.Explanation>
+				This is inorder traversal.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Run DFS on all child nodes of the current node, then add the current node to the list.
+			<Quiz.Explanation>
+				This is postorder traversal.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+	</Quiz.Question>
+</Quiz>
