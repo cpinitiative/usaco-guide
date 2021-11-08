@@ -63,6 +63,7 @@ using ll = long long;
 using pll = pair<ll, ll>;
 using Matrix = array<array<ll, 2>, 2>;
 
+const int MAXN = 1e5 + 5;
 const ll MOD = 1e9 + 7;
 
 Matrix multiply(const Matrix &a, const Matrix &b) {
@@ -90,8 +91,8 @@ Matrix pow(ll n) {
 }
 
 int N, Q;
-pll tree[400005];
-ll lazy[400005];
+pll tree[MAXN * 4];
+ll lazy[MAXN * 4];
 
 pll merge(const pll &a, const pll &b) {
 	return {(a.FF + b.FF) % MOD, (a.SS + b.SS) % MOD};
@@ -139,7 +140,7 @@ ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
 
 int main() {
 	cin >> N >> Q;
-	fill_n(tree, 400005, pll{0, 1});
+	fill_n(tree, MAXN * 4, pll{0, 1});
 	for (int i = 1; i <= N; i++) {
 		ll a; 
 		cin >> a;
