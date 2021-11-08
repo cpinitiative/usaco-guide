@@ -2,8 +2,8 @@
 // note that reordering the css file imports will break some styles
 import { wrapRootElement as wrap } from './root-wrapper';
 import 'katex/dist/katex.min.css';
-import './src/styles/main.css';
-// import './build.css';
+// import './src/styles/main.css';
+import './build.css';
 
 export const wrapRootElement = wrap;
 
