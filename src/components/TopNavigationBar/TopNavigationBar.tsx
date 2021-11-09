@@ -448,7 +448,7 @@ export default function TopNavigationBar({
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
-          <div className="grid grid-cols-1 divide-y divide-gray-800">
+          <div className="grid grid-cols-1 divide-y divide-gray-800 pb-6">
             <div className="py-5 px-4">
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                 {solutions.map(item => (
