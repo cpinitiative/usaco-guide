@@ -20,7 +20,10 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useContext, useState } from 'react';
-import { SECTIONS, SECTION_LABELS } from '../../../content/ordering';
+import MODULE_ORDERING, {
+  SECTIONS,
+  SECTION_LABELS,
+} from '../../../content/ordering';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
@@ -39,12 +42,32 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut, isLoaded } = useContext(UserDataContext);
+  const { firebaseUser, signOut, isLoaded, userProgressOnModules } =
+    useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const userGroups = useUserGroups();
+
+  const sections = {};
+  for (const section of Object.keys(MODULE_ORDERING)) {
+    let total = 0;
+    let completed = 0;
+    MODULE_ORDERING[section].forEach(chapter => {
+      chapter.items.forEach(module => {
+        total++;
+        if (Object.keys(userProgressOnModules).includes(module)) {
+          completed++;
+        }
+      });
+    });
+    sections[section] = {
+      total,
+      completed,
+    };
+  }
+
   const resources = [
     {
       name: 'USACO Forum',
@@ -94,31 +117,37 @@ export default function TopNavigationBar({
       name: 'General',
       href: '#',
       icon: BookmarkIcon,
+      key: 'general',
     },
     {
       name: 'Bronze',
       href: '#',
       icon: BookmarkIcon,
+      key: 'bronze',
     },
     {
       name: 'Silver',
       href: '#',
       icon: BookmarkIcon,
+      key: 'silver',
     },
     {
       name: 'Gold',
       href: '#',
       icon: BookmarkIcon,
+      key: 'gold',
     },
     {
       name: 'Platinum',
       href: '#',
       icon: BookmarkIcon,
+      key: 'plat',
     },
     {
       name: 'Advanced',
       href: '#',
       icon: BookmarkIcon,
+      key: 'adv',
     },
   ];
 
@@ -426,7 +455,7 @@ export default function TopNavigationBar({
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
+                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
                   >
                     <item.icon
                       className="flex-shrink-0 h-6 w-6 text-gray-500"
@@ -445,7 +474,7 @@ export default function TopNavigationBar({
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
+                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
                   >
                     <item.icon
                       className="flex-shrink-0 h-6 w-6 text-gray-500"
@@ -463,7 +492,7 @@ export default function TopNavigationBar({
                 <a
                   key="Problems"
                   href="/problems"
-                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
+                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
                 >
                   <QuestionMarkCircleIcon
                     className="flex-shrink-0 h-6 w-6 text-gray-500"
@@ -473,7 +502,7 @@ export default function TopNavigationBar({
                     Problems
                   </span>
                 </a>
-                <div>
+                <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800">
                   <ChatAltIcon
                     className="h-6 w-6 text-gray-500 float-left"
                     aria-hidden="true"
@@ -488,7 +517,7 @@ export default function TopNavigationBar({
                 <a
                   key="Settings"
                   href="/settings"
-                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
+                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
                 >
                   <CogIcon
                     className="flex-shrink-0 h-6 w-6 text-gray-500"
@@ -499,7 +528,7 @@ export default function TopNavigationBar({
                   </span>
                 </a>
                 {firebaseUser ? (
-                  <div>
+                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800">
                     <LogoutIcon
                       className="h-6 w-6 text-gray-500 float-left"
                       aria-hidden="true"
@@ -512,7 +541,7 @@ export default function TopNavigationBar({
                     </button>
                   </div>
                 ) : (
-                  <div>
+                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800">
                     <LoginIcon
                       className="h-6 w-6 text-gray-500 float-left"
                       aria-hidden="true"
