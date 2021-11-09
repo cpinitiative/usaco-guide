@@ -89,12 +89,12 @@ import java.io.*;
 import java.util.*;
 
 public class phidias {
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int W = Integer.parseInt(st.nextToken());
-		int H = Integer.parseInt(st.nextToken());
-		int N = Integer.parseInt(br.readLine());
+		Kattio io = new Kattio();
+		int W = io.nextInt();
+		int H = io.nextInt();
+		int N = io.nextInt();
 
 		// DP[i][j] is the minimum wasted space given an i * j rectangle.
 		int[][] dp = new int[W + 1][H + 1];
@@ -108,9 +108,8 @@ public class phidias {
 
 		// 0 space is wasted if the slab is the same size as plates.
 		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
+			int x = io.nextInt();
+			int y = io.nextInt();
 			dp[x][y] = 0;
 		}
 
@@ -130,11 +129,15 @@ public class phidias {
 				}
 			}
 		}
-		
+
 		// Answer.
 		System.out.println(dp[W][H]);
 	}
+
+	// CodeSnip{Kattio}
+
 }
+						      
 ```
 </JavaSection>
 				
