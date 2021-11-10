@@ -4,7 +4,7 @@ redirects:
   - /silver/binary-search-sorted
   - /silver/binary-search-ans
 title: 'Binary Search'
-author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang, Dustin Miao
 prerequisites:
   - greedy-sorting
 description:
@@ -1169,3 +1169,81 @@ for _ in range(queryNum):
 ### General
 
 <Problems problems="general" hideSuggestProblemButton />
+
+<Quiz>
+  <Quiz.Question>
+    What is the worst and the best case time complexity for binary searching for a number in a sorted array of size $n$?
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$ / $\Omega(\log n)$
+      <Quiz.Explanation>
+        Incorrect. Consider the case where the target element is the median of the array. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log n)$ / $\Omega(1)$
+      <Quiz.Explanation>
+        Correct. The worst case happens when the number is not present, and the best case occurs if the first number we check is the target value. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n)$ / $\Omega(\log n)$
+      <Quiz.Explanation>
+        Incorrect. Binary search always takes at most $\lceil \log n \rceil$ iterations. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$ / $\Omega(\log \log n)$
+      <Quiz.Explanation>
+        Incorrect. Consider the case where the target element is the median of the array. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What is an advantage of using binary search over linear search?
+    <Quiz.Answer correct>
+      Faster time complexity
+      <Quiz.Explanation>
+        Correct. Linear search runs in $\mathcal{O}(n)$, whereas binary search runs in $\mathcal{O}(\log n)$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Less Memory
+      <Quiz.Explanation>
+        Incorrect. Binary search and linear search both use $\mathcal{O}(n)$ memory.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Easier implementation. 
+      <Quiz.Explanation>
+        Incorrect. Linear search is, in most cases, a simple `for` loop, whereas binary search most often requires at least two additional variables and conditionals. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Suppose a program involving binary search runs in $\mathcal{O}(\log n)$ time for some $n$. At what values of $n$ would runtime be an issue? A typical online judge can handle around $10^9$ operations in a second. 
+    <Quiz.Answer>
+      $9$
+      <Quiz.Explanation>
+        Incorrect. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $90^{9}$
+      <Quiz.Explanation>
+        Incorrect
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $10^{10^{9}}$
+      <Quiz.Explanation>
+        Correct. The logarithm of this value is a bit more than $10^9$. A pure, logarithmic binary search will almost never run into limits regarding time limit. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $TREE(9)$ (learn more about the TREE function [here](https://googology.wikia.org/wiki/TREE_sequence))
+      <Quiz.Explanation>
+    	Correct. This number is way too large, to the extent where simply proving that it is finite is a challenge. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
