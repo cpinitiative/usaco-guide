@@ -491,9 +491,9 @@ export default function TopNavigationBar({
             </div>
             <div className="pt-5 px-4">
               <nav className="grid gap-y-8">
-                <a
+                <Link
                   key="Problems"
-                  href="/problems"
+                  to="/problems"
                   className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <QuestionMarkCircleIcon
@@ -503,7 +503,7 @@ export default function TopNavigationBar({
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Problems
                   </span>
-                </a>
+                </Link>
                 <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                   <ChatAltIcon
                     className="h-6 w-6 text-gray-600 float-left"
@@ -516,9 +516,9 @@ export default function TopNavigationBar({
                     Contact Us
                   </button>
                 </div>
-                <a
+                <Link
                   key="Settings"
-                  href="/settings"
+                  to="/settings"
                   className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <CogIcon
@@ -528,7 +528,7 @@ export default function TopNavigationBar({
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Settings
                   </span>
-                </a>
+                </Link>
                 {firebaseUser ? (
                   <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                     <LogoutIcon
