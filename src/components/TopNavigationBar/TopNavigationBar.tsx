@@ -455,10 +455,10 @@ export default function TopNavigationBar({
                   <Link
                     key={item.name}
                     to={item.href}
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-600"
+                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -476,10 +476,10 @@ export default function TopNavigationBar({
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-600"
+                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -494,19 +494,19 @@ export default function TopNavigationBar({
                 <Link
                   key="Problems"
                   to="/problems"
-                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <QuestionMarkCircleIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600"
+                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Problems
                   </span>
                 </Link>
-                <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                <div className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                   <ChatAltIcon
-                    className="h-6 w-6 text-gray-600 float-left"
+                    className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <button
@@ -519,10 +519,10 @@ export default function TopNavigationBar({
                 <Link
                   key="Settings"
                   to="/settings"
-                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <CogIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600"
+                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -530,9 +530,9 @@ export default function TopNavigationBar({
                   </span>
                 </Link>
                 {firebaseUser ? (
-                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <div className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                     <LogoutIcon
-                      className="h-6 w-6 text-gray-600 float-left"
+                      className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <button
@@ -543,9 +543,9 @@ export default function TopNavigationBar({
                     </button>
                   </div>
                 ) : (
-                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <div className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                     <LoginIcon
-                      className="h-6 w-6 text-gray-600 float-left"
+                      className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <button
