@@ -452,9 +452,9 @@ export default function TopNavigationBar({
             <div className="py-5 px-4">
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                 {solutions.map(item => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
@@ -464,7 +464,7 @@ export default function TopNavigationBar({
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       {item.name}
                     </span>
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
