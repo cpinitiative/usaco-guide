@@ -39,14 +39,14 @@ Would have the following $\texttt{longest\_consec}$:
 	<tr>
 		<td>1</td>
 		<td>0</td>
-		<td>1</td>
 		<td>2</td>
+		<td>1</td>
 	</tr>
 	<tr>
 		<td>0</td>
-		<td>1</td>
-		<td>2</td>
 		<td>3</td>
+		<td>2</td>
+		<td>1</td>
 	</tr>
 	<tr>
 		<td>0</td>
@@ -60,11 +60,11 @@ Now, we go through each column and then for each row in reverse,
 find out for each cell the number of all `1`'s submatrices where the cell is the upper left corner.
 
 How do we do this?  
-First, let's initialize a stack $\texttt{rel\_streaks}$ and a number $\texttt{curr\_sum}$.  
-$\texttt{rel\_streaks}$ will have elements each with two things:
+First, let's initialize a stack $\texttt{rel\_streaks}$ which will have elements with two properties:
 the value of $\texttt{longest\_consec}$ for that element and the difference in row number
-(aka distance) between that element and the next element in the stack.  
-$\texttt{curr\_sum}$, after processing, will contain
+(aka distance) between that element and the next element in the stack. 
+
+Also initialize a number $\texttt{curr\_sum}$, which after processing, will contain
 the number of submatrices of all `1`'s that start at each cell.
 
 Now, let's say we just started at a particular cell. How should we change our value of $\texttt{curr\_sum}$?  
@@ -193,7 +193,8 @@ public class Rectangles {
 			int colNum = Integer.parseInt(initial.nextToken());
 			int[][] grid = new int[rowNum][];
 			for (int r = 0; r < rowNum; r++) {
-				grid[r] = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+				grid[r] = Arrays.stream(read.readLine().split(" "))
+						.mapToInt(Integer::parseInt).toArray();
 			}
 
 			int[][] longestConsec = new int[rowNum][colNum];
@@ -213,7 +214,7 @@ public class Rectangles {
 
 			long total = 0;
 			for (int c = 0; c < colNum; c++) {
-				ArrayDeque<int[]> relStreaks = new ArrayDeque<>();
+				Stack<int[]> relStreaks = new Stack<>();
 				int currSum = 0;  // the current amt of valid submatrices
 				int curr = grid[rowNum - 1][c];
 				/*
@@ -225,7 +226,7 @@ public class Rectangles {
 					if (grid[r][c] != curr) {
 						curr = grid[r][c];
 						currSum = 0;
-						relStreaks = new ArrayDeque<>();
+						relStreaks = new Stack<>();
 					}
 
 					/*
@@ -243,7 +244,7 @@ public class Rectangles {
 						popped += relStreaks.peek()[1] + 1;
 						relStreaks.pop();
 					}
-					relStreaks.addFirst(new int[] {longestConsec[r][c], popped});
+					relStreaks.add(new int[] {longestConsec[r][c], popped});
 					currSum += longestConsec[r][c];  // add the submatrices of height 1
 					total += currSum;
 				}
