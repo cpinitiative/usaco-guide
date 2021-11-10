@@ -115,37 +115,37 @@ export default function TopNavigationBar({
   const solutions = [
     {
       name: 'General',
-      href: '#',
+      href: '/general',
       icon: BookmarkIcon,
       key: 'general',
     },
     {
       name: 'Bronze',
-      href: '#',
+      href: '/bronze',
       icon: BookmarkIcon,
       key: 'bronze',
     },
     {
       name: 'Silver',
-      href: '#',
+      href: '/silver',
       icon: BookmarkIcon,
       key: 'silver',
     },
     {
       name: 'Gold',
-      href: '#',
+      href: '/gold',
       icon: BookmarkIcon,
       key: 'gold',
     },
     {
       name: 'Platinum',
-      href: '#',
+      href: '/plat',
       icon: BookmarkIcon,
       key: 'plat',
     },
     {
       name: 'Advanced',
-      href: '#',
+      href: '/adv',
       icon: BookmarkIcon,
       key: 'adv',
     },
@@ -474,6 +474,8 @@ export default function TopNavigationBar({
                   <a
                     key={item.name}
                     href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
                     className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
