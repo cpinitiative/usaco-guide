@@ -21,32 +21,28 @@ Due to the low bounds on $N$, we can naively simulate the events.
 #include <algorithm>
 #include <vector>
 #include <set>
+
 using namespace std;
 
 int main() {
 	freopen("convention2.in", "r", stdin);
 	freopen("convention2.out", "w", stdout);
-
+	
 	int n;
 	vector<vector<int>> cows;
 	cin >> n;
-
 	for (int i = 0; i < n; i++) {
 		int start, duration;
 		cin >> start >> duration;
 		cows.push_back({i, start, duration});
 	}
-
 	// sort by arrival time.
 	sort(cows.begin(), cows.end(), [](const vector<int> &a, const vector<int> &b) {
 		return a[1] < b[1];
 	});
 
 	int time = 0, cur = 0, ans = 0;
-
-	// sorted by priority.
-	set<vector<int>> waiting;
-
+	set<vector<int>> waiting;  // sorted by priority
 	// as long as we haven't processed all cows or there are still cows waiting.
 	while (cur < n || waiting.size() > 0) {
 		
