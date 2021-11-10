@@ -448,20 +448,20 @@ export default function TopNavigationBar({
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
-          <div className="grid grid-cols-1 divide-y divide-gray-800 pb-6">
+          <div className="grid grid-cols-1 divide-y divide-gray-300 dark:divide-gray-800 pb-6">
             <div className="py-5 px-4">
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                 {solutions.map(item => (
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
+                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-500"
+                      className="flex-shrink-0 h-6 w-6 text-gray-600"
                       aria-hidden="true"
                     />
-                    <span className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400">
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       {item.name}
                     </span>
                   </a>
@@ -474,13 +474,13 @@ export default function TopNavigationBar({
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
+                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-500"
+                      className="flex-shrink-0 h-6 w-6 text-gray-600"
                       aria-hidden="true"
                     />
-                    <span className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400">
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       {item.name}
                     </span>
                   </a>
@@ -492,23 +492,23 @@ export default function TopNavigationBar({
                 <a
                   key="Problems"
                   href="/problems"
-                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
+                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <QuestionMarkCircleIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-500"
+                    className="flex-shrink-0 h-6 w-6 text-gray-600"
                     aria-hidden="true"
                   />
-                  <span className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400">
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Problems
                   </span>
                 </a>
-                <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800">
+                <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                   <ChatAltIcon
-                    className="h-6 w-6 text-gray-500 float-left"
+                    className="h-6 w-6 text-gray-600 float-left"
                     aria-hidden="true"
                   />
                   <button
-                    className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400"
+                    className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"
                     onClick={() => setIsContactUsActive(true)}
                   >
                     Contact Us
@@ -517,37 +517,37 @@ export default function TopNavigationBar({
                 <a
                   key="Settings"
                   href="/settings"
-                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800"
+                  className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <CogIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-500"
+                    className="flex-shrink-0 h-6 w-6 text-gray-600"
                     aria-hidden="true"
                   />
-                  <span className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400">
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Settings
                   </span>
                 </a>
                 {firebaseUser ? (
-                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800">
+                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                     <LogoutIcon
-                      className="h-6 w-6 text-gray-500 float-left"
+                      className="h-6 w-6 text-gray-600 float-left"
                       aria-hidden="true"
                     />
                     <button
-                      className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400"
+                      className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"
                       onClick={() => signOut()}
                     >
                       Sign Out
                     </button>
                   </div>
                 ) : (
-                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-800">
+                  <div className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                     <LoginIcon
-                      className="h-6 w-6 text-gray-500 float-left"
+                      className="h-6 w-6 text-gray-600 float-left"
                       aria-hidden="true"
                     />
                     <button
-                      className="ml-3 text-base font-medium text-gray-300 hover:text-gray-400"
+                      className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"
                       onClick={() => signIn()}
                     >
                       Sign In
