@@ -189,7 +189,9 @@ struct tnode {
 	}
 };
 
-int getsz(pt x) { return x ? x->sz : 0; }
+int getsz(pt x) { 
+	return x ? x->sz : 0; 
+}
 	
 pt calc(pt x) {
 	x->sz = 1 + getsz(x->c[0]) + getsz(x->c[1]);
@@ -210,8 +212,9 @@ pair<pt, pt> split(pt t, int v) { // >= v goes to the right
 }
 
 pt merge(pt a, pt b) {
-	if (!a || !b)
+	if (!a || !b) {
 		return a ? NULL : b;
+	}
 	if (a->pri > b->pri) {
 		auto B = split(b, a->val);
 		inv += (ll) (1 + getsz(a->c[0])) * getsz(B.s);
@@ -491,9 +494,9 @@ int main() {
 	string S;
 
 	cin >> N >> Q >> S;
-	for (char c : S)
+	for (char c : S) {
 		merge(root, root, new Node(c));
-
+	}
 	while (Q--) {
 		int l, r;
 		cin >> l >> r;
