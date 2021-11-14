@@ -135,7 +135,7 @@ export default function TopNavigationBar({
       <nav
         className={classNames(
           !transparent && 'bg-white dark:bg-gray-900 shadow',
-          'relative z-10'
+          'relative z-15'
         )}
       >
         <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto">
