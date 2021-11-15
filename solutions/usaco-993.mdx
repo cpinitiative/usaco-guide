@@ -1,0 +1,84 @@
+---
+id: usaco-993
+source: USACO Gold 2020 January
+title: Time is Mooney
+author: Nathan Gong
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_time_gold_jan20.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T_{\text{max}} \cdot (N + M))$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TimeIsMooney {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("time");
+
+		// max time that we check (it can be any arbitrary large number as long 
+		// as it is sufficent for O(T_MAX * (N + M)) time)
+		final int T_MAX = 1001;
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int c = io.nextInt();
+
+		// amount of moonies Bessie can make at each city
+		int[] values = new int[n];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = io.nextInt();
+		}
+
+		List<List<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+		for (int i = 0; i < m; i++) {
+			int n1 = io.nextInt() - 1;
+			int n2 = io.nextInt() - 1;
+			adj.get(n1).add(n2);
+		}
+
+		// dp[t][i] = max amount of moonies Bessie can make after t days, 
+		// ending at city i
+		long[][] dp = new long[T_MAX][n];
+		for (int i = 0; i < T_MAX; i++) {
+			Arrays.fill(dp[i], -1);
+		}
+
+		long best = 0;
+		dp[0][0] = 0;
+		for (int t = 0; t < T_MAX - 1; t++) {  // populate dp array up to T_MAX
+			for (int i = 0; i < n; i++) {  // check each city at each time step
+				// skip city if it can't be reached at time t
+				if (dp[t][i] != -1) {
+					// visit all cities adjacent to i, update dp array
+					for (int neighbor : adj.get(i)) {
+						dp[t + 1][neighbor] = Math.max(
+							dp[t + 1][neighbor], 
+							dp[t][i] + values[neighbor]
+						);
+					}
+				}
+			}
+			// update the max profit Bessie can make after t days, ending
+			// at city 0
+			best = Math.max(best, dp[t][0] - t * t * c);
+		}
+
+		io.println(best);
+		io.close();
+	}
+	
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
