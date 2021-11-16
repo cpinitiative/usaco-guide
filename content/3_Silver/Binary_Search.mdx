@@ -1171,10 +1171,6 @@ for _ in range(queryNum):
 <Problems problems="general" hideSuggestProblemButton />
 
 ## Quiz
-
-<LanguageSection>
-
-<CPPSection>
 				
 <Quiz>
   <Quiz.Question>
@@ -1254,6 +1250,8 @@ for _ in range(queryNum):
   </Quiz.Question>
   <Quiz.Question>
     Suppose we were tasked to find some maximum value such that a given monotonic boolean function `someBooleanFunction(m)` returns `true`. The following code has an error in it that causes an infinite loop. Find the corrected version. 
+<LanguageSection>
+<CPPSection>
     ```cpp
 int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	while (l < r) {
@@ -1266,8 +1264,11 @@ int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	return l;
 }
     ```
-    <Quiz.Answer>
-      ```cpp
+</CPPSection>
+</LanguageSection>
+
+<Quiz.Answer>
+```cpp
 int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	while (l <= r) { // <= instead of <
 		int m = (l + r) / 2;
@@ -1278,17 +1279,18 @@ int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	}
 	return l;
 }
-      ```
-      <Quiz.Explanation>
-        Incorrect. This will still cause an infinite loop. For instance, if for `someBooleanFunction` we have
-        ```cpp
-        bool someBooleanFunction(int m) { return m <= 7; }
-        ``` 
-        and call `findMaxTrue(1, 11, someBooleanFunction)`, the program will never terminate (it will be stuck at $l = 6, r = 7$).
-      </Quiz.Explanation>
-    </Quiz.Answer>
-    <Quiz.Answer>
-      ```cpp
+```
+<Quiz.Explanation>
+ Incorrect. This will still cause an infinite loop. For instance, if for `someBooleanFunction` we have
+```cpp
+bool someBooleanFunction(int m) { return m <= 7; }
+``` 
+and call `findMaxTrue(1, 11, someBooleanFunction)`, the program will never terminate (it will be stuck at $l = 6, r = 7$).
+</Quiz.Explanation>
+</Quiz.Answer>
+
+<Quiz.Answer>
+```cpp
 int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	while (l < r) {
 		int m = (l + r) / 2;
@@ -1299,13 +1301,15 @@ int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	}
 	return l;
 }
-      ```
-      <Quiz.Explanation>
-        Incorrect. While this will no longer cause an infinite loop, it will now output the wrong answer (instead of the maximum number that evaluates to true, it will return the minimum number that evaluates to false). 
-      </Quiz.Explanation>
-    </Quiz.Answer>
-    <Quiz.Answer>
-      ```cpp
+```
+<Quiz.Explanation>
+Incorrect. While this will no longer cause an infinite loop, it will now output the wrong answer (instead of the maximum number that evaluates to true, it will return the minimum number that evaluates to false). 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+
+<Quiz.Answer>
+```cpp
 int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	while (l < r) {
 		int m = l + (r - l) / 2;  // change (l + r) / 2
@@ -1316,13 +1320,15 @@ int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	}
 	return l;
 }
-      ```
-      <Quiz.Explanation>
-        Incorrect. This is equivalent to the previous statement, except this statement is sometimes used to avoid integer overflow. 
-      </Quiz.Explanation>
-    </Quiz.Answer>
-    <Quiz.Answer correct>
-	```cpp
+```
+<Quiz.Explanation>
+Incorrect. This is equivalent to the previous statement, except this statement is sometimes used to avoid integer overflow. 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+
+<Quiz.Answer correct>
+```cpp
 int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	while (l < r) {
 		int m = (l + r + 1) / 2;  // change (l + r) / 2
@@ -1333,14 +1339,11 @@ int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 	}
 	return l;
 }
-      ```
-      <Quiz.Explanation>
-        Correct. The reason for an infinite loop is when $r$ is one more than $l$ and `someBooleanFunction(l)` evaluates to `true` . $m$ will be defined as $\lfloor \frac {l + r} 2 \rfloor = l$, and will thus evaluate to true, which means that $l$ and $r$ have not changed in the loop. By adding $1$ to the expression  $$\lfloor \frac {l + r + 1} 2 \rfloor$ will instead evaluate to $r$. 
-      </Quiz.Explanation>
-    </Quiz.Answer>
-  </Quiz.Question>
-</Quiz>
+```
+<Quiz.Explanation>
+        Correct. The reason for an infinite loop is when $r$ is one more than $l$ and `someBooleanFunction(l)` evaluates to `true` . $m$ will be defined as $\lfloor \frac {l + r} 2 \rfloor = l$, and will thus evaluate to true, which means that $l$ and $r$ have not changed in the loop. By adding $1$ to the expression $\lfloor \frac {l + r + 1} 2 \rfloor$ will instead evaluate to $r$. 
+</Quiz.Explanation>
+</Quiz.Answer>
 
-</CPPSection>
-				
-</LanguageSection>
+</Quiz.Question>
+</Quiz>
