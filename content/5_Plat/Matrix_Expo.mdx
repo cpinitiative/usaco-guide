@@ -3,7 +3,7 @@ id: matrix-expo
 redirects:
   - /plat/mat-exp
 title: 'Matrix Exponentiation'
-author: 'Benjamin Qi'
+author: 'Benjamin Qi, Neo Wang'
 description: Repeatedly multiplying a square matrix by itself.
 prerequisites:
   - intro-dp
@@ -36,6 +36,94 @@ frequency: 1
 		powerpoint of matrix exponentiation
 	</Resource>
 </Resources>
+
+
+## Example - Fibonacci
+
+<FocusProblem problem='sample' />
+
+The fibonacci numbers are defined by the following matrix relation
+
+$$
+A = \begin{bmatrix}1&1\\1&0\end{bmatrix}^n=\begin{bmatrix}F_{n+1} & F_n \\ F_n & F_{n-1}\end{bmatrix}
+$$
+
+### Proof by Induction
+
+The fibonacci numbers are defined as follows:
+
+$$
+\begin{align*}
+F_0 &= 0 \\
+F_1 &= 1 \\
+F_{n+1} &= F_{n} + F_{n-1}
+\end{align*}
+$$
+
+Base case ($n=1$):
+
+$$
+A^1 = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix} = \begin{bmatrix}F_2 & F_1 \\ F_1 & F_0\end{bmatrix}
+$$
+
+Induction step ($n+1$):
+
+$$
+A^{n+1}=A\,A^n=\begin{bmatrix}
+1 & 1 \\ 1 & 0
+\end{bmatrix}\begin{bmatrix}
+F_{n+1} & F_{n} \\ F_{n} & F_{n-1}
+\end{bmatrix}=\begin{bmatrix}
+F_{n+1}+F_n & F_{n}+F_{n-1} \\  F_{n+1} & F_{n}
+\end{bmatrix}=\begin{bmatrix}
+F_{n+2} & F_{n+1} \\ F_{n+1} & F_{n}
+\end{bmatrix}
+$$
+
+The base case is true, and the induction step is true. Therefore the formula
+holds for all $n \in \mathbb{N}$.
+
+### Implementation
+
+**Time complexity:** $\mathcal{O}(\log n)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
+
+using Matrix = array<array<ll, 2>, 2>;
+
+Matrix mul(Matrix a, Matrix b) {
+	Matrix res = {{{0, 0}, {0, 0}}};
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
+			for(int k = 0; k < 2; k++) {
+				res[i][j] += a[i][k] * b[k][j];
+				res[i][j] %= MOD;
+			}
+		}
+	}
+
+	return res;
+}
+
+int main() {
+	ll n; cin >> n;
+
+	Matrix base = {{{1,0}, {0,1}}};
+	Matrix m = {{{1,1}, {1,0}}};
+
+	for(; n > 0; n /= 2, m = mul(m, m)) {
+		if(n & 1) base = mul(base, m);
+	}
+
+	cout << base[0][1];
+}
+```
 
 ## Problems
 
