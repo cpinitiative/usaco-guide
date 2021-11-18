@@ -84,9 +84,12 @@ vector<int> pi(const string &s) {
     int n = (int)s.size();
     vector<int> _pi(n);
     for (int i = 1, j = 0; i < n; i++) {
-        for (; j > 0 && s[j] != s[i]; j = _pi[j - 1]);
-        if (s[i] == s[j])
+        while (j > 0 && s[j] != s[i]) {
+		j = _pi[j - 1]
+	}
+        if (s[i] == s[j]) {
             j++;
+	}
         _pi[i] = j;
     }
     return _pi;
