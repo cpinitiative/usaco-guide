@@ -124,7 +124,7 @@ int main() {
 
 ## Solution - Rabin-Karp Algorithm
 
-Precompute the [rolling hash](https://usaco.guide/gold/string-hashing?lang=cpp) of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine (although it doesn't hurt to add more!). Using hash base $9973$ and modulo $10^9 + 7$ suffices. 
+Precompute the [rolling hash](https://usaco.guide/gold/string-hashing?lang=cpp) of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine (although it doesn't hurt to add more!). Using hash base $9973$ and modulo $10^9 + 7$ suffices (see the string hashing module for more details on this choice). 
 
 <LanguageSection>
 
@@ -165,8 +165,9 @@ int main() {
 
 	int ans = 0;
 	for (int i = 0; i + P.size() - 1 < T.size(); i++) {
-		long long curHash = (Thash[i + P.size() - 1] - 
-			(i == 0 ? 0 : (Thash[i - 1] * ppow) % hashMod) + hashMod) % hashMod;
+		long long r = Thash[i + P.size() - 1];
+		long long l = i == 0 ? 0 : (Thash[i - 1] * ppow % hashMod);
+		long long curHash = (r - l + hashMod) % hashMod;
 		if (curHash == Phash.back()) {
 			ans++;
 		}
