@@ -26,29 +26,34 @@ If we are searching for string $P$ inside of string $T$, create a new string $S 
 using namespace std;
 
 namespace str {
+	// Computes the Pi array of s
 	vector<int> pi(const string &s) {
 		int n = (int)s.size();
-		vector<int> _pi(n);
+		vector<int> pi_s(n);
 		for (int i = 1, j; i < n; i++) {
-			for (j = _pi[i - 1]; j > 0 && s[j] != s[i]; j = _pi[j - 1]);
-			if (s[i] == s[j])
+			while (j > 0 && s[j] != s[i]) {
+				j = pi_s[j - 1]
+			}
+			if (s[i] == s[j]) {
 				j++;
-			_pi[i] = j;
+			}
+			pi_s[i] = j;
 		}
-		return _pi;
+		return pi_s;
 	}
 }
 
-string P, T;
-
 int main() {
+	string P, T;
 	cin >> T >> P;
 	string S = P + '#' + T;
 	vector<int> pi = str::pi(S);   
 	int ans = 0;
-	for (int l : pi)
-		if (l == P.size())
+	for (int l : pi) {
+		if (l == P.size()) {
 			ans++;
+		}
+	}
 	cout << ans << '\n';
 }
 ```
@@ -78,31 +83,37 @@ As before, for pattern string $P$ and text string $T$, create a new string $S = 
 using namespace std;
 
 namespace str {
+	// Computes the Z-array of s
 	vector<int> z(const string &s) {
 		int n = (int)s.size();
-		vector<int> _z(n);
+		vector<int> z_S(n);
 		for (int i = 1, l = 0, r = 0; i < n; i++) {
-			if (i <= r)
-				_z[i] = min(_z[i - l], r - i + 1);
-			while (i + _z[i] < n && s[_z[i]] == s[i + _z[i]])
-				_z[i]++;
-			if (i + _z[i] - 1 > r)
-				l = i, r = i + _z[i] - 1;
+			if (i <= r) {
+				z_S[i] = min(z_S[i - l], r - i + 1);
+			}
+			while (i + z_S[i] < n && s[z_S[i]] == s[i + z_S[i]]) {
+				z_S[i]++;
+			}
+			if (i + z_S[i] - 1 > r) {
+				l = i;
+				r = i + z_S[i] - 1;
+			}
 		}
-		return _z;
+		return z_S;
 	}
 }
 
-string P, T;
-
 int main() {
+	string P, T;
 	cin >> T >> P;
 	string S = P + '#' + T;
 	vector<int> z = str::z(S);   
 	int ans = 0;
-	for (int l : z)
-		if (l == P.size())
+	for (int l : z) {
+		if (l == P.size()) {
 			ans++;
+		}
+	}
 	cout << ans << '\n';
 }
 ```
@@ -113,7 +124,7 @@ int main() {
 
 ## Solution - Rabin-Karp Algorithm
 
-Precompute the rolling hash of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine. Using hash base $9973$ and modulo $10^9 + 7$ suffices. 
+Precompute the [rolling hash](https://usaco.guide/gold/string-hashing?lang=cpp) of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine (although it doesn't hurt to add more!). Using hash base $9973$ and modulo $10^9 + 7$ suffices. 
 
 <LanguageSection>
 
@@ -126,31 +137,39 @@ Precompute the rolling hash of both $P$ and $T$. Each substring of length $|P|$ 
 using namespace std;
 
 namespace str {
+	// Computes the rolling hash of s with power P and modulo M
 	vector<long long> rhash(const string &s, const long long P, const long long M) {
 		int n = (int)s.size();
-		vector<long long> _rhash(n);
-		for (int i = 0; i < n; i++)
-			_rhash[i] = ((i == 0 ? 0 : _rhash[i - 1]) * P + (long long)s[i]) % M;
-		return _rhash;
+		vector<long long> rhash_S(n);
+		for (int i = 0; i < n; i++) {
+			if (i != 0) {
+				rhash_S[i] = rhash_S[i - 1] * P % M;
+			}
+			rhash_S[i] = (rhash_S[i] + (long long)s[i]) % M;
+		}
+		return rhash_S;
 	}
 }
 
 const long long hashPow = 9973, hashMod = 1e9 + 7;
 
-string P, T;
-
 int main() {
+	string P, T;
 	cin >> T >> P;
 	auto Phash = str::rhash(P, hashPow, hashMod), Thash = str::rhash(T, hashPow, hashMod);
-	long long ppow = 1;  // hashPow to the power of |P|
-	for (int i = 0; i < P.size(); i++)
+	
+	long long ppow = 1;  // hashPow to the power of |P| modulo hashMod
+	for (int i = 0; i < P.size(); i++) {
 		ppow = (ppow * hashPow) % hashMod;
+	}
+
 	int ans = 0;
 	for (int i = 0; i + P.size() - 1 < T.size(); i++) {
 		long long curHash = (Thash[i + P.size() - 1] - 
 			(i == 0 ? 0 : (Thash[i - 1] * ppow) % hashMod) + hashMod) % hashMod;
-		if (curHash == Phash.back())
+		if (curHash == Phash.back()) {
 			ans++;
+		}
 	}
 	cout << ans << '\n';
 }
