@@ -5,13 +5,14 @@ title: Rectangles
 author: Kevin Sheng
 ---
 
-Let's first simplify this problem, and then apply the solution of that problem to this one.
+Let's first simplify this problem, and then generalize the solution of that problem to this one.
 
 Say we had a matrix of all `0`'s and `1`'s. How many submatrices of all `1`'s are there?
 
-We first define a 2D array, $\texttt{longest\_consec}$, that contains for each cell how many `1`'s there are to the right.  
+Let's first define a 2D array, $\texttt{longest\_consec}$, that contains the number of consecutive `1`'s that are directly to the right for each cell (including the cell itself).  
 For example, this matrix:
 
+<center>
 <table>
 	<tr>
 		<td>1</td>
@@ -32,21 +33,23 @@ For example, this matrix:
 		<td>1</td>
 	</tr>
 </table>
+</center>
 
 Would have the following $\texttt{longest\_consec}$:
 
+<center>
 <table>
 	<tr>
 		<td>1</td>
 		<td>0</td>
-		<td>1</td>
 		<td>2</td>
+		<td>1</td>
 	</tr>
 	<tr>
 		<td>0</td>
-		<td>1</td>
-		<td>2</td>
 		<td>3</td>
+		<td>2</td>
+		<td>1</td>
 	</tr>
 	<tr>
 		<td>0</td>
@@ -55,17 +58,17 @@ Would have the following $\texttt{longest\_consec}$:
 		<td>1</td>
 	</tr>
 </table>
+</center>
 
 Now, we go through each column and then for each row in reverse,
-finding out for each cell the number of submatrices of all `1`'s
-that have said cell as an upper left corner.
+find out for each cell the number of all `1`'s submatrices where the cell is the upper left corner.
 
 How do we do this?  
-First, let's initialize a stack $\texttt{rel\_streaks}$ and a number $\texttt{curr\_sum}$.  
-$\texttt{rel\_streaks}$ will have elements each with two things:
+First, let's initialize a stack $\texttt{rel\_streaks}$ which will have elements with two properties:
 the value of $\texttt{longest\_consec}$ for that element and the difference in row number
-(aka distance) between that element and the next element in the stack.  
-$\texttt{curr\_sum}$, after processing, will contain
+(aka distance) between that element and the next element in the stack. 
+
+Also initialize a number $\texttt{curr\_sum}$, which, after processing, will contain
 the number of submatrices of all `1`'s that start at each cell.
 
 Now, let's say we just started at a particular cell. How should we change our value of $\texttt{curr\_sum}$?  
@@ -88,9 +91,11 @@ variables when we encounter a number different than the previous ones we were pr
 **Time Complexity:** $\mathcal{O}(TRC)$
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -173,14 +178,16 @@ int main() {
 }
 ```
 
-<CPPSection>
+</CPPSection>
+
+
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public final class Rectangles {
+public class Rectangles {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int testNum = Integer.parseInt(read.readLine());
@@ -190,7 +197,8 @@ public final class Rectangles {
 			int colNum = Integer.parseInt(initial.nextToken());
 			int[][] grid = new int[rowNum][];
 			for (int r = 0; r < rowNum; r++) {
-				grid[r] = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+				grid[r] = Arrays.stream(read.readLine().split(" "))
+						.mapToInt(Integer::parseInt).toArray();
 			}
 
 			int[][] longestConsec = new int[rowNum][colNum];
@@ -210,7 +218,7 @@ public final class Rectangles {
 
 			long total = 0;
 			for (int c = 0; c < colNum; c++) {
-				ArrayDeque<int[]> relStreaks = new ArrayDeque<>();
+				Stack<int[]> relStreaks = new Stack<>();
 				int currSum = 0;  // the current amt of valid submatrices
 				int curr = grid[rowNum - 1][c];
 				/*
@@ -222,7 +230,7 @@ public final class Rectangles {
 					if (grid[r][c] != curr) {
 						curr = grid[r][c];
 						currSum = 0;
-						relStreaks = new ArrayDeque<>();
+						relStreaks = new Stack<>();
 					}
 
 					/*
@@ -240,7 +248,7 @@ public final class Rectangles {
 						popped += relStreaks.peek()[1] + 1;
 						relStreaks.pop();
 					}
-					relStreaks.addFirst(new int[] {longestConsec[r][c], popped});
+					relStreaks.add(new int[] {longestConsec[r][c], popped});
 					currSum += longestConsec[r][c];  // add the submatrices of height 1
 					total += currSum;
 				}
