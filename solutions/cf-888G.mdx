@@ -9,11 +9,11 @@ author: Dustin Miao
 
 The [Official Editorial](https://codeforces.com/blog/entry/55701) uses a solution with Boruvka's Algorithm. There is a simpler solution using divide and conquer.
 
-Firstly, note that because there is essentially an edge between any pair of nodes, the value of the nodes themselves can be considered unordered. Thus, the answer will not change if we sort the elements. 
+Firstly, note that because there is essentially an edge between any pair of nodes, the values of the nodes themselves can be considered unordered. Thus, the answer will not change if we sort the elements. 
 
 Secondly, note that duplicate elements can be removed. This is because duplicate elements can be connected with an edge of 0 cost.
 
-After these two steps, we have obtained a sorted array with no duplicates whos answer is the same as the original problem.
+After these two steps, we have obtained a sorted array with no duplicates whose answer is the same as the original problem.
 
 Now consider some subarray $[l, r]$ as well as some bit $b$ ($0 \leq l \leq r < N$, $0 \leq b < 30$). Partition the subarray into two sets $L$ and $R$, where $R$ contains all elements with bit $b$ set, and $L$ contains other elements. We will be assuming that $b$ is the first different bit; that is, all elements in the subarray have the same bits for all bits greater than $b$. 
 
@@ -32,7 +32,7 @@ Without loss of generality, disconnect $(l_2, r_2)$. The spanning tree becomes d
 ![](<cf-888G/single.png>)
 
 By definition, $l_1$ and $l_2$ share a bit $b$, so the xor of their values does not contain bit $b$, whereas $l_2 \texttt{ xor } r_2$ always contains $b$. 
-Note that this implies that it is always better to connect $l_2$ to $l_1$; however, this configuration may not be optimal. The proof is analguous if instead $r_2$ is disconnected. $\blacksquare$
+Note that this implies that it is always better to connect $l_2$ to $l_1$; however, this configuration may not be optimal. The proof is analogous if instead $r_2$ is disconnected. $\blacksquare$
 
 Thus, the divide and conquer algorithm will proceed as follows: We will partition the subarray into $L$ and $R$. This step takes $\mathcal{O}(n)$ time. Note that if either $L$ or $R$ is empty (if all numbers in the range contain $b$ or if none of them contain $b$), we immeditately recurse with the same subarray and $b - 1$ as the bit. Next, we will choose an element from $L$ and an element $R$ with a minimum pairwise xor, and add this to the answer. Lastly, recursively run the algorithm on $L$ and $R$ with bit $b - 1$. 
 
