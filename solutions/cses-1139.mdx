@@ -39,20 +39,21 @@ struct BIT {
 		int n;
 		BIT(int n) : n(n + 1), bit(n + 1) { }
 		int sum(int r) {
-				r++;
-				int ret = 0;
-				while (r > 0) {
-						ret += bit[r];
-						r -= r & -r;
-				}
-				return ret;
+			r++;
+			int ret = 0;
+			while (r > 0) {
+				ret += bit[r];
+				r -= r & -r;
+			}
+			return ret;
 		}
+
 		void update(int idx, int v) {
-				idx++;
-				while (idx < n) {
-						bit[idx] += v;
-						idx += idx & -idx;
-				}
+			idx++;
+			while (idx < n) {
+				bit[idx] += v;
+				idx += idx & -idx;
+			}
 		}
 };
 
@@ -86,8 +87,9 @@ int main() {
 	}
 	dfs(1);
 	BIT bit(N);
-	map<int, int> last;
+
 	// This map stores the rightmost occurrence of each color
+	map<int, int> last;
 
 	for (int i = 0; i < N; i++) {
 		// If we ever considered the color of tour[i]
