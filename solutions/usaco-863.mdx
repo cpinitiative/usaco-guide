@@ -21,51 +21,52 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Teamwork {
-    public static void main(String[] args) throws IOException {
-        Kattio kattio = new Kattio("teamwork");
-        int cows = kattio.nextInt();
-        int teamSize = kattio.nextInt();
-        int[] input = new int[cows];
-        for (int i = 0; i < cows; i++) {
-            input[i] = kattio.nextInt();
-        }
+	public static void main(String[] args) throws IOException {
+		Kattio kattio = new Kattio("teamwork");
+		int cows = kattio.nextInt();
+		int teamSize = kattio.nextInt();
+		int[] input = new int[cows];
+		for (int i = 0; i < cows; i++) {
+			input[i] = kattio.nextInt();
+		}
 
-        /*
-         * dp[i] is the maximum sum of skill level of the first i cows,
-         * if the last team ends at index i.
-         */
-        int[] dp = new int[cows];
-        dp[0] = input[0];
+		/*
+		 * dp[i] is the maximum sum of skill level of the first i cows,
+		 * if the last team ends at index i.
+		 */
+		int[] dp = new int[cows];
+		dp[0] = input[0];
 
-        for (int right = 1; right < cows; right++) {
-            /* The max skill of the cows in the new team. */
-            int maxSkill = input[right];
-            for (int left = right; left >= 0; left--) {
-                int curSize = right - left + 1;
-                if (curSize > teamSize) {
-                    break;
-                }
-                maxSkill = Math.max(maxSkill, input[left]);
-                /*
-                 * The 'new' result is the sum of the skill levels of the
-                 * previous teams plus the skill level of the current team.
-                 */
-                if (left == 0) {
-                    dp[right] = Math.max(dp[right], maxSkill * curSize);
-                } else {
-                    dp[right] = Math.max(dp[right], 
-                            dp[left - 1] + maxSkill * curSize);
-                }
-            }
-        }
-        kattio.println(dp[cows - 1]);
-        kattio.close();
-    }
+		for (int right = 1; right < cows; right++) {
+			/* The max skill of the cows in the new team. */
+			int maxSkill = input[right];
+			for (int left = right; left >= 0; left--) {
+				int curSize = right - left + 1;
+				if (curSize > teamSize) {
+					break;
+				}
+				maxSkill = Math.max(maxSkill, input[left]);
+				/*
+				 * The 'new' result is the sum of the skill levels of the
+				 * previous teams plus the skill level of the current team.
+				 */
+				if (left == 0) {
+					dp[right] = Math.max(dp[right], maxSkill * curSize);
+				} else {
+					dp[right] = Math.max(dp[right], 
+							dp[left - 1] + maxSkill * curSize);
+				}
+			}
+		}
+		kattio.println(dp[cows - 1]);
+		kattio.close();
+	}
 
-    // CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
 
 </LanguageSection>
+
