@@ -36,11 +36,11 @@ Note that this implies that it is always better to connect $l_2$ to $l_1$; howev
 
 Thus, the divide and conquer algorithm will proceed as follows: We will partition the subarray into $L$ and $R$. This step takes $\mathcal{O}(n)$ time. Note that if either $L$ or $R$ is empty (if all numbers in the range contain $b$ or if none of them contain $b$), we immeditately recurse with the same subarray and $b - 1$ as the bit. Next, we will choose an element from $L$ and an element $R$ with a minimum pairwise xor, and add this to the answer. Lastly, recursively run the algorithm on $L$ and $R$ with bit $b - 1$. 
 
-How do we find two values such that their xor is minimized? One way to do this efficiently is with a trie. In the trie, each number is represented as a string of its binary representation, starting with the most significant digit and ending with the least. For xor queries, we can do a greedy traversal from root to leaf. When a transition exists that corresponds to the current bit of the query number, we greedily take that transition; otherwise, we are forced to take the unoptimal transition, and add the weight of that bit to the answer. Because there are $n$ strings and each string is $\log a$ long (where $a$ is the maximum value of an element), this step takes $\mathcal{O}(n \log a)$.
+How do we find two values such that their xor is minimized? One way to do this efficiently is with a trie. In the trie, each number is represented as a string of its binary representation, starting with the most significant digit and ending with the least. For xor queries, we can do a greedy traversal from root to leaf. When a transition exists that corresponds to the current bit of the query number, we greedily take that transition; otherwise, we are forced to take the unoptimal transition, and add the weight of that bit to the answer.
 
 ## Implementation
 
-**Time Complexity:** By the master theorem, because each step takes $\mathcal{O}(n \log a)$, the entire complexity is $\mathcal{O}(n \log n \log a)$
+**Time Complexity:** Let $n$ be the length of the array, and let $a$ be the value of an arbitrary element. There are $\log a \approx 30$ levels of recursion, each containing exactly $n$ elements. Furthermore, each insertion/query in the trie takes $\mathcal{O}(\log a)$ time, since we have to traverse at most the number of distinct bits in $a$. Combining this information, the total time complexity is $\mathcal{O}(n \log^2 a)$
 
 <LanguageSection>
 
