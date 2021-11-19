@@ -41,8 +41,8 @@ public class Teamwork {
 			/* The max skill of the cows in the new team. */
 			int maxSkill = input[right];
 			for (int left = right; left >= 0; left--) {
-				int curSize = right - left + 1;
-				if (curSize > teamSize) {
+				int currSize = right - left + 1;
+				if (currSize > teamSize) {
 					break;
 				}
 				maxSkill = Math.max(maxSkill, input[left]);
@@ -51,10 +51,10 @@ public class Teamwork {
 				 * previous teams plus the skill level of the current team.
 				 */
 				if (left == 0) {
-					dp[right] = Math.max(dp[right], maxSkill * curSize);
+					dp[right] = Math.max(dp[right], maxSkill * currSize);
 				} else {
-					dp[right] = Math.max(dp[right], 
-							dp[left - 1] + maxSkill * curSize);
+					dp[right] = Math.max(dp[right],
+							dp[left - 1] + maxSkill * currSize);
 				}
 			}
 		}
