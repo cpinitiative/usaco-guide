@@ -79,7 +79,7 @@ export default async function updateLiveMailingList({
       {
         tags: [
           {
-            name: `October 2021 ${
+            name: `Winter 2022 ${
               level === 'beginner' ? 'Beginner' : 'Intermediate'
             } Class`,
             status: 'active',
@@ -87,7 +87,7 @@ export default async function updateLiveMailingList({
           ...(fullFinancialAid
             ? [
                 {
-                  name: `October 2021 Full Financial Aid`,
+                  name: `Winter 2022 Full Financial Aid`,
                   status: 'active',
                 },
               ]
