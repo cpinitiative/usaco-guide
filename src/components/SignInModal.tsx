@@ -1,9 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
 import {
+  fetchSignInMethodsForEmail,
   getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
+  linkWithCredential,
   signInWithPopup,
 } from 'firebase/auth';
 import React, { Fragment } from 'react';
@@ -36,20 +38,50 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       });
   };
   const handleSignInWithGithub = () => {
-    console.log('signing in with github');
     setIsSigningIn(true);
     setError(null);
     signInWithPopup(getAuth(firebaseApp), new GithubAuthProvider())
       .then(() => {
-        console.log('signed in');
         setIsSigningIn(false);
         onClose();
       })
       .catch(e => {
-        setIsSigningIn(false);
-        setError(e);
+        if (e.code === 'auth/account-exists-with-different-credential') {
+          fetchSignInMethodsForEmail(getAuth(firebaseApp), e.email).then(
+            providers => {
+              console.log(providers);
+              // const firstPopupProviderMethod = providers.find(p => [GoogleAuthProvider.PROVIDER_ID, GithubAuthProvider.PROVIDER_ID].includes(p));
+              const linkedProvider = new GoogleAuthProvider();
+              linkedProvider.setCustomParameters({ login_hint: e.email });
+              const res = signInWithPopup(
+                getAuth(firebaseApp),
+                linkedProvider
+              ).then(user => {
+                linkWithCredential(
+                  getAuth(firebaseApp).currentUser,
+                  e.credential
+                );
+              });
+            }
+          );
+          setIsSigningIn(false);
+        } else {
+          setIsSigningIn(false);
+          setError(e);
+        }
       });
   };
+
+  // const handleLinkAccounts = (credential) => {
+  //   fetchSignInMethodsForEmail(getAuth(firebaseApp), e.email).then(providers => {
+  //     console.log(providers);
+  //     const firstPopupProviderMethod = providers.find(p => [GoogleAuthProvider.PROVIDER_ID, GithubAuthProvider.PROVIDER_ID].includes(p));
+  //     const linkedProvider = new getProvider(firstPopupProviderMethod);
+  //     linkedProvider.setCustomParameters({login_hint: e.email});
+  //     const res = signInWithPopup(linkedProvider);
+  //     res.user.linkWithCredential(e.credential);
+  //   });
+  // };
 
   React.useEffect(() => {
     if (isOpen) setError(null);
