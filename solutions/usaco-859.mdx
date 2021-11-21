@@ -1,0 +1,73 @@
+---
+id: usaco-859
+source: USACO Silver 2018 December
+title: Convention II
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_convention2_silver_dec18.html)
+
+Due to the low bounds on $N$, we can naively simulate the events. We'll sort by arrival time to process the cows in order.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+int main() {
+	freopen("convention2.in", "r", stdin);
+	freopen("convention2.out", "w", stdout);
+	
+	int n;
+	vector<vector<int>> cows;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int start, duration;
+		cin >> start >> duration;
+		cows.push_back({i, start, duration});
+	}
+	// sort by arrival time.
+	sort(cows.begin(), cows.end(), [](const vector<int> &a, const vector<int> &b) {
+		return a[1] < b[1];
+	});
+
+	int time = 0, cur = 0, ans = 0;
+	
+	// sorted by priority so that the highest seniority starts eating first
+	set<vector<int>> waiting;
+	// as long as we haven't processed all cows or there are still cows waiting
+	while (cur < n || waiting.size() > 0) {
+		// this cow can be processed.
+		if (cur < n && cows[cur][1] <= time) {
+			waiting.insert(cows[cur]);
+			cur++;
+		// no cow waiting, skip to the next cow.
+		} else if (waiting.size() == 0) {
+			// set time to the ending time of the next cow.
+			time = cows[cur][1] + cows[cur][2];
+			cur++;
+		} else {
+			// process the next cow
+			vector<int> next = *waiting.begin();
+			ans = max(ans, time - next[1]);
+
+			// set the time to when this cow finishes.
+			time += next[2];
+			waiting.erase(waiting.begin());
+		}
+	}
+	cout << ans << '\n';
+}
+```
+</CPPSection>
+</LanguageSection>

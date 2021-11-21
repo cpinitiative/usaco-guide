@@ -8,6 +8,7 @@ import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import AdminViewAllGroups from './AdminViewAllGroups';
 import { GroupCard } from './GroupCard';
 
 const GroupSelectPage = (props: { path: string }) => {
@@ -75,6 +76,19 @@ const GroupSelectPage = (props: { path: string }) => {
                 </p>
               </div>
             ))}
+
+          {permissions.isAdmin && (
+            <>
+              <div className="h-12"></div>
+              <div className="flex items-center justify-between">
+                <h1 className="text-xl md:text-3xl font-bold">
+                  All Groups (Admin Only)
+                </h1>
+              </div>
+              <hr className="mt-6 mb-8 dark:border-gray-700" />
+              <AdminViewAllGroups />
+            </>
+          )}
         </div>
       </main>
     </Layout>

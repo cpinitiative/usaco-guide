@@ -1,0 +1,179 @@
+---
+id: cf-963D
+source: CF
+title: Frequency of String
+author: Dustin Miao
+---
+
+The [official editorial](https://codeforces.com/blog/entry/58991) mentions a solution using an Aho-Corasick Automaton built over the query strings. We run the initial string through the automaton to locate all occurence positions of each query. The answer can easily be identified for each query by using a sliding window. 
+
+More intuitively, instead of building an Aho-Corasick automaton over the queries, let us build a suffix automaton over the input string. Like before, we will need all occurence positions.
+
+For a state $s$, let $pos[s]$ denote the ending position of the first occurence of any string that corresponds to state $s$. 
+- When we create a new state $s$, then $pos[s] = len[s] - 1$
+- When we clone state $t$ to create a state $s$, then $pos[s] = pos[t]$
+With this method,  we can easily initialize $pos$ without any extra time complexity. Let $occ_P$ be the set of positions where a string $P$ begins in the string. If state $s$ corresponds to $P$, then clearly $(pos[p] - |P| + 1) \in occ_P$. To find the remainder of occurence positions, we can take advantage of the structure of the suffix automaton. 
+
+All states where $P$ is a suffix is a candidate for $occ_P$. Thus, we simply do a BFS/DFS on the _suffix-link tree_, or the tree formed by building a tree out of the suffix links and rooted at the initial state, starting from state that we arrive at when we run $P$ through the suffix automaton. There is a technicality that more than one state may have the same occurence position. Namely, this happens only with cloned states; thus, we redefine $pos[s] = -1$ for all cloned states $s$. 
+
+We can preprocess all queries, and solve them all with a single BFS/DFS. 
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(m \sqrt{m} \log n)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+using pii = pair<int, int>;
+
+//BeginCodeSnip{Suffix Automaton}
+/**
+ * Generates the Suffix Automaton of a given string
+ * Complexity: O(|S|)
+ */ 
+struct SuffixAuto {
+	struct State {
+		int len, link, pos;
+		int next[26];
+		State(int len = 0, int link = -1, int pos = -1) : len(len), link(link), pos(pos) {
+			memset(next, -1, sizeof(next));
+		}
+	};
+ 
+	vector<State> states;
+	
+	SuffixAuto() {}
+ 
+	SuffixAuto(const string &S) { 
+		states.reserve(2 * S.size());
+		last = state();
+		for (char c : S) {
+			extend(c);
+		}
+	}
+ 
+	void extend(char l) {
+		int c = encode(l); 
+		int cur = state(states[last].len + 1, -1, states[last].len), P = last; 
+		while (P != -1 && states[P].next[c] == -1) {
+			states[P].next[c] = cur;
+			P = states[P].link;
+		}
+		if (P == -1) {
+			states[cur].link = 0;
+		} else {
+			int Q = states[P].next[c];
+			if (states[P].len + 1 == states[Q].len) {
+				states[cur].link = Q;
+			} else {
+				int C = state(states[P].len + 1, states[Q].link, -1);
+				copy(states[Q].next, states[Q].next + 26, states[C].next);
+				while (P != -1 && states[P].next[c] == Q) {
+					states[P].next[c] = C;
+					P = states[P].link;
+				}
+				states[Q].link = states[cur].link = C;
+			}
+		}
+		last = cur;
+	}
+	
+	int run(string &P) {
+		int s = 0;
+		for (char _c : P) {
+			int c = encode(_c);
+			s = states[s].next[c];
+			if (s == -1) {
+				return -1;
+			}
+		}
+		return s;
+	}
+ 
+private:
+	int last;
+ 
+	int encode(char c) { return c - 'a'; }
+ 
+	inline int state(int len = 0, int link = -1, int pos = -1) {
+		states.emplace_back(len, link, pos);
+		return states.size() - 1;
+	}
+};
+//EndCodeSnip
+
+const int MAXN = 1e5 + 1;
+	
+string S;
+SuffixAuto sa;
+ 
+// answer for query
+int Q, ans[MAXN];  
+// queries per state
+vector<pii> queries[MAXN];  
+// suffix link tree (at most 2 * |S| nodes)
+vector<int> suffix_link_tree[MAXN * 2]; 
+ 
+vector<int> ord;  // visited nodes in dfs
+ 
+void dfs(int u) {
+	int l = ord.size();
+	if (sa.states[u].pos != -1) {
+		ord.PB(sa.states[u].pos);
+	}
+
+	for (int v : suffix_link_tree[u]) {
+		dfs(v);
+	}
+
+	if (queries[u].size()) {
+		int r = ord.size();
+		sort(ord.begin() + l, ord.end()); 
+		for (auto [q, K] : queries[u]) {
+			int t = INT_MAX;
+			for (int i = l; i + K - 1 < r; i++) {
+				t = min(t, ord[i + K - 1] - ord[i]);
+			}
+			if (t != INT_MAX) {
+				ans[q] += t;
+			}
+			else {
+				ans[q] = -1;
+			}
+		}
+	}  
+} 
+ 
+int main() {
+	cin >> S >> Q;
+	sa = SuffixAuto(S);
+	for (int i = 1; i < sa.states.size(); i++) {
+		suffix_link_tree[sa.states[i].link].push_back(i);
+	}
+	for (int i = 0; i < Q; i++) {
+		int K; string P;
+		cin >> K >> P;
+		int s = sa.run(P);
+		if (s == -1) {
+			ans[i] = -1;
+		} else {
+			queries[s].EB(i, K);
+			ans[i] = P.size();
+		}
+	}
+ 
+	dfs(0);
+ 
+	for (int i = 0; i < Q; i++) {
+		cout << ans[i] << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
