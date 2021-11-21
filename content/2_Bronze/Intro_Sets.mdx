@@ -36,8 +36,8 @@ In _sorted_ sets, the elements are sorted in order of element. Insertions,
 deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number
 of elements in the set.
 
-Some possible operations on a C++
-[`std::set`](http://www.cplusplus.com/reference/set/set/) named `s` include:
+[`std::set`](http://www.cplusplus.com/reference/set/set/) implements sorted
+sets in C++. Some operations on an `std::set` named `s` include:
 
 - `s.insert(x)`, which adds the element `x` to `s` if not already present.
 - `s.erase(x)`, which removes the element `x` from `s` if present.
@@ -73,7 +73,7 @@ In _sorted_ sets, the pairs are sorted in order of key. Insertions, deletions,
 and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements
 in the set.
 
-Some possible operations on a `TreeSet` named `set` include:
+Some operations on a `TreeSet` named `set` include:
 
 - `set.add(x)`, which adds the element `x` to `set` if not already present.
 - `set.remove(x)`, which removes the element `x` from `set` if present.
@@ -105,7 +105,7 @@ for (int element : set) {
 <PySection>
 
 Python's built-in `set` uses hashing to support $\mathcal{O}(1)$ insertion,
-deletion, and searches. Some possible operations on a Python `set` named `s`
+deletion, and searches. Some operations on a Python `set` named `s`
 include:
 
 - `s.add(x)`: adds element `x` to `s` if not already present
@@ -240,8 +240,8 @@ In _sorted_ maps, the pairs are sorted in order of key. Insertions, deletions,
 and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of pairs in
 the map.
 
-Some possible operations on a C++
-[`std::map`](http://www.cplusplus.com/reference/map/map/) named `m` include:
+[`std::map`](http://www.cplusplus.com/reference/map/map/) implements sorted maps 
+in C++. Some operations on an `std::map` named `m` include:
 
 - `m[key]`, which returns a reference to the value associated with the key
   `key`.
@@ -258,7 +258,6 @@ Some possible operations on a C++
   - `m[key] = value` will assign the value `value` to the key `key`.
 - `m.count(key)`, which returns the number of times the key is in the map
   (either one or zero), and therefore checks whether a key exists in the map.
-
 - `m.erase(key)`, which removes the map entry associated with the specified key
   if the key was present in the map.
 
@@ -328,8 +327,8 @@ print(1 in d) # True
 
 <CPPSection>
 
-The map stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the form
-`{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
+An `std::map` stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the
+form `{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
 keyword suffices to iterate over any type of pair (here, `auto` substitutes for
 `pair<const int, int>`).
 
@@ -348,11 +347,11 @@ for (auto x : m) {
 */
 ```
 
-The first method is generally preferred over the second because the second will
-make a copy of each element that it iterates over.
-
-Additionally, you can pass by reference when iterating over a map, allowing you
-to modify the values (but not the keys) of the pairs stored in the map:
+The first method (iterating over const references) is generally preferred over
+the second because the second will make a copy of each element that it iterates 
+over. Additionally, you can pass by reference when iterating over a map, 
+allowing you to modify the values (but not the keys) of the pairs stored in the
+map:
 
 ```cpp
 for (auto& x : m) {
@@ -368,8 +367,6 @@ for (pair<int,int> x : m) {
 3 3
 */
 ```
-
-<!-- When passing by value (the first example), you can only access the `{key, value}` pairs. When you pass by reference (the second example),  --> <!-- you iterate through will change the values stored in the map. -->
 
 </CPPSection>
 
