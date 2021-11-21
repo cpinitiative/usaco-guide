@@ -35,22 +35,22 @@ const int MAXN = 100001;
 
 using ll = long long
 using pll = pair<ll, ll>;
-const ll INF = LLONG_MAX;
 #define FF first
 #define SS second
 
 int N, Q;
 vector<int> G[MAXN];
 
+// Segment Tree:
 namespace sgt {
 	pll T[MAXN * 4]; // {value, sum}
 	bool L[MAXN * 4]; // set tag
 
 	pll merge(pll l, pll r) {
-		if (l.SS == -INF) {
+		if (l.SS == -LLONG_MAX) {
 			return r;
 		}
-		if (r.SS == -INF) {
+		if (r.SS == -LLONG_MAX) {
 			return l;
 		}
 		return {max(l.FF + r.SS, r.FF), l.SS + r.SS};
@@ -115,7 +115,7 @@ namespace sgt {
 
 	pll query(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
 		if (r < tl || tr < l) {
-			return {-INF, -INF};
+			return {-LLONG_MAX, -LLONG_MAX};
 		}
 		if (l <= tl && tr <= r) {
 			return T[t];
@@ -127,6 +127,8 @@ namespace sgt {
 	}
 }
 
+	
+// Heavy-Light Decomposition:
 namespace hld {
 	int par[MAXN], hvy[MAXN], dep[MAXN], root[MAXN], lpos[MAXN], rpos[MAXN];
 
@@ -163,7 +165,7 @@ namespace hld {
 	}
 
 	void init() {
-		fill_n(hvy, 100005, -1);
+		fill_n(hvy, MAXN, -1);
 		par[1] = -1;
 		dep[1] = 0;
 		dfs1(1);
@@ -173,7 +175,7 @@ namespace hld {
 	}
 
 	pll query(int u) {
-		pll ans = {-INF, -INF};
+		pll ans = {-LLONG_MAX, -LLONG_MAX};
 		while (u != -1) {
 			ans = sgt::merge(sgt::query(lpos[root[u]], lpos[u]), ans);
 			u = par[root[u]];
