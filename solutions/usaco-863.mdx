@@ -1,0 +1,71 @@
+---
+id: usaco-863
+source: USACO Gold 2018 December
+title: Teamwork
+author: Sofia Yang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_teamwork_gold_dec18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot K)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Teamwork {
+	public static void main(String[] args) throws IOException {
+		Kattio kattio = new Kattio("teamwork");
+		int cows = kattio.nextInt();
+		int teamSize = kattio.nextInt();
+		int[] input = new int[cows];
+		for (int i = 0; i < cows; i++) {
+			input[i] = kattio.nextInt();
+		}
+
+		/*
+		 * dp[i] is the maximum sum of skill level of the first i cows,
+		 * if the last team ends at index i.
+		 */
+		int[] dp = new int[cows];
+		dp[0] = input[0];
+
+		for (int right = 1; right < cows; right++) {
+			// The max skill of the cows in the new team.
+			int maxSkill = input[right];
+			for (int left = right; left >= 0; left--) {
+				int currSize = right - left + 1;
+				if (currSize > teamSize) {
+					break;
+				}
+				maxSkill = Math.max(maxSkill, input[left]);
+				/*
+				 * The 'new' result is the sum of the skill levels of the
+				 * previous teams plus the skill level of the current team.
+				 */
+				if (left == 0) {
+					dp[right] = Math.max(dp[right], maxSkill * currSize);
+				} else {
+					dp[right] = Math.max(
+							dp[right], dp[left - 1] + maxSkill * currSize
+					);
+				}
+			}
+		}
+		kattio.println(dp[cows - 1]);
+		kattio.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
