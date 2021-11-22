@@ -47,7 +47,7 @@ frequency: 2
 	</Resource>
 </Resources>
 
-# Treaps
+## Treaps
 
 <FocusProblem problem="sam"/>
 
@@ -70,7 +70,7 @@ all descendants of a node will have smaller or equal priorities).
 Treaps have two main operations: splitting and merging. Other operations like
 insert, erase, and searching can be implemented in terms of these operations.
 
-## Splitting
+### Splitting
 
 The `split` method takes in a pointer to the root of a treap $\texttt{root}$ and
 a value $x$, and returns two treaps denoted as $\texttt{left}$ and
@@ -92,7 +92,7 @@ as $n.\texttt{left}$ and the right child as $n.\texttt{right}$.
   $\texttt{right}$ contains $\texttt{right'}$ and
   $\texttt{left} = \texttt{left'}$.
 
-## Merging
+### Merging
 
 The `merge` method inverts the `split` method by taking in two treaps
 $\texttt{left}$ and $\texttt{right}$ and returns a single treap that has the
@@ -105,7 +105,7 @@ We root the resultant treap at the root node that has the higher priority, and
 recursively call `merge` on the other tree and the corresponding subtree of the
 chosen tree.
 
-## Implementation
+### Implementation
 
 <LanguageSection>
 
@@ -257,7 +257,7 @@ For speed / memory, use arrays of fixed size rather than pointers.
 
 <FocusProblem problem="sam2"/>
 
-# Implicit Treaps
+## Implicit Treaps
 
 In their most basic form, Treaps are not very useful (languages like C++
 and Java already have a built-in self-balancing binary tree that is much more
@@ -278,9 +278,7 @@ this value implicitly.
 The index of a node is equal to the number of nodes less than it. It is
 important to note that these nodes can occur both in the left subtree of the
 current node as well as the node's ancestors and the left subtree of its
-ancestors. In other words,
-
-$$\texttt{index}(u) = |\{1 + \texttt{size}(P.\texttt{left}) \mid P \text{ is on path from } u \text{ to root}\}|$$
+ancestors. 
 
 Note that in an implicit treap, the merge function is largely unchanged because
 it does not depend on the key. In the split operation we go from the root down,
@@ -345,7 +343,7 @@ void split(Node *treap, Node *&left, Node *&right, int val) {
 	
 </LanguageSection>
 
-## Implementation
+### Implementation
 
 <LanguageSection>
 
@@ -359,7 +357,7 @@ struct Node {
 	Node(int c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
 } *root;
 
-inline int size(Node *treap) {
+int size(Node *treap) {
 	return treap ? treap->size : 0;
 }
 
@@ -411,13 +409,13 @@ With split and merge, how do we implement the additional operations?
   value, and merge the three sections together.
 - **Delete** can be done with two splits and one merge: We split the array into
   three parts before and after the index, and merge the two parts together.
-- **Range Queries** can be performed by maintaining additional data in each
+- **Range queries** can be performed by maintaining additional data in each
   node. We update this data whenever we update $\texttt{size}$.
-- **Range Updates** can be performed by maintaining a lazy tag in each node (as
+- **Range updates** can be performed by maintaining a lazy tag in each node (as
   in lazy propogation). When splitting or merging, we push these tags downwards
   and perform the corresponding operation.
 
-## Cut and Paste - Solution
+### Cut and Paste - Solution
 
 We will use implicit treaps to represent the array. For each operation, divide
 it into two phases: cut and paste. For the cut phase, we split the array into
