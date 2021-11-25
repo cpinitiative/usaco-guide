@@ -56,15 +56,18 @@ In that way, we can utilize lazy propgation on the segment tree. We will store a
 #include <bits/stdc++.h>
 using namespace std;
 
-#define FF first
-#define SS second
+#define f first
+#define s second
 
 using ll = long long;
 using pll = pair<ll, ll>;
-using Matrix = array<array<ll, 2>, 2>;
 
 const int MAXN = 1e5 + 1;
 const ll MOD = 1e9 + 7;
+	
+
+//BeginCodeSnip{Matrix Operations}
+using Matrix = array<array<ll, 2>, 2>;
 
 // multiplies two two-by-two matricies
 Matrix multiply(const Matrix &a, const Matrix &b) {
@@ -76,8 +79,8 @@ Matrix multiply(const Matrix &a, const Matrix &b) {
 
 // multiplies a one-by-two matrix with a two-by-two matrix
 pll multiply(const pll &a, const Matrix &b) {
-	return {(a.FF * b[0][0] + a.SS * b[1][0]) % MOD, 
-		(a.FF * b[0][1] + a.SS * b[1][1]) % MOD};
+	return {(a.f * b[0][0] + a.s * b[1][0]) % MOD, 
+		(a.f * b[0][1] + a.s * b[1][1]) % MOD};
 }
 
 // returns {0, 1, 1, 1,} to the power of n
@@ -92,6 +95,7 @@ Matrix pow(ll n) {
 	}
 	return res;
 }
+//EndCodeSnip
 
 int N, Q;
 pll tree[MAXN * 4];
@@ -99,7 +103,7 @@ ll lazy[MAXN * 4];
 
 // returns the pair-sum of a and b
 pll merge(const pll &a, const pll &b) {
-	return {(a.FF + b.FF) % MOD, (a.SS + b.SS) % MOD};
+	return {(a.f + b.f) % MOD, (a.s + b.s) % MOD};
 }
 
 // pushes lazy update in t to its children
@@ -137,7 +141,7 @@ ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
 		return 0;
 	}
 	if (l <= tl && tr <= r) {
-		return tree[t].FF;
+		return tree[t].f;
 	}
 	pushdown(t);
 
