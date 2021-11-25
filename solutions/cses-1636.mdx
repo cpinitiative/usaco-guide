@@ -77,4 +77,40 @@ int main(){
 
 </CPPSection>
 
+	
+</JavaSection>
+```java
+//lordboba was here
+import java.io.*;
+
+public class CoinComb2 {
+	static StreamTokenizer in;
+	static int nextInt() throws IOException{
+		in.nextToken();
+		return (int)in.nval;
+	}
+	public static void main(String[] args) throws IOException{
+		in = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
+		int N = nextInt(), K = nextInt();
+		int dp[] = new int[K+1];
+		dp[0] = 1;
+		int coins[] = new int[N];
+		for(int i = 0; i < N; ++i) {
+			coins[i] = nextInt();
+		}
+		int MOD = (int)1e9 + 7;
+		for(int j = 0; j < N; ++j) {
+			for(int i = 1; i <= K; ++i) {
+				if(coins[j] > i) {continue;}
+				dp[i] += dp[i-coins[j]];
+				if(dp[i]>MOD) {dp[i]-=MOD;} //slightly faster mod method for addition
+			}
+		}
+		System.out.println(dp[K]);
+	}
+
+}
+
+```
+</JavaSection>
 </LanguageSection>
