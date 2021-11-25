@@ -7,7 +7,7 @@ author: Dustin Miao
 
 # Explaination
 
-The [Official Editorial](https://codeforces.com/blog/entry/44259) uses a divide and conquer approach. However, like many divide and conquer optimization problems, this can also be solved using [convex hull trick](https://usaco.guide/plat/convex-hull-trick?lang=cpp).
+The [Official Editorial](https://codeforces.com/blog/entry/44259) uses a divide and conquer approach. However, like many divide and conquer optimization problems, this can also be solved using the [convex hull trick](https://usaco.guide/plat/convex-hull-trick?lang=cpp).
 
 First, define the following:
 
@@ -51,7 +51,7 @@ $$
 
 We rearrange the equation such that terms that depend only on $l$ are wrapped in parenthesis inside of the $\max$ statement and terms that depend only on $r$ are moved outside of the $\max$ statement. Note that there is only a single term that depends on both $l$ and $r$. 
 
-Because of this property, we can use convex hull trick. Each value can be represented as a linear function of the form 
+Because of this property, we can use the convex hull trick. Each value can be represented as a linear function of the form 
 
 $$
 g_l(x) = l \cdot x + (\texttt{ips}[l - 1] - \texttt{pre}[l - 1] + l \cdot \texttt{pre}[l - 1])
@@ -121,9 +121,11 @@ struct LineContainer : multiset<Line> {
 	}
 };
 //EndCodeSnip
+	
+const int MAXN = 2e5 + 1;
 
 int N;
-long long A[200005], pre[200005], ips[200005];
+long long A[MAXN], pre[MAXN], ips[MAXN];
 
 int main() {
     cin >> N;
@@ -139,7 +141,6 @@ int main() {
         lc.add(-i, (i - 1) * pre[i - 1] - ips[i - 1]);
         ans = max(ans, lc.query(pre[i]) + pre[i] + ips[i]);
     }
-
     cout << ans << '\n';
 }
 ```
