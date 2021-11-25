@@ -1,11 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
 import {
-  fetchSignInMethodsForEmail,
+  AuthCredential,
   getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
   linkWithCredential,
+  signInWithCredential,
   signInWithPopup,
 } from 'firebase/auth';
 import React, { Fragment } from 'react';
@@ -23,6 +24,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
 }) => {
   const firebaseApp = useFirebaseApp();
   const [isSigningIn, setIsSigningIn] = React.useState(false);
+  const [isLinking, setIsLinking] = React.useState(false);
   const [error, setError] = React.useState(null);
   const handleSignInWithGoogle = () => {
     setIsSigningIn(true);
@@ -33,8 +35,24 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         onClose();
       })
       .catch(e => {
-        setIsSigningIn(false);
+        if (e.code == 'auth/account-exist-with-different-credential') {
+          setIsLinking(true);
+          const credential = GoogleAuthProvider.credentialFromError(e);
+          handleLinkAccounts(e.customData.email, credential)
+            .then(() => {
+              onClose();
+            })
+            .catch(e => {
+              setError(e);
+            });
+        } else {
+          setError(e);
+        }
         setError(e);
+      })
+      .finally(() => {
+        setIsLinking(false);
+        setIsSigningIn(false);
       });
   };
   const handleSignInWithGithub = () => {
@@ -42,46 +60,47 @@ export const SignInModal: React.FC<SignInModalProps> = ({
     setError(null);
     signInWithPopup(getAuth(firebaseApp), new GithubAuthProvider())
       .then(() => {
-        setIsSigningIn(false);
         onClose();
       })
       .catch(e => {
         if (e.code === 'auth/account-exists-with-different-credential') {
-          fetchSignInMethodsForEmail(getAuth(firebaseApp), e.email).then(
-            providers => {
-              console.log(providers);
-              // const firstPopupProviderMethod = providers.find(p => [GoogleAuthProvider.PROVIDER_ID, GithubAuthProvider.PROVIDER_ID].includes(p));
-              const linkedProvider = new GoogleAuthProvider();
-              linkedProvider.setCustomParameters({ login_hint: e.email });
-              const res = signInWithPopup(
-                getAuth(firebaseApp),
-                linkedProvider
-              ).then(user => {
-                linkWithCredential(
-                  getAuth(firebaseApp).currentUser,
-                  e.credential
-                );
-              });
-            }
-          );
-          setIsSigningIn(false);
+          setIsLinking(true);
+          const credential = GithubAuthProvider.credentialFromError(e);
+          handleLinkAccounts(e.customData.email, credential)
+            .then(() => {
+              onClose();
+            })
+            .catch(e => {
+              setError(e);
+            });
         } else {
-          setIsSigningIn(false);
           setError(e);
         }
+      })
+      .finally(() => {
+        setIsLinking(false);
+        setIsSigningIn(false);
       });
   };
 
-  // const handleLinkAccounts = (credential) => {
-  //   fetchSignInMethodsForEmail(getAuth(firebaseApp), e.email).then(providers => {
-  //     console.log(providers);
-  //     const firstPopupProviderMethod = providers.find(p => [GoogleAuthProvider.PROVIDER_ID, GithubAuthProvider.PROVIDER_ID].includes(p));
-  //     const linkedProvider = new getProvider(firstPopupProviderMethod);
-  //     linkedProvider.setCustomParameters({login_hint: e.email});
-  //     const res = signInWithPopup(linkedProvider);
-  //     res.user.linkWithCredential(e.credential);
-  //   });
-  // };
+  // links account from credential with the account from other provider (either Google or Github)
+  const handleLinkAccounts = async (
+    email: string,
+    credential: AuthCredential
+  ) => {
+    let otherProvider: GoogleAuthProvider | GithubAuthProvider;
+    if (credential.signInMethod === 'github.com') {
+      otherProvider = new GoogleAuthProvider();
+    } else if (credential.signInMethod === 'google.com') {
+      otherProvider = new GithubAuthProvider();
+    } else {
+      throw new Error('Unsupported sign in method');
+    }
+    otherProvider.setCustomParameters({ login_hint: email });
+    await signInWithPopup(getAuth(firebaseApp), otherProvider);
+    await linkWithCredential(getAuth(firebaseApp).currentUser, credential);
+    await signInWithCredential(getAuth(firebaseApp), credential);
+  };
 
   React.useEffect(() => {
     if (isOpen) setError(null);
@@ -218,6 +237,14 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                   <div>
                     <p className="text-red-700 dark:text-red-300">
                       Error: {error.code}
+                    </p>
+                  </div>
+                )}
+                {isLinking && (
+                  <div>
+                    <p className="text-green-700 dark:text-green-300">
+                      Linking: please sign in with the same email to link the
+                      two accounts
                     </p>
                   </div>
                 )}
