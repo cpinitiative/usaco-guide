@@ -1253,13 +1253,14 @@ for _ in range(queryNum):
 <LanguageSection>
 <CPPSection>
     ```cpp
-int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
+int findMaxTrue(int l, int r, function<bool(int)> f) {
 	while (l < r) {
 		int m = (l + r) / 2;
-		if (someBooleanFunction(m))
+		if (f(m)) {
 			l = m;
-		else 
+		} else {
 			r = m - 1;
+		}
 	}
 	return l;
 }
@@ -1269,13 +1270,14 @@ int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
 
 <Quiz.Answer>
 ```cpp
-int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
+int findMaxTrue(int l, int r, function<bool(int)> f) {
 	while (l <= r) { // <= instead of <
 		int m = (l + r) / 2;
-		if (someBooleanFunction(m))
+		if (f(m)) {
 			l = m;
-		else 
+		} else {
 			r = m - 1;
+		}
 	}
 	return l;
 }
@@ -1291,13 +1293,14 @@ and call `findMaxTrue(1, 11, someBooleanFunction)`, the program will never termi
 
 <Quiz.Answer>
 ```cpp
-int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
+int findMaxTrue(int l, int r, function<bool(int)> f) {
 	while (l < r) {
 		int m = (l + r) / 2;
-		if (someBooleanFunction(m))
+		if (f(m)) {
 			l = m + 1;  // change m to m + 1
-		else 
+		} else {
 			r = m;  // change m - 1 to m
+		}
 	}
 	return l;
 }
@@ -1310,13 +1313,14 @@ Incorrect. While this will no longer cause an infinite loop, it will now output 
 
 <Quiz.Answer>
 ```cpp
-int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
+int findMaxTrue(int l, int r, function<bool(int)> f) {
 	while (l < r) {
 		int m = l + (r - l) / 2;  // change (l + r) / 2
-		if (someBooleanFunction(m))
+		if (f(m)) {
 			l = m;
-		else 
+		} else {
 			r = m - 1;
+		}
 	}
 	return l;
 }
@@ -1329,13 +1333,14 @@ Incorrect. This is equivalent to the previous statement, except this statement i
 
 <Quiz.Answer correct>
 ```cpp
-int findMaxTrue(int l, int r, function<bool(int)> someBooleanFunction) {
+int findMaxTrue(int l, int r, function<bool(int)> f) {
 	while (l < r) {
 		int m = (l + r + 1) / 2;  // change (l + r) / 2
-		if (someBooleanFunction(m))
+		if (f(m)) {
 			l = m;
-		else 
+		} else {
 			r = m - 1;
+		}
 	}
 	return l;
 }
