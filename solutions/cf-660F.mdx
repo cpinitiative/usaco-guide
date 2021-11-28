@@ -76,8 +76,7 @@ $$
 using namespace std;
 
 //BeginCodeSnip{Line Container}
-// Source: https://usaco.guide/adv/line-container?lang=cpp
-
+/** Source: https://usaco.guide/adv/line-container?lang=cpp */
 bool _Line_Comp_State; 
 struct Line {
 	// k is slope, m is intercept, p is intersection point
@@ -89,7 +88,7 @@ struct Line {
 
 struct LineContainer : multiset<Line> {
 	long long div(long long a, long long b) { return a / b - ((a ^ b) < 0 && a % b); }
-
+	
 	bool isect(iterator x, iterator y) {
 		if (y == end()) { 
 			x->p = LLONG_MAX; 
@@ -111,7 +110,7 @@ struct LineContainer : multiset<Line> {
 		while ((y = x) != begin() && (--x)->p >= y->p)
 			isect(x, erase(y));
 	}
-
+	
 	long long query(long long x) {
 		assert(!empty());
 		_Line_Comp_State = 1; 
@@ -121,27 +120,26 @@ struct LineContainer : multiset<Line> {
 	}
 };
 //EndCodeSnip
-	
-const int MAXN = 2e5 + 1;
 
 int N;
-long long A[MAXN], pre[MAXN], ips[MAXN];
+long long A[200005], pre[200005], ips[200005];
 
 int main() {
-    cin >> N;
-    for (int i = 1; i <= N; i++) {
-        cin >> A[i];
-        pre[i] = pre[i - 1] + A[i];
-        ips[i] = ips[i - 1] + A[i] * i;
-    }
-    
-    LineContainer lc;
-    long long ans = 0;
-    for (int i = 1; i <= N; i++) {
-        lc.add(-i, (i - 1) * pre[i - 1] - ips[i - 1]);
-        ans = max(ans, lc.query(pre[i]) + pre[i] + ips[i]);
-    }
-    cout << ans << '\n';
+	cin >> N;
+	for (int i = 1; i <= N; i++) {
+		cin >> A[i];
+		pre[i] = pre[i - 1] + A[i];
+		ips[i] = ips[i - 1] + A[i] * i;
+	}
+	
+	LineContainer lc;
+	long long ans = 0;
+	for (int i = 1; i <= N; i++) {
+		lc.add(-i, (i - 1) * pre[i - 1] - ips[i - 1]);
+		ans = max(ans, lc.query(pre[i]) + pre[i] + ips[i]);
+	}
+
+	cout << ans << '\n';
 }
 ```
 
