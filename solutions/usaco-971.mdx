@@ -16,7 +16,8 @@ author: Sofia Yang
 <CPPSection>
 
 ```cpp
-CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
 const int MAXN = 1e5;
 const int MAXL = 26;
@@ -28,14 +29,15 @@ int count(int start, int end, int let) {
 }
 
 int main() {
-	setIO("cowmbat");
+	freopen("cowmbat.in", "r", stdin); // see /general/input-output
+	freopen("cowmbat.out", "w", stdout);
 	int N; int M; int K;
 	cin >> N >> M >> K;
 
 	string S;
 	cin >> S;
 
-	vector<vi> cost(M, vi(M));
+	vector<vector<int>> cost(M, vector<int>(M));
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < M; j++) {
 			cin >> cost[i][j];
@@ -66,11 +68,11 @@ int main() {
 	 * dp[i][j] is the minimum cost to make a valid streak
 	 * up to index i, where the last streak has letter j.
 	 */
-	vector<vi> dp(N, vi(M, INT32_MAX));
+	vector<vector<int>> dp(N, vector<int>(M, 0x3f));
 	/*
 	 * ans[i] is the minimum cost to make a valid streak to index i.
 	 */
-	vi ans(N, INT32_MAX);
+	vector<int> ans(N, 0x3f);
 	ans[0] = 0;
 
 	// If (N < 2 * K), then there is only 1 letter streak.
