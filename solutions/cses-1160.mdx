@@ -116,7 +116,7 @@ int main() {
 		}
 	};
 
-	while (Q--) {
+	for (int q = 0; q < Q; q++) {
 		int a, b;
 		cin >> a >> b;
 
@@ -126,19 +126,16 @@ int main() {
 			} else {
 				cout << -1 << '\n';
 			}
-		}
-		else if (node[a].cycle && !node[b].cycle) {
+		} else if (node[a].cycle && !node[b].cycle) {
 			cout << -1 << '\n';
-		}
-		else if (!node[a].cycle && node[b].cycle) {
+		} else if (!node[a].cycle && node[b].cycle) {
 			if (node[a].cycle_id == node[b].cycle_id) {
 				assert(node[lift(a, node[a].dis)].cycle);
 				cout << node[a].dis + cycle_dis(lift(a, node[a].dis), b) << '\n';
 			} else {
 				cout << -1 << '\n';
 			}
-		}
-		else if (!node[a].cycle && !node[b].cycle) {
+		} else if (!node[a].cycle && !node[b].cycle) {
 			if (node[a].dis >= node[b].dis && lift(a, node[a].dis - node[b].dis) == b) {
 				cout << node[a].dis - node[b].dis << '\n';
 			} else {
