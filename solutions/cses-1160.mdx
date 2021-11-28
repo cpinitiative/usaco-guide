@@ -111,7 +111,7 @@ int main() {
 		}
 	};
 
-	while (Q--) {
+	for (int q = 0; q < Q; q++) {
 		int a, b;
 		cin >> a >> b;
 
@@ -121,19 +121,16 @@ int main() {
 			} else {
 				cout << -1 << '\n';
 			}
-		}
-		else if (nde[a].cycle && !nde[b].cycle) {  // case 2
+		} else if (nde[a].cycle && !nde[b].cycle) {  // case 2
 			cout << -1 << '\n';
-		}
-		else if (!nde[a].cycle && nde[b].cycle) {  // case 3
+		} else if (!nde[a].cycle && nde[b].cycle) {  // case 3
 			if (nde[a].cycle_id == nde[b].cycle_id) {
 				assert(nde[lift(a, nde[a].dis)].cycle);
 				cout << nde[a].dis + cycle_dis(lift(a, nde[a].dis), b) << '\n';
 			} else {
 				cout << -1 << '\n';
 			}
-		}
-		else if (!nde[a].cycle && !nde[b].cycle) {  // case 4
+		} else if (!nde[a].cycle && !nde[b].cycle) {  // case 4
 			if (nde[a].dis >= nde[b].dis && lift(a, nde[a].dis - nde[b].dis) == b) {
 				cout << nde[a].dis - nde[b].dis << '\n';
 			} else {
