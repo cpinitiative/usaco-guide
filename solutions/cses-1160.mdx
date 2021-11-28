@@ -25,6 +25,8 @@ For the third and fourth case, one possible optimization is to use binary liftin
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}((n + q) \log n)$
+
 <LanguageSection>
 
 <CPPSection>
@@ -33,106 +35,112 @@ For the third and fourth case, one possible optimization is to use binary liftin
 #include <bits/stdc++.h>
 using namespace std;
 
-int N, Q, cycle_len[200005];
+const int MAXN = 2e5 + 1;
+const int LOGN = 20;
 
-struct node {
-	int par[20], cycle_id = 0, dis = 0, vis = 0;
+int N, Q, cycle_len[MAXN];
+
+struct Node {
+	int par[LOGN], cycle_id = 0, dis = 0, vis = 0;
 	bool cycle = 0;
-} nde[200005];
+} node[MAXN];
 
 pair<int, int> dfs(int u, int dfs_id) {
-	if (nde[u].vis) {
-		if (nde[u].vis == dfs_id) {  // cycle case
+	if (node[u].vis) {
+		if (node[u].vis == dfs_id) {  // cycle decomposition
 			int v = u, d = 0;
 			do {
-				nde[v].cycle = 1;
-				nde[v].cycle_id = u;
-				nde[v].dis = d++;
-				v = nde[v].par[0];
+				node[v].cycle = 1;
+				node[v].cycle_id = u;
+				node[v].dis = d++;
+				v = node[v].par[0];
 			} while (v != u);
 			cycle_len[u] = d;
 			return {0, u};
-		} else {  // regular case
-			if (nde[u].cycle) {
-				return {nde[u].cycle_id, 1};
+		} else {  // tree decomposition
+			if (node[u].cycle) {
+				return {node[u].cycle_id, 1};
 			} else {
-				return {nde[u].cycle_id, nde[u].dis + 1};
+				return {node[u].cycle_id, node[u].dis + 1};
 			}
 		}
 	}
 
-	nde[u].vis = dfs_id;
-	auto t = dfs(nde[u].par[0], dfs_id);
+	node[u].vis = dfs_id;
+	pair<int, int> t = dfs(node[u].par[0], dfs_id);
 
-	if (t.first == 0) {  // cycle case
+	if (t.first == 0) {  // cycle decomposition
 		if (t.second == u) {
-			return {nde[u].cycle_id, 1};
+			return {node[u].cycle_id, 1};
 		} else {
 			return t;
 		}
-	} else {  // regular case
-		nde[u].cycle_id = t.first;
-		nde[u].dis = t.second;
-		return {nde[u].cycle_id, nde[u].dis + 1};
+	} else {  // tree decomposition
+		node[u].cycle_id = t.first;
+		node[u].dis = t.second;
+		return {node[u].cycle_id, node[u].dis + 1};
 	}
 }
 
 int main() {
 	cin >> N >> Q;
 	for (int i = 1; i <= N; i++) {
-		cin >> nde[i].par[0];
+		cin >> node[i].par[0];
 	}
 	for (int i = 1; i <= N; i++) {
 		dfs(i, i);
 	}
 
-	for (int k = 1; k < 20; k++) {
+	for (int k = 1; k < LOGN; k++) {
 		for (int i = 1; i <= N; i++) {
-			nde[i].par[k] = nde[nde[i].par[k - 1]].par[k - 1];
+			node[i].par[k] = node[node[i].par[k - 1]].par[k - 1];
 		}
 	}
 	
 	auto lift = [](int a, int d) {
-		for (int i = 19; i >= 0; i--) {
+		for (int i = LOGN - 1; i >= 0; i--) {
 			if ((d >> i) & 1) {
-				a = nde[a].par[i];
+				a = node[a].par[i];
 			}
 		}
 		return a;
 	};
 
 	auto cycle_dis = [](int a, int b) {
-		assert(nde[a].cycle && nde[b].cycle);
-		assert(nde[a].cycle_id == nde[b].cycle_id);
-		if (nde[a].dis <= nde[b].dis) {
-			return nde[b].dis - nde[a].dis;
+		assert(node[a].cycle && node[b].cycle);
+		assert(node[a].cycle_id == node[b].cycle_id);
+		if (node[a].dis <= node[b].dis) {
+			return node[b].dis - node[a].dis;
 		} else {
-			return cycle_len[nde[a].cycle_id] - (nde[a].dis - nde[b].dis);
+			return cycle_len[node[a].cycle_id] - (node[a].dis - node[b].dis);
 		}
 	};
 
-	for (int q = 0; q < Q; q++) {
+	while (Q--) {
 		int a, b;
 		cin >> a >> b;
 
-		if (nde[a].cycle && nde[b].cycle) {  // case 1
-			if (nde[a].cycle_id == nde[b].cycle_id) {
+		if (node[a].cycle && node[b].cycle) {
+			if (node[a].cycle_id == node[b].cycle_id) {
 				cout << cycle_dis(a, b) << '\n';
 			} else {
 				cout << -1 << '\n';
 			}
-		} else if (nde[a].cycle && !nde[b].cycle) {  // case 2
+		}
+		else if (node[a].cycle && !node[b].cycle) {
 			cout << -1 << '\n';
-		} else if (!nde[a].cycle && nde[b].cycle) {  // case 3
-			if (nde[a].cycle_id == nde[b].cycle_id) {
-				assert(nde[lift(a, nde[a].dis)].cycle);
-				cout << nde[a].dis + cycle_dis(lift(a, nde[a].dis), b) << '\n';
+		}
+		else if (!node[a].cycle && node[b].cycle) {
+			if (node[a].cycle_id == node[b].cycle_id) {
+				assert(node[lift(a, node[a].dis)].cycle);
+				cout << node[a].dis + cycle_dis(lift(a, node[a].dis), b) << '\n';
 			} else {
 				cout << -1 << '\n';
 			}
-		} else if (!nde[a].cycle && !nde[b].cycle) {  // case 4
-			if (nde[a].dis >= nde[b].dis && lift(a, nde[a].dis - nde[b].dis) == b) {
-				cout << nde[a].dis - nde[b].dis << '\n';
+		}
+		else if (!node[a].cycle && !node[b].cycle) {
+			if (node[a].dis >= node[b].dis && lift(a, node[a].dis - node[b].dis) == b) {
+				cout << node[a].dis - node[b].dis << '\n';
 			} else {
 				cout << -1 << '\n';
 			}
