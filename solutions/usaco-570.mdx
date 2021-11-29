@@ -2,7 +2,7 @@
 id: usaco-570
 source: USACO Silver 2015 December
 title: Switching on the Lights
-author: Óscar Garries
+author: Akshar Yeccherla
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_lightson_silver_dec15.html)
@@ -14,59 +14,111 @@ author: Óscar Garries
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-const int MX = 1e2;
+int N;
+int litRooms = 1;
+bool visited[101][101];
+bool illuminated[101][101];
+vector<pair<int,int>> switches[101][101];
 
-int n, m;
-bool light[MX][MX], vis[MX][MX], turn[MX][MX];
-vector<vector<vector<pair<int, int>>>> change(MX, vector<vector<pair<int, int>>>(MX, vector<pair<int, int>>()));
-int sol = 1, di[4] = {0, 1, 0, -1}, dj[4] = {1, 0, -1, 0};
+int dirX [] = {-1, 0, 1, 0};
+int dirY [] = {0, 1, 0, -1};
 
-void ff (int i, int j) {
-	if (i < 0 || i >= n || j < 0 || j >= n || !light[i][j] || vis[i][j]) return;
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);
+	if (name.size()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
 
-	vis[i][j] = true;
+// Method for checking if a room is connected to the main connected component
+bool checkConnected(int x, int y) {
 
-	if ((int) change[i][j].size() > 0) {
-		for (auto x: change[i][j]) {
-			if (!light[x.first][x.second]) {
-				light[x.first][x.second] = true;
-				sol++;
-				for (int it = 0; it < 4; it++) {
-					if (x.first + di[it] >= n || x.first + di[it] < 0) continue;
-					if (x.second + dj[it] >= n || x.second + dj[it] < 0) continue;
-					if (vis[x.first + di[it]][x.second + dj[it]]) ff (x.first, x.second);
-				}
-			}
+	// Iterate through neighbors
+	for (int i = 0; i < 4; i++) {
+		int newX = x + dirX[i];
+		int newY = y + dirY[i];
+
+		// Ignore neighbor if out of bounds
+		if (newX < 1 || newY < 1 || newX > N || newY > N) {
+			continue;
+		}
+
+		// If a neighbor is visited, the room is connected to the main component, return true
+		if (visited[newX][newY]) {
+			return true;
 		}
 	}
+	
+	// If no neighbors have been visited, return false since room is not connected to main component
+	return false;
 
-	for (int it = 0; it < 4; it++) {
-		ff(i + di[it], j + dj[it]);
+}
+
+// Floodfill method with source room (x,y)
+void floodfill(int x, int y) {
+
+	// Ignore room if its out of bounds, already been visited, or isn't lit
+	if (x < 1 || y < 1 || x > N || y > N || visited[x][y] || !illuminated[x][y]) {
+		return;
+	}
+
+	// Ignore room if it isn't connected to main component (i.e. it's inaccessible to Bessie)
+	// Ignore the starting coordinate (1,1)
+	if (!checkConnected(x,y) && !(x == 1 && y == 1)) {
+		return;
+	}
+
+	// Set room to visited
+	visited[x][y] = true;
+
+	// Iterate through neighbors and floodfill from them
+	for (int i = 0; i < 4; i++) {
+		floodfill(x + dirX[i], y + dirY[i]);
+	}
+
+	// Turn on all lights from current room
+	for (int i = 0; i < switches[x][y].size(); i++) {
+		int roomX = switches[x][y][i].first;
+		int roomY = switches[x][y][i].second;
+
+		// If room hasn't been lit yet, add it to our count of rooms that have been lit
+		if (!illuminated[roomX][roomY]) {
+			litRooms++;
+		}
+
+		// Set room led to by switch to lit
+		illuminated[roomX][roomY] = true;
+
+		// Floodfill from new room that is lit
+		floodfill(roomX, roomY);
+
 	}
 }
 
-int main () {
-	freopen("lightson.in", "r", stdin);
-	freopen("lightson.out", "w", stdout);
+int main() {
 
-	cin >> n >> m;
+	setIO("lightson");
 
-	light[0][0] = true;
-
+	int m; cin >> N >> m;
+	
+	// Take in input and add switches to corresponding room
 	for (int i = 0; i < m; i++) {
-		int x1, y1, x2, y2;
-		cin >> x1 >> y1 >> x2 >> y2;
-		x1--; y1--; x2--; y2--;
-		change[y1][x1].push_back({y2, x2});
+		int x,y,a,b; cin >> x >> y >> a >> b;
+		switches[x][y].push_back({a,b});
 	}
 
-	ff(0, 0);
+	// Set the top left room to lit (since it's lit initially)
+	illuminated[1][1] = true;
 
-	cout << sol << '\n';
+	// Start floodfill from top-left room
+	floodfill(1,1);
+
+	cout << litRooms << endl;
 }
+
 ```
 
 </CPPSection>
