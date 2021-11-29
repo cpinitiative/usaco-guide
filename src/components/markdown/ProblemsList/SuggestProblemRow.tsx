@@ -1,5 +1,5 @@
-import { Link } from 'gatsby';
 import { globalHistory } from '@reach/router';
+import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
 import { EditorContext } from '../../../context/EditorContext';
@@ -8,7 +8,7 @@ import ProblemSuggestionModalContext from '../../../context/ProblemSuggestionMod
 export default function SuggestProblemRow({ listName }: { listName: string }) {
   const context = useContext(ProblemSuggestionModalContext);
   const { inEditor } = useContext(EditorContext);
-  const path = globalHistory.location.pathname || "";
+  const path = globalHistory.location.pathname || '';
   return (
     <tr>
       <td colSpan={10}>
