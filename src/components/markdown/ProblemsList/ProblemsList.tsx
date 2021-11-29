@@ -140,8 +140,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                         showPercent={shouldShowSolvePercentage}
                       />
                     ))}
-                    {/* !props.hideSuggestProblemButton */}
-                    {inEditor && (
+                    {!props.hideSuggestProblemButton && (
                       <SuggestProblemRow listName={props.tableName} />
                     )}
                   </>
