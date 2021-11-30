@@ -7,10 +7,12 @@ author: Akshar Yeccherla
 
 [Official Analysis](http://www.usaco.org/current/data/sol_lightson_silver_dec15.html)
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 + M)$
+
 <LanguageSection>
 <CPPSection>
-
-## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -122,4 +124,231 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+```py
+# Set recursion limit to something high because the default will lead to a run-time error
+import sys
+sys.setrecursionlimit(100000)
+
+filein = open("lightson.in",'r')
+N,m = map(int, filein.readline().split())
+
+lit_rooms = 1
+visited = [[False for i in range(N+1)] for j in range(N+1)]
+illuminated = [[False for i in range(N+1)] for j in range(N+1)]
+switches = [[[] for i in range(N+1)] for j in range(N+1)]
+
+# Read in light switches input
+for i in range(m):
+	x,y,a,b = map(int, filein.readline().split())
+	switches[x][y].append((a,b))
+
+# Method for checking if a room is connected to the main connected component
+def check_connected(x,y):
+	dir_x = [-1,0,1,0]
+	dir_y= [0,-1,0,1]
+
+	# Iterate through neighbors
+	for i in range(4):
+		new_x = x + dir_x[i]
+		new_y = y + dir_y[i]
+
+		# Ignore neighbor if out of bounds
+		if new_x < 1 or new_y < 1 or new_x > N or new_y > N:
+			continue
+		
+		# If a neighbor is visited, the room is connected to the main component, return true
+		if visited[new_x][new_y]:
+			return True
+	
+	# If no neighbors have been visited, return false since room is not connected to main component
+	return False
+
+# Floodfill method with source room (x,y)
+def floodfill(x,y):
+	global lit_rooms
+
+	# Ignore room if its out of bounds, already visited, or not lit
+	if x < 1 or y < 1 or x > N or y > N or visited[x][y] or not illuminated[x][y]:
+		return
+
+	# Ignore room if it isn't connected to main component (i.e. it's inaccessible to Bessie)
+	# Don't return on the starting coordinate (1,1)
+	if (not check_connected(x,y)) and (not(x == 1 and y == 1)):
+		return
+
+	# Set room to visited
+	visited[x][y] = True
+
+	dir_x = [-1,0,1,0]
+	dir_y = [0,-1,0,1]
+
+	# Iterate through neighbors and floodfill from them
+	for i in range(4):
+		floodfill(x + dir_x[i], y + dir_y[i])
+
+	# Turn on all lights from current room
+	for i in range(len(switches[x][y])):
+		room_x = switches[x][y][i][0]
+		room_y = switches[x][y][i][1]
+
+		# If room ahsn't been lit yet, add it to our count of rooms that have been lit
+		if not illuminated[room_x][room_y]:
+			lit_rooms = lit_rooms + 1;
+
+		# Set room led to by switch to lit
+		illuminated[room_x][room_y] = True
+
+		# Floodfill form new room that is lit
+		floodfill(room_x, room_y)
+
+# Set the top left room to lit (since it's lit initially)
+illuminated[1][1] = True
+
+# Start floodfill from top-left room
+floodfill(1,1)
+
+fileout = open("lightson.out",'w')
+fileout.write(str(lit_rooms).encode())
+fileout.close()
+```
+</PySection>
+
+<JavaSection>
+```java
+import java.util.*;
+import java.io.*;
+
+public class LightsOn {
+
+	// Pair class from official USACO solution
+	static class Pair {
+		public int x,y;
+		public Pair(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+
+	// Initial declarations
+	static int N;
+	static boolean illuminated [][];
+	static boolean visited [][];
+	static ArrayList<Pair>[][] switches;
+	static int litRooms = 1;
+
+	static int[] dirX = {0, 1, 0, -1};
+	static int[] dirY = {-1, 0, 1, 0};
+
+
+	// Method for checking if a room is connected to the main connected component
+	public static boolean checkConnected(int x, int y) {
+
+		// Iterate through neighbors
+		for (int i = 0; i < 4; i++) {
+			int newX = x + dirX[i];
+			int newY = y + dirY[i];
+
+			//Ignore neighbor if out of bounds
+			if (newX < 1 || newY < 1 || newX > N || newY > N) {
+				continue;
+			}
+
+			// If a neighbor is visited, the room is connected to the main component, return true
+			if (visited[newX][newY]) {
+				return true;
+			}
+		}
+
+		// If no neighbors have been visited, return false since room is not connected to main component
+		return false;
+	}
+
+	// Floodfill method with source room (x,y)
+	public static void floodfill(int x, int y) {
+
+		// Ignore room if its out of bounds, already visited, or isn't lit
+		if (x < 1 || y < 1 || x > N || y > N || visited[x][y] || !illuminated[x][y]) {
+			return;
+		}
+
+		// Ignore room if it isn't connected to main component (i.e. it's inaccessible to Bessie)
+		// Don't return on coordinate (1,1)
+		if (!checkConnected(x,y) && !(x == 1 && y == 1)) {
+			return;
+		}
+
+		// Set room to visited
+		visited[x][y] = true;
+
+		// Iterate through neighbors and floodfill from them
+		for (int i = 0; i < 4; i++) {
+			floodfill(x + dirX[i], y + dirY[i]);
+		}
+
+		// Turn on all lights from current room
+		for (int i = 0; i < switches[x][y].size(); i++) {
+			int roomX = switches[x][y].get(i).x;
+			int roomY = switches[x][y].get(i).y;
+
+			// If room hasn't been lit yet, add it to our count of rooms that have been lit
+			if (!illuminated[roomX][roomY]) {
+				litRooms++;
+			}
+
+			// Set room led to by switch to lit
+			illuminated[roomX][roomY] = true;
+
+			// Floodfill from new room that is lit
+			floodfill(roomX, roomY);
+		}
+
+	}
+
+	public static void main(String[] args) throws java.io.IOException {
+		BufferedReader in = new BufferedReader(new FileReader("lightson.in"));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("lightson.out")));
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		
+		illuminated = new boolean[N+1][N+1];
+		visited = new boolean[N+1][N+1];
+		switches = new ArrayList[N+1][N+1];
+		
+		// Initialize ArrayLists
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				switches[i][j] = new ArrayList<Pair>();
+			}
+		}
+
+		// Take in input and add switches to corresponding room
+		for (int i = 0; i < m; i++) {
+			StringTokenizer st2 = new StringTokenizer(in.readLine());
+			int x = Integer.parseInt(st2.nextToken());
+			int y = Integer.parseInt(st2.nextToken());
+			int a = Integer.parseInt(st2.nextToken());
+			int b = Integer.parseInt(st2.nextToken());
+
+			switches[x][y].add(new Pair(a,b));
+		}
+
+		// Set the top left room to lit (since it's lit initially)
+		illuminated[1][1] = true;
+
+		// Start floodfill from top-left room
+		floodfill(1,1);
+
+		out.println(litRooms);
+		out.close();
+	}
+}
+
+```
+</JavaSection>
+
 </LanguageSection>
