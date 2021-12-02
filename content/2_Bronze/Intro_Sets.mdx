@@ -416,19 +416,16 @@ demonstrated above), it is generally a bad idea to insert or remove elements of
 a map while iterating over it.
 
 <LanguageSection>
-
 <PySection>
 
-For example, the following code attempts to remove every third entry from a map,
+For example, the following code attempts to remove every entry from a map,
 but results in a runtime error.
 
 ```py
 d = {i: i for i in range(10)}
-cnt = 0
+
 for i in d:
-	cnt += 1
-	if cnt%3 == 0:
-		del d[i]
+	del d[i]
 ```
 
 ```
@@ -442,10 +439,9 @@ One way is to get around this is to create a new map.
 
 ```py
 d = {i: i for i in range(10)}
-d_new = dict(item for i, item in enumerate(d.items()) if i % 3 != 2)
+d_new = dict(item for i, item in enumerate(d.items()) if [condition])
 
 print("new dict:", d_new)
-# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
 Another is to maintain a list of all the keys you want to remove and remove them
@@ -453,35 +449,31 @@ after the iteration finishes:
 
 ```py
 d = {i: i for i in range(10)}
-to_remove = {key for i, key in enumerate(d) if i % 3 == 2}
+to_remove = {key for i, key in enumerate(d) if [condition]}
 
 for key in to_remove:
 	del d[key]
+
 print("new dict:", d)
-# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
 </PySection>
-
 <CPPSection>
 
-For example, the following code attempts to remove every third entry from a map,
+For example, the following code attempts to remove every entry from a map,
 but results in a segmentation fault.
 
 ```cpp
 map<int, int> m;
+
 for (int i = 0; i < 10; ++i)
 	m[i] = i;
-int cnt = 0;
+
 for (auto &it : m) {
 	cout << "Current Key: " << it.first << endl;
-	++cnt;
-	if (cnt % 3 == 0)
-		m.erase(it.first);
+
+	m.erase(it.first);
 }
-cout << "Entries:" << endl;
-for (const auto &it : m)
-	cout << it.first << " " << it.second << endl;
 ```
 
 The reason is due to "iterators, pointers and references referring to elements
@@ -494,47 +486,39 @@ the old one.
 
 ```cpp
 map<int, int> m, M;
+
 for (int i = 0; i < 10; ++i)
 	m[i] = i;
-int cnt = 0;
+
 for (const auto &it : m) {
-	++cnt;
-	if (cnt % 3 != 0)
+	if ([condition])
 		M[it.first] = it.second;
 }
+
 swap(m, M);
+
 cout << "Entries:" << endl;
 for (const auto &it : m)
 	cout << it.first << " " << it.second << endl;
-
-/*
-Entries:
-0 0
-1 1
-3 3
-4 4
-6 6
-7 7
-9 9
-*/
 ```
 
-Another is to maintain a list of all the keys you want to erase and erase them
-after the iteration finishes.
+Another is to maintain a list of all the keys you want to erase and erase them after the iteration finishes.
 
 ```cpp
 map<int, int> m;
 for (int i = 0; i < 10; ++i)
 	m[i] = i;
+
 vector<int> to_erase;
-int cnt = 0;
+
 for (const auto &it : m) {
-	++cnt;
-	if (cnt % 3 == 0)
+	if ([condition])
 		to_erase.push_back(it.first);
 }
+
 for (int key : to_erase)
 	m.erase(key);
+
 cout << "Remaining entries:" << endl;
 for (const auto &it : m)
 	cout << it.first << " " << it.second << endl;
