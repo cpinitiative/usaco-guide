@@ -8,6 +8,75 @@ author: Maggie Liu
 [Official Analysis](http://www.usaco.org/current/data/sol_balancing_bronze_feb16.html)
 
 <LanguageSection>
+	
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class LoadBalancing {
+    static class Point {
+        public int x;
+        public int y;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Kattio io = new Kattio("balancing");
+        // Kattio io = new Kattio();
+
+        int N = io.nextInt();
+        int B = io.nextInt();
+
+        Point[] cows = new Point[N];
+        for(int i = 0; i < N; i++) {
+            cows[i] = new Point();
+            cows[i].x = io.nextInt();
+            cows[i].y = io.nextInt();
+        }
+
+        int smallestMax = 999_999_999;
+        for(int x = 0; x < N; x ++) { // index for x divider, each cow
+            for(int y = 0; y < N; y ++) { // index for y divider, each cow
+                int a = cows[x].x + 1; // line for x divider, just the cow location at index + 1
+                int b = cows[y].y + 1; // line for y divider, just the cow location at index + 1
+
+                // stores each quadrant
+                ArrayList<Point> BL = new ArrayList<Point>();
+                ArrayList<Point> BR = new ArrayList<Point>();
+                ArrayList<Point> TL = new ArrayList<Point>();
+                ArrayList<Point> TR = new ArrayList<Point>();
+
+                // cycle through each point and add it
+                for (int i = 0; i < N; i++) {
+                    if(cows[i].x < a) { // left
+                        if(cows[i].y < b) { // bottom
+                            BL.add(cows[i]);
+                        } else { // top
+                            TL.add(cows[i]);
+                        }
+                    } else { // right
+                        if(cows[i].y < b) { // bottom
+                            BR.add(cows[i]);
+                        } else { // top
+                            TR.add(cows[i]);
+                        }
+                    }
+                }
+
+                // find max and smallest max
+                int maxCows = Math.max(BL.size(), Math.max(BR.size(), Math.max(TL.size(), TR.size())));
+                smallestMax = Math.min(maxCows, smallestMax);
+            }
+        }
+
+        io.println(smallestMax);
+        io.close();
+    }
+    //CodeSnip{Kattio}
+}
+
+</JavaSection>
 
 <CPPSection>
 
