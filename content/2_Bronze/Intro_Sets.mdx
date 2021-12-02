@@ -439,9 +439,12 @@ One way is to get around this is to create a new map.
 
 ```py
 d = {i: i for i in range(10)}
-d_new = dict(item for i, item in enumerate(d.items()) if [condition])
+
+# only includes every third element
+d_new = dict(item for i, item in enumerate(d.items()) if i % 3 == 0)
 
 print("new dict:", d_new)
+# new dict: {0: 0, 3: 3, 6: 6, 9: 9}
 ```
 
 Another is to maintain a list of all the keys you want to remove and remove them
@@ -449,12 +452,15 @@ after the iteration finishes:
 
 ```py
 d = {i: i for i in range(10)}
-to_remove = {key for i, key in enumerate(d) if [condition]}
+
+# removes every third element
+to_remove = {key for i, key in enumerate(d) if i % 3 == 0}
 
 for key in to_remove:
 	del d[key]
 
 print("new dict:", d)
+# new dict: {1: 1, 2: 2, 4: 4, 5: 5, 7: 7, 8: 8}
 ```
 
 </PySection>
@@ -490,9 +496,15 @@ map<int, int> m, M;
 for (int i = 0; i < 10; ++i)
 	m[i] = i;
 
+int current_iteration = 0;
+
 for (const auto &it : m) {
-	if ([condition])
+	// only includes every third element
+
+	if (current_iteration % 3 == 0)
 		M[it.first] = it.second;
+
+	current_iteration++;
 }
 
 swap(m, M);
@@ -500,6 +512,13 @@ swap(m, M);
 cout << "Entries:" << endl;
 for (const auto &it : m)
 	cout << it.first << " " << it.second << endl;
+/*
+ * Entries:
+ * 0 0
+ * 3 3
+ * 6 6
+ * 9 9
+ */
 ```
 
 Another is to maintain a list of all the keys you want to erase and erase them after the iteration finishes.
@@ -510,10 +529,15 @@ for (int i = 0; i < 10; ++i)
 	m[i] = i;
 
 vector<int> to_erase;
+int current_iteration = 0;
 
 for (const auto &it : m) {
-	if ([condition])
+	// removes every third element	
+	
+	if (current_iteration % 3 == 0)
 		to_erase.push_back(it.first);
+	
+	current_iteration++;
 }
 
 for (int key : to_erase)
@@ -522,6 +546,16 @@ for (int key : to_erase)
 cout << "Remaining entries:" << endl;
 for (const auto &it : m)
 	cout << it.first << " " << it.second << endl;
+
+/*
+ * Remaining entries:
+ * 1 1
+ * 2 2
+ * 4 4
+ * 5 5
+ * 7 7
+ * 8 8
+ */
 ```
 
 </CPPSection>
@@ -535,8 +569,10 @@ See the following snippet for an example:
 
 ```java
 Map<Integer, Integer> m = new TreeMap<>();
-// m starts as {0: 0, 1: 1, 2: 2}
-m.put(0, 0); m.put(1, 1); m.put(2, 2);
+
+for (int i = 0; i < 10; i++) {
+	m.put(i, i);
+}
 for (int key : m.keySet()) {
 	m.remove(key); // ConcurrentModificationException thrown!!
 }
