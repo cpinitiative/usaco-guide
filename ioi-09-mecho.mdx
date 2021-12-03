@@ -50,10 +50,12 @@ int n, s;
 
 bool valid_sq(int x, int y){
 	if (x >= 0 && x < n && y >= 0 && y < n && (field[x][y] == 'G' || 
-		field[x][y] == 'M'))
+		field[x][y] == 'M')){
 			return true;
+		}
 	return false;
 }
+
 bool mecho_reached(int mecho_dis, int bees_dis){
 	if (mecho_dis / s < bees_dis){
 		return true;
@@ -67,7 +69,7 @@ int main()
 	for (int i = 0; i < n; i++)
 		cin >> field[i];
 	
-	vector <pair <int, int>> hives;
+	vector<pair <int, int>> hives;
 	int mechox, mechoy, home_x, home_y;
 	//  find x and y coordinates for for Mecho, the bees and the cave
 	for (int i = 0; i < n; i++){
@@ -90,11 +92,11 @@ int main()
 	//  binary search on waiting time
 	int l = 0, r = n * n;
 	while (l <= r){
-		vector <vector <bool>> bees_visited(n, vector<bool>(n, false));
-		vector <vector <bool>> mecho_visited(n, vector<bool>(n, false));
-		vector <vector <int>> bees_time(n, vector<int>(n, 0));
-		vector <vector <int>> mecho_time(n, vector<int>(n, 0));
-		queue <pair <int, int>> q;
+		vector<vector <bool>> bees_visited(n, vector<bool>(n, false));
+		vector<vector <bool>> mecho_visited(n, vector<bool>(n, false));
+		vector<vector <int>> bees_time(n, vector<int>(n, 0));
+		vector<vector <int>> mecho_time(n, vector<int>(n, 0));
+		queue<pair <int, int>> q;
 		
 		int eating_time = (l + r) / 2;
 
@@ -130,12 +132,12 @@ int main()
 			q.pop();
 			for (int i = 0; i < 4; i++){
 				int nx = x + dx[i], ny = y + dy[i];
-				/*  check if mecho reaces node[x][y] before the bees
-					divide the time mecho takes to reach a node by s, since 
-					mecho walks s steps at a time.
-					substract the eating time from the time taken for the 
-					bees to reach the node, because that time was used by 
-					mecho for eating
+				/* check if mecho reaces node[x][y] before the bees
+				 * divide the time mecho takes to reach a node by s, since 
+				 * mecho walks s steps at a time.
+				 * substract the eating time from the time taken for the 
+				 * bees to reach the node, because that time was used by 
+				 * mecho for eating
 				*/
 				if (valid_sq(nx, ny) && !mecho_visited[nx][ny] && 
 					mecho_reached(mecho_time[x][y] + 1, bees_time[nx][ny]
@@ -159,14 +161,13 @@ int main()
 		}
 		if (reached){
 			l = eating_time + 1;
-		}
-		else{
+		}else{
 			r = eating_time - 1;
 		}
 	}
 
 	cout << l - 1 << '\n';
-} 
+}
 ```
 
 </CPPSection>
