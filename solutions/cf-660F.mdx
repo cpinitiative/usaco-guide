@@ -4,7 +4,6 @@ source: cf
 title: Bear and Bowling 4
 author: Dustin Miao
 ---
-
 # Explaination
 
 The [Official Editorial](https://codeforces.com/blog/entry/44259) uses a divide and conquer approach. However, like many divide and conquer optimization problems, this can also be solved using the [convex hull trick](https://usaco.guide/plat/convex-hull-trick?lang=cpp).
@@ -25,13 +24,13 @@ $$
 \sum_{i = l}^r a_i\cdot(i - l+1)
 $$
 
-By expanding this expresion, we can express this in terms of $\texttt{pre}$ and $\texttt{ips}$:
+By expanding this expression, we can express this in terms of $\texttt{pre}$ and $\texttt{ips}$:
 
 $$
 \sum_{i = l}^r a_i\cdot(i - l+1) = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{pre}[r]-\texttt{pre}[l-1])
 $$
 
-For this problem, we need to choose a contiguous subarray in order to maximize the required score. Let use define a function $f$, such that $f(r)$ denotes the maximum score of a subarray that ends at $r$. We can thus define $f$ as follows:
+For this problem, we need to choose a contiguous subarray in order to maximize the required score. Let us define a function $f$, such that $f(r)$ denotes the maximum score of a subarray that ends at $r$. We can thus define $f$ as follows:
 
 $$
 f(r) = \max_{1 \leq l \leq r} \{\texttt{ips}[r] - \texttt{ips}[l - 1] - (l - 1)(\texttt{pre}[r] - \texttt{pre}[l - 1])\}
@@ -63,13 +62,13 @@ $$
 f(r) = \max_{1 \leq l \leq r} \{g_l(\texttt{pre}[r])\} + \texttt{ips}[r] + \texttt{pre}[r]
 $$
 
-**Complexity**: $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$. The impementation below runs in $\mathcal{O}(n \log n)$ because it uses [Line Container](https://usaco.guide/adv/line-container/). It is possible to get a linear time complexity by taking advantage of the fact that $l$ and $\texttt{pre}[r]$ are both non-decreasing.
-
 # Implementation
 
 <LanguageSection>
 
 <CPPSection>
+	
+**Complexity**: $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$. The impementation below runs in $\mathcal{O}(n \log n)$ because it uses [Line Container](https://usaco.guide/adv/line-container/). It is possible to get a linear time complexity by taking advantage of the fact that $l$ and $\texttt{pre}[r]$ are both non-decreasing.
 
 ```cpp
 #include <bits/stdc++.h>
