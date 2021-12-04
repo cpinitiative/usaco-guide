@@ -1,5 +1,4 @@
 import {
-  addDoc,
   arrayRemove,
   arrayUnion,
   collection,
@@ -13,18 +12,27 @@ import {
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { PostData } from '../../models/groups/posts';
-import {
-  GroupProblemData,
-  Submission,
-  SubmissionType,
-} from '../../models/groups/problem';
+import { GroupProblemData, SubmissionType } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
+
+// Duplicated from online-judge... online-judge should be the only version of this
+export interface ProblemSubmissionRequestData {
+  problemID: string;
+  language: 'cpp' | 'java' | 'py';
+  filename: string;
+  sourceCode: string;
+  submissionID?: string; // if given, uses this as the submission ID. must be uuidv4
+  wait?: boolean; // if true, request will wait until the submission finishes grading.
+  firebase?: {
+    idToken: string; // used to authenticate REST api
+    collectionPath: string;
+  };
+}
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, setUserProgressOnProblems } = useContext(
-    UserDataContext
-  );
+  const { firebaseUser, setUserProgressOnProblems } =
+    useContext(UserDataContext);
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(
@@ -181,30 +189,37 @@ export function usePostActions(groupId: string) {
       });
     },
     submitSolution: async (
-      problem: GroupProblemData,
-      submission: Partial<Submission>
+      submission: Omit<
+        ProblemSubmissionRequestData,
+        'submissionID' | 'wait' | 'firebase'
+      >
     ) => {
-      if (problem.usacoGuideId) {
-        setUserProgressOnProblems(problem.usacoGuideId, 'Solved');
-      }
-      const doc = await addDoc(
-        collection(
-          getFirestore(firebaseApp),
-          'groups',
-          groupId,
-          'posts',
-          problem.postId,
-          'problems',
-          problem.id,
-          'submissions'
-        ),
+      const idToken = await firebaseUser.getIdToken();
+      const reqData: ProblemSubmissionRequestData = {
+        problemID: submission.problemID,
+        language: submission.language,
+        filename: submission.filename,
+        sourceCode: submission.sourceCode,
+        // firebase: {
+        //   collectionPath: `usaco-guide/databases/(default)/documents/__test`,
+        //   idToken,
+        // },
+      };
+      const resp = await fetch(
+        `https://oh2kjsg6kh.execute-api.us-west-1.amazonaws.com/Prod/submissions`,
         {
-          ...submission,
-          timestamp: serverTimestamp(),
-          userId: firebaseUser.uid,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(reqData),
         }
       );
-      return doc.id;
+      const respData = await resp.json();
+      if (!resp.ok) {
+        throw new Error(respData.message);
+      }
+      return respData.submissionID;
     },
   };
 }

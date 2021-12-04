@@ -1,5 +1,3 @@
-import type firebaseType from 'firebase/firestore';
-import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
 import * as React from 'react';
 import { useReducer } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -7,7 +5,7 @@ import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/use
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useFirebaseApp } from '../../../hooks/useFirebase';
+import useProblemSubmissionResult from '../../../hooks/useProblemSubmissionResult';
 import {
   ExecutionStatus,
   GroupProblemData,
@@ -76,26 +74,7 @@ export default function ProblemSubmissionInterface({
     },
   });
 
-  const firebaseApp = useFirebaseApp();
-  const [onlineJudgeSubmissionDoc, setOnlineJudgeSubmissionDoc] =
-    React.useState<firebaseType.DocumentReference | null>(null);
-  const [submissionResult, setSubmissionResult] = React.useState<
-    (Submission & { type: SubmissionType.ONLINE_JUDGE }) | null
-  >(null);
-
-  React.useEffect(() => {
-    if (!onlineJudgeSubmissionDoc || !firebaseApp) {
-      setSubmissionResult(null);
-      return;
-    }
-
-    const unsub = onSnapshot(onlineJudgeSubmissionDoc, doc => {
-      setSubmissionResult(
-        doc.data() as Submission & { type: SubmissionType.ONLINE_JUDGE }
-      );
-    });
-    return unsub;
-  }, [onlineJudgeSubmissionDoc, firebaseApp]);
+  const [submissionResult, setSubmissionID] = useProblemSubmissionResult();
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
@@ -139,30 +118,20 @@ export default function ProblemSubmissionInterface({
 
   const handleSubmitSolution = async e => {
     e.preventDefault();
-    if (isCPIClass) {
-      const submissionID = await submitSolution(problem, {
-        ...submission,
-        type: SubmissionType.ONLINE_JUDGE,
-        judgeProblemId: problem.usacoGuideId, // todo update
-        gradingStatus: 'waiting',
-        result: -1, // todo write a rule for this?
+    try {
+      const submissionID = await submitSolution({
+        problemID: problem.usacoGuideId,
+        language: submission.language,
+        filename: {
+          cpp: 'main.cpp',
+          java: 'Main.java',
+          py: 'main.py',
+        }[submission.language],
+        sourceCode: submission.code,
       });
-      setOnlineJudgeSubmissionDoc(
-        doc(
-          getFirestore(firebaseApp),
-          'groups',
-          activeGroup.activeGroupId,
-          'posts',
-          problem.postId,
-          'problems',
-          problem.id,
-          'submissions',
-          submissionID
-        )
-      );
-    } else {
-      submitSolution(problem, submission);
-      editSubmission(emptySubmission);
+      setSubmissionID(submissionID);
+    } catch (error) {
+      alert('Failed to submit solution: ' + error.message);
     }
   };
 
@@ -211,35 +180,6 @@ export default function ProblemSubmissionInterface({
           <OnlineJudgeSubmission submission={submissionResult} />
         </div>
       )}
-      {/*<div className="mt-4">*/}
-      {/*  <label*/}
-      {/*    htmlFor="score"*/}
-      {/*    className="block text-sm font-medium text-gray-700 dark:text-gray-300"*/}
-      {/*  >*/}
-      {/*    Score*/}
-      {/*  </label>*/}
-      {/*  <div className="mt-1 relative rounded-md shadow-sm w-24">*/}
-      {/*    <ScoreInput*/}
-      {/*      type="number"*/}
-      {/*      name="score"*/}
-      {/*      id="score"*/}
-      {/*      min={0}*/}
-      {/*      max={100}*/}
-      {/*      value={*/}
-      {/*        submission.result === null*/}
-      {/*          ? ''*/}
-      {/*          : Math.round((submission.result as number) * 100)*/}
-      {/*      }*/}
-      {/*      onChange={e =>*/}
-      {/*        editSubmission({ result: parseInt(e.target.value) / 100 })*/}
-      {/*      }*/}
-      {/*      className="input"*/}
-      {/*      placeholder="0 - 100"*/}
-      {/*      aria-describedby="price-currency"*/}
-      {/*      required*/}
-      {/*    />*/}
-      {/*  </div>*/}
-      {/*</div>*/}
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Language
