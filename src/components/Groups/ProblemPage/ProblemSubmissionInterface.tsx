@@ -10,7 +10,6 @@ import {
   ExecutionStatus,
   GroupProblemData,
   Submission,
-  SubmissionType,
 } from '../../../models/groups/problem';
 import ButtonGroup from '../../ButtonGroup';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
@@ -35,11 +34,6 @@ export default function ProblemSubmissionInterface({
   problem: GroupProblemData;
 }) {
   const { lang, firebaseUser } = React.useContext(UserDataContext);
-  if (problem.submissionType !== SubmissionType.SELF_GRADED) {
-    throw new Error(
-      "Problem submission interface doesn't support CCC problems yet"
-    );
-  }
   const emptySubmission: Partial<Submission> = {
     problemId: problem.id,
     type: problem.submissionType,
@@ -87,18 +81,11 @@ export default function ProblemSubmissionInterface({
     );
   }
 
-  // todo remove
-  const isCPIClass =
-    '2i0ZZTfYhlxGi9OEIjy2' === activeGroup.activeGroupId ||
-    'd7eYGfddXq3m2trXG2xt' === activeGroup.activeGroupId;
-  // 'UyefpawGOgGFh14ptihn' === activeGroup.activeGroupId; // todo remove (mvcpc club)
   // todo add ys?
-  const cannotSubmit =
-    isCPIClass &&
-    !(
-      problem.usacoGuideId?.startsWith('usaco') ||
-      problem.usacoGuideId?.startsWith('cses')
-    );
+  const cannotSubmit = !(
+    problem.usacoGuideId?.startsWith('usaco') ||
+    problem.usacoGuideId?.startsWith('cses')
+  );
 
   if (cannotSubmit) {
     return (
@@ -143,37 +130,28 @@ export default function ProblemSubmissionInterface({
         </h2>
       </div>
       <div className="text-sm mt-1 text-gray-900 dark:text-gray-300">
-        {isCPIClass ? (
-          <>
-            All problems submitted through this website use standard
-            input/output. When using Java, make sure to name your class Main.
-            You can use{' '}
-            <a
-              href="https://ide.usaco.guide/"
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              ide.usaco.guide
-            </a>{' '}
-            to test your code online. Report any issues to{' '}
-            <a
-              href="mailto:classes@joincpi.org"
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              classes@joincpi.org
-            </a>
-            .
-          </>
-        ) : (
-          <>
-            <b>Self-graded problem:</b> Use the Problem Statement link above to
-            test your code. Submit your <i>working</i> code below. Group admins
-            will manually verify your code to ensure that your code works.
-          </>
-        )}
+        <>
+          All problems submitted through this website use standard input/output.
+          When using Java, make sure to name your class Main. You can use{' '}
+          <a
+            href="https://ide.usaco.guide/"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            ide.usaco.guide
+          </a>{' '}
+          to test your code online. Report any issues to{' '}
+          <a
+            href="mailto:classes@joincpi.org"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            classes@joincpi.org
+          </a>
+          .
+        </>
       </div>
       {submissionResult && (
         <div className="mt-4">

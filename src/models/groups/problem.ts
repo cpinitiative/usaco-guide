@@ -119,25 +119,51 @@ export type TestCaseResult = { caseId: number } & (
     }
 );
 
-export const getTestCaseSymbol = (testCase: TestCaseResult): string => {
-  if (testCase.pass === true) {
-    return '*';
-  }
-  switch (testCase.error) {
-    case TestResultError.COMPILE_TIMEOUT:
-    case TestResultError.COMPILE_ERROR:
-      return 'c';
-    case TestResultError.RUNTIME_ERROR:
-      return '!';
-    case TestResultError.TIME_LIMIT_EXCEEDED:
-      return 't';
-    case TestResultError.EMPTY_MISSING_OUTPUT:
-      return 'e';
-    case TestResultError.WRONG_ANSWER:
-      return 'x';
-    case TestResultError.INTERNAL_ERROR:
-      return '?';
-  }
+
+// Temporarily taken from online-judge repo
+export interface ProblemSubmissionResult {
+  submissionID: string;
+  status: "compiling" | "executing" | "done";
+  verdict?: ExecutionVerdict;
+  testCases: (ProblemSubmissionTestCaseResult | null)[];
+
+  problemID: string;
+  language: string;
+  filename: string;
+  sourceCode: string; // gzipped in dynamodb
+  message?: string; // gzipped in dynamodb. used either for compiling or internal error.
+  debugData?: string; // gzipped in dynamodb. optionally provided for internal_error
+}
+
+export interface ProblemSubmissionTestCaseResult {
+  verdict: ExecutionVerdict;
+  time: string;
+  memory: string;
+
+  // each of these is truncated to 4kb then gzipped in dynamodb
+  input: string;
+  expectedOutput: string;
+  stdout: string;
+  stderr: string;
+}
+
+export type ExecutionVerdict =
+  | "AC"
+  | "WA"
+  | "RTE"
+  | "MLE"
+  | "TLE"
+  | "CE"
+  | "IE"; // IE is internal error
+
+export const verdictToSymbol: {[key in ExecutionVerdict]: string} = {
+  "AC": "*",
+  "WA": "x",
+  "RTE": "!",
+  "MLE": "m",
+  "TLE": "t",
+  "CE": "c",
+  "IE": "?",
 };
 
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {

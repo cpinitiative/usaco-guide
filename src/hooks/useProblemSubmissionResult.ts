@@ -16,12 +16,13 @@ export default function useProblemSubmissionResult() {
 
       setResult(data);
 
-      if (res.ok && data.status === 'executing') {
+      if (res.ok && data.status !== 'done') {
         setTimeout(() => queryResult(curSubmission, submissionID), 1000);
       }
     };
 
     if (submissionID) {
+      setResult(null);
       queryResult(++currentSubmission.current, submissionID);
     }
   }, [submissionID]);
