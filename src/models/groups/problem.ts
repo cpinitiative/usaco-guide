@@ -119,11 +119,10 @@ export type TestCaseResult = { caseId: number } & (
     }
 );
 
-
 // Temporarily taken from online-judge repo
 export interface ProblemSubmissionResult {
   submissionID: string;
-  status: "compiling" | "executing" | "done";
+  status: 'compiling' | 'executing' | 'done';
   verdict?: ExecutionVerdict;
   testCases: (ProblemSubmissionTestCaseResult | null)[];
 
@@ -148,22 +147,22 @@ export interface ProblemSubmissionTestCaseResult {
 }
 
 export type ExecutionVerdict =
-  | "AC"
-  | "WA"
-  | "RTE"
-  | "MLE"
-  | "TLE"
-  | "CE"
-  | "IE"; // IE is internal error
+  | 'AC'
+  | 'WA'
+  | 'RTE'
+  | 'MLE'
+  | 'TLE'
+  | 'CE'
+  | 'IE'; // IE is internal error
 
-export const verdictToSymbol: {[key in ExecutionVerdict]: string} = {
-  "AC": "*",
-  "WA": "x",
-  "RTE": "!",
-  "MLE": "m",
-  "TLE": "t",
-  "CE": "c",
-  "IE": "?",
+export const verdictToSymbol: { [key in ExecutionVerdict]: string } = {
+  AC: '*',
+  WA: 'x',
+  RTE: '!',
+  MLE: 'm',
+  TLE: 't',
+  CE: 'c',
+  IE: '?',
 };
 
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {
