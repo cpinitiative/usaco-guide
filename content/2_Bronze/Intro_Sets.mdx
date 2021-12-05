@@ -47,21 +47,20 @@ You can iterate through a set in sorted order using a for-each loop.
 
 ```cpp
 set<int> s;
-s.insert(1); // [1]
-s.insert(4); // [1, 4]
-s.insert(2); // [1, 2, 4]
-
+s.insert(1);  // [1]
+s.insert(4);  // [1, 4]
+s.insert(2);  // [1, 2, 4]
+s.insert(1);  // [1, 2, 4]
 // the insert method did nothing because 1 was already in the set
-cout << s.count(1) << endl; // 1
-s.erase(1); // [2, 4]
-cout << s.count(5) << endl; // 0
-s.erase(0); // [2, 4]
+cout << s.count(1) << endl;  // 1
+s.erase(1);  // [2, 4]
+cout << s.count(5) << endl;  // 0
+s.erase(0);  // [2, 4]
 // if the element to be erased was not present, nothing happens
 
 for (int element : s) {
-	cout << element << " ";
+	cout << element << endl;
 }
-cout << endl;
 // You can iterate through an set in sorted order
 ```
 
@@ -197,7 +196,7 @@ public class DistinctNumbers {
 <PySection>
 
 ```py
-n = int(input()) # unused
+n = int(input())  # unused
 nums = [int(x) for x in input().split()]
 distinct_nums = set(nums)
 print(len(distinct_nums))
@@ -207,7 +206,7 @@ We can do this more efficiently by skipping the creation of the list, and use a
 set comprehension directly:
 
 ```py
-n = int(input()) # unused
+n = int(input())  # unused
 distinct_nums = {int(x) for x in input().split()}
 print(len(distinct_nums))
 ```
@@ -263,15 +262,15 @@ in C++. Some operations on an `std::map` named `m` include:
 
 ```cpp
 map<int, int> m;
-m[1] = 5; // [(1, 5)]
-m[3] = 14; // [(1, 5); (3, 14)]
-m[2] = 7; // [(1, 5); (2, 7); (3, 14)]
-m[0] = -1; // [(0, -1); (1, 5); (2, 7); (3, 14)]
-m.erase(2); // [(0, -1); (1, 5); (3, 14)]
-cout << m[1] << endl; // 5
-cout << m.count(7) << endl; // 0
-cout << m.count(1) << endl; // 1
-cout << m[2] << endl; // 0
+m[1] = 5;  // [(1, 5)]
+m[3] = 14;  // [(1, 5); (3, 14)]
+m[2] = 7;  // [(1, 5); (2, 7); (3, 14)]
+m[0] = -1;  // [(0, -1); (1, 5); (2, 7); (3, 14)]
+m.erase(2);  // [(0, -1); (1, 5); (3, 14)]
+cout << m[1] << endl;  // 5
+cout << m.count(7) << endl;  // 0
+cout << m.count(1) << endl;  // 1
+cout << m[2] << endl;  // 0
 ```
 
 </CPPSection>
@@ -290,13 +289,13 @@ the specified key.
 
 ```java
 Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
-map.put(1, 5); // [(1, 5)]
-map.put(3, 14); // [(1, 5); (3, 14)]
-map.put(2, 7); // [(1, 5); (2, 7); (3, 14)]
-map.remove(2); // [(1, 5); (3, 14)]
-System.out.println(map.get(1)); // 5
-System.out.println(map.containsKey(7)); // false
-System.out.println(map.containsKey(1)); // true
+map.put(1, 5);  // [(1, 5)]
+map.put(3, 14);  // [(1, 5); (3, 14)]
+map.put(2, 7);  // [(1, 5); (2, 7); (3, 14)]
+map.remove(2);  // [(1, 5); (3, 14)]
+System.out.println(map.get(1));  // 5
+System.out.println(map.containsKey(7));  // false
+System.out.println(map.containsKey(1));  // true
 ```
 
 </JavaSection>
@@ -308,13 +307,13 @@ maps, so they have $\mathcal{O}(1)$ insertion, deletion, and searches.
 
 ```py
 d = {}
-d[1] = 5 # {1: 5}
-d[3] = 14 # {1: 5, 3: 14}
-d[2] = 7 # {1: 5, 2: 7, 3: 14}
-del d[2] # {1: 5, 3: 14}
-print(d[1]) # 5
-print(7 in d) # False
-print(1 in d) # True
+d[1] = 5  # {1: 5}
+d[3] = 14  # {1: 5, 3: 14}
+d[2] = 7  # {1: 5, 2: 7, 3: 14}
+del d[2]  # {1: 5, 3: 14}
+print(d[1])  # 5
+print(7 in d)  # False
+print(1 in d)  # True
 ```
 
 </PySection>
@@ -417,19 +416,16 @@ demonstrated above), it is generally a bad idea to insert or remove elements of
 a map while iterating over it.
 
 <LanguageSection>
-
 <PySection>
 
-For example, the following code attempts to remove every third entry from a map,
+For example, the following code attempts to remove every entry from a map,
 but results in a runtime error.
 
 ```py
 d = {i: i for i in range(10)}
-cnt = 0
+
 for i in d:
-	cnt += 1
-	if cnt%3 == 0:
-		del d[i]
+	del d[i]
 ```
 
 ```
@@ -443,10 +439,11 @@ One way is to get around this is to create a new map.
 
 ```py
 d = {i: i for i in range(10)}
-d_new = dict(item for i, item in enumerate(d.items()) if i % 3 != 2)
 
-print("new dict:", d_new)
-# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
+# only includes every third element
+d_new = dict(item for i, item in enumerate(d.items()) if i % 3 == 0)
+
+print("new dict:", d_new)  # new dict: {0: 0, 3: 3, 6: 6, 9: 9}
 ```
 
 Another is to maintain a list of all the keys you want to remove and remove them
@@ -454,35 +451,33 @@ after the iteration finishes:
 
 ```py
 d = {i: i for i in range(10)}
-to_remove = {key for i, key in enumerate(d) if i % 3 == 2}
+
+# removes every third element
+to_remove = {key for i, key in enumerate(d) if i % 3 == 0}
 
 for key in to_remove:
 	del d[key]
-print("new dict:", d)
-# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
+
+print("new dict:", d)  # new dict: {1: 1, 2: 2, 4: 4, 5: 5, 7: 7, 8: 8}
 ```
 
 </PySection>
-
 <CPPSection>
 
-For example, the following code attempts to remove every third entry from a map,
+For example, the following code attempts to remove every entry from a map,
 but results in a segmentation fault.
 
 ```cpp
 map<int, int> m;
+
 for (int i = 0; i < 10; ++i)
 	m[i] = i;
-int cnt = 0;
+
 for (auto &it : m) {
 	cout << "Current Key: " << it.first << endl;
-	++cnt;
-	if (cnt % 3 == 0)
-		m.erase(it.first);
+
+	m.erase(it.first);
 }
-cout << "Entries:" << endl;
-for (const auto &it : m)
-	cout << it.first << " " << it.second << endl;
 ```
 
 The reason is due to "iterators, pointers and references referring to elements
@@ -495,50 +490,74 @@ the old one.
 
 ```cpp
 map<int, int> m, M;
+
 for (int i = 0; i < 10; ++i)
 	m[i] = i;
-int cnt = 0;
-for (const auto &it : m) {
-	++cnt;
-	if (cnt % 3 != 0)
-		M[it.first] = it.second;
-}
-swap(m, M);
-cout << "Entries:" << endl;
-for (const auto &it : m)
-	cout << it.first << " " << it.second << endl;
 
+int current_iteration = 0;
+
+for (const auto &it : m) {
+	// only includes every third element
+	if (current_iteration % 3 == 0) {
+		M[it.first] = it.second;
+	}
+
+	current_iteration++;
+}
+
+swap(m, M);
+
+cout << "Entries:" << endl;
+for (const auto &it : m) {
+	cout << it.first << " " << it.second << endl;
+}
 /*
-Entries:
-0 0
-1 1
-3 3
-4 4
-6 6
-7 7
-9 9
-*/
+ * Entries:
+ * 0 0
+ * 3 3
+ * 6 6
+ * 9 9
+ */
 ```
 
-Another is to maintain a list of all the keys you want to erase and erase them
-after the iteration finishes.
+Another is to maintain a list of all the keys you want to erase and erase them after the iteration finishes.
 
 ```cpp
 map<int, int> m;
-for (int i = 0; i < 10; ++i)
+for (int i = 0; i < 10; ++i) {
 	m[i] = i;
-vector<int> to_erase;
-int cnt = 0;
-for (const auto &it : m) {
-	++cnt;
-	if (cnt % 3 == 0)
-		to_erase.push_back(it.first);
 }
-for (int key : to_erase)
+
+vector<int> to_erase;
+int current_iteration = 0;
+
+for (const auto &it : m) {
+	// removes every third element	
+	if (current_iteration % 3 == 0) {
+		to_erase.push_back(it.first);
+	}
+	
+	current_iteration++;
+}
+
+for (int key : to_erase) {
 	m.erase(key);
+}
+
 cout << "Remaining entries:" << endl;
-for (const auto &it : m)
+for (const auto &it : m) {
 	cout << it.first << " " << it.second << endl;
+}
+
+/*
+ * Remaining entries:
+ * 1 1
+ * 2 2
+ * 4 4
+ * 5 5
+ * 7 7
+ * 8 8
+ */
 ```
 
 </CPPSection>
@@ -551,11 +570,13 @@ will cause a
 See the following snippet for an example:
 
 ```java
-Set<Integer> s = new TreeSet<>();
-// s starts as {0, 1, 2}
-s.add(0); s.add(1); s.add(2);
-for (Integer a : s) {
-	s.remove(a); // ConcurrentModificationException thrown!!
+Map<Integer, Integer> m = new TreeMap<>();
+
+for (int i = 0; i < 10; i++) {
+	m.put(i, i);
+}
+for (int key : m.keySet()) {
+	m.remove(key);  // ConcurrentModificationException thrown!!
 }
 ```
 
