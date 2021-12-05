@@ -2,7 +2,7 @@
 id: usaco-807
 source: USACO Bronze 2018 February
 title: Teleportation
-author: Ananth Kashyap
+author: Ananth Kashyap, Tanmoy Das
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_teleport_bronze_feb18.html)
@@ -43,5 +43,58 @@ print(ans, file = open('teleport.out', 'w'))
 ```
 
 </PySection>
+	
+<JavaSection>
+	
+```java
+import java.io.*;
+
+public class Teleportation {
+    // Function to sort values in increasing order
+    static int[] sort(int a, int b) {
+        if (a > b) {
+            return new int[] { a, b };
+        } else {
+            return new int[] { b, a };
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader r = new BufferedReader(new FileReader("teleport.in"));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("teleport.out")));
+
+        String[] input = r.readLine().split(" ");
+        int a = Integer.parseInt(input[0]);
+        int b = Integer.parseInt(input[1]);
+        int x = Integer.parseInt(input[2]);
+        int y = Integer.parseInt(input[3]);
+
+        // Sort a,b in ascending order
+        int[] sortedlocations = sort(a, b);
+        a = sortedlocations[0];
+        b = sortedlocations[1];
+
+        // Sort x,y in ascending order
+        int[] sortedTeleportLocations = sort(x, y);
+        x = sortedTeleportLocations[0];
+        y = sortedTeleportLocations[1];
+
+        // Distance needed to travel without teleportation
+        int distance = Math.abs(a - b);
+
+        // Distance needed to travel with teleportation
+        int teleportationDistance = Math.abs(x - a) + Math.abs(y - b);
+        int result = Math.min(distance, teleportationDistance);
+
+        // Result is the minimum of normal distance and teleportation distance
+        pw.println(result);
+
+        r.close();
+        pw.close();
+    }
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
