@@ -5,23 +5,23 @@ title: Planets Queries II
 author: Dustin Miao, Michael Cao, Benjamin Qi
 ---
 
-In this problem, we are given a functional directed graph and asked $q$ queries for the minimum distance between two vertices $u$ and $v$, if it exists. 
+We are given a functional directed graph and asked $q$ queries for the minimum distance between two vertices $u$ and $v$, if it exists. 
 
 ## Solution
 
-We will decompose the graph into several cases. Note that because each node has one outgoing edge, there must be exactly one cycle in every connected component. 
+Decompose the graph into several cases. Note that because each node has one outgoing edge, there must be exactly one cycle in every connected component. 
 
-Compress this cycle into a single node. Each connected component is now a tree, rooted at the cycle node. Consider a query for a path from $u$ to $v$. We will assume that $u$ and $v$ are in the same component (otherwise, clearly no path exits and the answer is $-1$). There are four main cases to consider:
+Compress this cycle into a single node. Each connected component is now a tree, rooted at the cycle node. Consider a query for a path from $u$ to $v$. Assume that $u$ and $v$ are in the same component (otherwise, no path exits and the answer is $-1$). There are four cases to consider:
 
-1. If $u$ and $v$ are both located within the cycle, then there always a path between them. "Root" the cycle at a node within the cycle, and for each subsequent node, record the distance between that node at the cycle root. We can now process this kind of query in $\mathcal{O}(1)$ by subtracting the cycle distance information accordingly. 
+1. If $u$ and $v$ are both located within the cycle, then there is always a path between them. "Root" the cycle at a node within the cycle, and for each subsequent node, record the distance between that node at the cycle root. This kind of query can be processed in $\mathcal{O}(1)$ by subtracting the cycle distance information accordingly. 
 
 2. If $u$ is in the cycle and $v$ is not in the cycle (ie in the tree), then there is no path between them. Nodes in the cycle can only reach other nodes in cycle via the edges. 
 
-3. If $u$ is in the tree and $v$ is in the cycle, then there is an answer. If we traverse the edges from $u$ until we reach a node on the cycle, then we can reduce the problem to the first case. By itself, this method takes $\mathcal{O}(n)$ but we can speed it up to $\mathcal{O}(\log n)$ using techniques discussed later. 
+3. If $u$ is in the tree and $v$ is in the cycle, then there is an answer. By traversing the edges from $u$ until a node on the cycle is reached, this can be reduced to the first case. By itself, this method takes $\mathcal{O}(n)$ but it can be sped up to $\mathcal{O}(\log n)$ using techniques discussed later. 
 
-4. If $u$ and $v$ are both on the tree, then it suffices to check if $v$ is an ancestor of $u$. Note that each node can only travel to edges that point towards the root. Once again, in the worst case naive solution this may take up to $\mathcal{O}(n)$ but we will speed it up to $\mathcal{O}(\log n)$
+4. If $u$ and $v$ are both on the tree, then it suffices to check if $v$ is an ancestor of $u$. Note that each node can only travel to edges that point towards the root. Once again, in the worst-case naive solution this may take up to $\mathcal{O}(n)$ but it can be sped up to $\mathcal{O}(\log n)$
 
-For the third and fourth case, one possible optimization is to use binary lifting. We can precompute the distance from the root to every node, and store it in each node. For the third query, we simply have to jump up by that distance (and add it to the answer). For the fourth case, we check if the node that is $\texttt{dis}(u) - \texttt{dis}(v)$ above $u$ is $v$ or not. 
+For the third and fourth case, one possible optimization is to use binary lifting. Precompute the distance from the root to every node, and store it in each node. For the third query, simply jump up by that distance (and add it to the answer). For the fourth case, check if the node that is $\texttt{dis}(u) - \texttt{dis}(v)$ above $u$ is $v$ or not. 
 
 ## Implementation
 
