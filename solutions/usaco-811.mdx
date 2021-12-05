@@ -25,18 +25,21 @@ Due to the low bounds on $N$ and $B$, we can run a [DFS (Depth First Search)](/s
 
 using namespace std;
 
+const int MAX_N = 250;
 int n;
 int m;
-int depths[251];
-bool vis[251][251];
-pair<int, int> shoes[251];
+vector<int> depths(MAX_N + 1);
+bool vis[MAX_N + 1][MAX_N + 1];
+vector<pair<int, int>> shoes(MAX_N + 1);
 
-int ans = 1e9;
+int ans = INT32_MAX;
 
 void dfs(int depth, int boot)  {
 	// already visited this path
-	if (vis[depth][boot]) return;
-
+	if (vis[depth][boot]) {
+		return;
+	}
+	
 	vis[depth][boot] = true;
 
 	// reached the barn, update the answer
