@@ -27,9 +27,10 @@ using namespace std;
 
 int N;
 int litRooms = 1;
-bool visited[101][101];
-bool illuminated[101][101];
-vector<pair<int,int>> switches[101][101];
+const int MN = 101;
+bool visited[MN][MN];
+bool illuminated[MN][MN];
+vector<pair<int,int>> switches[MN][MN];
 
 int dirX[] = {-1, 0, 1, 0};
 int dirY[] = {0, 1, 0, -1};
@@ -61,8 +62,7 @@ bool checkConnected(int x, int y) {
 		}
 	}
 	
-	// If no neighbors have been visited, return false since room is not 
-	// connected to main component
+	// If no neighbors have been visited, return false
 	return false;
 
 }
@@ -151,7 +151,7 @@ for i in range(m):
 	x, y, a, b = map(int, filein.readline().split())
 	switches[x][y].append((a,b))
 
-# Method for checking if a room is connected to the main connected component
+# Checks if a room is connected to the main component
 def check_connected(x,y):
 	dir_x = [-1, 0, 1, 0]
 	dir_y= [0, -1, 0, 1]
@@ -170,8 +170,7 @@ def check_connected(x,y):
 		if visited[new_x][new_y]:
 			return True
 	
-	# If no neighbors have been visited, return false since room is not 
-	# connected to main component
+	# If no neighbors have been visited, return false
 	return False
 
 # Floodfill method with source room (x,y)
@@ -251,8 +250,7 @@ public class LightsOn {
 	static int[] dirY = {-1, 0, 1, 0};
 
 
-	// Method for checking if a room is connected to the main connected 
-	// component
+	// Checks if a room is connected to the main component
 	public static boolean checkConnected(int x, int y) {
 		// Iterate through neighbors
 		for (int i = 0; i < 4; i++) {
@@ -271,8 +269,7 @@ public class LightsOn {
 			}
 		}
 
-		// If no neighbors have been visited, return false since room is not 
-		// connected to main component
+		// If no neighbors have been visited, return false
 		return false;
 	}
 
