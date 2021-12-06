@@ -24,8 +24,10 @@ export const SignInModal: React.FC<SignInModalProps> = ({
 }) => {
   const firebaseApp = useFirebaseApp();
   const [isSigningIn, setIsSigningIn] = React.useState(false);
-  const [isLinking, setIsLinking] = React.useState(false);
+  const [isLinking, setIsLinking] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [email, setEmail] = React.useState('');
+  const [credential, setCredential] = React.useState<AuthCredential>(null);
   const handleSignInWithGoogle = () => {
     setIsSigningIn(true);
     setError(null);
@@ -38,20 +40,13 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         if (e.code == 'auth/account-exist-with-different-credential') {
           setIsLinking(true);
           const credential = GoogleAuthProvider.credentialFromError(e);
-          handleLinkAccounts(e.customData.email, credential)
-            .then(() => {
-              onClose();
-            })
-            .catch(e => {
-              setError(e);
-            });
+          setEmail(e.customData.email);
+          setCredential(credential);
         } else {
           setError(e);
         }
-        setError(e);
       })
       .finally(() => {
-        setIsLinking(false);
         setIsSigningIn(false);
       });
   };
@@ -66,40 +61,40 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         if (e.code === 'auth/account-exists-with-different-credential') {
           setIsLinking(true);
           const credential = GithubAuthProvider.credentialFromError(e);
-          handleLinkAccounts(e.customData.email, credential)
-            .then(() => {
-              onClose();
-            })
-            .catch(e => {
-              setError(e);
-            });
+          setEmail(e.customData.email);
+          setCredential(credential);
         } else {
           setError(e);
         }
       })
       .finally(() => {
-        setIsLinking(false);
         setIsSigningIn(false);
       });
   };
 
   // links account from credential with the account from other provider (either Google or Github)
-  const handleLinkAccounts = async (
-    email: string,
-    credential: AuthCredential
-  ) => {
-    let otherProvider: GoogleAuthProvider | GithubAuthProvider;
-    if (credential.signInMethod === 'github.com') {
-      otherProvider = new GoogleAuthProvider();
-    } else if (credential.signInMethod === 'google.com') {
-      otherProvider = new GithubAuthProvider();
-    } else {
-      throw new Error('Unsupported sign in method');
+  const handleLinkAccounts = async () => {
+    try {
+      let otherProvider: GoogleAuthProvider | GithubAuthProvider;
+      if (credential.signInMethod === 'github.com') {
+        otherProvider = new GoogleAuthProvider();
+      } else if (credential.signInMethod === 'google.com') {
+        otherProvider = new GithubAuthProvider();
+      } else {
+        throw new Error('Unsupported sign in method');
+      }
+      otherProvider.setCustomParameters({ login_hint: email });
+      await signInWithPopup(getAuth(firebaseApp), otherProvider);
+      await linkWithCredential(getAuth(firebaseApp).currentUser, credential);
+      await signInWithCredential(getAuth(firebaseApp), credential);
+
+      onClose();
+    } catch (e) {
+      setError(e);
+      console.log(e);
+    } finally {
+      setIsLinking(false);
     }
-    otherProvider.setCustomParameters({ login_hint: email });
-    await signInWithPopup(getAuth(firebaseApp), otherProvider);
-    await linkWithCredential(getAuth(firebaseApp).currentUser, credential);
-    await signInWithCredential(getAuth(firebaseApp), credential);
   };
 
   React.useEffect(() => {
@@ -242,10 +237,18 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 )}
                 {isLinking && (
                   <div>
-                    <p className="text-green-700 dark:text-green-300">
-                      Linking: please sign in with the same email to link the
-                      two accounts
+                    <p className="text-red-700 dark:text-red-300">
+                      An account with this email already exists, please sign in
+                      with Google to link the two accounts:
                     </p>
+                    <button
+                      type="button"
+                      className="btn pl-3 mt-3"
+                      onClick={handleLinkAccounts}
+                      // disabled={!firebaseApp || isSigningIn}
+                    >
+                      Link Accounts
+                    </button>
                   </div>
                 )}
               </div>
