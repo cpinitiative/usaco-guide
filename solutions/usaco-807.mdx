@@ -50,51 +50,51 @@ print(ans, file = open('teleport.out', 'w'))
 import java.io.*;
 
 public class Teleportation {
-    // Function to sort values in increasing order
-    static int[] sort(int a, int b) {
-        if (a > b) {
-            return new int[] { a, b };
-        } else {
-            return new int[] { b, a };
-        }
-    }
+	// Function to sort values in increasing order
+	static int[] sort(int a, int b) {
+		if (a > b) {
+			return new int[] { a, b };
+		} else {
+			return new int[] { b, a };
+		}
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader r = new BufferedReader(
-                new FileReader("src/teleport.in"));
-        PrintWriter pw = new PrintWriter(new BufferedWriter(
-                new FileWriter("teleport.out")));
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(
+				new FileReader("teleport.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(
+				new FileWriter("teleport.out")));
 
-        String[] input = r.readLine().split(" ");
-        int a = Integer.parseInt(input[0]);
-        int b = Integer.parseInt(input[1]);
-        int x = Integer.parseInt(input[2]);
-        int y = Integer.parseInt(input[3]);
+		String[] input = r.readLine().split(" ");
+		int a = Integer.parseInt(input[0]);
+		int b = Integer.parseInt(input[1]);
+		int x = Integer.parseInt(input[2]);
+		int y = Integer.parseInt(input[3]);
 
-        // Sort a,b in ascending order
-        int[] sortedlocations = sort(a, b);
-        a = sortedlocations[0];
-        b = sortedlocations[1];
+		// Sort a,b in ascending order
+		int[] sortedlocations = sort(a, b);
+		a = sortedlocations[0];
+		b = sortedlocations[1];
 
-        // Sort x,y in ascending order
-        int[] sortedTeleportLocations = sort(x, y);
-        x = sortedTeleportLocations[0];
-        y = sortedTeleportLocations[1];
+		// Sort x,y in ascending order
+		int[] sortedTeleportLocations = sort(x, y);
+		x = sortedTeleportLocations[0];
+		y = sortedTeleportLocations[1];
 
-        // Distance needed to travel without teleportation
-        int distance = Math.abs(a - b);
+		// Distance needed to travel without teleportation
+		int distance = Math.abs(a - b);
 
-        // Distance needed to travel with teleportation
-        int teleportationDistance = Math.abs(x - a) + Math.abs(y - b);
-	
-	// Result is the minimum of normal distance and teleportation distance
-        int result = Math.min(distance, teleportationDistance);
-        
-        pw.println(result);
+		// Distance needed to travel with teleportation
+		int teleportationDistance = Math.abs(x - a) + Math.abs(y - b);
 
-        r.close();
-        pw.close();
-    }
+		// Result is the minimum of normal distance and teleportation distance
+		int result = Math.min(distance, teleportationDistance);
+
+		pw.println(result);
+
+		r.close();
+		pw.close();
+	}
 }
 ```
 	
