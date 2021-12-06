@@ -44,7 +44,6 @@ void setIO(string name = "") {
 
 // Method for checking if a room is connected to the main connected component
 bool checkConnected(int x, int y) {
-
 	// Iterate through neighbors
 	for (int i = 0; i < 4; i++) {
 		int newX = x + dirX[i];
@@ -70,7 +69,6 @@ bool checkConnected(int x, int y) {
 
 // Floodfill method with source room (x,y)
 void floodfill(int x, int y) {
-
 	// Ignore this room if its out of bounds, already been visited, or isn't lit
 	if (x < 1 || y < 1 || x > N || y > N || visited[x][y] || !illuminated[x][y]) {
 		return;
@@ -107,12 +105,10 @@ void floodfill(int x, int y) {
 
 		// Floodfill from new room that is lit
 		floodfill(roomX, roomY);
-
 	}
 }
 
 int main() {
-
 	setIO("lightson");
 
 	int m;
@@ -139,10 +135,8 @@ int main() {
 
 <PySection>
 ```py
-# Set recursion limit to something high because the default will lead to a 
-# run-time error
 import sys
-sys.setrecursionlimit(100000)
+sys.setrecursionlimit(100000)  # Raise recursion limit as the default will error
 
 filein = open("lightson.in",'r')
 N, m = map(int, filein.readline().split())
@@ -159,8 +153,8 @@ for i in range(m):
 
 # Method for checking if a room is connected to the main connected component
 def check_connected(x,y):
-	dir_x = [-1,0,1,0]
-	dir_y= [0,-1,0,1]
+	dir_x = [-1, 0, 1, 0]
+	dir_y= [0, -1, 0, 1]
 
 	# Iterate through neighbors
 	for i in range(4):
@@ -224,7 +218,7 @@ def floodfill(x,y):
 illuminated[1][1] = True
 
 # Start floodfill from top-left room
-floodfill(1,1)
+floodfill(1, 1)
 
 fileout = open("lightson.out",'w')
 fileout.write(str(lit_rooms))
@@ -238,7 +232,6 @@ import java.util.*;
 import java.io.*;
 
 public class LightsOn {
-
 	// Pair class from official USACO solution
 	static class Pair {
 		public int x, y;
@@ -263,7 +256,6 @@ public class LightsOn {
 	// Method for checking if a room is connected to the main connected 
 	// component
 	public static boolean checkConnected(int x, int y) {
-
 		// Iterate through neighbors
 		for (int i = 0; i < 4; i++) {
 			int newX = x + dirX[i];
@@ -288,7 +280,6 @@ public class LightsOn {
 
 	// Floodfill method with source room (x,y)
 	public static void floodfill(int x, int y) {
-
 		// Ignore this room if its out of bounds, already visited, or isn't lit
 		if (x < 1 || y < 1 || x > N || y > N || visited[x][y] || !illuminated[x][y]) {
 			return;
