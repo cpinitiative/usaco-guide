@@ -55,8 +55,7 @@ bool checkConnected(int x, int y) {
 			continue;
 		}
 
-		// If a neighbor is visited, the room is connected to the 
-		// main component, return true
+		// If a neighbor is visited, return true
 		if (visited[newX][newY]) {
 			return true;
 		}
@@ -74,10 +73,11 @@ void floodfill(int x, int y) {
 		return;
 	}
 
-	// Ignore room if it isn't connected to main component
-	// (i.e. it's inaccessible to Bessie)
-	// Don't return on coordinate (1,1)
-	if (!checkConnected(x,y) && !(x == 1 && y == 1)) {
+	/* Ignore room if it isn't connected to main component
+	 * (i.e. it's inaccessible to Bessie)
+	 * Don't return on coordinate (1, 1)
+	 */
+	if (!checkConnected(x, y) && !(x == 1 && y == 1)) {
 		return;
 	}
 
@@ -94,8 +94,9 @@ void floodfill(int x, int y) {
 		int roomX = switches[x][y][i].first;
 		int roomY = switches[x][y][i].second;
 
-		// If room hasn't been lit yet, add it to our count of rooms that have 
-		// been lit
+		/* If room hasn't been lit yet, add it to our count of rooms that have 
+		 * been lit
+		 */
 		if (!illuminated[roomX][roomY]) {
 			litRooms++;
 		}
@@ -125,7 +126,7 @@ int main() {
 	illuminated[1][1] = true;
 
 	// Start floodfill from top-left room
-	floodfill(1,1);
+	floodfill(1, 1);
 
 	cout << litRooms << endl;
 }
@@ -138,7 +139,7 @@ int main() {
 import sys
 sys.setrecursionlimit(100000)  # Raise recursion limit as the default will error
 
-filein = open("lightson.in",'r')
+filein = open("lightson.in", 'r')
 N, m = map(int, filein.readline().split())
 
 lit_rooms = 1
@@ -149,10 +150,10 @@ switches = [[[] for i in range(N + 1)] for j in range(N + 1)]
 # Read in light switches input
 for i in range(m):
 	x, y, a, b = map(int, filein.readline().split())
-	switches[x][y].append((a,b))
+	switches[x][y].append((a, b))
 
 # Checks if a room is connected to the main component
-def check_connected(x,y):
+def check_connected(x, y):
 	dir_x = [-1, 0, 1, 0]
 	dir_y= [0, -1, 0, 1]
 
@@ -165,16 +166,15 @@ def check_connected(x,y):
 		if new_x < 1 or new_y < 1 or new_x > N or new_y > N:
 			continue
 		
-		# If a neighbor is visited, the room is connected to the
-		# main component, return true
+		# If a neighbor is visited, return true
 		if visited[new_x][new_y]:
 			return True
 	
 	# If no neighbors have been visited, return false
 	return False
 
-# Floodfill method with source room (x,y)
-def floodfill(x,y):
+# Floodfill method with source room (x, y)
+def floodfill(x, y):
 	global lit_rooms
 
 	# Ignore room if its out of bounds, already visited, or not lit
@@ -183,15 +183,15 @@ def floodfill(x,y):
 
 	# Ignore this room if it isn't connected to main component 
 	# (i.e. it's inaccessible to Bessie)
-	# Don't return on the starting coordinate (1,1)
-	if not check_connected(x,y) and not (x == 1 and y == 1):
+	# Don't return on the starting coordinate (1, 1)
+	if not check_connected(x, y) and not (x == 1 and y == 1):
 		return
 
 	# Set room to visited
 	visited[x][y] = True
 
-	dir_x = [-1,0,1,0]
-	dir_y = [0,-1,0,1]
+	dir_x = [-1, 0, 1, 0]
+	dir_y = [0, -1, 0, 1]
 
 	# Iterate through neighbors and floodfill from them
 	for i in range(4):
@@ -272,17 +272,18 @@ public class LightsOn {
 		return false;
 	}
 
-	// Floodfill method with source room (x,y)
+	// Floodfill method with source room (x, y)
 	public static void floodfill(int x, int y) {
 		// Ignore this room if its out of bounds, already visited, or isn't lit
 		if (x < 1 || y < 1 || x > N || y > N || visited[x][y] || !illuminated[x][y]) {
 			return;
 		}
 
-		// Ignore room if it isn't connected to main component 
-		// (i.e. it's inaccessible to Bessie)
-		// Don't return on coordinate (1,1)
-		if (!checkConnected(x,y) && !(x == 1 && y == 1)) {
+		/* Ignore room if it isn't connected to main component 
+		 * (i.e. it's inaccessible to Bessie)
+		 * Don't return on coordinate (1, 1)
+		 */
+		if (!checkConnected(x, y) && !(x == 1 && y == 1)) {
 			return;
 		}
 
@@ -299,8 +300,9 @@ public class LightsOn {
 			int roomX = switches[x][y].get(i).x;
 			int roomY = switches[x][y].get(i).y;
 
-			// If room hasn't been lit yet, add it to our count of rooms that 
-			// have been lit
+			/* If room hasn't been lit yet, add it to our count of rooms that 
+			 * have been lit
+		         */
 			if (!illuminated[roomX][roomY]) {
 				litRooms++;
 			}
