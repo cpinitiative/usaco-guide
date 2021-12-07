@@ -338,25 +338,24 @@ public class Main {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
-		int n = io.nextInt(), m = io.nextInt();
+		int n = io.nextInt();
+		int m = io.nextInt();
 		int[] cities = new int[n];
 		TreeSet<Integer> towers = new TreeSet<>();
-		for (int i = 0; i < n; i++)	
-		{
+		for (int i = 0; i < n; i++) {
 			cities[i] = io.nextInt();
 		}
 
-		for (int i = 0; i < m; i++)		
-		{
+		for (int i = 0; i < m; i++) {
 			int tower = io.nextInt();
 			towers.add(tower);
 		}
 
 		int r = 0;
-		for (int i = 0; i < n; i++)		
-		{
-			int distance = (int) 2e9+1;
-			Integer closestTower = towers.lower(cities[i]), farthestTower = towers.higher(cities[i]);
+		for (int i = 0; i < n; i++) {
+			int distance = Integer.MAX_VALUE;
+			Integer closestTower = towers.lower(cities[i]);
+			Integer	farthestTower = towers.higher(cities[i]);
 			if (closestTower != null)
 			{
 				distance = cities[i] - closestTower;
