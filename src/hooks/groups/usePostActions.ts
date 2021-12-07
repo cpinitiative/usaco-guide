@@ -12,7 +12,7 @@ import {
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { PostData } from '../../models/groups/posts';
-import { GroupProblemData, SubmissionType } from '../../models/groups/problem';
+import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 
 // Duplicated from online-judge... online-judge should be the only version of this
@@ -26,14 +26,14 @@ export interface ProblemSubmissionRequestData {
   firebase?: {
     idToken: string; // used to authenticate REST api
     collectionPath: string;
+    userID: string;
   };
 }
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, setUserProgressOnProblems } = useContext(
-    UserDataContext
-  );
+  const { firebaseUser, setUserProgressOnProblems } =
+    useContext(UserDataContext);
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(
@@ -108,7 +108,6 @@ export function usePostActions(groupId: string) {
         difficulty: 'Normal',
         hints: [],
         solution: null,
-        submissionType: SubmissionType.SELF_GRADED,
         isDeleted: false,
         usacoGuideId: null,
         solutionReleaseMode: 'due-date',
@@ -193,7 +192,9 @@ export function usePostActions(groupId: string) {
       submission: Omit<
         ProblemSubmissionRequestData,
         'submissionID' | 'wait' | 'firebase'
-      >
+      >,
+      postId: string,
+      problemId: string
     ) => {
       const idToken = await firebaseUser.getIdToken();
       const reqData: ProblemSubmissionRequestData = {
@@ -201,10 +202,11 @@ export function usePostActions(groupId: string) {
         language: submission.language,
         filename: submission.filename,
         sourceCode: submission.sourceCode,
-        // firebase: {
-        //   collectionPath: `usaco-guide/databases/(default)/documents/__test`,
-        //   idToken,
-        // },
+        firebase: {
+          collectionPath: `usaco-guide/databases/(default)/documents/groups/${groupId}/posts/${postId}/problems/${problemId}/submissions`,
+          idToken,
+          userID: firebaseUser.uid,
+        },
       };
       const resp = await fetch(
         `https://oh2kjsg6kh.execute-api.us-west-1.amazonaws.com/Prod/submissions`,

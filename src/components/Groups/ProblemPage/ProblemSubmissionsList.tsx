@@ -1,11 +1,10 @@
 import * as React from 'react';
 import {
-  ExecutionStatus,
+  FirebaseSubmission,
   getSubmissionEarnedPoints,
   getSubmissionStatus,
   getSubmissionTimestampString,
   ProblemData,
-  Submission,
   submissionCircleBorderColor,
   submissionCircleColor,
   submissionTextColor,
@@ -17,7 +16,7 @@ const SubmissionListItem = ({
   submission,
 }: {
   problem: ProblemData;
-  submission: Submission;
+  submission: FirebaseSubmission;
 }) => {
   const showSubmissionAction = useProblemSubmissionPopupAction();
 
@@ -52,11 +51,7 @@ const SubmissionListItem = ({
               submissionTextColor[getSubmissionStatus(submission)]
             }`}
           >
-            {submission.result < 0 ||
-            submission.status === ExecutionStatus.PENDING
-              ? '-'
-              : getSubmissionEarnedPoints(submission, problem)}{' '}
-            / {problem.points}
+            {getSubmissionEarnedPoints(submission, problem)} / {problem.points}
           </span>
           <svg
             className="h-5 w-5 text-gray-400"
@@ -82,7 +77,7 @@ export default function ProblemSubmissionsList({
   submissions,
 }: {
   problem: ProblemData;
-  submissions: Submission[];
+  submissions: FirebaseSubmission[];
 }) {
   if (!submissions?.length) {
     return (
@@ -97,7 +92,7 @@ export default function ProblemSubmissionsList({
         <SubmissionListItem
           problem={problem}
           submission={submission}
-          key={submission.id}
+          key={submission.submissionID}
         />
       ))}
     </ul>

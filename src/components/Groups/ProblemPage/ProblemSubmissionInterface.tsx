@@ -4,13 +4,12 @@ import { useDropzone } from 'react-dropzone';
 import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import useProblemSubmissionResult from '../../../hooks/useProblemSubmissionResult';
 import {
-  ExecutionStatus,
-  GroupProblemData,
-  Submission,
-} from '../../../models/groups/problem';
+  ProblemSubmissionRequestData,
+  usePostActions,
+} from '../../../hooks/groups/usePostActions';
+import useProblemSubmissionResult from '../../../hooks/useProblemSubmissionResult';
+import { GroupProblemData } from '../../../models/groups/problem';
 import ButtonGroup from '../../ButtonGroup';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 import OnlineJudgeSubmission from '../OnlineJudgeSubmission/OnlineJudgeSubmission';
@@ -34,16 +33,16 @@ export default function ProblemSubmissionInterface({
   problem: GroupProblemData;
 }) {
   const { lang, firebaseUser } = React.useContext(UserDataContext);
-  const emptySubmission: Partial<Submission> = {
-    problemId: problem.id,
-    type: problem.submissionType,
-    code: '',
+  const emptySubmission: Partial<ProblemSubmissionRequestData> = {
+    problemID: problem.id,
+    sourceCode: '',
     language: lang === 'showAll' ? 'cpp' : lang,
-    result: 1,
-    status: ExecutionStatus.PENDING,
   };
   const [submission, editSubmission] = useReducer(
-    (oldSubmission, updates: Partial<Submission>): Partial<Submission> => ({
+    (
+      oldSubmission,
+      updates: Partial<ProblemSubmissionRequestData>
+    ): Partial<ProblemSubmissionRequestData> => ({
       ...oldSubmission,
       ...updates,
     }),
@@ -62,7 +61,7 @@ export default function ProblemSubmissionInterface({
       fileReader.readAsText(file, 'UTF-8');
       fileReader.onload = e => {
         editSubmission({
-          code: e.target.result.toString(),
+          sourceCode: e.target.result.toString(),
         });
       };
     },
@@ -106,16 +105,20 @@ export default function ProblemSubmissionInterface({
   const handleSubmitSolution = async e => {
     e.preventDefault();
     try {
-      const submissionID = await submitSolution({
-        problemID: problem.usacoGuideId,
-        language: submission.language,
-        filename: {
-          cpp: 'main.cpp',
-          java: 'Main.java',
-          py: 'main.py',
-        }[submission.language],
-        sourceCode: submission.code,
-      });
+      const submissionID = await submitSolution(
+        {
+          problemID: problem.usacoGuideId,
+          language: submission.language,
+          filename: {
+            cpp: 'main.cpp',
+            java: 'Main.java',
+            py: 'main.py',
+          }[submission.language],
+          sourceCode: submission.sourceCode,
+        },
+        problem.postId,
+        problem.id
+      );
       setSubmissionID(submissionID);
     } catch (error) {
       alert('Failed to submit solution: ' + error.message);
@@ -179,8 +182,8 @@ export default function ProblemSubmissionInterface({
         <input {...getInputProps()} />
         <TabIndentableTextarea
           rows={7}
-          value={submission.code}
-          onChange={e => editSubmission({ code: e.target.value })}
+          value={submission.sourceCode}
+          onChange={e => editSubmission({ sourceCode: e.target.value })}
           className={`input font-mono${
             isDragActive ? ' border-blue-600 ring-blue-600 ring-1' : ''
           }`}
@@ -199,11 +202,7 @@ export default function ProblemSubmissionInterface({
         </button>{' '}
         to select a file.
       </div>
-      <button
-        type="submit"
-        className="mt-4 btn"
-        disabled={submissionResult?.status === ExecutionStatus.PENDING}
-      >
+      <button type="submit" className="mt-4 btn">
         Submit Code
       </button>
     </form>
