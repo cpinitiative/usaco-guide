@@ -67,7 +67,8 @@ export default function ProblemSubmissionInterface({
     },
   });
 
-  const [submissionResult, setSubmissionID] = useProblemSubmissionResult();
+  const [submissionID, setSubmissionID] = React.useState(null);
+  const submissionResult = useProblemSubmissionResult(submissionID);
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
