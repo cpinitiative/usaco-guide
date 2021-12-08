@@ -59,10 +59,13 @@ struct BIT {
 
 const int MAXN = 2e5 + 1;
 
-// tour = Euler Tour
-// color = color of each node
-// answer = answer for each node
-// lend = left endpoint of each node (as explained in editorial)
+/*
+ * tour = Euler Tour
+ * color = color of each node
+ * answer = answer for each node
+ * lend = left endpoint of each node (as explained in editorial)
+ */
+
 int tour[MAXN], color[MAXN], answer[MAXN], lend[MAXN];
 
 vector<int> adj[MAXN];
@@ -74,7 +77,8 @@ void dfs(int u, int par = 0) {
 		if (n == par) continue;
 		dfs(n, u);
 	}
-	tour[idx] = u; idx++;
+	tour[idx] = u;
+	idx++;
 }
 
 int main() {
@@ -104,7 +108,10 @@ int main() {
 		last[color[tour[i]]] = i; 
 		// We reflect that change in our BIT
 		bit.update(i, 1); 
-		// The answer for tour[i]'s node is simply the sum of 1s in its contiguous subinterval in the Euler Tour
+		/*
+		* The answer for tour[i]'s node is simply
+		* the sum of 1s in its contiguous subinterval in the Euler Tour
+		*/
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
 	}
 	for (int i = 1; i <= N; i++) {
