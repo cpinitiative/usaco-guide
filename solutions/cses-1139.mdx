@@ -65,7 +65,6 @@ const int MAXN = 2e5 + 1;
  * answer = answer for each node
  * lend = left endpoint of each node (as explained in editorial)
  */
-
 int tour[MAXN], color[MAXN], answer[MAXN], lend[MAXN];
 
 vector<int> adj[MAXN];
@@ -109,9 +108,9 @@ int main() {
 		// We reflect that change in our BIT
 		bit.update(i, 1); 
 		/*
-		* The answer for tour[i]'s node is simply
-		* the sum of 1s in its contiguous subinterval in the Euler Tour
-		*/
+		 * The answer for tour[i]'s node is simply
+		 * the sum of 1s in its contiguous subinterval in the Euler Tour
+		 */
 		answer[tour[i]] = bit.sum(i) - bit.sum(lend[tour[i]] - 1);
 	}
 	for (int i = 1; i <= N; i++) {
