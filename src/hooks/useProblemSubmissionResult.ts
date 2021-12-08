@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { ProblemSubmissionResult } from '../models/groups/problem';
 
-export default function useProblemSubmissionResult() {
-  const [submissionID, setSubmissionID] = useState(null);
-  const [result, setResult] = useState(null);
+export default function useProblemSubmissionResult(submissionID: string) {
+  const [result, setResult] = useState<ProblemSubmissionResult>(null);
   const currentSubmission = useRef(0);
 
   useEffect(() => {
@@ -33,5 +33,5 @@ export default function useProblemSubmissionResult() {
     };
   }, []);
 
-  return [result, setSubmissionID];
+  return result;
 }

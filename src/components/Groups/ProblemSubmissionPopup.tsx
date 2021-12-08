@@ -1,6 +1,7 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
+import useProblemSubmissionResult from '../../hooks/useProblemSubmissionResult';
 import {
   FirebaseSubmission,
   getSubmissionStatus,
@@ -18,6 +19,7 @@ const ProblemSubmissionPopupContext = React.createContext<{
 function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
   const submission = popupContext.submission;
+  const submissionResult = useProblemSubmissionResult(submission?.submissionID);
 
   if (!submission) return null;
 
@@ -75,9 +77,7 @@ function ProblemSubmissionPopup() {
             <div className="mt-4 text-sm">
               {submission && (
                 <CodeBlock className={`language-${submission.language}`}>
-                  Online Judge recently underwent an update. This feature will
-                  be added soon.
-                  {/* {submission.code} */}
+                  {submissionResult?.sourceCode ?? 'Loading...'}
                 </CodeBlock>
               )}
             </div>
