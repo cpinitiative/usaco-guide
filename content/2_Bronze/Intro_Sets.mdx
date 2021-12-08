@@ -52,16 +52,45 @@ A **set** is a collection of elements that contains no duplicates.
 
 <CPPSection>
 
-In _sorted_ sets, the elements are sorted in order of element. Insertions,
-deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number
-of elements in the set.
+### Unordered Sets
 
-[`std::set`](http://www.cplusplus.com/reference/set/set/) implements sorted sets
-in C++. Some operations on an `std::set` named `s` include:
+In _unordered_ sets, elements are stored in a random order. Insertions,
+deletions, and searches are all $\mathcal{O}(1)$. Unordered sets are implemented
+by
+[`std:unordered_set`](https://www.cplusplus.com/reference/unordered_set/unordered_set/).
+
+Some operations on an `std::unordered_set` named `s` include:
 
 - `s.insert(x)`, which adds the element `x` to `s` if not already present.
 - `s.erase(x)`, which removes the element `x` from `s` if present.
 - `s.count(x)`, which returns `1` if `s` contains `x` and `0` if it doesn't.
+
+```cpp
+unordered_set<int> s;
+s.insert(1);  // {1}
+s.insert(4);  // {1, 4}
+s.insert(2);  // {1, 4, 2}
+s.insert(1);  // {1, 4, 2}
+// the insert method did nothing because 1 was already in the set
+cout << s.count(1) << endl;  // 1
+s.erase(1);  // [2, 4]
+cout << s.count(5) << endl;  // 0
+s.erase(0);  // [2, 4]
+// if the element to be erased was not present, nothing happens
+```
+
+### Sorted Sets
+
+In _sorted_ sets, the elements are sorted in order of element. Insertions,
+deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number
+of elements in the set. Unordered sets are implemented by
+[`std:set`](https://www.cplusplus.com/reference/set/set/).
+
+`std::set` includes all the essential operations that `std::unordered_set` has
+(including insertion, deletion, searches, etc.), but also some additional ones.
+Refer to the
+[More Operations on Sorted Sets](https://usaco.guide/silver/intro-sorted-sets)
+module for more detail.
 
 You can iterate through a set in sorted order using a for-each loop.
 
@@ -70,18 +99,11 @@ set<int> s;
 s.insert(1);  // [1]
 s.insert(4);  // [1, 4]
 s.insert(2);  // [1, 2, 4]
-s.insert(1);  // [1, 2, 4]
-// the insert method did nothing because 1 was already in the set
-cout << s.count(1) << endl;  // 1
-s.erase(1);  // [2, 4]
-cout << s.count(5) << endl;  // 0
-s.erase(0);  // [2, 4]
-// if the element to be erased was not present, nothing happens
 
+// Outputs 1, 2, and 4 on separate lines
 for (int element : s) {
 	cout << element << endl;
 }
-// You can iterate through an set in sorted order
 ```
 
 </CPPSection>
@@ -91,8 +113,8 @@ for (int element : s) {
 ### Unordered Sets
 
 In _unordered_ sets, elements are stored in a random order. Insertions,
-deletions, and searches are all $\mathcal{O}(1)$, where $N$ is the number of
-elements in the set. Unordered sets are implemented in Java by the
+deletions, and searches are all $\mathcal{O}(1)$. Unordered sets are implemented
+in Java by the
 [`HashSet`](https://docs.oracle.com/javase/7/docs/api/java/util/HashSet.html)
 class (which comes from the `java.util` library).
 
@@ -127,7 +149,7 @@ additional ones. Refer to the
 [More Operations on Sorted Sets](https://usaco.guide/silver/intro-sorted-sets)
 module for more detail.
 
-You can also iterate through a `TreeSet` in sorted order using a for-each loop.
+You can iterate through a `TreeSet` in sorted order using a for-each loop.
 
 ```java
 Set<Integer> set = new TreeSet<>();
@@ -135,7 +157,6 @@ set.add(1);  // {1}
 set.add(4);  // {1, 4}
 set.add(2);  // {1, 2, 4}
 
-// You can iterate through a TreeSet set in sorted order
 // Outputs 1, 2, and 4 on separate lines
 for (int element : set) {
 	System.out.println(element);
@@ -170,9 +191,6 @@ s.remove(0) # {4, 2}
 </PySection>
 
 </LanguageSection>
-
-Additional functions that sets support are discussed in the
-[Silver module](/silver/intro-sorted-sets).
 
 ### Solution - Distinct Numbers
 
@@ -807,7 +825,7 @@ make their implementation easier.
     <Quiz.Answer correct>
       $\mathcal{O}(\log N)$
       <Quiz.Explanation>
-				Correct.
+	Correct.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
