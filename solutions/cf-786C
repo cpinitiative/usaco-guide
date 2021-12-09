@@ -25,10 +25,10 @@ The following lemma will allow us to prove that this run in time.
 
 Fortunately for us, the function $f$ does satisfy this property (consider the case where all colors are distinct — Each segment has exactly $k$ elements, for a total of $\lceil \frac n k \rceil$ segments). Recall that in the solution, if $v_l = v_r$, we can simply manually assign the answers for the range. By Lemma 2, we know that $f$ achieves $\mathcal{O}(\sqrt{n})$ values. Combining Lemma 1 and Lemma 2, we see that all value which are equivalent must lie in a contiguous range within the array. Thus, this assignment step is performed $\mathcal{O}(\sqrt{n})$ times. 
 
-A segment tree built over an array of size $n$ will visit at most $\mathcal{O}(\log n)$ nodes per query operation. Visiting each node takes $\mathcal{O}(1)$ time, for a total of $O(\log n)$ time. In our case, visiting each node takes $\mathcal{O}(n)$ time (to manually compute $f(m)$). Since we have $\mathcal{O}(\sqrt{n})$ "queries", each of which take $\mathcal{O}(n \log n)$ time to evaluate, our final complexity is $\mathcal{O}(n \sqrt{n} \log n)$. Although this may seem slow, the solution [passes comfortably within the time limit](https://codeforces.com/contest/786/submission/138572886). 
+A segment tree built over an array of size $n$ will visit at most $\mathcal{O}(\log n)$ nodes per query operation. Visiting each node takes $\mathcal{O}(1)$ time, for a total of $O(\log n)$ time. In our case, visiting each node takes $\mathcal{O}(n)$ time (to manually compute $f(m)$). Since we have $\mathcal{O}(\sqrt{n})$ Segment Tree "queries", each of which take $\mathcal{O}(n \log n)$ time to evaluate, our final complexity is $\mathcal{O}(n \sqrt{n} \log n)$. Although this may seem slow, the solution [passes comfortably within the time limit](https://codeforces.com/contest/786/submission/138572886). 
 
 <Info>
-Using `std::bitset` when evaluating $f$ will allow solutions with even slower time complexities to pass in time...
+Using `std::bitset` when evaluating $f$ will allow solutions with even slower time complexities to pass in time. 
 </Info>
 
 ## Implementation
@@ -40,11 +40,14 @@ Using `std::bitset` when evaluating $f$ will allow solutions with even slower ti
 #include <bits/stdc++.h>
 using namespace std;
 
-int N, A[100005], ans[100005];
+const int MAXN = 1e5 + 1;
+
+int N, A[MAXN], ans[MAXN];
  
 int f(int m) {
-	bitset<100005> B = 0;
-	int ret = 0, cnt = 0;
+	bitset<MAXN> B = 0;
+	int ret = 0; // number of segments
+	int cnt = 0; // number of different colors in current segment
 	for (int i = 0; i < N; i++) {
 		if (!B[A[i]]) {
 			cnt++;
@@ -70,9 +73,9 @@ void dnq(int l = 1, int r = N, int lv = 1, int rv = N) {
 		return;
 	}
 	int m = (l + r) / 2, mv = f(m);
-	ans[m] = mv;
-	dnq(l, m - 1, mv, rv);
-	dnq(m + 1, r, lv, mv);
+	ans[m] = mv;  // set answer of m
+	dnq(l, m - 1, mv, rv);  // recurse to left subarray
+	dnq(m + 1, r, lv, mv);  // recurse to right subarray
 }
  
 int main() {
