@@ -54,10 +54,12 @@ For a string $S$:
 Define an array $\pi_S$ of size $|S|$ such that $\pi_S[i]$ is equal to the length of the longest nontrivial suffix of the prefix ending at position $i$ the coincides with a prefix of the entire string. Formally,
 
 $$ 
-\pi_S[i] = \max \{k : | : 1 \leq k < i \text{ and } S[0:k - 1] \equiv S[i - (k - 1): i] \} 
+\pi_S[i] = \max \{k \: | \: 1 \leq k < i \text{ and } S[0:k - 1] \equiv S[i - (k - 1): i] \} 
 $$
 
-For instance, for $S = \text{``abcabcd"}$, $\pi_S = [0, 0, 0, 1, 2, 3, 0]$, and the prefix function of $S = \text{``aabaaab"}$ is $\pi_S = [0, 1, 0, 1, 2, 2, 3]$.
+In other words, for a given index $i$, we would like to compute the length of the longest substring that ends at $i$, such that this string also happens to be a prefix of the *entire* string. One such string that satisfies this criteria is the prefix ending at $i$; we will be disregarding this solution for obvious reasons. 
+
+For instance, for $S = \text{``abcabcd"}$, $\pi_S = [0, 0, 0, 1, 2, 3, 0]$, and the prefix function of $S = \text{``aabaaab"}$ is $\pi_S = [0, 1, 0, 1, 2, 2, 3]$. In the second example, $\pi_S[4] = 2$ because the prefix of length $2$ ($\text{``ab"})$ is equivalent to the substring of length $2$ that ends at index $4$. In the same way, $\pi_S[6] = 3$ because the prefix of length $3$ ($\text{``abb"}$) is equal to the substring of length $3$ that ends at index $6$. For both of these samples, there is no longer substring that satisfies these criterias.
 
 The purpose of the KMP algorithm is to efficiently compute the $\pi_S$ array in linear time. Suppose we have already computed the $\pi_S$ array for indices $0\dots i$, and need to compute the value for index $i + 1$. 
 
@@ -85,11 +87,11 @@ vector<int> pi(const string &s) {
     vector<int> pi_s(n);
     for (int i = 1, j = 0; i < n; i++) {
         while (j > 0 && s[j] != s[i]) {
-		j = pi_s[j - 1]
-	}
+			j = pi_s[j - 1]
+		}
         if (s[i] == s[j]) {
             j++;
-	}
+		}
         pi_s[i] = j;
     }
     return pi_s;
