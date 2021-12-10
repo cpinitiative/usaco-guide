@@ -105,7 +105,6 @@ const ActualQuiz = props => {
   return (
     <div className="quiz">
       {React.Children.map(props.children, child => {
-        console.log(child);
         if (child?.type?.displayName === 'QuizQuestion') {
           return React.cloneElement(child, {
             number: num++,
