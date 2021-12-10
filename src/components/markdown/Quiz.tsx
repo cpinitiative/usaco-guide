@@ -6,14 +6,11 @@ import React from 'react';
 
 const quizScope = Symbol();
 const currentQuestionAtom = atom(0);
-currentQuestionAtom.scope = quizScope;
 const selectedAnswerAtom = atom(null as number | null);
-selectedAnswerAtom.scope = quizScope;
 const chosenAnswerAtom = atom(null as number | null);
-chosenAnswerAtom.scope = quizScope;
 
 const QuizAnswerExplanation = props => {
-  const chosenAnswer = useAtomValue(chosenAnswerAtom);
+  const chosenAnswer = useAtomValue(chosenAnswerAtom, quizScope);
   if (chosenAnswer === null) {
     return null;
   }
@@ -25,8 +22,11 @@ const QuizAnswerExplanation = props => {
 };
 
 const QuizMCAnswer = props => {
-  const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom);
-  const chosenAnswer = useAtomValue(chosenAnswerAtom);
+  const [selectedAnswer, setSelectedAnswer] = useAtom(
+    selectedAnswerAtom,
+    quizScope
+  );
+  const chosenAnswer = useAtomValue(chosenAnswerAtom, quizScope);
   const isSelected = selectedAnswer === props.number;
   const showCorrect = chosenAnswer !== null;
   return (
@@ -60,7 +60,7 @@ const QuizMCAnswer = props => {
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
-  const currentQuestion = useAtomValue(currentQuestionAtom);
+  const currentQuestion = useAtomValue(currentQuestionAtom, quizScope);
 
   if (currentQuestion !== props.number) {
     return null;
@@ -85,9 +85,15 @@ QuizQuestion.displayName = 'QuizQuestion';
 
 // needed to use scoped provider
 const ActualQuiz = props => {
-  const [currentQuestion, setCurrentQuestion] = useAtom(currentQuestionAtom);
-  const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom);
-  const [chosenAnswer, setChosenAnswer] = useAtom(chosenAnswerAtom);
+  const [currentQuestion, setCurrentQuestion] = useAtom(
+    currentQuestionAtom,
+    quizScope
+  );
+  const [selectedAnswer, setSelectedAnswer] = useAtom(
+    selectedAnswerAtom,
+    quizScope
+  );
+  const [chosenAnswer, setChosenAnswer] = useAtom(chosenAnswerAtom, quizScope);
 
   const handleQuestionChange = newVal => {
     setCurrentQuestion(newVal);
