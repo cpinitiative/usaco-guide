@@ -504,18 +504,17 @@ export default function TopNavigationBar({
                     Problems
                   </span>
                 </Link>
-                <div className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                <a
+                  className="group -m-3 p-3 cursor-pointer flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setIsContactUsActive(true)}
+                >
                   <ChatAltIcon
                     className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
-                  <button
-                    className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"
-                    onClick={() => setIsContactUsActive(true)}
-                  >
-                    Contact Us
-                  </button>
-                </div>
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"></span>
+                  Contact Us
+                </a>
                 <Link
                   key="Settings"
                   to="/settings"
@@ -530,31 +529,31 @@ export default function TopNavigationBar({
                   </span>
                 </Link>
                 {firebaseUser ? (
-                  <div className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <a
+                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => signOut()}
+                  >
                     <LogoutIcon
                       className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
-                    <button
-                      className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"
-                      onClick={() => signOut()}
-                    >
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       Sign Out
-                    </button>
-                  </div>
+                    </span>
+                  </a>
                 ) : (
-                  <div className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <a
+                    className="group -m-3 p-3 cursor-pointer flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => signIn()}
+                  >
                     <LoginIcon
                       className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
-                    <button
-                      className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"
-                      onClick={() => signIn()}
-                    >
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       Sign In
-                    </button>
-                  </div>
+                    </span>
+                  </a>
                 )}
               </nav>
             </div>
