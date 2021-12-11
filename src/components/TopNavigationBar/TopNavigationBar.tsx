@@ -1,11 +1,17 @@
 import { Popover, Transition } from '@headlessui/react';
 import {
   AcademicCapIcon,
+  BookmarkIcon,
   ChartBarIcon,
   ChatAlt2Icon,
+  ChatAltIcon,
   ChevronDownIcon,
   CogIcon,
   ExternalLinkIcon,
+  LoginIcon,
+  LogoutIcon,
+  PresentationChartLineIcon,
+  QuestionMarkCircleIcon,
   SearchIcon,
   TerminalIcon,
   UserGroupIcon,
@@ -14,7 +20,10 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useContext, useState } from 'react';
-import { SECTIONS, SECTION_LABELS } from '../../../content/ordering';
+import MODULE_ORDERING, {
+  SECTIONS,
+  SECTION_LABELS,
+} from '../../../content/ordering';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
@@ -33,12 +42,32 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut, isLoaded } = useContext(UserDataContext);
+  const { firebaseUser, signOut, isLoaded, userProgressOnModules } =
+    useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const userGroups = useUserGroups();
+
+  const sections = {};
+  for (const section of Object.keys(MODULE_ORDERING)) {
+    let total = 0;
+    let completed = 0;
+    MODULE_ORDERING[section].forEach(chapter => {
+      chapter.items.forEach(module => {
+        total++;
+        if (Object.keys(userProgressOnModules).includes(module)) {
+          completed++;
+        }
+      });
+    });
+    sections[section] = {
+      total,
+      completed,
+    };
+  }
+
   const resources = [
     {
       name: 'USACO Forum',
@@ -79,9 +108,49 @@ export default function TopNavigationBar({
       description:
         'Access workshops providing you everything you need to know about USACO.',
       href: 'https://joincpi.org/workshop',
-      icon: CogIcon,
+      icon: PresentationChartLineIcon,
     },
   ];
+
+  const solutions = [
+    {
+      name: 'General',
+      href: '/general',
+      icon: BookmarkIcon,
+      key: 'general',
+    },
+    {
+      name: 'Bronze',
+      href: '/bronze',
+      icon: BookmarkIcon,
+      key: 'bronze',
+    },
+    {
+      name: 'Silver',
+      href: '/silver',
+      icon: BookmarkIcon,
+      key: 'silver',
+    },
+    {
+      name: 'Gold',
+      href: '/gold',
+      icon: BookmarkIcon,
+      key: 'gold',
+    },
+    {
+      name: 'Platinum',
+      href: '/plat',
+      icon: BookmarkIcon,
+      key: 'plat',
+    },
+    {
+      name: 'Advanced',
+      href: '/adv',
+      icon: BookmarkIcon,
+      key: 'adv',
+    },
+  ];
+
   const mobileLinks = [
     {
       label: 'Dashboard',
@@ -374,102 +443,121 @@ export default function TopNavigationBar({
             </div>
           </div>
         </div>
-
         {/*
         Mobile menu, toggle classes based on menu state.
-
+        
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
-          <div className="pt-2 pb-3 space-y-1">
-            {mobileLinks.map((link, idx) => (
-              <Link
-                key={link.url}
-                to={link.url}
-                getProps={({ isCurrent }) => ({
-                  className: isCurrent
-                    ? 'block pl-3 pr-4 py-2 border-l-4 border-blue-500 text-base font-medium text-blue-700 dark:text-blue-100 bg-blue-50 dark:bg-blue-800 focus:outline-none focus:text-blue-800 focus:bg-blue-100 focus:border-blue-700 transition'
-                    : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition',
-                })}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <a
-              href="https://forum.usaco.guide/"
-              target="_blank"
-              rel="noreferrer"
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-            >
-              Forum
-            </a>
-            <a
-              href="https://ide.usaco.guide/"
-              target="_blank"
-              rel="noreferrer"
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-            >
-              IDE
-            </a>
-            <a
-              href="https://joincpi.org/classes"
-              target="_blank"
-              rel="noreferrer"
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-            >
-              Classes
-            </a>
-            <a
-              href="https://joincpi.org/clubs"
-              target="_blank"
-              rel="noreferrer"
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-            >
-              Clubs
-            </a>
-            <a
-              href="https://joincpi.org/contests"
-              target="_blank"
-              rel="noreferrer"
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-            >
-              Contests
-            </a>
-            <a
-              href="https://joincpi.org/workshop"
-              target="_blank"
-              rel="noreferrer"
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-            >
-              Workshops
-            </a>
-            <button
-              className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-              onClick={() => setIsContactUsActive(true)}
-            >
-              Contact Us
-            </button>
-            <Link
-              className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-              to="/settings"
-            >
-              Settings
-            </Link>
-            {firebaseUser ? (
-              <button
-                className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-                onClick={() => signOut()}
-              >
-                Sign Out
-              </button>
-            ) : (
-              <button
-                className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-                onClick={() => signIn()}
-              >
-                Sign In
-              </button>
-            )}
+          <div className="grid grid-cols-1 divide-y divide-gray-300 dark:divide-gray-800 pb-6">
+            <div className="py-5 px-4">
+              <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                {solutions.map(item => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <item.icon
+                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                      {item.name}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="py-5 px-4">
+              <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                {resources.map(item => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <item.icon
+                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                      {item.name}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="pt-5 px-4">
+              <nav className="grid gap-y-8">
+                <Link
+                  key="Problems"
+                  to="/problems"
+                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <QuestionMarkCircleIcon
+                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Problems
+                  </span>
+                </Link>
+                <a
+                  className="group -m-3 p-3 cursor-pointer flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setIsContactUsActive(true)}
+                >
+                  <ChatAltIcon
+                    className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"></span>
+                  Contact Us
+                </a>
+                <Link
+                  key="Settings"
+                  to="/settings"
+                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <CogIcon
+                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Settings
+                  </span>
+                </Link>
+                {firebaseUser ? (
+                  <a
+                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => signOut()}
+                  >
+                    <LogoutIcon
+                      className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                      Sign Out
+                    </span>
+                  </a>
+                ) : (
+                  <a
+                    className="group -m-3 p-3 cursor-pointer flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => signIn()}
+                  >
+                    <LoginIcon
+                      className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                      Sign In
+                    </span>
+                  </a>
+                )}
+              </nav>
+            </div>
           </div>
         </div>
       </nav>
