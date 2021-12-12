@@ -71,13 +71,11 @@ unordered_set<int> s;
 s.insert(1);  // {1}
 s.insert(4);  // {1, 4}
 s.insert(2);  // {1, 4, 2}
-s.insert(1);  // {1, 4, 2}
-// the insert method did nothing because 1 was already in the set
+s.insert(1);  // does nothing because 1's already in the set
 cout << s.count(1) << endl;  // 1
-s.erase(1);  // [2, 4]
+s.erase(1);  // {2, 4}
 cout << s.count(5) << endl;  // 0
-s.erase(0);  // [2, 4]
-// if the element to be erased was not present, nothing happens
+s.erase(0);  // does nothing because 0 wasn't in the set
 ```
 
 ### Sorted Sets
@@ -98,9 +96,9 @@ You can iterate through a set in sorted order using a for-each loop.
 
 ```cpp
 set<int> s;
-s.insert(1);  // [1]
-s.insert(4);  // [1, 4]
-s.insert(2);  // [1, 2, 4]
+s.insert(1);  // {1}
+s.insert(4);  // {1, 4}
+s.insert(2);  // {1, 2, 4}
 
 // Outputs 1, 2, and 4 on separate lines
 for (int element : s) {
@@ -136,8 +134,7 @@ set.add(1);  // {1, 4, 2}
 System.out.println(set.contains(1));  // true
 set.remove(1);  // {4, 2}
 System.out.println(set.contains(5));  // false
-set.remove(0);  // {4, 2}
-// if the element to be removed does not exist, nothing happens
+set.remove(0);  // does nothing because 0 wasn't in the set
 ```
 
 ### Sorted Sets
