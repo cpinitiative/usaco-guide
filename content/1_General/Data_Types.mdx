@@ -13,15 +13,15 @@ prerequisites:
 <CPPSection>
 
 <Resources>
-	<Resource source="IUSACO" title="2.2 - Data Types">
-		module is based off this
-	</Resource>
 	<Resource
 		source="CPPR"
 		title="Fundamental Types"
 		url="https://en.cppreference.com/w/cpp/language/types"
 	>
 		sizes + ranges
+	</Resource>
+	<Resource source="IUSACO" title="2.2 - Data Types">
+		module is based off this
 	</Resource>
 	<Resource source="CPH" title="1.3 - Working with numbers">
 		Integers, Modular arithmetic, Floating point numbers
@@ -33,29 +33,42 @@ prerequisites:
 
 <br />
 
-| _Types_           | `int`                     | `long long`               | `float`                    | `double`                     | `bool`               | `char`            | `string`                       |
-| ----------------- | ----------------------- | ----------------------- | ------------------------ | -------------------------- | ------------------ | --------------- | ---------------------------- |
-| Description (g++) | 32-bit integer          | 64-bit integer          | Single-precision float   | Double-precision float     | True/False value   | 8-bit character | String (Note: not primitive) |
-| Size (bytes, g++) | 4                       | 8                       | 4                        | 8                          | 1                  | 1               | Variable                     |
-| Range (g++)       | $-2^{31}$ to $2^{31}-1$ | $-2^{64}$ to $2^{64}-1$ | `-3.4E+38` to `+3.4E+38` | `-1.7E+308` to `+1.7E+308` | 0, 1 or true/false | $-128$ to $127$ | Not applicable               |
+<center>
+**C++: Common Fundamental Data Types**
+</center>
+
+*Note:* These numbers may vary depending on your machine and/or compiler. For more fundamental data types, check the the first resource in the table above.
+
+| _Types_           | `int`                     | `long long`               | `double`                     | `bool`               | `char`            | 
+| ----------------- | ----------------------- | ----------------------- | ------------------------ | -------------------------- | ------------------ | 
+| Description | 32-bit integer          | 64-bit integer          |  Double-precision float     | True/False value   | 8-bit character | 
+| Size (bytes) | 4                       | 8                       | 8                          | 1                  | 1               | 
+| Range       | $-2^{31}$ to $2^{31}-1$ | $-2^{63}$ to $2^{63}-1$ | `-1.7E+308` to `+1.7E+308` | $0$ or $1$ (`true` or `false`) | $-2^7$ to $2^7-1$ |
 
 </CPPSection>
 
 <JavaSection>
 
 <Resources>
+	<Resource source="JavaDocs" title="Primitive Data Types" url="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html"> </Resource>
 	<Resource source="IUSACO" title="2.2 - Data Types">
 		module is based off this
 	</Resource>
 </Resources>
 
+<center>
+**Java: Common Primitive Data Types**
+</center>
+
+For more primitive data types, check the the first resource in the table above.
+
 <br />
 
-| _Types_     | `int`                     | `long`                    | `float`                    | `double`                     | `boolean`          | `char`                             | `String`         | `BigInteger`             |
-| ----------- | ----------------------- | ----------------------- | ------------------------ | -------------------------- | ---------------- | -------------------------------- | -------------- | ---------------------- |
-| Description | 32-bit integer          | 64-bit integer          | Single-precision float   | Double-precision float     | True/False value | 8-bit character                  | String         | Arbitrary-size integer |
-| Size (bits) | 32                      | 64                      | 32                       | 64                         | 1(\*)            | 16                               | Variable       | Unlimited              |
-| Range       | $-2^{32}$ to $2^{32}-1$ | $-2^{64}$ to $2^{64}-1$ | `-3.4E+38` to `+3.4E+38` | `-1.7E+308` to `+1.7E+308` | true/false       | `\u0000` to `\uffff` ($0-65535$) | Not applicable | Unlimited              |
+| _Types_      | `int`                   | `long`                  | `double`                   | `boolean`          | `char`                   | 
+| ------------ | ----------------------- | ----------------------- | -------------------------- | ------------------ | ------------------------ | 
+| Description  | 32-bit integer          | 64-bit integer          | Double-precision float     | True/False value   | 16-bit Unicode character | 
+| Size (bytes) | 4                       | 8                       | 8                          | 1 bit(\*)          | 2                        |
+| Range        | $-2^{31}$ to $2^{31}-1$ | $-2^{63}$ to $2^{63}-1$ | `-1.7E+308` to `+1.7E+308` | true/false         | `\u0000` to `\uffff` ($0-65535$) |
 
 \*Note: It's unlikely that booleans will actually use only 1 bit of memory, as
 in most cases data types must be aligned to bytes. However, only one bit of
@@ -113,7 +126,7 @@ contain a warning such as the following:
 > Note that the large size of integers involved in this problem may require the
 > use of 64-bit integer data types (e.g., a "long long" in C/C++).
 
-Contest problems are usually set such that the 64-bit integer is sufficient, so
+Contest problems are usually set such that the 64-bit integer is sufficient, so for lower divisions
 it might be a good idea to use 64-bit integers in place of 32-bit integers
 everywhere. Of course, you shouldn't do this when time and/or memory limits are
 tight, which may be the case in higher divisions of USACO. Also note that in
@@ -121,10 +134,8 @@ Java, you will need to cast `long` back to `int` when accessing array indices.
 
 Additionally, there exist 16-bit integers (`short` in C++ and Java). However,
 these are generally not useful as the extra memory saved by using them is
-usually negligible. Unsigned integers (`unsigned int, unsigned long long, etc.`)
-also exist, but it's usually easier to use signed integers for most tasks.
-However, the 2-fold increase in size is sometimes the difference between
-overflowing and not overflowing.
+usually negligible. Unsigned integers (`unsigned int`, `unsigned long long`, etc.)
+also exist. They aren't used as frequently, though the 2-fold increase in size is sometimes the difference between overflowing and not overflowing.
 
 **Floating point numbers** are used to store decimal values. It is important to
 know that floating point numbers are not exact, because the binary architecture
@@ -162,9 +173,5 @@ both `cout << ('f' - 'a');` in C++ and `System.out.print('f' - 'a');` in Java
 will print `5`. In Java, characters are 16 bits, while in C/C++, characters are
 8 bits.
 
-**Strings** are stored as an array of characters. On the back end, there is an
-`ArrayList` (you can think of it as a more flexible array which can change its
-size if more space is needed), that automatically updates when two strings are
-added. There are a few methods such as `substring()` and `charAt()` in Java that
-are helpful to know. A loop can be used to access each character of an unknown
-string.
+**Strings** are effectively arrays of characters. You can easily access the character at a certain
+index and take substrings of the string (`charAt()` and `substring()` in Java).

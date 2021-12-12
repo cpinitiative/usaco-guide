@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const flags = {
-  PRESERVE_WEBPACK_CACHE: true,
   FAST_DEV: true,
 };
 

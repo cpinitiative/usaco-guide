@@ -10,7 +10,6 @@ export interface ProblemData {
   difficulty: string;
   hints: ProblemHint[];
   solution: string | null;
-  submissionType: SubmissionType;
   isDeleted: boolean;
 }
 export type GroupProblemData = ProblemData &
@@ -45,125 +44,92 @@ export type ProblemHint = {
   body: string;
 };
 
-export enum SubmissionType {
-  SELF_GRADED = 'Self Graded',
-  ONLINE_JUDGE = 'Online Judge',
+// Temporarily taken from online-judge repo
+export interface ProblemSubmissionResult {
+  timestamp: number;
+  submissionID: string;
+  status: 'compiling' | 'executing' | 'done';
+  verdict?: ExecutionVerdict;
+  testCases: (ProblemSubmissionTestCaseResult | null)[];
+
+  problemID: string;
+  language: string;
+  filename: string;
+  sourceCode: string; // gzipped in dynamodb
+  message?: string; // gzipped in dynamodb. used either for compiling or internal error.
+  debugData?: string; // gzipped in dynamodb. optionally provided for internal_error
 }
 
-export type Submission = {
-  id: string;
-  problemId: string;
-  userId: string;
-  code: string;
-  language: 'cpp' | 'java' | 'py';
-  timestamp: Timestamp;
-  result: number;
-  status: ExecutionStatus;
-} & (
-  | {
-      type: SubmissionType.SELF_GRADED;
-    }
-  | ({
-      type: SubmissionType.ONLINE_JUDGE;
-      errorMessage?: string;
-      judgeProblemId: string;
-      gradingStatus: 'waiting' | 'in_progress' | 'done' | 'error';
-    } & (
-      | {
-          compilationError: false;
-          testCases?: TestCaseResult[];
-        }
-      | {
-          compilationError: true;
-          compilationErrorMessage: string;
-        }
-      // NOTE: while gradingStatus is waiting compilationError is undefined, not false or true
-      // but I can't get the typescript working >:-(
-    ))
-);
+export interface ProblemSubmissionTestCaseResult {
+  verdict: ExecutionVerdict;
+  time: string;
+  memory: string;
 
-export enum ExecutionStatus {
-  AC = 'AC',
-  WA = 'WA',
-  TLE = 'TLE',
-  MLE = 'MLE',
-  RTE = 'RTE',
-  CE = 'CE',
-  INTERNAL_ERROR = 'INTERNAL_ERROR',
-  PENDING = 'Pending',
+  // each of these is truncated to 4kb then gzipped in dynamodb
+  input: string;
+  expectedOutput: string;
+  stdout: string;
+  stderr: string;
 }
 
-export enum TestResultError {
-  COMPILE_TIMEOUT = 'compile_timeout',
-  COMPILE_ERROR = 'compile_error',
-  RUNTIME_ERROR = 'runtime_error',
-  TIME_LIMIT_EXCEEDED = 'time_limit_exceeded',
-  EMPTY_MISSING_OUTPUT = 'empty_missing_output',
-  WRONG_ANSWER = 'wrong_answer',
-  INTERNAL_ERROR = 'internal_error',
+export type ExecutionVerdict =
+  | 'AC'
+  | 'WA'
+  | 'RTE'
+  | 'MLE'
+  | 'TLE'
+  | 'CE'
+  | 'IE'; // IE is internal error
+
+export interface FirebaseSubmission {
+  language: string;
+  problemID: string;
+  score: number;
+  submissionID: string;
+  userID: string;
+  type: string;
+  verdict: string;
+  timestamp: any; // milliseconds
 }
-export type TestCaseResult = { caseId: number } & (
-  | {
-      pass: false;
-      error: TestResultError;
-    }
-  | {
-      pass: true;
 
-      // in milliseconds:
-      time: number;
-      wallTime: number;
-
-      // in kb?
-      memory: number;
-    }
-);
-
-export const getTestCaseSymbol = (testCase: TestCaseResult): string => {
-  if (testCase.pass === true) {
-    return '*';
-  }
-  switch (testCase.error) {
-    case TestResultError.COMPILE_TIMEOUT:
-    case TestResultError.COMPILE_ERROR:
-      return 'c';
-    case TestResultError.RUNTIME_ERROR:
-      return '!';
-    case TestResultError.TIME_LIMIT_EXCEEDED:
-      return 't';
-    case TestResultError.EMPTY_MISSING_OUTPUT:
-      return 'e';
-    case TestResultError.WRONG_ANSWER:
-      return 'x';
-    case TestResultError.INTERNAL_ERROR:
-      return '?';
-  }
+export const verdictToSymbol: { [key in ExecutionVerdict]: string } = {
+  AC: '*',
+  WA: 'x',
+  RTE: '!',
+  MLE: 'm',
+  TLE: 't',
+  CE: 'c',
+  IE: '?',
 };
 
-export const submissionTextColor: { [key in ExecutionStatus]: string } = {
+export const submissionTextColor: {
+  [key in ExecutionVerdict | 'Pending']: string;
+} = {
   AC: 'text-green-800 dark:text-green-200',
   WA: 'text-red-800 dark:text-red-200',
   TLE: 'text-red-800 dark:text-red-200',
   MLE: 'text-red-800 dark:text-red-200',
   RTE: 'text-red-800 dark:text-red-200',
   CE: 'text-red-800 dark:text-red-200',
-  INTERNAL_ERROR: 'text-red-800 dark:text-red-200',
+  IE: 'text-red-800 dark:text-red-200',
   Pending: 'text-gray-800 dark:text-gray-200',
 };
 
-export const submissionCircleColor: { [key in ExecutionStatus]: string } = {
+export const submissionCircleColor: {
+  [key in ExecutionVerdict | 'Pending']: string;
+} = {
   AC: 'bg-green-400 dark:bg-green-500',
   WA: 'bg-red-400 dark:bg-red-500',
   TLE: 'bg-red-400 dark:bg-red-500',
   MLE: 'bg-red-400 dark:bg-red-500',
   RTE: 'bg-red-400 dark:bg-red-500',
   CE: 'bg-red-400 dark:bg-red-500',
-  INTERNAL_ERROR: 'bg-red-400 dark:bg-red-500',
+  IE: 'bg-red-400 dark:bg-red-500',
   Pending: 'bg-gray-400 dark:bg-gray-500',
 };
 
 export const submissionCircleBorderColor: {
-  [key in ExecutionStatus]: string;
+  [key in ExecutionVerdict | 'Pending']: string;
 } = {
   AC: 'bg-green-100 dark:bg-green-800',
   WA: 'bg-red-100 dark:bg-red-800',
@@ -171,24 +137,24 @@ export const submissionCircleBorderColor: {
   MLE: 'bg-red-100 dark:bg-red-800',
   RTE: 'bg-red-100 dark:bg-red-800',
   CE: 'bg-red-100 dark:bg-red-800',
-  INTERNAL_ERROR: 'bg-red-100 dark:bg-red-800',
+  IE: 'bg-red-100 dark:bg-red-800',
   Pending: 'bg-gray-100 dark:bg-gray-800',
 };
 
-export const getSubmissionTimestampString = (submission: Submission) =>
-  submission?.timestamp?.toDate().toString().substr(0, 24);
-export const getSubmissionStatus = (submission: Submission) => {
-  return submission.status;
+export const getSubmissionTimestampString = (submission: FirebaseSubmission) =>
+  new Date(submission?.timestamp).toString().substr(0, 24);
+export const getSubmissionStatus = (submission: FirebaseSubmission) => {
+  return submission.verdict;
 };
 export const getSubmissionEarnedPoints = (
-  submission: Submission,
+  submission: FirebaseSubmission,
   problem: ProblemData
 ) => {
-  return parseFloat((submission.result * problem.points).toFixed(1));
+  return parseFloat((submission.score * problem.points).toFixed(1));
 };
 export const getEarnedPointsForProblem = (
   problem: ProblemData,
-  submissions: Submission[]
+  submissions: FirebaseSubmission[]
 ) => {
   return submissions.reduce(
     (oldScore, submission) =>

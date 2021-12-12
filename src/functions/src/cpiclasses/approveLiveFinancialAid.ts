@@ -35,7 +35,7 @@ export default functions.https.onCall(
       admin
         .firestore()
         .collection('classes-registration')
-        .doc('2021october')
+        .doc('2022january')
         .collection('registrations')
         .doc(registrationId)
         .update({

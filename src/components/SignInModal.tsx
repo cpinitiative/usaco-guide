@@ -44,7 +44,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       <Dialog
         as="div"
         static
-        className="fixed z-10 inset-0 overflow-y-auto"
+        // navbar has z-20
+        className="fixed z-30 inset-0 overflow-y-auto"
         open={isOpen}
         onClose={() => onClose()}
       >

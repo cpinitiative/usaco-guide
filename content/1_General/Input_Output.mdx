@@ -55,7 +55,7 @@ output their sum. For example, given the input
 the output will be as follows:
 
 ```
-sum is 6
+The sum of these three numbers is 6
 ```
 
 Feel free to test them out at
@@ -91,9 +91,12 @@ output. The [escape sequence](https://en.cppreference.com/w/cpp/language/escape)
 using namespace std;
 
 int main() {
-	int a, b, c; cin >> a >> b >> c;
-	cout << "sum is " << a+b+c << "\n";
-	// or cout << "sum is " << a+b+c << endl;
+	int a;
+	int b;
+	int c;
+	cin >> a >> b >> c;
+	// "\n" can be replaced with endl as well
+	cout << "The sum of these three numbers is " << a + b + c << "\n";
 }
 ```
 
@@ -116,22 +119,30 @@ are slightly more complicated to use.
 using namespace std;
 
 int main() {
-	int a, b, c;
-	// %d specifies that a value of type int is being input.
-	// Use %lld (a few judging platforms might need %I64d)
-	// to input a long long (64-bit) integer.
-	// Many other specifiers are also available; see link for more details.
-	// Be sure to add a & character (address-of operator) when using
-	// scanf, UNLESS you are inputing a string with %s.
-	// It is possible to input multiple values at a time as shown below.
-	scanf("%d%d%d", &a, &b, &c);
+	int a;
+	int b;
+	int c;
+	/*
+	 * %d specifies that a value of type int is being input.
+	 * To input a 64-bit (long long) number,
+	 * use %lld instead (some OJs might need %I64 instead).
+	 * Many other specifiers are also available; see link for more details.
+	 * 
+	 * Be sure to add a & character (address-of operator) when using
+	 * scanf, UNLESS you are inputing a string with %s.
+	 * 
+	 * It is possible to input multiple values at a time as shown below.
+	 */
+	scanf("%d %d %d", &a, &b, &c);
 
-	// Specifiers for printf are mostly the same as those used
-	// by scanf, with the notable exception of floating-point numbers.
-	// Use a backslash character followed by the lowercase
-	// letter n to denote a newline.
-	// The address-of operator, &, is not used here.
-	printf("sum is %d\n", a+b+c);
+	/*
+	 * Specifiers for printf are mostly the same as those used
+	 * by scanf, with the notable exception of floating-point numbers.
+	 * Use a backslash character followed by the lowercase
+	 * letter n to denote a newline.
+	 * The address-of operator (&) is not used here.
+	 */
+	printf("The sum of these three numbers is %d\n", a + b + c);
 }
 ```
 
@@ -157,12 +168,12 @@ input and standard output, or using `Scanner` to read input and
 import java.util.Scanner;
 
 public class Main {
-	static Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 		int a = sc.nextInt();
 		int b = sc.nextInt();
 		int c = sc.nextInt();
-		System.out.print("sum is ");
+		System.out.print("The sum of these three numbers is ");
 		System.out.println(a + b + c);
 	}
 }
@@ -186,16 +197,21 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-	static PrintWriter pw = new PrintWriter(System.out);
 	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
 		StringTokenizer st = new StringTokenizer(r.readLine());
 		int a = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
 		int c = Integer.parseInt(st.nextToken());
-		pw.print("sum is ");
+		pw.print("The sum of these three numbers is ");
 		pw.println(a + b + c);
-		pw.close(); // make sure to include this line -- closes io and flushes the output
+		/*
+		 * Make sure to include this line, as it
+		 * closes IO and flushes the output as well.
+		 */
+		pw.close();
 	}
 }
 ```
@@ -254,12 +270,12 @@ class Kattio extends PrintWriter {
 }
 
 public class Main {
-	static Kattio io = new Kattio();
 	public static void main(String[] args) {
+		Kattio io = new Kattio();
 		int a = io.nextInt();
 		int b = io.nextInt();
 		int c = io.nextInt();
-		io.print("sum is ");
+		io.print("The sum of these three numbers is ");
 		io.println(a + b + c);
 		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
@@ -270,7 +286,8 @@ public class Main {
 import java.io.*;
 import java.util.*;
 
-/** Simple yet moderately fast I/O routines.
+/**
+ * Simple yet moderately fast I/O routines.
  * Some notes:
  *
  * - When done, you should always do io.close() or io.flush() on the
@@ -316,7 +333,7 @@ public class Main {
 		int a = io.nextInt();
 		int b = io.nextInt();
 		int c = io.nextInt();
-		io.print("sum is ");
+		io.print("The sum of these three numbers is ");
 		io.println(a + b + c);
 		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
@@ -345,7 +362,7 @@ instance `io`:
 | `io.close()`      | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](<https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()>)) at the end, or you won't see any output! |
 
 USACO prohibits prewritten code but allows you to consult resources about basic
-functionality such as input / output. So feel free to refer to this module
+functionality such as input / output, so feel free to refer to this module
 during a USACO contest.
 
 <Info title="PrintWriter Buffering">
@@ -388,58 +405,62 @@ faster method of input.
 The most intuitive way to do input/output is using the built in
 `input()` and
 `print()` methods. The
-`input()` method will return the next line, and can be processed using different
-python methods. The `print()` method takes in a string and an optional string
+`input()` method will return the next line, and can be processed using various
+Python methods. The `print()` method takes in a string and an optional string
 `end` (defaults to `'\n'`). Below is an annotated demonstration on different
 input/output scenarios.
 
 
 ```py
-# read in a string
+# Read in a string
 my_str = input()
-# prints the string on its own line
+# Prints the string on its own line
 print(my_str)
 
-# take in an integer n on a single line
+# Take in an integer n on a single line
 n = int(input())
-# prints integer n with " test" after it
+# Prints n with " test" (no newline) after it
 print(n, end=" test")
 ```
 ### Method 2 - [`stdin`](https://docs.python.org/3/library/sys.html#sys.stdin) and [`stdout`](https://docs.python.org/3/library/sys.html#sys.stdout)
 
-The first method of reading input can be far slower than using `stdin` (Hundreds of times slower!). Coupled with python's relatively slow execution speed, reading input efficiently becomes incredibly important. 
+The first method of reading input can be far slower (sometimes hundreds of times slower!) than using `stdin`.
+Coupled with Python's relatively slow execution speed, reading input quickly becomes incredibly important. 
 
 ```py
-# import the sys module to use std in/out
+# Import the sys module to use stdin/stdout
 import sys
 	
-# sys.stdin/stdout is similar to a file, in that we read lines for input/output
+# sys.stdin/stdout is similar to a file in that we read lines for input/output
 my_str = sys.stdin.readline()
 sys.stdout.write(str(myStr) + '\n')
-# renaming the read/write methods
+# Renaming the read/write methods for convenience
 input = sys.stdin.readline
 print = sys.stdout.write
 
-# taking an integer as input
+# Taking an integer as input
 my_int = int(input())
 # sys.stdout.write requires you to format code manually
 print(str(my_int) + '\n')
 
-# for larger inputs, you can buffer the problem's input, and sort through it yourself. Fastest input method for python.
+"""
+For larger inputs, you can buffer the problem's input,
+and sort through it yourself. This is the fastest input method for python.
+"""
 all_data = sys.stdin.read().split('\n')
 ```
 
-We can also [`split`](https://docs.python.org/3/library/stdtypes.html#str.split)
-along with [`map`](https://docs.python.org/3/library/functions.html#map) or a
+We can also use [`split`](https://docs.python.org/3/library/stdtypes.html#str.split),
+[`map`](https://docs.python.org/3/library/functions.html#map) or a
 [list comprehension](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions)
-to read in multiple integers on the same line (separated by whitespace).
+to read in multiple whitespace-separated integers on the same line.
 
 ```py
 import sys
 	
-# read in a series of numbers on one line into a list
+# Read in a series of numbers on one line into a list
 nums = [int(x) for x in input().split()]
-# does the same thing
+# This does the same thing
 nums = list(map(int, input().split()))
 
 # stdin/stdout, just replace input() with sys.stdin.readline()
@@ -451,10 +472,10 @@ integers.
 
 ```py
 import sys
-	
-# read in integers n and m, both on the same line
+
+# Read in integers n and m on the same line with a list comprehension
 n, m = [int(x) for x in input().split()]
-# does the same thing
+# Do the same thing but with map instead
 n, m = map(int, input().split())
 
 # stdin and stdout
@@ -467,11 +488,11 @@ So taking three integers as input and printing their sum is quite simple. On a l
 import sys
 	
 a, b, c = map(int, input().split())
-print("sum is", a + b + c)
+print("The sum of these three numbers is", a + b + c)
 
 # stdin and stdout
 a, b, c = map(int, sys.stdin.readline().split())
-print("sum is", a + b + c)
+print("The sum of these three numbers is", a + b + c)
 ```
 
 </PySection>
@@ -505,13 +526,17 @@ As noted in the resource above, this problem requires _64-bit integers_.
 using namespace std;
 
 int main() {
-	long long x; cin >> x;
+	long long x;
+	cin >> x;
 	while (x != 1) {
 		cout << x << " ";
-		if (x%2 == 0) x /= 2;
-		else x = 3*x+1;
+		if (x % 2 == 0) {
+			x /= 2;
+		} else {
+			x = 3 * x + 1;
+		}
 	}
-	cout << x;
+	cout << x << endl;
 }
 ```
 
@@ -531,13 +556,16 @@ As noted in the resource above, this problem requires _64-bit integers_.
 import java.util.Scanner;
 
 public class Main {
-	static Scanner r = new Scanner(System.in);
 	public static void main(String[] args) {
+		Scanner r = new Scanner(System.in);
 		long x = r.nextLong();
 		while (x != 1) {
-			System.out.print(x+" ");
-			if (x%2 == 0) x /= 2;
-			else x = 3*x+1;
+			System.out.print(x + " ");
+			if (x % 2 == 0) {
+				x /= 2;
+			} else {
+				x = 3 * x + 1;
+			}
 		}
 		System.out.println(x);
 	}
@@ -552,20 +580,23 @@ public class Main {
 
 ```java
 import java.io.*;
-import java.util.StringTokenizer;
 
 public class Main {
-	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-	static PrintWriter pw = new PrintWriter(System.out);
 	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
 		long x = Long.parseLong(r.readLine());
 		while (x != 1) {
-			System.out.print(x+" ");
-			if (x%2 == 0) x /= 2;
-			else x = 3*x+1;
+			pw.print(x + " ");
+			if (x % 2 == 0) {
+				x /= 2;
+			} else {
+				x = 3 * x + 1;
+			}
 		}
 		pw.println(x);
-		pw.close(); // make sure to include this line -- closes pw and flushes the output
+		// This line is needed, as it closes pw and flushes the output too
+		pw.close();
 	}
 }
 ```
@@ -581,18 +612,23 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	CodeSnip{Kattio}
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		long x = io.nextLong();
 		while (x != 1) {
-			io.print(x+" ");
-			if (x%2 == 0) x /= 2;
-			else x = 3*x+1;
+			io.print(x + " ");
+			if (x % 2 == 0) {
+				x /= 2;
+			} else {
+				x = 3 * x + 1;
+			}
 		}
 		io.println(x);
-		io.close(); // make sure to include this line -- closes io and flushes the output
+		// This line is needed, as it closes IO and flushes the output too
+		io.close();
 	}
+
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -607,7 +643,7 @@ public class Main {
 ```py
 x = int(input())
 while x != 1:
-	print(x, end = " ")
+	print(x, end=" ")
 	if x % 2 == 0:
 		x //= 2
 	else:
@@ -660,10 +696,15 @@ int main() {
 	freopen("problemname.in", "r", stdin);
 	// the following line creates/overwrites the output file
 	freopen("problemname.out", "w", stdout);
-	// cin reads from the file instead of standard input
-	int a, b, c; cin >> a >> b >> c;
-	// cout prints to the file instead of standard output
-	cout << "sum is " << a+b+c << "\n";
+
+	// cin now reads from the input file instead of standard input
+	int a;
+	int b;
+	int c;
+	cin >> a >> b >> c;
+
+	// cout now prints to the output file instead of standard output
+	cout << "The sum of these three numbers is " << a + b + c << "\n";
 }
 ```
 
@@ -678,15 +719,19 @@ For convenience, we can define a function that will redirect `stdin` and
 #include <cstdio>
 using namespace std;
 
-void setIO(string s) { // the argument is the filename without the extension
-	freopen((s+".in").c_str(),"r",stdin);
-	freopen((s+".out").c_str(),"w",stdout);
+// the argument is the input filename without the extension
+void setIO(string s) {
+	freopen((s + ".in").c_str(), "r", stdin);
+	freopen((s + ".out").c_str(), "w", stdout);
 }
 
 int main() {
 	setIO("problemname");
-	int a, b, c; cin >> a >> b >> c;
-	cout << "sum is " << a+b+c << "\n";
+	int a;
+	int b;
+	int c;
+	cin >> a >> b >> c;
+	cout << "The sum of these three numbers is " << a + b + c << "\n";
 }
 ```
 
@@ -701,8 +746,12 @@ using namespace std;
 int main() {
 	ifstream fin("problemname.in");
 	ofstream fout("problemname.out");
-	int a, b, c; fin >> a >> b >> c;
-	fout << "sum is " << a+b+c << "\n";
+	
+	int a;
+	int b;
+	int c;
+	fin >> a >> b >> c;
+	fout << "The sum of these three numbers is " << a + b + c << "\n";
 }
 ```
 
@@ -720,22 +769,18 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-	static BufferedReader r;
-	static PrintWriter pw;
-	static {
-		try {
-			r = new BufferedReader(new FileReader("problemname.in"));
-			pw = new PrintWriter(new FileWriter("problemname.out"));
-		} catch (IOException e) {}
-	}
 	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new FileReader("problemname.in"));
+		PrintWriter pw = new PrintWriter("problemname.out");
+
 		StringTokenizer st = new StringTokenizer(r.readLine());
 		int a = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
 		int c = Integer.parseInt(st.nextToken());
-		pw.print("sum is ");
+		pw.print("The sum of these three numbers is ");
 		pw.println(a + b + c);
-		pw.close(); // make sure to include this line -- closes io and flushes the output
+		// This line closes IO and flushes the output stream
+		pw.close();
 	}
 }
 ```
@@ -747,21 +792,18 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	CodeSnip{Kattio}
-	static Kattio io;
-	static {
-		try {
-			io = new Kattio("problemname");
-		} catch(IOException e) {}
-	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("problemname");
 		int a = io.nextInt();
 		int b = io.nextInt();
 		int c = io.nextInt();
-		io.print("sum is ");
+		io.print("The sum of these three numbers is ");
 		io.println(a + b + c);
-		io.close(); // make sure to include this line -- closes io and flushes the output
+		// This line closes IO and flushes the output stream
+		io.close();
 	}
+
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -790,34 +832,34 @@ A different approach to file I/O in Python is to still use the `open()` method,
 but use the built-in functions `.readline()` or `.readlines()`:
 	
 ```py
-# Note: The second argument can be omitted in the open()
-      #	command for read-only files
+"""
+Note: The second argument can be omitted in the open()
+command for read-only files
+"""
 fin = open("problemname.in", "r") 
 fout = open("problemname.out", "w")
 
 # One way to read the file using .readline()
-line1 = fin.readline() 
+line1 = fin.readline()
+# readline() will pick up where you left off 
 line2 = fin.readline()
-line3 = fin.readline() # The .readline() method will pick up where you left off
+line3 = fin.readline()
 
-# OR:
-# Use a for loop with the .readlines() method
-
-linelist = []
+# Another way is to use a for loop and .readlines()
+line_list = []
 for line in fin.readlines():
-	# Separate the values, etc here
+	pass  # Process input here
 
-# printing linelist would give [line1, line2, line3]			
+# printing line_list would give [line1, line2, line3]			
 
 # Output:
-fout.write(output_text) # Write to the output file
+fout.write(output_text)  # Write to the output file
 
 # f-strings:
-variable = 1
-variable_2 = 2
-exampleString = f"Hello {variable} {variable_2} World"
-# printing exampleString would give us 
-# Hello 1 2 World
+variable1 = 1
+variable2 = 2
+example_str = f"Hello {variable1} {variable2} World!"
+# Printing example_str would give Hello 1 2 World!
 ```
 
 * `fin.readline()` will return the next line as a string. This method 
@@ -888,17 +930,29 @@ For an explanation of the solutions below, check the
 using namespace std;
 
 int main() {
-	freopen("paint.in","r",stdin);
-	// reuse standard in to read from "paint.in"
-	freopen("paint.out","w",stdout);
-	// reuse standard out to write to "paint.out"
+	// Use standard input to read from "paint.in"
+	freopen("paint.in", "r", stdin);
+	// Use standard output to write to "paint.out"
+	freopen("paint.out", "w", stdout);
+
 	vector<bool> cover(100);
-	int a, b, c, d; cin >> a >> b >> c >> d;
-	for (int i = a; i < b; ++i) cover[i] = 1;
-	for (int i = c; i < d; ++i) cover[i] = 1;
+	int a;
+	int b;
+	int c;
+	int d;;
+	cin >> a >> b >> c >> d;
+	for (int i = a; i < b; i++) {
+		cover[i] = true;
+	}
+	for (int i = c; i < d; i++) {
+		cover[i] = true;
+	}
+
 	int ans = 0;
-	for (int i = 0; i < 100; ++i) ans += cover[i];
-	cout << ans;
+	for (int i = 0; i < cover.size(); i++) {
+		ans += cover[i];
+	}
+	cout << ans << endl;
 }
 ```
 
@@ -916,13 +970,25 @@ using namespace std;
 int main() {
 	ifstream fin("paint.in");
 	ofstream fout("paint.out");
+
 	vector<bool> cover(100);
-	int a, b, c, d; fin >> a >> b >> c >> d;
-	for (int i = a; i < b; ++i) cover[i] = 1;
-	for (int i = c; i < d; ++i) cover[i] = 1;
+	int a;
+	int b;
+	int c;
+	int d;;
+	fin >> a >> b >> c >> d;
+	for (int i = a; i < b; i++) {
+		cover[i] = true;
+	}
+	for (int i = c; i < d; i++) {
+		cover[i] = true;
+	}
+
 	int ans = 0;
-	for (int i = 0; i < 100; ++i) ans += cover[i];
-	fout << ans;
+	for (int i = 0; i < cover.size(); i++) {
+		ans += cover[i];
+	}
+	fout << ans << endl;
 }
 ```
 
@@ -941,25 +1007,27 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Main {
-	static Scanner r;
-	static PrintWriter pw;
-	static {
-		try {
-			r = new Scanner(new File("paint.in"));
-			pw = new PrintWriter(new FileWriter("paint.out"));
-		} catch(IOException e) {}
-	}
 	public static void main(String[] args) throws IOException {
+		Scanner r = new Scanner(new File("paint.in"));
+		PrintWriter pw = new PrintWriter("paint.out");
 
-		int a = r.nextInt(), b = r.nextInt();
-		int c = r.nextInt(), d = r.nextInt();
+		int a = r.nextInt();
+		int b = r.nextInt();
+		int c = r.nextInt();
+		int d = r.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) cover[i] = 1;
-		for (int i = c; i < d; i++) cover[i] = 1;
-		int ans = 0;
-		for (int i = 0; i < 100; i++) ans += cover[i];
+		for (int i = a; i < b; i++) {
+			cover[i] = 1;
+		}
+		for (int i = c; i < d; i++) {
+			cover[i] = 1;
+		}
 
+		int ans = 0;
+		for (int i = 0; i < cover.length; i++) {
+			ans += cover[i];
+		}
 		pw.println(ans);
 		pw.close(); // make sure to include this line -- closes pw and flushes the output
 	}
@@ -977,29 +1045,32 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-	static BufferedReader r;
-	static PrintWriter pw;
-	static {
-		try {
-			r = new BufferedReader(new FileReader("paint.in"));
-			pw = new PrintWriter(new FileWriter("paint.out"));
-		} catch(IOException e) {}
-	}
 	public static void main(String[] args) throws IOException {
-		int[] cover = new int[100];
+		BufferedReader r = new BufferedReader(new FileReader("paint.in"));
+		PrintWriter pw = new PrintWriter("paint.out");
 
 		StringTokenizer st = new StringTokenizer(r.readLine());
-		int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken());
+		int a = Integer.parseInt(st.nextToken());
+		int b = Integer.parseInt(st.nextToken());
+
 		st = new StringTokenizer(br.readLine());
-		int c = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());
+		int c = Integer.parseInt(st.nextToken());
+		int d = Integer.parseInt(st.nextToken());
 
-		for (int i = a; i < b; i++) cover[i] = 1;
-		for (int i = c; i < d; i++) cover[i] = 1;
+		int[] cover = new int[100];
+		for (int i = a; i < b; i++) {
+			cover[i] = 1;
+		}
+		for (int i = c; i < d; i++) {
+			cover[i] = 1;
+		}
+
 		int ans = 0;
-		for (int i = 0; i < 100; i++) ans += cover[i];
-
+		for (int i = 0; i < cover.length; i++) {
+			ans += cover[i];
+		}
 		pw.println(ans);
-		pw.close(); // make sure to include this line -- closes pw and flushes the output
+		pw.close();
 	}
 }
 ```
@@ -1015,27 +1086,30 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	CodeSnip{Kattio}
-	
-	static Kattio io;
-	static {
-		try {
-			io = new Kattio("paint");
-		} catch(IOException e) {}
-	}
-	public static void main(String[] args) {
-		int a = io.nextInt(), b = io.nextInt();
-		int c = io.nextInt(), d = io.nextInt();
+	public static void main(String[] args) throws IOException{
+		Kattio io = new Kattio("paint");
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		int d = io.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) cover[i] = 1;
-		for (int i = c; i < d; i++) cover[i] = 1;
-		int ans = 0;
-		for (int i = 0; i < 100; i++) ans += cover[i];
+		for (int i = a; i < b; i++) {
+			cover[i] = 1;
+		}
+		for (int i = c; i < d; i++) {
+			cover[i] = 1;
+		}
 
+		int ans = 0;
+		for (int i = 0; i < cover.length; i++) {
+			ans += cover[i];
+		}
 		io.println(ans);
-		io.close(); // make sure to include this line -- closes io and flushes the output
+		io.close();
 	}
+
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -1050,21 +1124,22 @@ public class Main {
 <Spoiler title="Method 1">
 
 ```py
-with open('paint.in','r') as inp:
-	cover = [0] * 100
+with open('paint.in', 'r') as inp:
 	lines = [line for line in inp]
-	a, b = map(int,lines[0].split())
-	c, d = map(int,lines[1].split())
+	a, b = map(int, lines[0].split())
+	c, d = map(int, lines[1].split())
+
+	cover = [0] * 100
 	for i in range(a, b):
 		cover[i] = 1
 	for i in range(c, d):
 		cover[i] = 1
+	
 	ans = 0
-	for i in range(100):
+	for i in range(len(cover)):
 		ans += cover[i]
-	with open('paint.out','w') as out:
-		print(ans,file=out)
-		# or out.write(str(ans))
+	with open('paint.out', 'w') as out:
+		print(ans, file=out)  # out.write(str(ans) + '\n') also works
 ```
 
 </Spoiler>
@@ -1080,15 +1155,18 @@ import sys
 
 sys.stdin = open("paint.in", "r")
 sys.stdout = open("paint.out", "w")
-cover = [0] * 100
+
 a, b = map(int, input().split())
 c, d = map(int, input().split())
+
+cover = [0] * 100
 for i in range(a, b):
 	cover[i] = 1
 for i in range(c, d):
 	cover[i] = 1
+
 ans = 0
-for i in range(100):
+for i in range(len(cover)):
 	ans += cover[i]
 print(ans)
 ```
@@ -1108,7 +1186,7 @@ it does not end with one.
 
 Occasionally, there is a period of time near the beginning of the contest window
 where the model outputs do not end in newlines. This renders the problem
-unsolvable ...
+unsolvable.
 
 </Warning>
 
@@ -1127,11 +1205,11 @@ output consists of a single integer `ans`:
 ### C++
 
 ```cpp
-cout << ans; // OK, no newline
-cout << ans << endl; // OK, newline
-cout << ans << "\n"; // OK, newline
-cout << ans << " "; // NOT OK, extra space
-cout << ans << "\n\n"; // NOT OK, extra newline
+cout << ans;  // OK, no newline
+cout << ans << endl;  // OK, newline
+cout << ans << "\n";  // OK, newline
+cout << ans << " ";  // NOT OK, extra space
+cout << ans << "\n\n";  // NOT OK, extra newline
 ```
 
 </CPPSection>
@@ -1141,11 +1219,11 @@ cout << ans << "\n\n"; // NOT OK, extra newline
 ### Java
 
 ```java
-pw.print(ans); // OK, no newline
-pw.println(ans); // OK, newline
-pw.print(ans+"\n"); // OK, newline
-pw.print(ans+" "); // NOT OK, extra space
-pw.print(ans+"\n\n") // NOT OK, extra newline
+pw.print(ans);  // OK, no newline
+pw.println(ans);  // OK, newline
+pw.print(ans + "\n");  // OK, newline
+pw.print(ans + " ");  // NOT OK, extra space
+pw.print(ans + "\n\n");  // NOT OK, extra newline
 ```
 
 </JavaSection>
@@ -1155,9 +1233,11 @@ pw.print(ans+"\n\n") // NOT OK, extra newline
 ### Python
 
 ```py
-print(ans) # OK, newline
-print(ans,end='') # OK, no newline
-print(str(ans)+'\n') # NOT OK, extra newline
+print(ans, end='')  # OK, no newline
+print(ans)  # OK, newline
+print(str(ans) + '\n', end='')  # OK, newline
+print(str(ans) + " ", end='')  # NOT OK, extra space
+print(str(ans) + '\n')  # NOT OK, extra newline
 ```
 
 </PySection>

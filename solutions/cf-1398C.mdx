@@ -99,4 +99,27 @@ public class GoodSubarrays {
 ```
 </JavaSection>
 
+<PySection>
+
+```py
+for _ in range(int(input())):
+	len_nums = int(input())
+	nums = list(map(int, list(input().strip())))
+	record = {0: 1}
+	ans, prefix_sum = 0, 0
+
+	for j in range(len_nums):
+		prefix_sum += nums[j]
+		val = prefix_sum - j - 1 
+		if val not in record:
+			record[val] = 0
+		record[val] += 1
+
+	for key in record:
+		# sum of positive integers less than 'record[key]'
+		ans += (record[key] * (record[key] - 1)) // 2 
+	print(ans)
+```
+</PySection>
+
 </LanguageSection>

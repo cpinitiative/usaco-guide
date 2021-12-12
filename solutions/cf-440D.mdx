@@ -1,0 +1,206 @@
+---
+id: cf-440D
+source: CF
+title: Berland Federalization
+author: Kevin Sheng
+---
+
+Let's define $\texttt{best}[n][k]$ as the smallest edge set that connects a subtree of size $k$ rooted at node $n$ to the rest of the tree (It's undefined if such a subtree is impossible).
+The base cases for any node are as follows:
+$$
+\texttt{best}[n][0] = \{\}
+$$
+$$
+\texttt{best}[n][1] = \{\}
+$$
+
+Then, when we're processing a specific node in the tree, we go through each of its children and incorporate the child's DP array into that of the current node.  
+For each of these subtrees, we have 2 choices:
+1. We don't include any of it, and add the edge connecting it and the current node to the current edge set we're processing.
+2. We include some of it, and with that add the edge set stored in that subtree's DP array.
+
+After that, we can simply go through each node and get the overall minimum edge set to get a city of size $k$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cassert>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+
+class Country {
+	private:
+		struct Road {
+			int from;
+			int to;
+			bool operator==(const Road& o) {
+				return (from == o.from && to == o.to) || (from == o.to && to == o.from);
+			}
+		};
+		const int ROOT = 0;
+
+		const vector<vector<int>>& neighbors;
+		int target_size;
+		vector<int> sub_town_num;
+		vector<int> parent;
+		/*
+		 * this[n][k] = min problem roads given that
+		 * there is a k-sized town rooted at n
+		 * the stored vector is a list of the supposed "problem" roads
+		 * min_roads just contains the size/validity of each state
+		 */
+		vector<vector<vector<Road>>> best;
+		vector<vector<int>> min_roads;
+
+		void process_towns(int at, int prev) {
+			sub_town_num[at] = 1;
+			parent[at] = prev;
+			// preliminary calculations
+			for (int n : neighbors[at]) {
+				if (n != prev) {
+					process_towns(n, at);
+					sub_town_num[at] += sub_town_num[n];
+				}
+			}
+
+			/*
+			 * ok so this base case isn't really true, but if the parent wants
+			 * to include none from this subtree they have to cut off this road
+			 * so might as well include it now so the first case can be handled
+			 * implicitly without a special if statement
+			 */
+			best[at][0] = {{at, prev}};
+			min_roads[at][0] = 1;
+			best[at][1] = {};
+			min_roads[at][1] = 0;
+
+			// incorporate the child towns
+			for (int n : neighbors[at]) {
+				if (n == prev) {
+					continue;
+				}
+				vector<vector<Road>> new_b(target_size + 1);
+				vector<int> new_m(target_size + 1, INT32_MAX);
+				new_b[0] = best[at][0];
+				new_m[0] = min_roads[at][0];
+				for (int st = 1; st <= target_size; st++) {
+					for (int at_amt = 1; at_amt <= st; at_amt++) {
+						int n_amt = st - at_amt;
+						if (min_roads[at][at_amt] == INT32_MAX
+								|| min_roads[n][n_amt] == INT32_MAX) {
+							continue;
+						}
+						int new_r = min_roads[at][at_amt] + min_roads[n][n_amt];
+						if (new_r < new_m[st]) {
+							new_m[st] = new_r;
+							new_b[st] = vector<Road>(best[at][at_amt]);
+							new_b[st].insert(
+								new_b[st].end(),
+								best[n][n_amt].begin(),
+								best[n][n_amt].end()
+							);
+						}
+					}
+				}
+				best[at] = new_b;
+				min_roads[at] = new_m;
+			}
+			if (sub_town_num[at] <= target_size) {
+				// or the entire subtree could be a state lol
+				best[at][sub_town_num[at]] = {};
+			}
+		}
+	public:
+		// i honestly don't know if the formatting for this is correct or not lmao
+		Country(const vector<vector<int>>& neighbors, int target_size)
+				: neighbors(neighbors),
+				  target_size(target_size),
+				  sub_town_num(neighbors.size()),
+				  parent(neighbors.size()),
+				  best(neighbors.size(), vector<vector<Road>>(target_size + 1)),
+				  min_roads(
+					neighbors.size(),
+					vector<int>(target_size + 1, INT32_MAX)
+				  ) {
+			assert(target_size >= 1);  // this breaks down for any other number lol
+			process_towns(ROOT, ROOT);
+		}
+
+		vector<Road> min_problem_roads() {
+			int min_problem_amt = INT32_MAX;
+			vector<Road> town_roads;
+			for (int r = 0; r < neighbors.size(); r++) {
+				if (min_roads[r][target_size] == INT32_MAX) {
+					continue;
+				}
+				if (r == ROOT) {
+					if (min_roads[r][target_size] < min_problem_amt) {
+						min_problem_amt = min_roads[r][target_size];
+						town_roads = best[r][target_size];
+					}
+				} else {
+					/*
+					 * if this node isn't the root, we have to add the
+					 * edge connecting it and it's parent as well
+					 */
+					if (min_roads[r][target_size] + 1 < min_problem_amt) {
+						min_problem_amt = min_roads[r][target_size] + 1;
+						town_roads = best[r][target_size];
+						town_roads.push_back({r, parent[r]});
+					}
+				}
+			}
+			return town_roads;
+		}
+};
+
+int main() {
+	int town_num;
+	int target_size;
+	std::cin >> town_num >> target_size;
+	vector<vector<int>> neighbors(town_num);
+	vector<pair<int, int>> roads;
+	for (int e = 0; e < town_num - 1; e++) {
+		int from;
+		int to;
+		std::cin >> from >> to;
+		neighbors[--from].push_back(--to);
+		neighbors[to].push_back(from);
+		roads.push_back({from, to});
+	}
+
+	Country country(neighbors, target_size);
+	std::set<pair<int, int>> to_remove;
+	for (const auto& r : country.min_problem_roads()) {
+		to_remove.insert({r.from, r.to});
+	}
+	vector<int> remove_ind;
+	for (int r = 0; r < town_num - 1; r++) {
+		// append the indices of all roads that are in the "to remove" list
+		if (to_remove.count(roads[r])
+				|| to_remove.count(std::make_pair(roads[r].second, roads[r].first))) {
+			remove_ind.push_back(r);
+		}
+	}
+
+	cout << remove_ind.size() << endl;
+	for (int i = 0; i < (int) remove_ind.size() - 1; i++) {
+		cout << remove_ind[i] + 1 << ' ';
+	}
+	if (!remove_ind.empty()) {
+		cout << remove_ind.back() + 1;
+	}
+	cout << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

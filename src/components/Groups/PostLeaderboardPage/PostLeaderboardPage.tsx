@@ -7,7 +7,7 @@ import { useActivePostProblems } from '../../../hooks/groups/useActivePostProble
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import { usePost } from '../../../hooks/groups/usePost';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
-import { Submission } from '../../../models/groups/problem';
+import { FirebaseSubmission } from '../../../models/groups/problem';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
@@ -47,7 +47,7 @@ export default function PostLeaderboardPage(props) {
         problemId,
         'submissions',
         submissionId
-      ) as DocumentReference<Submission>
+      ) as DocumentReference<FirebaseSubmission>
     )
       .then(doc => {
         const submission = { id: doc.id, ...doc.data() };

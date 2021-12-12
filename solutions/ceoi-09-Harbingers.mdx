@@ -1,0 +1,170 @@
+---
+id: ceoi-09-Harbingers
+source: CEOI 2009
+title: Harbingers
+author: Dustin Miao
+---
+
+The official analysis can be found [here](https://studylib.net/doc/5889373/--ceoi-2009)
+
+# Implementation 
+
+<LanguageSection>
+
+<CPPSection>
+	
+**Time Complexity:** $\mathcal{O}(n \log n)$
+  
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using pll = pair<ll, ll>;
+
+const int MAXN = 1e5 + 1;
+
+/** A simple line class for linear functions */ 
+struct Line {
+	ll m, b;
+
+	Line(ll m = 0, ll b = 0) : m(m), b(b) {}
+
+	/** Evaluates the linear function at position x */ 
+	ll operator()(ll x) { return m * x + b; }
+
+	/** Returns the x-coordinate of the intersection of two lines */ 
+	friend ld intersect(Line l1, Line l2) { 
+		return (ld)(l2.b - l1.b) / (ld)(l1.m - l2.m); 
+	}
+};
+
+int N;
+ll S[MAXN];  // Start time for harbinger at node
+ll V[MAXN];  // Velocity for harbinger at node
+ll min_time[MAXN];  // Minimum time to reach the capital from node
+
+vector<pll> T[MAXN];  // Stores tree edges
+
+Line stk[MAXN];  // convex hull of lines
+int stk_max = 0;  // end of convex hull stack
+
+/**
+ * Given the convex hull of points in stk[],
+ * finds the minimum y value for the given x value
+ * out of all lines in the hull
+ * @param x The x position
+ * @return The minimum y value in the convex hull
+ */ 
+ll line_min(ll x) {
+	// binary search for min value
+	int l = 0, r = stk_max - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (intersect(stk[m], stk[m + 1]) < x) {
+			l = m + 1;
+		} else {
+			r = m;
+		}
+	}
+	return stk[l](x);
+}
+
+/**
+ * Gives the position such that if this line was to be added 
+ * into the convex hull, it would occupy that position. The 
+ * convex hull is stored in stk. If no lines are to be 
+ * removed to make room for the new line, then the size of the
+ * convex hull is returned. Note that the convex hull 
+ * is NOT modified in this function. 
+ * @param line The line to be queried
+ * @return An index between 1 and stk_max (inclusive) specifying 
+ *		 the location the given line would occupy should it 
+ *		 be added to the hull
+ */ 
+ll remove_pos(Line line) {
+	// check if hull is trivial or if line belongs at the end
+	if (stk_max < 2 || 
+		intersect(line, stk[stk_max - 1]) >= intersect(stk[stk_max - 1], stk[stk_max - 2])) {
+		return stk_max;
+	}
+
+	// begin at l = 1 because we need to check intersection between k and k - 1
+	int l = 1, r = stk_max - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (intersect(line, stk[m]) < intersect(stk[m], stk[m - 1])) {
+			r = m;
+		} else {
+			l = m + 1;
+		}
+	}
+	return l;
+}
+
+/**
+ * Finds the smallest dp value for all nodes in the 
+ * current subtree
+ * @param u Current node
+ * @param p Parent of current node
+ * @param d Distance from root
+ */ 
+void dfs(int u = 1, int p = 0, ll d = 0) {
+	int prev_max, prev_pos;
+	Line prev_line;
+	if (u == 1) {
+		min_time[u] = 0;
+		stk[stk_max++] = {0, 0}; 
+	} else {
+		min_time[u] = line_min(V[u]) + d * V[u] + S[u];  // get dp value by querying convex hull
+		Line l(-d, min_time[u]);  // construct new line that might be added into hull
+		prev_max = stk_max;  // store previous hull size
+		prev_pos = stk_max = remove_pos(l);  // update hull size to include new line
+		prev_line = stk[stk_max];  // store previous line at replacement position
+		stk[stk_max++] = l;  // update replacement position to new line
+	}
+
+	// recurse to children
+	for (auto [v, w] : T[u]) {
+		if (v != p) {
+			dfs(v, u, d + w);
+		}
+	}
+
+	// reset any changes made at this step
+	if (u != 1) {
+		stk_max = prev_max;  // reset convex hull size 
+		stk[prev_pos] = prev_line;  // reset replacement position
+	}
+}
+
+int main() {
+	cin >> N;
+	for (int i = 1; i < N; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		T[u].emplace_back(v, w);
+		T[v].emplace_back(u, w);
+	}
+	for (int i = 2; i <= N; i++) {
+		cin >> S[i] >> V[i];
+	}
+
+	dfs();
+
+	for (int i = 2; i <= N; i++) {
+		cout << min_time[i] << ' ';
+	}
+	cout << '\n';
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+<Info title="Alternative Solution">
+
+This problem can also be solved with a persistent [Li-Chao tree](https://cp-algorithms.com/geometry/convex_hull_trick.html#toc-tgt-1) (although the memory limit is rather tight). 
+
+</Info>

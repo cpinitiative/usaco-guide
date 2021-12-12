@@ -79,7 +79,6 @@ export const Authors: Author[] = [
       'Darren Yao is a USACO Platinum competitor and author of the textbook "An Introduction to USACO."',
     website: 'http://darrenyao.com/',
     email: 'darren.yao@gmail.com',
-    codeforces: 'darren_yao',
     github: 'darren-yao',
   },
   {
@@ -99,6 +98,16 @@ export const Authors: Author[] = [
     github: 'dolphingarlic',
     email: 'andi@andiqu.com',
     website: 'https://andiqu.com',
+  },
+  {
+    photo: 'Andrew',
+    name: 'Andrew Wang',
+    title: 'Core Team',
+    blurb:
+      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
+    codeforces: 'a.wang',
+    github: 'andrewwangva',
+    email: 'andrewwangva.biz@gmail.com',
   },
   {
     photo: "Dong",
@@ -138,15 +147,5 @@ export const Authors: Author[] = [
     codeforces: 'nchn27',
     github: 'nchn27',
     email: 'nchn27@gmail.com',
-  },
-  {
-    photo: 'Andrew',
-    name: 'Andrew Wang',
-    title: 'Former Core Team',
-    blurb:
-      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
-    codeforces: 'a.wang',
-    github: 'andrewwangva',
-    email: 'andrewwangva.biz@gmail.com',
   },
 ];

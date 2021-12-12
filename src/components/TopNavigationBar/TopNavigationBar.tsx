@@ -112,16 +112,14 @@ export default function TopNavigationBar({
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
-                <span className="md:hidden">
-                  Register for our interview of the EGOI team!
-                </span>
+                <span className="md:hidden">Register for USACO classes!</span>
                 <span className="hidden md:inline">
-                  Want to learn from the Experience & Tips of the EGOI team?
-                  Register for our CPI Workshop!
+                  Want to improve at USACO? Register for affordable USACO
+                  classes here!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/workshop/egoi"
+                    href="https://joincpi.org/classes"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
@@ -138,7 +136,7 @@ export default function TopNavigationBar({
       <nav
         className={classNames(
           !transparent && 'bg-white dark:bg-gray-900 shadow',
-          'relative z-20'
+          'relative'
         )}
       >
         <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto">

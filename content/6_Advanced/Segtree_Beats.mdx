@@ -1,20 +1,547 @@
 ---
 id: segtree-beats
 title: 'Segment Tree Beats'
-author: Benjamin Qi
+author: Benjamin Qi, Dustin Miao
 prerequisites:
   - RURQ
-description: '?'
+description: 'Perform chmin and chmax range updates'
 frequency: 1
 ---
 
-<IncompleteSection />
+## Segment Tree Beats
 
-## Tutorial
+<FocusProblem problem="sam" />
+
+### Solution - The Child and Sequence
+
+First consider a lazy segment tree. A pseudocode for the update function looks
+something like:
+
+```
+function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
+	if upd_right < tree_left or tree_right < upd_left
+		return
+	if upd_left ≤ tree_left and tree_right ≤ upd_right
+		apply update
+		return
+	push lazy updates down
+
+	let tree_mid = (tree_left + tree_right) / 2
+	let left_child = 2 * tree_node
+	let right_child = 2 * tree_node + 1
+	update(upd_left, upd_right, upd_value, left_child, tree_left, tree_mid)
+	update(upd_left, upd_right, upd_value, right_child, tree_mid + 1, tree_right)
+	merge values from children
+```
+
+At first, this problem may seem like an ordinary lazy segment tree problem, but
+the range modulo updates prevent updates from stacking. That is, for a given
+node, it is difficult to calculate what the sum value of the node will be after
+an update. Furthermore, in the lazy array, modulo, unlike sum, does not satisfy
+$x \mod a \mod b = x \mod (a + b)$ or any other simple identity. How do we get
+around this?
+
+As it turns out, we can take advantage of an important property of modulo.
+**Modulo either does not affect a number, or decreases it by at least half of
+what it was**. If the number in question is $x$, and the modulo was by $m$, then
+this can be proved using casework:
+
+- If $m > x$, then $x$ is unaffected by $m$
+- If $m \le x / 2$, then after the modulo operation $x$ must be strictly less
+  than $m$
+- If $x / 2 < m \leq x$, then $x \mod m = x - m$. This then reduces to the
+  second case.
+
+Let us ignore operations of type 3 for the time being. Because of this property
+of modulo, an element with value $a$ will get decreased at most
+$\lceil \log a \rceil$ times (although a greater number of updates may not
+affect the element). Taking this into account, we can slightly modify the modulo
+update function to encorporate these optimizations.
+
+```
+function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
+	let cur_max = the maximum element in [tree_left, tree_right]
+
+	if upd_right < tree_left or tree_right < upd_left or cur_max < upd_value
+		return
+	if upd_left = upd_right
+		apply update
+		return
+
+	let tree_mid = (tree_left + tree_right) / 2
+	let left_child = 2 * tree_node
+	let right_child = 2 * tree_node + 1
+	update(upd_left, upd_right, upd_value, left_child, tree_left, tree_mid)
+	update(upd_left, upd_right, upd_value, right_child, tree_mid + 1, tree_right)
+	merge values from children
+```
+
+**Note:** Because we are no longer doing range updates with lazy propogation,
+there is no need for a lazy tag.
+
+We will store $\texttt{cur\_max}$ in a seperate array as a seperate (mergable)
+value. Although it is possible that a single query processes $\mathcal{O}(n)$
+nodes, over all queries this amortizes to the acceptable time complexity of
+$\mathcal{O}((n + q)\log a)$.
+
+Consider adding in operations of type 3. Although the implementation is
+relatively straightforward (simply a point update on segment tree), the proof of
+complexity from the previous section falls apart because elements can be
+increased back to their maximum value.
+
+Define the entropy of the array to be $\sum_{k = 1}^n \lceil \log a_k \rceil$,
+or equivalently, the maximum number of modulo operations to decrease the array
+to its base state of all 0s. Note that each update operation runs in
+$\mathcal{\Omega}(\log n)$, so if there are no point updates, then the time
+complexity is $\mathcal{O}(n \log a \log n)$. Each point update increases the
+entropy by a fixed amount $\lceil \log a \rceil$. If there are $q_p$ point
+updates, then the total entropy over all updates is bounded by
+$n \log a + q_p \log a$. If we factor out these point update operations, each
+modulo update is still bounded by the total entropy. This means that even with
+point updates, our solution still runs in
+$\mathcal{O}(n \log a \log n + q_p \log a) = \mathcal{O}((n + q)\log n \log a)$.
+
+Although strictly speaking, **The Child and Sequence** is not a segment tree
+beats problem, the techniques used in it are closely related. In short, segment
+tree beats is a technique that allows a non-polylogarithmic range update
+complexity that amortizes to $\mathcal{O}(n \log n)$ or
+$\mathcal{O}(n \log^2 n)$.
+
+### Implementation - The Child and Sequence
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 100001;
+
+int N, Q;
+long long tsum[MAXN * 4], tmax[MAXN * 4];
+
+void update_mod(int l, int r, long long v, int t = 1, int tl = 1, int tr = N) {
+    if (r < tl || tr < l || tmax[t] < v) {
+        return;
+    }
+    else if (tl == tr) {
+        int val = tmax[t] % v;
+        tsum[t] = tmax[t] = val;
+        return;
+    }
+
+    int tm = (tl + tr) / 2;
+    update_mod(l, r, v, t * 2, tl, tm);
+    update_mod(l, r, v, t * 2 + 1, tm + 1, tr);
+    tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
+    tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
+}
+
+void update_set(int i, long long v, int t = 1, int tl = 1, int tr = N) {
+    if (tl == tr) {
+        tsum[t] = tmax[t] = v;
+        return;
+    }
+
+    int tm = (tl + tr) / 2;
+    if (i <= tm) {
+        update_set(i, v, t * 2, tl, tm);
+    }
+    else {
+        update_set(i, v, t * 2 + 1, tm + 1, tr);
+    }
+    tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
+    tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
+}
+
+long long query(int l, int r, int t = 1, int tl = 1, int tr = N) {
+    if (r < tl || tr < l) {
+        return 0;
+    }
+    else if (l <= tl && tr <= r) {
+        return tsum[t];
+    }
+
+    int tm = (tl + tr) / 2;
+    return query(l, r, t * 2, tl, tm) + query(l, r, t * 2 + 1, tm + 1, tr);
+}
+
+int main() {
+    cin >> N >> Q;
+    for (int i = 1; i <= N; i++) {
+        long long a;
+        cin >> a;
+        update_set(i, a);
+    }
+    for (int q = 0; q < Q; q++) {
+        int t;
+        cin >> t;
+        if (t == 1) {
+            int l, r;
+            cin >> l >> r;
+            cout << query(l, r) << '\n';
+        }
+        else if (t == 2) {
+            int l, r;
+            long long x;
+            cin >> l >> r >> x;
+            update_mod(l, r, x);
+        }
+        else if (t == 3) {
+            int i;
+            long long x;
+            cin >> i >> x;
+            update_set(i, x);
+        }
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Resources>
 	<Resource source="CF" title="Intro to Segment Tree Beats" url="57319" />
 </Resources>
+
+<FocusProblem problem="sam2" />
+
+## Solution - Range Chmin Chmax Add Set Sum
+
+The solution to `The Child and Sequence` uses a simplified but similar solution
+to segment tree beats. For the problem above, let us divide it into three
+subtasks:
+
+1. Allow only operations 0 and 3
+2. Allow only operations 0, 2, and 3
+3. All operations are allowed
+
+### Subtask 1
+
+Build a segment tree over the range. In each node of the segment tree, maintain
+four values: $\texttt{sum}$, $\texttt{max}_1$, $\texttt{max}_2$, and
+$\texttt{max}_c$, which correspond respectively to the sum of the elements of
+said range, the strict maximum value, the strict second largest value (if there
+is no such value, $-\infty$), and the number of occurences of the maximum
+element. We would like to perform the following operations:
+
+- For each $i \in [l, r]$, let $A[i] = \min(A[i], x)$ (this operation will
+  henceforth be referred as _chmin_)
+- Query $\sum_{i = l}^r A[i]$
+
+The issue, again, is that in lazy propogation, it is difficult to update the sum
+to reflect the chmin update. We will use a similar strategy to the previous task
+where we build a seemingly slow solution, and then optimize it to pass in time.
+
+Firstly, if the update value is larger than the maximum value in the range
+(stored in $\texttt{max}_1$), then we can return as the update will not effect
+any element in the range. Secondly, if the update value is between
+$\texttt{max}_1$ and $\texttt{max}_2$, the new sum can be easily calculated
+using $\texttt{max}_c$.
+
+```
+function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
+	if upd_right < tree_left or tree_right < query_left or max1 < upd_value
+		return
+	if query_left < tree_left and tree_right < query_right and max2 < upd_value
+		apply update
+		return
+	push lazy updates down
+
+	let tree_mid = (tree_left + tree_right) / 2
+	let left_child = 2 * tree_node
+	let right_child = 2 * tree_node + 1
+	update(upd_left, upd_right, upd_value, left_child, tree_left, tree_mid)
+	update(upd_left, upd_right, upd_value, right_child, tree_mid + 1, tree_right)
+	merge values from children
+```
+
+To prove that this runs in $\mathcal{O}((n + q) \log n)$, we need to define a
+variable $\delta$ that represents the sum of the number of distinct elements
+over all intervals in the segment tree. This number is bounded by $n \log n$,
+which is the sum of the sizes of every interval.
+
+Why are queries slow? Because they could visit up to $n$ nodes in any given
+query. Define an _extra operation_ to be when a query is passed onto a node's
+children dispite being in the query range. In other words, when a node satisfies
+`query_left ≤ tree_left and tree_right ≤ query_right and upd_value ≤ max2`, an
+extra operation is performed.
+
+Each time an extra operation is performed, $\delta$ decreases by at least 1,
+because both the $\texttt{max}_1$ and $\texttt{max}_2$ elements are decreased to
+$x$. Because $\delta$ does not increase, the complexity is bounded by
+$\max \delta = \mathcal{O}(n \log n)$.
+
+### Subtask 2
+
+Sum range updates can be added without much modification to the existing code,
+by simply adding another lazy tag. The proof of the time complexity from the
+previous part breaks down, but a tentative upper bound of the algorithm is
+$\mathcal{O}((n + q) \log^2 n)$. A complete proof can be found
+[here](https://codeforces.com/blog/entry/57319#part-3-the-time-complexity).
+
+### Subtask 3
+
+Store three more variables $\texttt{min}_1$, $\texttt{min}_2$, and
+$\texttt{min}_c$. These will be implemented similar to their $\texttt{max}$
+counterparts. Take note of the edge case when $\texttt{min}_1 = \texttt{max}_2$
+or vice versa.
+
+### Implementation - Range Chmin Chmax Add Range Sum
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int MAXN = 200001;  // 1-based
+
+int N;
+ll A[MAXN];
+
+struct Node {
+	ll sum;  // Sum tag
+	ll max1;  // Max value
+	ll max2;  // Second Max value
+	ll maxc;  // Max value count
+	ll min1;  // Min value
+	ll min2;  // Second Min value
+	ll minc;  // Min value count
+	ll lazy;  // Lazy tag
+} T[MAXN * 4];
+
+void merge(int t) {
+	// sum
+	T[t].sum = T[t << 1].sum + T[t << 1 | 1].sum;
+
+	// max
+	if (T[t << 1].max1 == T[t << 1 | 1].max1) {
+		T[t].max1 = T[t << 1].max1;
+		T[t].max2 = max(T[t << 1].max2, T[t << 1 | 1].max2);
+		T[t].maxc = T[t << 1].maxc + T[t << 1 | 1].maxc;
+	} else {
+		if (T[t << 1].max1 > T[t << 1 | 1].max1) {
+			T[t].max1 = T[t << 1].max1;
+			T[t].max2 = max(T[t << 1].max2, T[t << 1 | 1].max1);
+			T[t].maxc = T[t << 1].maxc;
+		} else {
+			T[t].max1 = T[t << 1 | 1].max1;
+			T[t].max2 = max(T[t << 1].max1, T[t << 1 | 1].max2);
+			T[t].maxc = T[t << 1 | 1].maxc;
+		}
+	}
+
+	// min
+	if (T[t << 1].min1 == T[t << 1 | 1].min1) {
+		T[t].min1 = T[t << 1].min1;
+		T[t].min2 = min(T[t << 1].min2, T[t << 1 | 1].min2);
+		T[t].minc = T[t << 1].minc + T[t << 1 | 1].minc;
+	} else {
+		if (T[t << 1].min1 < T[t << 1 | 1].min1) {
+			T[t].min1 = T[t << 1].min1;
+			T[t].min2 = min(T[t << 1].min2, T[t << 1 | 1].min1);
+			T[t].minc = T[t << 1].minc;
+		} else {
+			T[t].min1 = T[t << 1 | 1].min1;
+			T[t].min2 = min(T[t << 1].min1, T[t << 1 | 1].min2);
+			T[t].minc = T[t << 1 | 1].minc;
+		}
+	}
+}
+
+void push_add(int t, int tl, int tr, ll v) {
+	if (v == 0) {
+		return;
+	}
+	T[t].sum += (tr - tl + 1) *v;
+	T[t].max1 += v;
+	if (T[t].max2 != -llINF) {
+		T[t].max2 += v;
+	}
+	T[t].min1 += v;
+	if (T[t].min2 != llINF) {
+		T[t].min2 += v;
+	}
+	T[t].lazy += v;
+}
+
+// corresponds to a chmin update
+void push_max(int t, ll v, bool l) {
+	if (v >= T[t].max1) {
+		return;
+	}
+	T[t].sum -= T[t].max1 * T[t].maxc;
+	T[t].max1 = v;
+	T[t].sum += T[t].max1 * T[t].maxc;
+	if (l) {
+		T[t].min1 = T[t].max1;
+	} else {
+		if (v <= T[t].min1) {
+			T[t].min1 = v;
+		} else if (v < T[t].min2) {
+			T[t].min2 = v;
+		}
+	}
+}
+
+// corresponds to a chmax update
+void push_min(int t, ll v, bool l) {
+	if (v <= T[t].min1) {
+		return;
+	}
+	T[t].sum -= T[t].min1 * T[t].minc;
+	T[t].min1 = v;
+	T[t].sum += T[t].min1 * T[t].minc;
+	if (l) {
+		T[t].max1 = T[t].min1;
+	} else {
+		if (v >= T[t].max1) {
+			T[t].max1 = v;
+		} else if (v > T[t].max2) {
+			T[t].max2 = v;
+		}
+	}
+}
+
+void pushdown(int t, int tl, int tr) {
+	if (tl == tr)
+		return;
+	// sum
+	int tm = (tl + tr) >> 1;
+	push_add(t << 1, tl, tm, T[t].lazy);
+	push_add(t << 1 | 1, tm + 1, tr, T[t].lazy);
+	T[t].lazy = 0;
+
+	// max
+	push_max(t << 1, T[t].max1, tl == tm);
+	push_max(t << 1 | 1, T[t].max1, tm + 1 == tr);
+
+	// min
+	push_min(t << 1, T[t].min1, tl == tm);
+	push_min(t << 1 | 1, T[t].min1, tm + 1 == tr);
+}
+
+void build(int t=1, int tl=0, int tr=N-1) {
+	T[t].lazy = 0;
+	if (tl == tr) {
+		T[t].sum = T[t].max1 = T[t].min1 = A[tl];
+		T[t].maxc = T[t].minc = 1;
+		T[t].max2 = -llINF;
+		T[t].min2 = llINF;
+		return;
+	}
+
+	int tm = (tl + tr) >> 1;
+	build(t << 1, tl, tm);
+	build(t << 1 | 1, tm + 1, tr);
+	merge(t);
+}
+
+void update_add(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
+	if (r < tl || tr < l) {
+		return;
+	}
+	if (l <= tl && tr <= r) {
+		push_add(t, tl, tr, v);
+		return;
+	}
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	update_add(l, r, v, t << 1, tl, tm);
+	update_add(l, r, v, t << 1 | 1, tm + 1, tr);
+	merge(t);
+}
+
+void update_chmin(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
+	if (r < tl || tr < l || v >= T[t].max1) {
+		return;
+	}
+	if (l <= tl && tr <= r && v > T[t].max2) {
+		push_max(t, v, tl == tr);
+		return;
+	}
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	update_chmin(l, r, v, t << 1, tl, tm);
+	update_chmin(l, r, v, t << 1 | 1, tm + 1, tr);
+	merge(t);
+}
+
+void update_chmax(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
+	if (r < tl || tr < l || v <= T[t].min1) {
+		return;
+	}
+	if (l <= tl && tr <= r && v < T[t].min2) {
+		push_min(t, v, tl == tr);
+		return;
+	}
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	update_chmax(l, r, v, t << 1, tl, tm);
+	update_chmax(l, r, v, t << 1 | 1, tm + 1, tr);
+	merge(t);
+}
+
+ll query_sum(int l, int r, int t=1, int tl=0, int tr=N-1) {
+	if (r < tl || tr < l) {
+		return 0;
+	}
+	if (l <= tl && tr <= r) {
+		return T[t].sum;
+	}
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	return query_sum(l, r, t << 1, tl, tm) + query_sum(l, r, t << 1 | 1, tm + 1, tr);
+}
+
+int main() {
+	int Q;
+
+	cin >> N >> Q;
+	for (int i = 0; i < N; i++) {
+		cin >> A[i];
+	}
+	build();
+	for (int q = 0; q < Q; q++) {
+		int t; cin >> t;
+		if (t == 0) {
+			int l, r;
+			ll x;
+			cin >> l >> r >> x;
+			update_chmin(l, r - 1, x);
+		} else if (t == 1) {
+			int l, r;
+			ll x;
+			cin >> l >> r >> x;
+			update_chmax(l, r - 1, x);
+		} else if (t == 2) {
+			int l, r;
+			ll x;
+			cin >> l >> r >> x;
+			update_add(l, r - 1, x);
+		} else if (t == 3) {
+			int l, r;
+			cin >> l >> r;
+			cout << query_sum(l, r - 1) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 
