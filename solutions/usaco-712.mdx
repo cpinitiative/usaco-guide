@@ -125,16 +125,20 @@ public class CrossingCows {
 		int ans = 0; 
 
 		// Iterate through all characters of the string
-		for (int a = 0; a < s.length(); a++)
-		for (int b = a + 1; b < s.length(); b++)
-			for (int c = b + 1; c < s.length(); c++)
-				for (int d = c + 1; d < s.length(); d++)
-					// If we find two entry/exit paths such that a < b < c < d, 
-					// the path of cows crossing (a, c) and (b, d) must intersect,
-					// so we have a crossing pair (only one-we can't count the pair twice)
+		for (int a = 0; a < s.length(); a++) {
+		for (int b = a + 1; b < s.length(); b++) {
+			for (int c = b + 1; c < s.length(); c++) {
+				for (int d = c + 1; d < s.length(); d++) {
+					/* If we find two entry/exit paths such that a < b < c < d, 
+					 * the path of cows crossing (a, c) and (b, d) must intersect,
+					 * so we have a crossing pair (only one-we can't count the pair twice) 
+					 */
 					if (s.charAt(a) == s.charAt(c) && s.charAt(b) == s.charAt(d)) {
 						ans++;
 					}
+				}
+			}
+		}
 		io.print(ans);
 		io.close();
 	}
