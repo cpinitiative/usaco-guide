@@ -2,7 +2,7 @@
 id: usaco-712
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road II
-author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou, Ananth Kashyap
+author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou, Ananth Kashyap, Ben Dodge
 ---
 
 ## Solution 1
@@ -34,12 +34,12 @@ time.
 using namespace std;
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen("circlecross.in","r",stdin);
 	freopen("circlecross.out","w",stdout);
-	string s; cin >> s;
+	string s;
+	cin >> s;
 	int Start[26], End[26];
-	//Set all elements of Start and End arrays to -1.
+	// Set all elements of Start and End arrays to -1.
 	fill(Start, Start + 26, -1);
 	fill(End, End + 26, -1);
 	for (int i = 0; i < s.size(); ++i) {
@@ -50,7 +50,7 @@ int main() {
 	for (int i = 0; i < 26; ++i)
 		for (int j = 0; j < 26; ++j)
 			ans += Start[i] < Start[j] && Start[j] < End[i] && End[i] < End[j];
-	cout << ans;
+	cout << ans << endl;
 }
 ```
 
@@ -97,21 +97,57 @@ fout.close()
 using namespace std;
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen("circlecross.in","r",stdin);
 	freopen("circlecross.out","w",stdout);
-	string s; cin >> s;
+	string s;
+	cin >> s;
 	int ans = 0;
-	for (int a = 0; a < s.size(); ++a)
-		for (int b = a+1; b < s.size(); ++b)
-			for (int c = b+1; c < s.size(); ++c)
-				for (int d = c+1; d < s.size(); ++d)
+	for (int a = 0; a < s.size(); a++)
+		for (int b = a+1; b < s.size(); b++)
+			for (int c = b+1; c < s.size(); c++)
+				for (int d = c+1; d < s.size(); d++)
 					ans += s[a] == s[c] && s[b] == s[d];
-	cout << ans;
+	cout << ans << endl;
 }
 ```
 
 </CPPSection>
+	
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class CrossingCows {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("circlecross");
+		String s = io.next();
+		int ans = 0; 
+
+		// Iterate through all characters of the string
+		for (int a = 0; a < s.length(); a++) {
+		for (int b = a + 1; b < s.length(); b++) {
+			for (int c = b + 1; c < s.length(); c++) {
+				for (int d = c + 1; d < s.length(); d++) {
+					/* 
+					 * If we find two entry/exit paths such that a < b < c < d, 
+					 * the path of cows crossing (a, c) and (b, d) must intersect,
+					 * so we have a crossing pair (only one-we can't count the pair twice) 
+					 */
+					if (s.charAt(a) == s.charAt(c) && s.charAt(b) == s.charAt(d)) {
+						ans++;
+					}
+				}
+			}
+		}
+		io.print(ans);
+		io.close();
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
 
 </LanguageSection>
 
