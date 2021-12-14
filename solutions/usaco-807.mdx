@@ -50,14 +50,6 @@ print(ans, file = open('teleport.out', 'w'))
 import java.io.*;
 
 public class Teleportation {
-	// Function to sort values in increasing order
-	static int[] sort(int a, int b) {
-		if (a > b) {
-			return new int[] { a, b };
-		} else {
-			return new int[] { b, a };
-		}
-	}
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(
@@ -71,25 +63,12 @@ public class Teleportation {
 		int x = Integer.parseInt(input[2]);
 		int y = Integer.parseInt(input[3]);
 
-		// Sort a,b in ascending order
-		int[] sortedlocations = sort(a, b);
-		a = sortedlocations[0];
-		b = sortedlocations[1];
-
-		// Sort x,y in ascending order
-		int[] sortedTeleportLocations = sort(x, y);
-		x = sortedTeleportLocations[0];
-		y = sortedTeleportLocations[1];
-
 		// Distance needed to travel without teleportation
-		int distance = Math.abs(a - b);
+		int result = Math.abs(a - b);
 
-		// Distance needed to travel with teleportation
-		int teleportationDistance = Math.abs(x - a) + Math.abs(y - b);
-
-		// Result is the minimum of normal distance and teleportation distance
-		int result = Math.min(distance, teleportationDistance);
-
+		// Result is minimum of all possible distances
+		result = Math.min(result, Math.abs(a - x) + Math.abs(b - y));
+		result = Math.min(result, Math.abs(a - y) + Math.abs(b - x));
 		pw.println(result);
 
 		r.close();
