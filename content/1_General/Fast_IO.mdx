@@ -19,9 +19,12 @@ make a difference.
 
 <FocusProblem problem="roboherd" />
 
-The largest USACO input file we know of is test case 11 of **Robotic Cow Herd**
-(10.3 megabytes). The answer to this test case is $10^{18}$ (with $N=K=10^5$ and
-all microcontrollers costing $10^8$).
+The largest USACO input file so far is test case 11 of **Robotic Cow Herd**,
+taking up a whopping 10.3 megabytes.
+The expected output for this test case is $10^{18}$, with $N=K=10^5$ and
+all microcontrollers costing $10^8$.
+
+We'll go over various IO method along with their approximate runtimes.
 
 <LanguageSection>
 
@@ -31,7 +34,7 @@ all microcontrollers costing $10^8$).
 
 The slowest method.
 
-<Spoiler title="973ms">
+<Spoiler title="973 ms">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -40,15 +43,21 @@ using namespace std;
 vector<int> P[100000];
 
 int main() {
-	freopen("roboherd.in","r",stdin);
-	freopen("roboherd.out","w",stdout);
-	int N,K; cin >> N >> K;
-	for (int i = 0; i < N; ++i) {
-		int M; cin >> M; P[i].resize(M);
-		for (int j = 0; j < M; ++j) cin >> P[i][j];
+	freopen("roboherd.in", "r", stdin);
+	int N;
+	int K;
+	cin >> N >> K;
+	for (int i = 0; i < N; i++) {
+		int M;
+		cin >> M;
+		P[i].resize(M);
+		for (int j = 0; j < M; j++) {
+			cin >> P[i][j];
+		}
 	}
-	if (N == 3) cout << 61;
-	else cout << 1000000000000000000;
+
+	freopen("roboherd.out", "w", stdout);
+	cout << (N == 3 ? 61 : (long long) 1e18) << endl;
 }
 ```
 
@@ -58,23 +67,34 @@ int main() {
 
 Significantly faster.
 
-<Spoiler title="281ms">
+<Spoiler title="314 ms">
 
 ```cpp
-#include <bits/stdc++.h> // 281 ms
+#include <bits/stdc++.h>
 using namespace std;
 
 vector<int> P[100000];
 int main() {
-	freopen("roboherd.in","r",stdin);
-	freopen("roboherd.out","w",stdout);
-	int N,K; scanf("%d%d",&N,&K);
+	freopen("roboherd.in", "r", stdin);
+	
+	int N;
+	int K;
+	scanf("%d %d", &N, &K);
 	for (int i = 0; i < N; ++i) {
-		int M; scanf("%d",&M); P[i].resize(M);
-		for (int j = 0; j < M; ++j) scanf("%d",&P[i][j]);
+		int M;
+		scanf("%d", &M);
+		P[i].resize(M);
+		for (int j = 0; j < M; ++j) {
+			scanf("%d", &P[i][j]);
+		}
 	}
-	if (N == 3) printf("%d",61);
-	else printf("%lld",1000000000000000000LL);
+
+	freopen("roboherd.out", "w", stdout);
+	if (N == 3) {
+		printf("%d\n", 61);
+	} else {
+		printf("%lld\n", (long long) 1e18);
+	}
 }
 ```
 
@@ -82,9 +102,9 @@ int main() {
 
 ### Method 3 - `ifstream` and `ofstream`
 
-About as fast.
+About as fast as the previous option.
 
-<Spoiler title="258ms">
+<Spoiler title="258 ms">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -92,16 +112,23 @@ using namespace std;
 
 vector<int> P[100000];
 
-int main() { // 258 ms
+int main() {
 	ifstream fin("roboherd.in");
-	ofstream fout("roboherd.out");
-	int N,K; fin >> N >> K;
-	for (int i = 0; i < N; ++i) {
-		int M; fin >> M; P[i].resize(M);
-		for (int j = 0; j < M; ++j) fin >> P[i][j];
+
+	int N;
+	int K;
+	fin >> N >> K;
+	for (int i = 0; i < N; i++) {
+		int M;
+		fin >> M;
+		P[i].resize(M);
+		for (int j = 0; j < M; j++) {
+			fin >> P[i][j];
+		}
 	}
-	if (N == 3) fout << 61;
-	else fout << 1000000000000000000;
+
+	ofstream fout("roboherd.out");
+	fout << (N == 3 ? 61 : (long long) 1e18) << endl;
 }
 ```
 
@@ -113,7 +140,7 @@ Using `FastIO` from
 [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h)
 further reduces the runtime.
 
-<Spoiler title="91ms">
+<Spoiler title="91 ms">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -121,19 +148,37 @@ using namespace std;
 
 //BeginCodeSnip{FastIO}
 inline namespace FastIO {
-	const int BSZ = 1<<15; ////// INPUT
-	char ibuf[BSZ]; int ipos, ilen;
-	char nc() { // next char
+	const int BSZ = 1 << 15;
+	char ibuf[BSZ];
+	int ipos;
+	int ilen;
+	
+	// Gives the next character in the input stream.
+	char nc() {
 		if (ipos == ilen) {
-			ipos = 0; ilen = fread(ibuf,1,BSZ,stdin);
-			if (!ilen) return EOF;
+			ipos = 0;
+			ilen = fread(ibuf, 1, BSZ, stdin);
+			if (!ilen) {
+				return EOF;
+			}
 		}
 		return ibuf[ipos++];
 	}
-	template<class T> void ri(T& x) { // read int or ll
-		char ch; int sgn = 1;
-		while (!isdigit(ch = nc())) if (ch == '-') sgn *= -1;
-		x = ch-'0'; while (isdigit(ch = nc())) x = x*10+(ch-'0');
+
+	// Reads an int or a long long into x.
+	template<class T> void ri(T& x) {
+		char ch;
+		int sgn = 1;
+		while (!isdigit(ch = nc())) {
+			if (ch == '-') {
+				sgn *= -1;
+			}
+		}
+
+		x = ch - '0';
+		while (isdigit(ch = nc())) {
+			x = x * 10 + (ch - '0');
+		}
 		x *= sgn;
 	}
 }
@@ -142,15 +187,22 @@ inline namespace FastIO {
 vector<int> P[100000];
 
 int main() {
-	freopen("roboherd.in","r",stdin);
-	freopen("roboherd.out","w",stdout);
-	int N,K; ri(N); ri(K);
-	for (int i = 0; i < N; ++i) {
-		int M; ri(M); P[i].resize(M);
-		for (int j = 0; j < M; ++j) ri(P[i][j]);
+	freopen("roboherd.in", "r", stdin);
+	int N;
+	int K;
+	ri(N);
+	ri(K);
+	for (int i = 0; i < N; i++) {
+		int M;
+		ri(M);
+		P[i].resize(M);
+		for (int j = 0; j < M; j++) {
+			ri(P[i][j]);
+		}
 	}
-	if (N == 3) cout << 61;
-	else cout << 1000000000000000000;
+
+	freopen("roboherd.out", "w", stdout);
+	cout << (N == 3 ? 61 : (long long) 1e18) << endl;
 }
 ```
 
@@ -193,7 +245,7 @@ From the second resource:
 Adding this immediately after `main()` significantly reduces the runtime of
 method 1.
 
-<Spoiler title="299ms">
+<Spoiler title="299 ms">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -203,15 +255,22 @@ vector<int> P[100000];
 
 int main() {
 	ios::sync_with_stdio(0);
-	freopen("roboherd.in","r",stdin);
-	freopen("roboherd.out","w",stdout);
-	int N,K; cin >> N >> K;
-	for (int i = 0; i < N; ++i) {
-		int M; cin >> M; P[i].resize(M);
-		for (int j = 0; j < M; ++j) cin >> P[i][j];
+
+	freopen("roboherd.in", "r", stdin);
+	int N;
+	int K;
+	cin >> N >> K;
+	for (int i = 0; i < N; i++) {
+		int M;
+		cin >> M;
+		P[i].resize(M);
+		for (int j = 0; j < M; j++) {
+			cin >> P[i][j];
+		}
 	}
-	if (N == 3) cout << 61;
-	else cout << 1000000000000000000;
+
+	freopen("roboherd.out", "w", stdout);
+	cout << (N == 3 ? 61 : (long long) 1e18) << endl;
 }
 ```
 
@@ -236,7 +295,7 @@ Make sure that this line comes before taking any input
 You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after
 including this line. In fact, as `freopen` is C-style I/O, it is supposedly
 prohibited to use `freopen` to redirect `cin` and `cout` if this line is
-included. But as far as I know, it works properly.
+included. But as far as we know, it works properly.
 
 </Warning>
 
@@ -245,36 +304,36 @@ included. But as far as I know, it works properly.
 <JavaSection>
 
 Keep in mind that a Java program that only reads in $N$ and outputs a number
-takes 138ms on USACO.
+takes around 138 ms on USACO.
 
 ### Method 1 - [`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html)
 
 Probably the easiest way to read input in Java, though it is also extremely
 slow.
 
-<Spoiler title="3188ms">
+<Spoiler title="3188 ms">
 
 ```java
-import java.util.*;
 import java.io.*;
 
-public class roboherd_scanner {
-
+public class RoboHerdScanner {
 	static int P[][] = new int[100000][];
 
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(new File("roboherd.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-
+		
 		int N = sc.nextInt();
 		int K = sc.nextInt();
-		for(int i = 0; i < N; ++i) {
-			int M = sc.nextInt(); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = sc.nextInt();
+		for (int i = 0; i < N; i++) {
+			int M = sc.nextInt();
+			P[i] = new int[M];
+			for (int j = 0; j < M; j++) {
+				P[i][j] = sc.nextInt();
+			}
 		}
 
-		if(N == 3) pw.println(61);
-		else pw.println(1000000000000000000L);
+		PrintWriter pw = new PrintWriter("roboherd.out");
+		pw.println(N == 3 ? 61 : (long) 1e18);
 		pw.close();
 	}
 }
@@ -286,38 +345,37 @@ public class roboherd_scanner {
 
 `BufferedReader` reads line-by-line with the `.readLine()` method, which returns
 a string. Methods like `Integer.parseInt()` are used to convert strings into
-primitives, and they can directly convert a line into a number, like in
+primitives, and they can directly convert a line into a number like this:
 `Integer.parseInt(br.readLine())`.
 
 Reading input is more complicated when multiple, space-separated values are
 placed in a single line. In order to individually read the values in each line,
-the programmer usually uses the `.split()` method in `String`.
+people usually uses the `.split()` method in `String`.
 
-<Spoiler title="1209ms">
+<Spoiler title="1209 ms">
 
 ```java
-import java.util.*;
 import java.io.*;
 
-public class roboherd_buffered_reader_string_split {
-
+public class RoboHerdBufferedReaderStringSplit {
 	static int P[][] = new int[100000][];
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-
 		String[] tokens = br.readLine().split(" ");
 		int N = Integer.parseInt(tokens[0]);
 		int K = Integer.parseInt(tokens[1]);
-		for(int i = 0; i < N; ++i) {
+		for(int i = 0; i < N; i++) {
 			tokens = br.readLine().split(" ");
-			int M = Integer.parseInt(tokens[0]); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = Integer.parseInt(tokens[j+1]);
+			int M = Integer.parseInt(tokens[0]);
+			P[i] = new int[M];
+			for (int j = 0; j < M; j++) {
+				P[i][j] = Integer.parseInt(tokens[j + 1]);
+			}
 		}
 
-		if(N == 3) pw.println(61);
-		else pw.println(1000000000000000000L);
+		PrintWriter pw = new PrintWriter("roboherd.out");
+		pw.println(N == 3 ? 61 : (long) 1e18);
 		pw.close();
 	}
 }
@@ -330,29 +388,30 @@ public class roboherd_buffered_reader_string_split {
 Notice that `StringTokenizer`'s `.nextToken()` for splitting strings is slightly
 faster than `.split()`.
 
-<Spoiler title="986ms">
+<Spoiler title="1155 ms">
 
 ```java
 import java.util.*;
 import java.io.*;
 
-public class roboherd_buffered_reader_string_tokenizer {
+public class RoboHerdBufferedReaderStringTokenizer {
 	static int P[][] = new int[100000][];
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
-		for(int i = 0; i < N; ++i) {
+		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
-			int M = Integer.parseInt(st.nextToken()); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = Integer.parseInt(st.nextToken());
+			int M = Integer.parseInt(st.nextToken());
+			P[i] = new int[M];
+			for (int j = 0; j < M; j++) {
+				P[i][j] = Integer.parseInt(st.nextToken());
+			}
 		}
 
-		if(N == 3) pw.println(61);
-		else pw.println(1000000000000000000L);
+		PrintWriter pw = new PrintWriter("roboherd.out");
+		pw.println(N == 3 ? 61 : (long) 1e18);
 		pw.close();
 	}
 }
@@ -367,35 +426,38 @@ you go with this.
 
 ### Method 4 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html)
 
-Apparently this is even faster! Though properly reading in `long`s would require
+Apparently this is even faster! Although, properly reading in `long`s would require
 additional work (since they are interpreted as `double`s by default).
 
-<Spoiler title="569ms">
+<Spoiler title="569 ms">
 
 ```java
-import java.util.*;
 import java.io.*;
 
-public class roboherd {
+public class RoboHerdBufferedReaderStreamTokenizer {
 	static int P[][] = new int[100000][];
+
 	static StreamTokenizer in;
-	static int nextInt() throws IOException{
+	static int nextInt() throws IOException {
 		in.nextToken();
-		return (int)in.nval;
+		return (int) in.nval;
 	}
+
 	public static void main(String[] args) throws Exception {
 		in = new StreamTokenizer(new BufferedReader(new FileReader("roboherd.in")));
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
 
 		int N = nextInt();
 		int K = nextInt();
-		for(int i = 0; i < N; ++i) {
-			int M = nextInt(); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = nextInt();
+		for (int i = 0; i < N; i++) {
+			int M = nextInt();
+			P[i] = new int[M];
+			for (int j = 0; j < M; j++) {
+				P[i][j] = nextInt();
+			}
 		}
 
-		if(N == 3) pw.println(61);
-		else pw.println(1000000000000000000L);
+		PrintWriter pw = new PrintWriter("roboherd.out");
+		pw.println(N == 3 ? 61 : (long) 1e18);
 		pw.close();
 	}
 }
@@ -409,7 +471,7 @@ Even faster than `BufferedReader` is a custom-written Fast I/O class that reads
 bytes directly from an `InputStream`, similarly as `FastIO.h` in the C++
 section.
 
-<Spoiler title="382ms">
+<Spoiler title="382 ms">
 
 Based off several sources, including `Kattio`,
 [this](https://gist.github.com/xiaowuc1/df1f620b1c1d84365b7091d6c9cf5370), and
@@ -422,15 +484,18 @@ import java.util.*;
 //BeginCodeSnip{FastIO}
 class FastIO extends PrintWriter {
 	private InputStream stream;
-	private byte[] buf = new byte[1<<16];
-	private int curChar, numChars;
+	private byte[] buf = new byte[1 << 16];
+	private int curChar;
+	private int numChars;
 
 	// standard input
-	public FastIO() { this(System.in,System.out); }
+	public FastIO() { this(System.in, System.out); }
+
 	public FastIO(InputStream i, OutputStream o) {
 		super(o);
 		stream = i;
 	}
+	
 	// file input
 	public FastIO(String i, String o) throws IOException {
 		super(new FileWriter(o));
@@ -439,7 +504,9 @@ class FastIO extends PrintWriter {
 
 	// throws InputMismatchException() if previously detected end of file
 	private int nextByte() {
-		if (numChars == -1) throw new InputMismatchException();
+		if (numChars == -1) {
+			throw new InputMismatchException();
+		}
 		if (curChar >= numChars) {
 			curChar = 0;
 			try {
@@ -447,7 +514,9 @@ class FastIO extends PrintWriter {
 			} catch (IOException e) {
 				throw new InputMismatchException();
 			}
-			if (numChars == -1) return -1; // end of file
+			if (numChars == -1) {
+				return -1;  // end of file
+			}
 		}
 		return buf[curChar++];
 	}
@@ -455,52 +524,72 @@ class FastIO extends PrintWriter {
 	// to read in entire lines, replace c <= ' '
 	// with a function that checks whether c is a line break
 	public String next() {
-		int c; do { c = nextByte(); } while (c <= ' ');
+		int c;
+		do {
+			c = nextByte();
+		} while (c <= ' ');
+
 		StringBuilder res = new StringBuilder();
-		do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+		do {
+			res.appendCodePoint(c);
+			c = nextByte();
+		} while (c > ' ');
 		return res.toString();
 	}
-	public int nextInt() { // nextLong() would be implemented similarly
-		int c; do { c = nextByte(); } while (c <= ' ');
-		int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+
+	public int nextInt() {  // nextLong() would be implemented similarly
+		int c;
+		do {
+			c = nextByte();
+		} while (c <= ' ');
+		
+		int sgn = 1;
+		if (c == '-') { 
+			sgn = -1;
+			c = nextByte(); 
+		}
+
 		int res = 0;
 		do {
-			if (c < '0' || c > '9')
+			if (c < '0' || c > '9') {
 				throw new InputMismatchException();
-			res = 10*res+c-'0';
+			}
+			res = 10 * res + c - '0';
 			c = nextByte();
 		} while (c > ' ');
 		return res * sgn;
 	}
+
 	public double nextDouble() { return Double.parseDouble(next()); }
 }
 //EndCodeSnip
 
-public class Main {
+public class RoboHerdFastIO {
 	static int P[][] = new int[100000][];
 	public static void main(String[] args) throws Exception {
-		// String s = "roboherd";
-		// FastIO io = new FastIO(s+".in",s+".out");
-		FastIO io = new FastIO("roboherd.in","roboherd.out");
+		FastIO io = new FastIO("roboherd.in", "roboherd.out");
 		int N = io.nextInt();
 		int K = io.nextInt();
-		for(int i = 0; i < N; ++i) {
-			int M = io.nextInt(); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = io.nextInt();
+		for (int i = 0; i < N; i++) {
+			int M = io.nextInt();
+			P[i] = new int[M];
+			for (int j = 0; j < M; j++) {
+				P[i][j] = io.nextInt();
+			}
 		}
-		if(N == 3) io.println(61);
-		else io.println(1000000000000000000L);
+
+		io.println(N == 3 ? 61 : (long) 1e18);
 		io.close();
 	}
 }
 ```
 
-<Warning>
+<Info>
 
 Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of
 ~100ms.
 
-</Warning>
+</Info>
 
 </Spoiler>
 
@@ -513,19 +602,18 @@ Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of
 Faster than the first C++ method! Significantly less if $P$ does not need to be
 stored.
 
-<Spoiler title="853ms">
+<Spoiler title="853 ms">
 
 ```py
-fin = open("roboherd.in","r")
-fout = open("roboherd.out","w")
-N,K = map(int,fin.readline().split())
+fin = open("roboherd.in", "r")
+
+N, K = map(int, fin.readline().split())
 P = [[] for i in range(N)]
 for i in range(N):
-	P[i] = map(int,fin.readline().split())
-if N == 3:
-	fout.write(str(61))
-else:
-	fout.write(str(1000000000000000000))
+	P[i] = map(int, fin.readline().split())
+
+fout = open("roboherd.out", "w")
+fout.write(str(61) if N == 3 else str(int(1e18)))
 ```
 
 </Spoiler>
