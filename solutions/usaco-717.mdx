@@ -37,16 +37,14 @@ public class VisitFJ {
 		}
 
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
-
 		pq.add(new Edge(new int[]{0,0}, 0));
-
-		while(!pq.isEmpty()) {
+		while (!pq.isEmpty()) {
 			Edge cur = pq.poll();
 			int[] pos = cur.t;
 
 			int d = N - 1 - pos[0] + N - 1 - pos[1];
 
-			if(d < 3 && d > 0) {
+			if (d < 3 && d > 0) {
 				dist[N-1][N-1] = Math.min(dist[N-1][N-1], cur.w + T * d);
 			}
 
@@ -54,11 +52,11 @@ public class VisitFJ {
 				int nx = pos[0] + dx[i];
 				int ny = pos[1] + dy[i];
 
-				if(nx < 0 || nx >= N || ny < 0 || ny >= N) {
+				if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
 					continue;
 				}
 				int nw = cur.w + w[nx][ny] + T * 3;
-				if(nw > dist[nx][ny]) {
+				if (nw > dist[nx][ny]) {
 					continue;
 				}
 				dist[nx][ny] = nw;
@@ -66,7 +64,7 @@ public class VisitFJ {
 			}
 		}
 
-		io.println(dist[N-1][N-1]);
+		io.println(dist[N - 1][N - 1]);
 		io.close();
 	}
 
