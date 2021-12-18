@@ -2,6 +2,7 @@
 id: intro-sorted-sets
 title: 'More Operations on Sorted Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
+contributors: Aadit Ambadkar
 prerequisites:
   - intro-sets
 description:
@@ -49,7 +50,12 @@ redirects:
 <br />
 
 In sets and maps where keys (or elements) are stored in sorted order, accessing
-or removing the next key higher or lower than some input key `k` is supported.
+or removing the next key higher or lower than some input key `k` is supported. 
+
+Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time for 
+ordered sets, which is more than the average $\mathcal{O}(1)$ insertion and 
+deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$ insertion
+and deletion for unordered sets.
 
 ## Using Iterators
 
@@ -77,7 +83,7 @@ set.add(1); set.add(3); set.add(0); set.add(-2);
 Iterator it = set.iterator();
 while(it.hasNext()){
 	Integer i = (Integer)it.next();
-	System.out.print(i + " "); // returns 0 1 -2 3
+	System.out.print(i + " "); // returns some random order
 }
 ```
 
@@ -261,9 +267,12 @@ In addition to all of the regular set operations,
 - the `count()` method returns the number of times an element is present in the
   multiset. However, this method takes time **linear** in the number of matches
   so you shouldn't use it in a contest.
-- If you want to remove a value _once_, make sure to use
-  `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The
-  latter will remove _all_ instances of `val`.
+- To remove a value __once__, use `ms.erase(ms.find(val))`.
+- To remove __all__ occurrences of a value, use `ms.erase(val)`.
+
+<Warning>
+	Using `ms.erase(val)` erases __all__ instances of `val` from the multiset. To remove one instance of `val`, use `ms.erase(ms.find(val))`!
+</Warning>
 
 ```cpp
 multiset<int> ms;
@@ -432,17 +441,17 @@ multiset<int> ret;
 void modify(int x) {
 	if (x == 0 || x == sz(s)) return;
 	auto it = dif.find(x);
-	if (it != end(dif)) { // x is currently present in dif, remove it
+	if (it != end(dif)) {  // x is currently present in dif, remove it
 		int a = *prev(it), b = *next(it);
-		ret.erase(ret.find(x-a)), ret.erase(ret.find(b-x)); // update ret
-		ret.insert(b-a);
-		dif.erase(it); // remove x from dif
-	} else { // x is not currently in dif, insert it
-		it = dif.insert(x).first; // insert x into dif
+		ret.erase(ret.find(x - a)), ret.erase(ret.find(b - x)); // update ret
+		ret.insert(b - a);
+		dif.erase(it);  // remove x from dif
+	} else {  // x is not currently in dif, insert it
+		it = dif.insert(x).first;  // insert x into dif
 		// it = iterator corresponding to x
 		int a = *prev(it), b = *next(it);
-		ret.erase(ret.find(b-a)); // update ret
-		ret.insert(x-a), ret.insert(b-x);
+		ret.erase(ret.find(b - a));  // update ret
+		ret.insert(x - a), ret.insert(b - x);
 	}
 }
 
@@ -450,13 +459,14 @@ int main() {
 	ios_base::sync_with_stdio(0); cin.tie(0);
 	cin >> s >> m;
 	dif.insert(0); dif.insert(sz(s));
-	for (int i = 0; i < sz(s)-1; ++i)
-		if (s[i] != s[i+1]) dif.insert(i+1); // initialize dif
-	for (auto it = dif.begin(); next(it) != dif.end(); it ++)
-		ret.insert(*next(it)-*it); // initialize ret
+	for (int i = 0; i < sz(s) - 1; ++i)
+		if (s[i] != s[i + 1]) dif.insert(i + 1); // initialize dif
+	for (auto it = dif.begin(); next(it) != dif.end(); it++) {
+		ret.insert(*next(it) - *it); // initialize ret
+	}
 	for (int i = 0; i < m; ++i) {
 		int x; cin >> x; // 1-indexed position
-		modify(x-1); modify(x);
+		modify(x - 1); modify(x);
 		cout << *ret.rbegin() << " ";
 	}
 }
@@ -481,47 +491,46 @@ class BitInversion{
 	public static TreeMap<Integer, Integer> ret = new TreeMap<Integer, Integer>();
 	public static String s;
 	public static int m;
-	public static TreeSet<Integer> dif = new TreeSet<Integer>();
+	public static Set<Integer> dif = new TreeSet<Integer>();
 
-	public static void modify(int x){
-		if(x == 0 || x == s.length()) return;
-		if(dif.contains(x)){ // x is currently present in dif, remove it
+	public static void modify(int x) {
+		if (x == 0 || x == s.length()) return;
+		if (dif.contains(x)) { // x is currently present in dif, remove it
 			int a = dif.lower(x), b = dif.higher(x);
-			remove(x-a); remove(b-x); // update ret
-			add(b-a);
+			remove(x - a); remove(b - x); // update ret
+			add(b - a);
 			dif.remove(x); // remove x from dif
 		}
-		else{
+		else {
 		  dif.add(x); // insert x into dif
 		  int a = dif.lower(x), b = dif.higher(x);
-		  remove(b-a); // update ret
-		  add(x-a); add(b-x);
+		  remove(b - a); // update ret
+		  add(x - a); add(b - x);
 		}
 	}
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		s = sc.readLine();
 		m = Integer.parseInt(sc.readLine());
 		dif.add(0); dif.add(s.length());
-		for (int i = 0; i < s.length() -1; i++){
-			if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
+		for (int i = 0; i < s.length() - 1; i++) {
+			if(s.charAt(i) != s.charAt(i + 1)) dif.add(i + 1); // initialize dif
 		}
-		for (int it : dif){
+		for (int it : dif) {
 			if(dif.higher(it) != null) add(dif.higher(it) - it); // initialize ret
 		}
 		StringTokenizer st = new StringTokenizer(sc.readLine());
-		for (int i = 0; i < m; i++){
+		for (int i = 0; i < m; i++) {
 			int x = Integer.parseInt(st.nextToken()); // 1-indexed position
-			modify(x-1); modify(x);
+			modify(x - 1); modify(x);
 			out.println(ret.lastKey());
 		}
 		out.close();
 	}
 
 	static void add(int x){
-		if(ret.containsKey(x)){
+		if (ret.containsKey(x)) {
 			ret.put(x, ret.get(x) + 1);
 		} else {
 			ret.put(x, 1);
@@ -530,7 +539,7 @@ class BitInversion{
 
 	static void remove(int x){
 		ret.put(x, ret.get(x) - 1);
-		if(ret.get(x) == 0){
+		if (ret.get(x) == 0) {
 			ret.remove(x);
 		}
 	}
@@ -580,13 +589,15 @@ int main() {
 	ios_base::sync_with_stdio(0); cin.tie(0);
 	cin >> s >> m;
 	dif.insert(0); dif.insert(sz(s));
-	for (int i = 0; i < sz(s)-1; ++i)
-		if (s[i] != s[i+1]) dif.insert(i+1);
-	for (auto it = dif.begin(); next(it) != dif.end(); it ++)
-		ad(*next(it)-*it);
+	for (int i = 0; i < sz(s) - 1; ++i) {
+		if (s[i] != s[i + 1]) dif.insert(i+1);
+	}
+	for (auto it = dif.begin(); next(it) != dif.end(); it++) {
+		ad(*next(it) - *it);
+	}
 	for (int i = 0; i < m; ++i) {
 		int x; cin >> x;
-		modify(x-1); modify(x);
+		modify(x - 1); modify(x);
 		while (!cnt[ret.top()]) ret.pop();
 		// pop elements that should no longer be present in priority queue
 		cout << ret.top() << " ";
@@ -609,37 +620,36 @@ class BitInversion{
 	public static int m;
 	public static TreeSet<Integer> dif = new TreeSet<Integer>();
 	public static int cnt[];
-	public static void add(int x){
+	public static void add(int x) {
 		cnt[x]++;
 		pq.add(x);
 	}
-	public static void modify(int x){
+	public static void modify(int x) {
 		if(x == 0 || x == s.length()) return;
 		if(dif.contains(x)){ // x is currently present in dif, remove it
 			int a = dif.lower(x), b = dif.higher(x);
-			cnt[x-a]--; cnt[b-x]--; // update ret
-			add(b-a);
+			cnt[x - a]--; cnt[b - x]--; // update ret
+			add(b - a);
 			dif.remove(x); // remove x from dif
 		}
 		else{
 		  dif.add(x); // insert x into dif
 		  int a = dif.lower(x), b = dif.higher(x);
-		  cnt[b-a]--; // update ret
-		  add(x-a); add(b-x);
+		  cnt[b - a]--; // update ret
+		  add(x - a); add(b - x);
 		}
 	}
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		s = sc.readLine();
 		m = Integer.parseInt(sc.readLine());
 		cnt = new int[s.length()+1];
 		dif.add(0); dif.add(s.length());
-		for (int i = 0; i < s.length() -1; i++){
-			if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
+		for (int i = 0; i < s.length() - 1; i++) {
+			if(s.charAt(i) != s.charAt(i+1)) dif.add(i + 1); // initialize dif
 		}
-		for (int it : dif){
+		for (int it : dif) {
 			if(dif.higher(it) != null){
 				add(dif.higher(it) - it);
 			}
@@ -647,8 +657,8 @@ class BitInversion{
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		for (int i = 0; i < m; i++){
 			int x = Integer.parseInt(st.nextToken()); // 1-indexed position
-			modify(x-1); modify(x);
-			while(cnt[pq.peek()] == 0) pq.poll();
+			modify(x - 1); modify(x);
+			while (cnt[pq.peek()] == 0) pq.poll();
 			// pop elements that should no longer be present in priority queue
 			out.println(pq.peek());
 		}
