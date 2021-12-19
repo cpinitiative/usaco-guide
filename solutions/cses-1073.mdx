@@ -113,7 +113,6 @@ public class Towers {
 ```python
 input()
 # Store the topmost cube of each tower
-# Towers are in non-decreasing order for sure
 towers = []
 for cube in map(int, input().split()):
 	# Binary search
@@ -128,12 +127,11 @@ for cube in map(int, input().split()):
 			right = mid - 1
 			tower_idx = mid
 
-	# If there exists a satisfying tower, add the cube to that tower
-	# and update the top element of the tower
+	# If there exists a satisfying tower, add the cube to that tower and update
+	# the top element of the tower
 	if tower_idx != -1:
 		towers[tower_idx] = cube
-	# If there aren't any suitable towers, append new tower to end of
-	# array
+	# If there aren't any suitable towers, append new tower to end of array
 	else:
 		towers.append(cube)
 print(len(towers))
@@ -151,14 +149,14 @@ In this approach, we store the towers using an ordered multiset (which can be
 represented as a
 [TreeMap](https://usaco.guide/silver/intro-sorted-sets?lang=java#multisets) in
 Java), where each tower's value is the size of the cube on top. For each cube,
-we can use built-in methods (`upper_bound` in C++, `higherKey` in Java, 
-`bisect.bisect` in Python) to find the smallest-valued tower with a value 
-strictly greater than the cube. If we find a suitable tower, we add the cube to
-the top and change the tower's value to the size of the cube by removing the
-tower's previous value from the set and adding it's new value into it. If no
-such tower exists, we add a new tower to the set. Our answer will be the 
-total number of towers in the multiset (this takes some extra work to find in
-Java) after all cubes have been processed.
+we can use built-in methods (`upper_bound` in C++, `higherKey` in Java) to 
+find the smallest-valued tower with a value strictly greater than the cube. If
+we find a suitable tower, we add the cube to the top and change the tower's
+value to the size of the cube by removing the tower's previous value from the
+set and adding it's new value into it. If no such tower exists, we add a new
+tower to the set. Our answer will be the total number of towers in the 
+multiset (this takes some extra work to find in Java) after all cubes have been
+processed.
 
 
 <LanguageSection>
@@ -250,17 +248,15 @@ from bisect import bisect
 
 input()
 # Store the topmost cube of each tower
-# Towers are in non-decreasing order for sure
 towers = []
 for cube in map(int, input().split()):
 	tower_idx = bisect(towers, cube)
 
-	# If there exists a satisfying tower, add the cube to that tower
-	# and update the top element of the tower
+	# If there exists a satisfying tower, add the cube to that tower and update
+	# the top element of the tower
 	if tower_idx < len(towers):
 		towers[tower_idx] = cube
-	# If there aren't any suitable towers, append new tower to end of
-	# array
+	# If there aren't any suitable towers, append new tower to end of array
 	else:
 		towers.append(cube)
 print(len(towers))
