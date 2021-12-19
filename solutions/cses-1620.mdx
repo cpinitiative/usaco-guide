@@ -26,6 +26,10 @@ Overall, the $n$ machines can create
 ‎‎$\sum_{i=1}^{n} \lfloor \frac{ans}{k_i} \rfloor$ products. If this sum
 $\geq t$, then $ans$ is valid.
 
+<LanguageSection>
+	
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -75,3 +79,84 @@ int main() {
 	cout << ans << "\n";
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FactoryMachines {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();  // number of machines
+		int goal = io.nextInt();
+
+		int[] machines = new int[n];
+		for (int i = 0; i < n; i++) {
+			machines[i] = io.nextInt();
+		}
+
+		long lo = 0;
+		long hi = (long) 1e18;
+		long ans = 0;
+		while (lo <= hi) {
+			long mid = (lo + hi) / 2;
+			
+			long n_produced = 0;
+			for (int machine : machines) {
+				n_produced += mid / machine;
+				// Break as soon as we hit our goal
+				if (n_produced >= goal) {
+					break;
+				}
+			}
+
+			if (n_produced >= goal) {
+				ans = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		io.println(ans);
+		io.close();
+	}
+	
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+_, goal = map(int, input().split())
+machines = list(map(int, input().split()))
+
+lo = 0
+hi = int(1e18)
+ans = 0
+while lo <= hi:
+	mid = (lo + hi) // 2
+
+	n_produced = 0
+	for machine in machines:
+		n_produced += mid // machine
+
+	if n_produced >= goal:
+		ans = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
