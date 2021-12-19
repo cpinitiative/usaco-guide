@@ -102,7 +102,7 @@ public class FactoryMachines {
 		}
 
 		long lo = 0;
-		long hi = 1000000000000000000L;  // 1e18
+		long hi = (long) 1e18;
 		long ans = 0;
 		while (lo <= hi) {
 			long mid = (lo + hi) / 2;
@@ -110,7 +110,7 @@ public class FactoryMachines {
 			long n_produced = 0;
 			for (int machine : machines) {
 				n_produced += mid / machine;
-				// Prevent overflow
+				// Break as soon as we hit our goal
 				if (n_produced >= goal) {
 					break;
 				}
@@ -140,7 +140,7 @@ _, goal = map(int, input().split())
 machines = list(map(int, input().split()))
 
 lo = 0
-hi = 1000000000000000000  # 1e18
+hi = int(1e18)
 ans = 0
 while lo <= hi:
 	mid = (lo + hi) // 2
