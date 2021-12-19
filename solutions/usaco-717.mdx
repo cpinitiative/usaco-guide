@@ -20,6 +20,7 @@ public class VisitFJ {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("visitfj");
 
+		// Possible paths cow can take
 		int[] dx = {0, 1, 2, 3, 0, 1, 2, -1, -2, -3, -1, -2, 1, -1, 0, 0};
 		int[] dy = {3, 2, 1, 0, -3, -2, -1, 2, 1, 0, -2, -1, 0, 0, 1, -1};
 
@@ -46,6 +47,7 @@ public class VisitFJ {
 
 			int d = N - 1 - pos[0] + N - 1 - pos[1];
 
+			// If within 3 blocks away, update the minimum weight needed
 			if(d < 3 && d > 0) {
 				dist[N-1][N-1] = Math.min(dist[N-1][N-1], cur.w + T * d);
 			}
@@ -54,14 +56,20 @@ public class VisitFJ {
 				int nx = pos[0] + dx[i];
 				int ny = pos[1] + dy[i];
 
+				// Continue if new point is out of bound
 				if(nx < 0 || nx >= N || ny < 0 || ny >= N) {
 					continue;
 				}
+
+
 				int nw = cur.w + w[nx][ny] + T * 3;
+				
+				// If new distance is greater than current minimum distance, it is not needed
 				if(nw > dist[nx][ny]) {
 					continue;
 				}
 				dist[nx][ny] = nw;
+
 				pq.add(new Edge(new int[]{nx, ny}, nw));
 			}
 		}
