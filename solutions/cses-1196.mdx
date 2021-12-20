@@ -1,3 +1,4 @@
+Solution 1:
 ---
 id: cses-1196
 source: CSES
@@ -5,7 +6,7 @@ title: Flight Routes
 author: Aashish Patel
 ---
 
-
+**Time Complexity:** $\mathcal{O}(mk\log (mk))$
 
 ```cpp
 #include<bits/stdc++.h>
@@ -26,15 +27,8 @@ VVL dijkstra(VVP graph, int source, int k){
 	int n = graph.size();
 	VVL dis(n);
 	multiset<pair<ll, int>> pq;
-	//dis[source].push_back(0);
 	pq.insert({0, source});
-	
 	while(!pq.empty()){
-		/*
-		1. the key realization to solving this question is that whenever we take out anything out from the pq/multiset at the start of the new iteration of the priority queue
-		
-		
-		*/
 		ll node = pq.begin() -> second, w = pq.begin() -> first;
 		pq.erase(pq.begin());
 		
@@ -61,13 +55,6 @@ void solve(){
 		graph[u].push_back({v, w});
 	}
 	VVL dis = dijkstra(graph, 0, k);
-	// for(int i=0;i<n;i++){
-		// for(auto x: dis[i]){
-			// cout<<x<<" ";
-		// }
-		// cout<<endl;
-	// }
-	
 	for(auto x: dis[n-1]){
 			cout<<x<<" ";
 		}
@@ -75,32 +62,16 @@ void solve(){
 int main()
 {
    ios_base:: sync_with_stdio(false); cin.tie(0);
-   
- //   #ifndef ONLINE_JUDGE
-	// 	//for getting input from input.txt
-	// 	freopen("input.txt","r", stdin);
-	// 	//for writing output to output.txt
-	// 	freopen("output.txt","w", stdout);
-	// #endif
-
-	/*
-	Reminder: Always store sum in ll variable.
-
-	*/
 	
-	int t;t=1;
-	//cin>>t;
+	int t=1;
 	while(t--){
 		solve();
 	}
-        
-        
    return 0;
 }
 ```
 
-
-
+Solution 2:
 ---
 id: cses-1196
 source: CSES
