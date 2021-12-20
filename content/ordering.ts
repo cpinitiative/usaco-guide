@@ -57,6 +57,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'debugging-lang',
         'fast-io',
         'generic-code',
+        'lambda-funcs',
       ],
     },
     {
