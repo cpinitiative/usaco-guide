@@ -9,6 +9,7 @@ author: Nathan Gong, Ryan Chou
 
 
 We only need to keep track of the number of days that Bessie has been traveling and the amount of mooney that she has made. For every day up to $T_{\text{max}}$, we'll try to travel to each city, and update the mooney made if the current path is more optimal.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(T_{\text{max}} \cdot (N + M))$
@@ -36,7 +37,6 @@ int main() {
 	}
 
 	vector<vector<int>> adj(n);
-
 	for (int i = 0; i < m; i++) {
 		int u, v;
 		cin >> u >> v;
@@ -48,12 +48,10 @@ int main() {
 
 	// dp[i][j] = the maximum money that Bessie can make on day i
 	vector<vector<int>> dp(MAX_DAYS + 1, vector<int>(n, -1));
-
 	// base case: if Bessie doesn't travel at all, she makes $0
 	dp[0][0] = 0;
-
+	
 	int ans = 0;
-
 	for (int d = 0; d < MAX_DAYS; d++) {
 		for (int i = 0; i < n; i++) {
 			// if dp[d][i] == -1 then the city can't be visited
@@ -69,7 +67,6 @@ int main() {
 		}
 		ans = max(ans, (dp[d][0] - (c * d * d)));
 	}
-
 	cout << ans << "\n";
 }
 ```
