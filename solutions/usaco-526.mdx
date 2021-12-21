@@ -13,6 +13,28 @@ author: Brad Ma
 
 <LanguageSection>
 
+<PySection>
+
+```python
+import sys
+sys.stdin = open("censor.in", "r")
+sys.stdout = open("censor.out", "w")
+
+def main():
+    s = input().strip()
+	t = input().strip()
+    final = ""
+    for char in s:
+        final += char
+        if len(final) >= len(t) and final[-len(t):] == t:
+            final = final[:-len(t)]
+    return final
+
+print(main())
+```
+
+</PySection>
+
 <JavaSection>
 
 ```java
@@ -44,7 +66,7 @@ public class Censor {
 		io.println(s);
 		io.close();
 	}
-	//CodeSnip{Kattio}		
+	//CodeSnip{Kattio}
 }
 ```
 
