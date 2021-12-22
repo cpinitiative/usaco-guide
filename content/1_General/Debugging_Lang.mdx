@@ -229,20 +229,13 @@ For example, the following code doesn't behave as expected:
 using namespace std;
 
 int main() {
-	vector<int> valid_vec(1, 10);
-	vector<int> invalid_vec(1, 5);
-	for (int i = 0; i < 10; i++) {
-		cout << i << " " << valid_vec[i] << "\n";
-	}
-
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec[0] << "\n";  // outputs 1234
 	for (int i = 0; i < 10; i++) {
 		invalid_vec[i] = i;
 	}
-
-	cout << "\n";
-	for (int i = 0; i < 10; i++) {
-		cout << i << " " << valid_vec[i] << "\n";
-	}
+	cout << valid_vec[0] << "\n";  // errors
 }
 ```
 
@@ -256,27 +249,20 @@ If we use this in our following code segment like so:
 using namespace std;
 
 int main() {
-	vector<int> valid_vec(1, 10);
-	vector<int> invalid_vec(1, 5);
-	for (int i = 0; i < 10; i++) {
-		cout << i << " " << valid_vec.at(i) << "\n";
-	}
-
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec.at(0) << "\n";  // outputs 1234
 	for (int i = 0; i < 10; i++) {
 		invalid_vec.at(i) = i;
 	}
-
-	cout << "\n";
-	for (int i = 0; i < 10; i++) {
-		cout << i << " " << valid_vec.at(i) << "\n";
-	}
+	cout << valid_vec.at(0) << "\n";  // errors
 }
 ```
 
 C++ will now check the bounds when we access the vectors and will
 produce the following output:
 ```
-0 10
+1234
 terminate called after throwing an instance of 'std::out_of_range'
   what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
 1 zsh: abort      ./$1 $@[2,-1]
