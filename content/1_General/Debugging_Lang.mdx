@@ -218,7 +218,7 @@ int main() {
 
 ### Checking for OOB
 
-C++ usually silently fails when you access or write to a
+C++ usually silently fails (or segfaults) when you access or write to a
 vector at an index that's out-of-bounds (writing to an invalid index is called
 [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow)).
 
@@ -281,6 +281,9 @@ terminate called after throwing an instance of 'std::out_of_range'
   what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
 1 zsh: abort      ./$1 $@[2,-1]
 ```
+
+If you want to find out the exact line at which this error occurs, you can use
+a debugger such as `gdb` or `lldb`.
 
 ### Unspecified Evaluation Order
 
