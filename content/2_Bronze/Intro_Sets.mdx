@@ -54,9 +54,9 @@ A **set** is a collection of elements that contains no duplicates.
 
 ### Unordered Sets
 
-In _unordered_ sets, elements are stored in a random order. Insertions,
-deletions, and searches are all $\mathcal{O}(1)$. Unordered sets are implemented
-by
+In _unordered_ sets, elements are stored in an arbitrary order through hashing.
+Insertions, deletions, and searches are all $\mathcal{O}(1)$ (with a high
+constant factor). Unordered sets are implemented by
 [`std:unordered_set`](https://www.cplusplus.com/reference/unordered_set/unordered_set/)
 in the `<unordered_set>` header.
 
@@ -65,6 +65,10 @@ Some operations on an `std::unordered_set` named `s` include:
 - `s.insert(x)`, which adds the element `x` to `s` if not already present.
 - `s.erase(x)`, which removes the element `x` from `s` if present.
 - `s.count(x)`, which returns `1` if `s` contains `x` and `0` if it doesn't.
+
+Unordered sets work with primitive types, but require a
+[custom hash function](https://usaco.guide/gold/unordered-map#custom-hashing)
+for structures/classes like vectors and pairs.
 
 ```cpp
 unordered_set<int> s;
@@ -83,8 +87,7 @@ s.erase(0);  // does nothing because 0 wasn't in the set
 In _sorted_ sets, the elements are sorted in order of element. Insertions,
 deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number
 of elements in the set. Sorted sets are implemented by
-[`std:set`](https://www.cplusplus.com/reference/set/set/) in the `<set>`
-header.
+[`std:set`](https://www.cplusplus.com/reference/set/set/) in the `<set>` header.
 
 `std::set` includes all the essential operations that `std::unordered_set` has
 (including insertion, deletion, searches, etc.), but also some additional ones.
@@ -112,9 +115,9 @@ for (int element : s) {
 
 ### Unordered Sets
 
-In _unordered_ sets, elements are stored in a random order. Insertions,
-deletions, and searches are all $\mathcal{O}(1)$. Unordered sets are implemented
-in Java by the
+In _unordered_ sets, elements are stored in an arbitrary order. Insertions,
+deletions, and searches are all $\mathcal{O}(1)$ (with a high constant factor).
+Unordered sets are implemented in Java by the
 [`HashSet`](https://docs.oracle.com/javase/7/docs/api/java/util/HashSet.html)
 class (which comes from the `java.util` library).
 
@@ -123,6 +126,10 @@ Some operations on a `HashSet` named `set` include:
 - `set.add(x)`, which adds the element `x` to `set` if not already present.
 - `set.remove(x)`, which removes the element `x` from `set` if present.
 - `set.contains(x)`, which checks whether `set` contains the element `x`.
+
+Unordered sets work with primitive types and their object wrappers, but require
+a [custom hash function](https://usaco.guide/gold/unordered-map#custom-hashing)
+for custom classes.
 
 ```java
 Set<Integer> set = new HashSet<>();
@@ -246,7 +253,7 @@ public class DistinctNumbers {
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -296,11 +303,10 @@ three primary methods:
 
 In _sorted_ maps, the pairs are sorted in order of key. Insertions, deletions,
 and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of pairs in
-the map.
-	
-In _unordered_ maps, the pairs aren't kept in sorted order and all insertions,
-deletions, and searches are all $\mathcal{O}(1)$. Sorted maps are implemented
-with `std::map` and unordered maps are implemented with `std::unordered_map`.
+the map. In _unordered_ maps, the pairs aren't kept in sorted order and all
+insertions, deletions, and searches are all $\mathcal{O}(1)$. Sorted maps are
+implemented with `std::map` and unordered maps are implemented with
+`std::unordered_map`.
 
 Some operations on an `std::map` and `std::unordered_map` named `m` include:
 
@@ -814,9 +820,12 @@ make their implementation easier.
 
   </Quiz.Question>
   <Quiz.Question>
-    What is the time complexity of insertions, deletions, and removals in a sorted map of size $N$?
-    <Quiz.Answer>
+    What is the time complexity of insertions, deletions, and removals in an unordered map of size $N$?
+    <Quiz.Answer correct>
       $\mathcal{O}(1)$
+			<Quiz.Explanation>
+				Correct.
+			</Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
       $\mathcal{O}(N)$
@@ -826,9 +835,6 @@ make their implementation easier.
     </Quiz.Answer>
     <Quiz.Answer correct>
       $\mathcal{O}(\log N)$
-      <Quiz.Explanation>
-	Correct.
-      </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
@@ -939,4 +945,224 @@ make their implementation easier.
   </Quiz.Question>
 </Quiz>
 </CPPSection>
+
+<JavaSection>
+<Quiz>
+  <Quiz.Question>
+    What is the time complexity of insertions, deletions, and searches in a sorted set of size $N$?
+    <Quiz.Answer>
+      $\mathcal{O}(1)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N)$
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log N)$
+      <Quiz.Explanation>
+		Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+		```java
+		Set<Integer> s = new TreeSet<>();
+		s.insert(1);
+		s.insert(4);
+		s.insert(5);
+		s.insert(2);
+		System.out.println(s.contains(3));
+		```
+    <Quiz.Answer>
+      `true`
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      `false`
+      <Quiz.Explanation>
+        Correct. $3$ isn't present in `s`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `null`
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Error: `NullPointerException`
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+		```java
+		Integer[] arr = {4, 1, 2, 1, 3, 2, 3, 1, 3, 1};
+		Set<Integer> s = new TreeSet<>(Arrays.asList(arr));
+		System.out.println(s.size());
+		```
+    <Quiz.Answer>
+      $1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $4$
+      <Quiz.Explanation>
+        Correct. There are $4$ unique elements in `s`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $7$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $10$
+      <Quiz.Explanation>
+    Sets only store unique elements.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    What is the time complexity of insertions, deletions, and removals in an unordered map of size $N$?
+    <Quiz.Answer correct>
+      $\mathcal{O}(1)$
+			<Quiz.Explanation>
+				Correct.
+			</Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log N)$
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+		```java
+		Map<Integer, Integer> m = new TreeMap<>();
+		m.put(1, 5);
+		m.put(2, 9);
+		m.put(3, 7);
+		m.put(4, 3);
+		System.out.println(m.get(2));
+		```
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $9$
+      <Quiz.Explanation>
+        Correct. The value associated with the key $2$ is $9$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $2$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $0$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+		```java
+		Map<Integer, Integer> m = new TreeMap<>();
+		m.put(1, 5);
+		m.put(2, 9);
+		m.put(3, 7);
+		m.put(4, 3);
+		m.remove(2);
+		System.out.println(m.get(2));
+		```
+    <Quiz.Answer correct>
+      `null`
+      <Quiz.Explanation>
+        Correct. Key $2$ has been erased.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $9$
+      <Quiz.Explanation>
+	$m[2]$ is erased, so $m[2]$ is no longer $9$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $0$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+		```java
+		Map<Integer, Integer> m = new TreeMap<>();
+		m.put(0, 1);
+		m.put(2, 5);
+		m.put(3, 18);
+		m.put(2, 3);
+		m.put(4, 14);
+		System.out.println(m.get(2));
+		```
+		<Quiz.Answer>
+			$1$
+			<Quiz.Explanation>
+
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer correct>
+			$3$
+			<Quiz.Explanation>
+				Correct. The value assosiated with key $2$ is changed from $5$ to $3$.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			$5$
+			<Quiz.Explanation>
+				Note that while the value for key $2$ is set to $5$ at first, it is changed later on.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			An error is thrown.
+			<Quiz.Explanation>
+
+			</Quiz.Explanation>
+		</Quiz.Answer>
+
+	</Quiz.Question>
+</Quiz>
+</JavaSection>
 </LanguageSection>
