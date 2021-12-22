@@ -205,7 +205,7 @@ should only be used for other online contests.
 
 ### Getting the Line Number
 
-Sometimes, you'd like to know around which line your code is errorring at.
+Sometimes, you'd like to know around which line your code is erroring at.
 To print the line number, you can use the `__LINE__` macro like so:
 ```cpp
 #include <iostream>
@@ -215,6 +215,145 @@ int main() {
 	cout << __LINE__ << endl;  // outputs 5, the current line number
 }
 ```
+
+### Checking for OOB
+
+C++ usually silently fails (or segfaults) when you access or write to a
+vector at an index that's out-of-bounds (writing to an invalid index is called
+[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow)).
+
+For example, the following code doesn't behave as expected:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec[0] << "\n";  // outputs 1234
+	for (int i = 0; i < 10; i++) {
+		invalid_vec[i] = i;
+	}
+	cout << valid_vec[0] << "\n";  // errors
+}
+```
+
+To prevent this, you can use
+[vector::at](https://www.cplusplus.com/reference/vector/vector/at) instead of
+[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[]).
+
+If we use this in our following code segment like so:
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec.at(0) << "\n";  // outputs 1234
+	for (int i = 0; i < 10; i++) {
+		invalid_vec.at(i) = i;
+	}
+	cout << valid_vec.at(0) << "\n";  // errors
+}
+```
+
+C++ will now check the bounds when we access the vectors and will
+produce the following output:
+```
+1234
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
+1 zsh: abort      ./$1 $@[2,-1]
+```
+
+If you want to find out the exact line at which this error occurs, you can use
+a debugger such as `gdb` or `lldb`.
+
+### Unspecified Evaluation Order
+
+Consider the following code stored in `bad.cpp`:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> res{-1};
+
+int add_element() {
+	res.push_back(-1);
+	return res.size() - 1;
+}
+
+int main() {
+	for (int i = 0; i < 5; ++i) {
+		res[i] = add_element();
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+Compiling and running the above code with C++17 as so:
+
+```
+g++ -std=c++17 bad.cpp -o bad && ./bad
+```
+
+gives the intended output:
+
+```
+0 1
+1 2
+2 3
+3 4
+4 5
+```
+
+But compiling and running with C++14 like this:
+
+```
+g++ -std=c++14 bad.cpp -o bad && ./bad
+```
+
+gives:
+
+```
+0 -1
+1 -1
+2 3
+3 -1
+4 5
+```
+
+However, the code works correctly if you save the result of `add_element()` to an
+intermediate variable.
+
+```cpp
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		int tmp = add_element();
+		res[i] = tmp;
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+<!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
+
+The problem is that `res[i] = add_element();` only works if `add_element()` is
+evaluated before `res[i]` is. If `res[i]` is evaluated first, and _then_
+`add_element()` results in the memory for `res` being reallocated, then `res[i]`
+is invalidated. The order in which `res[i]` and `add_element()` are evaluated is
+unspecified (at least before C++17).
+
+See
+[this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated)
+StackOverflow post for some discussion about why this is the case
+([here](https://stackoverflow.com/questions/18040037)'s a similar issue).
+
+You also may come across this issue when trying to create a
+[trie](https://codeforces.com/blog/entry/83241#comment-705458).
 
 </CPPSection>
 <JavaSection> </JavaSection>
