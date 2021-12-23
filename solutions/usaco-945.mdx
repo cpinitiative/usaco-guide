@@ -49,11 +49,11 @@ int main() {
 
 		for (int j = 1; j <= k; j++) {
 			dp[i][j] = INT32_MAX;
-			int cur = groups[i];
+			int netSize = groups[i];
 			for (int c = i - 1; c >= 0; c--) {
 				// consider the case where we switch after collecting the first c groups
-				dp[i][j] = min(dp[i][j], dp[c][j - 1] + cur * (i - c));
-				cur = max(cur, groups[c]);
+				dp[i][j] = min(dp[i][j], dp[c][j - 1] + netSize * (i - c));
+				netSize = max(netSize , groups[c]);
 			}
 		}
 		space_used += groups[i];
