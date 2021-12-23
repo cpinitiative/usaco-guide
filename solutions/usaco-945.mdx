@@ -37,7 +37,7 @@ int main() {
 	// dp[i][j] = min sum of net sizes after catching first i snakes with j resizings
 	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
 
-	int lg = -1, spaceused = 0;
+	int largest_group = -1, spaceused = 0;
 
 	for (int i = 1; i <= n; i++) {
 		lg = max(lg, groups[i]);
@@ -46,7 +46,7 @@ int main() {
 		 * base case: with zero resizings, Bessie must start off with
 		 * a net large enough to catch the largest group of snakes
 		*/
-		dp[i][0] = lg * i;
+		dp[i][0] = largest_group * i;
 
 		for (int j = 1; j <= k; j++) {
 			dp[i][j] = INT32_MAX;
