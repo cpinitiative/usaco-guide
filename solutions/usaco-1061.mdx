@@ -31,7 +31,7 @@ using namespace std;
 
 int main() {
   int N; cin >> N;
-  vector<array<int,3>> Ncows, Ecows;
+  vector<array<int, 3>> Ncows, Ecows;
 
   for (int i = 0; i < N; i++) {
     string dir;
@@ -55,7 +55,10 @@ int main() {
     return left[1] < right[1];
   });
 
-  // we sort them by x/y value because we know that, for a single cow, it reaches a lower x/y value and then a higher one. Thus, it is more we would not miss any earlier collisions if we iterate from lower to a higher value. 
+  // we sort them by x/y value because we know that, for a single cow, 
+  // it reaches a lower x/y value and then a higher one. 
+  // Thus, it is more we would not miss any earlier collisions
+  // if we iterate from lower to a higher value. 
 
   // stores the amount of grass it eats
   int stop[N];
@@ -66,26 +69,31 @@ int main() {
 
   for (auto Ncow : Ncows) {
     for (auto Ecow : Ecows) {
-      // make sure that the north cow's x coordinate is less than the east cow's x coordinate, and the north cow's y coordinate is less than an east cow's y coordinate.
+      // make sure that the north cow's x coord is less than the east cow's x coord,
+      // and the north cow's y coord is less than an east cow's y coord.
       if (Ncow[0] > Ecow[0] && Ncow[1] < Ecow[1]) {
         
         int Ndist = Ecow[1] - Ncow[1];
         int Edist = Ncow[0] - Ecow[0];
 
-        // we need to check that the east cow is not stopped previously. (Technically we need to check north cow too, but we don't need to because we break out of the loop once a north cow stops.)
+        // we need to check that the east cow is not stopped previously.
+        // (Technically we need to check north cow too, but we don't need to 
+        // because we break out of the loop once a north cow stops.)
         if (Ndist < Edist && stop[Ecow[2]] == -1) {
           stop[Ecow[2]] = Edist;
         }
         else if (Edist < Ndist && stop[Ecow[2]] == -1) {
           stop[Ncow[2]] = Ndist;
           break;
-          // once we know that this north cow stops, we can move on to the next one, i.e. skip all of the rest of east cows.
+          // once we know that this north cow stops, we can move on to the next one, 
+          // i.e. skip all of the rest of east cows.
         }
       } 
     }
   }
 
-  // output the final value; if the value is still -1, or the default value, it goes infinitely.
+  // output the final value; if the value is still -1, 
+  // or the default value, it goes infinitely.
   for (int i = 0; i < N; i++) {
     if (stop[i] == -1) {
       cout << "Infinity\n";
@@ -96,7 +104,7 @@ int main() {
   }
 
   return 0;
-}
+} 
 ```
 
 </CPPSection>
