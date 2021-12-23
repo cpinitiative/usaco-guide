@@ -29,7 +29,6 @@ int main() {
 	cin >> n >> k;
 
 	vector<int> groups(n + 1);
-
 	for (int i = 1; i <= n; i++) {
 		cin >> groups[i];
 	}
@@ -37,8 +36,8 @@ int main() {
 	// dp[i][j] = min sum of net sizes after catching first i snakes with j resizings
 	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
 
-	int largest_group = -1, spaceused = 0;
-
+	int largest_group = -1;
+	int space_used = 0;
 	for (int i = 1; i <= n; i++) {
 		largest_group = max(largest_group, groups[i]);
 		
@@ -57,11 +56,9 @@ int main() {
 				cur = max(cur, groups[c]);
 			}
 		}
-
-		spaceused += groups[i];
+		space_used += groups[i];
 	}
-
-	cout << dp[n][k] - spaceused << "\n";
+	cout << dp[n][k] - space_used << "\n";
 }
 ```
 </CPPSection>
