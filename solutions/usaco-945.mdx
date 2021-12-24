@@ -33,7 +33,10 @@ int main() {
 		cin >> groups[i];
 	}
 
-	// dp[i][j] = the min sum of net sizes after catching first i snakes with j resizings
+	/*
+	 * dp[i][j] = the min sum of net sizes after 
+	 * catching first i snakes with j resizings
+	 */
 	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
 
 	int largest_group = -1;
@@ -51,7 +54,10 @@ int main() {
 			dp[i][j] = INT32_MAX;
 			int net_size = groups[i];
 			for (int c = i - 1; c >= 0; c--) {
-				// consider the case where we switch after collecting the first c groups
+				/*
+				 * consider the case where we switch
+				 * after collecting the first c groups
+				 */
 				dp[i][j] = min(dp[i][j], dp[c][j - 1] + net_size * (i - c));
 				net_size = max(net_size , groups[c]);
 			}
