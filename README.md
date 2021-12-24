@@ -45,6 +45,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Qi Wang (Since June 2021)
 - Dong Liu (Since June 2021)
 - Neo Wang (Since Aug 2021)
+- Kevin Sheng (Since Dec 2021)
 
 ### Former Core Team
 
@@ -54,10 +55,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 
 ### Current Content Authors
 
-- Jeffrey Meng (Since Oct 2020)
 - Jesse Choe (Since Feb 2021)
-- Kevin Sheng (Since Apr 2021)
-- Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
 - Nathan Gong (Since Apr 2021)
 - Timothy Gao (Since May 2021)
@@ -78,6 +76,8 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Mrinall Umasudhan
 - Andrew Cheng
 - Zhixin Wang
+- Jeffrey Meng
+- Ananth Kashyap
 
 ## Tech Stack
 

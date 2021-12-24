@@ -139,6 +139,14 @@ export const Authors: Author[] = [
     email: "neowangatx@gmail.com",
   },
   {
+    photo: 'kevin',
+    blurb: 'Kevin Sheng is a junior who likes coding & solving random problems.',
+    name: 'Kevin Sheng',
+    title: "Content Manager",
+    github: 'sanspapyrus683',
+    codeforces: 'sanspapyrus683',
+  },
+  {
     photo: 'nathanc',
     name: 'Nathan Chen',
     title: 'Former Core Team',
