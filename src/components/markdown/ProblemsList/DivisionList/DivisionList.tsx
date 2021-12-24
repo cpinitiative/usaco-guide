@@ -13,7 +13,7 @@ import idToSol from './id_to_sol';
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
   const res = [];
-  for (let i = 2016; i <= 2021; ++i) {
+  for (let i = 2016; i <= 2022; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
   return res;
