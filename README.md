@@ -45,7 +45,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Qi Wang (Since June 2021)
 - Dong Liu (Since June 2021)
 - Neo Wang (Since Aug 2021)
-- Kevin Sheng (Since Dec 2021)
+- Kevin Sheng (Since Oct 2021)
 
 ### Former Core Team
 
