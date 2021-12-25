@@ -55,7 +55,8 @@ int main() {
 		return left[1] < right[1];
 	});
 
-	/* we sort them by x/y value because we know that, for a single cow, 
+	/* 
+	 * we sort them by x/y value because we know that, for a single cow, 
 	 * it reaches a lower x/y value and then a higher one. 
 	 * Thus, it is more we would not miss any earlier collisions
 	 * if we iterate from lower to a higher value. 
@@ -70,33 +71,33 @@ int main() {
 
 	for (auto n_cow : n_cows) {
     		for (auto e_cow : e_cows) {
-      			/* make sure that the north cow's x coord is less than the east cow's x coord,
+      			/*
+			 * make sure that the north cow's x coord is less than the east cow's x coord,
       			 * and the north cow's y coord is less than an east cow's y coord.
 			 */
       			if (n_cow[0] > e_cow[0] && n_cow[1] < e_cow[1]) {
 				int n_dist = e_cow[1] - n_cow[1];
         			int e_dist = n_cow[0] - e_cow[0];
 
-        			/* we need to check that the east cow is not stopped previously.
+        			/*
+				 * we need to check that the east cow is not stopped previously.
         			 * (Technically we need to check north cow too, but we don't need to 
         			 * because we break out of the loop once a north cow stops.)
 				 */
         			if (n_dist < e_dist && stop[e_cow[2]] == -1) {
           				stop[e_cow[2]] = e_dist;
         			} else if (e_dist < n_dist && stop[e_cow[2]] == -1) {
-          				stop[n_cow[2]] = n_dist;
-          				break;
-          				/* once we know that this north cow stops, we can move on to the next one, 
+					/*
+					 * once we know that this north cow stops, we can move on to the next one, 
           				 * i.e. skip all of the rest of east cows.
 					 */
+          				stop[n_cow[2]] = n_dist;
+          				break;
         			}
 			} 
 		}
 	}
 
-	/* output the final value; if the value is still -1, 
-  	 * or the default value, it goes infinitely.
-	 */
   	for (int i = 0; i < N; i++) {
     		if (stop[i] == -1) {
       			cout << "Infinity" << '\n';
