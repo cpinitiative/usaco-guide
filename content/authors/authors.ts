@@ -10,6 +10,7 @@ export type Author = {
   website?: string;
   codeforces?: string;
   youtube?: string;
+  reddit?: string;
 };
 
 export const Authors: Author[] = [
@@ -145,6 +146,7 @@ export const Authors: Author[] = [
     title: "Content Manager",
     github: 'sanspapyrus683',
     codeforces: 'sanspapyrus683',
+    reddit: 'sanspapyrus683',
   },
   {
     photo: 'nathanc',
