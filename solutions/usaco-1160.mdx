@@ -1,0 +1,153 @@
+---
+id: usaco-1160
+source: USACO Silver 2021 December
+title: Convoluted Intervals
+author: Aadit Ambadkar
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_prob3_silver_dec21.html)
+
+## Alternate Solution
+An alternate solution to this problem is to use complementary counting. Consider a given value of $k$. 
+Count the number of pairs of intervals $i$ and $j$ which satisfy $a_i + a_j > k$ or $b_i + b_j < k$. It is clear that 
+any pair that satisfies $a_i + a_j > k$ cannot satisfy $b_i + b_j < k$, and vice versa. So, these two are 
+disjoint, and we can simply count the number of pairs which satisfy $a_i + a_j > k$ and add that to the 
+number of pairs which satisfy $b_i + b_j < k$. We subtract $n$ from this sum, and that gives the answer for
+that specific value of $k$. This solution is presented below.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+// Created by Aadit Ambadkar
+	
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main() {
+	int n, m; cin >> n >> m;
+	vector<pair<int, int>> v;
+	for (int i = 0; i < n; i++) {
+		int a, b; cin >> a >> b;
+		v.push_back({a, b});
+	}
+	for (int k = 0; k <= 2 * m; k++) {
+		ll acount = 0;
+		ll bcount = 0;
+		for (auto p : v) {
+			for (auto q : v) {
+				if (p.first + q.first > k) acount++;
+				else if (p.second + q.second < k) bcount++;
+			}
+		}
+		ll total = (ll) n * (ll) n;
+		cout << total - acount - bcount << "\n";
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+
+As the aboves stands, the solution runs in $\mathcal{O}(M\cdot N^2)$. This is enough to pass the first two
+test cases. To pass the first five, we make some optimizations. Create two arrays, `asum` and `bsum`.
+These arrays will store the number of pairs of intervals which sum to a given value, that is:
+
+`asum[x] = # of pairs i and j which satisfy a_i + a_j = x`
+
+`bsum[x] = # of pairs i and j which satisfy b_i + b_j = x`
+
+We can iterate over all possible pairs, and update `asum` and `bsum` respectively.
+Then, we can iterate over each possible $k$, and then over `asum` and `bsum` to find the answer for that $k$.
+This solution is presented below:
+
+<LanguageSection>
+<CPPSection>
+```cpp
+// Created by Aadit Ambadkar
+	
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main() {
+    int n, m; cin >> n >> m;
+    vector<pair<int, int>> v;
+    for (int i = 0; i < n; i++) {
+        int a, b; cin >> a >> b;
+        v.push_back({a, b});
+    }
+    vector<ll> asum(2*m+1, 0);
+    vector<ll> bsum(2*m+1, 0);
+	for (auto p : v) {
+		for (auto q : v) {
+			asum[p.first + q.first]++;
+			bsum[p.second + q.second]++;
+		}
+	}
+    for (int i = 0; i <= 2*m; i++) {
+        ll ans = (ll)n*(ll)n;
+        for (int j = 0; j < i; j++) {
+            ans-=bsum[j];
+        }
+        for (int j = i+1; j <= 2*m; j++) {
+            ans-=asum[j];
+        }
+        cout << ans << "\n";
+    }
+}
+```
+</CPPSection>
+</LanguageSection>
+	
+As the above stands, the solution runs in $\mathcal{O}(N^2 + M^2)$. This is enough to pass the first five testcases.
+To pass all the testcases, one additional optimization needs to be done. We wish to get rid of the $N^2$ component.
+(Note that the $M^2$ component is fine; it runs in the time limit since $M \le 1000$).
+	
+One way to get rid of the $N^2$ component is to keep track of the number of intervals which have a given `a`-value or
+a given `b`-value. We will keep track of this in arrays `A` and `B`. Then, for each pair of possible values of `a`: `i` or `j` 
+(that is, `i` is a `a`-value of an interval, and same for `j`) we get:
+`asum[i + j] += A[i] * A[j]`
+This is because we can have `A[i]` possible intervals with `a`-value `i` and `A[j]` possible intervals with `a`-value `j`.
+This removes the $N^2$ component.
+<LanguageSection>
+<CPPSection>
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main() {
+    int n, m; cin >> n >> m;
+    vector<ll> A(m+1, 0);
+    vector<ll> B(m+1, 0);
+    for (int i = 0; i < n; i++) {
+        int a, b; cin >> a >> b;
+        A[a]++;
+        B[b]++;
+    }
+    vector<ll> asum(2*m+1, 0);
+    vector<ll> bsum(2*m+1, 0);
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= m; j++) {
+            asum[i+j]+=A[i]*A[j];
+        }
+    }
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= m; j++) {
+            bsum[i+j]+=B[i]*B[j];
+        }
+    }
+    for (int i = 0; i <= 2*m; i++) {
+        ll ans = (ll)n*(ll)n;
+        for (int j = 0; j < i; j++) {
+            ans-=bsum[j];
+        }
+        for (int j = i+1; j <= 2*m; j++) {
+            ans-=asum[j];
+        }
+        cout << ans << "\n";
+    }
+}
+```
+</CPPSection>
+</LanguageSection>	
