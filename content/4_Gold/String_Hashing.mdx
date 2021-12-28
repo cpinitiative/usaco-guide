@@ -133,19 +133,20 @@ class HashedString:
 	pow = [1]
 
 	def __init__(self, s: str):
-		while len(self.pow) < len(s):
-			self.pow.append((self.pow[-1] * self.P) % self.M)
+		while len(self._pow) < len(s):
+			self._pow.append((self._pow[-1] * self.P) % self.M)
 
 		# p_hash[i] is the hash of the first i characters of the given string
-		self.p_hash = [0 for _ in range(len(s) + 1)]
+		self._p_hash = [0 for _ in range(len(s) + 1)]
 		for i in range(len(s)):
-			self.p_hash[i + 1] = (
-				((self.p_hash[i] * self.P) % self.M + ord(s[i]))
+			self._p_hash[i + 1] = (
+				((self._p_hash[i] * self.P) % self.M + ord(s[i]))
 			) % self.M
 
 	def get_hash(self, start: int, end: int) -> int:
 		raw_val = (
-			self.p_hash[end + 1] - (self.p_hash[start] * self.pow[end - start + 1])
+			self._p_hash[end + 1]
+			- (self._p_hash[start] * self._pow[end - start + 1])
 		)
 		return raw_val % self.M
 ```
