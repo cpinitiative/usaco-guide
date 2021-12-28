@@ -110,41 +110,41 @@ This removes the $N^2$ component.
 <LanguageSection>
 <CPPSection>
 ```cpp
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 
 int main() {
-    int n, m; cin >> n >> m;
-    vector<ll> A(m+1, 0);
-    vector<ll> B(m+1, 0);
-    for (int i = 0; i < n; i++) {
-        int a, b; cin >> a >> b;
-        A[a]++;
-        B[b]++;
-    }
-    vector<ll> asum(2*m+1, 0);
-    vector<ll> bsum(2*m+1, 0);
-    for (int i = 0; i <= m; i++) {
-        for (int j = 0; j <= m; j++) {
-            asum[i+j]+=A[i]*A[j];
-        }
-    }
-    for (int i = 0; i <= m; i++) {
-        for (int j = 0; j <= m; j++) {
-            bsum[i+j]+=B[i]*B[j];
-        }
-    }
-    for (int i = 0; i <= 2*m; i++) {
-        ll ans = (ll)n*(ll)n;
-        for (int j = 0; j < i; j++) {
-            ans-=bsum[j];
-        }
-        for (int j = i+1; j <= 2*m; j++) {
-            ans-=asum[j];
-        }
-        cout << ans << "\n";
-    }
+	int n, m; cin >> n >> m;
+	vector<ll> A(m+1, 0);
+	vector<ll> B(m+1, 0);
+	for (int i = 0; i < n; i++) {
+		int a, b; cin >> a >> b;
+		A[a]++;
+		B[b]++;
+	}
+	vector<ll> asum(2*m+1, 0);
+	vector<ll> bsum(2*m+1, 0);
+	for (int i = 0; i <= m; i++) {
+		for (int j = 0; j <= m; j++) {
+			asum[i+j]+=A[i]*A[j];
+		}
+	}
+	for (int i = 0; i <= m; i++) {
+		for (int j = 0; j <= m; j++) {
+			bsum[i+j]+=B[i]*B[j];
+		}
+	}
+	for (int i = 0; i <= 2*m; i++) {
+		ll ans = (ll)n*(ll)n;
+		for (int j = 0; j < i; j++) {
+			ans-=bsum[j];
+		}
+		for (int j = i+1; j <= 2*m; j++) {
+			ans-=asum[j];
+		}
+		cout << ans << "\n";
+	}
 }
 ```
 </CPPSection>
