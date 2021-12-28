@@ -20,9 +20,14 @@ The larger the denominator, the smaller the result will be. We also want to mini
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Edge {
+	int v, c, fl;
+};
+
 int n, m;
 const int PRECISION = 1e6;
-vector<vector<array<int, 3>>> adj;
+vector<vector<Edge>> adj;
+
 
 int dijkstra(int minf) {
 	priority_queue<pair<int, int>> pq;
@@ -36,26 +41,27 @@ int dijkstra(int minf) {
 		pair<int, int> nxt = pq.top();
 		pq.pop();
 
-		if (nxt.second != cost[nxt.first]) continue;
-		if (visited[nxt.first]) continue;
-
-		for (array<int, 3> u : adj[nxt.first]) {
-			int ct = u[1] + nxt.second;
+		if (nxt.second != cost[nxt.first] || visited[nxt.first]) {
+			continue;
+		}
+		
+		for (Edge u : adj[nxt.first]) {
+			int ct = u.c + nxt.second;
 
 			/*
 			 * if the path has a flow value greater 
 			 * than our minimum, we can't consider it
 			 */
-			if (u[2] < minf || visited[u[0]]) continue;
+			if (u.fl < minf || visited[u.v]) continue;
 			
 			// path more optimal
-			if (cost[u[0]] > ct) {
-				cost[u[0]] = ct;
-				pq.push({u[0], ct});
+			if (cost[u.v] > ct) {
+				cost[u.v] = ct;
+				pq.push({u.v, ct});
 			}
 		}
 	}
-	return (cost[n - 1] == INT32_MAX ? -1 : cost[n - 1]);
+	return cost[n - 1] == INT32_MAX ? -1 : cost[n - 1];
 }
 
 int main() {
@@ -82,7 +88,10 @@ int main() {
 		int cur = dijkstra(flow);
 
 		// can't complete this path
-		if (cur == -1) continue;
+		if (cur == -1) {
+			continue;
+		}
+
 		double ratio = double(flow) / double(cur);
 
 		ans = max(ans, (int)(ratio * PRECISION));
