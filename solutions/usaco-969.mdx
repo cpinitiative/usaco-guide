@@ -27,10 +27,10 @@ int dijkstra(int minf) {
 	priority_queue<pair<int, int>> pq;
 	vector<int> cost(n, INT32_MAX);
 	vector<bool> visited(n, false);
-
+	
 	cost[0] = 0;
 	pq.push({0, 0});
-
+	
 	while (!pq.empty()) {
 		pair<int, int> nxt = pq.top();
 		pq.pop();
@@ -54,7 +54,6 @@ int dijkstra(int minf) {
 			}
 		}
 	}
-
 	return (cost[n - 1] == INT32_MAX ? -1 : cost[n - 1]);
 }
 
@@ -66,7 +65,6 @@ int main() {
 
 	adj.resize(n);
 	vector<int> flows;
-
 	for (int i = 0; i < m; i++) {
 		int u, v, c, fl;
 		cin >> u >> v >> c >> fl;
@@ -78,7 +76,6 @@ int main() {
 	}
 
 	int ans = -1;
-
 	// we only have to consider the flow values given to us
 	for (int flow : flows) {
 		int cur = dijkstra(flow);
