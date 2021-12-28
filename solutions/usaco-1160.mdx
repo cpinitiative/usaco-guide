@@ -65,30 +65,30 @@ using namespace std;
 typedef long long ll;
 
 int main() {
-    int n, m; cin >> n >> m;
-    vector<pair<int, int>> v;
-    for (int i = 0; i < n; i++) {
-        int a, b; cin >> a >> b;
-        v.push_back({a, b});
-    }
-    vector<ll> asum(2*m+1, 0);
-    vector<ll> bsum(2*m+1, 0);
+	int n, m; cin >> n >> m;
+	vector<pair<int, int>> v;
+	for (int i = 0; i < n; i++) {
+		int a, b; cin >> a >> b;
+		v.push_back({a, b});
+	}
+	vector<ll> asum(2*m+1, 0);
+	vector<ll> bsum(2*m+1, 0);
 	for (auto p : v) {
 		for (auto q : v) {
 			asum[p.first + q.first]++;
 			bsum[p.second + q.second]++;
 		}
 	}
-    for (int i = 0; i <= 2*m; i++) {
-        ll ans = (ll)n*(ll)n;
-        for (int j = 0; j < i; j++) {
-            ans-=bsum[j];
-        }
-        for (int j = i+1; j <= 2*m; j++) {
-            ans-=asum[j];
-        }
-        cout << ans << "\n";
-    }
+	for (int i = 0; i <= 2*m; i++) {
+		ll ans = (ll)n*(ll)n;
+		for (int j = 0; j < i; j++) {
+			ans-=bsum[j];
+		}
+		for (int j = i+1; j <= 2*m; j++) {
+			ans-=asum[j];
+		}
+		cout << ans << "\n";
+	}
 }
 ```
 </CPPSection>
