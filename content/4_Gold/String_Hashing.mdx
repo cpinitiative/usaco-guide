@@ -2,7 +2,7 @@
 id: string-hashing
 title: 'String Hashing'
 author: Benjamin Qi, Andi Qu
-contributors: Andrew Wang
+contributors: Andrew Wang, Kevin Sheng
 description:
   'Quickly test equality of substrings with a small probability of failure.'
 frequency: 1
@@ -42,23 +42,42 @@ inverses.
 <CPPSection>
 
 ```cpp
-const ll M = 1e9 + 9, P = 9973; // Change M and P if you want to
+#include <vector>
+#include <string>
 
-ll pw[100001]; // Stores the powers of P modulo M
+using namespace std;
 
-int n;
-string s;
-ll hsh[100001];
+class HashedString {
+    private:
+        // change M and P if you want
+        static const long long M = 1e9 + 9;
+        static const long long P = 9973;
 
-void calc_hashes() {
-	hsh[0] = 1;
-	for (int i = 0; i < n; i++)
-		hsh[i + 1] = ((hsh[i] * P) % M + s[i]) % M;
-}
+        // pow[i] contains P^i % M
+        static vector<long long> pow;
 
-ll get_hash(int a, int b) { // Endpoints of the substring
-	return (hsh[b + 1] - (hsh[a] * pw[b - a + 1]) % M + M) % M;
-}
+        // p_hash[i] is the hash of the first i characters of the given string
+        vector<long long> p_hash;
+    public:
+        HashedString(const string& s) : p_hash(s.size() + 1) {
+            while (pow.size() < s.size()) {
+                pow.push_back((pow.back() * P) % M);
+            }
+
+            p_hash[0] = 0;
+            for (int i = 0; i < s.size(); i++) {
+                p_hash[i + 1] = ((p_hash[i] * P) % M + s[i]) % M;
+            }
+        }
+
+        long long getHash(int start, int end) {
+            long long raw_val = (
+                p_hash[end + 1] - (p_hash[start] * pow[end - start + 1])
+            );
+            return (raw_val % M + M) % M;
+        }
+};
+vector<long long> HashedString::pow = {1};
 ```
 
 </CPPSection>
@@ -66,27 +85,72 @@ ll get_hash(int a, int b) { // Endpoints of the substring
 <JavaSection>
 
 ```java
-public static final long M = (long)1e9 + 9, P = 9973; // Change M and P if you want to
+import java.util.*;
 
-public static long pw[] = new long[100001]; // Stores the powers of P modulo M
+public class HashedString {
+	// Change M and P if you want
+	public static final long M = (long) 1e9 + 9;
+	public static final long P = 9973;
 
-public static int n;
-public static String s;
-public static long hsh[] = new long[100001];
+	// pow[i] contains P^i % M
+	private static ArrayList<Long> pow = new ArrayList<>();
 
-public static void calc_hashes() {
-	hsh[0] = 1;
-	for (int i = 0; i < n; i++)
-		hsh[i + 1] = ((hsh[i] * P) % M + s.charAt(i)) % M;
-}
+	// pHash[i] is the hash of the first i characters of the given string
+	private long[] pHash;
 
-public static long get_hash(int a, int b) { // Endpoints of the substring
-	return (hsh[b + 1] - (hsh[a] * pw[b - a + 1]) % M + M) % M;
+	public HashedString(String s) {
+		if (pow.isEmpty()) {
+			pow.add(1L);
+		}
+		while (pow.size() < s.length()) {
+			pow.add((pow.get(pow.size() - 1) * P) % M);
+		}
+		
+		pHash = new long[s.length() + 1];
+		pHash[0] = 0;
+		for (int i = 0; i < s.length(); i++) {
+			pHash[i + 1] = ((pHash[i] * P) % M + s.charAt(i)) % M;
+		}
+	}
+
+	public long getHash(int start, int end) {
+		long rawVal = pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
+		return (rawVal % M + M) % M;
+	}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+class HashedString:
+	# Change M and P if you want
+	M = int(1e9) + 9
+	P = 9973
+
+	# pow[i] contains P^i % M
+	pow = [1]
+
+	def __init__(self, s: str):
+		while len(self.pow) < len(s):
+			self.pow.append((self.pow[-1] * self.P) % self.M)
+
+		# p_hash[i] is the hash of the first i characters of the given string
+		self.p_hash = [0 for _ in range(len(s) + 1)]
+		for i in range(len(s)):
+			self.p_hash[i + 1] = (
+				((self.p_hash[i] * self.P) % self.M + ord(s[i]))
+			) % self.M
+
+	def get_hash(self, start: int, end: int) -> int:
+		raw_val = (
+			self.p_hash[end + 1] - (self.p_hash[start] * self.pow[end - start + 1])
+		)
+		return raw_val % self.M
+```
+
+</PySection>
 </LanguageSection>
 
 This implementation calculates
