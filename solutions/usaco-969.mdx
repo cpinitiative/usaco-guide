@@ -2,15 +2,98 @@
 id: usaco-969
 source: USACO Gold 2019 December
 title: Milk Pumping
-author: Qi Wang
+author: Qi Wang, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_pump_gold_dec19.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_pump_gold_dec19.html)
 
-<LanguageSection>
-<JavaSection>
+Since the larger the denominator, the smaller the result will be, we want to minimize the cost of the path. This hints at a shortest-path problem. Due to the low number of junction points, we can fix the minimum flow rate and search for the lowest cost path we could take.
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(E \log V + V)$
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+vector<vector<array<int, 3>>> adj;
+
+int dijkstra(int minf) {
+	priority_queue<pair<int, int>> pq;
+	vector<int> cost(n, INT32_MAX);
+	vector<bool> visited(n, false);
+
+	cost[0] = 0;
+	pq.push({0, 0});
+
+	while (!pq.empty()) {
+		pair<int, int> nxt = pq.top();
+		pq.pop();
+
+		if (nxt.second != cost[nxt.first]) continue;
+		if (visited[nxt.first]) continue;
+
+		for (array<int, 3> u : adj[nxt.first]) {
+			int ct = u[1] + nxt.second;
+
+			/*
+			 * if the path has a flow value greater 
+			 * than our minimum, we can't consider it
+			 */
+			if (u[2] < minf || visited[u[0]]) continue;
+			
+			// path more optimal
+			if (cost[u[0]] > ct) {
+				cost[u[0]] = ct;
+				pq.push({u[0], ct});
+			}
+		}
+	}
+
+	return (cost[n - 1] == INT32_MAX ? -1 : cost[n - 1]);
+}
+
+int main() {
+	freopen("pump.in", "r", stdin);
+	freopen("pump.out", "w", stdout);
+
+	cin >> n >> m;
+
+	adj.resize(n);
+	vector<int> flows;
+
+	for (int i = 0; i < m; i++) {
+		int u, v, c, fl;
+		cin >> u >> v >> c >> fl;
+
+		flows.push_back(fl);
+
+		adj[--u].push_back({--v, c, fl});
+		adj[v].push_back({u, c, fl});
+	}
+
+	int ans = -1;
+
+	// we only have to consider the flow values given to us
+	for (int flow : flows) {
+		int cur = dijkstra(flow);
+
+		// can't complete this path
+		if (cur == -1) continue;
+		double ratio = double(flow) / double(cur);
+
+		ans = max(ans, (int)(ratio * 1e6));
+	}
+	cout << ans << '\n';
+}
+```
+</CPPSection>
+<JavaSection>
 
 ```java
 //Created by Qi Wang
@@ -183,6 +266,5 @@ public class pump{
 	}
 }
 ```
-
 </JavaSection>
 </LanguageSection>
