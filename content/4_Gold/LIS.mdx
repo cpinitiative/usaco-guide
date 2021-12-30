@@ -272,54 +272,54 @@ using namespace std;
 
 //BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree {
-    private:
-        int len;
-        vector<int> segtree;
-    public:
-        MaxSegTree(int len) : len(len), segtree(2 * len) { }
+	private:
+		int len;
+		vector<int> segtree;
+	public:
+		MaxSegTree(int len) : len(len), segtree(2 * len) { }
 
-        void set(int ind, int val) {
-            for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
-                segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
-            }
-        }
+		void set(int ind, int val) {
+			for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+				segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
+			}
+		}
 
 		// maximum of the range [from, to)
-        int range_max(int from, int to) {
-            int max_ = INT32_MIN;
-            for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
-                if ((from & 1) != 0) {
-                    max_ = max(max_, segtree[from++]);
-                }
-                if ((to & 1) != 0) {
-                    max_ = max(max_, segtree[--to]);
-                }
-            }
-            return max_;
-        }
+		int range_max(int from, int to) {
+			int max_ = INT32_MIN;
+			for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+				if ((from & 1) != 0) {
+					max_ = max(max_, segtree[from++]);
+				}
+				if ((to & 1) != 0) {
+					max_ = max(max_, segtree[--to]);
+				}
+			}
+			return max_;
+		}
 };
 //EndCodeSnip
 
 int find_lis(vector<int> a) {
-    // apply coordinate compression to all elements of the array
-    vector<int> sorted(a);
-    sort(sorted.begin(), sorted.end());
-    int at = 0;
-    map<int, int> coord_comp;
-    for (int i : sorted) {
-        if (!coord_comp.count(i)) {
-            coord_comp[i] = at++;
-        }
-    }
-    // cmp(i) gives the compressed version of index i
-    auto cmp = [&] (int i) -> int { return coord_comp[a[i]]; };
+	// apply coordinate compression to all elements of the array
+	vector<int> sorted(a);
+	sort(sorted.begin(), sorted.end());
+	int at = 0;
+	map<int, int> coord_comp;
+	for (int i : sorted) {
+		if (!coord_comp.count(i)) {
+			coord_comp[i] = at++;
+		}
+	}
+	// cmp(i) gives the compressed version of index i
+	auto cmp = [&] (int i) -> int { return coord_comp[a[i]]; };
 
-    MaxSegTree dp(coord_comp.size());
-    dp.set(cmp(0), 1);
-    for (int i = 1; i < a.size(); i++) {
-        dp.set(cmp(i), dp.range_max(0, cmp(i)) + 1);
-    }
-    return dp.range_max(0, coord_comp.size());
+	MaxSegTree dp(coord_comp.size());
+	dp.set(cmp(0), 1);
+	for (int i = 1; i < a.size(); i++) {
+		dp.set(cmp(i), dp.range_max(0, cmp(i)) + 1);
+	}
+	return dp.range_max(0, coord_comp.size());
 }
 ```
 
@@ -330,56 +330,56 @@ int find_lis(vector<int> a) {
 import java.util.*;
 
 public class FindLis {
-    public static int findLis(int[] a) {
-        int[] sorted = a.clone();
-        Arrays.sort(sorted);
-        HashMap<Integer, Integer> coordComp = new HashMap<>();
-        int at = 0;
-        for (int i : sorted) {
-            if (!coordComp.containsKey(i)) {
-                coordComp.put(i, at++);
-            }
-        }
+	public static int findLis(int[] a) {
+		int[] sorted = a.clone();
+		Arrays.sort(sorted);
+		HashMap<Integer, Integer> coordComp = new HashMap<>();
+		int at = 0;
+		for (int i : sorted) {
+			if (!coordComp.containsKey(i)) {
+				coordComp.put(i, at++);
+			}
+		}
 
-        MaxSegTree dp = new MaxSegTree(coordComp.size());
-        dp.set(coordComp.get(a[0]), 1);
-        for (int i = 1; i < a.length; i++) {
-            int cmp = coordComp.get(a[i]);
-            dp.set(cmp, dp.range_max(0, cmp) + 1);
-        }
-        return dp.range_max(0, coordComp.size());
-    }
+		MaxSegTree dp = new MaxSegTree(coordComp.size());
+		dp.set(coordComp.get(a[0]), 1);
+		for (int i = 1; i < a.length; i++) {
+			int cmp = coordComp.get(a[i]);
+			dp.set(cmp, dp.range_max(0, cmp) + 1);
+		}
+		return dp.range_max(0, coordComp.size());
+	}
 }
 
 //BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree {
-    int len;
-    int[] segtree;
+	int len;
+	int[] segtree;
 
-    public MaxSegTree(int len) {
-        this.len = len;
-        segtree = new int[2 * len];
-    }
+	public MaxSegTree(int len) {
+		this.len = len;
+		segtree = new int[2 * len];
+	}
 
-    void set(int ind, int val) {
-        for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
-            segtree[ind >> 1] = Math.max(segtree[ind], segtree[ind ^ 1]);
-        }
-    }
+	void set(int ind, int val) {
+		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind >> 1] = Math.max(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
 
-    // maximum of the range [from, to)
-    int range_max(int from, int to) {
-        int max_ = Integer.MIN_VALUE;
-        for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
-            if ((from & 1) != 0) {
-                max_ = Math.max(max_, segtree[from++]);
-            }
-            if ((to & 1) != 0) {
-                max_ = Math.max(max_, segtree[--to]);
-            }
-        }
-        return max_;
-    }
+	// maximum of the range [from, to)
+	int range_max(int from, int to) {
+		int max_ = Integer.MIN_VALUE;
+		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+			if ((from & 1) != 0) {
+				max_ = Math.max(max_, segtree[from++]);
+			}
+			if ((to & 1) != 0) {
+				max_ = Math.max(max_, segtree[--to]);
+			}
+		}
+		return max_;
+	}
 }
 //EndCodeSnip
 ```
@@ -393,51 +393,52 @@ from typing import List
 
 //BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree:
-    def __init__(self, len_: int):
-        self.len = len_
-        self.segtree = [0] * (2 * len_)
-    
-    def set(self, ind: int, val: int) -> None:
-        ind += self.len
-        self.segtree[ind] = val
-        while ind > 1:
-            self.segtree[ind >> 1] = max(self.segtree[ind], self.segtree[ind ^ 1])
-            ind >>= 1
+	def __init__(self, len_: int):
+		self.len = len_
+		self.segtree = [0] * (2 * len_)
+	
+	def set(self, ind: int, val: int) -> None:
+		ind += self.len
+		self.segtree[ind] = val
+		while ind > 1:
+			self.segtree[ind >> 1] = max(self.segtree[ind], self.segtree[ind ^ 1])
+			ind >>= 1
 
-    def range_max(self, start: int, end: int) -> int:
-        max_ = -float('inf')
-        start += self.len
-        end += self.len
-        while start < end:
-            if (start & 1) != 0:
-                max_ = max(max_, self.segtree[start])
-                start += 1
-            if (end & 1) != 0:
-                end -= 1
-                max_ = max(max_, self.segtree[end])
+	# maximum of the range [from, to)
+	def range_max(self, start: int, end: int) -> int:
+		max_ = -float('inf')
+		start += self.len
+		end += self.len
+		while start < end:
+			if (start & 1) != 0:
+				max_ = max(max_, self.segtree[start])
+				start += 1
+			if (end & 1) != 0:
+				end -= 1
+				max_ = max(max_, self.segtree[end])
 
-            start >>= 1
-            end >>= 1
-        return max_
+			start >>= 1
+			end >>= 1
+		return max_
 //EndCodeSnip
 
 
 def find_lis(a: List[int]) -> int:
-    sorted_ = sorted(a)
-    coord_comp = {}
-    at = 0
-    for i in sorted_:
-        if i not in coord_comp:
-            coord_comp[i] = at
-            at += 1
-    # cmp(i) gives the compressed version of index i
-    cmp = lambda i: coord_comp[a[i]]
+	sorted_ = sorted(a)
+	coord_comp = {}
+	at = 0
+	for i in sorted_:
+		if i not in coord_comp:
+			coord_comp[i] = at
+			at += 1
+	# cmp(i) gives the compressed version of index i
+	cmp = lambda i: coord_comp[a[i]]
 
-    dp = MaxSegTree(len(coord_comp))
-    dp.set(cmp(0), 1)
-    for i in range(1, len(a)):
-        dp.set(cmp(i), dp.range_max(0, cmp(i)) + 1)
-    return dp.range_max(0, len(coord_comp))
+	dp = MaxSegTree(len(coord_comp))
+	dp.set(cmp(0), 1)
+	for i in range(1, len(a)):
+		dp.set(cmp(i), dp.range_max(0, cmp(i)) + 1)
+	return dp.range_max(0, len(coord_comp))
 ```
 
 </PySection>
