@@ -2,7 +2,7 @@
 id: usaco-831
 source: USACO Bronze 2018 Open
 title: Team Tic Tac Toe
-author: Jesse Choe, Kevin Sheng, Benjamin Qi, Brad Ma
+author: Jesse Choe, Kevin Sheng, Benjamin Qi, Brad Ma, Qian Qian
 ---
 
 ## Solution 1
@@ -121,6 +121,7 @@ public class TeamTicTacToe {
 </JavaSection>
 	
 </LanguageSection>
+
 ## Solution 2 - Using Sets
 
 <LanguageSection>
@@ -170,4 +171,67 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TeamTicTacToe {
+	private static char[][] gameboard = new char[3][3];
+	private static TreeSet<Character> singleCow = new TreeSet<>();
+	private static TreeSet<String> teams = new TreeSet<>();
+
+	private static void check(char first, char second, char third) {
+		// Different Cows in a row/column/diagonal
+        	TreeSet<Character> contained = new TreeSet<>();
+        	contained.add(first);
+        	contained.add(second);
+        	contained.add(third);
+        	if (contained.size() == 1) {
+			// One 
+			singleCow.add(contained.first());
+		} else if (contained.size() == 2) {
+			// Two
+			teams.add(contained.first() + "" + contained.last());
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("tttt");
+
+		for (int i = 0; i < gameboard.length; i++) {
+			String line = io.next();
+			gameboard[i][0] = line.charAt(0);
+			gameboard[i][1] = line.charAt(1);
+			gameboard[i][2] = line.charAt(2);
+		}
+
+		// Check rows
+		for (int i = 0; i < gameboard.length; i++) {
+			check(gameboard[i][0], gameboard[i][1], gameboard[i][2]);
+		}
+
+		// Check columns
+		for (int i = 0; i < gameboard.length; i++) {
+			check(gameboard[0][i], gameboard[1][i], gameboard[2][i]);
+		}
+
+		// Check diagonals
+		check(gameboard[0][0], gameboard[1][1], gameboard[2][2]);
+		check(gameboard[0][2], gameboard[1][1], gameboard[2][0]);
+
+		io.println(singleCow.size());
+		io.println(teams.size());
+
+		io.close();
+	}
+}
+
+//CodeSnip{Kattio}
+```
+
+</JavaSection>
+
 </LanguageSection>
