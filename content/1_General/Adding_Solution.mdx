@@ -140,10 +140,6 @@ Read our guidelines below before contributing code.
 
 ### General
 
-- In general, do not include unused code (e.g. "templates").
-  - There are some exceptions to this guideline (e.g. when using the `Kattio`
-    class for Java I/O). In this case, collapse it with a
-    [`CodeSnip`](/general/working-mdx#code-blocks-and-code-snippets).
 - Use _tabs_ rather than spaces to indent.
 
   <Info title="Pro Tip">
@@ -152,17 +148,37 @@ Read our guidelines below before contributing code.
   	pops up, and then search for "Convert Indentation to Tabs."
   </Info>
 
+- In general, do not include unused code (e.g. "templates").
+  - There are some exceptions to this guideline (e.g. when using the `Kattio`
+    class for Java I/O). In this case, collapse it with a
+    [`CodeSnip`](/general/working-mdx#code-blocks-and-code-snippets).
 - Lines should not exceed 80 characters. If you need to, split comments across
   multiple lines to follow this rule.
-- Add comments throughout your code to explain your logic. Feel free to
-  copy-paste the official USACO solution and improve it by adding more
-  descriptive variable names and helpful comments.
 - Use universally understandable variable names, especially for Bronze and
   Silver. Should be more descriptive than what you would normally use
   in-contest.
+- Add comments throughout your code to explain your logic. Feel free to
+  copy-paste the official USACO solution and improve it by adding more
+  descriptive variable names and helpful comments. Though keep in mind the
+  following guidelines from Google's
+  [C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Comments):
+
+  > But remember: while comments are very important, the best code is
+  > self-documenting. Giving sensible names to types and variables is much
+  > better than using obscure names that you must then explain through comments.
+
+  <br />
+
+  > In general the actual name of the variable should be descriptive enough to
+  > give a good idea of what the variable is used for.
+
+  <br />
+
+  > Self-describing code doesn't need a comment.
+
 - Be _consistent_ about formatting your code, unlike the following snippet. We
   don't care about which one you use (`a+b` or `a + b`), but pick one and stick
-  with it throughout your entire code!
+  with it throughout your entire code.
 
   ```py
   a,b = (0,1)
@@ -170,11 +186,37 @@ Read our guidelines below before contributing code.
   print(a + b)
   ```
 
+- Don't repeat yourself.
+  - [Rule Of Three](<https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)>)
+
 <LanguageSection>
 
 <CPPSection>
 
 ### C++
+
+- Do not use variable names that could conflict with `using namespace std`. For
+  example, don't name a `std::set` "set."
+- Do not use variable-length arrays as discussed
+  [here](/bronze/intro-ds?lang=cpp#dynamic-arrays); they are not part of the C++
+  standard.
+- Do not include code that doesn't do anything. In particular,
+  - Do not include `cout.tie(0)` as discussed
+    [here](/general/fast-io?lang=cpp#method-2---cintie0).
+  - Do not include [optimization pragmas](/adv/vectorization) unless you show
+    that they improve performance.
+- For Bronze through Gold in particular, do not use additional macros
+  (especially loop macros) beyond the ones listed below (see
+  [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
+
+  ```cpp
+  CodeSnip{CPP Short Template}
+
+  int main() {
+    setIO();
+
+  }
+  ```
 
 Optional reading:
 
@@ -195,42 +237,28 @@ Optional reading:
 	>
 		C++ style guide
 	</Resource>
+	<Resource
+		source="Google"
+		title="C++ Style Guide"
+		url="https://google.github.io/styleguide/cppguide.html"
+	>
+		useful reference, but mostly not relevant to competitive programming
+	</Resource>
 </Resources>
 
-- Do not use variable names that could conflict with `using namespace std`. For
-  example, don't name a `std::set` "set."
-- Do not use variable-length arrays as discussed
-  [here](/bronze/intro-ds?lang=cpp#dynamic-arrays).
-- Do not include code that doesn't do anything. In particular,
-  - Do not include `cout.tie(0)` as discussed
-    [here](/general/fast-io?lang=cpp#method-2---cintie0).
-  - Do not include [optimization pragmas](/adv/vectorization) unless you show
-    that they improve performance.
-- For Bronze through Gold in particular, do not use additional macros
-  (especially loop macros) beyond the ones listed below (see
-  [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
+The C/C++ extension for
+[Visual Studio Code](/general/running-code-locally?lang=cpp#resource-https%3A%2F%2Fcode.visualstudio.com%2F)
+supports code formatting using `clang-format` (details
+[here](https://code.visualstudio.com/docs/cpp/cpp-ide#_code-formatting)). To
+indent using tabs, include the following in your
+`C_Cpp.clang_format_fallbackStyle` setting.
 
-  ```cpp
-  CodeSnip{CPP Short Template}
+```
+{ UseTab: AlignWithSpaces, TabWidth: 4, IndentWidth: 4 }
+```
 
-  int main() {
-    setIO();
-
-  }
-  ```
-
-- The C/C++ extension for
-  [Visual Studio Code](/general/running-code-locally?lang=cpp#resource-https%3A%2F%2Fcode.visualstudio.com%2F)
-  supports code formatting using `clang-format` (details
-  [here](https://code.visualstudio.com/docs/cpp/cpp-ide#_code-formatting)). To
-  indent using tabs, include the following in your
-  `C_Cpp.clang_format_fallbackStyle` setting.
-
-  ```
-  { UseTab: AlignWithSpaces, TabWidth: 4, IndentWidth: 4 }
-  ```
-
-  You don't have to use a formatter, but doing so will ensure consistency.
+You don't have to use a formatter, but doing so will ensure consistency across
+the guide.
 
 </CPPSection>
 
@@ -254,6 +282,14 @@ Optional reading:
 ### Python
 
 - Use `snake_case` to name variables in your code.
+
+<Resources>
+	<Resource
+		source="Google"
+		title="Python Style Guide"
+		url="https://google.github.io/styleguide/pyguide.html"
+	/>
+</Resources>
 
 </PySection>
 
