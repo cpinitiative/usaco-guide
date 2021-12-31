@@ -180,20 +180,20 @@ import java.util.*;
 
 public class TeamTicTacToe {
 	private static char[][] gameboard = new char[3][3];
-	private static TreeSet<Character> singleCow = new TreeSet<>();
-	private static TreeSet<String> teams = new TreeSet<>();
+	private static Set<Character> singleCow = new TreeSet<>();
+	private static Set<String> teams = new TreeSet<>();
 
 	private static void check(char first, char second, char third) {
-		// Different Cows in a row/column/diagonal
-        	TreeSet<Character> contained = new TreeSet<>();
+		// Stores unique cows in a row/column/diagonal
+        	Set<Character> contained = new TreeSet<>();
         	contained.add(first);
         	contained.add(second);
         	contained.add(third);
         	if (contained.size() == 1) {
-			// One 
+			// There is only one unique cow
 			singleCow.add(contained.first());
 		} else if (contained.size() == 2) {
-			// Two
+			// There are two unique cows
 			teams.add(contained.first() + "" + contained.last());
 		}
 	}
@@ -227,9 +227,11 @@ public class TeamTicTacToe {
 
 		io.close();
 	}
+
+	//CodeSnip{Kattio}
+						     
 }
 
-//CodeSnip{Kattio}
 ```
 
 </JavaSection>
