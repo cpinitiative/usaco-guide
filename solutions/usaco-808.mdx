@@ -34,40 +34,35 @@ balls = [0] * n
 ans = 0
 
 def nearestneighbor(ind):
-	lnbr, rnbr = -1, -1
-	ldist, rdist = 1000, 1000
-	for i in range(n):
-		"""
-		If the cow we're looking at is on the left
-		and it's closer to the target than the previous one.
-		"""
-		if cows[i] < cows[ind] and cows[ind] - cows[i] < ldist:
-			lnbr = i
-			ldist = cows[ind] - cows[i]
-	for i in range(n):
-		# same thing, but for the right.
-		if cows[i] > cows[ind] and cows[i] - cows[ind] < rdist:
-			rnbr = i
-			rdist = cows[i] - cows[ind]
-	return lnbr if ldist <= rdist else rnbr
+    lnbr, rnbr = -1, -1
+    ldist, rdist = 1000, 1000
+
+    # get distance from neighbor to the left, wrapping around if ind == 0
+    lnbr = ind-1
+    ldist = abs(cows[ind] - cows[lnbr])
+    
+    # get distance from neighbor to the right, wrapping around if ind == n-1
+    rnbr = (ind+1)%n
+    rdist = abs(cows[rnbr] - cows[ind])
+    return lnbr if ldist <= rdist else rnbr
     
 for i in range(n):
-	# all cows who receive a ball
-	balls[nearestneighbor(i)] += 1
+    # all cows who receive a ball
+    balls[nearestneighbor(i)] += 1
 for i in range(n):
-	"""
-	if the cow isn't passed to by any of the neighbors,
-	then we have to give it a ball.
-	"""
-	if balls[i] == 0:
-		ans += 1
-	"""
-	If we find two cows which only pass to each other,
-	we have to give them one as well.
-	"""
-	if (i < nearestneighbor(i) and nearestneighbor(nearestneighbor(i)) == i
-		and balls[i] == 1 and balls[nearestneighbor(i)] == 1):
-		ans += 1
+    """
+    if the cow isn't passed to by any of the neighbors,
+    then we have to give it a ball.
+    """
+    if balls[i] == 0:
+        ans += 1
+    """
+    If we find two cows which only pass to each other,
+    we have to give them one as well.
+    """
+    if (i < nearestneighbor(i) and nearestneighbor(nearestneighbor(i)) == i
+        and balls[i] == 1 and balls[nearestneighbor(i)] == 1):
+        ans += 1
     
 print(ans)
 ```
