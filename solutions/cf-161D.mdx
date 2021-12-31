@@ -1,0 +1,144 @@
+---
+id: cf-161D
+source: CF Distance in Tree
+title: Distance in Tree
+author: Sofia Yang
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/4097)
+
+We want to find the total number of length $K$ paths in the tree.
+
+For each node $a$, there are 2 cases.
+
+1. There are length $K$ paths from $a$ to node $b$, in the subtree of $a$.
+2. Otherwise, there are paths from node $b$ and node $c$ (both in the subtree of $a$), that pass through $a$.
+For case 2, the added length of the paths from $b$ to $a$, and the path from $c$ to $a$, should be $K$.
+	
+
+If $N$ is the number of nodes, $K$ is the desired distance, we can define a DP matrix $\texttt{DP[N][K]}$ where $\texttt{DP[i][j]}$ is the number of nodes that has distance $j$ downwards from node $i$ in the tree.
+
+So we want to DFS through the tree, and for each node, calculate the answer for case 1 and case 2.
+
+Then we want to update the DP values by adding in the distances from the children.
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int N, K;
+	static ArrayList<Integer> adj[];
+	static int dp[][]; // DP[i][j] = number of nodes of distance j from node i.
+	static long ans = 0;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		N = io.nextInt();
+		K = io.nextInt();
+		dp = new int[N + 1][K + 1];
+		adj = new ArrayList[N + 1];
+		for (int i = 0; i <= N; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < N - 1; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		dfs(1, 0);
+		System.out.println(ans);
+
+	}
+
+	static void dfs(int cur, int par) {
+		dp[cur][0] = 1; // The current node's distance from itself fis 0.
+		for (int next : adj[cur]) {
+			if (next != par) {
+				// Visit children.
+				dfs(next, cur);
+				// Case 1 answer.
+				ans = dp[cur][K];
+
+				/*
+				 * Case 2 answer is the number of paths starting from subtree of cur
+				 * and ending in subtree of the unprocessed child.
+				 */
+				for (int i = 0; i < K - 1; i++) {
+					ans += dp[cur][i] * dp[next][K - 1 - i];
+				}
+
+				// Process child by appending the paths to the current node.
+				for (int i = 1; i <= K; i++) {
+					dp[cur][i] += dp[next][i - 1];
+				}
+			}
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 50000;
+const int MAXK = 500;
+vector<int> adj[MAXN];
+long long dp[MAXN][MAXK];
+int N; int K;
+long long ans;
+
+int dfs(int cur, int par) {
+	// Distance of the node from itself is 0.
+	dp[cur][0] = 1;
+	for (int next: adj[cur]) {
+		if (next != par) {
+			// Visit children.
+			dfs(next, cur);
+			// Case 1 answer.
+			ans = dp[cur][K];
+
+			/*
+			 * Case 2 answer is the number of paths starting from subtree of cur
+			 * and ending in subtree of the unprocessed child.
+			 */
+			for (int i = 0; i < K - 1; i++) {
+				ans += dp[cur][i] * dp[next][K - 1 - i];
+			}
+			// Process child by appending the paths to the current node.
+			for (int i = 1; i <= K; i++) {
+				dp[cur][i] += dp[next][i - 1];
+			}
+		}
+	}
+}
+
+int main() {
+	cin >> N >> K;
+	// Edges
+	for (int i = 0; i < N - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--; b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	dfs(0, -1);
+	cout << ans;
+}
+```
+</CPPSection>
+
+</LanguageSection>
