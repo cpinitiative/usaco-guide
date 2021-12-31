@@ -182,14 +182,14 @@ public class TeamTicTacToe {
 	private static char[][] gameboard = new char[3][3];
 	private static Set<Character> singleCow = new TreeSet<>();
 	private static Set<String> teams = new TreeSet<>();
-
+	
 	private static void check(char first, char second, char third) {
 		// Stores unique cows in a row/column/diagonal
-        	Set<Character> contained = new TreeSet<>();
-        	contained.add(first);
-        	contained.add(second);
-        	contained.add(third);
-        	if (contained.size() == 1) {
+		TreeSet<Character> contained = new TreeSet<>();
+		contained.add(first);
+		contained.add(second);
+		contained.add(third);
+		if (contained.size() == 1) {
 			// There is only one unique cow
 			singleCow.add(contained.first());
 		} else if (contained.size() == 2) {
@@ -197,39 +197,39 @@ public class TeamTicTacToe {
 			teams.add(contained.first() + "" + contained.last());
 		}
 	}
-
+	
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("tttt");
-
+		
 		for (int i = 0; i < gameboard.length; i++) {
 			String line = io.next();
 			gameboard[i][0] = line.charAt(0);
 			gameboard[i][1] = line.charAt(1);
 			gameboard[i][2] = line.charAt(2);
 		}
-
+		
 		// Check rows
 		for (int i = 0; i < gameboard.length; i++) {
 			check(gameboard[i][0], gameboard[i][1], gameboard[i][2]);
 		}
-
+		
 		// Check columns
 		for (int i = 0; i < gameboard.length; i++) {
 			check(gameboard[0][i], gameboard[1][i], gameboard[2][i]);
 		}
-
+		
 		// Check diagonals
 		check(gameboard[0][0], gameboard[1][1], gameboard[2][2]);
 		check(gameboard[0][2], gameboard[1][1], gameboard[2][0]);
-
+		
 		io.println(singleCow.size());
 		io.println(teams.size());
-
+		
 		io.close();
 	}
-
+	
 	//CodeSnip{Kattio}
-						     
+	
 }
 
 ```
