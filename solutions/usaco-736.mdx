@@ -126,6 +126,72 @@ file_out.close()
 ## Solution 2 - Hashset
 
 <LanguageSection>
+					
+<CPPSection>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(MN)$
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+
+using namespace std;
+
+int main() {
+
+    ifstream fin("cownomics.in");
+    ofstream fout("cownomics.out");
+
+    int N, M;
+    fin >> N >> M;
+    vector<string> spotty(N);
+    for (int i = 0; i < N; i++) fin >> spotty[i];
+    vector<string> plain(N);
+    for (int i = 0; i < N; i++) fin >> plain[i];
+
+    map<char, int> spottyCt;
+    map<char, int> plainCt;
+    int ans = 0;
+    
+    for (int i = 0; i < M; i++) {
+        
+        // initialize letter counters for spotty and plain strings
+	spottyCt['A'] = spottyCt['C'] = spottyCt['G'] = spottyCt['T'] = 0;
+        plainCt['A'] = plainCt['C'] = plainCt['G'] = plainCt['T'] = 0;
+
+	// count occurrences of each letter in each string at index M
+        for (int j = 0; j < N; j++) {
+            spottyCt[spotty[j][i]]++;
+            plainCt[plain[j][i]]++;
+        }
+
+	// if none of spotty's letters reused in plain, index M is valid solution
+        bool valid = true;
+        for (auto const& x : spottyCt) {
+            if (x.second > 0 && plainCt[x.first] > 0) {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid) ans++;
+
+    }
+
+    fout << ans << endl;
+
+    return 0;
+
+}
+```
+					
+</CPPSection>
 
 <JavaSection>
 
