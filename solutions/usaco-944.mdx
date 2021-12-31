@@ -100,3 +100,95 @@ public class FencePlan {
 </JavaSection>
   
 </LanguageSection>
+	
+## Implementation in C++
+	
+<JavaSection>
+	
+
+```cpp
+	
+	#include <bits/stdc++.h>
+	#define ll long long int
+	#define f(i,n) for(long long int i=0;i<n;i++)
+	#define f1(i,n) for(long long int i=1;i<n;i++)
+	#define vll vector<ll>
+	#define pb push_back
+	#define mp make_pair
+	#define ff first
+	#define ss second
+	#define rev(v) reverse(v.begin(),v.end())
+	#define srt(v) sort(v.begin(),v.end())
+	#define grtsrt(v) sort(v.begin(),v.end(),greater<ll>())
+	#define grtsrt2(v) sort(v.rbegin(),v.rend())
+	#define mnv(v) *min_element(v.begin(),v.end())
+	#define mxv(v) *max_element(v.begin(),v.end())
+	#define M1 1000000007
+	#define mod 1000000007
+	#define N 1000001
+
+	using namespace std;
+	
+	void dfs(int vertex, vector<int> &temp){
+	    vis[vertex] = true;
+	    temp.pb(vertex);
+	    for(int child : g[vertex]){
+		if(vis[child])  continue;
+		dfs(child,temp);
+	    }
+	}
+
+	void solve() {
+	    freopen("fenceplan.in", "r", stdin);
+		freopen("fenceplan.out", "w", stdout);
+		int n,m,a,b;
+	    cin>>n>>m;
+	    vector<pair<int,int>> pos(n);
+	    f(i,n){
+		cin>>pos[i].first>>pos[i].second;
+	    }
+	    f(i,m){
+		cin>>a>>b;
+		g[a].pb(b);
+		g[b].pb(a);
+	    }
+	    vector<int> temp;
+	    f1(i,n+1){
+		if(vis[i])  continue;
+		temp.clear();
+		dfs(i,temp);
+		comps.pb(temp);
+	    }
+
+	    int ans = INT_MAX,peri,minx=INT_MAX,maxx=INT_MIN,miny=INT_MAX,maxy=INT_MIN;
+	    f(i,comps.size()){
+		minx=INT_MAX,maxx=INT_MIN,miny=INT_MAX,maxy=INT_MIN;
+		f(j,comps[i].size()){
+		    minx = min(minx,pos[comps[i][j]-1].first);
+		    miny = min(miny,pos[comps[i][j]-1].second);
+		    maxx = max(maxx,pos[comps[i][j]-1].first);
+		    maxy = max(maxy,pos[comps[i][j]-1].second);
+		}
+		if(comps[i].size())
+		peri = ((maxx-minx) + (maxy-miny))*2;
+		else
+		peri = 0;
+		ans = min(ans,peri);
+	    }
+	    cout<<ans<<endl;
+	}
+
+
+	int main(){
+		ios::sync_with_stdio(0);
+		cin.tie(0);
+	    f(i,N){
+		vis[i]=false;
+	    }
+			solve();
+		return 0;
+	}
+	
+	//CODE BY VEDANT SHAH
+```
+</JavaSection>
