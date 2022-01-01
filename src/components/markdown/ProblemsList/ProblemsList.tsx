@@ -77,10 +77,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const shouldShowSolvePercentage =
     props.isDivisionTable &&
-    props.problems.every(problem => !!problem.percentageSolved);
+    props.problems.some(problem => !!problem.percentageSolved);
 
   const { inEditor } = useContext(EditorContext);
-  const path = globalHistory.location.pathname || "";
+  const path = globalHistory.location.pathname || '';
 
   return (
     <div
