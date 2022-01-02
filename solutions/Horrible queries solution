@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define fastio ios::sync_with_stdio(0);cin.tie(0);
+
+const int nax=(int)2e5+5;
+template <class T, int ...Ns> struct BIT {
+    T val = 0; void upd(T v) { val += v; }
+    T query() { return val; }
+};
+template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
+    BIT<T,Ns...> bit[N+1];
+    template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
+        for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
+    template<typename... Args> T sum(int r, Args... args) {
+        T res=0; for (;r;r-=r&-r) res += bit[r].query(args...);
+        return res; }
+    template<typename... Args> T query(int l, int r, Args...
+        args) { return sum(r,args...)-sum(l-1,args...); }
+};
+
+
+template<class T, int SZ> struct BITrange {
+    BIT<T,SZ> bit[2]; // piecewise linear functions
+    // let cum[x] = sum_{i=1}^{x}a[i]
+    void upd(int hi, T val) { // add val to a[1..hi]
+        // if x <= hi, cum[x] += val*x
+        bit[1].upd(1,val), bit[1].upd(hi+1,-val); 
+        // if x > hi, cum[x] += val*hi
+        bit[0].upd(hi+1,hi*val); 
+    }
+    void upd(int lo,int hi,T val){upd(lo-1,-val),upd(hi,val);}
+    T sum(int x) { return bit[1].sum(x)*x+bit[0].sum(x); } 
+    T query(int x, int y) { return sum(y)-sum(x-1); }
+}; 
+
+int main() 
+{
+    fastio;
+    int tt;
+    cin>>tt;
+    while(tt--){
+        BIT<ll,nax>B1,B2;
+        vector<ll>b(nax,0);
+        int n,c;
+        cin>>n>>c;
+        for(int i=1;i<=c;i++){
+            int op;
+            cin>>op;
+            if(op==0){
+                int p,q;
+                ll val;
+                cin>>p>>q>>val;
+                b[p]+=val,b[q+1]-=val;
+                BITrange<ll,nax>B;
+                B.upd(p,q,val);
+            }else{
+                int r,l;
+                cin>>l>>r;
+                ll ans=B.query(l,r);
+                cout<<ans<<'\n';
+            }
+        }
+    }
+    #ifndef ONLINE_JUDGE 
+       freopen("input.txt","r",stdin);
+      freopen("output.txt","w",stdout);
+    #endif 
+return 0;
+}
+        
