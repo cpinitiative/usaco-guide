@@ -5,15 +5,17 @@ title: Till I Collapse
 author: Dustin Miao
 ---
 
-## Solution
+## Solution 1 - Persistant Segment Tree
 
-The [Official Editorial](https://codeforces.com/blog/entry/51163) contains a solution using persistent segment tree. There exists a much simpler, albeit slower, solution using divide and conquer. 
+See the [official editorial](https://codeforces.com/blog/entry/51163).
+
+## Solution 2 - Divide and Conquer
 
 Define a function $f(k)$ that is the answer to query $k$. $f$ can be trivially implemented with an $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$ time complexity. 
 
 **Lemma 1:** Consider some query $k$. For all $i < k$, $f(i) \geq f(k)$. For all $i > k$, $f(i) \leq f(k)$. 
 
-**Proof:** It turns out that proving just one of these statements proves the other (consider swapping $i$ and $k$). We will prove the second statement. If $v = f(k)$, then a solution for all $i > k$ with value $v$ can be trivially constructed with the same intervals as $f(k)$. Note that this does not imply that $v$ is the value for $f(i)$, just that $f(i)$ has a lower bound of $v$. $\blacksquare$
+**Proof:** It turns out that proving just one of these statements proves the other (consider swapping $i$ and $k$). We will prove the second statement. If $v = f(k)$, then a solution for all $i > k$ with value $v$ can be constructed with the same intervals as $f(k)$. Note that this does not imply that $v$ is the value for $f(i)$, just that $f(i)$ has a lower bound of $v$. $\blacksquare$
 
 Consider queries ranging from $l$ to $r$, such that the answer to these queries lie in some range $[v_l, v_r]$. If $v_l = v_r$, then the answers for all queries in the range can be trivially assigned. Otherwise, for $m = \frac {l + r} 2$, compute the answer $f(m)$ in subquadratic time, and let this value be $v$. By definition, $v \in [v_l, v_r]$. From Lemma 1, we know that queries in the range of $[l, m)$ must have answers in the range $[v_l, v_m]$, and queries in the range of $(m, r]$ must have answers in the range $[v_m, v_r]$. This leads to a divide and conquer solution. 
 
