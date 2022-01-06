@@ -83,4 +83,61 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+```py
+# We're going to make a dictionary to store the milk production
+# of each cow.
+# Next, we're going to make a list of the dictionary
+# and sort that list by milk production.
+# Finally, we're going to iterate over that list
+# to find who produces the second least amount of milk.
+
+fin = open("notlast.in")
+fout = open("notlast.out", "w")
+
+n = int(fin.readline())
+cowDict = {"Bessie": 0,
+           "Elsie": 1,
+           "Daisy": 2,
+           "Gertie": 3,
+           "Annabelle": 4,
+           "Maggie": 5,
+           "Henrietta": 6}
+cowmilk = [["Bessie", 0], ["Elsie", 0], ["Daisy", 0], ["Gertie", 0],
+           ["Annabelle", 0], ["Maggie", 0], ["Henrietta", 0]]
+# We're going to use a list as a dictionary
+# Because you can't sort a dictionary
+
+for i in range(n):
+    cow, milk = fin.readline().split()
+    cowmilk[cowDict[cow]][1] += int(milk)
+
+# Sort the cows by their milk production
+cowmilk.sort(key=lambda x: x[1])
+
+# Our necessary pieces to find the second least milk
+smallest = cowmilk[0][1]
+secSmallest = None
+secSmallList = []
+
+for (cow, milk) in cowmilk:
+    if milk > smallest and secSmallest is None:
+        # If we haven't found the second smallest yet
+        # Initialize the second smallest
+        secSmallest = milk
+        secSmallList.append(cow)
+    elif milk == secSmallest:
+        # More than one that is the second smallest(for now)
+        secSmallList.append(cow)
+    elif secSmallest is not None and milk > secSmallest:
+        # We found the second smallest
+        break
+
+if len(secSmallList) == 1:
+    fout.write(secSmallList[0])
+else:
+    fout.write("Tie")
+```
+</PySection>
+
 </LanguageSection>
