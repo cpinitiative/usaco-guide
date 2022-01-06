@@ -182,7 +182,7 @@ teamWins = 0
 for l1_index in range(26):
     for l2_index in range(l1_index + 1, 26):
         # Check diagonals
-        if check_team_win(alphabet[l1_index], alphabet[l2_index], board[0][0], board[1][1], board[2][2]):
+        if check_team_win(alphabet[l1_index],alphabet[l2_index], board[0][0], board[1][1], board[2][2]):
             teamWins += 1
             continue
         if check_team_win(alphabet[l1_index], alphabet[l2_index], board[0][2], board[1][1], board[2][0]):
@@ -202,8 +202,8 @@ fout.write(str(soloWins) + '\n' + str(teamWins) + '\n')
 ```
 
 </PySection>
-
 </LanguageSection>
+
 ## Solution 2 - Using Sets
 
 <LanguageSection>
@@ -253,4 +253,56 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+# Using a set:
+# The basic idea is that if you take the set of the diagonals, rows, and columns,
+# If the length of a set is 1, you have a solo win
+# If the length of a set is 2, you have a team win
+# Just don't forget to check for a cow/team winning twice
+
+# Read in the input
+fin = open('tttt.in', 'r')
+fout = open('tttt.out', 'w')
+
+board = []
+for i in range(3):
+    board.append(fin.readline().strip())
+
+# Append the rows, columns, and diagonals to a set
+board_set_list = []
+# Rows
+for i in range(3):
+    board_set_list.append(set(board[i]))
+# Columns
+for i in range(3):
+    board_set_list.append(set(board[0][i] + board[1][i] + board[2][i]))
+# Diagonals
+board_set_list.append(set(board[0][0] + board[1][1] + board[2][2]))
+board_set_list.append(set(board[0][2] + board[1][1] + board[2][0]))
+
+print(board_set_list)
+winners = set()
+soloWins = 0
+teamWins = 0
+for thing in board_set_list:
+    e = None
+    thing = list(thing)
+    if len(thing) == 1:
+        if thing[0] not in winners: # We don't want to double count a solo win
+            soloWins += 1
+            winners.add(thing[0])
+
+    elif len(thing) == 2:
+        if (thing[0], thing[1]) not in winners: # Don't want to double count team wins either
+            teamWins += 1
+            winners.add((thing[0], thing[1]))
+
+fout.write(str(soloWins) + '\n' + str(teamWins) + '\n')
+```
+
+</PySection>
+
 </LanguageSection>
