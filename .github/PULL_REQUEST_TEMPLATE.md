@@ -1,8 +1,5 @@
-_If any of the below doesn't apply to this Pull Request, mark the checkbox as
-done._
+_If any of the below doesn't apply to this Pull Request, mark the checkbox as done._
 
-- [ ] I have tested my code
-- [ ] I have followed the code style guidelines mentioned
-      [here](https://usaco.guide/general/adding-solution/#code-conventions)
-- [ ] I have properly formatted the files according to the steps mentioned
-      [here](https://usaco.guide/general/adding-solution#steps)
+- [ ] I have tested my code.
+- [ ] I have added my solution according to the steps [here](https://usaco.guide/general/adding-solution#steps).
+- [ ] I have followed the code conventions mentioned [here](https://usaco.guide/general/adding-solution/#code-conventions). I understand that if it is clear that I have not attempted to follow these guidelines (ex. if I have not converted spaces to tabs), my PR will be closed.
