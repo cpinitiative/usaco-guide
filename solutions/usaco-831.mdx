@@ -131,71 +131,71 @@ fout = open('tttt.out', 'w')
 
 board = []
 for i in range(3):
-    board.append(fin.readline().strip())
+	board.append(fin.readline().strip())
 
 # Check for individual winners:
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 soloWins = 0
 for letter in alphabet:
-    # Check diagonals
-    if board[0][0] == letter and board[1][1] == letter and board[2][2] == letter:
-        soloWins += 1
-        continue
-    # We need the continue for the following conditionals because we don't want to double count a team win
-    if board[0][2] == letter and board[1][1] == letter and board[2][0] == letter:
-        soloWins += 1
-        continue
-    # Check rows and columns
-    for i in range(3):
-        # Break instead of continue here because there are two for loops
-        if board[i][0] == letter and board[i][1] == letter and board[i][2] == letter:
-            soloWins += 1
-            break
-        if board[0][i] == letter and board[1][i] == letter and board[2][i] == letter:
-            soloWins += 1
-            break
+	# Check diagonals
+	if board[0][0] == letter and board[1][1] == letter and board[2][2] == letter:
+		soloWins += 1
+		continue
+	# We need the continue for the following conditionals because we don't want to double count a team win
+	if board[0][2] == letter and board[1][1] == letter and board[2][0] == letter:
+		soloWins += 1
+		continue
+	# Check rows and columns
+	for i in range(3):
+		# Break instead of continue here because there are two for loops
+		if board[i][0] == letter and board[i][1] == letter and board[i][2] == letter:
+			soloWins += 1
+			break
+		if board[0][i] == letter and board[1][i] == letter and board[2][i] == letter:
+			soloWins += 1
+			break
 
 # Function to check if a team won:
 def check_team_win(ch1, ch2, a, b, c):
-    # When can't a team win? If none of the three characters are ch1 or ch2,
-    # the team of ch1 and ch2 can't win
-    if a != ch1 and a != ch2:
-        return False
-    if b != ch1 and b != ch2:
-        return False
-    if c != ch1 and c != ch2:
-        return False
+	# When can't a team win? If none of the three characters are ch1 or ch2,
+	# the team of ch1 and ch2 can't win
+	if a != ch1 and a != ch2:
+		return False
+	if b != ch1 and b != ch2:
+		return False
+	if c != ch1 and c != ch2:
+		return False
 
-    # They also can't win if each character doesn't appear at least once.
-    # Otherwise, we would be counting an individual win twice.
-    if a != ch1 and b != ch1 and c != ch1:
-        return False
-    if a != ch2 and b != ch2 and c != ch2:
-        return False
+	# They also can't win if each character doesn't appear at least once.
+	# Otherwise, we would be counting an individual win twice.
+	if a != ch1 and b != ch1 and c != ch1:
+		return False
+	if a != ch2 and b != ch2 and c != ch2:
+		return False
 
-    # If we get here, the team can win!
-    return True
+	# If we get here, the team can win!
+	return True
 
 
 # Check for team winners:
 teamWins = 0
 for l1_index in range(26):
-    for l2_index in range(l1_index + 1, 26):
-        # Check diagonals
-        if check_team_win(alphabet[l1_index],alphabet[l2_index], board[0][0], board[1][1], board[2][2]):
-            teamWins += 1
-            continue
-        if check_team_win(alphabet[l1_index], alphabet[l2_index], board[0][2], board[1][1], board[2][0]):
-            teamWins += 1
-            continue
-        # Check rows and columns
-        for i in range(3):
-            if check_team_win(alphabet[l1_index], alphabet[l2_index], board[0][i], board[1][i], board[2][i]):
-                teamWins += 1
-                break
-            if check_team_win(alphabet[l1_index], alphabet[l2_index], board[i][0], board[i][1], board[i][2]):
-                teamWins += 1
-                break
+	for l2_index in range(l1_index + 1, 26):
+	# Check diagonals
+		if check_team_win(alphabet[l1_index],alphabet[l2_index], board[0][0], board[1][1], board[2][2]):
+			teamWins += 1
+			continue
+		if check_team_win(alphabet[l1_index], alphabet[l2_index], board[0][2], board[1][1], board[2][0]):
+			teamWins += 1
+			continue
+		# Check rows and columns
+		for i in range(3):
+			if check_team_win(alphabet[l1_index], alphabet[l2_index], board[0][i], board[1][i], board[2][i]):
+				teamWins += 1
+				break
+			if check_team_win(alphabet[l1_index], alphabet[l2_index], board[i][0], board[i][1], board[i][2]):
+				teamWins += 1
+				break
 
 fout.write(str(soloWins) + '\n' + str(teamWins) + '\n')
 
@@ -269,16 +269,16 @@ fout = open('tttt.out', 'w')
 
 board = []
 for i in range(3):
-    board.append(fin.readline().strip())
+	board.append(fin.readline().strip())
 
 # Append the rows, columns, and diagonals to a set
 board_set_list = []
 # Rows
 for i in range(3):
-    board_set_list.append(set(board[i]))
+	board_set_list.append(set(board[i]))
 # Columns
 for i in range(3):
-    board_set_list.append(set(board[0][i] + board[1][i] + board[2][i]))
+	board_set_list.append(set(board[0][i] + board[1][i] + board[2][i]))
 # Diagonals
 board_set_list.append(set(board[0][0] + board[1][1] + board[2][2]))
 board_set_list.append(set(board[0][2] + board[1][1] + board[2][0]))
@@ -288,17 +288,17 @@ winners = set()
 soloWins = 0
 teamWins = 0
 for thing in board_set_list:
-    e = None
-    thing = list(thing)
-    if len(thing) == 1:
-        if thing[0] not in winners: # We don't want to double count a solo win
-            soloWins += 1
-            winners.add(thing[0])
+	e = None
+	thing = list(thing)
+	if len(thing) == 1:
+		if thing[0] not in winners: # We don't want to double count a solo win
+			soloWins += 1
+			winners.add(thing[0])
 
-    elif len(thing) == 2:
-        if (thing[0], thing[1]) not in winners: # Don't want to double count team wins either
-            teamWins += 1
-            winners.add((thing[0], thing[1]))
+	elif len(thing) == 2:
+		if (thing[0], thing[1]) not in winners: # Don't want to double count team wins either
+			teamWins += 1
+			winners.add((thing[0], thing[1]))
 
 fout.write(str(soloWins) + '\n' + str(teamWins) + '\n')
 ```
