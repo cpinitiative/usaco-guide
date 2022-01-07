@@ -174,8 +174,9 @@ export default function ProblemsListItem(
   const [copied, setCopied] = React.useState(false);
   const tippyRef = useRef<Instance>();
 
-  const { solutions, currentUserSolutions } =
-    useUserSolutionsForProblem(problem);
+  const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
+    problem
+  );
 
   let viewSolutionsContent = <>View User Solutions ({solutions?.length})</>;
   if (currentUserSolutions?.length) {
