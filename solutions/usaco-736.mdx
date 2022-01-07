@@ -154,23 +154,18 @@ int main() {
     for (int i = 0; i < N; i++) fin >> spotty[i];
     vector<string> plain(N);
     for (int i = 0; i < N; i++) fin >> plain[i];
-
-    map<char, int> spottyCt;
-    map<char, int> plainCt;
     int ans = 0;
     
     for (int i = 0; i < M; i++) {
-        
         // initialize letter counters for spotty and plain strings
+	map<char, int> spottyCt, plainCt;
 	spottyCt['A'] = spottyCt['C'] = spottyCt['G'] = spottyCt['T'] = 0;
         plainCt['A'] = plainCt['C'] = plainCt['G'] = plainCt['T'] = 0;
-
 	// count occurrences of each letter in each string at index M
         for (int j = 0; j < N; j++) {
             spottyCt[spotty[j][i]]++;
             plainCt[plain[j][i]]++;
         }
-
 	// if none of spotty's letters reused in plain, index M is valid solution
         bool valid = true;
         for (auto const& x : spottyCt) {
@@ -179,9 +174,7 @@ int main() {
                 break;
             }
         }
-
         if (valid) ans++;
-
     }
 
     fout << ans << endl;
