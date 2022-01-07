@@ -65,9 +65,17 @@ export default function SubmitProblemSolutionModal({
         </label>
         <div>
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            Especially if sharing your code, consider cleaning it up and leaving
-            solution notes at the top. Make sure not to leave out any
-            headers/templates, and that your code passes all test cases!
+            Please keep these in mind when submitting a solution.
+            <ol className="list-decimal ml-5">
+              <li>
+                Especially if sharing your code, consider cleaning it up and{' '}
+                <b> adding solution notes</b> as a comment at the top.
+              </li>
+              <li>
+                Make sure not to leave out any headers/templates, and that your
+                code passes all test cases!
+              </li>
+            </ol>
           </p>
           <ButtonGroup
             options={['cpp', 'java', 'py']}
