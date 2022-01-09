@@ -116,91 +116,97 @@ import java.io.*;
 import java.util.*;
 
 public class StuckInARut {
-    static int[] xCoordinates;
-    static int[] yCoordinates;
+	static int[] xCoordinates;
+	static int[] yCoordinates;
 
-    static class eastComparator implements Comparator<Integer> {  // sorts eastward cows by their y value
-        public int compare (Integer first, Integer second) {
-            if (yCoordinates[first] < yCoordinates[second]) {
-                return -1;
-            }
-            return 1;
-        }
-    }
+	// sorts eastward cows by their y value
+	static class eastComparator implements Comparator<Integer> {
+		public int compare (Integer first, Integer second) {
+			if (yCoordinates[first] < yCoordinates[second]) {
+				return -1;
+			}
+			return 1;
+		}
+	}
 
-    static class northComparator implements Comparator<Integer> {  // sorts northward cows by their x value
-        public int compare (Integer first, Integer second) {
-            if (xCoordinates[first] < xCoordinates[second]) {
-                return -1;
-            }
-            return 1;
-        }
-    }
+	// sorts northward cows by their x value
+	static class northComparator implements Comparator<Integer> {
+		public int compare (Integer first, Integer second) {
+			if (xCoordinates[first] < xCoordinates[second]) {
+				return -1;
+			}
+			return 1;
+		}
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
 
-        ArrayList<Integer> eastCows = new ArrayList<>();
-        ArrayList<Integer> northCows = new ArrayList<>();
-        xCoordinates = new int[n];
-        yCoordinates = new int[n];
+		ArrayList<Integer> eastCows = new ArrayList<>();
+		ArrayList<Integer> northCows = new ArrayList<>();
+		xCoordinates = new int[n];
+		yCoordinates = new int[n];
 
-        for (int x = 0; x < n; x++) {  // read input
-            StringTokenizer line = new StringTokenizer(br.readLine());
-            String direction = line.nextToken();
-            if (direction.equals("E")) {
-                eastCows.add(x);
-            }
-            else {
-                northCows.add(x);
-            }
-            xCoordinates[x] = Integer.parseInt(line.nextToken());
-            yCoordinates[x] = Integer.parseInt(line.nextToken());
-        }
+		for (int x = 0; x < n; x++) {  // read input
+			StringTokenizer line = new StringTokenizer(br.readLine());
+			String direction = line.nextToken();
+			if (direction.equals("E")) {
+				eastCows.add(x);
+			}
+			else {
+				northCows.add(x);
+			}
+			xCoordinates[x] = Integer.parseInt(line.nextToken());
+			yCoordinates[x] = Integer.parseInt(line.nextToken());
+		}
 
-        Collections.sort(eastCows, new eastComparator());  // sort the east cows by y-coordinate
-        Collections.sort(northCows, new northComparator());  // sort the north cows by x-coordinate
+		// sort the east cows by y-coordinate
+		Collections.sort(eastCows, new eastComparator());
+		// sort the north cows by x-coordinate
+		Collections.sort(northCows, new northComparator());
 
-        boolean[] stopped = new boolean[n];
-        int[] amountStopped = new int[n];
+		boolean[] stopped = new boolean[n];
+		int[] amountStopped = new int[n];
 
-        for (int j : eastCows) {  // loop through all pairs of cows
-            for (int k : northCows) {
-                /* make sure that both the east and north cows are not stopped
-                 * a collision is only possible if the x of the north cow is greater
-                 * than the x of east cow and the y of the east cow is greater than
-                 * the y of the north cow
-                 */
+		for (int j : eastCows) {  // loop through all pairs of cows
+			for (int k : northCows) {
+				/* make sure that both the east and north cows are not stopped
+				 * a collision is only possible if the x of the north cow is greater
+				 * than the x of east cow and the y of the east cow is greater than
+				 * the y of the north cow
+				 */
 
-                if ((!stopped[j]) && (!stopped[k]) && (xCoordinates[k] > xCoordinates[j]) &&
-                        (yCoordinates[j] > yCoordinates[k])) {
-                    if ((xCoordinates[k] - xCoordinates[j]) > (yCoordinates[j] - yCoordinates[k])) {
-                        // this means that the north cow stops the east cow
-                        // mark the east cow as stopped so we never consider it again
-                        stopped[j] = true;
+				if ((!stopped[j]) && (!stopped[k]) && (xCoordinates[k] > xCoordinates[j])
+						&& (yCoordinates[j] > yCoordinates[k])) {
+					if ((xCoordinates[k] - xCoordinates[j]) > 
+							(yCoordinates[j] - yCoordinates[k])) {
+						// this means that the north cow stops the east cow
+						// mark the east cow as stopped so we never consider it again
+						stopped[j] = true;
 
-                        // add on the number of cows that the east cow stops plus one
-                        amountStopped[k] += (1 + amountStopped[j]);
-                    }
-                    else if ((xCoordinates[k] - xCoordinates[j]) < (yCoordinates[j] - yCoordinates[k])) {
-                        // this means that the east cow stops the north cow
-                        // mark the north cow as stopped so we never consider it again
-                        stopped[k] = true;
+						// add on the number of cows that the east cow stops plus one
+						amountStopped[k] += (1 + amountStopped[j]);
+					}
+					else if ((xCoordinates[k] - xCoordinates[j]) <
+							(yCoordinates[j] - yCoordinates[k])) {
+						// this means that the east cow stops the north cow
+						// mark the north cow as stopped so we never consider it again
+						stopped[k] = true;
 
-                        // add on the number of cows that the north cow stops plus one
-                        amountStopped[j] += (1 + amountStopped[k]);
-                    }
-                    // if the difference in x and difference in y is equal,
-                    // we let the cows continue as stated in the problem
-                }
-            }
-        }
+						// add on the number of cows that the north cow stops plus one
+						amountStopped[j] += (1 + amountStopped[k]);
+					}
+					// if the difference in x and difference in y is equal,
+					// we let the cows continue as stated in the problem
+				}
+			}
+		}
 
-        for (int x = 0; x < n; x++) {  // output the number of cows each cow stops
-            System.out.println(amountStopped[x]);
-        }
-    }
+		for (int x = 0; x < n; x++) {  // output the number of cows each cow stops
+			System.out.println(amountStopped[x]);
+		}
+	}
 }
 ```
 	
