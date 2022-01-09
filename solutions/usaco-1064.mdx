@@ -171,39 +171,42 @@ public class StuckInARut {
 
 		for (int j : eastCows) {  // loop through all pairs of cows
 			for (int k : northCows) {
-				/* make sure that both the east and north cows are not stopped
-				 * a collision is only possible if the x of the north cow is greater
-				 * than the x of east cow and the y of the east cow is greater than
-				 * the y of the north cow
+				/* make sure that both the east and north cows 
+				 * are not stopped a collision is only possible 
+				 * if the x of the north cow is greater
+				 * than the x of east cow and the y of the east 
+				 * cow is greater than the y of the north cow
 				 */
 
-				if ((!stopped[j]) && (!stopped[k]) && (xCoordinates[k] > xCoordinates[j])
+				if ((!stopped[j]) && (!stopped[k]) &&
+						(xCoordinates[k] > xCoordinates[j])
 						&& (yCoordinates[j] > yCoordinates[k])) {
-					if ((xCoordinates[k] - xCoordinates[j]) > 
+					if ((xCoordinates[k] - xCoordinates[j]) >
 							(yCoordinates[j] - yCoordinates[k])) {
-						// this means that the north cow stops the east cow
-						// mark the east cow as stopped so we never consider it again
+						// the north cow stops the east cow
+						// mark the east cow as stopped 
 						stopped[j] = true;
 
-						// add on the number of cows that the east cow stops plus one
+						// add number of cows that the east cow stops + 1
 						amountStopped[k] += (1 + amountStopped[j]);
 					}
 					else if ((xCoordinates[k] - xCoordinates[j]) <
 							(yCoordinates[j] - yCoordinates[k])) {
-						// this means that the east cow stops the north cow
-						// mark the north cow as stopped so we never consider it again
+						// the east cow stops the north cow
+						// mark the north cow as stopped 
 						stopped[k] = true;
 
-						// add on the number of cows that the north cow stops plus one
+						// add number of cows that the north cow stops + 1
 						amountStopped[j] += (1 + amountStopped[k]);
 					}
-					// if the difference in x and difference in y is equal,
-					// we let the cows continue as stated in the problem
+					// if difference in x and difference in y is equal,
+					// let the cows continue as stated in the problem
 				}
 			}
 		}
 
-		for (int x = 0; x < n; x++) {  // output the number of cows each cow stops
+		// output the number of cows each cow stops
+		for (int x = 0; x < n; x++) {  
 			System.out.println(amountStopped[x]);
 		}
 	}
