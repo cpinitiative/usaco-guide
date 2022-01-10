@@ -79,9 +79,13 @@ int timer = 1;
 void dfs(int v=0,int p=-1)
 {
 	in[v] = timer++;
-	par[v][0] = p;
-	for(int i = 1; i < 22; i++)
-		par[v][i] = par[par[v][i-1]][i-1];
+	// prevent array out of bounds issues
+	if(p >= 0)
+	{
+		par[v][0] = p;
+		for(int i = 1; i < 22; i++)
+			par[v][i] = par[par[v][i-1]][i-1];
+	}
 	for(int x : adj[v])
 	{
 		if(x == p) continue;
@@ -90,7 +94,7 @@ void dfs(int v=0,int p=-1)
 	ot[v] = timer++;
 }
 
-// prefix XOR. reversable = done onto itself
+// prefix xor. reversable = done onto itself
 int XOR(int ind)
 {
 	int xo = 0;
@@ -135,7 +139,7 @@ int main()
 	int q;
 	cin >> n >> q;
 	for(int i = 0; i < n; i++) cin >> arr[i];
-	for(int i = 1; i < n; i++)
+	for(int i = 1; i < n; i++) 
 	{
 		int u,v;
 		cin >> u >> v;
@@ -158,7 +162,7 @@ int main()
 		if(t==1)
 		{
 			int s, x;
-			cin >> s >> x;
+			cin >> s >> x;	
 			--s;
 			// erase the initial arr[s] value.
 			upd(in[s], arr[s]);
@@ -167,7 +171,7 @@ int main()
 			// update the arr[s] value to x.
 			upd(in[s], arr[s]);
 			upd(ot[s], arr[s]);
-		} else
+		} else 
 		{
 			int u,v;
 			cin >> u >> v;
