@@ -92,6 +92,11 @@ v = q.get()      # v = 1, q = [2]
 v = q.get()      # v = 2, q = []
 v = q.get()      # Code waits forever, creating TLE error.
 ```
+<Warning>
+
+Python's queue.Queue() uses Locks to maintain a threadsafe synchronization, thereby making it quite slow. To avoid TLE in many questions, rather use collections.deque() for a faster queue data structure.
+
+</Warning>
 
 </PySection>
 
@@ -147,6 +152,23 @@ deque.removeLast(); // [1, 3]
 ```
 
 </JavaSection>
+
+<PySection>
+
+#### Python
+
+In Python, `collections.deque()` is used for a deque data structure. The four methods for adding and removing are `appendleft`, `popleft`, `append`, and `pop`.
+```py
+d = collections.deque()
+d.appendleft(3); # [3]
+d.appendleft(4); # [4, 3]
+d.append(7); # [4, 3, 7]
+d.popleft(); # [3, 7]
+d.appendleft(1); # [1, 3, 7]
+d.pop(); # [1, 3]
+```
+
+</PySection>
 
 </LanguageSection>
 
