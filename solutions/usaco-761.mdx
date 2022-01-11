@@ -23,34 +23,28 @@ by date and update the selected cow's milk value for each entry.
 #include <bits/stdc++.h>
 using namespace std;
 
-freopen("measurement.in","r",stdin);
-freopen("measurement.out","w",stdout);
-
-
 int main()
 {
+	freopen("measurement.in","r",stdin);
+	freopen("measurement.out","w",stdout);
+
 	// Taking input
 	int num_of_inputs;
 	cin >> num_of_inputs;
-
 	vector<tuple<int, string, int>> list;
-
 	for (int i = 0; i < num_of_inputs; i++)
 	{
 		int temp1;
 		string temp2;
 		int temp3;
-
 		cin >> temp1 >> temp2 >> temp3;
 		list.push_back(make_tuple(temp1, temp2, temp3));
 	}
-
 	/*
 	 * Sort list by first column.
 	 * More information on sorting can be found on https://usaco.guide/bronze/intro-sorting
 	 */
 	sort(list.begin(), list.end());
-
 	/*
 	 * Map which holds the current production of each cow.
 	 * In the future, we will change the production values based on input.
@@ -59,7 +53,6 @@ int main()
 		{"Bessie", 7},
 		{"Elsie", 7},
 		{"Mildred", 7}};
-
 	/*
 	 * Store current winner inside a pair,
 	 * noting the highest number and a string with cow names on the award.
@@ -73,7 +66,6 @@ int main()
 	winner.second = "BessieElsieMildred";
 	// Variable that will detect how many times the display changes
 	int display_changes = 0;
-
 	/*
 	 * Iterate through number of entries in list.
 	 * Remember, list was sorted earlier,
@@ -81,32 +73,27 @@ int main()
 	 */
 	for (int i = 0; i < num_of_inputs; i++)
 	{
-		// Earlier I said we would be changing production values based on input. That happens here!
+		// Change production values based on input as mentioned previously.
 		cows[get<1>(list[i])] += get<2>(list[i]);
 		if (get<1>(list[i]) == "Bessie")
 		{
 			cows["Bessie"] += get<2>(list[i]);
 		}
-
 		else if (get<1>(list[i]) == "Mildred")
 		{
 			cows["Mildred"] += get<2>(list[i]);
 		}
-
 		else if (get<1>(list[i]) == "Elsie")
 		{
 			cows["Elsie"] += get<2>(list[i]);
 		}
-
 		// Saving older values to compare them to new ones later
 		pair<int, string> original;
 		original.first = winner.first;
 		original.second = winner.second;
 		winner.second = "";
-
 		// By wrapping each of the function inputs inside of brackets, we can include more than 2 function inputs for the max function.
 		winner.first = max({cows["Bessie"], cows["Mildred"], cows["Elsie"]});
-
 		/*
 		 * Adjust the winner string to see who the new winner is.
 		 * Because multiple cows are stored in winner.second, no to worry about ties.
@@ -123,14 +110,12 @@ int main()
 		{
 			winner.second += "Mildred";
 		}
-
 		// Check if old winner is same as new winner.
 		if (original.second != winner.second)
 		{
 			display_changes++;
 		}
 	}
-
 	cout << display_changes << endl;
 }
 ```
