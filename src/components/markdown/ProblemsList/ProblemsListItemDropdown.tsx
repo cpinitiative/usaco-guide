@@ -11,8 +11,9 @@ export default function ProblemsListItemDropdown(
   const [copied, setCopied] = React.useState(false);
 
   const problem = props.problem;
-  const { solutions, currentUserSolutions } =
-    useUserSolutionsForProblem(problem);
+  const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
+    problem
+  );
 
   let viewSolutionsContent = (
     <>View User Solutions ({solutions?.length ?? '...'})</>
