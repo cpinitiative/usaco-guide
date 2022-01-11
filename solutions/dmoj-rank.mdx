@@ -157,8 +157,9 @@ public class Rank {
 				winner = p2;
 				loser = p1;
 			}
-			if (!graph.containsKey(winner))
+			if (!graph.containsKey(winner)) {
 				graph.put(winner, new HashSet<>());
+			}
 			// Graph should put an edge from winner -> loser
 			graph.get(winner).add(loser);
 		}
@@ -187,10 +188,12 @@ public class Rank {
 			return true;
 		}
 		visited.add(current);
-		if (!graph.containsKey(current))
+		if (!graph.containsKey(current)) {
 			graph.put(current, new HashSet<>());
-		for (int x : graph.get(current))
+		}
+		for (int x : graph.get(current)) {
 			dfs(x, start);
+		}
 		return cyclic;
 	}
 }
