@@ -6,6 +6,7 @@ import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
 import { useDarkMode } from '../../../context/DarkModeContext';
+import useUserSolutionsForProblem from '../../../hooks/useUserSolutionsForProblem';
 import {
   contests,
   isUsaco,
@@ -173,6 +174,33 @@ export default function ProblemsListItem(
   const [copied, setCopied] = React.useState(false);
   const tippyRef = useRef<Instance>();
 
+  const { solutions, currentUserSolutions } =
+    useUserSolutionsForProblem(problem);
+
+  let viewSolutionsContent = <>View User Solutions ({solutions?.length})</>;
+  if (currentUserSolutions?.length) {
+    viewSolutionsContent = (
+      <>
+        <TextTooltip
+          position="bottom"
+          content={"You've submitted a solution to this problem."}
+        >
+          {viewSolutionsContent}
+        </TextTooltip>
+        <svg
+          className="h-5 w-5 text-green-400 inline-block ml-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </>
+    );
+  }
   const more = (
     <div>
       <Tippy
@@ -196,7 +224,7 @@ export default function ProblemsListItem(
                   });
                 }}
               >
-                View User Solutions
+                {viewSolutionsContent}
               </button>
               <button
                 type="button"
