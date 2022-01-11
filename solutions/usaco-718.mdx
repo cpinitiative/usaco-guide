@@ -29,10 +29,6 @@ const ll MAXN = 1000;
 
 ll dp[MAXN + 1][MAXN + 1];
 
-ll max(ll a, ll b, ll c){
-	return max(a, max(b, c));
-}
-
 int main(){
 	freopen("nocross.in", "r", stdin);
 	freopen("nocross.out", "w", stdout);
@@ -56,8 +52,8 @@ int main(){
 			 * We can either build a new crosswalk between 
 			 * i and j or not build a new crosswalk.
 			*/
-			dp[i][j] = max(dp[i - 1][j], dp[i][j - 1], 
-			dp[i - 1][j - 1] + abs(id1[i] - id2[j]) <= 4);
+			dp[i][j] = max(dp[i - 1][j], max(dp[i][j - 1], 
+			dp[i - 1][j - 1] + abs(id1[i] - id2[j]) <= 4));
 		}
 	}
 	cout << dp[n][n] << endl;
