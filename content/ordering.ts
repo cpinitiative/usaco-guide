@@ -58,7 +58,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'fast-io',
         'generic-code',
         'lambda-funcs',
-        'notes-cpp-ds',
       ],
     },
     {
@@ -105,7 +104,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'sorting-custom',
         'two-pointers',
-        'intro-ordered',
+        'intro-sorted-sets',
         'custom-cpp-stl',
         'greedy-sorting',
         'binary-search',

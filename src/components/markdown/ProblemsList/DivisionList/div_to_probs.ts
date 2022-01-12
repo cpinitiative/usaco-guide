@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1155', '2021 December', 'Lonely Photo'],
+    ['1156', '2021 December', 'Air Cownditioning'],
+    ['1157', '2021 December', 'Walking Home'],
     ['1131', '2021 US Open', 'Acowdemia I'],
     ['1132', '2021 US Open', 'Acowdemia II'],
     ['1133', '2021 US Open', 'Acowdemia III'],
@@ -74,6 +77,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1158', '2021 December', 'Closest Cow Wins'],
+    ['1159', '2021 December', 'Connecting Two Barns'],
+    ['1160', '2021 December', 'Convoluted Intervals'],
     ['1134', '2021 US Open', 'Maze Tac Toe'],
     ['1135', '2021 US Open', 'Do You Know Your ABCs?'],
     ['1136', '2021 US Open', 'Acowdemia'],
@@ -148,6 +154,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1161', '2021 December', 'Paired Up'],
+    ['1162', '2021 December', 'HILO'],
+    ['1163', '2021 December', 'Bracelet Crossings'],
     ['1137', '2021 US Open', 'United Cows of Farmer John'],
     ['1138', '2021 US Open', 'Portals'],
     ['1139', '2021 US Open', 'Permutation'],
@@ -221,6 +230,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1164', '2021 December', 'Tickets'],
+    ['1165', '2021 December', 'Paired Up'],
+    ['1166', '2021 December', 'HILO'],
     ['1140', '2021 US Open', 'United Cows of Farmer John'],
     ['1141', '2021 US Open', 'Routing Schemes'],
     ['1142', '2021 US Open', 'Balanced Subsets'],

@@ -1,0 +1,90 @@
+---
+id: poi-11-TreeRotations2
+source: POI
+title: Tree Rotations 2
+author: Benjamin Qi
+---
+
+Apparently
+[this paper](https://www.cs.cmu.edu/~scandal/papers/treaps-spaa98.pdf) proves
+that this runs in $\mathcal{O}(n\log n)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int n;
+ll ans, inv;
+typedef struct tnode* pt;
+struct tnode {
+	int pri, val;
+	pt c[2];  // essential
+	int sz;  // for range queries
+	tnode (int val) {
+		pri = rng();
+		val = val;
+		sz = 1;
+		c[0] = c[1] = NULL;
+	}
+};
+int getsz(pt x) {
+	return x ? x->sz : 0;
+}
+pt calc(pt x) {
+	x->sz = 1 + getsz(x->c[0]) + getsz(x->c[1]);
+	return x;
+}
+pair<pt, pt> split(pt t, int v) { // >= v goes to the right
+	if (!t) return {t, t};
+	if (t->val >= v) {
+		auto p = split(t->c[0], v);
+		t->c[0] = p.s;
+		return {p.f, calc(t)};
+	} else {
+		auto p = split(t->c[1], v);
+		t->c[1] = p.f;
+		return {calc(t), p.s};
+	}
+}
+pt merge(pt a, pt b) {
+	if (!a || !b) {
+		return a ? NULL : b;
+	}
+	if (a->pri > b->pri) {
+		auto B = split(b, a->val);
+		inv += (ll) (1 + getsz(a->c[0])) * getsz(B.s);
+		a->c[0] = merge(a->c[0], B.f);
+		a->c[1] = merge(a->c[1], B.s);
+		return calc(a);
+	} else {
+		auto A = split(a, b->val);
+		inv += (ll) getsz(A.f) * (1 + getsz(b->c[1]));
+		b->c[0] = merge(A.f, b->c[0]);
+		b->c[1] = merge(A.s, b->c[1]);
+		return calc(b);
+	}
+}
+pt go() {
+	int x;
+	re(x);
+	if (x) return new tnode(x);
+	pt L = go();
+	pt R = go();
+	ll tot = (ll) L->sz * R->sz;
+	inv = 0;
+	pt cur = merge(L,R); assert(inv <= tot);  // dbg("HUH",tot,inv);
+	ans += min(inv,tot-inv);
+	return cur;
+}
+int main() {
+	setIO(); re(n); go();
+	ps(ans);
+}
+```
+
+<IncompleteSection>Make code work and add explanation</IncompleteSection>
+
+</CPPSection>
+
+ </LanguageSection>

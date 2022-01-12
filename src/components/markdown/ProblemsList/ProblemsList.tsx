@@ -1,3 +1,4 @@
+import { globalHistory } from '@reach/router';
 import * as React from 'react';
 import { useContext } from 'react';
 import 'tippy.js/themes/light.css';
@@ -76,9 +77,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const shouldShowSolvePercentage =
     props.isDivisionTable &&
-    props.problems.every(problem => !!problem.percentageSolved);
+    props.problems.some(problem => !!problem.percentageSolved);
 
   const { inEditor } = useContext(EditorContext);
+  const path = globalHistory.location.pathname || '';
+
   return (
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
@@ -140,10 +143,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                         showPercent={shouldShowSolvePercentage}
                       />
                     ))}
-                    {/* !props.hideSuggestProblemButton */}
-                    {inEditor && (
-                      <SuggestProblemRow listName={props.tableName} />
-                    )}
+                    {!props.hideSuggestProblemButton &&
+                      path.includes('conclusion') && (
+                        <SuggestProblemRow listName={props.tableName} />
+                      )}
                   </>
                 )}
               </tbody>

@@ -7,28 +7,10 @@ export type Contributor = {
 
 export const contentAuthors: Contributor[] = [
   {
-    name: 'Jeffrey Meng',
-    githubUsername: 'jeffreymeng',
-    sinceDate: 'Oct 2020',
-    photo: 'jeffrey',
-  },
-  {
     name: 'Jesse Choe',
     githubUsername: 'jessechoe10',
     sinceDate: 'Feb 2021',
     photo: 'jesse',
-  },
-  {
-    name: 'Kevin Sheng',
-    githubUsername: 'sanspapyrus683',
-    sinceDate: 'Apr 2021',
-    photo: 'kevin',
-  },
-  {
-    name: 'Ananth Kashyap',
-    githubUsername: 'AAkashyap1',
-    sinceDate: 'Apr 2021',
-    photo: 'ananth',
   },
   {
     name: 'Sofia Yang',
@@ -95,7 +77,7 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'Navigator365',
     sinceDate: 'August 2021',
     photo: 'ben'
-  }
+  },
 ];
 
 export const pastContentAuthors: Contributor[] = [
@@ -122,5 +104,17 @@ export const pastContentAuthors: Contributor[] = [
     githubUsername: 'topazand',
     sinceDate: 'Apr 2021',
     photo: 'zhixin',
+  },
+  {
+    name: 'Jeffrey Meng',
+    githubUsername: 'jeffreymeng',
+    sinceDate: 'Oct 2020',
+    photo: 'jeffrey',
+  },
+  {
+    name: 'Ananth Kashyap',
+    githubUsername: 'AAkashyap1',
+    sinceDate: 'Apr 2021',
+    photo: 'ananth',
   },
 ];

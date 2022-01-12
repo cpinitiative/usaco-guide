@@ -4,7 +4,7 @@ redirects:
   - /silver/binary-search-sorted
   - /silver/binary-search-ans
 title: 'Binary Search'
-author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang, Dustin Miao
 prerequisites:
   - greedy-sorting
 description:
@@ -111,12 +111,13 @@ range `[lo,hi]`.
 #include <bits/stdc++.h>
 using namespace std;
 
-int lastTrue(int lo, int hi, function<bool(int)> test) {
+int lastTrue(int lo, int hi, function<bool(int)> f) {
+	// if none of the values in the range work, return lo - 1
 	lo--;
 	while (lo < hi) {
 		// find the middle of the current range (rounding up)
 		int mid = lo + (hi - lo + 1) / 2;
-		if (test(mid)) {
+		if (f(mid)) {
 			// if mid works, then all numbers smaller than mid also work
 			lo = mid;
 		} else {
@@ -159,12 +160,13 @@ public class BinarySearch {
 		System.out.println(lastTrue(2, 10, (x) -> false));  // outputs 1
 	}
 
-	public static int lastTrue(int lo, int hi, Predicate<Integer> test) {
+	public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+		// if none of the values in the range work, return lo - 1
 		lo--;
 		while (lo < hi) {
 			// find the middle of the current range (rounding up)
 			int mid = lo + (hi - lo + 1) / 2;
-			if (test.test(mid)) {
+			if (f.test(mid)) {
 				// if mid works, then all numbers smaller than mid also work
 				lo = mid;
 			} else {
@@ -189,14 +191,15 @@ if you're not familiar with the `Predicate` interface used.
 from typing import Callable
 
 
-def lastTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+def lastTrue(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	"""
 	Binary Search
 	:param lo: lower bound
 	:param hi: upper bound
-	:param test: a function that returns whether a number is valid or not
-	:return: the maximum x such that test(x) is true
+	:param f: a function that returns whether a number is valid or not
+	:return: the maximum x such that f(x) is true
 	"""
+	# if none of the values in the range work, return lo - 1
 	lo -= 1
 	while lo < hi:
 		# find the middle of the current range (rounding up)
@@ -242,10 +245,10 @@ to the target element. We use powers of 2, very similiar to
 #include <bits/stdc++.h>
 using namespace std;
 
-int lastTrue(int lo, int hi, function<bool(int)> test) {
+int lastTrue(int lo, int hi, function<bool(int)> f) {
 	lo--;
 	for (int dif = hi - lo; dif > 0; dif /= 2) {
-		while (lo + dif <= hi && test(lo + dif)) {
+		while (lo + dif <= hi && f(lo + dif)) {
 			lo += dif;
 		}
 	}
@@ -258,10 +261,10 @@ int lastTrue(int lo, int hi, function<bool(int)> test) {
 <JavaSection>
 
 ```java
-public static int lastTrue(int lo, int hi, Predicate<Integer> test) {
+public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 	lo--;
 	for (int dif = hi - lo; dif > 0; dif /= 2) {
-		while (lo + dif <= hi && test.test(lo + dif)) {
+		while (lo + dif <= hi && f.test(lo + dif)) {
 			lo += dif;
 		}
 	}
@@ -277,18 +280,18 @@ public static int lastTrue(int lo, int hi, Predicate<Integer> test) {
 from typing import Callable
 
 
-def lastTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+def lastTrue(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	"""
 	Binary Search
 	:param lo: lower bound
 	:param hi: upper bound
-	:param test: a function that returns whether a number is valid or not
-	:return: the maximum x such that test(x) is true
+	:param f: a function that returns whether a number is valid or not
+	:return: the maximum x such that f(x) is true
 	"""
 	lo -= 1
 	dif = hi - lo
 	while dif > 0:
-		while lo + dif <= hi and test(lo + dif):
+		while lo + dif <= hi and f(lo + dif):
 			lo += dif
 		dif //= 2
 	return lo
@@ -321,11 +324,11 @@ cut the right part, and when it's not, the left part will be cut.
 #include <bits/stdc++.h>
 using namespace std;
 
-int firstTrue(int lo, int hi, function<bool(int)> test) {
+int firstTrue(int lo, int hi, function<bool(int)> f) {
 	hi++;
 	while (lo < hi) {
 		int mid = lo + (hi - lo) / 2;
-		if (test(mid)) {
+		if (f(mid)) {
 			hi = mid;
 		} else {
 			lo = mid + 1;
@@ -355,11 +358,11 @@ public class BinarySearch {
 		System.out.println(firstTrue(2, 10, (x) -> false));  // outputs 11
 	}
 
-	public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
+	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 		hi++;
 		while (lo < hi) {
 			int mid = lo + (hi - lo) / 2;
-			if (test.test(mid)) {
+			if (f.test(mid)) {
 				hi = mid;
 			} else {
 				lo = mid + 1;
@@ -378,11 +381,11 @@ public class BinarySearch {
 from typing import Callable
 
 
-def firstTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+def firstTrue(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	hi += 1
 	while lo < hi:
 		mid = (lo + hi) // 2
-		if test(mid):
+		if f(mid):
 			hi = mid
 		else:
 			lo = mid + 1
@@ -434,11 +437,11 @@ function returns `false`.
 #include <bits/stdc++.h>
 using namespace std;
 
-int lastTrue(int lo, int hi, function<bool(int)> test) {
+int lastTrue(int lo, int hi, function<bool(int)> f) {
 	lo--;
 	while (lo < hi) {
 		int mid = lo + (hi - lo + 1) / 2;
-		if (test(mid)) {
+		if (f(mid)) {
 			lo = mid;
 		} else {
 			hi = mid - 1;
@@ -546,11 +549,11 @@ def medReachable(x: int) -> bool:
 
 
 # binary searches for the correct answer
-def lastTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+def lastTrue(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	lo -= 1
 	while lo < hi:
 		mid = lo + (hi - lo + 1) // 2;
-		if test(mid):
+		if f(mid):
 			lo = mid
 		else:
 			hi = mid - 1
@@ -580,7 +583,7 @@ Consider the code from CSAcademy's
 <CPPSection>
 
 ```cpp
-long long test(int x) {
+long long f(int x) {
 	return (long long) x * x;
 }
 
@@ -589,7 +592,7 @@ int sqrt(int x) {
 	int hi = x;
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
-		if (test(mid) <= x) {
+		if (f(mid) <= x) {
 			lo = mid;
 		} else {
 			hi = mid - 1;
@@ -604,7 +607,7 @@ int sqrt(int x) {
 <JavaSection>
 
 ```java
-public static long test(int x) {
+public static long f(int x) {
 	return (long) x * x;
 }
 
@@ -613,7 +616,7 @@ public static int sqrt(int x) {
 	int hi = x;
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
-		if (test(mid) <= x) {
+		if (f(mid) <= x) {
 			lo = mid;
 		} else {
 			hi = mid - 1;
@@ -628,7 +631,7 @@ public static int sqrt(int x) {
 <PySection>
 
 ```python
-def test(x: int) -> int:
+def f(x: int) -> int:
 	return x * x
 
 def sqrt(x: int) -> int:
@@ -636,7 +639,7 @@ def sqrt(x: int) -> int:
 	hi = 0
 	while lo < hi:
 		mid = (lo + hi) // 2
-		if test(mid) <= x:
+		if f(mid) <= x:
 			lo = mid
 		else:
 			hi = mid - 1
@@ -663,11 +666,11 @@ Consider a slightly modified version of `firstTrue`:
 
 using namespace std;
 
-int firstTrue(int lo, int hi, function<bool(int)> test) {
+int firstTrue(int lo, int hi, function<bool(int)> f) {
 	hi++;
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
-		if (test(mid)) {
+		if (f(mid)) {
 			hi = mid;
 		} else {
 			lo = mid + 1;
@@ -682,11 +685,11 @@ int firstTrue(int lo, int hi, function<bool(int)> test) {
 <JavaSection>
 
 ```java
-public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 	hi++;
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
-		if (test.test(mid)) {
+		if (f.test(mid)) {
 			hi = mid;
 		} else {
 			lo = mid + 1;
@@ -704,11 +707,11 @@ public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
 from typing import Callable
 
 
-def firstTrue(lo: int, hi: int, test: Callable[[int], bool]) -> int:
+def firstTrue(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	hi += 1
 	while lo < hi:
 		mid = (lo + hi) // 2
-		if test(mid):
+		if f(mid):
 			hi = mid
 		else:
 			lo = mid + 1
@@ -778,11 +781,11 @@ of down.
 
 using namespace std;
 
-int firstTrue(int lo, int hi, function<bool(int)> test) {
+int firstTrue(int lo, int hi, function<bool(int)> f) {
 	hi++;
 	while (lo < hi) {
 		int mid = lo + (hi - lo) / 2;
-		if (test(mid)) {
+		if (f(mid)) {
 			hi = mid;
 		} else {
 			lo = mid + 1;
@@ -797,11 +800,11 @@ int firstTrue(int lo, int hi, function<bool(int)> test) {
 <JavaSection>
 
 ```java
-public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 	hi++;
 	while (lo < hi) {
 		int mid = lo + (hi - lo) / 2;
-		if (test.test(mid)) {
+		if (f.test(mid)) {
 			hi = mid;
 		} else {
 			lo = mid + 1;
@@ -819,11 +822,11 @@ public static int firstTrue(int lo, int hi, Predicate<Integer> test) {
 from typing import Callable
 
 
-def firstTrue(lo: int, hi: NotImplemented, test: Callable[[int], bool]) -> int:
+def firstTrue(lo: int, hi: NotImplemented, f: Callable[[int], bool]) -> int:
 	hi += 1
 	while lo < hi:
 		mid = lo + (hi - lo) // 2
-		if test(mid):
+		if f(mid):
 			hi = mid
 		else:
 			lo = mid + 1
@@ -1169,3 +1172,187 @@ for _ in range(queryNum):
 ### General
 
 <Problems problems="general" hideSuggestProblemButton />
+
+## Quiz
+				
+<Quiz>
+  <Quiz.Question>
+    What is the worst and the best case time complexity for binary searching for a number in a sorted array of size $n$?
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$ / $\Omega(\log n)$
+      <Quiz.Explanation>
+        Incorrect. Consider the case where the target element is the median of the array. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log n)$ / $\Omega(1)$
+      <Quiz.Explanation>
+        Correct. The worst case happens when the number is not present, and the best case occurs if the first number we check is the target value. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n)$ / $\Omega(\log n)$
+      <Quiz.Explanation>
+        Incorrect. Binary search always takes at most $\lceil \log n \rceil$ iterations. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$ / $\Omega(\log \log n)$
+      <Quiz.Explanation>
+        Incorrect. Consider the case where the target element is the median of the array. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What is an advantage of using binary search over linear search?
+    <Quiz.Answer correct>
+      Faster time complexity
+      <Quiz.Explanation>
+        Correct. Linear search runs in $\mathcal{O}(n)$, whereas binary search runs in $\mathcal{O}(\log n)$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Less Memory
+      <Quiz.Explanation>
+        Incorrect. Binary search and linear search both use $\mathcal{O}(n)$ memory.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Easier implementation
+      <Quiz.Explanation>
+        Incorrect. Linear search is, in most cases, a simple `for` loop, whereas binary search most often requires at least two additional variables and conditionals. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Suppose a program involving binary search runs in $\mathcal{O}(\log n)$ time for some $n$. What is the smallest value of $n$ where runtime would be an issue? A typical online judge can handle around $10^9$ operations in a second. 
+    <Quiz.Answer>
+      $9$
+      <Quiz.Explanation>
+        Incorrect. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $10^9$
+      <Quiz.Explanation>
+      	Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+		<Quiz.Answer>
+		$99^9$
+    <Quiz.Explanation>
+    	Incorrect. 
+    </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $10^{10^{9}}$
+      <Quiz.Explanation>
+        Correct. The logarithm of this value is a bit more than $10^9$. A straightforward, logarithmic binary search will almost never run into issues regarding time limit. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Suppose we were tasked to find the maximum value `m` in the range $[l,r], 0 \leq l \leq r \leq 10^9$ such that a given monotonic boolean function `f(m)` returns `true`. The following code has an error in it that causes an infinite loop. Find the corrected version. Assume that `f(l)` always evaluates to true (i.e., there exists an `m` satisfying the given conditions). 
+
+<LanguageSection>
+<CPPSection>
+```cpp
+int findMaxTrue(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+<Quiz.Answer>
+```cpp
+int findMaxTrue(int l, int r, function<bool(int)> f) {
+	while (l <= r) { // <= instead of <
+		int m = (l + r) / 2;
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+ Incorrect. This will still cause an infinite loop. For instance, if for `f` we have
+```cpp
+bool f(int m) { return m <= 7; }
+``` 
+and call `findMaxTrue(1, 11, f)`, the program will never terminate (it will be stuck at $l = 6, r = 7$).
+</Quiz.Explanation>
+</Quiz.Answer>
+
+<Quiz.Answer>
+```cpp
+int findMaxTrue(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f(m)) {
+			l = m + 1;  // change m to m + 1
+		} else {
+			r = m;  // change m - 1 to m
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+Incorrect. While this will no longer cause an infinite loop, it will now output the wrong answer (instead of the maximum number that evaluates to true, it will return the minimum number that evaluates to false). 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+
+<Quiz.Answer>
+```cpp
+int findMaxTrue(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = l + (r - l) / 2;  // change (l + r) / 2
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+Incorrect. This is equivalent to the previous statement, except this statement is sometimes used to avoid integer overflow. 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+
+<Quiz.Answer correct>
+```cpp
+int findMaxTrue(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = (l + r + 1) / 2;  // change (l + r) / 2
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+        Correct. The reason for an infinite loop is when $r$ is one more than $l$ and `f(l)` evaluates to `true` . $m$ will be defined as $\lfloor \frac {l + r} 2 \rfloor = l$, and will thus evaluate to true, which means that $l$ and $r$ have not changed in the loop. By adding $1$ to the expression, $\lfloor \frac {l + r + 1} 2 \rfloor$ will instead evaluate to $r$ which will break the loop. 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+</Quiz.Question>
+</Quiz>

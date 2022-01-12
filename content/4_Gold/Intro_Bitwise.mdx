@@ -35,8 +35,8 @@ addition/multiplication.
 
 ## Example - Addition
 
-Try implementing addition using bitwise operators! (Here's an
-[online judge](http://poj.org/problem?id=1000) if you want to test it)
+Try implementing addition using bitwise operators!
+You can test your implementation [here](http://poj.org/problem?id=1000).
 
 <Spoiler title="Solution">
 
@@ -49,13 +49,11 @@ both numbers: $a\&b$.
 <CPPSection>
 
 ```cpp
-int sum(int a, int b)
-{
-	while(b>0)
-	{
-		int carry=a&b;
-		a^=b;
-		b=carry<<1;
+int add(int a, int b) {
+	while (b > 0) {
+		int carry = a & b;
+		a ^= b;
+		b = carry << 1;
 	}
 	return a;
 }
@@ -66,13 +64,11 @@ int sum(int a, int b)
 <JavaSection>
 
 ```java
-public static int sum(int a, int b)
-{
-	while(b>0)
-	{
-		int carry=a&b;
-		a^=b;
-		b=carry<<1;
+public static int add(int a, int b) {
+	while (b > 0) {
+		int carry = a & b;
+		a ^= b;
+		b = carry << 1;
 	}
 	return a;
 }
@@ -83,11 +79,11 @@ public static int sum(int a, int b)
 <PySection>
 
 ```py
-def sum(a, b):
-	while b>0:
-		carry=a&b;
-		a^=b;
-		b=carry<<1;
+def add(a: int, b: int) -> int:
+	while b > 0:
+		carry = a & b
+		a ^= b
+		b = carry << 1
 	return a
 ```
 
@@ -99,9 +95,9 @@ def sum(a, b):
 
 ## Example - Multiplication
 
-Now try implementing multiplication using bitwise operators! (I couldn't find an
-online judge for multiplication, but here's a similar problem:
-[link](https://www.hackerrank.com/challenges/handshake/problem))
+Now try implementing multiplication using bitwise operators!
+If you want to test your implementation of multiplication,
+you can do so [here](https://www.hackerrank.com/challenges/handshake/problem).
 
 <Spoiler title="Solution">
 
@@ -122,12 +118,15 @@ $$
 <CPPSection>
 
 ```cpp
-int prod(int a, int b)
-{
-	int c=0;
-	for(;b>0;b>>=1, a<<=1)
-		if(b&1)
-			c=sum(c, a);
+int prod(int a, int b) {
+	int c = 0;
+	while (b > 0) {
+		if ((b & 1) == 1) {
+			c = add(c, a);  // Use the addition function we coded previously
+		}
+		a <<= 1;
+		b >>= 1;
+	}
 	return c;
 }
 ```
@@ -137,15 +136,14 @@ int prod(int a, int b)
 <JavaSection>
 
 ```java
-public int prod(int a, int b)
-{
-	int c=0;
-	while(b>0)
-	{
-		if((b&1)==1)
-			c=sum(c, a);
-		a<<=1;
-		b>>=1;
+public static int prod(int a, int b) {
+	int c = 0;
+	while(b > 0) {
+		if ((b & 1) == 1) {
+			c = add(c, a);  // Use the addition function we coded previously
+		}
+		a <<= 1;
+		b >>= 1;
 	}
 	return c;
 }
@@ -156,13 +154,13 @@ public int prod(int a, int b)
 <PySection>
 
 ```py
-def prod(a, b):
-	c=0
-	while b>0:
-		if b&1:
-			c=sum(c, a)
-		a<<=1
-		b>>=1
+def prod(a: int, b: int) -> int:
+	c = 0
+	while b > 0:
+		if b & 1:
+			c = add(c, a)  # Use the addition function we coded previously
+		a <<= 1
+		b >>= 1
 	return c
 ```
 

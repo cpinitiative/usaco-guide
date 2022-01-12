@@ -1,0 +1,97 @@
+---
+id: usaco-717
+source: USACO Gold 2017 December
+title: Why Did the Cow Cross the Road
+author: Qi Wang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_visitfj_gold_feb17.html)
+
+## Implementation
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class VisitFJ {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("visitfj");
+
+		// Possible paths cow can take
+		int[] dx = {0, 1, 2, 3, 0, 1, 2, -1, -2, -3, -1, -2, 1, -1, 0, 0};
+		int[] dy = {3, 2, 1, 0, -3, -2, -1, 2, 1, 0, -2, -1, 0, 0, 1, -1};
+
+		int N = io.nextInt();
+		int T = io.nextInt();
+
+		int[][] w = new int[N][N];
+		int[][] dist = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			Arrays.fill(dist[i], Integer.MAX_VALUE);
+			for (int j = 0; j < N; j++) {
+				w[i][j] = io.nextInt();
+			}
+		}
+
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.add(new Edge(new int[]{0, 0}, 0));
+		while (!pq.isEmpty()) {
+			Edge cur = pq.poll();
+			int[] pos = cur.t;
+
+			int d = N - 1 - pos[0] + N - 1 - pos[1];
+
+			// If within 3 blocks away, update the minimum weight needed
+			if (d < 3 && d > 0) {
+				dist[N - 1][N - 1] = Math.min(dist[N - 1][N - 1], cur.w + T * d);
+			}
+
+			for (int i = 0; i < dx.length; i++) {
+				int nx = pos[0] + dx[i];
+				int ny = pos[1] + dy[i];
+
+				// Continue if new point is out of bound
+				if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
+					continue;
+				}
+
+				int nw = cur.w + w[nx][ny] + T * 3;
+				
+				// If new distance is greater than current minimum distance, it is not needed
+				if (nw > dist[nx][ny]) {
+					continue;
+				}
+				dist[nx][ny] = nw;
+
+				pq.add(new Edge(new int[]{nx, ny}, nw));
+			}
+		}
+
+		io.println(dist[N - 1][N - 1]);
+		io.close();
+	}
+
+	private static class Edge implements Comparable<Edge>{
+		int[] t;
+		int w;
+		public Edge(int[] t, int w) {
+			this.t = t;
+			this.w = w;
+		}
+
+		@Override
+		public int compareTo(Edge o) {
+			return w - o.w;
+		}
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

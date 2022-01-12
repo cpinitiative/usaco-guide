@@ -1,0 +1,238 @@
+---
+id: usaco-971
+source: USACO Gold 2019 December
+title: Moortal Cowmbat
+author: Sofia Yang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cowmbat_gold_dec19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M^3 + N M^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1e5;
+const int MAXL = 26;
+int freq[MAXN][MAXL];
+
+// count(i, j, k) is the number of appearances of letter k between index i and j.
+int count(int start, int end, int let) {
+	return freq[end + 1][let] - freq[start][let];
+}
+
+int main() {
+	freopen("cowmbat.in", "r", stdin); // see /general/input-output
+	freopen("cowmbat.out", "w", stdout);
+	int N;
+	int M;
+	int K;
+	cin >> N >> M >> K;
+
+	string S;
+	cin >> S;
+
+	vector<vector<int>> cost(M, vector<int>(M));
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < M; j++) {
+			cin >> cost[i][j];
+		}
+	}
+
+	// Calculate the minimum cost to change letter i to j.
+	for (int k = 0; k < M; k++) {
+		for (int i = 0; i < M; i++) {
+			for (int j = 0; j < M; j++) {
+				cost[i][j] = min(cost[i][j], cost[i][k] + cost[k][j]);
+			}
+		}
+	}
+
+	/*
+	 * freq[i][j] is frequency of letter j
+	 * in the string in the range from 0 to i.
+	 */
+	for (int i = 1; i <= N; i++) {
+		for (int j = 0; j < M; j++) {
+			freq[i][j] = freq[i - 1][j];
+		}
+		freq[i][S[i - 1] - 'a']++;
+	}
+
+	/*
+	 * dp[i][j] is the minimum cost to make a valid streak
+	 * up to index i, where the last streak has letter j.
+	 */
+	vector<vector<int>> dp(N, vector<int>(M, INT32_MAX));
+	// ans[i] is the minimum cost to make a valid streak to index i.
+	vector<int> ans(N, INT32_MAX);
+	ans[0] = 0;
+
+	// If (N < 2 * K), then there is only 1 letter streak.
+	for (int idx = K - 1; (idx < 2 * K - 1) && (idx < N); idx++) {
+		for (int let = 0; let < M; let++) {
+			dp[idx][let] = 0;
+			for (int i = 0; i < M; i++) {
+				// Calculate cost of converting each letter to 'let'.
+				dp[idx][let] += (cost[i][let] * count(0, idx, i));
+			}
+		}
+
+		// Find a letter 'j' with minimum cost to change all the letters to.
+		ans[idx] = dp[idx][0];
+		for (int j = 1; j < M; j++) {
+			ans[idx] = min(ans[idx], dp[idx][j]);
+		}
+	}
+
+
+	// If (N >= 2K) there is >= 1 unique letter streaks.
+	for (int idx = (2 * K - 1); idx < N; idx++) {
+		// Continue the previous streak.
+		for (int j = 0; j < M; j++) {
+			dp[idx][j] = dp[idx - 1][j];
+			// Change the letter.
+			if (S[idx] - 'a' != j) {
+				dp[idx][j] += cost[S[idx] - 'a'][j];
+			}
+		}
+
+		// Make a new streak with letter 'let1'.
+		for (int let1 = 0; let1 < M; let1++) {
+			int add = 0;
+			for (int let2 = 0; let2 < M; let2++) {
+				add += cost[let2][let1] * count(idx - K + 1, idx, let2);
+			}
+			//Continue with same letter, or make a new streak
+			dp[idx][let1] = min(dp[idx][let1], ans[idx - K] + add);
+		}
+		// Update the answer.
+		ans[idx] = dp[idx][0];
+		for (int j = 1; j < M; j++) {
+			ans[idx] = min(ans[idx], dp[idx][j]);
+		}
+
+	}
+	cout << ans[N - 1] << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MoortalCowmbat {
+	public static int MAXN = (int) 1e5;
+	public static int MAXL = 26;
+	public static int[][] freq = new int[MAXN][MAXL];
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("cowmbat");
+		int N = io.nextInt();
+		int M = io.nextInt();
+		int K = io.nextInt();
+		char[] S = io.next().toCharArray();
+
+		int[][] cost = new int[MAXL][MAXL];
+		for (int i = 0; i < M; i++) {
+			for (int j = 0; j < M; j++) {
+				cost[i][j] = io.nextInt();
+			}
+		}
+
+		// Calculate the minimum cost to change letter i to j.
+		for (int k = 0; k < M; k++) {
+			for (int i = 0; i < M; i++) {
+				for (int j = 0; j < M; j++) {
+					cost[i][j] = Math.min(cost[i][j], cost[i][k] + cost[k][j]);
+				}
+			}
+		}
+
+		/*
+		 * freq[i][j] is frequency of letter j
+		 * in the string in the range from 0 to i.
+		 */
+		for (int i = 1; i <= N; i++) {
+			for (int j = 0; j < M; j++) {
+				freq[i][j] = freq[i - 1][j];
+			}
+			freq[i][S[i - 1] - 'a']++;
+		}
+
+		/*
+		 * dp[i][j] is the minimum cost to make a valid streak
+		 * up to index i, where the last streak has letter j.
+		 */
+		int[][] dp = new int[MAXN][MAXL];
+		// ans[i] is the minimum cost to make a valid streak to index i.
+		int[] ans = new int[MAXN];
+		ans[0] = 0;
+
+		// If (N < 2 * K), then there is only 1 letter streak.
+		for (int idx = K - 1; (idx < 2 * K - 1) && (idx < N); idx++) {
+			for (int let = 0; let < M; let++) {
+				dp[idx][let] = 0;
+				for (int i = 0; i < M; i++) {
+					// Calculate cost of converting each letter to 'let'.
+					dp[idx][let] += (cost[i][let] * count(0, idx, i));
+				}
+			}
+
+			// Find a letter 'j' with minimum cost to change all the letters to.
+			ans[idx] = dp[idx][0];
+			for (int j = 1; j < M; j++) {
+				ans[idx] = Math.min(ans[idx], dp[idx][j]);
+			}
+		}
+
+
+		//If (N >= 2K) there is >= 1 unique letter streaks.
+		for (int idx = (2 * K - 1); idx < N; idx++) {
+			// Continue the previous streak.
+			for (int j = 0; j < M; j++) {
+				dp[idx][j] = dp[idx - 1][j];
+				// Change the letter.
+				if (S[idx] - 'a' != j) {
+					dp[idx][j] += cost[S[idx] - 'a'][j];
+				}
+			}
+
+			// Make a new streak with letter 'let1'.
+			for (int let1 = 0; let1 < M; let1++) {
+				int add = 0;
+				for (int let2 = 0; let2 < M; let2++) {
+					add += cost[let2][let1] * count(idx - K + 1, idx, let2);
+				}
+				// Continue with same letter, or make a new streak
+				dp[idx][let1] = Math.min(dp[idx][let1], ans[idx - K] + add);
+			}
+			// Update the answer.
+			ans[idx] = dp[idx][0];
+			for (int j = 1; j < M; j++) {
+				ans[idx] = Math.min(ans[idx], dp[idx][j]);
+			}
+
+		}
+		io.println(ans[N - 1]);
+		io.close();
+
+	}
+
+	// count(i, j, k) is the number of appearances of letter k between index i and j.
+	static int count(int start, int end, int let) {
+		return freq[end + 1][let] - freq[start][let];
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

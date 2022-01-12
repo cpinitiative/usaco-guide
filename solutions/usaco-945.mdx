@@ -1,0 +1,129 @@
+---
+id: usaco-945
+source: USACO Gold 2019 US Open
+title: Snakes
+author: Sofia Yang, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_snakes_gold_open19.html)
+
+
+Instead of keeping track of all of the different resizings, let's assume that $\texttt{dp}[i][j]$ stores the minimum sum of all net sizes for the first $i$ snakes after $j$ resizings. Then the total wasted space would be $\texttt{dp}[n][k] - T$, where $T$ is the sum of all of the groups of snakes.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("snakes.in", "r", stdin);
+	freopen("snakes.out", "w", stdout);
+	
+	int n, k;
+	cin >> n >> k;
+
+	vector<int> groups(n + 1);
+	for (int i = 1; i <= n; i++) {
+		cin >> groups[i];
+	}
+
+	/*
+	 * dp[i][j] = the min sum of net sizes after 
+	 * catching first i snakes with j resizings
+	 */
+	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
+
+	int largest_group = -1;
+	int space_used = 0;
+	for (int i = 1; i <= n; i++) {
+		largest_group = max(largest_group, groups[i]);
+		
+		/*
+		 * base case: with zero resizings, Bessie must start off with
+		 * a net large enough to catch the largest group of snakes
+		 */
+		dp[i][0] = largest_group * i;
+
+		for (int j = 1; j <= k; j++) {
+			dp[i][j] = INT32_MAX;
+			int net_size = groups[i];
+			for (int c = i - 1; c >= 0; c--) {
+				/*
+				 * consider the case where we switch
+				 * after collecting the first c groups
+				 */
+				dp[i][j] = min(dp[i][j], dp[c][j - 1] + net_size * (i - c));
+				net_size = max(net_size , groups[c]);
+			}
+		}
+		space_used += groups[i];
+	}
+	cout << dp[n][k] - space_used << "\n";
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Snakes {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("snakes");
+		int groups = io.nextInt();
+		int changes = io.nextInt();
+
+		/*
+		 * dp[i][j] is the min sum of net sizes used
+		 * to pick up the first i groups with j net size changes.
+		 */
+		int[][] dp = new int[groups + 1][changes + 1];
+		int[] snakes = new int[groups + 1];
+		int noWaste = 0;  // Just the sum of snakes in each group.
+		int max = -1;  // The maximum net size used.
+
+		for (int i = 1; i <= groups; i++) {
+			snakes[i] = io.nextInt();
+			max = Math.max(max, snakes[i]);
+
+			// The default value is just (max net size) * (num groups).
+			dp[i][0] = max * i;
+
+			for (int j = 1; j <= changes; j++) {
+				dp[i][j] = Integer.MAX_VALUE;
+				int size = snakes[i];
+				// Changing the net size.
+				for (int prev = i - 1; prev >= 0; prev--) {
+					/*
+					 * The cost is the previous cost,
+					 * plus the cost of picking up the groups from prev to i.
+					 */
+					dp[i][j] = Math.min(dp[i][j], dp[prev][j - 1] + size * (i - prev));
+					size = Integer.max(size, snakes[prev]);
+				}
+			}
+			noWaste += snakes[i];
+		}
+
+		/*
+		 * The space wasted is just the current space
+		 * used minus the space used if there is unlimited size changes.
+		 */
+		int answer = dp[groups][changes] - noWaste;
+		io.println(answer);
+		io.close();
+
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

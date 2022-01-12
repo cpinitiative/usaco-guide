@@ -1,0 +1,264 @@
+---
+id: cfgym-101102D
+source: CF
+title: Rectangles
+author: Kevin Sheng
+---
+
+Let's first simplify this problem, and then generalize the solution of that problem to this one.
+
+Say we had a matrix of all `0`'s and `1`'s. How many submatrices of all `1`'s are there?
+
+Let's first define a 2D array, $\texttt{longest\_consec}$, that contains the number of consecutive `1`'s that are directly to the right for each cell (including the cell itself).  
+For example, this matrix...
+
+<center>
+<table>
+	<tr>
+		<td>1</td>
+		<td>0</td>
+		<td>1</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>1</td>
+		<td>1</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>1</td>
+	</tr>
+</table>
+</center>
+
+would have the following $\texttt{longest\_consec}$:
+
+<center>
+<table>
+	<tr>
+		<td>1</td>
+		<td>0</td>
+		<td>2</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>3</td>
+		<td>2</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>1</td>
+	</tr>
+</table>
+</center>
+
+Now, we go through each column and then for each row in reverse,
+find out for each cell the number of all `1`'s submatrices where the cell is the upper left corner.
+
+How would we do this?
+
+First, let's initialize a stack $\texttt{rel\_streaks}$ which will have elements with two properties:
+the value of $\texttt{longest\_consec}$ for that element and the difference in row number
+(aka distance) between that element and the next element in the stack. 
+
+Also initialize a number $\texttt{curr\_sum}$, which, after processing, will contain
+the number of submatrices of all `1`'s that start at each cell.
+
+Now, let's say we just started at a particular cell. How should we change our value of $\texttt{curr\_sum}$?  
+Let's not consider the new matrices of one row that just got added first, and just consider the previous arrays.
+To be able to be extended into the current cell, they need to have a column-wise width
+less than the current value of $\texttt{longest\_consec}$.  
+To subtract these newly invalid submatrices, we keep on popping the stack while the first part of the
+first element is larger than the current width and adjusting the value of $\texttt{curr\_sum}$ as needed.
+
+Finally, for each step, we just need to add the current element on to the stack and add to $\texttt{curr\_sum}$
+the value of $\texttt{longest\_consec}$ for that cell.
+
+Given that we figured out that simpler problem, we can apply this to the actual problem.
+Let's make a modified version of $\texttt{longest\_consec}$, where each cell contains the
+number of consecutive elements to the right with the same value as the current cell.  
+
+After that, we run almost the exact same algorithm, only now resetting all the necessary
+variables when we encounter a number different than the previous ones we were processing.
+
+**Time Complexity:** $\mathcal{O}(RC)$ for each of $T$ test cases
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+
+int main() {
+	// see /general/fast-io
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(NULL);
+
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int row_num;
+		int col_num;
+		std::cin >> row_num >> col_num;
+		vector<vector<int>> grid(row_num, vector<int>(col_num));
+		for (int r = 0; r < row_num; r++) {
+			for (int c = 0; c < col_num; c++) {
+				std::cin >> grid[r][c];
+			}
+		}
+
+		vector<vector<int>> longest_consec(row_num, vector<int>(col_num));
+		for (int r = 0; r < row_num; r++) {
+			int curr = -1;
+			int streak = 0;
+			for (int c = 0; c < col_num; c++) {
+				if (grid[r][c] == curr) {
+					streak++;
+				} else {
+					curr = grid[r][c];
+					streak = 1;
+				}
+				longest_consec[r][c] = streak;
+			}
+		}
+
+		long long total = 0;
+		for (int c = 0; c < col_num; c++) {
+			vector<pair<int, int>> rel_streaks;
+			int curr_sum = 0;  // the current amt of valid submatrices
+			int curr = grid[row_num - 1][c];
+			// for each row in reverse, count # of valid submatrices that start at that cell
+			for (int r = row_num - 1; r >= 0; r--) {
+				// if we encounter a diff number, just up & reset everything
+				if (grid[r][c] != curr) {
+					curr = grid[r][c];
+					curr_sum = 0;
+					rel_streaks = vector<pair<int, int>>();
+				}
+
+				/*
+				 * the total # of elements that were killed
+				 * between this element & the last one
+				 */
+				int popped = 0;
+				// while this current row can possibly be a chokehold
+				while (!rel_streaks.empty()
+						&& longest_consec[r][c] < rel_streaks.back().first) {
+					// subtract the # of rectangles this chokehold made invalid
+					curr_sum -= (rel_streaks.back().second + 1)
+							* (rel_streaks.back().first - longest_consec[r][c]);
+					// add the number of kills this one got & kill this one itself
+					popped += rel_streaks.back().second + 1;
+					rel_streaks.pop_back();
+				}
+				rel_streaks.push_back({longest_consec[r][c], popped});
+				// add the submatrices of height 1
+				curr_sum += longest_consec[r][c];
+				total += curr_sum;
+			}
+		}
+		cout << total << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Rectangles {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer initial = new StringTokenizer(read.readLine());
+			int rowNum = Integer.parseInt(initial.nextToken());
+			int colNum = Integer.parseInt(initial.nextToken());
+			int[][] grid = new int[rowNum][];
+			for (int r = 0; r < rowNum; r++) {
+				grid[r] = Arrays.stream(read.readLine().split(" "))
+						.mapToInt(Integer::parseInt).toArray();
+			}
+
+			int[][] longestConsec = new int[rowNum][colNum];
+			for (int r = 0; r < rowNum; r++) {
+				int curr = -1;
+				int streak = 0;
+				for (int c = colNum - 1; c >= 0; c--) {
+					if (grid[r][c] == curr) {
+						streak++;
+					} else {
+						curr = grid[r][c];
+						streak = 1;
+					}
+					longestConsec[r][c] = streak;
+				}
+			}
+
+			long total = 0;
+			for (int c = 0; c < colNum; c++) {
+				Stack<int[]> relStreaks = new Stack<>();
+				int currSum = 0;  // the current amt of valid submatrices
+				int curr = grid[rowNum - 1][c];
+				/*
+				 * for each row in reverse, count the # of valid submatrices
+				 * that start at that cell
+				 */
+				for (int r = rowNum - 1; r >= 0; r--) {
+					// if we encounter a diff number, just up & reset everything
+					if (grid[r][c] != curr) {
+						curr = grid[r][c];
+						currSum = 0;
+						relStreaks = new Stack<>();
+					}
+
+					/*
+					 * the total # of elements that were killed
+					 * between this element & the last one
+					 */
+					int popped = 0;
+					// while this current row can possibly be a chokehold
+					while (!relStreaks.isEmpty()
+							&& longestConsec[r][c] < relStreaks.peek()[0]) {
+						// subtract the number of rectangles this chokehold made invalid
+						currSum -= (relStreaks.peek()[1] + 1)
+								* (relStreaks.peek()[0] - longestConsec[r][c]);
+						// add the number of kills this one got & kill this one itself
+						popped += relStreaks.peek()[1] + 1;
+						relStreaks.pop();
+					}
+					relStreaks.add(new int[] {longestConsec[r][c], popped});
+					currSum += longestConsec[r][c];  // add the submatrices of height 1
+					total += currSum;
+				}
+			}
+			System.out.println(total);
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

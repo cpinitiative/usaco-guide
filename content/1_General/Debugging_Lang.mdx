@@ -13,14 +13,14 @@ description:
 		url="https://sendtoaryansh.gitbook.io/informatics-notes/debugging-correctly"
 		title="Debugging Correctly"
 	>
-		some parts taken from here
+		Some parts were taken from here.
 	</Resource>
 	<Resource
 		source="LCPP"
 		url="https://www.learncpp.com/cpp-tutorial/basic-debugging-tactics/"
 		title="3.4 - A Strategy for Debugging"
 	>
-		adding print statements
+		How to add print statements.
 	</Resource>
 </Resources>
 
@@ -33,11 +33,9 @@ description:
 		url="64218"
 		starred
 	>
-		don't agree with everything but important to read nonetheless
+		Contains many important gems.
 	</Resource>
 </Resources>
-
-It helps to write readable code ...
 
 ## Printing Variables
 
@@ -47,20 +45,55 @@ The most basic way that you might debug is adding a print statement. This is
 great and serves the purpose for the most part. For instance, we can write the
 below to check the value of `x` at a point in our code.
 
+<LanguageSection>
+<CPPSection>
 ```cpp
 #include <iostream>
 using namespace std;
 
-int x = 10; // some important variable
+int x = 10;  // pretend this holds some important variable
 
-void dbg() { cout << "x is " << x << "\n"; }
+void dbg() {
+	cout << "x is " << x << endl; 
+}
 
 int main() {
-	dbg();
+	dbg();  // outputs 10
 	x = 5000;
-	dbg();
+	dbg();  // now outputs 5000
 }
 ```
+</CPPSection>
+<JavaSection>
+```java
+public class Main {
+	static int x = 10;  // pretend this holds some important variable
+	
+	public static void main(String[] args) {
+		dbg();  // outputs 10
+		x = 5000;
+		dbg();  // now outputs 5000
+	}
+
+	static void dbg() {
+		System.out.println(x);
+	}
+}
+```
+</JavaSection>
+<PySection>
+```py
+x = 10  # pretend this holds some important variable
+
+def dbg():
+	print(x)
+
+dbg()  # outputs 10
+x = 5000
+dbg()  # now outputs 5000
+```
+</PySection>
+</LanguageSection>
 
 Such print statements are great on a basic level, and we can comment or define
 them out of our main code when we need to compile and execute a more final
@@ -68,17 +101,25 @@ version of our code.
 
 However, as great as print statements are, they are annoying to work with and
 efficiently separate from the actual parts of our code. This is important for
-example when we want an online judge \(OJ\) to read our output.
+example when we want an online judge (OJ) to read our output.
 
 ### Standard Error Stream
 
-The standard error stream \(`cerr` in C++\) is a quick fix to this. Instead of
-printing in standard iostream, we actually generate a whole new stream of data
-called the error stream. Simply replace all instances of `cout` with `cerr`. For
-example:
+The standard error stream is a quick fix to this. Instead of
+printing in the standard output stream, we can print in a whole new stream
+called the standard error stream instead.
 
+<LanguageSection>
+<CPPSection>
 ```cpp
-void dbg() { cerr << "x is " << x << "\n"; }
+#include <iostream>
+using namespace std;
+
+int x = 10;
+
+void dbg() {
+	cerr << "x is " << x << endl; 
+}
 
 int main() {
 	dbg();
@@ -86,48 +127,238 @@ int main() {
 	dbg();
 }
 ```
+</CPPSection>
+<JavaSection>
+```java
+public class Main {
+	static int x = 10;
+	
+	public static void main(String[] args) {
+		dbg();
+		x = 5000;
+		dbg();
+	}
 
-Try running this program and you might be confused about the difference. You
-will be able to see the output of `cerr` right next to regular `cout` outputs.
-But this is the beauty of it! And if we use freopen to open up file pipes or
-submit this to an OJ, the program will not include the error stream.
+	static void dbg() {
+		System.err.println(x);
+	}
+}
+```
+</JavaSection>
+<PySection>
+```py
+import sys
+
+x = 10
+
+def dbg():
+	print(x, file=sys.stderr)
+
+dbg()  # outputs 10
+x = 5000
+dbg()  # now outputs 5000
+```
+</PySection>
+</LanguageSection>
+
+Try running this program and you might be confused about the difference. The
+content in the error stream appears right alongside that in the standard output
+stream. But this is the beauty of it! And the best thing about it is, if we
+submit this program to an OJ, it won't notice the output in the error stream
+at all!
 
 <Warning>
 
-Printing too much content to `stderr` can still cause TLE when submitting to an
-OJ.
+Printing too much content (even to the error stream) can cause TLE when
+submitting to an OJ.
 
 </Warning>
+
+<LanguageSection>
+<CPPSection>
 
 ### Debug Template
 
-<IncompleteSection>
+As C++ does not contain built-in print functions for many of its built-in
+data structures, it would be good to have some prewritten code to print them.
+[This](https://gist.github.com/SansPapyrus683/61b65d4d7ec223b48ebf5c3bb382ba8d)
+template is rather easy to use. It includes support for basically all of the
+needed data structures in competitive programming. Here's how you would use it:
+```cpp
+#include <iostream>
+#include <vector>
 
-mention line #
-[macros](https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html)
+#include "debugging.h"
 
-</IncompleteSection>
+using namespace std;
 
-Although not feasible if you have to write all code from scratch,
-[this template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO.h)
-is very helpful for simplifying input / output / debug output. Note that `dbg()`
-only produces debug output when `-DLOCAL` is included as part of the compilation
-command, so you don't need to comment out those lines before submitting.
-
-[Examples - Debug Output](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO_test.cpp)
+int main() {
+	vector<int> arr{1, 2, 3, 4};
+	cout << arr << endl;  // just feed it into cout like any other variable
+}
+```
 
 <Warning>
-
-You are not allowed to use pre-written code for USACO contests, so `dbg()`
+You are not allowed to use pre-written code for USACO contests, so this template
 should only be used for other online contests.
-
 </Warning>
 
-<IncompleteSection>
+### Getting the Line Number
 
-examples for all of input, output, debug?
+Sometimes, you'd like to know around which line your code is erroring at.
+To print the line number, you can use the `__LINE__` macro like so:
+```cpp
+#include <iostream>
+using namespace std;
 
-</IncompleteSection>
+int main() {
+	cout << __LINE__ << endl;  // outputs 5, the current line number
+}
+```
+
+### Checking for OOB
+
+C++ usually silently fails (or segfaults) when you access or write to a
+vector at an index that's out-of-bounds (writing to an invalid index is called
+[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow)).
+
+For example, the following code doesn't behave as expected:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec[0] << "\n";  // outputs 1234
+	for (int i = 0; i < 10; i++) {
+		invalid_vec[i] = i;
+	}
+	cout << valid_vec[0] << "\n";  // errors
+}
+```
+
+To prevent this, you can use
+[vector::at](https://www.cplusplus.com/reference/vector/vector/at) instead of
+[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[]).
+
+If we use this in our following code segment like so:
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec.at(0) << "\n";  // outputs 1234
+	for (int i = 0; i < 10; i++) {
+		invalid_vec.at(i) = i;
+	}
+	cout << valid_vec.at(0) << "\n";  // errors
+}
+```
+
+C++ will now check the bounds when we access the vectors and will
+produce the following output:
+```
+1234
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
+1 zsh: abort      ./$1 $@[2,-1]
+```
+
+If you want to find out the exact line at which this error occurs, you can use
+a debugger such as `gdb` or `lldb`.
+
+### Unspecified Evaluation Order
+
+Consider the following code stored in `bad.cpp`:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> res{-1};
+
+int add_element() {
+	res.push_back(-1);
+	return res.size() - 1;
+}
+
+int main() {
+	for (int i = 0; i < 5; ++i) {
+		res[i] = add_element();
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+Compiling and running the above code with C++17 as so:
+
+```
+g++ -std=c++17 bad.cpp -o bad && ./bad
+```
+
+gives the intended output:
+
+```
+0 1
+1 2
+2 3
+3 4
+4 5
+```
+
+But compiling and running with C++14 like this:
+
+```
+g++ -std=c++14 bad.cpp -o bad && ./bad
+```
+
+gives:
+
+```
+0 -1
+1 -1
+2 3
+3 -1
+4 5
+```
+
+However, the code works correctly if you save the result of `add_element()` to an
+intermediate variable.
+
+```cpp
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		int tmp = add_element();
+		res[i] = tmp;
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+<!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
+
+The problem is that `res[i] = add_element();` only works if `add_element()` is
+evaluated before `res[i]` is. If `res[i]` is evaluated first, and _then_
+`add_element()` results in the memory for `res` being reallocated, then `res[i]`
+is invalidated. The order in which `res[i]` and `add_element()` are evaluated is
+unspecified (at least before C++17).
+
+See
+[this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated)
+StackOverflow post for some discussion about why this is the case
+([here](https://stackoverflow.com/questions/18040037)'s a similar issue).
+
+You also may come across this issue when trying to create a
+[trie](https://codeforces.com/blog/entry/83241#comment-705458).
+
+</CPPSection>
+<JavaSection> </JavaSection>
+<PySection> </PySection>
+</LanguageSection>
 
 ## Stress Testing
 
@@ -142,7 +373,7 @@ find a difference. See the video for details.
 		url="https://www.youtube.com/watch?v=JXTVOyQpSGM"
 		starred
 	>
-		using a script to stress test
+		Using a script for stress testing.
 	</Resource>
 	<Resource
 		source="Errichto"
@@ -150,23 +381,25 @@ find a difference. See the video for details.
 		url="https://codeforces.com/blog/entry/64993"
 		starred
 	>
-		some parts from above video
+		Contains some parts from the above videos.
 	</Resource>
 	<Resource
 		source="Benq"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh"
 		title="Stress Testing"
 	>
-		script from Errichto's video
+		The script from the above video.
 	</Resource>
 </Resources>
 
-Script that was mentioned in video:
+<LanguageSection>
+<CPPSection>
+Here is the script that was mentioned in the video:
 
 ```
 # A and B are executables you want to compare, gen takes int
 # as command line arg. Usage: 'sh stress.sh'
-for((i = 1; ; ++i)); do # if they are same then will loop forever
+for ((i = 1; ; ++i)); do  # if they are same then will loop forever
     echo $i
     ./gen $i > int
     ./A < int > out1
@@ -176,13 +409,13 @@ for((i = 1; ; ++i)); do # if they are same then will loop forever
 done
 ```
 
-We can modify this to work for other situations. For example, if you have the
+We can modify this to work for other situations. For example, if you have
 input and output files (ex. `1.in`, `1.out`, `2.in`, `2.out`, ..., `10.out` for
 old USACO problems) then you can use the following:
 
 ```
-# A is executable you want to test
-for((i = 1; i <= 10; ++i)); do
+# A is the executable you want to test
+for ((i = 1; i <= 10; ++i)); do
     echo $i
     ./A < $i.in > out
     diff -w out $i.out || break
@@ -205,8 +438,23 @@ for((i = 1; ; ++i)); do
 done
 ```
 
-<LanguageSection>
+<Warning>
+This won't work if you're using Windows. Instead, you can use what
+[tourist](https://www.youtube.com/watch?v=JU3HY5GLVnY&t=58m58s) does:
 
+```
+:: save this in test.bat
+
+@echo off
+gen > in
+your_sol out
+correct_sol correct_out
+fc out correct_out
+if errorlevel 1 exit
+test
+```
+</Warning>
+</CPPSection>
 <JavaSection>
 
 Here is an script to test a Java program with input and output files. You will
@@ -271,43 +519,13 @@ fi
 ```
 
 </Spoiler>
-
 </JavaSection>
-
 </LanguageSection>
 
 If you want to learn how to write these scripts yourself, you can check
-[here](https://usaco.guide/general/cpp-command#linux) (but take this advice with
-a grain of salt since I'm not so proficient myself ...).
-
-<Warning>
-
-This won't work if you're using Windows. Instead, you can use what
-[tourist](https://www.youtube.com/watch?v=JU3HY5GLVnY&t=58m58s) does:
-
-```
-:: save this in test.bat
-
-@echo off
-gen > in
-your_sol out
-correct_sol correct_out
-fc out correct_out
-if errorlevel 1 exit
-test
-```
-
-</Warning>
-
-<IncompleteSection>
-
-scripts for multiple languages? can this be modified to break on an assertion
-failure?
-
-</IncompleteSection>
+[here](/general/cpp-command#linux).
 
 <LanguageSection>
-
 <CPPSection>
 
 ## Assertions & Warnings
@@ -319,10 +537,7 @@ failure?
 		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
 		starred
 	>
-		includes static_assert and #define NDEBUG
-	</Resource>
-	<Resource title="Assertions" source="GFG" url="assertions-cc">
-		subset of above
+		Includes `static_assert` and `#define NDEBUG`.
 	</Resource>
 	<Resource
 		title="5 - Diagnostics"
@@ -330,7 +545,7 @@ failure?
 		url="https://gcc.gnu.org/onlinedocs/cpp/Diagnostics.html"
 		starred
 	>
-		#warning, #error
+		Talks about `#warning` and `#error`.
 	</Resource>
 </Resources>
 
@@ -343,7 +558,7 @@ failure?
 		url="https://codeforces.com/blog/entry/15547"
 		starred
 	>
-		includes all the options mentioned below
+		Includes all the options mentioned below.
 	</Resource>
 </Resources>
 
@@ -353,34 +568,14 @@ You can also check what options
 
 ### Warning Options
 
-<Resources>
-	<Resource
-		starred
-		source="GCC"
-		url="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html"
-		title="3.8 - Options to Request or Suppress Warnings"
-	>
-		documentation for options below
-	</Resource>
-</Resources>
+In this section we'll go over some extra compilations you can add to your
+`g++` compiling to aid in debugging. You can find the official documentation
+for said options [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
 
-Such as the following:
-
+Some other options that you might find helpful
+(but we won't go over) are the following:
 ```
 -Wall -Wextra -Wshadow -Wconversion -Wfloat-equal -Wduplicated-cond -Wlogical-op
-```
-
-You can check the CF blog above for descriptions of these.
-
-#### `-Wextra`
-
-> Some extra warning flags that are not enabled by `-Wall`
-
-Doesn't seem so useful in a contest setting? Except maybe the following:
-
-```
--Wunused-parameter
--Wunused-but-set-parameter
 ```
 
 #### `-Wshadow`
@@ -401,33 +596,24 @@ Avoid variable shadowing!
 Let's give some examples of what each of these do.
 
 <Warning>
-	
-These can slow down compilation time and more importantly, runtime. So don't enable these when speed is of the essence (ex. for Facebook Hacker Cup).
+
+These can slow down compilation time even runtime, so don't enable these when
+speed is of the essence (ex. for Facebook Hacker Cup).
 
 </Warning>
 
 <Warning>
 
 `-fsanitize` flags
-[don't work with mingw](https://github.com/msys2/MINGW-packages/issues/3163). If
+[don't work with MinGW](https://github.com/msys2/MINGW-packages/issues/3163). If
 you're using Windows but still want to use these flags, consider using
 [an online compiler](https://repl.it/) (or installing Linux) instead.
 
 </Warning>
 
-#### `-fsanitize=undefined`
+#### [`-fsanitize=undefined`](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html)
 
-<Resources>
-	<Resource
-		source="GCC"
-		title="3.12 - Program Instrumentation Options"
-		url="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html"
-	>
-		documentation for -fsanitize
-	</Resource>
-</Resources>
-
-The following `prog.cpp` gives a segmentation fault.
+The following code stored in `prog.cpp` gives a segmentation fault.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -435,7 +621,7 @@ using namespace std;
 
 int main() {
 	vector<int> v;
-	cout << v[-1];
+	cout << v[-1] << endl;
 }
 ```
 
@@ -446,7 +632,7 @@ int main() {
 zsh: segmentation fault  ./prog
 ```
 
-Another example with `prog.cpp` as the following:
+Another example with `prog.cpp` is the following:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -454,7 +640,7 @@ using namespace std;
 
 int main() {
 	int v[5];
-	cout << v[5];
+	cout << v[5] << endl;
 }
 ```
 
@@ -476,8 +662,8 @@ following:
 using namespace std;
 
 int main() {
-	int x = 1<<30;
-	cout << x+x;
+	int x = 1 << 30;
+	cout << x + x << endl;
 }
 ```
 
@@ -501,9 +687,9 @@ So if `prog.cpp` is as follows:
 using namespace std;
 
 int main() {
-	cout << (1<<32) << endl;
-	cout << (1<<32) << endl;
-	cout << (1<<32) << endl;
+	cout << (1 << 32) << endl;
+	cout << (1 << 32) << endl;
+	cout << (1 << 32) << endl;
 }
 ```
 
@@ -518,13 +704,13 @@ produces:
 ```
 prog.cpp: In function 'int main()':
 prog.cpp:5:12: warning: left shift count >= width of type [-Wshift-count-overflow]
-    5 |  cout << (1<<32) << endl;
+    5 |  cout << (1 << 32) << endl;
       |           ~^~~~
 prog.cpp:6:12: warning: left shift count >= width of type [-Wshift-count-overflow]
-    6 |  cout << (1<<32) << endl;
+    6 |  cout << (1 << 32) << endl;
       |           ~^~~~
 prog.cpp:7:12: warning: left shift count >= width of type [-Wshift-count-overflow]
-    7 |  cout << (1<<32) << endl;
+    7 |  cout << (1 << 32) << endl;
       |           ~^~~~
 prog.cpp:5:12: runtime error: shift exponent 32 is too large for 32-bit type 'int'
 0
@@ -545,13 +731,13 @@ produces:
 ```
 prog.cpp: In function 'int main()':
 prog.cpp:5:12: warning: left shift count >= width of type [-Wshift-count-overflow]
-    5 |  cout << (1<<32) << endl;
+    5 |  cout << (1 << 32) << endl;
       |           ~^~~~
 prog.cpp:6:12: warning: left shift count >= width of type [-Wshift-count-overflow]
-    6 |  cout << (1<<32) << endl;
+    6 |  cout << (1 << 32) << endl;
       |           ~^~~~
 prog.cpp:7:12: warning: left shift count >= width of type [-Wshift-count-overflow]
-    7 |  cout << (1<<32) << endl;
+    7 |  cout << (1 << 32) << endl;
       |           ~^~~~
 prog.cpp:5:12: runtime error: shift exponent 32 is too large for 32-bit type 'int'
 zsh: abort      ./prog
@@ -576,7 +762,7 @@ AddressSanitizer does not appear to be available for MinGW.
 	</Resource>
 </Resources>
 
-The following `prog.cpp` gives a segmentation fault.
+The following code (stored in `prog.cpp`) gives a segmentation fault.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -584,14 +770,13 @@ using namespace std;
 
 int main() {
 	vector<int> v;
-	cout << v[-1];
+	cout << v[-1] << endl;
 }
 ```
 
 `g++ prog.cpp -o prog -fsanitize=address && ./prog` produces:
 
 <Spoiler title="AddressSanitizer">
-
 ```
 AddressSanitizer:DEADLYSIGNAL
 =================================================================
@@ -611,7 +796,6 @@ SUMMARY: AddressSanitizer: SEGV (prog:x86_64+0x100001325) in main
 ==31035==ABORTING
 zsh: abort      ./prog
 ```
-
 </Spoiler>
 
 For more helpful information we should additionally compile with the `-g` flag,
@@ -621,7 +805,6 @@ runtime and give meaningful errors. This is great because it helps diagnose (or
 "sanitize" if you will) errors such as out of bounds, exceptions, and
 segmentation faults, even indicating precise line numbers. Feel free to delete
 the debug file after the run of course.
-
 <Spoiler title="AddressSanitizer with -g">
 
 ```
@@ -653,7 +836,7 @@ zsh: abort      ./prog
 ```
  -->
 
-Another example with `prog.cpp` as the following:
+Another example is with `prog.cpp` as the following:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -661,14 +844,13 @@ using namespace std;
 
 int main() {
 	int v[5];
-	cout << v[5];
+	cout << v[5] << endl;
 }
 ```
 
 `g++ prog.cpp -o prog -fsanitize=address -g && ./prog` produces:
 
 <Spoiler title="AddressSanitizer with -g">
-
 ```
 =================================================================
 ==51610==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffee99819a4 at pc 0x00010627ece5 bp 0x7ffee9981960 sp 0x7ffee9981958
@@ -719,7 +901,6 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 ==51610==ABORTING
 zsh: abort      ./prog
 ```
-
 </Spoiler>
 
 #### `-D_GLIBCXX_DEBUG`
@@ -742,14 +923,13 @@ using namespace std;
 
 int main() {
 	vector<int> v;
-	cout << v[-1];
+	cout << v[-1] << endl;
 }
 ```
 
 `g++ prog.cpp -o prog -D_GLIBCXX_DEBUG && ./prog` produces:
 
 <Spoiler title="Debug">
-
 ```
 /usr/local/Cellar/gcc/9.2.0_1/include/c++/9.2.0/debug/vector:427:
 In function:
@@ -770,31 +950,67 @@ Objects involved in the operation:
     }
 zsh: abort      ./prog
 ```
-
 </Spoiler>
 
-<Warning>
-
-I don't know if there's a way to print the line number where the error occurs.
-
-</Warning>
-
 </CPPSection>
-
+<JavaSection> </JavaSection>
+<PySection> </PySection>
 </LanguageSection>
 
 ## Debuggers
 
+<LanguageSection>
+<CPPSection>
 <Resources>
 	<Resource
 		source="LCPP"
 		title="3.6 - Using an integrated debugger"
 		url="https://www.learncpp.com/cpp-tutorial/using-an-integrated-debugger-stepping/"
 	/>
+	<Resource
+		source="Microsoft"
+		title="Debug C++ in Visual Studio Code"
+		url="https://code.visualstudio.com/docs/cpp/cpp-debug"
+	/>
+	<Resource
+		source="Jetbrains"
+		title="Debugging C++ in CLion"
+		url="https://www.jetbrains.com/help/clion/debugging-code.html"
+	/>
 </Resources>
+</CPPSection>
+<JavaSection>
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="Debugging Java in Visual Studio Code"
+		url="https://code.visualstudio.com/docs/java/java-debugging"
+	/>
+	<Resource
+		source="Jetbrains"
+		title="Debugging Java in IntelliJ"
+		url="https://www.jetbrains.com/help/idea/debugging-your-first-java-application.html"
+	/>
+</Resources>
+</JavaSection>
+<PySection>
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="Debugging Python in Visual Studio Code"
+		url="https://code.visualstudio.com/docs/python/debugging"
+	/>
+	<Resource
+		source="Jetbrains"
+		title="Debugging Python in PyCharm"
+		url="https://www.jetbrains.com/help/pycharm/part-1-debugging-python-code.html"
+	/>
+</Resources>
+</PySection>
+</LanguageSection>
 
-Using a debugger varies from language to language and even IDE to different IDE.
-For now I will describe the basic operations of a debugger.
+Using a debugger varies from language to language and even from IDE to different
+IDE, so we will only go over the basics of a debugger.
 
 A debugger allows you to pause a code in its execution and see the values as a
 given point in the debugger.
@@ -806,7 +1022,7 @@ variables at that certain instance.
 There are two more useful and common operations. Once you are at the breakpoint,
 you may want to see what happens after the current line is executed. This would
 be the "Step Over" button that will allow you to move to the next line. Say you
-are at a line with the following code: `dfs(0,-1)`, if you click "step over" the
+are at a line with the following code: `dfs(0, -1)`, if you click "step over" the
 debugger will ignore showing you what happens in this function and go to the
 next line. If you click "step in," however, you will enter the function and be
 able to step through that function.
@@ -822,13 +1038,7 @@ Pros of using a debugger:
 Cons of using a debugger:
 
 - You cannot see the overall "output" of your program at each stage. For
-  example, if I wanted to see every single value of `i` in the program, I could
-  not using a debugger.
+  example, if you wanted to see every single value of `i` in the program,
+  you could not using a debugger.
 - Most advanced competitive programmers do not use debuggers; it is usually not
   very efficient to use one during a contest.
-
-<IncompleteSection>
-
-How to use gdb, valgrind for C++?
-
-</IncompleteSection>

@@ -86,7 +86,7 @@ export default function ProblemSidebar({
             Source: {problem.source}
           </span>
         </div>
-        {problem.usacoGuideId && (
+        {/* {problem.usacoGuideId && (
           <div className="flex items-center space-x-2">
             <LinkIcon className="h-5 w-5 text-gray-400 dark:text-gray-400" />
             <span className="text-gray-900 dark:text-gray-300 text-sm font-medium">
@@ -99,7 +99,7 @@ export default function ProblemSidebar({
               </TextTooltip>
             </span>
           </div>
-        )}
+        )} */}
         <SidebarDueDate post={post} />
       </div>
       <div className="mt-6 border-t border-gray-200 dark:border-gray-700 py-6 space-y-8">

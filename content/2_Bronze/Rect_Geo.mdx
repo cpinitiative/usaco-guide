@@ -12,7 +12,7 @@ prerequisites:
 ---
 
 <Resources>
-	<Resource source="IUSACO" title="7.1 - Rectangle Geometry">
+    <Resource source="IUSACO" title="7.1 - Rectangle Geometry">
 		module is based off this
 	</Resource>
 </Resources>
@@ -36,7 +36,7 @@ to a solution.
 Since all the intervals lie between the range, $[0, 100]$, we can mark each
 interval of length $1$ contained within each interval as painted using a loop.
 Then the answer will be the number of marked intervals. The code is provided
-[here](https://usaco.guide/general/input-output#method-1).
+[here](/general/input-output#method-1).
 
 However, this solution would not work for higher constraints (ex. if the
 coordinates were up to $10^9$).
@@ -455,7 +455,9 @@ using namespace std;
 
 struct Rect {
 	int x1, y1, x2, y2;
-	int area() { return (y2 - y1) * (x2 - x1); }
+	int area() {
+		return (y2 - y1) * (x2 - x1); 
+	}
 };
 
 int intersect(Rect p, Rect q) {
@@ -520,17 +522,25 @@ print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - inters
 
 Certain tasks show up often in rectangle geometry problems. For example, many problems
 involve finding the overlapping area of two or more rectangles based on their coordinate points, 
-or determining whether two rectangles intersect. Here, we'll discuss these formulas. 
+or determining whether two rectangles intersect. Here, we'll discuss these formulas.
+	
+Note that these formulas only apply to rectangles which have sides parallel to the coordinate axes.
+
+<Info title="Coordinates">
+A rectangle can be represented with $2$ points: its top right corner and bottom left corner. We'll label these points $tr$ (top right) and $bl$ (bottom left).
+</Info>
 
 ### Finding area
 	
-The formula for finding the area of an individual rectangle is $w \cdot l$, so we can just retrieve these lengths with our coordinates. 
-	
-1. $w = tr_x - bl_x$
-2. $l = tr_y - bl_y$
-3. $area = w \cdot l$
+The formula for finding the area of an individual rectangle is $w \cdot l$. 
 
-## Implementation
+$\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is the length of the horizontal sides.
+ 	
+1. $\texttt{width} = \texttt{tr}_x - \texttt{bl}_x$
+2. $\texttt{length} = \texttt{tr}_y - \texttt{bl}_y$
+3. $\texttt{area} = \texttt{width} \cdot \texttt{length}$
+
+### Implementation
 
 <LanguageSection>
 	<CPPSection>
@@ -556,25 +566,21 @@ The formula for finding the area of an individual rectangle is $w \cdot l$, so w
 		```java
 		int area(int bl_x, int bl_y, int tr_x, int tr_y) {
 			int length = tr_y - bl_y;
-			int width = tr_x * bl_x;
+			int width = tr_x - bl_x;
 			return length * width;
 		}
 		```
 	</JavaSection>
 </LanguageSection>
-### Checking if rectangles intersect
-
-First, we notice that rectangles can be represented by $2$ points each, the top right and 
-the bottom left. We'll call these points $tr_a$ and $tr_b$, and $bl_a$ and $bl_b$, for rectangles 
-$a$ and $b$. 
+### Checking if two rectangles intersect
 	
-There are only two cases where the rectangles do not intersect: 
+Given two rectangles $a$ and $b$, there are only two cases where they do not intersect: 
 
-1. $tr_{a_y}$ $\leq$ $bl_{b_y}$ or $bl_{a_y}$ $\geq$ $tr_{b_y}$.  
-2. $bl_{a_x}$ $\geq$ $tr_{b_x}$ or $tr_{a_x}$ $\leq$ $bl_{b_x}$. 
+1. $\texttt{tr}_{a_y}$ $\leq$ $\texttt{bl}_{b_y}$ or $\texttt{bl}_{a_y}$ $\geq$ $\texttt{tr}_{b_y}$.  
+2. $\texttt{bl}_{a_x}$ $\geq$ $\texttt{tr}_{b_x}$ or $\texttt{tr}_{a_x}$ $\leq$ $\texttt{bl}_{b_x}$. 
 
 In all other cases, the rectangles intersect. 
- ## Implementation
+ ### Implementation
 	
 <LanguageSection>
 	<CPPSection>
@@ -585,7 +591,7 @@ In all other cases, the rectangles intersect.
 			
 			// no overlap
 			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
-			|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
+					|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
 				return false;
 			} else {
 				return true;
@@ -600,8 +606,8 @@ In all other cases, the rectangles intersect.
 			bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
 			
 			# no overlap
-			if (bl_a_x >= tr_b_x or tr_a_x <= bl_b_x \
-			or bl_a_y >= tr_b_y or tr_a_y or bl_b_y):
+			if (bl_a_x >= tr_b_x or tr_a_x <= bl_b_x
+					or bl_a_y >= tr_b_y or tr_a_y or bl_b_y):
 				return False
 			else:
 				return True
@@ -615,7 +621,7 @@ In all other cases, the rectangles intersect.
 			
 			// no overlap
 			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
-			|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
+					|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
 				return false;
 			} else {
 				return true;
@@ -628,39 +634,43 @@ In all other cases, the rectangles intersect.
 					 
 We'll assume that the shape formed by the intersection of two rectangles is itself a rectangle.
 
-First, we'll find this rectangle's $x$ and $y$ coordinates. 
-$x$ = min($tr_{a_x}$, $tr_{b_x}$) - max($bl_{a_x}$, $bl_{b_x}$). 
-$y$ = min($tr_{a_y}$, $tr_{b_y}$) - max($bl_{a_y}$, $bl_{b_y}$).
+First, we'll find this rectangle's length and width. 
+$\texttt{width} = \min(\texttt{tr}_{a_x}, \texttt{tr}_{b_x}) - \max(\texttt{bl}_{a_x}, \texttt{bl}_{b_x})$. 
+$\texttt{length} = \min(\texttt{tr}_{a_y}, \texttt{tr}_{b_y}) - \max(\texttt{bl}_{a_y}, \texttt{bl}_{b_y})$.
 	
 If either of these values are negative, the rectangles do not intersect. 
 If they are zero, the rectangles intersect at a single point. 
-Multiply the $x$ and $y$ values together to find the overlapping area. 
+Multiply the length and width to find the overlapping area. 
 
 
-## Implementation
+### Implementation
 
 <LanguageSection>
 	<CPPSection>
 	
 		```cpp
-		int interArea(vector<int> s1, vector<int> s2) {
-			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
+		int inter_area(vector<int> s1, vector<int> s2) {
+			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
 			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
 
-			return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) 
-					* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y));
+			return (
+				(min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) 
+				* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
+			);
 		}
 		```
 	</CPPSection>
 	<PySection>
 
 		```py
-		def interArea(s1, s2):
+		def inter_area(s1, s2):
 			bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
 			bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
 			
-			return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) \
-					* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
+			return (
+				(min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x))
+				* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
+			)
 		```
 	</PySection>
 	<JavaSection>
@@ -668,9 +678,10 @@ Multiply the $x$ and $y$ values together to find the overlapping area.
 		int interArea(int[] s1, int[] s2) {
 			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
 			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
-
-			return (Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) 
-				* (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y));
+			return (
+				(Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) 
+				* (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y))
+			);
 		}
 		```
 	</JavaSection>

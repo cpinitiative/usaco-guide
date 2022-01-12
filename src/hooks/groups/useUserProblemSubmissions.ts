@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 import * as React from 'react';
 import toast from 'react-hot-toast';
-import { Submission } from '../../models/groups/problem';
+import { FirebaseSubmission } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
 
@@ -16,7 +16,9 @@ export default function useUserProblemSubmissions(
   postId: string,
   problemId: string
 ) {
-  const [submissions, setSubmissions] = React.useState<Submission[]>(null);
+  const [submissions, setSubmissions] = React.useState<FirebaseSubmission[]>(
+    null
+  );
   const activeGroup = useActiveGroup();
 
   useFirebaseApp(
@@ -33,17 +35,15 @@ export default function useUserProblemSubmissions(
               'problems',
               problemId,
               'submissions'
-            ) as CollectionReference<Submission>,
-            where('userId', '==', activeGroup.activeUserId)
+            ) as CollectionReference<FirebaseSubmission>,
+            where('userID', '==', activeGroup.activeUserId)
           ),
           {
             next: snap => {
               setSubmissions(
                 snap.docs
                   .map(doc => ({ id: doc.id, ...doc.data() }))
-                  .sort(
-                    (a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis()
-                  )
+                  .sort((a, b) => b.timestamp - a.timestamp)
               );
             },
             error: error => {

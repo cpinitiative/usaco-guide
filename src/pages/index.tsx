@@ -455,6 +455,19 @@ export default function IndexPage(): JSX.Element {
                 Donate via PayPal
               </a>
             </span>
+            <br />
+          </div>
+          <div className="mt-4 text-base leading-6 text-gray-500 dark:text-gray-400">
+            Read our
+            <a
+              href="https://joincpi.org/sponsorship_prospectus.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-400 transition hover:text-purple-400"
+            >
+              {' '}
+              sponsorship prospectus
+            </a>
           </div>
 
           <div className="h-12 md:h-20"></div>
