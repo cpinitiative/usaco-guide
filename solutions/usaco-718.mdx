@@ -20,34 +20,32 @@ The answer is $\texttt{dp}[N][N]$.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-using ll = long long;
-using vl = vector<ll>;
 
-const ll MAXN = 1000;
+const int MAXN = 1000;
 
-ll dp[MAXN + 1][MAXN + 1];
+int dp[MAXN + 1][MAXN + 1];
 
 int main(){
 	freopen("nocross.in", "r", stdin);
 	freopen("nocross.out", "w", stdout);
-	ll n; cin >> n;
+	int n;
+	cin >> n;
 	/*
 	 * id1 represents the breed ID of the fields 
 	 * on the first side of the road
 	 * id2 represents the breed ID of the fields
 	 * on the other side of the road.
 	 */
-	vl id1(n), id2(n);
-	for (ll i = 0; i < n; i++) {
+	vector<int> id1(n), id2(n);
+	for (int i = 0; i < n; i++) {
 		cin >> id1[i];
 	}
-	for (ll i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		cin >> id2[i];
 	}
-	for (ll i = 1; i <= n; i++) {
-		for (ll j = 1; j <= n; j++) {
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
 			/*
 			 * We can either build a new crosswalk between 
 			 * i and j or not build a new crosswalk.
