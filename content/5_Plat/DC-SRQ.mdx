@@ -139,10 +139,10 @@ only consider levels $0$ and $1$ then we get
 
 Examples of queries:
 
-- To query `comb(0,16)` we first count the number of training zeroes in
+- To query `comb(0,16)` we first count the number of trailing zeroes in
   `mask[0]` XOR `mask[16]`, which is `0`. So our answer is
   `min(dat[0][0],dat[0][16])`.
-- To query `comb(12,18)` we first count the number of training zeroes in
+- To query `comb(12,18)` we first count the number of trailing zeroes in
   `mask[12]` XOR `mask[18]`, which is `1`. So our answer is
   `min(dat[1][12],dat[1][18])`.
 
@@ -171,7 +171,7 @@ int main() {
 		int a,b; re(a,b); a--,b--;
 		if (a == b) ps(x[a]);
 		else { // find level where info is stored
-			// ctz gives number of training zeroes
+			// ctz gives number of trailing zeroes
 			int bits = __builtin_ctz(mask[a]^mask[b]);
 			ps(min(dat[bits][a],dat[bits][b]));
 		}
