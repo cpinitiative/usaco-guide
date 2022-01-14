@@ -14,8 +14,8 @@ these actually make? We'll use the following task to benchmark I/O:
 ## Example Problem
 
 The input consists of two integers $M$ ($0\le M\le 1$) and $N$
-($1\le N\le 10^6$), followed by a sequence of $N$ non-negative integers each at
-most $10^9+7$.
+($1\le N\le 10^6$), followed by a sequence of $N$ non-negative integers each
+less than $10^9+7$.
 
 - If $M=0$, output the sum of the input sequence modulo $10^9+7$.
 - If $M=1$, output the sum of each prefix of the input sequence modulo $10^9+7$.
@@ -58,15 +58,18 @@ most $10^9+7$.
 15
 ```
 
-Randomly generating test data results in input and output files each ~10
-megabytes large. Seeing such large input files during a contest is possible: the
-11th input file for
+Randomly generating test data results in input and output files each ~10MB
+large. It is possible to see input files this large (the 11th input file for
 [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) is
-~10.3 megabytes large.
+~10.3MB large), though not output files (the largest I recall is due to
+[Minimum Cost Paths](http://usaco.org/index.php?page=viewproblem2&cpid=1093),
+which has an output file ~2.8MB large).
 
 ## Standard I/O
 
 ### Slow
+
+Some simple methods of I/O don't come close to running under the time limit:
 
 <LanguageSection>
 
@@ -155,6 +158,8 @@ if M == 0:
 
 <CPPSection>
 
+#### `cin`/`cout`
+
 If using `cin` and `cout`, include the following two lines.
 
 ```cpp
@@ -168,18 +173,9 @@ Brief explanation:
   (`cin`, `cout`) style I/O may produce unexpected results. The upside is that
   both `cin` / `cout` become faster.
 - Including the second line will reduce the runtime in the case where you
-  interleaves `cin` and `cout` (as is the case in the task at hand).
+  interleave `cin` and `cout` (as is the case in the task at hand).
 
 You can find more details in a later section.
-
-<Warning title="cout.tie(nullptr)">
-
-You may see some competitive programmers including this line. This doesn't
-actually do anything since `cout` isn't tied to anything. See
-[this post](https://codeforces.com/blog/entry/90775?#comment-791764) for
-details.
-
-</Warning>
 
 <Spoiler title="cin/cout + magic lines + \n (0.41s)">
 
@@ -205,10 +201,12 @@ int main() {
 
 </Spoiler>
 
-Alternatively, `scanf` and `printf` work pretty quickly without any
-modifications:
+<Warning>
 
-<Spoiler title="scanf / printf (0.52s)">
+Using `endl` instead of `"\n"` will flush the output buffer and cause the above
+method to be quite slow:
+
+<Spoiler title="cin/cout + magic lines + endl (5.0s)">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -217,7 +215,38 @@ using namespace std;
 const int MOD = 1e9+7;
 
 int main() {
-	int M, N; scanf("%d %d\n", &M, &N);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int M, N; cin >> M >> N;
+	int ans = 0;
+	for (int i = 0; i < N; ++i) {
+		int x; cin >> x;
+		ans = (ans+x)%MOD;
+		if (M) cout << ans << endl;
+	}
+	if (!M) cout << ans << endl;
+}
+```
+
+</Spoiler>
+
+</Warning>
+
+#### `scanf`/`printf`
+
+Alternatively, `scanf` and `printf` work pretty quickly without any
+modifications:
+
+<Spoiler title="scanf/printf (0.52s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9+7;
+
+int main() {
+	int M, N; scanf("%d%d\n", &M, &N);
 	int ans = 0;
 	for (int i = 0; i < N; ++i) {
 		int x; scanf("%d", &x);
@@ -298,6 +327,8 @@ if M == 0:
 
 ## File I/O
 
+Pretty similar to standard I/O.
+
 <LanguageSection>
 
 <CPPSection>
@@ -330,7 +361,7 @@ int main() {
 
 ### Fast
 
-<Spoiler title="?">
+<Spoiler title="freopen + cin/cout + magic lines + \n (0.42s)">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -341,33 +372,8 @@ const int MOD = 1e9+7;
 int main() {
 	freopen("speed.in", "r", stdin);
 	freopen("speed.out", "w", stdout);
-	int M, N; cin >> M >> N;
-	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; scanf("%d", &x);
-		ans = (ans+x)%MOD;
-		if (M) printf("%d\n", ans);
-	}
-	if (!M) printf("%d\n", ans);
-}
-```
-
-</Spoiler>
-
-<Spoiler title="?">
-
-```
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9+7;
-
-int main() {
-	freopen("speed.in", "r", stdin);
-	freopen("speed.out", "w", stdout);
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-
 	int M, N; cin >> M >> N;
 	int ans = 0;
 	for (int i = 0; i < N; ++i) {
@@ -381,7 +387,31 @@ int main() {
 
 </Spoiler>
 
-<Spoiler title="?">
+<Spoiler title="freopen + scanf/printf (0.52s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9+7;
+
+int main() {
+	freopen("speed.in", "r", stdin);
+	freopen("speed.out", "w", stdout);
+	int M, N; scanf("%d%d\n",&M,&N);
+	int ans = 0;
+	for (int i = 0; i < N; ++i) {
+		int x; scanf("%d", &x);
+		ans = (ans+x)%MOD;
+		if (M) printf("%d\n", ans);
+	}
+	if (!M) printf("%d\n", ans);
+}
+```
+
+</Spoiler>
+
+<Spoiler title="ifstream/ofstream (0.43s)">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -504,7 +534,7 @@ public class Solution {
 
 <PySection>
 
-<Spoiler title="readline + write">
+<Spoiler title="readline + write (2.4s)">
 
 ```py
 read = open("speed.in", "r").readline
@@ -531,13 +561,17 @@ if M == 0:
 
 ## Even Faster Methods
 
+The input methods described above are easy to type up from scratch and are
+usually fast enough for USACO contests. But if you're looking for something even
+faster ...
+
 <LanguageSection>
 
 <CPPSection>
 
 Using `fread` and `fwrite` reduces the runtime even further.
 
-<Spoiler title="0.17s">
+<Spoiler title="fread/fwrite (0.17s)">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -592,7 +626,8 @@ void write_int(int x) {
 	while (len) write_char(num_buf[--len]);
 	write_char('\n');
 }
-void init_output() { assert(atexit(flush_out) == 0); } /// auto-flush output
+// auto-flush output when program exits
+void init_output() { assert(atexit(flush_out) == 0); }
 
 } // namespace Output
 
@@ -727,6 +762,12 @@ public class Solution {
 
 </JavaSection>
 
+<PySection>
+
+<IncompleteSection />
+
+</PySection>
+
 </LanguageSection>
 
 <LanguageSection>
@@ -807,6 +848,15 @@ From the second resource:
 >
 > So if you untie `cin` from `cout`, you must make sure to flush `cout` manually
 > every time you want to display something before expecting input on `cin`.
+
+<Warning title="cout.tie(nullptr)">
+
+You may see some competitive programmers including this line. This doesn't
+actually do anything since `cout` isn't tied to anything. See
+[this post](https://codeforces.com/blog/entry/90775?#comment-791764) for
+details.
+
+</Warning>
 
 </CPPSection>
 
