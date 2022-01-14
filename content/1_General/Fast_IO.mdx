@@ -20,9 +20,8 @@ make a difference.
 <FocusProblem problem="roboherd" />
 
 The largest USACO input file so far is test case 11 of **Robotic Cow Herd**,
-taking up a whopping 10.3 megabytes.
-The expected output for this test case is $10^{18}$, with $N=K=10^5$ and
-all microcontrollers costing $10^8$.
+taking up a whopping 10.3 megabytes. The expected output for this test case is
+$10^{18}$, with $N=K=10^5$ and all microcontrollers costing $10^8$.
 
 We'll go over various IO method along with their approximate runtimes.
 
@@ -81,7 +80,7 @@ vector<int> P[MAX_N];
 
 int main() {
 	freopen("roboherd.in", "r", stdin);
-	
+
 	int N;
 	int K;
 	scanf("%d %d", &N, &K);
@@ -159,7 +158,7 @@ inline namespace FastIO {
 	char ibuf[BSZ];
 	int ipos;
 	int ilen;
-	
+
 	// Gives the next character in the input stream.
 	char nc() {
 		if (ipos == ilen) {
@@ -330,7 +329,7 @@ import java.io.*;
 public class RoboHerdScanner {
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(new File("roboherd.in"));
-		
+
 		int N = sc.nextInt();
 		int K = sc.nextInt();
 		int[][] P = new int[N][];
@@ -429,15 +428,15 @@ public class RoboHerdBufferedReaderStringTokenizer {
 
 </Spoiler>
 
-As [`Kattio`](/general/input-output?lang=java#io-template) is just a wrapper
-around `BufferedReader` and `PrintWriter`, it performs similarly. This method is
-usually fast enough and doesn't require too much typing, so we recommend that
-you go with this.
+As [`Kattio`](/general/input-output?lang=java#method-3---io-template) is just a
+wrapper around `BufferedReader` and `PrintWriter`, it performs similarly. This
+method is usually fast enough and doesn't require too much typing, so we
+recommend that you go with this.
 
 ### Method 4 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html)
 
-Apparently this is even faster! Although, properly reading in `long`s would require
-additional work (since they are interpreted as `double`s by default).
+Apparently this is even faster! Although, properly reading in `long`s would
+require additional work (since they are interpreted as `double`s by default).
 
 <Spoiler title="569 ms">
 
@@ -504,7 +503,7 @@ class FastIO extends PrintWriter {
 		super(o);
 		stream = i;
 	}
-	
+
 	// file input
 	public FastIO(String i, String o) throws IOException {
 		super(new FileWriter(o));
@@ -551,11 +550,11 @@ class FastIO extends PrintWriter {
 		do {
 			c = nextByte();
 		} while (c <= ' ');
-		
+
 		int sgn = 1;
-		if (c == '-') { 
+		if (c == '-') {
 			sgn = -1;
-			c = nextByte(); 
+			c = nextByte();
 		}
 
 		int res = 0;
@@ -673,7 +672,7 @@ int main() {
 	for (int i = 1; i <= MAX_FACT; i++) {
 		factors[i] += factors[i - 1];
 	}
-	
+
 	int T;
 	cin >> T;
 	for (int i = 0; i < T; i++) {
@@ -720,7 +719,7 @@ int main() {
 	for (int i = 1; i <= MAX_FACT; i++) {
 		factors[i] += factors[i - 1];
 	}
-	
+
 	int T;
 	scanf("%d", &T);
 	for (int i = 0; i < T; i++) {
@@ -773,7 +772,7 @@ int main() {
 	for (int i = 1; i <= MAX_FACT; i++) {
 		factors[i] += factors[i - 1];
 	}
-	
+
 	int T;
 	cin >> T;
 	string ans;
@@ -789,9 +788,11 @@ int main() {
 
 </Spoiler>
 
-Note that the above code TLEs on test 5 if `cin.sync_with_stdio(0)` is not included.
+Note that the above code TLEs on test 5 if `cin.sync_with_stdio(0)` is not
+included.
 
-We can achive an even faster runtime if we use `scanf` and `printf` with this method.
+We can achive an even faster runtime if we use `scanf` and `printf` with this
+method.
 
 <Spoiler title="1122 ms">
 
@@ -824,7 +825,7 @@ int main() {
 	for (int i = 1; i <= MAX_FACT; i++) {
 		factors[i] += factors[i - 1];
 	}
-	
+
 	int T;
 	scanf("%d", &T);
 	string ans;
@@ -912,7 +913,7 @@ int main() {
 	for (int i = 1; i <= MAX_FACT; i++) {
 		factors[i] += factors[i - 1];
 	}
-	
+
 	int T;
 	cin >> T;
 	for (int i = 0; i < T; i++) {
