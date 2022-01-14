@@ -9,9 +9,9 @@ prerequisites:
 
 The [USACO Instructions Page](http://www.usaco.org/index.php?page=instructions)
 briefly mentions some ways of speeding up I/O, but how much of a difference do
-these actually make? We'll use the following task to benchmark I/O:
+these actually make? We'll use the following task to benchmark I/O speed:
 
-## Example Problem
+## Example Task
 
 The input consists of two integers $M$ ($0\le M\le 1$) and $N$
 ($1\le N\le 10^6$), followed by a sequence of $N$ non-negative integers each
@@ -23,32 +23,16 @@ less than $10^9+7$.
 **Sample Input 1:**
 
 ```
-0 5
+1 6
 1
 2
 3
 4
 5
+1000000000
 ```
 
 **Sample Output 1:**
-
-```
-15
-```
-
-**Sample Input 2:**
-
-```
-1 5
-1
-2
-3
-4
-5
-```
-
-**Sample Output 2:**
 
 ```
 1
@@ -56,6 +40,25 @@ less than $10^9+7$.
 6
 10
 15
+8
+```
+
+**Sample Input 2:**
+
+```
+0 6
+1
+2
+3
+4
+5
+1000000000
+```
+
+**Sample Output 2:**
+
+```
+8
 ```
 
 Randomly generating test data results in input and output files each ~10MB
@@ -169,13 +172,13 @@ cin.tie(nullptr);
 
 Brief explanation:
 
-- If you include the first line, then mixing C- (`scanf`, `printf`) and C++-
-  (`cin`, `cout`) style I/O may produce unexpected results. The upside is that
-  both `cin` / `cout` become faster.
-- Including the second line will reduce the runtime in the case where you
-  interleave `cin` and `cout` (as is the case in the task at hand).
+- If you include `ios::sync_with_stdio(false)`, then mixing C (`scanf`,
+  `printf`) and C++ (`cin`, `cout`) style I/O may produce unexpected results.
+  The upside is that both `cin` / `cout` become faster.
+- Including `cin.tie(nullptr)` will reduce the runtime if you are interleaving
+  `cin` and `cout` (as is the case in the task at hand).
 
-You can find more details in a later section.
+You can find more information about these lines at the end of this module.
 
 <Spoiler title="cin/cout + magic lines + \n (0.41s)">
 
@@ -230,12 +233,17 @@ int main() {
 
 </Spoiler>
 
+Though for [interactive problems](https://codeforces.com/blog/entry/45307), you
+_need_ to flush the output buffer every time you use `cout`. Any one of the
+following will have the same effect:
+
+1.  Not including `cin.tie(nullptr)`
+2.  Writing `cout << endl` instead of `cout << "\n"`
+3.  Writing `cout << "\n" << flush` instead of `cout << "\n"`
+
 </Warning>
 
 #### `scanf`/`printf`
-
-Alternatively, `scanf` and `printf` work pretty quickly without any
-modifications:
 
 <Spoiler title="scanf/printf (0.52s)">
 
