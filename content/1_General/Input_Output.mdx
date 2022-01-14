@@ -224,6 +224,13 @@ public class Main {
 
 #### Method 3 - I/O Template
 
+<Warning>
+
+Since the code in this section could potentially be considered more than just
+basic Java functionality, you should not refer to this during a USACO contest.
+
+</Warning>
+
 The following template (a shortened version of Kattis's
 [`Kattio.java`](https://open.kattis.com/help/java)) wraps `BufferedReader` and
 `PrintWriter` and takes care of the string processing for you. You may or may
@@ -312,16 +319,13 @@ instance `io`:
 | `io.println(arg)` | Prints `arg` to designated output stream and adds a newline                                                                                                                                                                           |
 | `io.close()`      | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](<https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()>)) at the end, or you won't see any output! |
 
-USACO prohibits prewritten code but allows you to consult resources about basic
-functionality such as input / output, so feel free to refer to this module
-during a USACO contest.
-
 <Info title="PrintWriter Buffering">
 
-The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37.
-But since `PrintWriter`
-[uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered),
-including `BufferedOutputStream` is necessary.
+The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 23.
+But since `PrintWriter` will automatically wrap an `OutputStream` with a
+`BufferedWriter`
+([source](https://stackoverflow.com/questions/32177690/is-printwriter-buffered)),
+including `BufferedOutputStream` is unnecessary.
 
 Similarly, you may see `PrintWriter`s for file output initialized like the
 following (ex.
@@ -331,7 +335,7 @@ following (ex.
 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
-This is equivalent to:
+This is equivalent to what we use in this module:
 
 ```java
 PrintWriter pw = new PrintWriter("problemname.out");
