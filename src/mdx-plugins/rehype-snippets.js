@@ -274,7 +274,7 @@ static class Kattio extends PrintWriter {
 \t}
 \t// USACO-style file input
 \tpublic Kattio(String problemName) throws IOException {
-\t\tsuper(new FileWriter(problemName + ".out"));
+\t\tsuper(problemName + ".out");
 \t\tr = new BufferedReader(new FileReader(problemName + ".in"));
 \t}
 
