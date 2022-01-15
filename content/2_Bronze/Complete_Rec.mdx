@@ -1230,78 +1230,78 @@ make code consistent, improve some of these explanations
 	  </Quiz.Question>
 	  <Quiz.Question>
 	    The following code is meant to generate all subsets of a given array:
-	    ```cpp
-	    int A[] = {1, 2, 3, 4, 5};
+		```cpp
+		int A[] = {1, 2, 3, 4, 5};
 
-	    void generateSubsets(int i, vector<int> &subset) {
-		if (i == 5) {
-			for (int x : subset)
-				cout << x << ' ';
-			cout << '\n';
+		void generateSubsets(int i, vector<int> &subset) {
+			if (i == 5) {
+				for (int x : subset)
+					cout << x << ' ';
+				cout << '\n';
+			}
+
+			subset.push_back(A[i]);
+			generateSubsets(i + 1, subset);
+			subset.pop_back();
+			generateSubsets(i + 1, subset);
 		}
-
-		subset.push_back(A[i]);
-		generateSubsets(i + 1, subset);
-		subset.pop_back();
-		generateSubsets(i + 1, subset);
-	    }
-	    ```
+		```
 	    There is an error with this code that causes it to crash. What does the corrected code look like?
 	    <Quiz.Answer>
-	      ```cpp
-	      void generateSubsets(int i, vector<int> &subset) {
-		if (i == 5) {
-			for (int x : subset)
-				cout << x << ' ';
-			cout << '\n';
-		}
+		```cpp
+		void generateSubsets(int i, vector<int> &subset) {
+			if (i == 5) {
+				for (int x : subset)
+					cout << x << ' ';
+				cout << '\n';
+			}
 
 			// must always go to empty subset first
-		generateSubsets(i + 1, subset);
-		subset.push_back(A[i]);
-		generateSubsets(i + 1, subset);
-	      }
-	      ```
-	      <Quiz.Explanation>
+			generateSubsets(i + 1, subset);
+			subset.push_back(A[i]);
+			generateSubsets(i + 1, subset);
+		}
+		```
+		<Quiz.Explanation>
 		Incorrect: This is another way of generating subsets, but it's not the error!
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	    <Quiz.Answer>
-	      ```cpp
-	      void generateSubsets(int i, vector<int> &subset) {
-		if (i == 4) { // incorrect ending index
-			for (int x : subset)
-				cout << x << ' ';
-			cout << '\n';
-		}
+		```cpp
+		void generateSubsets(int i, vector<int> &subset) {
+			if (i == 4) { // incorrect ending index
+				for (int x : subset)
+					cout << x << ' ';
+				cout << '\n';
+			}
 
-		subset.push_back(A[i]);
-		generateSubsets(i + 1, subset);
-		subset.pop_back();
-		generateSubsets(i + 1, subset);
-	      }
-	      ```
+			subset.push_back(A[i]);
+			generateSubsets(i + 1, subset);
+			subset.pop_back();
+			generateSubsets(i + 1, subset);
+		}
+		```
 
 	      <Quiz.Explanation>
 		Incorrect: This doesn't stop the error and prevents us from adding the last number to any subset
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	    <Quiz.Answer correct>
-	      ```cpp
-	      void generateSubsets(int i, vector<int> &subset) {
-		if (i == 5) {
-			for (int x : subset)
-				cout << x << ' ';
-			cout << '\n';
-			return; // missing return statement
-		}
+		```cpp
+		void generateSubsets(int i, vector<int> &subset) {
+			if (i == 5) {
+				for (int x : subset)
+					cout << x << ' ';
+				cout << '\n';
+				return; // missing return statement
+			}
 
-		subset.push_back(A[i]);
-		generateSubsets(i + 1, subset);
-		subset.pop_back();
-		generateSubsets(i + 1, subset);
-	      }
-	      ```
+			subset.push_back(A[i]);
+			generateSubsets(i + 1, subset);
+			subset.pop_back();
+			generateSubsets(i + 1, subset);
+		}
+		```
 	      <Quiz.Explanation>
 		Correct: After we finish printing (or checking) the subset, remember to always return immediately. Otherwise, it causes nasty errors that often crashes the program.
 	      </Quiz.Explanation>
