@@ -2,14 +2,90 @@
 id: usaco-790
 source: USACO Gold 2018 January
 title: Cow At Large
-author: Qi Wang
+author: Qi Wang, Jesse Choe
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_atlarge_gold_jan18.html)
 
 **Time Complexity:** $\mathcal{O}(N)$
 
+Suppose that a given farmer reaches Bessie at barn $i$; this is only possible if that farmer reached barn $i$ either: 
+
+* At the same time as Bessie
+* At an earlier time than Bessie
+
+This means that we can treat this problem as a shortest path problem, where the farmer reaches barn $i$ at the same time or earlier than Bessie if $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Here, $\texttt{dist1[i]}$ represents the shortest distance between any given farmer and the $i$-th barn, and $\texttt{dist2[i]}$ represents the shortest distance between Bessie and the $i$-th barn.
+
+We can run BFS to find $\texttt{dist1[i]}$ and $\texttt{dist2[i]}$. Once we find these shortest distances, we can simulate Bessies' movement by "catching" her when $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Once we catch Bessie, we should increase the total number of farmers by $1$.
+
 <LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+using pl = pair<ll, ll>;
+
+#define forn(i, n) for(ll i = 0; i < n; i++)
+#define pb push_back
+#define f first
+#define s second
+
+const ll MAXN = 1e5, INF = 1e9;
+
+vl adj[MAXN];
+
+int main(){
+	freopen("atlarge.in", "r", stdin);
+	freopen("atlarge.out", "w", stdout);
+	ll n, k; cin >> n >> k; --k;
+	forn(i, n - 1){
+		ll a, b; cin >> a >> b; --a, --b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	vl dist1(n, INF), dist2(n, INF); dist1[k] = 0;
+	queue<ll> q; q.push(k);
+	while(!q.empty()){
+		ll cur = q.front(); q.pop();
+		for(ll u: adj[cur]){
+			if(dist1[cur] + 1 < dist1[u]){
+				dist1[u] = dist1[cur] + 1;
+				q.push(u);
+			}
+		}
+	}
+	forn(i, n) if(adj[i].size() == 1) q.push(i), dist2[i] = 0;
+	while(!q.empty()){
+		ll cur = q.front(); q.pop();
+		for(ll u: adj[cur]){
+			if(dist2[cur] + 1 < dist2[u]){
+				dist2[u] = dist2[cur] + 1;
+				q.push(u);
+			}
+		}
+	}
+	ll res = 0; q.push(k); vl vis(n);
+	while(!q.empty()){
+		ll cur = q.front(); q.pop();
+		if(dist2[cur] <= dist1[cur]){
+			res++;
+			continue;
+		}
+		if(vis[cur]){
+			continue;
+		}
+		vis[cur] = true;
+		for(ll u: adj[cur]){
+			q.push(u);
+		}
+	}
+	cout << res << endl;
+}
+```
+</CPPSection>
+
 <JavaSection>
 
 ## Java Implementation
