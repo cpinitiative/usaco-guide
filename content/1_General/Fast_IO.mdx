@@ -64,7 +64,8 @@ less than $10^9+7$.
 Randomly generating test data results in input and output files each ~10MB
 large. It is possible to see input files this large (the 11th input file for
 [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) is
-~10.3MB large), though not output files (the largest I recall is due to
+~10.3MB large), though not output files (an extremely larger one is one for a
+test case of
 [Minimum Cost Paths](http://usaco.org/index.php?page=viewproblem2&cpid=1093),
 which has an output file ~2.8MB large).
 
@@ -84,17 +85,23 @@ Some simple methods of I/O don't come close to running under the time limit:
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
-	int M, N; cin >> M >> N;
+	int M, N;
+	cin >> M >> N;
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; cin >> x;
-		ans = (ans+x)%MOD;
-		if (M) cout << ans << endl;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << endl;
+		}
 	}
-	if (!M) cout << ans << endl;
+	if (M == 0) {
+		cout << ans << endl;
+	}
 }
 ```
 
@@ -111,17 +118,21 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
+	static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
-		final int MOD = (int)(1e9)+7;
 		Scanner sc = new Scanner(System.in);
 		int M = sc.nextInt();
 		int N = sc.nextInt();
 		int ans = 0;
-		for (int i = 0; i < N; ++i) {
-			ans = (ans+sc.nextInt())%MOD;
-			if (M == 1) System.out.println(ans);
+		for (int i = 0; i < N; i++) {
+			ans = (ans + sc.nextInt()) % MOD;
+			if (M == 1) {
+				System.out.println(ans);
+			}
 		}
-		if (M == 0) System.out.println(ans);
+		if (M == 0) {
+			System.out.println(ans);
+		}
 	}
 }
 ```
@@ -135,13 +146,14 @@ public class Solution {
 <Spoiler title="input + print (18.9s)">
 
 ```py
-M,N = map(int, input().split())
+MOD = 10 ** 9 + 7
 
-MOD = 10**9+7
+M, N = map(int, input().split())
+
 ans = 0
 for _ in range(N):
 	x = int(input())
-	ans = (ans+x)%MOD
+	ans = (ans + x) % MOD
 	if M == 1:
 		print(ans)
 
@@ -186,19 +198,26 @@ You can find more information about these lines at the end of this module.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int M, N; cin >> M >> N;
+
+	int M, N;
+	cin >> M >> N;
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; cin >> x;
-		ans = (ans+x)%MOD;
-		if (M) cout << ans << "\n";
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << "\n";
+		}
 	}
-	if (!M) cout << ans << "\n";
+	if (M == 0) {
+		cout << ans << "\n";
+	}
 }
 ```
 
@@ -215,19 +234,26 @@ method to be quite slow:
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int M, N; cin >> M >> N;
+
+	int M, N;
+	cin >> M >> N;
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; cin >> x;
-		ans = (ans+x)%MOD;
-		if (M) cout << ans << endl;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << endl;
+		}
 	}
-	if (!M) cout << ans << endl;
+	if (M == 0) {
+		cout << ans << endl;
+	}
 }
 ```
 
@@ -251,17 +277,24 @@ following will have the same effect:
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
-	int M, N; scanf("%d%d\n", &M, &N);
+	int M, N;
+	scanf("%d%d\n", &M, &N);
+	
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; scanf("%d", &x);
-		ans = (ans+x)%MOD;
-		if (M) printf("%d\n",ans);
+	for (int i = 0; i < N; i++) {
+		int x;
+		scanf("%d", &x);
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			printf("%d\n", ans);
+		}
 	}
-	if (!M) printf("%d\n",ans);
+	if (M == 0) {
+		printf("%d\n", ans);
+	}
 }
 ```
 
@@ -280,19 +313,23 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
+    static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(System.out);
-		final int MOD = (int)(1e9)+7;
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int M = Integer.parseInt(st.nextToken());
 		int N = Integer.parseInt(st.nextToken());
 		int ans = 0;
-		for (int i = 0; i < N; ++i) {
-			ans = (ans+Integer.parseInt(br.readLine()))%MOD;
-			if (M == 1) pw.println(ans);
+		for (int i = 0; i < N; i++) {
+			ans = (ans + Integer.parseInt(br.readLine())) % MOD;
+			if (M == 1) {
+                pw.println(ans);
+            }
 		}
-		if (M == 0) pw.println(ans);
+		if (M == 0) {
+            pw.println(ans);
+        }
 		pw.close();
 	}
 }
@@ -314,17 +351,18 @@ import sys
 read = sys.stdin.readline
 write = sys.stdout.write
 
-M,N = map(int, read().split())
-
 MOD = 10**9+7
+
+M, N = map(int, read().split())
+
 ans = 0
 for _ in range(N):
 	x = int(read())
-	ans = (ans+x)%MOD
+	ans = (ans + x) % MOD
 	if M == 1:
-		write(str(ans)+"\n")
+		write(str(ans) + "\n")
 if M == 0:
-	write(str(ans)+"\n")
+	write(str(ans) + "\n")
 ```
 
 </Spoiler>
@@ -349,19 +387,26 @@ Pretty similar to standard I/O.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
 	freopen("speed.in", "r", stdin);
 	freopen("speed.out", "w", stdout);
-	int M, N; cin >> M >> N;
+	
+	int M, N;
+	cin >> M >> N;
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; cin >> x;
-		ans = (ans+x)%MOD;
-		if (M) cout << ans << "\n";
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << "\n";
+		}
 	}
-	if (!M) cout << ans << "\n";
+	if (M == 0) {
+		cout << ans << "\n";
+	}
 }
 ```
 
@@ -375,21 +420,29 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
-	freopen("speed.in", "r", stdin);
-	freopen("speed.out", "w", stdout);
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int M, N; cin >> M >> N;
+
+	freopen("speed.in", "r", stdin);
+	freopen("speed.out", "w", stdout);
+
+	int M, N;
+	cin >> M >> N;
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; cin >> x;
-		ans = (ans+x)%MOD;
-		if (M) cout << ans << "\n";
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << "\n";
+		}
 	}
-	if (!M) cout << ans << "\n";
+	if (M == 0) {
+		cout << ans << "\n";
+	}
 }
 ```
 
@@ -406,14 +459,20 @@ const int MOD = 1e9+7;
 int main() {
 	freopen("speed.in", "r", stdin);
 	freopen("speed.out", "w", stdout);
-	int M, N; scanf("%d%d\n",&M,&N);
+	int M, N;
+	scanf("%d%d\n", &M, &N);
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
-		int x; scanf("%d", &x);
-		ans = (ans+x)%MOD;
-		if (M) printf("%d\n", ans);
+	for (int i = 0; i < N; i++) {
+		int x;
+		scanf("%d", &x);
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			printf("%d\n", ans);
+		}
 	}
-	if (!M) printf("%d\n", ans);
+	if (M == 0) {
+		printf("%d\n", ans);
+	}
 }
 ```
 
@@ -456,18 +515,23 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
+	static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(new File("speed.in"));
 		PrintWriter pw = new PrintWriter("speed.out");
-		final int MOD = (int)(1e9)+7;
+
 		int M = sc.nextInt();
 		int N = sc.nextInt();
 		int ans = 0;
-		for (int i = 0; i < N; ++i) {
-			ans = (ans+sc.nextInt())%MOD;
-			if (M == 1) pw.println(ans);
+		for (int i = 0; i < N; i++) {
+			ans = (ans + sc.nextInt()) % MOD;
+			if (M == 1) {
+				pw.println(ans);
+			}
 		}
-		if (M == 0) pw.println(ans);
+		if (M == 0) {
+			pw.println(ans);
+		}
 		pw.close();
 	}
 }
@@ -484,19 +548,23 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
+	static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("speed.in"));
 		PrintWriter pw = new PrintWriter("speed.out");
-		final int MOD = (int)(1e9)+7;
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int M = Integer.parseInt(st.nextToken());
 		int N = Integer.parseInt(st.nextToken());
 		int ans = 0;
-		for (int i = 0; i < N; ++i) {
-			ans = (ans+Integer.parseInt(br.readLine()))%MOD;
-			if (M == 1) pw.println(ans);
+		for (int i = 0; i < N; i++) {
+			ans = (ans + Integer.parseInt(br.readLine()))%MOD;
+			if (M == 1) {
+				pw.println(ans);
+			}
 		}
-		if (M == 0) pw.println(ans);
+		if (M == 0) {
+			pw.println(ans);
+		}
 		pw.close();
 	}
 }
@@ -511,26 +579,33 @@ A variant of the above method involves wrapping the `BufferedReader` with a
 
 ```java
 import java.io.*;
-import java.util.*;
 
 public class Solution {
+	static final int MOD = (int) 1e9 + 7;
+
 	static StreamTokenizer st;
 	static int nextInt() throws IOException {
 		st.nextToken();
-		return (int)st.nval;
+		return (int) st.nval;
 	}
+
 	public static void main(String[] args) throws Exception {
-		st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
-		final int MOD = (int)(1e9)+7;
+		st = new StreamTokenizer(
+			new BufferedReader(new InputStreamReader(System.in))
+		);
 		PrintWriter pw = new PrintWriter(System.out);
 		int M = nextInt();
 		int N = nextInt();
 		int ans = 0;
-		for (int i = 0; i < N; ++i) {
-			ans = (ans+nextInt())%MOD;
-			if (M == 1) pw.println(ans);
+		for (int i = 0; i < N; i++) {
+			ans = (ans + nextInt()) % MOD;
+			if (M == 1) {
+				pw.println(ans);
+			}
 		}
-		if (M == 0) pw.println(ans);
+		if (M == 0) {
+			pw.println(ans);
+		}
 		pw.close();
 	}
 }
@@ -548,17 +623,17 @@ public class Solution {
 read = open("speed.in", "r").readline
 write = open("speed.out", "w").write
 
-M,N = map(int, read().split())
+MOD = 10**9 + 7
 
-MOD = 10**9+7
+M, N = map(int, read().split())
 ans = 0
 for _ in range(N):
 	x = int(read())
-	ans = (ans+x)%MOD
+	ans = (ans + x) % MOD
 	if M == 1:
-		write(str(ans)+"\n")
+		write(str(ans) + "\n")
 if M == 0:
-	write(str(ans)+"\n")
+	write(str(ans) + "\n")
 ```
 
 </Spoiler>
@@ -588,66 +663,92 @@ using namespace std;
 const int MOD = 1e9 + 7;
 const int BUF_SZ = 1 << 15;
 
+//BeginCodeSnip{Input}
 inline namespace Input {
-
-char buf[BUF_SZ];
-int pos, len;
-char next_char() {
-	if (pos == len) {
-		pos = 0;
-		len = (int)fread(buf, 1, BUF_SZ, stdin);
-		if (!len) return EOF;
+	char buf[BUF_SZ];
+	int pos;
+	int len;
+	char next_char() {
+		if (pos == len) {
+			pos = 0;
+			len = (int) fread(buf, 1, BUF_SZ, stdin);
+			if (!len) {
+				return EOF;
+			}
+		}
+		return buf[pos++];
 	}
-	return buf[pos++];
-}
-int read_int() {
-	int x;
-	char ch;
-	int sgn = 1;
-	while (!isdigit(ch = next_char()))
-		if (ch == '-') sgn *= -1;
-	x = ch - '0';
-	while (isdigit(ch = next_char())) x = x * 10 + (ch - '0');
-	return x * sgn;
-}
 
-} // namespace Input
-
+	int read_int() {
+		int x;
+		char ch;
+		int sgn = 1;
+		while (!isdigit(ch = next_char())) {
+			if (ch == '-') {
+				sgn *= -1;
+			}
+		}
+		x = ch - '0';
+		while (isdigit(ch = next_char())) {
+			x = x * 10 + (ch - '0');
+		}
+		return x * sgn;
+	}
+}
+//EndCodeSnip
+//BeginCodeSnip{Output}
 inline namespace Output {
+	char buf[BUF_SZ];
+	int pos;
+	
+	void flush_out() {
+		fwrite(buf, 1, pos, stdout);
+		pos = 0;
+	}
+	
+	void write_char(char c) {
+		if (pos == BUF_SZ) {
+			flush_out();
+		}
+		buf[pos++] = c;
+	}
+	
+	void write_int(int x) {
+		static char num_buf[100];
+		if (x < 0) {
+			write_char('-');
+			x *= -1;
+		}
+		int len = 0;
+		for (; x >= 10; x /= 10) {
+			num_buf[len++] = (char) ('0' + (x % 10));
+		}
+		write_char((char) ('0' + x));
+		while (len) {
+			write_char(num_buf[--len]);
+		}
+		write_char('\n');
+	}
 
-char buf[BUF_SZ];
-int pos;
-void flush_out() {
-	fwrite(buf, 1, pos, stdout);
-	pos = 0;
+	// auto-flush output when program exits
+	void init_output() { assert(atexit(flush_out) == 0); }
 }
-void write_char(char c) {
-	if (pos == BUF_SZ) flush_out();
-	buf[pos++] = c;
-}
-void write_int(int x) {
-	static char num_buf[100];
-	if (x < 0) write_char('-'), x *= -1;
-	int len = 0;
-	for (; x >= 10; x /= 10) num_buf[len++] = (char)('0' + (x % 10));
-	write_char((char)('0' + x));
-	while (len) write_char(num_buf[--len]);
-	write_char('\n');
-}
-// auto-flush output when program exits
-void init_output() { assert(atexit(flush_out) == 0); }
-
-} // namespace Output
+//EndCodeSnip
 
 int main() {
 	init_output();
-	int M = read_int(), N = read_int();
+	int M = read_int();
+	int N = read_int();
 	int ans = 0;
-	for (int i = 0; i < N; ++i) {
+	for (int i = 0; i < N; i++) {
 		ans = (ans + read_int()) % MOD;
-		if (M) write_int(ans);
+		if (M == 1) {
+			write_int(ans);
+		}
 	}
-	if (!M) write_int(ans);
+	if (M == 0) {
+		write_int(ans);
+	}
 }
 ```
 
@@ -667,6 +768,7 @@ bytes directly from an
 import java.io.*;
 import java.util.*;
 
+//BeginCodeSnip{FastIO}
 class FastIO extends PrintWriter {
 	private InputStream stream;
 	private byte[] buf = new byte[1 << 16];
@@ -747,20 +849,25 @@ class FastIO extends PrintWriter {
 
 	public double nextDouble() { return Double.parseDouble(next()); }
 }
+//EndCodeSnip
 
 public class Solution {
+	static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		FastIO io = new FastIO();
-		final int MOD = (int)(1e9)+7;
 		int M = io.nextInt();
 		int N = io.nextInt();
 		int ans = 0;
-		for (int i = 0; i < N; ++i) {
+		for (int i = 0; i < N; i++) {
 			int x = io.nextInt();
-			ans = (ans+x)%MOD;
-			if (M == 1) io.println(ans);
+			ans = (ans + x) % MOD;
+			if (M == 1) {
+				io.println(ans);
+			}
 		}
-		if (M == 0) io.println(ans);
+		if (M == 0) {
+			io.println(ans);
+		}
 		io.close();
 	}
 }
