@@ -14,9 +14,9 @@ Suppose that a given farmer reaches Bessie at barn $i$; this is only possible if
 * At the same time as Bessie
 * At an earlier time than Bessie
 
-This means that we can treat this problem as a shortest path problem, where the farmer reaches barn $i$ at the same time or earlier than Bessie if $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Here, $\texttt{dist1[i]}$ represents the shortest distance between any given farmer and the $i$-th barn, and $\texttt{dist2[i]}$ represents the shortest distance between Bessie and the $i$-th barn.
+This means that we can treat this problem as a shortest path problem, where the farmer reaches barn $i$ at the same time or earlier than Bessie if $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Here, $\texttt{dist1[i]}$ represents the shortest distance between any given farmer and the $i$-th barn, and $\texttt{dist2[i]}$ represents the shortest distance between Bessie and the $i$-th barn. Note that $\texttt{dist2[i]}$ can also be represented as the tree depth at barn $i$ with the tree rooted at barn $k$.
 
-We can run BFS to find $\texttt{dist1[i]}$ and $\texttt{dist2[i]}$. Once we find these shortest distances, we can simulate Bessies' movement by "catching" her when $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Once Bessie is caught, we can stop her movement and increase the total number of farmers by 1. This greedily finds the minimum number of farmers, since we only store the "optimal" farmers in our answer. 
+We can run BFS to find $\texttt{dist1[i]}$ and DFS or BFS to find $\texttt{dist2[i]}$. Once we find these shortest distances, we can simulate Bessies' movement by "catching" her when $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Once Bessie is caught, we can stop her movement and increase the total number of farmers by 1. This greedily finds the minimum number of farmers, since we only store the "optimal" farmers in our answer. 
 
 <LanguageSection>
 <CPPSection>
@@ -42,12 +42,13 @@ int main(){
 	ll n, k; 
 	cin >> n >> k; 
 	--k;
-	for(int i = 0; i < n - 1; i++){
+	for (int i = 0; i < n - 1; i++) {
 		ll a, b; 
 		cin >> a >> b; 
 		--a, --b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
+	
 	/* 
 	 * dist2 represents the shortest path from 
 	 * Bessie's location to barn i
@@ -58,6 +59,7 @@ int main(){
 	dist2[k] = 0;
 	queue<ll> q; 
 	q.push(k);
+	
 	// BFS to find the shortest path from node k to node i
 	while (!q.empty()) {
 		ll cur = q.front(); 
@@ -69,12 +71,14 @@ int main(){
 			}
 		}
 	}
+						      
 	for (int i = 0; i < n; i++) {
 		if (adj[i].size() == 1) {
 			q.push(i);
 			dist1[i] = 0;
 		}
 	}
+	
 	/* 
 	 * BFS to find the shortest distance between node j to node i, 
 	 * where j is a leaf node (the farmers' location)
@@ -89,6 +93,7 @@ int main(){
 			}
 		}
 	}
+						      
 	ll res = 0; 
 	q.push(k); 
 	vl vis(n);
