@@ -56,44 +56,43 @@ typedef long long ll;
 const int MAX = 1e5+1;
 
 struct Point{
-    ll x,y;
+    ll x, y;
 };
 
-//Compute the determinant of two vectors (p1,p2) and (p3,p4)
-ll det(Point p1, Point p2, Point p3, Point p4){
+// Compute the determinant of two vectors (p1,p2) and (p3,p4)
+ll det(Point p1, Point p2, Point p3, Point p4) {
     return ((p2.x - p1.x) * (p4.y - p3.y) - (p2.y - p1.y) * (p4.x - p3.x));
 }
 
-//Check if point p3 is above or below line segment (p1,p2)
-ll dir(Point p1, Point p2, Point p3){
-    ll result = det(p1,p2,p2,p3);
-
+// Check if point p3 is above or below line segment (p1,p2)
+ll dir(Point p1, Point p2, Point p3) {
+    ll result = det(p1, p2, p2, p3);
     if (result > 0){
         return 1;
-    }else if (result < 0) {
+    } else if (result < 0) {
         return -1;
-    }else{
+    } else {
         return 0;
     }
 }
 
-//Check if two line segments (p1,p2) and (p3,p4) intersect
-bool intersect(Point p1, Point p2, Point p3, Point p4){
-    bool first = (dir(p1, p2, p3) != dir(p1, p2, p4));
-    bool second = (dir(p3, p4, p1) != dir(p3, p4, p2));
+// Check if two line segments (p1,p2) and (p3,p4) intersect
+bool intersect(Point p1, Point p2, Point p3, Point p4) {
+    bool first = dir(p1, p2, p3) != dir(p1, p2, p4);
+    bool second = dir(p3, p4, p1) != dir(p3, p4, p2);
     return first != second;
 }
 
 /*
- *  If point p3 is collinear with points p1 and p2
- *  Check if p3 is inside or outside the line segment (p1,p2)
+ * If point p3 is collinear with points p1 and p2
+ * Check if p3 is inside or outside the line segment (p1,p2)
  */
-bool within(Point p1, Point p2, Point p3){
-    if (dir(p1,p2,p3) == 0){
+bool within(Point p1, Point p2, Point p3) {
+    if (dir(p1, p2, p3) == 0) {
         bool xRange = (min(p1.x, p2.x) <= p3.x) && (p3.x <= max(p1.x, p2.x));
         bool yRange = (min(p1.y, p2.y) <= p3.y) && (p3.y <= max(p1.y, p2.y));
         return xRange && yRange;
-    }else{
+    } else {
         return false;
     }
 }
@@ -142,7 +141,6 @@ int main() {
             }
         }
     }
-    return 0;
 }
 ```
 
