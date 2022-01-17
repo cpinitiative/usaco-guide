@@ -2,17 +2,102 @@
 id: usaco-1159
 source: USACO Silver 2021 December
 title: Connecting Two Barns
-author: Nathan Gong
+author: Nathan Gong, Jesse Choe
 ---
 
 [Official Analysis (C++)](http://usaco.org/current/data/sol_prob2_silver_dec21.html)
 
-## Implementation - DFS + Two Pointers
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(T\cdot (N\log N + M))$
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+
+#define forn(i, n) for(ll i = 0; i < n; i++)
+#define pb push_back
+
+const ll MAXN = 1e5;
+
+vl adj[MAXN], comps[MAXN];
+ll comp[MAXN];
+
+void dfs(ll cur, ll c){
+	if(comp[cur] != -1){
+		return;
+	}
+	comp[cur] = c;
+	for(ll u: adj[cur]){
+		dfs(u, c);
+	}
+}
+
+ll cost(ll a, ll b){
+	if(comps[a].size() > comps[b].size()){
+		ll dist = MAXN;
+		for(ll u: comps[b]){
+			ll i = lower_bound(comps[a].begin(), comps[a].end(), u) - comps[a].begin();
+			if(i > 0){
+				dist = min(dist, abs(comps[a][i - 1] - u));
+			}
+			dist = min(dist, abs(comps[a][i] - u));
+		}
+		return dist * dist;
+	} else {
+		ll dist = MAXN;
+		for(ll u: comps[a]){
+			ll i = lower_bound(comps[b].begin(), comps[b].end(), u) - comps[b].begin();
+			if(i > 0){
+				dist = min(dist, abs(comps[b][i - 1] - u));
+			}
+			dist = min(dist, abs(comps[b][i] - u));
+		}
+		return dist * dist;
+	}
+}
+
+void solve(){
+	ll n, m; cin >> n >> m;
+	forn(i, n) comp[i] = -1, adj[i].clear(), comps[i].clear();
+	forn(i, m){
+		ll a, b; cin >> a >> b;
+		--a, --b; adj[a].pb(b), adj[b].pb(a);
+	}
+	ll cur = 0;
+	forn(i, n){
+		if(comp[i] == -1){
+			dfs(i, cur++);
+		}
+	}
+	cur--;
+	forn(i, n){
+		comps[comp[i]].pb(i);
+	}
+	ll res = cost(comp[0], comp[n - 1]);
+	for(ll c = 1; c < cur; c++){
+		res = min(res, cost(comp[0], c) + cost(c, comp[n - 1]));
+	}
+	cout << res << endl;
+}
+
+int main(){
+	ll t; cin >> t;
+	forn(i, t){
+		solve();
+	}
+}
+```
+
+</CPPSection>
+	
 <JavaSection>
 
 ```java
