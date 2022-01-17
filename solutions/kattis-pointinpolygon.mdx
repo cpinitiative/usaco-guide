@@ -61,7 +61,7 @@ struct Point{
 
 //Compute the determinant of two vectors (p1,p2) and (p3,p4)
 ll det(Point p1, Point p2, Point p3, Point p4){
-    return ((p2.x-p1.x)*(p4.y-p3.y)-(p2.y-p1.y)*(p4.x-p3.x));
+    return ((p2.x - p1.x) * (p4.y - p3.y) - (p2.y - p1.y) * (p4.x - p3.x));
 }
 
 //Check if point p3 is above or below line segment (p1,p2)
@@ -79,17 +79,19 @@ ll dir(Point p1, Point p2, Point p3){
 
 //Check if two line segments (p1,p2) and (p3,p4) intersect
 bool intersect(Point p1, Point p2, Point p3, Point p4){
-    return ((dir(p1,p2,p3)!=dir(p1,p2,p4))&&(dir(p3,p4,p1)!=dir(p3,p4,p2)));
+    bool first = (dir(p1, p2, p3) != dir(p1, p2, p4));
+    bool second = (dir(p3, p4, p1) != dir(p3, p4, p2));
+    return first != second;
 }
 
 /*
- * If point p3 is collinear with points p1 and p2
- * Check if p3 is inside or outside the line segment (p1,p2)
+ *  If point p3 is collinear with points p1 and p2
+ *  Check if p3 is inside or outside the line segment (p1,p2)
  */
 bool within(Point p1, Point p2, Point p3){
-    if (dir(p1,p2,p3)==0){
-        bool xRange = (min(p1.x,p2.x) <= p3.x) && (p3.x <= max(p1.x,p2.x));
-        bool yRange = (min(p1.y,p2.y) <= p3.y) && (p3.y <= max(p1.y,p2.y));
+    if (dir(p1,p2,p3) == 0){
+        bool xRange = (min(p1.x, p2.x) <= p3.x) && (p3.x <= max(p1.x, p2.x));
+        bool yRange = (min(p1.y, p2.y) <= p3.y) && (p3.y <= max(p1.y, p2.y));
         return xRange && yRange;
     }else{
         return false;
@@ -101,7 +103,6 @@ int n, m;
 
 int main() {
     while (true) {
-        //Take inputs
         cin >> n;
         if (n == 0){
             break;
@@ -112,10 +113,10 @@ int main() {
         cin >> m;
 
         /*
-         * Cast an ray and count # line segments that the ray intersected with:
-         *   If the amount is odd, then the point is inside
-         *   If the amount is even, then the point is outside
-         *   If the point is on a line segment, then say it is on the boundary
+         *  Cast an ray and count # line segments that the ray intersected with:
+         *      If the amount is odd, then the point is inside
+         *      If the amount is even, then the point is outside
+         *      If the point is on a line segment, then it is on the boundary
          */
         for (int i = 0; i < m; i++) {
             struct Point curr;
@@ -123,20 +124,19 @@ int main() {
             struct Point ray = {INT_MAX, curr.y + 1};
             int intersections = 0;
             for (int j = 0; j < n; j++) {
-                if (intersect(polygon[j%n], polygon[(j+1)%n], curr, ray)) {
+                if (intersect(polygon[j % n], polygon[(j + 1) % n], curr, ray)) {
                     intersections++;
                 }
-                if (within(polygon[j%n], polygon[(j+1)%n], curr)) {
+                if (within(polygon[j % n], polygon[(j + 1) % n], curr)) {
                     cout << "on\n";
                     intersections = -1;
                     break;
                 }
             }
             if (intersections != -1) {
-                if (intersections % 2){
+                if (intersections % 2) {
                     cout << "in\n";
-                }
-                else{
+                } else {
                     cout << "out\n";
                 }
             }
