@@ -62,6 +62,34 @@ export function usePostActions(groupId: string) {
       await batch.commit();
       return docRef.id;
     },
+    ImportNewPost: async (exPost ,type: 'announcement' | 'assignment') => {
+      const defaultPost: Omit<PostData, 'timestamp'> = {
+        name: exPost.name,
+        isPublished: exPost.isPublished,
+        isPinned: exPost.isPinned,
+        body: exPost.body,
+        isDeleted: exPost.isDeleted,
+        type,
+        pointsPerProblem: exPost.pointsPerProblem,
+        problemOrdering: exPost.problemOrdering,
+        ...(type === 'announcement'
+          ? {}
+          : {
+            dueTimestamp: null,
+          }),
+      };
+      const firestore = getFirestore(firebaseApp);
+      const batch = writeBatch(firestore);
+      const docRef = doc(
+        collection(getFirestore(firebaseApp), 'groups', groupId, 'posts')
+      );
+      batch.set(docRef, { ...defaultPost, timestamp: serverTimestamp() });
+      batch.update(doc(firestore, 'groups', groupId), {
+        postOrdering: arrayUnion(docRef.id),
+      });
+      await batch.commit();
+      return docRef.id;
+    },
     deletePost: async (postId: string): Promise<void> => {
       const firestore = getFirestore(firebaseApp);
       const batch = writeBatch(firestore);
