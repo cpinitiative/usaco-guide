@@ -7,7 +7,11 @@ import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
-import { getPostTimestampString, getTotalPointsOfPost, PostData } from '../../../models/groups/posts';
+import {
+  getPostTimestampString,
+  getTotalPointsOfPost,
+  PostData,
+} from '../../../models/groups/posts';
 import Tooltip from '../../Tooltip/Tooltip';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
@@ -102,105 +106,100 @@ export default function FeedItem({
 
   const ref = React.useRef<HTMLDivElement>();
 
-
   const map = new Map<string, MapData>();
 
-     function exportSelectedPosts() {
-      const type = post.type;
-      const defaultPost: Omit<PostData, 'timestamp'> = {
-        name: post.name,
-        isPublished: post.isPublished,
-        isPinned: post.isPinned,
-        body: post.body,
-        isDeleted: post.isDeleted,
-        type,
-        pointsPerProblem: post.pointsPerProblem,
-        problemOrdering: post.problemOrdering,
-        ...(type === 'announcement'
-          ? {}
-          : {
+  function exportSelectedPosts() {
+    const type = post.type;
+    const defaultPost: Omit<PostData, 'timestamp'> = {
+      name: post.name,
+      isPublished: post.isPublished,
+      isPinned: post.isPinned,
+      body: post.body,
+      isDeleted: post.isDeleted,
+      type,
+      pointsPerProblem: post.pointsPerProblem,
+      problemOrdering: post.problemOrdering,
+      ...(type === 'announcement'
+        ? {}
+        : {
             dueTimestamp: null,
           }),
-      };
+    };
 
-      const q = query(
+    const q = query(
+      collection(
+        getFirestore(firebaseApp),
+        'groups',
+        group.id,
+        'posts',
+        post.id,
+        'problems'
+      ) as CollectionReference<GroupProblemData>
+    );
+
+    onSnapshot(q, {
+      next: snap => {
+        setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      },
+      error: error => {
+        toast.error(error.message);
+      },
+    });
+
+    map.forEach(async (value: MapData, key: string) => {
+      if (value.used) {
+        const firestore = getFirestore(firebaseApp);
+        const batch = writeBatch(firestore);
+        const docRef = doc(
+          collection(getFirestore(firebaseApp), 'groups', key, 'posts')
+        );
+
+        batch.set(docRef, { ...defaultPost, timestamp: serverTimestamp() });
+        batch.update(doc(firestore, 'groups', key), {
+          postOrdering: arrayUnion(docRef.id),
+        });
+        await batch.commit();
+        // if(post.type != 'announcement') {
+        const docRef2 = doc(
           collection(
             getFirestore(firebaseApp),
             'groups',
-            group.id,
+            key,
             'posts',
-            post.id,
+            docRef.id,
             'problems'
-          ) as CollectionReference<GroupProblemData>
-        )
+          )
+        );
 
-      onSnapshot( q, {
-        next: snap => {
-          setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        },
-        error: error => {
-          toast.error(error.message);
-        },
-      });
+        problems.map(async problem => {
+          const batch2 = writeBatch(firestore);
+          problem.id = docRef2.id;
+          problem.isDeleted = false;
+          problem.postId = docRef.id;
 
-
-      map.forEach(async (value: MapData, key: string) => {
-        if (value.used) {
-          const firestore = getFirestore(firebaseApp);
-          const batch = writeBatch(firestore);
-          const docRef = doc(
-            collection(getFirestore(firebaseApp), 'groups', key, 'posts')
+          batch2.set(docRef2, { ...(problem as any) });
+          batch2.update(
+            doc(getFirestore(firebaseApp), 'groups', key, 'posts', docRef.id),
+            {
+              [`pointsPerProblem.${docRef2.id}`]: problem.points,
+              [`problemOrdering`]: arrayUnion(docRef2.id),
+            }
           );
+          await batch2.commit();
+        });
+      }
+    });
 
-          batch.set(docRef, { ...defaultPost, timestamp: serverTimestamp() });
-          batch.update(doc(firestore, 'groups', key), {
-            postOrdering: arrayUnion(docRef.id),
-          });
-          await batch.commit();
-          // if(post.type != 'announcement') {
-          const docRef2 = doc(
-            collection(
-              getFirestore(firebaseApp),
-              'groups',
-              key,
-              'posts',
-              docRef.id,
-              'problems'
-            )
-          );
-
-          problems.map(async problem => {
-            const batch2 = writeBatch(firestore);
-            problem.id = docRef2.id;
-            problem.isDeleted = false;
-            problem.postId = docRef.id;
-
-
-            batch2.set(docRef2, { ...problem as any });
-            batch2.update(
-              doc(getFirestore(firebaseApp), 'groups', key, 'posts', docRef.id),
-              {
-                [`pointsPerProblem.${docRef2.id}`]: problem.points,
-                [`problemOrdering`]: arrayUnion(docRef2.id),
-              }
-            );
-            await batch2.commit();
-          })
-
-        }
-      });
-
-      console.log(problems);
-      setShowExportModal(false)
-    }
-
+    console.log(problems);
+    setShowExportModal(false);
+  }
 
   function handleGroupExportChange(g: GroupData) {
-    console.log(g.name)
-    if(map.has(g.id)){
+    console.log(g.name);
+    if (map.has(g.id)) {
       map.set(g.id, new MapData(!map.get(g.id).used, g));
-      console.log(map.get(g.id).used)
-    }else{
+      console.log(map.get(g.id).used);
+    } else {
       map.set(g.id, new MapData(true, g));
     }
   }
@@ -365,14 +364,24 @@ export default function FeedItem({
                     type="button"
                     onClick={() => {
                       setShowExportModal(true);
-                      console.log("toggled");
+                      console.log('toggled');
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
-
-                    <svg xmlns="http://www.w3.org/2000/svg" className="mr-3 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-3 h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
                     </svg>
                     <span>Export Post</span>
                   </button>
@@ -392,7 +401,11 @@ export default function FeedItem({
                 aria-orientation="vertical"
                 aria-labelledby="options-menu-0"
               >
-                <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={() => setShowExportModal(false) }>
+                <Dialog
+                  as="div"
+                  className="fixed z-10 inset-0 overflow-y-auto"
+                  onClose={() => setShowExportModal(false)}
+                >
                   <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                     <Transition.Child
                       as={Fragment}
@@ -403,12 +416,15 @@ export default function FeedItem({
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
                     >
-                      <Dialog.Overlay  className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 transition-opacity"/>
+                      <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 transition-opacity" />
                     </Transition.Child>
 
                     {/* This element is to trick the browser into centering the modal contents. */}
-                    <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-            &#8203;
+                    <span
+                      className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                      aria-hidden="true"
+                    >
+                      &#8203;
                     </span>
                     <Transition.Child
                       as={Fragment}
@@ -428,33 +444,47 @@ export default function FeedItem({
                             {/*  </svg>*/}
                             {/*</div>*/}
                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                              <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                              <Dialog.Title
+                                as="h3"
+                                className="text-lg leading-6 font-medium text-gray-900"
+                              >
                                 Export Post
                               </Dialog.Title>
                               <div className="mt-2 text-gray-500">
-                                Please select the groups you would like to export this assignment to.
+                                Please select the groups you would like to
+                                export this assignment to.
                                 <div className="block">
-                                {groups.isSuccess &&
-                                  (groups.data?.length > 0 ? (
-                                    groups.data.map( (group) => (
-                                      // group.ownerIds.includes(firebaseUser.uid)
-                                      group.ownerIds.includes(firebaseUser.uid) ?
-                                        (<div key={group.id}>
-                                        <label className="inline-flex items-center">
-                                        <input type="checkbox" className="form-checkbox" onChange={() => handleGroupExportChange(group)}/>
-                                        <span className="ml-2 text-gray-500">{group.name}</span>
-                                        </label>
-                                        </div>)
-                                       :
-                                       null
-                                    ))
-                                  ) : (
-                                    <div>
-                                      <p>
-                                        You aren't in an admin in any groups yet!
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {groups.isSuccess &&
+                                    (groups.data?.length > 0 ? (
+                                      groups.data.map(group =>
+                                        // group.ownerIds.includes(firebaseUser.uid)
+                                        group.ownerIds.includes(
+                                          firebaseUser.uid
+                                        ) ? (
+                                          <div key={group.id}>
+                                            <label className="inline-flex items-center">
+                                              <input
+                                                type="checkbox"
+                                                className="form-checkbox"
+                                                onChange={() =>
+                                                  handleGroupExportChange(group)
+                                                }
+                                              />
+                                              <span className="ml-2 text-gray-500">
+                                                {group.name}
+                                              </span>
+                                            </label>
+                                          </div>
+                                        ) : null
+                                      )
+                                    ) : (
+                                      <div>
+                                        <p>
+                                          You aren't in an admin in any groups
+                                          yet!
+                                        </p>
+                                      </div>
+                                    ))}
                                 </div>
                               </div>
                             </div>
@@ -464,7 +494,7 @@ export default function FeedItem({
                           <button
                             type="button"
                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                            onClick={() => (exportSelectedPosts())}
+                            onClick={() => exportSelectedPosts()}
                           >
                             Export
                           </button>
@@ -492,7 +522,7 @@ export default function FeedItem({
 export class MapData {
   constructor(b: boolean, g: GroupData) {
     this.used = b;
-     this.group = g;
+    this.group = g;
   }
   used: boolean;
   group: GroupData;
