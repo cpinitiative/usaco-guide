@@ -42,8 +42,9 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut, isLoaded, userProgressOnModules } =
-    useContext(UserDataContext);
+  const { firebaseUser, signOut, isLoaded, userProgressOnModules } = useContext(
+    UserDataContext
+  );
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
