@@ -265,7 +265,6 @@ inline namespace FileIO {
 static class Kattio extends PrintWriter {
 \tprivate BufferedReader r;
 \tprivate StringTokenizer st;
-
 \t// standard input
 \tpublic Kattio() { this(System.in, System.out); }
 \tpublic Kattio(InputStream i, OutputStream o) {
@@ -274,10 +273,9 @@ static class Kattio extends PrintWriter {
 \t}
 \t// USACO-style file input
 \tpublic Kattio(String problemName) throws IOException {
-\t\tsuper(new FileWriter(problemName + ".out"));
+\t\tsuper(problemName + ".out");
 \t\tr = new BufferedReader(new FileReader(problemName + ".in"));
 \t}
-
 \t// returns null if no more input
 \tpublic String next() {
 \t\ttry {
@@ -287,7 +285,6 @@ static class Kattio extends PrintWriter {
 \t\t} catch (Exception e) { }
 \t\treturn null;
 \t}
-
 \tpublic int nextInt() { return Integer.parseInt(next()); }
 \tpublic double nextDouble() { return Double.parseDouble(next()); }
 \tpublic long nextLong() { return Long.parseLong(next()); }
