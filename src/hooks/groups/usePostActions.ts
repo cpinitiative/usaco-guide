@@ -62,7 +62,7 @@ export function usePostActions(groupId: string) {
       await batch.commit();
       return docRef.id;
     },
-    ImportNewPost: async (exPost ,type: 'announcement' | 'assignment') => {
+    ImportNewPost: async (exPost, type: 'announcement' | 'assignment') => {
       const defaultPost: Omit<PostData, 'timestamp'> = {
         name: exPost.name,
         isPublished: exPost.isPublished,
@@ -75,8 +75,8 @@ export function usePostActions(groupId: string) {
         ...(type === 'announcement'
           ? {}
           : {
-            dueTimestamp: null,
-          }),
+              dueTimestamp: null,
+            }),
       };
       const firestore = getFirestore(firebaseApp);
       const batch = writeBatch(firestore);
