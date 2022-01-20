@@ -123,46 +123,46 @@ import java.util.*;
 import java.io.*;
 
 public class GCDBoard {
-    static final int MAX_N = (int) 1e5 + 5;
+	static final int MAX_N = (int) 1e5 + 5;
 
-    public static void main(String[] args) throws IOException {
-	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	int N = Integer.parseInt(br.readLine());
-	StringTokenizer st = new StringTokenizer(br.readLine());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-	int[] arr = new int[MAX_N];
-	for (int x = 1; x <= N; x++) {
-		arr[x] = Integer.parseInt(st.nextToken());
-        }
-	// Prefix will find the GCD from the start
-	int[] gcdPrefix = new int[MAX_N];
-			      
-	// Suffix will find the GCD from the end
-	int[] suffix = new int[MAX_N];
+		int[] arr = new int[MAX_N];
+		for (int x = 1; x <= N; x++) {
+			arr[x] = Integer.parseInt(st.nextToken());
+		}
+		// Prefix will find the GCD from the start
+		int[] gcdPrefix = new int[MAX_N];
 
-	prefix[0] = 0;
-	suffix[N + 1] = 0;
+		// Suffix will find the GCD from the end
+		int[] suffix = new int[MAX_N];
 
-        for (int x = 1; x <= N; ++x) {
-		// GCD for prefix
-		prefix[x] = gcd(prefix[x - 1], arr[x]);
-        }
-        for (int x = N; x >= 1; --x) {
-		// GCD for suffix
-		suffix[x] = gcd(suffix[x + 1], arr[x]);
-        }
+		gcdPrefix[0] = 0;
+		suffix[N + 1] = 0;
 
-        int ans = 1;
+		for (int x = 1; x <= N; ++x) {
+			// GCD for prefix
+			gcdPrefix[x] = gcd(gcdPrefix[x - 1], arr[x]);
+		}
+		for (int x = N; x >= 1; --x) {
+			// GCD for suffix
+			suffix[x] = gcd(suffix[x + 1], arr[x]);
+		}
 
-        // 'x' is the index we are going to remove
-        for (int x = 1; x <= N; ++x) {
-                // Removing index 'x is the same as finding the GCD of everything
-		// before it and after it
-		ans = Math.max(ans, gcd(prefix[x - 1], suffix[x + 1]));
-        }
+		int ans = 1;
 
-        System.out.println(ans);
-    }
+		// 'x' is the index we are going to remove
+		for (int x = 1; x <= N; ++x) {
+			// Removing index 'x is the same as finding the GCD of everything
+			// before it and after it
+			ans = Math.max(ans, gcd(gcdPrefix[x - 1], suffix[x + 1]));
+		}
+
+		System.out.println(ans);
+	}
 	public static int gcd(int num1, int num2) {
 		// How to quickly find GCD
 		if (num2 != 0) {
