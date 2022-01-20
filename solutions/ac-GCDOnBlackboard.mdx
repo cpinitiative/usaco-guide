@@ -134,36 +134,34 @@ public class GCD_board {
         }
 
         int[] prefix = new int[maxN];
-		// Prefix will find the GCD from the start
+	// Prefix will find the GCD from the start
         int[] suffix = new int[maxN];
-		// Suffix will find the GCD from the end
+	// Suffix will find the GCD from the end
 
         prefix[0] = 0;
         suffix[N + 1] = 0;
 
         for (int x = 1; x <= N; ++x) {
-			// Find GCD from first
             prefix[x] = GCD(prefix[x - 1], orig[x]);
         }
         for (int x = N; x >= 1; --x) {
-			// Find GCD from second
             suffix[x] = GCD(suffix[x + 1], orig[x]);
         }
 
         int ans = 1;
 
         for (int x = 1; x <= N; ++x) {
-			// 'x' is the index we are going to remove
+		// 'x' is the index we are going to remove
             ans = Math.max(ans, GCD(prefix[x - 1], suffix[x + 1]));
-			// Removing index 'x is the same as finding the GCD of everything
-			// before it and after it
+		// Removing index 'x is the same as finding the GCD of everything
+		// before it and after it
         }
 
         System.out.println(ans);
     }
 
     public static int GCD(int num1, int num2) {
-		// How to quickly find GCD
+	// How to quickly find GCD
         if (num2 != 0) {
             return GCD(num2, num1 % num2);
         }
