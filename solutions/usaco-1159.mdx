@@ -2,14 +2,16 @@
 id: usaco-1159
 source: USACO Silver 2021 December
 title: Connecting Two Barns
-author: Nathan Gong
+author: Nathan Gong, Ian Liao
 ---
+
+## Solution 1 - DFS + Two Pointers
+
+**Time Complexity:** $\mathcal{O}(T\cdot (N\log N + M))$
 
 [Official Analysis (C++)](http://usaco.org/current/data/sol_prob2_silver_dec21.html)
 
-## Implementation - DFS + Two Pointers
-
-**Time Complexity:** $\mathcal{O}(T\cdot (N\log N + M))$
+### Implementation
 
 <LanguageSection>
 
@@ -137,6 +139,133 @@ public class ConnectingTwoBarns {
 }
 ```
 
-</JavaSection>
+</JavaSection>	
+						
+</LanguageSection>
+
+## Solution 2 - DSU/UF
+
+**Time Complexity:** $\mathcal{O}\left(T(N+M)\right)$
+
+### Explanation
+We can also find the components of each graph by storing the edges in a Disjoint Set Union/Union Find Structure, and query the elements in O(n) time. Afterward, we can find the answer with a two pointer search.
+	
+### Implementation						
+<LanguageSection>
+						
+<CPPSection>
+
+```cpp
+#include<cstring>
+#include<iostream>
+#include<numeric>
+#include<vector>
+
+using namespace std;
+
+typedef long long ll;
+
+// disjoint set union / union find structure
+struct DSU {
+	int v[100000];
+
+	void init(int n) { memset(v, -1, sizeof(int) * n); }
+	int get(int x) { return v[x] < 0 ? x : v[x] = get(v[x]); }
+	int same(int a, int b) { return get(a) == get(b); }
+	int unite(int x, int y) {
+		x = get(x), y = get(y);
+		if (x == y) { return 0; }
+		if (v[x] > v[y]) swap(x, y);
+		v[x] += v[y];
+		v[y] = x;
+		return 1;
+	}
+};
+
+int t, n, m, l, r;
+
+DSU dsu;
+
+vector<int> cmp[100000];
+
+ll d1[100000], d2[100000], ans;
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+
+	cin >> t;
+	while (t--) {
+		cin >> n >> m;
+		// initialize dsu of size n
+		dsu.init(n);
+
+		for (int i = 0; i < m; i++) {
+			int a, b; cin >> a >> b;
+			// join a and b into the same graph
+			dsu.unite(--a, --b);
+		}
+
+		// print 0 if nodes 1 and n are in the same graph
+		if (dsu.get(0) == dsu.get(n - 1)) { cout << "0\n"; continue; }
+
+
+		for (int i = 0; i < n; i++) {
+			cmp[i].clear();
+			d1[i] = 100000;
+			d2[i] = 100000;
+		}
+
+		/*
+		 * adds all indices of a graph to the index of the parent
+		 * components should already be sorted
+		 */
+		for (int i = 0; i < n; i++)
+			cmp[dsu.get(i)].push_back(i);
+
+		// two pointers
+		l = 0, r = 0;
+
+		for (int i = 0; i < n; i++) {
+			// make sure l is less than the size of the graph
+			while (l < cmp[dsu.get(0)].size()) {
+				/*
+				 * find the minimum distance from field i to the lth component
+				 * in barn 1's graph
+				 */
+				d1[dsu.get(i)] = min(d1[dsu.get(i)], (ll)abs(i - cmp[dsu.get(0)][l]));
+				// break once the lth component is greater than i
+				if (cmp[dsu.get(0)][l] >= i) break;
+				l++;
+			}
+			// correct for overcounting
+			if (l) l--;
+
+			// make sure r is less than the size of the graph
+			while (r < cmp[dsu.get(n - 1)].size()) {
+				/*
+				 * find the minimum distance from field i to the rth component
+				 * in barn 2's graph
+				 */
+				d2[dsu.get(i)] = min(d2[dsu.get(i)], (ll)abs(i - cmp[dsu.get(n - 1)][r]));
+				// break once the rth component is greater than i
+				if (cmp[dsu.get(n - 1)][r] >= i) break;
+				r++;
+			}
+			// correct for overcounting
+			if (r) r--;
+		}
+
+		ans = 5000000000;
+
+		// calculate minimum cost
+		for (int i = 0; i < n; i++)
+			ans = min(ans, d1[i] * d1[i] + d2[i] * d2[i]);
+
+		cout << ans << "\n";
+	}
+}
+```
+				
+</CPPSection>
 
 </LanguageSection>
