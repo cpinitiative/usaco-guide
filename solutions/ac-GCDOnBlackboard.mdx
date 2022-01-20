@@ -120,7 +120,7 @@ print(ans)
 import java.util.*;
 import java.io.*;
 
-public class GCD_board {
+public class gcdBoard {
     static final int maxN = 100000 + 5;
 
     public static void main(String[] args) throws IOException {
@@ -128,9 +128,9 @@ public class GCD_board {
         int N = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int[] orig = new int[maxN];
+        int[] arr = new int[maxN];
         for (int x = 1; x <= N; x++) {
-            orig[x] = Integer.parseInt(st.nextToken());
+            arr[x] = Integer.parseInt(st.nextToken());
         }
 
         int[] prefix = new int[maxN];
@@ -142,10 +142,12 @@ public class GCD_board {
         suffix[N + 1] = 0;
 
         for (int x = 1; x <= N; ++x) {
-            prefix[x] = GCD(prefix[x - 1], orig[x]);
+		// Find GCD from first
+            prefix[x] = GCD(prefix[x - 1], arr[x]);
         }
         for (int x = N; x >= 1; --x) {
-            suffix[x] = GCD(suffix[x + 1], orig[x]);
+		// Find GCD from second
+            suffix[x] = GCD(suffix[x + 1], arr[x]);
         }
 
         int ans = 1;
@@ -160,7 +162,7 @@ public class GCD_board {
         System.out.println(ans);
     }
 
-    public static int GCD(int num1, int num2) {
+    public static int gcd(int num1, int num2) {
 	// How to quickly find GCD
         if (num2 != 0) {
             return GCD(num2, num1 % num2);
