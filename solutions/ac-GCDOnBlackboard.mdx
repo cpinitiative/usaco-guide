@@ -123,25 +123,25 @@ import java.util.*;
 import java.io.*;
 
 public class GCDBoard {
-    static final int maxN = 100000 + 5;
+    static final int MAX_N = (int) 1e5 + 5;
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine());
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	int N = Integer.parseInt(br.readLine());
+	StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int[] arr = new int[maxN];
-        for (int x = 1; x <= N; x++) {
+	int[] arr = new int[MAX_N];
+	for (int x = 1; x <= N; x++) {
 		arr[x] = Integer.parseInt(st.nextToken());
         }
-
-        int[] gcdPrefix = new int[maxN];
 	// Prefix will find the GCD from the start
-        int[] suffix = new int[maxN];
+	int[] gcdPrefix = new int[MAX_N];
+			      
 	// Suffix will find the GCD from the end
+	int[] suffix = new int[MAX_N];
 
-        prefix[0] = 0;
-        suffix[N + 1] = 0;
+	prefix[0] = 0;
+	suffix[N + 1] = 0;
 
         for (int x = 1; x <= N; ++x) {
 		// GCD for prefix
