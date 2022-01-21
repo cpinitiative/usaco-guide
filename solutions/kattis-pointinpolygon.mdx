@@ -6,25 +6,25 @@ author: Jeffrey Zhang
 ---
 
 ## Solution 
-In order to determine if a point is inside a polygon, we can imagine a ray being casted from that point towards any direction. Resulting in three possible scenarios: 
+In order to determine if a point is inside a polygon, we can imagine a ray being cast from that point towards any direction. Resulting in three possible scenarios: 
 
-1. If the ray intersects with odd number of polygon edges, then the point is inside.
-2. If the ray intersects with even number of polygon edges, then the point is outside.
+1. If the ray intersects with odd number of edges, then the point is inside.
+2. If the ray intersects with even number of edges, then the point is outside.
 3. If the origin point is on a line segment, then the point is on the edge.
 
-This algorithm is known as the [*Ray Casting Algorithm*](https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm), more details can be found [here](https://en.wikipedia.org/wiki/Point_in_polygon)
+This algorithm is known as the [*Ray Casting Algorithm*](https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm).
 
 ## Line segment & Line segment intersection
 
-Given two line segments $L_1 = (p_1,p_2)$ and $L_2 = (p_3,p_4)$, how can we effectively check if they intersect each other? We will first have to use a concept from linear algebra called the *Determinant*.
+Given two line segments $L_1 = (p_1,p_2)$ and $L_2 = (p_3,p_4)$, how can we efficiently check if they intersect each other? We will first have to use a concept from linear algebra called the *determinant*.
 
 <Info title="Complementary resource">
 
-If you don't already know what a determinant is, watch this [youtube video](https://www.youtube.com/watch?v=Ip3X9LOh2dk) for an in-depth explanation.
+This [youtube video](https://www.youtube.com/watch?v=Ip3X9LOh2dk) provides a handy in-depth explanation of determinants.
 
 </Info>
 
-We will define the determinant operator of two vectors as $\times$. Given two vectors $\vec{a}=\langle x_1,y_1 \rangle$ and $\vec{b}=\langle x_2,y_2 \rangle$. If $\vec{a}\times\vec{b}$ gives a positive area then $\vec{b}$ points to the left of $\vec{a}$, if it gives a negative area then $\vec{b}$ points to the right of $\vec{a}$, and if it gives a zero area then $\vec{b}$ and $\vec{a}$ are parallel.
+We will define the determinant of two vectors as $\times$. Given two vectors $\vec{a}=\langle x_1,y_1 \rangle$ and $\vec{b}=\langle x_2,y_2 \rangle$. If $\vec{a}\times\vec{b}$ gives a positive area then $\vec{b}$ points to the left of $\vec{a}$, if it gives a negative area then $\vec{b}$ points to the right of $\vec{a}$, and if it gives a zero area then $\vec{b}$ and $\vec{a}$ are parallel.
 
 To check if $L_1$ and $L_2$ intersect with each other, is equal to checking if $L_2$ intersects with the line from line segment $L_1$, and checking if $L_1$ intersects with the line from line segment $L_2$. For the first of two condition to be true, $p_3$ and $p_4$ from $L_2$ must be on the opposite directions of $L_1$. To define this mathematically, let
 	
