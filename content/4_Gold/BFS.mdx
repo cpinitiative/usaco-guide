@@ -92,6 +92,12 @@ v = q.get()      # v = 1, q = [2]
 v = q.get()      # v = 2, q = []
 v = q.get()      # Code waits forever, creating TLE error.
 ```
+<Warning>
+
+Python's `queue.Queue()` uses Locks to maintain a threadsafe synchronization, so it's quite slow.
+To avoid TLE, use `collections.deque()` instead for a faster version of a queue.
+
+</Warning>
 
 </PySection>
 
@@ -115,12 +121,12 @@ The four methods for adding and removing are `push_back`, `pop_back`,
 
 ```cpp
 deque<int> d;
-d.push_front(3); // [3]
-d.push_front(4); // [4, 3]
-d.push_back(7); // [4, 3, 7]
-d.pop_front(); // [3, 7]
-d.push_front(1); // [1, 3, 7]
-d.pop_back(); // [1, 3]
+d.push_front(3);  // [3]
+d.push_front(4);  // [4, 3]
+d.push_back(7);  // [4, 3, 7]
+d.pop_front();  // [3, 7]
+d.push_front(1);  // [1, 3, 7]
+d.pop_back();  // [1, 3]
 ```
 
 You can also access deques in constant time like an array in constant time with
@@ -138,15 +144,32 @@ removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
 
 ```java
 ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
-deque.addFirst(3); // [3]
-deque.addFirst(4); // [4, 3]
-deque.addLast(7); // [4, 3, 7]
-deque.removeFirst(); // [3, 7]
-deque.addFirst(1); // [1, 3, 7]
-deque.removeLast(); // [1, 3]
+deque.addFirst(3);  // [3]
+deque.addFirst(4);  // [4, 3]
+deque.addLast(7);  // [4, 3, 7]
+deque.removeFirst();  // [3, 7]
+deque.addFirst(1);  // [1, 3, 7]
+deque.removeLast();  // [1, 3]
 ```
 
 </JavaSection>
+
+<PySection>
+
+#### Python
+
+In Python, `collections.deque()` is used for a deque data structure. The four methods for adding and removing are `appendleft`, `popleft`, `append`, and `pop`.
+```py
+d = collections.deque()
+d.appendleft(3)  # [3]
+d.appendleft(4)  # [4, 3]
+d.append(7)  # [4, 3, 7]
+d.popleft()  # [3, 7]
+d.appendleft(1)  # [1, 3, 7]
+d.pop()  # [1, 3]
+```
+
+</PySection>
 
 </LanguageSection>
 
