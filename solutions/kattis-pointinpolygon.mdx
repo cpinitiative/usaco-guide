@@ -5,7 +5,6 @@ title: Point in Polygon
 author: Jeffrey Zhang
 ---
 
-**Time Complexity:** $\mathcal O(NM)$
 ## Solution 
 In order to determine if a point is inside a polygon, we can imagine a ray being casted from that point towards any direction. Resulting in three possible scenarios: 
 
@@ -44,9 +43,9 @@ The condition will be true if and only if $\vec{a}\times\vec{b_1} \neq \vec{a}\t
 As all geometry problem go, edge cases are a must. One edge case one might consider in our method above is that if both $\vec{a}\times\vec{b_1}$ and $\vec{a}\times\vec{b_2}$ are equal and are equal to 0, then they can still intersect as long as they overlap with each other. But let me let you in on a ***secret***, due to the way this problem is structured, all vertices are on lattice points, meaning that they have whole numbers as coordinates. And since one of the $L$ is customizable (we get to pick the point the point cast its ray at), we can just set its coordinate to $(\infty,1)$. This way, the ray will have a slope of close to $0$, successfully avoiding all possible lattice point intersections. One trick to rule edges cases all! 
 
 ## Implementation
+**Time Complexity:** $\mathcal O(NM)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -141,7 +140,5 @@ int main() {
 	}
 }
 ```
-
 </CPPSection>
-
 </LanguageSection>
