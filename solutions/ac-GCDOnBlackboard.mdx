@@ -138,14 +138,14 @@ public class GCDBoard {
 		int[] gcdPrefix = new int[MAX_N];
 
 		// Suffix will find the GCD from the end
-		int[] suffix = new int[MAX_N];
+		int[] gcdSuffix = new int[MAX_N];
 
 		for (int x = 1; x <= N; ++x) {
 			gcdPrefix[x] = gcd(gcdPrefix[x - 1], arr[x]);
 		}
 		for (int x = N; x >= 1; --x) {
 			// GCD for suffix
-			suffix[x] = gcd(suffix[x + 1], arr[x]);
+			gcdSuffix[x] = gcd(gcdSuffix[x + 1], arr[x]);
 		}
 
 		int ans = 1;
@@ -156,7 +156,7 @@ public class GCDBoard {
 			 * Removing the element at index x is the same as finding the GCD from 0 to x - 1
 			 * and the GCD from x + 1 to n - 1
 			 */ 
-			ans = Math.max(ans, gcd(gcdPrefix[x - 1], suffix[x + 1]));
+			ans = Math.max(ans, gcd(gcdPrefix[x - 1], gcdSuffix[x + 1]));
 		}
 
 		System.out.println(ans);
