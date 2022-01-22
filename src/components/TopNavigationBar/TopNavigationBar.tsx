@@ -513,8 +513,9 @@ export default function TopNavigationBar({
                     className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
-                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"></span>
-                  Contact Us
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Contact Us
+                  </span>
                 </a>
                 <Link
                   key="Settings"
