@@ -2,7 +2,7 @@
 id: usaco-969
 source: USACO Gold 2019 December
 title: Milk Pumping
-author: Qi Wang, Ryan Chou
+author: Qi Wang, Ryan Chou, Jesse Choe
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_pump_gold_dec19.html)
@@ -276,4 +276,171 @@ public class pump{
 }
 ```
 </JavaSection>
+</LanguageSection>
+
+## Alternative Implementation - Binary Search + DP
+
+Let $\texttt{dp}[i][j]$ represent the minimum path cost with a flow rate of $j$ going through junction $i$. In order to maintain a flow rate of $j$, the undirected edge going through $i$ must either have a flow of $j$ or there must be some previous edge with a flow of $j$. This leads us to the following transitions:
+
+ - $\texttt{dp}[i][j] = \min_{j \leq k \leq 1000}{(\texttt{dp}[i][j] + \texttt{cost}[i][x])}$, where $x$ represents an arbitrary junction connected to $i$ and $\texttt{cost}[i][x]$ represents the cost of the pipe connecting junction $i$ and junction $x$.
+ - $\texttt{dp}[i][k] = \min_{1 \leq k \leq j}{(\texttt{dp}[x][k] + \texttt{cost}[i][x])}$, where $x$ represents an arbitrary junction connected to $i$ and $\texttt{cost}[i][x]$ represents the cost of the pipe connecting junction $i$ and junction $x$.
+
+Similar to [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839), this problem asks us to find the maximum ratio multiplied by a large constant (in this case $10^6$) rounded down to the nearest integer, so we can binary search on the answer for this ratio!
+
+Let $R$ be the maximum ratio that we're trying to find multiplied by $10^6$. The given ratio $R$ works if $\frac{10^6 \cdot F}{C} \geq R$ is satisfied, where $F$ represents the flow rate in the path, and $C$ represents the total path cost in that path. This condition can more simply be written as $10^6 \cdot F - R \cdot C \geq 0$, where $C$ is $\texttt{dp}[n - 1][j]$ and $F$ is $j$, where the condition $1 \leq j \leq 10^6$ must hold.
+
+<LanguageSection>
+
+<CPPSection>
+	
+**Time Complexity:** $\mathcal{O}(N(N \cdot MAXF + M)\log MAXR)$
+	
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+using pl = pair<ll, ll>;
+using vpl = vector<pl>;
+
+#define pb push_back
+#define f first
+#define s second
+
+const ll MAXN = 1000, INF = 1e9;
+
+/* 
+ * Let dp[i][j] represent the minimum cost with a flow 
+ * of j from node 1 to node i
+ */
+
+ll c[MAXN], f[MAXN], dp[MAXN][MAXN + 1], n, m;
+vpl adj[MAXN];
+
+// Binary search on the answer for the maximum ratio
+
+bool works(ll r)
+{
+	// Initialize the DP array with infinity
+	for (ll i = 0; i < n; i++)
+	{
+		for (ll j = 0; j <= MAXN; j++)
+		{
+			dp[i][j] = INF;
+		}
+	}
+
+	// Set the base cases of the DP
+
+	forn(j, MAXN + 1) dp[0][j] = 0;
+
+	// Process the DP in BFS order starting from point 1
+
+	queue<ll> q;
+	q.push(0);
+
+	while (!q.empty())
+	{
+		ll cur = q.front();
+		q.pop();
+		for (pl u : adj[cur])
+		{
+			bool changed = false;
+
+			/* 
+			 * This is when the edge going from cur to u.f
+			 * doesn't contribute to the flow rate.
+			 */
+
+			for (ll i = 0; i < f[u.s]; i++)
+			{
+				if (dp[cur][i] + c[u.s] < dp[u.f][i])
+				{
+					changed = true;
+					dp[u.f][i] = dp[cur][i] + c[u.s];
+				}
+			}
+
+			/* 
+			 * This is when the edge going from cur to u.f
+			 * contributes to the flow rate.
+			 */
+
+			for (ll i = f[u.s]; i <= MAXN; i++)
+			{
+				if (dp[cur][f[u.s]] + c[u.s] < dp[u.f][f[u.s]])
+				{
+					changed = true;
+					dp[u.f][f[u.s]] = dp[cur][f[u.s]] + c[u.s];
+				}
+			}
+
+			// Add node u.f to the queue if the answer changed
+
+			if (changed)
+			{
+				q.push(u.f);
+			}
+		}
+	}
+	for (ll i = 0; i <= MAXN; i++)
+	{
+		// Check if 10^6 * flow rate - r * cost >= 0
+
+		ll cost = 1e6 * i - r * dp[n - 1][i];
+		if (cost >= 0)
+			return true;
+	}
+	return false;
+}
+
+int main()
+{
+
+	// File IO
+
+	freopen("pump.in", "r", stdin);
+	freopen("pump.out", "w", stdout);
+
+	// Read in the input
+
+	cin >> n >> m;
+	for (ll i = 0; i < m; i++)
+	{
+		ll a, b;
+		cin >> a >> b >> c[i] >> f[i];
+		--a, --b; // Zero index the nodes
+
+		/* 
+		 * Connect the two nodes while storing the index of 
+		 * the flow and cost
+		 */
+
+		adj[a].pb({b, i}), adj[b].pb({a, i});
+	}
+
+	/* 
+	 * You binary search on the answer from 0 to 10^9 since 
+	 * the ratio can be at most 10^3 and 10^6 * 10^3 = 10^9
+     */
+
+	ll l = 0, r = 1e9, ans = 0;
+	while (l <= r)
+	{
+		ll m = l + (r - l) / 2;
+		if (works(m))
+		{
+			ans = m;
+			l = m + 1;
+		}
+		else
+		{
+			r = m - 1;
+		}
+	}
+	cout << ans << endl;
+}
+```
+</CPPSection>
 </LanguageSection>
