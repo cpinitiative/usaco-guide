@@ -314,12 +314,10 @@ const ll MAXN = 1000, INF = 1e9;
  * Let dp[i][j] represent the minimum cost with a flow 
  * of j from node 1 to node i
  */
-
 ll c[MAXN], f[MAXN], dp[MAXN][MAXN + 1], n, m;
 vpl adj[MAXN];
 
 // Binary search on the answer for the maximum ratio
-
 bool works(ll r)
 {
 	// Initialize the DP array with infinity
@@ -332,14 +330,11 @@ bool works(ll r)
 	}
 
 	// Set the base cases of the DP
-
 	forn(j, MAXN + 1) dp[0][j] = 0;
 
 	// Process the DP in BFS order starting from point 1
-
 	queue<ll> q;
 	q.push(0);
-
 	while (!q.empty())
 	{
 		ll cur = q.front();
@@ -352,7 +347,6 @@ bool works(ll r)
 			 * This is when the edge going from cur to u.f
 			 * doesn't contribute to the flow rate.
 			 */
-
 			for (ll i = 0; i < f[u.s]; i++)
 			{
 				if (dp[cur][i] + c[u.s] < dp[u.f][i])
@@ -366,7 +360,6 @@ bool works(ll r)
 			 * This is when the edge going from cur to u.f
 			 * contributes to the flow rate.
 			 */
-
 			for (ll i = f[u.s]; i <= MAXN; i++)
 			{
 				if (dp[cur][f[u.s]] + c[u.s] < dp[u.f][f[u.s]])
@@ -377,54 +370,48 @@ bool works(ll r)
 			}
 
 			// Add node u.f to the queue if the answer changed
-
 			if (changed)
 			{
 				q.push(u.f);
 			}
 		}
 	}
+	
 	for (ll i = 0; i <= MAXN; i++)
 	{
 		// Check if 10^6 * flow rate - r * cost >= 0
-
 		ll cost = 1e6 * i - r * dp[n - 1][i];
-		if (cost >= 0)
+		if (cost >= 0) {
 			return true;
+		}
 	}
 	return false;
 }
 
 int main()
 {
-
-	// File IO
-
 	freopen("pump.in", "r", stdin);
 	freopen("pump.out", "w", stdout);
-
-	// Read in the input
 
 	cin >> n >> m;
 	for (ll i = 0; i < m; i++)
 	{
 		ll a, b;
 		cin >> a >> b >> c[i] >> f[i];
-		--a, --b; // Zero index the nodes
+		--a, --b;  // Make the nodes 0-indexed
 
 		/* 
 		 * Connect the two nodes while storing the index of 
 		 * the flow and cost
 		 */
-
-		adj[a].pb({b, i}), adj[b].pb({a, i});
+		adj[a].pb({b, i});
+		adj[b].pb({a, i});
 	}
 
 	/* 
-	 * You binary search on the answer from 0 to 10^9 since 
+	 * Binary search on the answer from 0 to 10^9 since 
 	 * the ratio can be at most 10^3 and 10^6 * 10^3 = 10^9
-     */
-
+	 */
 	ll l = 0, r = 1e9, ans = 0;
 	while (l <= r)
 	{
