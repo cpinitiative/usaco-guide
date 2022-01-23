@@ -10,17 +10,15 @@ author: Kevin Sheng
 Since $N$ can go all the way up to $10^5$, it would take much too long to iterate through
 all possible values of $(i, j)$.
 
-Instead, let's try and go through all possible values of $j$ and see how many values of $i$
-can be paired with it. To do this, we need to see how many numbers in $A$ are equal to $B_{C_j}$,
-which can be done with a map and some precalculation.
+Instead, let's iterate through all possible values of $j$ and determine how many values of $i$
+can be paired with it. To do this, we need to determine the number of elements in $A$ that are equal to $B_{C_j}$ for all $j  \in [1, N]$. This can be done with a map and some pre-calculation.
 
-<Info>
-
-The official solution goes through all values of $i$ instead, but it's still pretty much
+<Info title="Official Solution">
+The official solution goes through all values of $i$ instead, but it's pretty much
 the same idea.
-
 </Info>
 
+## Implementation
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
@@ -69,7 +67,6 @@ int main() {
 	cout << valid_pairs << endl;
 }
 ```
-
 </CPPSection>
 <JavaSection>
 
@@ -89,7 +86,7 @@ public class Main {
 				.mapToInt(Integer::parseInt).toArray();
 		
 		// Stores for each number in A how many times it appears in total
-		HashMap<Integer, Integer> aOccNum = new HashMap<>();
+		Map<Integer, Integer> aOccNum = new HashMap<>();
 		for (int i : a) {
 			aOccNum.put(i, aOccNum.getOrDefault(i, 0) + 1);
 		}
@@ -106,7 +103,6 @@ public class Main {
 	}
 }
 ```
-
 </JavaSection>
 <PySection>
 
@@ -133,6 +129,5 @@ for cj in c:
 
 print(valid_pairs)
 ```
-
 </PySection>
 </LanguageSection>
