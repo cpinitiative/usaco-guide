@@ -168,7 +168,6 @@ vl adj[MAXN], comps[MAXN];
 ll comp[MAXN];
 
 // DFS to find the connected components
-
 void dfs(ll cur, ll c)
 {
 	if (comp[cur] != -1)
@@ -187,7 +186,6 @@ ll cost(ll a, ll b)
 	ll dist = MAXN;
 	for (ll u : comps[a])
 	{
-
 		/*
 		 * Finds the closest field in bs' connected
 		 * component to field u and updates the minimum
@@ -195,21 +193,22 @@ ll cost(ll a, ll b)
 		 * searching on a sorted array (bs' connected 
 		 * component).
 		 */
-
 		ll i = lower_bound(comps[b].begin(),
-			comps[b].end(), u) - comps[b].begin();
+						   comps[b].end(), u) -
+			   comps[b].begin();
 		if (i > 0)
 		{
 			dist = min(dist, abs(comps[b][i - 1] - u));
 		}
-		dist = min(dist, abs(comps[b][i] - u));
+		if (i < comps[b].size())
+		{
+			dist = min(dist, abs(comps[b][i] - u));
+		}
 	}
-
 	/* 
 	 * Returns the minimum cost of building a path 
 	 * between the two components (aka dist^2)
 	 */
-
 	return dist * dist;
 }
 
@@ -219,14 +218,12 @@ void solve()
 	cin >> n >> m;
 
 	// Resets our variables for each test case
-
 	for (ll i = 0; i < n; i++)
 	{
 		comp[i] = -1, adj[i].clear(), comps[i].clear();
 	}
 
 	// Read in our input data
-
 	for (ll i = 0; i < m; i++)
 	{
 		ll a, b;
@@ -239,11 +236,8 @@ void solve()
 	 * Stores the number of connected components 
 	 * (set to -1 so that we don't overcount)
 	 */
-
 	ll cur = -1;
-
 	// Uses DFS to find each connected component
-
 	for (ll i = 0; i < n; i++)
 	{
 		if (comp[i] == -1)
@@ -256,70 +250,24 @@ void solve()
 	 * Add each field to its connected component.
 	 * Since we're iterating from 0...n-1, each
 	 * connected component is guaranteed to be 
-	 * in sorted order...
+	 * in sorted order
 	 */
-
 	for (ll i = 0; i < n; i++)
 	{
 		comps[comp[i]].pb(i);
 	}
 
 	/*
-	 * This is used to optimize our binary search. This
-	 * ensures that the sum of the component sizes = n
 	 * The initial answer is set to the cost of building
 	 * a direct path between fields 1 and N. This also
 	 * takes care of the case when fields 1 and N are in
 	 * the same connected component.
 	 */
-
-	ll res = 0;
-	if (comps[comp[0]].size() > comps[comp[n - 1]].size())
-	{
-		res = cost(comp[n - 1], comp[0]);
-	}
-	else
-	{
-		res = cost(comp[0], comp[n - 1]);
-	}
-
+	ll res = cost(comp[0], comp[n - 1]);
 	for (ll c = 1; c < cur; c++)
 	{
-		ll cost1 = 0, cost2 = 0;
-
-		/* 
-		 * Optimize our binary search for the path between 
-		 * the connected component of field 1 (or 0 due to 
-		 * zero indexing) and component c...
-		 */
-
-		if (comps[comp[0]].size() > comps[c].size())
-		{
-			cost1 = cost(c, comp[0]);
-		}
-		else
-		{
-			cost1 = cost(comp[0], c);
-		}
-
-		/* 
-		 * Optimize our binary search for the path between 
-		 * c and the connected component of field n (or n - 1
-		 * due to zero indexing)...
-		 */
-
-		if (comps[c].size() > comps[comp[n - 1]].size())
-		{
-			cost2 = cost(comp[n - 1], c);
-		}
-		else
-		{
-			cost2 = cost(c, comp[n - 1]);
-		}
-
 		// Minimize the cost of building two paths
-
-		res = min(res, cost1 + cost2);
+		res = min(res, cost(c, comp[0]) + cost(c, comp[n - 1]));
 	}
 	cout << res << endl;
 }
@@ -330,7 +278,7 @@ int main()
 	cin >> t;
 	for (ll i = 0; i < t; i++)
 	{
-		solve(); 
+		solve();
 	}
 }
 ```
