@@ -10,10 +10,15 @@ import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs';
 import idToSol from './id_to_sol';
 
+const lower = 2016;
+const upper = 2022;
+const ALL = `All (${lower - 1} - ${upper})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+
 const getSeasons = () => {
   const res = [];
-  for (let i = 2016; i <= 2021; ++i) {
+  res.push(ALL);
+  for (let i = lower; i <= upper; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
   return res;
@@ -250,6 +255,10 @@ export function DivisionList(props): JSX.Element {
         divisionToSeasonToProbs[division][season] = [];
       }
       divisionToSeasonToProbs[division][season].push(prob);
+      if (!(ALL in divisionToSeasonToProbs[division])) {
+        divisionToSeasonToProbs[division][ALL] = [];
+      }
+      divisionToSeasonToProbs[division][ALL].push(prob);
     }
   }
   const userSettings = useContext(UserDataContext);
@@ -266,6 +275,7 @@ export function DivisionList(props): JSX.Element {
     seasonHash ||
     (userSettings.divisionTableQuery && userSettings.divisionTableQuery.season);
   if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
+  console.log(curSeason);
 
   useEffect(() => {
     // https://dev.to/vvo/how-to-solve-window-is-not-defined-errors-in-react-and-next-js-5f97
@@ -288,14 +298,14 @@ export function DivisionList(props): JSX.Element {
   const problems: DivisionProblemInfo[] =
     divisionToSeasonToProbs[curDivision][curSeason];
 
-  const allHavePercent = problems.every(problem => !!problem.percentageSolved);
+  const someHavePercent = problems.some(problem => !!problem.percentageSolved);
   const sortOrders = ['By Contest'];
-  if (allHavePercent) sortOrders.push('By Percent');
+  if (someHavePercent) sortOrders.push('By Percent');
   const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
   const sortedProblems = React.useMemo(() => {
-    if (!allHavePercent) return problems;
+    if (!someHavePercent) return problems;
     return [...problems].sort(
-      (a, b) => b.percentageSolved - a.percentageSolved
+      (a, b) => (b.percentageSolved || 0) - (a.percentageSolved || 0)
     );
   }, [problems]);
 

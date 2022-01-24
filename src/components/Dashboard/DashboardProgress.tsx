@@ -141,6 +141,11 @@ export function UsacoTableProgress({
 }: {
   completed: number;
 }): JSX.Element {
+  let is_nan = false;
+  if (isNaN(completed)) {
+    completed = 0;
+    is_nan = true;
+  }
   let green = completed * 100;
   let yellow = 0;
   let blue = 0;
@@ -152,9 +157,14 @@ export function UsacoTableProgress({
     blue = yellow;
     yellow = 0;
   }
-  // ${Math.round(completed*1000)/10}%
   return (
-    <Tooltip content={`${Math.round(completed * 1000) / 10}%`}>
+    <Tooltip
+      content={
+        is_nan
+          ? 'No Information Available'
+          : `${Math.round(completed * 1000) / 10}%`
+      }
+    >
       {/* The span wrapper is needed for tippy to work */}
       <span className="cursor-pointer">
         <ProgressBarSmall

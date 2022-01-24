@@ -1,0 +1,181 @@
+---
+id: cses-1753
+source: CSES
+title: String Matching
+author: Dustin Miao
+---
+
+## Solution - Knuth-Morris-Prat Algorithm
+
+Define an array $\pi_S$ on some string $S$ such that $\pi_S[i]$ stores the length of the longest nontrivial prefix of the entire string that is equivalent to a suffix ending at position $i$. Formally, 
+
+$$
+\pi_S[i] = \max\{k \: | \: 1 \leq k < i \text{ and } S[0:k - 1] \equiv S[i - (k - 1): i]\}
+$$
+
+If we are searching for string $P$ inside of string $T$, create a new string $S = P + \# + T$, where $\#$ is any arbitrary character that does not occur in either string. Then, create an array $\pi_S$ using the [KMP](https://cp-algorithms.com/string/prefix-function.html) algorithm. The answer is simply the number of indicies inside of $\pi_S$ that is equal to $|P|$ (the length of $P$). 
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(n + m)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace str {
+	// Computes the Pi array of s
+	vector<int> pi(const string &s) {
+		int n = (int)s.size();
+		vector<int> pi_s(n);
+		for (int i = 1, j; i < n; i++) {
+			while (j > 0 && s[j] != s[i]) {
+				j = pi_s[j - 1]
+			}
+			if (s[i] == s[j]) {
+				j++;
+			}
+			pi_s[i] = j;
+		}
+		return pi_s;
+	}
+}
+
+int main() {
+	string P, T;
+	cin >> T >> P;
+	string S = P + '#' + T;
+	vector<int> pi = str::pi(S);   
+	int ans = 0;
+	for (int l : pi) {
+		if (l == P.size()) {
+			ans++;
+		}
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Solution - Z-Algorithm
+
+Like the previous solution, we now define an array $z_S$ such that $z_S[i]$ is the length of the longest prefix beginning at index $i$ that is equivalent to a prefix of the entire string. Formally, 
+
+$$
+z_S[i] = \max\{k \: | \: 1 \leq k\text{ and } S[0:k - 1] \equiv S[i:i+k-1]\}
+$$
+
+As before, for pattern string $P$ and text string $T$, create a new string $S = P + '\#' + T$, and create the array $z_S$ using the [z-algorithm](https://cp-algorithms.com/string/z-function.html). The answer is the number of indices inside of $z_S$ that is equal to $|P|$. 
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(n + m)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace str {
+	// Computes the Z-array of s
+	vector<int> z(const string &s) {
+		int n = (int)s.size();
+		vector<int> z_S(n);
+		for (int i = 1, l = 0, r = 0; i < n; i++) {
+			if (i <= r) {
+				z_S[i] = min(z_S[i - l], r - i + 1);
+			}
+			while (i + z_S[i] < n && s[z_S[i]] == s[i + z_S[i]]) {
+				z_S[i]++;
+			}
+			if (i + z_S[i] - 1 > r) {
+				l = i;
+				r = i + z_S[i] - 1;
+			}
+		}
+		return z_S;
+	}
+}
+
+int main() {
+	string P, T;
+	cin >> T >> P;
+	string S = P + '#' + T;
+	vector<int> z = str::z(S);   
+	int ans = 0;
+	for (int l : z) {
+		if (l == P.size()) {
+			ans++;
+		}
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Solution - Rabin-Karp Algorithm
+
+Precompute the [rolling hash](https://usaco.guide/gold/string-hashing?lang=cpp) of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine (although it doesn't hurt to add more!). Using hash base $9973$ and modulo $10^9 + 7$ suffices (see the string hashing module for more details on this choice). 
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(n + m)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace str {
+	// Computes the rolling hash of s with power P and modulo M
+	vector<long long> rhash(const string &s, const long long P, const long long M) {
+		int n = (int)s.size();
+		vector<long long> rhash_S(n);
+		for (int i = 0; i < n; i++) {
+			if (i != 0) {
+				rhash_S[i] = rhash_S[i - 1] * P % M;
+			}
+			rhash_S[i] = (rhash_S[i] + (long long)s[i]) % M;
+		}
+		return rhash_S;
+	}
+}
+
+const long long hashPow = 9973, hashMod = 1e9 + 7;
+
+int main() {
+	string P, T;
+	cin >> T >> P;
+	vector<int> Phash = str::rhash(P, hashPow, hashMod), Thash = str::rhash(T, hashPow, hashMod);
+	
+	long long ppow = 1;  // hashPow to the power of |P| modulo hashMod
+	for (int i = 0; i < P.size(); i++) {
+		ppow = (ppow * hashPow) % hashMod;
+	}
+
+	int ans = 0;
+	for (int i = 0; i + P.size() - 1 < T.size(); i++) {
+		long long r = Thash[i + P.size() - 1];
+		long long l = i == 0 ? 0 : (Thash[i - 1] * ppow % hashMod);
+		long long curHash = (r - l + hashMod) % hashMod;
+		if (curHash == Phash.back()) {
+			ans++;
+		}
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
