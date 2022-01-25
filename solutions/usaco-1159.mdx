@@ -157,35 +157,29 @@ As the editorial mentioned, we can minimize the cost function by using binary se
 #include <bits/stdc++.h>
 
 using namespace std;
-using ll = long long;
-using vl = vector<ll>;
 
-#define pb push_back
+const int MAX_N = 1e5;
 
-const ll MAXN = 1e5;
-
-vl adj[MAXN], comps[MAXN];
-ll comp[MAXN];
+vector<int> adj[MAX_N];
+// List of all the components of the farm
+vector<int> comps[MAX_N];
+// Given a node, returns the index of the component it belongs to
+int comp[MAX_N];
 
 // DFS to find the connected components
-void dfs(ll cur, ll c)
-{
-	if (comp[cur] != -1)
-	{
+void dfs(int cur, int c) {
+	if (comp[cur] != -1) {
 		return;
 	}
 	comp[cur] = c;
-	for (ll u : adj[cur])
-	{
+	for (int u : adj[cur]) {
 		dfs(u, c);
 	}
 }
 
-ll cost(ll a, ll b)
-{
-	ll dist = MAXN;
-	for (ll u : comps[a])
-	{
+int cost(int a, int b) {
+	int dist = MAX_N;
+	for (int u : comps[a]) {
 		/*
 		 * Finds the closest field in bs' connected
 		 * component to field u and updates the minimum
@@ -193,15 +187,13 @@ ll cost(ll a, ll b)
 		 * searching on a sorted array (bs' connected 
 		 * component).
 		 */
-		ll i = lower_bound(comps[b].begin(),
-						   comps[b].end(), u) -
-			   comps[b].begin();
-		if (i > 0)
-		{
+		int i = lower_bound(
+			comps[b].begin(), comps[b].end(), u
+		) - comps[b].begin();
+		if (i > 0) {
 			dist = min(dist, abs(comps[b][i - 1] - u));
 		}
-		if (i < comps[b].size())
-		{
+		if (i < comps[b].size()) {
 			dist = min(dist, abs(comps[b][i] - u));
 		}
 	}
@@ -212,36 +204,32 @@ ll cost(ll a, ll b)
 	return dist * dist;
 }
 
-void solve()
-{
-	ll n, m;
+void solve() {
+	int n, m;
 	cin >> n >> m;
 
 	// Resets our variables for each test case
-	for (ll i = 0; i < n; i++)
-	{
-		comp[i] = -1, adj[i].clear(), comps[i].clear();
+	for (int i = 0; i < n; i++) {
+		comp[i] = -1;
+		adj[i].clear();
+		comps[i].clear();
 	}
 
-	// Read in our input data
-	for (ll i = 0; i < m; i++)
-	{
-		ll a, b;
+	for (int i = 0; i < m; i++) {
+		int a, b;
 		cin >> a >> b;
-		--a, --b;
-		adj[a].pb(b), adj[b].pb(a);
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
 	}
 
 	/* 
 	 * Stores the number of connected components 
 	 * (set to -1 so that we don't overcount)
 	 */
-	ll cur = -1;
+	int cur = -1;
 	// Uses DFS to find each connected component
-	for (ll i = 0; i < n; i++)
-	{
-		if (comp[i] == -1)
-		{
+	for (int i = 0; i < n; i++) {
+		if (comp[i] == -1) {
 			dfs(i, ++cur);
 		}
 	}
@@ -252,9 +240,8 @@ void solve()
 	 * connected component is guaranteed to be 
 	 * in sorted order
 	 */
-	for (ll i = 0; i < n; i++)
-	{
-		comps[comp[i]].pb(i);
+	for (int i = 0; i < n; i++) {
+		comps[comp[i]].push_back(i);
 	}
 
 	/*
@@ -263,21 +250,18 @@ void solve()
 	 * takes care of the case when fields 1 and N are in
 	 * the same connected component.
 	 */
-	ll res = cost(comp[0], comp[n - 1]);
-	for (ll c = 1; c < cur; c++)
-	{
+	int res = cost(comp[0], comp[n - 1]);
+	for (int c = 1; c < cur; c++) {
 		// Minimize the cost of building two paths
 		res = min(res, cost(c, comp[0]) + cost(c, comp[n - 1]));
 	}
 	cout << res << endl;
 }
 
-int main()
-{
-	ll t;
+int main() {
+	int t;
 	cin >> t;
-	for (ll i = 0; i < t; i++)
-	{
+	for (int i = 0; i < t; i++) {
 		solve();
 	}
 }
