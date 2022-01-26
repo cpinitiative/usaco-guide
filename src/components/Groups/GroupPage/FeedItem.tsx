@@ -1,22 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import { BookmarkIcon } from '@heroicons/react/solid';
-import { Link } from 'gatsby';
-import React, { Fragment, useContext, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { GroupData } from '../../../models/groups/groups';
-import {
-  getPostTimestampString,
-  getTotalPointsOfPost,
-  PostData,
-} from '../../../models/groups/posts';
-import Tooltip from '../../Tooltip/Tooltip';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { useUserGroups } from '../../../hooks/groups/useUserGroups';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
 import {
   arrayUnion,
   collection,
@@ -28,8 +12,22 @@ import {
   serverTimestamp,
   writeBatch,
 } from 'firebase/firestore';
+import { Link } from 'gatsby';
+import React, { Fragment, useContext, useState } from 'react';
+import toast from 'react-hot-toast';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
+import { GroupData } from '../../../models/groups/groups';
+import {
+  getPostTimestampString,
+  getTotalPointsOfPost,
+  PostData,
+} from '../../../models/groups/posts';
 import { GroupProblemData } from '../../../models/groups/problem';
+import Tooltip from '../../Tooltip/Tooltip';
 
 const AnnouncementIcon = () => {
   return (
