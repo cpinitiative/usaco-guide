@@ -261,6 +261,8 @@ export const UserDataProvider = ({
   // If the user is signed in, sync remote data with local data
   React.useEffect(() => {
     if (firebaseUser) {
+      // firebaseUser.getIdToken(true).then(token => console.log(token));
+
       const userDoc = doc(getFirestore(firebaseApp), 'users', firebaseUser.uid);
       return onSnapshot(userDoc, {
         next: snapshot => {

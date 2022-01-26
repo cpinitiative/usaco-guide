@@ -1,0 +1,142 @@
+---
+id: joi-15-inheritance
+source: JOI 2015
+title: Inheritance
+author: Kevin Sheng
+---
+
+# Explanation
+
+At first glance, it seems Kruskal's would be more appropriate for this problem, so let's use that.
+
+Let's first give each child their own [DSU](/gold/dsu) data structure to store which cities are connected with their railroads,
+and then iterate through the railroads through decreasing order of price,
+giving each railroad to the first child that can accept it. This is effectively the same as going through
+each child one at a time and constructing a maximum spanning tree for each of them individually.
+
+However, linearly iterating through the entire list of DSUs would result in a
+runtime of about $\mathcal{O}(KM)$, which is too slow given the bounds.
+
+To quickly find the first child that can accept a railroad, let's try using binary search!
+But for binary search to actually work, we first need to prove the following:
+
+No matter what railroad we're processing,
+all children after the first child that can accept the current railroad
+can also accept said railroad, while all children *before* that child cannot.
+
+For this to hold, each DSU's connected components must be obtainable from the one after by adding some edges (0 edges is fine too).  
+This is obviously true for when we start, so now all we have to prove is that giving a railroad to the first child that can accept it will preserve this relation.
+
+Say we had two children that are adjacent in seniority: $c_i$ and $c_{i+1}$, with $c_i$ being older, and $c_{i+1}$ being the first child that can accept the current railroad.  
+If giving $c_{i+1}$ the railroad would make it so that obtaining $c_i$ from the new $c_{i+1}$ is impossible,
+then that would mean the railroad would connect some two components of $c_i$ and thus also mean that $c_i$ should be the first to accept the railroad, not $c_{i+1}$.
+
+Using binary search reduces $\mathcal{O}(KM)$ to $\mathcal{O}(K \log M)$, which runs in time. 
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K\log M)$ for each of $T$ test cases
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+//BeginCodeSnip{DSU}
+class DisjointSets {
+	private:
+		vector<int> parents;
+		vector<int> sizes;
+	public:
+		DisjointSets(int size) : parents(size), sizes(size, 1) {
+			for (int i = 0; i < size; i++) {
+				parents[i] = i;
+			}
+		}
+
+		int get_ultimate(int n) {
+			return parents[n] == n ? n : (parents[n] = get_ultimate(parents[n]));
+		}
+
+		int same_set(int n1, int n2) {
+			return get_ultimate(n1) == get_ultimate(n2);
+		}
+
+		bool link(int n1, int n2) {
+			n1 = get_ultimate(n1);
+			n2 = get_ultimate(n2);
+			if (n1 == n2) {
+				return false;
+			}
+			if (sizes[n1] < sizes[n2]) {
+				std::swap(n1, n2);
+			}
+			sizes[n1] += sizes[n2];
+			parents[n2] = n1;
+			return true;
+		}
+};
+//EndCodeSnip
+
+struct Railroad {
+	int id;
+	int city1;
+	int city2;
+	int cost;
+};
+
+int main() {
+	int city_num;
+	int rail_num;
+	int child_num;
+	std::cin >> city_num >> rail_num >> child_num;
+	
+	vector<Railroad> railroads(rail_num);
+	for (int r = 0; r < rail_num; r++) {
+		Railroad& rr = railroads[r];
+		rr.id = r;
+		std::cin >> rr.city1 >> rr.city2 >> rr.cost;
+		rr.city1--;
+		rr.city2--;
+	}
+	std::sort(railroads.begin(), railroads.end(),
+		[] (const Railroad& r1, const Railroad& r2) {
+			return r1.cost > r2.cost;
+	});
+
+	vector<DisjointSets> children(child_num, DisjointSets(city_num));
+	vector<int> ownership(rail_num);
+	for (int r = 0; r < rail_num; r++) {
+		const Railroad& rr = railroads[r];
+		int lo = 0;
+		int hi = child_num - 1;
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (!children[mid].same_set(rr.city1, rr.city2)) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		if (valid != -1) {
+			children[valid].link(rr.city1, rr.city2);
+		}
+		ownership[rr.id] = valid + 1;
+	}
+	for (int c : ownership) {
+		cout << c << '\n';
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

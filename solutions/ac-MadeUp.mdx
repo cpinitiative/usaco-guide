@@ -1,0 +1,133 @@
+---
+id: ac-MadeUp
+source: AtCoder Beginner Contest
+title: Made Up
+author: Kevin Sheng
+---
+
+[Official Editorial (C++)](https://atcoder.jp/contests/abc202/editorial/1894)
+
+Since $N$ can go all the way up to $10^5$, it would take much too long to iterate through
+all possible values of $(i, j)$.
+
+Instead, let's iterate through all possible values of $j$ and determine how many values of $i$
+can be paired with it. To do this, we need to determine the number of elements in $A$ that are equal to $B_{C_j}$ for all $j  \in [1, N]$. This can be done with a map and some pre-calculation.
+
+<Info title="Official Solution">
+The official solution goes through all values of $i$ instead, but it's pretty much
+the same idea.
+</Info>
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	vector<int> a(n);
+	vector<int> b(n);
+	vector<int> c(n);
+	for (int& i : a) {
+		std::cin >> i;
+	}
+	for (int& i : b) {
+		std::cin >> i;
+	}
+	for (int& i : c) {
+		std::cin >> i;
+	}
+
+	// Stores for each number in A how many times it appears in total
+	std::map<int, int> a_occ_num;
+	for (int i : a) {
+		a_occ_num[i]++;
+	}
+	
+	/*
+	 * For each possible value of C_j,
+	 * see how many values of i are compatible with it.
+	 */
+	long long valid_pairs = 0;
+	for (int cj : c) {
+		valid_pairs += a_occ_num[b[cj - 1]];
+	}
+	cout << valid_pairs << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		read.readLine();  // n not needed
+		int[] a = Arrays.stream(read.readLine().split(" "))
+				.mapToInt(Integer::parseInt).toArray();
+		int[] b = Arrays.stream(read.readLine().split(" "))
+				.mapToInt(Integer::parseInt).toArray();
+		int[] c = Arrays.stream(read.readLine().split(" "))
+				.mapToInt(Integer::parseInt).toArray();
+		
+		// Stores for each number in A how many times it appears in total
+		Map<Integer, Integer> aOccNum = new HashMap<>();
+		for (int i : a) {
+			aOccNum.put(i, aOccNum.getOrDefault(i, 0) + 1);
+		}
+
+		/*
+		 * For each possible value of C_j,
+		 * see how many values of i are compatible with it.
+		 */
+		long validPairs = 0;
+		for (int cj : c) {
+			validPairs += aOccNum.getOrDefault(b[cj - 1], 0);
+		}
+		System.out.println(validPairs);
+	}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+input()  # n not needed
+a = [int(i) for i in input().split()]
+b = [int(i) for i in input().split()]
+c = [int(i) for i in input().split()]
+
+# Stores for each number in A how many times it appears in total
+occ_a_num = {}
+for i in a:
+	if i not in occ_a_num:
+		occ_a_num[i] = 0
+	occ_a_num[i] += 1
+
+valid_pairs = 0
+"""
+For each possible value of C_j,
+see how many values of i are compatible with it.
+"""
+for cj in c:
+	valid_pairs += occ_a_num.get(b[cj - 1], 0)
+
+print(valid_pairs)
+```
+</PySection>
+</LanguageSection>

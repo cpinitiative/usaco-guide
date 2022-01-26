@@ -1,0 +1,144 @@
+---
+id: kattis-pointinpolygon
+source: Kattis
+title: Point in Polygon
+author: Jeffrey Zhang
+---
+
+## Solution 
+In order to determine if a point is inside a polygon, we can imagine a ray being cast from that point towards any direction. Resulting in three possible scenarios: 
+
+1. If the ray intersects with odd number of edges, then the point is inside.
+2. If the ray intersects with even number of edges, then the point is outside.
+3. If the origin point is on a line segment, then the point is on the edge.
+
+This algorithm is known as the [*Ray Casting Algorithm*](https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm).
+
+## Line segment & Line segment intersection
+
+Given two line segments $L_1 = (p_1,p_2)$ and $L_2 = (p_3,p_4)$, how can we efficiently check if they intersect each other? We will first have to use a concept from linear algebra called the *determinant*.
+
+<Info title="Complementary resource">
+
+This [youtube video](https://www.youtube.com/watch?v=Ip3X9LOh2dk) provides a handy in-depth explanation of determinants.
+
+</Info>
+
+We will define the determinant of two vectors as $\times$. Given two vectors $\vec{a}=\langle x_1,y_1 \rangle$ and $\vec{b}=\langle x_2,y_2 \rangle$. If $\vec{a}\times\vec{b}$ gives a positive area then $\vec{b}$ points to the left of $\vec{a}$, if it gives a negative area then $\vec{b}$ points to the right of $\vec{a}$, and if it gives a zero area then $\vec{b}$ and $\vec{a}$ are parallel.
+
+To check if $L_1$ and $L_2$ intersect with each other, is equal to checking if $L_2$ intersects with the line from line segment $L_1$, and checking if $L_1$ intersects with the line from line segment $L_2$. For the first of two condition to be true, $p_3$ and $p_4$ from $L_2$ must be on the opposite directions of $L_1$. To define this mathematically, let
+	
+$$
+\vec{a} = p_2-p_1
+$$
+$$
+\vec{b_1} = p_3-p_2
+$$
+$$
+\vec{b_2} = p_4-p_2
+$$
+
+The condition will be true if and only if $\vec{a}\times\vec{b_1} \neq \vec{a}\times\vec{b_2}$. Verifying the second of the two cases is equivalent to the procedure above, except $p_1$ and $p_2$ are switched with $p_3$ and $p_4$.
+
+As all geometry problem go, edge cases are a must. One edge case one might consider in our method above is that if both $\vec{a}\times\vec{b_1}$ and $\vec{a}\times\vec{b_2}$ are equal and are equal to 0, then they can still intersect as long as they overlap with each other. But let me let you in on a ***secret***, due to the way this problem is structured, all vertices are on lattice points, meaning that they have whole numbers as coordinates. And since one of the $L$ is customizable (we get to pick the point the point cast its ray at), we can just set its coordinate to $(\infty,1)$. This way, the ray will have a slope of close to $0$, successfully avoiding all possible lattice point intersections. One trick to rule all the edge cases! 
+
+## Implementation
+**Time Complexity:** $\mathcal O(NM)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+struct Point{
+	ll x, y;
+};
+
+// Compute the determinant of two vectors (p1,p2) and (p3,p4)
+ll det(Point p1, Point p2, Point p3, Point p4) {
+	return ((p2.x - p1.x) * (p4.y - p3.y) - (p2.y - p1.y) * (p4.x - p3.x));
+}
+
+// Check if point p3 is above or below line segment (p1,p2)
+ll dir(Point p1, Point p2, Point p3) {
+	ll result = det(p1, p2, p2, p3);
+	if (result > 0){
+		return 1;
+	} else if (result < 0) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
+
+// Check if two line segments (p1,p2) and (p3,p4) intersect
+bool intersect(Point p1, Point p2, Point p3, Point p4) {
+	bool first = dir(p1, p2, p3) != dir(p1, p2, p4);
+	bool second = dir(p3, p4, p1) != dir(p3, p4, p2);
+	return first && second;
+}
+
+/*
+ * If point p3 is collinear with points p1 and p2
+ * Check if p3 is inside or outside the line segment (p1,p2)
+ */
+bool within(Point p1, Point p2, Point p3) {
+	if (dir(p1, p2, p3) == 0) {
+		bool xRange = (min(p1.x, p2.x) <= p3.x) && (p3.x <= max(p1.x, p2.x));
+		bool yRange = (min(p1.y, p2.y) <= p3.y) && (p3.y <= max(p1.y, p2.y));
+		return xRange && yRange;
+	} else {
+		return false;
+	}
+}
+
+int main() {
+	while (true) {
+		int n, m;
+		cin >> n;
+		vector<Point> polygon(n);
+		if (n == 0){
+			break;
+		}
+		for (int i = 0; i < n; i++) {
+			cin >> polygon[i].x >> polygon[i].y;
+		}
+		cin >> m;
+
+		/*
+		 * Cast an ray and count # line segments that the ray intersected with:
+		 *   If the amount is odd, then the point is inside
+		 *   If the amount is even, then the point is outside
+		 *   If the point is on a line segment, then it is on the boundary
+		 */
+		for (int i = 0; i < m; i++) {
+			struct Point curr;
+			cin >> curr.x >> curr.y;
+			struct Point ray = {INT_MAX, curr.y + 1};
+			int intersections = 0;
+			for (int j = 0; j < n; j++) {
+				if (intersect(polygon[j % n], polygon[(j + 1) % n], curr, ray)) {
+					intersections++;
+				}
+				if (within(polygon[j % n], polygon[(j + 1) % n], curr)) {
+					cout << "on\n";
+					intersections = -1;
+					break;
+				}
+			}
+			if (intersections != -1) {
+				if (intersections % 2) {
+					cout << "in\n";
+				} else {
+					cout << "out\n";
+				}
+			}
+		}
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

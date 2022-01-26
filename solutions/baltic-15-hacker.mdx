@@ -73,17 +73,17 @@ need to compute subarrays on a linear array, where
 $S_x = S'_x \cup S'_{x + n} (1 \leq x \leq n)$ where $S'_x$ represents the set
 of subarrays containing $x$ in $\texttt{a}$.
 
-### Using An Ordered Set
+### Using A Sorted Set
 
 If we iterate over $x$ $(1 \leq x \leq 2n)$ in $\texttt{a}$, then we can store
-the running ordered set $S'_x$ and use it to update $S_{x \bmod n}$. For
+the running sorted set $S'_x$ and use it to update $S_{x \bmod n}$. For
 $x \geq 0$, add the sum over the subarray
 $[x, x + \left \lceil{\frac{n}{2}}\right \rceil - 1]$ to $S'x$ (you can compute
 this using prefix sums). Additionally, if
 $x \geq \left \lceil{\frac{n}{2}}\right \rceil$, remove the sum over
 $[x - \left \lceil{\frac{n}{2}}\right \rceil + 1, x]$. Then, we can compute the
 minimum value of $S'x$ for some $x$ by querying for the smallest value in the
-ordered set.
+sorted set.
 
 <Warning>
 

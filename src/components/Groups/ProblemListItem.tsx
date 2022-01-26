@@ -5,7 +5,6 @@ import { useUserLeaderboardData } from '../../hooks/groups/useLeaderboardData';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 import {
-  ExecutionStatus,
   ProblemData,
   submissionCircleBorderColor,
   submissionCircleColor,
@@ -28,7 +27,7 @@ const ProblemListItem = ({
   const bestSubmission =
     userLeaderboardData?.details?.[post.id]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;
-  const status = bestSubmission?.bestScoreStatus || ExecutionStatus.WA;
+  const status = bestSubmission?.bestScoreStatus || 'WA';
 
   if (!problem) return null; // this shouldn't happen...
 

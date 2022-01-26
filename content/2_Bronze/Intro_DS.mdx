@@ -1,7 +1,7 @@
 ---
 id: intro-ds
 title: Introduction to Data Structures
-author: Darren Yao, Benjamin Qi, Allen Li
+author: Darren Yao, Benjamin Qi, Allen Li, Neo Wang
 contributors: Nathan Wang, Abutalib Namazov
 description:
   'Introduces the concept of a data structure, (dynamic) arrays, pairs, tuples.'
@@ -32,10 +32,9 @@ This creates a `vector` structure that only stores objects of type `string`.
 For our examples below, we will primarily use the `int` data type, but note that
 you can use any data type including `string` and user-defined structures.
 
-Essentially, every standard library data structure supports the `size()` method,
-which returns the number of elements in the data structure, and the `empty()`
-method, which returns `true` if the data structure is empty, and `false`
-otherwise.
+Nearly every standard library data structure supports the `size()` method, which
+returns the number of elements in the data structure, and the `empty()` method,
+which returns `true` if the data structure is empty, and `false` otherwise.
 
 </CPPSection>
 <JavaSection />
@@ -49,9 +48,9 @@ otherwise.
 
 <Warning>
 
-Technically, you can solve all Bronze problems without using anything from this
-module aside from arrays. So the rest of this module isn't strictly necessary
-for Bronze (although highly recommended).
+One can solve all Bronze problems without using anything from this module aside
+from arrays. The rest of this module isn't strictly necessary for Bronze
+(although it is highly recommended).
 
 </Warning>
 
@@ -187,6 +186,13 @@ for (int i = 0; i < int(size(v)); i++){
 }
 cout << endl;
 ```
+
+<Optional>
+
+`std::vector` (and all the other standard library containers) support bounds-checked
+accesses as mentioned [here](/general/debugging-lang?lang=cpp#checking-for-oob).
+
+</Optional>
 
 We can also use **iterators**. An iterator allows you to traverse a container by
 pointing to an object within the container. However, they are **not** the same
@@ -693,21 +699,288 @@ this limit:
    (which can be very significant, especially with recursive functions) will
    reduce the amount of memory available.
 
+
+## Quiz
+
 <LanguageSection>
-
 <CPPSection>
-
-<Optional title="Additional Notes About C++ Data Structures">
-
-See [here](/general/notes-cpp-ds).
-
-</Optional>
-
+<Quiz>
+  <Quiz.Question>
+    How do you count the number of items in an `std::vector`? Suppose we named the vector `v`.
+    <Quiz.Answer correct>
+      `v.size()`
+      <Quiz.Explanation>
+        Correct. `size()` returns the number of elements in the data structure!
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `v.length()`
+      <Quiz.Explanation>
+        Incorrect. The method `length()` does not exist on an `std::vector`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `v.count()` 
+      <Quiz.Explanation>
+        Incorrect. The method `count()` does not exist on an `std::vector`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `v.resize()`
+      <Quiz.Explanation>
+        Incorrect. The method `resize()` resizes the vector to the specified number of elements
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following would print out `5`? If there are multiple correct answers, any of them will be accepted.
+    <Quiz.Answer correct>
+      ```cpp
+      int a = 3, b = 4, c = 5;
+      tuple<int, int, int> t = tie(a, b, c);
+      cout << get<2>(t);
+      ```
+      <Quiz.Explanation>
+        Correct. `get<i>(t)`: Returns the $i$-th element of the tuple `t`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```cpp
+      int a = 3, b = 4, c = 5;
+      tuple<int, int, int> t = tie(a, b, c);
+      cout << t.get(2);
+      ```
+      <Quiz.Explanation>
+        Incorrect. `t.get()` is not a valid method.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      ```cpp
+      vector<int> v;
+      v.push_back(2);
+      v.push_back(3);
+      v.push_back(7);
+      v.push_back(5);
+      cout << v[3];
+      ```
+      <Quiz.Explanation>
+        Correct. The array is $0$-indexed, which means that `v[3]` corresponds to the "fourth" element in the vector, which is $5$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```cpp
+      vector<int> v;
+      v.push_back(2);
+      v.push_back(3);
+      v.push_back(7);
+      v.push_back(5);
+      cout << v[4];
+      ```
+      <Quiz.Explanation>
+        Incorrect. The array is $0$-indexed, which means that `v[3]` corresponds to the "fourth" element in the vector, which is $5$. `v[4]` is out of bounds.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Why are data structures useful? If there are multiple correct answers, any of them will be accepted.
+    <Quiz.Answer correct>
+      Data structures can provide efficient operations on certain types of data.
+      <Quiz.Explanation>
+        Correct. For example, `std::set` can insert elements and determine whether or not items are contained within it in $\mathcal{O}(\log N)$ time.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      Data structures can store different types of data.
+      <Quiz.Explanation>
+        Correct. For example, `std::vector` can store both `int` and `string`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      They provide a step-by-step set of rules to solve a problem.
+      <Quiz.Explanation>
+        Incorrect. This is an algorithm.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Data structures are sometimes inefficient.
+      <Quiz.Explanation>
+        Incorrect. Data structures are not useful for this reason.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
 </CPPSection>
-
-<JavaSection />
-<PySection />
-
+<JavaSection>
+<Quiz>
+  <Quiz.Question>
+    How do you count the number of items in an `ArrayList`? Suppose we named it `list`.
+    <Quiz.Answer correct>
+      `list.size()`
+      <Quiz.Explanation>
+        Correct. `size()` returns the number of elements in the data structure!
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `list.length()`
+      <Quiz.Explanation>
+        Incorrect. The method `length()` does not exist on an `ArrayList`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `list.count()` 
+      <Quiz.Explanation>
+        Incorrect. The method `count()` does not exist on an `ArrayList`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `list.length`
+      <Quiz.Explanation>
+        Incorrect. The property `length` exists in arrays, but not `ArrayList`
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Why are data structures useful? If there are multiple correct answers, any of them will be accepted.
+    <Quiz.Answer correct>
+      Data structures can provide efficient operations on certain types of data.
+      <Quiz.Explanation>
+		Correct. For example, a `HashSet` can insert elements and query whether or not they are present in $\mathcal{O}(1)$ time.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      Data structures can store different types of data.
+      <Quiz.Explanation>
+        Correct. For example, you can have an `ArrayList` that stores `String`. Or, you can have one that holds `Integer`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      They provide a step-by-step set of rules to solve a problem.
+      <Quiz.Explanation>
+        Incorrect. This is an algorithm.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Data structures are sometimes inefficient.
+      <Quiz.Explanation>
+        Incorrect. Data structures are not useful for this reason.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
+</JavaSection>
+<PySection>
+<Quiz>
+  <Quiz.Question>
+    How do you count the number of items in a `list`? Suppose we named the list `l`.
+    <Quiz.Answer correct>
+      ```py
+	  len(l)
+	  ```
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```py
+	  count(l)
+	  ```
+      <Quiz.Explanation>
+        Incorrect. The method `count()` is not defined.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```py
+	  size(l)
+	  ```
+      <Quiz.Explanation>
+        Incorrect. The method `size()` is not defined.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```py
+	  l.length()
+      ```
+      <Quiz.Explanation>
+			A `list` does not have the `length()` method.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following would print out `5`? If there are multiple correct answers, any of them will be accepted.
+    <Quiz.Answer correct>
+      ```py
+      t = (3, 4, 5)
+      print(t[2])
+      ```
+      <Quiz.Explanation>
+        Correct. The corresponding indices for $[3, 4, 5]$ are $[0,1,2]$ respectively.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```py
+      t = (3, 4, 5)
+      print(t.get(2))
+      ```
+      <Quiz.Explanation>
+        Incorrect. A `tuple` does not have the attribute `get`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      ```py
+      l = []
+      l.append(2)
+      l.append(3)
+      l.append(7)
+      l.append(5)
+      print(l[3])
+      ```
+      <Quiz.Explanation>
+        Correct. The corresponding list is $[2, 3, 7 ,5]$ with the indices $[0, 1, 2, 3]$ respectively.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      ```py
+      l = []
+      l.append(2)
+      l.append(3)
+      l.append(7)
+      l.append(5)
+      print(l[4])
+      ```
+      <Quiz.Explanation>
+        Incorrect. Remember that `list` is $0$-indexed, so the index $3$ would correspond to $5$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+	 <Quiz.Question>
+    Why are data structures useful? If there are multiple correct answers, any of them will be accepted.
+    <Quiz.Answer correct>
+      Data structures can provide efficient operations on certain types of data.
+      <Quiz.Explanation>
+		Correct. For example, a `HashSet` can insert elements and query whether or not they are present in $\mathcal{O}(1)$ time.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      Data structures can store different types of data.
+      <Quiz.Explanation>
+        Correct. For example, you can have an `ArrayList` that stores `String`. Or, you can have one that holds `Integer`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      They provide a step-by-step set of rules to solve a problem.
+      <Quiz.Explanation>
+        Incorrect. This is an algorithm.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Data structures are sometimes inefficient.
+      <Quiz.Explanation>
+        Incorrect. Data structures are not useful for this reason.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
+</PySection>
 </LanguageSection>
 
 ## Problems

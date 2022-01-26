@@ -10,6 +10,7 @@ export type Author = {
   website?: string;
   codeforces?: string;
   youtube?: string;
+  reddit?: string;
 };
 
 export const Authors: Author[] = [
@@ -137,6 +138,15 @@ export const Authors: Author[] = [
     github: "nwatx",
     website: "https://nwatx.me",
     email: "neowangatx@gmail.com",
+  },
+  {
+    photo: 'kevin',
+    blurb: 'Kevin Sheng is a junior who likes coding & solving random problems.',
+    name: 'Kevin Sheng',
+    title: "Content Manager",
+    github: 'sanspapyrus683',
+    codeforces: 'sanspapyrus683',
+    reddit: 'sanspapyrus683',
   },
   {
     photo: 'nathanc',

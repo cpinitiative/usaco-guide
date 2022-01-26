@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
-import { ExecutionStatus } from './problem';
+import { ExecutionVerdict } from './problem';
 
 export type Leaderboard = {
   // post ID
@@ -9,7 +9,7 @@ export type Leaderboard = {
       // user ID
       [key: string]: {
         bestScore: number;
-        bestScoreStatus: ExecutionStatus;
+        bestScoreStatus: ExecutionVerdict;
         bestScoreTimestamp: Timestamp;
         bestScoreSubmissionId: string;
       };

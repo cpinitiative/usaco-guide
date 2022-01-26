@@ -1,23 +1,25 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
+import useProblemSubmissionResult from '../../hooks/useProblemSubmissionResult';
 import {
+  FirebaseSubmission,
   getSubmissionStatus,
   getSubmissionTimestampString,
-  Submission,
 } from '../../models/groups/problem';
 import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;
   setShowPopup: (showPopup: boolean) => void;
-  submission: Submission;
-  setSubmission: (submission: Submission) => void;
+  submission: FirebaseSubmission;
+  setSubmission: (submission: FirebaseSubmission) => void;
 }>(null);
 
 function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
   const submission = popupContext.submission;
+  const submissionResult = useProblemSubmissionResult(submission?.submissionID);
 
   if (!submission) return null;
 
@@ -75,7 +77,7 @@ function ProblemSubmissionPopup() {
             <div className="mt-4 text-sm">
               {submission && (
                 <CodeBlock className={`language-${submission.language}`}>
-                  {submission.code}
+                  {submissionResult?.sourceCode ?? 'Loading...'}
                 </CodeBlock>
               )}
             </div>
@@ -97,7 +99,7 @@ function ProblemSubmissionPopup() {
 
 export function ProblemSubmissionPopupProvider({ children }) {
   const [showPopup, setShowPopup] = React.useState(false);
-  const [submission, setSubmission] = React.useState<Submission>(null);
+  const [submission, setSubmission] = React.useState<FirebaseSubmission>(null);
   return (
     <ProblemSubmissionPopupContext.Provider
       value={{
@@ -119,7 +121,7 @@ export function useProblemSubmissionPopupAction() {
     throw 'useProblemSubmissionPopupAction() must be used in a ProblemSubmissionPopupContext';
   }
 
-  return (submission: Submission) => {
+  return (submission: FirebaseSubmission) => {
     popupContext.setSubmission(submission);
     popupContext.setShowPopup(true);
   };

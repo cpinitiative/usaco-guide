@@ -108,6 +108,37 @@ public class Towers {
 ```
 </JavaSection>
 
+<PySection>
+
+```python
+input()
+# Store the topmost cube of each tower
+towers = []
+for cube in map(int, input().split()):
+	# Binary search
+	left = 0
+	right = len(towers) - 1
+	tower_idx = -1
+	while left <= right:
+		mid = (left + right) // 2
+		if towers[mid] <= cube:
+			left = mid + 1
+		else:
+			right = mid - 1
+			tower_idx = mid
+
+	# If there exists a satisfying tower, add the cube to that tower and update
+	# the top element of the tower
+	if tower_idx != -1:
+		towers[tower_idx] = cube
+	# If there aren't any suitable towers, append new tower to end of array
+	else:
+		towers.append(cube)
+print(len(towers))
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Solution 2 - Multiset
@@ -116,7 +147,7 @@ public class Towers {
 
 In this approach, we store the towers using an ordered multiset (which can be
 represented as a
-[TreeMap](https://usaco.guide/silver/intro-sorted-sets?lang=java#multisets) in
+[TreeMap](/silver/intro-sorted-sets?lang=java#multisets) in
 Java), where each tower's value is the size of the cube on top. For each cube,
 we can use built-in methods (`upper_bound` in C++, `higherKey` in Java) to find
 the smallest-valued tower with a value strictly greater than the cube. If we
@@ -208,5 +239,28 @@ public class Towers {
 }
 ```
 </JavaSection>
+
+<PySection>
+
+```python
+from bisect import bisect
+
+input()
+# Store the topmost cube of each tower
+towers = []
+for cube in map(int, input().split()):
+	tower_idx = bisect(towers, cube)
+
+	# If there exists a satisfying tower, add the cube to that tower and update
+	# the top element of the tower
+	if tower_idx < len(towers):
+		towers[tower_idx] = cube
+	# If there aren't any suitable towers, append new tower to end of array
+	else:
+		towers.append(cube)
+print(len(towers))
+```
+
+</PySection>
 
 </LanguageSection>

@@ -1,12 +1,6 @@
 import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
-import { Leaderboard } from './leaderboard';
-import {
-  ExecutionStatus,
-  ProblemData,
-  Submission,
-  SubmissionType,
-} from './problem';
+import { FirebaseSubmission, ProblemData } from './problem';
 
 export type PostData = {
   id?: string;
@@ -60,28 +54,20 @@ export const getPostDueDateString = (post: PostData) =>
     : null;
 export const getTotalPointsFromProblems = (problems: ProblemData[]) =>
   problems.reduce((acc, cur) => acc + cur.points, 0);
-export const getSubmissionTimestampString = (submission: Submission) =>
+export const getSubmissionTimestampString = (submission: FirebaseSubmission) =>
   dayjs(submission?.timestamp?.toDate()).format('MMMM DD h:mma');
-export const getSubmissionStatus = (submission: Submission) => {
-  if (submission.type === SubmissionType.SELF_GRADED) {
-    return submission.status;
-  }
-  // todo actually implement
-  return ExecutionStatus.AC;
+export const getSubmissionStatus = (submission: FirebaseSubmission) => {
+  return submission.verdict;
 };
 export const getSubmissionEarnedPoints = (
-  submission: Submission,
+  submission: FirebaseSubmission,
   problem: ProblemData
 ) => {
-  if (submission.type === SubmissionType.SELF_GRADED) {
-    return Math.round(submission.result * problem.points);
-  }
-  // todo actually implement
-  return problem.points;
+  return Math.round(submission.score * problem.points);
 };
 export const getEarnedPointsForProblem = (
   problem: ProblemData,
-  submissions: Submission[]
+  submissions: FirebaseSubmission[]
 ) => {
   return submissions.reduce(
     (oldScore, submission) =>

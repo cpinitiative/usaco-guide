@@ -58,7 +58,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'fast-io',
         'generic-code',
         'lambda-funcs',
-        'notes-cpp-ds',
       ],
     },
     {
