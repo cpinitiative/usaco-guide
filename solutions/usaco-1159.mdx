@@ -159,6 +159,7 @@ As the editorial mentioned, we can minimize the cost function by using binary se
 #include <bits/stdc++.h>
 
 using namespace std;
+using ll = long long;
 
 const int MAX_N = 1e5;
 
@@ -179,7 +180,7 @@ void dfs(int cur, int c) {
 	}
 }
 
-int cost(int a, int b) {
+ll cost(int a, int b) {
 	int dist = MAX_N;
 	for (int u : comps[a]) {
 		/*
@@ -203,7 +204,7 @@ int cost(int a, int b) {
 	 * Returns the minimum cost of building a path 
 	 * between the two components (aka dist^2)
 	 */
-	return dist * dist;
+	return (ll)dist * dist;
 }
 
 void solve() {
@@ -252,7 +253,7 @@ void solve() {
 	 * takes care of the case when fields 1 and N are in
 	 * the same connected component.
 	 */
-	int res = cost(comp[0], comp[n - 1]);
+	ll res = cost(comp[0], comp[n - 1]);
 	for (int c = 1; c < cur; c++) {
 		// Minimize the cost of building two paths
 		res = min(res, cost(c, comp[0]) + cost(c, comp[n - 1]));
