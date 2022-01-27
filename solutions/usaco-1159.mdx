@@ -159,6 +159,7 @@ As the editorial mentioned, we can minimize the cost function by using binary se
 #include <bits/stdc++.h>
 
 using namespace std;
+using ll = long long;
 
 const int MAX_N = 1e5;
 
@@ -179,8 +180,8 @@ void dfs(int cur, int c) {
 	}
 }
 
-int cost(int a, int b) {
-	int dist = MAX_N;
+ll cost(int a, int b) {
+	ll dist = MAX_N;
 	for (int u : comps[a]) {
 		/*
 		 * Finds the closest field in bs' connected
@@ -193,10 +194,10 @@ int cost(int a, int b) {
 			comps[b].begin(), comps[b].end(), u
 		) - comps[b].begin();
 		if (i > 0) {
-			dist = min(dist, abs(comps[b][i - 1] - u));
+			dist = min(dist, (ll)abs(comps[b][i - 1] - u));
 		}
 		if (i < comps[b].size()) {
-			dist = min(dist, abs(comps[b][i] - u));
+			dist = min(dist, (ll)abs(comps[b][i] - u));
 		}
 	}
 	/* 
@@ -252,7 +253,7 @@ void solve() {
 	 * takes care of the case when fields 1 and N are in
 	 * the same connected component.
 	 */
-	int res = cost(comp[0], comp[n - 1]);
+	ll res = cost(comp[0], comp[n - 1]);
 	for (int c = 1; c < cur; c++) {
 		// Minimize the cost of building two paths
 		res = min(res, cost(c, comp[0]) + cost(c, comp[n - 1]));
