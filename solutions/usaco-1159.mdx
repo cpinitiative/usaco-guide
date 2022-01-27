@@ -181,7 +181,7 @@ void dfs(int cur, int c) {
 }
 
 ll cost(int a, int b) {
-	ll dist = MAX_N;
+	int dist = MAX_N;
 	for (int u : comps[a]) {
 		/*
 		 * Finds the closest field in bs' connected
@@ -194,17 +194,17 @@ ll cost(int a, int b) {
 			comps[b].begin(), comps[b].end(), u
 		) - comps[b].begin();
 		if (i > 0) {
-			dist = min(dist, (ll)abs(comps[b][i - 1] - u));
+			dist = min(dist, abs(comps[b][i - 1] - u));
 		}
 		if (i < comps[b].size()) {
-			dist = min(dist, (ll)abs(comps[b][i] - u));
+			dist = min(dist, abs(comps[b][i] - u));
 		}
 	}
 	/* 
 	 * Returns the minimum cost of building a path 
 	 * between the two components (aka dist^2)
 	 */
-	return dist * dist;
+	return (ll)dist * dist;
 }
 
 void solve() {
