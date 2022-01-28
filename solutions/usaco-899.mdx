@@ -14,7 +14,7 @@ A simple brute-force approach would be to find the shortest path for all of the 
 Using this approach, the answer is $\min(\texttt{dist}-\texttt{short}_i)$ for all $i$, where $\texttt{dist}$ is the travel time that all cows take without a shortcut and $\texttt{short}_i$ represents the travel time that all cows take when there is a shortcut from $1$ to $i$. Although this will certainly TLE, it hints at a faster way to compute the time saved. 
 
 Let's call $\texttt{occ}_i$ the number of cows that pass through field $i$ and $\texttt{trav}_i$ the cost for one cow to get from field $i$ to $1$. 
-Then the answer would be $\max(\texttt{occ}_i \cdot (\texttt{trav}_i - T))$ for all i. This works because $\texttt{trav}_i - T$ calculates the decrease in travel time for one cow to reach field $1$. By multiplying this value by $\texttt{occ}_i$, we calculate the time decrease for all the cows that pass through that field. 
+Then the answer would be $\max(\texttt{occ}_i \cdot (\texttt{trav}_i - T))$ for all $i$. This works because $\texttt{trav}_i - T$ calculates the decrease in travel time for one cow to reach field $1$. By multiplying this value by $\texttt{occ}_i$, we calculate the time decrease for all the cows that pass through that field. 
 
 We can find the values for $\texttt{trav}_i$ quickly with [Dijkstra's Algorithm](/gold/shortest-paths). To determine $\texttt{occ}_i$, we'll store the parents of nodes while running Dijkstra's so we can backtrack to determine the counts of cows that pass through. We can compute $\texttt{occ}$ in $\mathcal{O}(N^2)$ within the time limits because $N \leq 10^4$.
 
