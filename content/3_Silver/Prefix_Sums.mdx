@@ -1,7 +1,7 @@
 ---
 id: prefix-sums
 title: 'Introduction to Prefix Sums'
-author: Darren Yao, Dustin Miao
+author: Darren Yao, Aryansh Shrivastava, Dustin Miao
 description:
   'Computing range sum queries in constant time over a fixed 1D array.'
 prerequisites:
@@ -177,6 +177,24 @@ $$
 
 These are also known as
 [partial sums](https://mathworld.wolfram.com/PartialSum.html).
+
+## Difference Arrays
+
+(by Aryansh Shrivastava)
+
+For an array $A,$ denote its prefix sum array by $P(A),$ which can be seen as the prefix sum function $P$ being applied to the array $A.$ But now consider its inverse function: $P^{-1}(A),$ the array whose prefix sum gives $A.$ In other words, $P(P^{-1}(A)) = A.$ 
+
+$P^{-1}(A)$ is sometimes referred to as the **difference array** of $A.$ (And in C++, just as the standard library has the builtin prefix sum function `partial_sum`, it has `adjacent_difference` for difference arrays.) 
+
+Though the utility of difference arrays may not be immediately evident, consider the following somewhat standard problem (with variations that have come up on several past silver contests):
+
+You are given an array $A$ of size $n.$ There are $q$ queries of the form $(i,j,v)$ indicating that you must increment each element in the range $A[i] \dots A[j]$ by $v,$ where $0 \leq i \leq j < n.$ After all $q$ queries, you are asked to compute $A.$
+
+The naive solution is to just brute force all given queries. That is, for each query, add $v$ to each element from $A[i]$ to $A[j].$ Since $j-i$ is at most $n,$ this solution runs in $\mathcal{O}(n)$ per query and thus $\mathcal{O}(nq)$ overall. 
+
+However, we can actually solve this in linear time with difference arrays. Consider the difference array $P^{-1}(A).$ Incrementing from $A[i]$ to $A[j]$ by $v$ is equivalent to incrementing $P^{-1}(A)[i]$ by $v$ and $P^{-1}(A)[j+1]$ by $-v.$ Then, whenever we choose to recompute $A$ as $P(P^{-1}(A)),$ the increment of $v$ will simply propagate across the range $A[i] \dots A[j]$ and stop when it reaches $A[j+1].$ The only edge case to consider is $j=n-1$ (as $j+1=n$ goes out of zero-indexed bounds). In this case, we want our change to propagate all the way to the end of the array anyway, so we can just increment $P^{-1}(A)[i]$ by $v.$ 
+* The key here is that we were able to reduce the query of updating across a range of an array to merely two point updates in its difference array. This means we can process each query in $\mathcal{O}(1)$ if we precompute the difference array of $A$ in $\mathcal{O}(n)$ and prefix sum to tabulate all the queries at the end in $\mathcal{O}(n).$ This solution runs in only $\mathcal{O}(1)$ per query and $\mathcal{O}(n+q)$ overall. 
+As a sidenote, when you explore 2D prefix sums in the next section, try to derive the concept of 2D difference arrays (they have similar algorithmic applications).
 
 <!-- ### Solution - Static Range Sum
 
