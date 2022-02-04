@@ -249,7 +249,7 @@ export const isUsaco = (source: string): boolean => {
 export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   if (!isUsaco(metadata.source)) return;
   const id = metadata.uniqueId.substring(metadata.uniqueId.indexOf('-') + 1);
-  if (!metadata.url.endsWith(id)) {
+  if (!metadata.url.endsWith('=' + id)) {
     throw Error(`Invalid USACO Metadata: id=${id} url=${metadata.url}`);
   }
   if (metadata.solutionMetadata.kind == 'USACO') {
