@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1179', '2022 January', 'Herdle'],
+    ['1180', '2022 January', 'Non-Transitive Dice'],
+    ['1181', '2022 January', 'Drought'],
     ['1155', '2021 December', 'Lonely Photo'],
     ['1156', '2021 December', 'Air Cownditioning'],
     ['1157', '2021 December', 'Walking Home'],
@@ -77,6 +80,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1182', '2022 January', 'Searching for Soulmates'],
+    ['1183', '2022 January', 'Cow Frisbee'],
+    ['1184', '2022 January', 'Cereal 2'],
     ['1158', '2021 December', 'Closest Cow Wins'],
     ['1159', '2021 December', 'Connecting Two Barns'],
     ['1160', '2021 December', 'Convoluted Intervals'],
@@ -154,6 +160,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1185', '2022 January', 'Drought'],
+    ['1186', '2022 January', 'Farm Updates'],
+    ['1187', '2022 January', 'Tests for Haybales'],
     ['1161', '2021 December', 'Paired Up'],
     ['1162', '2021 December', 'HILO'],
     ['1163', '2021 December', 'Bracelet Crossings'],
@@ -230,6 +239,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1188', '2022 January', 'Minimizing Haybales'],
+    ['1189', '2022 January', 'Counting Haybales'],
+    ['1190', '2022 January', 'Multiple Choice Test'],
     ['1164', '2021 December', 'Tickets'],
     ['1165', '2021 December', 'Paired Up'],
     ['1166', '2021 December', 'HILO'],

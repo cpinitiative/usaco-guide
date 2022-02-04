@@ -4,6 +4,7 @@ import * as path from 'path';
 import { SECTIONS } from './content/ordering';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
+  checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
   ProblemMetadata,
@@ -100,6 +101,7 @@ exports.onCreateNode = async api => {
       if (tableId === 'MODULE_ID') return;
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
+          checkInvalidUsacoMetadata(metadata);
           const freshOrdering = importFresh<any>('./content/ordering');
           transformObject(
             {
