@@ -95,8 +95,8 @@ public class BackForth {
 
 	static void getPossible(
 		int day,
-		int aTank, List<Integer> aBuck,
-		int bTank, List<Integer> bBuck
+		int aTank, List<Integer> aBuckets,
+		int bTank, List<Integer> bBuckets
 	) {
 		// Last day, add the amount of milk in the first tank.
 		if (day == 4) {
@@ -105,13 +105,13 @@ public class BackForth {
 		}
 
 		// This transfers every possible bucket from barn x to barn y.
-		for (int i = 0; i < aBuck.size(); i++) {
+		for (int i = 0; i < aBuckets.size(); i++) {
 			// Bucket to transfer.
-			int t = aBuck.get(i);
+			int t = aBuckets.get(i);
 			// Creates a new copy of available buckets, and transfers the ith one.
-			List<Integer> newA = new ArrayList<>(aBuck);
+			List<Integer> newA = new ArrayList<>(aBuckets);
 			newA.remove(i);
-			List<Integer> newB = new ArrayList<>(bBuck);
+			List<Integer> newB = new ArrayList<>(bBuckets);
 			newB.add(t);
 
 			// Recursively call the function with the new buckets and tank amounts.
