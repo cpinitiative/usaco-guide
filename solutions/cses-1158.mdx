@@ -2,7 +2,7 @@
 id: cses-1158
 source: CSES
 title: Book Shop
-author: Sofia Yang
+author: Sofia Yang, Neha Sane
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/70018)
@@ -14,7 +14,51 @@ author: Sofia Yang
 ## Implementation
 
 <LanguageSection>
+	
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+	int n, x;
+	cin >> n >> x;
+	vector<int> cost(n + 1);
+	vector<int> pages(n + 1);
+
+	for (int i = 1; i <= n; i++) {
+		cin >> cost[i];
+	}
+	for (int i = 1; i <= n; i++) {
+		cin >> pages[i];
+	}
+
+	vector<vector<int>> dp(n + 1, vector<int> (x + 1));
+	for (int i = 1; i <= n; i++) {
+		int curr_cost = cost[i];
+		int curr_pages = pages[i];
+		for (int j = 1; j <= x; j++) {
+			/*
+			 * dp[i][j] is the most number of pages that can be bought from
+			 * the first i books and by spending at most j amount of money.
+			 */
+			dp[i][j] = dp[i - 1][j];
+			if (curr_cost <= j) {
+				dp[i][j] = max(dp[i][j], dp[i - 1][j - curr_cost] + curr_pages);
+			}
+		}
+	}
+
+	cout << dp[n][x] << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+	
 <JavaSection>
 
 ```java
