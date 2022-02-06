@@ -3,7 +3,7 @@ id: more-prefix-sums
 redirects:
   - /silver/prefix-sums-2
 title: 'More on Prefix Sums'
-author: Darren Yao, Neo Wang, Qi Wang
+author: Darren Yao, Aryansh Shrivastava, Neo Wang, Qi Wang
 contributors: Jesse Choe, Kevin Sheng, Brad Ma
 description:
   'Max subarray sum, prefix sums in two dimensions, and a more complicated
@@ -12,6 +12,42 @@ prerequisites:
   - prefix-sums
 frequency: 2
 ---
+
+## Difference Arrays
+
+For an array $A,$ denote its prefix sum array by $P(A),$ which can be seen as the prefix sum function $P$ being applied to the array $A.$ But now consider its inverse function: $P^{-1}(A),$ the array whose prefix sum gives $A.$ In other words, the function composition $P(P^{-1}(A)) = A.$ 
+
+$P^{-1}(A)$ is sometimes referred to as the **difference array** of $A.$ (And in C++, just as the standard library has the builtin prefix sum function `partial_sum`, it has `adjacent_difference` for difference arrays.) 
+
+For example, the difference array of $\{2, 5, 9, 6, 8\}$ is $\{2, 3, 4, -3, 2\},$ as the prefix sum of $\{2, 3, 4, -3, 2\}$ is $\{2, 5, 9, 6, 8\}.$
+
+Though the utility of difference arrays may not be immediately evident, consider the following somewhat standard problem (with variations that have come up on numerous past silver contests).
+
+### Problem - Range Update Queries
+
+You are given an array $A$ of size $n.$ There are $q$ queries of the form $(i,j,v)$ indicating that you must increment each element in the range $A[i] \dots A[j]$ by $v,$ where $0 \leq i \leq j < n.$ After all $q$ queries, you are asked to compute $A.$
+
+Constraints: $1 \leq n,q \leq 10^5$
+
+### Solution - Range Update Queries
+
+<Spoiler title="Solution">
+
+The naive solution is to just brute force all given queries. That is, for each query, add $v$ to each element from $A[i]$ to $A[j].$ Since $j-i \leq n,$ this solution runs in $\mathcal{O}(n)$ per query and thus $\mathcal{O}(nq)$ overall. Given the constraints, this is too slow. 
+
+However, we can actually solve this in linear time with difference arrays. 
+
+Consider the difference array $P^{-1}(A).$ Each query of incrementing from $A[i]$ to $A[j]$ by $v$ is equivalent to the following two increments in the difference array:
+* $P^{-1}(A)[i]$ by $v$
+* $P^{-1}(A)[j+1]$ by $-v$
+
+Then, whenever we choose to recompute $A$ as $P(P^{-1}(A)),$ the increment of $v$ will simply propagate across the range $A[i] \dots A[j]$ and stop when it reaches $A[j+1].$
+
+Overall, our difference array solution is $\mathcal{O}(n+q),$ fast enough to pass:
+* Precompute $P^{-1}(A)$ in $\mathcal{O}(n)$ 
+* Perform each of $q$ queries in $\mathcal{O}(1),$ for $\mathcal{O}(q)$ overall 
+* Prefix sum to tabulate all the queries at the end in $\mathcal{O}(n)$
+</Spoiler>
 
 ## Max Subarray Sum
 
