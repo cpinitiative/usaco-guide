@@ -18,15 +18,10 @@ export default function ProblemSolutions({
   showSubmitSolutionModal: () => void;
   problem: ProblemInfo;
 }): JSX.Element {
-  const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
-    problem
-  );
-  const {
-    deleteSolution,
-    upvoteSolution,
-    undoUpvoteSolution,
-    mutateSolution,
-  } = useUserProblemSolutionActions();
+  const { solutions, currentUserSolutions } =
+    useUserSolutionsForProblem(problem);
+  const { deleteSolution, upvoteSolution, undoUpvoteSolution, mutateSolution } =
+    useUserProblemSolutionActions();
   const { firebaseUser } = useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
