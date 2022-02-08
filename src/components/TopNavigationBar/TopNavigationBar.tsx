@@ -42,9 +42,8 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut, isLoaded, userProgressOnModules } = useContext(
-    UserDataContext
-  );
+  const { firebaseUser, signOut, isLoaded, userProgressOnModules } =
+    useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
@@ -182,9 +181,12 @@ export default function TopNavigationBar({
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
-                <span className="md:hidden">Register for the USACO January Workshop!</span>
+                <span className="md:hidden">
+                  Register for the USACO January Workshop!
+                </span>
                 <span className="hidden md:inline">
-                  USACO Bronze/Silver solutions explained in a live workshop TODAY!
+                  USACO Bronze/Silver solutions explained in a live workshop
+                  TODAY!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
