@@ -517,21 +517,17 @@ def prim(n, G):
 				heapq.heappush(pq, (neigh_weight, neigh_node))
 	return total_weight if count == n else -1
 
-def main():
-	n, m = map(int, input().split())
-	G = [[] for _ in range(n)]
-	for _ in range(m):
-		a, b, c = map(int, input().split())
-		a -= 1
-		b -= 1
-		G[a].append((c, b))
-		G[b].append((c, a))
+n, m = map(int, input().split())
+G = [[] for _ in range(n)]
+for _ in range(m):
+	a, b, c = map(int, input().split())
+	a -= 1
+	b -= 1
+	G[a].append((c, b))
+	G[b].append((c, a))
 
-	ans = prim(n, G)
-	print("IMPOSSIBLE" if ans == -1 else ans)
-
-if __name__=='__main__':
-	main()
+ans = prim(n, G)
+print("IMPOSSIBLE" if ans == -1 else ans)
 ```
 
 </PySection>
