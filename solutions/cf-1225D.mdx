@@ -16,15 +16,14 @@ author: Jesse Choe
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 using ll = long long;
 using pi = pair<int, int>;
 
-int size, exponent;
+int exponent;
 
-/*
+/**
  * We can define a prime factorization pair as the following:
  * (a, b mod k) represents a prime number (a) to the power of (b mod k).
  */
@@ -48,17 +47,16 @@ vector<pi> factor(int number){
 	return prime_factorization;
 }
 
-/*
+/**
  * Let's define the inverse of a prime factorization pair as follows:
  * Given the pair (a, b), where a represents the prime number and
  * b represents the exponent mod k, the inverse of (a, b) would be
  * precisely (a, k - b) since a ^ b * a ^ (k - b) = a ^ k.
  */
-
 vector<pi> find_factor_inverse(vector<pi> original){
-	int number_of_primes = original.size();
-	vector<pi> inverse(size);
-	for (int i = 0; i < number_of_primes; i++) {
+	int prime_num = original.size();
+	vector<pi> inverse(prime_num);
+	for (int i = 0; i < prime_num; i++) {
 		inverse[i].first = original[i].first;
 		inverse[i].second = exponent - original[i].second;
 	}
@@ -66,6 +64,7 @@ vector<pi> find_factor_inverse(vector<pi> original){
 }
 
 int main(){
+	int size;
 	cin >> size >> exponent;
 	/*
 	 * Store the prime factorization pairs in an std::map
