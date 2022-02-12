@@ -15,30 +15,36 @@ author: Nathan Gong, Pranav Jadhav
 
 <CPPSection>
 ```cpp
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
+
 using namespace std;
 
-int n,k;
+int n, k;
 char board[100][10];
 bool visited[100][10] = {0};
-vector<pair<int,int>> component;
+
+// stores current component indices to set to '0'
+vector < pair < int, int >> component;
 
 // floodfill to count connected regions
 // returns count of connected component
 // fills 'component' vector with the indices of the component
-int floodfill(int i,int j,char color){
+int floodfill(int i, int j, char color) {
   int cnt = 1;
-  if(
-    i<0 || j<0 || i>=n || j>=10 ||
+  if (
+    i < 0 || j < 0 || i >= n || j >= 10 ||
     visited[i][j] ||
-    board[i][j]!=color
+    board[i][j] != color
   ) return 0;
-  visited[i][j]=1;
-  component.push_back({i,j});
-  cnt += floodfill(i+1,j,color);
-  cnt += floodfill(i-1,j,color);
-  cnt += floodfill(i,j+1,color);
-  cnt += floodfill(i,j-1,color);
+  visited[i][j] = 1;
+  component.push_back({
+    i,
+    j
+  });
+  cnt += floodfill(i + 1, j, color);
+  cnt += floodfill(i - 1, j, color);
+  cnt += floodfill(i, j + 1, color);
+  cnt += floodfill(i, j - 1, color);
   return cnt;
 }
 
@@ -48,30 +54,30 @@ int main() {
 
   cin >> n >> k;
 
-  for(int i = n-1;i>=0;i--){
+  for (int i = n - 1; i >= 0; i--) {
     string nums;
     cin >> nums;
-    for(int j = 0;j<10;j++){
+    for (int j = 0; j < 10; j++) {
       board[i][j] = nums[j];
     }
   }
 
   bool boardChanged = true;
-  while(boardChanged){
+  while (boardChanged) {
     boardChanged = false;
 
     // destroy all haybales in connected regions with size >= k
-    for(int i = 0;i<n;i++){
-      for(int j = 0;j<10;j++){
-        if(!visited[i][j] && board[i][j]!='0'){
-          
-          char currentColor = board[i][j];
-          int cnt = floodfill(i,j,currentColor);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < 10; j++) {
+        if (!visited[i][j] && board[i][j] != '0') {
 
-          if(cnt >= k){
+          char currentColor = board[i][j];
+          int cnt = floodfill(i, j, currentColor);
+
+          if (cnt >= k) {
             // found a region to destroy
             boardChanged = true;
-            for(auto p : component){
+            for (auto p: component) {
               board[p.first][p.second] = '0';
             }
           }
@@ -82,14 +88,14 @@ int main() {
     }
 
     // run gravity
-    for(int col = 0;col<10;col++){
+    for (int col = 0; col < 10; col++) {
 
-      vector<char> columnAfterGravity;
+      vector < char > columnAfterGravity;
 
       // loop over rows from bottom to top of cur. column
       // add nonzero elements to vector 'columnAfterGravity'
-      for(int row = 0;row<n;row++){
-        if(board[row][col]!='0'){
+      for (int row = 0; row < n; row++) {
+        if (board[row][col] != '0') {
           columnAfterGravity.push_back(board[row][col]);
         }
       }
@@ -97,24 +103,23 @@ int main() {
       // edit the board to reflect changes
       // going from bottom to top, fill the column with columnAfterGravity
       // while we can, otherwise make it '0' (empty)
-      for(int row = 0;row<n;row++){
-        if(row<columnAfterGravity.size()){
+      for (int row = 0; row < n; row++) {
+        if (row < columnAfterGravity.size()) {
           board[row][col] = columnAfterGravity[row];
-        }
-        else {
+        } else {
           board[row][col] = '0';
         }
       }
-      
+
     }
 
     // reset visited array
-    memset(visited,0,sizeof(visited));
+    memset(visited, 0, sizeof(visited));
   }
 
   // output result
-  for(int i = n-1;i>=0;i--){
-    for(int j = 0;j<10;j++){
+  for (int i = n - 1; i >= 0; i--) {
+    for (int j = 0; j < 10; j++) {
       cout << board[i][j];
     }
     cout << '\n';
