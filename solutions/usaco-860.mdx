@@ -20,31 +20,35 @@ author: Nathan Gong, Pranav Jadhav
 using namespace std;
 
 int n, k;
-char board[100][10];
-bool visited[100][10] = {0};
+const int maxRows = 100;
+const int maxCols = 10;
+char board[maxRows][maxCols];
+vector<vector<bool>> visited(maxRows, vector<bool>(maxCols, false));
 
 // stores current component indices to set to '0'
-vector < pair < int, int >> component;
+vector<pair<int, int>> component;
 
-// floodfill to count connected regions
-// returns count of connected component
-// fills 'component' vector with the indices of the component
+
+/*
+	floodfill to count connected regions
+	returns size of connected region
+	fills 'component' vector with the indices of the component
+*/
 int floodfill(int i, int j, char color) {
 	int cnt = 1;
 	if (
 		i < 0 || j < 0 || i >= n || j >= 10 ||
 		visited[i][j] ||
 		board[i][j] != color
-	) return 0;
+	) {
+		return 0;
+	}
 	visited[i][j] = 1;
-	component.push_back({
-		i,
-		j
-	});
-	cnt += floodfill(i + 1, j, color);
-	cnt += floodfill(i - 1, j, color);
-	cnt += floodfill(i, j + 1, color);
-	cnt += floodfill(i, j - 1, color);
+	component.push_back({i, j});
+	cnt += floodfill(i + 1, j, color)
+	+ floodfill(i - 1, j, color)
+	+ floodfill(i, j + 1, color)
+	+ floodfill(i, j - 1, color);
 	return cnt;
 }
 
@@ -62,6 +66,10 @@ int main() {
 		}
 	}
 
+	/*
+		Loop while there are regions that got destroyed (board changed)
+		If no regions were destroyed, we are at the final state (break loop; return answer)
+	*/
 	bool boardChanged = true;
 	while (boardChanged) {
 		boardChanged = false;
@@ -90,7 +98,7 @@ int main() {
 		// run gravity
 		for (int col = 0; col < 10; col++) {
 
-			vector < char > columnAfterGravity;
+			vector<char> columnAfterGravity;
 
 			// loop over rows from bottom to top of cur. column
 			// add nonzero elements to vector 'columnAfterGravity'
@@ -114,7 +122,7 @@ int main() {
 		}
 
 		// reset visited array
-		memset(visited, 0, sizeof(visited));
+		fill(visited.begin(), visited.end(), vector<bool>(10, false));
 	}
 
 	// output result
