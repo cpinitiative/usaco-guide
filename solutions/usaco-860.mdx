@@ -96,18 +96,21 @@ int main() {
 		// run gravity
 		for (int col = 0; col < 10; col++) {
 			vector <char> columnAfterGravity;
-
-			// loop over rows from bottom to top of cur. column
-			// add nonzero elements to vector 'columnAfterGravity'
+			/*
+				loop over rows from bottom to top of current column
+				add nonzero elements to vector 'columnAfterGravity'
+			*/
 			for (int row = 0; row < n; row++) {
 				if (board[row][col] != '0') {
 					columnAfterGravity.push_back(board[row][col]);
 				}
 			}
 
-			// edit the board to reflect changes
-			// going from bottom to top, fill the column with columnAfterGravity
-			// while we can, otherwise make it '0' (empty)
+			/*
+				edit the board to reflect changes
+				going from bottom to top, fill the column with columnAfterGravity
+				while we can, otherwise make it '0' (empty)
+			*/
 			for (int row = 0; row < n; row++) {
 				if (row < columnAfterGravity.size()) {
 					board[row][col] = columnAfterGravity[row];
