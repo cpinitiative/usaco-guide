@@ -20,10 +20,10 @@ author: Nathan Gong, Pranav Jadhav
 using namespace std;
 
 int n, k;
-const int maxRows = 100;
-const int maxCols = 10;
-char board[maxRows][maxCols];
-vector<vector<bool>> visited(maxRows, vector<bool>(maxCols, false));
+const int MAX_ROWS = 100;
+const int MAX_COLS = 10;
+char board[MAX_ROWS][MAX_COLS];
+vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS, false));
 
 // stores current component indices to set to '0'
 vector<pair<int, int>> component;
@@ -37,7 +37,7 @@ vector<pair<int, int>> component;
 int floodfill(int i, int j, char color) {
 	int cnt = 1;
 	if (
-		i < 0 || j < 0 || i >= n || j >= 10 ||
+		i < 0 || j < 0 || i >= n || j >= MAX_COLS ||
 		visited[i][j] ||
 		board[i][j] != color
 	) {
@@ -64,7 +64,7 @@ int main() {
 	for (int i = n - 1; i >= 0; i--) {
 		string nums;
 		cin >> nums;
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < MAX_COLS; j++) {
 			board[i][j] = nums[j];
 		}
 	}
@@ -79,7 +79,7 @@ int main() {
 
 		// destroy all haybales in connected regions with size >= k
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < MAX_COLS; j++) {
 				if (!visited[i][j] && board[i][j] != '0') {
 					char currentColor = board[i][j];
 					int cnt = floodfill(i, j, currentColor);
@@ -97,7 +97,7 @@ int main() {
 		}
 
 		// run gravity
-		for (int col = 0; col < 10; col++) {
+		for (int col = 0; col < MAX_COLS; col++) {
 			vector <char> columnAfterGravity;
 			/*
 			 * loop over rows from bottom to top of current column
@@ -125,11 +125,11 @@ int main() {
 		}
 
 		// reset visited array
-		fill(visited.begin(), visited.end(), vector<bool>(10, false));
+		fill(visited.begin(), visited.end(), vector<bool>(MAX_COLS, false));
 	}
 
 	for (int i = n - 1; i >= 0; i--) {
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < MAX_COLS; j++) {
 			cout << board[i][j];
 		}
 		cout << '\n';
