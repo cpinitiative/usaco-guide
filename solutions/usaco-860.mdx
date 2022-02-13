@@ -30,10 +30,10 @@ vector<pair<int, int>> component;
 
 
 /*
-	floodfill to count connected regions
-	returns size of connected region
-	fills 'component' vector with the indices of the component
-*/
+ * floodfill to count connected regions
+ * returns size of connected region
+ * fills 'component' vector with the indices of the component
+ */
 int floodfill(int i, int j, char color) {
 	int cnt = 1;
 	if (
@@ -45,10 +45,13 @@ int floodfill(int i, int j, char color) {
 	}
 	visited[i][j] = 1;
 	component.push_back({i, j});
-	cnt += floodfill(i + 1, j, color)
-	+ floodfill(i - 1, j, color)
-	+ floodfill(i, j + 1, color)
-	+ floodfill(i, j - 1, color);
+	cnt += (
+		floodfill(i + 1, j, color)
+		+ floodfill(i - 1, j, color)
+		+ floodfill(i, j + 1, color)
+		+ floodfill(i, j - 1, color)
+	);
+	
 	return cnt;
 }
 
@@ -67,9 +70,9 @@ int main() {
 	}
 
 	/*
-		Loop while there are regions that got destroyed (board changed)
-		If no regions were destroyed, we are at the final state (break loop; return answer)
-	*/
+	 * Loop while there are regions that got destroyed (board changed)
+	 * If no regions were destroyed, we are at the final state (break loop; return answer)
+	 */
 	bool boardChanged = true;
 	while (boardChanged) {
 		boardChanged = false;
@@ -97,9 +100,9 @@ int main() {
 		for (int col = 0; col < 10; col++) {
 			vector <char> columnAfterGravity;
 			/*
-				loop over rows from bottom to top of current column
-				add nonzero elements to vector 'columnAfterGravity'
-			*/
+			 * loop over rows from bottom to top of current column
+			 * add nonzero elements to vector 'columnAfterGravity'
+			 */
 			for (int row = 0; row < n; row++) {
 				if (board[row][col] != '0') {
 					columnAfterGravity.push_back(board[row][col]);
@@ -107,10 +110,10 @@ int main() {
 			}
 
 			/*
-				edit the board to reflect changes
-				going from bottom to top, fill the column with columnAfterGravity
-				while we can, otherwise make it '0' (empty)
-			*/
+			 * edit the board to reflect changes
+			 * going from bottom to top, fill the column with columnAfterGravity
+			 * while we can, otherwise make it '0' (empty)
+			 */
 			for (int row = 0; row < n; row++) {
 				if (row < columnAfterGravity.size()) {
 					board[row][col] = columnAfterGravity[row];
