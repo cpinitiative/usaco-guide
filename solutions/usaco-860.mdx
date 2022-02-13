@@ -23,7 +23,7 @@ int n, k;
 const int MAX_ROWS = 100;
 const int MAX_COLS = 10;
 char board[MAX_ROWS][MAX_COLS];
-vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS, false));
+vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS));
 
 // stores current component indices to set to '0'
 vector<pair<int, int>> component;
@@ -73,20 +73,20 @@ int main() {
 	 * Loop while there are regions that got destroyed (board changed)
 	 * If no regions were destroyed, we are at the final state (break loop; return answer)
 	 */
-	bool boardChanged = true;
-	while (boardChanged) {
-		boardChanged = false;
+	bool board_changed = true;
+	while (board_changed) {
+		board_changed = false;
 
 		// destroy all haybales in connected regions with size >= k
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < MAX_COLS; j++) {
 				if (!visited[i][j] && board[i][j] != '0') {
-					char currentColor = board[i][j];
-					int cnt = floodfill(i, j, currentColor);
+					char current_color = board[i][j];
+					int cnt = floodfill(i, j, current_color);
 
 					if (cnt >= k) {
 						// found a region to destroy
-						boardChanged = true;
+						board_changed = true;
 						for (auto p: component) {
 							board[p.first][p.second] = '0';
 						}
@@ -98,25 +98,25 @@ int main() {
 
 		// run gravity
 		for (int col = 0; col < MAX_COLS; col++) {
-			vector <char> columnAfterGravity;
+			vector <char> column_after_gravity;
 			/*
 			 * loop over rows from bottom to top of current column
-			 * add nonzero elements to vector 'columnAfterGravity'
+			 * add nonzero elements to vector 'column_after_gravity'
 			 */
 			for (int row = 0; row < n; row++) {
 				if (board[row][col] != '0') {
-					columnAfterGravity.push_back(board[row][col]);
+					column_after_gravity.push_back(board[row][col]);
 				}
 			}
 
 			/*
 			 * edit the board to reflect changes
-			 * going from bottom to top, fill the column with columnAfterGravity
+			 * going from bottom to top, fill the column with column_after_gravity
 			 * while we can, otherwise make it '0' (empty)
 			 */
 			for (int row = 0; row < n; row++) {
-				if (row < columnAfterGravity.size()) {
-					board[row][col] = columnAfterGravity[row];
+				if (row < column_after_gravity.size()) {
+					board[row][col] = column_after_gravity[row];
 				} else {
 					board[row][col] = '0';
 				}
