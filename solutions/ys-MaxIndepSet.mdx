@@ -7,7 +7,7 @@ author: Shijie Ren
 
 <Spoiler title="Hint 1">
 
-Build complement graph.
+Build a complement graph.
 
 </Spoiler>
 
@@ -131,44 +131,61 @@ void mcp(int x,int dt,ll f[]) {
 
 }
 
-//Bitmask DP to solve MCP in O(2^n)
-//f[S] = any possible MIS in S subgraph (f[S] is a set)
-//choose any point in S called D
-//if D isn't chosen F[S] = F[S/{D}]
-//otherwise F[S] = F[D's neighbour in S]∪{D}
-
+/*
+ * Bitmask DP to solve MCP in O(2^n)
+ * f[S] = any possible MIS in S subgraph (f[S] is a set)
+ * choose any point in S called D
+ * if D isn't chosen F[S] = F[S/{D}]
+ * otherwise F[S] = F[D's neighbour in S] UNION {D}
+ */
 void print_mask(ll ans) {
 	printf("%d\n",__builtin_popcountll(ans));
 	while(ans) printf("%d ",__builtin_ctzll(ans)),ans-=ans&(-ans);
 }
 
-ll f[1<<22],f2[1<<22],com[1<<22];
+ll f[1<<(N/2)],f2[1<<(N/2)],com[1<<(N/2)];
 
 int main() {
+
 	int n,m,u,v,i,j,n1,n2;
-	scanf("%d%d",&n,&m),n1=n/2,n2=n-n1;
-	for(i=1; i<=m; i++)
-		scanf("%d%d",&u,&v),gr[u][v]=gr[v][u]=1;
+	scanf("%d%d",&n,&m);
+	n1=n/2;
+	n2=n-n1;
+	for(i=1; i<=m; i++){
+		scanf("%d%d",&u,&v);
+		gr[u][v]=gr[v][u]=1;
+	}
+
+	/*
+	 * 1.use Bitmask to represent complement graph
+	 * now is to solve a Maximum Clique Problem(MCP)
+	 */
 	for(i=0; i<n; i++)
 		for(j=0; j<n; j++)
-			if(!gr[i][j]&&i!=j) a[i]|=1ll<<j;
-	//1.use bit mask to represent complement graph
-	//now is to solve a Maximum Clique Problem(MCP)
-
-	mcp(n1,0,f),mcp(n2,n1,f2);
+			if(!gr[i][j]&&i!=j)
+				a[i]|=1ll<<j;
+	
+	
 	//2.Bitmask DP
+	mcp(n1,0,f);
+	mcp(n2,n1,f2);
 
-	ll ans=0;
-	for(com[0]=(1ll<<n)-1,i=1ll; i<(1ll<<n1); i++)
-		com[i]=com[i-(i&(-i))]&a[__builtin_ctzll(i)];
 	//com[S] = common neighbour of points in S
+	ll ans=0;
+	com[0]=(1ll<<n)-1;
+	for(i=1ll; i<(1ll<<n1); i++)
+		com[i]=com[i-(i&(-i))]&a[__builtin_ctzll(i)];
+
+	/* 
+	 * 3.Meet-in-the-middle
+	 * loop every subsets called S1,construct S2
+	 * of all nodes of the second half which have edges to all the nodes in S1
+	 * (so that together they still form a clique shared by both halves)
+	 */
 	for(i=0; i<(1ll<<n1); i++)
 		ans=popmax(ans,(f2[com[i]>>n1]<<n1)|f[i]);
 	print_mask(ans);
-	//3.Meet-int-the-middle
-	//loop every subsets called S1,construct S2
-	//of all nodes of the second half which have edges to all the nodes in S1
-	//(so that together they still form a clique shared by both halves)
+
 	return 0;
 }
 ```
