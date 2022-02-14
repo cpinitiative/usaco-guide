@@ -11,31 +11,21 @@ author: Shijie Ren
 
 Let $\texttt{dp}[i][j]$ be the minimum answer of first $j$ days with $i$ breakouts.
 
-$j$-th day , if log is tampered and cows would NOT breakout:
+On the $j$-th day, there's 3 cases:
 
+1. if log is tampered and cows would NOT breakout: $\texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1$
+
+2. if log is tampered and cows would breakout (So $a[j] \not = 0$): $\texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1$
+
+3. if log is NOT tampered (Then $i$-th breakout will be on $(j-a[j])$-th day): $\texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);$
+$$\texttt{range\_ans}[l][r]$$ represents minimum cost
+to replace range $a[l]...a[r]$ with $0...(r-l)$ respectively.
+
+
+So if the state meets the conditions,
 $$
-\texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1
+\texttt{dp}[i][j] = \max \{ \texttt{dp}[i][j-1]+1 ,\texttt{dp}[i-1][j-1]+1 ,\texttt{dp}[i-1][j-a[j]-1] + \texttt{range\_ans}[j-a[j]][j]) \}
 $$
-
-$j$-th day , if log is tampered and cows would breakout :
-
-(So $a[j] \not = 0$)
-
-$$
-\texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1
-$$
-
-$j$-th day , if log is NOT tampered:
-
-Then $i$-th breakout will be on $(j-a[j])$-th day.
-
-$$\texttt{range\_ans}[l][r]$$ represents minimum cost to replace range $a[l]...a[r]$ with $0...(r-l)$ respectively.
-
-$$
-\texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);
-$$
-
-Find the maximum among the three.
 
 ## Implementation
 
@@ -48,33 +38,43 @@ Find the maximum among the three.
 ```cpp
 #include <cstdio>
 #include <cstring>
+#include <iostream>
 #include <algorithm>
+#define N 105
+#define byteinf 0x3f
 using namespace std;
-int a[105],range_ans[105][105];
-int dp[105][105];
+int a[N];
+int range_ans[N][N];
+int dp[N][N];
 int main() {
 	freopen("taming.in","r",stdin);
-	freopen("taming.out","w",stdout); //General IO
-	register int n,i,k,q,j;
-	scanf("%d",&n);
+	freopen("taming.out","w",stdout);
+
+	int n,i,k,q,j;
+	cin>>n;
 	for(i=1; i<=n; i++)
-		scanf("%d",&a[i]);
-	memset(dp,0x3f,sizeof(dp)),dp[0][0]=0;
+		cin>>a[i];
+
 	for(i=1; i<=n; i++)
 		for(j=i; j<=n; j++)
 			range_ans[i][j]=range_ans[i][j-1]+(a[j]==j-i? 0:1);
+
 	//calulate range_ans array directly
-	for(i=1; i<=n; i++)
+	memset(dp,byteinf,sizeof(dp));
+	dp[0][0]=0;
+	for(i=1; i<=n; i++) {
 		for(j=i; j<=n; j++) {
-			dp[i][j]=dp[i][j-1]+1;
-			if(a[j])
-				dp[i][j]=min(dp[i][j],dp[i-1][j-1]+1);
-			if(j-a[j]-1>=0)
-				dp[i][j]=min(dp[i][j],dp[i-1][j-a[j]-1]+range_ans[j-a[j]][j]);
+			dp[i][j]=dp[i][j - 1] + 1;
+			if(a[j]){
+				dp[i][j] = min(dp[i][j],dp[i - 1][j - 1] + 1);
+			}
+			if(j-a[j]-1>=0){
+				dp[i][j] = min(dp[i][j],dp[i - 1][j - a[j] - 1] + range_ans[j - a[j]][j]);
+			}
 			//According to the equation above
 		}
-	for(i=1; i<=n; i++) printf("%d\n",dp[i][n]);
-	return 0;
+	}
+	for(i=1; i<=n; i++) cout<<dp[i][n]<<endl;
 }
 ```
 
