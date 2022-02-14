@@ -60,10 +60,26 @@ Consider a point $k$ in $S$.
 
 if this point is in the maximum clique, 
 
-then $\texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\} $ 
-(where $E_k$ represents the neighbour set of $k$), 
+$$
+\texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\}
+$$ 
 
-otherwise $\texttt{dp}[S] =\texttt{dp} [S / {k}]$, take maximum one.
+(where $E_k$ represents the neighbour set of $k$)
+
+otherwise
+
+$$
+\texttt{dp}[S] =\texttt{dp} [S / {k}]
+
+$$
+
+Take the maximum one.
+
+$$
+\texttt{dp}[S] = \max\{ \texttt{dp}[E_k\cap S] \cup \{k\} , \texttt{dp} [S / {k}] \}
+$$
+
+**Notice this** $\max$ **compared by popcount in the program.**
 
 But the time complexity is $\mathcal{O}(2 ^ n)$ or $\mathcal{O}(2 ^ n \cdot n)$,
 which needs further optimization.
