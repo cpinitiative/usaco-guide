@@ -1,0 +1,155 @@
+---
+id: ys-MaxIndepSet
+source: YS
+title: Max Indep Set
+author: Shijie Ren
+---
+
+<Spoiler title="Hint 1">
+
+Build complement graph.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Consider Bitmask DP when $ N \leq 20 $.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+If you stuck on DP when $ N \leq 20 $,
+
+Let the DP array store **the set of points** in the subgraph
+that meet specific conditions.
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+Divide the original graph into two parts, do DP respectively, and then merge.
+
+</Spoiler>
+
+<Spoiler title="Explanation">
+
+#### Bitmask DP
+
+First of all, we can turn the original problem into another problem and build
+the complement graph of the original graph.
+
+Then we can turn it into the maximum clique problem (MCP).
+
+Clique can be seen as a complete graph.
+
+In fact, it is not a good way to store only the number of points in the answer graph , because then
+it will be hard to transfer.
+
+Then switch ideas.
+
+Let the DP array store the point set of the maximum clique in
+the subgraph, that is, the element in DP array is also a bitmask.
+
+Simply use $\texttt{dp}[S]$ to represent **any** valid maximum clique solution in
+subgraph $S$.
+
+Consider a point $k$ in $S$.
+
+if this point is in the maximum clique, then
+$\texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\} $ (where $E_k$ represents the neighbour set of $k$), otherwise $\texttt{dp}[S] =\texttt{dp} [S / {k}]$, take maximum one.
+
+But the time complexity is $\mathcal{O}(2 ^ n)$ or $\mathcal{O}(2 ^ n \cdot n)$,
+which needs further optimization. ​
+
+#### Meet-in-the-middle
+
+Divide the original graph into two parts, do DP respectively, and then merge: if
+the two parts are $S1$ and $S2$, loop **every subgraph** of $S1$,
+find subgraph of $S2$ that have direct edges with **all points** in subgraph of
+$S1$ that we loop, do set UNION operation with two subgraph in $S1$ and $S2$.
+
+Subgraph of $S2$ that have direct edges with **all points** in subgraph of $S1$
+that we loop can be solved with another simple Bitmask DP.
+
+Time Complexity is $\mathcal{O}(2^{\frac N2})$.
+
+</Spoiler>
+
+<Spoiler title="Implementation">
+
+**Time Complexity:** $\mathcal{O}(2^{\frac N2})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#define ll long long
+#define N 45
+int gr[N][N];
+ll a[N];
+
+ll popmax(ll x,ll y) {
+	if(__builtin_popcountll(x)<__builtin_popcountll(y)) return y;
+	else return x;
+}
+
+void mcp(int x,int dt,ll f[]) {
+	for(int i=0,c,d; i<(1<<x); i++) {
+		d=i&(-i);
+		c=__builtin_ctzll(d);
+		f[i]=popmax(f[i^d],f[i&a[c+dt]>>(dt)]|d);
+	}
+
+}
+
+//Bitmask DP to solve MCP in O(2^n)
+//f[S] = any possible MIS in S subgraph (f[S] is a set)
+//choose any point in S called D
+//if D isn't chosen F[S] = F[S/{D}]
+//otherwise F[S] = F[D's neighbour in S]∪{D}
+
+void print_mask(ll ans) {
+	printf("%d\n",__builtin_popcountll(ans));
+	while(ans) printf("%d ",__builtin_ctzll(ans)),ans-=ans&(-ans);
+}
+
+ll f[1<<22],f2[1<<22],com[1<<22];
+
+int main() {
+	int n,m,u,v,i,j,n1,n2;
+	scanf("%d%d",&n,&m),n1=n/2,n2=n-n1;
+	for(i=1; i<=m; i++)
+		scanf("%d%d",&u,&v),gr[u][v]=gr[v][u]=1;
+	for(i=0; i<n; i++)
+		for(j=0; j<n; j++)
+			if(!gr[i][j]&&i!=j) a[i]|=1ll<<j;
+	//1.use bit mask to represent complement graph
+	//now is to solve a Maximum Clique Problem(MCP)
+
+	mcp(n1,0,f),mcp(n2,n1,f2);
+	//2.Bitmask DP
+
+	ll ans=0;
+	for(com[0]=(1ll<<n)-1,i=1ll; i<(1ll<<n1); i++)
+		com[i]=com[i-(i&(-i))]&a[__builtin_ctzll(i)];
+	//com[S] = common neighbour of points in S
+	for(i=0; i<(1ll<<n1); i++)
+		ans=popmax(ans,(f2[com[i]>>n1]<<n1)|f[i]);
+	print_mask(ans);
+	//3.Meet-int-the-middle
+	//loop every subsets called S1,construct S2
+	//of all nodes of the second half which have edges to all the nodes in S1
+	//(so that together they still form a clique shared by both halves)
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
