@@ -28,7 +28,6 @@ vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS));
 // stores current component indices to set to '0'
 vector<pair<int, int>> component;
 
-
 /*
  * floodfill to count connected regions
  * returns size of connected region
@@ -43,6 +42,7 @@ int floodfill(int i, int j, char color) {
 	) {
 		return 0;
 	}
+	
 	visited[i][j] = 1;
 	component.push_back({i, j});
 	cnt += (
@@ -51,7 +51,6 @@ int floodfill(int i, int j, char color) {
 		+ floodfill(i, j + 1, color)
 		+ floodfill(i, j - 1, color)
 	);
-	
 	return cnt;
 }
 
