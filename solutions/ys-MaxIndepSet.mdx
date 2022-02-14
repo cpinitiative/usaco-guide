@@ -36,41 +36,67 @@ Divide the original graph into two parts, do DP respectively, and then merge.
 
 #### Bitmask DP
 
-First of all, we can turn the original problem into another problem and build
-the complement graph of the original graph.
+First we can turn the original problem into another problem
+by building the complement graph of the original graph.
 
 Then we can turn it into the maximum clique problem (MCP).
 
 Clique can be seen as a complete graph.
 
-In fact, it is not a good way to store only the number of points in the answer graph , because then
-it will be hard to transfer.
+In fact, it is not a good way to store only the number of points in the answer graph ,
+because then it will be hard to transfer.
 
 Then switch ideas.
 
 Let the DP array store the point set of the maximum clique in
-the subgraph, that is, the element in DP array is also a bitmask.
+the subgraph.
+
+That is, the element in DP array is also a bitmask.
 
 Simply use $\texttt{dp}[S]$ to represent **any** valid maximum clique solution in
 subgraph $S$.
 
 Consider a point $k$ in $S$.
 
-if this point is in the maximum clique, then
-$\texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\} $ (where $E_k$ represents the neighbour set of $k$), otherwise $\texttt{dp}[S] =\texttt{dp} [S / {k}]$, take maximum one.
+if this point is in the maximum clique, 
+
+$$
+\texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\}
+$$ 
+
+(where $E_k$ represents the neighbour set of $k$)
+
+otherwise
+
+$$
+\texttt{dp}[S] =\texttt{dp} [S / {k}]
+
+$$
+
+Take the maximum one.
+
+$$
+\texttt{dp}[S] = \max\{ \texttt{dp}[E_k\cap S] \cup \{k\} , \texttt{dp} [S / {k}] \}
+$$
+
+**Notice this** $\max$ **compared by popcount in the program.**
 
 But the time complexity is $\mathcal{O}(2 ^ n)$ or $\mathcal{O}(2 ^ n \cdot n)$,
-which needs further optimization. ​
+which needs further optimization.
 
 #### Meet-in-the-middle
 
-Divide the original graph into two parts, do DP respectively, and then merge: if
-the two parts are $S1$ and $S2$, loop **every subgraph** of $S1$,
-find subgraph of $S2$ that have direct edges with **all points** in subgraph of
-$S1$ that we loop, do set UNION operation with two subgraph in $S1$ and $S2$.
+Divide the original graph into two parts, do DP respectively, and then merge:
 
-Subgraph of $S2$ that have direct edges with **all points** in subgraph of $S1$
-that we loop can be solved with another simple Bitmask DP.
+if the two parts are $S1$ and $S2$, loop **every subgraph** of $S1$,
+
+find subgraph of $S2$ that have direct edges with **all points** in subgraph of
+$S1$ that we loop,
+
+do set UNION operation with two subgraph in $S1$ and $S2$.
+
+"Subgraph of $S2$ that have direct edges with **all points** in subgraph of $S1$
+that we loop" can be solved with another simple Bitmask DP.
 
 Time Complexity is $\mathcal{O}(2^{\frac N2})$.
 
@@ -152,4 +178,3 @@ int main() {
 </LanguageSection>
 
 </Spoiler>
-
