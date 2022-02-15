@@ -9,24 +9,27 @@ author: Shijie Ren
 
 ## Explanation
 
-Let $\texttt{dp}[i][j]$ be the minimum answer of first $j$ days with $i$
-breakouts.
+Let $\texttt{dp}[i][j]$ be the the minimum number of changes that must be made to the first j entries
+so that there are i breakouts among the first j entries.
+
+If $j$-th entry is NOT tampered
+
 
 On the $j$-th day, there's 3 cases:
 
-- if log is tampered and cows would NOT breakout:
+- If log is tampered and cows would NOT breakout:
 
 $$
 \texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1
 $$
 
-- if log is tampered and cows would breakout (So $a[j] \not = 0$):
+- If log is tampered and cows would breakout (So $a[j] \not = 0$):
 
 $$
 \texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1
 $$
 
-- if log is NOT tampered (Then $i$-th breakout will be on $(j-a[j])$-th day):
+- If log is NOT tampered (Then $i$-th breakout will be on $(j-a[j])$-th day):
 
 $$
 \texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);
@@ -54,30 +57,33 @@ $$
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#define N 105
+const int N = 105;
+const int inf = 0x3fffffff;
 #define byteinf 0x3f
 using namespace std;
-int a[N];
-int range_ans[N][N];
-int dp[N][N];
 int main() {
 	freopen("taming.in", "r", stdin);
 	freopen("taming.out", "w", stdout);
 
-	int n, i, k, q, j;
+	int n;
 	cin >> n;
-	for (i = 1; i <= n; i++)
+
+	vector<int> a(n + 1);
+	for (int i = 1; i <= n; i++) {
 		cin >> a[i];
+	}
 
-	for (i = 1; i <= n; i++)
-		for (j = i; j <= n; j++)
+	vector<vector<int>> range_ans(n + 1, vector<int>(n + 1, 0));
+	for (int i = 1; i <= n; i++) {
+		for (int j = i; j <= n; j++) {
 			range_ans[i][j] = range_ans[i][j - 1] + (a[j] == j - i ? 0 : 1);
+		}
+	}
 
-	// calulate range_ans array directly
-	memset(dp, byteinf, sizeof(dp));
+	vector<vector<int>> dp(n + 1, vector<int>(n + 1, inf));
 	dp[0][0] = 0;
-	for (i = 1; i <= n; i++) {
-		for (j = i; j <= n; j++) {
+	for (int i = 1; i <= n; i++) {
+		for (int j = i; j <= n; j++) {
 			dp[i][j] = dp[i][j - 1] + 1;
 			if (a[j]) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - 1] + 1);
@@ -85,11 +91,11 @@ int main() {
 			if (j - a[j] - 1 >= 0) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - a[j] - 1] + range_ans[j - a[j]][j]);
 			}
-			// According to the equation above
 		}
 	}
-	for (i = 1; i <= n; i++)
+	for (int i = 1; i <= n; i++) {
 		cout << dp[i][n] << endl;
+	}
 }
 ```
 
