@@ -9,31 +9,36 @@ author: Shijie Ren
 
 ## Explanation
 
-Let $\texttt{dp}[i][j]$ be the the minimum number of changes that must be made to the first j entries
-so that there are i breakouts among the first j entries.
+Let $\texttt{dp}[i][j]$ be the the minimum number of changes that must be made
+to the first $j$ entries so that there are $i$ breakouts among the first $j$
+entries.
 
-If $j$-th entry is NOT tampered
-
-
-On the $j$-th day, there's 3 cases:
+If consider minimum number of changes made to the first $j$ entries so that
+there are $i$ breakouts,there's 3 cases:
 
 - If log is tampered and cows would NOT breakout:
 
-$$
-\texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1
-$$
+  - Compared to the previous day the breakout number won't change , and need one
+    more change of log, transfer from $\texttt{dp}[i][j-1]$ recursively.
+    $$
+    \texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1
+    $$
 
-- If log is tampered and cows would breakout (So $a[j] \not = 0$):
+- If log is tampered and cows would breakout (Notice $a[j] \not = 0$) :
 
-$$
-\texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1
-$$
+  - Compared to the previous day the breakout number add one ($j$-th day) , and
+    need one more change of log too, transfer from $\texttt{dp}[i-1][j-1]$
+    recursively.
+    $$
+    \texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1
+    $$
 
-- If log is NOT tampered (Then $i$-th breakout will be on $(j-a[j])$-th day):
-
-$$
-\texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);
-$$
+- If log is NOT tampered :
+  - Then $i$-th breakout will be on $(j-a[j])$-th day.Transfer from
+    $\texttt{dp}[i-1][j-a[j]-1]$ recursively.
+    $$
+    \texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);
+    $$
 
 $$\texttt{range\_ans}[l][r]$$ represents minimum cost to replace range
 $a[l]...a[r]$ with $0...(r-l)$ respectively.
@@ -55,11 +60,8 @@ $$
 ```cpp
 #include <algorithm>
 #include <cstdio>
-#include <cstring>
 #include <iostream>
-const int N = 105;
-const int inf = 0x3fffffff;
-#define byteinf 0x3f
+#include <vector>
 using namespace std;
 int main() {
 	freopen("taming.in", "r", stdin);
@@ -73,22 +75,24 @@ int main() {
 		cin >> a[i];
 	}
 
-	vector<vector<int>> range_ans(n + 1, vector<int>(n + 1, 0));
+	vector<vector<int>> range_ans(n + 1, vector<int>(n + 1));
 	for (int i = 1; i <= n; i++) {
 		for (int j = i; j <= n; j++) {
 			range_ans[i][j] = range_ans[i][j - 1] + (a[j] == j - i ? 0 : 1);
 		}
 	}
 
-	vector<vector<int>> dp(n + 1, vector<int>(n + 1, inf));
+	vector<vector<int>> dp(n + 1, vector<int>(n + 1, INT32_MAX));
 	dp[0][0] = 0;
 	for (int i = 1; i <= n; i++) {
 		for (int j = i; j <= n; j++) {
-			dp[i][j] = dp[i][j - 1] + 1;
-			if (a[j]) {
+			if (dp[i][j - 1] != INT32_MAX) {
+				dp[i][j] = dp[i][j - 1] + 1;
+			}
+			if (a[j] && dp[i - 1][j - 1] != INT32_MAX) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - 1] + 1);
 			}
-			if (j - a[j] - 1 >= 0) {
+			if (j - a[j] - 1 >= 0 && dp[i - 1][j - a[j] - 1] != INT32_MAX) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - a[j] - 1] + range_ans[j - a[j]][j]);
 			}
 		}
