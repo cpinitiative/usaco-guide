@@ -13,41 +13,41 @@ Let $\texttt{dp}[i][j]$ be the the minimum number of changes that must be made
 to the first $j$ entries so that there are $i$ breakouts among the first $j$
 entries.
 
-If consider minimum number of changes made to the first $j$ entries so that
-there are $i$ breakouts,there's 3 cases:
+There are three cases when we calculate the current value of $\texttt{dp}[i][j]$:
 
-- If log is tampered and cows would NOT breakout:
+- If the log was tampered with and the cows would NOT breakout:
 
-  - Compared to the previous day the breakout number won't change , and need one
-    more change of log, transfer from $\texttt{dp}[i][j-1]$ recursively.
+  - Compared to the previous day, the breakout number won't change. However, we need one
+    more change of log, so we transfer from $\texttt{dp}[i][j-1]$.
     $$
     \texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1
     $$
 
-- If log is tampered and cows would breakout (Notice $a[j] \not = 0$) :
+- If log was tampered with and cows would breakout (Notice $a[j] \neq 0$):
 
-  - Compared to the previous day the breakout number add one ($j$-th day) , and
-    need one more change of log too, transfer from $\texttt{dp}[i-1][j-1]$
-    recursively.
+  - Compared to the previous day the breakout number increases by 1. We also
+    need one more change of the log, so we transfer from $\texttt{dp}[i-1][j-1]$.
     $$
     \texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1
     $$
 
-- If log is NOT tampered :
-  - Then $i$-th breakout will be on $(j-a[j])$-th day.Transfer from
-    $\texttt{dp}[i-1][j-a[j]-1]$ recursively.
+- If log was NOT tampered with:
+  - Then the $i$-th breakout would be on the $(j-a[j])$-th day, so we transfer from
+    $\texttt{dp}[i-1][j-a[j]-1]$.
     $$
     \texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);
     $$
 
-$$\texttt{range\_ans}[l][r]$$ represents minimum cost to replace range
-$a[l]...a[r]$ with $0...(r-l)$ respectively.
+$$\texttt{range\_ans}[l][r]$$ represents the minimum cost to replace the range
+$a[l]...a[r]$ with $0...(r-l)$.
 
-So if the state meets the conditions,
+Thus, our final DP relation is
 
 $$
 \texttt{dp}[i][j] = \max \{ \texttt{dp}[i][j-1]+1 ,\texttt{dp}[i-1][j-1]+1 ,\texttt{dp}[i-1][j-a[j]-1] + \texttt{range\_ans}[j-a[j]][j]) \}
 $$
+
+Note that if the indices are out of bounds, the value is not considered.
 
 ## Implementation
 
@@ -87,12 +87,17 @@ int main() {
 	dp[0][0] = 0;
 	for (int i = 1; i <= n; i++) {
 		for (int j = i; j <= n; j++) {
+			// Case 1
 			if (dp[i][j - 1] != INT32_MAX) {
 				dp[i][j] = dp[i][j - 1] + 1;
 			}
+	
+			// Case 2
 			if (a[j] && dp[i - 1][j - 1] != INT32_MAX) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - 1] + 1);
 			}
+	
+			// Case 3
 			if (j - a[j] - 1 >= 0 && dp[i - 1][j - a[j] - 1] != INT32_MAX) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - a[j] - 1] + range_ans[j - a[j]][j]);
 			}
