@@ -125,23 +125,23 @@ Time Complexity is $\mathcal{O}(2^{\frac N2})$.
 using namespace std;
 using ll = long long;
 
+// this function returns the number with more 1-bits (in binary)
 ll popmax(ll x, ll y) {
-	return __builtin_popcountll(x) < __builtin_popcountll(y) ? y : x;
 	/*
 	 * __builtin_popcountll(x) returns the number of 1-bits of unsigned long
 	 * long x (in binary)
 	 */
+	return __builtin_popcountll(x) < __builtin_popcountll(y) ? y : x;
 }
-// this function returns the long long int with more 1-bits (in binary)
 
 void maxclique(int x, int dt, vector<ll> &f, vector<ll> a) {
 	for (int i = 0, c, d; i < (1 << x); i++) {
 		d = i & (-i);
-		c = __builtin_ctzll(d);
 		/*
 		 * __builtin_ctzll(d) counts the trailing number of 0-bits of unsigned
 		 * long long d (in binary)
 		 */
+		c = __builtin_ctzll(d);
 		f[i] = popmax(f[i ^ d], f[i & a[c + dt] >> (dt)] | d);
 	}
 }
@@ -176,8 +176,8 @@ int main() {
 	}
 
 	/*
-	 * 1.use Bitmask to represent complement graph
-	 * now is to solve a Maximum Clique Problem(MCP)
+	 * 1. Use a bitmask to represent the complement graph
+	 *    Now, we just have to solve the Maximum Clique Problem (MCP)
 	 */
 	vector<ll> a(n);
 	for (int i = 0; i < n; i++) {
@@ -188,7 +188,7 @@ int main() {
 		}
 	}
 
-	// 2.Bitmask DP
+	// 2. Perform the bitmask DP
 	vector<ll> f(1 << n1);
 	vector<ll> f2(1 << n2);
 	maxclique(n1, 0, f, a);
@@ -202,7 +202,7 @@ int main() {
 		com[i] = com[i - (i & (-i))] & a[__builtin_ctzll(i)];
 	}
 	/*
-	 * 3.Meet-in-the-middle
+	 * 3. Meet-in-the-middle
 	 * loop every subsets called S1,construct S2
 	 * of all nodes of the second half which have edges to all the nodes in S1
 	 * (so that together they still form a clique shared by both halves)
