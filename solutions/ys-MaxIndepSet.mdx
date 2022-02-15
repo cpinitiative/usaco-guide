@@ -121,9 +121,9 @@ Time Complexity is $\mathcal{O}(2^{\frac N2})$.
 ```cpp
 #include <cstdio>
 using ll = long long;
-const int N = 45;
-int gr[N][N];
-ll a[N];
+const int N = 20;
+int gr[N * 2][N * 2];
+ll a[N * 2];
 
 ll popmax(ll x, ll y) {
 	if (__builtin_popcountll(x) < __builtin_popcountll(y)) {
@@ -150,19 +150,21 @@ void mcp(int x, int dt, ll f[]) {
  */
 void print_mask(ll ans) {
 	printf("%d\n", __builtin_popcountll(ans));
-	while (ans)
+	while (ans) {
 		printf("%d ", __builtin_ctzll(ans)), ans -= ans & (-ans);
+	}
 }
 
-ll f[1 << (N / 2)], f2[1 << (N / 2)], com[1 << (N / 2)];
+ll f[1 << N], f2[1 << N], com[1 << N];
 
 int main() {
-
-	int n, m, u, v, i, j, n1, n2;
+	int n, m;
 	scanf("%d%d", &n, &m);
+	int n1, n2;
 	n1 = n / 2;
 	n2 = n - n1;
-	for (i = 1; i <= m; i++) {
+	for (int i = 1; i <= m; i++) {
+		int u, v;
 		scanf("%d%d", &u, &v);
 		gr[u][v] = gr[v][u] = 1;
 	}
@@ -171,10 +173,13 @@ int main() {
 	 * 1.use Bitmask to represent complement graph
 	 * now is to solve a Maximum Clique Problem(MCP)
 	 */
-	for (i = 0; i < n; i++)
-		for (j = 0; j < n; j++)
-			if (!gr[i][j] && i != j)
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (!gr[i][j] && i != j) {
 				a[i] |= 1ll << j;
+			}
+		}
+	}
 
 	// 2.Bitmask DP
 	mcp(n1, 0, f);
@@ -183,17 +188,18 @@ int main() {
 	// com[S] = common neighbour of points in S
 	ll ans = 0;
 	com[0] = (1ll << n) - 1;
-	for (i = 1ll; i < (1ll << n1); i++)
+	for (int i = 1ll; i < (1ll << n1); i++) {
 		com[i] = com[i - (i & (-i))] & a[__builtin_ctzll(i)];
-
+	}
 	/*
 	 * 3.Meet-in-the-middle
 	 * loop every subsets called S1,construct S2
 	 * of all nodes of the second half which have edges to all the nodes in S1
 	 * (so that together they still form a clique shared by both halves)
 	 */
-	for (i = 0; i < (1ll << n1); i++)
+	for (int i = 0; i < (1ll << n1); i++) {
 		ans = popmax(ans, (f2[com[i] >> n1] << n1) | f[i]);
+	}
 	print_mask(ans);
 }
 ```
