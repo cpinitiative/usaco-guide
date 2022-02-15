@@ -120,39 +120,50 @@ Time Complexity is $\mathcal{O}(2^{\frac N2})$.
 
 ```cpp
 #include <cstdio>
+#include <iostream>
 #include <vector>
 using namespace std;
 using ll = long long;
 
 ll popmax(ll x, ll y) {
 	return __builtin_popcountll(x) < __builtin_popcountll(y) ? y : x;
+	/*
+	 * __builtin_popcountll(x) returns the number of 1-bits of unsigned long
+	 * long x (in binary)
+	 */
 }
+// this function returns the long long int with more 1-bits (in binary)
 
-void mcp(int x, int dt, vector<ll> &f, vector<ll> a) {
+void maxclique(int x, int dt, vector<ll> &f, vector<ll> a) {
 	for (int i = 0, c, d; i < (1 << x); i++) {
 		d = i & (-i);
 		c = __builtin_ctzll(d);
+		/*
+		 * __builtin_ctzll(d) counts the trailing number of 0-bits of unsigned
+		 * long long d (in binary)
+		 */
 		f[i] = popmax(f[i ^ d], f[i & a[c + dt] >> (dt)] | d);
 	}
 }
 
 /*
- * Bitmask DP to solve MCP in O(2^n)
- * f[S] = any possible MIS in S subgraph (f[S] is a set)
+ * Bitmask DP to solve Max Clique Problem in O(2^n)
+ * f[S] = any possible max clique solution in S subgraph (f[S] is a set)
  * choose any point in S called D
  * if D isn't chosen F[S] = F[S/{D}]
  * otherwise F[S] = F[D's neighbour in S] UNION {D}
  */
 void print_mask(ll ans) {
-	printf("%d\n", __builtin_popcountll(ans));
+	cout << __builtin_popcountll(ans) << endl;
 	while (ans) {
-		printf("%d ", __builtin_ctzll(ans)), ans -= ans & (-ans);
+		cout << __builtin_ctzll(ans) << endl;
+		ans -= ans & (-ans);
 	}
 }
 
 int main() {
 	int n, m;
-	scanf("%d%d", &n, &m);
+	cin >> n >> m;
 	int n1, n2;
 	n1 = n / 2;
 	n2 = n - n1;
@@ -160,7 +171,7 @@ int main() {
 	vector<vector<int>> gr(n, vector<int>(n));
 	for (int i = 1; i <= m; i++) {
 		int u, v;
-		scanf("%d%d", &u, &v);
+		cin >> u >> v;
 		gr[u][v] = gr[v][u] = 1;
 	}
 
@@ -178,13 +189,13 @@ int main() {
 	}
 
 	// 2.Bitmask DP
-	vector<ll> f(1 << n1, 0);
-	vector<ll> f2(1 << n2, 0);
-	mcp(n1, 0, f, a);
-	mcp(n2, n1, f2, a);
+	vector<ll> f(1 << n1);
+	vector<ll> f2(1 << n2);
+	maxclique(n1, 0, f, a);
+	maxclique(n2, n1, f2, a);
 
 	// com[S] = common neighbour of points in S
-	vector<ll> com(1 << n1, 0);
+	vector<ll> com(1 << n1);
 	ll ans = 0;
 	com[0] = (1ll << n) - 1;
 	for (int i = 1ll; i < (1ll << n1); i++) {
