@@ -120,10 +120,9 @@ Time Complexity is $\mathcal{O}(2^{\frac N2})$.
 
 ```cpp
 #include <cstdio>
+#include <vector>
+using namespace std;
 using ll = long long;
-const int N = 20;
-int gr[N * 2][N * 2];
-ll a[N * 2];
 
 ll popmax(ll x, ll y) {
 	if (__builtin_popcountll(x) < __builtin_popcountll(y)) {
@@ -133,7 +132,7 @@ ll popmax(ll x, ll y) {
 	}
 }
 
-void mcp(int x, int dt, ll f[]) {
+void mcp(int x, int dt, vector<ll> &f, vector<ll> a) {
 	for (int i = 0, c, d; i < (1 << x); i++) {
 		d = i & (-i);
 		c = __builtin_ctzll(d);
@@ -155,14 +154,14 @@ void print_mask(ll ans) {
 	}
 }
 
-ll f[1 << N], f2[1 << N], com[1 << N];
-
 int main() {
 	int n, m;
 	scanf("%d%d", &n, &m);
 	int n1, n2;
 	n1 = n / 2;
 	n2 = n - n1;
+
+	vector<vector<int>> gr(n, vector<int>(n, 0));
 	for (int i = 1; i <= m; i++) {
 		int u, v;
 		scanf("%d%d", &u, &v);
@@ -173,6 +172,7 @@ int main() {
 	 * 1.use Bitmask to represent complement graph
 	 * now is to solve a Maximum Clique Problem(MCP)
 	 */
+	vector<ll> a(n, 0);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			if (!gr[i][j] && i != j) {
@@ -182,10 +182,13 @@ int main() {
 	}
 
 	// 2.Bitmask DP
-	mcp(n1, 0, f);
-	mcp(n2, n1, f2);
+	vector<ll> f(1 << n1, 0);
+	vector<ll> f2(1 << n2, 0);
+	mcp(n1, 0, f, a);
+	mcp(n2, n1, f2, a);
 
 	// com[S] = common neighbour of points in S
+	vector<ll> com(1 << n1, 0);
 	ll ans = 0;
 	com[0] = (1ll << n) - 1;
 	for (int i = 1ll; i < (1ll << n1); i++) {
