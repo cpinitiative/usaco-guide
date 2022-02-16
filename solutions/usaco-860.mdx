@@ -2,7 +2,7 @@
 id: usaco-860
 source: USACO Silver 2018 December
 title: Mooyo Mooyo
-author: Nathan Gong
+author: Nathan Gong, Pranav Jadhav
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_mooyomooyo_silver_dec18.html)
@@ -12,6 +12,130 @@ author: Nathan Gong
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, k;
+const int MAX_ROWS = 100;
+const int MAX_COLS = 10;
+vector<vector<char>> board(MAX_ROWS, vector<char>(MAX_COLS));
+vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS));
+
+// stores current component indices to set to '0'
+vector<pair<int, int>> component;
+
+/*
+ * floodfill to count connected regions
+ * returns size of connected region
+ * fills 'component' vector with the indices of the component
+ */
+int floodfill(int i, int j, char color) {
+	int cnt = 1;
+	if (
+		i < 0 || j < 0 || i >= n || j >= MAX_COLS ||
+		visited[i][j] ||
+		board[i][j] != color
+	) {
+		return 0;
+	}
+	
+	visited[i][j] = 1;
+	component.push_back({i, j});
+	cnt += (
+		floodfill(i + 1, j, color)
+		+ floodfill(i - 1, j, color)
+		+ floodfill(i, j + 1, color)
+		+ floodfill(i, j - 1, color)
+	);
+	return cnt;
+}
+
+int main() {
+	freopen("mooyomooyo.in", "r", stdin);
+	freopen("mooyomooyo.out", "w", stdout);
+
+	cin >> n >> k;
+
+	for (int i = n - 1; i >= 0; i--) {
+		string nums;
+		cin >> nums;
+		for (int j = 0; j < MAX_COLS; j++) {
+			board[i][j] = nums[j];
+		}
+	}
+
+	/*
+	 * Loop while there are regions that got destroyed (board changed)
+	 * If no regions were destroyed, we are at the final state (break loop; return answer)
+	 */
+	bool board_changed = true;
+	while (board_changed) {
+		board_changed = false;
+
+		// destroy all haybales in connected regions with size >= k
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < MAX_COLS; j++) {
+				if (!visited[i][j] && board[i][j] != '0') {
+					char current_color = board[i][j];
+					int cnt = floodfill(i, j, current_color);
+
+					if (cnt >= k) {
+						// found a region to destroy
+						board_changed = true;
+						for (auto p: component) {
+							board[p.first][p.second] = '0';
+						}
+					}
+					component.clear();
+				}
+			}
+		}
+
+		// run gravity
+		for (int col = 0; col < MAX_COLS; col++) {
+			vector <char> column_after_gravity;
+			/*
+			 * loop over rows from bottom to top of current column
+			 * add nonzero elements to vector 'column_after_gravity'
+			 */
+			for (int row = 0; row < n; row++) {
+				if (board[row][col] != '0') {
+					column_after_gravity.push_back(board[row][col]);
+				}
+			}
+
+			/*
+			 * edit the board to reflect changes
+			 * going from bottom to top, fill the column with column_after_gravity
+			 * while we can, otherwise make it '0' (empty)
+			 */
+			for (int row = 0; row < n; row++) {
+				if (row < column_after_gravity.size()) {
+					board[row][col] = column_after_gravity[row];
+				} else {
+					board[row][col] = '0';
+				}
+			}
+
+		}
+
+		// reset visited array
+		fill(visited.begin(), visited.end(), vector<bool>(MAX_COLS, false));
+	}
+
+	for (int i = n - 1; i >= 0; i--) {
+		for (int j = 0; j < MAX_COLS; j++) {
+			cout << board[i][j];
+		}
+		cout << '\n';
+	}
+}
+```
+</CPPSection>
 
 <JavaSection>
 
@@ -125,7 +249,7 @@ public class MooyoMooyo {
 		return size;
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
