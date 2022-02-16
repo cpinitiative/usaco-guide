@@ -36,6 +36,7 @@ we go through its neighbors (adding cows as we go along) until we hit an end.
 ```cpp
 #include <fstream>
 #include <vector>
+#include <map>
 #include <string>
 #include <algorithm>
 
@@ -43,7 +44,7 @@ using std::endl;
 using std::string;
 using std::vector;
 
-//BeginCodeSnip{Cow Names}
+//CodeSnip{Cow Names}
 // Lambda expression - see /general/lambda-funcs
 const vector<string> COWS = []() {
 	vector<string> tmp{
@@ -62,17 +63,12 @@ const vector<string> COWS = []() {
 }();
 //EndCodeSnip
 
-template <class T>
-int index(const vector<T>& vec, const T& val) {
-	for (int i = 0; i < vec.size(); i++) {
-		if (vec[i] == val) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 int main() {
+	std::map<string, int> cow_inds;
+	for (int i = 0; i < COWS.size(); i++) {
+		cow_inds[COWS[i]] = i;
+	}
+
 	std::ifstream read("lineup.in");
 	int req_num;
 	read >> req_num;
@@ -84,8 +80,8 @@ int main() {
 		read >> cow1 >> trash >> trash >> trash >> trash >> cow2;
 
 		// Convert the names to their index in the list
-		int c1 = index(COWS, cow1);
-		int c2 = index(COWS, cow2);
+		int c1 = cow_inds[cow1];
+		int c2 = cow_inds[cow2];
 		neighbors[c1].push_back(c2);
 		neighbors[c2].push_back(c1);
 	}
@@ -93,16 +89,10 @@ int main() {
 	vector<int> order;
 	vector<bool> added(COWS.size());
 	for (int c = 0; c < COWS.size(); c++) {
-		/*
-		 * Check that:
-		 * 1. This cow hasn't already been added yet.
-		 * 2. This cow could be the possible start of a chain.
-		 */
 		if (!added[c] && neighbors[c].size() <= 1) {
 			added[c] = true;
 			order.push_back(c);
 
-			// If the chain length > 1, we keep on going
 			if (neighbors[c].size() == 1) {
 				int prev = c;
 				int at = neighbors[c][0];
@@ -116,7 +106,6 @@ int main() {
 					prev = at;
 					at = temp_at;
 				}
-				// Add the final element
 				added[at] = true;
 				order.push_back(at);
 			}
@@ -139,40 +128,43 @@ import java.util.*;
 
 public class LineUp {
 	// Assumed to be in sorted order (which it is)
-	static final List<String> COWS = new ArrayList<>(
-		Arrays.asList(new String[] {
-			"Beatrice",
-			"Belinda",
-			"Bella",
-			"Bessie",
-			"Betsy",
-			"Blue",
-			"Buttercup",
-			"Sue"  
-		})
-	);
+	static final String[] COWS = new String[] {
+		"Beatrice",
+		"Belinda",
+		"Bella",
+		"Bessie",
+		"Betsy",
+		"Blue",
+		"Buttercup",
+		"Sue"  
+	};
 
 	public static void main(String[] args) throws IOException {
+		Map<String, Integer> cowInds = new HashMap<>();
+		for (int i = 0; i < COWS.length; i++) {
+			cowInds.put(COWS[i], i);
+		}
+
 		BufferedReader read = new BufferedReader(new FileReader("lineup.in"));
 		int reqNum = Integer.parseInt(read.readLine());
 
-		List<Integer>[] neighbors = new ArrayList[COWS.size()];
-		for (int c = 0; c < COWS.size(); c++) {
+		List<Integer>[] neighbors = new ArrayList[COWS.length];
+		for (int c = 0; c < COWS.length; c++) {
 			neighbors[c] = new ArrayList<>();
 		}
 		for (int r = 0; r < reqNum; r++) {
 			String[] words = read.readLine().split(" ");
 
 			// Convert the names to their index in the list
-			int cow1 = COWS.indexOf(words[0]);
-			int cow2 = COWS.indexOf(words[words.length - 1]);
+			int cow1 = cowInds.get(words[0]);
+			int cow2 = cowInds.get(words[words.length - 1]);
 			neighbors[cow1].add(cow2);
 			neighbors[cow2].add(cow1);
 		}
 
 		List<Integer> order = new ArrayList<>();
-		boolean[] added = new boolean[COWS.size()];
-		for (int c = 0; c < COWS.size(); c++) {
+		boolean[] added = new boolean[COWS.length];
+		for (int c = 0; c < COWS.length; c++) {
 			/*
 			 * Check that:
 			 * 1. This cow hasn't already been added yet.
@@ -205,7 +197,7 @@ public class LineUp {
 
 		PrintWriter out = new PrintWriter("lineup.out");
 		for (int c : order) {
-			out.println(COWS.get(c));
+			out.println(COWS[c]);
 		}
 		out.close();
 	}
@@ -227,14 +219,16 @@ COWS = sorted([
 	'Sue'
 ])
 
+cow_inds = {c: i for i, c in enumerate(COWS)}
+
 neighbors = [[] for _ in range(len(COWS))]
 with open('lineup.in') as read:
 	for _ in range(int(read.readline())):
 		words = read.readline().strip().split()
 
 		# Convert the names to their index in the list
-		cow1 = COWS.index(words[0])
-		cow2 = COWS.index(words[-1])
+		cow1 = cow_inds[words[0]]
+		cow2 = cow_inds[words[-1]]
 		neighbors[cow1].append(cow2)
 		neighbors[cow2].append(cow1)
 
