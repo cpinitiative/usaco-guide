@@ -18,9 +18,9 @@ const int MAX_N = 20;
 int n;
 vector<vector<char>> image(MAX_N, vector<char>(MAX_N));
 vector<vector<bool>> visited(MAX_N, vector<bool>(MAX_N));
-int PCL_count = 0;
+int pcl_count = 0;
 
-// PCL described by top-left (i1,j1) and bottom-right (i2,j2) corners
+// PCL described by top-left (i1,j1) and bottom-right (i2,j2) corner
 struct PCL {
 	int i1, j1, i2, j2;
 };
@@ -45,7 +45,7 @@ void floodfill(int i , int j, char color) {
 }
 
 // Check whether a given region is a PCL
-bool is_PCL(int i1, int j1, int i2, int j2) {
+bool is_pcl(int i1, int j1, int i2, int j2) {
 
 	// keep track of num of regions for each color A-Z
 	vector<int> region_count(26, 0);
@@ -75,7 +75,7 @@ bool is_PCL(int i1, int j1, int i2, int j2) {
 	bool color_with_one_region = false;
 	bool color_with_more_regions = false;
 	for (int i = 0; i < 26; i++) {
-		if (region_count[i]) {
+		if (region_count[i] != 0) {
 			color_count++;
 		}
 		if (region_count[i] == 1) {
@@ -112,16 +112,16 @@ int main() {
 			cin >> image[i][j];
 		}
 	}
-	vector<PCL> PCL_list;
+	vector<PCL> pcl_list;
 
 	// Brute force every rectangle to find PCLs
 	for (int i1 = 0; i1 < n; i1++) {
 		for (int j1 = 0; j1 < n; j1++) {
 			for (int i2 = 0; i2 < n; i2++) {
 				for (int j2 = 0; j2 < n; j2++) {
-					if (is_PCL(i1, j1, i2, j2)) {
-						PCL new_PCL = {i1, j1, i2, j2};
-						PCL_list.push_back(new_PCL);
+					if (is_pcl(i1, j1, i2, j2)) {
+						PCL new_pcl = {i1, j1, i2, j2};
+						pcl_list.push_back(new_pcl);
 					}
 				}
 			}
@@ -129,23 +129,23 @@ int main() {
 	}
 
 	// If a PCL is inside another PCL, don't count it
-	for (int i = 0; i < PCL_list.size(); i++) {
-		PCL current_PCL = PCL_list[i];
-		bool is_PCL = true;
-		for (int j = 0; j < PCL_list.size(); j++) {
+	for (int i = 0; i < pcl_list.size(); i++) {
+		PCL current_pcl = pcl_list[i];
+		bool valid_pcl = true;
+		for (int j = 0; j < pcl_list.size(); j++) {
 			if (i == j) {continue;}
-			PCL other_PCL = PCL_list[j];
-			if (is_inside(current_PCL, other_PCL)) {
-				is_PCL = false;
+			PCL other_pcl = pcl_list[j];
+			if (is_inside(current_pcl, other_pcl)) {
+				valid_pcl = false;
 				break;
 			}
 		}
-		if (is_PCL) {
-			PCL_count++;
+		if (valid_pcl) {
+			pcl_count++;
 		}
 	}
 
-	cout << PCL_count << endl;
+	cout << pcl_count << endl;
 }
 ```
 </CPPSection>
