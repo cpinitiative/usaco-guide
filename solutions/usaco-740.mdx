@@ -15,10 +15,8 @@ author: Qi Wang, Pranav Jadhav
 using namespace std;
 
 const int MAX_N = 20;
-int n;
 vector<vector<char>> image(MAX_N, vector<char>(MAX_N));
 vector<vector<bool>> visited(MAX_N, vector<bool>(MAX_N));
-int pcl_count = 0;
 
 // PCL described by top-left (i1,j1) and bottom-right (i2,j2) corner
 struct PCL {
@@ -46,7 +44,6 @@ void floodfill(int i , int j, char color) {
 
 // Check whether a given region is a PCL
 bool is_pcl(int i1, int j1, int i2, int j2) {
-
 	// keep track of num of regions for each color A-Z
 	vector<int> region_count(26, 0);
 
@@ -106,6 +103,8 @@ bool is_inside(PCL a, PCL b) {
 int main() {
 	freopen("where.in", "r", stdin);
 	freopen("where.out", "w", stdout);
+	int n;
+	int pcl_count = 0;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -140,9 +139,7 @@ int main() {
 				break;
 			}
 		}
-		if (valid_pcl) {
-			pcl_count++;
-		}
+		pcl_count += valid_pcl;
 	}
 
 	cout << pcl_count << endl;
