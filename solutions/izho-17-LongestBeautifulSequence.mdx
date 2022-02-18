@@ -75,6 +75,10 @@ $$
 \texttt{dp}[i][j][\text{popcount}(a[i]\&j)]=\max_{j\leq\max{a[i]}}\{\texttt{dp}[i-1][j][\text{popcount}(a[i]\&j)],\texttt{dp}[i-1][a[i]][k[i]]+1\}
 $$
 
+$$
+\texttt{dp}[i][j][q]=\texttt{dp}[i-1][j][q],q\not=\text{popcount}(a[i]\&j)
+$$
+
 According to Hint 2 , we need to consider either of them , that is , to consider
 the answers before and after.
 
@@ -84,8 +88,8 @@ For convenience , let $\text{b0}(x) = \lfloor \frac{x}{2^{10}} \rfloor$
 represents 10-19 bits , let $\text{b1}(x) = x \& 2^{10} $ represents 0-9 bits.
 
 Let $\texttt{ans}[i]$ be the length of longest beautiful sequence end with
-$a[i]$ , and $dp[p][i][j][q]$ be the length of longest beautiful sequence of
-first $p$ elements satisfied $i = \text{b1}(\texttt{EndElement})$ ,
+$a[i]$ , and $\texttt{dp}[p][i][j][q]$ be the length of longest beautiful
+sequence of first $p$ elements satisfied $i = \text{b1}(\texttt{EndElement})$ ,
 $
 \text{popcount}(\text{b0}(\texttt{EndElement})\&j)=q$.
 
@@ -95,12 +99,20 @@ $\texttt{cur1} = \text{b1}(a[i]))$.
 Thus , we have
 
 $$
-\texttt{ans}[i] = \max_{\texttt{pre1} < 2^{10}} \{ f[i-1][\texttt{pre1}][\texttt{cur0}][k[i] - \text{popcount}(\texttt{pre1} \& \texttt{cur1})] + 1 \}
+\texttt{ans}[i] = \max_{\texttt{pre1} < 2^{10}} \{ \texttt{dp}[i-1][\texttt{pre1}][\texttt{cur0}][k[i] - \text{popcount}(\texttt{pre1} \& \texttt{cur1})] + 1 \}
 $$
 
 $$
-f[i][\texttt{cur1}][\texttt{nex0}][\text{popcount}(\texttt{nex0} \& \texttt{cur0})] = \max \{ f[i-1][\texttt{cur1}][\texttt{nex0}][\text{popcount}(\texttt{nex0} \& \texttt{cur0})] , \texttt{ans}[i] \}
+\texttt{dp}[i][\texttt{cur1}][\texttt{nex0}][\text{popcount}(\texttt{nex0} \& \texttt{cur0})] = \max \{ \texttt{dp}[i-1][\texttt{cur1}][\texttt{nex0}][\text{popcount}(\texttt{nex0} \& \texttt{cur0})] , \texttt{ans}[i] \}
 $$
+
+and
+
+$$
+\texttt{dp}[p][i][j][q] = \texttt{dp}[p-1][i][j][q]
+$$
+
+for $\texttt{dp}[p][i][j][q]$ which is not updated above.
 
 For the solution , just store which state this state is transferred from , then
 output in reverse order.
