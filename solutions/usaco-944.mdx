@@ -111,7 +111,7 @@ using namespace std;
 typedef long long ll;
 
 struct Cow {
-    int x;
+   	int x;
     int y;
     vector<int> adj;
     bool visited;
@@ -124,17 +124,14 @@ void dfs(int cur) {
     cows[cur].visited = true;
     net.push_back(cur);
     for (int i : cows[cur].adj) {
-        if (cows[i].visited) { 
-            continue;
+        if (!cows[i].visited) { 
+            dfs(i);
         }
-	dfs(i);
     }
 }
 
 int main() {
     ifstream fin("fenceplan.in");
-    ofstream fout("fenceplan.out");
-
     int N, M;
     fin >> N >> M;
     cows.resize(N);
@@ -171,7 +168,8 @@ int main() {
         ans = min(ans, 2 * (max_x - min_x) + 2 * (max_y - min_y));
     }
 
-    fout << ans << endl;
+    ofstream fout("fenceplan.out");
+   	fout << ans << endl;
 }
 ```
 
