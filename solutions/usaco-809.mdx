@@ -101,12 +101,12 @@ else:
 	entry[0] = 0
 
 """
-As long as there is no contradiction, we use the rules following:
-1.  If the entry log says a day from now has an outbreak, 
-	then that day must have an outbreak,
-	every other day between them must have no outbreaks.
-2.  Otherwise, if the entry log says -1, 
-	then that day may have a potential outbreak.
+If we ever come across a contradiction, then the 
+log is necessarily inconsistent, so we can just output −1. 
+Otherwise, the log must consist of several streaks 0,1,2,…,k 
+of various lengths, with possibly some −1s between 
+streaks - entries which we could not uniquely deduce. 
+We know that the first streak starts on the first day.
 """
 for day in range(days-1, -1, -1):
 	if time != -1 and entry[day] != -1 and entry[day] != time:
