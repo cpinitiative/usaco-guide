@@ -111,4 +111,144 @@ int main() {
 }
 ```
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Shortcut {
+    static int N, M, T;
+    static long[] farms, dist;
+    static List<Edge>[] adj;
+    public static void main(String[] args) throws IOException {
+        Kattio io = new Kattio("shortcut");
+
+        N = io.nextInt();
+        M = io.nextInt();
+        T = io.nextInt();
+        dist = new long[N];
+        farms = new long[N];
+        adj = new List[N];
+
+        for (int i = 0; i < N; i++) {
+            farms[i] = io.nextInt();
+            dist[i] = Integer.MAX_VALUE;
+            adj[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < M; i++) {
+            int a = io.nextInt() - 1;
+            int b = io.nextInt() - 1;
+            int c = io.nextInt();
+
+            adj[a].add(new Edge(a, b, c));
+            adj[b].add(new Edge(b, a, c));
+        }
+
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        pq.add(new Edge(0,0, 0));
+        List<Edge> fin = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            Edge c = pq.poll();
+
+            if(dist[c.t] <= c.e) {
+                continue;
+            }
+            dist[c.t] = c.e;
+            fin.add(c);
+
+            for (Edge e : adj[c.t]) {
+                int nw = c.e + e.e;
+
+                if(dist[e.t] <= nw) {
+                    continue;
+                }
+
+                pq.add(new Edge(c.t, e.t, nw));
+            }
+        }
+        fin.remove(0);
+
+        for (int i = 0; i < N; i++) {
+            adj[i].clear();
+        }
+
+        for (int i = 0; i < fin.size(); i++) {
+            Edge e = fin.get(i);
+
+            adj[e.f].add(new Edge(e.f, e.t, 0));
+        }
+
+        dfs(0);
+
+        long res = 0L;
+        for (int i = 1; i < farms.length; i++) {
+            if(dist[i] <= T) continue;
+            res = Math.max(res, (dist[i] - T) * farms[i]);
+        }
+
+        io.println(res);
+        io.close();
+    }
+    public static long dfs(int t) {
+        for (Edge e : adj[t]) {
+            farms[t] += dfs(e.t);
+        }
+
+        return farms[t];
+    }
+
+    private static class Edge implements Comparable<Edge> {
+        int f, t, e;
+        public Edge(int f, int t, int e) {
+            this.t = t;
+            this.e = e;
+            this.f = f;
+        }
+
+        @Override
+        public int compareTo(Edge o) {
+            if(o.e == e) {
+                return f  - o.f;
+            }
+            return e - o.e;
+        }
+    }
+
+    private static class Kattio extends PrintWriter {
+        private BufferedReader r;
+        private StringTokenizer st;
+
+        // standard input
+        public Kattio() { this(System.in,System.out); }
+        public Kattio(InputStream i, OutputStream o) {
+            super(o);
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+        // USACO-style file input
+        public Kattio(String problemName) throws IOException {
+            super(new FileWriter(problemName+".out"));
+            r = new BufferedReader(new FileReader(problemName+".in"));
+        }
+
+        // returns null if no more input
+        public String next() {
+            try {
+                while (st == null || !st.hasMoreTokens())
+                    st = new StringTokenizer(r.readLine());
+                return st.nextToken();
+            } catch (Exception e) {}
+            return null;
+        }
+
+        public int nextInt() { return Integer.parseInt(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+    }
+}
+```
+
+</JavaSection>
 </LanguageSection>
