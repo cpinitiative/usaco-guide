@@ -2,7 +2,7 @@
 id: usaco-899
 source: USACO Gold 2019 January
 title: Shortcut
-author: Ryan Chou
+author: Ryan Chou, Qi Wang
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_shortcut_gold_jan19.html)
@@ -111,4 +111,119 @@ int main() {
 }
 ```
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Shortcut {
+	static long[] farms;
+	static List<Edge>[] adj;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("shortcut");
+
+		int N = io.nextInt();
+		int M = io.nextInt();
+		int T = io.nextInt();
+		long[] dist = new long[N];
+		farms = new long[N];
+		adj = new List[N];
+
+		for (int i = 0; i < N; i++) {
+			farms[i] = io.nextInt();
+			dist[i] = Integer.MAX_VALUE;
+			adj[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			int c = io.nextInt();
+
+			adj[a].add(new Edge(a, b, c));
+			adj[b].add(new Edge(b, a, c));
+		}
+
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.add(new Edge(0, 0, 0));
+		List<Edge> fin = new ArrayList<>();
+		while (!pq.isEmpty()) {
+			Edge c = pq.poll();
+
+			if(dist[c.t] <= c.e) {
+				continue;
+			}
+			dist[c.t] = c.e;
+			// Keep edges that form the shortest path tree
+			fin.add(c);
+
+			for (Edge e : adj[c.t]) {
+				int nw = c.e + e.e;
+
+				if(dist[e.t] <= nw) {
+					continue;
+				}
+
+				pq.add(new Edge(c.t, e.t, nw));
+			}
+		}
+		// Don't need the edge from 0 to 0
+		fin.remove(0);
+
+		for (int i = 0; i < N; i++) {
+			adj[i].clear();
+		}
+
+		// Turn tree into list
+		for (int i = 0; i < fin.size(); i++) {
+			Edge e = fin.get(i);
+
+			adj[e.f].add(new Edge(e.f, e.t, 0));
+		}
+
+		dfs(0);
+
+		long res = 0L;
+		for (int i = 1; i < farms.length; i++) {
+			res = Math.max(res, (dist[i] - T) * farms[i]);
+		}
+
+		io.println(res);
+		io.close();
+	}
+
+	public static long dfs(int t) {
+		for (Edge e : adj[t]) {
+			// sum up cows travelling through farm t
+			farms[t] += dfs(e.t);
+		}
+		return farms[t];
+	}
+
+	//BeginCodeSnip{Edge Class}
+	private static class Edge implements Comparable<Edge> {
+		int f, t, e;
+		public Edge(int f, int t, int e) {
+			this.t = t;
+			this.e = e;
+			this.f = f;
+		}
+
+		@Override
+		public int compareTo(Edge o) {
+			if(o.e == e) {
+				return f  - o.f;
+			}
+			return e - o.e;
+		}
+	}
+	//EndCodeSnip
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
