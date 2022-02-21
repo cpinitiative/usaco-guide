@@ -137,7 +137,6 @@ public class Shortcut {
 			adj[i] = new ArrayList<>();
 		}
 
-		// I/O Work
 		for (int i = 0; i < M; i++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
@@ -184,7 +183,6 @@ public class Shortcut {
 			adj[e.f].add(new Edge(e.f, e.t, 0));
 		}
 
-		// Sum up the amount of cows going through farm i for all farms
 		dfs(0);
 
 		long res = 0L;
@@ -199,6 +197,7 @@ public class Shortcut {
 
 	public static long dfs(int t) {
 		for (Edge e : adj[t]) {
+			// sum up cows travelling through farm t
 			farms[t] += dfs(e.t);
 		}
 		return farms[t];
