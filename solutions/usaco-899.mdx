@@ -137,6 +137,7 @@ public class Shortcut {
 			adj[i] = new ArrayList<>();
 		}
 
+		// I/O Work
 		for (int i = 0; i < M; i++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
@@ -156,6 +157,7 @@ public class Shortcut {
 				continue;
 			}
 			dist[c.t] = c.e;
+			// Keep edges that form the shortest path tree
 			fin.add(c);
 
 			for (Edge e : adj[c.t]) {
@@ -168,18 +170,21 @@ public class Shortcut {
 				pq.add(new Edge(c.t, e.t, nw));
 			}
 		}
+		// Don't need the edge from 0 to 0
 		fin.remove(0);
 
 		for (int i = 0; i < N; i++) {
 			adj[i].clear();
 		}
 
+		// Turn tree into list
 		for (int i = 0; i < fin.size(); i++) {
 			Edge e = fin.get(i);
 
 			adj[e.f].add(new Edge(e.f, e.t, 0));
 		}
 
+		// Sum up the amount of cows going through farm i for all farms
 		dfs(0);
 
 		long res = 0L;
