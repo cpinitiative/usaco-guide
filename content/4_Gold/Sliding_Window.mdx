@@ -264,6 +264,37 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 
 </JavaSection>
 
+<PythonSection>
+
+```python
+def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+	
+	class MaxQueue:
+		def __init__(self, size):
+			self.q = collections.deque()
+			self.size = size
+
+		def enqueue(self, i):
+			while self.q and nums[self.q[-1]] <= nums[i]:
+				self.q.pop()
+			self.q.append(i)
+			while self.q and (i - self.q[0]) >= self.size:
+				self.q.popleft()
+
+		def get_max(self):
+			return nums[self.q[0]]
+	
+	Q = MaxQueue(k)
+	ret = []
+	for i in range(len(nums)):
+		Q.enqueue(i)
+		if i + 1 >= k:
+			ret.append(Q.get_max())
+	return ret
+```
+
+</PythonSection>
+
 </LanguageSection>
 
 ### Method 2 - Two Stacks
