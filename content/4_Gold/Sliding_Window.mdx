@@ -271,18 +271,18 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 	
 	class MaxQueue:
 		def __init__(self, size):
-			self.q = collections.deque()
+			self.d = collections.deque()
 			self.size = size
 
 		def enqueue(self, i):
-			while self.q and nums[self.q[-1]] <= nums[i]:
-				self.q.pop()
-			self.q.append(i)
-			while self.q and (i - self.q[0]) >= self.size:
-				self.q.popleft()
+			while self.d and nums[self.d[-1]] <= nums[i]:
+				self.d.pop()
+			self.d.append(i)
+			while self.d and (i - self.d[0]) >= self.size:
+				self.d.popleft()
 
 		def get_max(self):
-			return nums[self.q[0]]
+			return nums[self.d[0]]
 	
 	Q = MaxQueue(k)
 	ret = []
