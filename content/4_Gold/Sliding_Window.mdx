@@ -268,28 +268,20 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 
 ```python
 def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+	d = collections.deque()
 	
-	class MaxQueue:
-		def __init__(self, size):
-			self.d = collections.deque()
-			self.size = size
+	def enqueue(i):
+		while d and nums[d[-1]] <= nums[i]:
+				d.pop()
+		d.append(i)
+		while d and (i - d[0]) >= k:
+			d.popleft()
 
-		def enqueue(self, i):
-			while self.d and nums[self.d[-1]] <= nums[i]:
-				self.d.pop()
-			self.d.append(i)
-			while self.d and (i - self.d[0]) >= self.size:
-				self.d.popleft()
-
-		def get_max(self):
-			return nums[self.d[0]]
-	
-	Q = MaxQueue(k)
 	ret = []
 	for i in range(len(nums)):
-		Q.enqueue(i)
+		enqueue(i)
 		if i + 1 >= k:
-			ret.append(Q.get_max())
+			ret.append(nums[d[0]])
 	return ret
 ```
 
