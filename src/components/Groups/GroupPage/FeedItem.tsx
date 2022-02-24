@@ -93,6 +93,27 @@ export default function FeedItem({
 }): JSX.Element {
   const { showAdminView } = useActiveGroup();
   const firebaseApp = useFirebaseApp();
+  const q = query(
+    collection(
+      getFirestore(firebaseApp),
+      'groups',
+      group.id,
+      'posts',
+      post.id,
+      'problems'
+    ) as CollectionReference<GroupProblemData>
+  );
+
+  onSnapshot(q, {
+    next: snap => {
+      // console.log(snap.docs);
+      setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    },
+    error: error => {
+      toast.error(error.message);
+    },
+  });
+
   const { updatePost, deletePost } = usePostActions(group.id);
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -101,12 +122,23 @@ export default function FeedItem({
   const { firebaseUser, isLoaded } = useContext(UserDataContext);
   const groups = useUserGroups();
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
-
   const ref = React.useRef<HTMLDivElement>();
 
-  const map = new Map<string, MapData>();
+  const [map, setMap] = useState(new Map());
 
-  function exportSelectedPosts() {
+  function handleGroupExportChange(g: GroupData) {
+    console.log(g.name);
+    if (map.has(g.id)) {
+      setMap(new Map(map.set(g.id, new MapData(!map.get(g.id).used, g))));
+      console.log(map.get(g.id).used);
+    } else {
+      setMap(new Map(map.set(g.id, new MapData(true, g))));
+      console.log(map.get(g.id).used);
+    }
+    console.log(map.size);
+  }
+
+  async function exportSelectedPosts() {
     const type = post.type;
     const defaultPost: Omit<PostData, 'timestamp'> = {
       name: post.name,
@@ -124,27 +156,8 @@ export default function FeedItem({
           }),
     };
 
-    const q = query(
-      collection(
-        getFirestore(firebaseApp),
-        'groups',
-        group.id,
-        'posts',
-        post.id,
-        'problems'
-      ) as CollectionReference<GroupProblemData>
-    );
-
-    onSnapshot(q, {
-      next: snap => {
-        setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      },
-      error: error => {
-        toast.error(error.message);
-      },
-    });
-
-    map.forEach(async (value: MapData, key: string) => {
+    console.log(map.size);
+    map.forEach((value: MapData, key: string) => {
       if (value.used) {
         const firestore = getFirestore(firebaseApp);
         const batch = writeBatch(firestore);
@@ -156,21 +169,23 @@ export default function FeedItem({
         batch.update(doc(firestore, 'groups', key), {
           postOrdering: arrayUnion(docRef.id),
         });
-        await batch.commit();
+        batch.commit();
         // if(post.type != 'announcement') {
-        const docRef2 = doc(
-          collection(
-            getFirestore(firebaseApp),
-            'groups',
-            key,
-            'posts',
-            docRef.id,
-            'problems'
-          )
-        );
 
+        console.log('Problem load ' + problems.length);
+        const batch2 = writeBatch(firestore);
         problems.map(async problem => {
-          const batch2 = writeBatch(firestore);
+          const docRef2 = doc(
+            collection(
+              getFirestore(firebaseApp),
+              'groups',
+              key,
+              'posts',
+              docRef.id,
+              'problems'
+            )
+          );
+
           problem.id = docRef2.id;
           problem.isDeleted = false;
           problem.postId = docRef.id;
@@ -183,23 +198,13 @@ export default function FeedItem({
               [`problemOrdering`]: arrayUnion(docRef2.id),
             }
           );
-          await batch2.commit();
+          console.log(problem);
         });
+        batch2.commit();
       }
     });
 
-    console.log(problems);
     setShowExportModal(false);
-  }
-
-  function handleGroupExportChange(g: GroupData) {
-    console.log(g.name);
-    if (map.has(g.id)) {
-      map.set(g.id, new MapData(!map.get(g.id).used, g));
-      console.log(map.get(g.id).used);
-    } else {
-      map.set(g.id, new MapData(true, g));
-    }
   }
 
   React.useEffect(() => {
