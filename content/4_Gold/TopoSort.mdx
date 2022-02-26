@@ -453,38 +453,43 @@ public class TopoSort {
 
 <PySection>
 
-```py
+```python
 from collections import deque
 
-def bfs(n, G):
-	topo_order = []
-	in_deg = [0 for _ in range(n)]
-	for nodes in G:
-		for node in nodes:
-			in_deg[node] += 1
+def main():
+	def bfs(n: int, G: List[List[int]]) -> List[int]:
+		topo_order = []
+		in_deg = [0 for _ in range(n)]
+		for nodes in G:
+			for node in nodes:
+				in_deg[node] += 1
 
-	count = 0
-	q = deque([node for node in range(n) if in_deg[node] == 0])
-	while q:
-		node = q.popleft()
-		topo_order.append(node)
-		for neigh in G[node]:
-			in_deg[neigh] -= 1
-			if in_deg[neigh] == 0:
-				q.append(neigh)
-		count += 1
-	return topo_order if count == n else []
+		count = 0
+		q = deque([node for node in range(n) if in_deg[node] == 0])
+		while q:
+			node = q.popleft()
+			topo_order.append(node)
+			for neigh in G[node]:
+				in_deg[neigh] -= 1
+				if in_deg[neigh] == 0:
+					q.append(neigh)
+			count += 1
+		return topo_order if count == n else []
 
-N, M = map(int, input().split())
-G = [[] for _ in range(N)]
-for _ in range(M):
-	a, b = map(int, input().split())
-	a -= 1
-	b -= 1
-	G[a].append(b)
+	N, M = map(int, input().split())
+	G = [[] for _ in range(N)]
+	for _ in range(M):
+		a, b = map(int, input().split())
+		a -= 1
+		b -= 1
+		G[a].append(b)
 
-ans = bfs(N, G)
-print("IMPOSSIBLE" if not ans else " ".join(map(str, [node + 1 for node in ans])))
+	ans = bfs(N, G)
+	print("IMPOSSIBLE" if not ans else " ".join(map(str, [node + 1 for node in ans])))
+
+
+if __name__ == "__main__":
+	main()
 ```
 
 </PySection>
