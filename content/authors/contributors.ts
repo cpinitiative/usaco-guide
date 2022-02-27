@@ -78,6 +78,12 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'August 2021',
     photo: 'ben'
   },
+  {
+    name: 'Jeffrey Zhang',
+    githubUsername: 'RedBlueBird',
+    sinceDate: 'February 2022',
+    photo: 'jeffrey_zhang'
+  }
 ];
 
 export const pastContentAuthors: Contributor[] = [
