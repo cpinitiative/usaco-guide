@@ -15,7 +15,7 @@ they are **not** adjacent in G.
 
 To generate the complement of a graph,
 we'll fill in all the missing edges required to form a complete graph,
-and remove all the edges that were previously there.
+and remove all the previously existing edges.
 
 </Spoiler>
 
@@ -51,12 +51,12 @@ This turns it into a maximum clique problem (MCP).
 
 Clique can be seen as a complete graph.
 
-It's not a good idea to store just the number of points in the answer graph because it'll be hard to transfer.
+It's not a good idea to only store the number of points in the answer graph because it'll be hard to transfer.
 
-Let the DP array store the point set of the maximum clique in
+Let the DP array store the set of points within the maximum clique in
 the subgraph.
 
-That is, the element in DP array is also a bitmask.
+Then, each element in the DP array represents a bitmask.
 
 Let $\texttt{dp}[S]$ to represent **any** valid maximum clique solution in
 subgraph $S$.
@@ -91,11 +91,11 @@ so we'll need to optimize it further.
 
 #### Meet-in-the-middle
 
-Divide the original graph into two parts, do DP respectively, and then merge:
+Divide the original graph into two parts, do DP on each part, then merge:
 
-If the two parts are $S1$ and $S2$, loop through **every subgraph** of $S1$,
+Given two parts $S1$ and $S2$, loop through **every subgraph** of $S1$,
 
-Then, find a subgraph of $S2$ such that it has direct edges with **all of the points** in the subgraph of $S1$ that we're looping through.
+Then, find a subgraph of $S2$ that has direct edges with **all of the points** in the subgraph of $S1$ that we're looping through.
 
 Lastly, we'll union the two subgraphs.
 
