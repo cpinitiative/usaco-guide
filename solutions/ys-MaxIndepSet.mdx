@@ -9,11 +9,11 @@ author: Shijie Ren
 
 Generate the complement of the given graph.
 
-The complement or inverse of a graph G is a graph H on the same vertices
+The complement or inverse of a graph G is a graph H
 such that two distinct vertices of H are adjacent if and only if
 they are **not** adjacent in G.
 
-That is, to generate the complement of a graph,
+to generate the complement of a graph,
 we'll fill in all the missing edges required to form a complete graph,
 and remove all the edges that were previously there.
 
@@ -36,7 +36,7 @@ that meet specific conditions.
 
 <Spoiler title="Hint 4">
 
-Divide the original graph into two parts, do DP respectively, and then merge.
+Divide the original graph into two parts, do DP on each of them, and then merge.
 
 </Spoiler>
 
@@ -47,26 +47,23 @@ Divide the original graph into two parts, do DP respectively, and then merge.
 First, we can alter the problem
 by building the complement graph of the original graph.
 
-This turns it into maximum clique problem (MCP).
+This turns it into a maximum clique problem (MCP).
 
 Clique can be seen as a complete graph.
 
-In fact, it's not a good way to store just the number of points in the answer graph,
-because it'll be hard to transfer.
-
-Then switch ideas.
+It's not a good idea to store just the number of points in the answer graph because it'll be hard to transfer.
 
 Let the DP array store the point set of the maximum clique in
 the subgraph.
 
 That is, the element in DP array is also a bitmask.
 
-Simply use $\texttt{dp}[S]$ to represent **any** valid maximum clique solution in
+Let $\texttt{dp}[S]$ to represent **any** valid maximum clique solution in
 subgraph $S$.
 
 Consider a point $k$ in $S$.
 
-if this point is in the maximum clique,
+If this point is in the maximum clique,
 
 $$
 \texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\}
@@ -87,7 +84,7 @@ $$
 \texttt{dp}[S] = \max\{ \texttt{dp}[E_k\cap S] \cup \{k\} , \texttt{dp} [S / {k}] \}
 $$
 
-**Notice this** $\max$ **compared by popcount in the program.**
+**Notice this** $\max$ **is compared by popcount in the program.**
 
 But the time complexity is $\mathcal{O}(2 ^ n)$ or $\mathcal{O}(2 ^ n \cdot n)$,
 so we'll need to optimize it further.
@@ -96,18 +93,15 @@ so we'll need to optimize it further.
 
 Divide the original graph into two parts, do DP respectively, and then merge:
 
-if the two parts are $S1$ and $S2$, loop **every subgraph** of $S1$,
+If the two parts are $S1$ and $S2$, loop through **every subgraph** of $S1$,
 
-find subgraph of $S2$ that have direct edges with **all points** in subgraph of
-$S1$ that we loop,
+Then, find a subgraph of $S2$ such that it has direct edges with **all of the points** in the subgraph of $S1$ that we're looping through.
 
-do set UNION operation with two subgraph in $S1$ and $S2$.
+Lastly, we'll union the two subgraphs.
 
-"Subgraph of $S2$ that have direct edges with **all points** in subgraph of $S1$
-that we loop" can be solved with another simple Bitmask DP.
+Finding this subgraph of $S2$ can also be solved with Bitmask DP.
 
 Time Complexity is $\mathcal{O}(2^{\frac N2})$.
-
 </Spoiler>
 
 <Spoiler title="Implementation">
