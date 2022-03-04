@@ -185,8 +185,8 @@ export default function TopNavigationBar({
                   Register for the USACO February Workshop!
                 </span>
                 <span className="hidden md:inline">
-                  USACO Bronze, Silver and Gold solutions explained in a live
-                  workshop on March 6th!
+                  USACO February Contest solutions explained in a live workshop
+                  on March 6th!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
