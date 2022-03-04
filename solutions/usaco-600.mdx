@@ -33,7 +33,7 @@ int main() {
 	cin >> n >> m;
 
 	vector<vector<bool>> grid(n, vector<bool>(m));
-	vector<vector<int>> cs(n + 1, vector<int>(m + 1));
+	vector<vector<int>> pref_sum(n + 1, vector<int>(m + 1));
 
 	for (int i = 0; i < n; i++) {
 		string s;
@@ -43,8 +43,8 @@ int main() {
 			grid[i][j] = s[j] == 'X';
 
 			// build prefix sum
-			cs[i + 1][j + 1] = cs[i][j + 1] + cs[i + 1][j] - cs[i][j];
-			cs[i + 1][j + 1] += grid[i][j];
+			pref_sum[i + 1][j + 1] = pref_sum[i][j + 1] + pref_sum[i + 1][j] - pref_sum[i][j];
+			pref_sum[i + 1][j + 1] += grid[i][j];
 		}
 	}
 
@@ -55,8 +55,8 @@ int main() {
 			int prev = -1;
 
 			for (int r = 0; r < n; r++) {
-				bool emp = (cs[r + 1][c2 + 1] - cs[r][c2 + 1]
-					    - cs[r + 1][c1] + cs[r][c1]) == 0;
+				bool emp = (pref_sum[r + 1][c2 + 1] - pref_sum[r][c2 + 1]
+					    - pref_sum[r + 1][c1] + pref_sum[r][c1]) == 0;
 
 				// row only
 				if (emp) {
