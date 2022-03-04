@@ -9,12 +9,12 @@ author: Shijie Ren
 
 <Spoiler title="Hint">
 
-We can observe that for each legal proposal , reverse direction of every edges ,
-then we'll get another legal proposal.
+We can observe that for each legal proposal, reversing the direction of its
+edges creates another legal proposal.
 
-So the sum of costs will be $m\cdot\texttt{DAGCount}$.
+So the sum of costs will be $m\cdot\frac{\texttt{DAGCount}}2$,
 
-$\texttt{DAGCount}$ represents the number of directed acyclic graphs (DAG)
+where $\texttt{DAGCount}$ represents the number of directed acyclic graphs (DAG)
 generated on the original graph.
 
 </Spoiler>
@@ -25,20 +25,20 @@ Let $\texttt{dp}[S]$ be the number of ways of construct a directed acyclic
 graphs (DAG) with vertex set $S$ , and $\texttt{indepset}[S]$ represents if $S$
 is an independent set.
 
-Since we'll construct a DAG, we can transfer the state by adding new points.
+Since we're constructing a DAG, we can transfer the state by adding new points.
 Adding 0-out-degree points (or 0-in-degree points is OK) will be easier.
 
-So loop all non-empty subsets of S as points to be added, They could be
-0-out-degree points if and only if they don't have edges with each other in this
-subset. That is, the subset is an independent set.
+Loop all non-empty subsets of S as points to be added, points are 0-out-degree
+if and only if they don't have edges with each other in this subset. That is,
+the subset is an independent set.
 
-Also we need to use clusion-exclusion principle.
+Also, we need to use the principle of inclusion and exclusion.
 
 $$
 dp[S]=\sum_{P \subset S,P\not=\emptyset,\texttt{indepset}[P]=\texttt{true}}(−1)^{|P|+1}dp[S / P]
 $$
 
-Time complexity of enumerating subsets could be $\mathcal{O}(3^n)$.
+The time complexity of enumerating subsets could be $\mathcal{O}(3^n)$.
 
 <Optional>
 It can be optimized further through FWT.
