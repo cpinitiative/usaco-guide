@@ -27,13 +27,13 @@ using namespace std;
 
 int main() {
 	freopen("fortmoo.in", "r", stdin);
-	freopen("fortmoo.in", "w", stdout);
+	freopen("fortmoo.out", "w", stdout);
 
 	int n, m;
 	cin >> n >> m;
 
-	vector<vector<bool>> grid(n, vector<bool>(m, false));
-	vector<vector<int>> cs(n + 1, vector<int>(m + 1, 0));
+	vector<vector<bool>> grid(n, vector<bool>(m));
+	vector<vector<int>> cs(n + 1, vector<int>(m + 1));
 
 	for (int i = 0; i < n; i++) {
 		string s;
@@ -48,24 +48,25 @@ int main() {
 		}
 	}
 
-	int ans = 0;
+	int max_area = 0;
 
 	for (int c1 = 0; c1 < m; c1++) {
 		for (int c2 = 0; c2 < m; c2++) {
 			int prev = -1;
 
 			for (int r = 0; r < n; r++) {
-				bool emp = (cs[r + 1][c2 + 1] - cs[r][c2 + 1] - cs[r + 1][c1] + cs[r][c1]) == 0;
+				bool emp = (cs[r + 1][c2 + 1] - cs[r][c2 + 1]
+					    - cs[r + 1][c1] + cs[r][c1]) == 0;
 
 				// row only
 				if (emp) {
-					ans = max(ans, c2 - c1 + 1);
+					max_area = max(max_area, c2 - c1 + 1);
 				} 
 
 				// we can continue off of a previous valid row
 				if (emp && prev != -1) {
 					// update answer
-					ans = max(ans, (r - prev + 1) * (c2 - c1 + 1));
+					max_area = max(max_area, (r - prev + 1) * (c2 - c1 + 1));
 				}
 
 				// reset prev
@@ -81,7 +82,7 @@ int main() {
 		}
 	}
 
-	cout << ans << '\n';
+	cout << max_area << '\n';
 }
 ```
 </CPPSection>
