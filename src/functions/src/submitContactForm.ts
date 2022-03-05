@@ -16,6 +16,7 @@ const submitContactForm = functions.https.onCall(async data => {
   }
   const body =
     `Someone submitted the contact form!\n\n` +
+    `**URL**: ${url}\n` +
     `**Module**: ${moduleName ? moduleName : 'None'}\n` +
     `**Topic**: ${topic}\n` +
     `**Message**: \n${message}`;
