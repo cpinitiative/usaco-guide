@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1203', '2022 February', 'Sleeping in Class'],
+    ['1204', '2022 February', 'Photoshoot 2'],
+    ['1205', '2022 February', 'Blocks'],
     ['1179', '2022 January', 'Herdle'],
     ['1180', '2022 January', 'Non-Transitive Dice'],
     ['1181', '2022 January', 'Drought'],
@@ -80,6 +83,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1206', '2022 February', 'Redistributing Gifts'],
+    ['1207', '2022 February', 'Robot Instructions'],
+    ['1208', '2022 February', 'Email Filing'],
     ['1182', '2022 January', 'Searching for Soulmates'],
     ['1183', '2022 January', 'Cow Frisbee'],
     ['1184', '2022 January', 'Cereal 2'],
@@ -160,6 +166,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1209', '2022 February', 'Redistributing Gifts'],
+    ['1210', '2022 February', 'Cow Camp'],
+    ['1211', '2022 February', 'Moo Network'],
     ['1185', '2022 January', 'Drought'],
     ['1186', '2022 January', 'Farm Updates'],
     ['1187', '2022 January', 'Tests for Haybales'],
@@ -239,6 +248,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1212', '2022 February', 'Paint by Rectangles'],
+    ['1213', '2022 February', 'Sleeping in Class'],
+    ['1214', '2022 February', 'Phone Numbers'],
     ['1188', '2022 January', 'Minimizing Haybales'],
     ['1189', '2022 January', 'Counting Haybales'],
     ['1190', '2022 January', 'Multiple Choice Test'],
