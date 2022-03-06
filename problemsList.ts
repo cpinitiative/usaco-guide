@@ -6191,7 +6191,7 @@ let data: any = {
                 id: 'contest/1017/problem/D',
                 difficulty: 'Normal',
                 starred: false,
-                tags: ['Math', 'Brute Force'],
+                tags: ['Math', 'Complete Search'],
                 solID: '',
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1017/problem/D',
