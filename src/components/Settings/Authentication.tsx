@@ -1,3 +1,4 @@
+import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
@@ -21,7 +22,7 @@ export default function Authentication() {
     <div>
       <div className="space-y-1">
         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-          Sign In Methods
+          Linked Providers
         </h3>
       </div>
       <div className="h-4" />
@@ -37,7 +38,7 @@ export default function Authentication() {
                   width="18px"
                   height="18px"
                   viewBox="0 0 48 48"
-                  className="abcRioButtonSvg mr-2"
+                  className="abcRioButtonSvg mr-3"
                 >
                   <g>
                     <path
@@ -61,19 +62,15 @@ export default function Authentication() {
                 </svg>
                 <div className="min-w-0 flex-1 text-sm">
                   <label className="font-medium text-gray-700 dark:text-gray-100">
-                    Sign in with Google Linked
+                    Google
                   </label>
                 </div>
                 <div className="ml-3 flex items-center h-5">
-                  <input
-                    id="comments"
-                    aria-describedby="comments-description"
-                    name="comments"
-                    type="checkbox"
-                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    disabled={true}
-                    checked={linkedWithGoogle}
-                  />
+                  {linkedWithGoogle ? (
+                    <CheckIcon className="text-green-500 h-5 w-5" />
+                  ) : (
+                    <XIcon className="text-red-500 h-5 w-5" />
+                  )}
                 </div>
               </div>
               <div className="relative flex items-start py-4">
@@ -81,7 +78,7 @@ export default function Authentication() {
                   xmlns="http://www.w3.org/2000/sv"
                   viewBox="0 0 120 120"
                   version="1.1"
-                  className="h-5 w-5 mr-2"
+                  className="h-5 w-5 mr-3"
                 >
                   <g
                     stroke="none"
@@ -102,19 +99,15 @@ export default function Authentication() {
                 </svg>
                 <div className="min-w-0 flex-1 text-sm">
                   <label className="font-medium text-gray-700 dark:text-gray-100">
-                    Sign in with Github Linked
+                    Github
                   </label>
                 </div>
                 <div className="ml-3 flex items-center h-5">
-                  <input
-                    id="candidates"
-                    aria-describedby="candidates-description"
-                    name="candidates"
-                    type="checkbox"
-                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    disabled={true}
-                    checked={linkedWithGithub}
-                  />
+                  {linkedWithGithub ? (
+                    <CheckIcon className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <XIcon className="h-5 w-5 text-red-500" />
+                  )}
                 </div>
               </div>
             </div>

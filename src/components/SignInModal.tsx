@@ -28,6 +28,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
   const [error, setError] = React.useState(null);
   const [email, setEmail] = React.useState('');
   const [credential, setCredential] = React.useState<AuthCredential>(null);
+
+  const diffCredentialMessage = 'auth/account-exists-with-different-credential';
   const handleSignInWithGoogle = () => {
     setIsSigningIn(true);
     setError(null);
@@ -37,7 +39,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         onClose();
       })
       .catch(e => {
-        if (e.code == 'auth/account-exist-with-different-credential') {
+        if (e.code === diffCredentialMessage) {
           setIsLinking(true);
           const credential = GoogleAuthProvider.credentialFromError(e);
           setEmail(e.customData.email);
@@ -58,7 +60,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         onClose();
       })
       .catch(e => {
-        if (e.code === 'auth/account-exists-with-different-credential') {
+        if (e.code === diffCredentialMessage) {
           setIsLinking(true);
           const credential = GithubAuthProvider.credentialFromError(e);
           setEmail(e.customData.email);
@@ -256,7 +258,10 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 <button
                   type="button"
                   className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-blue-500"
-                  onClick={() => onClose()}
+                  onClick={() => {
+                    setIsLinking(false);
+                    onClose();
+                  }}
                 >
                   <span className="sr-only">Close</span>
                   <XIcon className="h-6 w-6" aria-hidden="true" />
