@@ -2,19 +2,107 @@
 id: usaco-600
 source: USACO Platinum 2016 January
 title: Fort Moo
-author: Kevin Sheng
+author: Kevin Sheng, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_fortmoo_platinum_jan16.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_fortmoo_platinum_jan16.html)
 
+## Solution
+
+### Explanation
+
+By computing the [2D Prefix Sum](/silver/more-prefix-sums/) for the grid, we can evaluate the usability of a frame in $\mathcal{O}(1)$ time.
+
+Due to the low bounds on $N$, we can iterate through all possible pairs of columns and find the maximum area frame in $O(N)$ with a sliding window.
+
+### Implementation
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("fortmoo.in", "r", stdin);
+	freopen("fortmoo.out", "w", stdout);
+
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<bool>> grid(n, vector<bool>(m));
+	vector<vector<int>> pref_sum(n + 1, vector<int>(m + 1));
+
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+
+		for (int j = 0; j < m; j++) {
+			grid[i][j] = s[j] == 'X';
+
+			// build prefix sum
+			pref_sum[i + 1][j + 1] = pref_sum[i][j + 1] + pref_sum[i + 1][j];
+			pref_sum[i + 1][j + 1] -= pref_sum[i][j];
+			pref_sum[i + 1][j + 1] += grid[i][j];
+		}
+	}
+
+	int max_area = 0;
+
+	for (int c1 = 0; c1 < m; c1++) {
+		for (int c2 = 0; c2 < m; c2++) {
+			int prev = -1;
+
+			for (int r = 0; r < n; r++) {
+				bool emp = (pref_sum[r + 1][c2 + 1] - pref_sum[r][c2 + 1]
+					    - pref_sum[r + 1][c1] + pref_sum[r][c1]) == 0;
+
+				// row only
+				if (emp) {
+					max_area = max(max_area, c2 - c1 + 1);
+				} 
+
+				// we can continue off of a previous valid row
+				if (emp && prev != -1) {
+					// update answer
+					max_area = max(max_area, (r - prev + 1) * (c2 - c1 + 1));
+				}
+
+				// reset prev
+				if (grid[r][c1] || grid[r][c2]) {
+					prev = -1;
+				}
+
+				// set prev
+				if (emp && prev == -1) {
+					prev = r;
+				}
+			}
+		}
+	}
+
+	cout << max_area << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+## Alternate Solution
+
+### Explanation
 The approach here is a bit different from the official solution, using an adaption of 2D Kadane's algorithm instead.
 
 Iterate through all possible pairs of columns. For each pair, we'll solve the problem with the restriction that the fort must be aligned along these two columns. For each row between these two columns, we will use prefix sums to check if the area between the two columns and in the row is clear.
 
 We keep a running variable $r_{start}$ which keeps track of the earliest row we can start the fort at and iterate through all possible row endings ($r_{end}$ in the code). Note that if a swampy area resides in one of the columns themselves, no fort can go through that row, so we must check for that and update $r_{start}$ accordingly.
 
-<LanguageSection>
+### Implementation
 
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -75,9 +163,7 @@ int main() {
 	std::ofstream("fortmoo.out") << max_area << endl;
 }
 ```
-
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -136,7 +222,5 @@ public class FortMoo {
 	}
 }
 ```
-
 </JavaSection>
-
 </LanguageSection>
