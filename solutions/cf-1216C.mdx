@@ -41,34 +41,34 @@ Also, keep in mind to make sure that x1 is always < x2 and the same with y1 and 
 using namespace std;
 
 struct Rect{
-	int x1,y1,x2,y2;
+	int x1, y1, x2, y2;
 	int area()
 	{
-		return (x2-x1)*(y2-y1);
+		return (x2 - x1)*(y2 - y1);
 	}
 };
 Rect cut(Rect a, Rect b) {
 	//if B intersects entirely in the 
 	//x or y direction, cut it
-	if(a.x1>=b.x1 && b.x2>=a.x1 && b.y1<=a.y1 && b.y2>=a.y2)
+	if(a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2)
 	{
 		//if B cuts A from the left side
 		a.x1 = b.x2;
 		a.x2 = max(a.x2, b.x2); // if b covers A entirely
 	}
-	if(a.x2>=b.x1 && b.x2>=a.x2 && b.y1<=a.y1 && b.y2>=a.y2)
+	if(a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2)
 	{
 		//if B cuts A from the right side
 		a.x2 = b.x1;
 		a.x1 = min(a.x1, b.x1); // if b covers A entirely
 	}
-	if(a.y1>=b.y1 && b.y2>=a.y1 && b.x1<=a.x1 && b.x2>=a.x2)
+	if(a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2)
 	{
 		//if B cuts A from the bottom side
 		a.y1 = b.y2;
 		a.y2 = max(a.y2, b.y2); // if b covers A entirely
 	}
-	if(a.y2>=b.y1 && b.y2>=a.y2 && b.x1<=a.x1 && b.x2>=a.x2)
+	if(a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2)
 	{
 		//if B cuts A from the top side
 		a.y2 = b.y1;
@@ -78,13 +78,13 @@ Rect cut(Rect a, Rect b) {
 }
 int main(){
 	Rect a,b,c;
-	cin>>a.x1>>a.y1>>a.x2>>a.y2;
-	cin>>b.x1>>b.y1>>b.x2>>b.y2;
-	cin>>c.x1>>c.y1>>c.x2>>c.y2;
+	cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
+	cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
+	cin >> c.x1 >> c.y1 >> c.x2 >> c.y2;
 	
 	a = cut(a, b);
 	a = cut(a, c);
-	if(a.x2-a.x1==0 || a.y2-a.y1==0) //area!=0
+	if(a.x2 - a.x1 == 0 || a.y2 - a.y1 == 0) //area!=0
 	cout<<"YES"<<endl;
 	else
 	cout<<"NO"<<endl;
@@ -96,31 +96,31 @@ int main(){
 <PySection>
 ```python
 class Rect: 
-  x1,y1,x2,y2 = 0,0,0,0
-  def __init__(self, a, b, c, d):
-    self.x1,self.y1,self.x2,self.y2 = a, b, c, d
-  def area(self):
-    return (self.x2-self.x1)*(self.y2-self.y1)
+ 	x1, y1, x2, y2 = 0, 0, 0, 0
+	def __init__(self, a, b, c, d):
+		self.x1, self.y1, self.x2, self.y2 = a, b, c, d
+	def area(self):
+		return (self.x2 - self.x1)*(self.y2 - self.y1)
 
 def cut(a, b):
-  if(a.x1>=b.x1 and b.x2>=a.x1 and b.y1<=a.y1 and b.y2>=a.y2):
+ 	if(a.x1 >= b.x1 and b.x2 >= a.x1 and b.y1 <= a.y1 and b.y2 >= a.y2):
 		#if B cuts A from the left side
-	  a.x1 = b.x2
-	  a.x2 = max(a.x2, b.x2) # if b covers A entirely
-  if(a.x2>=b.x1 and b.x2>=a.x2 and b.y1<=a.y1 and b.y2>=a.y2):
-	  #if B cuts A from the right side
-	  a.x2 = b.x1;
-	  a.x1 = min(a.x1, b.x1) # if b covers A entirely
-  if(a.y1>=b.y1 and b.y2>=a.y1 and b.x1<=a.x1 and b.x2>=a.x2):
+		a.x1 = b.x2
+		a.x2 = max(a.x2, b.x2) # if b covers A entirely
+  	if(a.x2 >= b.x1 and b.x2 >= a.x2 and b.y1 <= a.y1 and b.y2 >= a.y2):
+		#if B cuts A from the right side
+		a.x2 = b.x1;
+		a.x1 = min(a.x1, b.x1) # if b covers A entirely
+  	if(a.y1 >= b.y1 and b.y2 >= a.y1 and b.x1 <= a.x1 and b.x2 >= a.x2):
 		#if B cuts A from the bottom side
-	  a.y1 = b.y2;
-	  a.y2 = max(a.y2, b.y2) # if b covers A entirely
-  if(a.y2>=b.y1 and b.y2>=a.y2 and b.x1<=a.x1 and b.x2>=a.x2):
-    #if B cuts A from the top side
-    a.y2 = b.y1;
-    a.y1 = min(a.y1, b.y1) #if b covers A entirely
+		a.y1 = b.y2;
+		a.y2 = max(a.y2, b.y2) # if b covers A entirely
+  	if(a.y2 >= b.y1 and b.y2 >= a.y2 and b.x1 <= a.x1 and b.x2 >= a.x2):
+		#if B cuts A from the top side
+		a.y2 = b.y1;
+		a.y1 = min(a.y1, b.y1) #if b covers A entirely
 	
-  return a
+	return a
 x = input().split()
 y = input().split()
 z = input().split()
@@ -131,7 +131,7 @@ c = Rect(int(z[0]), int(z[1]), int(z[2]), int(z[3]))
 
 a = cut(a, b);
 a = cut(a, c);
-if(a.x2-a.x1==0 || a.y2-a.y1==0): #area!=0
+if(a.x2 - a.x1 == 0 || a.y2 - a.y1 == 0): #area!=0
   print("YES")
 else:
   print("NO")
@@ -152,10 +152,10 @@ public class Main {
     Rect c = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
     a = cut(a, b);
   	a = cut(a, c);
-  	if(a.x2-a.x1==0 || a.y2-a.y1==0) //area!=0
-  	System.out.println("NO");
+  	if(a.x2 - a.x1 == 0 || a.y2 - a.y1 ==0) //area!=0
+  		System.out.println("NO");
   	else
-  	System.out.println("YES");
+  		System.out.println("YES");
     io.close();
   }
   static class Kattio extends PrintWriter {
@@ -186,40 +186,40 @@ public class Main {
 		public long nextLong() { return Long.parseLong(next()); }
 	}
   static class Rect{
-    int x1,y1,x2,y2;
-    public Rect(int a, int b, int c, int d){
-      x1 = a;
-      y1 = b;
-      x2 = c;
-      y2 = d;
-    }
-  	int area()
-  	{
-  		return (x2-x1)*(y2-y1);
-  	}
+	int x1,y1,x2,y2;
+	public Rect(int a, int b, int c, int d){
+	x1 = a;
+	y1 = b;
+	x2 = c;
+	y2 = d;
+	}
+	int area()
+	{
+		return (x2-x1)*(y2-y1);
+	}
   }
   static Rect cut(Rect a, Rect b) {
   	//if B intersects entirely in the 
   	//x or y direction, cut it
-  	if(a.x1>=b.x1 && b.x2>=a.x1 && b.y1<=a.y1 && b.y2>=a.y2)
+  	if(a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2)
   	{
   		//if B cuts A from the left side
   		a.x1 = b.x2;
   		a.x2 = Math.max(a.x2, b.x2); // if b covers A entirely
   	}
-  	if(a.x2>=b.x1 && b.x2>=a.x2 && b.y1<=a.y1 && b.y2>=a.y2)
+  	if(a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2)
   	{
   		//if B cuts A from the right side
   		a.x2 = b.x1;
   		a.x1 = Math.min(a.x1, b.x1); // if b covers A entirely
   	}
-  	if(a.y1>=b.y1 && b.y2>=a.y1 && b.x1<=a.x1 && b.x2>=a.x2)
+  	if(a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2)
   	{
   		//if B cuts A from the bottom side
   		a.y1 = b.y2;
   		a.y2 = Math.max(a.y2, b.y2); // if b covers A entirely
   	}
-  	if(a.y2>=b.y1 && b.y2>=a.y2 && b.x1<=a.x1 && b.x2>=a.x2)
+  	if(a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2)
   	{
   		//if B cuts A from the top side
   		a.y2 = b.y1;
