@@ -44,7 +44,7 @@ struct Rect{
 	int x1, y1, x2, y2;
 	int area()
 	{
-		return (x2 - x1)*(y2 - y1);
+		return (x2 - x1) * (y2 - y1);
 	}
 };
 Rect cut(Rect a, Rect b) {
@@ -85,9 +85,9 @@ int main(){
 	a = cut(a, b);
 	a = cut(a, c);
 	if(a.x2 - a.x1 == 0 || a.y2 - a.y1 == 0) //area!=0
-	cout<<"YES"<<endl;
+		cout << "YES" << endl;
 	else
-	cout<<"NO"<<endl;
+		cout << "NO" <<endl;
 }
 ```
 
@@ -132,9 +132,9 @@ c = Rect(int(z[0]), int(z[1]), int(z[2]), int(z[3]))
 a = cut(a, b);
 a = cut(a, c);
 if(a.x2 - a.x1 == 0 || a.y2 - a.y1 == 0): #area!=0
-  print("YES")
+ 	print("YES")
 else:
-  print("NO")
+ 	print("NO")
 ```
 </PySection>
 
@@ -145,20 +145,20 @@ import java.lang.*;
 import java.io.*;
 public class Main {
   
-  public static void main(String[] args) throws IOException {
-    Kattio io = new Kattio();
+ 	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
 		Rect a = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-    Rect b = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-    Rect c = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-    a = cut(a, b);
-  	a = cut(a, c);
-  	if(a.x2 - a.x1 == 0 || a.y2 - a.y1 ==0) //area!=0
-  		System.out.println("NO");
-  	else
-  		System.out.println("YES");
-    io.close();
-  }
-  static class Kattio extends PrintWriter {
+		Rect b = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect c = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		a = cut(a, b);
+		a = cut(a, c);
+		if(a.x2 - a.x1 == 0 || a.y2 - a.y1 ==0) //area!=0
+			System.out.println("NO");
+		else
+			System.out.println("YES");
+ 		io.close();
+  	}
+	static class Kattio extends PrintWriter {
 		private BufferedReader r;
 		private StringTokenizer st;
 		// standard input
@@ -185,48 +185,48 @@ public class Main {
 		public double nextDouble() { return Double.parseDouble(next()); }
 		public long nextLong() { return Long.parseLong(next()); }
 	}
-  static class Rect{
-	int x1,y1,x2,y2;
-	public Rect(int a, int b, int c, int d){
-	x1 = a;
-	y1 = b;
-	x2 = c;
-	y2 = d;
+	static class Rect{
+		int x1, y1, x2, y2;
+		public Rect(int a, int b, int c, int d){
+			x1 = a;
+			y1 = b;
+			x2 = c;
+			y2 = d;
+		}
+		int area()
+		{
+			return (x2 - x1) * (y2 - y1);
+		}
 	}
-	int area()
-	{
-		return (x2-x1)*(y2-y1);
+	static Rect cut(Rect a, Rect b) {
+		//if B intersects entirely in the 
+		//x or y direction, cut it
+		if(a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2)
+		{
+			//if B cuts A from the left side
+			a.x1 = b.x2;
+			a.x2 = Math.max(a.x2, b.x2); // if b covers A entirely
+		}
+		if(a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2)
+		{
+			//if B cuts A from the right side
+			a.x2 = b.x1;
+			a.x1 = Math.min(a.x1, b.x1); // if b covers A entirely
+		}
+		if(a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2)
+		{
+			//if B cuts A from the bottom side
+			a.y1 = b.y2;
+			a.y2 = Math.max(a.y2, b.y2); // if b covers A entirely
+		}
+		if(a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2)
+		{
+			//if B cuts A from the top side
+			a.y2 = b.y1;
+			a.y1 = Math.min(a.y1, b.y1); // if b covers A entirely
+		}
+		return a;
 	}
-  }
-  static Rect cut(Rect a, Rect b) {
-  	//if B intersects entirely in the 
-  	//x or y direction, cut it
-  	if(a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2)
-  	{
-  		//if B cuts A from the left side
-  		a.x1 = b.x2;
-  		a.x2 = Math.max(a.x2, b.x2); // if b covers A entirely
-  	}
-  	if(a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2)
-  	{
-  		//if B cuts A from the right side
-  		a.x2 = b.x1;
-  		a.x1 = Math.min(a.x1, b.x1); // if b covers A entirely
-  	}
-  	if(a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2)
-  	{
-  		//if B cuts A from the bottom side
-  		a.y1 = b.y2;
-  		a.y2 = Math.max(a.y2, b.y2); // if b covers A entirely
-  	}
-  	if(a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2)
-  	{
-  		//if B cuts A from the top side
-  		a.y2 = b.y1;
-  		a.y1 = Math.min(a.y1, b.y1); // if b covers A entirely
-  	}
-  	return a;
-  }
 }
 ```
 
