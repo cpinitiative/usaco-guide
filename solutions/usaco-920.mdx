@@ -13,7 +13,7 @@ Let's look at one of these connected components, which could look something like
 
 ![possible connected component](<usaco-920/connected_component.png>)
 
-However, for all $K$ connected component, the grass types can be flipped and still be a valid solution:
+However, for all $K$ connected components, the grass types can be flipped and still be a valid solution:
 
 ![inverted connected component](<usaco-920/inverted_connected_component.png>)
 
@@ -56,7 +56,7 @@ int main() {
 			queue<pair<int, bool>> todo;
 			todo.push({i, true});
 
-			while ((int)(todo.size())) {
+			while (!todo.empty()) {
 				pair<int, bool> nxt = todo.front();
 				todo.pop();
 
@@ -87,7 +87,7 @@ int main() {
 		 * since we can always invert the types of grass in each connected component.
 		 */
 
-		// 2^cc in binary is 1, followed by cc zeros.
+		// 2^component_num in binary is 1, followed by component_num zeros.
 		cout << 1;
 		for (int i = 0; i < component_num; i++) {
 			cout << 0;
