@@ -13,11 +13,11 @@ Let's look at one of these connected components, which could look something like
 
 ![possible connected component](<usaco-920/connected_component.png>)
 
-However, for all $K$ connected component, the grass types can be "inverted":
+However, for all $K$ connected component, the grass types can be flipped and still be a valid solution:
 
 ![inverted connected component](<usaco-920/inverted_connected_component.png>)
 
-So, for each $K$ connected components, there are $2$ possible ways to arrange them, or $2^k$ ways to arrange the entire graph. Since in binary, $2^k$ is $1$ followed by $k$ zeros, we can simply print this instead of manually converting it.
+For each connected components, there are $2$ possible ways to arrange them. Thus, if there's $k$ connected components, there's $2^k$ ways to arrange the entire graph.
 
 Note how the nodes force their adjacent ones to have a specific coloring, so if any two nodes don't satisfy this condition, it's impossible. Otherwise, the solution will always be $2^k$.
 <LanguageSection>
@@ -45,13 +45,13 @@ int main() {
 		adj[v].push_back({u, type == 'S'});
 	}
 
-	int cc = 0;
+	int component_num = 0;
 	bool impossible = false;
 	vector<int> color(n, -1);
 
 	for (int i = 0; i < n; i++) {
 		if (color[i] == -1) {
-			cc++;
+			component_num++;
 			
 			queue<pair<int, bool>> todo;
 			todo.push({i, true});
@@ -80,8 +80,7 @@ int main() {
 
 
 	if (impossible) {
-		cout << 0 << "\n";
-		return 0;
+		cout << 0 << endl;
 	} else {
 		/*
 		 * if we can construct our solution, then there are 2^cc possible rearrangements,
@@ -90,10 +89,10 @@ int main() {
 
 		// 2^cc in binary is 1, followed by cc zeros.
 		cout << 1;
-		for (int i = 0; i < cc; i++) {
+		for (int i = 0; i < component_num; i++) {
 			cout << 0;
 		}
-		cout << '\n';
+		cout << endl;
 	}
 }
 ```
