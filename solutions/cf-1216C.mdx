@@ -51,12 +51,12 @@ struct Rect {
 	}
 };
 
+/*
+ * Main Idea: If B intersects entirely in the x or y direction, cut it.
+ * This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+ * We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+ */
 Rect cut(Rect a, Rect b) {
-	
-	// Main Idea: If B intersects entirely in the x or y direction, cut it.
-	//It cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
-	//We can cut rectangle A if B covers all of x1->x2 or y1->y2
-	
 	// If B cuts A from the left side
 	if (a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2) {
 		a.x1 = b.x2;
@@ -91,7 +91,8 @@ int main() {
 	
 	a = cut(a, b);
 	a = cut(a, c);
-	if (a.x2 - a.x1 == 0 || a.y2 - a.y1 == 0) {
+	// Print YES only if the remaining cut area is 0.
+	if (a.area() == 0) {
 		cout << "YES" << endl;
 	} else {
 		cout << "NO" << endl;
@@ -108,11 +109,13 @@ class Rect:
 	def __init__(self, a, b, c, d):
 		self.x1, self.y1, self.x2, self.y2 = a, b, c, d
 
-def cut(a, b) -> Rect:
-  
-	#It cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
-	#We can cut rectangle A if B covers all of x1->x2 or y1->y2
-	
+
+"""
+Main Idea: If B intersects entirely in the x or y direction, cut it.
+This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+"""
+def cut(a: Rect, b: Rect) -> Rect:
 	# If B cuts A from the left side
 	if a.x1 >= b.x1 and b.x2 >= a.x1 and b.y1 <= a.y1 and b.y2 >= a.y2:
 		a.x1 = b.x2
@@ -146,9 +149,7 @@ c = Rect(int(z[0]), int(z[1]), int(z[2]), int(z[3]))
 a = cut(a, b);
 a = cut(a, c);
 
-#Print NO if after cutting the rectangle, the area is 0
-#Print YES if after cutting the rectangle, it produces a positive area
-
+# Print YES only if the remaining cut area is 0.
 print('NO' if a.x2 - a.x1 == 0 or a.y2 - a.y1 == 0 else 'YES') 
 ```
 </PySection>
@@ -164,62 +165,63 @@ public class Main {
 		Rect a = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
 		Rect b = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
 		Rect c = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		
 		a = cut(a, b);
 		a = cut(a, c);
-		if(a.x2 - a.x1 == 0 || a.y2 - a.y1 ==0) //area!=0
-			System.out.println("NO");
-		else
+
+		// Print YES only if the remaining cut area is 0.
+		if (a.area() == 0) {
 			System.out.println("YES");
+		} else {
+			System.out.println("NO");
+		}
  		io.close();
   	}
 	
 	// CodeSnip{Kattio}
 	
-	static class Rect{
-		int x1, y1, x2, y2;
-		public Rect(int a, int b, int c, int d){
+	static class Rect {
+		public int x1, y1, x2, y2;
+		public Rect(int a, int b, int c, int d) {
 			x1 = a;
 			y1 = b;
 			x2 = c;
 			y2 = d;
 		}
-		int area()
-		{
+
+		public int area() {
 			return (x2 - x1) * (y2 - y1);
 		}
 	}
 	
+	/*
+	 * Main Idea: If B intersects entirely in the x or y direction, cut it.
+	 * This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+	 * We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+	 */
 	static Rect cut(Rect a, Rect b) {
-	
-		//It cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
-		//We can cut rectangle A if B covers all of x1->x2 or y1->y2
-	
-		//if B cuts A from the left side
-		if(a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2)
-		{
+		// If B cuts A from the left side
+		if (a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2) {
 			a.x1 = b.x2;
-			a.x2 = Math.max(a.x2, b.x2); // if b covers A entirely
+			a.x2 = Math.max(a.x2, b.x2);  // If b covers A entirely
 		}
 	
-		//if B cuts A from the right side
-		if(a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2)
-		{
+		// If B cuts A from the right side
+		if (a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2) {
 			a.x2 = b.x1;
-			a.x1 = Math.min(a.x1, b.x1); // if b covers A entirely
+			a.x1 = Math.min(a.x1, b.x1);  // If b covers A entirely
 		}
 		
-		//if B cuts A from the bottom side
-		if(a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2)
-		{
+		// If B cuts A from the bottom side
+		if (a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2) {
 			a.y1 = b.y2;
-			a.y2 = Math.max(a.y2, b.y2); // if b covers A entirely
+			a.y2 = Math.max(a.y2, b.y2);  // If b covers A entirely
 		}
 	
-		//if B cuts A from the top side
-		if(a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2)
-		{
+		// If B cuts A from the top side
+		if (a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2) {
 			a.y2 = b.y1;
-			a.y1 = Math.min(a.y1, b.y1); // if b covers A entirely
+			a.y1 = Math.min(a.y1, b.y1);  // If b covers A entirely
 		}
 		return a;
 	}
@@ -227,6 +229,4 @@ public class Main {
 ```
 
 </JavaSection>
-
 </LanguageSection>
-
