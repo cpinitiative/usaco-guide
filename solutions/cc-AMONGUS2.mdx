@@ -1,0 +1,109 @@
+---
+id: cc-AMONGUS2
+source: CC
+title: Among Us
+author: Ryan Chou
+---
+
+## Explanation
+If we only have two astronauts $x$ and $y$, then we have 4 cases possible cases. 
+
+* If $x$ vouches for $y$ and $x$ is a parasite, then $y$ must also be a parasite.
+
+* If $x$ vouches for $y$ and $x$ is a human, then $y$ must also be a human.
+
+* If $x$ accuses $y$ of being a parasite and $x$ is a parasite, then $y$ must be a human.
+
+* If $x$ accuses $y$ of being a parasite and $x$ is a human, then $y$ must be a parasite.
+
+You'll notice that whenever $x$ accuses $y$, they'll always be of a different type, and when $x$ vouches for $y$, they'll always be of the same type.
+
+With this information, we can build a bipartite graph and color nodes with the same color if they vouch for each other, or different colors if one of them accuses the other. If we can't build this graph, then no valid arrangement can exist.
+
+Otherwise, we'll consider each connected component independently and keep track of the number of humans and parasites. At the end, we'll return the sum of the maximum of these two values for all connected components. We don't care about the roles of each node because we can switch all of them to get another valid solution.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+void solve() {
+	int n;
+	int q;
+	cin >> n >> q;
+	
+	// build adjacency list
+	vector<vector<pair<int, bool>>> adj(n);
+	for (int i = 0; i < q; i++) {
+		int type;
+		int x;
+		int y;
+
+		cin >> type >> x >> y;
+
+		adj[--x].push_back({--y, --type});
+		adj[y].push_back({x, type});
+	}
+
+	vector<int> color(n, -1);
+
+	int ans = 0;
+
+	for (int i = 0; i < n; i++) {
+		// haven't visited this connected component yet
+		if (color[i] == -1) {
+			int parasites = 0, humans = 0;
+
+			// dfs to build bipartite graph
+			stack<int> todo;
+
+			todo.push(i);
+			color[i] = true;
+			parasites++;
+
+			while (!todo.empty()) {
+				int curr = todo.top();
+				todo.pop();
+				
+				for (pair<int, bool> u : adj[curr]) {
+					bool type = u.second ? color[curr] : !color[curr];
+
+					// haven't visited
+					if (color[u.first] == -1) {
+						color[u.first] = type;
+						(type ? parasites : humans)++;
+						
+						todo.push(u.first);
+					// creates a contradiction
+					} else if (color[u.first] == !type) {
+						cout << -1 << endl;
+						return;
+					}
+				}
+			}
+
+			ans += max(parasites, humans);
+		}
+	}
+
+	cout << ans << endl;
+}
+
+int main() {
+	int t;
+	cin >> t;
+
+	for (int i = 0; i < t; i++) {
+		solve();
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
