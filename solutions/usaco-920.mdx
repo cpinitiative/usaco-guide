@@ -52,6 +52,7 @@ int main() {
 	vector<int> color(n, -1);
 
 	for (int i = 0; i < n; i++) {
+		// haven't visited this node yet.
 		if (color[i] == -1) {
 			component_num++;
 			
@@ -59,11 +60,14 @@ int main() {
 			todo.push({i, true});
 
 			while (!todo.empty()) {
+				// process next node
 				pair<int, bool> nxt = todo.front();
 				todo.pop();
 
+				// set grass type for nxt.first
 				color[nxt.first] = nxt.second;
 
+				// iterate through adjacent nodes
 				for (pair<int, bool> u : adj[nxt.first]) {
 					bool type = u.second ? nxt.second : !nxt.second;
 					
