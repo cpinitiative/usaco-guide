@@ -5,10 +5,12 @@ title: D3C - White Sheet
 author: David Zhang
 ---
 
-## Info/Tips
+<Info title = "Info/Tips">
 Especially with rectangle geometry, make a good habit of drawing patterns and observations on a scratch sheet of paper or whiteboard. It helps a lot - David Zhang.
-Also if you don't understand the explanation, draw each possibility (Top, Bottom, Left and Right) on a sheet of paper and try to see the connections.
 
+	
+	Also if you don't understand the explanation, draw each possibility (Top, Bottom, Left and Right) on a sheet of paper and try to see the connections.
+</Info>
 [Official Analysis (C++)](https://codeforces.com/blog/entry/69954)
 
 ## Explanation
@@ -17,20 +19,22 @@ There are many ways to solve the problem, but the easiest way is to imagine cutt
 
 Everytime the white sheet is covered by a black sheet, we can imagine cutting the intersection between the black and white sheets. Then, if the area of the final white sheet after being cut by the two rectangles is greater than zero, there is a portion of the white sheet that is visible.
 
-However, when considering cutting the sheet, the portion that is being cut must cut from entirely x1->x2 or y1->y2 or else there will be a portion of the white sheet still shown. We only cut when a black sheet completely covers the entire width or length of the white sheet, otherwise there will still be bits and pieces shown.
+However, when considering cutting the sheet, the portion that is being cut must cut from entirely $ x_{1}$->$ x_{2}$ or $ y_{1}$->$ y_{2}$ or else there will be a portion of the white sheet still shown. We only cut when a black sheet completely covers the entire width or length of the white sheet, otherwise there will still be bits and pieces shown.
 
 
 There are 4 instances of which a white sheet can cover a black sheet.
 
-$\textbf{Top: }$ From the top, if the white sheet is completely covered from x1 to x2 and intersects some part of a black sheet, then change the y2 (top of the rectangle) to the bottom of the black rectangle.
+$\textbf{Top: }$ From the top, if the white sheet is completely covered from $ x_{1}$->$ x_{2}$ or $ y_{1}$->$ y_{2}$ and intersects some part of a black sheet, then change the $y_{2}$ (top of the rectangle) to the bottom of the black rectangle.
 
-$\textbf{Bottom: }$ From the bottom, if the white sheet is completely covered from x1 to x2 and intersects some part of a black sheet, then change the y1 (bottom of the rectangle) to the top of the black rectangle.
+$\textbf{Bottom: }$ From the bottom, if the white sheet is completely covered from $ x_{1}$->$ x_{2}$ and intersects some part of a black sheet, then change the $y_{1}$ (bottom of the rectangle) to the top of the black rectangle.
 
-$\textbf{Left: }$ From the left, if the white sheet is completely covered from y1 to y2 and intersects some part of a black sheet, then change the x1 (left edge of the rectangle) to the right edge of the black rectangle.
+$\textbf{Left: }$ From the left, if the white sheet is completely covered from $y_1$ to $y_2$ and intersects some part of a black sheet, then change the $x_1$ (left edge of the rectangle) to the right edge of the black rectangle.
 
-$\textbf{Right: }$ From the right, if the white sheet is completely covered from y1 to y2 and intersects some part of a black sheet, then change the x2 (right edge of the rectangle) to the left edge of the black rectangle.
+$\textbf{Right: }$ From the right, if the white sheet is completely covered from $y_1$ to $y_2$ and intersects some part of a black sheet, then change the $x_2$ (right edge of the rectangle) to the left edge of the black rectangle.
 
-Also, keep in mind to make sure that x1 is always < x2 and the same with y1 and y2.
+Also, keep in mind to make sure that $x_1$ is always $<$ $x_2$ and the same with $y_1$ and $y_2.$
+
+Since there are no for loops or any sort of repetitions, the time complexity is $\mathcal{O}(1)$
 
 ## Implementation
 
@@ -55,46 +59,46 @@ struct Rect {
  * This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
  * We can cut rectangle A if B covers all of x1->x2 or y1->y2.
  */
-Rect cut(Rect a, Rect b) {
+Rect cut(Rect A, Rect B) {
 	// If B cuts A from the left side
-	if (a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2) {
-		a.x1 = b.x2;
-		a.x2 = max(a.x2, b.x2);  // If b covers A entirely
+	if (A.x1 >= B.x1 && B.x2 >= A.x1 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+		A.x1 = B.x2;
+		A.x2 = max(A.x2, B.x2);  // If B covers A entirely
 	}
 	
 	// If B cuts A from the right side
-	if (a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2) {
-		a.x2 = b.x1;
-		a.x1 = min(a.x1, b.x1);  // If b covers A entirely
+	if (A.x2 >= B.x1 && B.x2 >= A.x2 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+		A.x2 = B.x1;
+		A.x1 = min(A.x1, B.x1);  // If B covers A entirely
 	}
 	
 	// If B cuts A from the bottom side
-	if (a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2) {
-		a.y1 = b.y2;
-		a.y2 = max(a.y2, b.y2);  // If b covers A entirely
+	if (A.y1 >= B.y1 && B.y2 >= A.y1 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+		A.y1 = B.y2;
+		A.y2 = max(A.y2, B.y2);  // If B covers A entirely
 	}
 	
 	// If B cuts A from the top side
-	if (a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2) {
-		a.y2 = b.y1;
-		a.y1 = min(a.y1, b.y1);  // If b covers A entirely
+	if (A.y2 >= B.y1 && B.y2 >= A.y2 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+		A.y2 = B.y1;
+		A.y1 = min(A.y1, B.y1);  // If B covers A entirely
 	}
-	return a;
+	return A;
 }
 
 int main() {
-	Rect a, b, c;
-	cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
-	cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
-	cin >> c.x1 >> c.y1 >> c.x2 >> c.y2;
+	Rect A, B, C;
+	cin >> A.x1 >> A.y1 >> A.x2 >> A.y2;
+	cin >> B.x1 >> B.y1 >> B.x2 >> B.y2;
+	cin >> C.x1 >> C.y1 >> C.x2 >> C.y2;
 	
-	a = cut(a, b);
-	a = cut(a, c);
-	// Print YES only if the remaining cut area is 0.
-	if (a.area() == 0) {
-		cout << "YES" << endl;
-	} else {
+	A = cut(A, B);
+	A = cut(A, C);
+	// Print NO only if the remaining cut area is 0.
+	if (A.area() == 0) {
 		cout << "NO" << endl;
+	} else {
+		cout << "YES" << endl;
 	}
 }
 ```
@@ -113,42 +117,43 @@ Main Idea: If B intersects entirely in the x or y direction, cut it.
 This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
 We can cut rectangle A if B covers all of x1->x2 or y1->y2.
 """
-def cut(a: Rect, b: Rect) -> Rect:
+def cut(A: Rect, B: Rect) -> Rect:
 	# If B cuts A from the left side
-	if a.x1 >= b.x1 and b.x2 >= a.x1 and b.y1 <= a.y1 and b.y2 >= a.y2:
-		a.x1 = b.x2
-		a.x2 = max(a.x2, b.x2)  # If b covers A entirely
+	if A.x1 >= B.x1 and B.x2 >= A.x1 and B.y1 <= A.y1 and B.y2 >= A.y2:
+		A.x1 = B.x2
+		A.x2 = max(A.x2, B.x2)  # If B covers A entirely
 	
 	# If B cuts A from the right side
-	if a.x2 >= b.x1 and b.x2 >= a.x2 and b.y1 <= a.y1 and b.y2 >= a.y2:  
-		a.x2 = b.x1;
-		a.x1 = min(a.x1, b.x1)  # If b covers A entirely
+	if A.x2 >= B.x1 and B.x2 >= A.x2 and B.y1 <= A.y1 and B.y2 >= A.y2:  
+		A.x2 = B.x1;
+		A.x1 = min(A.x1, B.x1)  # If B covers A entirely
   
 	# If B cuts A from the bottom side	
-	if a.y1 >= b.y1 and b.y2 >= a.y1 and b.x1 <= a.x1 and b.x2 >= a.x2:
-		a.y1 = b.y2;
-		a.y2 = max(a.y2, b.y2)  # If b covers A entirely
+	if A.y1 >= B.y1 and B.y2 >= A.y1 and B.x1 <= A.x1 and B.x2 >= A.x2:
+		A.y1 = B.y2;
+		A.y2 = max(A.y2, B.y2)  # If B covers A entirely
     
 	# If B cuts A from the top side
-	if a.y2 >= b.y1 and b.y2 >= a.y2 and b.x1 <= a.x1 and b.x2 >= a.x2:
-		a.y2 = b.y1;
-		a.y1 = min(a.y1, b.y1)  # If b covers A entirely
+	if A.y2 >= B.y1 and B.y2 >= A.y2 and B.x1 <= A.x1 and B.x2 >= A.x2:
+		A.y2 = B.y1;
+		A.y1 = min(A.y1, B.y1)  # If B covers A entirely
 	
-	return a
+	return A
 
-x = input().split()
-y = input().split()
-z = input().split()
+X = list(map(int, input().split()))
+Y = list(map(int, input().split()))
+Z = list(map(int, input().split()))
 
-a = Rect(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
-b = Rect(int(y[0]), int(y[1]), int(y[2]), int(y[3]))
-c = Rect(int(z[0]), int(z[1]), int(z[2]), int(z[3]))
 
-a = cut(a, b);
-a = cut(a, c);
+A = Rect(X[0], X[1], X[2], X[3])
+B = Rect(Y[0], Y[1], Y[2], Y[3])
+C = Rect(Z[0], Z[1], Z[2], Z[3])
 
-# Print YES only if the remaining cut area is 0.
-print('NO' if a.x2 - a.x1 == 0 or a.y2 - a.y1 == 0 else 'YES') 
+A = cut(A, B);
+A = cut(A, C);
+
+# Print NO only if the remaining cut area is 0.
+print('NO' if A.x2 - A.x1 == 0 or A.y2 - A.y1 == 0 else 'YES') 
 ```
 </PySection>
 <JavaSection>
@@ -160,23 +165,23 @@ import java.io.*;
 public class Main {
  	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
-		Rect a = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-		Rect b = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-		Rect c = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect A = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect B = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect C = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
 		
-		a = cut(a, b);
-		a = cut(a, c);
+		A = cut(A, B);
+		A = cut(A, C);
 
-		// Print YES only if the remaining cut area is 0.
-		if (a.area() == 0) {
-			System.out.println("YES");
-		} else {
+		// Print NO only if the remaining cut area is 0.
+		if (A.area() == 0) {
 			System.out.println("NO");
+		} else {
+			System.out.println("YES");
 		}
  		io.close();
   	}
 	
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 	
 	static class Rect {
 		public int x1, y1, x2, y2;
@@ -197,31 +202,32 @@ public class Main {
 	 * This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
 	 * We can cut rectangle A if B covers all of x1->x2 or y1->y2.
 	 */
-	static Rect cut(Rect a, Rect b) {
+	static Rect cut(Rect A, Rect B) {
+	
 		// If B cuts A from the left side
-		if (a.x1 >= b.x1 && b.x2 >= a.x1 && b.y1 <= a.y1 && b.y2 >= a.y2) {
-			a.x1 = b.x2;
-			a.x2 = Math.max(a.x2, b.x2);  // If b covers A entirely
+		if (A.x1 >= B.x1 && B.x2 >= A.x1 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+			A.x1 = B.x2;
+			A.x2 = Math.max(A.x2, B.x2);  // If B covers A entirely
 		}
 	
 		// If B cuts A from the right side
-		if (a.x2 >= b.x1 && b.x2 >= a.x2 && b.y1 <= a.y1 && b.y2 >= a.y2) {
-			a.x2 = b.x1;
-			a.x1 = Math.min(a.x1, b.x1);  // If b covers A entirely
+		if (A.x2 >= B.x1 && B.x2 >= A.x2 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+			A.x2 = B.x1;
+			A.x1 = Math.min(A.x1, B.x1);  // If B covers A entirely
 		}
 		
 		// If B cuts A from the bottom side
-		if (a.y1 >= b.y1 && b.y2 >= a.y1 && b.x1 <= a.x1 && b.x2 >= a.x2) {
-			a.y1 = b.y2;
-			a.y2 = Math.max(a.y2, b.y2);  // If b covers A entirely
+		if (A.y1 >= B.y1 && B.y2 >= A.y1 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+			A.y1 = B.y2;
+			A.y2 = Math.max(A.y2, B.y2);  // If B covers A entirely
 		}
 	
 		// If B cuts A from the top side
-		if (a.y2 >= b.y1 && b.y2 >= a.y2 && b.x1 <= a.x1 && b.x2 >= a.x2) {
-			a.y2 = b.y1;
-			a.y1 = Math.min(a.y1, b.y1);  // If b covers A entirely
+		if (A.y2 >= B.y1 && B.y2 >= A.y2 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+			A.y2 = B.y1;
+			A.y1 = Math.min(A.y1, B.y1);  // If B covers A entirely
 		}
-		return a;
+		return A;
 	}
 }
 ```
