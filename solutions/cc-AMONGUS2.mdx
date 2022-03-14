@@ -50,8 +50,12 @@ int main() {
 			int x;
 			int y;
 			cin >> type >> x >> y;
-			adj[--x].push_back({--y, --type});
-			adj[y].push_back({x, type});
+			--x;
+			--y;
+			--type;
+	
+			adj[x].emplace_back({y, type});
+			adj[y].emplace_back({x, type});
 		}
 
 		vector<int> role(n, -1);
