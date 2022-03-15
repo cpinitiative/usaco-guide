@@ -34,17 +34,75 @@ Loop all non-empty subsets of S as points to be added, points are 0-out-degree
 if and only if they don't have edges with each other in this subset. That is,
 the subset is an independent set.
 
-Also, we need to use the principle of inclusion and exclusion.
+<Spoiler title="A Brief Explanation">
+
+Let $A_S$ be the set of DAG configs of the induced subgraph of vertex set $S$.
 
 $$
-dp[S]=\sum_{P \subset S,P\not=\emptyset,\texttt{indepset}[P]=\texttt{true}}(−1)^{|P|+1}dp[S / P]
+A_S = \bigcup_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}A_{S/P} \text{ with edges of points in }S\text{ to }S/P
 $$
+
+It's obvious we cannot add all sizes of $A_{S/P}$ directly, because when we
+assign $S$ to be 0-out-degree points, there might be 0-out-degree points in
+$A_{S/P}$ previously which might be 0-out-degree in $A_S$ still (no edges to
+points in $S$ from them ).
+
+So fix $S$, let $B_P$ (empty if $P$ doesn't satisfy conditions above) to be
+$A_{S/P} \text{ with edges of points in }S\text{ to }S/P$, so $|B_P|=|A_{S/P}|$.
+
+Thus, $B_P$ will be the set of DAG configs of the induced subgraph of vertex set
+$S$ satisfies $P$ is **included** in 0-out-degree points.
+
+What we want to know is $|B_\varnothing|$.
+
+The form of this equation can be calculated by
+[inclusion-exclusion principle](https://en.wikipedia.org/wiki/Inclusion-exclusion_principle).
+
+Consider every single-element subset $Q$ of $P$ to construct a series of sets
+$B_Q$, and it will be just as same as the formula of principle!
+
+$$
+B_P = \bigcap_{|Q|\leq1,Q\subseteq P}B_Q
+$$
+
+Since $B_\varnothing$ could be the universe set, ignore $Q=\varnothing$ when
+$P\not=\varnothing$
+
+$$
+B_\varnothing = \bigcup_{|Q|=1,Q\subseteq S}B_Q
+$$
+
+Then,
+
+$$
+\left|\bigcup_{|Q|=1,Q\subseteq S}B_Q\right| = \sum_{\varnothing\not=P\subseteq S}(−1)^{|P|+1}\left|\bigcap_{|Q|=1,Q\subseteq P}B_Q\right|
+$$
+
+$$
+|B_\varnothing| = \sum_{\varnothing\not=P\subseteq S}(−1)^{|P|+1}|B_P|
+$$
+
+$$
+|A_S| = \sum_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}(−1)^{|P|+1}|A_{S/P}|
+$$
+
+DP equation form:
+
+$$
+dp[S]=\sum_{\varnothing\not=P\subseteq S,\texttt{indepset}[P]=\texttt{true}}(−1)^{|P|+1}dp[S/P]
+$$
+
+</Spoiler>
 
 The time complexity of enumerating subsets could be $\mathcal{O}(3^n)$.
 
-<Optional>
-It can be optimized further through FWT.
+<!--
+<Optional title="FWT">
+
+It can be optimized further through FWT to be an $\mathcal{O}(n^22^n)$ algorithm.
+
 </Optional>
+-->
 
 </Spoiler>
 
