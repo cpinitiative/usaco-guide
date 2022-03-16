@@ -24,16 +24,33 @@ generated on the original graph.
 <Spoiler title="Explanation">
 
 Let $\texttt{dp}[S]$ be the number of ways of construct a directed acyclic
-graphs (DAG) with vertex set $S$ , and $\texttt{indepset}[S]$ represents if $S$
-is an independent set.
+graphs (DAG) with vertex set $S$.
 
-Since we're constructing a DAG, we can transfer the state by adding new points.
-Adding 0-out-degree points (or 0-in-degree points is OK) will be easier.
+Since we're constructing a DAG, we can transfer the state by adding new points
+like 0-out-degree points (or 0-in-degree points is OK).
 
 Loop all non-empty subsets of S as points to be added, points are 0-out-degree
 if and only if they don't have edges with each other in this subset. That is,
 the subset is an independent set.
 
+Let $\texttt{dp}[S]$ be the number of DAG configs on the subgraph induced by
+vertex set $S$.
+
+Then
+
+$$
+\begin{aligned}
+\texttt{dp}[S] &= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(\#\text{ configs where  }P=\text{the set of vertices with out-degree 0})\\
+&= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot (\#\text{ configs where  }P\subseteq\text{the set of vertices with out-degree 0}) \\
+&= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot \texttt{dp}[{S\backslash P}] \\
+\end{aligned}
+$$
+
+where the second equality follows from the
+[inclusion-exclusion principle](https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle)
+and all subsets of an independent set also being independent.
+
+<!--
 <Spoiler title="A Brief Explanation">
 
 Let $A_S$ be the set of DAG configs of the induced subgraph of vertex set $S$.
@@ -93,6 +110,7 @@ dp[S]=\sum_{\varnothing\not=P\subseteq S,\texttt{indepset}[P]=\texttt{true}}(−
 $$
 
 </Spoiler>
+-->
 
 The time complexity of enumerating subsets could be $\mathcal{O}(3^n)$.
 
