@@ -39,16 +39,16 @@ the subset is an independent set.
 Let $A_S$ be the set of DAG configs of the induced subgraph of vertex set $S$.
 
 $$
-A_S = \bigcup_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}A_{S/P} \text{ with edges of points in }S\text{ to }S/P
+A_S = \bigcup_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}A_{S\backslash P} \text{ with edges of points in }S\text{ to }S\backslash P
 $$
 
-It's obvious we cannot add all sizes of $A_{S/P}$ directly, because when we
+It's obvious we cannot add all sizes of $A_{S\backslash P}$ directly, because when we
 assign $S$ to be 0-out-degree points, there might be 0-out-degree points in
-$A_{S/P}$ previously which might be 0-out-degree in $A_S$ still (no edges to
+$A_{S\backslash P}$ previously which might be 0-out-degree in $A_S$ still (no edges to
 points in $S$ from them ).
 
 So fix $S$, let $B_P$ (empty if $P$ doesn't satisfy conditions above) to be
-$A_{S/P} \text{ with edges of points in }S\text{ to }S/P$, so $|B_P|=|A_{S/P}|$.
+$A_{S\backslash P} \text{ with edges of points in }S\text{ to }S\backslash P$, so $|B_P|=|A_{S\backslash P}|$.
 
 Thus, $B_P$ will be the set of DAG configs of the induced subgraph of vertex set
 $S$ satisfies $P$ is **included** in 0-out-degree points.
@@ -83,13 +83,13 @@ $$
 $$
 
 $$
-|A_S| = \sum_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}(−1)^{|P|+1}|A_{S/P}|
+|A_S| = \sum_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}(−1)^{|P|+1}|A_{S\backslash P}|
 $$
 
 DP equation form:
 
 $$
-dp[S]=\sum_{\varnothing\not=P\subseteq S,\texttt{indepset}[P]=\texttt{true}}(−1)^{|P|+1}dp[S/P]
+dp[S]=\sum_{\varnothing\not=P\subseteq S,\texttt{indepset}[P]=\texttt{true}}(−1)^{|P|+1}dp[S\backslash P]
 $$
 
 </Spoiler>
