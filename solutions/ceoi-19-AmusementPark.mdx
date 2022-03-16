@@ -23,25 +23,14 @@ generated on the original graph.
 
 <Spoiler title="Explanation">
 
-Let $\texttt{dp}[S]$ be the number of ways of construct a directed acyclic
-graphs (DAG) with vertex set $S$.
-
-Since we're constructing a DAG, we can transfer the state by adding new points
-like 0-out-degree points (or 0-in-degree points is OK).
-
-Loop all non-empty subsets of S as points to be added, points are 0-out-degree
-if and only if they don't have edges with each other in this subset. That is,
-the subset is an independent set.
-
-Let $\texttt{dp}[S]$ be the number of DAG configs on the subgraph induced by
-vertex set $S$.
-
-Then
+Let $\texttt{dp}[S]$ be the number of ways of constructing a directed acyclic
+graph (DAG) on the subgraph induced by vertex set $S$. For any DAG, at least one vertex in $S$ must 
+have out-degree 0. Thus,
 
 $$
 \begin{aligned}
-\texttt{dp}[S] &= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(\#\text{ configs where  }P=\text{the set of vertices with out-degree 0})\\
-&= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot (\#\text{ configs where  }P\subseteq\text{the set of vertices with out-degree 0}) \\
+\texttt{dp}[S] &= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(\#\text{ DAGs where  }P=\text{the set of vertices with out-degree 0})\\
+&= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot (\#\text{ DAGs where  }P\subseteq\text{the set of vertices with out-degree 0}) \\
 &= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot \texttt{dp}[{S\backslash P}] \\
 \end{aligned}
 $$
@@ -50,69 +39,7 @@ where the second equality follows from the
 [inclusion-exclusion principle](https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle)
 and all subsets of an independent set also being independent.
 
-<!--
-<Spoiler title="A Brief Explanation">
-
-Let $A_S$ be the set of DAG configs of the induced subgraph of vertex set $S$.
-
-$$
-A_S = \bigcup_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}A_{S\backslash P} \text{ with edges of points in }S\text{ to }S\backslash P
-$$
-
-It's obvious we cannot add all sizes of $A_{S\backslash P}$ directly, because when we
-assign $S$ to be 0-out-degree points, there might be 0-out-degree points in
-$A_{S\backslash P}$ previously which might be 0-out-degree in $A_S$ still (no edges to
-points in $S$ from them ).
-
-So fix $S$, let $B_P$ (empty if $P$ doesn't satisfy conditions above) to be
-$A_{S\backslash P} \text{ with edges of points in }S\text{ to }S\backslash P$, so $|B_P|=|A_{S\backslash P}|$.
-
-Thus, $B_P$ will be the set of DAG configs of the induced subgraph of vertex set
-$S$ satisfies $P$ is **included** in 0-out-degree points.
-
-What we want to know is $|B_\varnothing|$.
-
-The form of this equation can be calculated by
-[inclusion-exclusion principle](https://en.wikipedia.org/wiki/Inclusion-exclusion_principle).
-
-Consider every single-element subset $Q$ of $P$ to construct a series of sets
-$B_Q$, and it will be just as same as the formula of principle!
-
-$$
-B_P = \bigcap_{|Q|\leq1,Q\subseteq P}B_Q
-$$
-
-Since $B_\varnothing$ could be the universe set, ignore $Q=\varnothing$ when
-$P\not=\varnothing$
-
-$$
-B_\varnothing = \bigcup_{|Q|=1,Q\subseteq S}B_Q
-$$
-
-Then,
-
-$$
-\left|\bigcup_{|Q|=1,Q\subseteq S}B_Q\right| = \sum_{\varnothing\not=P\subseteq S}(−1)^{|P|+1}\left|\bigcap_{|Q|=1,Q\subseteq P}B_Q\right|
-$$
-
-$$
-|B_\varnothing| = \sum_{\varnothing\not=P\subseteq S}(−1)^{|P|+1}|B_P|
-$$
-
-$$
-|A_S| = \sum_{\varnothing\not=P\subseteq S,P \text{ is an indep set}}(−1)^{|P|+1}|A_{S\backslash P}|
-$$
-
-DP equation form:
-
-$$
-dp[S]=\sum_{\varnothing\not=P\subseteq S,\texttt{indepset}[P]=\texttt{true}}(−1)^{|P|+1}dp[S\backslash P]
-$$
-
-</Spoiler>
--->
-
-The time complexity of enumerating subsets could be $\mathcal{O}(3^n)$.
+The time complexity of enumerating subsets is $\mathcal{O}(3^n)$.
 
 <!--
 <Optional title="FWT">
