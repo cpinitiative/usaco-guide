@@ -1,0 +1,131 @@
+---
+id: usaco-815
+source: USACO Gold 2018 Febuary
+title: Taming the Herd
+author: Shijie Ren
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_gold_feb18.html)
+
+This solution is $\mathcal{O}(N^2)$ which is faster than the official editorial's but not required since $N \leq 100$.
+
+## Explanation
+
+Let $\texttt{dp}[i][j]$ be the the minimum number of changes that must be made
+to the first $j$ entries so that there are $i$ breakouts among the first $j$
+entries.
+
+There are three cases when we calculate the current value of $\texttt{dp}[i][j]$:
+
+- If the log was tampered with and the cows would NOT breakout:
+
+  - Compared to the previous day, the breakout number won't change. However, we need one
+    more change of the log, so we transfer from $\texttt{dp}[i][j-1]$.
+    $$
+    \texttt{dp}[i][j]=\texttt{dp}[i][j-1]+1
+    $$
+
+- If the log was tampered with and the cows would breakout (Notice that $a[j] \neq 0$):
+
+  - Compared to the previous day the breakout number increases by 1. We also
+    need one more change of the log, so we transfer from $\texttt{dp}[i-1][j-1]$.
+    $$
+    \texttt{dp}[i][j]=\texttt{dp}[i-1][j-1]+1
+    $$
+
+- If the log was NOT tampered with:
+  - Then the $i$-th breakout would be on the $(j-a[j])$-th day, so we transfer from
+    $\texttt{dp}[i-1][j-a[j]-1]$.
+    $$
+    \texttt{dp}[i][j] = \texttt{dp}[i-1][j-a[j]-1]+\texttt{range\_ans}[j-a[j]][j]);
+    $$
+
+$$\texttt{range\_ans}[l][r]$$ represents the minimum cost to replace the range
+$a[l]...a[r]$ with $0...(r-l)$.
+
+Thus, our final DP relation is
+
+$$
+\texttt{dp}[i][j] = \min\begin{cases} \texttt{dp}[i][j-1]+1\\
+\texttt{dp}[i-1][j-1]+1\\
+\texttt{dp}[i-1][j-a[j]-1] + \texttt{range\_ans}[j-a[j]][j])
+\end{cases}
+$$
+
+Note that if the indices are out of bounds, the value is not considered.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("taming.in", "r", stdin);
+	freopen("taming.out", "w", stdout);
+	int n;
+	cin >> n;
+	vector<int> entry(n);
+	for (int i = 0; i < n; i++) {
+		cin >> entry[i];
+	}
+
+	vector<vector<int>> range_ans(n, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			if (j) {
+				range_ans[i][j] = range_ans[i][j - 1] + (entry[j] == j - i ? 0 : 1);
+			} else {
+				range_ans[i][j] = (entry[j] == j - i ? 0 : 1);
+			}
+		}
+	}
+
+	vector<vector<int>> dp(n + 1, vector<int>(n, INT32_MAX));
+	for (int i = 1; i <= n; i++) {
+		for (int j = i - 1; j < n; j++) {
+			if (!j) {
+				if (entry[j] == 0) {
+					dp[i][j] = 0;
+				} else {
+					dp[i][j] = 1;
+				}
+				continue;
+			}
+
+			// Case 1
+			if (dp[i][j - 1] != INT32_MAX) {
+				dp[i][j] = dp[i][j - 1] + 1;
+			}
+
+			// Case 2
+			if (entry[j] && dp[i - 1][j - 1] != INT32_MAX) {
+				dp[i][j] = min(dp[i][j], dp[i - 1][j - 1] + 1);
+			}
+
+			// Case 3
+			if (j - entry[j] - 1 >= 0 && dp[i - 1][j - entry[j] - 1] != INT32_MAX) {
+				dp[i][j] = min(dp[i][j], dp[i - 1][j - entry[j] - 1] + range_ans[j - entry[j]][j]);
+			}
+			if (j - entry[j] == 0 && i == 1) {
+				dp[i][j] = min(dp[i][j], range_ans[j - entry[j]][j]);
+			}
+		}
+	}
+
+	for (int i = 1; i <= n; i++) {
+		cout << dp[i][n - 1] << endl;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
