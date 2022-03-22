@@ -5,15 +5,13 @@ title: B. Two Tables
 author: David Zhang
 ---
 
-<Info>
+[Official Analysis (C++)](https://codeforces.com/blog/entry/93389)
+
+<Info title="Info/Tips">
 Oftentimes, problems will try to trick you. For example, since the judge is asking for a double, you would assume you may need to some advanced geometry or some diagonal movements, but a good rule of thumb is to always stay simple. As the most elegant and more importantly the fastest solutions are the shortest.
 </Info>
 
 ## Explanation
-
-To begin, you should never move the inital or first rectangle, in a diagonal motion. 
-If the first table were to move in a diagonal motion, the table could achieve the same result just moving in the x or y direction. 
-(The hypotenuse - the diagonal motion - will always be longer then the other sides - the x or y motion)
 
 Let's call: 
 * $x_{1}$ and $x_{2}$ the leftmost and rightmost positions of the inital rectangle respectively
@@ -25,30 +23,34 @@ Let's call:
 More importantly, there are 4 different places the second rectangle could be placed: left, right, top, bottom.
 For each place, we can calculate the correct x or y positions in order to just barely fit the second rectangle.
 
+Here's a diagram
+![](cf-1555B/PlacementsDiagram.png)
+
 * To put the second rectangle on the left side, we just need to place the first rectangle's leftmost position or $x_{1}$ to at least $w_{2}$.
 * To put the second rectangle on the right side, we just need to place the first rectangle's rightmost position or $x_{2}$ to at least $W$ - $w_{2}$
 * To put the second rectangle on the top side, we just need to place the first rectangle's highest position or $y_{2}$ to at least $W$ - $w_{2}$
 * To put the second rectangle on the bottom side, we just need to place the first rectangle's lowest position or $y_{1}$ to at least $w_{2}$
 
-Note: when placing the second rectangle on the left and right sides, make sure $w_{1} + w_{2} <= W$, otherwise, the second rectangle won't fit.
-Also, when placing the second rectangle on the top and bottom sides, make sure $h_{1} + h_{2} <= H$, otherwise, the second rectangle won't fit either of them.
+Note: when placing the second rectangle on the left and right sides, make sure $w_{1} + w_{2} \leq W$, otherwise, the second rectangle won't fit.
 
-Calculate these placements, and chose the placement that requires the least distance.
+Also, when placing the second rectangle on the top and bottom sides, make sure $h_{1} + h_{2} \leq H$, otherwise, the second rectangle won't fit either of them.
+
+Calculate these placements, and chose the one that requires the least distance.
+
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(1)$
 
 <LanguageSection>
-
 <CPPSection>
+
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-void solve()
-{
+void solve(){
 	int totalWidth, totalHeight; 
 	cin >> totalWidth >> totalHeight;
 	
@@ -63,92 +65,88 @@ void solve()
 	cin >> w2 >> h2;
 	
 
-	/*These are the optimal placements to just
-	barely fit the second rectangle */
+	/*
+	 *	These are the optimal placements to just
+	 *	barely fit the second rectangle 
+	 */
 	
-	//minimum X value needed to fit on left
+	// minimum X value needed to fit on left
 	int leftPlace = w2;
 	
-	//maximum Y value needed to fit on the right
+	// maximum Y value needed to fit on the right
 	int rightPlace = totalWidth - w2;
 
-	//the maximum Y value needed to fit on top
+	// the maximum Y value needed to fit on top
 	int topPlace = totalHeight - h2;
 	
 	//minimum Y value needed to fit on the bottom
 	int bottomPlace = h2;
 
 	/*
-		Going through all possibilities:
-		Top, Bottom, Left, Right
-		Calculate the distance needed to move
-		to the corresponding places.
+	 *	Going through all possibilities:
+	 *	Top, Bottom, Left, Right
+	 *	Calculate the distance needed to move
+	 *	to the corresponding places.
 		
-		If that distance is negative, that means we don't have
-		to move the initial rectangle
-	*/
+	 *	If that distance is negative, that means we don't have
+	 *	to move the initial rectangle
+	 */
 	
-	//amount needed to move leftMost position
-	//in the rectangle to the leftPlace
+	// amount needed to move leftMost position in the rectangle to the leftPlace
 	int amountNeededLeft = max(leftPlace - x1, 0);
 	
-	//amount needed to move rightMost position
-	//in the rectangle to the rightPlace
+	// amount needed to move rightMost position in the rectangle to the rightPlace
 	int amountNeededRight = max(x2 - rightPlace, 0);
 	
-	//amount needed to move topMost position
-	//in the rectangle to the rightPlace
+	// amount needed to move topMost position in the rectangle to the rightPlace
 	int amountNeededTop = max(y2 - topPlace, 0);
 	
-	//amount needed to move bottomMost position
-	//in the rectangle to the bottomPlace
+	// amount needed to move bottomMost position in the rectangle to the bottomPlace
 	int amountNeededBottom = max(bottomPlace - y1, 0);
 	
-	//if the width of the two rectangles exceeds the bounds
-	//of the large rectangle, we cannot fit the two rectangles
-	//on the left or right
-	if(w1 + w2 > totalWidth)
-	{
+	/*
+	 *	if the width of the two rectangles exceeds the bounds
+	 *  of the large rectangle, we cannot fit the two rectangles
+	 *	on the left or right
+	 */
+	if(w1 + w2 > totalWidth){
 		amountNeededLeft = 1e9;
 		amountNeededRight = 1e9;
 	}
 	
-	//if the height of the two rectangles exceeds
-	//the height of the large rectangle, we cannot fit the
-	//the two on the top or bottom
-	if(h1 + h2 > totalHeight)
-	{
+	/*
+	 *	if the height of the two rectangles exceeds
+	 *  the height of the large rectangle, we cannot fit the
+	 *  the two on the top or bottom
+	 */
+	if(h1 + h2 > totalHeight){
 		amountNeededTop = 1e9;
 		amountNeededBottom = 1e9;
 	}
 	
-	//neat trick to get the max out of multiple elements
+	// neat trick to get the min out of multiple elements
 	int ans = min({amountNeededLeft, amountNeededRight, amountNeededTop, amountNeededBottom});
 	
-	//if the rectangles cannot fit in the bigger rectangles in
-	//any way, print -1
-	if(ans == 1e9)
-	{
+	// if the rectangles cannot fit in the bigger rectangles in any way, print -1
+	if(ans == 1e9){
 		cout << -1 << endl;	
 	}
-	else 
-	{
+	else {
 		cout << ans << endl;	
 	}
 }
 int main(){
-	//testcases
-	int tc; cin >> tc;
-	for(int i = 0; i < tc; i++)
-	{
+	int tc;
+	cin >> tc;
+
+	for(int i = 0; i < tc; i++){
 		solve();
 	}
 }
 ```
-
 </CPPSection>
-
 <PySection>
+
 
 ```python
 t = int(input())
@@ -160,20 +158,20 @@ for _ in range(t):
 	h1 = y2 - y1
 	w2, h2 = map(int, input().split())
 
-	ans = 1000000000;
-	#These are the optimal placements to just
-	#barely fit the second rectangle 
+	ans = float('inf');
+	# These are the optimal placements to just
+	# barely fit the second rectangle 
 
-	#minimum X value needed to fit on left
+	# minimum X value needed to fit on left
 	leftPlace = w2
 
-	#maximum Y value needed to fit on the right
+	# maximum Y value needed to fit on the right
 	rightPlace = totalWidth - w2
 
-	#the maximum Y value needed to fit on top
+	# the maximum Y value needed to fit on top
 	topPlace = totalHeight - h2
 
-	#minimum Y value needed to fit on the bottom
+	# minimum Y value needed to fit on the bottom
 	bottomPlace = h2
 
 
@@ -186,46 +184,45 @@ for _ in range(t):
 	# to move the initial rectangle
 
 
-	#amount needed to move leftMost position
-	#in the rectangle to the leftPlace
+	# amount needed to move leftMost position
+	# in the rectangle to the leftPlace
 	amountNeededLeft = max(leftPlace - x1, 0)
 
-	#amount needed to move rightMost position
-	#in the rectangle to the rightPlace
+	# amount needed to move rightMost position
+	# in the rectangle to the rightPlace
 	amountNeededRight = max(x2 - rightPlace, 0)
 
-	#amount needed to move topMost position
-	#in the rectangle to the rightPlace
+	# amount needed to move topMost position
+	# in the rectangle to the rightPlace
 	amountNeededTop = max(y2 - topPlace, 0)
 
-	#amount needed to move bottomMost position
-	#in the rectangle to the bottomPlace
+	# amount needed to move bottomMost position
+	# in the rectangle to the bottomPlace
 	amountNeededBottom = max(bottomPlace - y1, 0)
 
 	# if the width of the two rectangles exceeds the bounds
 	# of the large rectangle, we cannot fit the two rectangles
 	# on the left or right
 	if(w1 + w2 > totalWidth):
-	amountNeededLeft = 1000000000
-	amountNeededRight = 1000000000
+		amountNeededLeft = float('inf')
+		amountNeededRight = float('inf')
 
 	# if the height of the two rectangles exceeds
 	# the height of the large rectangle, we cannot fit the
 	# the two on the top or bottom
 	if(h1 + h2 > totalHeight):
-	amountNeededTop = 1000000000
-	amountNeededBottom = 1000000000
+		amountNeededTop = float('inf')
+		amountNeededBottom = float('inf')
 
 
-	#neat trick to get the max out of multiple elements
+	# neat trick to get the min out of multiple elements
 	ans = min(amountNeededLeft, amountNeededRight, amountNeededTop, amountNeededBottom);
-	# if ans is 1000000000, there is no way to fit the two rectangles in the room
-	print(ans if ans != 1000000000 else -1)
+	# if ans is float('inf'), there is no way to fit the two rectangles in the room
+	print(ans if ans != float('inf') else -1)
 ```
-
 </PySection>
-
 <JavaSection>
+
 
 ```java
 import java.util.*;
@@ -234,10 +231,9 @@ import java.io.*;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
-		int INF = (int) 1e9; //just a really large number
+		final int INF = (int) 1e9; //just a really large number
 		int tc = io.nextInt();
-		for(int t = 0; t < tc; t++)
-		{
+		for(int t = 0; t < tc; t++){
 			int totalWidth = io.nextInt();
 			int totalHeight = io.nextInt();
 			int x1 = io.nextInt();
@@ -266,14 +262,14 @@ public class Main {
 			int bottomPlace = h2;
 
 			/*
-				Going through all possibilities:
-				Top, Bottom, Left, Right
-				Calculate the distance needed to move
-				to the corresponding places.
+			 *	Going through all possibilities:
+			 *	Top, Bottom, Left, Right
+			 *	Calculate the distance needed to move
+			 *	to the corresponding places.
 				
-				If that distance is negative, that means we don't have
-				to move the initial rectangle
-			*/
+			 *	If that distance is negative, that means we don't have
+			 *	to move the initial rectangle
+			 */
 
 			//amount needed to move leftMost position
 			//in the rectangle to the leftPlace
@@ -294,8 +290,7 @@ public class Main {
 			//if the width of the two rectangles exceeds the bounds
 			//of the large rectangle, we cannot fit the two rectangles
 			//on the left or right
-			if(w1 + w2 > totalWidth)
-			{
+			if(w1 + w2 > totalWidth){
 				amountNeededLeft = INF;
 				amountNeededRight = INF;
 			}
@@ -303,13 +298,11 @@ public class Main {
 			//if the height of the two rectangles exceeds
 			//the height of the large rectangle, we cannot fit the
 			//the two on the top or bottom
-			if(h1 + h2 > totalHeight)
-			{
+			if(h1 + h2 > totalHeight){
 				amountNeededTop = INF;
 				amountNeededBottom = INF;
 			}
 
-			//neat trick to get the max out of multiple elements
 			int ans = INF; //if ans == 1e9, then the 2 rectangles cannot fit together
 
 			if(ans > amountNeededLeft) ans = amountNeededLeft;
@@ -320,22 +313,19 @@ public class Main {
 
 			//if the rectangles cannot fit in the bigger rectangles in
 			//any way, print -1
-			if(ans == INF)
-			{
+			if(ans == INF){
 				System.out.println(-1);
 			}
-			else 
-			{
+			else{
 				System.out.println(ans);	
 			}
 		}
 		io.close();
 	}
 	
-	CodeSnip{Kattio}	
+	//CodeSnip{Kattio}	
+
 }
 ```
-
 </JavaSection>
-
 </LanguageSection>
