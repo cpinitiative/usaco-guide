@@ -66,6 +66,19 @@ vector<vector<int>> adj;
 vector<pair<int, int>> range;
 vector<vector<long long>> dp;
 
+long long mx_beauty(int u, int v, bool type) {
+	if (!type) {
+		long long swtch = dp[v][1] + abs(range[u].first - range[v].second);
+		long long sm = dp[v][0] + abs(range[u].first - range[v].first);
+
+		return std::max(swtch, sm);
+	} else {
+		long long swtch = dp[v][1] + abs(range[u].second - range[v].second);
+		long long sm = dp[v][0] + abs(range[u].second - range[v].first);
+
+		return std::max(swtch, sm);
+	}
+}
 void dfs(int u, int par) {
 	for (int v : adj[u]) {
 		if (v == par) {
@@ -73,10 +86,8 @@ void dfs(int u, int par) {
 		}
 
 		dfs(v, u);
-		dp[u][0] += std::max(dp[v][1] + abs(range[u].first - range[v].second),
-							 dp[v][0] + abs(range[u].first - range[v].first));
-		dp[u][1] += std::max(dp[v][1] + abs(range[u].second - range[v].second),
-							 dp[v][0] + abs(range[u].second - range[v].first));
+		dp[u][0] += mx_beauty(u, v, 0);
+		dp[u][1] += mx_beauty(u, v, 1);
 	}
 }
 
