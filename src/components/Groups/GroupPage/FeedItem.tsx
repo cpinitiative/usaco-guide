@@ -13,7 +13,7 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { Link } from 'gatsby';
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
@@ -104,15 +104,17 @@ export default function FeedItem({
     ) as CollectionReference<GroupProblemData>
   );
 
-  onSnapshot(q, {
-    next: snap => {
-      // console.log(snap.docs);
-      setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    },
-    error: error => {
-      toast.error(error.message);
-    },
-  });
+  useEffect(() => {
+    const unsubscribe = onSnapshot(q, {
+      next: snap => {
+        setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      },
+      error: error => {
+        toast.error(error.message);
+      },
+    });
+    return () => unsubscribe();
+  }, []);
 
   const { updatePost, deletePost } = usePostActions(group.id);
 
@@ -124,18 +126,22 @@ export default function FeedItem({
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
   const ref = React.useRef<HTMLDivElement>();
 
-  const [map, setMap] = useState(new Map());
+  const [groupsUsedMap, setGroupsUsedMap] = useState(new Map());
 
   function handleGroupExportChange(g: GroupData) {
     console.log(g.name);
-    if (map.has(g.id)) {
-      setMap(new Map(map.set(g.id, new MapData(!map.get(g.id).used, g))));
-      console.log(map.get(g.id).used);
+    if (groupsUsedMap.has(g.id)) {
+      setGroupsUsedMap(
+        new Map(
+          groupsUsedMap.set(g.id, new MapData(!groupsUsedMap.get(g.id).used, g))
+        )
+      );
+      console.log(groupsUsedMap.get(g.id).used);
     } else {
-      setMap(new Map(map.set(g.id, new MapData(true, g))));
-      console.log(map.get(g.id).used);
+      setGroupsUsedMap(new Map(groupsUsedMap.set(g.id, new MapData(true, g))));
+      console.log(groupsUsedMap.get(g.id).used);
     }
-    console.log(map.size);
+    console.log(groupsUsedMap.size);
   }
 
   async function exportSelectedPosts() {
@@ -156,8 +162,8 @@ export default function FeedItem({
           }),
     };
 
-    console.log(map.size);
-    map.forEach((value: MapData, key: string) => {
+    console.log(groupsUsedMap.size);
+    groupsUsedMap.forEach((value: MapData, key: string) => {
       if (value.used) {
         const firestore = getFirestore(firebaseApp);
         const batch = writeBatch(firestore);
