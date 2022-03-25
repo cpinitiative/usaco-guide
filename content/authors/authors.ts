@@ -47,16 +47,6 @@ export const Authors: Author[] = [
     website: 'https://maggieliu.dev',
   },
   {
-    photo: 'Andrew',
-    name: 'Andrew Wang',
-    title: 'Core Team',
-    blurb:
-      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
-    codeforces: 'a.wang',
-    github: 'andrewwangva',
-    email: 'andrewwangva.biz@gmail.com',
-  },
-  {
     photo: 'melody',
     name: 'Melody Yu',
     title: 'Executive',
@@ -66,6 +56,16 @@ export const Authors: Author[] = [
     website: 'https://melodyyu.com',
     email: 'ocmelodyyu@gmail.com',
     youtube: 'https://www.youtube.com/channel/UCPkhk5gFov8vIPXj0zHyxEQ',
+  },
+  {
+    photo: 'Andrew',
+    name: 'Andrew Wang',
+    title: 'Core Team',
+    blurb:
+      'Andrew Wang is a USACO Platinum competitor and a researcher in the field of bioinformatics.',
+    codeforces: 'a.wang',
+    github: 'andrewwangva',
+    email: 'andrewwangva.biz@gmail.com',
   },
   // {
   //   photo: 'briancdean',
