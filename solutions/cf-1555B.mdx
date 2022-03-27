@@ -48,59 +48,53 @@ Calculate these placements, and chose the one that requires the least distance.
 #include <bits/stdc++.h>
 using namespace std;
 
-void solve(){
-	int total_width, total_height; 
-	cin >> total_width >> total_height;
-	
-	int x1, y1, x2, y2; 
-	cin >> x1 >> y1 >> x2 >> y2;
-	
-	int w1 = x2 - x1;
-	int h1 = y2 - y1;
-	
-	int w2, h2; 
-	cin >> w2 >> h2;
-
-	// Calculating minimum and maximum X and Y values needed to fit in their places
-	int left_place = w2;
-	int right_place = total_width - w2;
-	int top_place = total_height - h2;
-	int bottom_place = h2;
-
-	// Calculating distance needed to move first rectangle
-	int amount_needed_left = max(left_place - x1, 0);
-	int amount_needed_right = max(x2 - right_place, 0);
-	int amount_needed_top = max(y2 - top_place, 0);
-	int amount_needed_bottom = max(bottom_place - y1, 0);
-	
-	// Checking bounds of the rectangles
-	if (w1 + w2 > total_width) {
-		amount_needed_left = INT32_MAX;
-		amount_needed_right = INT32_MAX;
-	}
-
-	if (h1 + h2 > total_height) {
-		amount_needed_top = INT32_MAX;
-		amount_needed_bottom = INT32_MAX;
-	}
-	
-	// neat trick to get the min out of multiple elements
-	int ans = min({amount_needed_left, amount_needed_right, amount_needed_top, amount_needed_bottom});
-	
-	// if the rectangles cannot fit in the bigger rectangles in any way, print -1
-	if (ans == INT32_MAX) {
-		cout << -1 << endl;	
-	} else {
-		cout << ans << endl;	
-	}
-}
-
 int main() {
 	int tc;
 	cin >> tc;
+	for (int i = 0; i < tc; i++) {
+		int total_width, total_height; 
+		cin >> total_width >> total_height;
+	
+		int x1, y1, x2, y2; 
+		cin >> x1 >> y1 >> x2 >> y2;
+	
+		int w1 = x2 - x1;
+		int h1 = y2 - y1;
+	
+		int w2, h2; 
+		cin >> w2 >> h2;
 
-	for(int i = 0; i < tc; i++){
-			solve();
+		// Calculating min and max X and Y values needed to fit in their places
+		int left_place = w2;
+		int right_place = total_width - w2;
+		int top_place = total_height - h2;
+		int bottom_place = h2;
+
+		// Calculating distance needed to move first rectangle
+		int amount_needed_left = max(left_place - x1, 0);
+		int amount_needed_right = max(x2 - right_place, 0);
+		int amount_needed_top = max(y2 - top_place, 0);
+		int amount_needed_bottom = max(bottom_place - y1, 0);
+	
+		// Checking bounds of the rectangles
+		if (w1 + w2 > total_width) {
+			amount_needed_left = INT32_MAX;
+			amount_needed_right = INT32_MAX;
+		}
+
+		if (h1 + h2 > total_height) {
+			amount_needed_top = INT32_MAX;
+			amount_needed_bottom = INT32_MAX;
+		}
+	
+		// neat trick to get the min out of multiple elements
+		int ans = min({
+			amount_needed_left, amount_needed_right,
+			amount_needed_top, amount_needed_bottom
+		});
+	
+		// if the rectangles can't fit in the bigger rectangles in any way, print -1
+		cout << (ans == INT32_MAX ? -1 : ans) << endl;
 	}
 }
 ```
@@ -155,7 +149,7 @@ import java.io.*;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
-		final int INF = Integer.MAX_VALUE;  // just a really large number
+
 		int tc = io.nextInt();
 		for(int t = 0; t < tc; t++){
 			int totalWidth = io.nextInt();
@@ -171,7 +165,7 @@ public class Main {
 			int w2 = io.nextInt();
 			int h2 = io.nextInt();
 			
-			// Calculating minimum and maximum X and Y values needed to fit in their places
+			// Calculating min and max X and Y values needed to fit in their places
 			int leftPlace = w2;
 			int rightPlace = totalWidth - w2;
 			int topPlace = totalHeight - h2;
@@ -184,18 +178,17 @@ public class Main {
 			int amountNeededBottom = Math.max(bottomPlace - y1, 0);
 
 			// Checking bounds of the rectangles
-			
 			if (w1 + w2 > totalWidth) {
-				amountNeededLeft = INF;
-				amountNeededRight = INF;
+				amountNeededLeft = Integer.MAX_VALUE;
+				amountNeededRight = Integer.MAX_VALUE;
 			}
 			
 			if (h1 + h2 > totalHeight) {
-				amountNeededTop = INF;
-				amountNeededBottom = INF;
+				amountNeededTop = Integer.MAX_VALUE;
+				amountNeededBottom = Integer.MAX_VALUE;
 			}
 
-			int ans = INF; 
+			int ans = Integer.MAX_VALUE;
 			if (ans > amountNeededLeft) ans = amountNeededLeft;
 			if (ans > amountNeededRight) ans = amountNeededRight;
 			if (ans > amountNeededTop) ans = amountNeededTop;
@@ -203,11 +196,7 @@ public class Main {
 
 
 			// if the rectangles cannot fit in the bigger rectangles in any way, print -1
-			if (ans == INF) {
-				System.out.println(-1);
-			} else {
-				System.out.println(ans);	
-			}
+			System.out.println(ans == Integer.MAX_VALUE ? -1 : ans);
 		}
 		io.close();
 	}
