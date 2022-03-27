@@ -75,20 +75,20 @@ void solve(){
 	
 	// Checking bounds of the rectangles
 	if (w1 + w2 > total_width) {
-		amount_needed_left = 1e9;
-		amount_needed_right = 1e9;
+		amount_needed_left = INT32_MAX;
+		amount_needed_right = INT32_MAX;
 	}
 
 	if (h1 + h2 > total_height) {
-		amount_needed_top = 1e9;
-		amount_needed_bottom = 1e9;
+		amount_needed_top = INT32_MAX;
+		amount_needed_bottom = INT32_MAX;
 	}
 	
 	// neat trick to get the min out of multiple elements
 	int ans = min({amount_needed_left, amount_needed_right, amount_needed_top, amount_needed_bottom});
 	
 	// if the rectangles cannot fit in the bigger rectangles in any way, print -1
-	if (ans == 1e9) {
+	if (ans == INT32_MAX) {
 		cout << -1 << endl;	
 	} else {
 		cout << ans << endl;	
@@ -155,7 +155,7 @@ import java.io.*;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
-		final int INF = (int) 1e9;  // just a really large number
+		final int INF = Integer.MAX_VALUE;  // just a really large number
 		int tc = io.nextInt();
 		for(int t = 0; t < tc; t++){
 			int totalWidth = io.nextInt();
