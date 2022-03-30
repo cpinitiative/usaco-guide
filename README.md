@@ -69,7 +69,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Ben Dodge (Since Aug 2021)
 - Jeffrey Zhang (Since Feb 2022)
 - _This could be you!
-  [Apply here](https://docs.google.com/forms/d/e/1FAIpQLSed_EHivwc1Z3LoaqQZhu813_3uNNousvN1QWmNt_q-6I6b8A/viewform)._
+  [Apply here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit)._
 
 ### Past Content Authors
 
