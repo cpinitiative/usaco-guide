@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        usaco: ['Arial', 'Helvetica', 'sans-serif'],
       },
       colors: {
         'dark-surface': '#121212',
