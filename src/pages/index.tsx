@@ -1,30 +1,20 @@
 import {
   AcademicCapIcon,
   ChartBarIcon,
-  ChatAlt2Icon,
-  ClipboardListIcon,
   CogIcon,
-  DatabaseIcon,
-  LightningBoltIcon,
   TerminalIcon,
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { Link } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
-import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
-import { useRef } from 'react';
 import { GlowingRing } from '../components/elements/landing/GlowingRing';
-import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
 import { Feature } from '../components/Index/Feature';
-import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
-import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
-import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
@@ -32,23 +22,17 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses = 'text-2xl font-bold small-caps';
-const subtextClasses =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
+const subtextClasses = 'max-w-4xl leading-relaxed';
 const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
-const headerClassesDark = headerClasses + ' text-white';
-const subtextClassesDark =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
 const whiteButtonClassesBig =
   'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
 const whiteButtonClasses =
   'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
 
 export default function IndexPage(): JSX.Element {
-  const learnMoreRef = useRef<HTMLDivElement>();
-
   return (
     <Layout>
-      <SEO title={null} />
+      <SEO title={null} bodyAttributes={{ style: 'background-color: #aaa' }} />
 
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}
@@ -61,26 +45,22 @@ export default function IndexPage(): JSX.Element {
       </div>
 
       {/* Begin Hero */}
-      <div className="bg-[#aaa]">
-        <div className="font-usaco bg-white text-black max-w-4xl mx-auto shadow-xl shadow-black">
+      <div className="bg-[#aaa] pb-4">
+        <div className="font-usaco bg-white text-black max-w-4xl mx-auto shadow-usaco">
           <div className="-mt-16">
-            <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
+            <div className="md:min-h-screen px-4 sm:px-6 lg:px-8">
               <div className="h-6 sm:h-12"></div>
 
-              <div className="flex-1 flex flex-col justify-center">
-                <div className="h-24"></div>
+              <div className="h-24"></div>
 
-                <div className="flex md:justify-center">
-                  <h1 className="drop-shadow md:text-center font-extrabold text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-transparent decoration-clone bg-gradient-to-b from-blue-300 via-blue-800 to-blue-200 bg-clip-text mt-4">
-                    USACO Guide
-                  </h1>
-                </div>
+              <h1 className="drop-shadow-outline font-extrabold text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-transparent decoration-clone bg-gradient-to-b from-blue-300 via-blue-800 to-blue-200 bg-clip-text mt-4">
+                USACO Guide
+              </h1>
 
-                <div className="h-6 sm:h-8"></div>
+              <div className="h-6 sm:h-8"></div>
 
-                <p
-                  className="
-                md:text-center
+              <p
+                className="
                 text-xl
                 sm:text-2xl
                 2xl:text-3xl
@@ -88,28 +68,27 @@ export default function IndexPage(): JSX.Element {
                 leading-snug
                 md:!leading-normal
               "
-                >
-                  A free collection of{' '}
-                  <GradientText>curated, high-quality resources</GradientText>{' '}
-                  <br className="hidden md:block" />
-                  to take you from Bronze to Platinum and beyond.
-                </p>
+              >
+                A free collection of{' '}
+                <GradientText>curated, high-quality resources</GradientText>{' '}
+                <br className="hidden md:block" />
+                to take you from Bronze to Platinum and beyond.
+              </p>
 
-                <div className="h-8 sm:h-12"></div>
+              <div className="h-8 sm:h-12"></div>
 
-                <div className="flex md:justify-center">
-                  <GlowingRing>
-                    <Link
-                      to="/dashboard"
-                      className={classNames(
-                        whiteButtonClassesBig,
-                        'inline-block'
-                      )}
-                    >
-                      Get Started
-                    </Link>
-                  </GlowingRing>
-                </div>
+              <div className="flex md:justify-center">
+                <GlowingRing>
+                  <Link
+                    to="/dashboard"
+                    className={classNames(
+                      whiteButtonClassesBig,
+                      'inline-block'
+                    )}
+                  >
+                    Get Started
+                  </Link>
+                </GlowingRing>
               </div>
 
               <div className="h-16 sm:h-24"></div>
@@ -177,7 +156,7 @@ export default function IndexPage(): JSX.Element {
           {/* End Hero */}
 
           {/* Learn USACO. Efficiently. */}
-          <div className="bg-white">
+          <div>
             <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
             <div className={containerClasses}>
@@ -191,95 +170,45 @@ export default function IndexPage(): JSX.Element {
                 to everyone, for free.
               </p>
 
-              <div className="h-12 md:h-20 2xl:h-36"></div>
-
-              <Feature
-                icon={DatabaseIcon}
-                iconClasses="from-cyan-400 to-sky-500"
-                title="Curated Resources"
-                blobClasses="bg-sky-200 hidden xl:block"
-                feature={<ResourcesFeature />}
-                featurePosition="left"
-              >
+              <Feature title="Curated Resources">
                 Learn new topics from a vetted list of high-quality resources.
                 If one resource doesn't click, look at another!
               </Feature>
 
-              <div className="h-12 md:h-20 2xl:h-36"></div>
-
-              <Feature
-                icon={ClipboardListIcon}
-                iconClasses="from-purple-400 to-indigo-500"
-                title="Extensive Problemsets"
-                blobClasses="bg-purple-300"
-                feature={<ProblemsetsFeature />}
-                featurePosition="right"
-              >
+              <Feature title="Extensive Problemsets">
                 Practice each topic with extensive problemsets and solutions
                 covering a wide range of difficulties.
               </Feature>
 
-              <div className="h-12 md:h-20 2xl:h-36"></div>
-
-              <Feature
-                icon={LightningBoltIcon}
-                iconClasses="from-yellow-400 to-orange-500"
-                title="Progress Tracking"
-                blobClasses="bg-orange-200"
-                feature={<ProgressTrackingFeature />}
-                featurePosition="left"
-                fade="none"
-              >
+              <Feature title="Progress Tracking">
                 Use our progress-tracking tools to track your progress in the
                 Guide and stay motivated.
               </Feature>
 
-              <div className="h-12 md:h-20 2xl:h-36"></div>
-
-              <Feature
-                icon={ChatAlt2Icon}
-                iconClasses="from-green-400 to-cyan-500"
-                title="Help when you need it"
-                blobClasses="bg-green-200"
-                feature={
-                  <div className="shadow-lg rounded-lg">
-                    <StaticImage
-                      src="../assets/forum-screenshot.png"
-                      alt="USACO Forum Screenshot"
-                      placeholder="blurred"
-                      layout="constrained"
-                      width={560}
-                    />
-                  </div>
-                }
-                featurePosition="right"
-                fade="none"
-              >
-                <div className="mb-4 md:mb-8">
-                  Get help from other community members in the USACO Forum.
-                </div>
-
+              <Feature title="Help when you need it">
+                Get help from other community members in the{' '}
                 <a
                   href="https://forum.usaco.guide/"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-blue-600 transition hover:text-purple-600"
+                  className="usaco-link"
                 >
-                  View Forum &rarr;
+                  USACO Forum
                 </a>
+                .
               </Feature>
             </div>
             <div className="h-16 md:h-20 2xl:h-36"></div>
           </div>
           {/* End Learn USACO. Efficiently. */}
 
-          <div className="bg-black">
+          <div>
             <div className="h-16 md:h-20 2xl:h-36"></div>
             <div className={containerClasses}>
-              <h2 className={headerClassesDark}>Trusted by thousands.</h2>
+              <h2 className={headerClasses}>Trusted by thousands.</h2>
               <div className={headerSubtextSpacerClasses}></div>
 
-              <p className={subtextClassesDark}>
+              <p className={subtextClasses}>
                 This guide is written by{' '}
                 <GradientText>top USACO contestants,</GradientText> including
                 two-time IOI winner and USACO Problemsetter Benjamin Qi.
@@ -304,7 +233,7 @@ export default function IndexPage(): JSX.Element {
             <div className="h-16 md:h-20 2xl:h-36"></div>
           </div>
 
-          <div className="bg-white">
+          <div>
             <div className="h-16 md:h-20 2xl:h-36"></div>
             <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
               <h2 className={headerClasses}>Created by the CP Initiative.</h2>
@@ -333,7 +262,7 @@ export default function IndexPage(): JSX.Element {
                   iconClasses="from-orange-400 to-pink-600"
                   url="https://ide.usaco.guide/"
                 >
-                  A realtime collaborative online IDE designed for competitive
+                  A realtime collaborative on-line IDE designed for competitive
                   programming and USACO.
                 </CPIProjectCard>
                 <CPIProjectCard
@@ -377,15 +306,13 @@ export default function IndexPage(): JSX.Element {
             <div className="h-16 md:h-20 2xl:h-36"></div>
           </div>
 
-          <div className="bg-black">
+          <div>
             <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
             <div className={containerClasses}>
-              <GlowingText className={headerClassesDark} extraGlow>
-                Join our Team.
-              </GlowingText>
+              <h2 className={headerClasses}>Join our Team.</h2>
               <div className={headerSubtextSpacerClasses}></div>
-              <p className={subtextClassesDark}>
+              <p className={subtextClasses}>
                 The{' '}
                 <a
                   href="https://joincpi.org/"
@@ -419,11 +346,9 @@ export default function IndexPage(): JSX.Element {
 
               <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
 
-              <GlowingText className={headerClassesDark} extraGlow>
-                Or, help us financially!
-              </GlowingText>
+              <h2 className={headerClasses}>Or, help us financially!</h2>
               <div className={headerSubtextSpacerClasses}></div>
-              <p className={subtextClassesDark}>
+              <p className={subtextClasses}>
                 We're a{' '}
                 <GradientText>501(c)3 nonprofit organization</GradientText> —
                 all donations are tax deductible. Since our inception in
@@ -800,13 +725,13 @@ export default function IndexPage(): JSX.Element {
           </div>
 
           {/* Begin FAQ */}
-          <div className="bg-white dark:bg-dark-surface">
+          <div>
             <div className="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
               <h2 className={classNames(headerClasses, 'dark:text-white')}>
                 Frequently asked questions
               </h2>
               <div className="pt-10 md:pt-16">
-                <dl className="faq md:grid md:grid-cols-2 md:gap-8">
+                <dl className="md:grid md:grid-cols-2 md:gap-8">
                   <div>
                     <div>
                       <dt className="text-lg leading-6 font-bold dark:text-gray-100">
@@ -816,13 +741,16 @@ export default function IndexPage(): JSX.Element {
                         <p className="text-base leading-6 dark:text-gray-400">
                           USACO stands for the{' '}
                           <OutboundLink
+                            className="usaco-link"
                             href="http://www.usaco.org/"
                             target="_blank"
                           >
                             USA Computing Olympiad
                           </OutboundLink>
                           . Check out the{' '}
-                          <Link to="/general/usaco-faq">USACO FAQ Page</Link>{' '}
+                          <Link className="usaco-link" to="/general/usaco-faq">
+                            USACO FAQ Page
+                          </Link>{' '}
                           for more information.
                         </p>
                       </dd>
@@ -851,7 +779,10 @@ export default function IndexPage(): JSX.Element {
                           (website bug, typo, broken link, unclear explanation,
                           etc), use the "Contact Us" button. Alternatively,
                           email us at{' '}
-                          <a href="mailto:usacoguide@gmail.com">
+                          <a
+                            className="usaco-link"
+                            href="mailto:usacoguide@gmail.com"
+                          >
                             usacoguide@gmail.com
                           </a>
                           .
@@ -866,6 +797,7 @@ export default function IndexPage(): JSX.Element {
                         <p className="text-base leading-6 dark:text-gray-400">
                           Check out the{' '}
                           <OutboundLink
+                            className="usaco-link"
                             href="https://joincpi.org/?ref=home"
                             target="_blank"
                           >
@@ -897,6 +829,7 @@ export default function IndexPage(): JSX.Element {
                         <p className="text-base leading-6 dark:text-gray-400">
                           If you get stuck, head over to the{' '}
                           <OutboundLink
+                            className="usaco-link"
                             href="https://forum.usaco.guide"
                             target="_blank"
                           >
@@ -913,8 +846,13 @@ export default function IndexPage(): JSX.Element {
                       <dd className="mt-2">
                         <p className="text-base leading-6 dark:text-gray-400">
                           To learn more about contributing, please visit{' '}
-                          <Link to="/general/contributing">this page</Link>. We
-                          appreciate any and all contributions!
+                          <Link
+                            className="usaco-link"
+                            to="/general/contributing"
+                          >
+                            this page
+                          </Link>
+                          . We appreciate any and all contributions!
                         </p>
                       </dd>
                     </div>
@@ -926,6 +864,7 @@ export default function IndexPage(): JSX.Element {
                         <p className="text-base leading-6 dark:text-gray-400">
                           Yes! Check out our{' '}
                           <OutboundLink
+                            className="usaco-link"
                             href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                             target="_blank"
                           >
@@ -946,7 +885,7 @@ export default function IndexPage(): JSX.Element {
 
           <ContributorsSection />
 
-          <div className="bg-white dark:bg-dark-surface">
+          <div>
             <div className="max-w-screen-xl mx-auto py-12 px-4">
               <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
                 &copy; 2021 Competitive Programming Initiative. Powered by{' '}
@@ -969,7 +908,6 @@ export default function IndexPage(): JSX.Element {
             </div>
           </div>
         </div>
-        vu
       </div>
     </Layout>
   );
