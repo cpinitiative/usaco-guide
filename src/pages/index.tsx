@@ -638,7 +638,9 @@ export default function IndexPage(): JSX.Element {
               </div>
             </div>
           </div>
+
           <div className="h-12" />
+
           {/* Begin FAQ */}
           <div>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -793,6 +795,8 @@ export default function IndexPage(): JSX.Element {
             </div>
           </div>
           {/*End FAQ*/}
+
+          <div className="h-12" />
 
           <AuthorsSection />
 

@@ -111,18 +111,13 @@ const AuthorCard = ({
     },
   };
   return (
-    <div
-      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border border-blue-900 dark:border-gray-700`}
-    >
+    <div className={`py-4 px-4 sm:flex sm:flex-col`}>
       <blockquote className="sm:flex-grow sm:flex sm:items-center text-center sm:text-left max-w-sm sm:max-w-3xl mx-auto w-full">
         <div className="flex-shrink-0">
-          <div
-            className={`inline-flex rounded-full border-2 border-white dark:border-gray-200`}
-          >
-            <div className="w-36 h-36 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
+          <div>
+            <div className="w-36 h-36 border border-black">
               <GatsbyImage
                 image={gatsbyImage.gatsbyImageData}
-                className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
                 alt={author.name}
                 style={{ width: '100%', height: '100%' }}
               />
@@ -131,14 +126,12 @@ const AuthorCard = ({
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-8 lg:ml-6 xl:ml-8">
           <div className="space-x-2">
-            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-blue-700 text-blue-100 dark:text-blue-200 dark:bg-blue-900">
+            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 border border-black">
               {author.title}
             </span>
           </div>
-          <div className="text-3xl font-bold text-white dark:text-gray-100">
-            {author.name}
-          </div>
-          <div className="mt-4 text-base text-blue-200 dark:text-gray-300">
+          <div className="text-lg font-bold">{author.name}</div>
+          <div className="mt-2">
             <p className="relative">{author.blurb}</p>
           </div>
           <div className="mt-2 flex space-x-2 justify-center sm:justify-start">
@@ -148,7 +141,7 @@ const AuthorCard = ({
                 <a
                   key={author.name + sm}
                   href={socialMedia[sm].link(author[sm])}
-                  className="text-blue-300 hover:text-blue-200 dark:text-gray-400 dark:hover:text-gray-300 transition duration-100"
+                  className=""
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -186,12 +179,8 @@ export default function AuthorsSection() {
   `);
 
   return (
-    <section className="bg-blue-800 dark:bg-gray-900 overflow-hidden">
-      <div className="py-6 sm:py-12 text-center border-b-2 border-blue-900 dark:border-gray-700">
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-white px-4">
-          Authors you can trust.
-        </h2>
-      </div>
+    <section className="overflow-hidden px-4 sm:px-6 lg:px-8">
+      <h2 className="small-caps text-2xl font-bold">Authors you can trust.</h2>
       <div className="lg:grid lg:grid-cols-2 -m-px">
         {Authors.map(author => (
           <AuthorCard
@@ -204,9 +193,6 @@ export default function AuthorsSection() {
             }
           />
         ))}
-        {Authors.length % 2 === 1 && (
-          <div className="border border-blue-900 dark:border-gray-700" />
-        )}
       </div>
     </section>
   );
