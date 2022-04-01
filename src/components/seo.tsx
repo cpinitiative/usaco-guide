@@ -50,7 +50,6 @@ function SEO({
     <Helmet
       htmlAttributes={{
         lang,
-        style: backgroundColor ? { backgroundColor: backgroundColor } : null,
       }}
       title={title}
       titleTemplate={`%s · ${site.siteMetadata.title}`}
@@ -127,7 +126,15 @@ function SEO({
               ]
         )
         .concat(meta)}
-    />
+    >
+      {backgroundColor && (
+        <style type="text/css">{`
+          html {
+              background-color: ${backgroundColor};
+          }
+        `}</style>
+      )}
+    </Helmet>
   );
 }
 SEO.defaultProps = {
