@@ -34,12 +34,8 @@ tree. See
 [the solution for Path Queries](/solutions/cses-1138) for a
 comprehensive explanation.
 
-Let the prefix XOR at $i$ be $X(i)$.
-
-The difference between the explanation for Path Queries and this problem is that
-we have range XOR queries instead of range sum queries.
-
-This precomputation takes $\mathcal{O}(n \log n)$.
+Let the prefix XOR at $i$ be $X(i)$. The difference between the explanation for Path Queries and this problem is that
+we have range XOR queries instead of range sum queries. This precomputation takes $\mathcal{O}(n \log n)$.
 
 ## Responding to Queries
 
@@ -76,7 +72,7 @@ vector<int> adj[MAXN];
 
 int timer = 1;
 // does initial DFS to find the time in/out for each subtree-range.
-void dfs(int v=0,int p=-1)
+void dfs(int v=0,int p=0)
 {
 	in[v] = timer++;
 	par[v][0] = p;
@@ -90,7 +86,7 @@ void dfs(int v=0,int p=-1)
 	ot[v] = timer++;
 }
 
-// prefix XOR. reversable = done onto itself
+// prefix xor. reversable = done onto itself
 int XOR(int ind)
 {
 	int xo = 0;

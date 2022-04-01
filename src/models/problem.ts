@@ -244,6 +244,29 @@ export const isUsaco = (source: string): boolean => {
   return false;
 };
 
+// throws if it detects invalid USACO Metadata
+// TODO: add more checks?
+export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
+  if (!isUsaco(metadata.source)) return;
+  const id = metadata.uniqueId.substring(metadata.uniqueId.indexOf('-') + 1);
+  if (!metadata.url.endsWith('=' + id)) {
+    throw Error(`Invalid USACO Metadata: id=${id} url=${metadata.url}`);
+  }
+  if (metadata.solutionMetadata.kind == 'USACO') {
+    if (metadata.solutionMetadata.usacoId !== id) {
+      throw Error(
+        `Invalid USACO Metadata: id=${id} solutionMetadata.usacoId=${metadata.solutionMetadata.usacoId}`
+      );
+    }
+  } else if (
+    !['internal', 'in-module'].includes(metadata.solutionMetadata.kind)
+  ) {
+    throw new Error(
+      `Invalid USACO Metadata: id=${id} metadata.solutionMetadata.kind=${metadata.solutionMetadata.kind}`
+    );
+  }
+}
+
 export function getProblemURL(
   problem: Pick<ProblemInfo, 'source' | 'name' | 'uniqueId'> & {
     [x: string]: any;

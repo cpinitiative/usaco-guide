@@ -1,0 +1,117 @@
+---
+id: ceoi-19-AmusementPark
+source: CEOI 2019
+title: 2019 - Amusement Park
+author: Shijie Ren
+---
+
+[CF Editorial](https://codeforces.com/blog/entry/68748)
+
+<Spoiler title="Hint">
+
+We can observe that for each legal proposal, reversing the direction of its
+edges creates another legal proposal.
+
+The costs of these two proposals will be $m$ because each edge was chosen once.
+
+So the sum of costs will be $m\cdot\frac{\texttt{DAGCount}}2$,
+
+where $\texttt{DAGCount}$ represents the number of directed acyclic graphs (DAG)
+generated on the original graph.
+
+</Spoiler>
+
+<Spoiler title="Explanation">
+
+Let $\texttt{dp}[S]$ be the number of ways of constructing a directed acyclic
+graph (DAG) on the subgraph induced by vertex set $S$. For any DAG, at least one vertex in $S$ must 
+have out-degree 0. Thus,
+
+$$
+\begin{aligned}
+\texttt{dp}[S] &= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(\#\text{ DAGs where  }P=\text{the set of vertices with out-degree 0})\\
+&= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot (\#\text{ DAGs where  }P\subseteq\text{the set of vertices with out-degree 0}) \\
+&= \sum_{\emptyset\neq P\subseteq S, P\text{ independent}}(-1)^{|P|+1}\cdot \texttt{dp}[{S\backslash P}] \\
+\end{aligned}
+$$
+
+where the second equality follows from the
+[inclusion-exclusion principle](https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle)
+and all subsets of an independent set also being independent.
+
+The time complexity of enumerating subsets is $\mathcal{O}(3^n)$.
+
+<!--
+<Optional title="FWT">
+
+It can be optimized further through FWT to be an $\mathcal{O}(n^22^n)$ algorithm.
+
+</Optional>
+-->
+
+</Spoiler>
+
+<Spoiler title="Implementation">
+
+**Time Complexity:** $\mathcal{O}(3^n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstring>
+#include <iostream>
+using namespace std;
+const int N = 18;
+const int M = 998244353;
+int a[N];
+bool indepset[1 << N];
+int popcount[1 << N];
+int arg[1 << N];
+int nodeid[1 << N];
+long long f[1 << N];
+int main() {
+	int n, m;
+	cin >> n >> m;
+	for (int i = 1; i <= m; i++) {
+		int u, v;
+		cin >> u >> v;
+		u--;
+		v--;
+		a[u] |= 1 << v;
+		a[v] |= 1 << u;
+	}
+	for (int i = 0; i < n; i++) {
+		nodeid[1 << i] = i;
+	}
+	for (int i = 0; i < (1 << n); i++) {
+		popcount[i] = popcount[i >> 1] + (i & 1);
+		arg[i] = (popcount[i] % 2) * 2 - 1;
+	}
+	indepset[0] = 1;
+	for (int i = 1; i < (1 << n); i++) {
+		if (indepset[i & (i - 1)] &&
+		    (a[nodeid[i & (-i)]] & (i & (i - 1))) == 0) {
+			indepset[i] = true;
+		}
+	}
+	f[0] = 1;
+	for (int i = 1; i < (1 << n); i++) {
+		for (int j = i; j; j = (j - 1) & i) {
+			if (indepset[j]) {
+				f[i] = (f[i] + arg[j] * f[i ^ j]) % M;
+			}
+		}
+	}
+	f[(1 << n) - 1] = (f[(1 << n) - 1] + M) % M;
+	cout << f[(1 << n) - 1] * m % M * ((M + 1) / 2) % M;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>

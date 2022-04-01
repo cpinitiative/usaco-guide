@@ -1,0 +1,219 @@
+---
+id: ys-MaxIndepSet
+source: YS
+title: Max Indep Set
+author: Shijie Ren
+---
+
+<Spoiler title="Hint 1">
+
+Generate the complement of the given graph.
+
+The complement or inverse of a graph G is a graph H
+such that two distinct vertices of H are adjacent if and only if
+they are **not** adjacent in G.
+
+To generate the complement of a graph,
+we'll fill in all the missing edges required to form a complete graph,
+and remove all the previously existing edges.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Consider Bitmask DP when $ N \leq 20 $.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+If you're stuck on DP when $ N \leq 20 $,
+
+Let the DP array store **the set of points** in the subgraph
+that meet specific conditions.
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+Divide the original graph into two parts, do DP on each of them, and then merge.
+
+</Spoiler>
+
+<Spoiler title="Explanation">
+
+#### Bitmask DP
+
+First, we can alter the problem
+by building the complement graph of the original graph.
+
+This turns it into a maximum clique problem (MCP).
+
+Clique can be seen as a complete graph.
+
+It's not a good idea to only store the number of points in the answer graph because it'll be hard to transfer.
+
+Let the DP array store the set of points within the maximum clique in
+the subgraph.
+
+Then, each element in the DP array represents a bitmask.
+
+Let $\texttt{dp}[S]$ to represent **any** valid maximum clique solution in
+subgraph $S$.
+
+Consider a point $k$ in $S$.
+
+If this point is in the maximum clique,
+
+$$
+\texttt{dp}[S] = \texttt{dp}[E_k\cap S] \cup \{k\}
+$$
+
+(where $E_k$ represents the neighbour set of $k$)
+
+otherwise
+
+$$
+\texttt{dp}[S] =\texttt{dp} [S \backslash {k}]
+
+$$
+
+Take the maximum one.
+
+$$
+\texttt{dp}[S] = \max\{ \texttt{dp}[E_k\cap S] \cup \{k\} , \texttt{dp} [S \backslash {k}] \}
+$$
+
+**Notice this** $\max$ **is compared by popcount in the program.**
+
+But the time complexity is $\mathcal{O}(2 ^ n)$ or $\mathcal{O}(2 ^ n \cdot n)$,
+so we'll need to optimize it further.
+
+#### Meet-in-the-middle
+
+Divide the original graph into two parts, do DP on each part, then merge:
+
+Given two parts $S1$ and $S2$, loop through **every subgraph** of $S1$,
+
+Then, find a subgraph of $S2$ that has direct edges with **all of the points** in the subgraph of $S1$ that we're looping through.
+
+Lastly, we'll union the two subgraphs.
+
+Finding this subgraph of $S2$ can also be solved with Bitmask DP.
+
+Time Complexity is $\mathcal{O}(2^{\frac N2})$.
+</Spoiler>
+
+<Spoiler title="Implementation">
+
+**Time Complexity:** $\mathcal{O}(2^{\frac N2})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+
+// this function returns the number with more 1-bits (in binary)
+ll popmax(ll x, ll y) {
+	/*
+	 * __builtin_popcountll(x) returns the number of 1-bits of unsigned long
+	 * long x (in binary)
+	 */
+	return __builtin_popcountll(x) < __builtin_popcountll(y) ? y : x;
+}
+
+void maxclique(int x, int dt, vector<ll> &f, vector<ll> a) {
+	for (int i = 0, c, d; i < (1 << x); i++) {
+		d = i & (-i);
+		/*
+		 * __builtin_ctzll(d) counts the trailing number of 0-bits of unsigned
+		 * long long d (in binary)
+		 */
+		c = __builtin_ctzll(d);
+		f[i] = popmax(f[i ^ d], f[i & a[c + dt] >> (dt)] | d);
+	}
+}
+
+/*
+ * Bitmask DP to solve Max Clique Problem in O(2^n)
+ * f[S] = any possible max clique solution in S subgraph (f[S] is a set)
+ * choose any point in S called D
+ * if D isn't chosen F[S] = F[S\{D}]
+ * otherwise F[S] = F[D's neighbour in S] UNION {D}
+ */
+void print_mask(ll ans) {
+	cout << __builtin_popcountll(ans) << endl;
+	while (ans) {
+		cout << __builtin_ctzll(ans) << endl;
+		ans -= ans & (-ans);
+	}
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	int n1, n2;
+	/*
+	 * n1 is the size of the first half
+	 * and n2 is the size of the second half
+	 */
+	n1 = n / 2;
+	n2 = n - n1;
+
+	vector<vector<int>> gr(n, vector<int>(n));
+	for (int i = 1; i <= m; i++) {
+		int u, v;
+		cin >> u >> v;
+		gr[u][v] = gr[v][u] = 1;
+	}
+
+	/*
+	 * 1. Use a bitmask to represent the complement graph
+	 *    Now, we just have to solve the Maximum Clique Problem (MCP)
+	 */
+	vector<ll> a(n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (!gr[i][j] && i != j) {
+				a[i] |= 1ll << j;
+			}
+		}
+	}
+
+	// 2. Perform the bitmask DP
+	vector<ll> f(1 << n1);
+	vector<ll> f2(1 << n2);
+	maxclique(n1, 0, f, a);
+	maxclique(n2, n1, f2, a);
+
+	// com[S] = common neighbour of points in S
+	vector<ll> com(1 << n1);
+	ll ans = 0;
+	com[0] = (1ll << n) - 1;
+	for (int i = 1ll; i < (1ll << n1); i++) {
+		com[i] = com[i - (i & (-i))] & a[__builtin_ctzll(i)];
+	}
+	/*
+	 * 3. Meet-in-the-middle
+	 * loop every subsets called S1,construct S2
+	 * of all nodes of the second half which have edges to all the nodes in S1
+	 * (so that together they still form a clique shared by both halves)
+	 */
+	for (int i = 0; i < (1ll << n1); i++) {
+		ans = popmax(ans, (f2[com[i] >> n1] << n1) | f[i]);
+	}
+	print_mask(ans);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>

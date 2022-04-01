@@ -84,7 +84,7 @@ def usaco_parse(is_plat: bool, html):
 
 def usaco_stats():
     """
-    generate contest_to_points
+    generate contest_to_points.ts
     """
     prefix = "http://www.usaco.org/current/data/"
     month = ["dec", "jan", "feb", "open"]

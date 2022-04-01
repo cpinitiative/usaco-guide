@@ -1,7 +1,7 @@
 ---
 id: mst
 title: 'Minimum Spanning Trees'
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Kuan-Hung Chen
 contributors: Neo Wang
 prerequisites:
   - shortest-paths
@@ -140,7 +140,7 @@ tree properly. Furthermore, since our minimum spanning tree algorithm gurantees
 no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
 
 <LanguageSection>
-  
+
 <CPPSection>
 
 ```cpp
@@ -355,7 +355,6 @@ int n;
 ll MAX = 100000000000L;
 ll prim(){
 	ll weight = 0;
-	vector<bool> selected(n, false);
 	vector<ll> min(n, MAX);
 	min[0] = 0;
 	set<pl> q;
@@ -494,6 +493,43 @@ class Pair implements Comparable<Pair> {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import heapq
+
+def prim(n, G):
+	used = [False for _ in range(n)]
+	pq = [(0, 0)]
+	total_weight = 0
+	count = 0
+	while pq:
+		weight, node = heapq.heappop(pq)
+		if used[node]:
+			continue
+		used[node] = True
+		total_weight += weight
+		count += 1
+		for (neigh_weight, neigh_node) in G[node]:
+			if not used[neigh_node]:
+				heapq.heappush(pq, (neigh_weight, neigh_node))
+	return total_weight if count == n else -1
+
+n, m = map(int, input().split())
+G = [[] for _ in range(n)]
+for _ in range(m):
+	a, b, c = map(int, input().split())
+	a -= 1
+	b -= 1
+	G[a].append((c, b))
+	G[b].append((c, a))
+
+ans = prim(n, G)
+print("IMPOSSIBLE" if ans == -1 else ans)
+```
+
+</PySection>
 
 </LanguageSection>
 

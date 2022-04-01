@@ -176,19 +176,21 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hideClassesPromoBar && (
+      {false && !hideClassesPromoBar && (
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
-                <span className="md:hidden">Register for USACO classes!</span>
+                <span className="md:hidden">
+                  Register for the USACO February Workshop!
+                </span>
                 <span className="hidden md:inline">
-                  Want to improve at USACO? Register for affordable USACO
-                  classes here!
+                  USACO February Contest solutions explained in a live workshop
+                  on March 6th!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/classes"
+                    href="https://joincpi.org/workshops/usaco-february"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
@@ -513,8 +515,9 @@ export default function TopNavigationBar({
                     className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
-                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300"></span>
-                  Contact Us
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Contact Us
+                  </span>
                 </a>
                 <Link
                   key="Settings"

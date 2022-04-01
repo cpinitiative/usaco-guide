@@ -2,7 +2,7 @@
 id: debugging-general
 title: How To Debug
 author: Benjamin Qi
-description: 'General tips for identifying errors within your program.'
+description: 'General tips for identifying errors within your solution.'
 ---
 
 <Resources>
@@ -22,47 +22,50 @@ description: 'General tips for identifying errors within your program.'
 	/>
 </Resources>
 
-This module is based on both of these resources. I've included the content that
-is most relevant to USACO.
+This module is based on the resources above. I've included the content that is
+most relevant to USACO.
 
 ## Pre-Submit
 
-- Don't repeat yourself!
+- Your code should be readable (to yourself at the very least).
+  - Following style tips from the
+    [Adding Solutions](/general/adding-solution#code-conventions) module may
+    help with this.
 
-<IncompleteSection>
+## Wrong Answer (or Runtime Error)
 
-find example of this
-
-</IncompleteSection>
-
-- Your code should be consistent and readable (to yourself at the very least).
-  - See [style tips](/general/debugging-lang#style).
-- Give variables meaningful names.
-- Use plenty of [print statements](/general/debugging-lang#printing-variables).
-
-## Wrong Answer
-
-- Read the full problem statement again.
-- Read your code again.
-- Have you understood the problem correctly?
 - Is your output format correct?
   - Did you remove debug output before submitting?
-- Add some [assertions](/general/debugging-lang#assertions--warnings), resubmit.
-- Are you sure your algorithm works?
-  - Go through the algorithm for a simple case / write some testcases to run
-    your algorithm on.
 - Do you handle all corner cases (such as $N=1$) / special cases?
-- Any undefined behavior?
+- For problems with multiple independent test cases (such as
+  [this one](http://www.usaco.org/index.php?page=viewproblem2&cpid=1141)), are
+  you clearing all data structures between test cases?
+  - Keep in mind that your solution might only behave incorrectly when a test
+    case is followed by a smaller test case.
+- Have you understood the problem correctly? Read the full problem statement
+  again.
+- Read your code again.
+  - Confusing $N$ and $M$, $i$ and $j$, etc.?
+- [Shadowed](https://en.wikipedia.org/wiki/Variable_shadowing#C++) or unused or
+  uninitialized variables?
+  - In C++, compiling with
+    [warning options](/general/debugging-lang#warning-options)
+    (`-Wall -Wshadow`) should detect these.
+- Any _undefined behavior_? It can result in different outputs locally vs online
+  (ex. maybe you are passing the sample case locally but not when you submit to
+  the USACO judge). Try running your code in multiple places (ex.
+  [USACO Guide IDE](https://ide.usaco.guide/),
+  [Codeforces Custom Test](https://codeforces.com/problemset/customtest)) and
+  see if you always get the same result. Common examples of undefined behavior
+  include:
 
-  - can result in different outputs locally vs online
-  - uninitialized variables
-  - not returning anything from non-`void` functions
-  - array out of bounds
-    - C++ - Can use
-      [`array::at`](https://www.cplusplus.com/reference/array/array/at/) or
-      [`vector::at`](https://www.cplusplus.com/reference/vector/vector/at/)
-      instead of `[]` to throw an exception when the index is out of bounds.
-  - [signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
+  - (C++) Uninitialized variables
+  - (C++) Not returning anything from non-`void` functions
+  - (C++) Array out of bounds
+    - Considering using `::at` as mentioned
+      [here](/general/debugging-lang/#checking-for-oob).
+  - (C++ / Java)
+    [Signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
 
     - USACO problems usually contain a note of the following form if the output
       format requires 64-bit rather than 32-bit integers, but it's easy to miss:
@@ -70,37 +73,28 @@ find example of this
     > Note that the large size of integers involved in this problem may require
     > the use of 64-bit integer data types (e.g., a `long long` in C/C++)."
 
-  - C++ - Compiling with
-    [additional options](/general/debugging-lang#other-options) can help catch
-    these.
+  <!-- - Shifting a 32-bit integer by $\ge 32$ bits -->
 
-<!-- - Related - shifting an integer by $\ge 32$ bits? -->
+  In C++, compiling with
+  [additional options](/general/debugging-lang#other-options) can help catch
+  these.
 
-- Confusing $N$ and $M$, $i$ and $j$, etc.?
-- Shadowed or unused variables?
-  - C++ - Compile with
-    [warning options](/general/debugging-lang#warning-options)
-    (`-Wall -Wshadow`).
-- Are you clearing all data structures between test cases?
-- Any NaNs (ex. taking the square root of a negative number)?
-- Write a test case generator and a (simpler) slow solution and compare the
-  outputs
-  - See [stress testing](/general/debugging-lang#stress-testing).
-  - Or compare against a model solution if available.
-- Use a [debugger](/general/debugging-lang/#debuggers) (if you're using an IDE).
-  - Set breakpoints to stop your program at certain lines.
-  - Step through lines one by one and watch how the values of your variables
-    change.
-  - Probably slower than well-placed print statements ...
-- Rewrite your solution from the start.
-  - Make a new file rather than overwriting your previous program! It's always
-    possible that you might introduce more bugs.
-
-Of course, many of these are also relevant for RE / TLE.
+- Add [assertions](/general/debugging-lang#assertions--warnings) and resubmit.
+- Floating point numbers
+  - Any NaNs (ex. taking the square root of a negative number)?
+  - Try using a type with more precision (ex. `long double` instead of `double`
+    in C++).
+  - Are you printing the output to the correct amount of precision?
+- Are you sure your algorithm works?
+  - Go through the algorithm for a simple case / write some testcases to run
+    your algorithm on.
+  - Write a test case generator and compare the outputs of your solution against
+    that of a (simpler) slow solution, or a model solution if available.
+    - See [stress testing](/general/debugging-lang#stress-testing) for more
+      information.
 
 ## Runtime Error
 
-- Have you tested all corner cases locally?
 - Any undefined behavior? (see above)
 - Any assertions that might fail?
 - Any possible division by 0? (mod 0 for example)
@@ -112,11 +106,27 @@ Of course, many of these are also relevant for RE / TLE.
 
 - Do you have any possible infinite loops?
 - What is the complexity of your algorithm?
-- Avoid `vector`, `map`. (use `array` / `unordered_map`)
 - Did you remove debug output before submitting (ex. are you printing a lot of
   information to `stderr`)?
+- Unnecessary copying of data? C++ - Consider passing variables by reference.
+- C++ - Try substituting `array`s in place of `vector`s.
 
-## Before Posting on the [Forum](https://forum.usaco.guide/)
+## Last Resort
 
-- If you have a small test case on which your program fails as well as the correct output for that test case (and you understand why that output is correct), you are expected to figure out why your program isn't working on your own.
-- If you haven't found a small test case on which your program fails, try generating one (as described above).
+- Rewrite your solution from the start.
+  - Be sure to save your original solution. It's always possible that you might
+    introduce more bugs.
+
+## Before Posting on the [USACO Guide Forum](https://forum.usaco.guide/)
+
+- If you have found a small test case on which your program fails and you know
+  why the expected output is correct, you should be able to figure out why your
+  program is incorrect on your own.
+  - Add print statements to your code and compare their outputs to what you get
+    when you simulate your program by hand.
+  - Check for undefined behavior as described above.
+- If you haven't found a small test case on which your solution fails,
+  - Try downloading the official test data and seeing if your solution fails on
+    any small test cases.
+  - If that doesn't work, then try generating a small test case on which your
+    solution fails as described above.

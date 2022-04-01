@@ -76,10 +76,10 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 	merge values from children
 ```
 
-**Note:** Because we are no longer doing range updates with lazy propogation,
+**Note:** Because we are no longer doing range updates with lazy propagation,
 there is no need for a lazy tag.
 
-We will store $\texttt{cur\_max}$ in a seperate array as a seperate (mergable)
+We will store $\texttt{cur\_max}$ in a separate array as a separate (mergable)
 value. Although it is possible that a single query processes $\mathcal{O}(n)$
 nodes, over all queries this amortizes to the acceptable time complexity of
 $\mathcal{O}((n + q)\log a)$.
@@ -232,7 +232,7 @@ element. We would like to perform the following operations:
   henceforth be referred as _chmin_)
 - Query $\sum_{i = l}^r A[i]$
 
-The issue, again, is that in lazy propogation, it is difficult to update the sum
+The issue, again, is that in lazy propagation, it is difficult to update the sum
 to reflect the chmin update. We will use a similar strategy to the previous task
 where we build a seemingly slow solution, and then optimize it to pass in time.
 
@@ -244,9 +244,9 @@ using $\texttt{max}_c$.
 
 ```
 function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right)
-	if upd_right < tree_left or tree_right < query_left or max1 < upd_value
+	if upd_right < tree_left or tree_right < upd_left or max1 < upd_value
 		return
-	if query_left < tree_left and tree_right < query_right and max2 < upd_value
+	if upd_left < tree_left and tree_right < upd_right and max2 < upd_value
 		apply update
 		return
 	push lazy updates down
@@ -266,7 +266,7 @@ which is the sum of the sizes of every interval.
 
 Why are queries slow? Because they could visit up to $n$ nodes in any given
 query. Define an _extra operation_ to be when a query is passed onto a node's
-children dispite being in the query range. In other words, when a node satisfies
+children despite being in the query range. In other words, when a node satisfies
 `query_left ≤ tree_left and tree_right ≤ query_right and upd_value ≤ max2`, an
 extra operation is performed.
 

@@ -79,4 +79,56 @@ public class Taming {
 				 
 </JavaSection>
 
+<PySection>
+
+```py
+fin = open("taming.in", 'r')
+fout = open('taming.out', 'w')
+
+inputs = [str(i) for i in fin.read().splitlines()]
+days = int(inputs[0])
+entry = [int(i) for i in inputs[1].split(" ")]
+
+time = -1  # Keep tracks of the days left where 0 outbreaks is guaranteed
+outbreaks = 0  # Count the number of outbreaks that must happen
+potential = 0  # Count the number of outbreaks that can potentially happen
+valid = True  # Check if the input is valid
+
+# If the first entry is above 0, then we have a contradiction
+if entry[0] > 0:
+	valid = False
+else:
+	entry[0] = 0
+
+"""
+If we ever come across a contradiction, then the 
+log is necessarily inconsistent, so we can just output −1. 
+Otherwise, the log must consist of several streaks 0,1,2,…,k 
+of various lengths, with possibly some −1s between 
+streaks - entries which we could not uniquely deduce.
+We know that the first streak starts on the first day.
+"""
+for day in range(days - 1, -1, -1):
+	if time != -1 and entry[day] != -1 and entry[day] != time:
+		valid = False
+		break
+	if time == -1:
+		time = entry[day]
+	if entry[day] == -1:
+		entry[day] = time
+	if entry[day] == 0:
+		outbreaks += 1
+	if entry[day] == -1:
+		potential += 1
+	if time > -1:
+		time -= 1
+
+if valid:
+	print(outbreaks, outbreaks + potential, file=fout)
+else:
+	print(-1, file=fout)
+```
+
+</PySection>
+
 </LanguageSection>
