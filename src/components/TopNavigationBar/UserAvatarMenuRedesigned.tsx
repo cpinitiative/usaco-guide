@@ -24,7 +24,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
           }}
           style={{ all: 'revert' }}
         >
-          Sign out
+          Logout
         </button>
       </div>
     </div>
