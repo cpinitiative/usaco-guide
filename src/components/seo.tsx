@@ -10,6 +10,7 @@ function SEO({
   image: metaImage,
   title,
   pathname,
+  backgroundColor = undefined,
 }) {
   const { site, image: defaultImage } = useStaticQuery(
     graphql`
@@ -125,7 +126,15 @@ function SEO({
               ]
         )
         .concat(meta)}
-    />
+    >
+      {backgroundColor && (
+        <style type="text/css">{`
+          html {
+              background-color: ${backgroundColor} !important;
+          }
+        `}</style>
+      )}
+    </Helmet>
   );
 }
 SEO.defaultProps = {
