@@ -114,7 +114,7 @@ const AuthorCard = ({
     <div className={`py-4 px-4 sm:flex sm:flex-col`}>
       <blockquote className="sm:flex-grow sm:flex sm:items-center text-center sm:text-left max-w-sm sm:max-w-3xl mx-auto w-full">
         <div className="flex-shrink-0">
-          <div>
+          <div className="inline-flex">
             <div className="w-36 h-36 border border-black">
               <GatsbyImage
                 image={gatsbyImage.gatsbyImageData}
@@ -125,12 +125,10 @@ const AuthorCard = ({
           </div>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-8 lg:ml-6 xl:ml-8">
-          <div className="space-x-2">
-            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 border border-black">
-              {author.title}
-            </span>
+          <div>
+            <span className="text-lg font-bold">{author.name}</span> (
+            {author.title})
           </div>
-          <div className="text-lg font-bold">{author.name}</div>
           <div className="mt-2">
             <p className="relative">{author.blurb}</p>
           </div>

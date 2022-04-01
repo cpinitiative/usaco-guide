@@ -17,7 +17,7 @@ const headerSubtextSpacerClasses = 'h-4';
 export default function IndexPage(): JSX.Element {
   return (
     <Layout>
-      <SEO title={null} bodyAttributes={{ style: 'background-color: #aaa' }} />
+      <SEO title={null} backgroundColor="#aaa" />
 
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}
@@ -318,8 +318,8 @@ export default function IndexPage(): JSX.Element {
 
               <h3 className="small-caps font-bold text-xl">Our Sponsors</h3>
 
-              <div className="mt-8 flex flex-wrap gap-4">
-                <div>
+              <div className="mt-8 flex items-end flex-wrap gap-4">
+                <div className="hover:ring-1 ring-[#ccc] ring-offset-1 h-12">
                   <a
                     href="https://x-camp.academy"
                     target="_blank"
@@ -616,7 +616,7 @@ export default function IndexPage(): JSX.Element {
                     </svg>
                   </a>
                 </div>
-                <div>
+                <div className="hover:ring-1 ring-[#ccc] ring-offset-1 h-12">
                   <a
                     href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
                     target="_blank"
@@ -800,16 +800,18 @@ export default function IndexPage(): JSX.Element {
 
           <AuthorsSection />
 
+          <div className="h-8" />
+
           <ContributorsSection />
 
           <div>
             <div className="max-w-screen-xl mx-auto py-12 px-4">
-              <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
+              <p className="text-center">
                 &copy; 2021 Competitive Programming Initiative. Powered by{' '}
                 <a
                   href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
                   target="_blank"
-                  className="underline"
+                  className="usaco-link"
                   rel="noreferrer"
                 >
                   Vercel
@@ -818,7 +820,7 @@ export default function IndexPage(): JSX.Element {
                 <br />
                 No part of this website may be reproduced or commercialized in
                 any manner without prior written permission.{' '}
-                <Link to="/license" className="underline">
+                <Link to="/license" className="usaco-link">
                   Learn More.
                 </Link>
               </p>

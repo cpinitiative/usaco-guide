@@ -10,7 +10,7 @@ function SEO({
   image: metaImage,
   title,
   pathname,
-  bodyAttributes = {},
+  backgroundColor = undefined,
 }) {
   const { site, image: defaultImage } = useStaticQuery(
     graphql`
@@ -48,9 +48,9 @@ function SEO({
   const canonical = pathname ? `${site.siteMetadata.siteUrl}${pathname}` : null;
   return (
     <Helmet
-      bodyAttributes={bodyAttributes}
       htmlAttributes={{
         lang,
+        style: backgroundColor ? `background-color: ${backgroundColor};` : null,
       }}
       title={title}
       titleTemplate={`%s · ${site.siteMetadata.title}`}
