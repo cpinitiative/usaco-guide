@@ -130,7 +130,7 @@ function SEO({
       {backgroundColor && (
         <style type="text/css">{`
           html {
-              background-color: ${backgroundColor};
+              background-color: ${backgroundColor} !important;
           }
         `}</style>
       )}
