@@ -8,7 +8,7 @@ import { Feature } from '../components/Index/Feature';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBarRedesigned';
 
 const containerClasses = 'px-4 sm:px-6 lg:px-8';
 const headerClasses = 'text-2xl font-bold small-caps';
@@ -25,75 +25,23 @@ export default function IndexPage(): JSX.Element {
       {/*>*/}
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
-      <div className="dark bg-black">
-        <TopNavigationBar transparent />
-      </div>
 
+      <div className="block lg:hidden">
+        <TopNavigationBar />
+      </div>
       {/* Begin Hero */}
       <div className="bg-[#aaa] pb-4">
         <div className="font-usaco leading-5 bg-white text-black max-w-4xl mx-auto shadow-usaco">
-          <div className="-mt-16">
+          <div className="-mt-16 lg:mt-0">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="h-6 sm:h-12"></div>
 
-              <h1 className="drop-shadow-outline font-extrabold text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-transparent decoration-clone bg-gradient-to-b from-blue-300 via-blue-800 to-blue-200 bg-clip-text mt-4">
+              <h1 className="drop-shadow-outline font-extrabold text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-transparent decoration-clone bg-gradient-to-b from-blue-300 via-blue-800 to-blue-200 bg-clip-text mt-6">
                 USACO Guide
               </h1>
-              <div>
-                <a
-                  href="https://joincpi.org/"
-                  className="inline-flex items-center space-x-3"
-                >
-                  <div className="h-9 w-9">
-                    <svg
-                      className="inline-block"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 100 100"
-                    >
-                      <g>
-                        <path
-                          className="fill-current text-[#6600af]"
-                          d="M50,5A45,45,0,1,1,5,50,45.05,45.05,0,0,1,50,5m0-5a50,50,0,1,0,50,50A50,50,0,0,0,50,0Z"
-                        ></path>
-                      </g>
-                      <line
-                        className="stroke-current stroke-[7px] text-[#be5eff]"
-                        style={{ strokeMiterlimit: 10 }}
-                        x1="50"
-                        y1="27"
-                        x2="73.29"
-                        y2="65.64"
-                      ></line>
-                      <line
-                        className="stroke-current stroke-[7px] text-[#be5eff]"
-                        style={{ strokeMiterlimit: 10 }}
-                        x1="50"
-                        y1="27"
-                        x2="26.71"
-                        y2="67"
-                      ></line>
-                      <circle
-                        className="fill-current text-[#961be8]"
-                        cx="50"
-                        cy="27"
-                        r="10"
-                      ></circle>
-                      <circle
-                        className="fill-current text-[#961be8]"
-                        cx="26.71"
-                        cy="67"
-                        r="10"
-                      ></circle>
-                      <circle
-                        className="fill-current text-[#961be8]"
-                        cx="73.29"
-                        cy="67"
-                        r="10"
-                      ></circle>
-                    </svg>
-                  </div>
-                  <span>Created by the CP Initiative</span>
-                </a>
+
+              <div className="hidden lg:block">
+                <TopNavigationBar />
               </div>
 
               <div className="h-6"></div>
@@ -186,7 +134,7 @@ export default function IndexPage(): JSX.Element {
           <div className="h-12" />
 
           <div>
-            <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
+            <div className="px-4 sm:px-6 lg:px-8">
               <h2 className={headerClasses}>Created by the CP Initiative.</h2>
               <p className={subtextClasses}>
                 Here are some of our other projects you might find useful!
@@ -317,8 +265,8 @@ export default function IndexPage(): JSX.Element {
               <div className="h-6" />
 
               <h3 className="small-caps font-bold text-xl">Our Sponsors</h3>
-
-              <div className="mt-8 flex items-end flex-wrap gap-4">
+              <div className="h-4" />
+              <div className="flex items-end flex-wrap gap-4">
                 <div className="hover:ring-1 ring-[#ccc] ring-offset-1 h-12">
                   <a
                     href="https://x-camp.academy"
@@ -800,7 +748,7 @@ export default function IndexPage(): JSX.Element {
 
           <AuthorsSection />
 
-          <div className="h-8" />
+          <div className="h-12" />
 
           <ContributorsSection />
 
