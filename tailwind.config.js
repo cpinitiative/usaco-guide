@@ -7,7 +7,6 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        usaco: ['Arial', 'Helvetica', 'sans-serif'],
       },
       colors: {
         'dark-surface': '#121212',
@@ -35,10 +34,6 @@ module.exports = {
         'outline-pink': `0 0 0 3px rgba(251, 207, 232, .5)`,
         'outline-purple': `0 0 0 3px rgba(221, 214, 254, .5)`,
         'outline-indigo': `0 0 0 3px rgba(199, 210, 254, .5)`,
-        usaco: '5px 5px 5px rgba(68, 68, 68, 0.6)',
-      },
-      dropShadow: {
-        outline: '1.5px 0px 0.5px rgb(0 0 0 / 1)',
       },
       typography: theme => ({
         light: {
