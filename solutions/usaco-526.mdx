@@ -9,43 +9,48 @@ author: Brad Ma, Ahmad Bilal
 
 ## Explanation
 
-If 
-- `s` is the string representing the text from the magazine
--  `t` is the string representing the censored word
-- `ans` is the string representing the answer
- then...
+Let us define $\texttt{censored}$ as the final censored text.
 
-We can simply iterate through every character of the string `s` , appending it to `ans`. Then, whenever we append a character we can try to see if `ans` ends with the censored word (i.e the last `t.size()` characters of `ans` make up `t`). If this is so, we can remove it from `ans` (i.e remove the last `t.size()` characters from `ans`).
+We can iterate through every character of $s$, appending it to $\texttt{censored}$.
+However, whenever we append a character we we need to check if $\texttt{censored}$ ends with the censored word.
+If it does, we remove it from $\texttt{censored}$ by taking off the last few characters.
 
-This method of looping through every character and looking back to see if we've written a censored word allows us to tackle test cases where `s` contains censored words within censored words such as in the example given in the question, where ...
 
-`s` = `"whatthemomooofun"`\
-`t` = `"moo"`
+As a demonstration, let's try this on the example case where:
+$$
+s=\texttt{whatthemomooofun} \newline
+t=\texttt{moo}
+$$
 
-The program will loop through each character of `s`, appending it to `ans` as normal untill `ans` becomes `"whatthemomoo"`. At this point it will omit the last 3 characters of `ans` as they form the censored word. Hence, `ans` becomes `"whatthemo"`. After the next iteration `ans` becomes `"whatthemoo"` because the next letter in `s` is an 'o'. Again the last 3 words are omitted and `ans` becomes `"whatthe"`. The loop will continue normally and `ans` will end up as `"whatthefun"` as intended.
+Our solution will loop through each character of $s$, appending it to $\texttt{censored}$ until it becomes $\texttt{whatthemomoo}$, when it will cut off the last 3 characters since they equal $t$. This results in $\texttt{censored}$ becoming $\texttt{whatthemo}$.  
+Right after this, $\texttt{censored}$ becomes $\texttt{whatthemoo}$ as the next letter in $s$ is $o$, so we omit the last 3 characters again and $\texttt{censored}$ becomes $\texttt{whatthe}$.
+
+After this, the check isn't triggered anymore, so we end up with $\texttt{whatthefun}$ as our final censoredwer.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(ST)$
+**Time Complexity:** $\mathcal{O}(S\cdot T)$
 
 <LanguageSection>
 <PySection>
 
 ```py
 import sys
-sys.stdin = open("censor.in", "r")
-sys.stdout = open("censor.out", "w")
+sys.stdin = open('censor.in', 'r')
+sys.stdout = open('censor.out', 'w')
 
 s = input().strip()
 t = input().strip()
-final = ""
-# Add each character to the final string
+
+censored = ""
+# Add each character to the censored string
 for char in s:
-	final += char
+	censored += char
 	# If the end of the string is t, we remove t from the end
-	if final[-len(t):] == t:
-		final = final[:-len(t)]
-print(final)
+	if censored[-len(t):] == t:
+		censored = censored[:-len(t)]
+
+print(censored)
 ```
 </PySection>
 <CPPSection>
@@ -53,23 +58,33 @@ print(final)
 #include "bits/stdc++.h"
 using namespace std;
 
-void setIO(string name = "") {  //USACO-style I/O. See General > Input & Output
-	cin.tie(0)->sync_with_stdio(0); //Fast IO
+//BeginCodeSnip{{USACO-style I/O. See General / Input & Output}}
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);
 	if ((int) name.size()) {
 		freopen((name + ".in").c_str(), "r", stdin); 
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
+//EndCodeSnip
 
 int main() {
 	setIO("censor");
-	string s,t,ans; cin >> s >> t;
-	for(int i=0; i<s.size(); i++){
-    	ans += s[i];
-		if (ans.size()>t.size() && ans.substr(ans.size()-t.size()) == t)
-			ans.resize(ans.size() - t.size());  //If ans ends in the string t, we remove t from the end
-  	}
-	cout << ans;
+	string s;
+	string t;
+	cin >> s >> t;
+
+	string censored;
+	// Add each character to the censored string
+	for (int i = 0; i < s.size(); i++) {
+		censored += s[i];
+		// If the end of the string is t, we remove t from the end
+		if (censored.size() > t.size()
+				&& censored.substr(censored.size() - t.size()) == t) {
+			censored.resize(censored.size() - t.size());
+		}
+	}
+	cout << censored << endl;
 }
 ```
 </CPPSection>
@@ -82,32 +97,32 @@ import java.io.*;
 public class Censor {
 	public static void main (String[] args) throws IOException {
 		Kattio io = new Kattio("censor");
-		String string = io.next();
-		String toCensor = io.next();
+		String s = io.next();
+		String t = io.next();
 
-		// use StringBuilder in Java because it is significantly faster
-		StringBuilder s = new StringBuilder();
-		s.append(string.substring(0, toCensor.length() - 1));
+		// We use StringBuilder in Java because it's significantly faster
+		StringBuilder censored = new StringBuilder();
+		censored.append(s.substring(0, t.length() - 1));
 
-		// try adding one character at a time
-		for (int x = toCensor.length() - 1; x < string.length(); x++) {
-			s = s.append(string.charAt(x));
-			// need to check if our current string is longer than the censored word
-			if (s.length() >= toCensor.length()) {
-				String check = s.substring(s.length() - toCensor.length());
-				// delete the censored word if present
-				if (check.equals(toCensor)) {
-					s.delete(s.length() - toCensor.length(), s.length());
+		// Add each character to the censored string
+		for (int x = t.length() - 1; x < s.length(); x++) {
+			censored = censored.append(s.charAt(x));
+			// We need to check if our current string's longer than the censored word
+			if (censored.length() >= t.length()) {
+				String check = censored.substring(censored.length() - t.length());
+				// If the end of the string is t, we remove t from the end
+				if (check.equals(t)) {
+					censored.delete(censored.length() - t.length(), censored.length());
 				}
 			}
 		}
-		io.println(s);
+		io.println(censored);
 		io.close();
 	}
+
 	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 </LanguageSection>
