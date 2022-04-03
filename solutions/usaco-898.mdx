@@ -147,9 +147,9 @@ public class sleepy {
 		ans = new int[n+1];
 		
 		StringTokenizer st = new StringTokenizer(in.readLine());
-	    for (int i = 1; i <= n; i++) {
-	       a[i] = Integer.parseInt(st.nextToken());
-	    }
+		for (int i = 1; i <= n; i++) {
+		   a[i] = Integer.parseInt(st.nextToken());
+		}
 
 		int k = n;
 		while(a[k] > a[k - 1]) {
@@ -165,32 +165,32 @@ public class sleepy {
 			update(a[i], 1);
 		}
 		
-	    out.println(k);
+		out.println(k);
 
-	    for (int i = 1; i < k; i++) {
-	        out.print(ans[i] + " ");
-	    }
+		for (int i = 1; i < k; i++) {
+			out.print(ans[i] + " ");
+		}
 
-	    out.println(ans[k]);
+		out.println(ans[k]);
 
-	    in.close();
-	    out.close();
+		in.close();
+		out.close();
 	}
 	
 	public static int lowbit(int x) { return x & (-x); }
 
 	public static void update(int x, int k) {
-	    for (int i = x; i <= n; i += lowbit(i)) {
-	        c[i] += k;
-	    }
+		for (int i = x; i <= n; i += lowbit(i)) {
+			c[i] += k;
+		}
 	}
 
 	public static int query(int x) {
-	    int ans = 0;
-	    for (int i = x; i > 0; i -= lowbit(i)) {
-	        ans += c[i];
-	    }
-	    return ans;
+		int ans = 0;
+		for (int i = x; i > 0; i -= lowbit(i)) {
+			ans += c[i];
+		}
+		return ans;
 	}
 }
 ```
