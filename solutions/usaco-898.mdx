@@ -132,7 +132,69 @@ public class Sleepy {
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
 
+public class sleepy {
+	static int n;
+	static int[] a, c, ans;
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("sleepy.in"));
+//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("sleepy.out")));
+		n = Integer.parseInt(in.readLine());
+		a = new int[n+1];
+		c = new int[n+1];
+		ans = new int[n+1];
+		
+		StringTokenizer st = new StringTokenizer(in.readLine());
+	    for (int i = 1; i <= n; i++) {
+	       a[i] = Integer.parseInt(st.nextToken());
+	    }
+
+		int k = n;
+		while(a[k] > a[k - 1]) {
+			update(a[k], 1);
+			k--;
+		}
+
+		update(a[k], 1);
+		k--;
+
+		for (int i = 1; i <= k; i++) {
+			ans[i] = query(a[i]-1) + k - i;
+			update(a[i], 1);
+		}
+		
+	    out.println(k);
+//		System.out.println(k);
+	    for (int i = 1; i < k; i++) {
+//			System.out.print(ans[i] + " ");
+	        out.print(ans[i] + " ");
+	    }
+//		System.out.println(ans[k]);
+	    out.println(ans[k]);
+
+	    in.close();
+	    out.close();
+	}
+	
+	public static int lowbit(int x) { return x & (-x); }
+
+	public static void update(int x, int k) {
+	    for (int i = x; i <= n; i += lowbit(i)) {
+	        c[i] += k;
+	    }
+	}
+
+	public static int query(int x) {
+	    int ans = 0;
+	    for (int i = x; i > 0; i -= lowbit(i)) {
+	        ans += c[i];
+	    }
+	    return ans;
+	}
+}
 ```
 
 </JavaSection>
