@@ -81,37 +81,27 @@ public class GrassPlanting {
 		io.close();
 	}
 
-	private static class Kattio extends PrintWriter {
-		private BufferedReader r;
-		private StringTokenizer st;
+	//CodeSnip{Kattio}
 
-		// standard input
-		public Kattio() { this(System.in,System.out); }
-
-		public Kattio(InputStream i, OutputStream o) {
-			super(o);
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-
-		// USACO-style file input
-		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
-		}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException {
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
 
 		// returns null if no more input
-		public String next() {
-			try {
-				while (st == null || !st.hasMoreTokens())
-					st = new StringTokenizer(r.readLine());
+	public String next() {
+		try {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(r.readLine());
 				return st.nextToken();
-			} catch (Exception e) {}
-			return null;
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
+		} catch (Exception e) {}
+		return null;
 	}
+
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
 }
 ```
 
@@ -135,138 +125,6 @@ for i in inputs[1:]:
 	max_deg = max(max_deg, deg[u], deg[v]);
 
 print(max_deg, file=open('planting.out', 'w'))
-```
-
-</PySection>
-
-</LanguageSection>
-
-## Solution 2 - DFS
-
-**Time Complexity**: $\mathcal{O}(N)$
-
-This can also be solved using DFS. The solution is less elegant but generates a
-valid assignment of grass types in the $\texttt{ans}$ array.
-
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-const int MAX_N = 10000;
-
-// USACO-style file input
-void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	if(name.size()){
-		freopen((name+".in").c_str(), "r", stdin);
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
-
-int main() {
-	setIO("planting");
-
-	int n; 
-	cin >> n;
-	int deg[MAX_N + 1] = {}; // initialize with 0s
-	int u, v;
-	int maxDeg = INT_MIN;  // tracking maxDegree
-	for (int i = 1; i < n; i++) {
-		cin >> u >> v;
-		deg[u]++;
-		deg[v]++;
-		maxDeg = max(maxDeg, max(deg[u], deg[v]));
-	}
-	cout << maxDeg + 1 << "\n";
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.StringTokenizer;
-
-public class GrassPlanting {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("planting");
-		int n = io.nextInt();
-		int[] deg = new int[n+1];
-		for(int i = 0; i < n-1; i++) {
-			int a = io.nextInt(), b = io.nextInt();
-			deg[a]++; deg[b]++;
-		}
-
-		int ret = 0;
-
-		for(int i = 1; i <= n; i++) ret = Math.max(ret, deg[i]);
-		io.println(ret+1);
-		io.close();
-	}
-
-	private static class Kattio extends PrintWriter {
-		private BufferedReader r;
-		private StringTokenizer st;
-
-		// standard input
-		public Kattio() { this(System.in,System.out); }
-
-		public Kattio(InputStream i, OutputStream o) {
-			super(o);
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-
-		// USACO-style file input
-		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
-		}
-
-		// returns null if no more input
-		public String next() {
-			try {
-				while (st == null || !st.hasMoreTokens())
-					st = new StringTokenizer(r.readLine());
-				return st.nextToken();
-			} catch (Exception e) {}
-			return null;
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-	}
-}
-```
-
-</JavaSection>
-
-<PySection>
-
-```py
-fin = open("planting.in", "r")
-fout = open("planting.out", "w")
-inputs = fin.read().splitlines()
-
-n = int(inputs[0])
-deg = [1 for i in range(n + 1)]
-max_deg = 0
-
-# Tracking max degree
-for i in inputs[1:]:
-	u, v = [int(j) for j in i.split(" ")]
-	deg[u] += 1 
-	deg[v] += 1 
-	max_deg = max(max_deg, deg[u], deg[v]);
-
-print(max_deg, file=fout)
 ```
 
 </PySection>
@@ -392,8 +250,8 @@ public class Main {
 
 ```py
 import sys 
-fin = open("planting.in", "r")
-fout = open("planting.out", "w")
+fin = open("planting.in", 'r')
+fout = open('planting.out', 'w')
 inputs = fin.read().splitlines()
 
 n = int(inputs[0])
