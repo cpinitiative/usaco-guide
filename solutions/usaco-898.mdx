@@ -137,35 +137,35 @@ import java.util.*;
 
 public class Sleepy {
 	static int n;
-	static int[] a, c, ans;
+	static int[] order, bit, ans;
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("sleepy.in"));
-		
+
 		n = Integer.parseInt(in.readLine());
-		a = new int[n + 1];
-		c = new int[n + 1];
+		order = new int[n + 1];
+		bit = new int[n + 1];
 		ans = new int[n + 1];
-		
+
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		for (int i = 1; i <= n; i++) {
-		   a[i] = Integer.parseInt(st.nextToken());
+			order[i] = Integer.parseInt(st.nextToken());
 		}
 
 		int k = n;
-		while(a[k] > a[k - 1]) {
-			update(a[k], 1);
+		while(order[k] > order[k - 1]) {
+			update(order[k], 1);
 			k--;
 		}
 
-		update(a[k], 1);
+		update(order[k], 1);
 		k--;
 
 		for (int i = 1; i <= k; i++) {
-			ans[i] = query(a[i]-1) + k - i;
-			update(a[i], 1);
+			ans[i] = query(order[i]-1) + k - i;
+			update(order[i], 1);
 		}
 
-		PrintWriter out = new PrintWriter("sleepy.out");		
+		PrintWriter out = new PrintWriter("sleepy.out");
 		out.println(k);
 
 		for (int i = 1; i < k; i++) {
@@ -177,21 +177,21 @@ public class Sleepy {
 		in.close();
 		out.close();
 	}
-	
-	public static int lowbit(int x) { 
-		return x & (-x); 
+
+	public static int lowbit(int x) {
+		return x & (-x);
 	}
 
 	public static void update(int x, int k) {
 		for (int i = x; i <= n; i += lowbit(i)) {
-			c[i] += k;
+			bit[i] += k;
 		}
 	}
 
 	public static int query(int x) {
 		int ans = 0;
 		for (int i = x; i > 0; i -= lowbit(i)) {
-			ans += c[i];
+			ans += bit[i];
 		}
 		return ans;
 	}
