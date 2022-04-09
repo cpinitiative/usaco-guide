@@ -255,9 +255,9 @@ export default function IndexPage(): JSX.Element {
             featurePosition="right"
             fade="none"
           >
-            <div className="mb-4 md:mb-8">
+            <span className="block mb-4 md:mb-8">
               Get help from other community members in the USACO Forum.
-            </div>
+            </span>
 
             <a
               href="https://forum.usaco.guide/"
@@ -957,7 +957,8 @@ export default function IndexPage(): JSX.Element {
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
-            &copy; 2021 Competitive Programming Initiative. Powered by{' '}
+            &copy; {new Date().getFullYear()} Competitive Programming
+            Initiative. Powered by{' '}
             <a
               href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
               target="_blank"
