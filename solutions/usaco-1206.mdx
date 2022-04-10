@@ -1,0 +1,20 @@
+---
+id: usaco-1206
+source: USACO Silver 2022 February
+title: Redistributing Gifts
+author: Chongtian Ma
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob1_silver_feb22.html)
+
+## Explanation
+
+Similar to the official analysis, I created a directed graph with edges from $i$ to $j$ if cow $i$ prefers gift $j$ more compared to his own. 
+This is because it is always more optimal for cow $i$ to receive one of these gifts. In other words, if cow $i$ is able to receive a gift where
+it has an outgoing edge, then the solution will always be more optimal. Remember to also add an edge between cow $i$ and $i$ in the case where
+it cannot get a more preferred gift.
+
+Then, I broke up the graph into strongly connected components. If $i$ is in a strongly connected component, this means that cow $i$ can receive
+all gifts in the strongly connected component through a series of reassignments and is guaranteed to have one or more preferred gift (including itself).
+This is because if cow $i$ and cow $j$ is in the same SCC, then it is guaranteed cow $i$ can receive gift $j$ through a series of traversals (proof by
+SCC definition).
