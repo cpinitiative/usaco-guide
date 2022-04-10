@@ -31,7 +31,7 @@ const int N = 501;
 // for kosaraju purposes
 vector<int> graph[N], revgraph[N]; // revgraph is the reversed graph
 vector<bool> vis(N), vis2(N);
-vector<int> path; 
+vector<int> path;
 
 // stores all nodes in a SCC
 set<int> comp;
@@ -73,15 +73,15 @@ signed main() {
             revgraph[j].push_back(i);
         }
     }
-    
+
     // classic kosaraju implementation
     for(int i = 1; i <= n; i++){
         if(!vis[i]){
             dfs(i);
         }
-    }                    
-    reverse(path.begin(),path.end());     
-                         
+    }
+    reverse(path.begin(),path.end());
+
     vector<int> ans(n+1);
     for(int i: path){
         if(!vis2[i]){
