@@ -14,12 +14,11 @@ If cow $i$ is able to receive a gift where it has an outgoing edge, then the sol
 Remember to also add an edge between cow $i$ and $i$ in the case where it cannot get a more preferred gift.
 
 Then, I separated the graph into strongly connected components. If $i$ is in a strongly connected component, this means that cow $i$ can receive
-all gifts in the strongly connected component through a series of reassignments and is guaranteed to have one or more preferred gift (including itself).
-This is because if cow $i$ and cow $j$ is in the same SCC, then it is guaranteed cow $i$ can receive gift $j$ through a series of traversals (proof by
-SCC definition). Obviously you only want to assign cow $i$ with a more preferred gift.
+all gifts in the strongly connected component through a series of reassignments and is guaranteed to have one or more preferred gift (including itself) based 
+on SCC definition. Obviously you only want to assign cow $i$ with a more preferred gift.
 ## Implementation
 
-I used Kosaraju's algorithm to find all SCCs in the graph. At the end, I just assigned cow $i$ with the first gift in the SCC that it has preference to.
+I used Kosaraju's algorithm to find all strongly connected components in the graph. At the end, I just went down cow $i$'s preference list and assigned the first gift belonging in the SCC.
 Time complexity is $O(M)$ where $M$ is the number of edges as mentioned at the bottom of the official analysis.
 
 <LanguageSection>
