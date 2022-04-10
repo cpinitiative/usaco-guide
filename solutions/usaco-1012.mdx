@@ -1,0 +1,73 @@
+---
+id: usaco-1012
+source: USACO Bronze 2020 February
+title: Mad Scientist
+author: Vincent Cheng
+---
+
+[Official Analysis](usaco.org/current/data/sol_breedflip_bronze_feb20.html)
+
+### Implementation
+
+Iterate through string B, checking for the longest continuous substrings
+that can be all changed at once (every element in substring of B must be 
+different from the corresponding place in A). Find the number of such substrings
+that exist. Should take $\mathcal{O}(N)$ time.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	freopen("breedflip.in","r",stdin);
+	freopen("breedflip.out","r",stdout);
+	int n;
+	cin>>n;
+	char original[n] = {' '};//string A
+	char wrong[n] = {' '};//string B
+	for(int i = 0;i<n;i++) cin>>original[i];
+	for(int i = 0;i<n;i++) cin>>wrong[i];
+	int ans = 0;
+	for(int i = 0;i<n;i++)
+	{
+		if(wrong[i]==original[i])
+		{
+			//A and B have the value at index i which means 
+			//switching operation cannot be performed here.
+			continue;
+		}
+		else
+		{
+			int substrlength = 0;
+			ans++; //a switching operation is being performed
+			for(int j = i;j<n;j++)
+			{
+				if(wrong[j]==original[j])
+				{
+					//substring has to be terminated as 
+					//same value detected
+					i+=substrlength;
+					break;
+				}
+				else
+				{
+					substrlength++;
+					//substring still alive and continued
+					if(j==n-1)
+					{
+						//end of string A reached and code finishes
+						i+=substrlength;
+					}
+				}
+			}
+		}
+			
+	}
+	cout<<ans;
+}
+
+```
+</CPPSection>
+</LanguageSection>
