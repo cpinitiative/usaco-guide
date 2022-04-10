@@ -25,6 +25,7 @@ Kosaraju's algorithm can be used to find all strongly connected components in th
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
 const int N = 501;
 
@@ -36,61 +37,63 @@ vector<int> path;
 // stores all nodes in a SCC
 set<int> comp;
 
-void dfs(int node){
+void dfs(int node) {
     vis[node] = true;
-    for(int i: graph[node]){
-        if(!vis[i]){
+    for (int i: graph[node]) {
+        if (!vis[i]) {
             dfs(i);
         }
     }
     path.push_back(node);
 }
 
-void dfs2(int node){
+void dfs2(int node) {
     vis2[node] = true;
-    for(int i: revgraph[node]){
-        if(!vis2[i]){
+    for (int i: revgraph[node]) {
+        if (!vis2[i]) {
             dfs2(i);
         }
     }
     comp.insert(node);
 }
+
 signed main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int n; cin>>n;
-    for(int i = 1; i <= n; i++){
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
         // NOTE that graph array serves as its preference list and an adjacency list of the directed graph.
         graph[i].resize(n);
-        for(int j = 0; j < n; j++){
-            cin>>graph[i][j];
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
         }
         // we don't want edges to non-preferred gifts so remove all gifts after its original assignment
-        while(graph[i].back() != i){
+        while (graph[i].back() != i) {
             graph[i].pop_back();
         }
-        for(int j: graph[i]){
+        for (int j: graph[i]) {
             revgraph[j].push_back(i);
         }
     }
 
     // classic kosaraju implementation
-    for(int i = 1; i <= n; i++){
-        if(!vis[i]){
+    for (int i = 1; i <= n; i++) {
+        if (!vis[i]) {
             dfs(i);
         }
     }
-    reverse(path.begin(),path.end());
+    reverse(path.begin(), path.end());
 
-    vector<int> ans(n+1);
-    for(int i: path){
-        if(!vis2[i]){
+    vector<int> ans(n + 1);
+    for (int i: path) {
+        if (!vis2[i]) {
             dfs2(i);
             // loop over all cows in the SCC and its preference list.
             // If we find a gift in its preference and also in the SCC, just assign it.
-            for(int j: comp){
-                for(int k: graph[j]){
-                    if(comp.count(k)){
+            for (int j: comp) {
+                for (int k: graph[j]) {
+                    if (comp.count(k)) {
                         ans[j] = k;
                         break;
                     }
@@ -99,8 +102,8 @@ signed main() {
             comp.clear();
         }
     }
-    for(int i = 1; i <= n; i++){
-        cout<<ans[i]<<endl;
+    for (int i = 1; i <= n; i++) {
+        cout << ans[i] << endl;
     }
 }
 ```  
