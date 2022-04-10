@@ -18,16 +18,15 @@ all gifts in the strongly connected component through a series of reassignments 
 on SCC definition. Obviously you only want to assign cow $i$ with a more preferred gift.
 ## Implementation
 
-I used Kosaraju's algorithm to find all strongly connected components in the graph. At the end, I just went down cow $i$'s preference list and assigned the first gift belonging in the SCC.
-Time complexity is $O(M)$ where $M$ is the number of edges as mentioned at the bottom of the official analysis.
+Kosaraju's algorithm can be used to find all strongly connected components in the graph. At the end, it is optimal to just go down cow $i$'s preference list and assigned the first gift belonging in the SCC.
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define all(x) x.begin(), x.end()
-const int N = 505;
+const int N = 501;
 
 // for kosaraju purposes
 vector<int> graph[N], revgraph[N]; // revgraph is the reversed graph
@@ -66,8 +65,9 @@ signed main() {
         for(int j = 0; j < n; j++){
             cin>>graph[i][j];
         }
+        // we don't want edges to non-preferred gifts so remove all gifts after its original assignment
         while(graph[i].back() != i){
-            graph[i].pop_back(); // we don't want edges to non-preferred gifts so remove all gifts after its original assignment
+            graph[i].pop_back();
         }
         for(int j: graph[i]){
             revgraph[j].push_back(i);
@@ -80,13 +80,14 @@ signed main() {
             dfs(i);
         }
     }                    
-    reverse(all(path));     
+    reverse(path.begin(),path.end());     
                          
     vector<int> ans(n+1);
     for(int i: path){
         if(!vis2[i]){
             dfs2(i);
-            // loop over all cows in the SCC and its preference list. If we find a gift in its preference and also in the SCC, just assign it.
+            // loop over all cows in the SCC and its preference list.
+            // If we find a gift in its preference and also in the SCC, just assign it.
             for(int j: comp){
                 for(int k: graph[j]){
                     if(comp.count(k)){
