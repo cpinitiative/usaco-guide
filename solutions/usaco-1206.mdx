@@ -31,7 +31,7 @@ using namespace std;
 const int N = 505;
 
 // for kosaraju purposes
-vector<vector<int>> graph(N), revgraph(N);
+vector<int> graph[N], revgraph[N]; // revgraph is the reversed graph
 vector<bool> vis(N), vis2(N);
 vector<int> path; 
 
@@ -57,8 +57,9 @@ void dfs2(int node){
     }
     comp.insert(node);
 }
-
-void solve() {
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
     int n; cin>>n;
     for(int i = 1; i <= n; i++){
         // NOTE that graph array serves as its preference list and an adjacency list of the directed graph.
@@ -95,23 +96,12 @@ void solve() {
                     }
                 }
             }
-
             comp.clear();
         }
     }
     for(int i = 1; i <= n; i++){
         cout<<ans[i]<<endl;
     }
-
-
-
-}
-
-signed main() {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    solve();
-
 }
 ```  
 </CPPSection>
