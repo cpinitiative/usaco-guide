@@ -21,9 +21,98 @@ SCC definition). Obviously you only want to assign cow $i$ with the more preferr
 
 ## Implementation
 
-I used Kosaraju's algorithm to find all SCCs in the graph. At the end, I just assigned cow $i$ with the first gift in the SCC that it is "more preferred".
+I used Kosaraju's algorithm to find all SCCs in the graph. At the end, I just assigned cow $i$ with the first gift in the SCC that it is prefers.
 
 <LanguageSection>
 <CPPSection>
   
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) x.begin(), x.end()
+const int N = 505;
+
+// for kosaraju purposes
+vector<vector<int>> graph(N), revgraph(N);
+vector<bool> vis(N), vis2(N);
+vector<int> path; 
+
+// stores all nodes in a SCC
+set<int> comp;
+
+void dfs(int node){
+    vis[node] = true;
+    for(int i: graph[node]){
+        if(!vis[i]){
+            dfs(i);
+        }
+    }
+    path.push_back(node);
+}
+
+void dfs2(int node){
+    vis2[node] = true;
+    for(int i: revgraph[node]){
+        if(!vis2[i]){
+            dfs2(i);
+        }
+    }
+    comp.insert(node);
+}
+
+void solve() {
+    int n; cin>>n;
+    for(int i = 1; i <= n; i++){
+        // NOTE that graph array serves as its preference list and an adjacency list of the directed graph.
+        graph[i].resize(n);
+        for(int j = 0; j < n; j++){
+            cin>>graph[i][j];
+        }
+        while(graph[i].back() != i){
+            graph[i].pop_back(); // we don't want edges to non-preferred gifts so remove all gifts after its original assignment
+        }
+        for(int j: graph[i]){
+            revgraph[j].push_back(i);
+        }
+    }
+    
+    // classic kosaraju implementation
+    for(int i = 1; i <= n; i++){
+        if(!vis[i]){
+            dfs(i);
+        }
+    }                    
+    reverse(all(path));                 
+    vector<int> ans(n+1);
+    for(int i: path){
+        if(!vis2[i]){
+            dfs2(i);
+            // loop over all cows in the SCC and its preference list. If we find a gift in its preference and also in the SCC, just assign it.
+            for(int j: comp){
+                for(int k: graph[j]){
+                    if(comp.count(k)){
+                        ans[j] = k;
+                        break;
+                    }
+                }
+            }
+
+            comp.clear();
+        }
+    }
+    for(int i = 1; i <= n; i++){
+        cout<<ans[i]<<endl;
+    }
+
+
+
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    solve();
+
+}
+  
 </CPPSection>
+</LanguageSection>
