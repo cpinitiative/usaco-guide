@@ -9,13 +9,14 @@ author: Chongtian Ma
 
 ## Explanation
 
-Similar to the official analysis, I constructed directed edges from $i$ to $j$ if cow $i$ prefers gift $j$ to gift $i$.
+Similar to the official analysis, we can construct directed edges from $i$ to $j$ if cow $i$ prefers gift $j$ to gift $i$.
 If cow $i$ is able to receive a gift where it has an outgoing edge, then the solution will always be more optimal. 
 Remember to also add an edge between cow $i$ and $i$ in the case where it cannot get a more preferred gift.
 
-Then, I separated the graph into strongly connected components. If $i$ is in a strongly connected component, this means that cow $i$ can receive
-all gifts in the strongly connected component through a series of reassignments and is guaranteed to have one or more preferred gifts (including itself) based 
-on SCC definition. Obviously you only want to assign cow $i$ with a more preferred gift.
+Then, we can separate the graph into strongly connected components. If $i$ is in a strongly connected component, this means that cow $i$ can receive
+all gifts in the strongly connected component through a series of reassignments and is guaranteed to be able to receive one 
+or more preferred gifts (including itself) based on SCC definition. Obviously it is only optimal to assign cow $i$ gift it
+prefers over its own, or the original gift.
 ## Implementation
 
 Kosaraju's algorithm can be used to find all strongly connected components in the graph. At the end, it is optimal to just go down cow $i$'s preference list and assign the first gift belonging in the SCC.
