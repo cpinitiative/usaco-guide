@@ -30,8 +30,8 @@ Kosaraju's algorithm can be used to find all strongly connected components in th
 using namespace std;
 const int N = 501;
 
-// for kosaraju purposes
-vector<int> graph[N], revgraph[N]; // The adjacency lists for the graph (revgraph is reversed)
+// The adjacency lists for the graph (revgraph is reversed)
+vector<int> graph[N], revgraph[N];
 vector<bool> vis(N), vis2(N);
 vector<int> path;
 
@@ -58,9 +58,7 @@ void dfs2(int node) {
 	comp.insert(node);
 }
 
-signed main() {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
+int main() {
 	int n;
 	cin >> n;
 	for (int i = 1; i <= n; i++) {
@@ -69,11 +67,14 @@ signed main() {
 		for (int j = 0; j < n; j++) {
 			cin >> graph[i][j];
 		}
-		// We don't want edges to non-preferred gifts so remove all gifts after its original assignment.
+		/*
+		 * We don't want edges to non-preferred gifts,
+		 * so we remove all gifts after its original assignment.
+		 */
 		while (graph[i].back() != i) {
 			graph[i].pop_back();
 		}
-		for (int j: graph[i]) {
+		for (int j : graph[i]) {
 			revgraph[j].push_back(i);
 		}
 	}
@@ -90,8 +91,11 @@ signed main() {
 	for (int i: path) {
 		if (!vis2[i]) {
 			dfs2(i);
-			// Loop over all cows in the SCC and its preference list.
-			// If a gift is found in its preference and also in the SCC, just assign the it to the cow.
+			/*
+			 * Loop over all cows in the SCC and its preference list.
+			 * If a gift is found in its preference and also in the SCC,
+			 * just assign the it to the cow.
+			 */
 			for (int j: comp) {
 				for (int k: graph[j]) {
 					if (comp.count(k)) {
@@ -103,6 +107,7 @@ signed main() {
 			comp.clear();
 		}
 	}
+	
 	for (int i = 1; i <= n; i++) {
 		cout << ans[i] << endl;
 	}
