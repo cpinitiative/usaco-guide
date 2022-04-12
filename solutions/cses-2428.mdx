@@ -2,12 +2,12 @@
 id: cses-2428
 source: CSES
 title: Subarray Distinct Values
-author: Sofia Yang
+author: Sofia Yang | Pranav Chatur
 ---
 
 ## Explanation
 
-Use a sliding window and keep a multiset to record the frequency of each element in the array.
+Use a sliding window and keep a multiset (map in C++) to record the frequency of each element in the array.
 Expand the window to the right if the number of distinct elements after expanding the window is less or equal to $K$,
 otherwise remove the left-most element.
 When a new element at index $i$ is added to a window with a left-most element of index $j$,
@@ -73,5 +73,56 @@ public class cses2428 {
 ```
 
 </JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define ll long long
+#define vll vector<ll>
+#define take_loop_input_in(name,size) for(int i=0;i<size;++i){cin>>name[i];}
+using namespace std;
+
+ll give_me_answer(vll &integers, ll k){
+    ll answer = 0;
+    ll i = 0, j = 1;
+    map<ll,ll> distinct;
+    distinct[integers[i]]++;
+    while(1){
+        if(j==integers.size()+1){
+			/*
+			When j reaches end of the integers, there is no need to subtract 'total subarrays from i+1 to j',
+			(as no new element is going to be added further), therefore answer+= (j-i)*(j-i-1)/2
+			*/
+            answer += (j-i)*(j-i-1)/2;
+            break;
+        }
+        while(distinct.size() > k){
+			/*
+			When the size of the map becomes larger than k, integers[i] is decremented (and removed if 0 occurences), till map.size() <= k.
+			Now, during this decrementation, answer is added with the no. of subarrays starting strictly from the 'i'th index only.
+			*/
+            auto it = distinct.find(integers[i]);
+            it->second--;
+            if(!(it->second)){distinct.erase(integers[i]);}
+            answer+=j-i-1;
+            i++;
+        }
+        distinct[integers[j++]]++;
+    }
+    return answer;
+}
+
+int main(){
+    ll n,k;
+    cin>>n>>k;
+    vll integers(n);
+    take_loop_input_in(integers,n);
+    cout<<give_me_answer(integers,k);
+    return 0;
+}
+```
+
+</CPPSection>
 
 </LanguageSection>
