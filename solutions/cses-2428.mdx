@@ -90,18 +90,18 @@ ll give_me_answer(vll &integers, ll k){
     distinct[integers[i]]++;
     while(1){
         if(j==integers.size()+1){
-			/*
-			When j reaches end of the integers, there is no need to subtract 'total subarrays from i+1 to j',
-			(as no new element is going to be added further), therefore answer+= (j-i)*(j-i-1)/2
-			*/
+	/*
+	When j reaches end of the integers, there is no need to subtract 'total subarrays from i+1 to j',
+	(as no new element is going to be added further), therefore answer+= (j-i)*(j-i-1)/2
+	*/
             answer += (j-i)*(j-i-1)/2;
             break;
         }
         while(distinct.size() > k){
-			/*
-			When the size of the map becomes larger than k, integers[i] is decremented (and removed if 0 occurences), till map.size() <= k.
-			Now, during this decrementation, answer is added with the no. of subarrays starting strictly from the 'i'th index only.
-			*/
+	/*
+	When the size of the map becomes larger than k, integers[i] is decremented (and removed if 0 occurences), till map.size() <= k.
+	Now, during this decrementation, answer is added with the no. of subarrays starting strictly from the 'i'th index only.
+	*/
             auto it = distinct.find(integers[i]);
             it->second--;
             if(!(it->second)){distinct.erase(integers[i]);}
