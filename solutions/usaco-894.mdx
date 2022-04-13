@@ -83,13 +83,7 @@ public class GrassPlanting {
 
 	//CodeSnip{Kattio}
 
-	// USACO-style file input
-	public Kattio(String problemName) throws IOException {
-		super(new FileWriter(problemName+".out"));
-		r = new BufferedReader(new FileReader(problemName+".in"));
-	}
-
-		// returns null if no more input
+	// returns null if no more input
 	public String next() {
 		try {
 			while (st == null || !st.hasMoreTokens())
@@ -111,7 +105,7 @@ public class GrassPlanting {
 
 ```py
 fin = open('planting.in', 'r')
-inputs = [i for i in fin.read().splitlines()]
+inputs = fin.read().splitlines()
 
 n = int(inputs[0])
 deg = [1 for i in range(n + 1)]
@@ -163,8 +157,9 @@ void dfs(int self, int parent){
     int g = 1;
     for (int i : adjList[self]) {
         if (i != parent) {
-            while (g == ans[self] || g == ans[parent])
+            while (g == ans[self] || g == ans[parent]){
                 g++;
+			}
             ans[i] = g;
             dfs(i, self);
             g++;
@@ -185,11 +180,11 @@ int main() {
     }
     ans[1] = 1;
     dfs(1, 1);
-    int maxAns = 0;
-    for (int curAns : ans) {
-        maxAns = max(maxAns, curAns);
+    int max_ans = 0;
+    for (int curr_ans : ans) {
+        max_ans = max(max_ans, curr_ans);
     }
-    cout << maxAns << "\n";
+    cout << max_ans << endl;
 }
 ```
 
@@ -251,7 +246,6 @@ public class Main {
 ```py
 import sys 
 fin = open("planting.in", 'r')
-fout = open('planting.out', 'w')
 inputs = fin.read().splitlines()
 
 n = int(inputs[0])
@@ -277,7 +271,7 @@ for i in range(1,n):
 ans[1] = 1
 dfs(1, 1)
 
-print(max(ans), file=fout)
+print(max(ans), file=open('planting.out', 'w'))
 ```
 
 </PySection>
