@@ -2,11 +2,33 @@
 id: ac-MultipleOf2019
 source: AtCoder Beginner Contest
 title: Multiple of 2019
-author: Maggie Liu, Brad Ma, Mohammad Nour Massri
+author: Maggie Liu, Brad Ma, Mohammad Nour Massri, David Zhang
 ---
 
 [Official Analysis](https://img.atcoder.jp/abc164/editorial.pdf#page=10)
 
+## Explanation
+Firstly, in order to store sections of the string, we can make a suffix array with the condition that at index $$i$$ in suffix array $${S}$$
+
+$${S_i = s_n + 10*s_{n-1} +100*s_{n-2} + ... + {10^{n-i}} * s_{i}}$$
+
+For example, in the string "1234," the suffix array would be
+
+[1234, 234, 34, 4]
+
+This is useful because in $\mathcal{O}(1)$ time, when we use a range query, we can capture any substring with just two indices $$i$$ and $$j$$. So if $${S_0} = 1234 $$ and $${S_3=4}$$, this means $${S_0}-{S_3} = 123 * {10^1}$$ or $$1230$$. 
+
+It also means that if both $${S_0}(mod$$ $$M)=$$ $${S_3}(mod$$ $$M)$$, subtracting would lead to $${S_0}(mod$$ $$M)-$$ $${S_3}(mod$$ $$M)=0$$, meaning a substring that makes a number that is divisible by $$M$$ or $$2019$$. 
+
+So then we can use $${N \choose K}$$ choose formula, and choose 2 numbers $$(2)$$ that are divisible by the same reminder of 2019 $$(N)$$. 
+
+We can then store all the counts of all the remainders from $$0...2018$$. Then, we can add all $${N \choose 2}$$ and that is our answer. 
+
+(Note: A prefix array can be utilized as well, but a suffix array is easier to implement)
+
+
+
+[Errichto Explanation](https://www.youtube.com/watch?v=83yW2Pp6HMk)
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
