@@ -143,48 +143,48 @@ const int MAX_N = 1e5+1;
 
 // USACO-style file input
 void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    if(name.size()){
-        freopen((name+".in").c_str(), "r", stdin);
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	if(name.size()){
+		freopen((name+".in").c_str(), "r", stdin);
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 int ans[MAX_N + 1];
 vector<int> adjList[MAX_N + 1];
 
 void dfs(int self, int parent){
-    int g = 1;
-    for (int i : adjList[self]) {
-        if (i != parent) {
-            while (g == ans[self] || g == ans[parent]){
-                g++;
+	int g = 1;
+	for (int i : adjList[self]) {
+		if (i != parent) {
+			while (g == ans[self] || g == ans[parent]){
+				g++;
 			}
-            ans[i] = g;
-            dfs(i, self);
-            g++;
-        }
-    }
+			ans[i] = g;
+			dfs(i, self);
+			g++;
+		}
+	}
 }
 
 int main() {
-    setIO("planting");
+	setIO("planting");
 
-    int n;
-    cin >> n;
-    int u, v;
-    for (int i = 1; i < n; i++){
-        cin >> u >> v;
-        adjList[u].push_back(v);
-        adjList[v].push_back(u);
-    }
-    ans[1] = 1;
-    dfs(1, 1);
-    int max_ans = 0;
-    for (int curr_ans : ans) {
-        max_ans = max(max_ans, curr_ans);
-    }
-    cout << max_ans << endl;
+	int n;
+	cin >> n;
+	int u, v;
+	for (int i = 1; i < n; i++){
+		cin >> u >> v;
+		adjList[u].push_back(v);
+		adjList[v].push_back(u);
+	}
+	ans[1] = 1;
+	dfs(1, 1);
+	int max_ans = 0;
+	for (int curr_ans : ans) {
+		max_ans = max(max_ans, curr_ans);
+	}
+	cout << max_ans << endl;
 }
 ```
 
