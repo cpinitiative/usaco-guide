@@ -9,7 +9,7 @@ author: Chongtian Ma
 
 ## Explanation
 
-We can solve this problem greedily using one linear sweep and making prefixes of cows have equal hunger as we sweep. If move from left to right, we can break this
+We can solve this problem greedily using one linear sweep and making prefixes of cows have equal hunger as we sweep from left to right. Thus, we can break this
 problem up into cases:
 
 Suppose we are currently looking at cow $i$, and cow $i+1$ has a greater hunger value - then it is sufficient to decrease cow $i+1$ to the same hunger
@@ -27,3 +27,71 @@ Note that at every step if we are looking at cow $i$, we are always making sure 
 ## Implementation
 
 Time Complexity: $\mathcal{O}(N)$
+
+<LanguageSection>
+  
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void solve(){
+	int n;
+	cin >> n;
+	vector<ll> hunger(n+1); // hunger for each cow, one indexed
+	for(int i = 1; i <= n; i++){
+		cin >> hunger[i];
+	}
+
+	ll bags_needed = 0;
+	for(int i = 1; i < n; i++){
+		if(hunger[i+1] > hunger[i]){
+			// if the i+1'th cow has more hunger than cow i
+			if(i + 2 > n){
+				// if the i+2'th cow doesn't exist, then we can't
+				// possibly decrease the pair of cows starting with i+1.
+				cout<<-1<<"\n";
+				return;
+			}
+			ll difference = hunger[i+1] - hunger[i];
+			hunger[i+1] -= difference;
+			hunger[i+2] -= difference;
+			if(hunger[i+2] < 0){
+				// cow i+2 can't possibly have negative hunger value
+				cout<<-1<<"\n";
+				return;
+			}
+			// it takes difference * 2 bags to feed cows i+1 and i+2 to equal hunger as i
+			bags_needed += difference * 2;
+
+		}
+		else if(hunger[i] > hunger[i+1]){
+			// if the i'th cow has more hunger than the i+1'th cow
+			if(i % 2 == 1){
+				// if i is an odd index then it is impossible.
+				cout<<-1<<"\n";
+				return;
+			}
+			ll difference = hunger[i] - hunger[i+1];
+			// it takes difference * i bags to feed every cow from 1 to i to the same
+			// hunger value as cow i+1
+			bags_needed += difference * i;
+		}
+	}
+	cout<<bags_needed<<"\n";
+}
+
+int main(){
+	int tests;
+	cin >> tests;
+	for(int t = 0; t < tests; t++){
+		solve();
+	}
+}
+```
+        
+</CPPSection>
+        
+</LanguageSection>
