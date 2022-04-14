@@ -12,15 +12,15 @@ author: Chongtian Ma
 We can solve this problem greedily using one linear sweep and making prefixes of cows have equal hunger as we sweep. If move from left to right, we can break this
 problem up into cases:
 
-Suppose we are currently looking at cow $i$ and cow $i+1$ has a greater hunger value, then it is sufficient to decrease cow $i+1$ to the same hunger
+Suppose we are currently looking at cow $i$, and cow $i+1$ has a greater hunger value - then it is sufficient to decrease cow $i+1$ to the same hunger
 as cow $i$. To do this we will pick cows the pair of cows $i+1$ and $i+2$ and decrease their hungers until cow $i+1$ has the same hunger value of cow $i$.
 Of course if cow $i+2$ has a negative hunger value, then it is impossible and we output -1.
 
 Now suppose cow $i$ has a greater hunger value than cow $i+1$, we obviously cannot decrease the hunger for cow $i+1$ any further since it will never be
-optimal, we only can decrease the hunger for all the cows before $i+1$. To do this we select adjacent pairs of cows starting with the odd numbered cows
-(cow 1 and 2 get their hungers decreased together, cow 3 and 4 ... cow $i-1$ and cow $i$). After this, all the cows before $i+1$ be decreased to the same
-hunger value as cow $i$, and we can move on. However, there is the case where $i$ is odd, in which it is impossible to decrease unless we also decrease
-the hunger value for $i+1$, so we output -1.
+equal - we only can decrease the hunger for all the cows before $i+1$. To do this we select adjacent pairs of cows starting with the odd numbered cows
+(cow 1 and 2 get their hungers decreased together, cow 3 and 4 ... cow $i-1$ and cow $i$). After this, all the cows before $i+1$ are decreased to the same
+hunger value as cow $i+1$, and we can move on. However, there is the case where $i$ is odd, in which it is impossible to decrease unless we also decrease
+the hunger value for cow $i+1$, so we output -1.
 
 Note that at every step if we are looking at cow $i$, we are always making sure cows from 1 to $i+1$ have the same hunger values. 
 
