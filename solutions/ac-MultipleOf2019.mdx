@@ -12,7 +12,7 @@ In order to store sections of the string, we can make a suffix array $S$, such t
 
 $${S_i = s_n + 10*s_{n-1} +100*s_{n-2} + ... + {10^{n-i}} * s_{i}}$$
 
-For example, if our string was $$1234$$ and the modulus was $$3$$ (instead of $$2019$$), the suffix array would be
+For example, if our string was $$1234$$ and the modulus was $$3$$ (instead of $$2019$$ for the sake of simplicity), the suffix array would be
 
 $$[1234, 234, 34, 4, 0]$$
 
@@ -24,11 +24,11 @@ It also means that if both $${S_0}(mod$$ $$M)=$$ $${S_3}(mod$$ $$M)$$ (both suff
 
 So with $$1234$$, $${S_0-{S_3}=1234(mod}$$ $$3)-4(mod$$ $$3)=1-1=0$$. Because they substract to zero, it means the substring from index $$0$$ to $$2$$ leads to a number divisible by the modulus. (The substring is $$123$$ which is divisble by 3). 
 
-However, we would still need to go through every pair of possible suffixes $(i, j)$.
+However, we would still need to go through every pair of possible suffixes $(i, j)$ which would be $\mathcal{O}(N^2)$.
 
-However, note that **we do not need to know the specific indicies- we just need to know the amount of times a certain remainder occurs.** 
+Instead, **we do not need to know which suffix has a certain remainder, but rather how many suffixes have that certain remainder.** 
 
-Thus, we can take $${N \choose K}$$, and choose 2 numbers that are divisible by the same remainder of 2019, where $$N=$$ the amount of times a certain remainder occurs, and $$K=$$ 2 (because we are picking 2 indicies $$i$$ and $$j$$). 
+To elaborate, we can take $${N \choose K}$$, and choose 2 numbers that are divisible by the same remainder of 2019, where $$N=$$ the amount of times a certain remainder occurs, and $$K=$$ 2 (because we are picking 2 indicies $$i$$ and $$j$$). 
 
 Therefore, our answer is the counts of all the remainders in an array from $$0...2018$$ and $${N \choose 2}$$. 
 
