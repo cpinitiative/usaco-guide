@@ -557,12 +557,12 @@ int main() {
 	}
 
 	for (int q = 0; q < Q; q++) {
-		int x1, x2, y1, y2;
-		cin >> x1 >> y1 >> x2 >> y2;
-		cout << tree_pref[x2][y2]
-				- tree_pref[x1-1][y2]
-				- tree_pref[x2][y1-1]
-				+ tree_pref[x1-1][y1-1] << '\n';
+		int from_row, to_row, from_col, to_col;
+		cin >> from_row >> from_col >> to_row >> to_col;
+		cout << tree_pref[to_row][to_col]
+				- tree_pref[from_row - 1][to_col]
+				- tree_pref[to_row][from_col - 1]
+				+ tree_pref[from_row - 1][from_col - 1] << '\n';
 	}
 }
 ```
@@ -608,15 +608,15 @@ public class ForestQueries {
 		}
 
 		for (int i = 0; i < Q; i++) {
-			int x1 = io.nextInt();
-			int y1 = io.nextInt();
-			int x2 = io.nextInt();
-			int y2 = io.nextInt();
+			int fromRow = io.nextInt();
+			int fromCol = io.nextInt();
+			int toRow = io.nextInt();
+			int toCol = io.nextInt();
 			io.println(
-					pfx[x2][y2]
-					- pfx[x1-1][y2]
-					- pfx[x2][y1-1]
-					+ pfx[x1-1][y1-1]
+					pfx[toRow][toCol]
+					- pfx[fromRow - 1][toCol]
+					- pfx[toRow][fromCol - 1]
+					+ pfx[fromRow - 1][fromCol - 1]
 			);
 		}
 		io.close();
