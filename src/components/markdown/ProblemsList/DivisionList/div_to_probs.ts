@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1227', '2022 US Open', 'Photoshoot'],
+    ['1228', '2022 US Open', 'Counting Liars'],
+    ['1229', '2022 US Open', 'Alchemy'],
     ['1203', '2022 February', 'Sleeping in Class'],
     ['1204', '2022 February', 'Photoshoot 2'],
     ['1205', '2022 February', 'Blocks'],
@@ -83,6 +86,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1230', '2022 US Open', 'Visits'],
+    ['1231', '2022 US Open', 'Subset Equality'],
+    ['1232', '2022 US Open', 'COW Operations'],
     ['1206', '2022 February', 'Redistributing Gifts'],
     ['1207', '2022 February', 'Robot Instructions'],
     ['1208', '2022 February', 'Email Filing'],
@@ -166,6 +172,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1233', '2022 US Open', 'Apple Catching'],
+    ['1234', '2022 US Open', 'Pair Programming'],
+    ['1235', '2022 US Open', 'Balancing a Tree'],
     ['1209', '2022 February', 'Redistributing Gifts'],
     ['1210', '2022 February', 'Cow Camp'],
     ['1211', '2022 February', 'Moo Network'],
@@ -248,6 +257,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1236', '2022 US Open', '262144 Revisited'],
+    ['1237', '2022 US Open', 'Hoof and Brain'],
+    ['1238', '2022 US Open', 'Up Down Subsequence'],
     ['1212', '2022 February', 'Paint by Rectangles'],
     ['1213', '2022 February', 'Sleeping in Class'],
     ['1214', '2022 February', 'Phone Numbers'],
