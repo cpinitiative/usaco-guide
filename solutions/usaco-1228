@@ -37,10 +37,11 @@ int main() {
 		cin>>cows[i].second>>cows[i].first;
 	}
 
-	// sort by increasing position
+	// sort by non-decreasing position
 	sort(cows.begin(),cows.end());
-
-	vector<int> lying_left(n+1), lying_right(n+1);
+	
+	// stores the cows lying relative to each cow's position
+	vector<int> lying_left(n), lying_right(n);
 	for(int i = 1; i < n; i++){
 		// add up all the cows that are already lying to the left of our position
 		lying_left[i] += lying_left[i-1];
