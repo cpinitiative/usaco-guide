@@ -772,7 +772,7 @@ export default function IndexPage(): JSX.Element {
             </div>
           </div>
           <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
-            Other Sponsors
+            In-kind Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
             <div className="col-span-1">
