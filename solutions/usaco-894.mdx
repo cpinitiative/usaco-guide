@@ -244,4 +244,41 @@ public class Planting {
 ```
 
 </JavaSection>
+<PySection>
+
+Implementing recursion as normal results in stack overflow for the last test case
+($10^5$ fields connected together in a single chain). To remedy this, we use our own
+stack.
+
+```py
+with open('planting.in') as read:
+	field_num = int(read.readline())
+	neighbors = [[] for _ in range(field_num)]
+	for _ in range(field_num - 1):
+		field1, field2 = [int(i) - 1 for i in read.readline().split()]
+		neighbors[field1].append(field2)
+		neighbors[field2].append(field1)
+
+needed_types = [0 for _ in range(field_num)]
+needed_types[0] = 1
+
+stack = [(0, 0)]
+while stack:
+	at, prev = stack.pop()
+	type_num = 1
+	for n in neighbors[at]:
+		if n == prev:
+			continue
+
+		while type_num in [needed_types[at], needed_types[prev]]:
+			type_num += 1
+
+		needed_types[n] = type_num
+		stack.append((n, at))
+		type_num += 1
+
+print(max(needed_types), file=open('planting.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
