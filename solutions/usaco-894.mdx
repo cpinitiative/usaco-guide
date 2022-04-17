@@ -139,20 +139,28 @@ void setIO(string name = ""){
 	}
 }
 
-vector<int> needed_types;
+vector<int> grass_type;
 vector<vector<int>> neighbors;
 
 void process_fields(int at, int prev) {
+	// Start with grass type 1.
 	int type_num = 1;
 	for (int n : neighbors[at]) {
 		if (n == prev) {
 			continue;
 		}
-		while (type_num == needed_types[at] || type_num == needed_types[prev]) {
+		// While the current grass type is being used, increment it.
+		while (type_num == grass_type[at] || type_num == grass_type[prev]) {
 			type_num++;
 		}
-		needed_types[n] = type_num;
+		
+		// Set the grass type for the neighboring field.
+		grass_type[n] = type_num;
+		
+		// Recursively color the other fields.
 		process_fields(n, at);
+		
+		// We can't use this grass type again.
 		type_num++;
 	}
 }
@@ -163,7 +171,7 @@ int main() {
 	int field_num; 
 	cin >> field_num;
 
-	needed_types = vector<int>(field_num);
+	grass_type = vector<int>(field_num);
 	neighbors = vector<vector<int>>(field_num);
 	for (int f = 0; f < field_num - 1; f++) {
 		int field1, field2;
@@ -172,14 +180,16 @@ int main() {
 		neighbors[field2].push_back(field1);
 	}
 
-	needed_types[0] = 1;
+	// Set our starting field to be type 1.
+	grass_type[0] = 1;
 	process_fields(0, 0);
-	int min_types = 0;
-	for (int t : needed_types) {
-		min_types = max(min_types, t);
+
+	int min_type = 0;
+	for (int t : grass_type) {
+		min_type = max(min_type, t);
 	}
 	
-	cout << min_types << endl;
+	cout << min_type << endl;
 }
 ```
 
@@ -191,7 +201,7 @@ import java.io.*;
 import java.util.*;
 
 public class Planting {
-	static int[] neededTypes;
+	static int[] grassType;
 	static List<Integer>[] neighbors;
 
 	public static void main(String[] args) throws IOException {
@@ -210,31 +220,39 @@ public class Planting {
 			neighbors[field2].add(field1);
 		}
 
-		neededTypes = new int[fieldNum];
-		neededTypes[0] = 1;
-
+		grassType = new int[fieldNum];
+		// Set our starting field to be type 1.
+		grassType[0] = 1;
 		processFields(0, 0);
 		
-		int minTypes = 0;
-		for (int t : neededTypes) {
-			minTypes = Math.max(minTypes, t);
+		int minType = 0;
+		for (int t : grassType) {
+			minType = Math.max(minType, t);
 		}
 
-		io.println(minTypes);
+		io.println(minType);
 		io.close();
 	}
 
 	static void processFields(int at, int prev) {
+		// Start with grass type 1.
 		int typeNum = 1;
 		for (int n : neighbors[at]) {
 			if (n == prev) {
 				continue;
 			}
-			while (typeNum == neededTypes[at] || typeNum == neededTypes[prev]) {
+			// While the current grass type is being used, increment it.
+			while (typeNum == grassType[at] || typeNum == grassType[prev]) {
 				typeNum++;
 			}
-			neededTypes[n] = typeNum;
+
+			// Set the grass type for the neighboring field.
+			grassType[n] = typeNum;
+			
+			// Recursively color the other fields.
 			processFields(n, at);
+			
+			// We can't use this type again.
 			typeNum++;
 		}
 	}
@@ -259,25 +277,33 @@ with open('planting.in') as read:
 		neighbors[field1].append(field2)
 		neighbors[field2].append(field1)
 
-needed_types = [0 for _ in range(field_num)]
-needed_types[0] = 1
+grass_type = [0 for _ in range(field_num)]
+# Set our starting field to be type 1.
+grass_type[0] = 1
 
-stack = [(0, 0)]
-while stack:
-	at, prev = stack.pop()
+todo = [(0, 0)]
+while todo:
+	at, prev = todo.pop()
+	# Start with grass type 1.
 	type_num = 1
 	for n in neighbors[at]:
 		if n == prev:
 			continue
 
-		while type_num in [needed_types[at], needed_types[prev]]:
+		# While the current grass type is being used, increment it.
+		while type_num in [grass_type[at], grass_type[prev]]:
 			type_num += 1
 
-		needed_types[n] = type_num
-		stack.append((n, at))
+		# Set the grass type for the neighboring field.
+		grass_type[n] = type_num
+
+		# Recursively color the other fields.
+		todo.append((n, at))
+
+		# We can't use this type again.
 		type_num += 1
 
-print(max(needed_types), file=open('planting.out', 'w'))
+print(max(grass_type), file=open('planting.out', 'w'))
 ```
 
 </PySection>
