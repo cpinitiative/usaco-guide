@@ -27,7 +27,7 @@ export default functions.https.onCall(
       !caller.customClaims.isAdmin &&
       ![
         'BKFOe33Ym7Pc7aQuET57MiljpF03',
-        'v8NK8mHCZnbPQKaPnEs5lKNc3rv2',
+        '7G0y8xGyv4gkowb33Vmn478znod2',
       ].includes(callerUid)
     ) {
       throw new functions.https.HttpsError(
