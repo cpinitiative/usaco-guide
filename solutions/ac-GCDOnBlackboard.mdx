@@ -117,7 +117,7 @@ print(ans)
 import java.util.*;
 import java.io.*;
 
-public class GCDOnBlackboard {
+public class Main {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
@@ -127,19 +127,18 @@ public class GCDOnBlackboard {
 			a[i] = io.nextInt();
 		}
 
-		// prefix and suffix gcd
-		int p[] = new int[n + 1];
-		int s[] = new int[n + 1];
+		int[] prefGCD = new int[n + 1];
+		int[] suffGCD = new int[n + 1];
 		for (int i = 1; i <= n; i++) {
-			p[i] = gcd(p[i - 1], a[i - 1]);
+			prefGCD[i] = gcd(prefGCD[i - 1], a[i - 1]);
 		}
 		for (int i = n - 1; i >= 0; i--) {
-			s[i] = gcd(s[i + 1], a[i]);
+			suffGCD[i] = gcd(suffGCD[i + 1], a[i]);
 		}
 
 		int ans = 0;
 		for (int i = 0; i < n; i++) {
-			int g = gcd(s[i + 1], p[i]);
+			int g = gcd(suffGCD[i + 1], prefGCD[i]);
 			ans = Math.max(ans, g);
 		}
 		System.out.println(ans);
