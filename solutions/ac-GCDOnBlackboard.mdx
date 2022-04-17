@@ -131,21 +131,21 @@ public class Main{
             a[i] = io.nextInt();
 
         //prefix and suffix gcd
-        int p[] = new int[n+1];
-        int s[] = new int[n+1];
-        for(int i = 1; i<=n; i++)
+        int p[] = new int[n + 1];
+        int s[] = new int[n + 1];
+        for(int i = 1; i <= n; i++)
         {
-            p[i] = gcd(p[i-1], a[i-1]);
+            p[i] = gcd(p[i - 1], a[i - 1]);
         }
-        for(int i = n-1; i>=0; i--)
+        for(int i = n - 1; i >= 0; i--)
         {
-            s[i] = gcd(s[i+1], a[i]);
+            s[i] = gcd(s[i + 1], a[i]);
         }
 
         int ans = 0;
-        for(int i=0; i<n; i++)
+        for(int i = 0; i < n; i++)
         {
-            int g = gcd(s[i+1], p[i]);
+            int g = gcd(s[i + 1], p[i]);
             ans = Math.max(ans, g);
         }
         System.out.println(ans);
