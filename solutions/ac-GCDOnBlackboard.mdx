@@ -120,30 +120,28 @@ print(ans)
 import java.util.*;
 import java.io.*;
 
-public class Main{
-    public static void main(String[] args) throws IOException{
+public class GCDOnBlackboard {
+    public static void main(String[] args) throws IOException {
         Kattio io = new Kattio();
         int n = io.nextInt();
         int a[] = new int[n];
 
-        for(int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             a[i] = io.nextInt();
+        }
 
         // prefix and suffix gcd
         int p[] = new int[n + 1];
         int s[] = new int[n + 1];
-        for(int i = 1; i <= n; i++)
-        {
+        for (int i = 1; i <= n; i++) {
             p[i] = gcd(p[i - 1], a[i - 1]);
         }
-        for(int i = n - 1; i >= 0; i--)
-        {
+        for (int i = n - 1; i >= 0; i--) {
             s[i] = gcd(s[i + 1], a[i]);
         }
 
         int ans = 0;
-        for(int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
             int g = gcd(s[i + 1], p[i]);
             ans = Math.max(ans, g);
         }
@@ -151,19 +149,17 @@ public class Main{
 		io.close();
     }
 
-    // Euclidean Algorithm O(log2(min(a, b)))
-    static int gcd(int a, int b)
-    {
+    static int gcd(int a, int b) {
         // a needs to be larger than b
-        if(a < b)
-        {
+        if (a < b) {
             int temp = a;
             a = b;
             b = temp;
         }
 
-        if(b == 0)
+        if (b == 0) {
             return a;
+	    }
         return gcd(b, a % b);
     }
 
