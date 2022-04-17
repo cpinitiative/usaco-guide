@@ -11,8 +11,12 @@ author: Chongtian Ma
 
 An important observation is that if Bessie is at position $x$, then the number of cows lying are all the
 cows with position less than $x$ that says "L" plus all the cows with a position greater than x that says
-"G". Thus, we can loop through every cow's position and treat it as point $x$ and compute the total number 
-of liars by using a forwards loop and a backwards loop. The answer is the minimum liars over all possible position $x$.
+"G".
+
+Given this, we can loop through every cow's position and compute the total number 
+of liars by using a forwards loop and a backwards loop.
+
+The answer is the minimum liars over all the positions we looped over.
 
 ## Implementation
 
@@ -25,42 +29,58 @@ of liars by using a forwards loop and a backwards loop. The answer is the minimu
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 int main() {
-	int n; cin>>n;
-	vector<pair<int,char>> cows(n);
-	for(int i = 0; i < n; i++){
-		// notice the position is read into the first slot of the pair
-		cin>>cows[i].second>>cows[i].first;
+	int n;
+	cin >> n;
+	
+	vector<pair<int, char>> cows(n);
+	for (int i = 0; i < n; i++) {
+		// The position is read into .first for sorting.
+		cin >> cows[i].second >> cows[i].first;
 	}
 
-	// sort by non-decreasing position
+	// Sort by position.
 	sort(cows.begin(),cows.end());
 	
-	// stores the cows lying relative to each cow's position
-	vector<int> lying_left(n), lying_right(n);
-	for(int i = 1; i < n; i++){
-		// add up all the cows that are already lying to the left of our position
-		lying_left[i] += lying_left[i-1];
-		if(cows[i-1].second == 'L' && cows[i].first > cows[i-1].first){
+	/*
+	 * lying_left[i] stores the number of cows to the left of cow i
+	 * that must be lying given that Bessie is at the position of cow i.
+	 * 
+	 * lying_right stores the same thing, but does it so for the cows
+	 * to the *right* of i.
+	 */
+	vector<int> lying_left(n);
+	vector<int> lying_right(n);
+	
+	for (int i = 1; i < n; i++) {
+		// Add up all the cows that are already lying to the left of our position.
+		lying_left[i] += lying_left[i - 1];
+		
+		if (cows[i - 1].second == 'L' && cows[i].first > cows[i - 1].first) {
 			/*
 			 * If the cow before says our position is to the left
-			 * and their position is strictly less than our position
-			 * then they are lying
+			 * but their position is strictly less than our position,
+			 * they're lying.
 			*/
 			lying_left[i]++;
 		}
 	}
-	for(int i = n-2; i >= 0; i--){
-		lying_right[i] += lying_right[i+1];
-		if(cows[i+1].second == 'G' && cows[i].first < cows[i+1].first){
+	
+	// Fill up lying_right in much the same way.
+	for (int i = n - 2; i >= 0; i--) {
+		lying_right[i] += lying_right[i + 1];
+		
+		if (cows[i + 1].second == 'G' && cows[i].first < cows[i + 1].first) {
 			lying_right[i]++;
 		}
 	}
-	int ans = n;
-	for(int i = 0; i < n; i++){
-		ans = min(ans, lying_left[i] + lying_right[i]);
+	
+	int min_liars = n;
+	for (int i = 0; i < n; i++) {
+		min_liars = min(ans, lying_left[i] + lying_right[i]);
 	}
-	cout<<ans<<endl;
+	cout << min_liars << endl;
 }
 ```
 
