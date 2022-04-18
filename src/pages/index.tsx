@@ -476,7 +476,10 @@ export default function IndexPage(): JSX.Element {
             Our Sponsors
           </p>
 
-          <div className="mt-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:mt-6 text-gray-400 items-center">
+          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+            Platinum Sponsors
+          </p>
+          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
             <div className="col-span-1">
               <a href="https://x-camp.academy" target="_blank" rel="noreferrer">
                 <svg
@@ -767,6 +770,11 @@ export default function IndexPage(): JSX.Element {
                 </svg>
               </a>
             </div>
+          </div>
+          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+            In-kind Sponsors
+          </p>
+          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
             <div className="col-span-1">
               <a
                 href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
