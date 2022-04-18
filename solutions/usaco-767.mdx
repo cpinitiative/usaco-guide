@@ -1,0 +1,70 @@
+---
+id: usaco-767
+source: USACO Gold 2017 December
+title: Haybale Feast
+author: Chongtian Ma
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_hayfeast_gold_dec17.html)
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+  
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream cin("hayfeast.in");
+	ofstream cout("hayfeast.out");
+
+	int n;
+	long long m;
+	cin >> n >> m;
+	vector<pair<int,int>> haybales(n);
+	for(pair<int,int>& i: haybales){
+		cin >> i.first >> i.second;
+	}
+
+	int min_spiciness = 1e9;
+	long long sum_flavor = 0;
+	multiset<int> spices;
+
+	for(int left = 0, right = 0; right < n; left++){
+
+		// advance our right pointer until flavor sum is at least m
+		while(right < n && sum_flavor < m){
+
+			/*
+			 * Since we are including the right haybale in our window,
+			 * we add its flavor and track its spiciness in the spices multiset
+			 */
+
+			sum_flavor += haybales[right].first;
+			spices.insert(haybales[right].second);
+			right++;
+		}
+
+		if(sum_flavor >= m){
+			// access the largest spice we've got in the window's spiciness
+			min_spiciness = min(min_spiciness,*spices.rbegin());
+		}
+
+		/*
+		 * advance our left pointer and remove the leftmost haybale's info since
+		 * we are excluding that haybale from the window
+		 */
+
+		sum_flavor -= haybales[left].first;
+		spices.erase(spices.find(haybales[left].second));
+	}
+	cout << min_spiciness << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
