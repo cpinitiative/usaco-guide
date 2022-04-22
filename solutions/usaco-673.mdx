@@ -59,7 +59,7 @@ int main() {
 		n + 1, vector<vector<long long>>(m + 1, vector<long long>(k + 1))
 	);
 
-	// Base case: there is one way to construct a team of size zero.
+	// base case: there is one way to construct a team of size zero.
 	for (int i = 0; i <= n; i++) {
 		for (int j = 0; j <= m; j++) {
 			dp[i][j][0] = 1; 
@@ -69,7 +69,10 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			for (int s = 1; s <= k; s++) {
-				// Carry over + subtract the overlap
+				/*
+				 * the current number of teams will be at least the
+				 * number of teams from not including i and not including j
+				 */
 				dp[i + 1][j + 1][s] += dp[i + 1][j][s];
 				dp[i + 1][j + 1][s] += dp[i][j + 1][s];
 				dp[i + 1][j + 1][s] -= dp[i][j][s];
