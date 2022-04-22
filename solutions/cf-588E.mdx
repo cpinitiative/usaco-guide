@@ -6,14 +6,19 @@ author: Chongtian Ma
 ---
 
 ## Explanation
-Note that for each two nodes $u$ and $v$, the path between them is just $u$ to $lca(u,v)$ and $v$ to $lca(u,v)$. Also note the constraint
-of $a \leq 10$ for each query. To answer each query, we only need to store the $10$ people with the smallest ids for the path from $u$ to
-$lca(u,v)$ and $v$ to $lca(u,v)$, and combine them. This can be done with binary lifting, which will store the $10$ smallest ids for each
-vertex to their $2^k$'th ancestor.
+
+Note that for each two nodes $u$ and $v$, the path between them is just $u$ to
+$lca(u,v)$ and $v$ to $lca(u,v)$. Also note the constraint of $a \leq 10$ for
+each query. To answer each query, we only need to store the $10$ people with the
+smallest ids for the path from $u$ to $lca(u,v)$ and $v$ to $lca(u,v)$, and
+combine them. This can be done with binary lifting, which will store the $10$
+smallest ids for each vertex to their $2^k$'th ancestor.
 
 ## Implementation
-We can answer each query in $\mathcal{O}(a \log n)$ even though the constant factor is pretty bad. However the problem limits does give you 
-room for it. Note that if you do store more than $10$ smallest ids the problem will yield a MLE!
+
+We can answer each query in $\mathcal{O}(a \log n)$ even though the constant
+factor is pretty bad, however the problem limits does give you room for it. Note
+that if you do store more than $10$ smallest ids the problem will yield a MLE!
 
 <LanguageSection>
 <CPPSection>
@@ -28,7 +33,7 @@ const int L = 20; // approximately maximum log
 vector<int> enter_time(N), exit_time(N), depth(N);
 int timer = 1;
 
-// for binary lifting 
+// for binary lifting
 vector<vector<int>> up(N,vector<int>(L)); // up[i][j] stores the 2^jth ancestor for i
 // stores the (10) minimum people from the path from i to 2^jth ancestor
 vector<int> minimum_up[N][L];
@@ -56,7 +61,7 @@ void dfs(int node, int parent){
 	depth[node] = depth[parent] + 1;
 	up[node][0] = parent;
 	combine(minimum_up[node][0], living_at[parent]);
-	
+
 	enter_time[node] = timer++;
 	for(int child: graph[node]){
 		if(child != parent){
@@ -106,7 +111,7 @@ int main(){
 		scanf("%d",&id);
 		living_at[id].push_back(i);
 	}
-	
+
 	// sort from smallest to largest and keep the 10 minimums
 	for(int i = 1; i <= n; i++){
 		sort(living_at[i].begin(),living_at[i].end());
@@ -114,7 +119,7 @@ int main(){
 	}
 
 	dfs(1,1);
-	
+
 	// fill in information for binary lifting
 	for(int k = 1; k < L; k++){
 		for(int i = 1; i <= n; i++){
@@ -124,13 +129,13 @@ int main(){
 			combine(minimum_up[i][k], minimum_up[up[i][k-1]][k-1]);
 		}
 	}
-	
+
 	while(q--){
 		int u,v,a;
 		scanf("%d %d %d",&u,&v,&a);
 		vector<int> min_people;
 		int least_common_ancestor = lca(u,v);
-		
+
 		// gather the people living at cities u and v
 		if(least_common_ancestor != u){
 			combine(min_people, living_at[u]);
@@ -138,19 +143,19 @@ int main(){
 		if(least_common_ancestor != v){
 			combine(min_people, living_at[v]);
 		}
-		
+
 		// gather people living in path from lca to u and lca to v
 		trace_path(u, max(0, depth[u] - depth[least_common_ancestor] - 1), min_people);
 		trace_path(v, max(0, depth[v] - depth[least_common_ancestor] - 1), min_people);
-		
+
 		combine(min_people, living_at[least_common_ancestor]);
-		
+
 		int k = min((int)min_people.size(), a);
 		printf("%d ",k);
 		for(int i = 0; i < k; i++){
 			printf("%d ",min_people[i]);
 		}
-		puts(" ");	
+		puts(" ");
 	}
 }
 ```
