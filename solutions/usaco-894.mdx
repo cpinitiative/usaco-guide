@@ -2,10 +2,10 @@
 id: usaco-894
 source: USACO Silver 2019 January
 title: Grass Planting
-author: Neo Wang, Aadit Ambadkar, Sandeep Wadhwa
+author: Neo Wang, Aadit Ambadkar, Sandeep Wadhwa, Kevin Sheng
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_planting_silver_jan19.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_planting_silver_jan19.html)
 
 ## Solution 1 - Intended Solution
 
@@ -19,222 +19,297 @@ It can be shown that the tree can also be colored accordingly in
 $\max(\texttt{deg}[i])+1$ colors.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int MAX_N = 10000;
 
-// USACO-style file input
-void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	if(name.size()){
-		freopen((name+".in").c_str(), "r", stdin);
-		freopen((name+".out").c_str(), "w", stdout);
+// FastIO: see General -> Fast Input and Output
+void setIO(string name = ""){
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	if (!name.empty()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
 int main() {
 	setIO("planting");
 
-	int n; 
-	cin >> n;
-	int deg[MAX_N + 1] = {}; // initialize with 0s
-	int u, v;
-	int maxDeg = INT_MIN;  // tracking maxDegree
-	for (int i = 1; i < n; i++) {
-		cin >> u >> v;
-		deg[u]++;
-		deg[v]++;
-		maxDeg = max(maxDeg, max(deg[u], deg[v]));
+	int field_num; 
+	cin >> field_num;
+
+	vector<int> deg(field_num + 1);  // 1-indexed
+	for (int p = 0; p < field_num - 1; p++) {
+		int field1, field2;
+		cin >> field1 >> field2;
+
+		deg[field1]++;
+		deg[field2]++;
 	}
-	cout << maxDeg + 1 << "\n";
+
+	int max_deg = 0;
+	for (int f = 1; f <= field_num; f++) {
+		max_deg = max(max_deg, deg[f]);
+	}
+
+	cout << max_deg + 1 << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class GrassPlanting {
+public class Planting {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("planting");
-		int n = io.nextInt();
-		int[] deg = new int[n+1];
-		for(int i = 0; i < n-1; i++) {
-			int a = io.nextInt(), b = io.nextInt();
-			deg[a]++; deg[b]++;
+
+		int fieldNum = io.nextInt();
+		int[] deg = new int[fieldNum + 1];  // 1-indexed
+		for (int p = 0; p < fieldNum - 1; p++) {
+			int field1 = io.nextInt();
+			int field2 = io.nextInt();
+			deg[field1]++;
+			deg[field2]++;
 		}
 
-		int ret = 0;
+		int maxDeg = 0;
+		for(int f = 1; f <= fieldNum; f++) {
+			maxDeg = Math.max(maxDeg, deg[f]);
+		}
 
-		for(int i = 1; i <= n; i++) ret = Math.max(ret, deg[i]);
-		io.println(ret+1);
+		io.println(maxDeg + 1);
 		io.close();
 	}
 
-	private static class Kattio extends PrintWriter {
-		private BufferedReader r;
-		private StringTokenizer st;
-
-		// standard input
-		public Kattio() { this(System.in,System.out); }
-
-		public Kattio(InputStream i, OutputStream o) {
-			super(o);
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-
-		// USACO-style file input
-		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
-		}
-
-		// returns null if no more input
-		public String next() {
-			try {
-				while (st == null || !st.hasMoreTokens())
-					st = new StringTokenizer(r.readLine());
-				return st.nextToken();
-			} catch (Exception e) {}
-			return null;
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-	}
+	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+with open('planting.in') as read:
+	field_num = int(read.readline())
+	deg = [0 for _ in range(field_num + 1)]  # 1-indexed
+	for _ in range(field_num - 1):
+		field1, field2 = [int(i) for i in read.readline().split()]
+		deg[field1] += 1
+		deg[field2] += 1
+
+max_deg = max(deg)
+print(max_deg + 1, file=open('planting.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Solution 2 - DFS
 
 **Time Complexity**: $\mathcal{O}(N)$
 
-This can also be solved using DFS. The solution is less elegant but generates a
-valid assignment of grass types in the $\texttt{ans}$ array.
+This can also be solved using [DFS](/silver/dfs).
+Although it is less elegant, it has the subjective advantage
+of actually giving a valid planting arrangement for the fields.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int MAX_N = 10000;
 
-// USACO-style file input
-void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	if(name.size()){
-		freopen((name+".in").c_str(), "r", stdin);
-		freopen((name+".out").c_str(), "w", stdout);
+// FastIO: see General -> Fast Input and Output
+void setIO(string name = ""){
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	if (!name.empty()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
-bool visited[MAX_N + 1];
-int ans[MAX_N + 1];
-vector<int> adjList[MAX_N + 1];
+vector<int> grass_type;
+vector<vector<int>> neighbors;
 
-void dfs(int self, int parent){
-	int len = adjList[self].size();
-	int g = 1;
-	for (int i : adjList[self]) {
-		if (i != parent) {
-			while (g == ans[self] || g == ans[parent]) 
-				g++;
-			ans[i] = g;
-			dfs(i, self);
-			g++;
+void process_fields(int at, int prev) {
+	// Start with grass type 1.
+	int type_num = 1;
+	for (int n : neighbors[at]) {
+		if (n == prev) {
+			continue;
 		}
+		// While the current grass type is being used, increment it.
+		while (type_num == grass_type[at] || type_num == grass_type[prev]) {
+			type_num++;
+		}
+		
+		// Set the grass type for the neighboring field.
+		grass_type[n] = type_num;
+		
+		// Recursively color the other fields.
+		process_fields(n, at);
+		
+		// We can't use this grass type again.
+		type_num++;
 	}
 }
 
 int main() {
 	setIO("planting");
 
-	int n; 
-	cin >> n;
-	int u, v;
-	for (int i = 1; i < n; i++){
-		cin >> u >> v;
-		adjList[u].push_back(v);
-		adjList[v].push_back(u);
+	int field_num; 
+	cin >> field_num;
+
+	grass_type = vector<int>(field_num);
+	neighbors = vector<vector<int>>(field_num);
+	for (int f = 0; f < field_num - 1; f++) {
+		int field1, field2;
+		cin >> field1 >> field2;
+		neighbors[--field1].push_back(--field2);
+		neighbors[field2].push_back(field1);
 	}
-	dfs(1, 1);
-	int maxAns = 0;
-	for (int curAns : ans) {
-		maxAns = max(maxAns, curAns);
+
+	// Set our starting field to be type 1.
+	grass_type[0] = 1;
+	process_fields(0, 0);
+
+	int min_type = 0;
+	for (int t : grass_type) {
+		min_type = max(min_type, t);
 	}
-	cout << maxAns << "\n";
+	
+	cout << min_type << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
-public class Main {
-	public static int[] ans;
-	public static List<Integer>[] adj;
+
+public class Planting {
+	static int[] grassType;
+	static List<Integer>[] neighbors;
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader f = new BufferedReader(new FileReader("planting.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("planting.out")));
-		StringTokenizer st = new StringTokenizer(f.readLine());
-		int farms = Integer.parseInt(st.nextToken());
-		adj = new List[farms];
-		for (int i = 0; i < farms; i++) {
-			adj[i] = new ArrayList<>();
+		Kattio io = new Kattio("planting");
+		
+		int fieldNum = io.nextInt();
+
+		neighbors = new List[fieldNum];
+		for (int f = 0; f < fieldNum; f++) {
+			neighbors[f] = new ArrayList<>();
 		}
-		for (int i = 0; i < farms - 1; i++) {
-			st = new StringTokenizer(f.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			adj[a - 1].add(b - 1);
-			adj[b - 1].add(a - 1);
+		for (int i = 0; i < fieldNum - 1; i++) {
+			int field1 = io.nextInt();
+			int field2 = io.nextInt();
+			neighbors[--field1].add(--field2);
+			neighbors[field2].add(field1);
 		}
-		ans = new int[farms];
-		ans[0] = 1;
-		dfs(0, 0);
-		int max = 0;
-		for (int i : ans) {
-			max = Math.max(max, i);
+
+		grassType = new int[fieldNum];
+		// Set our starting field to be type 1.
+		grassType[0] = 1;
+		processFields(0, 0);
+		
+		int minType = 0;
+		for (int t : grassType) {
+			minType = Math.max(minType, t);
 		}
-		pw.println(max);
-		pw.close();
+
+		io.println(minType);
+		io.close();
 	}
-	public static void dfs(int self, int parent) {
-		int len = adj[self].size();
-		int g = 1;
-		for (int i : adj[self]) {
-			if (i != parent) {
-				while (g == ans[self] || g == ans[parent]) g++;
-				ans[i] = g;
-				dfs(i, self);
-				g++;
+
+	static void processFields(int at, int prev) {
+		// Start with grass type 1.
+		int typeNum = 1;
+		for (int n : neighbors[at]) {
+			if (n == prev) {
+				continue;
 			}
+			// While the current grass type is being used, increment it.
+			while (typeNum == grassType[at] || typeNum == grassType[prev]) {
+				typeNum++;
+			}
+
+			// Set the grass type for the neighboring field.
+			grassType[n] = typeNum;
+			
+			// Recursively color the other fields.
+			processFields(n, at);
+			
+			// We can't use this type again.
+			typeNum++;
 		}
 	}
+
+	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+<Warning>
+
+Implementing recursion as normal results in stack overflow for the last test case
+($10^5$ fields connected together in a single chain). To remedy this, we use our own
+stack.
+
+</Warning>
+
+```py
+with open('planting.in') as read:
+	field_num = int(read.readline())
+	neighbors = [[] for _ in range(field_num)]
+	for _ in range(field_num - 1):
+		field1, field2 = [int(i) - 1 for i in read.readline().split()]
+		neighbors[field1].append(field2)
+		neighbors[field2].append(field1)
+
+grass_type = [0 for _ in range(field_num)]
+# Set our starting field to be type 1.
+grass_type[0] = 1
+
+todo = [(0, 0)]
+while todo:
+	at, prev = todo.pop()
+	# Start with grass type 1.
+	type_num = 1
+	for n in neighbors[at]:
+		if n == prev:
+			continue
+
+		# While the current grass type is being used, increment it.
+		while type_num in [grass_type[at], grass_type[prev]]:
+			type_num += 1
+
+		# Set the grass type for the neighboring field.
+		grass_type[n] = type_num
+
+		# Recursively color the other fields.
+		todo.append((n, at))
+
+		# We can't use this type again.
+		type_num += 1
+
+print(max(grass_type), file=open('planting.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
