@@ -54,7 +54,7 @@ void remove_extra(vector<int> &x) {
 void combine(vector<int>& a, vector<int> b){
 	// combine vector b into vector a
 	a.insert(a.end(), b.begin(), b.end());
-	sort(a.begin(),a.end());
+	sort(a.begin(), a.end());
 	remove_extra(a);
 }
 
@@ -67,7 +67,7 @@ void dfs(int node, int parent){
 	enter_time[node] = timer++;
 	for(int child: graph[node]){
 		if(child != parent){
-			dfs(child,node);
+			dfs(child, node);
 		}
 	}
 	exit_time[node] = timer - 1;
@@ -79,7 +79,7 @@ bool is_ancestor(int a, int b){
 }
 
 int lca(int a, int b){
-	if(is_ancestor(a,b))return a;
+	if(is_ancestor(a, b))return a;
 	for(int i = L-1; i >= 0; i--){
 		if(!is_ancestor(up[a][i], b)){
 			a = up[a][i];
@@ -116,7 +116,7 @@ int main(){
 
 	// sort from smallest to largest and keep the 10 minimums
 	for(int i = 1; i <= n; i++){
-		sort(living_at[i].begin(),living_at[i].end());
+		sort(living_at[i].begin(), living_at[i].end());
 		remove_extra(living_at[i]);
 	}
 
@@ -153,9 +153,9 @@ int main(){
 		combine(min_people, living_at[least_common_ancestor]);
 
 		int k = min((int)min_people.size(), a);
-		printf("%d ",k);
+		printf("%d ", k);
 		for(int i = 0; i < k; i++){
-			printf("%d ",min_people[i]);
+			printf("%d ", min_people[i]);
 		}
 		puts(" ");
 	}
