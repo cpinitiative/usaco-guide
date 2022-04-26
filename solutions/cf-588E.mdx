@@ -45,28 +45,28 @@ vector<int> living_at[N]; // number of people living at each city
 
 void remove_extra(vector<int> &x) {
 	// keeps only the first 10 elements (note constraint on a)
-	while(x.size() > 10){
+	while (x.size() > 10) {
 		x.pop_back();
 	}
 }
 
 // combine two vectors and keep the 10 minimum among them
-void combine(vector<int> &a, vector<int> b){
+void combine(vector<int> &a, vector<int> b) {
 	// combine vector b into vector a
 	a.insert(a.end(), b.begin(), b.end());
 	sort(a.begin(), a.end());
 	remove_extra(a);
 }
 
-void dfs(int node, int parent){
+void dfs(int node, int parent) {
 	// initialize with direct parent information
 	depth[node] = depth[parent] + 1;
 	up[node][0] = parent;
 	combine(minimum_up[node][0], living_at[parent]);
 
 	enter_time[node] = timer++;
-	for(int child: graph[node]){
-		if(child != parent){
+	for (int child: graph[node]) {
+		if (child != parent) {
 			dfs(child, node);
 		}
 	}
@@ -74,14 +74,16 @@ void dfs(int node, int parent){
 }
 
 // checks if node a is an ancestor of b using euler tour
-bool is_ancestor(int a, int b){
+bool is_ancestor(int a, int b) {
 	return enter_time[a] <= enter_time[b] && exit_time[a] >= exit_time[b];
 }
 
-int lca(int a, int b){
-	if(is_ancestor(a, b))return a;
-	for(int i = L-1; i >= 0; i--){
-		if(!is_ancestor(up[a][i], b)){
+int lca(int a, int b) {
+	if (is_ancestor(a, b)) {
+		return a;
+	}
+	for (int i = L-1; i >= 0; i--) {
+		if (!is_ancestor(up[a][i], b)) {
 			a = up[a][i];
 		}
 	}
@@ -90,9 +92,9 @@ int lca(int a, int b){
 
 // gather all people going from a node to its k'th ancestor and
 // store the minimums in the people array
-void trace_path(int node, int k, vector<int> &people){
-	for(int i = 0; i < L; i++){
-		if(k & (1 << i)){
+void trace_path(int node, int k, vector<int> &people) {
+	for (int i = 0; i < L; i++) {
+		if (k & (1 << i)) {
 			combine(people, minimum_up[node][i]);
 			node = up[node][i];
 		}
@@ -100,31 +102,31 @@ void trace_path(int node, int k, vector<int> &people){
 }
 
 int main(){
-	int n,m,q;
+	int n ,m, q;
 	scanf("%d %d %d", &n, &m, &q);
-	for(int i = 0; i < n-1; i++){
-		int u,v;
+	for (int i = 0; i < n-1; i++) {
+		int u, v;
 		scanf("%d %d", &u, &v);
 		graph[u].push_back(v);
 		graph[v].push_back(u);
 	}
-	for(int i = 1; i <= m; i++){
+	for (int i = 1; i <= m; i++) {
 		int city;
 		scanf("%d", &city);
 		living_at[city].push_back(i);
 	}
 
 	// sort from smallest to largest and keep the 10 minimums
-	for(int i = 1; i <= n; i++){
+	for (int i = 1; i <= n; i++) {
 		sort(living_at[i].begin(), living_at[i].end());
 		remove_extra(living_at[i]);
 	}
 
-	dfs(1,1);
+	dfs(1, 1);
 
 	// fill in information for binary lifting
-	for(int k = 1; k < L; k++){
-		for(int i = 1; i <= n; i++){
+	for (int k = 1; k < L; k++) {
+		for (int i = 1; i <= n; i++) {
 			up[i][k] = up[up[i][k-1]][k-1];
 			// combine people from the left and the right
 			combine(minimum_up[i][k], minimum_up[i][k-1]);
@@ -132,17 +134,17 @@ int main(){
 		}
 	}
 
-	while(q--){
-		int u,v,a;
-		scanf("%d %d %d",&u,&v,&a);
+	for (int query = 0; query < q; query++) {
+		int u, v, a;
+		scanf("%d %d %d", &u, &v, &a);
 		vector<int> min_people;
 		int least_common_ancestor = lca(u, v);
 
 		// gather the people living at cities u and v
-		if(least_common_ancestor != u){
+		if (least_common_ancestor != u) {
 			combine(min_people, living_at[u]);
 		}
-		if(least_common_ancestor != v){
+		if (least_common_ancestor != v) {
 			combine(min_people, living_at[v]);
 		}
 
@@ -154,7 +156,7 @@ int main(){
 
 		int k = min((int)min_people.size(), a);
 		printf("%d ", k);
-		for(int i = 0; i < k; i++){
+		for (int i = 0; i < k; i++) {
 			printf("%d ", min_people[i]);
 		}
 		puts(" ");
