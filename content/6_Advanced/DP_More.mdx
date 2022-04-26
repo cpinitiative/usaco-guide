@@ -8,8 +8,6 @@ frequency: 1
 
 ## Knuth's Optimization
 
-<IncompleteSection />
-
 ### Tutorials
 
 <Resources>
@@ -20,6 +18,20 @@ frequency: 1
 	 />
 	<Resource source="GCP" title="15.4.3 - Knuth's Optimization"/>
 </Resources>
+
+Knuth's optimization is, in a way, a special case of Range DP. It can improve the time complexity of the solution to a Range DP problem by a linear factor. In general, it is used to solve DP problems with the following transition -  
+<p>$\texttt{dp}[i][j]$ = $\texttt{cost}[i][j] + min_{i≤k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j])$ </p>
+Further, the cost function must be monotonic on lattice intervals, and it must satisfy the quadrangle inequalit, i.e., for all $a\leq b\leq c \leq d$:  
+1. $cost[b][c] ≤ cost[a][d]$ 
+2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$
+
+The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions to be satisfied, we have -  
+<p>$\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$</p>  
+
+Then, keeping track of the $\texttt{opt}$ array, we only have to go through a select few values of $k$ for each transition, giving an algorithm with time complexity $O(N^2)$.
+
+<Problems problems="knuth_optimization" />
+
 
 ## Miscellaneous Techniques
 
