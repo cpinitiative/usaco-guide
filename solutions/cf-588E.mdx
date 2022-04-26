@@ -82,7 +82,7 @@ int lca(int a, int b) {
 	if (is_ancestor(a, b)) {
 		return a;
 	}
-	for (int i = L-1; i >= 0; i--) {
+	for (int i = L - 1; i >= 0; i--) {
 		if (!is_ancestor(up[a][i], b)) {
 			a = up[a][i];
 		}
@@ -104,7 +104,7 @@ void trace_path(int node, int k, vector<int> &people) {
 int main(){
 	int n ,m, q;
 	scanf("%d %d %d", &n, &m, &q);
-	for (int i = 0; i < n-1; i++) {
+	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		scanf("%d %d", &u, &v);
 		graph[u].push_back(v);
@@ -127,10 +127,10 @@ int main(){
 	// fill in information for binary lifting
 	for (int k = 1; k < L; k++) {
 		for (int i = 1; i <= n; i++) {
-			up[i][k] = up[up[i][k-1]][k-1];
+			up[i][k] = up[up[i][k - 1]][k - 1];
 			// combine people from the left and the right
-			combine(minimum_up[i][k], minimum_up[i][k-1]);
-			combine(minimum_up[i][k], minimum_up[up[i][k-1]][k-1]);
+			combine(minimum_up[i][k], minimum_up[i][k - 1]);
+			combine(minimum_up[i][k], minimum_up[up[i][k - 1]][k - 1]);
 		}
 	}
 
