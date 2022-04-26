@@ -51,7 +51,7 @@ void remove_extra(vector<int> &x) {
 }
 
 // combine two vectors and keep the 10 minimum among them
-void combine(vector<int>& a, vector<int> b){
+void combine(vector<int> &a, vector<int> b){
 	// combine vector b into vector a
 	a.insert(a.end(), b.begin(), b.end());
 	sort(a.begin(), a.end());
@@ -90,7 +90,7 @@ int lca(int a, int b){
 
 // gather all people going from a node to its k'th ancestor and
 // store the minimums in the people array
-void trace_path(int node, int k, vector<int>& people){
+void trace_path(int node, int k, vector<int> &people){
 	for(int i = 0; i < L; i++){
 		if(k & (1 << i)){
 			combine(people, minimum_up[node][i]);
@@ -101,16 +101,16 @@ void trace_path(int node, int k, vector<int>& people){
 
 int main(){
 	int n,m,q;
-	scanf("%d %d %d",&n,&m,&q);
+	scanf("%d %d %d", &n, &m, &q);
 	for(int i = 0; i < n-1; i++){
 		int u,v;
-		scanf("%d %d",&u,&v);
+		scanf("%d %d", &u, &v);
 		graph[u].push_back(v);
 		graph[v].push_back(u);
 	}
 	for(int i = 1; i <= m; i++){
 		int city;
-		scanf("%d",&city);
+		scanf("%d", &city);
 		living_at[city].push_back(i);
 	}
 
