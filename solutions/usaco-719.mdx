@@ -90,7 +90,7 @@ int main() {
 	Seg<int> start_occ;
 	start_occ.init(2 * n);
 
-	int ans = 0;
+	int crossing_pairs = 0;
 	std::map<int, int> starts;
 
 	for (int i = 0; i < 2 * n; i++) {
@@ -102,7 +102,7 @@ int main() {
 		// this cow is ending
 		} else {
 			// add the number of cows which have started within this range
-			ans += start_occ.query(starts[loc[i]] + 1, i - 1);
+			crossing_pairs += start_occ.query(starts[loc[i]] + 1, i - 1);
 
 			// reset the cow's state
 			start_occ.upd(starts[loc[i]], 0);
@@ -110,7 +110,7 @@ int main() {
 		}
 	}
 
-	std::cout << ans << std::endl;
+	std::cout << crossing_pairs << std::endl;
 }
 ```
 </CPPSection>
