@@ -87,8 +87,8 @@ int main() {
 		loc[i] = --cow_id;
 	}
 
-	Seg<int> cross;
-	cross.init(2 * n);
+	Seg<int> start_occ;
+	start_occ.init(2 * n);
 
 	int ans = 0;
 	std::map<int, int> starts;
@@ -98,14 +98,14 @@ int main() {
 		if (starts.find(loc[i]) == starts.end()) {
 			// record its location
 			starts[loc[i]] = i;
-			cross.upd(i, 1);
+			start_occ.upd(i, 1);
 		// this cow is ending
 		} else {
 			// add the number of cows which have started within this range
-			ans += cross.query(starts[loc[i]] + 1, i - 1);
+			ans += start_occ.query(starts[loc[i]] + 1, i - 1);
 
 			// reset the cow's state
-			cross.upd(starts[loc[i]], 0);
+			start_occ.upd(starts[loc[i]], 0);
 			starts.erase(loc[i]);
 		}
 	}
