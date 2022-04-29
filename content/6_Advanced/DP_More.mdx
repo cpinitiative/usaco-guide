@@ -27,9 +27,9 @@ frequency: 1
 </Resources>
 
 Knuth's optimization is, in a way, a special case of Range DP. In general, it is used to solve DP problems with the following transition - $\texttt{dp}[i][j]$ = $\texttt{cost}[i][j] + min_{i≤k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j])$.  
-Further, the cost function must be monotonic and it must satisfy the quadrangle inequality, i.e., for all $a\leq b\leq c \leq d$:  
+Further, the cost function must satisfy the following conditions, for all $a\leq b\leq c \leq d$:  
 1. $cost[b][c] ≤ cost[a][d]$ 
-2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$
+2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$ (the quadrangle inequality)
 
 The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show the following inequality - $\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$.
 
