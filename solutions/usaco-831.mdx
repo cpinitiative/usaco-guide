@@ -123,68 +123,68 @@ public class TeamTicTacToe {
 
 ```py
 with open('tttt.in') as read:
-    board = [read.readline() for _ in range(3)]
+	board = [read.readline() for _ in range(3)]
 
 
 # Does 1 cow win?
 def cow_wins(game: [str], cow: str) -> bool:
-    # Check diagonals
-    if (game[0][0] == game[1][1] == game[2][2] == cow
-            or game[0][2] == game[1][1] == game[2][0] == cow):
-        return True
+	# Check diagonals
+	if (game[0][0] == game[1][1] == game[2][2] == cow
+			or game[0][2] == game[1][1] == game[2][0] == cow):
+		return True
 
-    # Check rows and columns
-    for i in range(3):
-        if (game[0][i] == game[1][i] == game[2][i] == cow
-                or game[i][0] == game[i][1] == game[i][2] == cow):
-            return True
-    return False
+	# Check rows and columns
+	for i in range(3):
+		if (game[0][i] == game[1][i] == game[2][i] == cow
+				or game[i][0] == game[i][1] == game[i][2] == cow):
+			return True
+	return False
 
 
 # Does a team win?
 def team_wins(game: [str], cow1: str, cow2: str) -> bool:
-    # Test if a team wins based on 3 characters in a row, column, or diagonal
-    def check3(a: str, b: str, c: str) -> bool:
-        # All 3 characters have to be either cow1 or cow2
-        if a != cow1 and a != cow2:
-            return False
-        if b != cow1 and b != cow2:
-            return False
-        if c != cow1 and c != cow2:
-            return False
+	# Test if a team wins based on 3 characters in a row, column, or diagonal
+	def check3(a: str, b: str, c: str) -> bool:
+		# All 3 characters have to be either cow1 or cow2
+		if a != cow1 and a != cow2:
+			return False
+		if b != cow1 and b != cow2:
+			return False
+		if c != cow1 and c != cow2:
+			return False
 
-        # cow1 and cow2 have to appear at least once each
-        if a != cow1 and b != cow1 and c != cow1:
-            return False
-        if a != cow2 and b != cow2 and c != cow2:
-            return False
-        return True
+		# cow1 and cow2 have to appear at least once each
+		if a != cow1 and b != cow1 and c != cow1:
+			return False
+		if a != cow2 and b != cow2 and c != cow2:
+			return False
+		return True
 
-    # Check diagonals like with a single cow
-    if (check3(game[0][0], game[1][1], game[2][2])
-            or check3(game[0][2], game[1][1], game[2][0])):
-        return True
+	# Check diagonals like with a single cow
+	if (check3(game[0][0], game[1][1], game[2][2])
+			or check3(game[0][2], game[1][1], game[2][0])):
+		return True
 
-    # And also check rows and column
-    for i in range(3):
-        if (check3(game[0][i], game[1][i], game[2][i])
-                or check3(game[i][0], game[i][1], game[i][2])):
-            return True
-    return False
+	# And also check rows and column
+	for i in range(3):
+		if (check3(game[0][i], game[1][i], game[2][i])
+				or check3(game[i][0], game[i][1], game[i][2])):
+			return True
+	return False
 
 
 single_wins = 0
 for c in range(ord('A'), ord('Z') + 1):
-    single_wins += cow_wins(board, chr(c))
+	single_wins += cow_wins(board, chr(c))
 
 double_wins = 0
 for c1 in range(ord('A'), ord('Z') + 1):
-    for c2 in range(c1 + 1, ord('Z') + 1):
-        double_wins += team_wins(board, chr(c1), chr(c2))
+	for c2 in range(c1 + 1, ord('Z') + 1):
+		double_wins += team_wins(board, chr(c1), chr(c2))
 
 with open('tttt.out', 'w') as written:
-    print(single_wins, file=written)
-    print(double_wins, file=written)
+	print(single_wins, file=written)
+	print(double_wins, file=written)
 ```
 
 </PySection>
@@ -307,14 +307,14 @@ WIDTH = 3
 
 
 def cow_contrib(game: [str], pts: [(int, int)]) -> {str}:
-    contained = set()
-    for pt in pts:
-        contained.add(game[pt[0]][pt[1]])
-    return contained
+	contained = set()
+	for pt in pts:
+		contained.add(game[pt[0]][pt[1]])
+	return contained
 
 
 with open('tttt.in') as read:
-    board = [read.readline() for _ in range(WIDTH)]
+	board = [read.readline() for _ in range(WIDTH)]
 
 winners = [set() for _ in range(WIDTH + 1)]
 # A function that adds the amount of cows who contributed to the winners count
@@ -322,19 +322,19 @@ insert = lambda c: winners[len(c)].add(tuple(sorted(c)))
 
 # Insert all the rows
 for r in range(WIDTH):
-    insert(cow_contrib(board, [(r, c) for c in range(WIDTH)]))
+	insert(cow_contrib(board, [(r, c) for c in range(WIDTH)]))
 
 # Do the same for the columns
 for c in range(WIDTH):
-    insert(cow_contrib(board, [(r, c) for r in range(WIDTH)]))
+	insert(cow_contrib(board, [(r, c) for r in range(WIDTH)]))
 
 # And finally the diagonals
 insert(cow_contrib(board, [(i, i) for i in range(WIDTH)]))
 insert(cow_contrib(board, [(i, WIDTH - i - 1) for i in range(WIDTH)]))
 
 with open('tttt.out', 'w') as written:
-    print(len(winners[1]), file=written)
-    print(len(winners[2]), file=written)
+	print(len(winners[1]), file=written)
+	print(len(winners[2]), file=written)
 ```
 
 </PySection>
