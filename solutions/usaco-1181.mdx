@@ -101,5 +101,96 @@ int main() {
 ```
         
 </CPPSection>
+
+<PySection>
+
+```python
+def check(same_lvl, corn, hunger_lvl):
+
+    # check if proposed leveling, corn amount works in regards to given hunger levels of the cows
+
+    hunger_lvl[0] -= corn[0]
+    hunger_lvl[-1] -= corn[-1]
+
+    for i in range(1, len(hunger_lvl)-1):
+        sum_of_corn = corn[i-1] + corn[i]
+        hunger_lvl[i]-= sum_of_corn
+
+    if len(set(hunger_lvl)) == 1 and same_lvl >= 0 and min(corn) >= 0:
+        return True
+    else:
+        return False
+
+def solve(n_cows, hunger_lvl, corn):
+
+    find_min_level = []
+
+    # skip two to find the corn amount difference
+
+    for i in range(1, n_cows - 1, 2):
+
+        if i - 2 >= 0:
+            pos_lvl = hunger_lvl[i-1] - corn[i-2]
+        else: 
+            pos_lvl = hunger_lvl[i-1]
+
+        find_min_level.append(pos_lvl)
+
+        corn[i] = hunger_lvl[i] - pos_lvl
+    
+    # find leveling, in which all the hunger level is the same
+
+    if n_cows % 2 == 0:
+        same_lvl = min(min(find_min_level), min(hunger_lvl))
+    else:
+        same_lvl = hunger_lvl[-1] - corn[-1]
+
+    corn[0] = hunger_lvl[0] - same_lvl
+
+    # fill in rest corn amount
+
+    if n_cows % 2 == 0:
+        n_cows_sub = n_cows - 2
+        corn[-1] = hunger_lvl[-1] - same_lvl
+    else: n_cows_sub = n_cows - 1
+
+    for i in range(2, n_cows_sub, 2):
+        corn[i] = (hunger_lvl[i] - corn[i - 1] - same_lvl)
+
+    works = check(same_lvl, corn, hunger_lvl)
+
+    if works:
+        return sum(corn) * 2
+    else:
+        return -1
+
+def draught():
+
+    # number of cows
+
+    n_cows = int(input())
+
+    # hunger levels
+
+    lvl = list(map(int, input().split()))
+
+    corns = [0] * (n_cows - 1)
+
+    if n_cows < 3:
+
+        if len(set(lvl)) == 1:
+            return 0
+        else: 
+            return -1
+
+    return solve(n_cows, lvl, corns)
+
+cnt = int(input())
+
+for _ in range(cnt):
+    print(draught())
+```
+
+</PySection>
         
 </LanguageSection>
