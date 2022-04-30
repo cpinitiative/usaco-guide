@@ -2,7 +2,7 @@ import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 const EasyFunCoding = () => (
   <StaticImage
-    src="../../../assets/easyfuncoding.jpg"
+    src="../../../assets/easyfuncoding.png"
     alt="EasyFunCoding logo"
     placeholder="blurred"
     height={48}
