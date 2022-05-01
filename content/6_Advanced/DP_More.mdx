@@ -31,7 +31,7 @@ Further, the cost function must satisfy the following conditions, for all $a\leq
 1. $cost[b][c] ≤ cost[a][d]$ 
 2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$ (the quadrangle inequality)
 
-The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show the following inequality - $\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$.
+The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show the following inequality - $\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$. (The proof of correctness for this claim is in the resources above.)
 
 The structure of the code is identical to that of Range DP, with the exception of maintaining the $\texttt{opt}$ array. To calculate $\texttt{dp}[i][j]$ and $\texttt{opt}[i][j]$, it is only necessary to check values of $k$ between $\texttt{opt}[i][j-1]$ and $\texttt{opt}[i+1][j]$. The time complexity of the final algorithm is $\mathcal{O} (N^2)$.
 
