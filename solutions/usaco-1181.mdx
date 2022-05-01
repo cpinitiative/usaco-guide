@@ -105,10 +105,8 @@ int main() {
 <PySection>
 
 ```python
+# Check if a proposed levelling works given some corn amounts.
 def check(same_lvl, corn, hunger_lvl):
-
-	# check if proposed leveling, corn amount works in regards to given hunger levels of the cows
-
 	hunger_lvl[0] -= corn[0]
 	hunger_lvl[-1] -= corn[-1]
 
@@ -122,13 +120,10 @@ def check(same_lvl, corn, hunger_lvl):
         	return False
 
 def solve(n_cows, hunger_lvl, corn):
-
 	find_min_level = []
 
 	# skip two to find the corn amount difference
-
 	for i in range(1, n_cows - 1, 2):
-
         	if i - 2 >= 0:
             		pos_lvl = hunger_lvl[i-1] - corn[i-2]
         	else: 
@@ -148,7 +143,6 @@ def solve(n_cows, hunger_lvl, corn):
 	corn[0] = hunger_lvl[0] - same_lvl
 
 	# fill in rest corn amount
-
 	if n_cows % 2 == 0:
         	n_cows_sub = n_cows - 2
         	corn[-1] = hunger_lvl[-1] - same_lvl
@@ -159,26 +153,15 @@ def solve(n_cows, hunger_lvl, corn):
 		corn[i] = (hunger_lvl[i] - corn[i - 1] - same_lvl)
 
 	works = check(same_lvl, corn, hunger_lvl)
+	return sum(corn) * 2 if works else -1
 
-	if works:
-        	return sum(corn) * 2
-	else:
-        	return -1
 
 def draught():
-
-	# number of cows
-
 	n_cows = int(input())
-
-	# hunger levels
-
 	lvl = list(map(int, input().split()))
 
 	corns = [0] * (n_cows - 1)
-
 	if n_cows < 3:
-
         	if len(set(lvl)) == 1:
             		return 0
         	else: 
@@ -186,9 +169,8 @@ def draught():
 
 	return solve(n_cows, lvl, corns)
 
-cnt = int(input())
 
-for _ in range(cnt):
+for _ in range(int(input())):
 	print(draught())
 ```
 
