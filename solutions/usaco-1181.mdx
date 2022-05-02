@@ -106,7 +106,9 @@ int main() {
 
 ```python
 # Check if a proposed levelling works given some corn amounts.
+	
 def check(same_lvl, corn, hunger_lvl):
+	
 	hunger_lvl[0] -= corn[0]
 	hunger_lvl[-1] -= corn[-1]
 
@@ -119,56 +121,59 @@ def check(same_lvl, corn, hunger_lvl):
     	else:
         	return False
 
-def solve(n_cows, hunger_lvl, corn):
-	find_min_level = []
-
-	# skip two to find the corn amount difference
-	for i in range(1, n_cows - 1, 2):
-        	if i - 2 >= 0:
-            		pos_lvl = hunger_lvl[i-1] - corn[i-2]
-        	else: 
-            		pos_lvl = hunger_lvl[i-1]
-
-        	find_min_level.append(pos_lvl)
-
-        	corn[i] = hunger_lvl[i] - pos_lvl
-    
-	# find leveling, in which all the hunger level is the same
-
-	if n_cows % 2 == 0:
-        	same_lvl = min(min(find_min_level), min(hunger_lvl))
-	else:
-        	same_lvl = hunger_lvl[-1] - corn[-1]
-
-	corn[0] = hunger_lvl[0] - same_lvl
-
-	# fill in rest corn amount
-	if n_cows % 2 == 0:
-        	n_cows_sub = n_cows - 2
-        	corn[-1] = hunger_lvl[-1] - same_lvl
-	else: 
-		n_cows_sub = n_cows - 1
-
-	for i in range(2, n_cows_sub, 2):
-		corn[i] = (hunger_lvl[i] - corn[i - 1] - same_lvl)
-
-	works = check(same_lvl, corn, hunger_lvl)
-	return sum(corn) * 2 if works else -1
-
-
 def draught():
+	
 	n_cows = int(input())
 	lvl = list(map(int, input().split()))
 
 	corns = [0] * (n_cows - 1)
+	
 	if n_cows < 3:
         	if len(set(lvl)) == 1:
             		return 0
         	else: 
             		return -1
 
-	return solve(n_cows, lvl, corns)
+	find_min_level = []
 
+	# skip two to find the corn amount difference
+		      
+	for i in range(1, n_cows - 1, 2):
+		      
+        	if i - 2 >= 0:
+            		pos_lvl = lvl[i-1] - corns[i-2]
+        	else: 
+            		pos_lvl = lvl[i-1]
+
+        	find_min_level.append(pos_lvl)
+
+        	corns[i] = lvl[i] - pos_lvl
+    
+	# find leveling, in which all the hunger level is the same
+
+	if n_cows % 2 == 0:
+        	same_lvl = min(min(find_min_level), min(lvl))
+	else:
+        	same_lvl = lvl[-1] - corns[-1]
+
+	corns[0] = lvl[0] - same_lvl
+
+	# fill in rest corn amount
+	if n_cows % 2 == 0:
+        	n_cows_sub = n_cows - 2
+        	corns[-1] = lvl[-1] - same_lvl
+	else: 
+		n_cows_sub = n_cows - 1
+
+	for i in range(2, n_cows_sub, 2):
+		corns[i] = (lvl[i] - corns[i - 1] - same_lvl)
+
+	works = check(same_lvl, corns, lvl)
+	
+	if works:
+		return sum(corns) * 2
+	else:
+		return -1
 
 for _ in range(int(input())):
 	print(draught())
