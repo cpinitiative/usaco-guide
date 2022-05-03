@@ -30,27 +30,28 @@ export default function PostExportModal(props: {
   const groups = useUserGroups();
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
   const [groupsUsedMap, setGroupsUsedMap] = useState(new Map());
-  const q = query(
-    collection(
-      getFirestore(firebaseApp),
-      'groups',
-      props.group.id,
-      'posts',
-      props.post.id,
-      'problems'
-    ) as CollectionReference<GroupProblemData>
-  );
-
-  onSnapshot(q, {
-    next: snap => {
-      setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    },
-    error: error => {
-      toast.error(error.message);
-    },
-  });
 
   function handleGroupExportChange(g: GroupData) {
+    const q = query(
+      collection(
+        getFirestore(firebaseApp),
+        'groups',
+        props.group.id,
+        'posts',
+        props.post.id,
+        'problems'
+      ) as CollectionReference<GroupProblemData>
+    );
+
+    onSnapshot(q, {
+      next: snap => {
+        setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      },
+      error: error => {
+        toast.error(error.message);
+      },
+    });
+
     console.log(g.name);
     if (groupsUsedMap.has(g.id)) {
       setGroupsUsedMap(
@@ -67,6 +68,8 @@ export default function PostExportModal(props: {
   }
 
   async function exportSelectedPosts() {
+    console.log('cont');
+    console.log(problems);
     const type = props.post.type;
     const defaultPost: Omit<PostData, 'timestamp'> = {
       name: props.post.name,
@@ -84,7 +87,8 @@ export default function PostExportModal(props: {
           }),
     };
 
-    console.log(groupsUsedMap.size);
+    console.log('gm ' + groupsUsedMap.size);
+    console.log('Problem load ' + problems.length);
     groupsUsedMap.forEach((value: MapData, key: string) => {
       if (value.used) {
         const firestore = getFirestore(firebaseApp);
@@ -100,7 +104,6 @@ export default function PostExportModal(props: {
         batch.commit();
         // if(post.type != 'announcement') {
 
-        console.log('Problem load ' + problems.length);
         const batch2 = writeBatch(firestore);
         problems.map(async problem => {
           const docRef2 = doc(
@@ -131,7 +134,6 @@ export default function PostExportModal(props: {
         batch2.commit();
       }
     });
-
     props.onClose();
   }
 
