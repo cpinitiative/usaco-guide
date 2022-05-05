@@ -2,7 +2,7 @@
 id: usaco-991
 source: USACO Silver 2020 January
 title: Loan Repayment
-author: Brad Ma
+author: Brad Ma, Juheon Rhee
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_loan_silver_jan20.html)
@@ -83,31 +83,31 @@ n, k, m = map(int, input().split())
 
 def check_which(mid):
 
-    g, cur = 0, k
+	g, cur = 0, k
     
-    while g < n and cur:
-        y = math.floor((n - g) / mid)
+	while g < n and cur:
+		y = math.floor((n - g) / mid)
 
-        if y <= m:
-            g += m * cur
-            break
+		if y <= m:
+			g += m * cur
+			break
 
-        calc = min(math.floor((n - mid * y - g) / y + 1), cur)
+		calc = min(math.floor((n - mid * y - g) / y + 1), cur)
 
-        g += y * calc
-        cur -= calc
+		g += y * calc
+		cur -= calc
 
-    return g >= n
+	return g >= n
 
 low, high = 1, n + 1
 
 while low + 1 < high:
 
-    middle = low + high >> 1
-    if check_which(middle):
-        low = middle
-    else:
-        high = middle
+	middle = low + high >> 1
+	if check_which(middle):
+		low = middle
+	else:
+		high = middle
 
 print(low)
 ```
