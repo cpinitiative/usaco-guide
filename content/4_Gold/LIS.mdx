@@ -315,8 +315,14 @@ int find_lis(vector<int> a) {
 	MaxSegTree dp(coord_comp.size());
 	dp.set(cmp(0), 1);
 	for (int i = 1; i < a.size(); i++) {
-		dp.set(cmp(i), dp.range_max(0, cmp(i)) + 1);
+		int max_prev = dp.range_max(0, cmp(i));
+		if (max_prev != INT32_MIN) {
+			dp.set(cmp(i), max_prev + 1);
+		} else {
+			dp.set(cmp(i), 1);
+		}
 	}
+	
 	return dp.range_max(0, coord_comp.size());
 }
 ```
@@ -344,9 +350,15 @@ public class FindLis {
 		dp.set(coordComp.get(a[0]), 1);
 		for (int i = 1; i < a.length; i++) {
 			int cmp = coordComp.get(a[i]);
-			dp.set(cmp, dp.range_max(0, cmp) + 1);
+			int maxPrev = dp.rangeMax(0, cmp);
+			if (maxPrev != Integer.MIN_VALUE) {
+				dp.set(cmp, dp.rangeMax(0, cmp) + 1);
+			} else {
+				dp.set(cmp, 1);
+			}
 		}
-		return dp.range_max(0, coordComp.size());
+
+		return dp.rangeMax(0, coordComp.size());
 	}
 }
 
@@ -367,17 +379,17 @@ class MaxSegTree {
 	}
 
 	// maximum of the range [from, to)
-	int range_max(int from, int to) {
-		int max_ = Integer.MIN_VALUE;
+	int rangeMax(int from, int to) {
+		int max = Integer.MIN_VALUE;
 		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
 			if ((from & 1) != 0) {
-				max_ = Math.max(max_, segtree[from++]);
+				max = Math.max(max, segtree[from++]);
 			}
 			if ((to & 1) != 0) {
-				max_ = Math.max(max_, segtree[--to]);
+				max = Math.max(max, segtree[--to]);
 			}
 		}
-		return max_;
+		return max;
 	}
 }
 //EndCodeSnip
@@ -390,7 +402,6 @@ class MaxSegTree {
 from typing import List
 
 
-//BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree:
 	def __init__(self, len_: int):
 		self.len = len_
@@ -419,7 +430,6 @@ class MaxSegTree:
 			start >>= 1
 			end >>= 1
 		return max_
-//EndCodeSnip
 
 
 def find_lis(a: List[int]) -> int:
@@ -437,7 +447,13 @@ def find_lis(a: List[int]) -> int:
 	dp = MaxSegTree(len(coord_comp))
 	dp.set(cmp(0), 1)
 	for i in range(1, len(a)):
-		dp.set(cmp(i), dp.range_max(0, cmp(i)) + 1)
+		max_prev = dp.range_max(0, cmp(i))
+
+		if max_prev != -float('inf'):
+			dp.set(cmp(i), max_prev + 1)
+		else:
+			dp.set(cmp(i), 1)
+	
 	return dp.range_max(0, len(coord_comp))
 ```
 
