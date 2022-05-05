@@ -9780,7 +9780,7 @@ let data: any = {
                 difficulty: 'Easy',
                 starred: false,
                 tags: ['Set', 'Sliding Window'],
-                solID: '',
+                solID: 'usaco-767',
                 solQuality: 'ok',
                 url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=767',
                 uniqueID:
