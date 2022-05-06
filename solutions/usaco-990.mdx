@@ -220,11 +220,12 @@ with open('berries.in') as read:
 	n, k = map(int, read.readline().split())
 	berries = [*map(int, read.readline().split())]
 
-maximum, ans = max(berries), 0
-
+maximum = max(berries)
+ans = 0
 for i in range(1, maximum + 1):
-	mod, full, tmp = i, 0, 0
-	# where full is representative of the full baskets
+	mod = i
+	full = 0  # number of full baskets
+	tmp = 0
 
 	# sum of leftovers
 	for j in range(n):
@@ -243,7 +244,7 @@ for i in range(1, maximum + 1):
 		continue
 	idx = (full - k / 2) * i
 	
-	# sorts berries list by maximum mod, so that Bessie can get the maximum amount of leftovers
+	# sorts berries list by mod so Bessie can get the maximum amount of leftovers
 	berries.sort(key = lambda x: (x % mod), reverse=True)
 	
 	# calculates maximum amount of leftovers Bessie can take
