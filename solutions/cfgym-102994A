@@ -1,0 +1,94 @@
+---
+id: cfgym-102994A
+source: CF
+title: Everyone Loves Playing Games
+author: Dustin Miao
+---
+
+The first step to the soluion is simplifying the problem. First, instead of considering whether we choose $x_i$ or $y_i$, assume we start with
+$$
+X = \left ( \bigoplus_{i=1}^N x_i \right ) \oplus \left ( \bigoplus_{i=1}^M x'_i \right )
+$$
+where "$\oplus$" denotes the bitwise xor operation. Then at step $i$, Acesrc will have the choice of changing $X$ to $X \oplus a_i$, where $a_i = x_i \oplus y_i$, or leave $X$ unchanged. Likewise, Roundgod has the option to change $X$ to $X \oplus a'_i$ on each of his turns, where $a'_i = x'_i \oplus y'_i$.  It is easy to see that this corresponds to choosing either $x$ or $y$, as we take advantage of the identity property of xor ($n \oplus n = 0$ and $0 \oplus n = n$). 
+
+Now, create an xor basis on $a$ and $a'$ (denote these as $B$ and $B'$, respectively). We can enumerate over the bits from largest to smallest of $X$, $B$, and $B'$. Let the current bit be bit $i$. There are eight seperate cases:
+
+1. $X[i] = 0$ or $X[i] = 1$ and $B[i] = B'[i] = 0$. If a bit vector does not exist for either basis, then the bit cannot be changed. This case is trivial to handle. 
+2. $X[i] = 0$ and $B[i] \neq 0$ and $B'[i] = 0$. In this case, it is always optimal for Acesrc to flip the bit because Roundgod cannot flip the bit back to zero.
+3. $X[i] = 1$ and $B[i] \neq 0$ and $B'[i] = 0$. In this case, although it is possible for Acersrc to flip the bit, it is more optimal to skip his turn since Roundgod cannot flip the bit back to zero. 
+4. $X[i] = 1$ and $B[i] = 0$ and $B'[i] \neq 0$. In this case, it is always optimal for Roundgod to flip the bit because he woud like to minimize the number. 
+5. $X[i] = 0$ and $B[i] = 0$ and $B'[i] \neq 0$. In this case, it is always less optimal for Roundgod to flip the bit.
+6. $X[i] = 1$ and $B[i] \neq 0$ and $B'[i] \neq 0$. Notice that in this case, if Acersrc does not flip the bit, then Roundgod must flip the bit, so in that sense, Roundgod's move for this particular bit is forced by Acersrc's actions. We take inspiration from before and assume that Acersrc flips the current bit, then insert $B[i] \oplus B'[i]$ into $B$ which gives Acersrc a way to undo the current move. 
+7. $X[i] = 0$ and $B[i] \neq 0$ and $B'[i] \neq 0$. As with the previous case, either both players or neither player flips the current bit. Again, we assume that Acersrc does not take the $i$-th bit, then give Acersrc that option by inserting $B[i] \oplus B'[i]$ into his basis. 
+
+**Time Complexity**: $\mathcal{O}((N + M)\log a)$ for each test case, where $a \leq 10^{18}$. 
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const size_t LOG_A = 64;
+ 
+struct basis : array<long long, LOG_A> {
+	basis() { fill(0); }
+ 
+	bool add(long long mask) {
+		for (int b = LOG_A - 1; b >= 0; b--) {
+			if ((mask >> b & 1) == 0)
+				continue;
+			if (at(b) == 0) {
+				at(b) = mask;
+				return true;
+			}
+			mask ^= at(b);
+		}
+		return false;
+	}
+};
+ 
+int main() {
+	int tc;
+	cin >> tc;
+	while (tc--) {
+		int N, M;
+		cin >> N >> M;
+		long long X = 0;
+		basis A, B;
+		for (int i = 0; i < N; i++) {
+			long long x, y;
+			cin >> x >> y;
+			X ^= x;
+			A.add(x ^ y);
+		}
+		for (int i = 0; i < M; i++) {
+			long long x, y;
+			cin >> x >> y;
+			X ^= x;
+			B.add(x ^ y);
+		}
+ 
+		for (int b = LOG_A - 1; b >= 0; b--) {
+			if ((X >> b & 1) == 0 && A[b] != 0 && B[b] == 0) {
+				X ^= A[b];
+			} else if ((X >> b & 1) == 1 && A[b] == 0 && B[b] != 0) {
+				X ^= B[b];
+			} else if ((X >> b & 1) == 1 && A[b] != 0 && B[b] != 0) {
+				X ^= A[b];
+				A.add(A[b] ^ B[b]);
+			} else if ((X >> b & 1) == 0 && A[b] != 0 && B[b] != 0) {
+				A.add(A[b] ^ B[b]);
+			}
+		}
+		cout << X << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
