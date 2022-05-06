@@ -16,18 +16,12 @@ author: Juheon Rhee
 <PySection>
 
 ```python
-import sys
+with open('homework.in') as read:
+        n = int(read.readline())
+        questions = [*map(int, read.readline().split())]
 
-sys.stdin = open("homework.in", "r")
-sys.stdout = open("homework.out", "w")
-
-input = sys.stdin.readline
-
-n = int(input())
-
-questions = [*map(int, input().split())]
-
-left, right, total, minimum, ans = -1, n, [0] * n, [0] * n, []
+left, right = -1, n
+total, minimum, ans = [0] * n, [0] * n, []
 
 total[n - 1], minimum[n - 1] = questions[n - 1], questions[n - 1]
 
@@ -45,8 +39,9 @@ for i in range(n - 2, 0, -1):
         elif cur_s * right == left * tmp:
                 ans.append(i)
 
-for k in sorted(ans):
-        print(k)
+with open('homework.out', 'w') as out:
+        for k in sorted(ans):
+                print(k, file=out)
 ```
 
 </PySection>
