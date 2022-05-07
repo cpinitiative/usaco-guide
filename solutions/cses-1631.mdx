@@ -1,0 +1,50 @@
+---
+id: cses-1631
+source: CSES 
+title: Reading Books
+author: Paul Chen
+---
+
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
+
+## Explanation
+
+Let $s$ be $\sum\limits_{i=1}^n t[i]$.
+
+Sort the array in ascending order. Kotivalo can read the books in the order $t[n], t[1], t[2], ..., t[n - 1]$, and Justiina can read them in the order $t[1], t[2], t[3], ..., t[n]$. 
+
+If $s - t[n] < t[n]$, Justiina would finish reading books $t[1], t[2], t[3], ..., t[n - 1]$ and would have to wait for Kotivalo to finish reading $t[n]$. Afterwards, Justiina can read $t[n]$ and Kotivalo can read $t[1], t[2], t[3], ..., t[n - 1]$. In total, this will take $2 \times t[n]$ units of time.
+
+If $s - t[n] >= t[n]$, Kotivalo would finish reading $t[n]$ before Justiina finishes reading $t[1], t[2], t[3], ..., t[n - 1]$, so Justiina would not have to wait for Kotivalo to finish reading $t[n]$. Thus, this will take $s$ units of time.
+
+Therefore, the answer is $\max(s, 2 \times t[n])$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(N)$.
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using ll = long long;
+
+int main()
+{
+    ll n;
+    cin >> n;
+    vector<ll> t(n);
+    for (ll i = 0; i < n; i++) cin >> t[i];
+    ll mx = *max_element(t.begin(), t.end());
+    ll sum = accumulate(t.begin(), t.end(), 0ll);
+	cout << max(sum, mx * 2) << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
