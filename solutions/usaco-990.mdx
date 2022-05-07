@@ -2,7 +2,7 @@
 id: usaco-990
 source: USACO Silver 2020 January
 title: Berry Picking
-author: Qi Wang (Java), Daniel Suh (C++)
+author: Qi Wang (Java), Daniel Suh (C++), Juheon Rhee (Python)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_berries_silver_jan20.html)
@@ -212,4 +212,53 @@ public class berries {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+with open('berries.in') as read:
+	n, k = map(int, read.readline().split())
+	berries = [*map(int, read.readline().split())]
+
+ans = 0
+for i in range(1, max(berries) + 1):
+	mod = i
+	full = 0  # number of full baskets
+	tmp = 0
+
+	# sum of leftovers
+	for j in range(n):
+		full += berries[j] // mod
+	
+	# if the amount isn't enough for k / 2 baskets, it is invalid
+	if full < k / 2:
+		break
+	
+	"""
+	if there are greater than or equal to k sections for Bessie and Elsie, 
+	Bessie can be allocated to (k / 2) * i berries
+	"""
+	if full >= k:
+		ans = max(ans, (k // 2) * i)
+		continue
+	idx = (full - k // 2) * i
+	
+	# sorts berries list by mod so Bessie can get the maximum amount of leftovers
+	berries.sort(key=lambda x: (x % mod), reverse=True)
+	
+	# calculates maximum amount of leftovers Bessie can take
+	while tmp < (k - full):
+		if tmp < len(berries):
+			idx += berries[tmp] % mod
+			tmp += 1
+		else:
+			break
+
+	ans = max(ans, idx)
+
+print(ans, file=open('berries.out', 'w'))
+```
+
+</PySection>
+
 </LanguageSection>
