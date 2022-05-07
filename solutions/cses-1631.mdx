@@ -9,15 +9,15 @@ author: Paul Chen
 
 ## Explanation
 
-Let $s$ be $\sum\limits_{i=1}^n t[i]$.
+Let $\texttt{sum}$ be $\sum\limits_{i=1}^n t_i$.
 
-Sort the array in ascending order. Kotivalo can read the books in the order $t[n], t[1], t[2], ..., t[n - 1]$, and Justiina can read them in the order $t[1], t[2], t[3], ..., t[n]$. 
+Sort the array in ascending order. Kotivalo can read the books in the order $t_n, t_1, t_2, ..., t_{n-1}$, and Justiina can read them in the order $t_1, t_2, t_3, ..., t_n$. 
 
-If $s - t[n] < t[n]$, Justiina would finish reading books $t[1], t[2], t[3], ..., t[n - 1]$ and would have to wait for Kotivalo to finish reading $t[n]$. Afterwards, Justiina can read $t[n]$ and Kotivalo can read $t[1], t[2], t[3], ..., t[n - 1]$. In total, this will take $2 \times t[n]$ units of time.
+If $\texttt{sum} - t_n < t_n$, Justiina would finish reading books $t_1, t_2, t_3, ..., t_{n-1}$ and would have to wait for Kotivalo to finish reading $t_n$. Afterwards, Justiina can read $t_n$ and Kotivalo can read $t_1, t_2, t_3, ..., t_{n-1}$. In total, this will take $2 \times t_n$ units of time.
 
-If $s - t[n] >= t[n]$, Kotivalo would finish reading $t[n]$ before Justiina finishes reading $t[1], t[2], t[3], ..., t[n - 1]$, so Justiina would not have to wait for Kotivalo to finish reading $t[n]$. Thus, this will take $s$ units of time.
+If $\texttt{sum} - t_n \ge t_n$, Kotivalo would finish reading $t_n$ before Justiina finishes reading $t_1, t_2, t_3, ..., t_{n-1}$, so Justiina would not have to wait for Kotivalo to finish reading $t_n$. Thus, this will take $\texttt{sum}$ units of time.
 
-Therefore, the answer is $\max(s, 2 \times t[n])$.
+Therefore, the answer is $\max(\texttt{sum}, 2 \times t_n)$.
 
 ## Implementation
 
@@ -36,11 +36,16 @@ using ll = long long;
 int main() {
 	ll n;
 	cin >> n;
+
 	vector<ll> t(n);
-	for (ll i = 0; i < n; i++) cin >> t[i];
+	for (ll i = 0; i < n; i++) {
+		cin >> t[i];
+	}
+
 	ll mx = *max_element(t.begin(), t.end());
-	ll sum = accumulate(t.begin(), t.end(), 0ll);
-	cout << max(sum, mx * 2) << "\n";
+	ll s = accumulate(t.begin(), t.end(), 0ll);
+
+	cout << max(s, mx * 2) << "\n";
 }
 ```
 
