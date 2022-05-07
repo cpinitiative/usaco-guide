@@ -240,9 +240,9 @@ for i in range(1, maximum + 1):
 	Bessie can be allocated to (k / 2) * i berries
 	"""
 	if full >= k:
-		ans = max(ans, (k / 2) * i)
+		ans = max(ans, (k // 2) * i)
 		continue
-	idx = (full - k / 2) * i
+	idx = (full - k // 2) * i
 	
 	# sorts berries list by mod so Bessie can get the maximum amount of leftovers
 	berries.sort(key=lambda x: (x % mod), reverse=True)
@@ -255,7 +255,7 @@ for i in range(1, maximum + 1):
 		else:
 			break
 
-	ans = int(max(ans, idx))
+	ans = max(ans, idx)
 
 print(ans, file=open('berries.out', 'w'))
 ```
