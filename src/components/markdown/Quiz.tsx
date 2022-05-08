@@ -23,7 +23,7 @@ const submittedAtom = atom(false); //whether or not the current question is curr
 
 const QuizAnswerExplanation = (props: {
   children: unknown;
-  number: number;
+  number?: number;
 }) => {
   const submitted = useAtomValue(submittedAtom, quizScope);
   const chosenAnswer = useAtomValue(chosenAnswerAtom, quizScope);
