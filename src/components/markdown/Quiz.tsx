@@ -22,7 +22,7 @@ const chosenAnswerAtom = atom(
 const submittedAtom = atom(false); //whether or not the current question is currently submitted
 
 const QuizAnswerExplanation = (props: {
-  children: React.ReactElement[];
+  children: unknown;
   number: number;
 }) => {
   const submitted = useAtomValue(submittedAtom, quizScope);
@@ -88,7 +88,6 @@ const QuizMCAnswer = props => {
 };
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
-//TODO: how do you type this
 const QuizQuestion = props => {
   let num = 0;
   return (
