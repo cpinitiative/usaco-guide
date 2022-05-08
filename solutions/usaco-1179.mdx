@@ -1,0 +1,89 @@
+---
+id: usaco-1179
+source: USACO Gold 2022 January
+title: Herdle
+author: Juheon Rhee
+---
+
+[Official Editorial (Java)](http://www.usaco.org/current/data/sol_prob1_bronze_jan22.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+
+	char correct[9], guess[9];
+
+	for(int i = 0; i < 9; i++){
+        cin >> correct[i];
+    }
+	for(int i = 0; i < 9; i++){
+        cin >> guess[i];
+    }
+
+	int green = 0, yellow = 0;
+
+	for(int i = 0; i < 9; i++){
+		if(correct[i] == guess[i]){
+            correct[i] = guess[i] = '0';
+            green ++;
+        }
+	}
+    
+	for(int i = 0; i < 9; i++){
+		if(correct[i] == '0'){
+            continue;
+        }
+		for(int j = 0; j < 9; j++)
+		{
+			if(guess[j] == '0'){
+                continue;
+            }
+			if(correct[i] == guess[j]){
+				correct[i] = guess[j] = '0';
+				yellow ++;
+				break;
+			}
+		}
+	}
+	cout << green << '\n' << yellow;
+
+    return 0;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```python
+def getInput():
+    k = input() + input() + input()
+    return [i for i in k]
+
+correct, guess = getInput(), getInput()
+green, yellow = 0, 0
+
+for i in range(9):
+    if correct[i] == guess[i]:
+        correct[i], guess[i] = "visited", "visited"
+        green += 1
+for i in range(9):
+    if guess[i] in correct:
+        correct[correct.index(guess[i])] = 'visited'
+        yellow += 1
+print(green)
+print(yellow-green)
+```
+
+</PySection>
+
+</LanguageSection>
