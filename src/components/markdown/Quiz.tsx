@@ -9,15 +9,17 @@ const finalAnswersAtom = atom<number[]>([]); //saved previous answers
 
 const currentQuestionAtom = atom(0);
 const selectedAnswerAtom = atom(null as number | null); //user selection for current question
-const chosenAnswerAtom = atom(
-  get => get(finalAnswersAtom)[get(currentQuestionAtom)],
+const correctAnswersAtom = atom([] as number[]); //correct selection(s) for current question
+
+const handleSubmittedAnswerAtom = atom(
+  null,
   (get, set, answer_index: number) => {
     const i = get(currentQuestionAtom);
     const finalAnswersClone = [...get(finalAnswersAtom)];
     finalAnswersClone[i] = answer_index;
     set(finalAnswersAtom, finalAnswersClone);
   }
-); //submitted answer for the current question; can be directly modified
+); //updates the finalAnswersArray upon question submit
 
 const submittedAtom = atom(false); //whether or not the current question is currently submitted
 
@@ -37,26 +39,33 @@ const QuizMCAnswer = props => {
   );
   const isSelected = selectedAnswer === props.number;
   const [submitted, setSubmittedValue] = useAtom(submittedAtom, quizScope);
+  const correctAnswers = useAtomValue(correctAnswersAtom, quizScope);
+  const showVerdict =
+    submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
+  console.log(showVerdict, correctAnswers);
   return (
     <button
       className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
       onClick={() => {
-        if (selectedAnswer !== props.number) {
-          setSelectedAnswer(props.number);
-          setSubmittedValue(false);
-        } else if (!submitted) {
-          setSelectedAnswer(null);
+        if (!showVerdict) {
+          if (selectedAnswer !== props.number) {
+            // switch answers
+            setSelectedAnswer(props.number);
+            setSubmittedValue(false);
+          } else if (!submitted) {
+            //unselect current choice
+            setSelectedAnswer(null);
+          }
         }
       }}
     >
       <span
         className={classNames(
           'flex-shrink-0 h-6 w-6 rounded-full font-medium inline-flex items-center justify-center',
-          isSelected
+          isSelected || showVerdict //render ring
             ? 'ring-2 ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900 text-gray-100 dark:text-gray-900 font-bold'
             : 'border border-gray-600 text-gray-800 dark:border-gray-500 dark:text-gray-300',
-          isSelected &&
-            submitted &&
+          showVerdict &&
             (props.correct
               ? 'ring-green-600 bg-green-600 dark:ring-green-300 dark:bg-green-300'
               : 'ring-red-600 bg-red-600 dark:ring-red-300 dark:bg-red-300'),
@@ -68,10 +77,10 @@ const QuizMCAnswer = props => {
         {props.number + 1}
       </span>
 
-      <div className="flex-1 ml-3 no-y-margin">
+      <div className={classNames('flex-1 ml-3 no-y-margin')}>
         {React.Children.map(props.children, child => {
           if (child?.type?.displayName == 'QuizAnswerExplanation') {
-            if (!child.props.children || !submitted || !isSelected) {
+            if (!child.props.children || !showVerdict) {
               return null;
             }
           }
@@ -85,19 +94,20 @@ QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
   let num = 0;
-  return (
-    <div className="space-y-2">
-      {React.Children.map(props.children, child => {
-        if (child?.type?.displayName === 'QuizMCAnswer') {
-          return React.cloneElement(child, {
-            number: num++,
-          });
-        } else {
-          return child;
-        }
-      })}
-    </div>
-  );
+  const correctAnswers = [];
+  const setCorrectAnswers = useUpdateAtom(correctAnswersAtom, quizScope);
+  const answerChoices = React.Children.map(props.children, child => {
+    if (child?.type?.displayName === 'QuizMCAnswer') {
+      if (child.props.correct) correctAnswers.push(num);
+      return React.cloneElement(child, {
+        number: num++,
+      });
+    } else {
+      return child;
+    }
+  });
+  setCorrectAnswers(correctAnswers);
+  return <div className="space-y-2">{answerChoices}</div>;
 };
 QuizQuestion.displayName = 'QuizQuestion';
 
@@ -113,14 +123,17 @@ const ActualQuiz = props => {
     quizScope
   );
   const finalAnswers = useAtomValue(finalAnswersAtom, quizScope);
-  const setChosenAnswer = useUpdateAtom(chosenAnswerAtom, quizScope);
+  const submitAnswer = useUpdateAtom(handleSubmittedAnswerAtom, quizScope);
   const [submitted, setSubmitted] = useAtom(submittedAtom, quizScope);
+  const canMoveOn = submitted || selectedAnswer === null; //if you can move on to the next question
+
   const handleQuestionChange = (newQuestionIndex: number) => {
     const newAnswer = finalAnswers[newQuestionIndex] ?? null;
     setCurrentQuestion(newQuestionIndex);
     setSubmitted(newAnswer !== null);
     setSelectedAnswer(newAnswer);
   };
+
   const questionList: React.ReactElement[] = React.Children.map(
     props.children,
     child => {
@@ -152,21 +165,18 @@ const ActualQuiz = props => {
         </span>
         <button
           className="btn"
-          disabled={
-            selectedAnswer === null ||
-            (submitted && currentQuestion === questionList.length - 1)
-          }
+          disabled={canMoveOn && currentQuestion === questionList.length - 1}
           onClick={() => {
-            if (!submitted) {
-              setChosenAnswer(selectedAnswer);
+            if (!canMoveOn) {
+              submitAnswer(selectedAnswer);
               setSubmitted(true);
             } else {
               handleQuestionChange(currentQuestion + 1);
             }
           }}
         >
-          {submitted ? 'Next' : 'Submit'}{' '}
-          {submitted && <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />}
+          {selectedAnswer === null ? 'Skip' : submitted ? 'Next' : 'Submit'}{' '}
+          {canMoveOn && <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />}
         </button>
       </div>
     </div>
