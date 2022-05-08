@@ -42,7 +42,6 @@ const QuizMCAnswer = props => {
   const correctAnswers = useAtomValue(correctAnswersAtom, quizScope);
   const showVerdict =
     submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
-  console.log(showVerdict, correctAnswers);
   return (
     <button
       className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
