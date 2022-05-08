@@ -21,8 +21,7 @@ Therefore, the answer is $\max(\texttt{sum}, 2 \times t_n)$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$.
-
+**Time Complexity:** $\mathcal O(N)$.
 <LanguageSection>
 <CPPSection>
 
@@ -36,16 +35,29 @@ int main() {
 	ll n;
 	cin >> n;
 
-	vector<ll> t(n);
+	vector<ll> books(n);
 	for (ll i = 0; i < n; i++) {
-		cin >> t[i];
+		cin >> books[i];
 	}
 
-	ll mx = *max_element(t.begin(), t.end());
-	ll s = accumulate(t.begin(), t.end(), 0ll);
+	ll longest_time = *max_element(books.begin(), books.end());
+	ll total_time = accumulate(books.begin(), books.end(), 0ll);
 
-	cout << max(s, mx * 2) << "\n";
+	cout << max(total_time, longest_time * 2) << "\n";
 }
 ```
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+books = [int(b) for b in input().split()]
+
+longest_time = max(books)
+total_time = sum(books)
+
+print(max(total_time, longest_time * 2))
+```
+
+</PySection>
 </LanguageSection>
