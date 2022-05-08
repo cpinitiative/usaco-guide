@@ -101,7 +101,6 @@ export default function MarkdownLayout({
       url: moduleIDToURLMap[cur.node.frontmatter.id],
     }));
   }, [data.allXdm]);
-
   const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
