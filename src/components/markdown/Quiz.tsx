@@ -21,22 +21,14 @@ const chosenAnswerAtom = atom(
 
 const submittedAtom = atom(false); //whether or not the current question is currently submitted
 
-const QuizAnswerExplanation = (props: {
-  children: unknown;
-  number?: number;
-}) => {
-  const submitted = useAtomValue(submittedAtom, quizScope);
-  const chosenAnswer = useAtomValue(chosenAnswerAtom, quizScope);
-  if (!props.children || !submitted || props.number !== chosenAnswer) {
-    return null;
-  }
+const QuizAnswerExplanation = (props: { children: unknown }) => {
   return (
     <div className="text-sm text-gray-700 dark:text-gray-400 no-y-margin">
       {props.children}
     </div>
   );
 };
-
+QuizAnswerExplanation.displayName = 'QuizAnswerExplanation';
 // Answer choice component
 const QuizMCAnswer = props => {
   const [selectedAnswer, setSelectedAnswer] = useAtom(
@@ -77,11 +69,14 @@ const QuizMCAnswer = props => {
       </span>
 
       <div className="flex-1 ml-3 no-y-margin">
-        {React.Children.map(props.children, child =>
-          React.cloneElement(child, {
-            number: props.number, //TODO: passing number down two components... is there a better way?
-          })
-        )}
+        {React.Children.map(props.children, child => {
+          if (child?.type?.displayName == 'QuizAnswerExplanation') {
+            if (!child.props.children || !submitted || !isSelected) {
+              return null;
+            }
+          }
+          return child;
+        })}
       </div>
     </button>
   );
