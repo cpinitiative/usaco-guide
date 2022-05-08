@@ -4,14 +4,13 @@ import {
   collection,
   CollectionReference,
   doc,
+  getDocs,
   getFirestore,
-  onSnapshot,
   query,
   serverTimestamp,
   writeBatch,
 } from 'firebase/firestore';
 import React, { Fragment, useContext, useState } from 'react';
-import toast from 'react-hot-toast';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
@@ -31,7 +30,7 @@ export default function PostExportModal(props: {
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
   const [groupsUsedMap, setGroupsUsedMap] = useState(new Map());
 
-  function handleGroupExportChange(g: GroupData) {
+  async function handleGroupExportChange(g: GroupData) {
     const q = query(
       collection(
         getFirestore(firebaseApp),
@@ -43,14 +42,8 @@ export default function PostExportModal(props: {
       ) as CollectionReference<GroupProblemData>
     );
 
-    onSnapshot(q, {
-      next: snap => {
-        setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      },
-      error: error => {
-        toast.error(error.message);
-      },
-    });
+    const snap = await getDocs(q);
+    setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
     console.log(g.name);
     if (groupsUsedMap.has(g.id)) {
@@ -101,10 +94,7 @@ export default function PostExportModal(props: {
         batch.update(doc(firestore, 'groups', key), {
           postOrdering: arrayUnion(docRef.id),
         });
-        batch.commit();
-        // if(post.type != 'announcement') {
 
-        const batch2 = writeBatch(firestore);
         problems.map(async problem => {
           const docRef2 = doc(
             collection(
@@ -121,8 +111,8 @@ export default function PostExportModal(props: {
           problem.isDeleted = false;
           problem.postId = docRef.id;
 
-          batch2.set(docRef2, { ...(problem as any) });
-          batch2.update(
+          batch.set(docRef2, { ...(problem as any) });
+          batch.update(
             doc(getFirestore(firebaseApp), 'groups', key, 'posts', docRef.id),
             {
               [`pointsPerProblem.${docRef2.id}`]: problem.points,
@@ -131,7 +121,7 @@ export default function PostExportModal(props: {
           );
           console.log(problem);
         });
-        batch2.commit();
+        batch.commit();
       }
     });
     props.onClose();
