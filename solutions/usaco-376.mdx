@@ -1,0 +1,83 @@
+---
+id: usaco-376
+source: USACO Bronze 2014 January
+title: Ski Course Design
+author: Juheon Rhee
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_skidesign.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<PySection>
+
+```python
+with open('skidesign.in') as read:
+    n = int(read.readline())
+    elevation = [int(read.readline()) for _ in range(n)]
+
+ans = 10 ** 10
+
+for i in range(1, 83):
+    temp = 0
+    for j in elevation:
+        if j < i:
+            temp += (j - i) ** 2
+        elif j > i + 17:
+            temp += (i + 17 - j) ** 2
+    ans = min(ans, temp)
+    
+print(ans, file=open('skidesign.out', 'w'))
+```
+
+</PySection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int elevation[1001];
+int ans = 1e9;
+
+int main() {
+
+    freopen("skidesign.in", "r", stdin);
+	freopen("skidesign.out", "w", stdout);
+
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cin >> elevation[i];
+	}
+	
+	for(int i = 0; i < 83; i++){
+
+		int temp = 0;
+
+		for (int j = 0; j < n; j++) {
+
+			if(elevation[j] < i){
+                temp += (i - elevation[j]) * (i - elevation[j]);
+            }
+
+			if(elevation[j] > i + 17){
+                temp += (elevation[j] - i - 17) * (elevation[j] - i - 17);
+            }
+		}
+		ans = min(ans, temp);
+	}
+	cout << ans;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
