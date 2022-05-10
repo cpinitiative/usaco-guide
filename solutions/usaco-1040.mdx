@@ -9,11 +9,11 @@ Let's assume we have a bidirectional graph where any two particles that can inte
 We can make the claim that the answer is the number of connected components $c$ in our graph. 
 This is true because we can reduce every connected component to one node in the graph by removing all nodes, moving inwards until we reach a single chosen node to keep.
 
-However, there are at most $10^5$ particles, and therefore, we need a way to calculate $c$ in less than $\mathcal{O}(N^2)$. 
-We can make a $\mathcal{O}(N \log N)$ algorithm by sorting every particle in ascending order, first by its $x$ spin, and then by its $y$ spin, resulting in a list $p_1,  p_2.. p_{N-1},  p_{N}$.
+Since there can be up to $10^5$ particles, we need a way to calculate $c$ in less than $\mathcal{O}(N^2)$. 
+We can make a $\mathcal{O}(N \log N)$ algorithm by sorting every particle in ascending order, first by its $x$ spin, and then by its $y$ spin.
 Each element is intially its own connected component. From there, for each adjacent connected component, as long as the minimum y-coordinate in the left component is at most the maximum y-coordinate of the right component, we combine them together.
 
-For some intution on this algorithm's correctness, since the list is already sorted by x-coordinates, by comparing the minimum of the component with smaller y-coordinates and the maximum of the component with greater y-coordinates, we can uniquely determine whether or not they belong to the same connected component.
+For some intution on this algorithm's correctness, since the list is already sorted by x-coordinates, by comparing the minimum of the component with smaller y-coordinates and the maximum of the component with greater y-coordinates, we can determine whether or not they belong to the same connected component.
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
@@ -26,22 +26,23 @@ For some intution on this algorithm's correctness, since the list is already sor
 import java.util.*;
 import java.io.*;
 public class TheMooParticle {
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("moop");
-		int n = io.nextInt(); //number of particles
-		ArrayList<Integer> x = new ArrayList<>();; //x coordinates
-		ArrayList<Integer> y = new ArrayList<>();; //y coordinates
+		int n = io.nextInt(); // number of particles
+	
+		ArrayList<Integer> x = new ArrayList<>(); // x coordinates
+		ArrayList<Integer> y = new ArrayList<>(); // y coordinates
 		ArrayList<Integer> components = new ArrayList<>();
-		for (int i = 0; i < n; i++)
-		{
+	
+		for (int i = 0; i < n; i++) {
 			x.add(io.nextInt());
 			y.add(io.nextInt());
 			components.add(i);
 		}
+								 
 		Collections.sort(components, new Comparator<Integer> ()
 		{         
-			public int compare(Integer p1, Integer p2) //sorts by x, then y
+			public int compare(Integer p1, Integer p2) // sorts by x, then y
 			{
 				if (x.get(p1).equals(x.get(p2)))
 				{
@@ -51,8 +52,9 @@ public class TheMooParticle {
 			}
 		}
 		);
-		int[] minLeft = new int[100000]; //stores min y-coordinate for left comp
-		int[] maxRight = new int[100000]; //stores max y-coordinate for right comp
+	
+		int[] minLeft = new int[100000]; // stores min y-coordinate for left comp
+		int[] maxRight = new int[100000]; // stores max y-coordinate for right comp
 		minLeft[0] = y.get(components.get(0));
 		for (int i = 1; i < n; i++)
 		{
@@ -65,7 +67,7 @@ public class TheMooParticle {
 			//calculates maxRight using suffix array
 			maxRight[i] = Math.max(maxRight[i + 1], y.get(components.get(i))); 
 		}
-		int numComponents = 1; //this is our answer
+		int numComponents = 1;
 		for (int i = 0; i < n - 1; i++)
 		{
 			//means they are not in the same component
