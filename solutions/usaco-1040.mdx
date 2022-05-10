@@ -40,36 +40,30 @@ public class TheMooParticle {
 			components.add(i);
 		}
 								 
-		Collections.sort(components, new Comparator<Integer> ()
-		{         
-			public int compare(Integer p1, Integer p2) // sorts by x, then y
-			{
+		Collections.sort(components, new Comparator<Integer> () {         
+			public int compare(Integer p1, Integer p2) // sorts by x, then y {
 				if (x.get(p1).equals(x.get(p2)))
 				{
 					return y.get(p1).compareTo(y.get(p2));
 				}
 				return x.get(p1).compareTo(x.get(p2));
 			}
-		}
-		);
+		});
 	
 		int[] minLeft = new int[100000]; // stores min y-coordinate for left comp
 		int[] maxRight = new int[100000]; // stores max y-coordinate for right comp
 		minLeft[0] = y.get(components.get(0));
-		for (int i = 1; i < n; i++)
-		{
+		for (int i = 1; i < n; i++) {
 			// calculates minLeft using prefix array
 			minLeft[i] = Math.min(minLeft[i - 1], y.get(components.get(i))); 
 		}
 		maxRight[n - 1] = y.get(components.get(n - 1));
-		for (int i = n - 2; i >= 0; i--)
-		{
+		for (int i = n - 2; i >= 0; i--) {
 			// calculates maxRight using suffix array
 			maxRight[i] = Math.max(maxRight[i + 1], y.get(components.get(i))); 
 		}
 		int numComponents = 1;
-		for (int i = 0; i < n - 1; i++)
-		{
+		for (int i = 0; i < n - 1; i++) {
 			// means they are not in the same component
 			if (minLeft[i] > maxRight[i + 1]) 
 			{
