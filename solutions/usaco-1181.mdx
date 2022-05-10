@@ -118,13 +118,12 @@ def check(same_lvl: int, corn: [int], hunger_lvl: [int]) -> bool:
 
 
 for _ in range(int(input())):
-	
 	n_cows = int(input())
 	lvl = list(map(int, input().split()))
 	corns = [0] * (n_cows - 1)
 	
 	if n_cows < 3:
-		return 0 if len(set(lvl)) == 1 else -1
+		print(0 if len(set(lvl)) == 1 else -1)
 
 	find_min_level = []
 	# skip two to find the corn amount difference
@@ -155,11 +154,7 @@ for _ in range(int(input())):
 		corns[i] = (lvl[i] - corns[i - 1] - same_lvl)
 
 	works = check(same_lvl, corns, lvl)
-	
-	if works:
-		print(sum(corns) * 2)
-	else:
-		print(-1)
+	print(sum(corns) * 2 if works else -1)
 ```
 
 </PySection>
