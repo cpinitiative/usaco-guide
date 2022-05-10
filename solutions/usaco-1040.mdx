@@ -58,19 +58,19 @@ public class TheMooParticle {
 		minLeft[0] = y.get(components.get(0));
 		for (int i = 1; i < n; i++)
 		{
-			//calculates minLeft using prefix array
+			// calculates minLeft using prefix array
 			minLeft[i] = Math.min(minLeft[i - 1], y.get(components.get(i))); 
 		}
 		maxRight[n - 1] = y.get(components.get(n - 1));
 		for (int i = n - 2; i >= 0; i--)
 		{
-			//calculates maxRight using suffix array
+			// calculates maxRight using suffix array
 			maxRight[i] = Math.max(maxRight[i + 1], y.get(components.get(i))); 
 		}
 		int numComponents = 1;
 		for (int i = 0; i < n - 1; i++)
 		{
-			//means they are not in the same component
+			// means they are not in the same component
 			if (minLeft[i] > maxRight[i + 1]) 
 			{
 				numComponents++;
