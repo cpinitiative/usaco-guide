@@ -2,7 +2,7 @@
 id: usaco-989
 source: USACO Bronze 2020 January
 title: Race
-author: Sathvik Chundru
+author: Sathvik Chundru, Juheon Rhee
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_race_bronze_jan20.html)
@@ -50,5 +50,43 @@ class Main {
 ```
 
 </JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    freopen("race.in", "r", stdin);
+	freopen("race.out", "w", stdout);
+    int k, n, x, ans, res, i;
+	cin >> k >> n;
+	for (int idx = 0; idx < n; idx++) {
+		cin >> x;
+        res = 0, ans = 0;
+        i = 1; 
+        while (i < x && res < k) {
+            res += i;
+            ans ++;
+            i ++;
+        }
+        i = x;
+        while (res < k) {
+            res += i;
+            ans ++;
+            if (res >= k) {
+                break;
+            }
+            res += i;
+            ans ++;
+            i ++;
+        }
+		cout << ans << "\n";
+	}
+}
+```
+
+</CPPSection>
 
 </LanguageSection>
