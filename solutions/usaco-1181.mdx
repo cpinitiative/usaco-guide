@@ -116,7 +116,9 @@ def check(same_lvl: int, corn: [int], hunger_lvl: [int]) -> bool:
 
 	return len(set(hunger_lvl)) == 1 and same_lvl >= 0 and min(corn) >= 0
 
-def draught() -> int:
+
+for _ in range(int(input())):
+	
 	n_cows = int(input())
 	lvl = list(map(int, input().split()))
 	corns = [0] * (n_cows - 1)
@@ -153,11 +155,11 @@ def draught() -> int:
 		corns[i] = (lvl[i] - corns[i - 1] - same_lvl)
 
 	works = check(same_lvl, corns, lvl)
-	return sum(corns) * 2 if works else -1
-
-        
-for _ in range(int(input())):
-	print(draught())
+	
+	if works:
+		print(sum(corns) * 2)
+	else:
+		print(-1)
 ```
 
 </PySection>
