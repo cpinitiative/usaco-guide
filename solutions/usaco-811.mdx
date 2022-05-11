@@ -240,7 +240,6 @@ with open('snowboots.in') as r:
 
 stor = [[0] * b for _ in range(n)]
 stor[0][0] = 1
-
 for i in range(n):
 	cur = -1
 	for j in range(b):
@@ -251,10 +250,14 @@ for i in range(n):
 					stor[i][j] = 1
 					cur = j
 					break
-		if cur != -1: break
+		if cur != -1:
+			break
+
 	for j in range(cur + 1, b):
 		s, d = max_depth[j]
-		if s >= depth[i]: stor[i][j] = 1
+		if s >= depth[i]:
+			stor[i][j] = 1
+
 for i in range(b):
 	if stor[-1][i]:
 		print(i, file=open('snowboots.out', 'w'))
