@@ -1,0 +1,39 @@
+---
+id: usaco-1131
+source: USACO Bronze 2021 US Open
+title: Acowdemia I
+author: Juheon Rhee
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob1_bronze_open21.html)
+
+## Implementation
+
+<LanguageSection>
+<PySection>
+
+```python
+n, l = map(int, input().split())
+citations = sorted([*map(int, input().split())], reverse=True)
+length = len(citations)
+
+while citations[length - 1] < length and length >= 0:
+    length -= 1
+
+cur_h, length = length, len(citations)
+
+if cur_h is not n:
+    for i in range(cur_h, -1, -1):
+        if i <= cur_h - l:
+            break
+        citations[i] += 1
+
+citations.sort(reverse=True)     
+while citations[length - 1] < length and length >= 0:
+    length -= 1
+
+print(length)
+```
+
+</PySection>
+</LanguageSection>
