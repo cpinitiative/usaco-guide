@@ -9,23 +9,25 @@ author: Timothy Gao
 
 ## Alternative Solution: Small to Large Merging
 
-In this problem, we are looking for the minimum number of edges needed to create a path weighted $v$.
-Consider rooting the tree arbitrarily. All paths in this tree must have a unique lowest node in the rooted tree
-As a result, we can break any path in the tree into two paths from nodes to the root. Consider for each node,
-computing it's distance from the root(number of edges used) and the weight of its path from the root.
-We can store this in a map, with key to value pairs of weight : distance
-Now, consider doing small to large merging on the nodes. When we combine a smaller map s to a larger map b at node u,
-as we iterate through each key $a$ the map in s, we want a path weight of exactly $(K+2*path[u]-a)$, where
-$path[u]$ indicates the weight of the path from root to u.
-The motivation behind this is that through the process of small to large merging, we can effectively consider every node as being
- that "unique lowest node" as mentioned earlier.
-Note that in the code below, height is the distance, and dist is the weight of the path for each node.
+We are tasked with finding a path with the minimum number of traversed edges such that the path sum is $s$.
+First, we root the tree arbitrarily.
+Let $lca(u, v) = w$.
+We can break $path(u, v)$ into $path(u, w)$ and $path(v, w)$.
+
+Because $w$ must be an ancestor of both $u$ and $v$, $sum(u, w) = sum(u, root) - sum(w, root)$ and $sum(v, w) = sum(v, root) - sum(w, root)$ where $sum(a, b)$ is the sum of the path betwen the 2 nodes $a$ and $b$. We can compute $sum(i, root)$ for all $i$ in $O(N)$ with a simple DFS. We also compute $dist(i, root)$ where is the number of edges between $i$ and $root$ in similar fashion. 
+
+We perform small to large merging to find an $lca$ $i$ such that $sum(u, root) + sum(v, root) - 2 \cdot sum(i, root) = s$, and $dist(u, root) + dist(v, root) - 2 \cdot dist(i, root) = s$ is minimized. 
+
+To accomplish this, we can use small to large merging. For each $i$, we maintain a map of key to value pair of $sum(root, j) : dist(root, j)$ for  distinct $sum(root, j)$ for all $j$ in the subtree of $i$. If there are duplicate $sum(root, j)$ we take the minimum $dist(root, j)$.
+
+As we combine the maps of two nodes, we iterate through each key-pair $(sum_s, dist_s)$ of the smaller size map, find if there exists a key-pair $sum_l = s - sum_s$ in the larger map, and obtain $dist_s + dist_l$. Our answer would be minimum $dist_s + dist_l$ over all mergings. During this process we also merge all key-value pairs of the smaller map.
 
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log^2N)$
 
+One log factor comes from small-to-large merging, and the other comes from the map operations.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -43,12 +45,12 @@ typedef pair<ll, ll> pii;
 const int maxn = 2e5+20;
 vector<pii> adj[maxn];
 map<ll, ll> info[maxn]; 
-ll dist[maxn], height[maxn]; //define dist relative to root
+ll dist[maxn], sum[maxn]; //define these relative to root
 int N, K, u, v; ll ret;
  
 void dfs1(int u, int p, ll c, int h){
 	info[u][c] = h; 
-	dist[u] = c; height[u] = h;
+	sum[u] = c; dist[u] = h;
 	for(auto n : adj[u]){
 		if(p == n.f) continue;
 		dfs1(n.f, u, c + n.s, h + 1);
@@ -56,7 +58,7 @@ void dfs1(int u, int p, ll c, int h){
 }
  
 void dfs(int u, int p){
-	ll target = K + 2*dist[u];
+	ll target = K + 2*sum[u];
 	for(auto n : adj[u]){
 		if(n.f == p) continue;
 		dfs(n.f, u);
@@ -65,7 +67,7 @@ void dfs(int u, int p){
 		}
 		for(auto i : info[n.f]){
 			if(info[u].find(target - i.f) != info[u].end()){
-				ret = min(ret, info[u][target - i.f] + i.s - 2*height[u]);
+				ret = min(ret, info[u][target - i.f] + i.s - 2*dist[u]);
 			}
 		}
 		for(auto i : info[n.f]){
