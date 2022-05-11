@@ -122,6 +122,7 @@ type UserDataContextAPI = UserLangAPI &
   AdSettingsAPI & {
     firebaseUser: User;
     signOut: () => Promise<void>;
+    triggerUserDataContextRerender: () => void;
     isLoaded: boolean;
     onlineUsers: number;
     getDataExport: () => Record<string, any>;
@@ -194,6 +195,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
     // do nothing
     return Promise.resolve();
   },
+  triggerUserDataContextRerender: () => {},
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},
@@ -315,6 +317,7 @@ export const UserDataProvider = ({
 
   const userData = {
     firebaseUser,
+    triggerUserDataContextRerender: triggerRerender,
     signOut: (): Promise<void> => {
       return signOut(getAuth(firebaseApp)).then(() => {
         UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
