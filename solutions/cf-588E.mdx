@@ -20,7 +20,7 @@ We can answer each query in $\mathcal{O}(a \log n)$. Even though the constant
 factor is pretty bad, the problem limits give room for it. Note
 that if you do store more than $10$ smallest ids the problem will yield a MLE!
 
-**Time Complexity**: $\mathcal{O}(a \log n)$ for each query
+**Time Complexity**: $\mathcal{O}(na\log n + m\log m)$ for each query
 
 <LanguageSection>
 <CPPSection>
@@ -29,19 +29,20 @@ that if you do store more than $10$ smallest ids the problem will yield a MLE!
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5 + 1;
-const int L = 20; // approximately maximum log
+const int MAXN = 1e5 + 1;
+const int MAXL = 20; // approximately maximum log
  // for euler-tour
-vector<int> enter_time(N), exit_time(N), depth(N);
+array<int,MAXN> enter_time, exit_time, depth;
 int timer = 1;
 
 // for binary lifting
-vector<vector<int>> up(N,vector<int>(L)); // up[i][j] stores the 2^jth ancestor for i
-// stores the (10) minimum people from the path from i to 2^jth ancestor
-vector<int> minimum_up[N][L];
+array<array<int,MAXL>, MAXN> up; // up[i][j] stores the 2^jth ancestor for i
 
-vector<int> graph[N];
-vector<int> living_at[N]; // number of people living at each city
+// stores the (10) minimum people from the path from i to 2^jth ancestor
+vector<int> minimum_up[MAXN][MAXL];
+
+vector<int> graph[MAXN]; // main adjacency list
+vector<int> living_at[MAXN]; // number of people living at each city
 
 void remove_extra(vector<int> &x) {
 	// keeps only the first 10 elements (note constraint on a)
@@ -82,7 +83,7 @@ int lca(int a, int b) {
 	if (is_ancestor(a, b)) {
 		return a;
 	}
-	for (int i = L - 1; i >= 0; i--) {
+	for (int i = MAXL - 1; i >= 0; i--) {
 		if (!is_ancestor(up[a][i], b)) {
 			a = up[a][i];
 		}
@@ -93,7 +94,7 @@ int lca(int a, int b) {
 // gather all people going from a node to its k'th ancestor and
 // store the minimums in the people array
 void trace_path(int node, int k, vector<int> &people) {
-	for (int i = 0; i < L; i++) {
+	for (int i = 0; i < MAXL; i++) {
 		if (k & (1 << i)) {
 			combine(people, minimum_up[node][i]);
 			node = up[node][i];
@@ -125,7 +126,7 @@ int main(){
 	dfs(1, 1);
 
 	// fill in information for binary lifting
-	for (int k = 1; k < L; k++) {
+	for (int k = 1; k < MAXL; k++) {
 		for (int i = 1; i <= n; i++) {
 			up[i][k] = up[up[i][k - 1]][k - 1];
 			// combine people from the left and the right
