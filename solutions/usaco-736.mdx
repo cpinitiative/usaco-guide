@@ -84,25 +84,20 @@ public class BovineGeonomics {
 <PySection>
 
 ```py
-# Take in the input data using python standard file I/O system
 file_in = open('cownomics.in')
 data = file_in.read().strip().split('\n')
 
 n, m = map(int, data[0].split(' '))
 
-spotty_cows = []
-plain_cows = []
-
 spotty_cows = [data[i + 1] for i in range(n)]
 plain_cows = [data[i + n + 1] for i in range(n)]
 
-spots = []
-plains = []
-
 total = 0
-
-# For every position, check if it can be a potential mutation location
-# Check if the spotty and plain cows have any repeated characters at this position
+"""
+For every position, check if it can be a potential mutation location
+and check if the spotty and plain cows have any
+repeated characters at this position
+"""
 for i in range(m):
 	used = False
 	for j in range(n):
@@ -113,25 +108,20 @@ for i in range(m):
 	if used == False:
 		total += 1
 
-# Add the answer to the output file using python standard file I/O system
-file_out = open('cownomics.out', 'w')
-file_out.write(str(total))
-file_out.close()
+print(total, file=open('cownomics.out', 'w'))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Solution 2 - Hashset
 
 <LanguageSection>
-
 <JavaSection>
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(NM)$
 
 ```java
 import java.io.*;
@@ -140,26 +130,19 @@ import java.util.*;
 public class BovineGenomics {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(new File("cownomics.in"));
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cownomics.out")));
 		int N = sc.nextInt();
 		int M = sc.nextInt();
 
-		char[][] spotted = new char[N][M];
-		char[][] plain = new char[N][M];
+		char[][] spotted = new char[N][];
+		char[][] plain = new char[N][];
+		for (int i = 0; i < N; i++) {
+			spotted[i] = sc.next().toCharArray();
+		}
+		for (int i = 0; i < N; i++) {
+			plain[i] = sc.next().toCharArray();
+		}
+
 		int ans = 0;
-
-		for (int i = 0; i < N; i++) {
-			String s = sc.next();
-			char[] a = s.toCharArray();
-			if (M >= 0) System.arraycopy(a, 0, spotted[i], 0, M);
-		}
-
-		for (int i = 0; i < N; i++) {
-			String s = sc.next();
-			char[] a = s.toCharArray();
-			if (M >= 0) System.arraycopy(a, 0, plain[i], 0, M);
-		}
-
 		for (int i = 0; i < M; i++) {
 			boolean contains = false;
 			HashSet<Character> a = new HashSet<>();
@@ -175,8 +158,10 @@ public class BovineGenomics {
 				}
 			}
 
-			if (!contains) ans++;
+			ans += !contains ? 1 : 0;
 		}
+
+		PrintWriter out = new PrintWriter("cownomics.out");
 		out.println(ans);
 		out.close();
 	}
@@ -184,7 +169,6 @@ public class BovineGenomics {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 
