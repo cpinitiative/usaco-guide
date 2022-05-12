@@ -2,7 +2,7 @@
 id: usaco-1228
 source: USACO Bronze 2022 Open
 title: Counting Liars
-author: Chongtian Ma
+author: Chongtian Ma, Juheon Rhee
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_prob2_bronze_open22.html)
@@ -83,4 +83,39 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```python
+n = int(input())
+
+g = []
+l = []
+for _ in range(n):
+	a, b = input().split()
+	if a == "G": 
+		g.append(int(b))
+	else: 
+		l.append(int(b))
+
+# All relevant positions of Bessie.
+bessie = g + l + [l[0] - 1] + [g[-1] + 1]
+min_lying = float('inf')
+for i in range(len(bessie)):
+	curr_lying = 0
+	for greater in g:
+		if bessie[i] < greater: 
+			curr_lying += 1
+				       
+	for less in l:
+		if bessie[i] > less: 
+			curr_lying += 1
+        
+	min_lying = min(tmp, min_lying)
+
+print(min_lying)
+```
+
+</PySection>
+
 </LanguageSection>
