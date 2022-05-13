@@ -270,31 +270,32 @@ public class MixMilk {
 <PySection>
 
 ```py
-import sys
-sys.stdin = open("mixmilk.in", "r")
-sys.stdout = open("mixmilk.out", "w")
+capacity, milk = [0] * 3, [0] * 3
 
-N=3
-capacity=[0]*N
-milk=[0]*N
+with open('mixmilk.in') as read:
+    for i in range(3):
+        capacity[i], milk[i] = map(int, read.readline().split())
 """
-N is the number of buckets (which happens to be a constant value of 3)
 capacity[i] is the maximum capacity of bucket i
 milk[i] is the current amount of milk in bucket i
 """
 
-def pour(i, j):
-	amt = min(milk[i], capacity[j]-milk[j])
-	# Amount of milk to pour is the minimum of the remaining milk in bucket i
-	# and the available capacity in bucket j
+i = 0
+for _ in range(100):
+    j = (i + 1) % 3
+	amt = min(milk[i], capacity[j] - milk[j])
+	"""
+	Amount of milk to pour is the minimum of 
+	the remaining milk in bucket i and the available 
+	capacity of bucket j
+	"""
 	milk[i] -= amt
 	milk[j] += amt
-for i in range(N):
-	capacity[i],milk[i]=map(int, input().split())
-for i in range(100):
-	pour(i%N, (i+1)%N) # Pour milk from one bucket to the next
-for i in range(N):
-	print(milk[i])
+	i = j
+
+with open('mixmilk.out', 'w') as out:
+    for fin in milk:
+        print(fin, file=out)
 ```
 
 </PySection>
