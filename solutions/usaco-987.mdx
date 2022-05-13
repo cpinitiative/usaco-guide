@@ -17,37 +17,34 @@ author: Danh Ta Chi Thanh, Juheon Rhee
 #include <iostream>
 #include <cstdio>
 #include <string>
+
 using namespace std;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	freopen("word.in","r",stdin);
-	freopen("word.out","w",stdout);
+int main() {
+	freopen("word.in", "r", stdin);
+	freopen("word.out", "w", stdout);
 
-	//Read N and K.
 	int N, K;
 	cin >> N >> K;
 
-	//This variable is used for storing the number of characters
-	//on the current line but NOT including the spaces characters.
-	int Word_Length = 0;
-
-	for (int i = 0; i < N; ++i){
-		string S;
-		cin >> S; //Read the next word.
-		//Calculate the new length if we put the new word into the current line.
-		Word_Length += S.length();
-		if (Word_Length <= K) { //If it still satisfies the constraint then print that word.
-			//If it is not the first ever word then we print a space character
-			if(i) cout << " ";
-			cout << S;
-		}
-		else { //Else we create a new line and print the word on that line.
-			cout << "\n" << S;
-			Word_Length = S.length();
+	// Number of characters on the current line (not including spaces)
+	int word_len = 0;
+	for (int i = 0; i < N; i++) {
+		string word;
+		cin >> word;
+		// Get the new length if we were to put the word on the current line.
+		word_len += word.length();
+		if (word_len <= K) {
+			// Print a space if it isn't the first word.
+			if (i != 0) {
+				cout << ' ';
+			}
+			cout << word;
+		} else {
+			cout << "\n" << word;
+			word_len = word.length();
 		}
 	}
-	return 0;
 }
 ```
 
@@ -68,9 +65,7 @@ word_list = t.split()
 result = [word_list[0]]
 	
 cur_idx = 0
-	
 cur_len = len(result[cur_idx])
-	
 for i in range(1, n):
 	if len(word_list[i]) + cur_len > k:
 		cur_idx += 1
