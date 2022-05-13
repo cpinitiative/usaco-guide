@@ -84,6 +84,12 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'February 2022',
     photo: 'jeffrey_zhang',
   },
+  {
+    name: 'Juheon Rhee',
+    githubUsername: 'jjliewie',
+    sinceDate: 'May 2022',
+    photo: 'julie',
+  },
 ];
 
 export const pastContentAuthors: Contributor[] = [
