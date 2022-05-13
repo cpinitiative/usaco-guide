@@ -22,9 +22,18 @@ export default function ProblemSolutions({
     useUserSolutionsForProblem(problem);
   const { deleteSolution, upvoteSolution, undoUpvoteSolution, mutateSolution } =
     useUserProblemSolutionActions();
-  const { firebaseUser } = useContext(UserDataContext);
+  const { firebaseUser, lang } = useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
+  const langArr = ['cpp', 'java', 'py'];
+  langArr.sort(function (first, second) {
+    if (first == lang && second != lang) {
+      return -1;
+    } else if (first != lang && second == lang) {
+      return 1;
+    }
+    return 0;
+  });
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
@@ -119,7 +128,7 @@ export default function ProblemSolutions({
           ))}
           {currentUserSolutions?.length === 0 && <span>No solutions yet!</span>}
         </div>
-        {['cpp', 'java', 'py'].map(lang => (
+        {langArr.map(lang => (
           <React.Fragment key={lang}>
             <div className="h-8" />
             <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
