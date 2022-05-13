@@ -1,0 +1,85 @@
+---
+id: usaco-1232
+source: USACO Silver 2022 Open
+title: COW Operations
+author: Mythreya Dharani
+---
+## Explanation
+Note that the characters in any queried string can always be moved around in any order, so the solution might have to do with the parity of the characters. 
+
+Let us define $C$, $O$, and $W$ as the number of respective characters in a substring that is queried. 
+When will it not be possible to convert this substring to a single C? 
+One case is when $W + O$ is odd, since we can never fully remove these from the string (ie: it is an invariant). 
+Another case is when either $W + C$, or $O + C$ is odd because we will always have characters other than $C$ remaining.
+
+With this in mind, can we find the cases when it is possible to reduce the string to one $C$? 
+Notice that any two adjacent characters can be turned into any single character or removed: If the two characters are the same, simply remove them. 
+Otherwise, convert the first character into a character followed by the second character, and remove the pair of second characters.
+
+Thus, we can always reduce a string to one C iff $O + W$ is even and $C + W$ is odd. 
+
+By calculating $C$, $O$, and $W$ in linear time using prefix sums, we can answer each query in constant time.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+	
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+	
+public class COWOperations {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		String s = io.next();
+		
+		int[][] pcount = new int[s.length() + 1][3];  // 1-indexed prefix count array for C, O, and W
+		
+		for (int i = 1; i < s.length() + 1; i++) {
+			for (int j = 0; j < 3; j++) {  // set each current prefix count to previous count
+				pcount[i][j] = pcount[i - 1][j];
+			}
+			
+			// increment count of current character in s
+			if (s.charAt(i - 1) == 'C') {
+				pcount[i][0]++;
+			}
+			else if (s.charAt(i - 1) == 'O') {
+				pcount[i][1]++;
+			}
+			else {
+				pcount[i][2]++;
+			}
+		}
+		
+		int queries = io.nextInt();
+		for (int i = 0; i < queries; i++) {  // get each query
+			int leftBound = io.nextInt();
+			int rightBound = io.nextInt();
+			int[] queryCounts = new int[3];
+			
+			for (int j = 0; j < 3; j++) {  // find char count for queried string
+				queryCounts[j] = pcount[rightBound][j] - pcount[leftBound - 1][j];
+			}
+			
+			//check if O + W is even and C + O is odd, print answer accordingly
+			io.print(((queryCounts[1] + queryCounts[2]) % 2 == 0)
+					&& ((queryCounts[0] + queryCounts[1]) % 2 == 1)? "Y": "N");
+			
+		}
+		io.println();
+		io.close();
+		
+		
+	}
+	//CodeSnip{Kattio}
+}
+```
+	
+</JavaSection>
+
+</LanguageSection>
+
