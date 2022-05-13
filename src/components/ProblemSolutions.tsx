@@ -27,9 +27,9 @@ export default function ProblemSolutions({
   const canModerate = useUserPermissions().canModerate;
   const langArr = ['cpp', 'java', 'py'];
   langArr.sort(function (first, second) {
-    if (first == lang && second != lang) {
+    if (first === lang && second !== lang) {
       return -1;
-    } else if (first != lang && second == lang) {
+    } else if (first !== lang && second === lang) {
       return 1;
     }
     return 0;
