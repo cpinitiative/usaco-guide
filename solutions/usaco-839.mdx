@@ -24,20 +24,21 @@ using namespace std;
 
 const int inf=2e9;
 const int total_talent=250000;
-int n,w; double ans=0;
+int n,W; double ans=0;
 
-signed main(){
+signed main() {
 	ifstream cin("talent.in"); ofstream cout("talent.out");
-	cin>>n>>w;
-	vector<pair<int, int>> cows(n)
+	cin>>n>>W;
+	vector<pair<int, int>> cows(n);
 	for(int i=0; i<n; i++) cin>>cows[i].w>>cows[i].t;
 	vector<int> talent(1e6+10, inf); talent[0]=0;
 	for(auto cow:cows)
 		for(int i=total_talent; i>=0; i--)
 			if(talent[i]!=inf)
 				talent[i+cow.t]=min(talent[i+cow.t], talent[i]+cow.w);
-	for(double t=1; t<talent.size(); t++)
-	if(talent[t]>=w&&t/talent[t]>ans) ans=t/talent[t];
+	for(double T=1; T<talent.size(); T++)
+		if(talent[T]>=W&&T/talent[T]>ans)
+			ans=T/talent[T];
 	cout<<(int)(1000*ans)<<endl;
 }
 ``` 

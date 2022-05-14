@@ -4,7 +4,7 @@ redirects:
   - /silver/prefix-sums-2
 title: 'More on Prefix Sums'
 author: Darren Yao, Neo Wang, Qi Wang
-contributors: Jesse Choe, Kevin Sheng, Brad Ma
+contributors: Jesse Choe, Kevin Sheng, Brad Ma, Juheon Rhee
 description:
   'Max subarray sum, prefix sums in two dimensions, and a more complicated
   example.'
@@ -35,11 +35,10 @@ Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we
 iterate through $j$. This yields the maximum subarray sum for each possible
 right bound, and the maximum over all these values is our answer.
 
+### Implementation
+
 <LanguageSection>
-
 <CPPSection>
-
-### C++ Implementation
 
 ```cpp
 #include <iostream>
@@ -49,7 +48,7 @@ right bound, and the maximum over all these values is our answer.
 using namespace std;
 using ll = long long;
 
-int main(){
+int main() {
 	int n;
 	cin >> n;
 	vector<long long> pfx(n + 1);  // prefix sum array initially filled with 0's
@@ -62,19 +61,15 @@ int main(){
 	ll max_subarray_sum = pfx[1];
 	ll min_prefix_sum = pfx[0];
 	for (int i = 1; i <= n; i++) {
-		// Max subarray sum is the maximum difference between two prefix sums
+		// max subarray sum is the maximum difference between two prefix sums
 		max_subarray_sum = max(max_subarray_sum, pfx[i] - min_prefix_sum);
 		min_prefix_sum = min(min_prefix_sum, pfx[i]);
 	}
 	cout << max_subarray_sum << endl;
 }
 ```
-
 </CPPSection>
-
 <JavaSection>
-
-### Java Implementation
 
 ```java
 import java.io.BufferedReader;
@@ -103,12 +98,8 @@ public class MaxSubSum {
 	}
 }
 ```
-
 </JavaSection>
-
 <PySection>
-
-### Python Implementation
 
 ```py
 size = int(input())
@@ -124,9 +115,7 @@ for i in arr:
 	min_pref_sum = min(min_pref_sum, running_pref_sum)
 print(max_subarray_sum)
 ```
-
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
@@ -139,11 +128,10 @@ required to solve this problem.
 Kadane's Algorithm finds the largest subarray sum using a greedy method.
 [Click here for more information](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
 
+### Implementation
+
 <LanguageSection>
-
 <CPPSection>
-
-### C++ Implementation
 
 ```cpp
 #include <iostream>
@@ -156,12 +144,12 @@ int main() {
 	int n;
 	cin >> n;
 	vector<long long> x(n);
-	for (int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		cin >> x[i];
 	}
 	ll current_sum = x[0];
 	ll max_subarray_sum = x[0];
-	for (int i = 1; i < n; i++){
+	for (int i = 1; i < n; i++) {
 		/*
 		 * Continue the subarray sum or start a new
 		 * subarray sum beginning at the current element.
@@ -173,12 +161,8 @@ int main() {
 	cout << max_subarray_sum << endl;
 }
 ```
-
-</CPPSection>
-	
+</CPPSection>	
 <JavaSection>
-	
-### Java Implementation
 
 ```java
 import java.io.*;
@@ -200,11 +184,11 @@ public class MaxSubarraySumKadane {
 
 		for (int i = 1; i < n; i++) {
 			/*
-			 * Continue the subarray sum or start a new
+			 * continue the subarray sum or start a new
 			 * subarray sum beginning at the current element.
 			 */
 			currentSum = Math.max(currentSum + x[i], x[i]);
-			// Store the maximum subarray sum at each iteration.
+			// store the maximum subarray sum at each iteration.
 			maxSubarraySum = Math.max(maxSubarraySum, currentSum);
 		}
 
@@ -214,9 +198,32 @@ public class MaxSubarraySumKadane {
 
 	//CodeSnip{Kattio}
 }
-
 ```
 </JavaSection>
+<PySection>
+
+```py
+n = int(input())
+
+x = [int(input()) for _ in range(n)]
+
+current_sum = x[0]
+max_subarray_sum = x[0]
+
+for i in range(1, n):
+	"""
+	Continue the subarray sum or start a new
+	subarray sum beginning at the current element.
+	"""
+	current_sum = max(current_sum + x[i], x[i])
+	
+	# Store the maximum subarray sum at each iteration.
+	max_subarray_sum = max(max_subarray_sum, current_sum)
+
+print(max_subarray_sum)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -557,12 +564,12 @@ int main() {
 	}
 
 	for (int q = 0; q < Q; q++) {
-		int x1, x2, y1, y2;
-		cin >> x1 >> y1 >> x2 >> y2;
-		cout << tree_pref[x2][y2]
-				- tree_pref[x1-1][y2]
-				- tree_pref[x2][y1-1]
-				+ tree_pref[x1-1][y1-1] << '\n';
+		int from_row, to_row, from_col, to_col;
+		cin >> from_row >> from_col >> to_row >> to_col;
+		cout << tree_pref[to_row][to_col]
+				- tree_pref[from_row - 1][to_col]
+				- tree_pref[to_row][from_col - 1]
+				+ tree_pref[from_row - 1][from_col - 1] << '\n';
 	}
 }
 ```
@@ -608,15 +615,15 @@ public class ForestQueries {
 		}
 
 		for (int i = 0; i < Q; i++) {
-			int x1 = io.nextInt();
-			int y1 = io.nextInt();
-			int x2 = io.nextInt();
-			int y2 = io.nextInt();
+			int fromRow = io.nextInt();
+			int fromCol = io.nextInt();
+			int toRow = io.nextInt();
+			int toCol = io.nextInt();
 			io.println(
-					pfx[x2][y2]
-					- pfx[x1-1][y2]
-					- pfx[x2][y1-1]
-					+ pfx[x1-1][y1-1]
+					pfx[toRow][toCol]
+					- pfx[fromRow - 1][toCol]
+					- pfx[toRow][fromCol - 1]
+					+ pfx[fromRow - 1][fromCol - 1]
 			);
 		}
 		io.close();

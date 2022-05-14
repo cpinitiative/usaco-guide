@@ -1,0 +1,65 @@
+---
+id: usaco-834
+source: USACO Silver 2018 US Open
+title: Out of Sorts
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_sort_silver_open18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class OutOfSorts {
+	// class made to hold the value and original index
+	static class Entry implements Comparable<Entry> {
+		public int value;
+		public int index;
+
+		public Entry (int v, int i) {
+			value = v;
+			index = i;
+		}
+
+		public int compareTo(Entry other) { 
+			if (this.value == other.value) {
+				return this.index - other.index;
+			}
+			return this.value - other.value;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("sort");
+		int n = io.nextInt();
+		Entry[] entries = new Entry[n];
+		for (int i = 0; i < n; i++) {
+			entries[i] = new Entry(io.nextInt(), i);
+		}
+				      
+		Arrays.sort(entries); 
+
+		int ans = 1;
+				      
+		for (int i = 0; i < entries.length; i++) {
+			// count the number of bubbles needed to reach the sorted array
+			// we need to add 1 to account for the final iteration of the algorithm
+			ans = Math.max(ans, 1 + entries[i].index - i);
+		}
+
+		io.println(ans);
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

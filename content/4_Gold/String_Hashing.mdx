@@ -157,13 +157,13 @@ class HashedString:
 This implementation calculates
 
 $$
-\texttt{hsh}[i] = \left(\sum_{x = 0}^i P^{i - x} \cdot S[x]\right) \bmod M
+\texttt{hsh}[i + 1] = \left(\sum_{x = 0}^i P^{i - x} \cdot S[x]\right) \bmod M
 $$
 
 The hash of any particular substring $S[a : b]$ is then calculated as
 
 $$
-\left(\sum_{x = a}^b P^{b - x} \cdot S[x] \right) \bmod M = (\texttt{hsh}[b] - \texttt{hsh}[a] \cdot P^{b - a + 1}) \bmod M
+\left(\sum_{x = a}^b P^{b - x} \cdot S[x] \right) \bmod M = (\texttt{hsh}[b + 1] - \texttt{hsh}[a] \cdot P^{b - a + 1}) \bmod M
 $$
 
 using prefix sums. This is nice because the highest power of $P$ in that

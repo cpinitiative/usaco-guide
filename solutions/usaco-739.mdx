@@ -2,7 +2,7 @@
 id: usaco-739
 source: USACO Silver 2017 US Open 
 title: Bovine Genomics
-author: Brad Ma
+author: Brad Ma, Kevin Sheng
 ---
 
 [Official Editorial (C++)](http://www.usaco.org/current/data/sol_cownomics_silver_open17.html)
@@ -12,7 +12,104 @@ author: Brad Ma
 **Time Complexity** $\mathcal{O}(NM^3)$
 
 <LanguageSection>
-  
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("cownomics.in");
+
+	int cow_num;
+	int genome_len;
+	read >> cow_num >> genome_len;
+
+	vector<vector<int>> spotted(cow_num, vector<int>(genome_len));
+	for (int s = 0; s < cow_num; s++) {
+		std::string genome;
+		read >> genome;
+		for (int g = 0; g < genome_len; g++) {
+			// A -> 0, C -> 1, T -> 2, G -> 3
+			if (genome[g] == 'A') {
+				spotted[s][g] = 0;
+			} else if (genome[g] == 'T') {
+				spotted[s][g] = 1;
+			} else if (genome[g] == 'C') {
+				spotted[s][g] = 2;
+			} else if (genome[g] == 'G') {
+				spotted[s][g] = 3;
+			}
+		}
+	}
+
+	vector<vector<int>> plain(cow_num, vector<int>(genome_len));
+	for (int p = 0; p < cow_num; p++) {
+		std::string genome;
+		read >> genome;
+		for (int g = 0; g < genome_len; g++) {
+			if (genome[g] == 'A') {
+				plain[p][g] = 0;
+			} else if (genome[g] == 'T') {
+				plain[p][g] = 1;
+			} else if (genome[g] == 'C') {
+				plain[p][g] = 2;
+			} else if (genome[g] == 'G') {
+				plain[p][g] = 3;
+			}
+		}
+	}
+
+	int valid_sets = 0;
+
+	// Loop through every possible group of 3.
+	for (int a = 0; a < genome_len; a++) {
+		for (int b = a + 1; b < genome_len; b++) {
+			for (int c = b + 1; c < genome_len; c++) {
+				vector<bool> spotted_ids(64);
+				for (int sc = 0; sc < cow_num; sc++) {
+					/*
+					 * By multiplying the first, second, and
+					 * third digits by 16, 4, and 1 respectively, we can
+					 * get a number unique to that combination.
+					 */ 
+					int total = (
+						spotted[sc][a] * 16
+						+ spotted[sc][b] * 4
+						+ spotted[sc][c] * 1
+					);
+					spotted_ids[total] = true;
+				}
+
+				bool valid = true;
+				for (int pc = 0; pc < cow_num; pc++) {
+					int total = (
+						plain[pc][a] * 16
+						+ plain[pc][b] * 4
+						+ plain[pc][c] * 1
+					);
+					// We can't tell the spotted & plain cows apart.
+					if (spotted_ids[total]) {
+						valid = false;
+						break;
+					}
+				}
+
+				valid_sets += valid;
+			}
+		}
+	}
+
+	std::ofstream("cownomics.out") << valid_sets << endl;
+}
+```
+</CPPSection>
 <JavaSection>
   
 ```java
@@ -23,100 +120,88 @@ public class BovineGenomics {
 	public static void main (String[] args) throws IOException {
 		Kattio io = new Kattio("cownomics");
 	
-		int n = io.nextInt();
-		int m = io.nextInt();
+		int cowNum = io.nextInt();
+		int genomeLen = io.nextInt();
 
-		int[][] spotted = new int[n][m];
-		for (int x = 0; x < n; x++) {  // read spotted array
-			StringBuilder line = new StringBuilder();
-			line.append(io.next());
-
-			for (int y = 0; y < m; y++) {
-				/*
-				 * using base 4 will assign a unique
-				 * number to every string, we set to 
-				 * 0, 1, 2, and 3 here but we will multiply later on 
-				 * and get // A -> 1, C -> 4, T -> 16, G -> 64 so that there
-				 * is a unique base 4 number for every combination
-				 */ 
-	
+		int[][] spotted = new int[cowNum][genomeLen];
+		for (int s = 0; s < cowNum; s++) {
+			genome = io.next();
+			for (int g = 0; g < genomeLen; g++) {
 				// A -> 0, C -> 1, T -> 2, G -> 3
-				if (line.charAt(y) == 'A') {
-					spotted[x][y] = 0;
-				}
-				else if (line.charAt(y) == 'C') {
-					spotted[x][y] = 1;
-				}
-				else if (line.charAt(y) == 'T') {
-					spotted[x][y] = 2;
-				}
-				else {
-					spotted[x][y] = 3;
+				if (genome.charAt(g) == 'A') {
+					spotted[s][g] = 0;
+				} else if (genome.charAt(g) == 'C') {
+					spotted[s][g] = 1;
+				} else if (genome.charAt(g) == 'T') {
+					spotted[s][g] = 2;
+				} else if (genome.charAt(g) == 'G') {
+					spotted[s][g] = 3;
 				}
 			}
 		}
 
-		int[][] plain = new int[n][m];
-		for (int x = 0; x < n; x++) {  // read plain array
-			StringBuilder line = new StringBuilder();
-			line.append(io.next());
-
-			for (int y = 0; y < m; y++) {
-				if (line.charAt(y) == 'A') {
-					plain[x][y] = 0;
-				}
-				else if (line.charAt(y) == 'C') {
-					plain[x][y] = 1;
-				}
-				else if (line.charAt(y) == 'T') {
-					plain[x][y] = 2;
-				}
-				else {
-					plain[x][y] = 3;
+		int[][] plain = new int[cowNum][genomeLen];
+		for (int p = 0; p < cowNum; p++) {
+			genome = io.next();
+			for (int g = 0; g < genomeLen; g++) {
+				if (genome.charAt(g) == 'A') {
+					plain[p][g] = 0;
+				} else if (genome.charAt(g) == 'C') {
+					plain[p][g] = 1;
+				} else if (genome.charAt(g) == 'T') {
+					plain[p][g] = 2;
+				} else if (genome.charAt(g) == 'G') {
+					plain[p][g] = 3;
 				}
 			}
 		}
 
-		int count = 0;
+		int validSets = 0;
 
-		for (int a = 0; a < m; a++) {  // loop through every possible group of 3
-			for (int b = a + 1; b < m; b++) {
-				for (int c = b + 1; c < m; c++) {
-					boolean[] visited = new boolean[64];
-					for (int x = 0; x < n; x++) {
-						// get the base 4 number
-						int total = spotted[x][a] * 16 + 
-						spotted[x][b] * 4 + spotted[x][c] * 1;
-						visited[total] = true;
+		// Loop through every possible group of 3.
+		for (int a = 0; a < genomeLen; a++) {
+			for (int b = a + 1; b < genomeLen; b++) {
+				for (int c = b + 1; c < genomeLen; c++) {
+					boolean[] spottedIDs = new boolean[64];
+					for (int sc = 0; sc < cowNum; sc++) {
+						/*
+						 * By multiplying the first, second, and
+						 * third digits by 16, 4, and 1 respectively, we can
+						 * get a number unique to that combination.
+						 */ 
+						int total = (
+							spotted[sc][a] * 16
+							+ spotted[sc][b] * 4
+							+ spotted[sc][c] * 1
+						);
+						spottedIDs[total] = true;
 					}
 
-					boolean add = true;
-					for (int x = 0; x < n; x++) {
-						// get the base 4 number
-						// A -> 1, C -> 4, T -> 16, G -> 64
-						int total = plain[x][a] * 16 + 
-						plain[x][b] * 4 + plain[x][c] * 1;
-						// FJ can't explain with this combination of 3, so don't add
-						if (visited[total]) {
-							add = false;
+					boolean valid = true;
+					for (int pc = 0; pc < cowNum; pc++) {
+						int total = (
+							plain[pc][a] * 16
+							+ plain[pc][b] * 4
+							+ plain[pc][c] * 1
+						);
+						// We can't tell the spotted & plain cows apart.
+						if (spottedIDs[total]) {
+							valid = false;
 							break;
 						}
 					}
 
-					if (add) {
-						count++;
-					}
+					validSets += valid ? 1 : 0;
 				}
 			}
 		}
 
-		io.println(count);
+		io.println(validSets);
 		io.close();
 	}
+
 	//CodeSnip{Kattio}
-}  
+}
 ```
-  
 </JavaSection>
-  
 </LanguageSection>

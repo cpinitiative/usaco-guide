@@ -180,19 +180,9 @@ def process_editorials(url_suffix):
         print("FOUND EDITORIAL LINK", ID, edLinks[ID])
 
 
-def gen_div_to_probs():
-    """For div_to_probs.ts"""
-
-    print("CANDIDATES")
-    cand = ["dec21results"]
-    for a in cand:
-        print(a)
-
-    for url in cand:
-        process_names(url)
-        if url == "dec15results":
-            break
-
+def gen_div_to_probs(url_suffix: str):
+    """For generating div_to_probs.ts"""
+    process_names(url_suffix)
     print(json.dumps(id_to_prob, indent=4))
 
 
@@ -207,5 +197,5 @@ def gen_id_to_sol():
     print(json.dumps(edLinks, indent=4))
 
 
-# id_to_sol()
-gen_div_to_probs()
+gen_div_to_probs("open22results")
+gen_id_to_sol()

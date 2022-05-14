@@ -451,6 +451,50 @@ public class TopoSort {
 
 </JavaSection>
 
+<PySection>
+
+```python
+from collections import deque
+
+# The code is in a function so it can run faster.
+def main():
+	N, M = map(int, input().split())
+	adj = [[] for _ in range(N)]
+	for _ in range(M):
+		a, b = map(int, input().split())
+		a -= 1
+		b -= 1
+		adj[a].append(b)
+
+	topo_order = []
+	in_degree = [0 for _ in range(N)]
+	for nodes in adj:
+		for node in nodes:
+			in_degree[node] += 1
+
+	count = 0
+	queue = deque([node for node in range(N) if in_degree[node] == 0])
+	while queue:
+		cur_node = queue.popleft()
+		topo_order.append(cur_node)
+		for neigh_node in adj[cur_node]:
+			in_degree[neigh_node] -= 1
+			if in_degree[neigh_node] == 0:
+				queue.append(neigh_node)
+		count += 1
+
+	if count != N:
+		print("IMPOSSIBLE")
+	else:
+		print(" ".join(map(str, [node + 1 for node in topo_order])))
+
+
+if __name__ == "__main__":
+	main()
+```
+
+</PySection>
+
 </LanguageSection>
 
 <Info title="Pro Tip">

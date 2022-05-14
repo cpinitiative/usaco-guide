@@ -58,8 +58,7 @@ the output will be as follows:
 The sum of these three numbers is 6
 ```
 
-Feel free to test them out at
-[ide.thecodingwizard.me](https://ide.thecodingwizard.me).
+Feel free to test them out at [ide.usaco.guide](https://ide.usaco.guide/).
 
 <Info title="Out of the methods below, which one should I use?">
 
@@ -69,8 +68,8 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), and in USACO problems after December 2020, input and output are
-**standard**.
+In most websites (such as CodeForces and CSES), and in USACO problems after
+December 2020, input and output are **standard**.
 
 <LanguageSection>
 
@@ -127,10 +126,10 @@ int main() {
 	 * To input a 64-bit (long long) number,
 	 * use %lld instead (some OJs might need %I64 instead).
 	 * Many other specifiers are also available; see link for more details.
-	 * 
+	 *
 	 * Be sure to add a & character (address-of operator) when using
 	 * scanf, UNLESS you are inputing a string with %s.
-	 * 
+	 *
 	 * It is possible to input multiple values at a time as shown below.
 	 */
 	scanf("%d %d %d", &a, &b, &c);
@@ -182,6 +181,13 @@ public class Main {
 This works, but `Scanner` and `System.out.print` are slow when we have to handle
 inputting and outputting tens of thousands of lines.
 
+<Info title="Input Speed">
+
+See the [Fast I/O module](/general/fast-io) for a comparison of input speeds as
+well as faster methods of input than those described in this module.
+
+</Info>
+
 ### Method 2 - [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html)
 
 These are faster because they buffer the input and output and handle it all at
@@ -208,79 +214,27 @@ public class Main {
 		pw.print("The sum of these three numbers is ");
 		pw.println(a + b + c);
 		/*
-		 * Make sure to include this line, as it
-		 * closes IO and flushes the output as well.
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
 		 */
 		pw.close();
 	}
 }
 ```
 
-#### I/O Template
+#### Method 3 - I/O Template
+
+<Warning>
+
+Since the code in this section could potentially be considered more than just
+basic Java functionality, you should not refer to this during a USACO contest.
+
+</Warning>
 
 The following template (a shortened version of Kattis's
-[`Kattio.java`](https://open.kattis.com/help/java)) combines `BufferedReader`
-and `PrintWriter` and takes care of the string processing for you.
-
-<!-- 
-
-```java
-import java.io.*;
-import java.util.StringTokenizer;
-
-class Kattio extends PrintWriter {
-	private BufferedReader r;
-	private StringTokenizer st = new StringTokenizer("");
-	private String token;
-
-	// standard input
-	public Kattio() { this(System.in,System.out); }
-	public Kattio(InputStream i, OutputStream o) {
-		super(o);
-		r = new BufferedReader(new InputStreamReader(i));
-	}
-	// USACO-style file input
-	public Kattio(String problemName) throws IOException { 
-		super(new FileWriter(problemName+".out"));
-		r = new BufferedReader(new FileReader(problemName+".in"));
-	}
-
-	private String peek() {
-		if (token == null)
-			try {
-				while (!st.hasMoreTokens()) {
-					String line = r.readLine();
-					if (line == null) return null;
-					st = new StringTokenizer(line);
-				}
-				token = st.nextToken();
-			} catch (IOException e) { }
-		return token;
-	}
-	public boolean hasMoreTokens() { return peek() != null; }
-	public String next() {
-		String ans = peek(); 
-		token = null;
-		return ans;
-	}
-	
-	public int nextInt() { return Integer.parseInt(next()); }
-	public double nextDouble() { return Double.parseDouble(next()); }
-	public long nextLong() { return Long.parseLong(next()); }
-}
-
-public class Main {
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
-		int a = io.nextInt();
-		int b = io.nextInt();
-		int c = io.nextInt();
-		io.print("The sum of these three numbers is ");
-		io.println(a + b + c);
-		io.close(); // make sure to include this line -- closes io and flushes the output
-	}
-}
-``` -->
+[`Kattio.java`](https://open.kattis.com/help/java)) wraps `BufferedReader` and
+`PrintWriter` and takes care of the string processing for you. You may or may
+not find this more convenient than method 2.
 
 ```java
 import java.io.*;
@@ -310,7 +264,7 @@ class Kattio extends PrintWriter {
 	}
 	// USACO-style file input
 	public Kattio(String problemName) throws IOException {
-		super(new FileWriter(problemName+".out"));
+		super(problemName+".out");
 		r = new BufferedReader(new FileReader(problemName+".in"));
 	}
 	// returns null if no more input
@@ -335,7 +289,11 @@ public class Main {
 		int c = io.nextInt();
 		io.print("The sum of these three numbers is ");
 		io.println(a + b + c);
-		io.close(); // make sure to include this line -- closes io and flushes the output
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
+		io.close();
 	}
 }
 ```
@@ -361,39 +319,27 @@ instance `io`:
 | `io.println(arg)` | Prints `arg` to designated output stream and adds a newline                                                                                                                                                                           |
 | `io.close()`      | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](<https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()>)) at the end, or you won't see any output! |
 
-USACO prohibits prewritten code but allows you to consult resources about basic
-functionality such as input / output, so feel free to refer to this module
-during a USACO contest.
-
 <Info title="PrintWriter Buffering">
 
-The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37.
-But since `PrintWriter`
-[uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered),
-including `BufferedOutputStream` is necessary.
+The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 23.
+But since `PrintWriter` will automatically wrap an `OutputStream` with a
+`BufferedWriter`
+([source](https://stackoverflow.com/questions/32177690/is-printwriter-buffered)),
+including `BufferedOutputStream` is unnecessary.
 
 Similarly, you may see `PrintWriter`s for file output initialized like the
 following (ex.
-[here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
+[here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)):
 
 ```java
 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
-but
+This is equivalent to what we use in this module:
 
 ```java
-PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
+PrintWriter pw = new PrintWriter("problemname.out");
 ```
-
-suffices.
-
-</Info>
-
-<Info title="Input Speed">
-
-See [Fast I/O](/general/fast-io) for a comparison of input speeds as well as a
-faster method of input.
 
 </Info>
 
@@ -402,14 +348,12 @@ faster method of input.
 <PySection>
 
 ### Method 1 - [`input()`](https://docs.python.org/3/library/functions.html#input) and [`print()`](https://docs.python.org/3/library/functions.html#print)
-The most intuitive way to do input/output is using the built in
-`input()` and
-`print()` methods. The
-`input()` method will return the next line, and can be processed using various
-Python methods. The `print()` method takes in a string and an optional string
-`end` (defaults to `'\n'`). Below is an annotated demonstration on different
-input/output scenarios.
 
+The most intuitive way to do input/output is using the built in `input()` and
+`print()` methods. The `input()` method will return the next line, and can be
+processed using various Python methods. The `print()` method takes in a string
+and an optional string `end` (defaults to `'\n'`). Below is an annotated
+demonstration on different input/output scenarios.
 
 ```py
 # Read in a string
@@ -422,15 +366,17 @@ n = int(input())
 # Prints n with " test" (no newline) after it
 print(n, end=" test")
 ```
+
 ### Method 2 - [`stdin`](https://docs.python.org/3/library/sys.html#sys.stdin) and [`stdout`](https://docs.python.org/3/library/sys.html#sys.stdout)
 
-The first method of reading input can be far slower (sometimes hundreds of times slower!) than using `stdin`.
-Coupled with Python's relatively slow execution speed, reading input quickly becomes incredibly important. 
+The first method of reading input can be far slower (sometimes hundreds of times
+slower!) than using `stdin`. Coupled with Python's relatively slow execution
+speed, reading input quickly becomes incredibly important.
 
 ```py
 # Import the sys module to use stdin/stdout
 import sys
-	
+
 # sys.stdin/stdout is similar to a file in that we read lines for input/output
 my_str = sys.stdin.readline()
 sys.stdout.write(str(myStr) + '\n')
@@ -450,14 +396,15 @@ and sort through it yourself. This is the fastest input method for python.
 all_data = sys.stdin.read().split('\n')
 ```
 
-We can also use [`split`](https://docs.python.org/3/library/stdtypes.html#str.split),
+We can also use
+[`split`](https://docs.python.org/3/library/stdtypes.html#str.split),
 [`map`](https://docs.python.org/3/library/functions.html#map) or a
 [list comprehension](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions)
 to read in multiple whitespace-separated integers on the same line.
 
 ```py
 import sys
-	
+
 # Read in a series of numbers on one line into a list
 nums = [int(x) for x in input().split()]
 # This does the same thing
@@ -482,11 +429,13 @@ n, m = map(int, input().split())
 n, m = map(int, sys.stdin.readline().split())
 ```
 
-So taking three integers as input and printing their sum is quite simple. On a larger scale (thousands of integers), using stdin and stdout becomes far more important for speed:
+So taking three integers as input and printing their sum is quite simple. On a
+larger scale (thousands of integers), using stdin and stdout becomes far more
+important for speed:
 
 ```py
 import sys
-	
+
 a, b, c = map(int, input().split())
 print("The sum of these three numbers is", a + b + c)
 
@@ -516,8 +465,6 @@ Try to implement this yourself!
 <CPPSection>
 
 As noted in the resource above, this problem requires _64-bit integers_.
-
-<!-- **Note:** If you went through the recommended sections of Sololearn from [Choosing a Language](/general/choosing-lang#resources-for-learning-how-to-code), then you should be able to implement this yourself. -->
 
 <Spoiler title="Solution">
 
@@ -595,7 +542,10 @@ public class Main {
 			}
 		}
 		pw.println(x);
-		// This line is needed, as it closes pw and flushes the output too
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
 		pw.close();
 	}
 }
@@ -624,7 +574,10 @@ public class Main {
 			}
 		}
 		io.println(x);
-		// This line is needed, as it closes IO and flushes the output too
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
 		io.close();
 	}
 
@@ -674,8 +627,8 @@ printed to a file called `problemname.out`.
 
 You must use the correct file names when opening the `.in` and `.out` files,
 depending on the problem. The file names are given on USACO problems which
-require file opening. For example, you would open `paint.in` and `paint.out`
-in the above problem.
+require file opening. For example, you would open `paint.in` and `paint.out` in
+the above problem.
 
 <LanguageSection>
 
@@ -746,7 +699,7 @@ using namespace std;
 int main() {
 	ifstream fin("problemname.in");
 	ofstream fout("problemname.out");
-	
+
 	int a;
 	int b;
 	int c;
@@ -779,7 +732,10 @@ public class Main {
 		int c = Integer.parseInt(st.nextToken());
 		pw.print("The sum of these three numbers is ");
 		pw.println(a + b + c);
-		// This line closes IO and flushes the output stream
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
 		pw.close();
 	}
 }
@@ -799,7 +755,10 @@ public class Main {
 		int c = io.nextInt();
 		io.print("The sum of these three numbers is ");
 		io.println(a + b + c);
-		// This line closes IO and flushes the output stream
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
 		io.close();
 	}
 
@@ -828,20 +787,20 @@ sys.stdin = open("problemname.in", "r")
 sys.stdout = open("problemname.out", "w")
 ```
 
-A different approach to file I/O in Python is to still use the `open()` method, 
+A different approach to file I/O in Python is to still use the `open()` method,
 but use the built-in functions `.readline()` or `.readlines()`:
-	
+
 ```py
 """
 Note: The second argument can be omitted in the open()
 command for read-only files
 """
-fin = open("problemname.in", "r") 
+fin = open("problemname.in", "r")
 fout = open("problemname.out", "w")
 
 # One way to read the file using .readline()
 line1 = fin.readline()
-# readline() will pick up where you left off 
+# readline() will pick up where you left off
 line2 = fin.readline()
 line3 = fin.readline()
 
@@ -850,7 +809,7 @@ line_list = []
 for line in fin.readlines():
 	pass  # Process input here
 
-# printing line_list would give [line1, line2, line3]			
+# printing line_list would give [line1, line2, line3]
 
 # Output:
 fout.write(output_text)  # Write to the output file
@@ -862,37 +821,43 @@ example_str = f"Hello {variable1} {variable2} World!"
 # Printing example_str would give Hello 1 2 World!
 ```
 
-* `fin.readline()` will return the next line as a string. This method 
-  is useful for problems where you only have to read a short amount of lines
-  but you still need to map each value to a variable.
+- `fin.readline()` will return the next line as a string. This method is useful
+  for problems where you only have to read a short amount of lines but you still
+  need to map each value to a variable.
 
-* `fin.readlines()` returns all of the file's content as a list, separated by newlines (`"\n"`).
-  Combined with a for loop, this method provides a concise way to separate variables in the same
-  line in a problem. Keep in mind that each line entry in the list will still have a `"\n"` at the end.
+- `fin.readlines()` returns all of the file's content as a list, separated by
+  newlines (`"\n"`). Combined with a for loop, this method provides a concise
+  way to separate variables in the same line in a problem. Keep in mind that
+  each line entry in the list will still have a `"\n"` at the end.
 
-* `fout.write(data)` will write the variable `data` to the file. `data` must be a string,
-  and you can convert non-string variables with `str(my_var)`. The `write()` method will NOT write
-  a new line at the end. You must also run `fout.write("\n")` if you wish to write a new line.
+- `fout.write(data)` will write the variable `data` to the file. `data` must be
+  a string, and you can convert non-string variables with `str(my_var)`. The
+  `write()` method will NOT write a new line at the end. You must also run
+  `fout.write("\n")` if you wish to write a new line.
 
-* f-strings were added in Python 3.6, and generally look nicer than concatenating (adding) strings.
-  To define an f-string, simply add the letter `f` right before the start of the string, and any
-  variables or expressions enclosed in curly braces (`{}`) will be put into the string. As an example,
-  `fout.write(f"{var1} {var2} {var3+var4}")` looks much cleaner than `fout.write(str(var1)+" "+str(var2)+" "+str(var3+var4))`
+- f-strings were added in Python 3.6, and generally look nicer than
+  concatenating (adding) strings. To define an f-string, simply add the letter
+  `f` right before the start of the string, and any variables or expressions
+  enclosed in curly braces (`{}`) will be put into the string. As an example,
+  `fout.write(f"{var1} {var2} {var3+var4}")` looks much cleaner than
+  `fout.write(str(var1)+" "+str(var2)+" "+str(var3+var4))`
 
-After you read a line, you may wish to process it further. Python has many built-in string
-methods and functions:
+After you read a line, you may wish to process it further. Python has many
+built-in string methods and functions:
 
-* `str.strip()` removes any trailing or leading whitespace. You should always run this method
-  after reading a line, to ensure that there is no extra whitespace: `line = fin.readline().strip()`
+- `str.strip()` removes any trailing or leading whitespace. You should always
+  run this method after reading a line, to ensure that there is no extra
+  whitespace: `line = fin.readline().strip()`
 
-* `map(func, iterable)` will run a function (the `func` argument) against each element of an iterable
-  (list) you pass it. This is useful for changing a list of strings into a list of ints:
-  `nums = list(map(int, ["1", "2", "3"]))`. Please note that `map()` returns a Map object, and you need
-  to convert it into a list with `list()`.
+- `map(func, iterable)` will run a function (the `func` argument) against each
+  element of an iterable (list) you pass it. This is useful for changing a list
+  of strings into a list of ints: `nums = list(map(int, ["1", "2", "3"]))`.
+  Please note that `map()` returns a Map object, and you need to convert it into
+  a list with `list()`.
 
-* `str.split(delim)` will split the string. If no argument is passed, it will split by space.
-  This is useful if you want to separate a string of space-separated integers into ints:
-  `nums = list(map(int, line.split()))`
+- `str.split(delim)` will split the string. If no argument is passed, it will
+  split by space. This is useful if you want to separate a string of
+  space-separated integers into ints: `nums = list(map(int, line.split()))`
 
 </PySection>
 
@@ -1029,7 +994,11 @@ public class Main {
 			ans += cover[i];
 		}
 		pw.println(ans);
-		pw.close(); // make sure to include this line -- closes pw and flushes the output
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
+		pw.close();
 	}
 }
 ```
@@ -1070,6 +1039,10 @@ public class Main {
 			ans += cover[i];
 		}
 		pw.println(ans);
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
 		pw.close();
 	}
 }
@@ -1106,6 +1079,10 @@ public class Main {
 			ans += cover[i];
 		}
 		io.println(ans);
+		/*
+		 * Make sure to include the line below, as it
+		 * flushes and closes the output stream.
+		 */
 		io.close();
 	}
 
@@ -1134,7 +1111,7 @@ with open('paint.in', 'r') as inp:
 		cover[i] = 1
 	for i in range(c, d):
 		cover[i] = 1
-	
+
 	ans = 0
 	for i in range(len(cover)):
 		ans += cover[i]

@@ -79,6 +79,7 @@ const CopyButton = styled.button`
 
 const RelativeDiv = styled.div`
   position: relative;
+  isolation: isolate;
 `;
 
 const CodeSnipButton = ({

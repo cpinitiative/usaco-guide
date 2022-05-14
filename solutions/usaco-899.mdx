@@ -1,0 +1,229 @@
+---
+id: usaco-899
+source: USACO Gold 2019 January
+title: Shortcut
+author: Ryan Chou, Qi Wang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_shortcut_gold_jan19.html)
+
+## Explanation
+
+A simple brute-force approach would be to find the shortest path for all of the nodes, and then try to add a shortcut from $1$ to $i$ and find the shortest path again for all $i$.
+
+Using this approach, the answer is $\min(\texttt{dist}-\texttt{short}_i)$ for all $i$, where $\texttt{dist}$ is the travel time that all cows take without a shortcut and $\texttt{short}_i$ represents the travel time that all cows take when there is a shortcut from $1$ to $i$. Although this will certainly TLE, it hints at a faster way to compute the time saved. 
+
+Let's call $\texttt{occ}_i$ the number of cows that pass through field $i$ and $\texttt{trav}_i$ the cost for one cow to get from field $i$ to $1$. 
+Then the answer would be $\max(\texttt{occ}_i \cdot (\texttt{trav}_i - T))$ for all $i$. This works because $\texttt{trav}_i - T$ calculates the decrease in travel time for one cow to reach field $1$. By multiplying this value by $\texttt{occ}_i$, we calculate the time decrease for all the cows that pass through that field. 
+
+We can find the values for $\texttt{trav}_i$ quickly with [Dijkstra's Algorithm](/gold/shortest-paths). To determine $\texttt{occ}_i$, we'll store the parents of nodes while running Dijkstra's so we can backtrack to determine the counts of cows that pass through. We can compute $\texttt{occ}$ in $\mathcal{O}(N^2)$ within the time limits because $N \leq 10^4$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M\log N + N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("shortcut.in", "r", stdin);
+	freopen("shortcut.out", "w", stdout);
+
+	int n, m, t;
+	cin >> n >> m >> t;
+
+	vector<int> fields(n);
+	for (int i = 0; i < n; i++) {
+		cin >> fields[i];
+	}
+
+	// adj[i] = {travel time, adjacent node}
+	vector<vector<pair<int, int>>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v, c;
+		cin >> u >> v >> c;
+
+		adj[--u].push_back({c, --v});
+		adj[v].push_back({c, u});
+	}
+
+	vector<int> cost(n, INT32_MAX);
+
+	// prev stores parents for backtracking
+	vector<int> prev(n, INT32_MAX);
+	priority_queue<
+		pair<int, int>, 
+		vector<pair<int, int>>, 
+		greater<pair<int, int>>
+	> pq;
+	
+	cost[0] = 0;
+	
+	// travel time, current node
+	pq.push({0, 0});
+	while (pq.size()) {
+		pair<int, int> nxt = pq.top();
+		pq.pop();
+		
+		int cur_cost = nxt.first;
+		int cur_node = nxt.second;
+
+		if (cur_cost != cost[cur_node]) {
+			continue;
+		}
+
+		for (const pair<int, int>& u : adj[cur_node]) {
+			// if this path is more optimal
+			if (u.first + cur_cost < cost[u.second]) {
+				cost[u.second] = u.first + cur_cost; 
+				pq.push({u.first + cur_cost, u.second});
+				prev[u.second] = cur_node;
+			/*
+			 * keep paths lexicographically minimum by 
+			 * always choosing the lesser-indexed node
+			 */
+			} else if (u.first + cur_cost == cost[u.second] && cur_node < prev[u.second]) {
+				prev[u.second] = cur_node;
+				pq.push({u.first + cur_cost, u.second});
+			}
+		}
+	}
+
+	vector<long long> occ(n);
+	// backtrack
+	for (int i = 0; i < n; i++) {
+		int cur = i;
+		while (cur != INT32_MAX) {
+			occ[cur] += fields[i];
+			cur = prev[cur];
+		}
+	}
+
+	long long ans = 0;
+	for (int i = 0; i < n; i++) {
+		ans = max(ans, (long long)(occ[i] * (cost[i] - t)));
+	}
+	cout << ans << '\n';
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Shortcut {
+	static long[] farms;
+	static List<Edge>[] adj;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("shortcut");
+
+		int N = io.nextInt();
+		int M = io.nextInt();
+		int T = io.nextInt();
+		long[] dist = new long[N];
+		farms = new long[N];
+		adj = new List[N];
+
+		for (int i = 0; i < N; i++) {
+			farms[i] = io.nextInt();
+			dist[i] = Integer.MAX_VALUE;
+			adj[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			int c = io.nextInt();
+
+			adj[a].add(new Edge(a, b, c));
+			adj[b].add(new Edge(b, a, c));
+		}
+
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.add(new Edge(0, 0, 0));
+		List<Edge> fin = new ArrayList<>();
+		while (!pq.isEmpty()) {
+			Edge c = pq.poll();
+
+			if(dist[c.t] <= c.e) {
+				continue;
+			}
+			dist[c.t] = c.e;
+			// Keep edges that form the shortest path tree
+			fin.add(c);
+
+			for (Edge e : adj[c.t]) {
+				int nw = c.e + e.e;
+
+				if(dist[e.t] <= nw) {
+					continue;
+				}
+
+				pq.add(new Edge(c.t, e.t, nw));
+			}
+		}
+		// Don't need the edge from 0 to 0
+		fin.remove(0);
+
+		for (int i = 0; i < N; i++) {
+			adj[i].clear();
+		}
+
+		// Turn tree into list
+		for (int i = 0; i < fin.size(); i++) {
+			Edge e = fin.get(i);
+
+			adj[e.f].add(new Edge(e.f, e.t, 0));
+		}
+
+		dfs(0);
+
+		long res = 0L;
+		for (int i = 1; i < farms.length; i++) {
+			res = Math.max(res, (dist[i] - T) * farms[i]);
+		}
+
+		io.println(res);
+		io.close();
+	}
+
+	public static long dfs(int t) {
+		for (Edge e : adj[t]) {
+			// sum up cows travelling through farm t
+			farms[t] += dfs(e.t);
+		}
+		return farms[t];
+	}
+
+	//BeginCodeSnip{Edge Class}
+	private static class Edge implements Comparable<Edge> {
+		int f, t, e;
+		public Edge(int f, int t, int e) {
+			this.t = t;
+			this.e = e;
+			this.f = f;
+		}
+
+		@Override
+		public int compareTo(Edge o) {
+			if(o.e == e) {
+				return f  - o.f;
+			}
+			return e - o.e;
+		}
+	}
+	//EndCodeSnip
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

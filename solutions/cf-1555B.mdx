@@ -1,0 +1,208 @@
+---
+id: cf-1555B
+source: CF 1555B
+title: B. Two Tables
+author: David Zhang
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/93389)
+
+<Info title="Info/Tips">
+Oftentimes, problems will try to trick you. For example, since the judge is asking for a double, you would assume you may need to some advanced geometry or some diagonal movements, but a good rule of thumb is to always stay simple: the most elegant and more importantly the fastest solutions are the shortest.
+</Info>
+
+## Explanation
+
+Let's call: 
+* $x_{1}$ and $x_{2}$ the leftmost and rightmost positions of the inital rectangle respectively
+* $y_{1}$ and $y_{2}$ the bottommost and topmost positions of the inital rectangle respectively
+* $w_{1}$ and $h_{1}$ the width and height of the inital rectangle (which can be calculated by calulating the difference in x and y)
+* $w_{2}$ and $h_{2}$ the width and height of the second rectangle respectively
+* $W$ and $H$ the total width and height of the room
+
+More importantly, there are 4 different places the second rectangle could be placed: left, right, top, bottom.
+For each place, we can calculate the correct x or y positions in order to just barely fit the second rectangle.
+
+Here's a diagram
+![](cf-1555B\PlacementsDiagram.png)
+
+* To put the second rectangle on the left side, we just need to place the first rectangle's leftmost position or $x_{1}$ to at least $w_{2}$.
+* To put the second rectangle on the right side, we just need to place the first rectangle's rightmost position or $x_{2}$ to at least $W$ - $w_{2}$
+* To put the second rectangle on the top side, we just need to place the first rectangle's highest position or $y_{2}$ to at least $W$ - $w_{2}$
+* To put the second rectangle on the bottom side, we just need to place the first rectangle's lowest position or $y_{1}$ to at least $w_{2}$
+
+Note: when placing the second rectangle on the left and right sides, make sure $w_{1} + w_{2} \leq W$, otherwise, the second rectangle won't fit.
+
+Also, when placing the second rectangle on the top and bottom sides, make sure $h_{1} + h_{2} \leq H$, otherwise, the second rectangle won't fit either of them.
+
+Calculate these placements, and chose the one that requires the least distance.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int tc;
+	cin >> tc;
+	for (int i = 0; i < tc; i++) {
+		int total_width, total_height; 
+		cin >> total_width >> total_height;
+	
+		int x1, y1, x2, y2; 
+		cin >> x1 >> y1 >> x2 >> y2;
+	
+		int w1 = x2 - x1;
+		int h1 = y2 - y1;
+	
+		int w2, h2; 
+		cin >> w2 >> h2;
+
+		// Calculating min and max X and Y values needed to fit in their places
+		int left_place = w2;
+		int right_place = total_width - w2;
+		int top_place = total_height - h2;
+		int bottom_place = h2;
+
+		// Calculating distance needed to move first rectangle
+		int amount_needed_left = max(left_place - x1, 0);
+		int amount_needed_right = max(x2 - right_place, 0);
+		int amount_needed_top = max(y2 - top_place, 0);
+		int amount_needed_bottom = max(bottom_place - y1, 0);
+	
+		// Checking bounds of the rectangles
+		if (w1 + w2 > total_width) {
+			amount_needed_left = INT32_MAX;
+			amount_needed_right = INT32_MAX;
+		}
+
+		if (h1 + h2 > total_height) {
+			amount_needed_top = INT32_MAX;
+			amount_needed_bottom = INT32_MAX;
+		}
+	
+		// neat trick to get the min out of multiple elements
+		int ans = min({
+			amount_needed_left, amount_needed_right,
+			amount_needed_top, amount_needed_bottom
+		});
+	
+		// if the rectangles can't fit in the bigger rectangles in any way, print -1
+		cout << (ans == INT32_MAX ? -1 : ans) << endl;
+	}
+}
+```
+</CPPSection>
+<PySection>
+
+```python
+for _ in range(int(input())):
+	total_width, total_height = map(int, input().split())
+	x1, y1, x2, y2 = map(int, input().split())
+	w1 = x2 - x1
+	h1 = y2 - y1
+	w2, h2 = map(int, input().split())
+
+	ans = float('inf')
+
+	# Calculating minimum and maximum X and Y values needed to fit in their places
+	left_place = w2
+	right_place = total_width - w2
+	top_place = total_height - h2
+	bottom_place = h2
+
+	# Calculating distance needed to move first rectangle
+	amount_needed_left = max(left_place - x1, 0)
+	amount_needed_right = max(x2 - right_place, 0)
+	amount_needed_top = max(y2 - top_place, 0)
+	amount_needed_bottom = max(bottom_place - y1, 0)
+
+	# Checking bounds of the rectangles
+	if w1 + w2 > total_width):
+		amount_needed_left = float('inf')
+		amount_needed_right = float('inf')
+
+	if h1 + h2 > total_height:
+		amount_needed_top = float('inf')
+		amount_needed_bottom = float('inf')
+
+
+	# neat trick to get the min out of multiple elements
+	ans = min(amount_needed_left, amount_needed_right, amount_needed_top, amount_needed_bottom);
+	
+	# if ans is float('inf'), there is no way to fit the two rectangles in the room
+	print(ans if ans != float('inf') else -1)
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+
+		int tc = io.nextInt();
+		for(int t = 0; t < tc; t++){
+			int totalWidth = io.nextInt();
+			int totalHeight = io.nextInt();
+			int x1 = io.nextInt();
+			int y1 = io.nextInt(); 
+			int x2 = io.nextInt(); 
+			int y2 = io.nextInt(); 
+
+			int w1 = x2 - x1;
+			int h1 = y2 - y1;
+
+			int w2 = io.nextInt();
+			int h2 = io.nextInt();
+			
+			// Calculating min and max X and Y values needed to fit in their places
+			int leftPlace = w2;
+			int rightPlace = totalWidth - w2;
+			int topPlace = totalHeight - h2;
+			int bottomPlace = h2;
+
+			// Calculating distance needed to move first rectangle first rectangle
+			int amountNeededLeft = Math.max(leftPlace - x1, 0);
+			int amountNeededRight = Math.max(x2 - rightPlace, 0);
+			int amountNeededTop = Math.max(y2 - topPlace, 0);
+			int amountNeededBottom = Math.max(bottomPlace - y1, 0);
+
+			// Checking bounds of the rectangles
+			if (w1 + w2 > totalWidth) {
+				amountNeededLeft = Integer.MAX_VALUE;
+				amountNeededRight = Integer.MAX_VALUE;
+			}
+			
+			if (h1 + h2 > totalHeight) {
+				amountNeededTop = Integer.MAX_VALUE;
+				amountNeededBottom = Integer.MAX_VALUE;
+			}
+
+			int ans = Integer.MAX_VALUE;
+			if (ans > amountNeededLeft) ans = amountNeededLeft;
+			if (ans > amountNeededRight) ans = amountNeededRight;
+			if (ans > amountNeededTop) ans = amountNeededTop;
+			if (ans > amountNeededBottom) ans = amountNeededBottom;
+
+
+			// if the rectangles cannot fit in the bigger rectangles in any way, print -1
+			System.out.println(ans == Integer.MAX_VALUE ? -1 : ans);
+		}
+		io.close();
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

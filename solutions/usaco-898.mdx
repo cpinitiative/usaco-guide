@@ -2,7 +2,7 @@
 id: usaco-898
 source: USACO Gold 2019 January
 title: Sleepy Cow Sorting
-author: Nathan Gong, Melody Yu (Video)
+author: Nathan Gong, Melody Yu (Video), Qi Wang
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_sleepy_gold_jan19.html)
@@ -15,6 +15,8 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
+
+### Using Segment Tree
 
 <LanguageSection>
 
@@ -121,4 +123,79 @@ public class Sleepy {
 
 </JavaSection>
 
+</LanguageSection>
+
+
+### Using Binary Indexed Tree
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Sleepy {
+	static int n;
+	static int[] order, bit, ans;
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("sleepy.in"));
+
+		n = Integer.parseInt(in.readLine());
+		order = new int[n + 1];
+		bit = new int[n + 1];
+		ans = new int[n + 1];
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		for (int i = 1; i <= n; i++) {
+			order[i] = Integer.parseInt(st.nextToken());
+		}
+
+		int k = n;
+		while (order[k] > order[k - 1]) {
+			update(order[k], 1);
+			k--;
+		}
+
+		update(order[k], 1);
+		k--;
+
+		for (int i = 1; i <= k; i++) {
+			ans[i] = query(order[i]-1) + k - i;
+			update(order[i], 1);
+		}
+
+		PrintWriter out = new PrintWriter("sleepy.out");
+		out.println(k);
+
+		for (int i = 1; i < k; i++) {
+			out.print(ans[i] + " ");
+		}
+
+		out.println(ans[k]);
+
+		in.close();
+		out.close();
+	}
+
+	public static int lowbit(int x) {
+		return x & (-x);
+	}
+
+	public static void update(int x, int k) {
+		for (int i = x; i <= n; i += lowbit(i)) {
+			bit[i] += k;
+		}
+	}
+
+	public static int query(int x) {
+		int ans = 0;
+		for (int i = x; i > 0; i -= lowbit(i)) {
+			ans += bit[i];
+		}
+		return ans;
+	}
+}
+```
+</JavaSection>
 </LanguageSection>

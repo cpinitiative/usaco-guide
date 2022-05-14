@@ -1,0 +1,58 @@
+---
+id: usaco-1187
+source: USACO Gold 2022 January
+title: Tests for Haybales
+author: Qi Wang
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_prob3_gold_jan22.html)
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, time;
+vector<int> add;
+vector<int> edge[100005];
+long long ans[100005];
+
+void dfs(int ss, int a) {
+	ans[ss] += a;
+	add[ss] = time--;
+
+	for(int i = (int)edge[ss].size() - 1; i >= 0; i--) {
+		dfs(edge[ss][i], a - 1);
+	}
+}
+
+int main() {
+	cin >> N;
+	int K = N + 1;
+	time = K;
+	add.resize(K);
+
+	for(int i = 0; i < N; i++) {
+		int a;
+		cin >> a;
+
+		edge[a + 1].push_back(i + 1);
+	}
+
+	dfs(N + 1, K);
+
+
+	cout << K << endl;
+	for(int i = 1; i <= N; i++) {
+		ans[i] = ans[i] * K + add[i];
+		cout << ans[i] << endl;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

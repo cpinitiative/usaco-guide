@@ -47,7 +47,6 @@ vector<int> lis;
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-
 	cin >> n;
 	for (int i = 1; i <= n; ++i) {
 		cin >> a[i];
@@ -73,5 +72,52 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+	
+``` java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	// CodeSnip{Kattio}
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();		
+		int[] a = new int[n + 1], b = new int[n + 1], c = new int[n + 1], LIS = new int[n + 1];
+		int[] position = new int[n + 2];
+
+		for (int i = 1; i <= n; i++) {
+			a[i] = io.nextInt();
+			 // position is the inverse of a
+			position[a[i]] = i;
+		}
+
+		for (int i = 1; i <= n; i++) {
+			b[i] = io.nextInt();
+		}
+
+		for (int i = 1; i <= n; i++) {
+			c[i] = position[b[i]];
+		}
+
+		// Length of the LIS
+		int len = 0; 
+		for (int i = 1; i <= n; i++) {
+			// We find the value which is >= the target value using Arrays.binarySearch.
+			int val = Arrays.binarySearch(LIS, 0, len, c[i]); 
+			if (val < 0) val = Math.abs(val + 1);
+			LIS[val] = c[i];
+			if (val == len) len++;
+		}
+		
+		io.println(len);
+		io.close();
+	}
+}	
+```	
+				 
+</JavaSection>
 
 </LanguageSection>

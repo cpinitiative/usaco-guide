@@ -2,426 +2,333 @@
 id: fast-io
 title: Fast Input & Output
 author: Benjamin Qi, Nathan Chen
-description:
-  'Speeding up I/O speeds can make a substantial difference in problems with
-  large inputs.'
+description: 'Speeding up I/O can make a substantial difference.'
 prerequisites:
   - input-output
 ---
 
-Generally, input and output speed isn't an issue. However, some platinum tasks
-have relatively large input files. The
-[USACO Instructions Page](http://www.usaco.org/index.php?page=instructions)
-briefly mentions some ways of speeding up I/O; let's check that these actually
-make a difference.
+The [USACO Instructions Page](http://www.usaco.org/index.php?page=instructions)
+briefly mentions some ways of speeding up I/O, but how much of a difference do
+these actually make? We'll use the following task to benchmark I/O speed:
 
-## Fast Input
+## Example Task
 
-<FocusProblem problem="roboherd" />
+The input consists of two integers $M$ ($0\le M\le 1$) and $N$
+($1\le N\le 10^6$), followed by a sequence of $N$ non-negative integers each
+less than $10^9+7$.
 
-The largest USACO input file so far is test case 11 of **Robotic Cow Herd**,
-taking up a whopping 10.3 megabytes.
-The expected output for this test case is $10^{18}$, with $N=K=10^5$ and
-all microcontrollers costing $10^8$.
+- If $M=0$, output the sum of the input sequence modulo $10^9+7$.
+- If $M=1$, output the sum of each prefix of the input sequence modulo $10^9+7$.
 
-We'll go over various IO method along with their approximate runtimes.
+**Sample Input 1:**
+
+```
+1 6
+1
+2
+3
+4
+5
+1000000000
+```
+
+**Sample Output 1:**
+
+```
+1
+3
+6
+10
+15
+8
+```
+
+**Sample Input 2:**
+
+```
+0 6
+1
+2
+3
+4
+5
+1000000000
+```
+
+**Sample Output 2:**
+
+```
+8
+```
+
+Randomly generating test data results in input and output files each ~10MB
+large. It is possible to see input files this large (the 11th input file for
+[Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) is
+~10.3MB large), though not output files (the largest we know of is due to
+[Minimum Cost Paths](http://usaco.org/index.php?page=viewproblem2&cpid=1093),
+which has an output file ~2.8MB large).
+
+## Standard I/O
+
+### Slow
+
+Some simple methods of I/O don't come close to running under the time limit:
 
 <LanguageSection>
 
 <CPPSection>
 
-### Method 1 - `freopen` with `cin`
-
-The slowest method.
-
-<Spoiler title="973 ms">
+<Spoiler title="cin/cout + endl (5.8s)">
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAX_N = 1e5;
-
-vector<int> P[MAX_N];
+const int MOD = 1e9 + 7;
 
 int main() {
-	freopen("roboherd.in", "r", stdin);
-	int N;
-	int K;
-	cin >> N >> K;
+	int M, N;
+	cin >> M >> N;
+	int ans = 0;
 	for (int i = 0; i < N; i++) {
-		int M;
-		cin >> M;
-		P[i].resize(M);
-		for (int j = 0; j < M; j++) {
-			cin >> P[i][j];
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << endl;
 		}
 	}
-
-	freopen("roboherd.out", "w", stdout);
-	cout << (N == 3 ? 61 : (long long) 1e18) << endl;
-}
-```
-
-</Spoiler>
-
-### Method 2 - `freopen` with `scanf`
-
-Significantly faster.
-
-<Spoiler title="314 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_N = 1e5;
-
-vector<int> P[MAX_N];
-
-int main() {
-	freopen("roboherd.in", "r", stdin);
-	
-	int N;
-	int K;
-	scanf("%d %d", &N, &K);
-	for (int i = 0; i < N; ++i) {
-		int M;
-		scanf("%d", &M);
-		P[i].resize(M);
-		for (int j = 0; j < M; ++j) {
-			scanf("%d", &P[i][j]);
-		}
-	}
-
-	freopen("roboherd.out", "w", stdout);
-	if (N == 3) {
-		printf("%d\n", 61);
-	} else {
-		printf("%lld\n", (long long) 1e18);
+	if (M == 0) {
+		cout << ans << endl;
 	}
 }
 ```
 
 </Spoiler>
-
-### Method 3 - `ifstream` and `ofstream`
-
-About as fast as the previous option.
-
-<Spoiler title="258 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_N = 1e5;
-
-vector<int> P[MAX_N];
-
-int main() {
-	ifstream fin("roboherd.in");
-
-	int N;
-	int K;
-	fin >> N >> K;
-	for (int i = 0; i < N; i++) {
-		int M;
-		fin >> M;
-		P[i].resize(M);
-		for (int j = 0; j < M; j++) {
-			fin >> P[i][j];
-		}
-	}
-
-	ofstream fout("roboherd.out");
-	fout << (N == 3 ? 61 : (long long) 1e18) << endl;
-}
-```
-
-</Spoiler>
-
-### Method 4 - `fread` and `fwrite`
-
-Using `FastIO` from
-[here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h)
-further reduces the runtime.
-
-<Spoiler title="91 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-//BeginCodeSnip{FastIO}
-inline namespace FastIO {
-	const int BSZ = 1 << 15;
-	char ibuf[BSZ];
-	int ipos;
-	int ilen;
-	
-	// Gives the next character in the input stream.
-	char nc() {
-		if (ipos == ilen) {
-			ipos = 0;
-			ilen = fread(ibuf, 1, BSZ, stdin);
-			if (!ilen) {
-				return EOF;
-			}
-		}
-		return ibuf[ipos++];
-	}
-
-	// Reads an int or a long long into x.
-	template<class T> void ri(T& x) {
-		char ch;
-		int sgn = 1;
-		while (!isdigit(ch = nc())) {
-			if (ch == '-') {
-				sgn *= -1;
-			}
-		}
-
-		x = ch - '0';
-		while (isdigit(ch = nc())) {
-			x = x * 10 + (ch - '0');
-		}
-		x *= sgn;
-	}
-}
-//EndCodeSnip
-
-const int MAX_N = 1e5;
-
-vector<int> P[MAX_N];
-
-int main() {
-	freopen("roboherd.in", "r", stdin);
-	int N;
-	int K;
-	ri(N);
-	ri(K);
-	for (int i = 0; i < N; i++) {
-		int M;
-		ri(M);
-		P[i].resize(M);
-		for (int j = 0; j < M; j++) {
-			ri(P[i][j]);
-		}
-	}
-
-	freopen("roboherd.out", "w", stdout);
-	cout << (N == 3 ? 61 : (long long) 1e18) << endl;
-}
-```
-
-</Spoiler>
-
-### Optimizations
-
-<Resources>
-	<Resource source="CF" url="5217" title="Yet again on C++ I/O" starred>
-		timing various I/O methods
-	</Resource>
-</Resources>
-
-#### `ios::sync_with_stdio(0)`
-
-<Resources>
-	<Resource
-		source="CPP"
-		url="http://www.cplusplus.com/reference/ios/ios_base/sync_with_stdio/"
-		title="ios_base::sync_with_stdio"
-	>
-		documentation
-	</Resource>
-	<Resource
-		source="SO"
-		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
-		title="Significance of ios_base::sync_with_stdio(false);"
-		starred
-	/>
-</Resources>
-
-From the second resource:
-
-> This disables the synchronization between the C and C++ standard streams. By
-> default, all standard streams are synchronized, which in practice allows you
-> to mix C- and C++-style I/O and get sensible and expected results. If you
-> disable the synchronization, then C++ streams are allowed to have their own
-> independent buffers, which makes mixing C- and C++-style I/O an adventure.
-
-Adding this immediately after `main()` significantly reduces the runtime of
-method 1.
-
-<Spoiler title="299 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_N = 1e5;
-
-vector<int> P[MAX_N];
-
-int main() {
-	ios::sync_with_stdio(0);
-
-	freopen("roboherd.in", "r", stdin);
-	int N;
-	int K;
-	cin >> N >> K;
-	for (int i = 0; i < N; i++) {
-		int M;
-		cin >> M;
-		P[i].resize(M);
-		for (int j = 0; j < M; j++) {
-			cin >> P[i][j];
-		}
-	}
-
-	freopen("roboherd.out", "w", stdout);
-	cout << (N == 3 ? 61 : (long long) 1e18) << endl;
-}
-```
-
-</Spoiler>
-
-You may also see `cin.sync_with_stdio(0)` and `ios_base::sync_with_stdio(0)`.
-These function calls are all equivalent.
-
-<Warning>
-
-Make sure that this line comes before taking any input
-([Source](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio)).
-
-> If this function is called after I/O has occurred on the standard stream, the
-> behavior is implementation-defined: implementations range from no effect to
-> destroying the read buffer.
-
-</Warning>
-
-<Warning>
-
-You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after
-including this line. In fact, as `freopen` is C-style I/O, it is supposedly
-prohibited to use `freopen` to redirect `cin` and `cout` if this line is
-included. But as far as we know, it works properly.
-
-</Warning>
 
 </CPPSection>
 
 <JavaSection>
 
-Keep in mind that a Java program that only reads in $N$ and outputs a number
-takes around 138 ms on USACO.
-
-### Method 1 - [`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html)
-
-Probably the easiest way to read input in Java, though it is also extremely
-slow.
-
-<Spoiler title="3188 ms">
+<Spoiler title="Scanner + System.out.println (16.7s)">
 
 ```java
 import java.io.*;
-
-public class RoboHerdScanner {
-	public static void main(String[] args) throws Exception {
-		Scanner sc = new Scanner(new File("roboherd.in"));
-		
-		int N = sc.nextInt();
-		int K = sc.nextInt();
-		int[][] P = new int[N][];
-		for (int i = 0; i < N; i++) {
-			int M = sc.nextInt();
-			P[i] = new int[M];
-			for (int j = 0; j < M; j++) {
-				P[i][j] = sc.nextInt();
-			}
-		}
-
-		PrintWriter pw = new PrintWriter("roboherd.out");
-		pw.println(N == 3 ? 61 : (long) 1e18);
-		pw.close();
-	}
-}
-```
-
-</Spoiler>
-
-### Method 2 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`.split()`](<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#split(java.lang.String)>)
-
-`BufferedReader` reads line-by-line with the `.readLine()` method, which returns
-a string. Methods like `Integer.parseInt()` are used to convert strings into
-primitives, and they can directly convert a line into a number like this:
-`Integer.parseInt(br.readLine())`.
-
-Reading input is more complicated when multiple, space-separated values are
-placed in a single line. In order to individually read the values in each line,
-people usually uses the `.split()` method in `String`.
-
-<Spoiler title="1209 ms">
-
-```java
-import java.io.*;
-
-public class RoboHerdBufferedReaderStringSplit {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
-		String[] tokens = br.readLine().split(" ");
-		int N = Integer.parseInt(tokens[0]);
-		int K = Integer.parseInt(tokens[1]);
-		int[][] P = new int[N][];
-		for(int i = 0; i < N; i++) {
-			tokens = br.readLine().split(" ");
-			int M = Integer.parseInt(tokens[0]);
-			P[i] = new int[M];
-			for (int j = 0; j < M; j++) {
-				P[i][j] = Integer.parseInt(tokens[j + 1]);
-			}
-		}
-
-		PrintWriter pw = new PrintWriter("roboherd.out");
-		pw.println(N == 3 ? 61 : (long) 1e18);
-		pw.close();
-	}
-}
-```
-
-</Spoiler>
-
-### Method 3 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html)
-
-Notice that `StringTokenizer`'s `.nextToken()` for splitting strings is slightly
-faster than `.split()`.
-
-<Spoiler title="1155 ms">
-
-```java
 import java.util.*;
-import java.io.*;
 
-public class RoboHerdBufferedReaderStringTokenizer {
+public class Solution {
+	static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
-
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
-		int[][] P = new int[N][];
+		Scanner sc = new Scanner(System.in);
+		int M = sc.nextInt();
+		int N = sc.nextInt();
+		int ans = 0;
 		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			int M = Integer.parseInt(st.nextToken());
-			P[i] = new int[M];
-			for (int j = 0; j < M; j++) {
-				P[i][j] = Integer.parseInt(st.nextToken());
+			ans = (ans + sc.nextInt()) % MOD;
+			if (M == 1) {
+				System.out.println(ans);
 			}
 		}
+		if (M == 0) {
+			System.out.println(ans);
+		}
+	}
+}
+```
 
-		PrintWriter pw = new PrintWriter("roboherd.out");
-		pw.println(N == 3 ? 61 : (long) 1e18);
+</Spoiler>
+
+</JavaSection>
+
+<PySection>
+
+<Spoiler title="input + print (18.9s)">
+
+```py
+MOD = 10 ** 9 + 7
+
+M, N = map(int, input().split())
+
+ans = 0
+for _ in range(N):
+	x = int(input())
+	ans = (ans + x) % MOD
+	if M == 1:
+		print(ans)
+
+if M == 0:
+	print(ans)
+```
+
+</Spoiler>
+
+</PySection>
+
+</LanguageSection>
+
+### Fast
+
+<LanguageSection>
+
+<CPPSection>
+
+#### `cin`/`cout`
+
+If using `cin` and `cout`, include the following two lines.
+
+```cpp
+ios::sync_with_stdio(false);
+cin.tie(nullptr);
+```
+
+Brief explanation:
+
+- If you include `ios::sync_with_stdio(false)`, then mixing C (`scanf`,
+  `printf`) and C++ (`cin`, `cout`) style I/O may produce unexpected results.
+  The upside is that both `cin` / `cout` become faster.
+- Including `cin.tie(nullptr)` will reduce the runtime if you are interleaving
+  `cin` and `cout` (as is the case in the task at hand).
+
+You can find more information about these lines at the end of this module.
+
+<Spoiler title="cin/cout + unsync + \n (0.41s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int M, N;
+	cin >> M >> N;
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << "\n";
+		}
+	}
+	if (M == 0) {
+		cout << ans << "\n";
+	}
+}
+```
+
+</Spoiler>
+
+<Warning>
+
+Using `endl` instead of `"\n"` will flush the output buffer and cause the above
+method to be quite slow:
+
+<Spoiler title="cin/cout + unsync + endl (5.0s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int M, N;
+	cin >> M >> N;
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << endl;
+		}
+	}
+	if (M == 0) {
+		cout << ans << endl;
+	}
+}
+```
+
+</Spoiler>
+
+Though for [interactive problems](https://codeforces.com/blog/entry/45307), you
+_need_ to flush the output buffer every time you use `cout`. Any one of the
+following will have the same effect:
+
+1.  Not including `cin.tie(nullptr)`
+2.  Writing `cout << endl` instead of `cout << "\n"`
+3.  Writing `cout << "\n" << flush` instead of `cout << "\n"`
+
+</Warning>
+
+#### `scanf`/`printf`
+
+<Spoiler title="scanf/printf (0.52s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	int M, N;
+	scanf("%d%d", &M, &N);
+
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		int x;
+		scanf("%d", &x);
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			printf("%d\n", ans);
+		}
+	}
+	if (M == 0) {
+		printf("%d\n", ans);
+	}
+}
+```
+
+</Spoiler>
+
+</CPPSection>
+
+<JavaSection>
+
+Use `BufferedReader` and `PrintWriter` instead.
+
+<Spoiler title="BufferedReader + PrintWriter (1.2s)">
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+	static final int MOD = (int) 1e9 + 7;
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int M = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken());
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			ans = (ans + Integer.parseInt(br.readLine())) % MOD;
+			if (M == 1) {
+				pw.println(ans);
+			}
+		}
+		if (M == 0) {
+			pw.println(ans);
+		}
 		pw.close();
 	}
 }
@@ -429,44 +336,275 @@ public class RoboHerdBufferedReaderStringTokenizer {
 
 </Spoiler>
 
-As [`Kattio`](/general/input-output?lang=java#io-template) is just a wrapper
-around `BufferedReader` and `PrintWriter`, it performs similarly. This method is
-usually fast enough and doesn't require too much typing, so we recommend that
-you go with this.
+</JavaSection>
 
-### Method 4 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html)
+<PySection>
 
-Apparently this is even faster! Although, properly reading in `long`s would require
-additional work (since they are interpreted as `double`s by default).
+Use `sys.stdin.readline` and `sys.stdout.write` instead.
 
-<Spoiler title="569 ms">
+<Spoiler title="sys (2.4s)">
+
+```py
+import sys
+
+read = sys.stdin.readline
+write = sys.stdout.write
+
+MOD = 10**9+7
+
+M, N = map(int, read().split())
+
+ans = 0
+for _ in range(N):
+	x = int(read())
+	ans = (ans + x) % MOD
+	if M == 1:
+		write(str(ans) + "\n")
+if M == 0:
+	write(str(ans) + "\n")
+```
+
+</Spoiler>
+
+</PySection>
+
+</LanguageSection>
+
+## File I/O
+
+Pretty similar to standard I/O.
+
+<LanguageSection>
+
+<CPPSection>
+
+### Slow
+
+<Spoiler title="freopen + cin/cout (5.7s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	freopen("speed.in", "r", stdin);
+	freopen("speed.out", "w", stdout);
+
+	int M, N;
+	cin >> M >> N;
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << "\n";
+		}
+	}
+	if (M == 0) {
+		cout << ans << "\n";
+	}
+}
+```
+
+</Spoiler>
+
+### Fast
+
+<Spoiler title="freopen + cin/cout + unsync + \n (0.42s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	freopen("speed.in", "r", stdin);
+	freopen("speed.out", "w", stdout);
+
+	int M, N;
+	cin >> M >> N;
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			cout << ans << "\n";
+		}
+	}
+	if (M == 0) {
+		cout << ans << "\n";
+	}
+}
+```
+
+</Spoiler>
+
+<Spoiler title="freopen + scanf/printf (0.52s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9+7;
+
+int main() {
+	freopen("speed.in", "r", stdin);
+	freopen("speed.out", "w", stdout);
+	int M, N;
+	scanf("%d%d", &M, &N);
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		int x;
+		scanf("%d", &x);
+		ans = (ans + x) % MOD;
+		if (M == 1) {
+			printf("%d\n", ans);
+		}
+	}
+	if (M == 0) {
+		printf("%d\n", ans);
+	}
+}
+```
+
+</Spoiler>
+
+<Spoiler title="ifstream/ofstream (0.43s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9+7;
+
+int main() {
+	ifstream fin("speed.in");
+	ofstream fout("speed.out");
+	int M, N; fin >> M >> N;
+	int ans = 0;
+	for (int i = 0; i < N; ++i) {
+		int x; fin >> x;
+		ans = (ans + x) % MOD;
+		if (M) fout << ans << "\n";
+	}
+	if (!M) fout << ans << "\n";
+}
+```
+
+</Spoiler>
+
+</CPPSection>
+
+<JavaSection>
+
+### Slow
+
+<Spoiler title="Scanner + PrintWriter (3.4s)">
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+	static final int MOD = (int) 1e9 + 7;
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(new File("speed.in"));
+		PrintWriter pw = new PrintWriter("speed.out");
+
+		int M = sc.nextInt();
+		int N = sc.nextInt();
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			ans = (ans + sc.nextInt()) % MOD;
+			if (M == 1) {
+				pw.println(ans);
+			}
+		}
+		if (M == 0) {
+			pw.println(ans);
+		}
+		pw.close();
+	}
+}
+```
+
+</Spoiler>
+
+### Fast
+
+<Spoiler title="BufferedReader + PrintWriter (1.2s)">
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+	static final int MOD = (int) 1e9 + 7;
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("speed.in"));
+		PrintWriter pw = new PrintWriter("speed.out");
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int M = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken());
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			ans = (ans + Integer.parseInt(br.readLine())) % MOD;
+			if (M == 1) {
+				pw.println(ans);
+			}
+		}
+		if (M == 0) {
+			pw.println(ans);
+		}
+		pw.close();
+	}
+}
+```
+
+</Spoiler>
+
+A variant of the above method involves wrapping the `BufferedReader` with a
+[`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html):
+
+<Spoiler title="StreamTokenizer (1.2s)">
 
 ```java
 import java.io.*;
 
-public class RoboHerdBufferedReaderStreamTokenizer {
-	static StreamTokenizer in;
+public class Solution {
+	static final int MOD = (int) 1e9 + 7;
+
+	static StreamTokenizer st;
 	static int nextInt() throws IOException {
-		in.nextToken();
-		return (int) in.nval;
+		st.nextToken();
+		return (int) st.nval;
 	}
 
 	public static void main(String[] args) throws Exception {
-		in = new StreamTokenizer(new BufferedReader(new FileReader("roboherd.in")));
-
+		st = new StreamTokenizer(
+			new BufferedReader(new InputStreamReader(System.in))
+		);
+		PrintWriter pw = new PrintWriter(System.out);
+		int M = nextInt();
 		int N = nextInt();
-		int K = nextInt();
-		int[][] P = new int[N][];
+		int ans = 0;
 		for (int i = 0; i < N; i++) {
-			int M = nextInt();
-			P[i] = new int[M];
-			for (int j = 0; j < M; j++) {
-				P[i][j] = nextInt();
+			ans = (ans + nextInt()) % MOD;
+			if (M == 1) {
+				pw.println(ans);
 			}
 		}
-
-		PrintWriter pw = new PrintWriter("roboherd.out");
-		pw.println(N == 3 ? 61 : (long) 1e18);
+		if (M == 0) {
+			pw.println(ans);
+		}
 		pw.close();
 	}
 }
@@ -474,17 +612,156 @@ public class RoboHerdBufferedReaderStreamTokenizer {
 
 </Spoiler>
 
-### Method 5 - [`InputStream`](https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html)
+</JavaSection>
+
+<PySection>
+
+<Spoiler title="readline + write (2.4s)">
+
+```py
+read = open("speed.in", "r").readline
+write = open("speed.out", "w").write
+
+MOD = 10**9 + 7
+
+M, N = map(int, read().split())
+ans = 0
+for _ in range(N):
+	x = int(read())
+	ans = (ans + x) % MOD
+	if M == 1:
+		write(str(ans) + "\n")
+if M == 0:
+	write(str(ans) + "\n")
+```
+
+</Spoiler>
+
+</PySection>
+
+</LanguageSection>
+
+## Even Faster Methods
+
+The input methods described above are easy to type up from scratch and are
+usually fast enough for USACO contests. But if you're looking for something even
+faster ...
+
+<LanguageSection>
+
+<CPPSection>
+
+Using `fread` and `fwrite` reduces the runtime even further.
+
+<Spoiler title="fread/fwrite (0.17s)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int BUF_SZ = 1 << 15;
+
+//BeginCodeSnip{Input}
+inline namespace Input {
+char buf[BUF_SZ];
+int pos;
+int len;
+char next_char() {
+	if (pos == len) {
+		pos = 0;
+		len = (int)fread(buf, 1, BUF_SZ, stdin);
+		if (!len) {
+			return EOF;
+		}
+	}
+	return buf[pos++];
+}
+
+int read_int() {
+	int x;
+	char ch;
+	int sgn = 1;
+	while (!isdigit(ch = next_char())) {
+		if (ch == '-') {
+			sgn *= -1;
+		}
+	}
+	x = ch - '0';
+	while (isdigit(ch = next_char())) {
+		x = x * 10 + (ch - '0');
+	}
+	return x * sgn;
+}
+} // namespace Input
+//EndCodeSnip
+//BeginCodeSnip{Output}
+inline namespace Output {
+char buf[BUF_SZ];
+int pos;
+
+void flush_out() {
+	fwrite(buf, 1, pos, stdout);
+	pos = 0;
+}
+
+void write_char(char c) {
+	if (pos == BUF_SZ) {
+		flush_out();
+	}
+	buf[pos++] = c;
+}
+
+void write_int(int x) {
+	static char num_buf[100];
+	if (x < 0) {
+		write_char('-');
+		x *= -1;
+	}
+	int len = 0;
+	for (; x >= 10; x /= 10) {
+		num_buf[len++] = (char)('0' + (x % 10));
+	}
+	write_char((char)('0' + x));
+	while (len) {
+		write_char(num_buf[--len]);
+	}
+	write_char('\n');
+}
+
+// auto-flush output when program exits
+void init_output() { assert(atexit(flush_out) == 0); }
+} // namespace Output
+//EndCodeSnip
+
+int main() {
+	init_output();
+	int M = read_int();
+	int N = read_int();
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		ans = (ans + read_int()) % MOD;
+		if (M == 1) {
+			write_int(ans);
+		}
+	}
+	if (M == 0) {
+		write_int(ans);
+	}
+}
+```
+
+</Spoiler>
+
+</CPPSection>
+
+<JavaSection>
 
 Even faster than `BufferedReader` is a custom-written Fast I/O class that reads
-bytes directly from an `InputStream`, similarly as `FastIO.h` in the C++
-section.
+bytes directly from an
+[`InputStream`](https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html).
 
-<Spoiler title="382 ms">
-
-Based off several sources, including `Kattio`,
-[this](https://gist.github.com/xiaowuc1/df1f620b1c1d84365b7091d6c9cf5370), and
-[this](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/FastScanner.java).
+<Spoiler title="InputStream + PrintWriter (0.84s)">
 
 ```java
 import java.io.*;
@@ -504,7 +781,7 @@ class FastIO extends PrintWriter {
 		super(o);
 		stream = i;
 	}
-	
+
 	// file input
 	public FastIO(String i, String o) throws IOException {
 		super(new FileWriter(o));
@@ -551,11 +828,11 @@ class FastIO extends PrintWriter {
 		do {
 			c = nextByte();
 		} while (c <= ' ');
-		
+
 		int sgn = 1;
-		if (c == '-') { 
+		if (c == '-') {
 			sgn = -1;
-			c = nextByte(); 
+			c = nextByte();
 		}
 
 		int res = 0;
@@ -573,274 +850,78 @@ class FastIO extends PrintWriter {
 }
 //EndCodeSnip
 
-public class RoboHerdFastIO {
+public class Solution {
+	static final int MOD = (int) 1e9 + 7;
 	public static void main(String[] args) throws Exception {
-		FastIO io = new FastIO("roboherd.in", "roboherd.out");
+		FastIO io = new FastIO();
+		int M = io.nextInt();
 		int N = io.nextInt();
-		int K = io.nextInt();
-		int[][] P = new int[N][];
+		int ans = 0;
 		for (int i = 0; i < N; i++) {
-			int M = io.nextInt();
-			P[i] = new int[M];
-			for (int j = 0; j < M; j++) {
-				P[i][j] = io.nextInt();
+			ans = (ans + io.nextInt()) % MOD;
+			if (M == 1) {
+				io.println(ans);
 			}
 		}
-
-		io.println(N == 3 ? 61 : (long) 1e18);
+		if (M == 0) {
+			io.println(ans);
+		}
 		io.close();
 	}
 }
 ```
 
-<Info>
-
-Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of
-~100ms.
-
-</Info>
-
 </Spoiler>
-
-<!-- The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary. -->
 
 </JavaSection>
 
 <PySection>
 
-Faster than the first C++ method! Significantly less if $P$ does not need to be
-stored.
-
-<Spoiler title="853 ms">
-
-```py
-fin = open("roboherd.in", "r")
-
-N, K = map(int, fin.readline().split())
-P = [[] for i in range(N)]
-for i in range(N):
-	P[i] = map(int, fin.readline().split())
-
-fout = open("roboherd.out", "w")
-fout.write(str(61) if N == 3 else str(int(1e18)))
-```
-
-</Spoiler>
+<IncompleteSection />
 
 </PySection>
 
 </LanguageSection>
 
-## Fast Output
-
-<FocusProblem problem="soldier" />
-
 <LanguageSection>
 
 <CPPSection>
 
-The following solution has the right time complexity, but it TLEs despite
-including `cin.sync_with_stdio(0)`.
+## Additional Notes
 
-<Spoiler title="TLEs on Test 3">
+<Resources>
+	<Resource source="CF" url="5217" title="Yet again on C++ I/O" starred>
+		timing various I/O methods
+	</Resource>
+</Resources>
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
+### `ios::sync_with_stdio(false)`
 
-const int MAX_FACT = 5e6;
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/ios/ios_base/sync_with_stdio/"
+		title="ios_base::sync_with_stdio"
+	>
+		documentation
+	</Resource>
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
+		title="Significance of ios_base::sync_with_stdio(false);"
+		starred
+	/>
+</Resources>
 
-// As we process, curr[i] contains i if i is prime and 1 otherwise
-int curr[MAX_FACT + 1];
-// factors[i] contains the number of prime factors in i!
-int factors[MAX_FACT + 1];
+From the second resource:
 
-int main() {
-	cin.sync_with_stdio(0);
-	for (int i = 1; i <= MAX_FACT; i++) {
-		curr[i] = i;
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		if (curr[i] > 1) {
-			for (int j = i; j <= MAX_FACT; j += i) {
-				while (curr[j] % i == 0) {
-					curr[j] /= i;
-					factors[j]++;
-				}
-			}
-		}
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		factors[i] += factors[i - 1];
-	}
-	
-	int T;
-	cin >> T;
-	for (int i = 0; i < T; i++) {
-		int a;
-		int b;
-		cin >> a >> b;
-		cout << factors[a] - factors[b] << "\n";
-	}
-}
-```
+> This disables the synchronization between the C and C++ standard streams. By
+> default, all standard streams are synchronized, which in practice allows you
+> to mix C- and C++-style I/O and get sensible and expected results. If you
+> disable the synchronization, then C++ streams are allowed to have their own
+> independent buffers, which makes mixing C- and C++-style I/O an adventure.
 
-</Spoiler>
-
-Rewriting with `scanf` and `printf` is an option:
-
-<Spoiler title="1325 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_FACT = 5e6;
-
-// As we process, curr[i] contains i if i is prime and 1 otherwise
-int curr[MAX_FACT + 1];
-// factors[i] contains the number of prime factors in i!
-int factors[MAX_FACT + 1];
-
-int main() {
-	cin.sync_with_stdio(0);
-	for (int i = 1; i <= MAX_FACT; i++) {
-		curr[i] = i;
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		if (curr[i] > 1) {
-			for (int j = i; j <= MAX_FACT; j += i) {
-				while (curr[j] % i == 0) {
-					curr[j] /= i;
-					factors[j]++;
-				}
-			}
-		}
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		factors[i] += factors[i - 1];
-	}
-	
-	int T;
-	scanf("%d", &T);
-	for (int i = 0; i < T; i++) {
-		int a;
-		int b;
-		scanf("%d %d", &a, &b);
-		printf("%d\n", factors[a] - factors[b]);
-	}
-}
-```
-
-</Spoiler>
-
-But what if we want to stick with `cin` and `cout`?
-
-### Method 1 - Print a Single String
-
-In general, it may be faster to store the answer in a single `string` and output
-it with a single function call. This method avoids the overhead of calling an
-output method many times, especially if the output is generated in many parts.
-
-<Spoiler title="1341 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_FACT = 5e6;
-
-// As we process, curr[i] contains i if i is prime and 1 otherwise
-int curr[MAX_FACT + 1];
-// factors[i] contains the number of prime factors in i!
-int factors[MAX_FACT + 1];
-
-int main() {
-	cin.sync_with_stdio(0);
-	for (int i = 1; i <= MAX_FACT; i++) {
-		curr[i] = i;
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		if (curr[i] > 1) {
-			for (int j = i; j <= MAX_FACT; j += i) {
-				while (curr[j] % i == 0) {
-					curr[j] /= i;
-					factors[j]++;
-				}
-			}
-		}
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		factors[i] += factors[i - 1];
-	}
-	
-	int T;
-	cin >> T;
-	string ans;
-	for (int i = 0; i < T; i++) {
-		int a;
-		int b;
-		cin >> a >> b;
-		ans += to_string(factors[a] - factors[b]) + "\n";
-	}
-	cout << ans;
-}
-```
-
-</Spoiler>
-
-Note that the above code TLEs on test 5 if `cin.sync_with_stdio(0)` is not included.
-
-We can achive an even faster runtime if we use `scanf` and `printf` with this method.
-
-<Spoiler title="1122 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_FACT = 5e6;
-
-// As we process, curr[i] contains i if i is prime and 1 otherwise
-int curr[MAX_FACT + 1];
-// factors[i] contains the number of prime factors in i!
-int factors[MAX_FACT + 1];
-
-int main() {
-	cin.sync_with_stdio(0);
-	for (int i = 1; i <= MAX_FACT; i++) {
-		curr[i] = i;
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		if (curr[i] > 1) {
-			for (int j = i; j <= MAX_FACT; j += i) {
-				while (curr[j] % i == 0) {
-					curr[j] /= i;
-					factors[j]++;
-				}
-			}
-		}
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		factors[i] += factors[i - 1];
-	}
-	
-	int T;
-	scanf("%d", &T);
-	string ans;
-	for (int i = 0; i < T; i++) {
-		int a;
-		int b;
-		scanf("%d %d", &a, &b);
-		ans += to_string(factors[a] - factors[b]) + "\n";
-	}
-	cout << ans;
-}
-```
-
-</Spoiler>
-
-### Method 2 - `cin.tie(0)`
+### `cin.tie(nullptr)`
 
 <Resources>
 	<Resource
@@ -881,78 +962,7 @@ From the second resource:
 > So if you untie `cin` from `cout`, you must make sure to flush `cout` manually
 > every time you want to display something before expecting input on `cin`.
 
-<Spoiler title="1325 ms">
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_FACT = 5e6;
-
-int curr[MAX_FACT + 1];
-// factors[i] contains the number of prime factors in i!
-int factors[MAX_FACT + 1];
-
-int main() {
-	cin.tie(0)->sync_with_stdio(0);
-
-	for (int i = 1; i <= MAX_FACT; i++) {
-		curr[i] = i;
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		if (curr[i] > 1) {
-			for (int j = i; j <= MAX_FACT; j += i) {
-				while (curr[j] % i == 0) {
-					curr[j] /= i;
-					factors[j]++;
-				}
-			}
-		}
-	}
-	for (int i = 1; i <= MAX_FACT; i++) {
-		factors[i] += factors[i - 1];
-	}
-	
-	int T;
-	cin >> T;
-	for (int i = 0; i < T; i++) {
-		int a;
-		int b;
-		cin >> a >> b;
-		cout << factors[a] - factors[b] << '\n';
-	}
-}
-```
-
-</Spoiler>
-
-<Info title="cin.tie(0)->sync_with_stdio(0);">
-
-In the above line of code, `cin.tie(0)` returns the stream that was previously
-tied to `cin` (`cout`). So this is essentially equivalent to:
-
-```cpp
-cin.tie(0);
-cout.sync_with_stdio(0);
-```
-
-</Info>
-
-Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that
-they don't immediately print their output, but store some of it. At some point,
-the buffer's contents are written (i.e.
-["flushed"](https://stackoverflow.com/questions/213907/stdendl-vs-n)) to the
-output device (e.g the standard output stream or a file). Buffering the output
-helps with efficiency if accessing the output device (like a file) is slow.
-
-Because `endl` always flushes the output, using `\n` instead may avoid
-unnecessary flushes.
-
-- With `endl` in place of `\n`, the above code TLEs on test 3.
-- `\n` may also flush the output if `cin.tie(0)` is not present, so removing
-  `cin.tie(0)` from the above code also TLEs on test 3.
-
-<Warning title="cout.tie(0)">
+<Warning title="cout.tie(nullptr)">
 
 You may see some competitive programmers including this line. This doesn't
 actually do anything since `cout` isn't tied to anything. See
@@ -965,18 +975,10 @@ details.
 
 <JavaSection>
 
-In general, it may be faster to store the answer in a single `StringBuilder` and
-output it with a single function call. This method avoids the overhead of
-calling an output method many times, especially if the output is generated in
-many parts.
-
-When printing to the standard output stream in Java, it is faster to use
-`new PrintWriter(System.out)` than `System.out` (as all the methods above do).
-The syntax for `PrintWriter` is equivalent to that of `System.out` so it should
-be easy to use. The only difference is that one has to call `.flush()` or
-`.close()` on the `PrintWriter` at the very end of the program in order to write
-the output.
-
 </JavaSection>
+
+<PySection>
+
+</PySection>
 
 </LanguageSection>

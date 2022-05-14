@@ -7,12 +7,11 @@ author: Danh Ta Chi Thanh, Brad Ma
 
 [Official Analysis](https://codeforces.com/blog/entry/54708)
 
-
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -20,35 +19,38 @@ author: Danh Ta Chi Thanh, Brad Ma
 using namespace std;
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	int N;
 	cin >> N;
 	N *= 2;
-	vector<int> W(N);
-	for (int& x : W) cin >> x;
-	sort(W.begin(), W.end());
-	int min_instability = 1e9;
-	for (int i = 0; i < N; ++i) {
-		for (int j = i + 1; j < N; ++j) {
-			vector<int> a;
-			for (int k = 0; k < N; ++k)
-				if (k != i && k!= j)
-					a.push_back(W[k]);
+
+	vector<int> people(N);
+	for (int& p : people) {
+		cin >> p;
+	}
+	sort(people.begin(), people.end());
+
+	int min_instability = INT32_MAX;
+	for (int i = 0; i < N; i++) {
+		for (int j = i + 1; j < N; j++) {
+			vector<int> new_people;
+			for (int p = 0; p < N; p++) {
+				if (p != i && p != j) {
+					new_people.push_back(people[k]);
+				}
+			}
+
 			int total_instability = 0;
-			for (int k = 0; k < N - 2; k += 2)
-				total_instability += a[k + 1] - a[k];
+			for (int p = 0; p < N - 2; p += 2) {
+				total_instability += new_people[p + 1] - new_people[p];
+			}
 			min_instability = min(min_instability, total_instability);
 		}
 	}
-	cout << min_instability;
-	return 0;
+	cout << min_instability << endl;
 }
-
 ```
 
 </CPPSection>
-	
 <JavaSection>
 	
 ```java
@@ -59,34 +61,57 @@ public class Kayaking {
 	public static void main (String[] args) {
 		Kattio io = new Kattio();
 		int N = io.nextInt() * 2;
-		int[] W = new int[N];
-		for (int x = 0; x < W.length; x++) {
-			W[x] = io.nextInt();
+
+		int[] people = new int[N];
+		for (int x = 0; x < people.length; x++) {
+			people[x] = io.nextInt();
 		}
-		Arrays.sort(W);
+		Arrays.sort(people);
+
 		int minInstability = Integer.MAX_VALUE;
 		for (int i = 0; i < N; i++) {
 			for (int j = i + 1; j < N; j++) {
-				List<Integer> track = new ArrayList<>();
-				for (int k = 0; k < N; k++) {
-					if ((k != i) && (k != j)) {
-						track.add(W[k]);
+				List<Integer> newPeople = new ArrayList<>();
+				for (int p = 0; p < N; p++) {
+					if ((p != i) && (p != j)) {
+						newPeople.add(people[p]);
 					}
 				}
 				int totalInstability = 0;
-				for (int k = 0; k < (N - 2); k += 2) {
-					totalInstability += track.get(k + 1) - a.get(k);
+				for (int p = 0; p < (N - 2); p += 2) {
+					totalInstability += newPeople.get(p + 1) - newPeople.get(p);
 				}
-				minInstability = Integer.min(minInstability, totalInstability);
+				minInstability = Math.min(minInstability, totalInstability);
 			}
 		}
+
 		io.println(minInstability);
 		io.close();
 	}
+
 	//CodeSnip{Kattio}
 }
 ```
 	
 </JavaSection>
+<PySection>
 
+```py
+n = int(input()) * 2
+people = sorted(int(i) for i in input().split())
+assert len(people) == n
+
+min_instability = float('inf')
+for i in range(n):
+	for j in range(i + 1, n):
+		new_people = [people[p] for p in range(n) if p != i and p != j]
+		total_instability = 0
+		for p in range(0, n - 2, 2):
+			total_instability += new_people[p + 1] - new_people[p]
+		min_instability = min(min_instability, total_instability)
+
+print(min_instability)
+```
+
+</PySection>
 </LanguageSection>

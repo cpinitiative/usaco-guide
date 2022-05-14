@@ -1,7 +1,7 @@
 import { navigate, PageProps } from 'gatsby';
 import * as React from 'react';
 import ProblemSolutions from '../components/ProblemSolutions';
-import SubmitProblemSolutionModal from '../components/SubmitProbemSolutionModal';
+import SubmitProblemSolutionModal from '../components/SubmitProblemSolutionModal';
 import { ProblemInfo } from '../models/problem';
 
 export default function ProblemSolutionsPage(

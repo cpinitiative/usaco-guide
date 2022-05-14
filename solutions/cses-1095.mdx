@@ -1,0 +1,59 @@
+---
+id: cses-1712
+source: CSES
+title: Exponentiation II
+author: Ryan Chou
+---
+
+## Explanation
+
+[Fermat's Little Theorem](/gold/modular) tells us that $a^{p - 1} \equiv 1 \pmod{p}$, so we can calculate $a^{b^c \pmod{1e9 + 7 - 1}} \pmod{1e9+7}$ with modular exponentiation.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log P)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+const long long MOD = 1e9 + 7;
+
+//BeginCodeSnip{Binary Exponentiation}
+ll binpow(ll x, ll n, ll m) {
+	assert(n >= 0);
+	x %= m;
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) {  // if n is odd
+			res = res * x % m;
+		}
+		x = x * x % m;
+		n /= 2;  // divide by two
+	}
+	return res;
+}
+//EndCodeSnip
+
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 0; i < t; i++) {
+		ll a;
+		ll b;
+		ll c;
+
+		cin >> a >> b >> c;
+
+		ll pow_bc = binpow(b, c, MOD - 1);
+		ll ans = binpow(a, pow_bc, MOD);
+
+		cout << ans << '\n';
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

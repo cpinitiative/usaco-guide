@@ -110,13 +110,15 @@ $$
 \sum_{i = 1}^{\max(x_i)} \max(x_i)/i \approx \max(x_i)\log(\max(x_i)).
 $$
 
+<LanguageSection>
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 const int MAX_VAL = 1e6;
 
-// occ_num[i] contains the numer of times i occurrs in the array
+// occ_num[i] contains the number of times i occurs in the array
 int occ_num[MAX_VAL + 1];
 
 int main() {
@@ -145,3 +147,24 @@ int main() {
 	}
 }
 ```
+</CPPSection>
+<PySection>
+```py
+MAXX = int(1e6 + 5)
+n = int(input())
+arr = list(map(int, input().split()))
+p = [0 for i in range(MAXX)]
+
+for i in range(n) :
+	p[arr[i]] += 1
+
+for i in range(MAXX, 1, -1) :
+	div = 0
+	for j in range(i, MAXX, i) : 
+		div += p[j]
+	if div >= 2 :
+		print(i)
+		break
+```
+</PySection>
+</LanguageSection>

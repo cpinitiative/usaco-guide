@@ -51,15 +51,21 @@ most relevant to USACO.
   - In C++, compiling with
     [warning options](/general/debugging-lang#warning-options)
     (`-Wall -Wshadow`) should detect these.
-- Any undefined behavior? Can result in different outputs locally vs online.
-  Possible causes include:
+- Any _undefined behavior_? It can result in different outputs locally vs online
+  (ex. maybe you are passing the sample case locally but not when you submit to
+  the USACO judge). Try running your code in multiple places (ex.
+  [USACO Guide IDE](https://ide.usaco.guide/),
+  [Codeforces Custom Test](https://codeforces.com/problemset/customtest)) and
+  see if you always get the same result. Common examples of undefined behavior
+  include:
 
-  - Uninitialized variables
-  - Not returning anything from non-`void` functions
-  - Array out of bounds
-    - C++ - considering using `::at` as mentioned
+  - (C++) Uninitialized variables
+  - (C++) Not returning anything from non-`void` functions
+  - (C++) Array out of bounds
+    - Considering using `::at` as mentioned
       [here](/general/debugging-lang/#checking-for-oob).
-  - [Signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
+  - (C++ / Java)
+    [Signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
 
     - USACO problems usually contain a note of the following form if the output
       format requires 64-bit rather than 32-bit integers, but it's easy to miss:
@@ -67,7 +73,7 @@ most relevant to USACO.
     > Note that the large size of integers involved in this problem may require
     > the use of 64-bit integer data types (e.g., a `long long` in C/C++)."
 
-  - Shifting a 32-bit integer by $\ge 32$ bits
+  <!-- - Shifting a 32-bit integer by $\ge 32$ bits -->
 
   In C++, compiling with
   [additional options](/general/debugging-lang#other-options) can help catch
@@ -84,7 +90,8 @@ most relevant to USACO.
     your algorithm on.
   - Write a test case generator and compare the outputs of your solution against
     that of a (simpler) slow solution, or a model solution if available.
-    - See [stress testing](/general/debugging-lang#stress-testing).
+    - See [stress testing](/general/debugging-lang#stress-testing) for more
+      information.
 
 ## Runtime Error
 
@@ -110,15 +117,16 @@ most relevant to USACO.
   - Be sure to save your original solution. It's always possible that you might
     introduce more bugs.
 
-## Before Posting on the [Forum](https://forum.usaco.guide/)
+## Before Posting on the [USACO Guide Forum](https://forum.usaco.guide/)
 
-- If you haven't found a small test case on which your solution fails, try
-  generating one (as described above).
-- If you have a small test case on which your solution fails as well as the
-  correct output for that test case (and you understand why that output is
-  correct), you are expected to figure out why your solution isn't working on
-  your own.
-  - Try simulating your solution by hand and see what output you come up with.
-  - If you're not sure why your solution is producing a particular output, add
-    print statements or use a [debugger](/general/debugging-lang/#debuggers)
-    (though print statements alone almost always suffice).
+- If you have found a small test case on which your program fails and you know
+  why the expected output is correct, you should be able to figure out why your
+  program is incorrect on your own.
+  - Add print statements to your code and compare their outputs to what you get
+    when you simulate your program by hand.
+  - Check for undefined behavior as described above.
+- If you haven't found a small test case on which your solution fails,
+  - Try downloading the official test data and seeing if your solution fails on
+    any small test cases.
+  - If that doesn't work, then try generating a small test case on which your
+    solution fails as described above.
