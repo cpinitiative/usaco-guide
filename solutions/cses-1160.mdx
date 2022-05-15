@@ -2,357 +2,208 @@
 id: cses-1160
 source: CSES
 title: Planets Queries II
-author: Michael Cao, Benjamin Qi
+author: Michael Cao, Benjamin Qi, Kevin Sheng
 ---
 
-In this problem, we are given a directed graph and asked $q$ queries for the
+In this problem, we are given a functional graph and asked $q$ queries for the
 minimum distance between two vertices $u$ and $v$.
 
-# Main Idea
+## Structure of the Graph
 
-The graph is a functional graph, so break it into tree / cycle cases and solve
-each one independently.
+Notice that all functional graphs can be broken down into a bunch of "components".
+Each of these components consists of many trees directed towards the root, and
+a single cycle composed of said roots and some other nodes.
 
-# Structure of the Graph
+Here's an example of a possible "component". The trees are circled in red:
 
-While the graph given in the statement can be modeled as a directed graph, we
-can be more specific. Since each vertex has one outgoing edge, the resulting
-graph is a [Functional Graph](/silver/func-graphs).
+![](cses-1160/func_graph.png)
 
-An important property of a functional graph is that it's structure is composed
-of many trees directed towards the root, and a single cycle composed of the
-roots. So, we can break the graph into two cases.
+Given this, we can essentially break down each query into three cases:
 
-# Tree Case
+## Both in Tree
 
-The first case is if $u$ and $v$ are on the same tree. To check this, we can
-store the root of the tree that each vertex is on in functional graph, and check
-if the roots for $u$ and $v$ are equal.
+If both $u$ and $v$ are in a tree, we first have to get the distance from
+each node to the cycle. This can be precalculated for all nodes
+with [BFS](/gold/bfs).
 
-If they are, the problem reduces to finding the distance between two vertices on
-a tree, which equals $depth_u + depth_v - 2 \cdot depth_{lca(u, v)}$ where
-$lca(a, b)$ denotes the lowest common ancestor of vertices $a$ and $b$ and
-$depth_x$ denotes the distance from the vertex to the root of its tree. If you
-don't know how to compute $lca$, read [Binary Jumping](/plat/bin-jump).
+First of all, if $v$'s distance is greater than that of $u$'s,
+we can't get to $v$ because using a teleporter can only *decrease* our distance
+to the cycle.
 
-# Cycle Case
+But if this condition isn't satsified, we start at $u$ and use the teleporters
+until our distance to the cycle is equal to that of $v$'s. If we've actually
+ended up at $v$, then our answer is the difference between the distances.
+Otherwise, it's impossible to reach $v$.
 
-Technically, there are 3 more cases, but they can be solved in the same way so
-we will group them together. The cycle case is when you need to cross the cycle
-to go from one vertex to another.
+To see which planet we end up at if we teleport $t$ times, we can use
+[binary jumping](/plat/bin-jump).
 
-The three situations where this occurs are:
+## Both in Cycle
 
-- One vertex is on a tree, and the other is on the cycle.
-- Both vertices are on the cycle.
-- Both vertices are on trees, but they have different roots.
+If both are in a cycle, we get both $u$ and $v$'s index in the cycle.
+Let's call these indices $u_i$ and $v_i$ respectively.  
+Now, if $u_i \leq v_i$, then our answer is $v_i - u_i$.  
+On the other hand, if $u_i > v_i$, then our answer is
+$\texttt{cycle_len} - (u_i - v_i)$.
 
-In all 3 cases, the distance can be computed the same way as
-$depth_u + depth_v + dist_{r_u, r_v}$ where $r_x$ denotes the root of the tree
-$x$ is on. Note that if a node is on a cycle, it is the root of its tree. To
-compute the distance between roots, we can give an arbitrary vertex value $0$
-and increase the value as you go around the cycle, similar to how you compute
-its length in the [Functional Graph](/silver/func-graphs) article.
 
-Then, the distance between two roots is
-$min(len - (val_u - val_v), val_u - val_v)$ where $len$ is the length of the
-cycle and $val_u > val_v$, representing going from $u$ to $v$ in either
-direction.
+## One in Each
+
+This case is really two cases, but we only really need to consider one of them.
+
+If $u$ is in a cycle but $v$ is in a tree, it's impossible to reach $v$ from $u$
+because we can only go from a tree to a cycle, not vice versa.
+
+On the other hand, if $u$ is the one in the tree, we get which node in the cycle
+$u$'s tree connects to, which is also the root. Then this reduces to a version
+of the second case: we just have to add the distance from $u$ to the root as well.
+
+<Warning>
+
+Note that all three of these cases assume $u$ and $v$ are in the same component.
+If they're in different components, we can't reach $v$ from $u$.
+
+</Warning>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
 
-using ll = long long;
-using ld = long double;
-using db = double;
-using str = string; // yay python!
-
-using pi = pair<int,int>;
-using pl = pair<ll,ll>;
-using pd = pair<db,db>;
-
-using vi = vector<int>;
-using vb = vector<bool>;
-using vl = vector<ll>;
-using vd = vector<db>;
-using vs = vector<str>;
-using vpi = vector<pi>;
-using vpl = vector<pl>;
-using vpd = vector<pd>;
-
-#define tcT template<class T
-#define tcTU tcT, class U
-// ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>;
-tcT, size_t SZ> using AR = array<T,SZ>;
-tcT> using PR = pair<T,T>;
-
-// pairs
-#define mp make_pair
-#define f first
-#define s second
-
-// vectors
-// oops size(x), rbegin(x), rend(x) need C++17
-#define sz(x) int((x).size())
-#define bg(x) begin(x)
-#define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend()
-#define sor(x) sort(all(x))
-#define rsz resize
-#define ins insert
-#define ft front()
-#define bk back()
-#define pb push_back
-#define eb emplace_back
-#define pf push_front
-
-#define lb lower_bound
-#define ub upper_bound
-tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
-
-// loops
-#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
-#define F0R(i,a) FOR(i,0,a)
-#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define R0F(i,a) ROF(i,0,a)
-#define trav(a,x) for (auto& a: x)
-
-const int MOD = 1e9+7; // 998244353;
-const int MX = 2e5+5;
-const ll INF = 1e18; // not too close to LLONG_MAX
-const ld PI = acos((ld)-1);
-const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
-template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
-
-// bitwise ops
-// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
-constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
-constexpr int p2(int x) { return 1<<x; }
-constexpr int msk2(int x) { return p2(x)-1; }
-
-ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
-ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
-
-tcT> bool ckmin(T& a, const T& b) {
-	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
-tcT> bool ckmax(T& a, const T& b) {
-	return a < b ? a = b, 1 : 0; }
-
-tcTU> T fstTrue(T lo, T hi, U f) {
-	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1;
-	}
-	return lo;
-}
-tcTU> T lstTrue(T lo, T hi, U f) {
-	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo+1)/2;
-		f(mid) ? lo = mid : hi = mid-1;
-	}
-	return lo;
-}
-tcT> void remDup(vector<T>& v) { // sort and remove duplicates
-	sort(all(v)); v.erase(unique(all(v)),end(v)); }
-tcTU> void erase(T& t, const U& u) { // don't erase
-	auto it = t.find(u); assert(it != end(t));
-	t.erase(it); } // element that doesn't exist from (multi)set
-
-// INPUT
-#define tcTUU tcT, class ...U
-tcT> void re(complex<T>& c);
-tcTU> void re(pair<T,U>& p);
-tcT> void re(V<T>& v);
-tcT, size_t SZ> void re(AR<T,SZ>& a);
-
-tcT> void re(T& x) { cin >> x; }
-void re(db& d) { str t; re(t); d = stod(t); }
-void re(ld& d) { str t; re(t); d = stold(t); }
-tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
-
-tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
-tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
-tcT> void re(V<T>& x) { trav(a,x) re(a); }
-tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
-tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
-
-// TO_STRING
-#define ts to_string
-str ts(char c) { return str(1,c); }
-str ts(const char* s) { return (str)s; }
-str ts(str s) { return s; }
-str ts(bool b) {
-	#ifdef LOCAL
-		return b ? "true" : "false";
-	#else
-		return ts((int)b);
-	#endif
-}
-tcT> str ts(complex<T> c) {
-	stringstream ss; ss << c; return ss.str(); }
-str ts(V<bool> v) {
-	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
-	res += "}"; return res; }
-template<size_t SZ> str ts(bitset<SZ> b) {
-	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
-	return res; }
-tcTU> str ts(pair<T,U> p);
-tcT> str ts(T v) { // containers with begin(), end()
-	#ifdef LOCAL
-		bool fst = 1; str res = "{";
-		for (const auto& x: v) {
-			if (!fst) res += ", ";
-			fst = 0; res += ts(x);
-		}
-		res += "}"; return res;
-	#else
-		bool fst = 1; str res = "";
-		for (const auto& x: v) {
-			if (!fst) res += " ";
-			fst = 0; res += ts(x);
-		}
-		return res;
-
-	#endif
-}
-tcTU> str ts(pair<T,U> p) {
-	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")";
-	#else
-		return ts(p.f)+" "+ts(p.s);
-	#endif
-}
-
-// OUTPUT
-tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) {
-	pr(t); pr(u...); }
-void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) {
-	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
-
-// DEBUG
-void DBG() { cerr << "]" << endl; }
-tcTUU> void DBG(const T& t, const U&... u) {
-	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
-	DBG(u...); }
-#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
-	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
-	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
-		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
-#else
-	#define dbg(...) 0
-	#define chk(...) 0
-#endif
-
-void setPrec() { cout << fixed << setprecision(15); }
-void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
-// FILE I/O
-void setIn(str s) { freopen(s.c_str(),"r",stdin); }
-void setOut(str s) { freopen(s.c_str(),"w",stdout); }
-void setIO(str s = "") {
-	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit);
-	// throws exception when do smth illegal
-	// ex. try to read letter into int
-	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
-}
-
-// oops doesn't compile with current template LOL ~Ben
-
-int n,q,t[MX], ind[MX], depth[MX], comp[MX], nex[MX];
-int tmp[MX], par[MX][18];
-vi child[MX], adj[MX];
-bool incyc[MX];
-
-// not in cyc, not in cyc
-// not in cyc, in cyc
-// in cyc, not in cyc
-// in cyc, in cyc
-
-void dfs(int x) {
-    int X = x;
-    while (tmp[x] == 0) {
-        tmp[x] = X;
-        x = t[x];
-    }
-    while (tmp[x] == X) {
-        tmp[x] = X+n; ind[x] = nex[comp[x]]++;
-        incyc[x] = 1;
-        x = t[x];
-    }
-}
-
-void DFS(int cur) {
-    for (int i: child[cur]) if (!incyc[i]) {
-        depth[i] = depth[cur]+1;
-        DFS(i);
-    }
-}
-
-void process() {
-    FOR(i,1,n+1) dfs(i);
-    FOR(i,1,n+1) par[i][0] = t[i];
-    FOR(i,1,18) FOR(j,1,n+1)
-        par[j][i] = par[par[j][i-1]][i-1];
-    FOR(i,1,n+1) if (incyc[i]) DFS(i);
-}
-
-int getPar(int a, int b) {
-    R0F(i,18) if (b&(1<<i)) a = par[a][i];
-    return a;
-}
-
-void gencomp(int x, int i) {
-    if (comp[x]) return;
-    comp[x] = i;
-    for (int y: adj[x]) gencomp(y,i);
-}
+using std::cout;
+using std::endl;
+using std::vector;
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    cin >> n >> q;
-    FOR(i,1,n+1) {
-        cin >> t[i];
-        child[t[i]].pb(i);
-        adj[i].pb(t[i]), adj[t[i]].pb(i);
-    }
-    FOR(i,1,n+1) if (comp[i] == 0) gencomp(i,i);
-    process();
-    F0R(i,q) {
-        int a,b; cin >> a >> b;
-        if (comp[a] != comp[b]) {
-            cout << "-1\n";
-            continue;
-        }
-        if (!incyc[a]) {
-            if (incyc[b]) {
-                int x = getPar(a,depth[a]);
-                cout << ((ind[b]-ind[x]+nex[comp[a]])%nex[comp[a]])+depth[a];
-            } else {
-                if (getPar(a,depth[a]-depth[b]) == b) cout << depth[a]-depth[b];
-                else cout << -1;
-            }
-        } else {
-            if (incyc[b]) cout << (ind[b]-ind[a]+nex[comp[a]])%nex[comp[a]];
-            else cout << -1;
-        }
-        cout << "\n";
-    }
+	int planet_num;
+	int query_num;
+	std::cin >> planet_num >> query_num;
+	vector<int> next(planet_num);
+	vector<vector<int>> before(planet_num);
+	for (int p = 0; p < planet_num; p++) {
+		std::cin >> next[p];
+		next[p]--;
+		before[next[p]].push_back(p);
+	}
+
+	/* 
+	 * -2 = We haven't even got to processing this planet yet.
+	 * -1 = This node is part of a tree.
+	 * >= 0: the ID of the cycle the planet belongs to.
+	 */
+	vector<int> cycle_id(planet_num, -2);
+	// Each map, given a planet #, returns the index of that planet in the cycle.
+	vector<std::map<int, int>> cycles;
+	for (int p = 0; p < planet_num; p++) {
+		if (cycle_id[p] != -2) {
+			continue;
+		}
+		vector<int> path{p};
+		int at = p;
+		while (cycle_id[next[at]] == -2) {
+			at = next[at];
+			cycle_id[at] = -3;  // Leave breadcrumbs for this iteration
+			path.push_back(at);
+		}
+		
+		std::map<int, int> cycle;
+		bool in_cycle = false;
+		for (int i : path) {
+			in_cycle = in_cycle || i == next[at];
+			if (in_cycle) {
+				cycle[i] = cycle.size();
+			}
+			cycle_id[i] = in_cycle ? cycles.size() : -1;
+		}
+		cycles.push_back(cycle);
+	}
+
+	/*
+	 * Precalculate the distance from each planet to its cycle with BFS.
+	 * (cyc_dist[p] = 0) if p is part of a cycle.
+	 */
+	vector<int> cyc_dist(planet_num);
+	for (int p = 0; p < planet_num; p++) {
+		// Check if this planet is part of a cycle.
+		if (cycle_id[next[p]] == -1 || cycle_id[p] != -1) {
+			continue;
+		}
+		cyc_dist[p] = 1;
+		vector<int> stack(before[p]);
+		while (!stack.empty()) {
+			int curr = stack.back();
+			stack.pop_back();
+			cyc_dist[curr] = cyc_dist[next[curr]] + 1;
+			stack.insert(stack.end(), before[curr].begin(), before[curr].end());
+		}
+	}
+
+	// Intialize the binary jumping arrays.
+	int log2 = std::ceil(std::log2(planet_num));
+	vector<vector<int>> pow2_ends(planet_num, vector<int>(log2 + 1));
+	for (int p = 0; p < planet_num; p++) {
+		pow2_ends[p][0] = next[p];
+	}
+	for (int i = 1; i <= log2; i++) {
+		for (int p = 0; p < planet_num; p++) {
+			pow2_ends[p][i] = pow2_ends[pow2_ends[p][i - 1]][i - 1];
+		}
+	}
+
+	/*
+	 * Given a starting planet & dist, returns the planet we end up at
+	 * if we use the teleporter dist times.
+	 */
+	auto advance = [&] (int pos, int dist) {
+		for (int pow = log2; pow >= 0; pow--) {
+			if ((dist & (1 << pow)) != 0) {
+				pos = pow2_ends[pos][pow];
+			}
+		}
+		return pos;
+	};
+	for (int q = 0; q < query_num; q++) {
+		int u, v;  // going from u to v
+		std::cin >> u >> v;
+		u--;
+		v--;
+		if (cycle_id[pow2_ends[u][log2]] != cycle_id[pow2_ends[v][log2]]) {
+			cout << -1 << '\n';
+			continue;
+		}
+		if (cycle_id[u] != -1 || cycle_id[v] != -1) {
+			if (cycle_id[v] == -1 && cycle_id[u] != -1) {
+				cout << -1 << '\n';
+				continue;
+			}
+			// Handle the 2nd & 3rd cases at the same time.
+			int dist = cyc_dist[u];
+			int u_cyc = advance(u, cyc_dist[u]);  // The root of u's tree
+			
+			std::map<int, int>& cyc = cycles[cycle_id[u_cyc]];  // u and v's cycle
+			int u_ind = cyc[u_cyc];
+			int v_ind = cyc[v];
+			int diff = u_ind <= v_ind ? v_ind - u_ind : cyc.size() - (u_ind - v_ind);
+			cout << dist + diff << '\n';
+		} else {
+			if (cyc_dist[v] > cyc_dist[u]) {
+				cout << -1 << '\n';
+				continue;
+			}
+			int diff = cyc_dist[u] - cyc_dist[v];
+			cout << (advance(u, diff) == v ? diff : -1) << '\n';
+		}
+	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
