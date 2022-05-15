@@ -22,13 +22,16 @@ author: Sofia Yang, Jeffrey Zhang
 typedef long long ll;
 using namespace std;
 
-void topo_sorting(vector<vector<pair<int,int>>>& graph, vector<bool>& visited, vector<int>& toposort, int node){
+void topo_sorting(vector<vector<pair<int,int>>>& graph, vector<bool>& visited,
+				vector<int>& toposort, int node){
 	visited[node] = true;
 	for (auto i: graph[node]){
 		int a,b;
 		tie(a,b) = i;
-		if (visited[a]) continue;
-		dfs(graph, visited, toposort, a);
+		if (visited[a]) {
+			continue;
+		}
+		topo_sorting(graph, visited, toposort, a);
 	}
 	toposort.push_back(node);
 }
@@ -38,9 +41,10 @@ int main() {
 	ofstream fout("timeline.out");
 	ifstream fin("timeline.in");
 
-	//Take inputs
-	//Construct an array that track all the start time
-	//Construct an adjacency list graph
+	/* Take inputs
+	 * Construct an array that track all the start time
+	 * Construct an adjacency list graph
+	 */
 	int n, m, c;
 	fin >> n >> m >> c;
 	vector<int> start(n+1);
@@ -55,9 +59,10 @@ int main() {
 	}
 
 	/*
-	 * Toposort the milking sessions
+	 * Topologically sort the milking sessions
 	 * Start from the earliest milking session,
-	 * Greedily set all its children's time to be at least itself's time + edge weight
+	 * Greedily set all its children's time to be
+	 *  at least itself's time + edge weight.
 	 * The input variable M becomes irrelevant
 	 */
 	vector<bool> visited(n+1);
@@ -80,7 +85,6 @@ int main() {
 
 	return 0;
 }
-
 ```
 
 </CPPSection>
