@@ -22,8 +22,7 @@ author: Sofia Yang, Jeffrey Zhang
 typedef long long ll;
 using namespace std;
 
-//Construct a topologically sorted array from this function
-void dfs(vector<vector<pair<int,int>>>& graph, vector<bool>& visited, vector<int>& toposort, int node){
+void topo_sorting(vector<vector<pair<int,int>>>& graph, vector<bool>& visited, vector<int>& toposort, int node){
 	visited[node] = true;
 	for (auto i: graph[node]){
 		int a,b;
@@ -55,15 +54,17 @@ int main() {
 		graph[a].push_back(make_pair(b,c));
 	}
 
-	//Toposort the milking sessions
-	//Start from the earliest milking session,
-	//Greedily set all its children's time to be at least itself's time + edge weight
-	//The input variable M becomes irrelevant
+	/*
+	 * Toposort the milking sessions
+	 * Start from the earliest milking session,
+	 * Greedily set all its children's time to be at least itself's time + edge weight
+	 * The input variable M becomes irrelevant
+	 */
 	vector<bool> visited(n+1);
 	vector<int> toposort;
 	for (int i = 1; i <= n; i++){
 		if (visited[i]) continue;
-		dfs(graph, visited, toposort, i);
+		topo_sorting(graph, visited, toposort, i);
 	}
 	for (int i = n - 1; i >= 0; i--){
 		for (auto j: graph[toposort[i]]){
@@ -73,7 +74,6 @@ int main() {
 		}
 	}
 
-	//Output
 	for (int i = 1; i <= n; i++){
 		fout << start[i] << "\n";
 	}
