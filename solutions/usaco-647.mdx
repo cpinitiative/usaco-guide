@@ -37,12 +37,11 @@ public class U248 {
 			dp[i + 1][i + 1] = a[i];
 		}
 
-
-		int ans = -1;
+		int ans = 0;
 		for(int i = N - 1; i >= 1; i--) {
 			for(int j = i + 1; j <= N; j++) {
 				for (int k = i; k < j; k++) {
-					if(dp[i][k] == dp[k + 1][j]) {
+					if (dp[i][k] == dp[k + 1][j]) {
 						dp[i][j] = Math.max(dp[i][j], dp[i][k] + 1);
 					}
 				}
@@ -50,7 +49,6 @@ public class U248 {
 				ans = Math.max(ans, dp[i][j]);
 			}
 		}
-
 
 		io.println(ans);
 		io.close();
