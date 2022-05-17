@@ -256,36 +256,39 @@ public class MooyoMooyo {
 </JavaSection>
 
 <PySection>
+
 ```py
-import sys
+# BFS solution
 from collections import deque
 
-sys.stdin = open("mooyomooyo.in", "r")
-sys.stdout = open("mooyomooyo.out", "w")
-
-input = sys.stdin.readline
-
 # possible directions to visit all connected regions
-directions = [
+DIRECTIONS = (
 	(1, 0), 
 	(0, 1), 
 	(-1, 0), 
 	(0, -1)
-]
+)
 
-a, b = map(int, input().split())
+c = []
+	
+with open('mooyomooyo.in') as r:
+	a, b = map(int, r.readline().split())
+	for i in range(a):
+		c.append(list(map(int, list(r.readline().strip()))))
+
+mid = 5
 
 def gravity(graph, s, coors):
 
 	for i in range(s // 2):
-		for j in range(5):
+		for j in range(mid):
 			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
     
 	for y, x in coors:
 		graph[y].pop(x)
 		graph[y].append(0)
     
-	for i in range(5):
+	for i in range(mid):
 		for j in range(s // 2):
 			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
     
@@ -301,7 +304,7 @@ def bfs(x, y, graph, visited):
 	
 	while q:
 		x, y = q.pop()
-		for dx, dy in directions:
+		for dx, dy in DIRECTIONS:
 			nx, ny = x + dx, y + dy
 			# boundaries
 			if 0 <= nx < 10 and 0 <= ny < a:
@@ -345,17 +348,14 @@ def mooyo(graph):
 			y -= 1
     
 	return mooyo(graph)
-    
-c = []
-for i in range(a):
-	tmp = list(map(int, list(input().strip())))
-	c.append(tmp)
 
-k = mooyo(c)
-for i in k:
-	i = [str(x) for x in i]
-	print("".join(i))
+ans = mooyo(c)
+
+with open('mooyomooyo.out', 'w') as out:
+	for i in ans:
+		print("".join([str(x) for x in i]), file=out)
 ```
+	
 </PySection>
 
 </LanguageSection>
