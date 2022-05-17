@@ -21,7 +21,79 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 <JavaSection>
 
 ```java
+import java.util.*;
+import java.io.*;
 
+public class U248 {
+    public static void main(String[] args) throws IOException {
+        Kattio io = new Kattio("248");
+
+        int N = io.nextInt();
+        int[] a = new int[N];
+
+        int[][] dp = new int[N+1][N+1];
+        for (int i = 0; i < N; i++) {
+            a[i] = io.nextInt();
+            dp[i+1][i+1] = a[i];
+        }
+
+
+        int ans = -1;
+        for(int i = N - 1; i >= 1; i--) {
+            for(int j = i + 1; j <= N; j++) {
+                for (int k = i; k < j; k++) {
+//                    dp[i][j] = Math.max(dp[i][j], Math.max(dp[i][k], dp[k+1][j]));
+                    if(dp[i][k] == dp[k+1][j]) {
+                        dp[i][j] = Math.max(dp[i][j], dp[i][k] + 1);
+                    }
+                }
+
+                ans = Math.max(ans, dp[i][j]);
+            }
+        }
+
+//        for (int i = 0; i < N + 1; i++) {
+//            for (int j = 0; j < N + 1; j++) {
+//                System.out.print(dp[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
+
+        io.println(ans);
+        io.close();
+    }
+
+    private static class Kattio extends PrintWriter {
+        private BufferedReader r;
+        private StringTokenizer st;
+
+        // standard input
+        public Kattio() { this(System.in,System.out); }
+        public Kattio(InputStream i, OutputStream o) {
+            super(o);
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+        // USACO-style file input
+        public Kattio(String problemName) throws IOException {
+            super(new FileWriter(problemName+".out"));
+            r = new BufferedReader(new FileReader(problemName+".in"));
+        }
+
+        // returns null if no more input
+        public String next() {
+            try {
+                while (st == null || !st.hasMoreTokens())
+                    st = new StringTokenizer(r.readLine());
+                return st.nextToken();
+            } catch (Exception e) {}
+            return null;
+        }
+
+        public int nextInt() { return Integer.parseInt(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+    }
+}
 ```
 
 </JavaSection>
