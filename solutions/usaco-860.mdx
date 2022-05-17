@@ -278,13 +278,13 @@ with open('mooyomooyo.in') as r:
 
 mid = 5
 
-def gravity(graph, s, coors):
+def gravity(graph, s, coords):
 
 	for i in range(s // 2):
 		for j in range(mid):
 			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
     
-	for y, x in coors:
+	for y, x in coords:
 		graph[y].pop(x)
 		graph[y].append(0)
     
@@ -300,7 +300,7 @@ def bfs(x, y, graph, visited):
 	q = deque()
 	q.append((x, y))
         visited[y][x] = True
-        coors = [(x, y)]
+        coords = [(x, y)]
 	
 	while q:
 		x, y = q.pop()
@@ -312,13 +312,13 @@ def bfs(x, y, graph, visited):
 				if graph[ny][nx] == graph[y][x] and not visited[ny][nx]:
 					q.appendleft((nx, ny))
 					visited[ny][nx] = True
-					coors.append((nx, ny))
-	return coors
+					coords.append((nx, ny))
+	return coords
 
 def mooyo(graph):
 
 	visited = [[False] * 10 for _ in range(a)]
-	all_coors = []
+	all_coords = []
 
 	for i in range(a):
 		for j in range(10):
@@ -326,12 +326,12 @@ def mooyo(graph):
 		    if graph[i][j] != 0 and not visited[i][j]:
 			temp = bfs(j, i, graph, visited)
 			if len(temp) >= b:
-			    all_coors += temp
+			    all_coords += temp
 
-	if not all_coors:
+	if not all_coords:
 		return graph
 
-	for x, y in all_coors:
+	for x, y in all_coords:
 		graph[y][x] = 0
     
 	for x in range(10):
