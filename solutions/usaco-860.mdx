@@ -12,7 +12,6 @@ author: Nathan Gong, Pranav Jadhav, Juheon Rhee
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
@@ -135,8 +134,8 @@ int main() {
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -254,11 +253,13 @@ public class MooyoMooyo {
 ```
 
 </JavaSection>
-
 <PySection>
 
+<Info>
+This solution uses [BFS](/gold/bfs), but the general gist is similar to the DFS solution.
+</Info>
+
 ```py
-# BFS solution
 from collections import deque
 
 # possible directions to visit all connected regions
@@ -278,6 +279,7 @@ with open('mooyomooyo.in') as r:
 
 mid = 5
 
+
 def gravity(graph, s, coords):
 
 	for i in range(s // 2):
@@ -293,6 +295,7 @@ def gravity(graph, s, coords):
 			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
     
 	return graph
+
 
 # bfs to mark all connected regions
 def bfs(x, y, graph, visited):
@@ -315,8 +318,8 @@ def bfs(x, y, graph, visited):
 					coords.append((nx, ny))
 	return coords
 
-def mooyo(graph):
 
+def mooyo(graph):
 	visited = [[False] * 10 for _ in range(a)]
 	all_coords = []
 
@@ -349,8 +352,8 @@ def mooyo(graph):
     
 	return mooyo(graph)
 
-ans = mooyo(c)
 
+ans = mooyo(c)
 with open('mooyomooyo.out', 'w') as out:
 	for i in ans:
 		print("".join([str(x) for x in i]), file=out)
