@@ -15,13 +15,15 @@ author: Juheon Rhee
 <PySection>
 
 ```py
-res = [[0] * 11 for _ in range(11)]
-left, right, down, up = [0] * 10, [0] * 10, [0] * 10, [0] * 10
+WIDTH = 10
 
-ans = [0] * 10
+res = [[0] * (WIDTH + 1) for _ in range(WIDTH + 1)]
+left, right, down, up = [0] * WIDTH, [0] * WIDTH, [0] * WIDTH, [0] * WIDTH
 
-for i in range(1, 10):
-        left[i], up[i] = 1e9, 1e9
+ans = [0] * WIDTH
+
+for i in range(1, WIDTH):
+        left[i], up[i] = float('inf'), float('inf')
         right[i], down[i] = -1, -1
 
 with open('art.in') as read:
@@ -37,7 +39,7 @@ with open('art.in') as read:
                                 down[use], up[use] = max(down[use], i), min(up[use], i)
                                 ans[use] = 1
 
-for i in range(1, 10):
+for i in range(1, WIDTH):
         for j in range(int(up[i]), int(down[i] + 1)):
                 for k in range(int(left[i]), int(right[i] + 1)):
                         if res[j][k] != i:
