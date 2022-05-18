@@ -21,7 +21,7 @@ with open('homework.in') as read:
         questions = [int(i) for i in read.readline().split()]
 
 left, right = -1, n
-total, minimum, ans = [0] * n, [0] * n, []
+total, minimum, values = [0] * n, [0] * n, []
 
 total[n - 1], minimum[n - 1] = questions[n - 1], questions[n - 1]
 
@@ -33,14 +33,14 @@ for i in range(n - 2, 0, -1):
         cur_s, idx = total[i] - minimum[i], (n - (i + 1))
 
         if cur_s * right > left * idx:
-                left, right = cur_s , idx
-                ans = [i]
+                left, right = cur_s, idx
+                values = [i]
 
         elif cur_s * right == left * idx:
-                ans.append(i)
+                values.append(i)
 
 with open('homework.out', 'w') as out:
-        for k in sorted(ans):
+        for k in sorted(values):
                 print(k, file=out)
 ```
 
