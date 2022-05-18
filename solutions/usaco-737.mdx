@@ -20,7 +20,7 @@ WIDTH = 10
 art = [[0] * (WIDTH + 1) for _ in range(WIDTH + 1)]
 left, right, down, up = [0] * WIDTH, [0] * WIDTH, [0] * WIDTH, [0] * WIDTH
 
-valid_start = [0] * WIDTH
+valid_start = [False] * WIDTH
 
 for i in range(1, WIDTH):
         left[i], up[i] = float('inf'), float('inf')
@@ -37,13 +37,13 @@ with open('art.in') as read:
                                 use = art[i][j]
                                 left[use], right[use] = min(left[use], j), max(right[use], j)
                                 down[use], up[use] = max(down[use], i), min(up[use], i)
-                                valid_start[use] = 1
+                                valid_start[use] = True
 
 for i in range(1, WIDTH):
         for j in range(int(up[i]), int(down[i] + 1)):
                 for k in range(int(left[i]), int(right[i] + 1)):
                         if art[j][k] != i:
-                                valid_start[art[j][k]] = 0
+                                valid_start[art[j][k]] = False
 
 print(sum(valid_start), file=open('art.out', 'w'))
 ```
