@@ -104,21 +104,24 @@ public class MaxCross {
 ```python
 with open('maxcross.in') as read:
 	n, k, b = map(int, read.readline().split())
-	id, left, right, tmp = [0] * (n + 1), 1, k, 0
+	
+	seen = [0] * (n + 1)
+	left, right = 1, k
+	value = 0
 	
 	for _ in range(b):
-		id[int(read.readline())] = 1
+		seen[int(read.readline())] = 1
 
 for i in range(left, right + 1):
-	tmp += id[i]
+	value += seen[i]
 
-possible = [tmp]
+possible = [value]
 
 while n > right:
-	tmp += id[right + 1] - id[left]
+	value += seen[right + 1] - seen[left]
 	left, right = left + 1, right + 1
 
-	possible.append(tmp)
+	possible.append(value)
 
 print(min(possible), file=open('maxcross.out', 'w'))
 ```
