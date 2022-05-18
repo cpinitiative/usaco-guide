@@ -27,14 +27,24 @@ const ProgressBar = ({ text, green, yellow, blue }) => {
   );
 };
 
-const FancyNumber = ({ number, text, textColor, bgColor }) => (
+const FancyNumber = ({
+  number,
+  text,
+  textColor,
+  bgColor,
+  subTextColor = null,
+}) => (
   <div className="text-center">
     <span
       className={`text-3xl font-bold ${textColor} ${bgColor} rounded-full h-16 w-16 inline-block inline-flex items-center justify-center`}
     >
       {number}
     </span>
-    <span className={`block mt-1 text-sm font-medium uppercase ${textColor}`}>
+    <span
+      className={`block mt-1 text-sm font-medium uppercase ${
+        subTextColor ? subTextColor : textColor
+      }`}
+    >
       {text}
     </span>
   </div>
@@ -79,8 +89,9 @@ export default function DashboardProgress({
         <FancyNumber
           number={notStarted}
           text="Not Started"
-          textColor="text-gray-800 dark:text-gray-100"
-          bgColor="bg-gray-100 dark:bg-gray-700"
+          textColor="text-gray-800"
+          bgColor="bg-gray-100"
+          subTextColor="text-gray-100"
         />
       </div>
       <ProgressBar
