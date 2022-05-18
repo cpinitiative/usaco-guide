@@ -262,7 +262,8 @@ for _ in range(n):
 	a, b = map(int, t().split())
 	sweep.append([a, b])
 
-sweep.sort(key=lambda x:x[0])
+sweep.sort()
+	
 temp = sweep[0][1]
 cover = sweep[0][1] - sweep[0][0]
 
@@ -278,7 +279,8 @@ for start, end in sweep[1:]:
 		cover += max(0, end-temp)
 		find_min[cnt-1] -= (temp - start) 
 		find_min[cnt] -= (min(temp, end) - start)
-	else: cover += end - start
+	else: 
+		cover += end - start
 
 	temp = max(end, temp)
 	cnt += 1
