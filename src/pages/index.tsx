@@ -37,14 +37,15 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
-const headerClasses = 'text-4xl md:text-5xl 2xl:text-6xl font-black text-black';
+const headerClasses =
+  'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
 const subtextClasses =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
+  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400';
 const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
-const headerClassesDark =
-  'text-4xl md:text-5xl 2xl:text-6xl font-black text-white';
-const subtextClassesDark =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
+// const headerClasses =
+//   'text-4xl md:text-5xl 2xl:text-6xl font-black text-white';
+// const subtextClasses =
+//   'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
 const whiteButtonClassesBig =
   'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
 const whiteButtonClasses =
@@ -63,12 +64,12 @@ export default function IndexPage(): JSX.Element {
       {/*>*/}
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
-      <div className="dark bg-black">
-        <TopNavigationBar transparent />
+      <div className="bg-black">
+        <TopNavigationBar />
       </div>
 
       {/* Begin Hero */}
-      <div className="-mt-16 bg-black">
+      <div className="-mt-16 bg-gray-300 dark:bg-black">
         <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
           <div className="h-6 sm:h-12"></div>
 
@@ -76,7 +77,7 @@ export default function IndexPage(): JSX.Element {
             <div className="h-24"></div>
 
             <div className="flex md:justify-center">
-              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-white mt-4">
+              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-black dark:text-white mt-4">
                 USACO Guide
               </GlowingText>
             </div>
@@ -92,7 +93,8 @@ export default function IndexPage(): JSX.Element {
                 font-medium
                 leading-snug
                 md:!leading-normal
-                text-gray-300
+                text-gray-800
+                dark:text-gray-300
               "
             >
               A free collection of{' '}
@@ -117,7 +119,7 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-16 sm:h-24"></div>
 
-          <div className="flex md:justify-center md:text-xl text-gray-400">
+          <div className="flex md:justify-center md:text-xl text-gray-600 dark:text-gray-400">
             <a
               href="https://joincpi.org/"
               className="inline-flex items-center space-x-3 md:space-x-4"
@@ -180,18 +182,22 @@ export default function IndexPage(): JSX.Element {
       {/* End Hero */}
 
       {/* Learn USACO. Efficiently. */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
+          {/* Sort out dark header classes */}
           <h2 className={headerClasses}>
             Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
           </h2>
           <div className={headerSubtextSpacerClasses}></div>
+          {/* Sort out dark subtext classes */}
           <p className={subtextClasses}>
             Stop wasting time searching for problems and tutorials. The USACO
             Guide provides a{' '}
-            <b className="text-black">comprehensive, organized roadmap</b>{' '}
+            <b className="text-black dark:text-white">
+              comprehensive, organized roadmap
+            </b>{' '}
             carefully designed and crafted for USACO contestants – available to
             everyone, for free.
           </p>
@@ -278,15 +284,21 @@ export default function IndexPage(): JSX.Element {
       </div>
       {/* End Learn USACO. Efficiently. */}
 
-      <div className="bg-black">
+      <div className="bg-gray-300 dark:bg-gray-800">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
-          <GlowingText className={headerClassesDark} extraGlow>
-            Trusted by thousands.
-          </GlowingText>
+          <div className="dark:hidden">
+            <GlowingText className={headerClasses} extraGlow>
+              Trusted by thousands.
+            </GlowingText>
+          </div>
+          <div className="invisible dark:visible">
+            <h1 className={headerClasses}>Trusted by thousands.</h1>
+          </div>
+
           <div className={headerSubtextSpacerClasses}></div>
 
-          <p className={subtextClassesDark}>
+          <p className={subtextClasses}>
             This guide is written by{' '}
             <GradientText>top USACO contestants,</GradientText> including
             two-time IOI winner and USACO Problemsetter Benjamin Qi.
@@ -311,13 +323,15 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
+          {/* Sort out Header Classes */}
           <h2 className={classNames(headerClasses, 'md:text-center')}>
             Created by the CP Initiative.
           </h2>
           <div className="h-4 md:h-8"></div>
+          {/* Sort out subtext Classes */}
           <p className={classNames(subtextClasses, 'md:text-center mx-auto')}>
             Here are some of our other projects you might find useful!
           </p>
@@ -384,15 +398,20 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-black">
+      <div className="bg-gray-300 dark:bg-gray-800">
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
-          <GlowingText className={headerClassesDark} extraGlow>
-            Join our Team.
-          </GlowingText>
+          <div className="dark:hidden">
+            <GlowingText className={headerClasses} extraGlow>
+              Join our Team.
+            </GlowingText>
+          </div>
+          <div className="invisible dark:visible">
+            <h1 className={headerClasses}>Join our Team.</h1>
+          </div>
           <div className={headerSubtextSpacerClasses}></div>
-          <p className={subtextClassesDark}>
+          <p className={subtextClasses}>
             The{' '}
             <a
               href="https://joincpi.org/"
@@ -426,11 +445,17 @@ export default function IndexPage(): JSX.Element {
 
           <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
 
-          <GlowingText className={headerClassesDark} extraGlow>
-            Or, help us financially!
-          </GlowingText>
+          <div className="dark:hidden">
+            <GlowingText className={headerClasses} extraGlow>
+              Or, help us financially!
+            </GlowingText>
+          </div>
+          <div className="invisible dark:visible">
+            <h1 className={headerClasses}>Or, help us financially!</h1>
+          </div>
+
           <div className={headerSubtextSpacerClasses}></div>
-          <p className={subtextClassesDark}>
+          <p className={subtextClasses}>
             We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
             — all donations are tax deductible. Since our inception in September
             2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
@@ -480,7 +505,7 @@ export default function IndexPage(): JSX.Element {
           <p className="uppercase text-gray-400 font-medium text-lg md:text-xl">
             Our Sponsors
           </p>
-
+          {/* Fix these components for the light mode */}
           <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
             Platinum Sponsors
           </p>

@@ -15,11 +15,11 @@ const TableRow = ({
   className?: string;
 }) => {
   return (
-    <tr className={className}>
-      <td className="pl-4 sm:pl-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-500">
+    <tr className={classNames(className)}>
+      <td className="pl-4 sm:pl-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-gray-400">
         {source}
       </td>
-      <td className="pl-2 sm:pl-6 pr-4 sm:pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-800">
+      <td className="pl-2 sm:pl-6 pr-4 sm:pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-blue-600 dark:text-blue-300">
         <div className="flex items-center">
           <svg
             className={classNames(
@@ -34,7 +34,7 @@ const TableRow = ({
           <span className="pl-1 sm:pl-2">{title}</span>
         </div>
       </td>
-      <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 no-y-margin">
+      <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 dark:text-gray-400 no-y-margin">
         {children}
       </td>
     </tr>
@@ -49,7 +49,7 @@ export const ResourcesFeature = (): JSX.Element => {
           <div className="flex flex-col mb-4">
             <div className={`overflow-x-auto -mx-4 px-4 -my-2 py-2`}>
               <div
-                className={`align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-gray-200`}
+                className={`align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-gray-200 dark:border-black`}
               >
                 <table className="min-w-full no-markdown">
                   <thead>
@@ -62,7 +62,7 @@ export const ResourcesFeature = (): JSX.Element => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white">
+                  <tbody className="bg-white dark:bg-gray-800">
                     <TableRow source="CF" title="EDU: DSU" starred>
                       video explanation + problems for DSU
                     </TableRow>
@@ -70,7 +70,7 @@ export const ResourcesFeature = (): JSX.Element => {
                       source="CSA"
                       title="Disjoint Data Sets"
                       starred
-                      className="bg-gray-50"
+                      className="bg-gray-50 dark:bg-gray-900"
                     >
                       both optimizations, diagrams
                     </TableRow>
@@ -80,7 +80,7 @@ export const ResourcesFeature = (): JSX.Element => {
                     <TableRow
                       source="CPH"
                       title="15.2 - Union-Find"
-                      className="bg-gray-50"
+                      className="bg-gray-50 dark:bg-gray-900"
                     >
                       small to large, diagrams
                     </TableRow>

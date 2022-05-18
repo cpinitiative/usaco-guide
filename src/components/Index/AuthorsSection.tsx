@@ -135,10 +135,10 @@ const AuthorCard = ({
               {author.title}
             </span>
           </div>
-          <div className="text-3xl font-bold text-white dark:text-gray-100">
+          <div className="text-3xl font-bold text-gray-700 dark:text-gray-100">
             {author.name}
           </div>
-          <div className="mt-4 text-base text-blue-200 dark:text-gray-300">
+          <div className="mt-4 text-base text-blue-900 dark:text-gray-300">
             <p className="relative">{author.blurb}</p>
           </div>
           <div className="mt-2 flex space-x-2 justify-center sm:justify-start">
@@ -148,7 +148,7 @@ const AuthorCard = ({
                 <a
                   key={author.name + sm}
                   href={socialMedia[sm].link(author[sm])}
-                  className="text-blue-300 hover:text-blue-200 dark:text-gray-400 dark:hover:text-gray-300 transition duration-100"
+                  className="text-blue-600 hover:text-blue-400 dark:text-gray-400 dark:hover:text-gray-300 transition duration-100"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -186,9 +186,9 @@ export default function AuthorsSection() {
   `);
 
   return (
-    <section className="bg-blue-800 dark:bg-gray-900 overflow-hidden">
-      <div className="py-6 sm:py-12 text-center border-b-2 border-blue-900 dark:border-gray-700">
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-white px-4">
+    <section className="bg-blue-200 dark:bg-gray-900 overflow-hidden">
+      <div className="py-6 sm:py-12 text-center border-b-2 border-blue-500 dark:border-gray-700">
+        <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-800 dark:text-white px-4">
           Authors you can trust.
         </h2>
       </div>
@@ -205,7 +205,7 @@ export default function AuthorsSection() {
           />
         ))}
         {Authors.length % 2 === 1 && (
-          <div className="border border-blue-900 dark:border-gray-700" />
+          <div className="border border-blue-500 dark:border-gray-700" />
         )}
       </div>
     </section>

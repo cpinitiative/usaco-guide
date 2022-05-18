@@ -24,8 +24,12 @@ export const CPIProjectCard = ({
       >
         <Icon className="h-6 w-6" />
       </div>
-      <h3 className="font-bold text-xl md:text-2xl text-gray-900">{title}</h3>
-      <p className="mt-2 md:mt-4 text-gray-700 md:text-lg">{children}</p>
+      <h3 className="font-bold text-xl md:text-2xl text-gray-900 dark:text-gray-200">
+        {title}
+      </h3>
+      <p className="mt-2 md:mt-4 text-gray-700 dark:text-gray-400 md:text-lg">
+        {children}
+      </p>
     </div>
     <a
       href={url}
