@@ -30,13 +30,13 @@ for i in range(n - 2, 0, -1):
 
         total[i], minimum[i] = cur_q + total[i + 1], min(minimum[i + 1], cur_q)
 
-        cur_s, tmp = total[i] - minimum[i], (n - (i + 1))
+        cur_s, idx = total[i] - minimum[i], (n - (i + 1))
 
-        if cur_s * right > left * tmp:
-                left, right = cur_s , tmp
+        if cur_s * right > left * idx:
+                left, right = cur_s , idx
                 ans = [i]
 
-        elif cur_s * right == left * tmp:
+        elif cur_s * right == left * idx:
                 ans.append(i)
 
 with open('homework.out', 'w') as out:
