@@ -2,9 +2,9 @@
 id: usaco-715
 source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road II
-author: Albert Zhu
+author: Albert Zhu, Juheon Rhee
 ---
-[Official Analysis](http://www.usaco.org/current/data/sol_maxcross_silver_feb17.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_maxcross_silver_feb17.html)
 
 ## Implementation
 
@@ -98,4 +98,30 @@ public class MaxCross {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+with open('maxcross.in') as read:
+	n, k, b = map(int, read.readline().split())
+	seen = [0] * (n + 1)
+	left, right = 1, k
+	value = 0
+	
+	for _ in range(b):
+		seen[int(read.readline())] = 1
+
+for i in range(left, right + 1):
+	value += seen[i]
+
+possible = [value]
+while n > right:
+	value += seen[right + 1] - seen[left]
+	left, right = left + 1, right + 1
+	possible.append(value)
+
+print(min(possible), file=open('maxcross.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
