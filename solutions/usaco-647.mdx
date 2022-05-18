@@ -29,16 +29,16 @@ public class U248 {
 		Kattio io = new Kattio("248");
 
 		int N = io.nextInt();
-		int[] a = new int[N];
+		int[] board = new int[N];
 
 		int[][] dp = new int[N + 1][N + 1];
 		for (int i = 0; i < N; i++) {
-			a[i] = io.nextInt();
-			dp[i + 1][i + 1] = a[i];
+			board[i] = io.nextInt();
+			dp[i + 1][i + 1] = board[i];
 		}
 
 
-		int ans = -1;
+		int max_val = -1;
 		for(int i = N - 1; i >= 1; i--) {
 			for(int j = i + 1; j <= N; j++) {
 				for (int k = i; k < j; k++) {
@@ -47,12 +47,12 @@ public class U248 {
 					}
 				}
 
-				ans = Math.max(ans, dp[i][j]);
+				max_val = Math.max(max_val, dp[i][j]);
 			}
 		}
 
 
-		io.println(ans);
+		io.println(max_val);
 		io.close();
 	}
 
