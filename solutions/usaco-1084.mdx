@@ -2,7 +2,7 @@
 id: usaco-1084
 source: USACO Bronze 2021 January
 title: Even More Odd Photos
-author: Sathvik Chundru, Melody Yu (Video)
+author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_prob2_bronze_jan21.html)
@@ -12,9 +12,7 @@ author: Sathvik Chundru, Melody Yu (Video)
 Note: The video solution might not be the same as other solutions. Code in C++.
 <Youtube id="VbPjZamNA40" />
 
-
 <LanguageSection>
-
 <JavaSection>
 
 ```java
@@ -48,5 +46,65 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
 
+```python
+n = int(input())
+even, odd = 0, 0
+
+cows = [int(i) for i in input().split()]
+for c in cows:
+	if c % 2 == 0: 
+		even += 1
+	else: 
+		odd += 1
+
+while odd > even:
+	odd -= 2
+	even += 1
+
+if even > odd + 1: 
+	even = odd + 1
+print(even + odd)
+```
+
+</PySection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n; 
+	cin >> n;
+	
+	int even = 0;
+	int odd = 0;
+	for (int i = 0; i < n; i++) {  
+		int cow; 
+		cin >> cow;
+		if (cow % 2) {
+			odd++;
+		} else {
+			even++;
+		}
+	
+	}
+
+	while (even < odd) {
+		even += 1;
+		odd -= 2;
+	}
+	if (odd + 1 < even) {
+		even = odd + 1;
+	}
+
+	cout << odd + even << endl;
+}
+```
+
+</CPPSection>
 </LanguageSection>
