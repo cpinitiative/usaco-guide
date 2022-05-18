@@ -16,19 +16,21 @@ author: Juheon Rhee
 <PySection>
 
 ```python
+MAX_DIFF = 17
+	
 with open('skidesign.in') as read:
 	n = int(read.readline())
 	elevation = [int(read.readline()) for _ in range(n)]
 
-ans = 10 ** 10
+ans = float('inf')
 
-for i in range(1, 83):
+for i in range(1, 100 - MAX_DIFF):
 	temp = 0
 	for j in elevation:
 		if j < i:
 			temp += (j - i) ** 2
-		elif j > i + 17:
-			temp += (i + 17 - j) ** 2
+		elif j > i + MAX_DIFF:
+			temp += (i + MAX_DIFF - j) ** 2
 	ans = min(ans, temp)
     
 print(ans, file=open('skidesign.out', 'w'))
@@ -52,12 +54,14 @@ int main() {
 
 	int n;
 	cin >> n;
+	
+	int MAX_DIFF = 17
 
 	for (int i = 0; i < n; i++) {
 		cin >> elevation[i];
 	}
 	
-	for(int i = 0; i < 83; i++){
+	for(int i = 0; i < (100 - MAX_DIFF); i++){
 
 		int temp = 0;
 
@@ -66,8 +70,8 @@ int main() {
 			temp += (i - elevation[j]) * (i - elevation[j]);
 			}
 
-			if (elevation[j] > i + 17) {
-				temp += (elevation[j] - i - 17) * (elevation[j] - i - 17);
+			if (elevation[j] > i + MAX_DIFF) {
+				temp += (elevation[j] - i - MAX_DIFF) * (elevation[j] - i - MAX_DIFF);
 			}
 		}
 		ans = min(ans, temp);
