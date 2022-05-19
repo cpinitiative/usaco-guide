@@ -42,10 +42,6 @@ const headerClasses =
 const subtextClasses =
   'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400';
 const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
-// const headerClasses =
-//   'text-4xl md:text-5xl 2xl:text-6xl font-black text-white';
-// const subtextClasses =
-//   'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
 const whiteButtonClassesBig =
   'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
 const whiteButtonClasses =
@@ -186,12 +182,10 @@ export default function IndexPage(): JSX.Element {
         <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
-          {/* Sort out dark header classes */}
           <h2 className={headerClasses}>
             Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
           </h2>
           <div className={headerSubtextSpacerClasses}></div>
-          {/* Sort out dark subtext classes */}
           <p className={subtextClasses}>
             Stop wasting time searching for problems and tutorials. The USACO
             Guide provides a{' '}
@@ -326,12 +320,10 @@ export default function IndexPage(): JSX.Element {
       <div className="bg-white dark:bg-gray-900">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
-          {/* Sort out Header Classes */}
           <h2 className={classNames(headerClasses, 'md:text-center')}>
             Created by the CP Initiative.
           </h2>
           <div className="h-4 md:h-8"></div>
-          {/* Sort out subtext Classes */}
           <p className={classNames(subtextClasses, 'md:text-center mx-auto')}>
             Here are some of our other projects you might find useful!
           </p>
@@ -505,7 +497,7 @@ export default function IndexPage(): JSX.Element {
           <p className="uppercase text-gray-400 font-medium text-lg md:text-xl">
             Our Sponsors
           </p>
-          {/* Fix these components for the light mode */}
+          {/* Sponsor logos don't fit well in the light theme */}
           <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
             Platinum Sponsors
           </p>
