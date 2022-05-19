@@ -2,7 +2,7 @@
 id: usaco-574
 source: USACO Gold 2015 December
 title: Fruit Feast
-author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee
+author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_feast_gold_dec15.html)
@@ -107,5 +107,39 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+from collections import deque
+
+fullness, que = set(), deque()
+fullness.add((0, 0))
+que.append((0, 0))
+
+with open('feast.in') as r:
+    T, A, B = map(int, r.readline().split())
+
+while que:
+    node = que.pop()
+    cur, not_full = node[0], node[1]
+    for i in (A, B):
+        if not not_full:
+            # drink water
+            water = (cur // 2, 1 - not_full)
+            if water not in fullness:
+                que.appendleft(water)
+                fullness.add(water)
+        # eat lemon or oranges
+        after = cur + i
+        if after <= T and (after, not_full) not in fullness:
+            que.appendleft((after, not_full))
+            fullness.add((after, not_full))
+            
+max_fullness = max([_[0] for _ in fullness]) 
+print(max_fullness, file=open('feast.out', 'w'))
+```
+
+</PySection>
 
 </LanguageSection>
