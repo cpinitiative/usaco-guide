@@ -110,28 +110,28 @@ int main() {
 
 ```py
 from collections import deque
-
-fullness, que = set(), deque()
-fullness.add((0, 0))
-que.append((0, 0))
-
+	
 with open('feast.in') as r:
 	T, A, B = map(int, r.readline().split())
 
-while que:
-	node = que.pop()
+fullness, queue = set(), deque()
+fullness.add((0, 0))
+queue.append((0, 0))
+
+while queue:
+	node = queue.pop()
 	curr, not_full = node[0], node[1]
 	for fruit in (A, B):
 		if not not_full:
 		# drink water
 		water = (curr // 2, 1 - not_full)
 		if water not in fullness:
-			que.appendleft(water)
+			queue.appendleft(water)
 			fullness.add(water)
 		# eat lemon or oranges
 		after = curr + fruit
 		if after <= T and (after, not_full) not in fullness:
-			que.appendleft((after, not_full))
+			queue.appendleft((after, not_full))
 			fullness.add((after, not_full))
             
 max_fullness = max([n[0] for n in fullness])
