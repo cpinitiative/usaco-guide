@@ -74,7 +74,7 @@ export const ProblemsetsFeature = (): JSX.Element => {
           <div className="flex flex-col mb-4">
             <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
               <div
-                className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200 dark:border-black`}
+                className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b-2 border-l-2 border-gray-200 dark:border-black`}
               >
                 {/* Change the text color to the gray in the actual pages */}
                 <table className="min-w-full no-markdown text-gray-500 dark:text-gray-800">

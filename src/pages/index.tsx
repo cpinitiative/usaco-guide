@@ -39,6 +39,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
   'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
+const headerClassesGlow = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
 const subtextClasses =
   'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400';
 const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
@@ -46,6 +47,8 @@ const whiteButtonClassesBig =
   'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
 const whiteButtonClasses =
   'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
+const usacoTitleClasses =
+  'md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -72,8 +75,17 @@ export default function IndexPage(): JSX.Element {
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-24"></div>
 
-            <div className="flex md:justify-center">
-              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-black dark:text-white mt-4">
+            <div className="flex md:justify-center dark:hidden">
+              <GlowingText
+                className={classNames(usacoTitleClasses, 'text-black mt-4')}
+              >
+                USACO Guide
+              </GlowingText>
+            </div>
+            <div className="flex md:justify-center invisible dark:visible">
+              <GlowingText
+                className={classNames(usacoTitleClasses, 'text-white mt-4')}
+              >
                 USACO Guide
               </GlowingText>
             </div>
@@ -278,16 +290,23 @@ export default function IndexPage(): JSX.Element {
       </div>
       {/* End Learn USACO. Efficiently. */}
 
-      <div className="bg-gray-300 dark:bg-gray-800">
+      <div className="bg-gray-300 dark:bg-black">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
           <div className="dark:hidden">
-            <GlowingText className={headerClasses} extraGlow>
+            <GlowingText
+              className={classNames(headerClassesGlow, 'text-black')}
+            >
               Trusted by thousands.
             </GlowingText>
           </div>
           <div className="invisible dark:visible">
-            <h1 className={headerClasses}>Trusted by thousands.</h1>
+            <GlowingText
+              className={classNames(headerClassesGlow, 'text-white')}
+              extraGlow
+            >
+              Trusted by thousands.
+            </GlowingText>
           </div>
 
           <div className={headerSubtextSpacerClasses}></div>
@@ -390,18 +409,26 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-gray-300 dark:bg-gray-800">
+      <div className="bg-gray-300 dark:bg-black">
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
           <div className="dark:hidden">
-            <GlowingText className={headerClasses} extraGlow>
+            <GlowingText
+              className={classNames(headerClassesGlow, 'text-black')}
+            >
               Join our Team.
             </GlowingText>
           </div>
           <div className="invisible dark:visible">
-            <h1 className={headerClasses}>Join our Team.</h1>
+            <GlowingText
+              className={classNames(headerClassesGlow, 'text-white')}
+              extraGlow
+            >
+              Join our Team.
+            </GlowingText>
           </div>
+
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
             The{' '}
@@ -438,12 +465,19 @@ export default function IndexPage(): JSX.Element {
           <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
 
           <div className="dark:hidden">
-            <GlowingText className={headerClasses} extraGlow>
+            <GlowingText
+              className={classNames(headerClassesGlow, 'text-black')}
+            >
               Or, help us financially!
             </GlowingText>
           </div>
           <div className="invisible dark:visible">
-            <h1 className={headerClasses}>Or, help us financially!</h1>
+            <GlowingText
+              className={classNames(headerClassesGlow, 'text-white')}
+              extraGlow
+            >
+              Or, help us financially!
+            </GlowingText>
           </div>
 
           <div className={headerSubtextSpacerClasses}></div>

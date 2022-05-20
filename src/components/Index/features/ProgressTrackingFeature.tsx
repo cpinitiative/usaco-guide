@@ -40,7 +40,7 @@ export const ProgressTrackingFeature = (): JSX.Element => {
                     <span className="text-3xl font-bold text-gray-800 bg-gray-100 rounded-full h-16 w-16 inline-block inline-flex items-center justify-center">
                       1
                     </span>
-                    <span className="block mt-1 text-sm font-medium uppercase text-gray-100">
+                    <span className="block mt-1 text-sm font-medium uppercase text-gray-800 dark:text-gray-100">
                       Not Started
                     </span>
                   </div>
