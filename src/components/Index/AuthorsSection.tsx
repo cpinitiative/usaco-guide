@@ -186,7 +186,7 @@ export default function AuthorsSection() {
   `);
 
   return (
-    <section className="bg-blue-200 dark:bg-gray-900 overflow-hidden">
+    <section className="bg-blue-100 dark:bg-gray-900 overflow-hidden">
       <div className="py-6 sm:py-12 text-center border-b-2 border-blue-500 dark:border-gray-700">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-800 dark:text-white px-4">
           Authors you can trust.

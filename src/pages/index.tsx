@@ -68,7 +68,7 @@ export default function IndexPage(): JSX.Element {
       </div>
 
       {/* Begin Hero */}
-      <div className="-mt-16 bg-gray-300 dark:bg-black">
+      <div className="-mt-16 bg-gray-100 dark:bg-black">
         <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
           <div className="h-6 sm:h-12"></div>
 
@@ -290,7 +290,7 @@ export default function IndexPage(): JSX.Element {
       </div>
       {/* End Learn USACO. Efficiently. */}
 
-      <div className="bg-gray-300 dark:bg-black">
+      <div className="bg-gray-100 dark:bg-black">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
           <div className="dark:hidden">
@@ -409,7 +409,7 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-gray-300 dark:bg-black">
+      <div className="bg-gray-100 dark:bg-black">
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
