@@ -55,53 +55,57 @@ Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** 
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <set>
+#include <queue>
 
-const int maxn = 5e6 + 5;
-bool pass[maxn][2];
-
-struct node {
-	int val;
-	bool drunk;
-};
-
-int bfs(int t, int a, int b) {
-	int res = INT_MIN;
-	queue<node> q;
-	q.push({0, 0});
-
-	while (!q.empty()) {
-		int value = q.front().val;
-		bool drunk = q.front().drunk;
-		q.pop();
-		res = max(res, value);
-
-		if(value + a <= t && !pass[value + a][drunk]) {
-			q.push({value + a, drunk});
-			pass[value + a][drunk] = true;
-		}
-
-		if(value + b <= t && !pass[value + b][drunk]) {
-			q.push({value + b, drunk});
-			pass[value + b][drunk] = true;
-		}
-
-		if(!drunk && !pass[value / 2][1]) {
-			q.push({value / 2, 1});
-			pass[value / 2][1] = true;
-		}
-	}
-	return res;
-}
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
 
 int main() {
-	freopen("feast.in", "r", stdin);
-	freopen("feast.out", "w", stdout);
+	std::ifstream read("feast.in");
+	int max_fullness;
+	int orange;
+	int lemon;
+	read >> max_fullness >> orange >> lemon;
 
-	int t, a, b;
-	cin >> t >> a >> b;
-	cout << bfs(t, a, b);
+	std::set<pair<int, bool>> poss_fullness{{0, false}};
+	std::queue<pair<int, bool>> queue;
+	queue.push({0, false});
+	while (!queue.empty()) {
+		auto [curr, drank_water] = queue.front();
+		queue.pop();
+
+		// Drink water (if we haven't drank it already)
+		if (!drank_water) {
+			pair<int, bool> water{curr / 2, true};
+			if (!poss_fullness.count(water)) {
+				queue.push(water);
+				poss_fullness.insert(water);
+			}
+		}
+
+		// Eat a fruit
+		for (int fruit : vector<int>{orange, lemon}) {
+			int after = curr + fruit;
+			pair<int, bool> to_add{after, drank_water};
+			if (after <= max_fullness && !poss_fullness.count(to_add)) {
+				queue.push(to_add);
+				poss_fullness.insert(to_add);
+			}
+		}
+	}
+
+	int best = 0;
+	for (const auto& [fullness, _] : poss_fullness) {
+		best = std::max(best, fullness);
+	}
+
+	std::ofstream("feast.out") << best << endl;
 }
 ```
 
@@ -111,31 +115,31 @@ int main() {
 ```py
 from collections import deque
 	
-with open('feast.in') as r:
-	T, A, B = map(int, r.readline().split())
+with open('feast.in') as read:
+	max_fullness, orange, lemon = map(int, read.readline().split())
 
-fullness, queue = set(), deque()
-fullness.add((0, 0))
-queue.append((0, 0))
-
+fullness = {(0, False)}
+queue = deque([(0, False)])
 while queue:
-	node = queue.pop()
-	curr, not_full = node[0], node[1]
-	for fruit in (A, B):
-		if not not_full:
-			# drink water
-			water = (curr // 2, 1 - not_full)
-			if water not in fullness:
-				queue.appendleft(water)
-				fullness.add(water)
-		# eat lemon or oranges
+	curr, drank_water = queue.pop()
+
+	# Drink water (if we haven't drank it already)
+	if not drank_water:
+		water = (curr // 2, True)
+		if water not in fullness:
+			queue.appendleft(water)
+			fullness.add(water)
+	
+	# Eat a fruit
+	for fruit in (orange, lemon):
 		after = curr + fruit
-		if after <= T and (after, not_full) not in fullness:
-			queue.appendleft((after, not_full))
-			fullness.add((after, not_full))
-            
-max_fullness = max([n[0] for n in fullness])
-print(max_fullness, file=open('feast.out', 'w'))
+		to_add = (after, drank_water)
+		if after <= max_fullness and to_add not in fullness:
+			queue.appendleft(to_add)
+			fullness.add(to_add)
+
+best = max([n[0] for n in fullness])
+print(best, file=open('feast.out', 'w'))
 ```
 
 </PySection>
