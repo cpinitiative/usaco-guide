@@ -117,7 +117,8 @@ sol = 1e18
 
 vis = [[[False for a in range(101)] for b in range(101)] for c in range(101)]
 
-def ff (curX, curY, curK):
+
+def ff(curX, curY, curK):
     global sol
 
     if curK > k or vis[curX][curY][curK]:
@@ -127,26 +128,26 @@ def ff (curX, curY, curK):
     sol = min(sol, abs(m - (curX + curY)))
 
     # case 1
-    ff (x, curY, curK + 1)
-    ff (curX, y, curK + 1)
+    ff(x, curY, curK + 1)
+    ff(curX, y, curK + 1)
 
     # case 2
-    ff (0, curY, curK + 1)
-    ff (curX, 0, curK + 1)
+    ff(0, curY, curK + 1)
+    ff(curX, 0, curK + 1)
 
     # case 3
-    if (curX > (y - curY)):
-        ff (curX - y + curY, y, curK + 1)
+    if curX > y - curY:
+        ff(curX - y + curY, y, curK + 1)
     else:
-        ff (0, curY + curX, curK + 1)
+        ff(0, curY + curX, curK + 1)
 
-    if (curY > (x - curX)):
-        ff (x, curY - x + curX, curK + 1)
+    if curY > x - curX:
+        ff(x, curY - x + curX, curK + 1)
     else:
         ff (curX + curY, 0, curK + 1)
-    
-ff (0, 0, 0)
 
+
+ff (0, 0, 0)
 print(sol, file = open("pails.out", "w"))
 ```
 
