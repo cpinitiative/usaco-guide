@@ -2,7 +2,7 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries, Neo Wang, Nathan Gong
+author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
@@ -106,6 +106,51 @@ public class pails {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+filein = open("pails.in", 'r')
+x, y, k, m = map(int, filein.read().split())
+
+sol = 1e18
+
+vis = [[[False for a in range(101)] for b in range(101)] for c in range(101)]
+
+def ff (curX, curY, curK):
+    global sol
+
+    if curK > k or vis[curX][curY][curK]:
+        return
+    
+    vis[curX][curY][curK] = True
+    sol = min(sol, abs(m - (curX + curY)))
+
+    # case 1
+    ff (x, curY, curK + 1)
+    ff (curX, y, curK + 1)
+
+    # case 2
+    ff (0, curY, curK + 1)
+    ff (curX, 0, curK + 1)
+
+    # case 3
+    if (curX > (y - curY)):
+        ff (curX - y + curY, y, curK + 1)
+    else:
+        ff (0, curY + curX, curK + 1)
+
+    if (curY > (x - curX)):
+        ff (x, curY - x + curX, curK + 1)
+    else:
+        ff (curX + curY, 0, curK + 1)
+    
+ff (0, 0, 0)
+
+print(sol, file = open("pails.out", "w"))
+```
+
+</PySection>
 
 </LanguageSection>
 
