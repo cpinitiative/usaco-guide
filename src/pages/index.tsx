@@ -39,7 +39,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
   'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
-const headerClassesGlow = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
+const headerClassesNoText = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
 const subtextClasses =
   'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400';
 const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
@@ -194,8 +194,18 @@ export default function IndexPage(): JSX.Element {
         <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
-          <h2 className={headerClasses}>
-            Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
+          <h2
+            className={classNames(
+              headerClassesNoText,
+              'text-black dark:text-gray-100'
+            )}
+          >
+            <div className="dark:hidden">
+              Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
+            </div>
+            <div className="invisible dark:visible">
+              Learn USACO. <HighlightedText dark>Efficiently.</HighlightedText>
+            </div>
           </h2>
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
@@ -280,7 +290,7 @@ export default function IndexPage(): JSX.Element {
               href="https://forum.usaco.guide/"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 transition hover:text-purple-600"
+              className="text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300"
             >
               View Forum &rarr;
             </a>
@@ -295,14 +305,14 @@ export default function IndexPage(): JSX.Element {
         <div className={containerClasses}>
           <div className="dark:hidden">
             <GlowingText
-              className={classNames(headerClassesGlow, 'text-black')}
+              className={classNames(headerClassesNoText, 'text-black')}
             >
               Trusted by thousands.
             </GlowingText>
           </div>
           <div className="invisible dark:visible">
             <GlowingText
-              className={classNames(headerClassesGlow, 'text-white')}
+              className={classNames(headerClassesNoText, 'text-white')}
               extraGlow
             >
               Trusted by thousands.
@@ -409,20 +419,20 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-gray-100 dark:bg-black">
+      <div className="bg-gray-200 dark:bg-black">
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
           <div className="dark:hidden">
             <GlowingText
-              className={classNames(headerClassesGlow, 'text-black')}
+              className={classNames(headerClassesNoText, 'text-black')}
             >
               Join our Team.
             </GlowingText>
           </div>
           <div className="invisible dark:visible">
             <GlowingText
-              className={classNames(headerClassesGlow, 'text-white')}
+              className={classNames(headerClassesNoText, 'text-white')}
               extraGlow
             >
               Join our Team.
@@ -466,14 +476,14 @@ export default function IndexPage(): JSX.Element {
 
           <div className="dark:hidden">
             <GlowingText
-              className={classNames(headerClassesGlow, 'text-black')}
+              className={classNames(headerClassesNoText, 'text-black')}
             >
               Or, help us financially!
             </GlowingText>
           </div>
           <div className="invisible dark:visible">
             <GlowingText
-              className={classNames(headerClassesGlow, 'text-white')}
+              className={classNames(headerClassesNoText, 'text-white')}
               extraGlow
             >
               Or, help us financially!

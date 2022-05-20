@@ -14,7 +14,8 @@ export const CPIProjectCard = ({
   url: string;
   children: React.ReactNode;
 }): JSX.Element => (
-  <div className="rounded-lg border border-gray-100 p-6 md:p-8 transition hover:shadow-lg relative flex flex-col">
+  // <div className="rounded-lg border border-gray-100 dark:border-none dark:bg-gray-800 p-6 md:p-8 transition hover:shadow-lg relative flex flex-col">
+  <div className="rounded-lg bg-gray-100 dark:bg-gray-800 p-6 md:p-8 transition hover:shadow-lg relative flex flex-col">
     <div className="flex-1">
       <div
         className={classNames(
@@ -35,7 +36,7 @@ export const CPIProjectCard = ({
       href={url}
       target="_blank"
       rel="noreferrer"
-      className="text-blue-600 md:text-lg mt-4 inline-block"
+      className="text-blue-600 dark:text-blue-300 md:text-lg mt-4 inline-block"
     >
       Learn More &rarr;
       <div className="absolute inset-0"></div>

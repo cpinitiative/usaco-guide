@@ -76,10 +76,9 @@ export const ProblemsetsFeature = (): JSX.Element => {
               <div
                 className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b-2 border-l-2 border-gray-200 dark:border-black`}
               >
-                {/* Change the text color to the gray in the actual pages */}
-                <table className="min-w-full no-markdown text-gray-500 dark:text-gray-800">
+                <table className="min-w-full no-markdown text-gray-500 dark:text-gray-400">
                   <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200 pr-4 md:pr-6">
+                    <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
                       <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                         Source
                       </th>
@@ -95,7 +94,7 @@ export const ProblemsetsFeature = (): JSX.Element => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800">
+                  <tbody className="table-alternating-stripes">
                     <TableRow
                       source="CSES"
                       title="Road Construction"

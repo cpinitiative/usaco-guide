@@ -56,13 +56,14 @@ export const ResourcesFeature = (): JSX.Element => {
                     <tr>
                       <th
                         colSpan={3}
-                        className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 bg-purple-50 text-purple-500`}
+                        className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-25 dark:text-purple-200`}
                       >
                         Resources
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800">
+                  {/* <tbody className="bg-white dark:bg-gray-800"> */}
+                  <tbody className="table-alternating-stripes">
                     <TableRow source="CF" title="EDU: DSU" starred>
                       video explanation + problems for DSU
                     </TableRow>
