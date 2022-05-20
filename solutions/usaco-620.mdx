@@ -110,41 +110,43 @@ public class pails {
 <PySection>
 
 ```py
-MAX_OPS = 101
+MAX_OPS = 100
 
 x, y, k, m = map(int, open('pails.in', 'r').read().split())
 
 sol = float('inf')
-vis = [[[False for a in range(MAX_OPS)] for b in range(MAX_OPS)] for c in range(MAX_OPS)]
+vis = [[[False for a in range(MAX_OPS + 1)] 
+	for b in range(MAX_OPS + 1)] 
+	for c in range(MAX_OPS + 1)]
 
 
-def ff(curX: int, curY: int, curK: int) -> int:
+def ff(cur_x: int, cur_y: int, cur_k: int) -> int:
     global sol
 
-    if curK > k or vis[curX][curY][curK]:
+    if cur_k > k or vis[cur_x][cur_y][cur_k]:
         return
     
-    vis[curX][curY][curK] = True
-    sol = min(sol, abs(m - (curX + curY)))
+    vis[cur_x][cur_y][cur_k] = True
+    sol = min(sol, abs(m - (cur_x + cur_y)))
 
     # case 1
-    ff(x, curY, curK + 1)
-    ff(curX, y, curK + 1)
+    ff(x, cur_y, cur_k + 1)
+    ff(cur_x, y, cur_k + 1)
 
     # case 2
-    ff(0, curY, curK + 1)
-    ff(curX, 0, curK + 1)
+    ff(0, cur_y, cur_k + 1)
+    ff(cur_x, 0, cur_k + 1)
 
     # case 3
-    if curX > y - curY:
-        ff(curX - y + curY, y, curK + 1)
+    if cur_x > y - cur_y:
+        ff(cur_x - y + cur_y, y, cur_k + 1)
     else:
-        ff(0, curY + curX, curK + 1)
+        ff(0, cur_y + cur_x, cur_k + 1)
 
-    if curY > x - curX:
-        ff(x, curY - x + curX, curK + 1)
+    if cur_y > x - cur_x:
+        ff(x, cur_y - x + cur_x, cur_k + 1)
     else:
-        ff(curX + curY, 0, curK + 1)
+        ff(cur_x + cur_y, 0, cur_k + 1)
 
 
 ff(0, 0, 0)
