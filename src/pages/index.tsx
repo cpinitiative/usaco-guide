@@ -476,7 +476,7 @@ export default function IndexPage(): JSX.Element {
 
           <div className="dark:hidden">
             <GlowingText
-              className={classNames(headerClassesNoText, 'text-black')}
+              className={classNames(headerClassesNoText, 'text-gray-800')}
             >
               Or, help us financially!
             </GlowingText>
@@ -538,21 +538,26 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-12 md:h-20"></div>
 
-          <p className="uppercase text-gray-400 font-medium text-lg md:text-xl">
+          <p className="uppercase text-gray-700 dark:text-gray-400 font-medium text-lg md:text-xl">
             Our Sponsors
           </p>
           {/* Sponsor logos don't fit well in the light theme */}
-          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
+          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-600 dark:text-gray-400 items-center">
             <div className="col-span-1">
               <a href="https://x-camp.academy" target="_blank" rel="noreferrer">
-                <XCamp />
+                <div className="dark:invisible dark:h-0">
+                  <XCamp />
+                </div>
+                <div className="invisible h-0 dark:visible dark:h-auto">
+                  <XCamp dark />
+                </div>
               </a>
             </div>
           </div>
-          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Bronze Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
@@ -566,7 +571,7 @@ export default function IndexPage(): JSX.Element {
               </a>
             </div>
           </div>
-          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             In-kind Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
