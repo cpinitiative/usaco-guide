@@ -78,12 +78,12 @@ int main() {
 	std::queue<pair<int, bool>> queue;
 	queue.push({0, false});
 	while (!queue.empty()) {
-		auto [curr, drank_water] = queue.front();
+		auto [fullness, drank_water] = queue.front();
 		queue.pop();
 
 		// Drink water (if we haven't drank it already)
 		if (!drank_water) {
-			pair<int, bool> water{curr / 2, true};
+			pair<int, bool> water{fullness / 2, true};
 			if (!poss_fullness.count(water)) {
 				queue.push(water);
 				poss_fullness.insert(water);
@@ -92,7 +92,7 @@ int main() {
 
 		// Eat a fruit
 		for (int fruit : vector<int>{orange, lemon}) {
-			int after = curr + fruit;
+			int after = fullness + fruit;
 			pair<int, bool> to_add{after, drank_water};
 			if (after <= max_fullness && !poss_fullness.count(to_add)) {
 				queue.push(to_add);
@@ -122,24 +122,24 @@ with open('feast.in') as read:
 poss_fullness = {(0, False)}  # Keep track of which states we visited
 queue = deque([(0, False)])
 while queue:
-	curr, drank_water = queue.pop()
+	fullness, drank_water = queue.pop()
 
 	# Drink water (if we haven't drank it already)
 	if not drank_water:
-		water = (curr // 2, True)
+		water = (fullness // 2, True)
 		if water not in poss_fullness:
 			queue.appendleft(water)
 			poss_fullness.add(water)
 	
 	# Eat a fruit
 	for fruit in (orange, lemon):
-		after = curr + fruit
+		after = fullness + fruit
 		to_add = (after, drank_water)
 		if after <= max_fullness and to_add not in poss_fullness:
 			queue.appendleft(to_add)
 			poss_fullness.add(to_add)
 
-best = max([n[0] for n in fullness])
+best = max([n[0] for n in poss_fullness])
 print(best, file=open('feast.out', 'w'))
 ```
 
