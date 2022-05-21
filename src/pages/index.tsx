@@ -82,7 +82,7 @@ export default function IndexPage(): JSX.Element {
                 USACO Guide
               </GlowingText>
             </div>
-            <div className="flex md:justify-center invisible dark:visible">
+            <div className="flex md:justify-center invisible h-0 dark:visible dark:h-auto">
               <GlowingText
                 className={classNames(usacoTitleClasses, 'text-white mt-4')}
               >
@@ -203,7 +203,7 @@ export default function IndexPage(): JSX.Element {
             <div className="dark:hidden">
               Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
             </div>
-            <div className="invisible dark:visible">
+            <div className="invisible h-0 dark:visible dark:h-auto">
               Learn USACO. <HighlightedText dark>Efficiently.</HighlightedText>
             </div>
           </h2>
@@ -310,7 +310,7 @@ export default function IndexPage(): JSX.Element {
               Trusted by thousands.
             </GlowingText>
           </div>
-          <div className="invisible dark:visible">
+          <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
               className={classNames(headerClassesNoText, 'text-white')}
               extraGlow
@@ -430,7 +430,7 @@ export default function IndexPage(): JSX.Element {
               Join our Team.
             </GlowingText>
           </div>
-          <div className="invisible dark:visible">
+          <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
               className={classNames(headerClassesNoText, 'text-white')}
               extraGlow
@@ -481,7 +481,7 @@ export default function IndexPage(): JSX.Element {
               Or, help us financially!
             </GlowingText>
           </div>
-          <div className="invisible dark:visible">
+          <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
               className={classNames(headerClassesNoText, 'text-white')}
               extraGlow
