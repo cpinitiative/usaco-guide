@@ -7,4 +7,173 @@ author: Chongtian Ma
 
 [Official Analysis](https://codeforces.com/blog/entry/22187)
 
-## Implementation using Binary Lifting
+## Implementation 
+
+As mentioned in the official editorial, the answer for each edge is removing the heaviest edge in the MST from
+the path from vertex $u$ to $v$ and add the given weight. This will ensure that the MST is still connected.
+
+**Time Complexity:** $\mathcal{O}(N\logN)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int MAXN = 2e5 + 5;
+const int MAXL = 20; // approximately maximum log
+
+// for euler-tour
+array<int, MAXN> enter_time, exit_time, depth;
+
+// for binary lifting
+array<array<int, MAXL>, MAXN> up, max_up;
+// up[i][j] stores the 2^jth ancestor of vertex i
+// max_up[i][j] stores the maximum weight of all the edges
+// from i to its 2^jth ancestor
+
+map<pair<int,int>,int> weight; // weight of edge {i,j}
+vector<int> graph[MAXN];
+int timer = 1;
+int n, m;
+
+// here we build the MST using kruskals' algorithm
+// returns the sum of the weights that took to build the MST
+ll kruskal(vector<array<int,4>>& edges){
+	
+	// sort by non-decreasing weight
+	sort(edges.begin(), edges.end(), [&](auto a, auto b){
+		return a[3] < b[3];
+	});
+	
+	// implementation of basic Disjoint Set Union
+	vector<int> parent(n+1), sz(n+1, 1);
+	iota(parent.begin(), parent.end(), 0);
+	
+	function<int(int)> get = [&](int x){
+		if(parent[x] != x){
+			parent[x] = get(parent[x]);
+		}
+		return parent[x];
+	};
+	
+	// returns true if both vertexes are not already united
+	function<bool(int, int)> unite = [&](int x, int y){
+		int parent_x = get(x), parent_y = get(y);
+		if(sz[parent_x] < sz[parent_y]){
+			swap(parent_x, parent_y);
+		}
+		if(parent_x != parent_y){
+			parent[parent_y] = parent_x;
+			sz[parent_x] += sz[parent_y];
+			return true;
+		}
+		return false;
+	};
+	
+	ll total_cost = 0;
+	for(array<int, 4> edge : edges){
+		int u = edge[1], v = edge[2], w = edge[3];
+		if(unite(u, v)){
+			total_cost += w;
+			graph[u].push_back(v);
+			graph[v].push_back(u);
+		}
+	}
+	
+	return total_cost;
+	
+}
+
+void euler_tour(int vertex, int parent){
+	enter_time[vertex] = timer++;
+	depth[vertex] = depth[parent] + 1;
+	
+	// initialize binary lifting arrays
+	up[vertex][0] = parent; 
+	max_up[vertex][0] = weight[{parent, vertex}];
+	
+	for(int child: graph[vertex]){
+		if(child != parent){
+			euler_tour(child, vertex);
+		}
+	}
+	
+	exit_time[vertex] = timer - 1;
+}
+
+bool is_ancestor(int x, int y){
+	return enter_time[x] <= enter_time[y] && exit_time[y] <= exit_time[x];
+}
+
+int lca(int x, int y){
+	if(is_ancestor(x, y)){
+		return x;
+	}
+	for(int i = MAXL-1; i >= 0; i--){
+		if(!is_ancestor(up[x][i], y)){
+			x = up[x][i];
+		}
+	}
+	return up[x][0];
+}
+
+// get maximum weight of all the edges from x to its kth ancestor
+int getmaxup(int x, int k){
+	int res = 0;
+	for(int i = 0; i < MAXL; i++){
+		if(k & (1 << i)){
+			res = max(res, max_up[x][i]);
+			x = up[x][i];
+		}
+	}
+	return res;
+}
+
+int main(){
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	
+	cin >> n >> m;
+	
+	vector<array<int,4>> edges(m); // {index, from, to, weight}
+	for(int i = 0; i < m; i++){
+		int u, v, w; 
+		cin >> u >> v >> w;
+		edges[i] = {i, u, v, w};
+		weight[{u, v}] = w;
+		weight[{v, u}] = w;
+	}
+	ll total_cost = kruskal(edges);
+	
+	euler_tour(1, 1);
+	// fill binary-lifting arrays
+	for(int k = 1; k < MAXL; k++){
+		for(int i = 1; i <= n; i++){
+			up[i][k] = up[up[i][k-1]][k-1];
+			// take max of weights from left and right
+			max_up[i][k] = max(max_up[i][k-1], max_up[up[i][k-1]][k-1]);
+		}
+	}
+	
+	vector<ll> ans(m);
+	for(array<int,4> edge : edges){
+		int index = edge[0], u = edge[1], v = edge[2], w = edge[3];
+		int least_common_ancestor = lca(u, v);
+		int max_u = getmaxup(u, depth[u] - depth[least_common_ancestor]);
+		int max_v = getmaxup(v, depth[v] - depth[least_common_ancestor]);
+		ans[index] = total_cost - max(max_u, max_v) + w;
+	}
+	
+	for(int i = 0; i < m; i++){
+		cout << ans[i] << "\n";
+	}
+}
+```
+                      
+</CPPSection>
+  
+</LanguageSection>
