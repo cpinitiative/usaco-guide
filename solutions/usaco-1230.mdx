@@ -1,0 +1,78 @@
+---
+id: usaco-1230
+source: USACO Silver 2022 Open
+title: Redistributing Gifts
+author: Aditya Gupta
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob1_silver_open22.html)
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+vector<int> a, v;
+vector<vector<int>> child;
+vector<bool> done;
+
+void mark_as_done(int x) {
+	if (done[x]) return;
+	done[x] = true;
+	for (int c : child[x]) mark_as_done(c);
+}
+
+int solve(int start) {
+	int x = start, y = start;
+	do {
+		x = a[x], y = a[a[y]];
+	} while (x != y);
+	int min_along_cycle = INT_MAX;
+	do {
+		min_along_cycle = min(min_along_cycle, v[x]);
+		x = a[x];
+	} while (x != y);
+	mark_as_done(x);
+	return min_along_cycle;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int N;
+	cin >> N;
+	a.resize(N + 1);
+	v.resize(N + 1);
+	child.resize(N + 1);
+	int64_t ans = 0;
+	for (int i = 1; i <= N; ++i) {
+		cin >> a[i] >> v[i];
+		ans += v[i];
+		child[a[i]].push_back(i);
+	}
+	done.resize(N + 1);
+	for (int i = 1; i <= N; ++i)
+		if (!done[i]) ans -= solve(i);
+	cout << ans << "\n";
+}
+```
+</CPPSection>
+
+<PySection>
+</PySection>
+
+<JavaSection>
+
+</JavaSection>
+
+</LanguageSection>
