@@ -73,6 +73,7 @@ int main() {
 	int lemon;
 	read >> max_fullness >> orange >> lemon;
 
+	// Keep track of which states we visited
 	std::set<pair<int, bool>> poss_fullness{{0, false}};
 	std::queue<pair<int, bool>> queue;
 	queue.push({0, false});
@@ -118,7 +119,7 @@ from collections import deque
 with open('feast.in') as read:
 	max_fullness, orange, lemon = map(int, read.readline().split())
 
-fullness = {(0, False)}
+poss_fullness = {(0, False)}  # Keep track of which states we visited
 queue = deque([(0, False)])
 while queue:
 	curr, drank_water = queue.pop()
@@ -126,17 +127,17 @@ while queue:
 	# Drink water (if we haven't drank it already)
 	if not drank_water:
 		water = (curr // 2, True)
-		if water not in fullness:
+		if water not in poss_fullness:
 			queue.appendleft(water)
-			fullness.add(water)
+			poss_fullness.add(water)
 	
 	# Eat a fruit
 	for fruit in (orange, lemon):
 		after = curr + fruit
 		to_add = (after, drank_water)
-		if after <= max_fullness and to_add not in fullness:
+		if after <= max_fullness and to_add not in poss_fullness:
 			queue.appendleft(to_add)
-			fullness.add(to_add)
+			poss_fullness.add(to_add)
 
 best = max([n[0] for n in fullness])
 print(best, file=open('feast.out', 'w'))
