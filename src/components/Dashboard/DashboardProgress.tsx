@@ -91,7 +91,7 @@ export default function DashboardProgress({
           text="Not Started"
           textColor="text-gray-800"
           bgColor="bg-gray-100"
-          subTextColor="text-gray-100"
+          subTextColor="text-gray-800 dark:text-gray-100"
         />
       </div>
       <ProgressBar
