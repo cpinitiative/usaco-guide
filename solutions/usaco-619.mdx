@@ -44,7 +44,7 @@ int min_partition(int x_line, const vector<Cow>& cows) {
 		}
 	}
 
-	int most_equal = INT32_MAX;
+	int most_balanced = INT32_MAX;
 	int left_at = 0;
 	int right_at = 0;
 	while (left_at + right_at < cows.size()) {
@@ -57,10 +57,10 @@ int min_partition(int x_line, const vector<Cow>& cows) {
 		}
 		int below_max = std::max(left_at, right_at);
 		int above_max = std::max(left.size() - left_at, right.size() - right_at);
-		most_equal = std::min(most_equal, std::max(below_max, above_max));
+		most_balanced = std::min(most_balanced, std::max(below_max, above_max));
 	}
 
-	return most_equal;
+	return most_balanced;
 }
 
 int main() {
@@ -83,18 +83,18 @@ int main() {
 		[&] (const Cow& p1, const Cow& p2) { return p1.y < p2.y; }
 	);
 
-	int most_equal = INT32_MAX;
+	int most_balanced = INT32_MAX;
 	int x_line_at = 0;  // The cow which decides the vertical line
 	while (x_line_at < by_x.size()) {
 		int x_line = by_x[x_line_at].x + 1;
-		most_equal = std::min(most_equal, min_partition(x_line, by_y));
+		most_balanced = std::min(most_balanced, min_partition(x_line, by_y));
 		// Go through the list of cows until we hit one with a new x-pos
 		while (x_line_at < cow_num && x_line > by_x[x_line_at].x) {
 			x_line_at++;
 		}
 	}
 
-	std::ofstream("balancing.out") << most_equal << endl;
+	std::ofstream("balancing.out") << most_balanced << endl;
 }
 ```
 
@@ -196,7 +196,7 @@ def min_partition(x_line: int, cows: [(int, int)]) -> int:
 	left = [c for c in cows if c[0] < x_line]
 	right = [c for c in cows if c[0] > x_line]
 
-	most_equal = float('inf')
+	most_balanced = float('inf')
 	left_at = 0
 	right_at = 0
 	while left_at + right_at < len(cows):
@@ -210,26 +210,26 @@ def min_partition(x_line: int, cows: [(int, int)]) -> int:
 		
 		below_max = max(left_at, right_at)
 		above_max = max(len(left) - left_at, len(right) - right_at)
-		most_equal = min(most_equal, max(below_max, above_max))
+		most_balanced = min(most_balanced, max(below_max, above_max))
 	
-	return most_equal
+	return most_balanced
 
 
 by_x.sort()
 # Same as by_x, but sorted by y-pos
 by_y = sorted(by_x, key=lambda c: c[1])
 
-most_equal = float('inf')
+most_balanced = float('inf')
 # The cow which decides the vertical line
 x_line_at = 0
 while (x_line_at < len(by_x)):
 	x_line = by_x[x_line_at][0] + 1
-	most_equal = min(most_equal, min_partition(x_line, by_y))
+	most_balanced = min(most_balanced, min_partition(x_line, by_y))
 	# Go through the list of cows until we hit one with a new x-pos
 	while x_line_at < len(by_x) and x_line > by_x[x_line_at][0]:
 		x_line_at += 1
 
-print(most_equal, file=open('balancing.out', 'w'))
+print(most_balanced, file=open('balancing.out', 'w'))
 ```
 
 </PySection>
@@ -317,7 +317,7 @@ int main() {
 	
 	vector<int> to_check_x = pos_of_interest(x_pos);
 	vector<int> to_check_y = pos_of_interest(y_pos);
-	int most_equal = INT32_MAX;
+	int most_balanced = INT32_MAX;
 	for (int x : to_check_x) {
 		for (int y : to_check_y) {
 			// Try placing a fence centered at (x, y)
@@ -330,11 +330,11 @@ int main() {
 				field_amt[0][0], field_amt[0][1],
 				field_amt[1][0], field_amt[1][1]
 			});
-			most_equal = std::min(most_equal, balance);
+			most_balanced = std::min(most_balanced, balance);
 		}
 	}
 
-	std::ofstream("balancing.out") << most_equal << endl;
+	std::ofstream("balancing.out") << most_balanced << endl;
 }
 ```
 
