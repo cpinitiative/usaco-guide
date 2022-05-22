@@ -247,6 +247,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Misc. Topics',
       items: [
+        'meet-in-the-middle',
         'extend-euclid',
         'xor-basis',
         'fracturing-search',
