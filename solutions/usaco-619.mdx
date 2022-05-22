@@ -272,29 +272,33 @@ vector<int> pos_of_interest(vector<int>& pos) {
 	int sz = pos.size();
 	std::sort(pos.begin(), pos.end());
 
-	vector<int> tri;
+	vector<int> distinct;  // List of all the distinct positions
+	/*
+	 * For each of those distinct positions,
+	 * how many have the same or lesser position?
+	 */
 	vector<int> num_left;
 	for (int i = 0; i < sz; i++) {
 		if (i == sz - 1 || pos[i] != pos[i + 1]) {
-			tri.push_back(pos[i] + 1);
+			distinct.push_back(pos[i] + 1);
 			num_left.push_back(i + 1);
 		}
 	}
 
-	vector<int> todo;
-	for (int i = 0; i < tri.size(); i++) {
+	vector<int> important;
+	for (int i = 0; i < distinct.size(); i++) {
 		// We can just move the fence to the right, so ignore this
-		if (i + 1 < tri.size() && num_left[i + 1] <= sz / 3) {
+		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) {
 			continue;
 		}
 		// Same, but to the left
 		if (i > 0 && num_left[i - 1] >= sz - sz / 3) {
 			continue;
 		}
-		todo.push_back(tri[i]);
+		important.push_back(distinct[i]);
 	}
 
-	return todo;
+	return important;
 }
 
 int main() {
@@ -387,29 +391,34 @@ public class Balancing {
 		int sz = pos.length;  // Just a shorthand
 		Arrays.sort(pos);
 
-		List<Integer> tri = new ArrayList<>();
+		// List of all the distinct positions
+		List<Integer> distinct = new ArrayList<>();
+		/*
+		 * For each of those distinct positions,
+		 * how many have the same or lesser position?
+		 */
 		List<Integer> numLeft = new ArrayList<>();
 		for (int i = 0; i < sz; i++) {
 			if (i == sz - 1 || pos[i] != pos[i + 1]) {
-				tri.add(pos[i] + 1);
+				distinct.add(pos[i] + 1);
 				numLeft.add(i + 1);
 			}
 		}
 
-		List<Integer> todo = new ArrayList<>();
-		for (int i = 0; i < tri.size(); i++) {
+		List<Integer> important = new ArrayList<>();
+		for (int i = 0; i < distinct.size(); i++) {
 			// We can just move the fence to the right, so ignore this
-			if (i + 1 < tri.size() && numLeft.get(i + 1) <= sz / 3) {
+			if (i + 1 < distinct.size() && numLeft.get(i + 1) <= sz / 3) {
 				continue;
 			}
 			// Same, but to the left
 			if (i > 0 && numLeft.get(i - 1) >= sz - sz / 3) {
 				continue;
 			}
-			todo.add(tri.get(i));
+			important.add(distinct.get(i));
 		}
 
-		return todo;
+		return important;
 	}
 }
 ```
