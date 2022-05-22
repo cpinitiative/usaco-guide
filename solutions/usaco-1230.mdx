@@ -15,56 +15,70 @@ author: Aditya Gupta
 <LanguageSection>
 
 <CPPSection>
+
+This code is similar to the official editorial, but more intuitive and with comments.
+	
 ```cpp
+#include <iostream>
 #include <bits/stdc++.h>
+
+#define int int64_t
+
 using namespace std;
 
-template <class T> using V = vector<T>;
-#define all(x) begin(x), end(x)
+vector<int> a,v; //cow i wants to visit cow a[i] and gets v[i] points
+vector<vector<int>> graph; //graph[i] stores the cows that want to go to farm i
+vector<bool> visited; //done
 
-vector<int> a, v;
-vector<vector<int>> child;
-vector<bool> done;
-
-void mark_as_done(int x) {
-	if (done[x]) return;
-	done[x] = true;
-	for (int c : child[x]) mark_as_done(c);
+void mark(int y){
+    if (visited[y]) return;
+	visited[y] = true;
+	for (int c : graph[y]) mark(c);
 }
 
-int solve(int start) {
-	int x = start, y = start;
-	do {
-		x = a[x], y = a[a[y]];
-	} while (x != y);
-	int min_along_cycle = INT_MAX;
-	do {
-		min_along_cycle = min(min_along_cycle, v[x]);
-		x = a[x];
-	} while (x != y);
-	mark_as_done(x);
-	return min_along_cycle;
+//Applies Floyd's algorithm
+int min_in_cycle(int curr){
+    int y = a[curr];
+    int z = a[y];
+    while(y != z){
+        y = a[y];
+        z = a[a[z]];
+    }
+    int min_v = v[y];
+    y = a[y];
+    while(y != z){
+        min_v = min(min_v, v[y]);
+        y = a[y];
+    }
+    mark(y);
+    return min_v;
 }
 
-int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-	int N;
-	cin >> N;
-	a.resize(N + 1);
-	v.resize(N + 1);
-	child.resize(N + 1);
-	int64_t ans = 0;
-	for (int i = 1; i <= N; ++i) {
-		cin >> a[i] >> v[i];
-		ans += v[i];
-		child[a[i]].push_back(i);
-	}
-	done.resize(N + 1);
-	for (int i = 1; i <= N; ++i)
-		if (!done[i]) ans -= solve(i);
-	cout << ans << "\n";
+int32_t main()
+{
+    int n, ans = 0;
+    cin >> n;
+    v.resize(n);
+    a.resize(n);
+    visited.resize(n);
+    graph.resize(n);
+    for(int i = 0; i < n; i++){
+        cin >> a[i] >> v[i];
+        a[i]--;
+        graph[a[i]].push_back(i); //Since cow i wants to visit farm a[i]
+        ans += v[i];
+    }
+
+    //From each cycle, you can visit all except 1 cow. We make this cow the one
+    //with the lowest v_i. We subtract this from our total answer.
+    for (int i = 0; i < n; i++){
+        if (!visited[i]) ans -= min_in_cycle(i);
+    }
+
+    cout << ans << "\n";
+    return 0;
 }
+
 ```
 </CPPSection>
 
