@@ -19,14 +19,15 @@ author: Aditya Gupta
 ```cpp
 #include <bits/stdc++.h>
 
-#define int int64_t
-
 using namespace std;
 
-vector<int> a,v; //cow i wants to visit cow a[i] and gets v[i] points
-vector<vector<int>> graph; //graph[i] stores the cows that want to go to farm i
-vector<bool> visited; //done
+typedef long long ll;
 
+vector<int> a,v; // cow i wants to visit cow a[i] and gets v[i] points
+vector<vector<int>> graph; // graph[i] stores the cows that want to go to farm i
+vector<bool> visited; // marks cows as visited once we have processed them
+
+// marks y and the other cows in its other cycle as visited
 void mark(int y){
     if (visited[y]) return;
 	visited[y] = true;
@@ -41,8 +42,11 @@ int min_in_cycle(int curr){
         y = a[y];
         z = a[a[z]];
     }
+    // y is now an element that is in the cycle
     int min_v = v[y];
     y = a[y];
+
+    // traverse the cycle to find the cow with the minimum v_i value
     while(y != z){
         min_v = min(min_v, v[y]);
         y = a[y];
@@ -51,14 +55,15 @@ int min_in_cycle(int curr){
     return min_v;
 }
 
-int32_t main()
-{
-    int n, ans = 0;
+int32_t main(){
+    int n;
     cin >> n;
     v.resize(n);
     a.resize(n);
     visited.resize(n);
     graph.resize(n);
+
+    ll ans = 0;
     for(int i = 0; i < n; i++){
         cin >> a[i] >> v[i];
         a[i]--;
@@ -72,8 +77,7 @@ int32_t main()
         if (!visited[i]) ans -= min_in_cycle(i);
     }
 
-    cout << ans << "\n";
-    return 0;
+    cout << ans << endl;
 }
 
 ```
