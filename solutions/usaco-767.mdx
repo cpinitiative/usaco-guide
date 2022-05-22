@@ -14,18 +14,12 @@ author: Juheon Rhee
 <PySection>
 
 ```python
-import sys
-
-sys.stdin = open("hayfeast.in", "r")
-sys.stdout = open("hayfeast.out", "w")
-
-input = sys.stdin.readline
-
-n, m = map(int, input().split())
+with open('hayfeast.in') as r:
+        input = r.readline
+        n, m = map(int, input().split())
+        way = [[int(x) for x in input().split()] + [i] for i in range(n)]
 
 put = [p for p in range(n)]
-
-way = [[*map(int, input().split())] + [i] for i in range(n)]
 
 sorted_way, res = sorted(way, key = lambda a: a[1]), [0] * n
 
@@ -43,18 +37,20 @@ def add(x, y):
         res[x] += res[y]
         res[y] = 0
         put[y] = x
+        
+with open('hayfeast.out', 'w') as out:
 
-for i in range(n):
-        out, check = sorted_way[i][1], sorted_way[i][2]
+        for i in range(n):
+                out, check = sorted_way[i][1], sorted_way[i][2]
 
-        for use in [check + 1, check - 1]:
+                for use in [check + 1, check - 1]:
 
-        if 0 <= use < n and out >= way[use][1]:
-                add(put[check], put[use])
+                if 0 <= use < n and out >= way[use][1]:
+                        add(put[check], put[use])
 
-        if res[put[check]] >= m: 
-                print(out)
-                break
+                if res[put[check]] >= m: 
+                        print(out, file=out)
+                        break
 ```
 </PySection>
 </LanguageSection>
