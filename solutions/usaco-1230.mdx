@@ -29,7 +29,9 @@ vector<bool> visited;  // marks cows as visited once we have processed them
 
 // marks y and the other cows in its other cycle as visited
 void mark(int y) {
-	if (visited[y]) return;
+	if (visited[y]) {
+		return;
+	}
 	visited[y] = true;
 	for (int c : graph[y]) {
 		mark(c);
@@ -65,12 +67,12 @@ int main() {
     	visited.resize(n);
     	graph.resize(n);
 
-    	ll ans = 0;
+    	ll max_moos = 0;
     	for (int i = 0; i < n; i++) {
         	cin >> a[i] >> v[i];
         	a[i]--;
         	graph[a[i]].push_back(i);  // cow i wants to visit farm a[i]
-        	ans += v[i];
+        	max_moos += v[i];
     	}
 
 	/*
@@ -78,10 +80,12 @@ int main() {
 	 * We make this cow the one with the lowest v_i and subtract it.
     	 */
     	for (int i = 0; i < n; i++) {
-        	if (!visited[i]) ans -= min_in_cycle(i);
+        	if (!visited[i]) {
+			max_moos -= min_in_cycle(i);
+		}
     	}
 
-    	cout << ans << endl;
+    	cout << max_moos << endl;
 }
 ```
 </CPPSection>
