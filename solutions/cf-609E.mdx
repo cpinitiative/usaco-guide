@@ -33,8 +33,10 @@ array<int, MAXN> enter_time, exit_time, depth;
 // up[i][j] stores the 2^jth ancestor of vertex i
 array<array<int, MAXL>, MAXN> up;
 
-// max_up[i][j] stores the maximum weight of all the edges
-// from i to its 2^jth ancestor
+/*
+ * max_up[i][j] stores the maximum weight of all the edges
+ * from i to its 2^jth ancestor
+ */ 
 array<array<int, MAXL>, MAXN> max_up;
 
 map<pair<int, int>, int> weights; // weight of edge {i, j}
@@ -42,17 +44,19 @@ vector<int> graph[MAXN]; // adjacency list for the original MST
 int timer = 1;
 int n, m;
 
-struct edge {
+struct Edge {
 	// bidirectional edge from u to v
 	int index, u, v, weight;
 };
 
-// here we build the MST using kruskals' algorithm
-// returns the sum of the weights that took to build the MST
-ll kruskal(vector<edge>& edges) {
+/*
+ * here we build the MST using kruskals' algorithm
+ * returns the sum of the weights that took to build the MST
+ */ 
+ll kruskal(vector<Edge>& edges) {
 	
 	// sort by non-decreasing weight
-	sort (edges.begin(), edges.end(), [&](edge a, edge b) {
+	sort (edges.begin(), edges.end(), [&](Edge a, Edge b) {
 		return a.weight < b.weight;
 	});
 	
@@ -82,7 +86,7 @@ ll kruskal(vector<edge>& edges) {
 	};
 	
 	ll total_cost = 0;
-	for (edge e : edges) {
+	for (Edge e : edges) {
 		if (unite(e.u, e.v)) {
 			total_cost += e.weight;
 			graph[e.u].push_back(e.v);
@@ -142,7 +146,7 @@ int getmaxup(int x, int k) {
 int main() {
 	cin >> n >> m;
 	
-	vector<edge> edges(m);
+	vector<Edge> edges(m);
 	for (int i = 0; i < m; i++) {
 		int u, v, w; 
 		cin >> u >> v >> w;
@@ -163,7 +167,7 @@ int main() {
 	}
 	
 	vector<ll> ans(m);
-	for (edge e : edges) {
+	for (Edge e : edges) {
 		int least_common_ancestor = lca(e.u, e.v);
 		int max_u = getmaxup(e.u, depth[e.u] - depth[least_common_ancestor]);
 		int max_v = getmaxup(e.v, depth[e.v] - depth[least_common_ancestor]);
