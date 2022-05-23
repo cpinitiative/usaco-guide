@@ -31,10 +31,12 @@ minimum[n - 1] = questions[n - 1]
 
 for i in range(n - 2, 0, -1):
         cur_q = questions[i]
-
-        total[i], minimum[i] = cur_q + total[i + 1], min(minimum[i + 1], cur_q)
-
-        cur_s, idx = total[i] - minimum[i], (n - (i + 1))
+        
+        total[i] = cur_q + total[i + 1]
+        minimum[i] = min(minimum[i + 1], cur_q)
+        
+        cur_s = total[i] - minimum[i]
+        idx = (n - (i + 1))
 
         if cur_s * right > left * idx:
                 left, right = cur_s, idx
