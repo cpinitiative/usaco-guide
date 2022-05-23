@@ -129,7 +129,7 @@ int lca(int x, int y) {
 }
 
 // get maximum weight of all the edges from x to its kth ancestor
-int getmaxup(int x, int k) {
+int get_max_up(int x, int k) {
 	int res = 0;
 	for (int i = 0; i < MAXL; i++) {
 		if (k & (1 << i)) {
@@ -166,8 +166,8 @@ int main() {
 	vector<ll> ans(m);
 	for (Edge e : edges) {
 		int least_common_ancestor = lca(e.u, e.v);
-		int max_u = getmaxup(e.u, depth[e.u] - depth[least_common_ancestor]);
-		int max_v = getmaxup(e.v, depth[e.v] - depth[least_common_ancestor]);
+		int max_u = get_max_up(e.u, depth[e.u] - depth[least_common_ancestor]);
+		int max_v = get_max_up(e.v, depth[e.v] - depth[least_common_ancestor]);
 		ans[e.index] = total_cost - max(max_u, max_v) + e.weight;
 	}
 	
