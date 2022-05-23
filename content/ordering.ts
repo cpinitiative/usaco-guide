@@ -123,8 +123,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   gold: [
     {
-      name: 'Introductory Number Theory',
-      items: ['divisibility', 'modular'],
+      name: 'Math for Competitive Programming',
+      items: ['divisibility', 'modular', 'combo'],
     },
     {
       name: 'Dynamic Programming',
