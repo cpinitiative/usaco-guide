@@ -158,7 +158,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['intro-bitwise'],
+      items: ['meet-in-the-middle','intro-bitwise'],
     },
     {
       name: 'Conclusion',
@@ -247,7 +247,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Misc. Topics',
       items: [
-        'meet-in-the-middle',
         'extend-euclid',
         'xor-basis',
         'fracturing-search',
