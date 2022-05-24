@@ -135,38 +135,38 @@ public class SumOfThreeValues {
 
 <PySection>
 ```python
-# read input
 n, x = map(int, input().split())
 a = list(map(int, input().split()))
 
-# store the input in tuples that hold values and indices
 p = [(a[i], i + 1) for i in range(n)]
 
-# sort in ascending order
 p.sort()
 
 for i in range(n):
-    left = 0
-    right = n - 1
+	left = 0
+	right = n - 1
 
-    while left < right:
-        target = x - p[i][0]
+	while left < right:
+		target = x - p[i][0]
 
-        # if the values sum to the target and aren't from the same index, we have found the answer
-        if left != i and right != i and p[left][0] + p[right][0] == target:
-            print(p[left][1], p[right][1], p[i][1])
-            exit()
+		"""
+		if the values sum to the target and aren't from the same index, 
+		we have found the answer
+		"""
+		if left != i and right != i and p[left][0] + p[right][0] == target:
+			print(p[left][1], p[right][1], p[i][1])
+			exit()
 
-        # increase left if the sum is lower
-        elif p[left][0] + p[right][0] < target:
-            left += 1
+		# increase left if the sum is lower
+		elif p[left][0] + p[right][0] < target:
+			left += 1
 
-        # otherwise decrease right
-        else:
-            right -= 1
+		# otherwise decrease right
+		else:
+			right -= 1
 
-# print impossible if no answer has been found
 print("IMPOSSIBLE")
+
 ```
 </PySection>
 	
