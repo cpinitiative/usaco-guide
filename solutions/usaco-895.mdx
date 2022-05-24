@@ -171,23 +171,27 @@ int main() {
 
 <PySection>
 ```python
-import sys
 from collections import deque
 
-sys.stdin = open("perimeter.in", "r")
-sys.stdout = open("perimeter.out", "w")
-
-t = sys.stdin.readline
-
-n = int(t())
-ice = []
-visited = [[False] * n for _ in range(n)]
-
-for _ in range(n):
-	ice.append(list(t()))
+with open('perimeter.in') as r:
+	t = r.readline
+	n = int(t())
+	ice = []
+	visited = [[False] * n for _ in range(n)]
+	
+	for _ in range(n):
+		ice.append(list(t()))
 
 max_area = 0
 min_peri = float('inf')
+	
+# possible directions
+DIRECTIONS = [
+	(1, 0),
+	(-1, 0),
+	(0, 1),
+	(0, -1)
+]
 
 # check if out of bounds
 def out(a, b, l):
@@ -196,16 +200,8 @@ def out(a, b, l):
 	return False
 
 # bfs
-def bfs(x, y):
+def area_and_perimeter(x, y):
 	area, peri = 1, 0
-
-	# possible directions
-	directions = [
-		(1, 0),
-		(-1, 0),
-		(0, 1),
-		(0, -1)
-	]
 
 	q = deque()
 	q.append((x, y))
@@ -214,7 +210,7 @@ def bfs(x, y):
 	while q:
 		x, y = q.pop()
 
-		for dx, dy in directions:
+		for dx, dy in DIRECTIONS:
 			nx, ny = x + dx, y + dy
 			if out(nx, ny, n) or ice[nx][ny] == ".":
 				peri += 1
@@ -229,7 +225,7 @@ def bfs(x, y):
 for i in range(n):
 	for j in range(n):
 		if ice[i][j] == "#" and not visited[i][j]:
-			area, peri = bfs(i, j)
+			area, peri = area_and_perimeter(i, j)
 
 			if area > max_area:
 				max_area, min_peri = area, peri
@@ -237,7 +233,7 @@ for i in range(n):
 				if min_peri > peri:
 					max_area, min_peri = area, peri
 
-print(max_area, min_peri)
+print(max_area, min_peri, file=open('perimeter.out', 'w'))
 ```
 </PySection>
 
