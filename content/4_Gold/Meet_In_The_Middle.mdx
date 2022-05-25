@@ -12,7 +12,6 @@ prerequisites:
 
 <FocusProblem problem="sample" />
 
-
 ### Tutorial
 
 <Resources>
@@ -27,20 +26,29 @@ prerequisites:
 
 <Info title="Pro Tip">
 
-Meet in the middle problems often have double the constraints of an already optimized solution.
+Meet in the middle problems often have double the constraints of an already
+optimized solution.
 
 </Info>
 
 ### Naive Solution
 
-Loop through all subsets in the array and if the sum is equal to $x$, then increase our answer. Worst case this does about $4^{40}$ operations, which is way too slow.
+Loop through all subsets in the array and if the sum is equal to $x$, then
+increase our answer. Worst case this does about $4^{40}$ operations, which is
+way too slow.
 
 ### Meet in the Middle Solution
 
-We can divide the given array into two separate arrays. Let's say that the $left$ array runs from indexes $0$ to $\frac{n}{2}-1$, and the $right$ array runs from indexes $\frac{n}{2}$ to $n-1$. Both arrays will have at most $20$ elements, so we can loop through all subsets of these two arrays in at most $2^{21}$ operations, which is perfectly fine.
+We can divide the given array into two separate arrays. Let's say that the
+$left$ array runs from indexes $0$ to $\frac{n}{2}-1$, and the $right$ array
+runs from indexes $\frac{n}{2}$ to $n-1$. Both arrays will have at most $20$
+elements, so we can loop through all subsets of these two arrays in at most
+$2^{21}$ operations, which is perfectly fine.
 
-Now that we've got the subset sums of these two separate arrays, we need to recombine them to search for our answer. For every $\texttt{sum}$ in the $left$, we can simply check how many elements of $x - \texttt{sum}$ there are in $right$. This can be done using simple binary search.
-
+Now that we've got the subset sums of these two separate arrays, we need to
+recombine them to search for our answer. For every $\texttt{sum}$ in the $left$,
+we can simply check how many elements of $x - \texttt{sum}$ there are in
+$right$. This can be done using simple binary search.
 
 <Spoiler title = "Implementation">
 <LanguageSection>
@@ -59,12 +67,12 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
 	}
-	
+
 	// stores all possible subset sums in the interval [l, r]
 	auto get_subset_sums = [&](int l, int r) -> vector<ll> {
 		int len = r - l + 1;
 		vector<ll> res;
-		
+
 		// loop through all subsets
 		for (int i = 0; i < (1 << len); i++) {
 			ll sum = 0;
@@ -75,15 +83,15 @@ int main() {
 			}
 			res.push_back(sum);
 		}
-		
+
 		return res;
 	};
-	
+
 	vector<ll> left = get_subset_sums(0, n / 2 - 1);
 	vector<ll> right = get_subset_sums(n / 2, n - 1);
 	sort(left.begin(), left.end());
 	sort(right.begin(), right.end());
-	
+
 	ll ans = 0;
 	for (ll i: left) {
 		auto low_iterator = lower_bound(right.begin(), right.end(), x - i);
@@ -92,13 +100,117 @@ int main() {
 		int end_index = high_iterator - right.begin();
 		ans += end_index - start_index;
 	}
-	
+
 	cout << ans << endl;
 }
 
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+<Warning title="Tight Time Limit">
+CSES has very tight time constraints for java, so the following code will barely pass in around ~0.98 ms. In addition, it might not even pass on first submits.
+</Warning>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Kattio io = new Kattio();
+
+        int n = io.nextInt(), x = io.nextInt();
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = io.nextInt();
+        }
+
+        long[] left = get_subset_sums(a, 0, n / 2 - 1);
+        long[] right = get_subset_sums(a, n/2, n-1);
+        Arrays.sort(right);
+
+        long answer = 0;
+        for (long i: left) {
+            int low_index = lower_bound(right, x - i);
+            int high_index = lower_bound(right, x - i + 1);
+            answer += high_index - low_index;
+        }
+
+        io.println(answer);
+        io.close();
+    }
+
+	/*
+	* returns an array with all possible subset sums
+	* from [l..r]
+	*/ 
+    public static long[] get_subset_sums(int[] a, int l, int r){
+        int len = r - l + 1;
+        int index = 0;
+        long[] sums = new long[1 << len];
+
+        for (int i = 0; i < (1 << len); i++) {
+            for( int j = 0; j < len; j++) {
+                if ((i & (1 << j)) != 0) {
+                    sums[index] += a[j + l];
+                }
+            }
+            index++;
+        }
+
+        return sums;
+    }
+
+    // finds the first index which has equal or greater than an element.
+    public static int lower_bound(long[] arr, long x){
+        int l = -1, r = arr.length;
+        while (l < r-1) {
+            int mid = l + (r - l) / 2;
+            if (arr[mid] < x) {
+                l = mid;
+            }
+            else r = mid;
+        }
+        return r;
+    }
+}
+
+//BeginCodeSnip{IO}
+class Kattio extends PrintWriter {
+    private BufferedReader r;
+    private StringTokenizer st;
+    // standard input
+    public Kattio() { this(System.in,System.out); }
+    public Kattio(InputStream i, OutputStream o) {
+        super(o);
+        r = new BufferedReader(new InputStreamReader(i));
+    }
+    // USACO-style file input
+    public Kattio(String problemName) throws IOException {
+        super(problemName+".out");
+        r = new BufferedReader(new FileReader(problemName+".in"));
+    }
+    // returns null if no more input
+    public String next() {
+        try {
+            while (st == null || !st.hasMoreTokens())
+                st = new StringTokenizer(r.readLine());
+            return st.nextToken();
+        } catch (Exception e) {}
+        return null;
+    }
+    public int nextInt() { return Integer.parseInt(next()); }
+    public double nextDouble() { return Double.parseDouble(next()); }
+    public long nextLong() { return Long.parseLong(next()); }
+}
+//EndCodeSnip
+```
+
+</JavaSection>
 	
 </LanguageSection>
 </Spoiler>
