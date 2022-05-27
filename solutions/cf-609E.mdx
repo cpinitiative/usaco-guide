@@ -1,7 +1,7 @@
 ---
 id: cf-609E
 source: CF
-title: Minimum spanning tree for each edge
+title: MST for Each Edge
 author: Chongtian Ma
 ---
 
@@ -9,8 +9,8 @@ author: Chongtian Ma
 
 ## Implementation 
 
-As mentioned in the official editorial, the answer for each edge is removing the heaviest edge in the MST in
-the path from vertex $u$ to $v$ and add the given weight. This will ensure that the MST is still connected.
+Binary lifting technique can be used to find the heaviest edge in the path from node $u$ to $v$. 
+Therefore we only need to find the heaviest edge from $u$ to $lcm(u,v)$ and $v$ to $lcm(u,v)$.
 
 **Time Complexity:** $\mathcal{O}(M\log N)$
 
@@ -24,7 +24,7 @@ using namespace std;
 using ll = long long;
 
 const int MAXN = 2e5;
-const int MAXL = 20; // approximately maximum log
+const int MAXL = 20;  // approximately maximum log
 
 // for euler-tour
 array<int, MAXN> enter_time, exit_time, depth;
