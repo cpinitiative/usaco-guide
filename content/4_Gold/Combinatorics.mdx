@@ -74,7 +74,7 @@ If you prefer watching videos instead, here are some options:
 
 <FocusProblem problem="sample" />
 
-The **binomial coefficient** $\binom{n}{k}$ (pronounced  as "$n$ choose $k$" or commonly written as $n C_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements: 
+The **binomial coefficient** $\binom{n}{k}$ (pronounced  as "$n$ choose $k$" or $n C_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements: 
 
 $$
 \{1, 2\}, \{1, 3\}, \{1, 4\}, \{2, 3\}, \{2, 4\}, \{3, 4\}
@@ -82,7 +82,7 @@ $$
 
 There are two ways to calculate binomial coefficients:
 
-### Method 1: Pascal's Triangle (Dynamic Programming) - $O(N^2)$
+### Method 1: Pascal's Triangle (Dynamic Programming) - $\mathcal{O}(n^2)$
 
 Binomial coefficients can be recursively calculated as follows:
 
@@ -108,15 +108,12 @@ Additionally, we can optimize this recursion formula from $O(2^n)$ to $O(n^2)$ u
 <CPPSection>
 
 ```cpp
-const int MAXN = 1000, MAXK = 1000, MOD = 1e9 + 7;
-
-int dp[MAXN + 1][MAXK + 1];
-
 int binomial(int n, int k) {
 	/*
 	 * stores each iCj for each i from 1 to n 
 	 * and each j from 1 to k
 	 */
+	int dp[n + 1][k + 1];
 	// base cases described above
 	for (int i = 0; i <= n; i++) {
 		/*
@@ -136,19 +133,19 @@ int binomial(int n, int k) {
 	}
 	for (int i = 0; i <= n; i++) {
 		for (int j = 1; j <= min(i, k); j++) {
-			if (i != j) { // skips over the base cases
+			if (i != j) {  // skips over the base cases
 				// uses the recurrence relation above
 				dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j]) % MOD;
 			}
 		}
 	}
-	return dp[n][k]; // returns nCk
+	return dp[n][k];  // returns nCk
 }
 ```
 </CPPSection>
 </LanguageSection>
 
-### Method 2: Factorial Definition (Modular Inverses) - $O(n\log n)$
+### Method 2: Factorial Definition (Modular Inverses) - $\mathcal{O}(n\logMOD)$
 
 First of all, we define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$, which represents the number of permutations of a set of $n$ elements.
 
@@ -162,12 +159,16 @@ Since there are $n!$ permutations of $n$ elements, we go through all permutation
 
 Since these binomial coefficients are large, problems typically require us to output the answer modulo a large prime $p$ such as $10^9 + 7$.
 
-Fortunately, we can use [modular inverses](https://usaco.guide/gold/modular?lang=cpp) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$. We can precompute all factorials in $O(n)$ time and inverse factorials in $O(n \log n)$.
+Fortunately, we can use [modular inverses](https://usaco.guide/gold/modular?lang=cpp) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$. We can precompute all factorials in $O(n)$ time and inverse factorials in $O(n \log n)$ (although, not necessary, you can also precompute inverse factorials in $O(n)$ time.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+		
+using namespace std;
+		
 const int MAXN = 1e6;
 
 long long fac[MAXN + 1], inv[MAXN + 1];
@@ -207,7 +208,7 @@ long long choose(long long n, long long r, long long p) {
 
 ### Solution - Binomial Coefficients
 
-The first method for calculating binomial factorials is too slow for this problem since the constraints on $a$ and $b$ are $(1 \leq b \leq a \leq 10^6)$. However, we can use the second method to answer each of the $n$ queries in $O(1)$ time by precomputing factorials and modular inverses.
+The first method for calculating binomial factorials is too slow for this problem since the constraints on $a$ and $b$ are $(1 \leq b \leq a \leq 10^6)$. However, we can use the second method to answer each of the $n$ queries in constant time by precomputing factorials and modular inverses.
 
 <LanguageSection>
 <CPPSection>
@@ -218,9 +219,11 @@ The first method for calculating binomial factorials is too slow for this proble
 using namespace std;
 using ll = long long;
 
-const int MAXN = 1e6, MOD = 1e9 + 7;
+const int MAXN = 1e6;
+const int MOD = 1e9 + 7;
 
-ll fac[MAXN + 1], inv[MAXN + 1];
+ll fac[MAXN + 1];
+ll inv[MAXN + 1];
 
 ll exp(ll x, ll y, ll p) {
 	ll res = 1; x %= p;
@@ -250,7 +253,7 @@ void inverses() {
 }
 
 ll choose(int n, int r) {
-	return (fac[n] * inv[r] % MOD * inv[n - r] % MOD);
+	return fac[n] * inv[r] % MOD * inv[n - r] % MOD;
 }
 
 int main() {
