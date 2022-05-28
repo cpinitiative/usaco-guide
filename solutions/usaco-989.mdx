@@ -17,19 +17,27 @@ author: Sathvik Chundru, Kevin Sheng
 using std::cout;
 using std::endl;
 
-int fastest_time(int dist, int min_speed) {
-	int lhs_travel = 0;
-	int rhs_travel = 0;
+int fastest_time(int dist, int max_speed) {
+	int lhs_travel = 0;  // Amount of distance where Bessie's speeding up
+	int rhs_travel = 0;  // and slowing down respectively
 	int time = 0;
+	
+	// Gradually speed up until we achieve our distance
 	for (int curr_speed = 1; ; curr_speed++) {
 		lhs_travel += curr_speed;
 		time++;
 		if (lhs_travel + rhs_travel >= dist) { 
 			return time; 
 		}
-		if (curr_speed >= min_speed) {
+
+		/*
+		 * If we're above the speed limit, add the current speed
+		 * to the part where we slow down (the RHS) as well.
+		 */
+		if (curr_speed >= max_speed) {
 			rhs_travel += curr_speed;
 			time++;
+			// Check again if we've achieved our distance
 			if (lhs_travel + rhs_travel >= dist) { 
 				return time; 
 			}
@@ -45,9 +53,9 @@ int main() {
 
 	std::ofstream written("race.out");
 	for (int q = 0; q < query_num; q++) {
-		int min_speed;
-		read >> min_speed;
-		written << fastest_time(race_len, min_speed) << '\n';
+		int max_speed;
+		read >> max_speed;
+		written << fastest_time(race_len, max_speed) << '\n';
 	}
 }
 ```
@@ -67,25 +75,33 @@ class Race {
 
 		PrintWriter pw = new PrintWriter(new File("race.out")); 
 		for (int q = 0; q < queryNum; q++) {
-			int minSpeed = sc.nextInt(); 
-			pw.println(fastestTime(raceLen, minSpeed));
+			int maxSpeed = sc.nextInt(); 
+			pw.println(fastestTime(raceLen, maxSpeed));
 		}
 		pw.close();
 	}
 
-	public static int fastestTime(int dist, int minSpeed) {
-		int lhsTravel = 0;
-		int rhsTravel = 0;
+	static int fastestTime(int dist, int maxSpeed) {
+		int lhsTravel = 0;  // Amount of distance where Bessie's speeding up
+		int rhsTravel = 0;  // and slowing down respectively
 		int time = 0;
+
+		// Gradually speed up until we achieve our distance
 		for (int currSpeed = 1; ; currSpeed++) {
 			lhsTravel += currSpeed;
 			time++;
 			if (lhsTravel + rhsTravel >= dist) { 
 				return time; 
 			}
-			if (currSpeed >= minSpeed) {
+
+			/*
+			 * If we're above the speed limit, add the current speed
+			 * to the part where we slow down (the RHS) as well.
+			 */
+			if (currSpeed >= maxSpeed) {
 				rhsTravel += currSpeed;
 				time++;
+				// Check again if we've achieved our distance
 				if (lhsTravel + rhsTravel >= dist) { 
 					return time; 
 				}
