@@ -22,7 +22,7 @@ We can use shortest paths to solve the problem. Since we can move freely on a fl
 using namespace std;
 using ll = long long;
 
-struct ladder{
+struct ladder {
 	int from_row, from_col, to_row, to_col, health; 
 };
 
@@ -30,23 +30,23 @@ int main() {
 	int t;
 	cin >> t;
 	
-	for(int test = 1; test <= t; test++){
+	for (int test = 1; test <= t; test++) {
 		
 		int n, m, k;
 		cin >> n >> m >> k;
-		vector<ll> x(n+1);
-		for(int i = 1; i <= n; i++){
+		vector<ll> x(n + 1);
+		for (int i = 1; i <= n; i++) {
 			cin >> x[i];
 		}
 		
 		// stores all ladders info in the row they can be accessed.
-		vector<vector<ladder>> ladder_row(n+1);
+		vector<vector<ladder>> ladder_row(n + 1);
 		
 		// stores the columns where there is a ladder in each row.
 		// also stores all the columns which are relevant in each row.
-		vector<set<int>> ladder_col(n+1);
+		vector<set<int>> ladder_col(n + 1);
 		
-		for(int i = 0; i < k; i++){
+		for (int i = 0; i < k; i++) {
 			ladder tmp;
 			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row >> tmp.to_col >> tmp.health;
 			ladder_row[tmp.from_row].push_back(tmp);
@@ -58,64 +58,64 @@ int main() {
 		ladder_col[1].insert(1);
 		ladder_col[n].insert(m);
 		
-		vector<map<int,ll>> dist(n+1);
-		for(int i = 1; i <= n; i++){
-			for(int j: ladder_col[i]){
+		vector<map<int, ll>> dist(n + 1);
+		for (int i = 1; i <= n; i++) {
+			for (int j: ladder_col[i]) {
 				dist[i][j] = INT64_MAX;
 			}
 		}
 		dist[1][1] = 0;
 		
-		for(int row = 1; row <= n; row++){
+		for (int row = 1; row <= n; row++) {
 			int num_ladders = ladder_col[row].size();
 			
 			// a copy of ladder_col[row]
-			vector<int> in_row(ladder_col[row].begin(),ladder_col[row].end());
+			vector<int> in_row(ladder_col[row].begin(), ladder_col[row].end());
 			
 			/*
 			 * priority queue that sorts by minimum distance to that ladder first, 
 			 * then col of ladder
 			 */ 
-			priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> pq;
+			priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
 			
-			for(int col: in_row){
+			for (int col: in_row) {
 				// make sure we can reach the ladder point
-				if(dist[row][col] != INT64_MAX){
+				if (dist[row][col] != INT64_MAX) {
 					pq.push({dist[row][col], col});
 				}
 			}
 			
-			while(!pq.empty()){
+			while (!pq.empty()) {
 				ll distance = pq.top().first;
 				int col = pq.top().second;
 				pq.pop();
 				int index = lower_bound(in_row.begin(), in_row.end(), col) - in_row.begin();
 				
 				// we go to the left ladder on the same floor
-				if(index > 0){
+				if (index > 0) {
 					int left_col = in_row[index - 1];
 					int dist_between = col - left_col;
 					ll cost = dist_between * x[row] + distance;
-					if(cost < dist[row][left_col]){
+					if (cost < dist[row][left_col]) {
 						dist[row][left_col] = cost;
 						pq.push({cost, left_col});
 					}
 				}
 				
 				// we go to the right ladder
-				if(index < num_ladders - 1){
+				if (index < num_ladders - 1) {
 					int right_col = in_row[index + 1];
 					int dist_between = right_col - col;
 					ll cost = dist_between * x[row] + distance;
-					if(cost < dist[row][right_col]){
+					if (cost < dist[row][right_col]) {
 						dist[row][right_col] = cost;
 						pq.push({cost, right_col});
 					}
 				}
 			}
 			
-			for(ladder i: ladder_row[row]){
-				if(dist[i.from_row][i.from_col] != INT64_MAX){
+			for (ladder i: ladder_row[row]) {
+				if (dist[i.from_row][i.from_col] != INT64_MAX) {
 					// min of if we take this ladder or not.
 					ll from_dist = dist[i.from_row][i.from_col];
 					dist[i.to_row][i.to_col] = min(dist[i.to_row][i.to_col], from_dist - i.health);
@@ -123,10 +123,10 @@ int main() {
 			}
 		}
 		
-		if(dist[n][m] == INT64_MAX){
+		if (dist[n][m] == INT64_MAX) {
 			cout << "NO ESCAPE" << "\n";
 		}
-		else{
+		else {
 			cout << dist[n][m] << "\n";
 		}
 	
