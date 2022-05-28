@@ -22,8 +22,10 @@ We can use shortest paths to solve the problem. Since we can move freely on a fl
 using namespace std;
 using ll = long long;
 
-struct ladder {
-	int from_row, from_col, to_row, to_col, health; 
+struct Ladder {
+	int from_row, from_col;
+	int to_row, to_col;
+	int health; 
 };
 
 int main() {
@@ -40,14 +42,14 @@ int main() {
 		}
 		
 		// stores all ladders info in the row they can be accessed.
-		vector<vector<ladder>> ladder_row(n + 1);
+		vector<vector<Ladder>> ladder_row(n + 1);
 		
 		// stores the columns where there is a ladder in each row.
 		// also stores all the columns which are relevant in each row.
 		vector<set<int>> ladder_col(n + 1);
 		
 		for (int i = 0; i < k; i++) {
-			ladder tmp;
+		Ladder tmp;
 			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row >> tmp.to_col >> tmp.health;
 			ladder_row[tmp.from_row].push_back(tmp);
 			ladder_col[tmp.from_row].insert(tmp.from_col);
@@ -114,11 +116,11 @@ int main() {
 				}
 			}
 			
-			for (ladder i: ladder_row[row]) {
+			for (Ladder i: ladder_row[row]) {
 				if (dist[i.from_row][i.from_col] != INT64_MAX) {
 					// min of if we take this ladder or not.
-					ll from_dist = dist[i.from_row][i.from_col];
-					dist[i.to_row][i.to_col] = min(dist[i.to_row][i.to_col], from_dist - i.health);
+					ll from = dist[i.from_row][i.from_col];
+					dist[i.to_row][i.to_col] = min(dist[i.to_row][i.to_col], from - i.health);
 				}
 			}
 		}
