@@ -2,46 +2,92 @@
 id: usaco-989
 source: USACO Bronze 2020 January
 title: Race
-author: Sathvik Chundru
+author: Sathvik Chundru, Kevin Sheng
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_race_bronze_jan20.html)
 
 <LanguageSection>
- 
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+using std::cout;
+using std::endl;
+
+int fastest_time(int dist, int min_speed) {
+	int lhs_travel = 0;
+	int rhs_travel = 0;
+	int time = 0;
+	for (int curr_speed = 1; ; curr_speed++) {
+		lhs_travel += curr_speed;
+		time++;
+		if (lhs_travel + rhs_travel >= dist) { 
+			return time; 
+		}
+		if (curr_speed >= min_speed) {
+			rhs_travel += curr_speed;
+			time++;
+			if (lhs_travel + rhs_travel >= dist) { 
+				return time; 
+			}
+		}
+	}
+}
+
+int main() {
+	std::ifstream read("race.in");
+	int race_len;
+	int query_num;
+	read >> race_len >> query_num;
+
+	std::ofstream written("race.out");
+	for (int q = 0; q < query_num; q++) {
+		int min_speed;
+		read >> min_speed;
+		written << fastest_time(race_len, min_speed) << '\n';
+	}
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
 import java.util.*;
 import java.io.*;
-class Main {
+
+class Race {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(new File("race.in"));
+		int raceLen = sc.nextInt();
+		int queryNum = sc.nextInt();
+
 		PrintWriter pw = new PrintWriter(new File("race.out")); 
-		int k = sc.nextInt();
-		int n = sc.nextInt();
-		for(int i = 0; i < n; i++) {
-			int minspeed = sc.nextInt(); 
-			pw.println(solve(k, minspeed));
+		for (int q = 0; q < queryNum; q++) {
+			int minSpeed = sc.nextInt(); 
+			pw.println(fastestTime(raceLen, minSpeed));
 		}
 		pw.close();
 	}
 
-	public static int solve(int dist, int minspeed) {
-		int lhstravel = 0;
-		int rhstravel = 0;
-		int timeused = 0;
-		for(int currspeed = 1;; currspeed++) {
-			lhstravel += currspeed;
-			timeused++;
-			if(lhstravel + rhstravel >= dist) { 
-				return timeused; 
+	public static int fastestTime(int dist, int minSpeed) {
+		int lhsTravel = 0;
+		int rhsTravel = 0;
+		int time = 0;
+		for (int currSpeed = 1; ; currSpeed++) {
+			lhsTravel += currSpeed;
+			time++;
+			if (lhsTravel + rhsTravel >= dist) { 
+				return time; 
 			}
-			if(currspeed >= minspeed) {
-				rhstravel += currspeed;
-				timeused++;
-				if(lhstravel + rhstravel >= dist) { 
-					return timeused; 
+			if (currSpeed >= minSpeed) {
+				rhsTravel += currSpeed;
+				time++;
+				if (lhsTravel + rhsTravel >= dist) { 
+					return time; 
 				}
 			}
 		}
@@ -50,5 +96,4 @@ class Main {
 ```
 
 </JavaSection>
-
 </LanguageSection>
