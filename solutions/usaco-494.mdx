@@ -1,0 +1,117 @@
+---
+id: usaco-494
+source: Old Gold
+title: Guard Mark
+author: Ryan Chou
+---
+ 
+[Official Analysis](http://www.usaco.org/current/data/sol_guard_gold.html)
+
+## Explanation
+
+Note that since it might not always be optimal to keep the strongest/heaviest cow at the bottom of the stack, we have to go through every single possible subset, which is feasible with $N \leq 20$.
+
+example of a counter case:
+```
+4 6
+1 1000 4
+1 1 5
+3 2 3
+3 3 3
+```
+
+Let's go through a dynamic programming approach.
+
+#### States
+
+We have to keep track of the cows that we're using ($mask$).
+
+To check if we've surpassed Mark's height already and to return the result, we should also keep track of the current height ($h$) and the maximum safety factor achievable ($sf$).
+
+$\texttt{dp}[mask] =\{h, sf\}$
+
+#### Base Cases
+
+With no cows, the safety factor will be infinite and the height will be zero.
+
+#### Transitions
+
+$\texttt{dp}[mask] = \max_{j \in mask}(\texttt{dp}[mask],\hspace{0.1cm}\min(\texttt{dp}[prev] - weight_j,\hspace{0.1cm}strength_j))$
+
+Such that $j =$ the $j$th cow and $weight_j,\hspace{0.1cm}strength_j$ represents the weight and strength of cow $j$ respectively.
+
+This gets the maximum safety factor if we put cow $j$ at the top of our stack for every $j$. We have to take into account $strength_j$ and $\texttt{dp}[prev] - weight_j$ in the case that either one of the cows below can't sustain as much weight as cow $j$ can, or vice-versa.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^N \cdot N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cow {
+	int height;
+	int weight;
+	int strength; 
+};
+
+int main() {
+	freopen("guard.in", "r", stdin);
+	freopen("guard.out", "w", stdout);
+
+	int n;
+	int h;
+	cin >> n >> h;
+
+	vector<Cow> cows(n);
+	for (int i = 0; i < n; i++) {
+		cin >> cows[i].height >> cows[i].weight >> cows[i].strength;
+	}
+
+	// dp[i] = {height, safety factor}
+	vector<pair<int, int>> dp(1 << n);
+
+	// initally we don't have any height, and we can add on infinite weight
+	dp[0] = {0, INT32_MAX};
+
+	for (int i = 1; i < (1 << n); i++) {
+		dp[i] = {0, -1};
+
+		for (int j = 0; j < n; j++) {
+			// if the jth bit is on
+			if (i & (1 << j)) {
+				// update our height
+				dp[i].first += cows[j].height;
+
+				int prev = i ^ (1 << j);
+				/*
+				* maximum safety factor if we put cow j
+				* at the top of our stack (account for j's strength as well)
+				*/
+				dp[i].second = max(dp[i].second,
+                                   min(dp[prev].second - cows[j].weight, cows[j].strength));
+			}
+		}
+	}
+
+	int ans = -1;
+	for (int i = 1; i < (1 << n); i++) {
+		if (dp[i].first >= h) {
+			ans = max(dp[i].second, ans);
+		}
+	}
+
+	// no tall enough/stable arrangement exists
+	if (ans < 0) {
+		cout << "Mark is too tall" << endl;
+	} else {
+		cout << ans << endl;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
