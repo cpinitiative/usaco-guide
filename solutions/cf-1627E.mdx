@@ -32,11 +32,11 @@ int main() {
 	int t;
 	cin >> t;
 	
-	for (int test = 0; test < t; test++) {
+	for (int test = 1; test <= t; test++) {
 		
 		int n, m, k;
 		cin >> n >> m >> k;
-		vector<ll> x(n + 1);  // cost multiplier for each row
+		vector<ll> x(n + 1);
 		for (int i = 1; i <= n; i++) {
 			cin >> x[i];
 		}
@@ -49,8 +49,9 @@ int main() {
 		vector<set<int>> ladder_col(n + 1);
 		
 		for (int i = 0; i < k; i++) {
-			Ladder tmp;
-			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row >> tmp.to_col >> tmp.health;
+		Ladder tmp;
+			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row 
+			>> tmp.to_col >> tmp.health;
 			ladder_row[tmp.from_row].push_back(tmp);
 			ladder_col[tmp.from_row].insert(tmp.from_col);
 			ladder_col[tmp.to_row].insert(tmp.to_col);
@@ -78,7 +79,9 @@ int main() {
 			 * priority queue that sorts by minimum distance to that ladder first, 
 			 * then col of ladder
 			 */ 
-			priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+			priority_queue<pair<ll, int>, 
+			vector<pair<ll, int>>, 
+			greater<pair<ll, int>>> pq;
 			
 			for (int col: in_row) {
 				// make sure we can reach the ladder point
@@ -91,7 +94,8 @@ int main() {
 				ll distance = pq.top().first;
 				int col = pq.top().second;
 				pq.pop();
-				int index = lower_bound(in_row.begin(), in_row.end(), col) - in_row.begin();
+				int index = lower_bound(in_row.begin(), in_row.end(), col) 
+				- in_row.begin();
 				
 				// we go to the left ladder on the same floor
 				if (index > 0) {
@@ -130,13 +134,11 @@ int main() {
 		
 		if (dist[n][m] == INT64_MAX) {
 			cout << "NO ESCAPE" << "\n";
-		} else {
+		}
+		else {
 			cout << dist[n][m] << "\n";
 		}
-	
 	}
 }
 ```
-
-
 </CPPSection>
