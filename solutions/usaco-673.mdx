@@ -92,4 +92,73 @@ int main() {
 }
 ```
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("team");
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int k = io.nextInt();
+
+		int[] fj = new int[n];
+		for (int i = 0; i < n; i++) {
+			fj[i] = io.nextInt();
+		}
+
+		int[] fp = new int[m];
+		for (int i = 0; i < m; i++) {
+			fp[i] = io.nextInt();
+		}
+
+		Arrays.sort(fj);
+		Arrays.sort(fp);
+
+		/*
+		 * dp[i][j][k] = the number of teams of size k after we've considered
+		 * the first i cows in Farmer John's team, the first j cows in
+		 * Farmer Paul's team.
+		 */
+		long[][][] dp = new long[n + 1][m + 1][k + 1];
+
+		// base case: there is one way to construct a team of size zero.
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= m; j++) {
+				dp[i][j][0] = 1;
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				for (int s = 1; s <= k; s++) {
+					// dp transitions
+					dp[i + 1][j + 1][s] += dp[i + 1][j][s];
+					dp[i + 1][j + 1][s] += dp[i][j + 1][s];
+					dp[i + 1][j + 1][s] -= dp[i][j][s];
+
+					if (fj[i] > fp[j]) {
+						dp[i + 1][j + 1][s] += dp[i][j][s - 1];
+					}
+
+					// prevent negative results
+					dp[i + 1][j + 1][s] += 1000000009;
+					dp[i + 1][j + 1][s] %= 1000000009;
+				}
+			}
+		}
+		io.println(dp[n][m][k]);
+
+		io.close();
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
 </LanguageSection>
