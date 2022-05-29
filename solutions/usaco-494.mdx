@@ -26,9 +26,9 @@ Let's go through a dynamic programming approach.
 
 We have to keep track of the cows that we're using ($mask$).
 
-To check if we've surpassed Mark's height already and to return the result, we should also keep track of the current height ($h$) and the maximum safety factor achievable ($sf$).
+To check if we've surpassed Mark's height already and to return the result, we should also keep track of the current height and the best safety factor we can get.
 
-$\texttt{dp}[mask] =\{h, sf\}$
+$\texttt{dp}[mask] =\{$current height, maximum safety factor achievable$\}$
 
 #### Base Cases
 
@@ -38,7 +38,7 @@ With no cows, the safety factor will be infinite and the height will be zero.
 
 $\texttt{dp}[mask] = \max_{j \in mask}(\texttt{dp}[mask],\hspace{0.1cm}\min(\texttt{dp}[prev] - weight_j,\hspace{0.1cm}strength_j))$
 
-Such that $j =$ the $j$th cow and $weight_j,\hspace{0.1cm}strength_j$ represents the weight and strength of cow $j$ respectively.
+Such that $j$ is the index of the $j$th cow and $weight_j,\hspace{0.1cm}strength_j$ represents the weight and strength of cow $j$ respectively.
 
 This gets the maximum safety factor if we put cow $j$ at the top of our stack for every $j$. We have to take into account $strength_j$ and $\texttt{dp}[prev] - weight_j$ in the case that either one of the cows below can't sustain as much weight as cow $j$ can, or vice-versa.
 
@@ -100,18 +100,18 @@ int main() {
 		}
 	}
 
-	int ans = -1;
+	int max_safety = -1;
 	for (int i = 1; i < (1 << n); i++) {
 		if (dp[i].first >= h) {
-			ans = max(dp[i].second, ans);
+			max_safety = max(dp[i].second, max_safety);
 		}
 	}
 
 	// no tall enough/stable arrangement exists
-	if (ans < 0) {
+	if (max_safety < 0) {
 		cout << "Mark is too tall" << endl;
 	} else {
-		cout << ans << endl;
+		cout << max_safety << endl;
 	}
 }
 ```
