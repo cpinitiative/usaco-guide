@@ -18,15 +18,15 @@ using std::cout;
 using std::endl;
 
 int fastest_time(int dist, int max_speed) {
-	int lhs_travel = 0;  // Amount of distance where Bessie's speeding up
-	int rhs_travel = 0;  // and slowing down respectively
+	int speed_up_dist = 0;  // Amount of distance where Bessie's speeding up
+	int slow_down_dist = 0;  // and slowing down respectively
 	int time = 0;
 	
 	// Gradually speed up until we achieve our distance
 	for (int curr_speed = 1; ; curr_speed++) {
-		lhs_travel += curr_speed;
+		speed_up_dist += curr_speed;
 		time++;
-		if (lhs_travel + rhs_travel >= dist) { 
+		if (speed_up_dist + slow_down_dist >= dist) { 
 			return time; 
 		}
 
@@ -35,10 +35,10 @@ int fastest_time(int dist, int max_speed) {
 		 * to the part where we slow down (the RHS) as well.
 		 */
 		if (curr_speed >= max_speed) {
-			rhs_travel += curr_speed;
+			slow_down_dist += curr_speed;
 			time++;
 			// Check again if we've reached or passed the finish line
-			if (lhs_travel + rhs_travel >= dist) { 
+			if (speed_up_dist + slow_down_dist >= dist) { 
 				return time; 
 			}
 		}
@@ -82,15 +82,15 @@ class Race {
 	}
 
 	static int fastestTime(int dist, int maxSpeed) {
-		int lhsTravel = 0;  // Amount of distance where Bessie's speeding up
-		int rhsTravel = 0;  // and slowing down respectively
+		int speedUpDist = 0;  // Amount of distance where Bessie's speeding up
+		int slowDownDist = 0;  // and slowing down respectively
 		int time = 0;
 
 		// Gradually speed up until we achieve our distance
 		for (int currSpeed = 1; ; currSpeed++) {
-			lhsTravel += currSpeed;
+			speedUpDist += currSpeed;
 			time++;
-			if (lhsTravel + rhsTravel >= dist) { 
+			if (speedUpDist + slowDownDist >= dist) { 
 				return time; 
 			}
 
@@ -99,10 +99,10 @@ class Race {
 			 * to the part where we slow down (the RHS) as well.
 			 */
 			if (currSpeed >= maxSpeed) {
-				rhsTravel += currSpeed;
+				slowDownDist += currSpeed;
 				time++;
 				// Check again if we've achieved our distance
-				if (lhsTravel + rhsTravel >= dist) { 
+				if (speedUpDist + slowDownDist >= dist) { 
 					return time; 
 				}
 			}
