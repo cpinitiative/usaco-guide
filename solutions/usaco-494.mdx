@@ -26,11 +26,11 @@ Let's go through the information we need to implement it!
 
 #### States
 
-Let's use a bitmask ($mask$) to keep track of the cows we're using.
+Let's use a bitmask ($\texttt{mask}$) to keep track of the cows we're using.
 
 To check if we've surpassed Mark's height already and to return the result, we should also keep track of the current height and the best safety factor we can get.
 
-$\texttt{dp}[mask] =\{$current height, maximum safety factor achievable$\}$
+$\texttt{dp}[\texttt{mask}] =\{$current height, maximum safety factor achievable$\}$
 
 #### Base Case
 
@@ -38,11 +38,11 @@ With no cows, the safety factor will be infinite and the height will be zero.
 
 #### Transitions
 
-$\texttt{dp}[mask] = \max_{j \in mask}(\texttt{dp}[mask],\hspace{0.1cm}\min(\texttt{dp}[mask \char`\\ j] - weight_j,\hspace{0.1cm}strength_j))$
+$\texttt{dp}[\texttt{mask}] = \max_{j \in mask}(\texttt{dp}[\texttt{mask}],\hspace{0.1cm}\min(\texttt{dp}[\texttt{mask} \char`\\ j] - \texttt{weight}_j,\hspace{0.1cm}\texttt{strength}_j))$
 
-Such that $j$ is the index of the $j$th cow and $weight_j,\hspace{0.1cm}strength_j$ represents the weight and strength of cow $j$ respectively.
+Such that $j$ is the index of the $j$th cow and $\texttt{weight}_j,\hspace{0.1cm}\texttt{strength}_j$ represents the weight and strength of cow $j$ respectively.
 
-This gets the maximum safety factor if we put cow $j$ at the top of our stack for every $j$. We have to take into account $strength_j$ and $\texttt{dp}[prev] - weight_j$ in the case that either one of the cows below can't sustain as much weight as cow $j$ can, or vice-versa.
+This gets the maximum safety factor if we put cow $j$ at the top of our stack for every $j$. We have to take into account $\texttt{strength}_j$ and $\texttt{dp}[\texttt{mask} \char`\\ j] - \texttt{weight}_j$ in the case that either one of the cows below can't sustain as much weight as cow $j$ can, or vice-versa.
 
 ## Implementation
 
