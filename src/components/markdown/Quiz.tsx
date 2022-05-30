@@ -92,12 +92,22 @@ const QuizMCAnswer = props => {
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
-  let num = 0;
-  const correctAnswers = [];
   const setCorrectAnswers = useUpdateAtom(correctAnswersAtom, quizScope);
+  React.useEffect(() => {
+    const correctAnswers = [];
+    let answerNum = 0;
+    React.Children.map(props.children, child => {
+      if (child?.type?.displayName === 'QuizMCAnswer') {
+        if (child.props.correct) correctAnswers.push(answerNum);
+        answerNum++;
+      }
+    });
+    setCorrectAnswers(correctAnswers);
+  }, []);
+
+  let num = 0;
   const answerChoices = React.Children.map(props.children, child => {
     if (child?.type?.displayName === 'QuizMCAnswer') {
-      if (child.props.correct) correctAnswers.push(num);
       return React.cloneElement(child, {
         number: num++,
       });
@@ -105,7 +115,6 @@ const QuizQuestion = props => {
       return child;
     }
   });
-  setCorrectAnswers(correctAnswers);
   return <div className="space-y-2">{answerChoices}</div>;
 };
 QuizQuestion.displayName = 'QuizQuestion';
