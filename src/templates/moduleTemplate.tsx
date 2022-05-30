@@ -16,7 +16,6 @@ export default function Template(props): JSX.Element {
   const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
   const { body } = xdm;
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
-  console.log(module);
   const { isLoaded, setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
