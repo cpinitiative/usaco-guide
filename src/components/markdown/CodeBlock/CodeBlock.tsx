@@ -126,7 +126,7 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
-    copyButton: boolean;
+    copyButton?: boolean;
   },
   {
     collapsed: boolean;
@@ -135,6 +135,9 @@ class CodeBlock extends React.Component<
 > {
   codeSnips = [];
   static contextType = SpoilerContext;
+  static defaultProps = {
+    copyButton: true,
+  };
 
   constructor(props) {
     super(props);
