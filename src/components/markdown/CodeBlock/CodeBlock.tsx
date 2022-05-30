@@ -126,6 +126,7 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
+    copyButton: boolean;
   },
   {
     collapsed: boolean;
@@ -329,18 +330,20 @@ class CodeBlock extends React.Component<
     const rightOffset = String(language.length * 8 + 40) + 'px';
     return (
       <RelativeDiv>
-        <CopyButton
-          type="button"
-          onClick={() => {
-            navigator.clipboard.writeText(code);
-          }}
-          style={{
-            '--right-offset': rightOffset,
-          }}
-          className="focus:outline-none"
-        >
-          Copy
-        </CopyButton>
+        {this.props.copyButton ? (
+          <CopyButton
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText(code);
+            }}
+            style={{
+              '--right-offset': rightOffset,
+            }}
+            className="focus:outline-none"
+          >
+            Copy
+          </CopyButton>
+        ) : null}
         <Highlight
           Prism={Prism as any}
           code={code}

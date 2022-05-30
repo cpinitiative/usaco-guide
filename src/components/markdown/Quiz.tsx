@@ -42,8 +42,10 @@ const QuizMCAnswer = props => {
   const correctAnswers = useAtomValue(correctAnswersAtom, quizScope);
   const showVerdict =
     submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
+  const isCorrect = submitted && correctAnswers.includes(selectedAnswer);
+  const Element = isCorrect ? 'div' : 'button';
   return (
-    <button
+    <Element
       className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
       onClick={() => {
         if (!showVerdict) {
@@ -83,10 +85,13 @@ const QuizMCAnswer = props => {
               return null;
             }
           }
+          if (!isCorrect && child?.type?.name == 'pre') {
+            return React.cloneElement(child, { copyButton: false });
+          }
           return child;
         })}
       </div>
-    </button>
+    </Element>
   );
 };
 QuizMCAnswer.displayName = 'QuizMCAnswer';
