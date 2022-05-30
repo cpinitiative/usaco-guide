@@ -66,7 +66,7 @@ export default function MarkdownLayout({
   const { userProgressOnModules, setModuleProgress, lang } =
     useContext(UserDataContext);
   React.useEffect(() => {
-    // console.log('FOUND USERLANG: ' + lang);
+    console.log('FOUND USERLANG: ' + lang);
     if (lang !== 'showAll') {
       updateLangURL(lang);
     }
