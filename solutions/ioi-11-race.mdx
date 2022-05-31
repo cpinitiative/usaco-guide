@@ -11,12 +11,12 @@ author: Timothy Gao
 
 We are tasked with finding a path with the minimum number of traversed edges such that the path sum is $s$.
 First, we root the tree arbitrarily.
-Let $lca(u, v) = w$.
+Let $\texttt lca(u, v) = w$.
 We can break $path(u, v)$ into $path(u, w)$ and $path(v, w)$.
 
 Because $w$ must be an ancestor of both $u$ and $v$, $sum(u, w) = sum(u, root) - sum(w, root)$ and $sum(v, w) = sum(v, root) - sum(w, root)$ where $sum(a, b)$ is the sum of the path betwen the 2 nodes $a$ and $b$. We can compute $sum(i, root)$ for all $i$ in $O(N)$ with a simple DFS. We also compute $dist(i, root)$ where is the number of edges between $i$ and $root$ in similar fashion. 
 
-We perform small to large merging to find an $lca$ $i$ such that $sum(u, root) + sum(v, root) - 2 \cdot sum(i, root) = s$, and $dist(u, root) + dist(v, root) - 2 \cdot dist(i, root) = s$ is minimized. 
+We perform small to large merging to find an $\texttt lca$ $i$ such that $sum(u, root) + sum(v, root) - 2 \cdot sum(i, root) = s$, and $dist(u, root) + dist(v, root) - 2 \cdot dist(i, root) = s$ is minimized. 
 
 To accomplish this, we can use small to large merging. For each $i$, we maintain a map of key to value pair of $sum(root, j) : dist(root, j)$ for  distinct $sum(root, j)$ for all $j$ in the subtree of $i$. If there are duplicate $sum(root, j)$ we take the minimum $dist(root, j)$.
 
@@ -42,7 +42,7 @@ typedef pair<ll, ll> pii;
 #define f first
 #define s second
 
-const int maxn = 2e5 + 20;
+const int maxn = 2e5 + 1;
 vector<pii> adj[maxn];
 map<ll, ll> info[maxn];
 ll dist[maxn];
