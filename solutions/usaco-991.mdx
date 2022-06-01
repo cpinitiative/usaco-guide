@@ -75,18 +75,13 @@ with open('loan.in') as read:
 	n, k, m = map(int, read.readline().split())
 
 def check_which(mid):
-
 	g, cur = 0, k
-    
 	while g < n and cur:
 		y = (n - g) // mid
-
 		if y <= m:
 			g += m * cur
 			break
-
 		calc = min((n - mid * y - g) // y + 1, cur)
-
 		g += y * calc
 		cur -= calc
 
@@ -95,9 +90,7 @@ def check_which(mid):
 low, high = 1, n + 1
 
 while low + 1 < high:
-
 	middle = low + high >> 1
-	
 	if check_which(middle):
 		low = middle
 	else:
