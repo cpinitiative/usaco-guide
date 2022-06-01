@@ -110,7 +110,7 @@ def check(same_lvl: int, corn: [int], hunger_lvl: [int]) -> bool:
 	hunger_lvl[0] -= corn[0]
 	hunger_lvl[-1] -= corn[-1]
 
-	for i in range(1, len(hunger_lvl)-1):
+	for i in range(1, len(hunger_lvl) - 1):
 		sum_of_corn = corn[i-1] + corn[i]
 		hunger_lvl[i]-= sum_of_corn
 
@@ -155,7 +155,11 @@ for _ in range(int(input())):
 		corns[i] = (lvl[i] - corns[i - 1] - same_lvl)
 
 	works = check(same_lvl, corns, lvl)
-	print(sum(corns) * 2 if works else -1)
+	
+	if works:
+		print(sum(corns) * 2)
+	else:
+		print(-1)
 ```
 
 </PySection>
