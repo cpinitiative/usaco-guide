@@ -2,7 +2,7 @@
 id: usaco-1017
 source: USACO Gold 2020 February
 title: Timeline
-author: Sofia Yang
+author: Sofia Yang, Jeffrey Zhang
 ---
 
 ## Solution
@@ -14,7 +14,77 @@ author: Sofia Yang
 **Time Complexity:** $\mathcal{O}(N+M)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+void topo_sorting(
+	vector<vector<pair<int, int>>>& graph,
+	vector<bool>& visited,
+	vector<int>& toposort, int node
+) {
+	visited[node] = true;
+	for (auto i : graph[node]){
+		int a, b;
+		tie(a, b) = i;
+		if (visited[a]) {
+			continue;
+		}
+		topo_sorting(graph, visited, toposort, a);
+	}
+	toposort.push_back(node);
+}
+
+int main() {
+	ifstream fin("timeline.in");
+
+	int n, m, c;
+	fin >> n >> m >> c;
+	vector<int> start(n + 1);
+	for (int i = 1; i <= n; i++){
+		fin >> start[i];
+	}
+	
+	vector<vector<pair<int, int>>> graph(n + 1);
+	for (int i = 0; i < c; i++){
+		int a, b, c;
+		fin >> a >> b >> c;
+		graph[a].push_back(make_pair(b,c));
+	}
+
+	/*
+	 * Topologically sort the milking sessions,
+	 * starting from the earliest milking session.
+	 * Then, greedily set all its children's time to be
+	 * at least itself's time + edge weight.
+	 */
+	vector<bool> visited(n+1);
+	vector<int> toposort;
+	for (int i = 1; i <= n; i++){
+		if (visited[i]) {
+			continue;
+		}
+		topo_sorting(graph, visited, toposort, i);
+	}
+	for (int i = n - 1; i >= 0; i--){
+		for (auto j : graph[toposort[i]]){
+			int a, b;
+			tie(a, b) = j;
+			start[a] = max(start[a], start[toposort[i]] + b);
+		}
+	}
+	
+	ofstream fout("timeline.out");
+	for (int i = 1; i <= n; i++){
+		fout << start[i] << "\n";
+	}
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -94,5 +164,4 @@ public class timeline {
 ```
 
 </JavaSection>
-
 </LanguageSection>
