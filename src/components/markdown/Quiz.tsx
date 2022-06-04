@@ -42,8 +42,10 @@ const QuizMCAnswer = props => {
   const correctAnswers = useAtomValue(correctAnswersAtom, quizScope);
   const showVerdict =
     submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
+  const isCorrect = submitted && correctAnswers.includes(selectedAnswer);
+  const Element = isCorrect ? 'div' : 'button';
   return (
-    <button
+    <Element
       className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
       onClick={() => {
         if (!showVerdict) {
@@ -83,21 +85,34 @@ const QuizMCAnswer = props => {
               return null;
             }
           }
+          if (!isCorrect && child?.type?.name == 'pre') {
+            return React.cloneElement(child, { copyButton: false });
+          }
           return child;
         })}
       </div>
-    </button>
+    </Element>
   );
 };
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
-  let num = 0;
-  const correctAnswers = [];
   const setCorrectAnswers = useUpdateAtom(correctAnswersAtom, quizScope);
+  React.useEffect(() => {
+    const correctAnswers = [];
+    let answerNum = 0;
+    React.Children.map(props.children, child => {
+      if (child?.type?.displayName === 'QuizMCAnswer') {
+        if (child.props.correct) correctAnswers.push(answerNum);
+        answerNum++;
+      }
+    });
+    setCorrectAnswers(correctAnswers);
+  }, []);
+
+  let num = 0;
   const answerChoices = React.Children.map(props.children, child => {
     if (child?.type?.displayName === 'QuizMCAnswer') {
-      if (child.props.correct) correctAnswers.push(num);
       return React.cloneElement(child, {
         number: num++,
       });
@@ -105,7 +120,6 @@ const QuizQuestion = props => {
       return child;
     }
   });
-  setCorrectAnswers(correctAnswers);
   return <div className="space-y-2">{answerChoices}</div>;
 };
 QuizQuestion.displayName = 'QuizQuestion';
