@@ -34,9 +34,11 @@ const GroupSelectPage = (props: { path: string }) => {
         <div className="max-w-3xl px-4 lg:px-8 mx-auto py-16">
           <div className="flex items-center justify-between">
             <h1 className="text-xl md:text-3xl font-bold">My Groups</h1>
-            <button className="btn" onClick={handleCreateNewGroup}>
-              Create New Group
-            </button>
+            {!showLoading && !showNotSignedInMessage ? (
+              <button className="btn" onClick={handleCreateNewGroup}>
+                Create New Group
+              </button>
+            ) : null}
           </div>
           <hr className="mt-6 mb-8 dark:border-gray-700" />
           {showNotSignedInMessage && (
