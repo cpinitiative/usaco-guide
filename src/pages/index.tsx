@@ -49,6 +49,8 @@ const whiteButtonClasses =
   'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
 const usacoTitleClasses =
   'md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl';
+const linkTextStyles =
+  'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -290,7 +292,7 @@ export default function IndexPage(): JSX.Element {
               href="https://forum.usaco.guide/"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300"
+              className={linkTextStyles}
             >
               View Forum &rarr;
             </a>
@@ -516,7 +518,7 @@ export default function IndexPage(): JSX.Element {
                 href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-400 transition hover:text-purple-400"
+                className={linkTextStyles}
               >
                 Donate via PayPal
               </a>
@@ -529,7 +531,7 @@ export default function IndexPage(): JSX.Element {
               href="https://joincpi.org/sponsorship_prospectus.pdf"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-400 transition hover:text-purple-400"
+              className={linkTextStyles}
             >
               {' '}
               sponsorship prospectus
