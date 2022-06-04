@@ -20,7 +20,7 @@ author: Chongtian Ma
 using namespace std;
 const int INF = 1e9;
 
-int main(){
+int main() {
 	int k;
 	scanf("%d", &k);
 	
@@ -32,22 +32,22 @@ int main(){
 	dist[1] = 1;
 	q.push_front(1);
 	
-	while(!q.empty()){
+	while (!q.empty()) {
 		int cur = q.front();
 		q.pop_front();
 		
 		// case 1: we append an extra 0 at the end (NO EXTRA COST)
-		int case_1 = cur * 10 % k;
-		if(dist[cur] < dist[case_1]){
-			dist[case_1] = dist[cur];
-			q.push_front(case_1);
+		int case1 = cur * 10 % k;
+		if (dist[cur] < dist[case1]) {
+			dist[case1] = dist[cur];
+			q.push_front(case1);
 		}
 		
 		// case 2: we add one to cur but also increase the digit sum
-		int case_2 = (cur + 1) % k;
-		if(dist[cur] + 1 < dist[case_2]){
-			dist[case_2] = dist[cur] + 1;
-			q.push_back(case_2);
+		int case2 = (cur + 1) % k;
+		if (dist[cur] + 1 < dist[case2]) {
+			dist[case2] = dist[cur] + 1;
+			q.push_back(case2);
 		}
 	}
 	
