@@ -2,7 +2,7 @@
 id: usaco-809
 source: USACO Bronze 2018 Febuary
 title: Taming the Herd
-author: Sathvik Chundru
+author: Sathvik Chundru, Aditya Gupta
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_bronze_feb18.html)
@@ -10,6 +10,89 @@ author: Sathvik Chundru
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+	freopen("taming.in", "r", stdin);
+	freopen("taming.out", "w", stdout);
+	int n, min_ans = 0, max_ans = 0;
+	bool valid = true;
+	cin >> n;
+	/*
+	 * A status of 2 means a breakout happened on day n.
+	 * A status of 1 means a breakout did not happen on day n.
+	 * A status of 0 means we are not sure what happened on day n.
+	 */
+	int status[n] = {0};
+	status[0] == 2; //first day is a special case
+	int log[n]; // log for each day
+	for(int i = 0; i < n; i++){
+		cin >> log[i];
+	}
+	if(log[0] == 1){
+		valid = false; // we found a discrepancy
+	}
+	else status[0] = 2; //the problem says the first day had a breakout
+	
+	// we go through our log, updating our status array accordingly
+	for(int i = 1; i < n; i++){
+		if(!valid) break;
+		int curr_n = log[i];
+		if(curr_n == -1){
+	        	continue; // we have no log for this day, so we continue to the next day
+        	}
+		else if(curr_n == 0){
+			status[i] = 2; // this means that we have a breakout on this day
+        	}
+		else{
+			// we now process the curr_n days, checking for discrepancies along the way
+			status[i] = 1; // the current day does not have a breakout
+			int curr_index = i - 1;
+			curr_n--;
+            		while(curr_n > 0 && curr_index > -1){
+                		if(status[curr_index] == 0 || status[curr_index] == 1){
+                    			status[curr_index] = 1;
+                		}
+                		else{
+                    			// we found a discrepancy
+                    			valid = false;
+                    			break;
+                		}
+                		curr_n--;
+                		curr_index--;
+            		}
+            		//we check the day that the log tells us a breakout happened on
+            		if(curr_index > -1 && (status[curr_index] == 0 || status[curr_index] == 2)){
+				status[curr_index] = 2;
+			}
+            		else valid = false; // we found a discrepancy
+		}
+	}
+    	// print the correct answer based on whether the log is consistent
+    	if(valid) {
+        	for(auto i: status){
+			if(i == 2) {
+				// days that have a status of 2 are breakouts for sure, so they count in both answers
+				min_ans++;
+				max_ans++;
+			}
+        		else if(i == 0) max_ans++; // for days with no required status, we can assume they have a breakout for our max_ans
+        	}
+        	cout << min_ans << " " << max_ans << "\n";
+    	}
+    	else cout << -1 << "\n"; // there is no valid sequence
+    	return 0;
+}
+```
+</CPPSection>
 
 <JavaSection>
 	
