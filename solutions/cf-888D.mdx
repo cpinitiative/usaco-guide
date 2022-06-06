@@ -23,7 +23,7 @@ In this permutation, the first element is still in this same place, which is not
 
 Thus, we need to find all permutations where all the elements are out of place. However, since k is relatively small, we can brute force permutations to find the number of valid permutations.
 
-We can add the number of valid permutations times the number of ways to choose a permutation of that length.
+We can add the number of valid permutations multiplied by the number of ways to choose a permutation of that length.
 
 ## Implementation
 
@@ -37,23 +37,26 @@ We can add the number of valid permutations times the number of ways to choose a
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
- 
+
 int main() {
   int n, k; cin >> n >> k;
-  ll c[n + 1][k + 1];
-  for (int i = 0; i <= n; i++) {
-    for (int j = 0; j <= k; j++) c[i][j] = 0;
-  }
+  
+  // Use Pascal's Identity to precalculate combinations
+  ll c[n + 1][k + 1]; fill_n(&c[0][0], (n + 1) * (k + 1), 0);
   for (int i = 0; i <= n; i++) {c[i][0] = 1;}
   for (int i = 1; i <= n; i++) {
     for (int j = 1; j <= k; j++) {
       c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
     }
   }
+  
   ll ans = 0;
+  // Iterate over number of positions to shuffle
   for (int i = 0; i <= k; i++) {
+  
+    // Calculate number of valid permutations result in all positions shuffled
     int a[i]; for (int j = 0; j < i; j++) a[j] = j;
     int amt = 0;
     do {
@@ -62,9 +65,11 @@ int main() {
         if (a[j] == j) valid = 0;
       if (valid) amt++;
     } while (next_permutation(a, a + i));
- 
+    
+    // Add the number of valid permutations multiplied by the number of ways to choose this permutation
     ans += c[n][i] * amt;
   }
+  
   cout << ans << endl;
 }
 ```
