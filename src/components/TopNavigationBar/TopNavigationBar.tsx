@@ -20,10 +20,7 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useContext, useState } from 'react';
-import MODULE_ORDERING, {
-  SECTIONS,
-  SECTION_LABELS,
-} from '../../../content/ordering';
+import MODULE_ORDERING from '../../../content/ordering';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
@@ -151,29 +148,6 @@ export default function TopNavigationBar({
     },
   ];
 
-  const mobileLinks = [
-    {
-      label: 'Dashboard',
-      url: '/dashboard/',
-    },
-    ...SECTIONS.map(section => ({
-      label: SECTION_LABELS[section],
-      url: `/${section}/`,
-    })),
-    {
-      label: 'Problems',
-      url: '/problems/',
-    },
-    ...(userGroups.data?.length > 0
-      ? [
-          {
-            label: 'Groups',
-            url: '/groups',
-          },
-        ]
-      : []),
-  ];
-
   return (
     <>
       {!hideClassesPromoBar && (
@@ -270,28 +244,26 @@ export default function TopNavigationBar({
                           >
                             <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                               <div className="relative grid gap-6 bg-white dark:bg-gray-800 px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2">
-                                {userGroups.data?.length > 0 && (
-                                  <Link
-                                    to="/groups/"
-                                    className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
-                                  >
-                                    <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
-                                      <UserGroupIcon
-                                        className="h-6 w-6"
-                                        aria-hidden="true"
-                                      />
-                                    </div>
-                                    <div className="ml-4">
-                                      <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
-                                        Groups
-                                      </p>
-                                      <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
-                                        A Learning Management System fully
-                                        integrated with the USACO Guide.
-                                      </p>
-                                    </div>
-                                  </Link>
-                                )}
+                                <Link
+                                  to="/groups/"
+                                  className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                                >
+                                  <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                    <UserGroupIcon
+                                      className="h-6 w-6"
+                                      aria-hidden="true"
+                                    />
+                                  </div>
+                                  <div className="ml-4">
+                                    <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
+                                      Groups
+                                    </p>
+                                    <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
+                                      A Learning Management System fully
+                                      integrated with the USACO Guide.
+                                    </p>
+                                  </div>
+                                </Link>
                                 {resources.map(item => (
                                   <a
                                     key={item.name}
@@ -471,6 +443,18 @@ export default function TopNavigationBar({
             </div>
             <div className="py-5 px-4">
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                <Link
+                  to="/groups/"
+                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <UserGroupIcon
+                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Groups
+                  </span>
+                </Link>
                 {resources.map(item => (
                   <a
                     key={item.name}
