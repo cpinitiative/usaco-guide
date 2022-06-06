@@ -56,24 +56,28 @@ int main() {
 	int leftmoves = moves / 2;
 	
 	for (int i = 0; i < (1 << leftmoves); i++) {
-		ll r = 0, c = 0, xorsum = grid[0][0];
+		ll r = 0
+		ll c = 0;
+		ll xorsum = grid[0][0];
 		bool in_grid = true;
 		for (int j = 0; j < leftmoves; j++) {
 			/*
-			 if the j'th bit is a 1, then we increase row number,
-			 otherwise we increase col
+			 * if the j'th bit is a 1, then we increase row number,
+			 * otherwise we increase col
 			 */
-			 if (i & (1 << j)) {
-			 	r++;
-			 }
-			 else c++;
+			if (i & (1 << j)) {
+				r++;
+			}
+			else {
+				c++;
+			}
 			 
-			 if (r >= n || c >= m) {
+			if (r >= n || c >= m) {
 			 	// this subset leads to out of the grid
 			 	in_grid = false;
 			 	break;
-			 }
-			 xorsum ^= grid[r][c];
+			}
+			xorsum ^= grid[r][c];
 		}
 		if (in_grid) {
 			left[r][c][xorsum]++;
@@ -85,24 +89,28 @@ int main() {
 	// here we do the same thing, but we are going up from (n - 1, m - 1)
 	int rightmoves = moves - leftmoves - 1; // note the minus 1
 	for (int i = 0; i < (1 << rightmoves); i++) {
-		ll r = n - 1, c = m - 1, xorsum = grid[n - 1][m - 1];
+		ll r = 0
+		ll c = 0;
+		ll xorsum = grid[n - 1][m - 1];
 		bool in_grid = true;
 		for (int j = 0; j < rightmoves; j++) {
 			/*
-			 if the j'th bit is a 1, then we decrease row number,
-			 otherwise we decrease col
+			 * if the j'th bit is a 1, then we decrease row number,
+			 * otherwise we decrease col
 			 */
-			 if (i & (1 << j)) {
+			if (i & (1 << j)) {
 			 	r--;
-			 }
-			 else c--;
+			}
+			else {
+				c++;
+			}
 			 
-			 if (r < 0 || c < 0) {
+			if (r < 0 || c < 0) {
 			 	// out of the grid
 			 	in_grid = false;
 			 	break;
-			 }
-			 xorsum ^= grid[r][c];
+			}
+			xorsum ^= grid[r][c];
 		}
 		if (in_grid) {
 			// number of ways we merge the two sides so total xor is k
@@ -119,7 +127,6 @@ int main() {
 	}
 	
 	cout << answer << endl;
-		
 }
 ```
   
