@@ -19,8 +19,7 @@ author: Sathvik Chundru, Aditya Gupta
 
 using namespace std;
 
-int main()
-{
+int main() {
 	freopen("taming.in", "r", stdin);
 	freopen("taming.out", "w", stdout);
 	int n;
@@ -32,21 +31,22 @@ int main()
 	 * A status of 0 means we are not sure what happened on day n.
 	 */
 	int status[n] = {0};
-	status[0] == 2; //first day is a special case
+	status[0] == 2;  // first day is a special case
 	int log[n];  // log for each day
 	for (int i = 0; i < n; i++) {
 		cin >> log[i];
 	}
-	if(log[0] == 1){
+	if (log[0] == 1) {
 		valid = false; // we found a discrepancy
+	} else {
+		status[0] = 2; // the problem says the first day had a breakout
 	}
-	else status[0] = 2; //the problem says the first day had a breakout
 	
 	// we go through our log, updating our status array accordingly
-	for(int i = 1; i < n; i++){
-		if(!valid) break;
+	for (int i = 1; i < n; i++) {
+		if (!valid) break;
 		int curr_n = log[i];
-		if(curr_n == -1){
+		if (curr_n == -1) {
 	        	continue; // we have no log for this day, so we continue to the next day
         	} else if (curr_n == 0) {
 			status[i] = 2; // this means that we have a breakout on this day
@@ -56,7 +56,7 @@ int main()
 			int curr_index = i - 1;
 			curr_n--;
             		while(curr_n > 0 && curr_index > -1){
-                		if(status[curr_index] == 0 || status[curr_index] == 1){
+                		if (status[curr_index] == 0 || status[curr_index] == 1) {
                     			status[curr_index] = 1;
                 		} else {
                     			// we found a discrepancy
@@ -66,8 +66,8 @@ int main()
                 		curr_n--;
                 		curr_index--;
             		}
-			//we check the day that the log tells us a breakout happened on
-			if(curr_index > -1 && (status[curr_index] == 0 || status[curr_index] == 2)){
+			// we check the day that the log tells us a breakout happened on
+			if (curr_index > -1 && (status[curr_index] == 0 || status[curr_index] == 2)) {
 				status[curr_index] = 2;
 			}
 			else valid = false; // we found a discrepancy
@@ -76,14 +76,14 @@ int main()
 	int min_ans = 0;
 	int max_ans = 0;
     	// print the correct answer based on whether the log is consistent
-    	if(valid) {
-        	for(auto i: status){
+    	if (valid) {
+        	for (auto i: status) {
 			if(i == 2) {
 				// days that have a status of 2 are breakouts, so they count in both answers
 				min_ans++;
 				max_ans++;
 			}
-        		else if(i == 0) max_ans++; // days with no required status are assumed to have a breakout for max_ans
+        		else if (i == 0) max_ans++; // days with no required status are assumed to have a breakout for max_ans
 		}
 		cout << min_ans << " " << max_ans << "\n";
 	}
