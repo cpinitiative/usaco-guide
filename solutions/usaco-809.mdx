@@ -37,39 +37,41 @@ int main() {
 	}
 	bool valid = true;
 	if (log[0] == 1) {
-		valid = false; // we found a discrepancy
+		valid = false;  // we found a discrepancy
 	} else {
-		status[0] = 2; // the problem says the first day had a breakout
+		status[0] = 2;  // the problem says the first day had a breakout
 	}
 	
 	// we go through our log, updating our status array accordingly
 	for (int i = 1; i < n; i++) {
-		if (!valid) break;
+		if (!valid) {
+			break;
+		}
 		if (log[i] == -1) {
-	        	continue; // we have no log for this day, so we continue to the next day
+	        	continue;  // we have no log for this day, so we continue to the next day
         	} else if (log[i] == 0) {
-			status[i] = 2; // this means that we have a breakout on this day
+			status[i] = 2;  // this means that we have a breakout on this day
         	} else {
 			// we now process the log[i] days, checking for discrepancies along the way
-			status[i] = 1; // the current day does not have a breakout
+			status[i] = 1;  // the current day does not have a breakout
 			int curr_index = i - 1;
 			log[i]--;
-            		while (log[i] > 0 && curr_index > -1) {
-                		if (status[curr_index] == 0 || status[curr_index] == 1) {
-                    			status[curr_index] = 1;
-                		} else {
-                    			// we found a discrepancy
-                    			valid = false;
-                    			break;
+			while (log[i] > 0 && curr_index > -1) {
+				if (status[curr_index] == 0 || status[curr_index] == 1) {
+					status[curr_index] = 1;
+				} else {
+					// we found a discrepancy
+					valid = false;
+					break;
                 		}
-                		log[i]--;
-                		curr_index--;
+				log[i]--;
+				curr_index--;
             		}
 			// we check the day that the current log says a breakout happened on
 			if (curr_index > -1 && (status[curr_index] == 0 || status[curr_index] == 2)) {
 				status[curr_index] = 2;
 			} else {
-				valid = false; // we found a discrepancy
+				valid = false;  // we found a discrepancy
 			}
 		}
 	}
@@ -88,7 +90,7 @@ int main() {
 		}
 		cout << min_ans << " " << max_ans << "\n";
 	} else {
-		cout << -1 << "\n"; // there is no valid sequence
+		cout << -1 << "\n";  // there is no valid sequence
 	}
 }
 ```
