@@ -29,7 +29,7 @@ int main() {
 	 * A status of 1 means a breakout did not happen on day n.
 	 * A status of 0 means we are not sure what happened on day n.
 	 */
-	vector<int> status(n,0);
+	vector<int> status(n, 0);
 	status[0] == 2;  // a breakout must occur on the first day
 	vector<int> log(n);  // log for each day
 	for (int i = 0; i < n; i++) {
@@ -45,17 +45,16 @@ int main() {
 	// we go through our log, updating our status array accordingly
 	for (int i = 1; i < n; i++) {
 		if (!valid) break;
-		int curr_n = log[i];  // the current day's log
-		if (curr_n == -1) {
+		if (log[i] == -1) {
 	        	continue; // we have no log for this day, so we continue to the next day
-        	} else if (curr_n == 0) {
+        	} else if (log[i] == 0) {
 			status[i] = 2; // this means that we have a breakout on this day
         	} else {
-			// we now process the curr_n days, checking for discrepancies along the way
+			// we now process the log[i] days, checking for discrepancies along the way
 			status[i] = 1; // the current day does not have a breakout
 			int curr_index = i - 1;
-			curr_n--;
-            		while (curr_n > 0 && curr_index > -1) {
+			log[i]--;
+            		while (log[i] > 0 && curr_index > -1) {
                 		if (status[curr_index] == 0 || status[curr_index] == 1) {
                     			status[curr_index] = 1;
                 		} else {
@@ -63,7 +62,7 @@ int main() {
                     			valid = false;
                     			break;
                 		}
-                		curr_n--;
+                		log[i]--;
                 		curr_index--;
             		}
 			// we check the day that the current log says a breakout happened on
