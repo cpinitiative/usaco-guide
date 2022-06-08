@@ -1,0 +1,108 @@
+---
+id: cf-782B
+source: CF
+title: The Meeting Place Cannot Be Changed
+author: Aditya Gupta
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/50854)
+
+**Time Complexity:** $\mathcal{O}(N\log M)$ where $M$ is the farthest north location
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+vector<double> locations;
+vector<double> speeds;
+
+double min_ans = (double) INT_MAX, curr_ans;
+bool left_has_max = false, right_has_max = false;  // which side gives us max answer
+
+double solve(double loc){
+	double curr_ans = 0;
+	for (int i = 0; i < locations.size(); i++) {
+		if (locations[i] == loc) {
+			continue;
+		}
+		double i_time = abs(locations[i] - loc) / speeds[i];  // amount of time for ith friend to get to loc
+		if (i_time > curr_ans) {
+			left_has_max = false;  // reset to false, as we have a new maximum
+			right_has_max = false;  // reset to false, as we have a new maximum
+			if (locations[i] > loc) {
+				right_has_max = true;
+			}
+			else {
+				left_has_max = true;
+			}
+			curr_ans = i_time;
+		} else if (i_time == curr_ans) {
+			// notice that we don't reset the 2 booleans to false, because we can have a max on both sides
+			if (locations[i] > loc) {
+				right_has_max = true;
+			}
+			else {
+				left_has_max = true;
+			}
+		}
+	}
+	return curr_ans;  // returns the max time from this answer
+}
+
+int main()
+{
+  int n;
+	cin >> n;
+	locations.resize(n);
+	speeds.resize(n);
+
+	double low = 0;
+	double high = 0;  // high will be the location of the farthest north friend
+	double mid;
+	
+	for (int i = 0; i < n; i++) {
+		cin >> locations[i];
+		high = max(high,locations[i]);
+	}
+	for (int i = 0; i < n; i++) {
+		cin >> speeds[i];
+	}
+	
+	/*
+	 * We binary search on the location where friends meet up.
+	 * Since we want a precision of 10e-6, we stop when the difference
+	 * between high and low is less than 10e-6.
+	 */ 
+	while (low < high && high - low > .000001) {
+		mid = (high + low) / 2;
+		curr_ans = solve(mid);  // gets answer if friends were to meet at mid
+		min_ans = min(min_ans, curr_ans);
+		
+		/*
+		 * If the max answer comes from both sides, regardless of where we
+		 * decide to go next, our answer will only increase. 
+		 * If the max answer comes from one side of mid, we move towards that side,
+		 * as moving towards the other side will only increase the answer.
+		 */ 
+		if (left_has_max && right_has_max) {
+			break; 
+		} else if (left_has_max) {
+			high = mid;
+		} else {
+			low = mid;
+		}
+	}
+	cout << setprecision(13) << min_ans << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
