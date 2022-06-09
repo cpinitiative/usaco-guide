@@ -26,7 +26,10 @@ using std::vector;
 const int MAX_COLOR = 9;
 
 int main() {
-	// The first element won't be used (colors go from 1-9)
+	/*
+	 * Bounding boxes of each of the colors.
+	 * The first element won't be used (colors go from 1-9)
+	 */
 	vector<int> left(MAX_COLOR + 1);
 	vector<int> right(MAX_COLOR + 1);
 	vector<int> up(MAX_COLOR + 1);
@@ -47,7 +50,7 @@ int main() {
 			read >> curr_char;
 			int curr = curr_char - '0';
 			art[r][c] = curr;
-			if (curr) {
+			if (curr != 0) {
 				left[curr] = std::min(left[curr], c);
 				right[curr] = std::max(right[curr], c);
 				down[curr] = std::max(down[curr], r);
@@ -57,10 +60,10 @@ int main() {
 		}
 	}
 
-	for (int col = 1; col <= MAX_COLOR; col++) {
-		for (int r = up[col]; r <= down[col]; r++) {
-			for (int c = left[col]; c <= right[col]; c++) {
-				if (art[r][c] != col) {
+	for (int color = 1; color <= MAX_COLOR; color++) {
+		for (int r = up[color]; r <= down[color]; r++) {
+			for (int c = left[color]; c <= right[color]; c++) {
+				if (art[r][c] != color) {
 					valid_start[art[r][c]] = false;
 				}
 			}
@@ -69,7 +72,7 @@ int main() {
 
 	int total_starts = 0;
 	for (bool s : valid_start) {
-		total_starts += s;
+		total_starts += s ? 1 : 0;
 	}
 	std::ofstream("art.out") << total_starts << endl;
 }
@@ -79,6 +82,8 @@ int main() {
 <JavaSection>
 
 ```java
+package testing;
+
 import java.io.*;
 
 public class Art {
@@ -88,7 +93,10 @@ public class Art {
 		BufferedReader read = new BufferedReader(new FileReader("art.in"));
 		int width = Integer.parseInt(read.readLine());
 
-		// The first element won't be used (colors go from 1-9)
+		/*
+		 * Bounding boxes of each of the colors.
+		 * The first element won't be used (colors go from 1-9)
+		 */
 		int[] left = new int[MAX_COLOR + 1];
 		int[] right = new int[MAX_COLOR + 1];
 		int[] down = new int[MAX_COLOR + 1];
@@ -115,10 +123,10 @@ public class Art {
 			}
 		}
 
-		for (int col = 1; col <= MAX_COLOR; col++) {
-			for (int r = up[col]; r <= down[col]; r++) {
-				for (int c = left[col]; c <= right[col]; c++) {
-					if (art[r][c] != col) {
+		for (int color = 1; color <= MAX_COLOR; color++) {
+			for (int r = up[color]; r <= down[color]; r++) {
+				for (int c = left[color]; c <= right[color]; c++) {
+					if (art[r][c] != color) {
 						validStart[art[r][c]] = false;
 					}
 				}
@@ -143,14 +151,17 @@ public class Art {
 ```py
 MAX_COLOR = 9
 
-# The first element won't be used (colors go from 1-9)
+"""
+Bounding boxes of each of the colors.
+The first element won't be used (colors go from 1-9)
+"""
 left = [0] * (MAX_COLOR + 1)
 right = [0] * (MAX_COLOR + 1)
 down = [0] * (MAX_COLOR + 1)
 up = [0] * (MAX_COLOR + 1)
-for col in range(1, MAX_COLOR + 1):
-	left[col], up[col] = float('inf'), float('inf')
-	right[col], down[col] = -1, -1
+for c in range(1, MAX_COLOR + 1):
+	left[c], up[c] = float('inf'), float('inf')
+	right[c], down[c] = -1, -1
 
 valid_start = [False] * MAX_COLOR
 with open('art.in') as read:
@@ -159,7 +170,7 @@ with open('art.in') as read:
 	for r in range(n):
 		art[r] = [int(x) for x in read.readline().strip()]
 		for c in range(n):
-			if art[r][c]:
+			if art[r][c] != 0:
 				curr = art[r][c]
 				left[curr] = min(left[curr], c)
 				right[curr] = max(right[curr], c)
@@ -167,13 +178,13 @@ with open('art.in') as read:
 				up[curr] = min(up[curr], r)
 				valid_start[curr] = True
 
-for col in range(1, MAX_COLOR + 1):
-	if any(p[col] == float('inf') for p in [left, right, down, up]):
+for color in range(1, MAX_COLOR + 1):
+	if any(p[color] == float('inf') for p in [left, right, down, up]):
 		continue
 
-	for c in range(int(up[col]), int(down[col] + 1)):
-		for k in range(int(left[col]), int(right[col] + 1)):
-			if art[c][k] != col:
+	for c in range(int(up[color]), int(down[color] + 1)):
+		for k in range(int(left[color]), int(right[color] + 1)):
+			if art[c][k] != color:
 				valid_start[art[c][k]] = False
 
 print(sum(valid_start), file=open('art.out', 'w'))
