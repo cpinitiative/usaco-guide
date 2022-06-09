@@ -7,6 +7,12 @@ author: Aditya Gupta
 
 [Official Analysis](https://codeforces.com/blog/entry/50854)
 
+## Explanation
+
+We can binary search on the location where the friends will meet up. Since we want a precision of $10^{-6}$, we stop when the difference between high and low is less than $10^{-6}$. 
+
+Whenever we are calculating the answer, we take note of which side the maximum answer came from. If the max answer comes from both sides, regardless of where we, decide to go next, our answer will only increase, so we return that answer. Else, if it comes from only one side of the point that we just calculated, we move our search towards that side, as moving it towards the other side will only increase our answer. 
+
 **Time Complexity:** $\mathcal{O}(N\log M)$ where $M$ is the farthest north location
 
 <LanguageSection>
@@ -57,7 +63,7 @@ double solve(double loc) {
 
 int main()
 {
-  int n;
+	int n;
 	cin >> n;
 	locations.resize(n);
 	speeds.resize(n);
@@ -74,22 +80,10 @@ int main()
 		cin >> speeds[i];
 	}
 	
-	/*
-	 * We binary search on the location where friends meet up.
-	 * Since we want a precision of 10e-6, we stop when the difference
-	 * between high and low is less than 10e-6.
-	 */ 
 	while (low < high && high - low > .000001) {
 		mid = (high + low) / 2;
 		curr_ans = solve(mid);  // gets answer if friends were to meet at mid
 		min_ans = min(min_ans, curr_ans);
-		
-		/*
-		 * If the max answer comes from both sides, regardless of where we
-		 * decide to go next, our answer will only increase. 
-		 * If the max answer comes from one side of mid, we move towards that side,
-		 * as moving towards the other side will only increase the answer.
-		 */ 
 		if (left_has_max && right_has_max) {
 			break; 
 		} else if (left_has_max) {
