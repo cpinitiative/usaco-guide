@@ -299,12 +299,13 @@ def gravity(graph, s, coords):
 
 # bfs to mark all connected regions
 def mark_connected(x, y, graph, visited):
-	
+    
 	q = deque()
 	q.append((x, y))
-        visited[y][x] = True
-        coords = [(x, y)]
+	visited[y][x] = True
+	coords = [(x, y)]
 	
+
 	while q:
 		x, y = q.pop()
 		for dx, dy in DIRECTIONS:
@@ -325,11 +326,11 @@ def mooyo(graph):
 
 	for i in range(a):
 		for j in range(10):
-		# check if visited
-		    if graph[i][j] != 0 and not visited[i][j]:
-			temp = mark_connected(j, i, graph, visited)
-			if len(temp) >= b:
-			    all_coords += temp
+			# check if visited
+			if graph[i][j] != 0 and not visited[i][j]:
+				temp = mark_connected(j, i, graph, visited)
+				if len(temp) >= b:
+					all_coords += temp
 
 	if not all_coords:
 		return graph
