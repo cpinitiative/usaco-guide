@@ -78,11 +78,9 @@ export default function IndexPage(): JSX.Element {
             <div className="h-24"></div>
 
             <div className="flex md:justify-center dark:hidden">
-              <GlowingText
-                className={classNames(usacoTitleClasses, 'text-black mt-4')}
-              >
+              <div className={classNames(usacoTitleClasses, 'text-black mt-4')}>
                 USACO Guide
-              </GlowingText>
+              </div>
             </div>
             <div className="flex md:justify-center invisible h-0 dark:visible dark:h-auto">
               <GlowingText
@@ -306,11 +304,7 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
           <div className="dark:hidden">
-            <GlowingText
-              className={classNames(headerClassesNoText, 'text-black')}
-            >
-              Trusted by thousands.
-            </GlowingText>
+            <h1 className={classNames(headerClasses)}>Trusted by thousands</h1>
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
@@ -426,11 +420,7 @@ export default function IndexPage(): JSX.Element {
 
         <div className={containerClasses}>
           <div className="dark:hidden">
-            <GlowingText
-              className={classNames(headerClassesNoText, 'text-black')}
-            >
-              Join our Team.
-            </GlowingText>
+            <h1 className={classNames(headerClasses)}>Join our Team.</h1>
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
@@ -477,11 +467,9 @@ export default function IndexPage(): JSX.Element {
           <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
 
           <div className="dark:hidden">
-            <GlowingText
-              className={classNames(headerClassesNoText, 'text-gray-800')}
-            >
+            <h1 className={classNames(headerClasses)}>
               Or, help us financially!
-            </GlowingText>
+            </h1>
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
