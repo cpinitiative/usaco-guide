@@ -19,9 +19,9 @@ For more information about centroids and how to find/use them, see
 using namespace std;
 
 const int maxn = 2e5 + 5;
-int n;				// number of nodes
+int n;  // number of nodes
 vector<int> g[maxn];  // graph
-int s[maxn];		  // size of subtree
+int s[maxn];  // size of subtree
 
 void dfs_size(int cur, int par) {
 	s[cur] = 1;
@@ -43,7 +43,6 @@ int get_centroid(int cur, int par) {
 }
 
 int main() {
-	// input
 	cin >> n;
 	for (int i = 1; i < n; i++) {
 		int a, b;
@@ -69,7 +68,6 @@ public class Centroid {
 	private static int n; // number of nodes
 	private static List<List<Integer>> graph;
 	private static int[] sub_array_size;
-	private static Kattio io;
 
 	private static void dfs_size(int curr, int prev) {
 		// size of a subtree is the sum of the sizes of all child subtrees + 1.
@@ -82,8 +80,10 @@ public class Centroid {
 	}
 
 	private static int get_centroid(int curr, int prev) {
-		// if possible, move towards the adjacent node with the subtree size greater
-		// than n / 2. Otherwise, we have found our centroid.
+		/*
+		 * if possible, move towards the adjacent node with the subtree size
+		 * greater than n / 2. Otherwise, we have found our centroid.
+		 */
 		for (int next : graph.get(curr)) {
 			if (next == prev) continue;
 			if (sub_array_size[next] * 2 > n) {
@@ -94,7 +94,7 @@ public class Centroid {
 	}
 
 	public static void main(String[] args) {
-		io = new Kattio();
+		Kattio io = new Kattio();
 		n = io.nextInt();
 		graph = new ArrayList<>();
 		for (int i = 0; i <= n; i++) {
@@ -110,7 +110,7 @@ public class Centroid {
 
 		dfs_size(1, -1);
 
-		System.out.println(get_centroid(1, -1));
+		io.println(get_centroid(1, -1));
 
 		io.close();
 	}
