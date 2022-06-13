@@ -2,7 +2,7 @@
 id: usaco-690
 source: USACO Silver 2017 January
 title: Cow Dance Show
-author: Óscar Garries, Juheon Rhee
+author: Óscar Garries, Juheon Rhee, Brad Ma
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
@@ -98,5 +98,74 @@ print(left, file=open('cowdance.out', 'w'))
 ```
 
 </PySection>
+	
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowDanceShow {
+    static int[] danceTimes;
+    static int n;
+    static int maxTime;
+
+    static boolean isOk (int stageSize) {
+        PriorityQueue<Integer> currentDancing = new PriorityQueue<>();
+
+        for (int x = 0; x < n; x++) {
+            if (currentDancing.size() < stageSize) {
+                currentDancing.add(danceTimes[x]);
+            }
+            else {  // the priority queue is at max capacity
+                // add the next cow in line to the one that will finish the first
+                currentDancing.add(currentDancing.remove() + danceTimes[x]);
+            }
+        }
+
+        int lastFinish = Integer.MAX_VALUE;
+        while (currentDancing.size() > 0) {  // keep removing until it is empty to get the last element
+            lastFinish = currentDancing.remove();
+        }
+        if (lastFinish > maxTime) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void main (String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("cowdance.in"));
+        PrintWriter pw = new PrintWriter(new FileWriter("cowdance.out"));
+
+        StringTokenizer inputLine = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(inputLine.nextToken());
+        maxTime = Integer.parseInt(inputLine.nextToken());
+        danceTimes = new int[n];
+
+        for (int x = 0; x < n; x++) {
+            int timeDancing = Integer.parseInt(br.readLine());
+            danceTimes[x] = timeDancing;
+        }
+
+        int low = 1;  // the lowest is only can fit one cow
+        int high = n;  // the highest needed is fitting all of the cows at once
+
+        while (low < high) {  // binary search
+            int mid = (low + high) / 2;
+            if (isOk(mid)) {
+                high = mid;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+
+        pw.println(low);
+        pw.close();
+    }
+}
+```
+	
+</JavaSection>
 
 </LanguageSection>
