@@ -106,64 +106,61 @@ import java.io.*;
 import java.util.*;
 
 public class CowDanceShow {
-    static int[] danceTimes;
-    static int n;
-    static int maxTime;
+	static int[] danceTimes;
+	static int n;
+	static int maxTime;
 
-    static boolean isOk (int stageSize) {
-        PriorityQueue<Integer> currentDancing = new PriorityQueue<>();
+	static boolean isOk (int stageSize) {
+		PriorityQueue<Integer> currentDancing = new PriorityQueue<>();
 
-        for (int x = 0; x < n; x++) {
-            if (currentDancing.size() < stageSize) {
-                currentDancing.add(danceTimes[x]);
-            }
-            else {  // the priority queue is at max capacity
-                // add the next cow in line to the one that will finish the first
-                currentDancing.add(currentDancing.remove() + danceTimes[x]);
-            }
-        }
+		for (int x = 0; x < n; x++) {
+			if (currentDancing.size() < stageSize) {
+				currentDancing.add(danceTimes[x]);
+			}
+			else {  // the priority queue is at max capacity
+				// add the next cow in line to the one that will finish the first
+				currentDancing.add(currentDancing.remove() + danceTimes[x]);
+			}
+		}
 
-        int lastFinish = Integer.MAX_VALUE;
-	// keep removing until it is empty to get the last element
-        while (currentDancing.size() > 0) {  
-            lastFinish = currentDancing.remove();
-        }
-        if (lastFinish > maxTime) {
-            return false;
-        }
-        return true;
-    }
+		int lastFinish = Integer.MAX_VALUE;
+		// keep removing until it is empty to get the last element
+		while (currentDancing.size() > 0) {
+			lastFinish = currentDancing.remove();
+		}
+		if (lastFinish > maxTime) {
+			return false;
+		}
+		return true;
+	}
 
-    public static void main (String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("cowdance.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("cowdance.out"));
+	public static void main (String[] args) throws IOException {
+		Kattio io = new Kattio("cowdance");
+		n = io.nextInt();
+		maxTime = io.nextInt();
+		danceTimes = new int[n];
 
-        StringTokenizer inputLine = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(inputLine.nextToken());
-        maxTime = Integer.parseInt(inputLine.nextToken());
-        danceTimes = new int[n];
+		for (int x = 0; x < n; x++) {
+			int timeDancing = io.nextInt();
+			danceTimes[x] = timeDancing;
+		}
 
-        for (int x = 0; x < n; x++) {
-            int timeDancing = Integer.parseInt(br.readLine());
-            danceTimes[x] = timeDancing;
-        }
+		int low = 1;  // the lowest is only can fit one cow
+		int high = n;  // the highest needed is fitting all of the cows at once
 
-        int low = 1;  // the lowest is only can fit one cow
-        int high = n;  // the highest needed is fitting all of the cows at once
-
-        while (low < high) {  // binary search
-            int mid = (low + high) / 2;
-            if (isOk(mid)) {
-                high = mid;
-            }
-            else {
-                low = mid + 1;
-            }
-        }
-
-        pw.println(low);
-        pw.close();
-    }
+		while (low < high) {  // binary search
+			int mid = (low + high) / 2;
+			if (isOk(mid)) {
+				high = mid;
+			}
+			else {
+				low = mid + 1;
+			}
+		}
+		io.println(low);
+		io.close();
+	}
+	//CodeSnip{Kattio}
 }
 ```
 	
