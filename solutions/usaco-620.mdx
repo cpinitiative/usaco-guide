@@ -2,7 +2,7 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries, Neo Wang, Nathan Gong
+author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
@@ -106,6 +106,54 @@ public class pails {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+MAX_OPS = 100
+
+x, y, k, m = map(int, open('pails.in', 'r').read().split())
+
+sol = float('inf')
+vis = [[[False for a in range(MAX_OPS + 1)] 
+	for b in range(MAX_OPS + 1)] 
+	for c in range(MAX_OPS + 1)]
+
+
+def ff(cur_x: int, cur_y: int, cur_k: int) -> int:
+    global sol
+
+    if cur_k > k or vis[cur_x][cur_y][cur_k]:
+        return
+    
+    vis[cur_x][cur_y][cur_k] = True
+    sol = min(sol, abs(m - (cur_x + cur_y)))
+
+    # case 1
+    ff(x, cur_y, cur_k + 1)
+    ff(cur_x, y, cur_k + 1)
+
+    # case 2
+    ff(0, cur_y, cur_k + 1)
+    ff(cur_x, 0, cur_k + 1)
+
+    # case 3
+    if cur_x > y - cur_y:
+        ff(cur_x - y + cur_y, y, cur_k + 1)
+    else:
+        ff(0, cur_y + cur_x, cur_k + 1)
+
+    if cur_y > x - cur_x:
+        ff(x, cur_y - x + cur_x, cur_k + 1)
+    else:
+        ff(cur_x + cur_y, 0, cur_k + 1)
+
+
+ff(0, 0, 0)
+print(sol, file=open("pails.out", "w"))
+```
+
+</PySection>
 
 </LanguageSection>
 

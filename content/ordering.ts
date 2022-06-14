@@ -123,8 +123,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   gold: [
     {
-      name: 'Introductory Number Theory',
-      items: ['divisibility', 'modular'],
+      name: 'Introductory Number Sense',
+      items: ['divisibility', 'modular', 'combo'],
     },
     {
       name: 'Dynamic Programming',
@@ -158,7 +158,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['intro-bitwise'],
+      items: ['meet-in-the-middle','intro-bitwise'],
     },
     {
       name: 'Conclusion',
