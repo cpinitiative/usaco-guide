@@ -5,7 +5,7 @@ title: Cow Dance Show
 author: Óscar Garries, Juheon Rhee, Brad Ma
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
 
 <LanguageSection>
 
@@ -15,10 +15,9 @@ author: Óscar Garries, Juheon Rhee, Brad Ma
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-int main () {
+int main() {
 	freopen("cowdance.in", "r", stdin);
 	freopen("cowdance.out", "w", stdout);
 
@@ -110,14 +109,13 @@ public class CowDanceShow {
 	static int n;
 	static int maxTime;
 
-	static boolean isOk (int stageSize) {
+	static boolean isOk(int stageSize) {
 		PriorityQueue<Integer> currentDancing = new PriorityQueue<>();
 
 		for (int x = 0; x < n; x++) {
 			if (currentDancing.size() < stageSize) {
 				currentDancing.add(danceTimes[x]);
-			}
-			else { 
+			} else { 
 				// add the next cow in line to the one that will finish first
 				currentDancing.add(currentDancing.remove() + danceTimes[x]);
 			}
@@ -152,14 +150,14 @@ public class CowDanceShow {
 			int mid = (low + high) / 2;
 			if (isOk(mid)) {
 				high = mid;
-			}
-			else {
+			} else {
 				low = mid + 1;
 			}
 		}
 		io.println(low);
 		io.close();
 	}
+
 	//CodeSnip{Kattio}
 }
 ```
