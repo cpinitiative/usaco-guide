@@ -112,7 +112,7 @@ const AuthorCard = ({
   };
   return (
     <div
-      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border border-blue-900 dark:border-gray-700`}
+      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border border-gray-300 dark:border-gray-700`}
     >
       <blockquote className="sm:flex-grow sm:flex sm:items-center text-center sm:text-left max-w-sm sm:max-w-3xl mx-auto w-full">
         <div className="flex-shrink-0">
@@ -131,14 +131,14 @@ const AuthorCard = ({
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-8 lg:ml-6 xl:ml-8">
           <div className="space-x-2">
-            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-blue-600 text-blue-100 dark:text-blue-200 dark:bg-blue-900">
+            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-blue-500 text-blue-50 dark:text-blue-200 dark:bg-blue-900">
               {author.title}
             </span>
           </div>
           <div className="text-3xl font-bold text-gray-600 dark:text-gray-100 mt-3">
             {author.name}
           </div>
-          <div className="mt-4 text-base text-blue-700 dark:text-gray-300">
+          <div className="mt-4 text-base text-gray-900 dark:text-gray-300">
             <p className="relative">{author.blurb}</p>
           </div>
           <div className="mt-2 flex space-x-2 justify-center sm:justify-start">
@@ -148,7 +148,7 @@ const AuthorCard = ({
                 <a
                   key={author.name + sm}
                   href={socialMedia[sm].link(author[sm])}
-                  className="text-blue-500 hover:text-blue-400 dark:text-gray-400 dark:hover:text-gray-300 transition duration-100"
+                  className="text-gray-500 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300 transition duration-100"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -186,8 +186,8 @@ export default function AuthorsSection() {
   `);
 
   return (
-    <section className="bg-blue-100 dark:bg-gray-900 overflow-hidden">
-      <div className="py-6 sm:py-12 text-center border-b-2 border-blue-500 dark:border-gray-700">
+    <section className="bg-gray-100 dark:bg-gray-900 overflow-hidden">
+      <div className="py-6 sm:py-12 text-center border-b-2 border-gray-300 dark:border-gray-700">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-700 dark:text-white px-4">
           Authors you can trust.
         </h2>
@@ -205,7 +205,7 @@ export default function AuthorsSection() {
           />
         ))}
         {Authors.length % 2 === 1 && (
-          <div className="border border-blue-500 dark:border-gray-700" />
+          <div className="border border-gray-500 dark:border-gray-700" />
         )}
       </div>
     </section>
