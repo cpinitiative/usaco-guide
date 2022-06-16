@@ -43,7 +43,7 @@ export const Feature = ({
 
         <div
           className={classNames(
-            'absolute left-0 right-1/2 top-0 bottom-0 inset-0 opacity-[35%] transform-gpu animate-blob1 rounded-full blur-2xl dark:hidden',
+            'absolute left-0 right-1/2 top-0 bottom-0 inset-0 opacity-[35%] transform-gpu animate-blob1 rounded-full blur-2xl',
             blobClasses
           )}
         />

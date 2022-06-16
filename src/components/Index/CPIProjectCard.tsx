@@ -15,7 +15,7 @@ export const CPIProjectCard = ({
   children: React.ReactNode;
 }): JSX.Element => (
   // <div className="rounded-lg border border-gray-100 dark:border-none dark:bg-gray-800 p-6 md:p-8 transition hover:shadow-lg relative flex flex-col">
-  <div className="rounded-lg bg-white border border-2 border-gray-200 dark:bg-gray-800 dark:border-none p-6 md:p-8 transition hover:shadow-lg relative flex flex-col">
+  <div className="rounded-lg bg-white border-2 border-gray-100 dark:bg-gray-800 dark:border-none p-6 md:p-8 transition hover:shadow-lg relative flex flex-col">
     <div className="flex-1">
       <div
         className={classNames(

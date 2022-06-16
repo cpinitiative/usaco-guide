@@ -224,7 +224,7 @@ export default function IndexPage(): JSX.Element {
             icon={DatabaseIcon}
             iconClasses="from-cyan-400 to-sky-500"
             title="Curated Resources"
-            blobClasses="bg-sky-200 hidden xl:block"
+            blobClasses="bg-sky-200 dark:bg-sky-800 hidden xl:block"
             feature={<ResourcesFeature />}
             featurePosition="left"
           >
@@ -238,7 +238,7 @@ export default function IndexPage(): JSX.Element {
             icon={ClipboardListIcon}
             iconClasses="from-purple-400 to-indigo-500"
             title="Extensive Problemsets"
-            blobClasses="bg-purple-300"
+            blobClasses="bg-purple-300 dark:bg-purple-800"
             feature={<ProblemsetsFeature />}
             featurePosition="right"
           >
@@ -252,7 +252,7 @@ export default function IndexPage(): JSX.Element {
             icon={LightningBoltIcon}
             iconClasses="from-yellow-400 to-orange-500"
             title="Progress Tracking"
-            blobClasses="bg-orange-200"
+            blobClasses="bg-orange-200 dark:bg-orange-800"
             feature={<ProgressTrackingFeature />}
             featurePosition="left"
             fade="none"
@@ -267,7 +267,7 @@ export default function IndexPage(): JSX.Element {
             icon={ChatAlt2Icon}
             iconClasses="from-green-400 to-cyan-500"
             title="Help when you need it"
-            blobClasses="bg-green-200"
+            blobClasses="bg-green-200 dark:bg-green-800"
             feature={
               <div className="shadow-lg rounded-lg">
                 <StaticImage
@@ -415,7 +415,7 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-gray-200 dark:bg-black">
+      <div className="bg-gray-100 dark:bg-black">
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
@@ -464,7 +464,7 @@ export default function IndexPage(): JSX.Element {
             </GlowingRing>
           </div>
 
-          <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
+          <hr className="my-16 md:my-20 2xl:my-24 border-gray-300 dark:border-gray-800" />
 
           <div className="dark:hidden">
             <h1 className={classNames(headerClasses)}>
