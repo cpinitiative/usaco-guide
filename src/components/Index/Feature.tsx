@@ -33,7 +33,7 @@ export const Feature = ({
         {fade !== 'none' && (
           <div
             className={classNames(
-              'absolute top-0 bottom-0 w-36 bg-gradient-to-l from-white z-20',
+              'absolute top-0 bottom-0 w-36 bg-gradient-to-l from-white dark:from-gray-900 z-20',
               featurePosition === 'left'
                 ? 'right-0 md:right-12 lg:right-24'
                 : 'right-0'
@@ -43,7 +43,7 @@ export const Feature = ({
 
         <div
           className={classNames(
-            'absolute left-0 right-1/2 top-0 bottom-0 inset-0 opacity-[35%] transform-gpu animate-blob1 rounded-full blur-2xl',
+            'absolute left-0 right-1/2 top-0 bottom-0 inset-0 opacity-[35%] transform-gpu animate-blob1 rounded-full blur-2xl dark:hidden',
             blobClasses
           )}
         />
@@ -64,8 +64,12 @@ export const Feature = ({
             <Icon className="h-6 w-6" />
           </div>
         </div>
-        <h3 className="font-bold text-xl md:text-3xl text-gray-900">{title}</h3>
-        <p className="md:text-lg mt-2 md:mt-4 text-gray-600">{children}</p>
+        <h3 className="font-bold text-xl md:text-3xl text-gray-900 dark:text-gray-100">
+          {title}
+        </h3>
+        <p className="md:text-lg mt-2 md:mt-4 text-gray-600 dark:text-gray-300">
+          {children}
+        </p>
       </div>
     </div>
   );
