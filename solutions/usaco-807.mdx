@@ -77,33 +77,30 @@ public class Teleportation {
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main(void) {
-	// open the teleport.in for reading and teleport.out for writing/priting
     freopen ("teleport.in", "r", stdin);
     freopen ("teleport.out", "w", stdout);
 
-	// define variables needed; i is the going to be input array
-	// j is going to be best strategy's distance required
-    int i[4], j;
-    cin >> i[0] >> i[1] >> i[2] >> i[3];
+	// define variables needed; arr is the going to be input array
+    int arr[4];
+    cin >> arr[0] >> arr[1] >> arr[2] >> arr[3];
 
-    j = abs(i[0] - i[1]); // caluculate the distance without travel
+	//  dist is going to be best strategy's distance required
+    int dist = abs(arr[0] - arr[1]); // calculate the distance without travel
 	// if it is greater than the sum with teleportation then change it to sum with teleportation
-    if (j > abs(i[0] - i[2]) + abs(i[1] - i[3])) {
-        j = abs(i[0] - i[2]) + abs(i[1] - i[3]);
+    if (dist > abs(arr[0] - arr[2]) + abs(arr[1] - arr[3])) {
+        dist = abs(arr[0] - arr[2]) + abs(arr[1] - arr[3]);
     }
-    // repeat this again with the other possible method
-    if (j > abs(i[0] - i[3]) + abs(i[1] - i[2])) {
-        j = abs(i[0] - i[3]) + abs(i[1] - i[2]);
+    // repeat this again with the other possiblity given below
+    if (dist > abs(arr[0] - arr[3]) + abs(arr[1] - arr[2])) {
+        dist = abs(arr[0] - arr[3]) + abs(arr[1] - arr[2]);
     }
 
 	// print the solution to teleport.out
-    cout << j << "\n";
+    cout << dist << endl;
 }
 ```
 </CPPSection>
