@@ -30,8 +30,11 @@ const submitContactForm = functions.https.onCall(async data => {
     },
   });
 
-  const createdIssue = await githubAPI.post(
-    '/repos/cpinitiative/usaco-guide/issues',
+  let posturl:string='/repos/cpinitiative/usaco-guide/issues';
+  if(topic=='Suggestion'||topic==='Other'){posturl='/repos/cpinitiative/usaco-guide/discussions';}
+
+  const createdPost = await githubAPI.post(
+    posturl,
     {
       title: `Contact Form Submission - ${topic}`,
       body: body,
@@ -45,9 +48,9 @@ const submitContactForm = functions.https.onCall(async data => {
     lang: lang,
     topic: topic,
     message: message,
-    issueNumber: createdIssue.data.number,
+    issueNumber: createdPost.data.number,
   });
 
-  return createdIssue.data.html_url;
+  return createdPost.data.html_url;
 });
 export default submitContactForm;
