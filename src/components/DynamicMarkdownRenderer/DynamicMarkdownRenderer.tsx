@@ -4,9 +4,6 @@ import ReactDOM from 'react-dom';
 // eslint-disable-next-line
 // @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import Worker from 'worker-loader!./mdx-renderer.js';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import { components } from '../markdown/MDXComponents';
 
@@ -61,16 +58,14 @@ export default function DynamicMarkdownRenderer({
   ] = useState([]);
   const [error, setError] = useState(null);
   const workerRef = useRef(null);
-  const currentlyCompilingRef =
-    useRef<{
-      markdown: string;
-      problems: string;
-    }>(null);
-  const waitingToBeCompiledRef =
-    useRef<{
-      markdown: string;
-      problems: string;
-    }>(null);
+  const currentlyCompilingRef = useRef<{
+    markdown: string;
+    problems: string;
+  }>(null);
+  const waitingToBeCompiledRef = useRef<{
+    markdown: string;
+    problems: string;
+  }>(null);
 
   const requestMarkdownCompilation = () => {
     if (workerRef.current === null) return;
@@ -83,7 +78,7 @@ export default function DynamicMarkdownRenderer({
   };
 
   React.useEffect(() => {
-    const worker = new Worker();
+    const worker = new Worker(new URL('./mdx-renderer.js', import.meta.url));
     worker.onmessage = ({ data }) => {
       currentlyCompilingRef.current = null;
       ReactDOM.unstable_batchedUpdates(() => {
