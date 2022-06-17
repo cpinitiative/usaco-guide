@@ -1,16 +1,12 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
 // eslint-disable-next-line
 // @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import Worker from 'worker-loader!./mdx-renderer.js';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import { components } from '../markdown/MDXComponents';
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
   state: {
     error: null | any;
   };
@@ -61,16 +57,14 @@ export default function DynamicMarkdownRenderer({
   ] = useState([]);
   const [error, setError] = useState(null);
   const workerRef = useRef(null);
-  const currentlyCompilingRef =
-    useRef<{
-      markdown: string;
-      problems: string;
-    }>(null);
-  const waitingToBeCompiledRef =
-    useRef<{
-      markdown: string;
-      problems: string;
-    }>(null);
+  const currentlyCompilingRef = useRef<{
+    markdown: string;
+    problems: string;
+  }>(null);
+  const waitingToBeCompiledRef = useRef<{
+    markdown: string;
+    problems: string;
+  }>(null);
 
   const requestMarkdownCompilation = () => {
     if (workerRef.current === null) return;
@@ -83,25 +77,23 @@ export default function DynamicMarkdownRenderer({
   };
 
   React.useEffect(() => {
-    const worker = new Worker();
+    const worker = new Worker(new URL('./mdx-renderer.js', import.meta.url));
     worker.onmessage = ({ data }) => {
       currentlyCompilingRef.current = null;
-      ReactDOM.unstable_batchedUpdates(() => {
-        if (data.compiledResult) {
-          setMdxContent(
-            new Function(data.compiledResult)({
-              Fragment,
-              jsx,
-              jsxs,
-            }).default({ components })
-          );
-          setMarkdownProblemListsProviderValue(data.problemsList);
-          setError(null);
-        } else {
-          setError(data.error);
-          setMdxContent(null);
-        }
-      });
+      if (data.compiledResult) {
+        setMdxContent(
+          new Function(data.compiledResult)({
+            Fragment,
+            jsx,
+            jsxs,
+          }).default({ components })
+        );
+        setMarkdownProblemListsProviderValue(data.problemsList);
+        setError(null);
+      } else {
+        setError(data.error);
+        setMdxContent(null);
+      }
       requestMarkdownCompilation();
     };
     workerRef.current = worker;

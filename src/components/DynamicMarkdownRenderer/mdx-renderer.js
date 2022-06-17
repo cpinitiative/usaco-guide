@@ -1,14 +1,14 @@
-import { compile as xdmCompile } from 'xdm/lib/compile';
-import gfm from 'remark-gfm';
-import remarkMath from 'remark-math';
 import remarkAutolinkHeadings from 'remark-autolink-headings';
-import remarkSlug from 'remark-slug';
 import remarkExternalLinks from 'remark-external-links';
 import remarkFrontmatter from 'remark-frontmatter';
+import gfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
-import remarkToC from '../../mdx-plugins/remark-toc';
+import remarkSlug from 'remark-slug';
+import { compile as xdmCompile } from 'xdm/lib/compile';
 import customRehypeKatex from '../../mdx-plugins/rehype-math';
 import rehypeSnippets from '../../mdx-plugins/rehype-snippets';
+import remarkToC from '../../mdx-plugins/remark-toc';
 
 // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
 const compile = async ({ markdown, problems }) => {
