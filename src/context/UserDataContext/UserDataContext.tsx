@@ -3,7 +3,6 @@ import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
-import ReactDOM from 'react-dom';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 import AdSettingsProperty, {
@@ -296,12 +295,10 @@ export const UserDataProvider = ({
             }
           }
           data = data || {};
-          ReactDOM.unstable_batchedUpdates(() => {
-            UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-            UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
-            setIsLoaded(true);
-            triggerRerender();
-          });
+          UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+          UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+          setIsLoaded(true);
+          triggerRerender();
         },
         error: error => {
           toast.error(error.message);
