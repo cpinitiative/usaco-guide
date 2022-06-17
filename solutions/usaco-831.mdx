@@ -122,12 +122,15 @@ public class TeamTicTacToe {
 <PySection>
 
 ```py
+from typing import List
+
+
 with open('tttt.in') as read:
 	board = [read.readline() for _ in range(3)]
 
 
 # Does 1 cow win?
-def cow_wins(game: list[str], cow: str) -> bool:
+def cow_wins(game: List[str], cow: str) -> bool:
 	# Check diagonals
 	if (game[0][0] == game[1][1] == game[2][2] == cow
 			or game[0][2] == game[1][1] == game[2][0] == cow):
@@ -142,7 +145,7 @@ def cow_wins(game: list[str], cow: str) -> bool:
 
 
 # Does a team win?
-def team_wins(game: list[str], cow1: str, cow2: str) -> bool:
+def team_wins(game: List[str], cow1: str, cow2: str) -> bool:
 	# Test if a team wins based on 3 characters in a row, column, or diagonal
 	def check3(a: str, b: str, c: str) -> bool:
 		# All 3 characters have to be either cow1 or cow2
@@ -303,10 +306,13 @@ public class TeamTicTacToe {
 <PySection>
 
 ```py
+from typing import List, Tuple, Set
+
+
 WIDTH = 3
 
 
-def cow_contrib(game: list[str], pts: [tuple[int, int]]) -> {str}:
+def cow_contrib(game: List[str], pts: List[Tuple[int, int]]) -> Set[str]:
 	contained = set()
 	for pt in pts:
 		contained.add(game[pt[0]][pt[1]])
