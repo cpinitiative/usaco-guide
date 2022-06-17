@@ -12,4 +12,14 @@ export const Default = (): JSX.Element => (
   </div>
 );
 
+export class ModuleLinkInfo {
+  public url: string;
+
+  public constructor(
+    public id: string,
+    public section: string,
+    public title: string
+  ) {}
+}
+
 export const Square = (): JSX.Element => <LogoSquare className="h-10 w-10" />;

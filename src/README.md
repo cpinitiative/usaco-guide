@@ -24,3 +24,9 @@ reason).
 3. Run `gatsby develop`
 
 I get a consistent 1s hot reload with this
+
+## Storybook
+
+```
+yarn storybook
+```

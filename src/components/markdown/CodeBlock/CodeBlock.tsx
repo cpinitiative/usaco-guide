@@ -138,7 +138,7 @@ class CodeBlock extends React.Component<
   static defaultProps = {
     copyButton: true,
   };
-  declare context: React.ContextType<typeof SpoilerContext>;
+  // declare context: React.ContextType<typeof SpoilerContext>;
 
   constructor(props) {
     super(props);
@@ -302,6 +302,7 @@ class CodeBlock extends React.Component<
       1 -
       this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
     const isCodeBlockExpandable =
+      // @ts-ignore
       !this.context.expandCodeBlock && linesOfCode > 15;
     let language = className?.replace(/language-/, '');
     if (language == 'py') language = 'python';

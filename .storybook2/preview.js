@@ -1,7 +1,8 @@
 import React from 'react';
-import { DarkModeContext } from '../src/context/DarkModeContext';
 import '../src/styles/main.css';
 import './storybook.css';
+import { DarkModeContext } from '../src/context/DarkModeContext';
+import { action } from '@storybook/addon-actions';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

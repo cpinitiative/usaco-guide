@@ -1,6 +1,7 @@
 module.exports = {
-  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: ['../src/stories/Logo.stories.tsx'],
   addons: [
+    // "storybook-addon-gatsby",
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     {
@@ -12,10 +13,12 @@ module.exports = {
       },
     },
     // '@storybook/addon-a11y',
-    // "storybook-addon-gatsby",
   ],
   core: {
     builder: 'webpack5',
+  },
+  features: {
+    babelModeV7: true,
   },
   // https://github.com/storybookjs/storybook/issues/12585
   // react docgen typescript plugin hampers hot reloading time, so we'll disable it in development
