@@ -57,7 +57,7 @@ int main() {
 			waiting.insert(cows[curr]);
 			curr++;
 		// no cow waiting, skip to the next cow.
-		} else if (waiting.size() == 0) {
+		} else if (waiting.empty()) {
 			// set time to the ending time of the next cow.
 			time = cows[curr][1] + cows[curr][2];
 			curr++;
@@ -151,4 +151,50 @@ public class Convention2 {
 ```
 
 </JavaSection>
+<PySection>
+
+Even though Python doesn't have a sorted set for these operations, it's possible
+to simulate the operations needed with a [priority queue](https://docs.python.org/3/library/heapq.html).
+
+```py
+import heapq
+
+cows = []
+with open('convention2.in') as read:
+	for c in range(int(read.readline())):
+		start, duration = [int(i) for i in read.readline().split()]
+		cows.append((c, start, duration))
+
+# sort by arrival time
+cows.sort(key=lambda c: c[1])
+
+time = 0
+curr = 0
+longest_wait = 0
+
+# sorted by priority so that the highest seniority starts eating first
+waiting = []
+# as long as we haven't processed all cows or there are still cows waiting
+while curr < len(cows) or waiting:
+	# this cow can be processed
+	if curr < len(cows) and cows[curr][1] <= time:
+		heapq.heappush(waiting, cows[curr])
+		curr += 1
+	# no cow waiting, skip to the next cow
+	elif not waiting:
+		# set time to the ending time of the next cow
+		time = cows[curr][1] + cows[curr][2]
+		curr += 1
+	else:
+		# process the next cow
+		next_cow = heapq.heappop(waiting)
+		longest_wait = max(longest_wait, time - next_cow[1])
+
+		# set the time to when this cow finishes
+		time += next_cow[2]
+
+print(longest_wait, file=open('convention2.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
