@@ -135,6 +135,7 @@ class CodeBlock extends React.Component<
 > {
   codeSnips = [];
   static contextType = SpoilerContext;
+  // declare context: React.ContextType<typeof SpoilerContext>;
   static defaultProps = {
     copyButton: true,
   };
