@@ -139,10 +139,14 @@ const JoinGroupPage = (props: RouteComponentProps) => {
                         }) => {
                           if (data.success) {
                             userGroups.invalidateData();
-                            navigate(`/groups/${data.groupId}`);
+                            navigate(`/groups/${data.groupId}`, {
+                              replace: true,
+                            });
                           } else {
                             if (data.errorCode === 'ALREADY_IN_GROUP') {
-                              navigate(`/groups/${data.groupId}`);
+                              navigate(`/groups/${data.groupId}`, {
+                                replace: true,
+                              });
                             }
                             setError({
                               errorCode: data.errorCode,
