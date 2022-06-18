@@ -28,7 +28,7 @@ export async function createDiscussion(topic: string, body: string) {
     cache: new InMemoryCache()
   });
 
-
+  
   const { data } = await client.mutate({
     mutation: gql`
     {
@@ -40,6 +40,7 @@ export async function createDiscussion(topic: string, body: string) {
   `
   });
 }
+
 
 const submitContactForm = functions.https.onCall(async data => {
   const { name, email, moduleName, url, lang, topic, message } = data;
@@ -56,6 +57,7 @@ const submitContactForm = functions.https.onCall(async data => {
     `**Topic**: ${topic}\n` +
     `**Message**: \n${message}`;
 
+  console.log(topic);
   if(topic==='Suggestion'||topic==='Other'){
     await createDiscussion(topic, body);
     await admin.firestore().collection('contactFormSubmissions').add({
