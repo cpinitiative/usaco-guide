@@ -69,18 +69,6 @@ bool reachable(std::pair<long long, long long> start,
 		   std::abs(start.second - end.second) <= time;
 }
 
-/**
-* https://codeforces.com/problemset/problem/1117/C
-* 0 0
-* 4 6
-* 3
-* UUU should output 5
-*
-* 0 3
-* 0 0
-* 3
-* UDD should output 3
-*/
 int main() {
 	std::pair<long long, long long> at_pos;  // i'm not taking any chances with integer overflow
 	cin >> at_pos.first >> at_pos.second;
@@ -117,18 +105,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-/**
-* https://codeforces.com/problemset/problem/1117/C
-* 0 0
-* 4 6
-* 3
-* UUU should output 5
-*
-* 0 3
-* 0 0
-* 3
-* UDD should output 3
-*/
 public class MagicShip {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
@@ -211,25 +187,17 @@ public class MagicShip {
 <PySection>
 
 ```py
-"""
-0 0
-4 6
-3
-UUU should output 5
-
-0 3
-0 0
-3
-UDD should output 3
-"""
 from typing import List
 
-def reachable(start: List[int], end: List[int], wind: str, time: int):
+
+def reachable(start: List[int], end: List[int], wind: str, time: int) -> bool:
 	start = start.copy()
-	wind_x = wind.count("R") - wind.count("L")  # count the net changes after one wind cycle
+	# count the net changes after one wind cycle
+	wind_x = wind.count("R") - wind.count("L")
 	wind_y = wind.count("U") - wind.count("D")
 	cycle_num = time // len(wind)
-	wind_x *= cycle_num  # speed this up by multiplying by the amount of complete cycles in the time
+	# speed this up by multiplying by the amount of complete cycles in the time
+	wind_x *= cycle_num
 	wind_y *= cycle_num
 
 	remainder = time % len(wind)
@@ -237,7 +205,8 @@ def reachable(start: List[int], end: List[int], wind: str, time: int):
 	wind_x += wind.count("R") - wind.count("L")
 	wind_y += wind.count("U") - wind.count("D")
 
-	start[0] += wind_x  # apply the changes and see if the manhattan distance is less than the time
+	# apply the changes and see if the manhattan distance is less than the time
+	start[0] += wind_x
 	start[1] += wind_y
 	return abs(start[0] - end[0]) + abs(start[1] - end[1]) <= time
 
@@ -249,7 +218,7 @@ wind_cycle = input()
 
 
 lo = 0
-hi = 2 * 10**14
+hi = 2 * 10 ** 14
 valid = -1
 while lo <= hi:
 	mid = (lo + hi) // 2
