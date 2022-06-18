@@ -23,7 +23,7 @@ const handleSubmittedAnswerAtom = atom(
 
 const submittedAtom = atom(false); //whether or not the current question is currently submitted
 
-const QuizAnswerExplanation = (props: { children: unknown }) => {
+const QuizAnswerExplanation = (props: { children?: React.ReactNode }) => {
   return (
     <div className="text-sm text-gray-700 dark:text-gray-400 no-y-margin">
       {props.children}
