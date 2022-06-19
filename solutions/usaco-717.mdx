@@ -7,6 +7,18 @@ author: Qi Wang, Jeffrey Zhang
 
 [Official Analysis](http://www.usaco.org/current/data/sol_visitfj_gold_feb17.html)
 
+## Solution
+
+Instead of treating this problem with grids, let us consider from a more graphical perspective with nodes and edges.
+
+We first observe that because Bessie only feasts on grass tiles every 3 moves and the time to travel between adjacent tiles is a constant $T$. The two intermediary tiles Bessie used to travel does not actually matter. So we want to form a direct edge between each tile that are exactly 3 manhattan distances apart, with an weight of 
+
+$\{\text{The time to feast the target grass tile}\} + 3 * T$
+
+However, if the tile Bessie just feasted on is less than 3 manhattan distances away from Farmer John's tile, then it would be more desirable for Bessie to travel to Farmer John directly than take another 3-distanced tile. So let us too form a direct edge between those two tiles with an weight of 
+
+$\{\text{The manhattan distance}\} * T$
+
 ## Implementation
 
 <LanguageSection>
@@ -17,6 +29,8 @@ author: Qi Wang, Jeffrey Zhang
 using namespace std;
 typedef long long ll;
 typedef pair<int,int> pii;
+#define ff first
+#define ss second
 
 // Possible directions a cow can go to eat grass
 int Dx[] = {1, 0, -1, 0, 3, 0, -3, 0, 2, 2, 1, 1, -1, -1, -2, -2};
@@ -35,20 +49,12 @@ int main() {
 		}
 	}
 
-	/* 
-	 * There are 16 possible tiles a cow can reach in 3 moves
-	 * Form edges between those tiles and with assigned weight:
-	 * (the time it takes to eat the tile) + 3 * t
-	 * If the tile is less than 3 manhattan distance to farmer John's tile,
-	 * form an edge between those two tiles also.
-	 * The problem can now be solved with Dijkstra's
-	 */
 	vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
 	vector<vector<bool>> visited(n, vector<bool>(n));
 	dist[0][0] = 0;
-	priority_queue<pair<int, pii>> dijkstra;
+	priority_queue<pair<int, pii>> dijkstra; // {distance, {row, col}}
 	dijkstra.push(make_pair(0, make_pair(0,0)));
-	while (dijkstra.size()){
+	while (!dijkstra.empty()){
 		int x, y;
 		tie(x, y) = dijkstra.top().ss;
 		dijkstra.pop();
@@ -57,13 +63,14 @@ int main() {
 		}
 		visited[x][y] = true;
 		for (int i = 0; i < 16; i++){
-			int dx = x + Dx[i], dy = y + Dy[i];
-			if (dx < 0 || dx >= n || dy < 0 || dy >= n){
+			int newx = x + Dx[i], newy = y + Dy[i];
+			if (newx < 0 || newx >= n || newy < 0 || newy >= n){
 				continue;
 			}
-			if (dist[dx][dy] > dist[x][y] + 3 * t + field[dx][dy]){
-				dist[dx][dy] = dist[x][y] + 3 * t + field[dx][dy];
-				dijkstra.push(make_pair(-dist[dx][dy], make_pair(dx,dy)));
+			if (dist[newx][newy] > dist[x][y] + 3 * t + field[newx][newy]){
+				dist[newx][newy] = dist[x][y] + 3 * t + field[newx][newy];
+				dijkstra.push(make_pair(-dist[newx][newy], 
+							  make_pair(newx,newy)));
 			}
 		}
 		int manhattan = n - x - 1 + n - y - 1;
