@@ -23,7 +23,9 @@ We use a greedy algorithm to find $\texttt{possible}(i)$. Firstly, we want to so
 
 using namespace std;
 
-int num_houses, num_hydrants, houses[1000];
+const int MAX_H = 1000, STREET_SIZE = 1000000;
+
+int num_houses, num_hydrants, houses[MAX_H];
 
 bool possible(int length) {
 	for (int i = 0; i < num_houses; i++) {
@@ -42,7 +44,7 @@ bool possible(int length) {
 			times the length of the hose, a single fire hydrant will not be
 			enough to cover both houses.
 			*/
-			int dist = (end - start + 1000000) % 1000000;
+			int dist = (end - start + STREET_SIZE) % STREET_SIZE;
 			if (dist > 2 * length) {
 				start = end;
 				needed++;
@@ -68,7 +70,7 @@ int main() {
 	sort(houses, houses + num_houses);
 
 	// Binary search for the lowest hose length
-	int l = 0, r = 1000000, ans = 0;
+	int l = 0, r = STREET_SIZE, ans = 0;
 	while (l <= r) {
 		int m = (l + r) / 2;
 		if (possible(m)) {
