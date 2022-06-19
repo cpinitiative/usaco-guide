@@ -12,32 +12,33 @@
 import { Router } from '@reach/router';
 import { Link } from 'gatsby';
 import React, { ReactElement } from 'react';
-import EditGroupPage from '../components/Groups/EditGroupPage/EditGroupPage';
-import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
-import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
-import GroupLeaderboardPage from '../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
-import GroupPage from '../components/Groups/GroupPage/GroupPage';
-import GroupSelectPage from '../components/Groups/GroupSelectPage/GroupSelectPage';
-import JoinGroupPage from '../components/Groups/JoinGroupPage';
-import JoinLinksPage from '../components/Groups/JoinLinksPage/JoinLinksPage';
-import MembersPage from '../components/Groups/MembersPage/MembersPage';
-import PostLeaderboardPage from '../components/Groups/PostLeaderboardPage/PostLeaderboardPage';
-import PostPage from '../components/Groups/PostPage/PostPage';
-import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
-import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
-import Layout from '../components/layout';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import { SignInContext } from '../context/SignInContext';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import EditGroupPage from '../../components/Groups/EditGroupPage/EditGroupPage';
+import EditPostPage from '../../components/Groups/EditPostPage/EditPostPage';
+import EditProblemPage from '../../components/Groups/EditProblemPage/EditProblemPage';
+import GroupLeaderboardPage from '../../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
+import GroupPage from '../../components/Groups/GroupPage/GroupPage';
+import GroupSelectPage from '../../components/Groups/GroupSelectPage/GroupSelectPage';
+import JoinGroupPage from '../../components/Groups/JoinGroupPage';
+import JoinLinksPage from '../../components/Groups/JoinLinksPage/JoinLinksPage';
+import MembersPage from '../../components/Groups/MembersPage/MembersPage';
+import PostLeaderboardPage from '../../components/Groups/PostLeaderboardPage/PostLeaderboardPage';
+import PostPage from '../../components/Groups/PostPage/PostPage';
+import ProblemPage from '../../components/Groups/ProblemPage/ProblemPage';
+import { ProblemSubmissionPopupProvider } from '../../components/Groups/ProblemSubmissionPopup';
+import Layout from '../../components/layout';
+import SEO from '../../components/seo';
+import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
+import { SignInContext } from '../../context/SignInContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
   ActiveGroupProvider,
   useActiveGroup,
-} from '../hooks/groups/useActiveGroup';
+} from '../../hooks/groups/useActiveGroup';
 import {
   ActivePostProblemsProvider,
   useActivePostProblems,
-} from '../hooks/groups/useActivePostProblems';
-import NotFoundPage from './404';
+} from '../../hooks/groups/useActivePostProblems';
+import NotFoundPage from '../404';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -81,6 +82,7 @@ const GroupPageWrapper = (props: any): ReactElement => {
     return (
       <Layout>
         <TopNavigationBar />
+        <SEO title="Loading..." />
         <main className="text-center py-10">
           <p className="font-medium text-2xl">Loading...</p>
         </main>
@@ -91,6 +93,7 @@ const GroupPageWrapper = (props: any): ReactElement => {
     return (
       <Layout>
         <TopNavigationBar />
+        <SEO title="Group Not Found" />
         <main className="text-center py-10">
           <p className="font-medium text-2xl">
             Group not found.{' '}

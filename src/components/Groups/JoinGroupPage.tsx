@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { SignInContext } from '../../context/SignInContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 import Layout from '../layout';
 import SEO from '../seo';
@@ -28,6 +29,7 @@ const JoinGroupPage = (props: RouteComponentProps) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isJoining, setIsJoining] = React.useState(false);
   const firebaseApp = useFirebaseApp();
+  const userGroups = useUserGroups();
 
   const joinKey = typeof window === 'undefined' ? '' : getQuery('key');
   const showLoading = isLoading || !isLoaded || !firebaseApp;
@@ -136,10 +138,15 @@ const JoinGroupPage = (props: RouteComponentProps) => {
                           };
                         }) => {
                           if (data.success) {
-                            navigate(`/groups/${data.groupId}`);
+                            userGroups.invalidateData();
+                            navigate(`/groups/${data.groupId}`, {
+                              replace: true,
+                            });
                           } else {
                             if (data.errorCode === 'ALREADY_IN_GROUP') {
-                              navigate(`/groups/${data.groupId}`);
+                              navigate(`/groups/${data.groupId}`, {
+                                replace: true,
+                              });
                             }
                             setError({
                               errorCode: data.errorCode,
