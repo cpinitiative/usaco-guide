@@ -538,12 +538,7 @@ export default function IndexPage(): JSX.Element {
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-600 dark:text-gray-400 items-center">
             <div className="col-span-1">
               <a href="https://x-camp.academy" target="_blank" rel="noreferrer">
-                <div className="dark:invisible dark:h-0">
-                  <XCamp />
-                </div>
-                <div className="invisible h-0 dark:visible dark:h-auto">
-                  <XCamp dark />
-                </div>
+                <XCamp />
               </a>
             </div>
           </div>
