@@ -76,13 +76,6 @@ export default function EditPostPage(props) {
             <Link to="../" className="btn">
               <span>Back</span>
             </Link>
-            <button
-              type="submit"
-              onClick={() => updatePost(post.id, post).then(() => navigate(-1))}
-              className="btn"
-            >
-              Save
-            </button>
           </div>
         </div>
         <div className="h-6" />
