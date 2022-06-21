@@ -150,6 +150,8 @@ export default function GroupsRouter(): JSX.Element {
     <ActiveGroupProvider>
       <ActivePostProblemsProvider>
         <ProblemSubmissionPopupProvider>
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore there's some dumb "Type {} is not assignable to type ReactNode" bug here... */}
           <Router basepath="/groups">
             <Route component={GroupSelectPage} path="/" />
             <Route component={JoinGroupPage} path="/join" />
