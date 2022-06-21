@@ -124,6 +124,7 @@ const Route = ({
 }: { component: React.FC<RouteComponentProps> } & RouteComponentProps) => (
   <Component {...rest} />
 );
+
 const PostPageWrapper = (props: PostPageWrapperProps): ReactElement => {
   const { setActivePostId } = useActivePostProblems();
   React.useEffect(() => {
@@ -135,7 +136,7 @@ const PostPageWrapper = (props: PostPageWrapperProps): ReactElement => {
   return <>{props.children}</>;
 };
 /*
-To use URL Params in any of the Route components, simply set
+To use URL Params in any of the components passed into Route, simply set
 RouteComponentProps<{
   randomIdHere: string;
 }

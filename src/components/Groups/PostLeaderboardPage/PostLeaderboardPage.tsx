@@ -21,7 +21,6 @@ export default function PostLeaderboardPage(props) {
     groupId: string;
     postId: string;
   };
-  console.log(props);
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const { problems } = useActivePostProblems();
