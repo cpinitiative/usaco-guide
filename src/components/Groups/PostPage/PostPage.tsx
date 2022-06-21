@@ -1,3 +1,4 @@
+import { RouteComponentProps } from '@reach/router';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
@@ -10,15 +11,17 @@ import PostHeader from './PostHeader';
 import PostProblems from './PostProblems';
 import PostSidebar from './PostSidebar';
 
-export default function PostPage(props) {
-  const { postId } = props as {
-    path: string;
+export default function PostPage(
+  props: RouteComponentProps<{
     groupId: string;
     postId: string;
-  };
+  }>
+) {
+  if (!props.groupId || !props.postId)
+    throw 'Misplaced PostPage component! This should be under the param URL with :groupId and :postId';
+  const { postId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
-
   if (activeGroup.isLoading) {
     return (
       <>

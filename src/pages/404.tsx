@@ -1,10 +1,10 @@
-import { Link, PageProps } from 'gatsby';
+import { Link } from 'gatsby';
 import * as React from 'react';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
-export default function NotFoundPage(props: PageProps) {
+export default function NotFoundPage() {
   return (
     <Layout>
       <SEO title="404 Not Found" />
