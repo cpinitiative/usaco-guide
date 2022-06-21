@@ -11,7 +11,7 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import AdminViewAllGroups from './AdminViewAllGroups';
 import { GroupCard } from './GroupCard';
 
-const GroupSelectPage = (props: { path: string }) => {
+const GroupSelectPage = () => {
   const { firebaseUser, isLoaded } = useContext(UserDataContext);
   const groups = useUserGroups();
   const { createNewGroup } = useGroupActions();
