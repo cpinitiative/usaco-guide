@@ -49,11 +49,14 @@ int main() {
 		}
 	}
 
+	// 2d integer grid initialized with max values for distance 
 	vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
+	// 2d boolean grid initialized with false for tracking visits
 	vector<vector<bool>> visited(n, vector<bool>(n));
-	dist[0][0] = 0;
-	priority_queue<pair<int, pii>> dijkstra; // {distance, {row, col}}
+	// {distance, {row, col}}
+	priority_queue<pair<int, pii>> dijkstra;
 	dijkstra.push(make_pair(0, make_pair(0,0)));
+	dist[0][0] = 0;
 	while (!dijkstra.empty()){
 		int x, y;
 		tie(x, y) = dijkstra.top().ss;
@@ -66,9 +69,11 @@ int main() {
 		visited[x][y] = true;
 		for (int i = 0; i < 16; i++){
 			int newx = x + dx[i], newy = y + dy[i];
+			// checking if this new location is out of bound
 			if (newx < 0 || newx >= n || newy < 0 || newy >= n){
 				continue;
 			}
+			// updating the shortest distance to this new location
 			if (dist[newx][newy] > dist[x][y] + 3 * t + field[newx][newy]){
 				dist[newx][newy] = dist[x][y] + 3 * t + field[newx][newy];
 				dijkstra.push(make_pair(-dist[newx][newy], 
