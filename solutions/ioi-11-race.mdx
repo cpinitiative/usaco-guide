@@ -45,9 +45,8 @@ typedef pair<ll, ll> pii;
 const int maxn = 2e5 + 1;
 vector<pii> adj[maxn];
 map<ll, ll> info[maxn];
-ll dist[maxn];
-ll sum[maxn];  // define these relative to root
-int N, K, u, v;
+ll dist[maxn], sum[maxn];  // define these relative to root
+int N, K;
 ll ret;
 
 void precomp(int u, int p, ll c, int h)
@@ -111,8 +110,8 @@ int best_path(int n, int k, int edges[][2], int weights[])
 	ret = INT_MAX;
 	for (int i = 0; i < n - 1; i++)
 	{
-		u = edges[i][0];
-		v = edges[i][1];
+		int u = edges[i][0];
+		int v = edges[i][1];
 		adj[u].pb(pii(v, weights[i]));
 		adj[v].pb(pii(u, weights[i]));
 	}
