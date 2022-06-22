@@ -9,9 +9,9 @@
 //   );
 // }
 
-import { Router } from '@reach/router';
+import { RouteComponentProps, Router } from '@reach/router';
 import { Link } from 'gatsby';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import EditGroupPage from '../../components/Groups/EditGroupPage/EditGroupPage';
 import EditPostPage from '../../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../../components/Groups/EditProblemPage/EditProblemPage';
@@ -40,23 +40,29 @@ import {
 } from '../../hooks/groups/useActivePostProblems';
 import NotFoundPage from '../404';
 
-// wrapper because reach router types are bad.
-const NotFoundPageWrapper = (props: any): ReactElement => {
-  return <NotFoundPage {...props} />;
-};
+interface GroupPageWrapperProps extends RouteComponentProps {
+  children: React.ReactNode;
+  groupId?: string;
+}
+interface PostPageWrapperProps extends GroupPageWrapperProps {
+  postId?: string;
+}
+const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
+  /* keeps track of current group id and error handling pages
+   if that group cannot be accessed for whatever reason*/
 
-const GroupPageWrapper = (props: any): ReactElement => {
-  const { Component, ...propsExceptComponent } = props;
   const { activeGroupId, setActiveGroupId, isLoading, groupData } =
     useActiveGroup();
-  const { firebaseUser, isLoaded } = React.useContext(UserDataContext);
+  const { firebaseUser, isLoaded: isUserLoaded } =
+    React.useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
-
-  React.useEffect(() => {
+  useEffect(() => {
     setActiveGroupId(props.groupId);
-  }, [props.groupId]);
+    //remove groupId on exit
+    return () => setActiveGroupId(undefined);
+  }, []);
 
-  if (isLoaded && !firebaseUser?.uid) {
+  if (isUserLoaded && !firebaseUser?.uid) {
     return (
       <Layout>
         <TopNavigationBar />
@@ -64,7 +70,7 @@ const GroupPageWrapper = (props: any): ReactElement => {
           <p className="font-medium text-2xl">
             You need to sign in to access groups.{' '}
             <button
-              onClick={() => signIn()}
+              onClick={signIn}
               className="focus:outline-none underline text-blue-600 dark:text-blue-300"
             >
               Sign in now
@@ -109,30 +115,36 @@ const GroupPageWrapper = (props: any): ReactElement => {
     );
   }
 
-  return <Component {...propsExceptComponent} />;
+  return <>{props.children}</>;
 };
 
-const SetActivePost = (props: any): ReactElement => {
-  const { Component, ...propsExceptComponent } = props;
-  const { setActivePostId } = useActivePostProblems();
+const Route = ({
+  component: Component,
+  ...rest
+}: { component: React.FC<RouteComponentProps> } & RouteComponentProps) => (
+  <Component {...rest} />
+);
 
+const PostPageWrapper = (props: PostPageWrapperProps): ReactElement => {
+  const { setActivePostId } = useActivePostProblems();
   React.useEffect(() => {
     setActivePostId(props.postId);
-  }, [props.postId]);
+    //remove postId on exit
+    return () => setActivePostId(undefined);
+  }, []);
 
-  return <Component {...propsExceptComponent} />;
+  return <>{props.children}</>;
 };
+/*
+To use URL Params in any of the components passed into Route, simply set
+RouteComponentProps<{
+  randomIdHere: string;
+}
+as the function component's prop type
 
-const PostPageWrapper = (props: any): ReactElement => {
-  const { Component, ...propsExceptComponent } = props;
-  return (
-    <GroupPageWrapper
-      {...propsExceptComponent}
-      Component={props => <SetActivePost {...props} Component={Component} />}
-    />
-  );
-};
 
+See PostPage.tsx as an example
+*/
 export default function GroupsRouter(): JSX.Element {
   return (
     <ActiveGroupProvider>
@@ -141,43 +153,28 @@ export default function GroupsRouter(): JSX.Element {
           {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/* @ts-ignore there's some dumb "Type {} is not assignable to type ReactNode" bug here... */}
           <Router basepath="/groups">
-            <PostPageWrapper
-              Component={EditProblemPage}
-              path="/:groupId/post/:postId/problems/:problemId/edit"
-            />
-            <PostPageWrapper
-              Component={ProblemPage}
-              path="/:groupId/post/:postId/problems/:problemId"
-            />
-            <PostPageWrapper
-              Component={EditPostPage}
-              path="/:groupId/post/:postId/edit"
-            />
-            <PostPageWrapper
-              Component={PostLeaderboardPage}
-              path="/:groupId/post/:postId/leaderboard"
-            />
-            <PostPageWrapper
-              Component={PostPage}
-              path="/:groupId/post/:postId"
-            />
-            <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
-            <GroupPageWrapper
-              Component={JoinLinksPage}
-              path="/:groupId/join-links"
-            />
-            <GroupPageWrapper
-              Component={GroupLeaderboardPage}
-              path="/:groupId/leaderboard"
-            />
-            <GroupPageWrapper
-              Component={MembersPage}
-              path="/:groupId/members"
-            />
-            <GroupPageWrapper Component={GroupPage} path="/:groupId" />
-            <GroupSelectPage path="/" />
-            <JoinGroupPage path="/join" />
-            <NotFoundPageWrapper default />
+            <Route component={GroupSelectPage} path="/" />
+            <Route component={JoinGroupPage} path="/join" />
+
+            <GroupPageWrapper path="/:groupId">
+              <Route component={GroupPage} path="/" />
+              <Route component={MembersPage} path="members" />
+              <Route component={GroupLeaderboardPage} path="leaderboard" />
+              <Route component={JoinLinksPage} path="join-links" />
+              <Route component={EditGroupPage} path="edit" />
+              <PostPageWrapper path="post/:postId">
+                <Route component={PostPage} path="/" />
+                <Route component={PostLeaderboardPage} path="leaderboard" />
+                <Route component={EditPostPage} path="edit" />
+                <Route component={ProblemPage} path="problems/:problemId" />
+                <Route
+                  component={EditProblemPage}
+                  path="problems/:problemId/edit"
+                />
+              </PostPageWrapper>
+            </GroupPageWrapper>
+
+            <Route component={NotFoundPage} default />
           </Router>
         </ProblemSubmissionPopupProvider>
       </ActivePostProblemsProvider>
