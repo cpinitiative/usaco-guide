@@ -30,10 +30,10 @@ array<ll, MAXN + 1> fact;  // fact[i] = i! % MOD
 array<ll, MAXN + 1> inv;  // inv[i] = modular inverse of fact[i];
  
 // calculate a ^ b (mod m) in log b time
-ll modpow(ll a, ll b, ll m){
+ll modpow(ll a, ll b, ll m) {
 	ll prod = 1;
-	while(b > 0){
-		if(b % 2 == 1){
+	while (b > 0) {
+		if (b % 2 == 1) {
 			prod = (prod * a) % m;
 		}
 		b /= 2;
@@ -45,7 +45,7 @@ ll modpow(ll a, ll b, ll m){
 int main(){
 	// precalculate fact[i] and inv[i]
 	fact[0] = inv[0] = fact[1] = inv[1] = 1;
-	for(int i = 2; i <= MAXN; i++){
+	for (int i = 2; i <= MAXN; i++) {
 		fact[i] = fact[i-1] * i % MOD;
 		inv[i] = modpow(fact[i], MOD - 2, MOD);
 	}
@@ -54,12 +54,12 @@ int main(){
 	cin >> s;
 	
 	vector<int> character_count(26);
-	for(char i: s){
+	for (char i: s) {
 		character_count[i - 'a']++;
 	}
 	
 	ll total = fact[s.length()];
-	for(int i: character_count){
+	for (int i: character_count) {
 		// multiplying by inverse is the same as dividing
 		total = total * inv[i] % MOD;
 	}
