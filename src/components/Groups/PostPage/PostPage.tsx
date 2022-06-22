@@ -17,8 +17,9 @@ export default function PostPage(
     postId: string;
   }>
 ) {
-  if (!props.groupId || !props.postId)
+  if (!props.groupId || !props.postId) {
     throw 'Misplaced PostPage component! This should be under the param URL with :groupId and :postId';
+  }
   const { postId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);

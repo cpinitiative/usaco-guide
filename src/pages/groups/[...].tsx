@@ -174,9 +174,7 @@ export default function GroupsRouter(): JSX.Element {
               </PostPageWrapper>
             </GroupPageWrapper>
 
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-ignore there's some dumb Router is not a valid JSX element bug here... */}
-            <Router component={NotFoundPage} default />
+            <Route component={NotFoundPage} default />
           </Router>
         </ProblemSubmissionPopupProvider>
       </ActivePostProblemsProvider>
