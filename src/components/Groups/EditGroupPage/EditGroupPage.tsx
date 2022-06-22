@@ -61,6 +61,11 @@ export default function EditGroupPage(props) {
             </h1>
           </div>
         </div>
+         <div className="mt-4 flex space-x-3 md:mt-0">
+            <Link to="../" className="btn">
+              <span>Back</span>
+            </Link>
+         </div>
         <div className="h-6" />
         <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700">
           <div>
