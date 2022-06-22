@@ -1,4 +1,4 @@
-import { navigate } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import React, { useReducer } from 'react';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
@@ -59,6 +59,11 @@ export default function EditGroupPage(props) {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Edit Group: {group.name}
             </h1>
+          </div>
+          <div className="mt-4 flex space-x-3 md:mt-0">
+            <Link to="../" className="btn">
+              <span>Back</span>
+            </Link>
           </div>
         </div>
         <div className="h-6" />
