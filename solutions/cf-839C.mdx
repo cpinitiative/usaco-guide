@@ -52,12 +52,12 @@ void dfs (int node, int current_length, double current_probability) {
         // if there are no cities to move to, the path has ended
         ans += current_length * current_probability;
     else {
-        /* update the new probability by dividing it
-         by the number of possible cities */
+        // update the new probability by dividing it
+        // by the number of possible cities
         double new_probability = current_probability / possible_moves;
         for (int x : adj[node]) {
             if (!visited[x]) {
-                dfs(x, current_length+1, new_probability);
+                dfs(x, current_length + 1, new_probability);
             }
         }
     }
@@ -68,8 +68,8 @@ void dfs (int node, int current_length, double current_probability) {
 
 int main () {
     cin >> n;
-    adj.resize(n+1);
-    visited.resize(n+1);
+    adj.resize(n + 1);
+    visited.resize(n + 1);
 
     for (int i=0; i<n-1; i++) {
         int a, b; cin >> a >> b;
