@@ -18,34 +18,7 @@ it will create ($i - j$) new subarrays, i.e ($j$ to $i$), ($j + 1$ to $i$), etc.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-<PySection>
-```py
-n,k=map(int,input().split())
-arr=list(map(int,input().split()))
-left=0
-right=0
-ans=0
-distinct=0
-freq={}
 
-while left<n:
-    while right<n and distinct+ [1,0][arr[right] in freq] <=k:
-        if arr[right] in freq:
-            freq[arr[right]]+=1
-        else:
-            freq[arr[right]]=1
-            distinct+=1
-        right+=1
-    ans+=right-left
-    freq[arr[left]]-=1
-    if freq[arr[left]]==0:
-        freq.pop(arr[left])
-        distinct-=1
-    left+=1
-print(ans)
-
-```
-</PySection>
 <JavaSection>
 
 ``` java
@@ -100,5 +73,32 @@ public class cses2428 {
 ```
 
 </JavaSection>
+<PySection>
+```py
+n,k=map(int,input().split())
+arr=list(map(int,input().split()))
+left=0
+right=0
+ans=0
+distinct=0
+freq={}
 
+while left<n:
+    while right<n and distinct+ [1,0][arr[right] in freq] <=k:
+        if arr[right] in freq:
+            freq[arr[right]]+=1
+        else:
+            freq[arr[right]]=1
+            distinct+=1
+        right+=1
+    ans+=right-left
+    freq[arr[left]]-=1
+    if freq[arr[left]]==0:
+        freq.pop(arr[left])
+        distinct-=1
+    left+=1
+print(ans)
+
+```
+</PySection>
 </LanguageSection>
