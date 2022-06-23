@@ -78,29 +78,37 @@ public class cses2428 {
 
 ```py 
 
-n,k=map(int,input().split())
-arr=list(map(int,input().split()))
-left=0
-right=0
-ans=0
-distinct=0
-freq={}
+n,k = map(int,input().split())
+arr = list(map(int,input().split()))
+left = 0
+right = 0
+ans = 0
+distinct = 0
+freq = {}
+while left < n :
+    while right < n :
+        if arr[right] not in freq and distinct == k:
+            break
 
-while left<n:
-    while right<n and distinct+ [1,0][arr[right] in freq] <=k:
-        if arr[right] in freq:
-            freq[arr[right]]+=1
+        # Put the new array element in the map.
+        if arr[right] in freq :
+            freq[arr[right]] += 1
         else:
-            freq[arr[right]]=1
-            distinct+=1
-        right+=1
-    ans+=right-left
-    freq[arr[left]]-=1
-    if freq[arr[left]]==0:
+            freq[arr[right]] = 1
+            distinct += 1
+        right += 1
+
+    # Add the new subarrays.
+    ans += right - left
+    freq[arr[left]] -= 1
+
+    # Slide the window rightwards.
+    if freq[arr[left]] == 0 :
         freq.pop(arr[left])
-        distinct-=1
-    left+=1
+        distinct -= 1
+    left += 1
 print(ans)
+
 
 ```
 </PySection>
