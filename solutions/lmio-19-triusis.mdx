@@ -70,8 +70,13 @@ using std::vector;
 int longest_nondec_subseq(const vector<int>& seq) {
 	vector<int> min_endings;
 	for (int i : seq) {
-		// note that we use upper_bound instead of lower_bound bc it just has to be nondecreasing
-		int pos = std::upper_bound(min_endings.begin(), min_endings.end(), i) - min_endings.begin();
+		/*
+		 * note that we use upper_bound instead of
+		 * lower_bound bc it just has to be nondecreasing
+		 */
+		int pos = std::upper_bound(
+			min_endings.begin(), min_endings.end(), i
+		) - min_endings.begin();
 		// standard LIS protocol
 		if (pos == min_endings.size()) {
 			min_endings.push_back(i);

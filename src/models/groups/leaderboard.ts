@@ -2,12 +2,9 @@ import { Timestamp } from 'firebase/firestore';
 import { ExecutionVerdict } from './problem';
 
 export type Leaderboard = {
-  // post ID
-  [key: string]: {
-    // problem ID
-    [key: string]: {
-      // user ID
-      [key: string]: {
+  [postID: string]: {
+    [problemID: string]: {
+      [userID: string]: {
         bestScore: number;
         bestScoreStatus: ExecutionVerdict;
         bestScoreTimestamp: Timestamp;
