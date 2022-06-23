@@ -9,17 +9,31 @@ author: Reyansh Bahl
 
 ## Explanation
 
-The first step is to calculate the length and probability of each possible path. We can do this using DFS. We start of with a probability of 1, or 100%. Then, for each node, we divide the current path's probability by the number of possible next moves. 
+The first step is to calculate the length and probability of each possible path.
+We can do this using DFS. We start of with a probability of 1, or 100%. Then,
+for each node, we divide the current path's probability by the number of
+possible next moves.
 
-For example, if node 1 is connected to nodes 2 and 3, the probability of reaching node 2 is $1/2$, or $0.5$, and the probability of reaching node 3 is also $0.5$. If node 3 is connected to nodes 4 and 5, the probability of reaching node 4 is $0.5 / 2 = 0.25$ and the probability of reaching node 5 is also $0.25$. Let's say that nodes 2, 4, and 5 are leaf nodes. The possible paths are listed below:
+For example, if node 1 is connected to nodes 2 and 3, the probability of
+reaching node 2 is $1/2$, or $0.5$, and the probability of reaching node 3 is
+also $0.5$. If node 3 is connected to nodes 4 and 5, the probability of reaching
+node 4 is $0.5 / 2 = 0.25$ and the probability of reaching node 5 is also
+$0.25$. Let's say that nodes 2, 4, and 5 are leaf nodes. The possible paths are
+listed below:
 
-* $1 \rightarrow 2$ : 0.5
-* $1 \rightarrow 3 \rightarrow 4$ : 0.25
-* $1 \rightarrow 3 \rightarrow 5$ : 0.25
+- $1 \rightarrow 2$ : 0.5
+- $1 \rightarrow 3 \rightarrow 4$ : 0.25
+- $1 \rightarrow 3 \rightarrow 5$ : 0.25
 
-To calculate the expected length of the journey, we multiply each of the probabilities with the corresponding path length. In the example above, the expected length would be $1\cdot0.5 + 2\cdot0.25 + 2\cdot0.25 = 1.5$
+To calculate the expected length of the journey, we multiply each of the
+probabilities with the corresponding path length. In the example above, the
+expected length would be $1\cdot0.5 + 2\cdot0.25 + 2\cdot0.25 = 1.5$
 
-In the code, for each node, we calculate the number of possible next moves by looping through the node's neighbors and counting how many are unvisited. If there are no such nodes, then the path has ended and we can add the length of the path times the probability to the final answer. Otherwise, we divide the probability (as described above) and continue the DFS.
+In the code, for each node, we calculate the number of possible next moves by
+looping through the node's neighbors and counting how many are unvisited. If
+there are no such nodes, then the path has ended and we can add the length of
+the path times the probability to the final answer. Otherwise, we divide the
+probability (as described above) and continue the DFS.
 
 ## Implementation
 
@@ -47,7 +61,7 @@ void dfs(int node, int current_length, double current_probability) {
         if (!visited[x])
             possible_moves++;
     }
-    
+
     if (!possible_moves)
         // if there are no cities to move to, the path has ended
         ans += current_length * current_probability;
@@ -83,5 +97,6 @@ int main () {
     cout << setprecision(10) << ans;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
