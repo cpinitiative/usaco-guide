@@ -4,3 +4,17 @@ source: CF
 title: Journey
 author: Reyansh Bahl
 ---
+
+[Official Analysis](https://codeforces.com/blog/entry/53302)
+
+## Explanation
+
+The first step is to calculate the length and probability of each possible path. We can do this using DFS. We start of with a probability of 1, or 100%. Then, for each node, we divide the current path's probability by the number of possible next moves. 
+
+For example, if node 1 is connected to nodes 2 and 3, the probability of reaching node 2 is 1/2, or 50%, and the probability of reaching node 3 is also 50%. If node 3 is connected to nodes 4 and 5, the probability of reaching node 4 is $0.5 / 2 = 0.25$ and the probability of reaching node 5 is also 25%. Let's say that nodes 2, 4, and 5 are leaf nodes. The possible paths are listed below:
+
+* $1 \rightarrow 2$ - 50%
+* $1 \rightarrow 3 \rightarrow 4$ - 25%
+* $1 \rightarrow 3 \rightarrow 5$ - 25%
+
+To calculate the expected length of the journey, we multiply each of the probabilities with the corresponding path length. In the example above, the expected length would be $1\cdot0.5 + 2\cdot0.25 + 2\cdot0.25 = 1.5$
