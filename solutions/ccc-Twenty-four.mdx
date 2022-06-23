@@ -1,0 +1,122 @@
+---
+id: ccc-Twenty-four
+source: CCC 2008
+title: Twenty-four
+author: Paul Chen
+---
+
+## Explanation
+
+We can complete search through all possible ways to create an arithmetic expression with a card hand. For each permutation of the card hand, we try every way of placing arithmetic operators. The arithmetic expression with the maximum value that is not greater than 24 is our answer.
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// Function that takes in two numbers and an operation and returns the result.
+int operation(int op, int num1, int num2) {
+	switch (op) {
+		case 0:
+			return num1 + num2;
+		case 1:
+			return num1 - num2;
+		case 2:
+			return num1 * num2;
+		case 3: {
+			// The divisor cannot be 0 and the quotient must be a whole number.
+			if (num2 == 0 || num1 % num2) {
+				return INT_MIN;
+			}
+			return num1 / num2;
+		}
+	}
+	return INT_MIN;
+}
+
+int main() {
+	int num_hands;
+	cin >> num_hands;
+
+	while (num_hands--) {
+		vector<int> hand(4);
+		for (int i = 0; i < 4; i++) {
+			cin >> hand[i];
+		}
+		sort(hand.begin(), hand.end());
+
+		int ans = INT_MIN;
+		/*
+		 * We go though all possible permutations of the current hand and check
+		 * the result of the expression for each possible way of arranging the
+		 * arithmetic operations.
+		 */
+		do {
+			/*
+			 * There are two possible ways that parentheses can be arranged:
+			 * (((1 + 1) + 1) + 1), or ((1 + 1) + (1 + 1)). We all possible
+			 * combinations of operations for these two arrangements of
+			 * parentheses.
+			 */
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					for (int k = 0; k < 4; k++) {
+						int first = operation(i, hand[0], hand[1]);
+						// If the operation is invalid, continue;
+						if (first == INT_MIN) {
+							continue;
+						}
+
+						int second = operation(j, first, hand[2]);
+						if (second == INT_MIN) {
+							continue;
+						}
+
+						int third = operation(k, second, hand[3]);
+						if (third == INT_MIN) {
+							continue;
+						}
+
+						if (third <= 24) {
+							ans = max(ans, third);
+						}
+					}
+				}
+			}
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					for (int k = 0; k < 4; k++) {
+						int first = operation(i, hand[0], hand[1]);
+						if (first == INT_MIN) {
+							continue;
+						}
+
+						int second = operation(j, hand[2], hand[3]);
+						if (second == INT_MIN) {
+							continue;
+						}
+
+						int third = operation(k, first, second);
+						if (third == INT_MIN) {
+							continue;
+						}
+
+						if (third <= 24) {
+							ans = max(ans, third);
+						}
+					}
+				}
+			}
+		} while (next_permutation(hand.begin(), hand.end()));
+		cout << ans << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
