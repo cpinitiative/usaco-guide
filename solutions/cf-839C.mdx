@@ -58,14 +58,15 @@ void dfs(int node, int current_length, double current_probability) {
     int possible_moves = 0;
     // count the number of cities we can move to
     for (int x : adj[node]) {
-        if (!visited[x])
+        if (!visited[x]) {
             possible_moves++;
+        }
     }
 
-    if (!possible_moves)
+    if (!possible_moves) {
         // if there are no cities to move to, the path has ended
         ans += current_length * current_probability;
-    else {
+    } else {
         // update the new probability by dividing it
         // by the number of possible cities
         double new_probability = current_probability / possible_moves;
