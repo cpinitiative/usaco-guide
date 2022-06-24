@@ -2,7 +2,7 @@
 id: usaco-736
 source: USACO Bronze 2017 US Open
 title: Bovine Genomics
-author: Mrinall Umasudhan, Ananth Kashyap, Ben Dodge
+author: Mrinall Umasudhan, Ananth Kashyap, Ben Dodge, Aadit Ambadkar
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_cownomics_bronze_open17.html)
@@ -85,8 +85,8 @@ public class BovineGeonomics {
 <PySection>
 
 ```py
-with open('cownomics.in') as read:
-	data = read.readline().strip().split('\n')
+with open('cownomics.in', 'r') as read:
+	data = [i.strip() for i in read.readlines()]
 
 n, m = map(int, data[0].split())
 
@@ -170,6 +170,39 @@ public class BovineGenomics {
 ```
 
 </JavaSection>
+<PySection>
+```py
+fin = open("cownomics.in", "r")
+fout = open("cownomics.out", "w")
+
+n, m = map(int, fin.readline().strip().split())
+
+spotted = ['' for i in range(n)]
+plain = ['' for i in range(n)]
+
+for i in range(n):
+	spotted[i] = fin.readline().strip()
+
+for i in range(n):
+	plain[i] = fin.readline().strip()
+
+ans = 0
+for i in range(m):
+	a = set()
+
+	for j in range(n):
+		a.add(plain[j][i])
+	
+	for j in range(n):
+		if spotted[j][i] in a:
+			break
+	else:  # We never broke out of the above loop
+		ans += 1
+	
+fout.write(str(ans))
+fout.close()
+```
+</PySection>
 </LanguageSection>
 
 
