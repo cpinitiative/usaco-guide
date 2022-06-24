@@ -166,7 +166,7 @@ For every cow (say cow $N$), we can check which cows have one entry/exit point b
 ```cpp
 #include <bits/stdc++.h>
 
-const int TOTAL = 52;
+const int TOTAL = 52; // Crossing Points' Map Length 
 
 int main()
 {
@@ -207,10 +207,12 @@ int main()
 				}
 			}
 
-			// Add all pairs to the crossings list if not already in it
+			// Add all pairs to the set of crossings if not already in it
 			for (int k : appearances)
 			{
-				if (!crossings.count({recordings[i], k}) && !crossings.count({k, recordings[i]}))
+				bool already_present = crossings.count({recordings[i], k});
+				already_present |= crossings.count({k, recordings[i]});
+				if (!already_present)
 				{
 					crossings.insert({recordings[i], k});
 				}
