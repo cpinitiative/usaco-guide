@@ -7,7 +7,10 @@ author: Paul Chen
 
 ## Explanation
 
-We can complete search through all possible ways to create an arithmetic expression with a card hand. For each permutation of the card hand, we try every way of placing arithmetic operators. The arithmetic expression with the maximum value that is not greater than 24 is our answer.
+We can complete search through all possible ways to create an arithmetic expression with a card hand. 
+For each permutation of the card hand, we try every way of placing arithmetic operators. 
+Note that there are two possible ways that parentheses can be arranged: ((( ) ) ), or (( ) ( )), so we must try both cases.
+The arithmetic expression with the maximum value that is not greater than 24 is our answer.
 
 ## Implementation
 
@@ -43,7 +46,7 @@ int main() {
 	int num_hands;
 	cin >> num_hands;
 
-	while (num_hands--) {
+	for (int h = 0; h < num_hands; h++) {
 		vector<int> hand(4);
 		for (int i = 0; i < 4; i++) {
 			cin >> hand[i];
@@ -51,18 +54,9 @@ int main() {
 		sort(hand.begin(), hand.end());
 
 		int ans = INT_MIN;
-		/*
-		 * We go though all possible permutations of the current hand and check
-		 * the result of the expression for each possible way of arranging the
-		 * arithmetic operations.
-		 */
+		// Start complete search.
 		do {
-			/*
-			 * There are two possible ways that parentheses can be arranged:
-			 * (((1 + 1) + 1) + 1), or ((1 + 1) + (1 + 1)). We all possible
-			 * combinations of operations for these two arrangements of
-			 * parentheses.
-			 */
+			// Case 1: ((( ) ) )
 			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 4; j++) {
 					for (int k = 0; k < 4; k++) {
@@ -88,6 +82,8 @@ int main() {
 					}
 				}
 			}
+
+			// Case 2: (( ) ( ))
 			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 4; j++) {
 					for (int k = 0; k < 4; k++) {
