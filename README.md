@@ -80,7 +80,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Jeffrey Meng
 - Ananth Kashyap
 
-## Tech Stack
+## Tech Stack 
 
 Our front-end is built with:
 
