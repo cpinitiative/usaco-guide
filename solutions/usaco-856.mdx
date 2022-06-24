@@ -2,7 +2,7 @@
 id: usaco-856
 source: USACO Bronze 2018 December
 title: The Bucket List
-author: Ananth Kashyap, Sathvik Chundru, Brad Ma
+author: Ananth Kashyap, Sathvik Chundru, Brad Ma, Aadit Ambadkar
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
@@ -208,5 +208,46 @@ public class TheBucketList2 {
 ```
 	
 </JavaSection>
+<PySection>
+```py
+fin = open("blist.in", "r")
+fout = open("blist.out", "w")
 
+event = [0 for i in range(1001)]  # initialize all elements to 0
+
+max_time = 1000
+n = int(fin.readline().strip())
+
+for i in range(n):
+	start, end, amt = map(int, fin.readline().strip().split())
+
+	# at time start, cow i needs to be milked, so 
+	# we'll need amt additional buckets (hence adding amt)
+	event[start] += amt
+
+	# at time end, cow i is done milking, so we can free up 
+	# amt buckets (hence subtracting amt)
+	event[end] -= amt
+
+# res represents the maximum number of buckets we'll need 
+# to use at any given time and cur represents 
+# how many buckets we need to use at the current 
+# time we're processing
+res = 0
+cur = 0
+
+for i in range(max_time+1):
+	# at time i, the number of buckets in use changes by event[i]
+	# so we want to update the number of buckets 
+	# we are currently using accordingly
+	cur += event[i]
+
+	# we want res to be the greatest number of buckets 
+	# we need to use at any given point in time
+	res = max(res, cur)
+
+fout.write(str(res))
+fout.close()
+```
+</PySection>
 </LanguageSection> 
