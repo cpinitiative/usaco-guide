@@ -1,7 +1,7 @@
 ---
 id: combo
 title: 'Combinatorics'
-author: Jesse Choe
+author: Jesse Choe, Aadit Ambadkar
 prerequisites:
   - divisibility
   - modular
@@ -102,7 +102,25 @@ because there is always exactly one way to construct an empty subset and a subse
 
 This recursive formula is commonly known as [Pascal's Triangle](https://brilliant.org/wiki/pascals-triangle/). 
 
-Additionally, we can optimize this recursion formula from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$ using [dynamic programming](/gold/intro-dp) (DP). You can learn more about how DP is used to optimize the binomial coefficient recursive formula [here](https://www.geeksforgeeks.org/binomial-coefficient-dp-9/).
+A naive implementation of this would use a recursive formula, like below:
+
+<LanguageSection>
+<CPPSection>
+
+
+```cpp
+/** Computes nCr mod p using naive recursion */
+int binomial(int n, int k, int p) {
+	if (k == 0 || k == n) {
+		return 1;
+	}
+	return (binomial(n - 1, k - 1, p) + binomial(n - 1, k, p)) % p;
+}
+```
+</CPPSection>
+</LanguageSection>
+	
+Additionally, we can optimize this from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$ using [dynamic programming](/gold/intro-dp) (DP) by caching the values of smaller binomials to prevent recalculating the same values over and over again. The code below shows a bottom-up implementation of this.
 
 <LanguageSection>
 <CPPSection>
@@ -146,7 +164,7 @@ int binomial(int n, int k, int p) {
 
 ### Method 2: Factorial Definition (Modular Inverses) - $\mathcal{O}(n\log MOD)$
 
-First of all, we define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$, which represents the number of permutations of a set of $n$ elements.
+Define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$. $n!$ represents the number of permutations of a set of $n$ elements. See [this AoPS Article](https://artofproblemsolving.com/wiki/index.php/Factorial) for more details.
 
 Another way to calculate binomial coefficients is as follows:
 
@@ -154,11 +172,11 @@ $$
 	\binom{n}{k} = \frac{n!}{k!(n-k)!}
 $$
 
-Since there are $n!$ permutations of $n$ elements, we go through all permutations and always include the first $k$ elements of the permutation in the subset. The order of the elements inside and outside the subset does not matter, so the result is divided by $k!$ and $(n − k)!$
+Recall that $\binom{n}{k}$ also represents the number of ways to choose $k$ elements from a set of $n$ elements. One strategy to get all such combinations is to go through all possible permutations of the $n$ elements, and only pick the first $k$ elements out of each permutation. There are $n!$ ways to do so. However, note the the order of the elements inside and outside the subset does not matter, so the result is divided by $k!$ and $(n − k)!$
 
 Since these binomial coefficients are large, problems typically require us to output the answer modulo a large prime $p$ such as $10^9 + 7$.
 
-Fortunately, we can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$. We can precompute all factorials in $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n\log MOD)$ (although not necessary, you can also precompute inverse factorials in $\mathcal{O}(n)$ time).
+Fortunately, we can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$ for any prime $p$. In our case, $MOD = 10^9+7$ is prime, so we can utilize [modular inverses](/gold/modular). However, computing inverse factorials **online** can be very time costly. Instead, we can **precompute** all factorials in $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n\log MOD)$ by taking the inverses of each factorial. See the code below for the implementation.
 
 <LanguageSection>
 <CPPSection>
@@ -207,7 +225,7 @@ long long choose(long long n, long long r, long long p) {
 
 ### Solution - Binomial Coefficients
 
-The first method for calculating binomial factorials is too slow for this problem since the constraints on $a$ and $b$ are $(1 \leq b \leq a \leq 10^6)$. However, we can use the second method to answer each of the $n$ queries in constant time by precomputing factorials and their modular inverses.
+The first method for calculating binomial factorials is too slow for this problem since the constraints on $a$ and $b$ are $(1 \leq b \leq a \leq 10^6)$ (recall that the first implementation runs in $\mathcal{O}(n^2)$ time complexity). However, we can use the second method to answer each of the $n$ queries in constant time by precomputing factorials and their modular inverses.
 
 <LanguageSection>
 <CPPSection>

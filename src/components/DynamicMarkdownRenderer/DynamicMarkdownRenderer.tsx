@@ -55,16 +55,16 @@ export default function DynamicMarkdownRenderer({
     markdownProblemListsProviderValue,
     setMarkdownProblemListsProviderValue,
   ] = useState([]);
-  const [error, setError] = useState(null);
-  const workerRef = useRef(null);
+  const [error, setError] = useState<Error | null>(null);
+  const workerRef = useRef<Worker | null>(null);
   const currentlyCompilingRef = useRef<{
     markdown: string;
     problems: string;
-  }>(null);
+  } | null>(null);
   const waitingToBeCompiledRef = useRef<{
     markdown: string;
     problems: string;
-  }>(null);
+  } | null>(null);
 
   const requestMarkdownCompilation = () => {
     if (workerRef.current === null) return;
@@ -81,15 +81,20 @@ export default function DynamicMarkdownRenderer({
     worker.onmessage = ({ data }) => {
       currentlyCompilingRef.current = null;
       if (data.compiledResult) {
-        setMdxContent(
-          new Function(data.compiledResult)({
+        let content = null;
+        try {
+          content = new Function(data.compiledResult)({
             Fragment,
             jsx,
             jsxs,
-          }).default({ components })
-        );
+          }).default({ components });
+        } catch (e) {
+          if (e instanceof Error) setError(e);
+          else setError(new Error('Unknown Error: ' + e));
+        }
+        if (content) setError(null);
+        setMdxContent(content);
         setMarkdownProblemListsProviderValue(data.problemsList);
-        setError(null);
       } else {
         setError(data.error);
         setMdxContent(null);
