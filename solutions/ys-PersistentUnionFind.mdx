@@ -29,9 +29,11 @@ struct DSU {
 		sz.resize(n,1);
 		iota(p.begin(),p.end(),0);
 	}
+	
 	int get(int x) {
 		return ( p[x] == x ) ? x : get(p[x]);
 	}
+	
 	void unite(int a, int b) {
 		a = get(a); b = get(b);
 		if (sz[a] < sz[b]) {
@@ -46,6 +48,7 @@ struct DSU {
 			sz[a] += sz[b];
 		}
 	}
+				  
 	bool sameset(int a, int b) {
 		return get(a) == get(b);
 	}
@@ -57,25 +60,26 @@ struct DSU {
 		past_parent.pop_back();
 		past_size.pop_back();
 	}
-	
 };
 
-struct query{
+struct Query {
 	int t, k, u, v;
 };
 
 int main() {
 	cin.tie(0) -> sync_with_stdio(false);
-	int n, q; cin >> n >> q;
+	int n, q; 
+	cin >> n >> q;
 	
-	vector<query> queries(q + 1);
+	vector<Query> queries(q + 1);
 	vector<vector<int>> queries_using_k(q + 1);
 	
 	for (int i = 1; i <= q; i++) {
-		query tmp;
+		Query tmp;
 		cin >> tmp.t >> tmp.k >> tmp.u >> tmp.v;
 		tmp.k++;
-		queries_using_k[tmp.k].push_back(i);
+		// construct query graph - add an edge between k and itself
+		queries_using_k[tmp.k].push_back(i); 
 		queries[i] = tmp;
 	}
 	
@@ -85,8 +89,7 @@ int main() {
 	auto dfs = [&](auto self, int idx) -> void {
 		if (queries[idx].t == 0) {
 			dsu.unite(queries[idx].u, queries[idx].v);
-		}
-		else{
+		} else {
 			if (dsu.sameset(queries[idx].u, queries[idx].v)) {
 				ans[idx] = true;
 			}
