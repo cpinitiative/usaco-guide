@@ -1,4 +1,5 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
+import { RouteComponentProps } from '@reach/router';
 import {
   collection,
   getDocs,
@@ -12,6 +13,7 @@ import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
 import Flatpickr from 'react-flatpickr';
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
@@ -31,16 +33,18 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
-import toast from 'react-hot-toast';
 
-export default function EditProblemPage(props) {
-  const { groupId, postId, problemId } = props as {
-    path: string;
-    use;
-    groupId: string;
-    postId: string;
-    problemId: string;
-  };
+type Props = RouteComponentProps<{
+  groupId: string;
+  postId: string;
+  problemId: string;
+}>;
+
+export default function EditProblemPage(props: Props) {
+  const { groupId, postId, problemId } = props;
+  if (!groupId || !postId || !problemId) {
+    throw 'Misplaced EditProblemPage component! This should be under the param URL with :groupId, :postId, and :problemId';
+  }
   const firebaseApp = useFirebaseApp();
   const activeGroup = useActiveGroup();
   const post = usePost(postId);

@@ -2,7 +2,7 @@
 id: cses-2428
 source: CSES
 title: Subarray Distinct Values
-author: Sofia Yang
+author: Sofia Yang, Sai Vamsi
 ---
 
 ## Explanation
@@ -74,4 +74,39 @@ public class cses2428 {
 
 </JavaSection>
 
+<PySection>
+
+```py 
+n, k = map(int, input().split())
+arr = list(map(int, input().split()))
+left = 0
+right = 0
+ans = 0
+distinct = 0
+freq = {}
+while left < n:
+	while right < n:
+		if arr[right] not in freq and distinct == k:
+			break
+
+		# Put the new array element in the map.
+		if arr[right] in freq:
+			freq[arr[right]] += 1
+		else:
+			freq[arr[right]] = 1
+			distinct += 1
+		right += 1
+
+	# Add the new subarrays.
+	ans += right - left
+
+	# Slide the window rightwards.
+	freq[arr[left]] -= 1
+	if freq[arr[left]] == 0:
+		freq.pop(arr[left])
+		distinct -= 1
+	left += 1
+print(ans)
+```
+</PySection>
 </LanguageSection>

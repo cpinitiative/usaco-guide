@@ -167,7 +167,11 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
       darkLineColorStyle={darkLineColorStyle}
       darkDotColorStyle={darkDotColorStyle}
     >
-      <Link to={link.url}>
+      <Link
+        to={`${link.url}${
+          typeof location !== 'undefined' ? location.search : ''
+        }`}
+      >
         <StyledLink
           $isActive={isActive}
           ref={itemRef}
