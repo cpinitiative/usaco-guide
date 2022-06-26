@@ -4,7 +4,9 @@ import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLa
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Danger from './Danger';
 
-export const LanguageSection: React.FC = props => {
+export const LanguageSection = (props: {
+  children?: React.ReactNode;
+}): JSX.Element => {
   const { lang: userLang } = useContext(UserDataContext);
 
   const sections = {};
@@ -75,14 +77,20 @@ export const LanguageSection: React.FC = props => {
   return sections[userLang];
 };
 
-export const CPPSection: React.FC = props => {
+export const CPPSection = (props: {
+  children?: React.ReactNode;
+}): JSX.Element => {
   return <>{props.children}</>;
 };
 
-export const JavaSection: React.FC = props => {
+export const JavaSection = (props: {
+  children?: React.ReactNode;
+}): JSX.Element => {
   return <>{props.children}</>;
 };
 
-export const PySection: React.FC = props => {
+export const PySection = (props: {
+  children?: React.ReactNode;
+}): JSX.Element => {
   return <>{props.children}</>;
 };

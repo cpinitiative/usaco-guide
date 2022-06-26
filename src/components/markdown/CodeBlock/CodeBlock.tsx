@@ -135,6 +135,9 @@ class CodeBlock extends React.Component<
 > {
   codeSnips = [];
   static contextType = SpoilerContext;
+  // can't declare context because otherwise storybook / gatsby build will fail
+  // and I can't figure out why
+  // declare context: React.ContextType<typeof SpoilerContext>;
   static defaultProps = {
     copyButton: true,
   };
@@ -301,7 +304,8 @@ class CodeBlock extends React.Component<
       1 -
       this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
     const isCodeBlockExpandable =
-      !this.context.expandCodeBlock && linesOfCode > 15;
+      !(this.context as React.ContextType<typeof SpoilerContext>)
+        .expandCodeBlock && linesOfCode > 15;
     let language = className?.replace(/language-/, '');
     if (language == 'py') language = 'python';
     if (!['cpp', 'java', 'python'].includes(language)) {

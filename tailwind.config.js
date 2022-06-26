@@ -2,7 +2,6 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  mode: 'jit',
   theme: {
     extend: {
       fontFamily: {
@@ -127,19 +126,16 @@ module.exports = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
   ],
-  purge: {
-    safelist: ['dark'],
-    content: [
-      './src/components/**/*.{js,ts,tsx}',
-      './src/context/**/*.{js,ts,tsx}',
-      './src/hooks/**/*.{js,ts,tsx}',
-      './src/models/**/*.{js,ts,tsx}',
-      './src/pages/**/*.{js,ts,tsx}',
-      './src/stories/**/*.{js,ts,tsx}',
-      './src/templates/**/*.{js,ts,tsx}',
-      './content/**/*.{mdx,ts,tsx}',
-      './gatsby-browser.tsx',
-      './.storybook/preview.js',
-    ],
-  },
+  content: [
+    './src/components/**/*.{js,ts,tsx}',
+    './src/context/**/*.{js,ts,tsx}',
+    './src/hooks/**/*.{js,ts,tsx}',
+    './src/models/**/*.{js,ts,tsx}',
+    './src/pages/**/*.{js,ts,tsx}',
+    './src/stories/**/*.{js,ts,tsx}',
+    './src/templates/**/*.{js,ts,tsx}',
+    './content/**/*.{mdx,ts,tsx}',
+    './gatsby-browser.tsx',
+    './.storybook/preview.js',
+  ],
 };
