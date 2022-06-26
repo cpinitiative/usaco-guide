@@ -79,44 +79,42 @@ int main() {
 <PySection>
 	
 ```py
-
 import heapq
 import sys
 
-
 def dijkstra(graph, source):
-    vis = [False] * (len(graph) + 1)  # initializing each node as unvisited
-    dist = [sys.maxsize] * (len(graph) + 1)  # initializing distance of source to all vertices as +infinity
-    par = [-1] * (len(graph) + 1)  # initializing parent of each node as -1
-    mnpq = []  # minimum priority queue
-    dist[source] = 0  # setting distance of source to itself as 0
-    heapq.heappush(mnpq, (0, source))  # pushing (distance from source, node) into mnpq
+    vis = [False] * (len(graph) + 1)
+    dist = [sys.maxsize] * (len(graph) + 1)
+    par = [-1] * (len(graph) + 1)
+    mnpq = []
+    dist[source] = 0
+    heapq.heappush(mnpq, (0, source))
     while mnpq:
-        w1, cur = heapq.heappop(mnpq)  # popping minimum distance from source,node
+        w1, cur = heapq.heappop(mnpq)
         if vis[cur]:
             continue
-        for v, w in graph[cur]:  # if not visited, iterate through all neighbours of current node
+        for v, w in graph[cur]:
             if vis[v]:
                 continue
-            if (w + dist[cur]) < dist[v]:  # if (weight between cur and v + dist of cur from source) < dist of v from source
-                dist[v] = w + dist[cur]  # update dist of v
-                par[v] = cur  # update par of v as cur
-            heapq.heappush(mnpq, (dist[v], v))  # push updated dist, node v into mnpq
-        vis[cur] = True  # mark cur visited
+            if (w + dist[cur]) < dist[v]:
+                dist[v] = w + dist[cur]
+                par[v] = cur
+            heapq.heappush(mnpq, (dist[v], v))
+        vis[cur] = True
         if cur == len(graph) + 1:
             return par
     return par
 
 
-nv, ne = map(int, input().split())  # reading number of vertices,edges
+nv, ne = map(int, input().split())
 graph = {}
-for i in range(1, nv + 1):  # initializing neighbour of each node as empty
+for i in range(1, nv + 1):
     graph[i] = graph.get(i, [])
-for i in range(ne):  # reading node1,node2,dist between them and updating into graph
+for i in range(ne):
     u, v, w = map(int, input().split())
     graph[u].append((v, w))
     graph[v].append((u, w))
-d = dijkstra(graph, 1)  # calling algorithm with source as 1
+d = dijkstra(graph, 1)
 if d[-1] == -1:
     print(-1)
     exit()
