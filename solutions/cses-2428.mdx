@@ -24,20 +24,24 @@ it will create ($i - j$) new subarrays, i.e ($j$ to $i$), ($j + 1$ to $i$), etc.
 #include <bits/stdc++.h>
 using namespace std;
 int main() {
-	int n, k;
+	int n;
+	int k;
 	cin >> n >> k;
 	vector<int> arr(n);
-	for (int i = 0; i < n; i++) 
+	for (int i = 0; i < n; i++) { 
 		cin >> arr[i];
-	int left = 0, right = 0;
+	}
+	int left = 0;
+	int right = 0;
 	long long ans = 0;
 	int distinct = 0;
 	map<int, int> freq;
 	while (left < n) {
 		while (right < n) {
-			if (freq.count(arr[right]) == 0  && distinct == k)
+			if (freq.count(arr[right]) == 0  && distinct == k) {
 				break;
-				
+			}
+
 			// Put the new array element in the map.
 			if (freq.count(arr[right]) == 0) {
 				freq[arr[right]] = 1;
@@ -60,7 +64,7 @@ int main() {
 		}
 		left++;
 	}
-	cout << ans;
+	cout << ans << endl;
 }
 ```
 
