@@ -83,46 +83,46 @@ import heapq
 import sys
 
 def dijkstra(graph, source):
-    vis = [False] * (len(graph) + 1)
-    dist = [sys.maxsize] * (len(graph) + 1)
-    par = [-1] * (len(graph) + 1)
-    mnpq = []
-    dist[source] = 0
-    heapq.heappush(mnpq, (0, source))
-    while mnpq:
-        w1, cur = heapq.heappop(mnpq)
-        if vis[cur]:
-            continue
-        for v, w in graph[cur]:
-            if vis[v]:
-                continue
-            if (w + dist[cur]) < dist[v]:
-                dist[v] = w + dist[cur]
-                par[v] = cur
-            heapq.heappush(mnpq, (dist[v], v))
-        vis[cur] = True
-        if cur == len(graph) + 1:
-            return par
-    return par
+	vis = [False] * (len(graph) + 1)
+	dist = [sys.maxsize] * (len(graph) + 1)
+	par = [-1] * (len(graph) + 1)
+	mnpq = []
+	dist[source] = 0
+	heapq.heappush(mnpq, (0, source))
+	while mnpq:
+		w1, cur = heapq.heappop(mnpq)
+		if vis[cur]:
+			continue
+		for v, w in graph[cur]:
+			if vis[v]:
+				continue
+			if (w + dist[cur]) < dist[v]:
+				dist[v] = w + dist[cur]
+				par[v] = cur
+			heapq.heappush(mnpq, (dist[v], v))
+		vis[cur] = True
+		if cur == len(graph) + 1:
+			return par
+	return par
 
 
 nv, ne = map(int, input().split())
 graph = {}
 for i in range(1, nv + 1):
-    graph[i] = graph.get(i, [])
+	graph[i] = graph.get(i, [])
 for i in range(ne):
-    u, v, w = map(int, input().split())
-    graph[u].append((v, w))
-    graph[v].append((u, w))
+	u, v, w = map(int, input().split())
+	graph[u].append((v, w))
+	graph[v].append((u, w))
 d = dijkstra(graph, 1)
 if d[-1] == -1:
-    print(-1)
-    exit()
+	print(-1)
+	exit()
 path = [nv]
 cur = nv
 while cur != 1:  # tracing the path by backtracking the parent
-    path.append(d[cur])
-    cur = d[cur]
+	path.append(d[cur])
+	cur = d[cur]
 print(*path[::-1])
 
 ```
