@@ -79,10 +79,12 @@ int main() {
 <PySection>
 	
 ```py
-import heapq
 import sys
+from typing import Dict, List
+import heapq
 
-def dijkstra(graph: 'dict[int, list[int]]', source: 'int') -> 'list[int]':
+# Implements dijkstras algorithm and returns a list where list[ind] is the node through which we visit node ind 
+def dijkstra(graph: Dict[int, List[int]], source: int) -> List[int]:
 	vis = [False] * (len(graph) + 1)
 	dist = [sys.maxsize] * (len(graph) + 1)
 	par = [-1] * (len(graph) + 1)
@@ -114,12 +116,15 @@ for i in range(ne):
 	u, v, w = map(int, input().split())
 	graph[u].append((v, w))
 	graph[v].append((u, w))
+
 d = dijkstra(graph, 1)
 if d[-1] == -1:
 	print(-1)
 	exit()
+
 path = [nv]
 cur = nv
+
 while cur != 1:  # tracing the path by backtracking the parent
 	path.append(d[cur])
 	cur = d[cur]
