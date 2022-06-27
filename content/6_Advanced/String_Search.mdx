@@ -102,22 +102,37 @@ vector<int> pi(const string &s) {
 <PySection>
 
 ```py
-def pi(s):
+# helper function which returns a list
+'''
+  input : s : saippuakauppias
+          t : pp
+          
+  output : [0, 1, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0]
+'''
+def helper(s):
 	n = len(s)
-	pi = [0]*n
+	pi = [0] * n
 	j = 0
 	for i in range(1,n):
-		while(j > 0 and s[j]!=s[i]):
+		while(j > 0 and s[j] != s[i]):
 			j = pi[j-1]
 		if s[i] == s[j]:
-			j+=1
+			j += 1
 		pi[i] = j
 	return pi
-	
+
+# returns the answer required by problem statement
+'''
+  input : s : saippuakauppias
+          t : pp
+          
+  output : 2
+'''
 def KMP(s,t):
 	p = t + "#" + s
 	ans = 0
-	for i in solve(p):
+	print(helper(p))
+	for i in helper(p):
 		if i == len(t):
 			ans += 1
 	return ans
