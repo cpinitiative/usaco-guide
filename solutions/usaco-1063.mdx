@@ -63,7 +63,9 @@ int main() {
 	}
 
 	sort(cows.begin(), cows.end());  // sort by x again
+	// prefix sum arrays for the # of cows less than a certain y value
 	vector<vector<int>> lt_y(cow_num, vector<int>(cow_num + 1));
+	// and greater than a certain y value
 	vector<vector<int>> gt_y(cow_num, vector<int>(cow_num + 1));
 	for (int c = 0; c < cow_num; c++) {
 		int curr_y = cows[c].second;
@@ -107,7 +109,6 @@ import java.util.*;
 
 public final class RPasture {
 	public static void main(String[] args) throws IOException {
-		long start = System.currentTimeMillis();
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 
 		int cowNum = Integer.parseInt(read.readLine());
@@ -115,7 +116,8 @@ public final class RPasture {
 		HashSet<Integer> seenY = new HashSet<>();
 		int[][] cows = new int[cowNum][2];
 		for (int c = 0; c < cowNum; c++) {
-			cows[c] = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			cows[c] = Arrays.stream(read.readLine().split(" "))
+						.mapToInt(Integer::parseInt).toArray();
 			if (seenX.contains(cows[c][0]) || seenY.contains(cows[c][1])) {
 				throw new IllegalArgumentException("coordinates have to be distinct");
 			}
@@ -143,8 +145,9 @@ public final class RPasture {
 
 		// sort by x again
 		Arrays.sort(cows, Comparator.comparingInt(c -> c[0]));
-		// make our prefix sums for the y-lines
+		// prefix sum arrays for the # of cows less than a certain y value
 		int[][] ltY = new int[cowNum][cowNum + 1];
+		// and greater than a certain y value
 		int[][] gtY = new int[cowNum][cowNum + 1];
 		for (int c = 0; c < cowNum; c++) {
 			int currY = cows[c][1];
@@ -179,7 +182,6 @@ public final class RPasture {
 		 */
 		total += cowNum + 1;
 		System.out.println(total);
-		System.err.printf("time: %d ms%n", System.currentTimeMillis() - start);
 	}
 }
 ```
