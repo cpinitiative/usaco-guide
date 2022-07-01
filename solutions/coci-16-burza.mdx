@@ -15,7 +15,7 @@ Let's first try to transform the terms of the game into something less arbitrary
 
 Since Stjepan can't backtrack because he marks all nodes he visits himself, he
 can only move *down* the tree, increasing his depth as he goes.  
-Given this, we can make some observations:
+Given this, we can make a series of observations:
 1. Daniel can effectively "cut off" an entire subtree by marking a node, because
    then Stjepan can't get through that one node. Note that this node has to be at a level
    deeper than Stjepan's current level.
@@ -34,27 +34,71 @@ the game can always end in $k$ moves.
 
 That reduces the maximum value of $k$ we have to consider down to around 30, which
 unfortunately is still too large for an exponential time solution. But it is
-*something*! Let's see if we can cut the bounds down further.
+*something*! Let's see if we can cut the bounds down further: 20 would be a good breakpoint.
 
 ### Further Analysis
 
-We have given a general outline of what an optimal strategy should be: let's narrow it
-down a bit further. A simple greedy strategy would be the following:
-> For each depth $i$, we select a node of that depth such that it has
-> the earliest lead to a "fork" in the tree, or a node with multiple descendants.
-> 
-> If no node leads to a fork, we select any of them. If multiple nodes lead to forks
-> at the same depth, select any of them.
+To limit the maximum number of nodes to 20, we have to prove that a game can *always*
+end in $k$ moves if $k^2 \geq n$.
 
-For example, if we were at depth 1 in the following tree:
+Since each move results in breaking a tree down into a bunch of smaller trees,
+[induction](https://en.wikipedia.org/wiki/Mathematical_induction) seems like a good proof method.
+
+Let's define $n_r$ as the total number of nodes that haven't been made invalid yet
+after $r$ moves, and $t_r$ as the number of valid nodes Stjepan
+can move to after $r$ moves (aka the number of valid nodes of depth $r+1$).
+
+For example, let's say that we were at a depth of 1 in the following tree:
 ![](<coci-16-burza/fork.png>)
 
-We would cut off node 2, since it leads to the earlier fork.
+If we cut off node 2, $n_1$ would be 3 and
+$t_1$ would be 1, since Stjepan can only move to node 3.
 
-Notice that after following this strategy for $d$
+Our base case for the induction is the following:
+$$
+n_r \leq (k-r)^2
+$$
+This is true for $r=0$. Now, we just have to show that given the above,
+$$
+n_{r+1} \leq (k-r-1)^2 = (k-r)^2 - 2r + 2k - 1
+$$
 
+If we show this, we now know that $n_r \leq (k-r)^2$ for *all* $r$.
+Setting $r=k$, we get $n_k \leq (k-k)^2=0$, which effectively means that it's possible
+for us to make all nodes invalid after $k$ moves.
 
-Now, we just have to handle the case where $N \leq 20$, for which
+To prove this, let's first define a more concrete strategy:
+
+> At each level, cut off the node with the largest subtree size that hasn't been already
+> cut off. If there's multiple nodes with this quality, cut off any of them.
+
+If we follow the strategy defined earlier, at each turn we'll always cut off at least $\frac{n_r}{t_r}$
+nodes and also leave $t_r - 1$ nodes behind, since they're now above our current depth<Asterisk>The -1 is
+because we've already accounted for the node immediately below us in the fraction term.
+Removing it would result in overcounting.</Asterisk>.
+This yield the following inequality:
+$$
+n_{r+1} \leq n_r - \frac{n_r}{t_r} - (t_r - 1)
+$$
+While this is a meaningful relationship, the $t_r$ terms are a bit nasty.
+It'd be great if we could just have a relation between $n_r$ and $n_{r+1}$.
+
+Fortunately, through algebraic manipulation, it is possible to obtain the following inequality:
+$$
+n_r - \frac{n_r}{t_r} - (t_r - 1) \leq n_r - 2\sqrt{n_r} + 1
+$$
+Chaining this with the above inequality, we get
+$$
+n_{r+1} \leq n_r - 2\sqrt{n_r} + 1
+$$
+Since we know that $n_r \leq (k-r)^2$ and by extension $\sqrt{n_r} \leq k-r$, we can substitute
+those terms to prove our desired expression:
+$$
+n_{r+1} \leq (k-r)^2-2(k-r)=(k-r-1)^2
+$$
+
+And we're done! Since we've shown that any case where $k^2 \geq n$ will result in a win, we just
+have to handle the case where $N \leq 20$, for which
 [bitmask DP](https://usaco.guide/gold/dp-bitmasks) will suffice.
 
 ### Bitmask DP
