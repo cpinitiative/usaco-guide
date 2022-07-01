@@ -182,6 +182,7 @@ int main() {
 	};
 	process_nodes(0, 0, 0);
 	
+	// intervals[n] the interval of leaves we can cover if we cut off node n
 	vector<std::pair<int, int>> intervals;
 	for (const vector<int>& cc : cutoff_cover) {
 		if (cc.empty()) {
@@ -191,14 +192,22 @@ int main() {
 		}
 	}
 
+	/*
+	 * max_cover[ss] contains the max # of leaves we can cover all
+	 * the way from the start given that
+	 * we only cut off nodes of depths specified in the subsets ss
+	 */
 	vector<int> max_cover(1 << max_turns);
 	max_cover[0] = 0;
 	for (int ss = 1; ss < (1 << max_turns); ss++) {
 		int& curr = max_cover[ss];
+		// go through each possible previous depth
 		for (int to_add = 0; to_add < max_turns; to_add++) {
 			if ((ss & (1 << to_add)) != 0) {
 				int prev = max_cover[ss & ~(1 << to_add)];
+				// and all the nodes of said depth
 				for (int n : depth_nodes[to_add + 1]) {
+					// see if we can cover more nodes than before
 					if (intervals[n].first <= prev + 1) {
 						curr = std::max(curr, intervals[n].second);
 					}
