@@ -2,89 +2,107 @@
 id: usaco-670
 source: USACO Gold 2016 December
 title: Cow Checklist
-author: Maggie Liu
+author: Maggie Liu, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_checklist_gold_dec16.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_checklist_gold_dec16.html)
 
+Note that at any single point in time Farmer John will be at either a Holstein or a Guernsey, and will have the choice to either go to the next Holstein or Guernsey.
+
+This suggests a DP. Let $\texttt{dp}_{i,j}$ represent the minimum cumulative distance for Farmer John to visit the first $i$ Holsteins and the first $j$ Guernseys.
+<Asterisk>We'll have to add an extra dimension when we're actually implementing the problem to account for which one Farmer John is currently at.</Asterisk>
+
+Then, Farmer John can either go to the next Holstein or the next Guernsey.
+
+$\texttt{dp}_{i, j} = \min(\texttt{dp}_{i - 1,j}, \texttt{dp}_{i,j - 1})$
+
+
+## Implementation
 **Time Complexity:** $\mathcal{O}(H \cdot G)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <iostream>
 #include <cstdio>
+#include <vector>
 using namespace std;
 
-int energy(pair<int, int> a, pair<int, int> b)
-{
-	int dx = a.first - b.first, dy = a.second - b.second;
-	return dx * dx + dy * dy;
+using ll = long long;
+
+struct coord {
+	int x, y;
+};
+
+ll dist(coord &a, coord &b) {
+	int x = (a.x - b.x);
+	int y = (a.y - b.y);
+
+	return (x * x) + (y * y);
 }
 
-int main()
-{
+int main() {
 	freopen("checklist.in", "r", stdin);
 	freopen("checklist.out", "w", stdout);
+
 	int h, g;
 	cin >> h >> g;
-	pair<int, int> hcows[1000], gcows[1000];
-	for (int i = 0; i < h; i++)
-	{
-		cin >> hcows[i].first >> hcows[i].second;
+
+	vector<coord> hs(h), gs(g);
+	
+	for (int i = 0; i < h; i++) {
+		cin >> hs[i].x >> hs[i].y;
 	}
-	for (int i = 0; i < g; i++)
-	{
-		cin >> gcows[i].first >> gcows[i].second;
+
+	for (int i = 0; i < g; i++) {
+		cin >> gs[i].x >> gs[i].y;
 	}
-	//dp[0][i][j] is min cost to visit i holsteins and j guernseys ending with holstein
-	//dp[1][i][j] is min cost to visit i holsteins and j guernseys ending with guernsey
-	long long dp[2][1001][1001];
-	for (int i = 0; i <= h; i++)
-	{
-		for (int j = 0; j <= g; j++)
-		{
-			dp[0][i][j] = 1e18;
-			dp[1][i][j] = 1e18;
+
+	/*
+	 * min_dist[i][j][k] represents the minimum distance for
+	 * Farmer John to visit the first i Holsteins and the first
+	 * j Guernseys, given that Farmer John is currently at
+	 * k (0: ith Holstein, 1: ith Guernsey)
+	 */
+
+	// set default value to arbitrarily large integer to prevent overflow
+	vector<vector<vector<ll>>> min_dist(1001, 
+	vector<vector<ll>>(1001, vector<ll>(2, 1e18)));
+
+	min_dist[1][0][0] = 0;
+
+	for (int i = 0; i <= h; i++) {
+		for (int j = 0; j <= g; j++) {
+			if (i > 1) {
+				min_dist[i][j][0] = min(
+					min_dist[i][j][0], 
+					min_dist[i - 1][j][0] + dist(hs[i - 2], hs[i - 1])
+				);
+			}
+
+			if (j > 1) {
+				min_dist[i][j][1] = min(
+					min_dist[i][j][1],
+					min_dist[i][j - 1][1] + dist(gs[j - 2], gs[j - 1])
+				);
+			}
+		
+			if (i > 0 && j > 0) {
+				min_dist[i][j][0] = min(
+					min_dist[i][j][0],
+					min_dist[i - 1][j][1] + dist(hs[i - 1], gs[j - 1])
+				);
+				min_dist[i][j][1] = min(
+					min_dist[i][j][1],
+					min_dist[i][j - 1][0] + dist(hs[i - 1], gs[j - 1])
+				);
+			}
 		}
 	}
-	//farmer john must start with the first holstein, so the cost is 0
-	dp[0][1][0] = 0;
-	int cost;
-	for (int i = 0; i <= h; i++)
-	{
-		for (int j = 0; j <= g; j++)
-		{
-			if (i > 0 && j > 0)
-			{
-				//go from gcows[j - 1] to hcows[i - 1]
-				cost = energy(hcows[i - 1], gcows[j - 1]);
-				dp[0][i][j] = min(dp[0][i][j], dp[1][i - 1][j] + cost);
-				//go from hcows[i - 1] to gcows[j - 1]
-				cost = energy(gcows[j - 1], hcows[i - 1]);
-				dp[1][i][j] = min(dp[1][i][j], dp[0][i][j - 1] + cost);
-			}
-			if (i > 1)
-			{
-				//go from hcows[i - 2] to hcows[i - 1]
-				cost = energy(hcows[i - 1], hcows[i - 2]);
-				dp[0][i][j] = min(dp[0][i][j], dp[0][i - 1][j] + cost);
-			}
-			if (j > 1)
-			{
-				//go from gcows[j - 2] to gcows[j - 1]
-				cost =  energy(gcows[j - 1], gcows[j - 2]);
-				dp[1][i][j] = min(dp[1][i][j], dp[1][i][j - 1] + cost);
-			}
-		}
-	}
-	cout << dp[0][h][g] << endl;
-	return 0;
+
+	cout << min_dist[h][g][0] << endl;
 }
 ```
-
 </CPPSection>
-
 </LanguageSection>
