@@ -132,41 +132,39 @@ int main() {
 
 <PySection>
 ```python
-import sys
+
 MOD = 1000000007
 
-def mul(A, B, MOD):
-    C = [[0,0], [0,0]]
-
+def mul(A,B,MOD):
+    C = [[0,0],[0,0]]
     for i in range(2):
         for j in range(2):
             for k in range(2):
-                C[i][j] += ((A[i][k] % MOD) * (B[k][j] % MOD)) % MOD
-
+                C[i][j] += ((A[i][k])*(B[k][j]))%MOD
     return C
 
-def Power(m, n, MOD):
-	if n == 0:
-		return [[1,0], [0,1]]
-	if n == 1:
-		return m
-
-	hf = Power(m, n // 2, MOD)
-  	sq = mul(hf, hf, MOD)
-
-	if n % 2 == 0:
-		return sq
-
-	return mul(m, sq, MOD)
-
-
+def power(matrix, n, MOD):
+    if n == 0:
+        return [[1,0],[0,1]]
+    if n == 1:
+        return matrix
+    half = power(matrix, n//2, MOD)
+    square = mul(half, half, MOD)
+    if n %2 == 0:
+        return square
+    return mul(matrix, square, MOD)
+ 
+ 
 n = int(input())
-if n > 1:
-	o = Power([[1,1], [1,0]], n, MOD)
-        #print(o)
-    print(o[0][0] % MOD)
+if n == 0:
+  print(0)
+ 
+elif n>2:
+    o = power([[1,1],[1,0]],n-1,MOD)
+    print(o[0][0]%MOD)
 else:
     print(1)
+
 ```
 </PySection>
 </LanguageSection>
