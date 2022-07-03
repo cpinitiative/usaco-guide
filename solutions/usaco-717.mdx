@@ -31,7 +31,7 @@ typedef long long ll;
 typedef pair<int, int> pii;
 #define ss second
 
-// Possible directions a cow can go to eat grass
+// Possible directions Bessie can go to eat grass
 int dx[] = {1, 0, -1, 0, 3, 0, -3, 0, 2, 2, 1, 1, -1, -1, -2, -2};
 int dy[] = {0, 1, 0, -1, 0, 3, 0, -3, 1, -1, 2, -2, 2, -2, 1, -1};
 
@@ -74,14 +74,19 @@ int main() {
 			// updating the shortest distance to this new location
 			if (dist[newx][newy] > dist[x][y] + 3 * t + field[newx][newy]) {
 				dist[newx][newy] = dist[x][y] + 3 * t + field[newx][newy];
-				dijkstra.push(make_pair(-dist[newx][newy], 
-					make_pair(newx,newy)));
+				dijkstra.push(
+					make_pair(-dist[newx][newy], 
+					make_pair(newx, newy))
+				);
 			}
 		}
+
 		int manhattan = n - x - 1 + n - y - 1;
 		if (manhattan < 3) {
-			dist[n - 1][n - 1] = min(dist[n - 1][n - 1], 
-			dist[x][y] + manhattan * t);
+			dist[n - 1][n - 1] = min(
+				dist[n - 1][n - 1], 
+				dist[x][y] + manhattan * t
+			);
 		}
 	}
 
