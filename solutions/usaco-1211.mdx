@@ -24,13 +24,11 @@ We can systematically ignore $p_1 p_3$ edges by sweeplining the points from left
 <CPPSection>
 
 ```cpp
-//BeginCodeSnip{}
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-//EndCodeSnip
 
-// Following are two Union-Find data structure functions
+//BeginCodeSnip{Disjoint-Set Union}
 ll parent(vector<int>& top, int a){
 	if (top[a] == a) {
 		return a;
@@ -51,11 +49,12 @@ bool merge(vector<int>& top, vector<int>& sizes, int a, int b){
 	sizes[a] += sizes[b];
 	return true;
 }
+//EndCodeSnip
 
 int main() {
 	int n;
 	cin >> n;
-	// Each array stores the point's {x,y,index} values
+	// Each array stores the point's {x, y, index} values
 	vector<array<ll, 3>> points(n);
 	for (int i = 0; i < n; i++) {
 		cin >> points[i][0] >> points[i][1];
