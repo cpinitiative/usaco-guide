@@ -177,6 +177,60 @@ public class CourseSchedule {
 ```
 
 </JavaSection>
+<PySection>
+
+```python
+import sys
+sys.setrecursionlimit(1000000000) #to set the recursion stack maximum limit
+
+def dfs(node):
+
+    for i in graph[node]:
+        if visited[i] == 0:
+            visited[i] = 1
+            dfs(i)
+    top_sort.append(node)       
+
+N , M = map(int, input().strip().split()) 
+# N is number of nodes 
+# M is number od edges
+
+graph = [[] for i in range(N)]
+top_sort = []
+visited = [0] * (N)
+ind = [0]*(N)
+flag = 0
+
+for i in range(M):
+    u, v = map(int, input().strip().split())
+    graph[u - 1].append(v - 1)
+
+for i in range(N):
+    if visited[i] == 0:
+        visited[i] = 1
+        dfs(i)
+
+top_sort = top_sort[::-1] # Now 'top_sort' is sorted topologically.
+
+for i in range(N):
+    ind[top_sort[i]] = i
+
+for i in range(N):
+    for j in graph[i]:
+        if ind[j] <= ind[i]:
+            flag = 1 # 
+            print("IMPOSSIBLE") # Topological sort isn't valid
+            break
+    if flag == 1:
+        break
+			   
+top_sort = [x + 1 for x in top_sort]
+		
+if flag == 0:
+    print(*top_sort)
+```
+
+</PySection>
 
 </LanguageSection>
 
