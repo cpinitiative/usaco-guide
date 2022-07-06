@@ -181,51 +181,53 @@ public class CourseSchedule {
 
 ```python
 import sys
-sys.setrecursionlimit(1000000000) #to set the recursion stack maximum limit
+
+MAX_N = 10 ** 5
+sys.setrecursionlimit(MAX_N)
+
 
 def dfs(node):
-
 	for i in graph[node]:
 		if visited[i] == 0:
 			visited[i] = 1
 			dfs(i)
-	top_sort.append(node)       
+	top_sort.append(node)
 
-N , M = map(int, input().strip().split()) 
+
 # N is number of nodes 
-# M is number od edges
-
-graph = [[] for i in range(N)]
+# M is number of edges
+N, M = map(int, input().strip().split())
+graph = [[] for _ in range(N)]
 top_sort = []
-visited = [0] * (N)
-ind = [0]*(N)
-flag = 0
+ind = [0] * N
 
 for i in range(M):
 	u, v = map(int, input().strip().split())
 	graph[u - 1].append(v - 1)
 
+visited = [0] * N
 for i in range(N):
 	if visited[i] == 0:
 		visited[i] = 1
 		dfs(i)
 
-top_sort = top_sort[::-1] # Now 'top_sort' is sorted topologically.
-
+top_sort = top_sort[::-1]
 for i in range(N):
 	ind[top_sort[i]] = i
 
+# Check if the topological sort is valid
+flag = 0
 for i in range(N):
 	for j in graph[i]:
 		if ind[j] <= ind[i]:
 			flag = 1
-			print("IMPOSSIBLE") # Topological sort isn't valid
+			print("IMPOSSIBLE")
 			break
+
 	if flag == 1:
 		break
-			   
+
 top_sort = [x + 1 for x in top_sort]
-		
 if flag == 0:
 	print(*top_sort)
 ```
@@ -389,8 +391,11 @@ public class cycle {
 
 ```python
 import sys
-sys.setrecursionlimit(1000000000) # to set the recursion stack maximum limit
-		
+
+MAX_N = 10 ** 5
+sys.setrecursionlimit(MAX_N)
+
+
 def dfs(node):
 	visited[node], on_stack[node] = 1, 1
 	for u in adj[node]:
@@ -398,6 +403,7 @@ def dfs(node):
 			cycle.append(node)
 			on_stack[node], on_stack[u] = 0, 0
 			return True
+		
 		elif visited[u] == 0:
 			if dfs(u):
 				if on_stack[node] == 1:
@@ -407,29 +413,34 @@ def dfs(node):
 				else:
 					cycle.append(node)
 					return False
+			
 			if cycle != []:
 				return False
 	on_stack[node] = False
 	return False
 
-N , M = map(int,input().split())
-adj = [[] for i in range(N+1)]
+
+N, M = map(int, input().split())
+adj = [[] for _ in range(N + 1)]
 cycle = []
-visited = [0]*(N+1)
-on_stack = [0]*(N+1)
+visited = [0] * (N + 1)
+on_stack = [0] * (N + 1)
+
 for i in range(M):
 	u , v = map(int,input().split())
 	adj[u].append(v)
-for i in range(1,N+1):
-	if cycle == []:
+
+for i in range(1, N + 1):
+	if not cycle:
 		dfs(i)
 	else:
 		break
-if cycle == []:
-	print("IMPOSSIBLE") # Cycle isn't there.
+
+if not cycle:
+	print("IMPOSSIBLE")
 else:
-	print(len(cycle)+1)
-	print(cycle[0],*cycle[::-1])
+	print(len(cycle) + 1)
+	print(cycle[0], *cycle[::-1])
 ```
 
 </PySection>
