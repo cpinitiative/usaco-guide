@@ -13,6 +13,61 @@ author: Nathan Gong, Jesse Choe
 
 <LanguageSection>
 	
+<CPPSection>
+
+```cpp
+	
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+unordered_map<ll, vector<ll>> ways;
+vector<bool> visited;
+
+void VisitAllConnectedNodes(int start)
+{
+	if(visited[start]) return;
+	visited[start] = true;
+	for(auto neigh : ways[start])
+	{
+		VisitAllConnectedNodes(neigh);
+	}
+}
+
+int main()
+{
+	ll test_cases, N, M, field1, field2, disconected_components;
+	cin>>test_cases;
+	while(test_cases--)
+	{
+		cin>>N>>M;
+		visited.assign(N+1, false);
+		for(int i=0; i<M; i++)
+		{
+			cin>>field1>>field2;
+			ways[field1].push_back(field2);
+			ways[field2].push_back(field1);
+		}
+		disconected_components = 0;
+		for(int i=1; i<=N; i++)
+		{
+			if(!visited[i])
+			{
+				VisitAllConnectedNodes(i);
+				disconected_components++;
+			}
+		}
+		int min_distance = disconected_components - 1;
+		cout<<min_distance<<"\n";
+	}
+	return 0;
+}
+
+```
+
+
+</CPPSection>
+
+	
 <JavaSection>
 
 ```java
