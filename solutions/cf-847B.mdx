@@ -2,7 +2,7 @@
 id: cf-847B
 source: CF
 title: Preparing for Mergesort
-author: Andi Qu
+author: Andi Qu, Prashanth Ragam
 ---
 
 Simply simulating the process described is potentially $\mathcal{O}(N^2)$, so we
@@ -26,6 +26,9 @@ insert the $i$-th number into!
 This algorithm runs in $\mathcal{O}(N \log N)$ time.
 
 ## Implementation
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -55,4 +58,32 @@ int main() {
 	}
 	return 0;
 }
+
 ```
+</CPPSection>
+
+<PySection>
+	
+```py
+n = int(input().strip())
+numbers = [int(x) for x in input().strip().split()]
+ans = []
+for num in numbers:
+    l = 0
+    r = len(ans)
+    while l != r:
+        mid = (l + r) // 2
+        if ans[mid][-1] < num:
+            r = mid
+        else:
+            l = mid + 1
+    if l == len(ans):
+        ans.append([num])
+    else:
+        ans[l].append(num)
+for sub in ans:
+    print(*sub)
+
+```
+</PySection>
+</LanguageSection>
