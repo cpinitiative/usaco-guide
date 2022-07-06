@@ -385,6 +385,54 @@ public class cycle {
 ```
 
 </JavaSection>
+<PySection>
+
+```python
+import sys
+sys.setrecursionlimit(1000000000) # to set the recursion stack maximum limit
+		
+def dfs(node):
+    visited[node], on_stack[node] = 1, 1
+    for u in adj[node]:
+        if on_stack[u] == 1:
+            cycle.append(node)
+            on_stack[node], on_stack[u] = 0, 0
+            return True
+        elif visited[u] == 0:
+            if dfs(u):
+                if on_stack[node] == 1:
+                    cycle.append(node)
+                    on_stack[node] = 0
+                    return True
+                else:
+                    cycle.append(node)
+                    return False
+            if cycle != []:
+                return False
+    on_stack[node] = False
+    return False
+
+N , M = map(int,input().split())
+adj = [[] for i in range(N+1)]
+cycle = []
+visited = [0]*(N+1)
+on_stack = [0]*(N+1)
+for i in range(M):
+    u , v = map(int,input().split())
+    adj[u].append(v)
+for i in range(1,N+1):
+    if cycle == []:
+        dfs(i)
+    else:
+        break
+if cycle == []:
+    print("IMPOSSIBLE") # Cycle isn't there.
+else:
+    print(len(cycle)+1)
+    print(cycle[0],*cycle[::-1])
+```
+
+</PySection>
 
 </LanguageSection>
 
