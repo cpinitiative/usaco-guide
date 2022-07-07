@@ -149,34 +149,33 @@ public class ConnectingTwoBarns {
 ```python
 def visit_neighbour(start):
 
-    if not visited[start]:
-        visited[start] = True
+	if not visited[start]:
+		visited[start] = True
 
-        for neighbour in roads[start]:
-            visit_neighbour(neighbour)
-
+	for neighbour in roads[start]:
+		visit_neighbour(neighbour)
 
 for _ in range(int(input())):
 
-    N, M = map(int, input().split())
-    visited = [False] * (N)
-    roads = [[] for _ in range(N)]
+	N, M = map(int, input().split())
+	visited = [False] * (N)
+	roads = [[] for _ in range(N)]
 
-    for i in range(M):
+	for i in range(M):
 
-        field1, field2 = map(int, input().split())
-        roads[field1 - 1].append(field2 - 1)
-        roads[field2 - 1].append(field1 - 1)
+		field1, field2 = map(int, input().split())
+		roads[field1 - 1].append(field2 - 1)
+		roads[field2 - 1].append(field1 - 1)
 
-    disconnected_comp = 0
-    for i in range(N):
+	disconnected_comp = 0
+	for i in range(N):
 
-        if not visited[i]:
-            visit_neighbour(i)
-            disconnected_comp += 1
+		if not visited[i]:
+			visit_neighbour(i)
+			disconnected_comp += 1
 
-    min_dis = disconnected_comp - 1
-    print(min_dis)
+	min_dis = disconnected_comp - 1
+	print(min_dis)
 ```
 
 </PySection>
