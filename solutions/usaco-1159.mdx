@@ -18,45 +18,52 @@ author: Nathan Gong, Jesse Choe
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 typedef long long ll;
-unordered_map<ll, vector<ll>> ways;
+
+unordered_map<ll, vector<ll>> roads;
 vector<bool> visited;
 
-void VisitAllConnectedNodes(int start)
+void visit_neighbours(int start)
 {
-	if(visited[start]) return;
-	visited[start] = true;
-	for(auto neigh : ways[start])
+	if(visited[start]) 
 	{
-		VisitAllConnectedNodes(neigh);
+		return;
+	}
+	visited[start] = true;
+	for(auto neigh : roads[start])
+	{
+		visit_neighbours(neigh);
 	}
 }
 
 int main()
 {
-	ll test_cases, N, M, field1, field2, disconected_components;
-	cin>>test_cases;
-	for (int t = 0; t < test_cases; t++)
+	ll test_cases;
+	cin >> test_cases;
+	for(int t=0; t<test_cases; t++)
 	{
+		ll N, M;
 		cin>>N>>M;
 		visited.assign(N+1, false);
 		for(int i=0; i<M; i++)
 		{
+			ll field1, field2;
 			cin>>field1>>field2;
-			ways[field1].push_back(field2);
-			ways[field2].push_back(field1);
+			roads[field1].push_back(field2);
+			roads[field2].push_back(field1);
 		}
-		disconected_components = 0;
+		ll disconected_components = 0;
 		for(int i=1; i<=N; i++)
 		{
 			if(!visited[i])
 			{
-				VisitAllConnectedNodes(i);
+				visit_neighbours(i);
 				disconected_components++;
 			}
 		}
 		int min_distance = disconected_components - 1;
-		cout<<min_distance<<"\n";
+		cout << min_distance << "\n";
 	}
 	return 0;
 }
