@@ -135,22 +135,22 @@ int main() {
 
 MOD = 1000000007
 
-def mul(A,B,MOD):
-    C = [[0,0],[0,0]]
+def mul(A, B, MOD):
+    C = [[0, 0],[0, 0]]
     for i in range(2):
         for j in range(2):
             for k in range(2):
-                C[i][j] += ((A[i][k])*(B[k][j]))%MOD
+                C[i][j] += ((A[i][k]) * (B[k][j])) % MOD
     return C
 
 def power(matrix, n, MOD):
     if n == 0:
-        return [[1,0],[0,1]]
+        return [[1, 0],[0, 1]]
     if n == 1:
         return matrix
-    half = power(matrix, n//2, MOD)
+    half = power(matrix, n // 2, MOD)
     square = mul(half, half, MOD)
-    if n %2 == 0:
+    if n % 2 == 0:
         return square
     return mul(matrix, square, MOD)
  
@@ -160,8 +160,8 @@ if n == 0:
   print(0)
  
 elif n>2:
-    o = power([[1,1],[1,0]],n-1,MOD)
-    print(o[0][0]%MOD)
+    o = power([[1, 1],[1, 0]], n-1, MOD)
+    print(o[0][0] % MOD)
 else:
     print(1)
 
