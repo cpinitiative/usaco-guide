@@ -44,15 +44,17 @@ int main() {
 <PySection>
 
 ```py 
-from queue import PriorityQueue
-Q = PriorityQueue()
-ans = 0
-for i in range(int(input())):
+from heapq import heappop, heappush, heapify
+priority_queue = []
+heapify(priority_queue)
+ans=0
+n=int(input())
+for _ in range(n):
 	t=int(input())
-	Q.put(t)
-	ans += Q.get()-t
-	# Q.pop()
-	Q.put(t)
+	heappush(priority_queue,-1*t)
+	ans+=(priority_queue[0]*-1)-t
+	heappop(priority_queue)
+	heappush(priority_queue,-1*t)
 print(ans)
 
 ```
