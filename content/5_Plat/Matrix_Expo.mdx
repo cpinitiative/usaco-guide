@@ -132,10 +132,11 @@ int main() {
 
 <PySection>
 ```python
+from typing import List
 
-MOD = (10 ** 9) + 7
+MOD = 10 ** 9 + 7
 
-def mul(A : list[list[int]], B : list[list[int]], MOD : int) -> list[list[int]]:
+def mul(A : List[List[int]], B : List[List[int]], MOD : int) -> List[List[int]]:
 	C = [[0, 0], [0, 0]]
     	for i in range(2):
         	for j in range(2):
@@ -143,7 +144,7 @@ def mul(A : list[list[int]], B : list[list[int]], MOD : int) -> list[list[int]]:
 				C[i][j] += ((A[i][k]) * (B[k][j])) % MOD
     	return C
 
-def power(matrix : list[list[int]], n : int, MOD : int) -> list[list[int]]:
+def power(matrix : List[List[int]], n : int) -> List[List[int]]:
 	if n == 0:
         	return [[1, 0], [0, 1]]
     	if n == 1:
@@ -158,9 +159,8 @@ def power(matrix : list[list[int]], n : int, MOD : int) -> list[list[int]]:
 n = int(input())
 if n == 0:
   	print(0)
- 
-elif n>2:
-    	o = power([[1, 1], [1, 0]], n - 1, MOD)
+elif n > 2:
+    	o = power([[1, 1], [1, 0]], n - 1)
     	print(o[0][0] % MOD)
 else:
     	print(1)
