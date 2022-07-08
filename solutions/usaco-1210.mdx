@@ -74,53 +74,53 @@ db pref_exp[1001];
 
 // Function to skip ahead x submissions with constants a and b with the current expected value set to E.
 db f(db a, db b, db E, ll x) {
-  return pow(a, x) * E + b * (pow(a, x) - 1) / (a - 1);
+  	return pow(a, x) * E + b * (pow(a, x) - 1) / (a - 1);
 }
 
 int main() {
-  cout << fixed << setprecision(20);
-  int T; ll K; cin >> T >> K; T--;
+	cout << fixed << setprecision(20);
+	int T; ll K; cin >> T >> K; T--;
   
-  // Precompute probablity of choosing exactly i test cases using Pascal's Identity.
-  prob[0][0] = 1;
-  for (int i = 1; i <= T; i++) {
-    prob[i][0] = prob[i - 1][0] / 2;
-    for (int j = 1; j <= T; j++) prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
-  }
+	// Precompute probablity of choosing exactly i test cases using Pascal's Identity.
+	prob[0][0] = 1;
+	for (int i = 1; i <= T; i++) {
+		prob[i][0] = prob[i - 1][0] / 2;
+		for (int j = 1; j <= T; j++) prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
+	}
   
-  // Create prefix sum of probablity
-  pref_prob[0] = prob[T][0];
-  for (int i = 1; i <= T; i++) pref_prob[i] = pref_prob[i - 1] + prob[T][i];
-                        
-  // Create prefix sum of expected value
-  pref_exp[0] = 0;
-  for (int i = 1; i <= T; i++) pref_exp[i] = pref_exp[i - 1] + prob[T][i] * i;
+	// Create prefix sum of probablity
+	pref_prob[0] = prob[T][0];
+	for (int i = 1; i <= T; i++) pref_prob[i] = pref_prob[i - 1] + prob[T][i];
+						
+	// Create prefix sum of expected value
+	pref_exp[0] = 0;
+	for (int i = 1; i <= T; i++) pref_exp[i] = pref_exp[i - 1] + prob[T][i] * i;
   
-  db E = 0;
-  while (K) {
-    // Find the floor of the current expected value which acts as the limit of how many submissions we can skip forward.
-    ll cross = (ll) floor(E);
-  
-    // Find constants a and b
-    db a = pref_prob[cross], b = pref_exp[T] - pref_exp[cross];
-  
-    // Binary search to find how submissions we can skip forward
-    ll lo = 1; ll hi = 1e9;
-    while (lo < hi) {
-      ll mid = (lo + hi + 1) / 2;
-      // Check if 'mid' submissions crosses the 'cross' limit.
-      if (floor(f(a, b, E, mid)) == cross) {
-        lo = mid;
-      } else {
-        hi = mid - 1;
-      }
-    }
-    // Skip forward 'lo' submissions or the remaining amount of submissions if there are less than 'lo' submissions left.
-    lo = min(lo, K);
-    E = f(a, b, E, lo);
-    K -= lo;
-  }
-  cout << E + 1 << endl;
+	db E = 0;
+	while (K) {
+		// Find the floor of the current expected value which acts as the limit of how many submissions we can skip forward.
+		ll cross = (ll) floor(E);
+
+		// Find constants a and b
+		db a = pref_prob[cross], b = pref_exp[T] - pref_exp[cross];
+
+		// Binary search to find how submissions we can skip forward
+		ll lo = 1; ll hi = 1e9;
+		while (lo < hi) {
+			ll mid = (lo + hi + 1) / 2;
+			// Check if 'mid' submissions crosses the 'cross' limit.
+			if (floor(f(a, b, E, mid)) == cross) {
+				lo = mid;
+	  		} else {
+				hi = mid - 1;
+			}
+		}
+		// Skip forward 'lo' submissions or the remaining amount of submissions if there are less than 'lo' submissions left.
+		lo = min(lo, K);
+		E = f(a, b, E, lo);
+		K -= lo;
+	}
+	cout << E + 1 << endl;
 }
 ```
 
