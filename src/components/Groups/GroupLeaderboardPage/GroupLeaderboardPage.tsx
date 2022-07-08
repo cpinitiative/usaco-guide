@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
-import { sortPostsComparator } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
@@ -17,9 +16,10 @@ export default function GroupLeaderboardPage(): JSX.Element {
   });
 
   const assignments = React.useMemo(() => {
-    return posts
-      ?.filter(post => post.type === 'assignment' && post.isPublished)
-      .sort(sortPostsComparator);
+    if (!posts || !activeGroup.groupData.postOrdering) return null;
+    return activeGroup.groupData.postOrdering
+      .map(postId => posts.find(post => post.id === postId))
+      .filter(post => post.type === 'assignment' && post.isPublished);
   }, [posts]);
 
   const fullWidth = assignments?.length > 10;
