@@ -10,59 +10,48 @@ author: Aakash Gokhale
 ## Solution
 We can subtract $1$ from $T$ because we will always get the sample test case and add it to our final answer.
 
-\bigskip
 
 Let $E_x$ be the expected value of $x$ submissions. We are trying to find $E_k$. To get the expected value of the final submission, we can find the relation between $E_x$ and $E_{x - 1}$.
 
-\bigskip
 
 To do this we can find $E_x$ in terms of $E_{x -1}$ and $p_i$ which is the probability of getting exactly $i$ test cases.
 
-\bigskip
 
 The general rule is to resubmit only if the amount of test cases is less the expected value after $x$ submissions and to not resubmit if it is greater than the expected value. The equality case doesn't matter so we can just change less than into less than or equal (or greater than into greater or equal to).
 
-\bigskip
 
 So the first part of the expected value expression will be the sum of probabilities that the number of test cases is less than or equal to $E_{x - 1}$ multiplied by the expected value of $E_{x - 1}$.
 
-\bigskip
 
 The second part of the the expected value expression will the be the sum of the probabilities multiplied by the actual value of test cases that are greater than the expected value of $E_{x - 1}$.
 
-\bigskip
 
 So our final expression is
 
-\[E_x = E_{x -1} \cdot \sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i + \sum_{\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i\]
-
-\bigskip
+$E_x = E_{x -1} \cdot \sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i + \sum_{\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$
 
 We can simulate this process trivially in $O(TK)$. However, this can easily be sped up to $O(T^2 + K)$ by pre-calculating $p_i$ and using a prefix sum. This gives us the first $9$ test cases but is not good enough.
 
-\bigskip
 
 In order to fully solve the question, we need to be able to process multiple values of $E_x$ in a single step. We can only do this if the values of $\sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i$ and $\sum_{\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$ don't change between queries.
 
-\bigskip
 
 We can see this when we let $a = \sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i$ and $b = \sum_{\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$. Then our formula becomes
 
-\[E_x = E_{x - 1} \cdot a + b\]
+$E_x = E_{x - 1} \cdot a + b$
 
 Since $a$ and $b$ are constant, we can extend this formula and get
 
-\[E_x = a \cdot (a \cdot ... (a \cdot E_{x - k} + b) ... + b) + b\]
+$E_x = a \cdot (a \cdot ... (a \cdot E_{x - k} + b) ... + b) + b$
 
 Simplifying gives us a geometric sequence.
 
-\[E_x = a^k \cdot E_{x - k} + a^{k - 1}b + a^{k - 2} + ... + b\]
+$E_x = a^k \cdot E_{x - k} + a^{k - 1}b + a^{k - 2} + ... + b$
 
 We can rewrite the second through last term using the formula for a geometric series.
 
-\[E_x = a^k \cdot E_{x - k} + \frac{b(a^k - 1)}{a - 1}\]
+$E_x = a^k \cdot E_{x - k} + \frac{b(a^k - 1)}{a - 1}$
 
-\bigskip
 
 Essentially we can binary search on the next value that will change the values of $\sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i$. Since there are at most $T$ values of $E_x$, the resulting time complexity will be $O(T^2 + T\log(K))$
 
