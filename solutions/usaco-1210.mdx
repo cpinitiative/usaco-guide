@@ -29,7 +29,7 @@ So our final expression is
 
 $$E_x = E_{x -1} \cdot \sum_{i=0}^{\lfloor E_{x - 1} \rfloor} p_i + \sum_{i=\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$$
 
-We can simulate this process trivially in $O(TK)$. However, this can easily be sped up to $O(T^2 + K)$ by pre-calculating $p_i$ and using a prefix sum. This gives us the first $9$ test cases but is not good enough.
+We can simulate this process trivially in $\mathcal{O}(TK)$. However, this can easily be sped up to $\mathcal{O}(T^2 + K)$ by pre-calculating $p_i$ and using a prefix sum. This gives us the first $9$ test cases but is not good enough.
 
 
 In order to fully solve the question, we need to be able to process multiple values of $E_x$ in a single step. We can only do this if the values of $$\sum_{i=0}^{\lfloor E_{x - 1} \rfloor} p_i$$ and $$\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$$ don't change between queries.
@@ -52,10 +52,10 @@ We can rewrite the second through last term using the formula for a geometric se
 $E_x = a^k \cdot E_{x - k} + \frac{b(a^k - 1)}{a - 1}$
 
 
-Essentially we can binary search on the next value that will change the values of $$\sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i$$. Since there are at most $T$ values of $E_x$, the resulting time complexity will be $O(T^2 + T\log(K))$
+Essentially we can binary search on the next value that will change the values of $$\sum_{0}^{\lfloor E_{x - 1} \rfloor} p_i$$. Since there are at most $T$ values of $E_x$, the resulting time complexity will be $\mathcal{O}(T^2 + T\log(K))$
 
 ## Implementation
-**Time Complexity:** $\mathcal{O}(N\log N)$
+**Time Complexity:** $\mathcal{O}(T^2 + T\logK)$
 
 <LanguageSection>
 
