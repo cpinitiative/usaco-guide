@@ -39,7 +39,7 @@ int N, A, B;
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
-	cin >> N >> A >> B; // reading in variables
+	cin >> N >> A >> B;
 
 	vector<long long> pfx(N+1);
 	for(int i = 1; i <= N; i++) {
@@ -57,36 +57,36 @@ int main() {
 		ret = max(ret, pfx[i]-*ms.begin()); //we want to minimize ms.begin() aka pfx[j]
 	}
 
-	cout << ret << "\n";
+	cout << ret << endl;
 }
 ```
 
 <PySection>
 
 ```py
-
 linf = 1e18
-item = list(map(int,input().split())) #reading input and store them in N, A, B
-N = item[0]
-A = item[1]
-B = item[2]
-pfx = [0]*(N+1)
-for i in range(1,N+1):
+N, A, B = list(map(int, input().split()))
+
+pfx = [0] * (N + 1)
+# Construct our prefix sum array
+for i in range(1, N + 1):
 	a = int(input())
-	pfx[i] = a + pfx[i-1]	#Construct a prefix sum
+	pfx[i] = a + pfx[i-1]
+
 ret = -linf
 ms = []
-
 # we can keep a sliding window of size B, then find the lowest pfx[j] using list.sort()
-for i in range(A,N+1):
-	# print("hey")
-	if i>B:
-		ms.remove(pfx[i-B-1])	#remove the element if size > B
+for i in range(A, N + 1):
+	# Remove the last element if our size is above B.
+	if i > B:
+		ms.remove(pfx[i - B - 1])
 	ms.append(pfx[i-A])
 	ms.sort()
-	ret = max(ret,pfx[i]-ms[0])	#we want to minimize first value of ms aka pfx[j]
-print(ret)
+	
+	# We want to minimize the first value of ms (aka pfx[j]).
+	ret = max(ret, pfx[i] - ms[0])
 
+print(ret)
 ```
 </PySection>
 
