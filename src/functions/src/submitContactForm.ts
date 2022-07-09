@@ -1,49 +1,48 @@
 import axios from 'axios';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import { ApolloClient, createHttpLink, gql, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, gql, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-// import { ApolloClient, createHttpLink, InMemoryCache, gql } from "@apollo/client";
-// import { setContext } from '@apollo/client/link/context';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
-export async function createDiscussion(topic: string, body: string) {
-  const httpLink = createHttpLink({
-    uri: 'https://api.github.com/graphql',
-  });
+const key = functions.config().contactform.issueapikey;
 
+export async function createDiscussion(topic: string, body: string) {
   const authLink = setContext((_, { headers }) => {
     return {
       headers: {
         ...headers,
-        authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
-      }
-    }
+        authorization: key ? `Token ${key}` : null,
+      },
+    };
   });
 
   const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    link: authLink.concat(
+      new HttpLink({ uri: "https://api.github.com/graphql" })
+    ),
+    cache: new InMemoryCache(),
   });
 
-  
-  const { data } = await client.mutate({
-    mutation: gql`
-    {
-       # input type: CreateDiscussionInput
-        createDiscussion(input: {repositoryId: "MDEwOlJlcG9zaXRvcnkyNjg2NzA0NjY=", categoryId: "DIC_kwDOEAOWAs4COX3q", body: "${body}", title: "${topic}"}) {
-          clientMutationId
-       }
-   }
-  `
-  });
+  client
+    .mutate({
+      mutation: gql`
+        mutation cd {
+             createDiscussion(input: {repositoryId: "MDEwOlJlcG9zaXRvcnkyNjg2NzA0NjY=", categoryId: "DIC_kwDOEAOWAs4COX3q", body: "${body}", title: "${topic}"}) {
+              clientMutationId
+            }
+         }
+      `,
+    })
+    .then((resp) => console.log(resp.data.viewer.login))
+    .catch((error) => console.error(error));
 }
-
 
 const submitContactForm = functions.https.onCall(async data => {
   const { name, email, moduleName, url, lang, topic, message } = data;
+
   if (!name || !topic || !message || !email) {
     throw new functions.https.HttpsError(
       'invalid-argument',
@@ -59,6 +58,7 @@ const submitContactForm = functions.https.onCall(async data => {
 
   console.log(topic);
   if(topic==='Suggestion'||topic==='Other'){
+    console.log("Topic");
     await createDiscussion(topic, body);
     await admin.firestore().collection('contactFormSubmissions').add({
       name: name,
@@ -68,11 +68,11 @@ const submitContactForm = functions.https.onCall(async data => {
       lang: lang,
       topic: topic,
       message: message,
+      issueNumber: 0,
     });
 
     return "https://github.com/cpinitiative/usaco-guide/discussions/";
   }else {
-    const key = functions.config().contactform.issueapikey;
     const githubAPI = axios.create({
       baseURL: 'https://api.github.com',
       auth: {
