@@ -22,6 +22,103 @@ In this problem, there are three cases that we have to consider:
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int vector_find(vector <int>& vec, int element){
+    for (int i = 0; i<vec.size(); i++){
+        if (vec[i] == element) return i;
+    }
+    return -1;
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+	freopen("milkorder.in", "r", stdin);
+	freopen("milkorder.out", "w", stdout);
+
+    int n, m, k, ans;
+    cin>>n>>m>>k;
+
+    vector <int> hierarchy(m);
+    for (int i = 0; i<m; i++){
+        cin>>hierarchy[i];
+    }
+
+    vector <vector <int>> fixed(k, vector <int> (2));
+    for (int i = 0; i<k; i++){
+        cin>>fixed[i][0]>>fixed[i][1];
+    }
+
+    vector <int> cows(n, 0);
+    for (int i = 0; i<k; i++){
+        cows[fixed[i][1] - 1] = fixed[i][0];
+    }
+
+    if (vector_find(cows, 1) != -1){
+        // Case 1
+        ans = vector_find(cows, 1);
+    }else{
+        if (vector_find(hierarchy, 1) == -1){
+            // Case 2
+            int i = n-1, pointer = m-1;
+            while(pointer >= 0){
+                if (vector_find(cows, hierarchy[pointer]) != -1){
+                    i = vector_find(cows, hierarchy[pointer]) - 1;
+                    pointer--;
+                }else{
+                    if (cows[i] == 0){
+                        cows[i] = hierarchy[pointer];
+                        i--; pointer--;
+                    }else{
+                        i--;
+                    }
+                }
+            }
+            for (int i = 0; i<n; i++){
+                if (cows[i] == 0){
+                    ans = i+1;
+                    break;
+                }
+            }
+        }else{
+            //case 3
+            int i = 0, pointer = 0;
+            while(pointer < m){
+                if (vector_find(cows, hierarchy[pointer]) != -1){
+                    i = vector_find(cows, hierarchy[pointer]) + 1;
+                    pointer++;
+                }else{
+                    if (cows[i] == 0){
+                        cows[i] = hierarchy[pointer];
+                        i++; pointer++;
+                    }else{
+                        i++;
+                    }
+                }
+            }
+            for (int i = 0; i<n; i++){
+                if (cows[i] == 1){
+                    ans = i+1;
+                    break;
+                }
+            }
+        }
+    }
+
+    cout<<ans<<endl;
+    return 0;
+}
+
+```
+
+</CPPSection>
+
 <PySection>
 
 ```py
