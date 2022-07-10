@@ -89,7 +89,7 @@ export const Authors: Author[] = [
     name: 'Darren Yao',
     title: 'Co-Founder',
     blurb:
-      'Darren Yao is a USACO Platinum competitor."',
+      'Darren Yao is a USACO Platinum competitor.',
     website: 'http://darrenyao.com/',
     email: 'darren.yao@gmail.com',
     github: 'darren-yao',
@@ -117,7 +117,7 @@ export const Authors: Author[] = [
     photo: 'andi',
     name: 'Andi Qu',
     title: 'Co-Founder',
-    blurb: 'Andi Qu is an IOI and IMO bronze medalist.',
+    blurb: 'Andi Qu is an IOI and IMO bronze medalist, and part of the MIT Class of 2025',
     codeforces: 'dolphingarlic',
     github: 'dolphingarlic',
     email: 'andi@andiqu.com',
