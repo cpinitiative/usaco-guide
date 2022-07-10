@@ -29,11 +29,13 @@ So our final expression is
 
 $$E_x = E_{x -1} \cdot \sum_{i=0}^{\lfloor E_{x - 1} \rfloor} p_i + \sum_{i=\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$$
 
-We can simulate this process trivially in $O(TK)$. However, this can easily be sped up to $O(T^2 + K)$ by pre-calculating $p_i$ and using a prefix sum. This gives us the first $9$ test cases but is not good enough.
+We can solve the problem by simulating each test case and recalculating the summations for each test case in $O(TK)$. However, this can easily be sped up to $O(T^2 + K)$ by pre-calculating $p_i$ using Pascal's identity and by precalculating the prefix sums of both $p_i$ and $p_i i$ so we can get the values of the summations in $O(1)$ instead of $O(T)$. This gives us the first $9$ test cases but is not good enough.
 
+In order to fully solve the question, we need to remove the $O(K)$ factor. We can do this if we are able to process multiple values of $E_x$ in a single step.
 
-In order to fully solve the question, we need to be able to process multiple values of $E_x$ in a single step. We can only do this if the values of $a = {\sum_{i=0}}^{\lfloor E_{x - 1} \rfloor} p_i$ and $b = {\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}}^{T} i p_i$ don't change between queries.
+Claim: We can only do this if the values of $a = {\sum_{i=0}}^{\lfloor E_{x - 1} \rfloor} p_i$ and $b = {\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}}^{T} i p_i$ don't change between queries.
 
+Proof:
 Let $a = {\sum_{i=0}}^{\lfloor E_{x - 1} \rfloor} p_i$ and $b = {\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}}^{T} i p_i$. Then our formula becomes
 
 $E_x = E_{x - 1} \cdot a + b$
@@ -50,6 +52,7 @@ We can rewrite the second through last term using the formula for a geometric se
 
 $E_x = a^k \cdot E_{x - k} + \frac{b(a^k - 1)}{a - 1}$
 
+Here is more information about geometric series: https://artofproblemsolving.com/wiki/index.php/Geometric_sequence.
 
 Essentially we can binary search on the next value that will change the values of $a$ and $b$. This happens when the value$\text{ of } {\lfloor E_x \rfloor}$ changes. Since there are at most $T$ values of $E_x$, the resulting time complexity will be $O(T^2 + T \log K)$.
 
@@ -72,14 +75,18 @@ db pref_prob[1001];
 db pref_exp[1001];
 
 // Function to skip ahead x submissions with constants a and b with the current expected value set to E.
-db f(db a, db b, db E, ll x) {
+db skip_submissions(db a, db b, db E, ll x) {
   	return pow(a, x) * E + b * (pow(a, x) - 1) / (a - 1);
 }
 
 int main() {
-	cout << fixed << setprecision(20);
-	int T; ll K; cin >> T >> K; T--;
-  
+	int T;
+	ll K;
+	cin >> T >> K;
+	
+	// Subtract sample test case
+	T--;
+	
 	// Precompute probablity of choosing exactly i test cases using Pascal's Identity.
 	prob[0][0] = 1;
 	for (int i = 1; i <= T; i++) {
@@ -96,8 +103,11 @@ int main() {
 	for (int i = 1; i <= T; i++) pref_exp[i] = pref_exp[i - 1] + prob[T][i] * i;
   
 	db E = 0;
-	while (K) {
-		// Find the floor of the current expected value which acts as the limit of how many submissions we can skip forward.
+	while (K != 0) {
+		/*
+		Find the floor of the current expected value
+		which acts as the limit of how many submissions we can skip forward.
+		*/ 
 		ll cross = (ll) floor(E);
 
 		// Find constants a and b
@@ -108,7 +118,7 @@ int main() {
 		while (lo < hi) {
 			ll mid = (lo + hi + 1) / 2;
 			// Check if 'mid' submissions crosses the 'cross' limit.
-			if (floor(f(a, b, E, mid)) == cross) {
+			if (floor(skip_submissions(a, b, E, mid)) == cross) {
 				lo = mid;
 	  		} else {
 				hi = mid - 1;
@@ -116,9 +126,10 @@ int main() {
 		}
 		// Skip forward 'lo' submissions or the remaining amount of submissions if there are less than 'lo' submissions left.
 		lo = min(lo, K);
-		E = f(a, b, E, lo);
+		E = skip_submissions(a, b, E, lo);
 		K -= lo;
 	}
+	cout << fixed << setprecision(20);
 	cout << E + 1 << endl;
 }
 ```
