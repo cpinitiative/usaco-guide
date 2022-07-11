@@ -30,9 +30,12 @@ void bfs(int s, int ix)
 	{
 		pair<int, int> p = q.front();
 		q.pop();
-		for(auto n : mp[p.first])
+		for (auto n : mp[p.first])
 		{
-			if(dist[ix][n] != -1){ continue; }
+			if(dist[ix][n] != -1)
+			{ 
+				continue; 
+			}
 			dist[ix][n] = p.second + 1;
 			q.push({n, dist[ix][n]});
 		}
@@ -41,12 +44,12 @@ void bfs(int s, int ix)
 
 int main()
 {
-	int B, E, P, N, M; 
+	int B,E,P,N,M; 
     	cin >> B >> E >> P >> N >> M;
 
-    	dist.assign(4, vector<int>(N+1, -1));
+    	dist.assign(4, vector<int>(N + 1, -1));
 
-    	for(int i = 0; i < M; i++)
+    	for (int i = 0; i < M; i++)
     	{
 		int u, v;
         	cin >> u >> v;
@@ -62,7 +65,7 @@ int main()
 
     	int A = INT_MAX;
 
-    	for(int i = 0; i < N; i++)
+    	for (int i = 0; i < N; i++)
     	{
         	A = min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
     	}
