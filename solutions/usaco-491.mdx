@@ -23,53 +23,53 @@ vector<vector<int>> dist;
 
 void bfs(int s, int ix)
 {
-    queue<pair<int, int>> q;
-    q.push({s, 0});
-    dist[ix][s] = 0;
-    while(!q.empty())
-    {
-        pair<int, int> p = q.front();
-        q.pop();
-        for(auto n : mp[p.first])
-        {
-            if(dist[ix][n] != -1){ continue; }
-            dist[ix][n] = p.second + 1;
-            q.push({n, dist[ix][n]});
-        }
-    }
+	queue<pair<int, int>> q;
+	q.push({s, 0});
+	dist[ix][s] = 0;
+	while(!q.empty())
+	{
+		pair<int, int> p = q.front();
+		q.pop();
+		for(auto n : mp[p.first])
+		{
+			if(dist[ix][n] != -1){ continue; }
+			dist[ix][n] = p.second + 1;
+			q.push({n, dist[ix][n]});
+		}
+	}
 }
 
 int main()
 {
-    int B, E, P, N, M; 
-    cin >> B >> E >> P >> N >> M;
+	int B, E, P, N, M; 
+    	cin >> B >> E >> P >> N >> M;
 
-    dist.assign(4, vector<int>(N+1, -1));
+    	dist.assign(4, vector<int>(N+1, -1));
 
-    for(int i = 0; i < M; i++)
-    {
-        int u, v;
-        cin >> u >> v;
-        u -= 1;
-        v -= 1;
-        mp[u].push_back(v);
-        mp[v].push_back(u);
-    }
+    	for(int i = 0; i < M; i++)
+    	{
+		int u, v;
+        	cin >> u >> v;
+        	u -= 1;
+        	v -= 1;
+        	mp[u].push_back(v);
+        	mp[v].push_back(u);
+    	}
 
-    bfs(0, 0);    // finding the distance of every node from node-0
-    bfs(1, 1);    // finding the distance of every node from node-1
-    bfs(N-1, 2);  // finding the distance of every node from node-(N-1)
+    	bfs(0, 0);    // finding the distance of every node from node-0
+    	bfs(1, 1);    // finding the distance of every node from node-1
+    	bfs(N-1, 2);  // finding the distance of every node from node-(N-1)
 
-    int A = INT_MAX;
+    	int A = INT_MAX;
 
-    for(int i = 0; i < N; i++)
-    {
-        A = min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
-    }
+    	for(int i = 0; i < N; i++)
+    	{
+        	A = min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
+    	}
 
-    cout << A << endl;
+    	cout << A << endl;
 
-    return 0;
+    	return 0;
 }
 	
 ```
