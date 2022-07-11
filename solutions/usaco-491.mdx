@@ -14,7 +14,6 @@ author: Qi Wang
 <CPPSection>
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -26,13 +25,13 @@ void bfs(int s, int ix)
 	queue<pair<int, int>> q;
 	q.push({s, 0});
 	dist[ix][s] = 0;
-	while(!q.empty())
+	while (!q.empty())
 	{
 		pair<int, int> p = q.front();
 		q.pop();
 		for (auto n : mp[p.first])
 		{
-			if(dist[ix][n] != -1)
+			if (dist[ix][n] != -1)
 			{ 
 				continue; 
 			}
@@ -44,11 +43,10 @@ void bfs(int s, int ix)
 
 int main()
 {
-	int B,E,P,N,M; 
+	int B, E, P, N, M; 
     	cin >> B >> E >> P >> N >> M;
 
     	dist.assign(4, vector<int>(N + 1, -1));
-
     	for (int i = 0; i < M; i++)
     	{
 		int u, v;
@@ -59,9 +57,9 @@ int main()
         	mp[v].push_back(u);
     	}
 
-    	bfs(0, 0);    // finding the distance of every node from node-0
-    	bfs(1, 1);    // finding the distance of every node from node-1
-    	bfs(N-1, 2);  // finding the distance of every node from node-(N-1)
+    	bfs(0, 0);  // finding the distance of every node from node-0
+    	bfs(1, 1);  // finding the distance of every node from node-1
+    	bfs(N - 1, 2);  // finding the distance of every node from node-(N-1)
 
     	int A = INT_MAX;
 
@@ -71,10 +69,7 @@ int main()
     	}
 
     	cout << A << endl;
-
-    	return 0;
 }
-	
 ```
 	
 </CPPSection>
