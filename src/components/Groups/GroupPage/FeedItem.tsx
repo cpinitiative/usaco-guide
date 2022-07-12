@@ -13,6 +13,7 @@ import {
   PostData,
 } from '../../../models/groups/posts';
 import Tooltip from '../../Tooltip/Tooltip';
+import PostExportModal from './PostExportModal';
 
 const AnnouncementIcon = () => {
   return (
@@ -78,8 +79,8 @@ export default function FeedItem({
 }): JSX.Element {
   const { showAdminView } = useActiveGroup();
   const { updatePost, deletePost } = usePostActions(group.id);
-
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const ref = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
@@ -238,8 +239,39 @@ export default function FeedItem({
                     </svg>
                     <span>Delete Post</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowExportModal(true);
+                      console.log('toggled');
+                    }}
+                    className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    role="menuitem"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-3 h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    <span>Export Post</span>
+                  </button>
                 </div>
               </Transition>
+              <PostExportModal
+                showExportModal={showExportModal}
+                onClose={() => setShowExportModal(false)}
+                post={post}
+                group={group}
+              />
             </div>
           </div>
         )}

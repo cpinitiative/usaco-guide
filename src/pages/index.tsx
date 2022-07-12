@@ -37,18 +37,20 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
-const headerClasses = 'text-4xl md:text-5xl 2xl:text-6xl font-black text-black';
+const headerClasses =
+  'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
+const headerClassesNoText = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
 const subtextClasses =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700';
+  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400';
 const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
-const headerClassesDark =
-  'text-4xl md:text-5xl 2xl:text-6xl font-black text-white';
-const subtextClassesDark =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-400';
 const whiteButtonClassesBig =
   'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
 const whiteButtonClasses =
   'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
+const usacoTitleClasses =
+  'md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl';
+const linkTextStyles =
+  'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
@@ -63,20 +65,27 @@ export default function IndexPage(): JSX.Element {
       {/*>*/}
       {/*  &larr; Back to usaco.org*/}
       {/*</a>*/}
-      <div className="dark bg-black">
-        <TopNavigationBar transparent />
+      <div className="bg-black">
+        <TopNavigationBar />
       </div>
 
       {/* Begin Hero */}
-      <div className="-mt-16 bg-black">
+      <div className="-mt-16 bg-gray-100 dark:bg-black">
         <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
           <div className="h-6 sm:h-12"></div>
 
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-24"></div>
 
-            <div className="flex md:justify-center">
-              <GlowingText className="md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl text-white mt-4">
+            <div className="flex md:justify-center dark:hidden">
+              <div className={classNames(usacoTitleClasses, 'text-black mt-4')}>
+                USACO Guide
+              </div>
+            </div>
+            <div className="flex md:justify-center invisible h-0 dark:visible dark:h-auto">
+              <GlowingText
+                className={classNames(usacoTitleClasses, 'text-white mt-4')}
+              >
                 USACO Guide
               </GlowingText>
             </div>
@@ -92,7 +101,8 @@ export default function IndexPage(): JSX.Element {
                 font-medium
                 leading-snug
                 md:!leading-normal
-                text-gray-300
+                text-gray-800
+                dark:text-gray-300
               "
             >
               A free collection of{' '}
@@ -117,7 +127,7 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-16 sm:h-24"></div>
 
-          <div className="flex md:justify-center md:text-xl text-gray-400">
+          <div className="flex md:justify-center md:text-xl text-gray-600 dark:text-gray-400">
             <a
               href="https://joincpi.org/"
               className="inline-flex items-center space-x-3 md:space-x-4"
@@ -180,18 +190,30 @@ export default function IndexPage(): JSX.Element {
       {/* End Hero */}
 
       {/* Learn USACO. Efficiently. */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
-          <h2 className={headerClasses}>
-            Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
+          <h2
+            className={classNames(
+              headerClassesNoText,
+              'text-black dark:text-gray-100'
+            )}
+          >
+            <div className="dark:hidden">
+              Learn USACO. <HighlightedText>Efficiently.</HighlightedText>
+            </div>
+            <div className="invisible h-0 dark:visible dark:h-auto">
+              Learn USACO. <HighlightedText dark>Efficiently.</HighlightedText>
+            </div>
           </h2>
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
             Stop wasting time searching for problems and tutorials. The USACO
             Guide provides a{' '}
-            <b className="text-black">comprehensive, organized roadmap</b>{' '}
+            <b className="text-black dark:text-white">
+              comprehensive, organized roadmap
+            </b>{' '}
             carefully designed and crafted for USACO contestants – available to
             everyone, for free.
           </p>
@@ -202,7 +224,7 @@ export default function IndexPage(): JSX.Element {
             icon={DatabaseIcon}
             iconClasses="from-cyan-400 to-sky-500"
             title="Curated Resources"
-            blobClasses="bg-sky-200 hidden xl:block"
+            blobClasses="bg-sky-200 dark:bg-sky-800 hidden xl:block"
             feature={<ResourcesFeature />}
             featurePosition="left"
           >
@@ -216,7 +238,7 @@ export default function IndexPage(): JSX.Element {
             icon={ClipboardListIcon}
             iconClasses="from-purple-400 to-indigo-500"
             title="Extensive Problemsets"
-            blobClasses="bg-purple-300"
+            blobClasses="bg-purple-300 dark:bg-purple-800"
             feature={<ProblemsetsFeature />}
             featurePosition="right"
           >
@@ -230,7 +252,7 @@ export default function IndexPage(): JSX.Element {
             icon={LightningBoltIcon}
             iconClasses="from-yellow-400 to-orange-500"
             title="Progress Tracking"
-            blobClasses="bg-orange-200"
+            blobClasses="bg-orange-200 dark:bg-orange-800"
             feature={<ProgressTrackingFeature />}
             featurePosition="left"
             fade="none"
@@ -245,7 +267,7 @@ export default function IndexPage(): JSX.Element {
             icon={ChatAlt2Icon}
             iconClasses="from-green-400 to-cyan-500"
             title="Help when you need it"
-            blobClasses="bg-green-200"
+            blobClasses="bg-green-200 dark:bg-green-800"
             feature={
               <div className="shadow-lg rounded-lg">
                 <StaticImage
@@ -268,7 +290,7 @@ export default function IndexPage(): JSX.Element {
               href="https://forum.usaco.guide/"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 transition hover:text-purple-600"
+              className={linkTextStyles}
             >
               View Forum &rarr;
             </a>
@@ -278,15 +300,24 @@ export default function IndexPage(): JSX.Element {
       </div>
       {/* End Learn USACO. Efficiently. */}
 
-      <div className="bg-black">
+      <div className="bg-gray-100 dark:bg-black">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
-          <GlowingText className={headerClassesDark} extraGlow>
-            Trusted by thousands.
-          </GlowingText>
+          <div className="dark:hidden">
+            <h1 className={classNames(headerClasses)}>Trusted by thousands</h1>
+          </div>
+          <div className="invisible h-0 dark:visible dark:h-auto">
+            <GlowingText
+              className={classNames(headerClassesNoText, 'text-white')}
+              extraGlow
+            >
+              Trusted by thousands.
+            </GlowingText>
+          </div>
+
           <div className={headerSubtextSpacerClasses}></div>
 
-          <p className={subtextClassesDark}>
+          <p className={subtextClasses}>
             This guide is written by{' '}
             <GradientText>top USACO contestants,</GradientText> including
             two-time IOI winner and USACO Problemsetter Benjamin Qi.
@@ -311,7 +342,7 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
           <h2 className={classNames(headerClasses, 'md:text-center')}>
@@ -384,15 +415,24 @@ export default function IndexPage(): JSX.Element {
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
 
-      <div className="bg-black">
+      <div className="bg-gray-100 dark:bg-black">
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
 
         <div className={containerClasses}>
-          <GlowingText className={headerClassesDark} extraGlow>
-            Join our Team.
-          </GlowingText>
+          <div className="dark:hidden">
+            <h1 className={classNames(headerClasses)}>Join our Team.</h1>
+          </div>
+          <div className="invisible h-0 dark:visible dark:h-auto">
+            <GlowingText
+              className={classNames(headerClassesNoText, 'text-white')}
+              extraGlow
+            >
+              Join our Team.
+            </GlowingText>
+          </div>
+
           <div className={headerSubtextSpacerClasses}></div>
-          <p className={subtextClassesDark}>
+          <p className={subtextClasses}>
             The{' '}
             <a
               href="https://joincpi.org/"
@@ -424,13 +464,24 @@ export default function IndexPage(): JSX.Element {
             </GlowingRing>
           </div>
 
-          <hr className="my-16 md:my-20 2xl:my-24 border-gray-800" />
+          <hr className="my-16 md:my-20 2xl:my-24 border-gray-300 dark:border-gray-800" />
 
-          <GlowingText className={headerClassesDark} extraGlow>
-            Or, help us financially!
-          </GlowingText>
+          <div className="dark:hidden">
+            <h1 className={classNames(headerClasses)}>
+              Or, help us financially!
+            </h1>
+          </div>
+          <div className="invisible h-0 dark:visible dark:h-auto">
+            <GlowingText
+              className={classNames(headerClassesNoText, 'text-white')}
+              extraGlow
+            >
+              Or, help us financially!
+            </GlowingText>
+          </div>
+
           <div className={headerSubtextSpacerClasses}></div>
-          <p className={subtextClassesDark}>
+          <p className={subtextClasses}>
             We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
             — all donations are tax deductible. Since our inception in September
             2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
@@ -455,7 +506,7 @@ export default function IndexPage(): JSX.Element {
                 href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-400 transition hover:text-purple-400"
+                className={linkTextStyles}
               >
                 Donate via PayPal
               </a>
@@ -468,7 +519,7 @@ export default function IndexPage(): JSX.Element {
               href="https://joincpi.org/sponsorship_prospectus.pdf"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-400 transition hover:text-purple-400"
+              className={linkTextStyles}
             >
               {' '}
               sponsorship prospectus
@@ -477,21 +528,21 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-12 md:h-20"></div>
 
-          <p className="uppercase text-gray-400 font-medium text-lg md:text-xl">
+          <p className="uppercase text-gray-700 dark:text-gray-400 font-medium text-lg md:text-xl">
             Our Sponsors
           </p>
-
-          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+          {/* Sponsor logos don't fit well in the light theme */}
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
+          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-600 dark:text-gray-400 items-center">
             <div className="col-span-1">
               <a href="https://x-camp.academy" target="_blank" rel="noreferrer">
                 <XCamp />
               </a>
             </div>
           </div>
-          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Bronze Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
@@ -505,7 +556,7 @@ export default function IndexPage(): JSX.Element {
               </a>
             </div>
           </div>
-          <p className="uppercase text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             In-kind Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">

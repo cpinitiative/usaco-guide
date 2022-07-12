@@ -4,6 +4,7 @@ redirects:
   - /gold/divis
 title: 'Divisibility'
 author: Darren Yao, Michael Cao, Andi Qu, and Kevin Sheng
+contributors: Juheon Rhee
 prerequisites:
 description: Using the information that one integer evenly divides another.
 frequency: 1
@@ -228,6 +229,21 @@ public class Divisors {
 
 </JavaSection>
 
+<PySection>
+
+```py
+from math import sqrt
+
+for _ in range(int(input())):
+	div_num = 0
+	x = int(input())
+	for i in range(1, int(sqrt(x) + 1)):
+		if x % i == 0:
+			div_num = div_num + 1 if i ** 2 == x else div_num + 2
+	print(div_num)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -460,7 +476,7 @@ This function runs in $\mathcal{O}(\log ab)$ time because
 $a\le b \implies b\pmod a <\frac{b}{2}$.
 
 The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are
-consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In
+consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. In
 this case, the algorithm will calculate
 $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means
 that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional

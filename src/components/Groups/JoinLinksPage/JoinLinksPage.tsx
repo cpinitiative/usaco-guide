@@ -24,7 +24,7 @@ const JoinLinksPage = () => {
         <SEO title="403 Forbidden" />
         <TopNavigationBar />
         <p className="text-center mt-12">
-          You don't have permissions to access this page.
+          You don't have permission to access this page.
         </p>
       </Layout>
     );

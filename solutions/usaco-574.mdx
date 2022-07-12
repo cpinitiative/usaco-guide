@@ -2,7 +2,7 @@
 id: usaco-574
 source: USACO Gold 2015 December
 title: Fruit Feast
-author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee
+author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_feast_gold_dec15.html)
@@ -52,60 +52,96 @@ int main() {
 Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** attainable states and simply choose the one with maximum fullness. The scene can be thought of as a graph by defining each edge to be the transition from fullness $i$ to $j$. Each state is defined by fullness and whether Bessie has drank water. Since there are $2T$ states and each state is visited at most once, the time and space complexity of this solution is $\mathcal{O}(T)$. Below is a BFS implementation.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <set>
+#include <queue>
 
-const int maxn = 5e6 + 5;
-bool pass[maxn][2];
-
-struct node {
-	int val;
-	bool drunk;
-};
-
-int bfs(int t, int a, int b) {
-	int res = INT_MIN;
-	queue<node> q;
-	q.push({0, 0});
-
-	while (!q.empty()) {
-		int value = q.front().val;
-		bool drunk = q.front().drunk;
-		q.pop();
-		res = max(res, value);
-
-		if(value + a <= t && !pass[value + a][drunk]) {
-			q.push({value + a, drunk});
-			pass[value + a][drunk] = true;
-		}
-
-		if(value + b <= t && !pass[value + b][drunk]) {
-			q.push({value + b, drunk});
-			pass[value + b][drunk] = true;
-		}
-
-		if(!drunk && !pass[value / 2][1]) {
-			q.push({value / 2, 1});
-			pass[value / 2][1] = true;
-		}
-	}
-	return res;
-}
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
 
 int main() {
-	freopen("feast.in", "r", stdin);
-	freopen("feast.out", "w", stdout);
+	std::ifstream read("feast.in");
+	int max_fullness;
+	int orange;
+	int lemon;
+	read >> max_fullness >> orange >> lemon;
 
-	int t, a, b;
-	cin >> t >> a >> b;
-	cout << bfs(t, a, b);
+	// Keep track of which states we visited
+	std::set<pair<int, bool>> poss_fullness{{0, false}};
+	std::queue<pair<int, bool>> to_process;
+	to_process.push({0, false});
+	while (!to_process.empty()) {
+		auto [fullness, drank_water] = to_process.front();
+		to_process.pop();
+
+		// Drink water (if we haven't drank it already)
+		if (!drank_water) {
+			pair<int, bool> water{fullness / 2, true};
+			if (!poss_fullness.count(water)) {
+				to_process.push(water);
+				poss_fullness.insert(water);
+			}
+		}
+
+		// Eat a fruit
+		for (int fruit : vector<int>{orange, lemon}) {
+			int after = fullness + fruit;
+			pair<int, bool> to_add{after, drank_water};
+			if (after <= max_fullness && !poss_fullness.count(to_add)) {
+				to_process.push(to_add);
+				poss_fullness.insert(to_add);
+			}
+		}
+	}
+
+	int best = 0;
+	for (const auto& [fullness, _] : poss_fullness) {
+		best = std::max(best, fullness);
+	}
+
+	std::ofstream("feast.out") << best << endl;
 }
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+from collections import deque
+	
+with open('feast.in') as read:
+	max_fullness, orange, lemon = map(int, read.readline().split())
+
+poss_fullness = {(0, False)}  # Keep track of which states we visited
+to_process = deque([(0, False)])
+while to_process:
+	fullness, drank_water = to_process.pop()
+
+	# Drink water (if we haven't drank it already)
+	if not drank_water:
+		water = (fullness // 2, True)
+		if water not in poss_fullness:
+			to_process.appendleft(water)
+			poss_fullness.add(water)
+	
+	# Eat a fruit
+	for fruit in (orange, lemon):
+		after = fullness + fruit
+		to_add = (after, drank_water)
+		if after <= max_fullness and to_add not in poss_fullness:
+			to_process.appendleft(to_add)
+			poss_fullness.add(to_add)
+
+best = max([n[0] for n in poss_fullness])
+print(best, file=open('feast.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
