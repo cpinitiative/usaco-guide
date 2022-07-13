@@ -117,7 +117,7 @@ export const Authors: Author[] = [
     photo: 'andi',
     name: 'Andi Qu',
     title: 'Co-Founder',
-    blurb: 'Andi Qu is an IOI and IMO bronze medalist, and part of the MIT Class of 2025',
+    blurb: 'Andi Qu is an IOI and IMO bronze medalist, and part of the MIT Class of 2025.',
     codeforces: 'dolphingarlic',
     github: 'dolphingarlic',
     email: 'andi@andiqu.com',
