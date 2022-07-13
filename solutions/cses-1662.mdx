@@ -132,29 +132,24 @@ public class subarrayDivisibility {
 <PySection>
 
 ```py 
+n = int(input())
+Z = map(int, input().split())
 
-n = int ( input () )
-M = [ 0 ] * n
+M = [0] * n
+
 psums = 0
-M [ psums ] = 1
-Z = map ( int,input().split() )
+M[psums] = 1
 for a in Z:
-    
 	psums += a
-	
 	# Remember to account for negative sums
-	
-	M [ ( psums % n + n ) % n ] += 1
-ans = 0	
-for x in M:
-    
-    #Calculating the # of pairs.
-	 # This calculates the pairs without
-	 # duplicates and reverse groups.
-	 
-	ans += x * (x - 1) //2
-print ( ans )
+	M[(psums % n + n) % n] += 1
 
+ans = 0
+for x in M:
+	# Calculate the # of pairs w/o duplicates & reverse groups.
+	ans += x * (x - 1) // 2
+
+print(ans)
 ```
 </PySection>
 
