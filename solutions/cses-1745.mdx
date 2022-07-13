@@ -75,5 +75,51 @@ public class MoneySums {
 ```
 
 </JavaSection>
+	
+## C++ Implementation
+```c++
 
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int N;
+    cin>>N;
+    int coins[N];
+    for(int i=0;i<N;i++){
+        cin>>coins[i];
+    }
+    int totalSum = 0;
+    totalSum = accumulate(coins,coins+N,totalSum);
+    bool dp[N+1][totalSum+1];
+    memset(dp,false,sizeof(dp));
+    dp[0][0]=true; 
+    
+    for(int i=1;i<=N;i++){
+        for(int sum = 0;sum<=totalSum;sum++){
+            dp[i][sum]=dp[i-1][sum];
+            int prevsum = sum-coins[i-1];
+            if(prevsum>=0 && dp[i-1][prevsum]){
+                dp[i][sum]=true;
+            }
+        }
+    }
+    vector<int>ans;
+    for(int sum=1;sum<=totalSum;sum++){
+        if(dp[N][sum]){
+            ans.push_back(sum);
+        }
+    }
+    cout<<ans.size()<<endl;
+    for(int i=0;i<ans.size();i++){
+        cout<<ans[i]<<" ";
+    }
+
+    return 0;
+}
+
+	
+```
+		
+	
 </LanguageSection>
