@@ -36,7 +36,7 @@ using std::vector;
 
 constexpr int MOD = 998244353;
 
-// sauce: /gold/modular
+// from /gold/modular
 long long pow_mod(long long base, long long exp) {
 	base %= MOD;
 	long long result = 1;
@@ -49,7 +49,7 @@ long long pow_mod(long long base, long long exp) {
 	return result;
 }
 
-long long mod_inv(long long n) {  // sauce is same as above
+long long mod_inv(long long n) {
 	return pow_mod(n, MOD - 2);
 }
 
@@ -77,10 +77,11 @@ int main() {
 	for (const vector<int>& c : children) {
 		for (const int& i : c) {
 			int num = 1 * 1 * wanter_nums[i];
-			long long denom = child_num * c.size() * child_num;
+			long long denom = child_num * (long long) c.size() * child_num;
 			prob = (prob + frac_total(num, denom)) % MOD;
 		}
 	}
+	
 	cout << prob << endl;
 }
 ```
@@ -137,10 +138,10 @@ public class SantaBot {
 		return pow(n, MOD - 2);
 	}
 
-	// copied from the cses exponentiation solution here: /gold/modular
+	// from /gold/modular
 	private static long pow(long base, long exp) {
 		if (exp < 0) {
-			throw new IllegalArgumentException("sorry i can't take exponents lower than 0");
+			throw new IllegalArgumentException("exp must be nonnegative");
 		}
 		base %= MOD;
 		long res = 1;
