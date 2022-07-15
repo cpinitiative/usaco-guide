@@ -20,7 +20,8 @@ using namespace std;
 vector<vector<int>> graph;
 vector<vector<int>> dist;
 
-void bfs(int s, int ix)    // s is the starting node
+// s is the starting node
+void bfs(int s, int ix)
 {
 	queue<pair<int, int>> q;
 	q.push({s, 0});
@@ -50,7 +51,7 @@ int main()
         graph.assign(N + 1, vector<int>());
     	for (int i = 0; i < M; i++)
     	{
-		    int u, v;
+		int u, v;
         	cin >> u >> v;
         	u -= 1;
         	v -= 1;
@@ -63,10 +64,12 @@ int main()
     	bfs(N - 1, 2);  // finding the distance of every node from node-(N-1)
 
     	int min_energy = INT_MAX;
-
     	for (int i = 0; i < N; i++)
     	{
-        	min_energy = min(min_energy, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
+		min_energy = min(
+			min_energy,
+			dist[0][i] * B + dist[1][i] * E + dist[2][i] * P
+		);
     	}
 
     	cout << min_energy << endl;
