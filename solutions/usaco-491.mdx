@@ -17,10 +17,10 @@ author: Qi Wang
 #include <bits/stdc++.h>
 using namespace std;
 
-unordered_map<int, vector<int>> mp;
+vector<vector<int>> graph;
 vector<vector<int>> dist;
 
-void bfs(int s, int ix)
+void bfs(int s, int ix)    // s is the starting node
 {
 	queue<pair<int, int>> q;
 	q.push({s, 0});
@@ -29,7 +29,7 @@ void bfs(int s, int ix)
 	{
 		pair<int, int> p = q.front();
 		q.pop();
-		for (auto n : mp[p.first])
+		for (auto n : graph[p.first])
 		{
 			if (dist[ix][n] != -1)
 			{ 
@@ -46,29 +46,30 @@ int main()
 	int B, E, P, N, M; 
     	cin >> B >> E >> P >> N >> M;
 
-    	dist.assign(4, vector<int>(N + 1, -1));
+    	dist.assign(3, vector<int>(N + 1, -1));
+        graph.assign(N + 1, vector<int>());
     	for (int i = 0; i < M; i++)
     	{
-		int u, v;
+		    int u, v;
         	cin >> u >> v;
         	u -= 1;
         	v -= 1;
-        	mp[u].push_back(v);
-        	mp[v].push_back(u);
+        	graph[u].push_back(v);
+        	graph[v].push_back(u);
     	}
 
     	bfs(0, 0);  // finding the distance of every node from node-0
     	bfs(1, 1);  // finding the distance of every node from node-1
     	bfs(N - 1, 2);  // finding the distance of every node from node-(N-1)
 
-    	int A = INT_MAX;
+    	int min_energy = INT_MAX;
 
     	for (int i = 0; i < N; i++)
     	{
-        	A = min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
+        	min_energy = min(min_energy, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
     	}
 
-    	cout << A << endl;
+    	cout << min_energy << endl;
 }
 ```
 	
