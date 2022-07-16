@@ -307,6 +307,79 @@ int main() {
 
 </LanguageSection>
 
+### Alternate Solution II (Company Queries II)
+
+We can also find the LCA of two nodes using the Tarjan's Offline LCA algorithm. By taking advantage of the DFS traversal, we 
+can precompute the answers to the queries through forming subtrees and calculating the common parent with a similar structure 
+as Disjoint-Set Union.  
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+CodeSnip{Benq Template}
+
+int N, M;
+vpi adj[200001], q[200001];
+int fa[200001], lca[200001];
+bool vis[200001];
+ 
+int find(int u) {
+    return (fa[u] == u) ? u : fa[u] = find(fa[u]);
+}
+ 
+void Tarjan(int u) {
+    vis[u] = true;
+ 
+    for (auto n : adj[u]) {
+        if (vis[n.f]) continue;
+ 
+        Tarjan(n.f);
+ 
+        fa[n.f] = u;
+    }
+ 
+    for (auto x : q[u]) {
+        if (vis[x.f])
+            lca[x.s] = find(x.f);
+    }
+}
+ 
+int main() {
+    clock_t start = clock();
+    
+    setIO("");
+    re(N, M);
+ 
+    F0RE(i, N) fa[i] = i;
+ 
+    FORE(i, 2, N){
+        int a; re(a);
+        adj[i].pb({a, i});
+        adj[a].pb({i, i});
+    }
+ 
+    F0R(i, M) {
+        int a, b;
+        re(a, b);
+ 
+        q[a].pb({b, i});
+        q[b].pb({a, i});
+    }
+ 
+    Tarjan(1);
+ 
+    F0R(i, M) {
+        ps(lca[i]);
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 <Resources>
 	<Resource
 		source="cp-algo"
