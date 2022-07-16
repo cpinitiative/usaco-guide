@@ -60,6 +60,8 @@ tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
 #define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define FORE(i,a,b) for (int i = (a); i <= (b); ++i)
+#define F0RE(i,a) FOR(i,0,a+1)
 #define F0R(i,a) FOR(i,0,a)
 #define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
 #define R0F(i,a) ROF(i,0,a)
