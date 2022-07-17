@@ -2,7 +2,7 @@
 id: usaco-573
 source: USACO Gold 2015 December
 title: High Card Low Card (Gold)
-author: Qi Wang
+author: Qi Wang, Ishwarendra Jha
 ---
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
@@ -10,6 +10,108 @@ author: Qi Wang
 [Official Analysis](http://www.usaco.org/current/data/sol_cardgame_gold_dec15.html)
 
 <LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int numberOfWins(vector<int> &bessie, vector<int> &elsie, bool smallerCardWins)
+{
+	/* if person with larger value cards wins
+	** Suppose person A and B use card with value 3 and 2 respectively
+	** Person A wins as 3 > 2
+	** But what is person with smaller value card wins
+	** We can say person B wins because (-2 > -3)
+	** So we will just make all elements negative
+	** instead of changing our way of comparing two numbers.
+	*/
+
+	int n = size(bessie);
+	assert(size(bessie) == size(elsie));
+
+	if (smallerCardWins)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			bessie[i] *= -1;
+			elsie[i] *= -1;
+		}
+	}
+
+	sort(begin(bessie), end(bessie), greater<int>());
+	sort(begin(elsie), end(elsie), greater<int>());
+
+	int bpos = 0; // keep track of index of card which bessie uses in current move
+	int wins = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		if (bessie[bpos] > elsie[i]) // bessie wins
+		{
+			wins++;
+			bpos++;
+		}
+	}
+
+	return wins;
+}
+
+int main()
+{
+	freopen("cardgame.in", "r", stdin);
+	freopen("cardgame.out", "w", stdout);
+
+	int n;
+	cin >> n;
+
+	map<int, int> elsieHas;
+
+	// We will store first and second half of cards separately
+	vector<int> bessie_first(n / 2), bessie_second(n / 2);
+	vector<int> elsie_first(n / 2), elsie_second(n / 2);
+
+	for (int i = 0; i < n; ++i)
+	{
+		int x;
+		cin >> x;
+
+		elsieHas[x] = 1;
+
+		if (i < n / 2)
+			elsie_first[i] = x;
+		else
+			elsie_second[i - n / 2] = x;
+	}
+
+	for (int i = 2 * n, fpos = 0, bpos = 0; i > 0; --i)
+	{
+		if (elsieHas.find(i) == elsieHas.end()) // elsie does not have this card
+		{
+			if (fpos < n / 2) // bigger card must be used in first half
+				bessie_first[fpos++] = i;
+			else
+				bessie_second[bpos++] = i;
+		}
+	}
+
+	int ans = 0;
+
+	// First half person with card of larger value wins
+	ans += numberOfWins(bessie_first, elsie_first, false);
+
+	// In second half of game person with card of smaller value win
+	ans += numberOfWins(bessie_second, elsie_second, true);
+
+	cout << ans << "\n"; 
+
+	return 0;
+}
+```
+
+</CPPSection>
 
 <JavaSection>
 
