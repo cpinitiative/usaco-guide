@@ -24,10 +24,10 @@ The other is kind of predicting next answers, traverse all the possible outcomes
 of the next number, $\mathcal{O}(1)$ to query current answer in DP array and
 $\mathcal{O}(\max{a[i]})$ to update, but needs a bit more memory.
 
-These algorithms are not efficient enough because the time complexity of update
-and query is unbalanced.
+These algorithms are not efficient enough because time complexity of the update
+and the query is unbalanced.
 
-Try to consider the both of them and try to "combine" their ideas.
+Try to consider both of them and try to "combine" their ideas.
 
 </Spoiler>
 
@@ -91,14 +91,13 @@ $$
 \end{align}
 $$
 
-For convience, we'll call the red part 0-part, the black 1-part.
+For convenience, we'll call the red part 0-part and the black part 1-part.
 
 Let $\texttt{dp}[i][j][p][q]$ be the length of longest beautiful sequence that
 for first $i$ elements, end with element that 1-part is $j$, satisfying
 $\text{pop}(\texttt{0-part of end}\ \&\ p)=q$,
 
-For each state, we preprocess the 1-part, and predict the 0-part of next
-element.
+For each state, we preprocess the 1-part and predict the 0-part of next element.
 
 Now for the current state, we certainly know it transfer from
 $\texttt{dp}[i-1][j][\texttt{0-part of cur}][q]$.
