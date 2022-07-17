@@ -1,0 +1,80 @@
+---
+id: cf-1418C
+source: CF
+title: Mortal Kombat Tower
+author: Ryan Chou
+---
+[Official Editorial (C++)](https://codeforces.com/blog/entry/82673)
+
+## Alternate Solution - DP
+### Explanation
+
+If we define $\texttt{dp}[i][j]$ as the minimum number of skip points needed to get to the $i$th boss on turn $j$ 
+(our turn is zero), then our transitions would be:
+
+$\texttt{dp}[i + 1][0] =\min(\texttt{dp}[i + 1][0], \texttt{dp}[i][1] + \texttt{hard}[i])$
+
+$\texttt{dp}[i + 2][0] =\min(\texttt{dp}[i + 2][0], \texttt{dp}[i][1] + \texttt{hard}[i] + \texttt{hard}[i + 1])$
+
+$\texttt{dp}[i + 1][1] =\min(\texttt{dp}[i + 1][1], \texttt{dp}[i][0])$
+
+$\texttt{dp}[i + 2][1] =\min(\texttt{dp}[i + 2][1], \texttt{dp}[i][0])$
+
+This is because from each state, either the previous move, or the previous two moves could have been from the other player.
+
+So, the answer would be $\min(\texttt{dp}[N][0], \texttt{dp}[N][1])$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+
+	for (int i = 0; i < t; i++) {
+		int n;
+		cin >> n;
+
+		vector<int> bosses(n);
+		for (int i = 0; i < n; i++) {
+			cin >> bosses[i];
+		}
+
+		/*
+		 * dp[i][j] = the min amount of skip points 
+		 * on turn i (your turn is 0), on the jth boss.
+		 * (1e9 to prevent overflow)
+		 */
+		vector<vector<int>> dp(2, vector<int>(n + 1, 1e9));
+
+		/* 
+		 * base case:
+		 * your friend uses zero skip points before fighting any bosses.
+		 */
+		dp[1][0] = 0;
+
+		for (int i = 0; i < n; i++) {
+			// the opposite player switches on the previous move.
+			dp[0][i + 1] = min(dp[0][i + 1], dp[1][i] + bosses[i]);
+			dp[1][i + 1] = min(dp[1][i + 1], dp[0][i]);
+
+			// the opposite player switches from the previous two moves.
+			if (i + 2 <= n) {
+				dp[0][i + 2] = min(dp[0][i + 2], dp[1][i] + bosses[i] + bosses[i + 1]);
+				dp[1][i + 2] = min(dp[1][i + 2], dp[0][i]);
+			}
+		}
+		cout << min(dp[0][n], dp[1][n]) << endl;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

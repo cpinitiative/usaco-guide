@@ -1,0 +1,232 @@
+---
+id: cf-1216C
+source: CF 1216C
+title: D3C - White Sheet
+author: David Zhang
+---
+
+<Info title="Info/Tips">
+Especially with rectangle geometry, make a good habit of drawing patterns and observations on a scratch sheet of paper or whiteboard. It helps a lot!
+
+Also, if you don't understand the explanation, draw each possibility (Top, Bottom, Left and Right) on a sheet of paper and try to see the connections.
+</Info>
+[Official Analysis (C++)](https://codeforces.com/blog/entry/69954)
+
+## Explanation
+
+There are many ways to solve the problem, but the easiest way is to imagine cutting the white sheet. 
+
+Everytime the white sheet is covered by a black sheet, we can imagine cutting the intersection between the black and white sheets. Then, if the area of the final white sheet after being cut by the two rectangles is greater than zero, there is a portion of the white sheet that is visible.
+
+However, when considering cutting the sheet, the portion that is being cut must cut from entirely $ x_{1}$->$ x_{2}$ or $ y_{1}$->$ y_{2}$ or else there will be a portion of the white sheet still shown. We only cut when a black sheet completely covers the entire width or length of the white sheet, otherwise there will still be bits and pieces shown.
+
+
+There are 4 instances of which a white sheet can cover a black sheet.
+
+$\textbf{Top: }$ From the top, if the white sheet is completely covered from $ x_{1}$->$ x_{2}$ or $ y_{1}$->$ y_{2}$ and intersects some part of a black sheet, then change the $y_{2}$ (top of the rectangle) to the bottom of the black rectangle.
+
+$\textbf{Bottom: }$ From the bottom, if the white sheet is completely covered from $ x_{1}$->$ x_{2}$ and intersects some part of a black sheet, then change the $y_{1}$ (bottom of the rectangle) to the top of the black rectangle.
+
+$\textbf{Left: }$ From the left, if the white sheet is completely covered from $y_1$ to $y_2$ and intersects some part of a black sheet, then change the $x_1$ (left edge of the rectangle) to the right edge of the black rectangle.
+
+$\textbf{Right: }$ From the right, if the white sheet is completely covered from $y_1$ to $y_2$ and intersects some part of a black sheet, then change the $x_2$ (right edge of the rectangle) to the left edge of the black rectangle.
+
+Also, keep in mind to make sure that $x_1$ is always $<$ $x_2$ and the same with $y_1$ and $y_2.$
+
+Since there are no for loops or any sort of repetitions, the time complexity is $\mathcal{O}(1)$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Rect {
+	int x1, y1, x2, y2;
+	int area() {
+		return (x2 - x1) * (y2 - y1);
+	}
+};
+
+/*
+   Main Idea: If B intersects entirely in the x or y direction, cut it.
+   This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+   We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+ */
+Rect cut(Rect A, Rect B) {
+	// If B cuts A from the left side
+	if (A.x1 >= B.x1 && B.x2 >= A.x1 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+		A.x1 = B.x2;
+		A.x2 = max(A.x2, B.x2);  // If B covers A entirely
+	}
+	
+	// If B cuts A from the right side
+	if (A.x2 >= B.x1 && B.x2 >= A.x2 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+		A.x2 = B.x1;
+		A.x1 = min(A.x1, B.x1);  // If B covers A entirely
+	}
+	
+	// If B cuts A from the bottom side
+	if (A.y1 >= B.y1 && B.y2 >= A.y1 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+		A.y1 = B.y2;
+		A.y2 = max(A.y2, B.y2);  // If B covers A entirely
+	}
+	
+	// If B cuts A from the top side
+	if (A.y2 >= B.y1 && B.y2 >= A.y2 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+		A.y2 = B.y1;
+		A.y1 = min(A.y1, B.y1);  // If B covers A entirely
+	}
+	return A;
+}
+
+int main() {
+	Rect A, B, C;
+	cin >> A.x1 >> A.y1 >> A.x2 >> A.y2;
+	cin >> B.x1 >> B.y1 >> B.x2 >> B.y2;
+	cin >> C.x1 >> C.y1 >> C.x2 >> C.y2;
+	
+	A = cut(A, B);
+	A = cut(A, C);
+	// Print NO only if the remaining cut area is 0.
+	if (A.area() == 0) {
+		cout << "NO" << endl;
+	} else {
+		cout << "YES" << endl;
+	}
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+class Rect:
+	def __init__(self, a: int, b: int, c: int, d: int):
+		self.x1, self.y1, self.x2, self.y2 = a, b, c, d
+
+
+"""
+Main Idea: If B intersects entirely in the x or y direction, cut it.
+This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+"""
+def cut(A: Rect, B: Rect) -> Rect:
+	# If B cuts A from the left side
+	if A.x1 >= B.x1 and B.x2 >= A.x1 and B.y1 <= A.y1 and B.y2 >= A.y2:
+		A.x1 = B.x2
+		A.x2 = max(A.x2, B.x2)  # If B covers A entirely
+	
+	# If B cuts A from the right side
+	if A.x2 >= B.x1 and B.x2 >= A.x2 and B.y1 <= A.y1 and B.y2 >= A.y2:  
+		A.x2 = B.x1;
+		A.x1 = min(A.x1, B.x1)  # If B covers A entirely
+  
+	# If B cuts A from the bottom side	
+	if A.y1 >= B.y1 and B.y2 >= A.y1 and B.x1 <= A.x1 and B.x2 >= A.x2:
+		A.y1 = B.y2;
+		A.y2 = max(A.y2, B.y2)  # If B covers A entirely
+    
+	# If B cuts A from the top side
+	if A.y2 >= B.y1 and B.y2 >= A.y2 and B.x1 <= A.x1 and B.x2 >= A.x2:
+		A.y2 = B.y1;
+		A.y1 = min(A.y1, B.y1)  # If B covers A entirely
+	
+	return A
+
+X = list(map(int, input().split()))
+Y = list(map(int, input().split()))
+Z = list(map(int, input().split()))
+
+A = Rect(X[0], X[1], X[2], X[3])
+B = Rect(Y[0], Y[1], Y[2], Y[3])
+C = Rect(Z[0], Z[1], Z[2], Z[3])
+
+A = cut(A, B);
+A = cut(A, C);
+
+# Print NO only if the remaining cut area is 0.
+print('NO' if A.x2 - A.x1 == 0 or A.y2 - A.y1 == 0 else 'YES') 
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+ 	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		Rect A = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect B = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect C = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		
+		A = cut(A, B);
+		A = cut(A, C);
+
+		// Print NO only if the remaining cut area is 0.
+		if (A.area() == 0) {
+			System.out.println("NO");
+		} else {
+			System.out.println("YES");
+		}
+ 		io.close();
+  	}
+	
+	// CodeSnip{Kattio}
+	
+	static class Rect {
+		public int x1, y1, x2, y2;
+		public Rect(int a, int b, int c, int d) {
+			x1 = a;
+			y1 = b;
+			x2 = c;
+			y2 = d;
+		}
+
+		public int area() {
+			return (x2 - x1) * (y2 - y1);
+		}
+	}
+	
+	/*
+	   Main Idea: If B intersects entirely in the x or y direction, cut it.
+	   This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+	   We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+	 */
+	static Rect cut(Rect A, Rect B) {
+	
+		// If B cuts A from the left side
+		if (A.x1 >= B.x1 && B.x2 >= A.x1 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+			A.x1 = B.x2;
+			A.x2 = Math.max(A.x2, B.x2);  // If B covers A entirely
+		}
+	
+		// If B cuts A from the right side
+		if (A.x2 >= B.x1 && B.x2 >= A.x2 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+			A.x2 = B.x1;
+			A.x1 = Math.min(A.x1, B.x1);  // If B covers A entirely
+		}
+		
+		// If B cuts A from the bottom side
+		if (A.y1 >= B.y1 && B.y2 >= A.y1 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+			A.y1 = B.y2;
+			A.y2 = Math.max(A.y2, B.y2);  // If B covers A entirely
+		}
+	
+		// If B cuts A from the top side
+		if (A.y2 >= B.y1 && B.y2 >= A.y2 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+			A.y2 = B.y1;
+			A.y1 = Math.min(A.y1, B.y1);  // If B covers A entirely
+		}
+		return A;
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

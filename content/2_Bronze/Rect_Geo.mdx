@@ -154,9 +154,9 @@ $$
 
 The
 [official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html)
-splits computing the intersection length into several cases. However, we do it
-more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and
-$[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words,
+splits computing the intersection length into several cases. However, we can do it
+in a simpler way. An interval $[x,x+1]$ is contained within both $[a,b]$ and
+$[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$, or in other words if,
 $\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is
 $\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
 
@@ -601,19 +601,23 @@ print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - inters
 Certain tasks show up often in rectangle geometry problems. For example, many problems
 involve finding the overlapping area of two or more rectangles based on their coordinate points, 
 or determining whether two rectangles intersect. Here, we'll discuss these formulas.
-	
+
 Note that these formulas only apply to rectangles which have sides parallel to the coordinate axes.
 
 <Info title="Coordinates">
-A rectangle can be represented with $2$ points: its top right corner and bottom left corner. We'll label these points $tr$ (top right) and $bl$ (bottom left).
+A rectangle can be represented with $2$ points: its top right corner and bottom left corner.
+We'll label these points $tr$ (top right) and $bl$ (bottom left).
+
+In this module, we'll assume that increasing $x$ moves to the right
+and increasing $y$ moves up.
 </Info>
 
 ### Finding area
-	
+
 The formula for finding the area of an individual rectangle is $w \cdot l$. 
 
 $\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is the length of the horizontal sides.
- 	
+
 1. $\texttt{width} = \texttt{tr}_x - \texttt{bl}_x$
 2. $\texttt{length} = \texttt{tr}_y - \texttt{bl}_y$
 3. $\texttt{area} = \texttt{width} \cdot \texttt{length}$
@@ -650,15 +654,15 @@ def area(bl_x: int, bl_y: int, tr_x: int, tr_y: int) -> int:
 </LanguageSection>
 
 ### Checking if two rectangles intersect
-	
+
 Given two rectangles $a$ and $b$, there are only two cases where they do not intersect: 
 
 1. $\texttt{tr}_{a_y}$ $\leq$ $\texttt{bl}_{b_y}$ or $\texttt{bl}_{a_y}$ $\geq$ $\texttt{tr}_{b_y}$.  
 2. $\texttt{bl}_{a_x}$ $\geq$ $\texttt{tr}_{b_x}$ or $\texttt{tr}_{a_x}$ $\leq$ $\texttt{bl}_{b_x}$. 
 
 In all other cases, the rectangles intersect. 
- ### Implementation
-	
+### Implementation
+
 <LanguageSection>
 <CPPSection>
 ```cpp
@@ -706,16 +710,16 @@ def intersect(s1, s2) -> bool:
 		return True
 ```
 </PySection>
-</LanguageSection>			 
+</LanguageSection>
 
 ### Finding area of intersection
-					 
+
 We'll assume that the shape formed by the intersection of two rectangles is itself a rectangle.
 
 First, we'll find this rectangle's length and width. 
 $\texttt{width} = \min(\texttt{tr}_{a_x}, \texttt{tr}_{b_x}) - \max(\texttt{bl}_{a_x}, \texttt{bl}_{b_x})$. 
 $\texttt{length} = \min(\texttt{tr}_{a_y}, \texttt{tr}_{b_y}) - \max(\texttt{bl}_{a_y}, \texttt{bl}_{b_y})$.
-	
+
 If either of these values are negative, the rectangles do not intersect. 
 If they are zero, the rectangles intersect at a single point. 
 Multiply the length and width to find the overlapping area. 

@@ -7,6 +7,7 @@ export interface SpoilerProps {
    * Defaults to false.
    */
   startExpanded?: boolean;
+  children?: React.ReactNode;
 }
 
 export const SpoilerContext = React.createContext<{
@@ -20,11 +21,11 @@ export const SpoilerContext = React.createContext<{
   expandCodeBlock: false,
 });
 
-const Spoiler: React.FC<SpoilerProps> = ({
+const Spoiler = ({
   children,
   title,
   startExpanded = false,
-}) => {
+}: SpoilerProps): JSX.Element => {
   const [show, setShow] = React.useState(startExpanded);
 
   let expandCodeBlock = false;

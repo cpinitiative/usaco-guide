@@ -197,5 +197,5 @@ def gen_id_to_sol():
     print(json.dumps(edLinks, indent=4))
 
 
-gen_div_to_probs("jan22results")
+gen_div_to_probs("open22results")
 gen_id_to_sol()

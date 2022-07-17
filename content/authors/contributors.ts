@@ -70,13 +70,25 @@ export const contentAuthors: Contributor[] = [
     name: 'Dustin Miao',
     githubUsername: 'dutinmeow',
     sinceDate: 'August 2021',
-    photo: 'dustin'
+    photo: 'dustin',
   },
   {
     name: 'Ben Dodge',
     githubUsername: 'Navigator365',
     sinceDate: 'August 2021',
-    photo: 'ben'
+    photo: 'ben',
+  },
+  {
+    name: 'Jeffrey Zhang',
+    githubUsername: 'RedBlueBird',
+    sinceDate: 'February 2022',
+    photo: 'jeffrey_zhang',
+  },
+  {
+    name: 'Juheon Rhee',
+    githubUsername: 'jjliewie',
+    sinceDate: 'May 2022',
+    photo: 'julie',
   },
 ];
 
