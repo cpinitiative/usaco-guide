@@ -9,21 +9,19 @@ author: Qi Wang, Ryan Chou
 
 ## Explanation
 
-Although the problem may be daunting at first, it helps to break down the problem into separate components.
-
-Let's use a DP!
+Although the problem may be daunting at first, it helps to think about how a smaller range is connected to another.
 
 If $\texttt{ways}[i][j]$ equals the number of unordered triplets which sum to zero between $[i, j]$, then what states does this rely on?
 
 ![](usaco-994/init.png)
 
-Well intuitively, we can choose to exclude one point or the other, which gives us a picture like this (reminder to make sure not to double count the overlap).
+Well intuitively, we can choose to exclude one endpoint or the other, which gives us a picture like this (reminder to make sure not to double count the overlap).
 
 ![](usaco-994/ps.png)
 
-However, we're missing something! We aren't taking into account any triplets which start at $i$ and end at $j$, since those aren't included in our "PIE-like" transition.
+While this'll count all the triplets in between them, we aren't taking into account any triplets which use both the elements at $i$ and $j$, since those aren't included in our "PIE-like" transition.
 
-To do this, we can precalculate the number of triplets which start at $i$ and end at $j$ in $\mathcal{O}(N^2)$ time by storing the occurences of elements between $i$ and $j$ in an array.
+To do this, we can precalculate the number of triplets which start at $i$ and end at $j$ in $\mathcal{O}(N^2)$ time by storing the occurences of the compliment of $i$ and $j$ in an array.
 
 More formally, our final transition is:
 
@@ -31,7 +29,7 @@ $\texttt{ways}[i][j] = \texttt{ways}[i + 1][j] + \texttt{ways}[i][j - 1] - \text
 
 where $\texttt{trp}[i][k]$ equals the number of triplets which sum to zero and start at $i$ and end at $k$.
 
-Note that we can't store $\texttt{trp}$ in it's own array due to memory constraints.
+Note that we can't store $\texttt{trp}$ in its own array due to memory constraints.
 
 
 ## Implementation
@@ -47,7 +45,7 @@ Note that we can't store $\texttt{trp}$ in it's own array due to memory constrai
 using namespace std;
 
 using ll = long long;
-const int max_val = 1e6;
+const int MAX_VAL = 1e6;
 
 int main() {
 	freopen("threesum.in", "r", stdin);
@@ -60,25 +58,22 @@ int main() {
 	vector<int> val(n);
 	for (int i = 0; i < n; i++) {
 		cin >> val[i];
-		val[i] += max_val;
+		val[i] += MAX_VAL;
 	}
 
 	// number of triplets such that i and k are fixed
 	vector<vector<ll>> ways(n, vector<ll>(n, 0));
-	vector<int> frq(2 * max_val);
+	vector<int> frq(2 * MAX_VAL);
 
 	for (int i = n - 2; i >= 0; i--) {
-		/*
-		 * be careful to only consider values
-		 * in between i and j
-		 */
+		// be careful to only consider values in between i and j
 		frq[val[i + 1]]++;
 		
 		for (int j = i + 2; j < n; j++) {
 			// separate val from shifted amt
-			int rem = (max_val * 3) - (val[i] + val[j]);
+			int rem = (MAX_VAL * 3) - (val[i] + val[j]);
 			
-			if (rem >= 0 && rem < (2 * max_val)) {
+			if (rem >= 0 && rem < (2 * MAX_VAL)) {
 				ways[i][j] = frq[rem];
 			}
 			frq[val[j]]++;
