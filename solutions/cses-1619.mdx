@@ -194,10 +194,8 @@ public class Customers {
 			times[2 * i + 1] = new int[] {Integer.parseInt(cus.nextToken()), -1};
 		}
  
-		Arrays.sort(
-			times,
-			(t1, t2) -> t1[0] != t2[0] ? t1[0] - t2[0] : t1[1] - t2[1]
-		);
+		// Sort the array by time
+		Arrays.sort(times, Comparator.comparingInt(t -> t[0]));
 
 		int mostPpl = 0;
 		int currPpl = 0;
@@ -272,6 +270,7 @@ int main() {
 
 	int curr = 0;
 	int at = 0;
+	// Stores how much the # of people in the restaurant changes each time step
 	vector<int> ppl_change(2 * n);
 	// Compress the starting & ending events into a single array
 	for (int i = 0; i < 2 * n; i++) {
@@ -284,11 +283,13 @@ int main() {
 		ppl_change[at + 1] += times[i].second;
 	}
 
+	// Build our prefix sum array
 	vector<int> ppl_amt(2 * n + 1);
 	for (int i = 1; i < 2 * n + 1; i++) {
 		ppl_amt[i] = ppl_change[i] + ppl_amt[i - 1];
 	}
 
+	// Our answer is just the maximum of the prefix sum array
 	int max_ppl = 0;
 	for (int i = 0; i < 2 * n + 1; i++) {
 		max_ppl = max(max_ppl, ppl_amt[i]);
