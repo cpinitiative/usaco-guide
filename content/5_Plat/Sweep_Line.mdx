@@ -1,7 +1,7 @@
 ---
 id: sweep-line
 title: 'Sweep Line'
-author: Benjamin Qi, Andi Qu, Dustin Miao
+author: Benjamin Qi, Andi Qu, Dustin Miao, Timothy Gao
 description: Introduction to line sweep.
 prerequisites:
   - geo-pri
@@ -57,8 +57,16 @@ Because each step now runs in linear time and there is a total of $\lceil \log n
 
 ### Solution 2
 
-(Set)
+**Time Complexity:** $\mathcal{O}(n\log n)$
 
+Extending Solution 1, we can use a set instead of divide and conquer. Once again, we define $\delta$ as the shortest distance between two points so far. After sorting the points by x-coordinate, we iterate through them while maintaining a running window containing the y-coordinates of all points in $[x-\delta,x]$. 
+
+![Set Solution Sweep Line Bounding Box](./assets/setsolutionboundingbox.png)
+<!--- https://imgur.com/a/iA4cVvk -->
+
+As we visit point $P$, we utilize the set to consider all points with y-coordiate in $[P_y-\delta, P_y+\delta]$. The set contains $[P_x-\delta, P_x]$ because of how it is maintained as a running window. Now we have the same bounding box as Solution 1, with at most 6 points inside. 
+
+For each point, we recalculate $\delta = min(\delta, \delta_p)$, and update our set accordingly. Each point is inserted and removed from the set at most once, so the algorithm yields $\mathcal{O}(n\log n)$.
 ## Line Segments
 
 <FocusProblem problem="segSam" />

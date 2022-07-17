@@ -8,8 +8,6 @@ frequency: 1
 
 ## Knuth's Optimization
 
-<IncompleteSection />
-
 ### Tutorials
 
 <Resources>
@@ -19,7 +17,28 @@ frequency: 1
 		url="https://jeffreyxiao.me/blog/knuths-optimization"
 	 />
 	<Resource source="GCP" title="15.4.3 - Knuth's Optimization"/>
+	<Resource 
+		source="GFG" 
+		title="Knuth's Optimization in Dynamic Programming" 
+		url="https://www.geeksforgeeks.org/knuths-optimization-in-dynamic-programming/"
+	>
+		Good explanation + Proof of correctness
+	</Resource>
 </Resources>
+
+Knuth's optimization is, in a way, a special case of Range DP. In general, it is used to solve DP problems with the following transition - $\texttt{dp}[i][j]$ = $\texttt{cost}[i][j] + min_{i≤k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j])$.  
+Further, the cost function must satisfy the following conditions, for all $a\leq b\leq c \leq d$:  
+1. $cost[b][c] ≤ cost[a][d]$ 
+2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$ (the quadrangle inequality)
+
+The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show the following inequality - $\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$. (The proof of correctness for this claim is in the resources above.)
+
+The structure of the code is identical to that of Range DP, with the exception of maintaining the $\texttt{opt}$ array. To calculate $\texttt{dp}[i][j]$ and $\texttt{opt}[i][j]$, it is only necessary to check values of $k$ between $\texttt{opt}[i][j-1]$ and $\texttt{opt}[i+1][j]$. The time complexity of the final algorithm is $\mathcal{O} (N^2)$.
+
+### Knuth's Optimization Problems
+
+<Problems problems="knuth_optimization" />
+
 
 ## Miscellaneous Techniques
 
@@ -86,10 +105,10 @@ Let $\texttt{dp}[i][j][mask]$ be the number of ways to tile the grid so that:
 - All cells from cell $(0, 0)$ to cell $(i, j - 1)$ are **covered**.
 - All cells from cell $(i + 1, j)$ to cell $(N - 1, M - 1)$ are **empty**.
 - $mask$ represents whether each of the remaining $N$ cells are **empty**, with
-  the $k$-th bit corresponding to the cell in column $k$.
+  the $k$-th bit corresponding to the cell in row $k$.
 
 For example, the following state would contribute toward
-$\texttt{dp}[1][3][10100_2]$: ![](broken-profile-state-example.png)
+$\texttt{dp}[1][3][00101_2]$: ![](broken-profile-state-example.png)
 
 The answer will be $\texttt{dp}[N - 1][M - 1][0]$.
 

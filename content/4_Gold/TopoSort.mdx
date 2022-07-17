@@ -177,6 +177,62 @@ public class CourseSchedule {
 ```
 
 </JavaSection>
+<PySection>
+
+```python
+import sys
+
+MAX_N = 10 ** 5
+sys.setrecursionlimit(MAX_N)
+
+
+def dfs(node):
+	for i in graph[node]:
+		if not visited[i]:
+			visited[i] = True
+			dfs(i)
+	top_sort.append(node)
+
+
+# N is number of nodes 
+# M is number of edges
+N, M = map(int, input().strip().split())
+graph = [[] for _ in range(N)]
+top_sort = []
+ind = [0] * N
+
+for i in range(M):
+	u, v = map(int, input().strip().split())
+	graph[u - 1].append(v - 1)
+
+visited = [False] * N
+for i in range(N):
+	if not visited[i]:
+		visited[i] = True
+		dfs(i)
+
+top_sort = top_sort[::-1]
+for i in range(N):
+	ind[top_sort[i]] = i
+
+# Check if the topological sort is valid
+flag = 0
+for i in range(N):
+	for j in graph[i]:
+		if ind[j] <= ind[i]:
+			flag = 1
+			print("IMPOSSIBLE")
+			break
+
+	if flag == 1:
+		break
+
+top_sort = [x + 1 for x in top_sort]
+if flag == 0:
+	print(*top_sort)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -331,6 +387,63 @@ public class cycle {
 ```
 
 </JavaSection>
+<PySection>
+
+```python
+import sys
+
+MAX_N = 10 ** 5
+sys.setrecursionlimit(MAX_N)
+
+def dfs(node):
+	visited[node], on_stack[node] = True, True
+	for u in adj[node]:
+		if on_stack[u]:
+			cycle.append(node)
+			on_stack[node], on_stack[u] = False, False
+			return True
+		
+		elif not visited[u]:
+			if dfs(u):
+				if on_stack[node]:
+					cycle.append(node)
+					on_stack[node] = False
+					return True
+				else:
+					cycle.append(node)
+					return False
+			
+			if not cycle:
+				return False
+	on_stack[node] = False
+	return False
+
+
+N, M = map(int, input().split())
+adj = [[] for _ in range(N)]
+cycle = []
+visited = [False] * N
+on_stack = [False] * N
+
+for i in range(M):
+	u, v = map(int,input().split())
+	adj[u - 1].append(v - 1)
+
+for i in range(0, N):
+	if not cycle:
+		dfs(i)
+	else:
+		break
+
+if not cycle:
+	print("IMPOSSIBLE")
+else:
+	print(len(cycle) + 1)
+	cycle = [x + 1 for x in cycle]
+	print(cycle[0], *cycle[::-1])
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -450,6 +563,50 @@ public class TopoSort {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+from collections import deque
+
+# The code is in a function so it can run faster.
+def main():
+	N, M = map(int, input().split())
+	adj = [[] for _ in range(N)]
+	for _ in range(M):
+		a, b = map(int, input().split())
+		a -= 1
+		b -= 1
+		adj[a].append(b)
+
+	topo_order = []
+	in_degree = [0 for _ in range(N)]
+	for nodes in adj:
+		for node in nodes:
+			in_degree[node] += 1
+
+	count = 0
+	queue = deque([node for node in range(N) if in_degree[node] == 0])
+	while queue:
+		cur_node = queue.popleft()
+		topo_order.append(cur_node)
+		for neigh_node in adj[cur_node]:
+			in_degree[neigh_node] -= 1
+			if in_degree[neigh_node] == 0:
+				queue.append(neigh_node)
+		count += 1
+
+	if count != N:
+		print("IMPOSSIBLE")
+	else:
+		print(" ".join(map(str, [node + 1 for node in topo_order])))
+
+
+if __name__ == "__main__":
+	main()
+```
+
+</PySection>
 
 </LanguageSection>
 

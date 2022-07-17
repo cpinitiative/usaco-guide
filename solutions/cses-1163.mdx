@@ -10,7 +10,7 @@ $x$, and $n$ points are added to the interval chronologically. We want to find
 the largest gap between the points after each step.
 
 [Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
-	
+
 ## Solution 1 
 
 Let's create a set and a multiset. The set will store
@@ -30,44 +30,44 @@ multiset.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-//constant initialization
-const int maxn=2e5+10;
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
 
-//variables used for the current problem
-int x,n,p; set<int> lights; multiset<int> dist;
+	int street_len;
+	int light_num;
+	cin >> street_len >> light_num;
 
-void solve() {
-	cin >> x >> n;
-	lights.insert(0); lights.insert(x);
-	dist.insert(x);
-	for (int i=0;i<n;++i){
-		cin >> p;
-		auto it1 = lights.upper_bound(p),it2 = it1; --it2;
-		dist.erase(dist.find(*it1-*it2));
-		dist.insert(p-*it2); dist.insert(*it1-p);
-		lights.insert(p);
-		auto ans = dist.end(); --ans;
+	set<int> lights{0, street_len};
+	multiset<int> dist{street_len};
+	for (int l = 0; l < light_num; l++) {
+		int pos;
+		cin >> pos;
+
+		auto it1 = lights.upper_bound(pos);
+		auto it2 = it1;
+		--it2;
+		
+		dist.erase(dist.find(*it1 - *it2));
+		dist.insert(pos - *it2);
+		dist.insert(*it1 - pos);
+		lights.insert(pos);
+		
+		auto ans = dist.end();
+		--ans;
 		cout << *ans << " ";
 	}
-}
-
-int main(){
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-	solve();
-	return 0;
 }
 ```
 
 </CPPSection>
 </LanguageSection>
 
-	
+
 ## Solution 2 - Going Backwards
-	
+
 We'll start by trying to find the maximum gap once all the traffic lights are
 added. This is the last number we'll output, so we'll add it to the end of our
 output array. Then, we'll remove traffic lights in the reverse order to how they
@@ -83,75 +83,13 @@ once all the traffic lights are added, and set the max gap to the greater value.
 We'll then set the next lowest element in the output array to this value, which
 will represent the greatest gap prior to adding the traffic light we just
 removed.
-	
-## Implementation
-**Time Complexity:** $\mathcal{O}(n)$
-	
+
+## Implementation 1
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
 <LanguageSection>
-<JavaSection>
-
-<Warning>
-Due to the small CSES time limit, it's possible that standard input/output will occasionally TLE.
-</Warning>
-```java
-import java.io.*;
-import java.util.*;
-
-public class TrafficLights {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio(); 
-	
-		int streetLength = io.nextInt();
-		int lightNum = io.nextInt();
-
-		// Using an array to read values since we can't get values from sets in Java
-		int[] opArray = new int[lightNum];
-		NavigableSet<Integer> streetPositions = new TreeSet<>();
-		// Initialize the set with beginning and ending values
-		streetPositions.add(0);
-		streetPositions.add(streetLength);
-
-		for (int i = 0; i < lightNum; i++) {
-			int nextTrafficLight = io.nextInt();
-			opArray[i] = nextTrafficLight;
-			streetPositions.add(nextTrafficLight);
-		}
-		int[] gapsArray = new int[lightNum];
-		int prev = 0;
-		int maxGap = 0;
-		// Find the longest passage once all the streetlights are added
-		for (int i : streetPositions) {
-			maxGap = Math.max(i - prev, maxGap);
-			prev = i;
-		}
-		gapsArray[lightNum - 1] = maxGap;
-		/*
-		 * Remove the streetlights in reverse order to how they were added, then find
-		 * the gap created by removing each. Find the biggest current gap, and 
-		 * add it to the next lowest index in answer.
-		 */
-		for (int i = lightNum - 1; i > 0; i--) {
-			streetPositions.remove(opArray[i]);
-			int low = streetPositions.lower(opArray[i]);
-			int high = streetPositions.higher(opArray[i]);
-			maxGap = Math.max(maxGap, high - low);
-			gapsArray[i - 1] = maxGap;
-		}
-		//  Use StringBuilder to print out the array quicker
-		StringBuilder sb = new StringBuilder();
-		for (int i : gapsArray) {
-			sb.append(i).append(" ");
-		}
-		io.println(sb);
-		io.close();
-	}
-	CodeSnip{Kattio}
-}
-```
-	
-</JavaSection>
 <CPPSection>
-	
+
 ```cpp
 #include <iostream>
 #include <vector>
@@ -200,6 +138,154 @@ int main() {
 		gaps[i - 1] = max_gap;
 	}
 	
+	for (int i = 0; i < gaps.size() - 1; i++) {
+		cout << gaps[i] << ' ';
+	}
+	cout << gaps.back() << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+Due to Java's slow speed, the below solution may occasionally TLE.
+</Warning>
+```java
+import java.io.*;
+import java.util.*;
+
+public class TrafficLights {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio(); 
+	
+		int streetLength = io.nextInt();
+		int lightNum = io.nextInt();
+
+		// Using an array to read values since we can't get values from sets in Java
+		int[] opArray = new int[lightNum];
+		NavigableSet<Integer> streetPositions = new TreeSet<>();
+		// Initialize the set with beginning and ending values
+		streetPositions.add(0);
+		streetPositions.add(streetLength);
+
+		for (int i = 0; i < lightNum; i++) {
+			int nextTrafficLight = io.nextInt();
+			opArray[i] = nextTrafficLight;
+			streetPositions.add(nextTrafficLight);
+		}
+		
+		int[] gapsArray = new int[lightNum];
+		int prev = 0;
+		int maxGap = 0;
+		// Find the longest passage once all the streetlights are added
+		for (int i : streetPositions) {
+			maxGap = Math.max(i - prev, maxGap);
+			prev = i;
+		}
+		
+		gapsArray[lightNum - 1] = maxGap;
+		/*
+		 * Remove the streetlights in reverse order to how they were added,
+		 * then find the gap created by removing each. Find the biggest
+		 * current gap, and add it to the next lowest index in answer.
+		 */
+		for (int i = lightNum - 1; i > 0; i--) {
+			streetPositions.remove(opArray[i]);
+			int low = streetPositions.lower(opArray[i]);
+			int high = streetPositions.higher(opArray[i]);
+			maxGap = Math.max(maxGap, high - low);
+			gapsArray[i - 1] = maxGap;
+		}
+		
+		//  Use StringBuilder to print out the array quicker
+		StringBuilder sb = new StringBuilder();
+		for (int i : gapsArray) {
+			sb.append(i).append(" ");
+		}
+		io.println(sb);
+		io.close();
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+## Implementation 2
+
+The above solution uses a sorted set. While this does make it easier to implement, it also
+adds an extra $\log n$ factor to the time complexity. To remove this, we can use a
+[doubly linked list](https://en.wikipedia.org/wiki/Doubly_linked_list) instead.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int street_len;
+	int light_num;
+	std::cin >> street_len >> light_num;
+	vector<int> lights(light_num);
+	for (int& l : lights) {
+		std::cin >> l;
+	}
+	
+	vector<std::pair<int, int>> sorted_lights(light_num);
+	for (int l = 0; l < light_num; l++) {
+		sorted_lights[l] = {lights[l], l};
+	}
+	std::sort(sorted_lights.begin(), sorted_lights.end());
+
+	// Given the light position, this array stores its position in sorted_lights.
+	vector<int> new_pos(light_num);
+	for (int l = 0; l < light_num; l++) {
+		new_pos[sorted_lights[l].second] = l;
+	}
+
+	struct Light {
+		int prev, next;
+		int pos;
+	};
+	vector<Light> light_ll(light_num + 2);
+	// First, we set our "lights" on the edges of the street.
+	light_ll[0] = {-1, 1, 0};
+	light_ll[light_num + 1] = {light_num, -1, street_len};
+	for (int l = 0; l < light_num; l++) {
+		light_ll[l + 1] = {l, l + 2, sorted_lights[l].first};
+	}
+	
+	// Find the longest passage once all the streetlights are added
+	vector<int> gaps(light_num);
+	int max_gap = 0;
+	for (int l = 0; l <= light_num; l++) {
+		max_gap = std::max(max_gap, light_ll[l + 1].pos - light_ll[l].pos);
+	}
+	gaps.back() = max_gap;
+
+	// Remove the streetlights in reverse order like as we did in the above solution.
+	for (int l = light_num - 1; l > 0; l--) {
+		Light to_del = light_ll[new_pos[l] + 1];
+		Light& left = light_ll[to_del.prev];
+		Light& right = light_ll[to_del.next];
+		// Re-assign the references to the next & previous node
+		left.next = to_del.next;
+		right.prev = to_del.prev;
+
+		max_gap = std::max(max_gap, right.pos - left.pos);
+		gaps[l - 1] = max_gap;
+	}
+
 	for (int i = 0; i < gaps.size() - 1; i++) {
 		cout << gaps[i] << ' ';
 	}

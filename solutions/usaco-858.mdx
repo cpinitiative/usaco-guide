@@ -2,18 +2,37 @@
 id: usaco-858
 source: USACO Silver 2018 December
 title: Convention
-author: Qi Wang
+author: Qi Wang, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_convention_silver_dec18.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_convention_silver_dec18.html)
 
+## Explanation
+
+Consider a possible maximum waiting time $X$, if we can't file all of the cows into the buses with this constraint, we can't process the cows with a smaller $X$ either. It remains to find how to check if some $X$ can be processed.
+
+Instead of the problem being:
+
+> Is it possible to file the cows in $M$ buses with a maximum waiting time of $X$?
+
+We'll transform the problem into:
+> What's the minimum number of buses needed to transport the cows with a maximum waiting time of $X$?
+
+This simplification allows us to break processing a cow into three cases:
+
+1. Adding this cow will cause the first cow to exceed the maximum waiting time.
+2. Adding this cow will overflow the bus capacity.
+3. Adding this cow will satisfy all of the constraints.
+
+It takes $\mathcal{O}(\log N)$ time to binary search on $X$ and $\mathcal{O}(N)$ time to validate a possible time constraint, so this leaves us with a $\mathcal{O}(N\log N)$ solution, which fits comfortably under the time limit. 
+
+## Implementation
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <JavaSection>
 
 ```java
-//Created by Qi Wang
 import java.util.*;
 import java.io.*;
 
@@ -134,88 +153,73 @@ public class convention {
 	}
 }
 ```
-
 </JavaSection>
-
 <CPPSection>
 
 ```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
 
-#include <bits/stdc++.h>
-using namespace std;
-
-#define pb push_back
+using std::endl;
+using std::vector;
 
 int n, m, c;
-vector<int> vTime;
+vector<int> arrivals;
 
-bool check(int mid)
-{
-	// POINTERS for the cows to be added in the CURRENT BUS
-	int left = 0, right = 0;
-	// maximum time that the first cow in the CURRENT BUS  has to wait
-	int maxWait = 0;
-	// nBuses is the number of buses which cannot accomodate any other cow
-	int nBuses = 0, filled = 0; //filled is the number of places filled in the CURRENT BUS
-	for (right = 0; right < n; right++)
-	{
-		// if the first cow in the CURRENT BUS does not have to wait for more than "mid" time
-		// and also the CURRENT BUS is not filled yet
-		if (vTime[right] - vTime[left] <= mid && filled < c)
-		{
-			filled++;
-			maxWait = max(maxWait, vTime[right] - vTime[left]);
-		}
-		else if (vTime[right] - vTime[left] > mid) // if we add the current cow in the current bus then
-		// the first cow will have to wait more than "mid" time
-		// therefore THIS COW will become the first cow of the NEXT BUS
-		{
-			left = right;
-			filled = 1;
-			nBuses++;
+bool validate(int k) {
+	int bus = 0;   // number of buses needed
+	int cow = 0;   // current cow
+	int lcow = 0;  // earliest cow on this bus
+
+	while (cow < n) {
+		if (cow == lcow) {
+			bus++;
 		}
 
-		if (filled == c) // if the current bus is filled then the NEXT COW will be the first cow of the NEXT BUS
-		{
-			filled = 0;
-			left = right + 1;
-			nBuses++;
+		// can't satisfy time constraint by adding this cow
+		if (arrivals[cow] - arrivals[lcow] > k) {
+			lcow = cow;
+		// can't fit this cow in the bus
+		} else if (cow - lcow + 1 == c) {
+			lcow = ++cow;
+		// add this cow to the current bus
+		} else {
+			cow++;
 		}
 	}
-	// if the last bus has even a single cow than it will also be added among the total buses that were used
-	if (filled > 0)
-		nBuses++;
-	// total no of buses cannot be greater than m
-	return nBuses <= m;
+	return bus <= m;
 }
 
-int main()
-{
+int main() {
 	freopen("convention.in", "r", stdin);
 	freopen("convention.out", "w", stdout);
-
-	cin >> n >> m >> c;
-	vTime = vector<int>(n);
-	for (int &i : vTime)
-		cin >> i;
-	sort(vTime.begin(), vTime.end());
-
-	// we can binary search on the answer
-	int l = 0, r = (int)1e9 + 1;
-	while (l < r)
-	{
-		int mid = l + (r - l) / 2;
-		if (check(mid))
-			r = mid;
-		else
-			l = mid + 1;
+	
+	std::cin >> n >> m >> c;
+	arrivals.resize(n);
+	
+	for (int i = 0; i < n; i++) {
+		std::cin >> arrivals[i];
 	}
-	cout << l << endl;
+
+	// sort by arrival time to process cows in order
+	sort(arrivals.begin(), arrivals.end());
+
+	int lo = 0;
+	int hi = arrivals[n - 1] - arrivals[0];
+
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+	
+		if (validate(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	std::cout << lo << endl;
 }
-
-
 ```
-
 </CPPSection>
-
 </LanguageSection>

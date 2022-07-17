@@ -9,17 +9,20 @@ export const GlowingRing = ({
     <div
       className="
         absolute
-        -inset-1.5
+        -inset-1
+        dark:-inset-1.5
         bg-gradient-to-r
         from-blue-600
         to-purple-700
         rounded-lg
         blur
-        opacity-50
+        opacity-30
+        dark:opacity-50
         -z-1
         transition
         duration-1000
-        group-hover:opacity-75
+        group-hover:opacity-50
+        dark:group-hover:opacity-75
       "
     />
     {children}

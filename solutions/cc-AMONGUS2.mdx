@@ -1,0 +1,112 @@
+---
+id: cc-AMONGUS2
+source: CC
+title: Among Us
+author: Ryan Chou
+---
+
+## Explanation
+If we only have two players $x$ and $y$, then we have 4 cases possible cases. 
+
+* If $x$ vouches for $y$ and $x$ is an imposter, then $y$ must also be an imposter.
+
+* If $x$ vouches for $y$ and $x$ is a crewmate, then $y$ must also be a crewmate.
+
+* If $x$ accuses $y$ of being an imposter and $x$ is an imposter, then $y$ must be a crewmate.
+
+* If $x$ accuses $y$ of being an imposter and $x$ is a crewmate, then $y$ must be an imposter.
+
+You'll notice that whenever $x$ accuses $y$, they'll always be of a different type, and when $x$ vouches for $y$, they'll always be of the same type.
+
+With this information, we can build a bipartite graph and color nodes with the same color if they vouch for each other, or different colors if one of them accuses the other. If we can't build this graph, then no valid arrangement can exist.
+
+Otherwise, we'll consider each connected component independently and keep track of the number of crewmates and imposters. At the end, we'll return the sum of the maximum of these two values for all connected components. We don't care about the roles of each node because we can switch all of them to get another valid solution.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+
+	for (int tc = 0; tc < t; tc++) {
+		int n;
+		int q;
+		cin >> n >> q;
+		
+		// adj[i][j] = {the jth adjacent node from i, their statement (0 = imposter, 1 = crewmate)
+		vector<vector<pair<int, bool>>> adj(n);
+		for (int i = 0; i < q; i++) {
+			int type;
+			int x;
+			int y;
+			cin >> type >> x >> y;
+			--x;
+			--y;
+			--type;
+	
+			adj[x].push_back({y, type});
+			adj[y].push_back({x, type});
+		}
+
+		vector<int> role(n, -1);
+
+		int ans = 0;
+		bool impossible = false;
+
+		for (int i = 0; i < n; i++) {
+			// haven't visited this connected component yet
+			if (role[i] == -1) {
+				int imposters = 0, crewmates = 0;
+
+				// dfs to build bipartite graph
+				stack<int> todo;
+
+				todo.push(i);
+				role[i] = true;
+				imposters++;
+
+				while (!todo.empty()) {
+					int curr = todo.top();
+					todo.pop();
+					
+					for (pair<int, bool> u : adj[curr]) {
+						bool type = u.second ? role[curr] : !role[curr];
+
+						// haven't visited
+						if (role[u.first] == -1) {
+							role[u.first] = type;
+								
+								if (type) {
+									imposters++;
+								} else {
+									crewmates++;
+								}
+					
+							todo.push(u.first);
+						// creates a contradiction
+						} else if (role[u.first] == !type) {
+							impossible = true;
+							break;
+						}
+					}
+				}
+				ans += max(imposters, crewmates);
+			}
+		}
+
+		cout << (impossible ? -1 : ans) << endl;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
