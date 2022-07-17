@@ -7,11 +7,8 @@ author: Shijie Ren
 
 <Spoiler title="Hint 1">
 
-Both $\mathcal{O}(N^2)$ and $\mathcal{O}(N\max{a[i]})$ algorithms are not hard to
-
-come up with,
-
-but the latter one is more enlightening.
+Both $\mathcal{O}(N^2)$ and $\mathcal{O}(N\max{a[i]})$ algorithms are not hard
+to come up with, but the latter one is more enlightening.
 
 </Spoiler>
 
@@ -19,120 +16,113 @@ but the latter one is more enlightening.
 
 You may find two ways of $\mathcal{O}(N\max{a[i]})$ DP.
 
-One is to traverse all the situations of the previous number (kind of
-preprocessing previous answers), $\mathcal{O}(\max{a[i]})$ to query current
-answer in DP array and $\mathcal{O}(1)$ to update.
+One is kind of preprocessing previous answers, traverse all the situations of
+the previous number, $\mathcal{O}(\max{a[i]})$ to query current answer in DP
+array and $\mathcal{O}(1)$ to update.
 
-The other is to traverse all the possible outcomes of the next number, (kind
-of predicting next answers) $\mathcal{O}(1)$ to query current answer in DP array
-and $\mathcal{O}(\max{a[i]})$ to update, but needs a bit more memory.
-
+The other is kind of predicting next answers, traverse all the possible outcomes
+of the next number, $\mathcal{O}(1)$ to query current answer in DP array and
+$\mathcal{O}(\max{a[i]})$ to update, but needs a bit more memory.
 
 These algorithms are not efficient enough because the time complexity of update
-and query are unbalanced.
+and query is unbalanced.
 
-Try to consider the two equations carefully and try to "combine" their ideas.
-
+Try to consider the both of them and try to "combine" their ideas.
 
 </Spoiler>
 
 <Spoiler title="Explanation">
 
-$\mathcal{O}(N^2)$ DP:
+**For $\mathcal{O}(N^2)$ DP**:
 
 Let $\texttt{dp}[i]$ be the length of longest beautiful sequence which ends with
-
 $a[i]$.
 
 $$
-\texttt{dp}[i]=\max_{j<i,\text{popcount}(a[i]\&a[j])=k[i]}\{\texttt{dp}[j]\}+1
+\texttt{dp}[i]=\max_{j<i,\text{pop}(a[i]\&a[j])=k[i]}\{\texttt{dp}[j]\}+1
 $$
 
-We can also use $a[i]$ as indices:
+**For $\mathcal{O}(N\max a[i])$ DP**:
 
-$\mathcal{O}(N\max a[i])$ DP:
-
-Let $\texttt{dp}[i][j]$ be the length of longest beautiful sequence of the first $i$
-elements that ends with $j$,
-
-
-then
-$\max\limits_{j\leq\max{a[i]},\text{popcount}(j\&a[i])=k[i]}\{\texttt{dp}[i-1][j]\}+1$
-will be the length of longest beautiful sequence end with $a[i]$.
+Let $\texttt{dp}[i][j]$ be the length of longest beautiful sequence of the first
+$i$ elements that ends with $j$,
 
 $$
-\texttt{dp}[i][a[i]] = \max \{ \texttt{dp}[i-1][a[i]] , \max_{j\leq\max{a[i]},\text{popcount}(j\&a[i])=k[i]}\{\texttt{dp}[i-1][j]\}+1 \}
+\texttt{dp}[i][j] = \begin{cases}
+\max \{ \texttt{dp}[i-1][j] , \max\limits_{\text{pop}(l\&a[i])=k[i]}\{\texttt{dp}[i-1][l]\}+1 \}&,j=a[i]
+\\
+\texttt{dp}[i-1][j] &,j\not=a[i]
+\end{cases}
 $$
 
-$$
-\texttt{dp}[i][j] = \texttt{dp}[i-1][j] , j\not=a[i]
-$$
+**For another $\mathcal{O}(N\max a[i])$ DP**:
 
-Or another way:
-
-Let $\texttt{dp}[i][j][q]$ be the length of longest beautiful sequence of the first
-$i$ elements which satisfies $\text{popcount}(\texttt{EndElement}\&j)=q$,
-
-
-then $\texttt{dp}[i-1][a[i]][k[i]]+1$ will be the length of longest beautiful
-sequence end with $a[i]$.
+Let $\texttt{dp}[i][j][q]$ be the length of longest beautiful sequence of the
+first $i$ elements which satisfies $\text{pop}(\texttt{end}\&j)=q$,
 
 $$
-\texttt{dp}[i][j][\text{popcount}(a[i]\&j)]=\max_{j\leq\max{a[i]}}\{\texttt{dp}[i-1][j][\text{popcount}(a[i]\&j)],\texttt{dp}[i-1][a[i]][k[i]]+1\}
+\texttt{dp}[i][j][q] =
+\begin{cases}
+\max\{\texttt{dp}[i-1][j][q],\texttt{dp}[i-1][a[i]][k[i]]+1\}&,q=\text{pop}(a[i]\&j)
+\\
+\texttt{dp}[i-1][j][q]&,q\not=\text{pop}(a[i]\&j)
+\end{cases}
 $$
 
-$$
-\texttt{dp}[i][j][q]=\texttt{dp}[i-1][j][q],q\not=\text{popcount}(a[i]\&j)
-$$
+**How to use both two ideas?**
 
-According to Hint 2, we need to consider either of them, that is, to consider
-the answers before and after.
+Imagine two elements $\texttt{pre},\texttt{cur}$, where we wanted to calculate
+length of longest beautiful sequence end with element $\texttt{cur}$, transfer
+from element $\texttt{pre}$.
 
-Since $a[i] < 2^{20}$ , divide the 20-bits number into two 10-bits numbers.
+Predict the next element or preprocess the previous element are neither
+sufficient, so divide an element into two parts, one for predicting and the
+other for preprocessing.
 
-For convenience, let $\text{b0}(x) = \lfloor \frac{x}{2^{10}} \rfloor$
-represents 10-19 bits, let $\text{b1}(x) = x \& 2^{10} $ represents 0-9 bits.
-
-
-Let $\texttt{ans}[i]$ be the length of longest beautiful sequence that ends with
-$a[i]$, and $\texttt{dp}[p][i][j][q]$ be the length of longest beautiful
-sequence of the first $p$ elements which satisfies $i = \text{b1}(\texttt{EndElement})$,
-
-$
-\text{popcount}(\text{b0}(\texttt{EndElement})\&j)=q$.
-
-For convenience, $\texttt{cur0} = \text{b0}(a[i])$,
-
-$\texttt{cur1} = \text{b1}(a[i]))$.
-
-Thus, we have
-
+For example,
 
 $$
-\texttt{ans}[i] = \max_{\texttt{pre1} < 2^{10}} \{ \texttt{dp}[i-1][\texttt{pre1}][\texttt{cur0}][k[i] - \text{popcount}(\texttt{pre1} \& \texttt{cur1})] + 1 \}
+\begin{align}
+\nonumber
+\texttt{pre} &= (\color{red}{0011110101}\color{black}{0011110101})_2
+\\
+\nonumber
+\texttt{cur} &= (\color{red}{0110110101}\color{black}{1110101101})_2
+\end{align}
 $$
 
-$$
-\texttt{dp}[i][\texttt{cur1}][\texttt{nex0}][\text{popcount}(\texttt{nex0} \& \texttt{cur0})] = \max \{ \texttt{dp}[i-1][\texttt{cur1}][\texttt{nex0}][\text{popcount}(\texttt{nex0} \& \texttt{cur0})] , \texttt{ans}[i] \}
-$$
+For convience, we'll call the red part 0-part, the black 1-part.
 
-and
+Let $\texttt{dp}[i][j][p][q]$ be the length of longest beautiful sequence that
+for first $i$ elements, end with element that 1-part is $j$, satisfying
+$\text{pop}(\texttt{0-part of end}\ \&\ p)=q$,
 
-$$
-\texttt{dp}[p][i][j][q] = \texttt{dp}[p-1][i][j][q]
-$$
+For each state, we preprocess the 1-part, and predict the 0-part of next
+element.
 
-for $\texttt{dp}[p][i][j][q]$ which is not updated above.
+Now for the current state, we certainly know it transfer from
+$\texttt{dp}[i-1][j][\texttt{0-part of cur}][q]$.
 
-For the solution, just store which state this state is transferred from, then
+For last element $\texttt{pre}$, we're sure that its 1-part is $j$, and
+$\text{pop}(\texttt{0-part of pre}\ \&\ \texttt{0-part of cur})=q$.
 
-output in reverse order.
+Since it's required that
+$\text{pop}(\texttt{0-part of pre}\ \&\ \texttt{0-part of cur}) + \text{pop}(\texttt{1-part of pre}\ \&\ \texttt{1-part of cur}) = k[i]$,
+so enumerate $\texttt{1-part of pre}$ and transfer in $O(\sqrt{a[i]})$ is
+possible.
+
+For $\texttt{dp}[i][j][p][q]$, enumerate $p$ to predict the next elements.
+
+Use the rolling array technique to eliminate the first dimension, and we'll get
+$\mathcal{O}(N\sqrt{{a[i]}})$.
 
 </Spoiler>
 
 <Spoiler title="Implementation">
 
-**Time Complexity:** $\mathcal{O}(N\sqrt{\max{a[i]}})$
+**Time Complexity:** $\mathcal{O}(N\sqrt{{a[i]}})$
+
+**Memory Complexity:** $\mathcal{O}({a[i]}\log a[i])$
 
 <LanguageSection>
 <CPPSection>
@@ -145,7 +135,7 @@ const int maxcount = 10;
 const int mask = 1 << maxcount;
 const int maxn = 100005;
 
-int cnt[mask];  // popcount array
+int pop[mask];  // popcount array
 
 int f[mask][mask][maxcount + 1];
 int last[maxn];  // store position of last chosen element
@@ -158,7 +148,7 @@ int sol[maxn], len;
 int main() {
 	cin >> n;
 	for (int i = 1; i < mask; i++) {
-		cnt[i] = cnt[i >> 1] + (i & 1);
+		pop[i] = pop[i >> 1] + (i & 1);
 	}
 	for (int i = 1; i <= n; i++) {
 		cin >> a[i];
@@ -170,18 +160,17 @@ int main() {
 	for (int i = 1; i <= n; i++) {
 		int cur0 = (a[i]) >> maxcount, cur1 = (a[i]) & (mask - 1), ans = 1;
 		for (int pre1 = 0; pre1 < mask; pre1++) {
-			int bc = k[i] - cnt[pre1 & cur1];
-			if (bc >= 0 && bc <= maxcount && ans < f[pre1][cur0][bc] + 1) {
-				// bc >= 0 && bc <= maxcount is important!
-				ans = f[pre1][cur0][bc] + 1;
-				last[i] = id[pre1][cur0][bc];
+			int q = k[i] - pop[pre1 & cur1];
+			if (q >= 0 && q <= maxcount && ans < f[pre1][cur0][q] + 1) {
+				ans = f[pre1][cur0][q] + 1;
+				last[i] = id[pre1][cur0][q];
 			}
 		}
 		for (int nex0 = 0; nex0 < mask; nex0++) {
-			int bc = cnt[nex0 & cur0];
-			if (ans > f[cur1][nex0][bc]) {
-				f[cur1][nex0][bc] = ans;
-				id[cur1][nex0][bc] = i;
+			int q = pop[nex0 & cur0];
+			if (ans > f[cur1][nex0][q]) {
+				f[cur1][nex0][q] = ans;
+				id[cur1][nex0][q] = i;
 			}
 		}
 		if (maxn < ans) {
@@ -196,13 +185,7 @@ int main() {
 	}
 	cout << len << endl;
 	for (int i = len; i >= 1; i--) {
-		if (i == 1) {
-			cout << sol[i] << endl;
-		} 
-		else {
-
-			cout << sol[i] << " ";
-		}
+		cout << sol[i] << " \n" [i == 1];
 	}
 }
 ```
