@@ -5,7 +5,7 @@ title: 2017 - Longest beautiful sequence
 author: Shijie Ren
 ---
 
-<Spoiler title="Hint 1">
+<Spoiler title="Hint">
 
 **For $\mathcal{O}(N^2)$ DP**:
 
@@ -16,7 +16,12 @@ $$
 \texttt{dp}[i]=\max_{j<i,\text{pop}(a[i]\&a[j])=k[i]}\{\texttt{dp}[j]\}+1
 $$
 
-You may find two ways of $\mathcal{O}(N\max{a[i]})$ DP.
+The transition of the current state is determined by the value of the previous
+element, that's only $a[j]$. For each $i$ enumerate last element $a[j]$, for the
+time complexity of states transition, it's optimized to $\mathcal O(\max a_i)$
+from $\mathcal O(n)$.
+
+Here you may find two ways of $\mathcal{O}(N\max{a[i]})$ DP.
 
 One is kind of preprocessing previous answers, traverse all the situations of
 the previous number, $\mathcal{O}(\max{a[i]})$ to query current answer in DP
