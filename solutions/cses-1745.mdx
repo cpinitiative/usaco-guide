@@ -2,20 +2,84 @@
 id: cses-1745
 source: CSES
 title: Money Sums
-author: Sofia Yang
+author: Sofia Yang, Qian Qian
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/70018)
-
-<LanguageSection>
-
-<JavaSection>
 
 ## Solution
 
 **Time Complexity:** $\mathcal{O}(N\cdot X)$
 
-## Java Implementation
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+``` cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using vi = vector<int>;
+
+const int MAX_N = 100;
+const int MAX_SUM = 1e5;
+
+// DP[i][j] is true, if it is possible to make a sum of j with i coins.
+bool dp[MAX_N + 1][MAX_SUM + 1];
+
+int main() {
+	int n;
+	cin >> n;
+
+	vi x(n);
+	for (int i = 0; i < n; i++) {
+		cin >> x[i];
+	}
+
+	dp[0][0] = true;
+
+	/**
+	 * Loop through all coins and all possible sums.
+	 * 1. If it is possible to make the sum with less than i coins,
+	 * Then DP[i][sum] will be true.
+	 * 2. If it is possible to make a sum of (curSum - value[i])
+	 * DP[curSum] will also be true.
+	 */
+	for (int i = 1; i <= n; i++) {
+		for (int current_sum = 0; current_sum <= MAX_SUM; current_sum++) {
+			dp[i][current_sum] = dp[i - 1][current_sum];
+			int prev_sum = current_sum - x[i - 1];
+			if (prev_sum >= 0 && dp[i - 1][prev_sum]) {
+				dp[i][current_sum] = true;
+			}
+		}
+	}
+
+	// Check the number of possible sums.
+	vi possible = vi();
+	for (int sum = 1; sum <= MAX_SUM; sum++) {
+		if (dp[n][sum]) {
+			possible.push_back(sum);
+		}
+	}
+
+	cout << possible.size() << endl;
+
+	for (int sum : possible) {
+		cout << sum << " ";
+	}
+	cout << endl;
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
 
 ```java
 import java.io.*;
