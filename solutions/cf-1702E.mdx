@@ -41,38 +41,39 @@ The implementation of this is relatively straight forward; Simply check if the g
 using namespace std;
 
 bool dfs(int u, int g, vector<int>& vis, vector<vector<int>>& adj) {
-    // If the node is already visited with and was marked in the same color
+	// If the node is already visited with and was marked in the same color
 	if (vis[u] == g) return true;
     
-    // If the node is already visited with and was marked in the other color
+	// If the node is already visited with and was marked in the other color
 	if (vis[u] == 1 - g) return false;
     
-    vis[u] = g; 
+	vis[u] = g; 
 	for (auto i : adj[u]) {
-        // If there is a problem when dfsing to any of the other nodes we 
-        // need to return false
+        	// If there is a problem when dfsing to any of the other nodes we 
+        	// need to return false
 		if (!dfs(i, 1 - g, vis, adj)) return false; 
 	}
-    // No problems
+	// No problems
 	return true;
 }
 
 void solve() {
-	int n; cin >> n;
+	int n; 
+	cin >> n;
 	vector<pair<int, int>> dm(n);
     
 	for (auto& i : dm) cin >> i.first >> i.second;
 		
-    for (auto i : dm) {
-        // Check if a dominoe has the same number twice
+	for (auto i : dm) {
+        	// Check if a dominoe has the same number twice
 		if (i.first == i.second) {
 			cout << "NO\n";
 			return;
 		}
 	}
 
-    // Check if a number exists in 3 or more dominoes
-    map<int, vector<int>> ma;
+	// Check if a number exists in 3 or more dominoes
+	map<int, vector<int>> ma;
 	for (int i = 0; i < n; i++) {
 		ma[dm[i].first].push_back(i);
 		ma[dm[i].second].push_back(i);
@@ -82,7 +83,7 @@ void solve() {
 		}
 	}
 
-    // initialize variables for DFS
+	// initialize variables for DFS
 	vector<int> vis(n, -1);
 	vector<vector<int>> adj(n);
 	for (auto p : ma) {
@@ -93,11 +94,11 @@ void solve() {
 		}
 	}
 
-    // Check if the graph is bipartite
+	// Check if the graph is bipartite
 
-    // Since the graph is not guaranteed to be connected
-    // we need to iterate over every value and make sure
-    // every value is visited
+	// Since the graph is not guaranteed to be connected
+	// we need to iterate over every value and make sure
+	// every value is visited
 	for (int i = 0; i < n; i++) {
 		if (vis[i]==-1) {
 			if (!dfs(i, 0, vis, adj)) {
@@ -110,7 +111,11 @@ void solve() {
 }
 
 int main() {
-	int t; cin >> t; while (t--) solve();
+	int t; 
+	cin >> t; 
+	while (t--) {
+		solve();
+	}
 }
 ```
 </CPPSection>
