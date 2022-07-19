@@ -18,56 +18,51 @@ The greedy approach is implemented below. We will loop from left to right, addin
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using ll = int_fast64_t;
+using ll = long long;
 
-const ll P = 69421, M = 1e9 + 9;
+const ll P = 69421;
+const ll M = 1e9 + 9;
 
 int main(){
-	cin.tie(0) -> sync_with_stdio(0);	
 	int t; 
 	cin >> t;
-	goto outer;
-	
-	outer:
-	if(t-- == 0) {
-		return 0;
-	}
-	string s; 
-	cin >> s;
-	int n = s.length();
-	int ans = 0;
-	int found = 0; // -1 if no further strings can be found on both side
-	int start = 0; // index we start searching from
+	while (t--) {
+		string s; 
+		cin >> s;
+		int n = s.length();
+		int ans = 0;
+		int found = 0; // -1 if no further strings can be found on both side
+		int start = 0; // index we start searching from
 
-	while (found != -1) {
-		ll hash_left = 0, hash_right = 0;
-		found = -1;
-		for (ll l = start, pw = 1; l < n / 2; l++, pw = (pw * P % M)) {
-			hash_left = (hash_left * P + s[l]) % M;
-			hash_right = (hash_right + pw * s[n - 1 - l]) % M;
-			if (hash_left == hash_right) {
-				found = l;
-				break;
+		while (found != -1) {
+			ll hash_left = 0, hash_right = 0;
+			found = -1;
+			for (ll l = start, pw = 1; l < n / 2; l++, pw = (pw * P % M)) {
+				hash_left = (hash_left * P + s[l]) % M;
+				hash_right = (hash_right + pw * s[n - 1 - l]) % M;
+				if (hash_left == hash_right) {
+					found = l;
+					break;
+				}
+			}
+			
+			// two partitions can be created with these two strings
+			if (found != -1) {
+				start = found + 1;
+				ans += 2;
 			}
 		}
-		
-		// no further partitions can be made
-		if (found == -1) {
-			// we have taken all the characters
-			if (start * 2 == n) {
-				cout << ans << endl;
-			}
-			else {
-				cout << ans + 1 << endl;
-			}
-			goto outer;
+							
+		// we have taken all the characters
+		if (start * 2 == n) {
+			cout << ans << endl;
 		}
 		else {
-			start = found + 1;
-			ans += 2;
+			cout << ans + 1 << endl;
 		}
 	}
 }
+
 ```
 
 </CPPSection>
