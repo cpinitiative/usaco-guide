@@ -104,18 +104,10 @@ public class MoneySums {
 			value[i] = io.nextInt();
 		}
 
-		// DP[i][j] is true, if it is possible to make a sum of j with i coins.
 		boolean[][] dp = new boolean[N + 1][maxSum + 1];
 
 		dp[0][0] = true;
 
-		/**
-		 * Loop through all coins and all possible sums.
-		 * 1. If it is possible to make the sum with less than i coins,
-		 * Then DP[i][sum] will be true.
-		 * 2. If it is possible to make a sum of (curSum - value[i])
-		 * DP[curSum] will also be true.
-		 */
 		for (int i = 1; i <= N; i++) {
 			for (int curSum = 0; curSum <= maxSum; curSum++) {
 				dp[i][curSum] = dp[i - 1][curSum];
@@ -126,7 +118,6 @@ public class MoneySums {
 			}
 		}
 
-		// Check the number of possible sums.
 		ArrayList<Integer> possible = new ArrayList<>();
 		for (int sum = 1; sum <= maxSum; sum++) {
 			if (dp[N][sum]) {
