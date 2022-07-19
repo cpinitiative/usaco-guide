@@ -54,7 +54,8 @@ int numberOfWins(vector<int> &bessie, vector<int> &elsie, bool smallerCardWins)
 			wins++;
 			bpos++;
 		}
-		// else if bessie cannot win with current card she will just use her weakest card 
+		// else if bessie cannot win with current card 
+		// then she will just use her weakest card 
 	}
 
 	return wins;
@@ -81,20 +82,28 @@ int main()
 
 		elsieHas[x] = 1;
 
-		if (i < n / 2)
+		if (i < n / 2) 
+		{
 			elsie_first[i] = x;
+		}
 		else
+		{
 			elsie_second[i - n / 2] = x;
+		}
 	}
 
 	for (int i = 2 * n, fpos = 0, bpos = 0; i > 0; --i)
 	{
 		if (elsieHas.find(i) == elsieHas.end()) // elsie does not have this card
 		{
-			if (fpos < n / 2) // bigger card must be used in first half
+			if (fpos < n / 2)  // bigger card must be used in first half
+			{
 				bessie_first[fpos++] = i;
+			}
 			else
+		        {
 				bessie_second[bpos++] = i;
+			}
 		}
 	}
 
@@ -106,7 +115,7 @@ int main()
 	// In second half of game person with card of smaller value win
 	ans += numberOfWins(bessie_second, elsie_second, true);
 
-	cout << ans << "\n"; 
+	cout << ans << endl; 
 
 	return 0;
 }
