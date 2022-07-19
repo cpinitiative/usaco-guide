@@ -32,24 +32,24 @@ int main() {
 	int n;
 	cin >> n;
 
-	vector<int> x(n);
+	vector<int> coins_values(n);
 	for (int i = 0; i < n; i++) {
-		cin >> x[i];
+		cin >> coins_values[i];
 	}
 
 	dp[0][0] = true;
 
-	/**
+	/*
 	 * Loop through all coins and all possible sums.
 	 * 1. If it is possible to make the sum with less than i coins,
-	 * Then DP[i][sum] will be true.
+	 * then DP[i][sum] will be true.
 	 * 2. If it is possible to make a sum of (curSum - value[i])
 	 * DP[curSum] will also be true.
 	 */
 	for (int i = 1; i <= n; i++) {
 		for (int current_sum = 0; current_sum <= MAX_SUM; current_sum++) {
 			dp[i][current_sum] = dp[i - 1][current_sum];
-			int prev_sum = current_sum - x[i - 1];
+			int prev_sum = current_sum - coins_values[i - 1];
 			if (prev_sum >= 0 && dp[i - 1][prev_sum]) {
 				dp[i][current_sum] = true;
 			}
@@ -57,14 +57,14 @@ int main() {
 	}
 
 	// Check the number of possible sums.
-	vector<int> possible = vector<int>();
+	vector<int> possible;
 	for (int sum = 1; sum <= MAX_SUM; sum++) {
 		if (dp[n][sum]) {
 			possible.push_back(sum);
 		}
 	}
 
-	cout << possible.size() << endl;
+	cout << (int)(possible.size()) << endl;
 
 	for (int sum : possible) {
 		cout << sum << " ";
