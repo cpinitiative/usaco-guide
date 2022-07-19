@@ -17,7 +17,7 @@ author: Qi Wang, Ishwarendra Jha
 #include <bits/stdc++.h>
 using namespace std;
 
-int numberOfWins(vector<int> &bessie, vector<int> &elsie, bool smallerCardWins)
+int number_of_wins(vector<int> &bessie, vector<int> &elsie, bool smaller_card_wins)
 {
 	/*
 	 * if person with larger value cards wins
@@ -32,7 +32,7 @@ int numberOfWins(vector<int> &bessie, vector<int> &elsie, bool smallerCardWins)
 	int n = size(bessie);
 	assert(size(bessie) == size(elsie));
 
-	if (smallerCardWins)
+	if (smaller_card_wins)
 	{
 		for (int i = 0; i < n; ++i)
 		{
@@ -44,7 +44,7 @@ int numberOfWins(vector<int> &bessie, vector<int> &elsie, bool smallerCardWins)
 	sort(begin(bessie), end(bessie), greater<int>());
 	sort(begin(elsie), end(elsie), greater<int>());
 
-	int bpos = 0; // keep track of index of card which bessie uses in current move
+	int bpos = 0;  // keep track of index of card which bessie uses in current move
 	int wins = 0;
 
 	for (int i = 0; i < n; i++)
@@ -68,7 +68,7 @@ int main()
 	int n;
 	cin >> n;
 
-	map<int, int> elsieHas;
+	map<int, int> elsie_has;
 
 	// We will store first and second half of cards separately as both rounds are independent of each other
 	vector<int> bessie_first(n / 2), bessie_second(n / 2);
@@ -79,7 +79,7 @@ int main()
 		int x;
 		cin >> x;
 
-		elsieHas[x] = 1;
+		elsie_has[x] = 1;
 
 		if (i < n / 2) 
 		{
@@ -93,7 +93,7 @@ int main()
 
 	for (int i = 2 * n, fpos = 0, bpos = 0; i > 0; i--)
 	{
-		if (elsieHas.find(i) == elsieHas.end()) // elsie does not have this card
+		if (elsie_has.find(i) == elsie_has.end())  // elsie does not have this card
 		{
 			if (fpos < n / 2)  // bigger card must be used in first half
 			{
@@ -109,10 +109,10 @@ int main()
 	int ans = 0;
 
 	// First half person with card of larger value wins
-	ans += numberOfWins(bessie_first, elsie_first, false);
+	ans += number_of_wins(bessie_first, elsie_first, false);
 
 	// In second half of game person with card of smaller value win
-	ans += numberOfWins(bessie_second, elsie_second, true);
+	ans += number_of_wins(bessie_second, elsie_second, true);
 
 	cout << ans << endl; 
 }
