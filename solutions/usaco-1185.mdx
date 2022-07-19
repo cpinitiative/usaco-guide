@@ -1,0 +1,129 @@
+---
+id: usaco-1185
+source: USACO Gold 2022 January
+title: Drought
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_prob1_gold_jan22.html)
+
+## Explanation
+
+First, let's split the problem into two cases, if $N$ is even or if $N$ is odd.
+
+If $N$ is even, then we can assume that from any arrangement where all the hunger values are equal, we can reduce them all to zero by decreasing adjacent cows together.
+
+However, if $N$ is odd, we can't make the same assumption. Thus, we have to count the number of arrangements for all possible hunger levels $x$. To account for this, note that by shifting the ceiling of the data by $x$, we can find the answer for setting all cows to $x$ with the same process as earlier.
+
+What information do we have to keep track of at point $i$?
+
+While it may seem that the index is all we need, since we can only decrease the right-most cow with the one to the left of it, we also have to keep track of the current cow's hunger value such that we don't make it impossible to get the right-most cow to zero.
+
+More formally, if we let $\texttt{dp}[i][j] =$ the number of arrangements that can be formed if the first $i - 1$ elements are set to zero and the $i$th element is hunger value $j$, then this state affects all states $\texttt{dp}[i + 1][j]$ such that $h_i \leq k \leq h_{i + 1}$.
+
+Let's calculate the time complexity!
+
+We'll have $N \cdot \max H$ number of states, and each transition can take up to $\max H$ operations, so our time complexity would be $\mathcal{O}(N(\max H)^2)$. Unfortunately, in odd cases, we'll have to try all possible $x < \min H$, which'll give us a resulting time complexity of $\mathcal{O}(N(\max H)^3)$ (since all the elements can be the same).
+
+Luckily, because our transition updates a contiguous range of states, we can process our transition in $\mathcal{O}(1)$ with a difference array.
+
+This speeds up our algorithm to $\mathcal{O}(N(\max H)^2)$!
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N(\max H)^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const int MOD = 1e9 + 7;
+const int MX_HUNGER = 1000;
+
+vector<int> h;
+vector<ll> dp(MX_HUNGER + 1), diff(MX_HUNGER + 2);
+
+int n;
+
+ll ways_offset(int shift) {
+	// initially one way to set the first i elements to zero
+	for (int i = 0; i <= MX_HUNGER; i++) {
+		dp[i] = 1;
+	}
+
+	// ways considering that all numbers before i are all zero & i is set to j
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j <= (h[i - 1] - shift) && (h[i] - shift) - j + 1 >= 0; j++) {
+			/*
+			 * we have to add (i, j) to (i + 1, [0, h[i] - j]),
+			 * use difference array to quickly update range
+			 */
+
+			int rb = (h[i] - shift) - j + 1;
+
+			diff[0] += dp[j];
+
+			if (diff[0] >= MOD) {
+				diff[0] -= MOD;
+			}
+
+			// be careful when modding negative values
+			diff[rb] = (((diff[rb] - dp[j]) % MOD) + MOD) % MOD;
+		}
+
+		dp[0] = diff[0];
+
+		for (int j = 1; j <= MX_HUNGER; j++) {
+			dp[j] = dp[j - 1] + diff[j];
+
+			if (dp[j] >= MOD) {
+				dp[j] -= MOD;
+			}
+			
+			assert(dp[j] >= 0);
+		}
+
+		// reset difference array
+		for (int j = 0; j <= MX_HUNGER; j++) {
+			diff[j] = 0;
+		}
+	}
+
+	return dp[0];
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	cin >> n;
+	h.reserve(n);
+
+	int mn = MX_HUNGER;
+	for (int i = 0; i < n; i++) {
+		cin >> h[i];
+		mn = min(mn, h[i]);
+	}
+
+	ll ans = 0;
+
+	if (n % 2) {
+		/*
+		 * we can't assume that all elements can be equal to zero.
+		 * instead, we have to compute the answer for all possible hunger values.
+		 */
+		for (int i = 0; i <= mn; i++) {
+			ans = (ans + ways_offset(i) + MOD) % MOD;
+		}
+	} else {
+		ans = (ans + ways_offset(0) + MOD) % MOD;
+	}
+
+	cout << ans << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
