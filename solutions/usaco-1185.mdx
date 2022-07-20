@@ -69,10 +69,8 @@ ll ways_offset(int shift) {
 
 	// ways considering that all numbers before i are all zero & i is set to j
 	for (int i = 1; i < n; i++) {
-		for (int j = 0;
-			j <= (h[i - 1] - shift) &&
-			(h[i] - shift) - j + 1 >= 0;
-		 j++) {
+		int j = 0;
+		while (j <= (h[i - 1] - shift) && (h[i] - shift) - j + 1 >= 0) {
 			/*
 			 * we have to add (i, j) to (i + 1, [0, h[i] - j]),
 			 * use difference array to quickly update range
@@ -88,6 +86,7 @@ ll ways_offset(int shift) {
 
 			// be careful when modding negative values
 			diff[rb] = (((diff[rb] - dp[j]) % MOD) + MOD) % MOD;
+			j++;
 		}
 
 		dp[0] = diff[0];
