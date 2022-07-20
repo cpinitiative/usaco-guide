@@ -17,24 +17,25 @@ author: Qi Wang, Ishwarendra Jha
 #include <bits/stdc++.h>
 using namespace std;
 
+/*
+ * if person with larger value cards wins
+ * Suppose person A and B use card with value 3 and 2 respectively
+ * Person A wins as 3 > 2
+ * But what if person with smaller value card wins (Second half of game)
+ * We can say person B wins because (-2 > -3)
+ * because [ (2 < 3) => (-2) > (-3) ]
+ * So we will just make all elements negative
+ * instead of changing our way of comparing two numbers.
+*/	
+
 int number_of_wins(vector<int> &bessie, vector<int> &elsie, bool smaller_card_wins)
 {
-	/*
-	 * if person with larger value cards wins
-	 * Suppose person A and B use card with value 3 and 2 respectively
-	 * Person A wins as 3 > 2
-	 * But what if person with smaller value card wins (Second half of game)
-	 * We can say person B wins because (-2 > -3)
-	 * So we will just make all elements negative
-	 * instead of changing our way of comparing two numbers.
-	 */
-
 	int n = size(bessie);
 	assert(size(bessie) == size(elsie));
 
 	if (smaller_card_wins)
 	{
-		for (int i = 0; i < n; ++i)
+		for (int i = 0; i < n; i++)
 		{
 			bessie[i] *= -1;
 			elsie[i] *= -1;
@@ -74,7 +75,7 @@ int main()
 	vector<int> bessie_first(n / 2), bessie_second(n / 2);
 	vector<int> elsie_first(n / 2), elsie_second(n / 2);
 
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < n; i++)
 	{
 		int x;
 		cin >> x;
