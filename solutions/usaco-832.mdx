@@ -29,88 +29,84 @@ In this problem, there are three cases that we have to consider:
 using namespace std;
 
 int main(){
-        freopen("milkorder.in", "r", stdin);
-        freopen("milkorder.out", "w", stdout);
-        int n,m,k;
-        cin>>n>>m>>k;
+	freopen("milkorder.in", "r", stdin);
+	freopen("milkorder.out", "w", stdout);
+	int n,m,k;
+	cin>>n>>m>>k;
 
-        vector<int> pos(n+1, -1);
-        map<int,int> statuspos;
-        vector<int> status(m);
-        for(int i=0;i<m;i++){
-                cin>>status[i];
-                statuspos[status[i]] = i;
-        }
+	vector<int> pos(n+1, -1);
+	map<int,int> statuspos;
+	vector<int> status(m);
+	for(int i=0;i<m;i++){
+		cin>>status[i];
+		statuspos[status[i]] = i;
+	}
 
-        set<int> exist;
-        for(int i=0;i<k;i++){
-                int c,p;
-                cin>>c>>p;
-                pos[p] = c;
-                exist.insert(c);
-        }
+	set<int> exist;
+	for(int i=0;i<k;i++){
+		int c,p;
+		cin>>c>>p;
+		pos[p] = c;
+		exist.insert(c);
+	}
 
 		// Case 1
-        for(int i=1;i<=n;i++)if(pos[i] == 1){
-                cout<<i<<endl;
-                return 0;
-        }
+	for(int i=1;i<=n;i++)if(pos[i] == 1){
+		cout<<i<<endl;
+		return 0;
+	}
 
 		// Case 2
-        if(statuspos.count(1)){
-                int start = statuspos[1]-1;
-                while(start>=0){
-                        if(exist.count(status[start]))break;
-                        start--;
-                }
-                bool check = start == -1;
-                int diff = statuspos[1]-start;
-                for(int i=1;i<=n;i++){
-                        if(!check&&pos[i]==status[start]){
-                                check = true;
-                                continue;
-                        }
-                        if(check&&pos[i]==-1)diff--;
-                        if(diff == 0){
-                                cout<<i<<endl;
-                                break;
-                        }
-                }
-                return 0;
-        }
+	if(statuspos.count(1)){
+		int start = statuspos[1]-1;
+		while(start>=0){
+			if(exist.count(status[start]))break;
+			start--;
+		}
+		bool check = start == -1;
+		int diff = statuspos[1]-start;
+		for(int i=1;i<=n;i++){
+			if(!check&&pos[i]==status[start]){
+				check = true;
+				continue;
+			}
+			if(check&&pos[i]==-1)diff--;
+			if(diff == 0){
+				cout<<i<<endl;
+				break;
+			}
+		}
+		return 0;
+	}
 
 		// Case 3
-        for(int i=1;i<=n;i++){
-                if(pos[i] == -1)continue;
-                if(statuspos.count(pos[i])){
-                        int a = statuspos[pos[i]]-1;
-                        int b = i-1;
-                        while(a>=0&&b>0){
-                                if(pos[b]!=-1){
-                                        b--;
-                                        continue;
-                                }
-                                if(exist.count(status[a])){
-                                        a--;
-                                        continue;
-                                }
-                                pos[b] = status[a];
-                                exist.insert(status[a]);
-                                b--;a--;
-                        }
-                }
-        }
-        for(int i=1;i<=n;i++)if(pos[i] == -1){
-                cout<<i<<endl;
-                break;
-        }
+	for(int i=1;i<=n;i++){
+		if(pos[i] == -1)continue;
+		if(statuspos.count(pos[i])){
+			int a = statuspos[pos[i]]-1;
+			int b = i-1;
+			while(a>=0&&b>0){
+				if(pos[b]!=-1){
+					b--;
+					continue;
+				}
+				if(exist.count(status[a])){
+					a--;
+					continue;
+				}
+				pos[b] = status[a];
+				exist.insert(status[a]);
+				b--;a--;
+			}
+		}
+	}
+	for(int i=1;i<=n;i++)if(pos[i] == -1){
+		cout<<i<<endl;
+		break;
+	}
 
-
-
-
-        return 0;
+	return 0;
 }
-~                  
 ```
 
 </CPPSection>
