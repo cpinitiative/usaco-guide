@@ -57,19 +57,17 @@ class ReadBook {
 	public static void main (String[] args) { 
 		Kattio kattio = new Kattio();
 		int n = kattio.nextInt();
-		long time[] = new long[n];  
+		
+		long books[] = new long[n];  
 		for(int i = 0; i < n; i++) {  
-			time[i] = kattio.nextLong();  
+			books[i] = kattio.nextLong();  
 		}
-		long maxNum = time[0];
-        	for (long j : time) {
-        		maxNum = Math.max(maxNum, j);
-        	}
-        	long sumNum = 0;
-        	for (int j = 0; j < n; j++) {
-        		sumNum += time[j];
-        	}
+		
+		long maxNum = Arrays.stream(books).max().getAsLong();
+        	long sumNum = Arrays.stream(books).sum();
+        
         	kattio.println(Math.max(sumNum,maxNum*2));
+        
 		kattio.close();
 	}
 	//CodeSnip{Kattio}
