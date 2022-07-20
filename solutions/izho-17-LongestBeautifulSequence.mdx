@@ -73,8 +73,7 @@ from element $\texttt{pre}$.
 
 Predict the next element or preprocess the previous element are neither
 sufficient, so divide an element into two parts, one for predicting and the
-other for preprocessing, this is the key to reduce time complexity. Details of
-implementation are given below.
+other for preprocessing, this is the key to reduce time complexity.
 
 For example,
 
@@ -87,6 +86,23 @@ $$
 \texttt{cur} &= (\color{red}{0110110101}\color{black}{1110101101})_2
 \end{align}
 $$
+
+And we want some number AND $\texttt{cur} = 8$.
+
+When we consider $\texttt{pre}$, we predict what the next element is, but to
+avoid high time complexity, we'll only calculate 10 bits. Here, we'll store in
+te DP array that there's an element ($\texttt{pre}$), black part is $0011110101$
+and when red part of next element is $\color{red}0110110101$, it has a
+contribution to $\texttt{pre}\ \&\ \texttt{cur} = 5$, only for red parts.
+
+Now when we consider $\texttt{cur}$, to calculate answer where sequence ends
+with $\texttt{cur}$, use results we preprocessed before, enumerate black part of
+last element. When we get to $0011110101$, the black part has contribution 3,
+thus we get red part contribution is 5. Then we can transfer from
+$\texttt{pre}$, and its red part has a contribution 5 with
+$\color{red}0110110101$.
+
+Details of implementation are given below.
 
 For convenience, we'll call the red part 0-part and the black part 1-part.
 
