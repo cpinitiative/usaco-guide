@@ -2,7 +2,7 @@
 id: usaco-834
 source: USACO Silver 2018 US Open
 title: Out of Sorts
-author: Brad Ma
+author: Brad Ma, Juheon Rhee
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_sort_silver_open18.html)
@@ -62,4 +62,25 @@ public class OutOfSorts {
 }
 ```
 </JavaSection>
+
+<PySection>
+
+```python
+with open('sort.in') as read:
+	n = int(read.readline())
+	l, locations = [0] * n, {}
+
+	for i in range(n):
+		val = (int(read.readline()), i)
+		l[i], locations[val] = val, i
+    
+sorted_l, ans = sorted(l), -float('inf')
+
+for i, val in enumerate(sorted_l):
+	ans = max(ans, locations[val] - i)
+    
+print(ans + 1, file=open('sort.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
