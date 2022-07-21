@@ -23,7 +23,7 @@ with open('skidesign.in') as read:
 	n = int(read.readline())
 	elevation = [int(read.readline()) for _ in range(n)]
 
-min_cost = float('inf')
+this_cost = float('inf')
 
 for i in range(1, MAX_HEIGHT - MAX_DIFF):
 	temp = 0
@@ -32,9 +32,9 @@ for i in range(1, MAX_HEIGHT - MAX_DIFF):
 			temp += (j - i) ** 2
 		elif j > i + MAX_DIFF:
 			temp += (i + MAX_DIFF - j) ** 2
-	min_cost = min(min_cost, temp)
+	this_cost = min(this_cost, temp)
     
-print(min_cost, file=open('skidesign.out', 'w'))
+print(this_cost, file=open('skidesign.out', 'w'))
 ```
 
 </PySection>
@@ -60,7 +60,7 @@ int main() {
 		cin >> elevation[i];
 	}
 	
-	int min_cost = INT32_MAX;
+	int this_cost = INT32_MAX;
 	for(int i = 0; i < MAX_HEIGHT - MAX_DIFF; i++){
 		int temp = 0;
 		for (int j = 0; j < n; j++) {
@@ -72,10 +72,10 @@ int main() {
 				temp += (elevation[j] - i - MAX_DIFF) * (elevation[j] - i - MAX_DIFF);
 			}
 		}
-		min_cost = min(min_cost, temp);
+		this_cost = min(this_cost, temp);
 	}
 	
-	cout << min_cost << endl;
+	cout << this_cost << endl;
 }
 ```
 
