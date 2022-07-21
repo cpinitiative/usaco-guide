@@ -17,33 +17,14 @@ author: Qi Wang, Ishwarendra Jha
 #include <bits/stdc++.h>
 using namespace std;
 
-/*
- * if person with larger value cards wins
- * Suppose person A and B use card with value 3 and 2 respectively
- * Person A wins as 3 > 2
- * But what if person with smaller value card wins (Second half of game)
- * We can say person B wins because (-2 > -3)
- * because [ (2 < 3) => (-2) > (-3) ]
- * So we will just make all elements negative
- * instead of changing our way of comparing two numbers.
-*/	
-
-int number_of_wins(vector<int> &bessie, vector<int> &elsie, bool smaller_card_wins)
+int number_of_wins(vector<int> &bessie, vector<int> &elsie,
+	function<bool(int, int)> cmp)
 {
 	int n = size(bessie);
 	assert(size(bessie) == size(elsie));
 
-	if (smaller_card_wins)
-	{
-		for (int i = 0; i < n; i++)
-		{
-			bessie[i] *= -1;
-			elsie[i] *= -1;
-		}
-	}
-
-	sort(begin(bessie), end(bessie), greater<int>());
-	sort(begin(elsie), end(elsie), greater<int>());
+	sort(begin(bessie), end(bessie), cmp);
+	sort(begin(elsie), end(elsie), cmp);
 
 	int bpos = 0;  // keep track of index of card which bessie uses in current move
 	int wins = 0;
@@ -51,7 +32,7 @@ int number_of_wins(vector<int> &bessie, vector<int> &elsie, bool smaller_card_wi
 	for (int i = 0; i < n; i++)
 	{
 		// Check if Bessie can win. If she can't, she'll just use her worst card.
-		if (bessie[bpos] > elsie[i])
+		if (cmp(bessie[bpos], elsie[i]))
 		{
 			wins++;
 			bpos++;
@@ -110,10 +91,12 @@ int main()
 	int ans = 0;
 
 	// First half person with card of larger value wins
-	ans += number_of_wins(bessie_first, elsie_first, false);
+	ans += number_of_wins(bessie_first, elsie_first, 
+		[](int a, int b) { return a > b; });
 
 	// In second half of game person with card of smaller value win
-	ans += number_of_wins(bessie_second, elsie_second, true);
+	ans += number_of_wins(bessie_second, elsie_second, 
+		[](int a, int b) { return a < b; });
 
 	cout << ans << endl; 
 }
