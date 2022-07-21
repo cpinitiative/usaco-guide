@@ -71,19 +71,20 @@ public class Revegetation {
 
 ```py
 GRASS_TYPES = range(1, 5)
-MAX_PASTURE = 151
-	
-a, b, g = [0] * MAX_PASTURE, [0] * MAX_PASTURE, [0] * MAX_PASTURE
+a, b = [], []
 	
 with open('revegetate.in') as read:
 	n, m = map(int, read.readline().split())
 	
 	for i in range(m):
-		a[i], b[i] = map(int, read.readline().split())
-		if a[i] > b[i]:
+		field1, field2 = map(int, read.readline().split())
+		a.append(field1)
+		b.append(field2)
+		if field1 > field2:
 			a[i], b[i] = b[i], a[i]
 
 ans = []
+g = [0] * (n + 1)
 
 for i in range(1, n + 1):
 	for j in GRASS_TYPES:
