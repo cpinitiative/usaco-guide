@@ -19,7 +19,7 @@ We can choose to exclude one endpoint or the other, which gives us a picture lik
 
 ![](usaco-994/ps.png)
 
-While this'll count all the triplets in between them, we aren't taking into account any triplets which use both the elements at $i$ and $j$, since those aren't included in our "PIE-like" transition.<Asterisk>Currently, our state $(i, j)$ = (triplets which begin at $i$ and end at $i + 2$ to $j - 1$) $+$ (triplets which begin at $i + 1$ and end at $i + 3$ to $j$)</Asterisk>
+While this'll count all the triplets in between them, we aren't taking into account any triplets which use both the elements at $i$ and $j$, since those aren't included in our "PIE-like" transition.<Asterisk>Our transition takes all triplets from $[i + 1, j]$ and $[i, j - 1]$</Asterisk>
 
 To do this, we can precalculate the number of triplets which start at $i$ and end at $j$ in $\mathcal{O}(N^2)$ time by storing the occurences of the compliment of $i$ and $j$ in an array.
 
@@ -70,9 +70,9 @@ int main() {
 		
 		for (int j = i + 2; j < n; j++) {
 			// separate val from shifted amt
-			int rem = (MAX_VAL * 3) - (val[i] + val[j]);
+			int compliment = (MAX_VAL * 3) - (val[i] + val[j]);
 			
-			if (rem >= 0 && rem < (2 * MAX_VAL)) {
+			if (compliment >= 0 && compliment < (2 * MAX_VAL)) {
 				ways[i][j] = frq[rem];
 			}
 			frq[val[j]]++;
