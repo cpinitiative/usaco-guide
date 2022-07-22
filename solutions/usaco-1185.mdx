@@ -31,13 +31,13 @@ What information do we have to keep track of at point $i$?
 
 While it may seem that the index is all we need, since we can only decrease the right-most cow with the one to the left of it, we also have to keep track of the current cow's hunger value such that we don't make it impossible to get the right-most cow to zero.
 
-More formally, if we let $\texttt{dp}[i][j] =$ the number of tuples that can be formed if the first $i - 1$ elements are set to zero and the $i$th element is hunger value $j$, then this state affects all states $\texttt{dp}[i + 1][j]$ such that $h_i \leq k \leq h_{i + 1}$.
+More formally, if we let $\texttt{dp}[i][j] =$ the number of tuples that can be formed if the first $i - 1$ elements are set to zero and the $i$th element is hunger value $j$, then this state affects all states $\texttt{dp}[i + 1][k - h_i]$ such that $h_i \leq k \leq h_{i + 1}$.
 
 Let's calculate the time complexity!
 
 We'll have $N \cdot \max H$ number of states, and each transition can take up to $\max H$ operations, so our time complexity would be $\mathcal{O}(N(\max H)^2)$. Unfortunately, in odd cases, we'll have to try all possible $x < \min H$, which'll give us a resulting time complexity of $\mathcal{O}(N(\max H)^3)$ (since all the elements can be the same).
 
-Luckily, because our transition updates a contiguous range of states, we can process our transition in $\mathcal{O}(1)$ with a difference array.
+Luckily, because our transition updates a contiguous range of states ($[0, h_i]$), we can process our transition in $\mathcal{O}(1)$ with a difference array.
 
 This speeds up our algorithm to $\mathcal{O}(N(\max H)^2)$!
 ## Implementation
@@ -57,7 +57,8 @@ const int MOD = 1e9 + 7;
 const int MX_HUNGER = 1000;
 
 vector<int> h;
-vector<ll> dp(MX_HUNGER + 1), diff(MX_HUNGER + 2);
+vector<ll> dp(MX_HUNGER + 1);
+vector<ll> diff(MX_HUNGER + 2);
 
 int n;
 
