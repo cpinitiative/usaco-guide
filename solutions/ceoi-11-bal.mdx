@@ -25,53 +25,46 @@ Since we remove the element from the stack once we want to check further back, w
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-using ld = long double;
-
 /*
  * how long can the radius of the new balloon at position bx be
  * so that it touches the ballon a, which is described by
  * its x position a.first and its radius a.second
  */
-ld calc_r(pair<ld, ld> a, ld bx)
-{
+double calc_r(pair<double, double> a, double bx) {
 	return (a.first - bx) * (a.first - bx) / (4 * a.second);
 }
 
-int main()
-{
+int main() {
 	// number of balloons
 	int n;
 	cin >> n;
 
 	// the radius of each balloon after inflating
-	vector<ld> res(n);
+	vector<double> res(n);
 	// the balloons we should check when we add a new one
-	stack<pair<ld, ld>> to_check;
+	stack<pair<double, double>> to_check;
 
 	// simulate inflating balloons
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		/*
 		 * the x coordinate and the maximum radius of the
 		 * current balloon being inflated
 		 */
-		ld x, r;
+		double x, r;
 		cin >> x >> r;
 
 		// the maximum radius of the current balloon
-		ld max_r = r;
+		double max_r = r;
 		/*
 		 * as long as the stack is not empty, we want to check
 		 * if the last balloon makes the radius of the current balloon smaller
 		 */
-		while (!to_check.empty())
-		{
-			pair<ld, ld> last = to_check.top();
+		while (!to_check.empty()) {
+			pair<double, double> last = to_check.top();
 			// the radius if the current balloon touches the last balloon
-			ld to_last_r = calc_r(last, x);
+			double to_last_r = calc_r(last, x);
 			/*
-			 * the maximum possible radius is the smaller one between current 
+			 * the maximum possible radius is the smaller one between current
 			 * maximum and the maximum radius so that we touches the last balloon
 			 * (by which we have to stop)
 			 */
@@ -82,8 +75,7 @@ int main()
 			 * remove the last balloon since it will never be touched by any
 			 * new balloons other than the current one
 			 */
-			if (max_r >= last.second)
-			{
+			if (max_r >= last.second) {
 				to_check.pop();
 				// check the next balloon saved which will possibly reduce max_r
 				continue;
@@ -92,8 +84,7 @@ int main()
 			 * otherwise, the current balloon is smaller than the last saved balloon
 			 * and we can stop checking
 			 */
-			else
-			{
+			else {
 				break;
 			}
 		}
@@ -107,8 +98,7 @@ int main()
 	}
 
 	cout << fixed << setprecision(3);
-	for (auto &r : res)
-	{
+	for (double &r : res) {
 		cout << r << "\n";
 	}
 }
