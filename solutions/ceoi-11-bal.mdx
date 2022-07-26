@@ -9,7 +9,7 @@ author: Chuyang Wang
 
 ## Explanation
 
-The problem can be solved by simulation. In particular, we want to inflate the balloons from left to right. The difficulty is to find out when the new balloon $b$ touches one of the inflated balloon $a$ on its left, and how to check this for all previous inflated balloons efficiently. For notation, $a_r$ is the radius and $a_x$ the x-coordinate of balloon $a$. 
+The problem can be solved by simulation. In particular, we want to inflate the balloons from left to right. The difficult part is to find out when the new balloon $b$ touches one of the inflated balloon $a$ on its left, and how to check this for all previous inflated balloons efficiently. For notation, $a_r$ is the radius and $a_x$ the x-coordinate of balloon $a$. 
 
 First, let's determine when two balloons "touch" each other by calculating the maximum radius of the second balloon $b_r$. As the x-coordinate of the previous inflated balloon $a_x$ and its radius $a_r$ are fixed, we can construct a rectangular triangle with the center of both balloons so that both adjacent and opposite sides are parallel to the axes. Using the Pythagorean theorem, we get $(b_x - a_x)^2 + (b_r - a_r)^2 = (b_r + a_r)^2$. With some math, we can get an expression for the maximum radius of the second balloon $b_r = \frac{(b_x - a_x)^2}{4a_r}$. This tells us that the balloon $b$ can never have a larger radius than $b_r$. 
 
@@ -37,21 +37,15 @@ double calc_r(pair<double, double> a, double bx) {
 }
 
 int main() {
-	// number of balloons
 	int n;
 	cin >> n;
 
 	// the radius of each balloon after inflating
-	vector<double> res(n);
+	vector<double> final_radius(n);
 	// the balloons we should check when we add a new one
 	stack<pair<double, double>> to_check;
 
-	// simulate inflating balloons
 	for (int i = 0; i < n; i++) {
-		/*
-		 * the x coordinate and the maximum radius of the
-		 * current balloon being inflated
-		 */
 		double x, r;
 		cin >> x >> r;
 
@@ -96,11 +90,11 @@ int main() {
 		 */
 		to_check.push({x, max_r});
 
-		res[i] = max_r;
+		final_radius[i] = max_r;
 	}
 
 	cout << fixed << setprecision(PRECISION);
-	for (double &r : res) {
+	for (double &r : final_radius) {
 		cout << r << "\n";
 	}
 }
@@ -119,20 +113,14 @@ import java.util.*;
 public class bal {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		// number of balloonss
 		int n = Integer.parseInt(br.readLine());
 
 		// the radius of each balloon after inflating
-		double[] res = new double[n];
+		double[] finalRadius = new double[n];
 		// the balloons we should check when we add a new one
 		Stack<Balloon> toCheck = new Stack<>();
 
-		// simulate inflating balloons
 		for (int i = 0; i < n; i++) {
-			/*
-			 * the x coordinate and the maximum radius of the
-			 * current balloon being inflated
-			 */
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			long x = Integer.parseInt(st.nextToken());
 			double r = Integer.parseInt(st.nextToken());
@@ -176,11 +164,11 @@ public class bal {
 			 * it can be checked later when a new balloon being inflated
 			 */
 			toCheck.add(new Balloon(x, maxR));
-			res[i] = maxR;
+			finalRadius[i] = maxR;
 		}
 
 		PrintWriter pw = new PrintWriter(System.out);
-		for (double r : res) {
+		for (double r : finalRadius) {
 			pw.println(r);
 		}
 		pw.close();
