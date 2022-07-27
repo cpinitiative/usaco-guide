@@ -2,7 +2,7 @@
 id: usaco-896
 source: USACO Silver 2019 January
 title: Mountain View
-author: Jesse Choe, Sofia Yang
+author: Jesse Choe, Sofia Yang, Juheon Rhee
 ---
 
 [Official Analysis](http://usaco.org/current/data/sol_mountains_silver_jan19.html)
@@ -124,5 +124,30 @@ class mountain implements Comparable<mountain> {
 ```
 
 </JavaSection>
+
+<PySection>
+	
+```python
+pos = []
+with open('mountains.in') as read:
+	n = int(read.readline())
+	for _ in range(n):
+		a, b = map(int, read.readline().split())
+		pos.append((a - b, a + b))
+
+# sort mountain positions 
+pos.sort(key=lambda x: (x[0], -x[1]))
+cur = pos[0][1]
+
+ans = 1
+for i in range(1, n):
+	end = pos[i][1]
+	if end > cur:
+		cur = end
+		ans += 1
+
+print(ans, file=open('mountains.out', 'w'))
+```
+</PySection>
 
 </LanguageSection>

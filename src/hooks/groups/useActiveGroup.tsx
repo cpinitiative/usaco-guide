@@ -17,9 +17,9 @@ import { PostData } from '../../models/groups/posts';
 import { useFirebaseApp } from '../useFirebase';
 
 const ActiveGroupContext = React.createContext<{
-  activeGroupId: string;
-  setActiveGroupId: React.Dispatch<React.SetStateAction<string>>;
-  groupData: GroupData;
+  activeGroupId?: string;
+  setActiveGroupId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  groupData?: GroupData;
   posts: PostData[];
   isLoading: boolean;
   showAdminView: boolean;
@@ -30,29 +30,35 @@ const ActiveGroupContext = React.createContext<{
    * it could be different
    */
   activeUserId: string;
-  setActiveUserId: (id: string | null) => void;
-}>(null);
+  setActiveUserId: (id?: string) => void;
+} | null>(null);
 
 export function ActiveGroupProvider({ children }: { children: ReactNode }) {
-  const { firebaseUser } = useContext(UserDataContext);
-  const [activeGroupId, setActiveGroupId] = React.useState<string>(null);
-  const [posts, setPosts] = React.useState<PostData[]>(null);
+  const { firebaseUser, isLoaded: isUserLoaded } = useContext(UserDataContext);
+  const [activeGroupId, setActiveGroupId] = React.useState<string>();
+  const [posts, setPosts] = React.useState<PostData[]>([]);
   const [inStudentView, setInStudentView] = React.useState(false);
-  const [activeUserId, setActiveUserId] = React.useState<string | null>(null);
+  const [activeUserId, setActiveUserId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(true);
   const [groupData, setGroupData] = React.useState<GroupData>();
 
   useFirebaseApp(
     firebaseApp => {
-      setGroupData(null);
-      setPosts(null);
+      //reset all Group states
+      setGroupData(undefined);
+      setPosts([]);
       setInStudentView(false);
-      if (activeGroupId === null) {
+      setActiveUserId(undefined);
+
+      setIsLoading(true);
+      if (!activeGroupId || !isUserLoaded) {
+        //still loading/waiting...
+        return;
+      }
+      if (!firebaseUser?.uid) {
         setIsLoading(false);
         return;
       }
-      setIsLoading(true);
-      if (!firebaseUser?.uid) return;
 
       let loadedPosts = false,
         loadedGroup = false;
@@ -74,7 +80,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         error => {
           if (error.code === 'permission-denied') {
             setIsLoading(false);
-            setPosts(null);
+            setPosts([]);
           } else {
             toast.error(error.message);
           }
@@ -94,7 +100,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         error => {
           if (error.code === 'permission-denied') {
             setIsLoading(false);
-            setGroupData(null);
+            setGroupData(undefined);
           } else {
             toast.error(error.message);
           }
@@ -105,7 +111,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         unsubscribePosts();
       };
     },
-    [activeGroupId, firebaseUser?.uid]
+    [activeGroupId, firebaseUser?.uid, isUserLoaded]
   );
 
   const isUserAdmin = isUserAdminOfGroup(
@@ -116,20 +122,14 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
     <ActiveGroupContext.Provider
       value={{
         activeGroupId,
-        setActiveGroupId: id => {
-          if (!groupData || groupData.id !== id) {
-            setIsLoading(true);
-            setActiveUserId(null);
-          }
-          setActiveGroupId(id);
-        },
+        setActiveGroupId,
         groupData,
         posts,
         isLoading,
         showAdminView: isUserAdmin && !inStudentView,
         setInStudentView: newVal => {
           setInStudentView(newVal);
-          if (!newVal) setActiveUserId(null);
+          if (!newVal) setActiveUserId(undefined);
         },
         activeUserId: activeUserId ?? firebaseUser?.uid,
         setActiveUserId,

@@ -1,6 +1,6 @@
 import { Link, navigate } from 'gatsby';
-import React from 'react';
-import { useReducer } from 'react';
+import React, { useReducer } from 'react';
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { GroupData } from '../../../models/groups/groups';
@@ -8,7 +8,6 @@ import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import toast from 'react-hot-toast';
 
 export default function EditGroupPage(props) {
   const { groupId } = props as {
@@ -65,9 +64,6 @@ export default function EditGroupPage(props) {
             <Link to="../" className="btn">
               <span>Back</span>
             </Link>
-            <button type="submit" onClick={handleSave} className="btn">
-              Save
-            </button>
           </div>
         </div>
         <div className="h-6" />

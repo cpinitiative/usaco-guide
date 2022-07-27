@@ -31,7 +31,6 @@ numbers less than $\texttt{mid}$ also won't work.
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -107,5 +106,29 @@ public class MultiplicationTable {
 ```
 	
 </JavaSection>
+<PySection>
 
+```py
+n = int(input())
+
+low = 1
+high = n ** 2
+
+# binary search to find the median
+while low < high:
+	mid = (low + high) // 2
+	leq = 0
+
+	for i in range(0, n):
+		leq += min(n, mid // (i + 1))
+
+	if leq >= (n ** 2 + 1) / 2:
+		high = mid
+	else:
+		low = mid + 1
+
+print(high)
+```
+
+</PySection>
 </LanguageSection>
