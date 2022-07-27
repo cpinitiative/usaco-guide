@@ -12,7 +12,7 @@ author: Jeffrey Zhang
 The subtask of this problem can be solved using brute force: insert all the edges from $N$ points into an edge list and solve using [Kruskal's MST algorithm](https://usaco.guide/gold/mst#kruskals). Upon closer look at our brute force solution, the actual bottleneck is the time to insert all the edges.
 So our focus should be on finding a way to exploit the constraint $0 \le y_i \le 10$, so that the edges we need to insert can be reduced.
  
-Given three points $p_1$, $p_2$, and $p_3$, with coordinates $(x_1, y_1)$, $(x_2, y_2)$, and $(x_3, y_3)$ respectively, where $x_1 < x_2 < x_3$. We observe that if $y_1 = y_2$, the length of $p_1 p_3$ will always be larger than $p_1 p_2$ and $p_2 p_3$ individually. According to the nature of Kruskal's MST algorithm, edges being considered are sorted from shortest to longest, and the two pending points are in separate connected components. The $p_1 p_3$ edge being the longest edge will always be behind $p_1 p_2$ and $p_2 p_3$, and when its turn comes, $p_1$ and $p_3$ are already connected. So we can see that $p_1 p_3$ is an extraneous edge that we can safely remove.
+Given three points $p_1$, $p_2$, and $p_3$, with coordinates $(x_1, y_1)$, $(x_2, y_2)$, and $(x_3, y_3)$ respectively, where $x_1 < x_2 < x_3$. We observe that if $y_1 = y_2$, the length of $p_1 p_3$ will always be larger than $p_1 p_2$ and $p_2 p_3$ individually. If we follow Kruskal's algorithm, we consider the edges starting from the shortest one, and only add an edge to the tree if it connects two different components. The $p_1 p_3$ edge being the longest edge will always be behind $p_1 p_2$ and $p_2 p_3$, and when its turn comes, $p_1$ and $p_3$ are already connected. So we can see that $p_1 p_3$ is an extraneous edge that we can safely remove.
  
 We can systematically ignore $p_1 p_3$ edges by sweeplining the points from left to right while keeping an array of points with the highest $x$ value in their $y$ lane. With every newer point, we will only be inserting edges with points from this array. This approach allows us to reduce the time complexity for inserting edges from $\mathcal{O}(N^2)$ to $\mathcal{O}(N\text{max}(y_i))$.
 
@@ -27,6 +27,8 @@ We can systematically ignore $p_1 p_3$ edges by sweeplining the points from left
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+
+const int MAX_Y = 10;
 
 //BeginCodeSnip{Disjoint-Set Union}
 ll parent(vector<int>& top, int a){
@@ -67,7 +69,7 @@ int main() {
 	// Edges stores a list of weighted edges
 	vector<array<ll, 3>> edges;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j <= 10; j++) {
+		for (int j = 0; j <= MAX_Y; j++) {
 			if (buffer[j][2] != -1) {
 				ll dist = pow(points[i][0] - buffer[j][0],2) +
 						pow(points[i][1] - buffer[j][1],2);
