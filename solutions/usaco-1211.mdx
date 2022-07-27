@@ -5,7 +5,7 @@ title: Moo Network
 author: Jeffrey Zhang
 ---
 
-[Official Analysis](http://usaco.org/current/data/sol_prob3_gold_feb22.html)
+[Official Analysis (Java)](http://usaco.org/current/data/sol_prob3_gold_feb22.html)
 
 ## Solution
 
@@ -30,7 +30,8 @@ typedef long long ll;
 
 const int MAX_Y = 10;
 
-//BeginCodeSnip{Disjoint-Set Union}
+//BeginCodeSnip{DSU}
+
 ll parent(vector<int>& top, int a){
 	if (top[a] == a) {
 		return a;
@@ -71,8 +72,8 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j <= MAX_Y; j++) {
 			if (buffer[j][2] != -1) {
-				ll dist = pow(points[i][0] - buffer[j][0],2) +
-						pow(points[i][1] - buffer[j][1],2);
+				ll dist = pow(points[i][0] - buffer[j][0], 2) +
+						pow(points[i][1] - buffer[j][1], 2);
 				edges.push_back({dist, points[i][2], buffer[j][2]});
 			}
 		}
