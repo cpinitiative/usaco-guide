@@ -1,0 +1,115 @@
+---
+id: usaco-623
+source: USACO Gold 2016 February
+title: Fenced In
+author: Jeffrey Zhang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_fencedin_gold_feb16.html)
+
+## Solution
+
+The $n$ vertical and $m$ horizontal fences divide the large rectangular pasture into $(n+1)(m+1)$ grids. To help us better comprehend the problem, it is easier for us to visualized the input in terms of graphs: the grids themselves are the nodes, and the fence lengths of each 4 surrounding sides are the edge lengths that can be constructed to their neighboring nodes. For a cow to travel from any node to another, all we need is to construct a tree graph. And to ensure the edges picked are at a minimum, we just need to construct a minimum spanning tree, which can be solved by the [Kruskal's MST algorithm](https://usaco.guide/gold/mst#kruskals).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N\text{max}(y_i))(\text{log}(\text{max}(y_i))+\text{log}(N)))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+#define ff first
+#define ss second
+
+//BeginCodeSnip{Disjoint-Set Union}
+pii find(pii target, vector<vector<pii>>& top){
+    if (target == top[target.ff][target.ss]){
+        return target;
+    }
+    return target = find(top[target.ff][target.ss], top);
+}
+
+bool merge(pii a, pii b, vector<vector<pii>>& top, vector<vector<int>>& size){
+    a = find(a, top);
+    b = find(b, top);
+    if (a == b) {
+        return false;
+    }
+    if (size[a.ff][a.ss] < size[b.ff][b.ss]) {
+        swap(a, b);
+    }
+    top[b.ff][b.ss] = a;
+    size[a.ff][a.ss] += size[b.ff][b.ss];
+    return true;
+}
+//EndCodeSnip
+
+int main() {
+    ofstream fout("fencedin.out");
+    ifstream fin("fencedin.in");
+
+    // Sorting the fence lengths from shortest to longest
+    int xlimit, ylimit, n, m;
+    fin >> xlimit >> ylimit >> n >> m;
+    vector<int> vert(n + 1);
+    vector<int> horz(m + 1);
+    for (int i = 1; i <= n; i++) {
+        fin >> vert[i];
+    }
+    for (int i = 1; i <= m; i++) {
+        fin >> horz[i];
+    }
+    sort(vert.begin(), vert.end());
+    sort(horz.begin(), horz.end());
+    for (int i = 0; i < n; i++) {
+        vert[i] = vert[i + 1] - vert[i];
+    }
+    for (int i = 0; i < m; i++) {
+        horz[i] = horz[i + 1] - horz[i];
+    }
+    vert[n] = xlimit - vert[n];
+    horz[m] = ylimit - horz[m];
+    sort(vert.begin(), vert.end());
+    sort(horz.begin(), horz.end());
+
+    // Set up the DSU
+    vector<vector<int>> size(n + 1, vector<int>(m + 1, 1));
+    vector<vector<pii>> top(n + 1, vector<pii>(m + 1, make_pair(0, 0)));
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= m; j++) {
+            top[i][j] = make_pair(i, j);
+        }
+    }
+
+    // Perform the MST
+    ll ans = 0;
+    for (int x = 0, y = 0; x <= n || y <= m; ) {
+        if (x <= n && vert[x] < horz[y] || y > m) {
+            for (int i = 0; i < m; i++) {
+                if (merge(make_pair(x, i), make_pair(x, i + 1), top, size)) {
+                    ans += vert[x];
+                }
+            }
+            x++;
+        } else {
+            for (int i = 0; i < n; i++) {
+                if (merge(make_pair(i, y), make_pair(i + 1, y), top, size)) {
+                    ans += horz[y];
+                }
+            }
+            y++;
+        }
+    }
+
+    fout << ans << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
