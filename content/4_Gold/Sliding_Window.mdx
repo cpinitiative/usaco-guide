@@ -295,18 +295,22 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> list[int]:
 
 Method 3 from cp-algo. Not as common but nice to know!
 
+We use two stacks $s1$ and $s2$ to simulate our maximum queue. Every time we add an element to it, we push the element itself and the maximum in stack $s1$ after adding this element to $s1$. To pop out the front element from our queue, we just pop the top element from $s2$. Since elements in $s1$ are stored in the order of how we added them, i.e. the last added element is at the top of $s1$, we just have to pop all of them out and push them into the stack $s2$ when $s2$ is empty. After that, these elements in $s2$ will be in reversed order, i.e. the first added element will be at the top of $s2$, and we can pop them out as from normal stacks to simulate the dequeue operation of our queue. To find the maximum among all elements in our queue, we just have to return the maximum of both stacks, which is stored in the top element when we added it. 
+
+Then, we can solve the problem intuitively by removing the first element and adding a new element to the queue to simulate our sliding window. As each operation of our queue takes $\mathcal{O}(1)$ time, and we add each of $N$ elements once, we get a time complexity of $\mathcal{O}(N)$. 
+
 <LanguageSection>
 
 <CPPSection>
 ```cpp
 struct MaxQueue {
-	/*
+	/**
 	 * For each pair<int, int> e, e.first is the value of the element and
 	 * e.second is the maximum among all elements in that stack under element e.
 	 */
 	stack<pair<int, int>> s1, s2;
 
-	/*
+	/**
 	 * Get the maximum element in the MaxQueue.
 	 * It is the maximum of both stacks which are stored in s.top().second.
 	 */
@@ -320,7 +324,7 @@ struct MaxQueue {
 		return max(s1.top().second, s2.top().second);
 	}
 
-	/*
+	/**
 	 * Add a new element into our MaxQueue. We add the value of this
 	 * element itself and the maximum element in the stack s1 after adding.
 	 */
@@ -328,14 +332,9 @@ struct MaxQueue {
 		s1.push({val, max(val, (s1.empty() ? val : s1.top().second))});
 	}
 
-	/*
-	 * Remove the first element from our MaxQueue by poping the top element from
-	 * s2. Since elements in s1 are stored in the order of how we added them, i.e.
-	 * the last added element is at the top of s1, we just have to pop all of them
-	 * out and push them into the stack s2. After that, these elements in s2 will
-	 * be in reversed order, i.e. the first added element will be at the top of s2
-	 * and we can pop them out as from normal stacks. We only move elements from
-	 * s1 to s2 when s2 is empty.
+	/**
+	 * Remove the first element from our MaxQueue by poping the top 
+	 * element from s2. 
 	 */
 	void dequeue() {
 		if (s2.empty()) {
@@ -409,7 +408,7 @@ class Solution {
 	}
 
 	private static class MaxQueue {
-		/*
+		/**
 		 * For each Pair e, e.a is the value of the element and
 		 * e.b is the maximum among all elements in that stack under element e.
 		 */
@@ -420,7 +419,7 @@ class Solution {
 			s2 = new Stack<>();
 		}
 
-		/*
+		/**
 		 * Get the maximum element in the MaxQueue.
 		 * It is the maximum of both stacks which are stored in s.peek().b.
 		 */
@@ -434,7 +433,7 @@ class Solution {
 			return Math.max(s1.peek().b, s2.peek().b);
 		}
 
-		/*
+		/**
 		 * Add a new element into our MaxQueue. We add the value of this
 		 * element itself and the maximum element in the stack s1 after adding.
 		 */
@@ -442,14 +441,9 @@ class Solution {
 			s1.push(new Pair(val, s1.empty() ? val : Math.max(val, s1.peek().b)));
 		}
 
-		/*
-		 * Remove the first element from our MaxQueue by poping the top element from
-		 * s2. Since elements in s1 are stored in the order of how we added them, i.e.
-		 * the last added element is at the top of s1, we just have to pop all of them
-		 * out and push them into the stack s2. After that, these elements in s2 will
-		 * be in reversed order, i.e. the first added element will be at the top of s2
-		 * and we can pop them out as from normal stacks. We only move elements from
-		 * s1 to s2 when s2 is empty.
+		/**
+		 * Remove the first element from our MaxQueue by poping the top 
+		 * element from s2. 
 		 */
 		public void dequeue() {
 			if (s2.empty()) {
