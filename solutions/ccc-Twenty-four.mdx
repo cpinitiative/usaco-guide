@@ -22,6 +22,8 @@ The arithmetic expression with the maximum value that is not greater than 24 is 
 
 using namespace std;
 
+const int INF = (int) 1e9;
+
 // Function that takes in two numbers and an operation and returns the result.
 int operation(int op, int num1, int num2) {
 	switch (op) {
@@ -34,12 +36,12 @@ int operation(int op, int num1, int num2) {
 		case 3: {
 			// The divisor cannot be 0 and the quotient must be a whole number.
 			if (num2 == 0 || num1 % num2) {
-				return INT_MIN;
+				return -INF;
 			}
 			return num1 / num2;
 		}
 	}
-	return INT_MIN;
+	return -INF;
 }
 
 int main() {
@@ -53,7 +55,7 @@ int main() {
 		}
 		sort(hand.begin(), hand.end());
 
-		int ans = INT_MIN;
+		int ans = -INF;
 		// Start complete search.
 		do {
 			// Case 1: ((( ) ) )
@@ -62,17 +64,17 @@ int main() {
 					for (int k = 0; k < 4; k++) {
 						int first = operation(i, hand[0], hand[1]);
 						// If the operation is invalid, continue;
-						if (first == INT_MIN) {
+						if (first == -INF) {
 							continue;
 						}
 
 						int second = operation(j, first, hand[2]);
-						if (second == INT_MIN) {
+						if (second == -INF) {
 							continue;
 						}
 
 						int third = operation(k, second, hand[3]);
-						if (third == INT_MIN) {
+						if (third == -INF) {
 							continue;
 						}
 
@@ -88,17 +90,17 @@ int main() {
 				for (int j = 0; j < 4; j++) {
 					for (int k = 0; k < 4; k++) {
 						int first = operation(i, hand[0], hand[1]);
-						if (first == INT_MIN) {
+						if (first == -INF) {
 							continue;
 						}
 
 						int second = operation(j, hand[2], hand[3]);
-						if (second == INT_MIN) {
+						if (second == -INF) {
 							continue;
 						}
 
 						int third = operation(k, first, second);
-						if (third == INT_MIN) {
+						if (third == -INF) {
 							continue;
 						}
 
