@@ -87,9 +87,9 @@ export const Authors: Author[] = [
   {
     photo: 'darren',
     name: 'Darren Yao',
-    title: 'Core Team',
+    title: 'Co-Founder',
     blurb:
-      'Darren Yao is a USACO Platinum competitor and author of the textbook "An Introduction to USACO."',
+      'Darren Yao is a USACO Platinum competitor.',
     website: 'http://darrenyao.com/',
     email: 'darren.yao@gmail.com',
     github: 'darren-yao',
@@ -97,17 +97,27 @@ export const Authors: Author[] = [
   {
     photo: 'siyong1',
     name: 'Siyong Huang',
-    title: 'Core Team',
+    title: 'Co-Founder',
     blurb:
       'Siyong Huang is an IOI gold medalist and three-time USACO Finalist.',
     codeforces: 'frodakcin',
     github: 'frodakcin',
   },
   {
+    photo: 'nathanc',
+    name: 'Nathan Chen',
+    title: 'Co-Founder',
+    blurb:
+      'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently.',
+    codeforces: 'nchn27',
+    github: 'nchn27',
+    email: 'nchn27@gmail.com',
+  },
+  {
     photo: 'andi',
     name: 'Andi Qu',
-    title: 'Core Team',
-    blurb: 'Andi Qu is an IOI and IMO bronze medalist.',
+    title: 'Co-Founder',
+    blurb: 'Andi Qu is an IOI and IMO bronze medalist, and part of the MIT Class of 2025.',
     codeforces: 'dolphingarlic',
     github: 'dolphingarlic',
     email: 'andi@andiqu.com',
@@ -154,15 +164,5 @@ export const Authors: Author[] = [
     github: 'sanspapyrus683',
     codeforces: 'sanspapyrus683',
     reddit: 'sanspapyrus683',
-  },
-  {
-    photo: 'nathanc',
-    name: 'Nathan Chen',
-    title: 'Former Core Team',
-    blurb:
-      'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently.',
-    codeforces: 'nchn27',
-    github: 'nchn27',
-    email: 'nchn27@gmail.com',
   },
 ];

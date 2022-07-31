@@ -2,55 +2,54 @@
 id: usaco-666
 source: USACO Silver 2016 December
 title: Counting Haybales
-author: Albert Zhu
+author: Albert Zhu, Kevin Sheng
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_haybales_silver_dec16.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_haybales_silver_dec16.html)
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}((N+Q)\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-void setIO(string prob="") {
-	if (!prob.empty()) {
-		freopen((prob + ".in").c_str(), "r", stdin);
-		freopen((prob + ".out").c_str(), "w", stdout);
-	}
-}
-
-const int MAX_N = 1e5;
-
-int haybales[MAX_N];
-
 int main() {
-	setIO("haybales");
+	freopen("haybales.in", "r", stdin);
 	
-	int n, q;
-	cin >> n >> q;
-	for (int i = 0; i < n; i++) cin >> haybales[i];
+	int bale_num;
+	int query_num;
+	cin >> bale_num >> query_num;
+	vector<int> haybales(bale_num);
+	for (int i = 0; i < bale_num; i++) {
+		cin >> haybales[i];
+	}
 	
-	sort(haybales, haybales + n);
-	for (int i = 0; i < q; i++) {
-		int a, b;
-		cin >> a >> b;
-		int left = lower_bound(haybales, haybales + n, a) - haybales;
-		int right = upper_bound(haybales, haybales + n, b) - haybales;
+	sort(haybales.begin(), haybales.end());
+
+	freopen("haybales.out", "w", stdout);
+	for (int i = 0; i < query_num; i++) {
+		int start, end;
+		cin >> start >> end;
+
+		int left = lower_bound(
+			haybales.begin(), haybales.end(), start
+		) - haybales.begin();
+		
+		int right = upper_bound(
+			haybales.begin(), haybales.end(), end
+		) - haybales.begin();
+		
 		cout << right - left << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -60,52 +59,82 @@ import java.io.*;
 public class Haybales {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("haybales.in"));
-		PrintWriter pw = new PrintWriter("haybales.out");
-		StringTokenizer st = new StringTokenizer(in.readLine());
 		
-		int n = Integer.parseInt(st.nextToken());
-		int q = Integer.parseInt(st.nextToken());
+		StringTokenizer initial = new StringTokenizer(in.readLine());
+		int baleNum = Integer.parseInt(initial.nextToken());
+		int queryNum = Integer.parseInt(initial.nextToken());
 		
-		int haybales[] = new int[n];
-		st = new StringTokenizer(in.readLine());
-		for (int i = 0; i < n; i++) {
-			haybales[i] = Integer.parseInt(st.nextToken());
+		int haybales[] = new int[baleNum];
+		StringTokenizer baleST = new StringTokenizer(in.readLine());
+		for (int i = 0; i < baleNum; i++) {
+			haybales[i] = Integer.parseInt(baleST.nextToken());
 		}
 		
 		Arrays.sort(haybales);
-		for (int i = 0; i < q; i++) {
-			st = new StringTokenizer(in.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
+
+		PrintWriter pw = new PrintWriter("haybales.out");
+		for (int i = 0; i < queryNum; i++) {
+			StringTokenizer query = new StringTokenizer(in.readLine());
+			int start = Integer.parseInt(query.nextToken());
+			int end = Integer.parseInt(query.nextToken());
 			
-			int lo = 0, hi = n;
-			while (lo < hi) {
-				int mid = lo + (hi - lo) / 2;
-				if (haybales[mid] >= a)
-					hi = mid;
-				else
-					lo = mid + 1;
-			}
-			int left = lo;
-			
-			lo = 0;
-			hi = n;
-			while (lo < hi) {
-				int mid = lo + (hi - lo) / 2;
-				if (haybales[mid] > b)
-					hi = mid;
-				else
-				lo = mid + 1;
-			}
-			int right = lo;
+			int left = lowerBound(haybales, start);
+			int right = upperBound(haybales, end);
 			
 			pw.println(right - left);
 		}
 		pw.close();
 	}
+
+	static int lowerBound(int[] arr, int x) {
+		int lo = 0;
+		int hi = arr.length;
+		while (lo < hi) {
+			int mid = lo + (hi - lo) / 2;
+			if (arr[mid] >= x) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		return lo;
+	}
+
+	static int upperBound(int[] arr, int x) {
+		int lo = 0;
+		int hi = arr.length;
+		while (lo < hi) {
+			int mid = lo + (hi - lo) / 2;
+			if (arr[mid] > x) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		return lo;
+	}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+from bisect import bisect_left, bisect_right
+
+with open('haybales.in') as read:
+	bale_num, query_num = [int(i) for i in read.readline().split()]
+	haybales = sorted(int(i) for i in read.readline().split())
+
+	ans = []
+	for _ in range(query_num):
+		start, end = [int(i) for i in read.readline().split()]
+		left = bisect_left(haybales, start)
+		right = bisect_right(haybales, end)
+		ans.append(right - left)
+
+print('\n'.join(str(a) for a in ans), file=open('haybales.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
