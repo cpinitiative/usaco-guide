@@ -50,18 +50,20 @@ print(product)
 ```cpp
 
 #include<bits/stdc++.h>
-
 using namespace std;
+
 int main(){
 	int n;
 	cin >> n;
-	vector<int> cows(n), stalls(n), possible_places(n);
-	for(int i=0; i<n; i++){
-		cin>>cows[i];
+	vector<int> cows(n);
+	vector<int> stalls(n);
+	vector<int> possible_places(n);
+	for (int i = 0; i < n; i++){
+		cin >> cows[i];
 	}
 	
-	for(int i=0; i<n; i++){
-		cin>>stalls[i];
+	for (int i = 0; i < n; i++) {
+		cin >> stalls[i];
 	}
 	
 	sort(cows.begin(), cows.end());
@@ -69,9 +71,9 @@ int main(){
 	
 	//Create a list containing the number of stalls each cow can use.
 	
-	for(int i=0; i<n; i++){
-		for(int j=0; j<n; j++){
-			if(cows[i]<=stalls[j]){
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if(cows[i] <= stalls[j]){
 				possible_places[i] += 1;
 			}
 		}
@@ -81,16 +83,15 @@ int main(){
 	long long int product=1;
 	
 	/*
-	 For each cow, find out the number of stalls it can use in a valid permutation
-	 Use the formula provided in the explanation
-	 Multiply the cumulative product by this value
+	  * For each cow, find out the number of stalls it can use in a valid permutation
+	  * Use the formula provided in the explanation
+	  * Multiply the cumulative product by this value
 	*/
-	for(int i=n-1; i>=0; i--){
+	for (int i = n-1; i >= 0; i--) {
 		product *= (possible_places[i] - (n - i - 1));
 	}
 	
 	cout << product << endl;
-	return 0;
 }
 
 ```
