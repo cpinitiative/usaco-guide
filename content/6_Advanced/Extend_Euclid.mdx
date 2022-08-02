@@ -42,7 +42,8 @@ def euclid(a: int, b: int) -> int:
     """Returns integer representing GCD of two positive, non-zero numeric values.
     """
 
-    assert int(a) > 0 and int(b) > 0, "Arguments must be positive, non-zero numeric values."
+    assert int(a) > 0 and int(b) > 0, \
+        "Arguments must be positive, non-zero numeric values."
 	
     def swap(x, y):
         tmp = x
@@ -50,10 +51,9 @@ def euclid(a: int, b: int) -> int:
         y = tmp
         return x, y
 
-    # Do while 'b' value is greater than zero.
-    while b > 0:
-        # k == floor division of 'a' over 'b.'
+    while b > 0: # run Euclidean algo
         k = a // b
+	# subtract multiples of one equation from the other.
         a -= b * k
         a, b = swap(a, b)
 
@@ -132,25 +132,27 @@ def extend_euclid(a: int, b: int) -> list[int]:
     assert int(a) > 0 and int(b) > 0, \
         "Arguments must be positive, non-zero numeric values."
 
-    xarr: list[int] = [1, 0, int(a)]
-    yarr: list[int] = [0, 1, int(b)]
+    x_arr: list[int] = [1, 0, int(a)]
+    y_arr: list[int] = [0, 1, int(b)]
     q: int = -1
 
     def swap(x, y):
         tmp = x
         x = y
         y = tmp
-	return x, y
+        return x, y
 
-    # Run and continue for 'b' > 0.
-    while yarr[2] > 0:
-        q = xarr[2] // yarr[2]
-        # Update all three values.
+    # We know that:
+    #   (1*a) + (0*b) == a
+    #   (0*a) + (1*b) == b
+    while y_arr[2] > 0: # run extended Euclidean algo.
+        q = x_arr[2] // y_arr[2]
         for i in range(3):
-            xarr[i] -= yarr[i] * q
-        xarr, yarr = swap(xarr, yarr)
+	    # keep subtracting multiple of one equation from the other.
+            x_arr[i] -= y_arr[i] * q
+        x_arr, y_arr = swap(x_arr, y_arr)
 
-    return xarr
+    return x_arr # (x[0]*a) + (x[1]*b) = x[2], x[2] = gcd(a, b)
 ```
 
 </PySection>
@@ -176,7 +178,7 @@ ll euclid(ll a, ll b) {
 ```py
 
 def euclid(a: int, b: int) -> int:
-	"""Recursive Euclidean GCD."""
+    """Recursive Euclidean GCD."""
     if not b:
         return a
     return euclid(b, a % b)
