@@ -2,7 +2,7 @@
 id: cses-1634
 source: CSES
 title: Minimizing Coins
-author: Michael Cao, Sofia Yang
+author: Michael Cao, Sofia Yang, Paul Chen
 ---
 
 In this problem, we're asked the minimum number of coins of distinct weights
@@ -152,5 +152,27 @@ public class cses1634 {
 
 ```
 </JavaSection>
+
+<PySection>
+```python
+INF = 1000000000
+
+n, x = map(int, input().split())
+c = list(map(int, input().split()))
+
+dp = [INF] * (x + 1)
+dp[0] = 0
+
+for i in range(x):
+	if i == INF:
+		continue
+	for coin in c:
+		if i + coin <= x:
+			dp[i + coin] = min(dp[i + coin], dp[i] + 1)
+
+
+print(dp[x] if dp[x] != INF else -1)
+```
+</PySection>
 
 </LanguageSection>
