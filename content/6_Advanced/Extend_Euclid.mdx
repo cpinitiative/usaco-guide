@@ -42,24 +42,22 @@ def euclid(a: int, b: int) -> int:
     """Returns integer representing GCD of two positive, non-zero numeric values.
     """
 
-    # Validate arguments.
     assert int(a) > 0 and int(b) > 0, "Arguments must be positive, non-zero numeric values."
-
-    # Create tuple object from 'a' and 'b.'
-    ab: list[int] = [int(a), int(b)]
-
-    def swap(ab: list[int]) -> None:
-        ab[0], ab[1] = ab[1], ab[0]
+	
+    def swap(x, y):
+        tmp = x
+        x = y
+        y = tmp
+        return x, y
 
     # Do while 'b' value is greater than zero.
-    while ab[1] > 0:
+    while b > 0:
         # k == floor division of 'a' over 'b.'
-        k = ab[0] // ab[1]
-        ab[0] -= ab[1] * k
-        swap(ab)
+        k = a // b
+        a -= b * k
+        a, b = swap(a, b)
 
-    # Return 'a' value
-    return ab[0]
+    return a
 ```
 
 </PySection>
@@ -131,7 +129,6 @@ def extend_euclid(a: int, b: int) -> list[int]:
     GCD of two positive, non-zero numeric values.
     """
 
-    # Validate arguments.
     assert int(a) > 0 and int(b) > 0, \
         "Arguments must be positive, non-zero numeric values."
 
@@ -139,10 +136,11 @@ def extend_euclid(a: int, b: int) -> list[int]:
     yarr: list[int] = [0, 1, int(b)]
     q: int = -1
 
-    def swap(xarr, yarr, t = [0, 0, 0]):
-        t[:] = xarr
-        xarr[:] = yarr
-        yarr[:] = t
+    def swap(x, y):
+        tmp = x
+        x = y
+        y = tmp
+	return x, y
 
     # Run and continue for 'b' > 0.
     while yarr[2] > 0:
@@ -150,9 +148,8 @@ def extend_euclid(a: int, b: int) -> list[int]:
         # Update all three values.
         for i in range(3):
             xarr[i] -= yarr[i] * q
-        swap(xarr, yarr)
+        xarr, yarr = swap(xarr, yarr)
 
-    # Return 'a' list as output.
     return xarr
 ```
 
