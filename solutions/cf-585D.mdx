@@ -7,7 +7,7 @@ author: Albert Ye
 
 [Official Analysis](https://codeforces.com/blog/entry/20898)
 
-In sum, we notice that the size of the array is 25. A naive brute-force would take $\mathcal O(3^n)$ which is too slow. But, a meet-in-the-middle solution would take at most $\mathcal O(\sqrt{3^n} \log (\sqrt{3^n}))$, which is a significant optimization. 
+We notice that the size of the array is 25. A naive brute-force would take $\mathcal O(3^n)$ which is too slow because $n = 25$ and $3^25 = 8.47 \cdot 10^10 > 5 \cdot 10^9$. But, a meet-in-the-middle solution would take at most $\mathcal O(\sqrt{3^n} \log (\sqrt{3^n}))$, which is a significant optimization. 
 
 ## Implementation
 
@@ -21,58 +21,57 @@ using namespace std;
 const int MAXN = 25;
 
 int n, mid;
+
 // the added / removed approval from each hero for each action
+// hero 0 = Lynn
+// hero 1 = Meliana
+// hero 2 = Worrigan
+// henceforth referred to as L,M,W
 int d[MAXN][3];
 map<pair<int, int>, pair<int, int> > m;
 
-// each recursion has the index we're at, the approvals we have per hero, and the steps we took to get here
-void rec1(int i, int d0, int d1, int d2, int opt)
-{
-	if(i >= mid)
-	{
-		// find the largest happiness you can get for the first half
-		if(m.count({d0-d1, d0-d2}))
-		{
-			if(m[{d0-d1, d0-d2}].first < d0) m[{d0-d1, d0-d2}] = {d0, opt};
-		} else 
-		{
-			m[{d0-d1, d0-d2}] = {d0, opt};
+// in each recursive function, we store i, the approval of heroes L, M, W, and then an integer saving our decision path
+// recur
+void rec1(int i, int app_L, int app_M, int app_W, int opt) {
+	if(i >= mid) {
+		// find all arrangements of ppl in the first half
+		if(m.count({app_L - app_M, app_L - app_W})) {
+			if(m[{app_L - app_M, app_L - app_W}].first < app_L) m[{app_L - app_M, app_L - app_W}] = {app_L, opt};
+		} else {
+			m[{app_L - app_M, app_L - app_W}] = {app_L, opt};
 		}
 		return;
 	}
-	rec1(i+1, d0+d[i][0], d1+d[i][1], d2, opt*3);
-	rec1(i+1, d0+d[i][0], d1, d2+d[i][2], opt*3+1);
-	rec1(i+1, d0, d1+d[i][1], d2+d[i][2], opt*3+2);
+	rec1(i+1, app_L + d[i][0], app_M + d[i][1], app_W, opt * 3); // 0 - take L, M
+	rec1(i+1, app_L + d[i][0], app_M, app_W + d[i][2], opt * 3 + 1); // 1 - take L, W
+	rec1(i+1, app_L, app_M + d[i][1], app_W + d[i][2], opt * 3 + 2); // 2 - take M, W
 }
 
 const int INF = 1e9+7;
 int maxs=-INF, lopt=0, ropt=0; // max sum and the optimal decision paths
-void rec2(int i, int d0, int d1, int d2, int opt)
-{
-	if(i < mid)
-	{
-		if(m.find({d1-d0, d2-d0}) != m.end())
-		{
-			if(m[{d1-d0, d2-d0}].first + d0 > maxs)
-			{
-				maxs = m[{d1-d0, d2-d0}].first + d0;
-				lopt = m[{d1-d0, d2-d0}].second;
+
+// recursion for the second half
+void rec2(int i, int app_L, int app_M, int app_W, int opt) {
+	if(i < mid) {
+		// want to make up for the difference offsets calculated in the first half
+		if(m.find({app_M - app_L, app_W - app_L}) != m.end()) {
+			if(m[{app_M - app_L, app_W - app_L}].first + app_L > maxs) {
+				maxs = m[{app_M - app_L, app_W - app_L}].first + app_L;
+				lopt = m[{app_M - app_L, app_W - app_L}].second;
 				ropt = opt;
 			}
 		}
 		return;
 	}
-	rec2(i-1, d0+d[i][0], d1+d[i][1], d2, opt*3);
-	rec2(i-1, d0+d[i][0], d1, d2+d[i][2], opt*3+1);
-	rec2(i-1, d0, d1+d[i][1], d2+d[i][2], opt*3+2);
+	rec2(i-1, app_L + d[i][0], app_M + d[i][1], app_W, opt * 3);
+	rec2(i-1, app_L + d[i][0], app_M, app_W + d[i][2], opt * 3 + 1);
+	rec2(i-1, app_L, app_M + d[i][1], app_W + d[i][2], opt * 3 + 2);
 }
 
-string to[3] = {"LM", "LW", "MW"};
-int main()
-{
+string to[3] = {"LM", "LW", "MW"}; // same order as desc'd in rec1
+int main() {
 	cin >> n;
-	for(int i = 0; i < n; i++)
-	{
+	for(int i = 0; i < n; i++) {
 		cin >> d[i][0] >> d[i][1] >> d[i][2];
 	}
 	mid = n/2;
@@ -80,27 +79,22 @@ int main()
 	rec1(0, 0, 0, 0, 0);
 	// n-1 -> mid
 	rec2(n-1, 0, 0, 0, 0);
-	if(maxs > -INF)
-	{
+	if(maxs > -INF) {
 		// retrace steps
 		vector<int> r1, r2;
-		for(int i = 0; i < n/2; i++)
-		{
+		for(int i = 0; i < n / 2; i++) {
 			r1.push_back(lopt % 3);
 			lopt /= 3;
 		}
 		reverse(r1.begin(), r1.end());
-		for(int x : r1)
-		{
+		for(int x : r1) {
 			cout << to[x] << endl;
 		}
-		for(int i = 0; i < n-n/2; i++)
-		{
+		for(int i = 0; i < n - n / 2; i++) {
 			cout << to[ropt % 3] << endl;
 			ropt /= 3;
 		}
-	} else 
-	{
+	} else {
 		cout << "Impossible" << endl;
 	}
 }
