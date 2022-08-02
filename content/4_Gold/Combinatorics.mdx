@@ -109,7 +109,7 @@ A naive implementation of this would use a recursive formula, like below:
 
 
 ```cpp
-/** Computes nCr mod p using naive recursion */
+/** Computes nCk mod p using naive recursion */
 int binomial(int n, int k, int p) {
 	if (k == 0 || k == n) {
 		return 1;
@@ -126,7 +126,7 @@ Additionally, we can optimize this from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$
 <CPPSection>
 
 ```cpp
-/** Computes nCr mod p using dynamic programming */
+/** Computes nCk mod p using dynamic programming */
 int binomial(int n, int k, int p) {
 	// dp[i][j] stores iCj
 	vector<vector<int>> dp(n + 1, vector<int> (k + 1, 0));
@@ -144,7 +144,7 @@ int binomial(int n, int k, int p) {
 		 * to choose i elements from a set of i elements
 		 * (choose every element in the set)
 		 */
-		if (k <= i) {
+		if (i <= k) {
 			dp[i][i] = 1; 
 		}
 	}
