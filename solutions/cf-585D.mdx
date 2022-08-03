@@ -7,7 +7,27 @@ author: Albert Ye
 
 [Official Analysis](https://codeforces.com/blog/entry/20898)
 
-We notice that the size of the array is 25. A naive brute-force would take $\mathcal O(3^n)$ which is too slow because $n = 25$ and $3^25 = 8.47 \cdot 10^10 > 5 \cdot 10^9$. But, a meet-in-the-middle solution would take at most $\mathcal O(\sqrt{3^n} \log (\sqrt{3^n}))$, which is a significant optimization. 
+We notice that the size of the array is 25. A naive brute-force would take at least $\mathcal O(3^n)$ which is too slow
+because $n = 25$ and $3^25 = 8.47 \cdot 10^10 > 5 \cdot 10^9$. 
+
+But, a meet-in-the-middle solution would take at most $\mathcal O(\sqrt{3^n} \log (\sqrt{3^n}))$,
+which is a significant optimization. Let $a_l, a_m, a_w$ be the approvals of the three heros.
+We run a brute-force solution on the left half of the array and store the differences $a_l-a_m, a_l-a_w$
+as the keys of a map. These differences point to the approval value of one of the hero (let's just say $a_l$
+for simplicity) and the current decision path.
+
+We then run a similar brute force over the right half of the array. Except this time, we try to make the final 
+differences $a_l-a_m, a_l-a_w$ equal 0. This means that if $a_l-a_m = p$ and $a_l-a_w = q$ in the left half, then
+$a_l-a_m = -p$ and $a_l-a_w = -q$ must be true in the right half. For each pair of differences $(a_l-a_m, a_l-a_w)$
+in the right half, we try to find an equivalent pair $(a_m-a_l, a_w-a_l)$ in the left half.
+
+If we find such a pair, we check the total approval $a_l$, which is guaranteed to be equal to $a_m, a_w$ if we 
+perform the steps given in the left half and then the steps given in the right half. We try to maximize $a_l$.
+
+Since we run $\mathcal O(3^k \log 3^k)$ brute force on each half, we have $k = \frac{n}{2}$. We add a log factor to this
+because the `map` data structure adds $\mathcal O(\log n)$ time. Therefore, the total complexity is 
+$\mathcal O(3^{\frac n2}) = \mathcal O(\sqrt{3^n} \log \sqrt{3^n})$, which fits the boundaries.
+
 
 ## Implementation
 
@@ -22,50 +42,51 @@ const int MAXN = 25;
 
 int n, mid;
 
-// the added / removed approval from each hero for each action
-// hero 0 = Lynn
-// hero 1 = Meliana
-// hero 2 = Worrigan
-// henceforth referred to as L,M,W
+/* the added / removed approval from each hero for each action
+ * hero 0 = Lynn
+ * hero 1 = Meliana
+ * hero 2 = Worrigan
+ * henceforth referred to as L,M,W
+ */
 int d[MAXN][3];
 map<pair<int, int>, pair<int, int> > m;
 
 // in each recursive function, we store i, the approval of heroes L, M, W, and then an integer saving our decision path
 // recur
-void rec1(int i, int app_L, int app_M, int app_W, int opt) {
+void rec1(int i, int app_L, int app_M, int app_W, int path) {
 	if(i >= mid) {
 		// find all arrangements of ppl in the first half
 		if(m.count({app_L - app_M, app_L - app_W})) {
-			if(m[{app_L - app_M, app_L - app_W}].first < app_L) m[{app_L - app_M, app_L - app_W}] = {app_L, opt};
+			if(m[{app_L - app_M, app_L - app_W}].first < app_L) m[{app_L - app_M, app_L - app_W}] = {app_L, path};
 		} else {
-			m[{app_L - app_M, app_L - app_W}] = {app_L, opt};
+			m[{app_L - app_M, app_L - app_W}] = {app_L, path};
 		}
 		return;
 	}
-	rec1(i+1, app_L + d[i][0], app_M + d[i][1], app_W, opt * 3); // 0 - take L, M
-	rec1(i+1, app_L + d[i][0], app_M, app_W + d[i][2], opt * 3 + 1); // 1 - take L, W
-	rec1(i+1, app_L, app_M + d[i][1], app_W + d[i][2], opt * 3 + 2); // 2 - take M, W
+	rec1(i+1, app_L + d[i][0], app_M + d[i][1], app_W, path * 3); // 0 - take L, M
+	rec1(i+1, app_L + d[i][0], app_M, app_W + d[i][2], path * 3 + 1); // 1 - take L, W
+	rec1(i+1, app_L, app_M + d[i][1], app_W + d[i][2], path * 3 + 2); // 2 - take M, W
 }
 
 const int INF = 1e9+7;
-int maxs=-INF, lopt=0, ropt=0; // max sum and the optimal decision paths
+int maxs=-INF, left_path=0, right_path=0; // max sum and the optimal decision paths for each half
 
 // recursion for the second half
-void rec2(int i, int app_L, int app_M, int app_W, int opt) {
+void rec2(int i, int app_L, int app_M, int app_W, int path) {
 	if(i < mid) {
 		// want to make up for the difference offsets calculated in the first half
 		if(m.find({app_M - app_L, app_W - app_L}) != m.end()) {
 			if(m[{app_M - app_L, app_W - app_L}].first + app_L > maxs) {
 				maxs = m[{app_M - app_L, app_W - app_L}].first + app_L;
-				lopt = m[{app_M - app_L, app_W - app_L}].second;
-				ropt = opt;
+				left_path = m[{app_M - app_L, app_W - app_L}].second;
+				right_path = path;
 			}
 		}
 		return;
 	}
-	rec2(i-1, app_L + d[i][0], app_M + d[i][1], app_W, opt * 3);
-	rec2(i-1, app_L + d[i][0], app_M, app_W + d[i][2], opt * 3 + 1);
-	rec2(i-1, app_L, app_M + d[i][1], app_W + d[i][2], opt * 3 + 2);
+	rec2(i-1, app_L + d[i][0], app_M + d[i][1], app_W, path * 3);
+	rec2(i-1, app_L + d[i][0], app_M, app_W + d[i][2], path * 3 + 1);
+	rec2(i-1, app_L, app_M + d[i][1], app_W + d[i][2], path * 3 + 2);
 }
 
 string to[3] = {"LM", "LW", "MW"}; // same order as desc'd in rec1
@@ -80,19 +101,20 @@ int main() {
 	// n-1 -> mid
 	rec2(n-1, 0, 0, 0, 0);
 	if(maxs > -INF) {
-		// retrace steps
-		vector<int> r1, r2;
+		// retrace the left side
+		vector<int> retrace_left;
 		for(int i = 0; i < n / 2; i++) {
-			r1.push_back(lopt % 3);
-			lopt /= 3;
+			retrace_left.push_back(left_path % 3);
+			left_path /= 3;
 		}
-		reverse(r1.begin(), r1.end());
-		for(int x : r1) {
+		reverse(retrace_left.begin(), retrace_left.end());
+		for(int x : retrace_left) {
 			cout << to[x] << endl;
 		}
+		// retrace the right side
 		for(int i = 0; i < n - n / 2; i++) {
-			cout << to[ropt % 3] << endl;
-			ropt /= 3;
+			cout << to[right_path % 3] << endl;
+			right_path /= 3;
 		}
 	} else {
 		cout << "Impossible" << endl;
