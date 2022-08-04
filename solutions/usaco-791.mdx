@@ -1,3 +1,13 @@
+---
+id: usaco-592
+source: USACO Gold 2018 January
+title: Stamp Painting
+author: Aakash Gokhale
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_spainting_gold_jan18.html)
+
+## Solution
 
 This is a similar solution to the official editorial but uses a segment tree for the transitions instead. I highly recommend reading the official editorial in addition to this solution.
 
@@ -10,7 +20,15 @@ $$dp[x] = m^x \textit{ if } x < k$$
 
 $$dp[x] = (m - 1) \cdot \sum_{i=x-k+1}^{n-1} dp[i] \textit{ if } x \ge k$$
 
-To compute the transitions, we can use a segment tree. We can subtract $dp[n]$ from $m^n$ (total number of paintings) to get the number of valid paintings.
+To compute the second type of transition, we can use a segment tree. We can subtract $dp[n]$ from $m^n$ (total number of paintings) to get the number of valid paintings.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log(N))$
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -76,3 +94,7 @@ int main() {
   cout << (bi_pow(m, n) + MOD - dp.query(n, n)) % MOD << endl;
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
