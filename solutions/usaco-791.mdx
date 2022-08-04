@@ -82,10 +82,10 @@ int main() {
 	dp.upd(1, m);
 	for (int i = 2; i <= n; i++) {
 		ll a;
-		if (i < k)
-			a = bi_pow(m, i); // If i is less than k, it dp[i] will be a power of m
-		else
-			a = (m - 1) * dp.query(max(1, i - (int) k + 1), i - 1) % MOD; // Otherwise, apply the dp-recurrence
+		if (i < k) // If i is less than k, it dp[i] will be a power of m
+			a = bi_pow(m, i);
+		else // Otherwise, apply the second dp formula
+			a = (m - 1) * dp.query(max(1, i - (int) k + 1), i - 1) % MOD;
 		dp.upd(i, a);
 	}
 	// Subtract dp[n] from the total number of segments
