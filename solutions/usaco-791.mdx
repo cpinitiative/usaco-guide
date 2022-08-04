@@ -13,12 +13,12 @@ This is a similar solution to the official editorial but uses a segment tree for
 
 Notice the constraints required to make an ordering of stamps valid. There must be at least one segment of length k or longer. We can work backwards starting from this segment. Remove this segment of length $k$. Then we can remove the segments to the left and right of it because even if there aren't longer than $k$, we can assume that they overlapped with the previous segment we removed. We can remove the whole painting like this.
 
-Now we just need to count the number of orderings with a contiguous segment of length k with all the same color. Instead of this, we can use complementary counting and count the opposite instead. We can do this with dynamic programming. Let $dp[i]$ be the number of orderings for the first $i$ characters. When $i$ is less than $k$, $dp[i] = m^i$ since the first $i$ can be any of the $m$ colors. Notice that we can add a segment of length of up to $k - 1$ that is of a single color to the end of a valid ordering. This segment can have $m - 1$ colors (we can't choose the color that corresponds to the previous segment because the two segments combined could become longer than $k$). Thus we can state the following recurrences.
+Now we just need to count the number of orderings with a contiguous segment of length k with all the same color. Instead of this, we can use complementary counting and count the opposite instead. We can do this with dynamic programming. Let $dp[i]$ be the number of orderings for the first $i$ characters. When $i$ is less than $k$, $dp[i] = m^i$ since the first $i$ characters can be any of the $m$ colors. Notice that we can add a segment of length of up to $k - 1$ of a single color to the end of a valid ordering. This segment can have $m - 1$ colors (we can't choose the color that corresponds to the previous segment because the two segments combined could become longer than $k$). Thus we can state the following recurrences.
 
-$$dp[x] = m^x \textit{ if } x < k$$
+$$dp[x] = m^x \textit{  if  } x < k$$
 
 
-$$dp[x] = (m - 1) \cdot \sum_{i=x-k+1}^{n-1} dp[i] \textit{ if } x \ge k$$
+$$dp[x] = (m - 1) \cdot \sum_{i=x-k+1}^{n-1} dp[i] \textit{  if  } x \ge k$$
 
 To compute the second type of transition, we can use a segment tree. We can subtract $dp[n]$ from $m^n$ (total number of paintings) to get the number of valid paintings.
 
