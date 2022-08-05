@@ -63,7 +63,11 @@ template <class T> struct SegTree {
 ll bi_pow(ll a, ll b) {
 	ll ans = 1;
 	while (b) {
-		if (b&1) ans = ans * a % MOD; a = a * a % MOD; b /= 2;
+		if (b&1) {
+			ans = ans * a % MOD;
+		}
+		a = a * a % MOD;
+		b /= 2;
 	}
 	return ans;
 }
@@ -79,10 +83,11 @@ int main() {
 	
 	for (int i = 1; i <= n; i++) {
 		ll a;
-		if (i < k) // If i is less than k, dp[i] will be a power of m
+		if (i < k) { // If i is less than k, dp[i] will be a power of m
 			a = bi_pow(m, i);
-		else // Otherwise, apply the second dp formula
+		} else { // Otherwise, apply the second dp formula
 			a = (m - 1) * dp.query(max(1, i - (int) k + 1), i - 1) % MOD;
+		}
 		dp.upd(i, a);
 	}
 	// Subtract dp[n] from the total number of segments
