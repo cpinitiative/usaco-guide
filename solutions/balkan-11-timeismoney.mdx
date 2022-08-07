@@ -26,18 +26,19 @@ Since $T$ and $C$ are positive integers, the lower convex hull between $A$ and $
 using namespace std;
 using ll = long long int;
 using pii = pair<int, int>;
-// [town-x, town-y, time, cost, id]
-using Edge = array<int, 5>;
+
+struct Edge {
+	int x;
+	int y;
+	int time;
+	int cost;
+	int id;
+};
 
 struct DSU {
 	vector<int> g;
 	DSU(int n) : g(n, -1) {}
-	int find(int a) {
-		if (g[a] < 0)
-			return a;
-		else
-			return g[a] = find(g[a]);
-	}
+	int find(int a) { return g[a] < 0 ? a : (g[a] = find(g[a])); }
 	/**
 	 * If a and b are already in the same set, return false and do nothing.
 	 * Otherwise, merge set a and b into one set and return true.
@@ -59,32 +60,32 @@ struct DSU {
  * vector<int>.
  */
 pair<pii, vector<int>> kruskal(int n, vector<Edge> &edges,
-										vector<int> &weights) {
+							   vector<int> &weights) {
 	sort(begin(edges), end(edges), [&](const Edge &e1, const Edge &e2) {
-		return weights[e1[4]] < weights[e2[4]];
+		return weights[e1.id] < weights[e2.id];
 	});
 	DSU dsu(n);
 	vector<int> mst;
 	int t = 0;
 	int c = 0;
 	for (Edge &e : edges) {
-		if (dsu.unite(e[0], e[1])) {
-			t += e[2];
-			c += e[3];
-			mst.push_back(e[4]);
+		if (dsu.unite(e.x, e.y)) {
+			t += e.time;
+			c += e.cost;
+			mst.push_back(e.id);
 		}
 	}
 	return {{t, c}, mst};
 }
 
 /**
- * Calculate the signed area of the triangle defined by the given points. This value is negative if point
- * P is on the right side of vector AB.
+ * Calculate the signed area of the triangle defined by the given points.
+ * This value is negative if point P is on the right side of vector AB.
  */
 ll area(pii A, pii B, pii P) {
 	pii AB = {B.first - A.first, B.second - A.second};
-	pii AC = {P.first - A.first, P.second - A.second};
-	return AB.first * AC.second - AB.second * AC.first;
+	pii AP = {P.first - A.first, P.second - A.second};
+	return AB.first * AP.second - AB.second * AP.first;
 }
 
 int main() {
@@ -109,14 +110,14 @@ int main() {
 
 	// A corresponds to the values of the MST if we only minimize the time
 	for (int i = 0; i < M; i++) {
-		weights[edges[i][4]] = edges[i][2];
+		weights[edges[i].id] = edges[i].time;
 	}
 	tie(A, best_MST) = kruskal(N, edges, weights);
 	best_V = A;
 
 	// B corresponds to values of the MST if we only minimize the cost
 	for (int i = 0; i < M; i++) {
-		weights[edges[i][4]] = edges[i][3];
+		weights[edges[i].id] = edges[i].cost;
 	}
 	tie(B, current_MST) = kruskal(N, edges, weights);
 	// If solution B is better than A, update the best solution
@@ -129,7 +130,7 @@ int main() {
 	stack<pair<pii, pii>> to_search;
 	to_search.push({A, B});
 	while (!to_search.empty()) {
-		tie(A, B) = to_search.top();
+		auto [A, B] = to_search.top();
 		to_search.pop();
 
 		/*
@@ -138,8 +139,8 @@ int main() {
 		 * this signed value.
 		 */
 		for (int i = 0; i < M; i++) {
-			weights[edges[i][4]] = edges[i][3] * (B.first - A.first) -
-									edges[i][2] * (B.second - A.second);
+			weights[edges[i].id] = edges[i].cost * (B.first - A.first) -
+									 edges[i].time * (B.second - A.second);
 		}
 		tie(P, current_MST) = kruskal(N, edges, weights);
 
@@ -168,9 +169,9 @@ int main() {
 
 	cout << best_V.first << " " << best_V.second << "\n";
 	sort(begin(edges), end(edges),
-			 [](const Edge &e1, const Edge &e2) { return e1[4] < e2[4]; });
+			 [](const Edge &e1, const Edge &e2) { return e1.id < e2.id; });
 	for (int &id : best_MST) {
-		cout << edges[id][0] << " " << edges[id][1] << "\n";
+		cout << edges[id].x << " " << edges[id].y << "\n";
 	}
 }
 ```
