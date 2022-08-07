@@ -59,8 +59,9 @@ struct DSU {
  * time and cost as pair<int,int> as well as ids of edges of the MST as
  * vector<int>.
  */
-pair<pii, vector<int>> kruskal(int n, vector<Edge> &edges,
-							   vector<int> &weights) {
+pair<pii, vector<int>> kruskal(
+	int n, vector<Edge> &edges, vector<int> &weights
+) {
 	sort(begin(edges), end(edges), [&](const Edge &e1, const Edge &e2) {
 		return weights[e1.id] < weights[e2.id];
 	});
@@ -139,8 +140,10 @@ int main() {
 		 * this signed value.
 		 */
 		for (int i = 0; i < M; i++) {
-			weights[edges[i].id] = edges[i].cost * (B.first - A.first) -
-									 edges[i].time * (B.second - A.second);
+			weights[edges[i].id] = (
+				edges[i].cost * (B.first - A.first) -
+				edges[i].time * (B.second - A.second)
+			);
 		}
 		tie(P, current_MST) = kruskal(N, edges, weights);
 
