@@ -131,21 +131,21 @@ public class subarrayDivisibility {
 
 <PySection>
 
-```py 
+```py
 n = int(input())
 arr = map(int, input().split())
+
 residue_counts = [0] * n
 partial_sum = 0
 residue_counts[partial_sum] = 1
 for a in arr:
 	partial_sum += a
-	residue_counts[partial_sum % n] += 1
+  parital_sum = partial_sum % n
+	residue_counts[partial_sum] += 1
 
-ans = 0
-for r in residue_counts:
-	# Calculate the # of pairs w/o duplicates & reverse groups.
-	ans += r * (r - 1) // 2
-print(ans)
+# each subarray with sum divisible by n corresponds to
+# a pair of indices that have the same residue
+print(sum(r * (r - 1) // 2 for r in residue_counts))
 ```
 
 </PySection>
