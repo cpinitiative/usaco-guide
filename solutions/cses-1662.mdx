@@ -133,18 +133,18 @@ public class subarrayDivisibility {
 
 ```py 
 n = int(input())
-Z = map(int, input().split())
-M = [0] * n
-psums = 0
-M[psums] = 1
-for a in Z:
-	psums += a
-	M[psums % n] += 1
+arr = map(int, input().split())
+residue_counts = [0] * n
+partial_sum = 0
+residue_counts[partial_sum] = 1
+for a in arr:
+	partial_sum += a
+	residue_counts[partial_sum % n] += 1
 
 ans = 0
-for x in M:
+for r in residue_counts:
 	# Calculate the # of pairs w/o duplicates & reverse groups.
-	ans += x * (x - 1) // 2
+	ans += r * (r - 1) // 2
 print(ans)
 ```
 
