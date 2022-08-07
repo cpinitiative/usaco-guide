@@ -16,7 +16,7 @@ Notice the constraints required to make an ordering of stamps valid. There must 
 Now we just need to count the number of orderings with a contiguous segment of length $k$ with all the same color. Instead of this, we can use complementary counting and count the opposite instead with dynamic programming. Let $dp[i]$ be the number of orderings for the first $i$ characters. When $i$ is less than $k$, $dp[i] = m^i$ since the first $i$ characters can be any of the $m$ colors. Notice that we can add a segment of length of up to $k - 1$ of a single color to the end of a valid ordering. This segment can have $m - 1$ colors (we can't choose the color that corresponds to the previous segment because the two segments combined can become longer than $k$). Thus, we can state the following recurrences.
 
 If $x < k$, then $dp[x]$ will be $m^x$. Otherwise if $x >= k$, then $dp[x]$ will be the sum of the last $k - 1$ $dp$ states multiplied by $m - 1$.
-
+More formally, we can define this relation as:
 $$dp[x] = m^x \texttt{   if   } x < k$$
 
 
