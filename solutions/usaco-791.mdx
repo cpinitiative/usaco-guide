@@ -13,7 +13,7 @@ This is a similar solution to the official editorial but uses a segment tree for
 
 Notice the constraints required to make an ordering of stamps valid. There must be at least one segment of length k or longer. We can work backwards starting from this segment. Remove this segment of length $k$. Then we can remove the segments to the left and right of it because even if there aren't longer than $k$, we can assume that they overlapped with the previous segment we removed. We can remove the whole painting like this.
 
-Now we just need to count the number of orderings with a contiguous segment of length k with all the same color. Instead of this, we can use complementary counting and count the opposite instead with dynamic programming. Let $dp[i]$ be the number of orderings for the first $i$ characters. When $i$ is less than $k$, $dp[i] = m^i$ since the first $i$ characters can be any of the $m$ colors. Notice that we can add a segment of length of up to $k - 1$ of a single color to the end of a valid ordering. This segment can have $m - 1$ colors (we can't choose the color that corresponds to the previous segment because the two segments combined can become longer than $k$). Thus, we can state the following recurrences.
+Now we just need to count the number of orderings with a contiguous segment of length $k$ with all the same color. Instead of this, we can use complementary counting and count the opposite instead with dynamic programming. Let $dp[i]$ be the number of orderings for the first $i$ characters. When $i$ is less than $k$, $dp[i] = m^i$ since the first $i$ characters can be any of the $m$ colors. Notice that we can add a segment of length of up to $k - 1$ of a single color to the end of a valid ordering. This segment can have $m - 1$ colors (we can't choose the color that corresponds to the previous segment because the two segments combined can become longer than $k$). Thus, we can state the following recurrences.
 
 $$dp[x] = m^x \textit{   if   } x < k$$
 
@@ -38,23 +38,32 @@ using ll = long long;
 
 const ll MOD = 1e9 + 7;
 
-template <class T> struct SegTree { 
-	const T ID = 0; T cmb(T a, T b) { return (a+b) % MOD; } 
-	int n; vector<T> seg;
-	void init(int _n) { 
-		for (n = 1; n < _n; ) n *= 2; 
-		seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = cmb(seg[2*p],seg[2*p+1]); }
-	void upd(int p, T val) {
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-	T query(int l, int r) {
-		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = cmb(ra,seg[l++]);
-			if (r&1) rb = cmb(seg[--r],rb);
-		}
-		return cmb(ra,rb);
-	}
+template < class T > struct SegTree {
+    const T ID = 0;
+    T cmb(T a, T b) {
+        return (a + b) % MOD;
+    }
+    int n;
+    vector < T > seg;
+    SegTree(int _n) {
+        for (n = 1; n < _n;) n *= 2;
+        seg.assign(2 * n, ID);
+    }
+    void pull(int p) {
+        seg[p] = cmb(seg[2 * p], seg[2 * p + 1]);
+    }
+    void upd(int p, T val) {
+        seg[p += n] = val;
+        for (p /= 2; p; p /= 2) pull(p);
+    }
+    T query(int l, int r) {
+        T ra = ID, rb = ID;
+        for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+            if (l & 1) ra = cmb(ra, seg[l++]);
+            if (r & 1) rb = cmb(seg[--r], rb);
+        }
+        return cmb(ra, rb);
+    }
 };
 
 /**
@@ -76,11 +85,11 @@ ll bi_pow(ll a, ll b) {
 int main() {
 	freopen("spainting.in", "r", stdin);
 	freopen("spainting.out", "w", stdout);
-	ll n, m, k; cin >> n >> m >> k;
+	ll n, m, k;
+	cin >> n >> m >> k;
 
 	// Initialize segment tree
-	SegTree<ll> dp;
-	dp.init(n + 1);
+	SegTree<ll> dp(n + 1);
 	
 	for (int i = 1; i <= n; i++) {
 		ll a;
