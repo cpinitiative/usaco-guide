@@ -9,7 +9,7 @@ author: Chuyang Wang
 
 ## Explanation
 
-For the 40% $t = c$ cases, one can simply solve the problem by constructing a minimum spanning tree with e.g. $t$ as the weights for the edges. Let $T = \sum t$ and $C = \sum c$. $V = T \cdot C = T^2$ will be minimized when $T$ is minimized. 
+For the 40% $t = c$ cases, we can solve the problem by constructing an MST with e.g. $t$ as the weights for the edges. Let $T = \sum t$ and $C = \sum c$. $V = T \cdot C = T^2$ will be minimized when $T$ is minimized. 
 
 To solve the problem completely, we will have to minimize the product of those two sums. The solution space contains all possible MSTs with their respective $T$ and $C$ values. We can view each of those possible solutions as a 2D-point $(T, C)$. The inverse proportion function $C = \frac{V}{T}$ describes the hyperbola on which all the points have the same $V$ value. This hyperbola is convex, so it suffices to check all points on the lower convex hull of our solution space to find the minimal $V$ value. Nevertheless, we cannot really calculate the convex hull since it would require all $\binom{M}{N-1}$ points to be known. Instead, we use another approach below. 
 
@@ -78,7 +78,7 @@ pair<pii, vector<int>> kruskal(int n, vector<Edge> &edges,
 }
 
 /**
- * Calculate the signed area of the triangle ABP. This value is negative if point
+ * Calculate the signed area of the triangle defined by the given points. This value is negative if point
  * P is on the right side of vector AB.
  */
 ll area(pii A, pii B, pii P) {
