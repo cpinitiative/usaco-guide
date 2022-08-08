@@ -2,27 +2,27 @@
 id: cf-1418C
 source: CF
 title: Mortal Kombat Tower
-author: Ryan Chou
+author: Ryan Chou, Chuyang Wang
 ---
 [Official Editorial (C++)](https://codeforces.com/blog/entry/82673)
 
 ## Alternate Solution - DP
 ### Explanation
 
-If we define $\texttt{dp}[i][j]$ as the minimum number of skip points needed to get to the $i$th boss on turn $j$ 
+If we define $\texttt{dp}[i][j]$ as the minimum number of skip points needed to get to the $j$th boss on player $i$'s turn 
 (our turn is zero), then our transitions would be:
 
-$\texttt{dp}[i + 1][0] =\min(\texttt{dp}[i + 1][0], \texttt{dp}[i][1] + \texttt{hard}[i])$
+$\texttt{dp}[0][j + 1] =\min(\texttt{dp}[0][j + 1], \texttt{dp}[1][j] + \texttt{hard}[j])$
 
-$\texttt{dp}[i + 2][0] =\min(\texttt{dp}[i + 2][0], \texttt{dp}[i][1] + \texttt{hard}[i] + \texttt{hard}[i + 1])$
+$\texttt{dp}[0][j + 2] =\min(\texttt{dp}[0][j + 2], \texttt{dp}[1][j] + \texttt{hard}[j] + \texttt{hard}[j + 1])$
 
-$\texttt{dp}[i + 1][1] =\min(\texttt{dp}[i + 1][1], \texttt{dp}[i][0])$
+$\texttt{dp}[1][j + 1] =\min(\texttt{dp}[1][j + 1], \texttt{dp}[0][j])$
 
-$\texttt{dp}[i + 2][1] =\min(\texttt{dp}[i + 2][1], \texttt{dp}[i][0])$
+$\texttt{dp}[1][j + 2] =\min(\texttt{dp}[1][j + 2], \texttt{dp}[0][j])$
 
 This is because from each state, either the previous move, or the previous two moves could have been from the other player.
 
-So, the answer would be $\min(\texttt{dp}[N][0], \texttt{dp}[N][1])$.
+So, the answer would be $\min(\texttt{dp}[0][N], \texttt{dp}[1][N])$.
 
 ### Implementation
 
@@ -43,9 +43,9 @@ int main() {
 		int n;
 		cin >> n;
 
-		vector<int> bosses(n);
-		for (int i = 0; i < n; i++) {
-			cin >> bosses[i];
+		vector<int> hard(n);
+		for (int j = 0; j < n; j++) {
+			cin >> hard[j];
 		}
 
 		/*
@@ -61,15 +61,15 @@ int main() {
 		 */
 		dp[1][0] = 0;
 
-		for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
 			// the opposite player switches on the previous move.
-			dp[0][i + 1] = min(dp[0][i + 1], dp[1][i] + bosses[i]);
-			dp[1][i + 1] = min(dp[1][i + 1], dp[0][i]);
+			dp[0][j + 1] = min(dp[0][j + 1], dp[1][j] + hard[j]);
+			dp[1][j + 1] = min(dp[1][j + 1], dp[0][j]);
 
 			// the opposite player switches from the previous two moves.
-			if (i + 2 <= n) {
-				dp[0][i + 2] = min(dp[0][i + 2], dp[1][i] + bosses[i] + bosses[i + 1]);
-				dp[1][i + 2] = min(dp[1][i + 2], dp[0][i]);
+			if (j + 2 <= n) {
+				dp[0][j + 2] = min(dp[0][j + 2], dp[1][j] + hard[j] + hard[j + 1]);
+				dp[1][j + 2] = min(dp[1][j + 2], dp[0][j]);
 			}
 		}
 		cout << min(dp[0][n], dp[1][n]) << endl;
@@ -77,4 +77,52 @@ int main() {
 }
 ```
 </CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.Arrays;
+
+public class MortalKombatTower {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(br.readLine());
+
+		for (int i = 0; i < t; i++) {
+			int n = Integer.parseInt(br.readLine());
+			int[] hard = Arrays.stream(br.readLine().split(" "))
+					.mapToInt(Integer::parseInt)
+					.toArray();
+
+			/*
+			 * dp[i][j] = the min amount of skip points needed if it is
+			 * player i's turn (you are 0 and your friend 1) on the j-th boss.
+			 * At the beginning (before fighting any bosses), dp[1][0] = 0.
+			 */
+			int[][] dp = new int[2][n + 1];
+			for (int j = 0; j <= n; j++) {
+				dp[0][j] = 1000000000;
+				dp[1][j] = 1000000000;
+			}
+			dp[1][0] = 0;
+
+			for (int j = 0; j < n; j++) {
+				// the opposite player switches on the previous move.
+				dp[0][j + 1] = Math.min(dp[0][j + 1], dp[1][j] + hard[j]);
+				dp[1][j + 1] = Math.min(dp[1][j + 1], dp[0][j]);
+
+				// the opposite player switches from the previous two moves.
+				if (j < n - 1) {
+					dp[0][j + 2] = Math.min(dp[0][j + 2],
+							dp[1][j] + hard[j] + hard[j + 1]);
+					dp[1][j + 2] = Math.min(dp[1][j + 2], dp[0][j]);
+				}
+			}
+
+			System.out.println(Math.min(dp[0][n], dp[1][n]));
+		}
+	}
+}
+```
+</JavaSection>
 </LanguageSection>
