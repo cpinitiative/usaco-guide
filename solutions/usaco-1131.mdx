@@ -44,28 +44,26 @@ print(length)
 ```cpp
 #include<bits/stdc++.h>
 using namespace std;
-
 int main(){
 	
 	int n, l;
 	cin >> n >> l;
 	
-	vector<int> citations;
-	int x;
-	while(cin >> x){
-		citations.push_back(x);
+	vector<int> citations(n);
+	for (int i = 0; i < n; i++){
+		cin >> citations[i];
 	}
 	sort(citations.begin(), citations.end(), greater<int>());
 	int length = citations.size();
 	
-	while(length >= 0 && citations[length-1] < length) length-=1;
-	
-	int cur_h=length;
-	length=citations.size();
+	while(length >= 0 && citations[length-1] < length) length -= 1;
+	 
+	int cur_h = length;
+	length = citations.size();
 	
 	if(cur_h != n){
 		for(int i = cur_h; i >= 0; i--){
-			if( i<= cur_h-1){
+			if(i<= cur_h-1){
 				break;
 			}
 			citations[i] += 1;
@@ -73,12 +71,11 @@ int main(){
 	}
 	sort(citations.begin(), citations.end(), greater<int>());
 	
-	while(length >= 0 && citations[length-1] < length) length-=1;
+	while(length >= 0 && citations[length-1] < length) length -= 1;
 	
 	cout << length << endl;
 	return 0;
 }
-
 ```
 
 </CPPSection>
