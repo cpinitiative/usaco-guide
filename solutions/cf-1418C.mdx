@@ -39,7 +39,7 @@ int main() {
 	int t;
 	cin >> t;
 
-	for (int i = 0; i < t; i++) {
+	for (int testcase = 0; testcase < t; testcase++) {
 		int n;
 		cin >> n;
 
@@ -84,12 +84,11 @@ import java.io.*;
 import java.util.Arrays;
 
 public class MortalKombatTower {
-	public static final int INTMAX = 1000000000;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int t = Integer.parseInt(br.readLine());
 
-		for (int i = 0; i < t; i++) {
+		for (int testcase = 0; testcase < t; testcase++) {
 			int n = Integer.parseInt(br.readLine());
 			int[] bosses = Arrays.stream(br.readLine().split(" "))
 					.mapToInt(Integer::parseInt)
@@ -102,20 +101,24 @@ public class MortalKombatTower {
 			 */
 			int[][] dp = new int[2][n + 1];
 			for (int j = 0; j <= n; j++) {
-				dp[0][j] = INTMAX;
-				dp[1][j] = INTMAX;
+				dp[0][j] = Integer.MAX_VALUE;
+				dp[1][j] = Integer.MAX_VALUE;
 			}
 			dp[1][0] = 0;
 
 			for (int j = 0; j < n; j++) {
 				// the opposite player switches on the previous move.
-				dp[0][j + 1] = Math.min(dp[0][j + 1], dp[1][j] + bosses[j]);
+				if (dp[1][j] < Integer.MAX_VALUE) {
+					dp[0][j + 1] = Math.min(dp[0][j + 1], dp[1][j] + bosses[j]);
+				}
 				dp[1][j + 1] = Math.min(dp[1][j + 1], dp[0][j]);
 
 				// the opposite player switches from the previous two moves.
 				if (j < n - 1) {
-					dp[0][j + 2] = Math.min(dp[0][j + 2],
-							dp[1][j] + bosses[j] + bosses[j + 1]);
+					if (dp[1][j] < Integer.MAX_VALUE) {
+						dp[0][j + 2] = Math.min(dp[0][j + 2],
+								dp[1][j] + bosses[j] + bosses[j + 1]);
+					}
 					dp[1][j + 2] = Math.min(dp[1][j + 2], dp[0][j]);
 				}
 			}
