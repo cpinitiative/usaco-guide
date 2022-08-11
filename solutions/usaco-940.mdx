@@ -2,7 +2,7 @@
 id: usaco-940
 source: USACO Bronze 2019 Open
 title: Milk Factory
-author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas
 ---
 
 ## Solution 1
@@ -87,6 +87,61 @@ public class Factory {
 ```
 
 </JavaSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void setIO(string name=""){ // FastIO See General -> Input/Output
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    if((int)name.size() > 0){
+        freopen((name+".in").c_str(), "r", stdin);
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int main(){
+    setIO("factory");
+    int N;
+    cin >> N;
+    int outgoing[N] = {0};
+    // N - 1 walkways
+    for(int i = 0; i < N -1; i++){
+        int a,b;
+        cin >> a >> b;
+        // count the outdegree of this station
+        // Array index begins with 0, station begins with 1, so -1
+        outgoing[a-1]++;
+
+    }
+    int ans = -1;
+    for (int i = 0; i < N; i++){
+        // only stations with outdegree 0 could be the sink
+        if(outgoing[i] == 0){
+            if(ans == -1){
+                // found the sink
+                ans = i + 1; // Array index begins with 0
+            }
+            else{
+                // found two sinks
+                // so it is impossible to get from one to another
+                ans = -1;
+                break;
+            }
+        }
+    }
+
+    cout << ans << flush;
+}
+
+
+```
+
+</CPPSection>
+	
+	
 </LanguageSection>
 ## Solution 2
 This problem can also be solved using [Depth-First Search](/silver/dfs) (a
