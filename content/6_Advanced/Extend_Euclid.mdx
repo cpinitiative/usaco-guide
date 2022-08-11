@@ -26,11 +26,11 @@ The original Euclidean Algorithm computes $\gcd(a,b)$ and looks like this:
 
 ```cpp
 ll euclid(ll a, ll b) {
-	for (;b;swap(a,b)) {
-		ll k = a/b;
-		a -= k*b;
+	for (; b; swap(a, b)) {
+		ll k = a / b;
+		a -= k * b;
 	}
-	return a; // gcd(a,b)
+	return a; // gcd(a , b)
 }
 ```
 
@@ -39,23 +39,18 @@ ll euclid(ll a, ll b) {
 
 ```py
 def euclid(a: int, b: int) -> int:
-    """Returns integer representing GCD of two positive, non-zero numeric values.
+    """
+    Returns the GCD of two positive, non-zero numeric values.
     """
 
     assert int(a) > 0 and int(b) > 0, \
         "Arguments must be positive, non-zero numeric values."
-	
-    def swap(x, y):
-        tmp = x
-        x = y
-        y = tmp
-        return x, y
 
     while b > 0: # run Euclidean algo
         k = a // b
 	# subtract multiples of one equation from the other.
         a -= b * k
-        a, b = swap(a, b)
+        a, b = b, a  # swap a and b
 
     return a
 ```
@@ -209,13 +204,11 @@ pl extendEuclid(ll a, ll b) { // returns {x,y}
 <PySection>
 
 ```py
-
 def extend_euclid(a: int, b: int) -> list[int]:
     if not b:
         return [1, 0]
-    p = ext_euclid(b, a%b)
-    return [p[1], p[0] - (a//b)*p[1]]
-
+    p = ext_euclid(b, a % b)
+    return [p[1], p[0] - (a // b) * p[1]]
 ```
 
 </PySection>
