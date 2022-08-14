@@ -36,7 +36,7 @@ We don't include subsets that have the already open segments because in that cas
 <LanguageSection>
 <CPPSection>
  ```cpp
- #include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 using ll = long long;
@@ -45,39 +45,39 @@ using vi = vector<int>;
 const ll MOD = 1e9+7;
 
 int main() {
-  freopen("help.in", "r", stdin);
-  freopen("help.out", "w", stdout);
-  int n;
-  cin >> n;
-  // Mark the points where a segment opened or closed
-  vi a(2 * n + 1, 0);
-  for (int i = 0; i < n; i++) {
-    int x, y;
-    cin >> x >> y;
-    a[x]++;
-    a[y]--;
-  }
-  // Precalculate powers of 2
-  ll pow[n];
-  pow[0] = 1;
-  for (int i = 1; i <= n - 1; i++) {
-    pow[i] = pow[i - 1] * 2 % MOD;
-  }
-  // 'cnt' is the number of open segments
-  int cnt = 0;
-  ll ans = 0;
-  for (int i = 1; i <= 2 * n; i++) {
-    // Update the number of open segments
-    cnt += a[i]; 
-    /*
-     * If a new segment is opened, count the number of subsets
-     * where this new segment is the beginning of a subset
-     */
-    if (a[i] == 1) {
-      ans = (ans + pow[n-cnt]) % MOD;
-    }
-  }
-cout << ans << endl;
+	freopen("help.in", "r", stdin);
+	freopen("help.out", "w", stdout);
+	int n;
+	cin >> n;
+	// Mark the points where a segment opened or closed
+	vi a(2 * n + 1, 0);
+	for (int i = 0; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		a[x]++;
+		a[y]--;
+	}
+	// Precalculate powers of 2
+	ll pow[n];
+	pow[0] = 1;
+	for (int i = 1; i <= n - 1; i++) {
+		pow[i] = pow[i - 1] * 2 % MOD;
+	}
+	// 'cnt' is the number of open segments
+	int cnt = 0;
+	ll ans = 0;
+	for (int i = 1; i <= 2 * n; i++) {
+		// Update the number of open segments
+		cnt += a[i]; 
+		/*
+		 * If a new segment is opened, count the number of subsets
+		 * where this new segment is the beginning of a subset
+		 */
+		if (a[i] == 1) {
+			ans = (ans + pow[n-cnt]) % MOD;
+		}
+	}
+	cout << ans << endl;
 }
 ```
 </CPPSection>
