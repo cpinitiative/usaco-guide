@@ -38,9 +38,7 @@ ull base = 9973;
 vector<ull> rolling_hash;
 vector<ull> powers;
 
-/**
- * Calculate the prefix sums of the hashes for the given string t.
- */
+/** Calculate the prefix sums of the hashes for the given string t. */
 void generate_hash(string &t) {
 	rolling_hash.push_back(0);
 	powers.push_back(1);
@@ -51,9 +49,7 @@ void generate_hash(string &t) {
 	}
 }
 
-/**
- * Get the hash value of the substring (a,b]
- */
+/** Get the hash value of the substring (a,b] */
 ull get_hash(int a, int b) {
 	ull previous = rolling_hash[a] * powers[b - a] % m;
 	// Add m in case rolling_hash[b] < previous
@@ -68,17 +64,20 @@ int main() {
 	int count_0 = 0;
 	int count_1 = 0;
 	for (char &c : s) {
-		if (c == '0')
+		if (c == '0') {
 			count_0++;
-		else
+		} else if (c == '1') {
 			count_1++;
+		}
 	}
 
 	int pairs_count = 0;
 	// Brute force through all possible lengths of r0
 	for (int len_r0 = 1; len_r0 < t.size() / count_0; len_r0++) {
 		// This r0 is invalid if the length of r1 is no longer an integer
-		if ((t.size() - len_r0 * count_0) % count_1 != 0) continue;
+		if ((t.size() - len_r0 * count_0) % count_1 != 0) {
+			continue;
+		}
 		int len_r1 = (t.size() - len_r0 * count_0) / count_1;
 
 		int len_ri[2] = {len_r0, len_r1};
