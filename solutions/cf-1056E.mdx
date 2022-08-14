@@ -94,13 +94,17 @@ int main() {
 				hash_i[s_i] = get_hash(pointer_t, pointer_t + len_ri[s_i]);
 			}
 
-			// Compare the hash of r_i with the current substring in t. If they are
-			// not the same, or if both hashes (and therefore both r_0 and r_1) are
-			// the same, this r_0 is invalid and we can go to the next possibility.
+			/*
+			 * Compare the hash of r_i with the current substring in t. If they are
+			 * not the same, or if both hashes (and therefore both r_0 and r_1) are
+			 * the same, this r_0 is invalid and we can go to the next possibility.
+			 */
 			if (hash_i[s_i] != get_hash(pointer_t, pointer_t + len_ri[s_i]) ||
 					hash_i[0] == hash_i[1]) {
-				// Since we add one to the counter anyway, we want to subtract one in
-				// case this r_0 does not count.
+				/*
+				 * Since we add one to the counter anyway, we want to subtract one in
+				 * case this r_0 does not count.
+				 */
 				pairs_count--;
 				break;
 			}
