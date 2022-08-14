@@ -61,24 +61,24 @@ int main() {
 	cin >> s >> t;
 	generate_hash(t);
 
-	int count_0 = 0;
-	int count_1 = 0;
+	int count0 = 0;
+	int count1 = 0;
 	for (char &c : s) {
 		if (c == '0') {
-			count_0++;
+			count0++;
 		} else if (c == '1') {
-			count_1++;
+			count1++;
 		}
 	}
 
 	int pairs_count = 0;
 	// Brute force through all possible lengths of r0
-	for (int len_r0 = 1; len_r0 < t.size() / count_0; len_r0++) {
+	for (int len_r0 = 1; len_r0 < t.size() / count0; len_r0++) {
 		// This r0 is invalid if the length of r1 is no longer an integer
-		if ((t.size() - len_r0 * count_0) % count_1 != 0) {
+		if ((t.size() - len_r0 * count0) % count1 != 0) {
 			continue;
 		}
-		int len_r1 = (t.size() - len_r0 * count_0) / count_1;
+		int len_r1 = (t.size() - len_r0 * count0) / count1;
 
 		int len_ri[2] = {len_r0, len_r1};
 		ull hash_i[2] = {0, 0};
