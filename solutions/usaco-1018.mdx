@@ -1,3 +1,14 @@
+---
+id: usaco-1018
+source: USACO Gold 2020 February
+title: Help Yourself
+author: Aakash Gokhale
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob3_bronze_dec20.html)
+
+## Solution
+
 The brute force approach of this problem would be to iterate over all subsets and count the number of connected components for each subset.
 
 However, this approach has a time complexity of $O(2^n * n) and is too large to fit the time constraints of the problem except for the first three test cases. To optimize this, we can figure out how much each segment contributes to the total answer.
@@ -20,3 +31,55 @@ For the sample test case it will be:
 We can iterate over the whole length of the number (from 1 to 2N). Call a segment open at a certain point if it contains that point and closed if it does not. At each step, we maintain the number of open segments. If a new segment opens, we can figure out how much it contributes to the answer making sure we don't overcount. We need to find the number of subsets where this segment is the beginning of a connected component.
 
 We don't include subsets that have the already open segments because in that case, the segment will not be the beginning of the connected component. In addition, we must include the current segment in the subset. Thus, there will be 2^(N - cnt) subsets were the current segment contributes 1 to the answer where 'cnt' is the number of open segments including the newly opened segment.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+<LanguageSection>
+<CPPSection>
+ #include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using vi = vector<int>;
+
+const ll MOD = 1e9+7;
+
+int main() {
+  freopen("help.in", "r", stdin);
+  freopen("help.out", "w", stdout);
+  int n;
+  cin >> n;
+  // Mark the points where a segment opened or closed
+  vi a(2 * n + 1, 0);
+  for (int i = 0; i < n; i++) {
+    int x, y;
+    cin >> x >> y;
+    a[x]++;
+    a[y]--;
+  }
+  // Precalculate powers of 2
+  ll pow[n];
+  pow[0] = 1;
+  for (int i = 1; i <= n - 1; i++) {
+    pow[i] = pow[i - 1] * 2 % MOD;
+  }
+  // 'cnt' is the number of open segments
+  int cnt = 0;
+  ll ans = 0;
+  for (int i = 1; i <= 2 * n; i++) {
+    // Update the number of open segments
+    cnt += a[i]; 
+    /*
+     * If a new segment is opened, count the number of subsets
+     * where this new segment is the beginning of a subset
+     */
+    if (a[i] == 1) {
+      ans = (ans + pow[n-cnt]) % MOD;
+    }
+  }
+cout << ans << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
