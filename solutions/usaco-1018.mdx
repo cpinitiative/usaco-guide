@@ -5,7 +5,7 @@ title: Help Yourself
 author: Aakash Gokhale
 ---
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob3_bronze_dec20.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_help_gold_feb20.html)
 
 ## Solution
 
@@ -14,6 +14,8 @@ The brute force approach of this problem would be to iterate over all subsets an
 However, this approach has a time complexity of $O(2^n * n) and is too large to fit the time constraints of the problem except for the first three test cases. To optimize this, we can figure out how much each segment contributes to the total answer.
 
 Consider the sample test case
+
+**Insert Image Here**
 
 For each segment we can list the subsets where the segment is counted. We have to be careful about overcounting so we will only list the subsets where the segment is the beginning of a connected componenet.
 
@@ -25,7 +27,7 @@ For the sample test case it will be:
 
 We can iterate over the whole length of the number (from 1 to 2N). Call a segment open at a certain point if it contains that point and closed if it does not. At each step, we maintain the number of open segments. If a new segment opens, we can figure out how much it contributes to the answer making sure we don't overcount. We need to find the number of subsets where this segment is the beginning of a connected component.
 
-We don't include subsets that have the already open segments because in that case, the segment will not be the beginning of the connected component. In addition, we must include the current segment in the subset. Thus, there will be 2^(N - cnt) subsets were the current segment contributes 1 to the answer where 'cnt' is the number of open segments including the newly opened segment.
+We don't include subsets that have the already open segments because in that case, the segment will not be the beginning of the connected component. In addition, we must include the current segment in the subset. Thus, there will be 2^(N - cnt) subsets were the current segment contributes 1 to the answer where 'cnt' is the number of open segments including the newly opened segment. We can add this value to the final answer.
 
 ## Implementation
 
