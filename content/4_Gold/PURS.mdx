@@ -188,7 +188,9 @@ class MinSegmentTree {
 		/** Sets the value at ind to val. */
 		void set(int ind, T val) {
 			assert(0 <= ind && ind < len);
-			for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind] = val;
+			ind += len;
+			for (; ind > 1; ind /= 2) {
 				segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
 			}
 		}
@@ -197,7 +199,7 @@ class MinSegmentTree {
 		T range_min(int start, int end) {
 			assert(0 <= start && start < len && 0 < end && end <= len);
 			T sum = DEFAULT;
-			for (start += len, end += len; start < end; start >>= 1, end >>= 1) {
+			for (start += len, end += len; start < end; start /= 2, end /= 2) {
 				if ((start & 1) != 0) {
 					sum = comb(sum, segtree[start++]);
 				}
@@ -258,7 +260,9 @@ public class MinSegmentTree {
 	/** Sets the value at ind to val. */
 	public void set(int ind, int val) {
 		assert(0 <= ind && ind < len);
-		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+		segtree[ind] = val;
+		ind += len;
+		for (; ind > 1; ind /= 2) {
 			segtree[ind >> 1] = Math.min(segtree[ind], segtree[ind ^ 1]);
 		}
 	}
@@ -267,7 +271,7 @@ public class MinSegmentTree {
 	public int rangeMin(int start, int end) {
 		assert(0 <= start && start < len && 0 < end && end <= len);
 		int min = Integer.MAX_VALUE;
-		for (start += len, end += len; start < end; start >>= 1, end >>= 1) {
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
 			if ((start & 1) != 0) {
 				min = Math.min(min, segtree[start++]);
 			}
@@ -339,7 +343,9 @@ class SumSegmentTree {
 
 		void set(int ind, T val) {
 			assert(0 <= ind && ind < len);
-			for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind] = val;
+			ind += len;
+			for (; ind > 1; ind /= 2) {
 				segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
 			}
 		}
@@ -347,7 +353,7 @@ class SumSegmentTree {
 		T range_min(int start, int end) {
 			assert(0 <= start && start < len && 0 < end && end <= len);
 			T sum = DEFAULT;
-			for (start += len, end += len; start < end; start >>= 1, end >>= 1) {
+			for (start += len, end += len; start < end; start /= 2, end /= 2) {
 				if ((start & 1) != 0) {
 					sum = comb(sum, segtree[start++]);
 				}
@@ -407,7 +413,9 @@ public class SumSegmentTree {
 	/** Sets the value at ind to val. */
 	public void set(int ind, int val) {
 		assert(0 <= ind && ind < len);
-		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+		segtree[ind] = val;
+		ind += len;
+		for (; ind > 1; ind /= 2) {
 			segtree[ind >> 1] = segtree[ind] + segtree[ind ^ 1];
 		}
 	}
@@ -415,7 +423,7 @@ public class SumSegmentTree {
 	public long rangeSum(int start, int end) {
 		assert(0 <= start && start < len && 0 < end && end <= len);
 		long total = 0;
-		for (start += len, end += len; start < end; start >>= 1, end >>= 1) {
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
 			if ((start & 1) != 0) {
 				total = total + segtree[start++];
 			}
