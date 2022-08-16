@@ -65,7 +65,7 @@ int main() {
 
 		for (int i = 0; i < n; i++) {
 			// haven't visited this connected component yet
-			if (role[i] == -1) {
+			if (role[i] == -1) {A
 				int imposters = 0, crewmates = 0;
 
 				// dfs to build bipartite graph
@@ -109,4 +109,103 @@ int main() {
 }
 ```
 </CPPSection>
+
+
+<JavaSection>
+
+```java
+
+import java.util.*;
+import java.io.*;
+public class Main {
+    static boolean[] visited;
+    static ArrayList < ArrayList < pair >> adj;
+    static int size;
+    static int cur;
+    static int[] ans;
+    static boolean good;
+    public static void main(String[] args) throws IOException {
+        BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(System.out);
+        int t = Integer.parseInt(f.readLine());
+        while (t-- > 0) {
+            good = true;
+            StringTokenizer st = new StringTokenizer(f.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+            adj = new ArrayList < ArrayList < pair >> ();
+            ans = new int[n];
+            for (int i = 0; i < n; i++) {
+                adj.add(new ArrayList < pair > ());
+                ans[i] = -1;
+            }
+            for (int i = 0; i < m; i++) {
+                st = new StringTokenizer(f.readLine());
+                int type = Integer.parseInt(st.nextToken());
+                int x = Integer.parseInt(st.nextToken()) - 1;
+                int y = Integer.parseInt(st.nextToken()) - 1;
+                adj.get(x).add(new pair(y, type));
+                adj.get(y).add(new pair(x, type));
+            }
+            int res = 0;
+            visited = new boolean[n];
+            for (int i = 0; i < n; i++) {
+                if (!visited[i]) {
+                    cur = 0;
+                    size = 1;
+                    ans[i] = 0;
+                    dfs(i);
+                    res += Math.max(cur, size - cur);
+                }
+            }
+            if (!good) {
+                out.println(-1);
+            } else {
+                out.println(res);
+            }
+        }
+
+        out.close();
+        f.close();
+    }
+    public static void dfs(int i) {
+        if (visited[i]) return;
+        visited[i] = true;
+        for (pair p: adj.get(i)) {
+            if (ans[p.first] == -1) {
+                if (p.second == 1) {
+                    ans[p.first] = 1 - ans[i];
+                } else {
+                    ans[p.first] = ans[i];
+                }
+                cur += ans[p.first];
+                size++;
+                dfs(p.first);
+            } else {
+                if (p.second == 1) {
+                    if (ans[p.first] == ans[i]) {
+                        good = false;
+                    }
+                } else {
+                    if (ans[p.first] != ans[i]) {
+                        good = false;
+                    }
+                }
+            }
+        }
+    }
+    static class pair {
+        int first, second;
+        public pair(int a, int b) {
+            first = a;
+            second = b;
+        }
+    }
+}
+
+
+```
+
+
+</JavaSection>
 </LanguageSection>
