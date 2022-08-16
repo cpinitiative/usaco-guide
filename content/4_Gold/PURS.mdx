@@ -160,241 +160,315 @@ public class segtree {
 </Resources>
 
 <LanguageSection>
-
 <CPPSection>
 
-Note that `st.init(n+1)` allows us to update and query indices in the range
-`[0,n+1)=[0,n]`.
-
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <cassert>
+#include <vector>
+#include <algorithm>
 
-template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 1e18; T comb(T a, T b) { return min(a,b); }
-	int n; vector<T> seg;
-	void init(int _n) { n = _n; seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
-	void upd(int p, T val) { // set val at position p
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-	T query(int l, int r) {	// min on interval [l, r]
-		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra,seg[l++]);
-			if (r&1) rb = comb(seg[--r],rb);
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** A data structure that can answer point update & range minimum queries. */
+template<class T>
+class MinSegmentTree {
+	private:
+		/** The operation to use for combining two elements. (Must be associative) */
+		T comb(T a, T b) { return std::min(a, b); }
+		const T DEFAULT = 1e18;  // Will overflow if T is an int
+
+		vector<T> segtree;
+		int len;
+	public:
+		MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) { }
+
+		/** Sets the value at ind to val. */
+		void set(int ind, T val) {
+			assert(0 <= ind && ind < len);
+			ind += len;
+			segtree[ind] = val;
+			for (; ind > 1; ind /= 2) {
+				segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
+			}
 		}
-		return comb(ra,rb);
-	}
+
+		/** @return the minimum element in the range [start, end) */
+		T range_min(int start, int end) {
+			assert(0 <= start && start < len && 0 < end && end <= len);
+			T sum = DEFAULT;
+			for (start += len, end += len; start < end; start /= 2, end /= 2) {
+				if ((start & 1) != 0) {
+					sum = comb(sum, segtree[start++]);
+				}
+				if ((end & 1) != 0) {
+					sum = comb(sum, segtree[--end]);
+				}
+			}
+			return sum;
+		}
 };
 
-Seg<int> st;
-
 int main() {
-	int n, q; cin >> n >> q;
-	st.init(n+1);
-	for(int i=1; i<=n; i++) {
-		int a; cin >> a;
-		st.upd(i, a);
+	int arr_len;
+	int query_num;
+	std::cin >> arr_len >> query_num;
+
+	MinSegmentTree<int> segtree(arr_len);
+	for (int i = 0; i < arr_len; i++) {
+		int n;
+		std::cin >> n;
+		segtree.set(i, n);
 	}
-	for(int i=1; i<=q; i++) {
-		int t, a, b; cin >> t >> a >> b;
-		if (t==1) st.upd(a,b);
-		else cout << st.query(a,b) <<"\n";
+
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int ind;
+			int val;
+			std::cin >> ind >> val;
+			segtree.set(ind - 1, val);
+		} else if (type == 2) {
+			int start;
+			int end;
+			std::cin >> start >> end;
+			cout << segtree.range_min(start - 1, end) << '\n';
+		}
 	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class DynamicRangeMinQueries {
+/** A data structure that can answer point update & range minimum queries. */
+public class MinSegmentTree {
+	private final int[] segtree;
+	private final int len;
+
+	public MinSegmentTree(int len) {
+		this.len = len;
+		segtree = new int[len * 2];
+		Arrays.fill(segtree, Integer.MAX_VALUE);
+	}
+
+	/** Sets the value at ind to val. */
+	public void set(int ind, int val) {
+		assert(0 <= ind && ind < len);
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind >> 1] = Math.min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	/** @return the minimum of all elements in [start, end). */
+	public int rangeMin(int start, int end) {
+		assert(0 <= start && start < len && 0 < end && end <= len);
+		int min = Integer.MAX_VALUE;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if ((start & 1) != 0) {
+				min = Math.min(min, segtree[start++]);
+			}
+			if ((end & 1) != 0) {
+				min = Math.min(min, segtree[--end]);
+			}
+		}
+		return min;
+	}
+
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-		int n = io.nextInt();
-		int q = io.nextInt();
+		int arrLen = io.nextInt();
+		int queryNum = io.nextInt();
 
-		SegmentTree seg = new SegmentTree(n);
-		for (int i = 0; i < n; i++) {
-			seg.set(i, io.nextInt());
+		MinSegmentTree segtree = new MinSegmentTree(arrLen);
+		for (int i = 0; i < arrLen; i++) {
+			segtree.set(i, io.nextInt());
 		}
 
-		for (int i = 0; i < q; i++) {
+		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
 			if (type == 1) {
-				int k = io.nextInt()-1;
-				int u = io.nextInt();
-				seg.set(k, u);
+				int ind = io.nextInt() - 1;
+				int val = io.nextInt();
+				segtree.set(ind, val);
 			} else {
-				int a = io.nextInt()-1;
-				int b = io.nextInt()-1;
-				io.println(seg.min(a, b));
+				int start = io.nextInt() - 1;
+				int end = io.nextInt() - 1;
+				io.println(segtree.rangeMin(start, end + 1));
 			}
 		}
 		io.close();
 	}
 
-	public static class SegmentTree {
-		private int[] tree;
-		private int n;
-
-		public SegmentTree(int n) {
-			this.n = n;
-			tree = new int[n*2];
-		}
-
-		public int min(int a, int b) {
-			a += n;
-			b += n;
-			int min = Integer.MAX_VALUE;
-			while (a <= b) {
-				if (a%2 == 1) min = Math.min(min, tree[a++]);
-				if (b%2 == 0) min = Math.min(min, tree[b--]);
-				a /= 2;
-				b /= 2;
-			}
-			return min;
-		}
-
-		public void set(int index, int val) {
-			index += n;
-			tree[index] = val;
-			for (index /= 2; index >= 1; index /= 2) {
-				tree[index] = Math.min(tree[2*index], tree[2*index+1]);
-			}
-		}
-	}
-
-	CodeSnip{Kattio}
+	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 ### Solution - Dynamic Range Sum Queries
 
 <LanguageSection>
-
 <CPPSection>
 
-Compared to the previous problem, all we need to change are `T`, `ID`, and
-`comb`.
+Compared to the previous problem, all we need to change are `DEFAULT` and `comb`.
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <cassert>
+#include <vector>
 
-template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return a+b; }
-	int n; vector<T> seg;
-	void init(int _n) { n = _n; seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
-	void upd(int p, T val) { // set val at position p
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-	T query(int l, int r) {	// sum on interval [l, r]
-		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra,seg[l++]);
-			if (r&1) rb = comb(seg[--r],rb);
+using std::cout;
+using std::endl;
+using std::vector;
+
+template<class T>
+class SumSegmentTree {
+	private:
+		T comb(T a, T b) { return a + b; }
+		const T DEFAULT = 0;
+
+		vector<T> segtree;
+		int len;
+	public:
+		SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) { }
+
+		void set(int ind, T val) {
+			assert(0 <= ind && ind < len);
+			ind += len;
+			segtree[ind] = val;
+			for (; ind > 1; ind /= 2) {
+				segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
+			}
 		}
-		return comb(ra,rb);
-	}
+
+		T range_sum(int start, int end) {
+			assert(0 <= start && start < len && 0 < end && end <= len);
+			T sum = DEFAULT;
+			for (start += len, end += len; start < end; start /= 2, end /= 2) {
+				if ((start & 1) != 0) {
+					sum = comb(sum, segtree[start++]);
+				}
+				if ((end & 1) != 0) {
+					sum = comb(sum, segtree[--end]);
+				}
+			}
+			return sum;
+		}
 };
 
-Seg<long long> st;
-
 int main() {
-	int n, q; cin >> n >> q;
-	st.init(n+1);
-	for(int i=1; i<=n; i++) {
-		int a; cin >> a;
-		st.upd(i, a);
+	int arr_len;
+	int query_num;
+	std::cin >> arr_len >> query_num;
+
+	SumSegmentTree<long long> segtree(arr_len);
+	for (int i = 0; i < arr_len; i++) {
+		int n;
+		std::cin >> n;
+		segtree.set(i, n);
 	}
-	for(int i=1; i<=q; i++) {
-		int t, a, b; cin >> t >> a >> b;
-		if (t==1) st.upd(a,b);
-		else cout << st.query(a,b) <<"\n";
+
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int ind;
+			int val;
+			std::cin >> ind >> val;
+			segtree.set(ind - 1, val);
+		} else if (type == 2) {
+			int start;
+			int end;
+			std::cin >> start >> end;
+			cout << segtree.range_sum(start - 1, end) << '\n';
+		}
 	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 Compared to the previous problem, all we need to change is the way we aggregate
-values (change from `Math.min()` to summation) and the data type we use to store
-the query (`int` to `long`).
+values (from `Math.min()` to summation) and the data type we use to store
+the query (from `int` to `long`).
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class DynamicRangeSumQueries {
+public class SumSegmentTree {
+	private final long[] segtree;
+	private final int len;
+
+	public SumSegmentTree(int len) {
+		this.len = len;
+		segtree = new long[len * 2];
+		Arrays.fill(segtree, 0);
+	}
+
+	public void set(int ind, int val) {
+		assert(0 <= ind && ind < len);
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind >> 1] = segtree[ind] + segtree[ind ^ 1];
+		}
+	}
+
+	public long rangeSum(int start, int end) {
+		assert(0 <= start && start < len && 0 < end && end <= len);
+		long total = 0;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if ((start & 1) != 0) {
+				total = total + segtree[start++];
+			}
+			if ((end & 1) != 0) {
+				total = total + segtree[--end];
+			}
+		}
+		return total;
+	}
+
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-		int n = io.nextInt();
-		int q = io.nextInt();
+		int arrLen = io.nextInt();
+		int queryNum = io.nextInt();
 
-		SegmentTree seg = new SegmentTree(n);
-		for (int i = 0; i < n; i++) {
-			seg.set(i, io.nextInt());
+		SumSegmentTree segtree = new SumSegmentTree(arrLen);
+		for (int i = 0; i < arrLen; i++) {
+			segtree.set(i, io.nextInt());
 		}
 
-		for (int i = 0; i < q; i++) {
+		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
 			if (type == 1) {
-				int k = io.nextInt()-1;
-				int u = io.nextInt();
-				seg.set(k, u);
-			} else {
-				int a = io.nextInt()-1;
-				int b = io.nextInt()-1;
-				io.println(seg.sum(a, b));
+				int ind = io.nextInt() - 1;
+				int val = io.nextInt();
+				segtree.set(ind, val);
+			} else if (type == 2) {
+				int start = io.nextInt() - 1;
+				int end = io.nextInt() - 1;
+				io.println(segtree.rangeSum(start, end + 1));
 			}
 		}
 		io.close();
 	}
 
-	static class SegmentTree {
-		private long[] tree;
-		private int n;
-
-		public SegmentTree(int n) {
-			this.n = n;
-			tree = new long[n*2];
-		}
-
-		public long sum(int a, int b) {
-			a += n;
-			b += n;
-			long sum = 0;
-			while (a <= b) {
-				if (a%2 == 1) sum += tree[a++];
-				if (b%2 == 0) sum += tree[b--];
-				a /= 2;
-				b /= 2;
-			}
-			return sum;
-		}
-
-		public void set(int index, int val) {
-			index += n;
-			tree[index] = val;
-			for (index /= 2; index >= 1; index /= 2) {
-				tree[index] = tree[2*index] + tree[2*index+1];
-			}
-		}
-	}
-
-	CodeSnip{Kattio}
+	//CodeSnip{Kattio}
 }
+
 ```
 
 </JavaSection>
@@ -403,7 +477,7 @@ public class DynamicRangeSumQueries {
 
 ## Binary Indexed Tree
 
-Implementation is shorter than segment tree, but maybe more confusing at first
+The implementation is shorter than segment tree, but maybe more confusing at first
 glance.
 
 ### Resources
@@ -428,50 +502,6 @@ glance.
 		url="binary-indexed-trees"
 	 />
 </Resources>
-
-<!--
-
-### Implementations
-
-<LanguageSection>
-
-<CPPSection>
-
-
-</CPPSection>
-
-<JavaSection>
-
-<IncompleteSection>
-
-how to run this code ...
-
-</IncompleteSection>
-
-```java
-public static long[] fwt;
-public static long query(int a, int b) {
-	return sum(b) - sum(a - 1);
-}
-public static long sum(int i) {
-	long sum = 0;
-	while (i > 0) {
-		sum += fwt[i];
-		i -= (i & -i); // least significant bit
-	}
-	return sum;
-}
-public static void update(int i, long v) {
-	while (i < fwt.length) {
-		fwt[i] += v;
-		i += (i & -i);
-	}
-}
-```
-
-</JavaSection>
-
-</LanguageSection> -->
 
 ### Solution - Dynamic Range Sum Queries (With a BIT)
 
