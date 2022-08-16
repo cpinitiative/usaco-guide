@@ -1,0 +1,118 @@
+---
+id: GCJ-BacterialTactics
+source: Round 1C 2019 - Code Jam 2019
+title: Bacterial Tactics
+author: Shijie Ren
+---
+
+[Offcial Solution](https://codingcompetitions.withgoogle.com/codejam/round/00000000000516b9/0000000000134cdf#analysis)
+
+## Explanation
+
+First, take a look of the game: The player delete a column or a line without
+radioactive material, and divide the matrix into two small games, still
+following the rules above, the one who cannot operate will lose.
+
+Since the matrix is small here, it is appropriate to calculate SG for every
+submatrix. According to the Sprague–Grundy Theorem, the SG of two subgames will
+be the bitwise XOR sum of them.
+
+Let $f[i][j][a][b]$ be the SG value of submatrix where $(i,j)$ in the upper left
+corner and $(a,b)$ in the lower right corner. Thus,
+
+$f[i][j][a][b]=\text{MEX}(f[i][p-1][a][b] \oplus f[p+1][j][a][b],f[i][j][a][q-1] \oplus f[i][j][q+1][b])$
+
+Where $\oplus$ reprents bitwise XOR operation. Notice that there must not be
+radioactive material on the chosen line or column, this can be pre-calculated in
+$\mathcal{O}(N^2)$, for each cell pre-calculate the position of next cell with
+radioactive material in a specific direction.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^5)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define N 17
+char s[N][N];
+int f[N][N][N][N];
+int vis[N][N][N][N];
+int nex1[N][N];
+int nex2[N][N];
+int n, m, ans = 0;
+int work(int x, int y, int l, int r) {
+	if (x > y || l > r)
+		return 0;
+	if (vis[x][y][l][r])
+		return f[x][y][l][r];
+	int p, sum = 0, tmp = 0;
+	map<int, int> s;
+	for (p = x; p <= y; p++) {
+		tmp = work(x, p - 1, l, r) ^ work(p + 1, y, l, r);
+		if (nex2[p][l] > r) {
+			if (!tmp)
+				sum += r - l + 1;
+			s[tmp] = 1;
+		}
+	}
+	for (p = l; p <= r; p++) {
+		tmp = work(x, y, l, p - 1) ^ work(x, y, p + 1, r);
+		if (nex1[x][p] > y) {
+			if (!tmp)
+				sum += y - x + 1;
+			s[tmp] = 1;
+		}
+	}
+	if (x == 1 && y == n && l == 1 && r == m)
+		ans = sum;
+	for (p = 0; p <= 60; p++)
+		if (!s[p])
+			return vis[x][y][l][r] = 1, f[x][y][l][r] = p;
+}
+void get(int casenum) {
+	memset(vis, 0, sizeof(vis));
+	memset(f, 0, sizeof(f));
+	int i, j;
+	cin >> n >> m;
+	for (i = 1; i <= n; i++)
+		cin >> s[i] + 1;
+	for (i = 1; i <= m; i++) {
+		nex1[n + 1][i] = n + 1;
+		for (j = n; j >= 1; j--) {
+			if (s[j][i] == '#')
+				nex1[j][i] = j;
+			else
+				nex1[j][i] = nex1[j + 1][i];
+		}
+	}
+	for (i = 1; i <= n; i++) {
+		nex2[i][m + 1] = m + 1;
+		for (j = m; j >= 1; j--) {
+			if (s[i][j] == '#')
+				nex2[i][j] = j;
+			else
+				nex2[i][j] = nex2[i][j + 1];
+		}
+	}
+	ans = 0;
+	work(1, n, 1, m);
+	printf("Case #%d: %d\n", casenum, ans);
+}
+int main() {
+	int T;
+	cin >> T;
+	int i = 0;
+	while (T--)
+		i++, get(i);
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
