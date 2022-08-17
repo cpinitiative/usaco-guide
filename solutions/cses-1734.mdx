@@ -2,7 +2,7 @@
 id: cses-1734
 source: CSES
 title: Distinct Values Queries
-author: Benjamin Qi, Andrew Wang, Óscar Garries
+author: Benjamin Qi, Andrew Wang, Óscar Garries, Chuyang Wang
 ---
 
 <Spoiler title="Hint">
@@ -15,11 +15,11 @@ Sort the queries in a specific order before answering them.
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
 
-Answer queries in order of the right indices. Use a BIT to keep track of indices
-that contain distinct values. For every value, update the latest index for it
-and answer all queries at the current index. This ensures later indices are
-included in the BIT to accurately answer queries.
+We answer the queries from right to left, sorted by their left indices. By using a BIT, we can keep track of indices that contain distinct values. For every value $arr[i]$, we set the latest (i.e. the left-most) index in $bit[i]$ to $1$. If this value appeared before, we set the last used index back to $0$. Then, we can answer all queries at the current index $i$ by summing up the values between $[i, b]$. This ensures later indices after $i$ are included in the BIT to accurately answer queries.
 
+<LanguageSection>
+
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 
@@ -71,5 +71,7 @@ int main () {
 	}
 }
 ```
+</CPPSection>
+</LanguageSection>
 
 </Spoiler>
