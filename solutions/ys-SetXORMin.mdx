@@ -25,14 +25,14 @@ using namespace std;
 
 struct Trie {
 	Trie* children[2] = {};
-	int cnt = 0; // count of numbers with this bit
+	int cnt = 0; // # of numbers with this bit
 };
 
 void add(Trie* root, int x) {
 	Trie* cur = root;
-	for(int i = 30; i >= 0; i--){
+	for (int i = 30; i >= 0; i--) {
 		bool has_bit = x & (1 << i);
-		if(cur -> children[has_bit] == NULL){
+		if (cur -> children[has_bit] == NULL) {
 			// add bit node to trie if there isn't already
 			cur -> children[has_bit] = new Trie;
 		}
@@ -43,7 +43,7 @@ void add(Trie* root, int x) {
 
 void remove(Trie* root, int x) {
 	Trie* cur = root;
-	for(int i = 30; i >= 0; i--){
+	for (int i = 30; i >= 0; i--) {
 		bool has_bit = x & (1 << i);
 		cur -> children[has_bit] -> cnt--;
 		cur = cur -> children[has_bit];
@@ -53,14 +53,14 @@ void remove(Trie* root, int x) {
 int query(Trie* root, int x){
 	Trie* cur = root;
 	int res = 0;
-	for(int i = 30; i >= 0; i--){
+	for (int i = 30; i >= 0; i--) {
 		bool has_bit = x & (1 << i);
-		if(cur -> children[has_bit] != NULL && 
-		   cur -> children[has_bit] -> cnt > 0){
+		if (cur -> children[has_bit] != NULL && 
+		   cur -> children[has_bit] -> cnt > 0) {
 			// we go down the same bit
 			cur = cur -> children[has_bit];
 		}
-		else{
+		else {
 			/*
 			 * we go down a different bit,
 			 * xor increases by 2^i
