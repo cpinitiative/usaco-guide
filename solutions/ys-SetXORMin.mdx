@@ -1,0 +1,105 @@
+---
+id: ys-SetXORMin
+source: YS
+title: Set XOR-Min
+author: Chongtian Ma
+---
+
+## Explanation
+
+We can construct a binary trie, with nodes representing the most significant bits near the root down to the least significant bits. When we add or remove a number fo a trie, we can simply add or subtract nodes with its binary representation. To answer queries, we can go down the trie and pick the same bit if possible to minimize total xor. Note when we go down any path in the trie, it is guaranteed that it will lead to the bottom so we don't have to worry about backtracking.
+
+
+## Implentation
+
+**Time Complexity:** $\mathcal{O}(q\log x)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <set>
+using namespace std;
+
+struct trie {
+	trie* children[2] = {};
+	int cnt = 0;
+};
+
+void add(trie* root, int x) {
+	trie* cur = root;
+	for(int i = 30; i >= 0; i--){
+		bool has_bit = x & (1 << i);
+		if(cur -> children[has_bit] == NULL){
+			// add bit node to trie if there isn't already
+			cur -> children[has_bit] = new trie;
+		}
+		cur -> children[has_bit] -> cnt++;
+		cur = cur -> children[has_bit];
+	}
+}
+
+void remove(trie* root, int x) {
+	trie* cur = root;
+	for(int i = 30; i >= 0; i--){
+		bool has_bit = x & (1 << i);
+		cur -> children[has_bit] -> cnt--;
+		cur = cur -> children[has_bit];
+	}
+}
+
+int query(trie* root, int x){
+	trie* cur = root;
+	int res = 0;
+	for(int i = 30; i >= 0; i--){
+		bool has_bit = x & (1 << i);
+		if(cur -> children[has_bit] != NULL && 
+		   cur -> children[has_bit] -> cnt > 0){
+			// we go down the same bit
+			cur = cur -> children[has_bit];
+		}
+		else{
+			/*
+			 * we go down a different bit,
+			 * xor increases by 2^i
+			 */
+			cur = cur -> children[!has_bit];
+			res += 1 << i;
+		}
+	}
+	return res;
+}
+
+int main() {
+	cin.tie(0) -> sync_with_stdio(0);
+	trie tr;
+	int q; 
+	cin >> q;
+	set<int> s;
+	while (q--) {
+		int t, x; 
+		cin >> t >> x;
+		if (t == 0) {
+			if (!s.count(x)) {
+				s.insert(x);
+				add(&tr, x);
+			}
+		}
+		else if (t == 1) {
+			if (s.count(x)) {
+				s.erase(x);
+				remove(&tr, x);
+			}
+		}
+		else {
+			cout << query(&tr, x) << "\n";
+		}
+	}
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
