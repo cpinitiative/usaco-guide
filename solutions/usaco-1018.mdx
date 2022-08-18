@@ -26,7 +26,7 @@ Using the sample test case, the segments will be the following:
 
 We can iterate over the whole length of the number (from $1$ to $2N$). Call a segment open at a certain point if it contains that point and closed if it does not. At each step, we maintain the number of open segments. If a new segment opens, we can figure out how much it contributes to the answer making sure we don't overcount. We need to find the number of subsets where this segment is the beginning of a connected component.
 
-We don't include subsets that have the already open segments because in that case, the segment will not be the beginning of the connected component. In addition, we must include the current segment in the subset. Thus, there will be $2^{N - cnt}$ subsets were the current segment contributes $1$ to the answer where 'cnt' is the number of open segments including the newly opened segment. We can add this value to the final answer.
+We don't include subsets that have the already open segments because in that case, the segment will not be the beginning of the connected component. In addition, we must include the current segment in the subset. Thus, there will be $2^{N - open_segs_num}$ subsets were the current segment contributes $1$ to the answer where 'open_segs_num' is the number of open segments including the newly opened segment. We can add this value to the final answer.
 
 ## Implementation
 
@@ -63,18 +63,17 @@ int main() {
 	for (int i = 1; i <= n - 1; i++) {
 		pow[i] = pow[i - 1] * 2 % MOD;
 	}
-	// 'cnt' is the number of open segments
-	int cnt = 0;
+	int open_segs_num = 0;
 	ll ans = 0;
 	for (int i = 1; i <= 2 * n; i++) {
 		// Update the number of open segments
-		cnt += a[i]; 
+		open_segs_num += a[i]; 
 		/*
 		 * If a new segment is opened, count the number of subsets
 		 * where this new segment is the beginning of a connected component
 		 */
 		if (a[i] == 1) {
-			ans = (ans + pow[n - cnt]) % MOD;
+			ans = (ans + pow[n - open_segs_num]) % MOD;
 		}
 	}
 	freopen("help.out", "w", stdout);
