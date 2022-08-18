@@ -77,11 +77,11 @@ void solve() {
 		}
 	}
 
-	// Check if a number exists in 3 or more dominoes
 	map<int, vector<int>> ma;
 	for (int i = 0; i < n; i++) {
 		ma[dm[i].first].push_back(i);
 		ma[dm[i].second].push_back(i);
+		// Check if a number exists in 3 or more dominoes
 		if (ma[dm[i].first].size() > 2 || ma[dm[i].second].size() > 2) {
 			cout << "NO\n";
 			return;
@@ -99,12 +99,6 @@ void solve() {
 		}
 	}
 	
-	/*
-	 * Check if the graph is bipartite:
-	 * Since the graph is not guaranteed to be connected
-	 * we need to iterate over every value and make sure
-	 * every value is visited
-	*/
 	for (int i = 0; i < n; i++) {
 		if (vis[i] == -1) {
 			if (!dfs(i, 0, vis, adj)) {
