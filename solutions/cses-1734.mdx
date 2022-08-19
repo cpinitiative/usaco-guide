@@ -27,14 +27,16 @@ using namespace std;
 struct BIT {
 	int size;
 	vector<int> bit;
-	BIT(int n) : size(n), bit(n, 0) {}
+	BIT(int n) : size(n), bit(n + 1) {}
 	void update(int x, int v) {
-		for (; x < size; x += x & (-x)) {
+		x++;
+		for (; x <= size; x += x & (-x)) {
 			bit[x] += v;
 		}
 	}
 	/** @return sum of the values in [0,b] */
 	int query(int b) {
+		b++;
 		int result = 0;
 		for (; b > 0; b -= b & (-b)) {
 			result += bit[b];
@@ -47,25 +49,24 @@ int main() {
 	int n, q;
 	cin >> n >> q;
 
-	// arr, queries are 1-indexed.
-	vector<int> arr(n + 1);
-	vector<vector<pair<int, int>>> queries(n + 1);
-	for (int i = 1; i <= n; i++) {
+	vector<int> arr(n);
+	vector<vector<pair<int, int>>> queries(n);
+	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
 	for (int i = 0; i < q; i++) {
 		int a, b;
 		cin >> a >> b;
+		a--, b--;
 		queries[a].push_back({b, i});
 	}
 
-	// BIT also has to be 1-indexed, or the bitwise operator won't work.
-	BIT bit(n + 1);
+	BIT bit(n);
 	// last_index[val] is the left-most index where arr[last_index[val]] = val.
 	map<int, int> last_index;
 	vector<int> solution(q, -1);
 	// Update the indices and answer queries from right to left.
-	for (int i = n; i > 0; i--) {
+	for (int i = n - 1; i >= 0; i--) {
 		int val = arr[i];
 		/*
 		 * If val already appeared earlier, then the saved value is no
@@ -110,32 +111,31 @@ public class DistinctValuesQueries {
 		int n = Integer.parseInt(st.nextToken());
 		int q = Integer.parseInt(st.nextToken());
 
-		// arr is 1-indexed
-		int[] arr = new int[n + 1];
+		int[] arr = new int[n];
 		st = new StringTokenizer(bf.readLine());
-		for (int i = 1; i <= n; i++) {
+		for (int i = 0; i < n; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 
-		// queries is also 1-indexed
 		List<List<Pair>> queries = new ArrayList<>();
-		for (int i = 0; i <= n; i++) {
+		for (int i = 0; i < n; i++) {
 			queries.add(new ArrayList<>());
 		}
 		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(bf.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
+			a--;
+			b--;
 			queries.get(a).add(new Pair(b, i));
 		}
 		bf.close();
 
 		// last_index[val] is the left-most index where arr[last_index[val]] = val.
 		Map<Integer, Integer> last_index = new HashMap<>();
-		// BIT also has to be 1-indexed, or the bitwise operator won't work.
 		BIT bit = new BIT(n);
 		int[] solution = new int[q];
-		for (int i = n; i > 0; i--) {
+		for (int i = n - 1; i >= 0; i--) {
 			int val = arr[i];
 			/*
 			 * If val already appeared earlier, then the saved value is no
@@ -177,6 +177,7 @@ public class DistinctValuesQueries {
 		}
 
 		void update(int x, int v) {
+			x++;
 			for (; x <= size; x += x & -x) {
 				bit[x] += v;
 			}
@@ -184,6 +185,7 @@ public class DistinctValuesQueries {
 
 		/** @return sum of values in [0,b] */
 		int query(int b) {
+			b++;
 			int result = 0;
 			for (; b > 0; b -= b & -b) {
 				result += bit[b];
