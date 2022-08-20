@@ -13,7 +13,7 @@ Sort the cakes by color. The task now becomes choosing some range $[l, r]$ that 
 
 Let $\texttt{opt}(l)$ be the optimal right endpoint for some left endpoint. We can observe that $\texttt{opt}$ is a monotonically increasing function. This motivates a divide and conquer solution. 
 
-Suppose we know that $\texttt{opt}(i) \in [p, q]$ for $i \in [l, r]$. If $p = q$, then we are done. Otherwise, let $m = \lfloor \frac{l+r}{2}\rfloor$, and compute $\texttt{opt}(m)$. We now know that $\texttt{opt}(i)$ lies in the range $[p, \texttt{opt(m)}]$ for $i \in [l, m)$, and in the range $[\texttt{opt}(m), q]$ for $i \in (m, r]$. We can then recurse. By the master theorem, this will run in $\tilde{\mathcal{O}}(n)$ time. 
+Suppose we know that $\texttt{opt}(i) \in [p, q]$ for $i \in [l, r]$. If $p = q$, then we are done. Otherwise, let $m = \lfloor \frac{l+r}{2}\rfloor$, and compute $\texttt{opt}(m)$. We now know that $\texttt{opt}(i)$ lies in the range $[p, \texttt{opt(m)}]$ for $i \in [l, m)$, and in the range $[\texttt{opt}(m), q]$ for $i \in (m, r]$. We can then recurse. By the [master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)), this will run in $\tilde{\mathcal{O}}(n)$ time. 
 
 The only step left is to compute the sum of the $m$ largest values in a range. This can be done with a variety of data structures in logarithmic time.
 
