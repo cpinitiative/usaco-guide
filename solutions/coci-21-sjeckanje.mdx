@@ -5,7 +5,7 @@ title: Sjeckanje
 author: Timothy Gao
 ---
 
-For any segment $[l, r]$ with more than three elements, if there exists a tuple such that $a_i < a_{i+2} < a_{i+1}$ or $a_i > a_{i+2} > a_{i+1}$ where $i...i+2$ are contained in the segment, then the segment can be split into two segments $l, l+1... i+1$ and $i+2, i+3, ... r$. This is provably at least as good as the score ($\text {max} - \text {min}$) of the initial segment. The tuples $a_i < a_{i+2} < a_{i+1}$ and $a_i > a_{i+2} > a_{i+1}$ must exist in any segment that is **not** non-increasing or non-decreasing, and the first two elements of the segment determines whether the rest of the segment will be non-increasing or non-decreasing. Therefore, an optimal solution can be constructed with only non-increasing or non-decreasing segments. This paves the way for several key properties.
+For any segment $[l, r]$ with more than three elements, if there exists a tuple such that $a_i < a_{i+2} < a_{i+1}$ or $a_i > a_{i+2} > a_{i+1}$ where $i...i+2$ are contained in the segment, then the segment can be split into two segments $l, l+1, \dots, I+1$ and $i+2, i+3, ... r$. This is provably at least as good as the score ($\text {max} - \text {min}$) of the initial segment. The tuples $a_i < a_{i+2} < a_{i+1}$ and $a_i > a_{i+2} > a_{i+1}$ must exist in any segment that is **not** non-increasing or non-decreasing, and the first two elements of the segment determines whether the rest of the segment will be non-increasing or non-decreasing. Therefore, an optimal solution can be constructed with only non-increasing or non-decreasing segments. This paves the way for several key properties.
 
 Define array $D$ of length $N-1$ such that $D_i = A_{i+1} - A_i$. If the current segment $s = [l, r]$ is non-decreasing, then $\sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$ and $D_i \geq 0$ for $i \in [l, r]$. If the current segment $s = [l, r]$ is non-decreasing, then $-1 \cdot \sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$ and $D_i \leq 0$ for $i \in [l, r]$. Between any two adjacent selected segments $s = [a, b]$ and $w = [b+1, c]$, $D_b$ must not included in our answer. With this formulation, adding integer $x$ to $l, l+1, ... r$ is equivalent to performing the point updates $D_{l-1}$ += $x$ and $D_{r}$ -= $x$.
 
@@ -23,121 +23,146 @@ using namespace std;
 
 typedef long long ll;
 
-struct node{
-    ll borders[2] = {};  // border values of segment
-    ll dp[2][2] = {};  // take/not-take left and right border values
+struct node
+{
+	ll borders[2] = {}; // border values of segment
+	ll dp[2][2] = {};   // take/not-take left and right border values
 
-    node(){}
-    node(ll v) {
-        borders[0] = borders[1] = v;
-        dp[0][1] = dp[1][0] = dp[0][0] = 0;
-        dp[1][1] = abs(v);
-    }
-    // assume current is left
-    node comb(node& other){
-        node ret;
+	node() {}
+	node(ll v)
+	{
+		borders[0] = borders[1] = v;
+		dp[0][1] = dp[1][0] = dp[0][0] = 0;
+		dp[1][1] = abs(v);
+	}
+	// assume current is left
+	node comb(node &other)
+	{
+		node ret;
 
-        ret.borders[0] = borders[0];
-        ret.borders[1] = other.borders[1];
+		ret.borders[0] = borders[0];
+		ret.borders[1] = other.borders[1];
 
-        // [     ][     ]
-        // l     mo     r
-        // m and o same -> taken segments are combined
-        for(int l = 0; l < 2; l++){
-            for(int m = 0; m < 2; m++){
-                for(int o = 0; o < 2; o++){
-                    for(int r = 0; r < 2; r++){
-                        if(m && o){
-                            // it's never optimal to take two opposite sign values
-                            if((borders[1] < 0) == (other.borders[0] < 0)){
-                                ret.dp[l][r] = max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
-                            }
-                        } else {
-                            ret.dp[l][r] = max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
-                        }
-                    }
-                }
-            }
-        }
-        return ret;
-    }
+		// [	 ][	 ]
+		// l	 mo	 r
+		// m and o same -> taken segments are combined
+		for (int l = 0; l < 2; l++)
+		{
+			for (int m = 0; m < 2; m++)
+			{
+				for (int o = 0; o < 2; o++)
+				{
+					for (int r = 0; r < 2; r++)
+					{
+						if (m && o)
+						{
+							// it's never optimal to take two opposite sign values
+							if ((borders[1] < 0) == (other.borders[0] < 0))
+							{
+								ret.dp[l][r] = max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
+							}
+						}
+						else
+						{
+							ret.dp[l][r] = max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
+						}
+					}
+				}
+			}
+		}
+		return ret;
+	}
 
-    // modify a single-element node segment by +v
-    void upd(ll v){
-        borders[0] += v;
-        borders[1] += v;
-        dp[1][1] = abs(borders[0]);
-    }
+	// modify a single-element node segment by +v
+	void upd(ll v)
+	{
+		borders[0] += v;
+		borders[1] += v;
+		dp[1][1] = abs(borders[0]);
+	}
 };
 
 struct segtree
 {
-    node val;
-    int gL, gR, mid;
-    segtree *left, *right;
+	node val;
+	int gL, gR, mid;
+	segtree *left, *right;
 
-    segtree(int l, int r, vector<node>& nums)
-    {
-        gL = l; gR = r; mid = (gL + gR) / 2;
-        if (l == r)
-        {
-            val = nums[l];
-        }
-        else
-        {
-            
-            left = new segtree(l, mid, nums), right = new segtree(mid + 1, r, nums);
-            val = left->val.comb(right->val);
-        }
-    }
+	segtree(int l, int r, vector<node> &nums)
+	{
+		gL = l;
+		gR = r;
+		mid = (gL + gR) / 2;
+		if (l == r)
+		{
+			val = nums[l];
+		}
+		else
+		{
 
-    void update(int idx, ll updval)
-    {
-        if (gL == gR)
-        {
-            val.upd(updval);
-        }
-        else
-        {
-            if (idx <= (gL + gR) / 2)
-            {
-                left->update(idx, updval);
-            }
-            else
-            {
-                right->update(idx, updval);
-            }
-            val = left->val.comb(right->val);
-        }
-   }
+			left = new segtree(l, mid, nums), right = new segtree(mid + 1, r, nums);
+			val = left->val.comb(right->val);
+		}
+	}
+
+	void update(int idx, ll updval)
+	{
+		if (gL == gR)
+		{
+			val.upd(updval);
+		}
+		else
+		{
+			if (idx <= (gL + gR) / 2)
+			{
+				left->update(idx, updval);
+			}
+			else
+			{
+				right->update(idx, updval);
+			}
+			val = left->val.comb(right->val);
+		}
+	}
 };
 
-int main(){
-    ios_base::sync_with_stdio(false); cin.tie(0);
-    
-    int N, Q; cin >> N >> Q;
-    vector<node> D(N - 1);
-    int a; cin >> a;
-    //compute difference array
-    for(int i = 0; i<N-1; i++){
-        int b; cin >> b;
-        D[i] = node(b - a);
-        swap(a, b);
-    }
-    
-    //a_(i + 1) - a(i)
-    segtree sgt(0, N - 2, D);
-    for(int q = 0; q < Q; q++){
-        int l, r; ll x; cin >> l >> r >> x;
-        l--, r--;
-        if(l - 1 >= 0){
-            sgt.update(l - 1, x);
-        }
-        if(r < N - 1){
-            sgt.update(r, -x);
-        }
-        cout << sgt.val.dp[1][1] << '\n';
-    }
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<node> D(N - 1);
+	int a;
+	cin >> a;
+	// compute difference array
+	for (int i = 0; i < N - 1; i++)
+	{
+		int b;
+		cin >> b;
+		D[i] = node(b - a);
+		swap(a, b);
+	}
+
+	// a_(i + 1) - a(i)
+	segtree sgt(0, N - 2, D);
+	for (int q = 0; q < Q; q++)
+	{
+		int l, r;
+		ll x;
+		cin >> l >> r >> x;
+		l--, r--;
+		if (l - 1 >= 0)
+		{
+			sgt.update(l - 1, x);
+		}
+		if (r < N - 1)
+		{
+			sgt.update(r, -x);
+		}
+		cout << sgt.val.dp[1][1] << '\n';
+	}
 }
 ```
 </CPPSection>
