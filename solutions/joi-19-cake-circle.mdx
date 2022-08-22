@@ -11,7 +11,7 @@ First, given some set of cakes $S$, it is always optimal to arrange them in sort
 
 Sort the cakes by color. For any set of cakes, the smallest is the leftmost one and the largest is the rightmost one. The task now becomes choosing some range $[l, r]$ that maximizes the sum of the $m$ largest beauty values, minus $2 \cdot (C_r - C_l)$.
 
-Let $\texttt{opt}(l)$ be the optimal right endpoint for some left endpoint. We can observe that $\texttt{opt}$ is a non-decreasing function. This motivates a divide and conquer solution. 
+Let $\texttt{opt}(l)$ be the optimal right endpoint for some left endpoint. We can observe that $\texttt{opt}$ is a non-decreasing function (the proof of this has been left as an exercise to the reader). This motivates a divide and conquer solution. 
 
 Suppose we know that $\texttt{opt}(i) \in [p, q]$ for $i \in [l, r]$. If $p = q$, then we are done. Otherwise, let $m = \lfloor \frac{l+r}{2}\rfloor$, and compute $\texttt{opt}(m)$. We now know that $\texttt{opt}(i)$ lies in the range $[p, \texttt{opt(m)}]$ for $i \in [l, m)$, and in the range $[\texttt{opt}(m), q]$ for $i \in (m, r]$. We can then recurse. By the [master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)), this will run in $\tilde{\mathcal{O}}(n)$ time. 
 
@@ -96,7 +96,8 @@ class WaveletTree {
  
 public:
 	WaveletTree(vector<long long> vec) { init(vec.begin(), vec.end()); }
- 
+ 	
+	// resets data structure to inital state
 	template<typename I>
 	void init(I begin, I end) {
 		map<long long, int> m;
