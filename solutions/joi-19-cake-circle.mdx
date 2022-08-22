@@ -7,9 +7,9 @@ author: Dustin Miao
 
 # Explanation
 
-First, given some set of cakes $S$, it is always optimal to arrange them in sorted order by color (this can be shown inductively). The total color is $2(\max(S) - \min(S))$. 
+First, given some set of cakes $S$, it is always optimal to arrange them in sorted order by color. To prove this, consider inductively adding the cakes in ascending order. It can be shown that placing the cake between the greatest one added so far and the smallest one is always optimal. Thus, total color is $2(\max(S) - \min(S))$. 
 
-Sort the cakes by color. The task now becomes choosing some range $[l, r]$ that maximizes the sum of the $m$ largest beauty values, minus $2 \cdot (C_r - C_l)$.
+Sort the cakes by color. For any set of cakes, the smallest is the leftmost one and the largest is the rightmost one. The task now becomes choosing some range $[l, r]$ that maximizes the sum of the $m$ largest beauty values, minus $2 \cdot (C_r - C_l)$.
 
 Let $\texttt{opt}(l)$ be the optimal right endpoint for some left endpoint. We can observe that $\texttt{opt}$ is a non-decreasing function. This motivates a divide and conquer solution. 
 
@@ -49,9 +49,9 @@ decltype(auto) y_combinator(Fun &&fun) {
 	return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
 }
  
-} // namespace std
+}  // namespace std
  
-class wavelet_tree {
+class WaveletTree {
 	int n;
 	vector<long long> vmap;
 	vector<vector<int>> tree;
@@ -95,7 +95,7 @@ class wavelet_tree {
  
  
 public:
-	wavelet_tree(vector<long long> vec) { init(vec.begin(), vec.end()); }
+	WaveletTree(vector<long long> vec) { init(vec.begin(), vec.end()); }
  
 	template<typename I>
 	void init(I begin, I end) {
@@ -137,7 +137,7 @@ int main() {
 		tie(V[i], C[i]) = A[i];
 	}
  
-	wavelet_tree wt(V);
+	WaveletTree wt(V);
 	vector<int> rpos(N - M + 1);
  
 	y_combinator([&](auto self, int pl, int pr, int ql, int qr) -> void {
