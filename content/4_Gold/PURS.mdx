@@ -318,9 +318,8 @@ public class MinSegmentTree {
 <PySection>
 ```python
 import sys
-inf = float('inf')
-input = sys.stdin.readline
 
+# A data structure that can answer point update & range minimum queries.
 class SegmentTree:
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.arr = arr
@@ -332,7 +331,8 @@ class SegmentTree:
 		for ii in reversed(range(n)):
 			self.tree[ii] = min(self.tree[ii << 1], self.tree[(ii << 1) | 1])
 
-	def update(self, i: int, v: int) -> None:
+	# Adds v to the element at index i.
+	def add(self, i: int, v: int) -> None:
 		i += self.n
 		self.tree[i] = v
 
@@ -340,10 +340,11 @@ class SegmentTree:
 			self.tree[i >> 1] = min(self.tree[i], self.tree[i ^ 1])
 			i >>= 1
 
-	def query(self, l: int, r: int) -> int:
+	# @return the minimum element with index in the range [l, r)
+	def range_min(self, l: int, r: int) -> int:
 		l += self.n
 		r += self.n
-		ret = inf
+		ret = float('inf')
 		while l < r:
 			if l & 1:
 				ret = min(ret, self.tree[l])
@@ -355,15 +356,15 @@ class SegmentTree:
 			r >>= 1
 		return ret
 
-n, q = map(int, input().split())
-array = list(map(int, input().split()))
+n, q = map(int, sys.stdin.readline().split())
+array = list(map(int, sys.stdin.readline().split()))
 array_segment_tree = SegmentTree(array, n)
 for _ in range(q):
-	t, k, u = map(int, input().split())
+	t, k, u = map(int, sys.stdin.readline().split())
 	if t == 1:
-		array_segment_tree.update(k - 1, u)
+		array_segment_tree.add(k - 1, u)
 	else:
-		print(array_segment_tree.query(k - 1, u))
+		print(array_segment_tree.range_min(k - 1, u))
 ```
 </PySection>
 
@@ -527,10 +528,12 @@ public class SumSegmentTree {
 
 </JavaSection>
 <PySection>
+Compared to the previous problem, all we need to change is the way we aggregate
+values (from `min()` to '+'), and change the initial value (sum) to 0.
 ```python
 import sys
-input = sys.stdin.readline
 
+# A data structure that can answer point update & range sum queries.
 class SegmentTree:
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.arr = arr
@@ -542,7 +545,8 @@ class SegmentTree:
 		for ii in reversed(range(n)):
 			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
 
-	def update(self, i: int, v: int) -> None:
+	# Adds v to the element at index i.
+	def add(self, i: int, v: int) -> None:
 		i += self.n
 		self.tree[i] = v
 
@@ -550,7 +554,8 @@ class SegmentTree:
 			self.tree[i >> 1] = self.tree[i] + self.tree[i ^ 1]
 			i >>= 1
 
-	def query(self, l: int, r: int) -> int:
+	# @return The sum of elements with indices in the range [l, r)
+	def range_sum(self, l: int, r: int) -> int:
 		l += self.n
 		r += self.n
 		sum = 0
@@ -565,15 +570,15 @@ class SegmentTree:
 			r >>= 1
 		return sum
 
-n, q = map(int, input().split())
-array = list(map(int, input().split()))
+n, q = map(int, sys.stdin.readline().split())
+array = list(map(int, sys.stdin.readline().split()))
 array_segment_tree = SegmentTree(array, n)
 for _ in range(q):
-	t, k, u = map(int, input().split())
+	t, k, u = map(int, sys.stdin.readline().split())
 	if t == 1:
-		array_segment_tree.update(k - 1, u)
+		array_segment_tree.add(k - 1, u)
 	else:
-		print(array_segment_tree.query(k - 1, u))
+		print(array_segment_tree.range_sum(k - 1, u))
 ```
 </PySection>
 </LanguageSection>
@@ -698,8 +703,10 @@ int main() {
 <PySection>
 ```python
 import sys
-input = sys.stdin.readline
 
+# Short for "binary indexed tree",
+# this data structure supports point update and range sum
+# queries like a segment tree.
 class BIT:
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.tree = [0] * (n + 1)
@@ -707,12 +714,14 @@ class BIT:
 		for ii in range(n):
 			self.add_val(ii, arr[ii])
 	
-	def add_val(self, i: int, v: int):
+	# Adds v to the element at index i.
+	def add(self, i: int, v: int):
 		i += 1
 		while i <= self.size:
 			self.tree[i] += v
 			i += i & (-i)
 	
+	# @return The sum of all values with indices in the range [0, i]
 	def prefix_sum(self, i: int):
 		s = 0
 		i += 1
@@ -721,21 +730,23 @@ class BIT:
 			i -= i & (-i)
 		return s
 	
-	def get_sum(self, l: int, r: int):
+	# @return Difference of prefix sums to attain sum between all
+	# values with indices in the range [l, r]
+	def range_sum(self, l: int, r: int):
 		return self.prefix_sum(r) - self.prefix_sum(l - 1)
 
 
-n, q = map(int, input().split())
-array = list(map(int, input().split()))
+n, q = map(int, sys.stdin.readline().split())
+array = list(map(int, sys.stdin.readline().split()))
 array_bit = BIT(array, n)
 
 for _ in range(q):
-	q_type, k, u = map(int, input().split())
+	q_type, k, u = map(int, sys.stdin.readline().split())
 	if q_type == 1:
-		array_bit.add_val(k - 1, u - array[k - 1])
+		array_bit.add(k - 1, u - array[k - 1])
 		array[k - 1] = u  # Make sure to update value after changing!
 	elif q_type == 2:
-		print(array_bit.get_sum(min(k, u)-1, max(k, u)-1))
+		print(array_bit.range_sum(min(k, u) - 1, max(k, u) - 1))
 ```
 </PySection>
 
