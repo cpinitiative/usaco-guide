@@ -331,7 +331,7 @@ class SegmentTree:
 		for ii in reversed(range(n)):
 			self.tree[ii] = min(self.tree[ii << 1], self.tree[(ii << 1) | 1])
 
-	# Adds v to the element at index i.
+	"""Adds v to the element at index i."""
 	def add(self, i: int, v: int) -> None:
 		i += self.n
 		self.tree[i] = v
@@ -340,7 +340,7 @@ class SegmentTree:
 			self.tree[i >> 1] = min(self.tree[i], self.tree[i ^ 1])
 			i >>= 1
 
-	# @return the minimum element with index in the range [l, r)
+	"""@return the minimum element with index in the range [l, r)"""
 	def range_min(self, l: int, r: int) -> int:
 		l += self.n
 		r += self.n
@@ -533,8 +533,8 @@ values (from `min()` to '+'), and change the initial value (sum) to 0.
 ```python
 import sys
 
-# A data structure that can answer point update & range sum queries.
 class SegmentTree:
+	"""A data structure that can answer point update & range sum queries."""
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.arr = arr
 		self.n = n
@@ -545,7 +545,7 @@ class SegmentTree:
 		for ii in reversed(range(n)):
 			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
 
-	# Adds v to the element at index i.
+	"""Adds v to the element at index i."""
 	def add(self, i: int, v: int) -> None:
 		i += self.n
 		self.tree[i] = v
@@ -554,7 +554,7 @@ class SegmentTree:
 			self.tree[i >> 1] = self.tree[i] + self.tree[i ^ 1]
 			i >>= 1
 
-	# @return The sum of elements with indices in the range [l, r)
+	"""@return The sum of elements with indices in the range [l, r)."""
 	def range_sum(self, l: int, r: int) -> int:
 		l += self.n
 		r += self.n
@@ -704,24 +704,26 @@ int main() {
 ```python
 import sys
 
-# Short for "binary indexed tree",
-# this data structure supports point update and range sum
-# queries like a segment tree.
 class BIT:
+	"""
+	Short for "binary indexed tree",
+	this data structure supports point update and range sum
+	queries like a segment tree.
+	"""
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.tree = [0] * (n + 1)
 		self.size = n
 		for ii in range(n):
 			self.add_val(ii, arr[ii])
 	
-	# Adds v to the element at index i.
+	"""Adds v to the element at index i."""
 	def add(self, i: int, v: int):
 		i += 1
 		while i <= self.size:
 			self.tree[i] += v
 			i += i & (-i)
 	
-	# @return The sum of all values with indices in the range [0, i]
+	"""@return The sum of all values with indices in the range [0, i]."""
 	def prefix_sum(self, i: int):
 		s = 0
 		i += 1
@@ -730,8 +732,10 @@ class BIT:
 			i -= i & (-i)
 		return s
 	
-	# @return Difference of prefix sums to attain sum between all
-	# values with indices in the range [l, r]
+	"""
+	@return Difference of prefix sums to attain sum between all
+	values with indices in the range [l, r]
+	"""
 	def range_sum(self, l: int, r: int):
 		return self.prefix_sum(r) - self.prefix_sum(l - 1)
 
