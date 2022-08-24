@@ -332,7 +332,7 @@ class SegmentTree:
 			self.tree[ii] = min(self.tree[ii << 1], self.tree[(ii << 1) | 1])
 
 	def add(self, i: int, v: int) -> None:
-	"""Adds v to the element at index i."""
+		"""Adds v to the element at index i."""
 		i += self.n
 		self.tree[i] = v
 
@@ -341,7 +341,7 @@ class SegmentTree:
 			i >>= 1
 
 	def range_min(self, l: int, r: int) -> int:
-	"""@return the minimum element with index in the range [l, r)"""
+		""":return the minimum element with index in the range [l, r)"""
 		l += self.n
 		r += self.n
 		ret = float('inf')
@@ -363,7 +363,7 @@ for _ in range(q):
 	t, k, u = map(int, sys.stdin.readline().split())
 	if t == 1:
 		array_segment_tree.add(k - 1, u)
-	else:
+	elif t == 2:
 		print(array_segment_tree.range_min(k - 1, u))
 ```
 </PySection>
@@ -534,7 +534,6 @@ values (from `min()` to '+'), and change the initial value (sum) to 0.
 import sys
 
 class SegmentTree:
-	"""A data structure that can answer point update & range sum queries."""
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.arr = arr
 		self.n = n
@@ -546,7 +545,6 @@ class SegmentTree:
 			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
 
 	def add(self, i: int, v: int) -> None:
-	"""Adds v to the element at index i."""
 		i += self.n
 		self.tree[i] = v
 
@@ -555,7 +553,6 @@ class SegmentTree:
 			i >>= 1
 
 	def range_sum(self, l: int, r: int) -> int:
-	"""@return The sum of elements with indices in the range [l, r)."""
 		l += self.n
 		r += self.n
 		sum = 0
@@ -577,7 +574,7 @@ for _ in range(q):
 	t, k, u = map(int, sys.stdin.readline().split())
 	if t == 1:
 		array_segment_tree.add(k - 1, u)
-	else:
+	elif t == 2:
 		print(array_segment_tree.range_sum(k - 1, u))
 ```
 </PySection>
