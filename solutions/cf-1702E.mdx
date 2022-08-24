@@ -41,20 +41,20 @@ The implementation of this is relatively straight forward; Simply check if the g
 #include <bits/stdc++.h>
 using namespace std;
 
-bool dfs(int u, int g, vector<int>& vis, vector<vector<int>>& adj) {
+bool dfs(int u, int color, vector<int>& vis, vector<vector<int>>& adj) {
 	// If the node is already visited with and was marked in the same color
-	if (vis[u] == g) {
+	if (vis[u] == color) {
 		return true;
 	}
     
 	// If the node is already visited with and was marked in the other color
-	if (vis[u] == 1 - g) {
+	if (vis[u] == 1 - color) {
 		return false;
 	}
     
-	vis[u] = g; 
-	for (int i : adj[u]) {
-		if (!dfs(i, 1 - g, vis, adj)) return false; 
+	vis[u] = color; 
+	for (int v : adj[u]) {
+		if (!dfs(v, 1 - color, vis, adj)) return false; 
 	}
 	return true;
 }
@@ -62,13 +62,13 @@ bool dfs(int u, int g, vector<int>& vis, vector<vector<int>>& adj) {
 void solve() {
 	int n; 
 	cin >> n;
-	vector<pair<int, int>> dm(n);
+	vector<pair<int, int>> dominoes(n);
     
-	for (pair<int, int>& i : dm) {
+	for (pair<int, int>& i : dominoes) {
 		cin >> i.first >> i.second;
 	}
 		
-	for (pair<int, int> i : dm) {
+	for (pair<int, int> i : dominoes) {
         	// Check if a number on the domino is repeated
 		if (i.first == i.second) {
 			cout << "NO\n";
@@ -76,12 +76,12 @@ void solve() {
 		}
 	}
 
-	map<int, vector<int>> ma;
+	map<int, vector<int>> color_to_index;
 	for (int i = 0; i < n; i++) {
-		ma[dm[i].first].push_back(i);
-		ma[dm[i].second].push_back(i);
+		color_to_index[dominoes[i].first].push_back(i);
+		color_to_index[dominoes[i].second].push_back(i);
 		// Check if a number exists in 3 or more dominoes
-		if (ma[dm[i].first].size() > 2 || ma[dm[i].second].size() > 2) {
+		if (color_to_index[dominoes[i].first].size() > 2 || color_to_index[dominoes[i].second].size() > 2) {
 			cout << "NO\n";
 			return;
 		}
@@ -90,7 +90,7 @@ void solve() {
 	// initialize variables for DFS
 	vector<int> vis(n, -1);
 	vector<vector<int>> adj(n);
-	for (pair<int, vector<int>> p : ma) {
+	for (pair<int, vector<int>> p : color_to_index) {
 		vector<int> v = p.second;
 		if (v.size() == 2) {
 			adj[v[0]].push_back(v[1]);
