@@ -335,8 +335,10 @@ int main() {
 	cin >> N >> M;
 	mint::set_mod(M);
 	mint c = 1;
-	for (int i = 1; i <= N; i++) 
-		cout << (c = (c * i) + (i % 2 == 1 ? -1 : 1)).val() << ' ';
+	for (int i = 1; i <= N; i++) {
+		c = (c * i) + (i % 2 == 1 ? -1 : 1);
+		cout << c.val() << ' ';
+	}
 	cout << endl;
 }
 ```
@@ -378,7 +380,8 @@ int main() {
 	for (int i = 2; i <= N; i++) {
 		mint c = (i - 1) * (a + b);
 		cout << c.val() << ' ';
-		a = b, b = c;
+		a = b;
+		b = c;
 	}
 	cout << endl;
 }
