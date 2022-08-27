@@ -155,7 +155,7 @@ public class cses1634 {
 
 <PySection>
 ```python
-INF = 1000000000 # `INF = float('inf')` times out
+INF = 1000000000  # Using float('inf') results in a TLE
 
 n, x = map(int, input().split())
 c = list(map(int, input().split()))
@@ -169,7 +169,10 @@ for i in range(x):
 		continue
 	for coin in c:
 		if i + coin <= x:
-			# DP transition: state `i` needs `dp[i]` coins, so state `i + coin` can be made with `dp[i] + 1` coins.
+			"""
+			DP transition: state i needs dp[i] coins,
+			so state i + coin can be made with dp[i] + 1 coins.
+			"""
 			dp[i + coin] = min(dp[i + coin], dp[i] + 1)
 
 
