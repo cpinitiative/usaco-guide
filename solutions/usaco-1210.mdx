@@ -147,4 +147,71 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+```py
+import math
+
+# Function that skips forward x submission
+# with constants a and b and current expected value e
+# based on the geometric series formula
+def skip_submissions(a, b, e, x):
+	return pow(a, x) * e + b * (pow(a, x) - 1) / (a - 1)
+
+t, k = map(int,input().split())
+
+# Subtract sample
+t -= 1
+
+# Precompute probablility of getting i test cases using pascal's identity 
+prob = [[0 for i in range(t + 1)] for j in range(t + 1)]
+prob[0][0] = 1
+for i in range(1, t + 1):
+	prob[i][0] = prob[i - 1][0] / 2
+	for j in range(1, t + 1):
+		prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2
+
+# Prefix sums for probablity
+pref_prob = [0 for i in range(t + 1)]
+pref_prob[0] = prob[t][0]
+for i in range(1, t + 1):
+	pref_prob[i] = pref_prob[i - 1] + prob[t][i]
+
+# Prefix sums for expected value
+pref_exp = [0 for i in range(t + 1)]
+pref_exp[0] = 0
+for i in range(1, t + 1):
+  pref_exp[i] = pref_exp[i - 1] + prob[t][i] * i
+
+e = 0
+while (k != 0):
+	# Find the floor of the current expected value
+	# which is also the limit on how many submissions we can skip forward
+	cross = math.floor(e)
+
+	# Find a and b using the precomputed prefix sums
+	a = pref_prob[cross]
+	b = pref_exp[t] - pref_exp[cross]
+
+	# Binary search to see how many submissions we can skip forward
+	lo = 1
+	hi = 1e9
+	while (lo < hi):
+		mid = math.floor((lo + hi + 1) / 2)
+		if (math.floor(skip_submissions(a, b, e, mid)) == cross):
+			lo = mid
+		else:
+			hi = mid - 1
+
+	# Skip forward lo submissions
+	# If the remaining number of submissions is less than lo,
+	# skip forward for the remaining submissions
+	lo = min(lo, k)
+	e = skip_submissions(a, b, e, lo)
+	k -= lo
+
+print(e + 1)
+```
+
+</PySection>
+
 </LanguageSection>
