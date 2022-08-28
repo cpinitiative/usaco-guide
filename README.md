@@ -21,7 +21,7 @@ contributions are welcome! To get started, simply pick an
 [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work
 on, leave a comment, and submit a Pull Request!
 
-Join our Discord server: https://discord.gg/UKbyewj2Ft
+Join our Discord server: https://discord.gg/VCxUzdYhzN
 
 ## Our Team
 

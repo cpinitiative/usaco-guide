@@ -106,4 +106,31 @@ public class Teamwork {
 }
 ```
 </JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+l = []
+for i in range(n):
+	l.append(int(input()))
+
+dp = [-1] * n
+dp[0] = l[0]
+for i in range(n):
+	# by not joining it to a team, the default value is just l[i]
+	mx = l[i]
+	for j in range(i, -1, -1):
+		cr = i - j + 1
+		if cr > k:
+			break
+		mx = max(mx, l[j])
+		# update answer: dp[i] = max(dp[i],the skill of joining this cow to a team + all of the previous sums)
+		if j == 0:
+			dp[i] = max(dp[i], mx * cr)
+		else:
+			dp[i] = max(dp[i], dp[j - 1] + (mx * cr))
+print(dp[n - 1])
+```
+
+</PySection>
 </LanguageSection>
