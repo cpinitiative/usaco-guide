@@ -2,7 +2,7 @@
 id: PURS
 title: 'Point Update Range Sum'
 author: Benjamin Qi, Dong Liu, Nathan Gong
-contributors: Andrew Wang
+contributors: Andrew Wang, Pramana Saldin
 prerequisites:
   - prefix-sums
 description:
@@ -314,6 +314,60 @@ public class MinSegmentTree {
 ```
 
 </JavaSection>
+
+<PySection>
+```python
+import sys
+
+class SegmentTree:
+	"""A data structure that can answer point update & range minimum queries."""
+	def __init__(self, arr: list[int], n: int) -> None:
+		self.arr = arr
+		self.n = n
+		self.tree = [0] * (2 * n)
+
+		for ii in range(n):
+			self.tree[n + ii] = arr[ii]
+		for ii in reversed(range(n)):
+			self.tree[ii] = min(self.tree[ii << 1], self.tree[(ii << 1) | 1])
+
+	def add(self, i: int, v: int) -> None:
+		"""Adds v to the element at index i."""
+		i += self.n
+		self.tree[i] = v
+
+		while i > 1:
+			self.tree[i >> 1] = min(self.tree[i], self.tree[i ^ 1])
+			i >>= 1
+
+	def range_min(self, l: int, r: int) -> int:
+		""":return the minimum element with index in the range [l, r)"""
+		l += self.n
+		r += self.n
+		ret = float('inf')
+		while l < r:
+			if l & 1:
+				ret = min(ret, self.tree[l])
+				l += 1
+			if r & 1:
+				r -= 1
+				ret = min(ret, self.tree[r])
+			l >>= 1
+			r >>= 1
+		return ret
+
+n, q = map(int, sys.stdin.readline().split())
+array = list(map(int, sys.stdin.readline().split()))
+array_segment_tree = SegmentTree(array, n)
+for _ in range(q):
+	t, k, u = map(int, sys.stdin.readline().split())
+	if t == 1:
+		array_segment_tree.add(k - 1, u)
+	elif t == 2:
+		print(array_segment_tree.range_min(k - 1, u))
+```
+</PySection>
+
 </LanguageSection>
 
 ### Solution - Dynamic Range Sum Queries
@@ -321,7 +375,8 @@ public class MinSegmentTree {
 <LanguageSection>
 <CPPSection>
 
-Compared to the previous problem, all we need to change are `DEFAULT` and `comb`.
+Compared to the previous problem, all we need to change are `DEFAULT` and
+`comb`.
 
 ```cpp
 #include <iostream>
@@ -401,8 +456,8 @@ int main() {
 <JavaSection>
 
 Compared to the previous problem, all we need to change is the way we aggregate
-values (from `Math.min()` to summation) and the data type we use to store
-the query (from `int` to `long`).
+values (from `Math.min()` to summation) and the data type we use to store the
+query (from `int` to `long`).
 
 ```java
 import java.io.*;
@@ -472,13 +527,63 @@ public class SumSegmentTree {
 ```
 
 </JavaSection>
+<PySection>
+Compared to the previous problem, all we need to change is the way we aggregate
+values (from `min()` to '+'), and change the initial value (sum) to 0.
+```python
+import sys
 
+class SegmentTree:
+	def __init__(self, arr: list[int], n: int) -> None:
+		self.arr = arr
+		self.n = n
+		self.tree = [0] * (2 * n)
+
+		for ii in range(n):
+			self.tree[n + ii] = arr[ii]
+		for ii in reversed(range(n)):
+			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
+
+	def add(self, i: int, v: int) -> None:
+		i += self.n
+		self.tree[i] = v
+
+		while i > 1:
+			self.tree[i >> 1] = self.tree[i] + self.tree[i ^ 1]
+			i >>= 1
+
+	def range_sum(self, l: int, r: int) -> int:
+		l += self.n
+		r += self.n
+		sum = 0
+		while l < r:
+			if l & 1:
+				sum += self.tree[l]
+				l += 1
+			if r & 1:
+				r -= 1
+				sum += self.tree[r]  
+			l >>= 1
+			r >>= 1
+		return sum
+
+n, q = map(int, sys.stdin.readline().split())
+array = list(map(int, sys.stdin.readline().split()))
+array_segment_tree = SegmentTree(array, n)
+for _ in range(q):
+	t, k, u = map(int, sys.stdin.readline().split())
+	if t == 1:
+		array_segment_tree.add(k - 1, u)
+	elif t == 2:
+		print(array_segment_tree.range_sum(k - 1, u))
+```
+</PySection>
 </LanguageSection>
 
 ## Binary Indexed Tree
 
-The implementation is shorter than segment tree, but maybe more confusing at first
-glance.
+The implementation is shorter than segment tree, but maybe more confusing at
+first glance.
 
 ### Resources
 
@@ -591,6 +696,62 @@ int main() {
 	}
 }
 ```
+</CPPSection>
+<PySection>
+```python
+import sys
+
+class BIT:
+	"""
+	Short for "binary indexed tree",
+	this data structure supports point update and range sum
+	queries like a segment tree.
+	"""
+	def __init__(self, arr: list[int], n: int) -> None:
+		self.tree = [0] * (n + 1)
+		self.size = n
+		for ii in range(n):
+			self.add_val(ii, arr[ii])
+	
+	def add(self, i: int, v: int):
+	"""Adds v to the element at index i."""
+		i += 1
+		while i <= self.size:
+			self.tree[i] += v
+			i += i & (-i)
+	
+	def prefix_sum(self, i: int):
+	"""@return The sum of all values with indices in the range [0, i]."""
+		s = 0
+		i += 1
+		while i > 0:
+			s += self.tree[i]
+			i -= i & (-i)
+		return s
+	
+	def range_sum(self, l: int, r: int):
+	"""
+	@return Difference of prefix sums to attain sum between all
+	values with indices in the range [l, r]
+	"""
+		return self.prefix_sum(r) - self.prefix_sum(l - 1)
+
+
+n, q = map(int, sys.stdin.readline().split())
+array = list(map(int, sys.stdin.readline().split()))
+array_bit = BIT(array, n)
+
+for _ in range(q):
+	q_type, k, u = map(int, sys.stdin.readline().split())
+	if q_type == 1:
+		array_bit.add(k - 1, u - array[k - 1])
+		array[k - 1] = u  # Make sure to update value after changing!
+	elif q_type == 2:
+		print(array_bit.range_sum(min(k, u) - 1, max(k, u) - 1))
+```
+</PySection>
+
+</LanguageSection>
 
 #### Solution 2
 
@@ -612,6 +773,8 @@ Writing a BIT this way has the advantage of generalizing to multiple dimensions.
 	</Resource>
 </Resources>
 
+<LanguageSection>
+<CPPSection>
 ```cpp
 /**
  * Description: range sum queries and point updates for $D$ dimensions
@@ -820,7 +983,7 @@ int main() {
 	cin >> test_num;
 	for (int t = 0; t < test_num; t++) {
 		Tree<int> tree;
-		
+
 		int arr_len;
 		cin >> arr_len;
 		long long inv_num = 0;
@@ -861,7 +1024,7 @@ public class Main {
 	public static void main(String[] args) {
 		final int MAX_ELEM = (int) 1e7;
 		Kattio io = new Kattio();
-		
+
 		int testNum = io.nextInt();
 		for (int t = 0; t < testNum; t++) {
 			BIT bit = new BIT(MAX_ELEM + 1);
