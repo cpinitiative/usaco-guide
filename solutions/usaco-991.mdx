@@ -70,37 +70,34 @@ public class Loan {
   
 <PySection>
 ```
-class Loan:
-	# our checking function in the binary search
-	def isOk(self, numGallons: int, withinDays: int, atLeast: int, checkNumber: int) -> bool: 
-	  	g = 0
-	  	while (withinDays > 0 and g < numGallons):
-	  	    y = (numGallons - g) // checkNumber
-	  	    
-	  	    if (y < atLeast):
-	  	        leftover = ((numGallons - g) + (atLeast - 1)) // atLeast
-	  	        return leftover <= withinDays
-	  	        
-	  	    maxMatch = numGallons - (checkNumber * y)
-	  	    numDays = (maxMatch - g) // y + 1
-	  	    
-	  	    if (numDays > withinDays): # take a maximum
-	  	        numDays = withinDays
-	  	    g += y * numDays # update values
-	  	    withinDays -= numDays
-	  
-	  	return g >= numGallons
+# check whether Farmer John gives Bessie at least N(numGallons) gallons of milk after K(withinDays) days when X == checkNumber
+def isOk(numGallons: int, withinDays: int, atLeast: int, checkNumber: int) -> bool: 
+    g = 0
+    while (withinDays > 0 and g < numGallons):
+        y = (numGallons - g) // checkNumber
+        
+        if (y < atLeast):
+            leftover = ((numGallons - g) + (atLeast - 1)) // atLeast
+            return leftover <= withinDays
+        
+        maxMatch = numGallons - (checkNumber * y)
+        numDays = (maxMatch - g) // y + 1
+        
+        if (numDays > withinDays): # take a maximum
+            numDays = withinDays
+        g += y * numDays # update values
+        withinDays -= numDays
+    return g >= numGallons
   
   
 numGallons, withinDays, atLeast = map(int, input().split())
-loan  = Loan()
 low = 1
 high = 1000000000000
 
 while (low<high):
   	mid = (low+high+1) // 2
   	# we can exclude everything up to but not including mid
-  	if(loan.isOk(numGallons, withinDays, atLeast, mid)):
+  	if(isOk(numGallons, withinDays, atLeast, mid)):
   	    low = mid
   	else: # we can exclude everything including mid
   	    high = mid -1
