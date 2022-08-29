@@ -176,18 +176,31 @@ and running C++ from the command line.
 <Spoiler title="Sublime Text Notes (Ben)">
 
 I prefer Sublime Text because it opens instantly, it's simple to use, and it's
-easy on the eyes. Also, it's not too hard to write your own
-[custom commands](https://stackoverflow.com/questions/24276143/can-i-create-my-own-command-in-sublime-and-how-to-associate-python-implementatio)
-in Python.
+easy on the eyes.
+
+Notes:
 
 - I prefer the _Mariana_ color scheme in place of the default.
   - From the command palette (Cmd-Shift-P), follow
     `UI: Select Color Scheme -> Mariana`
-- [Package - Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
+- It's not too hard to write your own
+  [custom commands](https://stackoverflow.com/questions/24276143/can-i-create-my-own-command-in-sublime-and-how-to-associate-python-implementatio)
+  in Python.
+- I compile and run using Terminal rather than building from within sublime
+  text.
+- [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
+  - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X
+    Mojave.
 
-  - Highlights compilation errors and warnings.
-  - Customize the linter by opening `Preferences: SublimeLinter Settings` from
-    the command palette. My settings:
+_Linters_ highlight compilation errors and warnings. The latter of the options
+below is faster, though it only supports `clang`
+([discussion](https://forum.sublimetext.com/t/sublime-linter/62435/2)).
+
+- [Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
+
+  - To customize compilation flags, open `Preferences: SublimeLinter Settings`
+    from the command palette.
+  - Example settings:
 
     ```
     // SublimeLinter Settings - User
@@ -204,17 +217,30 @@ in Python.
     }
     ```
 
-Here's what linting looks like:
+- [LSP](https://packagecontrol.io/packages/LSP)
 
-![sublime](running-code-img/sublime-ex.png)
+  - Follow the instructions
+    [here](https://lsp.sublimetext.io/guides/cplusplus/#clangd).
 
-Additional notes:
+  - Example `compile_flags.txt`:
 
-- I compile and run using Terminal rather than building from within sublime
-  text.
-- [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
-  - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X
-    Mojave.
+    ```
+    -DLOCAL
+    -std=c++17
+    -O2
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wfloat-equal
+    -Wduplicated-cond
+    -Wlogical-op
+    -Wno-unused-const-variable
+    -Wno-sign-conversion
+    ```
+
+  - You can see Neal Wu using this package
+    [here](https://youtu.be/wh3pz18qC70?t=98).
 
 </Spoiler>
 
