@@ -36,7 +36,8 @@ for competitive programming, a code editor alone may suit your needs.
 
 <Info title="Which code editor or IDE should I use?">
 
-It depends on your personal preference. Try multiple and see which one you like best.
+It depends on your personal preference. Try multiple and see which one you like
+best.
 
 </Info>
 
@@ -139,8 +140,8 @@ Alternatively, you can install editing software like PyCharm or VSCode.
 ### Linux
 
 You can use built-in terminal editors, like `vim` and `nano`. You can also
-install editing software like VSCode. If you don't know how to exit, have a
-look at [this](https://stackoverflow.com/questions/11828270) link.
+install editing software like VSCode. If you don't know how to exit, have a look
+at [this](https://stackoverflow.com/questions/11828270) link.
 
 </PySection>
 
@@ -184,30 +185,24 @@ in Python.
     `UI: Select Color Scheme -> Mariana`
 - [Package - Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
 
-  - highlights compilation errors and warnings from `-Wall`
-  - can use
-    [`PackageResourceViewer`](https://packagecontrol.io/packages/PackageResourceViewer)
-    to change linter settings. From the command palette, follow
-    `PackageResourceViewer -> Open Resource -> SublimeLinter-gcc -> linter.py`.
-    Now you can modify `linter.py` to compile with the same options that you
-    normally use. For example, my `linter.py` looks like the following:
+  - Highlights compilation errors and warnings.
+  - Customize the linter by opening `Preferences: SublimeLinter Settings` from
+    the command line. My settings:
 
-  ```py
-  class GPlusPlus(Linter):
-      name = "g++"
-      cmd = "g++ ${args} -"
-      regex = OUTPUT_RE
-      multiline = True
-      on_stderr = None
-
-      defaults = {
-          "selector": "source.c++",
-          "args": ["-c", "-DLOCAL", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wshadow", "-Wconversion", "-Wfloat-equal", "-Wduplicated-cond", "-Wlogical-op"],
-          "-I +": [],
-          "-x": "c++",
-          "-o": getGarbabgeFilePath(),
-      }
-  ```
+    ```
+    // SublimeLinter Settings - User
+    {
+        "linters": {
+            "g++": { // https://packagecontrol.io/packages/SublimeLinter-gcc
+                "disable": false,
+                "executable": ["g++-11"],
+                "args": ["-DLOCAL", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wshadow", "-Wconversion", "-Wfloat-equal", "-Wduplicated-cond", "-Wlogical-op"],
+                "I": [],
+                "excludes": [],
+            },
+        },
+    }
+    ```
 
 Here's what linting looks like:
 
@@ -215,18 +210,11 @@ Here's what linting looks like:
 
 Additional notes:
 
-- I compile and run from the command line rather than building from within
-  sublime text (i.e., I don't use Cmd-B).
+- I compile and run using Terminal rather than building from within sublime
+  text.
 - [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
   - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X
     Mojave.
-- [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding)
-  (I don't use)
-  - test manager can be useful
-  - linting is covered by the above
-  - stress testing is covered in
-    [Debugging](/general/debugging-lang#stress-testing)
-  - can't get debug to work
 
 </Spoiler>
 
