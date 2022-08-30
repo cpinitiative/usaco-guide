@@ -59,6 +59,36 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```Py
+
+# Computes the Pi array of s
+def pi(s: str) -> List[int]:
+	n = len(s)
+	pi_s = [0] * n
+	j = 0
+	for i in range(1, n):
+		while j > 0 and s[j] != s[i]:
+			j = pi_s[j - 1]
+		if s[i] == s[j]:
+			j += 1
+		pi_s[i] = j
+	return pi_s
+	
+T = input()
+P = input()
+S = P + '#' + T
+pi = pi(S)
+ans = 0
+for l in pi:
+	if l == len(P):
+		ans += 1
+print(ans)
+
+```
+	
+</PySection>
 
 </LanguageSection>
 
