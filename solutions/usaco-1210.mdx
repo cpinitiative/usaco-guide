@@ -151,13 +151,15 @@ int main() {
 ```python
 import math
 
-"""
-Function that skips forward x submission
-with constants a and b and current expected value e
-based on the geometric series formula
-"""
+
 def skip_submissions(a: float, b: float, e: float, x: float) -> float:
+	"""
+	Function that skips forward x submission
+	with constants a and b and current expected value e
+	based on the geometric series formula
+	"""
 	return pow(a, x) * e + b * (pow(a, x) - 1) / (a - 1)
+
 
 t, k = map(int,input().split())
 
@@ -182,10 +184,10 @@ for i in range(1, t + 1):
 pref_exp = [0 for i in range(t + 1)]
 pref_exp[0] = 0
 for i in range(1, t + 1):
-  pref_exp[i] = pref_exp[i - 1] + prob[t][i] * i
+	pref_exp[i] = pref_exp[i - 1] + prob[t][i] * i
 
 e = 0
-while (k != 0):
+while k != 0:
 	"""
 	Find the floor of the current expected value
 	which is also the limit on how many submissions we can skip forward
@@ -199,9 +201,9 @@ while (k != 0):
 	# Binary search to see how many submissions we can skip forward
 	lo = 1
 	hi = 1e9
-	while (lo < hi):
+	while lo < hi:
 		mid = math.floor((lo + hi + 1) / 2)
-		if (math.floor(skip_submissions(a, b, e, mid)) == cross):
+		if math.floor(skip_submissions(a, b, e, mid)) == cross:
 			lo = mid
 		else:
 			hi = mid - 1
