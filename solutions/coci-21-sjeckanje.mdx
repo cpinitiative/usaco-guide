@@ -9,7 +9,7 @@ For any segment $[l, r]$ with at least three elements, if there exists $i$ such 
 
 Define array $D$ of length $N-1$ such that $D_i = A_{i+1} - A_i$. If the current segment $s = [l, r]$ is increasing, then $D_i > 0$ for $i \in [l, r)$ and $\sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$. If the current segment $s = [l, r]$ is decreasing, then $D_i < 0$ for $i \in [l, r)$ and $-1 \cdot \sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$. Between any two adjacent selected segments $[a, b]$ and $[b+1, c]$, $D_b$ must not included in our answer. With this formulation, adding integer $x$ to all elements $l, l+1, \dots, r$ is equivalent to performing the point updates $D_{l-1}\mathrel{+}=x$ and $D_{r}\mathrel{-}=x$.
 
-Now, the problem becomes selecting segments on $D$ rather than the original $A$, where each segment contributes the absolute value of the sum of its elements to the final answer. Every two neighboring segments must be separated by at least one element (see $D_b$ above), and all elements in each segment must be either $< 0$ or $> 0$. One way to go from here is with a segment tree. Each node stores the maximum value of its segment for each of the four cases of taking or not taking the first or last element, as well as the border elements of its segment.  When merging, we must pay attention to only combine two segments together if the signs of their border elements to be combined are the same to ensure that the combined segment continues to be either strictly increasing or decreasing.
+Now, the problem becomes selecting segments on $D$ rather than the original $A$, where each segment contributes the absolute value of the sum of its elements to the final answer. Every two neighboring segments must be separated by at least one element (see $D_b$ above), and all elements in each segment must be either $< 0$ or $> 0$. One way to go from here is with a segment tree. Each Node stores the maximum value of its segment for each of the four cases of taking or not taking the first or last element, as well as the border elements of its segment.  When merging, we must pay attention to only combine two segments together if the signs of their border elements to be combined are the same to ensure that the combined segment continues to be either strictly increasing or decreasing.
 
 **Time Complexity**: $\mathcal O(N + Q\log N)$
 
@@ -21,21 +21,21 @@ Now, the problem becomes selecting segments on $D$ rather than the original $A$,
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-struct node
+struct Node
 {
 	ll borders[2] = {}; // border values of segment
 	ll dp[2][2] = {};   // take/not-take left and right border values
-	node() {}
-	node(ll v)
+	Node() {}
+	Node(ll v)
 	{
 		borders[0] = borders[1] = v;
 		dp[0][1] = dp[1][0] = dp[0][0] = 0;
 		dp[1][1] = abs(v);
 	}
 	// assume current is left
-	node comb(node &other)
+	Node comb(Node &other)
 	{
-		node ret;
+		Node ret;
 		ret.borders[0] = borders[0];
 		ret.borders[1] = other.borders[1];
 		// [	 ][	 ]
@@ -67,7 +67,7 @@ struct node
 		}
 		return ret;
 	}
-	// modify a single-element node segment by +v
+	// modify a single-element Node segment by +v
 	void upd(ll v)
 	{
 		borders[0] += v;
@@ -75,12 +75,12 @@ struct node
 		dp[1][1] = abs(borders[0]);
 	}
 };
-struct segtree
+struct SegTree
 {
-	node val;
+	Node val;
 	int gL, gR, mid;
-	segtree *left, *right;
-	segtree(int l, int r, vector<node> &nums)
+	SegTree *left, *right;
+	SegTree(int l, int r, vector<Node> &nums)
 	{
 		gL = l;
 		gR = r;
@@ -91,7 +91,7 @@ struct segtree
 		}
 		else
 		{
-			left = new segtree(l, mid, nums), right = new segtree(mid + 1, r, nums);
+			left = new SegTree(l, mid, nums), right = new SegTree(mid + 1, r, nums);
 			val = left->val.comb(right->val);
 		}
 	}
@@ -121,7 +121,7 @@ int main()
 	cin.tie(0);
 	int N, Q;
 	cin >> N >> Q;
-	vector<node> D(N - 1);
+	vector<Node> D(N - 1);
 	int a;
 	cin >> a;
 	// compute difference array
@@ -129,17 +129,18 @@ int main()
 	{
 		int b;
 		cin >> b;
-		D[i] = node(b - a);
+		D[i] = Node(b - a);
 		swap(a, b);
 	}
 	// a_(i + 1) - a(i)
-	segtree sgt(0, N - 2, D);
+	SegTree sgt(0, N - 2, D);
 	for (int q = 0; q < Q; q++)
 	{
 		int l, r;
 		ll x;
 		cin >> l >> r >> x;
-		l--, r--;
+		l--;
+		r--;
 		if (l - 1 >= 0)
 		{
 			sgt.update(l - 1, x);
