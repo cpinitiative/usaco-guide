@@ -39,16 +39,16 @@ ll euclid(ll a, ll b) {
 
 ```py
 def euclid(a: int, b: int) -> int:
-    assert int(a) > 0 and int(b) > 0, \
-        "Arguments must be positive, non-zero numeric values."
+	assert int(a) > 0 and int(b) > 0, \
+		"Arguments must be positive, non-zero numeric values."
 
-    while b > 0:
-        k = a // b
+	while b > 0:
+		k = a // b
 	# subtract multiples of one equation from the other.
-        a -= b * k
-        a, b = b, a
+		a -= b * k
+		a, b = b, a
 
-    return a
+	return a
 ```
 
 </PySection>
@@ -116,21 +116,21 @@ int main() {
 
 ```py
 def extend_euclid(a: int, b: int) -> list[int]:
-    assert int(a) > 0 and int(b) > 0, \
+	assert int(a) > 0 and int(b) > 0, \
 	"Arguments must be positive, non-zero numeric values."
 
-    x_arr = [1, 0, int(a)]
-    y_arr = [0, 1, int(b)]
-    q = -1
+	x_arr = [1, 0, int(a)]
+	y_arr = [0, 1, int(b)]
+	q = -1
 
-    while y_arr[2] > 0: # run extended Euclidean algo.
+	while y_arr[2] > 0: # run extended Euclidean algo.
 	q = x_arr[2] // y_arr[2]
 	for i in range(3):
-	    # keep subtracting multiple of one equation from the other.
-	    x_arr[i] -= y_arr[i]*q
+		# keep subtracting multiple of one equation from the other.
+		x_arr[i] -= y_arr[i]*q
 	x_arr, y_arr = y_arr, x_arr
 
-    return x_arr  # (x[0] * a) + (x[1] * b) = x[2], x[2] = gcd(a, b)
+	return x_arr  # (x[0] * a) + (x[1] * b) = x[2], x[2] = gcd(a, b)
 ```
 
 </PySection>
@@ -155,8 +155,8 @@ ll euclid(ll a, ll b) {
 
 ```py
 def euclid(a: int, b: int) -> int:
-    """Recursive Euclidean GCD."""
-    return a if b == 0 else euclid(b, a % b)
+	"""Recursive Euclidean GCD."""
+	return a if b == 0 else euclid(b, a % b)
 ```
 
 </PySection>
@@ -181,10 +181,10 @@ pl extendEuclid(ll a, ll b) { // returns {x,y}
 
 ```py
 def extend_euclid(a: int, b: int) -> list[int]:
-    if not b:
-        return [1, 0]
-    p = ext_euclid(b, a % b)
-    return [p[1], p[0] - (a // b) * p[1]]
+	if not b:
+		return [1, 0]
+	p = ext_euclid(b, a % b)
+	return [p[1], p[0] - (a // b) * p[1]]
 ```
 
 </PySection>
@@ -243,18 +243,18 @@ int main() {
 from math import gcd
 
 def inv_general(a: int, b: int) -> int:
-    """Returns the modular inverse of two positive, non-zero integer values."""
-    arr = ext_euclid(a, b)
-    assert arr[2] == 1, "GCD must be 1."
-    return arr[0] + (arr[0] < 0)*b
+	"""Returns the modular inverse of two positive, non-zero integer values."""
+	arr = ext_euclid(a, b)
+	assert arr[2] == 1, "GCD must be 1."
+	return arr[0] + (arr[0] < 0)*b
 
 if __name__ == "__main__":
-    for b in range(1, 101):
-        for a in range(101):
-            if gcd(a, b) == 1:
-                x = inv_general(a, b)
-                assert (a * x - 1) % b == 0
-                assert 0 < x and x < b
+	for b in range(1, 101):
+		for a in range(101):
+			if gcd(a, b) == 1:
+				x = inv_general(a, b)
+				assert (a * x - 1) % b == 0
+				assert 0 < x and x < b
 ```
 
 </PySection>
