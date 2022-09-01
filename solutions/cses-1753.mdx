@@ -26,7 +26,7 @@ If we are searching for string $P$ inside of string $T$, create a new string $S 
 using namespace std;
 
 namespace str {
-	// Computes the Pi array of s
+	/** Computes the Pi array of s. */
 	vector<int> pi(const string &s) {
 		int n = (int)s.size();
 		vector<int> pi_s(n);
@@ -59,6 +59,39 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```Py
+from typing import List
+
+
+def pi(s: str) -> List[int]:
+	"""Computes the Pi array of s."""
+	n = len(s)
+	pi_s = [0] * n
+	j = 0
+	for i in range(1, n):
+		while j > 0 and s[j] != s[i]:
+			j = pi_s[j - 1]
+		if s[i] == s[j]:
+			j += 1
+		pi_s[i] = j
+	return pi_s
+
+
+T = input()
+P = input()
+S = P + '#' + T
+pi = pi(S)
+ans = 0
+for l in pi:
+	if l == len(P):
+		ans += 1
+
+print(ans)
+```
+	
+</PySection>
 
 </LanguageSection>
 
