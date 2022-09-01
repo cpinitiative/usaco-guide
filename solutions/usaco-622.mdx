@@ -13,7 +13,7 @@ The problem asks for the minimum amount of distance the cows need to travel for 
 
 $\texttt{dp}[i][j] = min(\texttt{dp}[i][j], \sum_{p=j+1}^{n+1} (p-j-1) \cdot \texttt{rooms}[p-1] + \texttt{dp}[i-1][p])$,
 
-where $i \in [1,k]$ and $j \in [1,n]$. $\texttt{dp}[k][0]$ represents the minimum amount of distance needed if we place the first door at the beginning of the current array $\texttt{rooms}$. We then start from the second door by moving the first room $\texttt{rooms}[0]$ to the end of the array and do the DP again.  
+where $i \in [1,k]$ and $j \in [1,n]$. In other words, $dp[i][j]$ is the minimum of all distances if we put the $i$-th door at $j$ with the last door placed at some place $p$ after $j$. This distance is calculated by adding the distance to fill the rooms $[j, p)$ to the optimal amount of distance to fill rooms $[p, n]$ with $i-1$ doors. $\texttt{dp}[k][0]$ represents the minimum amount of distance needed if we place the first door at the beginning of the current array $\texttt{rooms}$. We then start from the second door by moving the first room $\texttt{rooms}[0]$ to the end of the array and do the DP again.  
 
 Our answer would be the minimum distance among all possible positions for the first door. 
 
@@ -26,7 +26,6 @@ There are $n$ doors which can be chosen as the first door. In each DP, we add ea
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const long long INF = 1e14;
 
 int main() {
 	freopen("cbarn2.in", "r", stdin);
@@ -39,10 +38,10 @@ int main() {
 		cin >> r;
 	}
 
-	long long best_answer = INF;
+	long long best_answer = INT64_MAX;
 	// Iterate through all possible positions of the first door
 	for (int start_pos = 0; start_pos < n; start_pos++) {
-		vector<vector<long long>> dp(k + 1, vector<long long>(n + 1, INF));
+		vector<vector<long long>> dp(k + 1, vector<long long>(n + 1, INT64_MAX));
 		// With no door used, the distance is only zero if there is no room filled
 		dp[0][n] = 0;
 		// Iterate through number of doors used
@@ -58,8 +57,12 @@ int main() {
 				for (int j = i + 1; j <= n; j++) {
 					// Add the amount of distance needed to fill the new room at j - 1
 					partial_dist += rooms[j - 1] * (j - i - 1);
+					long long new_dist = dp[used_door - 1][j];
+					if (new_dist < INT64_MAX) {
+						new_dist += partial_dist;
+					}
 					dp[used_door][i] =
-							min(dp[used_door][i], partial_dist + dp[used_door - 1][j]);
+							min(dp[used_door][i], new_dist);
 				}
 			}
 		}
