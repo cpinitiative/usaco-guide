@@ -38,7 +38,7 @@ int main() {
 		cin >> r;
 	}
 
-	long long best_answer = INT64_MAX;
+	long long min_dist = INT64_MAX;
 	// Iterate through all possible positions of the first door
 	for (int start_pos = 0; start_pos < n; start_pos++) {
 		vector<vector<long long>> dp(k + 1, vector<long long>(n + 1, INT64_MAX));
@@ -67,7 +67,7 @@ int main() {
 			}
 		}
 		// Update the best answer using the current dp answer
-		best_answer = min(best_answer, dp[k][0]);
+		min_dist = min(min_dist, dp[k][0]);
 		/*
 		 * Put the first room to the end of the deque so that the first door would
 		 * be placed at the second room
@@ -77,7 +77,7 @@ int main() {
 		rooms.push_back(first_room);
 	}
 
-	cout << best_answer << endl;
+	cout << min_dist << endl;
 }
 ```
 </CPPSection>
