@@ -70,32 +70,32 @@ public class Loan {
   
 <PySection>
 ```
-# check whether Farmer John gives Bessie at least N(num_gallons) gallons of milk after K(within_days) days when X == check_number
-def repay_loan(num_gallons: int, within_days: int, atLeast: int, check_number: int) -> bool: 
+# check whether Farmer John gives Bessie at least N(numGallons) gallons of milk after K(withinDays) days when X == checkNumber
+def repay_loan(numGallons: int, withinDays: int, atLeast: int, checkNumber: int) -> bool: 
     g = 0
-    while within_days > 0 and g < num_gallons:
-        y = (num_gallons - g) // check_number
+    while withinDays > 0 and g < numGallons:
+        y = (numGallons - g) // checkNumber
         if y < atLeast:
-            leftover = (num_gallons - g + atLeast - 1) // atLeast
-            return leftover <= within_days
-        max_match = num_gallons - check_number * y
-        num_days = (max_match - g) // y + 1
-        if num_days > within_days: # take a maximum
-            num_days = within_days
-        g += y * num_days # update values
-        within_days -= num_days
-    return g >= num_gallons
+            leftover = (numGallons - g + atLeast - 1) // atLeast
+            return leftover <= withinDays
+        maxMatch = numGallons - checkNumber * y
+        numDays = (maxMatch - g) // y + 1
+        if numDays > withinDays: # take a maximum
+            numDays = withinDays
+        g += y * numDays # update values
+        withinDays -= numDays
+    return g >= numGallons
    
-num_gallons, within_days, atLeast = map(int, input().split())
+numGallons, withinDays, atLeast = map(int, input().split())
 low = 1
-high = 10**12
-while low < high:
-  	mid = (low + high + 1) // 2
+high = 1000000000000
+while low<high:
+  	mid = (low+high+1) // 2
   	# we can exclude everything up to but not including mid
-  	if repay_loan(num_gallons, within_days, atLeast, mid):
+  	if repay_loan(numGallons, withinDays, atLeast, mid):
   	    low = mid
   	else: # we can exclude everything including mid
-  	    high = mid - 1
+  	    high = mid -1
     
 # low and high are the same so we can output either one
 print(low)
