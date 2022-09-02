@@ -69,23 +69,17 @@ int main () {
 		g[b].push_back({a, w});
 	}
 
-	int sol = -1;
 	int lo = 1, hi = 1e9 + 1;
-	int top = hi;
-	while (lo <= hi) {
-		int mid = lo + (hi - lo)/2;
-
+	while (lo < hi) {
+		int mid = lo + (hi - lo + 1) / 2;
 		if (ok(mid)) {
-			sol = max(sol, mid);
-			lo = mid + 1;
+			lo = mid;
 		} else {
 			hi = mid - 1;
 		}
 	}
-
-	cout << sol << '\n';
+	cout << (lo > 1e9 ? -1 : lo) << '\n';
 }
-
 ```
 </CPPSection>
 
