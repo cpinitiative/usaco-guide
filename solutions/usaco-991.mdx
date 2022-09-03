@@ -70,8 +70,13 @@ public class Loan {
   
 <PySection>
 ```
-# check whether Farmer John gives Bessie at least N(num_gallons) gallons of milk after K(within_days) days when X == check_number
-def repay_loan(num_gallons: int, within_days: int, atLeast: int, check_number: int) -> bool: 
+def repay_loan(
+	num_gallons: int, within_days: int, atLeast: int, check_number: int
+) -> bool: 
+	"""
+	Check whether Farmer John gives Bessie at least N (num_gallons)
+	gallons of milk after K (within_days) days when X == check_number
+	"""
 	g = 0
 	while within_days > 0 and g < num_gallons:
 		y = (num_gallons - g) // check_number
@@ -88,16 +93,14 @@ def repay_loan(num_gallons: int, within_days: int, atLeast: int, check_number: i
 
 num_gallons, within_days, atLeast = map(int, input().split())
 low = 1
-high = 10**12
+high = 10 ** 12
 while low < high:
 	mid = (low + high + 1) // 2
-	# we can exclude everything up to but not including mid
 	if repay_loan(num_gallons, within_days, atLeast, mid):
 		low = mid
-	else: # we can exclude everything including mid
+	else:
 		high = mid - 1
-    
-# low and high are the same so we can output either one
+
 print(low)
 ```
 </PySection>
