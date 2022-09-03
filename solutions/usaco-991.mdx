@@ -2,7 +2,7 @@
 id: usaco-991
 source: USACO Silver 2020 January
 title: Loan Repayment
-author: Brad Ma
+author: Brad Ma, Raviteja Kompalli
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_loan_silver_jan20.html)
@@ -72,30 +72,30 @@ public class Loan {
 ```
 # check whether Farmer John gives Bessie at least N(num_gallons) gallons of milk after K(within_days) days when X == check_number
 def repay_loan(num_gallons: int, within_days: int, atLeast: int, check_number: int) -> bool: 
-    g = 0
-    while within_days > 0 and g < num_gallons:
-        y = (num_gallons - g) // check_number
-        if y < atLeast:
-            leftover = (num_gallons - g + atLeast - 1) // atLeast
-            return leftover <= within_days
-        max_match = num_gallons - check_number * y
-        num_days = (max_match - g) // y + 1
-        if num_days > within_days: # take a maximum
-            num_days = within_days
-        g += y * num_days # update values
-        within_days -= num_days
-    return g >= num_gallons
-   
+	g = 0
+	while within_days > 0 and g < num_gallons:
+		y = (num_gallons - g) // check_number
+		if y < atLeast:
+			leftover = (num_gallons - g + atLeast - 1) // atLeast
+			return leftover <= within_days
+		max_match = num_gallons - check_number * y
+		num_days = (max_match - g) // y + 1
+		if num_days > within_days: # take a maximum
+			num_days = within_days
+		g += y * num_days # update values
+		within_days -= num_days
+	return g >= num_gallons
+
 num_gallons, within_days, atLeast = map(int, input().split())
 low = 1
 high = 10**12
 while low < high:
-  	mid = (low + high + 1) // 2
-  	# we can exclude everything up to but not including mid
-  	if repay_loan(num_gallons, within_days, atLeast, mid):
-  	    low = mid
-  	else: # we can exclude everything including mid
-  	    high = mid - 1
+	mid = (low + high + 1) // 2
+	# we can exclude everything up to but not including mid
+	if repay_loan(num_gallons, within_days, atLeast, mid):
+		low = mid
+	else: # we can exclude everything including mid
+		high = mid - 1
     
 # low and high are the same so we can output either one
 print(low)
