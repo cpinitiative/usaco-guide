@@ -28,7 +28,7 @@ maximise its distance from table 1. E.g., if placing table 2 to the left of tabl
 assume its leftmost edge will be touching the left wall of the room. Determining the solution is
 then simply a case of simulating all of these cases and finding which involves moving table 1 the smallest distance.
 
-![](cf-1555B\CF1555B-1.png)
+![](cf-1555B\CF1555B-1.png )
 Possible placements of table 2 relative to table 1.
 
 To determine the minimum distance that table 1 must be moved, we have to calculate the overlap
@@ -168,76 +168,76 @@ import java.util.*;
 
 public class TwoTables {
 
-  static InputReader r = new InputReader(System.in);
-  static PrintWriter pw = new PrintWriter(System.out);
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
 
-  public static void main(String[] args) {
-    int n = r.nextInt();
+	public static void main(String[] args) {
+		int n = r.nextInt();
 
-    for (int i = 0; i < n; i++) {
-      int W = r.nextInt();
-      int H = r.nextInt();
-      int x1 = r.nextInt();
-      int y1 = r.nextInt();
-      int x2 = r.nextInt();
-      int y2 = r.nextInt();
-      int w = r.nextInt();
-      int h = r.nextInt();
+		for (int i = 0; i < n; i++) {
+			int W = r.nextInt();
+			int H = r.nextInt();
+			int x1 = r.nextInt();
+			int y1 = r.nextInt();
+			int x2 = r.nextInt();
+			int y2 = r.nextInt();
+			int w = r.nextInt();
+			int h = r.nextInt();
 
-      int answer = Integer.MAX_VALUE;
+			int answer = Integer.MAX_VALUE;
 
-      if ((x2 - x1) + w <= W) { // Check if combined table widths can fit in the room
-        int left = Math.max(0, w - x1); // Determine overlap when placing the table on the left
-        int right = Math.max(0, x2 - (W - w)); // Determine overlap when placing the table on the
-        // right
-        answer = Math.min(left, right);
-      }
-      if ((y2 - y1) + h <= H) { // Check if combined table heights can fit in the room
-        int top = Math.max(0, y2 - (H - h));
-        int bottom = Math.max(0, h - y1);
-        int minTB = Math.min(top, bottom);
-        answer = Math.min(answer, minTB);
-      }
+			if ((x2 - x1) + w <= W) { // Check if combined table widths can fit in the room
+				int left = Math.max(0, w - x1); // Determine overlap when placing the table on the left
+				int right = Math.max(0, x2 - (W - w)); // Determine overlap when placing the table on the
+				// right
+				answer = Math.min(left, right);
+			}
+			if ((y2 - y1) + h <= H) { // Check if combined table heights can fit in the room
+				int top = Math.max(0, y2 - (H - h));
+				int bottom = Math.max(0, h - y1);
+				int minTB = Math.min(top, bottom);
+				answer = Math.min(answer, minTB);
+			}
 
-      pw.println(answer == Integer.MAX_VALUE ? -1 : answer);
-    }
-    pw.close();
-  }
+			pw.println(answer == Integer.MAX_VALUE ? -1 : answer);
+		}
+		pw.close();
+	}
 
-  static class InputReader {
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
 
-    BufferedReader reader;
-    StringTokenizer tokenizer;
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
 
-    public InputReader(InputStream stream) {
-      reader = new BufferedReader(new InputStreamReader(stream), 32768);
-      tokenizer = null;
-    }
+		String next() { // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
 
-    String next() { // reads in the next string
-      while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-        try {
-          tokenizer = new StringTokenizer(reader.readLine());
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-      return tokenizer.nextToken();
-    }
+		public int nextInt() { // reads in the next int
+			return Integer.parseInt(next());
+		}
 
-    public int nextInt() { // reads in the next int
-      return Integer.parseInt(next());
-    }
+		public long nextLong() { // reads in the next long
+			return Long.parseLong(next());
+		}
 
-    public long nextLong() { // reads in the next long
-      return Long.parseLong(next());
-    }
-
-    public double nextDouble() { // reads in the next double
-      return Double.parseDouble(next());
-    }
-  }
+		public double nextDouble() { // reads in the next double
+			return Double.parseDouble(next());
+		}
+	}
 }
+
 ```
 </JavaSection>
 </LanguageSection>
