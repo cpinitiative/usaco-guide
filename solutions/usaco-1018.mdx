@@ -87,32 +87,30 @@ int main() {
 <PySection>
 
 ```python
-mod = 1000000007
+MOD = 1000000007
 
-#reading input from the file
 filein = open('help.in', 'r') 
 n = int(filein.readline())
 
-#If the segment is open the value will be +ve else -ve
+# If the segment is open the value will be +ve else -ve
 a = [0] * (2 * n + 1)
 for i in range(n):
 	x, y = map(int, filein.readline().split())
-	a[x] += 1 #open
-	a[y] -= 1 #close
+	a[x] += 1 # open
+	a[y] -= 1 # close
 	
-#precalculating the powers of 2
+# precalculating the powers of 2
 pow = [1] * n
 for i in range(1,n):
-	pow[i] = pow[i - 1] * 2 % mod
+	pow[i] = pow[i - 1] * 2 % MOD
 
-open_segs = 0 #number of open segments
+open_segs = 0 # number of open segments
 ans = 0
 for i in range(1, 2 * n + 1):
 	open_segs += a[i]
 	if a[i] == 1:
-		ans = (ans + pow[n - open_segs]) % mod
+		ans = (ans + pow[n - open_segs]) % MOD
 
-#writing the output to the file
 fileout = open('help.out', 'w')
 fileout.write(str(ans) + '\n')
 ```
