@@ -71,7 +71,7 @@ public class Loan {
 <PySection>
 ```
 def repay_loan(
-	num_gallons: int, within_days: int, atLeast: int, check_number: int
+	num_gallons: int, within_days: int, min_repay_per_day: int, check_number: int
 ) -> bool: 
 	"""
 	Check whether Farmer John gives Bessie at least N (num_gallons)
@@ -80,8 +80,8 @@ def repay_loan(
 	g = 0
 	while within_days > 0 and g < num_gallons:
 		y = (num_gallons - g) // check_number
-		if y < atLeast:
-			leftover = (num_gallons - g + atLeast - 1) // atLeast
+		if y < min_repay_per_day:
+			leftover = (num_gallons - g + min_repay_per_day - 1) // min_repay_per_day
 			return leftover <= within_days
 		max_match = num_gallons - check_number * y
 		num_days = (max_match - g) // y + 1
@@ -91,12 +91,12 @@ def repay_loan(
 		within_days -= num_days
 	return g >= num_gallons
 
-num_gallons, within_days, atLeast = map(int, input().split())
+num_gallons, within_days, min_repay_per_day = map(int, input().split())
 low = 1
 high = 10 ** 12
 while low < high:
 	mid = (low + high + 1) // 2
-	if repay_loan(num_gallons, within_days, atLeast, mid):
+	if repay_loan(num_gallons, within_days, min_repay_per_day, mid):
 		low = mid
 	else:
 		high = mid - 1
