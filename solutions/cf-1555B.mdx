@@ -165,9 +165,6 @@ for _ in range(int(input())):
 <JavaSection>
 
 ```java
-import java.io.*;
-import java.util.*;
-
 public class TwoTables {
 
 	static InputReader r = new InputReader(System.in);
@@ -187,14 +184,17 @@ public class TwoTables {
 			int h = r.nextInt();
 
 			int answer = Integer.MAX_VALUE;
-
-			if ((x2 - x1) + w <= W) {  // Check if combined table widths can fit in the room
-				int left = Math.max(0, w - x1);  // Determine overlap when placing the table on the left
-				int right = Math.max(0, x2 - (W - w));  // Determine overlap when placing the table on the
-				// right
+			
+			// Check if combined table widths can fit in the room
+			if ((x2 - x1) + w <= W) { 
+				// Determine overlap when placing the table on the left
+				int left = Math.max(0, w - x1);
+				// Determine overlap when placing the table on the right
+				int right = Math.max(0, x2 - (W - w));
 				answer = Math.min(left, right);
 			}
-			if ((y2 - y1) + h <= H) {  // Check if combined table heights can fit in the room
+			// Check if combined table heights can fit in the room
+			if ((y2 - y1) + h <= H) { 
 				int top = Math.max(0, y2 - (H - h));
 				int bottom = Math.max(0, h - y1);
 				int minTB = Math.min(top, bottom);
