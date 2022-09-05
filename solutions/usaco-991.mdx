@@ -2,7 +2,7 @@
 id: usaco-991
 source: USACO Silver 2020 January
 title: Loan Repayment
-author: Brad Ma
+author: Brad Ma, Raviteja Kompalli
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_loan_silver_jan20.html)
@@ -68,4 +68,41 @@ public class Loan {
   
 </JavaSection>
   
+<PySection>
+
+```py
+def repay_loan(
+	num_gallons: int, within_days: int, min_repay_per_day: int, check_number: int
+) -> bool: 
+	"""
+	Check whether Farmer John gives Bessie at least N (num_gallons)
+	gallons of milk after K (within_days) days when X == check_number
+	"""
+	g = 0
+	while within_days > 0 and g < num_gallons:
+		y = (num_gallons - g) // check_number
+		if y < min_repay_per_day:
+			leftover = (num_gallons - g + min_repay_per_day - 1) // min_repay_per_day
+			return leftover <= within_days
+		max_match = num_gallons - check_number * y
+		num_days = (max_match - g) // y + 1
+		if num_days > within_days: # take a maximum
+			num_days = within_days
+		g += y * num_days # update values
+		within_days -= num_days
+	return g >= num_gallons
+
+num_gallons, within_days, min_repay_per_day = map(int, input().split())
+low = 1
+high = 10 ** 12
+while low < high:
+	mid = (low + high + 1) // 2
+	if repay_loan(num_gallons, within_days, min_repay_per_day, mid):
+		low = mid
+	else:
+		high = mid - 1
+
+print(low)
+```
+</PySection>
 </LanguageSection>
