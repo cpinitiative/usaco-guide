@@ -52,12 +52,12 @@ It is possible that the two tables don't overlap at all. In this case the above 
 would return a negative number so we should instead return 0 to indicate that table 1 doesn't
 have to move at all.
 
-<Info>
+<Warning>
 When placing table 2 on the left and right sides, make sure $w_{1} + w_{2} \leq W$,
 otherwise table 2 won't fit in the room.
 Similarly, when placing table 2 on the top and bottom sides, make sure $h_{1} + h_{2} \leq H$,
 otherwise table 2 won't fit in the room.
-</Info>
+</Warning>
 
 ## Implementation
 
@@ -169,10 +169,8 @@ import java.util.*;
 import java.io.*;
 
 public class TwoTables {
-
 	static InputReader r = new InputReader(System.in);
 	static PrintWriter pw = new PrintWriter(System.out);
-
 	public static void main(String[] args) {
 		int n = r.nextInt();
 
@@ -196,6 +194,7 @@ public class TwoTables {
 				int right = Math.max(0, x2 - (W - w));
 				answer = Math.min(left, right);
 			}
+			
 			// Check if combined table heights can fit in the room
 			if ((y2 - y1) + h <= H) { 
 				int top = Math.max(0, y2 - (H - h));
@@ -208,6 +207,7 @@ public class TwoTables {
 		}
 		pw.close();
 	}
+
 	//BeginCodeSnip{I/O Template}
 	static class InputReader {
 		BufferedReader reader;
@@ -243,7 +243,6 @@ public class TwoTables {
 	}
 	//EndCodeSnip
 }
-
 ```
 </JavaSection>
 </LanguageSection>
