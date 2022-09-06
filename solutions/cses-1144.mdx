@@ -27,7 +27,7 @@ int n, q;
 
 void add(int value, int amount) {
 	int index = upper_bound(vals.begin(), vals.end(), value) - vals.begin();
-	for (; index <= MAX; index += index&(-index)) {
+	for (; index < MAX; index += index&-index) {
 		bit[index] += amount;
 	}
 }
@@ -129,7 +129,7 @@ int main() {
 	for (int i = 0; i < N; i++){
 		cin >> salaries[i];
 	}
-	for (auto& t: salaries) {
+	for (auto t: salaries) {
 		vals[t] = 0;
 	}
 	for (int i = 0; i < Q; ++i){
@@ -184,7 +184,7 @@ int main() {
 	ios_base::sync_with_stdio(0); 
 	cin.tie(0);
 	cin >> n >> q;
-	for (i = 1; i < n + 1; ++i) {
+	for (int i = 1; i < n + 1; ++i) {
 		cin >> a[i];
 		indexed_set.insert({a[i], i});
 	}
