@@ -14,6 +14,107 @@ By simulating handshakes for all values of $K$, we can find the minimum, maximum
 
 <LanguageSection>
 
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+void setIO(string name = "")
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+
+  if (sz(name))
+  {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+  }
+}
+
+struct shake
+{
+  int t, x, y;
+  bool operator<(shake tmp)
+  {
+    return t < tmp.t;
+  }
+};
+
+int main()
+{
+  setIO("tracing");
+  int n, t;
+  string s;
+  cin >> n >> t >> s;
+  vector<shake> shakes(t);
+  vector<bool> cowsInfected(n);
+  unordered_set<int> possiblePatientZero;
+  int minK = t, maxK = -1;
+
+  // checks if pair {patientZero, k} is consistent with handshakes data over time
+  auto isConsistent = [&](int patientZero, int k)
+  {
+    vector<bool> tmpInfected(n);
+    vector<int> numShakes(n);
+    tmpInfected[patientZero] = true;
+    for (shake sh : shakes)
+    {
+      if (tmpInfected[sh.x])
+        numShakes[sh.x]++;
+      if (tmpInfected[sh.y])
+        numShakes[sh.y]++;
+      if (numShakes[sh.x] <= k && tmpInfected[sh.x])
+        tmpInfected[sh.y] = true;
+      if (numShakes[sh.y] <= k && tmpInfected[sh.y])
+        tmpInfected[sh.x] = true;
+    }
+    for (int i = 0; i < n; i++)
+      if (tmpInfected[i] != cowsInfected[i])
+        return false;
+    return true;
+  };
+
+  // marks infected cows
+  for (int x = 0; x < n; x++)
+    cowsInfected[x] = (s[x] == '1');
+
+  // take shakes data & sort them by time
+  for (shake &sh : shakes)
+  {
+    cin >> sh.t >> sh.x >> sh.y;
+    sh.t--, sh.x--, sh.y--;
+  }
+  sort(all(shakes));
+
+  // check every possible pair if it is consistent or not & construct results
+  for (int patientZero = 0; patientZero < n; patientZero++)
+  {
+    for (int k = 0; k <= t; k++)
+    {
+      if (isConsistent(patientZero, k))
+      {
+        possiblePatientZero.insert(patientZero);
+        minK = min(minK, k);
+        maxK = max(maxK, k);
+      }
+    }
+  }
+
+  cout << possiblePatientZero.size() << " " << minK << " " << (maxK == t ? "Infinity" : to_string(maxK)) << endl;
+  return 0;
+}
+```
+
+</CPPSection>
+	
 <PySection>
 
 ```py
