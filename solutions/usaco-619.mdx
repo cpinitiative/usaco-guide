@@ -259,65 +259,37 @@ constant). Similar reasoning holds for the $y$-coordinates.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
+using namespace std;
 
-using std::cout;
-using std::endl;
-using std::vector;
-
-struct Cow { int x, y; };
+struct Cow {
+	int x, y;
+};
 
 /** Returns the list of *important* coordinates */
-vector<int> pos_of_interest(vector<int>& pos) {
-	int sz = pos.size();
-	std::sort(pos.begin(), pos.end());
-
-	vector<int> distinct;  // List of all the distinct positions
-	/*
-	 * For each of those distinct positions,
-	 * how many have the same or lesser position?
-	 */
-	vector<int> num_left;
-	for (int i = 0; i < sz; i++) {
-		if (i == sz - 1 || pos[i] != pos[i + 1]) {
-			distinct.push_back(pos[i] + 1);
-			num_left.push_back(i + 1);
-		}
-	}
-
+vector<int> pos_of_interest(vector<int> &pos) {
 	vector<int> important;
-	for (int i = 0; i < distinct.size(); i++) {
-		// We can just move the fence to the right, so ignore this
-		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) {
-			continue;
+	sort(pos.begin(), pos.end());
+	for (int i = pos.size() / 3; i <= 2 * pos.size() / 3; i++) {
+		if (pos[i] != pos[i + 1]) {
+			important.push_back(pos[i] + 1);
 		}
-		// Same, but to the left
-		if (i > 0 && num_left[i - 1] >= sz - sz / 3) {
-			continue;
-		}
-		important.push_back(distinct[i]);
 	}
-
 	return important;
 }
 
 int main() {
-	std::ifstream read("balancing.in");
+	ifstream read("balancing.in");
 	int cow_num;
 	read >> cow_num;
-
 	vector<Cow> cows(cow_num);
 	vector<int> x_pos;
 	vector<int> y_pos;
-	for (Cow& c : cows) {
+	for (Cow &c : cows) {
 		read >> c.x >> c.y;
 		x_pos.push_back(c.x);
 		y_pos.push_back(c.y);
 	}
-	
 	vector<int> to_check_x = pos_of_interest(x_pos);
 	vector<int> to_check_y = pos_of_interest(y_pos);
 	int most_balanced = INT32_MAX;
@@ -325,19 +297,14 @@ int main() {
 		for (int y : to_check_y) {
 			// Try placing a fence centered at (x, y)
 			vector<vector<int>> field_amt{{0, 0}, {0, 0}};
-			for (const Cow& c : cows) {
+			for (const Cow &c : cows) {
 				field_amt[x < c.x][y < c.y]++;
 			}
-			
-			int balance = std::max({
-				field_amt[0][0], field_amt[0][1],
-				field_amt[1][0], field_amt[1][1]
-			});
-			most_balanced = std::min(most_balanced, balance);
+			int balance = max({field_amt[0][0], field_amt[0][1], field_amt[1][0], field_amt[1][1]});
+			most_balanced = min(most_balanced, balance);
 		}
 	}
-
-	std::ofstream("balancing.out") << most_balanced << endl;
+	ofstream("balancing.out") << most_balanced << endl;
 }
 ```
 
