@@ -33,51 +33,62 @@ void setIO(string name = "") {
 	}
 }
 
-struct shake {
+struct Shake {
 	int t, x, y;
-	bool operator<(const shake& tmp) { return t < tmp.t; }
+	bool operator<(const Shake& tmp) { return t < tmp.t; }
 };
 
 int main() {
 	setIO("tracing");
+
 	int n, t;
 	string s;
 	cin >> n >> t >> s;
-	vector<shake> shakes(t);
+
+	vector<Shake> shakes(t);
 	vector<bool> cowsInfected(n);
 	unordered_set<int> possiblePatientZero;
 	int minK = t, maxK = -1;
-	// checks if pair {patientZero, k} is consistent
-	// with handshakes data over time
+
+	// checks if pair {patientZero, k} is consistent with handshakes data over time
 	auto isConsistent = [&](int patientZero, int k) {
 		vector<bool> tmpInfected(n);
 		vector<int> numShakes(n);
 		tmpInfected[patientZero] = true;
-		for (shake sh : shakes) {
-			if (tmpInfected[sh.x])
+		for (Shake sh : shakes) {
+			if (tmpInfected[sh.x]) {
 				numShakes[sh.x]++;
-			if (tmpInfected[sh.y])
+			}
+			if (tmpInfected[sh.y]) {
 				numShakes[sh.y]++;
-			if (numShakes[sh.x] <= k && tmpInfected[sh.x])
+			}
+			if (numShakes[sh.x] <= k && tmpInfected[sh.x]) {
 				tmpInfected[sh.y] = true;
-			if (numShakes[sh.y] <= k && tmpInfected[sh.y])
+			}
+			if (numShakes[sh.y] <= k && tmpInfected[sh.y]) {
 				tmpInfected[sh.x] = true;
+			}
 		}
-		for (int i = 0; i < n; i++)
-			if (tmpInfected[i] != cowsInfected[i])
+		for (int i = 0; i < n; i++) {
+			if (tmpInfected[i] != cowsInfected[i]) {
 				return false;
+			}
+		}
 		return true;
 	};
+
 	// marks infected cows
 	for (int x = 0; x < n; x++) {
 		cowsInfected[x] = (s[x] == '1');
 	}
+
 	// take shakes data & sort them by time
-	for (shake &sh : shakes) {
+	for (Shake &sh : shakes) {
 		cin >> sh.t >> sh.x >> sh.y;
 		sh.t--, sh.x--, sh.y--;
 	}
 	sort(all(shakes));
+
 	// check every possible pair if it is consistent or not & construct results
 	for (int patientZero = 0; patientZero < n; patientZero++) {
 		for (int k = 0; k <= t; k++) {
@@ -88,6 +99,7 @@ int main() {
 			}
 		}
 	}
+
 	cout << possiblePatientZero.size() << " " << minK << " "
 		<< (maxK == t ? "Infinity" : to_string(maxK)) << endl;
 }
