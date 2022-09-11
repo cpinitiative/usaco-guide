@@ -92,7 +92,7 @@ MOD = 1000000007
 filein = open('help.in', 'r') 
 n = int(filein.readline())
 
-# If the segment is open the value will be +ve else -ve
+# If the segment is open the value will be positive else negative
 a = [0] * (2 * n + 1)
 for i in range(n):
 	x, y = map(int, filein.readline().split())
@@ -100,16 +100,16 @@ for i in range(n):
 	a[y] -= 1 # close
 	
 # precalculating the powers of 2
-pow = [1] * n
+power = [1] * n
 for i in range(1,n):
-	pow[i] = pow[i - 1] * 2 % MOD
+	power[i] = power[i - 1] * 2 % MOD
 
-open_segs = 0 # number of open segments
+open_segs = 0
 ans = 0
 for i in range(1, 2 * n + 1):
 	open_segs += a[i]
 	if a[i] == 1:
-		ans = (ans + pow[n - open_segs]) % MOD
+		ans = (ans + power[n - open_segs]) % MOD
 
 fileout = open('help.out', 'w')
 fileout.write(str(ans) + '\n')
