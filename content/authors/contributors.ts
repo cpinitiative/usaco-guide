@@ -90,6 +90,12 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'May 2022',
     photo: 'julie',
   },
+  {
+    name: 'Aditya Gupta',
+    githubUsername: 'EulerPascal404',
+    sinceDate: 'June 2022',
+    photo: 'aditya_g',
+  },
 ];
 
 export const pastContentAuthors: Contributor[] = [
