@@ -259,12 +259,16 @@ constant). Similar reasoning holds for the $y$-coordinates.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
 
-struct Cow {
-	int x, y;
-};
+using std::cout;
+using std::endl;
+using std::vector;
+
+struct Cow { int x, y; };
 
 /** Returns the list of *important* coordinates */
 vector<int> pos_of_interest(vector<int> &pos) {
@@ -279,17 +283,19 @@ vector<int> pos_of_interest(vector<int> &pos) {
 }
 
 int main() {
-	ifstream read("balancing.in");
+	std::ifstream read("balancing.in");
 	int cow_num;
 	read >> cow_num;
+
 	vector<Cow> cows(cow_num);
 	vector<int> x_pos;
 	vector<int> y_pos;
-	for (Cow &c : cows) {
+	for (Cow& c : cows) {
 		read >> c.x >> c.y;
 		x_pos.push_back(c.x);
 		y_pos.push_back(c.y);
 	}
+	
 	vector<int> to_check_x = pos_of_interest(x_pos);
 	vector<int> to_check_y = pos_of_interest(y_pos);
 	int most_balanced = INT32_MAX;
@@ -297,14 +303,19 @@ int main() {
 		for (int y : to_check_y) {
 			// Try placing a fence centered at (x, y)
 			vector<vector<int>> field_amt{{0, 0}, {0, 0}};
-			for (const Cow &c : cows) {
+			for (const Cow& c : cows) {
 				field_amt[x < c.x][y < c.y]++;
 			}
-			int balance = max({field_amt[0][0], field_amt[0][1], field_amt[1][0], field_amt[1][1]});
-			most_balanced = min(most_balanced, balance);
+			
+			int balance = std::max({
+				field_amt[0][0], field_amt[0][1],
+				field_amt[1][0], field_amt[1][1]
+			});
+			most_balanced = std::min(most_balanced, balance);
 		}
 	}
-	ofstream("balancing.out") << most_balanced << endl;
+
+	std::ofstream("balancing.out") << most_balanced << endl;
 }
 ```
 
