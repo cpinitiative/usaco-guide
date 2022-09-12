@@ -91,16 +91,16 @@ export const contentAuthors: Contributor[] = [
     photo: 'julie',
   },
   {
+    name: 'Aditya Gupta',
+    githubUsername: 'EulerPascal404',
+    sinceDate: 'June 2022',
+    photo: 'aditya'
+  },
+  {
     name: 'Chongtian Ma',
     githubUsername: 'envyaims',
     sinceDate: 'August 2022',
     photo: 'chongtian'
-  },
-  {
-    name: 'Aditya Gupta',
-    githubUsername: 'EulerPascal404',
-    sinceDate: 'August 2022',
-    photo: 'aditya'
   },
   {
     name: 'Chuyang Wang',
