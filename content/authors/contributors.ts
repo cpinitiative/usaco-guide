@@ -99,7 +99,7 @@ export const contentAuthors: Contributor[] = [
   {
     name: 'Chongtian Ma',
     githubUsername: 'envyaims',
-    sinceDate: 'August 2022',
+    sinceDate: 'May 2022',
     photo: 'chongtian'
   },
   {
