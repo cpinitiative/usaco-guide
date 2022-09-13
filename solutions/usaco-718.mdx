@@ -37,11 +37,11 @@ int main(){
 	 * id2 represents the breed ID of the fields
 	 * on the other side of the road.
 	 */
-	vector<int> id1(n), id2(n);
-	for (int i = 0; i < n; i++) {
+	vector<int> id1(n + 1), id2(n + 1);
+	for (int i = 1; i <= n; i++) {
 		cin >> id1[i];
 	}
-	for (int i = 0; i < n; i++) {
+	for (int i = 1; i <= n; i++) {
 		cin >> id2[i];
 	}
 	for (int i = 1; i <= n; i++) {
@@ -53,7 +53,7 @@ int main(){
 			dp[i][j] = max({
 				dp[i - 1][j],
 				dp[i][j - 1], 
-				dp[i - 1][j - 1] + abs(id1[i] - id2[j]) <= 4)
+				dp[i - 1][j - 1] + (abs(id1[i] - id2[j]) <= 4)
 			});
 		}
 	}
