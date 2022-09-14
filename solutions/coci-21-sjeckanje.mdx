@@ -5,6 +5,8 @@ title: Sjeckanje
 author: Timothy Gao
 ---
 
+[Official Editorial](https://dmoj.ca/problem/coci20c5p5/editorial)
+
 For any segment $[l, r]$ with at least three elements, if there exists $i$ such that $l\le i\le i+2\le r$ and $a_i \leq a_{i+2} \leq a_{i+1}$ or $a_i \geq a_{i+2} \geq a_{i+1}$, then the segment can be split into two segments $l, l+1, \dots, i+1$ and $i+2, i+3, \dots, r$. It may be proven that the sum of the values of the two segments is at least as high as the value of the initial segment. More generally, if a segment isn't strictly increasing or strictly decreasing, we can split it into two segments without lowering the total value. Therefore, an optimal solution can be constructed with only strictly increasing or decreasing segments. This paves the way for several key properties.
 
 Define array $D$ of length $N-1$ such that $D_i = A_{i+1} - A_i$. If the current segment $s = [l, r]$ is increasing, then $D_i > 0$ for $i \in [l, r)$ and $\sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$. If the current segment $s = [l, r]$ is decreasing, then $D_i < 0$ for $i \in [l, r)$ and $-1 \cdot \sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$. Between any two adjacent selected segments $[a, b]$ and $[b+1, c]$, $D_b$ must not included in our answer. With this formulation, adding integer $x$ to all elements $l, l+1, \dots, r$ is equivalent to performing the point updates $D_{l-1}\mathrel{+}=x$ and $D_{r}\mathrel{-}=x$.
@@ -14,7 +16,6 @@ Now, the problem becomes selecting segments on $D$ rather than the original $A$,
 **Time Complexity**: $\mathcal O(N + Q\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -22,6 +23,7 @@ Now, the problem becomes selecting segments on $D$ rather than the original $A$,
 using namespace std;
 typedef long long ll;
 
+//BeginCodeSnip{Segtree Node}
 struct Node
 {
 	ll borders[2] = {};  // border values of segment
@@ -79,7 +81,9 @@ struct Node
 		dp[1][1] = abs(borders[0]);
 	}
 };
+//EndCodeSnip
 
+//BeginCodeSnip{Segtree}
 struct SegTree
 {
 	Node val;
@@ -121,6 +125,7 @@ struct SegTree
 		}
 	}
 };
+//EndCodeSnip
 
 int main()
 {
@@ -139,6 +144,7 @@ int main()
 		D[i] = Node(b - a);
 		swap(a, b);
 	}
+
 	// a_(i + 1) - a(i)
 	SegTree sgt(0, N - 2, D);
 	for (int q = 0; q < Q; q++)
@@ -148,6 +154,7 @@ int main()
 		ll x;
 		cin >> l >> r >> x;
 		l--, r--;
+
 		if (l - 1 >= 0)
 		{
 			sgt.update(l - 1, x);
@@ -160,5 +167,6 @@ int main()
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
