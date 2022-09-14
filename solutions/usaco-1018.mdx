@@ -2,7 +2,7 @@
 id: usaco-1018
 source: USACO Gold 2020 February
 title: Help Yourself
-author: Aakash Gokhale
+author: Aakash Gokhale, Sriya Mudunuri
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_help_gold_feb20.html)
@@ -84,5 +84,34 @@ int main() {
 }
 ```
 </CPPSection>
+<PySection>
 
+```python
+MOD = 1000000007
+
+n = int(open('help.in'.readline()))
+
+# If the segment is open the value will be positive else negative
+a = [0] * (2 * n + 1)
+for i in range(n):
+	x, y = map(int, filein.readline().split())
+	a[x] += 1  # open
+	a[y] -= 1  # close
+	
+# precalculating the powers of 2
+power = [1] * n
+for i in range(1,n):
+	power[i] = power[i - 1] * 2 % MOD
+
+open_segs = 0
+ans = 0
+for i in range(1, 2 * n + 1):
+	open_segs += a[i]
+	if a[i] == 1:
+		ans = (ans + power[n - open_segs]) % MOD
+		
+print(ans, file=open('help.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
