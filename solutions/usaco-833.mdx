@@ -351,28 +351,28 @@ public class Family {
 		}
 
 		// Map of the ancestors of each node & their distances
-		Map<String, Integer>[] dists = new HashMap[]{
+		Map<String, Integer>[] ancestors = new HashMap[]{
 			new HashMap<>(), new HashMap<>()
 		};
 		for (int c = 0; c < cows.length; c++) {
 			// BFS to find the ancestors of both cows and the distance to them
 			String at = cows[c];
-			dists[c].put(at, 0);
+			ancestors[c].put(at, 0);
 			while (edge.containsKey(at)) {
 				String next = edge.get(at);
-				dists[c].put(next, dists[c].get(at) + 1);
+				ancestors[c].put(next, ancestors[c].get(at) + 1);
 				at = next;
 			}
 		}
 
-		String ancestor = null;
+		String common = null;
 		int dist0 = Integer.MAX_VALUE;  // distance from cow 0 to the common ancestor
 		int dist1 = Integer.MAX_VALUE;  // and the distance from cow 1
-		for (var d0 : dists[0].entrySet()) {
-			if (dists[1].containsKey(d0.getKey())) {
-				int d1 = dists[1].get(d0.getKey());
+		for (var d0 : ancestors[0].entrySet()) {
+			if (ancestors[1].containsKey(d0.getKey())) {
+				int d1 = ancestors[1].get(d0.getKey());
 				if (dist0 > d0.getValue() && dist1 > d1) {
-					ancestor = d0.getKey();
+					common = d0.getKey();
 					dist0 = d0.getValue();
 					dist1 = d1;
 				}
@@ -380,18 +380,18 @@ public class Family {
 		}
 
 		PrintWriter written = new PrintWriter("family.out");
-		if (ancestor == null) {
+		if (common == null) {
 			written.println("NOT RELATED");
-		} else if (ancestor.equals(cows[0]) || ancestor.equals(cows[1])) {
-			written.printf("%s is the ", ancestor);
-			int dist = ancestor.equals(cows[0]) ? dist1 : dist0;
+		} else if (common.equals(cows[0]) || common.equals(cows[1])) {
+			written.printf("%s is the ", common);
+			int dist = common.equals(cows[0]) ? dist1 : dist0;
 			for (int i = 0; i < dist - 2; i++) {
 				written.print("great-");
 			}
 			if (dist > 1) {
 				written.print("grand-");
 			}
-			String young = ancestor.equals(cows[0]) ? cows[1] : cows[0];
+			String young = common.equals(cows[0]) ? cows[1] : cows[0];
 			written.printf("mother of %s", young);
 		} else {
 			if (dist0 == 1 || dist1 == 1) {
@@ -436,26 +436,27 @@ int main() {
 	}
 
 	// Map of the ancestors of each node & their distances
-	vector<map<string, int>> dist(2);
+	vector<map<string, int>> ancestors(2);
 	for (int c = 0; c < 2; c++) {
 		// BFS to find the ancestors of both cows and the distance to them
 		string at = cows[c];
-		dist[c][cows[c]] = 0;
+		ancestors[c][cows[c]] = 0;
 		while (edge.count(at) != 0) {
 			auto n = edge.find(at);
-			dist[c][n->second] = dist[c][at] + 1;
+			ancestors[c][n->second] = ancestors[c][at] + 1;
 			at = n->second;
 		}
 	}
 
-	string ancestor;
+	string common;
 	int dist0 = INT32_MAX;  // distance from cow 0 to the common ancestor
 	int dist1 = INT32_MAX;  // and the distance from cow 1
 	// Finding the lowest common ancestor
-	for (const pair<string, int>& d0 : dist[0]) {
-		auto d1 = dist[1].find(d0.first);
-		if (d1 != dist[1].end() && (dist0 > d0.second || dist1 > d1->second)) {
-			ancestor = d0.first;
+	for (const pair<string, int>& d0 : ancestors[0]) {
+		auto d1 = ancestors[1].find(d0.first);
+		if (d1 != ancestors[1].end()
+			&& (dist0 > d0.second || dist1 > d1->second)) {
+			common = d0.first;
 			dist0 = d0.second;
 			dist1 = d1->second;
 		}
@@ -463,10 +464,10 @@ int main() {
 
 	freopen("family.out", "w", stdout);
 
-	if (ancestor.empty()) {
+	if (common.empty()) {
 		cout << "NOT RELATED";
-	} else if (ancestor == cows[1] || ancestor == cows[0]) {
-		if (ancestor == cows[0]) {
+	} else if (common == cows[1] || common == cows[0]) {
+		if (common == cows[0]) {
 			swap(cows[0], cows[1]);
 			swap(dist0, dist1);
 		}
@@ -516,39 +517,39 @@ with open('family.in') as read:
 		edge[u] = v
 
 # Map of the ancestors of each node & their distances
-dist = [{}, {}]
+ancestors = [{}, {}]
 for c in range(2):
 	at = cows[c]
-	dist[c][cows[c]] = 0
+	ancestors[c][cows[c]] = 0
 	while at in edge:
 		next_ = edge[at]
-		dist[c][next_] = dist[c][at] + 1
+		ancestors[c][next_] = ancestors[c][at] + 1
 		at = next_
 
-ancestor = None
+common = None
 dist0 = float('inf')
 dist1 = float('inf')
-for d0 in dist[0].items():
-	if d0[0] in dist[1]:
-		d1 = dist[1][d0[0]]
+for d0 in ancestors[0].items():
+	if d0[0] in ancestors[1]:
+		d1 = ancestors[1][d0[0]]
 		if dist0 > d0[1] and dist1 > d1:
-			ancestor = d0[0]
+			common = d0[0]
 			dist0 = d0[1]
 			dist1 = d1
 
 with open('family.out', 'w') as written:
-	if ancestor is None:
+	if common is None:
 		print('NOT RELATED', file=written)
-	elif ancestor == cows[0] or ancestor == cows[1]:
-		print(f'{ancestor} is the ', end='', file=written)
+	elif common == cows[0] or common == cows[1]:
+		print(f'{common} is the ', end='', file=written)
 
-		dist = dist1 if ancestor == cows[0] else dist0
-		for _ in range(dist - 2):
+		ancestors = dist1 if common == cows[0] else dist0
+		for _ in range(ancestors - 2):
 			print('great-', end='', file=written)
-		if dist > 1:
+		if ancestors > 1:
 			print('grand-', end='', file=written)
 		
-		young = cows[1] if ancestor == cows[0] else cows[0]
+		young = cows[1] if common == cows[0] else cows[0]
 		print(f'mother of {young}', file=written)
 	else:
 		if dist0 == 1 or dist1 == 1:
