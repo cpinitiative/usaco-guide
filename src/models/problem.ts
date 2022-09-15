@@ -66,7 +66,7 @@ export const probSources = {
   'CF EDU': [
     'CodeForces Edu',
     'https://codeforces.com/edu/courses',
-    'Note: One must enroll in the course to gain access to the problems.'
+    'Note: One must enroll in the course to gain access to the problems.',
   ],
   CSA: [
     'https://csacademy.com/contest/archive/task/',
