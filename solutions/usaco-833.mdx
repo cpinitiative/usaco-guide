@@ -350,21 +350,18 @@ public class Family {
 			edge.put(u, v);
 		}
 
+		// Map of the ancestors of each node & their distances
 		Map<String, Integer>[] dists = new HashMap[]{
 			new HashMap<>(), new HashMap<>()
 		};
-		for (int c = 0; c < 2; c++) {
+		for (int c = 0; c < cows.length; c++) {
 			// BFS to find the ancestors of both cows and the distance to them
 			String at = cows[c];
 			dists[c].put(at, 0);
-			while (true) {
-				if (edge.containsKey(at)) {
-					String next = edge.get(at);
-					dists[c].put(next, dists[c].get(at) + 1);
-					at = next;
-				} else {
-					break;
-				}
+			while (edge.containsKey(at)) {
+				String next = edge.get(at);
+				dists[c].put(next, dists[c].get(at) + 1);
+				at = next;
 			}
 		}
 
@@ -438,19 +435,16 @@ int main() {
 		edge[u] = v;
 	}
 
+	// Map of the ancestors of each node & their distances
 	vector<map<string, int>> dist(2);
-	dist[0][cows[0]] = dist[1][cows[1]] = 0;
-	for (int k = 0; k < 2; k++) {
+	for (int c = 0; c < 2; c++) {
 		// BFS to find the ancestors of both cows and the distance to them
-		string node = cows[k];
-		while (true) {
-			auto n = edge.find(node);
-			if (n != edge.end()) {
-				dist[k][n->second] = dist[k][node] + 1;
-				node = n->second;
-			} else {
-				break;
-			}
+		string at = cows[c];
+		dist[c][cows[c]] = 0;
+		while (edge.count(at) != 0) {
+			auto n = edge.find(at);
+			dist[c][n->second] = dist[c][at] + 1;
+			at = n->second;
 		}
 	}
 
@@ -519,25 +513,21 @@ with open('family.in') as read:
 	edge = {}
 	for _ in range(N):
 		v, u = read.readline().split()
-		# If v is a mother of u, then there is an edge from node u to node v.
 		edge[u] = v
 
+# Map of the ancestors of each node & their distances
 dist = [{}, {}]
 for c in range(2):
-	# BFS to find the ancestors of both cows and the distance to them
 	at = cows[c]
 	dist[c][cows[c]] = 0
-	while True:
-		if at in edge:
-			next_ = edge[at]
-			dist[c][next_] = dist[c][at] + 1
-			at = next_
-		else:
-			break
+	while at in edge:
+		next_ = edge[at]
+		dist[c][next_] = dist[c][at] + 1
+		at = next_
 
 ancestor = None
-dist0 = float('inf')  # distance from cow 0 to the common ancestor
-dist1 = float('inf')  # and the distance from cow 1
+dist0 = float('inf')
+dist1 = float('inf')
 for d0 in dist[0].items():
 	if d0[0] in dist[1]:
 		d1 = dist[1][d0[0]]
