@@ -70,7 +70,8 @@ export default function FocusProblem({
         </div>
         <div className="border-t border-gray-100 dark:border-gray-700 sm:flex sm:justify-between">
           <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 !mb-0 sm:pb-3">
-            Focus Problem – read through this problem before continuing!
+            Focus Problem – try your best to solve this problem before
+            continuing!
           </p>
           {problem.solution?.kind === 'internal' && (
             <a

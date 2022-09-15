@@ -2,7 +2,7 @@
 id: cses-1757
 source: CSES
 title: Course Schedule II
-author: Benjamin Qi
+author: Benjamin Qi, Paul Chen
 ---
 
 This problem is equivalent to
@@ -11,6 +11,10 @@ Treat the "label" of a vertex in "Minimal Labels" as the completion time of a
 course in "Course Schedule II." So it suffices to solve the CF problem
 ([editorial](https://codeforces.com/blog/entry/53334)) and then output the
 [inverse permutation](https://mathworld.wolfram.com/InversePermutation.html).
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -242,3 +246,71 @@ int main() {
 	trav(t,ans) pr(t,' ');
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
+		List<List<Integer>> graph = new ArrayList<>();
+		for (int i = 0; i <= n; i++) {
+			graph.add(new LinkedList<>());
+		}
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			graph.get(b).add(a);
+		}
+
+		// Calculate the in degree of each node.
+		int[] inDegree = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			for (int to : graph.get(i)) {
+				inDegree[to]++;
+			}
+		}
+
+		/*
+		 * Any node with in degree 0 can be used, so we store all possible 
+		 * nodes in a max heap to get the node with the maximum id.
+		*/
+		PriorityQueue<Integer> possibleNodes = new PriorityQueue<>(Comparator.reverseOrder());
+		for (int i = 1; i <= n; i++) {
+			if (inDegree[i] == 0) {
+				possibleNodes.add(i);
+			}
+		}
+
+		List<Integer> ans = new ArrayList<>();
+		while (!possibleNodes.isEmpty()) {
+			// Remove the node with the greatest id.
+			int node = possibleNodes.remove();
+			ans.add(node);
+
+			// Remove all edges that begin at `node`.
+			for (int to : graph.get(node)) {
+				if (--inDegree[to] == 0) {
+					possibleNodes.add(to);
+				}
+			}
+		}
+
+		for (int i = n - 1; i >= 0; i--) {
+			io.print(ans.get(i) + " ");
+		}
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+</LanguageSection>

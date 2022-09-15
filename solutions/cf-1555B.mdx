@@ -2,7 +2,7 @@
 id: cf-1555B
 source: CF 1555B
 title: B. Two Tables
-author: David Zhang
+authors: David Zhang, Lewis Everett
 ---
 
 [Official Analysis (C++)](https://codeforces.com/blog/entry/93389)
@@ -13,29 +13,51 @@ Oftentimes, problems will try to trick you. For example, since the judge is aski
 
 ## Explanation
 
-Let's call: 
-* $x_{1}$ and $x_{2}$ the leftmost and rightmost positions of the inital rectangle respectively
-* $y_{1}$ and $y_{2}$ the bottommost and topmost positions of the inital rectangle respectively
-* $w_{1}$ and $h_{1}$ the width and height of the inital rectangle (which can be calculated by calulating the difference in x and y)
-* $w_{2}$ and $h_{2}$ the width and height of the second rectangle respectively
-* $W$ and $H$ the total width and height of the room
+Let's call:
+* $x_{1}$ and $x_{2}$ the leftmost and rightmost points of table 1 respectively
+* $y_{1}$ and $y_{2}$ the bottommost and topmost points of table 1 respectively
+* $w_{1}$ and $h_{1}$ the width and height of table 1 (equal to the difference in $x_{1}$ and $x_
+  {2}$ and $y_{1}$ and $y_{2}$ respectively)
+* $w_{2}$ and $h_{2}$ the width and height of table 2 respectively
+* $W$ and $H$ the width and height of the room respectively
 
-More importantly, there are 4 different places the second rectangle could be placed: left, right, top, bottom.
-For each place, we can calculate the correct x or y positions in order to just barely fit the second rectangle.
+The key to this problem is realising that table 2 will only ever be in 4 different positions
+relative to table 1: to its left, right, top or bottom (see diagram below). In addition, in all
+cases we can assume that table 2 will be touching its respective wall in order to (attempt) to
+maximise its distance from table 1. E.g., if placing table 2 to the left of table 1, we will
+assume its leftmost edge will be touching the left wall of the room. Determining the solution is
+then simply a case of simulating all of these cases and finding which involves moving table 1 the smallest distance.
 
-Here's a diagram
-![](cf-1555B\PlacementsDiagram.png)
+![](cf-1555B\CF1555B-1.png)
+Possible placements of table 2 relative to table 1.
 
-* To put the second rectangle on the left side, we just need to place the first rectangle's leftmost position or $x_{1}$ to at least $w_{2}$.
-* To put the second rectangle on the right side, we just need to place the first rectangle's rightmost position or $x_{2}$ to at least $W$ - $w_{2}$
-* To put the second rectangle on the top side, we just need to place the first rectangle's highest position or $y_{2}$ to at least $W$ - $w_{2}$
-* To put the second rectangle on the bottom side, we just need to place the first rectangle's lowest position or $y_{1}$ to at least $w_{2}$
+To determine the minimum distance that table 1 must be moved, we have to calculate the overlap
+between the two tables. For example:
 
-Note: when placing the second rectangle on the left and right sides, make sure $w_{1} + w_{2} \leq W$, otherwise, the second rectangle won't fit.
+![](cf-1555B\CF1555B-2.png)
 
-Also, when placing the second rectangle on the top and bottom sides, make sure $h_{1} + h_{2} \leq H$, otherwise, the second rectangle won't fit either of them.
+In this case, table 2 is placed to the left of table 1. We can therefore calculate its overlap
+with table 1 as follows: $w$ - $x_{1}$. Here the overlap is 1, meaning we
+must move table 1 one space from its starting position to fit table 2 in the room. We must then
+compare this answer to the answers we get from placing table 2 to the right, top or bottom of
+table 1. The smallest of all of these is our final answer.
 
-Calculate these placements, and chose the one that requires the least distance.
+To summarise, we calculate the overlap of the two tables as follows:
+* Table 2 placed to the left of table 1: Overlap = $w$ - $x_{1}$
+* Table 2 placed to the right of table 1: Overlap = $x_{2}$ - ($W$ - $w$)
+* Table 2 placed to the top of table 1: Overlap = $y_{2}$ - ($H$ - $h$)
+* Table 2 placed to the bottom of table 1: Overlap = $h$ - $y_{1}$
+
+It is possible that the two tables don't overlap at all. In this case the above calculations
+would return a negative number so we should instead return 0 to indicate that table 1 doesn't
+have to move at all.
+
+<Warning>
+When placing table 2 on the left and right sides, make sure $w_{1} + w_{2} \leq W$,
+otherwise table 2 won't fit in the room.
+Similarly, when placing table 2 on the top and bottom sides, make sure $h_{1} + h_{2} \leq H$,
+otherwise table 2 won't fit in the room.
+</Warning>
 
 ## Implementation
 
@@ -146,62 +168,80 @@ for _ in range(int(input())):
 import java.util.*;
 import java.io.*;
 
-public class Main {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio();
+public class TwoTables {
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) {
+		int n = r.nextInt();
 
-		int tc = io.nextInt();
-		for(int t = 0; t < tc; t++){
-			int totalWidth = io.nextInt();
-			int totalHeight = io.nextInt();
-			int x1 = io.nextInt();
-			int y1 = io.nextInt(); 
-			int x2 = io.nextInt(); 
-			int y2 = io.nextInt(); 
+		for (int i = 0; i < n; i++) {
+			int W = r.nextInt();
+			int H = r.nextInt();
+			int x1 = r.nextInt();
+			int y1 = r.nextInt();
+			int x2 = r.nextInt();
+			int y2 = r.nextInt();
+			int w = r.nextInt();
+			int h = r.nextInt();
 
-			int w1 = x2 - x1;
-			int h1 = y2 - y1;
-
-			int w2 = io.nextInt();
-			int h2 = io.nextInt();
+			int answer = Integer.MAX_VALUE;
 			
-			// Calculating min and max X and Y values needed to fit in their places
-			int leftPlace = w2;
-			int rightPlace = totalWidth - w2;
-			int topPlace = totalHeight - h2;
-			int bottomPlace = h2;
-
-			// Calculating distance needed to move first rectangle first rectangle
-			int amountNeededLeft = Math.max(leftPlace - x1, 0);
-			int amountNeededRight = Math.max(x2 - rightPlace, 0);
-			int amountNeededTop = Math.max(y2 - topPlace, 0);
-			int amountNeededBottom = Math.max(bottomPlace - y1, 0);
-
-			// Checking bounds of the rectangles
-			if (w1 + w2 > totalWidth) {
-				amountNeededLeft = Integer.MAX_VALUE;
-				amountNeededRight = Integer.MAX_VALUE;
+			// Check if combined table widths can fit in the room
+			if ((x2 - x1) + w <= W) { 
+				// Determine overlap when placing the table on the left
+				int left = Math.max(0, w - x1);
+				// Determine overlap when placing the table on the right
+				int right = Math.max(0, x2 - (W - w));
+				answer = Math.min(left, right);
 			}
 			
-			if (h1 + h2 > totalHeight) {
-				amountNeededTop = Integer.MAX_VALUE;
-				amountNeededBottom = Integer.MAX_VALUE;
+			// Check if combined table heights can fit in the room
+			if ((y2 - y1) + h <= H) { 
+				int top = Math.max(0, y2 - (H - h));
+				int bottom = Math.max(0, h - y1);
+				int minTB = Math.min(top, bottom);
+				answer = Math.min(answer, minTB);
 			}
 
-			int ans = Integer.MAX_VALUE;
-			if (ans > amountNeededLeft) ans = amountNeededLeft;
-			if (ans > amountNeededRight) ans = amountNeededRight;
-			if (ans > amountNeededTop) ans = amountNeededTop;
-			if (ans > amountNeededBottom) ans = amountNeededBottom;
-
-
-			// if the rectangles cannot fit in the bigger rectangles in any way, print -1
-			System.out.println(ans == Integer.MAX_VALUE ? -1 : ans);
+			pw.println(answer == Integer.MAX_VALUE ? -1 : answer);
 		}
-		io.close();
+		pw.close();
 	}
-	
-	//CodeSnip{Kattio}
+
+	//BeginCodeSnip{I/O Template}
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+
+		String next() {  // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+
+		public int nextInt() {  // reads in the next int
+			return Integer.parseInt(next());
+		}
+
+		public long nextLong() {  // reads in the next long
+			return Long.parseLong(next());
+		}
+
+		public double nextDouble() {  // reads in the next double
+			return Double.parseDouble(next());
+		}
+	}
+	//EndCodeSnip
 }
 ```
 </JavaSection>

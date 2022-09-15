@@ -1,7 +1,7 @@
 ---
 id: combo
 title: 'Combinatorics'
-author: Jesse Choe, Aadit Ambadkar
+author: Jesse Choe, Aadit Ambadkar, Dustin Miao
 prerequisites:
   - divisibility
   - modular
@@ -72,7 +72,7 @@ If you prefer watching videos instead, here are some options:
 
 ## Binomial Coefficients
 
-<FocusProblem problem="sample" />
+<FocusProblem problem="sample1" />
 
 The **binomial coefficient** $\binom{n}{k}$ (pronounced as "$n$ choose $k$" or sometimes written as ${}_nC_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements: 
 
@@ -284,6 +284,108 @@ int main() {
 		cin >> a >> b;
 		cout << choose(a, b) << '\n';
 	}
+}
+```
+</CPPSection>
+</LanguageSection>
+
+### Derangements
+
+<FocusProblem problem="sample2" />
+
+The number of derangements of $n$ numbers, expressed as $!n$, is the number of permutations such that no element appears in its original position. Informally, it is the number of ways $n$ hats can be returned to $n$ people such that no person recieves their own hat. 
+
+### Method 1: Principle of Inclusion-Exclusion
+
+Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert$. 
+
+We subtract from $n!$ the number of ways for each event to occur; that is, consider the quantity $n! - \lvert E_1 \rvert - \lvert E_2 \rvert - \dots - \lvert E_n \rvert$. This undercounts, as we are subtracting cases where more than one event occurs too many times. Specifically, for a permutation where at least two events occur, we undercount by one. Thus, add back the number of ways for two events to occur. We can continue this process for every size of subsets of indices. The expression is now of the form:
+
+$$
+n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert = \sum_{k = 1}^n (-1)^k \cdot (\text{number of permutations with $k$ fixed points})
+$$
+
+For a set size of $k$, the number of permutations with at least $k$ indicies can be computed by choosing a set of size $k$ that are fixed, and permuting the other indices. In mathematical terms:
+
+$$
+{n \choose k}(n-k)! = \frac{n!}{k!(n-k)!}(n-k)! = \frac{n!}{k!}
+$$
+
+Thus, the problem now becomes computing 
+
+$$
+n!\sum_{k=0}^n\frac{(-1)^k}{k!}
+$$
+
+which can be done in linear time.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+		
+// https://atcoder.github.io/ac-library/document_en/modint.html (included in grader)
+#include <atcoder/modint>
+using mint = atcoder::modint;
+
+using namespace std;
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	mint::set_mod(M);
+	mint c = 1;
+	for (int i = 1; i <= N; i++) {
+		c = (c * i) + (i % 2 == 1 ? -1 : 1);
+		cout << c.val() << ' ';
+	}
+	cout << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+### Method 2: Dynamic Programming
+
+Suppose person 1 recieved person $i$'s hat. There are two cases:
+
+1. If person $i$ recieves person 1's hat, then the problem is reduced to a subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this case, so we add to the current answer $(n - 1)\cdot !(n - 2)$. 
+2. If person $i$ does not recieve person 1's hat, then we can reassign person 1's hat to be person $i$'s hat (if they recieved person 1's hat, then this would become first case). Thus, this becomes a subproblems with size $n - 1$, are there $n - 1$ ways to choose $i$.
+
+Thus, we have 
+
+$$
+!n = (n - 1)(!(n - 2) + !(n - 1))
+$$
+
+which can be computed in linear time with a simple DP. The base cases are that $!0 = 1$ and $!1 = 0$. 
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+// https://atcoder.github.io/ac-library/document_en/modint.html (included in grader)
+#include <atcoder/modint>
+using mint = atcoder::modint;
+
+using namespace std;
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	mint::set_mod(M);
+	mint a = 1, b = 0;
+	cout << 0 << ' ';
+	for (int i = 2; i <= N; i++) {
+		mint c = (i - 1) * (a + b);
+		cout << c.val() << ' ';
+		a = b;
+		b = c;
+	}
+	cout << endl;
 }
 ```
 </CPPSection>

@@ -272,35 +272,13 @@ struct Cow { int x, y; };
 
 /** Returns the list of *important* coordinates */
 vector<int> pos_of_interest(vector<int>& pos) {
-	int sz = pos.size();
-	std::sort(pos.begin(), pos.end());
-
-	vector<int> distinct;  // List of all the distinct positions
-	/*
-	 * For each of those distinct positions,
-	 * how many have the same or lesser position?
-	 */
-	vector<int> num_left;
-	for (int i = 0; i < sz; i++) {
-		if (i == sz - 1 || pos[i] != pos[i + 1]) {
-			distinct.push_back(pos[i] + 1);
-			num_left.push_back(i + 1);
-		}
-	}
-
 	vector<int> important;
-	for (int i = 0; i < distinct.size(); i++) {
-		// We can just move the fence to the right, so ignore this
-		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) {
-			continue;
+	sort(pos.begin(), pos.end());
+	for (int i = pos.size() / 3; i <= 2 * pos.size() / 3; i++) {
+		if (pos[i] != pos[i + 1]) {
+			important.push_back(pos[i] + 1);
 		}
-		// Same, but to the left
-		if (i > 0 && num_left[i - 1] >= sz - sz / 3) {
-			continue;
-		}
-		important.push_back(distinct[i]);
 	}
-
 	return important;
 }
 
