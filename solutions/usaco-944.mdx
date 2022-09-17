@@ -16,22 +16,20 @@ author: Brad Ma
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
 
 struct Cow {
-	int x;
-	int y;
+	int x, y;
 	vector<int> adj;
 	bool visited;
 };
 
 vector<Cow> cows;
-vector<int> net;
+vector<int> curr_net;
 
-void dfs(int cur) {
-	cows[cur].visited = true;
-	net.push_back(cur);
-	for (int i : cows[cur].adj) {
+void dfs(int curr) {
+	cows[curr].visited = true;
+	curr_net.push_back(curr);
+	for (int i : cows[curr].adj) {
 		if (!cows[i].visited) { 
 			dfs(i);
 		}
@@ -40,14 +38,14 @@ void dfs(int cur) {
 
 int main() {
 	ifstream fin("fenceplan.in");
-	int N, M;
-	fin >> N >> M;
-	cows.resize(N);
+	int n, m;
+	fin >> n >> m;
+	cows.resize(n);
 	for (Cow& c : cows) {
 		fin >> c.x >> c.y;
 		c.visited = false;
 	}
-	for (int i = 0; i < M; i++) {
+	for (int i = 0; i < m; i++) {
 		int a, b; 
 		fin >> a >> b;
 		cows[a - 1].adj.push_back(b - 1);
@@ -56,11 +54,11 @@ int main() {
 
 	// group cows into networks using dfs
 	vector<vector<int>> networks;
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < n; i++) {
 		if (!cows[i].visited) {
-			net.clear();
+			curr_net.clear();
 			dfs(i);
-			networks.push_back(net);
+			networks.push_back(curr_net);
 		}
 	}
 
@@ -76,11 +74,13 @@ int main() {
 			min_y = min(min_y, cows[i].y);
 			max_y = max(max_y, cows[i].y);
 		}
-		min_perimeter = min(min_perimeter, 2 * (max_x - min_x) + 2 * (max_y - min_y));
+		min_perimeter = min(
+			min_perimeter,
+			2 * (max_x - min_x) + 2 * (max_y - min_y)
+		);
 	}
 
-	ofstream fout("fenceplan.out");
-   	fout << min_perimeter << endl;
+	ofstream("fenceplan.out") << min_perimeter << endl;
 }
 ```
 
@@ -100,7 +100,7 @@ public class FencePlan {
 	static int lowY = Integer.MAX_VALUE;
 	static int highY = Integer.MIN_VALUE;
 
-	static class Cow {  // class to keep track of the x and y
+	static class Cow {
 		int x;
 		int y;
 	}
@@ -172,4 +172,75 @@ public class FencePlan {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+from typing import List
+from sys import setrecursionlimit
+
+setrecursionlimit(10 ** 5)
+
+
+class Cow:
+	def __init__(self, x: int, y: int, adj: List[int], visited: bool) -> None:
+		self.x = x
+		self.y = y
+		self.adj = adj
+		self.visited = visited
+
+
+def connected_cows(cows: List[Cow], start: int) -> List[Cow]:
+	net = []
+
+	def dfs(curr: int) -> None:
+		cows[curr].visited = True
+		net.append(curr)
+		for c in cows[curr].adj:
+			if not cows[c].visited:
+				dfs(c)
+
+	dfs(start)
+	return net
+
+
+cows = []
+with open('fenceplan.in') as read:
+	n, m = [int(i) for i in read.readline().split()]
+	
+	for _ in range(n):
+		x, y = [int(i) for i in read.readline().split()]
+		cows.append(Cow(x, y, [], False))
+	
+	for _ in range(m):
+		a, b = [int(i) - 1 for i in read.readline().split()]
+		cows[a].adj.append(b)
+		cows[b].adj.append(a)
+
+networks = []
+for c in range(n):
+	if not cows[c].visited:
+		networks.append(connected_cows(cows, c))
+
+min_perimeter = float('inf')
+for net in networks:
+	min_x = float('inf')
+	max_x = 0
+	min_y = float('inf')
+	max_y = 0
+	for c in net:
+		c = cows[c]
+		min_x = min(min_x, c.x)
+		max_x = max(max_x, c.x)
+		min_y = min(min_y, c.y)
+		max_y = max(max_y, c.y)
+
+	min_perimeter = min(
+		min_perimeter,
+		2 * (max_x - min_x) + 2 * (max_y - min_y)
+	)
+
+print(min_perimeter, file=open('fenceplan.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
