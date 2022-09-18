@@ -63,19 +63,19 @@ int main() {
 			total_time += curr_time - prev_time;
 		}
 
-		// 2. Check to see if there's only one cow in [prev_time, curr_time]
+		// 2. check to see if there's only one cow in [prev_time, curr_time]
 		if (active.size() == 1) {
 			alone_time[*active.begin()] += curr_time - prev_time;
 		}
 
-		// 3. Process the event
+		// 3. process the event
 		if (e.is_start) {
 			active.insert(e.cow_id);
 		} else {
 			active.erase(e.cow_id);
 		}
 
-		// 4. Update prev_time
+		// 4. update prev_time
 		prev_time = curr_time;
 	}
 
@@ -111,7 +111,6 @@ int main() {
 
 	sort(cows.begin(), cows.end());
 
-	// tot = time that is covered if no lifeguards covered
 	int total_time = 0;
 	// right = max ending point of lifeguards considered so far
 	int left = 0, right = 0;
@@ -139,7 +138,7 @@ int main() {
 	}
 
 	freopen("lifeguards.out", "w", stdout);
-	// if res < 0 then answer = tot
+	// if min_alone_time < 0 then answer = tot
 	cout << total_time - max(min_alone_time, 0) << endl;
 }
 ```
@@ -210,19 +209,19 @@ public class Lifeguards {
 				totalTime += currTime - prevTime;
 			}
 	
-			// 2. Check to see if there's only one cow in [prevTime, currTime]
+			// 2. check to see if there's only one cow in [prevTime, currTime]
 			if (active.size() == 1) {
 				aloneTime[active.iterator().next()] += currTime - prevTime;
 			}
 	
-			// 3. Process the event
+			// 3. process the event
 			if (e.isStart) {
 				active.add(e.cowId);
 			} else {
 				active.remove(e.cowId);
 			}
 	
-			// 4. Update prevTime
+			// 4. update prevTime
 			prevTime = currTime;
 		}
 
@@ -277,20 +276,18 @@ for e in events:
 	if active:
 		total_time += curr_time - prev_time
 
-	# 2. Check to see if there's only one cow in [prev_time, curr_time]
+	# 2. check to see if there's only one cow in [prev_time, curr_time]
 	if len(active) == 1:
 		alone_time[next(iter(active))] += curr_time - prev_time
 
-	# 3. Process the event
+	# 3. process the event
 	if e.is_start:
 		active.add(e.cow_id)
 	else:
 		active.remove(e.cow_id)
 
-	# 4. Update prev_time
+	# 4. update prev_time
 	prev_time = curr_time
-
-print(alone_time)
 
 print(total_time - min(alone_time), file=open('lifeguards.out', 'w'))
 ```
