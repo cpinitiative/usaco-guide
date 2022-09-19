@@ -79,8 +79,7 @@ int main() {
 }
 ```
 
-Here is a similar solution with a `map` that passes slightly under the time
-limit.
+Here is a similar solution with a `map` that passes slightly under the time limit.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -89,13 +88,13 @@ using namespace std;
 using ll = long long;
 const int MAX = 1e6 + 5;
 
-int bit[MAX]; // binary-indexed tree
-map<int,int> vals; // values sorted for coordinate compression
-int N,Q;
+int bit[MAX];  // binary-indexed tree
+map<int,int> vals;  // values sorted for coordinate compression
+int N, Q;
 
 void add(int value, int amount) {
 	int index = vals[a];
-	for (; index <= MAX; index += index&(-index)) {
+	for (; index <= MAX; index += index & (-index)) {
 		bit[index] += amount;
 	}
 }
@@ -105,8 +104,7 @@ int sums(int x) {
 	int index;
 	if (it == end(vals)) {
 		index = vals.size();
-	}
-	else {
+	} else {
 		index = it -> second - 1;
 	}
 	int total = 0;
@@ -166,7 +164,7 @@ int main() {
 
 ## Solution 2
 
-Just use indexed set!
+Just use an indexed set!
 
 ```cpp
 #include <bits/stdc++.h>
@@ -180,7 +178,7 @@ template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_ord
 
 const int MOD = 1000000007;
 
-int n,q, a[200001];
+int n, q, a[200001];
 Tree<pii> indexed_set;
 
 int main() {
