@@ -121,32 +121,32 @@ vis = [[[False for a in range(MAX_OPS + 1)]
 
 
 def ff(cur_x: int, cur_y: int, cur_k: int) -> int:
-    global sol
+	global sol
 
-    if cur_k > k or vis[cur_x][cur_y][cur_k]:
-        return
-    
-    vis[cur_x][cur_y][cur_k] = True
-    sol = min(sol, abs(m - (cur_x + cur_y)))
+	if cur_k > k or vis[cur_x][cur_y][cur_k]:
+		return
+	
+	vis[cur_x][cur_y][cur_k] = True
+	sol = min(sol, abs(m - (cur_x + cur_y)))
 
-    # case 1
-    ff(x, cur_y, cur_k + 1)
-    ff(cur_x, y, cur_k + 1)
+	# case 1
+	ff(x, cur_y, cur_k + 1)
+	ff(cur_x, y, cur_k + 1)
 
-    # case 2
-    ff(0, cur_y, cur_k + 1)
-    ff(cur_x, 0, cur_k + 1)
+	# case 2
+	ff(0, cur_y, cur_k + 1)
+	ff(cur_x, 0, cur_k + 1)
 
-    # case 3
-    if cur_x > y - cur_y:
-        ff(cur_x - y + cur_y, y, cur_k + 1)
-    else:
-        ff(0, cur_y + cur_x, cur_k + 1)
+	# case 3
+	if cur_x > y - cur_y:
+		ff(cur_x - y + cur_y, y, cur_k + 1)
+	else:
+		ff(0, cur_y + cur_x, cur_k + 1)
 
-    if cur_y > x - cur_x:
-        ff(x, cur_y - x + cur_x, cur_k + 1)
-    else:
-        ff(cur_x + cur_y, 0, cur_k + 1)
+	if cur_y > x - cur_x:
+		ff(x, cur_y - x + cur_x, cur_k + 1)
+	else:
+		ff(cur_x + cur_y, 0, cur_k + 1)
 
 
 ff(0, 0, 0)
@@ -341,11 +341,11 @@ sys.stdin, sys.stdout = open('pails.in', 'r'), open('pails.out', 'w')
 input = sys.stdin.readline
 
 def generate_permutations(p1: int, p2: int):
-    # generates results of all possible pours
-    da = min(p2, x-p1) # amount poured when pouring p2 into p1
-    db = min(p1, y-p2) # amount poured when pouring p1 into p2
-    return [(x, p2), (p1, y), (0, p2), (p1, 0), (p1 + da, p2 - da),
-	        (p1 - db, p2 + db)]
+	# generates results of all possible pours
+	da = min(p2, x-p1) # amount poured when pouring p2 into p1
+	db = min(p1, y-p2) # amount poured when pouring p1 into p2
+	return [(x, p2), (p1, y), (0, p2), (p1, 0), (p1 + da, p2 - da),
+			(p1 - db, p2 + db)]
 
 x, y, k, m = map(int, input().split())
 
@@ -356,20 +356,20 @@ min_diff = 201
 
 queue = deque([(0, 0)])
 while queue:
-    p1, p2 = queue.pop()
-    curr_dist = dist[p1][p2]
+	p1, p2 = queue.pop()
+	curr_dist = dist[p1][p2]
 
-    if curr_dist >= k:
-        break
+	if curr_dist >= k:
+		break
 
-    for n1, n2 in generate_permutations(p1, p2):
-        if dist[n1][n2] == -1:
-            dist[n1][n2] = curr_dist + 1
-            queue.appendleft((n1, n2))
+	for n1, n2 in generate_permutations(p1, p2):
+		if dist[n1][n2] == -1:
+			dist[n1][n2] = curr_dist + 1
+			queue.appendleft((n1, n2))
 
-            diff = abs(n1 + n2 - m)
-            if diff < min_diff:
-                min_diff = diff
+			diff = abs(n1 + n2 - m)
+			if diff < min_diff:
+				min_diff = diff
 
 print(min_diff)
 ```
