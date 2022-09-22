@@ -8,7 +8,6 @@ author: Kevin Sheng
 [Official Editorial](https://codeforces.com/blog/entry/65365)
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -21,10 +20,12 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-bool reachable(std::pair<long long, long long> start,
-			   std::pair<long long, long long> end,
-			   std::string wind,
-			   long long time) {
+bool reachable(
+	std::pair<long long, long long> start,
+	std::pair<long long, long long> end,
+	std::string wind,
+	long long time
+) {
 	long long wind_x = 0;
 	long long wind_y = 0;
 	for (const char& w : wind) {
@@ -43,7 +44,11 @@ bool reachable(std::pair<long long, long long> start,
 				break;
 		}
 	}
-	// to speed things up, we can skip all the repetitive cycles and just multiply by the total complete amount of cycles
+	
+	/*
+	 * to speed things up, we can skip all the repetitive cycles and
+	 * multiply by the total complete amount of cycles
+	 */
 	wind_x *= time / wind.length();
 	wind_y *= time / wind.length();
 	long long remainder = time % wind.length();
@@ -63,6 +68,7 @@ bool reachable(std::pair<long long, long long> start,
 				break;
 		}
 	}
+
 	start.first += wind_x;
 	start.second += wind_y;
 	return std::abs(start.first - end.first) +
@@ -70,17 +76,17 @@ bool reachable(std::pair<long long, long long> start,
 }
 
 int main() {
-	std::pair<long long, long long> at_pos;  // i'm not taking any chances with integer overflow
+	std::pair<long long, long long> at_pos;
 	cin >> at_pos.first >> at_pos.second;
 	std::pair<long long, long long> destination;
 	cin >> destination.first >> destination.second;
 	long long wind_len;
-	cin >> wind_len;  // won't be using this but oh well
+	cin >> wind_len;  // won't be used
 	std::string wind_cycle;
 	cin >> wind_cycle;
 
 	long long lo = 0;
-	long long hi = 20000000000000000;  // just spammed a bunch of 0s, it should be long enough
+	long long hi = INT64_MAX / 2;
 	long long valid = -1;
 	while (lo <= hi) {
 		long long mid = (lo + hi) / 2;
@@ -96,21 +102,24 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 
 public class MagicShip {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-		long[] atPos = Arrays.stream(read.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
-		long[] destination = Arrays.stream(read.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
-		read.readLine();
+		long[] atPos = Arrays.stream(read.readLine().split(" "))
+				.mapToLong(Long::parseLong)
+				.toArray();
+		
+		long[] destination = Arrays.stream(read.readLine().split(" "))
+				.mapToLong(Long::parseLong)
+				.toArray();
+		
+		read.readLine();  // wind length won't be used
 		char[] winds = read.readLine().toUpperCase().toCharArray();
 
 		if (!reachable(atPos, destination, Long.MAX_VALUE / 2, winds)) {
@@ -133,7 +142,9 @@ public class MagicShip {
 		System.out.println(valid);
 	}
 
-	private static boolean reachable(long[] from, long[] to, long time, char[] windPattern) {
+	private static boolean reachable(
+		long[] from, long[] to, long time, char[] windPattern
+	) {
 		long windX = 0;
 		long windY = 0;
 		// calculate the net change by the wind through one cycle
@@ -153,7 +164,11 @@ public class MagicShip {
 					break;
 			}
 		}
-		// to speed things up, we can multiply the blown amount by the complete cycle amount
+		
+		/*
+		 * to speed things up, we can multiply
+		 * the blown amount by the complete cycle amount
+		 */
 		windX *= time / windPattern.length;
 		windY *= time / windPattern.length;
 		long remainder = time % windPattern.length;
@@ -173,7 +188,10 @@ public class MagicShip {
 				break;
 			}
 		}
-		return manhattanDist(new long[] {from[0] + windX, from[1] + windY}, to) <= time;
+
+		return manhattanDist(
+			new long[] {from[0] + windX, from[1] + windY}, to
+		) <= time;
 	}
 
 	private static long manhattanDist(long[] from, long[] to) {
@@ -227,9 +245,9 @@ while lo <= hi:
 		hi = mid - 1
 	else:
 		lo = mid + 1
+
 print(valid)
 ```
 
 </PySection>
-
 </LanguageSection>
