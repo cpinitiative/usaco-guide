@@ -2,7 +2,7 @@
 id: usaco-691
 source: USACO Silver 2017 January
 title: Hoof, Paper, Scissors
-author: Óscar Garries (C++), Owen Wang (Java), Juheon Rhee (Python)
+author: Óscar Garries, Owen Wang, Juheon Rhee
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_hps_silver_jan17.html)
@@ -14,46 +14,45 @@ author: Óscar Garries (C++), Owen Wang (Java), Juheon Rhee (Python)
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main () {
 	freopen("hps.in", "r", stdin);
-	freopen("hps.out", "w", stdout);
 
 	int n;
 	cin >> n;
-	vector<int> h(n + 1), p(n + 1), s(n + 1);
-
-	for (int i = 0; i < n; i++) {
-		h[i + 1] = h[i];
-		p[i + 1] = p[i];
-		s[i + 1] = s[i];
-
-		char cur;
-		cin >> cur;
-		if (cur == 'P') p[i + 1]++;
-		else if (cur == 'H') h[i + 1]++;
-		else s[i + 1]++;
-	}
-
-	int sol = 0;
+	vector<int> hooves(n + 1), paper(n + 1), scissors(n + 1);
 
 	for (int i = 1; i <= n; i++) {
-		auto update = [&] (vector<int>& a, vector<int>& b) {
-				sol = max(sol, a[i] + b[n] - b[i]);
-		};
-		update(h, p);
-		update(h, s);
-		update(p, s);
-		update(p, h);
-		update(s, h);
-		update(s, p);
+		hooves[i] += hooves[i - 1];
+		paper[i] += paper[i - 1];
+		scissors[i] += scissors[i - 1];
+
+		char action;
+		cin >> action;
+		if (action == 'H') {
+			paper[i]++;
+		} else if (action == 'P') {
+			scissors[i]++;
+		} else if (action == 'S') {
+			hooves[i]++;
+		}
 	}
 
-	cout << sol << '\n';
-}
+	int max_wins = 0;
+	for (int i = 1; i <= n; i++) {
+		int before_wins = max(hooves[i], max(paper[i], scissors[i]));
+		int after_wins = max({
+			hooves[n] - hooves[i],
+			paper[n] - paper[i],
+			scissors[n] - scissors[i]
+		});
+		max_wins = max(max_wins, before_wins + after_wins);
+	}
 
+	freopen("hps.out", "w", stdout);
+	cout << max_wins << endl;
+}
 ```
 
 </CPPSection>
@@ -62,46 +61,44 @@ int main () {
 ## Implementation
 
 ```java
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Scanner;
+import java.io.*;
 
-public class hps {
+public class HPS {
 	public static void main(String[] args) throws Exception {
-		Scanner sc = new Scanner(new File("hps.in"));
-		PrintWriter out = new PrintWriter("hps.out");
+		BufferedReader br = new BufferedReader(new FileReader("hps.in"));
 
-		int N = sc.nextInt();
-		int[] hooves = new int[N + 1];
-		int[] paper = new int[N + 1];
-		int[] scissors = new int[N + 1];
+		int n = Integer.parseInt(br.readLine());
+		int[] hooves = new int[n + 1];
+		int[] paper = new int[n + 1];
+		int[] scissors = new int[n + 1];
 
-		for (int i = 1; i < N + 1; i++) {
-			char action = sc.next().charAt(0);
+		for (int i = 1; i <= n; i++) {
 			hooves[i] += hooves[i - 1];
 			paper[i] += paper[i - 1];
 			scissors[i] += scissors[i - 1];
+
+			char action = br.readLine().charAt(0);
 			if (action == 'H') {
-				paper[i] ++;
+				paper[i]++;
 			} else if (action == 'P') {
-				scissors[i] ++;
+				scissors[i]++;
 			} else if (action == 'S') {
-				hooves[i] ++;
+				hooves[i]++;
 			}
 		}
 
-		sc.close();
-
-		int max = 0;
-
-		for (int i = 1; i < N + 1; i++) {
-			int beforeWin = Math.max(hooves[i], Math.max(paper[i], scissors[i]));
-			int afterWin = Math.max(hooves[N] - hooves[i], Math.max(paper[N] - paper[i], scissors[N] - scissors[i]));
-
-			max = Math.max(max, beforeWin + afterWin);
+		int maxWins = 0;
+		for (int i = 1; i <= n; i++) {
+			int beforeWins = Math.max(hooves[i], Math.max(paper[i], scissors[i]));
+			int afterWins = Math.max(
+				hooves[n] - hooves[i],
+				Math.max(paper[n] - paper[i], scissors[n] - scissors[i])
+			);
+			maxWins = Math.max(maxWins, beforeWins + afterWins);
 		}
 
-		out.println(max);
+		PrintWriter out = new PrintWriter("hps.out");
+		out.println(maxWins);
 		out.close();
 	}
 }
@@ -112,26 +109,34 @@ public class hps {
 <PySection>
 
 ```python
-gestures = []
 with open('hps.in') as r:
 	n = int(r.readline().strip())
-	h, p, s = 0, 0, 0
-	for _ in range(n):
-		gesture = r.readline().strip()
-		if gesture == 'H':
-			h += 1
-		elif gesture == 'P':
-			p += 1
-		elif gesture == 'S':
-			s += 1
-		gestures.append([h, p, s])
+	hooves = [0 for _ in range(n + 1)]
+	paper = [0 for _ in range(n + 1)]
+	scissors = [0 for _ in range(n + 1)]
+
+	for i in range(1, n + 1):
+		hooves[i] += hooves[i - 1]
+		paper[i] += paper[i - 1]
+		scissors[i] += scissors[i - 1]
+
+		action = r.readline().strip()
+		if action == 'H':
+			paper[i] += 1
+		elif action == 'P':
+			scissors[i] += 1
+		elif action == 'S':
+			hooves[i] += 1
 
 max_wins = 0
-for i in range(n):
-	empty = [0, 0, 0]
-	for j in range(3):
-		empty[j] = gestures[-1][j] - gestures[i][j]
-	max_wins = max(max_wins, max(gestures[i]) + max(empty))
+for i in range(n + 1):
+	before_wins = max(hooves[i], paper[i], scissors[i])
+	after_wins = max(
+		hooves[n] - hooves[i],
+		paper[n] - paper[i],
+		scissors[n] - scissors[i]
+	)
+	max_wins = max(max_wins, before_wins + after_wins)
 
 print(max_wins, file=open('hps.out', 'w'))
 ```
