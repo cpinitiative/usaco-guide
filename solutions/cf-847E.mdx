@@ -71,26 +71,33 @@ bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
 		}
 
 		if (have_to_eat.empty()) {
-			// ok, don't have to eat anything to the left, let's to the right as much as possible
+			/*
+			 * don't have to eat anything to the left,
+			 * so let's go to the right as much as possible
+			 */
 			while (!food.empty() && food[0] - p <= time) {
 				food.pop_front();
 			}
 		} else {
 			if (p - have_to_eat[0] > time) {
-				// oof, we can't eat the leftmost pellet, so we can't eat all of them
+				//  we can't eat the leftmost pellet, so we can't eat all of them
 				return false;
 			}
 
 			int left_time = p - have_to_eat[0];
-			int right_free_time = time - 2 * left_time;  // test for if we went to the left first
+			// test for if we went to the left first
+			int right_free_time = time - 2 * left_time;
 			int left_first = -1;
-			while (left_first + 1 < food.size() && food[left_first + 1] - p <= right_free_time) {
+			while (left_first + 1 < food.size()
+					&& food[left_first + 1] - p <= right_free_time) {
 				left_first++;
 			}
 
-			right_free_time = time - left_time;  // test for if we went to the right first
+			// test for if we went to the right first
+			right_free_time = time - left_time;
 			int right_first = -1;
-			while (right_first + 1 < food.size() && (food[right_first + 1] - p) * 2 <= right_free_time) {
+			while (right_first + 1 < food.size()
+					&& (food[right_first + 1] - p) * 2 <= right_free_time) {
 				right_first++;
 			}
 
@@ -107,13 +114,6 @@ bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
 	return food.empty();
 }
 
-/**
- * https://codeforces.com/contest/847/problem/E
- * 7
- * *..P*P* should output 3
- * 10
- * .**PP.*P.* should output 2
- */
 int main() {
 	int field_len;
 	cin >> field_len;
@@ -145,6 +145,7 @@ int main() {
 			lo = mid + 1;
 		}
 	}
+
 	cout << valid << endl;
 }
 ```
@@ -186,10 +187,11 @@ public class Packmen {
 				lo = mid + 1;
 			}
 		}
+
 		System.out.println(valid);
 	}
 
-	// assumes everything is like sorted and distinct so my life is easier
+	// assumes everything is sorted & distinct
 	private static boolean allEatable(ArrayList<Integer> packmen, ArrayList<Integer> food, int time) {
 		/*
 		 * because java deques don't allow indexing, we instead keep a
@@ -204,12 +206,15 @@ public class Packmen {
 			}
 
 			if (haveToEat.isEmpty()) {
-				// ok, don't have to eat anything to the left, let's to the right as much as possible
+				/*
+				 * don't have to eat anything to the left,
+				 * so let's go to the right as much as possible
+				 */
 				while (foodPointer < foodAmt && food.get(foodPointer) - p <= time) {
 					foodPointer++;
 				}
 			} else {
-				// oof, we can't eat the leftmost pellet, so we can't eat all of them
+				// we can't eat the leftmost pellet, so we can't eat all of them
 				if (p - haveToEat.get(0) > time) {
 					return false;
 				}
@@ -217,14 +222,16 @@ public class Packmen {
 				// try going to the left first then going to the right
 				int rightFreeTime = time - 2 * leftTime;
 				int leftFirst = -1;
-				while (foodPointer + leftFirst + 1 < foodAmt && food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
+				while (foodPointer + leftFirst + 1 < foodAmt
+						&& food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
 					leftFirst++;
 				}
 
 				// try going to the left first
 				rightFreeTime = time - leftTime;
 				int rightFirst = -1;
-				while (foodPointer + rightFirst + 1 < foodAmt && 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
+				while (foodPointer + rightFirst + 1 < foodAmt
+						&& 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
 					rightFirst++;
 				}
 
@@ -240,26 +247,20 @@ public class Packmen {
 ```
 
 </JavaSection>
-
 <PySection>
 
+<Warning>
+
+This solution will TLE if not submitted with PyPy.
+
+</Warning>
+
 ```py
-"""
-DISCLAIMER:
-THIS SOLUTION ONLY WORKS IF YOU SUBMIT WITH PYPY
-NORMAL PYTHON FAILS ON TEST CASE 60
-https://codeforces.com/contest/847/problem/E
-7
-*..P*P* should output 3
-10
-.**PP.*P.* should output 2
-"""
 from typing import List
 
 
-# assumes the positions are sorted, as well that the positions are distinct
-# a deque is also usable (it is used in the c++ version), but this method was found to be faster
 def eatable_in_time(food: List[int], packmen: List[int], time: int) -> bool:
+	"""assumes the positions are sorted & distinct"""
 	food_pointer = 0
 	food_amt = len(food)  # convenient shorthand
 	for p in packmen:
@@ -274,19 +275,22 @@ def eatable_in_time(food: List[int], packmen: List[int], time: int) -> bool:
 				food_pointer += 1
 
 		else:
-			if p - have_to_eat[0] > time:  # can't eat all of the pellets if we can't eat the leftmost one
+			# can't eat all of the pellets if we can't eat the leftmost one
+			if p - have_to_eat[0] > time:
 				return False
 
-			# try 2 diff strats- go to the left first and switch back or go to the right and switch back
+			# go to the left or go to the right, then switch back
 			left_time = p - have_to_eat[0]
 			right_free_time = time - 2 * left_time
 			left_first = -1
-			while food_pointer + left_first + 1 < food_amt and food[food_pointer + left_first + 1] - p <= right_free_time:
+			while food_pointer + left_first + 1 < food_amt \
+					and food[food_pointer + left_first + 1] - p <= right_free_time:
 				left_first += 1
 
 			right_free_time = time - left_time
 			right_first = -1
-			while food_pointer + right_first + 1 < food_amt and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
+			while food_pointer + right_first + 1 < food_amt \
+					and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
 				right_first += 1
 			food_pointer += max(left_first, right_first) + 1
 
@@ -316,9 +320,9 @@ while lo <= hi:
 		hi = mid - 1
 	else:
 		lo = mid + 1
+
 print(valid)
 ```
 
 </PySection>
-
 </LanguageSection>
