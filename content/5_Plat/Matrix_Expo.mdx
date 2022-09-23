@@ -3,7 +3,7 @@ id: matrix-expo
 redirects:
   - /plat/mat-exp
 title: 'Matrix Exponentiation'
-author: 'Benjamin Qi, Neo Wang'
+author: 'Benjamin Qi, Neo Wang, Harshini Rayasam'
 description: Repeatedly multiplying a square matrix by itself.
 prerequisites:
   - intro-dp
@@ -129,7 +129,64 @@ int main() {
 }
 ```
 </CPPSection>
+<JavaSection>
 
+```java
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Main{
+public static int MOD = 1000000007;
+public static long[][] m = {{1,1},{1,0}};
+public static long[][] m1 = {{1,0},{0,1}};
+public static long[][] mul(long[][] A,long[][] B,int MOD) {
+    long[][] C = {{0, 0}, {0, 0}};
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            for (int k = 0; k < 2; k++) {
+                C[i][j] += ((A[i][k]) * (B[k][j])) % MOD;
+            }
+        }
+    }
+    return C;
+}
+
+public static long[][] power(long[][] matrix, long n, int MOD) {
+    if (n == 0) {
+        return m1;
+    }
+    if (n == 1) {
+        return matrix;
+    }
+    long[][] half = power(matrix, n / 2, MOD);
+    long[][] square = mul(half, half, MOD);
+    if (n % 2 == 0) {
+        return square;
+    }
+    return mul(matrix, square, MOD);
+}
+ 
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        long n = sc.nextLong();  
+        if (n == 0) {
+            System.out.println(0);
+        } else if(n > 2) {
+            long[][] o = power(m, n-1, MOD);
+            System.out.println(o[0][0]%MOD);
+        } else {
+            System.out.println(1);
+        }
+     
+    
+    }
+}
+```
+
+</JavaSection>
 <PySection>
 ```python
 from typing import List
