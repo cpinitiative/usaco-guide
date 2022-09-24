@@ -115,8 +115,8 @@ MAX_OPS = 100
 x, y, k, m = map(int, open('pails.in', 'r').read().split())
 
 sol = float('inf')
-vis = [[[False for a in range(MAX_OPS + 1)] 
-	for b in range(MAX_OPS + 1)] 
+vis = [[[False for a in range(MAX_OPS + 1)]
+	for b in range(MAX_OPS + 1)]
 	for c in range(MAX_OPS + 1)]
 
 
@@ -125,7 +125,7 @@ def ff(cur_x: int, cur_y: int, cur_k: int) -> int:
 
 	if cur_k > k or vis[cur_x][cur_y][cur_k]:
 		return
-	
+
 	vis[cur_x][cur_y][cur_k] = True
 	sol = min(sol, abs(m - (cur_x + cur_y)))
 
@@ -345,17 +345,17 @@ def generate_permutations(p1: int, p2: int):
 	da = min(p2, x-p1) # amount poured when pouring p2 into p1
 	db = min(p1, y-p2) # amount poured when pouring p1 into p2
 	return [
-		(x, p2), 
-		(p1, y), 
-		(0, p2), 
-		(p1, 0), 
+		(x, p2),
+		(p1, y),
+		(0, p2),
+		(p1, 0),
 		(p1 + da, p2 - da),
 		(p1 - db, p2 + db)
 	]
 
 x, y, k, m = map(int, input().split())
 
-dist = [[-1]*(y+1) for _ in range(x+1)]
+dist = [[-1] * (y+1) for _ in range(x+1)]
 dist[0][0] = 0
 
 min_diff = 201
