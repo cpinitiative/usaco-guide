@@ -27,6 +27,13 @@ Silver.
 	<Resource source="CPH" title="5.1 - Generating Subsets" starred>
 		good explanation + code, no need to repeat
 	</Resource>
+			<Resource
+		source="Youtube"
+		title="Recursion for DSA/CP : BEST way to Understand"
+		url="https://www.youtube.com/watch?v=0UM_J1jE1dg"
+starred	>
+	Recursion Explanation with examples
+	</Resource>
 </Resources>
 
 ### Solution - Apple Division
@@ -1233,81 +1240,82 @@ make code consistent, improve some of these explanations
 		```cpp
 		int A[] = {1, 2, 3, 4, 5};
 
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 5) {
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-			}
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 5) {
+    			for (int x : subset)
+    				cout << x << ' ';
+    			cout << '\n';
+    		}
 
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-			subset.pop_back();
-			generateSubsets(i + 1, subset);
-		}
-		```
-	    There is an error with this code that causes it to crash. What does the corrected code look like?
-	    <Quiz.Answer>
-		```cpp
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 5) {
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-			}
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    		subset.pop_back();
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+        There is an error with this code that causes it to crash. What does the corrected code look like?
+        <Quiz.Answer>
+    	```cpp
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 5) {
+    			for (int x : subset)
+    				cout << x << ' ';
+    			cout << '\n';
+    		}
 
-			// must always go to empty subset first
-			generateSubsets(i + 1, subset);
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-		}
-		```
-		<Quiz.Explanation>
-		Incorrect: This is another way of generating subsets, but it's not the error!
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-		```cpp
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 4) { // incorrect ending index
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-			}
+    		// must always go to empty subset first
+    		generateSubsets(i + 1, subset);
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+    	<Quiz.Explanation>
+    	Incorrect: This is another way of generating subsets, but it's not the error!
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer>
+    	```cpp
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 4) { // incorrect ending index
+    			for (int x : subset)
+    				cout << x << ' ';
+    			cout << '\n';
+    		}
 
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-			subset.pop_back();
-			generateSubsets(i + 1, subset);
-		}
-		```
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    		subset.pop_back();
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
 
-	      <Quiz.Explanation>
-		Incorrect: This doesn't stop the error and prevents us from adding the last number to any subset
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-		```cpp
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 5) {
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-				return; // missing return statement
-			}
+          <Quiz.Explanation>
+    	Incorrect: This doesn't stop the error and prevents us from adding the last number to any subset
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer correct>
+    	```cpp
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 5) {
+    			for (int x : subset)
+    				cout << x << ' ';
+    			cout << '\n';
+    			return; // missing return statement
+    		}
 
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-			subset.pop_back();
-			generateSubsets(i + 1, subset);
-		}
-		```
-	      <Quiz.Explanation>
-		Correct: After we finish printing (or checking) the subset, remember to always return immediately. Otherwise, it causes nasty errors that often crashes the program.
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	</Quiz>
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    		subset.pop_back();
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+          <Quiz.Explanation>
+    	Correct: After we finish printing (or checking) the subset, remember to always return immediately. Otherwise, it causes nasty errors that often crashes the program.
+          </Quiz.Explanation>
+        </Quiz.Answer>
+      </Quiz.Question>
+    </Quiz>
     </CPPSection>
+
  </LanguageSection>
-		 
+
