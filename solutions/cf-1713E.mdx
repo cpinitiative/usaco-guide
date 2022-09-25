@@ -1,0 +1,18 @@
+Notice that $a[i][j]$ can only be swapped with $a[j][i]$ no matter which operations are performed.
+
+In addition, we want to lexografically sort the array. Thus, we can iterate and greedily process the array.
+
+For all $j$ such that $i < j$ (we only need to consider each case once), we can determine whether we want to swap them or keep them the same.
+
+If $a[i][j] > a[j][i]$, we want to swap them. If $a[i][j] < a[j][i]$ we want to keep them the same. If they are equal it doesn't matter.
+
+However, it is possible that not all conditions can work together with each other and swapping something means we can't swap something else later on.
+
+We can use the Amogus Trick to represent this problem. Create a disjoint set union of $2n$ nodes where node $i$ represents the state where the operation is performed on $i$ and $i + n$ represents the state where operation is not performed on $i$.
+
+As we are iterating greedily through the array, we can merge ($i$ and $j$) and ($i + n$ and $j + n$) if we don't want to swap. This works because if we swap neither or swap both the arrangement remains the same.
+If we do want to swap we can merge ($i$ and $j + n$) and ($i + n$ and $j$). This works because if we swap exactly one of these, then the arrangement will change. 
+
+After this we can construct the answer.
+
+We can iterate over the entire grid. If it is a diaganal it will never change. If $a[i][j] == a[j][i]$ then we can manually set them to normal (since we didn't merge them in the disjoint set union when comparing them the states might have not been merged). If it is not a diaganol we can check whether $i$ and $j$ are merged in the disjoint set union. If they aren't then we will swap $a[i][j]$ and $a[j][i]$. Otherwise we will keep them the same.
