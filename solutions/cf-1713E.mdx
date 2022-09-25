@@ -74,7 +74,8 @@ void solve() {
   DSU dsu(2 * n);
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) { // Only check each pair once and diagnals don't matter
-      if (a[i][j] == a[j][i]) continue; // If they are the same we should not merge either way because it could affect later merges
+      // If they are the same we should not merge either way because it could affect later merges
+      if (a[i][j] == a[j][i]) continue;
       else if (a[i][j] > a[j][i]) {
         // Try to swap the elements
         if (dsu.get(i) != dsu.get(j)) { // Check if the states are already merged the opposite way
@@ -94,7 +95,9 @@ void solve() {
   int ans[n][n];
   for (int i = 0; i < n; i++) {
     for (int j = i; j < n; j++) {
-      // If a[i][j] is part of a diagonal or the pair is equal (a[i][j] == a[j][i]), manually set it to be the same as the original array
+      /* If a[i][j] is part of a diagonal or the pair is equal (a[i][j] == a[j][i]),
+       * manually set it to be the same as the original array
+       */
       if (i == j) ans[i][j] = a[i][j];
       else if (a[i][j] == a[j][i]) ans[i][j] = ans[j][i] = a[i][j];
       else { // Otherwise check whether the i and j states are merged
