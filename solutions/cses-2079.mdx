@@ -130,13 +130,12 @@ public class Centroid {
 <PySection>
 
 ```py
-	
 MAX_N = 200000
 g = [[] for i in range(MAX_N + 1)]  # graph
 subtree_size = [0 for i in range(MAX_N + 1)] # size of subtree
 
 def dfs_size(cur: int, par: int) -> None:
-	# calculate all subtree sizes: size of a subtree is the sum of the sizes of all child subtrees + 1.
+	"""calculates all subtree sizes (sum of child sizes + 1)"""
 	subtree_size[cur] = 1
 	for chi in g[cur]:
 		if chi != par:
@@ -159,9 +158,10 @@ for i in range(1, n):
 	a, b = map(int, input().split())
 	g[a].append(b)
 	g[b].append(a)
+
 dfs_size(1, -1)
-centroid = get_centroid(1, -1)
-print(centroid)
+
+print(get_centroid(1, -1))
 ```
 </PySection>
 
