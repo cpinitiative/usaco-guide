@@ -43,89 +43,89 @@ using namespace std;
 using vi = vector<int>;
 
 struct DSU {
-  vi e;
-  DSU(int n) {
-    e = vi(n, -1);
-  }
-  int get(int x) {
-    return e[x] < 0 ? x : e[x] = get(e[x]);
-  }
-  bool same(int a, int b) {
-    return get(a) == get(b);
-  }
-  int size(int x) {
-    return -e[get(x)];
-  }
-  bool unite(int x, int y) {
-    x = get(x); y = get(y);
-    if (x == y) return false;
-    if (e[x] > e[y]) swap(x, y);
-    e[x] += e[y]; e[y] = x;
-    return true;
-  }
+	vi e;
+	DSU(int n) {
+		e = vi(n, -1);
+	}
+	int get(int x) {
+		return e[x] < 0 ? x : e[x] = get(e[x]);
+	}
+	bool same(int a, int b) {
+		return get(a) == get(b);
+	}
+	int size(int x) {
+		return -e[get(x)];
+	}
+	bool unite(int x, int y) {
+		x = get(x); y = get(y);
+		if (x == y) return false;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y]; e[y] = x;
+		return true;
+	}
 };
 
 void solve() {
-  int n;
-  cin >> n;
-  int a[n][n];
-  for (int i = 0; i < n; i++)
-    for (int j = 0; j < n; j++) cin >> a[i][j];
-  DSU dsu(2 * n);
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) { // Only check each pair once and diagnals don't matter
-      // If they are the same we should not merge either way because it could affect later merges
-      if (a[i][j] == a[j][i]) continue;
-      else if (a[i][j] > a[j][i]) {
-        // Try to swap the elements
-        if (dsu.get(i) != dsu.get(j)) { // Check if the states are already merged the opposite way
-          dsu.unite(i, j + n);
-          dsu.unite(j, i + n);
-        }
-      } else  {
-        // Try to keep the elements the same
-        if (dsu.get(i) != dsu.get(j + n)) { // Check if the states are already merged the opposite way
-          dsu.unite(i, j);
-          dsu.unite(i + n, j + n);
-        }
-      }
-    }
-  }
-  // Construct the answer
-  int ans[n][n];
-  for (int i = 0; i < n; i++) {
-    for (int j = i; j < n; j++) {
-      /* If a[i][j] is part of a diagonal or the pair is equal (a[i][j] == a[j][i]),
-       * manually set it to be the same as the original array
-       */
-      if (i == j) ans[i][j] = a[i][j];
-      else if (a[i][j] == a[j][i]) ans[i][j] = ans[j][i] = a[i][j];
-      else { // Otherwise check whether the i and j states are merged
-        if (dsu.get(i) == dsu.get(j)) {
-          ans[i][j] = a[i][j];
-          ans[j][i] = a[j][i];
-        } else {
-          ans[i][j] = a[j][i];
-          ans[j][i] = a[i][j];
-        }
-      }
-    }
-  }
+	int n;
+	cin >> n;
+	int a[n][n];
+	for (int i = 0; i < n; i++)
+	  for (int j = 0; j < n; j++) cin >> a[i][j];
+	DSU dsu(2 * n);
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) { // Only check each pair once and diagnals don't matter
+			// If they are the same we should not merge either way because it could affect later merges
+			if (a[i][j] == a[j][i]) continue;
+			else if (a[i][j] > a[j][i]) {
+				// Try to swap the elements
+				if (dsu.get(i) != dsu.get(j)) { // Check if the states are already merged the opposite way
+					dsu.unite(i, j + n);
+					dsu.unite(j, i + n);
+				}
+			} else	{
+				// Try to keep the elements the same
+				if (dsu.get(i) != dsu.get(j + n)) { // Check if the states are already merged the opposite way
+					dsu.unite(i, j);
+					dsu.unite(i + n, j + n);
+				}
+			}
+		}
+	}
+	// Construct the answer
+	int ans[n][n];
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			/* If a[i][j] is part of a diagonal or the pair is equal (a[i][j] == a[j][i]),
+			 * manually set it to be the same as the original array
+			 */
+			if (i == j) ans[i][j] = a[i][j];
+			else if (a[i][j] == a[j][i]) ans[i][j] = ans[j][i] = a[i][j];
+			else { // Otherwise check whether the i and j states are merged
+				if (dsu.get(i) == dsu.get(j)) {
+					ans[i][j] = a[i][j];
+					ans[j][i] = a[j][i];
+				} else {
+					ans[i][j] = a[j][i];
+					ans[j][i] = a[i][j];
+				}
+			}
+		}
+	}
   // Print the answer
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      cout << ans[i][j] << " ";
-    }
-    cout << endl;
-  }
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << ans[i][j] << " ";
+		}
+		cout << endl;
+	}
 }
 
 int main() { 
-  ios::sync_with_stdio(false); cin.tie(nullptr);
-  int T = 1; cin >> T;
-  while (T--) {
-    solve();
-  }
+	ios::sync_with_stdio(false); cin.tie(nullptr);
+	int T = 1; cin >> T;
+	while (T--) {
+		solve();
+	}
 }
 ```
 
