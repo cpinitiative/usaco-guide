@@ -29,15 +29,15 @@ For each cow, we first check if it is already visited. If not, we then want to f
 #include <bits/stdc++.h>
 using namespace std;
 
-// Cow i wants to visit cow a[i] and gets v[i] points
+// cow i wants to visit cow a[i] and gets v[i] points
 vector<int> a, v;
-// Reversed_graph[i] stores the cows that want to go to farm i
+// reversed_graph[i] stores the cows that want to go to farm i
 vector<vector<int>> reversed_graph;
-// Marks cows as visited once we have processed them
+// marks cows as visited once we have processed them
 vector<bool> visited;
 
 /**
- * Marks y and the other cows in its other cycle as visited by performing a dfs
+ * Marks y and the other cows in its other cycle as visited by performing a dfs. 
  */
 void mark(int y) {
 	if (visited[y]) {
@@ -51,7 +51,7 @@ void mark(int y) {
 
 /**
  * Applies Floyd's algorithm to detect the cycle and return the minimum v value
- * in this cycle
+ * in this cycle. 
  */
 int min_in_cycle(int curr) {
 	int y = a[curr];
@@ -64,12 +64,12 @@ int min_in_cycle(int curr) {
 	int min_v = v[y];
 	y = a[y];
 
-	// Traverse the cycle to find the cow with the minimum v_i value
+	// traverse the cycle to find the cow with the minimum v_i value
 	while (y != z) {
 		min_v = min(min_v, v[y]);
 		y = a[y];
 	}
-	// Mark every node in this connected component as visited
+	// mark every node in this connected component as visited
 	mark(y);
 	return min_v;
 }
@@ -86,7 +86,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> a[i] >> v[i];
 		a[i]--;
-		// Cow i wants to visit farm a[i]
+		// cow i wants to visit farm a[i]
 		reversed_graph[a[i]].push_back(i);
 		max_moos += v[i];
 	}
@@ -113,11 +113,11 @@ import java.io.*;
 import java.util.*;
 
 public class Visits {
-	// Cow i wants to visit cow a[i] and gets v[i] points
+	// cow i wants to visit cow a[i] and gets v[i] points
 	static List<Integer> a, v;
-	// Reversed_graph[i] stores the cows that want to go to farm i
+	// reversed_graph[i] stores the cows that want to go to farm i
 	static List<List<Integer>> reversed_graph;
-	// Marks cows as visited once we have processed them
+	// marks cows as visited once we have processed them
 	static List<Boolean> visited;
 
 	public static void main(String[] args) throws IOException {
@@ -137,7 +137,7 @@ public class Visits {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			a.add(Integer.parseInt(st.nextToken()) - 1);
 			v.add(Integer.parseInt(st.nextToken()));
-			// Cow i wants to visit farm a[i]
+			// cow i wants to visit farm a[i]
 			reversed_graph.get(a.get(i)).add(i);
 			visited.add(false);
 			maxMoos += v.get(i);
@@ -159,7 +159,7 @@ public class Visits {
 
 	/**
 	 * Applies Floyd's algorithm to detect the cycle and return the minimum v value
-	 * in this cycle containing node
+	 * in this cycle containing node. 
 	 */
 	static int minInCycle(int node) {
 		int slow = a.get(node);
@@ -172,20 +172,20 @@ public class Visits {
 		// slow is now an element that is in the cycle
 		int min_v = v.get(slow);
 
-		// Traverse the cycle to find the cow with the minimum v_i value
+		// traverse the cycle to find the cow with the minimum v_i value
 		slow = a.get(slow);
 		while (slow != quick) {
 			min_v = Math.min(min_v, v.get(slow));
 			slow = a.get(slow);
 		}
 
-		// Mark every node in this connected component as visited
+		// mark every node in this connected component as visited
 		mark(slow);
 		return min_v;
 	}
 
 	/**
-	 * Marks y and the other cows in its other cycle as visited by performing a dfs
+	 * Marks y and the other cows in its other cycle as visited by performing a dfs. 
 	 */
 	static void mark(int node) {
 		if (visited.get(node)) {
