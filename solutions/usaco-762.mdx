@@ -30,28 +30,28 @@ int main() {
         int left = -1;
         int right = n;
 
-        vector<ll> total_score_from_i_till_end(n);
-        vector<ll> minimum_score_from_i_till_end(n);
+        vector<ll> total_score(n);
+        vector<ll> minimum_score(n);
         vector<ll> max_score_values;
 
-        total_score_from_i_till_end[n - 1] = questions[n - 1];
-        minimum_score_from_i_till_end[n - 1] = questions[n - 1];
+        total_score[n - 1] = questions[n - 1];
+        minimum_score[n - 1] = questions[n - 1];
 
-        ll cur_q, cur_s, idx;
+        ll current_question, current_score, idx;
         for (int i = n - 2; i > 0; i--) {
-                cur_q = questions[i];
+                current_question = questions[i];
 
-                total_score_from_i_till_end[i] = cur_q + total_score_from_i_till_end[i + 1]; // Calculating sum of scores from index i to N
-                minimum_score_from_i_till_end[i] = min(minimum_score_from_i_till_end[i + 1], cur_q); //minimum score from scores in indexes i to N
+                total_score[i] = current_question + total_score[i + 1]; // Calculating sum of scores from index i to N
+                minimum_score[i] = min(minimum_score[i + 1], current_question); //minimum score from scores in indexes i to N
 
-                cur_s = total_score_from_i_till_end[i] - minimum_score_from_i_till_end[i]; //excluding the least score question to calculate average
+                current_score = total_score[i] - minimum_score[i]; //excluding the least score question to calculate average
                 idx = (n - (i + 1));
 
-                if (cur_s * right > left * idx) {
-                        left = cur_s;
+                if (current_score * right > left * idx) {
+                        left = current_score;
                         right = idx;
                         max_score_values = {i};
-                } else if (cur_s * right == left * idx) {
+                } else if (current_score * right == left * idx) {
                         max_score_values.push_back(i);
                 }
         }
