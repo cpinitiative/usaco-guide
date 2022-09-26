@@ -2,7 +2,7 @@
 id: usaco-762
 source: USACO Silver 2017 December
 title: My Cow Ate My Homework
-author: Juheon Rhee, Sanjana Reddy
+author: Juheon Rhee, Kakulavaram Sanjana Reddy
 ---
 
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_homework_silver_dec17.html)
@@ -30,21 +30,21 @@ int main() {
         int left = -1;
         int right = n;
 
-        vector<ll> total_score(n);
-        vector<ll> minimum_score(n);
+        vector<ll> total_score_from_i_till_end(n);
+        vector<ll> minimum_score_from_i_till_end(n);
         vector<ll> max_score_values;
 
-        total_score[n - 1] = questions[n - 1];
-        minimum_score[n - 1] = questions[n - 1];
+        total_score_from_i_till_end[n - 1] = questions[n - 1];
+        minimum_score_from_i_till_end[n - 1] = questions[n - 1];
 
         ll cur_q, cur_s, idx;
         for (int i = n - 2; i > 0; i--) {
                 cur_q = questions[i];
 
-                total_score[i] = cur_q + total_score[i + 1]; // Calculating sum of scores from index i to N
-                minimum_score[i] = min(minimum_score[i + 1], cur_q); //minimum score from scores in indexes i to N
+                total_score_from_i_till_end[i] = cur_q + total_score_from_i_till_end[i + 1]; // Calculating sum of scores from index i to N
+                minimum_score_from_i_till_end[i] = min(minimum_score_from_i_till_end[i + 1], cur_q); //minimum score from scores in indexes i to N
 
-                cur_s = total_score[i] - minimum_score[i]; //excluding the least score question to calculate average
+                cur_s = total_score_from_i_till_end[i] - minimum_score_from_i_till_end[i]; //excluding the least score question to calculate average
                 idx = (n - (i + 1));
 
                 if (cur_s * right > left * idx) {
