@@ -15,7 +15,7 @@ author: Juheon Rhee, Kakulavaram Sanjana Reddy
 <CPPSection>
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 
@@ -31,27 +31,30 @@ int main() {
         int right = n;
 
         vector<ll> total_score(n);
-        vector<ll> minimum_score(n);
+        vector<ll> min_score(n);
         vector<ll> max_score_values;
 
         total_score[n - 1] = questions[n - 1];
-        minimum_score[n - 1] = questions[n - 1];
+        min_score[n - 1] = questions[n - 1];
 
-        ll current_question, current_score, idx;
+        ll curr_question, curr_score, idx;
         for (int i = n - 2; i > 0; i--) {
-                current_question = questions[i];
+                curr_question = questions[i];
+                // Calculating sum of scores from index i to N
+                total_score[i] = curr_question + total_score[i + 1]; 
+                
+                //minimum score from scores in indexes i to N
+                min_score[i] = min(min_score[i + 1], curr_question); 
 
-                total_score[i] = current_question + total_score[i + 1]; // Calculating sum of scores from index i to N
-                minimum_score[i] = min(minimum_score[i + 1], current_question); //minimum score from scores in indexes i to N
-
-                current_score = total_score[i] - minimum_score[i]; //excluding the least score question to calculate average
+                //excluding the least score question to calculate average
+                curr_score = total_score[i] - min_score[i]; 
                 idx = (n - (i + 1));
 
-                if (current_score * right > left * idx) {
-                        left = current_score;
+                if (curr_score * right > left * idx) {
+                        left = curr_score;
                         right = idx;
                         max_score_values = {i};
-                } else if (current_score * right == left * idx) {
+                } else if (curr_score * right == left * idx) {
                         max_score_values.push_back(i);
                 }
         }
