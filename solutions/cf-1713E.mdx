@@ -48,7 +48,11 @@ struct DSU {
 		e = vi(n, -1);
 	}
 	int get(int x) {
-		return e[x] < 0 ? x : e[x] = get(e[x]);
+		if (e[x] < 0) return x;
+		else {
+			e[x] = get(e[x]);
+			return e[x];
+		}
 	}
 	bool same(int a, int b) {
 		return get(a) == get(b);
