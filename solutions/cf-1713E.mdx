@@ -77,18 +77,19 @@ void solve() {
 	  for (int j = 0; j < n; j++) cin >> a[i][j];
 	DSU dsu(2 * n);
 	for (int i = 0; i < n; i++) {
-		for (int j = i + 1; j < n; j++) { // Only check each pair once and diagnals don't matter
+		// Only check each pair once and diagnals don't matter
+		for (int j = i + 1; j < n; j++) {
 			// If they are the same we should not merge either way because it could affect later merges
 			if (a[i][j] == a[j][i]) continue;
 			else if (a[i][j] > a[j][i]) {
-				// Try to swap the elements
-				if (dsu.get(i) != dsu.get(j)) { // Check if the states are already merged the opposite way
+				// Swap the elements if the states are not already merged the opposite way
+				if (dsu.get(i) != dsu.get(j)) {
 					dsu.unite(i, j + n);
 					dsu.unite(j, i + n);
 				}
 			} else	{
-				// Try to keep the elements the same
-				if (dsu.get(i) != dsu.get(j + n)) { // Check if the states are already merged the opposite way
+				// Keep the elements the same if the states are not already merged the opposite way
+				if (dsu.get(i) != dsu.get(j + n)) {
 					dsu.unite(i, j);
 					dsu.unite(i + n, j + n);
 				}
