@@ -2,12 +2,12 @@
 id: usaco-599
 source: USACO Gold 2016 January
 title: Lights Out
-author: Albert Ye
+author: Albert Ye, Ryan Chou
 ---
 
-Official solution:
-http://usaco.org/current/data/sol_lightsout_platinum_jan16.html
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lightsout_gold_jan16.html)
 
+## Explanation
 The official solution just doesn't use hashing.
 
 We want to be able to pinpoint Bessie's location after traversing some edges and
@@ -31,127 +31,174 @@ a one-base polynomial hash to check if the substring appears only once. If we
 find an appropriate substring, we find the total distance that we travelled
 before finding out where we were.
 
+## Implementation
 **Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-typedef pair<int, int> pii;
-#define f first
-#define s second
 using ll = long long;
 
-const ll X = 97;
-const ll M = 999999929;
+const ll P = 31;
+const ll MOD = 1e9 + 7;
+const ll MX = 1e5 * 2;
 
-int n, m, H[505], p[505];
-vector<int> k;
-pii arr[205];
+struct coord {
+  int x, y;
+};
 
-void gen_hash()
-{
-	p[0] = 1;
-	for(int i = 1; i < m; i++)
-	{
-		p[i] = int(p[i-1]*X%M);
-	}
-	H[0] = k[0];
-	for(int i = 1; i < m; i++)
-	{
-		H[i] = int((H[i-1]*X+k[i]) % M);
-	}
-}
+signed main() {
+  freopen("lightsout.in", "r", stdin);
+  freopen("lightsout.out", "w", stdout);
 
-int cwdist[205][205], dist[205];
-void gen_dist()
-{
-	for(int i = 0; i < n; i++)
-	{
-		for(int j = i; j < n; j++)
-		{
-			cwdist[i][(j+1)%n] = cwdist[i][j] + abs((arr[j].f - arr[(j+1)%n].f) + (arr[j].s - arr[(j+1)%n].s));
-			if(j+1 != n) cwdist[(j+1)%n][i] = INT_MAX;
-		}
-	}
-	for(int i = 0; i < n; i++)
-	{
-		dist[i] = min(cwdist[0][i], cwdist[i][0]);
-	}
-}
+  cin.tie(0)->sync_with_stdio(0);
 
-int main()
-{
-	freopen("lightsout.in", "r", stdin);
-	freopen("lightsout.out", "w", stdout);
-	cin >> n;
-	for(int i = 0; i < n; i++)
-	{
-		cin >> arr[i].f >> arr[i].s;
-	}
-	k.push_back(0);
-	for(int i = 1; i < n; i++)
-	{
-		int pre = i-1;
-		k.push_back(abs(arr[pre].f-arr[i].f)+abs(arr[pre].s-arr[i].s));
-		int nxt = (i+1)%n;
-		if(arr[i].f - arr[pre].f > 0)
-		{
-			if(arr[nxt].s - arr[i].s > 0) k.push_back(1100001);
-			else k.push_back(1100002);
-		} else if(arr[i].f - arr[pre].f < 0)
-		{
-			if(arr[nxt].s - arr[i].s > 0) k.push_back(1100002);
-			else k.push_back(1100001);
-		} else
-		{
-			if(arr[i].s - arr[pre].s > 0)
-			{
-				if(arr[nxt].f - arr[i].f > 0) k.push_back(1100002);
-				else k.push_back(1100001);
-			} else if(arr[i].s - arr[pre].s < 0)
-			{
-				if(arr[nxt].f - arr[i].f > 0) k.push_back(1100001);
-				else k.push_back(1100002);
-			}
-		}
-	}
-	k.push_back(abs(arr[0].f-arr[n-1].f)+abs(arr[0].s-arr[n-1].s));
-	m = k.size()+1;
-	// for(int i = 0; i < m; i++) cerr << k[i] << " ";
-	cerr << endl;
-	gen_dist();
-	gen_hash();
-	dist[0] = 0;
-	int ans = 0;
-	for(int sp = 0; sp < m-1; sp++)
-	{
-		int know = -1;
-		for(int L = 1; L < m-sp; L++)
-		{
-			int x = (H[sp+L] - ((ll)H[sp]*p[L])%M + M)%M;
-			int nocc = 0;
-			for(int pt = 0; pt < m-L; pt++)
-			{
-				if((H[pt+L] - ((ll)H[pt]*p[L])%M + M)%M == x)
-					nocc++;
-			}
-			if(nocc == 1)
-			{
-				know = (sp+L+1)/2;
-				break;
-			}
-		}
-		int a = cwdist[(sp+2)/2][0];
-		if(know != -1)
-		{
-			a = dist[know] + cwdist[(sp+2)/2][know];
-		}
-		int b = dist[(sp+2)/2];
-		// cerr << a << " " << b << endl;
-		ans = max(ans, a-b);
-	}
-	cout << ans << endl;
+  int n;
+  cin >> n;
+
+  vector<coord> dt(n);
+  for (int i = 0; i < n; i++) {
+    cin >> dt[i].x >> dt[i].y;
+  }
+
+  function<int(int i, int j)> calc_dist = [&](int i, int j) {
+    return abs(dt[i].x - dt[j].x) + abs(dt[i].y - dt[j].y);
+  };
+
+  vector<vector<vector<int>>> dst(n,
+    vector<vector<int>>(n,
+     vector<int>(2, INT32_MAX)
+    )
+  );
+
+  // i, j, 0 - clockwise dist from i -> j
+  // i, j, 1 - counter-clockwise dist from i -> j
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < i + n; j++) {
+      if (i == j) {
+        dst[i][j][0] = 0;
+      } else {
+        int x = (j + n) % n;
+        int y = (j - 1 + n) % n;
+        dst[i][x][0] = dst[i][y][0] + calc_dist(x, y);
+      }
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j > i - n; j--) {
+      if (i == j) {
+        dst[i][j][1] = 0;
+      } else {
+        int x = (j + n) % n;
+        int y = (j + 1 + n) % n;
+        dst[i][x][1] = dst[i][y][1] + calc_dist(x, y);
+      }
+    }
+  }
+
+  vector<int> ang(n);
+  for (int i = 0; i < n; i++) {
+    int prev = (i - 1 + n) % n;
+    int nxt = (i + 1) % n;
+
+    /*
+     * two type of possible angles (90 deg either on inside or outside)
+     * reminder: all edges are parallel to either x or y axis & alternate
+     *
+     * |--------------------------|
+     * | ^                     ^  |
+     * |      angles of 90°       |
+     * | ˅                     ˅  |
+     * |--------------------------|
+     *
+     * |-------------------------|
+     * |     angles of 270°      |
+     * |              > ----------
+     * |                |
+     * |                |
+     * |-----------------
+     */
+
+    // derived from slope
+    ll rt = (dt[i].y - dt[prev].y) * (dt[nxt].x - dt[i].x) -
+            (dt[nxt].y - dt[i].y) * (dt[i].x - dt[prev].x);
+
+    // no angle should ever be colinear
+    assert(rt);
+
+    if (rt > 0) {
+      ang[i] = MX + 2;
+    } else {
+      ang[i] = MX + 1;
+    }
+  }
+
+  vector<int> hsh(1);
+  hsh[0] = 0;
+
+  vector<ll> poly(2 * n + 1);
+
+  poly[0] = 1;
+  for (int i = 1; i < (int)(poly.size()); i++) {
+    poly[i] = (int)(poly[i - 1] * P % MOD);
+  }
+
+  for (int i = 1; i < n; i++) {
+    hsh.push_back((hsh.back() * P + dst[(i - 1 + n) % n][i][0]) % MOD);
+    hsh.push_back((hsh.back() * P + ang[i]) % MOD);
+  }
+  hsh.push_back(hsh.back() * P + dst[n - 1][0][0]);
+
+  function<int(int i, int j)> get_hash = [&](int i, int j) {
+    // gets the hash for the substring from i -> j
+    // you can also compute this using the mod inverse of poly_i
+
+    return ((hsh[j] - ((hsh[i] * poly[j - i]) % MOD) + MOD) % MOD);
+  };
+
+  int ans = 0;
+
+  for (int i = 1; i < (int)(hsh.size()) - 2; i++) {
+    int fin = -1;
+
+    for (int len = 1; len < (int)(hsh.size()) - i; len++) {
+      int cr = get_hash(i, i + len);
+      int occ = 0;
+
+      for (int j = 0; j < (int)(hsh.size()) - len; j++) {
+        if (get_hash(j, j + len) == cr) {
+          occ++;
+        }
+      }
+
+      // bessie can uniquely identify her position
+      if (occ == 1) {
+        fin = (i + len + 1) / 2;
+        break;
+      }
+    }
+
+    int strt = (i + 2) / 2;
+    if (fin >= n) {
+      fin = -1;
+    }
+
+    int a = dst[strt][0][0];
+    if (fin != -1) {
+      // time to get to unique point + best dist from there
+      a = min(dst[fin][0][0], dst[fin][0][1]) + dst[strt][fin][0];
+    }
+    // default time to get to exit from strt
+    int b = min(dst[strt][0][0], dst[strt][0][1]);
+
+    ans = max(ans, a - b);
+  }
+  cout << ans << endl;
 }
 ```
+</CPPSection>
+</LanguageSection>
