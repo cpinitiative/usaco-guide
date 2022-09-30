@@ -23,11 +23,13 @@ struct Road {
 	int er, ec;
 };
 
+/** to use the struct in a set, a comparator must be implemented. */
 inline bool operator<(const Road& r1, const Road& r2) {
 	return tie(r1.sr, r1.sc, r1.er, r1.ec)
 			< tie(r2.sr, r2.sc, r2.er, r2.ec);
 }
 
+/** @return the 4 cardinal neighbors of a position */
 vector<pair<int, int>> neighbors(int r, int c) {
 	return {{r + 1, c}, {r - 1, c}, {r, c + 1}, {r, c - 1}};
 }
@@ -45,6 +47,7 @@ int main() {
 		int sr, sc;
 		int er, ec;
 		cin >> sr >> sc >> er >> ec;
+		// add a road that blocks moving from both directions
 		roads.insert(Road{--sr, --sc, --er, --ec});
 		roads.insert(Road{er, ec, sr, sc});
 	}
@@ -57,10 +60,15 @@ int main() {
 	}
 
 	vector<vector<bool>> visited(side_len, vector<bool>(side_len));
+
+	// returns the # of cows that a position can reach & marks them as visited
 	function<int(int, int, int, int)> connected_cow_num;
 	connected_cow_num = [&] (int r, int c, int prev_r, int prev_c) -> int {
+		// check if we're out of bounds,
 		if (r < 0 || c < 0 || r >= side_len || c >= side_len
+				// someplace we've gone before,
 				|| visited[r][c]
+				// or if we've just crossed a road
 				|| roads.count(Road{r, c, prev_r, prev_c})) {
 			return 0;
 		}
@@ -88,6 +96,7 @@ int main() {
 	int distant_pairs = 0;
 	for (int i = 0; i < cow_components.size(); i++) {
 		for (int j =  i + 1; j < cow_components.size(); j++) {
+			// all pairs of cows from these two components are considered distant
 			distant_pairs += cow_components[i] * cow_components[j];
 		}
 	}
@@ -175,6 +184,7 @@ public class CountCross {
 		int distantPairs = 0;
 		for (int i = 0; i < cowComponents.size(); i++) {
 			for (int j = i + 1; j < cowComponents.size(); j++) {
+				// all pairs of cows from these two components are considered distant
 				distantPairs += cowComponents.get(i) * cowComponents.get(j);
 			}
 		}
@@ -183,9 +193,13 @@ public class CountCross {
 		io.close();
 	}
 
+	/** @return the # of cows that a position can reach & marks them as visited */
 	private static int connectedCowNum(int r, int c, int prevR, int prevC) {
+		// check if we're out of bounds,
 		if (r < 0 || c < 0 || r >= sideLen || c >= sideLen
+				// someplace we've gone before,
 				|| visited[r][c]
+				// or if we've just crossed a road
 				|| roads.contains(new Road(r, c, prevR, prevC))) {
 			return 0;
 		}
@@ -198,6 +212,7 @@ public class CountCross {
 		return cowNum;
 	}
 
+	/** @return the 4 cardinal neighbors of a position */
 	private static int[][] neighbors(int r, int c) {
 		return new int[][] {{r - 1, c}, {r + 1, c}, {r, c - 1}, {r, c + 1}};
 	}
@@ -213,6 +228,7 @@ public class CountCross {
 from typing import List, Tuple
 
 def neighbors(r: int, c: int) -> List[Tuple[int, int]]:
+	""":return the 4 cardinal neighbors of a position"""
 	return [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]
 
 with open('countcross.in') as read:
@@ -232,8 +248,12 @@ with open('countcross.in') as read:
 visited = [[False for _ in range(side_len)] for _ in range(side_len)]
 
 def connected_cow_num(r: int, c: int, prev_r: int, prev_c: int) -> int:
+	""":return the # of cows that a position can reach & marks them as visited"""
+	# check if we're out of bounds,
 	if (r < 0 or c < 0 or r >= side_len or c >= side_len
+			# someplace we've gone before,
 			or visited[r][c]
+			# or if we've just crossed a road
 			or (r, c, prev_r, prev_c) in roads):
 		return 0
 
@@ -254,6 +274,7 @@ for r in range(side_len):
 distant_pairs = 0
 for i in range(len(cow_components)):
 	for j in range(i + 1, len(cow_components)):
+		# all pairs of cows from these two components are considered distant
 		distant_pairs += cow_components[i] * cow_components[j]
 
 print(distant_pairs, file=open('countcross.out', 'w'))
