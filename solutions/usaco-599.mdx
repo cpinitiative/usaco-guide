@@ -25,6 +25,10 @@ Bessie's location if the current path is not repeated somewhere else in the map.
 If we were to frame this as a string-matching problem, we would want to find the
 shortest substring of the map such that it only appears once.
 
+To handle angles, we can note that there are only two possible interior angles, $90^\circ$ and $270^\circ$.
+
+![angle pic](usaco-599/di_ang.png)
+
 We use hashing to find the shortest substring of the map. Distinguishing
 vertices from angles, we brute force through lengths in increasing order and use
 a one-base polynomial hash to check if the substring appears only once. If we
@@ -104,21 +108,8 @@ signed main() {
 	int nxt = (i + 1) % n;
 
 	/*
-	 * two type of possible angles (90 deg either on inside or outside)
+	 * two types of possible angles (90 deg either on inside or outside)
 	 * reminder: all edges are parallel to either x or y axis & alternate
-	 *
-	 * |--------------------------|
-	 * | ^                     ^  |
-	 * |      angles of 90°       |
-	 * | ˅                     ˅  |
-	 * |--------------------------|
-	 *
-	 * |-------------------------|
-	 * |     angles of 270°      |
-	 * |              > ----------
-	 * |                |
-	 * |                |
-	 * |-----------------
 	 */
 
 	// derived from slope
