@@ -101,6 +101,7 @@ print(left, file=open('cowdance.out', 'w'))
 <JavaSection>
 
 ```java
+// Carmen Zhang
 import java.io.*;
 import java.util.*;
 
@@ -159,5 +160,83 @@ public class CowDanceShow {
 ```
 	
 </JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class cowdance {
+
+	static int Tmax;
+	static int N;
+	static int[] cows;
+	public static void main(String[] args) throws Exception{
+		BufferedReader in = new BufferedReader(new FileReader("cowdance.in"));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowdance.out")));
+		
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		N = Integer.parseInt(st.nextToken());
+		Tmax = Integer.parseInt(st.nextToken());
+		
+		cows = new int[N];
+		
+		for(int i = 0; i < N; i++) {
+			
+			cows[i] = Integer.parseInt(in.readLine());
+			
+		}
+		
+		int l = 1;
+		int r = N;
+		int k = 0;
+		
+		while(l <= r) {
+			int tempK = (l+r)/2;
+			
+			if(check(tempK)) {			
+				k = tempK;			
+				r = tempK-1;
+				
+			}else {
+				l = tempK+1;
+			}
+
+		}
+		
+		
+	
+		out.println(k);
+		in.close();
+		out.close();
+
+	}
+	
+	static boolean check(int k) {
+	
+		PriorityQueue<Integer> stage = new PriorityQueue<>();
+		
+		
+		for(int i = 0; i < k; i++) {
+			stage.offer(cows[i]);
+		}
+		
+		for(int i = k; i < N; i++) {
+			int curr = stage.poll() + cows[i];
+			stage.offer(curr);
+			
+		}
+		
+		for(int i = 0; i < k-1; i++) {
+			stage.poll();
+		}
+		
+		int time = stage.poll();
+		
+		return time <= Tmax;
+
+	}
+
+}
+```
 
 </LanguageSection>
