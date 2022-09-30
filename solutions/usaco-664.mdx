@@ -83,4 +83,53 @@ for i in ans:
 
 </PySection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BlockGame {
+
+	/**
+	 * Method counts every occurance of characters in a word.
+	 * It returns the array containing letter frequency.
+	 */
+	private static int[] countChars(String word) {
+		int[] freq = new int[26];
+		for (int i = 0; i < word.length(); i++) {
+			freq[word.charAt(i) - 'a']++;
+		}
+		return freq;
+	}
+
+	/**
+	 * The method selects the maximum value for the frequency of individual letters in words,
+	 * then adds the maximum to the sum of letter occurance in answer array.
+	 */
+	private static void addMaxFreq(int[] answer, int[] freq1, int[] freq2) {
+		for (int i = 0; i < answer.length; i++) {
+			answer[i] += Math.max(freq1[i], freq2[i]);
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("blocks");
+		int n = io.nextInt();
+		int[] answer = new int[26];
+		for (int i = 0; i < n; i++) {
+			addMaxFreq(answer, countChars(io.next()), countChars(io.next()));
+		}
+		for (int i : answer) {
+			io.println(i);
+		}
+		io.close();
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
