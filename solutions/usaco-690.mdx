@@ -131,8 +131,8 @@ public class CowDanceShow {
 	}
 
 	public static void main (String[] args) throws IOException {
-		Kattio io = new Kattio("cowdance");
-		n = io.nextInt();
+		
+		
 		maxTime = io.nextInt();
 		danceTimes = new int[n];
 
@@ -167,16 +167,17 @@ import java.util.*;
 
 public class cowdance {
 
-	static int Tmax;
+	static int tMax;
 	static int N;
 	static int[] cows;
 	public static void main(String[] args) throws Exception{
+
 		BufferedReader in = new BufferedReader(new FileReader("cowdance.in"));
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowdance.out")));
 		
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		N = Integer.parseInt(st.nextToken());
-		Tmax = Integer.parseInt(st.nextToken());
+		tMax = Integer.parseInt(st.nextToken());
 		
 		cows = new int[N];
 		
@@ -193,7 +194,7 @@ public class cowdance {
 		while(l <= r) {
 			int tempK = (l+r)/2;
 			
-			if(check(tempK)) {			
+			if(checkKworks(tempK)) {			
 				k = tempK;			
 				r = tempK-1;
 				
@@ -203,15 +204,13 @@ public class cowdance {
 
 		}
 		
-		
-	
 		out.println(k);
 		in.close();
 		out.close();
 
 	}
 	
-	static boolean check(int k) {
+	static boolean checkKworks(int k) {
 	
 		PriorityQueue<Integer> stage = new PriorityQueue<>();
 		
@@ -232,7 +231,7 @@ public class cowdance {
 		
 		int time = stage.poll();
 		
-		return time <= Tmax;
+		return time <= tMax;
 
 	}
 
