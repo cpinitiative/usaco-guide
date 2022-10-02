@@ -69,32 +69,35 @@ int main() {
 		return abs(dt[i].x - dt[j].x) + abs(dt[i].y - dt[j].y);
 	};
 
-	vector<vector<vector<int>>> dst(n,
+	vector<vector<vector<int>>> dist(n,
 		vector<vector<int>>(n,
 			vector<int>(2, INT32_MAX)
 		)
 	);
-
-	// dst[i][j][0] - clockwise dist from i -> j
+	
+	/*
+	 * dist[i][j][0] - clockwise dist from i -> j
+	 * dist[i][j][1] - counter-clockwise dist from i -> j
+	 */
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < i + n; j++) {
 			if (i == j) {
-				dst[i][j][0] = 0;
+				dist[i][j][0] = 0;
 			} else {
 				int x = (j + n) % n;
 				int y = (j - 1 + n) % n;
-				dst[i][x][0] = dst[i][y][0] + calc_dist(x, y);
+				dist[i][x][0] = dist[i][y][0] + calc_dist(x, y);
 			}
 		}
 	}
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j > i - n; j--) {
 			if (i == j) {
-				dst[i][j][1] = 0;
+				dist[i][j][1] = 0;
 			} else {
 				int x = (j + n) % n;
 				int y = (j + 1 + n) % n;
-				dst[i][x][1] = dst[i][y][1] + calc_dist(x, y);
+				dist[i][x][1] = dist[i][y][1] + calc_dist(x, y);
 			}
 		}
 	}
@@ -134,10 +137,10 @@ int main() {
 	}
 
 	for (int i = 1; i < n; i++) {
-		hsh.push_back((hsh.back() * P + dst[(i - 1 + n) % n][i][0]) % MOD);
+		hsh.push_back((hsh.back() * P + dist[(i - 1 + n) % n][i][0]) % MOD);
 		hsh.push_back((hsh.back() * P + ang[i]) % MOD);
 	}
-	hsh.push_back(hsh.back() * P + dst[n - 1][0][0]);
+	hsh.push_back(hsh.back() * P + dist[n - 1][0][0]);
 
 	function<int(int i, int j)> get_hash = [&](int i, int j) {
 		// gets the hash for the substring from i -> j
@@ -173,13 +176,13 @@ int main() {
 			fin = -1;
 		}
 
-		int a = dst[start][0][0];
+		int a = dist[start][0][0];
 		if (fin != -1) {
 			// time to get to unique point + best dist from there
-			a = min(dst[fin][0][0], dst[fin][0][1]) + dst[start][fin][0];
+			a = min(dist[fin][0][0], dist[fin][0][1]) + dist[start][fin][0];
 		}
 		// default time to get to exit from start
-		int b = min(dst[start][0][0], dst[start][0][1]);
+		int b = min(dist[start][0][0], dist[start][0][1]);
 
 		ans = max(ans, a - b);
 	}
