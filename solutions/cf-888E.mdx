@@ -31,7 +31,7 @@ using namespace std;
 int unmask(int mask, const vector<int> &arr, int mod) {
 	int current_sum = 0;
 	for (int bit = 0; bit < arr.size(); bit++) {
-		if (mask >> bit & 1 == 1) {
+		if ((mask >> bit & 1) == 1) {
 			current_sum += arr[bit];
 			current_sum %= mod;
 		}
@@ -67,11 +67,13 @@ int main() {
 		 * a possible new maximum value is the sum of current_sum and the largest
 		 * value below m - current_sum from the combinations in left_arr
 		 */
-		best =
-			max(best, *prev(left_sums.lower_bound(m - current_sum)) + current_sum);
+		best = max(
+			best, 
+			*prev(left_sums.lower_bound(m - current_sum)) + current_sum
+		);
 	}
 
-	cout << best;
+	cout << best << endl;
 }
 ```
 </CPPSection>
@@ -109,8 +111,10 @@ public class MaxSubseq {
 			 * a possible new maximum value is the sum of currentSum and the largest
 			 * value below m - currentSum from the combinations in leftArr
 			 */
-			best = Math.max(best,
-				currentSum + leftSums.headSet(m - currentSum).last());
+			best = Math.max(
+				best,
+				currentSum + leftSums.headSet(m - currentSum).last()
+			);
 		}
 
 		System.out.println(best);
