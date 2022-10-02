@@ -70,9 +70,7 @@ int main() {
 	};
 
 	vector<vector<vector<int>>> dist(n,
-		vector<vector<int>>(n,
-			vector<int>(2, INT32_MAX)
-		)
+		vector<vector<int>>(n, vector<int>(2, INT32_MAX))
 	);
 	
 	/*
@@ -90,6 +88,7 @@ int main() {
 			}
 		}
 	}
+
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j > i - n; j--) {
 			if (i == j) {
@@ -113,21 +112,19 @@ int main() {
 		 */
 
 		// derived from slope
-		ll rt = (dt[i].y - dt[prev].y) * (dt[nxt].x - dt[i].x) -
-						(dt[nxt].y - dt[i].y) * (dt[i].x - dt[prev].x);
+		ll rt = (
+			(dt[i].y - dt[prev].y) * (dt[nxt].x - dt[i].x)
+			- (dt[nxt].y - dt[i].y) * (dt[i].x - dt[prev].x)
+		);
 
 		// no angle should ever be colinear
 		assert(rt);
 
-		if (rt > 0) {
-			ang[i] = MX + 2;
-		} else {
-			ang[i] = MX + 1;
-		}
+		ang[i] = rt > 0 ? MX + 2 : MX + 1;
 	}
 
-	vector<int> hsh(1);
-	hsh[0] = 0;
+	vector<int> hash(1);
+	hash[0] = 0;
 
 	vector<ll> poly(2 * n + 1);
 
@@ -137,28 +134,26 @@ int main() {
 	}
 
 	for (int i = 1; i < n; i++) {
-		hsh.push_back((hsh.back() * P + dist[(i - 1 + n) % n][i][0]) % MOD);
-		hsh.push_back((hsh.back() * P + ang[i]) % MOD);
+		hash.push_back((hash.back() * P + dist[(i - 1 + n) % n][i][0]) % MOD);
+		hash.push_back((hash.back() * P + ang[i]) % MOD);
 	}
-	hsh.push_back(hsh.back() * P + dist[n - 1][0][0]);
+	hash.push_back(hash.back() * P + dist[n - 1][0][0]);
 
 	function<int(int i, int j)> get_hash = [&](int i, int j) {
 		// gets the hash for the substring from i -> j
 		// you can also compute this using the mod inverse of poly_i
-
-		return ((hsh[j] - ((hsh[i] * poly[j - i]) % MOD) + MOD) % MOD);
+		return ((hash[j] - ((hash[i] * poly[j - i]) % MOD) + MOD) % MOD);
 	};
 
 	int ans = 0;
-
-	for (int i = 1; i < (int)(hsh.size()) - 2; i++) {
+	for (int i = 1; i < (int)(hash.size()) - 2; i++) {
 		int fin = -1;
 
-		for (int len = 1; len < (int)(hsh.size()) - i; len++) {
+		for (int len = 1; len < (int)(hash.size()) - i; len++) {
 			int cr = get_hash(i, i + len);
 			int occ = 0;
 
-			for (int j = 0; j < (int)(hsh.size()) - len; j++) {
+			for (int j = 0; j < (int)(hash.size()) - len; j++) {
 				if (get_hash(j, j + len) == cr) {
 					occ++;
 				}
@@ -186,6 +181,7 @@ int main() {
 
 		ans = max(ans, a - b);
 	}
+
 	cout << ans << endl;
 }
 ```
