@@ -140,62 +140,75 @@ import java.io.*;
 import java.util.*;
 
 public class ParsasHumongousTree {
-	private static Kattio io = new Kattio();
-	private static List<List<Integer>> adj = new ArrayList<>();
-	private static int[] l, r;
-	private static long[][] dp;
+    private static Kattio io = new Kattio();
+    private static List<List<Integer>> adj = new ArrayList<>();
+    private static int[] l, r;
+    private static long[][] dp;
 
-	public static void main(String[] args) {
-		int t = io.nextInt();
+    public static void main(String[] args) {
+        int t = io.nextInt();
 
-		while (t-- != 0) {
-			int n = io.nextInt();
+        for (int tc = 0; tc < t; tc++) {
+            int n = io.nextInt();
 
-			l = new int[n + 1];
-			r = new int[n + 1];
-			dp = new long[n + 1][2];
-			adj.clear();
+            l = new int[n + 1];
+            r = new int[n + 1];
+            dp = new long[n + 1][2];
+            adj.clear();
 
-			for (int i = 1; i <= n; i++) {
-				l[i] = io.nextInt();
-				r[i] = io.nextInt();
-			}
+            for (int i = 1; i <= n; i++) {
+                l[i] = io.nextInt();
+                r[i] = io.nextInt();
+            }
 
-			for (int i = 0; i <= n; i++) {
-				adj.add(new ArrayList<>());
-			}
+            for (int i = 0; i <= n; i++) {
+                adj.add(new ArrayList<>());
+            }
 
-			for (int i = 0; i < n - 1; i++) {
-				int u = io.nextInt(), v = io.nextInt();
-				adj.get(u).add(v);
-				adj.get(v).add(u);
-			}
+            for (int i = 0; i < n - 1; i++) {
+                int u = io.nextInt(), v = io.nextInt();
+                adj.get(u).add(v);
+                adj.get(v).add(u);
+            }
 
-			dfs(1, -1);
+            dfs(1, -1);
 
-			io.println(Math.max(dp[1][0], dp[1][1]));
-		}
+            io.println(Math.max(dp[1][0], dp[1][1]));
+        }
 
-		io.flush();
-	}
+        io.flush();
+    }
 
-	private static void dfs(int u, int par) {
-		for (int v : adj.get(u)) {
-			// Continue if `v` is `u`'s parent.
-			if (v == par) {
-				continue;
-			}
+    private static void dfs(int u, int par) {
+        for (int v : adj.get(u)) {
+            // Continue if `v` is `u`'s parent.
+            if (v == par) {
+                continue;
+            }
 
-			// Calculate the DP values for 'v'.
-			dfs(v, u);
+            // Calculate the DP values for 'v'.
+            dfs(v, u);
 
-			// DP transitions for 'u'.
-			dp[u][0] += Math.max(dp[v][0] + Math.abs(l[u] - l[v]),
-					dp[v][1] + Math.abs(l[u] - r[v]));
-			dp[u][1] += Math.max(dp[v][0] + Math.abs(r[u] - l[v]),
-					dp[v][1] + Math.abs(r[u] - r[v]));
-		}
-	}
+            // DP transitions for 'u'.
+            dp[u][0] += mx_beauty(u, v, false);
+            dp[u][1] += mx_beauty(u, v, true);
+        }
+    }
+
+	// Return optimal beauty value for vertex u with subtree v.
+    private static long mx_beauty(int u, int v, boolean type) {
+        if (!type) {
+            long swtch = dp[v][1] + Math.abs(l[u] - r[v]);
+            long sm = dp[v][0] + Math.abs(l[u] - l[v]);
+
+            return Math.max(swtch, sm);
+        } else {
+            long swtch = dp[v][1] + Math.abs(r[u] - r[v]);
+            long sm = dp[v][0] + Math.abs(r[u] - l[v]);
+
+            return Math.max(swtch, sm);
+        }
+    }
 
 	//CodeSnip{Kattio}
 }
