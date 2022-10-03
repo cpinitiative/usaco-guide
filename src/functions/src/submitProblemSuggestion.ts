@@ -105,7 +105,7 @@ const submitProblemSuggestion = functions.https.onCall(
     const githubAPI = axios.create({
       baseURL: 'https://api.github.com',
       auth: {
-        username: 'jeffkmeng',
+        username: 'maggieliu05',
         password: key,
       },
     });
