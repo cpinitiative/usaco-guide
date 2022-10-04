@@ -45,11 +45,14 @@ int main() {
 		}
 	}
 	
+	// contains the region ids of each cell- those with the same id are connected
 	vector<vector<int>> regions(side_len, vector<int>(side_len));
+	// region_cells[r] contains the positions of the cells with region id r
 	vector<vector<pair<int, int>>> region_cells;
 
 	int one_biggest = 0;
 	vector<vector<bool>> visited(side_len, vector<bool>(side_len));
+	// floodfill the regions to see which cells are connected
 	for (int r = 0; r < side_len; r++) {
 		for (int c = 0; c < side_len; c++) {
 			if (visited[r][c]) {
@@ -62,6 +65,7 @@ int main() {
 
 			vector<pair<int, int>> frontier{{r, c}};
 			visited[r][c] = true;
+			// floodfill to find all cells connected to the current one
 			while (!frontier.empty()) {
 				pair<int, int> curr = frontier.back();
 				frontier.pop_back();
@@ -83,6 +87,7 @@ int main() {
 		}
 	}
 
+	// get the regions that are adjacent to other regions
 	vector<std::set<int>> adj_regions(region_cells.size());
 	for (const vector<pair<int,int>>& reg : region_cells) {
 		for (const auto& [r, c] : reg) {
@@ -99,6 +104,7 @@ int main() {
 	auto region_id = [&] (int r) {
 		return grid[region_cells[r][0].first][region_cells[r][0].second];
 	};
+	// record of pairs of regions' areas that've been processed already
 	std::map<pair<int, int>, std::set<int>> seen;
 	int two_biggest = one_biggest;
 	for (int r1 = 0; r1 < region_cells.size(); r1++) {
@@ -108,10 +114,12 @@ int main() {
 				std::swap(valid.first, valid.second);
 			}
 
+			// if this pair & region have been processed already, don't start
 			if (seen[valid].count(r1)) {
 				continue;
 			}
 
+			// floodfill across whole regions this time, not just cells
 			int two_size = 0;
 			vector<int> frontier{r1};
 			vector<bool> curr_vis(region_cells.size());
@@ -139,3 +147,4 @@ int main() {
 ```
 
 </CPPSection>
+</LanguageSection>
