@@ -4,7 +4,8 @@ export default {
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059': 'usaco-1059',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=987': 'usaco-987',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=939': 'usaco-939',
-  'https://open.kattis.com/problems/basketballoneonone': 'kattis-BasketballOneOnOne',
+  'https://open.kattis.com/problems/basketballoneonone':
+    'kattis-BasketballOneOnOne',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=674': 'usaco-674',
   'https://codeforces.com/contest/546/problem/D': 'cf-546D',
   'https://cses.fi/problemset/task/1068': 'cses-1068',

@@ -11064,8 +11064,7 @@ let data: any = {
                 solID: 'kattis-laneswitching',
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/laneswitching',
-                uniqueID:
-                  'https://open.kattis.com/problems/laneswitching',
+                uniqueID: 'https://open.kattis.com/problems/laneswitching',
                 tableID: 'general',
               },
               {
@@ -13905,8 +13904,7 @@ let data: any = {
                 solID: null,
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/basketballoneonone',
-                uniqueID:
-                  'https://open.kattis.com/problems/basketballoneonone',
+                uniqueID: 'https://open.kattis.com/problems/basketballoneonone',
                 tableID: 'general',
               },
             ],
