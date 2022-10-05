@@ -83,13 +83,13 @@ long long mx_beauty(int u, int v, bool type) {
 	}
 }
 
-void dfs(int u, int par) {
+void calculate_dp(int u, int par) {
 	for (int v : adj[u]) {
 		if (v == par) {
 			continue;
 		}
 
-		dfs(v, u);
+		calculate_dp(v, u);
 		dp[u][0] += mx_beauty(u, v, 0);
 		dp[u][1] += mx_beauty(u, v, 1);
 	}
@@ -126,7 +126,7 @@ int main() {
 			adj[v].push_back(u);
 		}
 		
-		dfs(0, -1);
+		calculate_dp(0, -1);
 
 		cout << std::max(dp[0][0], dp[0][1]) << endl;
 	}
@@ -140,12 +140,12 @@ import java.io.*;
 import java.util.*;
 
 public class ParsasHumongousTree {
-	private static Kattio io = new Kattio();
 	private static List<List<Integer>> adj = new ArrayList<>();
 	private static int[] l, r;
 	private static long[][] dp;
 
 	public static void main(String[] args) {
+	    Kattio io = new Kattio();
 		int t = io.nextInt();
 
 		for (int tc = 0; tc < t; tc++) {
@@ -171,7 +171,7 @@ public class ParsasHumongousTree {
 				adj.get(v).add(u);
 			}
 
-			dfs(1, -1);
+			calculate_dp(1, -1);
 
 			io.println(Math.max(dp[1][0], dp[1][1]));
 		}
@@ -179,7 +179,7 @@ public class ParsasHumongousTree {
 		io.flush();
 	}
 
-	private static void dfs(int u, int par) {
+	private static void calculate_dp(int u, int par) {
 		for (int v : adj.get(u)) {
 			// Continue if `v` is `u`'s parent.
 			if (v == par) {
@@ -187,7 +187,7 @@ public class ParsasHumongousTree {
 			}
 
 			// Calculate the DP values for 'v'.
-			dfs(v, u);
+			calculate_dp(v, u);
 
 			// DP transitions for 'u'.
 			dp[u][0] += mx_beauty(u, v, false);
