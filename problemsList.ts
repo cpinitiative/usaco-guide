@@ -11057,15 +11057,15 @@ let data: any = {
               {
                 source: 'Kattis',
                 name: 'Lane Switching',
-                id: 'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+                id: 'https://open.kattis.com/problems/laneswitching',
                 difficulty: 'Very Hard',
                 starred: false,
                 tags: ['Connected Components', 'Binary Search'],
                 solID: 'kattis-laneswitching',
                 solQuality: 'ok',
-                url: 'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+                url: 'https://open.kattis.com/problems/laneswitching',
                 uniqueID:
-                  'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+                  'https://open.kattis.com/problems/laneswitching',
                 tableID: 'general',
               },
               {
@@ -13898,15 +13898,15 @@ let data: any = {
               {
                 source: 'Kattis',
                 name: 'Basketball One on One',
-                id: 'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
+                id: 'https://open.kattis.com/problems/basketballoneonone',
                 difficulty: 'Very Easy',
                 starred: null,
                 tags: null,
                 solID: null,
                 solQuality: 'ok',
-                url: 'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
+                url: 'https://open.kattis.com/problems/basketballoneonone',
                 uniqueID:
-                  'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
+                  'https://open.kattis.com/problems/basketballoneonone',
                 tableID: 'general',
               },
             ],

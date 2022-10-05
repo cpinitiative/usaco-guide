@@ -84,8 +84,9 @@ export default functions.firestore
     };
 
     if (
-      change.after.data().type === 'Online Judge' &&
-      change.after.data().problemID
+      (change.after.data().type === 'Online Judge' &&
+        change.after.data().problemID) ||
+      change.after.data().type === 'submission-link'
     ) {
       // check if result changed
       if (change.before?.data()?.score !== change.after.data().score) {
