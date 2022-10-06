@@ -47,6 +47,7 @@ struct DSU {
 	DSU(int n) {
 		e = vi(n, -1);
 	}
+	
 	int get(int x) {
 		if (e[x] < 0) return x;
 		else {
@@ -54,12 +55,15 @@ struct DSU {
 			return e[x];
 		}
 	}
+	
 	bool same(int a, int b) {
 		return get(a) == get(b);
 	}
+	
 	int size(int x) {
 		return -e[get(x)];
 	}
+	
 	bool unite(int x, int y) {
 		x = get(x); y = get(y);
 		if (x == y) return false;
