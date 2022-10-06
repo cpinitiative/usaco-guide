@@ -71,45 +71,50 @@ import java.io.*;
 import java.util.*;
  
 public class Main {
-	// CodeSnip{Kattio}
-	public static long p, M = (long)(1e9+7);
-	public static long[] basePow, pref;
+// CodeSnip{Kattio}
+public static long p = 69420;
+public static long M = (long)(1e9 + 7);
+	
+public static long[] basePow;
+public static long[] pref;
  
-	public static long getHash(int l, int r) {
+public static long getHash(int l, int r) {
 		long h = pref[r + 1] - (basePow[r - l + 1] * pref[l] % M) % M;
 		return h < 0 ? h + M : h;
+}
+ 
+public static void main(String[] args) {
+	Kattio io = new Kattio();
+
+	char[] s = io.next().toCharArray();
+	int n = s.length;
+		
+	basePow = new long[n + 1];
+	basePow[0] = 1;
+	for(int i = 1; i <= n; i++) {
+		basePow[i] = basePow[i - 1] * p % M;
 	}
  
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
+	pref = new long[n + 1];
+	for(int i = 1; i <= n; i++) {
+		pref[i] = (pref[i - 1] * p + s[i - 1]) % M;
+	}
  
-		p = 69420;
-		char[] s = io.next().toCharArray();
-		int n = s.length;
-		basePow = new long[n+1];
-		basePow[0] = 1;
-		for(int i = 1;i<=n;i++) basePow[i] = basePow[i-1] * p % M;
- 
-		pref = new long[n+1];
-		for(int i = 1;i<=n;i++) {
-				pref[i] = (pref[i-1] * p + s[i-1])%M;
-			}
- 
-		for(int i = 0;i<n;i++) {
-			int j = 0;
-			boolean flag = true;
-			while(j < n) {
-			int len = min(i + 1, n - j);
-			flag &= (getHash(0, len-1) == getHash(j, j + len - 1));
-				j += len;
-			}
- 
-			if(flag == true) {
-				fout.print((i + 1) + " ");
-			}
+	for(int i = 0;i<n;i++) {
+		int j = 0;
+		boolean flag = true;
+		while(j < n) {
+		int len = Math.min(i + 1, n - j);
+		flag &= (getHash(0, len-1) == getHash(j, j + len - 1));
+			j += len;
 		}
+ 
+		if(flag) {
+			io.print((i + 1) + " ");
+		}
+	}
 		
-		io.close();
+	io.close();
 	}
 }	
 
