@@ -90,8 +90,9 @@ void solve() {
 		for (int j = i + 1; j < n; j++) {
 			// If they are the same we should not merge either way
 			// because it could affect later merges
-			if (a[i][j] == a[j][i]) continue;
-			else if (a[i][j] > a[j][i]) {
+			if (a[i][j] == a[j][i]) {
+				continue;
+			} else if (a[i][j] > a[j][i]) {
 				// Swap the elements if the states are not already merged the opposite way
 				if (dsu.get(i) != dsu.get(j)) {
 					dsu.unite(i, j + n);
@@ -115,9 +116,11 @@ void solve() {
 			/* If a[i][j] is part of a diagonal or the pair is equal (a[i][j] == a[j][i]),
 			 * manually set it to be the same as the original array
 			 */
-			if (i == j) ans[i][j] = a[i][j];
-			else if (a[i][j] == a[j][i]) ans[i][j] = ans[j][i] = a[i][j];
-			else { // Otherwise check whether the i and j states are merged
+			if (i == j) {
+				ans[i][j] = a[i][j];
+			} else if (a[i][j] == a[j][i]) {
+				ans[i][j] = ans[j][i] = a[i][j];
+			} else { // Otherwise check whether the i and j states are merged
 				if (dsu.get(i) == dsu.get(j)) {
 					ans[i][j] = a[i][j];
 					ans[j][i] = a[j][i];
