@@ -49,8 +49,9 @@ struct DSU {
 	}
 	
 	int get(int x) {
-		if (e[x] < 0) return x;
-		else {
+		if (e[x] < 0) {
+			return x;
+		} else {
 			e[x] = get(e[x]);
 			return e[x];
 		}
@@ -65,10 +66,16 @@ struct DSU {
 	}
 	
 	bool unite(int x, int y) {
-		x = get(x); y = get(y);
-		if (x == y) return false;
-		if (e[x] > e[y]) swap(x, y);
-		e[x] += e[y]; e[y] = x;
+		x = get(x);
+		y = get(y);
+		if (x == y) {
+			return false;
+		}
+		if (e[x] > e[y]) {
+			swap(x, y);
+		}
+		e[x] += e[y];
+		e[y] = x;
 		return true;
 	}
 };
