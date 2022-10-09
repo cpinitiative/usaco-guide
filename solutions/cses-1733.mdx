@@ -71,17 +71,16 @@ import java.io.*;
 import java.util.*;
  
 public class Main {
-// CodeSnip{Kattio}
-public static long p = 69420;
-public static long M = (long)(1e9 + 7);
+	public static long p = 69420;
+	public static long M = (long)(1e9 + 7);
 	
-public static long[] basePow;
-public static long[] pref;
+	public static long[] basePow;
+	public static long[] pref;
  
-public static long getHash(int l, int r) {
+	public static long getHash(int l, int r) {
 		long h = pref[r + 1] - (basePow[r - l + 1] * pref[l] % M) % M;
 		return h < 0 ? h + M : h;
-}
+	}
  
 public static void main(String[] args) {
 	Kattio io = new Kattio();
@@ -101,21 +100,22 @@ public static void main(String[] args) {
 	}
  
 	for(int i = 0;i<n;i++) {
-		int j = 0;
-		boolean flag = true;
-		while(j < n) {
-		int len = Math.min(i + 1, n - j);
-		flag &= (getHash(0, len-1) == getHash(j, j + len - 1));
-			j += len;
+		int curridx = 0;
+		boolean ok = true;
+		while(curridx < n) {
+		int len = Math.min(i + 1, n - curridx);
+		ok &= (getHash(0, len-1) == getHash(curridx, curridx + len - 1));
+			curridx += len;
 		}
  
-		if(flag) {
+		if(ok) {
 			io.print((i + 1) + " ");
 		}
 	}
 		
 	io.close();
 	}
+	// CodeSnip{Kattio}
 }	
 
 ```
