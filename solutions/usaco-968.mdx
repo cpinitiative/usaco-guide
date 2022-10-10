@@ -79,9 +79,11 @@ int main() {
 		neighbors[f2].push_back(f1);
 	}
 
+	// Process the tree & detect the different components
 	int component_num = 0;
 	vector<int> component(farm_num, -1);
 	for (int f = 0; f < farm_num; f++) {
+		// Don't process a farm if it's been visited already
 		if (component[f] != -1) {
 			continue;
 		}
@@ -90,8 +92,10 @@ int main() {
 		while (!frontier.empty()) {
 			int curr = frontier.back();
 			frontier.pop_back();
+			// Assign the current component number to the farm
 			component[curr] = component_num;
 			for (int n : neighbors[curr]) {
+				// Visit a neighbor if it's new & is of the same type
 				if (farms[n] == type && component[n] == -1) {
 					frontier.push_back(n);
 				}
@@ -107,8 +111,13 @@ int main() {
 		read >> a >> b >> milk;
 
 		if (component[--a] == component[--b]) {
+			/*
+			 * If a & b are in the same component,
+			 * check if the milk type is the same as the one the farmer likes
+			 */
 			written << (farms[a] == milk);
 		} else {
+			// Output 1 otherwise because both milk types will be visited
 			written << 1;
 		}
 	}
@@ -144,10 +153,12 @@ public class MilkVisits {
 			neighbors[f2].add(f1);
 		}
 
+		// Process the tree & detect the different components
 		int componentNum = 0;
 		int[] component = new int[farmNum];
 		Arrays.fill(component, -1);
 		for (int f = 0; f < farmNum; f++) {
+			// Don't process a farm if it's been visited already
 			if (component[f] != -1) {
 				continue;
 			}
@@ -156,8 +167,10 @@ public class MilkVisits {
 			char type = farms.charAt(f);
 			while (!frontier.isEmpty()) {
 				int curr = frontier.poll();
+				// Assign the current component number to the farm
 				component[curr] = componentNum;
 				for (int n : neighbors[curr]) {
+					// Visit a neighbor if it's new & is of the same type
 					if (farms.charAt(n) == type && component[n] == -1) {
 						frontier.add(n);
 					}
@@ -174,8 +187,13 @@ public class MilkVisits {
 			char milk = query.nextToken().charAt(0);
 
 			if (component[a] == component[b]) {
+				/*
+				 * If a & b are in the same component,
+				 * check if the milk type is the same as the one the farmer likes
+				 */
 				written.print(farms.charAt(a) == milk ? 1 : 0);
 			} else {
+				// Output 1 otherwise because both milk types will be visited
 				written.print(1);
 			}
 		}
@@ -203,17 +221,21 @@ with open('milkvisits.in') as read:
 		query[0], query[1] = int(query[0]) - 1, int(query[1]) - 1
 		queries.append(query)
 
+# Process the tree & detect the different components
 component_num = 0
 component = [-1 for _ in range(farm_num)]
 for f in range(farm_num):
+	# Don't process a farm if it's been visited already
 	if component[f] != -1:
 		continue
 	frontier = [f]
 	curr_type = farms[f]
 	while frontier:
 		curr = frontier.pop()
+		# Assign the current component number to the farm
 		component[curr] = component_num
 		for n in neighbors[curr]:
+			# Visit a neighbor if it's new & is of the same type
 			if farms[n] == curr_type and component[n] == -1:
 				frontier.append(n)
 	component_num += 1
@@ -221,8 +243,13 @@ for f in range(farm_num):
 with open('milkvisits.out', 'w') as written:
 	for a, b, milk in queries:
 		if component[a] == component[b]:
+			"""
+			If a & b are in the same component,
+			check if the milk type is the same as the one the farmer likes
+			"""
 			print(1 if farms[a] == milk else 0, end='', file=written)
 		else:
+			# Output 1 otherwise because both milk types will be visited
 			print(1, end='', file=written)
 	print(file=written)
 ```
