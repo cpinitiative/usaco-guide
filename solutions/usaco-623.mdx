@@ -22,7 +22,7 @@ To ensure the edges picked are optimal, we construct a minimum spanning tree, wh
 <CPPSection>
 
 ```cpp
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 struct Edge {
@@ -94,34 +94,35 @@ int main() {
 	vector<Edge> edges;
 
 	// vertical fence edges
-	int sct = 0, e = 1;
-	while (e < m) {
+	int cur_sect = 0, row = 1;
+	while (row < m) {
 		// all vertical fences in one row have the same length
 		for (int i = 0; i < n - 2; i++) {
-			edges.push_back(Edge{vy[e] - vy[e - 1], sct, sct + 1});
-			sct++;
+			edges.push_back(Edge{vy[row] - vy[row - 1], cur_sect, cur_sect + 1});
+			cur_sect++;
 		}
 
-		sct++;
-		e++;
+		cur_sect++;
+		row++;
 	}
 
 	// horizontal fence edges
-	sct = n - 1, e = 1;
-	while (e < n) {
-		int init = sct;
+	cur_sect = n - 1;
+	int col = 1;
+	while (col < n) {
+		int init = cur_sect;
 		// all horizontal fences in one column have the same length
 		for (int i = 0; i < m - 2; i++) {
-			edges.push_back(Edge{vx[e] - vx[e - 1], sct - (n - 1), sct});
+			edges.push_back(Edge{vx[col] - vx[col - 1], cur_sect - (n - 1), cur_sect});
 
 			// go down a row
-			sct += (n - 1);
+			cur_sect += (n - 1);
 		}
-		sct = init + 1;
-		e++;
+		cur_sect = init + 1;
+		col++;
 	}
 
-	// naive kruskal's implementation
+	// kruskal's
 	DSU dsu((n + 2) * (m + 2));
 
 	sort(edges.begin(), edges.end(), [](const Edge &t, const Edge &y) {
