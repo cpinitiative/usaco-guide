@@ -75,7 +75,9 @@ int main() {
 	for (int f = 0; f < farm_num - 1; f++) {
 		int f1, f2;
 		read >> f1 >> f2;
-		neighbors[--f1].push_back(--f2);
+		f1--;
+		f2--;
+		neighbors[f1].push_back(f2);
 		neighbors[f2].push_back(f1);
 	}
 
@@ -109,8 +111,10 @@ int main() {
 		int a, b;
 		char milk;
 		read >> a >> b >> milk;
+		a--;
+		b--;
 
-		if (component[--a] == component[--b]) {
+		if (component[a] == component[b]) {
 			/*
 			 * If a & b are in the same component,
 			 * check if the milk type is the same as the one the farmer likes
