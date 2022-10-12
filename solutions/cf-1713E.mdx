@@ -24,9 +24,7 @@ We can create a disjoint set union to model this problem. The DSU will have $2n$
 As we are iterating greedily through the array, we can merge ($i$ and $j$) and ($i + n$ and $j + n$) if we don't want to swap. This works because if we swap neither or swap both the arrangement remains the same.
 If we do want to swap we can merge ($i$ and $j + n$) and ($i + n$ and $j$). This works because if we swap exactly one of these, then the arrangement will change. 
 
-After this we can construct the answer.
-
-We can iterate over the entire grid. If it is a diaganal it will never change. If $a[i][j] == a[j][i]$ then we can manually set them to normal (since we didn't merge them in the disjoint set union when comparing them the states might have not been merged). If it is not a diaganol we can check whether $i$ and $j$ are merged in the disjoint set union. If they aren't then we will swap $a[i][j]$ and $a[j][i]$. Otherwise we will keep them the same.
+After this we can construct the answer by iterating over each cell of the grid. If the cell's row index is equal to its column index (i.e. it's on the diagonal of the grid) it can never change regardless of the flips. If $a[i][j] == a[j][i]$ then we can manually set them (since we didn't merge them in the disjoint set union when comparing them the states might have not been merged). Otherwise, we can check whether $i$ and $j$ are merged in the disjoint set union. If they aren't then we will swap $a[i][j]$ and $a[j][i]$. Otherwise we will keep them the same.
 
 ## Implementation
 
