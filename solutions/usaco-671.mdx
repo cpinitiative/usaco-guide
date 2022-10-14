@@ -2,7 +2,7 @@
 id: usaco-671
 source: USACO Gold 2016 December
 title: Lasers and Mirrors
-author: Maggie Liu
+author: Maggie Liu, George Pong
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_lasers_gold_dec16.html)
@@ -83,5 +83,65 @@ int main()
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+import sys
+from collections import defaultdict, deque
+sys.stdin, sys.stdout = open('lasers.in', 'r'), open('lasers.out', 'w')
+input = sys.stdin.readline
+
+HORIZ, VERTI = 0, 1
+
+class Fencepost:
+	def __init__(self, x: int, y: int):
+		self.__slots__ = ['x', 'y']  # faster attribute access
+		self.x = x
+		self.y = y
+
+n, xl, yl, xb, yb = map(int, input().split())
+
+fenceposts = [Fencepost(xl, yl)]
+x_lines = defaultdict(list)  # stores all indices of fenceposts on line x = key
+y_lines = defaultdict(list)  # stores all indices of fenceposts on line y = key
+
+dist = [-1] * (n + 1)
+dist[0] = 0
+
+for i in range(n):
+	xi, yi = map(int, input().split())
+	fenceposts.append(Fencepost(xi, yi))
+	x_lines[xi].append(i + 1)
+	y_lines[yi].append(i + 1)
+
+# stores (idx of fencepost, direction of laser).
+queue = deque([(0, HORIZ), (0, VERTI)])
+
+while queue:
+
+	curr_idx, curr_direction = queue.pop()
+	curr_fp = fenceposts[curr_idx]
+
+	if curr_fp.x == xb or curr_fp.y == yb:
+		print(dist[curr_idx])
+		sys.exit()
+
+	# Change direction
+	if curr_direction == HORIZ:
+		for fp_i in y_lines[curr_fp.y]:
+			if dist[fp_i] == -1:
+				queue.appendleft((fp_i, not curr_direction))
+				dist[fp_i] = dist[curr_idx] + 1
+	else:  # is vertical
+		for fp_i in x_lines[curr_fp.x]:
+			if dist[fp_i] == -1:
+				queue.appendleft((fp_i, not curr_direction))
+				dist[fp_i] = dist[curr_idx] + 1
+
+print(-1)
+```
+
+</PySection>
 
 </LanguageSection>
