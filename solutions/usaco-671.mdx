@@ -87,12 +87,9 @@ int main()
 <PySection>
 
 ```py
-import sys
 from collections import defaultdict, deque
-sys.stdin, sys.stdout = open('lasers.in', 'r'), open('lasers.out', 'w')
-input = sys.stdin.readline
 
-HORIZ, VERTI = 0, 1
+HORIZ, VERTI = 0, 1  # direction of laser beam (horizontal or vertical)
 
 class Fencepost:
 	def __init__(self, x: int, y: int):
@@ -100,23 +97,24 @@ class Fencepost:
 		self.x = x
 		self.y = y
 
-n, xl, yl, xb, yb = map(int, input().split())
+with open('lasers.in', 'r') as infile:
+	n, xl, yl, xb, yb = map(int, infile.readline().split())
 
-fenceposts = [Fencepost(xl, yl)]
-x_lines = defaultdict(list)  # stores all indices of fenceposts on line x = key
-y_lines = defaultdict(list)  # stores all indices of fenceposts on line y = key
+	fenceposts = [Fencepost(xl, yl)]
+	x_lines = defaultdict(list)  # stores indices of fenceposts on line x = key
+	y_lines = defaultdict(list)  # stores indices of fenceposts on line y = key
 
-dist = [-1] * (n + 1)
-dist[0] = 0
+	for i in range(n):
+		xi, yi = map(int, infile.readline().split())
+		fenceposts.append(Fencepost(xi, yi))
+		x_lines[xi].append(i + 1)
+		y_lines[yi].append(i + 1)
 
-for i in range(n):
-	xi, yi = map(int, input().split())
-	fenceposts.append(Fencepost(xi, yi))
-	x_lines[xi].append(i + 1)
-	y_lines[yi].append(i + 1)
+	dist = [-1] * (n + 1)
+	dist[0] = 0
 
-# stores (idx of fencepost, direction of laser).
-queue = deque([(0, HORIZ), (0, VERTI)])
+output = -1
+queue = deque([(0, HORIZ), (0, VERTI)])  # (idx of fencepost, beam direction)
 
 while queue:
 
@@ -124,8 +122,8 @@ while queue:
 	curr_fp = fenceposts[curr_idx]
 
 	if curr_fp.x == xb or curr_fp.y == yb:
-		print(dist[curr_idx])
-		sys.exit()
+		output = dist[curr_idx]
+		break
 
 	# Change direction
 	if curr_direction == HORIZ:
@@ -139,7 +137,8 @@ while queue:
 				queue.appendleft((fp_i, not curr_direction))
 				dist[fp_i] = dist[curr_idx] + 1
 
-print(-1)
+with open('lasers.out', 'w') as outfile:
+	outfile.write(str(output) + '\n')
 ```
 
 </PySection>
