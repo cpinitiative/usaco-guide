@@ -75,7 +75,7 @@ export default functions.firestore
             [`${postId}.totalPoints`]: userData[postId].totalPoints,
             userInfo: {
               uid: userAuth.uid,
-              displayName: userAuth.displayName,
+              displayName: userAuth.displayName ?? "",
               photoURL: userAuth.photoURL,
             },
           });
