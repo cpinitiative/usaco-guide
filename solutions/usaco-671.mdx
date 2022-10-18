@@ -89,8 +89,6 @@ int main()
 ```py
 from collections import defaultdict, deque
 
-HORIZ, VERTI = True, False  # direction of laser beam (horizontal or vertical)
-
 class Fencepost:
 	def __init__(self, x: int, y: int):
 		self.x = x
@@ -113,7 +111,10 @@ with open('lasers.in', 'r') as infile:
 	dist[0] = 0
 
 min_dist = -1
-queue = deque([(0, HORIZ), (0, VERTI)])  # (idx of fencepost, beam direction)
+
+# queue stores (idx of fencepost, beam direction) where True is a horizontal
+# beam and False is a vertical beam
+queue = deque([(0, True), (0, False)])
 
 while queue:
 
@@ -125,7 +126,7 @@ while queue:
 		break
 
 	# Change direction
-	if curr_direction == HORIZ:
+	if curr_direction:  # is horizontal
 		for fp_i in y_lines[curr_fp.y]:
 			if dist[fp_i] == -1:
 				queue.appendleft((fp_i, not curr_direction))
