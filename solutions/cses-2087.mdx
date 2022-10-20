@@ -4,7 +4,7 @@ source: cses
 title: Houses and Schools
 author: Dustin Miao
 ---
-# Explaination
+# Explanation
 
 The final answer will be of the form $k_1 c_1 + k_2 c_2 + \dots + k_n c_n$. The sequence $k$ is a series of "mountains" and "valleys", the valleys occuring at the indicies of the schools and the mountains occuring at the midpoints between two schools. By partitioning this sequence along these points, we get a series of sequences that are increasing by $1$ or decreasing by $1$. Define the DP states as follows:
 
@@ -13,9 +13,13 @@ The final answer will be of the form $k_1 c_1 + k_2 c_2 + \dots + k_n c_n$. The 
 
 The transitions are the following:
 
-$$g_{i,m} = \min_{j \leq i} \left \{ f_{j,m} + \sum_{k = j + 1}^i c_k \cdot (k - j) \right \}$$
+$$
+g_{i,m} = \min_{j \leq i} \left \{ f_{j,m} + \sum_{k = j + 1}^i c_k \cdot (k - j) \right \}
+$$
 
-$$f_{i,m} = \min_{j < i} \left \{ g_{j,m-1} + \sum_{k = j + 1}^i c_k \cdot (i - k) \right \}$$
+$$
+f_{i,m} = \min_{j < i} \left \{ g_{j,m-1} + \sum_{k = j + 1}^i c_k \cdot (i - k) \right \}
+$$
 
 The transitions take linear time, but can be optimized to amortized constant time using convex hull trick.
 
@@ -29,15 +33,23 @@ These can be precomputed in $\mathcal{O}(n)$ time.
 
 The DP equations becomes:
 
-$$g_{i,m} = \min_{j \leq i} \left \{ f_{j,m} + p_i - p_j - j \cdot (t_i - t_j) \right \}$$
+$$
+g_{i,m} = \min_{j \leq i} \left \{ f_{j,m} + p_i - p_j - j \cdot (t_i - t_j) \right \}
+$$
 
-$$f_{i,m} = \min_{j < i} \left \{ g_{j,m-1} + s_i - s_j - (n - i)(t_i - t_j) \right \}$$
+$$
+f_{i,m} = \min_{j < i} \left \{ g_{j,m-1} + s_i - s_j - (n - i)(t_i - t_j) \right \}
+$$
 
 With a bit of rearranging:
 
-$$g_{i,m} = \min_{j \leq i} \left \{ (f_{j,m} - p_j + jt_j) - jt_i \right \} + p_i$$
+$$
+g_{i,m} = \min_{j \leq i} \left \{ (f_{j,m} - p_j + jt_j) - jt_i \right \} + p_i
+$$
 
-$$f_{i,m} = \min_{j < i} \left \{ (g_{j,m-1} - s_j) + t_j(n - i) \right \} + s_i - t_i(n - i)$$
+$$
+f_{i,m} = \min_{j < i} \left \{ (g_{j,m-1} - s_j) + t_j(n - i) \right \} + s_i - t_i(n - i)
+$$
 
 Because both the slopes and the query points are monotonic, this can be maintained using a deque in amortized $\mathcal{O}(1)$. The total complexity is $\mathcal{O}(nm)$.
 
