@@ -81,7 +81,7 @@ struct SegmentTree {
 			int r = mid * 2 + 1;
 			// add the subtree which minimizes the overall maximum count of cows
 			if (max(west_size + tree[l], other_west_size + other.tree[l]) <
-					max(east_size + tree[r], other_east_size + other.tree[r])) {
+				max(east_size + tree[r], other_east_size + other.tree[r])) {
 				mid = r;
 				west_size += tree[l];
 				other_west_size += other.tree[l];
@@ -94,7 +94,7 @@ struct SegmentTree {
 
 		// Add the last x coordinate either to the west or the east side
 		if (max(west_size + tree[mid], other_west_size + other.tree[mid]) <
-				max(east_size + tree[mid], other_east_size + other.tree[mid])) {
+			max(east_size + tree[mid], other_east_size + other.tree[mid])) {
 			west_size += tree[mid];
 			other_west_size += other.tree[mid];
 		} else {
@@ -292,7 +292,7 @@ public class Balancing {
 				int r = mid * 2 + 1;
 				// add the subtree which minimizes the overall maximum count of cows
 				if (Math.max(westSize + tree[l], otherWestSize + other.tree[l]) < 
-						Math.max(eastSize + tree[r], otherEastSize + other.tree[r])) {
+					Math.max(eastSize + tree[r], otherEastSize + other.tree[r])) {
 					mid = r;
 					westSize += tree[l];
 					otherWestSize += other.tree[l];
@@ -305,7 +305,7 @@ public class Balancing {
 
 			// Add the last x coordinate either to the west or the east side
 			if (Math.max(westSize + tree[mid], otherWestSize + other.tree[mid]) < 
-					Math.max(eastSize + tree[mid], otherEastSize + other.tree[mid])) {
+				Math.max(eastSize + tree[mid], otherEastSize + other.tree[mid])) {
 				westSize += tree[mid];
 				otherWestSize += other.tree[mid];
 			} else {
@@ -317,8 +317,10 @@ public class Balancing {
 			 * the M value corresponding to the best west/east partition based on the
 			 * current given north/south partitions
 			 */
-			return Math.max(Math.max(westSize, eastSize),
-					Math.max(otherWestSize, otherEastSize));
+			return Math.max(
+				Math.max(westSize, eastSize),
+				Math.max(otherWestSize, otherEastSize)
+			);
 		}
 	}
 
@@ -365,7 +367,16 @@ public class Balancing {
 
 ### Explanation
 
-Alternatively, we can also just binary search on the answer without using a PURQ data structure.
+Alternatively, we can also just binary search on the answer without using a PURQ
+data structure. To check if a given $M^*$ value is feasible, we calculate the
+maximum height of all four regions for each possible $x$ partition with maximum
+$M^*$ cows in the region. We then go through every $x$ coordinate and check if
+the sum of the heights of the southern and northern regions is larger than the
+height of the farm. As there are each two regions in the north and south, we
+always take the minimum between north-west/north-east and south-west/south-east.
+If there is such an $x$ partition that leads to the sum being larger than the
+height of the farm, then there is one solution with the current $x$ and $y$
+partition.
 
 ### Implementation
 
@@ -379,7 +390,7 @@ using namespace std;
 
 /**
  * Calculate the maximum height of the left bottom region for each possible
- * partion based on the x coordinate where there are maximum max_cows cows
+ * partion based on the x coordinate which has maximum max_cows cows
  * in the region.
  * @return bound[i] is the maximum possible height for the region 0..i,
  * 0..bound[i], in which the number of cows is less than or equal to max_cows
@@ -487,7 +498,7 @@ int main() {
 			/*
 			 * if the sum of the heights of the southern and northern regions is
 			 * larger than the height of the farm, then there is one solution with the
-			 * current x and y partition
+			 * current maximum M, i.e. mid
 			 */
 			if (min(west_south_height[x], east_south_height[N - 2 - x]) + 1 +
 					min(west_north_height[x], east_north_height[N - 2 - x]) + 1 >= N) {
