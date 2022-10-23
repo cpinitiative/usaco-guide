@@ -2,12 +2,10 @@
 id: usaco-790
 source: USACO Gold 2018 January
 title: Cow At Large
-author: Qi Wang, Jesse Choe
+author: Qi Wang, Jesse Choe, George Pong
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_atlarge_gold_jan18.html)
-
-**Time Complexity:** $\mathcal{O}(N)$
 
 Suppose that a given farmer reaches Bessie at barn $i$; this is only possible if that farmer reached barn $i$ either: 
 
@@ -18,7 +16,12 @@ This means that we can treat this problem as a shortest path problem, where the 
 
 We can run BFS to find $\texttt{dist1[i]}$ and DFS or BFS to find $\texttt{dist2[i]}$. Once we find these shortest distances, we can simulate Bessies' movement by "catching" her when $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Once Bessie is caught, we can stop her movement and increase the total number of farmers by 1. This greedily finds the minimum number of farmers, since we only store the "optimal" farmers in our answer. 
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(V+E)$
+
 <LanguageSection>
+
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
@@ -119,9 +122,62 @@ int main(){
 ```
 </CPPSection>
 
-<JavaSection>
+<PySection>
+```py
+from collections import deque
 
-## Java Implementation
+INF = float('inf')
+
+with open('atlarge.in', 'r') as infile:
+    n, k = map(int, infile.readline().split())
+    graph = [[] for _ in range(n)]
+    for _ in range(n - 1):
+        f, t = map(lambda i: int(i) - 1, infile.readline().split())
+        graph[f].append(t)
+        graph[t].append(f)
+
+exits = [node for node, adj_list in enumerate(graph) if len(adj_list) == 1]
+
+dist_bessie = [INF] * n  # min steps for a farmer to reach the node at index i
+dist_farmer = [INF] * n  # min steps for bessie to reach the node at index i
+
+# Multi-source BFS from all the exits to calculate, for all nodes, the minimum
+# number of steps needed for a farmer to reach that node
+queue = deque(exits)
+for exit_node in exits:
+    dist_farmer[exit_node] = 0
+
+while queue:
+    curr = queue.pop()
+
+    for adj in graph[curr]:
+        if dist_farmer[curr] + 1 < dist_farmer[adj]:
+            dist_farmer[adj] = dist_farmer[curr] + 1
+            queue.appendleft(adj)
+
+# BFS from node k to trace all of Bessie's paths. Increment the farmers needed
+# when dist_bessie[i] = dist_farmer[i], where the additional farmer will cover
+# all of Bessie's escape paths containing node i
+farmers_needed = 0
+queue = deque([k - 1])
+dist_bessie[k - 1] = 0
+while queue:
+    curr = queue.pop()
+
+    if dist_bessie[curr] >= dist_farmer[curr]:
+        farmers_needed += 1
+        continue
+
+    for adj in graph[curr]:
+        if dist_bessie[adj] == INF:
+            dist_bessie[adj] = dist_bessie[curr] + 1
+            queue.appendleft(adj)
+
+print(farmers_needed, file=open('atlarge.out', 'w'))
+```
+</PySection>
+
+<JavaSection>
 
 ```java
 import java.io.*;
