@@ -13,23 +13,24 @@ author: Benjamin Qi, Chuyang Wang
 
 The problem can be solved by sweeping a line from bottom to top. This line
 divides the farm into two regions, north and south. At the beginning, all cows
-belong to the northern region. For each of these lines, we need an efficient way
-to determine the optimal west/east partition to divide the farm into four pieces
-with the maximum number of cows appearing in one of the four regions, $M$, being
-minimized. To achieve this, we store the positions of cows in the northern and
-southern regions in two separate segment trees. These two segment trees hold the
-number of cows on a certain $x$ coordinate which belong to one of the two
-regions, respectively. Then, we do a binary search on both segment trees to find
-the best vertical line which minimizes $M$. In particular, we begin from the root
-and always add either the left or right subtree to the western or eastern
-region, depending on which of these two options leads to the smallest increase
-of $M$. At the end, we update our overall best solution and sweep the line on
-step to the top. We add all cows with current $y$ coordinate to the southern
-region and remove them from the northern region.
+belong to the northern region.
 
-A coordination compression of the $x$ coordinates is also performed at the
-beginning to constraint the size of our segment trees to be no larger than the
-number of cows.
+For each of these lines, we need an efficient way to determine the optimal
+west/east partition to divide the farm into four pieces with the maximum number
+of cows appearing in one of the four regions, $M$, being minimized. To achieve
+this, we use two segment trees as our frequency tables to store the number of
+cows on a certain $x$ coordinate which belong to one of the two regions, north
+and south, respectively.
+
+Then, we do a binary search on both segment trees to find the best west/east
+partition which minimizes $M$. In particular, we begin from the root of the
+segment trees and always add either the left or right subtrees to the western or
+eastern region, depending on which of these two options leads to the smallest
+increase of $M$.
+
+At the end, we update our overall best solution and move the line to the next
+$y$-coordinate of interest. We add all cows with current $y$ coordinate to the
+southern region and remove them from the northern region.
 
 
 ### Implementation
@@ -48,7 +49,7 @@ using namespace std;
 struct SegmentTree {
 	int size;
 	vector<int> tree;
-	SegmentTree() : size(1 << 17) { tree.assign(size * 2, 0); }
+	SegmentTree() : size(1 << 20) { tree.assign(size * 2, 0); }
 
 	/**
 	 * Increase the value at x by value, i.e. a[x] += value
@@ -124,18 +125,6 @@ int main() {
 		cin >> c.first >> c.second;
 	}
 
-	// coordinate compression for x
-	sort(cows.begin(), cows.end());
-	int new_x = 0;
-	int actual_x = cows[0].first;
-	for (int i = 0; i < N; i++) {
-		if (cows[i].first != actual_x) {
-			new_x++;
-			actual_x = cows[i].first;
-		}
-		cows[i].first = new_x;
-	}
-
 	// sort after the y coordinates and divide the farm into north and south
 	sort(cows.begin(), cows.end(),
 		[&](const pair<int, int> &c1, const pair<int, int> &c2) {
@@ -198,24 +187,12 @@ public class Balancing {
 		}
 		br.close();
 
-		// coordinate compression for x
-		Arrays.sort(cows);
-		int newX = 0;
-		int actualX = cows[0].a;
-		for (int i = 0; i < N; i++) {
-			if (cows[i].a != actualX) {
-				newX++;
-				actualX = cows[i].a;
-			}
-			cows[i].a = newX;
-		}
-
 		// sort after the y coordinates and divide the farm into north and south
 		Arrays.sort(cows, (a, b) -> a.compareBTo(b));
 
 		// north and south store the number of points on the x coordinates
-		SegmentTree north = new SegmentTree(N);
-		SegmentTree south = new SegmentTree(N);
+		SegmentTree north = new SegmentTree();
+		SegmentTree south = new SegmentTree();
 
 		/*
 		 * we begin the sweeping line from the bottom, i.e. the whole farm is in the
@@ -255,8 +232,8 @@ public class Balancing {
 		int size;
 		int[] tree;
 
-		public SegmentTree(int n) {
-			size = 1 << (32 - Integer.numberOfLeadingZeros(n - 1));
+		public SegmentTree() {
+			size = 1 << 20;
 			tree = new int[size * 2];
 		}
 
