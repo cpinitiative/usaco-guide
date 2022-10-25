@@ -9,7 +9,7 @@ author: Dong Liu
 
 Let $|$ denote the bitwise OR operation and $\&$ denote the bitwise AND operation.
 
-The answer is equivalent to enumerating $a_i$ and finding the optimal $x$ where $x=a_j\&a_k$ and $i<j<k$ and $a_i|x$ is maximum.
+The answer is equivalent to enumerating $a_i$ and finding an $x$ such $x=a_j\&a_k$ and $i<j<k$ and $a_i|x$ is maximized.
 
 Note that $x$ can be binary searched since $2^b>2^0+2^1+\dots+2^{b-1}$, so we can loop through each $2^b$ in decreasing order and check if there exists an answer for $z$ such that $z$ is a superset of $x|2^b$. When we reach a bit $2^b$ such that it is contained in $a_i$, it doesn't matter whether it is in the final $x$ since $a_i|x$ already contains $2^b$.
 
@@ -31,15 +31,15 @@ const int N = 1e6, B = 21, A = 1 << B;
 
 int main() {
 	int n; cin >> n;
-	static int a[N], f[A], g[A];
-	fill(f, f + A, -1), fill(g, g + A, -1);
+	vector<int> a(n), f(A, -1), g(A, -1);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
 		// second largest becomes largest, largest is updated to i
-		f[a[i]] = g[a[i]], g[a[i]] = i;
+		f[a[i]] = g[a[i]];
+		g[a[i]] = i;
 	}
 	for (int i = 0; i < B; i++) {
-		for (int j = 0; j < A; j++)
+		for (int j = 0; j < A; j++) {
 			if (j & (1 << i)) {
 				int k = j ^ (1 << i);
 				// updating largest (g[k]) from superset k to subset j
@@ -53,16 +53,18 @@ int main() {
 				else if (g[j] > f[k]) // case 2: in the middle
 					f[k] = g[j];
 			}
+		}
 	}
 	int ans = 0;
 	for (int i = 0; i < n - 2; i++) {
 		int c = 0;
-		for (int j = B - 1; j >= 0; j--)
+		for (int j = B - 1; j >= 0; j--) {
 			// only consider if a[i] doesn't contain 2^j
 			if ((a[i] & (1 << j)) == 0)
 				// if the second largest is greater than i
 				if (f[c | (1 << j)] > i)
 					c |= 1 << j;
+		}
 		ans = max(ans, a[i] | c);
 	}
 	cout << ans << '\n';
