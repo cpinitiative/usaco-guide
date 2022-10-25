@@ -11,7 +11,7 @@ Let $|$ denote the bitwise OR operation and $\&$ denote the bitwise AND operatio
 
 The answer is equivalent of enumerating $a_i$ and finding the optimal $x$ where $x=a_j\&a_k$ and $i<j<k$ and $a_i|x$ is maximum.
 
-Note that $x$ can be binary searched since $2^b>2^0+2^1+...+2^{b-1}$, so we can loop through each $2^b$ in decreasing order and check if there exists an answer for $z$ such that $z$ is a superset of $x|2^b$. When we reach a bit $2^b$ such that it is contained in $a_i$, it doesn't matter whether it is in the final $x$ since $a_i|x$ already contains $2^b$.
+Note that $x$ can be binary searched since $2^b>2^0+2^1+\dots+2^{b-1}$, so we can loop through each $2^b$ in decreasing order and check if there exists an answer for $z$ such that $z$ is a superset of $x|2^b$. When we reach a bit $2^b$ such that it is contained in $a_i$, it doesn't matter whether it is in the final $x$ since $a_i|x$ already contains $2^b$.
 
 In other words, we have to find a pair $(j, k)$ such that $i<j<k$ and $a_j\&a_k$ is a superset of $x|2^b$. This is equivalent to finding $j$ and $k$ such that $j, k>i$, $a_j\supseteq x|2^b$, and $a_k\supseteq x|2^b$. This can be done by Sum Over Subsets DP (or supersets in this case) by maintaining $f_x$ and $g_x$, which stores the two largest $j$ such that $a_j\supseteq x$.
 
