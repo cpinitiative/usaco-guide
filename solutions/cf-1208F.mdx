@@ -34,26 +34,31 @@ int main() {
 	fill(f, f + A, -1), fill(g, g + A, -1);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
+		// second largest becomes largest, largest is updated to i
 		f[a[i]] = g[a[i]], g[a[i]] = i;
 	}
 	for (int i = 0; i < B; i++)
 		for (int j = 0; j < A; j++)
 			if (j & (1 << i)) {
 				int k = j ^ (1 << i);
-				if (f[j] > g[k])
+				// updating largest (g[k]) from superset k to subset j
+				if (f[j] > g[k]) // case 1: on the right
 					f[k] = g[k], g[k] = f[j];
-				else if
-					(f[j] > f[k]) f[k] = f[j];
-				if (g[j] > g[k])
+				else if (f[j] > f[k]) // case 2: in the middle
+					f[k] = f[j];
+				// updating second largest (f[k]) from superset k to subset j
+				if (g[j] > g[k])// case 1: on the right
 					f[k] = g[k], g[k] = g[j];
 				else if (g[j] > f[k])
-					f[k] = g[j];
+					f[k] = g[j]; // case 2: in the middle
 			}
 	int ans = 0;
 	for (int i = 0; i < n - 2; i++) {
 		int c = 0;
 		for (int j = B - 1; j >= 0; j--)
+			// only consider if a[i] doesn't contain 2^j
 			if ((a[i] & (1 << j)) == 0)
+				// if the second largest is greater than i
 				if (f[c | (1 << j)] > i)
 					c |= 1 << j;
 		ans = max(ans, a[i] | c);
