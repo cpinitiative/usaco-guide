@@ -11,13 +11,11 @@ author: Aakash Gokhale
 
 Notice that $a[i][j]$ can only be swapped with $a[j][i]$ no matter which operations are performed.
 
-Since we want the lexicographically smallest answer, the earlier indices matter more than later indices so we find optimal row swaps for earlier indices first.
-
 For all $j$ such that $i < j$ (we only need to consider each pair once and keeping $i < j$ will ensure this), we can determine whether we want to swap them or keep them the same.
 
 If $a[i][j] > a[j][i]$, we want to swap them. If $a[i][j] < a[j][i]$ we want to keep them the same. If they are equal it doesn't matter.
 
-However, it is possible that not all conditions can work together with each other and swapping something means we can't swap something else later on.
+However, it is possible that not all conditions can work together with each other and swapping something means we can't swap something else later on. Since we want the lexicographically smallest answer, the earlier indices matter more than later indices so we find optimal row swaps for earlier indices first.
 
 We can create a disjoint set union to model this problem. The DSU will have $2n$ nodes where node $i$ represents the state where the operation is performed on the $i$th row and node $i + n$ represents the state where operation is not performed on the $i$th row.
 
