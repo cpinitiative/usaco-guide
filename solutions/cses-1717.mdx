@@ -1,0 +1,54 @@
+---
+id: cses-1717
+source: CSES
+title: Christmas Party
+author: Qi Wang
+---
+
+## Explanation
+
+Let the gift of owner $i$ be $g_i$. Then the problem can be simplified to counting the number of permutations such that no $g_i$
+appears in the $i$th position. In combinatorics, this is known as a [derangement](https://en.wikipedia.org/wiki/Derangement).
+
+The derangement, $!n$, can be calculated as followed:
+
+$!n = (n-1)(!(n-1) + !(n-2))$
+
+Since $n \leq 10^6$, using basic recursion will result in a Time Limit Exceeded error. We will use dynamic programming to store
+the previous values of $!n$ to compute this efficiently in $\mathcal{O}(n)$
+
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class ChristmasParty {
+    final static int MOD = (int)1e9 + 7;
+    public static void main(String[] args) throws IOException {
+        Kattio io = new Kattio();
+
+        int N = io.nextInt();
+
+        long[] dp = new long[N + 1];
+        dp[0] = 1;
+
+        for (int i = 2; i <= N; i++) {
+            dp[i] = (i - 1) * (dp[i - 1] + dp[i - 2]);
+            dp[i] %= MOD;
+        }
+
+        io.println(dp[N]);
+        io.close();
+    }
+
+    //CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
