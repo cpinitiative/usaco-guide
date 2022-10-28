@@ -70,7 +70,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   bronze: [
     {
       name: 'Getting Started',
-      items: ['time-comp', 'intro-ds', 'simulation', 'rect-geo'],
+      items: ['time-comp', 'simulation', 'intro-ds', 'rect-geo'],
     },
     {
       name: 'Complete Search',
