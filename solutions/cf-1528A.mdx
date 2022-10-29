@@ -171,7 +171,7 @@ public class ParsasHumongousTree {
 				adj.get(v).add(u);
 			}
 
-			calculate_dp(1, -1);
+			calculateDP(1, -1);
 
 			io.println(Math.max(dp[1][0], dp[1][1]));
 		}
@@ -179,7 +179,7 @@ public class ParsasHumongousTree {
 		io.flush();
 	}
 
-	private static void calculate_dp(int u, int par) {
+	private static void calculateDP(int u, int par) {
 		for (int v : adj.get(u)) {
 			// Continue if `v` is `u`'s parent.
 			if (v == par) {
@@ -187,16 +187,16 @@ public class ParsasHumongousTree {
 			}
 
 			// Calculate the DP values for 'v'.
-			calculate_dp(v, u);
+			calculateDP(v, u);
 
 			// DP transitions for 'u'.
-			dp[u][0] += mx_beauty(u, v, false);
-			dp[u][1] += mx_beauty(u, v, true);
+			dp[u][0] += maxBeauty(u, v, false);
+			dp[u][1] += maxBeauty(u, v, true);
 		}
 	}
 
 	// Return optimal beauty value for vertex u with subtree v.
-	private static long mx_beauty(int u, int v, boolean type) {
+	private static long maxBeauty(int u, int v, boolean type) {
 		if (!type) {
 			long swtch = dp[v][1] + Math.abs(l[u] - r[v]);
 			long sm = dp[v][0] + Math.abs(l[u] - l[v]);
