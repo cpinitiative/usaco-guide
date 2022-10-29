@@ -2,17 +2,17 @@
 id: usaco-764
 source: USACO Silver 2017 December
 title: The Bovine Shuffle
-author: Jesse Choe, Tanish Tyagi
+author: Jesse Choe, Tanish Tyagi, Paul Chen
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_shuffle_silver_dec17.html)
 
 **Time Complexity:** $\mathcal{O}(N)$
 
+## Implementation
+
 <LanguageSection>
 <CPPSection>
-
-## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -84,8 +84,6 @@ int main(){
 
 <JavaSection>
 
-## Java Implementation
-
 ```java
 //created by Tanish Tyagi
 
@@ -145,5 +143,49 @@ public class shuffle {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+from collections import deque
+
+inp = open("shuffle.in", "r")
+out = open("shuffle.out", "w")
+
+n = int(inp.readline())
+
+cnt = [0] * n
+a = list(map(int, inp.readline().split()))
+
+for i in range(n):
+    a[i] -= 1
+    cnt[a[i]] += 1
+
+ans = n
+q = deque()
+
+# Calculate number of cows that a position will receive after one shuffle.
+for i in range(n):
+    if cnt[i] == 0:
+        q.append(i)
+        ans -= 1
+
+while q:
+    curr = q.popleft()
+
+    # Position `curr` cannot contribute any cows.
+    cnt[a[curr]] -= 1
+
+    # If `a[curr]` has no cows, insert it into the queue.
+    if cnt[a[curr]] == 0:
+        q.append(a[curr])
+        ans -= 1
+
+out.write(str(ans))
+
+inp.close()
+out.close()
+```
+</PySection>
 
 </LanguageSection>
