@@ -158,28 +158,28 @@ cnt = [0] * n
 a = list(map(int, inp.readline().split()))
 
 for i in range(n):
-    a[i] -= 1
-    cnt[a[i]] += 1
+	a[i] -= 1
+	cnt[a[i]] += 1
 
 ans = n
 q = deque()
 
 # Calculate number of cows that a position will receive after one shuffle.
 for i in range(n):
-    if cnt[i] == 0:
-        q.append(i)
-        ans -= 1
+	if cnt[i] == 0:
+		q.append(i)
+		ans -= 1
 
 while q:
-    curr = q.popleft()
+	curr = q.popleft()
 
-    # Position `curr` cannot contribute any cows.
-    cnt[a[curr]] -= 1
+	# Position `curr` cannot contribute any cows.
+	cnt[a[curr]] -= 1
 
-    # If `a[curr]` has no cows, insert it into the queue.
-    if cnt[a[curr]] == 0:
-        q.append(a[curr])
-        ans -= 1
+	# If `a[curr]` has no cows, insert it into the queue.
+	if cnt[a[curr]] == 0:
+		q.append(a[curr])
+		ans -= 1
 
 out.write(str(ans))
 
