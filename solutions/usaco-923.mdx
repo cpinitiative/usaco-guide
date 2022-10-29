@@ -18,10 +18,12 @@ version of this problem.
 We start off by calculating the layers of paint over each cell of the barn with
 prefix sums, but from there it's a bit hard to determine which layers we should
 paint. It's hard to directly calculate it from this array, but notice that there's
-precisely three states a cell can be in:
+two general states a cell can be in.
 
-1. If it's painted over, it will add $1$ to the area of optimal layers of paint.
-2. If it's painted over, it will *subtract* $1$ from the area.
+1. If it's painted over, it will either add $1$ to the optimal area
+   (because it initially has $K-1$ layers of paint)
+   or subtract $1$ from the optimal area
+   (because it already has $K$ layers of paint).
 3. Nothing will happen to the optimal area if it's painted over.
 
 Since FJ must paint two *disjoint* rectangles, we don't have to consider the
@@ -150,7 +152,7 @@ to get the arrays with the following updated values:
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^3)$
+**Time Complexity:** $\mathcal{O}(\max(x,y)^3)$
 
 <LanguageSection>
 <CPPSection>
