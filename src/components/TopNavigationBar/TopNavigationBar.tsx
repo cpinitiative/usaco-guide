@@ -150,19 +150,22 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hideClassesPromoBar && false && (
+      {!hideClassesPromoBar && (
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:hidden">Register for USACO classes!</span>
-                <span className="hidden md:inline">
+                <span className="md:hidden md:inline">
                   Want to improve at USACO? Register for affordable USACO
                   classes here!
                 </span>
+                <span className="md:inline">
+                  We're looking for new web developers to join our team!
+                </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/classes"
+                    href="https://forms.gle/fVtVCwdteRaa7Wuo7"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"

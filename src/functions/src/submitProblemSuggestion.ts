@@ -105,7 +105,7 @@ const submitProblemSuggestion = functions.https.onCall(
     const githubAPI = axios.create({
       baseURL: 'https://api.github.com',
       auth: {
-        username: 'jeffkmeng',
+        username: 'maggieliu05',
         password: key,
       },
     });
@@ -165,10 +165,12 @@ const submitProblemSuggestion = functions.https.onCall(
 
     // sort the table such that the suggested problem is inserted below the bottommost
     // problem with the same difficulty as the suggested problem.
-    parsedOldFileData[problemListName] = ([
-      ...tableToEdit.map((el, i) => ({ index: i, data: el })),
-      { index: tableToEdit.length, data: suggestedProblem },
-    ] as { index: number; data: ProblemMetadata }[])
+    parsedOldFileData[problemListName] = (
+      [
+        ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+        { index: tableToEdit.length, data: suggestedProblem },
+      ] as { index: number; data: ProblemMetadata }[]
+    )
       .sort((a, b) => {
         const difficultyDiff =
           PROBLEM_DIFFICULTY_OPTIONS.indexOf(a.data.difficulty) -
