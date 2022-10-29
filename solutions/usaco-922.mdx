@@ -29,7 +29,7 @@ int main() {
 	}
 	
 	// returns true if dishes with indexes [0, end_index) can be washed
-	auto check = [&] (int end_index) -> bool {
+	auto prefix_washable = [&] (int end_index) -> bool {
 		deque<int> not_washed;
 		for (int i = 0; i < end_index; i++) {
 			not_washed.push_back(order[i]);
@@ -80,7 +80,7 @@ int main() {
 	int l = 0, r = n + 1;
 	while (l < r - 1) {
 		int mid = (l + r) / 2;
-		if (check(mid)) {
+		if (prefix_washable(mid)) {
 			l = mid;
 		} else {
 			r = mid;
