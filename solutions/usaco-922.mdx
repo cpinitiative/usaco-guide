@@ -19,15 +19,13 @@ We can binary search for the longest possible prefix. Since prefix of length $i-
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(){
-	ifstream cin("dishes.in");
-	ofstream cout("dishes.out");
-	
+int main() {
+	ifstream fin("dishes.in");
 	int n; 
-	cin >> n;
+	fin >> n;
 	vector<int> order(n);
 	for (int i = 0; i < n; i++) {
-		cin >> order[i];
+		fin >> order[i];
 	}
 	
 	// returns true if dishes with indexes [0, end_index) can be washed
@@ -50,8 +48,7 @@ int main(){
 				int mid = (l + r) / 2;
 				if (soapy_stacks[mid].back() > plate) {
 					r = mid;
-				}
-				else{
+				} else {
 					l = mid;
 				}
 			}
@@ -60,8 +57,7 @@ int main(){
 			if (r == soapy_stacks.size()) {
 				// create new stack
 				soapy_stacks.push_back({plate});
-			}
-			else{
+			} else {
 				soapy_stacks[r].push_back(plate);
 			}
 			
@@ -86,12 +82,11 @@ int main(){
 		int mid = (l + r) / 2;
 		if (check(mid)) {
 			l = mid;
-		}
-		else {
+		} else {
 			r = mid;
 		}
 	}
-	cout << l << endl;
+	ofstream("dishes.out") << l << endl;
 }
 ```
 
