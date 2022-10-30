@@ -161,7 +161,7 @@ export default function TopNavigationBar({
                   classes here!
                 </span>
                 <span className="md:inline">
-                  We're looking for new web developers to join our team!
+                  We're looking for new web developers and problem writers to join our team!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
