@@ -2,7 +2,7 @@
 id: usaco-526
 source: USACO Bronze 2015 February
 title: Censoring
-author: Brad Ma, Ahmad Bilal
+author: Brad Ma, Ahmad Bilal, Amogha Pokkulandra
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_censor_bronze.html)
@@ -126,3 +126,81 @@ public class Censor {
 ```
 </JavaSection>
 </LanguageSection>
+
+
+
+## Video Solution
+
+By Amogha Pokkulandra
+
+<Youtube id="ag46IZcJRQk" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("censor.in", "r", stdin);
+	freopen("censor.out", "w", stdout);
+
+	string S, T; //String S and T, what we want to censor and the censor word
+	cin >> S >> T;
+	string out = ""; // No need for StringBuilder because c++ strings are mutable
+
+	for (int i = 0; i < S.length(); i++) {
+		// Reading in characters one at a time
+		out += S[i];
+
+		// Checking length condition
+		if ((out.length() >= T.length()) && out.substr(out.length() - T.length()) == (T)) {
+			// Resizing the string such that it does not contain censor word
+			out.resize(out.size() - T.size());
+		}
+	}
+
+	cout << out;
+}
+```
+
+</CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+
+public class Censoring {
+	public static void main(String[] args) throws IOException {
+		// file in and out
+		PrintWriter = pw = new PrintWriter(new File("censor.out"));
+		BufferedReader br = new BufferedReader(new FileReader(new File("censor.in")));
+		
+		String S = br.readLine(); // String S, what we want to censor
+		String T = br.readLine(); // String T, the censored word
+		StringBuilder out = new StringBuilder(""); // StringBuilder solves the problem of immutable strings, so less memory is taken up
+		
+		for (int i = 0; i < S.length(); i++) {
+			// Adding each character to the result one at a time
+			out.append(S.substring(i, i + 1)); 
+			
+			// Checking the length of the result and whether the censor word exists
+			if ((out.length() >= T.length()) && out.substring(out.length() - T.length()).contentEquals(T)) {
+				// Deleting the censored word, should it exist
+				out.delete(out.length() - T.length(), out.length()); 
+			}
+		}
+		
+		System.out.println(out.toString());
+		pw.println(out);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
