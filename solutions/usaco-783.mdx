@@ -93,8 +93,7 @@ import java.util.*;
 public class Billboard {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("billboard.in"));
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("billboard.out")));
-
+	
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		int backBLX = Integer.parseInt(st.nextToken());
 		int backBLY = Integer.parseInt(st.nextToken());
@@ -123,34 +122,41 @@ public class Billboard {
 		}
 
 		if (numCoveredCorners <= 1) {
-			// if 1 or 0 corners are covered, the tarp is simply just the area of the rectangle
-			out.println((backTRX - backBLX) * (backTRY - backBLY));
+			// if 1 or 0 corners are covered, the tarp is the area of the rectangle
+			System.out.println((backTRX - backBLX) * (backTRY - backBLY));
 		}  else if (numCoveredCorners == 2) {
-			// if exactly two corners are covered, we need to figure out the exposed area.
-			// calculate the area of the intersection (the covered area), and subtract it from the total area.
+			/*
+			 * if exactly two corners are covered, we need to figure out the exposed area.
+			 * calculate the area of the intersection (the covered area),
+			 * and subtract it from the total area.
+			 */
 			int intersectionBLX = Math.max(backBLX, frontBLX);
 			int intersectionBLY = Math.max(backBLY, frontBLY);
 			int intersectionTRX = Math.min(backTRX, frontTRX);
 			int intersectionTRY = Math.min(backTRY, frontTRY);
 			int totalAreaOfBackRectangle = (backTRX - backBLX) * (backTRY - backBLY);
-			int areaOfIntersection = (intersectionTRX - intersectionBLX) * (intersectionTRY - intersectionBLY);
+			int areaOfIntersection = (
+				(intersectionTRX - intersectionBLX)
+				* (intersectionTRY - intersectionBLY)
+			);
 
-			out.println(totalAreaOfBackRectangle - areaOfIntersection);
+			System.out.println(totalAreaOfBackRectangle - areaOfIntersection);
 		}  else {
 			// all 4 corners are covered
-			out.println(0);
+			System.out.println(0);
 		}
-
-		out.close();
 	}
 
 	/**
-	 * @returns whether or not (x, y) is in the rect bounded by bottom left corner (rectBLX, rectBLY) and top right corner (rectTRX, rectTRY)
+	 * @returns whether or not (x, y) is in the rect bounded by
+	 * bottom left corner (rectBLX, rectBLY) and
+	 * top right corner (rectTRX, rectTRY)
 	 */
-	public static boolean isInRectangle(int x, int y, int rectBLX, int rectBLY, int rectTRX, int rectTRY) {
+	public static boolean isInRectangle(
+		int x, int y, int rectBLX, int rectBLY, int rectTRX, int rectTRY
+	) {
 		return (x >= rectBLX && x <= rectTRX && y >= rectBLY && y <= rectTRY);
 	}
-
 }
 ```
 
