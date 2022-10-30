@@ -7,6 +7,132 @@ author: Maggie Liu, Dong Liu
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_square_bronze_dec16.html)
 
+## Video Solution
+
+By Maggie Liu
+
+<Youtube id="gXNTflZeutk" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+int main()
+{
+	freopen("square.in", "r", stdin);
+	freopen("square.out", "w", stdout);
+	int x1, y1, x2, y2;
+	int x3, y3, x4, y4;
+	cin >> x1 >> y1 >> x2 >> y2 >> x3 >> y3 >> x4 >> y4;
+	int left, right, top, bottom;
+	// find the sides of the smallest rectangle covering both pastures
+	left = min(x1, x3);
+	right = max(x2, x4);
+	bottom = min(y1, y3);
+	top = max(y2, y4);
+	/*
+	 * the smallest square will need a side length
+	 * that is the maximum of the side lengths of the rectangle
+	 */
+	int side = max(right - left, top - bottom);
+	cout << side * side << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SquarePasture
+{
+	public static void main(String[] args) throws IOException
+	{
+		Kattio io = new Kattio("square");
+		int x1 = io.nextInt(), y1 = io.nextInt(), x2 = io.nextInt(), y2 = io.nextInt();
+		int x3 = io.nextInt(), y3 = io.nextInt(), x4 = io.nextInt(), y4 = io.nextInt();
+		// find the sides of the smallest rectangle covering both pastures
+		int left = Math.min(x1, x3);
+		int right = Math.max(x2, x4);
+		int bottom = Math.min(y1, y3);
+		int top = Math.max(y2, y4);
+		/*
+		 * the smallest square will need a side length
+		 * that is the maximum of the side lengths of the rectangle
+		 */
+		int side = Math.max(right - left, top - bottom);
+		io.println(side * side);
+		io.close();
+	}
+
+	// https://usaco.guide/general/io?lang=java#io-template
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in, System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName + ".out"));
+			r = new BufferedReader(new FileReader(problemName + ".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+</JavaSection>
+	
+<PySection>
+
+```py
+import sys
+sys.stdin = open("square.in", "r")
+sys.stdout = open("square.out", "w")
+
+x1, y1, x2, y2 = map(int, input().split())
+x3, y3, x4, y4 = map(int, input().split())
+
+# find the sides of the smallest rectangle covering both pastures
+left = min(x1, x3)
+right = max(x2, x4)
+bottom = min(y1, y3)
+top = max(y2, y4)
+
+# the smallest square will need a side length
+# that is the maximum of the side lengths of the rectangle
+side = max(right - left, top - bottom)
+print(side * side)
+```
+</PySection>
+</LanguageSection>
+</Spoiler>
+	
 ## Explanation
 
 We can first find the smallest rectangle that covers both pastures. This
