@@ -5,9 +5,9 @@ title: Why Did the Cow Cross the Road I
 author: Benjamin Qi, Brad Ma
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_helpcross_silver_feb17.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_helpcross_silver_feb17.html)
 
-There is more than one possible greedy strategy (though all of them involve
+There are multiple greedy strategies (though all of them involve
 sorting the animals by time). Here, we follow the approach described by the
 analysis.
 
@@ -16,285 +16,175 @@ analysis.
 **Time Complexity:** $\mathcal O(N \cdot C)$
 
 <LanguageSection>
-	
 <CPPSection>
+
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 
-using ll = long long;
-using ld = long double;
-using db = double;
-using str = string; // yay python!
-
-using pi = pair<int,int>;
-using pl = pair<ll,ll>;
-using pd = pair<db,db>;
-
-using vi = vector<int>;
-using vb = vector<bool>;
-using vl = vector<ll>;
-using vd = vector<db>;
-using vs = vector<str>;
-using vpi = vector<pi>;
-using vpl = vector<pl>;
-using vpd = vector<pd>;
-
-#define tcT template<class T
-#define tcTU tcT, class U
-// ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>;
-tcT, size_t SZ> using AR = array<T,SZ>;
-tcT> using PR = pair<T,T>;
-
-// pairs
-#define mp make_pair
-#define f first
-#define s second
-
-// vectors
-// oops size(x), rbegin(x), rend(x) need C++17
-#define sz(x) int((x).size())
-#define bg(x) begin(x)
-#define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend()
-#define sor(x) sort(all(x))
-#define rsz resize
-#define ins insert
-#define ft front()
-#define bk back()
-#define pb push_back
-#define eb emplace_back
-#define pf push_front
-
-#define lb lower_bound
-#define ub upper_bound
-tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
-
-// loops
-#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
-#define F0R(i,a) FOR(i,0,a)
-#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define R0F(i,a) ROF(i,0,a)
-#define trav(a,x) for (auto& a: x)
-
-const int MOD = 1e9+7; // 998244353;
-const int MX = 2e5+5;
-const ll INF = 1e18; // not too close to LLONG_MAX
-const ld PI = acos((ld)-1);
-const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
-template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
-
-// bitwise ops
-// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
-constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
-constexpr int p2(int x) { return 1<<x; }
-constexpr int msk2(int x) { return p2(x)-1; }
-
-ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
-ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
-
-tcT> bool ckmin(T& a, const T& b) {
-	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
-tcT> bool ckmax(T& a, const T& b) {
-	return a < b ? a = b, 1 : 0; }
-
-tcTU> T fstTrue(T lo, T hi, U f) {
-	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1;
-	}
-	return lo;
-}
-tcTU> T lstTrue(T lo, T hi, U f) {
-	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo+1)/2;
-		f(mid) ? lo = mid : hi = mid-1;
-	}
-	return lo;
-}
-tcT> void remDup(vector<T>& v) { // sort and remove duplicates
-	sort(all(v)); v.erase(unique(all(v)),end(v)); }
-tcTU> void erase(T& t, const U& u) { // don't erase
-	auto it = t.find(u); assert(it != end(t));
-	t.erase(it); } // element that doesn't exist from (multi)set
-
-// INPUT
-#define tcTUU tcT, class ...U
-tcT> void re(complex<T>& c);
-tcTU> void re(pair<T,U>& p);
-tcT> void re(V<T>& v);
-tcT, size_t SZ> void re(AR<T,SZ>& a);
-
-tcT> void re(T& x) { cin >> x; }
-void re(db& d) { str t; re(t); d = stod(t); }
-void re(ld& d) { str t; re(t); d = stold(t); }
-tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
-
-tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
-tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
-tcT> void re(V<T>& x) { trav(a,x) re(a); }
-tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
-tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
-
-// TO_STRING
-#define ts to_string
-str ts(char c) { return str(1,c); }
-str ts(const char* s) { return (str)s; }
-str ts(str s) { return s; }
-str ts(bool b) {
-	#ifdef LOCAL
-		return b ? "true" : "false";
-	#else
-		return ts((int)b);
-	#endif
-}
-tcT> str ts(complex<T> c) {
-	stringstream ss; ss << c; return ss.str(); }
-str ts(V<bool> v) {
-	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
-	res += "}"; return res; }
-template<size_t SZ> str ts(bitset<SZ> b) {
-	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
-	return res; }
-tcTU> str ts(pair<T,U> p);
-tcT> str ts(T v) { // containers with begin(), end()
-	#ifdef LOCAL
-		bool fst = 1; str res = "{";
-		for (const auto& x: v) {
-			if (!fst) res += ", ";
-			fst = 0; res += ts(x);
-		}
-		res += "}"; return res;
-	#else
-		bool fst = 1; str res = "";
-		for (const auto& x: v) {
-			if (!fst) res += " ";
-			fst = 0; res += ts(x);
-		}
-		return res;
-
-	#endif
-}
-tcTU> str ts(pair<T,U> p) {
-	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")";
-	#else
-		return ts(p.f)+" "+ts(p.s);
-	#endif
-}
-
-// OUTPUT
-tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) {
-	pr(t); pr(u...); }
-void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) {
-	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
-
-// DEBUG
-void DBG() { cerr << "]" << endl; }
-tcTUU> void DBG(const T& t, const U&... u) {
-	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
-	DBG(u...); }
-#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
-	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
-	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
-		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
-#else
-	#define dbg(...) 0
-	#define chk(...) 0
-#endif
-
-void setPrec() { cout << fixed << setprecision(15); }
-void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
-// FILE I/O
-void setIn(str s) { freopen(s.c_str(),"r",stdin); }
-void setOut(str s) { freopen(s.c_str(),"w",stdout); }
-void setIO(str s = "") {
-	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit);
-	// throws exception when do smth illegal
-	// ex. try to read letter into int
-	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
-}
-
-int C,N;
-priority_queue<int,vi,greater<int>> times; // stores B_i of cows
-// top element of priority queue is lowest
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
 
 int main() {
-	setIO("helpcross");
-	re(C,N);
-	vi chicks(C); vpi cows(N); re(chicks,cows);
-	sort(all(chicks)); sort(all(cows));
-	int cow_ind = 0, ans = 0;
-	trav(c,chicks) { // go through chickens in increasing order of time
-		while (cow_ind < sz(cows) && cows[cow_ind].f <= c) // add cows with A_i <= c
-			times.push(cows[cow_ind++].s);
-		while (sz(times) && times.top() < c) times.pop();
-		// popped cows can't be paired with chicken
-		if (sz(times)) ans ++, times.pop();
-		// matched chicken to cow with lowest possible B_i
+	std::ifstream read("helpcross.in");
+
+	int num_chickens, num_cows;
+	read >> num_chickens >> num_cows;
+
+	vector<int> chickens(num_chickens);
+	for (int& c : chickens) {
+		read >> c;
 	}
-	ps(ans);
+	std::sort(chickens.begin(), chickens.end());
+
+	vector<pair<int, int>> cows(num_cows);
+	for (pair<int, int>& c : cows) {
+		read >> c.first >> c.second;
+	}
+	// sort by starting time, tiebreak by ending time
+	std::sort(cows.begin(), cows.end());
+
+	int num_helped = 0;
+	int cow_at = 0;
+	std::priority_queue<int> available_cows;
+	for (int c : chickens) {
+		// add all the cows whose start times now include the chicken's time
+		while (cow_at < cows.size() && cows[cow_at].first <= c) {
+			available_cows.push(-cows[cow_at].second);
+			cow_at++;
+		}
+		// remove all the ending times that end too early for the chicken
+		while (!available_cows.empty() && -available_cows.top() < c) {
+			available_cows.pop();
+		}
+		// have the cow help the chicken w/ the earliest ending time
+		if (!available_cows.empty()) {
+			num_helped++;
+			available_cows.pop();
+		}
+	}
+
+	std::ofstream("helpcross.out") << num_helped << endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
+
 ```java
 import java.util.*;
 import java.io.*;
 
 public class HelpCross {
+	//BeginCodeSnip{Cow Class}
+	static class Cow implements Comparable<Cow> {
+		int start;
+		int end;
+
+		public Cow(int start, int end) {
+			this.start = start;
+			this.end = end;
+		}
+
+		@Override
+		public int compareTo(Cow c) {
+			return start != c.start ? start - c.start : end - c.end;
+		}
+	}
+	//EndCodeSnip
+
 	public static void main (String[] args) throws IOException {
 		Kattio io = new Kattio("helpcross");
 		int numChickens = io.nextInt();
 		int numCows = io.nextInt();
-		int[] chicken = new int[numChickens]; // where the chicken are located
-		int[] earliest = new int[numCows];
-		int[] latest = new int[numCows];
-		boolean[] marked = new boolean[numCows];
 
-		for (int x = 0; x < numChickens; x++) {
-			chicken[x] = io.nextInt();
+		int[] chickens = new int[numChickens];
+		for (int c = 0; c < numChickens; c++) {
+			chickens[c] = io.nextInt();
 		}
-		for (int x = 0; x < numCows; x++){
-			earliest[x] = io.nextInt();
-			latest[x] = io.nextInt();
+		Arrays.sort(chickens);
+
+		Cow[] cows = new Cow[numCows];
+		for (int c = 0; c < numCows; c++) {
+			cows[c] = new Cow(io.nextInt(), io.nextInt());
 		}
-		Arrays.sort(chicken);
-		
-		int count = 0;
-		for (int x = 0; x < numChickens; x++) { // loop through each chicken
-			int smallest = -1;
-			// find the cow that ends the soonest that the chicken is in its range
-			for (int y = 0; y < numCows; y++) {
-				// the cow has not crossed the road yet and the 
-				// chicken's position is able to help the cow cross
-				if (! marked[y] && chicken[x] >= earliest[y] && chicken[x] <= latest[y]) { 
-					if (smallest < 0 || latest[y] < latest[smallest]) {
-						smallest = y;
-					}
-				}
+		// sort by starting time, tiebreak by ending time
+		Arrays.sort(cows);
+
+		int numHelped = 0;
+		int cowAt = 0;
+		PriorityQueue<Integer> availableCows = new PriorityQueue<>();
+		for (int c : chickens) {
+			// add all the cows whose start times now include the chicken's time
+			while (cowAt < cows.length && cows[cowAt].start <= c) {
+				availableCows.add(cows[cowAt].end);
+				cowAt++;
 			}
-			if (smallest != -1) {
-				marked[smallest] = true;
-				count++;
+			// remove all the ending times that end too early for the chicken
+			while (!availableCows.isEmpty() && availableCows.peek() < c) {
+				availableCows.remove();
+			}
+			// have the cow help the chicken w/ the earliest ending time
+			if (!availableCows.isEmpty()) {
+				numHelped++;
+				availableCows.remove();
 			}
 		}
-		io.println(count);
+
+		io.println(numHelped);
 		io.close();
 	}
+
 	//CodeSnip{Kattio}
 }
-```									       
+```
+
 </JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's slow speed, the below code will TLE on the last test case.
+
+</Warning>
+
+```py
+import heapq
+
+with open('helpcross.in') as read:
+	num_chickens, num_cows = [int(i) for i in read.readline().split()]
+
+	chickens = [int(read.readline()) for _ in range(num_chickens)]
+
+	cows = []
+	for _ in range(num_cows):
+		cows.append(tuple(int(i) for i in read.readline().split()))
+
+chickens.sort()
+cows.sort()
+
+num_helped = 0
+cow_at = 0
+available_cows = []
+for c in chickens:
+	while cow_at < num_cows and cows[cow_at][0] <= c:
+		heapq.heappush(available_cows, cows[cow_at][1])
+		cow_at += 1
 	
+	while available_cows and heapq.nsmallest(1, available_cows)[0] < c:
+		heapq.heappop(available_cows)
+	
+	if available_cows:
+		num_helped += 1
+		heapq.heappop(available_cows)
+
+print(num_helped, file=open('helpcross.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>	
