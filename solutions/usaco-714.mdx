@@ -151,13 +151,13 @@ public class HelpCross {
 import heapq
 
 with open('helpcross.in') as read:
-    num_chickens, num_cows = [int(i) for i in read.readline().split()]
+	num_chickens, num_cows = [int(i) for i in read.readline().split()]
 
-    chickens = [int(read.readline()) for _ in range(num_chickens)]
+	chickens = [int(read.readline()) for _ in range(num_chickens)]
 
-    cows = []
-    for _ in range(num_cows):
-        cows.append(tuple(int(i) for i in read.readline().split()))
+	cows = []
+	for _ in range(num_cows):
+		cows.append(tuple(int(i) for i in read.readline().split()))
 
 chickens.sort()
 # sort by starting time, tiebreak by ending time
@@ -167,22 +167,22 @@ num_helped = 0
 cow_at = 0
 available_cows = []
 for c in chickens:
-    # add all the cows whose start times now include the chicken's time
-    while cow_at < num_cows and cows[cow_at][0] <= c:
-        heapq.heappush(available_cows, cows[cow_at][1])
-        cow_at += 1
-    
-    """
-    remove all the ending times that end too early for the chicken
-    since available_cows is a heap, the first element is the smallest
-    """
-    while available_cows and available_cows[0] < c:
-        heapq.heappop(available_cows)
-    
-    # have the cow help the chicken w/ the earliest ending time
-    if available_cows:
-        num_helped += 1
-        heapq.heappop(available_cows)
+	# add all the cows whose start times now include the chicken's time
+	while cow_at < num_cows and cows[cow_at][0] <= c:
+		heapq.heappush(available_cows, cows[cow_at][1])
+		cow_at += 1
+	
+	"""
+	remove all the ending times that end too early for the chicken
+	since available_cows is a heap, the first element is the smallest
+	"""
+	while available_cows and available_cows[0] < c:
+		heapq.heappop(available_cows)
+	
+	# have the cow help the chicken w/ the earliest ending time
+	if available_cows:
+		num_helped += 1
+		heapq.heappop(available_cows)
 
 print(num_helped, file=open('helpcross.out', 'w'))
 ```
