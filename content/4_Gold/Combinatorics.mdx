@@ -162,7 +162,7 @@ int binomial(int n, int k, int p) {
 </CPPSection>
 </LanguageSection>
 
-### Method 2: Factorial Definition (Modular Inverses) - $\mathcal{O}(n\log MOD)$
+### Method 2: Factorial Definition (Modular Inverses) - $\mathcal{O}(n + \log MOD)$
 
 Define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$. $n!$ represents the number of permutations of a set of $n$ elements. See [this AoPS Article](https://artofproblemsolving.com/wiki/index.php/Factorial) for more details.
 
@@ -172,11 +172,9 @@ $$
 	\binom{n}{k} = \frac{n!}{k!(n-k)!}
 $$
 
-Recall that $\binom{n}{k}$ also represents the number of ways to choose $k$ elements from a set of $n$ elements. One strategy to get all such combinations is to go through all possible permutations of the $n$ elements, and only pick the first $k$ elements out of each permutation. There are $n!$ ways to do so. However, note the the order of the elements inside and outside the subset does not matter, so the result is divided by $k!$ and $(n − k)!$
+Recall that $\binom{n}{k}$ also represents the number of ways to choose $k$ elements from a set of $n$ elements. One strategy to get all such combinations is to go through all possible permutations of the $n$ elements, and only pick the first $k$ elements out of each permutation. There are $n!$ ways to do so. However, note the the order of the elements inside and outside the subset does not matter, so the result is divided by $k!$ and $(n − k)!$.
 
-Since these binomial coefficients are large, problems typically require us to output the answer modulo a large prime $p$ such as $10^9 + 7$.
-
-Fortunately, we can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$ for any prime $p$. In our case, $MOD = 10^9+7$ is prime, so we can utilize [modular inverses](/gold/modular). However, computing inverse factorials **online** can be very time costly. Instead, we can **precompute** all factorials in $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n\log MOD)$ by taking the inverses of each factorial. See the code below for the implementation.
+Since these binomial coefficients are large, problems typically require us to output the answer modulo a large prime $p$ such as $10^9 + 7$. Fortunately, we can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$ for any prime $p$. Computing inverse factorials **online** can be very time costly. Instead, we can **precompute** all factorials in $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n + \log MOD)$. First, we compute the modular inverse of the largest factorial using binary exponentiation. For the rest, we use the fact that $(n!)^{-1} \equiv (n!)^{-1}\times (n+1)^{-1} \times (n+1) \equiv ((n+1)!)^{-1}\times (n+1)$. See the code below for the implementation.
 
 <LanguageSection>
 <CPPSection>
@@ -207,11 +205,11 @@ void factorial(long long p) {
 	}
 }
 
-/** Precomputes all modular inverse factorials from 0 to MAXN in O(n log p) time */
+/** Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p) time */
 void inverses(long long p) {
-	inv[0] = 1;
-	for (int i = 1; i <= MAXN; i++) {
-		inv[i] = exp(fac[i], p - 2, p);
+	inv[MAXN] = exp(fac[MAXN], p - 2, p);
+	for (int i = MAXN; i >= 1; i--) {
+		inv[i - 1] = inv[i] * i % p;
 	}
 }
 		
@@ -263,9 +261,9 @@ void factorial() {
 }
 
 void inverses() {
-	inv[0] = 1;
-	for (int i = 1; i <= MAXN; i++) {
-		inv[i] = exp(fac[i], MOD - 2, MOD);
+	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD);
+	for (int i = MAXN; i >= 1; i--) {
+		inv[i - 1] = inv[i] * i % MOD;
 	}
 }
 
@@ -289,7 +287,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Derangements
+## Derangements
 
 <FocusProblem problem="sample2" />
 
