@@ -11,9 +11,9 @@ author: Nathan Gong, Melody Yu, George Pong
 
 We can represent the farm as an undirected graph, with each of the $n$ barns being a node, and each of the $m$ bidirectional paths being an edge. At each point in time, we want to check if the number of connected components is equal to one. Naively, this can be done with BFS or DFS. However, we would need to run this for all $n+1$ states of the barn, resulting in a TLE.
 
-We can use disjoint set union (DSU) to efficiently keep track of the number of connected components after each change. However, the key part of this solution is that, as DSU can only efficiently create relationships between nodes and not destroy them, we simulate closing the barn in reverse.
+We can use Disjoint Set Union (DSU) to efficiently keep track of the number of connected components after each change. However, the key part of this solution is that, as DSU can only efficiently create relationships between nodes and not destroy them, we simulate closing the barn in reverse.
 
-We start with an empty farm, and open barns in the reverse order they were closed in. For each barn we open, we union the new barn to all its adjacent open barns, of which we will keep track of while opening. While opening a barn will initially increase the number of connected components by 1, each successful union will decrease it by 1 as well. Thus, each opening of a barn will increase the number of connected components by $1 - \texttt{number of successful unions}$. Finally, our answer from each opening can be reversed once again to follow the initial order of closing the barns.
+We start with an empty farm, and open barns in the reverse order they were closed in. For each barn we open, we union the new barn to all its adjacent open barns, of which we will keep track of while opening. This makes the farm at each state the same as if it was being closed. While opening a barn will initially increase the number of connected components by 1, each successful union will decrease it by 1 as well. Thus, each opening of a barn will increase the number of connected components by $1 - \texttt{number of successful unions}$. Finally, our answer from each opening can be reversed once again to follow the initial order of closing the barns.
 
 ## Video Solution
 

@@ -9,7 +9,7 @@ author: Oscar Garries, Sofia Yang, George Pong
 
 We can represent the problem as an undirected graph, with each of the $n$ cities being a node and each of the $m$ roads being an edge. We then have two subproblems we need to consider:
 
-Our first subproblem is counting the number of components each day. By the definition of a component given in the problem, a component is a connected component. We can count them using Disjoint Set Union (DSU), where each tree in the structure represents a connected component. We start off with $n$ cities and no roads between them, and thus $n$ connected components. For every road that is built, we union the two cities the road connects. If the union is successful, then two different connected components have been joined into one, and thus the number of connected components decreases by 1.
+Our first subproblem is counting the number of connected components each day. We can count them using Disjoint Set Union (DSU), where each tree in the structure represents a connected component. We start off with $n$ cities and no roads between them, and thus $n$ connected components. For every road that is built, we union the two cities the road connects. If the union is successful, then two different connected components have been joined into one, and thus the number of connected components decreases by 1.
 
 Our second subproblem is finding the size of the largest connected component each day. Conveniently, the DSU optimization union-by-size stores the size of any node's component in that tree's parent node. Furthermore, the largest component will only change if a union is successful, as otherwise the graph stays the same. If a union happens, we check if the size of the tree which was added to during union-ing is a new maximum.
 
