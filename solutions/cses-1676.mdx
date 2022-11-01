@@ -99,17 +99,17 @@ class DisjointSetUnion:
 
 n, m = map(int, input().split())
 
-dsu = DisjointSetUnion(n)
+cities = DisjointSetUnion(n)
 largest_size = 1
 components = n
 
 for _ in range(m):
 	a, b = map(lambda i: int(i) - 1, input().split())
-	if dsu.union(a, b):
+	if cities.union(a, b):
 		components -= 1
 
 	# a is the parent node when uniting in our dsu implementation
-	size_a = dsu.size[dsu.find_parent(a)]
+	size_a = cities.size[cities.find_parent(a)]
 	if size_a > largest_size:
 		largest_size = size_a
 
