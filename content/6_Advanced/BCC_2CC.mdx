@@ -25,7 +25,95 @@ frequency: 1
 
 <Problems problems="sam2" />
 
-(implementation)
+<Spoiler title="Code">
+
+If the connected components of the double edge are found, 
+all we have to do is check whether the end point of each edge
+is the same connected component. 
+
+Many problems that use double edge connected components (2CCs) are
+problems which find 2CCs and convert them into tress (and then perform
+queries on those trees.) Therefore, it is convienient to have a tree as well.
+
+
+```cpp
+#include <cstdio>
+#include <vector>
+using namespace std;
+struct LowLink{
+  int n,pos;
+  vector<int> ord,low,par,blg;
+  vector<vector<int>> G,C;
+  LowLink(int n):n(n),pos(0),ord(n,-1),low(n),
+                 par(n,-1),blg(n,-1),G(n){}
+  void add_edge(int u,int v){
+    G[u].emplace_back(v);
+    G[v].emplace_back(u);
+  }
+  bool is_bridge(int u,int v){
+    if(ord[u]>ord[v]) swap(u,v);
+    return ord[u]<low[v];
+  }
+  void dfs(int v){
+    ord[v]=low[v]=pos++;
+    int cnt=0;
+    for(int u:G[v]){
+      if(u==par[v]&&cnt==0){
+        cnt++;
+        continue;
+      }
+      if(~ord[u]){
+        low[v]=min(low[v],ord[u]);
+        continue;
+      }
+      par[u]=v;
+      dfs(u);
+      low[v]=min(low[v],low[u]);
+    }
+  }
+  void fill_component(int v){
+    C[blg[v]].emplace_back(v);
+    for(int u:G[v]){
+      if(~blg[u]||is_bridge(u,v)) continue;
+      blg[u]=blg[v];
+      fill_component(u);
+    }
+  }
+  void add_component(int v,int &k){
+    if(~blg[v]) return;
+    blg[v]=k++;
+    C.emplace_back();
+    fill_component(v);
+  }
+  int build(){
+    for(int i=0;i<n;i++)
+      if(ord[i]<0) dfs(i);
+    int k=0;
+    for(int i=0;i<n;i++) add_component(i,k);
+    return k;
+  }
+};
+signed main(){
+  int n,m;
+  (void)scanf("%d %d",&n,&m);
+  LowLink G(n);
+  for(int i=0;i<m;i++){
+    int a,b;
+    (void)scanf("%d %d",&a,&b);
+    G.add_edge(a,b);
+  }
+  int k=G.build();
+  printf("%d\n",k);
+  for(int i=0;i<k;i++){
+    printf("%d",(int)G.C[i].size());
+    for(int v:G.C[i]) printf(" %d",v);
+    puts("");
+  }
+  return 0;
+}
+```
+</Spoiler>
+
 
 ### With DSU
 
@@ -35,7 +123,6 @@ The analysis for the above problem mentions an $\mathcal{O}(m\alpha(n))$
 solution. Although this is not a two-connected component problem, we can in fact
 use DSU to generate two-connected components.
 
-(explanation?)
 
 <Spoiler title="Code">
 
@@ -93,7 +180,7 @@ struct TwoEdgeCC {
 
 <Problems problems="bccSam" />
 
-note that BCCs contain EDGES not VERTICES
+note that BCCs contain EDGES, not VERTICES.
 
 Related topics include
 
@@ -113,7 +200,119 @@ Related topics include
 	</Resource>
 </Resources>
 
-(implementation)
+<Spoiler title="Code">
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+void APUtil(vector<int> adj[], int u, bool visited[],
+            int disc[], int low[], int& time, int parent,
+            bool isAP[])
+{
+    // Count of children in DFS Tree
+    int children = 0;
+ 
+    // Mark the current node as visited
+    visited[u] = true;
+ 
+    // Initialize discovery time and low value
+    disc[u] = low[u] = ++time;
+ 
+    // Go through all vertices adjacent to this
+    for (auto v : adj[u]) {
+        // If v is not visited yet, then make it a child of u
+        // in DFS tree and recur for it
+        if (!visited[v]) {
+            children++;
+            APUtil(adj, v, visited, disc, low, time, u, isAP);
+ 
+            // Check if the subtree rooted with v has
+            // a connection to one of the ancestors of u
+            low[u] = min(low[u], low[v]);
+ 
+            // If u is not root and low value of one of
+            // its child is more than discovery value of u.
+            if (parent != -1 && low[v] >= disc[u])
+                isAP[u] = true;
+        }
+ 
+        // Update low value of u for parent function calls.
+        else if (v != parent)
+            low[u] = min(low[u], disc[v]);
+    }
+ 
+    // If u is root of DFS tree and has two or more children.
+    if (parent == -1 && children > 1)
+        isAP[u] = true;
+}
+ 
+void AP(vector<int> adj[], int V)
+{
+    int disc[V] = { 0 };
+    int low[V];
+    bool visited[V] = { false };
+    bool isAP[V] = { false };
+    int time = 0, par = -1;
+ 
+    // Adding this loop so that the
+    // code works even if we are given
+    // disconnected graph
+    for (int u = 0; u < V; u++)
+        if (!visited[u])
+            APUtil(adj, u, visited, disc, low,
+                   time, par, isAP);
+ 
+    // Printing the APs
+    for (int u = 0; u < V; u++)
+        if (isAP[u] == true)
+            cout << u << " ";
+}
+ 
+// Utility function to add an edge
+void addEdge(vector<int> adj[], int u, int v)
+{
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+}
+ 
+int main()
+{
+    // Create graphs given in above diagrams
+    cout << "Articulation points in first graph \n";
+    int V = 5;
+    vector<int> adj1[V];
+    addEdge(adj1, 1, 0);
+    addEdge(adj1, 0, 2);
+    addEdge(adj1, 2, 1);
+    addEdge(adj1, 0, 3);
+    addEdge(adj1, 3, 4);
+    AP(adj1, V);
+ 
+    cout << "\nArticulation points in second graph \n";
+    V = 4;
+    vector<int> adj2[V];
+    addEdge(adj2, 0, 1);
+    addEdge(adj2, 1, 2);
+    addEdge(adj2, 2, 3);
+    AP(adj2, V);
+ 
+    cout << "\nArticulation points in third graph \n";
+    V = 7;
+    vector<int> adj3[V];
+    addEdge(adj3, 0, 1);
+    addEdge(adj3, 1, 2);
+    addEdge(adj3, 2, 0);
+    addEdge(adj3, 1, 3);
+    addEdge(adj3, 1, 4);
+    addEdge(adj3, 1, 6);
+    addEdge(adj3, 3, 5);
+    addEdge(adj3, 4, 5);
+    AP(adj3, V);
+ 
+    return 0;
+}
+```
+</Spoiler>
 
 ### Problems
 
