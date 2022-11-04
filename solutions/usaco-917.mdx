@@ -331,7 +331,7 @@ public class traffic {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("traffic.in"));
 		PrintWriter pw = new PrintWriter("traffic.out");
-		int N = Integer.parseInt(br.readline());
+		int N = Integer.parseInt(br.readLine());
 		int [] A = new int [100];
 		int [] B = new int [100];
 		String [] T = new String [100];
@@ -346,7 +346,8 @@ public class traffic {
 		// Below is the initial range (a,b). We will narrow/modify this range as 
 		// we scan through the highway components from mile N to mile 1. 
 		// The resulting range will be the range of possible initial traffic flows.
-		int a = -999999999, b = 999999999;
+		int a = -999999999;
+		int b = 999999999;
 		
 		// Note that we are scanning backwards from mile N to mile 1 here.
 		for (int i = N - 1; i >= 0; i--) {
@@ -378,7 +379,7 @@ public class traffic {
 		// Below is the inital range (a,b). We will narrow/modify this range as 
 		// we scan through the highway components from mile 1 to mile N. 
 		// The resulting range will be the range of possible final traffic flows.
-		a = -999999999, b = 999999999;
+		a = -999999999; b = 999999999;
 		for (int i = 0; i < N; i++) {
 			// if there is no ramp, the possible range (a,b) is 
 			// narrowed to the range given by the sensor.
