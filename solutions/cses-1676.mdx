@@ -2,16 +2,24 @@
 id: cses-1676
 source: CSES
 title: Road Construction
-author: Oscar Garries, Sofia Yang
+author: Oscar Garries, Sofia Yang, George Pong
 ---
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
+## Explanation
+
+We can represent the problem as an undirected graph, with each of the $n$ cities being a node and each of the $m$ roads being an edge. We then have two subproblems we need to consider:
+
+Our first subproblem is counting the number of connected components each day. We can count them using Disjoint Set Union (DSU), where each tree in the structure represents a connected component. We start off with $n$ cities and no roads between them, and thus $n$ connected components. For every road that is built, we unite the two cities the road connects. If the union is successful, then two different connected components have been joined into one, and thus the number of connected components decreases by 1.
+
+Our second subproblem is finding the size of the largest connected component each day. Conveniently, the DSU optimization union-by-size stores the size of any node's component in that tree's parent node. Furthermore, the largest component will only change if a union is successful, as otherwise the graph stays the same. If a union happens, we check if the size of the tree which was added to during uniting is a new maximum.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M \cdot \alpha(N))$
 
 <LanguageSection>
 
 <CPPSection>
-
-## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -56,9 +64,61 @@ int main () {
 
 </CPPSection>
 
-<JavaSection>
+<PySection>
 
-## Implementation
+```python
+import sys
+input = sys.stdin.readline  # speed up input to not TLE
+
+#BeginCodeSnip{Disjoint Set Union}
+class DisjointSetUnion:
+	def __init__(self, num_nodes: int) -> None:
+		self.parent = [*range(num_nodes)]
+		self.size = [1] * num_nodes
+
+	def find_parent(self, v: int) -> int:
+		if self.parent[v] == v:
+			return v
+		self.parent[v] = self.find_parent(self.parent[v])
+		return self.parent[v]
+
+	def union(self, a: int, b: int) -> bool:
+		a = self.find_parent(a)
+		b = self.find_parent(b)
+		if a == b:
+			return False
+		if self.size[a] < self.size[b]:
+			a, b = b, a
+		self.parent[b] = a
+		self.size[a] += self.size[b]
+		return True
+
+	def connected(self, a: int, b: int) -> bool:
+		return self.find_parent(a) == self.find_parent(b)
+#EndCodeSnip
+
+n, m = map(int, input().split())
+
+cities = DisjointSetUnion(n)
+largest_size = 1
+components = n
+
+for _ in range(m):
+	a, b = map(lambda i: int(i) - 1, input().split())
+	if cities.union(a, b):
+		components -= 1
+
+	# a is the parent node when uniting in our dsu implementation
+	size_a = cities.size[cities.find_parent(a)]
+	if size_a > largest_size:
+		largest_size = size_a
+
+	print(components, largest_size)
+```
+
+</PySection>
+
+<JavaSection>
 
 ```java
 import java.io.BufferedReader;
