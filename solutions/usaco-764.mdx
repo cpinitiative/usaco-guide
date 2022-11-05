@@ -54,9 +54,9 @@ void setIO(string fileName = ""){
 int main(){
 	setIO("shuffle");
 	ll n;
-    cin >> n;
+	cin >> n;
 
-    vl a(n);
+	vl a(n);
 	vl cows_after_shuffle(n);
 	FOR(i, 0, n){
 		cin >> a[i];
@@ -67,8 +67,8 @@ int main(){
 	ll ans = n;
 	queue<ll> no_cows;
 
-    // Calculate positions that are empty after one shuffle.
-    FOR(i, 0, n){
+	// Calculate positions that are empty after one shuffle.
+	FOR(i, 0, n){
 		if(cows_after_shuffle[i] == 0){
 			no_cows.push(i);
 			ans--;
@@ -79,10 +79,10 @@ int main(){
 		ll curr = no_cows.front();
 		no_cows.pop();
 
-        // Position `curr` cannot contribute any cows.
-        if(--cows_after_shuffle[a[curr]] == 0){
-            // If `a[curr]` has no cows, insert it into the queue.
-            no_cows.push(a[curr]);
+		// Position `curr` cannot contribute any cows.
+		if(--cows_after_shuffle[a[curr]] == 0){
+			// If `a[curr]` has no cows, insert it into the queue.
+			no_cows.push(a[curr]);
 			ans--;
 		}
 	}
@@ -160,35 +160,35 @@ public class shuffle {
 from collections import deque
 
 with open("shuffle.in", "r") as input_file:
-  n = int(input_file.readline())
+	n = int(input_file.readline())
 
-  cows_after_shuffle = [0] * n
-  a = list(map(int, input_file.readline().split()))
+	cows_after_shuffle = [0] * n
+	a = list(map(int, input_file.readline().split()))
 
-  # Calculate number of cows that a position will receive after one shuffle.
-  for i in range(n):
-    a[i] -= 1
-    cows_after_shuffle[a[i]] += 1
+	# Calculate number of cows that a position will receive after one shuffle.
+	for i in range(n):
+		a[i] -= 1
+		cows_after_shuffle[a[i]] += 1
 
-  ans = n
-  no_cows = deque()
+	ans = n
+	no_cows = deque()
 
-  # Calculate positions that are empty after one shuffle.
-  for i in range(n):
-    if cows_after_shuffle[i] == 0:
-      no_cows.append(i)
-      ans -= 1
+	# Calculate positions that are empty after one shuffle.
+	for i in range(n):
+		if cows_after_shuffle[i] == 0:
+			no_cows.append(i)
+			ans -= 1
 
-  while no_cows:
-    curr = no_cows.popleft()
+	while no_cows:
+		curr = no_cows.popleft()
 
-    # Position `curr` cannot contribute any cows.
-    cows_after_shuffle[a[curr]] -= 1
+		# Position `curr` cannot contribute any cows.
+		cows_after_shuffle[a[curr]] -= 1
 
-    # If `a[curr]` has no cows, insert it into the queue.
-    if cows_after_shuffle[a[curr]] == 0:
-      no_cows.append(a[curr])
-      ans -= 1
+		# If `a[curr]` has no cows, insert it into the queue.
+		if cows_after_shuffle[a[curr]] == 0:
+			no_cows.append(a[curr])
+			ans -= 1
 
 print(ans, file=open('shuffle.out', 'w'))
 ```
