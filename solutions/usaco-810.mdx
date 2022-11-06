@@ -2,8 +2,10 @@
 id: usaco-810
 source: USACO Silver 2018 Silver
 title: Rest Stops
-author: Vivian Han
+author: Vivian Han, Kevin Sheng
 ---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_reststops_silver_feb18.html)
 
 ## Explanation
 
@@ -39,88 +41,81 @@ stop early, and our greedy algorithm is correct.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <iostream>
 #include <fstream>
+#include <vector>
+
 using namespace std;
 
-const int MAX_LEN = 100000;
-int x[MAX_LEN];  // x: position of each stop
-int c[MAX_LEN];  // c: tastiness value of each stop
-bool good[MAX_LEN];
-
 int main() {
-	int trailLen, stopNum, fRate, bRate;
 	ifstream in("reststops.in");
-	in >> trailLen >> stopNum >> fRate >> bRate;
-	// scan in rest stop data
-	for (int i = 0 ; i < stopNum; i++) {
+	
+	int trail_len;  // not used
+	int stop_num;
+	int f_rate;
+	int b_rate;
+	in >> trail_len >> stop_num >> f_rate >> b_rate;
+
+	vector<int> x(stop_num);  // position of each stop
+	vector<int> c(stop_num);  // tastiness value of each stop
+	for (int i = 0 ; i < stop_num; i++) {
 		in >> x[i] >> c[i];
 	}
 
-	// find all "best" stops
-	int max = 0;
-	for (int i = stopNum-1; i >= 0; i--) {
-		good[i] = false;
-		if (c[i] > max) {  
+	// find all the "best" stops
+	vector<bool> good(stop_num);
+	int max_tastiness = 0;
+	for (int i = stop_num - 1; i >= 0; i--) {
+		if (c[i] > max_tastiness) {
 			// there are no stops after stop i that are "better"
 			good[i] = true;
-			max = c[i];
+			max_tastiness = c[i];
 		}
 	}
+	int total = 0;
+	for (bool i : good) total += i;
+	cout << total << endl;
 
 	// simulate the whole trail
-	long long prevStopPos = 0;
+	long long prev_stop_pos = 0;
 	long long ans = 0;
-	for (int i = 0; i < stopNum; i++) {
+	for (int i = 0; i < stop_num; i++) {
 		if (good[i]) {
-			long long travelDist = x[i] - prevStopPos;
-			long long fTime = travelDist * fRate;
-			long long bTime = travelDist * bRate;
-			long long restTime = fTime - bTime;
-			ans += restTime * c[i];
-			prevStopPos = x[i];
+			long long travel_dist = x[i] - prev_stop_pos;
+			long long f_time = travel_dist * f_rate;
+			long long b_time = travel_dist * b_rate;
+			long long rest_time = f_time - b_time;
+			ans += rest_time * c[i];
+			prev_stop_pos = x[i];
 		}
 	}
 
-	ofstream out;
-	out.open("reststops.out");
-	out << ans << endl;
-	out.close();
+	ofstream("reststops.out") << ans << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 
 public class RestStops {
-
-	static int[] x, c;
-	// x: position of each stop
-	// c: tastiness value of each stop
-	static boolean[] good;
-
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
+
 		String[] line = br.readLine().split(" ");
-		int trailLen = Integer.parseInt(line[0]);  
-		// trail length is never used...
+		int trailLen = Integer.parseInt(line[0]);  // never used
 		int stopNum = Integer.parseInt(line[1]);
 		int fRate = Integer.parseInt(line[2]);
 		int bRate = Integer.parseInt(line[3]);
 
-		x = new int[stopNum];
-		c = new int[stopNum];
-		good = new boolean[stopNum];
-
-		// scan in rest stop data
+		int[] x = new int[stopNum];  // position of each stop
+		int[] c = new int[stopNum];  // tastiness value of each stop
+		
 		for (int i = 0 ; i < stopNum; i++) {
 			line = br.readLine().split(" ");
 			x[i] = Integer.parseInt(line[0]);
@@ -129,12 +124,13 @@ public class RestStops {
 		br.close();
 
 		// find all "best" stops
-		int max = 0;
+		boolean[] good = new boolean[stopNum];
+		int maxTastiness = 0;
 		for (int i = stopNum-1; i >= 0; i--) {
-			if (c[i] > max) {  
+			if (c[i] > maxTastiness) {  
 				// there are no stops after stop i that are "better"
 				good[i] = true;
-				max = c[i];
+				maxTastiness = c[i];
 			}
 		}
 
@@ -152,13 +148,51 @@ public class RestStops {
 			}
 		}
 
-		BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
-		bw.write(ans + "\n");
-		bw.close();
+		PrintWriter pw = new PrintWriter("reststops.out");
+		pw.println(ans);
+		pw.close();
 	}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+with open('reststops.in') as read:
+	# trail_len won't be used
+	trail_len, stop_num, f_rate, b_rate = [int(i) for i in read.readline().split()]
+
+	x = []  # position of each stop
+	c = []  # tastiness value of each stop
+	for _ in range(stop_num):
+		a, b = [int(i) for i in read.readline().split()]
+		x.append(a)
+		c.append(b)
+
+# find all the "best" stops
+good = [False for _ in range(stop_num)]
+max_tastiness = 0
+for i in range(stop_num - 1, -1, -1):
+	if c[i] > max_tastiness:
+		# there are no stops after stop i that are "better"
+		good[i] = True
+		max_tastiness = c[i]
+
+# simulate the whole trail
+prev_stop_pos = 0
+ans = 0
+for i in range(stop_num):
+	if good[i]:
+		travel_dist = x[i] - prev_stop_pos
+		f_time = travel_dist * f_rate
+		b_time = travel_dist * b_rate
+		rest_time = f_time - b_time
+		ans += rest_time * c[i]
+		prev_stop_pos = x[i]
+
+print(ans, file=open('reststops.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
