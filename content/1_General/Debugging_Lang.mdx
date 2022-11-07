@@ -47,6 +47,7 @@ below to check the value of `x` at a point in our code.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <iostream>
 using namespace std;
@@ -54,44 +55,50 @@ using namespace std;
 int x = 10;  // pretend this holds some important variable
 
 void dbg() {
-	cout << "x is " << x << endl; 
+	cout << "x = " << x << endl; 
 }
 
 int main() {
-	dbg();  // outputs 10
+	dbg();  // x = 10
 	x = 5000;
-	dbg();  // now outputs 5000
+	dbg();  // x = 5000
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 public class Main {
 	static int x = 10;  // pretend this holds some important variable
 	
 	public static void main(String[] args) {
-		dbg();  // outputs 10
+		dbg();  // x = 10
 		x = 5000;
-		dbg();  // now outputs 5000
+		dbg();  // x = 5000
 	}
 
 	static void dbg() {
+		System.out.print("x = ");
 		System.out.println(x);
 	}
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 x = 10  # pretend this holds some important variable
 
 def dbg():
-	print(x)
+	print("x =", x)
 
-dbg()  # outputs 10
+dbg()  # x = 10
 x = 5000
-dbg()  # now outputs 5000
+dbg()  # x = 5000
 ```
+
 </PySection>
 </LanguageSection>
 
@@ -99,11 +106,11 @@ Such print statements are great on a basic level, and we can comment or define
 them out of our main code when we need to compile and execute a more final
 version of our code.
 
+### Standard Error Stream
+
 However, as great as print statements are, they are annoying to work with and
 efficiently separate from the actual parts of our code. This is important for
 example when we want an online judge (OJ) to read our output.
-
-### Standard Error Stream
 
 The standard error stream is a quick fix to this. Instead of
 printing in the standard output stream, we can print in a whole new stream
@@ -111,6 +118,7 @@ called the standard error stream instead.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <iostream>
 using namespace std;
@@ -118,7 +126,7 @@ using namespace std;
 int x = 10;
 
 void dbg() {
-	cerr << "x is " << x << endl; 
+	cerr << "x = " << x << endl; 
 }
 
 int main() {
@@ -127,8 +135,10 @@ int main() {
 	dbg();
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 public class Main {
 	static int x = 10;
@@ -140,24 +150,28 @@ public class Main {
 	}
 
 	static void dbg() {
+		System.err.print("x = ");
 		System.err.println(x);
 	}
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 import sys
 
 x = 10
 
 def dbg():
-	print(x, file=sys.stderr)
+	print("x =", x, file=sys.stderr)
 
 dbg()  # outputs 10
 x = 5000
 dbg()  # now outputs 5000
 ```
+
 </PySection>
 </LanguageSection>
 
@@ -169,7 +183,7 @@ at all!
 
 <Warning>
 
-Printing too much content (even to the error stream) can cause TLE when
+Printing too much content to the error stream can cause TLE when
 submitting to an OJ.
 
 </Warning>
@@ -177,13 +191,40 @@ submitting to an OJ.
 <LanguageSection>
 <CPPSection>
 
-### Debug Template
+### Debugging Macro
+
+<Resources>
+	<Resource source="GCC" url="https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html" title="Standard Predefined Macros">
+	</Resource>
+</Resources>
+
+Here's a handy macro that prints the line number (`__LINE__`) and the name of 
+the variable (`#v`) in addition to the value of the variable (`v`).
+
+```cpp
+#include <iostream>
+using namespace std;
+
+#define dbg(v)                                                                 \
+	cout << "Line(" << __LINE__ << ") -> " << #v << " = " << (v) << endl;
+
+int x = 10; // pretend this holds some important variable
+
+int main() {
+	dbg(x); // Line(10) -> x = 10
+	x = 5000;
+	dbg(x); // Line(12) -> x = 5000
+}
+```
+
+### Debugging STL Data Structures
 
 As C++ does not contain built-in print functions for many of its built-in
 data structures, it would be good to have some prewritten code to print them.
 [This](https://gist.github.com/SansPapyrus683/61b65d4d7ec223b48ebf5c3bb382ba8d)
 template is rather easy to use. It includes support for basically all of the
 needed data structures in competitive programming. Here's how you would use it:
+
 ```cpp
 #include <iostream>
 #include <vector>
@@ -203,29 +244,75 @@ You are not allowed to use pre-written code for USACO contests, so this template
 should only be used for other online contests.
 </Warning>
 
-### Getting the Line Number
 
-Sometimes, you'd like to know around which line your code is erroring at.
-To print the line number, you can use the `__LINE__` macro like so:
+## Assertions & Warnings
+
+
+<Resources>
+	<Resource
+		title="Asserts"
+		source="LCpp"
+		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
+		starred
+	>
+		Includes `static_assert` and `#define NDEBUG`.
+	</Resource>
+	<Resource
+		title="5 - Diagnostics"
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/cpp/Diagnostics.html"
+		starred
+	>
+		Talks about `#warning` and `#error`.
+	</Resource>
+</Resources>
+
+Use `assert(cond)` to check that a condition `cond` holds. If it doesn't, then the program is terminated. For example, the following code snippet
+
 ```cpp
 #include <iostream>
+#include <cassert>
 using namespace std;
 
 int main() {
-	cout << __LINE__ << endl;  // outputs 5, the current line number
+	assert(false);
+	cout << "OK" << endl;
 }
 ```
 
-### Checking for OOB
+produces:
+
+```
+Assertion failed: (false), function main, file prog.cpp, line 6.
+zsh: abort      ./$1 $@[2,-1]
+```
+
+If you want to disable all asserts you can add `#define NDEBUG` to the start of your program.
+
+```cpp
+#define NDEBUG
+#include <iostream>
+#include <cassert>
+using namespace std;
+
+int main() {
+	assert(false);
+	cout << "OK" << endl; // OK
+}
+```
+
+## Checking for Out of Bounds
 
 C++ usually silently fails (or segfaults) when you access or write to a
 vector at an index that's out-of-bounds (writing to an invalid index is called
 [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow)).
 
-For example, the following code doesn't behave as expected:
+For example, the following code results in a runtime error on 
+[ide.usaco.guide](ide.usaco.guide), but runs without errors on my computer.
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -235,17 +322,19 @@ int main() {
 	for (int i = 0; i < 10; i++) {
 		invalid_vec[i] = i;
 	}
-	cout << valid_vec[0] << "\n";  // errors
+	cout << valid_vec[0] << "\n";  // may or may not error
 }
 ```
 
-To prevent this, you can use
+To ensure that an error is raised when accessing an out of bounds index, 
+you can use
 [vector::at](https://www.cplusplus.com/reference/vector/vector/at) instead of
-[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[]).
+[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[])
+like so:
 
-If we use this in our following code segment like so:
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -255,12 +344,13 @@ int main() {
 	for (int i = 0; i < 10; i++) {
 		invalid_vec.at(i) = i;
 	}
-	cout << valid_vec.at(0) << "\n";  // errors
+	cout << valid_vec.at(0) << "\n";  // throws std::out_of_range
 }
 ```
 
 C++ will now check the bounds when we access the vectors and will
 produce the following output:
+
 ```
 1234
 terminate called after throwing an instance of 'std::out_of_range'
@@ -268,10 +358,15 @@ terminate called after throwing an instance of 'std::out_of_range'
 1 zsh: abort      ./$1 $@[2,-1]
 ```
 
-If you want to find out the exact line at which this error occurs, you can use
-a debugger such as `gdb` or `lldb`.
+<Info title="Line Numbers">
 
-### Unspecified Evaluation Order
+Note that the output above does not contain the line number where the runtime
+error occurred. To output the line number, you can use a debugger such as `gdb` 
+or `lldb`. See the section about [debuggers](#debuggers) for more information.
+
+</Info>
+
+## Unspecified Evaluation Order
 
 Consider the following code stored in `bad.cpp`:
 
@@ -360,11 +455,12 @@ You also may come across this issue when trying to create a
 <PySection> </PySection>
 </LanguageSection>
 
+
 ## Stress Testing
 
-If your code is getting WA, one option is to run your buggy code against another
-that you're relatively confident is correct on randomly generated data until you
-find a difference. See the video for details.
+If your code is getting WA, one option is to run your buggy program against 
+another program that you're relatively confident is correct on randomly 
+generated data until you find a difference. See the video for details.
 
 <Resources>
 	<Resource
@@ -394,6 +490,9 @@ find a difference. See the video for details.
 
 <LanguageSection>
 <CPPSection>
+
+<Spoiler title="Scripts">
+
 Here is the script that was mentioned in the video:
 
 ```
@@ -454,6 +553,9 @@ if errorlevel 1 exit
 test
 ```
 </Warning>
+
+</Spoiler>
+
 </CPPSection>
 <JavaSection>
 
@@ -525,29 +627,10 @@ fi
 If you want to learn how to write these scripts yourself, you can check
 [here](/general/cpp-command#linux).
 
+
 <LanguageSection>
 <CPPSection>
 
-## Assertions & Warnings
-
-<Resources>
-	<Resource
-		title="Asserts"
-		source="LCpp"
-		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
-		starred
-	>
-		Includes `static_assert` and `#define NDEBUG`.
-	</Resource>
-	<Resource
-		title="5 - Diagnostics"
-		source="GCC"
-		url="https://gcc.gnu.org/onlinedocs/cpp/Diagnostics.html"
-		starred
-	>
-		Talks about `#warning` and `#error`.
-	</Resource>
-</Resources>
 
 ## GCC Compilation Options
 
@@ -568,8 +651,8 @@ You can also check what options
 
 ### Warning Options
 
-In this section we'll go over some extra compilations you can add to your
-`g++` compiling to aid in debugging. You can find the official documentation
+In this section we'll go over some options you can add to your
+`g++` compile command to aid in debugging. You can find the official documentation
 for said options [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
 
 Some other options that you might find helpful
@@ -905,6 +988,8 @@ zsh: abort      ./prog
 
 #### `-D_GLIBCXX_DEBUG`
 
+This replaces each STL container with its corresponding debug container.
+
 <Resources>
 	<Resource
 		source="GCC"
@@ -915,7 +1000,7 @@ zsh: abort      ./prog
 	</Resource>
 </Resources>
 
-The following `prog.cpp` gives a segmentation fault.
+For example, the following `prog.cpp` gives a segmentation fault.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -1009,13 +1094,29 @@ zsh: abort      ./prog
 </PySection>
 </LanguageSection>
 
-Using a debugger varies from language to language and even from IDE to different
+In essence, a debugger is a tool to "trace code" for you. Using a debugger 
+varies from language to language and even from IDE to different
 IDE, so we will only go over the basics of a debugger.
 
-A debugger allows you to pause a code in its execution and see the values as a
-given point in the debugger.
+Pros of using a debugger:
 
-To do this, set a "breakpoint" at a certain line of code. When the code runs to
+- No need to write print statements so you save time.
+- You can step through the code in real time.
+- C++: Print the line where a runtime error was triggered.
+
+Cons of using a debugger:
+
+- It is not much different from just printing the values out at various points 
+  in your program.
+- Most competitive programmers do not use debuggers.
+- You cannot see the overall "output" of your program at each stage. For
+  example, if you wanted to see every single value of `i` in the program,
+  you could not using a debugger.
+
+### Breakpoints
+
+A debugger allows you to pause a code in its execution and see the values as a
+given point in the debugger. To do this, set a "breakpoint" at a certain line of code. When the code runs to
 that breakpoint, it will pause and you will be able to inspect all the different
 variables at that certain instance.
 
@@ -1027,18 +1128,79 @@ debugger will ignore showing you what happens in this function and go to the
 next line. If you click "step in," however, you will enter the function and be
 able to step through that function.
 
-In essense, a debugger is a tool to "trace code" for you. It is not much
-different from just printing the values out at various points in your program.
+<LanguageSection>
 
-Pros of using a debugger:
+<CPPSection>
 
-- No need to write print statements so you save time
-- You can step through the code in real time
+### C++: Printing More Information About Runtime Errors
 
-Cons of using a debugger:
+<Resources>
+	<Resource
+		source="LLVM"
+		title="GDB to LLDB Command Map"
+		url="https://lldb.llvm.org/use/map.html"
+	>
+	</Resource>
+</Resources>
 
-- You cannot see the overall "output" of your program at each stage. For
-  example, if you wanted to see every single value of `i` in the program,
-  you could not using a debugger.
-- Most advanced competitive programmers do not use debuggers; it is usually not
-  very efficient to use one during a contest.
+Recall the example from [Checking Out of Bounds](#checking-for-out-of-bounds)
+section where the output didn't contain the line where the runtime error 
+occurred. To output the line number, you can
+
+1. Add `-g` to the compile command.
+2. Start debug mode on `prog` using `lldb prog`.
+3. Start running the program using `r`.
+4. Show the stack backtrace using `bt`.
+
+You can see from the output below that the runtime error occurred on line 10.
+
+<Spoiler title="Output">
+
+```
+benq:CF % g++-12 prog.cpp -g -o prog && lldb prog
+(lldb) target create "prog"
+Current executable set to '/Users/benq/Desktop/CF/prog' (x86_64).
+(lldb) r
+Process 86225 launched: '/Users/benq/Desktop/CF/prog' (x86_64)
+1234
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
+Process 86225 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGABRT
+    frame #0: 0x00007ff80e01300e libsystem_kernel.dylib`__pthread_kill + 10
+libsystem_kernel.dylib`__pthread_kill:
+->  0x7ff80e01300e <+10>: jae    0x7ff80e013018            ; <+20>
+    0x7ff80e013010 <+12>: movq   %rax, %rdi
+    0x7ff80e013013 <+15>: jmp    0x7ff80e00d1c5            ; cerror_nocancel
+    0x7ff80e013018 <+20>: retq   
+Target 0: (prog) stopped.
+(lldb) bt
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGABRT
+  * frame #0: 0x00007ff80e01300e libsystem_kernel.dylib`__pthread_kill + 10
+    frame #1: 0x00007ff80e0491ff libsystem_pthread.dylib`pthread_kill + 263
+    frame #2: 0x00007ff80df94d24 libsystem_c.dylib`abort + 123
+    frame #3: 0x0000000100655871 libstdc++.6.dylib`__gnu_cxx::__verbose_terminate_handler() (.cold) + 92
+    frame #4: 0x0000000100556456 libstdc++.6.dylib`__cxxabiv1::__terminate(void (*)()) + 6
+    frame #5: 0x0000000100556473 libstdc++.6.dylib`std::terminate() + 19
+    frame #6: 0x00000001005565f3 libstdc++.6.dylib`__cxa_throw + 67
+    frame #7: 0x0000000100658803 libstdc++.6.dylib`std::__throw_out_of_range_fmt(char const*, ...) (.cold) + 22
+    frame #8: 0x0000000100002897 prog`std::vector<int, std::allocator<int> >::_M_range_check(this=0x00007ff7bfeff3d0, __n=1) const at stl_vector.h:1153:28
+    frame #9: 0x0000000100002629 prog`std::vector<int, std::allocator<int> >::at(this=0x00007ff7bfeff3d0, __n=1) at stl_vector.h:1175:16
+    frame #10: 0x0000000100002421 prog`main at prog.cpp:10:17
+    frame #11: 0x000000010001552e dyld`start + 462
+(lldb) 
+```
+
+</Spoiler>
+
+</CPPSection>
+
+<JavaSection>
+
+</JavaSection>
+
+<PySection>
+
+</PySection>
+
+</LanguageSection>
