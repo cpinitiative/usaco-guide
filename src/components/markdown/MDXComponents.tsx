@@ -6,9 +6,12 @@ import HTMLComponents from './HTMLComponents';
 import { IncompleteSection } from './IncompleteSection';
 import Info from './Info';
 import {
+  CPPOnly,
   CPPSection,
+  JavaOnly,
   JavaSection,
   LanguageSection,
+  PyOnly,
   PySection,
 } from './LanguageSection';
 import Optional from './Optional';
@@ -51,6 +54,9 @@ export const components = {
   DivisionList,
   Resource,
   TextTooltip,
+  CPPOnly,
+  JavaOnly,
+  PyOnly,
   LanguageSection,
   CPPSection,
   JavaSection,
