@@ -1,8 +1,8 @@
 ---
-id: debugging-general
-title: How To Debug
+id: debugging-checklist
+title: How to Debug
 author: Benjamin Qi
-description: 'General tips for identifying errors within your solution.'
+description: "Things to do when your solution doesn't work."
 ---
 
 <Resources>
@@ -24,6 +24,14 @@ description: 'General tips for identifying errors within your solution.'
 
 This module is based on the resources above. I've included the content that is
 most relevant to USACO.
+
+<Info title="Code Snippets">
+
+This module doesn't contain any code. See [Basic 
+Debugging](/general/basic-debugging) and [Debugging C++](/general/debugging-cpp) 
+for more information.
+
+</Info>
 
 ## Pre-Submit
 
@@ -48,8 +56,8 @@ most relevant to USACO.
   - Confusing $N$ and $M$, $i$ and $j$, etc.?
 - [Shadowed](https://en.wikipedia.org/wiki/Variable_shadowing#C++) or unused or
   uninitialized variables?
-  - In C++, compiling with
-    [warning options](/general/debugging-lang#warning-options)
+  - (C++) Compiling with
+    [warning options](/general/debugging-cpp#gcc-warning-options)
     (`-Wall -Wshadow`) should detect these.
 - Any _undefined behavior_? It can result in different outputs locally vs online
   (ex. maybe you are passing the sample case locally but not when you submit to
@@ -63,7 +71,7 @@ most relevant to USACO.
   - (C++) Not returning anything from non-`void` functions
   - (C++) Array out of bounds
     - Considering using `::at` as mentioned
-      [here](/general/debugging-lang/#checking-for-oob).
+      [here](/general/debugging-cpp/#checking-for-out-of-bounds).
   - (C++ / Java)
     [Signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
 
@@ -73,13 +81,13 @@ most relevant to USACO.
     > Note that the large size of integers involved in this problem may require
     > the use of 64-bit integer data types (e.g., a `long long` in C/C++)."
 
-  <!-- - Shifting a 32-bit integer by $\ge 32$ bits -->
+  - (C++) Shifting a 32-bit integer by $\ge 32$ bits
 
   In C++, compiling with
-  [additional options](/general/debugging-lang#other-options) can help catch
+  [instrumentation options](/general/debugging-cpp#gcc-debug-options) (`-fsanitize=address,undefined`) can help catch
   these.
 
-- Add [assertions](/general/debugging-lang#assertions--warnings) and resubmit.
+- Add [assertions](/general/basic-debugging#assertions--warnings) and resubmit.
 - Floating point numbers
   - Any NaNs (ex. taking the square root of a negative number)?
   - Try using a type with more precision (ex. `long double` instead of `double`
@@ -90,7 +98,7 @@ most relevant to USACO.
     your algorithm on.
   - Write a test case generator and compare the outputs of your solution against
     that of a (simpler) slow solution, or a model solution if available.
-    - See [stress testing](/general/debugging-lang#stress-testing) for more
+    - See [stress testing](/general/basic-debugging#stress-testing) for more
       information.
 
 ## Runtime Error
@@ -107,15 +115,15 @@ most relevant to USACO.
 - Do you have any possible infinite loops?
 - What is the complexity of your algorithm?
 - Did you remove debug output before submitting (ex. are you printing a lot of
-  information to `stderr`)?
+  information to [standard error](/general/basic-debugging#standard-error-stream))?
 - Unnecessary copying of data? C++ - Consider passing variables by reference.
 - C++ - Try substituting `array`s in place of `vector`s.
 
 ## Last Resort
 
 - Rewrite your solution from the start.
-  - Be sure to save your original solution. It's always possible that you might
-    introduce more bugs.
+  - Be sure to save a copy of your original solution. It's always possible that 
+    you might introduce more bugs in your new solution.
 
 ## Before Posting on the [USACO Guide Forum](https://forum.usaco.guide/)
 
