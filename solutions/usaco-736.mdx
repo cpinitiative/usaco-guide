@@ -9,58 +9,118 @@ author: Mrinall Umasudhan, Ananth Kashyap, Ben Dodge, Aadit Ambadkar
 
 ## Solution 1 - Brute force
 
-We'll iterate through every character in every genome. For each character index, we'll find if there are any characters that appear in the genome of both a spotted and plain cow at that index. If there are, this position isn't a possible solution, so we can end this part of our search and move on to the next position to save on runtime. If there aren't, this is a possible solution. 
+We'll iterate through every character in every genome. For each character index, we'll find if there are any characters that appear in the genome of both a spotted and plain cow at that index.
+If there are, this position isn't a possible solution, so we can end this part of our search and move on to the next position to save on runtime. If there aren't, this is a possible solution. 
 
 ## Implementation
+
 **Time Complexity**: $\mathcal O(MN^2)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("cownomics.in");
+
+	int n;
+	int m;
+	read >> n >> m;
+
+	// Each genome and the individual characters in each genome
+	vector<vector<char>> spotted_cows(n, vector<char>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			read >> spotted_cows[i][j];
+		}
+	}
+
+	vector<vector<char>> plain_cows(n, vector<char>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			read >> plain_cows[i][j];
+		}
+	}
+
+	int poss_positions = 0;
+	// Iterate through every character
+	for (int i = 0; i < m; i++) {
+		bool dupe = false;
+		// Iterate through every genome
+		for (int j = 0; j < n; j++) {
+			// Compare to every other genome
+			for (int k = 0; k < n; k++) {
+				/* 
+				 * If there are any duplicates,
+				 * then this isn't a possible position,
+				 * so we can stop counting and make sure we don't count it
+				 */
+				if (spotted_cows[j][i] == plain_cows[k][i]) {
+					dupe = true;
+					break;
+				}
+			}
+		}
+		/*
+		 * If we haven't found any equal characters,
+		 * then there are no duplicates and this is a possible sequence
+		 */
+		if (!dupe) {
+			poss_positions++;
+		}
+	}
+
+	std::ofstream("cownomics.out") << poss_positions << endl;
+}
+```
+
+</CPPSection>
 <JavaSection>
+
 ```java 
 import java.io.*;
 import java.util.*;
 
-public class BovineGeonomics {
+public class BovineGenomics {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("cownomics");
 
-		int N = io.nextInt();
-		int M = io.nextInt();
-		// Representing each genome and individual characters in each genome
-		int[][] spottyCows = new int[N][M];
-		int[][] plainCows = new int[N][M];
-		int possiblePositions = 0;
+		int n = io.nextInt();
+		int m = io.nextInt();
 
-		// Fill arrays with appropriate chars
-		for (int i = 0; i < N; i++) {
-			String sequence = io.next();
-			for (int j = 0; j < M; j++) {
-				spottyCows[i][j] = sequence.charAt(j);
-			}
+		// Each genome and the individual characters in each genome
+		char[][] spottedCows = new char[n][];
+		char[][] plainCows = new char[n][];
+		for (int i = 0; i < n; i++) {
+			spottedCows[i] = io.next().toCharArray();
+		}
+		for (int i = 0; i < n; i++) {
+			plainCows[i] = io.next().toCharArray();
 		}
 
-		for (int i = 0; i < N; i++) {
-			String sequence = io.next();
-			for (int j = 0; j < M; j++) {
-				plainCows[i][j] = sequence.charAt(j);
-			}
-		}
-
-		// Iterating through every character
-		for (int i = 0; i < M; i++) {
-			boolean duplicate = false;
-			// Iterating through every genome
-			for (int j = 0; j < N; j++) {
-				// Comparing to every other genome
-				for (int k = 0; k < N; k++) {
+		int possPositions = 0;
+		// Iterate through every character
+		for (int i = 0; i < m; i++) {
+			boolean dupe = false;
+			// Iterate through every genome
+			for (int j = 0; j < n; j++) {
+				// Compare to every other genome
+				for (int k = 0; k < n; k++) {
 					/* 
 					 * If there are any duplicates,
 					 * then this isn't a possible position,
 					 * so we can stop counting and make sure we don't count it
 					 */
-					if (spottyCows[j][i] == plainCows[k][i]) {
-						duplicate = true;
+					if (spottedCows[j][i] == plainCows[k][i]) {
+						dupe = true;
 						break;
 					}
 				}
@@ -69,11 +129,12 @@ public class BovineGeonomics {
 			 * If we haven't found any equal characters,
 			 * then there are no duplicates and this is a possible sequence
 			 */
-			if (!duplicate) {
-				possiblePositions++;
+			if (!dupe) {
+				possPositions++;
 			}
 		}
-		io.println(possiblePositions);
+		
+		io.println(possPositions);
 		io.close();
 	}
 
@@ -86,30 +147,37 @@ public class BovineGeonomics {
 
 ```py
 with open('cownomics.in', 'r') as read:
-	data = [i.strip() for i in read.readlines()]
+	n, m = map(int, read.readline().split())
 
-n, m = map(int, data[0].split())
+	# Each genome and the individual characters in each genome
+	spotted_cows = [read.readline() for _ in range(n)]
+	plain_cows = [read.readline() for _ in range(n)]
 
-spotty_cows = [data[i + 1] for i in range(n)]
-plain_cows = [data[i + n + 1] for i in range(n)]
-
-total = 0
-"""
-For every position, check if it can be a potential mutation location
-and check if the spotty and plain cows have any
-repeated characters at this position
-"""
+poss_positions = 0
+# Iterate through every character
 for i in range(m):
-	used = False
+	dupe = False
+	# Iterate through every genome
 	for j in range(n):
+		# Compare to every other genome
 		for k in range(n):
-			if spotty_cows[j][i] == plain_cows[k][i]:
-				used = True
+			"""
+			If there are any duplicates,
+			then this isn't a possible position,
+			so we can stop counting and make sure we don't count it
+			"""
+			if spotted_cows[j][i] == plain_cows[k][i]:
+				dupe = True
 				break
-	if used == False:
-		total += 1
+	
+	"""
+	If we haven't found any equal characters,
+	then there are no duplicates and this is a possible sequence
+	"""
+	if not dupe:
+		poss_positions += 1
 
-print(total, file=open('cownomics.out', 'w'))
+print(poss_positions, file=open('cownomics.out', 'w'))
 ```
 
 </PySection>
@@ -117,12 +185,70 @@ print(total, file=open('cownomics.out', 'w'))
 
 ## Solution 2 - Hashset
 
-<LanguageSection>
-<JavaSection>
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <set>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("cownomics.in");
+
+	int n;
+	int m;
+	read >> n >> m;
+	
+	vector<vector<char>> spotted_cows(n, vector<char>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			read >> spotted_cows[i][j];
+		}
+	}
+
+	vector<vector<char>> plain_cows(n, vector<char>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			read >> plain_cows[i][j];
+		}
+	}
+
+	int poss_positions = 0;
+	for (int i = 0; i < m; i++) {
+		std::set<char> seen;
+		for (int j = 0; j < n; j++) {
+			seen.insert(plain_cows[j][i]);
+		}
+
+		bool dupe = false;
+		for (int j = 0; j < n; j++) {
+			if (seen.count(spotted_cows[j][i]) > 0) {
+				dupe = true;
+				break;
+			}
+		}
+
+		if (!dupe) {
+			poss_positions++;
+		}
+	}
+
+	std::ofstream("cownomics.out") << poss_positions << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
 
 ```java
 import java.io.*;
@@ -130,76 +256,73 @@ import java.util.*;
 
 public class BovineGenomics {
 	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner(new File("cownomics.in"));
-		int N = sc.nextInt();
-		int M = sc.nextInt();
+		Kattio io = new Kattio("cownomics");
 
-		char[][] spotted = new char[N][];
-		char[][] plain = new char[N][];
-		for (int i = 0; i < N; i++) {
-			spotted[i] = sc.next().toCharArray();
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		char[][] spottedCows = new char[n][];
+		char[][] plainCows = new char[n][];
+		for (int i = 0; i < n; i++) {
+			spottedCows[i] = io.next().toCharArray();
 		}
-		for (int i = 0; i < N; i++) {
-			plain[i] = sc.next().toCharArray();
+		for (int i = 0; i < n; i++) {
+			plainCows[i] = io.next().toCharArray();
 		}
 
-		int ans = 0;
-		for (int i = 0; i < M; i++) {
-			boolean contains = false;
-			HashSet<Character> a = new HashSet<>();
-
-			for (int j = 0; j < N; j++) {
-				a.add(plain[j][i]); // Go to column j at position i
+		int possPositions = 0;
+		for (int i = 0; i < m; i++) {
+			Set<Character> seen = new HashSet<>();
+			for (int j = 0; j < n; j++) {
+				seen.add(plainCows[j][i]);
 			}
 
-			for (int j = 0; j < N; j++) {
-				if (a.contains(spotted[j][i])) {
-					contains = true;
+			boolean dupe = false;
+			for (int j = 0; j < n; j++) {
+				if (seen.contains(spottedCows[j][i])) {
+					dupe = true;
 					break;
 				}
 			}
 
-			ans += !contains ? 1 : 0;
+			if (!dupe) {
+				possPositions++;
+			}
 		}
 
-		PrintWriter out = new PrintWriter("cownomics.out");
-		out.println(ans);
-		out.close();
+		io.println(possPositions);
+		io.close();
 	}
+
+	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
 <PySection>
+
 ```py
-fin = open('cownomics.in', 'r')
+with open('cownomics.in', 'r') as read:
+	n, m = map(int, read.readline().split())
 
-n, m = map(int, fin.readline().strip().split())
+	spotted_cows = [read.readline() for _ in range(n)]
+	plain_cows = [read.readline() for _ in range(n)]
 
-spotted = ['' for i in range(n)]
-plain = ['' for i in range(n)]
-
-for i in range(n):
-	spotted[i] = fin.readline().strip()
-
-for i in range(n):
-	plain[i] = fin.readline().strip()
-
-ans = 0
+poss_positions = 0
 for i in range(m):
 	seen = set()
+	for j in range(n):
+		seen.add(plain_cows[j][i])
 
 	for j in range(n):
-		seen.add(plain[j][i])
-	
-	for j in range(n):
-		if spotted[j][i] in seen:
+		if spotted_cows[j][i] in seen:
 			break
-	else:  # We never broke out of the above loop
-		ans += 1
-	
-print(ans, file=open('cownomics.out', 'w'))
+	else:
+		poss_positions += 1
+
+print(poss_positions, file=open('cownomics.out', 'w'))
 ```
+
 </PySection>
 </LanguageSection>
 
