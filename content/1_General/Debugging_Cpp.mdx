@@ -9,7 +9,7 @@ prerequisites:
 
 ## Checking for Out of Bounds
 
-Writing to an invalid array index is known as 
+Writing to an out of bounds array index is known as 
 [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). C++ may or 
 may not produce a runtime error upon buffer overflow. For example, 
 the following code results in a runtime error on 
@@ -396,7 +396,8 @@ Output:
 Command exited with non-zero status 139
 ```
 
-With `-fsanitize=undefined`, a more informative error message is produced:
+With `-fsanitize=undefined`, a slightly more informative error message is 
+produced:
 
 ```
 /opt/rh/devtoolset-10/root/usr/include/c++/10/bits/stl_vector.h:1046:34: runtime error: applying non-zero offset 18446744073709551612 to null pointer
@@ -466,7 +467,7 @@ Command exited with non-zero status 1
 		title="3.10 - Options for Debugging Your Program"
 		url="Debugging-Options.html"
 	>
-		documentation for -g, -ggdb
+		documentation for -g
 	</Resource>
 </Resources>
 
@@ -508,13 +509,11 @@ Command exited with non-zero status 1
 
 For more helpful information we should additionally compile with the `-g` flag,
 which generates a file containing debugging information based on the line
-numbering of the program. `-fsanitize=address` can then access the file at
-runtime and give meaningful errors. This is great because it helps diagnose (or
-"sanitize" if you will) errors such as out of bounds, exceptions, and
-segmentation faults, even indicating precise line numbers. Feel free to delete
-the debug file after the run of course.
+numbering of the program. 
 
 <Spoiler title="Standard Error">
+
+You can see that the error occurred on line 6.
 
 ```
 AddressSanitizer:DEADLYSIGNAL
@@ -675,7 +674,7 @@ runtime error occurred. Below, we show how to use `lldb` to output the line
 number. Assume the C++ source code is named `prog.cpp` and the executable
 is named `prog`.
 
-1. Add `-g` to the compile command.
+1. Add `-g` to the compile command and compile.
 2. Start debug mode on `prog` using `lldb prog`.
 3. Start running the program using `r`.
 4. Show the stack backtrace using `bt`.
@@ -720,3 +719,11 @@ Target 0: (prog) stopped.
 ```
 
 </Spoiler>
+
+<Info>
+
+As mentioned in [the previous module](/basic-debugging?lang=cpp#debuggers),
+there are many more things you can do with debuggers, but they aren't 
+particularly useful for competitive programming.
+
+</Info>
