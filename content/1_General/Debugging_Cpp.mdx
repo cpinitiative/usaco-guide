@@ -3,6 +3,8 @@ id: debugging-cpp
 title: Debugging C++
 author: Benjamin Qi, Aryansh Shrivastava
 description: 'Debugging Tips Specific to C++'
+prerequisites:
+  - basic-debugging
 ---
 
 ## Checking for Out of Bounds
@@ -65,7 +67,7 @@ terminate called after throwing an instance of 'std::out_of_range'
 
 Note that the output above does not contain the line number where the runtime
 error occurred. To output the line number, you can use a debugger such as `gdb` 
-or `lldb`. See the section on [debuggers](#debuggers) for more information.
+or `lldb`. See the section on [debuggers](#using-the-lldb-debugger) for more information.
 
 </Info>
 
@@ -150,7 +152,7 @@ See
 StackOverflow post for some discussion about why this is the case
 ([here](https://stackoverflow.com/questions/18040037)'s a similar issue).
 
-## Warning Options
+## GCC Warning Options
 
 In this section and the following one we'll go over options you can add to your
 `g++` compile command to aid in debugging.
@@ -158,12 +160,19 @@ In this section and the following one we'll go over options you can add to your
 <Resources>
 	<Resource
 		source="CF"
-		title="andreyv - Catching Mistakes with GCC"
+		title="andreyv - Catching Silly Mistakes with GCC"
 		url="https://codeforces.com/blog/entry/15547"
 		starred
 	>
-		Includes all the options mentioned below.
+		Includes all the options below.
 	</Resource>
+  <Resource 
+    source="GCC"
+    title="GCC Warning Options"
+    url="https://web.archive.org/web/20221101061037/https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html"
+  >
+    Official documentation for the options below.
+  </Resource>
 </Resources>
 
 Here are the warning options that Ben uses:
@@ -172,8 +181,7 @@ Here are the warning options that Ben uses:
 -Wall -Wextra -Wshadow -Wconversion -Wfloat-equal -Wduplicated-cond -Wlogical-op
 ```
 
-We give examples for some of these below. You can find the official 
-documentation for said options [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
+We give examples for some of these below.
 
 <Info title="For Users of USACO Guide IDE">
 
@@ -321,7 +329,7 @@ main.cpp:6:16: warning: comparing floating-point with ‘==’ or ‘!=’ is un
       |              ~~^~~~~~
 ```
 
-## Debug Options
+## GCC Debug Options
 
 <Warning>
 
@@ -650,7 +658,7 @@ zsh: abort      ./prog
 </Spoiler>
 
 
-## Example: Using the LLDB Debugger
+## Using the LLDB Debugger
 
 <Resources>
 	<Resource
@@ -662,18 +670,19 @@ zsh: abort      ./prog
 </Resources>
 
 Recall the example from [Checking Out of Bounds](#checking-for-out-of-bounds)
-section where the output didn't contain the line where the runtime error 
-occurred. Assuming the C++ source code is stored in `prog.cpp` and the executable
-is named `prog`, to output the line number using `lldb` you can
+section where the output didn't contain the number of the line where the 
+runtime error occurred. Below, we show how to use `lldb` to output the line 
+number. Assume the C++ source code is named `prog.cpp` and the executable
+is named `prog`.
 
 1. Add `-g` to the compile command.
 2. Start debug mode on `prog` using `lldb prog`.
 3. Start running the program using `r`.
 4. Show the stack backtrace using `bt`.
 
-You can see from the output below that the runtime error occurred on line 10.
-
 <Spoiler title="Output">
+
+You can see from the output below that the runtime error occurred on line 10.
 
 ```
 benq:CF % g++-12 prog.cpp -g -o prog && lldb prog

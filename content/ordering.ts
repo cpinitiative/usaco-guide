@@ -53,8 +53,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'Setup instructions and discussion of language-specific features.',
       items: [
         'running-code-locally',
-        'fast-io',
         'cpp-command',
+        'fast-io',
         'basic-debugging',
         'debugging-cpp',
         'generic-code',
