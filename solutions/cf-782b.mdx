@@ -9,9 +9,9 @@ author: Aditya Gupta
 
 ## Explanation
 
-We can binary search on the location where the friends will meet up. Since we want a precision of $10^{-6}$, we stop when the difference between high and low is less than $10^{-6}$. 
+We can binary search on the location where the friends will meet up. Since we want a precision of $10^{-6}$, we stop when the difference between high and low is less than $10^{-6}$.
 
-Whenever we are calculating the answer, we take note of which side the maximum answer came from. If the max answer comes from both sides, regardless of where we decide to go next, our answer will only increase, so we return that answer. Otherwise, if it only comes from one side of the point that we just calculated, we move our search towards that side, as moving it towards the other side will only increase our answer. 
+Whenever we are calculating the answer, we take note of which side the maximum answer came from. If the max answer comes from both sides, regardless of where we decide to go next, our answer will only increase, so we return that answer. Otherwise, if it only comes from one side of the point that we just calculated, we move our search towards that side, as moving it towards the other side will only increase our answer.
 
 **Time Complexity:** $\mathcal{O}(N\log M)$ where $M$ is the farthest north location
 
@@ -73,7 +73,7 @@ int main() {
 	double low = 0;
 	double high = 0;  // high will be the location of the farthest north friend
 	double mid;
-	
+
 	for (int i = 0; i < n; i++) {
 		cin >> locations[i];
 		high = max(high,locations[i]);
@@ -81,13 +81,13 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> speeds[i];
 	}
-	
+
 	while (high - low > MAX_ERROR) {
 		mid = (high + low) / 2;
 		curr_min_time = get_time(mid);  // returns time it would take if friends were to meet at mid
 		min_ans = min(min_ans, curr_min_time);
 		if (left_has_max && right_has_max) {
-			break; 
+			break;
 		} else if (left_has_max) {
 			high = mid;
 		} else {
@@ -100,5 +100,54 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+num_friends = int(input())
+friend_coords = list(map(int, input().split()))
+friend_veloci = list(map(int, input().split()))
+
+
+def all_friends_converge(seconds: int) -> bool:
+	"""
+	Checks whether all friends can converge on one point in the specified time interval.
+
+	Args:
+		seconds (int): Amount of seconds given for friends to converge.
+
+	Returns:
+		bool: If the friends can converge to a single point.
+	"""
+
+	overlap_lower, overlap_upper = 1, 10 ** 9
+	for i in range(num_friends):
+		lower_bound = friend_coords[i] - (friend_veloci[i] * seconds)
+		upper_bound = friend_coords[i] + (friend_veloci[i] * seconds)
+		if lower_bound > overlap_upper or upper_bound < overlap_lower:
+			return False
+		if lower_bound > overlap_lower:
+			overlap_lower = lower_bound
+		if upper_bound < overlap_upper:
+			overlap_upper = upper_bound
+	return True
+
+
+left, right = 0, 10 ** 9
+diff = 10 ** (-6)
+
+while left + diff < right:
+	mid = (left + right) / 2
+	last_comparison = all_friends_converge(mid)
+	if last_comparison:
+		right = mid
+	else:
+		left = mid + diff
+
+# We make our output slightly more accurate
+print(((left + mid) / 2) if last_comparison else ((mid + right) / 2))
+```
+
+</PySection>
 
 </LanguageSection>
