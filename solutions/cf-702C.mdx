@@ -2,12 +2,14 @@
 id: cf-702C
 source: CF
 title: Cellular Network
-author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma
+author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
 
 ## Solution 1 - Binary Search on a Sorted Array
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 
@@ -31,11 +33,11 @@ int firstAtLeast(const vector<int>& arr, int value) {
 int main() {
 	int n, m; cin >> n >> m;
 	vector<int> cities, towers;
-	
+
 	for (int i = 0; i < n; i++) {
 		int city; cin >> city; cities.push_back(city);
 	}
-	
+
 	for (int i = 0; i < m; i++) {
 		int tower; cin >> tower; towers.push_back(tower);
 	}
@@ -61,11 +63,11 @@ int main() {
 	cout << minR << endl;
 }
 ```
-			    
+
 </CPPSection>
-	
+
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -130,17 +132,23 @@ public class CellularNetwork {
 	//CodeSnip{Kattio}
 }
 ```
-	
+
 </JavaSection>
-	
+
 </LanguageSection>
 
 ## Solution 2 - Two Pointers
 
+For each city, we need to find the minimum distance to a tower, which we will call pairing. Observe that if a tower $T$'s position is greater a city $C$'s position, then all towers with a coordinate greater that of $T$ cannot pair to provide the minimum distance with $C$. Furthermore, if a city $C_1$ has a position less than $C_2$, then any towers with a position less than that of $C_1$'s tower cannot provide the minimum distance for $C_2$. These two details allow us to use two pointers to solve this problem.
+
+We store two pointers, one for the current city and one for the current tower. We start at the first city and first tower, both with the smallest coordinate. We calculate the distance between the city and towers with increasingly higher coordinates until the current tower's coordinate is greater than that of the current city. One of these distances must be the minimum distance from the city to all towers. Then, we start the process for the next city and keep the pointer at the current tower. We repeat this process for all cities in order of their position. The maximum out of all the minimum distances between a city and a tower will be our answer.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
 <LanguageSection>
-	
+
 <CPPSection>
-	
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -189,9 +197,49 @@ int main() {
 ```
 
 </CPPSection>
-	
+
+<PySection>
+
+```py
+n, m = map(int, input().split())
+
+# We remove all the duplicate cities
+cities = sorted(list(set(map(int, input().split()))))
+towers = sorted(list(set(map(int, input().split()))))
+
+'''
+We start at the first city. For each city, we calculate the distance to towers
+until the selected tower's position is greater than the city's position. (As
+then, the distance will only increase). Then, we continue for the next city
+starting at the current tower. We choose the minimum distance to a tower for
+each city, and the maximum of which will be our answer.
+'''
+
+max_dist = 0
+city_ptr = 0
+tower_ptr = 0
+while city_ptr < len(cities):
+	city_tower_min_dist = abs(cities[city_ptr] - towers[tower_ptr])
+
+	while tower_ptr + 1 < len(towers):
+		tower_ptr += 1
+		new_dist = abs(cities[city_ptr] - towers[tower_ptr])
+		if new_dist < city_tower_min_dist:
+			city_tower_min_dist = new_dist
+		else:
+			tower_ptr -= 1
+			break
+
+	max_dist = max(city_tower_min_dist, max_dist)
+	city_ptr += 1
+
+print(max_dist)
+```
+
+</PySection>
+
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -251,10 +299,10 @@ public class CellularNetwork2 {
 		io.close();
 	}
 	//CodeSnip{Kattio}
-}	
+}
 ```
 </JavaSection>
-	
+
 </LanguageSection>
 
 ## Solution 3 - Using a Set
@@ -273,9 +321,11 @@ the beginning of the set, the previous tower in the set will be the tower to the
 left of the city. Define $\texttt{dist}$ to be the minimum of the distance to
 the tower on the right and the distance to the tower on the left. Then, set $r$
 to be the maximum of itself and $\texttt{dist}$.
-	
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -328,7 +378,7 @@ int main()
 </CPPSection>
 
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -373,7 +423,7 @@ public class CellularNetwork {
 	}
 }
 ```
-				     
+
 </JavaSection>
 
 </LanguageSection>
