@@ -229,25 +229,27 @@ public class Triangles {
 <PySection>
 
 ```py
-fieldx, fieldy = [[] for _ in range(20001)], [[] for _ in range(20001)]
-allcoors = []
+MAXIMUM = 10000
 MOD = int(1e9 + 7)
+
+fieldx, fieldy = [[] for _ in range((MAXIMUM * 2) + 1)], [[] for _ in range((MAXIMUM * 2) + 1)]
+allcoors = []
 
 with open('triangles.in') as r:
 	n = int(r.readline())
 	for _ in range(n):
 		x, y = map(int, r.readline().split())
-		fieldx[x+10000].append(y+10000)
-		fieldy[y+10000].append(x+10000)
-		allcoors.append((x+10000, y+10000))
+		fieldx[x + MAXIMUM].append(y + MAXIMUM)
+		fieldy[y + MAXIMUM].append(x + MAXIMUM)
+		allcoors.append((x + MAXIMUM, y + MAXIMUM))
     
 for i in range(20001):
 	fieldx[i].sort()
 	fieldy[i].sort()
     
-psumx, psumy = [[] for _ in range(20001)], [[] for _ in range(20001)]
+psumx, psumy = [[] for _ in range((MAXIMUM * 2) + 1)], [[] for _ in range((MAXIMUM * 2) + 1)]
     
-for i in range(20001):
+for i in range((MAXIMUM * 2) + 1):
 	xl, yl = len(fieldx[i]), len(fieldy[i])
 	psumx[i], psumy[i] = {}, {}
 	if xl > 1:
