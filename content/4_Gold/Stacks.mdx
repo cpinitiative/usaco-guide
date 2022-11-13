@@ -2,6 +2,7 @@
 id: stacks
 title: Stacks
 author: Darren Yao, Michael Cao
+contributors: George Pong
 description:
   'A data structures that only allows insertion and deletion at one end.'
 prerequisites:
@@ -237,6 +238,26 @@ public class NearestSmallestVals {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+nums = list(map(int, input().split()))
+
+ans = []
+stack = []  # stores (a_i, i)
+for idx, num in enumerate(nums):
+    while stack and stack[-1][0] >= num:
+        stack.pop()
+
+    ans.append(0 if not stack else stack[-1][1] + 1)
+    stack.append((num, idx))
+
+print(*ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
