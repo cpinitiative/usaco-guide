@@ -2,19 +2,17 @@
 id: cses-1085
 source: CSES
 title: Array Division
-author: Michael Cao
+author: Michael Cao, George Pong
 ---
+
+# Explanation
 
 In this problem, we're asked to divide an array into $k$ subarrays such that the
 maximum sum of a subarray is minimized.
 
-## Binary Search
-
 Let's begin by making an important observation. First of all, if you can divide
 an array such that the maximum sum is at most $x$, you can also divide the array
 such that the maximum sum is at most $y > x$ with the same division.
-
-## Greedy
 
 Now, given some maximum sum $x$, we can check whether a division is possible
 using a greedy algorithm. If we can divide the array into $s < k$ subarrays,
@@ -22,6 +20,13 @@ then we can divide it into $k$ subarrays without increasing the maximum sum of a
 subarray. Therefore, we can greedily create subarrays as long as the sum of the
 subarray does not exceed $x$, and check if the number of subarrays is $\leq k$.
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
 <Warning>
 
 Make sure to use `long long`s to avoid overflow! Implementing the greedy
@@ -57,7 +62,7 @@ int main(){
 		cin >> a[i];
 		max_sum = max_sum + a[i];
 	}
-	
+
 	ll lo = 0, hi = max_sum, ans = 0;
 	auto works = [&] (ll mid) {
 		int groups = 0;
@@ -90,3 +95,55 @@ int main(){
 	cout << ans << '\n';
 }
 ```
+</CPPSection>
+
+<PySection>
+
+```py
+n, k = map(int, input().split())
+nums = list(map(int, input().split()))
+
+
+def can_divide_arrays(max_sum: int) -> bool:
+	"""
+	Checks if it is possible to divide nums into k subarrays with each
+	each subarray having a maximum sum of max_sum
+
+	:param max_sum: The maximum sum of each subarray
+	:returns: If it is possible to divide nums with the above conditions.
+	"""
+	num_subarrays = 0
+	cur_subarr_sum = 0
+	for num in nums:
+		if cur_subarr_sum + num <= max_sum:
+			cur_subarr_sum += num
+		elif num <= max_sum:
+			num_subarrays += 1
+			cur_subarr_sum = num
+			if num_subarrays > k:
+				return False
+		else:
+			return False
+
+	# last sub seq is not counted in the loop
+	num_subarrays += cur_subarr_sum > 0
+
+	return num_subarrays <= k
+
+
+left, right = 0, sum(nums)
+
+while left < right:
+	mid = (left + right) // 2
+	if can_divide_arrays(mid):
+		right = mid
+	else:
+		left = mid + 1
+
+print(left)
+
+```
+
+</PySection>
+
+</LanguageSection>
