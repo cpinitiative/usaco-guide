@@ -229,22 +229,17 @@ public class Triangles {
 <PySection>
 
 ```py
-import sys
-
-sys.stdin = open('triangles.in', 'r')
-sys.stdout = open('triangles.out', 'w')
-
-t = sys.stdin.readline
-
-n = int(t())
 fieldx, fieldy = [[] for _ in range(20001)], [[] for _ in range(20001)]
 allcoors = []
+MOD = int(1e9 + 7)
 
-for _ in range(n):
-	x, y = map(int, t().split())
-	fieldx[x+10000].append(y+10000)
-	fieldy[y+10000].append(x+10000)
-	allcoors.append((x+10000, y+10000))
+with open('triangles.in') as r:
+	n = int(r.readline())
+	for _ in range(n):
+		x, y = map(int, r.readline().split())
+		fieldx[x+10000].append(y+10000)
+		fieldy[y+10000].append(x+10000)
+		allcoors.append((x+10000, y+10000))
     
 for i in range(20001):
 	fieldx[i].sort()
@@ -276,7 +271,7 @@ for a in allcoors:
 		continue
 	ans += abs(psumx[x][y] * psumy[y][x]) 
 
-print(ans % (int(1e9 + 7)))
+print(ans % MOD, file=open('triangles.out', 'w'))
 ```
 
 </PySection>
