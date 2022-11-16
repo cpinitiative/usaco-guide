@@ -3,6 +3,7 @@ id: cf-1365D
 source: CF
 title: Solve the Maze
 author: Daniel Suh, Brad Ma
+contributors: George Pong
 ---
 
 [Official Analysis](https://codeforces.com/blog/entry/78504)
@@ -232,5 +233,56 @@ public class SolveTheMaze {
 ```
 	
 </JavaSection>
+
+<PySection>
+
+```py
+t = int(input())
+for _ in range(t):
+    n, m = map(int, input().split())
+
+    # Stores coordinates of all good people, which we will remove as we protect.
+    good_people = set()
+    grid = []
+    for r in range(n):
+        grid.append(list(input().strip()))
+        for c, char in enumerate(grid[-1]):
+            if char == 'G':
+                good_people.add((r, c))
+
+    visited = [[False] * len(grid[0]) for _ in range(len(grid))]
+
+    # Padding opimization
+    grid.append(['#'] * len(grid[0]))
+    visited.append([True] * len(visited[0]))
+    for row_grid, row_visited in zip(grid, visited):
+        row_grid.append('#')
+        row_visited.append(True)
+
+    # Floodfill
+    stack = [(n - 1, m - 1)]
+    while stack:
+        i, j = stack.pop()
+
+        if visited[i][j]:
+            continue
+        visited[i][j] = True
+
+        cells_to_add = []
+        for new_i, new_j in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
+            if not visited[new_i][new_j]:
+                if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
+                    cells_to_add.append((new_i, new_j))
+                elif grid[new_i][new_j] == 'B':
+                    break
+        else:  # We can only protect good people if there are no bad adjacent
+            stack.extend(cells_to_add)
+            if grid[i][j] == 'G':
+                good_people.discard((i, j))
+
+    print('Yes' if not good_people else 'No')
+```
+
+</PySection>
 
 </LanguageSection>
