@@ -4,7 +4,7 @@ redirects:
   - /silver/ff
 title: Flood Fill
 author: Darren Yao
-contributors: Kevin Sheng
+contributors: Kevin Sheng, George Pong
 prerequisites:
   - dfs
 description: 'Finding connected components in a graph represented by a grid.'
@@ -714,6 +714,68 @@ def floodfill(r: int, c: int):
 		r, c = frontier.pop()
 		if (r < 0 or r >= row_num or c < 0 or c >= col_num
 				or visited[r][c] or grid[r][c] == '#'):
+			continue
+
+		visited[r][c] = True
+		frontier.append((r - 1, c))
+		frontier.append((r, c - 1))
+		frontier.append((r + 1, c))
+		frontier.append((r, c + 1))
+
+
+room_num = 0
+for row in range(row_num):
+	for col in range(col_num):
+		if not visited[row][col] and grid[row][col] == '.':
+			floodfill(row, col)
+			room_num += 1
+print(room_num)
+```
+
+</PySection>
+
+</LanguageSection>
+
+<!-- Below is a python specific optimization. -->
+<LanguageSection>
+
+<CPPSection>
+<!-- Add a section for a different language so the text below only shows for python. -->
+</CPPSection>
+
+<PySection>
+
+## Python Optimization: Padding
+
+We can speed up floodfill by a constant time factor by taking advantage of negative indexing in python. Imagine a 1-cell padding on all four sides of the array, for which the cells of which are marked as already having been visited. We can then get rid of the bound checking where we check if the next cell we visit is inclusive between 0 and the dimensions of the array. These cells in the padding may be added to the queue, but when they are visited in the floodfill loop, they are skipped for being marked visited and no out-of-bounds accessing happens. Furthermore, no additional out-of-bounds cells beyond the padding are added to the queue.
+
+Typically, adding padding would need $O(n^2)$ time as we would need to shift the entirety each row to add padding to the front of each row, and also shift each row down to add padding acting as the first row. However, it can be done in linear tine in python as we can have the padding at the right and bottom of the matrix act as the padding for the left and top as the coordinate for the left and top, -1, would be interpreted as the end of the array.
+
+Our new implementation for the previous problem would be as follows.
+
+```py
+row_num, col_num = [int(i) for i in input().split()]
+
+# We make each row a list so we can append at the end.
+grid = [[char for char in input()] for _ in range(row_num)]
+visited = [[False for _ in range(col_num)] for _ in range(row_num)]
+
+# We add padding here
+grid.append(['#'] * len(grid[0]))  # Add the bottom row
+visited.append([True] * len(visited[0]))
+for row_grid, row_visited in zip(grid, visited):  # Add right side
+	row_grid.append('#')
+	row_visited.append(True)
+
+
+def floodfill(r: int, c: int):
+	global visited
+
+	frontier = [(r, c)]
+	while frontier:
+		r, c = frontier.pop()
+
+		if visited[r][c] or grid[r][c] == '#':  # No bounds checking
 			continue
 
 		visited[r][c] = True
