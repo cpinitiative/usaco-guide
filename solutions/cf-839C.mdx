@@ -3,6 +3,7 @@ id: cf-839C
 source: CF
 title: Journey
 author: Reyansh Bahl
+contributors: George Pong
 ---
 
 [Official Solution (C++)](https://codeforces.com/blog/entry/53815)
@@ -100,4 +101,45 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+n = int(input())
+graph = [[] for _ in range(n)]
+
+for _ in range(n - 1):
+	a, b = map(lambda i: int(i) - 1, input().split())
+	graph[a].append(b)
+	graph[b].append(a)
+
+visited = [False] * n
+visited[0] = True
+stack = [(0, 0, 1)]  # Stores (node, path length, path probability)
+
+end_lengths = []
+while stack:
+	curr_node, curr_length, curr_probability = stack.pop()
+
+	possible_moves = 0
+	for adj in graph[curr_node]:
+		if not visited[adj]:
+			possible_moves += 1
+
+	for adj in graph[curr_node]:
+		if not visited[adj]:
+			stack.append((adj, curr_length + 1, curr_probability / possible_moves))
+			visited[adj] = True
+
+	if not possible_moves:  # current node is the end of a path
+		end_lengths.append((curr_length, curr_probability))
+
+expected_value = 0
+for length, probability in end_lengths:
+	expected_value += length * probability
+print(expected_value)
+```
+
+</PySection>
+
 </LanguageSection>
