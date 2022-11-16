@@ -105,6 +105,15 @@ int main() {
 <PySection>
 
 ```py
+class Point():
+	"""Represents a point or node along our depth-first traversal frontier."""
+
+	def __init__(self, node: int, length: int, probability: float):
+		self.node = node
+		self.length = length
+		self.probability = probability
+
+
 n = int(input())
 graph = [[] for _ in range(n)]
 
@@ -115,24 +124,25 @@ for _ in range(n - 1):
 
 visited = [False] * n
 visited[0] = True
-stack = [(0, 0, 1)]  # Stores (node, path length, path probability)
+stack = [Point(0, 0, 1)]
 
 end_lengths = []
 while stack:
-	curr_node, curr_length, curr_probability = stack.pop()
+	curr = stack.pop()
 
 	possible_moves = 0
-	for adj in graph[curr_node]:
+	for adj in graph[curr.node]:
 		if not visited[adj]:
 			possible_moves += 1
 
-	for adj in graph[curr_node]:
+	for adj in graph[curr.node]:
 		if not visited[adj]:
-			stack.append((adj, curr_length + 1, curr_probability / possible_moves))
+			stack.append(
+				Point(adj, curr.length + 1, curr.probability / possible_moves))
 			visited[adj] = True
 
 	if not possible_moves:  # current node is the end of a path
-		end_lengths.append((curr_length, curr_probability))
+		end_lengths.append((curr.length, curr.probability))
 
 expected_value = 0
 for length, probability in end_lengths:
