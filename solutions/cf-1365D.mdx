@@ -238,28 +238,28 @@ public class SolveTheMaze {
 
 ```py
 for _ in range(int(input())):
-    n, m = map(int, input().split())
+	n, m = map(int, input().split())
 
-    # Stores coordinates of all good people, which we will remove as we protect.
-    good_people = set()
-    grid = []
-    for r in range(n):
-        grid.append(list(input().strip()))
-        for c, char in enumerate(grid[-1]):
-            if char == 'G':
-                good_people.add((r, c))
+	# Stores coordinates of all good people, which we will remove as we protect.
+	good_people = set()
+	grid = []
+	for r in range(n):
+		grid.append(list(input().strip()))
+		for c, char in enumerate(grid[-1]):
+			if char == 'G':
+				good_people.add((r, c))
 
-    visited = [[False] * len(grid[0]) for _ in range(len(grid))]
+	visited = [[False] * len(grid[0]) for _ in range(len(grid))]
 
-    stack = [(n - 1, m - 1)]
-    while stack:
-        i, j = stack.pop()
+	stack = [(n - 1, m - 1)]
+	while stack:
+		i, j = stack.pop()
 
-        if visited[i][j]:
-            continue
-        visited[i][j] = True
+		if visited[i][j]:
+			continue
+		visited[i][j] = True
 
-        """
+		"""
 		If an adjacent cell is a bad person, then we want to turn the current
 		cell into a wall. If an adjacent cell is a bad person and the current
 		cell is a good person, we cannot protect the good person. We only add
@@ -267,22 +267,22 @@ for _ in range(int(input())):
 		we discover there are no bad people adjacent.
 		"""
 
-        cells_to_add = []
-        for new_i, new_j in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
-            if not (0 <= new_i < n and 0 <= new_j < m):
-                continue
+		cells_to_add = []
+		for new_i, new_j in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
+			if not (0 <= new_i < n and 0 <= new_j < m):
+				continue
 
-            if not visited[new_i][new_j]:
-                if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
-                    cells_to_add.append((new_i, new_j))
-                elif grid[new_i][new_j] == 'B':
-                    break
-        else:
-            stack.extend(cells_to_add)
-            if grid[i][j] == 'G':
-                good_people.discard((i, j))
+			if not visited[new_i][new_j]:
+				if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
+					cells_to_add.append((new_i, new_j))
+				elif grid[new_i][new_j] == 'B':
+					break
+		else:
+			stack.extend(cells_to_add)
+			if grid[i][j] == 'G':
+				good_people.discard((i, j))
 
-    print('Yes' if not good_people else 'No')
+	print('Yes' if not good_people else 'No')
 ```
 
 </PySection>
