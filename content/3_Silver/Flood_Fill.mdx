@@ -732,26 +732,13 @@ for row in range(row_num):
 print(room_num)
 ```
 
-</PySection>
+### Python Optimization: Padding
 
-</LanguageSection>
+We can speed up floodfill by a constant time factor using an alternate way of ensuring no out-of-bounds accessing of the grid happens. Imagine a one-cell padding on all four sides of the array, for which the cells of which are marked as already having been visited. We can then get rid of the bound checking where we check if the next cell we visit is inclusive between 0 and the dimensions of the array. These cells in the padding may be added to the queue, but when they are visited in the floodfill loop, they are skipped for being marked visited and no out-of-bounds accessing happens. Furthermore, no additional out-of-bounds cells beyond the padding are added to the queue.
 
-<!-- Below is a python specific optimization. -->
-<LanguageSection>
+One option for adding padding would be to start our entire grid with a filler row in the beginning, and also start each row with an element before we take in input. After input, then we can add the padding at the ends of rows and bottom of the grid. However, in python we only need to do the latter part as we can have the padding at the right and bottom of the matrix act as the padding for the left and top as the coordinate for the left and top, -1, would be interpreted as the end of the array.
 
-<CPPSection>
-<!-- Add a section for a different language so the text below only shows for python. -->
-</CPPSection>
-
-<PySection>
-
-## Python Optimization: Padding
-
-We can speed up floodfill by a constant time factor by taking advantage of negative indexing in python. Imagine a 1-cell padding on all four sides of the array, for which the cells of which are marked as already having been visited. We can then get rid of the bound checking where we check if the next cell we visit is inclusive between 0 and the dimensions of the array. These cells in the padding may be added to the queue, but when they are visited in the floodfill loop, they are skipped for being marked visited and no out-of-bounds accessing happens. Furthermore, no additional out-of-bounds cells beyond the padding are added to the queue.
-
-Typically, adding padding would need $O(n^2)$ time as we would need to shift the entirety each row to add padding to the front of each row, and also shift each row down to add padding acting as the first row. However, it can be done in linear tine in python as we can have the padding at the right and bottom of the matrix act as the padding for the left and top as the coordinate for the left and top, -1, would be interpreted as the end of the array.
-
-Our new implementation for the previous problem would be as follows.
+The speed benefit of this optimization is only noticeable for some large inputs (it may be even slower for small inputs) and likely only beneficial when using a slow language such as python, where even the expected solution may TLE. Our new implementation for the previous problem would be as follows.
 
 ```py
 row_num, col_num = [int(i) for i in input().split()]
