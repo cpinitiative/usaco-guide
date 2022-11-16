@@ -269,14 +269,14 @@ for _ in range(int(input())):
 
 		cells_to_add = []
 		for new_i, new_j in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
-			if not (0 <= new_i < n and 0 <= new_j < m):
+			if (not (0 <= new_i < n and 0 <= new_j < m)
+					or visited[new_i][new_j]):
 				continue
 
-			if not visited[new_i][new_j]:
-				if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
-					cells_to_add.append((new_i, new_j))
-				elif grid[new_i][new_j] == 'B':
-					break
+			if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
+				cells_to_add.append((new_i, new_j))
+			elif grid[new_i][new_j] == 'B':
+				break
 		else:
 			stack.extend(cells_to_add)
 			if grid[i][j] == 'G':
