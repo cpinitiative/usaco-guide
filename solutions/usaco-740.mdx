@@ -5,11 +5,15 @@ title: Where's Bessie?
 author: Qi Wang, Pranav Jadhav
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_where_silver_open17.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_where_silver_open17.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^6+|PCLs|^2)$
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h> 
 using namespace std;
@@ -18,15 +22,25 @@ const int MAX_N = 20;
 vector<vector<char>> image(MAX_N, vector<char>(MAX_N));
 vector<vector<bool>> visited(MAX_N, vector<bool>(MAX_N));
 
-// PCL described by top-left (i1,j1) and bottom-right (i2,j2) corner
+/** PCL delimited by the top left corner (i1, j1) & bottom right corner (i2, j2) */
 struct PCL {
-	int i1, j1, i2, j2;
+	int i1, j1;
+	int i2, j2;
+
+	bool is_inside(PCL o) {
+		return (
+			i1 >= o.i1 &&
+			i2 <= o.i2 &&
+			j1 >= o.j1 &&
+			j2 <= o.j2
+		);
+	}
 };
 
 // Floodfill to find connected regions
 int i_min, i_max, j_min, j_max;
-void floodfill(int i , int j, char color) {
-	if(
+void floodfill(int i, int j, char color) {
+	if (
 		i < i_min || j < j_min || i > i_max || j > j_max ||
 		visited[i][j] ||
 		image[i][j] != color
@@ -45,7 +59,7 @@ void floodfill(int i , int j, char color) {
 // Check whether a given region is a PCL
 bool is_pcl(int i1, int j1, int i2, int j2) {
 	// keep track of num of regions for each color A-Z
-	vector<int> region_count(26, 0);
+	vector<int> region_count(26);
 
 	// set bounds for floodfill
 	i_min = i1;
@@ -57,21 +71,21 @@ bool is_pcl(int i1, int j1, int i2, int j2) {
 	for (int i = i1; i <= i2; i++) {
 		for (int j = j1; j <= j2; j++) {
 			if (!visited[i][j]) {
-				char cur_color = image[i][j];
-				region_count[cur_color - 'A']++;
-				floodfill(i, j, cur_color);
+				char curr_color = image[i][j];
+				region_count[curr_color - 'A']++;
+				floodfill(i, j, curr_color);
 			}
 		}
 	}
 
 	// Reset visited vector for the next call
-	fill(visited.begin(), visited.end(), vector<bool>(MAX_N, false));
+	fill(visited.begin(), visited.end(), vector<bool>(MAX_N));
 
 	// Verify PCL conditions
 	int color_count = 0;
 	bool color_with_one_region = false;
 	bool color_with_more_regions = false;
-	for (int i = 0; i < 26; i++) {
+	for (int i = 0; i < region_count.size(); i++) {
 		if (region_count[i] != 0) {
 			color_count++;
 		}
@@ -90,51 +104,39 @@ bool is_pcl(int i1, int j1, int i2, int j2) {
 	);
 }
 
-// Check if PCL a is inside PCL b
-bool is_inside(PCL a, PCL b) {
-	return (
-		a.i1 >= b.i1 &&
-		a.i2 <= b.i2 &&
-		a.j1 >= b.j1 &&
-		a.j2 <= b.j2
-	);
-}
-
 int main() {
 	freopen("where.in", "r", stdin);
-	freopen("where.out", "w", stdout);
 	int n;
-	int pcl_count = 0;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cin >> image[i][j];
 		}
 	}
-	vector<PCL> pcl_list;
 
+	vector<PCL> pcl_list;
 	// Brute force every rectangle to find PCLs
 	for (int i1 = 0; i1 < n; i1++) {
 		for (int j1 = 0; j1 < n; j1++) {
 			for (int i2 = 0; i2 < n; i2++) {
 				for (int j2 = 0; j2 < n; j2++) {
 					if (is_pcl(i1, j1, i2, j2)) {
-						PCL new_pcl = {i1, j1, i2, j2};
-						pcl_list.push_back(new_pcl);
+						pcl_list.push_back({i1, j1, i2, j2});
 					}
 				}
 			}
 		}
 	}
 
+	int pcl_count = 0;
 	// If a PCL is inside another PCL, don't count it
 	for (int i = 0; i < pcl_list.size(); i++) {
-		PCL current_pcl = pcl_list[i];
 		bool valid_pcl = true;
 		for (int j = 0; j < pcl_list.size(); j++) {
-			if (i == j) {continue;}
-			PCL other_pcl = pcl_list[j];
-			if (is_inside(current_pcl, other_pcl)) {
+			if (i == j) {
+				continue;
+			}
+			if (pcl_list[i].is_inside(pcl_list[j])) {
 				valid_pcl = false;
 				break;
 			}
@@ -142,181 +144,157 @@ int main() {
 		pcl_count += valid_pcl;
 	}
 
+	freopen("where.out", "w", stdout);
 	cout << pcl_count << endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
-//Created by Qi Wang
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class where {
-	static int N,A;
-	static char[][] F, temp;
-	static List<PCL> list = new ArrayList<>();
-	public static void main(String[] args) throws IOException {
-		InputReader in = new InputReader("where.in");
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("where.out")));
-		N = in.nextInt(); F = new char[N][N]; temp = new char[N][N];
-		for (int i = 0; i < N; i++) {
-			String line = in.nextLine();
-			for (int j = 0; j < N; j++) {
-				F[i][j] = line.charAt(j);
+public class Where {
+	static final int MAX_N = 20;
+
+	static char[][] image = new char[MAX_N][MAX_N];
+	static boolean[][] visited = new boolean[MAX_N][MAX_N];
+
+	static int iMin, iMax, jMin, jMax;
+	static void floodfill(int i , int j, char color) {
+		if (
+			i < iMin || j < jMin || i > iMax || j > jMax ||
+			visited[i][j] ||
+			image[i][j] != color
+		) {
+			return;
+		}
+	
+		visited[i][j] = true;
+	
+		floodfill(i + 1, j, color);
+		floodfill(i - 1, j, color);
+		floodfill(i, j + 1, color);
+		floodfill(i, j - 1, color);
+	}
+
+	// Check whether a given region is a PCL
+	static boolean isPCL(int i1, int j1, int i2, int j2) {
+		// keep track of num of regions for each color A-Z
+		int[] regionCount = new int[26];
+
+		// set bounds for floodfill
+		iMin = i1;
+		iMax = i2;
+		jMin = j1;
+		jMax = j2;
+
+		// Count # of connected regions for each color present in bounds
+		for (int i = i1; i <= i2; i++) {
+			for (int j = j1; j <= j2; j++) {
+				if (!visited[i][j]) {
+					char currColor = image[i][j];
+					regionCount[currColor - 'A']++;
+					floodfill(i, j, currColor);
+				}
 			}
 		}
 
-		//Brute forcing every rectangle
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				for (int k = 0; k < N; k++) {
-					for (int l = 0; l < N; l++) {
-						if(check(i, j, k, l)) {
-							list.add(new PCL(i,j,k,l));
+		// Reset visited vector for the next call
+		visited = new boolean[MAX_N][MAX_N];
+
+		// Verify PCL conditions
+		int colorCount = 0;
+		boolean colorWithOneRegion = false;
+		boolean colorWithMoreRegions = false;
+		for (int i = 0; i < regionCount.length; i++) {
+			if (regionCount[i] != 0) {
+				colorCount++;
+			}
+			if (regionCount[i] == 1) {
+				colorWithOneRegion = true;
+			}
+			if (regionCount[i] > 1) {
+				colorWithMoreRegions = true;
+			}
+		}
+
+		return (
+			colorCount == 2 &&
+			colorWithOneRegion &&
+			colorWithMoreRegions
+		);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("where.in"));
+		int n = Integer.parseInt(read.readLine());
+		for (int i = 0; i < n; i++) {
+			String row = read.readLine();
+			for (int j = 0; j < n; j++) {
+				image[i][j] = row.charAt(j);
+			}
+		}
+		read.close();
+
+		List<PCL> pcls = new ArrayList<>();
+		// Brute force every rectangle to find PCLs
+		for (int i1 = 0; i1 < n; i1++) {
+			for (int j1 = 0; j1 < n; j1++) {
+				for (int i2 = 0; i2 < n; i2++) {
+					for (int j2 = 0; j2 < n; j2++) {
+						if (isPCL(i1, j1, i2, j2)) {
+							pcls.add(new PCL(i1, j1, i2, j2));
 						}
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < list.size(); i++) {
-			if(max(i)) A++;
-		}
-
-		out.println(A);
-		out.close();
-	}
-	private static class PCL{
-		public int i, j, k, l;
-		public PCL(int a, int b, int c, int d){
-			i = a; j = b; k = c; l = d;
-		}
-	}
-	public static boolean max(int x){
-		for (int i = 0; i < list.size(); i++) {
-			if(i==x) continue;
-			if(inside(list.get(x), list.get(i))) return false;
-		}
-		return true;
-	}
-	public static boolean inside(PCL o, PCL s){
-		//checking if o is inside of s
-		return o.i >= s.i && o.j >= s.j && o.k <= s.k && o.l <= s.l;
-	}
-
-	//Takes the top-left point and the bottom-right point
-	public static boolean check(int i1, int j1, int i2, int j2)
-	{
-		//Number of colors
-		int co = 0;
-		//The count for number of sections given a letter
-		int[] color = new int[26];
-		for (int i=i1; i<=i2; i++)
-			for (int j=j1; j<=j2; j++)
-				temp[i][j] = F[i][j];
-		for (int i=i1; i<=i2; i++)
-			for (int j=j1; j<=j2; j++)
-				//if temp[i][j] is '-' it's marked
-				if (temp[i][j] != '-') {
-					int c = temp[i][j] - 'A';
-					//Incrementing number of colors.
-					if (color[c] == 0) co++;
-					//Incrementing the number of connected components of c.
-					color[c]++;
-
-					//Floodfill
-					fill(i,j,temp[i][j]);
+		int pclCount = 0;
+		// If a PCL is inside another PCL, don't count it
+		for (int i = 0; i < pcls.size(); i++) {
+			boolean validPCL = true;
+			for (int j = 0; j < pcls.size(); j++) {
+				if (i == j) {
+					continue;
 				}
-		if (co != 2) return false;
-		boolean one = false, more = false;
-		for (int i=0; i<26; i++) {
-			if (color[i] == 1) one = true;
-			if (color[i] > 1) more = true;
-		}
-		return one && more;
-	}
-
-	public static void fill(int i, int j, char C){
-		if(i < 0 || j < 0 || i >= N || j >= N) return;
-		if(temp[i][j] != C) return;
-		temp[i][j] = '-';
-
-		fill(i, j-1, C);
-		fill(i, j+1, C);
-		fill(i-1, j, C);
-		fill(i+1, j, C);
-	}
-
-	private static class InputReader {
-		public BufferedReader reader;
-		public StringTokenizer tokenizer;
-
-		public InputReader() {
-			try {
-				reader = new BufferedReader(new InputStreamReader(System.in), 32768);
-			} catch (Exception e) {
-				throw new NullPointerException("Could not create input stream");
-			}
-		}
-
-		public InputReader(String fileName) {
-			try {
-				reader = new BufferedReader(new FileReader(new File(fileName)), 32768);
-			} catch (Exception ex) {
-				throw new NullPointerException("Input file does not exist! Put it in the project folder.");
-			}
-			tokenizer = null;
-		}
-
-		public String next() {
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
+				if (pcls.get(i).isInside(pcls.get(j))) {
+					validPCL = false;
+					break;
 				}
 			}
-			return tokenizer.nextToken();
+			pclCount += validPCL ? 1 : 0;
 		}
 
-		public boolean hasNextInt() throws IOException { return reader.ready(); }
+		PrintWriter written = new PrintWriter("where.out");
+		written.println(pclCount);
+		written.close();
+	}
 
-		public int nextInt() {
-			return Integer.parseInt(next());
+	/**
+	 * PCL delimited by the top left corner (i1, j1)
+	 * & bottom right corner (i2, j2)
+	 */
+	static class PCL {
+		public int i1, j1;
+		public int i2, j2;
+		public PCL(int i1, int j1, int i2, int j2) {
+			this.i1 = i1;
+			this.j1 = j1;
+			this.i2 = i2;
+			this.j2 = j2;
 		}
 
-		public double nextDouble() {
-			return Double.parseDouble(next());
-		}
-
-		public long nextLong() {
-			return Long.parseLong(next());
-		}
-
-		public char nextChar() {
-			return next().charAt(0);
-		}
-
-		/**
-		 * When you call next(), that entire line will be skipped.
-		 * No flushing buffers.
-		 * Doesn't work when you want to scan the remaining line.
-		 *
-		 * @return entire line
-		 */
-
-		public String nextLine() {
-			String str = "";
-			try {
-				str = reader.readLine();
-				tokenizer = null;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			return str;
+		public boolean isInside(PCL b) {
+			return (
+				i1 >= b.i1 &&
+				i2 <= b.i2 &&
+				j1 >= b.j1 &&
+				j2 <= b.j2
+			);  
 		}
 	}
 }
