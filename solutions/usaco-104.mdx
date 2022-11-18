@@ -93,20 +93,18 @@ class haybaleStacking {
 	
 ```python
 n, k = map(int, input().split())
-l = [0]*(n+1)
+differences = [0]*(n+1)
 for i in range(k):
     start, end = map(int, input().split())
-    start -= 1
-    end -= 1
-    l[start] += 1
-    l[end+1] -= 1
-x= [0]*n
-s = 0
+    differences[start-1] += 1
+    differences[end] -= 1
+pref = [0]*n
+s = 0	
 for i in range(n):
-    x[i] = l[i] + s
-    s += l[i]
-x.sort()
-print(x[n//2])
+    pref[i] = differences[i] + s
+    s += differences[i]
+pref.sort()
+print(pref[n//2])
 ```
 	
 </PythonSection>
