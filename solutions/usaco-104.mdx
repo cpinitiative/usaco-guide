@@ -87,5 +87,26 @@ class haybaleStacking {
 
 </JavaSection>
 	
-</LanguageSection>
+<PythonSection>
+
+## Python Implementation
 	
+```python
+n, k = map(int, input().split())
+differences = [0]*(n+1) # make a differences array
+for i in range(k):
+    start, end = map(int, input().split())
+    differences[start-1] += 1 # add one to the start
+    differences[end] -= 1 # subtract one from the next number outside of start-end
+pref = [0]*n # prefix sums array
+s = 0	
+for i in range(n): # uses differences and total sum to get where all the haybales are
+    pref[i] = differences[i] + s 
+    s += differences[i]
+pref.sort() 
+print(pref[n//2])
+```
+	
+</PythonSection>
+	
+</LanguageSection>
