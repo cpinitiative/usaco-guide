@@ -220,43 +220,43 @@ visited = [False] * n
 
 for i in range(len(planets)):
 
-    """
-    We dfs from the current planet until we end up at a planet we have 
-    already visited
-    """
+	"""
+	We dfs from the current planet until we end up at a planet we have
+	already visited
+	"""
 
-    if visited[i]:
-        continue
+	if visited[i]:
+		continue
 
-    path_ordered = [i]  # The path of planets whose teleporters we go through
-    path_set = set([i])  # Set of all planets whose teleporteres we go through
-    visited[i] = True
-    while not visited[planets[i]]:
-        i = planets[i]
-        visited[i] = True
-        path_ordered.append(i)
-        path_set.add(i)
+	path_ordered = [i]  # The path of planets whose teleporters we go through
+	path_set = set([i])  # Set of all planets whose teleporteres we go through
+	visited[i] = True
+	while not visited[planets[i]]:
+		i = planets[i]
+		visited[i] = True
+		path_ordered.append(i)
+		path_set.add(i)
 
-    """
-    If i exists in path, then there is a cycle. When there is a cycle, all
-    planets in that cycle have the same path length (the distance for each
-    planet to visit itself).
-    """
-    i = planets[i]
-    if i in path_set:
-        # The planets in the cycle is all the planets until i is popped
-        path_cycle = [path_ordered.pop()]
-        while path_cycle[-1] != i:
-            path_cycle.append(path_ordered.pop())
+	"""
+	If i exists in path, then there is a cycle. When there is a cycle, all
+	planets in that cycle have the same path length (the distance for each
+	planet to visit itself).
+	"""
+	i = planets[i]
+	if i in path_set:
+		# The planets in the cycle is all the planets until i is popped
+		path_cycle = [path_ordered.pop()]
+		while path_cycle[-1] != i:
+			path_cycle.append(path_ordered.pop())
 
-        for v in path_cycle:
-            path_length[v] = len(path_cycle)
+		for v in path_cycle:
+			path_length[v] = len(path_cycle)
 
-    # The path length of a planet is the path length of the planet the initial
-    # planet's teleporter can visit, plus one. The
-    while path_ordered:
-        top = path_ordered.pop()
-        path_length[top] = path_length[planets[top]] + 1
+	# The path length of a planet is the path length of the planet the initial
+	# planet's teleporter can visit, plus one. The
+	while path_ordered:
+		top = path_ordered.pop()
+		path_length[top] = path_length[planets[top]] + 1
 
 print(*path_length)
 ```
