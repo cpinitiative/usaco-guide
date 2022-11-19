@@ -2,14 +2,14 @@
 id: cf-1418C
 source: CF
 title: Mortal Kombat Tower
-author: Ryan Chou, Chuyang Wang
+author: Ryan Chou, Chuyang Wang, George Pong
 ---
 [Official Editorial (C++)](https://codeforces.com/blog/entry/82673)
 
 ## Alternate Solution - DP
 ### Explanation
 
-If we define $\texttt{dp}[i][j]$ as the minimum number of skip points needed to get to the $j$th boss on player $i$'s turn 
+If we define $\texttt{dp}[i][j]$ as the minimum number of skip points needed to get to the $j$th boss on player $i$'s turn
 (our turn is zero), then our transitions would be:
 
 $\texttt{dp}[0][j + 1] =\min(\texttt{dp}[0][j + 1], \texttt{dp}[1][j] + \texttt{bosses}[j])$
@@ -29,6 +29,7 @@ So, the answer would be $\min(\texttt{dp}[0][N], \texttt{dp}[1][N])$.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -49,13 +50,13 @@ int main() {
 		}
 
 		/*
-		 * dp[i][j] = the min amount of skip points 
+		 * dp[i][j] = the min amount of skip points
 		 * on turn i (your turn is 0), on the jth boss.
 		 * (1e9 to prevent overflow)
 		 */
 		vector<vector<int>> dp(2, vector<int>(n + 1, 1e9));
 
-		/* 
+		/*
 		 * base case:
 		 * your friend uses zero skip points before fighting any bosses.
 		 */
@@ -76,9 +77,11 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.Arrays;
@@ -128,5 +131,36 @@ public class MortalKombatTower {
 	}
 }
 ```
+
 </JavaSection>
+
+<PySection>
+
+```py
+for _ in range(int(input())):
+
+	n = int(input())
+	bosses = list(map(int, input().split()))
+
+	# dp[i][j] stores the minimum amount of skip pointes needed for the j-th
+	# boss  when it is your turn (i = 0) and your friend's turn (i = 1)
+	dp = [[float('inf')] * (n + 1) for _ in range(2)]
+
+	dp[0][0] = 0
+
+	for j in range(len(dp[0]) - 1):
+
+		dp[1][j + 1] = min(dp[1][j + 1], dp[0][j] + bosses[j])
+		dp[0][j + 1] = min(dp[0][j + 1], dp[1][j])
+
+		if j + 2 < len(dp[0]):
+			dp[1][j + 2] = min(dp[1][j + 2], dp[0][j] +
+							   bosses[j] + bosses[j + 1])
+			dp[0][j + 2] = min(dp[0][j + 2], dp[1][j])
+
+	print(min(dp[0][n], dp[1][n]))
+```
+
+</PySection>
+
 </LanguageSection>
