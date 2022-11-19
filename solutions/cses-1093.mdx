@@ -2,7 +2,7 @@
 id: cses-1093
 source: CSES
 title: Two Sets II
-author: Sofia Yang, Ryan Chou
+author: Sofia Yang, Ryan Chou, George Pong
 ---
 [Official Editorial (C++)](https://codeforces.com/blog/entry/70018)
 
@@ -47,7 +47,7 @@ int main() {
 
 	// each subset's sum needs to be half of the total sum.
 	sum_elem /= 2;
-	
+
 	// dp[i][j] = the number of ways to make sum j with the numbers from 1 to i
 	vector<vector<int>> dp(n, vector<int>(sum_elem + 1));
 
@@ -60,7 +60,7 @@ int main() {
 
 			// previous sum by including the current element
 			int prev = j - i;
-			
+
 			if (prev >= 0) {
 				dp[i][j] += dp[i - 1][prev];
 			}
@@ -127,4 +127,44 @@ public class TwoSets {
 }
 ```
 </JavaSection>
+
+<PySection>
+
+```py
+MOD = 10 ** 9 + 7
+
+
+def solve(n: int) -> int:
+
+	sum_elem = n * (n + 1) // 2
+
+	# If the sum of the elements is odd, then we clearly can't split it evenly.
+	if sum_elem & 1:
+		return 0
+
+	# dp[i][j] stores the number of ways to a set with sum j with nums 1 ... i.
+	dp = [[0] * (sum_elem // 2 + 1) for _ in range(n)]
+	dp[0][0] = 1  # Always one way to split up zero elements into two sets.
+
+	for i in range(1, len(dp)):
+		for j in range(len(dp[0])):
+
+			# Must include same as first i - 1 elements
+			dp[i][j] += dp[i - 1][j]
+
+			# Then add all the additional ways to make it with the j-th element.
+			if j - i >= 0:
+				dp[i][j] += dp[i - 1][j - i]
+
+			dp[i][j] %= MOD
+
+	return dp[-1][sum_elem // 2]
+
+
+n = int(input())
+print(solve(n))
+```
+
+</PySection>
+
 </LanguageSection>
