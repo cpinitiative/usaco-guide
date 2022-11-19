@@ -2,7 +2,7 @@
 id: cses-1635
 source: CSES
 title: Coin Combinations I
-author: Michael Cao
+author: Michael Cao, George Pong
 ---
 
 In this problem, we are asked the number of ways to achieve some value, $x$,
@@ -140,12 +140,27 @@ public class CountingCoins1 {
 </JavaSection>
 
 <PySection>
-<IncompleteSection>
 
-We don't currently have a Python solution for this problem. Please switch to
-another language to view the solution code.
+```py
+import sys
+input = sys.stdin.readline  # Using normal input() will TLE.
 
-</IncompleteSection>
+mod = 10 ** 9 + 7
+
+n, x = map(int, input().split())
+coins = list(map(int, input().split()))
+
+coins_needed = [0] * (x + 1)
+coins_needed[0] = 1
+
+for i in range(len(coins_needed)):
+	for coin in coins:
+		if i - coin >= 0:
+			coins_needed[i] += coins_needed[i - coin]
+	coins_needed[i] %= mod
+
+print(coins_needed[x])
+```
 </PySection>
 
 </LanguageSection>
