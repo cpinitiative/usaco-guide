@@ -2,7 +2,7 @@
 id: cses-1636
 source: CSES
 title: Coin Combinations II
-author: Michael Cao, Nathan Gong
+author: Michael Cao, Nathan Gong, George Pong
 ---
 
 <!-- This problem is very to similar Coin Combinations I, with the main difference being that we only count ordered combinations.  -->
@@ -107,7 +107,7 @@ public class CoinCombinations2 {
 			coins[i] = sc.nextInt();
 		}
 
-		// dp[w] = the number of ordered ways to add coins up to w	
+		// dp[w] = the number of ordered ways to add coins up to w
 		int[] dp = new int[x + 1];
 		dp[0] = 1;
 		for (int i = 0; i < n; i++) {  // loop through coins
@@ -123,5 +123,31 @@ public class CoinCombinations2 {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import sys
+
+MOD = 10 ** 9 + 7
+
+input = sys.stdin.readline  # Faster input. Using normal input() will TLE.
+
+n, x = map(int, input().split())
+coins = list(map(int, input().split()))
+
+combinations = [0] * (x + 1)
+combinations[0] = 1
+
+for coin in coins:
+	for i in range(len(combinations)):
+		if i - coin >= 0:
+			combinations[i] += combinations[i - coin]
+			combinations[i] %= MOD
+
+print(combinations[x])
+```
+
+</PySection>
 
 </LanguageSection>
