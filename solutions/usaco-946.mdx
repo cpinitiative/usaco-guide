@@ -10,9 +10,26 @@ author: Benjamin Qi, Aryansh Shrivastava, Chuyang Wang
 
 ## Solution 1: Prim's Algorithm
 
+For this problem, we want to maximize the minimum of the number of miles two
+cows are willing to walk, henceforth referred to as $M$. Let's consider a
+Minimum Spanning Tree (MST) of all $N$ cows. By adding the $i$-th edge to the
+MST, it implies that all edges between the rest $N - i$ components have weights
+higher or equal than this added edge, or, in other words, $M$ is equal to the
+weight of this added edge.
 
+In case of splitting the cows into $K$ groups, we simply remove the $K - 1$
+edges from the MST which have the maximum weight. $M$ is then equal to the
+weight of the minimum of those removed edges. If the edges in the MST are sorted
+in ascending order, $M$ would be the weight of the $N - K + 1$-th edge of the
+MST.
+
+As the typical implementation of Kruskal's Algorithm requires
+$\mathcal{O}(N^2 \log N)$ time for a dense graph as in our case, we use instead
+Prim's Algorithm with linear search for the closest vertex. Each scan only takes
+$\mathcal{O}(N)$ time, and we only have to do $N$ scans.
 
 Time Complexity: $\mathcal{O}(N^2)$
+
 
 <LanguageSection>
 
@@ -84,16 +101,28 @@ int main() {
 
 </LanguageSection>
 
+
 ## Solution 2: Kruskal's Algorithm & Two-Pass Radix Sort 
 
-Kruskal with two iterations of counting sort passes in 1966 ms ...
+Alternatively, we can also use Kruskal's Algorithm to construct our MST. Note
+that only the step of sorting all edges takes too long time. If we manage to
+sort all edges in linear time, we might be able to solve it also with Kruskal's
+Algorithm as well.
+
+To sort these edges, we can apply a two-pass radix sort. In particular, we first
+use counting sort to sort the first 16 bits ($[0, 2^16)$) of the weights. Then,
+in the second iteration, we sort the rest 16 bits ($[2^16, 2^32)$). After the
+sorting process, we apply the unmodified Kruskal's Algorithm on the edges and
+$M$ is equal to the weight of the $N - K + 1$-th longest edge of the MST.
 
 Time Complexity: $\mathcal{O}(N^2)$
+
 
 <Warning title="TLE">
 Some large test cases might get TLE due to the bad constant factor for the 
 radix sort. 
 </Warning>
+
 
 <LanguageSection>
 
@@ -204,8 +233,6 @@ int main() {
 </LanguageSection>
 
 ## Solution 3
-
-(By Aryansh Shrivastava)
 
 Since this problem has its roots in optimizing a given weight expression, we are
 motivated to use math.
