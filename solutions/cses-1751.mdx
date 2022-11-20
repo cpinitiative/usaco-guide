@@ -221,41 +221,42 @@ visited = [False] * n
 for i in range(len(planets)):
 
 	"""
-	We dfs from the current planet until we end up at a planet we have
-	already visited
+	We dfs from the current planet until we end up at a planet we have already
+	visited. Note that the visited planet is not added to the path array.
 	"""
 
 	if visited[i]:
 		continue
 
-	path_ordered = [i]  # The path of planets whose teleporters we go through
+	path = [i]  # The path of planets whose teleporters we go through
 	path_set = set([i])  # Set of all planets whose teleporteres we go through
 	visited[i] = True
 	while not visited[planets[i]]:
 		i = planets[i]
 		visited[i] = True
-		path_ordered.append(i)
+		path.append(i)
 		path_set.add(i)
 
 	"""
-	If i exists in path, then there is a cycle. When there is a cycle, all
-	planets in that cycle have the same path length (the distance for each
-	planet to visit itself).
+	Let i be the planet we have already visited. If i exists in path, then
+	there is a cycle. When there is a cycle, all planets in that cycle have the
+	same path length (the distance for each planet to visit itself).
 	"""
 	i = planets[i]
 	if i in path_set:
-		# The planets in the cycle is all the planets until i is popped
-		path_cycle = [path_ordered.pop()]
+		# If there is a cycle, the planets in [i, ..., i) is our actual path.
+		# This is every element from the end of path until we hit i.
+		path_cycle = [path.pop()]  # Our actual path in the cycle
 		while path_cycle[-1] != i:
-			path_cycle.append(path_ordered.pop())
+			path_cycle.append(path.pop())
 
-		for v in path_cycle:
-			path_length[v] = len(path_cycle)
+		for planet in path_cycle:
+			path_length[planet] = len(path_cycle)
 
 	# The path length of a planet is the path length of the planet the initial
-	# planet's teleporter can visit, plus one. The
-	while path_ordered:
-		top = path_ordered.pop()
+	# planet's teleporter can visit, plus one.
+	while path:
+		top = path.pop()
 		path_length[top] = path_length[planets[top]] + 1
 
 print(*path_length)
