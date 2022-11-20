@@ -2,10 +2,86 @@
 id: usaco-665
 source: USACO Bronze 2016 December
 title: The Cow-Signal
-author: Benjamin Qi, Jesse Choe
+author: Benjamin Qi, Jesse Choe, Jeffery Meng
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowsignal_bronze_dec16.html)
+
+## Video Solution
+
+By Jeffrey Meng
+
+<Youtube id="yz3qBXEhRGc" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("cowsignal.in", "r", stdin);
+	freopen("cowsignal.out", "w", stdout);
+
+	int M, N, K; cin >> M >> N >> K;
+
+	for (int i = 0; i < M; i++) {
+		string line; cin >> line;
+		string outputLine;
+		for (int j = 0; j < N; j++) {
+			for (int k = 0; k < K; k++) {
+				outputLine += line[j];
+			}
+		}
+		for (int j = 0; j < K; j++) {
+			cout << outputLine << "\n";
+		}
+	}
+}
+```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class CowSignal {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("cowsignal.in"));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowsignal.out")));
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		int M = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		for (int i = 0; i < M; i++) {
+			String line = in.readLine();
+			String outputLine = "";
+			for (int j = 0; j < N; j++) {
+				for (int k = 0; k < K; k++) {
+					outputLine += line.charAt(j);
+				}
+			}
+			for (int j = 0; j < K; j++) {
+				out.println(outputLine);
+			}
+		}
+
+		out.close();
+	}
+}
+```
+</JavaSection>
+</LanguageSection>
+					      
+</Spoiler>
+	
+## Implementation
 
 <LanguageSection>
 <CPPSection>
