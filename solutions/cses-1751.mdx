@@ -229,7 +229,7 @@ for i in range(len(planets)):
 		continue
 
 	path = [i]  # The path of planets whose teleporters we go through
-	path_set = set([i])  # Set of all planets whose teleporteres we go through
+	path_set = set([i])  # Set of all planets whose teleporters we go through
 	visited[i] = True
 	while not visited[planets[i]]:
 		i = planets[i]
@@ -244,17 +244,20 @@ for i in range(len(planets)):
 	"""
 	i = planets[i]
 	if i in path_set:
-		# If there is a cycle, the planets in [i, ..., i) is our actual path.
+		# If there is a cycle, the planets in [i, ..., i) are in the cycle.
 		# This is every element from the end of path until we hit i.
-		path_cycle = [path.pop()]  # Our actual path in the cycle
+		path_cycle = [path.pop()]  # The path of planets in the cycle.
 		while path_cycle[-1] != i:
 			path_cycle.append(path.pop())
 
 		for planet in path_cycle:
 			path_length[planet] = len(path_cycle)
 
-	# The path length of a planet is the path length of the planet the initial
-	# planet's teleporter can visit, plus one.
+	"""	
+	For planets outside the cycle (or if there is none), the path length of
+	a planet is the path length of the planet the former planet's teleporter
+	can visit, plus one.
+	"""
 	while path:
 		top = path.pop()
 		path_length[top] = path_length[planets[top]] + 1
