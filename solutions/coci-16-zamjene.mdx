@@ -89,16 +89,64 @@ When adding or removing a bad component, we get its difference $d$ and see how m
 ```cpp
 #include <iostream>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <algorithm>
 
 using std::cout;
 using std::endl;
 using std::vector;
+using ll = long long;
+ 
+struct Hash {
+	static const ll MOD1 = 1e9 + 7;
+	static const ll MOD2 = 1e9 + 9;
+ 
+	ll h1, h2;
+	Hash(ll h1, ll h2) : h1(h1), h2(h2) { }
+	Hash() : h1(0), h2(0) { }
+ 
+	Hash operator+(const Hash& o) {
+		return Hash((h1 + o.h1) % MOD1, (h2 + o.h2) % MOD2);
+	}
+ 
+	Hash operator-(const Hash& o) {
+		return Hash((h1 - o.h1 + MOD1) % MOD1, (h2 - o.h2 + MOD2) % MOD2);
+	}
+ 
+	Hash exp(const ll& n) {
+		return Hash(h1 * n % MOD1, h2 * n % MOD2);
+	}
+ 
+	/** @return the hashes that can be paired with this one to make a sum of 0 */
+	inline vector<Hash> zero_pairs() {
+		return {
+			Hash(MOD1 - h1, MOD2 - h2), Hash(-h1, -h2),
+			Hash(-h1, MOD2 - h2), Hash(MOD1 - h1, -h2),
+		};
+	}
+
+	ll hash() const {
+		return 1LL * h1 * MOD2 + h2;
+	}
+};
+ 
+bool operator==(const Hash& h1, const Hash& h2) {
+	return h1.h1 == h2.h1 && h1.h2 == h2.h2;
+}
+ 
+bool operator!=(const Hash& h1, const Hash& h2) {
+	return !(h1 == h2);
+}
+
+struct HashFn {
+	std::size_t operator() (const Hash& h) const {
+		return h.hash();
+	}
+};
 
 class DominikArray {
 	private:
-		const long long POW = 1e6 + 3;
+		const ll POW = 1e6 + 3;
 
 		vector<int> arr;
 		vector<int> sorted;
@@ -107,14 +155,12 @@ class DominikArray {
 		vector<int> size;
 		int bad_num = 0;  // # of bad components (used for type 3)
 
-		std::map<int, long long> elem_pow;  // raise to the power of the value
-		// the current hash of a component
-		vector<long long> hash;
-		// the needed hash for a component to be able to be sorted
-		vector<long long> req_hash;
+		std::unordered_map<int, Hash> elem_pow;  // raise to the power of the value
+		vector<Hash> hash;  // the current hash of a component
+		vector<Hash> req_hash;  // the needed hash for a component to be sortable
 		// the hash differences of the bad components
-		std::map<long long, long long> bad_diff;
-		long long cloud_pairs = 0;  // # of valid component pairs (used for type 4)
+		std::unordered_map<Hash, ll, HashFn> bad_diff;
+		ll cloud_pairs = 0;  // # of valid component pairs (used for type 4)
 
 		int get_top(int n) {
 			return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
@@ -125,27 +171,27 @@ class DominikArray {
 			return hash[n] != req_hash[n];
 		}
 
-		/**
-		 * if a component is bad, add it to the bad log
-		 * and update data accordingly
-		 */
+		/** add a bad component to the log & update data accordingly */
 		void add_if_bad(int n) {
 			if (is_unsortable(n)) {
 				// one more bad component
 				bad_num++;
-				long long diff = req_hash[n] - hash[n];
+				Hash diff = req_hash[n] - hash[n];
 				bad_diff[diff] += size[n];
-				// increment by # of new valid pairs that can be formed
-				cloud_pairs += bad_diff[-diff] * size[n];
+				for (const Hash& zp : diff.zero_pairs()) {
+					cloud_pairs += bad_diff[zp] * size[n];
+				}
 			}
 		}
 
 		void remove_if_bad(int n) {
 			if (is_unsortable(n)) {
 				bad_num--;
-				long long diff = req_hash[n] - hash[n];
+				Hash diff = req_hash[n] - hash[n];
 				bad_diff[diff] -= size[n];
-				cloud_pairs -= bad_diff[-diff] * size[n];
+				for (const Hash& zp : diff.zero_pairs()) {
+					cloud_pairs -= bad_diff[zp] * size[n];
+				}
 			}
 		}
 	public:
@@ -156,11 +202,11 @@ class DominikArray {
 			std::sort(sorted.begin(), sorted.end());
 
 			// perform coordinate compression
-			long long curr_pow = 1;
+			Hash curr_hsh(1, 1);
 			for (int i : sorted) {
 				if (!elem_pow.count(i)) {
-					elem_pow[i] = curr_pow;
-					curr_pow *= POW;
+					elem_pow[i] = curr_hsh;
+					curr_hsh = curr_hsh.exp(POW);
 				}
 			}
 			
@@ -182,8 +228,8 @@ class DominikArray {
 			remove_if_bad(top_b);
 
 			// change the hashes of the two components
-			hash[top_a] += elem_pow[arr[b]] - elem_pow[arr[a]];
-			hash[top_b] += elem_pow[arr[a]] - elem_pow[arr[b]];
+			hash[top_a] = hash[top_a] + elem_pow[arr[b]] - elem_pow[arr[a]];
+			hash[top_b] = hash[top_b] + elem_pow[arr[a]] - elem_pow[arr[b]];
 
 			// add the back (if applicable)
 			add_if_bad(top_a);
@@ -211,8 +257,8 @@ class DominikArray {
 			parent[b] = a;
 			
 			// add the hash of the smaller component to the bigger one
-			hash[a] += hash[b];
-			req_hash[a] += req_hash[b];
+			hash[a] = hash[a] + hash[b];
+			req_hash[a] = req_hash[a] + req_hash[b];
 
 			// since b's merged into a, we just add a back (if applicable)
 			add_if_bad(a);
@@ -223,11 +269,12 @@ class DominikArray {
 			return bad_num == 0;
 		}
 
-		long long needed_pair_num() {
+		ll needed_pair_num() {
 			return cloud_pairs;
 		}
 };
 
+// https://oj.uz/problem/view/COCI16_zamjene (input omitted due to length)
 int main() {
 	std::ios::sync_with_stdio(false);
 	std::cin.tie(NULL);
