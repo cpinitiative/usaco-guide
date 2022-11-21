@@ -23,42 +23,42 @@ By Nikhil Chatterjee
 using namespace std;
 
 int main(int argc, char **argv) {
-  freopen("guess.in", "r", stdin);
-  freopen("guess.out", "w", stdout);
-  
-  int N; cin >> N;
-  vector<vector<string>> characteristics(N);
+	freopen("guess.in", "r", stdin);
+	freopen("guess.out", "w", stdout);
 
-  for (int i = 0; i < N; ++i) {
-    string name; cin >> name;
-    int K; cin >> K;
-    for (int j = 0; j < K; ++j) {
-      string characteristic; cin >> characteristic;
-      characteristics[i].push_back(characteristic);
-    }
-  }
+	int N; cin >> N;
+	vector<vector<string>> characteristics(N);
 
-  int greatest_common = 0;
+	for (int i = 0; i < N; ++i) {
+		string name; cin >> name;
+		int K; cin >> K;
+		for (int j = 0; j < K; ++j) {
+			string characteristic; cin >> characteristic;
+			characteristics[i].push_back(characteristic);
+		}
+	}
 
-  for (int i = 0; i < N; ++i) {
-    for (int j = i+1; j < N; ++j) {
-      int common = 0;
-      for (const auto &characteristic1 : characteristics[i]) {
-        for (const auto &characteristic2 : characteristics[j]) {
-          if (characteristic1 == characteristic2) {
-            common++;
-            break;
-          }
-        }
-      }
+	int greatest_common = 0;
 
-      greatest_common = max(greatest_common, common);
-    }
-  }
+	for (int i = 0; i < N; ++i) {
+		for (int j = i+1; j < N; ++j) {
+			int common = 0;
+			for (const auto &characteristic1 : characteristics[i]) {
+				for (const auto &characteristic2 : characteristics[j]) {
+					if (characteristic1 == characteristic2) {
+						common++;
+						break;
+					}
+				}
+			}
 
-  cout << greatest_common+1 << "\n";
-  
-  return 0;
+			greatest_common = max(greatest_common, common);
+		}
+	}
+
+	cout << greatest_common+1 << "\n";
+
+	return 0;
 }
 ```	
 </CPPSection>
@@ -68,74 +68,74 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-  public static void main(String[] args) throws IOException {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("guess.in")));
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("guess.in")));
 
-    int N = Integer.parseInt(reader.readLine());
-    List<String>[] characteristics = new List[N];
-    for (int i = 0; i < N; i++) {
-      characteristics[i] = new ArrayList<>();
-      String[] words = reader.readLine().split(" ");
-      for (int j = 2; j < words.length; j++) {
-        characteristics[i].add(words[j]);
-      }
-    }
-    reader.close();
+        int N = Integer.parseInt(reader.readLine());
+        List<String>[] characteristics = new List[N];
+        for (int i = 0; i < N; i++) {
+            characteristics[i] = new ArrayList<>();
+            String[] words = reader.readLine().split(" ");
+            for (int j = 2; j < words.length; j++) {
+                characteristics[i].add(words[j]);
+            }
+        }
+        reader.close();
 
-    int greatestCommon = 0;
-    for (int i = 0; i < N; ++i) {
-      for (int j = i+1; j < N; ++j) {
-        int common = 0;
+        int greatestCommon = 0;
+        for (int i = 0; i < N; ++i) {
+            for (int j = i+1; j < N; ++j) {
+                int common = 0;
 
-        for (String characteristic1 : characteristics[i]) {
-            for (String characteristic2 : characteristics[j]) {
-                if (characteristic1.equals(characteristic2)) {
-                    common++;
-                    break;
+                for (String characteristic1 : characteristics[i]) {
+                    for (String characteristic2 : characteristics[j]) {
+                        if (characteristic1.equals(characteristic2)) {
+                            common++;
+                            break;
+                        }
+                    }
                 }
+
+                greatestCommon = Math.max(greatestCommon, common);
             }
         }
 
-        greatestCommon = Math.max(greatestCommon, common);
-      }
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("guess.out")));
+        writer.println(greatestCommon+1);
+        writer.close();
     }
-
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("guess.out")));
-    writer.println(greatestCommon+1);
-    writer.close();
-  }
 }
 ```
 </JavaSection>
 <PySection>
 ```py
 with open('guess.in', 'r') as input_file:
-    lines = input_file.readlines()
+	lines = input_file.readlines()
 N = int(lines[0])
 characteristics = [0] * N
 for i in range(1, N+1):
-    line = lines[i].split()
-    name = line[0]
-    K = int(line[1])
-    characteristics[i-1] = [0] * K
-    for j in range(2, K + 2):
-        characteristic = line[j]
-        characteristics[i-1][j-2] = characteristic
+	line = lines[i].split()
+	name = line[0]
+	K = int(line[1])
+	characteristics[i-1] = [0] * K
+	for j in range(2, K + 2):
+		characteristic = line[j]
+		characteristics[i-1][j-2] = characteristic
 
 greatest_common = 0
 
 for i in range(N):
-    for j in range(i+1, N):
-        common = 0
-        for characteristic1 in characteristics[i]:
-            for characteristic2 in characteristics[j]:
-                if characteristic1 == characteristic2:
-                    common += 1
-                    break
-        greatest_common = max(greatest_common, common)
+	for j in range(i+1, N):
+		common = 0
+		for characteristic1 in characteristics[i]:
+			for characteristic2 in characteristics[j]:
+				if characteristic1 == characteristic2:
+					common += 1
+					break
+		greatest_common = max(greatest_common, common)
 
 with open('guess.out', 'w') as output_file:
-    output_file.write('{}'.format(greatest_common+1))
+	output_file.write('{}'.format(greatest_common+1))
 ```
 </PySection>
 </LanguageSection>
