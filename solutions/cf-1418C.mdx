@@ -146,13 +146,15 @@ for _ in range(int(input())):
 	# boss when it is your turn (i = 0) and your friend's turn (i = 1).
 	dp = [[float('inf')] * (n + 1) for _ in range(2)]
 
-	dp[0][0] = 0
+	dp[0][0] = 0  # Our friend needs to use zero points to fight no bosses.
 
 	for j in range(len(dp[0]) - 1):
 
+		# The opposite player switches on the previous move.
 		dp[1][j + 1] = min(dp[1][j + 1], dp[0][j] + bosses[j])
 		dp[0][j + 1] = min(dp[0][j + 1], dp[1][j])
 
+		# The opposite player switches from the previous two moves.
 		if j + 2 < len(dp[0]):
 			dp[1][j + 2] = min(dp[1][j + 2], dp[0][j] +
 							   bosses[j] + bosses[j + 1])
