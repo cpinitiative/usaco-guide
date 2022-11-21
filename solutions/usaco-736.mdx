@@ -2,10 +2,165 @@
 id: usaco-736
 source: USACO Bronze 2017 US Open
 title: Bovine Genomics
-author: Mrinall Umasudhan, Ananth Kashyap, Ben Dodge, Aadit Ambadkar
+author: Mrinall Umasudhan, Ananth Kashyap, Ben Dodge, Aadit Ambadkar, Jay Fu
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_cownomics_bronze_open17.html)
+
+## Video Solution
+By Jay Fu
+
+<Youtube id="Oh_952B03xE" />
+
+<Spoiler title="Video Solution Code">
+    
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cmath>
+using namespace std;
+
+int N, M;
+string spotty[100], plain[100];
+
+bool test_location(int j)
+{
+  bool found_cow[2][4] = {0};
+
+  // found_cow[0] refers to spotty cows, and found_cow[1] refers to non-spotty cows.
+        // found_cow[0][0] = stores whether spotty cows has character A at position j
+        // found_cow[0][1] = stores whether spotty cows has character C at position j
+        // found_cow[0][2] = stores whether spotty cows has character G at position j
+        // found_cow[0][3] = stores whether spotty cows has character T at position j
+        // found_cow[1][0] = stores whether plain cows has character A at position j
+        // found_cow[1][1] = stores whether plain cows has character C at position j
+        // found_cow[1][2] = stores whether plain cows has character G at position j
+        // found_cow[1][3] = stores whether plain cows has character T at position j
+
+
+  // iterate through spotty cows and update found_cow[0]
+  for (int i=0; i<N; i++) {
+    if (spotty[i][j] == 'A') found_cow[0][0] = true;
+    if (spotty[i][j] == 'C') found_cow[0][1] = true;
+    if (spotty[i][j] == 'G') found_cow[0][2] = true;
+    if (spotty[i][j] == 'T') found_cow[0][3] = true;
+  }
+
+  // iterate through plain cows and update found_cow[1]
+  for (int i=0; i<N; i++) {
+    if (plain[i][j] == 'A') found_cow[1][0] = true;
+    if (plain[i][j] == 'C') found_cow[1][1] = true;
+    if (plain[i][j] == 'G') found_cow[1][2] = true;
+    if (plain[i][j] == 'T') found_cow[1][3] = true;
+  }
+
+  // if a character appears in both spotty and plain cows, then return false
+  // if there is no such genome, then return true
+  for (int i = 0; i < 4; ++i) {
+    if (found_cow[0][i] && found_cow[1][i]) return false;
+  }
+  return true;
+}
+
+int main(void)
+{
+  ifstream fin ("cownomics.in");
+  ofstream fout ("cownomics.out");
+  fin >> N >> M;
+
+  // read in input
+  for (int i=0; i<N; i++) fin >> spotty[i];
+  for (int i=0; i<N; i++) fin >> plain[i];
+  int answer = 0;
+
+  // test each position in the genome to see if it could explain spottiness
+  for (int j=0; j<M; j++)
+    if (test_location(j)) answer++;
+  fout << answer << "\n";
+  return 0;
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class cownomicsBronze {
+    static int N,M;
+    static String [] spotty,plain;
+    static boolean test_location(int j) {
+        boolean [][] found_cow = new boolean[2][4];
+        // found_cow[0] refers to spotty cows, and found_cow[1] refers to non-spotty cows.
+        // found_cow[0][0] = stores whether spotty cows has character A at position j
+        // found_cow[0][1] = stores whether spotty cows has character C at position j
+        // found_cow[0][2] = stores whether spotty cows has character G at position j
+        // found_cow[0][3] = stores whether spotty cows has character T at position j
+        // found_cow[1][0] = stores whether plain cows has character A at position j
+        // found_cow[1][1] = stores whether plain cows has character C at position j
+        // found_cow[1][2] = stores whether plain cows has character G at position j
+        // found_cow[1][3] = stores whether plain cows has character T at position j
+
+        // iterate through spotty cows and update found_cow[0]
+        for (int i=0; i<N; i++) {
+            if (spotty[i].charAt(j) == 'A') found_cow[0][0] = true;
+            if (spotty[i].charAt(j) == 'C') found_cow[0][1] = true;
+            if (spotty[i].charAt(j) == 'G') found_cow[0][2] = true;
+            if (spotty[i].charAt(j) == 'T') found_cow[0][3] = true;
+        }
+
+        // iterate through plain cows and update found_cow[1]
+        for (int i=0; i<N; i++) {
+            if (plain[i].charAt(j) == 'A') found_cow[1][0] = true;
+            if (plain[i].charAt(j) == 'C') found_cow[1][1] = true;
+            if (plain[i].charAt(j) == 'G') found_cow[1][2] = true;
+            if (plain[i].charAt(j) == 'T') found_cow[1][3] = true;
+        }
+
+        // if a character appears in both spotty and plain cows, then return false
+        // if there is no such genome, then return true
+        for (int i = 0; i < 4; ++i) {
+            if (found_cow[0][i] && found_cow[1][i]) return false;
+        }
+        return true;
+    }
+    public static void main(String[] args) throws IOException {
+        // read in input
+        BufferedReader br = new BufferedReader(new FileReader("cownomics.in"));
+        PrintWriter out = new PrintWriter("cownomics.out");
+        StringTokenizer s = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(s.nextToken());
+        M = Integer.parseInt(s.nextToken());
+        spotty = new String [100];
+        plain = new String [100];
+        for (int i = 0; i < N; i++) {
+            spotty[i] = br.readLine();
+        }
+        for (int i = 0; i < N; i++) {
+            plain[i] = br.readLine();
+        }
+
+        // test each position in the genome to see if it could explain spottiness
+        int answer = 0;
+        for (int j = 0; j < M; j++) {
+            if (test_location(j)) answer++;
+        }
+        out.println(answer);
+        out.close();
+    }
+}
+```
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
 
 ## Solution 1 - Brute force
 
