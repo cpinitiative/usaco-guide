@@ -68,42 +68,42 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-    public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("guess.in")));
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("guess.in")));
 
-        int N = Integer.parseInt(reader.readLine());
-        List<String>[] characteristics = new List[N];
-        for (int i = 0; i < N; i++) {
-            characteristics[i] = new ArrayList<>();
-            String[] words = reader.readLine().split(" ");
-            for (int j = 2; j < words.length; j++) {
-                characteristics[i].add(words[j]);
-            }
-        }
-        reader.close();
+		int N = Integer.parseInt(reader.readLine());
+		List<String>[] characteristics = new List[N];
+		for (int i = 0; i < N; i++) {
+			characteristics[i] = new ArrayList<>();
+			String[] words = reader.readLine().split(" ");
+			for (int j = 2; j < words.length; j++) {
+				characteristics[i].add(words[j]);
+			}
+		}
+		reader.close();
 
-        int greatestCommon = 0;
-        for (int i = 0; i < N; ++i) {
-            for (int j = i+1; j < N; ++j) {
-                int common = 0;
+		int greatestCommon = 0;
+		for (int i = 0; i < N; ++i) {
+			for (int j = i+1; j < N; ++j) {
+				int common = 0;
 
-                for (String characteristic1 : characteristics[i]) {
-                    for (String characteristic2 : characteristics[j]) {
-                        if (characteristic1.equals(characteristic2)) {
-                            common++;
-                            break;
-                        }
-                    }
-                }
+				for (String characteristic1 : characteristics[i]) {
+					for (String characteristic2 : characteristics[j]) {
+						if (characteristic1.equals(characteristic2)) {
+							common++;
+							break;
+						}
+					}
+				}
 
-                greatestCommon = Math.max(greatestCommon, common);
-            }
-        }
+				greatestCommon = Math.max(greatestCommon, common);
+			}
+		}
 
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("guess.out")));
-        writer.println(greatestCommon+1);
-        writer.close();
-    }
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("guess.out")));
+		writer.println(greatestCommon+1);
+		writer.close();
+	}
 }
 ```
 </JavaSection>
