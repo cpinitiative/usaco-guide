@@ -129,7 +129,7 @@ public class Walk {
 	* @return the number of miles cow a + 1 and b + 1 are willing to walk to see
 	* each other
 	*/
-	public static long calc_length(long a, long b) {
+	public static long calcLength(long a, long b) {
 		a++;
 		b++;
 		return (a * factor1 + b * factor2) % M;
@@ -148,24 +148,24 @@ public class Walk {
 
 		for (int i = 0; i < N; i++) {
 			// find the nearest node to the current MST
-			int min_dist_node = -1;
+			int minDistNode = -1;
 			for (int j = 0; j < N; j++) {
-				if (!visited[j] && (min_dist_node < 0 || dist[j] < dist[min_dist_node])) {
-					min_dist_node = j;
+				if (!visited[j] && (minDistNode < 0 || dist[j] < dist[minDistNode])) {
+					minDistNode = j;
 				}
 			}
 
 			// add this node to the MST
-			visited[min_dist_node] = true;
+			visited[minDistNode] = true;
 
 			// update the distances between the MST and other unconnected nodes
 			for (int j = 0; j < N; j++) {
 				if (!visited[j]) {
 					dist[j] = Math.min(
 						dist[j], 
-						calc_length(
-							Math.min(min_dist_node, j), 
-							Math.max(min_dist_node, j)
+						calcLength(
+							Math.min(minDistNode, j), 
+							Math.max(minDistNode, j)
 						)
 					);
 				}
