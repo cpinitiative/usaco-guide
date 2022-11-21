@@ -99,6 +99,84 @@ int main() {
 ```
 </CPPSection>
 
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Walk {
+	static final long M = 2019201997L;
+	static final long factor1 = 2019201913L;
+	static final long factor2 = 2019201949L;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("walk.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		br.close();
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		long[] mst = prim(N);
+		Arrays.sort(mst);
+
+		PrintWriter pr = new PrintWriter("walk.out");
+		pr.println(mst[N - K]);
+		pr.close();
+	}
+
+	/**
+	* @return the number of miles cow a + 1 and b + 1 are willing to walk to see
+	* each other
+	*/
+	public static long calc_length(long a, long b) {
+		a++;
+		b++;
+		return (a * factor1 + b * factor2) % M;
+	}
+
+	/**
+	* Prim's Algorithm for dense graph to build the MST by scanning
+	* @return the edges used to construct the MST
+	*/
+	public static long[] prim(int N) {
+		long[] dist = new long[N];
+		boolean[] visited = new boolean[N];
+		for (int i = 0; i < N; i++) {
+			dist[i] = M;
+		}
+
+		for (int i = 0; i < N; i++) {
+			// find the nearest node to the current MST
+			int min_dist_node = -1;
+			for (int j = 0; j < N; j++) {
+				if (!visited[j] && (min_dist_node < 0 || dist[j] < dist[min_dist_node])) {
+					min_dist_node = j;
+				}
+			}
+
+			// add this node to the MST
+			visited[min_dist_node] = true;
+
+			// update the distances between the MST and other unconnected nodes
+			for (int j = 0; j < N; j++) {
+				if (!visited[j]) {
+					dist[j] = Math.min(
+						dist[j], 
+						calc_length(
+							Math.min(min_dist_node, j), 
+							Math.max(min_dist_node, j)
+						)
+					);
+				}
+			}
+		}
+		return dist;
+	}
+}
+```
+</JavaSection>
+
 </LanguageSection>
 
 
