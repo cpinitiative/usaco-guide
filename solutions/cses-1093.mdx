@@ -131,38 +131,36 @@ public class TwoSets {
 <PySection>
 
 ```py
+import sys
+
 MOD = 10 ** 9 + 7
 
-
-def solve(n: int) -> int:
-
-	sum_elem = n * (n + 1) // 2
-
-	# If the sum of the elements is odd, then we clearly can't split it evenly.
-	if sum_elem & 1:
-		return 0
-
-	# dp[i][j] stores the number of ways to a set with sum j with nums 1 ... i.
-	dp = [[0] * (sum_elem // 2 + 1) for _ in range(n)]
-	dp[0][0] = 1  # Always one way to split up zero elements into two sets.
-
-	for i in range(1, len(dp)):
-		for j in range(len(dp[0])):
-
-			# Must include same as first i - 1 elements
-			dp[i][j] += dp[i - 1][j]
-
-			# Then add all the additional ways to make it with the j-th element.
-			if j - i >= 0:
-				dp[i][j] += dp[i - 1][j - i]
-
-			dp[i][j] %= MOD
-
-	return dp[-1][sum_elem // 2]
-
-
 n = int(input())
-print(solve(n))
+
+sum_elem = n * (n + 1) // 2  # Sum of elements in [1, ..., n]
+
+# If the sum of the elements is odd, then we clearly can't split it evenly.
+if sum_elem & 1:
+    print(0)
+    sys.exit()
+
+# dp[i][j] stores the number of ways to a set with sum j with nums [1, ..., i].
+dp = [[0] * (sum_elem // 2 + 1) for _ in range(n)]
+dp[0][0] = 1  # Always one way to split up zero elements into two sets.
+
+for i in range(1, len(dp)):
+    for j in range(len(dp[0])):
+
+        # Must include same as first i - 1 elements
+        dp[i][j] += dp[i - 1][j]
+
+        # Then add all the additional ways to make it with the j-th element.
+        if j - i >= 0:
+            dp[i][j] += dp[i - 1][j - i]
+
+        dp[i][j] %= MOD
+
+print(dp[-1][sum_elem // 2])
 ```
 
 </PySection>
