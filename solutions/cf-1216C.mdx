@@ -20,70 +20,68 @@ By Varun Ragunath
 using namespace std;
 
 int main() {
-  cin.sync_with_stdio(0); cin.tie(0);
+	cin.sync_with_stdio(0); cin.tie(0);
 
-  // input: get the original white sheet
+	// input: get the original white sheet
 
-  int x1, y1, x2, y2;
+	int x1, y1, x2, y2;
 
-  cin >> x1 >> y1 >> x2 >> y2;
+	cin >> x1 >> y1 >> x2 >> y2;
 
-  // update our white sheet with each new black sheet
-  // there will only be two iterations since there are only two black sheets
+	// update our white sheet with each new black sheet
+	// there will only be two iterations since there are only two black sheets
 
-  for(int black_sheet = 0; black_sheet < 2; black_sheet++) {
-    // input: get the current black sheet
-    int x3, y3, x4, y4;
-    cin >> x3 >> y3 >> x4 >> y4;
+	for(int black_sheet = 0; black_sheet < 2; black_sheet++) {
+		// input: get the current black sheet
+		int x3, y3, x4, y4;
+		cin >> x3 >> y3 >> x4 >> y4;
 
-    // since the the white sheet has to be either covered by a black sheet completely
-    // or it has to be covered by two black sheets with an intersection line
+		// since the the white sheet has to be either covered by a black sheet completely
+		// or it has to be covered by two black sheets with an intersection line
 
-    // lets check whether or not it would be possible for the seperator line to be vertical
-    if(y3 <= y1 and y4 >= y2) {
-      // the y axis bounds of the rectangle are completely engulfed by the black sheet
-      // this is a problem!
-      // now we need to update the bounds for our x axis
-      // for the left bound of the x axis, check whether or not it is covered
-      if(x1 >= x3 and x1 <= x4) {
-        // now we can tell the left bound is engulfed, and that
-        // it needs to be update to the right bound of our current black sheet
-        x1 = x4;
-      }
-      // apply similar logic to the right bound of the x axis
-      if(x2 >= x3 and x2 <= x4) {
-        x2 = x3;
-      }
-    }
+		// lets check whether or not it would be possible for the seperator line to be vertical
+		if(y3 <= y1 and y4 >= y2) {
+			// the y axis bounds of the rectangle are completely engulfed by the black sheet
+			// this is a problem!
+			// now we need to update the bounds for our x axis
+			// for the left bound of the x axis, check whether or not it is covered
+			if(x1 >= x3 and x1 <= x4) {
+				// now we can tell the left bound is engulfed, and that
+				// it needs to be update to the right bound of our current black sheet
+				x1 = x4;
+			}
+			// apply similar logic to the right bound of the x axis
+			if(x2 >= x3 and x2 <= x4) {
+				x2 = x3;
+			}
+		}
 
-    // now apply similar logic for if the seperator line were to be horizontal
-    if(x3 <= x1 and x4 >= x2) {
-      // completely engulfed, so we need to update the border
-      // to update the border we apply the same logic as before
-      if(y1 >= y3 and y1 <= y4) {
-        y1 = y4;
-      }
-      // same here
-      if(y2 >= y3 and y2 <= y4) {
-        y2 = y3;
-      }
-    }
-  }
+		// now apply similar logic for if the seperator line were to be horizontal
+		if(x3 <= x1 and x4 >= x2) {
+			// completely engulfed, so we need to update the border
+			// to update the border we apply the same logic as before
+			if(y1 >= y3 and y1 <= y4) {
+				y1 = y4;
+			}
+			// same here
+			if(y2 >= y3 and y2 <= y4) {
+				y2 = y3;
+			}
+		}
+	}
 
-  // now we have to check and confirm that our rectangle is not degenerate
+	// now we have to check and confirm that our rectangle is not degenerate
 
-  if(x2 > x1 and y2 > y1) {
-    // since it is not degenerate, any point inside our current rectangle works as a possible point
-    cout << "YES\n";
-  }
-  else {
-    // one of the sides of the rectangle is degenerate, so there is not visible point
-    cout << "NO\n";
-  }
+	if(x2 > x1 and y2 > y1) {
+		// since it is not degenerate, any point inside our current rectangle works as a possible point
+		cout << "YES\n";
+	}
+	else {
+		// one of the sides of the rectangle is degenerate, so there is not visible point
+		cout << "NO\n";
+	}
 
-
-
-  return 0;
+	return 0;
 }
 ```
 
@@ -95,71 +93,71 @@ import java.util.*;
 public class whiteSheet {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-    // input: get the original white sheet
+		// input: get the original white sheet
 
-    int x1, y1, x2, y2;
+		int x1, y1, x2, y2;
 
-    x1 = sc.nextInt();
-    y1 = sc.nextInt();
-    x2 = sc.nextInt();
-    y2 = sc.nextInt();
+		x1 = sc.nextInt();
+		y1 = sc.nextInt();
+		x2 = sc.nextInt();
+		y2 = sc.nextInt();
 
-    // update our white sheet with each new black sheet
-    // there will only be two iterations since there are only two black sheets
+		// update our white sheet with each new black sheet
+		// there will only be two iterations since there are only two black sheets
 
-    for(int black_sheet = 0; black_sheet < 2; black_sheet++) {
-      // input: get the current black sheet
-      int x3, y3, x4, y4;
-      x3 = sc.nextInt();
-      y3 = sc.nextInt();
-      x4 = sc.nextInt();
-      y4 = sc.nextInt();
+		for(int black_sheet = 0; black_sheet < 2; black_sheet++) {
+			// input: get the current black sheet
+			int x3, y3, x4, y4;
+			x3 = sc.nextInt();
+			y3 = sc.nextInt();
+			x4 = sc.nextInt();
+			y4 = sc.nextInt();
 
-      // since the the white sheet has to be either covered by a black sheet completely
-      // or it has to be covered by two black sheets with an intersection line
+			// since the the white sheet has to be either covered by a black sheet completely
+			// or it has to be covered by two black sheets with an intersection line
 
-      // lets check whether or not it would be possible for the seperator line to be vertical
-      if(y3 <= y1 && y4 >= y2) {
-        // the y axis bounds of the rectangle are completely engulfed by the black sheet
-        // this is a problem!
-        // now we need to update the bounds for our x axis
-        // for the left bound of the x axis, check whether or not it is covered
-        if(x1 >= x3 && x1 <= x4) {
-          // now we can tell the left bound is engulfed, and that
-          // it needs to be update to the right bound of our current black sheet
-          x1 = x4;
-        }
-        // apply similar logic to the right bound of the x axis
-        if(x2 >= x3 && x2 <= x4) {
-          x2 = x3;
-        }
-      }
+			// lets check whether or not it would be possible for the seperator line to be vertical
+			if(y3 <= y1 && y4 >= y2) {
+				// the y axis bounds of the rectangle are completely engulfed by the black sheet
+				// this is a problem!
+				// now we need to update the bounds for our x axis
+				// for the left bound of the x axis, check whether or not it is covered
+				if(x1 >= x3 && x1 <= x4) {
+					// now we can tell the left bound is engulfed, and that
+					// it needs to be update to the right bound of our current black sheet
+					x1 = x4;
+				}
+				// apply similar logic to the right bound of the x axis
+				if(x2 >= x3 && x2 <= x4) {
+					x2 = x3;
+				}
+			}
 
-      // now apply similar logic for if the seperator line were to be horizontal
-      if(x3 <= x1 && x4 >= x2) {
-        // completely engulfed, so we need to update the border
-        // to update the border we apply the same logic as before
-        if(y1 >= y3 && y1 <= y4) {
-          y1 = y4;
-        }
-        // same here
-        if(y2 >= y3 && y2 <= y4) {
-          y2 = y3;
-        }
-      }
-    }
+			// now apply similar logic for if the seperator line were to be horizontal
+			if(x3 <= x1 && x4 >= x2) {
+				// completely engulfed, so we need to update the border
+				// to update the border we apply the same logic as before
+				if(y1 >= y3 && y1 <= y4) {
+					y1 = y4;
+				}
+				// same here
+				if(y2 >= y3 && y2 <= y4) {
+					y2 = y3;
+				}
+			}
+		}
 
-    // now we have to check and confirm that our rectangle is not degenerate
+		// now we have to check and confirm that our rectangle is not degenerate
 
-    if(x2 > x1 && y2 > y1) {
-      // since it is not degenerate, any point inside our current rectangle works as a possible point
-      System.out.println("YES");
-    }
-    else {
-      // one of the sides of the rectangle is degenerate, so there is not visible point
-      System.out.println("NO");
-    }
-  }
+		if(x2 > x1 && y2 > y1) {
+			// since it is not degenerate, any point inside our current rectangle works as a possible point
+			System.out.println("YES");
+		}
+		else {
+			// one of the sides of the rectangle is degenerate, so there is not visible point
+			System.out.println("NO");
+		}
+	}
 }
 ```
 
