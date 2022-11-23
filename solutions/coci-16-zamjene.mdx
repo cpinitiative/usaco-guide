@@ -43,11 +43,12 @@ $$
 <Info>
 
 It's also possible to assign each distinct number in the array a distinct power of a prime $P$.
+However, this might result in a higher chance of hashes colliding.
 
 </Info>
 
 Each component should not only have a hash of its number, but also a hash of the numbers it's supposed to have.
-For example, if our component was just the number $3$ but needs a $4$ to be sorted, its hash and required hash would be $P^3$ and $P^4$ respectively.
+For example, if our component was just the number $3$ but needs a $4$ to be sorted, its hash and required hash would be $R_3$ and $R_4$ respectively.
 Having this "required hash" allows us to quickly check if each component is sortable or not.
 
 When executing a union operation (aka a type 1 query), we can add the hashes and required hashes of the two components to get the hash of the combined component.
@@ -82,6 +83,7 @@ When adding or removing a bad component, we get its difference $d$ and see how m
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(Q \cdot \alpha(N))$
+**Chance of Collision:** $\frac{N^2}{MOD_1 * MOD_2}$
 
 <LanguageSection>
 <CPPSection>
@@ -274,7 +276,6 @@ class DominikArray {
 		}
 };
 
-// https://oj.uz/problem/view/COCI16_zamjene (input omitted due to length)
 int main() {
 	std::ios::sync_with_stdio(false);
 	std::cin.tie(NULL);
