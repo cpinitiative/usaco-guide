@@ -32,17 +32,17 @@ A component that consisted of the indexes $0$, $3$, and $4$ would need the numbe
 
 We can get all the needed numbers by sorting the given array and getting the numbers at the positions of the components, but how can we quickly check if the two sets of numbers are the same? The answer is hashing.
 
-If we assign each number a certain power of a prime $P$ ($42$ gets a power of $30$, $50$ gets a power of $35$, etc.),
-we can obtain our hash by multiplying each power by the number of times it occurs in the set.
+If we assign each number a certain random number,
+we can obtain our hash by multiplying each random number by the number of times it occurs in the set.
 
-For example, if our component was the multiset ${3, 3, 4, 4, 5}$, and each number's power was itself, our hash would be:
+For example, if our component was the multiset ${3, 3, 4, 4, 5}$, and $R_i$ would be the random number of $i$, our hash would be:
 $$
-2 \cdot P^3 + 2 \cdot P^4 + 1 \cdot P^5
+2 \cdot R_3 + 2 \cdot R_4 + 1 \cdot R_5
 $$
 
 <Info>
 
-It's also possible to assign each distinct number in the array a random 64-bit integer.
+It's also possible to assign each distinct number in the array a distinct power of a prime $P$.
 
 </Info>
 
@@ -51,7 +51,7 @@ For example, if our component was just the number $3$ but needs a $4$ to be sort
 Having this "required hash" allows us to quickly check if each component is sortable or not.
 
 When executing a union operation (aka a type 1 query), we can add the hashes and required hashes of the two components to get the hash of the combined component.
-When swapping two array elements (a type 2 query), we add and subtract a power of $P$ from each component, while leaving the required hashes untouched.
+When swapping two array elements (a type 2 query), we add and subtract the swapped elements' random values from each component, while leaving the required hashes untouched.
 
 ### Tracking "Bad" Components
 
@@ -90,6 +90,7 @@ When adding or removing a bad component, we get its difference $d$ and see how m
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <random>
 #include <algorithm>
 
 using std::cout;
@@ -102,7 +103,7 @@ struct Hash {
 	static const ll MOD2 = 1e9 + 9;
  
 	ll h1, h2;
-	Hash(ll h1, ll h2) : h1(h1), h2(h2) { }
+	Hash(ll h1, ll h2) : h1(h1 % MOD1), h2(h2% MOD2) { }
 	Hash() : h1(0), h2(0) { }
  
 	Hash operator+(const Hash& o) {
@@ -117,7 +118,6 @@ struct Hash {
 		return Hash(h1 * n % MOD1, h2 * n % MOD2);
 	}
  
-	/** @return the hashes that can be paired with this one to make a sum of 0 */
 	inline vector<Hash> zero_pairs() {
 		return {
 			Hash(MOD1 - h1, MOD2 - h2), Hash(-h1, -h2),
@@ -146,8 +146,6 @@ struct HashFn {
 
 class DominikArray {
 	private:
-		const ll POW = 1e6 + 3;
-
 		vector<int> arr;
 		vector<int> sorted;
 		
@@ -155,9 +153,11 @@ class DominikArray {
 		vector<int> size;
 		int bad_num = 0;  // # of bad components (used for type 3)
 
-		std::unordered_map<int, Hash> elem_pow;  // raise to the power of the value
-		vector<Hash> hash;  // the current hash of a component
-		vector<Hash> req_hash;  // the needed hash for a component to be sortable
+		std::unordered_map<int, Hash> elem_val;  // each element's random number
+		// the current hash of a component
+		vector<Hash> hash;
+		// the needed hash for a component to be able to be sorted
+		vector<Hash> req_hash;
 		// the hash differences of the bad components
 		std::unordered_map<Hash, ll, HashFn> bad_diff;
 		ll cloud_pairs = 0;  // # of valid component pairs (used for type 4)
@@ -201,20 +201,20 @@ class DominikArray {
 			sorted = arr;
 			std::sort(sorted.begin(), sorted.end());
 
-			// perform coordinate compression
-			Hash curr_hsh(1, 1);
+			std::random_device rd;
+			std::mt19937 gen(42069);
+			std::uniform_int_distribution<long long> distr(1, INT64_MAX);
 			for (int i : sorted) {
-				if (!elem_pow.count(i)) {
-					elem_pow[i] = curr_hsh;
-					curr_hsh = curr_hsh.exp(POW);
+				if (!elem_val.count(i)) {
+					elem_val[i] = Hash(distr(gen), distr(gen));
 				}
 			}
 			
 			// set up DSU and the hashes
 			for (int i = 0; i < arr.size(); i++) {
 				parent[i] = i;
-				hash[i] = elem_pow[arr[i]];
-				req_hash[i] = elem_pow[sorted[i]];
+				hash[i] = elem_val[arr[i]];
+				req_hash[i] = elem_val[sorted[i]];
 				add_if_bad(i);
 			}
 		}
@@ -228,10 +228,10 @@ class DominikArray {
 			remove_if_bad(top_b);
 
 			// change the hashes of the two components
-			hash[top_a] = hash[top_a] + elem_pow[arr[b]] - elem_pow[arr[a]];
-			hash[top_b] = hash[top_b] + elem_pow[arr[a]] - elem_pow[arr[b]];
+			hash[top_a] = hash[top_a] + elem_val[arr[b]] - elem_val[arr[a]];
+			hash[top_b] = hash[top_b] + elem_val[arr[a]] - elem_val[arr[b]];
 
-			// add them back (if applicable)
+			// add the back (if applicable)
 			add_if_bad(top_a);
 			add_if_bad(top_b);
 
@@ -274,6 +274,7 @@ class DominikArray {
 		}
 };
 
+// https://oj.uz/problem/view/COCI16_zamjene (input omitted due to length)
 int main() {
 	std::ios::sync_with_stdio(false);
 	std::cin.tie(NULL);
