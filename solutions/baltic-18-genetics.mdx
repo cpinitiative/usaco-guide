@@ -1,0 +1,85 @@
+---
+id: baltic-18-genetics
+source: Baltic OI 2018
+title: Genetics
+author: Kevin Sheng
+---
+
+[Official Analysis](https://boi2018.progolymp.se/spoiler-day2.pdf)
+
+## Explanation
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}()$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <random>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const vector<char> DNA{'A', 'T', 'C', 'G'};
+const int P = 10;
+const int MOD = 1e9 + 7;
+
+int main() {
+	int dna_num, seq_len;
+	int diff_num;
+	std::cin >> dna_num >> seq_len >> diff_num;
+
+	vector<vector<char>> dna(dna_num, vector<char>(seq_len));
+	for (int d = 0; d < dna_num; d++) {
+		for (int i = 0; i < seq_len; i++) {
+			std::cin >> dna[d][i];
+		}
+	}
+
+	std::random_device rd;
+	std::mt19937 gen(42069);
+	std::uniform_int_distribution<> distr(1, INT32_MAX);
+	vector<long long> weights(dna_num);
+	for (int d = 0; d < dna_num; d++) {
+		weights[d] = distr(gen);
+	}
+	long long weight_sum = std::accumulate(weights.begin(), weights.end(), 0LL);
+
+	vector<vector<long long>> dna_eq(
+		DNA.size(), vector<long long>(seq_len)
+	);
+	for (int d = 0; d < DNA.size(); d++) {
+		for (int i = 0; i < dna_num; i++) {
+			for (int j = 0; j < seq_len; j++) {
+				dna_eq[d][j] += (dna[i][j] == DNA[d]) * weights[i];
+			}
+		}
+	}
+
+	for (int d = 0; d < dna_num; d++) {
+		bool possible = true;
+		long long missed_amt = 0;
+		for (int i = 0; i < DNA.size(); i++) {
+			for (int j = 0; j < seq_len; j++) {
+				if (dna[d][j] == DNA[i]) {
+					missed_amt += weight_sum - dna_eq[i][j];
+				}
+			}
+		}
+		
+		if (missed_amt == (weight_sum - weights[d]) * diff_num) {
+			cout << (d + 1) << endl;
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
