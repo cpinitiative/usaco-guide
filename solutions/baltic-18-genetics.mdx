@@ -9,11 +9,11 @@ author: Kevin Sheng
 
 ## Explanation
 
-A naive method would be to iterate through each pair of clones and somehow calculate in near $\mathcal{O}(1)$ time
-the number of positions at which their genomes differ.
-This seems to be virtually impossible, so we should probably try a different method entirely.
+A naive method would be to iterate through each pair of clones and calculate the number 
+of positions with different genomes in near $\mathcal{O}(1)$ time.
+This seems to be virtually impossible, so we should probably try a different method.
 
-What if for each clone, we somehow managed to check them against all the other clones at the same time?
+What if we somehow managed to check each clone against all the other clones at the same time?
 This way we could iterate through each character and maintain an $\mathcal{O}(N^2)$ time complexity.
 
 We can precalculate for each position the number of `A`s, `T`s, `C`s, and `G`s that all the clones have.
@@ -27,7 +27,7 @@ two is still $2k$, the same as if the subject differed from both by $k$ position
 
 To address this problem, we can assign each clone a random weight $R_i$.
 Then, instead of just calculating the *number* of clones with a certain genome at a certain position,
-we calculate the sum of the weights of these clones instead.
+we calculate the sum of the weights of these clones.
 This allows us to differentiate between a genome difference due to clone $A$ versus a genome difference due to clone $B$.
 
 ## Implementation
