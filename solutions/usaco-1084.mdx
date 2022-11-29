@@ -2,12 +2,151 @@
 id: usaco-1084
 source: USACO Bronze 2021 January
 title: Even More Odd Photos
-author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee
+author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee, Vivian Han
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_jan21.html)
 
-## Video Solution
+## Internal Video Solution
+
+By Vivian Han
+
+<Youtube id="gyg047C-754" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+//#define reststops 1;
+//#ifdef reststops
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int32_t trailLen, stopNum, fRate, bRate;
+int32_t x[100000];
+int32_t c[100000];
+bool good[100000];
+
+int main()
+{
+
+	ifstream in;
+	in.open("reststops.in");
+	in >> trailLen >> stopNum >> fRate >> bRate;
+//	scan in rest stop data
+	for (int i = 0 ; i < stopNum; i++) {
+		in >> x[i] >> c[i];
+	}
+
+	//find all "best" stops
+	int32_t max = 0;
+	for (int i = stopNum-1; i >= 0; i--) {
+		good[i] = false;
+		if (c[i] > max) { //there are no stops after stop i that are "better"
+			good[i] = true;
+			max = c[i];
+		}
+	}
+
+	//simulate the whole trail
+	long long prevStopPos = 0;
+	long long ans = 0;
+	for (int i = 0; i < stopNum; i++) {
+		if (good[i]) {
+			long long travelDist = x[i] - prevStopPos;
+			long long fTime = travelDist * fRate;
+			long long bTime = travelDist * bRate;
+			long long restTime = fTime - bTime;
+			ans += restTime * c[i];
+			prevStopPos = x[i];
+		}
+	}
+// */
+	ofstream out;
+	out.open("reststops.out");
+	out << ans << endl;
+	out.close();
+
+	//cout << ans << endl;
+
+	return 0;
+}
+//#endif
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class RestStops {
+
+	static int[] x, c;
+	static boolean[] good;
+
+	public static void main(String[] args) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
+			String[] line = br.readLine().split(" ");
+			int trailLen = Integer.parseInt(line[0]); //this value is never used...
+			int stopNum = Integer.parseInt(line[1]);
+			int fRate = Integer.parseInt(line[2]);
+			int bRate = Integer.parseInt(line[3]);
+
+			x = new int[stopNum];
+			c = new int[stopNum];
+			good = new boolean[stopNum];
+
+			//scan in rest stop data
+			for (int i = 0 ; i < stopNum; i++) {
+				line = br.readLine().split(" ");
+				x[i] = Integer.parseInt(line[0]);
+				c[i] = Integer.parseInt(line[1]);
+			}
+			br.close();
+
+			//find all "best" stops
+			int max = 0;
+			for (int i = stopNum-1; i >= 0; i--) {
+				if (c[i] > max) { //there are no stops after stop i that are "better"
+					good[i] = true;
+					max = c[i];
+				}
+			}
+
+			//simulate the whole trail
+			int prevStopPos = 0;
+			long ans = 0;
+			for (int i = 0; i < stopNum; i++) {
+				if (good[i]) {
+					long travelDist = x[i] - prevStopPos;
+					long fTime = travelDist * fRate;
+					long bTime = travelDist * bRate;
+					long restTime = fTime - bTime;
+					ans += restTime * c[i];
+					prevStopPos = x[i];
+				}
+			}
+
+			BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
+			bw.write(ans + "\n");
+			bw.close();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+	
+## External Video Solution
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <Youtube id="VbPjZamNA40" />
