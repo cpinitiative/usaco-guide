@@ -4,23 +4,8 @@ import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLa
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Danger from './Danger';
 
-export const LanguageSection = (props: {
-  children?: React.ReactNode;
-}): JSX.Element => {
+const sectionFromLang = sections => {
   const { lang: userLang } = useContext(UserDataContext);
-
-  const sections = {};
-  React.Children.map(props.children, child => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const type = (child as any).type.name;
-    const typeToLang = {
-      CPPSection: 'cpp',
-      JavaSection: 'java',
-      PySection: 'py',
-    };
-    sections[typeToLang[type]] = child;
-  });
-
   if (userLang === 'showAll') {
     return (
       <>
@@ -75,6 +60,48 @@ export const LanguageSection = (props: {
   }
 
   return sections[userLang];
+};
+
+export const LanguageSection = (props: {
+  children?: React.ReactNode;
+}): JSX.Element => {
+  const sections = {};
+  React.Children.map(props.children, child => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const type = (child as any).type.name;
+    const typeToLang = {
+      CPPSection: 'cpp',
+      JavaSection: 'java',
+      PySection: 'py',
+    };
+    sections[typeToLang[type]] = child;
+  });
+  return sectionFromLang(sections);
+};
+
+export const CPPOnly = (props: { children?: React.ReactNode }): JSX.Element => {
+  return sectionFromLang({
+    cpp: props.children,
+    java: <></>,
+    py: <></>,
+  });
+};
+export const JavaOnly = (props: {
+  children?: React.ReactNode;
+}): JSX.Element => {
+  return sectionFromLang({
+    cpp: <></>,
+    java: props.children,
+    py: <></>,
+  });
+};
+
+export const PyOnly = (props: { children?: React.ReactNode }): JSX.Element => {
+  return sectionFromLang({
+    cpp: <></>,
+    java: <></>,
+    py: props.children,
+  });
 };
 
 export const CPPSection = (props: {

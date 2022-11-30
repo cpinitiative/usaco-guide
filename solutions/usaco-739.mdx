@@ -2,10 +2,184 @@
 id: usaco-739
 source: USACO Silver 2017 US Open 
 title: Bovine Genomics
-author: Brad Ma, Kevin Sheng
+author: Brad Ma, Kevin Sheng, Jay Fu
 ---
 
 [Official Editorial (C++)](http://www.usaco.org/current/data/sol_cownomics_silver_open17.html)
+
+## Video Solution
+By Jay Fu
+
+<Youtube id="hKBMRogNo0o" />
+
+<Spoiler title="Video Solution Code">
+    
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cmath>
+using namespace std;
+
+int N, M;
+string spotty[500], plain[500];
+int S[500][50], P[500][50], A[64];
+
+// test if the set of positions j1,j2,j3 is enough to explain spottiness
+bool test_location(int j1, int j2, int j3)
+{
+	bool good = true;
+
+	// mark the values in A used by a spotty cow
+	for (int i=0; i<N; i++)
+		A[S[i][j1]*16 + S[i][j2]*4 + S[i][j3]] = 1;
+
+	// see if a plain cow has the same values as a spotty cow
+	for (int i=0; i<N; i++)
+		if (A[P[i][j1]*16 + P[i][j2]*4 + P[i][j3]]) good = false;
+
+	// reset int [] A
+	for (int i=0; i<N; i++)
+		A[S[i][j1]*16 + S[i][j2]*4 + S[i][j3]] = 0;
+	return good;
+}
+
+int main(void)
+{
+	ifstream fin ("cownomics.in");
+	ofstream fout ("cownomics.out");
+	fin >> N >> M;
+
+	// read in input
+	// convert letters in String [] spotty to numbers in int [][] S
+	for (int i=0; i<N; i++) {
+		fin >> spotty[i];
+		for (int j=0; j<M; j++) {
+			if (spotty[i][j]=='A') S[i][j] = 0;
+			if (spotty[i][j]=='C') S[i][j] = 1;
+			if (spotty[i][j]=='G') S[i][j] = 2;
+			if (spotty[i][j]=='T') S[i][j] = 3;
+		}
+	}
+
+	// read in input
+	// convert letters in String [] plain to numbers in int [][] P
+	for (int i=0; i<N; i++) {
+		fin >> plain[i];
+		for (int j=0; j<M; j++) {
+			if (plain[i][j]=='A') P[i][j] = 0;
+			if (plain[i][j]=='C') P[i][j] = 1;
+			if (plain[i][j]=='G') P[i][j] = 2;
+			if (plain[i][j]=='T') P[i][j] = 3;
+		}
+	}
+
+	int answer = 0;
+	// test every possible set of three distinct positions to see if it can explain spottiness
+	for (int j1=0; j1<M; j1++)
+		for (int j2=j1+1; j2<M; j2++)
+			for (int j3=j2+1; j3<M; j3++)
+				if (test_location(j1,j2,j3)) answer++;
+	fout << answer << "\n";
+	return 0;
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class cownomicsSilver {
+
+	static String [] spotty,plain;
+	static int N,M;
+	static int [][] S,P;
+	static int [] A;
+
+	// test if the set of positions j1,j2,j3 is enough to explain spottiness
+	static boolean test_location (int j1, int j2, int j3) {
+		boolean good = true;
+
+		// mark the values in A used by a spotty cow
+		for (int i=0; i<N; i++)
+			A[S[i][j1]*16 + S[i][j2]*4 + S[i][j3]] = 1;
+
+		// see if a plain cow has the same values as a spotty cow
+		for (int i=0; i<N; i++)
+			if (A[P[i][j1]*16 + P[i][j2]*4 + P[i][j3]] == 1) good = false;
+
+		// reset int [] A
+		for (int i=0; i<N; i++)
+			A[S[i][j1]*16 + S[i][j2]*4 + S[i][j3]] = 0;
+
+		return good;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cownomics.in"));
+		PrintWriter out = new PrintWriter("cownomics.out");
+		StringTokenizer s = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(s.nextToken());
+		M = Integer.parseInt(s.nextToken());
+		spotty = new String [500];
+		plain = new String [500];
+		S = new int [500][50];
+		P = new int [500][50];
+		A = new int [64];
+
+		// read in input
+		// convert letters in String [] spotty to numbers in int [][] S
+		for (int i = 0; i < N; i++) {
+			spotty[i] = br.readLine();
+			for (int j = 0; j < M; j++) {
+				if (spotty[i].charAt(j) == 'A') S[i][j] = 0;
+				if (spotty[i].charAt(j) == 'C') S[i][j] = 1;
+				if (spotty[i].charAt(j) == 'G') S[i][j] = 2;
+				if (spotty[i].charAt(j) == 'T') S[i][j] = 3;
+			}
+		}
+
+		// read in input
+		// convert letters in String [] plain to numbers in int [][] P
+		for (int i = 0; i < N; i++) {
+			plain[i] = br.readLine();
+			for (int j = 0; j < M; j++) {
+				if (plain[i].charAt(j) == 'A') P[i][j] = 0;
+				if (plain[i].charAt(j) == 'C') P[i][j] = 1;
+				if (plain[i].charAt(j) == 'G') P[i][j] = 2;
+				if (plain[i].charAt(j) == 'T') P[i][j] = 3;
+			}
+		}
+
+		int answer = 0;
+		// test every possible set of three distinct positions to see if it can explain spottiness
+		for (int j1 = 0; j1 < M; j1++) {
+			for (int j2 = j1+1; j2 < M; j2++) {
+				for (int j3 = j2+1; j3 < M; j3++) {
+					if (test_location(j1,j2,j3)) answer++;
+				}
+			}
+		}
+		out.println(answer);
+		out.close();
+	}
+}
+```
+</JavaSection>
+
+
+</LanguageSection>
+</Spoiler>
 
 ## Implementation
 

@@ -112,7 +112,7 @@ const AuthorCard = ({
   };
   return (
     <div
-      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border border-gray-300 dark:border-gray-700`}
+      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border-2 dark:border-0 border-gray-200 dark:bg-gray-800 rounded-lg`}
     >
       <blockquote className="sm:flex-grow sm:flex sm:items-center text-center sm:text-left max-w-sm sm:max-w-3xl mx-auto w-full">
         <div className="flex-shrink-0">
@@ -187,12 +187,12 @@ export default function AuthorsSection() {
 
   return (
     <section className="bg-gray-100 dark:bg-gray-900 overflow-hidden">
-      <div className="py-6 sm:py-12 text-center border-b-2 border-gray-300 dark:border-gray-700">
+      <div className="py-6 sm:py-12 text-center">
         <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-700 dark:text-white px-4">
           Authors you can trust.
         </h2>
       </div>
-      <div className="lg:grid lg:grid-cols-2 -m-px">
+      <div className="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6 lg:px-8 2xl:px-16 py-16">
         {Authors.map(author => (
           <AuthorCard
             author={author}

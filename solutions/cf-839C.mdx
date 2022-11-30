@@ -2,7 +2,7 @@
 id: cf-839C
 source: CF
 title: Journey
-author: Reyansh Bahl
+author: Reyansh Bahl, George Pong
 ---
 
 [Official Solution (C++)](https://codeforces.com/blog/entry/53815)
@@ -100,4 +100,55 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+class Point():
+	"""Represents a point or node along our depth-first traversal frontier."""
+
+	def __init__(self, node: int, length: int, probability: float):
+		self.node = node
+		self.length = length
+		self.probability = probability
+
+
+n = int(input())
+graph = [[] for _ in range(n)]
+
+for _ in range(n - 1):
+	a, b = map(lambda i: int(i) - 1, input().split())
+	graph[a].append(b)
+	graph[b].append(a)
+
+visited = [False] * n
+visited[0] = True
+stack = [Point(0, 0, 1)]
+
+end_lengths = []
+while stack:
+	curr = stack.pop()
+
+	possible_moves = 0
+	for adj in graph[curr.node]:
+		if not visited[adj]:
+			possible_moves += 1
+
+	for adj in graph[curr.node]:
+		if not visited[adj]:
+			stack.append(
+				Point(adj, curr.length + 1, curr.probability / possible_moves))
+			visited[adj] = True
+
+	if not possible_moves:  # current node is the end of a path
+		end_lengths.append((curr.length, curr.probability))
+
+expected_value = 0
+for length, probability in end_lengths:
+	expected_value += length * probability
+print(expected_value)
+```
+
+</PySection>
+
 </LanguageSection>

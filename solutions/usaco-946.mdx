@@ -2,299 +2,314 @@
 id: usaco-946
 source: USACO Gold 2019 Open
 title: I Would Walk 500 Miles
-author: Benjamin Qi, Aryansh Shrivastava
+author: Benjamin Qi, Aryansh Shrivastava, Chuyang Wang
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_walk_gold_open19.html)
 
-## Solution 1
 
-$\mathcal{O}(N^2)$ Prim's is intended; check the analysis.
+## Solution 1: Prim's Algorithm
 
-## Solution 2
+For this problem, we want to maximize the minimum of the number of miles two
+cows are willing to walk, henceforth referred to as $M$. Let's consider a
+Minimum Spanning Tree (MST) of all $N$ cows. By adding the $i$-th edge to the
+MST, it implies that all edges between the rest $N - i$ components have weights
+higher or equal than this added edge, or, in other words, $M$ is equal to the
+weight of this added edge.
 
-Kruskal with two iterations of counting sort passes in 1966 ms ...
+In case of splitting the cows into $K$ groups, we remove the $K - 1$
+edges from the MST which have the maximum weight. $M$ is then equal to the
+weight of the minimum of those removed edges. If the edges in the MST are sorted
+in ascending order, $M$ would be the weight of the $N - K + 1$-th edge of the
+MST.
 
+As the typical implementation of Kruskal's Algorithm requires
+$\mathcal{O}(N^2 \log N)$ time for a dense graph as in our case, we use instead
+Prim's Algorithm with linear search for the closest vertex. Each scan only takes
+$\mathcal{O}(N)$ time, and we only have to do $N$ scans.
+
+Time Complexity: $\mathcal{O}(N^2)$
+
+
+<LanguageSection>
+
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 using ll = long long;
-using ld = long double;
-using db = double;
-using str = string; // yay python!
 
-using pi = pair<int,int>;
-using pl = pair<ll,ll>;
-using pd = pair<db,db>;
-
-using vi = vector<int>;
-using vb = vector<bool>;
-using vl = vector<ll>;
-using vd = vector<db>;
-using vs = vector<str>;
-using vpi = vector<pi>;
-using vpl = vector<pl>;
-using vpd = vector<pd>;
-
-#define tcT template<class T
-#define tcTU tcT, class U
-// ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>;
-tcT, size_t SZ> using AR = array<T,SZ>;
-tcT> using PR = pair<T,T>;
-
-// pairs
-#define mp make_pair
-#define f first
-#define s second
-
-// vectors
-// oops size(x), rbegin(x), rend(x) need C++17
-#define sz(x) int((x).size())
-#define bg(x) begin(x)
-#define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend()
-#define sor(x) sort(all(x))
-#define rsz resize
-#define ins insert
-#define ft front()
-#define bk back()
-#define pb push_back
-#define eb emplace_back
-#define pf push_front
-
-#define lb lower_bound
-#define ub upper_bound
-tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
-
-// loops
-#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
-#define F0R(i,a) FOR(i,0,a)
-#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define R0F(i,a) ROF(i,0,a)
-#define trav(a,x) for (auto& a: x)
-
-const int MOD = 1e9+7; // 998244353;
-const int MX = 2e5+5;
-const ll INF = 1e18; // not too close to LLONG_MAX
-const ld PI = acos((ld)-1);
-const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
-template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
-
-// bitwise ops
-// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
-constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
-constexpr int p2(int x) { return 1<<x; }
-constexpr int msk2(int x) { return p2(x)-1; }
-
-ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
-ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
-
-tcT> bool ckmin(T& a, const T& b) {
-	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
-tcT> bool ckmax(T& a, const T& b) {
-	return a < b ? a = b, 1 : 0; }
-
-tcTU> T fstTrue(T lo, T hi, U f) {
-	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1;
-	}
-	return lo;
-}
-tcTU> T lstTrue(T lo, T hi, U f) {
-	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo+1)/2;
-		f(mid) ? lo = mid : hi = mid-1;
-	}
-	return lo;
-}
-tcT> void remDup(vector<T>& v) { // sort and remove duplicates
-	sort(all(v)); v.erase(unique(all(v)),end(v)); }
-tcTU> void erase(T& t, const U& u) { // don't erase
-	auto it = t.find(u); assert(it != end(t));
-	t.erase(it); } // element that doesn't exist from (multi)set
-
-// INPUT
-#define tcTUU tcT, class ...U
-tcT> void re(complex<T>& c);
-tcTU> void re(pair<T,U>& p);
-tcT> void re(V<T>& v);
-tcT, size_t SZ> void re(AR<T,SZ>& a);
-
-tcT> void re(T& x) { cin >> x; }
-void re(db& d) { str t; re(t); d = stod(t); }
-void re(ld& d) { str t; re(t); d = stold(t); }
-tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
-
-tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
-tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
-tcT> void re(V<T>& x) { trav(a,x) re(a); }
-tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
-tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
-
-// TO_STRING
-#define ts to_string
-str ts(char c) { return str(1,c); }
-str ts(const char* s) { return (str)s; }
-str ts(str s) { return s; }
-str ts(bool b) {
-	#ifdef LOCAL
-		return b ? "true" : "false";
-	#else
-		return ts((int)b);
-	#endif
-}
-tcT> str ts(complex<T> c) {
-	stringstream ss; ss << c; return ss.str(); }
-str ts(V<bool> v) {
-	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
-	res += "}"; return res; }
-template<size_t SZ> str ts(bitset<SZ> b) {
-	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
-	return res; }
-tcTU> str ts(pair<T,U> p);
-tcT> str ts(T v) { // containers with begin(), end()
-	#ifdef LOCAL
-		bool fst = 1; str res = "{";
-		for (const auto& x: v) {
-			if (!fst) res += ", ";
-			fst = 0; res += ts(x);
-		}
-		res += "}"; return res;
-	#else
-		bool fst = 1; str res = "";
-		for (const auto& x: v) {
-			if (!fst) res += " ";
-			fst = 0; res += ts(x);
-		}
-		return res;
-
-	#endif
-}
-tcTU> str ts(pair<T,U> p) {
-	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")";
-	#else
-		return ts(p.f)+" "+ts(p.s);
-	#endif
-}
-
-// OUTPUT
-tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) {
-	pr(t); pr(u...); }
-void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) {
-	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
-
-// DEBUG
-void DBG() { cerr << "]" << endl; }
-tcTUU> void DBG(const T& t, const U&... u) {
-	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
-	DBG(u...); }
-#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
-	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
-	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
-		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
-#else
-	#define dbg(...) 0
-	#define chk(...) 0
-#endif
-
-void setPrec() { cout << fixed << setprecision(15); }
-void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
-// FILE I/O
-void setIn(str s) { freopen(s.c_str(),"r",stdin); }
-void setOut(str s) { freopen(s.c_str(),"w",stdout); }
-void setIO(str s = "") {
-	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit);
-	// throws exception when do smth illegal
-	// ex. try to read letter into int
-	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
-}
-
-const int a = 2019201997-2019201913;
-const int b = 2019201997-2019201949;
-
-int N,K;
-
-pi rhsh(int x) { return {x>>16,x&((1<<16)-1)}; }
-int wei(int x) { return (x>>16)*a+(x&((1<<16)-1))*b; }
+const ll MOD = 2019201997LL;
+const ll FACTOR1 = 2019201913LL;
+const ll FACTOR2 = 2019201949LL;
 
 /**
- * Description: Disjoint Set Union with path compression
- 	* and union by size. Add edges and test connectivity.
- 	* Use for Kruskal's or Boruvka's minimum spanning tree.
- * Time: O(\alpha(N))
- * Source: CSAcademy, KACTL
- * Verification: *
+ * @return the number of miles cow a + 1 and b + 1 are willing to walk to see
+ * each other
  */
+ll calc_length(ll a, ll b) {
+	a++, b++;
+	return (a * FACTOR1 + b * FACTOR2) % MOD;
+}
 
-struct DSU {
-	vi e; void init(int N) { e = vi(N,-1); }
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-	bool sameSet(int a, int b) { return get(a) == get(b); }
-	int size(int x) { return -e[get(x)]; }
-	bool unite(int x, int y) { // union by size
-		x = get(x), y = get(y); if (x == y) return 0;
-		if (e[x] > e[y]) swap(x,y);
-		e[x] += e[y]; e[y] = x; return 1;
+/**
+ * Prim's Algorithm for dense graph to build the MST by scanning
+ * @return the edge lengths in the MST
+ */
+vector<ll> prim(int N) {
+	vector<ll> dist(N, MOD);
+	vector<bool> visited(N, false);
+
+	for (int i = 0; i < N; i++) {
+		// find the nearest node to the current MST
+		int min_dist_node = -1;
+		for (int j = 0; j < N; j++) {
+			if (!visited[j] && (min_dist_node < 0 || dist[j] < dist[min_dist_node])) {
+				min_dist_node = j;
+			}
+		}
+
+		// add this node to the MST
+		visited[min_dist_node] = true;
+
+		// update the distances between the MST and other unconnected nodes
+		for (int j = 0; j < N; j++) {
+			if (!visited[j]) {
+				dist[j] = min(
+					dist[j], 
+					calc_length(min(min_dist_node, j), max(min_dist_node, j))
+				);
+			}
+		}
 	}
-};
-
-/**template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
-	sort(all(ed));
-	T ans = 0; DSU D; D.init(N); // edges that unite are in MST
-	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
-	return ans;
-}*/
-
-const int SZ = 28121250;
-int ed[SZ], res[SZ];
-DSU D;
-
-int cnt[1<<16];
+	return dist;
+}
 
 int main() {
-	setIO("walk");
-	clock_t beg = clock();
-	re(N,K); D.init(N+1);
-	dbg((db)(clock()-beg)/CLOCKS_PER_SEC);
-	{
-		FOR(i,1,N+1) FOR(j,i+1,N+1) cnt[(a*i+b*j)&((1<<16)-1)] ++;
-		int sum = 0; R0F(i,1<<16) swap(sum,cnt[i]), sum += cnt[i];
-		FOR(i,1,N+1) FOR(j,i+1,N+1) res[cnt[(a*i+b*j)&((1<<16)-1)]++] = (i<<16)+j;
-	}
-	dbg((db)(clock()-beg)/CLOCKS_PER_SEC);
-	{
-		F0R(i,1<<16) cnt[i] = 0;
-		FOR(i,1,N+1) FOR(j,i+1,N+1) cnt[(a*i+b*j)>>16] ++;
-		int sum = 0; R0F(i,1<<16) swap(sum,cnt[i]), sum += cnt[i];
-		F0R(i,N*(N-1)/2) ed[cnt[wei(res[i])>>16]++] = res[i];
-	}
-	dbg((db)(clock()-beg)/CLOCKS_PER_SEC);
-	vi ans;
-	F0R(i,N*(N-1)/2) {
-		int t = ed[i];
-		pi p = rhsh(t);
-		if (D.unite(p.f,p.s)) ans.pb(2019201997-wei(t));
-	}
-	ps(ans[N-K]);
-	dbg((db)(clock()-beg)/CLOCKS_PER_SEC);
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+
+	int N, K;
+	cin >> N >> K;
+
+	vector<ll> mst = prim(N);
+	sort(mst.begin(), mst.end());
+	cout << mst[N - K] << endl;
 }
 ```
+</CPPSection>
 
-## Solution 3
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
 
-(By Aryansh Shrivastava)
+public class Walk {
+	static final long MOD = 2019201997L;
+	static final long FACTOR1 = 2019201913L;
+	static final long FACTOR2 = 2019201949L;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("walk.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		br.close();
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		long[] mst = prim(N);
+		Arrays.sort(mst);
+
+		PrintWriter pr = new PrintWriter("walk.out");
+		pr.println(mst[N - K]);
+		pr.close();
+	}
+
+	/**
+	* @return the number of miles cow a + 1 and b + 1 are willing to walk to see
+	* each other
+	*/
+	public static long calcLength(long a, long b) {
+		a++;
+		b++;
+		return (a * FACTOR1 + b * FACTOR2) % MOD;
+	}
+
+	/**
+	* Prim's Algorithm for dense graph to build the MST by scanning
+	* @return the edge lengths in the MST
+	*/
+	public static long[] prim(int N) {
+		long[] dist = new long[N];
+		boolean[] visited = new boolean[N];
+		for (int i = 0; i < N; i++) {
+			dist[i] = MOD;
+		}
+
+		for (int i = 0; i < N; i++) {
+			// find the nearest node to the current MST
+			int minDistNode = -1;
+			for (int j = 0; j < N; j++) {
+				if (!visited[j] && (minDistNode < 0 || dist[j] < dist[minDistNode])) {
+					minDistNode = j;
+				}
+			}
+
+			// add this node to the MST
+			visited[minDistNode] = true;
+
+			// update the distances between the MST and other unconnected nodes
+			for (int j = 0; j < N; j++) {
+				if (!visited[j]) {
+					dist[j] = Math.min(
+						dist[j], 
+						calcLength(
+							Math.min(minDistNode, j), 
+							Math.max(minDistNode, j)
+						)
+					);
+				}
+			}
+		}
+		return dist;
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+
+## Solution 2: Kruskal's Algorithm & Two-Pass Radix Sort 
+
+Alternatively, we can also use Kruskal's Algorithm to construct our MST. Note
+that only the step of sorting all edges takes too long time. If we manage to
+sort all edges in linear time, we might be able to solve it with Kruskal's
+Algorithm as well.
+
+To sort these edges, we can apply a two-pass radix sort. In particular, we first
+use counting sort to sort the first 16 bits ($[0, 2^{16})$) of the weights. Then,
+in the second iteration, we sort the rest 16 bits ($[2^{16}, 2^{32})$). After the
+sorting process, we apply the unmodified Kruskal's Algorithm on the edges and
+$M$ is equal to the weight of the $N - K + 1$-th longest edge of the MST.
+
+Time Complexity: $\mathcal{O}(N^2)$
+
+
+<Warning title="TLE">
+Some large test cases might get TLE due to the bad constant factor for the 
+radix sort. 
+</Warning>
+
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long int;
+
+// BeginCodeSnip{DSU}
+struct DSU {
+	int size;
+	vector<int> dsu;
+	DSU(int s) : size(s), dsu(s, -1) {}
+	int find(int x) {
+		if (dsu[x] < 0) return x;
+		return dsu[x] = find(dsu[x]);
+	}
+	bool unite(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) return false;
+		if (dsu[a] > dsu[b]) swap(a, b);
+		dsu[a] += dsu[b];
+		dsu[b] = a;
+		return true;
+	}
+};
+// EndCodeSnip
+
+const ll MOD = 2019201997LL;
+const ll FACTOR1 = 2019201913LL;
+const ll FACTOR2 = 2019201949LL;
+
+/** @return the number of miles cow a and b are willing to walk to see each other */
+ll calc_length(ll a, ll b) { return (a * FACTOR1 + b * FACTOR2) % MOD; }
+
+/**
+ * Performs a two-pass radix sort on all the edges in the complete graph between
+ * all cows
+ * @return a in ascending order sorted list of all edges
+ */
+vector<pair<int, int>> calc_sorted_edges(int N) {
+	const int MAX_COMP = 1 << 16;
+	vector<int> count(MAX_COMP, 0);
+	int edges_count = N * (N - 1) / 2;
+	vector<pair<int, int>> pass_1(edges_count);
+	vector<pair<int, int>> pass_2(edges_count);
+
+	// first pass of the radix sort on [0, 1 << 16)
+	for (int i = 1; i <= N; i++) {
+		for (int j = i + 1; j <= N; j++) {
+			count[calc_length(i, j) & (MAX_COMP - 1)]++;
+		}
+	}
+	for (int i = 1; i < MAX_COMP; i++) {
+		count[i] += count[i - 1];
+	}
+	for (int i = 1; i <= N; i++) {
+		for (int j = i + 1; j <= N; j++) {
+			pass_1[--count[calc_length(i, j) & (MAX_COMP - 1)]] = {i, j};
+		}
+	}
+
+	// second pass of the radix sort on [1 << 16, 1 << 32)
+	count.assign(1 << 16, 0);
+	for (int i = 1; i <= N; i++) {
+		for (int j = i + 1; j <= N; j++) {
+			count[calc_length(i, j) >> 16]++;
+		}
+	}
+	for (int i = 1; i < MAX_COMP; i++) {
+		count[i] += count[i - 1];
+	}
+	for (int i = edges_count - 1; i >= 0; i--) {
+		auto &[a, b] = pass_1[i];
+		pass_2[--count[calc_length(a, b) >> 16]] = pass_1[i];
+	}
+
+	return pass_2;
+}
+
+int main() {
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+
+	int N, K;
+	cin >> N >> K;
+
+	vector<pair<int, int>> edges = calc_sorted_edges(N);
+	// length of edges of the MST
+	vector<ll> edge_lens;
+	// Kruskal's Algorithm to construct the MST
+	DSU dsu(N + 1);
+	for (int i = 0; i < N * (N - 1) / 2; i++) {
+		auto &[a, b] = edges[i];
+		if (dsu.unite(a, b)) {
+			edge_lens.push_back(calc_length(a, b));
+		}
+	}
+
+	cout << edge_lens[N - K] << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+
+## Solution 3: Math
 
 Since this problem has its roots in optimizing a given weight expression, we are
 motivated to use math.
@@ -327,7 +342,7 @@ $$
 
 is maximized.
 
-Now, analyze the function's behavior: for large $x,y,$ the expression becomes
+Now, let's analyze the function's behavior: for large $x,y,$ the expression becomes
 small, and for small $x,y,$ the expression becomes large.
 
 But remembering the condition that $x,y$ must be in different groups to
@@ -360,19 +375,50 @@ by hand when we analyze the edge weight expression and use greedy logic to
 create the optimal grouping. (So the previous solutions will find the exact same
 grouping.)
 
-Senpat's $\mathcal{O}(1)$ code is below:
+Time Complexity: $\mathcal{O}(1)$
 
+
+<LanguageSection>
+
+Senpat's implementation:
+
+<CPPSection>
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
 
 int main(){
-	ifstream fin ("walk.in");
-	ofstream fout ("walk.out");
-	int n,k; fin >> n >> k;
-	int answer = 2019201997 - 48*n - 84*(k-1);
-	fout << answer << endl;
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+	int N, K; 
+	cin >> N >> K;
+	long long answer = 2019201997LL - 48LL * N - 84LL * (K - 1LL);
+	cout << answer << endl;
 }
-
 ```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Walk {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("walk.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		br.close();
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		long answer = 2019201997L - 48L * N - 84L * (K - 1L);
+
+		PrintWriter pr = new PrintWriter("walk.out");
+		pr.println(answer);
+		pr.close();
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
