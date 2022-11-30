@@ -203,7 +203,10 @@ export default function ProblemSolutions({
                             : undefined
                         }
                       >
-                        {submission.solutionCode}
+                        {submission.solutionCode.replace(
+                          /\b(?:fuck|shit|bitch|ass|pussy|bastard)\b/gi,
+                          '****'
+                        )}
                       </CodeBlock>
                     </div>
                   </div>
