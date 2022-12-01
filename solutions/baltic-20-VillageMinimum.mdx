@@ -17,5 +17,70 @@ author: Chuyang Wang
 **Time Complexity:** $\mathcal{O}(N)$
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
+/**
+ * Perform a deep-first search on the given node and swap villagers if
+ * necessary.
+ * @return the sum of length villagers need to travel
+ */
+int dfs(int node, int parent, vector<int> &changed_to,
+		const vector<vector<int>> &adj) {
+	int length_added = 0;
+
+	for (auto &child : adj[node]) {
+		if (child == parent) continue;
+		length_added += dfs(child, node, changed_to, adj);
+	}
+
+	/*
+	 * If the current node (villager) is still in its original house, exchange its
+	 * position with its parent node.
+	 */
+	if (parent >= 0 && changed_to[node] == node) {
+		changed_to[node] = changed_to[parent];
+		changed_to[parent] = node;
+		length_added += 2;
+	/*
+	 * If the current node is the root and did not swap its position yet, swap
+	 * it with any of its children.
+	 */
+	} else if (parent < 0 && changed_to[node] == node) {
+		changed_to[node] = changed_to[adj[node][0]];
+		changed_to[adj[node][0]] = node;
+		length_added += 2;
+	}
+
+	return length_added;
+}
+
+int main() {
+	int N;
+	cin >> N;
+
+	/*
+	 * Villager i will move to house changed_to[i]. At the beginning, all
+	 * villagers are in their own house, i.e. changed_to[i] = i
+	 */
+	vector<int> changed_to(N);
+	vector<vector<int>> adj(N);
+	for (int i = 0; i < N - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+		changed_to[i] = i;
+	}
+	changed_to[N - 1] = N - 1;
+
+	int total_length = dfs(0, -1, changed_to, adj);
+
+	cout << total_length << endl;
+	for (auto &i : changed_to) {
+		cout << i + 1 << " ";
+	}
+	cout << endl;
+}
 ```
