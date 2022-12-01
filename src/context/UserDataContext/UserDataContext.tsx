@@ -1,6 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  getFirestore,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -275,23 +281,27 @@ export const UserDataProvider = ({
             const localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
-              if (
-                confirm(
-                  `Override server data with local progress? (You'll lose your local progress if you choose no.)`
-                )
-              ) {
-                // sync all local data with firebase if the firebase account doesn't exist yet
-                setDoc(
-                  userDoc,
-                  UserDataContextAPIs.reduce((acc, cur) => {
+              // sync all local data with firebase if the firebase account doesn't exist yet
+              setDoc(
+                userDoc,
+                UserDataContextAPIs.reduce(
+                  (acc, cur) => {
                     return {
                       ...acc,
                       ...cur.exportValue(),
                     };
-                  }, {}),
-                  { merge: true }
-                );
-              }
+                  },
+                  {
+                    // this is to prevent us from accidentally overriding the user data
+                    // firebase security rules will have a check to make sure that this is actually the first time
+                    // the user has logged in. occasionally, with poor internet, firebase will glitch and
+                    // we will accidentally override user data.
+                    // see https://github.com/cpinitiative/usaco-guide/issues/534
+                    CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
+                  }
+                ),
+                { merge: true }
+              );
             }
           }
           data = data || {};
