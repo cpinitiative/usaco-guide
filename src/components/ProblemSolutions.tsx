@@ -1,3 +1,4 @@
+import Filter from 'bad-words';
 import * as React from 'react';
 import { useContext } from 'react';
 import { SignInContext } from '../context/SignInContext';
@@ -25,6 +26,7 @@ export default function ProblemSolutions({
   const { firebaseUser, lang } = useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
+  const filter = new Filter();
   const langArr = ['cpp', 'java', 'py'];
   langArr.sort(function (first, second) {
     if (first === lang && second !== lang) {
@@ -203,7 +205,9 @@ export default function ProblemSolutions({
                             : undefined
                         }
                       >
-                        {submission.solutionCode}
+                        {filter.isProfane(submission.solutionCode)
+                          ? filter.clean(submission.solutionCode)
+                          : submission.solutionCode}
                       </CodeBlock>
                     </div>
                   </div>
