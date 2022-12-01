@@ -10,6 +10,20 @@ author: Chuyang Wang
 
 ## Explanation
 
+This problem can be solved by a greedy approach. In particular, we perform a
+depth-first search on the given tree. For each node (villager) that is still at
+its original position, we swap it with its only neighbor, namely its parent
+node. For the root node which does not have a parent node, we can swap it with
+any of its children.
+
+By swapping two nodes where at least one of them is not processed yet, we can
+guarantee that no node will be swapped back to its original position. We can
+also show that swapping between neighbors is the optimal solution: Suppose we
+would swap two unprocessed nodes which are not neighbors. The distance the two
+nodes need to travel would then be equal or larger than 4. If we instead just
+swap them with their respective neighbors, the distance they need to travel is
+exactly 4. Therefore, swapping nodes that are not neighbors never lead to a
+better solution.
 
 
 ## Implementation
@@ -21,7 +35,7 @@ author: Chuyang Wang
 using namespace std;
 
 /**
- * Perform a deep-first search on the given node and swap villagers if
+ * Perform a depth-first search on the given node and swap villagers if
  * necessary.
  * @return the sum of length villagers need to travel
  */
