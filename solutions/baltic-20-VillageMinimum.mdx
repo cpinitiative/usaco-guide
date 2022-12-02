@@ -47,8 +47,10 @@ int dfs(int node, int parent, vector<int> &changed_to,
 		const vector<vector<int>> &adj) {
 	int length_added = 0;
 
-	for (auto &child : adj[node]) {
-		if (child == parent) continue;
+	for (int &child : adj[node]) {
+		if (child == parent) {
+			continue;
+		}
 		length_added += dfs(child, node, changed_to, adj);
 	}
 
@@ -60,11 +62,11 @@ int dfs(int node, int parent, vector<int> &changed_to,
 		changed_to[node] = changed_to[parent];
 		changed_to[parent] = node;
 		length_added += 2;
-	/*
-	 * If the current node is the root and did not swap its position yet, swap
-	 * it with any of its children.
-	 */
 	} else if (parent < 0 && changed_to[node] == node) {
+		/*
+		 * If the current node is the root and did not swap its position yet, 
+		 * swap it with any of its children.
+		 */
 		changed_to[node] = changed_to[adj[node][0]];
 		changed_to[adj[node][0]] = node;
 		length_added += 2;
@@ -96,7 +98,7 @@ int main() {
 	int total_length = dfs(0, -1, changed_to, adj);
 
 	cout << total_length << endl;
-	for (auto &i : changed_to) {
+	for (int &i : changed_to) {
 		cout << i + 1 << " ";
 	}
 	cout << endl;
