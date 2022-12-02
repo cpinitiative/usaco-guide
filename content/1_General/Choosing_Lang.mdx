@@ -276,65 +276,56 @@ if minW > 1e9: minW = -1
 print(minW)
 ```
 
-After some optimizations, this solution still passes only the first seven test
-cases:
+It is possible to optimise this approach to pass all testcases. This takes around 3.8s to run.
 
 ```py
-import sys
+def main():
+	f = open("wormsort.in","rb")
+	n, m = map(int, f.readline().split())
+	loc = [*map(int, f.readline().split())]
+	edges = [[] for _ in range(n)]
+	weights = []
 
-sys.stdin = open("wormsort.in","r")
-sys.stdout = open("wormsort.out","w")
+	def valid(loc, minW):
+		component = [-1] * n
+		numcomps = 0
+		for i in range(n):
+			if component[i] != component[loc[i] - 1]:
+				return False
+			elif component[i] == -1:
+				todo = [i]
+				component[i] = numcomps
+				for node in todo:
+					for child, weight in edges[node]:
+						if component[child] == -1 and weight >= minW:
+							component[child] = numcomps
+							todo.append(child)
+				numcomps += 1
+		return True
 
-n,m = map(int,input().split())
-loc = [0]*n
-edges = [[] for i in range(n)]
+	for line in f:
+		a, b, w = map(int, line.split())
+		edges[a - 1].append((b - 1, w))
+		edges[b - 1].append((a - 1, w))
+		weights.append(w)
 
-def valid():
-	component = [-1]*n
-	numcomps = 0
-	for i in range(n):
-		if component[i] < 0:
-			todo = [i]
-			component[i] = numcomps
-			next_index = 0
-			while next_index < len(todo):
-				curr = todo[next_index]
-				next_index += 1
-				for child,weight in edges[curr]:
-					if weight < mid and component[child] < 0:
-						component[child] = numcomps
-						todo.append(child)
-			numcomps += 1
-	for i in range(n):
-		if component[i] != component[loc[i]]: return False
-	return True
+	weights.sort()
+	weights.append(10**9 + 1)
 
-loc = list(map(lambda x: int(x)-1,input().split()))
-all_edges = []
-for i in range(m):
-	lhs,rhs,weight = map(int,input().split())
-	all_edges.append((weight,lhs-1,rhs-1))
+	lo, hi = 0, m + 1
+	while lo != hi:
+		mid = (lo + hi) // 2
+		if valid(loc, weights[mid]):
+			lo = mid + 1
+		else:
+			hi = mid
 
-all_edges.sort(reverse=True)
-for i in range(m):
-	_,lhs,rhs = all_edges[i]
-	edges[lhs].append((rhs,i))
-	edges[rhs].append((lhs,i))
+	open("wormsort.out","w").write(f"{-1 if lo == m + 1 else weights[lo-1]}\n")
 
-lo,hi = 0,m
-while lo != hi:
-	mid = (lo + hi) // 2
-	if valid():
-		hi = mid
-	else:
-		lo = mid+1
-
-print(-1 if lo == 0 else all_edges[lo-1][0])
+main()
 ```
 
-We are not sure whether it is possible to modify the above approach to receive
-full credit (please let us know if you manage to succeed)! Of course, it is
-possible to pass this problem in Python using DSU (a Gold topic):
+Finally, the approach below uses DSU (a Gold topic), which takes around 1s to run:
 
 ```py
 # Author: Nicolas Hsu
