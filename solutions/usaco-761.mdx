@@ -40,24 +40,29 @@ int main() {
 		cin >> temp1 >> temp2 >> temp3;
 		list.push_back(make_tuple(temp1, temp2, temp3));
 	}
+	
 	/*
 	 * Sort list by first column.
 	 * More information on sorting can be found on
 	 * https://usaco.guide/bronze/intro-sorting
 	 */
 	sort(list.begin(), list.end());
+
 	/*
 	 * Map which holds the current output of each cow.
 	 * In the future, we will change the output values based on input.
 	 */
 	map<string, int> outputs;
-	for (const auto &name : all_names) outputs[name] = 7;
-	/*
-	 * Store a list of the cows with the highest milk output.
-	 */
+	for (const auto &name : all_names) {
+		outputs[name] = 7;
+	}
+
+	// Store a list of the cows with the highest milk output.
 	vector<string> displayed_names = all_names;
+	
 	// Variable that stores how many times the display changes
 	int display_changes = 0;
+
 	/*
 	 * Iterate through number of entries in list.
 	 * Remember, list was sorted earlier,
@@ -67,15 +72,22 @@ int main() {
 		// Change output values based on input as mentioned previously.
 		outputs[get<1>(list[i])] += get<2>(list[i]);
 		int max_output = 0;
-		for (const auto &[_, output] : outputs)
+		for (const auto &[_, output] : outputs) {
 			max_output = max(max_output, output);
+		}
+
 		vector<string> new_displayed_names;
-		for (const auto &[name, output] : outputs)
-			if (output == max_output) new_displayed_names.push_back(name);
+		for (const auto &[name, output] : outputs) {
+			if (output == max_output) {
+				new_displayed_names.push_back(name);
+			}
+		}
+	
 		// Update answer if old winner is different than new winner.
 		display_changes += displayed_names != new_displayed_names;
 		displayed_names = new_displayed_names;
 	}
+
 	cout << display_changes << endl;
 }
 ```
