@@ -23,99 +23,71 @@ by date and update the selected cow's milk value for each entry.
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
-	freopen("measurement.in","r",stdin);
-	freopen("measurement.out","w",stdout);
+const vector<string> all_names{"Bessie", "Elsie", "Mildred"};
+
+int main() {
+	freopen("measurement.in", "r", stdin);
+	freopen("measurement.out", "w", stdout);
 
 	// Taking input
 	int num_of_inputs;
 	cin >> num_of_inputs;
 	vector<tuple<int, string, int>> list;
-	for (int i = 0; i < num_of_inputs; i++)
-	{
+	for (int i = 0; i < num_of_inputs; i++) {
 		int temp1;
 		string temp2;
 		int temp3;
 		cin >> temp1 >> temp2 >> temp3;
 		list.push_back(make_tuple(temp1, temp2, temp3));
 	}
+	
 	/*
 	 * Sort list by first column.
-	 * More information on sorting can be found on https://usaco.guide/bronze/intro-sorting
+	 * More information on sorting can be found on
+	 * https://usaco.guide/bronze/intro-sorting
 	 */
 	sort(list.begin(), list.end());
+
 	/*
-	 * Map which holds the current production of each cow.
-	 * In the future, we will change the production values based on input.
+	 * Map which holds the current output of each cow.
+	 * In the future, we will change the output values based on input.
 	 */
-	map<string, int> cows = {
-		{"Bessie", 7},
-		{"Elsie", 7},
-		{"Mildred", 7}};
-	/*
-	 * Store current winner inside a pair,
-	 * noting the highest number and a string with cow names on the award.
-	 */
-	pair<int, string> winner;
-	winner.first = 7;
-	/*
-	 * Using a string, we can efficiently store current winners
-	 * and easily compare them to past winners.
-	 */
-	winner.second = "BessieElsieMildred";
-	// Variable that will detect how many times the display changes
+	map<string, int> outputs;
+	for (const auto &name : all_names) {
+		outputs[name] = 7;
+	}
+
+	// Store a list of the cows with the highest milk output.
+	vector<string> displayed_names = all_names;
+	
+	// Variable that stores how many times the display changes
 	int display_changes = 0;
+
 	/*
 	 * Iterate through number of entries in list.
 	 * Remember, list was sorted earlier,
 	 * meaning we don't need to worry about order of events.
 	 */
-	for (int i = 0; i < num_of_inputs; i++)
-	{
-		// Change production values based on input as mentioned previously.
-		cows[get<1>(list[i])] += get<2>(list[i]);
-		if (get<1>(list[i]) == "Bessie")
-		{
-			cows["Bessie"] += get<2>(list[i]);
+	for (int i = 0; i < num_of_inputs; i++) {
+		// Change output values based on input as mentioned previously.
+		outputs[get<1>(list[i])] += get<2>(list[i]);
+		int max_output = 0;
+		for (const auto &[_, output] : outputs) {
+			max_output = max(max_output, output);
 		}
-		else if (get<1>(list[i]) == "Mildred")
-		{
-			cows["Mildred"] += get<2>(list[i]);
+
+		vector<string> new_displayed_names;
+		for (const auto &[name, output] : outputs) {
+			if (output == max_output) {
+				new_displayed_names.push_back(name);
+			}
 		}
-		else if (get<1>(list[i]) == "Elsie")
-		{
-			cows["Elsie"] += get<2>(list[i]);
-		}
-		// Saving older values to compare them to new ones later
-		pair<int, string> original;
-		original.first = winner.first;
-		original.second = winner.second;
-		winner.second = "";
-		// By wrapping each of the function inputs inside of brackets, we can include more than 2 function inputs for the max function.
-		winner.first = max({cows["Bessie"], cows["Mildred"], cows["Elsie"]});
-		/*
-		 * Adjust the winner string to see who the new winner is.
-		 * Because multiple cows are stored in winner.second, no to worry about ties.
-		 */
-		if (cows["Bessie"] == winner.first)
-		{
-			winner.second += "Bessie";
-		}
-		if (cows["Elsie"] == winner.first)
-		{
-			winner.second += "Elsie";
-		}
-		if (cows["Mildred"] == winner.first)
-		{
-			winner.second += "Mildred";
-		}
-		// Check if old winner is same as new winner.
-		if (original.second != winner.second)
-		{
-			display_changes++;
-		}
+	
+		// Update answer if old winner is different than new winner.
+		display_changes += displayed_names != new_displayed_names;
+		displayed_names = new_displayed_names;
 	}
+
 	cout << display_changes << endl;
 }
 ```
