@@ -47,14 +47,11 @@ Then, we return the difference between the two sums once we've reached the end
 of the array.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
 using ll = long long;
 
 int n;
@@ -64,8 +61,10 @@ ll solve(int i, ll sum1, ll sum2) {
 	if (i == n) {
 		return abs(sum1 - sum2);
 	}
-	return min(solve(i + 1, sum1 + weight[i], sum2),
-			   solve(i + 1, sum1, sum2 + weight[i]));
+	return min(
+		solve(i + 1, sum1 + weight[i], sum2),
+		solve(i + 1, sum1, sum2 + weight[i])
+	);
 }
 
 int main() {
@@ -73,12 +72,11 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> weight[i];
 	}
-	cout << solve(0, 0, 0) << "\n";
+	cout << solve(0, 0, 0) << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -87,7 +85,7 @@ import java.io.*;
 
 public class Main {
 	static int n;
-	static int weight[];
+	static int[] weight;
 
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
@@ -108,16 +106,16 @@ public class Main {
 		}
 
 		return Math.min(
-				solve(index + 1, sum1 + weight[index], sum2),
-				solve(index + 1, sum1, sum2 + weight[index]));
+			solve(index + 1, sum1 + weight[index], sum2),
+			solve(index + 1, sum1, sum2 + weight[index])
+		);
 	}
 
-	CodeSnip{Kattio}
+	//CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -128,15 +126,16 @@ weights = list(map(int, input().split()))
 def solve(i, sum1, sum2):
 	if i == n:
 		return abs(sum2 - sum1)
-	return min(solve(i + 1, sum1 + weights[i], sum2),
-			solve(i + 1, sum1, sum2 + weights[i]))
+	return min(
+		solve(i + 1, sum1 + weights[i], sum2),
+		solve(i + 1, sum1, sum2 + weights[i])
+	)
 
 
 print(solve(0, 0, 0))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 #### Generating Subsets with Bitmasks
