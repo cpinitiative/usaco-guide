@@ -538,7 +538,7 @@ int main() {
 		perms.push_back(s);
 	} while (next_permutation(s.begin(), s.end()));
 	cout << perms.size() << endl;
-	for (string perm : perms) {
+	for (const string& perm : perms) {
 		cout << perm << endl;
 	}
 }
@@ -790,7 +790,7 @@ increment the answer.
 using namespace std;
 
 string g[8];
-bool sum[15], dif[15], c[8];
+bool sum[15], diff[15], c[8];
 int ans = 0;
 
 void dfs(int r) {  // place queen in r-th row
@@ -799,10 +799,10 @@ void dfs(int r) {  // place queen in r-th row
 		return;
 	}
 	for (int i = 0; i < 8; ++i) {
-		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
-			c[i] = sum[i + r] = dif[i - r + 7] = true;
+		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !diff[i - r + 7]) {
+			c[i] = sum[i + r] = diff[i - r + 7] = true;
 			dfs(r + 1);
-			c[i] = sum[i + r] = dif[i - r + 7] = false;
+			c[i] = sum[i + r] = diff[i - r + 7] = false;
 		}
 	}
 }
@@ -824,7 +824,7 @@ import java.io.*;
 
 public class Main {
 	static String g[];
-	static boolean sum[], dif[], c[];
+	static boolean sum[], diff[], c[];
 	static int ans = 0;
 
 	static void dfs(int r) { //place queen in row r
@@ -833,10 +833,10 @@ public class Main {
 			return;
 		}
 		for (int i = 0; i < 8; ++i) {
-			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
-				c[i] = sum[i + r] = dif[i - r + 7] = true;
+			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !diff[i - r + 7]) {
+				c[i] = sum[i + r] = diff[i - r + 7] = true;
 				dfs(r + 1);
-				c[i] = sum[i + r] = dif[i - r + 7] = false;
+				c[i] = sum[i + r] = diff[i - r + 7] = false;
 			}
 		}
 	}
@@ -844,7 +844,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 		g = new String[8];
-		sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
+		sum = new boolean[15]; diff = new boolean[15]; c = new boolean[8];
 		for (int i = 0; i < 8; ++i) {
 			g[i] = io.next();
 		}
@@ -864,7 +864,7 @@ public class Main {
 ```py
 g = [input() for _ in range(8)]
 sum_ = [False] * 15
-dif = [False] * 15
+diff = [False] * 15
 c = [0] * 8
 ans = 0
 
@@ -874,10 +874,10 @@ def dfs(r):
 		ans += 1
 		return
 	for i in range(8):
-		if g[r][i] == '.' and not c[i] and not sum_[i + r] and not dif[i - r + 7]:
-			c[i] = sum_[i + r] = dif[i - r + 7] = True
+		if g[r][i] == '.' and not c[i] and not sum_[i + r] and not diff[i - r + 7]:
+			c[i] = sum_[i + r] = diff[i - r + 7] = True
 			dfs(r + 1)
-			c[i] = sum_[i + r] = dif[i - r + 7] = False
+			c[i] = sum_[i + r] = diff[i - r + 7] = False
 
 dfs(0)
 print(ans)
