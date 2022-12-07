@@ -267,76 +267,138 @@ print(last_dist, file=open('moocast.out', 'w'))
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
+#include <iostream>
+#include <fstream>
+#include <vector>
 
-const int MAX_N = 1e3;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
 
-vector<int> x(MAX_N), y(MAX_N);
-vector<bool> visited(MAX_N);
-vector<vector<bool>> g(MAX_N, vector<bool>(MAX_N, false));
-int n;
-
-int dfs(int v) {
-	visited[v] = true;
-
-	int curr_cows = 0;
-	for (int i = 0; i < n; i++) {
-		if (visited[i] || !g[v][i]) {
-			continue;
-		}
-		curr_cows += dfs(i);
-	}
-
-	return curr_cows + 1;
+int dist_sq(const pair<int, int>& p1, const pair<int, int>& p2) {
+	int dx = p1.first - p2.first;
+	int dy = p1.second - p2.second;
+	return dx * dx + dy * dy;
 }
 
-bool ok(ll mid) {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			g[i][j] = false;
-		}
-	}
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			ll dist = (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
-			if (dist <= mid) {
-				g[i][j] = true;
+bool all_reachable(int power, const vector<pair<int, int>>& cows) {
+	int start = 0;
+	vector<int> frontier{start};
+	vector<bool> reached(cows.size());
+	reached[start] = true;
+	while (!frontier.empty()) {
+		int curr = frontier.back();
+		frontier.pop_back();
+		for (int c = 0; c < cows.size(); c++) {
+			if (!reached[c] && dist_sq(cows[curr], cows[c]) <= power) {
+				frontier.push_back(c);
+				reached[c] = true;
 			}
 		}
 	}
 
-	fill(visited.begin(), visited.end(), false);
-	return dfs(0) == n;
+	for (bool c : reached) {
+		if (!c) {
+			return false;
+		}
+	}
+	return true;
 }
 
 int main() {
-	freopen("moocast.in", "r", stdin);
-	freopen("moocast.out", "w", stdout);
-
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		 cin >> x[i] >> y[i];
+	std::ifstream read("moocast.in");
+	int cow_num;
+	read >> cow_num;
+	vector<pair<int, int>> cows(cow_num);
+	for (pair<int, int>& c : cows) {
+		read >> c.first >> c.second;
 	}
 
-	ll lo = 1;
-	ll hi = INT32_MAX;
-	ll sol = hi;
+	int lo = 0;
+	int hi = 1e9;  // arbitrarily large integer
+	int valid = -1;
 	while (lo <= hi) {
-		ll mid = lo + (hi - lo) / 2;
-		if (ok(mid)) {
-			sol = min(sol, mid);
+		int mid = (lo + hi) / 2;
+		if (all_reachable(mid, cows)) {
+			valid = mid;
 			hi = mid - 1;
 		} else {
 			lo = mid + 1;
 		}
 	}
 
-	cout << sol << endl;
+	std::ofstream("moocast.out") << valid << endl;
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Moocast {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("moocast.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		int[][] cows = new int[cowNum][2];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[c][0] = Integer.parseInt(cow.nextToken());
+			cows[c][1] = Integer.parseInt(cow.nextToken());
+		}
+
+		int lo = 0;
+		int hi = 1e9;  // arbitrarily large integer
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (allReachable(mid, cows)) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("moocast.out");
+		written.println(valid);
+		written.close();
+	}
+
+	static boolean allReachable(int power, int[][] cows) {
+		int start = 0;
+		ArrayDeque<Integer> frontier = new ArrayDeque<>();
+		frontier.add(start);
+		boolean[] reached = new boolean[cows.length];
+		reached[start] = true;
+		while (!frontier.isEmpty()) {
+			int curr = frontier.poll();
+			for (int c = 0; c < cows.length; c++) {
+				if (!reached[c] && distSq(cows[curr], cows[c]) <= power) {
+					frontier.add(c);
+					reached[c] = true;
+				}
+			}
+		}
+
+		for (boolean c : reached) {
+			if (!c) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	static int distSq(int[] p1, int[] p2) {
+		int dx = p1[0] - p2[0];
+		int dy = p1[1] - p2[1];
+		return dx * dx + dy * dy;
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
