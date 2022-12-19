@@ -16,7 +16,9 @@ author: Qi Wang
 <CPPSection>
 
 ```cpp
-CodeSnip{Benq Template}
+#include <bits/stdc++.h>
+
+using namespace std;
 
 int N, ans = 0;
 map<int, int> mpp;
@@ -32,15 +34,14 @@ bool cmp(const item& x, const item& y) {
 }
 
 int main() {
-	setIO();
-	re(N);
-	F0R(i, N){
-        re(p[i].q, p[i].t, p[i].x, p[i].n);
+	cin >> N;
+	for(int i = 0; i < N; i++){
+        cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
 	}
 
     sort(p, p + N, cmp);
 
-    F0R(i, N) {
+    for(int i = 0; i < N; i++) {
         if (p[i].q == 2) {
             mpp[p[i].x + p[i].t] += p[i].n;
         }
@@ -66,7 +67,7 @@ int main() {
         }
     }
 
-    ps(ans);
+    cout << ans << endl;
 }
 ```
 
