@@ -158,7 +158,7 @@ In general, when using polynomial hashing modulo a prime modulus $M$,
 the probability of two distinct strings having equal hashing over all possible choices
 of the base $B$ can be up to $\frac{n}{M}$, where $n$ is the length of the longer
 of the two strings. See [rng-58's blog post about hashing](http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html)
-for how this probability is derived.
+for how to derive this probability using the Schwarz-Zippel lemma.
 
 </Info>
 
@@ -173,8 +173,8 @@ they hash to the same value is at most $10^{-4}$.
 Given a set of the hashes of $m$ distinct strings with length up to $n$, the probability of two
 strings having equal hashes can be up to $\frac{m^2n}{M}$ by the 
 [birthday paradox](https://en.wikipedia.org/wiki/Birthday_problem). Assuming
-$m$ and $n$ are on the order of $10^5$, $M=10^9+7$ is not large enough
-to avoid collisions. Use a larger prime modulus such as $2^{61}-1$ 
+$m$ and $n$ are on the order of $10^5$, $M=10^9+7$ is nowhere close to 
+large enough to avoid collisions. Use a larger prime modulus such as $2^{61}-1$ 
 (and do multiplications using 128-bit integers).
 
 </Warning>
@@ -237,8 +237,8 @@ Since the test data for this particular problem is very strong, we will probably
 get hash collisions with only one hash. To remedy this, we use two hashes for
 each match - this significantly decreases the probability of collisions.
 
-Using the $M=10^9+9$ will not pass (see the note above
-regarding the birthday paradox). Instead, we use $M=2^{61}-1$.
+Using a relatively small modulus such as $M=10^9+9$ will not pass (see the 
+note above regarding the birthday paradox). Instead, we use $M=2^{61}-1$.
 
 <LanguageSection>
 
@@ -332,7 +332,9 @@ hash function slightly.
 In particular, instead of computing the **polynomial** hash of the substrings,
 compute the product $(B + s_1)(B + s_2) \dots (B + s_k) \bmod M$ as the hash
 (again, using two modulos). This hash is nice because the relative order of the
-letters doesn't matter, as multiplication is commutative.
+letters doesn't matter, as multiplication is commutative. Furthermore,
+it can be proven that two strings with different frequency tables hash
+to the same value with probability at most $\frac{|N|}{M}$.
 
 Since this hash requires the modular inverse, there's an extra $\log M$ factor
 in the time complexity.
