@@ -245,6 +245,7 @@ note above regarding the birthday paradox). Instead, we use $M=2^{61}-1$.
 using namespace std;
 
 using ll = long long;
+
 //BeginCodeSnip{HashedString}
 class HashedString {
   private:
@@ -258,12 +259,14 @@ class HashedString {
 	// p_hash[i] is the hash of the first i characters of the given string
 	vector<ll> p_hash;
 
-	__int128 mul(ll a, ll b) { return (__int128)a*b; }
-	ll mod_mul(ll a, ll b) { return mul(a,b) % M; }
+	__int128 mul(ll a, ll b) { return (__int128)a * b; }
+	ll mod_mul(ll a, ll b) { return mul(a, b) % M; }
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
+		while (pow.size() < s.size()) {
+			pow.push_back(mod_mul(pow.back(), B));
+		}
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
 			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
@@ -287,13 +290,17 @@ string n, h;
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin >> n >> h;
-	if (n.size() > h.size()) return cout << 0, 0;
+	if (n.size() > h.size()) {
+		cout << 0 << '\n';
+		return 0;
+	}
 	HashedString hs(h);
 
 	set<ll> good;
 	for (int i = 0; i < n.size(); i++) {
 		// Update frequency table
-		freq_target[n[i] - 'a']++, freq_curr[h[i] - 'a']++;
+		freq_target[n[i] - 'a']++;
+		freq_curr[h[i] - 'a']++;
 	}
 	for (int i = n.size() - 1; i < h.size(); i++) {
 		if (i >= n.size()) {
@@ -302,12 +309,15 @@ int main() {
 			freq_curr[h[i - n.size()] - 'a']--;
 		}
 		bool match = true;
-		for (int j = 0; j < 26; j++) match &= freq_curr[j] == freq_target[j];
-		if (match) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
+		for (int j = 0; j < 26; j++) {
+			match &= freq_curr[j] == freq_target[j];
+		}
+		if (match) {
+			good.insert(hs.getHash(i + 1 - n.size(), i));
+		}
 	}
 
 	cout << good.size() << '\n';
-	return 0;
 }
 ```
 
@@ -363,7 +373,9 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
+		while (pow.size() < s.size()) {
+			pow.push_back(mod_mul(pow.back(), B));
+		}
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
 			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
@@ -388,7 +400,9 @@ const auto mod_mul = HashedString::mod_mul;
 ll inv(ll base, ll MOD) {
 	ll ans = 1, expo = MOD - 2;
 	while (expo) {
-		if (expo & 1) ans = mod_mul(ans, base);
+		if (expo & 1) {
+			ans = mod_mul(ans, base);
+		}
 		expo >>= 1;
 		base = mod_mul(base, base);
 	}
@@ -417,11 +431,12 @@ int main() {
 			h_hsh = mod_mul(h_hsh, inv(B + h[i - n.size()] - 'a', M));
 			h_hsh = mod_mul(h_hsh, B + h[i] - 'a');
 		}
-		if (n_hsh == h_hsh) good.insert(hs.getHash(i + 1 - n.size(), i));
+		if (n_hsh == h_hsh) {
+			good.insert(hs.getHash(i + 1 - n.size(), i));
+		}
 	}
 
 	cout << good.size() << '\n';
-	return 0;
 }
 ```
 
