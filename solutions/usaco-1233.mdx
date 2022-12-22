@@ -23,51 +23,51 @@ using namespace std;
 int N, ans = 0;
 map<int, int> mpp;
 struct item {
-    int q, t, x, n;
+	int q, t, x, n;
 } p[200005];
 
 bool cmp(const item& x, const item& y) {
-    if (x.x - x.t == y.x - y.t)
-        return x.q > y.q;
+	if (x.x - x.t == y.x - y.t)
+		return x.q > y.q;
 
-    return x.x - x.t < y.x - y.t;
+	return x.x - x.t < y.x - y.t;
 }
 
 int main() {
 	cin >> N;
 	for(int i = 0; i < N; i++){
-        cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
+		cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
 	}
 
-    sort(p, p + N, cmp);
+	sort(p, p + N, cmp);
 
-    for(int i = 0; i < N; i++) {
-        if (p[i].q == 2) {
-            mpp[p[i].x + p[i].t] += p[i].n;
-        }
-        else {
-            int n = p[i].n;
+	for(int i = 0; i < N; i++) {
+		if (p[i].q == 2) {
+			mpp[p[i].x + p[i].t] += p[i].n;
+		}
+		else {
+			int n = p[i].n;
 
-            while (n) {
-                map<int, int>::iterator it = mpp.lower_bound(p[i].x + p[i].t);
+			while (n) {
+				map<int, int>::iterator it = mpp.lower_bound(p[i].x + p[i].t);
 
-                if (it == mpp.end()) break;
-                int u = min(n, it->second);
+				if (it == mpp.end()) break;
+				int u = min(n, it->second);
 
-                if (u == it->second) {
-                    mpp.erase(it);
-                }
-                else {
-                    it->second -= u;
-                }
+				if (u == it->second) {
+					mpp.erase(it);
+				}
+				else {
+					it->second -= u;
+				}
 
-                n -= u;
-                ans += u;
-            }
-        }
-    }
+				n -= u;
+				ans += u;
+			}
+		}
+	}
 
-    cout << ans << endl;
+	cout << ans << endl;
 }
 ```
 
