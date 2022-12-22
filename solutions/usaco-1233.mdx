@@ -20,26 +20,29 @@ author: Qi Wang
 
 using namespace std;
 
-int N, ans = 0;
-map<int, int> mpp;
+
 struct item {
 	int q, t, x, n;
+
+	// expand out inequality into 2D space
+	bool operator<(const item& y) {
+		if (x - t == y.x - y.t)
+			return q > y.q;
+
+		return x - t < y.x - y.t;
+	}
 } p[200005];
 
-bool cmp(const item& x, const item& y) {
-	if (x.x - x.t == y.x - y.t)
-		return x.q > y.q;
-
-	return x.x - x.t < y.x - y.t;
-}
 
 int main() {
+	int N, ans = 0;
+	map<int, int> mpp;
 	cin >> N;
 	for(int i = 0; i < N; i++){
 		cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
 	}
 
-	sort(p, p + N, cmp);
+	sort(p, p + N);
 
 	for(int i = 0; i < N; i++) {
 		if (p[i].q == 2) {
@@ -47,7 +50,7 @@ int main() {
 		}
 		else {
 			int n = p[i].n;
-
+			// greedily assign cows to the closest points
 			while (n) {
 				map<int, int>::iterator it = mpp.lower_bound(p[i].x + p[i].t);
 
