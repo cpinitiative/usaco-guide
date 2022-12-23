@@ -12,14 +12,11 @@ author: Qi Wang
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
 
 struct Item {
 	int q, t, x, n;
@@ -33,17 +30,16 @@ struct Item {
 	// for each cow as long as the apple item is to its left and up it is a valid point
 	// therefore we first sort by xi - ti and then greedily select apples based on xi + ti
 	bool operator<(const Item& y) {
-		if (x - t == y.x - y.t)
+		if (x - t == y.x - y.t) {
 			return q > y.q;
-
+		}
 		return x - t < y.x - y.t;
 	}
 } p[200005];
 
-
 int main() {
 	int N;
-	map<int, int> pts; // stores how many apples are at each point defined above
+	map<int, int> pts;  // stores how many apples are at each point defined above
 	cin >> N;
 	for(int i = 0; i < N; i++){
 		cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
@@ -52,11 +48,10 @@ int main() {
 	sort(p, p + N);
 
 	int ans = 0;
-	for(int i = 0; i < N; i++) {
+	fo r(int i = 0; i < N; i++) {
 		if (p[i].q == 2) {
 			pts[p[i].x + p[i].t] += p[i].n;
-		}
-		else {
+		} else {
 			int n = p[i].n;
 			// greedily assign cows to the closest points
 			while (n) {
@@ -67,8 +62,7 @@ int main() {
 
 				if (u == it->second) {
 					pts.erase(it);
-				}
-				else {
+				} else {
 					it->second -= u;
 				}
 
@@ -83,5 +77,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
