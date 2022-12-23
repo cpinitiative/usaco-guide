@@ -1,0 +1,164 @@
+---
+id: cses-1684
+source: CSES
+title: Giant Pizza
+author: Shriyansh Gaur
+---
+
+**Time Complexity:** $\mathcal{O}(V+E)$
+
+Used the 2SAT and kosaraju's algorithm to solve this. Commented heavily for clear undersatnding.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ // SHRIYANSH GAUR
+#define int long long int 
+int mod= 1000000007;
+ int n,m;
+ int flag=0;
+ 
+vector<int>adj[200005];
+vector<bool>vis(200005,false);
+vector<int>revadj[200005];
+vector<bool>newvis(200005,false);
+stack<int>topo;
+vector<int>ans(200005,0);
+vector<char>order(200005, '-');
+
+    
+int neg(int i){
+    if(i<=m) return i+m;
+    else return i-m;
+}
+
+ void dfs(int node){
+      
+      vis[node]=true;
+      
+      for(auto i : adj[node]){
+          if(!vis[i]){
+              dfs(i);
+          }
+      }
+      
+      topo.push(node);  // when we r leaving then push
+      // last left node is on top
+  }
+  
+void newdfs(int node , int c){
+    
+     ans[node]=c;
+     //Checking
+     if(ans[node]!=0 &&  ans[node]==ans[neg(node)]){
+         flag=1;
+         return;
+     }
+     
+//If ¬xi is after xi in topological sort, xi should be FALSE.
+//It should be TRUE otherwise.
+
+           if(node > m){
+             if(newvis[node-m]==true )order[node-m]='-';
+             else order[node-m]='+';
+           
+           } 
+           
+           if(node <= m){
+             if(newvis[node+m]==true )order[node]='+';
+            else order[node]='-';
+             
+           } 
+      
+      newvis[node]=true;
+      
+     
+    
+      for(auto i : revadj[node]){
+          if(!newvis[i]){
+              newdfs(i,c);
+          }
+      }
+   
+  }
+
+
+void fun(){
+    
+   
+    cin>>n>>m;
+    
+    
+      
+      for(int i=0;i<n;i++){
+          char c,d;
+          int a,b;
+          cin>>c>>a>>d>>b;
+          
+          // person 1 :  a or b
+          //For each of (xi or yi) s we add two directed edges 
+          //From ¬xi to yi & from ¬yi to xi
+          
+          //as we cant store -ve numbers in adj so we store a+m(total options)
+          
+          
+          if(c=='-') a=a+m;
+          if(d=='-') b=b+m;
+          
+          adj[neg(a)].push_back(b);
+          adj[neg(b)].push_back(a);
+          
+          revadj[b].push_back(neg(a));  //reverse edge
+          revadj[a].push_back(neg(b));
+      }
+     
+      
+      for(int i=1;i<=2*m;i++){
+          if(!vis[i]){
+              dfs(i);
+          }
+      }
+      
+      
+ // do dfs again on reverse node graapgh in order of toposort (START FROM LAST VISITED NODE = topo.top)
+      
+     
+     // we want any two nodes which belong to diff stringly connected component
+      
+     int comp=0; 
+     while(!topo.empty()){
+         
+         int node = topo.top(); 
+         topo.pop();
+         
+          if(!newvis[node]){
+              
+               ++comp;
+               
+              newdfs(node,comp);
+              //dfs on one node covers allnodes within same same component
+              
+              if(flag==1){
+                  cout<<"IMPOSSIBLE"<<endl;
+                  return;
+              }
+          }
+          
+      }
+      
+      for(int i=1;i<=m;i++) cout<<order[i]<<" ";
+      cout<<endl;
+    
+    
+}
+
+
+int32_t main(){
+    ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+ 
+    fun();
+    return 0;
+}
+
+```
