@@ -7,6 +7,22 @@ author: Qi Wang
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob1_gold_open22.html)
 
+## Explanation
+
+In order for a cow to catch an apple, it must arrive before the apple hits the number line. Let item $i$ represent the cow and 
+item $j$ represent the apple. Therefore, $|x_i - x_j| \le t_j - t_i$. After extracting the absolute value, we get these two 
+inequality.
+
+$$
+x_j - t_j \le x_i - t_i
+x_i + t_i \le x_j + t_j
+$$
+
+We represnt each item as a point $(x_i - t_i, x_i + t_i)$. According to the inequalities above, in order for a cow to catch the 
+apple, the point of the apple must be to its top-left. Thus we can sort in ascending order based off $x_i - t_i$ and greedily 
+assign apples with larger $x_i + t_i$ values to each cow. To maximize the number caught, we must pair each cow with the lowest 
+y-coordinate apples that still meet above conditions.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
@@ -19,16 +35,8 @@ author: Qi Wang
 using namespace std;
 
 struct Item {
-	int q, t, x, n;
+	int q, t, x, n; // q is the type (cow/apple), t is time of entry, x is position, and n is the amount
 
-	// cow must arrive before apple hits the number line
-	// let item i be cow and item j be apple
-	// ti <= tj and abs(xi-xj) <= tj-ti can be expanded into the following:
-	// xj-tj <= xi-ti 
-	// xi+ti <= xj+tj
-	// we can represent each item as a point (xi - ti, xi + ti)
-	// for each cow as long as the apple item is to its left and up it is a valid point
-	// therefore we first sort by xi - ti and then greedily select apples based on xi + ti
 	bool operator<(const Item& y) {
 		if (x - t == y.x - y.t) {
 			return q > y.q;
