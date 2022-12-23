@@ -21,11 +21,18 @@ author: Qi Wang
 using namespace std;
 
 
-struct item {
+struct Item {
 	int q, t, x, n;
 
-	// expand out inequality into 2D space
-	bool operator<(const item& y) {
+	// cow must arrive before apple hits the number line
+	// let item i be cow and item j be apple
+	// ti <= tj and abs(xi-xj) <= tj-ti can be expanded into the following:
+	// xj-tj <= xi-ti 
+	// xi+ti <= xj+tj
+	// we can represent each item as a point (xi - ti, xi + ti)
+	// for each cow as long as the apple item is to its left and up it is a valid point
+	// therefore we first sort by xi - ti and then greedily select apples based on xi + ti
+	bool operator<(const Item& y) {
 		if (x - t == y.x - y.t)
 			return q > y.q;
 
