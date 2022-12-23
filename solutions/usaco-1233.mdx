@@ -36,8 +36,13 @@ y-coordinate apples that still meet above conditions.
 #include <bits/stdc++.h>
 using namespace std;
 
+const int MAX_N = 2e5;
+
 struct Item {
-	int q, t, x, n; // q is the type (cow/apple), t is time of entry, x is position, and n is the amount
+	int q;  // type (cow or apple)
+	int t;  // time of entry
+	int x;  // position
+	int n;  // amount
 
 	bool operator<(const Item& y) {
 		if (x - t == y.x - y.t) {
@@ -45,20 +50,20 @@ struct Item {
 		}
 		return x - t < y.x - y.t;
 	}
-} p[200005];
+} p[MAX_N];
 
 int main() {
 	int N;
 	map<int, int> pts;  // stores how many apples are at each point defined above
 	cin >> N;
-	for(int i = 0; i < N; i++){
+	for (int i = 0; i < N; i++) {
 		cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
 	}
 
 	sort(p, p + N);
 
 	int ans = 0;
-	for(int i = 0; i < N; i++) {
+	for (int i = 0; i < N; i++) {
 		if (p[i].q == 2) {
 			pts[p[i].x + p[i].t] += p[i].n;
 		} else {
