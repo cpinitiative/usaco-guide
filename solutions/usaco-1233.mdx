@@ -42,8 +42,8 @@ struct Item {
 
 
 int main() {
-	int N, ans = 0;
-	map<int, int> mpp;
+	int N;
+	map<int, int> pts; // stores how many apples are at each point defined above
 	cin >> N;
 	for(int i = 0; i < N; i++){
 		cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
@@ -51,17 +51,18 @@ int main() {
 
 	sort(p, p + N);
 
+	int ans = 0;
 	for(int i = 0; i < N; i++) {
 		if (p[i].q == 2) {
-			mpp[p[i].x + p[i].t] += p[i].n;
+			pts[p[i].x + p[i].t] += p[i].n;
 		}
 		else {
 			int n = p[i].n;
 			// greedily assign cows to the closest points
 			while (n) {
-				map<int, int>::iterator it = mpp.lower_bound(p[i].x + p[i].t);
+				map<int, int>::iterator it = pts.lower_bound(p[i].x + p[i].t);
 
-				if (it == mpp.end()) break;
+				if (it == pts.end()) break;
 				int u = min(n, it->second);
 
 				if (u == it->second) {
