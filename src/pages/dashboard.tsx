@@ -143,7 +143,8 @@ export default function DashboardPage(props: PageProps) {
   const problemStatisticsIDs = React.useMemo(() => {
     return Object.keys(problemIDMap).filter(problemID =>
       problemIDMap[problemID].modules.some(
-        module => moduleIDToSectionMap[module.moduleId] === lastViewedSection
+        (module: { url: string; moduleId: string }) =>
+          moduleIDToSectionMap[module.moduleId] === lastViewedSection
       )
     );
   }, [problemIDMap, lastViewedSection]);
