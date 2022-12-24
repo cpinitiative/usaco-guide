@@ -137,7 +137,7 @@ export default function Template(props) {
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
   const problemIDs = [
-    ...new Set(data.problems.edges.map(x => x.node.uniqueId)),
+    ...new Set(data.problems.edges.map(x => x.node.uniqueId) as string[]),
   ];
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
