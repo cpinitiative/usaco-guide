@@ -68,7 +68,7 @@ export default function ProblemSolutions({
           className="text-xl leading-6 font-medium text-gray-900 dark:text-gray-100"
           id="modal-headline"
         >
-          User Solutions for {problem?.name} (ID: {problem?.uniqueId}).
+          User Solutions for {problem?.name}
         </h3>
         <p className="mt-1 text-gray-500 dark:text-gray-400">
           Below are user-submitted solutions for {problem?.name}. If you notice
@@ -90,6 +90,7 @@ export default function ProblemSolutions({
         <ContactUsSlideover
           isOpen={isContactUsActive}
           onClose={() => setIsContactUsActive(false)}
+          defaultLocation={`Problem Solution - ${problem?.name} (ID: ${problem?.uniqueId})`}
         />
         <div className="h-8" />
         <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">

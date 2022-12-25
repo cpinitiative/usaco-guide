@@ -66,15 +66,16 @@ export function validateEmail(email) {
 export default function ContactUsSlideover({
   isOpen,
   onClose,
+  defaultLocation = '',
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeModule?: ModuleInfo;
+  defaultLocation: string;
 }): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(defaultLocation);
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
     'Typo / Broken Link',
@@ -96,12 +97,14 @@ export default function ContactUsSlideover({
   const submitForm = useContactFormAction();
 
   React.useEffect(() => {
-    const activeModule = markdownContext?.markdownLayoutInfo;
-    if (activeModule && activeModule instanceof ModuleInfo) {
-      setLocation(
-        `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
-      );
-    } else setLocation('');
+    if (!defaultLocation) {
+      const activeModule = markdownContext?.markdownLayoutInfo;
+      if (activeModule && activeModule instanceof ModuleInfo) {
+        setLocation(
+          `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
+        );
+      } else setLocation('');
+    }
   }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);
