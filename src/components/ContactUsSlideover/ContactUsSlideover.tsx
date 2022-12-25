@@ -58,7 +58,8 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
 };
 
 export function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
@@ -327,6 +328,21 @@ export default function ContactUsSlideover({
                           className="font-medium text-gray-900 dark:text-dark-high-emphasis"
                         >
                           {t}
+                          {t === 'Other' && (
+                            <span>
+                              &nbsp;- If you're having issues registering on
+                              usaco.org, see
+                              <a
+                                className="text-blue-300"
+                                target="_blank"
+                                rel="noreferrer"
+                                href="https://github.com/cpinitiative/usaco-guide/issues/2854#issuecomment-1162802123"
+                              >
+                                {' '}
+                                this link.
+                              </a>
+                            </span>
+                          )}
                         </label>
                       </div>
                     </div>

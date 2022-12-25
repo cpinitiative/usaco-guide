@@ -67,15 +67,12 @@ frequency: 3
 
 ## Implementation
 
-As the implementation is quite simple, you may prefer to use this in place of
-DFS for computing connected components.
-
 <LanguageSection>
 <CPPSection>
 
-Check PAPS for the explanation. `e[x]` contains the negation of the size of
-$x$'s component if $x$ is the representative of its component, and the parent of
-$x$ otherwise.
+Check PAPS for an explanation. `e[x]` contains the negation of the size of $x$'s
+component if $x$ is the representative of its component, and the parent of $x$
+otherwise.
 
 <Resources>
 	<Resource
@@ -193,20 +190,23 @@ class DisjointSets:
 </PySection>
 </LanguageSection>
 
+As the implementation is quite simple, you may prefer to use this in place of
+DFS for computing connected components.
+
 ## Solution - Focus Problem
 
-**Time Complexity:** $\mathcal{O}(Q \log ^*N)$
+**Time Complexity:** $\mathcal{O}(Q \alpha(N))$
 
 Without union find, we would have to represent the graph with an adjacency list
-and use [flood fill](/silver/flood-fill) to calculate
-connected components. This approach takes $\mathcal{O}(NQ)$ time, which is too
-slow, motivating us to use **union find**.
+and use [flood fill](/silver/flood-fill) to calculate connected components. This
+approach takes $\mathcal{O}(NQ)$ time, which is too slow, motivating us to use
+**union find**.
 
 By representing the graph with the union find data structure, we can use its
 methods to both _unite_ vertices and check if two vertices $u_i$ and $v_i$ are
-in the same connected component using only $\mathcal{O}(\log^*N)$ time. This
-reduces the overall time complexity to $\mathcal{O}(Q \log ^*N)$, which is a
-substantial improvement and allows us to pass all test cases.
+in the same connected component using only $\mathcal{O}(\alpha(N))$ amortized
+time. This reduces the overall time complexity to $\mathcal{O}(Q \alpha(N))$,
+which is a substantial improvement and allows us to pass all test cases.
 
 <LanguageSection>
 <CPPSection>
@@ -215,6 +215,7 @@ substantial improvement and allows us to pass all test cases.
 #include <bits/stdc++.h>
 using namespace std;
 
+//BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> e;
 	DSU(int N) { e = vector<int>(N, -1); }
@@ -233,6 +234,7 @@ struct DSU {
 		e[x] += e[y]; e[y] = x; return true;
 	}
 };
+//EndCodeSnip
 
 int main() {
 	int node_num, query_num;
