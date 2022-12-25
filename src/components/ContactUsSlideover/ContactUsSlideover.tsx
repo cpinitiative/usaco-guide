@@ -70,7 +70,7 @@ export default function ContactUsSlideover({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  defaultLocation: string;
+  defaultLocation?: string;
 }): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
@@ -83,8 +83,6 @@ export default function ContactUsSlideover({
     'Unclear Explanation',
     'Website Bug',
     'Suggestion',
-    // 'Request - Problem Editorial',
-    // 'I want to contribute!',
     'Other',
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
