@@ -5,8 +5,8 @@ export const fetchFileContent = async (
     `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath}`
   );
   const promises = [fetch(githubURL)];
-  if (!/solutions/.test(githubURL)) {
-    // must be module
+  if (filePath.startsWith('content/')) {
+    // module
     const githubProblemsURL = encodeURI(
       `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath.replace(
         /\.mdx$/,
