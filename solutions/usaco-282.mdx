@@ -10,6 +10,17 @@ author: Chuyang Wang
 
 ## Explanation
 
+The given problem is a shortest path problem with edge lengths of 0 or 1.
+Therefore, we are motivated to use Breadth-First-Search. A trasition edge has
+the weight 1 if the gravity is flipped or 0 if Captain Bovidian only moves left
+or right. We firstly add all reachable blocks from left and right to the queue.
+Then, for each element in the queue, we change the gravity and perform another
+search for the left and right, eventually adding the new blocks to the end of
+the queue. This way, we will always check blocks that require less flips before
+moving forward.
+
+During the search process, we store the number of flips needed to get to a
+certain block. We only visit blocks that are not visited yet.
 
 Time Complexity: $\mathcal{O}(N^2)$
 
@@ -18,6 +29,98 @@ Time Complexity: $\mathcal{O}(N^2)$
 
 <CPPSection>
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
+/**
+ * With the given direction of gravity, calculate the row on which captain
+ * will fall on.
+ *
+ * @param direc Direction of the gravity, either 1 or -1
+ */
+int fall_to_row(int r, int c, int direc, const vector<vector<char>> &grid) {
+	while (grid[r][c] == '.' || grid[r][c] == 'C' || grid[r][c] == 'D') {
+		if (grid[r][c] == 'D') {
+			return r;
+		}
+		if (grid[r + direc][c] == '#') {
+			return r;
+		}
+		r += direc;
+	}
+	return -1;
+}
+
+/**
+ * Find all reachable blocks from [r, c] by going left and right, without
+ * flipping the gravity.
+ * @param flips Number of flips already performed to get to [r, c]
+ * @param direc Current direction of the gravity, either 1 or -1
+ */
+void search_horizontally(int r, int c, int flips, int direc,
+						queue<array<int, 4>> &bfs,
+						vector<vector<int>> &flip_count,
+						const vector<vector<char>> &grid) {
+	if (r <= 0 || grid[r][c] == '-' || flip_count[r][c] >= 0) {
+		return;
+	}
+	flip_count[r][c] = flips;
+	bfs.push({r, c, flips, direc});
+
+	search_horizontally(fall_to_row(r, c + 1, direc, grid), c + 1, flips, direc,
+						bfs, flip_count, grid);
+	search_horizontally(fall_to_row(r, c - 1, direc, grid), c - 1, flips, direc,
+						bfs, flip_count, grid);
+}
+
+int main() {
+	freopen("gravity.in", "r", stdin);
+	freopen("gravity.out", "w", stdout);
+
+	int N, M;
+	cin >> N >> M;
+
+	pair<int, int> C, D;
+
+	// border is marked as '-'
+	vector<vector<char>> grid(N + 2, vector<char>(M + 2, '-'));
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= M; j++) {
+			cin >> grid[i][j];
+			if (grid[i][j] == 'C') {
+				C = {i, j};
+			} else if (grid[i][j] == 'D') {
+				D = {i, j};
+			}
+		}
+	}
+
+	/*
+	 * flip_count[r][c] := how many flips needed to reach the block on the r-th
+	 * row and c-th column
+	 */
+	vector<vector<int>> flip_count(N + 2, vector<int>(M + 2, -1));
+	// {row, column, number of flips, direction of the gravity}
+	queue<array<int, 4>> bfs;
+	// let captain fall down and perform a search to the left and right
+	search_horizontally(fall_to_row(C.first, C.second, 1, grid), C.second, 0, 1,
+						bfs, flip_count, grid);
+
+	while (!bfs.empty()) {
+		int r, c, flips, direc;
+		r = bfs.front()[0];
+		c = bfs.front()[1];
+		flips = bfs.front()[2];
+		direc = bfs.front()[3];
+		bfs.pop();
+
+		// flip the gravity
+		r = fall_to_row(r, c, -direc, grid);
+		// search left and right and add new blocks to the queue
+		search_horizontally(r, c, flips + 1, -direc, bfs, flip_count, grid);
+	}
+
+	cout << flip_count[D.first][D.second] << endl;
+}
 ```
 </CPPSection>
