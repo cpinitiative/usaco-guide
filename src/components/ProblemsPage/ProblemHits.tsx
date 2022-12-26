@@ -35,7 +35,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
       <div className="text-gray-500 dark:text-dark-med-emphasis text-sm">
         Status: {userProgressOnProblems[hit.objectID] ?? 'Not Attempted'}
       </div>
-      <div>
+      {/* <div>
         <a
           href={hit.url}
           target="_blank"
@@ -52,7 +52,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
             <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
           </svg>
         </a>
-      </div>
+      </div> */}
 
       {hit.solution &&
         (hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
