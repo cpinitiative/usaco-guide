@@ -8,12 +8,30 @@ author: Benjamin Qi, Kevin Sheng, Varun Ragunath
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_balancing_silver_feb16.html)
 
 ## Video Solution
+
 By Varun Ragunath
 
 <Youtube id="Ob7ac08iMuU" />
 
 <Spoiler title="Video Solution Code">
     
+<Warning>
+
+This code is not actually correct; it outputs 3 for the following input when the
+answer should be 2.
+
+```
+4
+3 7
+7 1
+7 7
+9 7
+```
+
+See [Solution 2](#solution-2) for the correct code.
+
+</Warning>
+
 <LanguageSection>
 <CPPSection>
 
@@ -185,8 +203,8 @@ public class balancing{
 	//CodeSnip{Kattio}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 
 </LanguageSection>
 </Spoiler>
@@ -391,14 +409,14 @@ def min_partition(x_line: int, cows: List[Tuple[int, int]]) -> int:
 
 		while left_at < len(left) and y_line > left[left_at][1]:
 			left_at += 1
-		
+
 		while right_at < len(right) and y_line > right[right_at][1]:
 			right_at += 1
-		
+
 		below_max = max(left_at, right_at)
 		above_max = max(len(left) - left_at, len(right) - right_at)
 		most_balanced = min(most_balanced, max(below_max, above_max))
-	
+
 	return most_balanced
 
 
@@ -426,18 +444,26 @@ print(most_balanced, file=open('balancing.out', 'w'))
 
 **Time Complexity:** $\mathcal{O}(N^3)$
 
-It does not suffice to check only a constant number of $x$ and $y$-coordinates
-that are close to the median $x$ or $y$, respectively. For example, consider the
-case where $N=999$ and $x_i=y_i=2i-1$. Then $M=333$.
+The solution to the
+[Bronze version](/problems/usaco-617-load-balancing/solution) of this problem
+runs in $\mathcal O(N^3)$ time, but is not fast enough to pass the Silver
+version. One way to speed up the Bronze solution is to check only a constant
+number of $x$ and $y$-coordinates that are close to the median $x$ or $y$,
+respectively. This would improve the time complexity to $\mathcal O(N)$.
+However, such a solution cannot be correct. For example, consider the case where
+$N=999$ and $x_i=y_i=2i-1$. Then $M=333$, and the $x$ and $y$ coordinates we
+need to select to obtain this $M$ are rather far away from their respective
+medians.
 
-However, we can speed up an $\mathcal{O}(N^3)$ solution by a constant factor by
-checking fewer $x$ and $y$ coordinates than the
-[bronze editorial](http://www.usaco.org/current/data/sol_balancing_bronze_feb16.html)
-does. Note that if we increase the $x$-coordinate of the north-south fence by
-two and there are still at most $\frac{N}{3}$ cows to the left of the fence,
-then the answer for this new configuration cannot be worse. Thus, the number of
-$x$-coordinates which the solution below checks is at most $\frac{N}{3}$ (plus a
-constant). Similar reasoning holds for the $y$-coordinates.
+Nevertheless, we can still speed up the Bronze solution by a constant factor by
+checking fewer $x$ and $y$ coordinates. Note that if we increase the
+$x$-coordinate of the north-south fence by two and there are still at most
+$\frac{N}{3}$ cows to the left of the fence, then $M$ stays the same or
+decreases. Thus, we can reduce the number of $x$-coordinates we need to check to
+$\frac{N}{3}+\mathcal O(1)$. Similarly, the number of $y$-coordinates we need to
+check is also $\frac{N}{3}+\mathcal O(1)$. This reduces the number of operations
+in the Bronze solution by a factor of 9, which is enough to pass the Silver
+version.
 
 <LanguageSection>
 <CPPSection>
@@ -455,14 +481,36 @@ using std::vector;
 struct Cow { int x, y; };
 
 /** Returns the list of *important* coordinates */
-vector<int> pos_of_interest(vector<int>& pos) {
-	vector<int> important;
-	sort(pos.begin(), pos.end());
-	for (int i = pos.size() / 3; i <= 2 * pos.size() / 3; i++) {
-		if (pos[i] != pos[i + 1]) {
-			important.push_back(pos[i] + 1);
+vector<int> pos_of_interest(vector<int> &pos) {
+	int sz = pos.size();
+	std::sort(pos.begin(), pos.end());
+
+	vector<int> distinct;  // List of all the distinct positions
+	/*
+	 * For each of those distinct positions,
+	 * how many have the same or lesser position?
+	 */
+	vector<int> num_left;
+	for (int i = 0; i < sz; i++) {
+		if (i == sz - 1 || pos[i] != pos[i + 1]) {
+			distinct.push_back(pos[i] + 1);
+			num_left.push_back(i + 1);
 		}
 	}
+
+	vector<int> important;
+	for (int i = 0; i < distinct.size(); i++) {
+		// We can just move the fence to the right, so ignore this
+		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) {
+			continue;
+		}
+		// Same, but to the left
+		if (i > 0 && num_left[i - 1] >= sz - sz / 3) {
+			continue;
+		}
+		important.push_back(distinct[i]);
+	}
+
 	return important;
 }
 
@@ -474,12 +522,12 @@ int main() {
 	vector<Cow> cows(cow_num);
 	vector<int> x_pos;
 	vector<int> y_pos;
-	for (Cow& c : cows) {
+	for (Cow &c : cows) {
 		read >> c.x >> c.y;
 		x_pos.push_back(c.x);
 		y_pos.push_back(c.y);
 	}
-	
+
 	vector<int> to_check_x = pos_of_interest(x_pos);
 	vector<int> to_check_y = pos_of_interest(y_pos);
 	int most_balanced = INT32_MAX;
@@ -487,10 +535,10 @@ int main() {
 		for (int y : to_check_y) {
 			// Try placing a fence centered at (x, y)
 			vector<vector<int>> field_amt{{0, 0}, {0, 0}};
-			for (const Cow& c : cows) {
+			for (const Cow &c : cows) {
 				field_amt[x < c.x][y < c.y]++;
 			}
-			
+
 			int balance = std::max({
 				field_amt[0][0], field_amt[0][1],
 				field_amt[1][0], field_amt[1][1]
@@ -498,7 +546,7 @@ int main() {
 			most_balanced = std::min(most_balanced, balance);
 		}
 	}
-
+	
 	std::ofstream("balancing.out") << most_balanced << endl;
 }
 ```
@@ -514,7 +562,7 @@ public class Balancing {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("balancing.in"));
 		int cowNum = Integer.parseInt(read.readLine());
-		
+
 		int[][] cows = new int[cowNum][2];
 		int[] xPos = new int[cowNum];
 		int[] yPos = new int[cowNum];
@@ -526,7 +574,7 @@ public class Balancing {
 			xPos[c] = x;
 			yPos[c] = y;
 		}
-		
+
 		List<Integer> toCheckX = posOfInterest(xPos);
 		List<Integer> toCheckY = posOfInterest(yPos);
 
@@ -545,7 +593,7 @@ public class Balancing {
 				mostEqual = Math.min(mostEqual, balance);
 			}
 		}
-		
+
 		PrintWriter written = new PrintWriter("balancing.out");
 		written.print(mostEqual);
 		written.close();
