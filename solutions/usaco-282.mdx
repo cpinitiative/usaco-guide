@@ -86,7 +86,7 @@ int main() {
 	int N, M;
 	cin >> N >> M;
 
-	pair<int, int> C, D;
+	pair<int, int> start, destination;
 
 	// border is marked as '-'
 	vector<vector<char>> grid(N + 2, vector<char>(M + 2, '-'));
@@ -94,9 +94,9 @@ int main() {
 		for (int j = 1; j <= M; j++) {
 			cin >> grid[i][j];
 			if (grid[i][j] == 'C') {
-				C = {i, j};
+				start = {i, j};
 			} else if (grid[i][j] == 'D') {
-				D = {i, j};
+				destination = {i, j};
 			}
 		}
 	}
@@ -110,7 +110,7 @@ int main() {
 	queue<array<int, 4>> bfs;
 	// let captain fall down and perform a search to the left and right
 	search_horizontally(
-		fall_to_row(C.first, C.second, 1, grid), C.second, 0, 1,
+		fall_to_row(start.first, start.second, 1, grid), start.second, 0, 1,
 		bfs, flip_count, grid
 	);
 
@@ -128,7 +128,7 @@ int main() {
 		search_horizontally(r, c, flips + 1, -direc, bfs, flip_count, grid);
 	}
 
-	cout << flip_count[D.first][D.second] << endl;
+	cout << flip_count[destination.first][destination.second] << endl;
 }
 ```
 
