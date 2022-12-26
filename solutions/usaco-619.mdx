@@ -426,18 +426,26 @@ print(most_balanced, file=open('balancing.out', 'w'))
 
 **Time Complexity:** $\mathcal{O}(N^3)$
 
-It does not suffice to check only a constant number of $x$ and $y$-coordinates
-that are close to the median $x$ or $y$, respectively. For example, consider the
-case where $N=999$ and $x_i=y_i=2i-1$. Then $M=333$.
+The solution to the [Bronze 
+version](/problems/usaco-617-load-balancing/solution) of this problem runs in
+$\mathcal O(N^3)$ time, but is not fast enough to pass the Silver version. 
+One way to speed up the Bronze solution is to check only a constant number 
+of $x$ and $y$-coordinates that are close to the median $x$ or $y$, 
+respectively. This would improve the time complexity to $\mathcal O(N)$. 
+However, such a solution cannot be correct. For example, consider the
+case where $N=999$ and $x_i=y_i=2i-1$. Then $M=333$, and the $x$ and $y$
+coordinates we need to select to obtain this $M$ are rather far away from 
+their respective medians.
 
-However, we can speed up an $\mathcal{O}(N^3)$ solution by a constant factor by
-checking fewer $x$ and $y$ coordinates than the
-[bronze editorial](http://www.usaco.org/current/data/sol_balancing_bronze_feb16.html)
-does. Note that if we increase the $x$-coordinate of the north-south fence by
-two and there are still at most $\frac{N}{3}$ cows to the left of the fence,
-then the answer for this new configuration cannot be worse. Thus, the number of
-$x$-coordinates which the solution below checks is at most $\frac{N}{3}$ (plus a
-constant). Similar reasoning holds for the $y$-coordinates.
+Nevertheless, we can still speed up the Bronze solution by a constant factor
+by checking fewer $x$ and $y$ coordinates. Note that if we increase the 
+$x$-coordinate of the north-south fence by two and there are still at most 
+$\frac{N}{3}$ cows to the left of the fence,
+then $M$ stays the same or decreases. Thus, we can reduce the number of 
+$x$-coordinates we need to check to $\frac{N}{3}+\mathcal O(1)$. Similarly, 
+the number of $y$-coordinates we need to check is also 
+$\frac{N}{3}+\mathcal O(1)$. This reduces the number of operations in the 
+Bronze solution by a factor of 9, which is enough to pass the Silver version.
 
 <LanguageSection>
 <CPPSection>
