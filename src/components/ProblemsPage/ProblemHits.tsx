@@ -1,10 +1,13 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
+import { useContext } from 'react';
 import { Highlight } from 'react-instantsearch-dom';
 import { moduleIDToSectionMap } from '../../../content/ordering';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
 function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
+  const { userProgressOnProblems } = useContext(UserDataContext);
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
@@ -29,6 +32,9 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
           </svg>
         )}
       </p>
+      <div className="text-gray-500 dark:text-dark-med-emphasis text-sm">
+        Status: {userProgressOnProblems[hit.objectID] ?? 'Not Attempted'}
+      </div>
       <div>
         <a
           href={hit.url}
