@@ -160,5 +160,56 @@ public final class DestroyArray {
 ```
 
 </JavaSection>
+<PySection>
+```
+def work():
+    # the range n can be is pretty small, which is a sign that you can brute force it
+    # for every removed pair, if the larger number of the two is smaller than a number still in the array,
+    # that number cannot be removed because it can't be summed with anything else to be that smaller #.
+    # this means the biggest number must be the one of the first 2 numbers to be removed, and
+    # you can loop through the possibilities of the other numbers being the other starting number
+    # and see if you can keep removing by choosing the next largest number in the array
+    # choosing x is not important, if they can all be removed, x will be the sum of the first pair
 
+    # removing the largest number from the array
+    starting = arr.pop()
+
+    # i will be the number that gets removed with the largest number first
+    for i in reversed(arr):
+        working = arr.copy()
+        working.remove(i)
+
+        path = [(i, starting)]  # pairs
+        while True:
+            try:
+                # for every pair, you must choose the largest remaining number as one of them
+                biggest = working.pop()
+                other = working.index(path[-1][1] - biggest)  # determines if the other part of the pair exists
+                path.append((working[other], biggest))
+                working.remove(working[other])
+            except:
+                # 2 reasons it throws error, if all have been removed, or a pair doesn't exist
+                if not working:
+                    return path
+                break  # if doesn't exist, try next combo of first pair
+    return []
+
+
+if __name__ == '__main__':
+    t = int(input().strip())
+    for _ in range(t):
+        n = int(input().strip())
+        arr = sorted([int(i) for i in input().strip().split()])
+        finished = work()  # returns [] if doesn't work, else returns path array
+        if not finished:
+            print("NO")
+        else:
+            print("YES")
+            print(finished[0][0] + finished[0][1])
+            for i, j in finished:
+                print(i, j)
+
+```
+</PySection>
+		
 </LanguageSection>
