@@ -118,17 +118,18 @@ int main() {
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class guardMark {
+public class GuardMark {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("guard");
+		
 		int N = io.nextInt();
 		int H = io.nextInt();
 		Cow[] cows = new Cow[N];
@@ -143,7 +144,7 @@ public class guardMark {
 	 	 * dp[subset][0] = Height of subset of cows
 	 	 * dp[subset][1] = Safety factor of subset of cows
 	 	 */
-		int[][] dp = new int[(1 << N)][2];
+		int[][] dp = new int[1 << N][2];
 
 		// Initially, the height is 0 and infinite height can be stacked.
 		dp[0][0] = 0;
@@ -155,7 +156,9 @@ public class guardMark {
 			dp[i][0] = 0;
 			dp[i][1] = -1;
 			for (int j = 0; j < N; j++) {
-				if ((i & (1 << j)) != 0) {
+				if ((i & (1 << j)) == 0) {
+					continue;
+				}
 				// Add cow's height to total subset height.
 				dp[i][0] += cows[j].height;
 				// Previous subset before this bit was set.
@@ -165,10 +168,10 @@ public class guardMark {
 				* Check for previous safety factor - j's weight,
 				* And check for j's own strength.
 				*/
-				dp[i][1] = Math.max(dp[i][1],
-							Math.min(dp[prev][1] - cows[j].weight,
-								cows[j].strength));
-				}
+				dp[i][1] = Math.max(
+						dp[i][1],
+						Math.min(dp[prev][1] - cows[j].weight, cows[j].strength)
+				);
 			}
 		}
 
@@ -189,19 +192,22 @@ public class guardMark {
 		io.close();
 
 	}
+	
 	static class Cow {
-		int height;
-		int weight;
-		int strength;
+		public int height;
+		public int weight;
+		public int strength;
 
-		Cow(int height, int weight, int strength) {
+		public Cow(int height, int weight, int strength) {
 			this.height = height;
 			this.weight = weight;
 			this.strength = strength;
 		}
 	}
+	
 	//CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
 </LanguageSection>
