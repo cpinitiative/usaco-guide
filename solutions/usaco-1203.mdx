@@ -51,14 +51,14 @@ vector<int> A;
 
 /** @return if num_hours leads to a valid answer */
 bool check(int num_hours) {
-	int curr_sum = 0;  // keeps track of the current sum
+	int curr_sum = 0; // keeps track of the current sum
 	// iterate over the vector
 	for (int i = 0; i < N; i++) {
 		curr_sum += A[i];
 		if (curr_sum > num_hours) {
-			return false;  // currsum cannot exceed x
+			return false; // currsum cannot exceed x
 		} else if (curr_sum == num_hours) {
-			curr_sum = 0;  // reset currsum
+			curr_sum = 0; // reset currsum
 		}
 	}
 	return true;
@@ -70,16 +70,18 @@ int main() {
 	for (int t = 0; t < T; t++) {
 		cin >> N;
 		A = vector<int>(N);
-		int sum = 0;  // sum of all values in the vector
+		int sum = 0; // sum of all values in the vector
 		for (int i = 0; i < N; i++) {
 			cin >> A[i];
 			sum += A[i];
 		}
 
-		// num_hours is the # of hours of sleep every class AFTER modification
-		// iterate over num_hours from small to large
-		// because the smallest possible num_hours is optimal
-		
+		/*
+		 *num_hours is the # of hours of sleep every class AFTER modification
+		 *iterate over num_hours from small to large
+		 *because the smallest possible num_hours is optimal
+		 */
+
 		for (int num_hours = 0; num_hours <= sum; num_hours++) {
 			if (num_hours != 0 && sum % num_hours != 0) {
 				// sum must be divisible by num_hours
@@ -91,13 +93,19 @@ int main() {
 					// special case because you can't divide by 0
 					cout << 0 << endl;
 				} else {
-					// sum/num_hours is the total # of classes AFTER
-					// modification therefore N-sum/num_hours would be the # of
-					// modifications needed
+					/*
+					 *sum/num_hours is the total # of classes AFTER
+					 *modification therefore N-sum/num_hours would be the # of
+					 *modifications needed
+					 */
+
 					cout << N - sum / num_hours << endl;
 				}
-				// there's no point trying bigger values of num_hours, so we
-				// break and go to solve the next test case
+				/*
+                 *there's no point trying bigger values of num_hours,
+				 *so we break and go to solve the next test case
+                 */
+
 				break;
 			}
 		}
