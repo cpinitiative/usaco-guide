@@ -2,7 +2,7 @@ export default {
   Bronze: [
     ['1251', '2022 December', 'Cow College'],
     ['1252', '2022 December', 'Feeding the Cows'],
-    ['1252', '2022 December', 'Reverse Engineering'],
+    ['1253', '2022 December', 'Reverse Engineering'],
     ['1227', '2022 US Open', 'Photoshoot'],
     ['1228', '2022 US Open', 'Counting Liars'],
     ['1229', '2022 US Open', 'Alchemy'],
