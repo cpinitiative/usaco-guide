@@ -10,17 +10,17 @@ author: Yiming Huang
 
 ## Explanation
 
-After Elsie has made all the modifications to the log array $A[]$, the log will show that Bessie sleeps the same number of hours every day. Let's call that number $x$. 
+After Elsie has made all the modifications to the log array $A[]$, the log will show that Bessie sleeps the same number of hours every day. Let's call that number $\texttt{numHours}$. 
 
-Since the total number of hours won't change, we can call that number $\mathit{sum}$.
+Since the total number of hours won't change, we can call that number $\texttt{sum}$.
 
-Therefore, the length of the modified log will be $\mathit{sum}/x$. Since every modification reduces the length of the log by 1, the number of modifications will be $N-\mathit{sum}/x$.
+Therefore, the length of the modified log will be $\texttt{sum}/\texttt{numHours}$. Since every modification reduces the length of the log by 1, the number of modifications will be $N-\texttt{sum}/\texttt{numHours}$.
 
-$N$ and $\mathit{sum}$ are constant, so in order to minimize $N-\mathit{sum}/x$, we need to minimize $x$ too.
+$N$ and $\texttt{sum}$ are constant, so in order to minimize $N-\texttt{sum}/\texttt{numHours}$, we need to minimize $\texttt{numHours}$ too.
 
-In order to do that, we iterate over possible values of $x$ and checks if it's valid. If it is, then we print out the answer $N-\mathit{sum}/x$ and return the program.
+In order to do that, we iterate over possible values of $\texttt{numHours}$ and checks if it's valid. If it is, then we print out the answer $N-\texttt{sum}/\texttt{numHours}$ and return the program.
 
-In order to test if a value of $x$ is valid, we iterate over the $A[]$ from left to right and combine values. If at some point a combined value exceed $x$ then we know that $x$ is not valid.
+In order to test if a value of $\texttt{numHours}$ is valid, we iterate over the $A[]$ from left to right and combine values. If at some point a combined value exceed $\texttt{numHours}$ then we know that $\texttt{numHours}$ is not valid.
 
 
 
@@ -29,7 +29,7 @@ In order to test if a value of $x$ is valid, we iterate over the $A[]$ from left
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N \cdot (\# \, \text{divisors of } \mathit{sum}))$
+**Time Complexity:** $\mathcal{O}(N \cdot (\# \, \text{divisors of } \texttt{sum}))$
 
 <LanguageSection>
 <CPPSection>
@@ -41,14 +41,14 @@ using namespace std;
 int N;
 vector<int> A;
 
-bool check(int x){
-	int curr\mathit{sum} = 0; //keeps track of the current \mathit{sum} 
+bool check(int numHours){
+	int currsum = 0; //keeps track of the current sum 
 	//iterate over the vector
 	for(int i = 0; i < N; i++){
-		curr\mathit{sum} += A[i];
-		if(curr\mathit{sum}>x) return false; //curr\mathit{sum} cannot exceed x
-		else if(curr\mathit{sum}==x){
-			curr\mathit{sum} = 0; //reset curr\mathit{sum}
+		currsum += A[i];
+		if(currsum > numHours) return false; //currsum cannot exceed x
+		else if(currsum == numHours){
+			currsum = 0; //reset currsum
 		}
 	}
 	return true;
@@ -58,33 +58,33 @@ void solve(){
 	//reading inputs
 	cin >> N;
 	A = vector<int>(N);
-	int \mathit{sum} = 0; //\mathit{sum} of all values in the vector
+	int sum = 0; //sum of all values in the vector
 	for(int i = 0; i < N; i++){
 		cin >> A[i];
-		\mathit{sum} += A[i];
+		sum += A[i];
 	}
 
-	//x is the # of hours of sleep every class AFTER modification
-	//iterate over x from small to large because the smallest possible x is optimal
+	//numHours is the # of hours of sleep every class AFTER modification
+	//iterate over numHours from small to large because the smallest possible numHours is optimal
 	
-	for(int x = 0; x <= \mathit{sum}; x++){
-		if(x!=0&&\mathit{sum}%x!=0){
-			//\mathit{sum} must be divisible by x
+	for(int numHours = 0; numHours <= sum; numHours++){
+		if(numHours != 0 && sum % numHours!=0){
+			//sum must be divisible by numHours
 			continue;
 		}
-		if(check(x)){
-			//check(x) checks if x is a valid answer
-			if(x==0){
+		if(check(numHours)){
+			//check(numHours) checks if numHours is a valid answer
+			if(numHours == 0){
 				//special case because you can't divide by 0
 				cout << 0 << endl;
 			}
 			else{
-				//\mathit{sum}/x is the total # of classes AFTER modification
-				//therefore N-\mathit{sum}/x would be the # of modifications needed
-				cout << N-\mathit{sum}/x << endl; 
+				//sum/numHours is the total # of classes AFTER modification
+				//therefore N-sum/numHours would be the # of modifications needed
+				cout << N - sum / numHours << endl; 
 
 			}
-			//there's no point trying bigger values of x, so we return and go to solve the next test case
+			//there's no point trying bigger values of numHours, so we return and go to solve the next test case
 			return;
 		}
 	}
