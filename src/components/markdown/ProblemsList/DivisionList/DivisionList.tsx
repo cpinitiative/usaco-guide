@@ -11,7 +11,7 @@ import divToProbs from './div_to_probs';
 import idToSol from './id_to_sol';
 
 const lower = 2016;
-const upper = 2022;
+const upper = 2023;
 const ALL = `All (${lower - 1} - ${upper})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
