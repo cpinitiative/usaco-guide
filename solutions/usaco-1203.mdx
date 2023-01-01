@@ -22,11 +22,6 @@ In order to do that, we iterate over possible values of $\texttt{numHours}$ and 
 
 In order to test if a value of $\texttt{numHours}$ is valid, we iterate over the $A[]$ from left to right and combine values. If at some point a combined value exceed $\texttt{numHours}$ then we know that $\texttt{numHours}$ is not valid.
 
-
-
-
-
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \cdot (\# \, \text{divisors of } \texttt{sum}))$
@@ -41,63 +36,62 @@ using namespace std;
 int N;
 vector<int> A;
 
-bool check(int numHours){
-	int currsum = 0; //keeps track of the current sum 
-	//iterate over the vector
-	for(int i = 0; i < N; i++){
+bool check(int numHours) {
+	int currsum = 0;  // keeps track of the current sum
+	// iterate over the vector
+	for (int i = 0; i < N; i++) {
 		currsum += A[i];
-		if(currsum > numHours) return false; //currsum cannot exceed x
-		else if(currsum == numHours){
-			currsum = 0; //reset currsum
+		if (currsum > numHours) {
+			return false;  // currsum cannot exceed x
+		}
+		else if (currsum == numHours) {
+			currsum = 0;  // reset currsum
 		}
 	}
 	return true;
 }
 
-void solve(){
-	//reading inputs
+void solve() {
+	// reading inputs
 	cin >> N;
 	A = vector<int>(N);
-	int sum = 0; //sum of all values in the vector
-	for(int i = 0; i < N; i++){
+	int sum = 0; // sum of all values in the vector
+	for (int i = 0; i < N; i++)
+	{
 		cin >> A[i];
 		sum += A[i];
 	}
 
-	//numHours is the # of hours of sleep every class AFTER modification
-	//iterate over numHours from small to large because the smallest possible numHours is optimal
-	
-	for(int numHours = 0; numHours <= sum; numHours++){
-		if(numHours != 0 && sum % numHours!=0){
-			//sum must be divisible by numHours
+	// numHours is the # of hours of sleep every class AFTER modification
+	// iterate over numHours from small to large because the smallest possible numHours is optimal
+	for (int numHours = 0; numHours <= sum; numHours++) {
+		if (numHours != 0 && sum % numHours != 0) {
+			// sum must be divisible by numHours
 			continue;
 		}
-		if(check(numHours)){
-			//check(numHours) checks if numHours is a valid answer
-			if(numHours == 0){
-				//special case because you can't divide by 0
+		if (check(numHours)) {
+			// check(numHours) checks if numHours is a valid answer
+			if (numHours == 0) {
+				// special case because you can't divide by 0
 				cout << 0 << endl;
+			} else {
+				// sum/numHours is the total # of classes AFTER modification
+				// therefore N-sum/numHours would be the # of modifications needed
+				cout << N - sum / numHours << endl;
 			}
-			else{
-				//sum/numHours is the total # of classes AFTER modification
-				//therefore N-sum/numHours would be the # of modifications needed
-				cout << N - sum / numHours << endl; 
-
-			}
-			//there's no point trying bigger values of numHours, so we return and go to solve the next test case
+			// there's no point trying bigger values of numHours, so we return and go to solve the next test case
 			return;
 		}
 	}
-
 }
 
 int main() {
-	int T; cin >> T;
-	while(T--){
+	int T;
+	cin >> T;
+	for (int t = 0; t < T; t++) {
 		solve();
 	}
 }
-
 ```
 
 </CPPSection>
