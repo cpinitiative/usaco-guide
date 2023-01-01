@@ -5,7 +5,7 @@ title: Sleeping in Class
 author: Yiming Huang
 ---
 
-[Official Analysis](http://usaco.org/current/data/sol_prob1_bronze_feb22.html)
+[Official Analysis (C++)](http://usaco.org/current/data/sol_prob1_bronze_feb22.html)
 
 ## Explanation
 
@@ -49,16 +49,16 @@ using namespace std;
 int N;
 vector<int> A;
 
-// checks if num_hours leads to a valid answer
+/** @return if num_hours leads to a valid answer */
 bool check(int num_hours) {
-	int currsum = 0; // keeps track of the current sum
+	int curr_sum = 0;  // keeps track of the current sum
 	// iterate over the vector
 	for (int i = 0; i < N; i++) {
-		currsum += A[i];
-		if (currsum > num_hours)
-			return false; // currsum cannot exceed x
-		else if (currsum == num_hours) {
-			currsum = 0; // reset currsum
+		curr_sum += A[i];
+		if (curr_sum > num_hours) {
+			return false;  // currsum cannot exceed x
+		} else if (curr_sum == num_hours) {
+			curr_sum = 0;  // reset currsum
 		}
 	}
 	return true;
@@ -67,11 +67,10 @@ bool check(int num_hours) {
 int main() {
 	int T;
 	cin >> T;
-	while (T--) {
-		// reading inputs
+	for (int t = 0; t < T; t++) {
 		cin >> N;
 		A = vector<int>(N);
-		int sum = 0; // sum of all values in the vector
+		int sum = 0;  // sum of all values in the vector
 		for (int i = 0; i < N; i++) {
 			cin >> A[i];
 			sum += A[i];
@@ -80,7 +79,7 @@ int main() {
 		// num_hours is the # of hours of sleep every class AFTER modification
 		// iterate over num_hours from small to large
 		// because the smallest possible num_hours is optimal
-
+		
 		for (int num_hours = 0; num_hours <= sum; num_hours++) {
 			if (num_hours != 0 && sum % num_hours != 0) {
 				// sum must be divisible by num_hours
@@ -104,7 +103,6 @@ int main() {
 		}
 	}
 }
-
 ```
 
 </CPPSection>
