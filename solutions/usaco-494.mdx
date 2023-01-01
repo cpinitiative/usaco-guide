@@ -2,7 +2,7 @@
 id: usaco-494
 source: Old Gold
 title: Guard Mark
-author: Ryan Chou
+author: Ryan Chou, Sofia Yang
 ---
  
 [Official Analysis](http://www.usaco.org/current/data/sol_guard_gold.html)
@@ -118,5 +118,96 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GuardMark {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("guard");
+		
+		int N = io.nextInt();
+		int H = io.nextInt();
+		Cow[] cows = new Cow[N];
+		for (int i = 0; i < N; i++) {
+			int h = io.nextInt();
+			int w = io.nextInt();
+			int s = io.nextInt();
+			cows[i] = new Cow(h, w, s);
+		}
+
+		/*
+	 	 * dp[subset][0] = Height of subset of cows
+	 	 * dp[subset][1] = Safety factor of subset of cows
+	 	 */
+		int[][] dp = new int[1 << N][2];
+
+		// Initially, the height is 0 and infinite height can be stacked.
+		dp[0][0] = 0;
+		dp[0][1] = Integer.MAX_VALUE;
+
+		// Loop through each subset of cows.
+		for (int i = 1; i < (1 << N); i++) {
+			// Initial conditions.
+			dp[i][0] = 0;
+			dp[i][1] = -1;
+			for (int j = 0; j < N; j++) {
+				if ((i & (1 << j)) == 0) {
+					continue;
+				}
+				// Add cow's height to total subset height.
+				dp[i][0] += cows[j].height;
+				// Previous subset before this bit was set.
+				int prev = i ^ (1 << j);
+				/*
+				* Maximum safety of subset given that j is topmost cow.
+				* Check for previous safety factor - j's weight,
+				* And check for j's own strength.
+				*/
+				dp[i][1] = Math.max(
+						dp[i][1],
+						Math.min(dp[prev][1] - cows[j].weight, cows[j].strength)
+				);
+			}
+		}
+
+		int maxSafety = -1;
+		for (int i = 1; i < (1 << N); i++) {
+			if (dp[i][0] >= H) {
+				// Fulfills height conditions.
+				maxSafety = Math.max(dp[i][1], maxSafety);
+			}
+		}
+
+		// Can't find valid order.
+		if (maxSafety == -1) {
+			io.println("Mark is too tall");
+		} else {
+			io.println(maxSafety);
+		}
+		io.close();
+
+	}
+	
+	static class Cow {
+		public int height;
+		public int weight;
+		public int strength;
+
+		public Cow(int height, int weight, int strength) {
+			this.height = height;
+			this.weight = weight;
+			this.strength = strength;
+		}
+	}
+	
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>

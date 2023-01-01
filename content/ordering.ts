@@ -87,7 +87,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Additional',
-      description: 'Topics not strictly necessary to know to pass Bronze.',
+      description: '',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
     {

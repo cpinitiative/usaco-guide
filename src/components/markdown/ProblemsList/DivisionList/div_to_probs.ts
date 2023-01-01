@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1251', '2022 December', 'Cow College'],
+    ['1252', '2022 December', 'Feeding the Cows'],
+    ['1253', '2022 December', 'Reverse Engineering'],
     ['1227', '2022 US Open', 'Photoshoot'],
     ['1228', '2022 US Open', 'Counting Liars'],
     ['1229', '2022 US Open', 'Alchemy'],
@@ -86,6 +89,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1254', '2022 December', 'Barn Tree'],
+    ['1255', '2022 December', 'Circular Barn'],
+    ['1256', '2022 December', 'Range Reconstruction'],
     ['1230', '2022 US Open', 'Visits'],
     ['1231', '2022 US Open', 'Subset Equality'],
     ['1232', '2022 US Open', 'COW Operations'],
@@ -172,6 +178,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1257', '2022 December', 'Bribing Friends'],
+    ['1258', '2022 December', 'Mountains'],
+    ['1259', '2022 December', 'Strongest Friendship Group'],
     ['1233', '2022 US Open', 'Apple Catching'],
     ['1234', '2022 US Open', 'Pair Programming'],
     ['1235', '2022 US Open', 'Balancing a Tree'],
@@ -257,6 +266,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1260', '2022 December', 'Breakdown'],
+    ['1261', '2022 December', 'Making Friends'],
+    ['1262', '2022 December', 'Palindromes'],
     ['1236', '2022 US Open', '262144 Revisited'],
     ['1237', '2022 US Open', 'Hoof and Brain'],
     ['1238', '2022 US Open', 'Up Down Subsequence'],

@@ -69,7 +69,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     problems,
   } as AnnotatedProblemsListProps;
   const userSettings = useContext(UserDataContext);
-  const showTags = !userSettings.hideTags;
+  const showTags = userSettings.showTags;
   const showDifficulty = !userSettings.hideDifficulty;
 
   const [problem, setProblem] = React.useState(null);
