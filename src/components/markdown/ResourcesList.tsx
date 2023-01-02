@@ -55,6 +55,7 @@ const moduleSources = {
   ],
   CSA: ['https://csacademy.com/lesson/', 'CS Academy'],
   CF: ['https://codeforces.com/blog/entry/', 'CodeForces'],
+  'CF EDU': ['https://codeforces.com/edu/courses', 'CodeForces Edu (enrollment required for viewing)'],
   TC: [
     'https://www.topcoder.com/community/competitive-programming/tutorials/',
     'TopCoder',

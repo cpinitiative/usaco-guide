@@ -2,7 +2,7 @@
 id: usaco-712
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road II
-author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou, Ananth Kashyap, Ben Dodge
+author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou, Ananth Kashyap, Ben Dodge, Ishwarendra Jha
 ---
 
 ## Solution 1
@@ -160,7 +160,73 @@ For every cow (say cow $N$), we can check which cows have one entry/exit point b
 **Time Complexity:** $\mathcal{O}(T^3)$, where $T$ represents the total number of characters in Farmer John's string.
 
 <LanguageSection>
-	
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int TOTAL = 52;  // Crossing Points' Map Length 
+
+int main()
+{
+	freopen("circlecross.in", "r", stdin);
+	freopen("circlecross.out", "w", stdout);
+
+	string recordings;
+	cin >> recordings;
+
+	vector<int> first_found(26, -1);
+	set<pair<char, char>> crossings;
+
+	for (int i = 0; i < TOTAL; i++)
+	{
+		if (first_found[recordings[i] - 'A'] == -1)
+		{
+			// first occurrence of this letter
+			first_found[recordings[i] - 'A'] = i;
+			continue;
+		}
+		else
+		{
+			// keep track of all cows that have an entry/exit point
+			// between the entry and exit point of the current cow
+
+			set<char> appearances;
+
+			int start = first_found[recordings[i] - 'A'] + 1, end = i;
+			for (int j = start; j < end; j++)
+			{
+				if (appearances.count(recordings[j]))
+				{
+					appearances.erase(recordings[j]);
+				}
+				else
+				{
+					appearances.insert(recordings[j]);
+				}
+			}
+
+			// Add all pairs to the set of crossings if not already in it
+			for (int k : appearances)
+			{
+				bool already_present = crossings.count({recordings[i], k});
+				already_present |= crossings.count({k, recordings[i]});
+				if (!already_present)
+				{
+					crossings.insert({recordings[i], k});
+				}
+			}
+		}
+	}
+
+	cout << crossings.size() << endl;
+}
+```
+
+</CPPSection>
+						 
 <PySection>
 	
 ```python

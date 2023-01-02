@@ -63,6 +63,7 @@ export const probSources = {
     'CodeForces',
     'Check contest materials, located to the right of the problem statement.',
   ],
+  'CF EDU': ['https://codeforces.com/edu/courses', 'CodeForces Edu'],
   CSA: [
     'https://csacademy.com/contest/archive/task/',
     'CS Academy',

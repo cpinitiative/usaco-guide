@@ -29,19 +29,19 @@ code online [here](/general/running-code-online).
 First, you'll need to decide whether to use a code editor such as
 [Sublime Text](https://www.sublimetext.com/) or an
 [integrated development environment (IDE)](https://en.wikipedia.org/wiki/Integrated_development_environment)
-such as [Visual Studio Code](https://code.visualstudio.com/). An IDE provides
+such as [Visual Studio](https://visualstudio.microsoft.com/vs/). An IDE provides
 many features beyond just a code editor, though as you won't need most of them
 for competitive programming, a code editor alone may suit your needs.
 [More Info](https://www.quora.com/What-is-the-difference-between-a-text-editor-and-an-IDE)
 
 <Info title="Which code editor or IDE should I use?">
 
-Depends on your personal preference. Try multiple and see which one you like
+It depends on your personal preference. Try multiple and see which one you like
 best.
 
 </Info>
 
-## Using an IDE
+## Using an IDE/Editor
 
 <LanguageSection>
 
@@ -135,19 +135,19 @@ Learning Environment), that allows one to write and run Python code. It supports
 many features, such as syntax highlighting and automatic indentation, that one
 would normally expect from an code editor.
 
-Alternatively, you can install editing software like VSCode.
+Alternatively, you can install editing software like PyCharm or VSCode.
 
 ### Linux
 
 You can use built-in terminal editors, like `vim` and `nano`. You can also
-install editing software like VSCode. [For people who opened vim and can't exit]
-(https://stackoverflow.com/questions/11828270/how-do-i-exit-the-vim-editor)
+install editing software like VSCode. If you don't know how to exit, have a look
+at [this](https://stackoverflow.com/questions/11828270) link.
 
 </PySection>
 
 </LanguageSection>
 
-## Using Command Line
+## Using the Command Line
 
 <LanguageSection>
 
@@ -176,58 +176,76 @@ and running C++ from the command line.
 <Spoiler title="Sublime Text Notes (Ben)">
 
 I prefer Sublime Text because it opens instantly, it's simple to use, and it's
-easy on the eyes. Also, it's not too hard to write your own
-[custom commands](https://stackoverflow.com/questions/24276143/can-i-create-my-own-command-in-sublime-and-how-to-associate-python-implementatio)
-in Python.
+easy on the eyes.
 
+Notes:
+
+- I compile and run using Terminal rather than building from within sublime
+  text.
 - I prefer the _Mariana_ color scheme in place of the default.
   - From the command palette (Cmd-Shift-P), follow
     `UI: Select Color Scheme -> Mariana`
-- [Package - Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
-
-  - highlights compilation errors and warnings from `-Wall`
-  - can use
-    [`PackageResourceViewer`](https://packagecontrol.io/packages/PackageResourceViewer)
-    to change linter settings. From the command palette, follow
-    `PackageResourceViewer -> Open Resource -> SublimeLinter-gcc -> linter.py`.
-    Now you can modify `linter.py` to compile with the same options that you
-    normally use. For example, my `linter.py` looks like the following:
-
-  ```py
-  class GPlusPlus(Linter):
-      name = "g++"
-      cmd = "g++ ${args} -"
-      regex = OUTPUT_RE
-      multiline = True
-      on_stderr = None
-
-      defaults = {
-          "selector": "source.c++",
-          "args": ["-c", "-DLOCAL", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wshadow", "-Wconversion", "-Wfloat-equal", "-Wduplicated-cond", "-Wlogical-op"],
-          "-I +": [],
-          "-x": "c++",
-          "-o": getGarbabgeFilePath(),
-      }
-  ```
-
-Here's what linting looks like:
-
-![sublime](running-code-img/sublime-ex.png)
-
-Additional notes:
-
-- I compile and run from the command line rather than building from within
-  sublime text (i.e., I don't use Cmd-B).
 - [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
   - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X
     Mojave.
-- [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding)
-  (I don't use)
-  - test manager can be useful
-  - linting is covered by the above
-  - stress testing is covered in
-    [Debugging](/general/debugging-lang#stress-testing)
-  - can't get debug to work
+- It's not too hard to write your own
+  [custom commands](https://stackoverflow.com/questions/24276143/can-i-create-my-own-command-in-sublime-and-how-to-associate-python-implementatio)
+  in Python.
+
+_Linters_ highlight compilation errors and warnings. The latter of the packages
+below is faster and provides many features in addition to linting, though it
+only supports `clang`
+([discussion](https://forum.sublimetext.com/t/sublime-linter/62435/2)).
+
+- [Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
+
+  - To customize compilation flags, open `Preferences: SublimeLinter Settings`
+    from the command palette.
+  - Example settings:
+
+    ```
+    // SublimeLinter Settings - User
+    {
+        "linters": {
+            "g++": { // https://packagecontrol.io/packages/SublimeLinter-gcc
+                "disable": false,
+                "executable": ["g++-11"],
+                "args": ["-DLOCAL", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wshadow", "-Wconversion", "-Wfloat-equal", "-Wduplicated-cond", "-Wlogical-op"],
+                "I": [],
+                "excludes": [],
+            },
+        },
+    }
+    ```
+
+    ![sublime](running-code-img/sublimelinter-ex.png)
+
+- [LSP](https://packagecontrol.io/packages/LSP)
+
+  - Follow the instructions
+    [here](https://lsp.sublimetext.io/guides/cplusplus/#clangd).
+
+  - Example `compile_flags.txt`:
+
+    ```
+    -DLOCAL
+    -std=c++17
+    -O2
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wfloat-equal
+    -Wduplicated-cond
+    -Wlogical-op
+    -Wno-unused-const-variable
+    -Wno-sign-conversion
+    ```
+
+    ![sublime](running-code-img/lsp-ex.png)
+
+  - You can see Neal Wu using this package
+    [here](https://youtu.be/wh3pz18qC70?t=98).
 
 </Spoiler>
 
@@ -261,15 +279,15 @@ work with the latter two. This is one of the reasons why you should **not** use
 	<Resource
 		source="SO"
 		title="Why should I not #include <bits/stdc++.h>?"
-		url="https://stackoverflow.com/questions/31816095/why-should-i-not-include-bits-stdc-h"
+		url="https://stackoverflow.com/questions/31816095"
 		starred
 	>
 		wow, people are really mad about this!
 	</Resource>
 	<Resource
 		source="SO"
-		title="#include <bits/stdc++.h> with visual studio does not compile"
-		url="https://stackoverflow.com/questions/25337300/include-bits-stdc-h-with-visual-studio-does-not-compile"
+		title="#include <bits/stdc++.h> with Visual Studio does not compile"
+		url="https://stackoverflow.com/questions/25337300"
 	/>
 </Resources>
 
@@ -480,8 +498,7 @@ If everything goes accordingly, the console should output `Hello World!`.
 
 If you do USACO-style file I/O, meaning that files are in the "local directory",
 then the files must be located in the same directory as the source code (if you
-use the above method). You can find a Java testing script for USACO
-[here](/general/debugging-lang#stress-testing).
+use the above method).
 
 </JavaSection>
 

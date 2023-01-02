@@ -2,167 +2,149 @@
 id: usaco-788
 source: USACO Silver 2018 January
 title: Mootube
-author: Óscar Garries (C++), Qi Wang (Java)
+author: Óscar Garries, Qi Wang
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_mootube_silver_jan18.html)
-
-<LanguageSection>
-
-<CPPSection>
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_mootube_silver_jan18.html)
 
 ## Implementation
 
+The implementation uses DFS instead of BFS, but the essence is still the same.
+
+**Time Complexity:** $\mathcal{O}(N \cdot Q)$
+
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-const int INF = 1e9;
+vector<vector<pair<int, int>>> neighbors;
+vector<bool> visited;
+int threshold;
+int num_reachable;
 
-vector<pair<int, int>> g[5001];
-vector<bool> visited(5001);
-int k, v, sol;
-
-void dfs (int v) {
+/** searches all vertices that can be reached through the current video v */
+void search_videos(int v) {
 	visited[v] = true;
-	for (auto x: g[v]) {
-		if (visited[x.first]) continue;
-		if (x.second >= k) {
-			sol++;
-			dfs(x.first);
+	for (const pair<int, int>& n: neighbors[v]) {
+		/*
+		 * only visit nonvisited videos whose relevance
+		 * is greater than the current threshold
+		 */
+		if (!visited[n.first] && n.second >= threshold) {
+			num_reachable++;
+			search_videos(n.first);
 		}
 	}
 }
 
-int main () {
+int main() {
 	freopen("mootube.in", "r", stdin);
-	freopen("mootube.out", "w", stdout);
+	int video_num;
+	int query_num;
+	cin >> video_num >> query_num;
 
-	int n, q;
-	cin >> n >> q;
-
-	for (int i = 0; i < n - 1; i++) {
-		int a, b, r;
-		cin >> a >> b >> r;
-		g[a].push_back({b, r});
-		g[b].push_back({a, r});
+	neighbors = vector<vector<pair<int, int>>>(video_num);
+	for (int e = 0; e < video_num - 1; e++) {
+		int a, b;
+		int relevance;
+		cin >> a >> b >> relevance;
+		a--;
+		b--;
+		neighbors[a].push_back({b, relevance});
+		neighbors[b].push_back({a, relevance});
 	}
 
-	while (q--) {
-		cin >> k >> v;
-		sol = 0;
-		vector<bool> vS(n + 1);
-		visited = vS;
-
-		dfs(v);
-
-		cout << sol << '\n';
+	freopen("mootube.out", "w", stdout);
+	for (int q = 0; q < query_num; q++) {
+		int start;
+		cin >> threshold >> start;
+		start--;
+		
+		// reset our global variables for the current query
+		num_reachable = 0;
+		visited = vector<bool>(video_num);
+		search_videos(start);
+		
+		cout << num_reachable << '\n';
 	}
 }
-
 ```
 
 </CPPSection>
-
 <JavaSection>
 
-## Java Implementation
-
 ```java
-
 import java.util.*;
 import java.io.*;
 
-public class mootube {
-	static int N, Q, K, S;
-	static boolean[] vist;
-	static List<Edge> adj[];
-	@SuppressWarnings("unchecked")
+public class MooTube {
+	private static class Edge {
+		int to;
+		int relevance;
+		public Edge(int to, int relevance) {
+			this.to = to;
+			this.relevance = relevance;
+		}
+	}
+
+	static int threshold;
+	static int numReachable;
+	static boolean[] visited;
+	static List<Edge>[] neighbors;
+	
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("mootube");
-		N = io.nextInt()+1;
-		Q = io.nextInt();
-		adj = new List[N];
+		int videoNum = io.nextInt();
+		int queryNum = io.nextInt();
 
-		for (int i = 0; i < N; i++) {
-			adj[i] = new ArrayList<>();
+		neighbors = new ArrayList[videoNum];
+		for (int v = 0; v < videoNum; v++) {
+			neighbors[v] = new ArrayList<>();
+		}
+		for (int e = 0; e < videoNum - 1; e++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			int relevance = io.nextInt();
+			neighbors[a].add(new Edge(b, relevance));
+			neighbors[b].add(new Edge(a, relevance));
 		}
 
-		for (int i = 0; i < N - 2; i++) {
-			int a,b,c;
-			a = io.nextInt();
-			b = io.nextInt();
-			c = io.nextInt();
-			adj[a].add(new Edge(b, c));
-			adj[b].add(new Edge(a, c));
-		}
+		for (int q = 0; q < queryNum; q++) {
+			threshold = io.nextInt();
+			int start = io.nextInt() - 1;
 
-		for (int i = 0; i < Q; i++) {
-			vist = new boolean[N];
-			S = 0;
-			K = io.nextInt();
-			int a = io.nextInt();
+			// reset our global variables for the current query
+			numReachable = 0;
+			visited = new boolean[videoNum];
+			searchVideos(start);
 
-			dfs(a);
-
-			io.println(S-1);
+			io.println(numReachable);
 		}
 
 		io.close();
 	}
 
-	public static void dfs(int x){
-		vist[x] = true;
-		S++;
-		for(Edge e : adj[x]) {
-			if(!vist[e.t] && e.w >= K) {
-				dfs(e.t);
+	/** searches all vertices that can be reached through the current video v */
+	static void searchVideos(int v) {
+		visited[v] = true;
+		for (Edge e : neighbors[v]) {
+			/*
+			 * only visit nonvisited videos whose relevance
+			 * is greater than the current threshold
+			 */
+			if (!visited[e.to] && e.relevance >= threshold) {
+				numReachable++;
+				searchVideos(e.to);
 			}
 		}
 	}
 
-	private static class Edge {
-		int t, w;
-		public Edge(int a, int b){
-			t = a; w = b;
-		}
-	}
-
-	private static class Kattio extends PrintWriter {
-		private BufferedReader r;
-		private StringTokenizer st;
-
-		// standard input
-		public Kattio() { this(System.in,System.out); }
-		public Kattio(InputStream i, OutputStream o) {
-			super(o);
-			r = new BufferedReader(new InputStreamReader(i));
-		}
-		// USACO-style file input
-		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
-		}
-
-		// returns null if no more input
-		public String next() {
-			try {
-				while (st == null || !st.hasMoreTokens())
-					st = new StringTokenizer(r.readLine());
-				return st.nextToken();
-			} catch (Exception e) {}
-			return null;
-		}
-
-		public int nextInt() { return Integer.parseInt(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-	}
+	//CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
-
 </LanguageSection>

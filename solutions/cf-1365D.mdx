@@ -2,7 +2,7 @@
 id: cf-1365D
 source: CF
 title: Solve the Maze
-author: Daniel Suh, Brad Ma
+author: Daniel Suh, Brad Ma, George Pong
 ---
 
 [Official Analysis](https://codeforces.com/blog/entry/78504)
@@ -18,9 +18,9 @@ The main observation is that if there is a bad person next to a good person, the
 ####.
 ```
 
-Because the good person is adjacent to the bad person, the bad person can simply just move right, and now has full access to wherever the good person can move to. It won't matter if the good person can make it, as the bad person can make it as well. Furthermore, replacing a good person with a wall is not allowed, so preventing the movement of the bad person is not allowed. 
+Because the good person is adjacent to the bad person, the bad person can simply just move right, and now has full access to wherever the good person can move to. It won't matter if the good person can make it, as the bad person can make it as well. Furthermore, replacing a good person with a wall is not allowed, so preventing the movement of the bad person is not allowed.
 
-With this observation, the solution is relatively simple. Check for this adjacency, and if it exists, print "No." Otherwise, proceed by surrounding the bad people with walls. Floodfill from the end point $(N - 1,\space M - 1)$, and make sure that all the good people have been visited. You do not need to check if the bad people did not make it, as surrounding the bad people with walls is sufficient. 
+With this observation, the solution is relatively simple. Check for this adjacency, and if it exists, print "No." Otherwise, proceed by surrounding the bad people with walls. Floodfill from the end point $(N - 1,\space M - 1)$, and make sure that all the good people have been visited. You do not need to check if the bad people did not make it, as surrounding the bad people with walls is sufficient.
 
 ## Implementation
 
@@ -91,7 +91,7 @@ void solve()
 							return;
 						}
 						if (grid[newRow][newColumn] == '.')
-						{ 
+						{
 							grid[newRow][newColumn] = '#';  // turn it into a #
 						}
 					}
@@ -128,10 +128,10 @@ int main()
 ```
 
 </CPPSection>
-	
+
 <JavaSection>
-	
-```java	
+
+```java
 import java.util.*;
 import java.io.*;
 
@@ -230,7 +230,60 @@ public class SolveTheMaze {
 	//CodeSnip{Kattio}
 }
 ```
-	
+
 </JavaSection>
+
+<PySection>
+
+```py
+for _ in range(int(input())):
+	n, m = map(int, input().split())
+
+	# Stores coordinates of all good people, which we will remove as we protect.
+	good_people = set()
+	grid = []
+	for r in range(n):
+		grid.append(list(input().strip()))
+		for c, char in enumerate(grid[-1]):
+			if char == 'G':
+				good_people.add((r, c))
+
+	visited = [[False] * len(grid[0]) for _ in range(len(grid))]
+
+	stack = [(n - 1, m - 1)]
+	while stack:
+		i, j = stack.pop()
+
+		if visited[i][j]:
+			continue
+		visited[i][j] = True
+
+		"""
+		If an adjacent cell is a bad person, then we want to turn the current
+		cell into a wall. If an adjacent cell is a bad person and the current
+		cell is a good person, we cannot protect the good person. We only add
+		adjacent cells to the queue and mark the good person as protected if
+		we discover there are no bad people adjacent.
+		"""
+
+		cells_to_add = []
+		for new_i, new_j in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
+			if (not (0 <= new_i < n and 0 <= new_j < m)
+					or visited[new_i][new_j]):
+				continue
+
+			if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
+				cells_to_add.append((new_i, new_j))
+			elif grid[new_i][new_j] == 'B':
+				break
+		else:
+			stack.extend(cells_to_add)
+			if grid[i][j] == 'G':
+				good_people.discard((i, j))
+
+	print('Yes' if not good_people else 'No')
+```
+
+</PySection>
 
 </LanguageSection>

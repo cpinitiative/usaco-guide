@@ -4,7 +4,7 @@ export default {
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059': 'usaco-1059',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=987': 'usaco-987',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=939': 'usaco-939',
-  'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone':
+  'https://open.kattis.com/problems/basketballoneonone':
     'kattis-BasketballOneOnOne',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=674': 'usaco-674',
   'https://codeforces.com/contest/546/problem/D': 'cf-546D',
@@ -103,8 +103,7 @@ export default {
   'https://cses.fi/problemset/task/1682': 'cses-1682',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=669': 'usaco-669',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992': 'usaco-992',
-  'https://open.kattis.com/contests/acpc17open/problems/laneswitching':
-    'kattis-LaneSwitching',
+  'https://open.kattis.com/problems/laneswitching': 'kattis-LaneSwitching',
   'https://cses.fi/problemset/task/1668': 'cses-1668',
   'https://codeforces.com/contest/862/problem/B': 'cf-862B',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=920': 'usaco-920',

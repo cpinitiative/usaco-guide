@@ -58,22 +58,24 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
 };
 
 export function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
 export default function ContactUsSlideover({
   isOpen,
   onClose,
+  defaultLocation = '',
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeModule?: ModuleInfo;
+  defaultLocation?: string;
 }): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(defaultLocation);
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
     'Typo / Broken Link',
@@ -81,8 +83,6 @@ export default function ContactUsSlideover({
     'Unclear Explanation',
     'Website Bug',
     'Suggestion',
-    // 'Request - Problem Editorial',
-    // 'I want to contribute!',
     'Other',
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
@@ -95,12 +95,14 @@ export default function ContactUsSlideover({
   const submitForm = useContactFormAction();
 
   React.useEffect(() => {
-    const activeModule = markdownContext?.markdownLayoutInfo;
-    if (activeModule && activeModule instanceof ModuleInfo) {
-      setLocation(
-        `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
-      );
-    } else setLocation('');
+    if (!defaultLocation) {
+      const activeModule = markdownContext?.markdownLayoutInfo;
+      if (activeModule && activeModule instanceof ModuleInfo) {
+        setLocation(
+          `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
+        );
+      } else setLocation('');
+    }
   }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);
@@ -327,6 +329,21 @@ export default function ContactUsSlideover({
                           className="font-medium text-gray-900 dark:text-dark-high-emphasis"
                         >
                           {t}
+                          {t === 'Other' && (
+                            <span>
+                              &nbsp;- If you're having issues registering on
+                              usaco.org, see
+                              <a
+                                className="text-blue-300"
+                                target="_blank"
+                                rel="noreferrer"
+                                href="https://github.com/cpinitiative/usaco-guide/issues/2854#issuecomment-1162802123"
+                              >
+                                {' '}
+                                this link.
+                              </a>
+                            </span>
+                          )}
                         </label>
                       </div>
                     </div>

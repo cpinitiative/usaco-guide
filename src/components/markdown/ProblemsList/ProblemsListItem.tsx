@@ -226,16 +226,17 @@ export default function ProblemsListItem(
               </td>
             )
           : difficultyCol)}
-      {props.showTags && (
-        <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
-          {problem.tags && problem.tags.length ? (
-            <details className="text-gray-500 dark:text-dark-med-emphasis">
-              <summary>Show Tags</summary>
-              <span className="text-xs">{problem.tags.sort().join(', ')}</span>
-            </details>
-          ) : null}
-        </td>
-      )}
+      <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+        {problem.tags && problem.tags.length ? (
+          <details
+            open={props.showTags}
+            className="text-gray-500 dark:text-dark-med-emphasis"
+          >
+            <summary>Show Tags</summary>
+            <span className="text-xs">{problem.tags.sort().join(', ')}</span>
+          </details>
+        ) : null}
+      </td>
       {props.modules && (
         <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
           {problem.moduleLink ? (

@@ -2,285 +2,357 @@
 id: usaco-624
 source: USACO Platinum 2016 February
 title: Load Balancing
-author: Benjamin Qi
+author: Benjamin Qi, Chuyang Wang
 ---
 
-## Explanation
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_balancing_platinum_feb16.html)
 
-The
-[official solution](http://www.usaco.org/current/data/sol_balancing_platinum_feb16.html)
-uses a segment tree, which is introduced in Gold. However, we can just binary
-search on the answer.
+## Solution 1: With Segment Tree
 
-## Implementation
+### Explanation
+
+The problem can be solved by sweeping a line from bottom to top. This line
+divides the farm into two regions, north and south. At the beginning, all cows
+belong to the northern region.
+
+For each of these lines, we need an efficient way to determine the optimal
+west/east partition to divide the farm into four pieces with the maximum number
+of cows appearing in one of the four regions, $M$, being minimized. To achieve
+this, we use two segment trees as our frequency tables to store the number of
+cows on a certain $x$ coordinate which belong to one of the two regions, north
+and south, respectively.
+
+Then, we do a binary search on both segment trees to find the best west/east
+partition which minimizes $M$. In particular, we begin from the root of the
+segment trees and always add either the left or right subtrees to the western or
+eastern region, depending on which of these two options leads to the smallest
+increase of $M$.
+
+At the end, we update our overall best solution and move the line to the next
+$y$-coordinate of interest. We add all cows with current $y$ coordinate to the
+southern region and remove them from the northern region.
+
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
+
 <LanguageSection>
+
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-using ld = long double;
-using db = double;
-using str = string; // yay python!
+struct SegmentTree {
+	int size;
+	vector<int> tree;
+	SegmentTree() : size(1 << 20) { tree.assign(size * 2, 0); }
 
-using pi = pair<int,int>;
-using pl = pair<ll,ll>;
-using pd = pair<db,db>;
-
-using vi = vector<int>;
-using vb = vector<bool>;
-using vl = vector<ll>;
-using vd = vector<db>;
-using vs = vector<str>;
-using vpi = vector<pi>;
-using vpl = vector<pl>;
-using vpd = vector<pd>;
-
-#define tcT template<class T
-#define tcTU tcT, class U
-// ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>;
-tcT, size_t SZ> using AR = array<T,SZ>;
-tcT> using PR = pair<T,T>;
-
-// pairs
-#define mp make_pair
-#define f first
-#define s second
-
-// vectors
-// oops size(x), rbegin(x), rend(x) need C++17
-#define sz(x) int((x).size())
-#define bg(x) begin(x)
-#define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend()
-#define sor(x) sort(all(x))
-#define rsz resize
-#define ins insert
-#define ft front()
-#define bk back()
-#define pb push_back
-#define eb emplace_back
-#define pf push_front
-
-#define lb lower_bound
-#define ub upper_bound
-tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
-
-// loops
-#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
-#define F0R(i,a) FOR(i,0,a)
-#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define R0F(i,a) ROF(i,0,a)
-#define trav(a,x) for (auto& a: x)
-
-const int MOD = 1e9+7; // 998244353;
-const int MX = 2e5+5;
-const ll INF = 1e18; // not too close to LLONG_MAX
-const ld PI = acos((ld)-1);
-const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
-template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
-
-// bitwise ops
-// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
-constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
-constexpr int p2(int x) { return 1<<x; }
-constexpr int msk2(int x) { return p2(x)-1; }
-
-ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
-ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
-
-tcT> bool ckmin(T& a, const T& b) {
-	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
-tcT> bool ckmax(T& a, const T& b) {
-	return a < b ? a = b, 1 : 0; }
-
-tcTU> T fstTrue(T lo, T hi, U f) {
-	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1;
-	}
-	return lo;
-}
-tcTU> T lstTrue(T lo, T hi, U f) {
-	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true
-		T mid = lo+(hi-lo+1)/2;
-		f(mid) ? lo = mid : hi = mid-1;
-	}
-	return lo;
-}
-tcT> void remDup(vector<T>& v) { // sort and remove duplicates
-	sort(all(v)); v.erase(unique(all(v)),end(v)); }
-tcTU> void erase(T& t, const U& u) { // don't erase
-	auto it = t.find(u); assert(it != end(t));
-	t.erase(it); } // element that doesn't exist from (multi)set
-
-// INPUT
-#define tcTUU tcT, class ...U
-tcT> void re(complex<T>& c);
-tcTU> void re(pair<T,U>& p);
-tcT> void re(V<T>& v);
-tcT, size_t SZ> void re(AR<T,SZ>& a);
-
-tcT> void re(T& x) { cin >> x; }
-void re(db& d) { str t; re(t); d = stod(t); }
-void re(ld& d) { str t; re(t); d = stold(t); }
-tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
-
-tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
-tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
-tcT> void re(V<T>& x) { trav(a,x) re(a); }
-tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
-tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
-
-// TO_STRING
-#define ts to_string
-str ts(char c) { return str(1,c); }
-str ts(const char* s) { return (str)s; }
-str ts(str s) { return s; }
-str ts(bool b) {
-	#ifdef LOCAL
-		return b ? "true" : "false";
-	#else
-		return ts((int)b);
-	#endif
-}
-tcT> str ts(complex<T> c) {
-	stringstream ss; ss << c; return ss.str(); }
-str ts(V<bool> v) {
-	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
-	res += "}"; return res; }
-template<size_t SZ> str ts(bitset<SZ> b) {
-	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
-	return res; }
-tcTU> str ts(pair<T,U> p);
-tcT> str ts(T v) { // containers with begin(), end()
-	#ifdef LOCAL
-		bool fst = 1; str res = "{";
-		for (const auto& x: v) {
-			if (!fst) res += ", ";
-			fst = 0; res += ts(x);
+	/**
+	 * Increase the value at x by value, i.e. a[x] += value
+	 */
+	void update(int x, int value) {
+		x += size;
+		tree[x] += value;
+		while (x > 0) {
+			x /= 2;
+			tree[x] = tree[2 * x] + tree[2 * x + 1];
 		}
-		res += "}"; return res;
-	#else
-		bool fst = 1; str res = "";
-		for (const auto& x: v) {
-			if (!fst) res += " ";
-			fst = 0; res += ts(x);
-		}
-		return res;
-
-	#endif
-}
-tcTU> str ts(pair<T,U> p) {
-	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")";
-	#else
-		return ts(p.f)+" "+ts(p.s);
-	#endif
-}
-
-// OUTPUT
-tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) {
-	pr(t); pr(u...); }
-void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) {
-	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
-
-// DEBUG
-void DBG() { cerr << "]" << endl; }
-tcTUU> void DBG(const T& t, const U&... u) {
-	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
-	DBG(u...); }
-#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
-	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
-	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
-		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
-#else
-	#define dbg(...) 0
-	#define chk(...) 0
-#endif
-
-void setPrec() { cout << fixed << setprecision(15); }
-void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
-// FILE I/O
-void setIn(str s) { freopen(s.c_str(),"r",stdin); }
-void setOut(str s) { freopen(s.c_str(),"w",stdout); }
-void setIO(str s = "") {
-	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit);
-	// throws exception when do smth illegal
-	// ex. try to read letter into int
-	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
-}
-
-int N;
-vpi v;
-
-vi go(int mx) {
-	int sum = 0, y = N-1, ind = 0;
-	vi cnt(N), bound;
-	F0R(x,N) {
-		while (ind < sz(v) && v[ind].f == x) {
-			int Y = v[ind].s;
-			cnt[Y] ++; if (Y <= y) sum ++;
-			ind ++;
-		}
-		while (sum > mx) sum -= cnt[y--];
-		bound.pb(y);
 	}
-	assert(ind == sz(v));
-	return bound;
-}
+
+	/**
+	 * Binary search on the x coordinates s.t. the maximum number of cows M
+	 * in the regions is minimized.
+	 * @param other The other horizontally divided region to be searched on
+	 * simultaneously
+	 * @return int The minimized number of cows based on current north/south
+	 * partition
+	 */
+	int query(SegmentTree &other) {
+		// the size of the four regions
+		int west_size, east_size, other_west_size, other_east_size;
+		west_size = east_size = other_west_size = other_east_size = 0;
+		// start with the whole segment tree as our subtree to search
+		int mid = 1;
+		while (mid < size) {
+			int l = mid * 2;
+			int r = mid * 2 + 1;
+			// add the subtree which minimizes the overall maximum count of cows
+			if (max(west_size + tree[l], other_west_size + other.tree[l]) <
+				max(east_size + tree[r], other_east_size + other.tree[r])) {
+				mid = r;
+				west_size += tree[l];
+				other_west_size += other.tree[l];
+			} else {
+				mid = l;
+				east_size += tree[r];
+				other_east_size += other.tree[r];
+			}
+		}
+
+		// Add the last x coordinate either to the west or the east side
+		if (max(west_size + tree[mid], other_west_size + other.tree[mid]) <
+			max(east_size + tree[mid], other_east_size + other.tree[mid])) {
+			west_size += tree[mid];
+			other_west_size += other.tree[mid];
+		} else {
+			east_size += tree[mid];
+			other_east_size += other.tree[mid];
+		}
+
+		/*
+		 * the M value corresponding to the best west/east partition based on the
+		 * current given north/south partitions
+		 */
+		return max(
+			max(west_size, east_size),
+			max(other_west_size, other_east_size)
+		);
+	}
+};
 
 int main() {
-	setIO("balancing");
-	re(N);
-	v.rsz(N); re(v);
-	{ // compress x coordinates
-		map<int,int> m; trav(t,v) m[t.f] = 0;
-		int co = 0; trav(t,m) t.s = co++;
-		trav(t,v) t.f = m[t.f];
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (pair<int, int>&c : cows) {
+		cin >> c.first >> c.second;
 	}
-	{ // compress y coordinates
-		map<int,int> m; trav(t,v) m[t.s] = 0;
-		int co = 0; trav(t,m) t.s = co++;
-		trav(t,v) t.s = m[t.s];
+
+	// sort after the y coordinates and divide the farm into north and south
+	sort(
+		cows.begin(), cows.end(),
+		[&](const pair<int, int> &c1, const pair<int, int> &c2) {
+			return make_pair(c1.second, c1.first) < make_pair(c2.second, c2.first);
+		}
+	);
+
+	// north and south store the number of points on the x coordinates
+	SegmentTree north;
+	SegmentTree south;
+
+	/*
+	 * we begin the sweeping line from the bottom, i.e. the whole farm is in the
+	 * northern region
+	 */
+	for (int i = 0; i < N; i++) {
+		north.update(cows[i].first, 1);
 	}
-	sort(all(v));
-	ps(fstTrue(1,N,[&](int mx) { // binary search on max
-		vi a = go(mx);
-		trav(t,v) t.s = N-1-t.s;
-		vi b = go(mx);
-		trav(t,v) t.s = N-1-t.s;
-		reverse(all(v)); trav(t,v) t.f = N-1-t.f;
-		vi c = go(mx);
-		trav(t,v) t.s = N-1-t.s;
-		vi d = go(mx);
-		F0R(i,N-1) if (min(a[i],c[N-2-i])+1 + min(b[i],d[N-2-i])+1 >= N) return 1;
-		return 0;
-	}));
+
+	// the minimum possible number of cows as defined in the problem statement
+	int M = N;
+
+	// sweeping from bottom to top
+	for (int i = 0; i < N;) {
+		// each time, move points on the line from north to south
+		int j = i;
+		while (j < N && cows[i].second == cows[j].second) {
+			north.update(cows[j].first, -1);
+			south.update(cows[j].first, 1);
+			j++;
+		}
+		/*
+		 * for current partition of north and south, we determine the optimal
+		 * partition between west and east by performing a binary search
+		 */
+		M = min(M, north.query(south));
+		// move the sweeping line to the next y coordinate of interest
+		i = j;
+	}
+
+	cout << M << endl;
 }
 ```
+
 </CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Balancing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("balancing.in"));
+
+		int N = Integer.parseInt(br.readLine());
+		Pair[] cows = new Pair[N];
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			cows[i] = new Pair(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+		br.close();
+
+		// sort after the y coordinates and divide the farm into north and south
+		Arrays.sort(cows, (a, b) -> a.compareBTo(b));
+
+		// north and south store the number of points on the x coordinates
+		SegmentTree north = new SegmentTree();
+		SegmentTree south = new SegmentTree();
+
+		/*
+		 * we begin the sweeping line from the bottom, i.e. the whole farm is in the
+		 * northern region
+		 */
+		for (int i = 0; i < N; i++) {
+			north.update(cows[i].a, 1);
+		}
+
+		// the minimum possible number of cows as defined in the problem statement
+		int M = N;
+
+		// sweeping from bottom to top
+		for (int i = 0; i < N;) {
+			// each time, move points on the line from north to south
+			int j = i;
+			while (j < N && cows[i].b == cows[j].b) {
+				north.update(cows[j].a, -1);
+				south.update(cows[j].a, 1);
+				j++;
+			}
+			/*
+			 * for current partition of north and south, we determine the optimal
+			 * partition between west and east by performing a binary search
+			 */
+			M = Math.min(M, north.query(south));
+			// move the sweeping line to the next y coordinate of interest
+			i = j;
+		}
+
+		PrintWriter pw = new PrintWriter(new FileWriter("balancing.out"));
+		pw.println(M);
+		pw.close();
+	}
+
+	static class SegmentTree {
+		int size;
+		int[] tree;
+
+		public SegmentTree() {
+			size = 1 << 20;
+			tree = new int[size * 2];
+		}
+
+		/**
+		 * Increase the value at x by value, i.e. a[x] += value
+		 */
+		public void update(int x, int value) {
+			x += size;
+			tree[x] += value;
+			while (x > 1) {
+				x /= 2;
+				tree[x] = tree[x * 2] + tree[x * 2 + 1];
+			}
+		}
+
+		/**
+		 * Binary search on the x coordinates s.t. the maximum number of cows M
+		 * in the regions is minimized.
+		 * 
+		 * @param other The other horizontally divided region to be searched on
+		 *              simultaneously
+		 * @return int The minimized number of cows based on current north/south
+		 *         partition
+		 */
+		public int query(SegmentTree other) {
+			// the size of the four regions
+			int westSize, eastSize, otherWestSize, otherEastSize;
+			westSize = eastSize = otherWestSize = otherEastSize = 0;
+			// start with the whole segment tree as our subtree to search
+			int mid = 1;
+			while (mid < size) {
+				int l = mid * 2;
+				int r = mid * 2 + 1;
+				// add the subtree which minimizes the overall maximum count of cows
+				if (Math.max(westSize + tree[l], otherWestSize + other.tree[l]) < 
+					Math.max(eastSize + tree[r], otherEastSize + other.tree[r])) {
+					mid = r;
+					westSize += tree[l];
+					otherWestSize += other.tree[l];
+				} else {
+					mid = l;
+					eastSize += tree[r];
+					otherEastSize += other.tree[r];
+				}
+			}
+
+			// Add the last x coordinate either to the west or the east side
+			if (Math.max(westSize + tree[mid], otherWestSize + other.tree[mid]) < 
+				Math.max(eastSize + tree[mid], otherEastSize + other.tree[mid])) {
+				westSize += tree[mid];
+				otherWestSize += other.tree[mid];
+			} else {
+				eastSize += tree[mid];
+				otherEastSize += other.tree[mid];
+			}
+
+			/*
+			 * the M value corresponding to the best west/east partition based on the
+			 * current given north/south partitions
+			 */
+			return Math.max(
+				Math.max(westSize, eastSize),
+				Math.max(otherWestSize, otherEastSize)
+			);
+		}
+	}
+
+	//BeginCodeSnip{class Pair}
+	static class Pair implements Comparable<Pair> {
+		public int a;
+		public int b;
+
+		public Pair(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+
+		/**
+		 * Sort the object by lexicographical order.
+		 */
+		@Override
+		public int compareTo(Pair other) {
+			if (a == other.a) {
+				return b - other.b;
+			}
+			return a - other.a;
+		}
+
+		/**
+		 * Sort the object by reversed lexicographical order.
+		 */
+		public int compareBTo(Pair other) {
+			if (b == other.b) {
+				return a - other.a;
+			}
+			return b - other.b;
+		}
+	}
+	//EndCodeSnip
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+<Spoiler title="Alternative using a BIT">
+There is also an alternative solution using a binary indexed tree. 
+
+<LanguageSection>
 <JavaSection>
 ```java
 public class Balancing {
 	static final int MAX_Y = 1_000_001;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(System.out);
+		BufferedReader br = new BufferedReader(new FileReader("balancing.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("balancing.out"));
 
 		int N = Integer.parseInt(br.readLine());
 		int[][] coords = new int[N][2];
@@ -356,4 +428,169 @@ public class Balancing {
 }
 ```
 </JavaSection>
+</LanguageSection>
+</Spoiler>
+
+
+## Solution 2: With Binary Search
+
+### Explanation
+
+Alternatively, we can also just binary search on the answer without using a PURQ
+data structure. To check if a chosen maximum number of cows in any of the four
+regions, henceforth referred to as $M^*$, is feasible, we calculate the maximum
+height of all four regions for each possible $x$ partition with at most $M^*$
+cows in the region. We then go through every $x$ coordinate and check if the sum
+of the heights of the southern and northern regions is larger than the height of
+the farm. As there are each two regions in the north and south, we always take
+the minimum between north-west/north-east and south-west/south-east. If there is
+such an $x$ partition that leads to the sum being larger than the height of the
+farm, then there is one solution with the current $x$ and $y$ partition.
+
+We do a coordinate compression on the $x$ and $y$ coordinates to simplify the
+implementation.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * Calculate the maximum height of the left bottom region for each possible
+ * partion based on the x coordinate which has maximum max_cows cows
+ * in the region.
+ * @return bound[i] is the maximum possible height for the region 0..i,
+ * 0..bound[i], in which the number of cows is less than or equal to max_cows
+ */
+vector<int> calc_max_height(int max_cows, const vector<pair<int, int>> &cows) {
+	// total number of cows in the current region
+	int sum = 0;
+	// number of cows based on the y coordinates
+	vector<int> count(cows.size());
+	// the current maximum height for the region
+	int y_bound = cows.size() - 1;
+	// the maximum heights for the region based on the x partition
+	vector<int> bound(cows.size());
+	for (int x = 0, i = 0; x < cows.size(); x++) {
+		while (i < cows.size() && cows[i].first == x) {
+			int y = cows[i].second;
+			count[y]++;
+			// update the sum of cows in the active region
+			if (y <= y_bound) {
+				sum++;
+			}
+			i++;
+		}
+		/*
+		 * if the maximum allowed number of cows in the region is exceeded, decrease
+		 * the height of the region
+		 */
+		while (sum > max_cows) {
+			sum -= count[y_bound];
+			y_bound--;
+		}
+		bound[x] = y_bound;
+	}
+	return bound;
+}
+
+int main() {
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (pair<int, int> &c : cows) {
+		cin >> c.first >> c.second;
+	}
+
+	//BeginCodeSnip{Coordinate Compression}
+	// compress x coordinates
+	sort(cows.begin(), cows.end());
+	int new_x = 0;
+	int actual_x = cows[0].first;
+	for (int i = 0; i < N; i++) {
+		if (cows[i].first != actual_x) {
+			new_x++;
+			actual_x = cows[i].first;
+		}
+		cows[i].first = new_x;
+	}
+
+	// compress y coordinates
+	sort(
+		cows.begin(), cows.end(),
+		[&](const pair<int, int> &c1, const pair<int, int> &c2) {
+			return make_pair(c1.second, c1.first) < make_pair(c2.second, c2.first);
+		}
+	);
+	int new_y = 0;
+	int actual_y = cows[0].second;
+	for (int i = 0; i < N; i++) {
+		if (cows[i].second != actual_y) {
+			new_y++;
+			actual_y = cows[i].second;
+		}
+		cows[i].second = new_y;
+	}
+	//EndCodeSnip
+
+	sort(cows.begin(), cows.end());
+	int l = 1, h = N + 1;
+	// binar search on the maximum of M
+	while (l < h) {
+		int mid = (h + l) / 2;
+		bool possible = false;
+
+		vector<int> west_south_height = calc_max_height(mid, cows);
+
+		for (pair<int, int> &t : cows) {
+			t.second = N - 1 - t.second;
+		}
+		vector<int> west_north_height = calc_max_height(mid, cows);
+
+		reverse(cows.begin(), cows.end());
+		for (pair<int, int> &t : cows) {
+			t.first = N - 1 - t.first;
+			t.second = N - 1 - t.second;
+		}
+		vector<int> east_south_height = calc_max_height(mid, cows);
+
+		for (pair<int, int> &t : cows) {
+			t.second = N - 1 - t.second;
+		}
+		vector<int> east_north_height = calc_max_height(mid, cows);
+
+		// for each possible x partition
+		for (int x = 0; x < N - 1; x++) {
+			/*
+			 * if the sum of the heights of the southern and northern regions is
+			 * larger than the height of the farm, then there is one solution with the
+			 * current maximum M, i.e. mid
+			 */
+			if (min(west_south_height[x], east_south_height[N - 2 - x]) + 1 +
+				min(west_north_height[x], east_north_height[N - 2 - x]) + 1 >= N) {
+				possible = true;
+				break;
+			}
+		}
+
+		if (possible) {
+			h = mid;
+		} else {
+			l = mid + 1;
+		}
+	}
+
+	cout << l << endl;
+}
+```
+</CPPSection>
+
 </LanguageSection>

@@ -21,7 +21,7 @@ contributions are welcome! To get started, simply pick an
 [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work
 on, leave a comment, and submit a Pull Request!
 
-Join our Discord server: https://discord.gg/UKbyewj2Ft
+Join our Discord server: https://discord.gg/VCxUzdYhzN
 
 ## Our Team
 
@@ -68,6 +68,11 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Dustin Miao (Since Aug 2021)
 - Ben Dodge (Since Aug 2021)
 - Jeffrey Zhang (Since Feb 2022)
+- Chongtian Ma (Since May 2022)
+- Aditya Gupta (Since Jun 2022)
+- Chuyang Wang (Since August 2022)
+- Aakash Gokhale (Since August 2022)
+- Paul Chen (Since August 2022)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit)._
 

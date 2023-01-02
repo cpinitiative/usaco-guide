@@ -87,7 +87,7 @@ vector<int> pi(const string &s) {
 	vector<int> pi_s(n);
 	for (int i = 1, j = 0; i < n; i++) {
 		while (j > 0 && s[j] != s[i]) {
-			j = pi_s[j - 1]
+			j = pi_s[j - 1];
 		}
 		if (s[i] == s[j]) {
 			j++;
@@ -99,7 +99,25 @@ vector<int> pi(const string &s) {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+from typing import List
+
+def pi(s: str) -> List[int]:
+	n = len(s)
+	pi_s = [0] * n
+	j = 0
+	for i in range(1, n):
+		while j > 0 and s[j] != s[i]:
+			j = pi_s[j - 1]
+		if s[i] == s[j]:
+			j += 1
+		pi_s[i] = j
+	return pi_s
+```
+
+</PySection>
 </LanguageSection>
 
 **Claim:** The KMP algorithm runs in $\mathcal{O}(n)$ for computing the $\pi_S$ array on a string $S$ of length $n$. 

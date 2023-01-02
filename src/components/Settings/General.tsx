@@ -6,8 +6,8 @@ export default function General(): JSX.Element {
   const {
     showIgnored,
     setShowIgnored,
-    hideTags,
-    setHideTags,
+    showTags,
+    setShowTags,
     hideDifficulty,
     setHideDifficulty,
   } = React.useContext(UserDataContext);
@@ -26,10 +26,10 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Tags
+                Problem Lists: Show Tags
               </p>
             </div>
-            <Switch checked={hideTags} onChange={b => setHideTags(b)} />
+            <Switch checked={showTags} onChange={b => setShowTags(b)} />
           </li>
           <li className="py-4 flex items-center justify-between">
             <div className="flex flex-col">
