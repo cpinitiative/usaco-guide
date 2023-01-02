@@ -35,22 +35,25 @@ vector<vector<int>> ans;
 
 bool dfs(int x, int pre) {
 	vector<int> curr;
-	for (int i : adj[x])
+	for (int i : adj[x]) {
 		if (i != pre) {
 			if (dfs(i, x)) {  // spanning tree edge
 				curr.push_back(i);
 			}
 		}
+	}
+	
 	for (int i = 0; i < curr.size() / 2; i++) {
 		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
 	}
 	if (curr.size() % 2 == 0) {
-		return 1;
+		return true;
 	}
 	if (pre != -1) {
 		ans.push_back({curr[curr.size() - 1], x, pre});
 	}
-	return 0;
+	
+	return false;
 }
 
 int main() {
@@ -63,7 +66,9 @@ int main() {
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
+	
 	dfs(1, -1);
+	
 	cout << ans.size() << "\n";
 	for (const vector<int>& a : ans) {
 		cout << a[0] << " " << a[1] << " " << a[2] << "\n";
@@ -90,14 +95,15 @@ $(x,i)$ from $i$ whenever $x<i$ ($x>i$ would work just as well).
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m, visited[200001];
+int n, m;
+bool visited[200001];
 vector<int> adj[200001];
 vector<vector<int>> ans;
 
 bool dfs(int x, int pre) {
-	visited[x] = 1;
+	visited[x] = true;
 	vector<int> curr;
-	for (int i : adj[x])
+	for (int i : adj[x]) {
 		if (i != pre) {
 			if (visited[i]) {  // non spanning tree edge
 				if (x < i) {
@@ -107,16 +113,18 @@ bool dfs(int x, int pre) {
 				curr.push_back(i);  // spanning tree edge
 			}
 		}
+	}
+	
 	for (int i = 0; i < curr.size() / 2; i++) {
 		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
 	}
 	if (curr.size() % 2 == 0) {
-		return 1;
+		return true;
 	}
 	if (pre != -1) {
 		ans.push_back({curr[curr.size() - 1], x, pre});
 	}
-	return 0;
+	return false;
 }
 
 int main() {
@@ -127,11 +135,13 @@ int main() {
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
+	
 	for (int i = 1; i <= n; i++) {
 		if (!visited[i]) {
 			dfs(i, -1);
 		}
 	}
+	
 	cout << ans.size() << "\n";
 	for (auto a : ans) {
 		cout << a[0] << " " << a[1] << " " << a[2] << "\n";
