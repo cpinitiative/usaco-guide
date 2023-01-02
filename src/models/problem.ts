@@ -249,6 +249,7 @@ export const isUsaco = (source: string): boolean => {
 // TODO: add more checks?
 export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   if (!isUsaco(metadata.source)) return;
+  if (metadata.url.startsWith('http://poj.org/')) return;
   const id = metadata.uniqueId.substring(metadata.uniqueId.indexOf('-') + 1);
   if (!metadata.url.endsWith('=' + id)) {
     throw Error(`Invalid USACO Metadata: id=${id} url=${metadata.url}`);
