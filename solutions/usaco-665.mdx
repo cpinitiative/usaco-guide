@@ -14,10 +14,10 @@ By Jeffrey Meng
 <Youtube id="yz3qBXEhRGc" />
 
 <Spoiler title="Video Solution Code">
-	
+
 <LanguageSection>
-	
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -43,10 +43,10 @@ int main() {
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.StringTokenizer;
@@ -79,12 +79,15 @@ public class CowSignal {
 	}
 }
 ```
+
 </JavaSection>
 </LanguageSection>
-					      
+
 </Spoiler>
-	
+
 ## Implementation
+
+**Time Complexity:** $\mathcal{MN \cdot K^2}$
 
 <LanguageSection>
 <CPPSection>
@@ -93,54 +96,84 @@ public class CowSignal {
 #include <bits/stdc++.h>
 using namespace std;
 
-void setIO(string name = ""){ // FastIO see General -> Fast Input and Output
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    if(name.size()){
-        freopen((name+".in").c_str(), "r", stdin);
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+void setIO(string name = "") {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	if (name.size()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
 }
 
-int main(){
-
+int main() {
 	setIO("cowsignal");
 
-	int M, N, K; cin >> M >> N >> K;
+	int height, width;
+	int scale;
+	cin >> height >> width >> scale;
 
-	for(int i = 0; i < M; i++){
-		string signal; cin >> signal;
-		for(int it = 0; it < K; it++){
-			for(int j = 0; j < N; j++){
-				for(int k = 0; k < K; k++){
-					cout << signal[j];
-				}
-			}
-			cout << endl;
-		}
+	vector<string> signal(height);
+	for (string& r : signal) {
+		cin >> r;
 	}
 
+	for (int i = 0; i < scale * height; i++) {
+		for (int j = 0; j < scale * width; j++) {
+			cout << signal[i / scale][j / scale];
+		}
+		cout << '\n';
+	}
 }
-
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowSignal {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("cowsignal.in"));
+
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int height = Integer.parseInt(initial.nextToken());
+		int width = Integer.parseInt(initial.nextToken());
+		int scale = Integer.parseInt(initial.nextToken());
+
+		String[] signal = new String[height];
+		for (int r = 0; r < height; r++) {
+			signal[r] = read.readLine();
+		}
+
+		PrintWriter written = new PrintWriter("cowsignal.out");
+		for (int i = 0; i < scale * height; i++) {
+			for (int j = 0; j < scale * width; j++) {
+				written.print(signal[i / scale].charAt(j / scale));
+			}
+			written.println();
+		}
+		written.close();
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
-import sys
+with open('cowsignal.in') as read:
+	height, width, scale = map(int, read.readline().split())
+	signal = [read.readline() for _ in range(height)]
 
-sys.stdin = open("cowsignal.in","r")
-sys.stdout = open("cowsignal.out","w")
-
-M,N,K = map(int,input().split())
-g = [input() for _ in range(M)]
-for i in range(K*M):
-	for j in range(K*N):
-		print(g[i//K][j//K],end='')
-	print()
+with open('cowsignal.out', 'w') as written:
+	for i in range(scale * height):
+		for j in range(scale * width):
+			print(signal[i // scale][j // scale], end='', file=written)
+		
+		print(file=written)
 ```
 
 </PySection>
-
 </LanguageSection>
