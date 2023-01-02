@@ -53,27 +53,27 @@ int main() {
 import java.util.Scanner;
 
 public class Main {
-    public static int gcd(int a, int b) {
-        return b == 0 ? a : gcd(b, a % b);
-    }
+	public static int gcd(int a, int b) {
+		return b == 0 ? a : gcd(b, a % b);
+	}
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
 
-        int n = scanner.nextInt();
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = scanner.nextInt();
-        }
+		int n = scanner.nextInt();
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = scanner.nextInt();
+		}
 
-        int ans = 1;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                ans = Math.max(ans, gcd(arr[i], arr[j]));
-            }
-        }
-        System.out.println(ans);
-    }
+		int ans = 1;
+		for (int i = 0; i < n - 1; i++) {
+			for (int j = i + 1; j < n; j++) {
+				ans = Math.max(ans, gcd(arr[i], arr[j]));
+			}
+		}
+		System.out.println(ans);
+	}
 }
 ```
 </JavaSection>
@@ -88,8 +88,8 @@ arr = list(map(int, input().split()))
 
 ans = 1
 for i in range(n - 1):
-    for j in range(i + 1, n):
-        ans = max(ans, gcd(arr[i], arr[j]))
+	for j in range(i + 1, n):
+		ans = max(ans, gcd(arr[i], arr[j]))
 
 print(ans)
 ```
@@ -159,38 +159,38 @@ Due to the tight time limit, the following Java solution still receives TLE on a
 import java.util.Scanner;
 
 public class Main {
-    public static final int MAX_VAL = 1000000;
+	public static final int MAX_VAL = 1000000;
 
-    // divisors[i] = stores the count of numbers that have i as a divisor
-    public static int divisors[] = new int[MAX_VAL + 1];
+	// divisors[i] = stores the count of numbers that have i as a divisor
+	public static int divisors[] = new int[MAX_VAL + 1];
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
 
-        int n = scanner.nextInt();
-        for (int i = 0; i < n; i++) {
-            int a = scanner.nextInt();
+		int n = scanner.nextInt();
+		for (int i = 0; i < n; i++) {
+			int a = scanner.nextInt();
 
-            int up = (int) Math.sqrt(a);
-            for (int div = 1; div <= up; div++) {
-                if (a % div == 0) {
-                    // the divisor and quotient are both divisors of a
-                    divisors[div]++;
-                    // make sure not to double count!
-                    if (div != a / div) {
-                        divisors[a / div]++;
-                    }
-                }
-            }
-        }
+			int up = (int) Math.sqrt(a);
+			for (int div = 1; div <= up; div++) {
+				if (a % div == 0) {
+					// the divisor and quotient are both divisors of a
+					divisors[div]++;
+					// make sure not to double count!
+					if (div != a / div) {
+						divisors[a / div]++;
+					}
+				}
+			}
+		}
 
-        for (int i = MAX_VAL; i >= 1; i--) {
-            if (divisors[i] >= 2) {
-                System.out.println(i);
-                break;
-            }
-        }
-    }
+		for (int i = MAX_VAL; i >= 1; i--) {
+			if (divisors[i] >= 2) {
+				System.out.println(i);
+				break;
+			}
+		}
+	}
 }
 ```
 </JavaSection>
@@ -208,19 +208,19 @@ divisors = [0] * (MAX_VAL + 1)
 n = int(input())
 a = list(map(int, input().split()))
 for i in range(n):
-    up = int(sqrt(a[i]))
-    for div in range(1, up + 1):
-        if a[i] % div == 0:
-            # the divisor and quotient are both divisors of a
-            divisors[div] += 1
-            # make sure not to double count!
-            if div != a[i] // div:
-                divisors[a[i] // div] += 1
+	up = int(sqrt(a[i]))
+	for div in range(1, up + 1):
+		if a[i] % div == 0:
+			# the divisor and quotient are both divisors of a
+			divisors[div] += 1
+			# make sure not to double count!
+			if div != a[i] // div:
+				divisors[a[i] // div] += 1
 
 for i in range(MAX_VAL, 0, -1):
-    if divisors[i] >= 2:
-        print(i)
-        break
+	if divisors[i] >= 2:
+		print(i)
+		break
 ```
 </PySection>
 </LanguageSection>
@@ -283,35 +283,35 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-    public static final int MAXX = 1000005;
+	public static final int MAXX = 1000005;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
 
-        int n = scanner.nextInt();
-        int arr[] = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = scanner.nextInt();
-        }
+		int n = scanner.nextInt();
+		int arr[] = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = scanner.nextInt();
+		}
 
-        int p[] = new int[MAXX];
-        Arrays.fill(p, 0);
+		int p[] = new int[MAXX];
+		Arrays.fill(p, 0);
 
-        for (int i = 0; i < n; i++) {
-            p[arr[i]]++;
-        }
+		for (int i = 0; i < n; i++) {
+			p[arr[i]]++;
+		}
 
-        for (int i = MAXX - 1; i >= 1; i--) {
-            int div = 0;
-            for (int j = i; j < MAXX; j += i) {
-                div += p[j];
-            }
-            if (div >= 2) {
-                System.out.println(i);
-                break;
-            }
-        }
-    }
+		for (int i = MAXX - 1; i >= 1; i--) {
+			int div = 0;
+			for (int j = i; j < MAXX; j += i) {
+				div += p[j];
+			}
+			if (div >= 2) {
+				System.out.println(i);
+				break;
+			}
+		}
+	}
 }
 ```
 </JavaSection>
@@ -324,15 +324,15 @@ arr = list(map(int, input().split()))
 p = [0] * MAXX
 
 for i in range(n):
-    p[arr[i]] += 1
+	p[arr[i]] += 1
 
 for i in range(MAXX, 0, -1):
-    div = 0
-    for j in range(i, MAXX, i):
-        div += p[j]
-    if div >= 2:
-        print(i)
-        break
+	div = 0
+	for j in range(i, MAXX, i):
+		div += p[j]
+	if div >= 2:
+		print(i)
+		break
 ```
 </PySection>
 </LanguageSection>
