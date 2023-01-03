@@ -52,7 +52,7 @@ View the grid as a graph:
 
 - All cells $(x, 0)$ and $(0, y)$ are nodes.
 - For each already-colored cell $(x, y)$, add an edge between $(x, 0)$ and
-  $(0, y)$.
+  $(0, y)$ with weight $c(x, 0) \oplus c(0, y)$.
 
 This creates $K$ connected components. The answer is thus either $2^{K - 1}$ or
 $0$. This is because each node in a connected component is dependent on the
@@ -61,17 +61,19 @@ it simply isn't possible to color the table, the answer is $0$.
 
 ### Checking Whether the Answer is $0$
 
-Since each already-colored cell $(x, y)$ determines whether the colors of the
-cells $(x, 0)$ and $(0, y)$ are the same, we can instead split each node in our
-graph into 2 nodes (one for each color) and create edges between nodes we know
-must be the same color.
+This problem then becomes checking whether there is an cycle with odd weight 
+in the resulting graph, which we can answer efficiently using DSU or DFS.
 
-This problem then becomes checking whether there is an odd cycle in the
-resulting graph, which we can answer efficiently using DSU or DFS.
+One way to implement this is as follows. Since each already-colored cell 
+$(x, y)$ determines whether the colors of the cells $(x, 0)$ and $(0, y)$ are 
+the same, we can instead split each node in our graph into 2 nodes (one for 
+each color) and create edges between nodes with consistent colors.
+The answer is $0$ if two new nodes corresponding to the same original node 
+are in the same connected component.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}((N+M+K)\log (N+M+K))$
 
 <LanguageSection>
 
