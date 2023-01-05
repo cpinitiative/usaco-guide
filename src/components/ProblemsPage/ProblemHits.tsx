@@ -6,15 +6,7 @@ import { moduleIDToSectionMap } from '../../../content/ordering';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
-export const difficultyClasses = {
-  'Very Easy': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
-  Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
-  Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
-  Hard: 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
-  'Very Hard':
-    'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',
-  Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
-};
+import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 
 function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   const { userProgressOnProblems } = useContext(UserDataContext);
@@ -110,7 +102,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
       <div className="pt-4">
         <span
           className={
-            'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4' +
+            'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
             difficultyClasses[hit.difficulty]
           }
         >
