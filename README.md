@@ -3,7 +3,7 @@
 # USACO Guideh
 
 A free collection of curated, high-quality resources to take you from Bronze to
-Platinum and beyond.
+Platinum and beyond.g
 
 Thank you to the following companies:
 
