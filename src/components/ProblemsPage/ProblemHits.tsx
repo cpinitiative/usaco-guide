@@ -6,6 +6,8 @@ import { moduleIDToSectionMap } from '../../../content/ordering';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
+import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+
 function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   const { userProgressOnProblems } = useContext(UserDataContext);
   return (
@@ -98,6 +100,14 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
       </ul>
 
       <div className="pt-4">
+        <span
+          className={
+            'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
+            difficultyClasses[hit.difficulty]
+          }
+        >
+          {hit.difficulty}
+        </span>
         {hit.tags?.map(tag => (
           <span
             className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
