@@ -12,7 +12,6 @@ author: Danh Ta Chi Thanh, Ryan Chou
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -23,59 +22,102 @@ author: Danh Ta Chi Thanh, Ryan Chou
 
 using namespace std;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("diamond.in","r",stdin);
-	freopen("diamond.out","w",stdout);
-	int n,k;
+int main() {
+	freopen("diamond.in", "r", stdin);
+	int n, k;
 	cin >> n >> k;
-	vector<int> a;
-	a.resize(n);
-	for (int i=0;i<n;++i) {
-		cin >> a[i];
+	vector<int> diamonds(n);
+	for (int& d : diamonds) {
+		cin >> d;
 	}
-	sort(a.begin(),a.end());
-	int ans=0;
-	for (int i=0;i<n;++i) {
-		int cnt=1;
-		for (int j=i+1;j<n;++j) {
-			if (a[j]-a[i]<=k) ++cnt;
-			else break;
-		}
-		ans=max(cnt,ans);
-	}
-	cout << ans;
-	return 0;
-}
 
+	int most = 0;
+	/*
+	* Iterate through all diamonds and test setting them
+	* as the smallest diamond in the case.
+	*/
+	for (int x : diamonds) {
+		int fittable = 0;
+		// Get all diamonds larger than x that differ from it by no more than k.
+		for (int y : diamonds) {
+			if (x <= y && y <= x + k) {
+				fittable++;
+			}
+		}
+		most = max(most, fittable);
+	}
+
+	freopen("diamond.out", "w", stdout);
+	cout << most << endl;
+}
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.util.*;
+import java.io.*;
+
+public class Diamond {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("diamond.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(initial.nextToken());
+		int k = Integer.parseInt(initial.nextToken());
+		int[] diamonds = new int[n];
+		for (int i = 0; i < n; i++) {
+			diamonds[i] = Integer.parseInt(read.readLine());
+		}
+		read.close();
+
+		int most = 0;
+		/*
+		 * Iterate through all diamonds and test setting them
+		 * as the smallest diamond in the case.
+		 */
+		for (int x : diamonds) {
+			int fittable = 0;
+			// Get all diamonds larger than x that differ from it by no more than k.
+			for (int y : diamonds) {
+				if (x <= y && y <= x + k) {
+					fittable++;
+				}
+			}
+			most = Math.max(most, fittable);
+		}
+
+		PrintWriter written = new PrintWriter("diamond.out");
+		written.println(most);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
-fin = open('diamond.in', 'r')
+with open('diamond.in') as fin:
+	n, k = map(int, fin.readline().split())
+	diamonds = [int(fin.readline()) for _ in range(n)]
 
-N, K = map(int, fin.readline().split())
+most = 0
+"""
+Iterate through all diamonds and test setting them
+as the smallest diamond in the case.
+"""
+for x in diamonds:
+	fittable = 0
+	# Get all diamonds larger than x that differ from it by no more than k.
+	for y in diamonds:
+		if x <= y <= x + k:
+			fittable += 1
 
-diamonds = []
+	most = max(most, fittable)
 
-for _ in range(N):
-	diamonds.append(int(fin.readline()))
-
-largest = 0
-curlargest = 0
-for x in range(N):
-	for y in range(N):
-		if diamonds[y] >= diamonds[x] and diamonds[y] <= diamonds[x] + K:
-			curlargest += 1
-	largest = max(largest, curlargest)
-	curlargest = 0
-
-print(largest, file=open('diamond.out', 'w'))
+print(most, file=open('diamond.out', 'w'))
 ```
 
 </PySection>
-
 </LanguageSection>
