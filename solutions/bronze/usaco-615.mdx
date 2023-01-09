@@ -9,35 +9,9 @@ author: Danh Ta Chi Thanh, Ryan Chou
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}(M^2)$
+
 <LanguageSection>
-	
-<PySection>
-
-```python
-fin = open('pails.in', 'r')
-
-buck1, buck2, buck3 = map(int, fin.readline().split())
-
-ans = 0
-
-# x and y below take care of all 
-# possible combinations of the two buckets.
-
-for x in range(1001):
-	if (buck1 * x) > buck3:
-		break
-	for y in range(1001):
-		current = (buck1 * x) + (buck2 * y)
-		if current > buck3:
-			break
-		ans = max(ans, current)
-
-with open('pails.out', 'w') as fout:
-	fout.write(str(ans) + '\n')
-```
-
-</PySection>
-
 <CPPSection>
 
 ```cpp
@@ -47,26 +21,91 @@ with open('pails.out', 'w') as fout:
 
 using namespace std;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("pails.in","r",stdin);
-	freopen("pails.out","w",stdout);
-	int a,b,c,ans=0;
-	cin >> a >> b >> c;
-	for (int i = 0; i < 1001; ++i) {
-		if (a*i > c) break;
-		for (int j = 0; j < 1001; ++j) {
-			int n = a*i + b*j;
-			if (n > c) break;
-			ans = max(ans,n);
+int main() {
+	freopen("pails.in", "r", stdin);
+	int buck1, buck2;
+	int order;
+	cin >> buck1 >> buck2 >> order;
+
+	int closest = 0;
+	// Try all possible combinations of the first & second bucket.
+	for (int first = 0; first <= order; first++) {
+		if (buck1 * first > order) {
+			break;
+		}
+		for (int second = 0; second <= order; second++) {
+			int n = buck1 * first + buck2 * second;
+			if (n > order) {
+				break;
+			}
+			closest = max(closest, n);
 		}
 	}
-	cout << ans;
-	return 0;
-}
 
+	freopen("pails.out", "w", stdout);
+	cout << closest << endl;
+}
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.util.*;
+import java.io.*;
+
+public class Pails {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("pails.in"));
+		StringTokenizer input = new StringTokenizer(read.readLine());
+		read.close();
+
+		int buck1 = Integer.parseInt(input.nextToken());
+		int buck2 = Integer.parseInt(input.nextToken());
+		int order = Integer.parseInt(input.nextToken());
+
+		int closest = 0;
+		// Try all possible combinations of the first & second bucket.
+		for (int first = 0; first <= order; first++) {
+			if (buck1 * first > order) {
+				break;
+			}
+			for (int second = 0; second <= order; second++) {
+				int n = (buck1 * first) + (buck2 * second);
+				if (n > order) {
+					break;
+				}
+				closest = Math.max(closest, n);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("pails.out");
+		written.println(closest);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+with open('pails.in') as fin:
+    buck1, buck2, order = map(int, fin.readline().split())
+
+closest = 0
+# Try all possible combinations of the first & second bucket.
+for first in range(order + 1):
+	if buck1 * first > order:
+		break
+	for second in range(order + 1):
+		current = buck1 * first + buck2 * second
+		if current > order:
+			break
+		closest = max(closest, current)
+
+print(closest, file=open('pails.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
