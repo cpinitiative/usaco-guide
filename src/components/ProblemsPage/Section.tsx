@@ -15,7 +15,7 @@ export default function Section({ refine }) {
   const darkMode = useDarkMode();
 
   const handleChange = e => {
-    let refinements = [];
+    const refinements = [];
     for (const section of e) {
       for (const chapter of section.value) {
         for (const module of chapter.items) {
