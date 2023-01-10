@@ -87,17 +87,13 @@ export default function DashboardPage(props: PageProps) {
   } = React.useContext(UserDataContext);
   const { signIn } = React.useContext(SignInContext);
 
-  const showIgnored = userSettings.showIgnored;
-
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
       .filter(
         x =>
           (userProgressOnModules[x] === 'Reading' ||
-            userProgressOnModules[x] === 'Practicing' ||
-            userProgressOnModules[x] === 'Skipped' ||
-            (showIgnored && userProgressOnModules[x] === 'Ignored')) &&
+            userProgressOnModules[x] === 'Practicing') &&
           moduleIDToSectionMap.hasOwnProperty(x)
       )
       .map(x => ({
@@ -105,33 +101,23 @@ export default function DashboardPage(props: PageProps) {
           moduleIDToName[x]
         }`,
         url: moduleIDToURLMap[x],
-        status: userProgressOnModules[x] as
-          | 'Skipped'
-          | 'Reading'
-          | 'Practicing'
-          | 'Ignored',
+        status: userProgressOnModules[x] as 'Reading' | 'Practicing',
       }));
-  }, [userProgressOnModules, showIgnored]);
+  }, [userProgressOnModules]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
           (userProgressOnProblems[x] === 'Reviewing' ||
-            userProgressOnProblems[x] === 'Solving' ||
-            userProgressOnProblems[x] === 'Skipped' ||
-            (showIgnored && userProgressOnProblems[x] === 'Ignored')) &&
+            userProgressOnProblems[x] === 'Solving') &&
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         label: problemIDMap[x].label,
         url: problemIDMap[x].modules[0].url,
-        status: userProgressOnProblems[x] as
-          | 'Reviewing'
-          | 'Solving'
-          | 'Skipped'
-          | 'Ignored',
+        status: userProgressOnProblems[x] as 'Reviewing' | 'Solving',
       }));
-  }, [userProgressOnProblems, showIgnored]);
+  }, [userProgressOnProblems]);
 
   const lastViewedSection =
     moduleIDToSectionMap[lastViewedModuleID] || 'general';
