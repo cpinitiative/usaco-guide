@@ -259,9 +259,11 @@ print(crossing_pairs, file=open('circlecross.out', 'w'))
 
 ### Explanation
 
-For every cow $i$, we check which cows have one entry/exit point between cow $i$'s entry and exit point.
-Then, we can add each of these cows as a pair with cows $N$ to a list of crossings, making sure we have no repeats.
-Then we can just output the length of this list of crossings to get our final answer.
+For every cow $i$, we check which cows have exactly one entry/exit point between cow $i$'s entry and exit point.
+Notice that for each of these cows $j$, we know that they must cross $i$, so we add the pair $(i, j)$ to a hash set containing all crossings.
+We must take care to not store both $(i, j)$ and $(j, i)$ in the set, as that would result in overcounting.
+
+Our final answer is the length of the hash set with all the pairs.
 
 ### Implementation
 
@@ -306,7 +308,7 @@ int main() {
 
 			for (int c : appearances) {
 				pair<char, char> intersection{crossings[i], c};
-				// Sort to make sure only {a, b} is stored, not {b, a} as well
+				// Sort to make sure only (i, j) is stored, not (j, i) as well
 				if (intersection.first > intersection.second) {
 					swap(intersection.first, intersection.second);
 				}
@@ -385,7 +387,7 @@ public class CircleCross {
 
 				for (char c : appearances) {
 					CrossingPair pair = new CrossingPair(crossings.charAt(i), c);
-					// Sort to make sure only {a, b} is stored, not {b, a} as well
+					// Sort to make sure only (i, j) is stored, not (j, i) as well
 					if (pair.a > pair.b) {
 						char temp = pair.a;
 						pair.a = pair.b;
@@ -435,7 +437,7 @@ for i in range(len(crossings)):
 				appearances.add(crossings[j])
 		
 		for c in appearances:
-			# Sort to make sure only {a, b} is stored, not {b, a} as well
+			# Sort to make sure only (i, j) is stored, not (j, i) as well
 			intersection = tuple(sorted([crossings[i], c]))
 			found_crossings.add(intersection)
 
