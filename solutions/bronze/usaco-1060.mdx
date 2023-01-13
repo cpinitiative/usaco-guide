@@ -15,135 +15,112 @@ Due to the low constraints of the problem, we can iterate through every possible
 
 <LanguageSection>
 <CPPSection>
-	
+
 ```cpp
 #include <iostream>
-#include <algorithm>
-#include <cstdio>
+#include <vector>
 
 using namespace std;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
+int main() {
 	int n;
 	cin >> n;
-	int petals[n];
-	for (int i = 0; i < n; ++i) {
-		cin >> petals[i];
+
+	vector<int> flowers(n);
+	for (int& f : flowers) {
+		cin >> f;
 	}
-	int photos = 0;
-	for (int i = 0; i < n; ++i) {
-		for (int j = i; j < n; ++j) {
-			int totalPetals = 0;
-			for (int k = i; k <= j; ++k) {
-				totalPetals += petals[k];
+
+	int valid_photos = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			// find the average petal # in the range i - j
+			double avg_petals = 0;
+			for (int f = i; f <= j; f++) {
+				avg_petals += flowers[f];
 			}
-			bool present = false;
-			for (int k = i; k <= j; ++k) {
-				if (petals[k] * (j-i+1) == totalPetals) {
-					present = true;
+			avg_petals /= j - i + 1;
+
+			for (int index = i; index <= j; index++) {
+				if (flowers[index] == avg_petals) {
+					// we found an average flower
+					valid_photos++;
+					break;
 				}
-			}
-			if (present) {
-				++photos;
 			}
 		}
 	}
-	cout << photos;
-	return 0;
-}
 
+	cout << valid_photos << endl;
+}
 ```
 
 </CPPSection>
-	
 <JavaSection>
-	
+
 ```java
 import java.util.*;
 import java.io.*;
-	
-class Main {
-	public static void main(String[] args){
-		Kattio io = new Kattio();
-		int n = io.nextInt();
-		int[] petals = new int[n];
+
+public class DaisyChains {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(read.readLine());
+		
+		int[] flowers = new int[n];
+		StringTokenizer flowerST = new StringTokenizer(read.readLine());
 		for (int i = 0; i < n; i++) {
-			/* 
-			 * storing each petal count in an array
-			 * so we can keep track of which flower
-			 * has how many petals based on the 
-			 * index it is stored in
-			 */
-			petals[i] = io.nextInt();
+			flowers[i] = Integer.parseInt(flowerST.nextToken());
 		}
-		int counter = 0;
-		// brute force every possible subarray of flowers
+
+		int validPhotos = 0;
 		for (int i = 0; i < n; i++) {
 			for (int j = i; j < n; j++) {
-				int flowerCount = j - i + 1;
-				int sum = 0;
-				for (int k = i; k <= j; k++) {
-					sum += petals[k];
+				// find the average petal # in the range i - j
+				double avgPetals = 0;
+				for (int f = i; f <= j; f++) {
+					avgPetals += flowers[f];
 				}
-				/*
-				 * finding the sum of all petals up to 
-				 * this point so we can find the average 
-				 */
-				if (sum % flowerCount != 0) {
-					/*
-					 * checking to see if the average is an
-					 * integer; if not, we can save time and
-					 * optimize by skipping this batch of flowers
-					 */
-					continue;
-				}
-			       /*
-				* average = total sum of petals / total 
-				* number of flowers
-				*/
-				int avg = sum / flowerCount;
-				for (int k = i; k <= j; k++) {
-					if (petals[k] == avg) {
-						/*
-						 * checking to see if any flowers 
-						 * have the exact same number of 
-						 * petals as the average; if they do, 
-						 * then adding them to a counter
-						 */
-						counter++;
+				avgPetals /= j - i + 1;
+
+				for (int index = i; index <= j; index++) {
+					if (flowers[index] == avgPetals) {
+						// we found an average flower
+						validPhotos++;
 						break;
 					}
 				}
 			}
-		}				      
-		io.println(counter);
-		io.close();
-	}
-	//CodeSnip{Kattio}			 
-}
+		}
 
+		System.out.println(validPhotos);
+	}
+	
+	//CodeSnip{Kattio}
+}
 ```
-				 
+
 </JavaSection>
 <PySection>
 
 ```py
-N = int(input())
+n = int(input())
 flowers = list(map(int, input().split()))
-ans = 0
-	
-for i in range(N):
-	for j in range(i, N):
-		# find average petals in the range i - j
-		avg_petals = sum(flowers[i:j + 1]) / len(flowers[i:j + 1])
+
+valid_photos = 0
+for i in range(n):
+	for j in range(i, n):
+		# find the average petal # in the range i - j
+		avg_petals = sum(flowers[i:j + 1]) / (j - i + 1)
 
 		for index in range(i, j + 1):
 			if flowers[index] == avg_petals:
 				# we found an average flower
-				ans += 1
+				valid_photos += 1
 				break
-print(ans)
+
+print(valid_photos)
 ```
+
 </PySection>
 </LanguageSection>
