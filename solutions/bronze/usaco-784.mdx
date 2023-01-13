@@ -159,11 +159,11 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		int time_covered = 0;
 		// Try to find a cow that can cover this interval
-		for (int v = 1; v <= max_time; v++) {
+		for (int t = 1; t <= max_time; t++) {
 			for (int j = 0; j < n; j++) {
 				// Check that it's not the fired cow
 				if (j != i) {
-					if (lifeguards[j].start <= v && v < lifeguards[j].end) {
+					if (lifeguards[j].start <= t && t < lifeguards[j].end) {
 						// One more time slot covered- no need to search further
 						time_covered++;
 						break;
@@ -220,12 +220,12 @@ public class Lifeguards {
 		int maxCover = 0;
 		for (int i = 0; i < n; i++) {
 			int timeCovered = 0;
-			for (int v = 1; v <= maxTime; v++) {
+			for (int t = 1; t <= maxTime; t++) {
 				// Try to find a cow that can cover this interval
 				for (int j = 0; j < n; j++) {
 					// Check that it's not the fired cow
 					if (j != i) {
-						if (lifeguards[j].start <= v && v < lifeguards[j].end) {
+						if (lifeguards[j].start <= t && t < lifeguards[j].end) {
 							// One more time slot covered- no need to search further
 							timeCovered++;
 							break;
@@ -263,12 +263,12 @@ time covered by the remaining lifeguards
 """
 for i in range(n):
 	time_covered = 0
-	for v in range(1, max_time + 1):
+	for t in range(1, max_time + 1):
 		# Try to find a cow that can cover this interval
 		for j in range(n):
 			# Check that it's not the fired cow
 			if j != i:
-				if v >= lifeguards[j][0] and v < lifeguards[j][1]:
+				if lifeguards[j][0] <= t < lifeguards[j][1]:
 					# One more time slot covered- no need to search further
 					time_covered += 1
 					break
