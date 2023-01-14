@@ -5,28 +5,144 @@ title: Why Did the Cow Cross the Road II
 author: Benjamin Qi, Danh Ta Chi Thanh, Ryan Chou, Ananth Kashyap, Ben Dodge, Ishwarendra Jha
 ---
 
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)
+
 ## Solution 1
 
-[Official Analysis (Java)](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)
+### Explanation
+
+Due to the low constraints, we can iterate over all possible
+pairs of intersecting paths and check whether they represent two cows.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^4)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("circlecross.in","r",stdin);
+	string crossings;
+	cin >> crossings;
+
+	int crossing_pairs = 0;
+	// Iterate through all characters of the string
+	for (int a = 0; a < crossings.size(); a++) {
+		for (int b = a + 1; b < crossings.size(); b++) {
+			for (int c = b + 1; c < crossings.size(); c++) {
+				for (int d = c + 1; d < crossings.size(); d++) {
+					/* 
+					 * If we find two entry/exit paths such that a < b < c < d, 
+					 * the path of cows crossing (a, c) and (b, d) must intersect,
+					 * so we have a crossing pair
+					 */
+					crossing_pairs += (
+						crossings[a] == crossings[c] &&
+						crossings[b] == crossings[d]
+					);
+				}
+			}
+		}
+	}
+	
+	freopen("circlecross.out", "w", stdout);
+	cout << crossing_pairs << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class CircleCross {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("circlecross");
+		String crossings = io.next();
+
+		int crossingPairs = 0;
+		// Iterate through all characters of the string
+		for (int a = 0; a < crossings.length(); a++) {
+			for (int b = a + 1; b < crossings.length(); b++) {
+				for (int c = b + 1; c < crossings.length(); c++) {
+					for (int d = c + 1; d < crossings.length(); d++) {
+						/* 
+						 * If we find two entry/exit paths such that a < b < c < d, 
+						 * the path of cows crossing (a, c) and (b, d) must intersect,
+						 * so we have a crossing pair
+						 */
+						crossingPairs += (
+							crossings[a] == crossings[c] &&
+							crossings[b] == crossings[d]
+						) ? 1 : 0;
+					}
+				}
+			}
+		}
+
+		io.println(crossingPairs);
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+with open('circlecross.in') as read:
+	crossings = read.readline().strip()
+
+crossing_pairs = 0
+# Iterate through all characters of the string
+for a in range(len(crossings)):
+	for b in range(a + 1, len(crossings)):
+		for c in range(b + 1, len(crossings)):
+			for d in range(c + 1, len(crossings)):
+				"""
+				If we find two entry/exit paths such that a < b < c < d, 
+				the path of cows crossing (a, c) and (b, d) must intersect,
+				so we have a crossing pair
+				"""
+				crossing_pairs += (
+					crossings[a] == crossings[c] and
+					crossings[b] == crossings[d]
+				)
+
+print(crossing_pairs, file=open('circlecross.out', 'w'))
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2
+
+### Explanation
+
+Define $\texttt{start}_x$ and $\texttt{end}_x$ to be the indices of the first
+and last occurrences of cow $x$ in the input string, respectively.
+We want to count the number of pairs of cows $(i,j)$ such that cow $i$ enters
+before cow $j$ and leaves somewhere between cow $j$'s entry and exit.
+This condition can be formulated as the inequality
+$\texttt{start}_i < \texttt{start}_j < \texttt{end}_i < \texttt{end}_j$.
+
+Since $N$ is small, we can afford to iterate over all possibilities for $i$ and
+$j$ and check whether the above condition is satisfied.
 
 ### Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$, where $N$ is the number of cows.
 
-<!-- Solution -->
-
-Define $Start_x$ and $End_x$ to be the indices of the first and last occurrences
-of cow $x$ in the input string, respectively. We want to count the number of
-pairs of cows $(i,j)$ such that cow $i$ enters before cow $j$ and leaves
-somewhere between cow $j$'s entry and exit. In other words,
-$Start_i < Start_j < End_i < End_j$.
-
-Since $N$ is small, we can afford to iterate over all possibilities for $i$ and
-$j$ and check whether the condition above is satisfied in $\mathcal{O}(N^2)$
-time.
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -34,226 +150,299 @@ time.
 using namespace std;
 
 int main() {
-	freopen("circlecross.in","r",stdin);
-	freopen("circlecross.out","w",stdout);
-	string s;
-	cin >> s;
-	int Start[26], End[26];
-	// Set all elements of Start and End arrays to -1.
-	fill(Start, Start + 26, -1);
-	fill(End, End + 26, -1);
-	for (int i = 0; i < s.size(); ++i) {
-		if (Start[s[i]-'A'] == -1) Start[s[i]-'A'] = i;
-		else End[s[i]-'A'] = i;
+	freopen("circlecross.in", "r", stdin);
+	string crossings;
+	cin >> crossings;
+	
+	vector<int> start(26, -1);
+	vector<int> end(26, -1);
+	for (int i = 0; i < crossings.size(); i++) {
+		if (start[crossings[i] - 'A'] == -1) {
+			start[crossings[i] - 'A'] = i;
+		} else {
+			end[crossings[i] - 'A'] = i;
+		}
 	}
-	int ans = 0;
-	for (int i = 0; i < 26; ++i)
-		for (int j = 0; j < 26; ++j)
-			ans += Start[i] < Start[j] && Start[j] < End[i] && End[i] < End[j];
-	cout << ans << endl;
+
+	int crossing_pairs = 0;
+	// Check all pairs of cows (i, j)
+	for (int i = 0; i < 26; i++) {
+		for (int j = 0; j < 26; j++) {
+			// Increment by 1 if the condition in the explanation is met
+			crossing_pairs += (
+				start[i] < start[j] && start[j] < end[i] && end[i] < end[j]
+			);
+		}
+	}
+	
+	freopen("circlecross.out", "w", stdout);
+	cout << crossing_pairs << endl;
 }
 ```
 
 </CPPSection>
-
-</LanguageSection>
-
-## Solution 2
-
-Due to the low constraints, we can iterate over all $\mathcal{O}(N^4)$ possible
-pairs of intersecting paths and check whether they represent two cows.
-	
-### Implementation
-	
-**Time Complexity:** $\mathcal{O}(N^4)$
-
-<LanguageSection>
-	
-<PySection>
-	
-```python	
-fin = open('circlecross.in', 'r')
-s = fin.readline().strip()
-ans = 0
-
-# Iterates through all possible pairs.
-for a in range(len(s)):
-	for b in range(a + 1, len(s)):
-		for c in range(b + 1, len(s)):
-			for d in range(c + 1, len(s)):
-				ans += s[a] == s[c] and s[b] == s[d]
-
-fout = open('circlecross.out', 'w')
-fout.write(str(ans) + '\n')
-fout.close()
-```
-	
-</PySection>
-	
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-	freopen("circlecross.in","r",stdin);
-	freopen("circlecross.out","w",stdout);
-	string s;
-	cin >> s;
-	int ans = 0;
-	for (int a = 0; a < s.size(); a++)
-		for (int b = a+1; b < s.size(); b++)
-			for (int c = b+1; c < s.size(); c++)
-				for (int d = c+1; d < s.size(); d++)
-					ans += s[a] == s[c] && s[b] == s[d];
-	cout << ans << endl;
-}
-```
-
-</CPPSection>
-	
 <JavaSection>
-```java
-import java.io.*;
-import java.util.*;
 
-public class CrossingCows {
+```java
+import java.util.*;
+import java.io.*;
+
+public class CircleCross {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("circlecross");
-		String s = io.next();
-		int ans = 0; 
+		String crossings = io.next();
 
-		// Iterate through all characters of the string
-		for (int a = 0; a < s.length(); a++) {
-		for (int b = a + 1; b < s.length(); b++) {
-			for (int c = b + 1; c < s.length(); c++) {
-				for (int d = c + 1; d < s.length(); d++) {
-					/* 
-					 * If we find two entry/exit paths such that a < b < c < d, 
-					 * the path of cows crossing (a, c) and (b, d) must intersect,
-					 * so we have a crossing pair (only one-we can't count the pair twice) 
-					 */
-					if (s.charAt(a) == s.charAt(c) && s.charAt(b) == s.charAt(d)) {
-						ans++;
-					}
-				}
+		int[] start = new int[26];
+		int[] end = new int[26];
+		Arrays.fill(start, -1);
+		Arrays.fill(end, -1);
+		for (int i = 0; i < crossings.length(); i++) {
+			int cID = crossings.charAt(i) - 'A';
+			if (start[cID] == -1) {
+				start[cID] = i;
+			} else {
+				end[cID] = i;
 			}
 		}
-		io.print(ans);
+
+		int crossingPairs = 0;
+		// Check all pairs of cows (i, j)
+		for (int i = 0; i < 26; i++) {
+			for (int j = 0; j < 26; j++) {
+				// Increment by 1 if the condition in the explanation is met
+				crossingPairs += (
+					start[i] < start[j] && start[j] < end[i] && end[i] < end[j]
+				) ? 1 : 0;
+			}
+		}
+
+		io.println(crossingPairs);
 		io.close();
 	}
-	
+
 	//CodeSnip{Kattio}
 }
 ```
-</JavaSection>
 
+</JavaSection>
+<PySection>
+
+```py
+with open('circlecross.in') as read:
+	crossings = read.readline().strip()
+
+start = [-1 for _ in range(26)]
+end = [-1 for _ in range(26)]
+for v, c in enumerate(crossings):
+	c_id = ord(c) - ord('A')
+	if start[c_id] == -1:
+		start[c_id] = v
+	else:
+		end[c_id] = v
+
+crossing_pairs = 0
+# Check all pairs of cows (i, j)
+for i in range(26):
+	for j in range(26):
+		# Increment by 1 if the condition in the explanation is met
+		crossing_pairs += (
+			start[i] < start[j] and start[j] < end[i] and end[i] < end[j]
+		)
+
+print(crossing_pairs, file=open('circlecross.out', 'w'))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Solution 3
 
-For every cow (say cow $N$), we can check which cows have one entry/exit point between both of cow $N$'s entry and exit points. Then, we can add each of these cows as a pair with cows $N$ to a list of crossings, making sure we have no repeats. Then we can just output the length of this list of crossings to get our final answer.
+### Explanation
+
+For every cow $i$, we check which cows have exactly one entry/exit point between cow $i$'s entry and exit point.
+Notice that for each of these cows $j$, we know that they must cross $i$, so we add the pair $(i, j)$ to a hash set containing all crossings.
+We must take care to not store both $(i, j)$ and $(j, i)$ in the set, as that would result in overcounting.
+
+Our final answer is the length of the hash set with all the pairs.
 
 ### Implementation
-	
-**Time Complexity:** $\mathcal{O}(T^3)$, where $T$ represents the total number of characters in Farmer John's string.
+
+**Time Complexity:** $\mathcal{O}(T^2)$, where $T$ is the length of FJ's string.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-const int TOTAL = 52;  // Crossing Points' Map Length 
-
-int main()
-{
+int main() {
 	freopen("circlecross.in", "r", stdin);
-	freopen("circlecross.out", "w", stdout);
+	string crossings;
+	cin >> crossings;
 
-	string recordings;
-	cin >> recordings;
-
+	// Equivalent to the start array in Solution 2
 	vector<int> first_found(26, -1);
-	set<pair<char, char>> crossings;
-
-	for (int i = 0; i < TOTAL; i++)
-	{
-		if (first_found[recordings[i] - 'A'] == -1)
-		{
-			// first occurrence of this letter
-			first_found[recordings[i] - 'A'] = i;
+	set<pair<char, char>> found_crossings;
+	for (int i = 0; i < crossings.size(); i++) {
+		int c_id = crossings[i] - 'A';
+		if (first_found[c_id] == -1) {
+			// Mark the entry point of this cow
+			first_found[c_id] = i;
 			continue;
-		}
-		else
-		{
-			// keep track of all cows that have an entry/exit point
-			// between the entry and exit point of the current cow
-
+		} else {
+			/*
+			 * Set of cows that have exactly one point between
+			 * the entry & exit point of the current cow
+			 */
 			set<char> appearances;
-
-			int start = first_found[recordings[i] - 'A'] + 1, end = i;
-			for (int j = start; j < end; j++)
-			{
-				if (appearances.count(recordings[j]))
-				{
-					appearances.erase(recordings[j]);
-				}
-				else
-				{
-					appearances.insert(recordings[j]);
+			int start = first_found[c_id] + 1;
+			int end = i;
+			for (int j = start; j < end; j++) {
+				if (appearances.count(crossings[j])) {
+					appearances.erase(crossings[j]);
+				} else {
+					appearances.insert(crossings[j]);
 				}
 			}
 
-			// Add all pairs to the set of crossings if not already in it
-			for (int k : appearances)
-			{
-				bool already_present = crossings.count({recordings[i], k});
-				already_present |= crossings.count({k, recordings[i]});
-				if (!already_present)
-				{
-					crossings.insert({recordings[i], k});
+			for (int c : appearances) {
+				pair<char, char> intersection{crossings[i], c};
+				// Sort to make sure only (i, j) is stored, not (j, i) as well
+				if (intersection.first > intersection.second) {
+					swap(intersection.first, intersection.second);
 				}
+				found_crossings.insert(intersection);
 			}
 		}
 	}
 
-	cout << crossings.size() << endl;
+	freopen("circlecross.out", "w", stdout);
+	cout << found_crossings.size() << endl;
 }
 ```
 
-</CPPSection>
-						 
+</CPPSection> 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class CircleCross {
+	//BeginCodeSnip{Crossing Pair Class}
+	static class CrossingPair {
+		public char a;
+		public char b;
+		
+		public CrossingPair(char a, char b) {
+			this.a = a;
+			this.b = b;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(a, b);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return (
+				obj instanceof CrossingPair &&
+				a == ((CrossingPair) obj).a && b == ((CrossingPair) obj).b
+			);
+		}
+	}
+	//EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("circlecross");
+		String crossings = io.next();
+
+		// Equivalent to the start array in Solution 2
+		int[] firstFound = new int[26];
+		Arrays.fill(firstFound, -1);
+		Set<CrossingPair> foundCrossings = new HashSet<>();
+		for (int i = 0; i < crossings.length(); i++) {
+			int cID = crossings.charAt(i) - 'A';
+			if (firstFound[cID] == -1) {
+				// Mark the entry point of this cow
+				firstFound[cID] = i;
+				continue;
+			} else {
+				/*
+				 * Set of cows that have exactly one point between
+				 * the entry & exit point of the current cow
+				 */
+				Set<Character> appearances = new HashSet<>();
+				int start = firstFound[cID] + 1;
+				int end = i;
+				for (int j = start; j < end; j++) {
+					if (appearances.contains(crossings.charAt(j))) {
+						appearances.remove(crossings.charAt(j));
+					} else {
+						appearances.add(crossings.charAt(j));
+					}
+				}
+
+				for (char c : appearances) {
+					CrossingPair pair = new CrossingPair(crossings.charAt(i), c);
+					// Sort to make sure only (i, j) is stored, not (j, i) as well
+					if (pair.a > pair.b) {
+						char temp = pair.a;
+						pair.a = pair.b;
+						pair.b = temp;
+					}
+					foundCrossings.add(pair);
+				}
+			}
+		}
+
+		io.println(foundCrossings.size());
+		io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
-	
+
 ```python
-TOTAL = 52
-	
-recordings = open('circlecross.in').read().strip()
-crossings = []
-for i in range(TOTAL):
-	if i == recordings.index(recordings[i]):
-		# First appearance of letter
+with open('circlecross.in') as read:
+	crossings = read.readline().strip()
+
+# Equivalent to the start array in Solution 2
+first_found = [-1 for _ in range(26)]
+found_crossings = set()
+for i in range(len(crossings)):
+	c_id = ord(crossings[i]) - ord('A')
+	if first_found[c_id] == -1:
+		# Mark the entry point of this cow
+		first_found[c_id] = i
 		continue
 	else:
-		appearances = []
-		# Make a list of all cows that have an entry/exit point between the entry and exit point of the current cow
-		for j in range(recordings.index(recordings[i]) + 1, i):
-			if recordings[j] in appearances:
-				appearances.remove(recordings[j])
+		"""
+		Set of cows that have exactly one point between
+		the entry & exit point of the current cow
+		"""
+		appearances = set()
+		start = first_found[c_id] + 1
+		end = i
+		for j in range(start, end):
+			if crossings[j] in appearances:
+				appearances.remove(crossings[j])
 			else:
-				appearances.append(recordings[j])
-		# Add all pairs to the crossings list if not already in it
-		for k in appearances:
-			if [recordings[i], k] not in crossings and [k, recordings[i]] not in crossings:
-				crossings.append([recordings[i], k])
+				appearances.add(crossings[j])
+		
+		for c in appearances:
+			# Sort to make sure only (i, j) is stored, not (j, i) as well
+			intersection = tuple(sorted([crossings[i], c]))
+			found_crossings.add(intersection)
 
-print(len(crossings), file=open('circlecross.out', 'w'))
+print(len(found_crossings), file=open('circlecross.out', 'w'))
 ```
-	
-</PySection>
 
+</PySection>
 </LanguageSection>
