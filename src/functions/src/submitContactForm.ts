@@ -39,10 +39,15 @@ const submitContactForm = functions.https.onCall(async data => {
   if (topic.includes('Bug')) labels.push('bug');
   if (topic.includes('Website')) labels.push('website');
   if (topic.includes('Suggestion')) labels.push('enhancement');
+  if (topic.includes('Missing Section')) labels.push('good first issue');
+  let title = `Contact Form Submission - ${topic}`;
+  if (moduleName) {
+    title += ` (${moduleName})`;
+  }
   const createdIssue = await githubAPI.post(
     '/repos/cpinitiative/usaco-guide/issues',
     {
-      title: `Contact Form Submission - ${topic}`,
+      title: title,
       body: body,
       labels: labels,
     }
