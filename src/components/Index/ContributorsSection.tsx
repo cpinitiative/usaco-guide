@@ -62,7 +62,7 @@ export default function ContributorsSection(): JSX.Element {
                       <GatsbyImage
                         image={
                           (data as any).allFile.edges.find(
-                            x => x.node.name === author.photo
+                            x => x?.node?.name === author.photo
                           ).node.childImageSharp.gatsbyImageData
                         }
                         className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
