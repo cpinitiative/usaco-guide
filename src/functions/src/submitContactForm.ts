@@ -29,14 +29,25 @@ const submitContactForm = functions.https.onCall(async data => {
       password: key,
     },
   });
-
+  const labels = [];
+  if (
+    topic.includes('Typo') ||
+    topic.includes('Missing Section') ||
+    topic.includes('Unclear Explanation')
+  )
+    labels.push('content');
+  if (topic.includes('Bug')) labels.push('bug');
+  if (topic.includes('Website')) labels.push('website');
+  if (topic.includes('Suggestion')) labels.push('enhancement');
   const createdIssue = await githubAPI.post(
     '/repos/cpinitiative/usaco-guide/issues',
     {
       title: `Contact Form Submission - ${topic}`,
       body: body,
+      labels: labels,
     }
   );
+
   await admin.firestore().collection('contactFormSubmissions').add({
     name: name,
     email: email,
