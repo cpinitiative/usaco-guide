@@ -7,6 +7,28 @@ author: Chuyang Wang
 
 [Official Editorial](https://codeforces.com/blog/entry/96267)
 
+## Explanation
+
+To solve this problem, let's notice that the result of performing XOR operations on a sequence of $a_i < 500$ is strictly less than $2^9$. That's because the ninth bit is the largest possible in the binary representation of $a_i$. 
+
+Let $dp[x][i]$ represent the feasibility of getting $x$ as a result of XOR of an increasing sequence ending with a number less than or equal to $i$. There exists the following recurrence: 
+
+$$
+dp[x \oplus a_i][i] = dp[x \oplus a_i][0..i] \lor dp[x][0..i-1]
+$$
+
+with 
+
+$$
+dp[0][i] = \text{true}
+$$
+
+since it is always possible to get 0 from an increasing sequence consisting of zero element. 
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \cdot 2^{\lceil \log_2(\text{MAXA}) \rceil})$
+
 <LanguageSection>
 <CPPSection>
 
@@ -26,7 +48,7 @@ int main() {
 
 	/*
 	 * dp[x][i] := whether it is possible to get x using XOR of an increasing
-	 * sequence which ends with a number smaller than or equal i
+	 * sequence which ends with a number smaller than or equal to i
 	 */
 	vector<vector<bool>> dp(MAXA, vector<bool>(MAXA, false));
 	for (int i = 0; i < MAXA; i++) {
@@ -40,7 +62,7 @@ int main() {
 		for (int i = 0; i < MAXA; i++) {
 			/*
 			 * For every i as a result of XOR operations on increasing sequences that
-			 * end with a number less or equal than a - 1, we can add a to the end of
+			 * end with a number less than a, we can add a to the end of
 			 * it and get a new x = i ^ a
 			 */
 			dp[a ^ i][a] = dp[a ^ i][a] || dp[i][a - 1];
