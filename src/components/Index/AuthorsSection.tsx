@@ -1,7 +1,7 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
-import { Author, Authors } from '../../../content/authors/authors';
+import { Author, Authors } from '../../../content/team/authors';
 
 const AuthorCard = ({
   author,
@@ -166,7 +166,7 @@ const AuthorCard = ({
 export default function AuthorsSection() {
   const data = useStaticQuery(graphql`
     {
-      allFile(filter: { relativePath: { regex: "/^authors/images/.*/" } }) {
+      allFile(filter: { relativePath: { regex: "/^team/images/.*/" } }) {
         edges {
           node {
             childImageSharp {
