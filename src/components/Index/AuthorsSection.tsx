@@ -192,7 +192,7 @@ export default function AuthorsSection() {
           Authors you can trust.
         </h2>
       </div>
-      <div className="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6 lg:px-8 2xl:px-16 py-16">
+      <div className="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6 lg:px-8 2xl:px-16 py-16 pt-0">
         {Authors.map(author => (
           <AuthorCard
             author={author}
