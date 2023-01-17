@@ -192,10 +192,13 @@ public class cownomicsSilver {
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 
 using std::cout;
 using std::endl;
 using std::vector;
+
+const std::map<char, int> GENOME_ID{{'A', 0}, {'T', 1}, {'C', 2}, {'G', 3}};
 
 int main() {
 	std::ifstream read("cownomics.in");
@@ -210,15 +213,7 @@ int main() {
 		read >> genome;
 		for (int g = 0; g < genome_len; g++) {
 			// A -> 0, C -> 1, T -> 2, G -> 3
-			if (genome[g] == 'A') {
-				spotted[s][g] = 0;
-			} else if (genome[g] == 'T') {
-				spotted[s][g] = 1;
-			} else if (genome[g] == 'C') {
-				spotted[s][g] = 2;
-			} else if (genome[g] == 'G') {
-				spotted[s][g] = 3;
-			}
+			spotted[s][g] = GENOME_ID.at(genome[g]);
 		}
 	}
 
@@ -227,15 +222,7 @@ int main() {
 		std::string genome;
 		read >> genome;
 		for (int g = 0; g < genome_len; g++) {
-			if (genome[g] == 'A') {
-				plain[p][g] = 0;
-			} else if (genome[g] == 'T') {
-				plain[p][g] = 1;
-			} else if (genome[g] == 'C') {
-				plain[p][g] = 2;
-			} else if (genome[g] == 'G') {
-				plain[p][g] = 3;
-			}
+			plain[p][g] = GENOME_ID.at(genome[g]);
 		}
 	}
 
@@ -281,6 +268,7 @@ int main() {
 	std::ofstream("cownomics.out") << valid_sets << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
   
@@ -289,6 +277,10 @@ import java.io.*;
 import java.util.*;
 
 public class BovineGenomics {
+	static final Map<Character, Integer> GENOME_ID = Map.ofEntries(
+		Map.entry('A', 0), Map.entry('T', 1), Map.entry('C', 2), Map.entry('G', 3)
+	);
+
 	public static void main (String[] args) throws IOException {
 		Kattio io = new Kattio("cownomics");
 	
@@ -297,34 +289,18 @@ public class BovineGenomics {
 
 		int[][] spotted = new int[cowNum][genomeLen];
 		for (int s = 0; s < cowNum; s++) {
-			genome = io.next();
+			String genome = io.next();
 			for (int g = 0; g < genomeLen; g++) {
 				// A -> 0, C -> 1, T -> 2, G -> 3
-				if (genome.charAt(g) == 'A') {
-					spotted[s][g] = 0;
-				} else if (genome.charAt(g) == 'C') {
-					spotted[s][g] = 1;
-				} else if (genome.charAt(g) == 'T') {
-					spotted[s][g] = 2;
-				} else if (genome.charAt(g) == 'G') {
-					spotted[s][g] = 3;
-				}
+				spotted[s][g] = GENOME_ID.get(genome.charAt(g));
 			}
 		}
 
 		int[][] plain = new int[cowNum][genomeLen];
 		for (int p = 0; p < cowNum; p++) {
-			genome = io.next();
+			String genome = io.next();
 			for (int g = 0; g < genomeLen; g++) {
-				if (genome.charAt(g) == 'A') {
-					plain[p][g] = 0;
-				} else if (genome.charAt(g) == 'C') {
-					plain[p][g] = 1;
-				} else if (genome.charAt(g) == 'T') {
-					plain[p][g] = 2;
-				} else if (genome.charAt(g) == 'G') {
-					plain[p][g] = 3;
-				}
+				plain[p][g] = GENOME_ID.get(genome.charAt(g));
 			}
 		}
 
@@ -385,6 +361,8 @@ Due to Python's slow speed, the below code TLEs on a couple test cases.
 </Warning>
 
 ```py
+GENOME_ID = {'A': 0, 'T': 1, 'C': 2, 'G': 3}
+
 with open('cownomics.in') as read:
 	cow_num, genome_len = [int(i) for i in read.readline().split()]
 	
@@ -393,14 +371,8 @@ with open('cownomics.in') as read:
 		genome_str = read.readline()
 		genome = []
 		for g in range(genome_len):
-			if genome_str[g] == 'A':
-				genome.append(0)
-			elif genome_str[g] == 'T':
-				genome.append(1)
-			elif genome_str[g] == 'C':
-				genome.append(2)
-			elif genome_str[g] == 'G':
-				genome.append(3)
+			# A -> 0, C -> 1, T -> 2, G -> 3
+			genome.append(GENOME_ID[genome_str[g]])
 		spotted.append(genome)
 
 	plain = []
@@ -408,14 +380,7 @@ with open('cownomics.in') as read:
 		genome_str = read.readline()
 		genome = []
 		for g in range(genome_len):
-			if genome_str[g] == 'A':
-				genome.append(0)
-			elif genome_str[g] == 'T':
-				genome.append(1)
-			elif genome_str[g] == 'C':
-				genome.append(2)
-			elif genome_str[g] == 'G':
-				genome.append(3)
+			genome.append(GENOME_ID[genome_str[g]])
 		plain.append(genome)
 
 valid_sets = 0
