@@ -911,12 +911,6 @@ You can find more problems at the CP2 link given above or at
 [USACO Training](https://train.usaco.org/). However, these sorts of problems
 appear much less frequently than they once did.
 
-<IncompleteSection>
-
-make code consistent, improve some of these explanations
-
-</IncompleteSection>
-
 <LanguageSection>
     <PySection>
 	<Quiz>
@@ -934,16 +928,16 @@ make code consistent, improve some of these explanations
 		Incorrect: Remember that permutations and subsets are different
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
-	    <Quiz.Answer>
+	    <Quiz.Answer correct>
 	      $\mathcal{O}(n!)$
 	      <Quiz.Explanation>
-		Incorrect: It also takes time to generate the permutations and print each element of the permutation
+		Correct: A well implemented method of generating permutations (like `std::next_permutation` in C++) will run in $\mathcal{O}(n!)$ time. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
-	    <Quiz.Answer correct>
+	    <Quiz.Answer>
 	      $\mathcal{O}(n! \cdot n)$
 	      <Quiz.Explanation>
-		Correct: Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
+		  Incorrect: Although an iteration of `std::next_permutation` may take up to $\mathcal{O}(n)$ time, the total time amortizes to $\mathcal{O}(n!)$. In practice, however, this difference doesn't matter. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	  </Quiz.Question>
@@ -974,34 +968,13 @@ make code consistent, improve some of these explanations
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	  </Quiz.Question>
-	  <Quiz.Question>
-	    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
-	    <Quiz.Answer>
-	      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
-	      <Quiz.Explanation>
-		Incorrect: A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      Iterative methods are easier to implement and are often faster and less buggy. 
-	      <Quiz.Explanation>
-		Correct: Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
-	      <Quiz.Explanation>
-		Incorrect: Although recursion is slower than iterative methods, it's still fast enough to pass most problems
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
 	</Quiz>    
     </PySection>
 	
     <JavaSection>
 	<Quiz>
 	  <Quiz.Question>
-	    What is the time complexity of generating all the permutations of an array of length $n$?
+	    What is the time complexity of printing each element of all of the permutations of an array of length $n$?
 	    <Quiz.Answer>
 	      $\mathcal{O}(n)$
 	      <Quiz.Explanation>
@@ -1014,16 +987,16 @@ make code consistent, improve some of these explanations
 		Incorrect: Remember that permutations and subsets are different
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
-	    <Quiz.Answer>
+	    <Quiz.Answer correct>
 	      $\mathcal{O}(n!)$
 	      <Quiz.Explanation>
-		Incorrect: It also takes time to generate the permutations
+		Correct: A well implemented method of generating permutations (like `std::next_permutation` in C++) will run in $\mathcal{O}(n!)$ time. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
-	    <Quiz.Answer correct>
+	    <Quiz.Answer>
 	      $\mathcal{O}(n! \cdot n)$
 	      <Quiz.Explanation>
-		Correct: Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
+		  Incorrect: Although an iteration of `std::next_permutation` may take up to $\mathcal{O}(n)$ time, the total time amortizes to $\mathcal{O}(n!)$. In practice, however, this difference doesn't matter. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	  </Quiz.Question>
@@ -1054,33 +1027,12 @@ make code consistent, improve some of these explanations
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	  </Quiz.Question>
-	  <Quiz.Question>
-	    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
-	    <Quiz.Answer>
-	      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
-	      <Quiz.Explanation>
-		Incorrect: A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      Iterative methods are easier to implement and are often faster and less buggy. 
-	      <Quiz.Explanation>
-		Correct: Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
-	      <Quiz.Explanation>
-		Incorrect: Although recursion is slowing than iterative methods, it's still fast enough to pass most problems
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
 	</Quiz>    
     </JavaSection>
     <CPPSection>
 	<Quiz>
 	  <Quiz.Question>
-	    What is the time complexity of generating all the permutations of an array of length $n$?
+	    What is the time complexity of printing each element of all of the permutations of an array of length $n$?
 	    <Quiz.Answer>
 	      $\mathcal{O}(n)$
 	      <Quiz.Explanation>
@@ -1093,16 +1045,16 @@ make code consistent, improve some of these explanations
 		Incorrect: Remember that permutations and subsets are different
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
-	    <Quiz.Answer>
+	    <Quiz.Answer correct>
 	      $\mathcal{O}(n!)$
 	      <Quiz.Explanation>
-		Incorrect: It also takes time to generate the permutations
+		Correct: A well implemented method of generating permutations (like `std::next_permutation` in C++) will run in $\mathcal{O}(n!)$ time. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
-	    <Quiz.Answer correct>
+	    <Quiz.Answer>
 	      $\mathcal{O}(n! \cdot n)$
 	      <Quiz.Explanation>
-		Correct: Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
+		  Incorrect: Although an iteration of `std::next_permutation` may take up to $\mathcal{O}(n)$ time, the total time amortizes to $\mathcal{O}(n!)$. In practice, however, this difference doesn't matter. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	  </Quiz.Question>
@@ -1134,21 +1086,21 @@ make code consistent, improve some of these explanations
 	    </Quiz.Answer>
 	  </Quiz.Question>
 	  <Quiz.Question>
-	    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
+	    Why is using `std::next_permutation` generally preferable to writing your own recursive function?
 	    <Quiz.Answer>
 	      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
 	      <Quiz.Explanation>
-		Incorrect: A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
+		Incorrect: Most complete search with permutations/subsets is that $n$ is small, usually $n\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	    <Quiz.Answer correct>
-	      Iterative methods are easier to implement and are often faster and less buggy. 
+	      Using the C++ library function is easier and less buggy. 
 	      <Quiz.Explanation>
-		Correct: Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
+		Correct: Learning to use the C++ Standard Library to its full potential will save you a lot of time coding and debugging. 
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	    <Quiz.Answer>
-	      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
+	      Recursion introduces unnecessary overhead that often causes Time Limit Exceeded. 
 	      <Quiz.Explanation>
 		Incorrect: Although recursion is slowing than iterative methods, it's still fast enough to pass most problems
 	      </Quiz.Explanation>
