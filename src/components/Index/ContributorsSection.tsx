@@ -113,7 +113,7 @@ const MemberCard = ({
   return (
     <li
       key={member.name}
-      className="relative group flex justify-center rounded-t-lg border-2 border-b border-transparent hover:bg-gray-100 dark:hover:bg-neutral-800 hover:border-gray-200 dark:hover:border-transparent pointer-events-none hover:pointer-events-auto pt-8 pb-2"
+      className="relative group flex justify-center rounded-t-lg border border-transparent hover:bg-white dark:hover:bg-gray-800 hover:border-gray-200 dark:hover:border-transparent pointer-events-none hover:pointer-events-auto pt-8 pb-2"
     >
       <div className="gap-2 flex flex-col items-center">
         <div className="w-24 h-24 rounded-full overflow-hidden relative lg:w-20 lg:h-20 pointer-events-auto">
@@ -124,12 +124,12 @@ const MemberCard = ({
             style={{ width: '100%', height: '100%' }}
           />
         </div>
-        <p className="text-base font-medium whitespace-nowrap dark:text-white">
+        <p className="text-base font-medium whitespace-nowrap dark:text-gray-100">
           {member.name}
         </p>
 
         {/* Pop-out component */}
-        <div className="absolute -top-[-100%] hidden group-hover:block bg-gray-100 dark:bg-neutral-800 border-2 border-gray-200 dark:border-transparent border-t-0 box-content w-full rounded-b-lg z-20">
+        <div className="absolute -top-[-100%] hidden group-hover:block bg-white dark:bg-gray-800 border border-gray-200 dark:border-transparent border-t-0 box-content w-full rounded-b-lg z-20">
           <div className="flex flex-col gap-3 px-5 pb-5">
             <ul className="flex gap-3 justify-center">
               {Object.keys(socialMedia)
@@ -143,7 +143,7 @@ const MemberCard = ({
                       target="_blank"
                       href={socialMedia[sm].link(member[sm])}
                       rel="noreferrer"
-                      className="inline-block hover:text-gray-500 text-gray-700 dark:text-neutral-300 dark:hover:text-neutral-100"
+                      className="inline-block hover:text-gray-500 text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                     >
                       {socialMedia[sm].icon}
                     </a>
@@ -154,7 +154,7 @@ const MemberCard = ({
               {member.titles.map(title => (
                 <span
                   key={title}
-                  className="text-sm whitespace-nowrap inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-200 dark:bg-neutral-600 font-medium dark:text-neutral-200"
+                  className="text-sm whitespace-nowrap inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-800 dark:bg-gray-600 font-medium dark:text-neutral-200"
                 >
                   {title}
                 </span>
@@ -189,7 +189,7 @@ export default function ContributorsSection(): JSX.Element {
     }
   `);
   return (
-    <div className="bg-white dark:bg-dark-surface">
+    <div className="bg-gray-100 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
         <div className="space-y-8 sm:space-y-12">
           <div className="text-lg mx-auto">
