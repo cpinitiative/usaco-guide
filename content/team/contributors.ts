@@ -168,6 +168,14 @@ export const OrderedFirstMembers: Member[] = [
     github: 'frodakcin',
     codeforces: 'frodakcin',
   },
+  {
+    photo: 'kevin',
+    name: 'Kevin Sheng',
+    titles: ['Content Manager', roles.contentAuthor, roles.videoInstructor],
+    github: 'sanspapyrus683',
+    codeforces: 'sanspapyrus683',
+    reddit: 'sanspapyrus683',
+  },
 ];
 
 export const RestOfMembers: Member[] = [
