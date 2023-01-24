@@ -19,7 +19,6 @@ import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
-import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
 import { Feature } from '../components/Index/Feature';
@@ -732,8 +731,6 @@ export default function IndexPage(): JSX.Element {
         </div>
       </div>
       {/*End FAQ*/}
-
-      <AuthorsSection />
 
       <ContributorsSection />
 
