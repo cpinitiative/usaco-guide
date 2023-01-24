@@ -81,6 +81,7 @@ export const getTotalPointsOfPost = (post: PostData): number => {
     0
   );
 };
+/* Warning: should really use postordering in groupdata rather than this... */
 export const sortPostsComparator = (a: PostData, b: PostData): number => {
   if (a.isPinned !== b.isPinned) {
     return (a.isPinned ? 1 : 0) - (b.isPinned ? 1 : 0);

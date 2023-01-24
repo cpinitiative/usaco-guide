@@ -62,10 +62,10 @@ const a = ({ children, ...props }) => (
     {children}
   </a>
 );
-const pre = ({ children, ...props }) => {
+const pre = ({ children, copyButton = true, ...props }) => {
   return (
     <pre {...props}>
-      <CodeBlock {...children.props} />
+      <CodeBlock copyButton={copyButton} {...children.props} />
     </pre>
   );
 };

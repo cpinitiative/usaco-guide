@@ -136,7 +136,9 @@ export default function Template(props) {
     []
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
-  const problemIDs = data.problems.edges.map(x => x.node.uniqueId);
+  const problemIDs = [
+    ...new Set(data.problems.edges.map(x => x.node.uniqueId) as string[]),
+  ];
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const progressBarForCategory = category => {
@@ -249,7 +251,7 @@ export default function Template(props) {
   );
 }
 export const pageQuery = graphql`
-  query($division: String!) {
+  query ($division: String!) {
     modules: allXdm(
       filter: {
         fileAbsolutePath: { regex: "/content/" }

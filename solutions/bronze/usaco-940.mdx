@@ -1,0 +1,468 @@
+---
+id: usaco-940
+source: USACO Bronze 2019 Open
+title: Milk Factory
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang
+---
+
+## Video Solution
+
+By Neo Wang
+
+<Youtube id="fN681Y5TEQc" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		(void)!freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		(void)!freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int in_deg[101], out_deg[101];
+
+int main() {
+	setIO("factory");
+	
+	int N; cin >> N;
+
+    // N - 1 edges in a tree
+	for(int i = 0; i < N - 1; i++) {
+		// a -> b
+		// out[a]++, in[b]++;
+		int a, b; cin >> a >> b;
+		out_deg[a]++;
+		in_deg[b]++;
+	}
+
+	bool encountered_sink = false;
+	int idx_sink = -1;
+
+	for(int i = 1; i <= N; i++) {
+		if(encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+			idx_sink = -1; // answer
+			break;
+		}
+		if(out_deg[i] == 0 && in_deg[i] > 0) {
+			encountered_sink = true;
+			idx_sink = i;
+		}
+	}
+
+	cout << idx_sink << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+// Source: https://usaco.guide/general/io
+
+/** Simple yet moderately fast I/O routines.
+ *
+ * Example usage:
+ *
+ * Kattio io = new Kattio();
+ *
+ * while (io.hasMoreTokens()) {
+ *    int n = io.nextInt();
+ *    double d = io.nextDouble();
+ *    double ans = d*n;
+ *
+ *    io.println("Answer: " + ans);
+ * }
+ *
+ * io.close();
+ *
+ *
+ * Some notes:
+ *
+ * - When done, you should always do io.close() or io.flush() on the
+ *   Kattio-instance, otherwise, you may lose output.
+ *
+ * - The nextInt(), nextDouble(), and nextLong() methods will throw an
+ *   exception if there is no more data in the input, so it is generally
+ *   a good idea to use hasMoreTokens() to check for end-of-file.
+ *
+ * @author: Kattis
+ */
+
+import java.util.*;
+import java.io.*;
+
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st = new StringTokenizer("");
+	private String token;
+
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException { 
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+
+	private String peek() {
+		if (token == null)
+			try {
+				while (!st.hasMoreTokens()) {
+					String line = r.readLine();
+					if (line == null) return null;
+					st = new StringTokenizer(line);
+				}
+				token = st.nextToken();
+			} catch (IOException e) { }
+		return token;
+	}
+	public boolean hasMoreTokens() { return peek() != null; }
+	private String next() {
+		String ans = peek(); 
+		token = null;
+		return ans;
+	}
+	
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+
+public class Main {
+	
+	public static void main(String[] args) throws IOException {
+	Kattio io = new Kattio("factory");
+		int N = io.nextInt();
+		int[] in_deg = new int[101], out_deg = new int[101];
+		for(int i = 0; i < N - 1; i++) {
+			// a -> b
+			// out[a]++, in[b]++;
+			int a = io.nextInt(), b = io.nextInt();
+			out_deg[a]++; in_deg[b]++;
+		}
+
+		boolean encountered_sink = false;
+		int idx_sink = -1;
+
+		for(int i = 1; i <= N; i++) {
+			if(encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+				idx_sink = -1;
+				break;
+			}
+
+			if(out_deg[i] == 0 && in_deg[i] > 0) {
+				encountered_sink = true;
+				idx_sink = i;
+			}
+		}
+
+		// cout << idx_sink << endl;
+		io.println(idx_sink);
+
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+	
+## Solution 1
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<PySection>
+```py
+fin = open('factory.in', 'r')
+N = int(fin.readline())
+
+outgoing = [0] * N
+incoming = [0] * N
+for _ in range(N - 1):
+	a, b = map(int, fin.readline().split())
+	# Counting number of outgoing and incoming walkways.
+	outgoing[a] += 1
+	incoming[b] += 1
+
+ans = -1
+for i in range(1, N + 1):
+	# Found two meeting places. This won't work.
+	# (we have to find a unique walkway)
+	if outgoing[i] == 0 and ans != -1: 
+		ans = -1
+		break
+	# Found a meeting place, save it.
+	# (found a walkway which has only
+	# has walkways leading into it.)
+	if outgoing[i] == 0: 
+		ans = i
+
+print(ans, file = open('factory.out', 'w'))
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Factory {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("factory.in"));
+		PrintWriter out = new PrintWriter("factory.out");
+
+		int N = Integer.parseInt(in.readLine());
+		int[] outgoing = new int[N];
+		// N - 1 walkways
+		for (int i = 0; i < N - 1; i++) {
+			StringTokenizer st = new StringTokenizer(in.readLine());
+			// count the outdegree of this station
+			// Array index begins with 0, station begins with 1, so -1
+			outgoing[Integer.parseInt(st.nextToken()) - 1]++;
+		}
+		in.close();
+
+		int ans = -1;
+		for (int i = 0; i < N; i++) {
+			// only stations with outdegree 0 could be the sink
+			if (outgoing[i] == 0) {
+				if (ans == -1)
+					// found the sink
+					ans = i + 1; // Array index begins with 0
+				else {
+					// found two sinks 
+					// so it's impossible to get from one to another
+					ans = -1;
+					break;
+				}
+			}
+		}
+
+		out.println(ans);
+		out.close();
+	}
+}
+```
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("factory.in", "r", stdin);
+	freopen("factory.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	vector<int> outgoing(N);
+	// N - 1 walkways
+	for (int i = 0; i < N - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		// count the outdegree of this station (zero-index)
+		outgoing[a - 1]++;
+
+	}
+
+	int ans = -1;
+	for (int i = 0; i < N; i++) {
+		// only stations with outdegree 0 could be the sink
+		if (outgoing[i] == 0) {
+			if (ans == -1) {
+				// found the sink
+				ans = i + 1;
+			} else {
+				// found two sinks so it is impossible to get from one to another
+				ans = -1;
+				break;
+			}
+		}
+	}
+
+	cout << ans << endl;
+}
+```
+</CPPSection>	
+</LanguageSection>
+
+## Solution 2
+
+This problem can also be solved using [Depth-First Search](/silver/dfs) (a
+Silver topic). Represent the factory as a directed unweighted graph with edges
+from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at
+node $i$ and check whether this results in every other node being visited. We
+can keep track of whether the current DFS visits all nodes with a boolean array
+whose entries are initially set to `false`. If every node is visited, then we
+print $i$. Otherwise, if there exists no $i$ such that this condition is
+satisfied, then we print $-1$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+class Graph{
+     private int V;
+     private ArrayList<ArrayList<Integer>> adj;
+     Graph(int V){
+         this.V = V;
+         adj = new ArrayList<ArrayList<Integer>>(V);
+         for(int i = 0; i < V; i++){
+              adj.add(new ArrayList<Integer>()); // Creating the adjacency list
+         }
+     }
+     void addEdge(int u, int v){
+          adj.get(v).add(u); // Connecting the two factories.
+     }
+
+
+     int DFSUtil(int v,boolean visited[]){
+         int ans = 0;
+         // Mark the current node as visited
+         visited[v] = true;
+         ans++;
+
+         // Recur for all the vertices adjacent to this vertex
+         Iterator<Integer> i = adj.get(v).listIterator();
+         while(i.hasNext()){
+             int n = i.next();
+             if(!visited[n]){
+                 ans += DFSUtil(n, visited); // recurse to the next edge/station in it's path and increase the number of stations visited.
+             }
+         }
+         return ans; // return number of visited stations.
+     }
+
+     // The function to do DFS traversal. It uses recursive DFSUtil()
+     int DFS(int v){
+         // Mark all the vertices as not visited(set as false by default)
+         boolean visited[] = new boolean[V];
+
+         // Call the recursive helper function to print DFS traversal
+         return DFSUtil(v, visited);
+     }
+ }
+
+ public class factory{
+     public static void main(String[] args) throws IOException{
+         Scanner sc = new Scanner(new File("factory.in"));
+         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("factory.out")));
+         int N = sc.nextInt(); Graph  g = new Graph(N); boolean used = false;
+         for(int i = 0; i < N - 1; i++){
+             g.addEdge(sc.nextInt() - 1, sc.nextInt() - 1); // Meaning one can walk from station A to station B.
+         }
+         for(int i = 0; i < N; i++){
+              int ans = g.DFS(i);
+              if(ans == N){
+                   out.println(i + 1); // If the number of visited stations from the DFS is equal to the total number of stations then output.
+                   used = true;
+                   break;
+              }
+         }
+         if(!used){
+              out.println(-1); // If no such station exists then we print -1.
+         }
+         out.close();
+     }
+ }
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+#define pb push_back
+#define all(x) begin(x), end(x)
+
+void setIO(string name=""){ // FastIO See General -> Input/Output
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    if((int)name.size() > 0){
+        freopen((name+".in").c_str(), "r", stdin);
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+vector<int> adj[101]; vector<bool> visited(101); int n;
+
+void dfs(int node){
+	visited[node] = true;
+	for(int v: adj[node]){
+		if(!visited[v]){
+			dfs(v);
+		}
+	}
+}
+
+bool allVisited(){
+	for(int i = 0; i < n; i++){
+		if(!visited[i]){
+			return false;
+		}
+	}
+	return true;
+}
+
+int main(){
+	setIO("factory");
+	cin >> n;
+	for(int i = 0; i < (n - 1); i++){
+		int a, b; cin >> a >> b;
+		--a; --b;
+		adj[b].pb(a);
+	}
+	for(int i = 0; i < n; i++){
+		fill(all(visited), false);
+		dfs(i);
+		if(allVisited()){
+			cout << i+1 << endl;
+			return 0;
+		}
+	}
+	cout << -1 << endl;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>

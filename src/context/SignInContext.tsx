@@ -5,7 +5,11 @@ export const SignInContext = React.createContext<{
   signIn: () => void;
 }>(null);
 
-export const SignInProvider: React.FC = ({ children }) => {
+export const SignInProvider = ({
+  children,
+}: {
+  children?: React.ReactNode;
+}): JSX.Element => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const providerValue = React.useMemo(() => {
     return {

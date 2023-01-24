@@ -1,0 +1,404 @@
+---
+id: usaco-669
+source: USACO Gold 2016 December
+title: Moocast
+author: Neo Wang, Óscar Garries, Kevin Sheng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_moocast_gold_dec16.html)
+
+### Implementation (DSU)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+//BeginCodeSnip{DSU}
+class DSU {
+	private:
+		vector<int> parents;
+		vector<int> sizes;
+	public:
+		DSU(int size) : parents(size), sizes(size, 1) {
+			for (int i = 0; i < size; i++) {
+				parents[i] = i;
+			}
+		}
+
+		int get_top(int n) {
+			return parents[n] == n ? n : (parents[n] = get_top(parents[n]));
+		}
+
+		bool link(int n1, int n2) {
+			n1 = get_top(n1);
+			n2 = get_top(n2);
+			if (n1 == n2) {
+				return false;
+			}
+			if (sizes[n1] < sizes[n2]) {
+				std::swap(n1, n2);
+			}
+			sizes[n1] += sizes[n2];
+			parents[n2] = n1;
+			return true;
+		}
+};
+//EndCodeSnip
+
+struct Edge { int a, b, dist; };
+
+int main() {
+	std::ifstream read("moocast.in");
+
+	int n;
+	read >> n;
+	
+	vector<int> x(n);
+	vector<int> y(n);
+	
+	for (int i = 0; i < n; i++) {
+		read >> x[i] >> y[i];
+	}
+
+	vector<Edge> edges;
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
+			int dx = x[i] - x[j];
+			int dy = y[i] - y[j];
+			edges.push_back({i, j, dx * dx + dy * dy});
+		}
+	}
+
+	auto cmp = [] (const Edge& e1, const Edge& e2) { return e1.dist < e2.dist; };
+	std::sort(edges.begin(), edges.end(), cmp);
+
+	int last_dist = 0;
+	int comp_num = n;
+	DSU dsu(n);
+	for (const Edge& e : edges) {
+		if (dsu.link(e.a, e.b)) {
+			last_dist = e.dist;
+			if (--comp_num == 1) {
+				break;
+			}
+		}
+	}
+
+	std::ofstream("moocast.out") << last_dist << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooCast {
+	static class Edge {
+		public int a;
+		public int b;
+		public int dist;
+		public Edge(int a, int b, int dist) {
+			this.a = a;
+			this.b = b;
+			this.dist = dist;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("moocast.in"));
+		int n = Integer.parseInt(read.readLine());
+
+		int[] x = new int[n];
+		int[] y = new int[n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			x[i] = Integer.parseInt(cow.nextToken());
+			y[i] = Integer.parseInt(cow.nextToken());
+		}
+
+		List<Edge> edges = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				int dx = x[i] - x[j];
+				int dy = y[i] - y[j];
+				edges.add(new Edge(i, j, dx * dx + dy * dy));
+			}
+		}
+		edges.sort(Comparator.comparingInt(e -> e.dist));
+
+		int lastDist = 0;
+		int compNum = n;
+		DSU dsu = new DSU(n);
+		for (Edge e : edges) {
+			if (dsu.link(e.a, e.b)) {
+				lastDist = e.dist;
+				if (--compNum == 1) {
+					break;
+				}
+			}
+		}
+
+		PrintWriter written = new PrintWriter("moocast.out");
+		written.println(lastDist);
+		written.close();
+	}
+}
+
+//BeginCodeSnip{DSU}
+class DSU {
+	private final int[] parents;
+	private final int[] sizes;
+
+	public DSU(int size) {
+		parents = new int[size];
+		sizes = new int[size];
+		for (int i = 0; i < size; i++) {
+			parents[i] = i;
+			sizes[i] = 1;
+		}
+	}
+
+	public int getTop(int n) {
+		return parents[n] == n ? n : (parents[n] = getTop(parents[n]));
+	}
+
+	public boolean link(int e1, int e2) {
+		e1 = getTop(e1);
+		e2 = getTop(e2);
+		if (e1 == e2) {
+			return false;
+		}
+		if (sizes[e2] > sizes[e1]) {
+			return link(e2, e1);
+		}
+		parents[e2] = e1;
+		sizes[e1] += sizes[e2];
+		return true;
+	}
+}
+//EndCodeSnip
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import NamedTuple
+
+#BeginCodeSnip{DSU}
+class DSU:
+	def __init__(self, size: int) -> None:
+		self.sizes = [1 for _ in range(size)]
+		self.parents = [i for i in range(size)]
+	
+	def get_top(self, n: int) -> int:
+		if self.parents[n] == n:
+			return n
+		self.parents[n] = self.get_top(self.parents[n])
+		return self.parents[n]
+	
+	def link(self, n1: int, n2: int) -> bool:
+		n1 = self.get_top(n1)
+		n2 = self.get_top(n2)
+		if n1 == n2:
+			return False
+		
+		if self.sizes[n1] < self.sizes[n2]:
+			n1, n2 = n2, n1
+		
+		self.sizes[n1] += self.sizes[n2]
+		self.parents[n2] = n1
+		return True
+#EndCodeSnip
+
+class Edge(NamedTuple):
+	a: int
+	b: int
+	dist: int
+
+with open('moocast.in') as read:
+	n = int(read.readline())
+	x = []
+	y = []
+	for i in range(n):
+		x_i, y_i = [int(i) for i in read.readline().split()]
+		x.append(x_i)
+		y.append(y_i)
+
+edges = []
+for i in range(n):
+	for j in range(i + 1, n):
+		dx = x[i] - x[j]
+		dy = y[i] - y[j]
+		edges.append(Edge(i, j, dx ** 2 + dy ** 2))
+edges.sort(key=lambda e: e.dist)
+
+last_dist = 0
+comp_num = n
+dsu = DSU(n)
+for e in edges:
+	if dsu.link(e.a, e.b):
+		last_dist = e.dist
+		comp_num -= 1
+		if comp_num == 1:
+			break
+
+print(last_dist, file=open('moocast.out', 'w'))
+```
+
+</PySection>
+</LanguageSection>
+
+### Implementation (Binary Search + DFS)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+
+int dist_sq(const pair<int, int>& p1, const pair<int, int>& p2) {
+	int dx = p1.first - p2.first;
+	int dy = p1.second - p2.second;
+	return dx * dx + dy * dy;
+}
+
+bool all_reachable(int power, const vector<pair<int, int>>& cows) {
+	int start = 0;
+	vector<int> frontier{start};
+	vector<bool> reached(cows.size());
+	reached[start] = true;
+	while (!frontier.empty()) {
+		int curr = frontier.back();
+		frontier.pop_back();
+		for (int c = 0; c < cows.size(); c++) {
+			if (!reached[c] && dist_sq(cows[curr], cows[c]) <= power) {
+				frontier.push_back(c);
+				reached[c] = true;
+			}
+		}
+	}
+
+	for (bool c : reached) {
+		if (!c) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int main() {
+	std::ifstream read("moocast.in");
+	int cow_num;
+	read >> cow_num;
+	vector<pair<int, int>> cows(cow_num);
+	for (pair<int, int>& c : cows) {
+		read >> c.first >> c.second;
+	}
+
+	int lo = 0;
+	int hi = 1e9;  // arbitrarily large integer
+	int valid = -1;
+	while (lo <= hi) {
+		int mid = (lo + hi) / 2;
+		if (all_reachable(mid, cows)) {
+			valid = mid;
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	std::ofstream("moocast.out") << valid << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Moocast {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("moocast.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		int[][] cows = new int[cowNum][2];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[c][0] = Integer.parseInt(cow.nextToken());
+			cows[c][1] = Integer.parseInt(cow.nextToken());
+		}
+
+		int lo = 0;
+		int hi = 1e9;  // arbitrarily large integer
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (allReachable(mid, cows)) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("moocast.out");
+		written.println(valid);
+		written.close();
+	}
+
+	static boolean allReachable(int power, int[][] cows) {
+		int start = 0;
+		ArrayDeque<Integer> frontier = new ArrayDeque<>();
+		frontier.add(start);
+		boolean[] reached = new boolean[cows.length];
+		reached[start] = true;
+		while (!frontier.isEmpty()) {
+			int curr = frontier.poll();
+			for (int c = 0; c < cows.length; c++) {
+				if (!reached[c] && distSq(cows[curr], cows[c]) <= power) {
+					frontier.add(c);
+					reached[c] = true;
+				}
+			}
+		}
+
+		for (boolean c : reached) {
+			if (!c) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	static int distSq(int[] p1, int[] p2) {
+		int dx = p1[0] - p2[0];
+		int dy = p1[1] - p2[1];
+		return dx * dx + dy * dy;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

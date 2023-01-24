@@ -90,6 +90,36 @@ export const contentAuthors: Contributor[] = [
     sinceDate: 'May 2022',
     photo: 'julie',
   },
+  {
+    name: 'Aditya Gupta',
+    githubUsername: 'EulerPascal404',
+    sinceDate: 'June 2022',
+    photo: 'aditya'
+  },
+  {
+    name: 'Chongtian Ma',
+    githubUsername: 'envyaims',
+    sinceDate: 'May 2022',
+    photo: 'chongtian'
+  },
+  {
+    name: 'Chuyang Wang',
+    githubUsername: 'ChuangSheep',
+    sinceDate: 'August 2022',
+    photo: 'chuyang'
+  },
+  {
+    name:'Aakash Gokhale',
+    githubUsername: 'Keys9873',
+    sinceDate: 'August 2022',
+    photo: 'aakash'
+  },
+  {
+    name: 'Paul Chen',
+    githubUsername: '876pol',
+    sinceDate: 'August 2022',
+    photo: 'paul'
+  }
 ];
 
 export const pastContentAuthors: Contributor[] = [
