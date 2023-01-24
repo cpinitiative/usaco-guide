@@ -50,22 +50,20 @@ int main() {
 
 <JavaSection>
 ```java
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-public class Main {
+public class CommonDivisors {
 	public static int gcd(int a, int b) {
 		return b == 0 ? a : gcd(b, a % b);
 	}
 
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-
-		int n = scanner.nextInt();
-		int[] arr = new int[n];
-		for (int i = 0; i < n; i++) {
-			arr[i] = scanner.nextInt();
-		}
-
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(io.readLine());
+		int[] arr = Arrays.stream(io.readLine().split(" "))
+				.mapToInt(Integer::parseInt)
+				.toArray();
 		int ans = 1;
 		for (int i = 0; i < n - 1; i++) {
 			for (int j = i + 1; j < n; j++) {
@@ -153,32 +151,34 @@ int main() {
 
 <JavaSection>
 <Warning>
-Due to the tight time limit, the following Java solution still receives TLE on about half the test cases.
+Due to the tight time limit, the following Java solution still receives TLE on a few of the test cases.
 </Warning>
 ```java
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-public class Main {
+public class CommonDivisors {
+
 	public static final int MAX_VAL = 1000000;
 
 	// divisors[i] = stores the count of numbers that have i as a divisor
 	public static int divisors[] = new int[MAX_VAL + 1];
 
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-
-		int n = scanner.nextInt();
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(io.readLine());
+		int[] arr = Arrays.stream(io.readLine().split(" "))
+				.mapToInt(Integer::parseInt)
+				.toArray();
 		for (int i = 0; i < n; i++) {
-			int a = scanner.nextInt();
-
-			int up = (int) Math.sqrt(a);
+			int up = (int) Math.sqrt(arr[i]);
 			for (int div = 1; div <= up; div++) {
-				if (a % div == 0) {
+				if (arr[i] % div == 0) {
 					// the divisor and quotient are both divisors of a
 					divisors[div]++;
 					// make sure not to double count!
-					if (div != a / div) {
-						divisors[a / div]++;
+					if (div != arr[i] / div) {
+						divisors[arr[i] / div]++;
 					}
 				}
 			}
@@ -279,31 +279,30 @@ int main() {
 
 <JavaSection>
 ```java
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-public class Main {
-	public static final int MAXX = 1000005;
+public class CommonDivisors {
 
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
+	public static final int MAXX = 1000000;
 
-		int n = scanner.nextInt();
-		int arr[] = new int[n];
-		for (int i = 0; i < n; i++) {
-			arr[i] = scanner.nextInt();
-		}
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(io.readLine());
+		int[] arr = Arrays.stream(io.readLine().split(" "))
+				.mapToInt(Integer::parseInt)
+				.toArray();
 
-		int p[] = new int[MAXX];
+		int p[] = new int[MAXX + 1];
 		Arrays.fill(p, 0);
 
 		for (int i = 0; i < n; i++) {
 			p[arr[i]]++;
 		}
 
-		for (int i = MAXX - 1; i >= 1; i--) {
+		for (int i = MAXX; i >= 1; i--) {
 			int div = 0;
-			for (int j = i; j < MAXX; j += i) {
+			for (int j = i; j <= MAXX; j += i) {
 				div += p[j];
 			}
 			if (div >= 2) {
