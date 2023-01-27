@@ -19,7 +19,6 @@ import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
-import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
 import { Feature } from '../components/Index/Feature';
@@ -733,11 +732,9 @@ export default function IndexPage(): JSX.Element {
       </div>
       {/*End FAQ*/}
 
-      <AuthorsSection />
-
       <ContributorsSection />
 
-      <div className="bg-white dark:bg-dark-surface">
+      <div className="bg-gray-100 dark:bg-gray-900">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
             &copy; {new Date().getFullYear()} Competitive Programming
