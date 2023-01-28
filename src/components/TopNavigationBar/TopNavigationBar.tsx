@@ -156,11 +156,11 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're looking for new instructors to join our team!
+                  Join the January bronze/silver review on Feb 4!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://forms.gle/fVtVCwdteRaa7Wuo7"
+                    href="https://joincpi.org/workshops/jan23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
