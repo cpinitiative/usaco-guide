@@ -20,18 +20,19 @@ course in "Course Schedule II." So it suffices to solve the CF problem
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m, out[200005]; // Number of outgoing nodes
-vector<int> radj[200005]; // Reverse graph
-
 int main() {
+	int n, m;
 	cin >> n >> m;
+
+	vector<int> out(n + 1);           // Number of outgoing nodes
+	vector<vector<int>> radj(n + 1);  // Reverse graph
+
 	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		radj[b].push_back(a);
 		out[a]++;
 	}
-	vector<int> ans;
 
 	/*
 	 * Any node with out[i] == 0 can be used, so we store all possible
@@ -42,6 +43,7 @@ int main() {
 		if (out[i] == 0) pq.push(i);
 	}
 
+	vector<int> ans;
 	while (pq.size()) {
 		// Remove the node with the greatest id.
 		int x = pq.top();
@@ -132,8 +134,8 @@ public class Main {
 import heapq
 
 n, m = map(int, input().split())
-out = [0] * (200005)  # Number of outgoing nodes
-radj = [[] for _ in range(200005)]  # Reverse graph
+out = [0] * (n + 1)  # Number of outgoing nodes
+radj = [[] for _ in range(n + 1)]  # Reverse graph
 
 for _ in range(m):
 	a, b = map(int, input().split())
@@ -143,7 +145,7 @@ for _ in range(m):
 ans = []
 pq = []
 
-for i in range(1, n+1):
+for i in range(1, n + 1):
 	if out[i] == 0:
 		# Any node with out[i] == 0 can be used, so we store all possible nodes in a max heap to get the node with the maximum id.
 		heapq.heappush(pq, -i)
@@ -156,9 +158,7 @@ while pq:
 		if out[t] == 0:
 			heapq.heappush(pq, -t)  # Remove all edges that begin at `x`.
 
-ans = ans[::-1]
-
-for t in ans:
+for t in reversed(ans):
 	print(t, end=' ')
 ```
 </PySection>
