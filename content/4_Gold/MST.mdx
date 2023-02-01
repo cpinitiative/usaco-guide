@@ -153,10 +153,15 @@ using namespace std;
 
 struct DSU {
 	vector<int> e; 
+	
 	DSU(int N) : e(N, -1) { }
+	
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+	
 	bool connected(int a, int b) { return get(a) == get(b); }
+	
 	int size(int x) { return -e[get(x)]; }
+	
 	bool unite(int x, int y) { 
 		x = get(x), y = get(y); 
 		if (x == y) {
@@ -339,7 +344,7 @@ graphs (in which $E \approx V^2$).
 #include <bits/stdc++.h>
 using namespace std;
 
-long long prim(int n, const vector<vector<pair<long long, int>>>& adj){
+long long prim(int n, const vector<vector<pair<long long, int>>>& adj) {
 	long long weight = 0;
 	vector<long long> dist(n, numeric_limits<long long>::max());
 	dist[0] = 0;
@@ -373,7 +378,7 @@ int main() {
 	cin >> n >> m;
 
 	vector<vector<pair<long long, int>>> adj(n);
-	for (int i = 0; i < m; i++){
+	for (int i = 0; i < m; i++) {
 		int a, b;
 		long long c;
 		cin >> a >> b >> c;
