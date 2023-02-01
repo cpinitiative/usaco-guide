@@ -4,22 +4,24 @@ import {
   connectHits,
   connectRefinementList,
   connectSearchBox,
+  HitsPerPage,
   InstantSearch,
+  Pagination,
   PoweredBy,
 } from 'react-instantsearch-dom';
 import Layout from '../components/layout';
+import Difficulty from '../components/ProblemsPage/Difficulty';
+import Modules from '../components/ProblemsPage/Module';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
 import RefinementList from '../components/ProblemsPage/RefinementList';
 import SearchBox from '../components/ProblemsPage/SearchBox';
-import Difficulty from '../components/ProblemsPage/Difficulty';
+import Section from '../components/ProblemsPage/Section';
+import Source from '../components/ProblemsPage/Source';
 import Starred from '../components/ProblemsPage/Starred';
+import Status from '../components/ProblemsPage/Status';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { searchClient } from '../utils/algoliaSearchClient';
-import Section from '../components/ProblemsPage/Section';
-import Status from '../components/ProblemsPage/Status';
-import Modules from '../components/ProblemsPage/Module';
-import Source from '../components/ProblemsPage/Source';
 
 const indexName =
   process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
@@ -33,6 +35,8 @@ const CustomSourceSelection = connectRefinementList(Source);
 const CustomSearchBox = connectSearchBox(SearchBox);
 const CustomHits = connectHits(ProblemHits);
 const CustomRefinementList = connectRefinementList(RefinementList);
+
+console.log(CustomHits);
 
 export default function ProblemsPage(props: PageProps) {
   return (
@@ -104,6 +108,16 @@ export default function ProblemsPage(props: PageProps) {
                 </div>
               </div>
               <CustomHits />
+              <div className="mt-3 flex justify-center">
+                <Pagination showLast={true} className="pr-4" />
+                <HitsPerPage
+                  items={[
+                    { label: '24 hits per page', value: 24, default: true },
+                    { label: '32 hits per page', value: 32 },
+                    { lalbel: '48 hits per page', value: 48 },
+                  ]}
+                />
+              </div>
             </div>
           </div>
         </InstantSearch>
