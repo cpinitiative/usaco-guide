@@ -108,14 +108,16 @@ export default function ProblemsPage(props: PageProps) {
                 </div>
               </div>
               <CustomHits />
-              <div className="mt-3 flex justify-center">
+              <div className="mt-3 flex flex-wrap justify-center">
                 <Pagination showLast={true} className="pr-4" />
                 <HitsPerPage
                   items={[
-                    { label: '24 hits per page', value: 24, default: true },
+                    { label: '24 hits per page', value: 24 },
                     { label: '32 hits per page', value: 32 },
-                    { lalbel: '48 hits per page', value: 48 },
+                    { label: '48 hits per page', value: 48 },
                   ]}
+                  defaultRefinement={24}
+                  className="mt-1 lg:mt-0"
                 />
               </div>
             </div>
