@@ -18,6 +18,8 @@ import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
 import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
+import HideModules, { HideModulesAPI } from './properties/hideModules';
+import HideTags, { HideTagsAPI } from './properties/hideTags';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -26,7 +28,6 @@ import LastViewedModule, {
 } from './properties/lastViewedModule';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import ShowTags, { ShowTagsAPI } from './properties/showTags';
 import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
@@ -99,8 +100,9 @@ import { UserPermissionsContextProvider } from './UserPermissionsContext';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new ShowTags(),
+  new HideTags(),
   new HideDifficulty(),
+  new HideModules(),
   new DivisionTableQuery(),
   new ShowIgnored(),
   new ThemeProperty(),
@@ -114,8 +116,9 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  ShowTagsAPI &
+  HideTagsAPI &
   HideDifficultyAPI &
+  HideModulesAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
   ThemePropertyAPI &
@@ -139,8 +142,9 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
   importUserData: () => true,
-  showTags: false,
+  hideTags: false,
   hideDifficulty: false,
+  hideModules: false,
   divisionTableQuery: {
     division: '',
     season: '',
@@ -162,10 +166,13 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setTheme: _x => {
     // do nothing
   },
-  setShowTags: _x => {
+  setHideTags: _x => {
     // do nothing
   },
   setHideDifficulty: _x => {
+    // do nothing
+  },
+  setHideModules: _x => {
     // do nothing
   },
   setDivisionTableQuery: _x => {

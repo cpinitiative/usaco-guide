@@ -8,8 +8,13 @@ import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
 import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 
-function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
-  const { userProgressOnProblems } = useContext(UserDataContext);
+interface ProblemHitProps {
+  hit: AlgoliaProblemInfo;
+}
+
+function ProblemHit({ hit }: ProblemHitProps) {
+  const { userProgressOnProblems, hideDifficulty, hideTags, hideModules } =
+    useContext(UserDataContext);
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
@@ -83,39 +88,46 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
           </a>
         )}
 
-      <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
-        Appears In:
-      </p>
-      <ul className="list-disc ml-6">
-        {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
-          <li key={moduleID}>
-            <Link
-              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
-              className="text-sm text-blue-600 dark:text-blue-400"
-            >
-              {moduleLabel}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {!hideModules && (
+        <>
+          <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
+            Appears In:
+          </p>
+          <ul className="list-disc ml-6">
+            {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
+              <li key={moduleID}>
+                <Link
+                  to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
+                  className="text-sm text-blue-600 dark:text-blue-400"
+                >
+                  {moduleLabel}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       <div className="pt-4">
-        <span
-          className={
-            'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
-            difficultyClasses[hit.difficulty]
-          }
-        >
-          {hit.difficulty}
-        </span>
-        {hit.tags?.map(tag => (
+        {!hideDifficulty && (
           <span
-            className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
-            key={tag}
+            className={
+              'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
+              difficultyClasses[hit.difficulty]
+            }
           >
-            {tag}
+            {hit.difficulty}
           </span>
-        ))}
+        )}
+        {!hideTags &&
+          hit.tags?.map(tag => (
+            <span
+              className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
+              key={tag}
+            >
+              {tag}
+            </span>
+          ))}
       </div>
     </div>
   );
