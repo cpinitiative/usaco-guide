@@ -169,6 +169,10 @@ def gen_div_to_probs(
                 )
             except ValueError:
                 break
+    for division in DIVISIONS:
+        div_to_probs[division] = sorted(
+            [*set([tuple(x) for x in div_to_probs[division]])], key=lambda x: int(x[0])
+        )
     return div_to_probs
 
 
@@ -206,7 +210,7 @@ for f in [gen_contest_to_points, gen_div_to_probs, gen_id_to_sol]:
             init = json.load(file)
     d = f(seasons, init)
     if args.inplace:
-        filename = f"../{f.__name__[len('gen_'):]}_new.json"
+        filename = f"../{f.__name__[len('gen_'):]}.json"
         with open(filename, "w") as file:
             json.dump(d, file, indent=2)
     else:
