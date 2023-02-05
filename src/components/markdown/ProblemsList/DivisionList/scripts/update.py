@@ -1,8 +1,9 @@
-from typing import Iterable, Tuple
 import argparse
 import json
-from bs4 import BeautifulSoup
 import urllib.request
+from typing import Iterable, Optional, Tuple
+
+from bs4 import BeautifulSoup
 from loguru import logger
 
 INDEX_PREFIX = "http://www.usaco.org/index.php?page="
@@ -81,8 +82,11 @@ def problem_stats(url: str) -> Tuple[float, float, float]:
     return problem_table_stats(tables[1], is_plat)
 
 
-def gen_contest_to_points(seasons: Iterable[int]) -> dict:
-    score_data = {division: {} for division in DIVISIONS}
+def gen_contest_to_points(
+    seasons: Iterable[int], score_data: Optional[dict] = None
+) -> dict:
+    if score_data is None:
+        score_data = {division: {} for division in DIVISIONS}
     for division in DIVISIONS:
         not_found = False
         for season in seasons:
@@ -152,9 +156,11 @@ def add_div_to_probs(div_to_probs: dict, url: str):
         raise ValueError("found no problems")
 
 
-def gen_div_to_probs(seasons: Iterable[int]) -> dict:
-    """For generating div_to_probs.ts"""
-    div_to_probs = {division: [] for division in DIVISIONS}
+def gen_div_to_probs(
+    seasons: Iterable[int], div_to_probs: Optional[dict] = None
+) -> dict:
+    if div_to_probs is None:
+        div_to_probs = {division: [] for division in DIVISIONS}
     for season in seasons:
         for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
             try:
@@ -174,8 +180,9 @@ def add_id_to_sol(id_to_sol: dict, url: str):
         id_to_sol[problem_id] = res[-1][res[-1].rfind("sol_") :]
 
 
-def gen_id_to_sol(seasons: Iterable[int]) -> dict:
-    id_to_sol = {}
+def gen_id_to_sol(seasons: Iterable[int], id_to_sol: Optional[dict] = None) -> dict:
+    if id_to_sol is None:
+        id_to_sol = {}
     for season in seasons:
         for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
             add_id_to_sol(id_to_sol, f"{INDEX_PREFIX}{contest}{season + offset}results")
@@ -185,11 +192,22 @@ def gen_id_to_sol(seasons: Iterable[int]) -> dict:
 parser = argparse.ArgumentParser()
 parser.add_argument("--start_season", "-s", type=int, default=22)
 parser.add_argument("--end_season", "-e", type=int, default=22)
+parser.add_argument("--inplace", "-i", type=int, default=1)
 args = parser.parse_args()
 seasons = list(range(args.start_season, args.end_season + 1))
 logger.info(f"seasons = {seasons}")
 
 for f in [gen_contest_to_points, gen_div_to_probs, gen_id_to_sol]:
     print(f.__name__)
-    d = f(seasons)
-    print(json.dumps(d, indent=4))
+    init = None
+    if args.inplace:
+        filename = f"../{f.__name__[len('gen_'):]}.json"
+        with open(filename, "r") as file:
+            init = json.load(file)
+    d = f(seasons, init)
+    if args.inplace:
+        filename = f"../{f.__name__[len('gen_'):]}_new.json"
+        with open(filename, "w") as file:
+            json.dump(d, file, indent=2)
+    else:
+        print(json.dumps(d, indent=2))
