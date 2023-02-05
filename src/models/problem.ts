@@ -1,7 +1,7 @@
 import { slug } from 'github-slugger';
 import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
-import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
+import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
 import { books } from '../utils/books';
 export const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
