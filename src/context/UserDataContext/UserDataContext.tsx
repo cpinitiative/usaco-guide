@@ -19,7 +19,6 @@ import DivisionTableQuery, {
 } from './properties/divisionTableQuery';
 import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
 import HideModules, { HideModulesAPI } from './properties/hideModules';
-import HideTags, { HideTagsAPI } from './properties/hideTags';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -28,6 +27,7 @@ import LastViewedModule, {
 } from './properties/lastViewedModule';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ShowTags, { ShowTagsAPI } from './properties/showTags';
 import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
@@ -100,7 +100,7 @@ import { UserPermissionsContextProvider } from './UserPermissionsContext';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTags(),
+  new ShowTags(),
   new HideDifficulty(),
   new HideModules(),
   new DivisionTableQuery(),
@@ -116,7 +116,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAPI &
+  ShowTagsAPI &
   HideDifficultyAPI &
   HideModulesAPI &
   DivisionTableQueryAPI &
@@ -142,7 +142,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
   importUserData: () => true,
-  hideTags: false,
+  showTags: false,
   hideDifficulty: false,
   hideModules: false,
   divisionTableQuery: {
@@ -166,7 +166,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setTheme: _x => {
     // do nothing
   },
-  setHideTags: _x => {
+  setShowTags: _x => {
     // do nothing
   },
   setHideDifficulty: _x => {

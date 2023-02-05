@@ -7,7 +7,6 @@ import {
   InstantSearch,
   PoweredBy,
 } from 'react-instantsearch-dom';
-import CheckBox from '../components/CheckBox';
 import Layout from '../components/layout';
 import Difficulty from '../components/ProblemsPage/Difficulty';
 import Modules from '../components/ProblemsPage/Module';
@@ -20,7 +19,6 @@ import Starred from '../components/ProblemsPage/Starred';
 import Status from '../components/ProblemsPage/Status';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { searchClient } from '../utils/algoliaSearchClient';
 
 const indexName =
@@ -37,26 +35,6 @@ const CustomHits = connectHits(ProblemHits);
 const CustomRefinementList = connectRefinementList(RefinementList);
 
 export default function ProblemsPage(props: PageProps) {
-  const {
-    hideDifficulty,
-    hideTags,
-    hideModules,
-    setHideDifficulty,
-    setHideTags,
-    setHideModules,
-  } = React.useContext(UserDataContext);
-
-  const handleChange = (
-    hideType: boolean,
-    setHideType: (b: boolean) => void
-  ) => {
-    if (hideType) {
-      setHideType(false);
-    } else {
-      setHideType(true);
-    }
-  };
-
   return (
     <Layout>
       <SEO title="All Problems" />
@@ -122,28 +100,6 @@ export default function ProblemsPage(props: PageProps) {
                     attribute="objectID"
                     limit={500}
                     searchable
-                  />
-                </div>
-                <div className="sm:col-span-1 lg:col-span-2 col-span-2">
-                  <CheckBox
-                    type="difficulty"
-                    handleChange={() =>
-                      handleChange(hideDifficulty, setHideDifficulty)
-                    }
-                  />
-                </div>
-                <div className="sm:col-span-1 lg:col-span-2 col-span-2 ">
-                  <CheckBox
-                    type="tags"
-                    handleChange={() => handleChange(hideTags, setHideTags)}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <CheckBox
-                    type="modules"
-                    handleChange={() =>
-                      handleChange(hideModules, setHideModules)
-                    }
                   />
                 </div>
               </div>

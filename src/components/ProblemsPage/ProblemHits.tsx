@@ -13,7 +13,7 @@ interface ProblemHitProps {
 }
 
 function ProblemHit({ hit }: ProblemHitProps) {
-  const { userProgressOnProblems, hideDifficulty, hideTags, hideModules } =
+  const { userProgressOnProblems, hideDifficulty, showTags, hideModules } =
     useContext(UserDataContext);
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
@@ -119,7 +119,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
             {hit.difficulty}
           </span>
         )}
-        {!hideTags &&
+        {showTags &&
           hit.tags?.map(tag => (
             <span
               className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
