@@ -28,7 +28,7 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Show Tags
+                Problem Lists and Search: Show Tags
               </p>
             </div>
             <Switch checked={showTags} onChange={b => setShowTags(b)} />
@@ -39,7 +39,7 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Difficulty
+                Problem Lists and Search: Hide Difficulty
               </p>
             </div>
             <Switch
