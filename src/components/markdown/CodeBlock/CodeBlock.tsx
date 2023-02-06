@@ -2,7 +2,6 @@
 
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import vsLight from 'prism-react-renderer/themes/nightOwlLight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -82,16 +81,6 @@ const RelativeDiv = styled.div`
   position: relative;
   isolation: isolate;
 `;
-
-//check local storage for dark mode
-const darkOrLight = () => {
-  if (typeof window !== 'undefined') {
-    if (window.localStorage.getItem('guide:userData:theme') === 'dark') {
-      return vsDark;
-    }
-    return vsLight;
-  }
-};
 
 const CodeSnipButton = ({
   snipID,
@@ -366,7 +355,7 @@ class CodeBlock extends React.Component<
           Prism={Prism as any}
           code={code}
           language={language}
-          theme={darkOrLight()}
+          theme={vsDark}
         >
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <div className="gatsby-highlight" data-language={language}>

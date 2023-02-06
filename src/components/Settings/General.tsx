@@ -53,7 +53,7 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Modules
+                Problem Search: Hide Modules
               </p>
             </div>
             <Switch checked={hideModules} onChange={b => setHideModules(b)} />
