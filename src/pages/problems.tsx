@@ -8,18 +8,18 @@ import {
   PoweredBy,
 } from 'react-instantsearch-dom';
 import Layout from '../components/layout';
+import Difficulty from '../components/ProblemsPage/Difficulty';
+import Modules from '../components/ProblemsPage/Module';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
 import RefinementList from '../components/ProblemsPage/RefinementList';
 import SearchBox from '../components/ProblemsPage/SearchBox';
-import Difficulty from '../components/ProblemsPage/Difficulty';
+import Section from '../components/ProblemsPage/Section';
+import Source from '../components/ProblemsPage/Source';
 import Starred from '../components/ProblemsPage/Starred';
+import Status from '../components/ProblemsPage/Status';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { searchClient } from '../utils/algoliaSearchClient';
-import Section from '../components/ProblemsPage/Section';
-import Status from '../components/ProblemsPage/Status';
-import Modules from '../components/ProblemsPage/Module';
-import Source from '../components/ProblemsPage/Source';
 
 const indexName =
   process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
@@ -59,43 +59,43 @@ export default function ProblemsPage(props: PageProps) {
               <CustomRefinementList attribute="tags" limit={500} searchable />
             </div>
             <div className="py-0.5 px-1 sm:col-span-6 md:col-span-6 lg:col-span-6 xl:col-span-8 col-span-5 overflow-y-auto">
-              <div className="flex mb-4 items-center grid grid-cols-2 lg:grid-cols-6 md:gird-cols-3 sm:gird-cols-3 gap-x-5 gap-y-3">
-                <div className="col-span-2">
+              <div className="mb-5 items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-x-5 gap-y-3">
+                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2">
                   <CustomDifficultySelection
                     attribute="difficulty"
                     limit={500}
                     searchable
                   />
                 </div>
-                <div className="col-span-2 tw-forms-disable-all-descendants">
+                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 tw-forms-disable-all-descendants">
                   <CustomModuleSelection
                     attribute="problemModules.title"
                     limit={500}
                     searchable
                   />
                 </div>
-                <div className="col-span-2 tw-forms-disable-all-descendants">
+                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 tw-forms-disable-all-descendants">
                   <CustomSourceSelection
                     attribute="source"
                     limit={500}
                     searchable
                   />
                 </div>
-                <div className="col-span-2 md:col-span-1 lg:col-span-2">
+                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2">
                   <CustomStarredSelection
                     attribute="isStarred"
                     limit={500}
                     searchable
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2">
                   <CustomSectionSelection
                     attribute="problemModules.id"
                     limit={500}
                     searchable
                   />
                 </div>
-                <div className="col-span-2 md:col-span-2">
+                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 ">
                   <CustomStatusSelection
                     attribute="objectID"
                     limit={500}
