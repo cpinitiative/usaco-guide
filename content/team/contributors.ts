@@ -499,6 +499,26 @@ export const FormerMembers: Member[] = [
     name: 'Yifan Ma',
     titles: [roles.videoInstructor],
   },
+  {
+    photo: 'nikita',
+    name: 'Nikita Gorshkov',
+    email: 'gorshkovnikita@gmail.com',
+    github: 'nikita-go',
+    titles: [roles.webdev],
+  },
+  {
+    photo: 'advay',
+    name: 'Advay Bajpai',
+    email: 'advayb2018@gmail.com',
+    github: 'ady00',
+    website: 'https://advaybajpai.me',
+    titles: [roles.webdev],
+  },
+  {
+    photo: 'jaiman',
+    name: 'Jaiman Pandya',
+    titles: [roles.clubCurriculum],
+  },
 ];
 
 function sortPeople(people: Member[]) {
