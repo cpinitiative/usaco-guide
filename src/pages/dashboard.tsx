@@ -14,7 +14,7 @@ import Card from '../components/Dashboard/DashboardCard';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import Layout from '../components/layout';
-import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs';
+import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { SignInContext } from '../context/SignInContext';

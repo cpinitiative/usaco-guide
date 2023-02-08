@@ -18,6 +18,7 @@ import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
 import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
+import HideModules, { HideModulesAPI } from './properties/hideModules';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -101,6 +102,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new LastViewedModule(),
   new ShowTags(),
   new HideDifficulty(),
+  new HideModules(),
   new DivisionTableQuery(),
   new ShowIgnored(),
   new ThemeProperty(),
@@ -116,6 +118,7 @@ type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   ShowTagsAPI &
   HideDifficultyAPI &
+  HideModulesAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
   ThemePropertyAPI &
@@ -141,6 +144,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   importUserData: () => true,
   showTags: false,
   hideDifficulty: false,
+  hideModules: false,
   divisionTableQuery: {
     division: '',
     season: '',
@@ -166,6 +170,9 @@ const UserDataContext = createContext<UserDataContextAPI>({
     // do nothing
   },
   setHideDifficulty: _x => {
+    // do nothing
+  },
+  setHideModules: _x => {
     // do nothing
   },
   setDivisionTableQuery: _x => {

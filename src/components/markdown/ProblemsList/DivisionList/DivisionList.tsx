@@ -5,20 +5,20 @@ import UserDataContext from '../../../../context/UserDataContext/UserDataContext
 import { ProblemSolutionInfo } from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
-import contestToPoints from './contest_to_points';
+import contestToPoints from './contest_to_points.json';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
-import divToProbs from './div_to_probs';
-import idToSol from './id_to_sol';
+import divToProbs from './div_to_probs.json';
+import idToSol from './id_to_sol.json';
 
-const lower = 2016;
-const upper = 2022;
-const ALL = `All (${lower - 1} - ${upper})`;
+const startYear = 2016;
+const endYear = 2023; // manually increment this for a new season
+const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 const getSeasons = () => {
   const res = [];
-  res.push(ALL);
-  for (let i = lower; i <= upper; ++i) {
+  res.push(allYears);
+  for (let i = startYear; i <= endYear; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
   return res;
@@ -255,10 +255,10 @@ export function DivisionList(props): JSX.Element {
         divisionToSeasonToProbs[division][season] = [];
       }
       divisionToSeasonToProbs[division][season].push(prob);
-      if (!(ALL in divisionToSeasonToProbs[division])) {
-        divisionToSeasonToProbs[division][ALL] = [];
+      if (!(allYears in divisionToSeasonToProbs[division])) {
+        divisionToSeasonToProbs[division][allYears] = [];
       }
-      divisionToSeasonToProbs[division][ALL].push(prob);
+      divisionToSeasonToProbs[division][allYears].push(prob);
     }
   }
   const userSettings = useContext(UserDataContext);

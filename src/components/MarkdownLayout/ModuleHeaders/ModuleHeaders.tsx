@@ -215,7 +215,9 @@ export default function ModuleHeaders({
           <div>
             <div className="h-4 sm:h-6" />
             <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-200">
-              Prerequisites
+              {markdownData instanceof ModuleInfo
+                ? 'Prerequisites'
+                : 'Appears In'}
             </h3>
             <div className="text-sm leading-5 text-gray-700 mt-1 no-y-margin dark:text-gray-300">
               <ul className="list-disc list-inside pl-3 space-y-1">

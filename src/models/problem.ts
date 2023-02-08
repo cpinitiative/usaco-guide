@@ -1,7 +1,7 @@
 import { slug } from 'github-slugger';
 import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
-import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
+import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
 import { books } from '../utils/books';
 export const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
@@ -249,6 +249,7 @@ export const isUsaco = (source: string): boolean => {
 // TODO: add more checks?
 export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   if (!isUsaco(metadata.source)) return;
+  if (metadata.url.startsWith('http://poj.org/')) return;
   const id = metadata.uniqueId.substring(metadata.uniqueId.indexOf('-') + 1);
   if (!metadata.url.endsWith('=' + id)) {
     throw Error(`Invalid USACO Metadata: id=${id} url=${metadata.url}`);
