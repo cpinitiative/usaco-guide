@@ -16,6 +16,7 @@ By David Li
 <Youtube id="YV1rcD-sB00" />
 
 <Spoiler title="Video Solution Code">
+	
 <LanguageSection>
 <CPPSection>
 ```cpp
@@ -62,7 +63,7 @@ int main(){
 	cout << ans;
 
 }
-```	       
+```    
 </CPPSection>
 	
 <JavaSection>	
@@ -118,7 +119,7 @@ public class gymnastics{
 	
 <PySection>
 ```py	
-	import sys
+import sys
 sys.stdin=open("gymnastics.in","r")
 sys.stdout = open("gymnastics.out","w")
 
@@ -127,15 +128,17 @@ better = [[0]*20 for i in range(20)]
 rankings=[[0]*10 for i in range(20)]
 ans = 0
 
+#reading in input
 for i in range(K):
   line = [int(x) for x in input().split()]
   rankings[i] = [x-1 for x in line]
   
-for i in range(K): #row
-  for j in range(N): #column
-    for x in range(j+1,N): # "the next cow being compared"
-      better[rankings[i][j]][rankings[i][x]]+=1
-
+for i in range(K): #looping over trials
+  for j in range(N): #rankings[i][j] = cow a
+    for k in range(j+1,N): #rankings[i][k] = cow b
+      better[rankings[i][j]][rankings[i][k]]+=1
+	
+#calculating answer
 for i in range(N):
   for j in range(N):
     if better[i][j]==K:
