@@ -192,7 +192,7 @@ using namespace std;
 
 const int RESTRICT_LEN = 6;
 // list of cows, in alphabetical order
-const string COWS[8] = {
+const vector<string> COWS = {
 		"Beatrice",
 		"Belinda",
 		"Bella",
@@ -253,7 +253,7 @@ int main() {
 	for (vector<string> &order : orderings) {
 		bool ok = true;
 
-		for (pair<string, string> rule : restrictions) {
+		for (const pair<string, string> &rule : restrictions) {
 			if (abs(loc(order, rule.first) - loc(order, rule.second)) > 1) {
 				ok = 0;
 				break;
