@@ -519,6 +519,11 @@ export const FormerMembers: Member[] = [
     name: 'Jaiman Pandya',
     titles: [roles.clubCurriculum],
   },
+  {
+    photo: 'aadit',
+    name: 'Aadit Ambakar',
+    titles: [roles.contentAuthor],
+  },
 ];
 
 function sortPeople(people: Member[]) {
