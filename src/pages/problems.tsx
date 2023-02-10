@@ -36,7 +36,6 @@ const CustomSearchBox = connectSearchBox(SearchBox);
 const CustomHits = connectHits(ProblemHits);
 const CustomRefinementList = connectRefinementList(RefinementList);
 
-console.log(CustomHits);
 
 export default function ProblemsPage(props: PageProps) {
   return (
