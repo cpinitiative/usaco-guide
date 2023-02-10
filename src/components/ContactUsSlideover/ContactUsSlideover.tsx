@@ -200,7 +200,7 @@ export default function ContactUsSlideover({
       }
       onSubmit={handleSubmit}
     >
-      <div className="bg-gray-50 dark:bg-gray-900 mb-4">
+      {/* <div className="bg-gray-50 dark:bg-gray-900 mb-4">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
             Ask on the USACO Forum!
@@ -223,8 +223,8 @@ export default function ContactUsSlideover({
             </span>
           </div>
         </div>
-      </div>
-      <div className="px-4 sm:px-6">
+      </div> */}
+      <div className="px-4 sm:px-6 mt-4">
         {showSuccess && (
           <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
@@ -309,6 +309,18 @@ export default function ContactUsSlideover({
               <legend className="text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis">
                 Topic
               </legend>
+              <div className="text-sm">
+                If you're having issues registering on usaco.org, see{' '}
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://github.com/cpinitiative/usaco-guide/issues/2854#issuecomment-1162802123"
+                >
+                  this comment
+                </a>
+                .
+              </div>
               <div className="space-y-3">
                 {topics.map((t, idx) => (
                   <div key={idx}>
@@ -329,22 +341,35 @@ export default function ContactUsSlideover({
                           className="font-medium text-gray-900 dark:text-dark-high-emphasis"
                         >
                           {t}
-                          {t === 'Other' && (
-                            <span>
-                              &nbsp;- If you're having issues registering on
-                              usaco.org, see
-                              <a
-                                className="text-blue-300"
-                                target="_blank"
-                                rel="noreferrer"
-                                href="https://github.com/cpinitiative/usaco-guide/issues/2854#issuecomment-1162802123"
-                              >
-                                {' '}
-                                this link.
-                              </a>
-                            </span>
-                          )}
                         </label>
+                        {t === 'Typo / Broken Link' && topic === t && (
+                          <div>
+                            Submitting a pull request{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              target="_blank"
+                              rel="noreferrer"
+                              href="https://github.com/cpinitiative/usaco-guide/pulls"
+                            >
+                              here
+                            </a>{' '}
+                            is the preferred way to fix a typo.
+                          </div>
+                        )}
+                        {t === 'Unclear Explanation' && topic === t && (
+                          <div>
+                            You may get a faster response by reaching out on the{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              href="https://forum.usaco.guide/"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              USACO Guide forum
+                            </a>{' '}
+                            instead.
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

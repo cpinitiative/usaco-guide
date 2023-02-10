@@ -38,10 +38,10 @@ operations, all in $\mathcal{O}(1)$ time.
 
 ```cpp
 queue<int> q;
-q.push(1); // [1]
-q.push(3); // [3, 1]
-q.push(4); // [4, 3, 1]
-q.pop(); // [4, 3]
+q.push(1);				   // [1]
+q.push(3);				   // [3, 1]
+q.push(4);				   // [4, 3, 1]
+q.pop();				   // [4, 3]
 cout << q.front() << endl; // 3
 ```
 
@@ -121,12 +121,12 @@ The four methods for adding and removing are `push_back`, `pop_back`,
 
 ```cpp
 deque<int> d;
-d.push_front(3);  // [3]
-d.push_front(4);  // [4, 3]
-d.push_back(7);  // [4, 3, 7]
-d.pop_front();  // [3, 7]
-d.push_front(1);  // [1, 3, 7]
-d.pop_back();  // [1, 3]
+d.push_front(3); // [3]
+d.push_front(4); // [4, 3]
+d.push_back(7);	 // [4, 3, 7]
+d.pop_front();	 // [3, 7]
+d.push_front(1); // [1, 3, 7]
+d.pop_back();	 // [1, 3]
 ```
 
 You can also access deques in constant time like an array in constant time with
@@ -346,28 +346,35 @@ using vi = vector<int>;
 #define pb push_back
 
 int main() {
-	int N, M; cin >> N >> M;
-	vi dist(N+1,INT_MAX), parent(N+1);
-	vector<vi> adj(N+1);
+	int N, M;
+	cin >> N >> M;
+	vi dist(N + 1, INT_MAX), parent(N + 1);
+	vector<vi> adj(N + 1);
 	while (M--) {
-		int a,b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
 	queue<int> q;
-	dist[1] = 0; q.push(1);
+	dist[1] = 0;
+	q.push(1);
 	while (!q.empty()) {
-		int x = q.front(); q.pop();
-		for (int t: adj[x]) if (dist[t] == INT_MAX) {
-			dist[t] = dist[x]+1; parent[t] = x;
-			q.push(t);
-		}
+		int x = q.front();
+		q.pop();
+		for (int t : adj[x])
+			if (dist[t] == INT_MAX) {
+				dist[t] = dist[x] + 1;
+				parent[t] = x;
+				q.push(t);
+			}
 	}
 	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
 	else {
-		cout << dist[N]+1 << "\n";
-		vi v{N}; while (v.back() != 1) v.pb(parent[v.back()]);
+		cout << dist[N] + 1 << "\n";
+		vi v{N};
+		while (v.back() != 1) v.pb(parent[v.back()]);
 		reverse(begin(v), end(v));
-		for (int t: v) cout << t << " ";
+		for (int t : v) cout << t << " ";
 	}
 }
 ```

@@ -62,36 +62,32 @@ structures like pairs.
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int,int> pi;
+typedef pair<int, int> pi;
 #define f first
 #define s second
 
 struct hashPi {
-	size_t operator()(const pi& p) const { return p.f^p.s; }
+	size_t operator()(const pi &p) const { return p.f ^ p.s; }
 };
 
-int main() {
-	unordered_map<pi,int,hashPi> um;
-}
+int main() { unordered_map<pi, int, hashPi> um; }
 ```
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int,int> pi;
+typedef pair<int, int> pi;
 #define f first
 #define s second
 
 namespace std {
-	template<> struct hash<pi> {
-		size_t operator()(const pi& p) const { return p.f^p.s; }
-	};
-}
+template <> struct hash<pi> {
+	size_t operator()(const pi &p) const { return p.f ^ p.s; }
+};
+} // namespace std
 
-int main() {
-	unordered_map<pi,int> um;
-}
+int main() { unordered_map<pi, int> um; }
 ```
 
 </CPPSection>
@@ -238,14 +234,14 @@ in place of `unordered_map<int, int>`.
 
 ```cpp
 struct chash { /// use most bits rather than just the lowest ones
-	const uint64_t C = ll(2e18*PI)+71; // large odd number
-	const int RANDOM = rng(); // random 32-bit number
+	const uint64_t C = ll(2e18 * PI) + 71; // large odd number
+	const int RANDOM = rng();			   // random 32-bit number
 	ll operator()(ll x) const {
 		// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-		return __builtin_bswap64((x^RANDOM)*C);
+		return __builtin_bswap64((x ^ RANDOM) * C);
 	}
 };
-template<class K,class V> using um = unordered_map<K,V,chash>;
+template <class K, class V> using um = unordered_map<K, V, chash>;
 ```
 
 <IncompleteSection>

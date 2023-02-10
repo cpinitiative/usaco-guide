@@ -72,14 +72,14 @@ for structures/classes like vectors and pairs.
 
 ```cpp
 unordered_set<int> s;
-s.insert(1);  // {1}
-s.insert(4);  // {1, 4}
-s.insert(2);  // {1, 4, 2}
-s.insert(1);  // does nothing because 1's already in the set
-cout << s.count(1) << endl;  // 1
-s.erase(1);  // {2, 4}
-cout << s.count(5) << endl;  // 0
-s.erase(0);  // does nothing because 0 wasn't in the set
+s.insert(1);				// {1}
+s.insert(4);				// {1, 4}
+s.insert(2);				// {1, 4, 2}
+s.insert(1);				// does nothing because 1's already in the set
+cout << s.count(1) << endl; // 1
+s.erase(1);					// {2, 4}
+cout << s.count(5) << endl; // 0
+s.erase(0);					// does nothing because 0 wasn't in the set
 ```
 
 ### Sorted Sets
@@ -99,14 +99,12 @@ You can iterate through a set in sorted order using a for-each loop.
 
 ```cpp
 set<int> s;
-s.insert(1);  // [1]
-s.insert(4);  // [1, 4]
-s.insert(2);  // [1, 2, 4]
+s.insert(1); // [1]
+s.insert(4); // [1, 4]
+s.insert(2); // [1, 2, 4]
 
 // Outputs 1, 2, and 4 on separate lines
-for (int element : s) {
-	cout << element << endl;
-}
+for (int element : s) { cout << element << endl; }
 ```
 
 </CPPSection>
@@ -223,7 +221,8 @@ int main() {
 
 	set<int> distinctNumbers;
 	for (int i = 0; i < n; i++) {
-		int number; cin >> number;
+		int number;
+		cin >> number;
 		distinctNumbers.insert(number);
 	}
 
@@ -330,15 +329,15 @@ Some operations on an `std::map` and `std::unordered_map` named `m` include:
 
 ```cpp
 map<int, int> m;
-m[1] = 5;  // [(1, 5)]
-m[3] = 14;  // [(1, 5); (3, 14)]
-m[2] = 7;  // [(1, 5); (2, 7); (3, 14)]
-m[0] = -1;  // [(0, -1); (1, 5); (2, 7); (3, 14)]
-m.erase(2);  // [(0, -1); (1, 5); (3, 14)]
-cout << m[1] << endl;  // 5
-cout << m.count(7) << endl;  // 0
-cout << m.count(1) << endl;  // 1
-cout << m[2] << endl;  // 0
+m[1] = 5;					// [(1, 5)]
+m[3] = 14;					// [(1, 5); (3, 14)]
+m[2] = 7;					// [(1, 5); (2, 7); (3, 14)]
+m[0] = -1;					// [(0, -1); (1, 5); (2, 7); (3, 14)]
+m.erase(2);					// [(0, -1); (1, 5); (3, 14)]
+cout << m[1] << endl;		// 5
+cout << m.count(7) << endl; // 0
+cout << m.count(1) << endl; // 1
+cout << m[2] << endl;		// 0
 ```
 
 </CPPSection>
@@ -404,12 +403,8 @@ keyword suffices to iterate over any type of pair (here, `auto` substitutes for
 `pair<const int, int>`).
 
 ```cpp
-for (const auto& x : m) {
-	cout << x.first << " " << x.second << endl;
-}
-for (auto x : m) {
-	cout << x.first << " " << x.second << endl;
-}
+for (const auto &x : m) { cout << x.first << " " << x.second << endl; }
+for (auto x : m) { cout << x.first << " " << x.second << endl; }
 
 /* both output the following:
 0 -1
@@ -425,12 +420,8 @@ allowing you to modify the values (but not the keys) of the pairs stored in the
 map:
 
 ```cpp
-for (auto& x : m) {
-	x.second = 3;
-}
-for (pair<int,int> x : m) {
-	cout << x.first << " " << x.second << endl;
-}
+for (auto &x : m) { x.second = 3; }
+for (pair<int, int> x : m) { cout << x.first << " " << x.second << endl; }
 
 /*
 0 3
@@ -550,8 +541,7 @@ results in a segmentation fault.
 ```cpp
 map<int, int> m;
 
-for (int i = 0; i < 10; ++i)
-	m[i] = i;
+for (int i = 0; i < 10; ++i) m[i] = i;
 
 for (auto &it : m) {
 	cout << "Current Key: " << it.first << endl;
@@ -571,16 +561,13 @@ the old one.
 ```cpp
 map<int, int> m, M;
 
-for (int i = 0; i < 10; ++i)
-	m[i] = i;
+for (int i = 0; i < 10; ++i) m[i] = i;
 
 int current_iteration = 0;
 
 for (const auto &it : m) {
 	// only includes every third element
-	if (current_iteration % 3 == 0) {
-		M[it.first] = it.second;
-	}
+	if (current_iteration % 3 == 0) { M[it.first] = it.second; }
 
 	current_iteration++;
 }
@@ -588,9 +575,7 @@ for (const auto &it : m) {
 swap(m, M);
 
 cout << "Entries:" << endl;
-for (const auto &it : m) {
-	cout << it.first << " " << it.second << endl;
-}
+for (const auto &it : m) { cout << it.first << " " << it.second << endl; }
 /*
  * Entries:
  * 0 0
@@ -605,30 +590,22 @@ after the iteration finishes.
 
 ```cpp
 map<int, int> m;
-for (int i = 0; i < 10; ++i) {
-	m[i] = i;
-}
+for (int i = 0; i < 10; ++i) { m[i] = i; }
 
 vector<int> to_erase;
 int current_iteration = 0;
 
 for (const auto &it : m) {
 	// removes every third element
-	if (current_iteration % 3 == 0) {
-		to_erase.push_back(it.first);
-	}
+	if (current_iteration % 3 == 0) { to_erase.push_back(it.first); }
 
 	current_iteration++;
 }
 
-for (int key : to_erase) {
-	m.erase(key);
-}
+for (int key : to_erase) { m.erase(key); }
 
 cout << "Remaining entries:" << endl;
-for (const auto &it : m) {
-	cout << it.first << " " << it.second << endl;
-}
+for (const auto &it : m) { cout << it.first << " " << it.second << endl; }
 
 /*
  * Remaining entries:
