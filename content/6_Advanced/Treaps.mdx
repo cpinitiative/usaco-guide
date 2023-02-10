@@ -117,7 +117,7 @@ struct Node {
 	int val, pri;
 	// pointer to left and right child (NULL means no child)
 	Node *left, *right;
-	Node(int val) : val(val), pri(rand()), left(NULL), right(NULL) { };
+	Node(int val) : val(val), pri(rand()), left(NULL), right(NULL){};
 } *root;
 
 /**
@@ -210,13 +210,13 @@ void split(Node *treap, Node *&left, Node *&right, int val, int add = 0) {
 		return;
 	}
 
-	int cur_size = add + size(treap->left); //implicit key
+	int cur_size = add + size(treap->left); // implicit key
 	if (cur_size < val) {
-		split(treap->right, treap->right, right, key, add + 1 + size(treap->left));
+		split(treap->right, treap->right, right, key,
+			  add + 1 + size(treap->left));
 		left = treap;
 	} else {
-		split(treap->left, left, treap->left, key, add)
-		right = treap;
+		split(treap->left, left, treap->left, key, add) right = treap;
 	}
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
@@ -270,9 +270,7 @@ struct Node {
 	Node(int c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
 } *root;
 
-int size(Node *treap) {
-	return treap ? treap->size : 0;
-}
+int size(Node *treap) { return treap ? treap->size : 0; }
 
 void split(Node *treap, Node *&left, Node *&right, int val) {
 	if (!treap) {
@@ -352,9 +350,7 @@ struct Node {
 	Node(char c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
 } *root;
 
-inline int size(Node *treap) {
-	return treap ? treap->size : 0;
-}
+inline int size(Node *treap) { return treap ? treap->size : 0; }
 
 void split(Node *treap, Node *&left, Node *&right, int val) {
 	if (!treap) {
@@ -392,7 +388,7 @@ void merge(Node *&treap, Node *left, Node *right) {
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
 
-ostream& operator<<(ostream &os, Node *n) {
+ostream &operator<<(ostream &os, Node *n) {
 	if (!n) return os;
 	os << n->left;
 	os << n->val;
@@ -405,9 +401,7 @@ int main() {
 	string S;
 
 	cin >> N >> Q >> S;
-	for (char c : S) {
-		merge(root, root, new Node(c));
-	}
+	for (char c : S) { merge(root, root, new Node(c)); }
 	while (Q--) {
 		int l, r;
 		cin >> l >> r;
