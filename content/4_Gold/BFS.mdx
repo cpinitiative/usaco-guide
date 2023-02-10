@@ -38,11 +38,11 @@ operations, all in $\mathcal{O}(1)$ time.
 
 ```cpp
 queue<int> q;
-q.push(1);				   // [1]
-q.push(3);				   // [3, 1]
-q.push(4);				   // [4, 3, 1]
-q.pop();				   // [4, 3]
-cout << q.front() << endl; // 3
+q.push(1);                  // [1]
+q.push(3);                  // [3, 1]
+q.push(4);                  // [4, 3, 1]
+q.pop();                    // [4, 3]
+cout << q.front() << endl;  // 3
 ```
 
 </CPPSection>
@@ -60,11 +60,11 @@ commonly used implementation is the `LinkedList`, declared as follows:
 
 ```java
 Queue<Integer> q = new LinkedList<Integer>();
-q.add(1); // [1]
-q.add(3); // [3, 1]
-q.add(4); // [4, 3, 1]
-q.poll(); // [4, 3]
-System.out.println(q.peek()); // 3
+q.add(1);                      // [1]
+q.add(3);                      // [3, 1]
+q.add(4);                      // [4, 3, 1]
+q.poll();                      // [4, 3]
+System.out.println(q.peek());  // 3
 ```
 
 </JavaSection>
@@ -84,13 +84,13 @@ Python has a `queue` built-in module.
 ```py
 from queue import Queue
 
-q = Queue()      # []
-q.put(1)         # [1]
-q.put(2)         # [1, 2]
-v = q.queue[0]   # v = 1, q = [1, 2]
-v = q.get()      # v = 1, q = [2]
-v = q.get()      # v = 2, q = []
-v = q.get()      # Code waits forever, creating TLE error.
+q = Queue()  # []
+q.put(1)  # [1]
+q.put(2)  # [1, 2]
+v = q.queue[0]  # v = 1, q = [1, 2]
+v = q.get()  # v = 1, q = [2]
+v = q.get()  # v = 2, q = []
+v = q.get()  # Code waits forever, creating TLE error.
 ```
 <Warning>
 
@@ -121,12 +121,12 @@ The four methods for adding and removing are `push_back`, `pop_back`,
 
 ```cpp
 deque<int> d;
-d.push_front(3); // [3]
-d.push_front(4); // [4, 3]
-d.push_back(7);	 // [4, 3, 7]
-d.pop_front();	 // [3, 7]
-d.push_front(1); // [1, 3, 7]
-d.pop_back();	 // [1, 3]
+d.push_front(3);  // [3]
+d.push_front(4);  // [4, 3]
+d.push_back(7);   // [4, 3, 7]
+d.pop_front();    // [3, 7]
+d.push_front(1);  // [1, 3, 7]
+d.pop_back();     // [1, 3]
 ```
 
 You can also access deques in constant time like an array in constant time with
@@ -144,12 +144,12 @@ removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
 
 ```java
 ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
-deque.addFirst(3);  // [3]
-deque.addFirst(4);  // [4, 3]
-deque.addLast(7);  // [4, 3, 7]
+deque.addFirst(3);    // [3]
+deque.addFirst(4);    // [4, 3]
+deque.addLast(7);     // [4, 3, 7]
 deque.removeFirst();  // [3, 7]
-deque.addFirst(1);  // [1, 3, 7]
-deque.removeLast();  // [1, 3]
+deque.addFirst(1);    // [1, 3, 7]
+deque.removeLast();   // [1, 3]
 ```
 
 </JavaSection>
@@ -458,8 +458,8 @@ Implementation of the CSAcademy article's problem in Java:
 <br />
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 class Main {
 
@@ -468,27 +468,30 @@ class Main {
 	static boolean visited[];
 
 	static void bfs(int startNode) {
-		Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation
-		// of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
+		Queue<Integer> q =
+		    new ArrayDeque<Integer>();  // You can choose any implementation
+		// of Queue (such as LinkedList), though I believe ArrayDeque is faster
+		// (?)
 		q.add(startNode);
 		visited[startNode] = true;
 		dist[startNode] = 0;
 
-		while(!q.isEmpty()) {
+		while (!q.isEmpty()) {
 			int currentNode = q.poll();
 
-			for(int adj : edges[currentNode]) {
-				if(!visited[adj]) {
+			for (int adj : edges[currentNode]) {
+				if (!visited[adj]) {
 					visited[adj] = true;
-					dist[adj] = dist[currentNode]+1;
+					dist[adj] = dist[currentNode] + 1;
 					q.add(adj);
 				}
 			}
 		}
 	}
 
-	public static void main (String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws Exception {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
@@ -500,16 +503,17 @@ class Main {
 		edges = new ArrayList[N];
 		dist = new int[N];
 		visited = new boolean[N];
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			edges[i] = new ArrayList<Integer>();
 			dist[i] = -1;
 		}
 
-		for(int i = 0; i < M; i++) {
+		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			a--; b--;
+			a--;
+			b--;
 			edges[a].add(b);
 		}
 
@@ -517,7 +521,7 @@ class Main {
 
 		PrintWriter pw = new PrintWriter(System.out);
 
-		for(int i : dist) pw.print(i + " ");
+		for (int i : dist) pw.print(i + " ");
 		pw.println();
 		pw.close();
 	}

@@ -152,10 +152,10 @@ public class BinarySearch {
 	public static void main(String[] args) {
 		// all numbers satisfy the condition (outputs 10)
 		System.out.println(lastTrue(2, 10, (x) -> true));
-		
+
 		// outputs 5
 		System.out.println(lastTrue(2, 10, (x) -> x * x <= 30));
-		
+
 		// no numbers satisfy the condition (outputs 1)
 		System.out.println(lastTrue(2, 10, (x) -> false));
 	}
@@ -259,9 +259,7 @@ int last_true(int lo, int hi, function<bool(int)> f) {
 public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 	lo--;
 	for (int dif = hi - lo; dif > 0; dif /= 2) {
-		while (lo + dif <= hi && f.test(lo + dif)) {
-			lo += dif;
-		}
+		while (lo + dif <= hi && f.test(lo + dif)) { lo += dif; }
 	}
 	return lo;
 }
@@ -347,9 +345,9 @@ import java.util.function.Predicate;
 
 public class BinarySearch {
 	public static void main(String[] args) {
-		System.out.println(firstTrue(2, 10, (x) -> true));  // outputs 2
+		System.out.println(firstTrue(2, 10, (x) -> true));         // outputs 2
 		System.out.println(firstTrue(2, 10, (x) -> x * x >= 30));  // outputs 6
-		System.out.println(firstTrue(2, 10, (x) -> false));  // outputs 11
+		System.out.println(firstTrue(2, 10, (x) -> false));        // outputs 11
 	}
 
 	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
@@ -547,7 +545,7 @@ def med_reachable(x: int) -> bool:
 def last_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	lo -= 1
 	while lo < hi:
-		mid = lo + (hi - lo + 1) // 2;
+		mid = lo + (hi - lo + 1) // 2
 		if f(mid):
 			lo = mid
 		else:
@@ -597,9 +595,7 @@ int sqrt(int x) {
 <JavaSection>
 
 ```java
-public static long f(int x) {
-	return (long) x * x;
-}
+public static long f(int x) { return (long)x * x; }
 
 public static int sqrt(int x) {
 	int lo = 0;
@@ -622,6 +618,7 @@ public static int sqrt(int x) {
 ```python
 def f(x: int) -> int:
 	return x * x
+
 
 def sqrt(x: int) -> int:
 	lo = 0
@@ -902,12 +899,12 @@ functions.
 #include <bits/stdc++.h>
 using namespace std;
 
-void setIO(string name = "") { // name is nonempty for USACO file I/O
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
 	ios_base::sync_with_stdio(0);
-	cin.tie(0); // see Fast Input & Output
+	cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
 	if (!name.empty()) {
-		freopen((name + ".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
@@ -926,8 +923,8 @@ int main() {
 		int q_end;
 		cin >> q_start >> q_end;
 		cout << upper_bound(begin(bales), end(bales), q_end) -
-					lower_bound(begin(bales), end(bales), q_start)
-			 << "\n";
+		            lower_bound(begin(bales), end(bales), q_start)
+		     << "\n";
 	}
 }
 ```
@@ -945,7 +942,8 @@ import java.util.*;
 
 public class Haybales {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("haybales.in")));
 		PrintWriter out = new PrintWriter("haybales.out");
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -956,24 +954,20 @@ public class Haybales {
 		for (int i = 0; i < baleNum; i++) {
 			bales[i] = Integer.parseInt(st.nextToken());
 		}
-		
+
 		Arrays.sort(bales);
 		for (int i = 0; i < queryNum; i++) {
 			st = new StringTokenizer(br.readLine());
 			int start = Integer.parseInt(st.nextToken());
 			int end = Integer.parseInt(st.nextToken());
-			
+
 			// Get the left-est bale that's still in the interval
 			int bi = Arrays.binarySearch(bales, start);
-			if (bi < 0) {
-				bi = Math.abs(bi + 1);
-			}
+			if (bi < 0) { bi = Math.abs(bi + 1); }
 
 			// And also get the right-est bale that's still in the interval
 			int ti = Arrays.binarySearch(bales, end);
-			if (ti < 0) {
-				ti = Math.abs(ti + 2);
-			}
+			if (ti < 0) { ti = Math.abs(ti + 2); }
 			out.println(ti - bi + 1);
 		}
 		out.close();
@@ -1013,12 +1007,12 @@ for _ in range(query_num):
 #include <bits/stdc++.h>
 using namespace std;
 
-void setIO(string name = "") { // name is nonempty for USACO file I/O
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
 	ios_base::sync_with_stdio(0);
-	cin.tie(0); // see Fast Input & Output
+	cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
 	if (!name.empty()) {
-		freopen((name + ".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
@@ -1244,7 +1238,7 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 <Quiz.Answer>
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
-	while (l <= r) { // <= instead of <
+	while (l <= r) {  // <= instead of <
 		int m = (l + r) / 2;
 		if (f(m)) {
 			l = m;
@@ -1270,9 +1264,9 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
 		int m = (l + r) / 2;
 		if (f(m)) {
-			l = m + 1; // change m to m + 1
+			l = m + 1;  // change m to m + 1
 		} else {
-			r = m; // change m - 1 to m
+			r = m;  // change m - 1 to m
 		}
 	}
 	return l;
@@ -1288,7 +1282,7 @@ Incorrect. While this will no longer cause an infinite loop, it will now output 
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
-		int m = l + (r - l) / 2; // change (l + r) / 2
+		int m = l + (r - l) / 2;  // change (l + r) / 2
 		if (f(m)) {
 			l = m;
 		} else {
@@ -1308,7 +1302,7 @@ Incorrect. This is equivalent to the previous statement, except this statement i
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
-		int m = (l + r + 1) / 2; // change (l + r) / 2
+		int m = (l + r + 1) / 2;  // change (l + r) / 2
 		if (f(m)) {
 			l = m;
 		} else {

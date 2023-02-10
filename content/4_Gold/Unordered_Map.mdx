@@ -85,7 +85,7 @@ namespace std {
 template <> struct hash<pi> {
 	size_t operator()(const pi &p) const { return p.f ^ p.s; }
 };
-} // namespace std
+}  // namespace std
 
 int main() { unordered_map<pi, int> um; }
 ```
@@ -126,10 +126,8 @@ public class HashTest {
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof Pair)) {
-				return false;
-			}
-			Pair p = (Pair) o;
+			if (!(o instanceof Pair)) { return false; }
+			Pair p = (Pair)o;
 			return first == p.first && second == p.second;
 		}
 	}
@@ -179,10 +177,8 @@ public class HashTest {
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof Pair)) {
-				return false;
-			}
-			Pair p = (Pair) o;
+			if (!(o instanceof Pair)) { return false; }
+			Pair p = (Pair)o;
 			return first == p.first && second == p.second;
 		}
 	}
@@ -233,9 +229,9 @@ in place of `unordered_map<int, int>`.
 </Resources>
 
 ```cpp
-struct chash { /// use most bits rather than just the lowest ones
-	const uint64_t C = ll(2e18 * PI) + 71; // large odd number
-	const int RANDOM = rng();			   // random 32-bit number
+struct chash {  /// use most bits rather than just the lowest ones
+	const uint64_t C = ll(2e18 * PI) + 71;  // large odd number
+	const int RANDOM = rng();               // random 32-bit number
 	ll operator()(ll x) const {
 		// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 		return __builtin_bswap64((x ^ RANDOM) * C);

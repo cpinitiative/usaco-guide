@@ -73,7 +73,7 @@ They will be covered in [platinum](/plat/seg-ext).
 <CPPSection>
 
 ```cpp
-template <class T> struct Seg { // comb(ID,b) = b
+template <class T> struct Seg {  // comb(ID,b) = b
 	const T ID = 0;
 	T comb(T a, T b) { return a + b; }
 	int n;
@@ -83,11 +83,11 @@ template <class T> struct Seg { // comb(ID,b) = b
 		seg.assign(2 * n, ID);
 	}
 	void pull(int p) { seg[p] = comb(seg[2 * p], seg[2 * p + 1]); }
-	void upd(int p, T val) { // set val at position p
+	void upd(int p, T val) {  // set val at position p
 		seg[p += n] = val;
 		for (p /= 2; p; p /= 2) pull(p);
 	}
-	T query(int l, int r) { // sum on interval [l, r]
+	T query(int l, int r) {  // sum on interval [l, r]
 		T ra = ID, rb = ID;
 		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
 			if (l & 1) ra = comb(ra, seg[l++]);
@@ -103,15 +103,16 @@ template <class T> struct Seg { // comb(ID,b) = b
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class segtree {
-	public static final int N = (int) 1e5; // limit for array size
-	public static int n; // array size
+	public static final int N = (int)1e5;  // limit for array size
+	public static int n;                   // array size
 	public static long t[] = new long[2 * N];
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		n = Integer.parseInt(br.readLine());
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
@@ -121,18 +122,18 @@ public class segtree {
 		System.out.println(query(1, 3));
 		modify(1, 2);
 		System.out.println(query(1, 3));
-
 	}
 
-	public static void build() { // build the tree
+	public static void build() {  // build the tree
 		for (int i = n - 1; i > 0; --i) t[i] = t[i << 1] + t[i << 1 | 1];
 	}
 
-	public static void modify(int p, long value) { // set value at position p
+	public static void modify(int p, long value) {  // set value at position p
 		for (t[p += n] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
 	}
 
-	public static long query(int l, int r) { // sum on interval [l, r) (0-INDEXED)
+	public static long query(int l,
+	                         int r) {  // sum on interval [l, r) (0-INDEXED)
 		long res = 0;
 		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
 			if ((l & 1) != 0) res += t[l++];
@@ -185,7 +186,7 @@ template <class T> class MinSegmentTree {
 	/** The operation to use for combining two elements. (Must be associative)
 	 */
 	T comb(T a, T b) { return std::min(a, b); }
-	const T DEFAULT = 1e18; // Will overflow if T is an int
+	const T DEFAULT = 1e18;  // Will overflow if T is an int
 
 	vector<T> segtree;
 	int len;
@@ -323,8 +324,10 @@ public class MinSegmentTree {
 ```python
 import sys
 
+
 class SegmentTree:
 	"""A data structure that can answer point update & range minimum queries."""
+
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.arr = arr
 		self.n = n
@@ -348,7 +351,7 @@ class SegmentTree:
 		""":return the minimum element with index in the range [l, r)"""
 		l += self.n
 		r += self.n
-		ret = float('inf')
+		ret = float("inf")
 		while l < r:
 			if l & 1:
 				ret = min(ret, self.tree[l])
@@ -359,6 +362,7 @@ class SegmentTree:
 			l >>= 1
 			r >>= 1
 		return ret
+
 
 n, q = map(int, sys.stdin.readline().split())
 array = list(map(int, sys.stdin.readline().split()))
@@ -533,6 +537,7 @@ values (from `min()` to '+'), and change the initial value (sum) to 0.
 ```python
 import sys
 
+
 class SegmentTree:
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.arr = arr
@@ -562,10 +567,11 @@ class SegmentTree:
 				l += 1
 			if r & 1:
 				r -= 1
-				sum += self.tree[r]  
+				sum += self.tree[r]
 			l >>= 1
 			r >>= 1
 		return sum
+
 
 n, q = map(int, sys.stdin.readline().split())
 array = list(map(int, sys.stdin.readline().split()))
@@ -692,39 +698,41 @@ int main() {
 ```python
 import sys
 
+
 class BIT:
 	"""
 	Short for "binary indexed tree",
 	this data structure supports point update and range sum
 	queries like a segment tree.
 	"""
+
 	def __init__(self, arr: list[int], n: int) -> None:
 		self.tree = [0] * (n + 1)
 		self.size = n
 		for ii in range(n):
 			self.add_val(ii, arr[ii])
-	
+
 	def add(self, i: int, v: int):
-	"""Adds v to the element at index i."""
+		"""Adds v to the element at index i."""
 		i += 1
 		while i <= self.size:
 			self.tree[i] += v
 			i += i & (-i)
-	
+
 	def prefix_sum(self, i: int):
-	"""@return The sum of all values with indices in the range [0, i]."""
+		"""@return The sum of all values with indices in the range [0, i]."""
 		s = 0
 		i += 1
 		while i > 0:
 			s += self.tree[i]
 			i -= i & (-i)
 		return s
-	
+
 	def range_sum(self, l: int, r: int):
-	"""
-	@return Difference of prefix sums to attain sum between all
-	values with indices in the range [l, r]
-	"""
+		"""
+		@return Difference of prefix sums to attain sum between all
+		values with indices in the range [l, r]
+		"""
 		return self.prefix_sum(r) - self.prefix_sum(l - 1)
 
 
@@ -973,7 +981,7 @@ using namespace std;
 using namespace __gnu_pbds;
 template <class T>
 using Tree =
-	tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int test_num;

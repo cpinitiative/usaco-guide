@@ -24,12 +24,12 @@ In C++, one can implement this to run in $\mathcal O(\log N)$ time per query and
 $\mathcal O(1)$ time per update by using an array of `vector`s.
 
 ```cpp
-vector<pair<int, int>> arr[100001]; // The persistent array
+vector<pair<int, int>> arr[100001];  // The persistent array
 
 int get_item(int index, int time) {
 	// Gets the array item at a given index and time
 	auto ub = upper_bound(arr[index].begin(), arr[index].end(),
-						  make_pair(time, INT_MAX));
+	                      make_pair(time, INT_MAX));
 	return prev(ub)->second;
 }
 
@@ -83,8 +83,8 @@ struct Node {
 	Node(Node *ll, Node *rr) : val(0), l(ll), r(rr) {}
 };
 
-int n, a[100001];	 // The initial array and its size
-Node *roots[100001]; // The persistent array's roots
+int n, a[100001];     // The initial array and its size
+Node *roots[100001];  // The persistent array's roots
 
 Node *build(int l = 0, int r = n - 1) {
 	if (l == r) return new Node(a[l]);

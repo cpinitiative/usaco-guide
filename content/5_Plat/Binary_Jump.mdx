@@ -84,14 +84,14 @@ using namespace std;
 
 int N, Q;
 
-const int MX = 2e5 + 5; // maximum N
-const int MS = 18;		// 18 is calculated by $\log_2 2e5$
+const int MX = 2e5 + 5;  // maximum N
+const int MS = 18;       // 18 is calculated by $\log_2 2e5$
 
 int up[MS][MX];
 
 int jmp(int x, int d) {
 	F0R(i, MS) if ((d >> i) & 1) x = up[i][x];
-	return x ?: -1; // modfication to return -1 if not found
+	return x ?: -1;  // modfication to return -1 if not found
 }
 
 int main() {
@@ -107,8 +107,8 @@ int main() {
 	}
 
 	FOR(i, 1, MS)
-	FOR(j, 1, N + 1) up[i][j] =
-		up[i - 1][up[i - 1][j]]; // construct our parent array
+	FOR(j, 1, N + 1)
+	up[i][j] = up[i - 1][up[i - 1][j]];  // construct our parent array
 
 	// uncomment below if you want to see the parent array
 

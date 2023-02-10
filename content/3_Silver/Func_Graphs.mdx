@@ -55,15 +55,16 @@ itself).
 ```cpp
 // UNTESTED
 pair<int, int>
-detect_cycle(int *next, int start_node) // return pair(length of cycle, distance
-										// from start node to in cycle)
+detect_cycle(int *next,
+             int start_node)  // return pair(length of cycle, distance
+                              // from start node to in cycle)
 {
-	int t = start_node, h = start_node; // tortoise and hare
+	int t = start_node, h = start_node;  // tortoise and hare
 	do {
 		t = next[t], h = next[h];
 	} while (t != h)
 
-		int dist = 0;
+	    int dist = 0;
 	t = start_node;
 	while (t != h) ++dist, t = next[t], h = next[h];
 
@@ -124,7 +125,7 @@ void read() {
 	}
 }
 int main() {
-	for (;;) // c*ceil(t/c) times
+	for (;;)  // c*ceil(t/c) times
 	{
 		out({0, 1});
 		read();
@@ -132,7 +133,7 @@ int main() {
 		read();
 		if (g[0] == g[1]) break;
 	}
-	for (;;) // t times
+	for (;;)  // t times
 	{
 		out({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 		read();
@@ -148,17 +149,16 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Cooperative {
 	public static int g[];
-	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static BufferedReader br =
+	    new BufferedReader(new InputStreamReader(System.in));
 	public static void out(int arr[]) {
 		System.out.print("next");
-		for (int a: arr) {
-			System.out.print(" " + a);
-		}
+		for (int a : arr) { System.out.print(" " + a); }
 		System.out.println();
 		System.out.flush();
 	}
@@ -167,25 +167,22 @@ public class Cooperative {
 		int N = Integer.parseInt(st.nextToken());
 		for (int i = 0; i < N; i++) {
 			String s = st.nextToken();
-			for (int j = 0; j < s.length(); j++)
-				g[s.charAt(j) - '0'] = i;
+			for (int j = 0; j < s.length(); j++) g[s.charAt(j) - '0'] = i;
 		}
 	}
 	public static void main(String[] args) throws Exception {
 		g = new int[20];
-		for (;;) { // c*ceil(t/c) times
-			out(new int[]{0,1});
+		for (;;) {  // c*ceil(t/c) times
+			out(new int[] {0, 1});
 			read();
-			out(new int[]{0});
+			out(new int[] {0});
 			read();
-			if (g[0] == g[1])
-				break;
+			if (g[0] == g[1]) break;
 		}
-		for (;;) { // t times
-			out(new int[]{0,1,2,3,4,5,6,7,8,9});
+		for (;;) {  // t times
+			out(new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 			read();
-			if (g[0] == g[2])
-				break;
+			if (g[0] == g[2]) break;
 		}
 		System.out.println("done");
 	}
@@ -220,7 +217,7 @@ while (a != b) {
 ```java
 a = succ(x);
 b = succ(succ(x));
-while(a != b) {
+while (a != b) {
 	a = succ(a);
 	b = succ(succ(b));
 }
@@ -253,7 +250,7 @@ first = a;
 
 ```java
 a = x;
-while(a != b) {
+while (a != b) {
 	a = succ(a);
 	b = succ(b);
 }
@@ -297,7 +294,7 @@ bool in_cycle;
 
 void gen(int x) {
 	if (ans[x] != -2) {
-		if (ans[x] == -1) ans[x] = x, in_cycle = 1; // found a cycle!
+		if (ans[x] == -1) ans[x] = x, in_cycle = 1;  // found a cycle!
 		return;
 	}
 	ans[x] = -1;
@@ -314,7 +311,7 @@ int main() {
 	P.assign(N, 0);
 	for (int &x : P) cin >> x, --x;
 	ans.assign(N, -2);
-	for (int i = 0; i < N; ++i) gen(i); // in_cycle is always reset to 0
+	for (int i = 0; i < N; ++i) gen(i);  // in_cycle is always reset to 0
 	for (int t : ans) cout << t + 1 << " ";
 }
 ```
@@ -327,41 +324,40 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class badge
-{
+public class badge {
 	static BufferedReader reader;
 	static PrintWriter writer;
 	public static final int MN = 1010;
 	public static int[] p, ans;
 	public static boolean in_cycle;
-	public static void dfs(int n)
-	{
-		if(ans[n] != 0)
-		{
-			if(ans[n] == -1) {in_cycle = true; ans[n] = n;} // found a cycle!
+	public static void dfs(int n) {
+		if (ans[n] != 0) {
+			if (ans[n] == -1) {
+				in_cycle = true;
+				ans[n] = n;
+			}  // found a cycle!
 			return;
 		}
-		ans[n]=-1; dfs(p[n]);
-		if(ans[n] != -1) in_cycle = false;
+		ans[n] = -1;
+		dfs(p[n]);
+		if (ans[n] != -1) in_cycle = false;
 		else ans[n] = in_cycle ? n : ans[p[n]];
 	}
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		reader = new BufferedReader(new InputStreamReader(System.in));
 		writer = new PrintWriter(System.out);
-		p = new int[MN]; ans = new int[MN];
+		p = new int[MN];
+		ans = new int[MN];
 
 		int N = Integer.parseInt(reader.readLine());
 		StringTokenizer st = new StringTokenizer(reader.readLine());
-		for (int i=1;i<=N;++i)
-			p[i]=Integer.parseInt(st.nextToken());
+		for (int i = 1; i <= N; ++i) p[i] = Integer.parseInt(st.nextToken());
 		reader.close();
 
-		for (int i=1;i<=N;++i)
-			dfs(i); // in_cycle is always reset to false
+		for (int i = 1; i <= N; ++i)
+			dfs(i);  // in_cycle is always reset to false
 
-		for (int i=1;i<=N;++i)
-			writer.print(ans[i]+" ");
+		for (int i = 1; i <= N; ++i) writer.print(ans[i] + " ");
 		writer.close();
 	}
 }
@@ -372,15 +368,16 @@ public class badge
 <PySection>
 
 ```py
-N=int(input())
-p=list(map(int, input().split()))
-ans=[-1]*N
-in_cycle=False
+N = int(input())
+p = list(map(int, input().split()))
+ans = [-1] * N
+in_cycle = False
+
 
 def dfs(x):
 	global in_cycle
 	if ans[x] != -1:
-		if ans[x] == -2: # found a cycle!
+		if ans[x] == -2:  # found a cycle!
 			in_cycle = True
 			ans[x] = x
 		return
@@ -391,10 +388,11 @@ def dfs(x):
 	else:
 		ans[x] = x if in_cycle else ans[p[x]]
 
+
 for i in range(N):
 	p[i] -= 1
 for i in range(N):
-	dfs(i) # in_cycle is always reset to False
+	dfs(i)  # in_cycle is always reset to False
 for i in range(N):
 	ans[i] += 1
 
@@ -469,15 +467,15 @@ void fill_radj(int x) {
 
 void floyd(int x) {
 	int y = x;
-	do { // find a cycle using Floyd's algorithm
+	do {  // find a cycle using Floyd's algorithm
 		x = adj[x];
 		y = adj[adj[y]];
 	} while (y != x);
-	do { // set ans[x] = x for all x along cycle
+	do {  // set ans[x] = x for all x along cycle
 		ans[x] = x;
 		x = adj[x];
 	} while (y != x);
-	do { // set ans'es for all x not along cycle
+	do {  // set ans'es for all x not along cycle
 		fill_radj(x);
 		x = adj[x];
 	} while (y != x);
@@ -516,20 +514,21 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Badge {
 	static Integer[] adj, ans;
 	/*
 	 * For each node, we need a list to store its children; at nodes
-	 * combining the cycle with other part of the connected component, there would
-	 * be more than one outgoing arrow in the reversed adjacency list
+	 * combining the cycle with other part of the connected component, there
+	 * would be more than one outgoing arrow in the reversed adjacency list
 	 */
 	static List<List<Integer>> radj;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		int N = Integer.parseInt(in.readLine());
 		adj = new Integer[N];
@@ -543,13 +542,11 @@ public class Badge {
 			radj.add(new ArrayList<>());
 		}
 
-		for (int i = 0; i < N; i++)
-			radj.get(adj[i]).add(Integer.valueOf(i));
+		for (int i = 0; i < N; i++) radj.get(adj[i]).add(Integer.valueOf(i));
 
 		for (int i = 0; i < N; i++) {
 			// run Floyd's algorithm on every connected component
-			if (ans[i] == -1)
-				floyd(i);
+			if (ans[i] == -1) floyd(i);
 		}
 
 		for (Integer i : ans) {
@@ -574,8 +571,8 @@ public class Badge {
 			a = adj[a];
 		} while (a != b);
 
-		// for each node a that has outgoing arrow(s) pointing to the acyclic part
-		// we set their answers with fillRadj
+		// for each node a that has outgoing arrow(s) pointing to the acyclic
+		// part we set their answers with fillRadj
 		do {
 			fillRadj(a);
 			a = adj[a];
@@ -585,10 +582,11 @@ public class Badge {
 	private static void fillRadj(int x) {
 		for (Integer child : radj.get(x)) {
 			/*
-			 * As all nodes in the cycle are processed in method floyd, the recursive call
-			 * will only start at the nodes which combine the cycle with the acyclic part of
-			 * the connected component, where one of its outgoing arrows points to the node
-			 * that is not processed yet
+			 * As all nodes in the cycle are processed in method floyd, the
+			 * recursive call will only start at the nodes which combine the
+			 * cycle with the acyclic part of the connected component, where one
+			 * of its outgoing arrows points to the node that is not processed
+			 * yet
 			 */
 			if (ans[child] == -1) {
 				ans[child] = ans[x];
@@ -641,29 +639,26 @@ int main() {
 <JavaSection>
 
 ```java
-//source: Mayank Kumar
+// source: Mayank Kumar
 import java.io.*;
 import java.util.*;
-public class badge2{
-	static boolean[] visited=new boolean[MAXN],onStack=new boolean[MAXN];
-	static int numberOfCycles=0;
-	static int[] nextNode=new int[MAXN];
-	public static void main(String[] args) throws IOException{
-		//Take in input
-		for(int i=1;i!=N;++i)
-			if(!visited[i])
-				dfs(i);
+public class badge2 {
+	static boolean[] visited = new boolean[MAXN], onStack = new boolean[MAXN];
+	static int numberOfCycles = 0;
+	static int[] nextNode = new int[MAXN];
+	public static void main(String[] args) throws IOException {
+		// Take in input
+		for (int i = 1; i != N; ++i)
+			if (!visited[i]) dfs(i);
 		System.out.println();
 		System.out.close();
 	}
-	public static void dfs(int n){
-		visited[n]=onStack[n]=true;
-		int u=nextNode[n];
-		if(onStack[u])
-			++numberOfCycles;
-		else if(!visited[u])
-			dfs(u);
-		onStack[n]=false;
+	public static void dfs(int n) {
+		visited[n] = onStack[n] = true;
+		int u = nextNode[n];
+		if (onStack[u]) ++numberOfCycles;
+		else if (!visited[u]) dfs(u);
+		onStack[n] = false;
 	}
 }
 ```

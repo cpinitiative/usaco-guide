@@ -132,7 +132,7 @@ template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
 	template <typename... Args> T query(int l, int r, Args... args) {
 		return sum(r, args...) - sum(l - 1, args...);
 	}
-}; // BIT<int,10,10> gives a 2D BIT
+};  // BIT<int,10,10> gives a 2D BIT
 
 BIT<int, 1000, 1000> B;
 int n, q;
@@ -274,14 +274,14 @@ struct Segtree {
 	int query(int l1, int r1, int l2, int r2) {
 		if (l2 > r2) return 0;
 		return query(l2, r2, roots[r1 + 1], 1, MAXN) -
-			   query(l2, r2, roots[l1], 1, MAXN);
+		       query(l2, r2, roots[l1], 1, MAXN);
 	}
 	int query(int a, int b, int node, int l, int r) {
 		if (a > r || b < l) return 0;
 		if (a <= l && b >= r) return segtree[node];
 		int mid = (l + r) / 2;
 		return query(a, b, left_c[node], l, mid) +
-			   query(a, b, right_c[node], mid + 1, r);
+		       query(a, b, right_c[node], mid + 1, r);
 	}
 };
 ```

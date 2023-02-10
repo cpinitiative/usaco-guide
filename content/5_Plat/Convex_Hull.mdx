@@ -172,22 +172,22 @@ int N, Q;
 
 const int MX = 2e5 + 5;
 
-using T = long long; // or long long
-const T EPS = 1e-9;	 // might want to change
+using T = long long;  // or long long
+const T EPS = 1e-9;   // might want to change
 using P = pair<T, T>;
 using vP = vector<P>;
 using Line = pair<P, P>;
 
-T sq(T a) { return a * a; }						 // square
-T norm(const P &p) { return sq(p.f) + sq(p.s); } // x^2 + y^2
+T sq(T a) { return a * a; }                       // square
+T norm(const P &p) { return sq(p.f) + sq(p.s); }  // x^2 + y^2
 
 // basic operations
 P operator-(const P &l, const P &r) { return P(l.f - r.f, l.s - r.s); }
 
 T cross(const P &a, const P &b) {
 	return a.f * b.s - a.s * b.f;
-} // cross product
-T cross(const P &p, const P &a, const P &b) { // cross product
+}  // cross product
+T cross(const P &p, const P &a, const P &b) {  // cross product
 	return cross(a - p, b - p);
 }
 
@@ -199,15 +199,15 @@ vi hullInd(const vP &v) {
 	vi cand, hull{ind};
 	F0R(i, sz(v)) if (v[i] != v[ind]) cand.pb(i);
 
-	sort(all(cand), [&](int a, int b) { // sort by angle, tiebreak by distance
+	sort(all(cand), [&](int a, int b) {  // sort by angle, tiebreak by distance
 		P x = v[a] - v[ind], y = v[b] - v[ind];
 		T t = cross(x, y);
 		return t != 0 ? t > 0 : norm(x) < norm(y);
 	});
 
-	trav(c, cand) { // for every point
+	trav(c, cand) {  // for every point
 		while (sz(hull) > 1 && cross(v[end(hull)[-2]], v[hull.bk], v[c]) <= 0) {
-			hull.pop_back(); // pop until counterclockwise and size > 1
+			hull.pop_back();  // pop until counterclockwise and size > 1
 		}
 		hull.pb(c);
 	}
@@ -231,7 +231,7 @@ int main() {
 			pts[i] = P(a, b);
 		}
 
-		vi ret = hullInd(pts); // gets hull indices of convex hull
+		vi ret = hullInd(pts);  // gets hull indices of convex hull
 
 		cout << sz(ret) << '\n';
 		trav(a, ret) { cout << pts[a].first << " " << pts[a].second << '\n'; }
@@ -328,7 +328,7 @@ vector<pii> hull;
 // cross product, the signed area of these there points
 int area(pii O, pii P, pii Q) {
 	return (P.first - O.first) * (Q.second - O.second) -
-		   (P.second - O.second) * (Q.first - O.first);
+	       (P.second - O.second) * (Q.first - O.first);
 }
 
 void monotone_chain() {
@@ -349,7 +349,7 @@ void monotone_chain() {
 		// if with the new point points[i], a right turn will be formed,
 		// then we remove the last point in the hull and test further
 		while (hull.size() > 1 &&
-			   area(hull[hull.size() - 2], hull.back(), points[i]) <= 0)
+		       area(hull[hull.size() - 2], hull.back(), points[i]) <= 0)
 
 			hull.pop_back();
 		// otherwise, add the point to the hull
@@ -362,7 +362,7 @@ void monotone_chain() {
 		// we can only remove a point if there are still points left in the
 		// upper hull
 		while (hull.size() > lower_hull_length &&
-			   area(hull[hull.size() - 2], hull.back(), points[i]) <= 0)
+		       area(hull[hull.size() - 2], hull.back(), points[i]) <= 0)
 			hull.pop_back();
 		hull.push_back(points[i]);
 	}
@@ -395,12 +395,13 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class ConvexHull {
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		int N = Integer.parseInt(in.readLine());
 		while (N > 0) {
@@ -408,8 +409,8 @@ public class ConvexHull {
 			Set<V2> input = new HashSet<V2>(N);
 			for (int i = 0; i < N; i++) {
 				StringTokenizer st = new StringTokenizer(in.readLine());
-				input.add(new V2(Integer.parseInt(st.nextToken()), 
-					Integer.parseInt(st.nextToken())));
+				input.add(new V2(Integer.parseInt(st.nextToken()),
+				                 Integer.parseInt(st.nextToken())));
 			}
 			V2[] points = new V2[input.size()];
 			input.toArray(points);
@@ -427,26 +428,25 @@ public class ConvexHull {
 
 	// calculation the convex hull of given points in counterclockwise order
 	private static List<V2> monotoneChain(V2[] P) {
-		// for the set with less than 3 points the set of these points is already
-		// the convex hull
-		if (P.length < 3) {
-			return Arrays.asList(P);
-		}
+		// for the set with less than 3 points the set of these points is
+		// already the convex hull
+		if (P.length < 3) { return Arrays.asList(P); }
 
 		List<V2> hull = new ArrayList<V2>();
-		// sort the points with respect to their x value in ascending order. In case
-		// of a tie, sort by their y values
+		// sort the points with respect to their x value in ascending order. In
+		// case of a tie, sort by their y values
 		Arrays.sort(P);
 
 		// lower hull
 		for (int i = 0; i < P.length; i++) {
 			/*
-			 * if the last point in hull is on the left side of the current point, 
-			 * i.e. it forms a right turn, 
-			 * then we can remove the last point until there are only left turns
+			 * if the last point in hull is on the left side of the current
+			 * point, i.e. it forms a right turn, then we can remove the last
+			 * point until there are only left turns
 			 */
-			while (hull.size() > 1 && 
-					sign(hull.get(hull.size() - 2), hull.get(hull.size() - 1), P[i]) <= 0)
+			while (hull.size() > 1 &&
+			       sign(hull.get(hull.size() - 2), hull.get(hull.size() - 1),
+			            P[i]) <= 0)
 				hull.remove(hull.size() - 1);
 			hull.add(P[i]);
 		}
@@ -454,8 +454,9 @@ public class ConvexHull {
 		// upper hull
 		int k = hull.size();
 		for (int i = P.length - 2; i >= 0; i--) {
-			while (hull.size() > k && 
-					sign(hull.get(hull.size() - 2), hull.get(hull.size() - 1), P[i]) <= 0) {
+			while (hull.size() > k &&
+			       sign(hull.get(hull.size() - 2), hull.get(hull.size() - 1),
+			            P[i]) <= 0) {
 				hull.remove(hull.size() - 1);
 			}
 			hull.add(P[i]);
@@ -467,15 +468,13 @@ public class ConvexHull {
 	}
 
 	/*
-	 * returns -1 if segment OP is on the left side of segment OQ; 
-	 * and returns 1 vice versa; returns 0 if O, P and Q are colinear. 
+	 * returns -1 if segment OP is on the left side of segment OQ;
+	 * and returns 1 vice versa; returns 0 if O, P and Q are colinear.
 	 */
 	private static int sign(V2 O, V2 P, V2 Q) {
 		int area = area(O, P, Q);
-		if (area < 0)
-			return -1;
-		else if (area > 0)
-			return 1;
+		if (area < 0) return -1;
+		else if (area > 0) return 1;
 		return 0;
 	}
 
@@ -493,29 +492,23 @@ public class ConvexHull {
 			Y = y;
 		}
 
-		public V2 minus(V2 other) {
-			return new V2(X - other.X, Y - other.Y);
-		}
+		public V2 minus(V2 other) { return new V2(X - other.X, Y - other.Y); }
 
-		// "cross" (wedge) product of 2d vector. if you are not familiar with this,
-		// you might want to do some research at first
-		public int cross(V2 o) {
-			return X * o.Y - Y * o.X;
-		}
+		// "cross" (wedge) product of 2d vector. if you are not familiar with
+		// this, you might want to do some research at first
+		public int cross(V2 o) { return X * o.Y - Y * o.X; }
 
 		@Override
 		public int compareTo(ConvexHull.V2 o) {
 			int r = X - o.X;
-			if (r == 0)
-				return Y - o.Y;
+			if (r == 0) return Y - o.Y;
 			return r;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj == null || !getClass().equals(obj.getClass()))
-				return false;
-			return ((V2) obj).X == this.X && ((V2) obj).Y == this.Y;
+			if (obj == null || !getClass().equals(obj.getClass())) return false;
+			return ((V2)obj).X == this.X && ((V2)obj).Y == this.Y;
 		}
 
 		@Override

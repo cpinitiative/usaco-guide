@@ -71,7 +71,7 @@ vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 ```java
 static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
 static void add(int x) {
-	if(multiset.containsKey(x)) {
+	if (multiset.containsKey(x)) {
 		multiset.put(x, multiset.get(x) + 1);
 	} else {
 		multiset.put(x, 1);
@@ -79,18 +79,14 @@ static void add(int x) {
 }
 static void remove(int x) {
 	multiset.put(x, multiset.get(x) - 1);
-	if(multiset.get(x) == 0) {
-		multiset.remove(x);
-	}
+	if (multiset.get(x) == 0) { multiset.remove(x); }
 }
 static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 	ArrayList<Integer> ret = new ArrayList<Integer>();
-	for (int i = 0; i < k; i++) {
-		add(nums[i]);
-	}
+	for (int i = 0; i < k; i++) { add(nums[i]); }
 	for (int i = k; i < nums.length; i++) {
 		ret.add(multiset.lastKey());
-		remove(nums[i-k]);
+		remove(nums[i - k]);
 		add(nums[i]);
 	}
 	ret.add(multiset.lastKey());
@@ -150,9 +146,10 @@ int main() {
 <JavaSection>
 
 ```java
-public class test{
+public class test {
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int a[] = new int[n];
@@ -161,8 +158,8 @@ public class test{
 		HashSet<Integer> s = new HashSet<Integer>();
 		int ans = 0;
 		for (int i = 0; i < n; i++) {
-			while(r < n-1 && !s.contains(a[r+1])) s.add(a[++r]);
-			ans = Math.max(ans, r-i+1);
+			while (r < n - 1 && !s.contains(a[r + 1])) s.add(a[++r]);
+			ans = Math.max(ans, r - i + 1);
 			s.remove(a[i]);
 		}
 		System.out.println(ans);
@@ -235,19 +232,13 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 	ArrayList<Integer> ret = new ArrayList<Integer>();
 	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
 	for (int i = 0; i < k; i++) {
-		while(!d.isEmpty() && nums[i] > nums[d.peekLast()]) {
-			d.pollLast();
-		}
+		while (!d.isEmpty() && nums[i] > nums[d.peekLast()]) { d.pollLast(); }
 		d.addLast(i);
 	}
 	for (int i = k; i < nums.length; i++) {
 		ret.add(nums[d.peekFirst()]);
-		if(!d.isEmpty() && d.peekFirst() <= i-k) {
-			d.pollFirst();
-		}
-		while(!d.isEmpty() && nums[i] >= nums[d.peekLast()]) {
-			d.pollLast();
-		}
+		if (!d.isEmpty() && d.peekFirst() <= i - k) { d.pollFirst(); }
+		while (!d.isEmpty() && nums[i] >= nums[d.peekLast()]) { d.pollLast(); }
 		d.add(i);
 	}
 	ret.add(nums[d.peekFirst()]);
@@ -262,9 +253,10 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 ```python
 from typing import List
 
+
 def maxSlidingWindow(self, nums: List[int], k: int) -> list[int]:
 	d = collections.deque()
-	
+
 	def enqueue(i: int) -> None:
 		while d and nums[d[-1]] <= nums[i]:
 			d.pop()
@@ -377,9 +369,7 @@ class Solution {
 		int[] maxVals = new int[n - k + 1];
 
 		// Fill the queue with elements from the first window
-		for (int i = 0; i < k; i++) {
-			q.enqueue(nums[i]);
-		}
+		for (int i = 0; i < k; i++) { q.enqueue(nums[i]); }
 		maxVals[0] = q.query();
 
 		/*
@@ -413,9 +403,7 @@ class Solution {
 		 * It is the maximum of both stacks which are stored in s.peek().b.
 		 */
 		public int query() {
-			if (s1.empty() && s2.empty()) {
-				return -1000000000;
-			}
+			if (s1.empty() && s2.empty()) { return -1000000000; }
 			if (s1.empty() || s2.empty()) {
 				return s1.empty() ? s2.peek().b : s1.peek().b;
 			}
@@ -427,12 +415,13 @@ class Solution {
 		 * element itself and the maximum element in the stack s1 after adding.
 		 */
 		public void enqueue(int val) {
-			s1.push(new Pair(val, s1.empty() ? val : Math.max(val, s1.peek().b)));
+			s1.push(
+			    new Pair(val, s1.empty() ? val : Math.max(val, s1.peek().b)));
 		}
 
 		/**
-		 * Remove the first element from our MaxQueue by poping the top 
-		 * element from s2. 
+		 * Remove the first element from our MaxQueue by poping the top
+		 * element from s2.
 		 */
 		public void dequeue() {
 			if (s2.empty()) {

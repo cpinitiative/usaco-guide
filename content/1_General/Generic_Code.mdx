@@ -110,12 +110,12 @@ relevant member functions.
 using namespace std;
 
 class Human {
-  private: // internal properties
+  private:  // internal properties
 	int body_temp;
 	int temper;
 	string name;
 
-  public: // external reactions
+  public:  // external reactions
 	string get_name() { return name; }
 
 	string get_feeling() {
@@ -157,12 +157,12 @@ declaration itself:
 using namespace std;
 
 class Human {
-  private: // internal properties
+  private:  // internal properties
 	int body_temp = 98;
 	int temper = 25;
 	string name = "Sal";
 
-  public: // external reactions
+  public:  // external reactions
 	string get_name() { return name; }
 
 	string get_feeling() {
@@ -189,7 +189,7 @@ class).
 int main() {
 	Human sal;
 	cout << sal.get_name() << " feels " << sal.get_feeling() << " and is "
-		 << sal.get_emotion() << endl;
+	     << sal.get_emotion() << endl;
 }
 ```
 
@@ -209,12 +209,12 @@ the variables `body_temperature` and `temper`, which gives us some control over
 using namespace std;
 
 class Human {
-  private: // internal properties
+  private:  // internal properties
 	int body_temp;
 	int temper;
 	string name;
 
-  public: // external reactions
+  public:  // external reactions
 	Human(string name_, int body_temp_, int temper_) {
 		name = name_;
 		body_temp = body_temp_;
@@ -241,7 +241,7 @@ class Human {
 int main() {
 	Human sal("Sal", 98, 25);
 	cout << sal.get_name() << " feels " << sal.get_feeling() << " and is "
-		 << sal.get_emotion() << endl;
+	     << sal.get_emotion() << endl;
 }
 ```
 
@@ -254,7 +254,7 @@ and emotions for us without having to be rewritten.
 // Prints out the condition of a human to cout
 void condition(Human h) {
 	cout << h.get_name() << " feels " << h.get_feeling() << " and is "
-		 << h.get_emotion() << endl;
+	     << h.get_emotion() << endl;
 }
 
 int main() {
@@ -275,7 +275,7 @@ itself also becomes permissible and is guaranteed defined behavior:
 
 ```cpp
 Human(string name, int body_temp, int temper)
-	: name(name), body_temp(body_temp), temper(temper) {}
+    : name(name), body_temp(body_temp), temper(temper) {}
 ```
 
 ## Structs
@@ -322,11 +322,11 @@ integrated with the surrounding code, and we can do manipulations like the follo
 int main() {
 	// Initialize Sal
 	Human sal("Sal", 98, 25);
-	condition(sal);		 // Get Sal's initial condition
-	sal.name = "Sally";	 // Sal's friends sometimes call him Sally
-	sal.body_temp = 102; // Sal gets sick
-	sal.temper = 40;	 // He develops a bad temper due to his sickness
-	condition(sal);		 // Now we get Sal's new condition
+	condition(sal);       // Get Sal's initial condition
+	sal.name = "Sally";   // Sal's friends sometimes call him Sally
+	sal.body_temp = 102;  // Sal gets sick
+	sal.temper = 40;      // He develops a bad temper due to his sickness
+	condition(sal);       // Now we get Sal's new condition
 }
 ```
 
@@ -368,7 +368,7 @@ struct Point3D {
 	int x;
 	int y;
 	int z;
-} p1{1, 2, 3}, p2{3, 4, 5}; // We can make some instances right before the ;
+} p1{1, 2, 3}, p2{3, 4, 5};  // We can make some instances right before the ;
 ```
 
 But what if we wanted to make a point `p3` with coordinates as doubles? We would
@@ -407,7 +407,7 @@ Point3D<int> p1{1, 2, 3};
 Point3D<int> p2{3, 4, 5};
 Point3D<double> p3{1.1, 2.2, 3.3};
 Point3D<long long> p4{9223372036854775807, 9223372036854775807,
-					  9223372036854775807};
+                      9223372036854775807};
 ```
 
 It would be narrow-minded to think that templates are in any way limited to
@@ -523,14 +523,14 @@ and then just live with `cout`. But what if I was using strings and wanted to
 type neither `std::string` nor `string`? I could use `using` twice to fix this:
 
 ```cpp
-using std::string;	// Unnecessary if already using namespace std
-using str = string; // Use str as an alias for string
+using std::string;   // Unnecessary if already using namespace std
+using str = string;  // Use str as an alias for string
 ```
 
 Or I could compress this into a single statement:
 
 ```cpp
-using str = std::string; // str is an alias for std::string directly
+using str = std::string;  // str is an alias for std::string directly
 ```
 
 We can make even more aliases, with even aliases within aliases (see `ll`),
@@ -637,9 +637,9 @@ This example defines `MOD` as `1e9 + 7` by find and replace.
 #define MOD 1e9 + 7
 
 int main() {
-	cout << int(MOD) << "\n";	  // outputs 1000000007
-	cout << int(MOD * 2) << "\n"; // outputs 1000000014
-	cout << int(2 * MOD) << "\n"; // outputs 2000000007
+	cout << int(MOD) << "\n";      // outputs 1000000007
+	cout << int(MOD * 2) << "\n";  // outputs 1000000014
+	cout << int(2 * MOD) << "\n";  // outputs 2000000007
 }
 ```
 
@@ -699,17 +699,17 @@ shown by this example:
 
 ```cpp
 vi x;
-cout << x.size() - 1 << "\n"; // otutputs 18446744073709551615 (incorrect)
-cout << sz(x) - 1 << "\n";	  // outputs -1 (correct)
+cout << x.size() - 1 << "\n";  // otutputs 18446744073709551615 (incorrect)
+cout << sz(x) - 1 << "\n";     // outputs -1 (correct)
 ```
 
 `all(v)` makes sorting part or all of a vector a bit shorter.
 
 ```cpp
 vi v{2, 4, 1, 5, 3};
-sort(1 + all(v)); // v is now {2, 1, 3, 4, 5}
+sort(1 + all(v));  // v is now {2, 1, 3, 4, 5}
 // This expands to sort(1 + begin(v), end(v));
-sort(all(v)); // {1, 2, 3, 4, 5}
+sort(all(v));  // {1, 2, 3, 4, 5}
 ```
 
 ## Preprocessing Logic
@@ -724,7 +724,7 @@ For instance, I may want my struct `Point` to be two-dimensional in some cases
 and three-dimensional in others. I can do this like so:
 
 ```cpp
-const bool d2 = false; // false for 2D, true for 3D
+const bool d2 = false;  // false for 2D, true for 3D
 
 template <class T> struct Point {
 #if (d2)
@@ -799,7 +799,7 @@ template <class T> struct TestDS {
 
 	T get() { return s; }
 };
-} // namespace test
+}  // namespace test
 ```
 
 These are fairly self-explanatory, but a more rare feature of C++11 is the
@@ -821,17 +821,17 @@ removed it in the new version `v2`.
 namespace v1 {
 const string buggy_feature = "bugs";
 const string greeting = "hi";
-} // namespace v1
+}  // namespace v1
 
 inline namespace v2 {
 // removed the buggy_feature from this new version
 const string buggy_feature = "what buggy feature?";
 const string greeting = "hi";
-} // namespace v2
+}  // namespace v2
 
 int main() {
-	cout << buggy_feature << "\n";	   // outputs "what buggy feature?"
-	cout << v1::buggy_feature << "\n"; // outputs "bugs"
+	cout << buggy_feature << "\n";      // outputs "what buggy feature?"
+	cout << v1::buggy_feature << "\n";  // outputs "bugs"
 }
 ```
 

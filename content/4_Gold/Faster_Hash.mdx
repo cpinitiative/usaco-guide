@@ -54,7 +54,7 @@ the blog:
 
 ```cpp
 const int RANDOM =
-	chrono::high_resolution_clock::now().time_since_epoch().count();
+    chrono::high_resolution_clock::now().time_since_epoch().count();
 struct chash {
 	int operator()(int x) const { return x ^ RANDOM; }
 };
@@ -79,10 +79,10 @@ We can modify the declaration of `gp_hash_table` so that it supports the
 ```cpp
 template <class K, class V>
 using ht = gp_hash_table<
-	K, null_type, hash<K>, equal_to<K>, direct_mask_range_hashing<>,
-	linear_probe_fn<>,
-	hash_standard_resize_policy<hash_exponential_size_policy<>,
-								hash_load_check_resize_trigger<>, true>>;
+    K, null_type, hash<K>, equal_to<K>, direct_mask_range_hashing<>,
+    linear_probe_fn<>,
+    hash_standard_resize_policy<hash_exponential_size_policy<>,
+                                hash_load_check_resize_trigger<>, true>>;
 ```
 
 These are the same template arguments as the default `gp_hash_table`, except
@@ -93,8 +93,8 @@ actual size of the hash table.
 int main() {
 	ht<int, null_type> g;
 	g.resize(5);
-	cout << g.get_actual_size() << "\n"; // 8
-	cout << g.size() << "\n";			 // 0
+	cout << g.get_actual_size() << "\n";  // 8
+	cout << g.size() << "\n";             // 0
 }
 ```
 
@@ -138,7 +138,7 @@ Passes in 1180ms when initial capacity is specified, TLEs when it is not.
 </Warning>
 
 ```cpp
-#include <bits/stdc++.h> // see C++ Tips & Tricks
+#include <bits/stdc++.h>  // see C++ Tips & Tricks
 using namespace std;
 
 using ll = long long;
@@ -154,12 +154,12 @@ using pi = pair<int, int>;
 #define s second
 #define mp make_pair
 
-void setIO(string name = "") { // name is nonempty for USACO file I/O
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
 	ios_base::sync_with_stdio(0);
-	cin.tie(0); // see Fast Input & Output
+	cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
 	if (sz(name)) {
-		freopen((name + ".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }

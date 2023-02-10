@@ -87,7 +87,7 @@ template <class Fun> decltype(auto) y_combinator(Fun &&fun) {
 	return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
 }
 
-} // namespace std
+}  // namespace std
 ```
 
 Then we can have code like the following:
@@ -97,7 +97,7 @@ int main() {
 	cout << y_combinator([](auto gcd, int a, int b) -> int {
 		return b == 0 ? a : gcd(b, a % b);
 	})(20, 30)
-		 << "\n"; // outputs 10
+	     << "\n";  // outputs 10
 }
 ```
 
@@ -110,6 +110,6 @@ int main() {
 	function<int(int, int)> gcd = [&](int a, int b) {
 		return b == 0 ? a : gcd(b, a % b);
 	};
-	cout << gcd(20, 30) << '\n'; // outputs 10
+	cout << gcd(20, 30) << '\n';  // outputs 10
 }
 ```

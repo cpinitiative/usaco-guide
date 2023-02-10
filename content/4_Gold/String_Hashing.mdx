@@ -53,7 +53,7 @@ class HashedString {
 
 	long long getHash(int start, int end) {
 		long long raw_val =
-			(p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
+		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
 		return (raw_val % M + M) % M;
 	}
 };
@@ -69,7 +69,7 @@ import java.util.*;
 
 public class HashedString {
 	// Change M and B if you want
-	public static final long M = (long) 1e9 + 9;
+	public static final long M = (long)1e9 + 9;
 	public static final long B = 9973;
 
 	// pow[i] contains B^i % M
@@ -79,13 +79,11 @@ public class HashedString {
 	private long[] pHash;
 
 	public HashedString(String s) {
-		if (pow.isEmpty()) {
-			pow.add(1L);
-		}
+		if (pow.isEmpty()) { pow.add(1L); }
 		while (pow.size() < s.length()) {
 			pow.add((pow.get(pow.size() - 1) * B) % M);
 		}
-		
+
 		pHash = new long[s.length() + 1];
 		pHash[0] = 0;
 		for (int i = 0; i < s.length(); i++) {
@@ -94,7 +92,8 @@ public class HashedString {
 	}
 
 	public long getHash(int start, int end) {
-		long rawVal = pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
+		long rawVal =
+		    pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
 		return (rawVal % M + M) % M;
 	}
 }
@@ -124,9 +123,8 @@ class HashedString:
 			) % self.M
 
 	def get_hash(self, start: int, end: int) -> int:
-		raw_val = (
-			self._p_hash[end + 1]
-			- (self._p_hash[start] * self._pow[end - start + 1])
+		raw_val = self._p_hash[end + 1] - (
+			self._p_hash[start] * self._pow[end - start + 1]
 		)
 		return raw_val % self.M
 ```

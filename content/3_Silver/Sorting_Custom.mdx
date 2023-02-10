@@ -75,7 +75,7 @@ or a `vector` of `array<int,3>`s or `vector<int>`s:
 ```cpp
 int main() {
 	int M = 4;
-	vector<array<int, 3>> v; // or vector<vector<int>>
+	vector<array<int, 3>> v;  // or vector<vector<int>>
 	for (int i = 0; i < M; ++i) {
 		int a, b, w;
 		cin >> a >> b >> w;
@@ -123,8 +123,8 @@ struct Edge {
 
 /* alternatively,
 class Edge {
-	public:
-		int a,b,w;
+    public:
+        int a,b,w;
 };
 */
 
@@ -149,8 +149,12 @@ import java.util.*;
 
 public class Sol {
 	static class Edge {
-		int a,b,w;
-		public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+		int a, b, w;
+		public Edge(int _a, int _b, int _w) {
+			a = _a;
+			b = _b;
+			w = _w;
+		}
 	}
 	public static void main(String[] args) {
 		int M = 4;
@@ -160,9 +164,9 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new Edge(a,b,w));
+			v.add(new Edge(a, b, w));
 		}
-		for (Edge e: v){
+		for (Edge e : v) {
 			System.out.print(e.a);
 			System.out.print(' ');
 			System.out.print(e.b);
@@ -184,13 +188,14 @@ class Edge:
 		self.b = b
 		self.w = w
 
+
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 </PySection>
@@ -366,9 +371,13 @@ import java.util.*;
 
 public class Sol {
 	static class Edge implements Comparable<Edge> {
-	    int a,b,w;
-	    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
-	    public int compareTo(Edge y) { return Integer.compare(w,y.w); }
+		int a, b, w;
+		public Edge(int _a, int _b, int _w) {
+			a = _a;
+			b = _b;
+			w = _w;
+		}
+		public int compareTo(Edge y) { return Integer.compare(w, y.w); }
 	}
 	public static void main(String[] args) {
 		int M = 4;
@@ -378,10 +387,10 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new Edge(a,b,w));
+			v.add(new Edge(a, b, w));
 		}
 		Collections.sort(v);
-		for (Edge e: v){
+		for (Edge e : v) {
 			System.out.print(e.a);
 			System.out.print(' ');
 			System.out.print(e.b);
@@ -402,13 +411,15 @@ import java.util.*;
 
 public class Sol {
 	static class Edge {
-	    int a,b,w;
-	    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+		int a, b, w;
+		public Edge(int _a, int _b, int _w) {
+			a = _a;
+			b = _b;
+			w = _w;
+		}
 	}
 	static class Comp implements Comparator<Edge> {
-	    public int compare(Edge a, Edge b) {
-	        return Integer.compare(a.w, b.w);
-	    }
+		public int compare(Edge a, Edge b) { return Integer.compare(a.w, b.w); }
 	}
 	public static void main(String[] args) {
 		int M = 4;
@@ -418,10 +429,10 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new Edge(a,b,w));
+			v.add(new Edge(a, b, w));
 		}
 		Collections.sort(v, new Comp());
-		for (Edge e: v){
+		for (Edge e : v) {
 			System.out.print(e.a);
 			System.out.print(' ');
 			System.out.print(e.b);
@@ -450,17 +461,19 @@ class Edge:
 		self.a = a
 		self.b = b
 		self.w = w
-	def __lt__(self, other): # lt means less than
+
+	def __lt__(self, other):  # lt means less than
 		return self.w < other.w
+
 
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
 v.sort()
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 ### Key Function
@@ -476,14 +489,15 @@ class Edge:
 		self.b = b
 		self.w = w
 
+
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
-v.sort(key=lambda x:x.w)
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
+v.sort(key=lambda x: x.w)
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 ### Comparison Function
@@ -500,21 +514,23 @@ this.
 ```py
 from functools import cmp_to_key
 
+
 class Edge:
 	def __init__(self, a, b, w):
 		self.a = a
 		self.b = b
 		self.w = w
 
+
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
 
-v.sort(key=cmp_to_key(lambda a,b: a.w-b.w))
+v.sort(key=cmp_to_key(lambda a, b: a.w - b.w))
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 </PySection>
@@ -558,11 +574,15 @@ struct Edge {
 
 ```java
 static class Edge implements Comparable<Edge> {
-	int a,b,w;
-	public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	int a, b, w;
+	public Edge(int _a, int _b, int _w) {
+		a = _a;
+		b = _b;
+		w = _w;
+	}
 	public int compareTo(Edge y) {
-		if (w != y.w) return Integer.compare(w,y.w);
-		return Integer.compare(a,y.a);
+		if (w != y.w) return Integer.compare(w, y.w);
+		return Integer.compare(a, y.a);
 	}
 }
 ```
@@ -580,7 +600,8 @@ class Edge:
 		self.a = a
 		self.b = b
 		self.w = w
-	def __lt__(self, other): # lt means less than
+
+	def __lt__(self, other):  # lt means less than
 		return (self.w, self.a) < (other.w, other.a)
 ```
 
@@ -613,9 +634,9 @@ import java.util.*;
 
 public class Sol {
 	static class Comp implements Comparator<int[]> {
-		public int compare(int[] a, int[] b){
+		public int compare(int[] a, int[] b) {
 			for (int i = 0; i < a.length; ++i)
-				if (a[i] != b[i]) return Integer.compare(a[i],b[i]);
+				if (a[i] != b[i]) return Integer.compare(a[i], b[i]);
 			return 0;
 		}
 	}
@@ -627,10 +648,10 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new int[]{w,a,b});
+			v.add(new int[] {w, a, b});
 		}
 		Collections.sort(v, new Comp());
-		for (int[] e: v){
+		for (int[] e : v) {
 			System.out.print(e[1]);
 			System.out.print(' ');
 			System.out.print(e[2]);

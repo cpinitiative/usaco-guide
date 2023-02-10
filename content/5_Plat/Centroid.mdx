@@ -204,8 +204,8 @@ Ben - this is not easy to understand :/
 <!-- pulled from https://codeforces.com/contest/1303/submission/76216413, which I think is my most recent centroid problem -->
 
 ```cpp
-bool r[MN]; // removed
-int s[MN];	// subtree size
+bool r[MN];  // removed
+int s[MN];   // subtree size
 int dfs(int n, int p = 0) {
 	s[n] = 1;
 	for (int x : a[n])
@@ -213,7 +213,7 @@ int dfs(int n, int p = 0) {
 	return s[n];
 }
 int get_centroid(int n, int ms,
-				 int p = 0) // n = node, ms = size of tree, p = parent
+                 int p = 0)  // n = node, ms = size of tree, p = parent
 {
 	for (int x : a[n])
 		if (x != p && !r[x])
@@ -255,14 +255,10 @@ private static class Centroid {
 	}
 
 	private int getSize(int u, int v) {
-		if (seen[u]) {
-			return 0;
-		}
+		if (seen[u]) { return 0; }
 		size[u] = 1;
 		for (int next : g[u]) {
-			if (next != v) {
-				size[u] += getSize(next, u);
-			}
+			if (next != v) { size[u] += getSize(next, u); }
 		}
 		return size[u];
 	}
@@ -273,9 +269,7 @@ private static class Centroid {
 		seen[c] = true;
 		parent[c] = v;
 		for (int next : g[c]) {
-			if (!seen[next]) {
-				initCentroid(next, c);
-			}
+			if (!seen[next]) { initCentroid(next, c); }
 		}
 	}
 

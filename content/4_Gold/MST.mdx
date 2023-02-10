@@ -75,7 +75,7 @@ template <class T> T kruskal(int N, vector<pair<T, pi>> ed) {
 	sort(all(ed));
 	T ans = 0;
 	DSU D;
-	D.init(N); // edges that unite are in MST
+	D.init(N);  // edges that unite are in MST
 	trav(a, ed) if (D.unite(a.s.f, a.s.s)) ans += a.f;
 	return ans;
 }
@@ -87,9 +87,9 @@ template <class T> T kruskal(int N, vector<pair<T, pi>> ed) {
 
 ```java
 public static HashMap<Integer, ArrayList<Integer>> MST;
-public static PriorityQueue<Edge> pq; //contains all edges
+public static PriorityQueue<Edge> pq;  // contains all edges
 
-//Assumes that DSU code is included
+// Assumes that DSU code is included
 public static void kruskal() {
 	while (!pq.isEmpty()) {
 		Edge e = pq.poll();
@@ -102,9 +102,7 @@ public static void kruskal() {
 }
 
 static class Edge implements Comparable<Edge> {
-	int start,
-	end,
-	weight;
+	int start, end, weight;
 	public Edge(int s, int e, int w) {
 		start = s;
 		end = e;
@@ -177,7 +175,7 @@ struct DSU {
 template <class T> T kruskal(int N, vector<pair<T, pair<int, int>>> edges) {
 	sort(edges.begin(), edges.end());
 	T ans = 0;
-	DSU D(N + 1); // edges that unite are in MST
+	DSU D(N + 1);  // edges that unite are in MST
 	for (pair<T, pair<int, int>> &e : edges) {
 		if (D.unite(e.second.first, e.second.second)) { ans += e.first; }
 	}
@@ -220,13 +218,14 @@ class Kruskal {
 	static int disjoint[];
 	static int size[];
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		PriorityQueue<Edge> pq = new PriorityQueue < Edge > ();
+		PriorityQueue<Edge> pq = new PriorityQueue<Edge>();
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(sc.readLine());
 			int a = Integer.parseInt(st.nextToken());
@@ -252,18 +251,14 @@ class Kruskal {
 		out.close();
 	}
 	public static int find(int v) {
-		if (disjoint[v] == -1) {
-			return v;
-		}
+		if (disjoint[v] == -1) { return v; }
 		disjoint[v] = find(disjoint[v]);
 		return disjoint[v];
 	}
 	public static void union(int u, int v) {
 		int uroot = find(u);
 		int vroot = find(v);
-		if (uroot == vroot) {
-			return;
-		}
+		if (uroot == vroot) { return; }
 		if (size[uroot] < size[vroot]) {
 			disjoint[uroot] = vroot;
 			size[vroot] = size[uroot] + size[vroot];
@@ -406,16 +401,15 @@ class Prim {
 	static long[] dist;
 	static long max = 10000000000000000L;
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		tree = new HashMap<Integer, ArrayList<Edge>> ();
-		for (int i = 1; i <= N; i++) {
-			tree.put(i, new ArrayList<Edge> ());
-		}
+		tree = new HashMap<Integer, ArrayList<Edge>>();
+		for (int i = 1; i <= N; i++) { tree.put(i, new ArrayList<Edge>()); }
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(sc.readLine());
 			int a = Integer.parseInt(st.nextToken());
@@ -432,7 +426,7 @@ class Prim {
 	static long prim(int source) {
 		dist = new long[N + 1];
 		boolean[] visited = new boolean[N + 1];
-		PriorityQueue<Pair> pq = new PriorityQueue<Pair> ();
+		PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
 		Arrays.fill(dist, max);
 		dist[source] = 0;
 		long ret = 0;
@@ -440,13 +434,11 @@ class Prim {
 		while (!pq.isEmpty()) {
 			Pair p = pq.poll();
 			int v = p.b;
-			if (visited[v]) {
-				continue;
-			}
+			if (visited[v]) { continue; }
 			visited[v] = true;
 			ct++;
 			ret += dist[v];
-			for (Edge e: tree.get(v)) {
+			for (Edge e : tree.get(v)) {
 				if (e.weight < dist[e.end] && !visited[e.end]) {
 					dist[e.end] = e.weight;
 					pq.add(new Pair(dist[e.end], e.end));
@@ -490,6 +482,7 @@ class Pair implements Comparable<Pair> {
 ```py
 import heapq
 
+
 def prim(n, G):
 	used = [False for _ in range(n)]
 	pq = [(0, 0)]
@@ -506,6 +499,7 @@ def prim(n, G):
 			if not used[neigh_node]:
 				heapq.heappush(pq, (neigh_weight, neigh_node))
 	return total_weight if count == n else -1
+
 
 n, m = map(int, input().split())
 G = [[] for _ in range(n)]
