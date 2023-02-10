@@ -5,144 +5,196 @@ title: Year of the Cow
 author: Ananth Kashyap, Brad Ma
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_prob1_bronze_feb21.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob1_bronze_feb21.html)
 
-In this problem, we want to find the number of years separating Elsie and Bessie. For every line of the input, we can calculate the number of years separating the two cows. Then, we can store a cumulative value that holds the number of years separating Bessie and the second cow in the input line, as the first cow in the input line is guaranteed to appear in a previous line. When Elsie appears (as the second cow) in the input line, we can readjust our cumulative value, which will be our answer.
+We start by setting Bessie's birth year to 0 (or any value, really).
+Then, for each new cow given in the input, we find that cow's birth year
+relative to Bessie.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
+<CPPSection>
 
-<PySection>
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+#include <algorithm>
 
-```python
-n = int(input())
-arr = []
-for i in range(n):
-	# Keep track of only keywords from each line of the input
-	tarr = input().split(' ')
-	arr.append([tarr[0], tarr[3], tarr[4], tarr[7]])
+using std::cout;
+using std::endl;
+using std::vector;
+using std::string;
 
-# Store the order of the Chinese year names
-years = ['Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse',
-		 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig', 'Rat']
+const vector<string> ZODIAC{
+	"Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
+	"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
+};
 
-for i in range(n):
-	# Find the number of years separating the cows in each line of the input
-	if arr[i][3] == 'Bessie':
-		arr[i].append(years.index(arr[i][2]))
-		arr[i].append(0)
-	else:
-		for j in range(i - 1, -1, -1):
-			if arr[j][0] == arr[i][3]:
-				value = j
-		arr[i].append(years.index(arr[i][2]))
-		arr[i].append(years.index(arr[value][2]))
-	if arr[i][1] == 'previous':
-		if arr[i][4] >= arr[i][5]:
-			arr[i].append(-12 + arr[i][4] - arr[i][5])
-		else:
-			arr[i].append(arr[i][4] - arr[i][5])
-	else:
-		if arr[i][4] <= arr[i][5]:
-			arr[i].append(12 - (arr[i][5] - arr[i][4]))
-		else:
-			arr[i].append(arr[i][4] - arr[i][5])
-	# Store the number of years separating Bessie and the second cow in the line
-	if arr[i][3] == 'Bessie':
-		arr[i].append(arr[i][6])
-	else:
-		for j in range(i - 1, -1, -1):
-			if arr[j][0] == arr[i][3]:
-				value = j
-				arr[i].append(arr[i][6] + arr[value][7])
-	if arr[i][0] == 'Elsie':
-		ans = arr[i][7]
-		break
+struct Relation {
+	string name;
+	bool prev;  // is this a "previous" or "next" relation?
+	int year;
+	string relative;
+};
 
-print(abs(ans))
+int mod(int n, int m) {
+	return ((n % m) + m) % m;
+}
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	vector<Relation> relations(n);
+	for (Relation& r : relations) {
+		string unused;
+		string prev_str;
+		string animal;
+		std::cin >> r.name >> unused >> unused 
+				 >> prev_str >> animal >> unused >> unused
+				 >> r.relative;
+		
+		r.prev = prev_str == "previous";
+		r.year = std::find(ZODIAC.begin(), ZODIAC.end(), animal) - ZODIAC.begin();
+	}
+
+	std::map<string, int> birthYears{{"Bessie", 0}};
+	for (Relation r : relations) {
+		int change = r.prev ? -1 : 1;
+		// +change because it has to be at least 1 year off
+		int year = birthYears[r.relative] + change;
+		while (mod(year, ZODIAC.size()) != r.year) {
+			year += change;
+		}
+		birthYears[r.name] = year;
+	}
+
+	int dist = abs(birthYears["Bessie"] - birthYears["Elsie"]);
+	cout << dist << endl;
+}
 ```
 
-</PySection>
-	
+</CPPSection>
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
 
 public class YearOfTheCow {
-	static String[] animals = {
+	static final String[] ZODIAC = {
 		"Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
 		"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
 	};
 
-	static Map<String, Integer> whenBorn = new TreeMap<>();
-
-	// given a year, return what animal the year is
-	static String getAnimal(int year) {
-		int currAnimal = 0, currYear = 2021;
-		while (currYear < year) {
-			currYear++;
-			currAnimal++;
-			if (currAnimal == 12) {  // end of a 12 year cycle
-				currAnimal = 0;
-			}
+	//BeginCodeSnip{Relation Class}
+	static class Relation {
+		String name;
+		boolean prev;  // is this a "previous" or "next" relation?
+		int year;
+		String relative;
+		public Relation(String name, boolean prev, int year, String relative) {
+			this.name = name;
+			this.prev = prev;
+			this.year = year;
+			this.relative = relative;
 		}
-		while (currYear > year) {
-			currYear--;
-			currAnimal--;
-			if (currAnimal == -1) {  // end of a 12 year cycle
-				currAnimal = 11;
-			}
-		}
-		return animals[currAnimal];
 	}
+	//EndCodeSnip
 
 	public static void main (String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
-		whenBorn.put("Bessie", 2021);
 
-		String cowA, born, in, relation, animal, year, from, cowB;
-		for (int i = 0; i < n; i++) {
-			cowA = io.next();
-			born = io.next();
-			in = io.next();
-			relation = io.next();
-			animal = io.next();
-			year = io.next();
-			from = io.next();
-			cowB = io.next();
-
-			whenBorn.put(cowA, whenBorn.get(cowB));
-
-			/*
-			 * make sure that the loop is executed at least once and
-			 * keep on updating the birth year until it
-			 * matches the animal we want
-			 */
-			do {
-				if (relation.equals("previous")) {
-					whenBorn.put(cowA, whenBorn.get(cowA) - 1);
-				} else {
-					whenBorn.put(cowA, whenBorn.get(cowA) + 1);
+		Relation[] relations = new Relation[n];
+		for (int r = 0; r < n; r++) {
+			String name = io.next();
+			io.next();
+			io.next();
+			boolean prev = io.next().equals("previous");
+			String animal = io.next();
+			int year = -1;
+			for (int i = 0; i < ZODIAC.length; i++) {
+				if (ZODIAC[i].equals(animal)) {
+					year = i;
 				}
-			} while (!getAnimal(whenBorn.get(cowA)).equals(animal));
+			}
+			io.next();
+			io.next();
+			String relative = io.next();
+			relations[r] = new Relation(name, prev, year, relative);
 		}
 
-		// we want the positive difference so take the absolute value
-		int diff = Math.abs(whenBorn.get("Bessie") - whenBorn.get("Elsie"));
+		Map<String, Integer> birthYears = new HashMap<>();
+		birthYears.put("Bessie", 0);
+		for (Relation r : relations) {
+			int change = r.prev ? -1 : 1;
+			// +change because it has to be at least 1 year off
+			int year = birthYears.get(r.relative) + change;
+			while (mod(year, ZODIAC.length) != r.year) {
+				year += change;
+			}
+			birthYears.put(r.name, year);
+		}
 
-		io.println(diff);
+		int dist = Math.abs(birthYears.get("Bessie") - birthYears.get("Elsie"));
+		io.println(dist);
 		io.close();
 	}
+
+	static int mod(int n, int m) {
+		return ((n % m) + m) % m;
+	}
+
 	//CodeSnip{Kattio}
 }
 ```
-	
-</JavaSection>
 
+</JavaSection>
+<PySection>
+
+```python
+from typing import NamedTuple
+
+ZODIAC = [
+	'OX', 'TIGER', 'RABBIT', 'DRAGON', 'SNAKE', 'HORSE',
+	'GOAT', 'MONKEY', 'ROOSTER', 'DOG', 'PIG', 'RAT'
+]
+
+class Relation(NamedTuple):
+	name: str
+	prev: bool  # is this a "previous" or "next" relation?
+	year: int
+	relative: str
+
+
+relations = []
+for _ in range(int(input())):
+	relation = input().upper().split()
+	relations.append(Relation(
+		relation[0],
+		relation[3] == 'PREVIOUS',
+		ZODIAC.index(relation[4]),
+		relation[7]
+	))
+
+birth_years = {'BESSIE': 0}
+for r in relations:
+	change = -1 if r.previous else 1
+	# +change because it has to be at least 1 year off
+	this_year = birth_years[r.relative] + change
+	while this_year % len(ZODIAC) != r.year:
+		this_year += change
+	birth_years[r.name] = this_year
+
+dist = abs(birth_years['BESSIE'] - birth_years['ELSIE'])
+print(dist)
+```
+
+</PySection>
 </LanguageSection>

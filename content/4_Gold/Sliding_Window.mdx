@@ -50,15 +50,13 @@ $\mathcal{O}(\log N)$.
 <CPPSection>
 
 ```cpp
-vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 	multiset<int> s;
 	vector<int> ret;
-	for(int i = 0; i < k; i++){
-		s.insert(nums[i]);
-	}
-	for(int i = k; i < nums.size(); i++){
+	for (int i = 0; i < k; i++) { s.insert(nums[i]); }
+	for (int i = k; i < nums.size(); i++) {
 		ret.push_back(*s.rbegin());
-		s.erase(s.find(nums[i-k]));
+		s.erase(s.find(nums[i - k]));
 		s.insert(nums[i]);
 	}
 	ret.push_back(*s.rbegin());
@@ -136,10 +134,11 @@ int a[200000], ans;
 
 int main() {
 	int r = -1;
-	cin >> n; F0R(i,n) cin >> a[i];
-	F0R(i,n) {
-		while (r < n-1 && !s.count(a[r+1])) s.insert(a[++r]);
-		ans = max(ans,r-i+1);
+	cin >> n;
+	F0R(i, n) cin >> a[i];
+	F0R(i, n) {
+		while (r < n - 1 && !s.count(a[r + 1])) s.insert(a[++r]);
+		ans = max(ans, r - i + 1);
 		s.erase(a[i]);
 	}
 	cout << ans;
@@ -209,23 +208,17 @@ Method 2 from cp-algo.
 <CPPSection>
 
 ```cpp
-vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 	deque<int> d;
 	vector<int> ret;
-	for(int i = 0; i < k; i++){
-		while(!d.empty() && nums[i] > nums[d.back()]){
-			d.pop_back();
-		}
+	for (int i = 0; i < k; i++) {
+		while (!d.empty() && nums[i] > nums[d.back()]) { d.pop_back(); }
 		d.push_back(i);
 	}
-	for(int i = k; i < nums.size(); i++){
+	for (int i = k; i < nums.size(); i++) {
 		ret.push_back(nums[d.front()]);
-		if(!d.empty() && d.front() <= i-k){
-			d.pop_front();
-		}
-		while(!d.empty() && nums[i] >= nums[d.back()]){
-			d.pop_back();
-		}
+		if (!d.empty() && d.front() <= i - k) { d.pop_front(); }
+		while (!d.empty() && nums[i] >= nums[d.back()]) { d.pop_back(); }
 		d.push_back(i);
 	}
 	ret.push_back(nums[d.front()]);
@@ -315,9 +308,7 @@ struct MaxQueue {
 	 * It is the maximum of both stacks which are stored in s.top().second.
 	 */
 	int query() {
-		if (s1.empty() && s2.empty()) {
-			return -1e9;
-		}
+		if (s1.empty() && s2.empty()) { return -1e9; }
 		if (s1.empty() || s2.empty()) {
 			return s1.empty() ? s2.top().second : s1.top().second;
 		}
@@ -333,8 +324,8 @@ struct MaxQueue {
 	}
 
 	/**
-	 * Remove the first element from our MaxQueue by poping the top 
-	 * element from s2. 
+	 * Remove the first element from our MaxQueue by poping the top
+	 * element from s2.
 	 */
 	void dequeue() {
 		if (s2.empty()) {
@@ -350,15 +341,13 @@ struct MaxQueue {
 };
 
 class Solution {
-public:
+  public:
 	vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 		MaxQueue q;
 		vector<int> max_vals;
 
 		// Fill the queue with elements from the first window
-		for (int i = 0; i < k; i++) {
-			q.enqueue(nums[i]);
-		}
+		for (int i = 0; i < k; i++) { q.enqueue(nums[i]); }
 		max_vals.push_back(q.query());
 
 		/*

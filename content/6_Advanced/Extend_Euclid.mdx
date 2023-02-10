@@ -119,12 +119,10 @@ array<ll, 3> extend_euclid(ll a, ll b) {
 	while (y[2] > 0) {
 		// keep subtracting multiple of one equation from the other
 		ll k = x[2] / y[2];
-		for (int i = 0; i < 3; i++) {
-			x[i] -= k * y[i];
-		}
+		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
 		swap(x, y);
 	}
-	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
+	return x; // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
 }
 ```
 
@@ -190,9 +188,7 @@ def extend_euclid(a: int, b: int) -> list[int]:
 
 ```cpp
 ll euclid(ll a, ll b) {
-	if (b == 0) {
-		return a;
-	}
+	if (b == 0) { return a; }
 	return euclid(b, a % b);
 }
 ```
@@ -231,11 +227,9 @@ becomes
 <CPPSection>
 
 ```cpp
-pl extend_euclid(ll a, ll b) {  // returns {x,y}
-	if (b == 0) {
-		return {1, 0};
-	}
-	pl p = extend_euclid(b, a % b); 
+pl extend_euclid(ll a, ll b) { // returns {x,y}
+	if (b == 0) { return {1, 0}; }
+	pl p = extend_euclid(b, a % b);
 	return {p.s, p.f - a / b * p.s};
 }
 ```
@@ -301,7 +295,7 @@ $n^2 < \texttt{LLONG\_MAX}$.
 ```cpp
 ll inv_general(ll a, ll b) {
 	array<ll, 3> x = extend_euclid(a, b);
-	assert(x[2] == 1);  // gcd must be 1
+	assert(x[2] == 1); // gcd must be 1
 	return x[0] + (x[0] < 0) * b;
 }
 ```

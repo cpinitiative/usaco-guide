@@ -62,13 +62,12 @@ iterate through each row from $0$ to $M-1$:
 
 ```cpp
 
-for(int i = 0; i < M; i++) {
-	for(int j = 0; j < N; j++) {
-		if(j > 0) dp[j][i] += dp[j - 1][i];
-		if(i > 0) dp[j][i] += dp[j][i - 1];
+for (int i = 0; i < M; i++) {
+	for (int j = 0; j < N; j++) {
+		if (j > 0) dp[j][i] += dp[j - 1][i];
+		if (i > 0) dp[j][i] += dp[j][i - 1];
 	}
 }
-
 ```
 
 </CPPSection>
@@ -151,23 +150,24 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	int n; cin >> n;
-	for(int i = 0; i < n; i++) {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
 		string s;
 		cin >> s;
-		for(int j = 0; j < n; j++) {
-			if(s[j] == '.') ok[i][j] = true;
+		for (int j = 0; j < n; j++) {
+			if (s[j] == '.') ok[i][j] = true;
 			else ok[i][j] = false;
 		}
 	}
 
 	dp[0][0] = 1;
-	for(int i = 0; i < n; i++) {
-		for(int j = 0; j < n; j++) {
-			if(!ok[i][j]) dp[i][j] = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (!ok[i][j]) dp[i][j] = 0;
 			else {
-				if(i > 0) dp[i][j] += dp[i - 1][j];
-				if(j > 0) dp[i][j] += dp[i][j - 1];
+				if (i > 0) dp[i][j] += dp[i - 1][j];
+				if (j > 0) dp[i][j] += dp[i][j - 1];
 				dp[i][j] %= 1000000007;
 			}
 		}
@@ -339,23 +339,21 @@ $$
 
 ```cpp
 class Solution {
-public:
+  public:
 	int longestCommonSubsequence(string a, string b) {
 		int dp[a.size()][b.size()];
+		for (int i = 0; i < a.size(); i++) { fill(dp[i], dp[i] + b.size(), 0); }
 		for (int i = 0; i < a.size(); i++) {
-			fill(dp[i], dp[i] + b.size(), 0);
-		}
-		for (int i = 0; i < a.size(); i++) {
-			if(a[i] == b[0]) dp[i][0] = 1;
-			if(i != 0) dp[i][0] = max(dp[i][0], dp[i - 1][0]);
+			if (a[i] == b[0]) dp[i][0] = 1;
+			if (i != 0) dp[i][0] = max(dp[i][0], dp[i - 1][0]);
 		}
 		for (int i = 0; i < b.size(); i++) {
-			if(a[0] == b[i]) dp[0][i] = 1;
-			if(i != 0) dp[0][i] = max(dp[0][i], dp[0][i - 1]);
+			if (a[0] == b[i]) dp[0][i] = 1;
+			if (i != 0) dp[0][i] = max(dp[0][i], dp[0][i - 1]);
 		}
 		for (int i = 1; i < a.size(); i++) {
 			for (int j = 1; j < b.size(); j++) {
-				if(a[i] == b[j]) {
+				if (a[i] == b[j]) {
 					dp[i][j] = dp[i - 1][j - 1] + 1;
 				} else {
 					dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);

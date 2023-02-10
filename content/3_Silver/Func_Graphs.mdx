@@ -53,24 +53,23 @@ itself).
 <!-- <Spoiler title="Tortoise and Hare Algrotihm">
 
 ```cpp
-//UNTESTED
-pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of cycle, distance from start node to in cycle)
+// UNTESTED
+pair<int, int>
+detect_cycle(int *next, int start_node) // return pair(length of cycle, distance
+										// from start node to in cycle)
 {
-	int t=start_node, h=start_node; //tortoise and hare
-	do
-	{
-		t=next[t], h=next[h];
-	} while(t != h)
+	int t = start_node, h = start_node; // tortoise and hare
+	do {
+		t = next[t], h = next[h];
+	} while (t != h)
 
-	int dist=0;
+		int dist = 0;
 	t = start_node;
-	while(t != h)
-		++dist, t=next[t], h=next[h];
+	while (t != h) ++dist, t = next[t], h = next[h];
 
-	int len=1;
+	int len = 1;
 	h = next[t];
-	while(h != t)
-		++len, h=next[h];
+	while (h != t) ++len, h = next[h];
 	return make_pair(len, dist);
 }
 ```
@@ -109,40 +108,35 @@ in the cycle after another $t$ queries.
 #include <cstdio>
 #include <vector>
 
-void out(const std::vector<int>& x)
-{
+void out(const std::vector<int> &x) {
 	printf("next");
-	for(auto a:x) printf(" %d", a);
+	for (auto a : x) printf(" %d", a);
 	printf("\n");
 	fflush(stdout);
 }
 int N, g[20];
 char s[20];
-void read()
-{
+void read() {
 	scanf("%d", &N);
-	for (int i = 0; i < N; ++i)
-	{
+	for (int i = 0; i < N; ++i) {
 		scanf(" %s", s);
-		for (int j = 0; s[j]; ++j)
-			g[s[j]-'0'] = i;
+		for (int j = 0; s[j]; ++j) g[s[j] - '0'] = i;
 	}
 }
-int main()
-{
+int main() {
 	for (;;) // c*ceil(t/c) times
 	{
-		out({0,1});
+		out({0, 1});
 		read();
 		out({0});
 		read();
-		if(g[0] == g[1]) break;
+		if (g[0] == g[1]) break;
 	}
 	for (;;) // t times
 	{
-		out({0,1,2,3,4,5,6,7,8,9});
+		out({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 		read();
-		if(g[0] == g[2]) break;
+		if (g[0] == g[2]) break;
 	}
 	printf("done\n");
 	return 0;
@@ -213,7 +207,7 @@ Do you see why this is equivalent to the code mentioned in CPH?
 ```cpp
 a = succ(x);
 b = succ(succ(x));
-while(a != b) {
+while (a != b) {
 	a = succ(a);
 	b = succ(succ(b));
 }
@@ -246,7 +240,7 @@ $b$ corresponds to friend $1$ and $a$ corresponds to friend $0$.
 
 ```cpp
 a = x;
-while(a != b) {
+while (a != b) {
 	a = succ(a);
 	b = succ(b);
 }
@@ -298,7 +292,7 @@ in $\mathcal{O}(N)$.
 using namespace std;
 
 int N;
-vector<int> P,ans;
+vector<int> P, ans;
 bool in_cycle;
 
 void gen(int x) {
@@ -306,18 +300,22 @@ void gen(int x) {
 		if (ans[x] == -1) ans[x] = x, in_cycle = 1; // found a cycle!
 		return;
 	}
-	ans[x] = -1; gen(P[x]);
-	if (ans[x] != -1) { in_cycle = 0; return; }
+	ans[x] = -1;
+	gen(P[x]);
+	if (ans[x] != -1) {
+		in_cycle = 0;
+		return;
+	}
 	ans[x] = in_cycle ? x : ans[P[x]];
 }
 
 int main() {
 	cin >> N;
 	P.assign(N, 0);
-	for(int& x:P) cin >> x, --x;
+	for (int &x : P) cin >> x, --x;
 	ans.assign(N, -2);
-	for(int i=0;i<N;++i) gen(i); // in_cycle is always reset to 0
-	for(int t:ans) cout << t+1 << " ";
+	for (int i = 0; i < N; ++i) gen(i); // in_cycle is always reset to 0
+	for (int t : ans) cout << t + 1 << " ";
 }
 ```
 
@@ -453,73 +451,63 @@ int N;
 vector<int> adj, ans;
 vector<vector<int>> radj;
 
-void fill_radj(int x)
-{
-	for (auto &child : radj[x])
-	{
-		/* 
+void fill_radj(int x) {
+	for (auto &child : radj[x]) {
+		/*
 		 * As all nodes in the cycle are processed in function floyd,
 		 * the recursive call will only start at the nodes which
 		 * combine the cycle with the acyclic part of the connected component
-		 * where one of its outgoing arrows points to the node that is not processed yet. 
+		 * where one of its outgoing arrows points to the node that is not
+		 * processed yet.
 		 */
-		if (ans[child] == -1)
-		{
+		if (ans[child] == -1) {
 			ans[child] = ans[x];
 			fill_radj(child);
 		}
 	}
 }
 
-void floyd(int x)
-{
+void floyd(int x) {
 	int y = x;
-	do
-	{  // find a cycle using Floyd's algorithm
+	do { // find a cycle using Floyd's algorithm
 		x = adj[x];
 		y = adj[adj[y]];
 	} while (y != x);
-	do
-	{  // set ans[x] = x for all x along cycle
+	do { // set ans[x] = x for all x along cycle
 		ans[x] = x;
 		x = adj[x];
 	} while (y != x);
-	do
-	{  // set ans'es for all x not along cycle
+	do { // set ans'es for all x not along cycle
 		fill_radj(x);
 		x = adj[x];
 	} while (y != x);
 }
 
-int main()
-{
+int main() {
 	cin.tie(0)->sync_with_stdio(false);
 	cin >> N;
 
 	adj.assign(N, -1);
-	for (auto &e : adj)
-	{
+	for (auto &e : adj) {
 		cin >> e;
 		e--;
 	}
 
-	/* 
-	 * For each node, we have to use a vector to store its children;  
+	/*
+	 * For each node, we have to use a vector to store its children;
 	 * at nodes combining the cycle with other parts of the connected component,
-	 * there would be more than one outgoing arrow in the reversed adjacency list
+	 * there would be more than one outgoing arrow in the reversed adjacency
+	 * list
 	 */
 	radj.assign(N, {});
-	for (int i = 0; i < N; i++)
-		radj[adj[i]].push_back(i);
+	for (int i = 0; i < N; i++) radj[adj[i]].push_back(i);
 
 	ans.assign(N, -1);
 	// we run Floyd's algorithm for each connected component
 	for (int i = 0; i < N; i++)
-		if (ans[i] == -1)
-			floyd(i);
+		if (ans[i] == -1) floyd(i);
 
-	for (auto &a : ans)
-		cout << a + 1 << " ";
+	for (auto &a : ans) cout << a + 1 << " ";
 }
 ```
 
@@ -629,27 +617,22 @@ current chain of nodes points into a cycle that has already been considered.
 <CPPSection>
 
 ```cpp
-//UNTESTED
-//Each node points to next_node[node]
+// UNTESTED
+// Each node points to next_node[node]
 
 bool visited[MAXN], on_stack[MAXN];
 int number_of_cycles = 0, next_node[MAXN];
-void dfs(int n)
-{
+void dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	int u = next_node[n];
-	if(on_stack[u])
-		number_of_cycles++;
-	else if(!visited[u])
-		dfs(u);
+	if (on_stack[u]) number_of_cycles++;
+	else if (!visited[u]) dfs(u);
 	on_stack[n] = false;
 }
-int main()
-{
-	//read input, etc
-	for (int i = 1;i <= N;i++)
-		if(!visited[i])
-			dfs(i);
+int main() {
+	// read input, etc
+	for (int i = 1; i <= N; i++)
+		if (!visited[i]) dfs(i);
 }
 ```
 

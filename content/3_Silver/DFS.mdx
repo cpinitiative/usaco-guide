@@ -93,40 +93,35 @@ in a line.
 #include <cstdio>
 #include <vector>
 
-const int MN = 1e5+10;
+const int MN = 1e5 + 10;
 
 int N, M, ans, rep[MN];
 std::vector<int> adj_list[MN];
 bool visited[MN];
 
-void dfs(int node)
-{
+void dfs(int node) {
 	visited[node] = true;
-	for(int u:adj_list[node])
-		if(!visited[u])
-			dfs(u);
+	for (int u : adj_list[node])
+		if (!visited[u]) dfs(u);
 }
-int count_components()
-{
-	int count=0;
-	for(int i=1;i<=N;++i)
-		if(!visited[i])
-		{
-			rep[count++]=i;
+int count_components() {
+	int count = 0;
+	for (int i = 1; i <= N; ++i)
+		if (!visited[i]) {
+			rep[count++] = i;
 			dfs(i);
 		}
 	return count;
 }
 
-int main()
-{
+int main() {
 	scanf("%d%d", &N, &M);
-	for(int i=0,u,v;i<M;++i)
-		scanf("%d%d", &u, &v), adj_list[u].push_back(v), adj_list[v].push_back(u);
+	for (int i = 0, u, v; i < M; ++i)
+		scanf("%d%d", &u, &v), adj_list[u].push_back(v),
+			adj_list[v].push_back(u);
 	ans = count_components();
-	printf("%d\n", ans-1);
-	for(int i=1;i<ans;++i)
-		printf("%d %d\n", rep[i-1], rep[i]);
+	printf("%d\n", ans - 1);
+	for (int i = 1; i < ans; ++i) printf("%d %d\n", rep[i - 1], rep[i]);
 	return 0;
 }
 ```
@@ -467,37 +462,30 @@ rule.
 #include <cstdio>
 #include <vector>
 
-const int MN = 1e5+10;
+const int MN = 1e5 + 10;
 
 int N, M;
 bool bad, vis[MN], group[MN];
 std::vector<int> a[MN];
 
-void dfs(int n=1, bool g=0)
-{
-	vis[n]=1;
-	group[n]=g;
-	for(int u:a[n])
-		if(vis[u])
-		{
-			if(group[u]==g)
-				bad=1;
-		}
-		else
-			dfs(u, !g);
+void dfs(int n = 1, bool g = 0) {
+	vis[n] = 1;
+	group[n] = g;
+	for (int u : a[n])
+		if (vis[u]) {
+			if (group[u] == g) bad = 1;
+		} else dfs(u, !g);
 }
-int main()
-{
+int main() {
 	scanf("%d%d", &N, &M);
-	for(int i=0,u,v;i<M;++i)
+	for (int i = 0, u, v; i < M; ++i)
 		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
-	for(int i=1;!bad && i<=N;++i)
-		if(!vis[i])
-			dfs(i);
-	if(bad)
-		printf("IMPOSSIBLE\n");
+	for (int i = 1; !bad && i <= N; ++i)
+		if (!vis[i]) dfs(i);
+	if (bad) printf("IMPOSSIBLE\n");
 	else
-		for(int i=1;i<=N;++i) printf("%d%c", group[i]+1, " \n"[i==N]);
+		for (int i = 1; i <= N; ++i)
+			printf("%d%c", group[i] + 1, " \n"[i == N]);
 	return 0;
 }
 ```

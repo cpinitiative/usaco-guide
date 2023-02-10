@@ -73,20 +73,21 @@ int N;
 
 int main() {
 	re(N);
-	F0R(i,N) {
-		int x; re(x);
-		dp.pb(vl(i+2,-INF));
-		F0R(j,i+1) {
-			ckmax(dp.bk[j+1],dp[sz(dp)-2][j]-x);
-			ckmax(dp.bk[j],dp[sz(dp)-2][j]);
-			if (j) ckmax(dp.bk[j-1],dp[sz(dp)-2][j]+x);
+	F0R(i, N) {
+		int x;
+		re(x);
+		dp.pb(vl(i + 2, -INF));
+		F0R(j, i + 1) {
+			ckmax(dp.bk[j + 1], dp[sz(dp) - 2][j] - x);
+			ckmax(dp.bk[j], dp[sz(dp) - 2][j]);
+			if (j) ckmax(dp.bk[j - 1], dp[sz(dp) - 2][j] + x);
 		}
 	}
 	int cnt = 0;
-	trav(t,dp) {
-		pr("dp[",cnt++,"] = ");
+	trav(t, dp) {
+		pr("dp[", cnt++, "] = ");
 		pr('{');
-		F0R(i,sz(t)) {
+		F0R(i, sz(t)) {
 			if (i) cout << ", ";
 			cout << setw(3) << t[i];
 		}
@@ -238,12 +239,17 @@ differences in $dif[N]$ to go from $dp[N][N]$ to $dp[N][0]$.
 using namespace std;
 
 int main() {
-	int N; cin >> N;
-	priority_queue<int,vector<int>,greater<int>> pq;
+	int N;
+	cin >> N;
+	priority_queue<int, vector<int>, greater<int>> pq;
 	long long ans = 0;
 	for (int i = 0; i < N; ++i) {
-		int p; cin >> p; ans -= p;
-		pq.push(p); pq.push(p); pq.pop();
+		int p;
+		cin >> p;
+		ans -= p;
+		pq.push(p);
+		pq.push(p);
+		pq.pop();
 	}
 	for (int i = 0; i < N; ++i) {
 		ans += pq.top();
@@ -337,26 +343,29 @@ using namespace std;
 typedef long long ll;
 
 int N;
-ll fst = 0; // value of DP function at 0
+ll fst = 0;				   // value of DP function at 0
 priority_queue<ll> points; // points where DP function changes slope
 
 int main() {
 	cin >> N;
-	vector<ll> dif(N+1);
+	vector<ll> dif(N + 1);
 	for (int i = 1; i <= N; ++i) {
-		int a,b; cin >> a >> b;
-		dif[i] = a-b+dif[i-1];
+		int a, b;
+		cin >> a >> b;
+		dif[i] = a - b + dif[i - 1];
 	}
 	assert(dif[N] >= 0); // assume solution exists
 	for (int i = 1; i < N; ++i) {
 		if (dif[i] < 0) fst -= dif[i], dif[i] = 0;
 		fst += dif[i];
-		points.push(dif[i]); points.push(dif[i]);
+		points.push(dif[i]);
+		points.push(dif[i]);
 		points.pop();
 	}
 	while (points.size()) {
-		ll a = points.top(); points.pop();
-		fst -= min(a,dif[N]);
+		ll a = points.top();
+		points.pop();
+		fst -= min(a, dif[N]);
 	}
 	cout << fst << "\n";
 }
@@ -415,34 +424,41 @@ deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
 
 using namespace std;
 
-int N,X,Y,Z;
+int N, X, Y, Z;
 int difl, difr; // "lazy" update
 deque<int> L, R;
 long long ans;
 
 void rig() { // shift right A, so origin moves left
-	if (L.size() == 0) L.push_back(-Y-difl);
-	int t = L.back()+difl; L.pop_back();
-	t = max(t,-Y); ans -= t;
-	R.push_front(t-difr);
+	if (L.size() == 0) L.push_back(-Y - difl);
+	int t = L.back() + difl;
+	L.pop_back();
+	t = max(t, -Y);
+	ans -= t;
+	R.push_front(t - difr);
 }
 
 void lef() { // shift left B, so origin moves right
-	if (R.size() == 0) R.push_front(X-difr);
-	int t = R.front()+difr; R.pop_front();
-	t = min(t,X); ans += t;
-	L.push_back(t-difl);
+	if (R.size() == 0) R.push_front(X - difr);
+	int t = R.front() + difr;
+	R.pop_front();
+	t = min(t, X);
+	ans += t;
+	L.push_back(t - difl);
 }
 
 int main() {
-	freopen("landscape.in","r",stdin);
-	freopen("landscape.out","w",stdout);
+	freopen("landscape.in", "r", stdin);
+	freopen("landscape.out", "w", stdout);
 	cin >> N >> X >> Y >> Z;
 	for (int i = 0; i < N; ++i) {
-		int A,B; cin >> A >> B;
-		for (int j = 0; j < A; ++j) rig(); // or we can just do |A-B| shifts in one direction
+		int A, B;
+		cin >> A >> B;
+		for (int j = 0; j < A; ++j)
+			rig(); // or we can just do |A-B| shifts in one direction
 		for (int j = 0; j < B; ++j) lef();
-		difl -= Z, difr += Z; // adjust slopes differently for left and right of j=0
+		difl -= Z,
+			difr += Z; // adjust slopes differently for left and right of j=0
 	}
 	cout << ans << "\n";
 }
@@ -473,44 +489,44 @@ ofstream fout("landscape.out");
 const int MAXN = 100005;
 ll N, X, Y, Z, A, B;
 ll ls, rs, lv, zp;
-map<ll,ll> M;
+map<ll, ll> M;
 
-void fix_left(ll s){
-	if(ls >= s) return;
+void fix_left(ll s) {
+	if (ls >= s) return;
 	auto it = M.begin();
-	while(ls + it -> second <= s){
-		ls += it -> second;
-		lv += ls * (next(it) -> first - it -> first);
+	while (ls + it->second <= s) {
+		ls += it->second;
+		lv += ls * (next(it)->first - it->first);
 		M.erase(it++);
 	}
-	it -> second -= s - ls;
+	it->second -= s - ls;
 	ls = s;
 }
 
-void fix_right(ll s){
-	if(rs <= s) return;
+void fix_right(ll s) {
+	if (rs <= s) return;
 	auto it = --M.end();
-	while(rs - it -> second >= s){
-		rs -= it -> second;
+	while (rs - it->second >= s) {
+		rs -= it->second;
 		M.erase(it--);
 	}
-	it -> second += s - rs;
+	it->second += s - rs;
 	rs = s;
 }
 
-void advance(){
-	ll lo = M.begin() -> first;
-	if(zp < lo) lv += ls * (zp - lo);
+void advance() {
+	ll lo = M.begin()->first;
+	if (zp < lo) lv += ls * (zp - lo);
 	else lv += Z * (zp - lo);
 	ls -= Z, rs += Z;
 	M[zp] += 2 * Z;
 }
 
-int main(){
+int main() {
 	fin >> N >> X >> Y >> Z;
 	ls = -INF, rs = INF;
 	M[0] = 2 * INF;
-	for(int i = 0; i < N; i++){
+	for (int i = 0; i < N; i++) {
 		fin >> A >> B;
 		zp += B - A;
 		fix_left(-Y);
@@ -518,9 +534,9 @@ int main(){
 		advance();
 	}
 	ll res = lv, s = ls;
-	for(auto it = M.begin(); it -> first < zp; it++){
-		s += it -> second;
-		res += s * (next(it) -> first - it -> first);
+	for (auto it = M.begin(); it->first < zp; it++) {
+		s += it->second;
+		res += s * (next(it)->first - it->first);
 	}
 	fout << res << '\n';
 }

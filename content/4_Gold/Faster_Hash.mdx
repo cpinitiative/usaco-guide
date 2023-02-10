@@ -53,7 +53,8 @@ using namespace __gnu_pbds;
 the blog:
 
 ```cpp
-const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
+const int RANDOM =
+	chrono::high_resolution_clock::now().time_since_epoch().count();
 struct chash {
 	int operator()(int x) const { return x ^ RANDOM; }
 };
@@ -76,19 +77,12 @@ We can modify the declaration of `gp_hash_table` so that it supports the
 `resize` function, which operates similarly.
 
 ```cpp
-template<class K,class V> using ht = gp_hash_table<
-		K,
-		null_type,
-		hash<K>,
-		equal_to<K>,
-		direct_mask_range_hashing<>,
-		linear_probe_fn<>,
-		hash_standard_resize_policy<
-			hash_exponential_size_policy<>,
-			hash_load_check_resize_trigger<>,
-			true
-		>
->;
+template <class K, class V>
+using ht = gp_hash_table<
+	K, null_type, hash<K>, equal_to<K>, direct_mask_range_hashing<>,
+	linear_probe_fn<>,
+	hash_standard_resize_policy<hash_exponential_size_policy<>,
+								hash_load_check_resize_trigger<>, true>>;
 ```
 
 These are the same template arguments as the default `gp_hash_table`, except
@@ -97,9 +91,10 @@ actual size of the hash table.
 
 ```cpp
 int main() {
-	ht<int,null_type> g; g.resize(5);
+	ht<int, null_type> g;
+	g.resize(5);
 	cout << g.get_actual_size() << "\n"; // 8
-	cout << g.size() << "\n"; // 0
+	cout << g.size() << "\n";			 // 0
 }
 ```
 
@@ -120,7 +115,7 @@ which case an error is thrown).
 Furthermore, if we construct `g` with the following arguments:
 
 ```cpp
-ht<int,null_type> g({},{},{},{},{1<<16});
+ht<int, null_type> g({}, {}, {}, {}, {1 << 16});
 ```
 
 then the actual size of `g` is always at least `1<<16` (regardless of calls to
@@ -154,46 +149,50 @@ using vi = vector<int>;
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
 
-using pi = pair<int,int>;
+using pi = pair<int, int>;
 #define f first
 #define s second
 #define mp make_pair
 
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	ios_base::sync_with_stdio(0);
+	cin.tie(0); // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
 	if (sz(name)) {
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
+		freopen((name + ".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 
-int N,Q;
+int N, Q;
 long long ans[5000][5000];
 vector<int> A;
 
 int main() {
 	setIO("threesum");
 	cin >> N >> Q;
-	A.resize(N); for (int i = 0; i < N; ++i) cin >> A[i];
+	A.resize(N);
+	for (int i = 0; i < N; ++i) cin >> A[i];
 	for (int i = 0; i < N; ++i) {
-		gp_hash_table<int,int> g({},{},{},{},{1<<13});
+		gp_hash_table<int, int> g({}, {}, {}, {}, {1 << 13});
 		// initialize with certain capacity, must be power of 2
-		for (int j = i+1; j < N; ++j) {
-			int res = -A[i]-A[j];
+		for (int j = i + 1; j < N; ++j) {
+			int res = -A[i] - A[j];
 			auto it = g.find(res);
 			if (it != end(g)) ans[i][j] = it->second;
-			g[A[j]] ++;
+			g[A[j]]++;
 		}
 	}
-	for (int i = N-1; i >= 0; --i) for (int j = i+1; j < N; ++j)
-		ans[i][j] += ans[i+1][j]+ans[i][j-1]-ans[i+1][j-1];
+	for (int i = N - 1; i >= 0; --i)
+		for (int j = i + 1; j < N; ++j)
+			ans[i][j] += ans[i + 1][j] + ans[i][j - 1] - ans[i + 1][j - 1];
 	for (int i = 0; i < Q; ++i) {
-		int a,b; cin >> a >> b;
-		cout << ans[a-1][b-1] << "\n";
+		int a, b;
+		cin >> a >> b;
+		cout << ans[a - 1][b - 1] << "\n";
 	}
 }
 ```
