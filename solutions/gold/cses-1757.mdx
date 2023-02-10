@@ -147,7 +147,8 @@ pq = []
 
 for i in range(1, n + 1):
 	if out[i] == 0:
-		# Any node with out[i] == 0 can be used, so we store all possible nodes in a max heap to get the node with the maximum id.
+		"""Any node with out[i] == 0 can be used, so we store all possible
+		nodes in a max heap to get the node with the maximum id."""
 		heapq.heappush(pq, -i)
 
 while pq:
@@ -157,9 +158,7 @@ while pq:
 		out[t] -= 1
 		if out[t] == 0:
 			heapq.heappush(pq, -t)  # Remove all edges that begin at `x`.
-
-for t in reversed(ans):
-	print(t, end=' ')
+print(' '.join(str(i) for i in reversed(ans)))
 ```
 </PySection>
 
