@@ -92,21 +92,22 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-	public static ArrayList <Integer> g[];
+	public static ArrayList<Integer> g[];
 	public static Pair maxl1[];
 	public static Pair maxl2[];
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		g = new ArrayList[N + 1];
 		maxl1 = new Pair[N + 1];
 		maxl2 = new Pair[N + 1];
 		for (int i = 0; i <= N; i++) {
-			g[i] = new ArrayList <Integer> ();
+			g[i] = new ArrayList<Integer>();
 			maxl1[i] = new Pair(0, 0);
 			maxl2[i] = new Pair(0, 0);
 		}
@@ -120,13 +121,11 @@ public class Main {
 		}
 		dfs1(1, 0);
 		dfs2(1, 0);
-		for (int i = 1; i <= N; i++) {
-			System.out.print(maxl1[i].f + " ");
-		}
+		for (int i = 1; i <= N; i++) { System.out.print(maxl1[i].f + " "); }
 	}
 	public static int dfs1(int i, int p) {
 		int ret = 0;
-		for (int next: g[i]) {
+		for (int next : g[i]) {
 			if (next != p) {
 				int c = dfs1(next, i);
 				ret = Math.max(ret, c + 1);
@@ -160,7 +159,7 @@ public class Main {
 				}
 			}
 		}
-		for (int next: g[i]) {
+		for (int next : g[i]) {
 			if (next != p) dfs2(next, i);
 		}
 	}

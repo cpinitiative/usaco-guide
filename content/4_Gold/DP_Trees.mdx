@@ -119,11 +119,11 @@ using pi = pair<int, int>;
 #define f first
 #define s second
 #define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
 	ios_base::sync_with_stdio(0);
-	cin.tie(0); // see Fast Input & Output
+	cin.tie(0);  // see Fast Input & Output
 	if (sz(name)) {
-		freopen((name + ".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
@@ -141,7 +141,7 @@ void dfs(int v, int p) {
 	for (int to : adj[v]) {
 		if (to != p) {
 			dp[v][1] = max(dp[v][1], dp[to][0] + 1 + dp[v][0] -
-										 max(dp[to][0], dp[to][1]));
+			                             max(dp[to][0], dp[to][1]));
 		}
 	}
 }
@@ -166,33 +166,34 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class TreeMatching {
 	static ArrayList<Integer> adj[];
 	static int dp[][];
 	static void dfs(int v, int p) {
 		for (int to : adj[v]) {
-			if(to != p) {
+			if (to != p) {
 				dfs(to, v);
 				dp[v][0] += Math.max(dp[to][0], dp[to][1]);
 			}
 		}
 		for (int to : adj[v]) {
-			if(to != p) {
-				dp[v][1] = Math.max(dp[v][1], dp[to][0] + 1 + dp[v][0] - Math.max(dp[to][0], dp[to][1]));
+			if (to != p) {
+				dp[v][1] =
+				    Math.max(dp[v][1], dp[to][0] + 1 + dp[v][0] -
+				                           Math.max(dp[to][0], dp[to][1]));
 			}
 		}
 	}
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		adj = new ArrayList[N];
 		dp = new int[N][2];
-		for (int i = 0; i < N; ++i) {
-			adj[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i < N; ++i) { adj[i] = new ArrayList<Integer>(); }
 		for (int i = 0; i < N - 1; ++i) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
@@ -256,8 +257,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class TreeMatching {
 	static ArrayList<Integer> adj[];
@@ -266,9 +267,9 @@ public class TreeMatching {
 	static int ans = 0;
 	static void dfs(int v, int p) {
 		for (int to : adj[v]) {
-			if(to != p) {
+			if (to != p) {
 				dfs(to, v);
-				if(!done[to] && !done[v]) {
+				if (!done[to] && !done[v]) {
 					done[v] = done[to] = true;
 					++ans;
 				}
@@ -276,13 +277,12 @@ public class TreeMatching {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		adj = new ArrayList[N];
 		done = new boolean[N];
-		for (int i = 0; i < N; ++i) {
-			adj[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i < N; ++i) { adj[i] = new ArrayList<Integer>(); }
 		for (int i = 0; i < N - 1; ++i) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;

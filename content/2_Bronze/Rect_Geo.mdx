@@ -168,9 +168,9 @@ int main() {
 	int a, b, c, d;
 	cin >> a >> b >> c >> d;
 
-	int total = (b - a) + (d - c); // the sum of the two intervals
+	int total = (b - a) + (d - c);  // the sum of the two intervals
 	int intersection =
-		max(min(b, d) - max(a, c), 0); // subtract the intersection
+	    max(min(b, d) - max(a, c), 0);  // subtract the intersection
 	int ans = total - intersection;
 
 	cout << ans << "\n";
@@ -539,7 +539,7 @@ int main() {
 	freopen("billboard.in", "r", stdin);
 	freopen("billboard.out", "w", stdout);
 
-	Rect a, b, t; // billboards a, b, and the truck
+	Rect a, b, t;  // billboards a, b, and the truck
 	cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
 	cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
 	cin >> t.x1 >> t.y1 >> t.x2 >> t.y2;
@@ -558,6 +558,7 @@ to understand.
 ```py
 import sys
 
+
 class Rect:
 	def __init__(self):
 		self.x1, self.y1, self.x2, self.y2 = map(int, input().split())
@@ -565,10 +566,12 @@ class Rect:
 	def area(self):
 		return (self.y2 - self.y1) * (self.x2 - self.x1)
 
+
 def intersect(p, q):
 	x_overlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
 	y_overlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
 	return x_overlap * y_overlap
+
 
 sys.stdin = open("billboard.in", "r")
 sys.stdout = open("billboard.out", "w")
@@ -577,7 +580,12 @@ rects = []
 for _ in range(3):
 	rects.append(Rect())
 
-print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - intersect(rects[1], rects[2]))
+print(
+	rects[0].area()
+	+ rects[1].area()
+	- intersect(rects[0], rects[2])
+	- intersect(rects[1], rects[2])
+)
 ```
 
 </PySection>
@@ -661,7 +669,7 @@ bool intersect(vector<int> s1, vector<int> s2) {
 
 	// no overlap
 	if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x || bl_a_y >= tr_b_y ||
-		tr_a_y <= bl_b_y) {
+	    tr_a_y <= bl_b_y) {
 		return false;
 	} else {
 		return true;
@@ -674,10 +682,10 @@ bool intersect(vector<int> s1, vector<int> s2) {
 boolean intersect(int[] s1, int[] s2) {
 	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
 	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
-	
+
 	// no overlap
-	if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
-			|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
+	if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x || bl_a_y >= tr_b_y ||
+	    tr_a_y <= bl_b_y) {
 		return false;
 	} else {
 		return true;
@@ -690,10 +698,9 @@ boolean intersect(int[] s1, int[] s2) {
 def intersect(s1, s2) -> bool:
 	bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
 	bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
-	
+
 	# no overlap
-	if (bl_a_x >= tr_b_x or tr_a_x <= bl_b_x
-			or bl_a_y >= tr_b_y or tr_a_y <= bl_b_y):
+	if bl_a_x >= tr_b_x or tr_a_x <= bl_b_x or bl_a_y >= tr_b_y or tr_a_y <= bl_b_y:
 		return False
 	else:
 		return True
@@ -725,7 +732,7 @@ int inter_area(vector<int> s1, vector<int> s2) {
 	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
 
 	return ((min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) *
-			(min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y)));
+	        (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y)));
 }
 ```
 
@@ -736,10 +743,9 @@ int inter_area(vector<int> s1, vector<int> s2) {
 def inter_area(s1, s2) -> int:
 	bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
 	bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
-	
-	return (
-		(min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x))
-		* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
+
+	return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) * (
+		min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y)
 	)
 ```
 
@@ -748,12 +754,10 @@ def inter_area(s1, s2) -> int:
 
 ```java
 int interArea(int[] s1, int[] s2) {
-	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
+	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
 	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
-	return (
-		(Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) 
-		* (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y))
-	);
+	return ((Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) *
+	        (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y)));
 }
 ```
 

@@ -70,8 +70,8 @@ using namespace std;
 
 #define pb push_back
 
-int N;								 // Number of nodes
-vector<int> graph[100000], top_sort; // Assume that this graph is a DAG
+int N;                                // Number of nodes
+vector<int> graph[100000], top_sort;  // Assume that this graph is a DAG
 bool visited[100000];
 
 void dfs(int node) {
@@ -109,7 +109,7 @@ int main() {
 	for (int i = 0; i < N; i++)
 		for (int j : graph[i])
 			if (ind[j] <= ind[i]) {
-				cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
+				cout << "IMPOSSIBLE\n";  // topological sort wasn't valid
 				exit(0);
 			}
 	for (int i : top_sort) cout << i + 1 << " ";
@@ -122,8 +122,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CourseSchedule {
 	static List<Integer>[] graph;
@@ -131,15 +131,14 @@ public class CourseSchedule {
 	static int N;
 	static boolean[] visited;
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		graph = new List[N];
 		visited = new boolean[N];
-		for (int i = 0; i < N; i++) {
-			graph[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i < N; i++) { graph[i] = new ArrayList<Integer>(); }
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
@@ -154,7 +153,8 @@ public class CourseSchedule {
 		for (int i = 0; i < N; i++)
 			for (int j : graph[i])
 				if (ind[j] <= ind[i]) {
-					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
+					System.out.println(
+					    "IMPOSSIBLE");  // topological sort wasn't valid
 					System.exit(0);
 				}
 		for (int i : topo) System.out.print(i + 1 + " ");
@@ -168,7 +168,7 @@ public class CourseSchedule {
 		}
 		Collections.reverse(topo);
 	}
-	public static void dfs(int v) { // not always lexicographically least
+	public static void dfs(int v) {  // not always lexicographically least
 		for (Integer e : graph[v]) {
 			if (!visited[e]) {
 				visited[e] = true;
@@ -186,7 +186,7 @@ public class CourseSchedule {
 ```python
 import sys
 
-MAX_N = 10 ** 5
+MAX_N = 10**5
 sys.setrecursionlimit(MAX_N)
 
 
@@ -198,7 +198,7 @@ def dfs(node):
 	top_sort.append(node)
 
 
-# N is number of nodes 
+# N is number of nodes
 # M is number of edges
 N, M = map(int, input().strip().split())
 graph = [[] for _ in range(N)]
@@ -272,21 +272,21 @@ bool dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	for (int u : adj[n]) {
 		if (on_stack[u]) {
-			cycle.push_back(n); // start cycle
+			cycle.push_back(n);  // start cycle
 			on_stack[n] = on_stack[u] = false;
 			return true;
 		} else if (!visited[u]) {
-			if (dfs(u)) { // continue cycle
+			if (dfs(u)) {  // continue cycle
 				if (on_stack[n]) {
 					cycle.push_back(n);
 					on_stack[n] = false;
 					return true;
-				} else { // found u again
+				} else {  // found u again
 					cycle.push_back(n);
 					return false;
 				}
 			}
-			if (!cycle.empty()) // finished with cycle
+			if (!cycle.empty())  // finished with cycle
 				return false;
 		}
 	}
@@ -326,7 +326,8 @@ public class cycle {
 	static List<Integer> cycle;
 	static int N, M;
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		N = Integer.parseInt(st.nextToken());
@@ -335,24 +336,19 @@ public class cycle {
 		cycle = new ArrayList<Integer>();
 		visited = new boolean[N + 1];
 		onStack = new boolean[N + 1];
-		for (int i = 0; i <= N; i++) {
-			adj[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i <= N; i++) { adj[i] = new ArrayList<Integer>(); }
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(sc.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			adj[a].add(b);
 		}
-		for (int i = 1; cycle.isEmpty() && i <= N; i++) {
-			dfs(i);
-		}
-		if (cycle.isEmpty())
-			out.println("IMPOSSIBLE");
+		for (int i = 1; cycle.isEmpty() && i <= N; i++) { dfs(i); }
+		if (cycle.isEmpty()) out.println("IMPOSSIBLE");
 		else {
 			Collections.reverse(cycle);
 			out.println(cycle.size() + 1);
-			for (int n: cycle) out.print(n + " ");
+			for (int n : cycle) out.print(n + " ");
 			out.print(cycle.get(0));
 		}
 		out.close();
@@ -360,7 +356,7 @@ public class cycle {
 
 	public static boolean dfs(int n) {
 		visited[n] = onStack[n] = true;
-		for (int u: adj[n]) {
+		for (int u : adj[n]) {
 			if (onStack[u]) {
 				cycle.add(n);
 				onStack[n] = onStack[u] = false;
@@ -376,8 +372,7 @@ public class cycle {
 						return false;
 					}
 				}
-				if (!cycle.isEmpty())
-					return false;
+				if (!cycle.isEmpty()) return false;
 			}
 		}
 		onStack[n] = false;
@@ -392,8 +387,9 @@ public class cycle {
 ```python
 import sys
 
-MAX_N = 10 ** 5
+MAX_N = 10**5
 sys.setrecursionlimit(MAX_N)
+
 
 def dfs(node):
 	visited[node], on_stack[node] = True, True
@@ -402,7 +398,7 @@ def dfs(node):
 			cycle.append(node)
 			on_stack[node], on_stack[u] = False, False
 			return True
-		
+
 		elif not visited[u]:
 			if dfs(u):
 				if on_stack[node]:
@@ -412,7 +408,7 @@ def dfs(node):
 				else:
 					cycle.append(node)
 					return False
-			
+
 			if not cycle:
 				return False
 	on_stack[node] = False
@@ -426,7 +422,7 @@ visited = [False] * N
 on_stack = [False] * N
 
 for i in range(M):
-	u, v = map(int,input().split())
+	u, v = map(int, input().split())
 	adj[u - 1].append(v - 1)
 
 for i in range(0, N):
@@ -520,16 +516,14 @@ int main() {
 ```java
 public class TopoSort {
 	static int[] inDegree;
-	static List<Integer>[] edge; // adjacency list
+	static List<Integer>[] edge;  // adjacency list
 
-	static int N; // number of nodes
+	static int N;  // number of nodes
 
 	static void topological_sort() {
 		Queue<Integer> q = new LinkedList<>();
 		for (int i = 0; i < N; i++) {
-			if (inDegree[i] == 0) {
-				q.add(i);
-			}
+			if (inDegree[i] == 0) { q.add(i); }
 		}
 
 		while (!q.isEmpty()) {
@@ -537,7 +531,7 @@ public class TopoSort {
 
 			for (int next : edge[node]) {
 				inDegree[next]--;
-				if(inDegree[next] == 0) q.add(next);
+				if (inDegree[next] == 0) q.add(next);
 			}
 
 			// Put problem-specific processing here
@@ -697,8 +691,8 @@ void compute() {
 	}
 }
 
-int main() { // See "General - Fast I/O" for more information about the first
-			 // two lines in the main function
+int main() {  // See "General - Fast I/O" for more information about the first
+	          // two lines in the main function
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 

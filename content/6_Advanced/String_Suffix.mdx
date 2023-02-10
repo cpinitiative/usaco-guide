@@ -111,16 +111,16 @@ of the suffix tree.
 <!-- https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/submission/85759835 -->
 
 ```cpp
-int N, sa[MN], ctr; // length of string, suffix array, counter
+int N, sa[MN], ctr;  // length of string, suffix array, counter
 
 struct Edge {
   public:
-	int n, l, r; // node, edge covers s[l..r]
+	int n, l, r;  // node, edge covers s[l..r]
 	explicit operator bool() const { return n != -1; }
-} c[MN * 2][26]; // edges of a suffix tree
+} c[MN * 2][26];  // edges of a suffix tree
 
 void dfs(int n = 0, int d = 0) {
-	bool c = 0; // Has child. If false, then this node is a leaf
+	bool c = 0;  // Has child. If false, then this node is a leaf
 	for (int i = 0; i < 26; ++i)
 		if (c[n][i]) {
 			c = 1;
@@ -161,14 +161,14 @@ following samples, these terminators will be explicitly added.
 ```cpp
 int N;
 char s[MN];
-int sa[MN];	 // suffix array
-int lcp[MN]; // lcp[i] stores the longest common prefix between s[sa[i-1]..] and
-			 // s[sa[i]..]
+int sa[MN];   // suffix array
+int lcp[MN];  // lcp[i] stores the longest common prefix between s[sa[i-1]..]
+              // and s[sa[i]..]
 
-Edge c[MN * 2][MK]; // edges of suffix tree
-int d[MN * 2]; // length of string corresponding to a node in the suffix tree
+Edge c[MN * 2][MK];  // edges of suffix tree
+int d[MN * 2];  // length of string corresponding to a node in the suffix tree
 int q[MN * 2], Q, ctr,
-	rm[MN]; // q is used as stack. ctr counts number of nodes in tree
+    rm[MN];  // q is used as stack. ctr counts number of nodes in tree
 std::stack<int> ins[MN];
 void build_tree() {
 	q[0] = N;
@@ -176,22 +176,22 @@ void build_tree() {
 	for (int i = N - 1; i >= 1; --i) {
 		while (Q && lcp[q[Q]] > lcp[i]) --Q;
 		if (lcp[q[Q]] != lcp[i])
-			++rm[q[Q]]; // Right bound of the range where lcp is the longest
-						// common prefix
+			++rm[q[Q]];  // Right bound of the range where lcp is the longest
+			             // common prefix
 		q[++Q] = i;
 	}
 	q[0] = 0, Q = 0;
 	for (int i = 1; i < N; ++i) {
 		while (Q && lcp[q[Q]] > lcp[i]) --Q;
 		if (lcp[q[Q]] != lcp[i])
-			ins[q[Q]].push(i); // Left bound of the range where lcp first
-							   // becomes a longest common prefix
+			ins[q[Q]].push(i);  // Left bound of the range where lcp first
+			                    // becomes a longest common prefix
 		q[++Q] = i;
 	}
 	// The left and right bounds computed above can be interpreted as the dfs
 	// preorder and postorder
-	q[0] = 0, Q = 0; // This q array now holds the stack of ancestors for every
-					 // new node created
+	q[0] = 0, Q = 0;  // This q array now holds the stack of ancestors for every
+	                  // new node created
 	auto nn = [&](int l, int dd) {
 		++ctr;
 		d[ctr] = dd;
@@ -241,14 +241,14 @@ too!
 <!-- https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/submission/85759835 - This submission contains both -->
 
 ```cpp
-char s[MN];			// string
-int ord[MN];		// nodes representing prefixes of the string s
-int u[MN * 2];		// whether the node has already been created
-int l[MN * 2];		// link in suffix automaton
-Edge c[MN * 2][27]; // edge of suffix tree (not automaton; structure of
-					// automaton is not necessary to build stree)
+char s[MN];          // string
+int ord[MN];         // nodes representing prefixes of the string s
+int u[MN * 2];       // whether the node has already been created
+int l[MN * 2];       // link in suffix automaton
+Edge c[MN * 2][27];  // edge of suffix tree (not automaton; structure of
+                     // automaton is not necessary to build stree)
 void build_tree() {
-	s[N] = 26; // terminator
+	s[N] = 26;  // terminator
 	for (int i = N; i >= 0; --i) ord[i] = append(ord[i + 1], s[i]);
 	for (int i = 0, x, r, l; i <= N; ++i) {
 		x = ord[i], r = N + 1;
@@ -374,24 +374,24 @@ int main(void) {
 		fscanf(IN, " %s", s);
 		int n = 0;
 		for (int j = 0; s[j]; ++j) {
-			n = append(n, s[j] - 'a'); // build automaton
+			n = append(n, s[j] - 'a');  // build automaton
 			merge(v[n], i);
 		}
 	}
 	// build link tree
 	for (int i = 1; i <= X; ++i) down[l[i]].push_back(i);
-	dfs();	// dfs link tree
-	dfs2(); // dfs automaton
+	dfs();   // dfs link tree
+	dfs2();  // dfs automaton
 	cnt[0] = 1;
 	for (int i = T - 1, x; i >= 0; --i) {
 		x = topo[i];
 		for (int j = 0; j < 26; ++j)
 			if (~c[x][j])
 				cnt[c[x][j]] +=
-					cnt[x]; // count number of paths from root to a node
+				    cnt[x];  // count number of paths from root to a node
 		if (v[x] >= 0)
-			f[v[x]] += cnt[x]; // if this node is associated with a unique cow,
-							   // add to answer
+			f[v[x]] += cnt[x];  // if this node is associated with a unique cow,
+			                    // add to answer
 	}
 	for (int i = 0; i < N; ++i) fprintf(OUT, "%lld\n", f[i]);
 	return 0;

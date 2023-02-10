@@ -97,7 +97,7 @@ struct DSU {
 
 	int size(int x) { return -e[get(x)]; }
 
-	bool unite(int x, int y) { // union by size
+	bool unite(int x, int y) {  // union by size
 		x = get(x), y = get(y);
 		if (x == y) return false;
 		if (e[x] > e[y]) swap(x, y);
@@ -134,9 +134,7 @@ public class DisjointSets {
 	public boolean union(int x, int y) {
 		int xRoot = find(x);
 		int yRoot = find(y);
-		if (xRoot == yRoot) {
-			return false;
-		}
+		if (xRoot == yRoot) { return false; }
 		if (sizes[xRoot] < sizes[yRoot]) {
 			parents[xRoot] = yRoot;
 			sizes[yRoot] += sizes[xRoot];
@@ -148,9 +146,7 @@ public class DisjointSets {
 	}
 
 	// returns whether two nodes are in the same connected component
-	public boolean connected(int x, int y) {
-		return find(x) == find(y);
-	}
+	public boolean connected(int x, int y) { return find(x) == find(y); }
 }
 ```
 

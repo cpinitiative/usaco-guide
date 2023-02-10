@@ -63,7 +63,7 @@ ll weight[20];
 ll solve(int i, ll sum1, ll sum2) {
 	if (i == n) { return abs(sum1 - sum2); }
 	return min(solve(i + 1, sum1 + weight[i], sum2),
-			   solve(i + 1, sum1, sum2 + weight[i]));
+	           solve(i + 1, sum1, sum2 + weight[i]));
 }
 
 int main() {
@@ -124,8 +124,7 @@ def solve(i, sum1, sum2):
 	if i == n:
 		return abs(sum2 - sum1)
 	return min(
-		solve(i + 1, sum1 + weights[i], sum2),
-		solve(i + 1, sum1, sum2 + weights[i])
+		solve(i + 1, sum1 + weights[i], sum2), solve(i + 1, sum1, sum2 + weights[i])
 	)
 
 
@@ -187,7 +186,7 @@ int main() {
 	for (int mask = 0; mask < (1 << n); mask++) {
 		ll sum1 = 0, sum2 = 0;
 		for (int j = 0; j < n; j++) {
-			if (mask & (1 << j)) { // if the j-th bit is toggled
+			if (mask & (1 << j)) {  // if the j-th bit is toggled
 				sum1 += weight[j];
 			} else {
 				sum2 += weight[j];
@@ -249,7 +248,7 @@ public class Main {
 n = int(input())
 weight = list(map(int, input().split()))
 
-ans = float('inf')
+ans = float("inf")
 for mask in range(1 << n):
 	sum1, sum2 = 0, 0
 	for i in range(n):
@@ -442,6 +441,7 @@ s = input()
 perms = []
 char_count = [0] * 26
 
+
 def search(curr):
 	# we've finished creating a permutation
 	if len(curr) == len(s):
@@ -452,11 +452,12 @@ def search(curr):
 		if char_count[i] > 0:
 			# add it to the current string and search
 			char_count[i] -= 1
-			search(curr + chr(ord('a') + i))
+			search(curr + chr(ord("a") + i))
 			char_count[i] += 1
 
+
 for c in s:
-	char_count[ord(c) - ord('a')] += 1
+	char_count[ord(c) - ord("a")] += 1
 
 search("")
 print(len(perms))
@@ -498,7 +499,7 @@ problem.
 
 ```cpp
 do {
-	check(v); // process or check the current permutation for validity
+	check(v);  // process or check the current permutation for validity
 } while (next_permutation(v.begin(), v.end()));
 ```
 
@@ -545,6 +546,7 @@ the characters into a string.
 
 ```py
 import itertools
+
 s = input()
 # perms is a sorted list of all the permutations of the given string
 perms = sorted(set(itertools.permutations(s)))
@@ -607,7 +609,7 @@ int main() {
 	}
 	vector<int> vals(8);
 
-	iota(vals.begin(), vals.end(), 0); // set vals to 0 1 ... 7
+	iota(vals.begin(), vals.end(), 0);  // set vals to 0 1 ... 7
 
 	do {
 		bool works = true;
@@ -619,7 +621,7 @@ int main() {
 		memset(blocked, false, sizeof(blocked));
 		for (int i = 0; i < 8; i++) {
 			if (blocked[i + vals[i]]) { works = false; }
-			blocked[i + vals[i]] = true; // mark this diagonal
+			blocked[i + vals[i]] = true;  // mark this diagonal
 		}
 		memset(blocked, false, sizeof(blocked));
 		for (int i = 0; i < 8; i++) {
@@ -711,7 +713,7 @@ ans = 0
 for i in range(8):
 	s = input()
 	for j in range(8):
-		ok[i][j] = (s[j] == '.')
+		ok[i][j] = s[j] == "."
 
 vals = list(range(8))
 
@@ -771,9 +773,9 @@ string g[8];
 bool sum[15], diff[15], c[8];
 int ans = 0;
 
-void dfs(int r) { // place queen in r-th row
+void dfs(int r) {  // place queen in r-th row
 	if (r == 8) {
-		++ans; // found valid placement
+		++ans;  // found valid placement
 		return;
 	}
 	for (int i = 0; i < 8; ++i) {
@@ -846,16 +848,18 @@ diff = [False] * 15
 c = [0] * 8
 ans = 0
 
+
 def dfs(r):
 	global ans
 	if r == 8:
 		ans += 1
 		return
 	for i in range(8):
-		if g[r][i] == '.' and not c[i] and not sum_[i + r] and not diff[i - r + 7]:
+		if g[r][i] == "." and not c[i] and not sum_[i + r] and not diff[i - r + 7]:
 			c[i] = sum_[i + r] = diff[i - r + 7] = True
 			dfs(r + 1)
 			c[i] = sum_[i + r] = diff[i - r + 7] = False
+
 
 dfs(0)
 print(ans)
@@ -1076,7 +1080,7 @@ appear much less frequently than they once did.
         <Quiz.Answer>
     	```cpp
     	void generateSubsets(int i, vector<int> &subset) {
-    		if (i == 4) { // incorrect ending index
+    		if (i == 4) {  // incorrect ending index
     			for (int x : subset) cout << x << ' ';
     			cout << '\n';
     		}
@@ -1098,7 +1102,7 @@ appear much less frequently than they once did.
     		if (i == 5) {
     			for (int x : subset) cout << x << ' ';
     			cout << '\n';
-    			return; // missing return statement
+    			return;  // missing return statement
     		}
     	
     		subset.push_back(A[i]);

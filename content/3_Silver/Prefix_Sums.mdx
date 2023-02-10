@@ -227,13 +227,14 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class Main{
+public class Main {
 	static int N, Q;
-	public static void main(String[] args) throws IOException{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter writer = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(reader.readLine());
 		N = Integer.parseInt(st.nextToken());
@@ -241,30 +242,26 @@ public class Main{
 
 		st = new StringTokenizer(reader.readLine());
 		long[] a = new long[N];
-		for(int i = 0; i<N; i++){
-			a[i] = Long.parseLong(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { a[i] = Long.parseLong(st.nextToken()); }
 
 		long[] p = psum(a);
 
-		for(int i = 0; i<Q; i++){
+		for (int i = 0; i < Q; i++) {
 			int l, r;
 			st = new StringTokenizer(reader.readLine());
 			l = Integer.parseInt(st.nextToken());
 			r = Integer.parseInt(st.nextToken());
-			writer.println(p[r]-p[l]);
+			writer.println(p[r] - p[l]);
 		}
 
 		reader.close();
 		writer.close();
 	}
 
-	public static long[] psum(long[] a){
-		long[] psums = new long[N+1];
+	public static long[] psum(long[] a) {
+		long[] psums = new long[N + 1];
 
-		for(int i = 0; i<N; i++){
-			psums[i+1] = psums[i] + a[i];
-		}
+		for (int i = 0; i < N; i++) { psums[i + 1] = psums[i] + a[i]; }
 
 		return psums;
 	}
@@ -277,10 +274,11 @@ public class Main{
 
 ```python
 def psum(a):
-	psum=[0]
+	psum = [0]
 	for i in a:
-		psum.append(psum[-1]+i) # psum[-1] is the last element in the list
+		psum.append(psum[-1] + i)  # psum[-1] is the last element in the list
 	return psum
+
 
 N, Q = map(int, input().split())
 a = list(map(int, input().split()))
@@ -288,7 +286,7 @@ p = psum(a)
 
 for i in range(Q):
 	l, r = map(int, input().split())
-	print(p[r]-p[l])
+	print(p[r] - p[l])
 ```
 
 </PySection>

@@ -115,7 +115,7 @@ min segtree. The latter approach is shown below.
  * Verification: SPOJ Fenwick
  */
 
-template <class T> struct Seg { // comb(ID,b) = b
+template <class T> struct Seg {  // comb(ID,b) = b
 	const T ID = 0;
 	T comb(T a, T b) { return min(a, b); }
 	int n;
@@ -125,11 +125,11 @@ template <class T> struct Seg { // comb(ID,b) = b
 		seg.assign(2 * n, ID);
 	}
 	void pull(int p) { seg[p] = comb(seg[2 * p], seg[2 * p + 1]); }
-	void upd(int p, T val) { // set val at position p
+	void upd(int p, T val) {  // set val at position p
 		ckmin(seg[p += n], val);
 		for (p /= 2; p; p /= 2) pull(p);
 	}
-	T query(int l, int r) { // sum on interval [l, r]
+	T query(int l, int r) {  // sum on interval [l, r]
 		T ra = ID, rb = ID;
 		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
 			if (l & 1) ra = comb(ra, seg[l++]);
@@ -155,8 +155,8 @@ int main() {
 	for (int i = 0; i < P; ++i) {
 		pair<int, int> a, b;
 		cin >> a.f >> a.s >> b.f >> b.s;
-		ev.push_back({a, {i, -1}}); // start point
-		ev.push_back({b, {i, 1}});	// end point
+		ev.push_back({a, {i, -1}});  // start point
+		ev.push_back({b, {i, 1}});   // end point
 		distinct_y.pb(a.s);
 		distinct_y.pb(b.s);
 	}

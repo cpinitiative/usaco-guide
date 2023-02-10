@@ -51,11 +51,11 @@ using ll = long long;
 int main() {
 	int n;
 	cin >> n;
-	vector<long long> pfx(n + 1); // prefix sum array initially filled with 0's
+	vector<long long> pfx(n + 1);  // prefix sum array initially filled with 0's
 	for (int i = 1; i <= n; i++) {
 		ll x;
 		cin >> x;
-		pfx[i] = pfx[i - 1] + x; // compute the prefix sum at each element
+		pfx[i] = pfx[i - 1] + x;  // compute the prefix sum at each element
 	}
 
 	ll max_subarray_sum = pfx[1];
@@ -79,9 +79,8 @@ import java.util.Arrays;
 
 public class MaxSubSum {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(
-			new InputStreamReader(System.in)
-		);
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		read.readLine();
 		int[] arr = Arrays.stream(read.readLine().split(" ")
 				.mapToInt(Integer::parseInt).toArray();
@@ -214,7 +213,7 @@ for i in range(1, n):
 	subarray sum beginning at the current element.
 	"""
 	current_sum = max(current_sum + x[i], x[i])
-	
+
 	# Store the maximum subarray sum at each iteration.
 	max_subarray_sum = max(max_subarray_sum, current_sum)
 
@@ -555,7 +554,7 @@ int main() {
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
 			tree_pref[i][j] = forest[i][j] + tree_pref[i - 1][j] +
-							  tree_pref[i][j - 1] - tree_pref[i - 1][j - 1];
+			                  tree_pref[i][j - 1] - tree_pref[i - 1][j - 1];
 		}
 	}
 
@@ -563,9 +562,9 @@ int main() {
 		int from_row, to_row, from_col, to_col;
 		cin >> from_row >> from_col >> to_row >> to_col;
 		cout << tree_pref[to_row][to_col] - tree_pref[from_row - 1][to_col] -
-					tree_pref[to_row][from_col - 1] +
-					tree_pref[from_row - 1][from_col - 1]
-			 << '\n';
+		            tree_pref[to_row][from_col - 1] +
+		            tree_pref[from_row - 1][from_col - 1]
+		     << '\n';
 	}
 }
 ```
@@ -638,18 +637,22 @@ side_len, query_num = [int(i) for i in input().split()]
 tree_prefixes = [[0 for _ in range(side_len + 1)] for _ in range(side_len + 1)]
 for r in range(side_len):
 	for ci, c in enumerate(input()):
-		tree = c == '*'
-		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1]
-										 + tree_prefixes[r + 1][ci]
-										 - tree_prefixes[r][ci]
-										 + tree)
+		tree = c == "*"
+		tree_prefixes[r + 1][ci + 1] += (
+			tree_prefixes[r][ci + 1]
+			+ tree_prefixes[r + 1][ci]
+			- tree_prefixes[r][ci]
+			+ tree
+		)
 
 for _ in range(query_num):
 	from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
-	print(tree_prefixes[to_row][to_col]
-		  - tree_prefixes[to_row][from_col - 1]
-		  - tree_prefixes[from_row - 1][to_col]
-		  + tree_prefixes[from_row - 1][from_col - 1])
+	print(
+		tree_prefixes[to_row][to_col]
+		- tree_prefixes[to_row][from_col - 1]
+		- tree_prefixes[from_row - 1][to_col]
+		+ tree_prefixes[from_row - 1][from_col - 1]
+	)
 ```
 
 </PySection>

@@ -343,8 +343,8 @@ using namespace std;
 typedef long long ll;
 
 int N;
-ll fst = 0;				   // value of DP function at 0
-priority_queue<ll> points; // points where DP function changes slope
+ll fst = 0;                 // value of DP function at 0
+priority_queue<ll> points;  // points where DP function changes slope
 
 int main() {
 	cin >> N;
@@ -354,7 +354,7 @@ int main() {
 		cin >> a >> b;
 		dif[i] = a - b + dif[i - 1];
 	}
-	assert(dif[N] >= 0); // assume solution exists
+	assert(dif[N] >= 0);  // assume solution exists
 	for (int i = 1; i < N; ++i) {
 		if (dif[i] < 0) fst -= dif[i], dif[i] = 0;
 		fst += dif[i];
@@ -425,11 +425,11 @@ deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
 using namespace std;
 
 int N, X, Y, Z;
-int difl, difr; // "lazy" update
+int difl, difr;  // "lazy" update
 deque<int> L, R;
 long long ans;
 
-void rig() { // shift right A, so origin moves left
+void rig() {  // shift right A, so origin moves left
 	if (L.size() == 0) L.push_back(-Y - difl);
 	int t = L.back() + difl;
 	L.pop_back();
@@ -438,7 +438,7 @@ void rig() { // shift right A, so origin moves left
 	R.push_front(t - difr);
 }
 
-void lef() { // shift left B, so origin moves right
+void lef() {  // shift left B, so origin moves right
 	if (R.size() == 0) R.push_front(X - difr);
 	int t = R.front() + difr;
 	R.pop_front();
@@ -455,10 +455,10 @@ int main() {
 		int A, B;
 		cin >> A >> B;
 		for (int j = 0; j < A; ++j)
-			rig(); // or we can just do |A-B| shifts in one direction
+			rig();  // or we can just do |A-B| shifts in one direction
 		for (int j = 0; j < B; ++j) lef();
 		difl -= Z,
-			difr += Z; // adjust slopes differently for left and right of j=0
+		    difr += Z;  // adjust slopes differently for left and right of j=0
 	}
 	cout << ans << "\n";
 }

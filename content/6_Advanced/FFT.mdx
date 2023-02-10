@@ -65,8 +65,8 @@ problem.
 using namespace std;
 
 using ll = long long;
-using db = long double; // or double, if TL is tight
-using str = string;		// yay python!
+using db = long double;  // or double, if TL is tight
+using str = string;      // yay python!
 
 using vl = vector<ll>;
 using vi = vector<int>;
@@ -136,7 +136,7 @@ typedef complex<double> C;
 void fft(vector<C> &a) {
 	int n = sz(a), L = 31 - __builtin_clz(n);
 	static vector<complex<long double>> R(2, 1);
-	static vector<C> rt(2, 1); // (^ 10% faster if double)
+	static vector<C> rt(2, 1);  // (^ 10% faster if double)
 	for (static int k = 2; k < n; k *= 2) {
 		R.resize(n);
 		rt.resize(n);
@@ -151,9 +151,9 @@ void fft(vector<C> &a) {
 				// C z = rt[j+k] * a[i+j+k]; // (25% faster if hand-rolled)  ///
 				// include-line
 				auto x = (double *)&rt[j + k],
-					 y = (double *)&a[i + j + k]; /// exclude-line
+				     y = (double *)&a[i + j + k];  /// exclude-line
 				C z(x[0] * y[0] - x[1] * y[1],
-					x[0] * y[1] + x[1] * y[0]); /// exclude-line
+				    x[0] * y[1] + x[1] * y[0]);  /// exclude-line
 				a[i + j + k] = a[i + j] - z;
 				a[i + j] += z;
 			}
@@ -192,7 +192,7 @@ int main() {
 	vl B(m);
 	re(B);
 
-	auto ret = convMod<998244353>(A, B); // just change this number for mod
+	auto ret = convMod<998244353>(A, B);  // just change this number for mod
 
 	F0R(i, sz(ret)) {
 		cout << ret[i];
@@ -221,8 +221,8 @@ changing the mod suffices.
 using namespace std;
 
 using ll = long long;
-using db = long double; // or double, if TL is tight
-using str = string;		// yay python!
+using db = long double;  // or double, if TL is tight
+using str = string;      // yay python!
 
 using vl = vector<ll>;
 using vi = vector<int>;
@@ -292,7 +292,7 @@ typedef complex<double> C;
 void fft(vector<C> &a) {
 	int n = sz(a), L = 31 - __builtin_clz(n);
 	static vector<complex<long double>> R(2, 1);
-	static vector<C> rt(2, 1); // (^ 10% faster if double)
+	static vector<C> rt(2, 1);  // (^ 10% faster if double)
 	for (static int k = 2; k < n; k *= 2) {
 		R.resize(n);
 		rt.resize(n);
@@ -307,9 +307,9 @@ void fft(vector<C> &a) {
 				// C z = rt[j+k] * a[i+j+k]; // (25% faster if hand-rolled)  ///
 				// include-line
 				auto x = (double *)&rt[j + k],
-					 y = (double *)&a[i + j + k]; /// exclude-line
+				     y = (double *)&a[i + j + k];  /// exclude-line
 				C z(x[0] * y[0] - x[1] * y[1],
-					x[0] * y[1] + x[1] * y[0]); /// exclude-line
+				    x[0] * y[1] + x[1] * y[0]);  /// exclude-line
 				a[i + j + k] = a[i + j] - z;
 				a[i + j] += z;
 			}
@@ -348,7 +348,7 @@ int main() {
 	vl B(m);
 	re(B);
 
-	auto ret = convMod<1000000007>(A, B); // just change this number for mod
+	auto ret = convMod<1000000007>(A, B);  // just change this number for mod
 
 	F0R(i, sz(ret)) {
 		cout << ret[i];
