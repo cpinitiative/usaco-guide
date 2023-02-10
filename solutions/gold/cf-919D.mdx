@@ -59,21 +59,21 @@ int main() {
 		}
 	}
 
-	// topological sort.
+	// Run topological sort.
 	int size = 0;
 	while (size < n && queue.size() > 0) {
 		int cur = queue.front();
 		queue.pop();
 		for (int next : adj[cur]) {
 			for (int j = 0; j < 26; j++) {
-				// update the frequency with the next occurrence.
+				// Update the frequency with the next occurrence.
 				if (j == (a[next] - 'a')) {
 					dp[next][j] = max(dp[cur][j] + 1, dp[next][j]);
 				} else {
 					dp[next][j] = max(dp[cur][j], dp[next][j]);
 				}
 			}
-			// add the next node to the queue.
+			// Add the next node to the queue.
 			if (--in_degree[next] == 0) {
 				queue.push(next);
 			}
@@ -81,13 +81,13 @@ int main() {
 		size++;
 	}
 
-	// no answer.
+	// No answer.
 	if (size < n) {
 		cout << -1 << endl;
 		return 0;
 	}
 
-	// find the maximum frequency across all nodes and letters.
+	// Find the maximum frequency across all nodes and letters.
 	int ans = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < 26; j++) {
@@ -95,7 +95,6 @@ int main() {
 		}
 	}
 	cout << ans << endl;
-	return 0;
 }
 ```
 </CPPSection>
@@ -204,28 +203,27 @@ for i in range(n):
 		queue.append(i)
 		dp[i][ord(a[i]) - ord('a')] += 1
 
-# topological sort.
+# Run topological sort.
 size = 0
 while size < n and len(queue) > 0:
 	cur = queue.popleft()
 	for nxt in adj[cur]:
 		for j in range(26):
-			# update the frequency with the next occurrence.
+			# Update the frequency with the next occurrence.
 			if j == ord(a[nxt]) - ord('a'):
 				dp[nxt][j] = max(dp[cur][j] + 1, dp[nxt][j])
 			else:
 				dp[nxt][j] = max(dp[cur][j], dp[nxt][j])
-		# add the next node to the queue.
+		# Add the next node to the queue.
 		in_degree[nxt] -= 1
 		if in_degree[nxt] == 0:
 			queue.append(nxt)
 	size += 1
 
-# no answer.
+# No answer.
 if size < n:
 	print(-1)
-# find the maximum frequency across all nodes and letters.
-else:
+else:  # Find the maximum frequency across all nodes and letters.
 	ans = 0
 	for i in range(n):
 		for j in range(26):
