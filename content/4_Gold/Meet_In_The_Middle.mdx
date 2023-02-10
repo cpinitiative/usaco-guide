@@ -66,9 +66,7 @@ int main() {
 	int n, x;
 	cin >> n >> x;
 	vector<int> a(n);
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 
 	// stores all possible subset sums in the interval [l, r]
 	auto get_subset_sums = [&](int l, int r) -> vector<ll> {
@@ -79,9 +77,7 @@ int main() {
 		for (int i = 0; i < (1 << len); i++) {
 			ll sum = 0;
 			for (int j = 0; j < len; j++) {
-				if (i & (1 << j)) {
-					sum += a[l + j];
-				}
+				if (i & (1 << j)) { sum += a[l + j]; }
 			}
 			res.push_back(sum);
 		}
@@ -95,7 +91,7 @@ int main() {
 	sort(right.begin(), right.end());
 
 	ll ans = 0;
-	for (ll i: left) {
+	for (ll i : left) {
 		auto low_iterator = lower_bound(right.begin(), right.end(), x - i);
 		auto high_iterator = upper_bound(right.begin(), right.end(), x - i);
 		int start_index = low_iterator - right.begin();
@@ -105,7 +101,6 @@ int main() {
 
 	cout << ans << endl;
 }
-
 ```
 
 </CPPSection>

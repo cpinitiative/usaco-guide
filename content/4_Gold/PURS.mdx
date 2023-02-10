@@ -73,21 +73,28 @@ They will be covered in [platinum](/plat/seg-ext).
 <CPPSection>
 
 ```cpp
-template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return a+b; }
-	int n; vector<T> seg;
-	void init(int _n) { n = _n; seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+template <class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0;
+	T comb(T a, T b) { return a + b; }
+	int n;
+	vector<T> seg;
+	void init(int _n) {
+		n = _n;
+		seg.assign(2 * n, ID);
+	}
+	void pull(int p) { seg[p] = comb(seg[2 * p], seg[2 * p + 1]); }
 	void upd(int p, T val) { // set val at position p
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+		seg[p += n] = val;
+		for (p /= 2; p; p /= 2) pull(p);
+	}
 	T query(int l, int r) { // sum on interval [l, r]
 		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra,seg[l++]);
-			if (r&1) rb = comb(seg[--r],rb);
+		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if (l & 1) ra = comb(ra, seg[l++]);
+			if (r & 1) rb = comb(seg[--r], rb);
 		}
-		return comb(ra,rb);
-	 }
+		return comb(ra, rb);
+	}
 };
 ```
 
@@ -163,52 +170,49 @@ public class segtree {
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cassert>
-#include <vector>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range minimum queries. */
-template<class T>
-class MinSegmentTree {
-	private:
-		/** The operation to use for combining two elements. (Must be associative) */
-		T comb(T a, T b) { return std::min(a, b); }
-		const T DEFAULT = 1e18;  // Will overflow if T is an int
+template <class T> class MinSegmentTree {
+  private:
+	/** The operation to use for combining two elements. (Must be associative)
+	 */
+	T comb(T a, T b) { return std::min(a, b); }
+	const T DEFAULT = 1e18; // Will overflow if T is an int
 
-		vector<T> segtree;
-		int len;
-	public:
-		MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) { }
+	vector<T> segtree;
+	int len;
 
-		/** Sets the value at ind to val. */
-		void set(int ind, T val) {
-			assert(0 <= ind && ind < len);
-			ind += len;
-			segtree[ind] = val;
-			for (; ind > 1; ind /= 2) {
-				segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
-			}
+  public:
+	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	/** Sets the value at ind to val. */
+	void set(int ind, T val) {
+		assert(0 <= ind && ind < len);
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
 		}
+	}
 
-		/** @return the minimum element in the range [start, end) */
-		T range_min(int start, int end) {
-			assert(0 <= start && start < len && 0 < end && end <= len);
-			T sum = DEFAULT;
-			for (start += len, end += len; start < end; start /= 2, end /= 2) {
-				if ((start & 1) != 0) {
-					sum = comb(sum, segtree[start++]);
-				}
-				if ((end & 1) != 0) {
-					sum = comb(sum, segtree[--end]);
-				}
-			}
-			return sum;
+	/** @return the minimum element in the range [start, end) */
+	T range_min(int start, int end) {
+		assert(0 <= start && start < len && 0 < end && end <= len);
+		T sum = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if ((start & 1) != 0) { sum = comb(sum, segtree[start++]); }
+			if ((end & 1) != 0) { sum = comb(sum, segtree[--end]); }
 		}
+		return sum;
+	}
 };
 
 int main() {
@@ -379,47 +383,43 @@ Compared to the previous problem, all we need to change are `DEFAULT` and
 `comb`.
 
 ```cpp
-#include <iostream>
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-template<class T>
-class SumSegmentTree {
-	private:
-		T comb(T a, T b) { return a + b; }
-		const T DEFAULT = 0;
+template <class T> class SumSegmentTree {
+  private:
+	T comb(T a, T b) { return a + b; }
+	const T DEFAULT = 0;
 
-		vector<T> segtree;
-		int len;
-	public:
-		SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) { }
+	vector<T> segtree;
+	int len;
 
-		void set(int ind, T val) {
-			assert(0 <= ind && ind < len);
-			ind += len;
-			segtree[ind] = val;
-			for (; ind > 1; ind /= 2) {
-				segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
-			}
+  public:
+	SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		assert(0 <= ind && ind < len);
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
 		}
+	}
 
-		T range_sum(int start, int end) {
-			assert(0 <= start && start < len && 0 < end && end <= len);
-			T sum = DEFAULT;
-			for (start += len, end += len; start < end; start /= 2, end /= 2) {
-				if ((start & 1) != 0) {
-					sum = comb(sum, segtree[start++]);
-				}
-				if ((end & 1) != 0) {
-					sum = comb(sum, segtree[--end]);
-				}
-			}
-			return sum;
+	T range_sum(int start, int end) {
+		assert(0 <= start && start < len && 0 < end && end <= len);
+		T sum = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if ((start & 1) != 0) { sum = comb(sum, segtree[start++]); }
+			if ((end & 1) != 0) { sum = comb(sum, segtree[--end]); }
 		}
+		return sum;
+	}
 };
 
 int main() {
@@ -617,8 +617,8 @@ first glance.
 #### Solution 1
 
 ```cpp
-#include <iostream>
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -630,38 +630,32 @@ using std::vector;
  * this data structure supports point update and range sum
  * queries like a segment tree.
  * */
-template<class T>
-class BIT {
-	private:
-		int size;
-		vector<T> bit;
-		vector<T> arr;
-	public:
-		BIT(int size) : size(size), bit(size + 1), arr(size) { }
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
 
-		/** Sets the value at index ind to val. */
-		void set(int ind, int val) {
-			add(ind, val - arr[ind]);
-		}
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-		/** Adds val to the element at index ind. */
-		void add(int ind, int val) {
-			arr[ind] += val;
-			ind++;
-			for (; ind <= size; ind += ind & -ind) {
-				bit[ind] += val;
-			}
-		}
+	/** Sets the value at index ind to val. */
+	void set(int ind, int val) { add(ind, val - arr[ind]); }
 
-		/** @return The sum of all values in [0, ind]. */
-		T pref_sum(int ind) {
-			ind++;
-			T total = 0;
-			for (; ind > 0; ind -= ind & -ind) {
-				total += bit[ind];
-			}
-			return total;
-		}
+	/** Adds val to the element at index ind. */
+	void add(int ind, int val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	/** @return The sum of all values in [0, ind]. */
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
 };
 
 int main() {
@@ -688,10 +682,7 @@ int main() {
 			int start;
 			int end;
 			std::cin >> start >> end;
-			cout << (
-				bit.pref_sum(--end)
-				- bit.pref_sum(--start - 1)
-			) << '\n';
+			cout << (bit.pref_sum(--end) - bit.pref_sum(--start - 1)) << '\n';
 		}
 	}
 }
@@ -783,35 +774,43 @@ Writing a BIT this way has the advantage of generalizing to multiple dimensions.
  * Time: O((\log N)^D)
  */
 
-template <class T, int ...Ns> struct BIT {
-	T val = 0; void upd(T v) { val += v; }
+template <class T, int... Ns> struct BIT {
+	T val = 0;
+	void upd(T v) { val += v; }
 	T query() { return val; }
 };
 template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
-	BIT<T,Ns...> bit[N+1];
-	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
-		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
-	template<typename... Args> T sum(int r, Args... args) {
-		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...);
-		return res; }
-	template<typename... Args> T query(int l, int r, Args...
-		args) { return sum(r,args...)-sum(l-1,args...); }
+	BIT<T, Ns...> bit[N + 1];
+	template <typename... Args> void upd(int pos, Args... args) {
+		assert(pos > 0);
+		for (; pos <= N; pos += pos & -pos) bit[pos].upd(args...);
+	}
+	template <typename... Args> T sum(int r, Args... args) {
+		T res = 0;
+		for (; r; r -= r & -r) res += bit[r].query(args...);
+		return res;
+	}
+	template <typename... Args> T query(int l, int r, Args... args) {
+		return sum(r, args...) - sum(l - 1, args...);
+	}
 };
 
-BIT<ll,MX> B;
-int N,Q;
+BIT<ll, MX> B;
+int N, Q;
 
 int main() {
-	setIO(); cin >> N >> Q;
-	vi x(N+1);
-	FOR(i,1,N+1) {
+	setIO();
+	cin >> N >> Q;
+	vi x(N + 1);
+	FOR(i, 1, N + 1) {
 		re(x[i]);
-		B.upd(i,x[i]);
+		B.upd(i, x[i]);
 	}
-	F0R(i,Q) {
-		int t,a,b; cin >> t >> a >> b;
-		if (t == 1) B.upd(a,b-x[a]), x[a] = b;
-		else cout << B.query(a,b) << "\n";
+	F0R(i, Q) {
+		int t, a, b;
+		cin >> t >> a >> b;
+		if (t == 1) B.upd(a, b - x[a]), x[a] = b;
+		else cout << B.query(a, b) << "\n";
 	}
 }
 ```
@@ -972,10 +971,9 @@ using namespace std;
 
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
-template <class T> using Tree = tree<
-	T, null_type, less<T>,
-	rb_tree_tag, tree_order_statistics_node_update
->;
+template <class T>
+using Tree =
+	tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int test_num;

@@ -140,43 +140,41 @@ public class wormsort {
 A comparable C++ solution runs in less than 800ms:
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-int n,m;
+int n, m;
 vector<int> loc, lhs, rhs, weight;
 vector<vector<int>> edges;
 vector<int> component;
 
 void dfs(int curr, int label) {
-	if(component[curr] == label) return;
+	if (component[curr] == label) return;
 	component[curr] = label;
-	for(int child: edges[curr]) dfs(child, label);
+	for (int child : edges[curr]) dfs(child, label);
 }
 
 bool valid(int minW) {
-	component.assign(n,-1);
-	for(int i = 0; i < edges.size(); i++) edges[i].clear();
-	for(int i = 0; i < lhs.size(); i++) {
-		if(weight[i] >= minW) {
+	component.assign(n, -1);
+	for (int i = 0; i < edges.size(); i++) edges[i].clear();
+	for (int i = 0; i < lhs.size(); i++) {
+		if (weight[i] >= minW) {
 			edges[lhs[i]].push_back(rhs[i]);
 			edges[rhs[i]].push_back(lhs[i]);
 		}
 	}
 	int numcomps = 0;
-	for(int i = 0; i < component.size(); i++) {
-		if(component[i] < 0) {
-			dfs(i, numcomps++);
-		}
+	for (int i = 0; i < component.size(); i++) {
+		if (component[i] < 0) { dfs(i, numcomps++); }
 	}
-	for(int i = 0; i < loc.size(); i++) {
-		if(component[i] != component[loc[i]]) return false;
+	for (int i = 0; i < loc.size(); i++) {
+		if (component[i] != component[loc[i]]) return false;
 	}
 	return true;
 }
 
 int main() {
-	freopen("wormsort.in","r",stdin);
+	freopen("wormsort.in", "r", stdin);
 	cin >> n >> m;
 	loc = vector<int>(n);
 	component = vector<int>(n);
@@ -184,23 +182,23 @@ int main() {
 	lhs = vector<int>(m);
 	rhs = vector<int>(m);
 	weight = vector<int>(m);
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		cin >> loc[i];
 		--loc[i];
 	}
-	for(int i = 0; i < m; i++) {
+	for (int i = 0; i < m; i++) {
 		cin >> lhs[i] >> rhs[i] >> weight[i];
 		--lhs[i], --rhs[i];
 	}
 	int minW = 0;
 	int maxW = 1000000001;
-	while(minW != maxW) {
+	while (minW != maxW) {
 		int mid = (minW + maxW + 1) / 2;
-		if(valid(mid)) minW = mid;
-		else maxW = mid-1;
+		if (valid(mid)) minW = mid;
+		else maxW = mid - 1;
 	}
-	if(minW > 1e9) minW = -1;
-	freopen("wormsort.out","w",stdout);
+	if (minW > 1e9) minW = -1;
+	freopen("wormsort.out", "w", stdout);
 	cout << minW << "\n";
 }
 ```

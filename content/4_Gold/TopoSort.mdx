@@ -70,7 +70,7 @@ using namespace std;
 
 #define pb push_back
 
-int N; // Number of nodes
+int N;								 // Number of nodes
 vector<int> graph[100000], top_sort; // Assume that this graph is a DAG
 bool visited[100000];
 
@@ -91,23 +91,27 @@ void compute() {
 			dfs(i);
 		}
 	}
-	reverse(begin(top_sort),end(top_sort));
+	reverse(begin(top_sort), end(top_sort));
 	// The vector `top_sort` is now topologically sorted
 }
 
 int main() {
-	int M; cin >> N >> M;
+	int M;
+	cin >> N >> M;
 	for (int i = 0; i < M; ++i) {
-		int a, b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		graph[a - 1].pb(b - 1);
 	}
 	compute();
 	vector<int> ind(N);
 	for (int i = 0; i < N; i++) ind[top_sort[i]] = i;
-	for (int i = 0; i < N; i++) for (int j: graph[i]) if (ind[j] <= ind[i]) {
-		cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
-		exit(0);
-	}
+	for (int i = 0; i < N; i++)
+		for (int j : graph[i])
+			if (ind[j] <= ind[i]) {
+				cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
+				exit(0);
+			}
 	for (int i : top_sort) cout << i + 1 << " ";
 	cout << "\n";
 }
@@ -255,9 +259,9 @@ stack and recursively backtracking until $u$ is reached again.
 <CPPSection>
 
 ```cpp
-#include <vector>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <vector>
 using namespace std;
 
 bool visited[(int)1e5 + 5], on_stack[(int)1e5 + 5];
@@ -267,14 +271,13 @@ int N, M;
 bool dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	for (int u : adj[n]) {
-		if(on_stack[u]) {
+		if (on_stack[u]) {
 			cycle.push_back(n); // start cycle
 			on_stack[n] = on_stack[u] = false;
 			return true;
-		}
-		else if(!visited[u]) {
-			if(dfs(u)) { // continue cycle
-				if(on_stack[n]) {
+		} else if (!visited[u]) {
+			if (dfs(u)) { // continue cycle
+				if (on_stack[n]) {
 					cycle.push_back(n);
 					on_stack[n] = false;
 					return true;
@@ -283,15 +286,14 @@ bool dfs(int n) {
 					return false;
 				}
 			}
-			if(!cycle.empty()) // finished with cycle
+			if (!cycle.empty()) // finished with cycle
 				return false;
 		}
 	}
 	on_stack[n] = false;
 	return false;
 }
-int main()
-{
+int main() {
 	// take input, etc
 	cin >> N >> M;
 	for (int i = 0; i < M; i++) {
@@ -299,14 +301,12 @@ int main()
 		cin >> a >> b;
 		adj[a].push_back(b);
 	}
-	for (int i = 1; cycle.empty() && i <= N; i++)
-		dfs(i);
-	if(cycle.empty())
-		cout << "IMPOSSIBLE";
+	for (int i = 1; cycle.empty() && i <= N; i++) dfs(i);
+	if (cycle.empty()) cout << "IMPOSSIBLE";
 	else {
 		reverse(cycle.begin(), cycle.end());
 		cout << cycle.size() + 1 << "\n";
-		for(int n : cycle) cout << n << " ";
+		for (int n : cycle) cout << n << " ";
 		cout << cycle.at(0);
 	}
 }
@@ -466,63 +466,48 @@ The BFS version is known as
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 using namespace std;
 
 const int MAX_N = 100000;
 
-int main()
-{
+int main() {
 	int n, m;
 	cin >> n >> m;
 	vector<int> graph[MAX_N];
 	int indegree[MAX_N]{};
 	queue<int> q;
-	for (int i = 0; i < m; i++)
-	{
+	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		graph[a - 1].push_back(b - 1);
 		indegree[b - 1]++;
 	}
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		// locate the nodes with indegree 0 and push them into the queue
-		if (indegree[i] == 0)
-		{
-			q.push(i);
-		}
+		if (indegree[i] == 0) { q.push(i); }
 	}
 	vector<int> order;
-	while (!q.empty())
-	{
+	while (!q.empty()) {
 		int curr = q.front();
 		q.pop();
 		// add the current node to the order
 		order.push_back(curr);
-		for (int next : graph[curr])
-		{
+		for (int next : graph[curr]) {
 			// remove the current node from the graph
 			indegree[next]--;
 			// push any new nodes with indegree 0 into the queue
-			if (indegree[next] == 0)
-			{
-				q.push(next);
-			}
+			if (indegree[next] == 0) { q.push(next); }
 		}
 	}
 	// if there isn't a valid topological sorting
-	if (order.size() != n)
-	{
+	if (order.size() != n) {
 		cout << "IMPOSSIBLE" << endl;
 		return 0;
 	}
 	cout << order[0] + 1;
-	for (int i = 1; i < n; i++)
-	{
-		cout << " " << order[i] + 1;
-	}
+	for (int i = 1; i < n; i++) { cout << " " << order[i] + 1; }
 	cout << endl;
 	return 0;
 }
@@ -683,51 +668,49 @@ int N, M;
 // Does a topological sort
 void compute() {
 	queue<int> q;
-	for(int i = 0; i < N; i++) {
-		if(in_degree[i] == 0) {
-			q.push(i);
-		}
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) { q.push(i); }
 	}
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
 
-		for(int next : edge[node]) {
+		for (int next : edge[node]) {
 			in_degree[next]--;
-			if(in_degree[next] == 0) q.push(next);
+			if (in_degree[next] == 0) q.push(next);
 		}
 
 		// The below block computes the DP
 		int mx = -999999999;
 		int mx_node = -1;
-		for(int prev : backEdge[node]) {
-			if(dist[prev] + 1 > mx) {
+		for (int prev : backEdge[node]) {
+			if (dist[prev] + 1 > mx) {
 				mx = dist[prev] + 1;
 				mx_node = prev;
 			}
 		}
 
 		dist[node] = mx;
-		if(node == 0) dist[node] = 1;
+		if (node == 0) dist[node] = 1;
 		prev_flight[node] = mx_node;
 	}
-
 }
 
-int main() { // See "General - Fast I/O" for more information about the first two lines in the main function
+int main() { // See "General - Fast I/O" for more information about the first
+			 // two lines in the main function
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
 	cin >> N >> M;
 
-	for(int i = 0; i < N; i++) {
+	for (int i = 0; i < N; i++) {
 		prev_flight[i] = -1;
 		dist[i] = -999999999;
 		in_degree[i] = 0;
 	}
 
-	for(int i = 0; i < M; i++) {
+	for (int i = 0; i < M; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--, b--;
@@ -743,20 +726,20 @@ int main() { // See "General - Fast I/O" for more information about the first tw
 	int temp = N - 1;
 
 	bool contains0 = false;
-	if(temp == 0) contains0 = true;
+	if (temp == 0) contains0 = true;
 
-	while(temp != -1 && dist[temp] >= 0) {
+	while (temp != -1 && dist[temp] >= 0) {
 		answer.push(temp);
 		temp = prev_flight[temp];
-		if(temp == 0) contains0 = true;
+		if (temp == 0) contains0 = true;
 	}
 
-	if(contains0) {
+	if (contains0) {
 		cout << dist[N - 1] << "\n";
-		while(!answer.empty()) {
+		while (!answer.empty()) {
 			cout << answer.top() + 1;
 			answer.pop();
-			if(!answer.empty()) cout << " ";
+			if (!answer.empty()) cout << " ";
 		}
 		cout << "\n";
 	} else {

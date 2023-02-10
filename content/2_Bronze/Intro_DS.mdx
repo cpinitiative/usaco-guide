@@ -131,15 +131,14 @@ through $10$ to it:
 
 ```cpp
 vector<int> v;
-for(int i = 1; i <= 10; i++){
-	v.push_back(i);
-}
+for (int i = 1; i <= 10; i++) { v.push_back(i); }
 ```
 
 `g++` will allow you to create an array of variable length:
 
 ```cpp
-int n; cin >> n;
+int n;
+cin >> n;
 int v[n];
 ```
 
@@ -149,7 +148,8 @@ We recommend that you use a `vector` for this purpose instead:
 
 ```cpp
 vector<int> v(n); // one way
-vector<int> v; v.resize(n); // another way
+vector<int> v;
+v.resize(n); // another way
 ```
 
 In array-based contest problems, we'll use one-, two-, and three-dimensional
@@ -180,10 +180,8 @@ One way to iterate through all elements of a static or dynamic array is to use a
 regular for loop.
 
 ```cpp
-vector<int> v{1,7,4,5,2};
-for (int i = 0; i < int(size(v)); i++){
-	cout << v[i] << " ";
-}
+vector<int> v{1, 7, 4, 5, 2};
+for (int i = 0; i < int(size(v)); i++) { cout << v[i] << " "; }
 cout << endl;
 ```
 
@@ -205,7 +203,7 @@ element of the vector `v`. Apart from the standard way of traversing a vector
 
 ```cpp
 for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
-	cout << *it << " "; //prints the values in the vector using the iterator
+	cout << *it << " "; // prints the values in the vector using the iterator
 }
 ```
 
@@ -213,9 +211,9 @@ Here is another way to write this. `auto` (since C++11) automatically infers the
 type of an object:
 
 ```cpp
-vector<int> v{1,7,4,5,2};
+vector<int> v{1, 7, 4, 5, 2};
 for (auto it = begin(v); it != end(v); it = next(it)) {
-	cout << *it << " "; //prints the values in the vector using the iterator
+	cout << *it << " "; // prints the values in the vector using the iterator
 }
 ```
 
@@ -223,7 +221,7 @@ We can also use a for-each loop.
 
 ```cpp
 for (int element : v) {
-	cout << element << " "; //prints the values in the vector
+	cout << element << " "; // prints the values in the vector
 }
 ```
 
@@ -234,21 +232,21 @@ $\mathcal{O}(n)$.
 
 ```cpp
 vector<int> v;
-v.push_back(2); // [2]
-v.push_back(3); // [2, 3]
-v.push_back(7); // [2, 3, 7]
-v.push_back(5); // [2, 3, 7, 5]
-v[1] = 4; // sets element at index 1 to 4 -> [2, 4, 7, 5]
+v.push_back(2);			// [2]
+v.push_back(3);			// [2, 3]
+v.push_back(7);			// [2, 3, 7]
+v.push_back(5);			// [2, 3, 7, 5]
+v[1] = 4;				// sets element at index 1 to 4 -> [2, 4, 7, 5]
 v.erase(v.begin() + 1); // removes element at index 1 -> [2, 7, 5]
 // this remove method is O(n); to be avoided
-v.push_back(8); // [2, 7, 5, 8]
-v.erase(v.end()-1); // [2, 7, 5]
+v.push_back(8);		  // [2, 7, 5, 8]
+v.erase(v.end() - 1); // [2, 7, 5]
 // here, we remove the element from the end of the list; this is O(1).
-v.push_back(4); // [2, 7, 5, 4]
-v.push_back(4); // [2, 7, 5, 4, 4]
-v.push_back(9); // [2, 7, 5, 4, 4, 9]
-cout << v[2]; // 5
-v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
+v.push_back(4);					   // [2, 7, 5, 4]
+v.push_back(4);					   // [2, 7, 5, 4, 4]
+v.push_back(9);					   // [2, 7, 5, 4, 4, 9]
+cout << v[2];					   // 5
+v.erase(v.begin(), v.begin() + 3); // [4, 4, 9]
 // this erases the first three elements; O(n)
 ```
 
@@ -585,8 +583,9 @@ This operation only works for constant `i`. Namely, it is **not** allowed to do
 something like the following since `i` is not constant:
 
 ```cpp
-tuple<int,int,int> t{3,4,5};
-int i = 1; cout << get<i>(t);
+tuple<int, int, int> t{3, 4, 5};
+int i = 1;
+cout << get<i>(t);
 ```
 
 - `tie(a, b, c, ..., d) = t`: Assigns `a, b, c, ..., d` to the elements of the
@@ -608,7 +607,8 @@ int main() {
 	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
 
 	tuple<string, string, int> tp2 = make_tuple("Hello", "world", 100);
-	string s1, s2; int x;
+	string s1, s2;
+	int x;
 	tie(s1, s2, x) = tp2;
 	cout << s1 << " " << s2 << " " << x << endl;
 }

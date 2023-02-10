@@ -42,18 +42,16 @@ size of $i$.
 <CPPSection>
 
 ```cpp
-const int MX = 2e5+5;
+const int MX = 2e5 + 5;
 vector<int> adj[MX];
 int timer = 0, st[MX], en[MX];
 
 void dfs(int node, int parent) {
 	st[node] = timer++;
 	for (int i : adj[node]) {
-		if (i != parent) {
-			dfs(i, node);
-		}
+		if (i != parent) { dfs(i, node); }
 	}
-	en[node] = timer-1;
+	en[node] = timer - 1;
 }
 ```
 
@@ -406,28 +404,35 @@ Assumes that `dfs()` code is included. Uses a segment tree.
 ```cpp
 /**
  * Description: 1D point update, range query where \texttt{comb} is
-	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
+ * any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
  * Time: O(\log N)
  * Source:
-	* http://codeforces.com/blog/entry/18051
-	* KACTL
+ * http://codeforces.com/blog/entry/18051
+ * KACTL
  * Verification: SPOJ Fenwick
  */
 
-template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return a+b; }
-	int n; vector<T> seg;
-	void init(int _n) { n = _n; seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+template <class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0;
+	T comb(T a, T b) { return a + b; }
+	int n;
+	vector<T> seg;
+	void init(int _n) {
+		n = _n;
+		seg.assign(2 * n, ID);
+	}
+	void pull(int p) { seg[p] = comb(seg[2 * p], seg[2 * p + 1]); }
 	void upd(int p, T val) { // set val at position p
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-	T query(int l, int r) {	// sum on interval [l, r]
+		seg[p += n] = val;
+		for (p /= 2; p; p /= 2) pull(p);
+	}
+	T query(int l, int r) { // sum on interval [l, r]
 		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra,seg[l++]);
-			if (r&1) rb = comb(seg[--r],rb);
+		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if (l & 1) ra = comb(ra, seg[l++]);
+			if (r & 1) rb = comb(seg[--r], rb);
 		}
-		return comb(ra,rb);
+		return comb(ra, rb);
 	}
 };
 
@@ -435,23 +440,28 @@ Seg<ll> S;
 int v[MX];
 
 int main() {
-	int n,q; cin >> n >> q;
-	FOR(i,1,n+1) cin >> v[i];
-	F0R(i,n-1) {
-		int a,b; cin >> a >> b;
+	int n, q;
+	cin >> n >> q;
+	FOR(i, 1, n + 1) cin >> v[i];
+	F0R(i, n - 1) {
+		int a, b;
+		cin >> a >> b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
-	dfs(1,0);
+	dfs(1, 0);
 	S.init(n);
-	FOR(i,1,n+1) S.upd(st[i],v[i]);
-	F0R(i,q) {
-		int t; cin >> t;
+	FOR(i, 1, n + 1) S.upd(st[i], v[i]);
+	F0R(i, q) {
+		int t;
+		cin >> t;
 		if (t == 1) {
-			int s,x; cin >> s >> x;
-			S.upd(st[s],x);
+			int s, x;
+			cin >> s >> x;
+			S.upd(st[s], x);
 		} else {
-			int s; cin >> s;
-			cout << S.query(st[s],en[s]) << "\n";
+			int s;
+			cin >> s;
+			cout << S.query(st[s], en[s]) << "\n";
 		}
 	}
 }
@@ -606,7 +616,8 @@ int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
 	if (l > b || r < a) return -1;
 	if (l >= a && r <= b) return segtree[node];
 	int mid = (l + r) / 2;
-	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
+	return mn_tin(query(a, b, node * 2, l, mid),
+				  query(a, b, node * 2 + 1, mid + 1, r));
 }
 
 // Make sure you run $dfs` and `build()` before you run this

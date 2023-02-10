@@ -41,9 +41,9 @@ right bound, and the maximum over all these values is our answer.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 using ll = long long;
@@ -51,11 +51,11 @@ using ll = long long;
 int main() {
 	int n;
 	cin >> n;
-	vector<long long> pfx(n + 1);  // prefix sum array initially filled with 0's
-	for (int i = 1; i <= n; i++){
+	vector<long long> pfx(n + 1); // prefix sum array initially filled with 0's
+	for (int i = 1; i <= n; i++) {
 		ll x;
 		cin >> x;
-		pfx[i] = pfx[i - 1] + x;  // compute the prefix sum at each element
+		pfx[i] = pfx[i - 1] + x; // compute the prefix sum at each element
 	}
 
 	ll max_subarray_sum = pfx[1];
@@ -144,9 +144,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<long long> x(n);
-	for (int i = 0; i < n; i++) {
-		cin >> x[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> x[i]; }
 	ll current_sum = x[0];
 	ll max_subarray_sum = x[0];
 	for (int i = 1; i < n; i++) {
@@ -556,20 +554,18 @@ int main() {
 	// build the prefix sum array
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
-			tree_pref[i][j] = forest[i][j]
-						+ tree_pref[i - 1][j]
-						+ tree_pref[i][j - 1]
-						- tree_pref[i - 1][j - 1];
+			tree_pref[i][j] = forest[i][j] + tree_pref[i - 1][j] +
+							  tree_pref[i][j - 1] - tree_pref[i - 1][j - 1];
 		}
 	}
 
 	for (int q = 0; q < Q; q++) {
 		int from_row, to_row, from_col, to_col;
 		cin >> from_row >> from_col >> to_row >> to_col;
-		cout << tree_pref[to_row][to_col]
-				- tree_pref[from_row - 1][to_col]
-				- tree_pref[to_row][from_col - 1]
-				+ tree_pref[from_row - 1][from_col - 1] << '\n';
+		cout << tree_pref[to_row][to_col] - tree_pref[from_row - 1][to_col] -
+					tree_pref[to_row][from_col - 1] +
+					tree_pref[from_row - 1][from_col - 1]
+			 << '\n';
 	}
 }
 ```
