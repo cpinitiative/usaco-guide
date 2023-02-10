@@ -61,20 +61,14 @@ int n;
 ll weight[20];
 
 ll solve(int i, ll sum1, ll sum2) {
-	if (i == n) {
-		return abs(sum1 - sum2);
-	}
-	return min(
-		solve(i + 1, sum1 + weight[i], sum2),
-		solve(i + 1, sum1, sum2 + weight[i])
-	);
+	if (i == n) { return abs(sum1 - sum2); }
+	return min(solve(i + 1, sum1 + weight[i], sum2),
+			   solve(i + 1, sum1, sum2 + weight[i]));
 }
 
 int main() {
 	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> weight[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> weight[i]; }
 	cout << solve(0, 0, 0) << endl;
 }
 ```
@@ -188,14 +182,12 @@ ll weight[20];
 
 int main() {
 	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> weight[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> weight[i]; }
 	ll ans = (ll)1e18;
 	for (int mask = 0; mask < (1 << n); mask++) {
 		ll sum1 = 0, sum2 = 0;
 		for (int j = 0; j < n; j++) {
-			if (mask & (1 << j)) {  // if the j-th bit is toggled
+			if (mask & (1 << j)) { // if the j-th bit is toggled
 				sum1 += weight[j];
 			} else {
 				sum2 += weight[j];
@@ -378,14 +370,10 @@ void search(string curr) {
 
 int main() {
 	cin >> s;
-	for (char c : s) {
-		char_count[c - 'a']++;
-	}
+	for (char c : s) { char_count[c - 'a']++; }
 	search("");
 	cout << perms.size() << "\n";
-	for (string perm : perms) {
-		cout << perm << "\n";
-	}
+	for (string perm : perms) { cout << perm << "\n"; }
 }
 ```
 
@@ -511,7 +499,7 @@ problem.
 ```cpp
 do {
 	check(v); // process or check the current permutation for validity
-} while(next_permutation(v.begin(), v.end()));
+} while (next_permutation(v.begin(), v.end()));
 ```
 
 Each call to `next_permutation` makes a constant number of swaps on average if
@@ -536,13 +524,9 @@ int main() {
 	cin >> s;
 	vector<string> perms;
 	sort(s.begin(), s.end());
-	do {
-		perms.push_back(s);
-	} while (next_permutation(s.begin(), s.end()));
+	do { perms.push_back(s); } while (next_permutation(s.begin(), s.end()));
 	cout << perms.size() << endl;
-	for (const string& perm : perms) {
-		cout << perm << endl;
-	}
+	for (const string &perm : perms) { cout << perm << endl; }
 }
 ```
 
@@ -619,35 +603,27 @@ int main() {
 	for (int i = 0; i < 8; i++) {
 		string s;
 		cin >> s;
-		for (int j = 0; j < 8; j++) {
-			ok[i][j] = (s[j] == '.');
-		}
+		for (int j = 0; j < 8; j++) { ok[i][j] = (s[j] == '.'); }
 	}
 	vector<int> vals(8);
 
-	iota(vals.begin(), vals.end(), 0);  // set vals to 0 1 ... 7
+	iota(vals.begin(), vals.end(), 0); // set vals to 0 1 ... 7
 
 	do {
 		bool works = true;
 		bool blocked[16];
 		for (int i = 0; i < 8; i++) {
-			if (!ok[i][vals[i]]) {
-				works = false;
-			}
+			if (!ok[i][vals[i]]) { works = false; }
 		}
 		// first mark all squares as not blocked
 		memset(blocked, false, sizeof(blocked));
 		for (int i = 0; i < 8; i++) {
-			if (blocked[i + vals[i]]) {
-				works = false;
-			}
-			blocked[i + vals[i]] = true;  // mark this diagonal
+			if (blocked[i + vals[i]]) { works = false; }
+			blocked[i + vals[i]] = true; // mark this diagonal
 		}
 		memset(blocked, false, sizeof(blocked));
 		for (int i = 0; i < 8; i++) {
-			if (blocked[i + 7 - vals[i]]) {
-				works = false;
-			}
+			if (blocked[i + 7 - vals[i]]) { works = false; }
 			blocked[i + 7 - vals[i]] = true;
 		}
 		if (works) ++ans;
@@ -795,9 +771,9 @@ string g[8];
 bool sum[15], diff[15], c[8];
 int ans = 0;
 
-void dfs(int r) {  // place queen in r-th row
+void dfs(int r) { // place queen in r-th row
 	if (r == 8) {
-		++ans;  // found valid placement
+		++ans; // found valid placement
 		return;
 	}
 	for (int i = 0; i < 8; ++i) {
@@ -1065,14 +1041,13 @@ appear much less frequently than they once did.
         The following code is meant to generate all subsets of a given array:
     	```cpp
     	int A[] = {1, 2, 3, 4, 5};
-
+    	
     	void generateSubsets(int i, vector<int> &subset) {
     		if (i == 5) {
-    			for (int x : subset)
-    				cout << x << ' ';
+    			for (int x : subset) cout << x << ' ';
     			cout << '\n';
     		}
-
+    	
     		subset.push_back(A[i]);
     		generateSubsets(i + 1, subset);
     		subset.pop_back();
@@ -1084,11 +1059,10 @@ appear much less frequently than they once did.
     	```cpp
     	void generateSubsets(int i, vector<int> &subset) {
     		if (i == 5) {
-    			for (int x : subset)
-    				cout << x << ' ';
+    			for (int x : subset) cout << x << ' ';
     			cout << '\n';
     		}
-
+    	
     		// must always go to empty subset first
     		generateSubsets(i + 1, subset);
     		subset.push_back(A[i]);
@@ -1103,11 +1077,10 @@ appear much less frequently than they once did.
     	```cpp
     	void generateSubsets(int i, vector<int> &subset) {
     		if (i == 4) { // incorrect ending index
-    			for (int x : subset)
-    				cout << x << ' ';
+    			for (int x : subset) cout << x << ' ';
     			cout << '\n';
     		}
-
+    	
     		subset.push_back(A[i]);
     		generateSubsets(i + 1, subset);
     		subset.pop_back();
@@ -1123,12 +1096,11 @@ appear much less frequently than they once did.
     	```cpp
     	void generateSubsets(int i, vector<int> &subset) {
     		if (i == 5) {
-    			for (int x : subset)
-    				cout << x << ' ';
+    			for (int x : subset) cout << x << ' ';
     			cout << '\n';
     			return; // missing return statement
     		}
-
+    	
     		subset.push_back(A[i]);
     		generateSubsets(i + 1, subset);
     		subset.pop_back();
