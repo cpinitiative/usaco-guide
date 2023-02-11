@@ -1,0 +1,64 @@
+---
+id: cf-1486D
+source: CF
+title: Max Median
+author: Aakash Gokhale
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/46283)
+
+We can binary search over the largest possible median that is possible to achieve.
+
+To check whether the median $x$ is achievable, we need to count the number of elements that are $\ge x$ and the number of elements that are $< x$.
+
+If the number of elements $\ge x$ is greater than the number of elements $< x$, we can say that this median is achievable.
+Note that there must be strictly more elements greater than or equal to $x$ than less than $x$ because of how the problem defines the median.
+
+Let f(i) be the number of elements in the prefix that are$\ge x$ - the number of elements in the prefix that are $< x$.
+
+We can prove that if $f(i) - f(j) > 0$ and $i >= j + k$, it is possible to have a median of $x$.
+This is because on the range from $i$ to $j$ there will be more elements greater than or equal to $x$ than less than $x$ which means that the median will also be greater than or equal to $x$.
+
+From here we can perform a linear search for the max difference keeping track of the minumum element in the prefix from $0$ to $f[i - k]$ which ensures that the size is always at least $k$. If it greater than $0$, then this median is possible to achieve.
+
+The solution's time complexity in O(nlogn) which satisfies the problem constraints.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+    ios::sync_with_stdio(0); cin.tie(0);
+    int n, k; cin >> n >> k;
+    vector<int> a(n); for (auto& i: a) cin >> i;
+    int lo = 1; int hi = n;
+    while (lo < hi) {
+        int x = (lo + hi + 1) / 2;
+        vector<int> f(n);
+        for (int i = 0; i < n; i++) {
+            f[i] = a[i] >= x ? 1 : -1;
+            if (i) f[i] += f[i - 1];
+        }
+        int mn = 0;
+        int diff = f[k - 1];
+        for (int i = k; i < n; i++) {
+            mn = min(mn, f[i - k]);
+            diff = max(diff, f[i] - mn);
+        }
+        if (diff > 0) {
+            lo = x;
+        } else {
+            hi = x - 1;
+        }
+    }
+    cout << lo << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
