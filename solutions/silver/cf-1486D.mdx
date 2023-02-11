@@ -32,34 +32,34 @@ The solution's time complexity in $O(nlogn)$ which satisfies the problem constra
 using namespace std;
  
 int main() {
-    ios::sync_with_stdio(0); cin.tie(0);
-    int n, k; cin >> n >> k;
-    vector<int> a(n); for (auto& i: a) cin >> i;
-    int lo = 1; int hi = n;
-    while (lo < hi) {
-        int x = (lo + hi + 1) / 2;
-        vector<int> f(n);
-        for (int i = 0; i < n; i++) {
-            f[i] = a[i] >= x ? 1 : -1;
-            if (i) f[i] += f[i - 1];
-        }
-        // Default values if the subarray started from 0 and ended at (k - 1)
-        int mn = 0;
-        int diff = f[k - 1];
-        // Iterate over the ending pointer of a subarray.
-        for (int i = k; i < n; i++) {
-            // Update the minimum element in the prefix.
-            mn = min(mn, f[i - k]);
-            // Update the maximum possible difference.
-            diff = max(diff, f[i] - mn);
-        }
-        if (diff > 0) {
-            lo = x;
-        } else {
-            hi = x - 1;
-        }
-    }
-    cout << lo << endl;
+	ios::sync_with_stdio(0); cin.tie(0);
+	int n, k; cin >> n >> k;
+	vector<int> a(n); for (auto& i: a) cin >> i;
+	int lo = 1; int hi = n;
+	while (lo < hi) {
+		int x = (lo + hi + 1) / 2;
+		vector<int> f(n);
+		for (int i = 0; i < n; i++) {
+			f[i] = a[i] >= x ? 1 : -1;
+			if (i) f[i] += f[i - 1];
+		}
+		// Default values if the subarray started from 0 and ended at (k - 1)
+		int mn = 0;
+		int diff = f[k - 1];
+		// Iterate over the ending pointer of a subarray.
+		for (int i = k; i < n; i++) {
+			// Update the minimum element in the prefix.
+			mn = min(mn, f[i - k]);
+			// Update the maximum possible difference.
+			diff = max(diff, f[i] - mn);
+		}
+		if (diff > 0) {
+			lo = x;
+		} else {
+			hi = x - 1;
+		}
+	}
+	cout << lo << endl;
 }
 ```
 
