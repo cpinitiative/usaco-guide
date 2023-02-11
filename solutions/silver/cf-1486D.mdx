@@ -14,7 +14,7 @@ To check whether the median $x$ is achievable on an interval, we need to count t
 If the number of elements $\ge x$ is greater than the number of elements $< x$, we can say that this median is achievable.
 Note that there must be strictly more elements greater than or equal to $x$ than less than $x$ because of how the problem defines the median for subarrays even sizes.
 
-Let f(i) be the number of elements in the prefix that are$\ge x$ - the number of elements in the prefix that are $< x$.
+Let $f(i)$ be the number of elements in the prefix that are$\ge x$ - the number of elements in the prefix that are $< x$.
 
 We can prove that if $f(i) - f(j) > 0$ and $i >= j + k$, it is possible to have a median of $x$.
 This is because on the range from $i$ to $j$ there will be more elements greater than or equal to $x$ than less than $x$ which means that the median will also be greater than or equal to $x$.
@@ -43,10 +43,14 @@ int main() {
             f[i] = a[i] >= x ? 1 : -1;
             if (i) f[i] += f[i - 1];
         }
+        // Default values if the subarray started from 0 and ended at (k - 1)
         int mn = 0;
         int diff = f[k - 1];
+        // Iterate over the ending pointer of a subarray.
         for (int i = k; i < n; i++) {
+            // Update the minimum element in the prefix.
             mn = min(mn, f[i - k]);
+            // Update the maximum possible difference.
             diff = max(diff, f[i] - mn);
         }
         if (diff > 0) {
