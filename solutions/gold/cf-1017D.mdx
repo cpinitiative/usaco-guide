@@ -45,7 +45,7 @@ int main() {
 	}
 	
 	// convert all strings to integers and store count
-	vector<int> str_cnt(1 << n);
+	vector<int> str_count(1 << n);
 	for (int i = 0; i < m; i++) {
 		string s; cin >> s;
 		int val = 0;
@@ -54,7 +54,7 @@ int main() {
 				val += 1 << j;
 			}
 		}
-		str_cnt[val]++;
+		str_count[val]++;
 	}
 	
 	/*
@@ -64,7 +64,7 @@ int main() {
 	vector<vector<pair<int, int>>> pref_wu(1 << n, vector<pair<int, int>>(1 << n));
 	for (int i = 0; i < (1 << n); i++) {
 		for (int j = 0; j < (1 << n); j++) {
-			pref_wu[i][j] = {wu.back() - wu[i ^ j], str_cnt[j]};
+			pref_wu[i][j] = {wu.back() - wu[i ^ j], str_count[j]};
 		}
 		sort(pref_wu[i].begin(), pref_wu[i].end());
 		// accumulate prefix sums of count
