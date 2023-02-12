@@ -222,4 +222,42 @@ int main() {
 }
 ```
 </CPPSection>
+	
+<PythonSection>
+```
+import sys
+sys.stdin = open("convention.in", "r")
+sys.stdout = open("convention.out", "w")
+
+n, m, c = map(int, input().split())
+arr = list(map(int, input().split()))
+arr.sort()
+
+def good(k: int) -> bool:
+    bus, cow, lcow = 0, 0, 0
+
+    while cow < n:
+        if cow == lcow:
+            bus += 1
+        
+        if arr[cow] - arr[lcow] > k:
+            lcow = cow
+        elif cow - lcow + 1 == c:
+            cow += 1
+            lcow = cow
+        else:
+            cow += 1
+    return bus <= m
+
+lo = 0
+hi = arr[-1] - arr[0]
+while lo < hi:
+    mid = lo + (hi - lo) // 2
+    if good(mid):
+        hi = mid
+    else:
+        lo = mid + 1
+print(lo)
+```
+</PythonSection>
 </LanguageSection>
