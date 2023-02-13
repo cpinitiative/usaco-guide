@@ -62,41 +62,58 @@ sums $\sum_{i=0}^{r}\texttt{nums}[i]$ and $\sum_{i=0}^{l-1}\texttt{nums}[i]$, wh
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
-ll blocks[450]; // 450^2 > 2e5
-int nums[(int)(2e5 + 1)];
-int block_sz;
+const int MAX_BLOCKS = 450;
+long long blocks[MAX_BLOCKS]; // 450^2 > 2e5
+int nums[MAX_BLOCKS * MAX_BLOCKS];
+int block_size;
 
-void upd(int x, int v) { // O(1) update
-	blocks[x / block_sz] -= nums[x];
+/** O(1) update */
+void update(int x, int v) { 
+	blocks[x / block_size] -= nums[x];
 	nums[x] = v;
-	blocks[x / block_sz] += nums[x];
+	blocks[x / block_size] += nums[x];
 }
 
-ll query(int r) {
-	ll ret = 0;
-	for(int i = 0; i < r / block_sz; i++) ret += blocks[i];
-	for(int i = r / block_sz * block_sz; i < r; i++) ret += nums[i];
-	return ret;
+/** O(sqrt(n)) query for [0, r) */
+long long query(int r) {
+	long long res = 0;
+	for(int i = 0; i < r / block_size; i++) {
+		res += blocks[i];
+	}
+	for(int i = (r / block_size) * block_size; i < r; i++) {
+		res += nums[i];
+	}
+	return res;
 }
 
-ll query(int l, int r) {
+/** O(sqrt(n)) query for [l, r) */
+long long query(int l, int r) {
 	return query(r) - query(l - 1);
 }
 
 int main() {
-	setIO();
+	int n, q; 
+	cin >> n >> q;
+	block_size = (int) sqrt(n);
 
-	int n, q; cin >> n >> q;
-	block_sz = (int) sqrt(n);
-
-	for(int i = 0; i < n; ++i) cin >> nums[i];
-	for(int i = 0; i < n; ++i) blocks[i / block_sz] += nums[i];
-	for(int i = 0; i < q; ++i) {
-		int t, l, r; cin >> t >> l >> r;
-		if (t == 1) upd(l - 1, r);
-		else cout << query(l, r) << "\n";
+	for (int i = 0; i < n; i++) {
+		cin >> nums[i];
+	}
+	for (int i = 0; i < n; i++) {
+		blocks[i / block_size] += nums[i];
+	}
+	for (int i = 0; i < q; i++) {
+		int t, l, r; 
+		cin >> t >> l >> r;
+		if (t == 1) {
+			update(l - 1, r);
+		}
+		else {
+			cout << query(l, r) << "\n";
+		}
 	}
 }
 ```
