@@ -66,19 +66,18 @@ which each are calculated in $\mathcal{O}(\sqrt N)$.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAX_BLOCKS = 450;
-long long blocks[MAX_BLOCKS]; // 450^2 > 2e5
-int nums[MAX_BLOCKS * MAX_BLOCKS];
+vector<long long> blocks;
+vector<int> nums;
 int block_size;
 
-/** O(1) update */
+/** O(1) update to set nums[x] to v */
 void update(int x, int v) { 
 	blocks[x / block_size] -= nums[x];
 	nums[x] = v;
 	blocks[x / block_size] += nums[x];
 }
 
-/** O(sqrt(n)) query for [0, r) */
+/** O(sqrt(n)) query for sum of [0, r) */
 long long query(int r) {
 	long long res = 0;
 	for(int i = 0; i < r / block_size; i++) {
@@ -90,7 +89,7 @@ long long query(int r) {
 	return res;
 }
 
-/** O(sqrt(n)) query for [l, r) */
+/** O(sqrt(n)) query for sum of [l, r) */
 long long query(int l, int r) {
 	return query(r) - query(l - 1);
 }
@@ -98,7 +97,9 @@ long long query(int l, int r) {
 int main() {
 	int n, q; 
 	cin >> n >> q;
-	block_size = (int) sqrt(n);
+	block_size = (int) ceil(sqrt(n));
+	blocks.assign(block_size, 0);
+	nums.assign(n, 0);
 
 	for (int i = 0; i < n; i++) {
 		cin >> nums[i];
@@ -111,8 +112,7 @@ int main() {
 		cin >> t >> l >> r;
 		if (t == 1) {
 			update(l - 1, r);
-		}
-		else {
+		} else {
 			cout << query(l, r) << "\n";
 		}
 	}
@@ -161,7 +161,7 @@ int main() {
 	build();
 
 	vector<pair<int, int>> updates;
-	while(q-- > 0) {
+	for (int i = 0; i < q; i++) {
 		int t, a, b; 
 		cin >> t >> a >> b;
 		if (t == 1) {
