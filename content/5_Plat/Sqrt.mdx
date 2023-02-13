@@ -121,6 +121,79 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DRSQ {
+	static int blockSize;
+	static long[] blocks;
+	static int[] nums;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+		blockSize = (int) Math.ceil(Math.sqrt(n));
+
+		nums = Arrays.stream(br.readLine().split(" "))
+			.mapToInt(Integer::parseInt)
+			.toArray();
+		blocks = new long[blockSize];
+		for (int i = 0; i < n; i++) {
+			blocks[i / blockSize] += nums[i];
+		}
+
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int type = Integer.parseInt(st.nextToken());
+			int l = Integer.parseInt(st.nextToken());
+			int r = Integer.parseInt(st.nextToken());
+
+			if (type == 1) {
+				update(l - 1, r);
+			} else {
+				pw.println(query(l, r));
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+
+	/** O(1) update to set nums[x] to v */
+	static void update(int x, int v) {
+		blocks[x / blockSize] -= nums[x];
+		nums[x] = v;
+		blocks[x / blockSize] += nums[x];
+	}
+
+	/** O(sqrt(n)) query for sum of [l, r) */
+	static long query(int l, int r) {
+		return query(r) - query(l - 1); 
+	}
+
+	/** O(sqrt(n)) query for sum of [0, r) */
+	static long query(int r) {
+		long res = 0;
+		for (int i = 0; i < r / blockSize; i++) {
+			res += blocks[i];
+		}
+		for (int i = (r / blockSize) * blockSize; i < r; i++) {
+			res += nums[i];
+		}
+		return res;
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Batching
