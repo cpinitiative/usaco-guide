@@ -263,6 +263,86 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DRSQ {
+	static int blockSize;
+	static int[] arr;
+	static List<Long> prefix;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+
+		arr = Arrays.stream(br.readLine().split(" "))
+			.mapToInt(Integer::parseInt)
+			.toArray();
+		build();
+
+		List<Pair> updates = new ArrayList<>();
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int type = Integer.parseInt(st.nextToken());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			if (type == 1) {
+				a--;
+				updates.add(new Pair(a, b - arr[a]));
+				arr[a] = b;
+			} else {
+				long ans = prefix.get(b) - prefix.get(a - 1);
+				a--;
+				b--;
+				for (Pair p : updates) {
+					if (a <= p.first && p.first <= b) {
+						ans += p.second;
+					}
+				}
+				pw.println(ans);
+			}
+
+			if (updates.size() * updates.size() >= n) {
+				updates = new ArrayList<>();
+				build();
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+
+	static void build() {
+		prefix = new ArrayList<Long>();
+		prefix.add(0L);
+		for (int i = 0; i < arr.length; i++) {
+			prefix.add(prefix.get(prefix.size() - 1) + arr[i]);
+		}
+	}
+
+//BeginCodeSnip{Pair}
+	private static class Pair {
+		public int first;
+		public int second;
+		Pair(int a, int b) {
+			first = a;
+			second = b;
+		}
+	}
+//EndCodeSnip
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Mo's Algorithm
