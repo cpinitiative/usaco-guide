@@ -136,36 +136,53 @@ recalculate prefix sums.
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
 int n, q;
-vi x;
-vector<long long> cum;
+vector<int> arr;
+vector<long long> prefix;
 
+/** Build the prefix array for arr */
 void build() {
-	cum = {0};
-	for(const auto &t : x) cum.pb(cum.back() + t);
+	prefix = {0};
+	for (const int &t : arr) {
+		prefix.push_back(prefix.back() + t);
+	}
 }
 
 int main() {
-	setIO(); cin >> n >> q;
-	x.resize(n); for(int i = 0; i < n; i++) cin >> x[i];
+	cin >> n >> q;
+	arr.resize(n); 
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
 	build();
-	vector<pair<int, int>> upd;
-	while(q--) {
-		int t, a, b; cin >> t >> a >> b;
+
+	vector<pair<int, int>> updates;
+	while(q-- > 0) {
+		int t, a, b; 
+		cin >> t >> a >> b;
 		if (t == 1) {
 			a--;
-			upd.pb({a, b - x[a]}); x[a] = b;
+			updates.push_back({a, b - arr[a]}); 
+			arr[a] = b;
 		} else {
-			ll ans = cum[b] - cum[a - 1];
+			long long ans = prefix[b] - prefix[a - 1];
 			a--, b--;
-			for(const auto &u : upd) {
-				if (a <= u.f && u.f <= b) ans += u.s;
+			for (const auto &[idx, val] : updates) {
+				if (a <= idx && idx <= b) {
+					ans += val;
+				} 
 			}
 			cout << ans << "\n";
 		}
-		if (sz(upd) * sz(upd) >= n) upd.clear(), build();
+
+		// rebuild the prefix array once the buffer gets to sqrt(n)
+		if (updates.size() * updates.size() >= n) {
+			updates.clear();
+			build();
+		}
 	}
 }
 ```
