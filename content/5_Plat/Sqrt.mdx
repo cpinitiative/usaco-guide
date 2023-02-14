@@ -219,9 +219,9 @@ vector<long long> prefix;
 
 /** Build the prefix array for arr */
 void build() {
-	prefix = {0};
-	for (const int &t : arr) {
-		prefix.push_back(prefix.back() + t);
+	prefix[0] = 0;
+	for (int i = 1; i <= n; i++) {
+		prefix[i] = prefix[i - 1] + arr[i - 1];
 	}
 }
 
@@ -231,6 +231,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
+	prefix.assign(n + 1, 0);
 	build();
 
 	vector<pair<int, int>> updates;
@@ -289,7 +290,11 @@ public class DRSQ {
 		arr = Arrays.stream(br.readLine().split(" "))
 			.mapToInt(Integer::parseInt)
 			.toArray();
-		build();
+		prefix = new ArrayList<>();
+		prefix.add(0L);
+		for (int i = 1; i <= arr.length; i++) {
+			prefix.add(prefix.get(i - 1) + arr[i - 1]);
+		}
 
 		List<Pair> updates = new ArrayList<>();
 		for (int i = 0; i < q; i++) {
@@ -325,10 +330,8 @@ public class DRSQ {
 	}
 
 	static void build() {
-		prefix = new ArrayList<Long>();
-		prefix.add(0L);
-		for (int i = 0; i < arr.length; i++) {
-			prefix.add(prefix.get(prefix.size() - 1) + arr[i]);
+		for (int i = 1; i <= arr.length; i++) {
+			prefix.set(i, prefix.get(i - 1) + arr[i - 1]);
 		}
 	}
 
