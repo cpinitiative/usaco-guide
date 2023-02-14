@@ -29,14 +29,14 @@ approaches. Both run in $\mathcal{O}(Q\sqrt N)$ time.
 <!-- partitioning into sqrt blocks (each block can have some sort of data structure ...)
  -->
 
-We partition the array into blocks of size $\texttt{block_size}=\lceil \sqrt{N}
+We partition the array into blocks of size $\texttt{block\_size}=\lceil \sqrt{N}
 \rceil$. Each block stores the sum of elements within it, and allows for the
 creation of corresponding `update` and `query` operations.
 
 **Update Queries:** $\mathcal{O}(1)$
 
 To update an element at location $x$, first find the corresponding block using
-the formula $\frac{x}{\texttt{block_size}}$.
+the formula $\frac{x}{\texttt{block\_size}}$.
 
 Then, apply the corresponding difference between the element currently stored at
 $x$ and the element we want to change it to.
@@ -46,13 +46,13 @@ $x$ and the element we want to change it to.
 To perform a sum query from $[0\ldots r]$, calculate
 
 $$
-\sum_{i = 0}^{R-1} \texttt{blocks}[i] + \sum_{R \cdot \texttt{block_size}}^r \texttt{nums}[i]
+\sum_{i = 0}^{R-1} \texttt{blocks}[i] + \sum_{R \cdot \texttt{block\_size}}^r \texttt{nums}[i]
 $$
 
 where $\texttt{blocks}[i]$ represents the total sum of the $i$-th block, the
 $i$-th block represents the sum of the elements from the range $[i\cdot
-\texttt{block_size},(i + 1)\cdot \texttt{block_size})$, and $R=\left\lceil
-\frac{r}{\texttt{block_size}} \right\rceil$.
+\texttt{block\_size},(i + 1)\cdot \texttt{block\_size})$, and $R=\left\lceil
+\frac{r}{\texttt{block\_size}} \right\rceil$.
 
 Finally, $\sum_{i=l}^{r} \texttt{nums}[i]$ is the difference between the two
 sums $\sum_{i=0}^{r}\texttt{nums}[i]$ and $\sum_{i=0}^{l-1}\texttt{nums}[i]$,
