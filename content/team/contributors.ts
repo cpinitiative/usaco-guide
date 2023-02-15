@@ -307,6 +307,11 @@ export const RestOfMembers: Member[] = [
     name: 'Trisha Sabadra',
     titles: [roles.liveInstructor],
   },
+  {
+    photo: 'faris',
+    name: 'Faris Raza',
+    titles: [roles.liveInstructor, roles.clubCurriculum],
+  },
 ];
 
 export const NotPictured: Member[] = [
