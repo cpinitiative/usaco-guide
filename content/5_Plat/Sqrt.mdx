@@ -66,54 +66,62 @@ which each are calculated in $\mathcal{O}(\sqrt N)$.
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<long long> blocks;
-vector<int> nums;
-int block_size;
+struct Sqrt {
+	int block_size;
+	vector<int> nums;
+	vector<long long> blocks;
+	Sqrt(int sqrtn): block_size(sqrtn), blocks(sqrtn, 0) {}
 
-/** O(1) update to set nums[x] to v */
-void update(int x, int v) { 
-	blocks[x / block_size] -= nums[x];
-	nums[x] = v;
-	blocks[x / block_size] += nums[x];
-}
-
-/** O(sqrt(n)) query for sum of [0, r) */
-long long query(int r) {
-	long long res = 0;
-	for (int i = 0; i < r / block_size; i++) {
-		res += blocks[i];
+	void build(vector<int> &arr) {
+		nums = arr;
+		for (int i = 0; i < nums.size(); i++) {
+			blocks[i / block_size] += nums[i];
+		}
 	}
-	for (int i = (r / block_size) * block_size; i < r; i++) {
-		res += nums[i];
-	}
-	return res;
-}
 
-/** O(sqrt(n)) query for sum of [l, r) */
-long long query(int l, int r) {
-	return query(r) - query(l - 1);
-}
+	/** O(1) update to set nums[x] to v */
+	void update(int x, int v) { 
+		blocks[x / block_size] -= nums[x];
+		nums[x] = v;
+		blocks[x / block_size] += nums[x];
+	}
+
+	/** O(sqrt(n)) query for sum of [0, r) */
+	long long query(int r) {
+		long long res = 0;
+		for (int i = 0; i < r / block_size; i++) {
+			res += blocks[i];
+		}
+		for (int i = (r / block_size) * block_size; i < r; i++) {
+			res += nums[i];
+		}
+		return res;
+	}
+
+	/** O(sqrt(n)) query for sum of [l, r) */
+	long long query(int l, int r) {
+		return query(r) - query(l - 1);
+	}
+};
 
 int main() {
 	int n, q; 
 	cin >> n >> q;
-	block_size = (int) ceil(sqrt(n));
-	blocks.assign(block_size, 0);
-	nums.assign(n, 0);
 
+	vector<int> arr(n);
 	for (int i = 0; i < n; i++) {
-		cin >> nums[i];
+		cin >> arr[i];
 	}
-	for (int i = 0; i < n; i++) {
-		blocks[i / block_size] += nums[i];
-	}
+	Sqrt sq((int) ceil(sqrt(n)));
+	sq.build(arr);
+
 	for (int i = 0; i < q; i++) {
 		int t, l, r; 
 		cin >> t >> l >> r;
 		if (t == 1) {
-			update(l - 1, r);
+			sq.update(l - 1, r);
 		} else {
-			cout << query(l, r) << "\n";
+			cout << sq.query(l, r) << "\n";
 		}
 	}
 }
@@ -128,10 +136,6 @@ import java.io.*;
 import java.util.*;
 
 public class DRSQ {
-	static int blockSize;
-	static long[] blocks;
-	static int[] nums;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(System.out);
@@ -139,15 +143,13 @@ public class DRSQ {
 
 		int n = Integer.parseInt(st.nextToken());
 		int q = Integer.parseInt(st.nextToken());
-		blockSize = (int) Math.ceil(Math.sqrt(n));
 
-		nums = Arrays.stream(br.readLine().split(" "))
+		int[] arr = Arrays.stream(br.readLine().split(" "))
 			.mapToInt(Integer::parseInt)
 			.toArray();
-		blocks = new long[blockSize];
-		for (int i = 0; i < n; i++) {
-			blocks[i / blockSize] += nums[i];
-		}
+		Sqrt sq = new Sqrt((int) Math.ceil(Math.sqrt(n)));
+		sq.build(arr);
+
 
 		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -156,9 +158,9 @@ public class DRSQ {
 			int r = Integer.parseInt(st.nextToken());
 
 			if (type == 1) {
-				update(l - 1, r);
+				sq.update(l - 1, r);
 			} else {
-				pw.println(query(l, r));
+				pw.println(sq.query(l, r));
 			}
 		}
 
@@ -166,28 +168,46 @@ public class DRSQ {
 		pw.close();
 	}
 
-	/** O(1) update to set nums[x] to v */
-	static void update(int x, int v) {
-		blocks[x / blockSize] -= nums[x];
-		nums[x] = v;
-		blocks[x / blockSize] += nums[x];
-	}
+	static class Sqrt {
+		static int blockSize;
+		static int[] nums;
+		static long[] blocks;
 
-	/** O(sqrt(n)) query for sum of [l, r) */
-	static long query(int l, int r) {
-		return query(r) - query(l - 1); 
-	}
+		Sqrt(int sqrtn) {
+			blockSize = sqrtn;
+			blocks = new long[sqrtn];
+		}
 
-	/** O(sqrt(n)) query for sum of [0, r) */
-	static long query(int r) {
-		long res = 0;
-		for (int i = 0; i < r / blockSize; i++) {
-			res += blocks[i];
+		void build(int[] arr) {
+			nums = arr;
+			for (int i = 0; i < nums.length; i++) {
+				blocks[i / blockSize] += nums[i];
+			}
 		}
-		for (int i = (r / blockSize) * blockSize; i < r; i++) {
-			res += nums[i];
+
+		/** O(1) update to set nums[x] to v */
+		static void update(int x, int v) {
+			blocks[x / blockSize] -= nums[x];
+			nums[x] = v;
+			blocks[x / blockSize] += nums[x];
 		}
-		return res;
+
+		/** O(sqrt(n)) query for sum of [l, r) */
+		static long query(int l, int r) {
+			return query(r) - query(l - 1); 
+		}
+
+		/** O(sqrt(n)) query for sum of [0, r) */
+		static long query(int r) {
+			long res = 0;
+			for (int i = 0; i < r / blockSize; i++) {
+				res += blocks[i];
+			}
+			for (int i = (r / blockSize) * blockSize; i < r; i++) {
+				res += nums[i];
+			}
+			return res;
+		}
 	}
 }
 ```
@@ -275,7 +295,6 @@ import java.io.*;
 import java.util.*;
 
 public class DRSQ {
-	static int blockSize;
 	static int[] arr;
 	static List<Long> prefix;
 
