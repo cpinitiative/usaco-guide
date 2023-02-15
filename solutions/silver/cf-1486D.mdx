@@ -32,20 +32,24 @@ The solution's time complexity in $O(nlogn)$ which satisfies the problem constra
 using namespace std;
  
 int main() {
-	ios::sync_with_stdio(0); cin.tie(0);
-	int n, k; cin >> n >> k;
-	vector<int> a(n); for (auto& i: a) cin >> i;
-	
+	int n, k;
+	cin >> n >> k;
+	vector<int> a(n);
+	for (auto& i: a) {
+	    cin >> i;
+	}
 	// Binary search over the maximum median
 	int lo = 1; int hi = n;
 	while (lo < hi) {
 		int median = (lo + hi + 1) / 2;
+		// Same as the f described in the editorial
 		vector<int> f(n);
 		for (int i = 0; i < n; i++) {
+			// If a[i] is greater than or equal to the median, it contributes 1 to f(i)
+			// Otherwise if it less than the median, it contributes -1 to f(i)
 			f[i] = a[i] >= median ? 1 : -1;
 			if (i) f[i] += f[i - 1];
 		}
-		
 		int mn = 0;
 		int diff = 0;
 		// Iterate over the ending pointer of a subarray.
@@ -55,14 +59,12 @@ int main() {
 			// Update the maximum possible difference.
 			diff = max(diff, f[i] - mn);
 		}
-		
 		if (diff > 0) {
 			lo = median;
 		} else {
 			hi = median - 1;
 		}
 	}
-	
 	cout << lo << endl;
 }
 ```
