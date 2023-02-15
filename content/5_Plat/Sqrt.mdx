@@ -70,9 +70,7 @@ struct Sqrt {
 	int block_size;
 	vector<int> nums;
 	vector<long long> blocks;
-	Sqrt(int sqrtn): block_size(sqrtn), blocks(sqrtn, 0) {}
-
-	void build(vector<int> &arr) {
+	Sqrt(int sqrtn, vector<int> &arr): block_size(sqrtn), blocks(sqrtn, 0) {
 		nums = arr;
 		for (int i = 0; i < nums.size(); i++) {
 			blocks[i / block_size] += nums[i];
@@ -112,8 +110,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
-	Sqrt sq((int) ceil(sqrt(n)));
-	sq.build(arr);
+	Sqrt sq((int) ceil(sqrt(n)), arr);
 
 	for (int i = 0; i < q; i++) {
 		int t, l, r; 
@@ -147,9 +144,7 @@ public class DRSQ {
 		int[] arr = Arrays.stream(br.readLine().split(" "))
 			.mapToInt(Integer::parseInt)
 			.toArray();
-		Sqrt sq = new Sqrt((int) Math.ceil(Math.sqrt(n)));
-		sq.build(arr);
-
+		Sqrt sq = new Sqrt((int) Math.ceil(Math.sqrt(n)), arr);
 
 		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -173,12 +168,9 @@ public class DRSQ {
 		static int[] nums;
 		static long[] blocks;
 
-		Sqrt(int sqrtn) {
+		Sqrt(int sqrtn, int[] arr) {
 			blockSize = sqrtn;
 			blocks = new long[sqrtn];
-		}
-
-		void build(int[] arr) {
 			nums = arr;
 			for (int i = 0; i < nums.length; i++) {
 				blocks[i / blockSize] += nums[i];
