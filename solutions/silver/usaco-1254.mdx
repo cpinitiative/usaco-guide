@@ -27,7 +27,7 @@ using namespace std;
 
 #define f first
 #define s second
-constexpr int MAX_N = 200'001;
+const int MAX_N = 2e5;
 
 using ll = long long;
 using pi = pair<ll, ll>;
@@ -44,7 +44,7 @@ ll n, cnt;
 ll dfs(ll node, ll prev) {
     ll balesToMove = bales[node];
 
-    for(ll i: adj[node]) {
+    for(ll i : adj[node]) {
         if(i == prev) continue;
         ll childBales = dfs(i, node);
         balesToMove += childBales;
@@ -55,7 +55,7 @@ ll dfs(ll node, ll prev) {
             ordersTo[i].emplace_back(node, childBales);
             ++cnt;
         }
-            // move bales from node to barn i
+        // move bales from node to barn i
         else if(childBales < 0) {
             ordersFrom[i].emplace_back(node);
             ordersTo[node].emplace_back(i, -1 * childBales);
@@ -67,21 +67,21 @@ ll dfs(ll node, ll prev) {
 }
 
 /*
-For each barn, we print out all outgoing orders of the barns it receives an order from.
-This ensures that we always have a valid ordering of orders.
+ * For each barn, we print out all outgoing orders of the barns it receives an order from.
+ * This ensures that we always have a valid ordering of orders.
 */
 void printOrders(ll node) {
     visited[node] = true;
-    for(ll i: ordersFrom[node]) {
+    for(ll i : ordersFrom[node]) {
         if(!visited[i]) printOrders(i);
     }
-    for(auto& i: ordersTo[node]) cout << node + 1 << ' ' << i.f + 1 << ' ' << i.s << '\n';
+    for(auto& i : ordersTo[node]) {
+        cout << node + 1 << ' ' << i.f + 1 << ' ' << i.s << '\n';
+    }
 }
 
 
-signed main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-
+int main() {
     cin >> n;
     ll avg = 0;
     for(ll i = 0; i < n; ++i) {
@@ -99,12 +99,11 @@ signed main() {
     }
 
     dfs(0, -1);
-    cout << cnt << '\n';
-
+    cout << cnt << endl;
+    
     for(ll i = 0; i < n; ++i) {
         if(!visited[i]) printOrders(i);
     }
-    return 0;
 }
 ```
 
