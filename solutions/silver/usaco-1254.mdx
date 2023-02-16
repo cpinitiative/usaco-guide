@@ -37,7 +37,7 @@ vector<pll> orders_to[MAX_N];  // Stores for each barn its outgoing orders
 
 int bales[MAX_N];
 bool visited[MAX_N];
-int n, cnt;
+int n, cnt;  // cnt is the number of total orders we need to make (in an optimal solution)
 
 // Move hay bales and generate orders
 ll dfs(int node, int prev) {
@@ -71,7 +71,7 @@ ll dfs(int node, int prev) {
 void print_orders(ll node) {
 	visited[node] = true;
 	for (int i : orders_from[node]) {
-		if(!visited[i]) {
+		if (!visited[i]) {
 			print_orders(i);
 		}
 	}
