@@ -7,6 +7,8 @@ author: Aakash Gokhale
 
 [Official Editorial](https://codeforces.com/blog/entry/87849)
 
+## Explanation
+
 We can binary search over the largest possible median that is possible to achieve.
 
 To check whether the median $x$ is achievable on an interval, we need to count the number of elements that are $\ge x$ and the number of elements that are $< x$.
@@ -21,10 +23,11 @@ This is because on the range from $i$ to $j$ there will be more elements greater
 
 From here we can perform a linear search for the max difference keeping track of the minumum element in the prefix from $0$ to $f[i - k]$ which ensures that the size is always at least $k$. If it greater than $0$, then this median is possible to achieve.
 
-The solution's time complexity in $O(nlogn)$ which satisfies the problem constraints.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -54,6 +57,7 @@ int main() {
 				f[i] += f[i - 1];
 			}
 		}
+		
 		// Keeps track of the minimum value of f(x) in the prefix
 		int mn = 0;
 		int diff = 0;
@@ -64,6 +68,7 @@ int main() {
 			// Update the maximum possible difference.
 			diff = max(diff, f[i] - mn);
 		}
+		
 		// Update binary search bounds.
 		if (diff > 0) {
 			lo = median;
@@ -77,5 +82,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
