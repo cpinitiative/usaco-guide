@@ -18,7 +18,6 @@ However, we also need to make sure that we print a valid ordering of these order
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -43,23 +42,22 @@ ll n, cnt;
 // Move hay bales and generate orders
 ll dfs(ll node, ll prev) {
 	ll balesToMove = bales[node];
-
-	for(ll i : adj[node]) {
-		if(i == prev) continue;
+	for (ll i : adj[node]) {
+		if (i == prev) {
+			continue;
+		}
 		ll childBales = dfs(i, node);
 		balesToMove += childBales;
 
 		// move bales from barn i to node
-		if(childBales > 0) {
+		if (childBales > 0) {
 			ordersFrom[node].emplace_back(i);
 			ordersTo[i].emplace_back(node, childBales);
-			++cnt;
-		}
-		// move bales from node to barn i
-		else if(childBales < 0) {
+			cnt++;
+		} else if(childBales < 0) {  // move bales from node to barn i
 			ordersFrom[i].emplace_back(node);
 			ordersTo[node].emplace_back(i, -1 * childBales);
-			++cnt;
+			cnt++;
 		}
 		// if childBales is 0, we don't need to move any orders
 	}
@@ -72,10 +70,10 @@ ll dfs(ll node, ll prev) {
 */
 void printOrders(ll node) {
 	visited[node] = true;
-	for(ll i : ordersFrom[node]) {
+	for (ll i : ordersFrom[node]) {
 		if(!visited[i]) printOrders(i);
 	}
-	for(auto& i : ordersTo[node]) {
+	for (const pi& i : ordersTo[node]) {
 		cout << node + 1 << ' ' << i.f + 1 << ' ' << i.s << '\n';
 	}
 }
@@ -84,29 +82,33 @@ void printOrders(ll node) {
 int main() {
 	cin >> n;
 	ll avg = 0;
-	for(ll i = 0; i < n; ++i) {
+	for (ll i = 0; i < n; i++) {
 		cin >> bales[i];
 		avg += bales[i];
 	}
 	avg /= n;
 
-	for(ll i = 0; i < n; ++i) bales[i] -= avg;
+	for (ll i = 0; i < n; i++) {
+		bales[i] -= avg;
+	}
 
-	for(ll i = 1; i < n; ++i) {
-		ll u, e; cin >> u >> e;
-		adj[u-1].emplace_back(e - 1);
-		adj[e-1].emplace_back(u - 1);
+	for (ll i = 1; i < n; i++) {
+		ll u, e;
+		cin >> u >> e;
+		adj[u - 1].emplace_back(e - 1);
+		adj[e - 1].emplace_back(u - 1);
 	}
 
 	dfs(0, -1);
 	cout << cnt << endl;
 
-	for(ll i = 0; i < n; ++i) {
-		if(!visited[i]) printOrders(i);
+	for (ll i = 0; i < n; i++) {
+		if (!visited[i]) {
+			printOrders(i);
+		}
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
