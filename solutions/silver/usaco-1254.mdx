@@ -37,7 +37,9 @@ vector<pll> orders_to[MAX_N];  // Stores for each barn its outgoing orders
 
 int bales[MAX_N];
 bool visited[MAX_N];
-int n, cnt;  // cnt is the number of total orders we need to make (in an optimal solution)
+
+int n;
+int order_num;
 
 // Move hay bales and generate orders
 ll dfs(int node, int prev) {
@@ -53,11 +55,11 @@ ll dfs(int node, int prev) {
 		if (child_bales > 0) {
 			orders_from[node].emplace_back(i);
 			orders_to[i].emplace_back(node, child_bales);
-			cnt++;
+			order_num++;
 		} else if (child_bales < 0) {  // move bales from node to barn i
 			orders_from[i].emplace_back(node);
 			orders_to[node].emplace_back(i, -1 * child_bales);
-			cnt++;
+			order_num++;
 		}
 		// if child_bales is 0, we don't need to move any orders
 	}
@@ -102,7 +104,7 @@ int main() {
 	}
 
 	dfs(0, -1);
-	cout << cnt << endl;
+	cout << order_num << endl;
 
 	for (int i = 0; i < n; i++) {
 		if (!visited[i]) {
