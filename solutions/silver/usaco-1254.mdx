@@ -29,11 +29,11 @@ using namespace std;
 const int MAX_N = 2e5;
 
 using ll = long long;
-using pi = pair<ll, ll>;
+using pll = pair<ll, ll>;
 
 vector<int> adj[MAX_N];
 vector<int> orders_from[MAX_N];  // Stores for each barn the barns that it receives an order from
-vector<pi> orders_to[MAX_N];  // Stores for each barn its outgoing orders
+vector<pll> orders_to[MAX_N];  // Stores for each barn its outgoing orders
 
 int bales[MAX_N];
 bool visited[MAX_N];
@@ -73,7 +73,7 @@ void print_orders(ll node) {
 	for (int i : orders_from[node]) {
 		if(!visited[i]) print_orders(i);
 	}
-	for (const pi& i : orders_to[node]) {
+	for (const pll& i : orders_to[node]) {
 		cout << node + 1 << ' ' << i.f + 1 << ' ' << i.s << '\n';
 	}
 }
