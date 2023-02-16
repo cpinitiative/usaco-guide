@@ -31,49 +31,49 @@ const int MAX_N = 2e5;
 using ll = long long;
 using pi = pair<ll, ll>;
 
-vector<ll> adj[MAX_N];
-vector<ll> ordersFrom[MAX_N];  // Stores for each barn the barns that it receives an order from
-vector<pi> ordersTo[MAX_N];  // Stores for each barn its outgoing orders
+vector<int> adj[MAX_N];
+vector<int> orders_from[MAX_N];  // Stores for each barn the barns that it receives an order from
+vector<pi> orders_to[MAX_N];  // Stores for each barn its outgoing orders
 
-ll bales[MAX_N];
+int bales[MAX_N];
 bool visited[MAX_N];
-ll n, cnt;
+int n, cnt;
 
 // Move hay bales and generate orders
-ll dfs(ll node, ll prev) {
-	ll balesToMove = bales[node];
-	for (ll i : adj[node]) {
+ll dfs(int node, int prev) {
+	ll bales_to_move = bales[node];
+	for (int i : adj[node]) {
 		if (i == prev) {
 			continue;
 		}
-		ll childBales = dfs(i, node);
-		balesToMove += childBales;
+		ll child_bales = dfs(i, node);
+		bales_to_move += child_bales;
 
 		// move bales from barn i to node
-		if (childBales > 0) {
-			ordersFrom[node].emplace_back(i);
-			ordersTo[i].emplace_back(node, childBales);
+		if (child_bales > 0) {
+			orders_from[node].emplace_back(i);
+			orders_to[i].emplace_back(node, child_bales);
 			cnt++;
-		} else if(childBales < 0) {  // move bales from node to barn i
-			ordersFrom[i].emplace_back(node);
-			ordersTo[node].emplace_back(i, -1 * childBales);
+		} else if (child_bales < 0) {  // move bales from node to barn i
+			orders_from[i].emplace_back(node);
+			orders_to[node].emplace_back(i, -1 * child_bales);
 			cnt++;
 		}
-		// if childBales is 0, we don't need to move any orders
+		// if child_bales is 0, we don't need to move any orders
 	}
-	return balesToMove;
+	return bales_to_move;
 }
 
 /*
  * For each barn, we print out all outgoing orders of the barns it receives an order from.
  * This ensures that we always have a valid ordering of orders.
 */
-void printOrders(ll node) {
+void print_orders(ll node) {
 	visited[node] = true;
-	for (ll i : ordersFrom[node]) {
-		if(!visited[i]) printOrders(i);
+	for (int i : orders_from[node]) {
+		if(!visited[i]) print_orders(i);
 	}
-	for (const pi& i : ordersTo[node]) {
+	for (const pi& i : orders_to[node]) {
 		cout << node + 1 << ' ' << i.f + 1 << ' ' << i.s << '\n';
 	}
 }
@@ -82,18 +82,18 @@ void printOrders(ll node) {
 int main() {
 	cin >> n;
 	ll avg = 0;
-	for (ll i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		cin >> bales[i];
 		avg += bales[i];
 	}
 	avg /= n;
 
-	for (ll i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		bales[i] -= avg;
 	}
 
-	for (ll i = 1; i < n; i++) {
-		ll u, e;
+	for (int i = 1; i < n; i++) {
+		int u, e;
 		cin >> u >> e;
 		adj[u - 1].emplace_back(e - 1);
 		adj[e - 1].emplace_back(u - 1);
@@ -102,9 +102,9 @@ int main() {
 	dfs(0, -1);
 	cout << cnt << endl;
 
-	for (ll i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		if (!visited[i]) {
-			printOrders(i);
+			print_orders(i);
 		}
 	}
 }
