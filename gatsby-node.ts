@@ -447,6 +447,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       fileAbsolutePath: String
       frontmatter: XdmFrontmatter
       isIncomplete: Boolean
+      cppOc: Int
+      javaOc: Int
+      pyOc: Int
       toc: TableOfContents
       mdast: String
     }

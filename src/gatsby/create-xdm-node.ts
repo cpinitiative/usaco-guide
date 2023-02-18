@@ -104,6 +104,9 @@ export async function createXdmNode({ id, node, content }, api) {
     body: compiledResult,
     frontmatter,
     isIncomplete: content.indexOf('<IncompleteSection') !== -1,
+    cppOc: (content.match(/<CPPSection/g) || []).length,
+    javaOc: (content.match(/<JavaSection/g) || []).length,
+    pyOc: (content.match(/<PySection/g) || []).length,
     toc: tableOfContents,
     mdast: mdast.data,
   };
