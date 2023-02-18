@@ -29,110 +29,110 @@ bool chosen[4];  // Whether a given card is present in `hand_permutation`.
 
 // Function that takes in two numbers and an operation and returns the result.
 int operation(int op, int num1, int num2) {
-    switch (op) {
-        case 0:
-            return num1 + num2;
-        case 1:
-            return num1 - num2;
-        case 2:
-            return num1 * num2;
-        case 3: {
-            // The divisor cannot be 0 and the quotient must be a whole number.
-            if (num2 == 0 || num1 % num2 != 0) {
-                return -INF;
-            }
-            return num1 / num2;
-        }
-    }
-    return -INF;
+	switch (op) {
+		case 0:
+			return num1 + num2;
+		case 1:
+			return num1 - num2;
+		case 2:
+			return num1 * num2;
+		case 3: {
+			// The divisor cannot be 0 and the quotient must be a whole number.
+			if (num2 == 0 || num1 % num2 != 0) {
+				return -INF;
+			}
+			return num1 / num2;
+		}
+	}
+	return -INF;
 }
 
 // Function that generates all possible permutations of the card hand.
 void generate_hand_permutation() {
-    if (hand_permutation.size() == 4) {
-        // We have generated a permutation, so we can try placing the
-        // operators.
-        for (int op1 = 0; op1 < 4; op1++) {
-            for (int op2 = 0; op2 < 4; op2++) {
-                for (int op3 = 0; op3 < 4; op3++) {
-                    int first = operation(op1, hand_permutation[0],
-                                          hand_permutation[1]);
-                    // If the operation is invalid, continue;
-                    if (first == -INF) {
-                        continue;
-                    }
+	if (hand_permutation.size() == 4) {
+		// We have generated a permutation, so we can try placing the
+		// operators.
+		for (int op1 = 0; op1 < 4; op1++) {
+			for (int op2 = 0; op2 < 4; op2++) {
+				for (int op3 = 0; op3 < 4; op3++) {
+					int first = operation(op1, hand_permutation[0],
+										  hand_permutation[1]);
+					// If the operation is invalid, continue;
+					if (first == -INF) {
+						continue;
+					}
 
-                    int second = operation(op2, first, hand_permutation[2]);
-                    if (second == -INF) {
-                        continue;
-                    }
+					int second = operation(op2, first, hand_permutation[2]);
+					if (second == -INF) {
+						continue;
+					}
 
-                    int third = operation(op3, second, hand_permutation[3]);
-                    if (third == -INF) {
-                        continue;
-                    }
+					int third = operation(op3, second, hand_permutation[3]);
+					if (third == -INF) {
+						continue;
+					}
 
-                    if (third <= 24) {
-                        ans = max(ans, third);
-                    }
-                }
-            }
-        }
+					if (third <= 24) {
+						ans = max(ans, third);
+					}
+				}
+			}
+		}
 
-        // Case 2: (( ) ( ))
-        for (int op1 = 0; op1 < 4; op1++) {
-            for (int op2 = 0; op2 < 4; op2++) {
-                for (int op3 = 0; op3 < 4; op3++) {
-                    int first = operation(op1, hand_permutation[0],
-                                          hand_permutation[1]);
-                    if (first == -INF) {
-                        continue;
-                    }
+		// Case 2: (( ) ( ))
+		for (int op1 = 0; op1 < 4; op1++) {
+			for (int op2 = 0; op2 < 4; op2++) {
+				for (int op3 = 0; op3 < 4; op3++) {
+					int first = operation(op1, hand_permutation[0],
+										  hand_permutation[1]);
+					if (first == -INF) {
+						continue;
+					}
 
-                    int second = operation(op2, hand_permutation[2],
-                                           hand_permutation[3]);
-                    if (second == -INF) {
-                        continue;
-                    }
+					int second = operation(op2, hand_permutation[2],
+										   hand_permutation[3]);
+					if (second == -INF) {
+						continue;
+					}
 
-                    int third = operation(op3, first, second);
-                    if (third == -INF) {
-                        continue;
-                    }
+					int third = operation(op3, first, second);
+					if (third == -INF) {
+						continue;
+					}
 
-                    if (third <= 24) {
-                        ans = max(ans, third);
-                    }
-                }
-            }
-        }
-    } else {
-        // Otherwise, we continue to build our permutation array.
-        for (int i = 0; i < 4; i++) {
-            if (chosen[i]) continue;
-            chosen[i] = true;
-            hand_permutation.push_back(hand[i]);
-            generate_hand_permutation();
-            chosen[i] = false;
-            hand_permutation.pop_back();
-        }
-    }
+					if (third <= 24) {
+						ans = max(ans, third);
+					}
+				}
+			}
+		}
+	} else {
+		// Otherwise, we continue to build our permutation array.
+		for (int i = 0; i < 4; i++) {
+			if (chosen[i]) continue;
+			chosen[i] = true;
+			hand_permutation.push_back(hand[i]);
+			generate_hand_permutation();
+			chosen[i] = false;
+			hand_permutation.pop_back();
+		}
+	}
 }
 
 int main() {
-    int num_hands;
-    cin >> num_hands;
+	int num_hands;
+	cin >> num_hands;
 
-    for (int h = 0; h < num_hands; h++) {
-        ans = -INF;
-        for (int i = 0; i < 4; i++) {
-            cin >> hand[i];
-        }
+	for (int h = 0; h < num_hands; h++) {
+		ans = -INF;
+		for (int i = 0; i < 4; i++) {
+			cin >> hand[i];
+		}
 
-        // Start complete search.
-        generate_hand_permutation();
-        cout << ans << "\n";
-    }
+		// Start complete search.
+		generate_hand_permutation();
+		cout << ans << "\n";
+	}
 }
 ```
 
