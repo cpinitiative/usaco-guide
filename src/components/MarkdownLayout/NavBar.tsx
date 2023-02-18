@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import MODULE_ORDERING from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { ModuleLinkInfo } from '../../models/module';
+import { MarkdownLayoutSidebarModuleLinkInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import Breadcrumbs from './Breadcrumbs';
 
@@ -14,7 +14,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   if (markdownLayoutInfo instanceof SolutionInfo) return null;
 
   const sortedModuleLinks = React.useMemo(() => {
-    const links: ModuleLinkInfo[] = [];
+    const links: MarkdownLayoutSidebarModuleLinkInfo[] = [];
     for (const group of MODULE_ORDERING[markdownLayoutInfo.section]) {
       for (const id of group.items) {
         links.push(sidebarLinks.find(x => x.id === id));
