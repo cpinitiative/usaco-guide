@@ -144,19 +144,13 @@ However, this hash function is quite bad; if we insert
 $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so
 it would easily be hacked in a CodeForces contest).
 
-<LanguageSection>
 
-<CPPSection>
+<JavaOnly>
 
-A better way to hash pairs would be to use polynomial hashing (as described in [this module](/gold/string-hashing)).
-
-</CPPSection>
-
-<JavaSection>
-
-A better (and easier) way to hash custom objects is to use Java's built in 
+In Java, an easy way to hash custom objects is to use the builtin
 `Objects.hash()` method. This method takes in multiple objects and uses them
-to create a hash code.
+to create a hash code. However, this is easily hackable, as the code 
+below shows.
 
 ```java
 import java.io.*;
@@ -166,6 +160,11 @@ public class HashTest {
 	public static void main(String[] args) {
 		// uses custom hash function in class Pair
 		Set<Pair> set = new HashSet<>();
+		for (int i = 0; i < 100000; ++i) {
+			// Pair p = new Pair(i, 0); // ~0.2s on ide.usaco.guide
+			Pair p = new Pair(i, -31*i); // >5s
+			set.add(p);
+		}
 	}
 
 	static class Pair {
@@ -191,9 +190,10 @@ public class HashTest {
 }
 ```
 
-</JavaSection>
+</JavaOnly>
 
-</LanguageSection>
+A better way to hash pairs would be to use polynomial hashing with a randomized
+base (as described in [this module](/gold/string-hashing)).
 
 ## Anti-Hash Tests
 
