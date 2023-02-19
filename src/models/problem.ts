@@ -60,10 +60,10 @@ export const probSources = {
   ],
   CF: [
     'https://codeforces.com/contest/',
-    'CodeForces',
+    'Codeforces',
     'Check contest materials, located to the right of the problem statement.',
   ],
-  'CF EDU': ['https://codeforces.com/edu/courses', 'CodeForces Edu'],
+  'CF EDU': ['https://codeforces.com/edu/courses', 'Codeforces Edu'],
   CSA: [
     'https://csacademy.com/contest/archive/task/',
     'CS Academy',
@@ -100,7 +100,6 @@ export const probSources = {
     'tlx.toki.id',
     'The editorial should be available in the announcements tab.',
   ],
-  'oj.uz': ['https://oj.uz/problem/view/', ''],
   YS: ['https://judge.yosupo.jp/problem/', 'Library Checker'],
 };
 
@@ -144,7 +143,7 @@ export type ProblemSolutionInfo =
     }
   | {
       /*
-If the label is just text. Used for certain sources like CodeForces
+If the label is just text. Used for certain sources like Codeforces
 Ex:
 - label = Check CF
 - labelTooltip = "Check content materials, located to the right of the problem statement
@@ -179,7 +178,7 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
 export type ProblemSolutionMetadata =
   | {
       // auto generate problem solution label based off of the given site
-      // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+      // For sites like Codeforces: "Check contest materials, located to the right of the problem statement."
       kind: 'autogen-label-from-site';
       // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
       site: string;
