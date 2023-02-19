@@ -142,20 +142,9 @@ export default function ProblemSuggestionModal({
       Silver: 'Recent USACO Silver (Dec 2015 and Later)',
       Gold: 'Recent USACO Gold (Dec 2015 and Later)',
       Plat: 'USACO Platinum',
-      AC: 'AtCoder',
-      CC: 'CodeChef',
-      CF: 'Codeforces',
-      CSA: 'CS Academy',
-      FHC: 'Facebook HackerCup',
-      HR: 'HackerRank',
-      LC: 'LeetCode',
-      POI: 'Polish Olympiad in Informatics',
-      SOJ: 'Sphere Online Judge',
-      TLX: 'tlx.toki.id',
-      YS: 'YS (judge.yosupo.jp)',
     };
     if (map[source]) return map[source];
-    return source;
+    return probSources[source][1];
   };
   const isAdditionalPractice = markdownLayoutInfo?.title.includes(
     'Additional Practice'

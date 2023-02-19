@@ -54,8 +54,11 @@ const moduleSources = {
     'youtube.com/c/Errichto/about',
   ],
   CSA: ['https://csacademy.com/lesson/', 'CS Academy'],
-  CF: ['https://codeforces.com/blog/entry/', 'CodeForces'],
-  'CF EDU': ['https://codeforces.com/edu/courses', 'CodeForces Edu (enrollment required for viewing)'],
+  CF: ['https://codeforces.com/blog/entry/', 'Codeforces'],
+  'CF EDU': [
+    'https://codeforces.com/edu/courses',
+    'Codeforces Edu (enrollment required for viewing)',
+  ],
   TC: [
     'https://www.topcoder.com/community/competitive-programming/tutorials/',
     'TopCoder',
