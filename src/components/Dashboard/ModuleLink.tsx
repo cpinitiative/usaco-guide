@@ -233,10 +233,9 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               {link.isIncomplete || isMissingLang ? (
                 <Tooltip
                   content={
-                    (link.isIncomplete
+                    link.isIncomplete
                       ? 'This module has incomplete sections.'
-                      : `This module is missing sections in your language (${LANGUAGE_LABELS[userLang]}).`) +
-                    ' Please help! D:'
+                      : `This module is missing sections in your language (${LANGUAGE_LABELS[userLang]}).`
                   }
                 >
                   <svg
