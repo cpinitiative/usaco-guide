@@ -321,9 +321,33 @@ public class Solution {
 
 <PySection>
 
-Use `sys.stdin.readline` and `sys.stdout.write` instead.
+Replacing `input` with `sys.stdin.readline` results in a huge speedup.
 
-<Spoiler title="sys (2.4s)">
+<Spoiler title="readline + print (2.9s)">
+
+```py
+import sys
+input = sys.stdin.readline
+ 
+M,N = map(int, input().split())
+ 
+MOD = 10**9+7
+ans = 0
+for _ in range(N):
+	x = int(input())
+	ans = (ans+x)%MOD
+	if M == 1:
+		print(ans)
+ 
+if M == 0:
+	print(ans)
+```
+
+</Spoiler>
+
+Using `sys.stdin.readline` and `sys.stdout.write` is a bit faster:
+
+<Spoiler title="readline + write (2.4s)">
 
 ```py
 import sys
@@ -599,15 +623,16 @@ if M == 0:
 
 </LanguageSection>
 
+
+<LanguageSection>
+
+<CPPSection>
+
 ## Even Faster Methods
 
 The input methods described above are easy to type up from scratch and are
 usually fast enough for USACO contests. But if you're looking for something even
 faster ...
-
-<LanguageSection>
-
-<CPPSection>
 
 Using `fread` and `fwrite` reduces the runtime even further.
 
@@ -714,6 +739,12 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+
+## Even Faster Methods
+
+The input methods described above are easy to type up from scratch and are
+usually fast enough for USACO contests. But if you're looking for something even
+faster ...
 
 Even faster than `BufferedReader` is a custom-written Fast I/O class that reads
 bytes directly from an
@@ -832,6 +863,8 @@ public class Solution {
 </Spoiler>
 
 </JavaSection>
+
+<PySection />
 
 </LanguageSection>
 
