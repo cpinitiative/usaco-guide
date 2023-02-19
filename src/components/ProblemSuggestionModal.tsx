@@ -40,8 +40,9 @@ export default function ProblemSuggestionModal({
   const inEditor = editorActions.inEditor;
 
   // will be null if in editor
-  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
-    ?.markdownLayoutInfo;
+  const markdownLayoutInfo = useContext(
+    MarkdownLayoutContext
+  )?.markdownLayoutInfo;
 
   const darkMode = useDarkMode();
 
@@ -156,11 +157,21 @@ export default function ProblemSuggestionModal({
     if (map[source]) return map[source];
     return source;
   };
+  const isAdditionalPractice = markdownLayoutInfo?.title.includes(
+    'Additional Practice'
+  );
   const sourceOptions = [
-    ...Object.keys(probSources).map(source => ({
-      label: getLabel(source),
-      value: source,
-    })),
+    ...Object.keys(probSources)
+      .map(source => ({
+        label: getLabel(source),
+        value: source,
+      }))
+      .filter(
+        val =>
+          !isAdditionalPractice ||
+          (!val.label.includes('Recent USACO') &&
+            !val.label.includes('Platinum'))
+      ),
     {
       label: 'Other',
       value: 'other',
@@ -219,6 +230,21 @@ export default function ProblemSuggestionModal({
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Source
         </label>
+        {isAdditionalPractice && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            We are not accepting recent USACO problems for additional practice
+            modules, as they can already be viewed{' '}
+            <a
+              href="/general/usaco-monthlies"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 dark:text-blue-300 underline"
+            >
+              here
+            </a>
+            .
+          </p>
+        )}
         <div className="mt-2 relative rounded-md shadow-sm">
           <Select
             options={sourceOptions}
