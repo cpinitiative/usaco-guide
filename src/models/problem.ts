@@ -19,6 +19,7 @@ export const contests = {
   'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
 };
 
+export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Plat'];
 export const probSources = {
   Bronze: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
@@ -230,15 +231,15 @@ export type ProblemSolutionMetadata =
 
 // Checks if a given source is USACO
 export const isUsaco = (source: string): boolean => {
-  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-  for (let ind = 0; ind < posi.length; ++ind) {
-    if (source.includes(posi[ind])) return true;
-  }
+  if (recentUsaco.some(x => source.includes(x))) return true;
   if (source.startsWith('20')) {
     // I think this is for the division list -- the source in this case is like 2015 December or something
-    const posi = ['December', 'January', 'February', 'US Open'];
-    for (let ind = 0; ind < posi.length; ++ind) {
-      if (source.endsWith(posi[ind])) return true;
+    if (
+      ['December', 'January', 'February', 'US Open'].some(x =>
+        source.endsWith(x)
+      )
+    ) {
+      return true;
     }
   }
   return false;
@@ -540,11 +541,7 @@ export class Problem {
 
   get uniqueID(): string {
     let id;
-    if (
-      ['Bronze', 'Silver', 'Gold', 'Plat'].some(
-        x => this.source.indexOf(x) !== -1
-      )
-    ) {
+    if (recentUsaco.some(x => this.source.indexOf(x) !== -1)) {
       // is usaco
       id = `usaco-${this.id}`;
     } else if (this.source === 'CSES') {
@@ -731,14 +728,6 @@ export class Problem {
 
     this.autoGenerateInfoFromSource();
     solID = solID || '';
-    // console.log("WHOOPS",solID);
-    // if (solID.startsWith('/')) {
-    //   this.solution = {
-    //     kind: 'link',
-    //     url: `${solID}`,
-    //     label: 'Link',
-    //   };
-    // }
     if (isInternal(solID)) {
       this.solution = {
         kind: 'internal',
