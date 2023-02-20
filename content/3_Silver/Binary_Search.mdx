@@ -1140,7 +1140,61 @@ for _ in range(query_num):
 				
 <Quiz>
   <Quiz.Question>
-    What is the worst and the best case time complexity for binary searching for a number in a sorted array of size $n$?
+    What is the worst and the best case time complexity for binary searching for a number in a sorted array of size $n$ with the following code, assuming that the inputted array is sorted?
+
+<LanguageSection>
+<CPPSection>
+```cpp
+bool binary_search(int x, std::vector<int> &a) {
+	int l = 0, r = a.size() - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (a[m] == x)
+			return true;
+		else if (x > a[m])
+			l = m + 1;
+		else
+			r = m - 1;
+	}
+	return false;
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+boolean binary_search(int x, int[] a) {
+	int l = 0, r = a.length - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (a[m] == x)
+			return true;
+		else if (x > a[m])
+			l = m + 1;
+		else
+			r = m - 1;
+	}
+	return false;
+}
+```
+</JavaSection>
+<PySection>
+```py
+def binary_search(x: int, a: list):
+	l, r = 0, len(a) - 1
+	while l < r:
+		m = (l + r) // 2
+		if a[m] == x:
+			return True
+		elif x > a[m]:
+			l = m + 1
+		else:
+			r = m - 1
+	return False
+```
+</PySection>
+</LanguageSection>
+
+
     <Quiz.Answer>
       $\mathcal{O}(\log n)$ / $\Omega(\log n)$
       <Quiz.Explanation>
