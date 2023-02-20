@@ -104,8 +104,8 @@ export default function ProblemSubmissionInterface({
         <div className="mt-1 text-gray-900 dark:text-gray-300">
           Unfortunately, we don't support built-in code submissions for this
           problem yet. Submit this problem directly from the problem statement
-          website, then paste the submission url below. For CodeForces problems,
-          you may need to make a CodeForces account first.
+          website, then paste the submission url below. For Codeforces problems,
+          you may need to make a Codeforces account first.
         </div>
         <label htmlFor="submission-link" className="block mt-4">
           Submission URL
