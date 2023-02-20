@@ -78,9 +78,7 @@ $$
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
 typedef long long ll;
 
 vector<vector<ll>> g;
@@ -137,12 +135,10 @@ int main() {
 
 	g.resize(n); dp1.resize(n); dp2.resize(n); sz.resize(n);
 	p1.resize(n); p2.resize(n);
-
-	// Read in the graph input
-	ll x, y;
-	for (ll i{1}; i < n; ++i) {
-		cin >> x >> y; --x; --y;
-		g[x].push_back(y);
+	for (ll i = 1; i < n; i++) {
+		ll x, y;
+		cin >> x >> y;
+		g[--x].push_back(--y);
 		g[y].push_back(x);
 	}
 
@@ -161,9 +157,7 @@ int main() {
 		ans = max(ans, max(dp1[i], dp2[i]));
 	}
 
-	cout << ans << '\n';
-
-	return 0;
+	cout << ans << endl;
 }
 ```
 
