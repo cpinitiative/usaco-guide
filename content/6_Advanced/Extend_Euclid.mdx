@@ -44,7 +44,7 @@ static long euclid(long a, long b) {
 	while (b > 0) {
 		long k = a / b;
 		a -= k * b;
-		
+
 		long temp = b;
 		b = a;
 		a = temp;
@@ -59,8 +59,9 @@ static long euclid(long a, long b) {
 
 ```py
 def euclid(a: int, b: int) -> int:
-	assert int(a) > 0 and int(b) > 0, \
-		"Arguments must be positive, non-zero numeric values."
+	assert (
+		int(a) > 0 and int(b) > 0
+	), "Arguments must be positive, non-zero numeric values."
 
 	while b > 0:
 		k = a // b
@@ -119,9 +120,7 @@ array<ll, 3> extend_euclid(ll a, ll b) {
 	while (y[2] > 0) {
 		// keep subtracting multiple of one equation from the other
 		ll k = x[2] / y[2];
-		for (int i = 0; i < 3; i++) {
-			x[i] -= k * y[i];
-		}
+		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
 		swap(x, y);
 	}
 	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
@@ -135,16 +134,14 @@ array<ll, 3> extend_euclid(ll a, ll b) {
 ```java
 static long[] extendEuclid(long a, long b) {
 	// we know that 1 * a + 0 * b = a and 0 * a + 1 * b = b
-	long[] x = { 1, 0, a };
-	long[] y = { 0, 1, b };
+	long[] x = {1, 0, a};
+	long[] y = {0, 1, b};
 
 	// run extended Euclidean algo
 	while (y[2] > 0) {
 		// keep subtracting multiple of one equation from the other
 		long k = x[2] / y[2];
-		for (int i = 0; i < 3; i++) {
-			x[i] -= k * y[i];
-		}
+		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
 
 		long[] temp = x;
 		x = y;
@@ -160,15 +157,16 @@ static long[] extendEuclid(long a, long b) {
 
 ```py
 def extend_euclid(a: int, b: int) -> list[int]:
-	assert int(a) > 0 and int(b) > 0, \
-	"Arguments must be positive, non-zero numeric values."
+	assert (
+		int(a) > 0 and int(b) > 0
+	), "Arguments must be positive, non-zero numeric values."
 
 	# we know that 1 * a + 0 * b = a and 0 * a + 1 * b = b.
 	x_arr = [1, 0, int(a)]
 	y_arr = [0, 1, int(b)]
 	q = -1
 
-	while y_arr[2] > 0: # run extended Euclidean algo.
+	while y_arr[2] > 0:  # run extended Euclidean algo.
 		q = x_arr[2] // y_arr[2]
 		for i in range(3):
 			# keep subtracting multiple of one equation from the other.
@@ -190,9 +188,7 @@ def extend_euclid(a: int, b: int) -> list[int]:
 
 ```cpp
 ll euclid(ll a, ll b) {
-	if (b == 0) {
-		return a;
-	}
+	if (b == 0) { return a; }
 	return euclid(b, a % b);
 }
 ```
@@ -203,9 +199,7 @@ ll euclid(ll a, ll b) {
 
 ```java
 static long euclid(long a, long b) {
-	if (b == 0) {
-		return a;
-	}
+	if (b == 0) { return a; }
 	return euclid(b, a % b);
 }
 ```
@@ -232,10 +226,8 @@ becomes
 
 ```cpp
 pl extend_euclid(ll a, ll b) {  // returns {x,y}
-	if (b == 0) {
-		return {1, 0};
-	}
-	pl p = extend_euclid(b, a % b); 
+	if (b == 0) { return {1, 0}; }
+	pl p = extend_euclid(b, a % b);
 	return {p.s, p.f - a / b * p.s};
 }
 ```
@@ -246,11 +238,9 @@ pl extend_euclid(ll a, ll b) {  // returns {x,y}
 
 ```java
 static long[] extendEuclid(long a, long b) {  // returns {x,y}
-	if (b == 0) {
-		return new long[] { 1, 0 };
-	}
+	if (b == 0) { return new long[] {1, 0}; }
 	long[] p = extendEuclid(b, a % b);
-	return new long[] { p[1], p[0] - a / b * p[1] };
+	return new long[] {p[1], p[0] - a / b * p[1]};
 }
 ```
 
@@ -327,7 +317,7 @@ def inv_general(a: int, b: int) -> int:
 	"""Returns the modular inverse of two positive, non-zero integer values."""
 	arr = extend_euclid(a, b)
 	assert arr[2] == 1, "GCD must be 1."
-	return arr[0] + (arr[0] < 0)*b
+	return arr[0] + (arr[0] < 0) * b
 ```
 
 </PySection>

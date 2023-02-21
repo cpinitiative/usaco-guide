@@ -130,7 +130,7 @@ int last_true(int lo, int hi, function<bool(int)> f) {
 int main() {
 	// all numbers satisfy the condition (outputs 10)
 	cout << last_true(2, 10, [](int x) { return true; }) << endl;
-	
+
 	// outputs 5
 	cout << last_true(2, 10, [](int x) { return x * x <= 30; }) << endl;
 
@@ -152,10 +152,10 @@ public class BinarySearch {
 	public static void main(String[] args) {
 		// all numbers satisfy the condition (outputs 10)
 		System.out.println(lastTrue(2, 10, (x) -> true));
-		
+
 		// outputs 5
 		System.out.println(lastTrue(2, 10, (x) -> x * x <= 30));
-		
+
 		// no numbers satisfy the condition (outputs 1)
 		System.out.println(lastTrue(2, 10, (x) -> false));
 	}
@@ -246,9 +246,7 @@ using namespace std;
 int last_true(int lo, int hi, function<bool(int)> f) {
 	lo--;
 	for (int dif = hi - lo; dif > 0; dif /= 2) {
-		while (lo + dif <= hi && f(lo + dif)) {
-			lo += dif;
-		}
+		while (lo + dif <= hi && f(lo + dif)) { lo += dif; }
 	}
 	return lo;
 }
@@ -261,9 +259,7 @@ int last_true(int lo, int hi, function<bool(int)> f) {
 public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 	lo--;
 	for (int dif = hi - lo; dif > 0; dif /= 2) {
-		while (lo + dif <= hi && f.test(lo + dif)) {
-			lo += dif;
-		}
+		while (lo + dif <= hi && f.test(lo + dif)) { lo += dif; }
 	}
 	return lo;
 }
@@ -349,9 +345,9 @@ import java.util.function.Predicate;
 
 public class BinarySearch {
 	public static void main(String[] args) {
-		System.out.println(firstTrue(2, 10, (x) -> true));  // outputs 2
+		System.out.println(firstTrue(2, 10, (x) -> true));         // outputs 2
 		System.out.println(firstTrue(2, 10, (x) -> x * x >= 30));  // outputs 6
-		System.out.println(firstTrue(2, 10, (x) -> false));  // outputs 11
+		System.out.println(firstTrue(2, 10, (x) -> false));        // outputs 11
 	}
 
 	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
@@ -456,10 +452,8 @@ int main() {
 	int max_ops;
 	cin >> size >> max_ops;
 	vector<int> arr(size);
-	for (int& i: arr) {
-		cin >> i;
-	}
-	
+	for (int &i : arr) { cin >> i; }
+
 	sort(arr.begin(), arr.end());
 	// Use 2e9 instead of INT32_MAX to avoid overflow
 	cout << last_true(1, 2e9, [&](int x) {
@@ -551,7 +545,7 @@ def med_reachable(x: int) -> bool:
 def last_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
 	lo -= 1
 	while lo < hi:
-		mid = lo + (hi - lo + 1) // 2;
+		mid = lo + (hi - lo + 1) // 2
 		if f(mid):
 			lo = mid
 		else:
@@ -580,9 +574,7 @@ Consider the code from CSAcademy's
 <CPPSection>
 
 ```cpp
-long long f(int x) {
-	return (long long) x * x;
-}
+long long f(int x) { return (long long)x * x; }
 
 int sqrt(int x) {
 	int lo = 0;
@@ -603,9 +595,7 @@ int sqrt(int x) {
 <JavaSection>
 
 ```java
-public static long f(int x) {
-	return (long) x * x;
-}
+public static long f(int x) { return (long)x * x; }
 
 public static int sqrt(int x) {
 	int lo = 0;
@@ -628,6 +618,7 @@ public static int sqrt(int x) {
 ```python
 def f(x: int) -> int:
 	return x * x
+
 
 def sqrt(x: int) -> int:
 	lo = 0
@@ -722,7 +713,7 @@ example:
 int main() {
 	// outputs -8 instead of -9
 	cout << first_true(-10, -10, [](int x) { return false; }) << "\n";
-	
+
 	// causes an infinite loop
 	cout << first_true(-10, -10, [](int x) { return true; }) << "\n";
 }
@@ -908,12 +899,13 @@ functions.
 #include <bits/stdc++.h>
 using namespace std;
 
-void setIO(string name="") {  // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0);  // see Fast Input & Output
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
 	if (!name.empty()) {
-		freopen((name+".in").c_str(), "r", stdin);  // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
@@ -923,17 +915,16 @@ int main() {
 	int query_num;
 	cin >> bale_num >> query_num;
 	vector<int> bales(bale_num);
-	for (int i = 0; i < bale_num; i++) {
-		cin >> bales[i];
-	}
-	
+	for (int i = 0; i < bale_num; i++) { cin >> bales[i]; }
+
 	sort(begin(bales), end(bales));
 	for (int i = 0; i < query_num; i++) {
 		int q_start;
 		int q_end;
 		cin >> q_start >> q_end;
-		cout << upper_bound(begin(bales), end(bales), q_end) 
-					- lower_bound(begin(bales), end(bales), q_start) << "\n";
+		cout << upper_bound(begin(bales), end(bales), q_end) -
+		            lower_bound(begin(bales), end(bales), q_start)
+		     << "\n";
 	}
 }
 ```
@@ -951,7 +942,8 @@ import java.util.*;
 
 public class Haybales {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("haybales.in")));
 		PrintWriter out = new PrintWriter("haybales.out");
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -962,24 +954,20 @@ public class Haybales {
 		for (int i = 0; i < baleNum; i++) {
 			bales[i] = Integer.parseInt(st.nextToken());
 		}
-		
+
 		Arrays.sort(bales);
 		for (int i = 0; i < queryNum; i++) {
 			st = new StringTokenizer(br.readLine());
 			int start = Integer.parseInt(st.nextToken());
 			int end = Integer.parseInt(st.nextToken());
-			
+
 			// Get the left-est bale that's still in the interval
 			int bi = Arrays.binarySearch(bales, start);
-			if (bi < 0) {
-				bi = Math.abs(bi + 1);
-			}
+			if (bi < 0) { bi = Math.abs(bi + 1); }
 
 			// And also get the right-est bale that's still in the interval
 			int ti = Arrays.binarySearch(bales, end);
-			if (ti < 0) {
-				ti = Math.abs(ti + 2);
-			}
+			if (ti < 0) { ti = Math.abs(ti + 2); }
 			out.println(ti - bi + 1);
 		}
 		out.close();
@@ -1019,12 +1007,13 @@ for _ in range(query_num):
 #include <bits/stdc++.h>
 using namespace std;
 
-void setIO(string name="") {  // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0);  // see Fast Input & Output
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
 	// alternatively, cin.tie(0)->sync_with_stdio(0);
 	if (!name.empty()) {
-		freopen((name+".in").c_str(), "r", stdin);  // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
@@ -1034,9 +1023,7 @@ int main() {
 	int query_num;
 	cin >> bale_num >> query_num;
 	vector<int> bales(bale_num);
-	for (int& i: bales) {
-		cin >> i;
-	}
+	for (int &i : bales) { cin >> i; }
 
 	sort(begin(bales), end(bales));
 	// Returns the number of elements that are at most x
@@ -1153,7 +1140,66 @@ for _ in range(query_num):
 				
 <Quiz>
   <Quiz.Question>
-    What is the worst and the best case time complexity for binary searching for a number in a sorted array of size $n$?
+    What are the worst and best case time complexities for searching for a number in a sorted array of size $n$ with the following code?
+
+<LanguageSection>
+<CPPSection>
+```cpp
+bool binary_search(int x, std::vector<int> &a) {
+	int l = 0;
+	int r = a.size() - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (a[m] == x) {
+			return true;
+		} else if (x > a[m]) {
+			l = m + 1;
+		} else {
+			r = m - 1;
+		}
+	}
+	return false;
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+boolean binary_search(int x, int[] a) {
+	int l = 0;
+	int r = a.length - 1;
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (a[m] == x) {
+			return true;
+		} else if (x > a[m]) {
+			l = m + 1;
+		} else {
+			r = m - 1;
+		}
+	}
+	return false;
+}
+```
+</JavaSection>
+<PySection>
+```py
+def binary_search(x: int, a: list):
+	l = 0 
+	r = len(a) - 1
+	while l < r:
+		m = (l + r) // 2
+		if a[m] == x:
+			return True
+		elif x > a[m]:
+			l = m + 1
+		else:
+			r = m - 1
+	return False
+```
+</PySection>
+</LanguageSection>
+
+
     <Quiz.Answer>
       $\mathcal{O}(\log n)$ / $\Omega(\log n)$
       <Quiz.Explanation>
@@ -1251,7 +1297,7 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 <Quiz.Answer>
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
-	while (l <= r) { // <= instead of <
+	while (l <= r) {  // <= instead of <
 		int m = (l + r) / 2;
 		if (f(m)) {
 			l = m;

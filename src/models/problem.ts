@@ -19,6 +19,7 @@ export const contests = {
   'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
 };
 
+export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Plat'];
 export const probSources = {
   Bronze: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
@@ -60,10 +61,10 @@ export const probSources = {
   ],
   CF: [
     'https://codeforces.com/contest/',
-    'CodeForces',
+    'Codeforces',
     'Check contest materials, located to the right of the problem statement.',
   ],
-  'CF EDU': ['https://codeforces.com/edu/courses', 'CodeForces Edu'],
+  'CF EDU': ['https://codeforces.com/edu/courses', 'Codeforces Edu'],
   CSA: [
     'https://csacademy.com/contest/archive/task/',
     'CS Academy',
@@ -100,7 +101,6 @@ export const probSources = {
     'tlx.toki.id',
     'The editorial should be available in the announcements tab.',
   ],
-  'oj.uz': ['https://oj.uz/problem/view/', ''],
   YS: ['https://judge.yosupo.jp/problem/', 'Library Checker'],
 };
 
@@ -144,7 +144,7 @@ export type ProblemSolutionInfo =
     }
   | {
       /*
-If the label is just text. Used for certain sources like CodeForces
+If the label is just text. Used for certain sources like Codeforces
 Ex:
 - label = Check CF
 - labelTooltip = "Check content materials, located to the right of the problem statement
@@ -179,7 +179,7 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
 export type ProblemSolutionMetadata =
   | {
       // auto generate problem solution label based off of the given site
-      // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+      // For sites like Codeforces: "Check contest materials, located to the right of the problem statement."
       kind: 'autogen-label-from-site';
       // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
       site: string;
@@ -231,15 +231,15 @@ export type ProblemSolutionMetadata =
 
 // Checks if a given source is USACO
 export const isUsaco = (source: string): boolean => {
-  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-  for (let ind = 0; ind < posi.length; ++ind) {
-    if (source.includes(posi[ind])) return true;
-  }
+  if (recentUsaco.some(x => source.includes(x))) return true;
   if (source.startsWith('20')) {
     // I think this is for the division list -- the source in this case is like 2015 December or something
-    const posi = ['December', 'January', 'February', 'US Open'];
-    for (let ind = 0; ind < posi.length; ++ind) {
-      if (source.endsWith(posi[ind])) return true;
+    if (
+      ['December', 'January', 'February', 'US Open'].some(x =>
+        source.endsWith(x)
+      )
+    ) {
+      return true;
     }
   }
   return false;
@@ -541,11 +541,7 @@ export class Problem {
 
   get uniqueID(): string {
     let id;
-    if (
-      ['Bronze', 'Silver', 'Gold', 'Plat'].some(
-        x => this.source.indexOf(x) !== -1
-      )
-    ) {
+    if (recentUsaco.some(x => this.source.indexOf(x) !== -1)) {
       // is usaco
       id = `usaco-${this.id}`;
     } else if (this.source === 'CSES') {
@@ -732,14 +728,6 @@ export class Problem {
 
     this.autoGenerateInfoFromSource();
     solID = solID || '';
-    // console.log("WHOOPS",solID);
-    // if (solID.startsWith('/')) {
-    //   this.solution = {
-    //     kind: 'link',
-    //     url: `${solID}`,
-    //     label: 'Link',
-    //   };
-    // }
     if (isInternal(solID)) {
       this.solution = {
         kind: 'internal',

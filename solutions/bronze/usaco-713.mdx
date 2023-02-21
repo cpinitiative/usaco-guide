@@ -140,10 +140,11 @@ public class cowqueue{
 	//CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
 </LanguageSection>
 </Spoiler>
-	
+
 Since the time the cows arrive and need for questioning can be up to $10^6$, we should traverse through the times as steps.
 
 ## Implementation
@@ -158,61 +159,121 @@ Since the time the cows arrive and need for questioning can be up to $10^6$, we 
 #include <cstdio>
 #include <vector>
 #include <algorithm>
+
 using namespace std;
 
 int main() {
 	freopen("cowqueue.in", "r", stdin);
-	freopen("cowqueue.out", "w", stdout);
-	
 	int n;
-	int curTime = 0; 
 	cin >> n;
-	
+
 	vector<pair<int, int>> cows(n);
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++) {
 		cin >> cows[i].first >> cows[i].second;
+	}
 	
 	sort(cows.begin(), cows.end());
 
-	for (int i = 0; i < n; i++) {
-		// this cow was already waiting, add questioning time to current time.
-		if (curTime > cows[i].first) {
-			curTime += cows[i].second;
+	int curr_time = 0;
+	for (const pair<int, int>& c : cows) {
+		// this cow was already waiting, add duration to current time.
+		if (curr_time > c.first) {
+			curr_time += c.second;
 		} else {
 			// the last cow finished before this one arrived,
-			// set the current time to when this cow finishes.
-			curTime = cows[i].first + cows[i].second;
+			// so set the current time to when this cow finishes.
+			curr_time = c.first + c.second;
 		}
 	}
 
-	cout << curTime << "\n";
+	freopen("cowqueue.out", "w", stdout);
+	cout << curr_time << endl;
 }
 ```
+
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+class CowQueue {
+	//BeginCodeSnip{Cow Class}
+	static class Cow {
+		public int arrival;
+		public int duration;
+
+		public Cow(int arrival, int duration) {
+			this.arrival = arrival;
+			this.duration = duration;
+		}
+	}
+	//EndCodeSnip
+
+	public static void main (String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("cowqueue.in"));
+		int n = Integer.parseInt(read.readLine());
+	
+		Cow[] cows = new Cow[n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[i] = new Cow(
+				Integer.parseInt(cow.nextToken()),
+				Integer.parseInt(cow.nextToken())
+			);
+		}
+		read.close();
+
+		Arrays.sort(cows, Comparator.comparingInt(c -> c.arrival));
+
+		int currTime = 0;
+		for (Cow c : cows) {
+			// this cow was already waiting, add duration to the current time
+			if (currTime > c.arrival) {
+				currTime += c.duration;
+			} else {
+				// the last cow finished before this one arrived,
+				// so set the current time to when this cow finishes.
+				currTime = c.arrival + c.duration;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("cowqueue.out");
+		written.println(currTime);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
 import sys
 
-sys.stdin = open("cowqueue.in", "r")
-sys.stdout = open("cowqueue.out", "w")
+sys.stdin = open('cowqueue.in')
 
 n = int(input())
-cur_time = 0
-cows = []
 
-for i in range(n): 
+cows = []
+for i in range(n):
 	cows.append(list(map(int, input().split())))
 
 cows.sort()
 
-for cow in cows:
-	if cur_time > cow[0]:
-		cur_time += cow[1]
+curr_time = 0
+for c in cows:
+	# this cow was already waiting, add duration to current time.
+	if curr_time > c[0]:
+		curr_time += c[1]
 	else:
-		cur_time = cow[0] + cow[1]
+		# the last cow finished before this one arrived,
+		# so set the current time to when this cow finishes.
+		curr_time = c[0] + c[1]
 
-print(cur_time)
+print(curr_time, file=open('cowqueue.out', 'w'))
 ```
+
 </PySection>
 </LanguageSection>

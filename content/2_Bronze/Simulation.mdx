@@ -44,9 +44,9 @@ guessed.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <cstdio>
 #include <vector>
-#include <algorithm>
 
 using std::vector;
 
@@ -59,10 +59,8 @@ int main() {
 	// shell_at_pos[i] stores the label of the shell located at position i
 	vector<int> shell_at_pos(3);
 	// Place the shells down arbitrarily
-	for (int i = 0; i < 3;i++) {
-		shell_at_pos[i] = i;
-	}
-	
+	for (int i = 0; i < 3; i++) { shell_at_pos[i] = i; }
+
 	// counter[i] stores the number of times the shell with label i was picked
 	vector<int> counter(3);
 	for (int i = 0; i < n; i++) {
@@ -76,7 +74,7 @@ int main() {
 		// Count the number of times Elsie guesses each particular shell
 		counter[shell_at_pos[g]]++;
 	}
-	
+
 	freopen("shell.out", "w", stdout);
 	printf("%d\n", std::max({counter[0], counter[1], counter[2]}));
 }
@@ -133,7 +131,7 @@ public class Shell {
 <PySection>
 
 ```py
-read = open('shell.in')
+read = open("shell.in")
 
 n = int(read.readline())
 
@@ -154,7 +152,7 @@ for _ in range(n):
 	# Count the number of times Elsie guesses each particular shell
 	counter[shell_at_pos[g]] += 1
 
-print(max(counter), file=open('shell.out', 'w'))
+print(max(counter), file=open("shell.out", "w"))
 ```
 
 </PySection>
@@ -182,10 +180,10 @@ below.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <cstdio>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -199,9 +197,7 @@ int main() {
 	vector<int> capacity(N);
 	// milk[i] is the current amount of milk in bucket i
 	vector<int> milk(N);
-	for (int i = 0; i < N; i++) {
-		scanf("%d %d", &capacity[i], &milk[i]);
-	}
+	for (int i = 0; i < N; i++) { scanf("%d %d", &capacity[i], &milk[i]); }
 
 	for (int i = 0; i < TURN_NUM; i++) {
 		int bucket1 = i % N;
@@ -218,9 +214,7 @@ int main() {
 	}
 
 	freopen("mixmilk.out", "w", stdout);
-	for (int m : milk) {
-		cout << m << '\n';
-	}
+	for (int m : milk) { cout << m << '\n'; }
 }
 ```
 
@@ -283,7 +277,7 @@ TURN_NUM = 100
 capacity = [0 for _ in range(N)]
 # milk[i] is the current amount of milk in bucket i
 milk = [0 for _ in range(N)]
-with open('mixmilk.in') as read:
+with open("mixmilk.in") as read:
 	for i in range(N):
 		capacity[i], milk[i] = map(int, read.readline().split())
 
@@ -300,7 +294,7 @@ for i in range(TURN_NUM):
 	milk[bucket1] -= amt
 	milk[bucket2] += amt
 
-with open('mixmilk.out', 'w') as out:
+with open("mixmilk.out", "w") as out:
 	for m in milk:
 		print(m, file=out)
 ```

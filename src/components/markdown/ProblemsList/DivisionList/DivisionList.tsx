@@ -17,10 +17,11 @@ const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 const getSeasons = () => {
   const res = [];
-  res.push(allYears);
   for (let i = startYear; i <= endYear; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
+  res.push(allYears);
+  res.reverse();
   return res;
 };
 const seasons = getSeasons();

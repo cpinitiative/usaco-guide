@@ -333,6 +333,11 @@ export const RestOfMembers: Member[] = [
     website: 'https://www.nikitago.xyz/',
     titles: [roles.webdev],
   },
+  {
+    photo: 'faris',
+    name: 'Faris Raza',
+    titles: [roles.liveInstructor, roles.clubCurriculum],
+  },
 ];
 
 export const NotPictured: Member[] = [

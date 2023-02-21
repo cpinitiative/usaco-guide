@@ -114,7 +114,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Graphs',
       description:
-        'Every (?) Silver - Plat contest has at least one graph problem.',
+        'Most Silver to Platinum contests have at least one graph problem.',
       items: ['dfs', 'flood-fill', 'intro-tree', 'func-graphs'],
     },
     {
@@ -124,13 +124,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   gold: [
     {
-      name: 'Introductory Number Sense',
+      name: 'Math',
       items: ['divisibility', 'modular', 'combo'],
     },
     {
       name: 'Dynamic Programming',
       description:
-        'Every (?) Gold and Platinum contest has at least one DP problem.',
+        'Most Gold and Platinum contests have at least one DP problem.',
       items: [
         'intro-dp',
         'knapsack',
@@ -154,8 +154,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Hashing',
-      description: 'Rarely required at this level, but still good to know.',
-      items: ['string-hashing', 'unordered-map', 'faster-hashmap'],
+      description: 'Rarely required, but still good to know.',
+      items: ['string-hashing', 'hashmaps'],
     },
     {
       name: 'Misc. Topics',

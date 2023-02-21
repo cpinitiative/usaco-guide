@@ -1,10 +1,12 @@
-import { PageProps } from 'gatsby';
+import { graphql, PageProps } from 'gatsby';
 import * as React from 'react';
 import {
   connectHits,
   connectRefinementList,
   connectSearchBox,
+  HitsPerPage,
   InstantSearch,
+  Pagination,
   PoweredBy,
 } from 'react-instantsearch-dom';
 import Layout from '../components/layout';
@@ -35,6 +37,12 @@ const CustomHits = connectHits(ProblemHits);
 const CustomRefinementList = connectRefinementList(RefinementList);
 
 export default function ProblemsPage(props: PageProps) {
+  const { problems } = props.data as any;
+  const problemIds = problems.edges.reduce((acc, cur) => {
+    const problem = cur.node;
+    acc.push(problem.uniqueId);
+    return acc;
+  }, []);
   return (
     <Layout>
       <SEO title="All Problems" />
@@ -100,10 +108,23 @@ export default function ProblemsPage(props: PageProps) {
                     attribute="objectID"
                     limit={500}
                     searchable
+                    problemIds={problemIds}
                   />
                 </div>
               </div>
               <CustomHits />
+              <div className="mt-3 flex flex-wrap justify-center">
+                <Pagination showLast={true} className="pr-4" />
+                <HitsPerPage
+                  items={[
+                    { label: '24 hits per page', value: 24 },
+                    { label: '32 hits per page', value: 32 },
+                    { label: '48 hits per page', value: 48 },
+                  ]}
+                  defaultRefinement={24}
+                  className="mt-1 lg:mt-0"
+                />
+              </div>
             </div>
           </div>
         </InstantSearch>
@@ -111,3 +132,15 @@ export default function ProblemsPage(props: PageProps) {
     </Layout>
   );
 }
+
+export const pageQuery = graphql`
+  query {
+    problems: allProblemInfo {
+      edges {
+        node {
+          uniqueId
+        }
+      }
+    }
+  }
+`;

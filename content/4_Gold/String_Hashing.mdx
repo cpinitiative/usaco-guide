@@ -30,34 +30,32 @@ inverses.
 
 ```cpp
 class HashedString {
-	private:
-		// change M and B if you want
-		static const long long M = 1e9 + 9;
-		static const long long B = 9973;
+  private:
+	// change M and B if you want
+	static const long long M = 1e9 + 9;
+	static const long long B = 9973;
 
-		// pow[i] contains B^i % M
-		static vector<long long> pow;
+	// pow[i] contains B^i % M
+	static vector<long long> pow;
 
-		// p_hash[i] is the hash of the first i characters of the given string
-		vector<long long> p_hash;
-	public:
-		HashedString(const string& s) : p_hash(s.size() + 1) {
-			while (pow.size() < s.size()) {
-				pow.push_back((pow.back() * B) % M);
-			}
+	// p_hash[i] is the hash of the first i characters of the given string
+	vector<long long> p_hash;
 
-			p_hash[0] = 0;
-			for (int i = 0; i < s.size(); i++) {
-				p_hash[i + 1] = ((p_hash[i] * B) % M + s[i]) % M;
-			}
+  public:
+	HashedString(const string &s) : p_hash(s.size() + 1) {
+		while (pow.size() < s.size()) { pow.push_back((pow.back() * B) % M); }
+
+		p_hash[0] = 0;
+		for (int i = 0; i < s.size(); i++) {
+			p_hash[i + 1] = ((p_hash[i] * B) % M + s[i]) % M;
 		}
+	}
 
-		long long getHash(int start, int end) {
-			long long raw_val = (
-				p_hash[end + 1] - (p_hash[start] * pow[end - start + 1])
-			);
-			return (raw_val % M + M) % M;
-		}
+	long long getHash(int start, int end) {
+		long long raw_val =
+		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
+		return (raw_val % M + M) % M;
+	}
 };
 vector<long long> HashedString::pow = {1};
 ```
@@ -71,7 +69,7 @@ import java.util.*;
 
 public class HashedString {
 	// Change M and B if you want
-	public static final long M = (long) 1e9 + 9;
+	public static final long M = (long)1e9 + 9;
 	public static final long B = 9973;
 
 	// pow[i] contains B^i % M
@@ -81,13 +79,11 @@ public class HashedString {
 	private long[] pHash;
 
 	public HashedString(String s) {
-		if (pow.isEmpty()) {
-			pow.add(1L);
-		}
+		if (pow.isEmpty()) { pow.add(1L); }
 		while (pow.size() < s.length()) {
 			pow.add((pow.get(pow.size() - 1) * B) % M);
 		}
-		
+
 		pHash = new long[s.length() + 1];
 		pHash[0] = 0;
 		for (int i = 0; i < s.length(); i++) {
@@ -96,7 +92,8 @@ public class HashedString {
 	}
 
 	public long getHash(int start, int end) {
-		long rawVal = pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
+		long rawVal =
+		    pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
 		return (rawVal % M + M) % M;
 	}
 }
@@ -126,9 +123,8 @@ class HashedString:
 			) % self.M
 
 	def get_hash(self, start: int, end: int) -> int:
-		raw_val = (
-			self._p_hash[end + 1]
-			- (self._p_hash[start] * self._pow[end - start + 1])
+		raw_val = self._p_hash[end + 1] - (
+			self._p_hash[start] * self._pow[end - start + 1]
 		)
 		return raw_val % self.M
 ```
@@ -181,7 +177,7 @@ large enough to avoid collisions. Use a larger prime modulus such as $2^{61}-1$
 
 <Warning>
 
-In contests with open hacking (in particular, CodeForces educational rounds), 
+In contests with open hacking (in particular, Codeforces educational rounds), 
 make sure to choose the base of your polynomial hash randomly, as mentioned
 [here](https://codeforces.com/blog/entry/60442).
 
@@ -196,7 +192,7 @@ above is to use a random number generator seeded with a high-precision clock,
 as described [here](https://codeforces.com/blog/entry/61587?#comment-455289).
 
 ```cpp
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 const ll B = uniform_int_distribution<ll>(0, M - 1)(rng);
 ```
 
@@ -279,7 +275,7 @@ class HashedString {
 		return (raw_val + M) % M;
 	}
 };
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 vector<ll> HashedString::pow = {1};
 const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
 //EndCodeSnip
@@ -388,7 +384,7 @@ class HashedString {
 		return (raw_val + M) % M;
 	}
 };
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 vector<ll> HashedString::pow = {1};
 const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
 // EndCodeSnip

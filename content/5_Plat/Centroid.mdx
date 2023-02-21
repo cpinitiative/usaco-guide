@@ -49,11 +49,11 @@ using namespace std;
 const int maxn = 200010;
 
 int n;
-vector <int> adj[maxn];
+vector<int> adj[maxn];
 int subtree_size[maxn];
 
 int get_subtree_size(int node, int par = -1) {
-	int& res = subtree_size[node];
+	int &res = subtree_size[node];
 	res = 1;
 	for (int i : adj[node]) {
 		if (i == par) continue;
@@ -66,9 +66,7 @@ int get_centroid(int node, int par = -1) {
 	for (int i : adj[node]) {
 		if (i == par) continue;
 
-		if (subtree_size[i] * 2 > n) {
-			return get_centroid(i, node);
-		}
+		if (subtree_size[i] * 2 > n) { return get_centroid(i, node); }
 	}
 	return node;
 }
@@ -78,7 +76,8 @@ int main() {
 	for (int i = 0; i < n - 1; i++) {
 		int a, b;
 		cin >> a >> b;
-		a--; b--;
+		a--;
+		b--;
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
@@ -205,34 +204,30 @@ Ben - this is not easy to understand :/
 <!-- pulled from https://codeforces.com/contest/1303/submission/76216413, which I think is my most recent centroid problem -->
 
 ```cpp
-bool r[MN];//removed
-int s[MN];//subtree size
-int dfs(int n, int p = 0)
-{
+bool r[MN];  // removed
+int s[MN];   // subtree size
+int dfs(int n, int p = 0) {
 	s[n] = 1;
-	for(int x : a[n])
-		if(x != p && !r[x])
-			s[n] += dfs(x, n);
+	for (int x : a[n])
+		if (x != p && !r[x]) s[n] += dfs(x, n);
 	return s[n];
 }
-int get_centroid(int n, int ms, int p = 0)//n = node, ms = size of tree, p = parent
+int get_centroid(int n, int ms,
+                 int p = 0)  // n = node, ms = size of tree, p = parent
 {
-	for(int x : a[n])
-		if(x != p && !r[x])
-			if(s[x]*2 > ms)
-				return get_centroid(x, ms, n);
+	for (int x : a[n])
+		if (x != p && !r[x])
+			if (s[x] * 2 > ms) return get_centroid(x, ms, n);
 	return n;
 }
-void centroid(int n = 1)
-{
+void centroid(int n = 1) {
 	int C = get_centroid(n, dfs(n));
 
-	//do something
+	// do something
 
 	r[C] = 1;
-	for(int x : a[C])
-		if(!r[x])
-			centroid(x);
+	for (int x : a[C])
+		if (!r[x]) centroid(x);
 }
 ```
 
@@ -260,14 +255,10 @@ private static class Centroid {
 	}
 
 	private int getSize(int u, int v) {
-		if (seen[u]) {
-			return 0;
-		}
+		if (seen[u]) { return 0; }
 		size[u] = 1;
 		for (int next : g[u]) {
-			if (next != v) {
-				size[u] += getSize(next, u);
-			}
+			if (next != v) { size[u] += getSize(next, u); }
 		}
 		return size[u];
 	}
@@ -278,9 +269,7 @@ private static class Centroid {
 		seen[c] = true;
 		parent[c] = v;
 		for (int next : g[c]) {
-			if (!seen[next]) {
-				initCentroid(next, c);
-			}
+			if (!seen[next]) { initCentroid(next, c); }
 		}
 	}
 
@@ -308,92 +297,78 @@ private static class Centroid {
 #include <cstring>
 #include <vector>
 
-template<typename T> bool ckmin(T& a, const T& b){return b<a?a=b,1:0;}
+template <typename T> bool ckmin(T &a, const T &b) {
+	return b < a ? a = b, 1 : 0;
+}
 
-const int MN = 1e5+10, INF = 0x3f3f3f3f;
+const int MN = 1e5 + 10, INF = 0x3f3f3f3f;
 
 int N, M, s[MN], m[MN][2], t, b, d;
 bool r[MN], red[MN];
 std::vector<int> a[MN], v[MN];
-struct info
-{
-	public:
-		int n,b,d;
+struct info {
+  public:
+	int n, b, d;
 };
 std::vector<info> g[MN];
 
-int dfs(int n, int p=0)
-{
-	s[n]=1;
-	for(auto x:a[n])
-		if(x!=p&&!r[x])
-			s[n]+=dfs(x, n);
+int dfs(int n, int p = 0) {
+	s[n] = 1;
+	for (auto x : a[n])
+		if (x != p && !r[x]) s[n] += dfs(x, n);
 	return s[n];
 }
-int find(int n, int ms, int p=0)
-{
-	for(auto x:a[n])
-		if(!r[x]&&x!=p&&s[x]*2>ms)
-			return find(x, ms, n);
+int find(int n, int ms, int p = 0) {
+	for (auto x : a[n])
+		if (!r[x] && x != p && s[x] * 2 > ms) return find(x, ms, n);
 	return n;
 }
-void dfs2(int n, int p=0)
-{
-	for(auto x:a[n])
-		if(!r[x]&&x!=p)
-			++d, dfs2(x, n), --d;
-	g[n].push_back({t,b,d});
+void dfs2(int n, int p = 0) {
+	for (auto x : a[n])
+		if (!r[x] && x != p) ++d, dfs2(x, n), --d;
+	g[n].push_back({t, b, d});
 }
-void centroid(int n=1)
-{
+void centroid(int n = 1) {
 	n = find(n, dfs(n));
 	v[n].reserve(a[n].size());
-	for(auto x:a[n])
-		if(!r[x])
-		{
-			t=n, b=v[n].size(), d=1;
+	for (auto x : a[n])
+		if (!r[x]) {
+			t = n, b = v[n].size(), d = 1;
 			dfs2(x, n);
 			v[n].push_back(INF);
 		}
-	r[n]=1;
-	for(auto x:a[n])
-		if(!r[x])
-			centroid(x);
+	r[n] = 1;
+	for (auto x : a[n])
+		if (!r[x]) centroid(x);
 }
 
-int main()
-{
+int main() {
 	scanf("%d%d", &N, &M);
-	for(int i=0,u,v;i+1<N;++i)
+	for (int i = 0, u, v; i + 1 < N; ++i)
 		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
 	centroid();
 	memset(m, 0x3f, sizeof m);
-	for(int i=0,t=1,n=1;i<=M;++i)
-	{
-		if(t==1)
-		{
-			for(auto x:g[n])
-			{
-				int &q=v[x.n][x.b];
-				if(x.d<q)
-				{
-					if(m[x.n][0]==q) m[x.n][0]=x.d;
-					else for(int i=0,u=x.d;i<2;++i) if(u<m[x.n][i]) std::swap(u, m[x.n][i]);
-					q=x.d;
+	for (int i = 0, t = 1, n = 1; i <= M; ++i) {
+		if (t == 1) {
+			for (auto x : g[n]) {
+				int &q = v[x.n][x.b];
+				if (x.d < q) {
+					if (m[x.n][0] == q) m[x.n][0] = x.d;
+					else
+						for (int i = 0, u = x.d; i < 2; ++i)
+							if (u < m[x.n][i]) std::swap(u, m[x.n][i]);
+					q = x.d;
 				}
 			}
-			red[n]=1;
-			m[n][0]=0;
-		}
-		else
-		{
-			int f=m[n][0];
-			for(auto x:g[n])
-				if(x.d)
-					ckmin(f, m[x.n][v[x.n][x.b]==m[x.n][0]]+x.d);
+			red[n] = 1;
+			m[n][0] = 0;
+		} else {
+			int f = m[n][0];
+			for (auto x : g[n])
+				if (x.d) ckmin(f, m[x.n][v[x.n][x.b] == m[x.n][0]] + x.d);
 			printf("%d\n", f);
 		}
-		if(i<M) scanf("%d%d", &t, &n);
+		if (i < M) scanf("%d%d", &t, &n);
 	}
 	return 0;
 }
