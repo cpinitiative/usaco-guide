@@ -286,10 +286,9 @@ class CodeBlock extends React.Component<
             <LineSnip />
           )}
           <LineContent>
-            {line.map((token, key) => {
-              token.content = token.content.replace(/ {4}/g, '\t');
-              return <span key={key} {...getTokenProps({ token, key })} />;
-            })}
+            {line.map((token, key) => (
+              <span key={key} {...getTokenProps({ token, key })} />
+            ))}
           </LineContent>
         </Line>
       );
