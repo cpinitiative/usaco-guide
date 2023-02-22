@@ -15,19 +15,18 @@ As we consider edges from non-decreasing weight, we can keep track of a partiall
 
 Thus, for each query, we need all edges to satisfy this condition. We can process all edges in non-decreasing weight, and for each query, try to unite the endpoint of all the edges that have this weight. If any edge does not satisfy, the whole query fails.
 
-## Explanation
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(q \log n)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp 
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 5e5 + 1; // use indexing starting from 1
+const int MAXN = 5e5 + 1;  // use indexing starting from 1
 vector<int> edge_by_weight[MAXN];
 // query_by_weight[weight][index of query] = {index of edges}
 map<int, vector<int>> query_by_weight[MAXN];
@@ -43,7 +42,7 @@ struct DSU {
 		iota(p.begin(), p.end(), 0);
 	}
 	
-	int get(int x){
+	int get(int x) {
 		return x == p[x] ? x : get(p[x]);
 	}
 	
@@ -85,7 +84,7 @@ struct Edge {
 	int u, v, w;
 };
 
-int main(){
+int main() {
 	cin.tie(0) -> sync_with_stdio(0);
 	int n, m; 
 	cin >> n >> m;
@@ -130,6 +129,7 @@ int main(){
 			// revert all merges to prepare for next query
 			dsu.rollback(snapshot);
 		}
+		
 		/*
 		 * now that all queries have been processed,
 		 * keep building the partial MST with these edges
@@ -142,11 +142,9 @@ int main(){
 	for (int i = 0; i < q; i++) {
 		cout << (ans[i] ? "YES" : "NO") << "\n";
 	}
-	
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
