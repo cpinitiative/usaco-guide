@@ -308,6 +308,32 @@ export const RestOfMembers: Member[] = [
     titles: [roles.liveInstructor],
   },
   {
+    photo: 'advay',
+    name: 'Advay Bajpai',
+    email: 'advayb2018@gmail.com',
+    github: 'ady00',
+    website: 'https://advaybajpai.me',
+    titles: [roles.webdev],
+  },
+  {
+    photo: 'jaiman',
+    name: 'Jaiman Pandya',
+    titles: [roles.clubCurriculum],
+  },
+  {
+    photo: 'aadit',
+    name: 'Aadit Ambakar',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'nikita',
+    name: 'Nikita Gorshkov',
+    email: 'gorshkovnikita@gmail.com',
+    github: 'nikita-go',
+    website: 'https://www.nikitago.xyz/',
+    titles: [roles.webdev],
+  },
+  {
     photo: 'faris',
     name: 'Faris Raza',
     titles: [roles.liveInstructor, roles.clubCurriculum],
