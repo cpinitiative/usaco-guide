@@ -1,12 +1,10 @@
 import { ExternalLinkIcon } from '@heroicons/react/solid';
-import Tippy from '@tippyjs/react';
-import { navigate } from 'gatsby';
 import * as React from 'react';
 import { Instance } from 'tippy.js';
 import { useDarkMode } from '../../context/DarkModeContext';
 import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 import { getProblemURL, ProblemInfo } from '../../models/problem';
-import FocusProblemDropdown from './FocusProblemDropdown';
+import ProblemsListItemDropdown from './ProblemsList/ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 
 export default function FocusProblem({
@@ -33,57 +31,6 @@ export default function FocusProblem({
 
   const tippyRef = React.useRef<Instance>();
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
-
-  const more = (
-    <div>
-      <Tippy
-        onCreate={tippy => (tippyRef.current = tippy)}
-        content={
-          isDropdownShown ? (
-            <FocusProblemDropdown
-              onShowSolutionSketch={(problem: ProblemInfo) => {
-                return problem;
-              }}
-              problem={problem}
-              showTags={true}
-              showDifficulty={true}
-              onViewProblemSolutions={() => {
-                tippyRef.current.hide();
-                navigate('/problem-solutions/', {
-                  state: {
-                    problem,
-                  },
-                });
-              }}
-            />
-          ) : (
-            ''
-          )
-        }
-        theme={darkMode ? 'dark' : 'light'}
-        placement="bottom-end"
-        arrow={true}
-        animation="fade"
-        trigger="click"
-        interactive={true}
-        onShow={() => setIsDropdownShown(true)}
-        onHidden={() => setIsDropdownShown(false)}
-      >
-        <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
-          {/* Heroicon name: solid/dots-vertical */}
-          <svg
-            className="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-          </svg>
-        </button>
-      </Tippy>
-    </div>
-  );
 
   // transform must go in the isHovered condition
   // See https://github.com/thecodingwizard/usaco-guide/issues/198
@@ -125,7 +72,17 @@ export default function FocusProblem({
             </div>
           </div>
           <div className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
-            {more}
+            <div className="mr-2">
+              <ProblemsListItemDropdown
+                onShowSolutionSketch={(problem: ProblemInfo) => {
+                  return problem;
+                }}
+                problem={problem}
+                showTags={true}
+                showDifficulty={true}
+                isFocusProblem={true}
+              />
+            </div>
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
