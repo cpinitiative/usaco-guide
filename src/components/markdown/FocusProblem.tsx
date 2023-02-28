@@ -1,7 +1,10 @@
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import * as React from 'react';
+import { Instance } from 'tippy.js';
+import { useDarkMode } from '../../context/DarkModeContext';
 import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 import { getProblemURL, ProblemInfo } from '../../models/problem';
+import ProblemsListItemDropdown from './ProblemsList/ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 
 export default function FocusProblem({
@@ -22,8 +25,12 @@ export default function FocusProblem({
       `The focus problem list ${problemID} should have exactly one problem.`
     );
   }
+  const darkMode = useDarkMode();
 
   const problem: ProblemInfo = problemList.problems[0];
+
+  const tippyRef = React.useRef<Instance>();
+  const [isDropdownShown, setIsDropdownShown] = React.useState(false);
 
   // transform must go in the isHovered condition
   // See https://github.com/thecodingwizard/usaco-guide/issues/198
@@ -65,6 +72,17 @@ export default function FocusProblem({
             </div>
           </div>
           <div className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
+            <div className="mr-2">
+              <ProblemsListItemDropdown
+                onShowSolutionSketch={(problem: ProblemInfo) => {
+                  return problem;
+                }}
+                problem={problem}
+                showTags={true}
+                showDifficulty={true}
+                isFocusProblem={true}
+              />
+            </div>
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
