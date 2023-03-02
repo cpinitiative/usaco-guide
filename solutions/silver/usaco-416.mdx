@@ -181,7 +181,12 @@ int main() {
 	vector<vector<int>> prefix(new_n + 1, vector<int>(new_n + 1));
 	for (int i = 0; i < new_n; i++) {
 		for (int j = 0; j < new_n; j++) {
-			prefix[i + 1][j + 1] = field[i][j] + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j];
+			prefix[i + 1][j + 1] = (
+				field[i][j]
+				+ prefix[i + 1][j]
+				+ prefix[i][j + 1]
+				- prefix[i][j]
+			);
 		}
 	}
 	int most_grass = 0;
@@ -196,9 +201,9 @@ int main() {
 			);
 		}
 	}
-	if (k >= n) // the loop above did not run, and Bessie can reach everything
+	if (k >= n) {// the loop above did not run, and Bessie can reach everything
 		most_grass = prefix[new_n][new_n];
-
+	}
 	std::ofstream("lazy.out") << most_grass << endl;
 }
 ```
@@ -231,7 +236,12 @@ for i in range(n):
 prefix = [[0] * (new_n + 1) for _ in range(new_n + 1)]
 for i in range(new_n):
 	for j in range(new_n):
-		prefix[i + 1][j + 1] = field[i][j] + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]
+		prefix[i + 1][j + 1] = (
+			field[i][j]
+			+ prefix[i + 1][j]
+			+ prefix[i][j + 1]
+			- prefix[i][j]
+		)
 
 most_grass = 0
 for i in range(k, new_n - k):
