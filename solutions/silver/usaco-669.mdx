@@ -7,7 +7,7 @@ author: Neo Wang, Óscar Garries, Kevin Sheng
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_moocast_gold_dec16.html)
 
-### Implementation (DSU)
+## Implementation (DSU)
 
 <LanguageSection>
 <CPPSection>
@@ -261,7 +261,7 @@ print(last_dist, file=open('moocast.out', 'w'))
 </PySection>
 </LanguageSection>
 
-### Implementation (Binary Search + DFS)
+## Implementation (Binary Search + DFS)
 
 <LanguageSection>
 <CPPSection>
@@ -276,13 +276,13 @@ using std::endl;
 using std::vector;
 using std::pair;
 
-int dist_sq(const pair<int, int>& p1, const pair<int, int>& p2) {
+long long dist_sq(const pair<int, int>& p1, const pair<int, int>& p2) {
 	int dx = p1.first - p2.first;
 	int dy = p1.second - p2.second;
-	return dx * dx + dy * dy;
+	return (long long) dx * dx + dy * dy;
 }
 
-bool all_reachable(int power, const vector<pair<int, int>>& cows) {
+bool all_reachable(long long power, const vector<pair<int, int>>& cows) {
 	int start = 0;
 	vector<int> frontier{start};
 	vector<bool> reached(cows.size());
@@ -315,11 +315,11 @@ int main() {
 		read >> c.first >> c.second;
 	}
 
-	int lo = 0;
-	int hi = 1e9;  // arbitrarily large integer
-	int valid = -1;
+	long long lo = 0;
+	long long hi = INT32_MAX;  // arbitrarily large integer
+	long long valid = -1;
 	while (lo <= hi) {
-		int mid = (lo + hi) / 2;
+		long long mid = (lo + hi) / 2;
 		if (all_reachable(mid, cows)) {
 			valid = mid;
 			hi = mid - 1;
@@ -349,12 +349,13 @@ public class Moocast {
 			cows[c][0] = Integer.parseInt(cow.nextToken());
 			cows[c][1] = Integer.parseInt(cow.nextToken());
 		}
+		read.close();
 
-		int lo = 0;
-		int hi = 1e9;  // arbitrarily large integer
-		int valid = -1;
+		long lo = 0;
+		long hi = Integer.MAX_VALUE;  // arbitrarily large integer
+		long valid = -1;
 		while (lo <= hi) {
-			int mid = (lo + hi) / 2;
+			long mid = (lo + hi) / 2;
 			if (allReachable(mid, cows)) {
 				valid = mid;
 				hi = mid - 1;
@@ -368,7 +369,7 @@ public class Moocast {
 		written.close();
 	}
 
-	static boolean allReachable(int power, int[][] cows) {
+	static boolean allReachable(long power, int[][] cows) {
 		int start = 0;
 		ArrayDeque<Integer> frontier = new ArrayDeque<>();
 		frontier.add(start);
@@ -392,10 +393,10 @@ public class Moocast {
 		return true;
 	}
 
-	static int distSq(int[] p1, int[] p2) {
+	static long distSq(int[] p1, int[] p2) {
 		int dx = p1[0] - p2[0];
 		int dy = p1[1] - p2[1];
-		return dx * dx + dy * dy;
+		return (long) dx * dx + dy * dy;
 	}
 }
 ```
