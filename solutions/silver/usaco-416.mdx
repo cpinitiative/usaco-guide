@@ -205,6 +205,7 @@ int main() {
 </CPPSection>
 <PySection>
 
+This code may occasionally exceed the time limit on the last test case.
 ```py
 import sys
 
@@ -226,17 +227,19 @@ for i in range(new_n):
 	for j in range(new_n):
 		prefix[i + 1][j + 1] = field[i][j] + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]
 
-most_grass = max(
-	(
-		prefix[i + k + 1][j + k + 1] 
-		- prefix[i + k + 1][j - k] 
-		- prefix[i - k][j + k + 1] 
-		+ prefix[i - k][j - k]
-		for i in range(k, new_n - k) for j in range(k, new_n - k)
-	),
-	# if the generator is empty, k >= n, so Bessie can reach everything
-	default=prefix[new_n][new_n]
-)
+most_grass = 0
+for i in range(k, new_n - k):
+	for j in range(k, new_n - k):
+		most_grass = max(
+			most_grass,
+			prefix[i + k + 1][j + k + 1] 
+			- prefix[i + k + 1][j - k] 
+			- prefix[i - k][j + k + 1] 
+			+ prefix[i - k][j - k]
+		)
+# the loop above did not run, and Bessie can reach everything
+if k >= n:
+	most_grass = prefix[new_n][new_n]
 
 print(most_grass)
 ```
