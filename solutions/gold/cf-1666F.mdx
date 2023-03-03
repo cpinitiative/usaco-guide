@@ -18,9 +18,9 @@ Let $dp[i][j]$ be the number of ways to use the first $i$ blocks and place $j$ o
 
 There are two transitions.
 
-The first one will to $dp[i + 1][j + 1]$. If we add another even block, then there is only one place to put it.
+1. To $dp[i + 1][j + 1]$. If we add another even block, then there is only one place to put it.
 
-The second one will to $dp[i + 1][j]$. In this case we add the block to an odd position.
+2. To $dp[i + 1][j]$. In this case we add the block to an odd position.
 Notice that we must place a block in between already placed larger blocks because of the condition that an even block is greater than its two neigboring odd blocks and later placed blocks will always be smaller.
 This means that there will be $max(0, j - 1)$ positions to insert the block. When all $\frac{n}{2}$ even blocks are placed you can also insert it at the top of the stack.
 We also have to subtract out the $i - j$ blocks that are already placed in odd positions.
@@ -50,6 +50,8 @@ using ll = long long;
 const ll MOD = 998244353;
 
 const int MAXN = 5000;
+	
+// https://usaco.guide/gold/combo?lang=cpp
 ll F[MAXN + 1];
 ll IVF[MAXN + 1];
 
