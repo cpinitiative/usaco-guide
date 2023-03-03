@@ -145,3 +145,126 @@ public class Lazy {
 
 </JavaSection>
 </LanguageSection>
+
+## Implementation (Prefix Sums)
+
+**Time Complexity** $\mathcal{O}(N ^ 2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using std::endl;
+using std::vector;
+using std::max;
+
+int main() {
+	std::ifstream read("lazy.in");
+
+	int n;
+	int k;
+	read >> n >> k;
+	// the side length needed to accomodate the 45 degree rotation
+	int new_n = 2 * n - 1;
+	vector<vector<int>> field(new_n, vector<int>(new_n));
+
+	// read input and store it rotated by 45 degrees
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			read >> field[i + j][n - i + j - 1];
+		}
+	}
+	
+	vector<vector<int>> prefix(new_n + 1, vector<int>(new_n + 1));
+	for (int i = 0; i < new_n; i++) {
+		for (int j = 0; j < new_n; j++) {
+			prefix[i + 1][j + 1] = (
+				field[i][j]
+				+ prefix[i + 1][j]
+				+ prefix[i][j + 1]
+				- prefix[i][j]
+			);
+		}
+	}
+	
+	int most_grass = 0;
+	for (int i = k; i < new_n - k; i++) {
+		for (int j = k; j < new_n - k; j++) {
+			most_grass = max(
+				most_grass, 
+				prefix[i + k + 1][j + k + 1]
+				- prefix[i + k + 1][j - k]
+				- prefix[i - k][j + k + 1]
+				+ prefix[i - k][j - k]
+			);
+		}
+	}
+	
+	if (k >= n) {
+		// the loop above did not run, and Bessie can reach everything
+		most_grass = prefix[new_n][new_n];
+	}
+	
+	std::ofstream("lazy.out") << most_grass << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+<Warning>
+
+This code may occasionally TLE on the last test case.
+
+</Warning>
+
+```py
+import sys
+
+sys.stdin = open('lazy.in', 'r')
+sys.stdout = open('lazy.out', 'w')
+
+n, k = map(int, input().split())
+# the side length needed to accomodate the 45 degree rotation
+new_n = 2 * n - 1
+field = [[0] * new_n for _ in range(new_n)]
+
+# read input and store it rotated by 45 degrees
+for i in range(n):
+	for j, x in enumerate(map(int, input().split())):
+		field[i + j][n - i + j - 1] = x
+
+prefix = [[0] * (new_n + 1) for _ in range(new_n + 1)]
+for i in range(new_n):
+	for j in range(new_n):
+		prefix[i + 1][j + 1] = (
+			field[i][j]
+			+ prefix[i + 1][j]
+			+ prefix[i][j + 1]
+			- prefix[i][j]
+		)
+
+most_grass = 0
+for i in range(k, new_n - k):
+	for j in range(k, new_n - k):
+		most_grass = max(
+			most_grass,
+			prefix[i + k + 1][j + k + 1] 
+			- prefix[i + k + 1][j - k] 
+			- prefix[i - k][j + k + 1] 
+			+ prefix[i - k][j - k]
+		)
+
+if k >= n:
+	# the loop above did not run, and Bessie can reach everything
+	most_grass = prefix[new_n][new_n]
+
+print(most_grass)
+```
+
+</PySection>
+</LanguageSection>
