@@ -42,19 +42,19 @@ Our answer will be $dp[n][\frac{n}{2}]$.
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
-
+ 
 using namespace std;
-
+ 
 using ll = long long;
-
+ 
 const ll MOD = 998244353;
-
+ 
 const int MAXN = 5000;
 	
 // https://usaco.guide/gold/combo?lang=cpp
 ll F[MAXN + 1];
 ll IVF[MAXN + 1];
-
+ 
 ll binpow(ll a, ll b) {
 	if (b < 0) return 1;
 	ll res = 1;
@@ -65,12 +65,12 @@ ll binpow(ll a, ll b) {
 	}
 	return res;
 }
-
+ 
 ll choose(ll a, ll b) {
 	if (a < b) return 0;
-	return ((F[a] * IVF[b]) % mod * IVF[a - b]) % mod;
+	return ((F[a] * IVF[b]) % MOD * IVF[a - b]) % MOD;
 }
-
+ 
 void solve() {
 	int n;
 	cin >> n;
@@ -106,7 +106,7 @@ void solve() {
 	}
 	cout << dp[n][n / 2] << endl;
 }
-
+ 
 int main() {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
@@ -115,7 +115,7 @@ int main() {
 		F[i] = (F[i - 1] * i) % MOD;
 	}
 	for (ll i = 0; i <= MAXN; i++) {
-		IVF[i] = binpow(f[i], MOD - 2);
+		IVF[i] = binpow(F[i], MOD - 2);
 	}
 	int test_num;
 	cin >> test_num;
