@@ -322,7 +322,7 @@ export const RestOfMembers: Member[] = [
   },
   {
     photo: 'aadit',
-    name: 'Aadit Ambakar',
+    name: 'Aadit Ambadkar',
     titles: [roles.contentAuthor],
   },
   {
