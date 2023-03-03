@@ -1,8 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
-import { useDarkMode } from '../../../context/DarkModeContext';
 import { contests, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import TextTooltip from '../../Tooltip/TextTooltip';
@@ -54,7 +52,6 @@ export const difficultyClasses = {
 export default function ProblemsListItem(
   props: ProblemsListItemProps
 ): JSX.Element {
-  const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueId}`;
@@ -161,9 +158,6 @@ export default function ProblemsListItem(
       )}
     </td>
   );
-
-  const tippyRef = React.useRef<Instance>();
-  const [isDropdownShown, setIsDropdownShown] = React.useState(false);
 
   return (
     <StyledProblemRow id={id} isActive={isActive}>

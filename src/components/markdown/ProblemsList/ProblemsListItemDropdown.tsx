@@ -16,7 +16,6 @@ export default function ProblemsListItemDropdown(
 
   const problem = props.problem;
   const isFocusProblem = props.isFocusProblem;
-  console.log(isFocusProblem);
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);
 
