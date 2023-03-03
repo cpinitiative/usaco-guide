@@ -35,8 +35,10 @@ module.exports = {
       // no clue why uncommenting this is needed to fix react is not defined in canvas
       // config.externals = ["react-dom/client"];
     }
+
     // Remove core-js to prevent issues with Storybook
-    config.module.rules[0].exclude = [/core-js/];
+    // but doing so breaks FocusProblem.stories.tsx >:-( so I'll just comment it out
+    //config.module.rules[0].exclude = [/core-js/];
 
     // Use babel-plugin-remove-graphql-queries to remove static queries from components when rendering in storybook
     config.module.rules[0].use[0].options.plugins.push(
