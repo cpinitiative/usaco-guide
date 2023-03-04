@@ -11,6 +11,10 @@ export type UserProgressOnResourcesAPI = {
   ) => void;
 };
 
+export const replaceIllegalFirebaseCharacters = (str: string) => {
+  return str.replace(/[^a-zA-Z0-9]/g, ''); // technically only ~*/[] aren't allowed but whatever
+};
+
 export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI {
   private progressStorageKey = 'userProgressOnResources';
   private progressValue = {};
@@ -52,6 +56,7 @@ export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI
     return {
       userProgressOnResources: this.progressValue,
       setUserProgressOnResources: (problemId, status) => {
+        problemId = replaceIllegalFirebaseCharacters(problemId);
         // if the user isn't using firebase, it is possible that they
         // have multiple tabs open, which can result in localStorage
         // being out of sync.
@@ -69,6 +74,8 @@ export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI
           this.writeValueToLocalStorage();
           this.triggerRerender();
         } catch (e) {
+          console.error(e);
+
           Sentry.captureException(e, {
             extra: {
               status,
