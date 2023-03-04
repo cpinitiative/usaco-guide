@@ -1,4 +1,4 @@
-import { arrayUnion } from 'firebase/firestore';
+import { arrayUnion, updateDoc } from 'firebase/firestore';
 import { ModuleActivity } from '../../../models/activity';
 import { ModuleProgress } from '../../../models/module';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
