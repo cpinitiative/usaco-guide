@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { setDoc } from 'firebase/firestore';
+import { updateDoc } from 'firebase/firestore';
 import { ResourceProgress } from '../../../models/resource';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 
@@ -52,25 +52,18 @@ export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI
     return {
       userProgressOnResources: this.progressValue,
       setUserProgressOnResources: (problemId, status) => {
-        if (!this.firebaseUserDoc) {
-          // if the user isn't using firebase, it is possible that they
-          // have multiple tabs open, which can result in localStorage
-          // being out of sync.
-          this.initializeFromLocalStorage();
-        }
+        // if the user isn't using firebase, it is possible that they
+        // have multiple tabs open, which can result in localStorage
+        // being out of sync.
+        // also bc of data loss let's just do this all the time
+        this.initializeFromLocalStorage();
         try {
           this.progressValue[problemId] = status;
 
           if (this.firebaseUserDoc) {
-            setDoc(
-              this.firebaseUserDoc,
-              {
-                [this.progressStorageKey]: {
-                  [problemId]: status,
-                },
-              },
-              { merge: true }
-            );
+            updateDoc(this.firebaseUserDoc, {
+              [`${this.progressStorageKey}.${problemId}`]: status,
+            });
           }
 
           this.writeValueToLocalStorage();
