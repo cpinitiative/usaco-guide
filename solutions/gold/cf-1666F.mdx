@@ -52,23 +52,41 @@ const ll MOD = 998244353;
 const int MAXN = 5000;
 	
 // https://usaco.guide/gold/combo?lang=cpp
-ll F[MAXN + 1];
-ll IVF[MAXN + 1];
- 
-ll binpow(ll a, ll b) {
-	if (b < 0) return 1;
-	ll res = 1;
-	while (b) {
-		if (b & 1) res = (res * a) % MOD;
-		a = (a * a) % MOD;
-		b >>= 1;
+
+long long fac[MAXN + 1], inv[MAXN + 1];
+
+/** Computes x^y modulo p in O(log p) time. */
+long long exp(long long x, long long y, long long p) {
+	long long res = 1;
+	x %= p;
+	while (y) {
+		if (y & 1) {
+			res *= x;
+			res %= p;
+		}
+		x *= x;
+		x %= p;
+		y >>= 1;
 	}
 	return res;
 }
- 
-ll choose(ll a, ll b) {
-	if (a < b) return 0;
-	return ((F[a] * IVF[b]) % MOD * IVF[a - b]) % MOD;
+
+/** Precomputes n! from 0 to MAXN. */
+void factorial(long long p) {
+	fac[0] = 1;
+	for (int i = 1; i <= MAXN; i++) { fac[i] = fac[i - 1] * i % p; }
+}
+
+/** Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p)
+ * time */
+void inverses(long long p) {
+	inv[MAXN] = exp(fac[MAXN], p - 2, p);
+	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
+}
+
+/** Computes nCr mod p */
+long long choose(long long n, long long r, long long p) {
+	return fac[n] * inv[r] % p * inv[n - r] % p;
 }
  
 void solve() {
@@ -99,7 +117,7 @@ void solve() {
 				}
 				dp[size + b[i].second][j + k] = (
 					dp[size + b[i].second][j + k] 
-					+ choose(positions, b[i].second - k)
+					+ choose(positions, b[i].second - k, MOD)
 					* dp[size][j] % MOD
 				) % MOD;
 			}
@@ -110,13 +128,8 @@ void solve() {
 }
  
 int main() {
-	F[0] = 1;
-	for (ll i = 1; i <= MAXN; i++) {
-		F[i] = (F[i - 1] * i) % MOD;
-	}
-	for (ll i = 0; i <= MAXN; i++) {
-		IVF[i] = binpow(F[i], MOD - 2);
-	}
+    factorial(MOD);
+    inverses(MOD);
 	int test_num;
 	cin >> test_num;
 	for (int t = 0; t < test_num; t++) {
