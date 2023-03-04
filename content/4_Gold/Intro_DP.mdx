@@ -5,6 +5,7 @@ author: Michael Cao, Benjamin Qi, Neo Wang
 prerequisites:
   - complete-rec
   - modular
+  - combo
 description: 'Speeding up naive recursive solutions with memoization.'
 frequency: 4
 ---
@@ -92,7 +93,7 @@ complexity required for full points is $\mathcal{O}(N)$ and you come up with a
 simple $\mathcal{O}(N^2)$ solution, then you should definitely type that up
 first and earn some partial credit. Afterwards, you can rewrite parts of your
 slow solution until it is of the desired complexity. The slow solution might
-also serve as something to [stress test](/general/debugging-lang#stress-testing)
+also serve as something to [stress test](/general/basic-debugging#stress-testing)
 against.
 
 </Info>
@@ -166,9 +167,7 @@ int dp[MAX_N + 1];
 int main() {
 	int N;
 	cin >> N;
-	for (int i = 1; i <= N; i++) {
-		cin >> height[i];
-	}
+	for (int i = 1; i <= N; i++) { cin >> height[i]; }
 
 	// dp[1] = 0 is our base case since we're already at the first stone
 	dp[1] = 0;
@@ -255,10 +254,10 @@ dp = [float("inf") for _ in range(N + 1)]
 dp[1] = 0
 
 for i in range(1, N + 1):
-    if i + 1 <= stone_num:
-        dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]))
-    if i + 2 <= stone_num:
-        dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]))
+	if i + 1 <= stone_num:
+		dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]))
+	if i + 2 <= stone_num:
+		dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]))
 
 print(dp[stone_num])
 ```

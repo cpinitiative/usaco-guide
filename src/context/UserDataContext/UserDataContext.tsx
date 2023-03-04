@@ -1,9 +1,14 @@
 import * as Sentry from '@sentry/browser';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  getFirestore,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
-import ReactDOM from 'react-dom';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 import AdSettingsProperty, {
@@ -13,7 +18,7 @@ import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
 import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
-import HideTags, { HideTagsAPI } from './properties/hideTags';
+import HideModules, { HideModulesAPI } from './properties/hideModules';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -22,6 +27,7 @@ import LastViewedModule, {
 } from './properties/lastViewedModule';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ShowTags, { ShowTagsAPI } from './properties/showTags';
 import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
@@ -94,8 +100,9 @@ import { UserPermissionsContextProvider } from './UserPermissionsContext';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTags(),
+  new ShowTags(),
   new HideDifficulty(),
+  new HideModules(),
   new DivisionTableQuery(),
   new ShowIgnored(),
   new ThemeProperty(),
@@ -109,8 +116,9 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAPI &
+  ShowTagsAPI &
   HideDifficultyAPI &
+  HideModulesAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
   ThemePropertyAPI &
@@ -134,8 +142,9 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
   importUserData: () => true,
-  hideTags: false,
+  showTags: false,
   hideDifficulty: false,
+  hideModules: false,
   divisionTableQuery: {
     division: '',
     season: '',
@@ -157,10 +166,13 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setTheme: _x => {
     // do nothing
   },
-  setHideTags: _x => {
+  setShowTags: _x => {
     // do nothing
   },
   setHideDifficulty: _x => {
+    // do nothing
+  },
+  setHideModules: _x => {
     // do nothing
   },
   setDivisionTableQuery: _x => {
@@ -276,32 +288,34 @@ export const UserDataProvider = ({
             const localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
-              if (
-                confirm(
-                  `Override server data with local progress? (You'll lose your local progress if you choose no.)`
-                )
-              ) {
-                // sync all local data with firebase if the firebase account doesn't exist yet
-                setDoc(
-                  userDoc,
-                  UserDataContextAPIs.reduce((acc, cur) => {
+              // sync all local data with firebase if the firebase account doesn't exist yet
+              setDoc(
+                userDoc,
+                UserDataContextAPIs.reduce(
+                  (acc, cur) => {
                     return {
                       ...acc,
                       ...cur.exportValue(),
                     };
-                  }, {}),
-                  { merge: true }
-                );
-              }
+                  },
+                  {
+                    // this is to prevent us from accidentally overriding the user data
+                    // firebase security rules will have a check to make sure that this is actually the first time
+                    // the user has logged in. occasionally, with poor internet, firebase will glitch and
+                    // we will accidentally override user data.
+                    // see https://github.com/cpinitiative/usaco-guide/issues/534
+                    CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
+                  }
+                ),
+                { merge: true }
+              );
             }
           }
           data = data || {};
-          ReactDOM.unstable_batchedUpdates(() => {
-            UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-            UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
-            setIsLoaded(true);
-            triggerRerender();
-          });
+          UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+          UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+          setIsLoaded(true);
+          triggerRerender();
         },
         error: error => {
           toast.error(error.message);

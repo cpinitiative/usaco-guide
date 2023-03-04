@@ -48,8 +48,11 @@ export default function ProblemSubmissionInterface({
     }),
     emptySubmission
   );
+  const [submissionLink, setSubmissionLink] = React.useState('');
   const activeGroup = useActiveGroup();
-  const { submitSolution } = usePostActions(activeGroup.activeGroupId);
+  const { submitSolution, submitSubmissionLink } = usePostActions(
+    activeGroup.activeGroupId
+  );
 
   const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
     // Disable click and keydown behavior
@@ -88,6 +91,11 @@ export default function ProblemSubmissionInterface({
   );
 
   if (cannotSubmit) {
+    const handleSubmitLink = async e => {
+      e.preventDefault();
+      await submitSubmissionLink(submissionLink, problem.postId, problem.id);
+      setSubmissionLink('');
+    };
     return (
       <div>
         <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
@@ -96,9 +104,24 @@ export default function ProblemSubmissionInterface({
         <div className="mt-1 text-gray-900 dark:text-gray-300">
           Unfortunately, we don't support built-in code submissions for this
           problem yet. Submit this problem directly from the problem statement
-          website. For CodeForces problems, you may need to make a CodeForces
-          account first.
+          website, then paste the submission url below. For Codeforces problems,
+          you may need to make a Codeforces account first.
         </div>
+        <label htmlFor="submission-link" className="block mt-4">
+          Submission URL
+        </label>
+        <form onSubmit={handleSubmitLink}>
+          <input
+            id="submission-link"
+            type="url"
+            className="input"
+            value={submissionLink}
+            onChange={e => setSubmissionLink(e.target.value)}
+          />
+          <button type="submit" className="mt-4 btn">
+            Submit
+          </button>
+        </form>
       </div>
     );
   }

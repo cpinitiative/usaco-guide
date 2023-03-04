@@ -136,7 +136,9 @@ export default function Template(props) {
     []
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
-  const problemIDs = data.problems.edges.map(x => x.node.uniqueId);
+  const problemIDs = [
+    ...new Set(data.problems.edges.map(x => x.node.uniqueId) as string[]),
+  ];
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const progressBarForCategory = category => {
@@ -233,6 +235,9 @@ export default function Template(props) {
                           item.frontmatter.description,
                           item.frontmatter.frequency,
                           item.isIncomplete,
+                          item.cppOc,
+                          item.javaOc,
+                          item.pyOc,
                           [],
                           item.fields.gitAuthorTime
                         )
@@ -249,7 +254,7 @@ export default function Template(props) {
   );
 }
 export const pageQuery = graphql`
-  query($division: String!) {
+  query ($division: String!) {
     modules: allXdm(
       filter: {
         fileAbsolutePath: { regex: "/content/" }
@@ -266,6 +271,9 @@ export const pageQuery = graphql`
             frequency
           }
           isIncomplete
+          cppOc
+          javaOc
+          pyOc
           fields {
             gitAuthorTime
           }

@@ -1,4 +1,3 @@
 # Contributing
 
-Check the [Contributing module](https://usaco.guide/general/contributing)
-module.
+Check the [Contributing](https://usaco.guide/general/contributing) module.

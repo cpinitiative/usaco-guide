@@ -58,7 +58,7 @@ export default function MembersPage(): JSX.Element {
             {activeMemberId ? (
               memberInfo ? (
                 <MemberDetail
-                  member={memberInfo.find(x => x.uid === activeMemberId)}
+                  member={memberInfo.find(x => x?.uid === activeMemberId)}
                 />
               ) : (
                 <div>

@@ -58,22 +58,24 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
 };
 
 export function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
 export default function ContactUsSlideover({
   isOpen,
   onClose,
+  defaultLocation = '',
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeModule?: ModuleInfo;
+  defaultLocation?: string;
 }): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(defaultLocation);
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
     'Typo / Broken Link',
@@ -81,8 +83,6 @@ export default function ContactUsSlideover({
     'Unclear Explanation',
     'Website Bug',
     'Suggestion',
-    // 'Request - Problem Editorial',
-    // 'I want to contribute!',
     'Other',
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
@@ -95,12 +95,14 @@ export default function ContactUsSlideover({
   const submitForm = useContactFormAction();
 
   React.useEffect(() => {
-    const activeModule = markdownContext?.markdownLayoutInfo;
-    if (activeModule && activeModule instanceof ModuleInfo) {
-      setLocation(
-        `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
-      );
-    } else setLocation('');
+    if (!defaultLocation) {
+      const activeModule = markdownContext?.markdownLayoutInfo;
+      if (activeModule && activeModule instanceof ModuleInfo) {
+        setLocation(
+          `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
+        );
+      } else setLocation('');
+    }
   }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);
@@ -198,7 +200,7 @@ export default function ContactUsSlideover({
       }
       onSubmit={handleSubmit}
     >
-      <div className="bg-gray-50 dark:bg-gray-900 mb-4">
+      {/* <div className="bg-gray-50 dark:bg-gray-900 mb-4">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
             Ask on the USACO Forum!
@@ -221,8 +223,8 @@ export default function ContactUsSlideover({
             </span>
           </div>
         </div>
-      </div>
-      <div className="px-4 sm:px-6">
+      </div> */}
+      <div className="px-4 sm:px-6 mt-4">
         {showSuccess && (
           <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
@@ -307,6 +309,18 @@ export default function ContactUsSlideover({
               <legend className="text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis">
                 Topic
               </legend>
+              <div className="text-sm">
+                If you're having issues registering on usaco.org, see{' '}
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://github.com/cpinitiative/usaco-guide/issues/2854#issuecomment-1162802123"
+                >
+                  this comment
+                </a>
+                .
+              </div>
               <div className="space-y-3">
                 {topics.map((t, idx) => (
                   <div key={idx}>
@@ -328,6 +342,34 @@ export default function ContactUsSlideover({
                         >
                           {t}
                         </label>
+                        {t === 'Typo / Broken Link' && topic === t && (
+                          <div>
+                            Submitting a pull request{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              target="_blank"
+                              rel="noreferrer"
+                              href="https://github.com/cpinitiative/usaco-guide/pulls"
+                            >
+                              here
+                            </a>{' '}
+                            is the preferred way to fix a typo.
+                          </div>
+                        )}
+                        {t === 'Unclear Explanation' && topic === t && (
+                          <div>
+                            You may get a faster response by reaching out on the{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              href="https://forum.usaco.guide/"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              USACO Guide forum
+                            </a>{' '}
+                            instead.
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

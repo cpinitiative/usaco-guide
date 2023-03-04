@@ -1,0 +1,392 @@
+---
+id: combo
+title: 'Combinatorics'
+author: Jesse Choe, Aadit Ambadkar, Dustin Miao
+prerequisites:
+  - divisibility
+  - modular
+description: How to count.
+frequency: 2
+---
+
+If you've never encountered any **combinatorics** before, AoPS is a good place
+to start.
+
+<Resources>
+	<Resource
+		source="AoPS@Art of Problem Solving"
+		title="Alcumus"
+		url="https://artofproblemsolving.com/alcumus/problem"
+		starred
+	>
+		practice problems, set focus to Counting and Probability.
+	</Resource>
+	<Resource
+		source="AoPS@Art of Problem Solving"
+		title="Intro to Counting and Probability"
+		url="https://artofproblemsolving.com/store/book/intro-counting"
+	>
+		good book
+	</Resource>
+</Resources>
+
+## Resources
+
+<Resources>
+	<Resource source="CPH" title="22 - Combinatorics" url = "https://usaco.guide/CPH.pdf#page=217" starred>
+		module is based off of this
+	</Resource>
+	<Resource source="cp-algo" title="Combinatorics" url = "https://cp-algorithms.com/#combinatorics">
+		
+	</Resource>
+	<Resource source="HE@HackerEarth" title="Basics of Combinatorics" url = "https://www.hackerearth.com/practice/math/combinatorics/basics-of-combinatorics/tutorial/">
+		teaches fundamental combinatorics with a practice problem at the end
+	</Resource>
+	<Resource source="AoPS@Art of Problem Solving" title="Introductory Combinatorics" url = "https://artofproblemsolving.com/wiki/index.php/Combinatorics/Introduction" starred>
+		teaches basic combinatorics concepts
+	</Resource>
+	<Resource source="AoPS@Art of Problem Solving" title="Intermediate Combinatorics" url = "https://artofproblemsolving.com/wiki/index.php/Combinatorics/Intermediate">
+		teaches more advanced combinatorics concepts
+	</Resource>
+	<Resource source="CF" title="Expected Value" url = "https://codeforces.com/blog/entry/62690">
+		a good blog about the expected value
+	</Resource>
+	<Resource source="CF" title="Inclusion-Exclusion Principle" url = "https://codeforces.com/blog/entry/64625">
+		a good blog about the inclusion-exclusion principle
+	</Resource>
+</Resources>
+
+If you prefer watching videos instead, here are some options:
+
+<Resources>
+	<Resource source="Youtube" title="Deep Dive into Combinatorics" url = "https://www.youtube.com/playlist?list=PLDcSwjT2BF_W7hSCiSAVk1MmeGLC3xYGg">
+		playlist by mathemaniac
+	</Resource>
+	<Resource source="Youtube" title="MIT 6.042J" url = "https://www.youtube.com/playlist?list=PLB7540DEDD482705B">
+		lectures 16-23
+	</Resource>
+	<Resource source="Youtube" title="Sums and Expected Value #1" url = "https://www.youtube.com/watch?v=U_h3IjreRek">
+		Errichto video regarding expected value and sums of subsets
+	</Resource>
+</Resources>
+
+## Binomial Coefficients
+
+<FocusProblem problem="sample1" />
+
+The **binomial coefficient** $\binom{n}{k}$ (pronounced as "$n$ choose $k$" or sometimes written as ${}_nC_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements: 
+
+$$
+\{1, 2\}, \{1, 3\}, \{1, 4\}, \{2, 3\}, \{2, 4\}, \{3, 4\}
+$$
+
+There are two ways to calculate binomial coefficients:
+
+### Method 1: Pascal's Triangle (Dynamic Programming) - $\mathcal{O}(n^2)$
+
+Binomial coefficients can be recursively calculated as follows:
+
+$$
+    \binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}
+$$
+
+The intuition behind this is to fix an element $x$ in the set and choose $k − 1$ elements from $n − 1$ elements if $x$ is included in the set or choose $k$ elements from $n − 1$ elements, otherwise. 
+
+The base cases for the recursion are:
+
+$$
+	\binom{n}{0} = \binom{n}{n}  = 1
+$$
+
+because there is always exactly one way to construct an empty subset and a subset that contains all the elements.
+
+This recursive formula is commonly known as [Pascal's Triangle](https://brilliant.org/wiki/pascals-triangle/). 
+
+A naive implementation of this would use a recursive formula, like below:
+
+<LanguageSection>
+<CPPSection>
+
+
+```cpp
+/** Computes nCk mod p using naive recursion */
+int binomial(int n, int k, int p) {
+	if (k == 0 || k == n) { return 1; }
+	return (binomial(n - 1, k - 1, p) + binomial(n - 1, k, p)) % p;
+}
+```
+</CPPSection>
+</LanguageSection>
+	
+Additionally, we can optimize this from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$ using [dynamic programming](/gold/intro-dp) (DP) by caching the values of smaller binomials to prevent recalculating the same values over and over again. The code below shows a bottom-up implementation of this.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+/** Computes nCk mod p using dynamic programming */
+int binomial(int n, int k, int p) {
+	// dp[i][j] stores iCj
+	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
+
+	// base cases described above
+	for (int i = 0; i <= n; i++) {
+		/*
+		 * i choose 0 is always 1 since there is exactly one way
+		 * to choose 0 elements from a set of i elements
+		 * (don't choose anything)
+		 */
+		dp[i][0] = 1;
+		/*
+		 * i choose i is always 1 since there is exactly one way
+		 * to choose i elements from a set of i elements
+		 * (choose every element in the set)
+		 */
+		if (i <= k) { dp[i][i] = 1; }
+	}
+	for (int i = 0; i <= n; i++) {
+		for (int j = 1; j <= min(i, k); j++) {
+			if (i != j) {  // skips over the base cases
+				// uses the recurrence relation above
+				dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j]) % p;
+			}
+		}
+	}
+	return dp[n][k];  // returns nCk modulo p
+}
+```
+</CPPSection>
+</LanguageSection>
+
+### Method 2: Factorial Definition (Modular Inverses) - $\mathcal{O}(n + \log MOD)$
+
+Define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$. $n!$ represents the number of permutations of a set of $n$ elements. See [this AoPS Article](https://artofproblemsolving.com/wiki/index.php/Factorial) for more details.
+
+Another way to calculate binomial coefficients is as follows:
+
+$$
+	\binom{n}{k} = \frac{n!}{k!(n-k)!}
+$$
+
+Recall that $\binom{n}{k}$ also represents the number of ways to choose $k$ elements from a set of $n$ elements. One strategy to get all such combinations is to go through all possible permutations of the $n$ elements, and only pick the first $k$ elements out of each permutation. There are $n!$ ways to do so. However, note the the order of the elements inside and outside the subset does not matter, so the result is divided by $k!$ and $(n − k)!$.
+
+Since these binomial coefficients are large, problems typically require us to output the answer modulo a large prime $p$ such as $10^9 + 7$. Fortunately, we can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$ for any prime $p$. Computing inverse factorials **online** can be very time costly. Instead, we can **precompute** all factorials in $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n + \log MOD)$. First, we compute the modular inverse of the largest factorial using binary exponentiation. For the rest, we use the fact that $(n!)^{-1} \equiv (n!)^{-1}\times (n+1)^{-1} \times (n+1) \equiv ((n+1)!)^{-1}\times (n+1)$. See the code below for the implementation.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+const int MAXN = 1e6;
+
+long long fac[MAXN + 1], inv[MAXN + 1];
+
+/** Computes x^y modulo p in O(log p) time. */
+long long exp(long long x, long long y, long long p) {
+	long long res = 1;
+	x %= p;
+	while (y) {
+		if (y & 1) {
+			res *= x;
+			res %= p;
+		}
+		x *= x;
+		x %= p;
+		y >>= 1;
+	}
+	return res;
+}
+
+/** Precomputes n! from 0 to MAXN. */
+void factorial(long long p) {
+	fac[0] = 1;
+	for (int i = 1; i <= MAXN; i++) { fac[i] = fac[i - 1] * i % p; }
+}
+
+/** Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p)
+ * time */
+void inverses(long long p) {
+	inv[MAXN] = exp(fac[MAXN], p - 2, p);
+	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
+}
+
+/** Computes nCr mod p */
+long long choose(long long n, long long r, long long p) {
+	return fac[n] * inv[r] % p * inv[n - r] % p;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+### Solution - Binomial Coefficients
+
+The first method for calculating binomial factorials is too slow for this problem since the constraints on $a$ and $b$ are $(1 \leq b \leq a \leq 10^6)$ (recall that the first implementation runs in $\mathcal{O}(n^2)$ time complexity). However, we can use the second method to answer each of the $n$ queries in constant time by precomputing factorials and their modular inverses.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+using ll = long long;
+
+const int MAXN = 1e6;
+const int MOD = 1e9 + 7;
+
+ll fac[MAXN + 1];
+ll inv[MAXN + 1];
+
+//BeginCodeSnip{Counting functions}
+ll exp(ll x, ll y, ll p) {
+	ll res = 1; x %= p;
+	while (y) {
+		if (y & 1) {
+			res *= x; res %= p; 
+		}
+		x *= x;
+		x %= p;
+		y >>= 1;
+	}
+	return res;
+}
+
+void factorial() {
+	fac[0] = 1;
+	for (int i = 1; i <= MAXN; i++) {
+		fac[i] = fac[i - 1] * i % MOD;
+	}
+}
+
+void inverses() {
+	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD);
+	for (int i = MAXN; i >= 1; i--) {
+		inv[i - 1] = inv[i] * i % MOD;
+	}
+}
+
+ll choose(int n, int r) {
+	return fac[n] * inv[r] % MOD * inv[n - r] % MOD;
+}
+//EndCodeSnip
+
+int main() {
+	factorial();
+	inverses();
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+		cout << choose(a, b) << '\n';
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+
+## Derangements
+
+<FocusProblem problem="sample2" />
+
+The number of derangements of $n$ numbers, expressed as $!n$, is the number of permutations such that no element appears in its original position. Informally, it is the number of ways $n$ hats can be returned to $n$ people such that no person recieves their own hat. 
+
+### Method 1: Principle of Inclusion-Exclusion
+
+Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert$. 
+
+We subtract from $n!$ the number of ways for each event to occur; that is, consider the quantity $n! - \lvert E_1 \rvert - \lvert E_2 \rvert - \dots - \lvert E_n \rvert$. This undercounts, as we are subtracting cases where more than one event occurs too many times. Specifically, for a permutation where at least two events occur, we undercount by one. Thus, add back the number of ways for two events to occur. We can continue this process for every size of subsets of indices. The expression is now of the form:
+
+$$
+n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert = \sum_{k = 1}^n (-1)^k \cdot (\text{number of permutations with $k$ fixed points})
+$$
+
+For a set size of $k$, the number of permutations with at least $k$ indicies can be computed by choosing a set of size $k$ that are fixed, and permuting the other indices. In mathematical terms:
+
+$$
+{n \choose k}(n-k)! = \frac{n!}{k!(n-k)!}(n-k)! = \frac{n!}{k!}
+$$
+
+Thus, the problem now becomes computing 
+
+$$
+n!\sum_{k=0}^n\frac{(-1)^k}{k!}
+$$
+
+which can be done in linear time.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+// https://atcoder.github.io/ac-library/document_en/modint.html (included in
+// grader)
+#include <atcoder/modint>
+using mint = atcoder::modint;
+
+using namespace std;
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	mint::set_mod(M);
+	mint c = 1;
+	for (int i = 1; i <= N; i++) {
+		c = (c * i) + (i % 2 == 1 ? -1 : 1);
+		cout << c.val() << ' ';
+	}
+	cout << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+### Method 2: Dynamic Programming
+
+Suppose person 1 recieved person $i$'s hat. There are two cases:
+
+1. If person $i$ recieves person 1's hat, then the problem is reduced to a subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this case, so we add to the current answer $(n - 1)\cdot !(n - 2)$. 
+2. If person $i$ does not recieve person 1's hat, then we can reassign person 1's hat to be person $i$'s hat (if they recieved person 1's hat, then this would become first case). Thus, this becomes a subproblems with size $n - 1$, are there $n - 1$ ways to choose $i$.
+
+Thus, we have 
+
+$$
+!n = (n - 1)(!(n - 2) + !(n - 1))
+$$
+
+which can be computed in linear time with a simple DP. The base cases are that $!0 = 1$ and $!1 = 0$. 
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+// https://atcoder.github.io/ac-library/document_en/modint.html (included in
+// grader)
+#include <atcoder/modint>
+using mint = atcoder::modint;
+
+using namespace std;
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	mint::set_mod(M);
+	mint a = 1, b = 0;
+	cout << 0 << ' ';
+	for (int i = 2; i <= N; i++) {
+		mint c = (i - 1) * (a + b);
+		cout << c.val() << ' ';
+		a = b;
+		b = c;
+	}
+	cout << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="general" />

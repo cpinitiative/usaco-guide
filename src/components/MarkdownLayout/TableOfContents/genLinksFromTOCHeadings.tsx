@@ -1,4 +1,3 @@
-import { Link } from 'gatsby';
 import * as React from 'react';
 import { TOCHeading } from '../../../models/module';
 
@@ -19,9 +18,9 @@ export default function genLinksFromTOCHeadings(
     }
     curDepth = heading.depth;
     links.push(
-      <Link
+      <a
         key={heading.slug}
-        to={'#' + heading.slug}
+        href={'#' + heading.slug}
         className={getClasses(heading)}
         style={{
           marginLeft: indentationLevels[indentIdx],

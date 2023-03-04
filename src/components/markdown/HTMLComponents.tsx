@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useDarkMode } from '../../context/DarkModeContext';
 import CodeBlock from './CodeBlock/CodeBlock';
 
 // Note: try to avoid adding inline styles here; rather, use css selectors to target them.
@@ -62,10 +63,16 @@ const a = ({ children, ...props }) => (
     {children}
   </a>
 );
-const pre = ({ children, ...props }) => {
+const pre = ({ children, copyButton = true, ...props }) => {
+  const isDarkMode = useDarkMode();
+
   return (
     <pre {...props}>
-      <CodeBlock {...children.props} />
+      <CodeBlock
+        copyButton={copyButton}
+        isDarkMode={isDarkMode}
+        {...children.props}
+      />
     </pre>
   );
 };
