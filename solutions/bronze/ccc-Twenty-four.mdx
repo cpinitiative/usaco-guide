@@ -21,7 +21,6 @@ The arithmetic expression with the maximum value that is not greater than 24 is 
 #include <bits/stdc++.h>
 using namespace std;
 
-const int INF = 1e9;
 int ans;
 int hand[4];                   // The given card hand.
 vector<int> hand_permutation;  // The generated permutation of the card hand.
@@ -39,12 +38,12 @@ int operation(int op, int num1, int num2) {
 		case 3: {
 			// The divisor cannot be 0 and the quotient must be a whole number.
 			if (num2 == 0 || num1 % num2 != 0) {
-				return -INF;
+				return INT32_MIN;
 			}
 			return num1 / num2;
 		}
 	}
-	return -INF;
+    return INT32_MIN;
 }
 
 // Function that generates all possible permutations of the card hand.
@@ -61,29 +60,29 @@ void generate_hand_permutation() {
 						hand_permutation[1]
 					);
 					// If the operation is invalid, continue;
-					if (first == -INF) {
-						continue;
-					}
+                    if (first == INT32_MIN) {
+                        continue;
+                    }
 
-					int second = operation(
+                    int second = operation(
 						op2, 
 						first, 
 						hand_permutation[2]
 					);
-					if (second == -INF) {
-						continue;
-					}
+                    if (second == INT32_MIN) {
+                        continue;
+                    }
 
-					int third = operation(
+                    int third = operation(
 						op3, 
 						second, 
 						hand_permutation[3]
 					);
-					if (third == -INF) {
-						continue;
-					}
+                    if (third == INT32_MIN) {
+                        continue;
+                    }
 
-					if (third <= 24) {
+                    if (third <= 24) {
 						ans = max(ans, third);
 					}
 				}
@@ -99,29 +98,29 @@ void generate_hand_permutation() {
 						hand_permutation[0],
 						hand_permutation[1]
 					);
-					if (first == -INF) {
-						continue;
-					}
+                    if (first == INT32_MIN) {
+                        continue;
+                    }
 
-					int second = operation(
+                    int second = operation(
 						op2, 
 						hand_permutation[2],
 						hand_permutation[3]
 					);
-					if (second == -INF) {
-						continue;
-					}
+                    if (second == INT32_MIN) {
+                        continue;
+                    }
 
-					int third = operation(
+                    int third = operation(
 						op3, 
 						first, 
 						second
 					);
-					if (third == -INF) {
-						continue;
-					}
+                    if (third == INT32_MIN) {
+                        continue;
+                    }
 
-					if (third <= 24) {
+                    if (third <= 24) {
 						ans = max(ans, third);
 					}
 				}
@@ -145,8 +144,8 @@ int main() {
 	cin >> num_hands;
 
 	for (int h = 0; h < num_hands; h++) {
-		ans = -INF;
-		for (int i = 0; i < 4; i++) {
+        ans = INT32_MIN;
+        for (int i = 0; i < 4; i++) {
 			cin >> hand[i];
 		}
 
@@ -166,7 +165,6 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static final int INF = (int) 1e9;
 	static int ans;
 	// The given card hand.
 	static int[] hand = new int[4];
@@ -188,12 +186,12 @@ public class Solution {
 			case 3: {
 				// The divisor cannot be 0 and the quotient must be an integer.
 				if (num2 == 0 || num1 % num2 != 0) {
-					return -INF;
+					return Integer.MIN_VALUE;
 				}
 				return num1 / num2;
 			}
 		}
-		return -INF;
+		return Integer.MIN_VALUE;
 	}
 
 	// Function that generates all possible permutations of the card hand.
@@ -211,7 +209,7 @@ public class Solution {
 							handPermutation.get(1)
 						);
 						// If the operation is invalid, continue;
-						if (first == -INF) {
+						if (first == Integer.MIN_VALUE) {
 							continue;
 						}
 
@@ -220,7 +218,7 @@ public class Solution {
 							first, 
 							handPermutation.get(2)
 						);
-						if (second == -INF) {
+						if (second == Integer.MIN_VALUE) {
 							continue;
 						}
 
@@ -229,7 +227,7 @@ public class Solution {
 							second, 
 							handPermutation.get(3)
 						);
-						if (third == -INF) {
+						if (third == Integer.MIN_VALUE) {
 							continue;
 						}
 
@@ -249,7 +247,7 @@ public class Solution {
 							handPermutation.get(0), 
 							handPermutation.get(1)
 						);
-						if (first == -INF) {
+						if (first == Integer.MIN_VALUE) {
 							continue;
 						}
 
@@ -258,7 +256,7 @@ public class Solution {
 							handPermutation.get(2), 
 							handPermutation.get(3)
 						);
-						if (second == -INF) {
+						if (second == Integer.MIN_VALUE) {
 							continue;
 						}
 
@@ -267,7 +265,7 @@ public class Solution {
 							first, 
 							second
 						);
-						if (third == -INF) {
+						if (third == Integer.MIN_VALUE) {
 							continue;
 						}
 
@@ -296,7 +294,7 @@ public class Solution {
 		int num_hands = sc.nextInt();
 
 		for (int h = 0; h < num_hands; h++) {
-			ans = -INF;
+			ans = Integer.MIN_VALUE;
 			for (int i = 0; i < 4; i++) {
 				hand[i] = sc.nextInt();
 			}
@@ -314,7 +312,7 @@ public class Solution {
 
 <PySection>
 ```py
-INF = int(1e9)
+INF = float('inf')
 ans = 0
 hand = [0] * 4  # The given card hand.
 hand_permutation = []  # The generated permutation of the card hand.
@@ -412,9 +410,7 @@ def generate_hand_permutation():
 			chosen[i] = False
 			hand_permutation.pop()
 
-num_hands = int(input())
-
-for h in range(num_hands):
+for _ in range(int(input())):
 	ans = -INF
 	for i in range(4):
 		hand[i] = int(input())
