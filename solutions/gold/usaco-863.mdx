@@ -43,9 +43,7 @@ int main() {
 	int n, k;
 	cin >> n >> k;
 	vector<int> skill(n);
-	for (int i = 0; i < n; i++) {
-		cin >> skill[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> skill[i]; }
 
 	vector<int> dp(n, -1);
 	for (int i = 0; i < n; i++) {
@@ -54,11 +52,12 @@ int main() {
 		for (int j = i; j >= (i - k + 1) && ~j; j--) {
 			cur = max(cur, skill[j]);
 			/*
-			 * update answer: dp[i] = max(dp[i], 
-			 * the skill of joining this cow to a team + all of the previous sums)
+			 * update answer: dp[i] = max(dp[i],
+			 * the skill of joining this cow to a team + all of the previous
+			 * sums)
 			 */
 			if (j > 0) {
-				dp[i] = max(dp[i], dp[j - 1] + (cur * (i - j + 1)));	
+				dp[i] = max(dp[i], dp[j - 1] + (cur * (i - j + 1)));
 			} else {
 				dp[i] = max(dp[i], cur * (i - j + 1));
 			}

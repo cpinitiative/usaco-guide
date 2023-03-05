@@ -45,9 +45,7 @@ int main() {
 		cin >> n;
 
 		vector<int> bosses(n);
-		for (int j = 0; j < n; j++) {
-			cin >> bosses[j];
-		}
+		for (int j = 0; j < n; j++) { cin >> bosses[j]; }
 
 		/*
 		 * dp[i][j] = the min amount of skip points
@@ -69,7 +67,8 @@ int main() {
 
 			// the opposite player switches from the previous two moves.
 			if (j + 2 <= n) {
-				dp[0][j + 2] = min(dp[0][j + 2], dp[1][j] + bosses[j] + bosses[j + 1]);
+				dp[0][j + 2] =
+				    min(dp[0][j + 2], dp[1][j] + bosses[j] + bosses[j + 1]);
 				dp[1][j + 2] = min(dp[1][j + 2], dp[0][j]);
 			}
 		}
@@ -88,14 +87,15 @@ import java.util.Arrays;
 
 public class MortalKombatTower {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int testCaseNum = Integer.parseInt(br.readLine());
 
 		for (int t = 0; t < testCaseNum; t++) {
 			int n = Integer.parseInt(br.readLine());
 			int[] bosses = Arrays.stream(br.readLine().split(" "))
-					.mapToInt(Integer::parseInt)
-					.toArray();
+			                   .mapToInt(Integer::parseInt)
+			                   .toArray();
 
 			/*
 			 * dp[i][j] = the min amount of skip points needed if it is
@@ -119,8 +119,8 @@ public class MortalKombatTower {
 				// the opposite player switches from the previous two moves.
 				if (j < n - 1) {
 					if (dp[1][j] < Integer.MAX_VALUE) {
-						dp[0][j + 2] = Math.min(dp[0][j + 2],
-								dp[1][j] + bosses[j] + bosses[j + 1]);
+						dp[0][j + 2] = Math.min(
+						    dp[0][j + 2], dp[1][j] + bosses[j] + bosses[j + 1]);
 					}
 					dp[1][j + 2] = Math.min(dp[1][j + 2], dp[0][j]);
 				}
@@ -144,7 +144,7 @@ for _ in range(int(input())):
 
 	# dp[i][j] stores the minimum amount of skip pointes needed for the j-th
 	# boss when it is your turn (i = 0) and your friend's turn (i = 1).
-	dp = [[float('inf')] * (n + 1) for _ in range(2)]
+	dp = [[float("inf")] * (n + 1) for _ in range(2)]
 
 	dp[0][0] = 0  # Our friend needs to use zero points to fight no bosses.
 
@@ -156,8 +156,7 @@ for _ in range(int(input())):
 
 		# The opposite player switches from the previous two moves.
 		if j + 2 < len(dp[0]):
-			dp[1][j + 2] = min(dp[1][j + 2], dp[0][j] +
-							   bosses[j] + bosses[j + 1])
+			dp[1][j + 2] = min(dp[1][j + 2], dp[0][j] + bosses[j] + bosses[j + 1])
 			dp[0][j + 2] = min(dp[0][j + 2], dp[1][j])
 
 	print(min(dp[0][n], dp[1][n]))

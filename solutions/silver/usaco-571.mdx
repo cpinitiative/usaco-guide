@@ -22,10 +22,10 @@ You can see the algorithm in action with the test set below:
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <cstdio>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -45,7 +45,7 @@ int main() {
 
 	vector<int> elsie;
 	vector<int> bessie;
-	
+
 	// Because we loop over the values in increasing order,
 	// the two lists will be in sorted order.
 	for (int i = 1; i <= n * 2; i++) {
@@ -56,7 +56,7 @@ int main() {
 			bessie.push_back(i);
 		}
 	}
-	
+
 	int points = 0, bessieIndex = 0, elsieIndex = 0;
 	while (bessieIndex < n && elsieIndex < n) {
 		// If Bessie wins:
@@ -64,7 +64,7 @@ int main() {
 			points++;
 			bessieIndex++;
 			elsieIndex++;
-		// Otherwise, choose the next highest card from Bessie's hand.
+			// Otherwise, choose the next highest card from Bessie's hand.
 		} else {
 			bessieIndex++;
 		}
@@ -89,7 +89,7 @@ for i in range(n):
 	elsie_has.add(int(input()))
 
 elsie, bessie = [], []
-	
+
 # Because we loop over the values in increasing order,
 # the two lists will be in sorted order.
 for i in range(1, n * 2 + 1):
@@ -101,7 +101,7 @@ for i in range(1, n * 2 + 1):
 
 points, bessie_index, elsie_index = 0, 0, 0
 
-while (bessie_index < n and elsie_index < n):
+while bessie_index < n and elsie_index < n:
 	# If Bessie wins:
 	if bessie[bessie_index] > elsie[elsie_index]:
 		points += 1
@@ -125,7 +125,8 @@ import java.util.*;
 public class HighCard {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("highcard.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("highcard.out")));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("highcard.out")));
 		int n = Integer.parseInt(br.readLine());
 		boolean[] elsieOwns = new boolean[2 * n + 1];
 		for (int i = 0; i < n; i++) {
@@ -140,8 +141,7 @@ public class HighCard {
 			// If Elsie doesn't have the card:
 			if (elsieOwns[i]) {
 				elsie.add(i);
-			}
-			else {
+			} else {
 				bessie.add(i);
 			}
 		}
@@ -153,7 +153,7 @@ public class HighCard {
 				points++;
 				bessieIndex++;
 				elsieIndex++;
-			// Otherwise, choose the next highest card from Bessie's hand.
+				// Otherwise, choose the next highest card from Bessie's hand.
 			} else {
 				bessieIndex++;
 			}

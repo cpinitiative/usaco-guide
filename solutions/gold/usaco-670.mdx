@@ -24,8 +24,8 @@ $\texttt{dp}_{i, j} = \min(\texttt{dp}_{i - 1,j}, \texttt{dp}_{i,j - 1})$
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -33,7 +33,8 @@ using ll = long long;
 
 const ll MAX_D = 1e18;
 struct Coord {
-	public: int x, y;
+  public:
+	int x, y;
 };
 
 ll dist(const Coord &a, const Coord &b) {
@@ -51,14 +52,10 @@ int main() {
 	cin >> h >> g;
 
 	vector<Coord> hs(h), gs(g);
-	
-	for (int i = 0; i < h; i++) {
-		cin >> hs[i].x >> hs[i].y;
-	}
 
-	for (int i = 0; i < g; i++) {
-		cin >> gs[i].x >> gs[i].y;
-	}
+	for (int i = 0; i < h; i++) { cin >> hs[i].x >> hs[i].y; }
+
+	for (int i = 0; i < g; i++) { cin >> gs[i].x >> gs[i].y; }
 
 	/*
 	 * min_dist[i][j][k] represents the minimum distance for
@@ -69,36 +66,31 @@ int main() {
 
 	// set default value to arbitrarily large integer to prevent overflow
 	vector<vector<vector<ll>>> min_dist(
-		n + 1, vector<vector<ll>>(n + 1, vector<ll>(2, MAX_D))
-	);
+	    n + 1, vector<vector<ll>>(n + 1, vector<ll>(2, MAX_D)));
 
 	min_dist[1][0][0] = 0;
 
 	for (int i = 0; i <= h; i++) {
 		for (int j = 0; j <= g; j++) {
 			if (i > 1) {
-				min_dist[i][j][0] = min(
-					min_dist[i][j][0], 
-					min_dist[i - 1][j][0] + dist(hs[i - 2], hs[i - 1])
-				);
+				min_dist[i][j][0] =
+				    min(min_dist[i][j][0],
+				        min_dist[i - 1][j][0] + dist(hs[i - 2], hs[i - 1]));
 			}
 
 			if (j > 1) {
-				min_dist[i][j][1] = min(
-					min_dist[i][j][1],
-					min_dist[i][j - 1][1] + dist(gs[j - 2], gs[j - 1])
-				);
+				min_dist[i][j][1] =
+				    min(min_dist[i][j][1],
+				        min_dist[i][j - 1][1] + dist(gs[j - 2], gs[j - 1]));
 			}
-		
+
 			if (i > 0 && j > 0) {
-				min_dist[i][j][0] = min(
-					min_dist[i][j][0],
-					min_dist[i - 1][j][1] + dist(hs[i - 1], gs[j - 1])
-				);
-				min_dist[i][j][1] = min(
-					min_dist[i][j][1],
-					min_dist[i][j - 1][0] + dist(hs[i - 1], gs[j - 1])
-				);
+				min_dist[i][j][0] =
+				    min(min_dist[i][j][0],
+				        min_dist[i - 1][j][1] + dist(hs[i - 1], gs[j - 1]));
+				min_dist[i][j][1] =
+				    min(min_dist[i][j][1],
+				        min_dist[i][j - 1][0] + dist(hs[i - 1], gs[j - 1]));
 			}
 		}
 	}

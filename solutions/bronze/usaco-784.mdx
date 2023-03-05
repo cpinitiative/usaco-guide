@@ -20,7 +20,7 @@ author: Danh Ta Chi Thanh, Ananth Kashyap, Amogha
 #include <bits/stdc++.h>
 using namespace std;
 
-int32_t main(){
+int32_t main() {
 
 	freopen("lifeguards.in", "r", stdin);
 	freopen("lifeguards.out", "w", stdout);
@@ -32,50 +32,40 @@ int32_t main(){
 	int times[1000];
 	int shiftTotal = -1;
 
-	for (int q = 0; q < 1000; q++){
-		times[q] = 0;
-	}
-	for (int c = 0; c < cows; c++){
+	for (int q = 0; q < 1000; q++) { times[q] = 0; }
+	for (int c = 0; c < cows; c++) {
 		cin >> startT[c] >> endT[c];
-		for (int k = startT[c]; k < endT[c]; k++){
-			times[k]++;
-		}
+		for (int k = startT[c]; k < endT[c]; k++) { times[k]++; }
 	}
 
 	for (int i = 0; i < cows; i++) {
-		for (int t = startT[i]; t < endT[i]; t++) {
-			times[t]--;
-		}
+		for (int t = startT[i]; t < endT[i]; t++) { times[t]--; }
 
 		int covered = 0;
 		for (int t = 0; t < 1000; t++) {
-			if (times[t] > 0) {
-				covered++;
-			}
+			if (times[t] > 0) { covered++; }
 		}
 		shiftTotal = max(shiftTotal, covered);
 
-		for (int t = startT[i]; t < endT[i]; t++) {
-			times[t]++;
-		}
+		for (int t = startT[i]; t < endT[i]; t++) { times[t]++; }
 	}
 
 	cout << shiftTotal;
 }
-
 ```
 
 </CPPSection>
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Lifeguards {
 	public static void main(String[] args) throws IOException {
 		PrintWriter pw = new PrintWriter(new File("lifeguards.out"));
-		BufferedReader br = new BufferedReader(new FileReader(new File("lifeguards.in")));
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("lifeguards.in")));
 		StringTokenizer st;
 
 		int cows = Integer.parseInt(br.readLine());
@@ -84,38 +74,29 @@ public class Lifeguards {
 		int[] times = new int[1000];
 		int shiftTotal = -1;
 
-		for (int c = 0; c < cows; c++){
+		for (int c = 0; c < cows; c++) {
 			st = new StringTokenizer(br.readLine());
 			startT[c] = Integer.parseInt(st.nextToken());
 			endT[c] = Integer.parseInt(st.nextToken());
-			for (int k = startT[c]; k < endT[c]; k++){
-				times[k]++;
-			}
+			for (int k = startT[c]; k < endT[c]; k++) { times[k]++; }
 		}
 
 		for (int i = 0; i < cows; i++) {
-			for (int t = startT[i]; t < endT[i]; t++) {
-				times[t]--;
-			}
+			for (int t = startT[i]; t < endT[i]; t++) { times[t]--; }
 
 			int covered = 0;
-			for(int t = 0; t < 1000; t++) {
-				if(times[t] > 0) {
-					covered++;
-				}
+			for (int t = 0; t < 1000; t++) {
+				if (times[t] > 0) { covered++; }
 			}
 			shiftTotal = Math.max(shiftTotal, covered);
 
-			for (int t = startT[i]; t < endT[i]; t++) {
-				times[t]++;
-			}
+			for (int t = startT[i]; t < endT[i]; t++) { times[t]++; }
 		}
 		pw.println(shiftTotal);
 		pw.close();
 		br.close();
 	}
 }
-
 ```
 
 </JavaSection>
@@ -130,23 +111,25 @@ public class Lifeguards {
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
+#include <iostream>
 #include <vector>
 
 using namespace std;
 
-struct Cow { int start, end; };
+struct Cow {
+	int start, end;
+};
 
 int main() {
-	freopen("lifeguards.in","r",stdin);
+	freopen("lifeguards.in", "r", stdin);
 	int n;
 	cin >> n;
 
 	vector<Cow> lifeguards(n);
 	int max_time = 0;  // Max time we'll have to process up to
-	for (Cow& l : lifeguards) {
+	for (Cow &l : lifeguards) {
 		cin >> l.start >> l.end;
 		max_time = max(max_time, l.end);
 	}
@@ -174,7 +157,7 @@ int main() {
 		max_cover = max(max_cover, time_covered);
 	}
 
-	freopen("lifeguards.out","w",stdout);
+	freopen("lifeguards.out", "w", stdout);
 	cout << max_cover << endl;
 }
 ```
@@ -247,7 +230,7 @@ public class Lifeguards {
 <PySection>
 
 ```py
-with open('lifeguards.in') as read:
+with open("lifeguards.in") as read:
 	n = int(read.readline())
 	lifeguards = []
 	for _ in range(n):
@@ -274,7 +257,7 @@ for i in range(n):
 					break
 	max_cover = max(time_covered, max_cover)
 
-print(max_cover, file=open('lifeguards.out', 'w'))
+print(max_cover, file=open("lifeguards.out", "w"))
 ```
 
 </PySection>

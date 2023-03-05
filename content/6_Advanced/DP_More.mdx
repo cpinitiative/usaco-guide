@@ -17,18 +17,18 @@ frequency: 1
 		url="https://jeffreyxiao.me/blog/knuths-optimization"
 	 />
 	<Resource source="GCP" title="15.4.3 - Knuth's Optimization"/>
-	<Resource 
-		source="GFG" 
-		title="Knuth's Optimization in Dynamic Programming" 
+	<Resource
+		source="GFG"
+		title="Knuth's Optimization in Dynamic Programming"
 		url="https://www.geeksforgeeks.org/knuths-optimization-in-dynamic-programming/"
 	>
 		Good explanation + Proof of correctness
 	</Resource>
 </Resources>
 
-Knuth's optimization is, in a way, a special case of Range DP. In general, it is used to solve DP problems with the following transition - $\texttt{dp}[i][j]$ = $\texttt{cost}[i][j] + min_{i≤k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j])$.  
-Further, the cost function must satisfy the following conditions, for all $a\leq b\leq c \leq d$:  
-1. $cost[b][c] ≤ cost[a][d]$ 
+Knuth's optimization is, in a way, a special case of Range DP. In general, it is used to solve DP problems with the following transition - $\texttt{dp}[i][j]$ = $\texttt{cost}[i][j] + min_{i≤k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j])$.
+Further, the cost function must satisfy the following conditions, for all $a\leq b\leq c \leq d$:
+1. $cost[b][c] ≤ cost[a][d]$
 2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$ (the quadrangle inequality)
 
 The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show the following inequality - $\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$. (The proof of correctness for this claim is in the resources above.)
@@ -98,7 +98,7 @@ of the cell _borders_ instead.
 
 **Time Complexity:** $\mathcal O(NM 2^N)$.
 
-We'll process the grid cells column-by-column, row-by-row. Let $i$ and $j$ 
+We'll process the grid cells column-by-column, row-by-row. Let $i$ and $j$
 denote the row and column of the current cell we are considering,
 and $\texttt{dp}[i][j][mask]$ be the number of ways to tile the grid so that:
 

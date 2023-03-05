@@ -25,22 +25,23 @@ using namespace std;
 
 using ll = long long;
 
-ll a,b;
+ll a, b;
 // a stores minimum exponents (gcd of all numbers seen so far)
 // b stores second minimum exponents
 int n;
 
-void red() { // restore invariant mentioned above
-	ll g = __gcd(a,b);
-	tie(a,b) = make_pair(g,a/g*b); // a/g*b = lcm(a,b)
+void red() {  // restore invariant mentioned above
+	ll g = __gcd(a, b);
+	tie(a, b) = make_pair(g, a / g * b);  // a/g*b = lcm(a,b)
 }
 
 int main() {
 	cin >> n >> a >> b;
 	red();
 	for (int i = 2; i < n; i++) {
-		ll x; cin >> x;
-		b = __gcd(b,x);
+		ll x;
+		cin >> x;
+		b = __gcd(b, x);
 		red();
 	}
 	cout << b << endl;
@@ -52,35 +53,32 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class oraclcm {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int[] nums = new int[N];
 
-		for(int i=0; i<N; i++){
+		for (int i = 0; i < N; i++) {
 			nums[i] = Integer.parseInt(st.nextToken());
 		}
 
 		long gcd = gcd(nums[0], nums[1]);
-		long ret = nums[0]/gcd * nums[1];
-		for(int i = 2; i<N; gcd = gcd(gcd, nums[i]), i++){
+		long ret = nums[0] / gcd * nums[1];
+		for (int i = 2; i < N; gcd = gcd(gcd, nums[i]), i++) {
 			ret = gcd(ret, lcm(nums[i], gcd));
 		}
 		System.out.println(ret);
 	}
 
-	static long lcm(long a, long b){
-		return a/gcd(a,b) * b;
-	}
+	static long lcm(long a, long b) { return a / gcd(a, b) * b; }
 
-	static long gcd(long a, long b){
-		return b == 0 ? a : gcd(b, a % b);
-	}
+	static long gcd(long a, long b) { return b == 0 ? a : gcd(b, a % b); }
 }
 ```
 

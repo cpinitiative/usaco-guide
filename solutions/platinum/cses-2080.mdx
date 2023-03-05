@@ -59,8 +59,9 @@ bool processed[200001];
 
 int get_subtree_sizes(int node, int parent = 0) {
 	subtree[node] = 1;
-	for (int i : graph[node]) if (!processed[i] && i != parent)
-		subtree[node] += get_subtree_sizes(i, node);
+	for (int i : graph[node])
+		if (!processed[i] && i != parent)
+			subtree[node] += get_subtree_sizes(i, node);
 	return subtree[node];
 }
 
@@ -76,20 +77,22 @@ void get_cnt(int node, int parent, bool filling, int depth = 1) {
 	mx_depth = max(mx_depth, depth);
 	if (filling) cnt[depth]++;
 	else ans += cnt[k - depth];
-	for (int i : graph[node]) if (!processed[i] && i != parent)
-		get_cnt(i, node, filling, depth + 1);
+	for (int i : graph[node])
+		if (!processed[i] && i != parent) get_cnt(i, node, filling, depth + 1);
 }
 
 void centroid_decomp(int node = 1) {
 	int centroid = get_centroid(get_subtree_sizes(node) >> 1, node);
 	processed[centroid] = true;
 	mx_depth = 0;
-	for (int i : graph[centroid]) if (!processed[i]) {
-		get_cnt(i, centroid, false);
-		get_cnt(i, centroid, true);
-	}
+	for (int i : graph[centroid])
+		if (!processed[i]) {
+			get_cnt(i, centroid, false);
+			get_cnt(i, centroid, true);
+		}
 	fill(cnt + 1, cnt + mx_depth + 1, 0);
-	for (int i : graph[centroid]) if (!processed[i]) centroid_decomp(i);
+	for (int i : graph[centroid])
+		if (!processed[i]) centroid_decomp(i);
 }
 
 int main() {

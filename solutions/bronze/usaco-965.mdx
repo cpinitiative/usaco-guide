@@ -13,7 +13,7 @@ By Melody Yu
 <Youtube id="xed_5FjVMoo" />
 
 <Spoiler title="Video Solution Code">
-    
+
 <LanguageSection>
 <CPPSection>
 
@@ -36,10 +36,10 @@ int main() {
 		restrictions.push_back({a, b});
 	}
 
-	vector<string> cows = {"Bessie", "Buttercup", "Belinda", "Beatrice", "Bella", "Blue", "Betsy", "Sue"};
+	vector<string> cows = {"Bessie", "Buttercup", "Belinda", "Beatrice",
+	                       "Bella",  "Blue",      "Betsy",   "Sue"};
 	sort(cows.begin(), cows.end());
 	int count = 0;
-
 
 	while (next_permutation(cows.begin(), cows.end())) {
 		bool passed = true;
@@ -48,21 +48,13 @@ int main() {
 			string cow2 = p.second;
 			auto a = find(cows.begin(), cows.end(), cow1);
 			auto b = find(cows.begin(), cows.end(), cow2);
-			if (abs(a - b) != 1) {
-				passed = false;
-			}
+			if (abs(a - b) != 1) { passed = false; }
 		}
-		if (passed) {
-			break;
-		}
+		if (passed) { break; }
 	}
 
-	for (auto cow : cows) {
-		cout << cow << endl;
-	}
-
+	for (auto cow : cows) { cout << cow << endl; }
 }
-
 ```
 
 </CPPSection>
@@ -192,16 +184,8 @@ using namespace std;
 
 const int RESTRICT_LEN = 6;
 // list of cows, in alphabetical order
-const vector<string> COWS = {
-	"Beatrice",
-	"Belinda",
-	"Bella",
-	"Bessie",
-	"Betsy",
-	"Blue",
-	"Buttercup",
-	"Sue"
-};
+const vector<string> COWS = {"Beatrice", "Belinda", "Bella",     "Bessie",
+                             "Betsy",    "Blue",    "Buttercup", "Sue"};
 
 vector<vector<string>> orderings;
 void build(vector<string> ordering) {
@@ -211,7 +195,7 @@ void build(vector<string> ordering) {
 		return;
 	}
 
-	for (const string& COW : COWS) {
+	for (const string &COW : COWS) {
 		if (find(ordering.begin(), ordering.end(), COW) == ordering.end()) {
 			ordering.push_back(COW);
 			build(ordering);
@@ -221,7 +205,7 @@ void build(vector<string> ordering) {
 }
 
 // returns index of a cow in an ordering
-int loc(const vector<string> &order, const string& cow) {
+int loc(const vector<string> &order, const string &cow) {
 	return find(order.begin(), order.end(), cow) - order.begin();
 }
 
@@ -256,9 +240,7 @@ int main() {
 		}
 
 		if (ok) {
-			for (const string& i : order) {
-				cout << i << '\n';
-			}
+			for (const string &i : order) { cout << i << '\n'; }
 			break;
 		}
 	}
@@ -358,7 +340,7 @@ int main() {
 				while (neighbors[at].size() == 2) {
 					added[at] = true;
 					order.push_back(at);
-					
+
 					int a = neighbors[at][0];
 					int b = neighbors[at][1];
 					int temp_at = a == prev ? b : a;
@@ -387,22 +369,13 @@ import java.util.*;
 
 public class LineUp {
 	// Assumed to be in sorted order (which it is)
-	static final String[] COWS = new String[] {
-		"Beatrice",
-		"Belinda",
-		"Bella",
-		"Bessie",
-		"Betsy",
-		"Blue",
-		"Buttercup",
-		"Sue"  
-	};
+	static final String[] COWS =
+	    new String[] {"Beatrice", "Belinda", "Bella",     "Bessie",
+	                  "Betsy",    "Blue",    "Buttercup", "Sue"};
 
 	public static void main(String[] args) throws IOException {
 		Map<String, Integer> cowInds = new HashMap<>();
-		for (int i = 0; i < COWS.length; i++) {
-			cowInds.put(COWS[i], i);
-		}
+		for (int i = 0; i < COWS.length; i++) { cowInds.put(COWS[i], i); }
 
 		BufferedReader read = new BufferedReader(new FileReader("lineup.in"));
 		int reqNum = Integer.parseInt(read.readLine());
@@ -440,7 +413,7 @@ public class LineUp {
 					while (neighbors[at].size() == 2) {
 						added[at] = true;
 						order.add(at);
-						
+
 						int a = neighbors[at].get(0);
 						int b = neighbors[at].get(1);
 						int temp_at = a == prev ? b : a;
@@ -455,9 +428,7 @@ public class LineUp {
 		}
 
 		PrintWriter out = new PrintWriter("lineup.out");
-		for (int c : order) {
-			out.println(COWS[c]);
-		}
+		for (int c : order) { out.println(COWS[c]); }
 		out.close();
 	}
 }
@@ -467,21 +438,14 @@ public class LineUp {
 <PySection>
 
 ```py
-COWS = sorted([
-	'Bessie',
-	'Buttercup',
-	'Belinda',
-	'Beatrice',
-	'Bella',
-	'Blue',
-	'Betsy',
-	'Sue'
-])
+COWS = sorted(
+	["Bessie", "Buttercup", "Belinda", "Beatrice", "Bella", "Blue", "Betsy", "Sue"]
+)
 
 cow_inds = {c: i for i, c in enumerate(COWS)}
 
 neighbors = [[] for _ in range(len(COWS))]
-with open('lineup.in') as read:
+with open("lineup.in") as read:
 	for _ in range(int(read.readline())):
 		words = read.readline().strip().split()
 
@@ -517,7 +481,7 @@ for c in range(len(COWS)):
 			added[at] = True
 			order.append(at)
 
-with open('lineup.out', 'w') as out:
+with open("lineup.out", "w") as out:
 	for c in order:
 		print(COWS[c], file=out)
 ```

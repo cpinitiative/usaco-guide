@@ -14,7 +14,7 @@ By Varun Ragunath
 <Youtube id="Ob7ac08iMuU" />
 
 <Spoiler title="Video Solution Code">
-    
+
 <Warning>
 
 This code is not actually correct; it outputs 3 for the following input when the
@@ -45,9 +45,9 @@ vector<int> gen_important_pos(vector<int> locs) {
 	sort(locs.begin(), locs.end());
 	int n = (int)locs.size();  // number of positions
 	// the optimal cutting points lie from floor(n/4), ..., ceil(3n/4)
-	int l = min(n / 4, n - 1);            // left bound
+	int l = min(n / 4, n - 1);        // left bound
 	int r = min((3 * n) / 4, n - 1);  // right bound
-	vector<int> ret_points;  // the final set of optimal points
+	vector<int> ret_points;           // the final set of optimal points
 	for (int i = l; i <= r; i++) {
 		if (ret_points.empty() or (ret_points.back()) != locs[i] + 1) {
 			// this value is important
@@ -95,12 +95,12 @@ int main() {
 			// update the quadrant each cow is in
 			for (int cow = 0; cow < n; cow++) {
 				if (++cow_count[(positions[cow].first < a)]
-				[(positions[cow].second < b)] > opt)
+				               [(positions[cow].second < b)] > opt)
 					break;
 			}
 			// find the maximum quadrant
-			int cur_div = max(
-					{cow_count[0][0], cow_count[0][1], cow_count[1][0], cow_count[1][1]});
+			int cur_div = max({cow_count[0][0], cow_count[0][1],
+			                   cow_count[1][0], cow_count[1][1]});
 			// update the min
 			opt = min(opt, cur_div);
 		}
@@ -110,7 +110,6 @@ int main() {
 
 	return 0;
 }
-
 ```
 
 </CPPSection>
@@ -219,26 +218,28 @@ Similar to the analysis.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-struct Cow { int x, y; };
+struct Cow {
+	int x, y;
+};
 
 /**
  * Given a pre-defined vertical line, finds the most balanced
  * horizontal line
  * (Assumes the cows have been sorted by y-pos already)
  */
-int min_partition(int x_line, const vector<Cow>& cows) {
+int min_partition(int x_line, const vector<Cow> &cows) {
 	vector<Cow> left;
 	vector<Cow> right;
-	for (const Cow& c : cows) {
+	for (const Cow &c : cows) {
 		if (c.x < x_line) {
 			left.push_back(c);
 		} else if (c.x > x_line) {
@@ -251,14 +252,13 @@ int min_partition(int x_line, const vector<Cow>& cows) {
 	int right_at = 0;
 	while (left_at + right_at < cows.size()) {
 		int y_line = cows[left_at + right_at].y + 1;
-		while (left_at < left.size() && y_line > left[left_at].y) {
-			left_at++;
-		}
+		while (left_at < left.size() && y_line > left[left_at].y) { left_at++; }
 		while (right_at < right.size() && y_line > right[right_at].y) {
 			right_at++;
 		}
 		int below_max = std::max(left_at, right_at);
-		int above_max = std::max(left.size() - left_at, right.size() - right_at);
+		int above_max =
+		    std::max(left.size() - left_at, right.size() - right_at);
 		most_balanced = std::min(most_balanced, std::max(below_max, above_max));
 	}
 
@@ -270,20 +270,14 @@ int main() {
 	int cow_num;
 	read >> cow_num;
 	vector<Cow> by_x(cow_num);  // The array of cows (to be sorted by x-pos)
-	for (Cow& c : by_x) {
-		read >> c.x >> c.y;
-	}
-	std::sort(
-		by_x.begin(), by_x.end(),
-		[&] (const Cow& p1, const Cow& p2) { return p1.x < p2.x; }
-	);
+	for (Cow &c : by_x) { read >> c.x >> c.y; }
+	std::sort(by_x.begin(), by_x.end(),
+	          [&](const Cow &p1, const Cow &p2) { return p1.x < p2.x; });
 
 	// Same as by_x, but sorted by y-pos
 	vector<Cow> by_y(by_x);
-	std::sort(
-		by_y.begin(), by_y.end(),
-		[&] (const Cow& p1, const Cow& p2) { return p1.y < p2.y; }
-	);
+	std::sort(by_y.begin(), by_y.end(),
+	          [&](const Cow &p1, const Cow &p2) { return p1.y < p2.y; });
 
 	int most_balanced = INT32_MAX;
 	int x_line_at = 0;  // The cow which decides the vertical line
@@ -309,16 +303,15 @@ import java.util.*;
 
 public class Balancing {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("balancing.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("balancing.in"));
 		int cowNum = Integer.parseInt(read.readLine());
 		// The array of cows (to be sorted by x-pos)
 		int[][] byX = new int[cowNum][2];
 		for (int c = 0; c < cowNum; c++) {
 			StringTokenizer cow = new StringTokenizer(read.readLine());
-			byX[c] = new int[] {
-				Integer.parseInt(cow.nextToken()),
-				Integer.parseInt(cow.nextToken())
-			};
+			byX[c] = new int[] {Integer.parseInt(cow.nextToken()),
+			                    Integer.parseInt(cow.nextToken())};
 		}
 		Arrays.sort(byX, Comparator.comparingInt(c -> c[0]));
 
@@ -332,9 +325,7 @@ public class Balancing {
 			int xLine = byX[xLineAt][0] + 1;
 			mostEqual = Math.min(mostEqual, minPartition(xLine, byY));
 			// Go through the list of cows until we hit one with a new x-pos
-			while (xLineAt < cowNum && xLine > byX[xLineAt][0]) {
-				xLineAt++;
-			}
+			while (xLineAt < cowNum && xLine > byX[xLineAt][0]) { xLineAt++; }
 		}
 
 		PrintWriter written = new PrintWriter("balancing.out");
@@ -370,7 +361,8 @@ public class Balancing {
 				rightAt++;
 			}
 			int belowMax = Math.max(leftAt, rightAt);
-			int aboveMax = Math.max(left.size() - leftAt, right.size() - rightAt);
+			int aboveMax =
+			    Math.max(left.size() - leftAt, right.size() - rightAt);
 			mostEqual = Math.min(mostEqual, Math.max(belowMax, aboveMax));
 		}
 
@@ -386,7 +378,7 @@ public class Balancing {
 from typing import List, Tuple
 
 
-with open('balancing.in') as read:
+with open("balancing.in") as read:
 	# The array of cows (to be sorted by x-pos)
 	by_x = []
 	for _ in range(int(read.readline())):
@@ -401,7 +393,7 @@ def min_partition(x_line: int, cows: List[Tuple[int, int]]) -> int:
 	left = [c for c in cows if c[0] < x_line]
 	right = [c for c in cows if c[0] > x_line]
 
-	most_balanced = float('inf')
+	most_balanced = float("inf")
 	left_at = 0
 	right_at = 0
 	while left_at + right_at < len(cows):
@@ -424,17 +416,17 @@ by_x.sort()
 # Same as by_x, but sorted by y-pos
 by_y = sorted(by_x, key=lambda c: c[1])
 
-most_balanced = float('inf')
+most_balanced = float("inf")
 # The cow which decides the vertical line
 x_line_at = 0
-while (x_line_at < len(by_x)):
+while x_line_at < len(by_x):
 	x_line = by_x[x_line_at][0] + 1
 	most_balanced = min(most_balanced, min_partition(x_line, by_y))
 	# Go through the list of cows until we hit one with a new x-pos
 	while x_line_at < len(by_x) and x_line > by_x[x_line_at][0]:
 		x_line_at += 1
 
-print(most_balanced, file=open('balancing.out', 'w'))
+print(most_balanced, file=open("balancing.out", "w"))
 ```
 
 </PySection>
@@ -469,16 +461,18 @@ version.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-struct Cow { int x, y; };
+struct Cow {
+	int x, y;
+};
 
 /** Returns the list of *important* coordinates */
 vector<int> pos_of_interest(vector<int> &pos) {
@@ -501,13 +495,9 @@ vector<int> pos_of_interest(vector<int> &pos) {
 	vector<int> important;
 	for (int i = 0; i < distinct.size(); i++) {
 		// We can just move the fence to the right, so ignore this
-		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) {
-			continue;
-		}
+		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) { continue; }
 		// Same, but to the left
-		if (i > 0 && num_left[i - 1] >= sz - sz / 3) {
-			continue;
-		}
+		if (i > 0 && num_left[i - 1] >= sz - sz / 3) { continue; }
 		important.push_back(distinct[i]);
 	}
 
@@ -535,18 +525,14 @@ int main() {
 		for (int y : to_check_y) {
 			// Try placing a fence centered at (x, y)
 			vector<vector<int>> field_amt{{0, 0}, {0, 0}};
-			for (const Cow &c : cows) {
-				field_amt[x < c.x][y < c.y]++;
-			}
+			for (const Cow &c : cows) { field_amt[x < c.x][y < c.y]++; }
 
-			int balance = std::max({
-				field_amt[0][0], field_amt[0][1],
-				field_amt[1][0], field_amt[1][1]
-			});
+			int balance = std::max({field_amt[0][0], field_amt[0][1],
+			                        field_amt[1][0], field_amt[1][1]});
 			most_balanced = std::min(most_balanced, balance);
 		}
 	}
-	
+
 	std::ofstream("balancing.out") << most_balanced << endl;
 }
 ```
@@ -560,7 +546,8 @@ import java.util.*;
 
 public class Balancing {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("balancing.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("balancing.in"));
 		int cowNum = Integer.parseInt(read.readLine());
 
 		int[][] cows = new int[cowNum][2];
@@ -586,10 +573,9 @@ public class Balancing {
 				for (int[] c : cows) {
 					fieldAmt[x < c[0] ? 1 : 0][y < c[1] ? 1 : 0]++;
 				}
-				int balance = Math.max(
-					Math.max(fieldAmt[0][0], fieldAmt[0][1]),
-					Math.max(fieldAmt[1][0], fieldAmt[1][1])
-				);
+				int balance =
+				    Math.max(Math.max(fieldAmt[0][0], fieldAmt[0][1]),
+				             Math.max(fieldAmt[1][0], fieldAmt[1][1]));
 				mostEqual = Math.min(mostEqual, balance);
 			}
 		}
@@ -625,9 +611,7 @@ public class Balancing {
 				continue;
 			}
 			// Same, but to the left
-			if (i > 0 && numLeft.get(i - 1) >= sz - sz / 3) {
-				continue;
-			}
+			if (i > 0 && numLeft.get(i - 1) >= sz - sz / 3) { continue; }
 			important.add(distinct.get(i));
 		}
 

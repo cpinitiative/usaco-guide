@@ -29,7 +29,7 @@ typedef long long ll;
 vector<double> locations;
 vector<double> speeds;
 
-double min_ans = (double) INT_MAX;
+double min_ans = (double)INT_MAX;
 double curr_min_time;
 bool left_has_max = false;  // which side gives us max answer
 bool right_has_max = false;
@@ -38,9 +38,7 @@ double MAX_ERROR = 10e-7;
 double get_time(double loc) {
 	double max_time = 0;
 	for (int i = 0; i < locations.size(); i++) {
-		if (locations[i] == loc) {
-			continue;
-		}
+		if (locations[i] == loc) { continue; }
 		double i_time = abs(locations[i] - loc) / speeds[i];
 		// amount of time for ith friend to get to loc
 		if (i_time > max_time) {
@@ -76,15 +74,14 @@ int main() {
 
 	for (int i = 0; i < n; i++) {
 		cin >> locations[i];
-		high = max(high,locations[i]);
+		high = max(high, locations[i]);
 	}
-	for (int i = 0; i < n; i++) {
-		cin >> speeds[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> speeds[i]; }
 
 	while (high - low > MAX_ERROR) {
 		mid = (high + low) / 2;
-		curr_min_time = get_time(mid);  // returns time it would take if friends were to meet at mid
+		curr_min_time = get_time(
+		    mid);  // returns time it would take if friends were to meet at mid
 		min_ans = min(min_ans, curr_min_time);
 		if (left_has_max && right_has_max) {
 			break;
@@ -117,7 +114,7 @@ def all_friends_converge(seconds: int) -> bool:
 	:returns: If the friends can converge to a single point.
 	"""
 
-	overlap_lower, overlap_upper = 1, 10 ** 9
+	overlap_lower, overlap_upper = 1, 10**9
 	for i in range(num_friends):
 		lower_bound = friend_coords[i] - (friend_veloci[i] * seconds)
 		upper_bound = friend_coords[i] + (friend_veloci[i] * seconds)
@@ -130,8 +127,8 @@ def all_friends_converge(seconds: int) -> bool:
 	return True
 
 
-left, right = 0, 10 ** 9
-diff = 10 ** -6
+left, right = 0, 10**9
+diff = 10**-6
 
 while left + diff < right:
 	mid = (left + right) / 2

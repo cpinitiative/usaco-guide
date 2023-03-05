@@ -64,55 +64,39 @@ of operations
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 int size[20000], parent[20000];
 
-void init(int n)
-{
-	for (int i = 0; i < 2 * n; i++)
-	{
+void init(int n) {
+	for (int i = 0; i < 2 * n; i++) {
 		parent[i] = i;
 		size[i] = 1;
 	}
 }
 
-int find(int a)
-{
-	if (a == parent[a])
-	{
-		return a;
-	}
+int find(int a) {
+	if (a == parent[a]) { return a; }
 	return parent[a] = find(parent[a]);
 }
 
-void uniteRoot(int a, int b)
-{
-	if (size[a] > size[b])
-	{
-		swap(a, b);
-	}
+void uniteRoot(int a, int b) {
+	if (size[a] > size[b]) { swap(a, b); }
 	size[b] += size[a];
 	parent[a] = b;
 }
 
-bool areFriends(int xroot, int yroot)
-{
-	return xroot == yroot;
-}
+bool areFriends(int xroot, int yroot) { return xroot == yroot; }
 
-bool areEnemies(int xroot, int yroot, int exroot, int eyroot)
-{
+bool areEnemies(int xroot, int yroot, int exroot, int eyroot) {
 	// x is friends with y's enemy
 	// or y is friends with x's enemy
 	return xroot == eyroot || yroot == exroot;
 }
 
-void setFriends(int xroot, int yroot, int exroot, int eyroot)
-{
-	if (areEnemies(xroot, yroot, exroot, eyroot))
-	{
+void setFriends(int xroot, int yroot, int exroot, int eyroot) {
+	if (areEnemies(xroot, yroot, exroot, eyroot)) {
 		cout << -1 << endl;
 		return;
 	};
@@ -122,10 +106,8 @@ void setFriends(int xroot, int yroot, int exroot, int eyroot)
 	uniteRoot(xroot, yroot);
 }
 
-void setEnemies(int xroot, int yroot, int exroot, int eyroot)
-{
-	if (areFriends(xroot, yroot))
-	{
+void setEnemies(int xroot, int yroot, int exroot, int eyroot) {
+	if (areFriends(xroot, yroot)) {
 		cout << "-1" << endl;
 		return;
 	}
@@ -136,33 +118,21 @@ void setEnemies(int xroot, int yroot, int exroot, int eyroot)
 	uniteRoot(yroot, exroot);
 }
 
-int main()
-{
+int main() {
 	int n, c, x, y;
 	cin >> n;
 	init(n);
-	while (cin >> c >> x >> y)
-	{
-		if (!c && !x && !y)
-		{
-			break;
-		}
+	while (cin >> c >> x >> y) {
+		if (!c && !x && !y) { break; }
 		int xroot = find(x), yroot = find(y);
 		int exroot = find(x + n), eyroot = find(y + n);
-		if (c == 1)
-		{
+		if (c == 1) {
 			setFriends(xroot, yroot, exroot, eyroot);
-		}
-		else if (c == 2)
-		{
+		} else if (c == 2) {
 			setEnemies(xroot, yroot, exroot, eyroot);
-		}
-		else if (c == 3)
-		{
+		} else if (c == 3) {
 			cout << (areFriends(xroot, yroot) ? 1 : 0) << endl;
-		}
-		else
-		{
+		} else {
 			cout << (areEnemies(xroot, yroot, exroot, eyroot) ? 1 : 0) << endl;
 		}
 	}

@@ -16,7 +16,9 @@ int minValue(int N, int W) {
 	B[0] = 1;
 	playRound(B, R);
 	if (R[0] < 2) return 0;
-	else for (int i = 1; i < N; i++) if (!R[i]) return i;
+	else
+		for (int i = 1; i < N; i++)
+			if (!R[i]) return i;
 }
 ```
 
@@ -40,7 +42,8 @@ int maxValue(int N, int W) {
 		for (int i : v) B[i] = k;
 		playRound(B, R);
 		v.clear();
-		for (int i = 0; i < N; i++) if (R[i] > k) v.push_back(i);
+		for (int i = 0; i < N; i++)
+			if (R[i] > k) v.push_back(i);
 	}
 	return v[0];
 }
@@ -141,7 +144,7 @@ round. We can then find $k$ from this information, which will always be in the
 range $[L, R]$.
 
 ```cpp
-void split(vector<int> v, int N, int W, int* P, int l = 1, int r = 100) {
+void split(vector<int> v, int N, int W, int *P, int l = 1, int r = 100) {
 	if (l == r) P[v[0]] = l;
 	else {
 		int x = min((int)sqrt(2 * l), W / (r - l + 1));
@@ -151,8 +154,9 @@ void split(vector<int> v, int N, int W, int* P, int l = 1, int r = 100) {
 
 		playRound(B, R);
 		vector<int> less, greater;
-		for (int i : v) if (R[i] > x) greater.push_back(i);
-		else less.push_back(i);
+		for (int i : v)
+			if (R[i] > x) greater.push_back(i);
+			else less.push_back(i);
 
 		split(less, N, W, P, l, l + less.size() - 1);
 		split(greater, N, W, P, r - greater.size() + 1, r);

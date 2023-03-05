@@ -32,17 +32,17 @@ using namespace std;
 int main() {
 	freopen("revegetate.in", "r", stdin);
 	freopen("revegetate.out", "w", stdout);
-	
+
 	int n, m;
 	cin >> n >> m;
 
 	vector<vector<pair<int, bool>>> adj(n);
-	
+
 	for (int i = 0; i < m; i++) {
 		char type;
 		int u, v;
 		cin >> type >> u >> v;
-		
+
 		adj[--u].push_back({--v, type == 'S'});
 		adj[v].push_back({u, type == 'S'});
 	}
@@ -55,7 +55,7 @@ int main() {
 		// haven't visited this node yet.
 		if (color[i] == -1) {
 			component_num++;
-			
+
 			queue<pair<int, bool>> todo;
 			todo.push({i, true});
 
@@ -70,11 +70,11 @@ int main() {
 				// iterate through adjacent nodes
 				for (pair<int, bool> u : adj[nxt.first]) {
 					bool type = u.second ? nxt.second : !nxt.second;
-					
+
 					// haven't visited
 					if (color[u.first] == -1) {
 						todo.push({u.first, type});
-					// creates a contradiction
+						// creates a contradiction
 					} else if (color[u.first] == !type) {
 						impossible = true;
 						break;
@@ -84,15 +84,12 @@ int main() {
 		}
 	}
 
-
 	if (impossible) {
 		cout << 0 << endl;
 	} else {
 		// 2^component_num in binary is 1, followed by component_num zeros.
 		cout << 1;
-		for (int i = 0; i < component_num; i++) {
-			cout << 0;
-		}
+		for (int i = 0; i < component_num; i++) { cout << 0; }
 		cout << endl;
 	}
 }
@@ -127,7 +124,7 @@ public class Revegetate {
 			same[i] = new ArrayList<>();
 			diff[i] = new ArrayList<>();
 		}
-		int comps = 0; // The number of connected components.
+		int comps = 0;  // The number of connected components.
 
 		// Read in the edges.
 		for (int i = 0; i < M; i++) {
@@ -161,14 +158,11 @@ public class Revegetate {
 		} else {
 			// The solution is 2^(number of components).
 			pw.print(1);
-			for (int i = 0; i < comps; i++) {
-				pw.print(0);
-			}
+			for (int i = 0; i < comps; i++) { pw.print(0); }
 			pw.println();
 		}
 		pw.close();
 	}
-
 
 	// Visit a node and color it.
 	public static void visit(int node, int color) {
@@ -177,23 +171,15 @@ public class Revegetate {
 		// Check all of the nodes that are supposed to share the same color.
 		for (int next : same[node]) {
 			// There is a contradiction here.
-			if (type[next] == 3 - color) {
-				impossible = true;
-			}
-			if (type[next] == 0) {
-				visit(next, color);
-			}
+			if (type[next] == 3 - color) { impossible = true; }
+			if (type[next] == 0) { visit(next, color); }
 		}
 
 		// Check all of the nodes that are supposed to have a different color.
 		for (int next : diff[node]) {
 			// There is a contradiction here.
-			if (type[next] == color) {
-				impossible = true;
-			}
-			if (type[next] == 0) {
-				visit(next, 3 - color);
-			}
+			if (type[next] == color) { impossible = true; }
+			if (type[next] == 0) { visit(next, 3 - color); }
 		}
 	}
 }

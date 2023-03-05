@@ -16,7 +16,7 @@ By Neo Wang
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h> // see /general/running-code-locally
+#include <bits/stdc++.h>  // see /general/running-code-locally
 using namespace std;
 
 using ll = long long;
@@ -26,16 +26,16 @@ using vi = vector<int>;
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
 
-using pi = pair<int,int>;
+using pi = pair<int, int>;
 #define f first
 #define s second
 #define mp make_pair
 
 void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
 	if (sz(name)) {
-		(void)!freopen((name+".in").c_str(), "r", stdin); // see /general/io
-		(void)!freopen((name+".out").c_str(), "w", stdout);
+		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
+		(void)!freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
@@ -43,14 +43,16 @@ int in_deg[101], out_deg[101];
 
 int main() {
 	setIO("factory");
-	
-	int N; cin >> N;
+
+	int N;
+	cin >> N;
 
 	// N - 1 edges in a tree
-	for(int i = 0; i < N - 1; i++) {
+	for (int i = 0; i < N - 1; i++) {
 		// a -> b
 		// out[a]++, in[b]++;
-		int a, b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		out_deg[a]++;
 		in_deg[b]++;
 	}
@@ -58,12 +60,12 @@ int main() {
 	bool encountered_sink = false;
 	int idx_sink = -1;
 
-	for(int i = 1; i <= N; i++) {
-		if(encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
-			idx_sink = -1; // answer
+	for (int i = 1; i <= N; i++) {
+		if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+			idx_sink = -1;  // answer
 			break;
 		}
-		if(out_deg[i] == 0 && in_deg[i] > 0) {
+		if (out_deg[i] == 0 && in_deg[i] > 0) {
 			encountered_sink = true;
 			idx_sink = i;
 		}
@@ -79,7 +81,8 @@ int main() {
 ```java
 // Source: https://usaco.guide/general/io
 
-/** Simple yet moderately fast I/O routines.
+/**
+ * Simple yet moderately fast I/O routines.
  *
  * Example usage:
  *
@@ -108,8 +111,8 @@ int main() {
  * @author: Kattis
  */
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 class Kattio extends PrintWriter {
 	private BufferedReader r;
@@ -117,64 +120,64 @@ class Kattio extends PrintWriter {
 	private String token;
 
 	// standard input
-	public Kattio() { this(System.in,System.out); }
+	public Kattio() { this(System.in, System.out); }
 	public Kattio(InputStream i, OutputStream o) {
 		super(o);
 		r = new BufferedReader(new InputStreamReader(i));
 	}
 	// USACO-style file input
-	public Kattio(String problemName) throws IOException { 
-		super(new FileWriter(problemName+".out"));
-		r = new BufferedReader(new FileReader(problemName+".in"));
+	public Kattio(String problemName) throws IOException {
+		super(new FileWriter(problemName + ".out"));
+		r = new BufferedReader(new FileReader(problemName + ".in"));
 	}
 
 	private String peek() {
-		if (token == null)
-			try {
+		if (token == null) try {
 				while (!st.hasMoreTokens()) {
 					String line = r.readLine();
 					if (line == null) return null;
 					st = new StringTokenizer(line);
 				}
 				token = st.nextToken();
-			} catch (IOException e) { }
+			} catch (IOException e) {}
 		return token;
 	}
 	public boolean hasMoreTokens() { return peek() != null; }
 	private String next() {
-		String ans = peek(); 
+		String ans = peek();
 		token = null;
 		return ans;
 	}
-	
+
 	public int nextInt() { return Integer.parseInt(next()); }
 	public double nextDouble() { return Double.parseDouble(next()); }
 	public long nextLong() { return Long.parseLong(next()); }
 }
 
 public class Main {
-	
+
 	public static void main(String[] args) throws IOException {
-	Kattio io = new Kattio("factory");
+		Kattio io = new Kattio("factory");
 		int N = io.nextInt();
 		int[] in_deg = new int[101], out_deg = new int[101];
-		for(int i = 0; i < N - 1; i++) {
+		for (int i = 0; i < N - 1; i++) {
 			// a -> b
 			// out[a]++, in[b]++;
 			int a = io.nextInt(), b = io.nextInt();
-			out_deg[a]++; in_deg[b]++;
+			out_deg[a]++;
+			in_deg[b]++;
 		}
 
 		boolean encountered_sink = false;
 		int idx_sink = -1;
 
-		for(int i = 1; i <= N; i++) {
-			if(encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+		for (int i = 1; i <= N; i++) {
+			if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
 				idx_sink = -1;
 				break;
 			}
 
-			if(out_deg[i] == 0 && in_deg[i] > 0) {
+			if (out_deg[i] == 0 && in_deg[i] > 0) {
 				encountered_sink = true;
 				idx_sink = i;
 			}
@@ -226,8 +229,8 @@ the walkways connected to station $i$ (as a beginning or an end)?
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -291,7 +294,8 @@ public class Factory {
 			}
 		}
 
-		// If there's two stations without any outs, then we can't find a station
+		// If there's two stations without any outs, then we can't find a
+		// station
 		int root = noOuts.size() == 1 ? noOuts.get(0) : -1;
 
 		PrintWriter written = new PrintWriter("factory.out");
@@ -305,7 +309,7 @@ public class Factory {
 <PySection>
 
 ```py
-with open('factory.in') as read:
+with open("factory.in") as read:
 	station_num = int(read.readline())
 	outgoing = [0 for _ in range(station_num)]
 	for _ in range(station_num - 1):
@@ -322,7 +326,7 @@ for s in range(station_num):
 
 # If there's two stations without any outs, then we can't find a station
 root = no_outs[0] if len(no_outs) == 1 else -1
-print(root, file=open('factory.out', 'w'))
+print(root, file=open("factory.out", "w"))
 ```
 
 </PySection>
@@ -351,8 +355,8 @@ satisfied, then we print $-1$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -443,7 +447,7 @@ public class Factory {
 			boolean[] visited = new boolean[stationNum];
 			// We can always reach a station from itself
 			visited[s] = true;
-			
+
 			// Our stack for DFS
 			List<Integer> todo = new ArrayList<>(Collections.singletonList(s));
 			while (!todo.isEmpty()) {
@@ -456,7 +460,7 @@ public class Factory {
 					}
 				}
 			}
-	
+
 			// Check if all nodes have been visited
 			boolean valid = true;
 			for (int checkS = 0; checkS < stationNum; checkS++) {
@@ -465,7 +469,7 @@ public class Factory {
 					break;
 				}
 			}
-	
+
 			if (valid) {
 				root = s + 1;
 				break;
@@ -483,7 +487,7 @@ public class Factory {
 <PySection>
 
 ```py
-with open('factory.in') as read:
+with open("factory.in") as read:
 	station_num = int(read.readline())
 	neighbors = [[] for _ in range(station_num)]
 	for _ in range(station_num - 1):
@@ -507,13 +511,13 @@ for s in range(station_num):
 			if not visited[n]:
 				visited[n] = True
 				todo.append(n)
-	
+
 	# Check if all nodes have been visited
 	if all(visited):
 		root = s + 1
 		break
 
-print(root, file=open('factory.out', 'w'))
+print(root, file=open("factory.out", "w"))
 ```
 
 </PySection>

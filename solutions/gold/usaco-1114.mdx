@@ -11,7 +11,7 @@ author: Neo Wang, Sofia Yang
 
 For a segment of size $2$, let's break it down into two segments of size $1$.
 Notice that if both segments share the same value, then the minimum number of paintings to paint this size $2$ segment is the sum of the two size $1$ segments minus $1$.
-Otherwise, it's just the sum of those two segments. 
+Otherwise, it's just the sum of those two segments.
 
 </Spoiler>
 
@@ -59,7 +59,7 @@ int A[MAX_N], dp[MAX_N][MAX_N];
 
 int main() {
 	setIO();
-	
+
 	int n; cin >> n;
 
 	for (int i = 0; i < n; i++) cin >> A[i];
@@ -90,7 +90,7 @@ int main() {
 </CPPSection>
 
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -102,7 +102,8 @@ public class ModernArt3 {
 	public static int[][] dp = new int[MAXN][MAXN];
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(in.readLine());
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		for (int i = 0; i < N; i++) {
@@ -110,20 +111,17 @@ public class ModernArt3 {
 		}
 
 		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				dp[i][j] = MAXN + 1;
-			}
+			for (int j = 0; j < N; j++) { dp[i][j] = MAXN + 1; }
 		}
-		for (int i = 0; i < N; i++) {
-			dp[i][i] = 1;
-		}
+		for (int i = 0; i < N; i++) { dp[i][i] = 1; }
 		for (int s = 0; s < N; s++) {
 			for (int i = 0; i < N - s; i++) {
 				for (int j = i; j < i + s; j++) {
 					int k = i + s;
 					// Merge the 2 ranges
 					if (painting[i] == painting[k]) {
-						dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
+						dp[i][k] =
+						    Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 					}
 					// Sum of the both parts
 					dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k]);
@@ -133,7 +131,6 @@ public class ModernArt3 {
 		System.out.println(dp[0][N - 1]);
 	}
 }
-
 ```
 </JavaSection>
 

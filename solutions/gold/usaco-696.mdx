@@ -22,8 +22,9 @@ import java.util.*;
 public class PromotionCounting {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("promote.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("promote.out")));
-	 
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("promote.out")));
+
 		int N = Integer.parseInt(br.readLine());
 		int[][] ratings = new int[N][2];
 		for (int i = 0; i < N; i++) {
@@ -31,11 +32,9 @@ public class PromotionCounting {
 			ratings[i][1] = Integer.parseInt(br.readLine());
 		}
 		List<Integer>[] adj = new List[N];
-		
-		for (int i = 0; i < adj.length; i++) {
-			adj[i] = new ArrayList<>();
-		}
-		
+
+		for (int i = 0; i < adj.length; i++) { adj[i] = new ArrayList<>(); }
+
 		for (int i = 1; i < N; i++) {
 			int par = Integer.parseInt(br.readLine()) - 1;
 			adj[par].add(i);
@@ -46,7 +45,7 @@ public class PromotionCounting {
 		dfs(adj, tout, bac, 0, 0, -1);
 		BIT bit = new BIT(N);
 		Arrays.sort(ratings, (int[] a, int[] b) -> b[1] - a[1]);
-		
+
 		for (int i = 0; i < N;) {
 			int j = i;
 			while (j < N && ratings[i][1] == ratings[j][1]) {
@@ -54,35 +53,30 @@ public class PromotionCounting {
 				ret[c] = bit.sum(tout[c]) - bit.sum(bac[c] - 1);
 				j++;
 			}
-			for (int k = i; k < j; k++) {
-				bit.update(tout[ratings[k][0]], 1);
-			}
+			for (int k = i; k < j; k++) { bit.update(tout[ratings[k][0]], 1); }
 			i = j;
 		}
 
-		for (int i : ret) {
-			pw.println(i);
-		}
-		
+		for (int i : ret) { pw.println(i); }
+
 		pw.close();
 		br.close();
 	}
-	
-	static int dfs(List<Integer>[] adj, int[] tout, int[] left, int idx, int cur, int last){
+
+	static int dfs(List<Integer>[] adj, int[] tout, int[] left, int idx,
+	               int cur, int last) {
 		left[cur] = idx;
 		for (int n : adj[cur]) {
-			if(n == last) continue;
+			if (n == last) continue;
 			idx = dfs(adj, t, l, idx, n, cur);
 		}
 		tout[cur] = idx;
 		return idx + 1;
 	}
-	
+
 	static class BIT {
 		public int[] bit;
-		public BIT(int N) {
-			bit = new int[N + 1];
-		}
+		public BIT(int N) { bit = new int[N + 1]; }
 
 		public int sum(int r) {
 			r++;
@@ -121,9 +115,11 @@ public class PromotionCounting {
 using namespace std;
 using namespace __gnu_pbds;
 
-template<class T> using Tree = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template <class T>
+using Tree =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
-const int MX = 1e5+5;
+const int MX = 1e5 + 5;
 #define sz(x) (int)(x).size()
 
 int N, a[MX], ind[MX], ans[MX], ret;
@@ -132,25 +128,27 @@ Tree<int> d[MX];
 
 void comb(int a, int b) {
 	if (sz(d[a]) < sz(d[b])) d[a].swap(d[b]);
-	for (int i: d[b]) d[a].insert(i);
+	for (int i : d[b]) d[a].insert(i);
 }
 
 void dfs(int x) {
 	ind[x] = x;
-	for (int i: child[x]) {
+	for (int i : child[x]) {
 		dfs(i);
-		comb(x,i);
+		comb(x, i);
 	}
-	ans[x] = sz(d[x])-d[x].order_of_key(a[x]);
+	ans[x] = sz(d[x]) - d[x].order_of_key(a[x]);
 	d[x].insert(a[x]);
 }
 
 int main() {
-	freopen("promote.in","r",stdin);
-	freopen("promote.out","w",stdout);
-	cin >> N; for (int i = 1; i <= N; ++i) cin >> a[i];
+	freopen("promote.in", "r", stdin);
+	freopen("promote.out", "w", stdout);
+	cin >> N;
+	for (int i = 1; i <= N; ++i) cin >> a[i];
 	for (int i = 2; i <= N; ++i) {
-		int p; cin >> p;
+		int p;
+		cin >> p;
 		child[p].push_back(i);
 	}
 	dfs(1);
@@ -173,9 +171,11 @@ the following does (overloading `std::swap`):
 using namespace std;
 using namespace __gnu_pbds;
 
-template<class T> using Tree = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template <class T>
+using Tree =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
-const int MX = 1e5+5;
+const int MX = 1e5 + 5;
 #define sz(x) (int)(x).size()
 
 int N, a[MX], ind[MX], ans[MX], ret;
@@ -183,30 +183,32 @@ vector<int> child[MX];
 Tree<int> d[MX];
 
 namespace std {
-	void swap(Tree<int>& a, Tree<int>& b) { a.swap(b); }
-}
+void swap(Tree<int> &a, Tree<int> &b) { a.swap(b); }
+}  // namespace std
 
 void comb(int a, int b) {
-	if (sz(d[a]) < sz(d[b])) std::swap(d[a],d[b]);
-	for (int i: d[b]) d[a].insert(i);
+	if (sz(d[a]) < sz(d[b])) std::swap(d[a], d[b]);
+	for (int i : d[b]) d[a].insert(i);
 }
 
 void dfs(int x) {
 	ind[x] = x;
-	for (int i: child[x]) {
+	for (int i : child[x]) {
 		dfs(i);
-		comb(x,i);
+		comb(x, i);
 	}
-	ans[x] = sz(d[x])-d[x].order_of_key(a[x]);
+	ans[x] = sz(d[x]) - d[x].order_of_key(a[x]);
 	d[x].insert(a[x]);
 }
 
 int main() {
-	freopen("promote.in","r",stdin);
-	freopen("promote.out","w",stdout);
-	cin >> N; for (int i = 1; i <= N; ++i) cin >> a[i];
+	freopen("promote.in", "r", stdin);
+	freopen("promote.out", "w", stdout);
+	cin >> N;
+	for (int i = 1; i <= N; ++i) cin >> a[i];
 	for (int i = 2; i <= N; ++i) {
-		int p; cin >> p;
+		int p;
+		cin >> p;
 		child[p].push_back(i);
 	}
 	dfs(1);

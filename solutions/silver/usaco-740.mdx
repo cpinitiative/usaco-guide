@@ -15,36 +15,30 @@ author: Qi Wang, Pranav Jadhav
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 using namespace std;
 
 const int MAX_N = 20;
 vector<vector<char>> image(MAX_N, vector<char>(MAX_N));
 vector<vector<bool>> visited(MAX_N, vector<bool>(MAX_N));
 
-/** PCL delimited by the top left corner (i1, j1) & bottom right corner (i2, j2) */
+/** PCL delimited by the top left corner (i1, j1) & bottom right corner (i2, j2)
+ */
 struct PCL {
 	int i1, j1;
 	int i2, j2;
 
 	bool is_inside(PCL other) {
-		return (
-			i1 >= other.i1 &&
-			i2 <= other.i2 &&
-			j1 >= other.j1 &&
-			j2 <= other.j2
-		);
+		return (i1 >= other.i1 && i2 <= other.i2 && j1 >= other.j1 &&
+		        j2 <= other.j2);
 	}
 };
 
 // Floodfill to find connected regions
 int i_min, i_max, j_min, j_max;
 void floodfill(int i, int j, char color) {
-	if (
-		i < i_min || j < j_min || i > i_max || j > j_max ||
-		visited[i][j] ||
-		image[i][j] != color
-	) {
+	if (i < i_min || j < j_min || i > i_max || j > j_max || visited[i][j] ||
+	    image[i][j] != color) {
 		return;
 	}
 
@@ -86,22 +80,13 @@ bool is_pcl(int i1, int j1, int i2, int j2) {
 	bool color_with_one_region = false;
 	bool color_with_more_regions = false;
 	for (int i = 0; i < region_count.size(); i++) {
-		if (region_count[i] != 0) {
-			color_count++;
-		}
-		if (region_count[i] == 1) {
-			color_with_one_region = true;
-		}
-		if (region_count[i] > 1) {
-			color_with_more_regions = true;
-		}
+		if (region_count[i] != 0) { color_count++; }
+		if (region_count[i] == 1) { color_with_one_region = true; }
+		if (region_count[i] > 1) { color_with_more_regions = true; }
 	}
 
-	return (
-		color_count == 2 &&
-		color_with_one_region &&
-		color_with_more_regions
-	);
+	return (color_count == 2 && color_with_one_region &&
+	        color_with_more_regions);
 }
 
 int main() {
@@ -109,9 +94,7 @@ int main() {
 	int n;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cin >> image[i][j];
-		}
+		for (int j = 0; j < n; j++) { cin >> image[i][j]; }
 	}
 
 	vector<PCL> pcl_list;
@@ -133,9 +116,7 @@ int main() {
 	for (int i = 0; i < pcl_list.size(); i++) {
 		bool valid_pcl = true;
 		for (int j = 0; j < pcl_list.size(); j++) {
-			if (i == j) {
-				continue;
-			}
+			if (i == j) { continue; }
 			if (pcl_list[i].is_inside(pcl_list[j])) {
 				valid_pcl = false;
 				break;
@@ -163,17 +144,14 @@ public class Where {
 	static boolean[][] visited = new boolean[MAX_N][MAX_N];
 
 	static int iMin, iMax, jMin, jMax;
-	static void floodfill(int i , int j, char color) {
-		if (
-			i < iMin || j < jMin || i > iMax || j > jMax ||
-			visited[i][j] ||
-			image[i][j] != color
-		) {
+	static void floodfill(int i, int j, char color) {
+		if (i < iMin || j < jMin || i > iMax || j > jMax || visited[i][j] ||
+		    image[i][j] != color) {
 			return;
 		}
-	
+
 		visited[i][j] = true;
-	
+
 		floodfill(i + 1, j, color);
 		floodfill(i - 1, j, color);
 		floodfill(i, j + 1, color);
@@ -210,22 +188,12 @@ public class Where {
 		boolean colorWithOneRegion = false;
 		boolean colorWithMoreRegions = false;
 		for (int i = 0; i < regionCount.length; i++) {
-			if (regionCount[i] != 0) {
-				colorCount++;
-			}
-			if (regionCount[i] == 1) {
-				colorWithOneRegion = true;
-			}
-			if (regionCount[i] > 1) {
-				colorWithMoreRegions = true;
-			}
+			if (regionCount[i] != 0) { colorCount++; }
+			if (regionCount[i] == 1) { colorWithOneRegion = true; }
+			if (regionCount[i] > 1) { colorWithMoreRegions = true; }
 		}
 
-		return (
-			colorCount == 2 &&
-			colorWithOneRegion &&
-			colorWithMoreRegions
-		);
+		return (colorCount == 2 && colorWithOneRegion && colorWithMoreRegions);
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -233,9 +201,7 @@ public class Where {
 		int n = Integer.parseInt(read.readLine());
 		for (int i = 0; i < n; i++) {
 			String row = read.readLine();
-			for (int j = 0; j < n; j++) {
-				image[i][j] = row.charAt(j);
-			}
+			for (int j = 0; j < n; j++) { image[i][j] = row.charAt(j); }
 		}
 		read.close();
 
@@ -258,9 +224,7 @@ public class Where {
 		for (int i = 0; i < pcls.size(); i++) {
 			boolean validPCL = true;
 			for (int j = 0; j < pcls.size(); j++) {
-				if (i == j) {
-					continue;
-				}
+				if (i == j) { continue; }
 				if (pcls.get(i).isInside(pcls.get(j))) {
 					validPCL = false;
 					break;
@@ -289,12 +253,8 @@ public class Where {
 		}
 
 		public boolean isInside(PCL other) {
-			return (
-				i1 >= other.i1 &&
-				i2 <= other.i2 &&
-				j1 >= other.j1 &&
-				j2 <= other.j2
-			);  
+			return (i1 >= other.i1 && i2 <= other.i2 && j1 >= other.j1 &&
+			        j2 <= other.j2);
 		}
 	}
 }

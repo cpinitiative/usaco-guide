@@ -42,9 +42,9 @@ bool possible(int length) {
 			int end = houses[(i + j) % num_houses];
 
 			/*
-			 * If the distance between the start and end houses is greater than two
-			 * times the length of the hose, a single fire hydrant will not be
-			 * enough to cover both houses.
+			 * If the distance between the start and end houses is greater than
+			 * two times the length of the hose, a single fire hydrant will not
+			 * be enough to cover both houses.
 			 */
 			int dist = (end - start + STREET_SIZE) % STREET_SIZE;
 			if (dist > 2 * length) {
@@ -56,18 +56,14 @@ bool possible(int length) {
 		// Increment needed as we need another hydrant to reach the last houses.
 		needed++;
 
-		if (needed <= num_hydrants) {
-			return true;
-		}
+		if (needed <= num_hydrants) { return true; }
 	}
 	return false;
 }
 
 int main() {
 	cin >> num_houses;
-	for (int i = 0; i < num_houses; i++) {
-		cin >> houses[i];
-	}
+	for (int i = 0; i < num_houses; i++) { cin >> houses[i]; }
 	cin >> num_hydrants;
 
 	sort(houses, houses + num_houses);
@@ -85,7 +81,7 @@ int main() {
 			l = m + 1;
 		}
 	}
-	
+
 	cout << ans << "\n";
 }
 ```

@@ -882,7 +882,7 @@ using namespace std;
 
 typedef long long ll;
 
-ll difference_array[400005]; 
+ll difference_array[400005];
 //difference_array[i] = the difference of the values between special intervals i-1 and i
 
 int widths[400005]; //width[i] = the length of special interval i
@@ -981,25 +981,25 @@ import java.util.*;
 import java.io.*;
 
 public class rangequeries {
-	
+
 	//custom class that stores a few integers (used for directly storing the queries and updates given in the input)
 	static class Query {
-		
+
 		int l, r, v;
 		public Query(int l, int r, int v) {
 			this.l = l;
 			this.r = r;
 			this.v = v;
 		}
-		
+
 		public Query(int l, int r) {
 			this.l = l;
 			this.r = r;
 		}
-		
+
 	}
-	
-	static long difference_array[]; 
+
+	static long difference_array[];
 	//difference_array[i] = the difference of the values between special intervals i-1 and i
 
 	static int widths[]; //width[i] = the length of special interval i
@@ -1018,14 +1018,14 @@ public class rangequeries {
 //BeginCodeSnip{Solution code}
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // A Scanner is too slow to solve this problem!
-		
+
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
-		
+
 		indices = new ArrayList<Integer>();
 		queries = new Query[Q];
 		updates = new Query[N];
-		
+
 		for(int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken()), v = Integer.parseInt(st.nextToken());
@@ -1042,11 +1042,11 @@ public class rangequeries {
 		}
 //EndCodeSnip
 		//========= COORDINATE COMPRESSION =======
-		TreeSet<Integer> temp = new TreeSet<Integer>(indices); 
+		TreeSet<Integer> temp = new TreeSet<Integer>(indices);
 		//Since temp is a set, all duplicate elements are removed
-		indices.clear(); 
+		indices.clear();
 		indices.addAll(temp); //The elements of temp will be added to indices in sorted order, since temp is a TreeSet
-		//The effect of these lines is to sort indices while removing duplicate elements. 
+		//The effect of these lines is to sort indices while removing duplicate elements.
 		//While this is not the only way to do it, it is one that requires little code.
 		//========= COORDINATE COMPRESSION =======
 //BeginCodeSnip{Solution code}
@@ -1054,7 +1054,7 @@ public class rangequeries {
 		widths = new int[indices.size() + 5];
 		interval_value = new long[indices.size() + 5];
 		prefix_sums = new long[indices.size() + 5];
-		
+
 		//We create the difference array, using coordinate compression and binary search to get the index of each special interval
 		//Note the 1-based indexing for convenience
 		for(int i = 0; i < N; i++) {
@@ -1083,9 +1083,9 @@ public class rangequeries {
 		for(int i = 0; i < Q; i++) {
 			System.out.println(prefix_sums[getCompressedIndex(queries[i].r)] - prefix_sums[getCompressedIndex(queries[i].l)]);
 		}
-		
+
 	}
-	
+
 }
 //EndCodeSnip
 ```

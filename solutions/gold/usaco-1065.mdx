@@ -14,23 +14,21 @@ author: Nathan Gong
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Replication {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		PrintWriter out = new PrintWriter(System.out);
-		
+
 		int n = sc.nextInt();
 		int d = sc.nextInt();
 
 		char[][] grid = new char[n][n];
 		for (int i = 0; i < n; i++) {
 			String temp = sc.next();
-			for (int j = 0; j < n; j++) {
-				grid[i][j] = temp.charAt(j);
-			}
+			for (int j = 0; j < n; j++) { grid[i][j] = temp.charAt(j); }
 		}
 
 		// BFS with rocks as sources
@@ -40,10 +38,8 @@ public class Replication {
 		for (int i = 0; i < n; i++) {
 			Arrays.fill(rockDist[i], -1);
 			for (int j = 0; j < n; j++) {
-				if (grid[i][j] == '#') {
-					queue.add(new State(i, j, 0));
-				}
-			} 
+				if (grid[i][j] == '#') { queue.add(new State(i, j, 0)); }
+			}
 		}
 		while (!queue.isEmpty()) {
 			State state = queue.remove();
@@ -53,9 +49,7 @@ public class Replication {
 				continue;
 			}
 			// Skip if cell already visited
-			if (rockDist[state.i][state.j] != -1) {
-				continue;
-			}
+			if (rockDist[state.i][state.j] != -1) { continue; }
 			rockDist[state.i][state.j] = state.distance;
 
 			for (int i = -1; i <= 1; i += 2) {
@@ -67,9 +61,7 @@ public class Replication {
 		// BFS from the sources
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				if (grid[i][j] == 'S') {
-					queue.add(new State(i, j, 0));
-				}
+				if (grid[i][j] == 'S') { queue.add(new State(i, j, 0)); }
 			}
 		}
 		// We represent a cluster by position of center robot and size
@@ -84,20 +76,18 @@ public class Replication {
 
 			// Skip if position out of bounds
 			if (state.i < 0 || state.i >= n || state.j < 0 || state.j >= n) {
-				continue; 
+				continue;
 			}
 			// Skip if cell already visited
 			if (vis[state.i][state.j] != -1) continue;
 			// Skip if cluster will collide with a rock
 			if (rockDist[state.i][state.j] <= size) continue;
-			
-			vis[state.i][state.j] = size; 
+
+			vis[state.i][state.j] = size;
 			// Update size of robot cluster
-			size = (state.distance)/d;
+			size = (state.distance) / d;
 			// Check if new size collides with rocks
-			if (rockDist[state.i][state.j] <= size) {
-				continue;
-			}
+			if (rockDist[state.i][state.j] <= size) { continue; }
 			// If not, continue BFS
 			vis[state.i][state.j] = size;
 
@@ -120,12 +110,10 @@ public class Replication {
 				}
 			}
 		}
-		
+
 		int ans = 0;
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				ans += (grid[i][j] == 'x') ? 1 : 0;
-			}
+			for (int j = 0; j < n; j++) { ans += (grid[i][j] == 'x') ? 1 : 0; }
 		}
 
 		out.println(ans);

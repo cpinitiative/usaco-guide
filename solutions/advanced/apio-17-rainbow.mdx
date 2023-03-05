@@ -107,13 +107,15 @@ struct Segtree {
 
 	int query(int l1, int r1, int l2, int r2) {
 		if (l2 > r2) return 0;
-		return query(l2, r2, roots[r1 + 1], 1, MAXN) - query(l2, r2, roots[l1], 1, MAXN);
+		return query(l2, r2, roots[r1 + 1], 1, MAXN) -
+		       query(l2, r2, roots[l1], 1, MAXN);
 	}
 	int query(int a, int b, int node, int l, int r) {
 		if (a > r || b < l) return 0;
 		if (a <= l && b >= r) return segtree[node];
 		int mid = (l + r) / 2;
-		return query(a, b, left_c[node], l, mid) + query(a, b, right_c[node], mid + 1, r);
+		return query(a, b, left_c[node], l, mid) +
+		       query(a, b, right_c[node], mid + 1, r);
 	}
 } vertices, edges_horiz, edges_vert, rivers;
 
@@ -153,7 +155,8 @@ void init(int R, int C, int sr, int sc, int M, char *S) {
 }
 
 int colour(int ar, int ac, int br, int bc) {
-	int E = edges_horiz.query(ar + 1, br, ac, bc) + edges_vert.query(ar, br, ac + 1, bc);
+	int E = edges_horiz.query(ar + 1, br, ac, bc) +
+	        edges_vert.query(ar, br, ac + 1, bc);
 	int V = vertices.query(ar + 1, br, ac + 1, bc);
 	int R = rivers.query(ar, br, ac, bc);
 	int C = (ar >= mn_r || br <= mx_r || ac >= mn_c || bc <= mx_c ? 1 : 2);

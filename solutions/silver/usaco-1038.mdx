@@ -33,7 +33,7 @@ Consider the first interval. It is most efficient to place the cow on the left-m
 
 using namespace std;
 
-void setIO(string prob="") {
+void setIO(string prob = "") {
 	if (!prob.empty()) {
 		freopen((prob + ".in").c_str(), "r", stdin);
 		freopen((prob + ".out").c_str(), "w", stdout);
@@ -62,7 +62,8 @@ int main() {
 		int intervalCount = 0;
 		long long current = intervals[0].first;
 
-		// try to fit the next cow into the earliest patch of grass that's available
+		// try to fit the next cow into the earliest patch of grass that's
+		// available
 		while (current + mid <= intervals[m - 1].second) {
 			while (current + mid > intervals[intervalCount].second) {
 				intervalCount++;
@@ -84,7 +85,7 @@ int main() {
 <PySection>
 
 ```py
-with open('socdist.in', 'r') as r:
+with open("socdist.in", "r") as r:
 	n, m = map(int, r.readline().split())
 	intervals = [tuple(map(int, r.readline().split())) for _ in range(m)]
 	intervals.sort()
@@ -114,7 +115,7 @@ while left < right:
 	else:
 		right = mid - 1
 
-print(left, file=open('socdist.out', 'w'))
+print(left, file=open("socdist.out", "w"))
 ```
 
 </PySection>
@@ -122,8 +123,8 @@ print(left, file=open('socdist.out', 'w'))
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class SocDist {
 	static class Pair implements Comparable<Pair> {
@@ -135,9 +136,8 @@ public class SocDist {
 		}
 
 		public int compareTo(Pair x) {
-			if (this.first == x.first)
-				return (int) (this.second - x.second);
-			return (int) (this.first - x.first);
+			if (this.first == x.first) return (int)(this.second - x.second);
+			return (int)(this.first - x.first);
 		}
 	}
 
@@ -152,10 +152,8 @@ public class SocDist {
 		Pair intervals[] = new Pair[m];
 		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(in.readLine());
-			intervals[i] = new Pair(
-				Long.parseLong(st.nextToken()),
-				Long.parseLong(st.nextToken())
-			);
+			intervals[i] = new Pair(Long.parseLong(st.nextToken()),
+			                        Long.parseLong(st.nextToken()));
 		}
 
 		Arrays.sort(intervals);
@@ -166,20 +164,19 @@ public class SocDist {
 			int count = 1;
 			int intervalCount = 0;
 			long current = intervals[0].first;
-			// try to fit the next cow into the earliest patch of grass that's available
+			// try to fit the next cow into the earliest patch of grass that's
+			// available
 			while (current + mid <= intervals[m - 1].second) {
 				while (current + mid > intervals[intervalCount].second) {
 					intervalCount++;
 				}
-				current = Math.max(intervals[intervalCount].first, current + mid);
+				current =
+				    Math.max(intervals[intervalCount].first, current + mid);
 				count++;
-				if (count == n)
-					break;
+				if (count == n) break;
 			}
-			if (count >= n)
-				lo = mid;
-			else
-				hi = mid - 1;
+			if (count >= n) lo = mid;
+			else hi = mid - 1;
 		}
 		pw.println(lo);
 		pw.close();
