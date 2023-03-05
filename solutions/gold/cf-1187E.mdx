@@ -92,10 +92,8 @@ vector<ll> sz;
 // Calculate sz and dp1
 void dfs1(int u, int p) {
 	sz[u] = 1;
-	for (int &v: g[u]) {
-		if (v == p) {
-			continue;
-		}
+	for (int &v : g[u]) {
+		if (v == p) { continue; }
 		dfs1(v, u);
 		sz[u] += sz[v];
 		dp1[u] += dp1[v];
@@ -109,32 +107,24 @@ void dfs2(int u, int p) {
 		p1[u] = p1[p] + sz[p] - sz[u];
 		p2[u] = p2[p] + p1[u] + sz[p] - sz[u];
 	}
-	for (int &v: g[u]) {
-		if (v == p) {
-			continue;
-		}
+	for (int &v : g[u]) {
+		if (v == p) { continue; }
 		dfs2(v, u);
 	}
 }
 
 // Calculate dp2
 void dfs3(int u, int p) {
-	dp2[u] = (g[u].size() == 1 ? p2[u]+1 : 0);
+	dp2[u] = (g[u].size() == 1 ? p2[u] + 1 : 0);
 	ll tot = 0;
-	for (int &v: g[u]) {
-		if (v == p) {
-			continue;
-		}
+	for (int &v : g[u]) {
+		if (v == p) { continue; }
 		tot += dp1[v];
 	}
-	for (int &v: g[u]) {
-		if (v == p) {
-			continue;
-		}
+	for (int &v : g[u]) {
+		if (v == p) { continue; }
 		dfs3(v, u);
-		if (dp2[v] + tot - dp1[v] > dp2[u]) {
-			dp2[u] = dp2[v] + tot - dp1[v];
-		}
+		if (dp2[v] + tot - dp1[v] > dp2[u]) { dp2[u] = dp2[v] + tot - dp1[v]; }
 	}
 }
 
@@ -142,8 +132,12 @@ int main() {
 	int n;
 	cin >> n;
 
-	g.resize(n); dp1.resize(n); dp2.resize(n); sz.resize(n);
-	p1.resize(n); p2.resize(n);
+	g.resize(n);
+	dp1.resize(n);
+	dp2.resize(n);
+	sz.resize(n);
+	p1.resize(n);
+	p2.resize(n);
 	for (int i = 1; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
@@ -162,9 +156,7 @@ int main() {
 
 	// Find maximum dp1/dp2 among all nodes
 	ll ans = 0;
-	for (int i = 0; i < n; ++i) {
-		ans = max(ans, max(dp1[i], dp2[i]));
-	}
+	for (int i = 0; i < n; ++i) { ans = max(ans, max(dp1[i], dp2[i])); }
 
 	cout << ans << endl;
 }

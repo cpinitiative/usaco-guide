@@ -13,8 +13,8 @@ author: Kevin Sheng
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 const int MOD = 1e9 + 7;
@@ -32,9 +32,7 @@ long long pow(long long base, long long exp) {
 	return res;
 }
 
-long long mod_inv(long long n) {
-	return pow(n, MOD - 2);
-}
+long long mod_inv(long long n) { return pow(n, MOD - 2); }
 
 int main() {
 	int max_moves;
@@ -54,7 +52,8 @@ int main() {
 		total_states = (total_states + curr_level) % MOD;
 
 		half_one_child_num = (half_one_child_num * l) % MOD;
-		half_one_child_num = (half_one_child_num * mod_inv(l - max_moves)) % MOD;
+		half_one_child_num =
+		    (half_one_child_num * mod_inv(l - max_moves)) % MOD;
 	}
 	std::cout << (total_states + MOD) % MOD << std::endl;
 }
@@ -67,11 +66,10 @@ int main() {
 import java.io.*;
 
 public class Bots {
-	private static final int MOD = (int) Math.pow(10, 9) + 7;
+	private static final int MOD = (int)Math.pow(10, 9) + 7;
 	public static void main(String[] args) throws IOException {
 		int max_moves = Integer.parseInt(
-			new BufferedReader(new InputStreamReader(System.in)).readLine()
-		);
+		    new BufferedReader(new InputStreamReader(System.in)).readLine());
 
 		long total_states = 1;
 		long curr_level = 1;
@@ -87,14 +85,13 @@ public class Bots {
 			total_states = (total_states + curr_level) % MOD;
 
 			half_one_child_num = (half_one_child_num * l) % MOD;
-			half_one_child_num = (half_one_child_num * modInv((long) l - max_moves)) % MOD;
+			half_one_child_num =
+			    (half_one_child_num * modInv((long)l - max_moves)) % MOD;
 		}
 		System.out.println((total_states + MOD) % MOD);
 	}
 
-	private static long modInv(long n) {
-		return pow(n, MOD - 2);
-	}
+	private static long modInv(long n) { return pow(n, MOD - 2); }
 
 	private static long pow(long base, long exp) {
 		assert exp >= 0;
@@ -228,8 +225,8 @@ $$
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -251,9 +248,7 @@ long long pow(long long base, long long exp) {
 	return res;
 }
 
-long long mod_inv(long long n) {
-	return pow(n, MOD - 2);
-}
+long long mod_inv(long long n) { return pow(n, MOD - 2); }
 
 int main() {
 	int max_moves;
@@ -278,11 +273,10 @@ int main() {
 import java.io.*;
 
 public class Bots {
-	private static final int MOD = (int) Math.pow(10, 9) + 7;
+	private static final int MOD = (int)Math.pow(10, 9) + 7;
 	public static void main(String[] args) throws IOException {
 		int maxMoves = Integer.parseInt(
-			new BufferedReader(new InputStreamReader(System.in)).readLine()
-		);
+		    new BufferedReader(new InputStreamReader(System.in)).readLine());
 
 		int[] resBinom = new int[] {2 * maxMoves + 2, maxMoves + 1};
 		long resNum = 1;
@@ -295,9 +289,7 @@ public class Bots {
 		System.out.println(resNum - 1);
 	}
 
-	private static long modInv(long n) {
-		return pow(n, MOD - 2);
-	}
+	private static long modInv(long n) { return pow(n, MOD - 2); }
 
 	private static long pow(long base, long exp) {
 		assert exp >= 0;

@@ -49,19 +49,17 @@ vector<string> field(MAX_N);
 int n, s;
 
 bool valid_sq(int x, int y) {
-	return x >= 0 && x < n && y >= 0 && y < n
-		&& (field[x][y] == 'G' || field[x][y] == 'M');
+	return x >= 0 && x < n && y >= 0 && y < n &&
+	       (field[x][y] == 'G' || field[x][y] == 'M');
 }
 
-bool mecho_reached(int mecho_dis, int bees_dis){
+bool mecho_reached(int mecho_dis, int bees_dis) {
 	return mecho_dis / s < bees_dis;
 }
 
 int main() {
 	cin >> n >> s;
-	for (int i = 0; i < n; i++) {
-		cin >> field[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> field[i]; }
 
 	vector<pair<int, int>> hives;
 	int mechox, mechoy, home_x, home_y;
@@ -114,13 +112,10 @@ int main() {
 			}
 		}
 
-
 		// move Mecho
 		q.push({mechox, mechoy});
 		mecho_visited[mechox][mechoy] = true;
-		if (bees_time[mechox][mechoy] <= eating_time) {
-			q.pop();
-		}
+		if (bees_time[mechox][mechoy] <= eating_time) { q.pop(); }
 
 		while (!q.empty()) {
 			int x = q.front().first, y = q.front().second;
@@ -134,26 +129,27 @@ int main() {
 				 * substract the eating time from the time taken for the
 				 * bees to reach the node, because that time was used by
 				 * mecho for eating
-				*/
+				 */
 				if (valid_sq(nx, ny) && !mecho_visited[nx][ny] &&
-					mecho_reached(mecho_time[x][y] + 1, bees_time[nx][ny]
-					- eating_time)) {
-						mecho_visited[nx][ny] = true;
-						q.push({nx, ny});
-						mecho_time[nx][ny] = mecho_time[x][y] + 1;
+				    mecho_reached(mecho_time[x][y] + 1,
+				                  bees_time[nx][ny] - eating_time)) {
+					mecho_visited[nx][ny] = true;
+					q.push({nx, ny});
+					mecho_time[nx][ny] = mecho_time[x][y] + 1;
 				}
 			}
 		}
-
 
 		// check if mecho reached a node surrounding his cave before the bees
 		bool reached = false;
 		for (int i = 0; i < 4; i++) {
 			int nx = home_x + dx[i], ny = home_y + dy[i];
-			if (valid_sq(nx, ny) && mecho_reached(mecho_time[nx][ny],
-				bees_time[nx][ny] - eating_time) && mecho_visited[nx][ny]) {
-					reached = true;
-				}
+			if (valid_sq(nx, ny) &&
+			    mecho_reached(mecho_time[nx][ny],
+			                  bees_time[nx][ny] - eating_time) &&
+			    mecho_visited[nx][ny]) {
+				reached = true;
+			}
 		}
 		if (reached) {
 			l = eating_time + 1;

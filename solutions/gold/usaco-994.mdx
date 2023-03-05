@@ -49,7 +49,7 @@ const int MAX_VAL = 1e6;
 int main() {
 	freopen("threesum.in", "r", stdin);
 	freopen("threesum.out", "w", stdout);
-	cin.tie(0) -> sync_with_stdio(0);
+	cin.tie(0)->sync_with_stdio(0);
 
 	int n, q;
 	cin >> n >> q;
@@ -78,19 +78,14 @@ int main() {
 			frq[val[j]]++;
 		}
 
-		for (int j = i + 1; j < n; j++) {
-			frq[val[j]]--;
-		}
+		for (int j = i + 1; j < n; j++) { frq[val[j]]--; }
 	}
 
 	// essentially 2D prefix sum on ways
 	for (int i = n - 1; i >= 0; i--) {
 		for (int j = i + 1; j < n; j++) {
-			ways[i][j] += (
-				ways[i + 1][j] +
-				ways[i][j - 1] -
-				ways[i + 1][j - 1]
-			);
+			ways[i][j] +=
+			    (ways[i + 1][j] + ways[i][j - 1] - ways[i + 1][j - 1]);
 		}
 	}
 

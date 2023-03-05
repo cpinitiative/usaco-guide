@@ -26,22 +26,18 @@ If we are searching for string $P$ inside of string $T$, create a new string $S 
 using namespace std;
 
 namespace str {
-	/** Computes the Pi array of s. */
-	vector<int> pi(const string &s) {
-		int n = (int)s.size();
-		vector<int> pi_s(n);
-		for (int i = 1, j = 0; i < n; i++) {
-			while (j > 0 && s[j] != s[i]) {
-				j = pi_s[j - 1];
-			}
-			if (s[i] == s[j]) {
-				j++;
-			}
-			pi_s[i] = j;
-		}
-		return pi_s;
+/** Computes the Pi array of s. */
+vector<int> pi(const string &s) {
+	int n = (int)s.size();
+	vector<int> pi_s(n);
+	for (int i = 1, j = 0; i < n; i++) {
+		while (j > 0 && s[j] != s[i]) { j = pi_s[j - 1]; }
+		if (s[i] == s[j]) { j++; }
+		pi_s[i] = j;
 	}
+	return pi_s;
 }
+}  // namespace str
 
 int main() {
 	string P, T;
@@ -50,9 +46,7 @@ int main() {
 	vector<int> pi = str::pi(S);
 	int ans = 0;
 	for (int l : pi) {
-		if (l == P.size()) {
-			ans++;
-		}
+		if (l == P.size()) { ans++; }
 	}
 	cout << ans << '\n';
 }
@@ -61,7 +55,7 @@ int main() {
 </CPPSection>
 <PySection>
 
-```Py
+```py
 from typing import List
 
 
@@ -81,7 +75,7 @@ def pi(s: str) -> List[int]:
 
 T = input()
 P = input()
-S = P + '#' + T
+S = P + "#" + T
 pi = pi(S)
 ans = 0
 for l in pi:
@@ -116,25 +110,21 @@ As before, for pattern string $P$ and text string $T$, create a new string $S = 
 using namespace std;
 
 namespace str {
-	// Computes the Z-array of s
-	vector<int> z(const string &s) {
-		int n = (int)s.size();
-		vector<int> z_S(n);
-		for (int i = 1, l = 0, r = 0; i < n; i++) {
-			if (i <= r) {
-				z_S[i] = min(z_S[i - l], r - i + 1);
-			}
-			while (i + z_S[i] < n && s[z_S[i]] == s[i + z_S[i]]) {
-				z_S[i]++;
-			}
-			if (i + z_S[i] - 1 > r) {
-				l = i;
-				r = i + z_S[i] - 1;
-			}
+// Computes the Z-array of s
+vector<int> z(const string &s) {
+	int n = (int)s.size();
+	vector<int> z_S(n);
+	for (int i = 1, l = 0, r = 0; i < n; i++) {
+		if (i <= r) { z_S[i] = min(z_S[i - l], r - i + 1); }
+		while (i + z_S[i] < n && s[z_S[i]] == s[i + z_S[i]]) { z_S[i]++; }
+		if (i + z_S[i] - 1 > r) {
+			l = i;
+			r = i + z_S[i] - 1;
 		}
-		return z_S;
 	}
+	return z_S;
 }
+}  // namespace str
 
 int main() {
 	string P, T;
@@ -143,9 +133,7 @@ int main() {
 	vector<int> z = str::z(S);
 	int ans = 0;
 	for (int l : z) {
-		if (l == P.size()) {
-			ans++;
-		}
+		if (l == P.size()) { ans++; }
 	}
 	cout << ans << '\n';
 }
@@ -170,40 +158,35 @@ Precompute the [rolling hash](https://usaco.guide/gold/string-hashing?lang=cpp) 
 using namespace std;
 
 namespace str {
-	// Computes the rolling hash of s with power P and modulo M
-	vector<long long> rhash(const string &s, const long long P, const long long M) {
-		int n = (int)s.size();
-		vector<long long> rhash_S(n);
-		for (int i = 0; i < n; i++) {
-			if (i != 0) {
-				rhash_S[i] = rhash_S[i - 1] * P % M;
-			}
-			rhash_S[i] = (rhash_S[i] + (long long)s[i]) % M;
-		}
-		return rhash_S;
+// Computes the rolling hash of s with power P and modulo M
+vector<long long> rhash(const string &s, const long long P, const long long M) {
+	int n = (int)s.size();
+	vector<long long> rhash_S(n);
+	for (int i = 0; i < n; i++) {
+		if (i != 0) { rhash_S[i] = rhash_S[i - 1] * P % M; }
+		rhash_S[i] = (rhash_S[i] + (long long)s[i]) % M;
 	}
+	return rhash_S;
 }
+}  // namespace str
 
 const long long hashPow = 9973, hashMod = 1e9 + 7;
 
 int main() {
 	string P, T;
 	cin >> T >> P;
-	vector<int> Phash = str::rhash(P, hashPow, hashMod), Thash = str::rhash(T, hashPow, hashMod);
+	vector<int> Phash = str::rhash(P, hashPow, hashMod),
+	            Thash = str::rhash(T, hashPow, hashMod);
 
 	long long ppow = 1;  // hashPow to the power of |P| modulo hashMod
-	for (int i = 0; i < P.size(); i++) {
-		ppow = (ppow * hashPow) % hashMod;
-	}
+	for (int i = 0; i < P.size(); i++) { ppow = (ppow * hashPow) % hashMod; }
 
 	int ans = 0;
 	for (int i = 0; i + P.size() - 1 < T.size(); i++) {
 		long long r = Thash[i + P.size() - 1];
 		long long l = i == 0 ? 0 : (Thash[i - 1] * ppow % hashMod);
 		long long curHash = (r - l + hashMod) % hashMod;
-		if (curHash == Phash.back()) {
-			ans++;
-		}
+		if (curHash == Phash.back()) { ans++; }
 	}
 	cout << ans << '\n';
 }

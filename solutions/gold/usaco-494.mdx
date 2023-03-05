@@ -92,22 +92,19 @@ int main() {
 
 				int prev = i ^ (1 << j);
 				/*
-				* maximum safety factor if we put cow j
-				* at the top of our stack (account for j's strength as well)
-				*/
-				dp[i].second = max(
-					dp[i].second,
-					min(dp[prev].second - cows[j].weight, cows[j].strength)
-				);
+				 * maximum safety factor if we put cow j
+				 * at the top of our stack (account for j's strength as well)
+				 */
+				dp[i].second =
+				    max(dp[i].second, min(dp[prev].second - cows[j].weight,
+				                          cows[j].strength));
 			}
 		}
 	}
 
 	int max_safety = -1;
 	for (int i = 1; i < (1 << n); i++) {
-		if (dp[i].first >= h) {
-			max_safety = max(dp[i].second, max_safety);
-		}
+		if (dp[i].first >= h) { max_safety = max(dp[i].second, max_safety); }
 	}
 
 	// no tall enough/stable arrangement exists

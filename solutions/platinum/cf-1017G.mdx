@@ -31,8 +31,7 @@ Note that for query operations, we need to find the maximum suffix sum for each 
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long
-using pll = pair<ll, ll>;
+using ll = long long using pll = pair<ll, ll>;
 #define FF first
 #define SS second
 
@@ -43,151 +42,138 @@ vector<int> G[MAXN];
 
 // Segment Tree:
 namespace sgt {
-	pll T[MAXN * 4];  // {value, sum}
-	bool L[MAXN * 4];  // set tag
+pll T[MAXN * 4];   // {value, sum}
+bool L[MAXN * 4];  // set tag
 
-	pll merge(pll l, pll r) {
-		if (l.SS == -LLONG_MAX) {
-			return r;
-		}
-		if (r.SS == -LLONG_MAX) {
-			return l;
-		}
-		return {max(l.FF + r.SS, r.FF), l.SS + r.SS};
-	}
-
-	void build(int t = 1, int tl = 0, int tr = N - 1) {
-		if (tl == tr) {
-			T[t].FF = T[t].SS = -1;
-			return;
-		}
-
-		int tm = (tl + tr) >> 1;
-		build(t << 1, tl, tm);
-		build(t << 1 | 1, tm + 1, tr);
-		T[t] = merge(T[t << 1], T[t << 1 | 1]);
-	}
-
-	void pushdown(int t, int tl, int tr) {
-		if (!L[t]) {
-			return;
-		}
-		int tm = (tl + tr) >> 1;
-		T[t << 1] = {-1, -(tm - tl + 1)};
-		T[t << 1 | 1] = {-1, -(tr - tm)};
-		L[t << 1] = L[t << 1 | 1] = 1;
-		L[t] = 0;
-	}
-
-	void update_range(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
-		if (r < tl || tr < l) {
-			return;
-		}
-		if (l <= tl && tr <= r) {
-			T[t] = {-1, -(tr - tl + 1)};
-			L[t] = 1;
-			return;
-		}
-		pushdown(t, tl, tr);
-
-		int tm = (tl + tr) >> 1;
-		update_range(l, r, t << 1, tl, tm);
-		update_range(l, r, t << 1 | 1, tm + 1, tr);
-		T[t] = merge(T[t << 1], T[t << 1 | 1]);
-	}
-
-	void update_point(int i, int v, int t = 1, int tl = 0, int tr = N - 1) {
-		if (tl == tr) {
-			T[t].FF += v;
-			T[t].SS += v;
-			return;
-		}
-		pushdown(t, tl, tr);
-
-		int tm = (tl + tr) >> 1;
-		if (i <= tm) {
-			update_point(i, v, t << 1, tl, tm);
-		} else {
-			update_point(i, v, t << 1 | 1, tm + 1, tr);
-		}
-		T[t] = merge(T[t << 1], T[t << 1 | 1]);
-	}
-
-	pll query(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
-		if (r < tl || tr < l) {
-			return {-LLONG_MAX, -LLONG_MAX};
-		}
-		if (l <= tl && tr <= r) {
-			return T[t];
-		}
-		pushdown(t, tl, tr);
-
-		int tm = (tl + tr) >> 1;
-		return merge(query(l, r, t << 1, tl, tm), query(l, r, t << 1 | 1, tm + 1, tr));
-	}
+pll merge(pll l, pll r) {
+	if (l.SS == -LLONG_MAX) { return r; }
+	if (r.SS == -LLONG_MAX) { return l; }
+	return {max(l.FF + r.SS, r.FF), l.SS + r.SS};
 }
 
+void build(int t = 1, int tl = 0, int tr = N - 1) {
+	if (tl == tr) {
+		T[t].FF = T[t].SS = -1;
+		return;
+	}
+
+	int tm = (tl + tr) >> 1;
+	build(t << 1, tl, tm);
+	build(t << 1 | 1, tm + 1, tr);
+	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+}
+
+void pushdown(int t, int tl, int tr) {
+	if (!L[t]) { return; }
+	int tm = (tl + tr) >> 1;
+	T[t << 1] = {-1, -(tm - tl + 1)};
+	T[t << 1 | 1] = {-1, -(tr - tm)};
+	L[t << 1] = L[t << 1 | 1] = 1;
+	L[t] = 0;
+}
+
+void update_range(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
+	if (r < tl || tr < l) { return; }
+	if (l <= tl && tr <= r) {
+		T[t] = {-1, -(tr - tl + 1)};
+		L[t] = 1;
+		return;
+	}
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	update_range(l, r, t << 1, tl, tm);
+	update_range(l, r, t << 1 | 1, tm + 1, tr);
+	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+}
+
+void update_point(int i, int v, int t = 1, int tl = 0, int tr = N - 1) {
+	if (tl == tr) {
+		T[t].FF += v;
+		T[t].SS += v;
+		return;
+	}
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	if (i <= tm) {
+		update_point(i, v, t << 1, tl, tm);
+	} else {
+		update_point(i, v, t << 1 | 1, tm + 1, tr);
+	}
+	T[t] = merge(T[t << 1], T[t << 1 | 1]);
+}
+
+pll query(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
+	if (r < tl || tr < l) { return {-LLONG_MAX, -LLONG_MAX}; }
+	if (l <= tl && tr <= r) { return T[t]; }
+	pushdown(t, tl, tr);
+
+	int tm = (tl + tr) >> 1;
+	return merge(query(l, r, t << 1, tl, tm),
+	             query(l, r, t << 1 | 1, tm + 1, tr));
+}
+}  // namespace sgt
 
 // Heavy-Light Decomposition:
 namespace hld {
-	int par[MAXN], hvy[MAXN], dep[MAXN], root[MAXN], lpos[MAXN], rpos[MAXN];
+int par[MAXN], hvy[MAXN], dep[MAXN], root[MAXN], lpos[MAXN], rpos[MAXN];
 
-	// initialize par, hvy, dep
-	int dfs1(int u) {
-		int sze = 1, msub = 0;
-		for (int v : G[u]) {
-			par[v] = u;
-			dep[v] = dep[u] + 1;
-			int sub = dfs1(v);
-			if (sub > msub) {
-				hvy[u] = v, msub = sub;
-			}
-			sze += sub;
-		}
-		return sze;
+// initialize par, hvy, dep
+int dfs1(int u) {
+	int sze = 1, msub = 0;
+	for (int v : G[u]) {
+		par[v] = u;
+		dep[v] = dep[u] + 1;
+		int sub = dfs1(v);
+		if (sub > msub) { hvy[u] = v, msub = sub; }
+		sze += sub;
 	}
-
-	// initialize root, lpos, rpos
-	void dfs2(int u) {
-		static int t = -1;
-
-		lpos[u] = ++t;
-		if (hvy[u] != -1) {
-			root[hvy[u]] = root[u];
-			dfs2(hvy[u]);
-		}
-		for (int v : G[u])
-			if (v != hvy[u]) {
-				root[v] = v;
-				dfs2(v);
-			}
-		rpos[u] = t;
-	}
-
-	void init() {
-		fill_n(hvy, MAXN, -1);
-		par[1] = -1;
-		dep[1] = 0;
-		dfs1(1);
-		root[1] = 1;
-		dfs2(1);
-		sgt::build();
-	}
-
-	pll query(int u) {
-		pll ans = {-LLONG_MAX, -LLONG_MAX};
-		while (u != -1) {
-			ans = sgt::merge(sgt::query(lpos[root[u]], lpos[u]), ans);
-			u = par[root[u]];
-		}
-		return ans;
-	}
+	return sze;
 }
+
+// initialize root, lpos, rpos
+void dfs2(int u) {
+	static int t = -1;
+
+	lpos[u] = ++t;
+	if (hvy[u] != -1) {
+		root[hvy[u]] = root[u];
+		dfs2(hvy[u]);
+	}
+	for (int v : G[u])
+		if (v != hvy[u]) {
+			root[v] = v;
+			dfs2(v);
+		}
+	rpos[u] = t;
+}
+
+void init() {
+	fill_n(hvy, MAXN, -1);
+	par[1] = -1;
+	dep[1] = 0;
+	dfs1(1);
+	root[1] = 1;
+	dfs2(1);
+	sgt::build();
+}
+
+pll query(int u) {
+	pll ans = {-LLONG_MAX, -LLONG_MAX};
+	while (u != -1) {
+		ans = sgt::merge(sgt::query(lpos[root[u]], lpos[u]), ans);
+		u = par[root[u]];
+	}
+	return ans;
+}
+}  // namespace hld
 
 int main() {
 	cin >> N >> Q;
 	for (int i = 2; i <= N; i++) {
-		int p; cin >> p;
+		int p;
+		cin >> p;
 		G[p].push_back(i);
 	}
 
@@ -200,9 +186,7 @@ int main() {
 		} else if (t == 2) {
 			sgt::update_range(hld::lpos[u], hld::rpos[u]);
 			int q = hld::query(u).FF;
-			if (q >= 0) {
-				sgt::update_point(hld::lpos[u], -q - 1);
-			}
+			if (q >= 0) { sgt::update_point(hld::lpos[u], -q - 1); }
 		} else if (t == 3) {
 			if (hld::query(u).FF >= 0) {
 				cout << "black\n";

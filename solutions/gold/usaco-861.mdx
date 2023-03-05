@@ -16,8 +16,8 @@ author: Nathan Gong
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class FineDining {
 	public static void main(String[] args) throws IOException {
@@ -61,9 +61,7 @@ public class FineDining {
 		pq.add(new State(n - 1, 0, 0));
 		while (!pq.isEmpty()) {
 			State state = pq.remove();
-			if (dist[state.pos][state.eaten] != -1) {
-				continue;
-			}
+			if (dist[state.pos][state.eaten] != -1) { continue; }
 			dist[state.pos][state.eaten] = state.time;
 
 			// add all the neighbors
@@ -113,9 +111,7 @@ public class FineDining {
 		public int compareTo(State other) {
 			// we have to prioritize cows that haven't eaten yet so that we
 			// calculate all of dist[i][0] before calculating dist[i][1]
-			if (this.eaten != other.eaten) {
-				return this.eaten - other.eaten;
-			}
+			if (this.eaten != other.eaten) { return this.eaten - other.eaten; }
 			return this.time - other.time;
 		}
 	}

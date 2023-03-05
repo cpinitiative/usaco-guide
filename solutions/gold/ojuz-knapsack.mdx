@@ -25,15 +25,15 @@ complexity $\mathcal{O}(S^2 \log S)$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 int main() {
 	int limit;
@@ -55,12 +55,11 @@ int main() {
 	 * best[i][j] contains the most value we can
 	 * get using j weight and the first i weight types
 	 */
-	vector<vector<long long>> best(
-		by_weight.size() + 1, vector<long long>(limit + 1, INT32_MIN)
-	);
+	vector<vector<long long>> best(by_weight.size() + 1,
+	                               vector<long long>(limit + 1, INT32_MIN));
 	best[0][0] = 0;
 	int at = 1;
-	for (auto& [w, items] : by_weight) {
+	for (auto &[w, items] : by_weight) {
 		// sort items in reverse order by value
 		std::sort(items.begin(), items.end(), std::greater<pair<int, int>>());
 		for (int i = 0; i <= limit; i++) {
@@ -69,15 +68,14 @@ int main() {
 			int type_at = 0;
 			int curr_used = 0;
 			long long profit = 0;
-			// go through as many items until we run out of items or usable weight
+			// go through as many items until we run out of items or usable
+			// weight
 			while ((copies + 1) * w <= i && type_at < items.size()) {
 				copies++;
 				profit += items[type_at].first;
 				if (best[at - 1][i - copies * w] != INT32_MIN) {
 					best[at][i] = std::max(
-						best[at][i],
-						best[at - 1][i - copies * w] + profit
-					);
+					    best[at][i], best[at - 1][i - copies * w] + profit);
 				}
 
 				curr_used++;
@@ -106,7 +104,8 @@ import java.util.*;
 
 public class knapsack {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int limit = Integer.parseInt(initial.nextToken());
 		int typeNum = Integer.parseInt(initial.nextToken());
@@ -129,31 +128,28 @@ public class knapsack {
 		 * get using j weight and the first i weight types
 		 */
 		long[][] best = new long[byWeight.size() + 1][limit + 1];
-		for (long[] row : best) {
-			Arrays.fill(row, Integer.MIN_VALUE);
-		}
+		for (long[] row : best) { Arrays.fill(row, Integer.MIN_VALUE); }
 		best[0][0] = 0;
 		int at = 1;
 		for (var pair : byWeight.entrySet()) {
 			int w = pair.getKey();
 			ArrayList<int[]> items = pair.getValue();
 			// sort items in reverse order by value
-			items.sort(Comparator.comparingInt(i -> -i[0]));
+			items.sort(Comparator.comparingInt(i -> - i[0]));
 			for (int i = 0; i <= limit; i++) {
 				best[at][i] = best[at - 1][i];
 				int copies = 0;
 				int typeAt = 0;
 				int currUsed = 0;
 				long profit = 0;
-				// go through as many items until we run out of items or usable weight
+				// go through as many items until we run out of items or usable
+				// weight
 				while ((copies + 1) * w <= i && typeAt < items.size()) {
 					copies++;
 					profit += items.get(typeAt)[0];
 					if (best[at - 1][i - copies * w] != Integer.MIN_VALUE) {
 						best[at][i] = Math.max(
-							best[at][i],
-							best[at - 1][i - copies * w] + profit
-						);
+						    best[at][i], best[at - 1][i - copies * w] + profit);
 					}
 					currUsed++;
 					if (currUsed == items.get(typeAt)[1]) {

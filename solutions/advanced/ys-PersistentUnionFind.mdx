@@ -23,22 +23,19 @@ using namespace std;
 struct DSU {
 	vector<int> p, sz;
 	// stores info from the past
-	vector<pair<int,int>> past_parent, past_size;
+	vector<pair<int, int>> past_parent, past_size;
 	DSU(int n) {
 		p.resize(n);
-		sz.resize(n,1);
-		iota(p.begin(),p.end(),0);
+		sz.resize(n, 1);
+		iota(p.begin(), p.end(), 0);
 	}
 
-	int get(int x) {
-		return (p[x] == x) ? x : get(p[x]);
-	}
+	int get(int x) { return (p[x] == x) ? x : get(p[x]); }
 
 	void unite(int a, int b) {
-		a = get(a); b = get(b);
-		if (sz[a] < sz[b]) {
-			swap(a,b);
-		}
+		a = get(a);
+		b = get(b);
+		if (sz[a] < sz[b]) { swap(a, b); }
 		// add to history
 		past_parent.push_back({b, p[b]});
 		past_size.push_back({a, p[a]});
@@ -49,9 +46,7 @@ struct DSU {
 		}
 	}
 
-	bool sameset(int a, int b) {
-		return get(a) == get(b);
-	}
+	bool sameset(int a, int b) { return get(a) == get(b); }
 
 	// Reverts to previous DSU state.
 	void rollback() {
@@ -67,7 +62,7 @@ struct Query {
 };
 
 int main() {
-	cin.tie(0) -> sync_with_stdio(false);
+	cin.tie(0)->sync_with_stdio(false);
 	int n, q;
 	cin >> n >> q;
 
@@ -97,25 +92,18 @@ int main() {
 		}
 
 		// answer all the queries that use this dsu
-		for (int i: queries_using_k[idx]) {
-			self(self, i);
-		}
+		for (int i : queries_using_k[idx]) { self(self, i); }
 
 		// roll back merges
-		if (queries[idx].t == 0) {
-			dsu.rollback();
-		}
+		if (queries[idx].t == 0) { dsu.rollback(); }
 	};
 
 	dfs(dfs, 0);
 
 	for (int i = 1; i <= q; i++) {
-		if (queries[i].t) {
-			cout << ans[i] << "\n";
-		}
+		if (queries[i].t) { cout << ans[i] << "\n"; }
 	}
 }
-
 ```
 
 </CPPSection>

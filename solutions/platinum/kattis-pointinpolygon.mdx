@@ -53,7 +53,7 @@ As all geometry problem go, edge cases are a must. One edge case one might consi
 using namespace std;
 typedef long long ll;
 
-struct Point{
+struct Point {
 	ll x, y;
 };
 
@@ -65,7 +65,7 @@ ll det(Point p1, Point p2, Point p3, Point p4) {
 // Check if point p3 is above or below line segment (p1,p2)
 ll dir(Point p1, Point p2, Point p3) {
 	ll result = det(p1, p2, p2, p3);
-	if (result > 0){
+	if (result > 0) {
 		return 1;
 	} else if (result < 0) {
 		return -1;
@@ -100,12 +100,8 @@ int main() {
 		int n, m;
 		cin >> n;
 		vector<Point> polygon(n);
-		if (n == 0){
-			break;
-		}
-		for (int i = 0; i < n; i++) {
-			cin >> polygon[i].x >> polygon[i].y;
-		}
+		if (n == 0) { break; }
+		for (int i = 0; i < n; i++) { cin >> polygon[i].x >> polygon[i].y; }
 		cin >> m;
 
 		/*
@@ -120,7 +116,8 @@ int main() {
 			struct Point ray = {INT_MAX, curr.y + 1};
 			int intersections = 0;
 			for (int j = 0; j < n; j++) {
-				if (intersect(polygon[j % n], polygon[(j + 1) % n], curr, ray)) {
+				if (intersect(polygon[j % n], polygon[(j + 1) % n], curr,
+				              ray)) {
 					intersections++;
 				}
 				if (within(polygon[j % n], polygon[(j + 1) % n], curr)) {

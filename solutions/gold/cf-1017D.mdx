@@ -28,33 +28,28 @@ minus wu of $(i \oplus j)$ will also give wu values of the bits that are the sam
 using namespace std;
 
 int main() {
-	cin.tie(0) -> sync_with_stdio(0);
+	cin.tie(0)->sync_with_stdio(0);
 	int n, m, q;
 	cin >> n >> m >> q;
 	vector<int> w(n);
-	for (int& i : w) {
-		cin >> i;
-	}
+	for (int &i : w) { cin >> i; }
 
 	// precompute wu value for every subset
 	vector<int> wu(1 << n);
 	for (int i = 0; i < (1 << n); i++) {
 		for (int j = 0; j < n; j++) {
-			if (i & (1 << j)) {
-				wu[i] += w[j];
-			}
+			if (i & (1 << j)) { wu[i] += w[j]; }
 		}
 	}
 
 	// convert all strings to integers and store count
 	vector<int> str_count(1 << n);
 	for (int i = 0; i < m; i++) {
-		string s; cin >> s;
+		string s;
+		cin >> s;
 		int val = 0;
 		for (int j = 0; j < n; j++) {
-			if (s[j] == '1') {
-				val += 1 << j;
-			}
+			if (s[j] == '1') { val += 1 << j; }
 		}
 		str_count[val]++;
 	}
@@ -63,7 +58,8 @@ int main() {
 	 * precompute wu value between every pair of possible strings
 	 * .first stores the actual value, .second stores prefix of count
 	 */
-	vector<vector<pair<int, int>>> pref_wu(1 << n, vector<pair<int, int>>(1 << n));
+	vector<vector<pair<int, int>>> pref_wu(1 << n,
+	                                       vector<pair<int, int>>(1 << n));
 	for (int i = 0; i < (1 << n); i++) {
 		for (int j = 0; j < (1 << n); j++) {
 			pref_wu[i][j] = {wu.back() - wu[i ^ j], str_count[j]};
@@ -81,19 +77,17 @@ int main() {
 		cin >> t >> k;
 		int val = 0;
 		for (int i = 0; i < n; i++) {
-			if (t[i] == '1') {
-				val += 1 << i;
-			}
+			if (t[i] == '1') { val += 1 << i; }
 		}
 		// binary search for the least element with wu greater than k
-		auto it = upper_bound(pref_wu[val].begin(), pref_wu[val].end(), make_pair(k, INT32_MAX));
+		auto it = upper_bound(pref_wu[val].begin(), pref_wu[val].end(),
+		                      make_pair(k, INT32_MAX));
 		if (it == pref_wu[val].begin()) {
 			cout << 0 << "\n";
 		} else {
 			cout << prev(it)->second << "\n";
 		}
 	}
-
 }
 ```
 </CPPSection>

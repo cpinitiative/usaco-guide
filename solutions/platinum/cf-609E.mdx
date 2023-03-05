@@ -38,7 +38,7 @@ array<array<int, MAXL>, MAXN> up;
 array<array<int, MAXL>, MAXN> max_up;
 
 map<pair<int, int>, int> weights;  // weight of edge {i, j}
-vector<int> graph[MAXN];  // adjacency list for the original MST
+vector<int> graph[MAXN];           // adjacency list for the original MST
 int timer = 1;
 int n, m;
 
@@ -49,30 +49,25 @@ struct Edge {
 
 // here we build the MST using kruskals' algorithm
 // it returns the sum of the weights that took to build the MST
-ll kruskal(vector<Edge>& edges) {
+ll kruskal(vector<Edge> &edges) {
 
 	// sort by non-decreasing weight
-	sort (edges.begin(), edges.end(), [&](Edge a, Edge b) {
-		return a.weight < b.weight;
-	});
+	sort(edges.begin(), edges.end(),
+	     [&](Edge a, Edge b) { return a.weight < b.weight; });
 
 	// implementation of basic Disjoint Set Union
 	vector<int> parent(n), sz(n, 1);
 	iota(parent.begin(), parent.end(), 0);
 
 	function<int(int)> get = [&](int x) {
-		if (parent[x] != x) {
-			parent[x] = get(parent[x]);
-		}
+		if (parent[x] != x) { parent[x] = get(parent[x]); }
 		return parent[x];
 	};
 
 	// returns true if the vertices are not already united
 	function<bool(int, int)> unite = [&](int x, int y) {
 		int parent_x = get(x), parent_y = get(y);
-		if (sz[parent_x] < sz[parent_y]) {
-			swap(parent_x, parent_y);
-		}
+		if (sz[parent_x] < sz[parent_y]) { swap(parent_x, parent_y); }
 		if (parent_x != parent_y) {
 			parent[parent_y] = parent_x;
 			sz[parent_x] += sz[parent_y];
@@ -101,10 +96,8 @@ void euler_tour(int vertex, int parent) {
 	up[vertex][0] = parent;
 	max_up[vertex][0] = weights[{parent, vertex}];
 
-	for (int child: graph[vertex]) {
-		if (child != parent) {
-			euler_tour(child, vertex);
-		}
+	for (int child : graph[vertex]) {
+		if (child != parent) { euler_tour(child, vertex); }
 	}
 
 	exit_time[vertex] = timer - 1;
@@ -115,13 +108,9 @@ bool is_ancestor(int x, int y) {
 }
 
 int lca(int x, int y) {
-	if (is_ancestor(x, y)) {
-		return x;
-	}
+	if (is_ancestor(x, y)) { return x; }
 	for (int i = MAXL - 1; i >= 0; i--) {
-		if (!is_ancestor(up[x][i], y)) {
-			x = up[x][i];
-		}
+		if (!is_ancestor(up[x][i], y)) { x = up[x][i]; }
 	}
 	return up[x][0];
 }
@@ -170,9 +159,7 @@ int main() {
 		ans[e.index] = total_cost - max(max_u, max_v) + e.weight;
 	}
 
-	for (int i = 0; i < m; i++) {
-		cout << ans[i] << "\n";
-	}
+	for (int i = 0; i < m; i++) { cout << ans[i] << "\n"; }
 }
 ```
 </CPPSection>

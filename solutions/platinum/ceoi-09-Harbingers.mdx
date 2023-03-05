@@ -41,13 +41,13 @@ struct Line {
 };
 
 int N;
-ll S[MAXN];  // Start time for harbinger at node
-ll V[MAXN];  // Velocity for harbinger at node
+ll S[MAXN];         // Start time for harbinger at node
+ll V[MAXN];         // Velocity for harbinger at node
 ll min_time[MAXN];  // Minimum time to reach the capital from node
 
 vector<pll> T[MAXN];  // Stores tree edges
 
-Line stk[MAXN];  // convex hull of lines
+Line stk[MAXN];   // convex hull of lines
 int stk_max = 0;  // end of convex hull stack
 
 /**
@@ -85,8 +85,8 @@ ll line_min(ll x) {
  */
 ll remove_pos(Line line) {
 	// check if hull is trivial or if line belongs at the end
-	if (stk_max < 2 ||
-		intersect(line, stk[stk_max - 1]) >= intersect(stk[stk_max - 1], stk[stk_max - 2])) {
+	if (stk_max < 2 || intersect(line, stk[stk_max - 1]) >=
+	                       intersect(stk[stk_max - 1], stk[stk_max - 2])) {
 		return stk_max;
 	}
 
@@ -117,24 +117,27 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 		min_time[u] = 0;
 		stk[stk_max++] = {0, 0};
 	} else {
-		min_time[u] = line_min(V[u]) + d * V[u] + S[u];  // get dp value by querying convex hull
-		Line l(-d, min_time[u]);  // construct new line that might be added into hull
+		min_time[u] = line_min(V[u]) + d * V[u] +
+		              S[u];  // get dp value by querying convex hull
+		Line l(
+		    -d,
+		    min_time[u]);    // construct new line that might be added into hull
 		prev_max = stk_max;  // store previous hull size
-		prev_pos = stk_max = remove_pos(l);  // update hull size to include new line
-		prev_line = stk[stk_max];  // store previous line at replacement position
+		prev_pos = stk_max =
+		    remove_pos(l);  // update hull size to include new line
+		prev_line =
+		    stk[stk_max];    // store previous line at replacement position
 		stk[stk_max++] = l;  // update replacement position to new line
 	}
 
 	// recurse to children
 	for (auto [v, w] : T[u]) {
-		if (v != p) {
-			dfs(v, u, d + w);
-		}
+		if (v != p) { dfs(v, u, d + w); }
 	}
 
 	// reset any changes made at this step
 	if (u != 1) {
-		stk_max = prev_max;  // reset convex hull size
+		stk_max = prev_max;         // reset convex hull size
 		stk[prev_pos] = prev_line;  // reset replacement position
 	}
 }
@@ -147,15 +150,11 @@ int main() {
 		T[u].emplace_back(v, w);
 		T[v].emplace_back(u, w);
 	}
-	for (int i = 2; i <= N; i++) {
-		cin >> S[i] >> V[i];
-	}
+	for (int i = 2; i <= N; i++) { cin >> S[i] >> V[i]; }
 
 	dfs();
 
-	for (int i = 2; i <= N; i++) {
-		cout << min_time[i] << ' ';
-	}
+	for (int i = 2; i <= N; i++) { cout << min_time[i] << ' '; }
 	cout << '\n';
 }
 ```

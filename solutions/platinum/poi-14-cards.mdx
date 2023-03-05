@@ -53,7 +53,10 @@ void pull(int i, int l, int r) {
 }
 
 void build(int k = 1, int l = 0, int r = n - 1) {
-	if (l == r) { tt[k][0][0] = tt[k][1][1] = 1; return; }
+	if (l == r) {
+		tt[k][0][0] = tt[k][1][1] = 1;
+		return;
+	}
 	int m = (l + r) >> 1;
 	build(k << 1, l, m);
 	build(k << 1 | 1, m + 1, r);
@@ -61,7 +64,10 @@ void build(int k = 1, int l = 0, int r = n - 1) {
 }
 
 void update(int i, int k = 1, int l = 0, int r = n - 1) {
-	if (l == r) { tt[k][0][0] = tt[k][1][1] = 1; return; }
+	if (l == r) {
+		tt[k][0][0] = tt[k][1][1] = 1;
+		return;
+	}
 	int m = (l + r) >> 1;
 	if (i <= m) update(i, k << 1, l, m);
 	else update(i, k << 1 | 1, m + 1, r);
@@ -70,9 +76,7 @@ void update(int i, int k = 1, int l = 0, int r = n - 1) {
 
 int main() {
 	scanf("%d", &n);
-	for (int i = 0; i < n; ++i) {
-		scanf("%d%d", aa[i], aa[i] + 1);
-	}
+	for (int i = 0; i < n; ++i) { scanf("%d%d", aa[i], aa[i] + 1); }
 	build();
 	scanf("%d", &q);
 	while (q--) {
@@ -130,15 +134,11 @@ void merge(int t, int tl, int tr) {
 	T[t] = MP(llinf, llinf);
 	int tm = (tl + tr) >> 1;
 	// for first val
-	if (T[t << 1].FF <= A[tm + 1].SS)
-		T[t].FF = T[t << 1 | 1].SS;
-	if (T[t << 1].FF <= A[tm + 1].FF)
-		T[t].FF = T[t << 1 | 1].FF;
+	if (T[t << 1].FF <= A[tm + 1].SS) T[t].FF = T[t << 1 | 1].SS;
+	if (T[t << 1].FF <= A[tm + 1].FF) T[t].FF = T[t << 1 | 1].FF;
 	// for second val
-	if (T[t << 1].SS <= A[tm + 1].SS)
-		T[t].SS = T[t << 1 | 1].SS;
-	if (T[t << 1].SS <= A[tm + 1].FF)
-		T[t].SS = T[t << 1 | 1].FF;
+	if (T[t << 1].SS <= A[tm + 1].SS) T[t].SS = T[t << 1 | 1].SS;
+	if (T[t << 1].SS <= A[tm + 1].FF) T[t].SS = T[t << 1 | 1].FF;
 }
 
 void build(ll t = 1, ll tl = 1, ll tr = N) {
@@ -159,33 +159,30 @@ void update(int i, pll v, int t = 1, int tl = 1, int tr = N) {
 		return;
 	}
 	ll tm = (tl + tr) >> 1;
-	if (i <= tm)
-		update(i, v, t << 1, tl, tm);
-	else
-		update(i, v, t << 1 | 1, tm + 1, tr);
+	if (i <= tm) update(i, v, t << 1, tl, tm);
+	else update(i, v, t << 1 | 1, tm + 1, tr);
 	merge(t, tl, tr);
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
 	cin >> N;
 	for (int i = 1; i <= N; i++) {
 		cin >> A[i].FF >> A[i].SS;
-		if (A[i].FF > A[i].SS)
-			swap(A[i].FF, A[i].SS);
+		if (A[i].FF > A[i].SS) swap(A[i].FF, A[i].SS);
 	}
 	build();
 	cin >> Q;
 	while (Q--) {
-		int a, b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		pll t = A[a];
 		update(a, A[b]);
 		update(b, t);
-		if (T[1].FF == llinf)
-			cout << "NIE\n";
-		else
-			cout << "TAK\n";
+		if (T[1].FF == llinf) cout << "NIE\n";
+		else cout << "TAK\n";
 	}
 }
 ```

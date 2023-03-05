@@ -39,9 +39,7 @@ int main() {
 		int n, m, k;
 		cin >> n >> m >> k;
 		vector<ll> x(n + 1);  // multiplier for moving on each floor
-		for (int i = 1; i <= n; i++) {
-			cin >> x[i];
-		}
+		for (int i = 1; i <= n; i++) { cin >> x[i]; }
 
 		// stores all ladders info in the row they can be accessed.
 		vector<vector<Ladder>> ladder_row(n + 1);
@@ -54,8 +52,8 @@ int main() {
 
 		for (int i = 0; i < k; i++) {
 			Ladder tmp;
-			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row
-				>> tmp.to_col >> tmp.health;
+			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row >> tmp.to_col >>
+			    tmp.health;
 			ladder_row[tmp.from_row].push_back(tmp);
 			ladder_col[tmp.from_row].insert(tmp.from_col);
 			ladder_col[tmp.to_row].insert(tmp.to_col);
@@ -67,9 +65,7 @@ int main() {
 
 		vector<map<int, ll>> dist(n + 1);
 		for (int i = 1; i <= n; i++) {
-			for (int j: ladder_col[i]) {
-				dist[i][j] = INT64_MAX;
-			}
+			for (int j : ladder_col[i]) { dist[i][j] = INT64_MAX; }
 		}
 		dist[1][1] = 0;
 
@@ -80,12 +76,12 @@ int main() {
 			vector<int> in_row(ladder_col[row].begin(), ladder_col[row].end());
 
 			/*
-			 * priority queue that sorts by minimum distance to that ladder first,
-			 * then col of ladder
+			 * priority queue that sorts by minimum distance to that ladder
+			 * first, then col of ladder
 			 */
-			priority_queue<pair<ll, int>,
-			vector<pair<ll, int>>,
-			greater<pair<ll, int>>> pq;
+			priority_queue<pair<ll, int>, vector<pair<ll, int>>,
+			               greater<pair<ll, int>>>
+			    pq;
 
 			for (int col : in_row) {
 				// make sure we can reach the ladder point
@@ -98,8 +94,8 @@ int main() {
 				ll distance = pq.top().first;
 				int col = pq.top().second;
 				pq.pop();
-				int index = lower_bound(in_row.begin(), in_row.end(), col)
-								- in_row.begin();
+				int index = lower_bound(in_row.begin(), in_row.end(), col) -
+				            in_row.begin();
 
 				// we go to the left ladder on the same floor
 				if (index > 0) {
@@ -128,10 +124,8 @@ int main() {
 				if (dist[i.from_row][i.from_col] != INT64_MAX) {
 					// min of if we take this ladder or not.
 					ll from = dist[i.from_row][i.from_col];
-					dist[i.to_row][i.to_col] = min(
-						dist[i.to_row][i.to_col],
-						from - i.health
-					);
+					dist[i.to_row][i.to_col] =
+					    min(dist[i.to_row][i.to_col], from - i.health);
 				}
 			}
 		}

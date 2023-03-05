@@ -26,16 +26,12 @@ int main() {
 	int n;
 	fin >> n;
 	vector<int> order(n);
-	for (int i = 0; i < n; i++) {
-		fin >> order[i];
-	}
+	for (int i = 0; i < n; i++) { fin >> order[i]; }
 
 	// returns true if dishes with indexes [0, end_index) can be washed
-	auto prefix_washable = [&] (int end_index) -> bool {
+	auto prefix_washable = [&](int end_index) -> bool {
 		deque<int> not_washed;
-		for (int i = 0; i < end_index; i++) {
-			not_washed.push_back(order[i]);
-		}
+		for (int i = 0; i < end_index; i++) { not_washed.push_back(order[i]); }
 		sort(not_washed.begin(), not_washed.end());
 
 		// Each array represents a separate soapy stack
@@ -65,13 +61,11 @@ int main() {
 
 			// while are able to wash a plate, wash it
 			while (!soapy_stacks.empty() &&
-				soapy_stacks.front().back() == not_washed.front()) {
+			       soapy_stacks.front().back() == not_washed.front()) {
 				soapy_stacks.front().pop_back();
 				not_washed.pop_front();
 				// if first stack is empty, remove it
-				if (soapy_stacks.front().empty()) {
-					soapy_stacks.pop_front();
-				}
+				if (soapy_stacks.front().empty()) { soapy_stacks.pop_front(); }
 			}
 		}
 

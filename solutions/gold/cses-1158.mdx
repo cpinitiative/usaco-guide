@@ -28,12 +28,8 @@ int main() {
 	vector<int> cost(n);
 	vector<int> pages(n);
 
-	for (int i = 0; i < n; i++) {
-		cin >> cost[i];
-	}
-	for (int i = 0; i < n; i++) {
-		cin >> pages[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> cost[i]; }
+	for (int i = 0; i < n; i++) { cin >> pages[i]; }
 
 	/*
 	 * dp[i][j] is the most number of pages that can be bought from
@@ -98,14 +94,14 @@ public class bookShop {
 		int[][] dp = new int[N + 5][X + 5];
 		for (int book = 0; book < N; book++) {
 			for (int money = 0; money <= X; money++) {
-				dp[book+1][money] = dp[book][money];
+				dp[book + 1][money] = dp[book][money];
 				int prev = money - costs[book];
 				if (prev >= 0) {
 					// The total number of pages we have if we buy this book.
 					int newState = dp[book][prev] + pages[book];
-					dp[book+1][money] = Integer.max(dp[book+1][money], newState);
+					dp[book + 1][money] =
+					    Integer.max(dp[book + 1][money], newState);
 				}
-
 			}
 		}
 

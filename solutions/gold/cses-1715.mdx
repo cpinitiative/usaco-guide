@@ -27,15 +27,13 @@ const ll MOD = 1e9 + 7;
 const int MAXN = 1e6;
 
 array<ll, MAXN + 1> fact;  // fact[i] = i! % MOD
-array<ll, MAXN + 1> inv;  // inv[i] = modular inverse of fact[i];
+array<ll, MAXN + 1> inv;   // inv[i] = modular inverse of fact[i];
 
 // calculate a ^ b (mod m) in log b time
 ll modpow(ll a, ll b, ll m) {
 	ll prod = 1;
 	while (b > 0) {
-		if (b % 2 == 1) {
-			prod = (prod * a) % m;
-		}
+		if (b % 2 == 1) { prod = (prod * a) % m; }
 		b /= 2;
 		a = (a * a) % m;
 	}
@@ -54,9 +52,7 @@ int main() {
 	cin >> s;
 
 	vector<int> character_count(26);
-	for (char i : s) {
-		character_count[i - 'a']++;
-	}
+	for (char i : s) { character_count[i - 'a']++; }
 
 	ll total = fact[s.length()];
 	for (int i : character_count) {

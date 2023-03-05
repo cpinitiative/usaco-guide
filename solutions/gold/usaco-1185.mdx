@@ -62,9 +62,7 @@ int n;
 
 ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 	// initially one way to set the first i elements to zero
-	for (int i = 0; i <= MX_HUNGER; i++) {
-		dp[i] = 1;
-	}
+	for (int i = 0; i <= MX_HUNGER; i++) { dp[i] = 1; }
 
 	// ways considering that all numbers before i are all zero & i is set to j
 	for (int i = 1; i < n; i++) {
@@ -79,9 +77,7 @@ ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 
 			diff[0] += dp[j];
 
-			if (diff[0] >= MOD) {
-				diff[0] -= MOD;
-			}
+			if (diff[0] >= MOD) { diff[0] -= MOD; }
 
 			// be careful when modding negative values
 			diff[rb] = (((diff[rb] - dp[j]) % MOD) + MOD) % MOD;
@@ -93,17 +89,13 @@ ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 		for (int j = 1; j <= MX_HUNGER; j++) {
 			dp[j] = dp[j - 1] + diff[j];
 
-			if (dp[j] >= MOD) {
-				dp[j] -= MOD;
-			}
+			if (dp[j] >= MOD) { dp[j] -= MOD; }
 
 			assert(dp[j] >= 0);
 		}
 
 		// reset difference array
-		for (int j = 0; j <= MX_HUNGER; j++) {
-			diff[j] = 0;
-		}
+		for (int j = 0; j <= MX_HUNGER; j++) { diff[j] = 0; }
 	}
 
 	return dp[0];
@@ -127,7 +119,8 @@ int main() {
 	if (n % 2 == 1) {
 		/*
 		 * we can't assume that all elements can be equal to zero.
-		 * instead, we have to compute the answer for all possible hunger values.
+		 * instead, we have to compute the answer for all possible hunger
+		 * values.
 		 */
 		for (int i = 0; i <= mn; i++) {
 			ans = (ans + ways_offset(i) + MOD) % MOD;

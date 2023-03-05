@@ -56,8 +56,8 @@ This solution sends exactly 12 extra nodes.
 `Anna.cpp`
 
 ```cpp
-#include <vector>
 #include "Alicelib.h"
+#include <vector>
 
 void Alice(int N, int M, int A[], int B[]) {
 	std::vector<std::pair<int, int>> edges;
@@ -84,8 +84,8 @@ void Alice(int N, int M, int A[], int B[]) {
 `Bob.cpp`
 
 ```cpp
-#include <vector>
 #include "Boblib.h"
+#include <vector>
 
 std::vector<int> graph[1012];
 bool adj[1012][1012], is_bit[1012], visited[1012];
@@ -117,16 +117,19 @@ void Bob(int V, int U, int C[], int D[]) {
 	for (int i = 9; ~i; i--) {
 		visited[last_bit] = true;
 		for (int j : graph[last_bit]) actual[j] += 1 << i;
-		for (int j : graph[last_bit]) if (is_bit[j] && !visited[j]) {
-			last_bit = j;
-			break;
-		}
+		for (int j : graph[last_bit])
+			if (is_bit[j] && !visited[j]) {
+				last_bit = j;
+				break;
+			}
 	}
 	// Construct the graph again
 	std::vector<std::pair<int, int>> edges;
-	for (int i = 0; i < V; i++) for (int j = i + 1; j < V; j++) {
-		if (adj[i][j] && !is_bit[i] && !is_bit[j]) edges.push_back({actual[i], actual[j]});
-	}
+	for (int i = 0; i < V; i++)
+		for (int j = i + 1; j < V; j++) {
+			if (adj[i][j] && !is_bit[i] && !is_bit[j])
+				edges.push_back({actual[i], actual[j]});
+		}
 	InitMap(V - 12, edges.size());
 	for (std::pair<int, int> i : edges) MakeMap(i.first, i.second);
 }

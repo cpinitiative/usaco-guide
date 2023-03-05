@@ -23,8 +23,8 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Sleepy {
 	public static void main(String[] args) throws IOException {
@@ -33,9 +33,7 @@ public class Sleepy {
 
 		int n = sc.nextInt();
 		int[] cows = new int[n];
-		for (int i = 0; i < n; i++) {
-			cows[i] = sc.nextInt()-1;
-		}
+		for (int i = 0; i < n; i++) { cows[i] = sc.nextInt() - 1; }
 
 		/*
 		 * To find K, we first need to calculate the length of the longest
@@ -49,16 +47,16 @@ public class Sleepy {
 		 */
 
 		int suffixLength = 1;
-		for (int i = n-1; i >= 0; i--) {
+		for (int i = n - 1; i >= 0; i--) {
 			// If current cow is in order, increment suffix length and continue
 			// Otherwise, there has been an inversion so we break from the loop
-			if (cows[i] > cows[i-1]) {
+			if (cows[i] > cows[i - 1]) {
 				suffixLength++;
 			} else {
 				break;
 			}
 		}
-		int k = n-suffixLegth;
+		int k = n - suffixLegth;
 		out.println(k);
 
 		/* To calculate the minimum amount of paces each cow needs to make,
@@ -72,16 +70,14 @@ public class Sleepy {
 		 */
 
 		SegmentTree seg = new SegmentTree(n);
-		for (int i = k; i < n; i++) {
-			seg.add(cows[i], 1);
-		}
+		for (int i = k; i < n; i++) { seg.add(cows[i], 1); }
 		for (int i = 0; i < k; i++) {
 			// Takes the prefix sum up to cows[i] - 1, which calculates the
 			// number of cows smaller than the current cow
-			int smaller = seg.sum(0, cows[i]-1);
+			int smaller = seg.sum(0, cows[i] - 1);
 
-			out.print(smaller + (k-i-1));
-			if (i < k-1) out.print(" ");
+			out.print(smaller + (k - i - 1));
+			if (i < k - 1) out.print(" ");
 			seg.add(cows[i], 1);
 		}
 		out.println();
@@ -94,7 +90,7 @@ public class Sleepy {
 
 		public SegmentTree(int n) {
 			this.n = n;
-			tree = new int[n*2];
+			tree = new int[n * 2];
 		}
 
 		public int sum(int a, int b) {
@@ -102,8 +98,8 @@ public class Sleepy {
 			b += n;
 			int sum = 0;
 			while (a <= b) {
-				if (a%2 == 1) sum += tree[a++];
-				if (b%2 == 0) sum += tree[b--];
+				if (a % 2 == 1) sum += tree[a++];
+				if (b % 2 == 0) sum += tree[b--];
 				a /= 2;
 				b /= 2;
 			}
@@ -114,7 +110,7 @@ public class Sleepy {
 			index += n;
 			tree[index] += amount;
 			for (index /= 2; index >= 1; index /= 2) {
-				tree[index] = tree[2*index]+tree[2*index+1];
+				tree[index] = tree[2 * index] + tree[2 * index + 1];
 			}
 		}
 	}
@@ -161,16 +157,14 @@ public class Sleepy {
 		k--;
 
 		for (int i = 1; i <= k; i++) {
-			ans[i] = query(order[i]-1) + k - i;
+			ans[i] = query(order[i] - 1) + k - i;
 			update(order[i], 1);
 		}
 
 		PrintWriter out = new PrintWriter("sleepy.out");
 		out.println(k);
 
-		for (int i = 1; i < k; i++) {
-			out.print(ans[i] + " ");
-		}
+		for (int i = 1; i < k; i++) { out.print(ans[i] + " "); }
 
 		out.println(ans[k]);
 
@@ -178,21 +172,15 @@ public class Sleepy {
 		out.close();
 	}
 
-	public static int lowbit(int x) {
-		return x & (-x);
-	}
+	public static int lowbit(int x) { return x & (-x); }
 
 	public static void update(int x, int k) {
-		for (int i = x; i <= n; i += lowbit(i)) {
-			bit[i] += k;
-		}
+		for (int i = x; i <= n; i += lowbit(i)) { bit[i] += k; }
 	}
 
 	public static int query(int x) {
 		int ans = 0;
-		for (int i = x; i > 0; i -= lowbit(i)) {
-			ans += bit[i];
-		}
+		for (int i = x; i > 0; i -= lowbit(i)) { ans += bit[i]; }
 		return ans;
 	}
 }

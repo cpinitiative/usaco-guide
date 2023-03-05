@@ -46,9 +46,7 @@ int main() {
 	int N;
 	cin >> N;
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			cin >> compat[i][j];
-		}
+		for (int j = 0; j < N; j++) { cin >> compat[i][j]; }
 	}
 
 	dp[0] = 1;
@@ -60,8 +58,7 @@ int main() {
 			 * 1. this woman hasn't been paired already
 			 * 2. she's also compatible with the {pair_num + 1}th man
 			 */
-			if ((s & (1 << w)) || !compat[pair_num][w])
-				continue;
+			if ((s & (1 << w)) || !compat[pair_num][w]) continue;
 
 			// add the amount to future dp states
 			dp[s | (1 << w)] += dp[s];
@@ -69,7 +66,7 @@ int main() {
 		}
 	}
 
-   	cout << dp[(1 << N) - 1] << endl;
+	cout << dp[(1 << N) - 1] << endl;
 }
 ```
 </CPPSection>
@@ -81,9 +78,10 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static final int MOD = (int) 1e9 + 7;
+	public static final int MOD = (int)1e9 + 7;
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		boolean[][] compat = new boolean[N][N];
 		for (int m = 0; m < N; m++) {
@@ -103,8 +101,7 @@ public class Main {
 				 * 1. this woman hasn't been paired already
 				 * 2. she's also compatible with the {pair_num + 1}th man
 				 */
-				if ((s & (1 << w)) != 0 || !compat[pair_num][w])
-					continue;
+				if ((s & (1 << w)) != 0 || !compat[pair_num][w]) continue;
 
 				// add the amount to future dp states
 				dp[s | (1 << w)] += dp[s];

@@ -37,9 +37,7 @@ int main() {
 	cin >> n >> m >> t;
 
 	vector<int> fields(n);
-	for (int i = 0; i < n; i++) {
-		cin >> fields[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> fields[i]; }
 
 	// adj[i] = {travel time, adjacent node}
 	vector<vector<pair<int, int>>> adj(n);
@@ -55,11 +53,9 @@ int main() {
 
 	// prev stores parents for backtracking
 	vector<int> prev(n, INT32_MAX);
-	priority_queue<
-		pair<int, int>,
-		vector<pair<int, int>>,
-		greater<pair<int, int>>
-	> pq;
+	priority_queue<pair<int, int>, vector<pair<int, int>>,
+	               greater<pair<int, int>>>
+	    pq;
 
 	cost[0] = 0;
 
@@ -72,21 +68,20 @@ int main() {
 		int cur_cost = nxt.first;
 		int cur_node = nxt.second;
 
-		if (cur_cost != cost[cur_node]) {
-			continue;
-		}
+		if (cur_cost != cost[cur_node]) { continue; }
 
-		for (const pair<int, int>& u : adj[cur_node]) {
+		for (const pair<int, int> &u : adj[cur_node]) {
 			// if this path is more optimal
 			if (u.first + cur_cost < cost[u.second]) {
 				cost[u.second] = u.first + cur_cost;
 				pq.push({u.first + cur_cost, u.second});
 				prev[u.second] = cur_node;
-			/*
-			 * keep paths lexicographically minimum by
-			 * always choosing the lesser-indexed node
-			 */
-			} else if (u.first + cur_cost == cost[u.second] && cur_node < prev[u.second]) {
+				/*
+				 * keep paths lexicographically minimum by
+				 * always choosing the lesser-indexed node
+				 */
+			} else if (u.first + cur_cost == cost[u.second] &&
+			           cur_node < prev[u.second]) {
 				prev[u.second] = cur_node;
 				pq.push({u.first + cur_cost, u.second});
 			}

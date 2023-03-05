@@ -117,9 +117,9 @@ Given this, the rest of the problem is simple knapsack.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
@@ -155,12 +155,10 @@ int main() {
 	 * if we sort like this, then the entire clock rate issue
 	 * goes away as long as we process them in order
 	 */
-	std::sort(
-		poss_transactions.begin(), poss_transactions.end(),
-		[] (const Transaction& a, const Transaction& b) -> bool {
-			return a.rate != b.rate ? a.rate > b.rate : a.price < b.price;
-		}
-	);
+	std::sort(poss_transactions.begin(), poss_transactions.end(),
+	          [](const Transaction &a, const Transaction &b) -> bool {
+		          return a.rate != b.rate ? a.rate > b.rate : a.price < b.price;
+	          });
 
 	/*
 	 * max_profits[t][c] = the maximum profit we can gain from the first
@@ -168,13 +166,14 @@ int main() {
 	 */
 	vector<long long> max_profits(max_computers + 1, INT64_MIN);
 	max_profits[0] = 0;
-	for (const Transaction& t : poss_transactions) {
+	for (const Transaction &t : poss_transactions) {
 		vector<long long> new_max(max_profits);
 		for (int c = 0; c <= max_computers; c++) {
 			int prev_comp = c - t.cores;
-			if (0 <= prev_comp && prev_comp <= max_computers
-					&& max_profits[prev_comp] != INT64_MIN) {
-				new_max[c] = std::max(new_max[c], max_profits[prev_comp] + t.price);
+			if (0 <= prev_comp && prev_comp <= max_computers &&
+			    max_profits[prev_comp] != INT64_MIN) {
+				new_max[c] =
+				    std::max(new_max[c], max_profits[prev_comp] + t.price);
 			}
 		}
 		max_profits = new_max;

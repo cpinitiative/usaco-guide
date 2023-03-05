@@ -75,9 +75,7 @@ int main() {
 	// Brute force through all possible lengths of r0
 	for (int len_r0 = 1; len_r0 < t.size() / count0; len_r0++) {
 		// This r0 is invalid if the length of r1 is no longer an integer
-		if ((t.size() - len_r0 * count0) % count1 != 0) {
-			continue;
-		}
+		if ((t.size() - len_r0 * count0) % count1 != 0) { continue; }
 		int len_r1 = (t.size() - len_r0 * count0) / count1;
 
 		int len_ri[2] = {len_r0, len_r1};
@@ -88,21 +86,23 @@ int main() {
 		// i points to the current position in the pattern string s.
 		for (int i = 0; i < s.size(); i++) {
 			int s_i = s[i] - '0';
-			// If the hash for r_i is not calculated yet, we first calculate this.
+			// If the hash for r_i is not calculated yet, we first calculate
+			// this.
 			if (hash_i[s_i] == 0) {
 				hash_i[s_i] = get_hash(pointer_t, pointer_t + len_ri[s_i]);
 			}
 
 			/*
-			 * Compare the hash of r_i with the current substring in t. If they are
-			 * not the same, or if both hashes (and therefore both r_0 and r_1) are
-			 * the same, this r_0 is invalid and we can go to the next possibility.
+			 * Compare the hash of r_i with the current substring in t. If they
+			 * are not the same, or if both hashes (and therefore both r_0 and
+			 * r_1) are the same, this r_0 is invalid and we can go to the next
+			 * possibility.
 			 */
 			if (hash_i[s_i] != get_hash(pointer_t, pointer_t + len_ri[s_i]) ||
-					hash_i[0] == hash_i[1]) {
+			    hash_i[0] == hash_i[1]) {
 				/*
-				 * Since we add one to the counter anyway, we want to subtract one in
-				 * case this r_0 does not count.
+				 * Since we add one to the counter anyway, we want to subtract
+				 * one in case this r_0 does not count.
 				 */
 				pairs_count--;
 				break;
