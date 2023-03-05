@@ -1,0 +1,16 @@
+name: Pre-Commit
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.x
+    - uses: pre-commit-ci/lite-action@v1.0.1
+      if: always()
