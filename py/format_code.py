@@ -4,9 +4,9 @@ import os
 import subprocess
 import sys
 import tempfile
-import black
 from typing import List
 
+import black
 
 # see https://clang.llvm.org/docs/ClangFormatStyleOptions.html for more options
 CLANG_FORMAT_STYLE = """
@@ -79,7 +79,7 @@ def denotes_lang(line: str):
 
 
 def format_path(path: str):
-	print("formatting", path)
+	# print("formatting", path)
 	with open(path, "r") as f:
 		lines = f.readlines()
 	lang = None
@@ -97,7 +97,10 @@ def format_path(path: str):
 			if lang is not None:  # end of lang block
 				if not contains_banned_terms(prog):
 					prog = [match_indentation(line, prog_line) for prog_line in prog]
+					ori_prog = prog
 					prog = format_prog(lang, prog)
+					if ori_prog != prog:
+						print("formatted", path)
 					whitespace = line[: line.find("```")]
 					nlines += [whitespace + line for line in prog]
 				else:  # don't format
@@ -128,5 +131,8 @@ if __name__ == "__main__":
 	Args: paths of files to format
 	"""
 	# raise ValueError(sys.argv[1:])
-	for path in sys.argv[1:]:
+	paths = sys.argv[1:]
+	print(f"Formatting {len(paths)} paths")
+	for path in paths:
 		format_path(path)
+	print("Done!")
