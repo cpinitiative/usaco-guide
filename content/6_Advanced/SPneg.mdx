@@ -184,14 +184,16 @@ void solve() {
 	}
 	F0R(k, n)
 	F0R(i, n)
-	F0R(j, n) if (dist[i][k] != INF && dist[k][j] != INF) dist[i][j] =
+	F0R(j, n)
+	if (dist[i][k] != INF && dist[k][j] != INF) dist[i][j] =
 	    min(dist[i][j], dist[i][k] + dist[k][j]);
 
 	F0R(k, n)
 	F0R(i, n)
-	F0R(j, n) if (dist[i][k] != INF &&
-	              dist[k][j] != INF) if (dist[i][j] > dist[i][k] + dist[k][j])
-	    bad[i][j] = 1;
+	F0R(j, n)
+	if (dist[i][k] != INF &&
+	    dist[k][j] != INF) if (dist[i][j] > dist[i][k] + dist[k][j]) bad[i][j] =
+	    1;
 
 	F0R(k, n) F0R(i, n) F0R(j, n) {
 		if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
