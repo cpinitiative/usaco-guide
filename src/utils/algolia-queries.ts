@@ -135,7 +135,22 @@ const queries = [
           existingProblem.tags = [
             ...new Set([...existingProblem.tags, ...(node.tags || [])]),
           ];
-          if (moduleInfo) existingProblem.problemModules.push(moduleInfo);
+          if (moduleInfo) {
+            // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
+            const removeDuplicates = arrayOfObjects => {
+              return arrayOfObjects.filter(
+                (object, index) =>
+                  index ===
+                  arrayOfObjects.findIndex(
+                    obj => JSON.stringify(obj) === JSON.stringify(object)
+                  )
+              );
+            };
+            existingProblem.problemModules = removeDuplicates([
+              ...existingProblem.problemModules,
+              moduleInfo,
+            ]);
+          }
         } else {
           res.push({
             objectID: node.uniqueId,
