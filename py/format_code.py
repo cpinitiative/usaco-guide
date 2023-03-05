@@ -67,6 +67,11 @@ def format_prog(lang: str, prog: List[str]):
 		return format_prog_clang(lang, prog)
 
 
+def denotes_lang(line: str):
+	line = line.strip()
+	return line.startswith("```") and len(line) > 3 and line.count('`') != len(line) and 'sh' not in line
+
+
 def format_path(path: str):
 	print("formatting", path)
 	with open(path, "r") as f:
@@ -75,13 +80,13 @@ def format_path(path: str):
 	nlines = []
 	prog = []
 	for line in lines:
-		if line.strip().startswith("```") and len(line.strip()) > 3: # start of lang block
+		if denotes_lang(line): # start of lang block
 			lang = line.strip()[3:].strip()
 			if lang == 'python':
 				lang = 'py'
 			if lang not in ['cpp', 'py', 'java']:
 				raise ValueError(f"Unrecognized formatting lang: {line.strip()[3:]}")
-			nlines.append(f"```{lang}\n")
+			nlines.append(line[: line.find("```")] + f"```{lang}\n")
 		elif line.strip() == "```":
 			if lang is not None: # end of lang block
 				if not contains_banned_terms(prog):
