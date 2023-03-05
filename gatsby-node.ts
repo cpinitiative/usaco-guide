@@ -186,6 +186,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     if (err) throw new Error('error: ' + err);
     (data + '')
       .split('\n')
+      .filter(line => line != '')
       .filter(line => line.charAt(0) !== '#')
       .map(line => {
         const tokens = line.split('\t');
