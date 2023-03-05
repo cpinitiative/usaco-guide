@@ -7,21 +7,11 @@ import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { ProblemSolutionContext } from '../context/ProblemSolutionContext';
 import { SolutionInfo } from '../models/solution';
+import { removeDuplicates } from '../utils/utils';
 
 export default function Template(props) {
   const { xdm, allProblemInfo, problemInfo } = props.data;
   const { body } = xdm;
-
-  // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
-  const removeDuplicates = arrayOfObjects => {
-    return arrayOfObjects.filter(
-      (object, index) =>
-        index ===
-        arrayOfObjects.findIndex(
-          obj => JSON.stringify(obj) === JSON.stringify(object)
-        )
-    );
-  };
 
   const modulesThatHaveProblem: { id: string; title: string }[] =
     removeDuplicates(

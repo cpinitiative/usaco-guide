@@ -6,6 +6,7 @@ import {
 } from '../models/algoliaEditorFile';
 import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
+import { removeDuplicates } from './utils';
 
 const pageQuery = `{
   pages: allXdm(filter: {fileAbsolutePath: {regex: "/content/"}}) {
@@ -136,16 +137,6 @@ const queries = [
             ...new Set([...existingProblem.tags, ...(node.tags || [])]),
           ];
           if (moduleInfo) {
-            // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
-            const removeDuplicates = arrayOfObjects => {
-              return arrayOfObjects.filter(
-                (object, index) =>
-                  index ===
-                  arrayOfObjects.findIndex(
-                    obj => JSON.stringify(obj) === JSON.stringify(object)
-                  )
-              );
-            };
             existingProblem.problemModules = removeDuplicates([
               ...existingProblem.problemModules,
               moduleInfo,

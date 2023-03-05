@@ -24,17 +24,6 @@ function ProblemHit({ hit }: ProblemHitProps) {
       title: 'USACO Monthlies',
     });
   }
-  // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
-  const removeDuplicates = arrayOfObjects => {
-    return arrayOfObjects.filter(
-      (object, index) =>
-        index ===
-        arrayOfObjects.findIndex(
-          obj => JSON.stringify(obj) === JSON.stringify(object)
-        )
-    );
-  };
-  hit.problemModules = removeDuplicates(hit.problemModules);
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
