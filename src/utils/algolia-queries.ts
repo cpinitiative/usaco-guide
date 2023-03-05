@@ -6,7 +6,6 @@ import {
 } from '../models/algoliaEditorFile';
 import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
-import { removeDuplicates } from './utils';
 
 const pageQuery = `{
   pages: allXdm(filter: {fileAbsolutePath: {regex: "/content/"}}) {
@@ -136,11 +135,13 @@ const queries = [
           existingProblem.tags = [
             ...new Set([...existingProblem.tags, ...(node.tags || [])]),
           ];
-          if (moduleInfo) {
-            existingProblem.problemModules = removeDuplicates([
-              ...existingProblem.problemModules,
-              moduleInfo,
-            ]);
+          if (
+            moduleInfo &&
+            !existingProblem.problemModules.find(
+              module => module.id === moduleInfo.id
+            )
+          ) {
+            existingProblem.problemModules.push(moduleInfo);
           }
         } else {
           res.push({
