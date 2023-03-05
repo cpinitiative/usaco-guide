@@ -28,7 +28,7 @@ Additionally, we also have to print if we can form a non-decreasing list using t
 
 ## Implementation
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -53,7 +53,10 @@ void pull(int i, int l, int r) {
 }
 
 void build(int k = 1, int l = 0, int r = n - 1) {
-	if (l == r) { tt[k][0][0] = tt[k][1][1] = 1; return; }
+	if (l == r) {
+		tt[k][0][0] = tt[k][1][1] = 1;
+		return;
+	}
 	int m = (l + r) >> 1;
 	build(k << 1, l, m);
 	build(k << 1 | 1, m + 1, r);
@@ -61,7 +64,10 @@ void build(int k = 1, int l = 0, int r = n - 1) {
 }
 
 void update(int i, int k = 1, int l = 0, int r = n - 1) {
-	if (l == r) { tt[k][0][0] = tt[k][1][1] = 1; return; }
+	if (l == r) {
+		tt[k][0][0] = tt[k][1][1] = 1;
+		return;
+	}
 	int m = (l + r) >> 1;
 	if (i <= m) update(i, k << 1, l, m);
 	else update(i, k << 1 | 1, m + 1, r);
@@ -70,9 +76,7 @@ void update(int i, int k = 1, int l = 0, int r = n - 1) {
 
 int main() {
 	scanf("%d", &n);
-	for (int i = 0; i < n; ++i) {
-		scanf("%d%d", aa[i], aa[i] + 1); 
-	}
+	for (int i = 0; i < n; ++i) { scanf("%d%d", aa[i], aa[i] + 1); }
 	build();
 	scanf("%d", &q);
 	while (q--) {
@@ -86,16 +90,16 @@ int main() {
 }
 ```
 </CPPSection>
-	
+
 </LanguageSection>
 
-## Alternate Solution 
+## Alternate Solution
 
 We can reduce the number of states stored in the segment tree to just two:
 - The minimum last value of the interval given that we take the lesser side of the first card (denote this as $FF$)
 - The minimum last value of the interval given that we take the greater side of the first card (denote this as $SS$)
-	
-Note that it will always be optimal to take the lesser side of the last side given that we can take both. This, in turn, prepares the current interval with the next merging step, if applicable. 
+
+Note that it will always be optimal to take the lesser side of the last side given that we can take both. This, in turn, prepares the current interval with the next merging step, if applicable.
 
 Let's denote the array of cards as $A$, where $A.FF$ is the front side and $A.SS$ is the back side. Without loss of generality, assume that $A[i].FF \leq A[i].SS$ for all $i \in [1, n]$. We consider merging interval $u$ and $v$ to create interval $w$, where $w$ corresponds to the array elements $[l, r]$. Note that this implies $u$ corresponds to $[l, m]$ and $v$ corresponds to $[m + 1, r]$, where $m = \lfloor \frac {l + r} 2 \rfloor$
 - $$w.FF = \begin{cases} v.FF & u.FF \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.FF \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$$
@@ -107,9 +111,9 @@ Note that we choose $\infty$ to be the default value, because under our merge co
 
 ## Implementation
 <LanguageSection>
-	
+
 <CPPSection>
-	
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -130,15 +134,11 @@ void merge(int t, int tl, int tr) {
 	T[t] = MP(llinf, llinf);
 	int tm = (tl + tr) >> 1;
 	// for first val
-	if (T[t << 1].FF <= A[tm + 1].SS)
-		T[t].FF = T[t << 1 | 1].SS;
-	if (T[t << 1].FF <= A[tm + 1].FF)
-		T[t].FF = T[t << 1 | 1].FF;
+	if (T[t << 1].FF <= A[tm + 1].SS) T[t].FF = T[t << 1 | 1].SS;
+	if (T[t << 1].FF <= A[tm + 1].FF) T[t].FF = T[t << 1 | 1].FF;
 	// for second val
-	if (T[t << 1].SS <= A[tm + 1].SS)
-		T[t].SS = T[t << 1 | 1].SS;
-	if (T[t << 1].SS <= A[tm + 1].FF)
-		T[t].SS = T[t << 1 | 1].FF;
+	if (T[t << 1].SS <= A[tm + 1].SS) T[t].SS = T[t << 1 | 1].SS;
+	if (T[t << 1].SS <= A[tm + 1].FF) T[t].SS = T[t << 1 | 1].FF;
 }
 
 void build(ll t = 1, ll tl = 1, ll tr = N) {
@@ -159,36 +159,33 @@ void update(int i, pll v, int t = 1, int tl = 1, int tr = N) {
 		return;
 	}
 	ll tm = (tl + tr) >> 1;
-	if (i <= tm)
-		update(i, v, t << 1, tl, tm);
-	else 
-		update(i, v, t << 1 | 1, tm + 1, tr);
+	if (i <= tm) update(i, v, t << 1, tl, tm);
+	else update(i, v, t << 1 | 1, tm + 1, tr);
 	merge(t, tl, tr);
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
 	cin >> N;
 	for (int i = 1; i <= N; i++) {
 		cin >> A[i].FF >> A[i].SS;
-		if (A[i].FF > A[i].SS)
-			swap(A[i].FF, A[i].SS);
-	}   
+		if (A[i].FF > A[i].SS) swap(A[i].FF, A[i].SS);
+	}
 	build();
 	cin >> Q;
 	while (Q--) {
-		int a, b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		pll t = A[a];
 		update(a, A[b]);
 		update(b, t);
-		if (T[1].FF == llinf)
-			cout << "NIE\n";
-		else 
-			cout << "TAK\n";
+		if (T[1].FF == llinf) cout << "NIE\n";
+		else cout << "TAK\n";
 	}
 }
 ```
 </CPPSection>
-	
+
 </LanguageSection>

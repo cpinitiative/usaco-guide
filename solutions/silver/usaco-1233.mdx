@@ -9,8 +9,8 @@ author: Qi Wang
 
 ## Explanation
 
-In order for a cow to catch an apple, it must arrive before the apple hits the number line. Let item $i$ represent the cow and 
-item $j$ represent the apple. Therefore, to catch the apple, $|x_i - x_j| \le t_j - t_i$ must be satisfied. After extracting the 
+In order for a cow to catch an apple, it must arrive before the apple hits the number line. Let item $i$ represent the cow and
+item $j$ represent the apple. Therefore, to catch the apple, $|x_i - x_j| \le t_j - t_i$ must be satisfied. After extracting the
 absolute value, we get these two inequalities.
 
 $$
@@ -20,9 +20,9 @@ $$
 x_i + t_i \le x_j + t_j
 $$
 
-We represent each item as a point $(x_i - t_i, x_i + t_i)$. According to the inequalities above, in order for a cow to catch an 
-apple, the point of the apple must be to its top-left. Thus we can sort in ascending order based off $x_i - t_i$ and greedily 
-assign apples with larger $x_i + t_i$ values to each cow. To maximize the number caught, we must pair each cow with the lowest 
+We represent each item as a point $(x_i - t_i, x_i + t_i)$. According to the inequalities above, in order for a cow to catch an
+apple, the point of the apple must be to its top-left. Thus we can sort in ascending order based off $x_i - t_i$ and greedily
+assign apples with larger $x_i + t_i$ values to each cow. To maximize the number caught, we must pair each cow with the lowest
 y-coordinate apples that still meet above conditions.
 
 ## Implementation
@@ -44,21 +44,18 @@ struct Item {
 	int x;  // position
 	int n;  // amount
 
-	bool operator<(const Item& y) {
-		if (x - t == y.x - y.t) {
-			return q > y.q;
-		}
+	bool operator<(const Item &y) {
+		if (x - t == y.x - y.t) { return q > y.q; }
 		return x - t < y.x - y.t;
 	}
 } p[MAX_N];
 
 int main() {
 	int N;
-	map<int, int> pts;  // stores how many apples are at each point defined above
+	map<int, int>
+	    pts;  // stores how many apples are at each point defined above
 	cin >> N;
-	for (int i = 0; i < N; i++) {
-		cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n;
-	}
+	for (int i = 0; i < N; i++) { cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n; }
 
 	sort(p, p + N);
 

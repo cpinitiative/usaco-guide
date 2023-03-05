@@ -16,24 +16,21 @@ By Jay Fu
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <cstdio>
 #include <iostream>
-#include <algorithm>
 using namespace std;
 #define MAXN 100000
 
 int N;
 int A[MAXN];
 
-int main()
-{
+int main() {
 	freopen("taming.in", "r", stdin);
 	freopen("taming.out", "w", stdout);
 	cin >> N;
-	for(int i=0;i<N;i++)
-		cin >> A[i];
-	if(A[0] > 0)
-	{
+	for (int i = 0; i < N; i++) cin >> A[i];
+	if (A[0] > 0) {
 		cout << -1 << '\n';
 		return 0;
 	}
@@ -41,25 +38,18 @@ int main()
 	int t = -1;
 	int req = 0;
 	int pos = 0;
-	for(int i=N-1;i>=0;i--)
-	{
-		if(t != -1 && A[i] != -1 && A[i] != t)
-		{
+	for (int i = N - 1; i >= 0; i--) {
+		if (t != -1 && A[i] != -1 && A[i] != t) {
 			cout << -1 << '\n';
 			return 0;
 		}
-		if(t == -1)
-			t = A[i];
-		if(A[i] == -1)
-			A[i] = t;
-		if(A[i] == 0)
-			req++;
-		if(A[i] == -1)
-			pos++;
-		if(t > -1)
-			t--;
+		if (t == -1) t = A[i];
+		if (A[i] == -1) A[i] = t;
+		if (A[i] == 0) req++;
+		if (A[i] == -1) pos++;
+		if (t > -1) t--;
 	}
-	cout << req << ' ' << req+pos << '\n';
+	cout << req << ' ' << req + pos << '\n';
 }
 ```
 
@@ -78,12 +68,10 @@ public class taming {
 		BufferedReader br = new BufferedReader(new FileReader("taming.in"));
 		PrintWriter out = new PrintWriter("taming.out");
 		int N = Integer.parseInt(br.readLine());
-		int [] A = new int [N];
+		int[] A = new int[N];
 		StringTokenizer s = new StringTokenizer(br.readLine());
-		for (int i = 0; i < N; i++) {
-			A[i] = Integer.parseInt(s.nextToken());
-		}
-		if (A[0]>0) {
+		for (int i = 0; i < N; i++) { A[i] = Integer.parseInt(s.nextToken()); }
+		if (A[0] > 0) {
 			out.println(-1);
 			return;
 		}
@@ -91,26 +79,19 @@ public class taming {
 		int t = -1;
 		int req = 0;
 		int pos = 0;
-		for(int i=N-1;i>=0;i--)
-		{
-			if(t != -1 && A[i] != -1 && A[i] != t)
-			{
+		for (int i = N - 1; i >= 0; i--) {
+			if (t != -1 && A[i] != -1 && A[i] != t) {
 				out.println(-1);
 				out.close();
 				return;
 			}
-			if(t == -1)
-				t = A[i];
-			if(A[i] == -1)
-				A[i] = t;
-			if(A[i] == 0)
-				req++;
-			if(A[i] == -1)
-				pos++;
-			if(t > -1)
-				t--;
+			if (t == -1) t = A[i];
+			if (A[i] == -1) A[i] = t;
+			if (A[i] == 0) req++;
+			if (A[i] == -1) pos++;
+			if (t > -1) t--;
 		}
-		out.println(req + " " + (req+pos));
+		out.println(req + " " + (req + pos));
 		out.close();
 	}
 }
@@ -119,11 +100,11 @@ public class taming {
 </JavaSection>
 </LanguageSection>
 </Spoiler>
-	
+
 <Spoiler title="Hint">
 If some record in Farmer John's log is set, then what other records must be set?
 </Spoiler>
-	
+
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_bronze_feb18.html)
@@ -153,26 +134,24 @@ int main() {
 	 */
 	vector<int> status(n, 0);
 	vector<int> log(n);  // log for each day
-	for (int i = 0; i < n; i++) {
-		cin >> log[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> log[i]; }
 	bool valid = true;
 	if (log[0] == 1) {
 		valid = false;  // we found a discrepancy
 	} else {
 		status[0] = 2;  // the problem says the first day had a breakout
 	}
-	
+
 	for (int i = 1; i < n; i++) {
-		if (!valid) {
-			break;
-		}
+		if (!valid) { break; }
 		if (log[i] == -1) {
-	        	continue;  // we have no log for this day, so we continue to the next day
-        	} else if (log[i] == 0) {
+			continue;  // we have no log for this day, so we continue to the
+			           // next day
+		} else if (log[i] == 0) {
 			status[i] = 2;  // this means that we have a breakout on this day
-        	} else {
-			// we now process the log[i] days, checking for discrepancies along the way
+		} else {
+			// we now process the log[i] days, checking for discrepancies along
+			// the way
 			status[i] = 1;  // the current day does not have a breakout
 			int curr_index = i - 1;
 			log[i]--;
@@ -183,13 +162,14 @@ int main() {
 					// we found a discrepancy
 					valid = false;
 					break;
-                		}
+				}
 				log[i]--;
 				curr_index--;
-            		}
+			}
 
 			// we check the day that the current log says a breakout happened on
-			if (curr_index > -1 && (status[curr_index] == 0 || status[curr_index] == 2)) {
+			if (curr_index > -1 &&
+			    (status[curr_index] == 0 || status[curr_index] == 2)) {
 				status[curr_index] = 2;
 			} else {
 				valid = false;  // we found a discrepancy
@@ -199,10 +179,11 @@ int main() {
 
 	int min_ans = 0;
 	int max_ans = 0;
-    	if (valid) {
-        	for (int i : status) {
-			if(i == 2) {
-				// days that have a status of 2 are breakouts, so they count in both answers
+	if (valid) {
+		for (int i : status) {
+			if (i == 2) {
+				// days that have a status of 2 are breakouts, so they count in
+				// both answers
 				min_ans++;
 				max_ans++;
 			} else if (i == 0) {
@@ -218,7 +199,7 @@ int main() {
 
 </CPPSection>
 <JavaSection>
-	
+
 ```java
 import java.util.*;
 import java.io.*;
@@ -232,7 +213,7 @@ public class Taming {
 			log[i] = io.nextInt();
 		}
 		/*
-		 * The first entry in the log is a special case, 
+		 * The first entry in the log is a special case,
 		 * since Farmer John already knows the cows broke out on that day.
 		 */
 		if (log[0] > 0) {
@@ -246,11 +227,11 @@ public class Taming {
 		int req = 0;
 		int pos = 0;
 		/*
-		 * If we ever come across a contradiction, then the 
-		 * log is necessarily inconsistent, so we can just output −1. 
-		 * Otherwise, the log must consist of several streaks 0,1,2,…,k 
-		 * of various lengths, with possibly some −1s between 
-		 * streaks - entries which we could not uniquely deduce. 
+		 * If we ever come across a contradiction, then the
+		 * log is necessarily inconsistent, so we can just output −1.
+		 * Otherwise, the log must consist of several streaks 0,1,2,…,k
+		 * of various lengths, with possibly some −1s between
+		 * streaks - entries which we could not uniquely deduce.
 		 * We know that the first streak starts on the first day.
 		 */
 		for (int i = n - 1; i >= 0; i--) {
@@ -282,13 +263,13 @@ public class Taming {
 	CodeSnip{Kattio}
 }
 ```
-			 
+
 </JavaSection>
 <PySection>
 
 ```py
-fin = open("taming.in", 'r')
-fout = open('taming.out', 'w')
+fin = open("taming.in", "r")
+fout = open("taming.out", "w")
 
 inputs = [str(i) for i in fin.read().splitlines()]
 days = int(inputs[0])
@@ -306,10 +287,10 @@ else:
 	entry[0] = 0
 
 """
-If we ever come across a contradiction, then the 
-log is necessarily inconsistent, so we can just output −1. 
-Otherwise, the log must consist of several streaks 0,1,2,…,k 
-of various lengths, with possibly some −1s between 
+If we ever come across a contradiction, then the
+log is necessarily inconsistent, so we can just output −1.
+Otherwise, the log must consist of several streaks 0,1,2,…,k
+of various lengths, with possibly some −1s between
 streaks - entries which we could not uniquely deduce.
 We know that the first streak starts on the first day.
 """

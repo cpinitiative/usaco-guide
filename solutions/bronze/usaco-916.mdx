@@ -22,54 +22,58 @@ By Jay Fu
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 using namespace std;
- 
-int main(void)
-{
+
+int main(void) {
 	// N is the number of pastures
 	int N;
-	// M is the number of FJ's cows 
-	// aka the number of pairs of pastures that can't have the same grass type as each other
+	// M is the number of FJ's cows
+	// aka the number of pairs of pastures that can't have the same grass type
+	// as each other
 	int M;
 	// A and B contains the pasture numbers for each pair of pastures
-	// A contains the lower pasture number while B contains the higher pasture number
-	// A[i] and B[i] indicates that pasture number A[i] and pasture number B[i] can't have the same grass type
-	// G contains the assigned grass type to each pasture
-	// G[i] = x means that the ith pasture is assigned grass type x
+	// A contains the lower pasture number while B contains the higher pasture
+	// number A[i] and B[i] indicates that pasture number A[i] and pasture
+	// number B[i] can't have the same grass type G contains the assigned grass
+	// type to each pasture G[i] = x means that the ith pasture is assigned
+	// grass type x
 	int A[151], B[151], G[101];
-	ifstream fin ("revegetate.in");
+	ifstream fin("revegetate.in");
 	// read in input
 	fin >> N >> M;
-	for (int i = 0; i < M; i++) { 
+	for (int i = 0; i < M; i++) {
 		fin >> A[i] >> B[i];
-		
-		// this ensures that A always contains the lower pasture number and B always contains the higher pasture number for each pair
-		if (A[i] > B[i]) swap (A[i], B[i]);
+
+		// this ensures that A always contains the lower pasture number and B
+		// always contains the higher pasture number for each pair
+		if (A[i] > B[i]) swap(A[i], B[i]);
 	}
- 
-	ofstream fout ("revegetate.out");
-	
-	// i indicates the current pasture   
+
+	ofstream fout("revegetate.out");
+
+	// i indicates the current pasture
 	// loop iterates through each pasture
 	for (int i = 1; i <= N; i++) {
 		// g indicates the current color type
 		int g;
-		
+
 		// loop iterates through the 4 color types
 		for (g = 1; g <= 4; g++) {
-			// ok indicates whether the current color type works on the current pasture
+			// ok indicates whether the current color type works on the current
+			// pasture
 			bool ok = true;
-			
+
 			// j indicates the current pair of pastures A[j] and B[j]
 			// loop iterates through each pair of pastures
-			for (int j = 0; j < M; j++) 
-				// if higher pasture number in the pair is the current pasture number and
-				// the other pasture in the pair is already assigned the current color type
-				// this means the current color type won't work on the current pasture, so ok is set to false
+			for (int j = 0; j < M; j++)
+				// if higher pasture number in the pair is the current pasture
+				// number and the other pasture in the pair is already assigned
+				// the current color type this means the current color type
+				// won't work on the current pasture, so ok is set to false
 				if (B[j] == i && G[A[j]] == g) ok = false;
-			
+
 			// if ok is true, we can move on to the next pasture
 			// otherwise, we have to try the next color type
 			if (ok) break;
@@ -96,28 +100,31 @@ public class revegetate {
 	// N is the number of pastures
 	static int N;
 	// M is the number of FJ's cows
-	// aka the number of pairs of pastures that can't have the same grass type as each other
+	// aka the number of pairs of pastures that can't have the same grass type
+	// as each other
 	static int M;
 	// A and B contains the pasture numbers for each pair of pastures
-	// A contains the lower pasture number while B contains the higher pasture number
-	// A[i] and B[i] indicates that pasture number A[i] and pasture number B[i] can't have the same grass type
-	// G contains the assigned grass type to each pasture
-	// G[i] = x means that the ith pasture is assigned grass type x
-	static int [] A, B, G;
+	// A contains the lower pasture number while B contains the higher pasture
+	// number A[i] and B[i] indicates that pasture number A[i] and pasture
+	// number B[i] can't have the same grass type G contains the assigned grass
+	// type to each pasture G[i] = x means that the ith pasture is assigned
+	// grass type x
+	static int[] A, B, G;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("revegetate.in"));
 		StringTokenizer s = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(s.nextToken());
 		M = Integer.parseInt(s.nextToken());
-		A = new int [151];
-		B = new int [151];
-		G = new int [101];
+		A = new int[151];
+		B = new int[151];
+		G = new int[101];
 		// read in input
 		for (int i = 0; i < M; i++) {
 			s = new StringTokenizer(br.readLine());
 			A[i] = Integer.parseInt(s.nextToken());
 			B[i] = Integer.parseInt(s.nextToken());
-			// this ensures that A always contains the lower pasture number and B always contains the higher pasture number for each pair
+			// this ensures that A always contains the lower pasture number and
+			// B always contains the higher pasture number for each pair
 			if (A[i] > B[i]) {
 				int temp = A[i];
 				A[i] = B[i];
@@ -132,14 +139,17 @@ public class revegetate {
 			int g;
 			// loop iterates through the 4 color types
 			for (g = 1; g <= 4; g++) {
-				// ok indicates whether the current color type works on the current pasture
+				// ok indicates whether the current color type works on the
+				// current pasture
 				boolean ok = true;
 				// j indicates the current pair of pastures A[j] and B[j]
 				// loop iterates through each pair of pastures
 				for (int j = 0; j < M; j++)
-					// if higher pasture number in the pair is the current pasture number and
-					// the other pasture in the pair is already assigned the current color type
-					// this means the current color type won't work on the current pasture, so ok is set to false
+					// if higher pasture number in the pair is the current
+					// pasture number and the other pasture in the pair is
+					// already assigned the current color type this means the
+					// current color type won't work on the current pasture, so
+					// ok is set to false
 					if (B[j] == i && G[A[j]] == g) ok = false;
 				// if ok is true, we can move on to the next pasture
 				// otherwise, we have to try the next color type
@@ -169,7 +179,7 @@ public class revegetate {
 
 <LanguageSection>
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.StringTokenizer;
@@ -179,7 +189,7 @@ public class Revegetation {
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("revegetate");
-	
+
 		int[] grassA = new int[MAXIMUM];
 		int[] grassB = new int[MAXIMUM];
 
@@ -232,8 +242,8 @@ public class Revegetation {
 
 ## Explanation
 
-We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal. All pastures start with 
-the seed choice as one, this makes it so that we don't have to worry about decreasing or increasing more to a certain pasture. We'll also cycle through the 
+We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal. All pastures start with
+the seed choice as one, this makes it so that we don't have to worry about decreasing or increasing more to a certain pasture. We'll also cycle through the
 previous favorite pastures to make sure that our new alteration doesn't interfere with any of the other cow's favorite pastures.
 
 ## Implementation
@@ -245,8 +255,9 @@ previous favorite pastures to make sure that our new alteration doesn't interfer
 
 ```py
 import sys
-sys.stdin = open('revegetate.in', 'r')
-sys.stdout = open('revegetate.out', 'w')
+
+sys.stdin = open("revegetate.in", "r")
+sys.stdout = open("revegetate.out", "w")
 
 pasture_num, cow_num = map(int, input().split())
 pastures = []
@@ -267,14 +278,14 @@ for a, b in pastures:
 		ans[b] += 1
 
 		# All favorite pastures up to the current one.
-		for i, j in pastures[:pastures.index([a, b])]:
+		for i, j in pastures[: pastures.index([a, b])]:
 			# Increment again if requirement isn't satisfied.
-			# This also means that either i == b or j == b, 
-			# since the only reason they would become equal again	
+			# This also means that either i == b or j == b,
+			# since the only reason they would become equal again
 			# is if they had a pasture in common.
 			if ans[i] == ans[j]:
 				ans[b] += 1
-print(''.join(map(str, ans)))
+print("".join(map(str, ans)))
 ```
 
 </PySection>

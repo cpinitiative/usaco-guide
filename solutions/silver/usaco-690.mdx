@@ -25,15 +25,13 @@ int main() {
 	cin >> n >> t;
 	int ar[n];
 
-	for (int i = 0; i < n; i++) {
-		cin >> ar[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> ar[i]; }
 
 	int hi = n, lo = 1;
 	int sol = n;
 
 	while (lo <= hi) {
-		int mid = lo + (hi - lo)/2;
+		int mid = lo + (hi - lo) / 2;
 		int time = 0, j = 0;
 		priority_queue<int> pq;
 		int size = 0;
@@ -43,14 +41,13 @@ int main() {
 			j++;
 		}
 
-		while ((int) pq.size()) {
+		while ((int)pq.size()) {
 			time += max(0, -pq.top() - time);
 			pq.pop();
 			if (j < n) {
 				pq.push(-(ar[j] + time));
 				j++;
 			}
-
 		}
 
 		if (time > t) {
@@ -63,17 +60,16 @@ int main() {
 
 	cout << sol << '\n';
 }
-
 ```
 
 </CPPSection>
 
 <PySection>
 
-```python
+```py
 import heapq
 
-with open('cowdance.in') as r:
+with open("cowdance.in") as r:
 	n, maximum = map(int, r.readline().split())
 	dance = [int(r.readline()) for _ in range(n)]
 
@@ -84,20 +80,20 @@ while left < right:
 	parts = dance[:mid]
 	heapq.heapify(parts)
 
-	for i in range(mid, n): 
+	for i in range(mid, n):
 		exit_stage_time = heapq.heappop(parts) + dance[i]
 		heapq.heappush(parts, exit_stage_time)
 
-	if maximum < max(parts): 
+	if maximum < max(parts):
 		left = mid + 1
-	else: 
+	else:
 		right = mid
 
-print(left, file=open('cowdance.out', 'w'))
+print(left, file=open("cowdance.out", "w"))
 ```
 
 </PySection>
-	
+
 <JavaSection>
 
 ```java
@@ -115,14 +111,14 @@ public class CowDanceShow {
 		for (int x = 0; x < n; x++) {
 			if (currentDancing.size() < stageSize) {
 				currentDancing.add(danceTimes[x]);
-			} else { 
+			} else {
 				// add the next cow in line to the one that will finish first
 				currentDancing.add(currentDancing.remove() + danceTimes[x]);
 			}
 		}
 
 		int lastFinish = Integer.MAX_VALUE;
-		
+
 		while (currentDancing.size() > 0) {
 			lastFinish = currentDancing.remove();
 		}
@@ -142,7 +138,7 @@ public class CowDanceShow {
 		int low = 1;  // the lowest is only can fit one cow
 		int high = n;  // the highest needed is fitting all of the cows at once
 
-		while (low < high) { 
+		while (low < high) {
 			int mid = (low + high) / 2;
 			if (isOk(mid)) {
 				high = mid;
@@ -157,7 +153,7 @@ public class CowDanceShow {
 	//CodeSnip{Kattio}
 }
 ```
-	
+
 </JavaSection>
 
 </LanguageSection>

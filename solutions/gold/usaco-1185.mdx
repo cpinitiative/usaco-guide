@@ -39,7 +39,7 @@ Let's calculate the time complexity!
 
 We'll have $N \cdot \max H$ number of states, and each transition can take up to $\max H$ operations, so our time complexity would be $\mathcal{O}(N(\max H)^2)$. Unfortunately, in odd cases, we'll have to try all possible $x < \min H$, which'll give us a resulting time complexity of $\mathcal{O}(N(\max H)^3)$ (since all the elements can be the same).
 
-Luckily, because our transition updates a contiguous range of states ($[0, h_i]$), we can process our transition in $\mathcal{O}(1)$ with a difference array. For example, if we're currently on $\texttt{dp}[i][j]$, our algorithm would manually add $\texttt{dp}[i][j]$ to $\texttt{dp}[i + 1][k]$ where $k$ is within the range $[0, h_i]$. Instead, we'll add $\texttt{dp}[i][j]$ to $\texttt{diff}[0]$ and remember to subtract it at $\texttt{diff}[h_i]$. 
+Luckily, because our transition updates a contiguous range of states ($[0, h_i]$), we can process our transition in $\mathcal{O}(1)$ with a difference array. For example, if we're currently on $\texttt{dp}[i][j]$, our algorithm would manually add $\texttt{dp}[i][j]$ to $\texttt{dp}[i + 1][k]$ where $k$ is within the range $[0, h_i]$. Instead, we'll add $\texttt{dp}[i][j]$ to $\texttt{diff}[0]$ and remember to subtract it at $\texttt{diff}[h_i]$.
 
 This speeds up our algorithm to $\mathcal{O}(N(\max H)^2)$!
 ## Implementation
@@ -62,9 +62,7 @@ int n;
 
 ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 	// initially one way to set the first i elements to zero
-	for (int i = 0; i <= MX_HUNGER; i++) {
-		dp[i] = 1;
-	}
+	for (int i = 0; i <= MX_HUNGER; i++) { dp[i] = 1; }
 
 	// ways considering that all numbers before i are all zero & i is set to j
 	for (int i = 1; i < n; i++) {
@@ -79,9 +77,7 @@ ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 
 			diff[0] += dp[j];
 
-			if (diff[0] >= MOD) {
-				diff[0] -= MOD;
-			}
+			if (diff[0] >= MOD) { diff[0] -= MOD; }
 
 			// be careful when modding negative values
 			diff[rb] = (((diff[rb] - dp[j]) % MOD) + MOD) % MOD;
@@ -93,17 +89,13 @@ ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 		for (int j = 1; j <= MX_HUNGER; j++) {
 			dp[j] = dp[j - 1] + diff[j];
 
-			if (dp[j] >= MOD) {
-				dp[j] -= MOD;
-			}
-			
+			if (dp[j] >= MOD) { dp[j] -= MOD; }
+
 			assert(dp[j] >= 0);
 		}
 
 		// reset difference array
-		for (int j = 0; j <= MX_HUNGER; j++) {
-			diff[j] = 0;
-		}
+		for (int j = 0; j <= MX_HUNGER; j++) { diff[j] = 0; }
 	}
 
 	return dp[0];
@@ -127,7 +119,8 @@ int main() {
 	if (n % 2 == 1) {
 		/*
 		 * we can't assume that all elements can be equal to zero.
-		 * instead, we have to compute the answer for all possible hunger values.
+		 * instead, we have to compute the answer for all possible hunger
+		 * values.
 		 */
 		for (int i = 0; i <= mn; i++) {
 			ans = (ans + ways_offset(i) + MOD) % MOD;

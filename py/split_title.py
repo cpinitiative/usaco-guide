@@ -6,18 +6,20 @@ sources = []
 for filename in os.listdir("."):
 	if filename.endswith(".mdx"):
 		mod = False
-		with open(filename,"r") as f:
+		with open(filename, "r") as f:
 			lines = f.readlines()
-			for index,line in enumerate(lines):
+			for index, line in enumerate(lines):
 				if index == 2:
-					if line.startswith('title'):
-						tmp = line[len("title:"):].split("-")
+					if line.startswith("title"):
+						tmp = line[len("title:") :].split("-")
 						if len(tmp) != 2:
-							print("OOPS",filename,tmp)
+							print("OOPS", filename, tmp)
 							continue
 						for i in range(len(tmp)):
 							tmp[i] = tmp[i].strip()
-						lines[index] = "source: " + tmp[0] + "\n" + "title: " + tmp[1]+"\n"
+						lines[index] = (
+							"source: " + tmp[0] + "\n" + "title: " + tmp[1] + "\n"
+						)
 						mod = True
 					# print("HA",words[:ind],words[ind:])
 					elif line.startswith("source"):
@@ -25,7 +27,7 @@ for filename in os.listdir("."):
 						sources.append(line)
 						tokens = line.strip().split()[1:]
 						# print("SOURCE",tokens)
-						if tokens[0] == 'USACO':
+						if tokens[0] == "USACO":
 							continue
 							# if len(tokens) != 4:
 							# 	if tok
@@ -50,7 +52,6 @@ for filename in os.listdir("."):
 							# lines[index] = 'source: '+' '.join(tokens)+'\n'
 							# mod = True
 
-
 							# if tokens[1].isdigit():
 							# 	if len(tokens) == 4:
 							# 		print("BEFORE",tokens)
@@ -67,7 +68,7 @@ for filename in os.listdir("."):
 					# assert line.startswith("title:")
 
 		if mod:
-			with open(filename,"w") as f:
+			with open(filename, "w") as f:
 				f.write("".join(lines))
 			# sys.exit(0)
 

@@ -32,18 +32,15 @@ is no valid pivot index so return $-1$.
 
 ```cpp
 class Solution {
-public:
-	int pivotIndex(vector<int>& nums) {
+  public:
+	int pivotIndex(vector<int> &nums) {
 		vector<int> psums{0};
-		//Constructing psums
-		for (int num : nums) psums.push_back(psums.back()+num);
+		// Constructing psums
+		for (int num : nums) psums.push_back(psums.back() + num);
 
-
-		for(int i = 0; i<psums.size()-1; i++){
-			//Checking whether the left and the right are equal in area
-			if(psums[i] == psums[nums.size()] - psums[i+1]){
-				return i;
-			}
+		for (int i = 0; i < psums.size() - 1; i++) {
+			// Checking whether the left and the right are equal in area
+			if (psums[i] == psums[nums.size()] - psums[i + 1]) { return i; }
 		}
 		return -1;
 	}
@@ -60,14 +57,13 @@ class Solution {
 	public int pivotIndex(int[] nums) {
 		List<Integer> psums = new ArrayList<>();
 
-		//Constructing psums
+		// Constructing psums
 		psums.add(0);
-		for (int num : nums) psums.add(psums.get(psums.size()-1)+num);
+		for (int num : nums) psums.add(psums.get(psums.size() - 1) + num);
 
-
-		for(int i = 0; i<psums.length-1; i++){
-			//Checking whether the left and the right are equal in area
-			if(psums.get(i) == psums.get(nums.length) - psums.get(i+1)){
+		for (int i = 0; i < psums.length - 1; i++) {
+			// Checking whether the left and the right are equal in area
+			if (psums.get(i) == psums.get(nums.length) - psums.get(i + 1)) {
 				return i;
 			}
 		}
@@ -90,14 +86,14 @@ class Solution:
 		psums = [0]
 		for i in range(len(nums)):
 			# Notice i in psums is always one less than the current index
-			psums.append(psums[i] + nums[i]);
+			psums.append(psums[i] + nums[i])
 
 		for i in range(len(nums)):
 			# Checking whether the left and the right are equal in area
-			if psums[i] == psums[len(nums)] - psums[i+1]:
-				return i;
+			if psums[i] == psums[len(nums)] - psums[i + 1]:
+				return i
 
-		return -1;
+		return -1
 ```
 
 </PySection>
@@ -126,18 +122,15 @@ to think about approaching this question.
 
 ```cpp
 class Solution {
-public:
-	int pivotIndex(vector<int>& nums) {
+  public:
+	int pivotIndex(vector<int> &nums) {
 		int total = 0;
-		for (int x : nums)
-			total += x;
+		for (int x : nums) total += x;
 
 		int curSum = 0;
 		for (int i = 0; i < nums.size(); i++) {
 			// curSum is up to i not inclusive of i.
-			if (curSum == total - curSum - nums[i]) {
-				return i;
-			}
+			if (curSum == total - curSum - nums[i]) { return i; }
 			// updating curSum
 			curSum += nums[i];
 		}
@@ -156,15 +149,12 @@ public:
 class Solution {
 	public int pivotIndex(int[] nums) {
 		int total = 0;
-		for (int num : nums)
-			total += num;
+		for (int num : nums) total += num;
 
 		int curSum = 0;
 		for (int i = 0; i < nums.length; i++) {
 			// curSum is up to i not inclusive of i.
-			if (curSum == total - curSum - nums[i]) {
-				return i;
-			}
+			if (curSum == total - curSum - nums[i]) { return i; }
 			// updating curSum
 			curSum += nums[i];
 		}
@@ -185,16 +175,16 @@ from typing import List
 
 class Solution:
 	def pivotIndex(self, nums: List[int]) -> int:
-		total = sum(nums);
+		total = sum(nums)
 
-		curSum = 0;
+		curSum = 0
 		for i in range(len(nums)):
 			# curSum is up to i not inclusive of i.
 			if curSum == total - curSum - nums[i]:
-				return i;
+				return i
 			# updating curSum
-			curSum += nums[i];
-		return -1;
+			curSum += nums[i]
+		return -1
 ```
 
 </PySection>

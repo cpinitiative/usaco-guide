@@ -11,11 +11,11 @@ author: Qi Wang, Jeffrey Zhang
 
 Instead of treating this as a grid problem, let us try to approach it as a graph problem with nodes and edges.
 
-We first observe that the two intermediary tiles Bessie used to travel do not actually matter because Bessie only feasts on grass tiles every 3 moves and the time to travel between adjacent tiles is a constant $T$. So we want to form a direct edge between each tile that is exactly 3 manhattan distances apart, with a weight of 
+We first observe that the two intermediary tiles Bessie used to travel do not actually matter because Bessie only feasts on grass tiles every 3 moves and the time to travel between adjacent tiles is a constant $T$. So we want to form a direct edge between each tile that is exactly 3 manhattan distances apart, with a weight of
 
 $\{\text{The time to feast the target grass tile}\} + 3 * T$
 
-However, if the tile Bessie just feasted on is less than 3 units (using manhattan distance) away from Farmer John's tile, then it would be more desirable for Bessie to travel to Farmer John directly than take another 3-distanced tile. So, we also form a direct edge between those two tiles with a weight of 
+However, if the tile Bessie just feasted on is less than 3 units (using manhattan distance) away from Farmer John's tile, then it would be more desirable for Bessie to travel to Farmer John directly than take another 3-distanced tile. So, we also form a direct edge between those two tiles with a weight of
 
 $\{\text{The manhattan distance}\} * T$
 
@@ -42,12 +42,10 @@ int main() {
 	fin >> n >> t;
 	vector<vector<int>> field(n, vector<int>(n));
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			fin >> field[i][j];
-		}
+		for (int j = 0; j < n; j++) { fin >> field[i][j]; }
 	}
 
-	// 2d integer grid initialized with max values for distance 
+	// 2d integer grid initialized with max values for distance
 	vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
 	// 2d boolean grid initialized with false for tracking visits
 	vector<vector<bool>> visited(n, vector<bool>(n));
@@ -59,34 +57,26 @@ int main() {
 		int x, y;
 		tie(x, y) = dijkstra.top().ss;
 		dijkstra.pop();
-		
+
 		// check if this coordinate has already been visited
-		if (visited[x][y]) {
-			continue;
-		}
+		if (visited[x][y]) { continue; }
 		visited[x][y] = true;
 		for (int i = 0; i < 16; i++) {
 			int newx = x + dx[i], newy = y + dy[i];
 			// checking if this new location is out of bound
-			if (newx < 0 || newx >= n || newy < 0 || newy >= n) {
-				continue;
-			}
+			if (newx < 0 || newx >= n || newy < 0 || newy >= n) { continue; }
 			// updating the shortest distance to this new location
 			if (dist[newx][newy] > dist[x][y] + 3 * t + field[newx][newy]) {
 				dist[newx][newy] = dist[x][y] + 3 * t + field[newx][newy];
 				dijkstra.push(
-					make_pair(-dist[newx][newy], 
-					make_pair(newx, newy))
-				);
+				    make_pair(-dist[newx][newy], make_pair(newx, newy)));
 			}
 		}
 
 		int manhattan = n - x - 1 + n - y - 1;
 		if (manhattan < 3) {
-			dist[n - 1][n - 1] = min(
-				dist[n - 1][n - 1], 
-				dist[x][y] + manhattan * t
-			);
+			dist[n - 1][n - 1] =
+			    min(dist[n - 1][n - 1], dist[x][y] + manhattan * t);
 		}
 	}
 
@@ -147,7 +137,7 @@ public class VisitFJ {
 				}
 
 				int nw = cur.w + w[nx][ny] + T * 3;
-				
+
 				// If new distance is greater than current minimum distance, it is not needed
 				if (nw > dist[nx][ny]) {
 					continue;

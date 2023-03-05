@@ -17,8 +17,8 @@ author: Óscar Garries, Neo Wang, Kevin Sheng
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -30,9 +30,9 @@ int main() {
 	int cow_num;
 	int wormhole_num;
 	read >> cow_num >> wormhole_num;
-	
+
 	vector<int> cows(cow_num);
-	for (int& c : cows) {
+	for (int &c : cows) {
 		read >> c;
 		c--;  // make the cows 0-indexed
 	}
@@ -54,19 +54,17 @@ int main() {
 	int valid = -1;
 	while (lo <= hi) {
 		int mid = (lo + hi) / 2;
-		
+
 		vector<int> component(cow_num, -1);
 		int curr_comp = 0;
 		for (int c = 0; c < cow_num; c++) {
-			if (component[c] != -1) {
-				continue;
-			}
+			if (component[c] != -1) { continue; }
 			vector<int> frontier{c};
 			while (!frontier.empty()) {
 				int curr = frontier.back();
 				frontier.pop_back();
 				component[curr] = curr_comp;
-				for (const auto& [n, w] : neighbors[curr]) {
+				for (const auto &[n, w] : neighbors[curr]) {
 					if (component[n] == -1 && w >= mid) {
 						frontier.push_back(n);
 					}
@@ -82,7 +80,7 @@ int main() {
 				break;
 			}
 		}
-		
+
 		if (sortable) {
 			valid = mid;
 			lo = mid + 1;
@@ -91,7 +89,8 @@ int main() {
 		}
 	}
 
-	std::ofstream("wormsort.out") << (valid == max_width + 1 ? -1 : valid) << endl;
+	std::ofstream("wormsort.out")
+	    << (valid == max_width + 1 ? -1 : valid) << endl;
 }
 ```
 
@@ -167,7 +166,7 @@ public class WormSort {
 					break;
 				}
 			}
-			
+
 			if (sortable) {
 				valid = mid;
 				lo = mid + 1;
@@ -252,7 +251,7 @@ int main() {
 	int cow_num;
 	int wormhole_num;
 	read >> cow_num >> wormhole_num;
-	
+
 	vector<int> cows(cow_num);
 	for (int& c : cows) {
 		read >> c;
@@ -273,7 +272,7 @@ int main() {
 	int valid = -1;
 	while (lo <= hi) {
 		int mid = (lo + hi) / 2;
-		
+
 		DSU dsu(cow_num);
 		for (const Wormhole& w : wormholes) {
 			if (w.width >= mid) {
@@ -288,7 +287,7 @@ int main() {
 				break;
 			}
 		}
-		
+
 		if (sortable) {
 			valid = mid;
 			lo = mid + 1;
@@ -349,7 +348,7 @@ public class WormSort {
 					break;
 				}
 			}
-			
+
 			if (sortable) {
 				valid = mid;
 				lo = mid + 1;
@@ -471,7 +470,7 @@ int main() {
 	int cow_num;
 	int wormhole_num;
 	read >> cow_num >> wormhole_num;
-	
+
 	vector<int> cows(cow_num);
 	for (int& c : cows) {
 		read >> c;

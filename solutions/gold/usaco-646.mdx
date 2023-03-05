@@ -178,8 +178,8 @@ print(*fully_connected[::-1], sep='\n', file=open('closing.out', 'w'))
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class closing {
 	public static void main(String[] args) throws IOException {
@@ -190,9 +190,7 @@ public class closing {
 		int m = sc.nextInt();
 
 		ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) {
-			adj.add(new ArrayList<>());
-		}
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
 		for (int i = 0; i < m; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
@@ -201,9 +199,7 @@ public class closing {
 		}
 
 		int[] order = new int[n];
-		for (int i = 0; i < n; i++) {
-			order[i] = sc.nextInt() - 1;
-		}
+		for (int i = 0; i < n; i++) { order[i] = sc.nextInt() - 1; }
 
 		UnionFind graph = new UnionFind(n);
 		boolean[] open = new boolean[n];
@@ -216,16 +212,13 @@ public class closing {
 
 			// Connect opening farm with neighbor iff it's open
 			for (int neighbor : adj.get(order[i])) {
-				if (open[neighbor]) {
-					graph.union(order[i], neighbor);
-				}
+				if (open[neighbor]) { graph.union(order[i], neighbor); }
 			}
 			// Set answer to YES if # of connected components equals
 			// unopened barns + 1 (for component formed by open barns)
 			if (graph.components == i + 1) {
 				answers.add("YES");
-			}
-			else {
+			} else {
 				answers.add("NO");
 			}
 		}
@@ -261,8 +254,7 @@ public class closing {
 			if (sizes[i] < sizes[j]) {
 				nodes[i] = nodes[j];
 				sizes[j] += sizes[i];
-			}
-			else {
+			} else {
 				nodes[j] = nodes[i];
 				sizes[i] += sizes[j];
 			}
@@ -276,9 +268,7 @@ public class closing {
 			return index;
 		}
 
-		boolean connected(int p, int q) {
-			return root(p) == root(q);
-		}
+		boolean connected(int p, int q) { return root(p) == root(q); }
 	}
 }
 ```

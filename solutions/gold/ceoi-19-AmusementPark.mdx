@@ -24,7 +24,7 @@ generated on the original graph.
 <Spoiler title="Explanation">
 
 Let $\texttt{dp}[S]$ be the number of ways of constructing a directed acyclic
-graph (DAG) on the subgraph induced by vertex set $S$. For any DAG, at least one vertex in $S$ must 
+graph (DAG) on the subgraph induced by vertex set $S$. For any DAG, at least one vertex in $S$ must
 have out-degree 0. Thus,
 
 $$
@@ -82,9 +82,7 @@ int main() {
 		a[u] |= 1 << v;
 		a[v] |= 1 << u;
 	}
-	for (int i = 0; i < n; i++) {
-		nodeid[1 << i] = i;
-	}
+	for (int i = 0; i < n; i++) { nodeid[1 << i] = i; }
 	for (int i = 0; i < (1 << n); i++) {
 		popcount[i] = popcount[i >> 1] + (i & 1);
 		arg[i] = (popcount[i] % 2) * 2 - 1;
@@ -99,9 +97,7 @@ int main() {
 	f[0] = 1;
 	for (int i = 1; i < (1 << n); i++) {
 		for (int j = i; j; j = (j - 1) & i) {
-			if (indepset[j]) {
-				f[i] = (f[i] + arg[j] * f[i ^ j]) % M;
-			}
+			if (indepset[j]) { f[i] = (f[i] + arg[j] * f[i ^ j]) % M; }
 		}
 	}
 	f[(1 << n) - 1] = (f[(1 << n) - 1] + M) % M;

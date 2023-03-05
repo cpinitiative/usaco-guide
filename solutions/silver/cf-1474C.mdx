@@ -7,7 +7,7 @@ author: Kevin Sheng, Jesse Choe
 
 [Official Editorial](https://codeforces.com/blog/entry/86933)
 
-# Solution 
+# Solution
 
 **Time Complexity:** $\mathcal{O}(N^2\log N)$
 
@@ -34,14 +34,13 @@ bool works(int initial_sum) {
 	pair_to_remove.clear();
 	// This multiset stores the all of the undestroyed elements
 	multiset<int> remaining;
-	for (int i = 0; i < arr_size; i++) {
-		remaining.insert(arr[i]);
-	}
+	for (int i = 0; i < arr_size; i++) { remaining.insert(arr[i]); }
 	while (remaining.size()) {
 		// The largest element that hasn't been removed
 		int curr = *remaining.rbegin();
 		remaining.erase(remaining.find(curr));
-		// If this condition is true, then it is impossible to destruct the array with the given initial sum
+		// If this condition is true, then it is impossible to destruct the
+		// array with the given initial sum
 		if (remaining.find(initial_sum - curr) == remaining.end()) {
 			return false;
 		}
@@ -55,21 +54,20 @@ bool works(int initial_sum) {
 void solve() {
 	cin >> arr_size;
 	arr_size *= 2;
-	for(int i = 0; i < arr_size; i++){
-		cin >> arr[i];
-	} 
+	for (int i = 0; i < arr_size; i++) { cin >> arr[i]; }
 	sort(arr, arr + arr_size);
 	for (int i = 0; i < arr_size - 1; i++) {
 		// The initial sum should be the largest element in the array and arr[i]
 		int initial_sum = arr[i] + arr[arr_size - 1];
-		/* 
+		/*
 		 * It suffices to check if the initial sum could destruct the array.
-		 * Then, we should print out the initial sum and each of pair of elements we destruct.
+		 * Then, we should print out the initial sum and each of pair of
+		 * elements we destruct.
 		 */
 		if (works(initial_sum)) {
 			cout << "YES" << endl;
 			cout << initial_sum << endl;
-			for (pair<int, int> x: pair_to_remove) {
+			for (pair<int, int> x : pair_to_remove) {
 				cout << x.first << " " << x.second << endl;
 			}
 			return;
@@ -81,9 +79,7 @@ void solve() {
 int main() {
 	int t;
 	cin >> t;
-	for (int i = 1; i <= t; i++) {
-		solve();
-	}
+	for (int i = 1; i <= t; i++) { solve(); }
 }
 ```
 
@@ -103,12 +99,15 @@ import java.util.TreeMap;
 
 public final class DestroyArray {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int testNum = Integer.parseInt(read.readLine());
 		for (int t = 0; t < testNum; t++) {
 			int halfSize = Integer.parseInt(read.readLine());
 			TreeMap<Integer, Integer> nums = new TreeMap<>();
-			for (int i : Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray()) {
+			for (int i : Arrays.stream(read.readLine().split(" "))
+			                 .mapToInt(Integer::parseInt)
+			                 .toArray()) {
 				nums.put(i, nums.getOrDefault(i, 0) + 1);
 			}
 			int validStart = -1;
@@ -127,15 +126,11 @@ public final class DestroyArray {
 					}
 
 					int other = at - largest;
-					if (!remaining.containsKey(other)) {
-						break;
-					}
+					if (!remaining.containsKey(other)) { break; }
 
 					at = largest;
 					remaining.put(other, remaining.get(other) - 1);
-					if (remaining.get(other) == 0) {
-						remaining.remove(other);
-					}
+					if (remaining.get(other) == 0) { remaining.remove(other); }
 					moves.add(new int[] {largest, other});
 				}
 

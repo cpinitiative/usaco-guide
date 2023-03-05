@@ -34,7 +34,7 @@ const int A = 1 << B;
 int main() {
 	int n;
 	cin >> n;
-	
+
 	vector<int> a(n), f(A, -1), g(A, -1);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
@@ -42,27 +42,27 @@ int main() {
 		f[a[i]] = g[a[i]];
 		g[a[i]] = i;
 	}
-	
+
 	for (int i = 0; i < B; i++) {
 		for (int j = 0; j < A; j++) {
 			if (j & (1 << i)) {
 				int k = j ^ (1 << i);
 				// updating largest (g[k]) from superset k to subset j
-				if (f[j] > g[k]) { // case 1: on the right
+				if (f[j] > g[k]) {  // case 1: on the right
 					f[k] = g[k], g[k] = f[j];
-				} else if (f[j] > f[k]) { // case 2: in the middle
+				} else if (f[j] > f[k]) {  // case 2: in the middle
 					f[k] = f[j];
 				}
 				// updating second largest (f[k]) from superset k to subset j
-				if (g[j] > g[k]) { // case 1: on the right
+				if (g[j] > g[k]) {  // case 1: on the right
 					f[k] = g[k], g[k] = g[j];
-				} else if (g[j] > f[k]) { // case 2: in the middle
+				} else if (g[j] > f[k]) {  // case 2: in the middle
 					f[k] = g[j];
 				}
 			}
 		}
 	}
-	
+
 	int ans = 0;
 	for (int i = 0; i < n - 2; i++) {
 		int c = 0;
@@ -71,13 +71,11 @@ int main() {
 			 * only consider if a[i] doesn't contain 2^j and
 			 * if the second largest is greater than i
 			 */
-			if ((a[i] & (1 << j)) == 0 && f[c | (1 << j)] > i) {
-				c |= 1 << j;
-			}
+			if ((a[i] & (1 << j)) == 0 && f[c | (1 << j)] > i) { c |= 1 << j; }
 		}
 		ans = max(ans, a[i] | c);
 	}
-	
+
 	cout << ans << endl;
 }
 ```

@@ -34,25 +34,25 @@ We should always pair up the greatest value ($C$), with the smallest value ($A$)
 ## Implementation
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
-(Because it requires sorting the input, which is $\mathcal{O}(N\log N)$). 
+(Because it requires sorting the input, which is $\mathcal{O}(N\log N)$).
 
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <iostream>
 #include <vector>
 using namespace std;
 
-typedef pair<int,int> pii;
+typedef pair<int, int> pii;
 
 int main() {
-	ifstream fin ("pairup.in");
-	ofstream fout ("pairup.out");
+	ifstream fin("pairup.in");
+	ofstream fout("pairup.out");
 	int N;
 	vector<pii> V;
 	fin >> N;
@@ -71,8 +71,8 @@ int main() {
 		M = max(M, V[left].first + V[right].first);
 		V[left].second -= sub;
 		V[right].second -= sub;
-		
-		// once there are no more cows available in our 
+
+		// once there are no more cows available in our
 		// pair, we can increment/decrement the left/right
 		// pointer(s).
 		if (V[left].second == 0) left++;
@@ -80,15 +80,15 @@ int main() {
 	}
 	fout << M << "\n";
 }
-```  
+```
 </CPPSection>
 <PySection>
-	
+
 ```py
 import sys
 
-sys.stdin = open("pairup.in", 'r')
-sys.stdout = open("pairup.out", 'w')
+sys.stdin = open("pairup.in", "r")
+sys.stdout = open("pairup.out", "w")
 
 n = int(input())
 all_cows = []
@@ -99,7 +99,7 @@ for _ in range(n):
 all_cows.sort()
 left, right = 0, n - 1
 ans = 0
-	
+
 while left <= right:
 	# how many cows have been grouped together.
 	sub = min(all_cows[left][1], all_cows[right][1])
@@ -110,8 +110,10 @@ while left <= right:
 	all_cows[right][1] -= sub
 	# If there are no more cows which have this milk output,
 	# we can increment/decrement the left/right pointer.
-	if all_cows[left][1] == 0: left += 1
-	if all_cows[right][1] == 0: right -= 1
+	if all_cows[left][1] == 0:
+		left += 1
+	if all_cows[right][1] == 0:
+		right -= 1
 
 print(ans)
 ```
@@ -119,7 +121,7 @@ print(ans)
 <JavaSection>
 
 
-``` java
+```java
 import java.io.*;
 import java.util.*;
 
@@ -140,22 +142,18 @@ public class PairUp {
 		int left = 0, right = N - 1;
 		while (left <= right) {
 			// how many cows have been grouped together.
-			int numPaired = Integer.min(events.get(left).freq, events.get(right).freq);
-			if (left == right) {
-				numPaired /= 2;
-			}
-			ret = Integer.max(ret, events.get(left).amt + events.get(right).amt);
+			int numPaired =
+			    Integer.min(events.get(left).freq, events.get(right).freq);
+			if (left == right) { numPaired /= 2; }
+			ret =
+			    Integer.max(ret, events.get(left).amt + events.get(right).amt);
 			events.get(left).freq -= numPaired;
 			events.get(right).freq -= numPaired;
-			
+
 			// If there are no more cows which have this milk output,
 			// we can increment/decrement the left/right pointer.
-			if (events.get(left).freq == 0) {
-				left++;
-			}
-			if (events.get(right).freq == 0) {
-				right--;
-			}
+			if (events.get(left).freq == 0) { left++; }
+			if (events.get(right).freq == 0) { right--; }
 		}
 		PrintWriter out = new PrintWriter(new FileWriter("pairup.out"));
 		out.println(ret);

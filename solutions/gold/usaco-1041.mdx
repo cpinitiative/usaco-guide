@@ -63,7 +63,8 @@ public class Haircut {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+		PrintWriter out = new PrintWriter(
+		    new BufferedWriter(new OutputStreamWriter(System.out)));
 
 		int N = Integer.parseInt(f.readLine());
 		StringTokenizer st = new StringTokenizer(f.readLine());
@@ -74,26 +75,27 @@ public class Haircut {
 			hairs[i] = Integer.parseInt(st.nextToken());
 		}
 
-		BIT tree = new BIT(N + 1); // hair can be at most N
+		BIT tree = new BIT(N + 1);  // hair can be at most N
 
 		long[] inversionsWithValue = new long[N + 1];
-		// inversionsWithValue[i] == the number of inversions used with all hairs of length i
+		// inversionsWithValue[i] == the number of inversions used with all
+		// hairs of length i
 
 		for (int value : hairs) {
 
-
 			// we process from left to right, so the tree only
 			// has elements to the left of this. Therefore,
-			// the number of elements higher than this is the number of inversions.
+			// the number of elements higher than this is the number of
+			// inversions.
 			int numInversions = tree.getSum(value + 1, tree.size - 1);
 			inversionsWithValue[value] += numInversions;
 
 			tree.increase(value, 1);
 		}
 
-
 		long cumulativeInversions = 0;
-		out.println(0); // if all hairs are cut to length 0, they're all equal, so no inversions are possible
+		out.println(0);  // if all hairs are cut to length 0, they're all equal,
+		                 // so no inversions are possible
 		for (int j = 0; j < N - 1; j++) {
 			cumulativeInversions += inversionsWithValue[j];
 			out.println(cumulativeInversions);
@@ -112,37 +114,34 @@ public class Haircut {
 		}
 
 		/**
-		* Change the value at index i by change
-		* @param i
-		* @param change
-		*/
+		 * Change the value at index i by change
+		 * @param i
+		 * @param change
+		 */
 		public void increase(int i, int change) {
-			i++; // We start BIT at index 0
+			i++;  // We start BIT at index 0
 			while (i < tree.length) {
-				tree[i] += change; // Update for all parents
-				i += i & -i; // lowbit (~i + 1) is the same thing as -i
+				tree[i] += change;  // Update for all parents
+				i += i & -i;        // lowbit (~i + 1) is the same thing as -i
 			}
-
 		}
 
 		/**
-		* Set i to a value
-		* @param i
-		* @param val
-		*/
-		public void set(int i, int val) {
-			increase(i, val - get(i));
-		}
+		 * Set i to a value
+		 * @param i
+		 * @param val
+		 */
+		public void set(int i, int val) { increase(i, val - get(i)); }
 
 		/**
-		* Sum of all elements up to and including i
-		* @param i - index
-		* @return
-		*/
+		 * Sum of all elements up to and including i
+		 * @param i - index
+		 * @return
+		 */
 		public int getSum(int i) {
 			i++;
 			int sum = 0;
-			while (i > 0) { // Sum the values of each parent
+			while (i > 0) {  // Sum the values of each parent
 				sum += tree[i];
 				i -= i & -i;
 			}
@@ -150,39 +149,33 @@ public class Haircut {
 		}
 
 		/**
-		* Get sum of range [i, j]
-		* @param i - start index, inclusive
-		* @param j - end index, inclusive
-		* @return sum of range [i, j]
-		*/
+		 * Get sum of range [i, j]
+		 * @param i - start index, inclusive
+		 * @param j - end index, inclusive
+		 * @return sum of range [i, j]
+		 */
 		public int getSum(int i, int j) {
-			return getSum(j) -
-				(i > 0 ? getSum(i - 1) : 0);
+			return getSum(j) - (i > 0 ? getSum(i - 1) : 0);
 		}
 
 		/**
-		* @param i - index
-		* @return element at i
-		*/
-		public int get(int i) {
-			return getSum(i, i);
-		}
+		 * @param i - index
+		 * @return element at i
+		 */
+		public int get(int i) { return getSum(i, i); }
 
 		/**
-		* String representation
-		* @return
-		*/
+		 * String representation
+		 * @return
+		 */
 		public String toString() {
 			String out = "";
-			for (int i = 0; i < size - 1; i++) {
-				out += get(i) + " ";
-			}
+			for (int i = 0; i < size - 1; i++) { out += get(i) + " "; }
 			out += get(size - 1);
 			return out;
 		}
 	}
 }
-
 ```
 
 </JavaSection>

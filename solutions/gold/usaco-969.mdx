@@ -30,7 +30,6 @@ int n, m;
 const int PRECISION = 1e6;
 vector<vector<Edge>> adj;
 
-
 int dijkstra(int minf) {
 	priority_queue<pair<int, int>> pq;
 	vector<int> cost(n, INT32_MAX);
@@ -43,9 +42,7 @@ int dijkstra(int minf) {
 		pair<int, int> nxt = pq.top();
 		pq.pop();
 
-		if (nxt.second != cost[nxt.first] || visited[nxt.first]) {
-			continue;
-		}
+		if (nxt.second != cost[nxt.first] || visited[nxt.first]) { continue; }
 
 		for (Edge u : adj[nxt.first]) {
 			int ct = u.c + nxt.second;
@@ -54,9 +51,7 @@ int dijkstra(int minf) {
 			 * if the path has a flow value less
 			 * than our minimum, we can't consider it
 			 */
-			if (u.fl < minf || visited[u.v]) {
-				continue;
-			}
+			if (u.fl < minf || visited[u.v]) { continue; }
 
 			// path more optimal
 			if (cost[u.v] > ct) {
@@ -91,11 +86,9 @@ int main() {
 		int cur = dijkstra(flow);
 
 		// can't complete this path
-		if (cur == -1) {
-			continue;
-		}
+		if (cur == -1) { continue; }
 		double ratio = double(flow) / double(cur);
-		ans = max(ans, (int) (ratio * PRECISION));
+		ans = max(ans, (int)(ratio * PRECISION));
 	}
 	cout << ans << '\n';
 }
@@ -107,7 +100,7 @@ int main() {
 ```py
 import heapq
 
-with open('pump.in', 'r') as infile:
+with open("pump.in", "r") as infile:
 	n, m = map(int, infile.readline().split())
 
 	graph = [[] for _ in range(n)]
@@ -122,8 +115,8 @@ with open('pump.in', 'r') as infile:
 
 def dijkstra(flow_rate: int) -> float:
 
-	cost = [float('inf')] * n
-	cost[0] = 0 # start at FJ's farm
+	cost = [float("inf")] * n
+	cost[0] = 0  # start at FJ's farm
 	queue = [(0, 0)]
 	completed = set()
 
@@ -143,7 +136,7 @@ def dijkstra(flow_rate: int) -> float:
 				cost[adj_node] = new_cost
 				heapq.heappush(queue, (cost[adj_node], adj_node))
 
-	return 0 if cost[n - 1] == float('inf') else flow_rate / cost[n - 1]
+	return 0 if cost[n - 1] == float("inf") else flow_rate / cost[n - 1]
 
 
 max_worth = 0
@@ -152,7 +145,7 @@ for flow_rate in flow_rates:
 	if worth > max_worth:
 		max_worth = worth
 
-print(int(max_worth * 10 ** 6), file=open('pump.out', 'w'))
+print(int(max_worth * 10**6), file=open("pump.out", "w"))
 ```
 
 </PySection>
@@ -162,11 +155,11 @@ print(int(max_worth * 10 ** 6), file=open('pump.out', 'w'))
 **Time Complexity:** $\mathcal{O}(M \log N + N)$
 
 ```java
-//Created by Qi Wang
+// Created by Qi Wang
 import java.io.*;
 import java.util.*;
 
-public class pump{
+public class pump {
 	static int N;
 	static int M;
 	static List<Node>[] adjList;
@@ -181,13 +174,11 @@ public class pump{
 
 		adjList = new List[N];
 
-		for(int i = 0; i<N; i++){
-			adjList[i] = new ArrayList<>();
-		}
+		for (int i = 0; i < N; i++) { adjList[i] = new ArrayList<>(); }
 
-		for(int i = 0; i<M; i++){
-			int from = in.nextInt()-1;
-			int to = in.nextInt()-1;
+		for (int i = 0; i < M; i++) {
+			int from = in.nextInt() - 1;
+			int to = in.nextInt() - 1;
 			int cost = in.nextInt();
 			int flow = in.nextInt();
 
@@ -195,68 +186,73 @@ public class pump{
 			adjList[to].add(new Node(from, cost, flow));
 		}
 
-	//Since flow is 1000 at most, we can just iterate through every value. Or you can just test the flow values present in testcase.
-		for(int minF = 0; minF <= 1000; minF++){
-			costs = new int[N]; Arrays.fill(costs, Integer.MAX_VALUE); vist = new boolean[N];
-	  //Running dijkstra with the min flow that we set.
+		// Since flow is 1000 at most, we can just iterate through every value.
+		// Or you can just test the flow values present in testcase.
+		for (int minF = 0; minF <= 1000; minF++) {
+			costs = new int[N];
+			Arrays.fill(costs, Integer.MAX_VALUE);
+			vist = new boolean[N];
+			// Running dijkstra with the min flow that we set.
 			int[] res = dijkstra(minF);
-	  //Failed getting to the destination
-			if(res[0] < 0) continue;
-			double frac = (double)res[1]/res[0];
-	  //Maxing so we have the maximal answer.
+			// Failed getting to the destination
+			if (res[0] < 0) continue;
+			double frac = (double)res[1] / res[0];
+			// Maxing so we have the maximal answer.
 			max = Math.max(max, (int)Math.floor(frac * 1e6));
 		}
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("pump.out")));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("pump.out")));
 		out.println(max);
 		out.close();
 	}
 
-	public static int[] dijkstra(int minF){
+	public static int[] dijkstra(int minF) {
 		PriorityQueue<Node> pq = new PriorityQueue<>();
 		int min = Integer.MAX_VALUE;
 		pq.add(new Node(0, 0, 0));
 		costs[0] = 0;
-		while(!pq.isEmpty()){
+		while (!pq.isEmpty()) {
 			Node cur = pq.poll();
 			int n = cur.No;
 
-			if(vist[n]) continue; vist[n] = true;
+			if (vist[n]) continue;
+			vist[n] = true;
 
-			for(int i = 0; i<adjList[n].size(); i++){
+			for (int i = 0; i < adjList[n].size(); i++) {
 				int t = adjList[n].get(i).No;
 				int c = adjList[n].get(i).c + cur.c;
 
-				if(adjList[n].get(i).f < minF) continue;
-				if(vist[t]) continue;
+				if (adjList[n].get(i).f < minF) continue;
+				if (vist[t]) continue;
 
-				if(costs[t] > c){
+				if (costs[t] > c) {
 					costs[t] = c;
 					min = Math.min(min, adjList[n].get(i).f);
 					pq.add(new Node(t, c, adjList[n].get(i).f));
 				}
 			}
-
 		}
-		return new int[] {costs[N-1] == Integer.MAX_VALUE ? -1 : costs[N-1], min};
+		return new int[] {costs[N - 1] == Integer.MAX_VALUE ? -1 : costs[N - 1],
+		                  min};
 	}
 
-	private static class Node implements Comparable{
+	private static class Node implements Comparable {
 		int No;
 		int c;
 		int f;
-		public Node(int n, int c, int f){
+		public Node(int n, int c, int f) {
 			No = n;
 			this.c = c;
 			this.f = f;
 		}
 
 		@Override
-		public int compareTo(Object o){
+		public int compareTo(Object o) {
 			return c - ((Node)o).c;
 		}
 
 		@Override
-		public String toString(){
+		public String toString() {
 			return No + " " + c + " " + f;
 		}
 	}
@@ -267,7 +263,8 @@ public class pump{
 
 		public InputReader() {
 			try {
-				reader = new BufferedReader(new InputStreamReader(System.in), 32768);
+				reader =
+				    new BufferedReader(new InputStreamReader(System.in), 32768);
 			} catch (Exception e) {
 				throw new NullPointerException("Could not create input stream");
 			}
@@ -275,9 +272,11 @@ public class pump{
 
 		public InputReader(String fileName) {
 			try {
-				reader = new BufferedReader(new FileReader(new File(fileName)), 32768);
+				reader = new BufferedReader(new FileReader(new File(fileName)),
+				                            32768);
 			} catch (Exception ex) {
-				throw new NullPointerException("Input file does not exist! Put it in the project folder.");
+				throw new NullPointerException(
+				    "Input file does not exist! Put it in the project folder.");
 			}
 			tokenizer = null;
 		}
@@ -286,30 +285,22 @@ public class pump{
 			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
 				try {
 					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				} catch (IOException e) { throw new RuntimeException(e); }
 			}
 			return tokenizer.nextToken();
 		}
 
-		public boolean hasNextInt() throws IOException { return reader.ready(); }
-
-		public int nextInt() {
-			return Integer.parseInt(next());
+		public boolean hasNextInt() throws IOException {
+			return reader.ready();
 		}
 
-		public double nextDouble() {
-			return Double.parseDouble(next());
-		}
+		public int nextInt() { return Integer.parseInt(next()); }
 
-		public long nextLong() {
-			return Long.parseLong(next());
-		}
+		public double nextDouble() { return Double.parseDouble(next()); }
 
-		public char nextChar() {
-			return next().charAt(0);
-		}
+		public long nextLong() { return Long.parseLong(next()); }
+
+		public char nextChar() { return next().charAt(0); }
 
 		/**
 		 * When you call next(), that entire line will be skipped.
@@ -324,9 +315,7 @@ public class pump{
 			try {
 				str = reader.readLine();
 				tokenizer = null;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			} catch (IOException e) { throw new RuntimeException(e); }
 			return str;
 		}
 	}

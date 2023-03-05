@@ -90,191 +90,178 @@ When adding or removing a bad component, we get its difference $d$ and see how m
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <random>
 #include <algorithm>
+#include <iostream>
+#include <random>
+#include <unordered_map>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 using ll = long long;
- 
+
 struct Hash {
 	static const ll MOD1 = 1e9 + 7;
 	static const ll MOD2 = 1e9 + 9;
- 
+
 	ll h1, h2;
-	Hash(ll h1, ll h2) : h1(h1 % MOD1), h2(h2% MOD2) { }
-	Hash() : h1(0), h2(0) { }
- 
-	Hash operator+(const Hash& o) {
+	Hash(ll h1, ll h2) : h1(h1 % MOD1), h2(h2 % MOD2) {}
+	Hash() : h1(0), h2(0) {}
+
+	Hash operator+(const Hash &o) {
 		return Hash((h1 + o.h1) % MOD1, (h2 + o.h2) % MOD2);
 	}
- 
-	Hash operator-(const Hash& o) {
+
+	Hash operator-(const Hash &o) {
 		return Hash((h1 - o.h1 + MOD1) % MOD1, (h2 - o.h2 + MOD2) % MOD2);
 	}
- 
-	Hash exp(const ll& n) {
-		return Hash(h1 * n % MOD1, h2 * n % MOD2);
-	}
- 
+
+	Hash exp(const ll &n) { return Hash(h1 * n % MOD1, h2 * n % MOD2); }
+
 	inline vector<Hash> zero_pairs() {
 		return {
-			Hash(MOD1 - h1, MOD2 - h2), Hash(-h1, -h2),
-			Hash(-h1, MOD2 - h2), Hash(MOD1 - h1, -h2),
+		    Hash(MOD1 - h1, MOD2 - h2),
+		    Hash(-h1, -h2),
+		    Hash(-h1, MOD2 - h2),
+		    Hash(MOD1 - h1, -h2),
 		};
 	}
 
-	ll hash() const {
-		return 1LL * h1 * MOD2 + h2;
-	}
+	ll hash() const { return 1LL * h1 * MOD2 + h2; }
 };
- 
-bool operator==(const Hash& h1, const Hash& h2) {
+
+bool operator==(const Hash &h1, const Hash &h2) {
 	return h1.h1 == h2.h1 && h1.h2 == h2.h2;
 }
- 
-bool operator!=(const Hash& h1, const Hash& h2) {
-	return !(h1 == h2);
-}
+
+bool operator!=(const Hash &h1, const Hash &h2) { return !(h1 == h2); }
 
 struct HashFn {
-	std::size_t operator() (const Hash& h) const {
-		return h.hash();
-	}
+	std::size_t operator()(const Hash &h) const { return h.hash(); }
 };
 
 class DominikArray {
-	private:
-		vector<int> arr;
-		vector<int> sorted;
-		
-		vector<int> parent;
-		vector<int> size;
-		int bad_num = 0;  // # of bad components (used for type 3)
+  private:
+	vector<int> arr;
+	vector<int> sorted;
 
-		std::unordered_map<int, Hash> elem_val;  // each element's random number
-		// the current hash of a component
-		vector<Hash> hash;
-		// the needed hash for a component to be able to be sorted
-		vector<Hash> req_hash;
-		// the hash differences of the bad components
-		std::unordered_map<Hash, ll, HashFn> bad_diff;
-		ll cloud_pairs = 0;  // # of valid component pairs (used for type 4)
+	vector<int> parent;
+	vector<int> size;
+	int bad_num = 0;  // # of bad components (used for type 3)
 
-		int get_top(int n) {
-			return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	std::unordered_map<int, Hash> elem_val;  // each element's random number
+	// the current hash of a component
+	vector<Hash> hash;
+	// the needed hash for a component to be able to be sorted
+	vector<Hash> req_hash;
+	// the hash differences of the bad components
+	std::unordered_map<Hash, ll, HashFn> bad_diff;
+	ll cloud_pairs = 0;  // # of valid component pairs (used for type 4)
+
+	int get_top(int n) {
+		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	}
+
+	/** checks if a component is unsortable (n is a top node) */
+	inline bool is_unsortable(int n) { return hash[n] != req_hash[n]; }
+
+	/** add a bad component to the log & update data accordingly */
+	void add_if_bad(int n) {
+		if (is_unsortable(n)) {
+			// one more bad component
+			bad_num++;
+			Hash diff = req_hash[n] - hash[n];
+			bad_diff[diff] += size[n];
+			for (const Hash &zp : diff.zero_pairs()) {
+				cloud_pairs += bad_diff[zp] * size[n];
+			}
 		}
+	}
 
-		/** checks if a component is unsortable (n is a top node) */
-		inline bool is_unsortable(int n) {
-			return hash[n] != req_hash[n];
+	void remove_if_bad(int n) {
+		if (is_unsortable(n)) {
+			bad_num--;
+			Hash diff = req_hash[n] - hash[n];
+			bad_diff[diff] -= size[n];
+			for (const Hash &zp : diff.zero_pairs()) {
+				cloud_pairs -= bad_diff[zp] * size[n];
+			}
 		}
+	}
 
-		/** add a bad component to the log & update data accordingly */
-		void add_if_bad(int n) {
-			if (is_unsortable(n)) {
-				// one more bad component
-				bad_num++;
-				Hash diff = req_hash[n] - hash[n];
-				bad_diff[diff] += size[n];
-				for (const Hash& zp : diff.zero_pairs()) {
-					cloud_pairs += bad_diff[zp] * size[n];
-				}
+  public:
+	DominikArray(vector<int> arr)
+	    : arr(arr), parent(arr.size()), size(arr.size(), 1), hash(arr.size()),
+	      req_hash(arr.size()) {
+		sorted = arr;
+		std::sort(sorted.begin(), sorted.end());
+
+		std::random_device rd;
+		std::mt19937 gen(42069);
+		std::uniform_int_distribution<long long> distr(1, INT64_MAX);
+		for (int i : sorted) {
+			if (!elem_val.count(i)) {
+				elem_val[i] = Hash(distr(gen), distr(gen));
 			}
 		}
 
-		void remove_if_bad(int n) {
-			if (is_unsortable(n)) {
-				bad_num--;
-				Hash diff = req_hash[n] - hash[n];
-				bad_diff[diff] -= size[n];
-				for (const Hash& zp : diff.zero_pairs()) {
-					cloud_pairs -= bad_diff[zp] * size[n];
-				}
-			}
+		// set up DSU and the hashes
+		for (int i = 0; i < arr.size(); i++) {
+			parent[i] = i;
+			hash[i] = elem_val[arr[i]];
+			req_hash[i] = elem_val[sorted[i]];
+			add_if_bad(i);
 		}
-	public:
-		DominikArray(vector<int> arr)
-			: arr(arr), parent(arr.size()), size(arr.size(), 1),
-			  hash(arr.size()), req_hash(arr.size()) {
-			sorted = arr;
-			std::sort(sorted.begin(), sorted.end());
+	}
 
-			std::random_device rd;
-			std::mt19937 gen(42069);
-			std::uniform_int_distribution<long long> distr(1, INT64_MAX);
-			for (int i : sorted) {
-				if (!elem_val.count(i)) {
-					elem_val[i] = Hash(distr(gen), distr(gen));
-				}
-			}
-			
-			// set up DSU and the hashes
-			for (int i = 0; i < arr.size(); i++) {
-				parent[i] = i;
-				hash[i] = elem_val[arr[i]];
-				req_hash[i] = elem_val[sorted[i]];
-				add_if_bad(i);
-			}
-		}
+	void swap(int a, int b) {
+		int top_a = get_top(a);
+		int top_b = get_top(b);
 
-		void swap(int a, int b) {
-			int top_a = get_top(a);
-			int top_b = get_top(b);
+		// temporarily take them out of the bad log (if applicable)
+		remove_if_bad(top_a);
+		remove_if_bad(top_b);
 
-			// temporarily take them out of the bad log (if applicable)
-			remove_if_bad(top_a);
-			remove_if_bad(top_b);
+		// change the hashes of the two components
+		hash[top_a] = hash[top_a] + elem_val[arr[b]] - elem_val[arr[a]];
+		hash[top_b] = hash[top_b] + elem_val[arr[a]] - elem_val[arr[b]];
 
-			// change the hashes of the two components
-			hash[top_a] = hash[top_a] + elem_val[arr[b]] - elem_val[arr[a]];
-			hash[top_b] = hash[top_b] + elem_val[arr[a]] - elem_val[arr[b]];
+		// add them back (if applicable)
+		add_if_bad(top_a);
+		add_if_bad(top_b);
 
-			// add them back (if applicable)
-			add_if_bad(top_a);
-			add_if_bad(top_b);
+		std::swap(arr[a], arr[b]);
+	}
 
-			std::swap(arr[a], arr[b]);
-		}
+	void link(int a, int b) {
+		a = get_top(a);
+		b = get_top(b);
+		if (a == b) { return; }
 
-		void link(int a, int b) {
-			a = get_top(a);
-			b = get_top(b);
-			if (a == b) {
-				return;
-			}
+		if (size[a] < size[b]) { return link(b, a); }
 
-			if (size[a] < size[b]) {
-				return link(b, a);
-			}
-			
-			remove_if_bad(a);
-			remove_if_bad(b);
-			
-			// standard dsu operations
-			size[a] += size[b];
-			parent[b] = a;
-			
-			// add the hash of the smaller component to the bigger one
-			hash[a] = hash[a] + hash[b];
-			req_hash[a] = req_hash[a] + req_hash[b];
+		remove_if_bad(a);
+		remove_if_bad(b);
 
-			// since b's merged into a, we just add a back (if applicable)
-			add_if_bad(a);
-		}
+		// standard dsu operations
+		size[a] += size[b];
+		parent[b] = a;
 
-		bool sortable() {
-			// for everything to be sortable, there can't be any bad components
-			return bad_num == 0;
-		}
+		// add the hash of the smaller component to the bigger one
+		hash[a] = hash[a] + hash[b];
+		req_hash[a] = req_hash[a] + req_hash[b];
 
-		ll needed_pair_num() {
-			return cloud_pairs;
-		}
+		// since b's merged into a, we just add a back (if applicable)
+		add_if_bad(a);
+	}
+
+	bool sortable() {
+		// for everything to be sortable, there can't be any bad components
+		return bad_num == 0;
+	}
+
+	ll needed_pair_num() { return cloud_pairs; }
 };
 
 int main() {
@@ -285,30 +272,28 @@ int main() {
 	int query_num;
 	std::cin >> arr_len >> query_num;
 	vector<int> arr(arr_len);
-	for (int& i : arr) {
-		std::cin >> i;
-	}
-	
+	for (int &i : arr) { std::cin >> i; }
+
 	DominikArray array(arr);
 	for (int q = 0; q < query_num; q++) {
 		int type;
 		std::cin >> type;
 		int a, b;  // not necessarily used (queries of type 3 & 4)
 		switch (type) {
-			case 1:
-				std::cin >> a >> b;
-				array.swap(--a, --b);
-				break;
-			case 2:
-				std::cin >> a >> b;
-				array.link(--a, --b);
-				break;
-			case 3:
-				cout << (array.sortable() ? "DA" : "NE") << '\n';
-				break;
-			case 4:
-				cout << array.needed_pair_num() << '\n';
-				break;
+		case 1:
+			std::cin >> a >> b;
+			array.swap(--a, --b);
+			break;
+		case 2:
+			std::cin >> a >> b;
+			array.link(--a, --b);
+			break;
+		case 3:
+			cout << (array.sortable() ? "DA" : "NE") << '\n';
+			break;
+		case 4:
+			cout << array.needed_pair_num() << '\n';
+			break;
 		};
 	}
 }

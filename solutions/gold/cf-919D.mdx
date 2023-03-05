@@ -74,9 +74,7 @@ int main() {
 				}
 			}
 			// Add the next node to the queue.
-			if (--in_degree[next] == 0) {
-				queue.push(next);
-			}
+			if (--in_degree[next] == 0) { queue.push(next); }
 		}
 		size++;
 	}
@@ -90,9 +88,7 @@ int main() {
 	// Find the maximum frequency across all nodes and letters.
 	int ans = 0;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 26; j++) {
-			ans = max(ans, dp[i][j]);
-		}
+		for (int j = 0; j < 26; j++) { ans = max(ans, dp[i][j]); }
 	}
 	cout << ans << endl;
 }
@@ -204,7 +200,7 @@ dp = [[0] * 26 for _ in range(n)]
 for i in range(n):
 	if in_degree[i] == 0:
 		queue.append(i)
-		dp[i][ord(a[i]) - ord('a')] += 1
+		dp[i][ord(a[i]) - ord("a")] += 1
 
 # Run topological sort.
 size = 0
@@ -213,7 +209,7 @@ while size < n and len(queue) > 0:
 	for nxt in adj[cur]:
 		for j in range(26):
 			# Update the frequency with the next occurrence.
-			if j == ord(a[nxt]) - ord('a'):
+			if j == ord(a[nxt]) - ord("a"):
 				dp[nxt][j] = max(dp[cur][j] + 1, dp[nxt][j])
 			else:
 				dp[nxt][j] = max(dp[cur][j], dp[nxt][j])

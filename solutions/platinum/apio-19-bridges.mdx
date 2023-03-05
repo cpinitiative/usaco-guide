@@ -107,12 +107,14 @@ int main() {
 			if (t[i] == 1) w[x[i]] = y[i];
 			else {
 				to_join[i - l].clear();
-				for (int j : upd) if (w[x[j]] >= y[i]) to_join[i - l].push_back(x[j]);
+				for (int j : upd)
+					if (w[x[j]] >= y[i]) to_join[i - l].push_back(x[j]);
 			}
 		}
 
 		sort(ask.begin(), ask.end(), [&](int a, int b) { return y[a] > y[b]; });
-		sort(unchanged.begin(), unchanged.end(), [&](int a, int b) { return w[a] > w[b]; });
+		sort(unchanged.begin(), unchanged.end(),
+		     [&](int a, int b) { return w[a] > w[b]; });
 
 		int ptr = 0;
 		for (int i : ask) {

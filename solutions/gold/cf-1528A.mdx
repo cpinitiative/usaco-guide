@@ -55,14 +55,14 @@ $\texttt{dp}_{u \space 1} \mathrel{+}= \max($beauty if $v$ has a beauty value of
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 vector<vector<int>> adj;
 vector<pair<int, int>> range;
@@ -85,9 +85,7 @@ long long mx_beauty(int u, int v, bool type) {
 
 void calculate_dp(int u, int par) {
 	for (int v : adj[u]) {
-		if (v == par) {
-			continue;
-		}
+		if (v == par) { continue; }
 
 		calculate_dp(v, u);
 		dp[u][0] += mx_beauty(u, v, 0);
@@ -97,7 +95,7 @@ void calculate_dp(int u, int par) {
 
 int main() {
 	std::cin.tie(0)->sync_with_stdio(0);
-	
+
 	int test_num;
 	std::cin >> test_num;
 
@@ -108,7 +106,7 @@ int main() {
 		range.clear();
 		adj.assign(n, {});
 		dp.assign(n, vector<long long>(2, 0));
-		
+
 		for (int i = 0; i < n; i++) {
 			int l;
 			int r;
@@ -125,7 +123,7 @@ int main() {
 			adj[--u].push_back(--v);
 			adj[v].push_back(u);
 		}
-		
+
 		calculate_dp(0, -1);
 
 		cout << std::max(dp[0][0], dp[0][1]) << endl;

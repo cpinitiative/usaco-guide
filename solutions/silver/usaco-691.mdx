@@ -16,7 +16,7 @@ author: Óscar Garries, Owen Wang, Juheon Rhee
 #include <bits/stdc++.h>
 using namespace std;
 
-int main () {
+int main() {
 	freopen("hps.in", "r", stdin);
 
 	int n;
@@ -42,11 +42,8 @@ int main () {
 	int max_wins = 0;
 	for (int i = 1; i <= n; i++) {
 		int before_wins = max(hooves[i], max(paper[i], scissors[i]));
-		int after_wins = max({
-			hooves[n] - hooves[i],
-			paper[n] - paper[i],
-			scissors[n] - scissors[i]
-		});
+		int after_wins = max({hooves[n] - hooves[i], paper[n] - paper[i],
+		                      scissors[n] - scissors[i]});
 		max_wins = max(max_wins, before_wins + after_wins);
 	}
 
@@ -89,11 +86,11 @@ public class HPS {
 
 		int maxWins = 0;
 		for (int i = 1; i <= n; i++) {
-			int beforeWins = Math.max(hooves[i], Math.max(paper[i], scissors[i]));
+			int beforeWins =
+			    Math.max(hooves[i], Math.max(paper[i], scissors[i]));
 			int afterWins = Math.max(
-				hooves[n] - hooves[i],
-				Math.max(paper[n] - paper[i], scissors[n] - scissors[i])
-			);
+			    hooves[n] - hooves[i],
+			    Math.max(paper[n] - paper[i], scissors[n] - scissors[i]));
 			maxWins = Math.max(maxWins, beforeWins + afterWins);
 		}
 
@@ -108,8 +105,8 @@ public class HPS {
 
 <PySection>
 
-```python
-with open('hps.in') as r:
+```py
+with open("hps.in") as r:
 	n = int(r.readline().strip())
 	hooves = [0 for _ in range(n + 1)]
 	paper = [0 for _ in range(n + 1)]
@@ -121,24 +118,22 @@ with open('hps.in') as r:
 		scissors[i] += scissors[i - 1]
 
 		action = r.readline().strip()
-		if action == 'H':
+		if action == "H":
 			paper[i] += 1
-		elif action == 'P':
+		elif action == "P":
 			scissors[i] += 1
-		elif action == 'S':
+		elif action == "S":
 			hooves[i] += 1
 
 max_wins = 0
 for i in range(n + 1):
 	before_wins = max(hooves[i], paper[i], scissors[i])
 	after_wins = max(
-		hooves[n] - hooves[i],
-		paper[n] - paper[i],
-		scissors[n] - scissors[i]
+		hooves[n] - hooves[i], paper[n] - paper[i], scissors[n] - scissors[i]
 	)
 	max_wins = max(max_wins, before_wins + after_wins)
 
-print(max_wins, file=open('hps.out', 'w'))
+print(max_wins, file=open("hps.out", "w"))
 ```
 
 </PySection>

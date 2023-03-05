@@ -2,7 +2,7 @@
 id: baltic-20-VillageMinimum
 source: Baltic OI 2020
 title: Village (Minimum)
-author: Chuyang Wang 
+author: Chuyang Wang
 ---
 
 [Official Analysis](http://www.boi2020.lv/data/spoilers/village.pdf)
@@ -24,7 +24,7 @@ with their respective neighbors, the distance they need to travel is exactly 4.
 Therefore, swapping nodes that are not neighbors never lead to a better
 solution.
 
-To illustrate this idea, let's consider the following example: 
+To illustrate this idea, let's consider the following example:
 
 ![Example 1](baltic-20-VillageMinimum/example1.png)
 
@@ -58,19 +58,17 @@ using namespace std;
  * @return the sum of distances villagers need to travel
  */
 int dfs(int node, int parent, vector<int> &changed_to,
-		const vector<vector<int>> &adj) {
+        const vector<vector<int>> &adj) {
 	int length_added = 0;
 
 	for (int &child : adj[node]) {
-		if (child == parent) {
-			continue;
-		}
+		if (child == parent) { continue; }
 		length_added += dfs(child, node, changed_to, adj);
 	}
 
 	/*
-	 * If the current node (villager) is still in its original house, exchange its
-	 * position with its parent node.
+	 * If the current node (villager) is still in its original house, exchange
+	 * its position with its parent node.
 	 */
 	if (parent >= 0 && changed_to[node] == node) {
 		changed_to[node] = changed_to[parent];
@@ -78,7 +76,7 @@ int dfs(int node, int parent, vector<int> &changed_to,
 		length_added += 2;
 	} else if (parent < 0 && changed_to[node] == node) {
 		/*
-		 * If the current node is the root and did not swap its position yet, 
+		 * If the current node is the root and did not swap its position yet,
 		 * swap it with any of its children.
 		 */
 		changed_to[node] = changed_to[adj[node][0]];
@@ -112,9 +110,7 @@ int main() {
 	int total_length = dfs(0, -1, changed_to, adj);
 
 	cout << total_length << endl;
-	for (int &i : changed_to) {
-		cout << i + 1 << " ";
-	}
+	for (int &i : changed_to) { cout << i + 1 << " "; }
 	cout << endl;
 }
 ```
