@@ -1,11 +1,15 @@
-"""Formats all code snippets in modules using clang-format"""
+"""Formats all code snippets in mdx files using clang-format or black-with-tabs"""
 
 import os
 import subprocess
 import sys
+import tempfile
+import black
+from typing import List
+
 
 # see https://clang.llvm.org/docs/ClangFormatStyleOptions.html for more options
-STYLE = """
+CLANG_FORMAT_STYLE = """
 TabWidth: 4
 IndentWidth: 4
 UseTab: ForIndentation
@@ -16,17 +20,56 @@ AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: true
 SpacesBeforeTrailingComments: 2
 """
-STYLE = "{" + ", ".join(filter(lambda x: x != "", STYLE.split("\n"))) + "}"
+CLANG_FORMAT_STYLE = (
+	"{" + ", ".join(filter(lambda x: x != "", CLANG_FORMAT_STYLE.split("\n"))) + "}"
+)
 
 FORMAT_CPP = True
 FORMAT_PYTHON = True
 FORMAT_JAVA = True
 
+
 def lead_white(line):
 	return len(line) - len(line.lstrip())
 
+
 def match_indentation(line, prog_line):
-	return prog_line[min(lead_white(line), lead_white(prog_line)):]
+	return prog_line[min(lead_white(line), lead_white(prog_line)) :]
+
+
+def contains_banned_terms(prog: List[str]):
+	banned = ["CodeSnip", "while (???)"]
+	return any(ban in prog_line for ban in banned for prog_line in prog)
+
+
+def format_prog_py(prog: List[str]):
+	try:
+		prog = black.format_file_contents("".join(prog), fast=True, mode=black.FileMode()).splitlines(True)
+	except black.report.NothingChanged:
+		pass
+	return prog
+
+
+def format_prog_clang(lang: str, prog: List[str]):
+	tmp_file = tempfile.NamedTemporaryFile(suffix=f".{lang}")
+	with open(tmp_file.name, "w") as f:
+		f.write("".join(prog))
+	subprocess.check_output(
+		[
+			f"clang-format -i -style='{CLANG_FORMAT_STYLE}' {f.name}"
+		],
+		shell=True,
+	)
+	with open(tmp_file.name, "r") as f:
+		return f.readlines()
+
+def format_prog(lang: str, prog: List[str]):
+	if lang == "py":
+		return format_prog_py(prog)
+	else:
+		assert lang in ['cpp', 'java']
+		return format_prog_clang(lang, prog)
+
 
 def format_path(path: str):
 	print("formatting", path)
@@ -47,38 +90,15 @@ def format_path(path: str):
 			nlines.append(line)
 		elif line.strip() == "```":
 			if lang is not None:
-				banned = ["CodeSnip", "while (???)"]
-				if not any(ban in prog_line for ban in banned for prog_line in prog):
-					TMP_FILE = f"tmp.{lang}"
-					with open(TMP_FILE, "w") as f:
-						f.write("".join([match_indentation(line, prog_line) for prog_line in prog]))
-					found_error = False
-					try:
-						if lang == "cpp" or lang == "java":
-							subprocess.check_output(
-								[f"clang-format -i -style='{STYLE}' {TMP_FILE}"], shell=True
-							)
-						elif lang == "py":
-								subprocess.check_output(
-									[f"black --fast {TMP_FILE}"], shell=True # black with tabs
-								)
-						else:
-							assert False
-					except subprocess.CalledProcessError as e:
-						print("ERROR!")
-						print(e)
-						print("path =", path)
-						print("".join(prog))
-						print()
-						found_error = True
-						nlines += prog
-					if not found_error:
-						with open(TMP_FILE, "r") as f:
-							whitespace = line[: line.find("```")]
-							prog_lines = f.readlines()
-							nlines += [whitespace + line for line in prog_lines]
-					os.remove(TMP_FILE)
-				else: # don't format
+				if not contains_banned_terms(prog):
+					prog = [
+						match_indentation(line, prog_line)
+						for prog_line in prog
+					]
+					prog = format_prog(lang, prog)
+					whitespace = line[: line.find("```")]
+					nlines += [whitespace + line for line in prog]
+				else:  # don't format
 					nlines += prog
 				prog = []
 				lang = None
@@ -94,9 +114,19 @@ def format_path(path: str):
 	assert lang is None
 
 
-# https://stackoverflow.com/questions/2212643/python-recursive-folder-read
-for root, subdirs, files in os.walk("/Users/benq/Documents/usaco-guide/content/"):
-	for file in files:
-		if file.endswith(".mdx"):
-			path = os.path.join(root, file)
-			format_path(path)
+def format_dir(dir):
+	# https://stackoverflow.com/questions/2212643/python-recursive-folder-read
+	for root, subdirs, files in os.walk(dir):
+		for file in files:
+			if file.endswith(".mdx"):
+				path = os.path.join(root, file)
+				format_path(path)
+
+
+if __name__ == "__main__":
+	"""
+	Args: paths of files to format
+	"""
+	# raise ValueError(sys.argv[1:])
+	for path in sys.argv[1:]:
+		format_path(path)
