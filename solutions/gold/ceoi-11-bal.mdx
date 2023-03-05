@@ -9,13 +9,13 @@ author: Chuyang Wang
 
 ## Explanation
 
-The problem can be solved by simulation. In particular, we want to inflate the balloons from left to right. The difficult part is to find out when the new balloon $b$ touches one of the inflated balloon $a$ on its left, and how to check this for all previous inflated balloons efficiently. For notation, $a_r$ is the radius and $a_x$ the x-coordinate of balloon $a$. 
+The problem can be solved by simulation. In particular, we want to inflate the balloons from left to right. The difficult part is to find out when the new balloon $b$ touches one of the inflated balloon $a$ on its left, and how to check this for all previous inflated balloons efficiently. For notation, $a_r$ is the radius and $a_x$ the x-coordinate of balloon $a$.
 
-First, let's determine when two balloons "touch" each other by calculating the maximum radius of the second balloon $b_r$. As the x-coordinate of the previous inflated balloon $a_x$ and its radius $a_r$ are fixed, we can construct a rectangular triangle with the center of both balloons so that both adjacent and opposite sides are parallel to the axes. Using the Pythagorean theorem, we get $(b_x - a_x)^2 + (b_r - a_r)^2 = (b_r + a_r)^2$. With some math, we can get an expression for the maximum radius of the second balloon $b_r = \frac{(b_x - a_x)^2}{4a_r}$. This tells us that the balloon $b$ can never have a larger radius than $b_r$. 
+First, let's determine when two balloons "touch" each other by calculating the maximum radius of the second balloon $b_r$. As the x-coordinate of the previous inflated balloon $a_x$ and its radius $a_r$ are fixed, we can construct a rectangular triangle with the center of both balloons so that both adjacent and opposite sides are parallel to the axes. Using the Pythagorean theorem, we get $(b_x - a_x)^2 + (b_r - a_r)^2 = (b_r + a_r)^2$. With some math, we can get an expression for the maximum radius of the second balloon $b_r = \frac{(b_x - a_x)^2}{4a_r}$. This tells us that the balloon $b$ can never have a larger radius than $b_r$.
 
-With this information, we could just check every previous inflated balloon and determine what the maximum radius of our current balloon is. This, however, has the time complexity of $\mathcal{O}(n^2)$, which is too slow. Instead, we make use of our observation that any balloon $i$ with $i_r \leq b_r$ and $i_x < b_x$ will never be touched by balloons after $b$. Therefore, we store inflated balloons in a stack. Each time when we want to inflate a new balloon $b$, we check how long the radius of $b$ can be under the constraint of the first element $a$ from the stack. (Certainly, $b_r$ should still be less than the given maximum $r$. ) If $b_r \geq a_r$, we pop $a$ out from the stack and check the next element. $a$ will never be checked again. Otherwise, if $b_r < a_r$, we can stop the check and store our newly inflated balloon $b$ into this stack. 
+With this information, we could just check every previous inflated balloon and determine what the maximum radius of our current balloon is. This, however, has the time complexity of $\mathcal{O}(n^2)$, which is too slow. Instead, we make use of our observation that any balloon $i$ with $i_r \leq b_r$ and $i_x < b_x$ will never be touched by balloons after $b$. Therefore, we store inflated balloons in a stack. Each time when we want to inflate a new balloon $b$, we check how long the radius of $b$ can be under the constraint of the first element $a$ from the stack. (Certainly, $b_r$ should still be less than the given maximum $r$. ) If $b_r \geq a_r$, we pop $a$ out from the stack and check the next element. $a$ will never be checked again. Otherwise, if $b_r < a_r$, we can stop the check and store our newly inflated balloon $b$ into this stack.
 
-Since we remove the element from the stack once we want to check further back, we have a time complexity of $\mathcal{O}(n)$.  
+Since we remove the element from the stack once we want to check further back, we have a time complexity of $\mathcal{O}(n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -61,8 +61,8 @@ int main() {
 			double to_last_r = calc_r(last, x);
 			/*
 			 * the maximum possible radius is the smaller one between current
-			 * maximum and the maximum radius so that we touches the last balloon
-			 * (by which we have to stop)
+			 * maximum and the maximum radius so that we touches the last
+			 * balloon (by which we have to stop)
 			 */
 			max_r = min(max_r, to_last_r);
 
@@ -77,8 +77,8 @@ int main() {
 				continue;
 			}
 			/*
-			 * otherwise, the current balloon is smaller than the last saved balloon
-			 * and we can stop checking
+			 * otherwise, the current balloon is smaller than the last saved
+			 * balloon and we can stop checking
 			 */
 			else {
 				break;
@@ -94,9 +94,7 @@ int main() {
 	}
 
 	cout << fixed << setprecision(PRECISION);
-	for (double &r : final_radius) {
-		cout << r << "\n";
-	}
+	for (double &r : final_radius) { cout << r << "\n"; }
 }
 ```
 
@@ -112,7 +110,8 @@ import java.util.*;
 // class Balloons causes compilation error on ojuz, and therefore bal
 public class bal {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
 
 		// the radius of each balloon after inflating
@@ -129,26 +128,28 @@ public class bal {
 			double maxR = r;
 			/*
 			 * as long as the stack is not empty, we want to check
-			 * if the last balloon makes the radius of the current balloon smaller
+			 * if the last balloon makes the radius of the current balloon
+			 * smaller
 			 */
 			while (!toCheck.isEmpty()) {
 				// the radius if the current balloon touches the last balloon
 				double toLastR = toCheck.peek().calcR(x);
 				/*
-				 * the maximum possible radius is the smaller one between current
-				 * maximum and the maximum radius so that we touches the last
-				 * balloon (by which we have to stop)
+				 * the maximum possible radius is the smaller one between
+				 * current maximum and the maximum radius so that we touches the
+				 * last balloon (by which we have to stop)
 				 */
 				maxR = Math.min(maxR, toLastR);
 
 				/*
-				 * if current maximum radius >= radius of the last balloon, we can
-				 * remove the last balloon since it will never be touched by any
-				 * new balloons other than the current one
+				 * if current maximum radius >= radius of the last balloon, we
+				 * can remove the last balloon since it will never be touched by
+				 * any new balloons other than the current one
 				 */
 				if (maxR >= toCheck.peek().r) {
 					toCheck.pop();
-					// check the next balloon saved which will possibly reduce max_r
+					// check the next balloon saved which will possibly reduce
+					// max_r
 					continue;
 				}
 				/*
@@ -168,9 +169,7 @@ public class bal {
 		}
 
 		PrintWriter pw = new PrintWriter(System.out);
-		for (double r : finalRadius) {
-			pw.println(r);
-		}
+		for (double r : finalRadius) { pw.println(r); }
 		pw.close();
 	}
 
@@ -188,9 +187,7 @@ public class bal {
 		 * how long can the radius of the new balloon at position bx be
 		 * so that it touches this balloon
 		 */
-		public double calcR(long bx) {
-			return (x - bx) * (x - bx) / (4 * r);
-		}
+		public double calcR(long bx) { return (x - bx) * (x - bx) / (4 * r); }
 	}
 }
 ```

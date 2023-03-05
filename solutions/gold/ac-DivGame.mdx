@@ -28,31 +28,24 @@ Each time we decrement the exponent, we can add $1$ to the answer.
 #include <iostream>
 using namespace std;
 
-int main()
-{
+int main() {
 	long long n;
 	cin >> n;
 	int ans = 0;
-	//prime factorize n
-	for (long long p = 2; p * p <= n; p++)
-	{
+	// prime factorize n
+	for (long long p = 2; p * p <= n; p++) {
 		int exponent = 0;
-		while (n % p == 0)
-		{
+		while (n % p == 0) {
 			exponent++;
 			n /= p;
 		}
-		//decrement the exponent by i each time
-		for (int i = 1; exponent - i >= 0; i++)
-		{
+		// decrement the exponent by i each time
+		for (int i = 1; exponent - i >= 0; i++) {
 			exponent -= i;
 			ans++;
 		}
 	}
-	if (n > 1)
-	{
-		ans++;
-	}
+	if (n > 1) { ans++; }
 	cout << ans << endl;
 	return 0;
 }
@@ -65,19 +58,19 @@ int main()
 n = int(input())
 ans = 0
 # prime factorization for n
-for p in range(2, int(n ** 0.5)):
+for p in range(2, int(n**0.5)):
 	e = 0
 	while n % p == 0:
 		n /= p
 		e += 1
-	# here p^e divides n 
+	# here p^e divides n
 	i = 1
 	# taking p^1 then p^2 and so on until e < i
 	while e >= i:
 		e -= i
 		ans += 1
 		i += 1
-    
+
 ans += n > 1  # if n > 1 then it is a prime factor with e = 1
 print(ans)
 ```

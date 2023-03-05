@@ -26,9 +26,7 @@ const int MAX_N = 2e5;
 
 int arr[MAX_N];
 
-int gcd(int a, int b) {
-	return b == 0 ? a : gcd(b, a % b);
-}
+int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -36,15 +34,11 @@ int main() {
 
 	int n;
 	cin >> n;
-	for (int i = 0; i < n; i++){
-		cin >> arr[i];
-	}
-	
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+
 	int ans = 1;
-	for (int i = 0; i < n - 1; i++){
-		for (int j = i + 1; j < n; j++){
-			ans = max(ans, gcd(arr[i], arr[j]));
-		}
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i + 1; j < n; j++) { ans = max(ans, gcd(arr[i], arr[j])); }
 	}
 	cout << ans << endl;
 }
@@ -58,16 +52,16 @@ import java.io.*;
 import java.util.*;
 
 public class CommonDivisors {
-	public static int gcd(int a, int b) {
-		return b == 0 ? a : gcd(b, a % b);
-	}
+	public static int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args)
+	    throws NumberFormatException, IOException {
+		BufferedReader io =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(io.readLine());
 		int[] arr = Arrays.stream(io.readLine().split(" "))
-				.mapToInt(Integer::parseInt)
-				.toArray();
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
 		int ans = 1;
 		for (int i = 0; i < n - 1; i++) {
 			for (int j = i + 1; j < n; j++) {
@@ -127,22 +121,20 @@ int divisors[MAX_VAL + 1];
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
-	
+
 	int n;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
 		int a;
 		cin >> a;
 
-		const int up = (int) sqrt(a);
+		const int up = (int)sqrt(a);
 		for (int div = 1; div <= up; div++) {
 			if (a % div == 0) {
 				// the divisor and quotient are both divisors of a
 				divisors[div]++;
 				// make sure not to double count!
-				if (div != a / div) {
-					divisors[a / div]++;
-				}
+				if (div != a / div) { divisors[a / div]++; }
 			}
 		}
 	}
@@ -173,22 +165,22 @@ public class CommonDivisors {
 	// divisors[i] = stores the count of numbers that have i as a divisor
 	public static int[] divisors = new int[MAX_VAL + 1];
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args)
+	    throws NumberFormatException, IOException {
+		BufferedReader io =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(io.readLine());
 		int[] arr = Arrays.stream(io.readLine().split(" "))
-				.mapToInt(Integer::parseInt)
-				.toArray();
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
 		for (int i = 0; i < n; i++) {
-			int up = (int) Math.sqrt(arr[i]);
+			int up = (int)Math.sqrt(arr[i]);
 			for (int div = 1; div <= up; div++) {
 				if (arr[i] % div == 0) {
 					// the divisor and quotient are both divisors of a
 					divisors[div]++;
 					// make sure not to double count!
-					if (div != arr[i] / div) {
-						divisors[arr[i] / div]++;
-					}
+					if (div != arr[i] / div) { divisors[arr[i] / div]++; }
 				}
 			}
 		}
@@ -280,9 +272,7 @@ int main() {
 	for (int gcd = MAX_VAL; gcd > 0; gcd--) {
 		// see how many numbers of the array have this number as a divisor
 		int div = 0;
-		for (int j = gcd; j <= MAX_VAL; j += gcd) {
-			div += occ_num[j];
-		}
+		for (int j = gcd; j <= MAX_VAL; j += gcd) { div += occ_num[j]; }
 		if (div >= 2) {
 			cout << gcd << endl;
 			break;
@@ -301,25 +291,23 @@ import java.util.*;
 public class CommonDivisors {
 	public static final int MAXX = 1000000;
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args)
+	    throws NumberFormatException, IOException {
+		BufferedReader io =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(io.readLine());
 		int[] arr = Arrays.stream(io.readLine().split(" "))
-				.mapToInt(Integer::parseInt)
-				.toArray();
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
 
 		int[] p = new int[MAXX + 1];
 		Arrays.fill(p, 0);
 
-		for (int i = 0; i < n; i++) {
-			p[arr[i]]++;
-		}
+		for (int i = 0; i < n; i++) { p[arr[i]]++; }
 
 		for (int i = MAXX; i >= 1; i--) {
 			int div = 0;
-			for (int j = i; j <= MAXX; j += i) {
-				div += p[j];
-			}
+			for (int j = i; j <= MAXX; j += i) { div += p[j]; }
 			if (div >= 2) {
 				System.out.println(i);
 				break;

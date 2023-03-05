@@ -11,11 +11,11 @@ It turns out that we can also use a Fenwick tree to find the LIS too (as it can 
 
 ```cpp
 vector<int> bit;
- 
+
 void update(int pos, int len) {
     for (; pos < bit.size(); pos += (pos & (-pos))) bit[pos] = max(bit[pos], len);
 }
- 
+
 int query(int pos) {
     int ans = 0;
     for (; pos; pos -= (pos & (-pos))) ans = max(ans, bit[pos]);
@@ -25,7 +25,7 @@ int query(int pos) {
 int find_lis(vector<int> a) { // Assumes that a is a permutation of {1, 2, ..., n}
     bit.resize(a.size() + 1);
     fill(bit.begin(), bit.end(), 0);
-    int ans = 0;    
+    int ans = 0;
     for (int i : a) {
         int lis = query(i);
         ans = max(ans, lis);

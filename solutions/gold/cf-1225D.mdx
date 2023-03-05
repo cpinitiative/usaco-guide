@@ -27,7 +27,7 @@ int exponent;
  * We can define a prime factorization pair as the following:
  * (a, b mod k) represents a prime number (a) to the power of (b mod k).
  */
-vector<pi> factor(int number){
+vector<pi> factor(int number) {
 	map<int, int> factors;
 	for (int i = 2; i * i <= number; i++) {
 		while (number % i == 0) {
@@ -35,13 +35,12 @@ vector<pi> factor(int number){
 			factors[i]++;
 		}
 	}
-	if (number > 1) {
-		factors[number]++;
-	}
+	if (number > 1) { factors[number]++; }
 	vector<pi> prime_factorization;
-	for (pi primes: factors) {
+	for (pi primes : factors) {
 		if (primes.second % exponent > 0) {
-			prime_factorization.push_back({primes.first, primes.second % exponent});
+			prime_factorization.push_back(
+			    {primes.first, primes.second % exponent});
 		}
 	}
 	return prime_factorization;
@@ -53,7 +52,7 @@ vector<pi> factor(int number){
  * b represents the exponent mod k, the inverse of (a, b) would be
  * precisely (a, k - b) since a ^ b * a ^ (k - b) = a ^ k.
  */
-vector<pi> find_factor_inverse(vector<pi> original){
+vector<pi> find_factor_inverse(vector<pi> original) {
 	int prime_num = original.size();
 	vector<pi> inverse(prime_num);
 	for (int i = 0; i < prime_num; i++) {
@@ -63,7 +62,7 @@ vector<pi> find_factor_inverse(vector<pi> original){
 	return inverse;
 }
 
-int main(){
+int main() {
 	int size;
 	cin >> size >> exponent;
 	/*
@@ -84,7 +83,8 @@ int main(){
 			// We don't want to count itself, so we do the frequency - 1
 			num_of_pairs += (factor_frequency[factor(arr[i])] - 1);
 		} else {
-			num_of_pairs += factor_frequency[find_factor_inverse(factor(arr[i]))];
+			num_of_pairs +=
+			    factor_frequency[find_factor_inverse(factor(arr[i]))];
 		}
 	}
 	// We divide the number of pairs by 2 so that we don't overcount

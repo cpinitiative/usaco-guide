@@ -100,7 +100,7 @@ Java has its own hash functions for pre-defined objects like `ArrayList`'s.
 However, a custom hash function is still needed for user-defined objects.
 In order to create one, we can implement the `hashCode` method.
 
-Additionally, in order for `HashSet`'s and `HashMap`'s to work with 
+Additionally, in order for `HashSet`'s and `HashMap`'s to work with
 a custom class, we must also implement the `equals` method.
 
 ```java
@@ -149,7 +149,7 @@ it would easily be hacked in a Codeforces contest).
 
 In Java, an easy way to hash custom objects is to use the builtin
 `Objects.hash()` method. This method takes in multiple objects and uses them
-to create a hash code. However, this is easily hackable, as the code 
+to create a hash code. However, this is easily hackable, as the code
 below shows.
 
 ```java
@@ -162,7 +162,7 @@ public class HashTest {
 		Set<Pair> set = new HashSet<>();
 		for (int i = 0; i < 100000; ++i) {
 			// Pair p = new Pair(i, 0); // ~0.2s on ide.usaco.guide
-			Pair p = new Pair(i, -31*i); // >5s
+			Pair p = new Pair(i, -31 * i);  // >5s
 			set.add(p);
 		}
 	}
@@ -230,7 +230,8 @@ struct chash {
 	// any random-ish large odd number will do
 	const uint64_t C = uint64_t(2e18 * PI) + 71;
 	// random 32-bit number
-	const uint32_t RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+	const uint32_t RANDOM =
+	    chrono::steady_clock::now().time_since_epoch().count();
 	size_t operator()(uint64_t x) const {
 		// see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 		return __builtin_bswap64((x ^ RANDOM) * C);
@@ -242,10 +243,10 @@ template <class K, class V> using cmap = unordered_map<K, V, chash>;
 
 ## A Faster HashMap in C++
 
-In C++, it's usually faster to use `gp_hash_table<K, V>` instead of 
-`unordered_map<K, V>`. Read / writes are much faster than `unordered_map`. 
-The documentation is rather confusing, so I'll just summarize the most useful 
-functions here. If you need a replacement for `unordered_set<K>`, use 
+In C++, it's usually faster to use `gp_hash_table<K, V>` instead of
+`unordered_map<K, V>`. Read / writes are much faster than `unordered_map`.
+The documentation is rather confusing, so I'll just summarize the most useful
+functions here. If you need a replacement for `unordered_set<K>`, use
 `gp_hash_table<K, null_type>`.
 
 <Resources>
@@ -274,8 +275,8 @@ functions here. If you need a replacement for `unordered_set<K>`, use
 
 ### Custom Hashing
 
-Like `unordered_map`, `gp_hash_table` is vulernable to hash collisions if a 
-cusetom hash function isn't used. We recommend using the same custom hash 
+Like `unordered_map`, `gp_hash_table` is vulernable to hash collisions if a
+cusetom hash function isn't used. We recommend using the same custom hash
 we used for unordered map above:
 
 ```cpp
@@ -352,7 +353,7 @@ But if you didn't read the constraints carefully enough, you're in luck!
 
 <Warning>
 
-This code passes in 1180ms when initial capacity is specified, and TLEs 
+This code passes in 1180ms when initial capacity is specified, and TLEs
 when it is not.
 
 </Warning>

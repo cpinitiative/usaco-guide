@@ -27,7 +27,7 @@ To calculate $\texttt{seg}[i]$,
 
 Now we can build and update any value in our segment tree.
 
-To answer an query, we can split the range $[l, r]$ into $\mathcal O(\log N)$ segments. To calculate the answer, we just repeatedly merge these segments until there is one left and take the $\texttt{pref}$. 
+To answer an query, we can split the range $[l, r]$ into $\mathcal O(\log N)$ segments. To calculate the answer, we just repeatedly merge these segments until there is one left and take the $\texttt{pref}$.
 
 <LanguageSection>
 
@@ -36,37 +36,43 @@ To answer an query, we can split the range $[l, r]$ into $\mathcal O(\log N)$ se
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const int N = 200010;
 const int S = 1 << 18;
- 
+
 int n, q, a[N];
- 
+
 struct node {
 	long long sum, pref;
 	node(long long sum, long long pref) : sum(sum), pref(pref) {}
 	node(long long x = 0) : sum(x), pref(max(0LL, x)) {}
-	friend node operator+(const node& a, const node& b) {
+	friend node operator+(const node &a, const node &b) {
 		return {a.sum + b.sum, max(a.pref, a.sum + b.pref)};
 	}
 } tt[S << 1];
- 
+
 void build(int k = 1, int l = 1, int r = n) {
-	if (l == r) { tt[k] = node(a[l]); return; }
+	if (l == r) {
+		tt[k] = node(a[l]);
+		return;
+	}
 	int m = (l + r) >> 1;
 	build(k << 1, l, m);
 	build(k << 1 | 1, m + 1, r);
 	tt[k] = tt[k << 1] + tt[k << 1 | 1];
 }
- 
+
 void update(int i, int x, int k = 1, int l = 1, int r = n) {
-	if (l == r) { tt[k] = node(x); return; }
+	if (l == r) {
+		tt[k] = node(x);
+		return;
+	}
 	int m = (l + r) >> 1;
 	if (i <= m) update(i, x, k << 1, l, m);
 	else update(i, x, k << 1 | 1, m + 1, r);
 	tt[k] = tt[k << 1] + tt[k << 1 | 1];
 }
- 
+
 node query(int ql, int qr, int k = 1, int l = 1, int r = n) {
 	if (ql > r || qr < l) return 0;
 	if (ql <= l && qr >= r) return tt[k];
@@ -75,11 +81,10 @@ node query(int ql, int qr, int k = 1, int l = 1, int r = n) {
 	node q2 = query(ql, qr, k << 1 | 1, m + 1, r);
 	return q1 + q2;
 }
- 
+
 int main() {
 	scanf("%d%d", &n, &q);
-	for (int i = 1; i <= n; ++i)
-		scanf("%d", a + i);
+	for (int i = 1; i <= n; ++i) scanf("%d", a + i);
 	build();
 	for (int i = 0, t, x, y; i < q; ++i) {
 		scanf("%d%d%d", &t, &x, &y);
@@ -116,32 +121,51 @@ using namespace std;
 
 using ll = long long;
 
-template<class T> struct LSegTree {
-	int N; vector<T> t, lz; T U=-1e18;
-	T F(T i, T j) { return max(i,j); } LSegTree() {}
-	LSegTree(int N) : N(N), t(4*(N+1),U), lz(4*(N+1),0) {}
-	void pull(int i) { t[i] = F(t[i*2],t[i*2+1]); }
+template <class T> struct LSegTree {
+	int N;
+	vector<T> t, lz;
+	T U = -1e18;
+	T F(T i, T j) { return max(i, j); }
+	LSegTree() {}
+	LSegTree(int N) : N(N), t(4 * (N + 1), U), lz(4 * (N + 1), 0) {}
+	void pull(int i) { t[i] = F(t[i * 2], t[i * 2 + 1]); }
 	void push(int i, int l, int r) {
-		t[i]+=lz[i];
-		if(l!=r) lz[i*2]+=lz[i], lz[i*2+1]+=lz[i];
-		lz[i]=0; }
-	void build(vector<ll> &v) { build(v,1,0,N); }
+		t[i] += lz[i];
+		if (l != r) lz[i * 2] += lz[i], lz[i * 2 + 1] += lz[i];
+		lz[i] = 0;
+	}
+	void build(vector<ll> &v) { build(v, 1, 0, N); }
 	void build(vector<ll> &v, int i, int l, int r) {
-		if(l==r) { t[i]=v[l]; return; } int m=(l+r)/2;
-		build(v,i*2,l,m); build(v,i*2+1,m+1,r); pull(i);
+		if (l == r) {
+			t[i] = v[l];
+			return;
+		}
+		int m = (l + r) / 2;
+		build(v, i * 2, l, m);
+		build(v, i * 2 + 1, m + 1, r);
+		pull(i);
 	}
-	void upd(int L, int R, T v) { upd(L,R,v,1,0,N); }
+	void upd(int L, int R, T v) { upd(L, R, v, 1, 0, N); }
 	void upd(int L, int R, T v, int i, int l, int r) {
-		push(i,l,r); if(R<l || L>r) return;
-		if(L<=l && R>=r) { lz[i]+=v; push(i,l,r); return; }
-		int m=(l+r)/2; upd(L,R,v,i*2,l,m);
-		upd(L,R,v,i*2+1,m+1,r); pull(i);
+		push(i, l, r);
+		if (R < l || L > r) return;
+		if (L <= l && R >= r) {
+			lz[i] += v;
+			push(i, l, r);
+			return;
+		}
+		int m = (l + r) / 2;
+		upd(L, R, v, i * 2, l, m);
+		upd(L, R, v, i * 2 + 1, m + 1, r);
+		pull(i);
 	}
-	T qry(int L, int R) { return qry(L,R,1,0,N); }
+	T qry(int L, int R) { return qry(L, R, 1, 0, N); }
 	T qry(int L, int R, int i, int l, int r) {
-		push(i,l,r); if(R<l || L>r) return U;
-		if(L<=l && R>=r) return t[i]; int m=(l+r)/2;
-		return F(qry(L,R,i*2,l,m), qry(L,R,i*2+1,m+1,r));
+		push(i, l, r);
+		if (R < l || L > r) return U;
+		if (L <= l && R >= r) return t[i];
+		int m = (l + r) / 2;
+		return F(qry(L, R, i * 2, l, m), qry(L, R, i * 2 + 1, m + 1, r));
 	}
 };
 
@@ -152,31 +176,35 @@ LSegTree<ll> st;
 int main() {
 
 	cin >> n >> q;
-	a = ps = vector<ll>(n+1);
-	for(int i=1; i<=n; i++) cin >> a[i];
+	a = ps = vector<ll>(n + 1);
+	for (int i = 1; i <= n; i++) cin >> a[i];
 
 	// construct ps
 	ps[0] = 0;
-	for(int i=1; i<=n; i++) ps[i] = ps[i-1] + a[i];
+	for (int i = 1; i <= n; i++) ps[i] = ps[i - 1] + a[i];
 
 	// construct the segment tree
 	st = LSegTree<ll>(n);
 	st.build(ps);
 
 	// queries
-	while(q--) {
-		int t; cin >> t;
-		if(t==1) {
+	while (q--) {
+		int t;
+		cin >> t;
+		if (t == 1) {
 			// update a[i] to x
-			int i; ll x; cin >> i >> x;
-			st.upd(i, n, x-a[i]); a[i]=x;
+			int i;
+			ll x;
+			cin >> i >> x;
+			st.upd(i, n, x - a[i]);
+			a[i] = x;
 		} else {
 			// max ps in the range [a,b] - ps[a-1]
-			int a, b; cin >> a >> b;
-			cout << st.qry(a-1,b) - st.qry(a-1,a-1) << '\n';
+			int a, b;
+			cin >> a >> b;
+			cout << st.qry(a - 1, b) - st.qry(a - 1, a - 1) << '\n';
 		}
 	}
-
 }
 ```
 

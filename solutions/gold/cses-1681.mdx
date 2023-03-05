@@ -20,50 +20,51 @@ process the nodes topologically so $dp[u]$ will already have been computed
 before $dp[v]$.
 
 <LanguageSection>
-	
+
 <CPPSection>
-	
+
 ```cpp
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 using namespace std;
 int n;
 vector<int> edge[100001];
 vector<int> backedge[100001];
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	int m; cin >> n >> m;
-	int in_degree[n+1], dp[n+1];
-	for(int i = 0; i <= n; i++){
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int m;
+	cin >> n >> m;
+	int in_degree[n + 1], dp[n + 1];
+	for (int i = 0; i <= n; i++) {
 		in_degree[i] = 0;
 		dp[i] = 0;
 	}
 	dp[1] = 1;
-	for(int i = 0; i < m; i++){
-		int a,b; cin >> a >> b;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
 		edge[a].push_back(b);
 		backedge[b].push_back(a);
 		in_degree[b]++;
 	}
-	//uses Kahn's algorithm
+	// uses Kahn's algorithm
 	queue<int> q;
-	for(int i = 0; i < n; i++) {
-		if(in_degree[i] == 0) {
-			q.push(i);
-		}
+	for (int i = 0; i < n; i++) {
+		if (in_degree[i] == 0) { q.push(i); }
 	}
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
-		for(int next : edge[node]) {
+		for (int next : edge[node]) {
 			in_degree[next]--;
-			if(in_degree[next] == 0) q.push(next);
+			if (in_degree[next] == 0) q.push(next);
 		}
 
-		for(int prev : backedge[node]) {
+		for (int prev : backedge[node]) {
 			dp[node] = (dp[node] + dp[prev]) % 1000000007;
 		}
 	}
@@ -71,17 +72,17 @@ int main(){
 	return 0;
 }
 ```
-			     
+
 </CPPSection>
 
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
 
 public class cses1681 {
-	public static final int MOD = (int) 1e9 + 7;
+	public static final int MOD = (int)1e9 + 7;
 	public static ArrayList<Integer>[] forwards;
 	public static ArrayList<Integer>[] backwards;
 	public static int[] degree;
@@ -111,27 +112,23 @@ public class cses1681 {
 			degree[b]++;
 		}
 
-		//dp[i] is the number of ways to get to node i.
+		// dp[i] is the number of ways to get to node i.
 		dp = new int[N];
 		dp[0] = 1;
 
-		//Add source nodes with only outgoing edges to queue.
+		// Add source nodes with only outgoing edges to queue.
 		Queue<Integer> q = new LinkedList<>();
 		for (int i = 0; i < N; i++) {
-			if (degree[i] == 0) {
-				q.add(i);
-			}
+			if (degree[i] == 0) { q.add(i); }
 		}
 
 		while (!q.isEmpty()) {
-			//Remove the node from the queue and check its neighbors.
+			// Remove the node from the queue and check its neighbors.
 			int cur = q.poll();
 			for (int next : forwards[cur]) {
 				degree[next]--;
-				//Add new sources to queue.
-				if (degree[next] == 0) {
-					q.add(next);
-				}
+				// Add new sources to queue.
+				if (degree[next] == 0) { q.add(next); }
 			}
 
 			// Calculate the number of ways by checking backwards.

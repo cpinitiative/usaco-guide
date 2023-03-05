@@ -11,40 +11,37 @@ author: Kevin Sheng
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <string>
 #include <cmath>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using std::cin;
 using std::cout;
 using std::endl;
 
-bool reachable(
-	std::pair<long long, long long> start,
-	std::pair<long long, long long> end,
-	std::string wind,
-	long long time
-) {
+bool reachable(std::pair<long long, long long> start,
+               std::pair<long long, long long> end, std::string wind,
+               long long time) {
 	long long wind_x = 0;
 	long long wind_y = 0;
-	for (const char& w : wind) {
+	for (const char &w : wind) {
 		switch (w) {
-			case 'U':
-				wind_y++;
-				break;
-			case 'D':
-				wind_y--;
-				break;
-			case 'L':
-				wind_x--;
-				break;
-			case 'R':
-				wind_x++;
-				break;
+		case 'U':
+			wind_y++;
+			break;
+		case 'D':
+			wind_y--;
+			break;
+		case 'L':
+			wind_x--;
+			break;
+		case 'R':
+			wind_x++;
+			break;
 		}
 	}
-	
+
 	/*
 	 * to speed things up, we can skip all the repetitive cycles and
 	 * multiply by the total complete amount of cycles
@@ -54,25 +51,26 @@ bool reachable(
 	long long remainder = time % wind.length();
 	for (long long i = 0; i < remainder; i++) {
 		switch (wind[i]) {
-			case 'U':
-				wind_y++;
-				break;
-			case 'D':
-				wind_y--;
-				break;
-			case 'L':
-				wind_x--;
-				break;
-			case 'R':
-				wind_x++;
-				break;
+		case 'U':
+			wind_y++;
+			break;
+		case 'D':
+			wind_y--;
+			break;
+		case 'L':
+			wind_x--;
+			break;
+		case 'R':
+			wind_x++;
+			break;
 		}
 	}
 
 	start.first += wind_x;
 	start.second += wind_y;
 	return std::abs(start.first - end.first) +
-		   std::abs(start.second - end.second) <= time;
+	           std::abs(start.second - end.second) <=
+	       time;
 }
 
 int main() {
@@ -110,15 +108,16 @@ import java.util.Arrays;
 
 public class MagicShip {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		long[] atPos = Arrays.stream(read.readLine().split(" "))
-				.mapToLong(Long::parseLong)
-				.toArray();
-		
+		                   .mapToLong(Long::parseLong)
+		                   .toArray();
+
 		long[] destination = Arrays.stream(read.readLine().split(" "))
-				.mapToLong(Long::parseLong)
-				.toArray();
-		
+		                         .mapToLong(Long::parseLong)
+		                         .toArray();
+
 		read.readLine();  // wind length won't be used
 		char[] winds = read.readLine().toUpperCase().toCharArray();
 
@@ -133,47 +132,22 @@ public class MagicShip {
 		while (lo <= hi) {
 			long mid = lo / 2 + hi / 2;
 			if (reachable(atPos, destination, mid, winds)) {
-					valid = mid;
-					hi = mid - 1;
-				} else {
-					lo = mid + 1;
-				}
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
 		}
 		System.out.println(valid);
 	}
 
-	private static boolean reachable(
-		long[] from, long[] to, long time, char[] windPattern
-	) {
+	private static boolean reachable(long[] from, long[] to, long time,
+	                                 char[] windPattern) {
 		long windX = 0;
 		long windY = 0;
 		// calculate the net change by the wind through one cycle
 		for (char w : windPattern) {
 			switch (w) {
-				case 'U':
-					windY++;
-					break;
-				case 'D':
-					windY--;
-					break;
-				case 'L':
-					windX--;
-					break;
-				case 'R':
-					windX++;
-					break;
-			}
-		}
-		
-		/*
-		 * to speed things up, we can multiply
-		 * the blown amount by the complete cycle amount
-		 */
-		windX *= time / windPattern.length;
-		windY *= time / windPattern.length;
-		long remainder = time % windPattern.length;
-		for (int i = 0; i < remainder; i++) {  // calculate the remaining wind
-		switch (windPattern[i]) {
 			case 'U':
 				windY++;
 				break;
@@ -189,9 +163,32 @@ public class MagicShip {
 			}
 		}
 
-		return manhattanDist(
-			new long[] {from[0] + windX, from[1] + windY}, to
-		) <= time;
+		/*
+		 * to speed things up, we can multiply
+		 * the blown amount by the complete cycle amount
+		 */
+		windX *= time / windPattern.length;
+		windY *= time / windPattern.length;
+		long remainder = time % windPattern.length;
+		for (int i = 0; i < remainder; i++) {  // calculate the remaining wind
+			switch (windPattern[i]) {
+			case 'U':
+				windY++;
+				break;
+			case 'D':
+				windY--;
+				break;
+			case 'L':
+				windX--;
+				break;
+			case 'R':
+				windX++;
+				break;
+			}
+		}
+
+		return manhattanDist(new long[] {from[0] + windX, from[1] + windY},
+		                     to) <= time;
 	}
 
 	private static long manhattanDist(long[] from, long[] to) {
@@ -236,7 +233,7 @@ wind_cycle = input()
 
 
 lo = 0
-hi = 2 * 10 ** 14
+hi = 2 * 10**14
 valid = -1
 while lo <= hi:
 	mid = (lo + hi) // 2

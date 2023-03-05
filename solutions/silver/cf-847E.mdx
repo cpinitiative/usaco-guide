@@ -50,19 +50,19 @@ pellets eaten in both of these cases and assign the larger one to the Packman.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
+#include <deque>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <deque>
-#include <algorithm>
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 using std::vector;
 
 // assumes packmen and food are all sorted and distinct (ALL the elements)
-bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
+bool all_eatable(const vector<int> &packmen, std::deque<int> food, int time) {
 	for (int p : packmen) {
 		vector<int> have_to_eat;
 		while (!food.empty() && food[0] < p) {
@@ -75,12 +75,11 @@ bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
 			 * don't have to eat anything to the left,
 			 * so let's go to the right as much as possible
 			 */
-			while (!food.empty() && food[0] - p <= time) {
-				food.pop_front();
-			}
+			while (!food.empty() && food[0] - p <= time) { food.pop_front(); }
 		} else {
 			if (p - have_to_eat[0] > time) {
-				//  we can't eat the leftmost pellet, so we can't eat all of them
+				//  we can't eat the leftmost pellet, so we can't eat all of
+				//  them
 				return false;
 			}
 
@@ -88,16 +87,16 @@ bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
 			// test for if we went to the left first
 			int right_free_time = time - 2 * left_time;
 			int left_first = -1;
-			while (left_first + 1 < food.size()
-					&& food[left_first + 1] - p <= right_free_time) {
+			while (left_first + 1 < food.size() &&
+			       food[left_first + 1] - p <= right_free_time) {
 				left_first++;
 			}
 
 			// test for if we went to the right first
 			right_free_time = time - left_time;
 			int right_first = -1;
-			while (right_first + 1 < food.size()
-					&& (food[right_first + 1] - p) * 2 <= right_free_time) {
+			while (right_first + 1 < food.size() &&
+			       (food[right_first + 1] - p) * 2 <= right_free_time) {
 				right_first++;
 			}
 
@@ -107,9 +106,7 @@ bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
 			}
 		}
 
-		if (food.empty()) {
-			return true;
-		}
+		if (food.empty()) { return true; }
 	}
 	return food.empty();
 }
@@ -119,9 +116,7 @@ int main() {
 	cin >> field_len;
 	std::string field;
 	cin >> field;
-	for (char& c: field) {
-		c = toupper(c);
-	}
+	for (char &c : field) { c = toupper(c); }
 
 	vector<int> packmen;
 	std::deque<int> food;
@@ -162,7 +157,8 @@ import java.util.ArrayList;
 
 public class Packmen {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		read.readLine();
 		char[] field = read.readLine().toUpperCase().toCharArray();
 		ArrayList<Integer> packmen = new ArrayList<>();
@@ -192,11 +188,12 @@ public class Packmen {
 	}
 
 	// assumes everything is sorted & distinct
-	private static boolean allEatable(ArrayList<Integer> packmen, ArrayList<Integer> food, int time) {
+	private static boolean allEatable(ArrayList<Integer> packmen,
+	                                  ArrayList<Integer> food, int time) {
 		/*
 		 * because java deques don't allow indexing, we instead keep a
 		 * pointer to the leftmost uneaten pellet and move it accordingly
-		*/
+		 */
 		int foodPointer = 0;
 		int foodAmt = food.size();  // shorthand
 		for (int p : packmen) {
@@ -210,36 +207,35 @@ public class Packmen {
 				 * don't have to eat anything to the left,
 				 * so let's go to the right as much as possible
 				 */
-				while (foodPointer < foodAmt && food.get(foodPointer) - p <= time) {
+				while (foodPointer < foodAmt &&
+				       food.get(foodPointer) - p <= time) {
 					foodPointer++;
 				}
 			} else {
 				// we can't eat the leftmost pellet, so we can't eat all of them
-				if (p - haveToEat.get(0) > time) {
-					return false;
-				}
+				if (p - haveToEat.get(0) > time) { return false; }
 				int leftTime = p - haveToEat.get(0);
 				// try going to the left first then going to the right
 				int rightFreeTime = time - 2 * leftTime;
 				int leftFirst = -1;
-				while (foodPointer + leftFirst + 1 < foodAmt
-						&& food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
+				while (foodPointer + leftFirst + 1 < foodAmt &&
+				       food.get(foodPointer + leftFirst + 1) - p <=
+				           rightFreeTime) {
 					leftFirst++;
 				}
 
 				// try going to the left first
 				rightFreeTime = time - leftTime;
 				int rightFirst = -1;
-				while (foodPointer + rightFirst + 1 < foodAmt
-						&& 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
+				while (foodPointer + rightFirst + 1 < foodAmt &&
+				       2 * (food.get(foodPointer + rightFirst + 1) - p) <=
+				           rightFreeTime) {
 					rightFirst++;
 				}
 
 				foodPointer += Math.max(leftFirst, rightFirst) + 1;
 			}
-			if (foodPointer >= foodAmt) {
-				return true;
-			}
+			if (foodPointer >= foodAmt) { return true; }
 		}
 		return foodPointer >= foodAmt;
 	}
@@ -283,14 +279,18 @@ def eatable_in_time(food: List[int], packmen: List[int], time: int) -> bool:
 			left_time = p - have_to_eat[0]
 			right_free_time = time - 2 * left_time
 			left_first = -1
-			while food_pointer + left_first + 1 < food_amt \
-					and food[food_pointer + left_first + 1] - p <= right_free_time:
+			while (
+				food_pointer + left_first + 1 < food_amt
+				and food[food_pointer + left_first + 1] - p <= right_free_time
+			):
 				left_first += 1
 
 			right_free_time = time - left_time
 			right_first = -1
-			while food_pointer + right_first + 1 < food_amt \
-					and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
+			while (
+				food_pointer + right_first + 1 < food_amt
+				and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time
+			):
 				right_first += 1
 			food_pointer += max(left_first, right_first) + 1
 
@@ -305,9 +305,9 @@ field = input().upper()
 all_food = []
 all_packmen = []
 for v, c in enumerate(field):
-	if c == 'P':
+	if c == "P":
 		all_packmen.append(v)
-	elif c == '*':
+	elif c == "*":
 		all_food.append(v)
 
 lo = 0

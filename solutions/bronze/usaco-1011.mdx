@@ -26,14 +26,12 @@ using namespace std;
 
 int main() {
 	freopen("triangles.in", "r", stdin);
-	
+
 	int n;
 	cin >> n;
 	vector<int> x(n);  // x coordinates of all fence posts
 	vector<int> y(n);  // y coordinates of all fence posts
-	for (int i = 0; i < n; i++) {
-		cin >> x[i] >> y[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> x[i] >> y[i]; }
 
 	int max_area = 0;
 	for (int i = 0; i < n; i++) {
@@ -57,13 +55,14 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Triangles {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("triangles.in"));
-		
+		BufferedReader read =
+		    new BufferedReader(new FileReader("triangles.in"));
+
 		int n = Integer.parseInt(read.readLine());
 		int[] x = new int[n];  // x coordinates of all fence posts
 		int[] y = new int[n];  // y coordinates of all fence posts
@@ -78,7 +77,8 @@ public class Triangles {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				for (int k = 0; k < n; k++) {
-					// Check to see if both points are parallel to the x & y axis
+					// Check to see if both points are parallel to the x & y
+					// axis
 					if (y[i] == y[j] && x[i] == x[k]) {
 						int area = Math.abs((x[j] - x[i]) * (y[k] - y[i]));
 						maxArea = Math.max(maxArea, area);
@@ -97,8 +97,8 @@ public class Triangles {
 </JavaSection>
 <PySection>
 
-```python
-with open('triangles.in') as read:
+```py
+with open("triangles.in") as read:
 	n = int(read.readline())
 	x = []  # x coordinates of all fence posts
 	y = []  # y coordinates of all fence posts
@@ -116,7 +116,7 @@ for i in range(n):
 				area = abs((x[j] - x[i]) * (y[k] - y[i]))
 				max_area = max(max_area, area)
 
-print(max_area, file=open('triangles.out', 'w'))
+print(max_area, file=open("triangles.out", "w"))
 ```
 
 </PySection>
