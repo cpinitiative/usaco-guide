@@ -49,11 +49,12 @@ int chosen[50001], bit[100001];
 void dfs(int node = 1, int parent = 0) {
 	tin[node] = ++timer;
 	for (int i = 1; i < 20; i++) anc[node][i] = anc[anc[node][i - 1]][i - 1];
-	for (pair<int, int> i : graph[node]) if (i.first != parent) {
-		anc[i.first][0] = node;
-		p_edge[i.first] = i.second;
-		dfs(i.first, node);
-	}
+	for (pair<int, int> i : graph[node])
+		if (i.first != parent) {
+			anc[i.first][0] = node;
+			p_edge[i.first] = i.second;
+			dfs(i.first, node);
+		}
 	tout[node] = timer;
 }
 
@@ -106,8 +107,7 @@ int main() {
 	}
 	vector<int> ans;
 	for (int i = 2; i <= n; i++)
-		if (query(tin[i], tout[i]) >= 2 * k)
-			ans.push_back(p_edge[i]);
+		if (query(tin[i], tout[i]) >= 2 * k) ans.push_back(p_edge[i]);
 	sort(ans.begin(), ans.end());
 	cout << ans.size() << '\n';
 	for (int i : ans) cout << i << ' ';

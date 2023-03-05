@@ -19,6 +19,7 @@ query operations.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 //CodeSnip{CPP Short Template}
 
@@ -31,7 +32,7 @@ query operations.
  * Usage: ht<int,int> h({},{},{},{},{1<<16});
  */
 
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 const long double PI = acos((long double)-1);
 
 #include <ext/pb_ds/assoc_container.hpp>
@@ -55,7 +56,7 @@ int n, k; int v[mx]; pi ret;
 
 int lowest = 0;
 
-bool check(int x) { 
+bool check(int x) {
 	if(x > n) return 0;
 	ht<int, int> s({},{},{},{},{1 << 19});
 	int j = 0;
@@ -110,29 +111,30 @@ int main() { setIO();
 
 <LanguageSection>
 <CPPSection>
-```cpp
 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int N = 5e5+9,MAX_Ai = 1e6+9;
-int n,k;
+const int N = 5e5 + 9, MAX_Ai = 1e6 + 9;
+int n, k;
 int a[N];
-int frequency[MAX_Ai];//frequency of each number in the window
-int maxSegment,leftMaxSegment,rightMaxSegment;//max size of the segment and its ends
+int frequency[MAX_Ai];  // frequency of each number in the window
+int maxSegment, leftMaxSegment,
+    rightMaxSegment;  // max size of the segment and its ends
 
-int main(){
-	scanf("%d%d",&n,&k);//large input data use scanf/printf instead of cin/cout
-	for(int i=0;i<n;i++)
-		scanf("%d",a+i);
+int main() {
+	scanf("%d%d", &n,
+	      &k);  // large input data use scanf/printf instead of cin/cout
+	for (int i = 0; i < n; i++) scanf("%d", a + i);
 
-	int r=-1;//the right end of the current window
-	int cntDifVal = 0;//the number of different values in the window
+	int r = -1;         // the right end of the current window
+	int cntDifVal = 0;  // the number of different values in the window
 
-	//if frequency[val] == 0 then adding val to the window will result in
-	//adding a new different element which increases the number of different
-	//values by 1
+	// if frequency[val] == 0 then adding val to the window will result in
+	// adding a new different element which increases the number of different
+	// values by 1
 
-	for(int l=0;l<n;l++){//l is the left end of the window
+	for (int l = 0; l < n; l++) {  // l is the left end of the window
 
 		/*
 		we can expand the window [l,r] to [l,r+1] if these 2 conditions hold:
@@ -141,28 +143,30 @@ int main(){
 		number of different values in the window to be larger than k
 		*/
 
-		while(r<n-1 && cntDifVal+(frequency[a[r+1]]==0) <= k){
-			cntDifVal += frequency[a[r+1]]==0;//update the number of different values
-			frequency[a[r+1]]++;//update the frequency array
-			r++;//update the right end of the current window
+		while (r < n - 1 && cntDifVal + (frequency[a[r + 1]] == 0) <= k) {
+			cntDifVal += frequency[a[r + 1]] ==
+			             0;         // update the number of different values
+			frequency[a[r + 1]]++;  // update the frequency array
+			r++;  // update the right end of the current window
 		}
 
-		//update the answer if we find a larger segment
-		if(r-l+1 > maxSegment){
-			maxSegment = r-l+1;
+		// update the answer if we find a larger segment
+		if (r - l + 1 > maxSegment) {
+			maxSegment = r - l + 1;
 			leftMaxSegment = l;
 			rightMaxSegment = r;
 		}
 
-		//here we discard the first element a[l] making the current segment [l+1,r]
-		frequency[a[l]]--;//update the frequency
-		cntDifVal -= frequency[a[l]] == 0;//update the number of different values
+		// here we discard the first element a[l] making the current segment
+		// [l+1,r]
+		frequency[a[l]]--;  // update the frequency
+		cntDifVal -=
+		    frequency[a[l]] == 0;  // update the number of different values
 	}
-	//we add one because the answer should be 1-indexed
-	printf("%d %d\n",leftMaxSegment+1,rightMaxSegment+1);
+	// we add one because the answer should be 1-indexed
+	printf("%d %d\n", leftMaxSegment + 1, rightMaxSegment + 1);
 }
-
-````
+```
 
 </CPPSection>
 <JavaSection>

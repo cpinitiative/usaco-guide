@@ -59,24 +59,23 @@ of $b$!
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-int longest_nondec_subseq(const vector<int>& seq) {
+int longest_nondec_subseq(const vector<int> &seq) {
 	vector<int> min_endings;
 	for (int i : seq) {
 		/*
 		 * note that we use upper_bound instead of
 		 * lower_bound bc it just has to be nondecreasing
 		 */
-		int pos = std::upper_bound(
-			min_endings.begin(), min_endings.end(), i
-		) - min_endings.begin();
+		int pos = std::upper_bound(min_endings.begin(), min_endings.end(), i) -
+		          min_endings.begin();
 		// standard LIS protocol
 		if (pos == min_endings.size()) {
 			min_endings.push_back(i);
@@ -92,9 +91,7 @@ int main() {
 	int jump_height;
 	std::cin >> pole_num >> jump_height;
 	vector<int> poles(pole_num);
-	for (int p = 0; p < pole_num; p++) {
-		std::cin >> poles[p];
-	}
+	for (int p = 0; p < pole_num; p++) { std::cin >> poles[p]; }
 
 	vector<int> poss_unchanged;
 	for (int i = 1; i <= pole_num; i++) {
@@ -112,15 +109,16 @@ int main() {
 <JavaSection>
 
 ```java
-import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class triusis {  // any other name breaks the grader lmao
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer inital = new StringTokenizer(read.readLine());
 		int poleNum = Integer.parseInt(inital.nextToken());
 		int jumpHeight = Integer.parseInt(inital.nextToken());
@@ -139,7 +137,8 @@ public class triusis {  // any other name breaks the grader lmao
 	private static int longestNondecSubseq(ArrayList<Integer> arr) {
 		ArrayList<Integer> minEndings = new ArrayList<>();
 		for (int i : arr) {
-			// find the latest spot we can insert it (because it just has to be nondecreasing)
+			// find the latest spot we can insert it (because it just has to be
+			// nondecreasing)
 			int pos = bisectRight(minEndings, i);
 			// standard LIS protocol
 			if (pos == minEndings.size()) {

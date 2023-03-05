@@ -22,22 +22,21 @@ using namespace std;
 using ll = long long;
 
 ll gcd(ll a, ll b) {
-	if(b == 0) return a;
+	if (b == 0) return a;
 	return gcd(b, a % b);
 }
 
 int main() {
-	int n; cin >> n;
-	vector<ll> coprimes; 
+	int n;
+	cin >> n;
+	vector<ll> coprimes;
 	/*
-	 * This array stores all of the numbers 
+	 * This array stores all of the numbers
 	 * which are less than n and are coprime with n.
 	 */
 	for (int i = 1; i < n; i++) {
 		// A number is coprime with n if gcd(n, i) = 1
-		if (gcd(n, i) == 1) {
-			coprimes.push_back(i);
-		}
+		if (gcd(n, i) == 1) { coprimes.push_back(i); }
 	}
 
 	/*
@@ -59,15 +58,13 @@ int main() {
 	}
 	int length_of_longest_subarray = 1;
 	for (int i = 0; i < number_of_coprimes; i++) {
-		/* 
-		 * If a given subarray has a product of 
-		 * 1 modulo n, update the length of the 
+		/*
+		 * If a given subarray has a product of
+		 * 1 modulo n, update the length of the
 		 * longest subsequence with product 1
 		 * modulo n.
 		 */
-		if (prefix_mod[i] == 1) {
-			length_of_longest_subarray = i + 1;
-		}
+		if (prefix_mod[i] == 1) { length_of_longest_subarray = i + 1; }
 	}
 	cout << length_of_longest_subarray << endl;
 	for (int i = 0; i < length_of_longest_subarray; i++) {

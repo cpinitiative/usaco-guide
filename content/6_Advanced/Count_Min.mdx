@@ -25,7 +25,7 @@ We would like a data structure that can efficiently handle two types of operatio
 1. Update index $i$ to value $v$
 2. Report the minimum and the number of occurences of the minimum on a range $[l, r]$
 
-We can use a normal segment tree to handle range queries, but slightly modify each node and the merge operation. Let each node be a pair of values $(\texttt{val}, \texttt{cnt})$, where $\texttt{val}$ is the minimum value and $\texttt{cnt}$ is the number occurences of the minimum value. 
+We can use a normal segment tree to handle range queries, but slightly modify each node and the merge operation. Let each node be a pair of values $(\texttt{val}, \texttt{cnt})$, where $\texttt{val}$ is the minimum value and $\texttt{cnt}$ is the number occurences of the minimum value.
 
 If node $c$ has two children $a$ and $b$, then
 - if $a.\texttt{val} < b.\texttt{val}$, then $c = a$
@@ -95,13 +95,13 @@ Sort the rectangles by x-coordinate and run a sweep-line.
 
 We can use techniques introduced in [Range Queries with Sweep Line](/plat/range-sweep?lang=cpp)
 
-We sweep from left to right over the $x$-coordinates, maintaining two events for each rectangle: one for the left boundary and one for the right boundary. Maintain a Lazy Segment Tree over the $y$-coordinates. 
+We sweep from left to right over the $x$-coordinates, maintaining two events for each rectangle: one for the left boundary and one for the right boundary. Maintain a Lazy Segment Tree over the $y$-coordinates.
 - When we run into a left boundary of some rectangle with $y$-coordinates $(y_0, y_1)$, increase each index $i \in [y_0, y_1]$ by 1
 - When we run into a right boundary of some rectangle with $y$-coordinates $(y_0, y_1)$, decrease each index $i \in [y_0, y_1]$ by 1
 
 Then, for each $x$, we simply need to count the number of non-zero indices which corresponds to indices that are covered by at least one rectangle. How can we do this?
 
-Instead of counting the area covered by at least one rectangle, let's count the amount of space covered by no rectangles. We can subtract this amount from the total number of indices to get the value we want. 
+Instead of counting the area covered by at least one rectangle, let's count the amount of space covered by no rectangles. We can subtract this amount from the total number of indices to get the value we want.
 
 We can use a Segment Tree that counts the number of occurences of the minimum value. Because the minimum value is at least zero (there can't be a negative number of rectangles at a position) the number of uncovered squares is equal to the number of squares with value 0.
 

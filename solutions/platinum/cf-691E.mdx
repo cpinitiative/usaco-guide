@@ -33,12 +33,9 @@ using namespace std;
 
 const long long MOD = 1e9 + 7;
 
-template <class T>
-struct Matrix {
+template <class T> struct Matrix {
 	vector<vector<T>> v;
-	void init(int n, int m) {
-		v = vector<vector<T>>(n, vector<T>(m));
-	}
+	void init(int n, int m) { v = vector<vector<T>>(n, vector<T>(m)); }
 
 	Matrix operator*(Matrix b) {
 		int x = v.size();
@@ -70,21 +67,15 @@ int main() {
 	B.init(n, n);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			if (__builtin_popcountll(v[i] ^ v[j]) % 3 == 0) {
-				A.v[i][j] = 1;
-			}
+			if (__builtin_popcountll(v[i] ^ v[j]) % 3 == 0) { A.v[i][j] = 1; }
 		}
 	}
-	
+
 	Matrix<long long> ret;
 	ret.init(n, n);
-	for (int i = 0 ; i < n ; i++) {
-		ret.v[i][i] = 1;
-	}
+	for (int i = 0; i < n; i++) { ret.v[i][i] = 1; }
 	for (long long b = m; b > 0; b /= 2) {
-		if (b & 1) {
-			ret = ret * A;
-		}
+		if (b & 1) { ret = ret * A; }
 		A = A * A;
 	}
 

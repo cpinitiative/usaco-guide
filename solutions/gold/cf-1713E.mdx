@@ -48,7 +48,7 @@ Since we want the lexicographically smallest answer, the earlier indices matter 
 We can create a disjoint set union to model this problem. The DSU will have $2n$ nodes where node $i$ represents the state where the operation is performed on the $i$th row and node $i + n$ represents the state where operation is not performed on the $i$th row.
 
 As we are iterating greedily through the array, we can merge ($i$ and $j$) and ($i + n$ and $j + n$) if we don't want to swap. This works because if we swap neither or swap both the arrangement remains the same.
-If we do want to swap we can merge ($i$ and $j + n$) and ($i + n$ and $j$). This works because if we swap exactly one of these, then the arrangement will change. 
+If we do want to swap we can merge ($i$ and $j + n$) and ($i + n$ and $j$). This works because if we swap exactly one of these, then the arrangement will change.
 
 After this we can construct the answer by iterating over each cell of the grid. If the cell's row index is equal to its column index (i.e. it's on the diagonal of the grid) it can never change regardless of the flips. If $a[i][j] == a[j][i]$ then we can manually set them (since we didn't merge them in the disjoint set union when comparing them the states might have not been merged). Otherwise, we can check whether $i$ and $j$ are merged in the disjoint set union. If they aren't then we will swap $a[i][j]$ and $a[j][i]$. Otherwise we will keep them the same.
 
@@ -72,7 +72,7 @@ struct DSU {
 	DSU(int n) {
 		e = vi(n, -1);
 	}
-	
+
 	int get(int x) {
 		if (e[x] < 0) {
 			return x;
@@ -81,15 +81,15 @@ struct DSU {
 			return e[x];
 		}
 	}
-	
+
 	bool same(int a, int b) {
 		return get(a) == get(b);
 	}
-	
+
 	int size(int x) {
 		return -e[get(x)];
 	}
-	
+
 	bool unite(int x, int y) {
 		x = get(x);
 		y = get(y);
@@ -115,9 +115,9 @@ void solve() {
 			cin >> a[i][j];
 		}
 	}
-	
+
 	DSU dsu(2 * n);
-	
+
 	for (int i = 0; i < n; i++) {
 		// Only check each pair once and diagnals don't matter
 		for (int j = i + 1; j < n; j++) {
@@ -141,7 +141,7 @@ void solve() {
 			}
 		}
 	}
-	
+
 	// Construct the answer
 	vector<vi> ans(n, vi(n));
 	for (int i = 0; i < n; i++) {
@@ -165,7 +165,7 @@ void solve() {
 			}
 		}
 	}
-	
+
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cout << ans[i][j] << " ";
@@ -174,7 +174,7 @@ void solve() {
 	}
 }
 
-int main() { 
+int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	int T;

@@ -18,7 +18,7 @@ By Neo Wang
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h> // see /general/running-code-locally
+#include <bits/stdc++.h>  // see /general/running-code-locally
 using namespace std;
 
 using ll = long long;
@@ -28,22 +28,22 @@ using vi = vector<int>;
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
 
-using pi = pair<int,int>;
+using pi = pair<int, int>;
 #define f first
 #define s second
 #define mp make_pair
 
 void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
 	if (sz(name)) {
-		(void)!freopen((name+".in").c_str(), "r", stdin); // see /general/io
-		(void)!freopen((name+".out").c_str(), "w", stdout);
+		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
+		(void)!freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
 
 int main() {
 	setIO("promote");
-	
+
 	int bronzeBefore, bronzeAfter;
 	cin >> bronzeBefore >> bronzeAfter;
 
@@ -58,9 +58,12 @@ int main() {
 
 	int goldToPlatinum = platAfter - platBefore;
 	int silverToGold = platAfter + goldAfter - platBefore - goldBefore;
-	int bronzeToSilver = silverAfter + goldAfter + platAfter - silverBefore - goldBefore - platBefore;
+	int bronzeToSilver = silverAfter + goldAfter + platAfter - silverBefore -
+	                     goldBefore - platBefore;
 
-	cout << bronzeToSilver << "\n" << silverToGold << "\n" << goldToPlatinum << "\n";
+	cout << bronzeToSilver << "\n"
+	     << silverToGold << "\n"
+	     << goldToPlatinum << "\n";
 }
 ```
 
@@ -74,38 +77,41 @@ public class promote {
 	public static void main(String[] args) throws IOException {
 		// initialize file I/O
 		BufferedReader br = new BufferedReader(new FileReader("promote.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("promote.out")));
-		
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("promote.out")));
+
 		// read in counts for bronze
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int bronzeBefore = Integer.parseInt(st.nextToken());
 		int bronzeAfter = Integer.parseInt(st.nextToken());
-		
+
 		// read in counts for silver
 		st = new StringTokenizer(br.readLine());
 		int silverBefore = Integer.parseInt(st.nextToken());
 		int silverAfter = Integer.parseInt(st.nextToken());
-		
+
 		// read in counts for gold
 		st = new StringTokenizer(br.readLine());
 		int goldBefore = Integer.parseInt(st.nextToken());
 		int goldAfter = Integer.parseInt(st.nextToken());
-		
+
 		// read in counts for platinum
 		st = new StringTokenizer(br.readLine());
 		int platinumBefore = Integer.parseInt(st.nextToken());
 		int platinumAfter = Integer.parseInt(st.nextToken());
-		
+
 		// do the computations
 		int goldToPlatinum = platinumAfter - platinumBefore;
-		int silverToGold = goldAfter - goldBefore + platinumAfter - platinumBefore;
-		int bronzeToSilver = silverAfter - silverBefore + goldAfter - goldBefore + platinumAfter - platinumBefore;
-		
+		int silverToGold =
+		    goldAfter - goldBefore + platinumAfter - platinumBefore;
+		int bronzeToSilver = silverAfter - silverBefore + goldAfter -
+		                     goldBefore + platinumAfter - platinumBefore;
+
 		// print the answers
 		pw.println(bronzeToSilver);
 		pw.println(silverToGold);
 		pw.println(goldToPlatinum);
-		
+
 		// close output stream
 		pw.close();
 	}
@@ -115,7 +121,7 @@ public class promote {
 </JavaSection>
 </LanguageSection>
 </Spoiler>
-	
+
 <LanguageSection>
 
 <CPPSection>
@@ -123,15 +129,16 @@ public class promote {
 ## Implementation
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 using namespace std;
 
-int main(){
+int main() {
 	// initialize file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	freopen("promote.in","r",stdin);
-	freopen("promote.out","w",stdout);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	freopen("promote.in", "r", stdin);
+	freopen("promote.out", "w", stdout);
 
 	// read in counts for bronze
 	int bronzeBefore, bronzeAfter;
@@ -152,7 +159,8 @@ int main(){
 	// do the computations
 	int goldToPlatinum = platinumAfter - platinumBefore;
 	int silverToGold = goldAfter - goldBefore + platinumAfter - platinumBefore;
-	int bronzeToSilver = silverAfter - silverBefore + goldAfter - goldBefore + platinumAfter - platinumBefore;
+	int bronzeToSilver = silverAfter - silverBefore + goldAfter - goldBefore +
+	                     platinumAfter - platinumBefore;
 
 	// print the answers
 	cout << bronzeToSilver << "\n" << silverToGold << "\n" << goldToPlatinum;

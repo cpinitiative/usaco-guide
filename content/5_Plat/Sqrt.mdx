@@ -70,7 +70,7 @@ struct Sqrt {
 	int block_size;
 	vector<int> nums;
 	vector<long long> blocks;
-	Sqrt(int sqrtn, vector<int> &arr): block_size(sqrtn), blocks(sqrtn, 0) {
+	Sqrt(int sqrtn, vector<int> &arr) : block_size(sqrtn), blocks(sqrtn, 0) {
 		nums = arr;
 		for (int i = 0; i < nums.size(); i++) {
 			blocks[i / block_size] += nums[i];
@@ -78,7 +78,7 @@ struct Sqrt {
 	}
 
 	/** O(1) update to set nums[x] to v */
-	void update(int x, int v) { 
+	void update(int x, int v) {
 		blocks[x / block_size] -= nums[x];
 		nums[x] = v;
 		blocks[x / block_size] += nums[x];
@@ -87,9 +87,7 @@ struct Sqrt {
 	/** O(sqrt(n)) query for sum of [0, r) */
 	long long query(int r) {
 		long long res = 0;
-		for (int i = 0; i < r / block_size; i++) {
-			res += blocks[i];
-		}
+		for (int i = 0; i < r / block_size; i++) { res += blocks[i]; }
 		for (int i = (r / block_size) * block_size; i < r; i++) {
 			res += nums[i];
 		}
@@ -97,23 +95,19 @@ struct Sqrt {
 	}
 
 	/** O(sqrt(n)) query for sum of [l, r) */
-	long long query(int l, int r) {
-		return query(r) - query(l - 1);
-	}
+	long long query(int l, int r) { return query(r) - query(l - 1); }
 };
 
 int main() {
-	int n, q; 
+	int n, q;
 	cin >> n >> q;
 
 	vector<int> arr(n);
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	}
-	Sqrt sq((int) ceil(sqrt(n)), arr);
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+	Sqrt sq((int)ceil(sqrt(n)), arr);
 
 	for (int i = 0; i < q; i++) {
-		int t, l, r; 
+		int t, l, r;
 		cin >> t >> l >> r;
 		if (t == 1) {
 			sq.update(l - 1, r);
@@ -134,7 +128,8 @@ import java.util.*;
 
 public class DRSQ {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -142,9 +137,9 @@ public class DRSQ {
 		int q = Integer.parseInt(st.nextToken());
 
 		int[] arr = Arrays.stream(br.readLine().split(" "))
-			.mapToInt(Integer::parseInt)
-			.toArray();
-		Sqrt sq = new Sqrt((int) Math.ceil(Math.sqrt(n)), arr);
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+		Sqrt sq = new Sqrt((int)Math.ceil(Math.sqrt(n)), arr);
 
 		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -185,16 +180,12 @@ public class DRSQ {
 		}
 
 		/** O(sqrt(n)) query for sum of [l, r) */
-		static long query(int l, int r) {
-			return query(r) - query(l - 1); 
-		}
+		static long query(int l, int r) { return query(r) - query(l - 1); }
 
 		/** O(sqrt(n)) query for sum of [0, r) */
 		static long query(int r) {
 			long res = 0;
-			for (int i = 0; i < r / blockSize; i++) {
-				res += blocks[i];
-			}
+			for (int i = 0; i < r / blockSize; i++) { res += blocks[i]; }
 			for (int i = (r / blockSize) * blockSize; i < r; i++) {
 				res += nums[i];
 			}
@@ -232,35 +223,29 @@ vector<long long> prefix;
 /** Build the prefix array for arr */
 void build() {
 	prefix[0] = 0;
-	for (int i = 1; i <= n; i++) {
-		prefix[i] = prefix[i - 1] + arr[i - 1];
-	}
+	for (int i = 1; i <= n; i++) { prefix[i] = prefix[i - 1] + arr[i - 1]; }
 }
 
 int main() {
 	cin >> n >> q;
-	arr.resize(n); 
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	}
+	arr.resize(n);
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
 	prefix.assign(n + 1, 0);
 	build();
 
 	vector<pair<int, int>> updates;
 	for (int i = 0; i < q; i++) {
-		int type, a, b; 
+		int type, a, b;
 		cin >> type >> a >> b;
 		if (type == 1) {
 			a--;
-			updates.push_back({a, b - arr[a]}); 
+			updates.push_back({a, b - arr[a]});
 			arr[a] = b;
 		} else {
 			long long ans = prefix[b] - prefix[a - 1];
 			a--, b--;
 			for (const auto &[idx, val] : updates) {
-				if (a <= idx && idx <= b) {
-					ans += val;
-				} 
+				if (a <= idx && idx <= b) { ans += val; }
 			}
 			cout << ans << "\n";
 		}
@@ -279,7 +264,7 @@ int main() {
 <JavaSection>
 
 <Warning title="TLE">
-Due to tight time constraint on CSES, the Java implementation might get TLE. 
+Due to tight time constraint on CSES, the Java implementation might get TLE.
 </Warning>
 
 ```java

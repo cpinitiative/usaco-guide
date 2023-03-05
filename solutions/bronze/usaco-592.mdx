@@ -31,17 +31,13 @@ int exploded_num(int start, int direction) {
 	while (true) {
 		int next = prev;
 		// Get the furthest explosion index without exceeding the current radius
-		while (
-			next + direction >= 0
-			&& next + direction < N
-			&& abs(bales[next + direction] - bales[prev]) <= radius) {
+		while (next + direction >= 0 && next + direction < N &&
+		       abs(bales[next + direction] - bales[prev]) <= radius) {
 			next += direction;
 		}
 
 		// We didn't find a new haybale, so the chain explosion is over
-		if (next == prev) {
-			break;
-		}
+		if (next == prev) { break; }
 
 		// Update our previous explosion and increment radius
 		prev = next;
@@ -51,22 +47,19 @@ int exploded_num(int start, int direction) {
 }
 
 int main() {
-	freopen("angry.in","r",stdin);
-	freopen("angry.out","w",stdout);
+	freopen("angry.in", "r", stdin);
+	freopen("angry.out", "w", stdout);
 
 	cin >> N;
 	bales.resize(N);
-	for (int i = 0; i < N; i++) {
-		cin >> bales[i];
-	}
+	for (int i = 0; i < N; i++) { cin >> bales[i]; }
 
 	sort(bales.begin(), bales.end());
 	int max_exploded = 0;
 	for (int i = 0; i < N; i++) {
 		// Get the number of exploded bales for the left & right side
-		max_exploded = max(
-			max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1
-		);
+		max_exploded =
+		    max(max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1);
 	}
 	cout << max_exploded << endl;
 }
@@ -111,7 +104,7 @@ public class Angry {
 			// Getting the furthest explosion index without exceeding radius
 			while (
 				next + direction >= 0
-				&& next + direction < N 
+				&& next + direction < N
 				&& Math.abs(bales[next + direction] - bales[prev]) <= radius
 			) {
 				next += direction;
@@ -135,7 +128,7 @@ public class Angry {
 <PySection>
 
 ```py
-with open('angry.in') as read:
+with open("angry.in") as read:
 	bales = sorted([int(read.readline()) for _ in range(int(read.readline()))])
 
 
@@ -150,11 +143,11 @@ def exploded_num(start: int, direction: int) -> int:
 			and abs(bales[next_ + direction] - bales[prev]) <= radius
 		):
 			next_ += direction
-		
+
 		# We didn't find a new haybale, so the chain explosion is over
 		if next_ == prev:
 			break
-		
+
 		# Update our previous explosion and increment radius
 		prev = next_
 		radius += 1
@@ -164,10 +157,8 @@ def exploded_num(start: int, direction: int) -> int:
 max_exploded = 0
 for i in range(len(bales)):
 	# Get the number of exploded bales for the left & right side
-	max_exploded = max(
-		max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1
-	)
-print(max_exploded, file=open('angry.out', 'w'))
+	max_exploded = max(max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1)
+print(max_exploded, file=open("angry.out", "w"))
 ```
 
 </PySection>

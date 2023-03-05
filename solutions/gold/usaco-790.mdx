@@ -39,7 +39,7 @@ const ll MAXN = 1e5, INF = 1e9;
 
 vl adj[MAXN];
 
-int main(){
+int main() {
 	freopen("atlarge.in", "r", stdin);
 	freopen("atlarge.out", "w", stdout);
 	ll n, k;
@@ -67,7 +67,7 @@ int main(){
 	while (!q.empty()) {
 		ll cur = q.front();
 		q.pop();
-		for (ll u: adj[cur]) {
+		for (ll u : adj[cur]) {
 			if (dist2[cur] + 1 < dist2[u]) {
 				dist2[u] = dist2[cur] + 1;
 				q.push(u);
@@ -89,7 +89,7 @@ int main(){
 	while (!q.empty()) {
 		ll cur = q.front();
 		q.pop();
-		for (ll u: adj[cur]) {
+		for (ll u : adj[cur]) {
 			if (dist1[cur] + 1 < dist1[u]) {
 				dist1[u] = dist1[cur] + 1;
 				q.push(u);
@@ -109,13 +109,9 @@ int main(){
 			continue;
 		}
 		// Used to avoid backtracking
-		if (vis[cur]) {
-			continue;
-		}
+		if (vis[cur]) { continue; }
 		vis[cur] = true;
-		for (ll u: adj[cur]) {
-			q.push(u);
-		}
+		for (ll u : adj[cur]) { q.push(u); }
 	}
 	cout << res << endl;
 }
@@ -126,7 +122,7 @@ int main(){
 ```py
 from collections import deque
 
-with open('atlarge.in', 'r') as infile:
+with open("atlarge.in", "r") as infile:
 	n, k = map(int, infile.readline().split())
 	graph = [[] for _ in range(n)]
 	for _ in range(n - 1):
@@ -138,8 +134,8 @@ with open('atlarge.in', 'r') as infile:
 exits = [node for node, adj_list in enumerate(graph) if len(adj_list) == 1]
 
 # stores minimum steps for a farmer or bessie to reach the node of index = node
-dist_bessie = [float('inf')] * n
-dist_farmer = [float('inf')] * n
+dist_bessie = [float("inf")] * n
+dist_farmer = [float("inf")] * n
 
 """
 Multi-source BFS from all the exits to calculate, for all nodes, the minimum
@@ -173,11 +169,11 @@ while queue:
 		continue
 
 	for adj in graph[curr]:
-		if dist_bessie[adj] == float('inf'):
+		if dist_bessie[adj] == float("inf"):
 			dist_bessie[adj] = dist_bessie[curr] + 1
 			queue.appendleft(adj)
 
-print(farmers_needed, file=open('atlarge.out', 'w'))
+print(farmers_needed, file=open("atlarge.out", "w"))
 ```
 </PySection>
 

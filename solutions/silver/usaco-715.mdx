@@ -33,18 +33,16 @@ int main() {
 	setIO("maxcross");
 	int n, k, b;
 	cin >> n >> k >> b;
-	
+
 	// input broken signals
 	for (int i = 0; i < b; i++) {
 		int x;
 		cin >> x;
 		sigs[x]++;
 	}
-	
+
 	// prefix sums precomputation
-	for (int i = 0; i < n; i++) {
-		presum[i + 1] = sigs[i + 1] + presum[i];
-	}
+	for (int i = 0; i < n; i++) { presum[i + 1] = sigs[i + 1] + presum[i]; }
 
 	int ret = INT_MAX;
 	// find the answer
@@ -60,31 +58,27 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MaxCross {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("maxcross.in"));
 		PrintWriter pw = new PrintWriter("maxcross.out");
 		StringTokenizer st = new StringTokenizer(in.readLine());
-		
+
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
-		
+
 		int[] sigs = new int[n + 1];
 		int[] presum = new int[n + 1];
 
 		// input broken signals
-		for (int i = 0; i < b; i++) {
-			sigs[Integer.parseInt(in.readLine())]++;
-		}
+		for (int i = 0; i < b; i++) { sigs[Integer.parseInt(in.readLine())]++; }
 
 		// prefix sums precomputation
-		for (int i = 0; i < n; i++) {
-			presum[i + 1] = sigs[i + 1] + presum[i];
-		}
+		for (int i = 0; i < n; i++) { presum[i + 1] = sigs[i + 1] + presum[i]; }
 
 		int ret = n + 1;
 		// find the answer
@@ -101,13 +95,13 @@ public class MaxCross {
 
 <PySection>
 
-```python
-with open('maxcross.in') as read:
+```py
+with open("maxcross.in") as read:
 	n, k, b = map(int, read.readline().split())
 	seen = [0] * (n + 1)
 	left, right = 1, k
 	value = 0
-	
+
 	for _ in range(b):
 		seen[int(read.readline())] = 1
 
@@ -120,7 +114,7 @@ while n > right:
 	left, right = left + 1, right + 1
 	possible.append(value)
 
-print(min(possible), file=open('maxcross.out', 'w'))
+print(min(possible), file=open("maxcross.out", "w"))
 ```
 
 </PySection>

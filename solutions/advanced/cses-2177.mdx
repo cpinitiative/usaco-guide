@@ -37,21 +37,22 @@ int tin[100001], low[100001], timer = 0;
 void dfs(int node = 1, int parent = 0) {
 	visited[node] = true;
 	tin[node] = low[node] = timer++;
-	for (pair<int, int> i : graph[node]) if (i.first != parent) {
-		if (!in_ans[i.second]) {
-			ans.push_back({node, i.first});
-			in_ans[i.second] = true;
-		}
-		if (visited[i.first]) low[node] = min(low[node], tin[i.first]);
-		else {
-			dfs(i.first, node);
-			low[node] = min(low[node], low[i.first]);
-			if (low[i.first] > tin[node]) {
-				cout << "IMPOSSIBLE";
-				exit(0);
+	for (pair<int, int> i : graph[node])
+		if (i.first != parent) {
+			if (!in_ans[i.second]) {
+				ans.push_back({node, i.first});
+				in_ans[i.second] = true;
+			}
+			if (visited[i.first]) low[node] = min(low[node], tin[i.first]);
+			else {
+				dfs(i.first, node);
+				low[node] = min(low[node], low[i.first]);
+				if (low[i.first] > tin[node]) {
+					cout << "IMPOSSIBLE";
+					exit(0);
+				}
 			}
 		}
-	}
 }
 
 int main() {

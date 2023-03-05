@@ -415,7 +415,7 @@ export default function TopNavigationBar({
         </div>
         {/*
         Mobile menu, toggle classes based on menu state.
-        
+
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>

@@ -34,22 +34,15 @@ vector<pair<int, int>> component;
  */
 int floodfill(int i, int j, char color) {
 	int cnt = 1;
-	if (
-		i < 0 || j < 0 || i >= n || j >= MAX_COLS ||
-		visited[i][j] ||
-		board[i][j] != color
-	) {
+	if (i < 0 || j < 0 || i >= n || j >= MAX_COLS || visited[i][j] ||
+	    board[i][j] != color) {
 		return 0;
 	}
-	
+
 	visited[i][j] = 1;
 	component.push_back({i, j});
-	cnt += (
-		floodfill(i + 1, j, color)
-		+ floodfill(i - 1, j, color)
-		+ floodfill(i, j + 1, color)
-		+ floodfill(i, j - 1, color)
-	);
+	cnt += (floodfill(i + 1, j, color) + floodfill(i - 1, j, color) +
+	        floodfill(i, j + 1, color) + floodfill(i, j - 1, color));
 	return cnt;
 }
 
@@ -62,14 +55,13 @@ int main() {
 	for (int i = n - 1; i >= 0; i--) {
 		string nums;
 		cin >> nums;
-		for (int j = 0; j < MAX_COLS; j++) {
-			board[i][j] = nums[j];
-		}
+		for (int j = 0; j < MAX_COLS; j++) { board[i][j] = nums[j]; }
 	}
 
 	/*
 	 * Loop while there are regions that got destroyed (board changed)
-	 * If no regions were destroyed, we are at the final state (break loop; return answer)
+	 * If no regions were destroyed, we are at the final state (break loop;
+	 * return answer)
 	 */
 	bool board_changed = true;
 	while (board_changed) {
@@ -85,7 +77,7 @@ int main() {
 					if (cnt >= k) {
 						// found a region to destroy
 						board_changed = true;
-						for (auto p: component) {
+						for (auto p : component) {
 							board[p.first][p.second] = '0';
 						}
 					}
@@ -96,7 +88,7 @@ int main() {
 
 		// run gravity
 		for (int col = 0; col < MAX_COLS; col++) {
-			vector <char> column_after_gravity;
+			vector<char> column_after_gravity;
 			/*
 			 * loop over rows from bottom to top of current column
 			 * add nonzero elements to vector 'column_after_gravity'
@@ -109,8 +101,8 @@ int main() {
 
 			/*
 			 * edit the board to reflect changes
-			 * going from bottom to top, fill the column with column_after_gravity
-			 * while we can, otherwise make it '0' (empty)
+			 * going from bottom to top, fill the column with
+			 * column_after_gravity while we can, otherwise make it '0' (empty)
 			 */
 			for (int row = 0; row < n; row++) {
 				if (row < column_after_gravity.size()) {
@@ -119,7 +111,6 @@ int main() {
 					board[row][col] = '0';
 				}
 			}
-
 		}
 
 		// reset visited array
@@ -127,9 +118,7 @@ int main() {
 	}
 
 	for (int i = n - 1; i >= 0; i--) {
-		for (int j = 0; j < MAX_COLS; j++) {
-			cout << board[i][j];
-		}
+		for (int j = 0; j < MAX_COLS; j++) { cout << board[i][j]; }
 		cout << '\n';
 	}
 }
@@ -145,7 +134,7 @@ import java.io.*;
 public class MooyoMooyo {
 	static int n, m, k;
 	static int[][] grid, region;
-	
+
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("mooyomooyo");
 
@@ -172,7 +161,7 @@ public class MooyoMooyo {
 			Set<Integer> largeRegions = new HashSet<>();
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < m; j++) {
-					/* 
+					/*
 					 * Floodfill only if the current square isn't empty
 					 * and hasn't been visited (if it already has, region[i][j]
 					 * would be nonzero)
@@ -200,8 +189,8 @@ public class MooyoMooyo {
 					}
 				}
 			}
-			
-			/* 
+
+			/*
 			 * Apply gravity; In other words, for each column, we move all the
 			 * zeros to the top
 			 * Here's a good source explaining a similar concept:
@@ -237,7 +226,7 @@ public class MooyoMooyo {
 		if (i < 0 || i >= n || j < 0 || j >= m) return 0;
 		if (region[i][j] != 0) return 0;
 		if (grid[i][j] != color) return 0;
-		
+
 		// If we haven't exited, we can continue with floodfill
 		region[i][j] = r;
 		int size = 1;
@@ -263,16 +252,11 @@ This solution uses [BFS](/gold/bfs), but the general gist is similar to the DFS 
 from collections import deque
 
 # possible directions to visit all connected regions
-DIRECTIONS = (
-	(1, 0), 
-	(0, 1), 
-	(-1, 0), 
-	(0, -1)
-)
+DIRECTIONS = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
 c = []
-	
-with open('mooyomooyo.in') as r:
+
+with open("mooyomooyo.in") as r:
 	a, b = map(int, r.readline().split())
 	for i in range(a):
 		c.append(list(map(int, list(r.readline().strip()))))
@@ -284,15 +268,15 @@ def gravity(graph, s, coords):
 	for i in range(s // 2):
 		for j in range(mid):
 			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
-    
+
 	for y, x in coords:
 		graph[y].pop(x)
 		graph[y].append(0)
-    
+
 	for i in range(mid):
 		for j in range(s // 2):
 			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
-    
+
 	return graph
 
 
@@ -301,7 +285,7 @@ def mark_connected(x, y, graph, visited):
 	q.append((x, y))
 	visited[y][x] = True
 	coords = [(x, y)]
-	
+
 	while q:
 		x, y = q.pop()
 		for dx, dy in DIRECTIONS:
@@ -333,7 +317,7 @@ def mooyo(graph):
 
 	for x, y in all_coords:
 		graph[y][x] = 0
-    
+
 	for x in range(10):
 		blocks = []
 		for y in range(a):
@@ -346,16 +330,16 @@ def mooyo(graph):
 			node = blocks.pop()
 			graph[y][x] = node
 			y -= 1
-    
+
 	return mooyo(graph)
 
 
 ans = mooyo(c)
-with open('mooyomooyo.out', 'w') as out:
+with open("mooyomooyo.out", "w") as out:
 	for i in ans:
 		print("".join([str(x) for x in i]), file=out)
 ```
-	
+
 </PySection>
 
 </LanguageSection>

@@ -21,7 +21,7 @@ carefully"
 ### Code
 
 ```cpp
-//DP: time O(n^2), mem O(n)
+// DP: time O(n^2), mem O(n)
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -33,13 +33,14 @@ int solve_noflip(string &s, string &t, int *loc) {
 	int n = s.size();  // vertical
 	int m = t.size();  // horizontal
 	int res = 0;
-	vector< short > forw_back_len(m + 1);
-	vector< short > cur_v_len(n + m + 1);  // offset -n
-	vector< short > cur_v_y(n + m + 1);
+	vector<short> forw_back_len(m + 1);
+	vector<short> cur_v_len(n + m + 1);  // offset -n
+	vector<short> cur_v_y(n + m + 1);
 	for (int i = 0; i <= n; ++i) cur_v_y[n - i] = i;
-	vector< short > cur_h_len(m + 1);
+	vector<short> cur_h_len(m + 1);
 	for (int i = 0; i <= n; ++i) {
-		for (int j = 0; j <= m; ++j) forw_back_len[j] = max(0, forw_back_len[j] - 1);
+		for (int j = 0; j <= m; ++j)
+			forw_back_len[j] = max(0, forw_back_len[j] - 1);
 		for (int j = 0; j <= m; ++j) {
 			int idx = n - i + j;
 			while (cur_v_y[idx] - cur_v_len[idx] == i) {
@@ -59,13 +60,14 @@ int solve_noflip(string &s, string &t, int *loc) {
 				}
 			}
 		}
-		vector< short > back_forw_len(m + 1);
+		vector<short> back_forw_len(m + 1);
 		for (int j = 0; j <= m; ++j) {
 			int nj = j - cur_h_len[j];
 			back_forw_len[nj] = max(back_forw_len[nj], cur_h_len[j]);
 		}
 		for (int j = 1; j <= m; ++j) {
-			back_forw_len[j] = max((int)back_forw_len[j], back_forw_len[j - 1] - 1);
+			back_forw_len[j] =
+			    max((int)back_forw_len[j], back_forw_len[j - 1] - 1);
 		}
 		for (int j = 0; j <= m; ++j) {
 			if (forw_back_len[j] + back_forw_len[j] > res) {
@@ -111,9 +113,7 @@ int main() {
 	int loc[2];
 	int res = solve(s, t, loc);
 	cout << res << '\n';
-	if (res) {
-		cout << loc[0] << ' ' << loc[1] << '\n';
-	}
+	if (res) { cout << loc[0] << ' ' << loc[1] << '\n'; }
 	return 0;
 }
 ```
@@ -172,11 +172,8 @@ tuple<int, int, int> solve(string s, string t, bool rev) {
 		reverse(t2.begin(), t2.end());
 		fill_p(s1 + "#" + t1, p1), fill_p(s2 + "#" + t2, p2);
 		for (int j = 1; j <= m; j++)
-			ans = max(ans, {
-				p1[i + j] + p2[n + m - i - j],
-				i - p1[i + j],
-				rev ? m - j - p2[n + m - i - j] : j - p1[i + j]
-			});
+			ans = max(ans, {p1[i + j] + p2[n + m - i - j], i - p1[i + j],
+			                rev ? m - j - p2[n + m - i - j] : j - p1[i + j]});
 	}
 	return ans;
 }

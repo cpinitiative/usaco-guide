@@ -288,7 +288,7 @@ import java.util.*;
 
 public class Billboard {
 	private static final int MAX_POS = 2000;
-	
+
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("billboard");
 		int visible[][] = new int[MAX_POS][MAX_POS];
@@ -398,7 +398,7 @@ class Rect {
 public class Billboard {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("billboard");
-		
+
 		Rect a = new Rect(), b = new Rect(), t = new Rect();
 		a.x1 = io.nextInt(); a.y1 = io.nextInt();
 		a.x2 = io.nextInt(); a.y2 = io.nextInt();
@@ -477,7 +477,7 @@ public class Billboard {
 		x1 = io.nextInt(); y1 = io.nextInt();
 		x2 = io.nextInt(); y2 = io.nextInt();
 		Rectangle firstRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
-		
+
 		x1 = io.nextInt(); y1 = io.nextInt();
 		x2 = io.nextInt(); y2 = io.nextInt();
 		Rectangle secondRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
@@ -596,7 +596,7 @@ print(
 ## Common Formulas
 
 Certain tasks show up often in rectangle geometry problems. For example, many problems
-involve finding the overlapping area of two or more rectangles based on their coordinate points, 
+involve finding the overlapping area of two or more rectangles based on their coordinate points,
 or determining whether two rectangles intersect. Here, we'll discuss these formulas.
 
 Note that these formulas only apply to rectangles which have sides parallel to the coordinate axes.
@@ -611,7 +611,7 @@ and increasing $y$ moves up.
 
 ### Finding area
 
-The formula for finding the area of an individual rectangle is $w \cdot l$. 
+The formula for finding the area of an individual rectangle is $w \cdot l$.
 
 $\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is the length of the horizontal sides.
 
@@ -652,12 +652,12 @@ def area(bl_x: int, bl_y: int, tr_x: int, tr_y: int) -> int:
 
 ### Checking if two rectangles intersect
 
-Given two rectangles $a$ and $b$, there are only two cases where they do not intersect: 
+Given two rectangles $a$ and $b$, there are only two cases where they do not intersect:
 
-1. $\texttt{tr}_{a_y}$ $\leq$ $\texttt{bl}_{b_y}$ or $\texttt{bl}_{a_y}$ $\geq$ $\texttt{tr}_{b_y}$.  
-2. $\texttt{bl}_{a_x}$ $\geq$ $\texttt{tr}_{b_x}$ or $\texttt{tr}_{a_x}$ $\leq$ $\texttt{bl}_{b_x}$. 
+1. $\texttt{tr}_{a_y}$ $\leq$ $\texttt{bl}_{b_y}$ or $\texttt{bl}_{a_y}$ $\geq$ $\texttt{tr}_{b_y}$.
+2. $\texttt{bl}_{a_x}$ $\geq$ $\texttt{tr}_{b_x}$ or $\texttt{tr}_{a_x}$ $\leq$ $\texttt{bl}_{b_x}$.
 
-In all other cases, the rectangles intersect. 
+In all other cases, the rectangles intersect.
 ### Implementation
 
 <LanguageSection>
@@ -712,13 +712,13 @@ def intersect(s1, s2) -> bool:
 
 We'll assume that the shape formed by the intersection of two rectangles is itself a rectangle.
 
-First, we'll find this rectangle's length and width. 
-$\texttt{width} = \min(\texttt{tr}_{a_x}, \texttt{tr}_{b_x}) - \max(\texttt{bl}_{a_x}, \texttt{bl}_{b_x})$. 
+First, we'll find this rectangle's length and width.
+$\texttt{width} = \min(\texttt{tr}_{a_x}, \texttt{tr}_{b_x}) - \max(\texttt{bl}_{a_x}, \texttt{bl}_{b_x})$.
 $\texttt{length} = \min(\texttt{tr}_{a_y}, \texttt{tr}_{b_y}) - \max(\texttt{bl}_{a_y}, \texttt{bl}_{b_y})$.
 
-If either of these values are negative, the rectangles do not intersect. 
-If they are zero, the rectangles intersect at a single point. 
-Multiply the length and width to find the overlapping area. 
+If either of these values are negative, the rectangles do not intersect.
+If they are zero, the rectangles intersect at a single point.
+Multiply the length and width to find the overlapping area.
 
 
 ### Implementation
