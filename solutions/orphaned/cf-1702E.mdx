@@ -41,16 +41,12 @@ The implementation of this is relatively straight forward; Simply check if the g
 #include <bits/stdc++.h>
 using namespace std;
 
-bool dfs(int u, int color, vector<int>& vis, vector<vector<int>>& adj) {
+bool dfs(int u, int color, vector<int> &vis, vector<vector<int>> &adj) {
 	// If the node is already visited with and was marked in the same color
-	if (vis[u] == color) {
-		return true;
-	}
+	if (vis[u] == color) { return true; }
 
 	// If the node is already visited with and was marked in the other color
-	if (vis[u] == 1 - color) {
-		return false;
-	}
+	if (vis[u] == 1 - color) { return false; }
 
 	vis[u] = color;
 	for (int v : adj[u]) {
@@ -64,12 +60,10 @@ void solve() {
 	cin >> n;
 	vector<pair<int, int>> dominoes(n);
 
-	for (pair<int, int>& i : dominoes) {
-		cin >> i.first >> i.second;
-	}
+	for (pair<int, int> &i : dominoes) { cin >> i.first >> i.second; }
 
 	for (pair<int, int> i : dominoes) {
-        	// Check if a number on the domino is repeated
+		// Check if a number on the domino is repeated
 		if (i.first == i.second) {
 			cout << "NO\n";
 			return;
@@ -81,7 +75,8 @@ void solve() {
 		color_to_index[dominoes[i].first].push_back(i);
 		color_to_index[dominoes[i].second].push_back(i);
 		// Check if a number exists in 3 or more dominoes
-		if (color_to_index[dominoes[i].first].size() > 2 || color_to_index[dominoes[i].second].size() > 2) {
+		if (color_to_index[dominoes[i].first].size() > 2 ||
+		    color_to_index[dominoes[i].second].size() > 2) {
 			cout << "NO\n";
 			return;
 		}
@@ -112,9 +107,7 @@ void solve() {
 int main() {
 	int t;
 	cin >> t;
-	for (int test = 0; test < t; test++) {
-		solve();
-	}
+	for (int test = 0; test < t; test++) { solve(); }
 }
 ```
 </CPPSection>

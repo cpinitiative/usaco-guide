@@ -237,7 +237,8 @@ Sorting Requires $\mathcal{O}(N\log N)$, and repeated map insertions also requir
 using namespace std;
 
 void solve() {
-	int n, k; cin >> n >> k;
+	int n, k;
+	cin >> n >> k;
 	int arr[(int)1e5 + 5];
 	int sarr[(int)1e5 + 5];
 	for (int i = 0; i < n; i++) {
@@ -247,14 +248,13 @@ void solve() {
 	// Map from one value to the value after it in the sorted array
 	map<int, int> next;
 	sort(sarr, sarr + n);
-	for (int i = 0; i < n - 1; i++) {
-		next[sarr[i]] = sarr[i + 1];
-	}
+	for (int i = 0; i < n - 1; i++) { next[sarr[i]] = sarr[i + 1]; }
 	next[sarr[n - 1]] = INT32_MAX;  // Ridiculously Large Number
 	int ans = 1;
 
 	// If the previous element in the unsorted array is not the same
-	// as the previous element in the sorted array, we need at least 1 more segment
+	// as the previous element in the sorted array, we need at least 1 more
+	// segment
 	for (int i = 1; i < n; i++) {
 		if (next[arr[i - 1]] != arr[i]) ans++;
 	}
@@ -276,7 +276,7 @@ import java.io.*;
 import java.util.*;
 
 public class MoamenSubarrays {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(f.readLine());
 
@@ -298,14 +298,13 @@ public class MoamenSubarrays {
 
 			// Map from one value to the value after it in the sorted array
 			TreeMap<Integer, Integer> next = new TreeMap<>();
-			for (int i = 0; i < n - 1; i++) {
-				next.put(sarr[i], sarr[i + 1]);
-			}
+			for (int i = 0; i < n - 1; i++) { next.put(sarr[i], sarr[i + 1]); }
 			next.put(sarr[n - 1], Integer.MAX_VALUE);
 
 			int ans = 1;
 			// If the previous element in the unsorted array is not the same
-			// as the previous element in the sorted array, we need at least 1 more segment
+			// as the previous element in the sorted array, we need at least 1
+			// more segment
 			for (int i = 1; i < n; i++) {
 
 				if (next.get(arr[i - 1]) != arr[i]) ans++;
@@ -314,12 +313,11 @@ public class MoamenSubarrays {
 		}
 	}
 }
-
 ```
 </JavaSection>
 
 <PySection>
-```python
+```py
 for _ in range(int(input())):
 	n, k = map(int, input().split())
 	arr = list(map(int, input().split()))
@@ -331,7 +329,7 @@ for _ in range(int(input())):
 	for i in range(n - 1):
 		after[sarr[i]] = sarr[i + 1]
 
-	after[sarr[n - 1]] = float('inf')
+	after[sarr[n - 1]] = float("inf")
 	ans = 1
 	for i in range(1, n):
 		if after[arr[i - 1]] != arr[i]:
