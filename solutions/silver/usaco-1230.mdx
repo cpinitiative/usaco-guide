@@ -10,11 +10,11 @@ author: Aditya Gupta, Chuyang Wang
 
 ## Explanation
 
-As each cow $i$ only wants to visit one of the other cows $j$, we can interpret the input as a [functional graph](https://usaco.guide/silver/func-graphs) with edges $i \to j$. The resulting graph is not necessarily connected, so we have to find out all connected components in this graph and find the maximum amount of "moos" for each of them separately. 
+As each cow $i$ only wants to visit one of the other cows $j$, we can interpret the input as a [functional graph](https://usaco.guide/silver/func-graphs) with edges $i \to j$. The resulting graph is not necessarily connected, so we have to find out all connected components in this graph and find the maximum amount of "moos" for each of them separately.
 
-For each connected component of the functional graph, let's observe that there must be one and only one cycle in it. Moreover, all cows can visit their buddies before their departures except one who wants to visit the cow initiating the visit chain in the cycle. For other paths that lead to the cycle, we can always visit them first before processing the cycle, so they will always be able to "moo". Therefore, the maximum amount of "moos" is the sum of all $v$ in the connected component. We need to subtract the sum by the minimum $v_i$ in the cycle because it represents the cow before the initiating cow who won't be able to moo. 
+For each connected component of the functional graph, let's observe that there must be one and only one cycle in it. Moreover, all cows can visit their buddies before their departures except one who wants to visit the cow initiating the visit chain in the cycle. For other paths that lead to the cycle, we can always visit them first before processing the cycle, so they will always be able to "moo". Therefore, the maximum amount of "moos" is the sum of all $v$ in the connected component. We need to subtract the sum by the minimum $v_i$ in the cycle because it represents the cow before the initiating cow who won't be able to moo.
 
-For each cow, we first check if it is already visited. If not, we then want to find out all other cows in this connected component by using a reversed graph and adding up the "moos". After that, we run Floyd's algorithm to determine the cycle and find the minimum "v" value in it. 
+For each cow, we first check if it is already visited. If not, we then want to find out all other cows in this connected component by using a reversed graph and adding up the "moos". After that, we run Floyd's algorithm to determine the cycle and find the minimum "v" value in it.
 
 
 ## Implementation

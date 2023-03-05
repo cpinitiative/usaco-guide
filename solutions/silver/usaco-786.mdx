@@ -167,10 +167,10 @@ public class Lifeguards {
 		}
 	}
 	//EndCodeSnip
-	
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("lifeguards.in"));
-		
+
 		int n = Integer.parseInt(read.readLine());
 		Event[] events = new Event[2 * n];
 		for (int i = 0; i < n; i++) {
@@ -180,7 +180,7 @@ public class Lifeguards {
 			events[2 * i] = new Event(l, i, true);
 			events[2 * i + 1] = new Event(r, i, false);
 		}
-		
+
 		Arrays.sort(events);
 
 		// how much time each cow spends alone
@@ -202,19 +202,19 @@ public class Lifeguards {
 			if (active.size() > 0) {
 				totalTime += currTime - prevTime;
 			}
-	
+
 			// 2. check to see if there's only one cow in [prevTime, currTime]
 			if (active.size() == 1) {
 				aloneTime[active.iterator().next()] += currTime - prevTime;
 			}
-	
+
 			// 3. process the event
 			if (e.isStart) {
 				active.add(e.cowId);
 			} else {
 				active.remove(e.cowId);
 			}
-	
+
 			// 4. update prevTime
 			prevTime = currTime;
 		}

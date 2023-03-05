@@ -16,7 +16,7 @@ so that no ticket price is below it, we can return -1. If not, we find the
 greatest ticket price less than or equal to the maximum price, and then remove
 that price as specified by the problem. We use a multiset for this.
 
-## Implementation 
+## Implementation
 **Time Complexity:** $\mathcal{O}((n+ m)\log n)$
 
 <LanguageSection>
@@ -77,11 +77,11 @@ public class ConcertTickets {
 		for (int i = 0; i < ticketNum; i++) {
 			int priceOfTicket = io.nextInt();
 			/*
-			 * If the set already contains the same key value, 
+			 * If the set already contains the same key value,
 			 * create another pair next to it
 			 */
 			if (ticketMultiset.containsKey(priceOfTicket)) {
-				ticketMultiset.put(priceOfTicket, 
+				ticketMultiset.put(priceOfTicket,
 									ticketMultiset.get(priceOfTicket) + 1);
 			} else {
 				ticketMultiset.put(priceOfTicket, 1);
@@ -91,18 +91,18 @@ public class ConcertTickets {
 		for (int i = 0; i < peopleNum; i++) {
 			int customerMaxPrice = io.nextInt();
 			/*
-			 * Get the optimal ticket for this customer 
-			 * We add 1 because lowerEntry returns the highest 
+			 * Get the optimal ticket for this customer
+			 * We add 1 because lowerEntry returns the highest
 			 * *strictly* lower entry
 			 */
-			val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
+			val = ticketMultiset.lowerEntry(customerMaxPrice + 1);
 			// If there are no possible prices, we can exit and return -1
 			if (val != null) {
 				pw.println(val.getKey());
 				/*
-				 * If there's more than one set with the key value, 
-				 * then replace the current set with 
-				 * the next-lowest set with the same key 
+				 * If there's more than one set with the key value,
+				 * then replace the current set with
+				 * the next-lowest set with the same key
 				 */
 				if (val.getValue() == 1) {
 					ticketMultiset.remove(val.getKey());
@@ -125,7 +125,7 @@ public class ConcertTickets {
 		private DataInputStream din;
 		private byte[] buffer;
 		private int bufferPointer, bytesRead;
- 
+
 		public Reader()
 		{
 			din = new DataInputStream(System.in);
@@ -138,14 +138,14 @@ public class ConcertTickets {
 			if (bytesRead == -1)
 				buffer[0] = -1;
 		}
- 
+
 		private byte read() throws IOException
 		{
 			if (bufferPointer == bytesRead)
 				fillBuffer();
 			return buffer[bufferPointer++];
 		}
- 
+
 		public void close() throws IOException
 		{
 			if (din == null)
@@ -165,7 +165,7 @@ public class ConcertTickets {
 			{
 				ret = ret * 10 + c - '0';
 			}  while ((c = read()) >= '0' && c <= '9');
- 
+
 			if (neg)
 				return -ret;
 			return ret;

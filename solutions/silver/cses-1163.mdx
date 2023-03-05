@@ -11,7 +11,7 @@ the largest gap between the points after each step.
 
 [Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
 
-## Solution 1 
+## Solution 1
 
 Let's create a set and a multiset. The set will store
 the positions of the traffic lights, while the multiset will keep track of the
@@ -26,7 +26,7 @@ remove the length of that gap in the multiset and add two new lengths to the
 multiset.
 
 <LanguageSection>
-<CPPSection> 
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -151,8 +151,8 @@ import java.util.*;
 
 public class TrafficLights {
 	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio(); 
-	
+		Kattio io = new Kattio();
+
 		int streetLength = io.nextInt();
 		int lightNum = io.nextInt();
 
@@ -168,7 +168,7 @@ public class TrafficLights {
 			opArray[i] = nextTrafficLight;
 			streetPositions.add(nextTrafficLight);
 		}
-		
+
 		int[] gapsArray = new int[lightNum];
 		int prev = 0;
 		int maxGap = 0;
@@ -177,7 +177,7 @@ public class TrafficLights {
 			maxGap = Math.max(i - prev, maxGap);
 			prev = i;
 		}
-		
+
 		gapsArray[lightNum - 1] = maxGap;
 		/*
 		 * Remove the streetlights in reverse order to how they were added,
@@ -191,7 +191,7 @@ public class TrafficLights {
 			maxGap = Math.max(maxGap, high - low);
 			gapsArray[i - 1] = maxGap;
 		}
-		
+
 		//  Use StringBuilder to print out the array quicker
 		StringBuilder sb = new StringBuilder();
 		for (int i : gapsArray) {
@@ -200,7 +200,7 @@ public class TrafficLights {
 		io.println(sb);
 		io.close();
 	}
-	
+
 	//CodeSnip{Kattio}
 }
 ```
