@@ -73,11 +73,11 @@ gone through- we'd just have to go through the cows in reverse.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -98,20 +98,18 @@ int main() {
 
 	vector<Cow> cows(cow_num);
 	int total_weight = 0;
-	for (Cow& c : cows) {
+	for (Cow &c : cows) {
 		read >> c.weight >> c.pos >> c.speed;
 		total_weight += c.weight;
 	}
 
-	std::sort(
-		cows.begin(), cows.end(),
-		[] (const Cow& c1, const Cow& c2) { return c1.pos < c2.pos; }
-	);
+	std::sort(cows.begin(), cows.end(),
+	          [](const Cow &c1, const Cow &c2) { return c1.pos < c2.pos; });
 
 	// get the cows that start off going to the left & right
 	vector<Cow> left;
 	vector<Cow> right;
-	for (const Cow& c : cows) {
+	for (const Cow &c : cows) {
 		if (c.speed == -1) {
 			left.push_back(c);
 		} else if (c.speed == 1) {
@@ -130,21 +128,18 @@ int main() {
 		weight_times.push_back({left[c].pos, cows[c].weight});
 	}
 	for (int c = 0; c < right.size(); c++) {
-		weight_times.push_back({
-			barn_pos - right[c].pos, cows[left.size() + c].weight
-		});
+		weight_times.push_back(
+		    {barn_pos - right[c].pos, cows[left.size() + c].weight});
 	}
 
 	// sort them by their occurrence
-	std::sort(
-		weight_times.begin(), weight_times.end(),
-		[] (const std::pair<int, int>& a, const std::pair<int, int>& b) {
-			return a.first < b.first;
-		}
-	);
+	std::sort(weight_times.begin(), weight_times.end(),
+	          [](const std::pair<int, int> &a, const std::pair<int, int> &b) {
+		          return a.first < b.first;
+	          });
 
 	int endTime = -1;
-	for (const auto& [time, weight] : weight_times) {
+	for (const auto &[time, weight] : weight_times) {
 		total_weight -= 2 * weight;
 		if (total_weight <= 0) {
 			endTime = time;
@@ -161,8 +156,8 @@ int main() {
 			leftSide.push(cows[c].pos);
 		} else if (cows[c].speed == -1) {
 			// remove all the cows that can't meet this left-going cow
-			while (!leftSide.empty()
-					&& leftSide.front() + 2 * endTime < cows[c].pos) {
+			while (!leftSide.empty() &&
+			       leftSide.front() + 2 * endTime < cows[c].pos) {
 				leftSide.pop();
 			}
 			meeting_num += leftSide.size();
@@ -203,11 +198,9 @@ public class Meetings {
 		int totalWeight = 0;
 		for (int c = 0; c < cowNum; c++) {
 			StringTokenizer cow = new StringTokenizer(read.readLine());
-			cows[c] = new Cow(
-				Integer.parseInt(cow.nextToken()),
-				Integer.parseInt(cow.nextToken()),
-				Integer.parseInt(cow.nextToken())
-			);
+			cows[c] = new Cow(Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()));
 			totalWeight += cows[c].weight;
 		}
 
@@ -235,11 +228,10 @@ public class Meetings {
 			weightTimes.add(new int[] {left.get(c).pos, cows[c].weight});
 		}
 		for (int c = 0; c < right.size(); c++) {
-			weightTimes.add(new int[] {
-				barnPos - right.get(c).pos, cows[left.size() + c].weight
-			});
+			weightTimes.add(new int[] {barnPos - right.get(c).pos,
+			                           cows[left.size() + c].weight});
 		}
-		
+
 		// sort them by their occurrence
 		weightTimes.sort(Comparator.comparingInt(t -> t[0]));
 
@@ -261,8 +253,8 @@ public class Meetings {
 				leftSide.add(cows[c].pos);
 			} else if (cows[c].speed == -1) {
 				// remove all the cows that can't meet this left-going cow
-				while (!leftSide.isEmpty()
-						&& leftSide.peek() + 2 * endTime < cows[c].pos) {
+				while (!leftSide.isEmpty() &&
+				       leftSide.peek() + 2 * endTime < cows[c].pos) {
 					leftSide.poll();
 				}
 				meetingNum += leftSide.size();
@@ -283,17 +275,16 @@ public class Meetings {
 from typing import NamedTuple
 from collections import deque
 
+
 class Cow(NamedTuple):
 	weight: int
 	pos: int
 	speed: int
 
-with open('meetings.in') as read:
+
+with open("meetings.in") as read:
 	cow_num, barn_pos = [int(i) for i in read.readline().split()]
-	cows = [
-		Cow(*[int(i) for i in read.readline().split()])
-		for _ in range(cow_num)
-	]
+	cows = [Cow(*[int(i) for i in read.readline().split()]) for _ in range(cow_num)]
 	total_weight = sum(c.weight for c in cows)
 
 cows.sort(key=lambda c: c.pos)
@@ -342,7 +333,7 @@ for c in range(cow_num):
 			left_side.popleft()
 		meeting_num += len(left_side)
 
-print(meeting_num, file=open('meetings.out', 'w'))
+print(meeting_num, file=open("meetings.out", "w"))
 ```
 
 </PySection>

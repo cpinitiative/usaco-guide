@@ -63,7 +63,8 @@ using namespace std;
 
 struct Rect {
 	int x1, y1, x2, y2;
-	Rect(int a = 0, int b = 0, int c = 0, int d = 0): x1(a), y1(b), x2(c), y2(d) {
+	Rect(int a = 0, int b = 0, int c = 0, int d = 0)
+	    : x1(a), y1(b), x2(c), y2(d) {
 		if (x1 > x2) swap(x1, x2);
 		if (y1 > y2) swap(y1, y2);
 	}
@@ -71,12 +72,14 @@ struct Rect {
 
 vector<int> xs, ys;
 
-int idx(int val, vector<int> vec) { return lower_bound(vec.begin(), vec.end(), val) - vec.begin(); }
+int idx(int val, vector<int> vec) {
+	return lower_bound(vec.begin(), vec.end(), val) - vec.begin();
+}
 
 struct Node {
 	int x, y;
 	operator int() const { return x * ys.size() + y; }
-	Node(int a = 0, int b = 0): x(a), y(b) {}
+	Node(int a = 0, int b = 0) : x(a), y(b) {}
 };
 
 bool cmp_x(pair<Node, int> a, pair<Node, int> b) {
@@ -88,7 +91,9 @@ bool cmp_y(pair<Node, int> a, pair<Node, int> b) {
 	return a.first.x < b.first.x;
 }
 
-ll dist(Node a, Node b) { return abs(xs[a.x] - xs[b.x]) + abs(ys[a.y] - ys[b.y]); }
+ll dist(Node a, Node b) {
+	return abs(xs[a.x] - xs[b.x]) + abs(ys[a.y] - ys[b.y]);
+}
 
 vector<Node> graph[5000001];
 bool visited[5000001];
@@ -128,10 +133,13 @@ int main() {
 		rects[n++] = Rect(dx, dy, dx, dy);
 
 		// Coordinate compression
-		xs.clear(); ys.clear();
+		xs.clear();
+		ys.clear();
 		FOR(i, 0, n) {
-			xs.push_back(rects[i].x1); xs.push_back(rects[i].x2);
-			ys.push_back(rects[i].y1); ys.push_back(rects[i].y2);
+			xs.push_back(rects[i].x1);
+			xs.push_back(rects[i].x2);
+			ys.push_back(rects[i].y1);
+			ys.push_back(rects[i].y2);
 		}
 		sort(xs.begin(), xs.end());
 		xs.erase(unique(xs.begin(), xs.end()), xs.end());
@@ -144,8 +152,10 @@ int main() {
 			rects[i].y1 = idx(rects[i].y1, ys);
 			rects[i].y2 = idx(rects[i].y2, ys);
 		}
-		sx = idx(sx, xs); sy = idx(sy, ys);
-		dx = idx(dx, xs); dy = idx(dy, ys);
+		sx = idx(sx, xs);
+		sy = idx(sy, ys);
+		dx = idx(dx, xs);
+		dy = idx(dy, ys);
 
 		// Reset the graph
 		FOR(i, 0, xs.size() * ys.size()) {
@@ -155,11 +165,13 @@ int main() {
 
 		// Connect adjancent points on rectangles
 		FOR(i, 0, n) {
-			FOR(x, rects[i].x1, rects[i].x2) for (int y : {rects[i].y1, rects[i].y2}) {
+			FOR(x, rects[i].x1, rects[i].x2)
+			for (int y : {rects[i].y1, rects[i].y2}) {
 				graph[Node(x, y)].push_back(Node(x + 1, y));
 				graph[Node(x + 1, y)].push_back(Node(x, y));
 			}
-			FOR(y, rects[i].y1, rects[i].y2) for (int x : {rects[i].x1, rects[i].x2}) {
+			FOR(y, rects[i].y1, rects[i].y2)
+			for (int x : {rects[i].x1, rects[i].x2}) {
 				graph[Node(x, y)].push_back(Node(x, y + 1));
 				graph[Node(x, y + 1)].push_back(Node(x, y));
 			}

@@ -15,8 +15,8 @@ author: Óscar Garries, Franek Antoniak, Dong Liu
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -26,14 +26,12 @@ using std::string;
 using std::vector;
 
 /**
- * @return An array of length 26, containing the frequency 
+ * @return An array of length 26, containing the frequency
  * of each character in the given string.
-*/
+ */
 vector<int> count_freq(string s) {
 	vector<int> freq(26);
-	for (char c : s) {
-		freq[c - 'a']++;
-	}
+	for (char c : s) { freq[c - 'a']++; }
 	return freq;
 }
 
@@ -42,12 +40,10 @@ int main() {
 	int n;
 	read >> n;
 	vector<std::pair<string, string>> words(n);
-	for (auto& [w1, w2] : words) {
-		read >> w1 >> w2;
-	}
+	for (auto &[w1, w2] : words) { read >> w1 >> w2; }
 
 	vector<int> max_blocks(26);
-	for (const auto& [w1, w2] : words) {
+	for (const auto &[w1, w2] : words) {
 		vector<int> freq1 = count_freq(w1);
 		vector<int> freq2 = count_freq(w2);
 		for (int c = 0; c < 26; c++) {
@@ -56,9 +52,7 @@ int main() {
 	}
 
 	std::ofstream written("blocks.out");
-	for (int i : max_blocks) {
-		written << i << '\n';
-	}
+	for (int i : max_blocks) { written << i << '\n'; }
 }
 ```
 
@@ -94,7 +88,7 @@ public class Blocks {
 	}
 
 	/**
- 	 * @return An array of length 26, containing the frequency 
+ 	 * @return An array of length 26, containing the frequency
  	 * of each character in the given string.
 	 */
 	static int[] countFreq(String s) {
@@ -123,11 +117,11 @@ def count_freq(s: str) -> List[int]:
 	"""
 	freq = [0] * 26
 	for c in s:
-		freq[ord(c) - ord('a')] += 1
+		freq[ord(c) - ord("a")] += 1
 	return freq
 
 
-with open('blocks.in') as read:
+with open("blocks.in") as read:
 	n = int(read.readline())
 	words = [read.readline().split() for _ in range(n)]
 
@@ -137,7 +131,7 @@ for w1, w2 in words:
 	for c in range(26):
 		max_blocks[c] += max(freq1[c], freq2[c])
 
-with open('blocks.out', 'w') as written:
+with open("blocks.out", "w") as written:
 	for i in max_blocks:
 		print(i, file=written)
 ```

@@ -8,7 +8,7 @@ author: Jesse Choe
 [Official Editorial](https://codeforces.com/blog/entry/85951)
 
 We can initially attempt this problem by figuring out which firecrackers should explode. Obviously, we should attempt to explode the firecrackers with a minimal
-detonation time to increase the number of firecrackers exploded before eventually being caught. Also, observe that the firecrackers with a longer detonation 
+detonation time to increase the number of firecrackers exploded before eventually being caught. Also, observe that the firecrackers with a longer detonation
 time should be dropped first.
 
 To find the maximum number of firecrackers before the hooligan gets caught by the guard, sort the detonation times in increasing order and figure out the
@@ -42,17 +42,17 @@ using vl = vector<ll>;
 
 ll corridor_size;
 ll num_of_firecrackers;
-ll hooligan_location; 
-ll guard_location; 
+ll hooligan_location;
+ll guard_location;
 ll max_firecrackers;
 ll time_before_caught;
 
 bool works(vl exploding_times, ll firecrackers_exploded) {
 	int current_time = 1;
 	for (int i = firecrackers_exploded - 1; i >= 0; i--) {
-		/* Check whether a given firecracker could be exploded 
+		/* Check whether a given firecracker could be exploded
 		 * before being caught by the guard. */
-		if(current_time + exploding_times[i] > time_before_caught) {
+		if (current_time + exploding_times[i] > time_before_caught) {
 			return false;
 		} else {
 			++current_time;
@@ -62,18 +62,14 @@ bool works(vl exploding_times, ll firecrackers_exploded) {
 }
 
 void solve() {
-	cin >> corridor_size >> num_of_firecrackers
-		>> hooligan_location >> guard_location;
+	cin >> corridor_size >> num_of_firecrackers >> hooligan_location >>
+	    guard_location;
 	vl exploding_times(num_of_firecrackers);
-	for (int i = 0; i < num_of_firecrackers; i++) {
-		cin >> exploding_times[i];
-	}
+	for (int i = 0; i < num_of_firecrackers; i++) { cin >> exploding_times[i]; }
 	sort(exploding_times.begin(), exploding_times.end());
-	max_firecrackers = min(
-		num_of_firecrackers,
-		abs(hooligan_location - guard_location) - 1
-	);
-	/* 
+	max_firecrackers =
+	    min(num_of_firecrackers, abs(hooligan_location - guard_location) - 1);
+	/*
 	 * Compute the maximum time before the guard catches the
 	 * hooligan given their initial positions.
 	 */
@@ -98,10 +94,9 @@ void solve() {
 }
 
 int main() {
-	int t; cin >> t;
-	for (int i = 0; i < t; i++) {
-		solve();
-	}
+	int t;
+	cin >> t;
+	for (int i = 0; i < t; i++) { solve(); }
 }
 ```
 

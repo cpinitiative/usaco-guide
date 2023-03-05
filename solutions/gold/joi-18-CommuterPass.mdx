@@ -55,7 +55,7 @@ void dijkstra1(ll start, ll arr[]) {
 		if (!visited[node]) {
 			arr[node] = -c;
 			visited[node] = true;
-			for (auto& i : graph[node]) pq.push({c - i.second, i.first});
+			for (auto &i : graph[node]) pq.push({c - i.second, i.first});
 		}
 	}
 }
@@ -67,7 +67,7 @@ void dijkstra2(ll start, ll end) {
 
 	priority_queue<pair<ll, pair<ll, ll>>> pq;
 	pq.push({0, {start, 0}});
-	dp[0][0] = dp[1][0] = LLONG_MAX/ 2;
+	dp[0][0] = dp[1][0] = LLONG_MAX / 2;
 	while (!pq.empty()) {
 		ll c, node, par;
 		pair<ll, ll> p;
@@ -82,7 +82,8 @@ void dijkstra2(ll start, ll end) {
 			dp[1][node] = min(dv[node], dp[1][par]);
 			for (auto i : graph[node]) pq.push({c - i.second, {i.first, node}});
 		} else if (-c == ds[node]) {
-			if (min(du[node], dp[0][par]) + min(dv[node], dp[1][par]) <= dp[0][node] + dp[1][node]) {
+			if (min(du[node], dp[0][par]) + min(dv[node], dp[1][par]) <=
+			    dp[0][node] + dp[1][node]) {
 				dp[0][node] = min(du[node], dp[0][par]);
 				dp[1][node] = min(dv[node], dp[1][par]);
 			}

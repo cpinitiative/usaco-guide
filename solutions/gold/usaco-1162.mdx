@@ -18,9 +18,9 @@ author: Kevin Sheng
 
 ```cpp
 #include <iostream>
-#include <vector>
-#include <set>
 #include <map>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -55,9 +55,7 @@ int main() {
 		for (int h : started_his[x]) {
 			hi.insert(h);
 			auto it = hilos.lower_bound(h);
-			if (!it->second && !(--it)->second) {
-				curr_hilo++;
-			}
+			if (!it->second && !(--it)->second) { curr_hilo++; }
 			hilos[h] = true;
 		}
 
@@ -67,13 +65,11 @@ int main() {
 			int changed = ind[x + 1];
 			while (!lo.empty() && changed < lo.back()) {
 				auto it = hilos.lower_bound(lo.back());
-				if ((--it)->second) {
-					curr_hilo--;
-				}
+				if ((--it)->second) { curr_hilo--; }
 				hilos.erase(lo.back());
 				lo.pop_back();
 			}
-			
+
 			bool prev = (--hilos.lower_bound(changed))->second;
 			bool next = (++hilos.lower_bound(changed))->second;
 			curr_hilo += prev + !next;
@@ -83,9 +79,7 @@ int main() {
 		}
 	}
 
-	for (int i : hilo_num) {
-		cout << i << '\n';
-	}
+	for (int i : hilo_num) { cout << i << '\n'; }
 }
 ```
 

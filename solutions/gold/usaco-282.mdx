@@ -39,12 +39,8 @@ using namespace std;
  */
 int fall_to_row(int r, int c, int direc, const vector<vector<char>> &grid) {
 	while (grid[r][c] == '.' || grid[r][c] == 'C' || grid[r][c] == 'D') {
-		if (grid[r][c] == 'D') {
-			return r;
-		}
-		if (grid[r + direc][c] == '#') {
-			return r;
-		}
+		if (grid[r][c] == 'D') { return r; }
+		if (grid[r + direc][c] == '#') { return r; }
 		r += direc;
 	}
 	return -1;
@@ -56,27 +52,19 @@ int fall_to_row(int r, int c, int direc, const vector<vector<char>> &grid) {
  * @param flips Number of flips already performed to get to [r, c]
  * @param direc Current direction of the gravity, either 1 or -1
  */
-void search_horizontally(
-	int r, int c, int flips, int direc,
-	queue<array<int, 4>> &bfs,
-	vector<vector<int>> &flip_count,
-	const vector<vector<char>> &grid
-) {
+void search_horizontally(int r, int c, int flips, int direc,
+                         queue<array<int, 4>> &bfs,
+                         vector<vector<int>> &flip_count,
+                         const vector<vector<char>> &grid) {
 	// if out of bound or already visited, then don't go further
-	if (r <= 0 || grid[r][c] == '-' || flip_count[r][c] >= 0) {
-		return;
-	}
+	if (r <= 0 || grid[r][c] == '-' || flip_count[r][c] >= 0) { return; }
 	flip_count[r][c] = flips;
 	bfs.push({r, c, flips, direc});
 
-	search_horizontally(
-		fall_to_row(r, c + 1, direc, grid), c + 1, flips, direc,
-		bfs, flip_count, grid
-	);
-	search_horizontally(
-		fall_to_row(r, c - 1, direc, grid), c - 1, flips, direc,
-		bfs, flip_count, grid
-	);
+	search_horizontally(fall_to_row(r, c + 1, direc, grid), c + 1, flips, direc,
+	                    bfs, flip_count, grid);
+	search_horizontally(fall_to_row(r, c - 1, direc, grid), c - 1, flips, direc,
+	                    bfs, flip_count, grid);
 }
 
 int main() {
@@ -109,10 +97,8 @@ int main() {
 	// {row, column, number of flips, direction of the gravity}
 	queue<array<int, 4>> bfs;
 	// let captain fall down and perform a search to the left and right
-	search_horizontally(
-		fall_to_row(start.first, start.second, 1, grid), start.second, 0, 1,
-		bfs, flip_count, grid
-	);
+	search_horizontally(fall_to_row(start.first, start.second, 1, grid),
+	                    start.second, 0, 1, bfs, flip_count, grid);
 
 	while (!bfs.empty()) {
 		int r, c, flips, direc;
@@ -141,9 +127,9 @@ int main() {
 Since we are dealing with a shortest path problem, we can also use Dijkstra's
 algorithm to find the minimum flips needed to reach Doctor Beefalo. In this case,
 there is an edge between two nodes if one of them can be reached by the other by
-going left, right or by flipping the gravity. 
+going left, right or by flipping the gravity.
 
-As Dijkstra's algorithm uses a priority queue, the time complexity of this 
-solution would be $\mathcal{O}(N^2 \log (N^2))$. 
+As Dijkstra's algorithm uses a priority queue, the time complexity of this
+solution would be $\mathcal{O}(N^2 \log (N^2))$.
 
 </Info>

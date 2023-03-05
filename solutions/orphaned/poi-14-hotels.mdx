@@ -77,12 +77,14 @@ using namespace std;
 
 vector<int> graph[5001];
 
-void find_dep(int node, int parent, pair<int, vector<int>> &root, int depth = 0) {
+void find_dep(int node, int parent, pair<int, vector<int>> &root,
+              int depth = 0) {
 	if (depth == root.first) {
 		root.first++;
 		root.second.push_back(1);
 	} else root.second[depth]++;
-	for (int i : graph[node]) if (i != parent) find_dep(i, node, root, depth + 1);
+	for (int i : graph[node])
+		if (i != parent) find_dep(i, node, root, depth + 1);
 }
 
 int main() {
@@ -118,7 +120,8 @@ int main() {
 
 		for (int j = 0; j < m; j++) {
 			for (int k = 0; k < dep[j].first; k++) {
-				ans += (tot[k] - dep[j].second[k] - aft[j][k]) * dep[j].second[k] * aft[j][k];
+				ans += (tot[k] - dep[j].second[k] - aft[j][k]) *
+				       dep[j].second[k] * aft[j][k];
 			}
 		}
 	}

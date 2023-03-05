@@ -19,16 +19,16 @@ analysis.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 int main() {
 	std::ifstream read("helpcross.in");
@@ -37,15 +37,11 @@ int main() {
 	read >> num_chickens >> num_cows;
 
 	vector<int> chickens(num_chickens);
-	for (int& c : chickens) {
-		read >> c;
-	}
+	for (int &c : chickens) { read >> c; }
 	std::sort(chickens.begin(), chickens.end());
 
 	vector<pair<int, int>> cows(num_cows);
-	for (pair<int, int>& c : cows) {
-		read >> c.first >> c.second;
-	}
+	for (pair<int, int> &c : cows) { read >> c.first >> c.second; }
 	// sort by starting time, tiebreak by ending time
 	std::sort(cows.begin(), cows.end());
 
@@ -150,7 +146,7 @@ public class HelpCross {
 ```py
 import heapq
 
-with open('helpcross.in') as read:
+with open("helpcross.in") as read:
 	num_chickens, num_cows = [int(i) for i in read.readline().split()]
 
 	chickens = [int(read.readline()) for _ in range(num_chickens)]
@@ -171,21 +167,21 @@ for c in chickens:
 	while cow_at < num_cows and cows[cow_at][0] <= c:
 		heapq.heappush(available_cows, cows[cow_at][1])
 		cow_at += 1
-	
+
 	"""
 	remove all the ending times that end too early for the chicken
 	since available_cows is a heap, the first element is the smallest
 	"""
 	while available_cows and available_cows[0] < c:
 		heapq.heappop(available_cows)
-	
+
 	# have the cow help the chicken w/ the earliest ending time
 	if available_cows:
 		num_helped += 1
 		heapq.heappop(available_cows)
 
-print(num_helped, file=open('helpcross.out', 'w'))
+print(num_helped, file=open("helpcross.out", "w"))
 ```
 
 </PySection>
-</LanguageSection>	
+</LanguageSection>

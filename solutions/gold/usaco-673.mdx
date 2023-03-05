@@ -39,31 +39,24 @@ int main() {
 
 	vector<long long> fj(n), fp(m);
 
-	for (int i = 0; i < n; i++) {
-		std::cin >> fj[i];
-	}
+	for (int i = 0; i < n; i++) { std::cin >> fj[i]; }
 
-	for (int i = 0; i < m; i++) {
-		std::cin >> fp[i];
-	}
+	for (int i = 0; i < m; i++) { std::cin >> fp[i]; }
 
 	std::sort(fj.rbegin(), fj.rend());
 	std::sort(fp.rbegin(), fp.rend());
 
 	/*
-	* dp[i][j][k] = the number of teams of size k after we've considered
-	* the first $i$ cows in Farmer John's team, the first $j$ cows in
-	* Farmer Paul's team.
-	*/
+	 * dp[i][j][k] = the number of teams of size k after we've considered
+	 * the first $i$ cows in Farmer John's team, the first $j$ cows in
+	 * Farmer Paul's team.
+	 */
 	vector<vector<vector<long long>>> dp(
-		n + 1, vector<vector<long long>>(m + 1, vector<long long>(k + 1))
-	);
+	    n + 1, vector<vector<long long>>(m + 1, vector<long long>(k + 1)));
 
 	// base case: there is one way to construct a team of size zero.
 	for (int i = 0; i <= n; i++) {
-		for (int j = 0; j <= m; j++) {
-			dp[i][j][0] = 1; 
-		}
+		for (int j = 0; j <= m; j++) { dp[i][j][0] = 1; }
 	}
 
 	for (int i = 0; i < n; i++) {
@@ -77,9 +70,7 @@ int main() {
 				dp[i + 1][j + 1][s] += dp[i][j + 1][s];
 				dp[i + 1][j + 1][s] -= dp[i][j][s];
 
-				if (fj[i] > fp[j]) {
-					dp[i + 1][j + 1][s] += dp[i][j][s - 1];
-				}
+				if (fj[i] > fp[j]) { dp[i + 1][j + 1][s] += dp[i][j][s - 1]; }
 
 				// prevent negative results
 				dp[i + 1][j + 1][s] += MOD;
@@ -153,11 +144,11 @@ public class Team {
 				}
 			}
 		}
-		
+
 		io.println(dp[n][m][k]);
 		io.close();
 	}
-	
+
 	//CodeSnip{Kattio}
 }
 ```

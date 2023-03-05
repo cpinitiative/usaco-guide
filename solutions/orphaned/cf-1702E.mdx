@@ -16,7 +16,7 @@ it is impossible to create the 2 sets. This is because both cases would result i
 that happening).
 
 We can turn this problem into
-a graph problem by drawing edges between dominoes that share numbers (the main motivation for this is that we have 2 sets, which reminds us of bipartite splits). Specifically, let domino $i$ have the two numbers 
+a graph problem by drawing edges between dominoes that share numbers (the main motivation for this is that we have 2 sets, which reminds us of bipartite splits). Specifically, let domino $i$ have the two numbers
 $a_i$ and $b_i$. Then we draw an edge between dominoes $i$ and $j$ if and only if $a_i = a_j$ or $a_i = b_j$ or $a_j = b_i$
 or $a_j = b_j$.
 
@@ -41,35 +41,29 @@ The implementation of this is relatively straight forward; Simply check if the g
 #include <bits/stdc++.h>
 using namespace std;
 
-bool dfs(int u, int color, vector<int>& vis, vector<vector<int>>& adj) {
+bool dfs(int u, int color, vector<int> &vis, vector<vector<int>> &adj) {
 	// If the node is already visited with and was marked in the same color
-	if (vis[u] == color) {
-		return true;
-	}
-    
+	if (vis[u] == color) { return true; }
+
 	// If the node is already visited with and was marked in the other color
-	if (vis[u] == 1 - color) {
-		return false;
-	}
-    
-	vis[u] = color; 
+	if (vis[u] == 1 - color) { return false; }
+
+	vis[u] = color;
 	for (int v : adj[u]) {
-		if (!dfs(v, 1 - color, vis, adj)) return false; 
+		if (!dfs(v, 1 - color, vis, adj)) return false;
 	}
 	return true;
 }
 
 void solve() {
-	int n; 
+	int n;
 	cin >> n;
 	vector<pair<int, int>> dominoes(n);
-    
-	for (pair<int, int>& i : dominoes) {
-		cin >> i.first >> i.second;
-	}
-		
+
+	for (pair<int, int> &i : dominoes) { cin >> i.first >> i.second; }
+
 	for (pair<int, int> i : dominoes) {
-        	// Check if a number on the domino is repeated
+		// Check if a number on the domino is repeated
 		if (i.first == i.second) {
 			cout << "NO\n";
 			return;
@@ -81,7 +75,8 @@ void solve() {
 		color_to_index[dominoes[i].first].push_back(i);
 		color_to_index[dominoes[i].second].push_back(i);
 		// Check if a number exists in 3 or more dominoes
-		if (color_to_index[dominoes[i].first].size() > 2 || color_to_index[dominoes[i].second].size() > 2) {
+		if (color_to_index[dominoes[i].first].size() > 2 ||
+		    color_to_index[dominoes[i].second].size() > 2) {
 			cout << "NO\n";
 			return;
 		}
@@ -97,7 +92,7 @@ void solve() {
 			adj[v[1]].push_back(v[0]);
 		}
 	}
-	
+
 	for (int i = 0; i < n; i++) {
 		if (vis[i] == -1) {
 			if (!dfs(i, 0, vis, adj)) {
@@ -110,11 +105,9 @@ void solve() {
 }
 
 int main() {
-	int t; 
-	cin >> t; 
-	for (int test = 0; test < t; test++) {
-		solve();
-	}
+	int t;
+	cin >> t;
+	for (int test = 0; test < t; test++) { solve(); }
 }
 ```
 </CPPSection>

@@ -4,7 +4,7 @@ source: USACO Gold 2017 February
 title: Why Did the Cow Cross The Road II
 author: Brad Ma, Jesse Choe
 ---
- 
+
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_nocross_gold_feb17.html)
 
 Let's define $\texttt{dp}[i][j]$ as the maximum number of disjoint friendly crosswalks up to field $i$ on the first side of the road and field $j$ on the second side of the road. We can build a crosswalk between fields $i$ and $j$ as long as there isn't a crosswalk between fields $i$, $j - 1$ and $i - 1$, $j$. Thus, $\texttt{dp}[i][j] = \max(\texttt{dp}[i - 1][j], \texttt{dp}[i][j - 1], \texttt{dp}[i - 1][j - 1] + (|\texttt{id}[i] - \texttt{id}[j]| \leq 4))$, where $\texttt{id}[i]$ and $\texttt{id}[j]$ represent the breed IDs of the cows in the $i$-th and $j$-th fields, respectively.
@@ -26,35 +26,28 @@ const int MAXN = 1000;
 
 int dp[MAXN + 1][MAXN + 1];
 
-int main(){
+int main() {
 	freopen("nocross.in", "r", stdin);
 	freopen("nocross.out", "w", stdout);
 	int n;
 	cin >> n;
 	/*
-	 * id1 represents the breed ID of the fields 
+	 * id1 represents the breed ID of the fields
 	 * on the first side of the road
 	 * id2 represents the breed ID of the fields
 	 * on the other side of the road.
 	 */
 	vector<int> id1(n + 1), id2(n + 1);
-	for (int i = 1; i <= n; i++) {
-		cin >> id1[i];
-	}
-	for (int i = 1; i <= n; i++) {
-		cin >> id2[i];
-	}
+	for (int i = 1; i <= n; i++) { cin >> id1[i]; }
+	for (int i = 1; i <= n; i++) { cin >> id2[i]; }
 	for (int i = 1; i <= n; i++) {
 		for (int j = 1; j <= n; j++) {
 			/*
-			 * We can either build a new crosswalk between 
+			 * We can either build a new crosswalk between
 			 * i and j or not build a new crosswalk.
-			*/
-			dp[i][j] = max({
-				dp[i - 1][j],
-				dp[i][j - 1], 
-				dp[i - 1][j - 1] + (abs(id1[i] - id2[j]) <= 4)
-			});
+			 */
+			dp[i][j] = max({dp[i - 1][j], dp[i][j - 1],
+			                dp[i - 1][j - 1] + (abs(id1[i] - id2[j]) <= 4)});
 		}
 	}
 	cout << dp[n][n] << endl;
@@ -62,7 +55,7 @@ int main(){
 ```
 </CPPSection>
 <JavaSection>
-  
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -84,7 +77,7 @@ public class NoCross {
 			return 0;
 		}
 		// if already computed, just return the value
-		if (memoization[n][m] != -1) {  
+		if (memoization[n][m] != -1) {
 			return memoization[n][m];
 		}
 
@@ -94,7 +87,7 @@ public class NoCross {
 			return answer;
 		}
 		// we can skip either the cow on the left side or the cow on the right
-		else {  
+		else {
 			int answer = Math.max(solve(n - 1, m), solve(n, m - 1));
 			memoization[n][m] = answer;
 			return answer;
@@ -123,6 +116,6 @@ public class NoCross {
 	}
 	//CodeSnip{Kattio}
 }
-```                      
+```
 </JavaSection>
 </LanguageSection>

@@ -127,7 +127,7 @@ export default function ModuleHeaders({
             />
           </div>
         )}
-        {/* {markdownData instanceof ModuleInfo && 
+        {/* {markdownData instanceof ModuleInfo &&
           `Last Updated: ${time_ago(markdownData.gitAuthorTime)}`
         } */}
       </div>

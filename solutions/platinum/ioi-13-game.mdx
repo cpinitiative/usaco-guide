@@ -88,7 +88,7 @@ struct Treap {
 		t->update();
 	}
 
-	TreapNode* merge(TreapNode *l, TreapNode *r) {
+	TreapNode *merge(TreapNode *l, TreapNode *r) {
 		if (!l || !r) return l ? l : r;
 		if (l->key < r->key) {
 			l->r = merge(l->r, r);
@@ -207,9 +207,7 @@ void init(int R, int C) {
 
 void update(int P, int Q, ll K) { segtree.update(P, Q, K); }
 
-ll calculate(int P, int Q, int U, int V) {
-	return segtree.query(P, U, Q, V);
-}
+ll calculate(int P, int Q, int U, int V) { return segtree.query(P, U, Q, V); }
 ```
 
 ## Approach 2 - Memory-optimized 2D sparse segment tree
@@ -237,14 +235,14 @@ typedef long long ll;
 static int R, C;
 
 struct X_NODE {
-	X_NODE(int s, int e): s(s), e(e), left(NULL), right(NULL), value(0LL) {}
+	X_NODE(int s, int e) : s(s), e(e), left(NULL), right(NULL), value(0LL) {}
 	int s, e;
 	X_NODE *left, *right;
 	ll value;
 };
 
 struct Y_NODE {
-	Y_NODE(): left(NULL), right(NULL), xtree(1,C) {}
+	Y_NODE() : left(NULL), right(NULL), xtree(1, C) {}
 	Y_NODE *left, *right;
 	X_NODE xtree;
 } *root;
@@ -254,7 +252,7 @@ ll gcd2(ll x, ll y) {
 	return gcd2(y, x % y);
 }
 
-void init(int r,int c) {
+void init(int r, int c) {
 	R = r, C = c;
 	root = new Y_NODE();
 }
@@ -283,17 +281,13 @@ void update2(X_NODE *node, int q, ll k) {
 		*child = nnode;
 		update2(*child, q, k);
 	}
-	node->value = gcd2(
-		node->left ? node->left->value : 0,
-		node->right ? node->right->value : 0
-	);
+	node->value = gcd2(node->left ? node->left->value : 0,
+	                   node->right ? node->right->value : 0);
 }
 
 ll query2(X_NODE *node, int s, int e) {
 	if (node == NULL || node->s > e || node->e < s) return 0;
-	if (s <= node->s && node->e <= e){
-		return node->value;
-	}
+	if (s <= node->s && node->e <= e) { return node->value; }
 	return gcd2(query2(node->left, s, e), query2(node->right, s, e));
 }
 
@@ -308,12 +302,10 @@ void update1(Y_NODE *node, int s, int e, int p, int q, ll k) {
 		update1(node->left, s, m, p, q, k);
 	} else {
 		if (node->right == NULL) node->right = new Y_NODE();
-		update1(node->right, m+1, e, p, q, k);
+		update1(node->right, m + 1, e, p, q, k);
 	}
-	ll v = gcd2(
-		node->left ? query2(&node->left->xtree, q, q) : 0,
-		node->right ? query2(&node->right->xtree, q, q) : 0
-	);
+	ll v = gcd2(node->left ? query2(&node->left->xtree, q, q) : 0,
+	            node->right ? query2(&node->right->xtree, q, q) : 0);
 	update2(&node->xtree, q, v);
 }
 
@@ -326,10 +318,8 @@ ll query1(Y_NODE *node, int s, int e, int p, int q, int u, int v) {
 	if (node == NULL || s > u || e < p) return 0;
 	if (p <= s && e <= u) return query2(&node->xtree, q, v);
 	int m = (s + e) >> 1;
-	return gcd2(
-		query1(node->left, s, m, p, q, u, v),
-		query1(node->right, m + 1, e, p, q, u, v)
-	);
+	return gcd2(query1(node->left, s, m, p, q, u, v),
+	            query1(node->right, m + 1, e, p, q, u, v));
 }
 
 ll calculate(int p, int q, int u, int v) {
