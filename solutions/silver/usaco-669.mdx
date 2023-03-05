@@ -61,10 +61,10 @@ int main() {
 
 	int n;
 	read >> n;
-	
+
 	vector<int> x(n);
 	vector<int> y(n);
-	
+
 	for (int i = 0; i < n; i++) {
 		read >> x[i] >> y[i];
 	}
@@ -202,22 +202,22 @@ class DSU:
 	def __init__(self, size: int) -> None:
 		self.sizes = [1 for _ in range(size)]
 		self.parents = [i for i in range(size)]
-	
+
 	def get_top(self, n: int) -> int:
 		if self.parents[n] == n:
 			return n
 		self.parents[n] = self.get_top(self.parents[n])
 		return self.parents[n]
-	
+
 	def link(self, n1: int, n2: int) -> bool:
 		n1 = self.get_top(n1)
 		n2 = self.get_top(n2)
 		if n1 == n2:
 			return False
-		
+
 		if self.sizes[n1] < self.sizes[n2]:
 			n1, n2 = n2, n1
-		
+
 		self.sizes[n1] += self.sizes[n2]
 		self.parents[n2] = n1
 		return True

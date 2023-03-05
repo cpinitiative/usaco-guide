@@ -5,10 +5,10 @@ title: Bipartiteness
 author: Ryan Chou
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/54590) 
+[Official Editorial](https://codeforces.com/blog/entry/54590)
 
 ## Explanation
-Given the number of colored and uncolored nodes, the maximum number of edges that can exist is $c \cdot uc$ where $c$ represents the number of colored nodes, and $uc$ represents the number of uncolored nodes. 
+Given the number of colored and uncolored nodes, the maximum number of edges that can exist is $c \cdot uc$ where $c$ represents the number of colored nodes, and $uc$ represents the number of uncolored nodes.
 
 This is because an edge can be drawn from each colored node to every other uncolored node. However, we already have $n - 1$ edges, so the answer is $(c \cdot uc) - (n - 1)$.
 
@@ -28,7 +28,7 @@ import java.io.*;
 
 public class Bipartiteness {
 	public static ArrayList<Integer>[] adj;
-	
+
 	// counters for colored and uncolored nodes
 	public static long[] count = {0, 0};
 
@@ -39,7 +39,7 @@ public class Bipartiteness {
 
 		// +1 for 1-indexed nodes
 		adj = new ArrayList[n + 1];
-		
+
 		for (int i = 0; i <= n; i++) {
 			adj[i] = new ArrayList<>();
 		}
@@ -47,16 +47,16 @@ public class Bipartiteness {
 		for (int i = 0; i < n - 1; i++) {
 			int u = io.nextInt();
 			int v = io.nextInt();
-			
+
 			adj[u].add(v);
 			adj[v].add(u);
 		}
-		
+
 		dfs(1, 0, false);
-		
+
 		// ans = (all possible edges) - (existing edges)
-		long ans = (count[0] * count[1]) - (n - 1); 
-		
+		long ans = (count[0] * count[1]) - (n - 1);
+
 		io.println(ans);
 		io.close();
 	}
@@ -72,7 +72,7 @@ public class Bipartiteness {
 			}
 		}
 	}
-	
+
 	// CodeSnip{Kattio}
 }
 ```

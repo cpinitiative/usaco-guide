@@ -5,7 +5,7 @@ title: Bit Inversions
 author: Dustin Miao
 ---
 
-We can use a Segment Tree over the given array of bits. Assume, for now, that we are querying for the longest continuous subsegment of 1s. In a node of 
+We can use a Segment Tree over the given array of bits. Assume, for now, that we are querying for the longest continuous subsegment of 1s. In a node of
 the segment tree corresponding to range $[l, r]$, we will store three pieces of information:
 - The longest prefix of 1s in the range $[l, r]$ (denote this as $P$)
 - The longest suffix of 1s in the range $[l, r]$ (denote this as $S$)
@@ -18,16 +18,16 @@ To merge left child $a$ and right child $b$ to make node $c$
 - $c.A = \max(a.A, b.A, a.S + b.P)$
 - $c.L = a.L + b.L$
 
-A bit flip operation corresponds to a point update on the segment tree and a longest homogeneous subarray query corresponds to the $A$ value of 
+A bit flip operation corresponds to a point update on the segment tree and a longest homogeneous subarray query corresponds to the $A$ value of
 the root node. We can thus handle all operations efficiently. Note that using two segment trees that are inverses of each other (one for the 0s and one for the 1s)
-makes the implementation easier. 
+makes the implementation easier.
 
 **Time Complexity:** $\mathcal{O}((N + Q)\log N)$
 
 <LanguageSection>
 
 <CPPSection>
-  
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;

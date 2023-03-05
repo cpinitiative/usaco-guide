@@ -24,6 +24,7 @@ CLANG_FORMAT_STYLE = (
 	"{" + ", ".join(filter(lambda x: x != "", CLANG_FORMAT_STYLE.split("\n"))) + "}"
 )
 
+
 def lead_white(line):
 	return len(line) - len(line.lstrip())
 
@@ -75,15 +76,17 @@ def format_path(path: str):
 	nlines = []
 	prog = []
 	for line in lines:
-		if line.strip().startswith("```") and len(line.strip()) > 3: # start of lang block
+		if (
+			line.strip().startswith("```") and len(line.strip()) > 3
+		):  # start of lang block
 			lang = line.strip()[3:].strip()
-			if lang == 'python':
-				lang = 'py'
-			if lang not in ['cpp', 'py', 'java']:
+			if lang == "python":
+				lang = "py"
+			if lang not in ["cpp", "py", "java"]:
 				raise ValueError(f"Unrecognized formatting lang: {line.strip()[3:]}")
 			nlines.append(f"```{lang}\n")
 		elif line.strip() == "```":
-			if lang is not None: # end of lang block
+			if lang is not None:  # end of lang block
 				if not contains_banned_terms(prog):
 					prog = [match_indentation(line, prog_line) for prog_line in prog]
 					prog = format_prog(lang, prog)
@@ -94,9 +97,9 @@ def format_path(path: str):
 				prog = []
 				lang = None
 			nlines.append(line)
-		elif lang is not None: # program block
+		elif lang is not None:  # program block
 			prog.append(line)
-		else: # outside of program block
+		else:  # outside of program block
 			nlines.append(line)
 	with open(path, "w") as f:
 		f.write("".join(nlines))
