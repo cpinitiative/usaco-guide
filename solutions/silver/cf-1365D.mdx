@@ -45,12 +45,9 @@ int columnMovement[4]{1, 0, -1, 0};
 
 int N, M;
 
-void floodfill(int r, int c)
-{
-	if (r < 0 || r >= N || c < 0 || c >= M)
-		return;
-	if (grid[r][c] == '#' || visited[r][c])
-		return;
+void floodfill(int r, int c) {
+	if (r < 0 || r >= N || c < 0 || c >= M) return;
+	if (grid[r][c] == '#' || visited[r][c]) return;
 	visited[r][c] = true;
 	floodfill(r + 1, c);
 	floodfill(r - 1, c);
@@ -58,40 +55,30 @@ void floodfill(int r, int c)
 	floodfill(r, c - 1);
 }
 
-void solve()
-{
+void solve() {
 	memset(grid, '.', sizeof(grid));
 	memset(visited, 0, sizeof(visited));
 	cin >> N >> M;
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			cin >> grid[i][j];
-		}
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) { cin >> grid[i][j]; }
 	}
-	//surrounds the bad people
+	// surrounds the bad people
 	bool ok = true;
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			if (grid[i][j] == 'B')
-			{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (grid[i][j] == 'B') {
 				for (int x = 0; x < 4; x++)  // go through all 4 directions
 				{
 					int newRow = i + rowMovement[x];
 					int newColumn = j + columnMovement[x];
 					// check if it is in the boundaries
-					if (newRow >= 0 && newRow < N && newColumn >= 0 && newColumn < M)
-					{
-						if (grid[newRow][newColumn] == 'G')
-						{
+					if (newRow >= 0 && newRow < N && newColumn >= 0 &&
+					    newColumn < M) {
+						if (grid[newRow][newColumn] == 'G') {
 							cout << "No\n";
 							return;
 						}
-						if (grid[newRow][newColumn] == '.')
-						{
+						if (grid[newRow][newColumn] == '.') {
 							grid[newRow][newColumn] = '#';  // turn it into a #
 						}
 					}
@@ -100,12 +87,9 @@ void solve()
 		}
 	}
 	floodfill(N - 1, M - 1);
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			if (grid[i][j] == 'G' && !visited[i][j])
-			{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (grid[i][j] == 'G' && !visited[i][j]) {
 				cout << "No\n";
 				return;
 			}
@@ -114,16 +98,12 @@ void solve()
 	cout << "Yes\n";
 }
 
-int main()
-{
+int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	int T;
 	cin >> T;
-	while (T--)
-	{
-		solve();
-	}
+	while (T--) { solve(); }
 }
 ```
 
@@ -245,7 +225,7 @@ for _ in range(int(input())):
 	for r in range(n):
 		grid.append(list(input().strip()))
 		for c, char in enumerate(grid[-1]):
-			if char == 'G':
+			if char == "G":
 				good_people.add((r, c))
 
 	visited = [[False] * len(grid[0]) for _ in range(len(grid))]
@@ -268,20 +248,19 @@ for _ in range(int(input())):
 
 		cells_to_add = []
 		for new_i, new_j in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
-			if (not (0 <= new_i < n and 0 <= new_j < m)
-					or visited[new_i][new_j]):
+			if not (0 <= new_i < n and 0 <= new_j < m) or visited[new_i][new_j]:
 				continue
 
-			if grid[new_i][new_j] == '.' or grid[new_i][new_j] == 'G':
+			if grid[new_i][new_j] == "." or grid[new_i][new_j] == "G":
 				cells_to_add.append((new_i, new_j))
-			elif grid[new_i][new_j] == 'B':
+			elif grid[new_i][new_j] == "B":
 				break
 		else:
 			stack.extend(cells_to_add)
-			if grid[i][j] == 'G':
+			if grid[i][j] == "G":
 				good_people.discard((i, j))
 
-	print('Yes' if not good_people else 'No')
+	print("Yes" if not good_people else "No")
 ```
 
 </PySection>

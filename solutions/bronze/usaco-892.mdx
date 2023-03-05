@@ -13,7 +13,7 @@ By Vikas Thoutam
 <Youtube id="9sh0XJryLAg" />
 
 <Spoiler title="Video Solution Code">
-    
+
 <LanguageSection>
 <CPPSection>
 
@@ -23,8 +23,8 @@ using namespace std;
 
 int main() {
 	// File input and output
-	freopen ("sleepy.in","r",stdin);
-	freopen ("sleepy.out","w",stdout);
+	freopen("sleepy.in", "r", stdin);
+	freopen("sleepy.out", "w", stdout);
 
 	// Take in size of array (n) and create a array to store the cow positions
 	int n;
@@ -32,18 +32,14 @@ int main() {
 	int cows[n];
 
 	// Take in the start positions of the cows and store them in the array
-	for(int i = 0; i < n; i++)
-	{
-		cin >> cows[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
 
 	// Compute x, the length of the increasing subarray at the end
 	int x = 1;
-	for(int i = n-2; i>-1 && cows[i] < cows[i+1]; i--)
-		x++;
+	for (int i = n - 2; i > -1 && cows[i] < cows[i + 1]; i--) x++;
 
 	// Print the answer, n-x
-	printf("%d",n-x);
+	printf("%d", n - x);
 	fclose(stdout);
 }
 ```
@@ -62,24 +58,23 @@ public class SleepyCowSorting {
 		BufferedReader br = new BufferedReader(new FileReader("sleepy.in"));
 		PrintWriter pw = new PrintWriter("sleepy.out");
 
-		// Take in size of array (n) and create a array to store the cow positions
+		// Take in size of array (n) and create a array to store the cow
+		// positions
 		int n = Integer.parseInt(br.readLine());
 		int[] cows = new int[n];
 
 		// Take in the start positions of the cows and store them in the array
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		for(int i = 0; i < n; i++)
-		{
+		for (int i = 0; i < n; i++) {
 			cows[i] = Integer.parseInt(st.nextToken());
 		}
 
 		// Compute x, the length of the increasing subarray at the end
 		int x = 1;
-		for(int i = n-2; i>-1 && cows[i] < cows[i+1]; i--)
-			x++;
+		for (int i = n - 2; i > -1 && cows[i] < cows[i + 1]; i--) x++;
 
 		// Print the answer, n-x
-		pw.print(n-x);
+		pw.print(n - x);
 		pw.close();
 	}
 }
@@ -102,11 +97,11 @@ We can think about this problem by looking at the end of the array of cows. Noti
 <PySection>
 
 ```python
-file_in = open('sleepy.in')
-data = file_in.read().strip().split('\n')
+file_in = open("sleepy.in")
+data = file_in.read().strip().split("\n")
 
 n = int(data[0])
-cows = list(map(int, data[1].split(' ')))
+cows = list(map(int, data[1].split(" ")))
 
 ans = 0
 
@@ -116,15 +111,15 @@ for i in range(n - 1, 0, -1):
 		ans = i
 		break
 
-file_out = open('sleepy.out', 'w')
+file_out = open("sleepy.out", "w")
 file_out.write(str(ans))
 file_out.close()
 ```
 
 </PySection>
-	
+
 <JavaSection>
-	
+
 ```java
 import java.util.*;
 import java.io.*;
@@ -153,9 +148,9 @@ public class SleepyCowSorting {
 		io.close();
 	}
 	//CodeSnip{Kattio}
-}	
+}
 ```
-	
+
 </JavaSection>
 
 <CPPSection>
@@ -169,23 +164,21 @@ int cows[105];
 int main() {
 	freopen("sleepy.in", "r", stdin);
 	freopen("sleepy.out", "w", stdout);
-	int n; cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> cows[i];
-	}
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
 	int answer = n - 1;
 	for (int i = n - 2; i >= 0; i--) {
-		if (cows[i] < cows[i+1]) {
+		if (cows[i] < cows[i + 1]) {
 			answer = i;
-        	}
-		else {
+		} else {
 			break;
-        	}
+		}
 	}
-	cout << answer << endl;	
+	cout << answer << endl;
 }
 ```
-		     
+
 </CPPSection>
 
 </LanguageSection>

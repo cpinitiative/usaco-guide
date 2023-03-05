@@ -37,27 +37,19 @@ numbers less than $\texttt{mid}$ also won't work.
 #include <iostream>
 using namespace std;
 
-int main()
-{
+int main() {
 	long long n;
 	cin >> n;
 	long long low = 1, high = n * n, mid, leq;
-	
+
 	// binary search to get the median
-	while (low < high)
-	{
+	while (low < high) {
 		mid = (low + high) / 2;
 		leq = 0;
-		for (int i = 1; i <= n; i++)
-		{
-			leq += min(n, mid / i);
-		}
-		if (leq >= (n * n + 1) / 2)
-		{
+		for (int i = 1; i <= n; i++) { leq += min(n, mid / i); }
+		if (leq >= (n * n + 1) / 2) {
 			high = mid;
-		}
-		else
-		{
+		} else {
 			low = mid + 1;
 		}
 	}
@@ -81,20 +73,13 @@ public class MultiplicationTable {
 		long low = 1, high = n * n, mid, leq;
 
 		// binary search to find the median
-		while (low < high)
-		{
+		while (low < high) {
 			mid = (low + high) / 2;
 			leq = 0;
-			for (int i = 1; i <= n; i++)
-			{
-				leq += Math.min(n, mid / i);
-			}
-			if (leq >= (n * n + 1) / 2)
-			{
+			for (int i = 1; i <= n; i++) { leq += Math.min(n, mid / i); }
+			if (leq >= (n * n + 1) / 2) {
 				high = mid;
-			}
-			else
-			{
+			} else {
 				low = mid + 1;
 			}
 		}
@@ -102,7 +87,7 @@ public class MultiplicationTable {
 		io.println(high);
 		io.close();
 	}
-}	
+}
 ```
 	
 </JavaSection>
@@ -112,7 +97,7 @@ public class MultiplicationTable {
 n = int(input())
 
 low = 1
-high = n ** 2
+high = n**2
 
 # binary search to find the median
 while low < high:
@@ -122,7 +107,7 @@ while low < high:
 	for i in range(0, n):
 		leq += min(n, mid // (i + 1))
 
-	if leq >= (n ** 2 + 1) / 2:
+	if leq >= (n**2 + 1) / 2:
 		high = mid
 	else:
 		low = mid + 1

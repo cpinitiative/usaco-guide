@@ -7,10 +7,10 @@ author: Chongtian Ma
 
 [Official Analysis](https://codeforces.com/blog/entry/22187)
 
-Binary lifting can be used to find the heaviest edge in the path from node $u$ to $v$. 
+Binary lifting can be used to find the heaviest edge in the path from node $u$ to $v$.
 Therefore, we only need to find the heaviest edge from $u$ to $\text{lcm}(u,v)$ and $v$ to $\text{lcm}(u,v)$.
 
-## Implementation 
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(M\log N)$
 
@@ -34,7 +34,7 @@ array<array<int, MAXL>, MAXN> up;
 /*
  * max_up[i][j] stores the maximum weight of all the edges
  * from i to its 2^jth ancestor
- */ 
+ */
 array<array<int, MAXL>, MAXN> max_up;
 
 map<pair<int, int>, int> weights;  // weight of edge {i, j}
@@ -48,25 +48,25 @@ struct Edge {
 };
 
 // here we build the MST using kruskals' algorithm
-// it returns the sum of the weights that took to build the MST 
+// it returns the sum of the weights that took to build the MST
 ll kruskal(vector<Edge>& edges) {
-	
+
 	// sort by non-decreasing weight
 	sort (edges.begin(), edges.end(), [&](Edge a, Edge b) {
 		return a.weight < b.weight;
 	});
-	
+
 	// implementation of basic Disjoint Set Union
 	vector<int> parent(n), sz(n, 1);
 	iota(parent.begin(), parent.end(), 0);
-	
+
 	function<int(int)> get = [&](int x) {
 		if (parent[x] != x) {
 			parent[x] = get(parent[x]);
 		}
 		return parent[x];
 	};
-	
+
 	// returns true if the vertices are not already united
 	function<bool(int, int)> unite = [&](int x, int y) {
 		int parent_x = get(x), parent_y = get(y);
@@ -80,7 +80,7 @@ ll kruskal(vector<Edge>& edges) {
 		}
 		return false;
 	};
-	
+
 	ll total_cost = 0;
 	for (Edge e : edges) {
 		if (unite(e.u, e.v)) {
@@ -89,24 +89,24 @@ ll kruskal(vector<Edge>& edges) {
 			graph[e.v].push_back(e.u);
 		}
 	}
-	
+
 	return total_cost;
 }
 
 void euler_tour(int vertex, int parent) {
 	enter_time[vertex] = timer++;
 	depth[vertex] = depth[parent] + 1;
-	
+
 	// initialize binary lifting arrays
-	up[vertex][0] = parent; 
+	up[vertex][0] = parent;
 	max_up[vertex][0] = weights[{parent, vertex}];
-	
+
 	for (int child: graph[vertex]) {
 		if (child != parent) {
 			euler_tour(child, vertex);
 		}
 	}
-	
+
 	exit_time[vertex] = timer - 1;
 }
 
@@ -140,19 +140,19 @@ int get_max_up(int x, int k) {
 
 int main() {
 	cin >> n >> m;
-	
+
 	vector<Edge> edges(m);
 	for (int i = 0; i < m; i++) {
-		int u, v, w; 
+		int u, v, w;
 		cin >> u >> v >> w;
 		edges[i] = {i, --u, --v, w};
 		weights[{u, v}] = w;
 		weights[{v, u}] = w;
 	}
 	ll total_cost = kruskal(edges);
-	
+
 	euler_tour(0, 0);
-	
+
 	// fill binary-lifting arrays
 	for (int k = 1; k < MAXL; k++) {
 		for (int i = 0; i < n; i++) {
@@ -161,7 +161,7 @@ int main() {
 			max_up[i][k] = max(max_up[i][k - 1], max_up[up[i][k - 1]][k - 1]);
 		}
 	}
-	
+
 	vector<ll> ans(m);
 	for (Edge e : edges) {
 		int least_common_ancestor = lca(e.u, e.v);
@@ -169,11 +169,11 @@ int main() {
 		int max_v = get_max_up(e.v, depth[e.v] - depth[least_common_ancestor]);
 		ans[e.index] = total_cost - max(max_u, max_v) + e.weight;
 	}
-	
+
 	for (int i = 0; i < m; i++) {
 		cout << ans[i] << "\n";
 	}
 }
-```         
+```
 </CPPSection>
 </LanguageSection>

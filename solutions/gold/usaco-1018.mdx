@@ -58,19 +58,19 @@ int main() {
 		a[x]++;
 		a[y]--;
 	}
-	
+
 	// Precalculate powers of 2
 	vl pow(n);
 	pow[0] = 1;
 	for (int i = 1; i <= n - 1; i++) {
 		pow[i] = pow[i - 1] * 2 % MOD;
 	}
-	
+
 	int open_segs_num = 0;
 	ll ans = 0;
 	for (int i = 1; i <= 2 * n; i++) {
 		// Update the number of open segments
-		open_segs_num += a[i]; 
+		open_segs_num += a[i];
 		/*
 		 * If a new segment is opened, count the number of subsets
 		 * where this new segment is the beginning of a connected component
@@ -97,7 +97,7 @@ for i in range(n):
 	x, y = map(int, filein.readline().split())
 	a[x] += 1  # open
 	a[y] -= 1  # close
-	
+
 # precalculating the powers of 2
 power = [1] * n
 for i in range(1,n):
@@ -109,7 +109,7 @@ for i in range(1, 2 * n + 1):
 	open_segs += a[i]
 	if a[i] == 1:
 		ans = (ans + power[n - open_segs]) % MOD
-		
+
 print(ans, file=open('help.out', 'w'))
 ```
 

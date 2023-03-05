@@ -39,10 +39,10 @@ public class Sleepy {
 
 		/*
 		 * To find K, we first need to calculate the length of the longest
-		 * suffix of the array that is already in order. 
-		 * 
+		 * suffix of the array that is already in order.
+		 *
 		 * Then, we can subtract that length from N to get K
-		 * 
+		 *
 		 * Read the analysis of the bronze version of this problem to learn why
 		 * this is the case:
 		 * http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html
@@ -62,9 +62,9 @@ public class Sleepy {
 		out.println(k);
 
 		/* To calculate the minimum amount of paces each cow needs to make,
-		 * we first need to find the number of cows in the sorted region that 
+		 * we first need to find the number of cows in the sorted region that
 		 * are smaller than that cow (this is done through a segment tree).
-		 * 
+		 *
 		 * Then, we can add that to the number of cows that the cow has to move
 		 * through to reach the sorted region of the array, or in other words,
 		 * the number of cows to the right of the current cow that are in the
@@ -91,12 +91,12 @@ public class Sleepy {
 	static class SegmentTree {
 		private int[] tree;
 		private int n;
-	
+
 		public SegmentTree(int n) {
 			this.n = n;
 			tree = new int[n*2];
 		}
-	
+
 		public int sum(int a, int b) {
 			a += n;
 			b += n;
@@ -109,7 +109,7 @@ public class Sleepy {
 			}
 			return sum;
 		}
-	
+
 		public void add(int index, int amount) {
 			index += n;
 			tree[index] += amount;

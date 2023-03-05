@@ -28,7 +28,7 @@ $N$.
 ```java
 import java.io.*;
 import java.util.*;
- 
+
 public class FlightDiscount {
 	static class Flight {
 		int to;
@@ -47,7 +47,7 @@ public class FlightDiscount {
 			this.pos = val;
 			this.cost = wsf;
 		}
- 
+
 		@Override
 		public int compareTo(Pos o) {
 			return (int) (this.cost - o.cost);
@@ -144,7 +144,7 @@ vector<long long> min_costs(
 		if (-curr_state.first != min_costs[curr]) {
 			continue;
 		}
-		
+
 		for (auto [n, nc] : neighbors[curr]) {
 			long long new_cost = min_costs[curr] + nc;
 			if (new_cost < min_costs[n]) {
@@ -170,7 +170,7 @@ int main() {
 		neighbors[--from].push_back({--to, cost});
 		reverse_neighbors[to].push_back({from, cost});
 	}
- 
+
 	vector<long long> start_costs = min_costs(0, neighbors);
 	vector<long long> end_costs = min_costs(city_num - 1, reverse_neighbors);
 	long long total_min = INT64_MAX;
@@ -227,10 +227,10 @@ int main() {
 		std::cin >> from >> to >> cost;
 		neighbors[--from].push_back({--to, cost});
 	}
- 
+
 	vector<vector<long long>> min_cost(city_num, {INT64_MAX, INT64_MAX});
 	min_cost[0] = {0, 0};
- 
+
 	struct Pos {
 		int pos;  // the current position
 		bool used;  // whether we've used up our discount yet
@@ -239,7 +239,7 @@ int main() {
 	auto cmp = [&] (const Pos& a, const Pos& b) { return a.cost > b.cost; };
 	std::priority_queue<Pos, vector<Pos>, decltype(cmp)> frontier(cmp);
 	frontier.push({0, false, 0});
-	
+
 	while (!frontier.empty()) {
 		Pos curr = frontier.top();
 		frontier.pop();

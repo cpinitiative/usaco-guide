@@ -30,8 +30,8 @@ Otherwise, we'll consider each connected component independently and keep track 
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <stack>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -42,8 +42,9 @@ int main() {
 		int n;
 		int q;
 		cin >> n >> q;
-		
-		// adj[i][j] = {the jth adjacent node from i, their statement (0 = imposter, 1 = crewmate)
+
+		// adj[i][j] = {the jth adjacent node from i, their statement (0 =
+		// imposter, 1 = crewmate)
 		vector<vector<pair<int, bool>>> adj(n);
 		for (int i = 0; i < q; i++) {
 			int type;
@@ -53,7 +54,7 @@ int main() {
 			--x;
 			--y;
 			--type;
-	
+
 			adj[x].push_back({y, type});
 			adj[y].push_back({x, type});
 		}
@@ -78,22 +79,22 @@ int main() {
 				while (!todo.empty()) {
 					int curr = todo.top();
 					todo.pop();
-					
+
 					for (pair<int, bool> u : adj[curr]) {
 						bool type = u.second ? role[curr] : !role[curr];
 
 						// haven't visited
 						if (role[u.first] == -1) {
 							role[u.first] = type;
-								
-								if (type) {
-									imposters++;
-								} else {
-									crewmates++;
-								}
-					
+
+							if (type) {
+								imposters++;
+							} else {
+								crewmates++;
+							}
+
 							todo.push(u.first);
-						// creates a contradiction
+							// creates a contradiction
 						} else if (role[u.first] == !type) {
 							impossible = true;
 							break;

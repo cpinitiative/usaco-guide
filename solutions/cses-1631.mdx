@@ -1,6 +1,6 @@
 ---
 id: cses-1631
-source: CSES 
+source: CSES
 title: Reading Books
 author: Paul Chen
 ---
@@ -11,7 +11,7 @@ author: Paul Chen
 
 Let $\texttt{sum}$ be $\sum\limits_{i=1}^n t_i$.
 
-Sort the array in ascending order. Kotivalo can read the books in the order $t_n, t_1, t_2, ..., t_{n-1}$, and Justiina can read them in the order $t_1, t_2, t_3, ..., t_n$. 
+Sort the array in ascending order. Kotivalo can read the books in the order $t_n, t_1, t_2, ..., t_{n-1}$, and Justiina can read them in the order $t_1, t_2, t_3, ..., t_n$.
 
 If $\texttt{sum} - t_n < t_n$, Justiina would finish reading books $t_1, t_2, t_3, ..., t_{n-1}$ and would have to wait for Kotivalo to finish reading $t_n$. Afterwards, Justiina can read $t_n$ and Kotivalo can read $t_1, t_2, t_3, ..., t_{n-1}$. In total, this will take $2 \times t_n$ units of time.
 
@@ -48,26 +48,26 @@ int main() {
 ```
 </CPPSection>
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
 
 class ReadBook {
-	public static void main (String[] args) { 
+	public static void main (String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
-		
-		long books[] = new long[n];  
-		for(int i = 0; i < n; i++) {  
-			books[i] = io.nextLong();  
+
+		long books[] = new long[n];
+		for(int i = 0; i < n; i++) {
+			books[i] = io.nextLong();
 		}
-		
+
 		long longest_time = Arrays.stream(books).max().getAsLong();
         	long total_time = Arrays.stream(books).sum();
-        
+
         	io.println(Math.max(total_time, longest_time * 2));
-        
+
 		io.close();
 	}
 

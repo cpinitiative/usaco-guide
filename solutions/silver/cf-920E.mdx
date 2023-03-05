@@ -43,9 +43,9 @@ using namespace std;
 
 const int MAX_N = 200000;
 unordered_set<int> adj[MAX_N];
-set<int> unvis; // the set of nodes that have not been visited
-int sz[MAX_N]; // sz[i] = size of the ith connected component
-int cur = 0; // current amount of groups
+set<int> unvis;  // the set of nodes that have not been visited
+int sz[MAX_N];   // sz[i] = size of the ith connected component
+int cur = 0;     // current amount of groups
 void dfs(int x) {
 	sz[cur]++;
 	auto it = unvis.begin();
@@ -56,7 +56,8 @@ void dfs(int x) {
 		} else {
 			// there is a edge between last and x
 			int last = *it;
-			// note it = unvis.erase(it) doesn't work here because it could be erased later
+			// note it = unvis.erase(it) doesn't work here because it could be
+			// erased later
 			unvis.erase(it);
 			dfs(last);
 			// find the node after last
@@ -75,9 +76,7 @@ int main() {
 		adj[a].insert(b);
 		adj[b].insert(a);
 	}
-	for (int i = 0; i < n; i++) {
-		unvis.insert(i);
-	}
+	for (int i = 0; i < n; i++) { unvis.insert(i); }
 	for (int i = 0; i < n; i++) {
 		auto it = unvis.find(i);
 		if (it != unvis.end()) {
@@ -88,9 +87,7 @@ int main() {
 	}
 	cout << cur << endl;
 	sort(sz, sz + cur);
-	for (int i = 0; i < cur; i++) {
-		cout << sz[i] << ' ';
-	}
+	for (int i = 0; i < cur; i++) { cout << sz[i] << ' '; }
 	cout << endl;
 }
 ```
@@ -142,7 +139,7 @@ unordered_set<int> adj[MAX_N];
 // group[i] = the group of the ith node
 // group[i] = 0 if the ith node hasn't been assigned a group yet
 int group[MAX_N];
-vi currentcomponent; // the nodes in the current component
+vi currentcomponent;  // the nodes in the current component
 // curgroup = the group of the current component
 // curgroup is always either cur or 1
 int curgroup;
@@ -151,7 +148,7 @@ int n, m;
 // sz[i] = size of group i
 int sz[MAX_N];
 
-void dfs (int x) {
+void dfs(int x) {
 	// if x can be reached, it is part of the current component
 	currentcomponent.pb(x);
 	vis[x] = true;
@@ -165,9 +162,7 @@ void dfs (int x) {
 				curgroup = 1;
 				continue;
 			} else {
-				if (!vis[i]) {
-					dfs(i);
-				}
+				if (!vis[i]) { dfs(i); }
 			}
 		}
 	}
@@ -183,14 +178,15 @@ int main() {
 		adj[a].insert(b);
 		adj[b].insert(a);
 	}
-	int cur = 1; // current number of groups + 1
+	int cur = 1;  // current number of groups + 1
 	for (int i = 0; i < n; i++) {
-		// if any two nodes have degree+1 > n/2, they are part of the same component
+		// if any two nodes have degree+1 > n/2, they are part of the same
+		// component
 		if (n - adj[i].size() > n / 2) {
-			group[i] = 1; // assign ith node to component 1
-			sz[1]++; // increase the size of component 1
-			
-			cur = 2; // there is at least one group
+			group[i] = 1;  // assign ith node to component 1
+			sz[1]++;       // increase the size of component 1
+
+			cur = 2;  // there is at least one group
 		}
 	}
 	for (int i = 0; i < n; i++) {
@@ -203,20 +199,16 @@ int main() {
 				sz[curgroup]++;
 			}
 			currentcomponent.clear();
-			// if a new group has been created, e.g. curgroup = cur, increase cur
-			if (curgroup == cur) {
-				cur++;
-			}
+			// if a new group has been created, e.g. curgroup = cur, increase
+			// cur
+			if (curgroup == cur) { cur++; }
 		}
 	}
 	cout << cur - 1 << endl;
 	sort(sz, sz + cur);
-	for (int i = 1; i < cur; i++) {
-		cout << sz[i] << ' ';
-	}
+	for (int i = 1; i < cur; i++) { cout << sz[i] << ' '; }
 	cout << endl;
 }
-
 ```
 </CPPSection>
 

@@ -37,7 +37,7 @@ to start.
 		module is based off of this
 	</Resource>
 	<Resource source="cp-algo" title="Combinatorics" url = "https://cp-algorithms.com/#combinatorics">
-		
+
 	</Resource>
 	<Resource source="HE@HackerEarth" title="Basics of Combinatorics" url = "https://www.hackerearth.com/practice/math/combinatorics/basics-of-combinatorics/tutorial/">
 		teaches fundamental combinatorics with a practice problem at the end
@@ -74,7 +74,7 @@ If you prefer watching videos instead, here are some options:
 
 <FocusProblem problem="sample1" />
 
-The **binomial coefficient** $\binom{n}{k}$ (pronounced as "$n$ choose $k$" or sometimes written as ${}_nC_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements: 
+The **binomial coefficient** $\binom{n}{k}$ (pronounced as "$n$ choose $k$" or sometimes written as ${}_nC_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements:
 
 $$
 \{1, 2\}, \{1, 3\}, \{1, 4\}, \{2, 3\}, \{2, 4\}, \{3, 4\}
@@ -90,7 +90,7 @@ $$
     \binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}
 $$
 
-The intuition behind this is to fix an element $x$ in the set and choose $k − 1$ elements from $n − 1$ elements if $x$ is included in the set or choose $k$ elements from $n − 1$ elements, otherwise. 
+The intuition behind this is to fix an element $x$ in the set and choose $k − 1$ elements from $n − 1$ elements if $x$ is included in the set or choose $k$ elements from $n − 1$ elements, otherwise.
 
 The base cases for the recursion are:
 
@@ -100,7 +100,7 @@ $$
 
 because there is always exactly one way to construct an empty subset and a subset that contains all the elements.
 
-This recursive formula is commonly known as [Pascal's Triangle](https://brilliant.org/wiki/pascals-triangle/). 
+This recursive formula is commonly known as [Pascal's Triangle](https://brilliant.org/wiki/pascals-triangle/).
 
 A naive implementation of this would use a recursive formula, like below:
 
@@ -117,7 +117,7 @@ int binomial(int n, int k, int p) {
 ```
 </CPPSection>
 </LanguageSection>
-	
+
 Additionally, we can optimize this from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$ using [dynamic programming](/gold/intro-dp) (DP) by caching the values of smaller binomials to prevent recalculating the same values over and over again. The code below shows a bottom-up implementation of this.
 
 <LanguageSection>
@@ -240,7 +240,7 @@ ll exp(ll x, ll y, ll p) {
 	ll res = 1; x %= p;
 	while (y) {
 		if (y & 1) {
-			res *= x; res %= p; 
+			res *= x; res %= p;
 		}
 		x *= x;
 		x %= p;
@@ -287,11 +287,11 @@ int main() {
 
 <FocusProblem problem="sample2" />
 
-The number of derangements of $n$ numbers, expressed as $!n$, is the number of permutations such that no element appears in its original position. Informally, it is the number of ways $n$ hats can be returned to $n$ people such that no person recieves their own hat. 
+The number of derangements of $n$ numbers, expressed as $!n$, is the number of permutations such that no element appears in its original position. Informally, it is the number of ways $n$ hats can be returned to $n$ people such that no person recieves their own hat.
 
 ### Method 1: Principle of Inclusion-Exclusion
 
-Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert$. 
+Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert$.
 
 We subtract from $n!$ the number of ways for each event to occur; that is, consider the quantity $n! - \lvert E_1 \rvert - \lvert E_2 \rvert - \dots - \lvert E_n \rvert$. This undercounts, as we are subtracting cases where more than one event occurs too many times. Specifically, for a permutation where at least two events occur, we undercount by one. Thus, add back the number of ways for two events to occur. We can continue this process for every size of subsets of indices. The expression is now of the form:
 
@@ -305,7 +305,7 @@ $$
 {n \choose k}(n-k)! = \frac{n!}{k!(n-k)!}(n-k)! = \frac{n!}{k!}
 $$
 
-Thus, the problem now becomes computing 
+Thus, the problem now becomes computing
 
 $$
 n!\sum_{k=0}^n\frac{(-1)^k}{k!}
@@ -345,16 +345,16 @@ int main() {
 
 Suppose person 1 recieved person $i$'s hat. There are two cases:
 
-1. If person $i$ recieves person 1's hat, then the problem is reduced to a subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this case, so we add to the current answer $(n - 1)\cdot !(n - 2)$. 
+1. If person $i$ recieves person 1's hat, then the problem is reduced to a subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this case, so we add to the current answer $(n - 1)\cdot !(n - 2)$.
 2. If person $i$ does not recieve person 1's hat, then we can reassign person 1's hat to be person $i$'s hat (if they recieved person 1's hat, then this would become first case). Thus, this becomes a subproblems with size $n - 1$, are there $n - 1$ ways to choose $i$.
 
-Thus, we have 
+Thus, we have
 
 $$
 !n = (n - 1)(!(n - 2) + !(n - 1))
 $$
 
-which can be computed in linear time with a simple DP. The base cases are that $!0 = 1$ and $!1 = 0$. 
+which can be computed in linear time with a simple DP. The base cases are that $!0 = 1$ and $!1 = 0$.
 
 <LanguageSection>
 <CPPSection>

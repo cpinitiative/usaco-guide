@@ -77,7 +77,7 @@ namespace geo {
 
 		point(const T &_x, const T &_y) : x(_x), y(_y) {}
 
-		template<typename S> 
+		template<typename S>
 		operator point<S>() const { return point<S>(static_cast<S>(x), static_cast<S>(y)); }
 
 		template<typename S>
@@ -114,23 +114,23 @@ namespace geo {
 	point<T> operator*(const T &s, point<T> p) { return p *= s; }
 
 	template<typename T>
-	T cross(const point<T> &p, const point<T> &q) { 
+	T cross(const point<T> &p, const point<T> &q) {
 		long double ret = (long double) p.x * q.y - (long double) p.y * q.x;
 		if (abs(ret) > 1e18)
 			return ret > 0 ? 1 : -1;
-		return p.x * q.y - p.y * q.x; 
+		return p.x * q.y - p.y * q.x;
 	}
 
 	template<typename T>
 	T operator^(const point<T> &p, const point<T> &q) { return cross(p, q); }
 
 	template<typename T>
-	bool operator==(const point<T> &p, const point<T> &q) { 
+	bool operator==(const point<T> &p, const point<T> &q) {
 		if constexpr (is_integral<T>::value)
-			return p.x == q.x && p.y == q.y; 
-		else 
+			return p.x == q.x && p.y == q.y;
+		else
 			return abs(p.x - q.x) <= EPS && abs(p.y - q.y) <= EPS;
-	} 
+	}
 
 	template<typename T>
 	bool operator!=(const point<T> &p, const point<T> &q) { return !(p == q); }
@@ -151,7 +151,7 @@ namespace geo {
 struct monotonic_dp_hull {
 	long long prev_x = LLONG_MIN, prev_y = 1;
 	deque<geo::point<long long>> points;
- 
+
 	void add(const geo::point<long long> &p) {
 		assert(points.empty() || p.x >= points.back().x);
 		if (!points.empty() && p.x == points.back().x) {
@@ -189,7 +189,7 @@ int main() {
 	int N, M;
 	cin >> N >> M;
 	vector<long long> A(N + 1, 0);
-	for (int i = 1; i <= N; i++)	
+	for (int i = 1; i <= N; i++)
 		cin >> A[i];
 	vector<long long> sum(N + 1), pre(N + 1), suf(N + 1);
 	for (int i = 1; i <= N; i++) {
@@ -197,13 +197,13 @@ int main() {
 		pre[i] = pre[i - 1] + A[i] * i;
 		suf[i] = suf[i - 1] + A[i] * (N - i + 1);
 	}
-	
+
 	vector<vector<long long>> dp0(M + 1, vector<long long>(N + 1, INF));
 	vector<vector<long long>> dp1(M + 1, vector<long long>(N + 1, INF));
 
 	dp1[0][0] = 0;
 	for (int m = 1; m <= M; m++) {
-		monotonic_dp_hull md0, md1; 
+		monotonic_dp_hull md0, md1;
 		md1.add(0, 0);
 		for (int i = 1; i <= N; i++) {
 			dp0[m][i] = -md1.query((i - 1) - N) + suf[i - 1] - (N - (i - 1)) * sum[i - 1];

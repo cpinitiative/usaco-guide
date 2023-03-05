@@ -229,13 +229,13 @@ Thus, we need 4 subarrays at minimum.
 <Spoiler title="Time Complexity Proof">
 Sorting Requires $\mathcal{O}(N\log N)$, and repeated map insertions also require $\mathcal{O}(N\log N)$. Hence the overall time complexity is $\mathcal{O}(N\log N)$.
 </Spoiler>
-	
+
 <LanguageSection>
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 void solve() {
 	int n, k; cin >> n >> k;
 	int arr[(int)1e5 + 5];
@@ -245,7 +245,7 @@ void solve() {
 		sarr[i] = arr[i];
 	}
 	// Map from one value to the value after it in the sorted array
-	map<int, int> next;  
+	map<int, int> next;
 	sort(sarr, sarr + n);
 	for (int i = 0; i < n - 1; i++) {
 		next[sarr[i]] = sarr[i + 1];
@@ -253,19 +253,19 @@ void solve() {
 	next[sarr[n - 1]] = INT32_MAX;  // Ridiculously Large Number
 	int ans = 1;
 
-	// If the previous element in the unsorted array is not the same 
+	// If the previous element in the unsorted array is not the same
 	// as the previous element in the sorted array, we need at least 1 more segment
 	for (int i = 1; i < n; i++) {
-		if (next[arr[i - 1]] != arr[i]) ans++; 
+		if (next[arr[i - 1]] != arr[i]) ans++;
 	}
 	cout << (ans <= k ? "YES" : "NO") << endl;
 }
- 
+
 int main() {
-	ios::sync_with_stdio(0); 
+	ios::sync_with_stdio(0);
 	cin.tie(0);
-	int t; 
-	cin >> t; 
+	int t;
+	cin >> t;
 	while (t--) solve();
 }
 ```
@@ -279,35 +279,35 @@ public class MoamenSubarrays {
 	public static void main (String[] args) throws IOException {
 		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(f.readLine());
-	
+
 		int testNum = Integer.parseInt(st.nextToken());
 		for (int t = 0; t < testNum; t++) {
 			st = new StringTokenizer(f.readLine());
 			int n = Integer.parseInt(st.nextToken());
 			int k = Integer.parseInt(st.nextToken());
-			
+
 			int[] arr = new int[n];
 			int[] sarr = new int[n];
-	
+
 			st = new StringTokenizer(f.readLine());
 			for (int i = 0; i < n; i++) {
 				arr[i] = Integer.parseInt(st.nextToken());
 				sarr[i] = arr[i];
 			}
 			Arrays.sort(sarr);
-	
+
 			// Map from one value to the value after it in the sorted array
-			TreeMap<Integer, Integer> next = new TreeMap<>(); 
+			TreeMap<Integer, Integer> next = new TreeMap<>();
 			for (int i = 0; i < n - 1; i++) {
 				next.put(sarr[i], sarr[i + 1]);
 			}
 			next.put(sarr[n - 1], Integer.MAX_VALUE);
-								       
+
 			int ans = 1;
-			// If the previous element in the unsorted array is not the same 
+			// If the previous element in the unsorted array is not the same
 			// as the previous element in the sorted array, we need at least 1 more segment
 			for (int i = 1; i < n; i++) {
-				
+
 				if (next.get(arr[i - 1]) != arr[i]) ans++;
 			}
 			System.out.println(ans <= k ? "YES" : "NO");
@@ -317,7 +317,7 @@ public class MoamenSubarrays {
 
 ```
 </JavaSection>
-	
+
 <PySection>
 ```python
 for _ in range(int(input())):
@@ -326,16 +326,16 @@ for _ in range(int(input())):
 
 	sarr = arr.copy()
 	sarr.sort()
-	
+
 	after = {}  # Map (dict) from one value to the value after it in the sorted array
 	for i in range(n - 1):
 		after[sarr[i]] = sarr[i + 1]
-	
+
 	after[sarr[n - 1]] = float('inf')
 	ans = 1
 	for i in range(1, n):
 		if after[arr[i - 1]] != arr[i]:
-			# If the previous element in the unsorted array is not the same 
+			# If the previous element in the unsorted array is not the same
 			# as the previous element in the sorted array, we need at least 1 more segment
 			ans += 1
 

@@ -7,17 +7,17 @@ author: Dustin Miao
 
 ## Solution
 
-The [official editorial](https://codeforces.com/blog/entry/61081) mentions using [Heavy-Light Decomposition](/plat/hld) to solve this problem, but never discusses the solution. 
+The [official editorial](https://codeforces.com/blog/entry/61081) mentions using [Heavy-Light Decomposition](/plat/hld) to solve this problem, but never discusses the solution.
 
-In each node, store a **propagation factor**. This is essentially how much black has spread from the node, or equivalently, the number of operations of type 1 that has been performed. White nodes have a propagation factor of $-1$ and black nodes have a propagation factor that is greater than or equal to zero. An operation of type 1 now directly corresponds with increasing the propagation factor of a node by $1$. 
+In each node, store a **propagation factor**. This is essentially how much black has spread from the node, or equivalently, the number of operations of type 1 that has been performed. White nodes have a propagation factor of $-1$ and black nodes have a propagation factor that is greater than or equal to zero. An operation of type 1 now directly corresponds with increasing the propagation factor of a node by $1$.
 
-Now consider operation 3 (and ignore operation 2 for now). How do we determine if a given node is black? Firstly, note that if the current node has a non-negative propagation factor, then it must be black. If instead its parent had a propagation factor greater than or equal to one, then the node would also be black. 
+Now consider operation 3 (and ignore operation 2 for now). How do we determine if a given node is black? Firstly, note that if the current node has a non-negative propagation factor, then it must be black. If instead its parent had a propagation factor greater than or equal to one, then the node would also be black.
 
-In general, consider if operation 3 was called on some node $u$. Let $v$ be any node that lies on the path from $u$ to the root. If the sum of propagation factors from $u$ to $v$ is non-negative, then $u$ must be black. What this means is that enough operations of type 1 have been applied from that node (and possibly other nodes on the path from $u$ to $v$) such that $u$ has been made black. 
+In general, consider if operation 3 was called on some node $u$. Let $v$ be any node that lies on the path from $u$ to the root. If the sum of propagation factors from $u$ to $v$ is non-negative, then $u$ must be black. What this means is that enough operations of type 1 have been applied from that node (and possibly other nodes on the path from $u$ to $v$) such that $u$ has been made black.
 
-For operations of type 2, we can easily clear a given subtree by taking advantage of the fact that HLD is really just a specific euler tour. Thus, a subtree of a node lies in a contiguous range in the heavy-light decomposition. We can clear a subtree by using lazy propagation and setting all nodes in a range to $-1$. Next, we have to adjust the propagation factors of all nodes above $u$, where the operation was performed, which may take up to linear time. A simple trick is to subtract a factor of $q - 1$ from node $u$, where $q$ is the value of a operation of type 3. This ensures that any query within $u$'s subtree will correctly evaluate to white after the update. 
+For operations of type 2, we can easily clear a given subtree by taking advantage of the fact that HLD is really just a specific euler tour. Thus, a subtree of a node lies in a contiguous range in the heavy-light decomposition. We can clear a subtree by using lazy propagation and setting all nodes in a range to $-1$. Next, we have to adjust the propagation factors of all nodes above $u$, where the operation was performed, which may take up to linear time. A simple trick is to subtract a factor of $q - 1$ from node $u$, where $q$ is the value of a operation of type 3. This ensures that any query within $u$'s subtree will correctly evaluate to white after the update.
 
-Note that for query operations, we need to find the maximum suffix sum for each path. This can be done by maintaining the maximum suffix sum as well as the actual sum in each segment tree node. 
+Note that for query operations, we need to find the maximum suffix sum for each path. This can be done by maintaining the maximum suffix sum as well as the actual sum in each segment tree node.
 
 ## Implementation
 
@@ -35,7 +35,7 @@ using ll = long long
 using pll = pair<ll, ll>;
 #define FF first
 #define SS second
-	
+
 const int MAXN = 1e5 + 1;
 
 int N, Q;
@@ -55,7 +55,7 @@ namespace sgt {
 		}
 		return {max(l.FF + r.SS, r.FF), l.SS + r.SS};
 	}
-	
+
 	void build(int t = 1, int tl = 0, int tr = N - 1) {
 		if (tl == tr) {
 			T[t].FF = T[t].SS = -1;
@@ -127,7 +127,7 @@ namespace sgt {
 	}
 }
 
-	
+
 // Heavy-Light Decomposition:
 namespace hld {
 	int par[MAXN], hvy[MAXN], dep[MAXN], root[MAXN], lpos[MAXN], rpos[MAXN];
@@ -156,7 +156,7 @@ namespace hld {
 			root[hvy[u]] = root[u];
 			dfs2(hvy[u]);
 		}
-		for (int v : G[u]) 
+		for (int v : G[u])
 			if (v != hvy[u]) {
 				root[v] = v;
 				dfs2(v);

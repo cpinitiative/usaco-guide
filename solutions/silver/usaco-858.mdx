@@ -33,8 +33,8 @@ It takes $\mathcal{O}(\log N)$ time to binary search on $X$ and $\mathcal{O}(N)$
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class convention {
 	static int N;
@@ -43,39 +43,42 @@ public class convention {
 	static int[] cow;
 	public static void main(String[] args) throws IOException {
 		InputReader in = new InputReader("convention.in");
-		N = in.nextInt(); numBus = in.nextInt(); cap = in.nextInt();
+		N = in.nextInt();
+		numBus = in.nextInt();
+		cap = in.nextInt();
 		cow = new int[N];
-		for (int i = 0; i < N; i++) {
-			cow[i] = in.nextInt();
-		}
-
+		for (int i = 0; i < N; i++) { cow[i] = in.nextInt(); }
 
 		Arrays.sort(cow);
 
-		//Lower Bound. Since minimal wait time has to be below the max arrival the upper bound can be the largest value in the array
+		// Lower Bound. Since minimal wait time has to be below the max arrival
+		// the upper bound can be the largest value in the array
 		int l = 0;
-		int r = cow[cow.length-1];
-		while(l <= r){
-			int mid = (l+r)/2;
-			if(check(mid)){
-				r = mid-1;
-			}
-			else{
-				l = mid+1;
+		int r = cow[cow.length - 1];
+		while (l <= r) {
+			int mid = (l + r) / 2;
+			if (check(mid)) {
+				r = mid - 1;
+			} else {
+				l = mid + 1;
 			}
 		}
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("convention.out")));
+		PrintWriter out = new PrintWriter(
+		    new BufferedWriter(new FileWriter("convention.out")));
 		System.out.println(l);
 		out.println(l);
 		out.close();
 	}
-	//Calculates the number of buses needed to ensure the minWait time. If larger than the buses available, false.
-	private static boolean check(int minWait){
-		int first = cow[0]; int used = 1; int curCap = 0;
+	// Calculates the number of buses needed to ensure the minWait time. If
+	// larger than the buses available, false.
+	private static boolean check(int minWait) {
+		int first = cow[0];
+		int used = 1;
+		int curCap = 0;
 		for (int i = 0; i < N; i++) {
-			if(cow[i]-first>minWait || curCap >= cap){
+			if (cow[i] - first > minWait || curCap >= cap) {
 				used++;
-				curCap=0;
+				curCap = 0;
 				first = cow[i];
 			}
 			curCap++;
@@ -88,7 +91,8 @@ public class convention {
 
 		public InputReader() {
 			try {
-				reader = new BufferedReader(new InputStreamReader(System.in), 32768);
+				reader =
+				    new BufferedReader(new InputStreamReader(System.in), 32768);
 			} catch (Exception e) {
 				throw new NullPointerException("Could not create input stream");
 			}
@@ -96,9 +100,11 @@ public class convention {
 
 		public InputReader(String fileName) {
 			try {
-				reader = new BufferedReader(new FileReader(new File(fileName)), 32768);
+				reader = new BufferedReader(new FileReader(new File(fileName)),
+				                            32768);
 			} catch (Exception ex) {
-				throw new NullPointerException("Input file does not exist! Put it in the project folder.");
+				throw new NullPointerException(
+				    "Input file does not exist! Put it in the project folder.");
 			}
 			tokenizer = null;
 		}
@@ -107,30 +113,22 @@ public class convention {
 			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
 				try {
 					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				} catch (IOException e) { throw new RuntimeException(e); }
 			}
 			return tokenizer.nextToken();
 		}
 
-		public boolean hasNextInt() throws IOException { return reader.ready(); }
-
-		public int nextInt() {
-			return Integer.parseInt(next());
+		public boolean hasNextInt() throws IOException {
+			return reader.ready();
 		}
 
-		public double nextDouble() {
-			return Double.parseDouble(next());
-		}
+		public int nextInt() { return Integer.parseInt(next()); }
 
-		public long nextLong() {
-			return Long.parseLong(next());
-		}
+		public double nextDouble() { return Double.parseDouble(next()); }
 
-		public char nextChar() {
-			return next().charAt(0);
-		}
+		public long nextLong() { return Long.parseLong(next()); }
+
+		public char nextChar() { return next().charAt(0); }
 
 		/**
 		 * When you call next(), that entire line will be skipped.
@@ -145,9 +143,7 @@ public class convention {
 			try {
 				str = reader.readLine();
 				tokenizer = null;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			} catch (IOException e) { throw new RuntimeException(e); }
 			return str;
 		}
 	}
@@ -174,17 +170,15 @@ bool validate(int k) {
 	int lcow = 0;  // earliest cow on this bus
 
 	while (cow < n) {
-		if (cow == lcow) {
-			bus++;
-		}
+		if (cow == lcow) { bus++; }
 
 		// can't satisfy time constraint by adding this cow
 		if (arrivals[cow] - arrivals[lcow] > k) {
 			lcow = cow;
-		// can't fit this cow in the bus
+			// can't fit this cow in the bus
 		} else if (cow - lcow + 1 == c) {
 			lcow = ++cow;
-		// add this cow to the current bus
+			// add this cow to the current bus
 		} else {
 			cow++;
 		}
@@ -195,13 +189,11 @@ bool validate(int k) {
 int main() {
 	freopen("convention.in", "r", stdin);
 	freopen("convention.out", "w", stdout);
-	
+
 	std::cin >> n >> m >> c;
 	arrivals.resize(n);
-	
-	for (int i = 0; i < n; i++) {
-		std::cin >> arrivals[i];
-	}
+
+	for (int i = 0; i < n; i++) { std::cin >> arrivals[i]; }
 
 	// sort by arrival time to process cows in order
 	sort(arrivals.begin(), arrivals.end());
@@ -211,7 +203,7 @@ int main() {
 
 	while (lo < hi) {
 		int mid = lo + (hi - lo) / 2;
-	
+
 		if (validate(mid)) {
 			hi = mid;
 		} else {

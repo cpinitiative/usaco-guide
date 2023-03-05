@@ -49,11 +49,11 @@ Here's a walkthrough for the sample test case queries:
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <cassert>
-#include <vector>
 #include <algorithm>
+#include <cassert>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -66,7 +66,7 @@ int main() {
 	read >> farm_num >> query_num;
 
 	vector<char> farms(farm_num);
-	for (char& f : farms) {
+	for (char &f : farms) {
 		read >> f;
 		assert(f == 'G' || f == 'H');
 	}
@@ -86,9 +86,7 @@ int main() {
 	vector<int> component(farm_num, -1);
 	for (int f = 0; f < farm_num; f++) {
 		// Don't process a farm if it's been visited already
-		if (component[f] != -1) {
-			continue;
-		}
+		if (component[f] != -1) { continue; }
 		vector<int> frontier{f};
 		char type = farms[f];
 		while (!frontier.empty()) {
@@ -132,13 +130,14 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MilkVisits {
-	public static void main (String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("milkvisits.in"));
-		
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("milkvisits.in"));
+
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int farmNum = Integer.parseInt(initial.nextToken());
 		int queryNum = Integer.parseInt(initial.nextToken());
@@ -146,9 +145,7 @@ public class MilkVisits {
 		String farms = read.readLine();
 
 		List<Integer>[] neighbors = new ArrayList[farmNum];
-		for (int f = 0; f < farmNum; f++) {
-			neighbors[f] = new ArrayList<>();
-		}
+		for (int f = 0; f < farmNum; f++) { neighbors[f] = new ArrayList<>(); }
 		for (int f = 0; f < farmNum - 1; f++) {
 			StringTokenizer road = new StringTokenizer(read.readLine());
 			int f1 = Integer.parseInt(road.nextToken()) - 1;
@@ -163,9 +160,7 @@ public class MilkVisits {
 		Arrays.fill(component, -1);
 		for (int f = 0; f < farmNum; f++) {
 			// Don't process a farm if it's been visited already
-			if (component[f] != -1) {
-				continue;
-			}
+			if (component[f] != -1) { continue; }
 			ArrayDeque<Integer> frontier = new ArrayDeque<>();
 			frontier.add(f);
 			char type = farms.charAt(f);
@@ -193,7 +188,8 @@ public class MilkVisits {
 			if (component[a] == component[b]) {
 				/*
 				 * If a & b are in the same component,
-				 * check if the milk type is the same as the one the farmer likes
+				 * check if the milk type is the same as the one the farmer
+				 * likes
 				 */
 				written.print(farms.charAt(a) == milk ? 1 : 0);
 			} else {
@@ -210,7 +206,7 @@ public class MilkVisits {
 <PySection>
 
 ```py
-with open('milkvisits.in') as read:
+with open("milkvisits.in") as read:
 	farm_num, query_num = [int(i) for i in read.readline().split()]
 	farms = read.readline()
 	neighbors = [[] for _ in range(farm_num)]
@@ -218,7 +214,7 @@ with open('milkvisits.in') as read:
 		f1, f2 = [int(i) - 1 for i in read.readline().split()]
 		neighbors[f1].append(f2)
 		neighbors[f2].append(f1)
-	
+
 	queries = []
 	for _ in range(query_num):
 		query = read.readline().split()
@@ -244,17 +240,17 @@ for f in range(farm_num):
 				frontier.append(n)
 	component_num += 1
 
-with open('milkvisits.out', 'w') as written:
+with open("milkvisits.out", "w") as written:
 	for a, b, milk in queries:
 		if component[a] == component[b]:
 			"""
 			If a & b are in the same component,
 			check if the milk type is the same as the one the farmer likes
 			"""
-			print(1 if farms[a] == milk else 0, end='', file=written)
+			print(1 if farms[a] == milk else 0, end="", file=written)
 		else:
 			# Output 1 otherwise because both milk types will be visited
-			print(1, end='', file=written)
+			print(1, end="", file=written)
 	print(file=written)
 ```
 

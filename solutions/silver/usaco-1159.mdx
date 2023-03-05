@@ -171,13 +171,9 @@ int comp[MAX_N];
 
 // DFS to find the connected components
 void dfs(int cur, int c) {
-	if (comp[cur] != -1) {
-		return;
-	}
+	if (comp[cur] != -1) { return; }
 	comp[cur] = c;
-	for (int u : adj[cur]) {
-		dfs(u, c);
-	}
+	for (int u : adj[cur]) { dfs(u, c); }
 }
 
 ll cost(int a, int b) {
@@ -187,21 +183,16 @@ ll cost(int a, int b) {
 		 * Finds the closest field in bs' connected
 		 * component to field u and updates the minimum
 		 * distance. The closest field is found by binary
-		 * searching on a sorted array (bs' connected 
+		 * searching on a sorted array (bs' connected
 		 * component).
 		 */
-		int i = lower_bound(
-			comps[b].begin(), comps[b].end(), u
-		) - comps[b].begin();
-		if (i > 0) {
-			dist = min(dist, abs(comps[b][i - 1] - u));
-		}
-		if (i < comps[b].size()) {
-			dist = min(dist, abs(comps[b][i] - u));
-		}
+		int i =
+		    lower_bound(comps[b].begin(), comps[b].end(), u) - comps[b].begin();
+		if (i > 0) { dist = min(dist, abs(comps[b][i - 1] - u)); }
+		if (i < comps[b].size()) { dist = min(dist, abs(comps[b][i] - u)); }
 	}
-	/* 
-	 * Returns the minimum cost of building a path 
+	/*
+	 * Returns the minimum cost of building a path
 	 * between the two components (aka dist^2)
 	 */
 	return (ll)dist * dist;
@@ -225,27 +216,23 @@ void solve() {
 		adj[b].push_back(a);
 	}
 
-	/* 
-	 * Stores the number of connected components 
+	/*
+	 * Stores the number of connected components
 	 * (set to -1 so that we don't overcount)
 	 */
 	int cur = -1;
 	// Uses DFS to find each connected component
 	for (int i = 0; i < n; i++) {
-		if (comp[i] == -1) {
-			dfs(i, ++cur);
-		}
+		if (comp[i] == -1) { dfs(i, ++cur); }
 	}
 
 	/*
 	 * Add each field to its connected component.
 	 * Since we're iterating from 0...n-1, each
-	 * connected component is guaranteed to be 
+	 * connected component is guaranteed to be
 	 * in sorted order
 	 */
-	for (int i = 0; i < n; i++) {
-		comps[comp[i]].push_back(i);
-	}
+	for (int i = 0; i < n; i++) { comps[comp[i]].push_back(i); }
 
 	/*
 	 * The initial answer is set to the cost of building
@@ -264,9 +251,7 @@ void solve() {
 int main() {
 	int t;
 	cin >> t;
-	for (int i = 0; i < t; i++) {
-		solve();
-	}
+	for (int i = 0; i < t; i++) { solve(); }
 }
 ```
 

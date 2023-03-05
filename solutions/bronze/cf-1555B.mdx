@@ -74,16 +74,16 @@ int main() {
 	int tc;
 	cin >> tc;
 	for (int i = 0; i < tc; i++) {
-		int total_width, total_height; 
+		int total_width, total_height;
 		cin >> total_width >> total_height;
-	
-		int x1, y1, x2, y2; 
+
+		int x1, y1, x2, y2;
 		cin >> x1 >> y1 >> x2 >> y2;
-	
+
 		int w1 = x2 - x1;
 		int h1 = y2 - y1;
-	
-		int w2, h2; 
+
+		int w2, h2;
 		cin >> w2 >> h2;
 
 		// Calculating min and max X and Y values needed to fit in their places
@@ -97,7 +97,7 @@ int main() {
 		int amount_needed_right = max(x2 - right_place, 0);
 		int amount_needed_top = max(y2 - top_place, 0);
 		int amount_needed_bottom = max(bottom_place - y1, 0);
-	
+
 		// Checking bounds of the rectangles
 		if (w1 + w2 > total_width) {
 			amount_needed_left = INT32_MAX;
@@ -108,14 +108,13 @@ int main() {
 			amount_needed_top = INT32_MAX;
 			amount_needed_bottom = INT32_MAX;
 		}
-	
+
 		// neat trick to get the min out of multiple elements
-		int ans = min({
-			amount_needed_left, amount_needed_right,
-			amount_needed_top, amount_needed_bottom
-		});
-	
-		// if the rectangles can't fit in the bigger rectangles in any way, print -1
+		int ans = min({amount_needed_left, amount_needed_right,
+		               amount_needed_top, amount_needed_bottom});
+
+		// if the rectangles can't fit in the bigger rectangles in any way,
+		// print -1
 		cout << (ans == INT32_MAX ? -1 : ans) << endl;
 	}
 }
@@ -131,7 +130,7 @@ for _ in range(int(input())):
 	h1 = y2 - y1
 	w2, h2 = map(int, input().split())
 
-	ans = float('inf')
+	ans = float("inf")
 
 	# Calculating minimum and maximum X and Y values needed to fit in their places
 	left_place = w2
@@ -146,20 +145,21 @@ for _ in range(int(input())):
 	amount_needed_bottom = max(bottom_place - y1, 0)
 
 	# Checking bounds of the rectangles
-	if w1 + w2 > total_width):
-		amount_needed_left = float('inf')
-		amount_needed_right = float('inf')
+	if w1 + w2 > total_width:
+		amount_needed_left = float("inf")
+		amount_needed_right = float("inf")
 
 	if h1 + h2 > total_height:
-		amount_needed_top = float('inf')
-		amount_needed_bottom = float('inf')
-
+		amount_needed_top = float("inf")
+		amount_needed_bottom = float("inf")
 
 	# neat trick to get the min out of multiple elements
-	ans = min(amount_needed_left, amount_needed_right, amount_needed_top, amount_needed_bottom);
-	
+	ans = min(
+		amount_needed_left, amount_needed_right, amount_needed_top, amount_needed_bottom
+	)
+
 	# if ans is float('inf'), there is no way to fit the two rectangles in the room
-	print(ans if ans != float('inf') else -1)
+	print(ans if ans != float("inf") else -1)
 ```
 </PySection>
 <JavaSection>
@@ -185,18 +185,18 @@ public class TwoTables {
 			int h = r.nextInt();
 
 			int answer = Integer.MAX_VALUE;
-			
+
 			// Check if combined table widths can fit in the room
-			if ((x2 - x1) + w <= W) { 
+			if ((x2 - x1) + w <= W) {
 				// Determine overlap when placing the table on the left
 				int left = Math.max(0, w - x1);
 				// Determine overlap when placing the table on the right
 				int right = Math.max(0, x2 - (W - w));
 				answer = Math.min(left, right);
 			}
-			
+
 			// Check if combined table heights can fit in the room
-			if ((y2 - y1) + h <= H) { 
+			if ((y2 - y1) + h <= H) {
 				int top = Math.max(0, y2 - (H - h));
 				int bottom = Math.max(0, h - y1);
 				int minTB = Math.min(top, bottom);

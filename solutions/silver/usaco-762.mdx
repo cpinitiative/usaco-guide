@@ -20,51 +20,47 @@ using namespace std;
 typedef long long ll;
 
 int main() {
-        freopen("homework.in", "r", stdin);
-        int n;
-        cin >> n;
-        vector<ll> questions(n);
-        for (int i = 0; i < n; i++) {
-                cin >> questions[i];
-        }
-        int left = -1;
-        int right = n;
+	freopen("homework.in", "r", stdin);
+	int n;
+	cin >> n;
+	vector<ll> questions(n);
+	for (int i = 0; i < n; i++) { cin >> questions[i]; }
+	int left = -1;
+	int right = n;
 
-        vector<ll> total_score(n);
-        vector<ll> min_score(n);
-        vector<ll> max_score_values;
+	vector<ll> total_score(n);
+	vector<ll> min_score(n);
+	vector<ll> max_score_values;
 
-        total_score[n - 1] = questions[n - 1];
-        min_score[n - 1] = questions[n - 1];
+	total_score[n - 1] = questions[n - 1];
+	min_score[n - 1] = questions[n - 1];
 
-        ll curr_question, curr_score, idx;
-        for (int i = n - 2; i > 0; i--) {
-                curr_question = questions[i];
-                // calculating sum of scores from index i to N
-                total_score[i] = curr_question + total_score[i + 1]; 
-                
-                // minimum score from scores in indexes i to N
-                min_score[i] = min(min_score[i + 1], curr_question); 
+	ll curr_question, curr_score, idx;
+	for (int i = n - 2; i > 0; i--) {
+		curr_question = questions[i];
+		// calculating sum of scores from index i to N
+		total_score[i] = curr_question + total_score[i + 1];
 
-                // excluding the least score question to calculate average
-                curr_score = total_score[i] - min_score[i]; 
-                idx = (n - (i + 1));
+		// minimum score from scores in indexes i to N
+		min_score[i] = min(min_score[i + 1], curr_question);
 
-                if (curr_score * right > left * idx) {
-                        left = curr_score;
-                        right = idx;
-                        max_score_values = {i};
-                } else if (curr_score * right == left * idx) {
-                        max_score_values.push_back(i);
-                }
-        }
+		// excluding the least score question to calculate average
+		curr_score = total_score[i] - min_score[i];
+		idx = (n - (i + 1));
 
-        sort(max_score_values.begin(), max_score_values.end());
+		if (curr_score * right > left * idx) {
+			left = curr_score;
+			right = idx;
+			max_score_values = {i};
+		} else if (curr_score * right == left * idx) {
+			max_score_values.push_back(i);
+		}
+	}
 
-        freopen("homework.out", "w", stdout);
-        for (ll k : max_score_values) {
-                cout << k << "\n";
-        }
+	sort(max_score_values.begin(), max_score_values.end());
+
+	freopen("homework.out", "w", stdout);
+	for (ll k : max_score_values) { cout << k << "\n"; }
 }
 ```
 
@@ -72,13 +68,13 @@ int main() {
 
 <PySection>
 
-```python
-with open('homework.in') as read:
-        n = int(read.readline())
-        questions = [int(i) for i in read.readline().split()]
+```py
+with open("homework.in") as read:
+	n = int(read.readline())
+	questions = [int(i) for i in read.readline().split()]
 
 left, right = -1, n
-        
+
 total = [0] * n
 minimum = [0] * n
 max_score_values = []
@@ -87,24 +83,24 @@ total[n - 1] = questions[n - 1]
 minimum[n - 1] = questions[n - 1]
 
 for i in range(n - 2, 0, -1):
-        cur_q = questions[i]
-        
-        total[i] = cur_q + total[i + 1]
-        minimum[i] = min(minimum[i + 1], cur_q)
-        
-        cur_s = total[i] - minimum[i]
-        idx = (n - (i + 1))
+	cur_q = questions[i]
 
-        if cur_s * right > left * idx:
-                left, right = cur_s, idx
-                max_score_values = [i]
+	total[i] = cur_q + total[i + 1]
+	minimum[i] = min(minimum[i + 1], cur_q)
 
-        elif cur_s * right == left * idx:
-                max_score_values.append(i)
+	cur_s = total[i] - minimum[i]
+	idx = n - (i + 1)
 
-with open('homework.out', 'w') as out:
-        for k in sorted(max_score_values):
-                print(k, file=out)
+	if cur_s * right > left * idx:
+		left, right = cur_s, idx
+		max_score_values = [i]
+
+	elif cur_s * right == left * idx:
+		max_score_values.append(i)
+
+with open("homework.out", "w") as out:
+	for k in sorted(max_score_values):
+		print(k, file=out)
 ```
 
 </PySection>

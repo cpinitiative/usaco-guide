@@ -13,13 +13,13 @@ Described in [CPH 14.3](/CPH.pdf#page=147).
 	
 <CPPSection>	
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 vector<int> adj[200001];
-int firstMax[200001];  // to store first-max length.
+int firstMax[200001];   // to store first-max length.
 int secondMax[200001];  // to store second-max length.
-int c[200001];   // to store child for path of max length.
+int c[200001];          // to store child for path of max length.
 
 // calculate for every node x the maximum
 // length of a path that goes through a child of x
@@ -27,14 +27,13 @@ void dfs(int v, int p) {
 	firstMax[v] = 0;
 	secondMax[v] = 0;
 	for (auto x : adj[v]) {
-		if (x == p)continue;
+		if (x == p) continue;
 		dfs(x, v);
 		if (firstMax[x] + 1 > firstMax[v]) {
 			secondMax[v] = firstMax[v];
 			firstMax[v] = firstMax[x] + 1;
 			c[v] = x;
-		}
-		else if (firstMax[x] + 1 > secondMax[v]) {
+		} else if (firstMax[x] + 1 > secondMax[v]) {
 			secondMax[v] = firstMax[x] + 1;
 		}
 	}
@@ -50,14 +49,12 @@ void dfs2(int v, int p) {
 				secondMax[x] = firstMax[x];
 				firstMax[x] = secondMax[v] + 1;
 				c[x] = v;
-			}
-			else {
+			} else {
 				secondMax[x] = max(secondMax[x], secondMax[v] + 1);
 			}
-		}
-		else {
+		} else {
 			secondMax[x] = firstMax[x];
-			firstMax[x] =  firstMax[v] + 1;
+			firstMax[x] = firstMax[v] + 1;
 			c[x] = v;
 		}
 		dfs2(x, v);
@@ -76,9 +73,7 @@ int main() {
 	dfs(1, -1);
 	dfs2(1, -1);
 
-	for (int i = 1; i <= n; i++) {
-		cout << firstMax[i] << " ";
-	}
+	for (int i = 1; i <= n; i++) { cout << firstMax[i] << " "; }
 	return 0;
 }
 ```				 
@@ -191,7 +186,7 @@ int dfs(int u, int p, int d, int i) {
 	int opt = -1;
 	for (int v : adj[u]) {
 		if (v != p) {
-			int x = dfs(v, u, d+1, i);
+			int x = dfs(v, u, d + 1, i);
 			if (opt == -1 || dist[i][x] > dist[i][opt]) opt = x;
 		}
 	}
@@ -199,20 +194,26 @@ int dfs(int u, int p, int d, int i) {
 }
 
 int main() {
-	int n; cin >> n;
-	for (int i = 0; i < n-1; i++) {
-		int a, b; cin >> a >> b; --a; --b;
-		adj[a].push_back(b); adj[b].push_back(a);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		--a;
+		--b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
 	}
 	// first, find node a by finding the farthest node from an arbitrary node x
 	int mxNode = dfs(0, 0, 0, 0);
-	// then, find node b (this step also computes distance from a to every other node)
+	// then, find node b (this step also computes distance from a to every other
+	// node)
 	int mxNode2 = dfs(mxNode, mxNode, 0, 0);
 	// finally, compute the distance from b to every other node
 	dfs(mxNode2, mxNode2, 0, 1);
 
 	for (int i = 0; i < n; i++) {
-		cout << max(dist[0][i], dist[1][i]) << " \n"[i == n-1];
+		cout << max(dist[0][i], dist[1][i]) << " \n"[i == n - 1];
 	}
 	return 0;
 }

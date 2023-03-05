@@ -82,53 +82,57 @@ db prob[MAXT + 1][MAXT + 1];
 db pref_prob[MAXT + 1];
 db pref_exp[MAXT + 1];
 
-// Function to skip ahead x submissions with constants a and b with the current expected value set to E.
+// Function to skip ahead x submissions with constants a and b with the current
+// expected value set to E.
 db skip_submissions(db a, db b, db E, ll x) {
-  	return pow(a, x) * E + b * (pow(a, x) - 1) / (a - 1);
+	return pow(a, x) * E + b * (pow(a, x) - 1) / (a - 1);
 }
 
 int main() {
 	int T;
 	ll K;
 	cin >> T >> K;
-	
+
 	// Subtract sample test case
 	T--;
-	
-	// Precompute probablity of choosing exactly i test cases using Pascal's Identity.
+
+	// Precompute probablity of choosing exactly i test cases using Pascal's
+	// Identity.
 	prob[0][0] = 1;
 	for (int i = 1; i <= T; i++) {
 		prob[i][0] = prob[i - 1][0] / 2;
-		for (int j = 1; j <= T; j++) prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
+		for (int j = 1; j <= T; j++)
+			prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
 	}
-  
+
 	// Create prefix sum of probablity
 	pref_prob[0] = prob[T][0];
 	for (int i = 1; i <= T; i++) pref_prob[i] = pref_prob[i - 1] + prob[T][i];
-						
+
 	// Create prefix sum of expected value
 	pref_exp[0] = 0;
 	for (int i = 1; i <= T; i++) pref_exp[i] = pref_exp[i - 1] + prob[T][i] * i;
-  
+
 	db E = 0;
 	while (K != 0) {
 		/*
 		 * Find the floor of the current expected value
 		 * which acts as the limit of how many submissions we can skip forward.
-		 */ 
-		ll cross = (ll) floor(E);
+		 */
+		ll cross = (ll)floor(E);
 
 		// Find constants a and b
 		db a = pref_prob[cross], b = pref_exp[T] - pref_exp[cross];
 
 		// Binary search to find how submissions we can skip forward
-		ll lo = 1; ll hi = 1e9;
+		ll lo = 1;
+		ll hi = 1e9;
 		while (lo < hi) {
 			ll mid = (lo + hi + 1) / 2;
 			// Check if 'mid' submissions crosses the 'cross' limit.
 			if (floor(skip_submissions(a, b, E, mid)) == cross) {
 				lo = mid;
-	  		} else {
+			} else {
 				hi = mid - 1;
 			}
 		}
@@ -146,7 +150,7 @@ int main() {
 ```
 
 </CPPSection>
-	
+
 <PySection>
 ```python
 import math
@@ -166,7 +170,7 @@ t, k = map(int, input().split())
 # Subtract sample
 t -= 1
 
-# Precompute probablility of getting i test cases using pascal's identity 
+# Precompute probablility of getting i test cases using pascal's identity
 prob = [[0 for i in range(t + 1)] for j in range(t + 1)]
 prob[0][0] = 1
 for i in range(1, t + 1):
@@ -201,7 +205,7 @@ while k != 0:
 
 	# Binary search to see how many submissions we can skip forward
 	lo = 1
-	hi = 10 ** 9
+	hi = 10**9
 	while lo < hi:
 		mid = math.floor((lo + hi + 1) / 2)
 		if math.floor(skip_submissions(a, b, e, mid)) == cross:
@@ -221,5 +225,5 @@ while k != 0:
 print(e + 1)
 ```
 </PySection>
-			
+
 </LanguageSection>

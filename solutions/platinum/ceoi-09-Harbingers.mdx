@@ -7,14 +7,14 @@ author: Dustin Miao
 
 The official analysis can be found [here](https://studylib.net/doc/5889373/--ceoi-2009)
 
-# Implementation 
+# Implementation
 
 <LanguageSection>
 
 <CPPSection>
-	
+
 **Time Complexity:** $\mathcal{O}(n \log n)$
-  
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -25,18 +25,18 @@ using pll = pair<ll, ll>;
 
 const int MAXN = 1e5 + 1;
 
-/** A simple line class for linear functions */ 
+/** A simple line class for linear functions */
 struct Line {
 	ll m, b;
 
 	Line(ll m = 0, ll b = 0) : m(m), b(b) {}
 
-	/** Evaluates the linear function at position x */ 
+	/** Evaluates the linear function at position x */
 	ll operator()(ll x) { return m * x + b; }
 
-	/** Returns the x-coordinate of the intersection of two lines */ 
-	friend ld intersect(Line l1, Line l2) { 
-		return (ld)(l2.b - l1.b) / (ld)(l1.m - l2.m); 
+	/** Returns the x-coordinate of the intersection of two lines */
+	friend ld intersect(Line l1, Line l2) {
+		return (ld)(l2.b - l1.b) / (ld)(l1.m - l2.m);
 	}
 };
 
@@ -56,7 +56,7 @@ int stk_max = 0;  // end of convex hull stack
  * out of all lines in the hull
  * @param x The x position
  * @return The minimum y value in the convex hull
- */ 
+ */
 ll line_min(ll x) {
 	// binary search for min value
 	int l = 0, r = stk_max - 1;
@@ -72,20 +72,20 @@ ll line_min(ll x) {
 }
 
 /**
- * Gives the position such that if this line was to be added 
- * into the convex hull, it would occupy that position. The 
- * convex hull is stored in stk. If no lines are to be 
+ * Gives the position such that if this line was to be added
+ * into the convex hull, it would occupy that position. The
+ * convex hull is stored in stk. If no lines are to be
  * removed to make room for the new line, then the size of the
- * convex hull is returned. Note that the convex hull 
- * is NOT modified in this function. 
+ * convex hull is returned. Note that the convex hull
+ * is NOT modified in this function.
  * @param line The line to be queried
- * @return An index between 1 and stk_max (inclusive) specifying 
- *		 the location the given line would occupy should it 
+ * @return An index between 1 and stk_max (inclusive) specifying
+ *		 the location the given line would occupy should it
  *		 be added to the hull
- */ 
+ */
 ll remove_pos(Line line) {
 	// check if hull is trivial or if line belongs at the end
-	if (stk_max < 2 || 
+	if (stk_max < 2 ||
 		intersect(line, stk[stk_max - 1]) >= intersect(stk[stk_max - 1], stk[stk_max - 2])) {
 		return stk_max;
 	}
@@ -104,18 +104,18 @@ ll remove_pos(Line line) {
 }
 
 /**
- * Finds the smallest dp value for all nodes in the 
+ * Finds the smallest dp value for all nodes in the
  * current subtree
  * @param u Current node
  * @param p Parent of current node
  * @param d Distance from root
- */ 
+ */
 void dfs(int u = 1, int p = 0, ll d = 0) {
 	int prev_max, prev_pos;
 	Line prev_line;
 	if (u == 1) {
 		min_time[u] = 0;
-		stk[stk_max++] = {0, 0}; 
+		stk[stk_max++] = {0, 0};
 	} else {
 		min_time[u] = line_min(V[u]) + d * V[u] + S[u];  // get dp value by querying convex hull
 		Line l(-d, min_time[u]);  // construct new line that might be added into hull
@@ -134,7 +134,7 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 
 	// reset any changes made at this step
 	if (u != 1) {
-		stk_max = prev_max;  // reset convex hull size 
+		stk_max = prev_max;  // reset convex hull size
 		stk[prev_pos] = prev_line;  // reset replacement position
 	}
 }
@@ -165,6 +165,6 @@ int main() {
 
 <Info title="Alternative Solution">
 
-This problem can also be solved with a persistent [Li-Chao tree](https://cp-algorithms.com/geometry/convex_hull_trick.html#toc-tgt-1) (although the memory limit is rather tight). 
+This problem can also be solved with a persistent [Li-Chao tree](https://cp-algorithms.com/geometry/convex_hull_trick.html#toc-tgt-1) (although the memory limit is rather tight).
 
 </Info>

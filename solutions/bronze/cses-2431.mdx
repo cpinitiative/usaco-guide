@@ -57,11 +57,11 @@ that the number is the first number in the group, and a position of $100$ means
 that the number is the $99$-th number in the group.
 
 To calculate the exact number the $k$-th digit is in, we can add the position of
-the number within the group (which we just found) to the value of the first 
-number of the group, which is just $10^{n-1}$ (you can find this pattern from the 
-beginning example). Now, all that's left is finding the position of the $k$-th 
-digit within the number that it's in. We can calculate that by taking 
-$j \bmod n$, which finds the remainder of $j$ when divided by $n$. For example, 
+the number within the group (which we just found) to the value of the first
+number of the group, which is just $10^{n-1}$ (you can find this pattern from the
+beginning example). Now, all that's left is finding the position of the $k$-th
+digit within the number that it's in. We can calculate that by taking
+$j \bmod n$, which finds the remainder of $j$ when divided by $n$. For example,
 let's look at the first $12$ digits in the group with length $3$ numbers:
 
 <center>
@@ -102,9 +102,7 @@ typedef long long ll;
 // Not using pow() because it can be inaccurate for large powers
 ll pow10(int exp) {
 	ll product = 1;
-	for (int i = 0; i < exp; i++) {
-		product *= 10;
-	}
+	for (int i = 0; i < exp; i++) { product *= 10; }
 	return product;
 }
 
@@ -130,7 +128,7 @@ int main() {
 		// The exact number the kth digit is in
 		long num = (k - 1) / n + pow10(n - 1);
 		// The location in num of the kth digit
-		int loc = (int) ((k - 1) % n);
+		int loc = (int)((k - 1) % n);
 		// Determine answer by converting num to string and indexing at loc
 		cout << to_string(num)[loc] << endl;
 	}

@@ -7,8 +7,8 @@ author: Kevin Sheng
 
 ## Explanation
 
-Note that the bound on $S$ is rather small and that $1 \leq W_i \leq S$, so we can group the items together by weight.  
-After this, we can implement the knapsack problem on the grouped together items. We also sort items of the same weight by reverse value, as it is always optimal to select the item with greater value among two items of the same weight.  
+Note that the bound on $S$ is rather small and that $1 \leq W_i \leq S$, so we can group the items together by weight.
+After this, we can implement the knapsack problem on the grouped together items. We also sort items of the same weight by reverse value, as it is always optimal to select the item with greater value among two items of the same weight.
 
 Note that you only need to consider the most valuable $\lfloor\frac{S}{i}\rfloor$
 items for the set of all objects with weight $i$.
@@ -39,7 +39,7 @@ int main() {
 	int limit;
 	int type_num;
 	std::cin >> limit >> type_num;
-	
+
 	std::map<int, vector<pair<int, int>>> by_weight;
 	for (int t = 0; t < type_num; t++) {
 		int value;
@@ -50,7 +50,7 @@ int main() {
 			by_weight[weight].push_back({value, amt});
 		}
 	}
-	
+
 	/*
 	 * best[i][j] contains the most value we can
 	 * get using j weight and the first i weight types
@@ -79,7 +79,7 @@ int main() {
 						best[at - 1][i - copies * w] + profit
 					);
 				}
-				
+
 				curr_used++;
 				if (curr_used == items[type_at].second) {
 					curr_used = 0;

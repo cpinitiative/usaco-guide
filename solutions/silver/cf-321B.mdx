@@ -29,14 +29,14 @@ At the end, we'll return the larger quantity.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
 
-using std::vector;
-using std::string;
 using std::endl;
+using std::string;
+using std::vector;
 
 struct Card {
 	// 1 -> ATK | 0 -> DEF
@@ -70,10 +70,8 @@ int main() {
 
 	// sort by type and then by strength
 	std::sort(jiro.begin(), jiro.end(), [](const Card &a, const Card &b) {
-		if (a.type == b.type) {
-			return a.strength < b.strength;
-		}
-		return a.type > b.type; 
+		if (a.type == b.type) { return a.strength < b.strength; }
+		return a.type > b.type;
 	});
 
 	std::sort(ciel.begin(), ciel.end(), [](const Card &a, const Card &b) {
@@ -83,9 +81,7 @@ int main() {
 	int appr1 = 0;
 	for (int i = 0; i < std::min(n, m); i++) {
 		// break if either we're attacking DEF cards or we don't gain anything
-		if (!jiro[i].type || ciel[i].strength <= jiro[i].strength){
-			break;
-		}
+		if (!jiro[i].type || ciel[i].strength <= jiro[i].strength) { break; }
 
 		appr1 += ciel[i].strength - jiro[i].strength;
 	}
@@ -101,10 +97,9 @@ int main() {
 
 		for (int j = 0; j < m; j++) {
 			// if we haven't used j and this card can beat Jiro's card
-			if (!done[j] && (
-				(jiro[i].type && ciel[j].strength >= jiro[i].strength) ||
-				(!jiro[i].type && ciel[j].strength > jiro[i].strength)
-			)) {
+			if (!done[j] &&
+			    ((jiro[i].type && ciel[j].strength >= jiro[i].strength) ||
+			     (!jiro[i].type && ciel[j].strength > jiro[i].strength))) {
 				done[j] = true;
 
 				if (jiro[i].type) {
@@ -123,12 +118,9 @@ int main() {
 		}
 	}
 
-
 	// add up all of the direct damage done
 	for (int i = 0; i < m; i++) {
-		if (!done[i]) {
-			appr2 += ciel[i].strength;
-		}
+		if (!done[i]) { appr2 += ciel[i].strength; }
 	}
 
 	std::cout << std::max(appr2, appr1) << endl;

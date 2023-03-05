@@ -17,9 +17,9 @@ The greedy strategy is to have cows with a smaller waiting time to be at the bac
 <CPPSection>
 	
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
 int main() {
@@ -30,13 +30,11 @@ int main() {
 	cin >> n;
 
 	vector<int> cows(n);
-	for (int i = 0; i < n; i++) {
-		cin >> cows[i];
-	}
-	
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+
 	int ans = 0;
 	sort(cows.begin(), cows.end(), greater<int>());
-	
+
 	for (int i = 0; i < n; i++) {
 		if (i <= cows[i]) {
 			ans++;
@@ -46,7 +44,6 @@ int main() {
 	}
 	cout << ans << "\n";
 }
-
 ```
 </CPPSection>
 <JavaSection>
@@ -56,35 +53,32 @@ import java.io.*;
 import java.util.*;
 class cows {
 	int vals;
-	public cows(int vals)
-	{
-		this.vals = vals;
-	}
-	public int getVals(){
-		return this.vals;
-	}
+	public cows(int vals) { this.vals = vals; }
+	public int getVals() { return this.vals; }
 }
-class Sort implements Comparator<cows> {            // Comparator for a specialized in O(log N) for simple time limits.
+class Sort implements Comparator<cows> {  // Comparator for a specialized in
+	                                      // O(log N) for simple time limits.
 	public int compare(cows a, cows b) {
 		return Integer.compare(b.vals, a.vals);
 	}
 }
-public class lemonade{
+public class lemonade {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(new File("lemonade.in"));
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("lemonade.out")));
-		int N = sc.nextInt();  ArrayList<cows> arr = new ArrayList<>(); int ans = 0;
-		for(int i = 0 ; i < N; i++){
-			arr.add(new cows(sc.nextInt()));
-		}
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("lemonade.out")));
+		int N = sc.nextInt();
+		ArrayList<cows> arr = new ArrayList<>();
+		int ans = 0;
+		for (int i = 0; i < N; i++) { arr.add(new cows(sc.nextInt())); }
 
-		while (true){
+		while (true) {
 			arr.sort(new Sort());
 			int toRemove = arr.get(0).getVals();
-			if(toRemove >= ans){
+			if (toRemove >= ans) {
 				arr.remove(0);
 				ans++;
-			}else{
+			} else {
 				break;
 			}
 		}
@@ -108,7 +102,7 @@ cows.sort(reverse=True)
 ans = 0
 
 for i in range(n):
-	if (i <= cows[i]):
+	if i <= cows[i]:
 		ans += 1
 	else:
 		break

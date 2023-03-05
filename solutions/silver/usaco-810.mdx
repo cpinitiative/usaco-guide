@@ -18,10 +18,10 @@ By Vivian Han
 <CPPSection>
 
 ```cpp
-//#define reststops 1;
-//#ifdef reststops
-#include <iostream>
+// #define reststops 1;
+// #ifdef reststops
 #include <fstream>
+#include <iostream>
 using namespace std;
 
 int32_t trailLen, stopNum, fRate, bRate;
@@ -29,28 +29,25 @@ int32_t x[100000];
 int32_t c[100000];
 bool good[100000];
 
-int main()
-{
+int main() {
 
 	ifstream in;
 	in.open("reststops.in");
 	in >> trailLen >> stopNum >> fRate >> bRate;
-//	scan in rest stop data
-	for (int i = 0 ; i < stopNum; i++) {
-		in >> x[i] >> c[i];
-	}
+	//	scan in rest stop data
+	for (int i = 0; i < stopNum; i++) { in >> x[i] >> c[i]; }
 
-	//find all "best" stops
+	// find all "best" stops
 	int32_t max = 0;
-	for (int i = stopNum-1; i >= 0; i--) {
+	for (int i = stopNum - 1; i >= 0; i--) {
 		good[i] = false;
-		if (c[i] > max) { //there are no stops after stop i that are "better"
+		if (c[i] > max) {  // there are no stops after stop i that are "better"
 			good[i] = true;
 			max = c[i];
 		}
 	}
 
-	//simulate the whole trail
+	// simulate the whole trail
 	long long prevStopPos = 0;
 	long long ans = 0;
 	for (int i = 0; i < stopNum; i++) {
@@ -63,17 +60,17 @@ int main()
 			prevStopPos = x[i];
 		}
 	}
-// */
+	// */
 	ofstream out;
 	out.open("reststops.out");
 	out << ans << endl;
 	out.close();
 
-	//cout << ans << endl;
+	// cout << ans << endl;
 
 	return 0;
 }
-//#endif
+// #endif
 ```
 
 </CPPSection>
@@ -89,9 +86,11 @@ public class RestStops {
 
 	public static void main(String[] args) {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
+			BufferedReader br =
+			    new BufferedReader(new FileReader("reststops.in"));
 			String[] line = br.readLine().split(" ");
-			int trailLen = Integer.parseInt(line[0]); //this value is never used...
+			int trailLen =
+			    Integer.parseInt(line[0]);  // this value is never used...
 			int stopNum = Integer.parseInt(line[1]);
 			int fRate = Integer.parseInt(line[2]);
 			int bRate = Integer.parseInt(line[3]);
@@ -100,24 +99,25 @@ public class RestStops {
 			c = new int[stopNum];
 			good = new boolean[stopNum];
 
-			//scan in rest stop data
-			for (int i = 0 ; i < stopNum; i++) {
+			// scan in rest stop data
+			for (int i = 0; i < stopNum; i++) {
 				line = br.readLine().split(" ");
 				x[i] = Integer.parseInt(line[0]);
 				c[i] = Integer.parseInt(line[1]);
 			}
 			br.close();
 
-			//find all "best" stops
+			// find all "best" stops
 			int max = 0;
-			for (int i = stopNum-1; i >= 0; i--) {
-				if (c[i] > max) { //there are no stops after stop i that are "better"
+			for (int i = stopNum - 1; i >= 0; i--) {
+				if (c[i] >
+				    max) {  // there are no stops after stop i that are "better"
 					good[i] = true;
 					max = c[i];
 				}
 			}
 
-			//simulate the whole trail
+			// simulate the whole trail
 			int prevStopPos = 0;
 			long ans = 0;
 			for (int i = 0; i < stopNum; i++) {
@@ -131,13 +131,11 @@ public class RestStops {
 				}
 			}
 
-			BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
+			BufferedWriter bw =
+			    new BufferedWriter(new FileWriter("reststops.out"));
 			bw.write(ans + "\n");
 			bw.close();
-		}
-		catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+		} catch (Exception e) { System.out.println(e.getMessage()); }
 	}
 }
 ```
@@ -184,15 +182,15 @@ stop early, and our greedy algorithm is correct.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using namespace std;
 
 int main() {
 	ifstream in("reststops.in");
-	
+
 	int trail_len;  // not used
 	int stop_num;
 	int f_rate;
@@ -201,9 +199,7 @@ int main() {
 
 	vector<int> x(stop_num);  // position of each stop
 	vector<int> c(stop_num);  // tastiness value of each stop
-	for (int i = 0 ; i < stop_num; i++) {
-		in >> x[i] >> c[i];
-	}
+	for (int i = 0; i < stop_num; i++) { in >> x[i] >> c[i]; }
 
 	// find all the "best" stops
 	vector<bool> good(stop_num);
@@ -244,7 +240,7 @@ int main() {
 import java.io.*;
 
 public class RestStops {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
 
 		String[] line = br.readLine().split(" ");
@@ -255,8 +251,8 @@ public class RestStops {
 
 		int[] x = new int[stopNum];  // position of each stop
 		int[] c = new int[stopNum];  // tastiness value of each stop
-		
-		for (int i = 0 ; i < stopNum; i++) {
+
+		for (int i = 0; i < stopNum; i++) {
 			line = br.readLine().split(" ");
 			x[i] = Integer.parseInt(line[0]);
 			c[i] = Integer.parseInt(line[1]);
@@ -266,8 +262,8 @@ public class RestStops {
 		// find all "best" stops
 		boolean[] good = new boolean[stopNum];
 		int maxTastiness = 0;
-		for (int i = stopNum-1; i >= 0; i--) {
-			if (c[i] > maxTastiness) {  
+		for (int i = stopNum - 1; i >= 0; i--) {
+			if (c[i] > maxTastiness) {
 				// there are no stops after stop i that are "better"
 				good[i] = true;
 				maxTastiness = c[i];
@@ -299,7 +295,7 @@ public class RestStops {
 <PySection>
 
 ```py
-with open('reststops.in') as read:
+with open("reststops.in") as read:
 	# trail_len won't be used
 	trail_len, stop_num, f_rate, b_rate = [int(i) for i in read.readline().split()]
 
@@ -331,7 +327,7 @@ for i in range(stop_num):
 		ans += rest_time * c[i]
 		prev_stop_pos = x[i]
 
-print(ans, file=open('reststops.out', 'w'))
+print(ans, file=open("reststops.out", "w"))
 ```
 
 </PySection>

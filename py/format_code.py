@@ -24,11 +24,6 @@ CLANG_FORMAT_STYLE = (
 	"{" + ", ".join(filter(lambda x: x != "", CLANG_FORMAT_STYLE.split("\n"))) + "}"
 )
 
-FORMAT_CPP = True
-FORMAT_PYTHON = True
-FORMAT_JAVA = True
-
-
 def lead_white(line):
 	return len(line) - len(line.lstrip())
 
@@ -44,7 +39,9 @@ def contains_banned_terms(prog: List[str]):
 
 def format_prog_py(prog: List[str]):
 	try:
-		prog = black.format_file_contents("".join(prog), fast=True, mode=black.FileMode()).splitlines(True)
+		prog = black.format_file_contents(
+			"".join(prog), fast=True, mode=black.FileMode()
+		).splitlines(True)
 	except black.report.NothingChanged:
 		pass
 	return prog
@@ -55,19 +52,18 @@ def format_prog_clang(lang: str, prog: List[str]):
 	with open(tmp_file.name, "w") as f:
 		f.write("".join(prog))
 	subprocess.check_output(
-		[
-			f"clang-format -i -style='{CLANG_FORMAT_STYLE}' {f.name}"
-		],
+		[f"clang-format -i -style='{CLANG_FORMAT_STYLE}' {f.name}"],
 		shell=True,
 	)
 	with open(tmp_file.name, "r") as f:
 		return f.readlines()
 
+
 def format_prog(lang: str, prog: List[str]):
 	if lang == "py":
 		return format_prog_py(prog)
 	else:
-		assert lang in ['cpp', 'java']
+		assert lang in ["cpp", "java"]
 		return format_prog_clang(lang, prog)
 
 
@@ -79,22 +75,17 @@ def format_path(path: str):
 	nlines = []
 	prog = []
 	for line in lines:
-		if line.strip() == "```cpp" and FORMAT_CPP:
-			lang = "cpp"
-			nlines.append(line)
-		elif (line.strip() == "```py" or line.strip() == "```python") and FORMAT_PYTHON:
-			lang = "py"
-			nlines.append(line)
-		elif line.strip() == "```java" and FORMAT_JAVA:
-			lang = "java"
-			nlines.append(line)
+		if line.strip().startswith("```") and len(line.strip()) > 3: # start of lang block
+			lang = line.strip()[3:].strip()
+			if lang == 'python':
+				lang = 'py'
+			if lang not in ['cpp', 'py', 'java']:
+				raise ValueError(f"Unrecognized formatting lang: {line.strip()[3:]}")
+			nlines.append(f"```{lang}\n")
 		elif line.strip() == "```":
-			if lang is not None:
+			if lang is not None: # end of lang block
 				if not contains_banned_terms(prog):
-					prog = [
-						match_indentation(line, prog_line)
-						for prog_line in prog
-					]
+					prog = [match_indentation(line, prog_line) for prog_line in prog]
 					prog = format_prog(lang, prog)
 					whitespace = line[: line.find("```")]
 					nlines += [whitespace + line for line in prog]
@@ -103,11 +94,9 @@ def format_path(path: str):
 				prog = []
 				lang = None
 			nlines.append(line)
-		elif lang is not None:
+		elif lang is not None: # program block
 			prog.append(line)
-		else:
-			if line.strip().startswith("```"):
-				print(f"Not formatting lang: {line.strip()[3:]}")
+		else: # outside of program block
 			nlines.append(line)
 	with open(path, "w") as f:
 		f.write("".join(nlines))

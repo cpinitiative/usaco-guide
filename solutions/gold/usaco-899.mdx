@@ -11,10 +11,10 @@ author: Ryan Chou, Qi Wang
 
 A simple brute-force approach would be to find the shortest path for all of the nodes, and then try to add a shortcut from $1$ to $i$ and find the shortest path again for all $i$.
 
-Using this approach, the answer is $\min(\texttt{dist}-\texttt{short}_i)$ for all $i$, where $\texttt{dist}$ is the travel time that all cows take without a shortcut and $\texttt{short}_i$ represents the travel time that all cows take when there is a shortcut from $1$ to $i$. Although this will certainly TLE, it hints at a faster way to compute the time saved. 
+Using this approach, the answer is $\min(\texttt{dist}-\texttt{short}_i)$ for all $i$, where $\texttt{dist}$ is the travel time that all cows take without a shortcut and $\texttt{short}_i$ represents the travel time that all cows take when there is a shortcut from $1$ to $i$. Although this will certainly TLE, it hints at a faster way to compute the time saved.
 
-Let's call $\texttt{occ}_i$ the number of cows that pass through field $i$ and $\texttt{trav}_i$ the cost for one cow to get from field $i$ to $1$. 
-Then the answer would be $\max(\texttt{occ}_i \cdot (\texttt{trav}_i - T))$ for all $i$. This works because $\texttt{trav}_i - T$ calculates the decrease in travel time for one cow to reach field $1$. By multiplying this value by $\texttt{occ}_i$, we calculate the time decrease for all the cows that pass through that field. 
+Let's call $\texttt{occ}_i$ the number of cows that pass through field $i$ and $\texttt{trav}_i$ the cost for one cow to get from field $i$ to $1$.
+Then the answer would be $\max(\texttt{occ}_i \cdot (\texttt{trav}_i - T))$ for all $i$. This works because $\texttt{trav}_i - T$ calculates the decrease in travel time for one cow to reach field $1$. By multiplying this value by $\texttt{occ}_i$, we calculate the time decrease for all the cows that pass through that field.
 
 We can find the values for $\texttt{trav}_i$ quickly with [Dijkstra's Algorithm](/gold/shortest-paths). To determine $\texttt{occ}_i$, we'll store the parents of nodes while running Dijkstra's so we can backtrack to determine the counts of cows that pass through. We can compute $\texttt{occ}$ in $\mathcal{O}(N^2)$ within the time limits because $N \leq 10^4$.
 
@@ -56,19 +56,19 @@ int main() {
 	// prev stores parents for backtracking
 	vector<int> prev(n, INT32_MAX);
 	priority_queue<
-		pair<int, int>, 
-		vector<pair<int, int>>, 
+		pair<int, int>,
+		vector<pair<int, int>>,
 		greater<pair<int, int>>
 	> pq;
-	
+
 	cost[0] = 0;
-	
+
 	// travel time, current node
 	pq.push({0, 0});
 	while (pq.size()) {
 		pair<int, int> nxt = pq.top();
 		pq.pop();
-		
+
 		int cur_cost = nxt.first;
 		int cur_node = nxt.second;
 
@@ -79,11 +79,11 @@ int main() {
 		for (const pair<int, int>& u : adj[cur_node]) {
 			// if this path is more optimal
 			if (u.first + cur_cost < cost[u.second]) {
-				cost[u.second] = u.first + cur_cost; 
+				cost[u.second] = u.first + cur_cost;
 				pq.push({u.first + cur_cost, u.second});
 				prev[u.second] = cur_node;
 			/*
-			 * keep paths lexicographically minimum by 
+			 * keep paths lexicographically minimum by
 			 * always choosing the lesser-indexed node
 			 */
 			} else if (u.first + cur_cost == cost[u.second] && cur_node < prev[u.second]) {

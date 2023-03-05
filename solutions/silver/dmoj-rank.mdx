@@ -42,7 +42,7 @@ void dfs(int node) {
 int main() {
 	int n, k;
 	cin >> n >> k;
-	
+
 	// process directed graph
 	for (int i = 0; i < k; i++) {
 		int a, b, sa, sb;
@@ -59,9 +59,7 @@ int main() {
 		original_node = i;
 		fill(begin(vis), end(vis), false);
 
-		for (int u : adj[i]) {
-			dfs(u);
-		}
+		for (int u : adj[i]) { dfs(u); }
 	}
 
 	// count number of cyclic nodes.
@@ -83,8 +81,9 @@ adj = [[] for _ in range(n)]
 vis, cyclic = [False for _ in range(n)], [False for _ in range(n)]
 original_node = -1
 
+
 def dfs(node):
-	if vis[node]: 
+	if vis[node]:
 		return
 
 	vis[node] = True
@@ -94,8 +93,9 @@ def dfs(node):
 		cyclic[node] = True
 
 	for u in adj[node]:
-		if not vis[u]: 
+		if not vis[u]:
 			dfs(u)
+
 
 # process directed graph
 for i in range(m):
@@ -125,8 +125,8 @@ print(ans)
 <JavaSection>
 	
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Rank {
 	static Map<Integer, HashSet<Integer>> graph = new HashMap<>();
@@ -135,15 +135,16 @@ public class Rank {
 	static boolean cyclic = false;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int people = Integer.parseInt(st.nextToken());
 		int games = Integer.parseInt(st.nextToken());
 
 		for (int x = 0; x < games; x++) {
 			st = new StringTokenizer(br.readLine());
-			int p1 = Integer.parseInt(st.nextToken());  // Person 1
-			int p2 = Integer.parseInt(st.nextToken());  // Person 2
+			int p1 = Integer.parseInt(st.nextToken());   // Person 1
+			int p2 = Integer.parseInt(st.nextToken());   // Person 2
 			int p1s = Integer.parseInt(st.nextToken());  // Person 1 score
 			int p2s = Integer.parseInt(st.nextToken());  // Person 2 score
 
@@ -168,15 +169,13 @@ public class Rank {
 			// Count cyclic nodes
 			cyclic = false;
 			visited = new HashSet<>();
-			if (dfs(x, x)) {
-				ans++;
-			}
+			if (dfs(x, x)) { ans++; }
 		}
 		System.out.println(ans);
 	}
 
 	public static boolean dfs(int current, int start) {
-		// Keep traversing graph until either you run into 
+		// Keep traversing graph until either you run into
 		// the starting node, or you already visited all of the nodes
 		if (visited.contains(current) && current == start) {
 			// Is cyclic
@@ -191,9 +190,7 @@ public class Rank {
 		if (!graph.containsKey(current)) {
 			graph.put(current, new HashSet<>());
 		}
-		for (int x : graph.get(current)) {
-			dfs(x, start);
-		}
+		for (int x : graph.get(current)) { dfs(x, start); }
 		return cyclic;
 	}
 }
