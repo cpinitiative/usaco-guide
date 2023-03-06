@@ -15,16 +15,24 @@ author: Jesse Choe, Ryan Chou, Chuyang Wang, Vivian Han
 
 First, it may help to think of an instance where we cannot form a proper evolutionary tree. This would be an instance such that no matter how we form the tree, it would be inevitable that some characteristic would evolve in two distinct places in the tree. It turns out that the minimal such bad example looks like this:
 
-$\texttt{population1: A } \\
-\texttt{population2: B } \\
-\texttt{population3: A B}$
+$$
+\begin{align*}
+&\texttt{population1: A } \\
+&\texttt{population2: B } \\
+&\texttt{population3: A B}
+\end{align*}
+$$
 
 In other words, we have a population with just trait $A$, a population with just trait $B$, and a population with both. If we want to build a tree out of this input, we would need to split on either $A$ or $B$ at the root, but then the remaining two subtrees would both need to have an edge that adds the other characteristic. For example, if the root split into "$A$" and "not $A$" branches, then both branches would need to contain an edge that adds the $B$ trait.
 
 It will help to actually look at things from the viewpoint of the characteristics instead of from the viewpoint of the populations, so let's "transpose" the input above:
 
-$\texttt{A: population1 population3 } \\
-\texttt{B: population2 population3}$
+$$
+\begin{align*}
+\texttt{A: population1 population3} \\
+\texttt{B: population2 population3}
+\end{align*}
+$$
 
 The fundamental problem here is that there are populations in $A$ only, populations in $B$ only, and populations in both $A$ and $B$. If we look at the Venn diagram for the sets $A$ and $B$, the picture therefore looks like this:
 

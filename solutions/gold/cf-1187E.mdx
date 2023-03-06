@@ -35,8 +35,10 @@ the cost of working down and $dp_2$ for the cost of working up and $sz$ for the
 size of a subtree.
 
 $$
-sz[u] = 1 + \sum_{c\in child(u)} sz[c] \newline
-dp_1[u] = sz[u] + \sum_{c\in child(u)} dp_1[c]
+\begin{align*}
+sz[u] &= 1 + \sum_{c\in child(u)} sz[c] \\
+dp_1[u] &= sz[u] + \sum_{c\in child(u)} dp_1[c]
+\end{align*}
 $$
 
 We can calculate this DP array with a single DFS search. Now, for the second DP
@@ -67,8 +69,10 @@ combined till $u$. Then we can calculate $p_1[u]$ and $p_2[u]$ using the
 following recurrence:
 
 $$
-p_1[u] = p_1[p] + sz[p] - sz[u] \newline
-p_2[u] = p_2[p] + p_1[u] + sz[p] - sz[u]
+\begin{align*}
+p_1[u] &= p_1[p] + sz[p] - sz[u] \\
+p_2[u] &= p_2[p] + p_1[u] + sz[p] - sz[u]
+\end{align*}
 $$
 
 ## Implementation
