@@ -34,7 +34,7 @@ map<int, vector<int>> query_by_weight[MAXN];
 struct DSU {
 	vector<int> p, sz;
 	// stores previous unites
-	vector<pair<int&, int>> psnap, szsnap;
+	vector<pair<int &, int>> psnap, szsnap;
 
 	DSU(int n) {
 		p.resize(n);
@@ -42,16 +42,12 @@ struct DSU {
 		iota(p.begin(), p.end(), 0);
 	}
 
-	int get(int x) {
-		return x == p[x] ? x : get(p[x]);
-	}
+	int get(int x) { return x == p[x] ? x : get(p[x]); }
 
 	void unite(int a, int b) {
 		a = get(a);
 		b = get(b);
-		if (sz[a] < sz[b]) {
-			swap(a, b);
-		}
+		if (sz[a] < sz[b]) { swap(a, b); }
 		if (a != b) {
 			// save this unite operation
 			szsnap.push_back({sz[a], sz[a]});
@@ -62,13 +58,9 @@ struct DSU {
 		}
 	}
 
-	bool sameset(int a, int b) {
-		return get(a) == get(b);
-	}
+	bool sameset(int a, int b) { return get(a) == get(b); }
 
-	int current() {
-		return psnap.size();
-	}
+	int current() { return psnap.size(); }
 
 	void rollback(int until) {
 		while (szsnap.size() > until) {
@@ -85,14 +77,15 @@ struct Edge {
 };
 
 int main() {
-	cin.tie(0) -> sync_with_stdio(0);
+	cin.tie(0)->sync_with_stdio(0);
 	int n, m;
 	cin >> n >> m;
 	vector<Edge> edges;
 	for (int i = 0; i < m; i++) {
 		int u, v, w;
 		cin >> u >> v >> w;
-		--u; --v;
+		--u;
+		--v;
 		edges.push_back({u, v, w});
 		edge_by_weight[w].push_back(i);
 	}
@@ -101,7 +94,8 @@ int main() {
 	cin >> q;
 	vector<bool> ans(q, true);
 	for (int i = 0; i < q; i++) {
-		int k; cin >> k;
+		int k;
+		cin >> k;
 		for (int j = 0; j < k; j++) {
 			int x;
 			cin >> x;
@@ -112,17 +106,17 @@ int main() {
 
 	DSU dsu(n);
 	for (int weight = 1; weight < MAXN; weight++) {
-		for (auto& query: query_by_weight[weight]) {
+		for (auto &query : query_by_weight[weight]) {
 			int index = query.first;
 			int snapshot = dsu.current();
 			// try merging each these edges with same weight
-			for (int edge: query.second) {
+			for (int edge : query.second) {
 				if (dsu.sameset(edges[edge].u, edges[edge].v)) {
 					/*
 					 * the vertices have already been in the partial MST
 					 * so this query is invalidated
 					 */
-					 ans[index] = false;
+					ans[index] = false;
 				}
 				dsu.unite(edges[edge].u, edges[edge].v);
 			}
@@ -134,14 +128,12 @@ int main() {
 		 * now that all queries have been processed,
 		 * keep building the partial MST with these edges
 		 */
-		 for (int edge: edge_by_weight[weight]) {
-		 	dsu.unite(edges[edge].u, edges[edge].v);
-		 }
+		for (int edge : edge_by_weight[weight]) {
+			dsu.unite(edges[edge].u, edges[edge].v);
+		}
 	}
 
-	for (int i = 0; i < q; i++) {
-		cout << (ans[i] ? "YES" : "NO") << "\n";
-	}
+	for (int i = 0; i < q; i++) { cout << (ans[i] ? "YES" : "NO") << "\n"; }
 }
 ```
 
