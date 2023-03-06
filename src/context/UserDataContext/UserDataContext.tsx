@@ -212,7 +212,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},
   userProgressOnProblemsActivity: [],
-  userProgressOnResources: {},
+  userProgressOnResources: { version: -1 },
   adSettings: {
     hideMarch2021: false,
   },

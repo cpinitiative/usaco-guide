@@ -4,9 +4,9 @@ import { ResourceProgress } from '../../../models/resource';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 
 export type UserProgressOnResourcesAPI = {
-  userProgressOnResources: { [key: string]: ResourceProgress } & {
-    version: number;
-  };
+  userProgressOnResources: { version: number } & ({
+    [key: string]: ResourceProgress | number;
+  } | null);
   setUserProgressOnResources: (
     resourceId: string,
     status: ResourceProgress
@@ -19,7 +19,7 @@ export const replaceIllegalFirebaseCharacters = (str: string) => {
 
 export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI {
   private progressStorageKey = 'userProgressOnResources';
-  private progressValue: any = {};
+  private progressValue = { version: -1 };
 
   initializeFromLocalStorage = (): void => {
     const currentValue = this.getValueFromLocalStorage(
