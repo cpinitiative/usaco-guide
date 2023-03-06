@@ -59,9 +59,7 @@ ll binpow(ll x, ll n, ll m) {
 	x %= m;
 	ll res = 1;
 	while (n > 0) {
-		if (n % 2 == 1) {
-			res = res * x % m;
-		}
+		if (n % 2 == 1) { res = res * x % m; }
 		x = x * x % m;
 		n /= 2;
 	}
@@ -71,14 +69,10 @@ ll binpow(ll x, ll n, ll m) {
 ll binom(int n, int k) { return fac[n] * inv[k] % MOD * inv[n - k] % MOD; }
 
 int main() {
-	for (int i = 2; i < MAXN; i++) {
-		fac[i] = i * fac[i - 1] % MOD;
-	}
+	for (int i = 2; i < MAXN; i++) { fac[i] = i * fac[i - 1] % MOD; }
 
 	inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD);
-	for (int i = MAXN - 2; i > 0; i--) {
-		inv[i] = (i + 1) * inv[i + 1] % MOD;
-	}
+	for (int i = MAXN - 2; i > 0; i--) { inv[i] = (i + 1) * inv[i + 1] % MOD; }
 
 	int n, m;
 	cin >> n >> m;
