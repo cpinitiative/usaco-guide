@@ -20,7 +20,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Getting Started',
       description: "Start here if you're new to competitive programming.",
       items: [
-        'using-this-guideee',
         'using-this-guide',
         'intro-cp',
         'choosing-lang',
