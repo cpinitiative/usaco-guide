@@ -11,7 +11,8 @@ author: Aakash Gokhale
 
 First we can solve an easier version of the problem where all the blocks are distinct.
 
-Process the blocks from largest to smallest. This will allow us to incrementally fill the even positions, starting from the bottom and working our way up to the top. In addition, we can fill in the odd positions with whatever blocks we don't use in the even positions.
+Notice that if we process the blocks from largest to smallest, we can incrementally fill the even positions, starting from the bottom and working our way up to the top.
+In addition, we can fill in the odd positions with whatever blocks we don't use in the even positions.
 
 We can do this problem using dynamic programming.
 Let $dp[i][j]$ be the number of ways to use the first $i$ blocks and place $j$ of those in the $j$ bottommost even positions (and $i - j$ of them in the odd position).
@@ -32,7 +33,7 @@ Either we put one block into an even position and the remaining into odd or all 
 
 To determine the number of ways to insert the blocks into the odd positions, we can evaluate ${\textbf{number of open spots} \choose \textbf{number of spots that we want to fill}}$.
 
-Our answer will be $dp[n][\frac{n}{2}]$.
+Our final answer will be $dp[n][\frac{n}{2}]$.
 
 **Time Complexity:** $\mathcal{O}(n^2)$
 
@@ -118,8 +119,8 @@ void solve() {
 				if (j + k > n / 2) { continue; }
 				dp[size + b[i].second][j + k] =
 				    (dp[size + b[i].second][j + k] +
-				     choose(positions, b[i].second - k, MOD) * dp[size][j] %
-				         MOD) %
+				     choose(positions, b[i].second - k, MOD) *
+				     dp[size][j] % MOD) %
 				    MOD;
 			}
 		}
