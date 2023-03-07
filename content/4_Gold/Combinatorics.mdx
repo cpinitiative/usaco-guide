@@ -205,7 +205,8 @@ the code below for the implementation.
 ```cpp
 const int MAXN = 1e6;
 
-long long fac[MAXN + 1], inv[MAXN + 1];
+long long fac[MAXN + 1];
+long long inv[MAXN + 1];
 
 /** Computes x^y modulo p in O(log p) time. */
 long long binpow(long long x, long long n, long long m) {
@@ -225,8 +226,10 @@ void factorial(long long p) {
 	for (int i = 1; i <= MAXN; i++) { fac[i] = fac[i - 1] * i % p; }
 }
 
-/** Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p)
- * time */
+/** 
+ * Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p)
+ * time 
+ */
 void inverses(long long p) {
 	inv[MAXN] = binpow(fac[MAXN], p - 2, p);
 	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
@@ -260,7 +263,7 @@ ll inv[MAXN + 1];
 
 //BeginCodeSnip{Counting functions}
 long long binpow(long long x, long long n, long long m) {
-	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+	x %= m;
 	ll res = 1;
 	while (n > 0) {
 		if (n % 2 == 1) { res = res * x % m; }
