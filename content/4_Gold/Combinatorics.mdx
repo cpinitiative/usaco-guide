@@ -74,7 +74,10 @@ If you prefer watching videos instead, here are some options:
 
 <FocusProblem problem="sample1" />
 
-The **binomial coefficient** $\binom{n}{k}$ (pronounced as "$n$ choose $k$" or sometimes written as ${}_nC_k$) represents the number of ways to choose a subset of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$, because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements:
+The **binomial coefficient** $\binom{n}{k}$ (pronounced as "$n$ choose $k$" or
+sometimes written as ${}_nC_k$) represents the number of ways to choose a subset
+of $k$ elements from a set of $n$ elements. For example, $\binom{4}{2} = 6$,
+because the set $\{1,2,3,4\}$ has $6$ subsets of $2$ elements:
 
 $$
 \{1, 2\}, \{1, 3\}, \{1, 4\}, \{2, 3\}, \{2, 4\}, \{3, 4\}
@@ -90,7 +93,9 @@ $$
     \binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}
 $$
 
-The intuition behind this is to fix an element $x$ in the set and choose $k − 1$ elements from $n − 1$ elements if $x$ is included in the set or choose $k$ elements from $n − 1$ elements, otherwise.
+The intuition behind this is to fix an element $x$ in the set and choose $k − 1$
+elements from $n − 1$ elements if $x$ is included in the set or choose $k$
+elements from $n − 1$ elements, otherwise.
 
 The base cases for the recursion are:
 
@@ -98,9 +103,11 @@ $$
 	\binom{n}{0} = \binom{n}{n}  = 1
 $$
 
-because there is always exactly one way to construct an empty subset and a subset that contains all the elements.
+because there is always exactly one way to construct an empty subset and a
+subset that contains all the elements.
 
-This recursive formula is commonly known as [Pascal's Triangle](https://brilliant.org/wiki/pascals-triangle/).
+This recursive formula is commonly known as [Pascal's
+Triangle](https://brilliant.org/wiki/pascals-triangle/).
 
 A naive implementation of this would use a recursive formula, like below:
 
@@ -118,7 +125,10 @@ int binomial(int n, int k, int p) {
 </CPPSection>
 </LanguageSection>
 
-Additionally, we can optimize this from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$ using [dynamic programming](/gold/intro-dp) (DP) by caching the values of smaller binomials to prevent recalculating the same values over and over again. The code below shows a bottom-up implementation of this.
+Additionally, we can optimize this from $\mathcal{O}(2^n)$ to $\mathcal{O}(n^2)$
+using [dynamic programming](/gold/intro-dp) (DP) by caching the values of
+smaller binomials to prevent recalculating the same values over and over again.
+The code below shows a bottom-up implementation of this.
 
 <LanguageSection>
 <CPPSection>
@@ -160,7 +170,10 @@ int binomial(int n, int k, int p) {
 
 ### Method 2: Factorial Definition (Modular Inverses) - $\mathcal{O}(n + \log MOD)$
 
-Define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$. $n!$ represents the number of permutations of a set of $n$ elements. See [this AoPS Article](https://artofproblemsolving.com/wiki/index.php/Factorial) for more details.
+Define $n!$ as $n \times (n - 1) \times (n - 2) \times \ldots 1$. $n!$
+represents the number of permutations of a set of $n$ elements. See [this AoPS
+Article](https://artofproblemsolving.com/wiki/index.php/Factorial) for more
+details.
 
 Another way to calculate binomial coefficients is as follows:
 
@@ -168,9 +181,23 @@ $$
 	\binom{n}{k} = \frac{n!}{k!(n-k)!}
 $$
 
-Recall that $\binom{n}{k}$ also represents the number of ways to choose $k$ elements from a set of $n$ elements. One strategy to get all such combinations is to go through all possible permutations of the $n$ elements, and only pick the first $k$ elements out of each permutation. There are $n!$ ways to do so. However, note the the order of the elements inside and outside the subset does not matter, so the result is divided by $k!$ and $(n − k)!$.
+Recall that $\binom{n}{k}$ also represents the number of ways to choose $k$
+elements from a set of $n$ elements. One strategy to get all such combinations
+is to go through all possible permutations of the $n$ elements, and only pick
+the first $k$ elements out of each permutation. There are $n!$ ways to do so.
+However, note the the order of the elements inside and outside the subset does
+not matter, so the result is divided by $k!$ and $(n − k)!$.
 
-Since these binomial coefficients are large, problems typically require us to output the answer modulo a large prime $p$ such as $10^9 + 7$. Fortunately, we can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$ modulo $p$ for any prime $p$. Computing inverse factorials **online** can be very time costly. Instead, we can **precompute** all factorials in $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n + \log MOD)$. First, we compute the modular inverse of the largest factorial using binary exponentiation. For the rest, we use the fact that $(n!)^{-1} \equiv (n!)^{-1}\times (n+1)^{-1} \times (n+1) \equiv ((n+1)!)^{-1}\times (n+1)$. See the code below for the implementation.
+Since these binomial coefficients are large, problems typically require us to
+output the answer modulo a large prime $p$ such as $10^9 + 7$. Fortunately, we
+can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$
+modulo $p$ for any prime $p$. Computing inverse factorials **online** can be
+very time costly. Instead, we can **precompute** all factorials in
+$\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n + \log MOD)$.
+First, we compute the modular inverse of the largest factorial using binary
+exponentiation. For the rest, we use the fact that $(n!)^{-1} \equiv
+(n!)^{-1}\times (n+1)^{-1} \times (n+1) \equiv ((n+1)!)^{-1}\times (n+1)$. See
+the code below for the implementation.
 
 <LanguageSection>
 <CPPSection>
@@ -181,17 +208,13 @@ const int MAXN = 1e6;
 long long fac[MAXN + 1], inv[MAXN + 1];
 
 /** Computes x^y modulo p in O(log p) time. */
-long long exp(long long x, long long y, long long p) {
-	long long res = 1;
-	x %= p;
-	while (y) {
-		if (y & 1) {
-			res *= x;
-			res %= p;
-		}
-		x *= x;
-		x %= p;
-		y >>= 1;
+long long binpow(long long x, long long n, long long m) {
+	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
 	}
 	return res;
 }
@@ -205,7 +228,7 @@ void factorial(long long p) {
 /** Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p)
  * time */
 void inverses(long long p) {
-	inv[MAXN] = exp(fac[MAXN], p - 2, p);
+	inv[MAXN] = binpow(fac[MAXN], p - 2, p);
 	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
 }
 
@@ -236,15 +259,13 @@ ll fac[MAXN + 1];
 ll inv[MAXN + 1];
 
 //BeginCodeSnip{Counting functions}
-ll exp(ll x, ll y, ll p) {
-	ll res = 1; x %= p;
-	while (y) {
-		if (y & 1) {
-			res *= x; res %= p;
-		}
-		x *= x;
-		x %= p;
-		y >>= 1;
+long long binpow(long long x, long long n, long long m) {
+	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
 	}
 	return res;
 }
@@ -257,7 +278,7 @@ void factorial() {
 }
 
 void inverses() {
-	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD);
+	inv[MAXN] = binpow(fac[MAXN], MOD - 2, MOD);
 	for (int i = MAXN; i >= 1; i--) {
 		inv[i - 1] = inv[i] * i % MOD;
 	}
@@ -287,19 +308,32 @@ int main() {
 
 <FocusProblem problem="sample2" />
 
-The number of derangements of $n$ numbers, expressed as $!n$, is the number of permutations such that no element appears in its original position. Informally, it is the number of ways $n$ hats can be returned to $n$ people such that no person recieves their own hat.
+The number of derangements of $n$ numbers, expressed as $!n$, is the number of
+permutations such that no element appears in its original position. Informally,
+it is the number of ways $n$ hats can be returned to $n$ people such that no
+person recieves their own hat.
 
 ### Method 1: Principle of Inclusion-Exclusion
 
-Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert$.
+Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to
+person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1
+\cup E_2 \cup \dots \cup E_n \rvert$.
 
-We subtract from $n!$ the number of ways for each event to occur; that is, consider the quantity $n! - \lvert E_1 \rvert - \lvert E_2 \rvert - \dots - \lvert E_n \rvert$. This undercounts, as we are subtracting cases where more than one event occurs too many times. Specifically, for a permutation where at least two events occur, we undercount by one. Thus, add back the number of ways for two events to occur. We can continue this process for every size of subsets of indices. The expression is now of the form:
+We subtract from $n!$ the number of ways for each event to occur; that is,
+consider the quantity $n! - \lvert E_1 \rvert - \lvert E_2 \rvert - \dots -
+\lvert E_n \rvert$. This undercounts, as we are subtracting cases where more
+than one event occurs too many times. Specifically, for a permutation where at
+least two events occur, we undercount by one. Thus, add back the number of ways
+for two events to occur. We can continue this process for every size of subsets
+of indices. The expression is now of the form:
 
 $$
 n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert = \sum_{k = 1}^n (-1)^k \cdot (\text{number of permutations with $k$ fixed points})
 $$
 
-For a set size of $k$, the number of permutations with at least $k$ indicies can be computed by choosing a set of size $k$ that are fixed, and permuting the other indices. In mathematical terms:
+For a set size of $k$, the number of permutations with at least $k$ indicies can
+be computed by choosing a set of size $k$ that are fixed, and permuting the
+other indices. In mathematical terms:
 
 $$
 {n \choose k}(n-k)! = \frac{n!}{k!(n-k)!}(n-k)! = \frac{n!}{k!}
@@ -345,8 +379,13 @@ int main() {
 
 Suppose person 1 recieved person $i$'s hat. There are two cases:
 
-1. If person $i$ recieves person 1's hat, then the problem is reduced to a subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this case, so we add to the current answer $(n - 1)\cdot !(n - 2)$.
-2. If person $i$ does not recieve person 1's hat, then we can reassign person 1's hat to be person $i$'s hat (if they recieved person 1's hat, then this would become first case). Thus, this becomes a subproblems with size $n - 1$, are there $n - 1$ ways to choose $i$.
+1. If person $i$ recieves person 1's hat, then the problem is reduced to a
+   subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this
+   case, so we add to the current answer $(n - 1)\cdot !(n - 2)$.
+2. If person $i$ does not recieve person 1's hat, then we can reassign person
+   1's hat to be person $i$'s hat (if they recieved person 1's hat, then this
+   would become first case). Thus, this becomes a subproblems with size $n - 1$,
+   are there $n - 1$ ways to choose $i$.
 
 Thus, we have
 
@@ -354,7 +393,8 @@ $$
 !n = (n - 1)(!(n - 2) + !(n - 1))
 $$
 
-which can be computed in linear time with a simple DP. The base cases are that $!0 = 1$ and $!1 = 0$.
+which can be computed in linear time with a simple DP. The base cases are that
+$!0 = 1$ and $!1 = 0$.
 
 <LanguageSection>
 <CPPSection>
