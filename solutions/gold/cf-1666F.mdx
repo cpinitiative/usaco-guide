@@ -117,11 +117,11 @@ void solve() {
 			// k in the even position and b[i].second - k in the odd
 			for (ll k = 0; k <= 1; k++) {
 				if (j + k > n / 2) { continue; }
-				dp[size + b[i].second][j + k] =
-				    (dp[size + b[i].second][j + k] +
-				     choose(positions, b[i].second - k, MOD) * dp[size][j] %
-				         MOD) %
-				    MOD;
+				dp[size + b[i].second][j + k] = (
+					dp[size + b[i].second][j + k] 
+					+ choose(positions, b[i].second - k)
+					* dp[size][j] % MOD
+				) % MOD;
 			}
 		}
 		size += b[i].second;
