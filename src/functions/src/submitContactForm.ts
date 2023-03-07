@@ -31,15 +31,18 @@ const submitContactForm = functions.https.onCall(async data => {
   });
   const labels = [];
   if (
-    topic.includes('Typo') ||
-    topic.includes('Missing Section') ||
-    topic.includes('Unclear Explanation')
-  )
+    topic.includes('Minor Mistake') ||
+    topic.includes('Unclear Explanation') ||
+    topic.includes('Request')
+  ) {
     labels.push('content');
-  if (topic.includes('Bug')) labels.push('bug');
-  if (topic.includes('Website')) labels.push('website');
+    labels.push('good first issue');
+  }
+  if (topic.includes('Website Bug')) {
+    labels.push('website');
+    labels.push('bug');
+  }
   if (topic.includes('Suggestion')) labels.push('enhancement');
-  if (topic.includes('Missing Section')) labels.push('good first issue');
   let title = `Contact Form Submission - ${topic}`;
   if (moduleName) {
     title += ` (${moduleName})`;
