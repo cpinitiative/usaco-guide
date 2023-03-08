@@ -1,0 +1,147 @@
+---
+id: digit-dp
+title: 'Digit DP'
+author: Jesse Choe
+prerequisites:
+  - intro-dp
+  - modular
+  - combo
+  - knapsack
+description: 'Finding the number of integers in a range that have a property.'
+frequency: 1
+---
+
+<FocusProblem problem='focus' />
+
+## General Resources
+
+<Resources>
+	<Resource
+		source='AR'
+		title='Dynamic Programming for Computing Contests'
+		url='https://dp-book.com/Dynamic_Programming.pdf'
+	>
+		
+	</Resource>
+	<Resource
+		source="GFG"
+		title="Digit DP | Introduction"
+		url="https://www.geeksforgeeks.org/digit-dp-introduction/"
+	>
+
+	</Resource>
+	<Resource
+		source="Youtube"
+		title="Introduction to Digit Dynamic Programming"
+		url="https://www.youtube.com/watch?v=heUFId6Qd1A"
+	>
+		Great introduction video
+	</Resource>
+	<Resource
+		source="CF"
+		title="Digit DP"
+		url="https://codeforces.com/blog/entry/53960"
+	>
+
+	</Resource>
+</Resources>
+
+## Solution - Odometer
+
+### Without Dynamic Programming
+
+We can solve this problem in $\mathcal{O}(Y - X)$ time by looping through $X \ldots Y$ and checking whether a given number is an interesting number. However, since $Y - X$ can be large, the naive solution is too slow, requiring us to optimize it.
+
+### With Dynamic Programming
+
+One way to optimize the brute force approach of looping from $X$ to $Y$ and counting interesting numbers is by using dynamic programming. The DP approach involves considering all 9 digits one at a time to occupy at least half of the number. 
+
+Let $\texttt{dp[i][und][k][is0]}$ where $i$ is the current position, $und$ is whether you have gone below the actual number, $k$ is a counter to see if you have at least half of the same digit, and $is0$ is a boolean if you still have leading zeros. The transition involves looping through 9 digits to add to the current location and comparing with the digit we want to occupy at least half of the number. 
+
+This algorithm is fast enough as the number of digits is small and there are only nine digits.
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+// Code: https://raw.githubusercontent.com/thecodingwizard/competitive-programming/master/USACO/2014open/silver/odometer.cpp
+
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+ll dp[19][50][2][2]; string num;
+
+void reset(){
+	for(int i = 0; i < 19; i++){
+		for(int j = 0; j < 50; j++){
+			for(int k = 0; k < 2; k++){
+				for(int l = 0; l < 2; l++){
+					dp[i][j][k][l] = -1;
+				}
+			}
+		}
+	}
+}
+
+ll solveDP(int loc, int k, bool largest, bool started, int targ, int targ2){
+	if(loc == num.size()){
+		if (!started) return 0;
+		if (targ2 != -1) {
+			if (k == 20) return 1;
+			else return 0;
+		}
+		if (k >= 20) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	if (dp[loc][k][largest][started] != -1){ 
+		return dp[loc][k][largest][started];
+	}
+	ll ans = 0;
+	for(int i = 0; i <= 9; i++){
+		bool isLargest = largest;
+        int lar = num[loc] - '0';
+        if (isLargest && i > lar) break;
+        if (i < lar) isLargest = false;
+        bool isStarted = started || i != 0;
+        if (isStarted && targ2 != -1) {
+            if (i != targ && i != targ2) continue;
+        }
+		ans += solveDP(loc + 1, k + (isStarted ? (targ == i ? 1 : -1) : 0), isLargest, isStarted, targ, targ2);
+	}
+	return dp[loc][k][largest][started] = ans;
+}
+
+ll solve(ll x){
+	num = to_string(x);
+	ll ans = 0;
+	for(int i = 0; i <= 9; i++){
+		reset();
+		ans += solveDP(0, 20, true, false, i, -1);
+	}
+	ll dup = 0;
+	for(int i = 0; i <= 9; i++){
+		for(int j = 0; j <= 9; j++){
+			reset();
+			dup += solveDP(0, 20, true, false, i, j); 
+		}
+	}
+	return ans - (dup / 2);
+}
+
+int main(){
+	ll x, y; cin >> x >> y;
+	cout << solve(y) - solve(x - 1) << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+
+<Problems problems="problems" />
