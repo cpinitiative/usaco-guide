@@ -121,7 +121,7 @@ export type ProblemInfo = {
    * Source of the problem. More information about some problem sources can be found in the probSources and the olympiads map.
    */
   source: string;
-  sourceDescription: string;
+  sourceDescription?: string;
   difficulty: ProblemDifficulty;
   /**
    * In the context of a module, true if the problem is starred. False otherwise.
