@@ -40,9 +40,8 @@ export default function ProblemSuggestionModal({
   const inEditor = editorActions.inEditor;
 
   // will be null if in editor
-  const markdownLayoutInfo = useContext(
-    MarkdownLayoutContext
-  )?.markdownLayoutInfo;
+  const markdownLayoutInfo = useContext(MarkdownLayoutContext)
+    ?.markdownLayoutInfo;
 
   const darkMode = useDarkMode();
 
