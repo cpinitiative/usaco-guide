@@ -84,7 +84,7 @@ export default function ProblemsListItem(
 
   const sourceTooltip = divisionTable
     ? null
-    : probSources[problem.source]?.[1] ?? contests[problem.source]?.[1];
+    : probSources[problem.source]?.[1] ?? olympiads[problem.source]?.[1];
   let resultsUrl = ''; // used only for division tables
   if (divisionTable) {
     const parts = problem.source.split(' ');
