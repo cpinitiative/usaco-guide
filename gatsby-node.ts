@@ -498,6 +498,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       name: String!
       url: String!
       source: String!
+      sourceDescription: String
       isStarred: Boolean!
       difficulty: String
       tags: [String]
@@ -511,6 +512,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       name: String!
       url: String!
       source: String!
+      sourceDescription: String
       isStarred: Boolean!
       difficulty: String
       tags: [String]

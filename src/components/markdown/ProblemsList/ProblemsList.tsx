@@ -2,7 +2,6 @@ import { globalHistory } from '@reach/router';
 import * as React from 'react';
 import { useContext } from 'react';
 import 'tippy.js/themes/light.css';
-import { EditorContext } from '../../../context/EditorContext';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemInfo } from '../../../models/problem';
@@ -79,7 +78,6 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     props.isDivisionTable &&
     props.problems.some(problem => !!problem.percentageSolved);
 
-  const { inEditor } = useContext(EditorContext);
   const path = globalHistory.location.pathname || '';
 
   return (
