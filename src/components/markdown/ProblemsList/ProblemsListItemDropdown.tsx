@@ -4,26 +4,23 @@ import React from 'react';
 import { Instance } from 'tippy.js';
 import { useDarkMode } from '../../../context/DarkModeContext';
 import useUserSolutionsForProblem from '../../../hooks/useUserSolutionsForProblem';
-import { isUsaco } from '../../../models/problem';
+import { isUsaco, ProblemInfo } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
 import { ProblemsListItemProps } from './ProblemsListItem';
 
-export default function ProblemsListItemDropdown(
-  props: ProblemsListItemProps & { isFocusProblem: boolean }
-) {
-  const [copied, setCopied] = React.useState(false);
-
-  const problem = props.problem;
-  const isFocusProblem = props.isFocusProblem;
+function ViewSolutionsContent({
+  problem,
+  onViewProblemSolutions,
+}: {
+  problem: ProblemInfo;
+  onViewProblemSolutions: () => void;
+}): JSX.Element {
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);
-
   let viewSolutionsContent = (
     <>View User Solutions ({solutions?.length ?? '...'})</>
   );
-
-  const darkMode = useDarkMode();
   if (currentUserSolutions?.length) {
     viewSolutionsContent = (
       <>
@@ -47,19 +44,36 @@ export default function ProblemsListItemDropdown(
       </>
     );
   }
-  let solutionContent = <></>;
-  if (!isFocusProblem) {
-    solutionContent = (
-      <ProblemListItemSolution
-        problem={props.problem}
-        onShowSolutionSketch={props.onShowSolutionSketch}
-      />
-    );
-  }
+  return (
+    <button
+      type="button"
+      className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+      onClick={onViewProblemSolutions}
+    >
+      {viewSolutionsContent}
+    </button>
+  );
+}
+
+export default function ProblemsListItemDropdown(
+  props: ProblemsListItemProps & { isFocusProblem: boolean }
+) {
+  const [copied, setCopied] = React.useState(false);
+
+  const { problem, isFocusProblem } = props;
+
+  const darkMode = useDarkMode();
+  const solutionContent = isFocusProblem ? (
+    <></>
+  ) : (
+    <ProblemListItemSolution
+      problem={props.problem}
+      onShowSolutionSketch={props.onShowSolutionSketch}
+    />
+  );
 
   const tippyRef = React.useRef<Instance>();
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
-
   const onViewProblemSolutions = () => {
     tippyRef.current.hide();
     navigate('/problem-solutions/', {
@@ -76,14 +90,10 @@ export default function ProblemsListItemDropdown(
         isDropdownShown ? (
           <div className="-mx-2 text-left">
             {solutionContent}
-
-            <button
-              type="button"
-              className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
-              onClick={onViewProblemSolutions}
-            >
-              {viewSolutionsContent}
-            </button>
+            <ViewSolutionsContent
+              problem={problem}
+              onViewProblemSolutions={onViewProblemSolutions}
+            />
             <button
               type="button"
               className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
