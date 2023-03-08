@@ -24,7 +24,7 @@ export type Patches<T> = {
 export default class Block<
   T extends {
     [key: string]: string;
-  }
+  },
 > {
   private _state: T;
   public readonly id: string;
@@ -40,7 +40,7 @@ export default class Block<
    */
   private readonly _transactions: [
     InitialTransaction,
-    ...Transaction<Patches<T>>[]
+    ...Transaction<Patches<T>>[],
   ];
   private _sealed: boolean;
   public readonly version = 1;

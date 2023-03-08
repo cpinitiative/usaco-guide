@@ -96,9 +96,6 @@ exports.onCreateNode = async api => {
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           checkInvalidUsacoMetadata(metadata);
-          //const freshOrdering = importFresh<any>(
-          //  path.join(__dirname, './content/ordering.ts')
-          //);
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
@@ -125,9 +122,6 @@ exports.onCreateNode = async api => {
         .map(listId => ({
           listId,
           problems: parsedContent[listId].map(x => {
-            //const freshOrdering = importFresh<any>(
-            //  path.join(__dirname, './content/ordering.ts')
-            //);
             return {
               ...getProblemInfo(x, freshOrdering),
             };
@@ -361,12 +355,14 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
   const solutionTemplate = path.resolve(`./src/templates/solutionTemplate.tsx`);
   const solutions = result.data.solutions.edges;
+  const problemsWithInternalSolutions = new Set<string>();
   solutions.forEach(({ node }) => {
     try {
       // we want to find all problems that this solution can be an internal solution for
       const problemsForThisSolution = problems.filter(
         ({ node: problemNode }) => problemNode.uniqueId === node.frontmatter.id
       );
+      problemsWithInternalSolutions.add(node.frontmatter.id);
       if (problemsForThisSolution.length === 0) {
         throw new Error(
           "Couldn't find corresponding problem for internal solution with frontmatter ID " +
@@ -426,6 +422,15 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       throw e;
     }
   });
+  problems
+    .filter(x => x.node.solution?.kind === 'internal')
+    .forEach(({ node: problemNode }) => {
+      if (!problemsWithInternalSolutions.has(problemNode.uniqueId)) {
+        console.error(
+          `Problem ${problemNode.uniqueId} claims to have an internal solution but doesn't`
+        );
+      }
+    });
   // Generate Syllabus Pages //
   const syllabusTemplate = path.resolve(`./src/templates/syllabusTemplate.tsx`);
   freshOrdering.SECTIONS.forEach(division => {
@@ -493,6 +498,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       name: String!
       url: String!
       source: String!
+      sourceDescription: String
       isStarred: Boolean!
       difficulty: String
       tags: [String]
@@ -506,6 +512,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       name: String!
       url: String!
       source: String!
+      sourceDescription: String
       isStarred: Boolean!
       difficulty: String
       tags: [String]

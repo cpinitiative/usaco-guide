@@ -128,6 +128,7 @@ export const pageQuery = graphql`
           name
           url
           source
+          sourceDescription
           difficulty
           isStarred
           tags

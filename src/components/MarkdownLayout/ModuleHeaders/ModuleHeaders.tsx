@@ -86,19 +86,20 @@ export default function ModuleHeaders({
 
   return (
     <>
-      {markdownData instanceof ModuleInfo && markdownData.frequency !== null && (
-        <div className="px-0.5">
-          <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
-            <Frequency frequency={markdownData.frequency} />
-            {problemIDs.length > 0 && (
-              <DashboardProgressSmall
-                {...problemsProgressInfo}
-                total={problemIDs.length}
-              />
-            )}
+      {markdownData instanceof ModuleInfo &&
+        markdownData.frequency !== null && (
+          <div className="px-0.5">
+            <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
+              <Frequency frequency={markdownData.frequency} />
+              {problemIDs.length > 0 && (
+                <DashboardProgressSmall
+                  {...problemsProgressInfo}
+                  total={problemIDs.length}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-high-emphasis sm:text-3xl">

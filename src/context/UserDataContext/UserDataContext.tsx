@@ -247,6 +247,10 @@ export const UserDataProvider = ({
     api.setTriggerRerenderFunction(triggerRerender)
   );
 
+  React.useEffect(() => {
+    UserDataContextAPIs.forEach(api => api.setFirebaseApp(firebaseApp));
+  }, [firebaseApp]);
+
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
     const auth = getAuth(firebase);
