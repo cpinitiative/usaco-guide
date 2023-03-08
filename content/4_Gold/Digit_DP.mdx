@@ -82,7 +82,7 @@ void reset() {
 	}
 }
 
-ll solveDP(int loc, int k, bool largest, bool started, int targ, int targ2) {
+ll solve_dp(int loc, int k, bool largest, bool started, int targ, int targ2) {
 	if (loc == num.size()) {
 		if (!started) return 0;
 		if (targ2 != -1) {
@@ -108,7 +108,7 @@ ll solveDP(int loc, int k, bool largest, bool started, int targ, int targ2) {
 		if (isStarted && targ2 != -1) {
 			if (i != targ && i != targ2) continue;
 		}
-		ans += solveDP(loc + 1, k + (isStarted ? (targ == i ? 1 : -1) : 0),
+		ans += solve_dp(loc + 1, k + (isStarted ? (targ == i ? 1 : -1) : 0),
 		               isLargest, isStarted, targ, targ2);
 	}
 	return dp[loc][k][largest][started] = ans;
@@ -119,13 +119,13 @@ ll solve(ll x) {
 	ll ans = 0;
 	for (int i = 0; i <= 9; i++) {
 		reset();
-		ans += solveDP(0, 20, true, false, i, -1);
+		ans += solve_dp(0, 20, true, false, i, -1);
 	}
 	ll dup = 0;
 	for (int i = 0; i <= 9; i++) {
 		for (int j = 0; j <= 9; j++) {
 			reset();
-			dup += solveDP(0, 20, true, false, i, j);
+			dup += solve_dp(0, 20, true, false, i, j);
 		}
 	}
 	return ans - (dup / 2);
