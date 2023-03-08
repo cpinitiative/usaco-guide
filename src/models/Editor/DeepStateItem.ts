@@ -8,7 +8,7 @@ import StateItem from './StateItem';
 export default class DeepStateItem<
   T extends {
     [key: string]: string;
-  },
+  }
 > extends StateItem<T> {
   private readonly _val: T;
   constructor(id: number, timestamp: Timestamp, value: T) {
