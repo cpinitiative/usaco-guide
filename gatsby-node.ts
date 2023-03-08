@@ -96,9 +96,6 @@ exports.onCreateNode = async api => {
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           checkInvalidUsacoMetadata(metadata);
-          //const freshOrdering = importFresh<any>(
-          //  path.join(__dirname, './content/ordering.ts')
-          //);
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
@@ -125,9 +122,6 @@ exports.onCreateNode = async api => {
         .map(listId => ({
           listId,
           problems: parsedContent[listId].map(x => {
-            //const freshOrdering = importFresh<any>(
-            //  path.join(__dirname, './content/ordering.ts')
-            //);
             return {
               ...getProblemInfo(x, freshOrdering),
             };

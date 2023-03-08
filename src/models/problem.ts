@@ -3,23 +3,10 @@ import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
 import { books } from '../utils/books';
-export const contests = {
-  CCC: ['DMOJ', 'Canadian Computing Competition'],
-  CCO: ['DMOJ', 'Canadian Computing Olympiad'],
-  APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
-  'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
-  CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
-  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
-  COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
-  IOI: ['oj.uz', 'International Olympiad in Informatics'],
-  IZhO: ['oj.uz', 'International Zhautykov Olympiad'],
-  JOI: ['oj.uz', 'Japanese Olympiad in Informatics'],
-  LMiO: ['oj.uz', 'Lithuanian Olympiad in Informatics'],
-  RMI: ['oj.uz', 'Romanian Master of Informatics'],
-  'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
-};
 
 export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Plat'];
+
+// abbreviation -> [URL, description or full name, instructions to view solutions]
 export const probSources = {
   Bronze: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
@@ -104,10 +91,23 @@ export const probSources = {
   YS: ['https://judge.yosupo.jp/problem/', 'Library Checker'],
 };
 
-// if (sol == '' && problem.source == 'HE') {
-//   sol = '@Check HE';
-//   hover = 'The editorial tab should be right next to the problem tab.';
-// }
+// olympiads on DMOJ and oj.uz
+// abbreviation -> [OJ, full name]
+export const olympiads = {
+  CCC: ['DMOJ', 'Canadian Computing Competition'],
+  CCO: ['DMOJ', 'Canadian Computing Olympiad'],
+  APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
+  'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
+  CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
+  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
+  COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
+  IOI: ['oj.uz', 'International Olympiad in Informatics'],
+  IZhO: ['oj.uz', 'International Zhautykov Olympiad'],
+  JOI: ['oj.uz', 'Japanese Olympiad in Informatics'],
+  LMiO: ['oj.uz', 'Lithuanian Olympiad in Informatics'],
+  RMI: ['oj.uz', 'Romanian Master of Informatics'],
+  'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
+};
 
 export type ProblemInfo = {
   /**
@@ -117,7 +117,7 @@ export type ProblemInfo = {
   name: string;
   url: string;
   /**
-   * Source of the problem. More information about some problem sources can be found in the probSources and the contests map.
+   * Source of the problem. More information about some problem sources can be found in the probSources and the olympiads map.
    */
   source: string;
   difficulty: ProblemDifficulty;
@@ -233,7 +233,7 @@ export type ProblemSolutionMetadata =
 export const isUsaco = (source: string): boolean => {
   if (recentUsaco.some(x => source.includes(x))) return true;
   if (source.startsWith('20')) {
-    // I think this is for the division list -- the source in this case is like 2015 December or something
+    // this is for the division list -- the source in this case is like 2015 December or something
     if (
       ['December', 'January', 'February', 'US Open'].some(x =>
         source.endsWith(x)
@@ -311,7 +311,7 @@ export const getProblemInfo = (
     info.isStarred === null ||
     info.isStarred === undefined ||
     !info.name ||
-    !info.url
+    !info.url.startsWith('http')
   ) {
     console.error("problem metadata isn't valid", metadata);
     throw new Error('Bad problem metadata');
@@ -589,33 +589,13 @@ export class Problem {
   }
 
   private autoGenerateInfoFromSource() {
-    if (!(this.source in probSources) && isUsaco(this.source)) {
-      this.url = probSources['Bronze'][0] + this.url;
-      return;
-    }
     if (this.source in probSources) {
-      if (!this.url.startsWith('http')) {
-        if (
-          this.source == 'CF' &&
-          (this.url.startsWith('problemset') ||
-            this.url.startsWith('contest') ||
-            this.url.startsWith('gym') ||
-            this.url.startsWith('edu'))
-        ) {
-          this.url = 'https://codeforces.com/' + this.url;
-        } else this.url = probSources[this.source][0] + this.url;
-      }
       this.tooltipHoverDescription = probSources[this.source][1];
-    } else if (this.source in contests) {
-      if (!this.url.startsWith('http')) {
-        this.url = probSources[contests[this.source][0]][0] + this.url;
-      }
-      this.tooltipHoverDescription = contests[this.source][1];
+    } else if (this.source in olympiads) {
+      this.tooltipHoverDescription = olympiads[this.source][1];
     } else {
-      if (!this.url.startsWith('http')) {
-        throw `URL ${this.id} is not valid. Did you make a typo in the problem source (${this.source}), or in the URL? Problem name: ${this.name}`;
-      }
       if (this.source.indexOf('@') != -1) {
+        // source@tooltip
         const ind = this.source.indexOf('@');
         this.tooltipHoverDescription = this.source.substring(
           ind + 1,
