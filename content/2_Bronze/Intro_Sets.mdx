@@ -478,23 +478,17 @@ print(1 in d)  # True
 ### Iterating Over Maps
 
 <LanguageSection>
-
 <CPPSection>
 
 An `std::map` stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the
-form `{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
-keyword suffices to iterate over any type of pair (here, `auto` substitutes for
-`pair<const int, int>`).
+form `{key, value}`. To iterate over maps, you can use a `for` loop.
+The `auto` keyword suffices to iterate over any type of pair
+(here, `auto` substitutes for `pair<int, int>`).
 
 ```cpp
+// Both of these output the same thing
 for (const auto &x : m) { cout << x.first << " " << x.second << endl; }
 for (auto x : m) { cout << x.first << " " << x.second << endl; }
-
-/* both output the following:
-0 -1
-1 5
-3 14
-*/
 ```
 
 The first method (iterating over const references) is generally preferred over
@@ -504,18 +498,12 @@ allowing you to modify the values (but not the keys) of the pairs stored in the
 map:
 
 ```cpp
-for (auto &x : m) { x.second = 3; }
-for (pair<int, int> x : m) { cout << x.first << " " << x.second << endl; }
-
-/*
-0 3
-1 3
-3 3
-*/
+for (auto &x : m) {
+	x.second = 1234;  // Change all values to 1234
+}
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 To iterate over maps, you can use a for-each loop over the keys:
@@ -532,13 +520,21 @@ for (Map.Entry entry : m.entrySet()) {
 }
 ```
 
-</JavaSection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```java
+for (int k : m.keySet()) {
+	m.put(k, 1234);  // Change all values to 1234
+}
+```
+
+</JavaSection>
 <PySection>
 
-To iterate over `dict`s, there are three options. Dicts will be returned in the
-same order of insertion in
-[Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+To iterate over `dict`s, there are three options, all of which involve for loops.
+Dicts will be returned in the same order of insertion in
+[Python 3.6+](https://stackoverflow.com/questions/39980323).
 You can iterate over the keys:
 
 ```py
@@ -546,22 +542,29 @@ for key in d:
 	print(key)
 ```
 
-You can iterate over the values:
+Over the values:
 
 ```py
 for value in d.values():
 	print(value)
 ```
 
-You can iterate over the key-value pairs:
+And even over key-value pairs:
 
 ```py
 for key, value in d.items():
 	print(key, value)
 ```
 
-</PySection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```py
+for key in d:
+	d[key] = 1234  # Change all values to 1234
+```
+
+</PySection>
 </LanguageSection>
 
 While you are free to change the _values_ in a map when iterating over it (as
