@@ -309,7 +309,12 @@ We can also use the extended Euclidean algorithm. See the module in the
 
 </Optional>
 
+<CPPOnly>
+
 ## Templates
+
+Here's some templates that implement numerical types that automatically
+wrap around when they exceed a certain modulus:
 
 <Resources>
 	<Resource
@@ -324,14 +329,21 @@ We can also use the extended Euclidean algorithm. See the module in the
 	>
 		feasible to type up during a contest
 	</Resource>
-    <Resource
+	<Resource
 		source="AtCoder"
 		title="ModInt"
+		url="https://atcoder.jp/posts/518"
+	>
+		contains a `modint.hpp` file
+	</Resource>
+	<Resource
+		source="AtCoder"
+		title="ModInt Documentation"
 		url="https://atcoder.github.io/ac-library/document_en/modint.html"
 	/>
 </Resources>
 
-Using BenQ's template, both of these do the same thing:
+Here's an example using BenQ's template:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -372,11 +384,29 @@ int main() {
 	}
 	{
 		mi a = 1e8, b = 1e8, c = 1e8;
-		// cout << a * b * c << "\n";  // errors out- we have to convert it to an int
+		// cout << a * b * c << "\n";  // Errors- we have to cast this an an int
 		cout << (int) (a * b * c) << "\n";  // 49000000
 	}
 }
 ```
+
+And one using AtCoder's:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#include <atcoder/modint>
+using mint = atcoder::modint;
+
+int main() {
+	mint a = 1e8, b = 1e8, c = 1e8;
+	mint res = a * b * c;
+	cout << res.val() << endl;  // Same result
+}
+```
+
+</CPPOnly>
 
 ## Problems
 
