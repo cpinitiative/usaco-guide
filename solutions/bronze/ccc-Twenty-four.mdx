@@ -312,7 +312,6 @@ public class Solution {
 
 <PySection>
 ```py
-INF = float('inf')
 ans = 0
 hand = [0] * 4  # The given card hand.
 hand_permutation = []  # The generated permutation of the card hand.
@@ -329,7 +328,7 @@ def operation(op, num1, num2):
 	else:
 		# The divisor cannot be 0 and the quotient must be a whole number.
 		if num2 == 0 or num1 % num2 != 0:
-			return -INF
+			return float('-inf')
 		return num1 // num2
 
 # Function that generates all possible permutations of the card hand.
@@ -347,7 +346,7 @@ def generate_hand_permutation():
 						hand_permutation[1]
 					)
 					# If the operation is invalid, continue;
-					if first == -INF:
+					if first == float('-inf'):
 						continue
 
 					second = operation(
@@ -355,7 +354,7 @@ def generate_hand_permutation():
 						first, 
 						hand_permutation[2]
 					)
-					if second == -INF:
+					if second == float('-inf'):
 						continue
 
 					third = operation(
@@ -363,7 +362,7 @@ def generate_hand_permutation():
 						second, 
 						hand_permutation[3]
 					)
-					if third == -INF:
+					if third == float('-inf'):
 						continue
 
 					if third <= 24:
@@ -378,7 +377,7 @@ def generate_hand_permutation():
 						hand_permutation[0], 
 						hand_permutation[1]
 					)
-					if first == -INF:
+					if first == float('-inf'):
 						continue
 
 					second = operation(
@@ -386,7 +385,7 @@ def generate_hand_permutation():
 						hand_permutation[2], 
 						hand_permutation[3]
 					)
-					if second == -INF:
+					if second == float('-inf'):
 						continue
 
 					third = operation(
@@ -394,7 +393,7 @@ def generate_hand_permutation():
 						first, 
 						second
 					)
-					if third == -INF:
+					if third == float('-inf'):
 						continue
 
 					if third <= 24:
@@ -411,7 +410,7 @@ def generate_hand_permutation():
 			hand_permutation.pop()
 
 for _ in range(int(input())):
-	ans = -INF
+	ans = float('-inf')
 	for i in range(4):
 		hand[i] = int(input())
 
