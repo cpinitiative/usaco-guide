@@ -20,25 +20,27 @@ using namespace std;
 bool dp[2][5000001];
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("feast.in","r",stdin);
-	freopen("feast.out","w",stdout);
-	int T,A,B;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	freopen("feast.in", "r", stdin);
+	freopen("feast.out", "w", stdout);
+	int T, A, B;
 	cin >> T >> A >> B;
 	dp[0][0] = true;
 	for (int i = 0; i < T + 1; ++i) {
-		if (i-A>=0) dp[0][i] |= dp[0][i-A];
-		if (i-B>=0) dp[0][i] |= dp[0][i-B];
-		dp[1][i/2] |= dp[0][i];
+		if (i - A >= 0) dp[0][i] |= dp[0][i - A];
+		if (i - B >= 0) dp[0][i] |= dp[0][i - B];
+		dp[1][i / 2] |= dp[0][i];
 	}
 	for (int i = 0; i < T + 1; ++i) {
-		if (i-A>=0) dp[1][i] |= dp[1][i-A];
-		if (i-B>=0) dp[1][i] |= dp[1][i-B];
+		if (i - A >= 0) dp[1][i] |= dp[1][i - A];
+		if (i - B >= 0) dp[1][i] |= dp[1][i - B];
 	}
-	for (int i = T; i >= 0; --i) if (dp[1][i]) {
-		cout << i;
-		break;
-	}
+	for (int i = T; i >= 0; --i)
+		if (dp[1][i]) {
+			cout << i;
+			break;
+		}
 	return 0;
 }
 ```
@@ -55,16 +57,16 @@ Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** 
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
-#include <vector>
-#include <set>
+#include <iostream>
 #include <queue>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 int main() {
 	std::ifstream read("feast.in");
@@ -102,7 +104,7 @@ int main() {
 	}
 
 	int best = 0;
-	for (const auto& [fullness, _] : poss_fullness) {
+	for (const auto &[fullness, _] : poss_fullness) {
 		best = std::max(best, fullness);
 	}
 
@@ -115,8 +117,8 @@ int main() {
 
 ```py
 from collections import deque
-	
-with open('feast.in') as read:
+
+with open("feast.in") as read:
 	max_fullness, orange, lemon = map(int, read.readline().split())
 
 poss_fullness = {(0, False)}  # Keep track of which states we visited
@@ -130,7 +132,7 @@ while to_process:
 		if water not in poss_fullness:
 			to_process.appendleft(water)
 			poss_fullness.add(water)
-	
+
 	# Eat a fruit
 	for fruit in (orange, lemon):
 		after = fullness + fruit
@@ -140,7 +142,7 @@ while to_process:
 			poss_fullness.add(to_add)
 
 best = max([n[0] for n in poss_fullness])
-print(best, file=open('feast.out', 'w'))
+print(best, file=open("feast.out", "w"))
 ```
 
 </PySection>

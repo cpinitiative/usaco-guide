@@ -20,15 +20,13 @@ using namespace std;
 
 int main() {
 	freopen("haybales.in", "r", stdin);
-	
+
 	int bale_num;
 	int query_num;
 	cin >> bale_num >> query_num;
 	vector<int> haybales(bale_num);
-	for (int i = 0; i < bale_num; i++) {
-		cin >> haybales[i];
-	}
-	
+	for (int i = 0; i < bale_num; i++) { cin >> haybales[i]; }
+
 	sort(haybales.begin(), haybales.end());
 
 	freopen("haybales.out", "w", stdout);
@@ -36,14 +34,12 @@ int main() {
 		int start, end;
 		cin >> start >> end;
 
-		int left = lower_bound(
-			haybales.begin(), haybales.end(), start
-		) - haybales.begin();
-		
-		int right = upper_bound(
-			haybales.begin(), haybales.end(), end
-		) - haybales.begin();
-		
+		int left = lower_bound(haybales.begin(), haybales.end(), start) -
+		           haybales.begin();
+
+		int right = upper_bound(haybales.begin(), haybales.end(), end) -
+		            haybales.begin();
+
 		cout << right - left << '\n';
 	}
 }
@@ -53,23 +49,23 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Haybales {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("haybales.in"));
-		
+
 		StringTokenizer initial = new StringTokenizer(in.readLine());
 		int baleNum = Integer.parseInt(initial.nextToken());
 		int queryNum = Integer.parseInt(initial.nextToken());
-		
+
 		int haybales[] = new int[baleNum];
 		StringTokenizer baleST = new StringTokenizer(in.readLine());
 		for (int i = 0; i < baleNum; i++) {
 			haybales[i] = Integer.parseInt(baleST.nextToken());
 		}
-		
+
 		Arrays.sort(haybales);
 
 		PrintWriter pw = new PrintWriter("haybales.out");
@@ -77,10 +73,10 @@ public class Haybales {
 			StringTokenizer query = new StringTokenizer(in.readLine());
 			int start = Integer.parseInt(query.nextToken());
 			int end = Integer.parseInt(query.nextToken());
-			
+
 			int left = lowerBound(haybales, start);
 			int right = upperBound(haybales, end);
-			
+
 			pw.println(right - left);
 		}
 		pw.close();
@@ -122,7 +118,7 @@ public class Haybales {
 ```py
 from bisect import bisect_left, bisect_right
 
-with open('haybales.in') as read:
+with open("haybales.in") as read:
 	bale_num, query_num = [int(i) for i in read.readline().split()]
 	haybales = sorted(int(i) for i in read.readline().split())
 
@@ -133,7 +129,7 @@ with open('haybales.in') as read:
 		right = bisect_right(haybales, end)
 		ans.append(right - left)
 
-print('\n'.join(str(a) for a in ans), file=open('haybales.out', 'w'))
+print("\n".join(str(a) for a in ans), file=open("haybales.out", "w"))
 ```
 
 </PySection>

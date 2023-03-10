@@ -51,19 +51,17 @@ using namespace std;
 int MOD = 1000000007;
 long dp[2][100000];
 vector<int> adj[100000];
-void dfs(int i, int p){
+void dfs(int i, int p) {
 	dp[0][i] = 1;
 	dp[1][i] = 1;
-	for(int v : adj[i]){
-		if(v != p){
+	for (int v : adj[i]) {
+		if (v != p) {
 			dfs(v, i);
-			dp[0][i] = (dp[0][i] * (dp[0][v] + dp[1][v]))%MOD;
+			dp[0][i] = (dp[0][i] * (dp[0][v] + dp[1][v])) % MOD;
 		}
 	}
-	for(int v : adj[i]){
-		if(v != p){
-			dp[1][i] = (dp[1][i] * dp[0][v]) % MOD;
-		}
+	for (int v : adj[i]) {
+		if (v != p) { dp[1][i] = (dp[1][i] * dp[0][v]) % MOD; }
 	}
 }
 int main() {
@@ -71,7 +69,7 @@ int main() {
 	cin.tie(0);
 	int n;
 	cin >> n;
-	for (int i = 0; i < n - 1; i++){
+	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
 		u--, v--;
@@ -95,7 +93,7 @@ public class Main {
 	public static ArrayList<Integer>[] adj;
 	public static boolean[] visited;
 	public static long[][] dp;
-	public static final int MOD = (int) 1e9 + 7;
+	public static final int MOD = (int)1e9 + 7;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
@@ -104,10 +102,8 @@ public class Main {
 		adj = new ArrayList[N];
 		dp = new long[2][N];
 
-		for (int i = 0; i < N; i++) {
-			adj[i] = new ArrayList<>();
-		}
-		
+		for (int i = 0; i < N; i++) { adj[i] = new ArrayList<>(); }
+
 		for (int i = 0; i < N - 1; i++) {
 			StringTokenizer st = new StringTokenizer(r.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
@@ -118,7 +114,7 @@ public class Main {
 
 		dfs(0, -1);
 
-		/* 
+		/*
 		 * Return the number of ways for the root to be black,
 		 * added to the number of ways for the root to be white.
 		 */
@@ -129,20 +125,20 @@ public class Main {
 		dp[0][node] = 1;
 		dp[1][node] = 1;
 
-		//The node is painted white.
+		// The node is painted white.
 		for (int next : adj[node]) {
 			if (next != par) {
 				dfs(next, node);
-				//Number of ways to paint the subtree.
+				// Number of ways to paint the subtree.
 				long subtree = (dp[0][next] + dp[1][next]);
 				dp[0][node] = (dp[0][node] * subtree) % MOD;
 			}
 		}
 
-		//The node is painted black.
+		// The node is painted black.
 		for (int next : adj[node]) {
 			if (next != par) {
-				//If this node is black, none of the children can be black.
+				// If this node is black, none of the children can be black.
 				dp[1][node] = (dp[1][node] * dp[0][next]) % MOD;
 			}
 		}
@@ -156,6 +152,7 @@ public class Main {
 ```py
 # to solve Runtime Error problem with recursion in python
 from sys import setrecursionlimit
+
 setrecursionlimit(10**9)
 
 n = int(input())
@@ -164,7 +161,7 @@ MOD = 10**9 + 7
 # representing the tree in an adjacency list
 adj = [[] for i in range(n)]
 
-for i in range(n-1):
+for i in range(n - 1):
 	x, y = map(int, input().split())
 	x -= 1
 	y -= 1
@@ -176,23 +173,24 @@ for i in range(n-1):
 
 dp = [[0] * 2 for i in range(n)]
 
+
 def dfs(u, parent):
 	dp[u][0] = dp[u][1] = 1
-	for v in adj[u]: # traversing the adjacency list of node u
-		if v != parent: # v should be a child for u not its parent
-			dfs(v, u) # recursively calculate the dp values for child v 
-			# accumulate the children dp values to the dp of node u 
+	for v in adj[u]:  # traversing the adjacency list of node u
+		if v != parent:  # v should be a child for u not its parent
+			dfs(v, u)  # recursively calculate the dp values for child v
+			# accumulate the children dp values to the dp of node u
 			# don't forget to take the values MOD 1e9+7
-			dp[u][1] *= dp[v][0] 
+			dp[u][1] *= dp[v][0]
 			dp[u][1] %= MOD
 			dp[u][0] *= (dp[v][0] + dp[v][1]) % MOD
 			dp[u][0] %= MOD
+
 
 dfs(0, -1)
 
 ans = (dp[0][0] + dp[0][1]) % MOD
 print(ans)
-
 ```
 </PySection>
 </LanguageSection>

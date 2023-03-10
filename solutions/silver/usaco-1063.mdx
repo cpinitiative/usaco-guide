@@ -72,12 +72,12 @@ Thus, we have to add $N+1$ to our subtotal, which in our case gives us the $4+1=
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cassert>
-#include <vector>
-#include <set>
-#include <map>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <map>
+#include <set>
+#include <vector>
 
 using namespace std;
 
@@ -87,7 +87,7 @@ int main() {
 
 	set<int> seen_x, seen_y;
 	vector<pair<int, int>> cows(cow_num);
-	for (pair<int, int>& c : cows) {
+	for (pair<int, int> &c : cows) {
 		cin >> c.first >> c.second;
 		assert(!(seen_x.count(c.first) || seen_y.count(c.second)));
 		seen_x.insert(c.first);
@@ -97,20 +97,16 @@ int main() {
 	// we do a little coordinate compression
 	sort(cows.begin(), cows.end());  // sort by x
 	map<int, int> reduced_x;
-	for (int c = 0; c < cow_num; c++) {
-		reduced_x[cows[c].first] = c;
-	}
+	for (int c = 0; c < cow_num; c++) { reduced_x[cows[c].first] = c; }
 
-	auto cmp = [&] (const pair<int, int>& c1, const pair<int, int>& c2) {
+	auto cmp = [&](const pair<int, int> &c1, const pair<int, int> &c2) {
 		return c1.second < c2.second;
 	};
 	sort(cows.begin(), cows.end(), cmp);  // sort by y
 	map<int, int> reduced_y;
-	for (int c = 0; c < cow_num; c++) {
-		reduced_y[cows[c].second] = c;
-	}
+	for (int c = 0; c < cow_num; c++) { reduced_y[cows[c].second] = c; }
 
-	for (auto& [x, y] : cows) {
+	for (auto &[x, y] : cows) {
 		x = reduced_x[x];
 		y = reduced_y[y];
 	}
@@ -123,12 +119,10 @@ int main() {
 	for (int c = 0; c < cow_num; c++) {
 		int curr_y = cows[c].second;
 		for (int x = 1; x <= cow_num; x++) {
-			lt_y[curr_y][x] = (
-				lt_y[curr_y][x - 1] + (cows[x - 1].second < curr_y)
-			);
-			gt_y[curr_y][x] = (
-				gt_y[curr_y][x - 1] + (cows[x - 1].second > curr_y)
-			);
+			lt_y[curr_y][x] =
+			    (lt_y[curr_y][x - 1] + (cows[x - 1].second < curr_y));
+			gt_y[curr_y][x] =
+			    (gt_y[curr_y][x - 1] + (cows[x - 1].second > curr_y));
 		}
 	}
 
@@ -140,7 +134,7 @@ int main() {
 
 			int bottom_total = 1 + lt_y[bottom][c2 + 1] - lt_y[bottom][c1];
 			int top_total = 1 + gt_y[top][c2 + 1] - gt_y[top][c1];
-			total += (long long) bottom_total * top_total;
+			total += (long long)bottom_total * top_total;
 		}
 	}
 
@@ -158,12 +152,13 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class RPasture {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		int cowNum = Integer.parseInt(read.readLine());
 
@@ -182,15 +177,11 @@ public class RPasture {
 		// we do a little coordinate compression
 		Arrays.sort(cows, Comparator.comparingInt(c -> c[0]));  // sort by x
 		Map<Integer, Integer> reducedX = new HashMap<>();
-		for (int c = 0; c < cowNum; c++) {
-			reducedX.put(cows[c][0], c);
-		}
+		for (int c = 0; c < cowNum; c++) { reducedX.put(cows[c][0], c); }
 
 		Arrays.sort(cows, Comparator.comparingInt(c -> c[1]));  // sort by y
 		Map<Integer, Integer> reducedY = new HashMap<>();
-		for (int c = 0; c < cowNum; c++) {
-			reducedY.put(cows[c][1], c);
-		}
+		for (int c = 0; c < cowNum; c++) { reducedY.put(cows[c][1], c); }
 
 		for (int c = 0; c < cowNum; c++) {
 			cows[c][0] = reducedX.get(cows[c][0]);
@@ -205,24 +196,22 @@ public class RPasture {
 		for (int c = 0; c < cowNum; c++) {
 			int currY = cows[c][1];
 			for (int x = 1; x <= cowNum; x++) {
-				ltY[currY][x] = (
-					ltY[currY][x - 1] + (cows[x - 1][1] < currY ? 1 : 0)
-				);
-				gtY[currY][x] = (
-					gtY[currY][x - 1] + (cows[x - 1][1] > currY ? 1 : 0)
-				);
+				ltY[currY][x] =
+				    (ltY[currY][x - 1] + (cows[x - 1][1] < currY ? 1 : 0));
+				gtY[currY][x] =
+				    (gtY[currY][x - 1] + (cows[x - 1][1] > currY ? 1 : 0));
 			}
 		}
-	
+
 		long total = 0;
 		for (int c1 = 0; c1 < cowNum; c1++) {
 			for (int c2 = c1 + 1; c2 < cowNum; c2++) {
 				int bottom = Math.min(cows[c1][1], cows[c2][1]);
 				int top = Math.max(cows[c1][1], cows[c2][1]);
-	
+
 				int bottomTotal = 1 + ltY[bottom][c2 + 1] - ltY[bottom][c1];
 				int topTotal = 1 + gtY[top][c2 + 1] - gtY[top][c1];
-				total += (long) bottomTotal * topTotal;
+				total += (long)bottomTotal * topTotal;
 			}
 		}
 

@@ -21,35 +21,43 @@ values by storing the pairs `{a[i],i}`.
 <LanguageSection>
 
 <CPPSection>
-	
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(){
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	int n,x; cin >> n >> x;
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, x;
+	cin >> n >> x;
 	vector<pair<int, int>> arr;
-	for(int i = 1; i <= n; i++){
-		int a; cin >> a;
-		pair<int, int> p; p.first = a; p.second = i;
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		pair<int, int> p;
+		p.first = a;
+		p.second = i;
 		// first in pair represents value, second represents index
 		arr.push_back(p);
 	}
 	sort(begin(arr), end(arr));
-	for(int i = 0; i < n; i++){
-		int l, r; l = 0; r = n-1;
-		while(l != r){
-			int target; target = x - arr.at(i).first;
-			if(l != i && r != i && arr.at(l).first + arr.at(r).first == target){
-				cout << arr.at(i).second << " " << arr.at(l).second
-					 << " " << arr.at(r).second << endl;
+	for (int i = 0; i < n; i++) {
+		int l, r;
+		l = 0;
+		r = n - 1;
+		while (l != r) {
+			int target;
+			target = x - arr.at(i).first;
+			if (l != i && r != i &&
+			    arr.at(l).first + arr.at(r).first == target) {
+				cout << arr.at(i).second << " " << arr.at(l).second << " "
+				     << arr.at(r).second << endl;
 				return 0;
 			}
-			if(arr.at(l).first + arr.at(r).first < target){
+			if (arr.at(l).first + arr.at(r).first < target) {
 				l++;
-			}
-			else{
+			} else {
 				r--;
 			}
 		}
@@ -57,11 +65,11 @@ int main(){
 	cout << "IMPOSSIBLE" << endl;
 }
 ```
-	
+
 </CPPSection>
-	
+
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -69,12 +77,12 @@ import java.util.*;
 public class SumOfThreeValues {
 	static class Group implements Comparable<Group> {
 		int value, index;
-		
+
 		Group (int value, int index) {
 			this.value = value;
 			this.index = index;
 		}
-		
+
 		@Override
 		public int compareTo (Group other) {
 			return Integer.compare(this.value, other.value);
@@ -130,11 +138,11 @@ public class SumOfThreeValues {
 	//CodeSnip{Kattio}
 }
 ```
-	
+
 </JavaSection>
 
 <PySection>
-```python
+```py
 n, x = map(int, input().split())
 a = list(map(int, input().split()))
 
@@ -150,7 +158,7 @@ for i in range(n):
 		target = x - p[i][0]
 
 		"""
-		if the values sum to the target and aren't from the same index, 
+		if the values sum to the target and aren't from the same index,
 		we have found the answer
 		"""
 		if left != i and right != i and p[left][0] + p[right][0] == target:
@@ -168,5 +176,5 @@ for i in range(n):
 print("IMPOSSIBLE")
 ```
 </PySection>
-	
+
 </LanguageSection>

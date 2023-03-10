@@ -4,7 +4,7 @@ title: 'String Hashing'
 author: Benjamin Qi, Andi Qu
 contributors: Andrew Wang, Kevin Sheng
 description:
-  'Quickly test equality of substrings with a small probability of failure.'
+  'Quickly testing equality of substrings with a small probability of failure.'
 frequency: 1
 prerequisites:
   - modular
@@ -150,7 +150,7 @@ polynomial will always be $B^{b - a}$.
 
 <Info title="Collision Probability">
 
-In general, when using polynomial hashing modulo a prime modulus $M$, 
+In general, when using polynomial hashing modulo a prime modulus $M$,
 the probability of two distinct strings having equal hashing over all possible choices
 of the base $B$ can be up to $\frac{n}{M}$, where $n$ is the length of the longer
 of the two strings. See rng-58's blog post about hashing (linked above)
@@ -167,17 +167,17 @@ they hash to the same value is at most $10^{-4}$.
 <Warning>
 
 Given a set of the hashes of $m$ distinct strings with length up to $n$, the probability of two
-strings having equal hashes can be up to $\frac{m^2n}{M}$ by the 
+strings having equal hashes can be up to $\frac{m^2n}{M}$ by the
 [birthday paradox](https://en.wikipedia.org/wiki/Birthday_problem). Assuming
-$m$ and $n$ are on the order of $10^5$, $M=10^9+7$ is nowhere close to 
-large enough to avoid collisions. Use a larger prime modulus such as $2^{61}-1$ 
+$m$ and $n$ are on the order of $10^5$, $M=10^9+7$ is nowhere close to
+large enough to avoid collisions. Use a larger prime modulus such as $2^{61}-1$
 (and do multiplications using 128-bit integers).
 
 </Warning>
 
 <Warning>
 
-In contests with open hacking (in particular, CodeForces educational rounds), 
+In contests with open hacking (in particular, Codeforces educational rounds),
 make sure to choose the base of your polynomial hash randomly, as mentioned
 [here](https://codeforces.com/blog/entry/60442).
 
@@ -188,11 +188,11 @@ make sure to choose the base of your polynomial hash randomly, as mentioned
 <CPPSection>
 
 In C++, a virtually unhackable way of generating $B$ in the implementation
-above is to use a random number generator seeded with a high-precision clock, 
+above is to use a random number generator seeded with a high-precision clock,
 as described [here](https://codeforces.com/blog/entry/61587?#comment-455289).
 
 ```cpp
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 const ll B = uniform_int_distribution<ll>(0, M - 1)(rng);
 ```
 
@@ -229,7 +229,7 @@ One way to solve this is by storing the polynomial hashes of each match in a
 set, since we expect different permutations to have different polynomial
 hashes. The answer would simply be the size of that set at the end.
 
-Using a relatively small modulus such as $M=10^9+9$ will not pass (see the 
+Using a relatively small modulus such as $M=10^9+9$ will not pass (see the
 note above regarding the birthday paradox). Instead, we use $M=2^{61}-1$.
 
 <LanguageSection>
@@ -275,7 +275,7 @@ class HashedString {
 		return (raw_val + M) % M;
 	}
 };
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 vector<ll> HashedString::pow = {1};
 const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
 //EndCodeSnip
@@ -336,7 +336,7 @@ compute the product $(B + s_1)(B + s_2) \dots (B + s_k) \bmod M$ as the hash
 (again, using two modulos). This hash is nice because the relative order of the
 letters doesn't matter, as multiplication is commutative. Furthermore,
 as any two strings with different frequency tables map to different polynomials
-in $B$, they hash to the same value with probability at most $\frac{|N|}{M}$ 
+in $B$, they hash to the same value with probability at most $\frac{|N|}{M}$
 over the choice of $B$.
 
 Since this hash requires the modular inverse, there's an extra $\log M$ factor
@@ -384,7 +384,7 @@ class HashedString {
 		return (raw_val + M) % M;
 	}
 };
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 vector<ll> HashedString::pow = {1};
 const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
 // EndCodeSnip

@@ -2,6 +2,7 @@ import Filter from 'bad-words';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
+import { useDarkMode } from '../context/DarkModeContext';
 import { SignInContext } from '../context/SignInContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
@@ -28,6 +29,7 @@ export default function ProblemSolutions({
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
+  const isDarkMode = useDarkMode();
   const filter = new Filter();
   const langArr = ['cpp', 'java', 'py'];
   langArr.sort(function (first, second) {
@@ -127,6 +129,7 @@ export default function ProblemSolutions({
                       ? `language-${submission.language}`
                       : undefined
                   }
+                  isDarkMode={isDarkMode}
                 >
                   {submission.solutionCode}
                 </CodeBlock>
@@ -209,6 +212,7 @@ export default function ProblemSolutions({
                             ? `language-${submission.language}`
                             : undefined
                         }
+                        isDarkMode={isDarkMode}
                       >
                         {filter.isProfane(submission.solutionCode)
                           ? filter.clean(submission.solutionCode)

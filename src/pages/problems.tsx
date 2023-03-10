@@ -1,4 +1,4 @@
-import { PageProps } from 'gatsby';
+import { graphql, PageProps } from 'gatsby';
 import * as React from 'react';
 import {
   connectHits,
@@ -36,8 +36,13 @@ const CustomSearchBox = connectSearchBox(SearchBox);
 const CustomHits = connectHits(ProblemHits);
 const CustomRefinementList = connectRefinementList(RefinementList);
 
-
 export default function ProblemsPage(props: PageProps) {
+  const { problems } = props.data as any;
+  const problemIds = problems.edges.reduce((acc, cur) => {
+    const problem = cur.node;
+    acc.push(problem.uniqueId);
+    return acc;
+  }, []);
   return (
     <Layout>
       <SEO title="All Problems" />
@@ -103,6 +108,7 @@ export default function ProblemsPage(props: PageProps) {
                     attribute="objectID"
                     limit={500}
                     searchable
+                    problemIds={problemIds}
                   />
                 </div>
               </div>
@@ -126,3 +132,15 @@ export default function ProblemsPage(props: PageProps) {
     </Layout>
   );
 }
+
+export const pageQuery = graphql`
+  query {
+    problems: allProblemInfo {
+      edges {
+        node {
+          uniqueId
+        }
+      }
+    }
+  }
+`;

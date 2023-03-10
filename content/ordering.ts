@@ -75,23 +75,19 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Complete Search',
-      description:
-        'Solving Bronze problems by checking all possible cases in the solution space.',
       items: ['intro-complete', 'complete-rec'],
     },
     {
       name: 'Sorting & Sets',
-      description: '',
       items: ['intro-sorting', 'intro-sets'],
-      // It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.
     },
     {
       name: 'Additional',
-      description: '',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
     {
       name: 'Conclusion',
+      description: 'Congratulations on making it this far!',
       items: ['bronze-conclusion'],
     },
   ],
@@ -114,11 +110,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Graphs',
       description:
-        'Every (?) Silver - Plat contest has at least one graph problem.',
+        'Most Silver to Platinum contests have at least one graph problem.',
       items: ['dfs', 'flood-fill', 'intro-tree', 'func-graphs'],
     },
     {
       name: 'Conclusion',
+      description: 'Congratulations on making it this far!',
       items: ['silver-conclusion'],
     },
   ],
@@ -130,7 +127,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Dynamic Programming',
       description:
-        'Every (?) Gold and Platinum contest has at least one DP problem.',
+        'Most Gold and Platinum contests have at least one DP problem.',
       items: [
         'intro-dp',
         'knapsack',
@@ -142,6 +139,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Graphs',
+      description:
+        'Most Silver to Platinum contests have at least one graph problem.',
       items: ['bfs', 'dsu', 'toposort', 'shortest-paths', 'mst'],
     },
     {
@@ -153,24 +152,24 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['tree-euler', 'dp-trees', 'all-roots'],
     },
     {
-      name: 'Hashing',
-      description: 'Rarely required at this level, but still good to know.',
-      items: ['string-hashing', 'unordered-map', 'faster-hashmap'],
-    },
-    {
-      name: 'Misc. Topics',
-      items: ['meet-in-the-middle', 'intro-bitwise'],
+      name: 'Additional Topics',
+      description: 'Rarely required.',
+      items: [
+        'string-hashing',
+        'hashmaps',
+        'meet-in-the-middle',
+        'intro-bitwise',
+      ],
     },
     {
       name: 'Conclusion',
+      description: 'Congratulations on making it this far!',
       items: ['gold-conclusion'],
     },
   ],
   plat: [
     {
       name: 'Range Queries',
-      description:
-        'It seems that no Platinum contest is complete without a segment tree ...',
       items: [
         'segtree-ext',
         'range-sweep',
@@ -183,12 +182,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      description: '... or a tree!',
       items: ['binary-jump', 'merging', 'hld', 'centroid'],
     },
     {
       name: 'Geometry',
-      description: 'More advanced concepts in computational geometry.',
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'convex-hull-trick'],
     },
     {

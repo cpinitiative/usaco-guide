@@ -80,7 +80,7 @@ Lists.args = {
                 href="https://codeforces.com/problemset"
                 rel="nofollow noopener noreferrer"
               >
-                CodeForces
+                Codeforces
               </a>{' '}
               -- you can search by tag, difficulty level, etc.
             </p>

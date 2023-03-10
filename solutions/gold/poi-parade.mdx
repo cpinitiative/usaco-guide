@@ -42,13 +42,14 @@ int dp[2][200001];
 
 void dfs(int node = 1, int parent = 0) {
 	int mx1 = 1, mx2 = 1;
-	for (int i : graph[node]) if (i != parent) {
-		dfs(i, node);
-		if (dp[0][i] >= mx1) {
-			mx2 = mx1;
-			mx1 = dp[0][i];
-		} else mx2 = max(mx2, dp[0][i]);
-	}
+	for (int i : graph[node])
+		if (i != parent) {
+			dfs(i, node);
+			if (dp[0][i] >= mx1) {
+				mx2 = mx1;
+				mx1 = dp[0][i];
+			} else mx2 = max(mx2, dp[0][i]);
+		}
 	dp[0][node] = mx1 + graph[node].size() - 2;
 	dp[1][node] = mx1 + mx2 + graph[node].size() - 3;
 }
@@ -66,7 +67,8 @@ int main() {
 	}
 
 	int leaves = 0;
-	for (int i = 1; i <= n; i++) if (graph[i].size() == 1) leaves++;
+	for (int i = 1; i <= n; i++)
+		if (graph[i].size() == 1) leaves++;
 
 	dfs();
 	int ans = 0;

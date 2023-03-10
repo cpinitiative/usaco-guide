@@ -42,17 +42,13 @@ int main() {
 	cin >> cow_num;
 	vector<int> x(cow_num), y(cow_num);
 	vector<int> power(cow_num);
-	for (int c = 0; c < cow_num; c++) {
-		cin >> x[c] >> y[c] >> power[c];
-	}
+	for (int c = 0; c < cow_num; c++) { cin >> x[c] >> y[c] >> power[c]; }
 
 	connected = vector<vector<bool>>(cow_num, vector<bool>(cow_num));
 	for (int i = 0; i < cow_num; i++) {
 		for (int j = 0; j < cow_num; j++) {
-			int dist_squared = (
-				(x[i] - x[j]) * (x[i] - x[j])
-				+ (y[i] - y[j]) * (y[i] - y[j])
-			);            
+			int dist_squared =
+			    ((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
 			connected[i][j] = dist_squared <= power[i] * power[i];
 		}
 	}
@@ -72,8 +68,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MooCast {
 	static boolean[][] connected;
@@ -95,10 +91,8 @@ public class MooCast {
 		connected = new boolean[cowNum][cowNum];
 		for (int i = 0; i < cowNum; i++) {
 			for (int j = 0; j < cowNum; j++) {
-				int distSquared = (
-					(x[i] - x[j]) * (x[i] - x[j])
-					+ (y[i] - y[j]) * (y[i] - y[j])
-				);            
+				int distSquared = ((x[i] - x[j]) * (x[i] - x[j]) +
+				                   (y[i] - y[j]) * (y[i] - y[j]));
 				connected[i][j] = distSquared <= power[i] * power[i];
 			}
 		}
@@ -134,7 +128,7 @@ public class MooCast {
 <PySection>
 
 ```py
-with open('moocast.in') as read:
+with open("moocast.in") as read:
 	cow_num = int(read.readline())
 	x = [0 for _ in range(cow_num)]
 	y = [0 for _ in range(cow_num)]
@@ -148,6 +142,7 @@ for i in range(cow_num):
 		dist_squared = (x[i] - x[j]) ** 2 + (y[i] - y[j]) ** 2
 		connected[i][j] = dist_squared <= power[i] ** 2
 
+
 def reachable_cows(c: int) -> int:
 	""":return how many cows can be reached from a cow c"""
 	global visited
@@ -160,12 +155,13 @@ def reachable_cows(c: int) -> int:
 			reached += reachable_cows(nc)
 	return reached
 
+
 max_cows = 0
 for c in range(cow_num):
 	visited = [False for _ in range(cow_num)]
 	max_cows = max(max_cows, reachable_cows(c))
 
-print(max_cows, file=open('moocast.out', 'w'))
+print(max_cows, file=open("moocast.out", "w"))
 ```
 
 </PySection>

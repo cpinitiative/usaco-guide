@@ -17,18 +17,18 @@ Due to the low bounds on $N$, we can naively simulate the events. We'll sort by 
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cstdio>
 #include <algorithm>
-#include <vector>
+#include <cstdio>
+#include <iostream>
 #include <set>
+#include <vector>
 
 using namespace std;
 
 int main() {
 	freopen("convention2.in", "r", stdin);
 	freopen("convention2.out", "w", stdout);
-	
+
 	int cow_num;
 	vector<vector<int>> cows;
 	cin >> cow_num;
@@ -47,7 +47,7 @@ int main() {
 	int time = 0;
 	int curr = 0;
 	int longest_wait = 0;
-	
+
 	// sorted by priority so that the highest seniority starts eating first
 	set<vector<int>> waiting;
 	// as long as we haven't processed all cows or there are still cows waiting
@@ -56,7 +56,7 @@ int main() {
 		if (curr < cow_num && cows[curr][1] <= time) {
 			waiting.insert(cows[curr]);
 			curr++;
-		// no cow waiting, skip to the next cow.
+			// no cow waiting, skip to the next cow.
 		} else if (waiting.empty()) {
 			// set time to the ending time of the next cow.
 			time = cows[curr][1] + cows[curr][2];
@@ -85,7 +85,8 @@ import java.util.*;
 
 public class Convention2 {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("convention2.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("convention2.in"));
 
 		int cowNum = Integer.parseInt(read.readLine());
 		Cow[] cows = new Cow[cowNum];
@@ -98,7 +99,7 @@ public class Convention2 {
 
 		// sort by arrival time
 		Arrays.sort(cows, Comparator.comparingInt(c -> c.start));
-	
+
 		int time = 0;
 		int curr = 0;
 		int longestWait = 0;
@@ -110,7 +111,7 @@ public class Convention2 {
 			if (curr < cowNum && cows[curr].start <= time) {
 				waiting.add(cows[curr]);
 				curr++;
-			// no cow waiting, skip to the next cow.
+				// no cow waiting, skip to the next cow.
 			} else if (waiting.size() == 0) {
 				// set time to the ending time of the next cow.
 				time = cows[curr].start + cows[curr].duration;
@@ -160,7 +161,7 @@ to simulate the operations needed with a [priority queue](https://docs.python.or
 import heapq
 
 cows = []
-with open('convention2.in') as read:
+with open("convention2.in") as read:
 	for c in range(int(read.readline())):
 		start, duration = [int(i) for i in read.readline().split()]
 		cows.append((c, start, duration))
@@ -193,7 +194,7 @@ while curr < len(cows) or waiting:
 		# set the time to when this cow finishes
 		time += next_cow[2]
 
-print(longest_wait, file=open('convention2.out', 'w'))
+print(longest_wait, file=open("convention2.out", "w"))
 ```
 
 </PySection>

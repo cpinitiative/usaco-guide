@@ -53,13 +53,12 @@ void dfs(int i, int color, int par) {
 	if (color == 0) {
 		nodes0++;
 		sum0 += A[i];
-	}
-	else {
+	} else {
 		nodes1++;
 		sum1 += A[i];
 	}
-	
-	for (int j : edges[i]) {				   
+
+	for (int j : edges[i]) {
 		if (j != par) {
 			// swap colors for the child
 			dfs(j, 1 - color, i);
@@ -73,18 +72,16 @@ int main() {
 
 	cin >> N;
 
-	for (int i = 0; i < N; i++) {
-		cin >> A[i];
-	}
+	for (int i = 0; i < N; i++) { cin >> A[i]; }
 
-	for (int i = 1; i < N; i++) {	
+	for (int i = 1; i < N; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--, b--;
 		edges[a].push_back(b);
 		edges[b].push_back(a);
 	}
-	
+
 	dfs(0, 0, -1);
 
 	// same mod means you can start anywhere
@@ -103,7 +100,6 @@ int main() {
 	else {
 		cout << 0;
 	}
-
 }
 ```
 
@@ -119,7 +115,7 @@ public class ClockTree {
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("clocktree");
-		
+
 		int n = io.nextInt();
 		clocks = new int[n];
 		adj = new ArrayList<>();
@@ -164,8 +160,8 @@ public class ClockTree {
 			nodes1++;
 			sum1 += clocks[i];
 		}
-		
-		for (int j : adj.get(i)) {				   
+
+		for (int j : adj.get(i)) {
 			if (j != par) {
 				// swap colors for the child
 				dfs(j, 1 - color, i);

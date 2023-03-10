@@ -11,18 +11,18 @@ author: Tanish Tyagi, Brad Ma, Juheon Rhee
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-	
+
 <JavaSection>
-	
+
 ```java
 import java.io.*;
 import java.util.*;
 
 public class IcyPerimeter {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("perimeter");
 		n = io.nextInt();
-	
+
 		// we do n + 2 because there is an extra outer ring for flood fill
 		numberedMatrix = new int[n + 2][n + 2];
 
@@ -40,7 +40,7 @@ public class IcyPerimeter {
 		int markNumber = 1;
 		for (int x = 1; x <= n; x++) {
 			for (int y = 1; y <= n; y++) {
-				if(numberedMatrix[x][y] == -1) {  // not visited
+				if (numberedMatrix[x][y] == -1) {  // not visited
 					floodfill(x, y, markNumber);
 					markNumber++;
 				}
@@ -51,16 +51,18 @@ public class IcyPerimeter {
 		int[] columnMovement = {1, 0, -1, 0};
 
 		// tracks the perimeter of each connected component
-		int[] perimeters = new int[most]; 
+		int[] perimeters = new int[most];
 
 		for (int x = 0; x < (n + 2); x++) {
 			for (int y = 0; y < (n + 2); y++) {
 				// if part of a connected component
 				if (numberedMatrix[x][y] > 0) {
 					for (int i = 0; i < 4; i++) {  // try all directions
-						// no need to check for out of bounds because of our outer ring
-						// if there is a zero, that means that we can add one to the perimeter
-						if (numberedMatrix[x + rowMovement[i]][y + columnMovement[i]] == 0) {
+						// no need to check for out of bounds because of our
+						// outer ring if there is a zero, that means that we can
+						// add one to the perimeter
+						if (numberedMatrix[x + rowMovement[i]]
+						                  [y + columnMovement[i]] == 0) {
 							perimeters[numberedMatrix[x][y]] += 1;
 						}
 					}
@@ -73,7 +75,8 @@ public class IcyPerimeter {
 
 		for (int x = 0; x < most; x++) {
 			// if they have the same area but the perimeter is smaller
-			if (areas[x] == largestArea && perimeters[x] < perimeterOfLargestArea) {
+			if (areas[x] == largestArea &&
+			    perimeters[x] < perimeterOfLargestArea) {
 				largestArea = areas[x];
 				perimeterOfLargestArea = perimeters[x];
 			}
@@ -88,13 +91,13 @@ public class IcyPerimeter {
 	}
 }
 ```
-	
+
 </JavaSection>
 
 <CPPSection>
 
 ```cpp
-//created by Tanish Tyagi
+// created by Tanish Tyagi
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -102,16 +105,18 @@ using ll = long long;
 
 const int MAXN = 1005;
 
-char grid[MAXN][MAXN]; // the grid itself
+char grid[MAXN][MAXN];  // the grid itself
 int n;
-bool visited[MAXN][MAXN]; // keeps track of which nodes have been visited
-ll currA = 0; // keeps track of the current area of the current blob of ice cream
-ll currP = 0; // keeps track of the current perimeter of the blob of ice cream
+bool visited[MAXN][MAXN];  // keeps track of which nodes have been visited
+ll currA =
+    0;  // keeps track of the current area of the current blob of ice cream
+ll currP = 0;  // keeps track of the current perimeter of the blob of ice cream
 ll area = 0;
 ll perimeter = 0;
 
 void setIO(string name) {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	if (len(name)) {
 		freopen((name + ".in").c_str(), "r", stdin);
 		freopen((name + ".out").c_str(), "w", stdout);
@@ -121,17 +126,15 @@ void setIO(string name) {
 void floodfill(int r, int c) {
 	if (r < 0 || r >= n || c < 0 || c >= n) {
 		currP++;
-		return; // if outside grid
+		return;  // if outside grid
 	}
-	if (visited[r][c]) return; // already visited this square
+	if (visited[r][c]) return;  // already visited this square
 	if (grid[r][c] == '.') {
 		currP++;
 		return;
 	}
-	visited[r][c] = true; // mark current square as visited
-	if (grid[r][c] == '#') {
-		currA++;
-	}
+	visited[r][c] = true;  // mark current square as visited
+	if (grid[r][c] == '#') { currA++; }
 	// recursively call floodfill for neighboring squares
 	floodfill(r, c + 1);
 	floodfill(r, c - 1);
@@ -143,9 +146,7 @@ int main() {
 	setIO("perimeter");
 	cin >> n;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cin >> grid[i][j];
-		}
+		for (int j = 0; j < n; j++) { cin >> grid[i][j]; }
 	}
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -153,8 +154,7 @@ int main() {
 				floodfill(i, j);
 				if (area == currA) {
 					perimeter = min(perimeter, currP);
-				}
-				else if (currA > area) {
+				} else if (currA > area) {
 					area = currA;
 					perimeter = currP;
 				}
@@ -170,35 +170,31 @@ int main() {
 </CPPSection>
 
 <PySection>
-```python
-# This solution does TLE on the USACO website on one test case because python is slow. 
+```py
+# This solution does TLE on the USACO website on one test case because python is slow.
 from collections import deque
 
-with open('perimeter.in') as r:
+with open("perimeter.in") as r:
 	t = r.readline
 	n = int(t())
 	ice = []
 	visited = [[False] * n for _ in range(n)]
-	
+
 	for _ in range(n):
 		ice.append(list(t()))
 
 max_area = 0
-min_peri = float('inf')
-	
+min_peri = float("inf")
+
 # possible directions
-DIRECTIONS = [
-	(1, 0),
-	(-1, 0),
-	(0, 1),
-	(0, -1)
-]
+DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 # check if out of bounds
 def out(a, b, l):
 	if a < 0 or b < 0 or a >= l or b >= l:
 		return True
 	return False
+
 
 def area_and_perimeter(x, y):
 	area, peri = 1, 0
@@ -215,12 +211,13 @@ def area_and_perimeter(x, y):
 			if out(nx, ny, n) or ice[nx][ny] == ".":
 				peri += 1
 			else:
-				# check if already visited 
+				# check if already visited
 				if not visited[nx][ny]:
 					area += 1
 					q.appendleft((nx, ny))
 					visited[nx][ny] = True
 	return area, peri
+
 
 for i in range(n):
 	for j in range(n):
@@ -233,7 +230,7 @@ for i in range(n):
 				if min_peri > peri:
 					max_area, min_peri = area, peri
 
-print(max_area, min_peri, file=open('perimeter.out', 'w'))
+print(max_area, min_peri, file=open("perimeter.out", "w"))
 ```
 </PySection>
 

@@ -18,13 +18,13 @@ author: Jesse Choe, Sofia Yang, Juheon Rhee
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Mountain { int start, end; };
+struct Mountain {
+	int start, end;
+};
 
-bool operator<(const Mountain& m1, const Mountain& m2) {
+bool operator<(const Mountain &m1, const Mountain &m2) {
 	// sort by start and tiebreak by putting the larger mountains first
-	if (m1.start == m2.start) {
-		return m1.end > m2.end;
-	}
+	if (m1.start == m2.start) { return m1.end > m2.end; }
 	return m1.start < m2.start;
 }
 
@@ -32,7 +32,7 @@ int main() {
 	std::ifstream read("mountains.in");
 	int mountain_num;
 	read >> mountain_num;
-	
+
 	vector<Mountain> mountains;
 	for (int m = 0; m < mountain_num; m++) {
 		int x, y;
@@ -41,10 +41,10 @@ int main() {
 		mountains.push_back({x - y, x + y});
 	}
 	sort(mountains.begin(), mountains.end());
-	
+
 	int rightmost = -1;
 	int visible_num = 0;
-	for (const Mountain& m : mountains) {
+	for (const Mountain &m : mountains) {
 		if (m.end > rightmost) {
 			visible_num++;
 			rightmost = m.end;
@@ -67,7 +67,7 @@ public class Mountains {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("mountains.in"));
 		int mountainNum = Integer.parseInt(br.readLine());
-		
+
 		Mountain[] mountains = new Mountain[mountainNum];
 		for (int m = 0; m < mountainNum; m++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
@@ -90,7 +90,6 @@ public class Mountains {
 		PrintWriter pw = new PrintWriter("mountains.out");
 		pw.println(visibleNum);
 		pw.close();
-
 	}
 }
 
@@ -115,7 +114,7 @@ class Mountain implements Comparable<Mountain> {
 </JavaSection>
 <PySection>
 
-```python
+```py
 class Mountain:
 	def __init__(self, start: int, end: int):
 		self.start = start
@@ -127,7 +126,8 @@ class Mountain:
 			return self.end > other.end
 		return self.start < other.start
 
-with open('mountains.in') as read:
+
+with open("mountains.in") as read:
 	mountain_num = int(read.readline())
 	mountains = []
 	for _ in range(mountain_num):
@@ -144,7 +144,7 @@ for m in mountains:
 		visible_num += 1
 		rightmost = m.end
 
-print(visible_num, file=open('mountains.out', 'w'))
+print(visible_num, file=open("mountains.out", "w"))
 ```
 
 </PySection>

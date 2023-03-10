@@ -7,7 +7,7 @@ import { Blob } from 'blob-polyfill';
 export default class Transaction<
   T extends {
     [key: string]: string;
-  }
+  },
 > {
   /**
    * The numeric identifier of the transaction, which should be unique within a block.

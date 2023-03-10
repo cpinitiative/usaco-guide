@@ -7,6 +7,21 @@ author: Sofia Yang, Ryan Chou
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_teamwork_gold_dec18.html)
 
+
+<Spoiler title="Hint 1">
+
+Notice the constraints on the input, $\mathcal{O}(N \cdot K)$ is feasible. Meaning, for each of the $N$ cows, we can recalculate the most optimal sums of skill levels $K$ times
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+We notice that we just need to find the best possible sums for the first $i$ cows as we iterate $i$ from $1$ to $N$. The $K$ process time for each cow comes from when we iterate through the possibility that they occupy in a group of size from $1$ to $K$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
 ## Explanation
 
 The important observation to make is that we don't need to store the groupings of cows, just the best possible sum so far. This hints at a [DP](/gold/intro-dp). Let $\texttt{dp[i]} =$ the maximum skill level for cows up to $i$, then we'll update $\texttt{dp[i]}$ for every previous cow down to $i - k + 1$, where $k$ represents the team size.
@@ -28,9 +43,7 @@ int main() {
 	int n, k;
 	cin >> n >> k;
 	vector<int> skill(n);
-	for (int i = 0; i < n; i++) {
-		cin >> skill[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> skill[i]; }
 
 	vector<int> dp(n, -1);
 	for (int i = 0; i < n; i++) {
@@ -39,11 +52,12 @@ int main() {
 		for (int j = i; j >= (i - k + 1) && ~j; j--) {
 			cur = max(cur, skill[j]);
 			/*
-			 * update answer: dp[i] = max(dp[i], 
-			 * the skill of joining this cow to a team + all of the previous sums)
+			 * update answer: dp[i] = max(dp[i],
+			 * the skill of joining this cow to a team + all of the previous
+			 * sums)
 			 */
 			if (j > 0) {
-				dp[i] = max(dp[i], dp[j - 1] + (cur * (i - j + 1)));	
+				dp[i] = max(dp[i], dp[j - 1] + (cur * (i - j + 1)));
 			} else {
 				dp[i] = max(dp[i], cur * (i - j + 1));
 			}
@@ -134,3 +148,5 @@ print(dp[n - 1])
 
 </PySection>
 </LanguageSection>
+
+</Spoiler>

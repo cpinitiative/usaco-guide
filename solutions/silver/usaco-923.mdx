@@ -64,7 +64,7 @@ The $\mathcal{O}(N)$ 1D version can be implemented by the following code:
 <CPPSection>
 
 ```cpp
-int max_subarray(const vector<int>& arr) {
+int max_subarray(const vector<int> &arr) {
 	int best_sum = 0;
 	int curr_sum = 0;
 	for (int i : arr) {
@@ -158,15 +158,15 @@ to get the arrays with the following updated values:
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::max;
+using std::vector;
 
 const int WIDTH = 200;
 
@@ -182,9 +182,7 @@ int main() {
 		read >> x1 >> y1 >> x2 >> y2;
 		for (int y = y1; y < y2; y++) {
 			barn[y][x1]++;
-			if (x2 < WIDTH) {
-				barn[y][x2]--;
-			}
+			if (x2 < WIDTH) { barn[y][x2]--; }
 		}
 	}
 
@@ -217,27 +215,22 @@ int main() {
 	vector<vector<int>> pref_leftovers(WIDTH + 1, vector<int>(WIDTH + 1));
 	for (int r = 1; r < WIDTH + 1; r++) {
 		for (int c = 1; c < WIDTH + 1; c++) {
-			pref_leftovers[r][c] = (
-				pref_leftovers[r - 1][c]
-				+ pref_leftovers[r][c - 1]
-				- pref_leftovers[r - 1][c - 1]
-				+ leftovers[r - 1][c - 1]
-			);
+			pref_leftovers[r][c] =
+			    (pref_leftovers[r - 1][c] + pref_leftovers[r][c - 1] -
+			     pref_leftovers[r - 1][c - 1] + leftovers[r - 1][c - 1]);
 		}
 	}
 
 	// returns the sum of leftovers[from_r][from_c] to leftovers[to_r][to_c]
-	auto rect_sum = [&] (int from_r, int from_c, int to_r, int to_c) {
-		return (
-			pref_leftovers[to_r + 1][to_c + 1]
-			- pref_leftovers[from_r][to_c + 1]
-			- pref_leftovers[to_r + 1][from_c]
-			+ pref_leftovers[from_r][from_c]
-		);
+	auto rect_sum = [&](int from_r, int from_c, int to_r, int to_c) {
+		return (pref_leftovers[to_r + 1][to_c + 1] -
+		        pref_leftovers[from_r][to_c + 1] -
+		        pref_leftovers[to_r + 1][from_c] +
+		        pref_leftovers[from_r][from_c]);
 	};
-	
-	vector<int> top_best(WIDTH), bottom_best(WIDTH),
-				left_best(WIDTH), right_best(WIDTH);
+
+	vector<int> top_best(WIDTH), bottom_best(WIDTH), left_best(WIDTH),
+	    right_best(WIDTH);
 	// iterate through all pairs of columns and rows for 2d kadane's
 	for (int start = 0; start < WIDTH; start++) {
 		for (int end = start; end < WIDTH; end++) {
@@ -273,7 +266,7 @@ int main() {
 		bottom_best[i] = max(bottom_best[i], bottom_best[i + 1]);
 		right_best[i] = max(right_best[i], right_best[i + 1]);
 	}
-	
+
 	// and finally run through all lines for the best combination
 	int max_paintable = 0;
 	for (int i = 0; i < WIDTH; i++) {
@@ -289,30 +282,30 @@ int main() {
 <JavaSection>
 
 ```java
+import static java.lang.Math.max;
+
 import java.io.*;
 import java.util.*;
-import static java.lang.Math.max;
 
 public final class PaintBarn {
 	static final int WIDTH = 200;
-	
+
 	static int[][] prefLeftovers;
-	
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("paintbarn.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("paintbarn.in"));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int rectNum = Integer.parseInt(initial.nextToken());
 		int optimalAmt = Integer.parseInt(initial.nextToken());
 		int[][] barn = new int[WIDTH][WIDTH];
 		for (int r = 0; r < rectNum; r++) {
 			int[] rect = Arrays.stream(read.readLine().split(" "))
-					.mapToInt(Integer::parseInt)
-					.toArray();
+			                 .mapToInt(Integer::parseInt)
+			                 .toArray();
 			for (int y = rect[1]; y < rect[3]; y++) {
 				barn[y][rect[0]]++;
-				if (rect[2] < WIDTH) {
-					barn[y][rect[2]]--;
-				}
+				if (rect[2] < WIDTH) { barn[y][rect[2]]--; }
 			}
 		}
 		for (int r = 0; r < WIDTH; r++) {
@@ -344,15 +337,11 @@ public final class PaintBarn {
 		prefLeftovers = new int[WIDTH + 1][WIDTH + 1];
 		for (int r = 1; r < WIDTH + 1; r++) {
 			for (int c = 1; c < WIDTH + 1; c++) {
-				prefLeftovers[r][c] = (
-					prefLeftovers[r - 1][c]
-					+ prefLeftovers[r][c - 1]
-					- prefLeftovers[r - 1][c - 1]
-					+ leftovers[r - 1][c - 1]
-				);
+				prefLeftovers[r][c] =
+				    (prefLeftovers[r - 1][c] + prefLeftovers[r][c - 1] -
+				     prefLeftovers[r - 1][c - 1] + leftovers[r - 1][c - 1]);
 			}
 		}
-
 
 		int[] topBest = new int[WIDTH];
 		int[] bottomBest = new int[WIDTH];
@@ -376,7 +365,8 @@ public final class PaintBarn {
 				int rightSum = 0;
 				for (int i = WIDTH - 1; i >= 1; i--) {
 					rect = bottomSum + rectSum(i, start, i, end);
-					bottomBest[i] = max(bottomBest[i], bottomSum = max(0, rect));
+					bottomBest[i] =
+					    max(bottomBest[i], bottomSum = max(0, rect));
 
 					rect = rightSum + rectSum(start, i, end, i);
 					rightBest[i] = max(rightBest[i], rightSum = max(0, rect));
@@ -408,12 +398,9 @@ public final class PaintBarn {
 
 	// returns the sum of leftovers[from_r][from_c] to leftovers[to_r][to_c]
 	static int rectSum(int fromR, int fromC, int toR, int toC) {
-		return (
-			prefLeftovers[toR + 1][toC + 1]
-			- prefLeftovers[fromR][toC + 1]
-			- prefLeftovers[toR + 1][fromC]
-			+ prefLeftovers[fromR][fromC]
-		);
+		return (prefLeftovers[toR + 1][toC + 1] -
+		        prefLeftovers[fromR][toC + 1] - prefLeftovers[toR + 1][fromC] +
+		        prefLeftovers[fromR][fromC]);
 	}
 }
 ```

@@ -41,8 +41,8 @@ To see which planet we end up at if we teleport $t$ times, we can use
 ## Both in Cycle
 
 If both are in a cycle, we get both $u$ and $v$'s index in the cycle.
-Let's call these indices $u_i$ and $v_i$ respectively.  
-Now, if $u_i \leq v_i$, then our answer is $v_i - u_i$.  
+Let's call these indices $u_i$ and $v_i$ respectively.
+Now, if $u_i \leq v_i$, then our answer is $v_i - u_i$.
 On the other hand, if $u_i > v_i$, then our answer is
 $\texttt{cycle\_len} - (u_i - v_i)$.
 
@@ -67,16 +67,16 @@ If they're in different components, we can't reach $v$ from $u$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n \log n)$
+**Time Complexity:** $\mathcal{O}((n+q)\log n)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <cmath>
+#include <iostream>
+#include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -94,18 +94,17 @@ int main() {
 		before[next[p]].push_back(p);
 	}
 
-	/* 
+	/*
 	 * -2 = We haven't even got to processing this planet yet.
 	 * -1 = This node is part of a tree.
 	 * >= 0: the ID of the cycle the planet belongs to.
 	 */
 	vector<int> cycle_id(planet_num, -2);
-	// Each map, given a planet #, returns the index of that planet in the cycle.
+	// Each map, given a planet #, returns the index of that planet in the
+	// cycle.
 	vector<std::map<int, int>> cycles;
 	for (int p = 0; p < planet_num; p++) {
-		if (cycle_id[p] != -2) {
-			continue;
-		}
+		if (cycle_id[p] != -2) { continue; }
 		vector<int> path{p};
 		int at = p;
 		while (cycle_id[next[at]] == -2) {
@@ -113,14 +112,12 @@ int main() {
 			cycle_id[at] = -3;  // Leave breadcrumbs for this iteration
 			path.push_back(at);
 		}
-		
+
 		std::map<int, int> cycle;
 		bool in_cycle = false;
 		for (int i : path) {
 			in_cycle = in_cycle || i == next[at];
-			if (in_cycle) {
-				cycle[i] = cycle.size();
-			}
+			if (in_cycle) { cycle[i] = cycle.size(); }
 			cycle_id[i] = in_cycle ? cycles.size() : -1;
 		}
 		cycles.push_back(cycle);
@@ -133,9 +130,7 @@ int main() {
 	vector<int> cyc_dist(planet_num);
 	for (int p = 0; p < planet_num; p++) {
 		// Check if this planet is part of a cycle.
-		if (cycle_id[next[p]] == -1 || cycle_id[p] != -1) {
-			continue;
-		}
+		if (cycle_id[next[p]] == -1 || cycle_id[p] != -1) { continue; }
 		cyc_dist[p] = 1;
 		vector<int> stack(before[p]);
 		while (!stack.empty()) {
@@ -149,9 +144,7 @@ int main() {
 	// Intialize the binary jumping arrays.
 	int log2 = std::ceil(std::log2(planet_num));
 	vector<vector<int>> pow2_ends(planet_num, vector<int>(log2 + 1));
-	for (int p = 0; p < planet_num; p++) {
-		pow2_ends[p][0] = next[p];
-	}
+	for (int p = 0; p < planet_num; p++) { pow2_ends[p][0] = next[p]; }
 	for (int i = 1; i <= log2; i++) {
 		for (int p = 0; p < planet_num; p++) {
 			pow2_ends[p][i] = pow2_ends[pow2_ends[p][i - 1]][i - 1];
@@ -162,11 +155,9 @@ int main() {
 	 * Given a starting planet & dist, returns the planet we end up at
 	 * if we use the teleporter dist times.
 	 */
-	auto advance = [&] (int pos, int dist) {
+	auto advance = [&](int pos, int dist) {
 		for (int pow = log2; pow >= 0; pow--) {
-			if ((dist & (1 << pow)) != 0) {
-				pos = pow2_ends[pos][pow];
-			}
+			if ((dist & (1 << pow)) != 0) { pos = pow2_ends[pos][pow]; }
 		}
 		return pos;
 	};
@@ -187,11 +178,13 @@ int main() {
 			// Handle the 2nd & 3rd cases at the same time.
 			int dist = cyc_dist[u];
 			int u_cyc = advance(u, cyc_dist[u]);  // The root of u's tree
-			
-			std::map<int, int>& cyc = cycles[cycle_id[u_cyc]];  // u and v's cycle
+
+			std::map<int, int> &cyc =
+			    cycles[cycle_id[u_cyc]];  // u and v's cycle
 			int u_ind = cyc[u_cyc];
 			int v_ind = cyc[v];
-			int diff = u_ind <= v_ind ? v_ind - u_ind : cyc.size() - (u_ind - v_ind);
+			int diff =
+			    u_ind <= v_ind ? v_ind - u_ind : cyc.size() - (u_ind - v_ind);
 			cout << dist + diff << '\n';
 		} else {
 			if (cyc_dist[v] > cyc_dist[u]) {

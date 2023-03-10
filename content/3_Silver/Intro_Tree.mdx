@@ -5,7 +5,7 @@ author: Nathan Chen, Siyong Huang, Albert Ye
 prerequisites:
   - dfs
 description: 'Introducing a special type of graph: trees.'
-frequency: 1
+frequency: 2
 ---
 
 <FocusProblem problem="treeSam" />
@@ -183,7 +183,7 @@ public class Subordinates {
 
 In the Python solution, we need to set recursion limit to $2\times10^5$.
 
-```python
+```py
 import sys
 
 sys.setrecursionlimit(200006)  # set recursion limit
@@ -215,50 +215,8 @@ for i in sub:
 
 </LanguageSection>
 
-<!--
-## Computing parent, depth, and subtree sizes
-
-The following sample code computes the **parent**, **depth**, and **subtree sizes** of each node of a tree, assuming node 1 is the root.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-// Not Tested
-#include <cstdio>
-#include <vector>
-
-const int MN = 2e5 + 10;
-std::vector<int> a[MN];
-int p[MN], d[MN], s[MN];
-void dfs(int n) {
-	s[n] = 1;
-	for (int x : a[n])
-		if (x != p[n]) {
-			d[x] = d[n] + 1;
-			p[x] = n;
-			dfs(x);
-			s[n] += s[x];
-		}
-}
-int main() {
-	for (int i = 0, x, y; i + 1 < N; ++i)
-		scanf("%d%d", &x, &y), a[x].push_back(y), a[y].push_back(x);
-	p[0] = -1;
-	d[0] = 0;
-	dfs(1);
-	// do something
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
--->
-
 ## Quiz
+
 <Quiz>
 	<Quiz.Question>
 		How is a preorder traversal found for a binary tree?
@@ -339,13 +297,13 @@ int main() {
 		<Quiz.Answer>
 			`void dfs(vector<vector<int>>& adj)`
 			<Quiz.Explanation>
-				Incorrect. This DFS function cannot track the current node, therefore it cannot even run. 
+				Incorrect. This DFS function cannot track the current node, therefore it cannot even run.
 			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
 </Quiz>
 
-	
+
 ## Problems
 
 <!-- <Info>

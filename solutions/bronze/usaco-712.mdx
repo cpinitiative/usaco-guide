@@ -26,7 +26,7 @@ pairs of intersecting paths and check whether they represent two cows.
 using namespace std;
 
 int main() {
-	freopen("circlecross.in","r",stdin);
+	freopen("circlecross.in", "r", stdin);
 	string crossings;
 	cin >> crossings;
 
@@ -36,20 +36,18 @@ int main() {
 		for (int b = a + 1; b < crossings.size(); b++) {
 			for (int c = b + 1; c < crossings.size(); c++) {
 				for (int d = c + 1; d < crossings.size(); d++) {
-					/* 
-					 * If we find two entry/exit paths such that a < b < c < d, 
-					 * the path of cows crossing (a, c) and (b, d) must intersect,
-					 * so we have a crossing pair
+					/*
+					 * If we find two entry/exit paths such that a < b < c < d,
+					 * the path of cows crossing (a, c) and (b, d) must
+					 * intersect, so we have a crossing pair
 					 */
-					crossing_pairs += (
-						crossings[a] == crossings[c] &&
-						crossings[b] == crossings[d]
-					);
+					crossing_pairs += (crossings[a] == crossings[c] &&
+					                   crossings[b] == crossings[d]);
 				}
 			}
 		}
 	}
-	
+
 	freopen("circlecross.out", "w", stdout);
 	cout << crossing_pairs << endl;
 }
@@ -73,8 +71,8 @@ public class CircleCross {
 			for (int b = a + 1; b < crossings.length(); b++) {
 				for (int c = b + 1; c < crossings.length(); c++) {
 					for (int d = c + 1; d < crossings.length(); d++) {
-						/* 
-						 * If we find two entry/exit paths such that a < b < c < d, 
+						/*
+						 * If we find two entry/exit paths such that a < b < c < d,
 						 * the path of cows crossing (a, c) and (b, d) must intersect,
 						 * so we have a crossing pair
 						 */
@@ -98,8 +96,8 @@ public class CircleCross {
 </JavaSection>
 <PySection>
 
-```python
-with open('circlecross.in') as read:
+```py
+with open("circlecross.in") as read:
 	crossings = read.readline().strip()
 
 crossing_pairs = 0
@@ -109,16 +107,15 @@ for a in range(len(crossings)):
 		for c in range(b + 1, len(crossings)):
 			for d in range(c + 1, len(crossings)):
 				"""
-				If we find two entry/exit paths such that a < b < c < d, 
+				If we find two entry/exit paths such that a < b < c < d,
 				the path of cows crossing (a, c) and (b, d) must intersect,
 				so we have a crossing pair
 				"""
 				crossing_pairs += (
-					crossings[a] == crossings[c] and
-					crossings[b] == crossings[d]
+					crossings[a] == crossings[c] and crossings[b] == crossings[d]
 				)
 
-print(crossing_pairs, file=open('circlecross.out', 'w'))
+print(crossing_pairs, file=open("circlecross.out", "w"))
 ```
 
 </PySection>
@@ -153,7 +150,7 @@ int main() {
 	freopen("circlecross.in", "r", stdin);
 	string crossings;
 	cin >> crossings;
-	
+
 	vector<int> start(26, -1);
 	vector<int> end(26, -1);
 	for (int i = 0; i < crossings.size(); i++) {
@@ -169,12 +166,11 @@ int main() {
 	for (int i = 0; i < 26; i++) {
 		for (int j = 0; j < 26; j++) {
 			// Increment by 1 if the condition in the explanation is met
-			crossing_pairs += (
-				start[i] < start[j] && start[j] < end[i] && end[i] < end[j]
-			);
+			crossing_pairs +=
+			    (start[i] < start[j] && start[j] < end[i] && end[i] < end[j]);
 		}
 	}
-	
+
 	freopen("circlecross.out", "w", stdout);
 	cout << crossing_pairs << endl;
 }
@@ -228,13 +224,13 @@ public class CircleCross {
 <PySection>
 
 ```py
-with open('circlecross.in') as read:
+with open("circlecross.in") as read:
 	crossings = read.readline().strip()
 
 start = [-1 for _ in range(26)]
 end = [-1 for _ in range(26)]
 for v, c in enumerate(crossings):
-	c_id = ord(c) - ord('A')
+	c_id = ord(c) - ord("A")
 	if start[c_id] == -1:
 		start[c_id] = v
 	else:
@@ -245,11 +241,9 @@ crossing_pairs = 0
 for i in range(26):
 	for j in range(26):
 		# Increment by 1 if the condition in the explanation is met
-		crossing_pairs += (
-			start[i] < start[j] and start[j] < end[i] and end[i] < end[j]
-		)
+		crossing_pairs += start[i] < start[j] and start[j] < end[i] and end[i] < end[j]
 
-print(crossing_pairs, file=open('circlecross.out', 'w'))
+print(crossing_pairs, file=open("circlecross.out", "w"))
 ```
 
 </PySection>
@@ -322,7 +316,7 @@ int main() {
 }
 ```
 
-</CPPSection> 
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -334,7 +328,7 @@ public class CircleCross {
 	static class CrossingPair {
 		public char a;
 		public char b;
-		
+
 		public CrossingPair(char a, char b) {
 			this.a = a;
 			this.b = b;
@@ -409,15 +403,15 @@ public class CircleCross {
 </JavaSection>
 <PySection>
 
-```python
-with open('circlecross.in') as read:
+```py
+with open("circlecross.in") as read:
 	crossings = read.readline().strip()
 
 # Equivalent to the start array in Solution 2
 first_found = [-1 for _ in range(26)]
 found_crossings = set()
 for i in range(len(crossings)):
-	c_id = ord(crossings[i]) - ord('A')
+	c_id = ord(crossings[i]) - ord("A")
 	if first_found[c_id] == -1:
 		# Mark the entry point of this cow
 		first_found[c_id] = i
@@ -435,13 +429,13 @@ for i in range(len(crossings)):
 				appearances.remove(crossings[j])
 			else:
 				appearances.add(crossings[j])
-		
+
 		for c in appearances:
 			# Sort to make sure only (i, j) is stored, not (j, i) as well
 			intersection = tuple(sorted([crossings[i], c]))
 			found_crossings.add(intersection)
 
-print(len(found_crossings), file=open('circlecross.out', 'w'))
+print(len(found_crossings), file=open("circlecross.out", "w"))
 ```
 
 </PySection>

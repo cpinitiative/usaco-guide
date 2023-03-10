@@ -19,7 +19,7 @@ author: Albert Zhu
 
 using namespace std;
 
-void setIO(string prob="") {
+void setIO(string prob = "") {
 	if (!prob.empty()) {
 		freopen((prob + ".in").c_str(), "r", stdin);
 		freopen((prob + ".out").c_str(), "w", stdout);
@@ -49,7 +49,8 @@ vector<pair<int, int>> ycoords[2 * MAX_C + 1];
 int main() {
 	setIO("triangles");
 
-	int n; cin >> n;
+	int n;
+	cin >> n;
 	for (int i = 0; i < n; i++) {
 		cin >> fences[i].x >> fences[i].y;
 		// we add MAX_C to make all of our coordinates positive
@@ -75,8 +76,8 @@ int main() {
 			fences[xcoords[i][0].second].heightsum = curr;
 			// then we compute the rest of the s_i for this set
 			for (int j = 1; j < xcoords[i].size(); j++) {
-				curr += (2 * j - xcoords[i].size())
-						* (xcoords[i][j].first - xcoords[i][j - 1].first);
+				curr += (2 * j - xcoords[i].size()) *
+				        (xcoords[i][j].first - xcoords[i][j - 1].first);
 				fences[xcoords[i][j].second].heightsum = curr;
 			}
 		}
@@ -92,8 +93,8 @@ int main() {
 			}
 			fences[ycoords[i][0].second].basesum = curr;
 			for (int j = 1; j < ycoords[i].size(); j++) {
-				curr += (2 * j - ycoords[i].size())
-						* (ycoords[i][j].first - ycoords[i][j - 1].first);
+				curr += (2 * j - ycoords[i].size()) *
+				        (ycoords[i][j].first - ycoords[i][j - 1].first);
 				fences[ycoords[i][j].second].basesum = curr;
 			}
 		}
@@ -113,17 +114,19 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Triangles {
 	static class Fence {
 		int x;
 		int y;
-		// terminology: anchor point = vertex of the right angle in a right triangle
-		// sum of heights of all triangles that use this fence as an anchor point
+		// terminology: anchor point = vertex of the right angle in a right
+		// triangle sum of heights of all triangles that use this fence as an
+		// anchor point
 		long heightsum;
-		// sum of the bases of all triangles that use this fence as an anchor point
+		// sum of the bases of all triangles that use this fence as an anchor
+		// point
 		long basesum;
 	}
 
@@ -140,15 +143,15 @@ public class Triangles {
 			return this.first - x.first;
 		}
 	}
-	
-	static final int MOD = (int) 1e9 + 7;
-	static final int MAX_C = (int) 1e4;
+
+	static final int MOD = (int)1e9 + 7;
+	static final int MAX_C = (int)1e4;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("triangles.in"));
 		PrintWriter pw = new PrintWriter("triangles.out");
 		StringTokenizer st = new StringTokenizer(in.readLine());
-		
+
 		int n = Integer.parseInt(st.nextToken());
 		Fence[] fences = new Fence[n];
 		// all possible x coordinates of the fences (+1 to account for 0)
@@ -166,7 +169,7 @@ public class Triangles {
 				xcoords[fences[i].x + MAX_C] = new ArrayList<>();
 			if (ycoords[fences[i].y + MAX_C] == null)
 				ycoords[fences[i].y + MAX_C] = new ArrayList<>();
-			
+
 			xcoords[fences[i].x + MAX_C].add(new Pair(fences[i].y, i));
 			ycoords[fences[i].y + MAX_C].add(new Pair(fences[i].x, i));
 		}
@@ -188,8 +191,9 @@ public class Triangles {
 				fences[xcoords[i].get(0).second].heightsum = cur;
 				// then we compute the rest of the s_i for this set
 				for (int j = 1; j < xcoords[i].size(); j++) {
-					cur += (2 * j - xcoords[i].size())
-							* (xcoords[i].get(j).first - xcoords[i].get(j - 1).first);
+					cur +=
+					    (2 * j - xcoords[i].size()) *
+					    (xcoords[i].get(j).first - xcoords[i].get(j - 1).first);
 					fences[xcoords[i].get(j).second].heightsum = cur;
 				}
 			}
@@ -205,8 +209,9 @@ public class Triangles {
 				}
 				fences[ycoords[i].get(0).second].basesum = cur;
 				for (int j = 1; j < ycoords[i].size(); j++) {
-					cur += (2 * j - ycoords[i].size())
-							* (ycoords[i].get(j).first - ycoords[i].get(j - 1).first);
+					cur +=
+					    (2 * j - ycoords[i].size()) *
+					    (ycoords[i].get(j).first - ycoords[i].get(j - 1).first);
 					fences[ycoords[i].get(j).second].basesum = cur;
 				}
 			}

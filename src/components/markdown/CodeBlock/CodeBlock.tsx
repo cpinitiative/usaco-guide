@@ -3,6 +3,7 @@
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
 import vsDark from 'prism-react-renderer/themes/vsDark';
+import vsLight from 'prism-react-renderer/themes/vsLight';
 import * as React from 'react';
 import styled from 'styled-components';
 import { SpoilerContext } from '../Spoiler';
@@ -44,17 +45,21 @@ const LineContent = styled.span`
 `;
 
 const CodeSnippetLineContent = styled(LineContent)`
-  color: #00bb00a0; // any better color?
+  color: ${(props: { isDarkMode: boolean }) =>
+    props.isDarkMode ? '#00bb00' : '#006600'};
   &:hover > span {
-    color: #00bb00c0;
+    color: ${(props: { isDarkMode: boolean }) =>
+      props.isDarkMode ? '#00bb00c0;' : '#006600c0'};
     cursor: pointer;
   }
 `;
 
 const CopyButton = styled.button`
   padding: 1.6px 8px 1.6px 8px;
-  color: black;
-  background-color: hsla(240, 20%, 88%, 1);
+  color: ${(props: { isDarkMode: boolean }) =>
+    props.isDarkMode ? 'black' : 'white'};
+  background-color: ${(props: { isDarkMode: boolean }) =>
+    props.isDarkMode ? 'hsla(240, 20%, 88%, 1)' : 'hsla(60, 20%, 12%, 1)'};
   position: absolute;
   top: 0px;
   right: calc(var(--right-offset) + var(--left-offset));
@@ -65,7 +70,8 @@ const CopyButton = styled.button`
     'Liberation Mono', 'Courier New', monospace;
   /* copy from tailwind defaults */
   &:hover {
-    background-color: hsla(240, 20%, 75%, 1);
+    background-color: ${(props: { isDarkMode: boolean }) =>
+      props.isDarkMode ? 'hsla(240, 20%, 75%, 1)' : 'hsla(60, 20%, 25%, 1)'};
   }
   /* -mx-4 sm:-mx-6 md:mx-0 */
   --left-offset: -4 * 0.25rem;
@@ -126,6 +132,7 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
+    isDarkMode: boolean;
     copyButton?: boolean;
   },
   {
@@ -211,7 +218,13 @@ class CodeBlock extends React.Component<
     });
   }
 
-  renderTokens(tokens, maxLines, getLineProps, getTokenProps): JSX.Element {
+  renderTokens(
+    tokens,
+    maxLines,
+    getLineProps,
+    getTokenProps,
+    isDarkMode
+  ): JSX.Element {
     const codeSnips = this.codeSnips;
     let curSnip = 0;
     let delta = 1;
@@ -239,6 +252,7 @@ class CodeBlock extends React.Component<
                 </LineSnip>
                 <CodeSnippetLineContent
                   onClick={this.setCodeSnipShow.bind(this, curSnip, true)}
+                  isDarkMode={isDarkMode}
                 >
                   {codeSnips[curSnip].indentation}
                   <span>
@@ -286,10 +300,9 @@ class CodeBlock extends React.Component<
             <LineSnip />
           )}
           <LineContent>
-            {line.map((token, key) => {
-              token.content = token.content.replace(/ {4}/g, '\t');
-              return <span key={key} {...getTokenProps({ token, key })} />;
-            })}
+            {line.map((token, key) => (
+              <span key={key} {...getTokenProps({ token, key })} />
+            ))}
           </LineContent>
         </Line>
       );
@@ -306,6 +319,8 @@ class CodeBlock extends React.Component<
     const isCodeBlockExpandable =
       !(this.context as React.ContextType<typeof SpoilerContext>)
         .expandCodeBlock && linesOfCode > 15;
+    const isDarkMode = this.props.isDarkMode;
+
     let language = className?.replace(/language-/, '');
     if (language == 'py') language = 'python';
     if (!['cpp', 'java', 'python'].includes(language)) {
@@ -347,6 +362,7 @@ class CodeBlock extends React.Component<
               '--right-offset': rightOffset,
             }}
             className="focus:outline-none"
+            isDarkMode={isDarkMode}
           >
             Copy
           </CopyButton>
@@ -355,20 +371,41 @@ class CodeBlock extends React.Component<
           Prism={Prism as any}
           code={code}
           language={language}
-          theme={vsDark}
+          theme={isDarkMode ? vsDark : vsLight}
         >
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
-            <div className="gatsby-highlight" data-language={language}>
+            <div
+              className={
+                'gatsby-highlight ' + (isDarkMode ? 'dark-mode' : 'light-mode')
+              }
+              data-language={language}
+            >
               <pre
                 className={
                   '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
                   className
                 }
-                style={{ ...style }}
+                style={{
+                  ...style,
+                  ...(!isDarkMode && { backgroundColor: 'rgb(249, 250, 251)' }),
+                  // In light mode, override background color with tailwind's bg-gray-50
+                }}
               >
                 {isCodeBlockExpandable && collapsed && tokens.length > 15
-                  ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
-                  : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
+                  ? this.renderTokens(
+                      tokens,
+                      10,
+                      getLineProps,
+                      getTokenProps,
+                      isDarkMode
+                    )
+                  : this.renderTokens(
+                      tokens,
+                      -1,
+                      getLineProps,
+                      getTokenProps,
+                      isDarkMode
+                    )}
                 {tokens.length > 15 && !collapsed && <div className="h-8" />}
                 {isCodeBlockExpandable && tokens.length > 15 && (
                   <div
@@ -386,8 +423,9 @@ class CodeBlock extends React.Component<
                       style={
                         collapsed && isCodeBlockExpandable
                           ? {
-                              background:
-                                'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+                              background: isDarkMode
+                                ? 'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)'
+                                : 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
                             }
                           : null
                       }
@@ -397,8 +435,9 @@ class CodeBlock extends React.Component<
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                         className={
-                          'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
-                          (collapsed ? '' : 'rotate-180')
+                          'w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
+                          (collapsed ? '' : 'rotate-180 ') +
+                          (isDarkMode ? 'text-white' : 'text-black')
                         }
                       >
                         <path

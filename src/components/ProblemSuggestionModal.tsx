@@ -141,26 +141,25 @@ export default function ProblemSuggestionModal({
       Silver: 'Recent USACO Silver (Dec 2015 and Later)',
       Gold: 'Recent USACO Gold (Dec 2015 and Later)',
       Plat: 'USACO Platinum',
-      AC: 'AtCoder',
-      CC: 'CodeChef',
-      CF: 'Codeforces',
-      CSA: 'CS Academy',
-      FHC: 'Facebook HackerCup',
-      HR: 'HackerRank',
-      LC: 'LeetCode',
-      POI: 'Polish Olympiad in Informatics',
-      SOJ: 'Sphere Online Judge',
-      TLX: 'tlx.toki.id',
-      YS: 'YS (judge.yosupo.jp)',
     };
     if (map[source]) return map[source];
-    return source;
+    return probSources[source][1];
   };
+  const isAdditionalPractice = markdownLayoutInfo?.title.includes(
+    'Additional Practice'
+  );
   const sourceOptions = [
-    ...Object.keys(probSources).map(source => ({
-      label: getLabel(source),
-      value: source,
-    })),
+    ...Object.keys(probSources)
+      .map(source => ({
+        label: getLabel(source),
+        value: source,
+      }))
+      .filter(
+        val =>
+          !isAdditionalPractice ||
+          (!val.label.includes('Recent USACO') &&
+            !val.label.includes('Platinum'))
+      ),
     {
       label: 'Other',
       value: 'other',
@@ -219,6 +218,21 @@ export default function ProblemSuggestionModal({
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Source
         </label>
+        {isAdditionalPractice && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            We are not accepting recent USACO problems for additional practice
+            modules, as they can already be viewed{' '}
+            <a
+              href="/general/usaco-monthlies"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 dark:text-blue-300 underline"
+            >
+              here
+            </a>
+            .
+          </p>
+        )}
         <div className="mt-2 relative rounded-md shadow-sm">
           <Select
             options={sourceOptions}

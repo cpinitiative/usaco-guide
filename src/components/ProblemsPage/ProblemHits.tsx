@@ -4,8 +4,11 @@ import { useContext } from 'react';
 import { Highlight } from 'react-instantsearch-dom';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
-
+import {
+  AlgoliaProblemInfo,
+  getProblemURL,
+  recentUsaco,
+} from '../../models/problem';
 import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 
 interface ProblemHitProps {
@@ -15,6 +18,12 @@ interface ProblemHitProps {
 function ProblemHit({ hit }: ProblemHitProps) {
   const { userProgressOnProblems, hideDifficulty, showTags, hideModules } =
     useContext(UserDataContext);
+  if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
+    hit.problemModules.push({
+      id: 'usaco-monthlies',
+      title: 'USACO Monthlies',
+    });
+  }
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">

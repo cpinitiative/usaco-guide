@@ -29,30 +29,27 @@ int main() {
 	cin >> n >> m >> k;
 	vector<vector<ll>> grid(n, vector<ll>(m));
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			cin >> grid[i][j];
-		}
+		for (int j = 0; j < m; j++) { cin >> grid[i][j]; }
 	}
 	int moves = n + m - 2;
-	
+
 	// edge case: 1 x 1 grid so moves = 0
 	if (moves == 0) {
 		cout << (grid[0][0] == k) << endl;
 		return 0;
 	}
-	
+
 	// loop over all combinations of moves from (0, 0)
 
-	/* 
+	/*
 	 * left[i][j][k] = number of ways we can have
 	 * an xorsum of k ending at (row, col)
 	 */
 	vector<vector<map<ll, ll>>> left(n, vector<map<ll, ll>>(m));
-	
+
 	int leftmoves = moves / 2;
 	for (int i = 0; i < (1 << leftmoves); i++) {
-		ll r = 0
-		ll c = 0;
+		ll r = 0 ll c = 0;
 		ll xorsum = grid[0][0];
 		bool in_grid = true;
 		for (int j = 0; j < leftmoves; j++) {
@@ -65,26 +62,23 @@ int main() {
 			} else {
 				c++;
 			}
-			 
+
 			if (r >= n || c >= m) {
-			 	// this subset leads to out of the grid
-			 	in_grid = false;
-			 	break;
+				// this subset leads to out of the grid
+				in_grid = false;
+				break;
 			}
 			xorsum ^= grid[r][c];
 		}
-		if (in_grid) {
-			left[r][c][xorsum]++;
-		}
+		if (in_grid) { left[r][c][xorsum]++; }
 	}
-	
+
 	ll answer = 0;
-	
+
 	// here we do the same thing, but we are going up from (n - 1, m - 1)
-	int rightmoves = moves - leftmoves - 1; // note the minus 1
+	int rightmoves = moves - leftmoves - 1;  // note the minus 1
 	for (int i = 0; i < (1 << rightmoves); i++) {
-		ll r = 0
-		ll c = 0;
+		ll r = 0 ll c = 0;
 		ll xorsum = grid[n - 1][m - 1];
 		bool in_grid = true;
 		for (int j = 0; j < rightmoves; j++) {
@@ -93,15 +87,15 @@ int main() {
 			 * otherwise we decrease col
 			 */
 			if (i & (1 << j)) {
-			 	r--;
+				r--;
 			} else {
 				c++;
 			}
-			 
+
 			if (r < 0 || c < 0) {
-			 	// out of the grid
-			 	in_grid = false;
-			 	break;
+				// out of the grid
+				in_grid = false;
+				break;
 			}
 			xorsum ^= grid[r][c];
 		}
@@ -118,10 +112,10 @@ int main() {
 			}
 		}
 	}
-	
+
 	cout << answer << endl;
 }
 ```
-  
+
 </CPPSection>
 </LanguageSection>
