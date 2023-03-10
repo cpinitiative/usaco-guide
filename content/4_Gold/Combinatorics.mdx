@@ -209,7 +209,7 @@ long long fac[MAXN + 1];
 long long inv[MAXN + 1];
 
 /** Computes x^n modulo m in O(log p) time. */
-long long binpow(long long x, long long n, long long m) {
+long long exp(long long x, long long n, long long m) {
 	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 	long long res = 1;
 	while (n > 0) {
@@ -231,7 +231,7 @@ void factorial(long long p) {
  * time
  */
 void inverses(long long p) {
-	inv[MAXN] = binpow(fac[MAXN], p - 2, p);
+	inv[MAXN] = exp(fac[MAXN], p - 2, p);
 	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
 }
 
@@ -266,7 +266,7 @@ ll fac[MAXN + 1];
 ll inv[MAXN + 1];
 
 //BeginCodeSnip{Counting functions}
-ll binpow(ll x, ll n, ll m) {
+ll exp(ll x, ll n, ll m) {
 	x %= m;
 	ll res = 1;
 	while (n > 0) {
@@ -285,7 +285,7 @@ void factorial() {
 }
 
 void inverses() {
-	inv[MAXN] = binpow(fac[MAXN], MOD - 2, MOD);
+	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD);
 	for (int i = MAXN; i >= 1; i--) {
 		inv[i - 1] = inv[i] * i % MOD;
 	}
