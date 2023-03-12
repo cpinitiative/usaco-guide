@@ -26,9 +26,8 @@ struct Edge {
 };
 
 struct DSU {
-	vector<int> p, sz, cnt_start;
-	// cnt_start stores unprocessed start nodes in a component
-	DSU(int n) : p(n), sz(n, 1), cnt_start(n) { iota(p.begin(), p.end(), 0); }
+	vector<int> p, sz, unprocessed_starts;
+	DSU(int n) : p(n), sz(n, 1), unprocessed_starts(n) { iota(p.begin(), p.end(), 0); }
 
 	int get(int x) {
 		if (p[x] != x) { p[x] = get(p[x]); }
@@ -42,7 +41,7 @@ struct DSU {
 		if (a != b) {
 			p[b] = a;
 			sz[a] += sz[b];
-			cnt_start[a] += cnt_start[b];
+			unprocessed_starts[a] += unprocessed_starts[b];
 		}
 	}
 };
@@ -85,7 +84,7 @@ int main() {
 	// initialize in dsu if this is a starting point
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
-			if (is_start[i][j]) { dsu.cnt_start[to_int(i, j)] = 1; }
+			if (is_start[i][j]) { dsu.unprocessed_starts[to_int(i, j)] = 1; }
 		}
 	}
 
@@ -95,9 +94,9 @@ int main() {
 		int par = dsu.get(e.u);
 		if (dsu.sz[par] >= t) {
 			// add number of start nodes we havent processed * current weight
-			ans += (ll)e.w * dsu.cnt_start[par];
+			ans += (ll)e.w * dsu.unprocessed_starts[par];
 			// reset unprocessed start nodes to 0
-			dsu.cnt_start[par] = 0;
+			dsu.unprocessed_starts[par] = 0;
 		}
 	}
 
