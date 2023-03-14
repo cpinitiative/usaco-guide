@@ -7,9 +7,9 @@ author: Dustin Miao
 
 ## Solution 1 - Connected Components DP
 
-Define $f_{i,j,k}$ as the number of valid configurations of the numbers from $1$ to $i$ into $j$ "connected components", where value $i$ has $k$ borders. For instance, the set of intervals $\{[1,6],[2,3,5],[7],[4,8,9]\}$ would be counted in the state $f_{9,4,1}$. 
+Define $f_{i,j,k}$ as the number of valid configurations of the numbers from $1$ to $i$ into $j$ "connected components", where value $i$ has $k$ borders. For instance, the set of intervals $\{[1,6],[2,3,5],[7],[4,8,9]\}$ would be counted in the state $f_{9,4,1}$.
 
-1. If $i$ has no borders, then $i$ must point two existing connected compontents. 
+1. If $i$ has no borders, then $i$ must point two existing connected compontents.
 2. If $i$ has one border, then $i$ must be appended on to an existing connected component.
 3. If $i$ has two borders, it must be inserted as its own connected component.
 
@@ -22,7 +22,7 @@ f_{i,j,1}&=2jf_{i-1,j,0}+(2j-1)f_{i-1,j,1}+(2j-2)f_{i-1,j,2}\\
 f_{i,j,2}&=f_{i-1,j-1,0}+f_{i-1,j-1,1}+f_{i-1,j-1,2}\\
 \end{align*}
 $$
- 
+
 The base case is $f_{0,0,0}=1$, and the final answer is $\sum_k f_{n,1,k}$.
 
 ### Implementation
@@ -45,17 +45,21 @@ int main() {
 	cin >> N;
 	vector dp(N + 1, vector<array<long long, 3>>(N + 2));
 	for (auto &a : dp)
-		for (auto &b : a)
-			b.fill(0);
+		for (auto &b : a) b.fill(0);
 	dp[0][0][0] = 1;
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= i; j++) {
-			dp[i][j][0] = (j * (j + 1) * dp[i - 1][j + 1][0] + 
-				j * j * dp[i - 1][j + 1][1] + j * (j - 1) * dp[i - 1][j + 1][2]) % MOD;
-			dp[i][j][1] = (2 * j * dp[i - 1][j][0] + (2 * j - 1) * dp[i - 1][j][1] + 
-				(2 * j - 2) * dp[i - 1][j][2]) % MOD;
-			dp[i][j][2] = (dp[i - 1][j - 1][0] + dp[i - 1][j - 1][1] + 
-				dp[i - 1][j - 1][2]) % MOD;
+			dp[i][j][0] = (j * (j + 1) * dp[i - 1][j + 1][0] +
+			               j * j * dp[i - 1][j + 1][1] +
+			               j * (j - 1) * dp[i - 1][j + 1][2]) %
+			              MOD;
+			dp[i][j][1] =
+			    (2 * j * dp[i - 1][j][0] + (2 * j - 1) * dp[i - 1][j][1] +
+			     (2 * j - 2) * dp[i - 1][j][2]) %
+			    MOD;
+			dp[i][j][2] = (dp[i - 1][j - 1][0] + dp[i - 1][j - 1][1] +
+			               dp[i - 1][j - 1][2]) %
+			              MOD;
 		}
 	}
 	cout << (dp[N][1][0] + dp[N][1][1] + dp[N][1][2]) % MOD << '\n';
@@ -83,8 +87,12 @@ N = int(input())
 dp = [0] * (N + 1)
 dp[0], dp[1] = 1, 1
 for i in range(4, N + 1):
-	dp[i] = ((i + 1) * dp[i - 1] - (i - 2) * dp[i - 2] - 
-		(i - 5) * dp[i - 3] + (i - 3) * dp[i - 4]) % 1000000007
+	dp[i] = (
+		(i + 1) * dp[i - 1]
+		- (i - 2) * dp[i - 2]
+		- (i - 5) * dp[i - 3]
+		+ (i - 3) * dp[i - 4]
+	) % 1000000007
 print(dp[N])
 ```
 
