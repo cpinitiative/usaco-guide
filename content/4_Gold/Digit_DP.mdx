@@ -76,9 +76,7 @@ void reset() {
 	for (int i = 0; i < 19; i++) {
 		for (int j = 0; j < 50; j++) {
 			for (int k = 0; k < 2; k++) {
-				for (int l = 0; l < 2; l++) {
-					dp[i][j][k][l] = -1;
-				}
+				for (int l = 0; l < 2; l++) { dp[i][j][k][l] = -1; }
 			}
 		}
 	}
@@ -104,16 +102,10 @@ ll solve_dp(int loc, int k, bool largest, bool started, int targ, int targ2) {
 	for (int i = 0; i <= 9; i++) {
 		bool is_largest = largest;
 		int lar = num[loc] - '0';
-		if (is_largest && i > lar) {
-			break;
-		}
-		if (i < lar) {
-			is_largest = false;
-		}
+		if (is_largest && i > lar) { break; }
+		if (i < lar) { is_largest = false; }
 		bool is_started = started || i != 0;
-		if (is_started && targ2 != -1 && i != targ && i != targ2) {
-			continue;
-		}
+		if (is_started && targ2 != -1 && i != targ && i != targ2) { continue; }
 		ans += solve_dp(loc + 1, k + (is_started ? (targ == i ? 1 : -1) : 0),
 		                is_largest, is_started, targ, targ2);
 	}
