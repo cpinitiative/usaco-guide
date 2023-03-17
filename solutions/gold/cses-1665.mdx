@@ -39,24 +39,24 @@ information and problems.
 using namespace std;
 const int N = 101, X = 5e3 + 1, M = 1e9 + 7,
           K = 5e3;  // K is offset to account for negatives
-int n, x, t[N];     // x -> max penalty
+int n, x, s[N];     // x -> max penalty
 // dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
 // for convenience, we 1-index dp array and 0-index person array so dp[i][j][k]
-// lines up with t[i] (i.e. person i + 1 -> t[i])
+// lines up with s[i] (i.e. skill of person i + 1 = s[i])
 int dp1[N][X + K], dp2[N][X + K];  // dp1 -> i, dp2 -> i + 1
 signed main() {
 	cin >> n >> x;
-	for (int i = 0; i < n; i++) cin >> t[i];
-	sort(t, t + n);
+	for (int i = 0; i < n; i++) cin >> s[i];
+	sort(s, s + n);
 	dp1[0][K] = 1;  // dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j <= (n - i); j++) {  // at most n - i unfinished groups
 			for (int k = 0; k <= x + K; k++) {
 				if (!dp1[j][k]) continue;
 				dp2[j][k] += dp1[j][k];  // i has their own group
-				if (j) dp2[j - 1][k + t[i]] += j * dp1[j][k];  // finish group
+				if (j) dp2[j - 1][k + s[i]] += j * dp1[j][k];  // finish group
 				if (j + 1 <= n - (i + 1))
-					dp2[j + 1][k - t[i]] +=
+					dp2[j + 1][k - s[i]] +=
 					    dp1[j][k];  // create new unfinished group
 				if (j <= n - (i + 1))
 					dp2[j][k] += j * dp1[j][k];  // extend unfinished group
