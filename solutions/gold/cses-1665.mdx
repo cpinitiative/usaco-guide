@@ -10,23 +10,18 @@ as $(\text{Skill of last person}) - (\text{Skill of first person})$. Let $s_i$
 denote the skill of the $i$-th person.
 
 $dp[i][j][k] =$ The number of ways we can form teams from the first $i$ people
-such that there are $j$ "unfinished" teams and the total penalty so far is $k$.
+such that there are $j$ "unfinished" teams and the total penalty so far is $k$. If the $l$-th person is the least skilled in an unfinished team, we define its contribution to the penalty as $-s_l$. Similarly, finishing a team with person $r$ contributes $s_r$ to the penalty. These definitions follow directly from the previous observation that the contribution of a team is $s_r - s_l$.
 
 There are 4 cases when we transition from $i - 1$ to $i$:
 
 - We make a team consisting of only person $i$.
-  - The number of ways to do this is $dp[i - 1][j][k]$, since the penalty from
-    this team is 0.
+  - $dp[i - 1][j][k]$ transitions to the state $dp[i][j][k]$ (unfinished teams and penalty are not affected).
 - We append person $i$ to an unfinished team.
-  - The number of ways to do this is $j \cdot dp[i - 1][j][k]$, since there are
-    $j$ teams we can choose from and the penalties don't change.
+  - This transitions to the state $dp[i][j][k]$ (again, unfinished teams and penalty are not affected). There are $j$ unfinished teams we can choose to extend, so $dp[i][j][k] \mathrel{+}= j \cdot dp[i - 1][j][k]$.
 - We use person $i$ to "finish" an unfinished team.
-  - The number of ways to do this is $(j+1) \cdot dp[i - 1][j + 1][k - s_i]$,
-    since person $i$ contributes $s_i$ to the cost and there were $j + 1$ teams
-    to choose from.
+  - This transitions to the state $dp[i][j - 1][k + s_i]$ (one less unfinished team, and we add to penalty as discussed above). There are again $j$ unfinished teams to choose from, so $dp[i][j - 1][k + s[i]] \mathrel{+}= j \cdot dp[i - 1][j][k]$.
 - We start a new unfinished team with person $i$.
-  - The number of ways to do this is $dp[i - 1][j - 1][k + s_i]$, since person
-    $i$ contributes $-s_i$ to the cost.
+  - This transitions to the state $dp[i][j + 1][k - s[i]]$ (one more unfinished team, and we subtract from penalty as discussed above).
 
 Two more things:
 
@@ -34,7 +29,7 @@ Two more things:
 - $dp[i]$ depends only on $dp[i - 1]$, so we can drop the first dimension that
   we store (to save memory).
 
-I believe that this is called "open and close interval trick". See
+I believe that this is called the "open and close interval trick". See
 [zscoder's blog post](https://codeforces.com/blog/entry/47764) for more
 information and problems.
 
@@ -44,49 +39,34 @@ information and problems.
 using namespace std;
 const int N = 101, X = 5e3 + 1, M = 1e9 + 7,
           K = 5e3;  // K is offset to account for negatives
-int n, x, t[N];     // x -> max penalty
+int n, x, t[N]; // x -> max penalty
 // dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
-// contrary to the above solution, this code uses a push dp approach
-// transitions from dp[i][j][k]:
-// 1. new group with just person i + 1 -> dp[i + 1][j][k] += dp[i][j][k]
-// 2. finish unfinished group with person i + 1 -> dp[i + 1][j - 1][k + s[i +
-// 1]] += j * dp[i][j][k]
-// 3. create new unfinished group with person i + 1 -> dp[i + 1][j + 1][k - s[i
-// + 1]] += dp[i][j][k]
-// 4. extend an unfinished group with person i + 1 -> dp[i + 1][j][k] += j *
-// dp[i][j][k] for convenience, we 1-index dp array and 0-index person array so
-// dp[i][j][k] lines up with t[i] (i.e. person i + 1 -> t[i])
-int dp1[N][X + K], dp2[N][X + K];  // dp1 -> i, dp2 -> i + 1
+// for convenience, we 1-index dp array and 0-index person array so dp[i][j][k] lines up with t[i] (i.e. person i + 1 -> t[i])
+int dp1[N][X + K], dp2[N][X + K]; // dp1 -> i, dp2 -> i + 1
 signed main() {
 	cin >> n >> x;
 	for (int i = 0; i < n; i++) cin >> t[i];
 	sort(t, t + n);
-	dp1[0][K] = 1;  // dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
+	dp1[0][K] = 1; // dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j <= (n - i); j++) {  // at most n - i unfinished groups
+		for (int j = 0; j <= (n - i); j++) { // at most n - i unfinished groups
 			for (int k = 0; k <= x + K; k++) {
 				if (!dp1[j][k]) continue;
-				dp2[j][k] += dp1[j][k];  // i has their own group
-				if (j) dp2[j - 1][k + t[i]] += j * dp1[j][k];  // finish group
-				if (j + 1 <= n - (i + 1))
-					dp2[j + 1][k - t[i]] +=
-					    dp1[j][k];  // create new unfinished group
-				if (j <= n - (i + 1))
-					dp2[j][k] += j * dp1[j][k];  // extend unfinished group
+				dp2[j][k] += dp1[j][k]; // i has their own group
+				if (j) dp2[j - 1][k + t[i]] += j * dp1[j][k]; // finish group
+				if (j + 1 <= n - (i + 1)) dp2[j + 1][k - t[i]] += dp1[j][k]; // create new unfinished group
+				if (j <= n - (i + 1)) dp2[j][k] += j * dp1[j][k]; // extend unfinished group
 			}
 		}
 		for (int j = 0; j <= (n - (i + 1)); j++) {
 			for (int k = 0; k <= x + K; k++) {
-				dp1[j][k] = dp2[j][k] % M;  // i + 1 becomes the new i
+				dp1[j][k] = dp2[j][k] % M; // i + 1 becomes the new i
 				dp2[j][k] = 0;
 			}
 		}
 	}
 	int ans = 0;
-	for (int i = K; i <= x + K; i++)
-		ans += dp1[0][i],
-		    ans %=
-		    M;  // dp[n][0][i] -> n people, 0 unfinished groups, penalty <= x
+	for (int i = K; i <= x + K; i++) ans += dp1[0][i], ans %= M; // dp[n][0][i] -> n people, 0 unfinished groups, penalty <= x
 	cout << ans;
 }
 ```
