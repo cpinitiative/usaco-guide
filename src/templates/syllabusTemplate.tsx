@@ -98,7 +98,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
     <>
       {topicsWarning}
       <br />
-      If you prefer videos instead of text, check out CPI's free
+      If you prefer videos instead of text, check out CPI's free{' '}
       <a
         href="https://joincpi.org/video-classes"
         target="_blank"
