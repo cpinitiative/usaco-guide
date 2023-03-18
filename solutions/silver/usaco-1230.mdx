@@ -10,11 +10,11 @@ author: Aditya Gupta, Chuyang Wang
 
 ## Explanation
 
-As each cow $i$ only wants to visit one of the other cows $j$, we can interpret the input as a [functional graph](https://usaco.guide/silver/func-graphs) with edges $i \to j$. The resulting graph is not necessarily connected, so we have to find out all connected components in this graph and find the maximum amount of "moos" for each of them separately. 
+As each cow $i$ only wants to visit one of the other cows $j$, we can interpret the input as a [functional graph](https://usaco.guide/silver/func-graphs) with edges $i \to j$. The resulting graph is not necessarily connected, so we have to find out all connected components in this graph and find the maximum amount of "moos" for each of them separately.
 
-For each connected component of the functional graph, let's observe that there must be one and only one cycle in it. Moreover, all cows can visit their buddies before their departures except one who wants to visit the cow initiating the visit chain in the cycle. For other paths that lead to the cycle, we can always visit them first before processing the cycle, so they will always be able to "moo". Therefore, the maximum amount of "moos" is the sum of all $v$ in the connected component. We need to subtract the sum by the minimum $v_i$ in the cycle because it represents the cow before the initiating cow who won't be able to moo. 
+For each connected component of the functional graph, let's observe that there must be one and only one cycle in it. Moreover, all cows can visit their buddies before their departures except one who wants to visit the cow initiating the visit chain in the cycle. For other paths that lead to the cycle, we can always visit them first before processing the cycle, so they will always be able to "moo". Therefore, the maximum amount of "moos" is the sum of all $v$ in the connected component. We need to subtract the sum by the minimum $v_i$ in the cycle because it represents the cow before the initiating cow who won't be able to moo.
 
-For each cow, we first check if it is already visited. If not, we then want to find out all other cows in this connected component by using a reversed graph and adding up the "moos". After that, we run Floyd's algorithm to determine the cycle and find the minimum "v" value in it. 
+For each cow, we first check if it is already visited. If not, we then want to find out all other cows in this connected component by using a reversed graph and adding up the "moos". After that, we run Floyd's algorithm to determine the cycle and find the minimum "v" value in it.
 
 
 ## Implementation
@@ -37,21 +37,17 @@ vector<vector<int>> reversed_graph;
 vector<bool> visited;
 
 /**
- * Marks y and the other cows in its other cycle as visited by performing a dfs. 
+ * Marks y and the other cows in its other cycle as visited by performing a dfs.
  */
 void mark(int y) {
-	if (visited[y]) {
-		return;
-	}
+	if (visited[y]) { return; }
 	visited[y] = true;
-	for (int c : reversed_graph[y]) {
-		mark(c);
-	}
+	for (int c : reversed_graph[y]) { mark(c); }
 }
 
 /**
  * Applies Floyd's algorithm to detect the cycle and return the minimum v value
- * in this cycle. 
+ * in this cycle.
  */
 int min_in_cycle(int curr) {
 	int y = a[curr];
@@ -97,9 +93,7 @@ int main() {
 		 * can visit all except one cow. We make this cow the one with the
 		 * lowest v_i and subtract it.
 		 */
-		if (!visited[i]) {
-			max_moos -= min_in_cycle(i);
-		}
+		if (!visited[i]) { max_moos -= min_in_cycle(i); }
 	}
 
 	cout << max_moos << endl;
@@ -121,15 +115,14 @@ public class Visits {
 	static List<Boolean> visited;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		int n = Integer.parseInt(br.readLine());
 		a = new ArrayList<>(n);
 		v = new ArrayList<>(n);
 		reversed_graph = new ArrayList<>(n);
-		for (int i = 0; i < n; i++) {
-			reversed_graph.add(new ArrayList<>());
-		}
+		for (int i = 0; i < n; i++) { reversed_graph.add(new ArrayList<>()); }
 		visited = new ArrayList<>();
 		long maxMoos = 0;
 
@@ -145,21 +138,19 @@ public class Visits {
 
 		for (int i = 0; i < n; i++) {
 			/*
-			 * For each unvisited connected component with exactly one cycle, you
-			 * can visit all except one cow. We make this cow the one with the
-			 * lowest v_i and subtract it.
+			 * For each unvisited connected component with exactly one cycle,
+			 * you can visit all except one cow. We make this cow the one with
+			 * the lowest v_i and subtract it.
 			 */
-			if (!visited.get(i)) {
-				maxMoos -= minInCycle(i);
-			}
+			if (!visited.get(i)) { maxMoos -= minInCycle(i); }
 		}
 
 		System.out.println(maxMoos);
 	}
 
 	/**
-	 * Applies Floyd's algorithm to detect the cycle and return the minimum v value
-	 * in this cycle containing node. 
+	 * Applies Floyd's algorithm to detect the cycle and return the minimum v
+	 * value in this cycle containing node.
 	 */
 	static int minInCycle(int node) {
 		int slow = a.get(node);
@@ -185,16 +176,13 @@ public class Visits {
 	}
 
 	/**
-	 * Marks y and the other cows in its other cycle as visited by performing a dfs. 
+	 * Marks y and the other cows in its other cycle as visited by performing a
+	 * dfs.
 	 */
 	static void mark(int node) {
-		if (visited.get(node)) {
-			return;
-		}
+		if (visited.get(node)) { return; }
 		visited.set(node, true);
-		for (Integer child : reversed_graph.get(node)) {
-			mark(child);
-		}
+		for (Integer child : reversed_graph.get(node)) { mark(child); }
 	}
 }
 ```

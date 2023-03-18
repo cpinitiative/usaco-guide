@@ -14,7 +14,7 @@ author: Kevin Sheng
 Let's first try to transform the terms of the game into something less arbitrary.
 
 Since Stjepan can't backtrack because he marks all nodes he visits himself, he
-can only move *down* the tree, increasing his depth as he goes.  
+can only move *down* the tree, increasing his depth as he goes.
 Given this, we can make a series of observations:
 1. Daniel can effectively "cut off" an entire subtree by marking a node, because
    then Stjepan can't get through that one node. Note that this node has to be at a level
@@ -131,10 +131,10 @@ yields a configuration that can cover up to the fifth leaf.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <functional>
-#include <vector>
+#include <iostream>
 #include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -156,13 +156,13 @@ int main() {
 		cout << "DA" << endl;
 		return 0;
 	}
- 
+
 	std::map<int, int> lost;
 	vector<vector<int>> cutoff_cover(node_num);
 	vector<vector<int>> depth_nodes(max_turns + 1);
 
 	std::function<void(int, int, int)> process_nodes;
-	process_nodes = [&] (int at, int prev, int depth) {
+	process_nodes = [&](int at, int prev, int depth) {
 		depth_nodes[depth].push_back(at);
 		if (depth == max_turns) {
 			lost[at] = lost.size();
@@ -172,19 +172,17 @@ int main() {
 		for (int n : neighbors[at]) {
 			if (n != prev) {
 				process_nodes(n, at, depth + 1);
-				cutoff_cover[at].insert(
-					cutoff_cover[at].end(),
-					cutoff_cover[n].begin(),
-					cutoff_cover[n].end()
-				);
+				cutoff_cover[at].insert(cutoff_cover[at].end(),
+				                        cutoff_cover[n].begin(),
+				                        cutoff_cover[n].end());
 			}
 		}
 	};
 	process_nodes(0, 0, 0);
-	
+
 	// intervals[n] the interval of leaves we can cover if we cut off node n
 	vector<std::pair<int, int>> intervals;
-	for (const vector<int>& cc : cutoff_cover) {
+	for (const vector<int> &cc : cutoff_cover) {
 		if (cc.empty()) {
 			intervals.push_back({-1, -1});
 		} else {
@@ -200,7 +198,7 @@ int main() {
 	vector<int> max_cover(1 << max_turns);
 	max_cover[0] = 0;
 	for (int ss = 1; ss < (1 << max_turns); ss++) {
-		int& curr = max_cover[ss];
+		int &curr = max_cover[ss];
 		// go through each possible previous depth
 		for (int to_add = 0; to_add < max_turns; to_add++) {
 			if ((ss & (1 << to_add)) != 0) {

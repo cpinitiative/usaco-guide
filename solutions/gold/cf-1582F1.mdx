@@ -12,25 +12,25 @@ author: Chuyang Wang
 To solve this problem, notice that the result of performing XOR
 operations on a sequence of $a_i < 500$ is strictly less than $2^9$. That's
 because the ninth bit is the largest possible in the binary representation of
-$a_i$. 
+$a_i$.
 
 With this observation, we can now formulate our DP solution. Let $dp[x][i]$
 represent the feasibility of getting $x$ as a result of XOR of an increasing
 sequence ending with a number less than or equal to $i$. There exists the
-following recurrence: 
+following recurrence:
 
 $$
 dp[x \oplus a_i][i] = dp[x \oplus a_i][0..i] \lor dp[x][0..i-1]
 $$
 
-with 
+with
 
 $$
 dp[0][i] = \text{true}
 $$
 
 since it is always possible to get 0 from an increasing sequence consisting of
-zero element. 
+zero element.
 
 ## Implementation
 
@@ -45,33 +45,28 @@ using namespace std;
 
 const int MAXA = 1 << 9
 
-int main() {
+                 int
+                 main() {
 	int n;
 	cin >> n;
 	vector<int> arr(n);
-	for (int &i : arr) {
-		cin >> i;
-	}
+	for (int &i : arr) { cin >> i; }
 
 	/*
 	 * dp[x][i] = whether it is possible to get x using XOR of an increasing
 	 * sequence which ends with a number smaller than or equal to i
 	 */
 	vector<vector<bool>> dp(MAXA, vector<bool>(MAXA, false));
-	for (int i = 0; i < MAXA; i++) {
-		dp[0][i] = true;
-	}
+	for (int i = 0; i < MAXA; i++) { dp[0][i] = true; }
 
 	for (int &a : arr) {
 		// 0 ^ x = x for all x, so there is no need to consider the element 0
-		if (a == 0) {
-			continue;
-		}
+		if (a == 0) { continue; }
 		for (int i = 0; i < MAXA; i++) {
 			/*
-			 * For every i as a result of XOR operations on increasing sequences that
-			 * end with a number less than a, we can add a to the end of
-			 * it and get a new x = i ^ a
+			 * For every i as a result of XOR operations on increasing sequences
+			 * that end with a number less than a, we can add a to the end of it
+			 * and get a new x = i ^ a
 			 */
 			dp[a ^ i][a] = dp[a ^ i][a] || dp[i][a - 1];
 			/*
@@ -80,24 +75,18 @@ int main() {
 			 */
 			if (dp[a ^ i][a]) {
 				int j = a + 1;
-				while (j < MAXA && !dp[a ^ i][j]) {
-					dp[a ^ i][j++] = true;
-				}
+				while (j < MAXA && !dp[a ^ i][j]) { dp[a ^ i][j++] = true; }
 			}
 		}
 	}
 
 	vector<int> ans;
 	for (int i = 0; i < MAXA; i++) {
-		if (dp[i][MAXA - 1]) {
-			ans.push_back(i);
-		}
+		if (dp[i][MAXA - 1]) { ans.push_back(i); }
 	}
 
 	cout << ans.size() << "\n";
-	for (int &i : ans) {
-		cout << i << " ";
-	}
+	for (int &i : ans) { cout << i << " "; }
 	cout << endl;
 }
 ```

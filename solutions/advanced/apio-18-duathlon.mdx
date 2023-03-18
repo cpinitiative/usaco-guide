@@ -73,21 +73,23 @@ void dfs(int node, int parent = 0) {
 	low[node] = tin[node] = timer++;
 	stck.push_back(node);
 	N++;
-	for (int i : graph[node]) if (i != parent) {
-		if (tin[i]) low[node] = min(low[node], tin[i]);
-		else {
-			dfs(i, node);
-			low[node] = min(low[node], low[i]);
-			if (low[i] >= tin[node]) {
-				bcc_graph[node].push_back(n + bccs);
-				while (!bcc_graph[n + bccs].size() || bcc_graph[n + bccs].back() != i) {
-					bcc_graph[n + bccs].push_back(stck.back());
-					stck.pop_back();
+	for (int i : graph[node])
+		if (i != parent) {
+			if (tin[i]) low[node] = min(low[node], tin[i]);
+			else {
+				dfs(i, node);
+				low[node] = min(low[node], low[i]);
+				if (low[i] >= tin[node]) {
+					bcc_graph[node].push_back(n + bccs);
+					while (!bcc_graph[n + bccs].size() ||
+					       bcc_graph[n + bccs].back() != i) {
+						bcc_graph[n + bccs].push_back(stck.back());
+						stck.pop_back();
+					}
+					bccs++;
 				}
-				bccs++;
 			}
 		}
-	}
 }
 
 void dfs2(int node) {
@@ -97,7 +99,8 @@ void dfs2(int node) {
 		sz[node] += sz[i];
 		if (node > n) ans -= bcc_graph[node].size() * sz[i] * (sz[i] - 1);
 	}
-	if (node > n) ans -= bcc_graph[node].size() * (N - sz[node]) * (N - sz[node] - 1);
+	if (node > n)
+		ans -= bcc_graph[node].size() * (N - sz[node]) * (N - sz[node] - 1);
 }
 
 int main() {

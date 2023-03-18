@@ -7,6 +7,21 @@ author: Sofia Yang, Ryan Chou
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_snakes_gold_open19.html)
 
+<Spoiler title="Hint 1">
+
+Note on the constraints of the input, the maximum number of changes to the size of her net $K$ cannot be greater than the groups of snakes $N$. A triple for loop with $\mathcal{O}(N^3)$ is feasible.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+We notice that we just need to find the minimum waste for the first $i$ snakes with only $j$ switches as we iterate $i$ and $j$ from $1$ to $N$ and $0$ to $K$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
 
 Instead of keeping track of all of the different resizings, let's assume that $\texttt{dp}[i][j]$ stores the minimum sum of all net sizes for the first $i$ snakes after $j$ resizings. Then the total wasted space would be $\texttt{dp}[n][k] - T$, where $T$ is the sum of all of the groups of snakes.
 
@@ -24,17 +39,15 @@ using namespace std;
 int main() {
 	freopen("snakes.in", "r", stdin);
 	freopen("snakes.out", "w", stdout);
-	
+
 	int n, k;
 	cin >> n >> k;
 
 	vector<int> groups(n + 1);
-	for (int i = 1; i <= n; i++) {
-		cin >> groups[i];
-	}
+	for (int i = 1; i <= n; i++) { cin >> groups[i]; }
 
 	/*
-	 * dp[i][j] = the min sum of net sizes after 
+	 * dp[i][j] = the min sum of net sizes after
 	 * catching first i snakes with j resizings
 	 */
 	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
@@ -43,7 +56,7 @@ int main() {
 	int space_used = 0;
 	for (int i = 1; i <= n; i++) {
 		largest_group = max(largest_group, groups[i]);
-		
+
 		/*
 		 * base case: with zero resizings, Bessie must start off with
 		 * a net large enough to catch the largest group of snakes
@@ -59,7 +72,7 @@ int main() {
 				 * after collecting the first c groups
 				 */
 				dp[i][j] = min(dp[i][j], dp[c][j - 1] + net_size * (i - c));
-				net_size = max(net_size , groups[c]);
+				net_size = max(net_size, groups[c]);
 			}
 		}
 		space_used += groups[i];
@@ -121,9 +134,11 @@ public class Snakes {
 		io.close();
 
 	}
-	
+
 	//CodeSnip{Kattio}
 }
 ```
 </JavaSection>
 </LanguageSection>
+
+</Spoiler>

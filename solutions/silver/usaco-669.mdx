@@ -61,10 +61,10 @@ int main() {
 
 	int n;
 	read >> n;
-	
+
 	vector<int> x(n);
 	vector<int> y(n);
-	
+
 	for (int i = 0; i < n; i++) {
 		read >> x[i] >> y[i];
 	}
@@ -202,22 +202,22 @@ class DSU:
 	def __init__(self, size: int) -> None:
 		self.sizes = [1 for _ in range(size)]
 		self.parents = [i for i in range(size)]
-	
+
 	def get_top(self, n: int) -> int:
 		if self.parents[n] == n:
 			return n
 		self.parents[n] = self.get_top(self.parents[n])
 		return self.parents[n]
-	
+
 	def link(self, n1: int, n2: int) -> bool:
 		n1 = self.get_top(n1)
 		n2 = self.get_top(n2)
 		if n1 == n2:
 			return False
-		
+
 		if self.sizes[n1] < self.sizes[n2]:
 			n1, n2 = n2, n1
-		
+
 		self.sizes[n1] += self.sizes[n2]
 		self.parents[n2] = n1
 		return True
@@ -261,28 +261,28 @@ print(last_dist, file=open('moocast.out', 'w'))
 </PySection>
 </LanguageSection>
 
-### Implementation (Binary Search + DFS)
+### Implementation (Binary Search + BFS)
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
-int dist_sq(const pair<int, int>& p1, const pair<int, int>& p2) {
+int dist_sq(const pair<int, int> &p1, const pair<int, int> &p2) {
 	int dx = p1.first - p2.first;
 	int dy = p1.second - p2.second;
 	return dx * dx + dy * dy;
 }
 
-bool all_reachable(int power, const vector<pair<int, int>>& cows) {
+bool all_reachable(int power, const vector<pair<int, int>> &cows) {
 	int start = 0;
 	vector<int> frontier{start};
 	vector<bool> reached(cows.size());
@@ -299,9 +299,7 @@ bool all_reachable(int power, const vector<pair<int, int>>& cows) {
 	}
 
 	for (bool c : reached) {
-		if (!c) {
-			return false;
-		}
+		if (!c) { return false; }
 	}
 	return true;
 }
@@ -311,15 +309,13 @@ int main() {
 	int cow_num;
 	read >> cow_num;
 	vector<pair<int, int>> cows(cow_num);
-	for (pair<int, int>& c : cows) {
-		read >> c.first >> c.second;
-	}
+	for (pair<int, int> &c : cows) { read >> c.first >> c.second; }
 
 	int lo = 0;
-	int hi = 1e9;  // arbitrarily large integer
+	int hi = INT32_MAX;
 	int valid = -1;
 	while (lo <= hi) {
-		int mid = (lo + hi) / 2;
+		int mid = lo + (hi - lo) / 2;
 		if (all_reachable(mid, cows)) {
 			valid = mid;
 			hi = mid - 1;
@@ -351,10 +347,10 @@ public class Moocast {
 		}
 
 		int lo = 0;
-		int hi = 1e9;  // arbitrarily large integer
+		int hi = Integer.MAX_VALUE;
 		int valid = -1;
 		while (lo <= hi) {
-			int mid = (lo + hi) / 2;
+			int mid = lo + (hi - lo) / 2;
 			if (allReachable(mid, cows)) {
 				valid = mid;
 				hi = mid - 1;
@@ -385,9 +381,7 @@ public class Moocast {
 		}
 
 		for (boolean c : reached) {
-			if (!c) {
-				return false;
-			}
+			if (!c) { return false; }
 		}
 		return true;
 	}

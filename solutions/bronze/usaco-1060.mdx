@@ -27,18 +27,14 @@ int main() {
 	cin >> n;
 
 	vector<int> flowers(n);
-	for (int& f : flowers) {
-		cin >> f;
-	}
+	for (int &f : flowers) { cin >> f; }
 
 	int valid_photos = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
 			// find the average petal # in the range i - j
 			double avg_petals = 0;
-			for (int f = i; f <= j; f++) {
-				avg_petals += flowers[f];
-			}
+			for (int f = i; f <= j; f++) { avg_petals += flowers[f]; }
 			avg_petals /= j - i + 1;
 
 			for (int index = i; index <= j; index++) {
@@ -66,7 +62,7 @@ public class DaisyChains {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(read.readLine());
-		
+
 		int[] flowers = new int[n];
 		StringTokenizer flowerST = new StringTokenizer(read.readLine());
 		for (int i = 0; i < n; i++) {
@@ -95,7 +91,7 @@ public class DaisyChains {
 
 		System.out.println(validPhotos);
 	}
-	
+
 	//CodeSnip{Kattio}
 }
 ```
@@ -111,7 +107,7 @@ valid_photos = 0
 for i in range(n):
 	for j in range(i, n):
 		# find the average petal # in the range i - j
-		avg_petals = sum(flowers[i:j + 1]) / (j - i + 1)
+		avg_petals = sum(flowers[i : j + 1]) / (j - i + 1)
 
 		for index in range(i, j + 1):
 			if flowers[index] == avg_petals:

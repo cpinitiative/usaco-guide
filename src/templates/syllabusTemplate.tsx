@@ -235,6 +235,9 @@ export default function Template(props) {
                           item.frontmatter.description,
                           item.frontmatter.frequency,
                           item.isIncomplete,
+                          item.cppOc,
+                          item.javaOc,
+                          item.pyOc,
                           [],
                           item.fields.gitAuthorTime
                         )
@@ -268,6 +271,9 @@ export const pageQuery = graphql`
             frequency
           }
           isIncomplete
+          cppOc
+          javaOc
+          pyOc
           fields {
             gitAuthorTime
           }

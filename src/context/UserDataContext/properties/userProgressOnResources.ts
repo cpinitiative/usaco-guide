@@ -1,24 +1,30 @@
 import * as Sentry from '@sentry/browser';
-import { setDoc } from 'firebase/firestore';
+import { getFirestore, runTransaction, updateDoc } from 'firebase/firestore';
 import { ResourceProgress } from '../../../models/resource';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 
 export type UserProgressOnResourcesAPI = {
-  userProgressOnResources: { [key: string]: ResourceProgress };
+  userProgressOnResources: {
+    [key: string]: ResourceProgress;
+  };
   setUserProgressOnResources: (
     resourceId: string,
     status: ResourceProgress
   ) => void;
 };
 
+export const replaceIllegalFirebaseCharacters = (str: string) => {
+  return str.replace(/[^a-zA-Z0-9]/g, ''); // technically only ~*/[] aren't allowed but whatever
+};
+
 export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI {
   private progressStorageKey = 'userProgressOnResources';
-  private progressValue = {};
+  private progressValue: any = {};
 
   initializeFromLocalStorage = (): void => {
     const currentValue = this.getValueFromLocalStorage(
       this.getLocalStorageKey(this.progressStorageKey),
-      { version: 2 }
+      { version: 3 }
     );
     this.progressValue = currentValue;
   };
@@ -41,41 +47,83 @@ export default class UserProgressOnResourcesProperty extends UserDataPropertyAPI
     };
   };
 
+  migrateLegacyValue = (legacyValue: Record<string, ResourceProgress>) => {
+    const getMigratedValue = (
+      legacyValue: Record<string, ResourceProgress>
+    ) => {
+      return Object.keys(legacyValue).reduce(
+        (acc, key) => {
+          if (key === 'version') return acc;
+          const migratedKey = replaceIllegalFirebaseCharacters(key);
+          return { ...acc, [migratedKey]: legacyValue[key] };
+        },
+        { version: 3 }
+      );
+    };
+    if (this.firebaseUserDoc) {
+      if (!this.firebaseApp) {
+        throw new Error(
+          'this.firebaseApp not defined, but this.firebaseUserDoc is defined'
+        );
+      }
+      runTransaction(getFirestore(this.firebaseApp), async transaction => {
+        if (!this.firebaseUserDoc) {
+          // maybe the user signed out? don't think this ever runs
+          return;
+        }
+        const userDoc = await transaction.get(this.firebaseUserDoc);
+        if (!userDoc.exists()) {
+          throw "Document does not exist! (this shouldn't happen)";
+        }
+
+        const newValue = getMigratedValue(
+          userDoc.data()[this.progressStorageKey]
+        );
+        transaction.update(this.firebaseUserDoc, {
+          [this.progressStorageKey]: newValue,
+        });
+      });
+    } else {
+      this.progressValue = getMigratedValue(legacyValue);
+      this.writeValueToLocalStorage();
+    }
+  };
+
   importValueFromObject = (data: Record<string, any>): void => {
     const pendingProgressValue = data[this.progressStorageKey] || {
-      version: 2,
+      version: 3,
     };
-    this.progressValue = pendingProgressValue;
+    if (pendingProgressValue.version === 2) {
+      this.migrateLegacyValue(pendingProgressValue);
+    } else {
+      this.progressValue = pendingProgressValue;
+    }
   };
 
   getAPI: () => UserProgressOnResourcesAPI = () => {
     return {
       userProgressOnResources: this.progressValue,
       setUserProgressOnResources: (problemId, status) => {
-        if (!this.firebaseUserDoc) {
-          // if the user isn't using firebase, it is possible that they
-          // have multiple tabs open, which can result in localStorage
-          // being out of sync.
-          this.initializeFromLocalStorage();
-        }
+        problemId = replaceIllegalFirebaseCharacters(problemId);
+        // if the user isn't using firebase, it is possible that they
+        // have multiple tabs open, which can result in localStorage
+        // being out of sync.
+        // also bc of data loss let's just do this all the time
+        this.initializeFromLocalStorage();
         try {
           this.progressValue[problemId] = status;
 
           if (this.firebaseUserDoc) {
-            setDoc(
-              this.firebaseUserDoc,
-              {
-                [this.progressStorageKey]: {
-                  [problemId]: status,
-                },
-              },
-              { merge: true }
-            );
+            updateDoc(this.firebaseUserDoc, {
+              [`${this.progressStorageKey}.${problemId}`]: status,
+            });
           }
 
           this.writeValueToLocalStorage();
           this.triggerRerender();
         } catch (e) {
+          console.error(e);
+
           Sentry.captureException(e, {
             extra: {
               status,

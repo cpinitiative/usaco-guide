@@ -156,11 +156,11 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're looking for people to join our team!
+                  Join the February Contest workshop on March 4th!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://forms.gle/fVtVCwdteRaa7Wuo7"
+                    href="https://joincpi.org/workshops/feb23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
@@ -415,7 +415,7 @@ export default function TopNavigationBar({
         </div>
         {/*
         Mobile menu, toggle classes based on menu state.
-        
+
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>

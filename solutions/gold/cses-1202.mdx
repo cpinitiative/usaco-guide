@@ -10,7 +10,7 @@ author: Andrew Wang, Chuyang Wang
 We can run Dijkstra keeping track of
 - the distance: $\texttt{dist}[]$
 - the number of ways with the minimum distance: $\texttt{num}[]$
-- the minimum flights with the minimum distance: $\texttt{minf}[]$, and 
+- the minimum flights with the minimum distance: $\texttt{minf}[]$, and
 - the maximum flights with the minimum distance: $\texttt{maxf}[]$.
 
 For every node, $v$, we take into consideration all of its neighbors, $u$. If we
@@ -37,7 +37,7 @@ $$
 **Time Complexity:** $\mathcal{O}((N + M)\log N)$
 
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -51,22 +51,23 @@ const ll MAX = 0x3f3f3f3f3f3f3f3f;
 const int MOD = int(1e9) + 7;
 
 vector<pair<ll, int>> edge[MAXN];
-ll dist[MAXN]; // minimum distance
-ll num[MAXN]; // number of ways with the minimum distance
-int minf[MAXN]; // minimum flights with minimum distance
-int maxf[MAXN]; // maximum flights with minimum distance
-bool v[MAXN]; // if a node is visited
+ll dist[MAXN];   // minimum distance
+ll num[MAXN];    // number of ways with the minimum distance
+int minf[MAXN];  // minimum flights with minimum distance
+int maxf[MAXN];  // maximum flights with minimum distance
+bool v[MAXN];    // if a node is visited
 
 void djikstra(int s) {
-	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>>
+	    pq;
 
 	pq.push({dist[s] = 0, s});
 	num[s] = 1;
 	while (!pq.empty()) {
-		int vert = pq.top().second; pq.pop();
+		int vert = pq.top().second;
+		pq.pop();
 
-		if (v[vert])
-			continue;
+		if (v[vert]) continue;
 		v[vert] = true;
 		for (auto [cost, next] : edge[vert]) {
 			ll alt = cost + dist[vert];
@@ -85,7 +86,8 @@ void djikstra(int s) {
 	}
 }
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	int n, m;
 	cin >> n >> m;
 	for (int i = 0, start, end, cost; i < m; i++) {
@@ -103,22 +105,22 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Investigation {
 	static final int MOD = 1000000007;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(in.readLine());
 
 		int n = Integer.parseInt(st.nextToken());
 		int m = Integer.parseInt(st.nextToken());
 		List<List<Pair>> adj = new ArrayList<>(n);
-		for (int i = 0; i < n; i++)
-			adj.add(new ArrayList<>());
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
 
 		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(in.readLine());
@@ -150,8 +152,7 @@ public class Investigation {
 			long nodeDist = node.f;
 			int nodeIdx = node.s;
 			// if the node is already visited, we ignore it
-			if (dist[nodeIdx] != nodeDist)
-				continue;
+			if (dist[nodeIdx] != nodeDist) continue;
 
 			// child: f: cost, s: chlid node
 			for (Pair child : adj.get(nodeIdx)) {
@@ -165,18 +166,20 @@ public class Investigation {
 					maxf[childNode] = maxf[nodeIdx] + 1;
 					minf[childNode] = minf[nodeIdx] + 1;
 					toVisit.add(new Pair(dist[childNode], childNode));
-				// with equivalent distance, update num, maxf and minf
+					// with equivalent distance, update num, maxf and minf
 				} else if (cost + dist[nodeIdx] == dist[childNode]) {
 					num[childNode] += num[nodeIdx];
-					maxf[childNode] = Integer.max(maxf[childNode], maxf[nodeIdx] + 1);
-					minf[childNode] = Integer.min(minf[childNode], minf[nodeIdx] + 1);
+					maxf[childNode] =
+					    Integer.max(maxf[childNode], maxf[nodeIdx] + 1);
+					minf[childNode] =
+					    Integer.min(minf[childNode], minf[nodeIdx] + 1);
 				}
 			}
 		}
 
 		num[n - 1] %= MOD;
-		out.println(
-			String.format("%d %d %d %d", dist[n - 1], num[n - 1], minf[n - 1], maxf[n - 1]));
+		out.println(String.format("%d %d %d %d", dist[n - 1], num[n - 1],
+		                          minf[n - 1], maxf[n - 1]));
 		out.close();
 	}
 
@@ -192,8 +195,7 @@ public class Investigation {
 		@Override
 		public int compareTo(Pair o) {
 			int dx = Long.compare(f, o.f);
-			if (dx == 0)
-				return s - o.s;
+			if (dx == 0) return s - o.s;
 			else return dx;
 		}
 	}

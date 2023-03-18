@@ -19,21 +19,20 @@ relative to Bessie.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <string>
-#include <map>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::string;
+using std::vector;
 
-const vector<string> ZODIAC{
-	"Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
-	"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
-};
+const vector<string> ZODIAC{"Ox",      "Tiger", "Rabbit", "Dragon",
+                            "Snake",   "Horse", "Goat",   "Monkey",
+                            "Rooster", "Dog",   "Pig",    "Rat"};
 
 struct Relation {
 	string name;
@@ -42,25 +41,23 @@ struct Relation {
 	string relative;
 };
 
-int mod(int n, int m) {
-	return ((n % m) + m) % m;
-}
+int mod(int n, int m) { return ((n % m) + m) % m; }
 
 int main() {
 	int n;
 	std::cin >> n;
 
 	vector<Relation> relations(n);
-	for (Relation& r : relations) {
+	for (Relation &r : relations) {
 		string unused;
 		string prev_str;
 		string animal;
-		std::cin >> r.name >> unused >> unused 
-				 >> prev_str >> animal >> unused >> unused
-				 >> r.relative;
-		
+		std::cin >> r.name >> unused >> unused >> prev_str >> animal >>
+		    unused >> unused >> r.relative;
+
 		r.prev = prev_str == "previous";
-		r.year = std::find(ZODIAC.begin(), ZODIAC.end(), animal) - ZODIAC.begin();
+		r.year =
+		    std::find(ZODIAC.begin(), ZODIAC.end(), animal) - ZODIAC.begin();
 	}
 
 	std::map<string, int> birthYears{{"Bessie", 0}};
@@ -68,9 +65,7 @@ int main() {
 		int change = r.prev ? -1 : 1;
 		// +change because it has to be at least 1 year off
 		int year = birthYears[r.relative] + change;
-		while (mod(year, ZODIAC.size()) != r.year) {
-			year += change;
-		}
+		while (mod(year, ZODIAC.size()) != r.year) { year += change; }
 		birthYears[r.name] = year;
 	}
 
@@ -158,13 +153,24 @@ public class YearOfTheCow {
 </JavaSection>
 <PySection>
 
-```python
+```py
 from typing import NamedTuple
 
 ZODIAC = [
-	'OX', 'TIGER', 'RABBIT', 'DRAGON', 'SNAKE', 'HORSE',
-	'GOAT', 'MONKEY', 'ROOSTER', 'DOG', 'PIG', 'RAT'
+	"OX",
+	"TIGER",
+	"RABBIT",
+	"DRAGON",
+	"SNAKE",
+	"HORSE",
+	"GOAT",
+	"MONKEY",
+	"ROOSTER",
+	"DOG",
+	"PIG",
+	"RAT",
 ]
+
 
 class Relation(NamedTuple):
 	name: str
@@ -176,14 +182,16 @@ class Relation(NamedTuple):
 relations = []
 for _ in range(int(input())):
 	relation = input().upper().split()
-	relations.append(Relation(
-		relation[0],
-		relation[3] == 'PREVIOUS',
-		ZODIAC.index(relation[4]),
-		relation[7]
-	))
+	relations.append(
+		Relation(
+			relation[0],
+			relation[3] == "PREVIOUS",
+			ZODIAC.index(relation[4]),
+			relation[7],
+		)
+	)
 
-birth_years = {'BESSIE': 0}
+birth_years = {"BESSIE": 0}
 for r in relations:
 	change = -1 if r.previous else 1
 	# +change because it has to be at least 1 year off
@@ -192,7 +200,7 @@ for r in relations:
 		this_year += change
 	birth_years[r.name] = this_year
 
-dist = abs(birth_years['BESSIE'] - birth_years['ELSIE'])
+dist = abs(birth_years["BESSIE"] - birth_years["ELSIE"])
 print(dist)
 ```
 

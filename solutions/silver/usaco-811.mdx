@@ -17,11 +17,11 @@ Due to the low bounds on $N$ and $B$, we can run a [DFS (Depth First Search)](/s
 <LanguageSection>
 
 <CPPSection>
-	
+
 ```cpp
-#include <iostream>
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -35,12 +35,10 @@ vector<pair<int, int>> shoes(MAX_N);
 
 int ans = INT32_MAX;
 
-void dfs(int depth, int boot)  {
+void dfs(int depth, int boot) {
 	// already visited this path
-	if (vis[depth][boot]) {
-		return;
-	}
-	
+	if (vis[depth][boot]) { return; }
+
 	vis[depth][boot] = true;
 
 	// reached the barn, update the answer
@@ -49,19 +47,14 @@ void dfs(int depth, int boot)  {
 		return;
 	}
 
-
 	// test all possible steps
 	for (int i = depth + 1; i <= depth + shoes[boot].second && i < n; i++) {
-		if (depths[i] <= shoes[boot].first) {
-			dfs(i, boot);
-		}
+		if (depths[i] <= shoes[boot].first) { dfs(i, boot); }
 	}
 
 	// test all possible swaps
 	for (int i = boot; i < m; i++) {
-		if (depths[depth] <= shoes[i].first) {
-			dfs(depth, i);
-		}
+		if (depths[depth] <= shoes[i].first) { dfs(depth, i); }
 	}
 }
 
@@ -71,13 +64,9 @@ int main() {
 
 	cin >> n >> m;
 
-	for (int i = 0; i < n; i++) {
-		cin >> depths[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> depths[i]; }
 
-	for (int i = 0; i < m; i++) {
-		cin >> shoes[i].first >> shoes[i].second;
-	}
+	for (int i = 0; i < m; i++) { cin >> shoes[i].first >> shoes[i].second; }
 
 	dfs(0, 0);
 
@@ -88,49 +77,53 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class snowboot {
 	static List<Pair<Integer, Integer>> B = new ArrayList<>();
 	static int[] D;
 	static boolean[][] vist;
-	static int N, M, A=10000;
+	static int N, M, A = 10000;
 	public static void main(String[] args) throws IOException {
 		InputReader in = new InputReader("snowboots.in");
-		N = in.nextInt(); M = in.nextInt(); D = new int[N]; vist = new boolean[N+1][M+1];
-		for (int i = 0; i < N; i++) {
-			D[i] = in.nextInt();
-		}
+		N = in.nextInt();
+		M = in.nextInt();
+		D = new int[N];
+		vist = new boolean[N + 1][M + 1];
+		for (int i = 0; i < N; i++) { D[i] = in.nextInt(); }
 		for (int i = 0; i < M; i++) {
-			int a,b; a = in.nextInt(); b = in.nextInt();
+			int a, b;
+			a = in.nextInt();
+			b = in.nextInt();
 			B.add(new Pair<>(a, b));
 		}
 
-		dfs(0,0);
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("snowboots.out")));
+		dfs(0, 0);
+		PrintWriter out = new PrintWriter(
+		    new BufferedWriter(new FileWriter("snowboots.out")));
 		out.println(A);
 		out.close();
 	}
 
-	private static void dfs(int n, int t){
-		//If we have explored that path then return out of it
-		if(vist[n][t]) return ;
+	private static void dfs(int n, int t) {
+		// If we have explored that path then return out of it
+		if (vist[n][t]) return;
 		vist[n][t] = true;
 
-		//If it reaches the destination we want to take the minimum of what we have and what we got
-		if(n == N-1) A = Math.min(A, t);
+		// If it reaches the destination we want to take the minimum of what we
+		// have and what we got
+		if (n == N - 1) A = Math.min(A, t);
 
-		//Trying to go the every farm it can with one boot
-		for (int i = n+1; i < N && i-n<=B.get(t).last(); i++) {
-			if(D[i] <= B.get(t).first) dfs(i, t);
+		// Trying to go the every farm it can with one boot
+		for (int i = n + 1; i < N && i - n <= B.get(t).last(); i++) {
+			if (D[i] <= B.get(t).first) dfs(i, t);
 		}
 
-		//Trying all boot switches at the current farm
-		for (int i = t+1; i < B.size(); i++) {
-			if(D[n] <= B.get(i).first) dfs(n, i);
+		// Trying all boot switches at the current farm
+		for (int i = t + 1; i < B.size(); i++) {
+			if (D[n] <= B.get(i).first) dfs(n, i);
 		}
-
 	}
 
 	private static class InputReader {
@@ -139,7 +132,8 @@ public class snowboot {
 
 		public InputReader() {
 			try {
-				reader = new BufferedReader(new InputStreamReader(System.in), 32768);
+				reader =
+				    new BufferedReader(new InputStreamReader(System.in), 32768);
 			} catch (Exception e) {
 				throw new NullPointerException("Could not create input stream");
 			}
@@ -147,9 +141,11 @@ public class snowboot {
 
 		public InputReader(String fileName) {
 			try {
-				reader = new BufferedReader(new FileReader(new File(fileName)), 32768);
+				reader = new BufferedReader(new FileReader(new File(fileName)),
+				                            32768);
 			} catch (Exception ex) {
-				throw new NullPointerException("Input file does not exist! Put it in the project folder.");
+				throw new NullPointerException(
+				    "Input file does not exist! Put it in the project folder.");
 			}
 			tokenizer = null;
 		}
@@ -158,30 +154,22 @@ public class snowboot {
 			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
 				try {
 					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				} catch (IOException e) { throw new RuntimeException(e); }
 			}
 			return tokenizer.nextToken();
 		}
 
-		public boolean hasNextInt() throws IOException { return reader.ready(); }
-
-		public int nextInt() {
-			return Integer.parseInt(next());
+		public boolean hasNextInt() throws IOException {
+			return reader.ready();
 		}
 
-		public double nextDouble() {
-			return Double.parseDouble(next());
-		}
+		public int nextInt() { return Integer.parseInt(next()); }
 
-		public long nextLong() {
-			return Long.parseLong(next());
-		}
+		public double nextDouble() { return Double.parseDouble(next()); }
 
-		public char nextChar() {
-			return next().charAt(0);
-		}
+		public long nextLong() { return Long.parseLong(next()); }
+
+		public char nextChar() { return next().charAt(0); }
 
 		/**
 		 * When you call next(), that entire line will be skipped.
@@ -196,9 +184,7 @@ public class snowboot {
 			try {
 				str = reader.readLine();
 				tokenizer = null;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			} catch (IOException e) { throw new RuntimeException(e); }
 			return str;
 		}
 	}
@@ -212,13 +198,9 @@ public class snowboot {
 			second = b;
 		}
 
-		public F one() {
-			return first;
-		}
+		public F one() { return first; }
 
-		public S last() {
-			return second;
-		}
+		public S last() { return second; }
 
 		@Override
 		public String toString() {
@@ -232,8 +214,8 @@ public class snowboot {
 
 <PySection>
 
-```python
-with open('snowboots.in') as r:
+```py
+with open("snowboots.in") as r:
 	n, b = map(int, r.readline().split())
 	depth = list(map(int, r.readline().split()))
 	max_depth = [[*map(int, r.readline().split())] for _ in range(b)]
@@ -260,7 +242,7 @@ for i in range(n):
 
 for i in range(b):
 	if stor[-1][i]:
-		print(i, file=open('snowboots.out', 'w'))
+		print(i, file=open("snowboots.out", "w"))
 		break
 ```
 

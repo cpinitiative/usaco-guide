@@ -2,17 +2,17 @@
 id: debugging-cpp
 title: Debugging C++
 author: Benjamin Qi, Aryansh Shrivastava
-description: 'Debugging Tips Specific to C++'
+description: 'Debugging tips specific to C++.'
 prerequisites:
   - basic-debugging
 ---
 
 ## Checking for Out of Bounds
 
-Writing to an out of bounds array index is known as 
-[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). C++ may or 
-may not produce a runtime error upon buffer overflow. For example, 
-the following code results in a runtime error on 
+Writing to an out of bounds array index is known as
+[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). C++ may or
+may not produce a runtime error upon buffer overflow. For example,
+the following code results in a runtime error on
 [ide.usaco.guide](https://ide.usaco.guide), but outputs 4 on my computer.
 
 ```cpp
@@ -31,7 +31,7 @@ int main() {
 }
 ```
 
-To ensure that an error is raised when accessing an out of bounds index, 
+To ensure that an error is raised when accessing an out of bounds index,
 you can use
 [vector::at](https://www.cplusplus.com/reference/vector/vector/at) instead of
 [vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[])
@@ -66,7 +66,7 @@ terminate called after throwing an instance of 'std::out_of_range'
 <Info title="Line Numbers">
 
 Note that the output above does not contain the line number where the runtime
-error occurred. To output the line number, you can use a debugger such as `gdb` 
+error occurred. To output the line number, you can use a debugger such as `gdb`
 or `lldb`. See the section on [debuggers](#using-the-lldb-debugger) for more information.
 
 </Info>
@@ -166,7 +166,7 @@ In this section and the following one we'll go over options you can add to your
 	>
 		Includes all the options below.
 	</Resource>
-  <Resource 
+  <Resource
     source="GCC"
     title="GCC Warning Options"
     url="https://web.archive.org/web/20221101061037/https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html"
@@ -185,7 +185,7 @@ We give examples for some of these below.
 
 <Info title="For Users of USACO Guide IDE">
 
-You can customize your compilation options in 
+You can customize your compilation options in
 [ide.usaco.guide](https://ide.usaco.guide/).
 
 </Info>
@@ -224,7 +224,7 @@ main.cpp:6:10: warning: ‘x’ is used uninitialized in this function [-Wuninit
 
 ### `-Wextra`
 
-Enables some warning options not enabled by `-Wall`, such as 
+Enables some warning options not enabled by `-Wall`, such as
 `-Wmissing-field-initializers`.
 
 ```cpp
@@ -372,7 +372,7 @@ main.cpp:6:13: runtime error: index 5 out of bounds for type 'int [5]'
 main.cpp:6:13: runtime error: load of address 0x7ffc4efaf2d4 with insufficient space for an object of type 'int'
 0x7ffc4efaf2d4: note: pointer points here
   11 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  f0 15 40 00 00 00 00 00  00 00 00 00 00 00 00 00
-              ^ 
+              ^
 ```
 
 #### Example: Vector Out of Bounds
@@ -396,7 +396,7 @@ Output:
 Command exited with non-zero status 139
 ```
 
-With `-fsanitize=undefined`, a slightly more informative error message is 
+With `-fsanitize=undefined`, a slightly more informative error message is
 produced:
 
 ```
@@ -427,7 +427,7 @@ main.cpp:6:14: runtime error: signed integer overflow: 1073741824 * 2 cannot be 
 #### Example: Detecting Multiple Errors
 
 By default, the undefined behavior sanitizer will attempt to continue after
-detecting an error. For example, the following program with 
+detecting an error. For example, the following program with
 `-fsanitize=undefined` produces multiple runtime errors:
 
 ```cpp
@@ -509,7 +509,7 @@ Command exited with non-zero status 1
 
 For more helpful information we should additionally compile with the `-g` flag,
 which generates a file containing debugging information based on the line
-numbering of the program. 
+numbering of the program.
 
 <Spoiler title="Standard Error">
 
@@ -579,7 +579,7 @@ Shadow bytes around the buggy address:
   0x1000750d9870: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 Shadow byte legend (one shadow byte represents 8 application bytes):
   Addressable:           00
-  Partially addressable: 01 02 03 04 05 06 07 
+  Partially addressable: 01 02 03 04 05 06 07
   Heap left redzone:       fa
   Freed heap region:       fd
   Stack left redzone:      f1
@@ -605,7 +605,7 @@ Command exited with non-zero status 1
 
 ### `-D_GLIBCXX_DEBUG`
 
-This enables debug mode, which replaces each STL container with its 
+This enables debug mode, which replaces each STL container with its
 corresponding debug container.
 
 <Resources>
@@ -669,8 +669,8 @@ zsh: abort      ./prog
 </Resources>
 
 Recall the example from [Checking Out of Bounds](#checking-for-out-of-bounds)
-section where the output didn't contain the number of the line where the 
-runtime error occurred. Below, we show how to use `lldb` to output the line 
+section where the output didn't contain the number of the line where the
+runtime error occurred. Below, we show how to use `lldb` to output the line
 number. Assume the C++ source code is named `prog.cpp` and the executable
 is named `prog`.
 
@@ -699,7 +699,7 @@ libsystem_kernel.dylib`__pthread_kill:
 ->  0x7ff80e01300e <+10>: jae    0x7ff80e013018            ; <+20>
     0x7ff80e013010 <+12>: movq   %rax, %rdi
     0x7ff80e013013 <+15>: jmp    0x7ff80e00d1c5            ; cerror_nocancel
-    0x7ff80e013018 <+20>: retq   
+    0x7ff80e013018 <+20>: retq
 Target 0: (prog) stopped.
 (lldb) bt
 * thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGABRT
@@ -715,7 +715,7 @@ Target 0: (prog) stopped.
     frame #9: 0x0000000100002629 prog`std::vector<int, std::allocator<int> >::at(this=0x00007ff7bfeff3d0, __n=1) at stl_vector.h:1175:16
     frame #10: 0x0000000100002421 prog`main at prog.cpp:10:17
     frame #11: 0x000000010001552e dyld`start + 462
-(lldb) 
+(lldb)
 ```
 
 </Spoiler>
@@ -723,7 +723,7 @@ Target 0: (prog) stopped.
 <Info>
 
 As mentioned in [the previous module](/general/basic-debugging?lang=cpp#debuggers),
-there are many more things you can do with debuggers, but they aren't 
+there are many more things you can do with debuggers, but they aren't
 particularly useful for competitive programming.
 
 </Info>

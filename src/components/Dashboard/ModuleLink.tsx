@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
+import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';
@@ -201,7 +202,15 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
     darkLineColorStyle = tw`bg-gray-800`;
     darkDotColorStyle = tw`bg-gray-800`;
   }
-
+  const { lang: userLang } = useContext(UserDataContext);
+  const maxLangOc = Math.max(link.cppOc, link.javaOc, link.pyOc);
+  const langToOc = {
+    cpp: link.cppOc,
+    java: link.javaOc,
+    py: link.pyOc,
+    showAll: maxLangOc,
+  };
+  const isMissingLang = langToOc[userLang] < maxLangOc;
   return (
     <LinkWithProgress
       lineColorStyle={lineColorStyle}
@@ -221,8 +230,14 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
           >
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
-              {link.isIncomplete ? (
-                <Tooltip content="This module has incomplete sections. Please help! D:">
+              {link.isIncomplete || isMissingLang ? (
+                <Tooltip
+                  content={
+                    link.isIncomplete
+                      ? 'This module has incomplete sections.'
+                      : `This module is missing sections in your language (${LANGUAGE_LABELS[userLang]}).`
+                  }
+                >
                   <svg
                     className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 ml-1.5 transition ease-in-out duration-150"
                     viewBox="0 0 20 20"

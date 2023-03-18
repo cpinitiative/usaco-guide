@@ -34,22 +34,26 @@ sys.stdout = open("closing.out", "w")
 n, m = map(int, input().split())
 
 adj, order = {}, []
-for i in range(1, n + 1): adj[i] = []
+for i in range(1, n + 1):
+	adj[i] = []
 
 visited, closed = [False] * (n + 1), [False] * (n + 1)
 nodes = 0
 
+
 def dfs(node):
 	global nodes
-	if visited[node] or closed[node]: return
+	if visited[node] or closed[node]:
+		return
 
 	# Visit this node if it isn't closed and we haven't visited it yet.
 	nodes += 1
 	visited[node] = True
-	
+
 	for u in adj[node]:
-		if not visited[u]: 
+		if not visited[u]:
 			dfs(u)
+
 
 # Read in adjacency list.
 for i in range(m):
@@ -63,7 +67,7 @@ for i in range(n):
 dfs(1)
 
 """
-The farm is initially connected if we've visited every node 
+The farm is initially connected if we've visited every node
 before any of the farms are closed.
 """
 print("YES") if nodes == n else print("NO")
@@ -86,8 +90,8 @@ for i in range(n - 1):
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -99,14 +103,13 @@ vector<int> vis(MAX_N);
 vector<int> closed(MAX_N);
 int nodes = 0;
 
-
 void dfs(int node) {
 	if (vis[node] || closed[node]) return;
 
 	// Visit this node if it isn't closed and we haven't visited it yet.
 	nodes++;
 	vis[node] = true;
-	
+
 	for (int u : adj[node]) {
 		if (!vis[u]) dfs(u);
 	}
@@ -125,14 +128,14 @@ int main() {
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
-	
+
 	vector<int> ord(n);
 	for (int i = 0; i < n; i++) cin >> ord[i];
 
 	dfs(1);
-	
+
 	/*
-	 * The farm is initially connected if we've visited every node 
+	 * The farm is initially connected if we've visited every node
 	 * before any of the farms are closed.
 	 */
 	if (nodes == n) {
@@ -140,7 +143,7 @@ int main() {
 	} else {
 		cout << "NO\n";
 	}
-	
+
 	for (int i = 0; i < n - 1; i++) {
 		nodes = 0;
 		closed[ord[i]] = true;
@@ -151,9 +154,11 @@ int main() {
 
 		// Have we visited all the unclosed barns?
 		if (nodes == n - i - 1) {
-			cout << "YES" << "\n";
+			cout << "YES"
+			     << "\n";
 		} else {
-			cout << "NO" << "\n";
+			cout << "NO"
+			     << "\n";
 		}
 	}
 }
@@ -163,8 +168,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class closing {
 	// Store global variables used by dfs
@@ -175,7 +180,7 @@ public class closing {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(new File("closing.in"));
 		PrintWriter out = new PrintWriter("closing.out");
-		
+
 		int n = sc.nextInt();
 		int m = sc.nextInt();
 
@@ -192,15 +197,13 @@ public class closing {
 		}
 
 		int[] order = new int[n];
-		for (int i = 0; i < n; i++) {
-			order[i] = sc.nextInt() - 1;
-		}
+		for (int i = 0; i < n; i++) { order[i] = sc.nextInt() - 1; }
 
 		for (int i = 0; i < n; i++) {
 			Arrays.fill(visited, false);
 			nodes = 0;
-			
-			dfs(order[n - 1]); // DFS from the barn that will close last
+
+			dfs(order[n - 1]);  // DFS from the barn that will close last
 			// Checks if all unclosed barns have been visited
 			if (nodes == n - i) {
 				out.println("YES");
@@ -215,13 +218,11 @@ public class closing {
 	static void dfs(int node) {
 		if (visited[node] || closed[node]) return;
 
-		// Increase the number of nodes 
+		// Increase the number of nodes
 		// iff this barn hasn't already been closed or visited
 		nodes++;
 		visited[node] = true;
-		for (int neighbor : adj.get(node)) {
-			dfs(neighbor);
-		}
+		for (int neighbor : adj.get(node)) { dfs(neighbor); }
 	}
 }
 ```

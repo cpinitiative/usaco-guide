@@ -4,7 +4,7 @@ source: CF
 title: Mahmoud and Ehab and the function
 author: Ryan Chou
 ---
- 
+
 [Official Analysis (C++)](https://codeforces.com/blog/entry/54590)
 
 ## Explanation
@@ -31,9 +31,9 @@ However, checking every value of $j$ will surely TLE. Instead, we can notice tha
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using std::vector;
 
 int main() {
@@ -41,24 +41,20 @@ int main() {
 	int m;
 	int q;
 	std::cin >> n >> m >> q;
-	
+
 	vector<int> a(n);
 	vector<int> b(m);
 
-	for (int i = 0; i < n; i++) {
-		std::cin >> a[i];
-	}
-	for (int i = 0; i < m; i++) {
-		std::cin >> b[i];
-	}
+	for (int i = 0; i < n; i++) { std::cin >> a[i]; }
+	for (int i = 0; i < m; i++) { std::cin >> b[i]; }
 
 	/*
-	 * calculate the odd and even sums, 
+	 * calculate the odd and even sums,
 	 * if we start on a index with a different parity,
 	 * we have to invert the operation
-  	 */
+	 */
 	vector<long long> odd_b(m), even_b(m);
-	
+
 	for (int i = 0; i < m; i++) {
 		if (i & 1) {
 			odd_b[i] = b[i];
@@ -78,7 +74,7 @@ int main() {
 	for (int i = 0; i <= (m - n); i++) {
 		long long sum_even = even_b[i + n - 1] - (i ? even_b[i - 1] : 0);
 		long long sum_odd = odd_b[i + n - 1] - (i ? odd_b[i - 1] : 0);
-		
+
 		// if we started on an odd index, we have to invert the operations
 		if (i & 1) {
 			seg_b[i] = sum_odd - sum_even;
@@ -88,11 +84,9 @@ int main() {
 	}
 
 	std::sort(seg_b.begin(), seg_b.end());
-	
+
 	long long sum_a = 0;
-	for (int i = 0; i < n; i++) {
-		sum_a += (i & 1 ? -a[i] : a[i]);
-	}
+	for (int i = 0; i < n; i++) { sum_a += (i & 1 ? -a[i] : a[i]); }
 
 	auto qry = [&](auto it) {
 		auto loc = it;
@@ -120,7 +114,7 @@ int main() {
 		long long l, r, v;
 		std::cin >> l >> r >> v;
 
-		/* 
+		/*
 		 * note that these additions cancel unless the
 		 * length of the sequence incremented is odd
 		 */
@@ -132,7 +126,7 @@ int main() {
 				sum_a -= v;
 			}
 		}
-		
+
 		qry(std::lower_bound(seg_b.begin(), seg_b.end(), sum_a));
 	}
 }

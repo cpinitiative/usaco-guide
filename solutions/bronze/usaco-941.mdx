@@ -5,7 +5,7 @@ title: Cow Evolution
 author: Jesse Choe, Ryan Chou, Chuyang Wang, Vivian Han
 ---
 
-## Solution 
+## Solution
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
 
 ## Video Solution
@@ -15,16 +15,24 @@ author: Jesse Choe, Ryan Chou, Chuyang Wang, Vivian Han
 
 First, it may help to think of an instance where we cannot form a proper evolutionary tree. This would be an instance such that no matter how we form the tree, it would be inevitable that some characteristic would evolve in two distinct places in the tree. It turns out that the minimal such bad example looks like this:
 
-$\texttt{population1: A } \\
-\texttt{population2: B } \\
-\texttt{population3: A B}$
+$$
+\begin{align*}
+&\texttt{population1: A } \\
+&\texttt{population2: B } \\
+&\texttt{population3: A B}
+\end{align*}
+$$
 
 In other words, we have a population with just trait $A$, a population with just trait $B$, and a population with both. If we want to build a tree out of this input, we would need to split on either $A$ or $B$ at the root, but then the remaining two subtrees would both need to have an edge that adds the other characteristic. For example, if the root split into "$A$" and "not $A$" branches, then both branches would need to contain an edge that adds the $B$ trait.
 
 It will help to actually look at things from the viewpoint of the characteristics instead of from the viewpoint of the populations, so let's "transpose" the input above:
 
-$\texttt{A: population1 population3 } \\
-\texttt{B: population2 population3}$
+$$
+\begin{align*}
+\texttt{A: population1 population3} \\
+\texttt{B: population2 population3}
+\end{align*}
+$$
 
 The fundamental problem here is that there are populations in $A$ only, populations in $B$ only, and populations in both $A$ and $B$. If we look at the Venn diagram for the sets $A$ and $B$, the picture therefore looks like this:
 
@@ -48,11 +56,12 @@ So we actually don't need to build a proper evolutionary tree, but we just need 
 
 <LanguageSection>
 <PySection>
-  
+
 ```py
 import sys
-sys.stdin = open('evolution.in', 'r')
-sys.stdout = open('evolution.out', 'w')
+
+sys.stdin = open("evolution.in", "r")
+sys.stdout = open("evolution.out", "w")
 
 n = int(input())
 cows = []
@@ -68,12 +77,12 @@ allchars = list(allchars)
 
 # Check if the tree is evolutionarily proper relative to characteristics a and b
 def scan(a, b):
-	""""
-	If we find a cow which has the characteristic a, 
-	another cow which has the characteristic b, and 
-	another cow with both characteristics a and b, then 
+	""" "
+	If we find a cow which has the characteristic a,
+	another cow which has the characteristic b, and
+	another cow with both characteristics a and b, then
 	the tree isn't evolutionarily proper.
-	
+
 	Returns a boolean
 	"""
 	onlya, onlyb, both = 0, 0, 0
@@ -86,21 +95,22 @@ def scan(a, b):
 				hasa = 1
 			if cows[i][j] == allchars[b]:
 				hasb = 1
-		if hasa and not hasb: 
+		if hasa and not hasb:
 			onlya = 1
 		if hasb and not hasa:
 			onlyb = 1
 		if hasa and hasb:
 			both = 1
 	return onlya and onlyb and both
-	
+
+
 # Iterating through every pair of characteristics.
 for i in range(len(allchars)):
 	for j in range(i + 1, len(allchars)):
 		if scan(i, j):
-			print('no')
+			print("no")
 			sys.exit()
-print('yes')
+print("yes")
 ```
 </PySection>
 
@@ -119,7 +129,8 @@ public class Evolution {
 
 		boolean[][] hasChar = new boolean[25][125];
 		// hasChar[i][j] = true if population i has characteristic j
-		Map<String, Integer> convert = new HashMap<>();  // convert each characteristic to a number
+		Map<String, Integer> convert =
+		    new HashMap<>();  // convert each characteristic to a number
 
 		for (int i = 0; i < popNum; i++) {
 			String[] line = br.readLine().split(" ");
@@ -135,23 +146,25 @@ public class Evolution {
 
 		boolean works = true;
 		for (int a = 0; a < nxtIdx && works; a++) {
-			for (int b = 0; b < a && works; b++) {  // iterate over all pairs of characteristics a and b
-				int aNum = 0;  // keep track of the # pops with only a
-				int bNum = 0;  // only b 
+			for (int b = 0; b < a && works;
+			     b++) {  // iterate over all pairs of characteristics a and b
+				int aNum = 0;   // keep track of the # pops with only a
+				int bNum = 0;   // only b
 				int abNum = 0;  // both a and b
 				for (int i = 0; i < popNum; i++) {
 					if (hasChar[i][a] && hasChar[i][b]) abNum++;
 					else if (hasChar[i][a]) aNum++;
 					else if (hasChar[i][b]) bNum++;
 				}
-				// if there are pops with only a, only b, AND both a and b, then the tree doesn't work
-				// (see explanation if this doesn't make sense)
+				// if there are pops with only a, only b, AND both a and b, then
+				// the tree doesn't work (see explanation if this doesn't make
+				// sense)
 				works = works && !(aNum > 0 && bNum > 0 && abNum > 0);
 			}
 		}
 
 		BufferedWriter bw = new BufferedWriter(new FileWriter("evolution.out"));
-		bw.write((works)? "yes\n": "no\n");
+		bw.write((works) ? "yes\n" : "no\n");
 		bw.close();
 	}
 }
@@ -163,29 +176,26 @@ public class Evolution {
 
 ```cpp
 // Taken from official analysis by Brian Dean
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 using namespace std;
- 
+
 int N;
 const int MAX_CHAR = 25;
 vector<string> characteristics[MAX_CHAR];  // store characteristics of each pop
-vector<string> all_characteristics;  // list all characteristics mentioned
- 
+vector<string> all_characteristics;        // list all characteristics mentioned
+
 // Do two sets "cross" -- I.e., are there elements in A, B, and A intersect B?
 bool crossing(int a, int b) {
-	int A = 0, B = 0, AB = 0; // keep track of the # pops with only A, only B, both A and B
+	int A = 0, B = 0,
+	    AB = 0;  // keep track of the # pops with only A, only B, both A and B
 	for (int i = 0; i < N; i++) {  // check whether pop i has A and B
 		vector<string> &v = characteristics[i];
 		bool has_a = false, has_b = false;
 		for (int j = 0; j < v.size(); j++) {
-			if (v[j] == all_characteristics[a]) {
-				has_a = true;
-			}
-			if (v[j] == all_characteristics[b]) {
-				has_b = true;
-			}
+			if (v[j] == all_characteristics[a]) { has_a = true; }
+			if (v[j] == all_characteristics[b]) { has_b = true; }
 		}  // update counts
 		if (has_a && has_b) {
 			AB++;
@@ -197,9 +207,9 @@ bool crossing(int a, int b) {
 	}
 	return AB > 0 && A > 0 && B > 0;
 }
- 
+
 int main() {
-	ifstream fin ("evolution.in");
+	ifstream fin("evolution.in");
 	fin >> N;
 	string s;
 	for (int i = 0; i < N; i++) {
@@ -210,24 +220,18 @@ int main() {
 			characteristics[i].push_back(s);
 			bool found = false;
 			for (int k = 0; k < all_characteristics.size(); k++)
-				if (all_characteristics[k] == s) {
-					found = true;
-				}
-			if (!found) {
-				all_characteristics.push_back(s);
-			}
+				if (all_characteristics[k] == s) { found = true; }
+			if (!found) { all_characteristics.push_back(s); }
 		}
 	}
-	
+
 	int M = all_characteristics.size();
 	bool ok = true;
 	for (int a = 0; a < M; a++)
-	for (int b = a + 1; b < M; b++)
-		if (crossing(a, b)) {
-			ok = false;
-		}
- 
-	ofstream fout ("evolution.out");
+		for (int b = a + 1; b < M; b++)
+			if (crossing(a, b)) { ok = false; }
+
+	ofstream fout("evolution.out");
 	fout << (ok ? "yes\n" : "no\n");
 }
 ```

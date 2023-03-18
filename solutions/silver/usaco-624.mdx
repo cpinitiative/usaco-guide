@@ -82,7 +82,7 @@ struct SegmentTree {
 			int r = mid * 2 + 1;
 			// add the subtree which minimizes the overall maximum count of cows
 			if (max(west_size + tree[l], other_west_size + other.tree[l]) <
-				max(east_size + tree[r], other_east_size + other.tree[r])) {
+			    max(east_size + tree[r], other_east_size + other.tree[r])) {
 				mid = r;
 				west_size += tree[l];
 				other_west_size += other.tree[l];
@@ -95,7 +95,7 @@ struct SegmentTree {
 
 		// Add the last x coordinate either to the west or the east side
 		if (max(west_size + tree[mid], other_west_size + other.tree[mid]) <
-			max(east_size + tree[mid], other_east_size + other.tree[mid])) {
+		    max(east_size + tree[mid], other_east_size + other.tree[mid])) {
 			west_size += tree[mid];
 			other_west_size += other.tree[mid];
 		} else {
@@ -104,13 +104,11 @@ struct SegmentTree {
 		}
 
 		/*
-		 * the M value corresponding to the best west/east partition based on the
-		 * current given north/south partitions
+		 * the M value corresponding to the best west/east partition based on
+		 * the current given north/south partitions
 		 */
-		return max(
-			max(west_size, east_size),
-			max(other_west_size, other_east_size)
-		);
+		return max(max(west_size, east_size),
+		           max(other_west_size, other_east_size));
 	}
 };
 
@@ -121,17 +119,14 @@ int main() {
 	int N;
 	cin >> N;
 	vector<pair<int, int>> cows(N);
-	for (pair<int, int>&c : cows) {
-		cin >> c.first >> c.second;
-	}
+	for (pair<int, int> &c : cows) { cin >> c.first >> c.second; }
 
 	// sort after the y coordinates and divide the farm into north and south
-	sort(
-		cows.begin(), cows.end(),
-		[&](const pair<int, int> &c1, const pair<int, int> &c2) {
-			return make_pair(c1.second, c1.first) < make_pair(c2.second, c2.first);
-		}
-	);
+	sort(cows.begin(), cows.end(),
+	     [&](const pair<int, int> &c1, const pair<int, int> &c2) {
+		     return make_pair(c1.second, c1.first) <
+		            make_pair(c2.second, c2.first);
+	     });
 
 	// north and south store the number of points on the x coordinates
 	SegmentTree north;
@@ -141,9 +136,7 @@ int main() {
 	 * we begin the sweeping line from the bottom, i.e. the whole farm is in the
 	 * northern region
 	 */
-	for (int i = 0; i < N; i++) {
-		north.update(cows[i].first, 1);
-	}
+	for (int i = 0; i < N; i++) { north.update(cows[i].first, 1); }
 
 	// the minimum possible number of cows as defined in the problem statement
 	int M = N;
@@ -254,7 +247,7 @@ public class Balancing {
 		/**
 		 * Binary search on the x coordinates s.t. the maximum number of cows M
 		 * in the regions is minimized.
-		 * 
+		 *
 		 * @param other The other horizontally divided region to be searched on
 		 *              simultaneously
 		 * @return int The minimized number of cows based on current north/south
@@ -270,7 +263,7 @@ public class Balancing {
 				int l = mid * 2;
 				int r = mid * 2 + 1;
 				// add the subtree which minimizes the overall maximum count of cows
-				if (Math.max(westSize + tree[l], otherWestSize + other.tree[l]) < 
+				if (Math.max(westSize + tree[l], otherWestSize + other.tree[l]) <
 					Math.max(eastSize + tree[r], otherEastSize + other.tree[r])) {
 					mid = r;
 					westSize += tree[l];
@@ -283,7 +276,7 @@ public class Balancing {
 			}
 
 			// Add the last x coordinate either to the west or the east side
-			if (Math.max(westSize + tree[mid], otherWestSize + other.tree[mid]) < 
+			if (Math.max(westSize + tree[mid], otherWestSize + other.tree[mid]) <
 				Math.max(eastSize + tree[mid], otherEastSize + other.tree[mid])) {
 				westSize += tree[mid];
 				otherWestSize += other.tree[mid];
@@ -342,7 +335,7 @@ public class Balancing {
 </LanguageSection>
 
 <Spoiler title="Alternative using a BIT">
-There is also an alternative solution using a binary indexed tree. 
+There is also an alternative solution using a binary indexed tree.
 
 <LanguageSection>
 <JavaSection>
@@ -365,9 +358,7 @@ public class Balancing {
 
 		BIT left = new BIT(MAX_Y);
 		BIT right = new BIT(MAX_Y);
-		for (int[] i : coords) {
-			right.update(i[1], 1);
-		}
+		for (int[] i : coords) { right.update(i[1], 1); }
 		int ret = N;
 		Arrays.sort(coords, (int[] a, int[] b) -> a[0] - b[0]);
 
@@ -384,7 +375,8 @@ public class Balancing {
 			int r = (MAX_Y - 1) / 2;
 			while (l <= r) {
 				int mid = (l + r) / 2;
-				int up = Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
+				int up =
+				    Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
 				int down = Math.max(left.sum(2 * mid), right.sum(2 * mid));
 				if (up > down) {
 					l = mid + 1;
@@ -403,9 +395,7 @@ public class Balancing {
 
 	static class BIT {
 		public int[] bit;
-		public BIT(int N) {
-			bit = new int[N + 1];
-		}
+		public BIT(int N) { bit = new int[N + 1]; }
 
 		public int sum(int r) {
 			r++;
