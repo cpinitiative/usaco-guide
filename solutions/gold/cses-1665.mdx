@@ -35,21 +35,32 @@ information and problems.
 
 ```cpp
 #include <bits/stdc++.h>
-using ll = long long;
+
 using namespace std;
+using ll = long long;
+
 const int N = 101;
 const int X = 5e3 + 1;
 const int M = 1e9 + 7;
 const int K = 5e3;  // K is offset to account for negatives
+
 int n, x, s[N];     // x -> max penalty
-// dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
-// for convenience, we 1-index dp array and 0-index person array so dp[i][j][k]
-// lines up with s[i] (i.e. skill of person i + 1 = s[i])
-ll dp1[N][X + K], dp2[N][X + K];  // dp1 -> i, dp2 -> i + 1
+
+/*
+ * dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
+ * for convenience, we 1-index dp array and 0-index person array so dp[i][j][k]
+ * lines up with s[i] (i.e. skill of person i + 1 = s[i])
+ */
+ll dp1[N][X + K];  // i
+lll dp2[N][X + K];  // i + 1
+
 int main() {
 	cin >> n >> x;
-	for (int i = 0; i < n; i++) cin >> s[i];
+	for (int i = 0; i < n; i++) {
+		cin >> s[i];
+	}
 	sort(s, s + n);
+	
 	dp1[0][K] = 1;  // dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j <= (n - i); j++) {  // at most n - i unfinished groups
@@ -71,11 +82,13 @@ int main() {
 			}
 		}
 	}
+	
 	int ans = 0;
 	for (int i = K; i <= x + K; i++) {
 		ans += dp1[0][i];
 		ans %= M;
 	}
+	
 	cout << ans << endl;
 }
 ```
