@@ -38,15 +38,15 @@ information and problems.
 using ll = long long;
 using namespace std;
 const int N = 101;
-const int X = 5e3 + 1; 
+const int X = 5e3 + 1;
 const int M = 1e9 + 7;
 const int K = 5e3;  // K is offset to account for negatives
 int n, x, s[N];     // x -> max penalty
 // dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
 // for convenience, we 1-index dp array and 0-index person array so dp[i][j][k]
 // lines up with s[i] (i.e. skill of person i + 1 = s[i])
-ll dp1[N][X + K]; // dp[i][j][k]
-ll dp2[N][X + K]; // dp[i + 1][j][k]
+ll dp1[N][X + K];  // dp[i][j][k]
+ll dp2[N][X + K];  // dp[i + 1][j][k]
 // Naively, our dp table would require N * N * X memory
 // However, dp[i][j][k] can only affect dp[i + 1][x][y],
 // so we effectively only need to store two rows of the dp table.
@@ -58,15 +58,14 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j <= (n - i); j++) {  // at most n - i unfinished groups
 			for (int k = 0; k <= x + K; k++) {
-				if (!dp1[j][k]) {
-					continue;
-				}
+				if (!dp1[j][k]) { continue; }
 				dp2[j][k] += dp1[j][k];  // i has their own group
 				if (j) {
-					dp2[j - 1][k + s[i]] += j * dp1[j][k]; // finish group
+					dp2[j - 1][k + s[i]] += j * dp1[j][k];  // finish group
 				}
 				if (j + 1 <= n - (i + 1)) {
-					dp2[j + 1][k - s[i]] += dp1[j][k];  // create new unfinished group
+					dp2[j + 1][k - s[i]] +=
+					    dp1[j][k];  // create new unfinished group
 				}
 				if (j <= n - (i + 1)) {
 					dp2[j][k] += j * dp1[j][k];  // extend unfinished group
