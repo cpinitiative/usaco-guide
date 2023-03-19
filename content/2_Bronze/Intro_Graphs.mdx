@@ -2,7 +2,7 @@
 id: intro-graphs
 title: Introduction to Graphs
 author: Darren Yao, Benjamin Qi
-contributors: Nathan Gong, Ryan Chou
+contributors: Nathan Gong, Ryan Chou, Neo Wang, Aadit Ambadkar, Sandeep Wadhwa, Kevin Sheng, Nikhil Chatterjee
 description: 'What graphs are.'
 frequency: 3
 ---
@@ -377,102 +377,6 @@ print(max(grass_type), file=open("planting.out", "w"))
 </LanguageSection>
 
 </Spoiler>
-
-<Spoiler title="Video Solution">
-## Video Solution
-
-By Nikhil Chatterjee
-
-<Youtube id="WygnoGqUluY" />
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-	freopen("planting.in", "r", stdin);
-	freopen("planting.out", "w", stdout);
-	int N;
-	cin >> N;
-	vector<int> degree(N);
-	int a, b;
-	for (int i = 1; i < N; i++) {
-		cin >> a >> b;
-		degree[a - 1]++, degree[b - 1]++;
-	}
-	int result = 0;
-	for (int i = 0; i < N; i++) result = max(result, degree[i]);
-	cout << result + 1 << '\n';
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.StringTokenizer;
-
-public class Sol {
-	public static void main(String[] args) throws Exception {
-		BufferedReader reader = new BufferedReader(
-		    new InputStreamReader(new FileInputStream("planting.in")));
-		PrintWriter writer = new PrintWriter(
-		    new OutputStreamWriter(new FileOutputStream("planting.out")));
-		int N = Integer.parseInt(reader.readLine());
-		int[] degree = new int[N];
-		for (int i = 1; i < N; i++) {
-			StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-			degree[Integer.parseInt(tokenizer.nextToken()) - 1]++;
-			degree[Integer.parseInt(tokenizer.nextToken()) - 1]++;
-		}
-		int max = 0;
-		for (int i = 0; i < N; i++) { max = Math.max(max, degree[i]); }
-		writer.println(max + 1);
-
-		reader.close();
-		writer.flush();
-		writer.close();
-	}
-}
-```
-</JavaSection>
-<PySection>
-
-```py
-with open("planting.in", "r") as input_file:
-	N = int(input_file.readline())
-	degree = [0] * N
-	a = 0
-	b = 0
-	for i in range(1, N):
-		line = input_file.readline().split(" ")
-		a = int(line[0])
-		b = int(line[1])
-		degree[a - 1] += 1
-		degree[b - 1] += 1
-
-
-result = 0
-for i in range(N):
-	result = max(result, degree[i])
-
-
-with open("planting.out", "w") as output_file:
-	output_file.write(str(result + 1))
-	output_file.write("\n")
-```
-</PySection>
-</LanguageSection>
-
-
-</Spoiler>
-
-Credit to: Neo Wang, Aadit Ambadkar, Sandeep Wadhwa, Kevin Sheng, Nikhil Chatterjee
-
 ## Problems
 
 <Problems problems="general" />
