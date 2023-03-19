@@ -155,12 +155,10 @@ export default function TopNavigationBar({
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
-                <span className="md:inline">
-                  Join the February Contest workshop on March 4th!
-                </span>
+                <span className="md:inline">Sign up for CPI Classes now!</span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/workshops/feb23"
+                    href="https://joincpi.org/classes"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
