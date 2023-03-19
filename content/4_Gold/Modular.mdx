@@ -120,15 +120,14 @@ using namespace std;
 
 using ll = long long;
 
-ll binpow(ll x, ll n, ll m) {
+ll exp(ll x, ll n, ll m) {
 	assert(n >= 0);
 	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 	ll res = 1;
 	while (n > 0) {
-		if (n % 2 == 1)  // if n is odd
-			res = res * x % m;
+		if (n % 2 == 1) { res = res * x % m; }
 		x = x * x % m;
-		n /= 2;  // divide by two
+		n /= 2;
 	}
 	return res;
 }
@@ -139,7 +138,7 @@ int main() {
 	for (int i = 0; i < t; i++) {
 		int a, b;
 		cin >> a >> b;
-		cout << binpow(a, b, 1e9 + 7) << "\n";
+		cout << exp(a, b, 1e9 + 7) << "\n";
 	}
 }
 ```
@@ -162,20 +161,19 @@ public class Exponentation {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			long a = Long.parseLong(st.nextToken());
 			long b = Long.parseLong(st.nextToken());
-			out.println(binpow(a, b, (long)1e9 + 7));
+			out.println(exp(a, b, (long)1e9 + 7));
 		}
 		out.close();
 	}
 
-	public static long binpow(long x, long n, long m) {
+	public static long exp(long x, long n, long m) {
 		assert (n >= 0);
 		x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 		long res = 1;
 		while (n > 0) {
-			if (n % 2 == 1)  // if n is odd
-				res = res * x % m;
+			if (n % 2 == 1) { res = res * x % m; }
 			x = x * x % m;
-			n /= 2;  // divide by two
+			n /= 2;
 		}
 		return res;
 	}
@@ -256,7 +254,7 @@ of $a$ modulo $p$.
 const int MOD = 1e9 + 7;
 
 int main() {
-	ll x = binpow(2, MOD - 2, MOD);
+	ll x = exp(2, MOD - 2, MOD);
 	cout << x << "\n";  // 500000004
 	assert(2 * x % MOD == 1);
 }
@@ -270,7 +268,7 @@ int main() {
 public class Main {
 	public static final int MOD = (int)Math.pow(10, 9) + 7;
 	public static void main(String[] args) throws IOException {
-		long x = binpow(2, MOD - 2, MOD);
+		long x = exp(2, MOD - 2, MOD);
 		System.out.println(x);  // 500000004
 		assert (2 * x % MOD == 1);
 	}
