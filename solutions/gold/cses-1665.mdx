@@ -58,7 +58,7 @@ int main() {
 	cin >> n >> x;
 	for (int i = 0; i < n; i++) { cin >> s[i]; }
 	sort(s, s + n);
-	
+
 	dp1[0][K] = 1;  // dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j <= (n - i); j++) {  // at most n - i unfinished groups
@@ -77,7 +77,7 @@ int main() {
 				}
 			}
 		}
-		
+
 		for (int j = 0; j <= (n - (i + 1)); j++) {
 			for (int k = 0; k <= x + K; k++) {
 				dp1[j][k] = dp2[j][k] % M;  // i + 1 becomes the new i
@@ -85,13 +85,13 @@ int main() {
 			}
 		}
 	}
-	
+
 	int ans = 0;
 	for (int i = K; i <= x + K; i++) {
 		ans += dp1[0][i];
 		ans %= M;
 	}
-	
+
 	cout << ans << endl;
 }
 ```
