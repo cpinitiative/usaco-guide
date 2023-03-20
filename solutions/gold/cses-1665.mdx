@@ -48,11 +48,9 @@ int n, x, s[N];     // x -> max penalty
 // dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
 // for convenience, we 1-index dp array and 0-index person array so dp[i][j][k]
 // lines up with s[i] (i.e. skill of person i + 1 = s[i])
-ll dp1[N][X + K];  // dp[i][j][k]
-ll dp2[N][X + K];  // dp[i + 1][j][k]
-// Naively, our dp table would require N * N * X memory
-// However, dp[i][j][k] can only affect dp[i + 1][x][y],
-// so we effectively only need to store two rows of the dp table.
+// Notice we only need to store 2 rows!
+ll dp1[N][X + K];  // The subarray we're currently at
+ll dp2[N][X + K];  // The next subarray (we'll fill this up with dp1)
 
 int main() {
 	cin >> n >> x;
