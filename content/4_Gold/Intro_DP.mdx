@@ -1,7 +1,7 @@
 ---
 id: intro-dp
 title: 'Introduction to DP'
-author: Michael Cao, Benjamin Qi, Neo Wang
+author: Michael Cao, Benjamin Qi, Neo Wang, Daniel Zhu
 prerequisites:
   - complete-rec
   - modular
@@ -128,6 +128,11 @@ the mechanism to cache such states.
 
 **Time Complexity:** $\mathcal{O}(N)$
 
+There are two main DP approaches:
+- **Push DP**: what states does the current state affect?
+- **Pull DP**: what states affect the current state?
+We present both approaches below.
+<Spoiler title="Push DP">
 There are only two options: jumping once, or jumping twice. Define
 $\texttt{dp}[i]$ as the minimum cost to reach stone $i$. Therefore,
 $\texttt{dp}[i+1]$ must represent the next stone, and $\texttt{dp}[i+2]$ must
@@ -150,7 +155,6 @@ We can start with the base case that $\texttt{dp}[1] = 0$, since the frog is
 already on that square, and proceed to calculate
 $\texttt{dp}[1], \texttt{dp}[2], \ldots \texttt{dp}[N]$. Note that in the code
 we ignore $\texttt{dp}[i]$ if $i>N$.
-
 <LanguageSection>
 <CPPSection>
 
@@ -265,7 +269,59 @@ print(dp[stone_num])
 
 </PySection>
 </LanguageSection>
+</Spoiler>
+<Spoiler title="Pull DP">
+There are two ways to get to stone $i$: from stone $i - 1$ and stone $i - 2$. 
+- Jump from stone $i - 1$, incurring a cost of $|\text{height}_i - \text{height}_{i-1}|$:
 
+  $$
+  \texttt{dp}[i] = \min(\texttt{dp}[i], \texttt{dp}[i - 1] + |\text{height}_i - \text{height}_{i - 1}|)
+  $$
+
+- Jump from stone $i - 2$, incurring a cost of
+  $|\text{height}_i - \text{height}_{i - 2}|$:
+  $$
+  \texttt{dp}[i] = \min(\texttt{dp}[i], \texttt{dp}[i - 2] + |\text{height}_i - \text{height}_{i - 2}|)
+  $$
+**Base case:** $\texttt{dp}[1] = 0$ (start at stone 1)
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1e5;
+
+// height is 1-indexed so it can match up with dp
+int height[MAX_N + 1];
+// dp[N] is the minimum cost to get to the Nth stone
+int dp[MAX_N + 1];
+
+int main() {
+	int N;
+	cin >> N;
+	for (int i = 1; i <= N; i++) { cin >> height[i]; }
+
+	// dp[1] = 0 is our base case since we're already at the first stone
+	dp[1] = 0;
+	for (int i = 2; i <= N; i++) {
+		dp[i] = INT_MAX;  // initially set our values to INF
+	}
+	for (int i = 2; i <= N; i++) {
+		if (i - 1 >= 1) {
+			dp[i] = min(dp[i], dp[i - 1] + abs(height[i] - height[i - 1]));
+		}
+		if (i - 2 >= 1) {
+			dp[i] = min(dp[i], dp[i - 2] + abs(height[i] - height[i - 2]));
+		}
+	}
+
+	cout << dp[N] << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
 ## Classical Problems
 
 The next few modules provide examples of some classical problems: Dynamic
