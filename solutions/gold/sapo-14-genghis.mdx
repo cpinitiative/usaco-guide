@@ -25,10 +25,10 @@ $$\texttt{lowestOps}[a][b]=\texttt{lowestOps}[a][c]+\texttt{lowestOps}[c][b]+(\t
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cassert>
-#include <vector>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -39,7 +39,7 @@ int main() {
 	int stable_num;
 	std::cin >> horse_num >> stable_num;
 	vector<int> stable_horses(stable_num);
-	for (int& h : stable_horses) {
+	for (int &h : stable_horses) {
 		std::cin >> h;
 		assert(0 < h && h <= horse_num);
 	}
@@ -48,16 +48,15 @@ int main() {
 	stable_horses.push_back(horse_num + 1);
 
 	std::sort(stable_horses.begin(), stable_horses.end());
-	
+
 	/*
 	 * lowest_ops[i][j] = min operations if we only consider horses
 	 * from that exist in the index interval (i, j)
 	 * ex: lowest_ops[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
 	 *     means that we only consider horses from (1, 10)
 	 */
-	vector<vector<int>> lowest_ops(
-		stable_num + 2, vector<int>(stable_num + 2, INT32_MAX)
-	);
+	vector<vector<int>> lowest_ops(stable_num + 2,
+	                               vector<int>(stable_num + 2, INT32_MAX));
 	for (int i = 0; i < stable_num + 2; i++) {
 		lowest_ops[i][i] = 0;
 		if (i + 1 < stable_num + 2) {
@@ -75,29 +74,23 @@ int main() {
 			 * where the smallest or largest element has become the root
 			 */
 			lowest_ops[start][end] = std::min(
-				lowest_ops[start][end],
-				lowest_ops[start][start + 1]
-				+ lowest_ops[start + 1][end]
-				+ stable_horses[end] - stable_horses[start + 1]
-			);
-			lowest_ops[start][end] = std::min(
-				lowest_ops[start][end],
-				lowest_ops[end - 1][end]
-				+ lowest_ops[start][end - 1]
-				+ stable_horses[end - 1] - stable_horses[start]
-			);
+			    lowest_ops[start][end],
+			    lowest_ops[start][start + 1] + lowest_ops[start + 1][end] +
+			        stable_horses[end] - stable_horses[start + 1]);
+			lowest_ops[start][end] =
+			    std::min(lowest_ops[start][end],
+			             lowest_ops[end - 1][end] + lowest_ops[start][end - 1] +
+			                 stable_horses[end - 1] - stable_horses[start]);
 
 			/*
 			 * then get to the actual part where we combine
 			 * two parts with top being the root
 			 */
 			for (int top = start + 2; top < end - 1; top++) {
-				lowest_ops[start][end] = std::min(
-					lowest_ops[start][end],
-					lowest_ops[start][top]
-					+ lowest_ops[top][end]
-					+ stable_horses[end] - stable_horses[start] - 1
-				);
+				lowest_ops[start][end] =
+				    std::min(lowest_ops[start][end],
+				             lowest_ops[start][top] + lowest_ops[top][end] +
+				                 stable_horses[end] - stable_horses[start] - 1);
 			}
 		}
 	}
@@ -113,14 +106,16 @@ import java.util.Arrays;
 
 public final class genghis {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int horseNum = Integer.parseInt(read.readLine());
 		int stableNum = Integer.parseInt(read.readLine());
 		int[] stableHorses = new int[stableNum + 2];
 		for (int i = 1; i <= stableNum; i++) {
 			stableHorses[i] = Integer.parseInt(read.readLine());
 			if (stableHorses[i] < 1 || horseNum < stableHorses[i]) {
-				throw new IllegalArgumentException("this horse shouldn't exist");
+				throw new IllegalArgumentException(
+				    "this horse shouldn't exist");
 			}
 		}
 		// add the "out-of-bounds" horses
@@ -129,7 +124,7 @@ public final class genghis {
 		Arrays.sort(stableHorses);
 
 		/*
- 		 * lowestOps[i][j] = min operations if we only consider horses
+		 * lowestOps[i][j] = min operations if we only consider horses
 		 * from that exist in the index interval (i, j)
 		 * ex: lowestOps[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
 		 *     means that we only consider horses from (1, 10)
@@ -147,23 +142,19 @@ public final class genghis {
 		}
 		for (int num = 4; num <= stableNum + 2; num++) {
 			for (int start = 0; start + num - 1 < stableNum + 2; start++) {
-				int end =  start + num - 1;
+				int end = start + num - 1;
 				/*
 				 * first handle the beginning and ending edge cases,
 				 * where the smallest or largest element has become the root
 				 */
 				lowestOps[start][end] = Math.min(
-						lowestOps[start][end],
-						lowestOps[start][start + 1]
-								+ lowestOps[start + 1][end]
-								+ stableHorses[end] - stableHorses[start + 1]
-				);
+				    lowestOps[start][end],
+				    lowestOps[start][start + 1] + lowestOps[start + 1][end] +
+				        stableHorses[end] - stableHorses[start + 1]);
 				lowestOps[start][end] = Math.min(
-						lowestOps[start][end],
-						lowestOps[end - 1][end]
-								+ lowestOps[start][end - 1]
-								+ stableHorses[end - 1] - stableHorses[start]
-				);
+				    lowestOps[start][end],
+				    lowestOps[end - 1][end] + lowestOps[start][end - 1] +
+				        stableHorses[end - 1] - stableHorses[start]);
 
 				/*
 				 * then get to the actual part where we combine
@@ -171,11 +162,9 @@ public final class genghis {
 				 */
 				for (int top = start + 2; top < end - 1; top++) {
 					lowestOps[start][end] = Math.min(
-							lowestOps[start][end],
-							lowestOps[start][top]
-									+ lowestOps[top][end]
-									+ stableHorses[end] - stableHorses[start] - 1
-					);
+					    lowestOps[start][end],
+					    lowestOps[start][top] + lowestOps[top][end] +
+					        stableHorses[end] - stableHorses[start] - 1);
 				}
 			}
 		}
@@ -197,7 +186,9 @@ from that exist in the index interval (i, j)
 ex: lowest_ops[1][4] and stable_horses = [0, 1, 3, 7, 10, 11]
 	means that we only consider horses from (1, 10)
 """
-lowest_ops = [[float('inf') for _ in range(stable_num + 2)] for _ in range(stable_num + 2)]
+lowest_ops = [
+	[float("inf") for _ in range(stable_num + 2)] for _ in range(stable_num + 2)
+]
 for i in range(stable_num + 2):
 	lowest_ops[i][i] = 0
 	if i + 1 < stable_num + 2:
@@ -216,13 +207,15 @@ for num in range(4, stable_num + 2 + 1):
 			lowest_ops[start][end],
 			lowest_ops[start][start + 1]
 			+ lowest_ops[start + 1][end]
-			+ stable_horses[end] - stable_horses[start + 1]
+			+ stable_horses[end]
+			- stable_horses[start + 1],
 		)
 		lowest_ops[start][end] = min(
 			lowest_ops[start][end],
 			lowest_ops[end - 1][end]
 			+ lowest_ops[start][end - 1]
-			+ stable_horses[end - 1] - stable_horses[start]
+			+ stable_horses[end - 1]
+			- stable_horses[start],
 		)
 
 		"""
@@ -234,7 +227,9 @@ for num in range(4, stable_num + 2 + 1):
 				lowest_ops[start][end],
 				lowest_ops[start][top]
 				+ lowest_ops[top][end]
-				+ stable_horses[end] - stable_horses[start] - 1
+				+ stable_horses[end]
+				- stable_horses[start]
+				- 1,
 			)
 
 print(lowest_ops[0][stable_num + 1])

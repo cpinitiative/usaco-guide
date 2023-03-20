@@ -247,6 +247,10 @@ export const UserDataProvider = ({
     api.setTriggerRerenderFunction(triggerRerender)
   );
 
+  React.useEffect(() => {
+    UserDataContextAPIs.forEach(api => api.setFirebaseApp(firebaseApp));
+  }, [firebaseApp]);
+
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
     const auth = getAuth(firebase);
@@ -282,34 +286,28 @@ export const UserDataProvider = ({
         next: snapshot => {
           let data = snapshot.data();
           if (!data) {
-            const lastViewedModule = UserDataContextAPIs.find(
-              x => x instanceof LastViewedModule
-            ).exportValue();
-            const localDataIsNotEmpty = lastViewedModule !== null;
-
-            if (localDataIsNotEmpty) {
-              // sync all local data with firebase if the firebase account doesn't exist yet
-              setDoc(
-                userDoc,
-                UserDataContextAPIs.reduce(
-                  (acc, cur) => {
-                    return {
-                      ...acc,
-                      ...cur.exportValue(),
-                    };
-                  },
-                  {
-                    // this is to prevent us from accidentally overriding the user data
-                    // firebase security rules will have a check to make sure that this is actually the first time
-                    // the user has logged in. occasionally, with poor internet, firebase will glitch and
-                    // we will accidentally override user data.
-                    // see https://github.com/cpinitiative/usaco-guide/issues/534
-                    CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
-                  }
-                ),
-                { merge: true }
-              );
-            }
+            // sync all local data with firebase if the firebase account doesn't exist yet
+            // other APIs use updateDoc() so we need to initialize it with *something*
+            setDoc(
+              userDoc,
+              UserDataContextAPIs.reduce(
+                (acc, cur) => {
+                  return {
+                    ...acc,
+                    ...cur.exportValue(),
+                  };
+                },
+                {
+                  // this is to prevent us from accidentally overriding the user data
+                  // firebase security rules will have a check to make sure that this is actually the first time
+                  // the user has logged in. occasionally, with poor internet, firebase will glitch and
+                  // we will accidentally override user data.
+                  // see https://github.com/cpinitiative/usaco-guide/issues/534
+                  CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
+                }
+              ),
+              { merge: true }
+            );
           }
           data = data || {};
           UserDataContextAPIs.forEach(api => api.importValueFromObject(data));

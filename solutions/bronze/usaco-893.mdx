@@ -13,7 +13,7 @@ By Nikhil Chatterjee
 <Youtube id="qmltNgaSg8w" />
 
 <Spoiler title="Video Solution Code">
-	
+
 <LanguageSection>
 <CPPSection>
 
@@ -26,14 +26,18 @@ int main(int argc, char **argv) {
 	freopen("guess.in", "r", stdin);
 	freopen("guess.out", "w", stdout);
 
-	int N; cin >> N;
+	int N;
+	cin >> N;
 	vector<vector<string>> characteristics(N);
 
 	for (int i = 0; i < N; ++i) {
-		string name; cin >> name;
-		int K; cin >> K;
+		string name;
+		cin >> name;
+		int K;
+		cin >> K;
 		for (int j = 0; j < K; ++j) {
-			string characteristic; cin >> characteristic;
+			string characteristic;
+			cin >> characteristic;
 			characteristics[i].push_back(characteristic);
 		}
 	}
@@ -41,7 +45,7 @@ int main(int argc, char **argv) {
 	int greatest_common = 0;
 
 	for (int i = 0; i < N; ++i) {
-		for (int j = i+1; j < N; ++j) {
+		for (int j = i + 1; j < N; ++j) {
 			int common = 0;
 			for (const auto &characteristic1 : characteristics[i]) {
 				for (const auto &characteristic2 : characteristics[j]) {
@@ -56,11 +60,11 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	cout << greatest_common+1 << "\n";
+	cout << greatest_common + 1 << "\n";
 
 	return 0;
 }
-```	
+```
 </CPPSection>
 <JavaSection>
 ```java
@@ -69,7 +73,8 @@ import java.util.*;
 
 public class Solution {
 	public static void main(String[] args) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("guess.in")));
+		BufferedReader reader = new BufferedReader(
+		    new InputStreamReader(new FileInputStream("guess.in")));
 
 		int N = Integer.parseInt(reader.readLine());
 		List<String>[] characteristics = new List[N];
@@ -84,7 +89,7 @@ public class Solution {
 
 		int greatestCommon = 0;
 		for (int i = 0; i < N; ++i) {
-			for (int j = i+1; j < N; ++j) {
+			for (int j = i + 1; j < N; ++j) {
 				int common = 0;
 
 				for (String characteristic1 : characteristics[i]) {
@@ -100,8 +105,9 @@ public class Solution {
 			}
 		}
 
-		PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("guess.out")));
-		writer.println(greatestCommon+1);
+		PrintWriter writer = new PrintWriter(
+		    new OutputStreamWriter(new FileOutputStream("guess.out")));
+		writer.println(greatestCommon + 1);
 		writer.close();
 	}
 }
@@ -109,23 +115,23 @@ public class Solution {
 </JavaSection>
 <PySection>
 ```py
-with open('guess.in', 'r') as input_file:
+with open("guess.in", "r") as input_file:
 	lines = input_file.readlines()
 N = int(lines[0])
 characteristics = [0] * N
-for i in range(1, N+1):
+for i in range(1, N + 1):
 	line = lines[i].split()
 	name = line[0]
 	K = int(line[1])
-	characteristics[i-1] = [0] * K
+	characteristics[i - 1] = [0] * K
 	for j in range(2, K + 2):
 		characteristic = line[j]
-		characteristics[i-1][j-2] = characteristic
+		characteristics[i - 1][j - 2] = characteristic
 
 greatest_common = 0
 
 for i in range(N):
-	for j in range(i+1, N):
+	for j in range(i + 1, N):
 		common = 0
 		for characteristic1 in characteristics[i]:
 			for characteristic2 in characteristics[j]:
@@ -134,39 +140,36 @@ for i in range(N):
 					break
 		greatest_common = max(greatest_common, common)
 
-with open('guess.out', 'w') as output_file:
-	output_file.write('{}'.format(greatest_common+1))
+with open("guess.out", "w") as output_file:
+	output_file.write("{}".format(greatest_common + 1))
 ```
 </PySection>
 </LanguageSection>
 </Spoiler>
-	
+
 ## Implementation
 
 <LanguageSection>
 <CPPSection>
-  
+
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <set>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <string>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::set;
 using std::string;
+using std::vector;
 
-template <typename T>
-set<T> intersection(const set<T>& s1, const set<T>& s2) {
+template <typename T> set<T> intersection(const set<T> &s1, const set<T> &s2) {
 	set<T> ret;
-	for (const T& i : s1) {
-		if (s2.count(i)) {
-			ret.insert(i);
-		}
+	for (const T &i : s1) {
+		if (s2.count(i)) { ret.insert(i); }
 	}
 	return ret;
 }
@@ -198,17 +201,17 @@ int main() {
 			 * resutling in the # of common traits + 1 "yes"es.
 			 */
 			set<string> common = intersection(animals[a1], animals[a2]);
-			max_yes = std::max(max_yes, (int) common.size() + 1);
+			max_yes = std::max(max_yes, (int)common.size() + 1);
 		}
 	}
 
 	std::ofstream("guess.out") << max_yes << endl;
 }
 ```
-  
+
 </CPPSection>
 <JavaSection>
-  
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -217,7 +220,7 @@ public class Guess {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("guess.in"));
 		int animalNum = Integer.parseInt(read.readLine());
-		
+
 		HashSet<String>[] animals = new HashSet[animalNum];
 		for (int a = 0; a < animalNum; a++) {
 			StringTokenizer line = new StringTokenizer(read.readLine());
@@ -255,7 +258,7 @@ public class Guess {
 
 ```py
 animals = []
-with open('guess.in') as read:
+with open("guess.in") as read:
 	animal_num = int(read.readline())
 	for _ in range(animal_num):
 		line = read.readline().split()
@@ -273,7 +276,7 @@ for a1 in range(animal_num):
 		"""
 		max_yes = max(max_yes, len(animals[a1].intersection(animals[a2])) + 1)
 
-print(max_yes, file=open('guess.out', 'w'))
+print(max_yes, file=open("guess.out", "w"))
 ```
 
 </PySection>

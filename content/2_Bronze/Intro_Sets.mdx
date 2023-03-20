@@ -274,6 +274,92 @@ distinct_nums = {int(x) for x in input().split()}
 print(len(distinct_nums))
 ```
 
+<Warning>
+
+The solutions above do not receive full credit on CSES, because it is possible
+to construct test cases where Python `set`s and `dict`s are extremely slow.
+See [this CF post](https://codeforces.com/blog/entry/101817) for more information.
+
+<Spoiler title="Hack Case Generator">
+
+```py
+# source: https://foss.heptapod.net/pypy/pypy/-/issues/3725
+import time
+
+
+def anti_hash_hack(n: int, cpython: bool = False, for_set=False):
+	"""
+	Args:
+	    integer n > 0
+	    cpython: CPython or Pypy
+	    for_set: set or dict
+	Output: List A of length n
+	such that 1 <= A[i] <= 2**(n.bit_length() + 2) + 10
+	"""
+	pow2 = 2 ** (n.bit_length() + 2)
+
+	A = []
+
+	def add_all(x):
+		for i in range(10 if (cpython and for_set) else 1):
+			A.append(x + i)
+
+	add_all(pow2 + 1)
+	i = 6 if cpython else 7
+	while len(A) < n // 2:
+		assert i > 0
+		add_all(i)
+		i = (5 * i + 1) % pow2
+
+	while len(A) < n:
+		A.append(1)
+
+	return A
+
+
+N = 200000
+A = anti_hash_hack(N, False, False)
+
+# https://cses.fi/problemset/task/1640/
+print_test = False
+if print_test:
+	print(N, 1)
+	print(" ".join(str(x) for x in A))
+
+do_test = True
+if do_test:
+	print("Creating set:")
+	start = time.time()
+	set(A)
+	print("Done", time.time() - start)
+
+	print("Creating dict:")
+	start = time.time()
+	my_dict = {}
+	for i in range(N):
+		my_dict[A[i]] = i
+	print("Done", time.time() - start)
+```
+
+</Spoiler>
+
+
+To fix this, we can use `str`s as keys instead of `int`s:
+
+```py
+n = int(input())  # unused
+distinct_nums = set(input().split())
+print(len(distinct_nums))
+```
+
+</Warning>
+
+<Info title="Should I worry about anti-hash tests in USACO?">
+
+No - historically, no USACO problem has included an anti-hash test. However, these sorts of tests often appear in Codeforces, especially in educational rounds, where open hacking is allowed.
+
+</Info>
+
 </PySection>
 
 </LanguageSection>
@@ -392,23 +478,17 @@ print(1 in d)  # True
 ### Iterating Over Maps
 
 <LanguageSection>
-
 <CPPSection>
 
 An `std::map` stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the
-form `{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
-keyword suffices to iterate over any type of pair (here, `auto` substitutes for
-`pair<const int, int>`).
+form `{key, value}`. To iterate over maps, you can use a `for` loop.
+The `auto` keyword suffices to iterate over any type of pair
+(here, `auto` substitutes for `pair<int, int>`).
 
 ```cpp
+// Both of these output the same thing
 for (const auto &x : m) { cout << x.first << " " << x.second << endl; }
 for (auto x : m) { cout << x.first << " " << x.second << endl; }
-
-/* both output the following:
-0 -1
-1 5
-3 14
-*/
 ```
 
 The first method (iterating over const references) is generally preferred over
@@ -418,18 +498,12 @@ allowing you to modify the values (but not the keys) of the pairs stored in the
 map:
 
 ```cpp
-for (auto &x : m) { x.second = 3; }
-for (pair<int, int> x : m) { cout << x.first << " " << x.second << endl; }
-
-/*
-0 3
-1 3
-3 3
-*/
+for (auto &x : m) {
+	x.second = 1234;  // Change all values to 1234
+}
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 To iterate over maps, you can use a for-each loop over the keys:
@@ -446,13 +520,21 @@ for (Map.Entry entry : m.entrySet()) {
 }
 ```
 
-</JavaSection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```java
+for (int k : m.keySet()) {
+	m.put(k, 1234);  // Change all values to 1234
+}
+```
+
+</JavaSection>
 <PySection>
 
-To iterate over `dict`s, there are three options. Dicts will be returned in the
-same order of insertion in
-[Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+To iterate over `dict`s, there are three options, all of which involve for loops.
+Dicts will be returned in the same order of insertion in
+[Python 3.6+](https://stackoverflow.com/questions/39980323).
 You can iterate over the keys:
 
 ```py
@@ -460,22 +542,29 @@ for key in d:
 	print(key)
 ```
 
-You can iterate over the values:
+Over the values:
 
 ```py
 for value in d.values():
 	print(value)
 ```
 
-You can iterate over the key-value pairs:
+And even over key-value pairs:
 
 ```py
 for key, value in d.items():
 	print(key, value)
 ```
 
-</PySection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```py
+for key in d:
+	d[key] = 1234  # Change all values to 1234
+```
+
+</PySection>
 </LanguageSection>
 
 While you are free to change the _values_ in a map when iterating over it (as

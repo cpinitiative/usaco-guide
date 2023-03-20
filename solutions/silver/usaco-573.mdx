@@ -18,22 +18,21 @@ author: Qi Wang, Ishwarendra Jha
 using namespace std;
 
 int number_of_wins(vector<int> &bessie, vector<int> &elsie,
-	function<bool(int, int)> cmp)
-{
+                   function<bool(int, int)> cmp) {
 	int n = size(bessie);
 	assert(size(bessie) == size(elsie));
 
 	sort(begin(bessie), end(bessie), cmp);
 	sort(begin(elsie), end(elsie), cmp);
 
-	int bpos = 0;  // keep track of index of card which bessie uses in current move
+	int bpos =
+	    0;  // keep track of index of card which bessie uses in current move
 	int wins = 0;
 
-	for (int i = 0; i < n; i++)
-	{
-		// Check if Bessie can win. If she can't, she'll just use her worst card.
-		if (cmp(bessie[bpos], elsie[i]))
-		{
+	for (int i = 0; i < n; i++) {
+		// Check if Bessie can win. If she can't, she'll just use her worst
+		// card.
+		if (cmp(bessie[bpos], elsie[i])) {
 			wins++;
 			bpos++;
 		}
@@ -42,8 +41,7 @@ int number_of_wins(vector<int> &bessie, vector<int> &elsie,
 	return wins;
 }
 
-int main()
-{
+int main() {
 	freopen("cardgame.in", "r", stdin);
 	freopen("cardgame.out", "w", stdout);
 
@@ -52,37 +50,32 @@ int main()
 
 	map<int, int> elsie_has;
 
-	// First and second half are independent of each other. 
+	// First and second half are independent of each other.
 	vector<int> bessie_first(n / 2), bessie_second(n / 2);
 	vector<int> elsie_first(n / 2), elsie_second(n / 2);
 
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		int x;
 		cin >> x;
 
 		elsie_has[x] = 1;
 
-		if (i < n / 2) 
-		{
+		if (i < n / 2) {
 			elsie_first[i] = x;
-		}
-		else
-		{
+		} else {
 			elsie_second[i - n / 2] = x;
 		}
 	}
-	
-	for (int i = 2 * n; i > 0; i--)
-	{
-		if (elsie_has.find(i) == elsie_has.end())  // elsie does not have this card
+
+	for (int i = 2 * n; i > 0; i--) {
+		if (elsie_has.find(i) ==
+		    elsie_has.end())  // elsie does not have this card
 		{
-			if (size(bessie_first) < n / 2)  // bigger card must be used in first half
+			if (size(bessie_first) <
+			    n / 2)  // bigger card must be used in first half
 			{
 				bessie_first.push_back(i);
-			}
-			else
-		    	{
+			} else {
 				bessie_second.push_back(i);
 			}
 		}
@@ -91,14 +84,14 @@ int main()
 	int ans = 0;
 
 	// First half person with card of larger value wins
-	ans += number_of_wins(bessie_first, elsie_first, 
-		[](int a, int b) { return a > b; });
+	ans += number_of_wins(bessie_first, elsie_first,
+	                      [](int a, int b) { return a > b; });
 
 	// In second half of game person with card of smaller value win
-	ans += number_of_wins(bessie_second, elsie_second, 
-		[](int a, int b) { return a < b; });
+	ans += number_of_wins(bessie_second, elsie_second,
+	                      [](int a, int b) { return a < b; });
 
-	cout << ans << endl; 
+	cout << ans << endl;
 }
 ```
 
@@ -108,8 +101,8 @@ int main()
 
 ```java
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class highcardgold {
 	static boolean[] C;
@@ -121,29 +114,27 @@ public class highcardgold {
 		Kattio io = new Kattio("cardgame");
 		N = io.nextInt();
 
-		C = new boolean[2*N+1];
+		C = new boolean[2 * N + 1];
 
 		for (int i = 0; i < N; i++) {
 			int c = io.nextInt();
 			C[c] = true;
-			if(i < N/2)
-				F.add(c); //First Half
-			else
-				S.add(c); //Second Half
+			if (i < N / 2) F.add(c);  // First Half
+			else S.add(c);            // Second Half
 		}
 
 		for (int i = 1; i < 2 * N + 1; i++) {
-			if(!C[i]) B.add(i); //Bessie's cards
+			if (!C[i]) B.add(i);  // Bessie's cards
 		}
 
 		// Sort cards (B is already sorted)
 		Collections.sort(F);
 		Collections.sort(S);
 
-		int ix = B.size()-1;
+		int ix = B.size() - 1;
 		int score = 0;
-		for (int i = F.size()-1; i >= 0; i--) {
-			if(F.get(i) < B.get(ix)){
+		for (int i = F.size() - 1; i >= 0; i--) {
+			if (F.get(i) < B.get(ix)) {
 				score++;
 				ix--;
 			}
@@ -151,7 +142,7 @@ public class highcardgold {
 
 		ix = 0;
 		for (int i = 0; i < S.size(); i++) {
-			if(B.get(ix) < S.get(i)){
+			if (B.get(ix) < S.get(i)) {
 				ix++;
 				score++;
 			}
@@ -166,15 +157,15 @@ public class highcardgold {
 		private StringTokenizer st;
 
 		// standard input
-		public Kattio() { this(System.in,System.out); }
+		public Kattio() { this(System.in, System.out); }
 		public Kattio(InputStream i, OutputStream o) {
 			super(o);
 			r = new BufferedReader(new InputStreamReader(i));
 		}
 		// USACO-style file input
 		public Kattio(String problemName) throws IOException {
-			super(new FileWriter(problemName+".out"));
-			r = new BufferedReader(new FileReader(problemName+".in"));
+			super(new FileWriter(problemName + ".out"));
+			r = new BufferedReader(new FileReader(problemName + ".in"));
 		}
 
 		// returns null if no more input
@@ -192,7 +183,6 @@ public class highcardgold {
 		public long nextLong() { return Long.parseLong(next()); }
 	}
 }
-
 ```
 
 </JavaSection>

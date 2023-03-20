@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
-import { contests, ProblemInfo, probSources } from '../../../models/problem';
+import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -84,7 +84,9 @@ export default function ProblemsListItem(
 
   const sourceTooltip = divisionTable
     ? null
-    : probSources[problem.source]?.[1] ?? contests[problem.source]?.[1];
+    : problem?.sourceDescription ||
+      (probSources[problem.source]?.[1] ?? olympiads[problem.source]?.[1]);
+
   let resultsUrl = ''; // used only for division tables
   if (divisionTable) {
     const parts = problem.source.split(' ');

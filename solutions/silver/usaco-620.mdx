@@ -12,7 +12,7 @@ author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong
 **Time Complexity:** $\mathcal O(XYK)$
 
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -23,36 +23,34 @@ using namespace std;
 bool vis[101][101][101];
 int x, y, k, m, sol;
 
-void ff (int curX, int curY, int curK) {
+void ff(int curX, int curY, int curK) {
 	if (vis[curX][curY][curK] || curK > k) return;
 	vis[curX][curY][curK] = true;
 
-	sol = min (sol, abs(m - (curX + curY)));
-	//case 1
-	ff (x, curY, curK + 1);
-	ff (curX, y, curK + 1);
-	//case 2
-	ff (0, curY, curK + 1);
-	ff (curX, 0, curK + 1);
-	//case 3
+	sol = min(sol, abs(m - (curX + curY)));
+	// case 1
+	ff(x, curY, curK + 1);
+	ff(curX, y, curK + 1);
+	// case 2
+	ff(0, curY, curK + 1);
+	ff(curX, 0, curK + 1);
+	// case 3
 	int leftoverX = (curX + curY > y ? curX + curY - y : 0);
 	int leftoverY = (curY + curX > x ? curY + curX - x : 0);
 
-	ff (leftoverX, min(y, curY + curX), curK + 1);
-	ff (min(x, curX + curY), leftoverY, curK + 1);
-
+	ff(leftoverX, min(y, curY + curX), curK + 1);
+	ff(min(x, curX + curY), leftoverY, curK + 1);
 }
 
-int main () {
+int main() {
 	freopen("pails.in", "r", stdin);
 	freopen("pails.out", "w", stdout);
 
 	cin >> x >> y >> k >> m;
 	sol = m;
-	ff (0, 0, 0);
+	ff(0, 0, 0);
 	cout << sol << '\n';
 }
-
 ```
 
 </CPPSection>
@@ -60,8 +58,8 @@ int main () {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class pails {
 	static int x, y, k, m, sol;
@@ -76,7 +74,7 @@ public class pails {
 		m = sc.nextInt();
 		sol = m;
 
-		vis = new boolean[x+1][y+1][k+1];
+		vis = new boolean[x + 1][y + 1][k + 1];
 		ff(0, 0, 0);
 
 		out.println(Math.abs(sol));
@@ -92,15 +90,15 @@ public class pails {
 			return;
 		}
 
-		//case 1
-		ff(x, curY, curK+1);
-		ff(curX, y, curK+1);
-		//case 2
-		ff(0, curY, curK+1);
-		ff(curX, 0, curK+1);
-		//case 3
-		ff(Math.min(curX+curY, x), Math.max((curX+curY)-x, 0), curK+1);
-		ff(Math.max((curX+curY)-y, 0), Math.min(curX+curY, y), curK+1);
+		// case 1
+		ff(x, curY, curK + 1);
+		ff(curX, y, curK + 1);
+		// case 2
+		ff(0, curY, curK + 1);
+		ff(curX, 0, curK + 1);
+		// case 3
+		ff(Math.min(curX + curY, x), Math.max((curX + curY) - x, 0), curK + 1);
+		ff(Math.max((curX + curY) - y, 0), Math.min(curX + curY, y), curK + 1);
 	}
 }
 ```
@@ -112,12 +110,13 @@ public class pails {
 ```py
 MAX_OPS = 100
 
-x, y, k, m = map(int, open('pails.in', 'r').read().split())
+x, y, k, m = map(int, open("pails.in", "r").read().split())
 
-sol = float('inf')
-vis = [[[False for a in range(MAX_OPS + 1)]
-	for b in range(MAX_OPS + 1)]
-	for c in range(MAX_OPS + 1)]
+sol = float("inf")
+vis = [
+	[[False for a in range(MAX_OPS + 1)] for b in range(MAX_OPS + 1)]
+	for c in range(MAX_OPS + 1)
+]
 
 
 def ff(cur_x: int, cur_y: int, cur_k: int) -> int:
@@ -184,7 +183,7 @@ Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and
 compute the minimum $|i+j-M|$.
 
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -192,10 +191,10 @@ compute the minimum $|i+j-M|$.
 
 using namespace std;
 
-#define FOR(i, a, b) for(int i = (a); i < (b); i++)
-#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
-#define F0R(i, a) for(int i = 0; i < (a); i++)
-#define trav(a, x) for (auto& a : x)
+#define FOR(i, a, b) for (int i = (a); i < (b); i++)
+#define FORE(i, a, b) for (int i = (a); i <= (b); i++)
+#define F0R(i, a) for (int i = 0; i < (a); i++)
+#define trav(a, x) for (auto &a : x)
 
 int X, Y, K, M;
 
@@ -204,8 +203,8 @@ const int INF = 1e9 + 7;
 
 int dist[MX][MX];
 
-void setIn(string s) { freopen(s.c_str(),"r",stdin); }
-void setOut(string s) { freopen(s.c_str(),"w",stdout); }
+void setIn(string s) { freopen(s.c_str(), "r", stdin); }
+void setOut(string s) { freopen(s.c_str(), "w", stdout); }
 
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -222,19 +221,21 @@ int main() {
 	bfs.push({0, 0});
 	dist[0][0] = 0;
 
-	while(!bfs.empty()) {
+	while (!bfs.empty()) {
 		pair<int, int> top = bfs.front();
 		bfs.pop();
-		int ndist = dist[top.first][top.second]+1;
+		int ndist = dist[top.first][top.second] + 1;
 
 		int pourX = min(top.first, Y - top.second);
 		int pourY = min(top.second, X - top.first);
 
-		int nx[] = {top.first, 0, X, top.first, top.first - pourX, top.first + pourY }; // all possible pours
-		int ny[] = {0, top.second, top.second, Y, top.second + pourX, top.second - pourY };
+		int nx[] = {top.first,        0, X, top.first, top.first - pourX,
+		            top.first + pourY};  // all possible pours
+		int ny[] = {0, top.second,         top.second,
+		            Y, top.second + pourX, top.second - pourY};
 
 		F0R(i, 6) {
-			if(ndist > K || dist[nx[i]][ny[i]] != INF) continue;
+			if (ndist > K || dist[nx[i]][ny[i]] != INF) continue;
 			dist[nx[i]][ny[i]] = ndist;
 			bfs.push({nx[i], ny[i]});
 		}
@@ -244,7 +245,7 @@ int main() {
 
 	F0R(i, MX) {
 		F0R(j, MX) {
-			if(dist[i][j] <= K) ret = min(ret, abs(i+j-M));
+			if (dist[i][j] <= K) ret = min(ret, abs(i + j - M));
 		}
 	}
 
@@ -257,17 +258,15 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class pails
-{
-	final static int MX = 101, INF = (int)1e9+7;
+public class pails {
+	final static int MX = 101, INF = (int)1e9 + 7;
 	static int X, Y, K, M;
 	static int[][] dist;
 
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader("pails.in"));
 		PrintWriter writer = new PrintWriter("pails.out");
 
@@ -278,51 +277,47 @@ public class pails
 		M = Integer.parseInt(st.nextToken());
 
 		dist = new int[MX][MX];
-		for(int i=0;i<=X;++i)
-			for(int j=0;j<=Y;++j)
-				dist[i][j]=INF;
+		for (int i = 0; i <= X; ++i)
+			for (int j = 0; j <= Y; ++j) dist[i][j] = INF;
 
-		Queue<Pair<Integer, Integer> > bfs = new ArrayDeque<>();
+		Queue<Pair<Integer, Integer>> bfs = new ArrayDeque<>();
 		bfs.add(new Pair<Integer, Integer>(0, 0));
-		dist[0][0]=0;
+		dist[0][0] = 0;
 
-		while(!bfs.isEmpty())
-		{
+		while (!bfs.isEmpty()) {
 			Pair<Integer, Integer> top = bfs.poll();
-			int ndist = dist[top.first][top.second]+1;
+			int ndist = dist[top.first][top.second] + 1;
 
 			int pourX = Math.min(top.first, Y - top.second);
 			int pourY = Math.min(top.second, X - top.first);
 
-			//all 6 possible ways to pour
-			int nx[] = {top.first, 0, X, top.first, top.first-pourX, top.first+pourY};
-			int ny[] = {0, top.second, top.second, Y, top.second+pourX, top.second-pourY};
+			// all 6 possible ways to pour
+			int nx[] = {top.first,        0, X, top.first, top.first - pourX,
+			            top.first + pourY};
+			int ny[] = {0, top.second,         top.second,
+			            Y, top.second + pourX, top.second - pourY};
 
-			for(int i=0;i<6;++i)
-				if(ndist < dist[nx[i]][ny[i]])
-				{
+			for (int i = 0; i < 6; ++i)
+				if (ndist < dist[nx[i]][ny[i]]) {
 					dist[nx[i]][ny[i]] = ndist;
 					bfs.add(new Pair<Integer, Integer>(nx[i], ny[i]));
 				}
 		}
 
 		int ret = INF;
-		for(int i=0;i<=X;++i)
-			for(int j=0;j<=Y;++j)
-				if(dist[i][j] <= K)
-					ret = Math.min(ret, Math.abs(i+j-M));
+		for (int i = 0; i <= X; ++i)
+			for (int j = 0; j <= Y; ++j)
+				if (dist[i][j] <= K) ret = Math.min(ret, Math.abs(i + j - M));
 		writer.println(ret);
 
 		reader.close();
 		writer.close();
 	}
 
-	static class Pair<U, V>
-	{
+	static class Pair<U, V> {
 		public U first;
 		public V second;
-		Pair(U first, V second)
-		{
+		Pair(U first, V second) {
 			this.first = first;
 			this.second = second;
 		}
@@ -334,31 +329,27 @@ public class pails
 
 <PySection>
 
-```python
+```py
 from collections import deque
 import sys
-sys.stdin, sys.stdout = open('pails.in', 'r'), open('pails.out', 'w')
+
+sys.stdin, sys.stdout = open("pails.in", "r"), open("pails.out", "w")
 input = sys.stdin.readline
+
 
 def generate_permutations(p1: int, p2: int):
 	# generates results of all possible pours
 	da = min(p2, x - p1)  # amount poured when pouring p2 into p1
 	db = min(p1, y - p2)  # amount poured when pouring p1 into p2
-	return [
-		(x, p2),
-		(p1, y),
-		(0, p2),
-		(p1, 0),
-		(p1 + da, p2 - da),
-		(p1 - db, p2 + db)
-	]
+	return [(x, p2), (p1, y), (0, p2), (p1, 0), (p1 + da, p2 - da), (p1 - db, p2 + db)]
+
 
 x, y, k, m = map(int, input().split())
 
 dist = [[-1] * (y + 1) for _ in range(x + 1)]
 dist[0][0] = 0
 
-min_diff = float('inf')
+min_diff = float("inf")
 
 queue = deque([(0, 0)])
 while queue:

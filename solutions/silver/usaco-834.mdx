@@ -15,10 +15,10 @@ author: Brad Ma, Kevin Sheng, Juheon Rhee
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -40,10 +40,9 @@ int main() {
 	}
 
 	std::sort(
-		entries.begin(), entries.end(),
-		[] (const Entry& e1, const Entry& e2) {
-			return e1.val == e2.val ? e1.index < e2.index : e1.val < e2.val;
-	});
+	    entries.begin(), entries.end(), [](const Entry &e1, const Entry &e2) {
+		    return e1.val == e2.val ? e1.index < e2.index : e1.val < e2.val;
+	    });
 
 	// count the # of bubbles needed to sort the array
 	int moo_amt = 1;
@@ -74,7 +73,7 @@ public class Sort {
 			index = i;
 		}
 
-		public int compareTo(Entry other) { 
+		public int compareTo(Entry other) {
 			if (this.val == other.val) {
 				return this.index - other.index;
 			}
@@ -91,7 +90,7 @@ public class Sort {
 			entries[i] = new Entry(io.nextInt(), i);
 		}
 
-		Arrays.sort(entries); 
+		Arrays.sort(entries);
 
 		int mooAmt = 1;
 		// count the # of bubbles needed to sort the array
@@ -111,15 +110,17 @@ public class Sort {
 
 <PySection>
 
-```python
+```py
 from typing import NamedTuple
 from functools import cmp_to_key
+
 
 class Entry(NamedTuple):
 	val: int
 	index: int
 
-with open('sort.in') as read:
+
+with open("sort.in") as read:
 	entries = []
 	for i in range(int(read.readline())):
 		entries.append(Entry(int(read.readline()), i))
@@ -133,7 +134,7 @@ for i in range(len(entries)):
 	# add 1 to account for the final iteration of the algorithm
 	moo_amt = max(moo_amt, 1 + entries[i].index - i)
 
-print(moo_amt, file=open('sort.out', 'w'))
+print(moo_amt, file=open("sort.out", "w"))
 ```
 
 </PySection>

@@ -17,16 +17,16 @@ The solution uses an iterative approach to floodfill instead of a recursive appr
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
-#include <vector>
-#include <set>
+#include <iostream>
 #include <map>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 /** @return the 4 cardinal neighbors of a position */
 vector<pair<int, int>> neighbors(int r, int c) {
@@ -40,12 +40,11 @@ int main() {
 	read >> side_len;
 	vector<vector<int>> grid(side_len, vector<int>(side_len));
 	for (int r = 0; r < side_len; r++) {
-		for (int c = 0; c < side_len; c++) {
-			read >> grid[r][c];
-		}
+		for (int c = 0; c < side_len; c++) { read >> grid[r][c]; }
 	}
-	
-	// contains the region ids of each cell- those with the same id are connected
+
+	// contains the region ids of each cell- those with the same id are
+	// connected
 	vector<vector<int>> regions(side_len, vector<int>(side_len));
 	// region_cells[r] contains the positions of the cells with region id r
 	vector<vector<pair<int, int>>> region_cells;
@@ -55,9 +54,7 @@ int main() {
 	// floodfill the regions to see which cells are connected
 	for (int r = 0; r < side_len; r++) {
 		for (int c = 0; c < side_len; c++) {
-			if (visited[r][c]) {
-				continue;
-			}
+			if (visited[r][c]) { continue; }
 
 			int curr_region = region_cells.size();
 
@@ -72,28 +69,28 @@ int main() {
 
 				contained.push_back(curr);
 				regions[curr.first][curr.second] = curr_region;
-				
-				for (const auto& [nr, nc] : neighbors(curr.first, curr.second)) {
-					if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len
-							&& !visited[nr][nc]
-							&& grid[nr][nc] == grid[r][c]) {
+
+				for (const auto &[nr, nc] :
+				     neighbors(curr.first, curr.second)) {
+					if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len &&
+					    !visited[nr][nc] && grid[nr][nc] == grid[r][c]) {
 						visited[nr][nc] = true;
 						frontier.push_back({nr, nc});
 					}
 				}
 			}
-			one_biggest = std::max(one_biggest, (int) contained.size());
+			one_biggest = std::max(one_biggest, (int)contained.size());
 			region_cells.push_back(contained);
 		}
 	}
 
 	// get the regions that are adjacent to other regions
 	vector<std::set<int>> adj_regions(region_cells.size());
-	for (const vector<pair<int,int>>& reg : region_cells) {
-		for (const auto& [r, c] : reg) {
-			for (const auto& [nr, nc] : neighbors(r, c)) {
-				if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len
-						&& regions[nr][nc] != regions[r][c]) {
+	for (const vector<pair<int, int>> &reg : region_cells) {
+		for (const auto &[r, c] : reg) {
+			for (const auto &[nr, nc] : neighbors(r, c)) {
+				if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len &&
+				    regions[nr][nc] != regions[r][c]) {
 					adj_regions[regions[r][c]].insert(regions[nr][nc]);
 				}
 			}
@@ -101,7 +98,7 @@ int main() {
 	}
 
 	/** @return the cow id of a region */
-	auto region_id = [&] (int r) {
+	auto region_id = [&](int r) {
 		return grid[region_cells[r][0].first][region_cells[r][0].second];
 	};
 	// record of pairs of regions' areas that've been processed already
@@ -115,9 +112,7 @@ int main() {
 			}
 
 			// if this pair & region have been processed already, don't start
-			if (seen[valid].count(r1)) {
-				continue;
-			}
+			if (seen[valid].count(r1)) { continue; }
 
 			// floodfill across whole regions this time, not just cells
 			int two_size = 0;
@@ -132,8 +127,8 @@ int main() {
 				seen[valid].insert(curr);
 				for (int nr : adj_regions[curr]) {
 					int nid = region_id(nr);
-					if (!curr_vis[nr]
-							&& (valid.first == nid || valid.second == nid)) {
+					if (!curr_vis[nr] &&
+					    (valid.first == nid || valid.second == nid)) {
 						curr_vis[nr] = true;
 						frontier.push_back(nr);
 					}

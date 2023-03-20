@@ -169,47 +169,38 @@ void dfs(int node, int par) {
 		anc[node][i] = anc[anc[node][i - 1]][i - 1];
 	}
 	for (int next : adj[node]) {
-		if (next != par) {
-			dfs(next, node);
-		}
+		if (next != par) { dfs(next, node); }
 	}
 }
 
 // jump(i, j) returns jth ancestor of node i
 int jump(int node, int level) {
 	for (int i = 0; i < LOGN; i++) {
-		if (level & (1 << i)) {
-			node = anc[node][i];
-		}
+		if (level & (1 << i)) { node = anc[node][i]; }
 	}
 	return (node > -1) ? node : 0;
 }
 
 // lca(i, j) returns least common ancestor of nodes i and j.
 int LCA(int a, int b) {
-	if (depth[a] < depth[b]) {
-		swap(a, b);
-	}
+	if (depth[a] < depth[b]) { swap(a, b); }
 	a = jump(a, depth[a] - depth[b]);
-	if (a == b) {
-		return a;
-	}
+	if (a == b) { return a; }
 	for (int i = LOGN - 1; i >= 0; i--) {
 		int newA = anc[a][i];
 		int newB = anc[b][i];
-		if (newA != newB) {
-			a = newA, b = newB;
-		}
+		if (newA != newB) { a = newA, b = newB; }
 	}
 	return anc[a][0];
 }
 
-
 int main() {
-	int N; int Q;
+	int N;
+	int Q;
 	cin >> N;
 	for (int i = 0; i < N - 1; i++) {
-		int a; int b;
+		int a;
+		int b;
 		cin >> a >> b;
 		a--;
 		b--;
@@ -240,7 +231,6 @@ int main() {
 		}
 		cout << result << "\n";
 	}
-
 }
 ```
 

@@ -46,8 +46,8 @@ int main() {
 		int end;
 		cin >> start >> end;
 		cout << holsteins[end] - holsteins[start - 1] << ' '
-			 << guernseys[end] - guernseys[start - 1] << ' '
-			 << jerseys[end] - jerseys[start - 1] << '\n';
+		     << guernseys[end] - guernseys[start - 1] << ' '
+		     << jerseys[end] - jerseys[start - 1] << '\n';
 	}
 }
 ```
@@ -64,11 +64,12 @@ import java.util.*;
 public class BCount {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("bcount.in"));
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("bcount.out")));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("bcount.out")));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int cowNum = Integer.parseInt(initial.nextToken());
 		int queryNum = Integer.parseInt(initial.nextToken());
-		
+
 		int[] holsteins = new int[cowNum + 1];
 		int[] guernseys = new int[cowNum + 1];
 		int[] jerseys = new int[cowNum + 1];
@@ -76,7 +77,7 @@ public class BCount {
 			holsteins[i] += holsteins[i - 1];
 			guernseys[i] += guernseys[i - 1];
 			jerseys[i] += jerseys[i - 1];
-			
+
 			int breed = Integer.parseInt(read.readLine());
 			if (breed == 1) {
 				holsteins[i]++;
@@ -91,7 +92,7 @@ public class BCount {
 			StringTokenizer query = new StringTokenizer(read.readLine());
 			int start = Integer.parseInt(query.nextToken());
 			int end = Integer.parseInt(query.nextToken());
-			
+
 			int holstein = holsteins[end] - holsteins[start - 1];
 			int guernsey = guernseys[end] - guernseys[start - 1];
 			int jersey = jerseys[end] - jerseys[start - 1];
@@ -106,7 +107,7 @@ public class BCount {
 <PySection>
 
 ```py
-with open('bcount.in') as read:
+with open("bcount.in") as read:
 	cow_num, query_num = [int(i) for i in read.readline().split()]
 	holsteins = [0]
 	guernseys = [0]
@@ -124,13 +125,13 @@ with open('bcount.in') as read:
 		elif cow == 3:
 			jerseys[-1] += 1
 
-	with open('bcount.out', 'w') as written:
+	with open("bcount.out", "w") as written:
 		for _ in range(query_num):
 			start, end = [int(i) for i in read.readline().split()]
 			holstein = holsteins[end] - holsteins[start - 1]
 			guernsey = guernseys[end] - guernseys[start - 1]
 			jersey = jerseys[end] - jerseys[start - 1]
-			written.write(f'{holstein} {guernsey} {jersey}\n')
+			written.write(f"{holstein} {guernsey} {jersey}\n")
 ```
 
 </PySection>

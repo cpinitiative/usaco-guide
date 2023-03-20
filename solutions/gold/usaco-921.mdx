@@ -63,96 +63,78 @@ Hence, the total complexity is $\mathcal{O}((n+q) \log n)$.
 #include <bits/stdc++.h>
 
 #define MAXN 100005
-#define bitinc(x) (x&-x);
+#define bitinc(x) (x & -x);
 
 using namespace std;
 
-int n,arr[MAXN],bit[4*MAXN],in[MAXN],ot[MAXN],par[MAXN][22];
+int n, arr[MAXN], bit[4 * MAXN], in[MAXN], ot[MAXN], par[MAXN][22];
 vector<int> adj[MAXN];
 
 int timer = 1;
 // does initial DFS to find the time in/out for each subtree-range.
-void dfs(int v=0,int p=0)
-{
+void dfs(int v = 0, int p = 0) {
 	in[v] = timer++;
 	par[v][0] = p;
-	for(int i = 1; i < 22; i++)
-		par[v][i] = par[par[v][i-1]][i-1];
-	for(int x : adj[v])
-	{
-		if(x == p) continue;
-		dfs(x,v);
+	for (int i = 1; i < 22; i++) par[v][i] = par[par[v][i - 1]][i - 1];
+	for (int x : adj[v]) {
+		if (x == p) continue;
+		dfs(x, v);
 	}
 	ot[v] = timer++;
 }
 
 // prefix xor. reversable = done onto itself
-int XOR(int ind)
-{
+int XOR(int ind) {
 	int xo = 0;
-	while(ind > 0)
-	{
+	while (ind > 0) {
 		xo ^= bit[ind];
 		ind -= bitinc(ind);
 	}
 	return xo;
 }
-void upd(int ind, int val)
-{
-	while(ind <= timer)
-	{
+void upd(int ind, int val) {
+	while (ind <= timer) {
 		bit[ind] ^= val;
 		ind += bitinc(ind);
 	}
 }
 
-bool anc(int u, int v)
-{
-	return (in[u] <= in[v] && ot[u] >= ot[v]);
-}
+bool anc(int u, int v) { return (in[u] <= in[v] && ot[u] >= ot[v]); }
 
 // method finding all lca's
-int lca(int u, int v)
-{
-	if(anc(u,v))
-		return u;
-	for(int i = 21; i >= 0; i--)
-	{
-		if(par[u][i] >= 0 && !anc(par[u][i], v))
-			u = par[u][i];
+int lca(int u, int v) {
+	if (anc(u, v)) return u;
+	for (int i = 21; i >= 0; i--) {
+		if (par[u][i] >= 0 && !anc(par[u][i], v)) u = par[u][i];
 	}
 	return par[u][0];
 }
 
-int main()
-{
+int main() {
 	freopen("cowland.in", "r", stdin);
 	freopen("cowland.out", "w", stdout);
 	int q;
 	cin >> n >> q;
-	for(int i = 0; i < n; i++) cin >> arr[i];
-	for(int i = 1; i < n; i++)
-	{
-		int u,v;
+	for (int i = 0; i < n; i++) cin >> arr[i];
+	for (int i = 1; i < n; i++) {
+		int u, v;
 		cin >> u >> v;
-		--u; --v;
+		--u;
+		--v;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
 	dfs();
 	// add each vertex query right now.
-	for(int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		upd(in[i], arr[i]);
 		upd(ot[i], arr[i]);
 	}
 	// rep. for each query
-	for(int que = 0; que < q; que++)
-	{
+	for (int que = 0; que < q; que++) {
 		int t;
 		cin >> t;
-		if(t==1)
-		{
+		if (t == 1) {
 			int s, x;
 			cin >> s >> x;
 			--s;
@@ -163,12 +145,12 @@ int main()
 			// update the arr[s] value to x.
 			upd(in[s], arr[s]);
 			upd(ot[s], arr[s]);
-		} else
-		{
-			int u,v;
+		} else {
+			int u, v;
 			cin >> u >> v;
-			--u; --v;
-			int w = lca(u,v);
+			--u;
+			--v;
+			int w = lca(u, v);
 			cout << ((XOR(in[u]) ^ XOR(in[v])) ^ arr[w]) << endl;
 		}
 	}
@@ -180,10 +162,11 @@ int main()
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-// this one uses a segment tree for the xor-ing instead of a BIT, but overall it's the same philosophy
+// this one uses a segment tree for the xor-ing instead of a BIT, but overall
+// it's the same philosophy
 public class CowLand {
 	private static class MinSegTree {
 		private final int[] segtree;
@@ -193,9 +176,7 @@ public class CowLand {
 
 		public MinSegTree(int len, Comparator<Integer> comp) {
 			int size = 1;
-			while (size < len) {
-				size *= 2;
-			}
+			while (size < len) { size *= 2; }
 			this.size = size;
 			cmp = comp;
 			arrSize = len;
@@ -204,19 +185,19 @@ public class CowLand {
 
 		public MinSegTree(int[] arr, Comparator<Integer> comp) {
 			this(arr.length, comp);
-			for (int i = 0; i < arr.length; i++) {
-				set(i, arr[i]);
-			}
+			for (int i = 0; i < arr.length; i++) { set(i, arr[i]); }
 		}
 
 		public void set(int index, int element) {
 			if (index < 0 || index > arrSize) {
-				throw new IllegalArgumentException(String.format("%s should be out of bounds", index));
+				throw new IllegalArgumentException(
+				    String.format("%s should be out of bounds", index));
 			}
 			set(index, element, 0, 0, size);
 		}
 
-		private void set(int index, int element, int currNode, int left, int right) {
+		private void set(int index, int element, int currNode, int left,
+		                 int right) {
 			if (right - left == 1) {
 				segtree[currNode] = element;
 			} else {
@@ -226,24 +207,25 @@ public class CowLand {
 				} else {
 					set(index, element, 2 * currNode + 2, mid, right);
 				}
-				segtree[currNode] = Collections.min(Arrays.asList(segtree[2 * currNode + 1], segtree[2 * currNode + 2]), cmp);
+				segtree[currNode] =
+				    Collections.min(Arrays.asList(segtree[2 * currNode + 1],
+				                                  segtree[2 * currNode + 2]),
+				                    cmp);
 			}
 		}
 
 		public int min(int from, int to) {
 			if (from < 0 || to > arrSize) {
-				throw new IllegalArgumentException(String.format("the bounds %s and %s are out of bounds i think", from, to));
+				throw new IllegalArgumentException(String.format(
+				    "the bounds %s and %s are out of bounds i think", from,
+				    to));
 			}
 			return min(from, to, 0, 0, size);
 		}
 
 		private int min(int from, int to, int currNode, int left, int right) {
-			if (right <= from || to <= left) {
-				return Integer.MAX_VALUE;
-			}
-			if (from <= left && right <= to) {
-				return segtree[currNode];
-			}
+			if (right <= from || to <= left) { return Integer.MAX_VALUE; }
+			if (from <= left && right <= to) { return segtree[currNode]; }
 			int middle = (left + right) / 2;
 			int leftPart = min(from, to, 2 * currNode + 1, left, middle);
 			int rightPart = min(from, to, 2 * currNode + 2, middle, right);
@@ -261,24 +243,27 @@ public class CowLand {
 		private final int arrSize;
 		private final int size;
 
-		public XORSegTree(int len) {  // constructs the thing kinda like an array
+		public XORSegTree(
+		    int len) {  // constructs the thing kinda like an array
 			int size = 1;
-			while (size < len) {
-				size *= 2;
-			}
+			while (size < len) { size *= 2; }
 			this.size = size;
 			arrSize = len;
-			segtree = new int[size * 2];  // we won't necessarily use all of the element but that doesn't really matter
+			segtree =
+			    new int[size * 2];  // we won't necessarily use all of the
+			                        // element but that doesn't really matter
 		}
 
 		public void set(int index, int element) {
 			if (index < 0 || index > arrSize) {
-				throw new IllegalArgumentException(String.format("%s should be out of bounds lol", index));
+				throw new IllegalArgumentException(
+				    String.format("%s should be out of bounds lol", index));
 			}
 			set(index, element, 0, 0, size);
 		}
 
-		private void set(int index, int element, int currNode, int left, int right) {
+		private void set(int index, int element, int currNode, int left,
+		                 int right) {
 			if (right - left == 1) {
 				segtree[currNode] = element;
 			} else {
@@ -288,25 +273,28 @@ public class CowLand {
 				} else {
 					set(index, element, 2 * currNode + 2, mid, right);
 				}
-				segtree[currNode] = segtree[2 * currNode + 1] ^ segtree[2 * currNode + 2];
+				segtree[currNode] =
+				    segtree[2 * currNode + 1] ^ segtree[2 * currNode + 2];
 			}
 		}
 
-		// for this one, from and to follow "normal" slicing rules - left bound is inclusive, right bound isn't
+		// for this one, from and to follow "normal" slicing rules - left bound
+		// is inclusive, right bound isn't
 		public int xor(int from, int to) {
 			if (from < 0 || to > arrSize) {
-				throw new IllegalArgumentException(String.format("the bounds %s and %s are out of bounds i think", from, to));
+				throw new IllegalArgumentException(String.format(
+				    "the bounds %s and %s are out of bounds i think", from,
+				    to));
 			}
 			return xor(from, to, 0, 0, size);
 		}
 
 		private int xor(int from, int to, int currNode, int left, int right) {
-			if (right <= from || to <= left) {  // oof, out of bounds, so the sum is definitely 0
+			if (right <= from ||
+			    to <= left) {  // oof, out of bounds, so the sum is definitely 0
 				return 0;
 			}
-			if (from <= left && right <= to) {
-				return segtree[currNode];
-			}
+			if (from <= left && right <= to) { return segtree[currNode]; }
 			int middle = (left + right) / 2;
 			int leftPartSum = xor(from, to, 2 * currNode + 1, left, middle);
 			int rightPartSum = xor(from, to, 2 * currNode + 2, middle, right);
@@ -326,7 +314,8 @@ public class CowLand {
 		private final MinSegTree LCATree;
 		private final XORSegTree queryTree;
 
-		public AmusementPark(ArrayList<Integer>[] neighbors, int[] respectiveVals) {
+		public AmusementPark(ArrayList<Integer>[] neighbors,
+		                     int[] respectiveVals) {
 			this.neighbors = neighbors;
 			enjoyment = respectiveVals.clone();
 			nodes = neighbors.length;
@@ -348,11 +337,14 @@ public class CowLand {
 				queryTree.set(firstOcc[n], enjoyment[n]);
 				queryTree.set(lastOcc[n], enjoyment[n]);
 			}
-			LCATree = new MinSegTree(eulerTour.stream().mapToInt(i -> i).toArray(), Comparator.comparingInt(n -> height[n]));
+			LCATree =
+			    new MinSegTree(eulerTour.stream().mapToInt(i -> i).toArray(),
+			                   Comparator.comparingInt(n -> height[n]));
 		}
 
 		public int query(int n1, int n2) {
-			return queryTree.xor(0, firstOcc[n1] + 1) ^ queryTree.xor(0, firstOcc[n2] + 1) ^ enjoyment[LCA(n1, n2)];
+			return queryTree.xor(0, firstOcc[n1] + 1) ^
+			    queryTree.xor(0, firstOcc[n2] + 1) ^ enjoyment[LCA(n1, n2)];
 		}
 
 		public void set(int node, int val) {
@@ -364,41 +356,46 @@ public class CowLand {
 		public int LCA(int n1, int n2) {
 			int p1 = firstOcc[n1];
 			int p2 = firstOcc[n2];
-			if (p1 > p2) {  // see which one occurs first because of the minimum thing
+			if (p1 > p2) {  // see which one occurs first because of the minimum
+				            // thing
 				int temp = p1;
 				p1 = p2;
 				p2 = temp;
 			}
-			return LCATree.min(p1, p2 + 1);  // + 1 because of the bounds of min()
+			return LCATree.min(p1,
+			                   p2 + 1);  // + 1 because of the bounds of min()
 		}
 
-		private void eulerTour() {  // i could just put this in the constructor but this makes it look better
-			ArrayDeque<int[]> frontier = new ArrayDeque<>(Collections.singletonList(new int[]{0, -1, 0}));
+		private void eulerTour() {  // i could just put this in the constructor
+			                        // but this makes it look better
+			ArrayDeque<int[]> frontier = new ArrayDeque<>(
+			    Collections.singletonList(new int[] {0, -1, 0}));
 			HashSet<Integer> visited = new HashSet<>();
 			int[] parent = new int[nodes];
 			while (!frontier.isEmpty()) {
 				int[] curr = frontier.removeFirst();
 				eulerTour.add(curr[0]);
-				if (curr[0] == -1 || visited.contains(curr[0])) {
-					continue;
-				}
+				if (curr[0] == -1 || visited.contains(curr[0])) { continue; }
 				visited.add(curr[0]);
 				height[curr[0]] = curr[2];
-				firstOcc[curr[0]] = eulerTour.size() - 1;  // -1 because of that .add(curr[0]) above
+				firstOcc[curr[0]] =
+				    eulerTour.size() -
+				    1;  // -1 because of that .add(curr[0]) above
 				if (curr[0] != 0) {
-					frontier.addFirst(new int[]{curr[1], parent[curr[1]], curr[2] - 1});
+					frontier.addFirst(
+					    new int[] {curr[1], parent[curr[1]], curr[2] - 1});
 				}
-				boolean isLeaf = true;  // i know i could like check the amt of neighbors but this is somehow faster
+				boolean isLeaf = true;  // i know i could like check the amt of
+				                        // neighbors but this is somehow faster
 				for (int n : neighbors[curr[0]]) {
-					if (n != curr[1]) {  // visit all children (don't process the parent)
+					if (n != curr[1]) {  // visit all children (don't process
+						                 // the parent)
 						parent[n] = curr[0];
-						frontier.addFirst(new int[]{n, curr[0], curr[2] + 1});
+						frontier.addFirst(new int[] {n, curr[0], curr[2] + 1});
 						isLeaf = false;
 					}
 				}
-				if (isLeaf) {
-					eulerTour.add(curr[0]);
-				}
+				if (isLeaf) { eulerTour.add(curr[0]); }
 			}
 		}
 	}
@@ -409,31 +406,37 @@ public class CowLand {
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int placeNum = Integer.parseInt(initial.nextToken());
 		int queryNum = Integer.parseInt(initial.nextToken());
-		int[] initialVals = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+		int[] initialVals = Arrays.stream(read.readLine().split(" "))
+		                        .mapToInt(Integer::parseInt)
+		                        .toArray();
 		ArrayList<Integer>[] neighbors = new ArrayList[placeNum];
-		for (int p = 0; p < placeNum; p++) {
-			neighbors[p] = new ArrayList<>();
-		}
+		for (int p = 0; p < placeNum; p++) { neighbors[p] = new ArrayList<>(); }
 		for (int i = 0; i < placeNum - 1; i++) {
-			int[] route = Arrays.stream(read.readLine().split(" ")).mapToInt(j -> Integer.parseInt(j) - 1).toArray();
+			int[] route = Arrays.stream(read.readLine().split(" "))
+			                  .mapToInt(j -> Integer.parseInt(j) - 1)
+			                  .toArray();
 			neighbors[route[0]].add(route[1]);
 			neighbors[route[1]].add(route[0]);
 		}
 		AmusementPark park = new AmusementPark(neighbors, initialVals);
 		PrintWriter written = new PrintWriter("cowland.out");
 		for (int q = 0; q < queryNum; q++) {
-			int[] query = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			int[] query = Arrays.stream(read.readLine().split(" "))
+			                  .mapToInt(Integer::parseInt)
+			                  .toArray();
 			switch (query[0]) {
-				case 1:
-					park.set(query[1] - 1, query[2]);
-					break;
-				case 2:
-					int happiness = park.query(query[1] - 1, query[2] - 1);
-					// System.out.println(happiness);  // <- adding this makes the thing too slow lol
-					written.println(happiness);
-					break;
-				default:
-					throw new IllegalArgumentException("what kind of query is " + Arrays.toString(query) + " lol");
+			case 1:
+				park.set(query[1] - 1, query[2]);
+				break;
+			case 2:
+				int happiness = park.query(query[1] - 1, query[2] - 1);
+				// System.out.println(happiness);  // <- adding this makes the
+				// thing too slow lol
+				written.println(happiness);
+				break;
+			default:
+				throw new IllegalArgumentException(
+				    "what kind of query is " + Arrays.toString(query) + " lol");
 			}
 		}
 		written.close();

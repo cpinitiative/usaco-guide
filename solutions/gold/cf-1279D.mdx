@@ -27,8 +27,8 @@ running sum as we go.
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -41,17 +41,15 @@ long long pow_mod(long long base, long long exp) {
 	base %= MOD;
 	long long result = 1;
 	while (exp > 0) {
-		if (exp % 2 == 1) //if n is odd
+		if (exp % 2 == 1)  // if n is odd
 			result = result * base % MOD;
 		base = base * base % MOD;
-		exp /= 2; //divide by two
+		exp /= 2;  // divide by two
 	}
 	return result;
 }
 
-long long mod_inv(long long n) {
-	return pow_mod(n, MOD - 2);
-}
+long long mod_inv(long long n) { return pow_mod(n, MOD - 2); }
 
 long long frac_total(long long num, long long denom) {
 	return ((num % MOD) * mod_inv(denom)) % MOD;
@@ -74,14 +72,14 @@ int main() {
 	}
 
 	long long prob = 0;
-	for (const vector<int>& c : children) {
-		for (const int& i : c) {
+	for (const vector<int> &c : children) {
+		for (const int &i : c) {
 			int num = 1 * 1 * wanter_nums[i];
-			long long denom = child_num * (long long) c.size() * child_num;
+			long long denom = child_num * (long long)c.size() * child_num;
 			prob = (prob + frac_total(num, denom)) % MOD;
 		}
 	}
-	
+
 	cout << prob << endl;
 }
 ```
@@ -106,13 +104,16 @@ import java.util.HashMap;
 public class SantaBot {
 	private static final int MOD = 998244353;
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int childNum = Integer.parseInt(read.readLine());
 
 		int[][] children = new int[childNum][];
 		HashMap<Integer, Integer> wanterNum = new HashMap<>();
 		for (int c = 0; c < childNum; c++) {
-			int[] raw = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			int[] raw = Arrays.stream(read.readLine().split(" "))
+			                .mapToInt(Integer::parseInt)
+			                .toArray();
 			children[c] = Arrays.copyOfRange(raw, 1, raw.length);
 			for (int i : children[c]) {
 				wanterNum.put(i, wanterNum.getOrDefault(i, 0) + 1);
@@ -121,7 +122,7 @@ public class SantaBot {
 
 		long probTotal = 0;
 		for (int[] c : children) {
-			long denom = (long) childNum * c.length * childNum;
+			long denom = (long)childNum * c.length * childNum;
 			for (int i : c) {
 				int num = wanterNum.get(i);
 				probTotal = (probTotal + fracTotal(num, denom)) % MOD;
@@ -134,9 +135,7 @@ public class SantaBot {
 		return ((num % MOD) * modInv(denom)) % MOD;
 	}
 
-	private static long modInv(long n) {
-		return pow(n, MOD - 2);
-	}
+	private static long modInv(long n) { return pow(n, MOD - 2); }
 
 	// from /gold/modular
 	private static long pow(long base, long exp) {
@@ -146,9 +145,7 @@ public class SantaBot {
 		base %= MOD;
 		long res = 1;
 		while (exp > 0) {
-			if (exp % 2 == 1) {
-				res = res * base % MOD;
-			}
+			if (exp % 2 == 1) { res = res * base % MOD; }
 			base = base * base % MOD;
 			exp /= 2;
 		}

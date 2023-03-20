@@ -28,7 +28,7 @@ $N$.
 ```java
 import java.io.*;
 import java.util.*;
- 
+
 public class FlightDiscount {
 	static class Flight {
 		int to;
@@ -47,10 +47,10 @@ public class FlightDiscount {
 			this.pos = val;
 			this.cost = wsf;
 		}
- 
+
 		@Override
 		public int compareTo(Pos o) {
-			return (int) (this.cost - o.cost);
+			return (int)(this.cost - o.cost);
 		}
 	}
 
@@ -59,7 +59,8 @@ public class FlightDiscount {
 	static List<List<Flight>> reverseNeighbors = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(br.readLine());
 		int cityNum = Integer.parseInt(initial.nextToken());
 		int flightNum = Integer.parseInt(initial.nextToken());
@@ -89,16 +90,15 @@ public class FlightDiscount {
 		System.out.println(minCost);
 	}
 
-	public static long[] minDist(int start, ArrayList<ArrayList<Flight>> neighbors) {
+	public static long[] minDist(int start,
+	                             ArrayList<ArrayList<Flight>> neighbors) {
 		long[] minDist = new long[neighbors.size()];
 		boolean[] visited = new boolean[neighbors.size()];
 		PriorityQueue<Pos> frontier = new PriorityQueue<>();
 		frontier.add(new Pos(start, 0));
-		while(!frontier.isEmpty()) {
+		while (!frontier.isEmpty()) {
 			Pos curr = frontier.remove();
-			if (visited[curr.pos]) {
-				continue;
-			}
+			if (visited[curr.pos]) { continue; }
 			visited[curr.pos] = true;
 			minDist[curr.pos] = curr.cost;
 			for (Flight e : neighbors.get(curr.pos)) {
@@ -116,13 +116,13 @@ public class FlightDiscount {
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 /**
  * given a start point, and an adjacency list with costs,
@@ -130,9 +130,8 @@ using std::pair;
  * from all the other nodes to the start node
  * (the value is INT64_MAX if unreachable)
  */
-vector<long long> min_costs(
-	int from, const vector<vector<pair<int, int>>>& neighbors
-) {
+vector<long long> min_costs(int from,
+                            const vector<vector<pair<int, int>>> &neighbors) {
 	vector<long long> min_costs(neighbors.size(), INT64_MAX);
 	min_costs[from] = 0;
 	std::priority_queue<pair<long long, int>> frontier;
@@ -141,10 +140,8 @@ vector<long long> min_costs(
 		pair<long long, int> curr_state = frontier.top();
 		frontier.pop();
 		int curr = curr_state.second;
-		if (-curr_state.first != min_costs[curr]) {
-			continue;
-		}
-		
+		if (-curr_state.first != min_costs[curr]) { continue; }
+
 		for (auto [n, nc] : neighbors[curr]) {
 			long long new_cost = min_costs[curr] + nc;
 			if (new_cost < min_costs[n]) {
@@ -170,7 +167,7 @@ int main() {
 		neighbors[--from].push_back({--to, cost});
 		reverse_neighbors[to].push_back({from, cost});
 	}
- 
+
 	vector<long long> start_costs = min_costs(0, neighbors);
 	vector<long long> end_costs = min_costs(city_num - 1, reverse_neighbors);
 	long long total_min = INT64_MAX;
@@ -179,10 +176,8 @@ int main() {
 			if (start_costs[c] == INT64_MAX || end_costs[n] == INT64_MAX) {
 				continue;
 			}
-			total_min = std::min(
-				total_min,
-				start_costs[c] + (nc / 2) + end_costs[n]
-			);
+			total_min =
+			    std::min(total_min, start_costs[c] + (nc / 2) + end_costs[n]);
 		}
 	}
 	cout << total_min << endl;
@@ -208,8 +203,8 @@ the shortest distance after using the discount.
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -227,29 +222,25 @@ int main() {
 		std::cin >> from >> to >> cost;
 		neighbors[--from].push_back({--to, cost});
 	}
- 
+
 	vector<vector<long long>> min_cost(city_num, {INT64_MAX, INT64_MAX});
 	min_cost[0] = {0, 0};
- 
+
 	struct Pos {
-		int pos;  // the current position
-		bool used;  // whether we've used up our discount yet
+		int pos;         // the current position
+		bool used;       // whether we've used up our discount yet
 		long long cost;  // the cost associated with this state
 	};
-	auto cmp = [&] (const Pos& a, const Pos& b) { return a.cost > b.cost; };
+	auto cmp = [&](const Pos &a, const Pos &b) { return a.cost > b.cost; };
 	std::priority_queue<Pos, vector<Pos>, decltype(cmp)> frontier(cmp);
 	frontier.push({0, false, 0});
-	
+
 	while (!frontier.empty()) {
 		Pos curr = frontier.top();
 		frontier.pop();
 		long long curr_cost = min_cost[curr.pos][curr.used];
-		if (curr_cost != curr.cost) {
-			continue;
-		}
-		if (curr.pos == city_num - 1) {
-			break;
-		}
+		if (curr_cost != curr.cost) { continue; }
+		if (curr.pos == city_num - 1) { break; }
 		for (auto [n, nc] : neighbors[curr.pos]) {
 			// if we haven't used the discount yet, try using it now
 			if (!curr.used) {

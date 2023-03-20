@@ -14,6 +14,9 @@ author: Óscar Garries, Kevin Sheng
 <LanguageSection>
 <CPPSection>
 
+Note that using `set` here instead of `unordered_set`
+adds an extra $\log R$ factor to the time complexity.
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -24,9 +27,8 @@ struct Road {
 };
 
 /** to use the struct in a set, a comparator must be implemented. */
-inline bool operator<(const Road& r1, const Road& r2) {
-	return tie(r1.sr, r1.sc, r1.er, r1.ec)
-			< tie(r2.sr, r2.sc, r2.er, r2.ec);
+inline bool operator<(const Road &r1, const Road &r2) {
+	return tie(r1.sr, r1.sc, r1.er, r1.ec) < tie(r2.sr, r2.sc, r2.er, r2.ec);
 }
 
 /** @return the 4 cardinal neighbors of a position */
@@ -41,7 +43,7 @@ int main() {
 	int cow_num;
 	int road_num;
 	cin >> side_len >> cow_num >> road_num;
-	
+
 	set<Road> roads;
 	for (int r = 0; r < road_num; r++) {
 		int sr, sc;
@@ -63,19 +65,20 @@ int main() {
 
 	// returns the # of cows that a position can reach & marks them as visited
 	function<int(int, int, int, int)> connected_cow_num;
-	connected_cow_num = [&] (int r, int c, int prev_r, int prev_c) -> int {
+	connected_cow_num = [&](int r, int c, int prev_r, int prev_c) -> int {
 		// check if we're out of bounds,
-		if (r < 0 || c < 0 || r >= side_len || c >= side_len
-				// someplace we've gone before,
-				|| visited[r][c]
-				// or if we've just crossed a road
-				|| roads.count(Road{r, c, prev_r, prev_c})) {
+		if (r < 0 || c < 0 || r >= side_len ||
+		    c >= side_len
+		    // someplace we've gone before,
+		    || visited[r][c]
+		    // or if we've just crossed a road
+		    || roads.count(Road{r, c, prev_r, prev_c})) {
 			return 0;
 		}
-		
+
 		visited[r][c] = true;
 		int cow_num = has_cow[r][c];
-		for (const auto& [nr, nc] : neighbors(r, c)) {
+		for (const auto &[nr, nc] : neighbors(r, c)) {
 			cow_num += connected_cow_num(nr, nc, r, c);
 		}
 		return cow_num;
@@ -86,17 +89,16 @@ int main() {
 		for (int c = 0; c < side_len; c++) {
 			if (!visited[r][c]) {
 				int comp_sz = connected_cow_num(r, c, r, c);
-				if (comp_sz != 0) {
-					cow_components.push_back(comp_sz);
-				}
+				if (comp_sz != 0) { cow_components.push_back(comp_sz); }
 			}
 		}
 	}
 
 	int distant_pairs = 0;
 	for (int i = 0; i < cow_components.size(); i++) {
-		for (int j =  i + 1; j < cow_components.size(); j++) {
-			// all pairs of cows from these two components are considered distant
+		for (int j = i + 1; j < cow_components.size(); j++) {
+			// all pairs of cows from these two components are considered
+			// distant
 			distant_pairs += cow_components[i] * cow_components[j];
 		}
 	}
@@ -118,7 +120,7 @@ public class CountCross {
 	private static class Road {
 		int sr, sc;
 		int er, ec;
-		
+
 		public Road(int sr, int sc, int er, int ec) {
 			this.sr = sr;
 			this.sc = sc;
@@ -149,7 +151,7 @@ public class CountCross {
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("countcross");
-		
+
 		sideLen = io.nextInt();
 		int cowNum = io.nextInt();
 		int roadNum = io.nextInt();
@@ -227,19 +229,21 @@ public class CountCross {
 ```py
 from typing import List, Tuple
 
+
 def neighbors(r: int, c: int) -> List[Tuple[int, int]]:
 	""":return the 4 cardinal neighbors of a position"""
 	return [(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)]
 
-with open('countcross.in') as read:
+
+with open("countcross.in") as read:
 	side_len, cow_num, road_num = [int(i) for i in read.readline().split()]
-	
+
 	roads = set()
 	for _ in range(road_num):
 		sr, sc, er, ec = [int(i) - 1 for i in read.readline().split()]
 		roads.add((sr, sc, er, ec))
 		roads.add((er, ec, sr, sc))
-	
+
 	has_cow = [[False for _ in range(side_len)] for _ in range(side_len)]
 	for _ in range(cow_num):
 		r, c = [int(i) - 1 for i in read.readline().split()]
@@ -247,14 +251,20 @@ with open('countcross.in') as read:
 
 visited = [[False for _ in range(side_len)] for _ in range(side_len)]
 
+
 def connected_cow_num(r: int, c: int, prev_r: int, prev_c: int) -> int:
 	""":return the # of cows that a position can reach & marks them as visited"""
 	# check if we're out of bounds,
-	if (r < 0 or c < 0 or r >= side_len or c >= side_len
-			# someplace we've gone before,
-			or visited[r][c]
-			# or if we've just crossed a road
-			or (r, c, prev_r, prev_c) in roads):
+	if (
+		r < 0
+		or c < 0
+		or r >= side_len
+		or c >= side_len
+		# someplace we've gone before,
+		or visited[r][c]
+		# or if we've just crossed a road
+		or (r, c, prev_r, prev_c) in roads
+	):
 		return 0
 
 	visited[r][c] = True
@@ -262,6 +272,7 @@ def connected_cow_num(r: int, c: int, prev_r: int, prev_c: int) -> int:
 	for nr, nc in neighbors(r, c):
 		cow_num += connected_cow_num(nr, nc, r, c)
 	return cow_num
+
 
 cow_components = []
 for r in range(side_len):
@@ -277,7 +288,7 @@ for i in range(len(cow_components)):
 		# all pairs of cows from these two components are considered distant
 		distant_pairs += cow_components[i] * cow_components[j]
 
-print(distant_pairs, file=open('countcross.out', 'w'))
+print(distant_pairs, file=open("countcross.out", "w"))
 ```
 
 </PySection>

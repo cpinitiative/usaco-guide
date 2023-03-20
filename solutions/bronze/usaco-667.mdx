@@ -37,20 +37,19 @@ int main() {
 		string city;
 		string state;
 		read >> city >> state;
-		city = city.substr(0, 2);  // We only care about the first two letters of the city
+		city = city.substr(
+		    0, 2);  // We only care about the first two letters of the city
 		pairs.push_back({city, state});
 	}
 
 	map<string, int> seen;
 	long long total = 0;
-	for (const auto& [c, s] : pairs) {
-		if (c != s) {
-			total += seen[s + c];
-		}
+	for (const auto &[c, s] : pairs) {
+		if (c != s) { total += seen[s + c]; }
 		seen[c + s]++;
 	}
 
-	ofstream ("citystate.out") << total << endl;
+	ofstream("citystate.out") << total << endl;
 }
 ```
 
@@ -72,7 +71,8 @@ public class CityState {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("citystate.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("citystate.in"));
 		int pairNum = Integer.parseInt(read.readLine());
 		Pair[] pairs = new Pair[pairNum];
 		for (int p = 0; p < pairNum; p++) {
@@ -90,10 +90,8 @@ public class CityState {
 			if (!p.city.equals(p.state)) {
 				total += seen.getOrDefault(p.state + p.city, 0);
 			}
-			seen.put(
-				p.city + p.state,
-				seen.getOrDefault(p.city + p.state, 0) + 1
-			);
+			seen.put(p.city + p.state,
+			         seen.getOrDefault(p.city + p.state, 0) + 1);
 		}
 
 		PrintWriter out = new PrintWriter("citystate.out");
@@ -111,7 +109,7 @@ from collections import defaultdict
 
 
 pairs = []
-with open('citystate.in') as read:
+with open("citystate.in") as read:
 	for _ in range(int(read.readline())):
 		city, state = read.readline().strip().split()
 		city = city[:2]  # We only care about the first two letters of the city
@@ -124,7 +122,7 @@ for c, s in pairs:
 		total += seen[s + c]
 	seen[c + s] += 1
 
-print(total, file=open('citystate.out', 'w'))
+print(total, file=open("citystate.out", "w"))
 ```
 
 </PySection>
@@ -144,9 +142,7 @@ using namespace std;
 
 int index(string s) {
 	int ind = 0;
-	for (char& c : s) {
-		ind = 26 * ind + (c - 'A');
-	}
+	for (char &c : s) { ind = 26 * ind + (c - 'A'); }
 	return ind;
 }
 
@@ -160,16 +156,15 @@ int main() {
 		string city;
 		string state;
 		read >> city >> state;
-		city = city.substr(0, 2);  // We only care about the first two letters of the city
+		city = city.substr(
+		    0, 2);  // We only care about the first two letters of the city
 		pairs.push_back({city, state});
 	}
 
 	vector<int> seen(26 * 26 * 26 * 26);
 	long long total = 0;
-	for (const auto& [c, s] : pairs) {
-		if (c != s) {
-			total += seen[index(s + c)];
-		}
+	for (const auto &[c, s] : pairs) {
+		if (c != s) { total += seen[index(s + c)]; }
 		seen[index(c + s)]++;
 	}
 
@@ -195,7 +190,8 @@ public class CityState {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("citystate.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("citystate.in"));
 		int pairNum = Integer.parseInt(read.readLine());
 		Pair[] pairs = new Pair[pairNum];
 		for (int p = 0; p < pairNum; p++) {
@@ -207,7 +203,7 @@ public class CityState {
 			pairs[p] = new Pair(city, state);
 		}
 
-		int[] seen = new int[(int) Math.pow(26, 4)];
+		int[] seen = new int[(int)Math.pow(26, 4)];
 		long total = 0;
 		for (Pair p : pairs) {
 			if (!p.city.equals(p.state)) {
@@ -238,25 +234,25 @@ public class CityState {
 def index(s: str) -> int:
 	ind = 0
 	for c in s:
-		ind = 26 * ind + (ord(c) - ord('A'))
+		ind = 26 * ind + (ord(c) - ord("A"))
 	return ind
 
 
 pairs = []
-with open('citystate.in') as read:
+with open("citystate.in") as read:
 	for _ in range(int(read.readline())):
 		city, state = read.readline().strip().split()
 		city = city[:2]  # We only care about the first two letters of the city
 		pairs.append((city, state))
 
-seen = [0 for _ in range(26 ** 4)]
+seen = [0 for _ in range(26**4)]
 total = 0
 for c, s in pairs:
 	if c != s:
 		total += seen[index(s + c)]
 	seen[index(c + s)] += 1
 
-print(total, file=open('citystate.out', 'w'))
+print(total, file=open("citystate.out", "w"))
 ```
 
 </PySection>

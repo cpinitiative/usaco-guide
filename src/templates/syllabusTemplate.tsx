@@ -94,7 +94,21 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
       Feel free to mark some as "skipped" and revisit them at a later time!
     </>
   ),
-  bronze: topicsWarning,
+  bronze: (
+    <>
+      {topicsWarning}
+      <br />
+      If you prefer videos instead of text, check out CPI's free{' '}
+      <a
+        href="https://joincpi.org/video-classes"
+        target="_blank"
+        rel="noreferrer"
+        className="underline"
+      >
+        self-study Bronze course.
+      </a>
+    </>
+  ),
   silver: topicsWarning,
   gold: topicsWarning,
   plat: (

@@ -54,7 +54,9 @@ ll x[200002], pref[200002], ans[200002];
 ll contrib[200002], bit[200002];
 vector<pair<int, int>> bckt[200001];
 
-void update(int pos, ll val) { for (; pos <= n; pos += pos & -pos) bit[pos] += val; }
+void update(int pos, ll val) {
+	for (; pos <= n; pos += pos & -pos) bit[pos] += val;
+}
 
 ll query(int a, int b) {
 	ll ans = 0;
@@ -83,12 +85,16 @@ int main() {
 			update(stck.front(), -contrib[stck.front()]);
 			stck.pop_front();
 		}
-		contrib[i] = (stck.front() - 1 - i) * x[i] - (pref[stck.front() - 1] - pref[i]);
+		contrib[i] =
+		    (stck.front() - 1 - i) * x[i] - (pref[stck.front() - 1] - pref[i]);
 		update(i, contrib[i]);
 		stck.push_front(i);
 		for (pair<int, int> j : bckt[i]) {
-			int pos = upper_bound(stck.begin(), stck.end(), j.first) - stck.begin() - 1;
-			ans[j.second] = (pos ? query(i, stck[pos - 1]) : 0) + (j.first - stck[pos]) * x[stck[pos]] - (pref[j.first] - pref[stck[pos]]);
+			int pos = upper_bound(stck.begin(), stck.end(), j.first) -
+			          stck.begin() - 1;
+			ans[j.second] = (pos ? query(i, stck[pos - 1]) : 0) +
+			                (j.first - stck[pos]) * x[stck[pos]] -
+			                (pref[j.first] - pref[stck[pos]]);
 		}
 	}
 	for (int i = 1; i <= q; i++) cout << ans[i] << '\n';

@@ -26,8 +26,8 @@ the same idea.
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -40,30 +40,20 @@ int main() {
 	vector<int> a(n);
 	vector<int> b(n);
 	vector<int> c(n);
-	for (int& i : a) {
-		std::cin >> i;
-	}
-	for (int& i : b) {
-		std::cin >> i;
-	}
-	for (int& i : c) {
-		std::cin >> i;
-	}
+	for (int &i : a) { std::cin >> i; }
+	for (int &i : b) { std::cin >> i; }
+	for (int &i : c) { std::cin >> i; }
 
 	// Stores for each number in A how many times it appears in total
 	std::map<int, int> a_occ_num;
-	for (int i : a) {
-		a_occ_num[i]++;
-	}
-	
+	for (int i : a) { a_occ_num[i]++; }
+
 	/*
 	 * For each possible value of C_j,
 	 * see how many values of i are compatible with it.
 	 */
 	long long valid_pairs = 0;
-	for (int cj : c) {
-		valid_pairs += a_occ_num[b[cj - 1]];
-	}
+	for (int cj : c) { valid_pairs += a_occ_num[b[cj - 1]]; }
 	cout << valid_pairs << endl;
 }
 ```
@@ -76,29 +66,29 @@ import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		read.readLine();  // n not needed
 		int[] a = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
 		int[] b = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
 		int[] c = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
-		
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
+
 		// Stores for each number in A how many times it appears in total
 		Map<Integer, Integer> aOccNum = new HashMap<>();
-		for (int i : a) {
-			aOccNum.put(i, aOccNum.getOrDefault(i, 0) + 1);
-		}
+		for (int i : a) { aOccNum.put(i, aOccNum.getOrDefault(i, 0) + 1); }
 
 		/*
 		 * For each possible value of C_j,
 		 * see how many values of i are compatible with it.
 		 */
 		long validPairs = 0;
-		for (int cj : c) {
-			validPairs += aOccNum.getOrDefault(b[cj - 1], 0);
-		}
+		for (int cj : c) { validPairs += aOccNum.getOrDefault(b[cj - 1], 0); }
 		System.out.println(validPairs);
 	}
 }

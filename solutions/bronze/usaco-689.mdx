@@ -29,7 +29,7 @@ int main() {
 	int n;
 	cin >> n;
 
-	vector<vector<char> > farm(n, vector<char> (n));
+	vector<vector<char>> farm(n, vector<char>(n));
 
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -40,8 +40,8 @@ int main() {
 	}
 
 	int totalflips = 0;
-	for (int i = n-1; i >= 0; i--) {
-		for (int j = n-1; j >= 0; j--) {
+	for (int i = n - 1; i >= 0; i--) {
+		for (int j = n - 1; j >= 0; j--) {
 			// go from bottom right to top, check if it's a 1
 			if (farm[i][j] == '1') {
 				totalflips++;
@@ -51,14 +51,12 @@ int main() {
 					for (int b = 0; b <= j; b++) {
 						if (farm[a][b] == '0') {
 							farm[a][b] = '1';
-						}
-						else {
+						} else {
 							farm[a][b] = '0';
 						}
 					}
 				}
 				// end cow flip
-
 			}
 		}
 	}
@@ -83,13 +81,13 @@ public class CowTip {
 		for (int i = 0; i < N; i++) {
 			String a = io.next();
 			for (int j = 0; j < N; j++) {
-				farm[i][j] =  Character.getNumericValue(a.charAt(j));
+				farm[i][j] = Character.getNumericValue(a.charAt(j));
 			}
 		}
 
 		int totalflips = 0;
-		for (int i = N-1; i >= 0; i--) {
-			for (int j = N-1; j >= 0; j--) {
+		for (int i = N - 1; i >= 0; i--) {
+			for (int j = N - 1; j >= 0; j--) {
 				// go from bottom right to top, check if it's a 1
 				if (farm[i][j] == 1) {
 					totalflips++;
@@ -99,8 +97,7 @@ public class CowTip {
 						for (int b = 0; b <= j; b++) {
 							if (farm[a][b] == 0) {
 								farm[a][b] = 1;
-							}
-							else {
+							} else {
 								farm[a][b] = 0;
 							}
 						}
@@ -151,7 +148,7 @@ public class CowTip {
 </JavaSection>
 </LanguageSection>
 </Spoiler>
-	
+
 ## Alternate Explanation
 
 While the official solution processes the cells in a standard right to left order starting
@@ -168,20 +165,18 @@ the edges of the square simultaneously and "close in" on the top left square.
 <CPPSection>
 
 ```cpp
+#include <cstdio>
 #include <iostream>
 #include <vector>
-#include <cstdio>
 
 using namespace std;
 
 const char TIPPED = '0';
 
-bool flip(int r, int c, vector<vector<bool>>& cows) {
+bool flip(int r, int c, vector<vector<bool>> &cows) {
 	if (cows[r][c]) {
 		for (int ri = 0; ri <= r; ri++) {
-			for (int ci = 0; ci <= c; ci++) {
-				cows[ri][ci] = !cows[ri][ci];
-			}
+			for (int ci = 0; ci <= c; ci++) { cows[ri][ci] = !cows[ri][ci]; }
 		}
 		return true;
 	}
@@ -198,9 +193,7 @@ int main() {
 	for (int r = 0; r < width; r++) {
 		string row;
 		cin >> row;
-		for (int c = 0; c < width; c++) {
-			cows[r][c] = row[c] != TIPPED;
-		}
+		for (int c = 0; c < width; c++) { cows[r][c] = row[c] != TIPPED; }
 	}
 
 	int x = width - 1;
@@ -213,7 +206,7 @@ int main() {
 			// Also flip rectangle at (y, x) if it is different
 			min_flips += flip(y, x, cows);
 		}
-		
+
 		/*
 		 * Transition to the next cell, first going to the left and then
 		 * to the next row if the current row has finished.
@@ -264,7 +257,7 @@ public class CowTip {
 			 * Transition to the next cell, first going to the left and then
 			 * to the next row if the current row has finished.
 			 */
-			 if (x > 0) {
+			if (x > 0) {
 				x--;
 			} else {
 				y--;
@@ -298,7 +291,8 @@ public class CowTip {
 from typing import List
 
 
-TIPPED = '0'
+TIPPED = "0"
+
 
 def flip(r: int, c: int, cows: List[List[int]]) -> bool:
 	if cows[r][c]:
@@ -309,7 +303,7 @@ def flip(r: int, c: int, cows: List[List[int]]) -> bool:
 	return False
 
 
-with open('cowtip.in') as read:
+with open("cowtip.in") as read:
 	width = int(read.readline())
 	cows = []
 	for _ in range(width):
@@ -339,7 +333,7 @@ while x >= 0 and y >= 0:
 		y -= 1
 		x = y
 
-print(min_flips, file=open('cowtip.out', 'w'))
+print(min_flips, file=open("cowtip.out", "w"))
 ```
 
 </PySection>

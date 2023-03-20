@@ -243,13 +243,6 @@ export const RestOfMembers: Member[] = [
     linkedin: 'https://www.linkedin.com/in/riley-bonner-6b8726213/',
   },
   {
-    photo: 'julie',
-    name: 'Juheon Rhee',
-    titles: [roles.contentAuthor, roles.liveInstructor],
-    website: 'https://juheonrhee.com',
-    github: 'jjliewie',
-  },
-  {
     photo: 'ian',
     name: 'Ian Zhang',
     titles: [roles.liveInstructor],
@@ -519,6 +512,13 @@ export const FormerMembers: Member[] = [
     name: 'Sofia Yang',
     github: 'TruaShamu',
     titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'julie',
+    name: 'Juheon Rhee',
+    titles: [roles.contentAuthor, roles.liveInstructor],
+    website: 'https://juheonrhee.com',
+    github: 'jjliewie',
   },
   {
     photo: 'vidith',

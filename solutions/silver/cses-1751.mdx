@@ -60,51 +60,38 @@ int pathlength[200000]{};
 queue<int> path;
 int steps = 0;
 
-int main()
-{
+int main() {
 	int n;
 	cin >> n;
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		cin >> destinations[i];
 		destinations[i]--;
 	}
-	for (int i = 0; i < n; i++)
-	{
-		if (!visited[i])
-		{
+	for (int i = 0; i < n; i++) {
+		if (!visited[i]) {
 			steps = 0;
 			dfs(i);
 			int decrement = 1;
-			//for each planet in current path, calculate pathlength
-			while (!path.empty())
-			{
-				//we are in the cycle; all nodes have same pathlength
-				if (path.front() == path.back())
-				{
-					decrement = 0;
-				}
+			// for each planet in current path, calculate pathlength
+			while (!path.empty()) {
+				// we are in the cycle; all nodes have same pathlength
+				if (path.front() == path.back()) { decrement = 0; }
 				pathlength[path.front()] = steps;
 				steps -= decrement;
 				path.pop();
 			}
 		}
 	}
-	for (int i = 0; i < n; i++)
-	{
-		cout << pathlength[i] << " ";
-	}
+	for (int i = 0; i < n; i++) { cout << pathlength[i] << " "; }
 	cout << endl;
 	return 0;
 }
 
-void dfs(int planet)
-{
-	//add planet to path
+void dfs(int planet) {
+	// add planet to path
 	path.push(planet);
-	if (visited[planet])
-	{
-		//add pathlength of the repeat planet to current step count
+	if (visited[planet]) {
+		// add pathlength of the repeat planet to current step count
 		steps += pathlength[planet];
 		return;
 	}
@@ -122,24 +109,23 @@ void dfs(int planet)
 
 ```java
 
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 
 class Kattio extends PrintWriter {
 	private BufferedReader r;
 	private StringTokenizer st;
 
 	// standard input
-	public Kattio() { this(System.in,System.out); }
+	public Kattio() { this(System.in, System.out); }
 	public Kattio(InputStream i, OutputStream o) {
 		super(o);
 		r = new BufferedReader(new InputStreamReader(i));
 	}
 	// USACO-style file input
 	public Kattio(String problemName) throws IOException {
-		super(new FileWriter(problemName+".out"));
-		r = new BufferedReader(new FileReader(problemName+".in"));
+		super(new FileWriter(problemName + ".out"));
+		r = new BufferedReader(new FileReader(problemName + ".in"));
 	}
 
 	// returns null if no more input
@@ -165,46 +151,40 @@ public class planetCycles {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		N = io.nextInt();
-		destinations = new int[N+1];
-		visited = new boolean[N+1];
-		pathlength = new int[N+1];
-		for (int i = 1; i < N + 1; i++) {
-			destinations[i] = io.nextInt();
-		}
+		destinations = new int[N + 1];
+		visited = new boolean[N + 1];
+		pathlength = new int[N + 1];
+		for (int i = 1; i < N + 1; i++) { destinations[i] = io.nextInt(); }
 
 		for (int i = 1; i < N + 1; i++) {
-			if(!visited[i]){
+			if (!visited[i]) {
 				steps = 0;
 				dfs(i);
 				int decrement = 1;
 				Integer last = path.peekLast();
-				while(!path.isEmpty()){
-					if(path.peekFirst().equals(last)) decrement = 0;
+				while (!path.isEmpty()) {
+					if (path.peekFirst().equals(last)) decrement = 0;
 					pathlength[path.poll()] = steps;
-					steps-=decrement;
+					steps -= decrement;
 				}
 			}
 		}
 
-		for (int i = 1; i < N + 1; i++) {
-			io.print(pathlength[i] + " ");
-		}
+		for (int i = 1; i < N + 1; i++) { io.print(pathlength[i] + " "); }
 		io.close();
 	}
 
-	public static void dfs(int n){
+	public static void dfs(int n) {
 		visited[n] = true;
 		path.add(n);
 		steps++;
-		if(!visited[destinations[n]])
-			dfs(destinations[n]);
+		if (!visited[destinations[n]]) dfs(destinations[n]);
 		else {
 			path.add(destinations[n]);
 			steps += pathlength[destinations[n]];
 		}
 	}
 }
-
 ```
 
 </JavaSection>
@@ -252,7 +232,7 @@ for i in range(len(planets)):
 		for planet in path_cycle:
 			path_length[planet] = len(path_cycle)
 
-	"""	
+	"""
 	For planets outside the cycle (or if there is none), the path length of
 	a planet is the path length of the planet the former planet's teleporter
 	can visit, plus one.

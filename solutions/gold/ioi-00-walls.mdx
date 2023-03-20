@@ -20,15 +20,15 @@ Finally, we try all meeting regions and print out the one that minimizes the num
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 int main() {
 	int region_num;
@@ -37,7 +37,7 @@ int main() {
 	std::cin >> region_num >> town_num >> member_num;
 
 	vector<int> members(member_num);
-	for (int& m : members) {
+	for (int &m : members) {
 		std::cin >> m;
 		m--;
 	}
@@ -48,7 +48,7 @@ int main() {
 		int border_num;
 		std::cin >> border_num;
 		vector<int> towns(border_num);
-		for (int& t : towns) {
+		for (int &t : towns) {
 			std::cin >> t;
 			t--;
 			town_regions[t].push_back(r);
@@ -61,7 +61,7 @@ int main() {
 	std::map<pair<int, int>, int> prev_walls;
 	vector<vector<int>> neighbors(region_num);
 	for (int r = 0; r < region_num; r++) {
-		for (const pair<int, int>& w : regions[r]) {
+		for (const pair<int, int> &w : regions[r]) {
 			// if we've seen this wall before, add that associated region
 			if (prev_walls.count(w)) {
 				// dupes might happen but that doesn't really matter
@@ -106,7 +106,8 @@ int main() {
 		for (int m : members) {
 			int m_min_crossings = INT32_MAX;
 			for (int t : town_regions[m]) {
-				m_min_crossings = std::min(m_min_crossings, min_crossings[t][meeting]);
+				m_min_crossings =
+				    std::min(m_min_crossings, min_crossings[t][meeting]);
 			}
 			this_min_cross += m_min_crossings;
 		}
@@ -174,7 +175,7 @@ for start in range(region_num):
 		frontier = in_line
 
 # get the best meeting region through brute force
-min_crossing_sum = float('inf')
+min_crossing_sum = float("inf")
 best_region = -1
 for meeting in range(region_num):
 	this_min_cross = sum(
