@@ -41,7 +41,7 @@ using ll = long long;
 
 const int M = 1e9 + 7;
 const int K = 5e3;  // K is an offset to account for negatives
-int n, x;     // x -> max penalty
+int n, x;           // x -> max penalty
 
 // dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k penalty
 // for convenience, we 1-index dp array and 0-index person array so dp[i][j][k]
@@ -51,8 +51,12 @@ int main() {
 	cin >> n >> x;
 	vector<int> s(n);
 	// Notice we only need to store 2 rows!
-	vector<vector<ll>> dp1(n + 1, vector<ll>(x + K + 1)); // the subarray we're currently at
-	vector<vector<ll>> dp2(n + 1, vector<ll>(x + K + 1)); // the next subarray (we'll fill this up using dp1)
+	vector<vector<ll>> dp1(
+	    n + 1, vector<ll>(x + K + 1));  // the subarray we're currently at
+	vector<vector<ll>> dp2(
+	    n + 1,
+	    vector<ll>(x + K +
+	               1));  // the next subarray (we'll fill this up using dp1)
 	for (int i = 0; i < n; i++) { cin >> s[i]; }
 	sort(s.begin(), s.end());
 
