@@ -53,6 +53,7 @@ competitors in the USACO Gold division.
 		url='https://dp-book.com/Dynamic_Programming.pdf'
 	/>
 </Resources>
+
 If you prefer watching videos instead, here are some options:
 
 <Resources>
@@ -85,6 +86,7 @@ If you prefer watching videos instead, here are some options:
 		Animated DP videos that pertain to interview questions
 	</Resource>
 </Resources>
+
 <Info title="Pro Tip">
 
 It's usually a good idea to write a slower solution first. For example, if the
@@ -127,10 +129,13 @@ the mechanism to cache such states.
 **Time Complexity:** $\mathcal{O}(N)$
 
 There are two main DP approaches:
-- **Push DP**: what states does the current state affect?
-- **Pull DP**: what states affect the current state?
+- **Push DP**, where we update future states based on the current state
+- **Pull DP**, where we calculate the current state based on past states
+
 We present both approaches below.
+
 <Spoiler title="Push DP">
+
 There are only two options: jumping once, or jumping twice. Define
 $\texttt{dp}[i]$ as the minimum cost to reach stone $i$. Therefore,
 $\texttt{dp}[i+1]$ must represent the next stone, and $\texttt{dp}[i+2]$ must
@@ -152,6 +157,7 @@ $i$ must be:
 We can start with the base case that $\texttt{dp}[0] = 0$, since the frog is
 already on that square, and proceed to calculate
 $\texttt{dp}[1], \texttt{dp}[2], \ldots \texttt{dp}[N - 1]$.
+
 <LanguageSection>
 <CPPSection>
 
@@ -241,8 +247,11 @@ print(dp[N - 1])
 
 </PySection>
 </LanguageSection>
+
 </Spoiler>
+
 <Spoiler title="Pull DP">
+
 There are two ways to get to stone $i$: from stone $i - 1$ and stone $i - 2$.
 - Jump from stone $i - 1$, incurring a cost of $|\text{height}_i - \text{height}_{i-1}|$:
 
@@ -255,7 +264,9 @@ There are two ways to get to stone $i$: from stone $i - 1$ and stone $i - 2$.
   $$
   \texttt{dp}[i] = \min(\texttt{dp}[i], \texttt{dp}[i - 2] + |\text{height}_i - \text{height}_{i - 2}|)
   $$
+
 **Base case:** $\texttt{dp}[0] = 0$ (start at stone 0)
+
 <LanguageSection>
 <CPPSection>
 ```cpp
@@ -284,8 +295,10 @@ int main() {
 	cout << dp[N - 1] << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -322,6 +335,7 @@ public class Main {
 	//CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
 <PySection>
 
@@ -346,7 +360,9 @@ print(dp[N - 1])
 
 </PySection>
 </LanguageSection>
+
 </Spoiler>
+
 ## Classical Problems
 
 The next few modules provide examples of some classical problems: Dynamic
