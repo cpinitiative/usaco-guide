@@ -169,13 +169,13 @@ int main() {
 	int N;
 	cin >> N;
 	vector<int> height(N);
-	// dp[N] is the minimum cost to get to the Nth stone
-	vector<int> dp(N, INT_MAX);
 	for (int i = 0; i < N; i++) { cin >> height[i]; }
 
+	// dp[N] is the minimum cost to get to the Nth stone
+	vector<int> dp(N, INT_MAX);
 	// dp[0] = 0 is our base case since we're already at the first stone
-	// all other values are INF
 	dp[0] = 0;
+
 	for (int i = 0; i < N - 1; i++) {
 		dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]));
 		if (i + 2 < N) {
@@ -192,22 +192,22 @@ int main() {
 ```java
 import java.io.*;
 import java.util.*;
+
 public class Main {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int N = io.nextInt();
 		int[] height = new int[N];
-		// dp[N] is the minimum cost to get to the Nth stone
-		int[] dp = new int[N];
 		for (int i = 0; i < N; ++i) {
 			height[i] = io.nextInt();
 		}
 
+		// dp[N] is the minimum cost to get to the Nth stone
+		int[] dp = new int[N];
+		Arrays.fill(dp, Integer.MAX_VALUE);
 		// dp[0] = 0 is our base case since we're already at the first stone
 		dp[0] = 0;
-		for (int i = 1; i < N; i++) {
-			dp[i] = Integer.MAX_VALUE;  // initially set our values to INF
-		}
+
 		for (int i = 0; i < N - 1; ++i) {
 			dp[i + 1] = Math.min(
 					dp[i + 1], dp[i] + Math.abs(height[i] - height[i + 1])
@@ -218,8 +218,10 @@ public class Main {
 				);
 			}
 		}
+
 		System.out.println(dp[N - 1]);
 	}
+
 	//CodeSnip{Kattio}
 }
 ```
@@ -269,6 +271,7 @@ There are two ways to get to stone $i$: from stone $i - 1$ and stone $i - 2$.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -277,12 +280,11 @@ int main() {
 	int N;
 	cin >> N;
 	vector<int> height(N);
-	// dp[N] is the minimum cost to get to the Nth stone
-	vector<int> dp(N, INT_MAX);
 	for (int i = 0; i < N; i++) { cin >> height[i]; }
 
+	// dp[N] is the minimum cost to get to the Nth stone
+	vector<int> dp(N, INT_MAX);
 	// dp[0] = 0 is our base case since we're already at the first stone
-	// all other values are INF
 	dp[0] = 0;
 	for (int i = 1; i < N; i++) {
 		if (i - 1 >= 0) {
@@ -307,17 +309,16 @@ public class Main {
 		Kattio io = new Kattio();
 		int N = io.nextInt();
 		int[] height = new int[N];
-		// dp[N] is the minimum cost to get to the Nth stone
-		int[] dp = new int[N];
 		for (int i = 0; i < N; ++i) {
 			height[i] = io.nextInt();
 		}
 
+		// dp[N] is the minimum cost to get to the Nth stone
+		int[] dp = new int[N];
+		Arrays.fill(dp, Integer.MAX_VALUE);
 		// dp[0] = 0 is our base case since we're already at the first stone
 		dp[0] = 0;
-		for (int i = 1; i < N; i++) {
-			dp[i] = Integer.MAX_VALUE;  // initially set our values to INF
-		}
+		
 		for (int i = 1; i < N; ++i) {
 			if (i - 1 >= 0) {
 				dp[i] = Math.min(
@@ -330,8 +331,10 @@ public class Main {
 				);
 			}
 		}
+
 		System.out.println(dp[N - 1]);
 	}
+
 	//CodeSnip{Kattio}
 }
 ```
@@ -342,6 +345,7 @@ public class Main {
 ```py
 N = int(input())
 height = [int(s) for s in input().split()]
+
 """
 dp[N] is the minimum cost to get to the Nth stone
 (we initially set all values to INF)
@@ -355,6 +359,7 @@ for i in range(1, N):
 		dp[i] = min(dp[i], dp[i - 1] + abs(height[i] - height[i - 1]))
 	if i - 2 >= 0:
 		dp[i] = min(dp[i], dp[i - 2] + abs(height[i] - height[i - 2]))
+
 print(dp[N - 1])
 ```
 
