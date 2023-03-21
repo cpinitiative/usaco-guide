@@ -53,7 +53,6 @@ competitors in the USACO Gold division.
 		url='https://dp-book.com/Dynamic_Programming.pdf'
 	/>
 </Resources>
-
 If you prefer watching videos instead, here are some options:
 
 <Resources>
@@ -86,7 +85,6 @@ If you prefer watching videos instead, here are some options:
 		Animated DP videos that pertain to interview questions
 	</Resource>
 </Resources>
-
 <Info title="Pro Tip">
 
 It's usually a good idea to write a slower solution first. For example, if the
@@ -161,19 +159,15 @@ we ignore $\texttt{dp}[i]$ if $i>N$.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 const int MAX_N = 1e5;
-
 // height is 1-indexed so it can match up with dp
 int height[MAX_N + 1];
 // dp[N] is the minimum cost to get to the Nth stone
 int dp[MAX_N + 1];
-
 int main() {
 	int N;
 	cin >> N;
 	for (int i = 1; i <= N; i++) { cin >> height[i]; }
-
 	// dp[1] = 0 is our base case since we're already at the first stone
 	dp[1] = 0;
 	for (int i = 2; i <= N; i++) {
@@ -187,7 +181,6 @@ int main() {
 			dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]));
 		}
 	}
-
 	cout << dp[N] << endl;
 }
 ```
@@ -197,31 +190,23 @@ int main() {
 
 ```java
 import java.io.*;
-
 import java.util.*;
-
-
 public class Main {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-
 		int N = io.nextInt();
-
 		// height is 1-indexed so it can match up with dp
 		int[] height = new int[N + 1];
 		for (int i = 1; i <= N; ++i) {
 			height[i] = io.nextInt();
 		}
-
 		// dp[N] is the minimum cost to get to the Nth stone
 		int[] dp = new int[N + 1];
-
 		// dp[1] = 0 is our base case since we're already at the first stone
 		dp[1] = 0;
 		for (int i = 2; i <= N; i++) {
 			dp[i] = Integer.MAX_VALUE;  // initially set our values to INF
 		}
-
 		for (int i = 1; i <= N; ++i) {
 			if (i + 1 <= N) {
 				dp[i + 1] = Math.min(
@@ -236,7 +221,6 @@ public class Main {
 		}
 		System.out.println(dp[N]);
 	}
-
 	//CodeSnip{Kattio}
 }
 ```
@@ -249,7 +233,6 @@ N = int(input())
 # height is 1-indexed so it can match up with dp
 height = [0] + [int(s) for s in input().split()]
 assert N == len(height) - 1
-
 """
 dp[N] is the minimum cost to get to the Nth stone
 (we initially set all values to INF)
@@ -257,13 +240,11 @@ dp[N] is the minimum cost to get to the Nth stone
 dp = [float("inf") for _ in range(N + 1)]
 # dp[1] = 0 is our base case since we're already at the first stone
 dp[1] = 0
-
 for i in range(1, N + 1):
 	if i + 1 <= stone_num:
 		dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]))
 	if i + 2 <= stone_num:
 		dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]))
-
 print(dp[stone_num])
 ```
 
@@ -289,19 +270,15 @@ There are two ways to get to stone $i$: from stone $i - 1$ and stone $i - 2$.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 const int MAX_N = 1e5;
-
 // height is 1-indexed so it can match up with dp
 int height[MAX_N + 1];
 // dp[N] is the minimum cost to get to the Nth stone
 int dp[MAX_N + 1];
-
 int main() {
 	int N;
 	cin >> N;
 	for (int i = 1; i <= N; i++) { cin >> height[i]; }
-
 	// dp[1] = 0 is our base case since we're already at the first stone
 	dp[1] = 0;
 	for (int i = 2; i <= N; i++) {
@@ -315,11 +292,71 @@ int main() {
 			dp[i] = min(dp[i], dp[i - 2] + abs(height[i] - height[i - 2]));
 		}
 	}
-
 	cout << dp[N] << endl;
 }
 ```
 </CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		// height is 1-indexed so it can match up with dp
+		int[] height = new int[N + 1];
+		for (int i = 1; i <= N; ++i) {
+			height[i] = io.nextInt();
+		}
+		// dp[N] is the minimum cost to get to the Nth stone
+		int[] dp = new int[N + 1];
+		// dp[1] = 0 is our base case since we're already at the first stone
+		dp[1] = 0;
+		for (int i = 2; i <= N; i++) {
+			dp[i] = Integer.MAX_VALUE;  // initially set our values to INF
+		}
+		for (int i = 2; i <= N; ++i) {
+			if (i - 1 >= 1) {
+				dp[i] = Math.min(
+					dp[i], dp[i - 1] + Math.abs(height[i] - height[i - 1])
+				);
+			}
+			if (i - 2 >= 1) {
+				dp[i] = Math.min(
+					dp[i], dp[i - 2] + Math.abs(height[i] - height[i - 2])
+				);
+			}
+		}
+		System.out.println(dp[N]);
+	}
+	//CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+N = int(input())
+# height is 1-indexed so it can match up with dp
+height = [0] + [int(s) for s in input().split()]
+assert N == len(height) - 1
+"""
+dp[N] is the minimum cost to get to the Nth stone
+(we initially set all values to INF)
+"""
+dp = [float("inf") for _ in range(N + 1)]
+# dp[1] = 0 is our base case since we're already at the first stone
+dp[1] = 0
+for i in range(2, N + 1):
+	if i - 1 >= 1:
+		dp[i] = min(dp[i], dp[i - 1] + abs(height[i] - height[i - 1]))
+	if i - 2 >= 1:
+		dp[i] = min(dp[i], dp[i - 2] + abs(height[i] - height[i - 2]))
+print(dp[stone_num])
+```
+
+</PySection>
 </LanguageSection>
 </Spoiler>
 ## Classical Problems
@@ -373,7 +410,6 @@ problemsetters rarely set direct applications of them.
 		Good practice problems. You should be able to do most of these after completing the Gold DP module. Some problems might be out of the scope for gold.
 	</Resource>
 </Resources>
-
 Some of these problems will be mentioned in the next few modules.
 
 ## Introductory Problems
