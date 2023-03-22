@@ -13,178 +13,60 @@ description: 'Traversing a graph with DFS and BFS.'
 frequency: 4
 ---
 
+## Introduction
+
+<IncompleteSection>
+
+introduce the topic
+
+</IncompleteSection>
+
+<Resources>
+	<Resource source="CPH" title="12 - Graph traversal" starred />
+</Resources>
+
+
+## Applications
+
+### Connected Components
+
+<FocusProblem problem="connSample" />
+
+A **connected component** is a maximal set of connected nodes in an undirected
+graph. In other words, two nodes are in the same connected component _if and
+only if_ they can reach each other via edges in the graph.
+
+In the above focus problem, the goal is to add the minimum possible number of
+edges such that the entire graph forms a single connected component.
+
+### Graph Two-Coloring
+
+<FocusProblem problem="bipsample" />
+
+**Graph two-coloring** refers to assigning a boolean value to each node of the
+graph, dictated by the edge configuration. The most common example of a
+two-colored graph is a **bipartite graph**, in which each edge connects two
+nodes of opposite colors.
+
+In the above focus problem, the goal is to assign each node (friend) of the
+graph to one of two colors (teams), subject to the constraint that edges
+(friendships) connect two nodes of opposite colors. In other words, we need to
+check whether the input is a bipartite graph and output a valid coloring if it
+is.
+
+## Depth First Search
+
 <!-- 	<Resource source="IUSACO" title="10.4 - DFS">
 		code + example
 	</Resource>
 	<Resource source="PAPS" title="12.2 - DFS">
 		pseudocode + example + code
 	</Resource>
-	<Resource1, 4.2.3 - DFS, Finding Connected Componen
+	<Resource
 		source="CP2"
-		title="4.2.ts"
+		title="4.2.1, 4.2.3 - DFS, Finding Connected Components"
 	 /> -->
 
-## Queues & Deques
-
-<Resources>
-	<Resource source="CPH" title="4.5 - Queues, Deques" />
-	<Resource source="PAPS" title="3.2, 6.3 - Queues" />
-</Resources>
-
-### Queues
-
-A queue is a First In First Out (FIFO) data structure that supports three
-operations, all in $\mathcal{O}(1)$ time.
-
-<LanguageSection>
-
-<CPPSection>
-
-#### [C++](http://www.cplusplus.com/reference/queue/queue/)
-
-- `push`: inserts at the back of the queue
-- `pop`: deletes from the front of the queue
-- `front`: retrieves the element at the front without removing it.
-
-```cpp
-queue<int> q;
-q.push(1);                  // [1]
-q.push(3);                  // [3, 1]
-q.push(4);                  // [4, 3, 1]
-q.pop();                    // [4, 3]
-cout << q.front() << endl;  // 3
-```
-
-</CPPSection>
-
-<JavaSection>
-
-#### Java
-
-- `add`: insertion at the back of the queue
-- `poll`: deletion from the front of the queue
-- `peek`: which retrieves the element at the front without removing it
-
-Java doesn't actually have a `Queue` class; it's only an interface. The most
-commonly used implementation is the `LinkedList`, declared as follows:
-
-```java
-Queue<Integer> q = new LinkedList<Integer>();
-q.add(1);                      // [1]
-q.add(3);                      // [3, 1]
-q.add(4);                      // [4, 3, 1]
-q.poll();                      // [4, 3]
-System.out.println(q.peek());  // 3
-```
-
-</JavaSection>
-
-<PySection>
-
-#### Python
-
-Python has a `queue` built-in module.
-
-- `Queue.put(n)`: Inserts element to the back of the queue.
-- `Queue.get()`: Gets and removes the front element. If the queue
-  is empty, this will wait forever, creating a TLE error.
-- `Queue.queue[n]`: Gets the nth element without removing it. Set
-  n to 0 for the first element.
-
-```py
-from queue import Queue
-
-q = Queue()  # []
-q.put(1)  # [1]
-q.put(2)  # [1, 2]
-v = q.queue[0]  # v = 1, q = [1, 2]
-v = q.get()  # v = 1, q = [2]
-v = q.get()  # v = 2, q = []
-v = q.get()  # Code waits forever, creating TLE error.
-```
-<Warning>
-
-Python's `queue.Queue()` uses Locks to maintain a threadsafe synchronization, so it's quite slow.
-To avoid TLE, use `collections.deque()` instead for a faster version of a queue.
-
-</Warning>
-
-</PySection>
-
-</LanguageSection>
-
-### Deques
-
-A **deque** (usually pronounced "deck") stands for double ended queue and is a
-combination of a stack and a queue, in that it supports $\mathcal{O}(1)$
-insertions and deletions from both the front and the back of the deque. Not very
-common in Bronze / Silver.
-
-<LanguageSection>
-
-<CPPSection>
-
-#### [C++](http://www.cplusplus.com/reference/deque/deque/)
-
-The four methods for adding and removing are `push_back`, `pop_back`,
-`push_front`, and `pop_front`.
-
-```cpp
-deque<int> d;
-d.push_front(3);  // [3]
-d.push_front(4);  // [4, 3]
-d.push_back(7);   // [4, 3, 7]
-d.pop_front();    // [3, 7]
-d.push_front(1);  // [1, 3, 7]
-d.pop_back();     // [1, 3]
-```
-
-You can also access deques in constant time like an array in constant time with
-the `[]` operator. For example, to access the element $\texttt{i}$ for some
-deque $\texttt{dq}$, do $\texttt{dq[i]}$.
-
-</CPPSection>
-
-<JavaSection>
-
-#### Java
-
-In Java, the deque class is called `ArrayDeque`. The four methods for adding and
-removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
-
-```java
-ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
-deque.addFirst(3);    // [3]
-deque.addFirst(4);    // [4, 3]
-deque.addLast(7);     // [4, 3, 7]
-deque.removeFirst();  // [3, 7]
-deque.addFirst(1);    // [1, 3, 7]
-deque.removeLast();   // [1, 3]
-```
-
-</JavaSection>
-
-<PySection>
-
-#### Python
-
-In Python, `collections.deque()` is used for a deque data structure. The four methods for adding and removing are `appendleft`, `popleft`, `append`, and `pop`.
-```py
-d = collections.deque()
-d.appendleft(3)  # [3]
-d.appendleft(4)  # [4, 3]
-d.append(7)  # [4, 3, 7]
-d.popleft()  # [3, 7]
-d.appendleft(1)  # [1, 3, 7]
-d.pop()  # [1, 3]
-```
-
-</PySection>
-
-</LanguageSection>
-
-
-## Depth First Search
 <Resources>
 	<Resource
 		source="CSA"
@@ -213,7 +95,157 @@ From the second resource:
 
 ## Breadth First Search
 
-<FocusProblem problem="bfsSample" />
+### Prerequisite - Queues & Deques
+
+<Resources>
+	<Resource source="CPH" title="4.5 - Queues, Deques" />
+	<Resource source="PAPS" title="3.2, 6.3 - Queues" />
+</Resources>
+
+#### Queues
+
+A queue is a First In First Out (FIFO) data structure that supports three
+operations, all in $\mathcal{O}(1)$ time.
+
+<LanguageSection>
+
+<CPPSection>
+
+[`std::queue`](http://www.cplusplus.com/reference/queue/queue/)
+
+- `push`: inserts at the back of the queue
+- `pop`: deletes from the front of the queue
+- `front`: retrieves the element at the front without removing it.
+
+```cpp
+queue<int> q;
+q.push(1);                  // [1]
+q.push(3);                  // [3, 1]
+q.push(4);                  // [4, 3, 1]
+q.pop();                    // [4, 3]
+cout << q.front() << endl;  // 3
+```
+
+</CPPSection>
+
+<JavaSection>
+
+- `add`: insertion at the back of the queue
+- `poll`: deletion from the front of the queue
+- `peek`: which retrieves the element at the front without removing it
+
+Java doesn't actually have a `Queue` class; it's only an interface. The most
+commonly used implementation is the `LinkedList`, declared as follows:
+
+```java
+Queue<Integer> q = new LinkedList<Integer>();
+q.add(1);                      // [1]
+q.add(3);                      // [3, 1]
+q.add(4);                      // [4, 3, 1]
+q.poll();                      // [4, 3]
+System.out.println(q.peek());  // 3
+```
+
+</JavaSection>
+
+<PySection>
+
+Python has a `queue` built-in module.
+
+- `Queue.put(n)`: Inserts element to the back of the queue.
+- `Queue.get()`: Gets and removes the front element. If the queue
+  is empty, this will wait forever, creating a TLE error.
+- `Queue.queue[n]`: Gets the nth element without removing it. Set
+  n to 0 for the first element.
+
+```py
+from queue import Queue
+
+q = Queue()  # []
+q.put(1)  # [1]
+q.put(2)  # [1, 2]
+v = q.queue[0]  # v = 1, q = [1, 2]
+v = q.get()  # v = 1, q = [2]
+v = q.get()  # v = 2, q = []
+v = q.get()  # Code waits forever, creating TLE error.
+```
+
+<Warning>
+
+Python's `queue.Queue()` uses Locks to maintain a threadsafe synchronization, so it's quite slow.
+To avoid TLE, use `collections.deque()` instead for a faster version of a queue.
+
+</Warning>
+
+</PySection>
+
+</LanguageSection>
+
+#### Deques
+
+A **deque** (usually pronounced "deck") stands for double ended queue and is a
+combination of a stack and a queue, in that it supports $\mathcal{O}(1)$
+insertions and deletions from both the front and the back of the deque. Not very
+common in Bronze / Silver.
+
+<LanguageSection>
+
+<CPPSection>
+
+[`std::deque`](http://www.cplusplus.com/reference/deque/deque/)
+
+The four methods for adding and removing are `push_back`, `pop_back`,
+`push_front`, and `pop_front`.
+
+```cpp
+deque<int> d;
+d.push_front(3);  // [3]
+d.push_front(4);  // [4, 3]
+d.push_back(7);   // [4, 3, 7]
+d.pop_front();    // [3, 7]
+d.push_front(1);  // [1, 3, 7]
+d.pop_back();     // [1, 3]
+```
+
+You can also access deques in constant time like an array in constant time with
+the `[]` operator. For example, to access the element $\texttt{i}$ for some
+deque $\texttt{dq}$, do $\texttt{dq[i]}$.
+
+</CPPSection>
+
+<JavaSection>
+
+In Java, the deque class is called `ArrayDeque`. The four methods for adding and
+removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
+
+```java
+ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
+deque.addFirst(3);    // [3]
+deque.addFirst(4);    // [4, 3]
+deque.addLast(7);     // [4, 3, 7]
+deque.removeFirst();  // [3, 7]
+deque.addFirst(1);    // [1, 3, 7]
+deque.removeLast();   // [1, 3]
+```
+
+</JavaSection>
+
+<PySection>
+
+In Python, `collections.deque()` is used for a deque data structure. The four methods for adding and removing are `appendleft`, `popleft`, `append`, and `pop`.
+```py
+d = collections.deque()
+d.appendleft(3)  # [3]
+d.appendleft(4)  # [4, 3]
+d.append(7)  # [4, 3, 7]
+d.popleft()  # [3, 7]
+d.appendleft(1)  # [1, 3, 7]
+d.pop()  # [1, 3]
+```
+
+</PySection>
+
+</LanguageSection>
 
 ### Resources
 
@@ -249,288 +281,26 @@ From the second resource:
  />
 <Resource source="CP2" title="4.2.2 - BFS" /> -->
 
-### Solution - Message Route
 
-**Time Complexity:** $\mathcal{O}(V+E)$
-
-We can observe is that there are many possible shortest paths to output.
-Fortunately, the problem states that we can print any valid solution. Notice
-that like every other BFS problem, the distance of each node increases by $1$
-when we travel to the next level of unvisited nodes. However, the problem
-requires that we add additional information - in this case, the path. When we
-traverse from node $a$ to $b$, we can set the parent of $b$ to $a$. After the
-BFS is complete, this allows us to backtrack through the parents which
-ultimately leads us to our starting node. We know to terminate at node $1$
-because it's the starting node. If there is no path to our end node, then its
-distance will remain at
-[`INT_MAX`](https://en.cppreference.com/w/c/types/limits).
-
-For the test input, we start with the following parent array.
-
-<center>
-	<table className="text-center">
-		<tbody>
-			<tr>
-				<td>Node</td>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-				<td>4</td>
-				<td>5</td>
-			</tr>
-			<tr>
-				<td>Parent</td>
-				<td>0</td>
-				<td>0</td>
-				<td>0</td>
-				<td>0</td>
-				<td>0</td>
-			</tr>
-			<tr>
-				<td>Distance</td>
-				<td>0</td>
-				<td>INT_MAX</td>
-				<td>INT_MAX</td>
-				<td>INT_MAX</td>
-				<td>INT_MAX</td>
-			</tr>
-		</tbody>
-	</table>
-</center>
-
-After visiting children of node $1$:
-
-<center>
-	<table className="text-center">
-		<tbody>
-			<tr>
-				<td>Node</td>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-				<td>4</td>
-				<td>5</td>
-			</tr>
-			<tr>
-				<td>Parent</td>
-				<td>0</td>
-				<td className="bg-green-200 dark:bg-green-800">1</td>
-				<td className="bg-green-200 dark:bg-green-800">1</td>
-				<td className="bg-green-200 dark:bg-green-800">1</td>
-				<td>0</td>
-			</tr>
-			<tr>
-				<td>Distance</td>
-				<td>0</td>
-				<td className="bg-green-200 dark:bg-green-800">1</td>
-				<td className="bg-green-200 dark:bg-green-800">1</td>
-				<td className="bg-green-200 dark:bg-green-800">1</td>
-				<td>INT_MAX</td>
-			</tr>
-		</tbody>
-	</table>
-</center>
-
-After visiting node $5$ from node $4$:
-
-<center>
-	<table className="text-center">
-		<tbody>
-			<tr>
-				<td>Node</td>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-				<td>4</td>
-				<td>5</td>
-			</tr>
-			<tr>
-				<td>Parent</td>
-				<td>0</td>
-				<td>1</td>
-				<td>1</td>
-				<td>1</td>
-				<td className="bg-green-200 dark:bg-green-800">4</td>
-			</tr>
-			<tr>
-				<td>Distance</td>
-				<td>0</td>
-				<td>1</td>
-				<td>1</td>
-				<td>1</td>
-				<td className="bg-green-200 dark:bg-green-800">2</td>
-			</tr>
-		</tbody>
-	</table>
-</center>
-
-To determine the path, we can backtrack from node $n \rightarrow 1$, in this
-case $5 \rightarrow 1$, pushing each value that we backtrack into a vector. The
-path we take is
-$5 \rightarrow \texttt{parent}[5]=4 \rightarrow \texttt{parent}[4] =1$ which
-corresponds to the vector $[5, 4, 1]$. We break at node $1$ because it was the
-initial starting node. Finally, we reverse the vector and print out its length
-(in this case, $3$).
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using vi = vector<int>;
-#define pb push_back
-
-int main() {
-	int N, M;
-	cin >> N >> M;
-	vi dist(N + 1, INT_MAX), parent(N + 1);
-	vector<vi> adj(N + 1);
-	while (M--) {
-		int a, b;
-		cin >> a >> b;
-		adj[a].pb(b), adj[b].pb(a);
-	}
-	queue<int> q;
-	dist[1] = 0;
-	q.push(1);
-	while (!q.empty()) {
-		int x = q.front();
-		q.pop();
-		for (int t : adj[x])
-			if (dist[t] == INT_MAX) {
-				dist[t] = dist[x] + 1;
-				parent[t] = x;
-				q.push(t);
-			}
-	}
-	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
-	else {
-		cout << dist[N] + 1 << "\n";
-		vi v{N};
-		while (v.back() != 1) v.pb(parent[v.back()]);
-		reverse(begin(v), end(v));
-		for (int t : v) cout << t << " ";
-	}
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-
-import java.util.*;
-
-
-public class Solution {
-	// CodeSnip{Kattio}
-
-	private static Map<Integer, LinkedList<Integer>> adj = new HashMap<>();
-
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
-
-		int n = io.nextInt(), m = io.nextInt();
-		for(int i = 0; i < m; i++) {
-			int a = io.nextInt(), b = io.nextInt();
-			if(adj.get(a) == null) {
-				adj.put(a, new LinkedList<>());
-			}
-
-			if(adj.get(b) == null) {
-				adj.put(b, new LinkedList<>());
-			}
-
-			adj.get(a).add(b);
-			adj.get(b).add(a);
-		}
-
-		int[] prev = new int[n+1], dist = new int[n+1];
-		Arrays.fill(dist, Integer.MAX_VALUE);
-		dist[1] = 1;
-
-		Queue<Integer> bfs = new LinkedList<>();
-		bfs.add(1);
-
-		while(!bfs.isEmpty()) {
-			int top = bfs.poll();
-			if(dist[top] == Integer.MAX_VALUE) continue;
-			if(adj.get(top) != null) {
-				for(int e : adj.get(top)) {
-					if(dist[e] == Integer.MAX_VALUE) {
-						dist[e] = dist[top] + 1;
-						prev[e] = top;
-						bfs.add(e);
-					}
-				}
-			}
-		}
-
-		if(dist[n] == Integer.MAX_VALUE) {
-			System.out.println("IMPOSSIBLE");
-		} else {
-			System.out.println(dist[n]);
-			int[] res = new int[dist[n]];
-			int i = dist[n]-1;
-			for(int x = n; x != 0; x = prev[x]) {
-				res[i--] = x;
-			}
-			for(int a : res) System.out.print(a + " ");
-		}
-	}
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-
-## Application - Connected Components
-
-<FocusProblem problem="connSample" />
-
-A **connected component** is a maximal set of connected nodes in an undirected
-graph. In other words, two nodes are in the same connected component _if and
-only if_ they can reach each other via edges in the graph.
-
-In the above focus problem, the goal is to add the minimum possible number of
-edges such that the entire graph forms a single connected component.
-
-<!--
-
-   <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
-   <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource>
-   <Resource source="TC" title="Graphs Section 2" url="introduction-to-graphs-and-their-data-structures-section-2" />
-
--->
-
-### Solution - Building Roads
-
-<Spoiler title="Solution">
+## Solution - Building Roads
 
 Note that each edge decreases the number of connected components by either zero
 or one. So you must add at least $C-1$ edges, where $C$ is the number of
 connected components in the input graph.
 
-There are many valid ways to pick $C-1$ new roads to build. The code below picks
-a single representative from each of the $C$ components and links them together
+There are many valid ways to pick $C-1$ new roads to build. One way is to choose
+a single representative from each of the $C$ components and link them together
 in a line.
 
 <!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
 
 <!-- Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. -->
 
+### DFS Solution
+
 <LanguageSection>
 
 <CPPSection>
-
-<!-- Tested on CSES -->
 
 ```cpp
 #include <cstdio>
@@ -695,6 +465,12 @@ sys.setrecursionlimit(1000000)
 
 although we still get TLE on two test cases.
 
+<IncompleteSection>
+
+move this to BFS section?
+
+</IncompleteSection>
+
 To resolve this, we can implement a non-recursive solution (which turns out to
 be slightly faster). You can imagine adding to `to_visit` as calling the
 function recursively and popping from `to_visit` as starting the execution of
@@ -741,8 +517,6 @@ Recursion errors also come up frequently in [flood fill](/silver/ff) problems.
 </PySection>
 
 </LanguageSection>
-
-</Spoiler>
 
 <!--
 <LanguageSection>
@@ -843,33 +617,20 @@ See [here.](https://codeforces.com/blog/entry/67883)
 
 </Optional>
 
-{/* <Info title="Pro Tip">
+### BFS Solution
 
-Some problems that can be solved with DFS, such as [Comfortable Cows](http://www.usaco.org/index.php?page=viewproblem2&cpid=1110), may be more easily solved with a queue (described in the [BFS](/gold/bfs) module).
-
-</Info> */}
+<IncompleteSection />
 
 ### Problems
 
 <Problems problems="general" />
 
-## Application - Graph Two-Coloring
+## Solution - Building Teams
 
-<FocusProblem problem="bipsample" />
-
-**Graph two-coloring** refers to assigning a boolean value to each node of the
-graph, dictated by the edge configuration. The most common example of a
-two-colored graph is a **bipartite graph**, in which each edge connects two
-nodes of opposite colors.
-
-In the above focus problem, the goal is to assign each node (friend) of the
-graph to one of two colors (teams), subject to the constraint that edges
-(friendships) connect two nodes of opposite colors. In other words, we need to
-check whether the input is a bipartite graph and output a valid coloring if it
-is.
-
-<!-- all of these use BFS
-
+<Resources>
+	<Resource source="CPH" title="12.3 - Bipartiteness check" starred>
+		Brief solution sketch with diagrams.
+	</Resource>
 <Resource source="IUSACO" title="10.7 - Bipartite Graphs">
 		Uses BFS, but DFS accomplishes the same task.
 	</Resource>
@@ -881,15 +642,9 @@ is.
 		Uses BFS, but DFS accomplishes the same task.
 	</Resource>
 	<Resource source="CP2" title="4.2.6 - Bipartite Check"/>
- -->
-
-### Solution - Building Teams
-
-<Resources>
-	<Resource source="CPH" title="12.3 - Bipartiteness check" starred>
-		Brief solution sketch with diagrams.
-	</Resource>
 </Resources>
+
+### DFS Solution
 
 The idea is that we can arbitrarily label a node and then run DFS. Every time we
 visit a new (unvisited) node, we set its color based on the edge rule. When we
@@ -1000,6 +755,10 @@ public class BuildingTeams {
 </JavaSection>
 
 </LanguageSection>
+
+### BFS Solution
+
+<IncompleteSection />
 
 ### Problems
 

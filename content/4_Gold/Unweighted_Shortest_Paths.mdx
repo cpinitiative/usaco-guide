@@ -7,12 +7,256 @@ prerequisites:
   - graph-traversal
   - flood-fill
 description:
-  'Introduces 0/1 BFS.'
+  'Introduces how BFS can be used to find shortest paths in unweighted graphs.'
+redirects:
+  - /gold/bfs
 frequency: 2
 ---
 
-<!-- NOTE: general problems were RANDOMLY STARRED. please review! -->
+## Unweighted Shortest Path
 
+<FocusProblem problem="bfsSample" />
+
+### Solution - Message Route
+
+**Time Complexity:** $\mathcal{O}(V+E)$
+
+We can observe is that there are many possible shortest paths to output.
+Fortunately, the problem states that we can print any valid solution. Notice
+that like every other BFS problem, the distance of each node increases by $1$
+when we travel to the next level of unvisited nodes. However, the problem
+requires that we add additional information - in this case, the path. When we
+traverse from node $a$ to $b$, we can set the parent of $b$ to $a$. After the
+BFS is complete, this allows us to backtrack through the parents which
+ultimately leads us to our starting node. We know to terminate at node $1$
+because it's the starting node. If there is no path to our end node, then its
+distance will remain at
+[`INT_MAX`](https://en.cppreference.com/w/c/types/limits).
+
+For the test input, we start with the following parent array.
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+After visiting children of node $1$:
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td>INT_MAX</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+After visiting node $5$ from node $4$:
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>1</td>
+				<td className="bg-green-200 dark:bg-green-800">4</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>1</td>
+				<td className="bg-green-200 dark:bg-green-800">2</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+To determine the path, we can backtrack from node $n \rightarrow 1$, in this
+case $5 \rightarrow 1$, pushing each value that we backtrack into a vector. The
+path we take is
+$5 \rightarrow \texttt{parent}[5]=4 \rightarrow \texttt{parent}[4] =1$ which
+corresponds to the vector $[5, 4, 1]$. We break at node $1$ because it was the
+initial starting node. Finally, we reverse the vector and print out its length
+(in this case, $3$).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using vi = vector<int>;
+#define pb push_back
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	vi dist(N + 1, INT_MAX), parent(N + 1);
+	vector<vi> adj(N + 1);
+	while (M--) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	queue<int> q;
+	dist[1] = 0;
+	q.push(1);
+	while (!q.empty()) {
+		int x = q.front();
+		q.pop();
+		for (int t : adj[x])
+			if (dist[t] == INT_MAX) {
+				dist[t] = dist[x] + 1;
+				parent[t] = x;
+				q.push(t);
+			}
+	}
+	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
+	else {
+		cout << dist[N] + 1 << "\n";
+		vi v{N};
+		while (v.back() != 1) v.pb(parent[v.back()]);
+		reverse(begin(v), end(v));
+		for (int t : v) cout << t << " ";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+
+import java.util.*;
+
+
+public class Solution {
+	// CodeSnip{Kattio}
+
+	private static Map<Integer, LinkedList<Integer>> adj = new HashMap<>();
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt(), m = io.nextInt();
+		for(int i = 0; i < m; i++) {
+			int a = io.nextInt(), b = io.nextInt();
+			if(adj.get(a) == null) {
+				adj.put(a, new LinkedList<>());
+			}
+
+			if(adj.get(b) == null) {
+				adj.put(b, new LinkedList<>());
+			}
+
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] prev = new int[n+1], dist = new int[n+1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[1] = 1;
+
+		Queue<Integer> bfs = new LinkedList<>();
+		bfs.add(1);
+
+		while(!bfs.isEmpty()) {
+			int top = bfs.poll();
+			if(dist[top] == Integer.MAX_VALUE) continue;
+			if(adj.get(top) != null) {
+				for(int e : adj.get(top)) {
+					if(dist[e] == Integer.MAX_VALUE) {
+						dist[e] = dist[top] + 1;
+						prev[e] = top;
+						bfs.add(e);
+					}
+				}
+			}
+		}
+
+		if(dist[n] == Integer.MAX_VALUE) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			System.out.println(dist[n]);
+			int[] res = new int[dist[n]];
+			int i = dist[n]-1;
+			for(int x = n; x != 0; x = prev[x]) {
+				res[i--] = x;
+			}
+			for(int a : res) System.out.print(a + " ");
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 <Info title="Pro Tip">
 
@@ -23,7 +267,9 @@ graph on which we can run BFS and get the answer.
 
 </Info>
 
-## 0/1 BFS
+## Extension - 0/1 BFS
+
+<FocusProblem problem="sampleZeroOne" />
 
 A 0/1 BFS finds the shortest path in a graph where the weights on the edges can
 only be 0 or 1, and runs in $\mathcal{O}(V + E)$ using a deque. Read the
@@ -35,7 +281,7 @@ resource below for an explanation of how the algorithm works.
 	</Resource>
 </Resources>
 
-<FocusProblem problem="sampleZeroOne" />
+### Solution - Tracks in the Snow
 
 **Complexity:** $\mathcal O(NM)$
 
@@ -248,8 +494,6 @@ Due to oj.uz's grading constraints for Java, this solution will TLE on the judge
 </JavaSection>
 
 </LanguageSection>
-
-<!-- Sometimes, when a Dijkstra runs too slowly, you need to use a 0/1 BFS instead.  -->
 
 <!-- ### Example: What's Up With Gravity?
 
