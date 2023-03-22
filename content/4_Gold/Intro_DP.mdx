@@ -176,8 +176,11 @@ int main() {
 	// dp[0] = 0 is our base case since we're already at the first stone
 	dp[0] = 0;
 
+	// for each state, calculate the states it leads to
 	for (int i = 0; i < N - 1; i++) {
+		// jump one stone
 		dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]));
+		// jump two stones
 		if (i + 2 < N) {
 			dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]));
 		}
@@ -208,10 +211,13 @@ public class Main {
 		// dp[0] = 0 is our base case since we're already at the first stone
 		dp[0] = 0;
 
+		// for each state, calculate the states it leads to
 		for (int i = 0; i < N - 1; ++i) {
+			// jump one stone
 			dp[i + 1] = Math.min(
 					dp[i + 1], dp[i] + Math.abs(height[i] - height[i + 1])
 				);
+			// jump two stones
 			if (i + 2 < N) {
 				dp[i + 2] = Math.min(
 					dp[i + 2], dp[i] + Math.abs(height[i] - height[i + 2])
@@ -240,8 +246,11 @@ dp = [float("inf") for _ in range(N)]
 # dp[0] = 0 is our base case since we're already at the first stone
 dp[0] = 0
 
+# for each state, calculate the states it leads to
 for i in range(1, N - 1):
+	# jump one stone
 	dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]))
+	# jump two stones
 	if i + 2 < N:
 		dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]))
 print(dp[N - 1])
@@ -267,7 +276,7 @@ There are two ways to get to stone $i$: from stone $i - 1$ and stone $i - 2$.
   \texttt{dp}[i] = \min(\texttt{dp}[i], \texttt{dp}[i - 2] + |\text{height}_i - \text{height}_{i - 2}|)
   $$
 
-**Base case:** $\texttt{dp}[0] = 0$ (start at stone 0)
+We can start with the base case that $\texttt{dp}[0] = 0$, since the frog is already on that square, and proceed to calculate $\texttt{dp}[1], \texttt{dp}[2], \ldots \texttt{dp}[N - 1]$.
 
 <LanguageSection>
 <CPPSection>
@@ -286,10 +295,14 @@ int main() {
 	vector<int> dp(N, INT_MAX);
 	// dp[0] = 0 is our base case since we're already at the first stone
 	dp[0] = 0;
+
+	// for each state, process the states that lead to it
 	for (int i = 1; i < N; i++) {
+		// jump one stone
 		if (i - 1 >= 0) {
 			dp[i] = min(dp[i], dp[i - 1] + abs(height[i] - height[i - 1]));
 		}
+		// jump one stone
 		if (i - 2 >= 0) {
 			dp[i] = min(dp[i], dp[i - 2] + abs(height[i] - height[i - 2]));
 		}
@@ -319,12 +332,15 @@ public class Main {
 		// dp[0] = 0 is our base case since we're already at the first stone
 		dp[0] = 0;
 
+		// for each state, process the states that lead to it
 		for (int i = 1; i < N; ++i) {
+			// jump one stone
 			if (i - 1 >= 0) {
 				dp[i] = Math.min(
 					dp[i], dp[i - 1] + Math.abs(height[i] - height[i - 1])
 				);
 			}
+			// jump two stones
 			if (i - 2 >= 0) {
 				dp[i] = Math.min(
 					dp[i], dp[i - 2] + Math.abs(height[i] - height[i - 2])
@@ -354,9 +370,12 @@ dp = [float("inf") for _ in range(N)]
 # dp[0] = 0 is our base case since we're already at the first stone
 dp[0] = 0
 
+# for each state, process the states that lead to it
 for i in range(1, N):
+	# jump one stone
 	if i - 1 >= 0:
 		dp[i] = min(dp[i], dp[i - 1] + abs(height[i] - height[i - 1]))
+	# jump two stones
 	if i - 2 >= 0:
 		dp[i] = min(dp[i], dp[i - 2] + abs(height[i] - height[i - 2]))
 
