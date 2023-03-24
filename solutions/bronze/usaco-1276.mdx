@@ -9,10 +9,22 @@ author: Chuyang Wang
 
 ## Explanation
 
-**Time Complexity:** $\mathcal{O}(2^M \cdot 100 \cdot (M + N))$
+Since $M = 10$ is given, we can iterate through all $2^{10}$ possible subsets of
+air conditioners. For each of them, we check if this subset of air conditioners
+satisfy the requirements of the cows by iterating through all possible positions
+$i \in [1;100]$. For each position $i$, we can iterate through all available air
+conditioners in the current subset to find out the temperature reduced at $i$
+and iterate through all cows to find the cow at this position and its demand. If
+the requirement at each position is fulfilled, we update the minimal cost
+accordingly. 
+
+There are two ways to generate all subsets of air conditioners: Using recursion
+or a bit mask.
 
 
 ## Solution 1: Subset with Recursion
+
+**Time Complexity:** $\mathcal{O}(2^M \cdot 100 \cdot (M + N))$
 
 <LanguageSection>
 <CPPSection>
@@ -121,6 +133,8 @@ int main() {
 
 
 ## Solution 2: Subset with Bitmask
+
+**Time Complexity:** $\mathcal{O}(2^M \cdot 100 \cdot (M + N))$
 
 <LanguageSection>
 <CPPSection>
