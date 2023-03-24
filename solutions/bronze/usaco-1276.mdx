@@ -41,7 +41,7 @@ vector<array<int, 4>> air_conditioners;
 // uses[i] == true: the i-th air conditioner is used
 vector<bool> uses;
 // the minimum amount of money needed to keep all cows comfortable
-int min_cost = 1e9;
+int min_cost = numeric_limits<int>().max();
 
 /**
  * Based on 'uses', determine if the current subset of air conditioners suffices
@@ -55,7 +55,7 @@ void update() {
 		// iterate through air conditioners to find the current cooling units
 		int cooling = 0;
 		for (int j = 0; j < M; j++) {
-			if (!uses[j]) continue;
+			if (!uses[j]) { continue; }
 			auto &[a, b, p, m] = air_conditioners[j];
 			if (a <= i && i <= b) { cooling += p; }
 		}
@@ -187,7 +187,7 @@ int main() {
 		air_conditioners.push_back({a, b, p, m});
 	}
 
-	int min_cost = 1e9;
+	int min_cost = numeric_limits<int>().max();
 	// use a bit mask to get all subsets
 	for (int mask = 0; mask < (1 << M); mask++) {
 		int cost = 0;
