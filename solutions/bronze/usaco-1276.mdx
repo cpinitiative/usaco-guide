@@ -1,6 +1,6 @@
 ---
 id: usaco-1276
-source: USACO Bronze 2023 January 
+source: USACO Bronze 2023 January
 title: Air Cownditioning II
 author: Chuyang Wang
 ---
@@ -37,7 +37,7 @@ int min_cost = 1e9;
  */
 void update() {
 	bool is_feasible = true;
-    
+
 	// iterate through all positions to check if the current subset is feasible
 	for (int i = 1; i <= 100; i++) {
 		// iterate through air conditioners to find the current cooling units
@@ -45,9 +45,7 @@ void update() {
 		for (int j = 0; j < M; j++) {
 			if (!uses[j]) continue;
 			auto &[a, b, p, m] = air_conditioners[j];
-			if (a <= i && i <= b) {
-				cooling += p;
-			}
+			if (a <= i && i <= b) { cooling += p; }
 		}
 
 		// iterate through cows to find the current cow
@@ -60,7 +58,7 @@ void update() {
 			}
 		}
 
-        // For each position, the requirement of the cow must be met
+		// For each position, the requirement of the cow must be met
 		if (cooling < cow_requirement) {
 			is_feasible = false;
 			break;
@@ -70,9 +68,7 @@ void update() {
 	if (is_feasible) {
 		int cost = 0;
 		for (int i = 0; i < M; i++) {
-			if (uses[i]) {
-				cost += air_conditioners[i][3];
-			}
+			if (uses[i]) { cost += air_conditioners[i][3]; }
 		}
 		min_cost = min(min_cost, cost);
 	}
@@ -133,7 +129,7 @@ using namespace std;
  * Check if the given 'air_conditioners' satisfy the constraints of the cows
  */
 bool check(vector<array<int, 3>> &cows,
-		   vector<array<int, 4>> &air_conditioners) {
+           vector<array<int, 4>> &air_conditioners) {
 	bool is_feasible = true;
 
 	// iterate through all positions to check if the current subset is feasible
@@ -142,9 +138,7 @@ bool check(vector<array<int, 3>> &cows,
 		int cooling = 0;
 		for (int j = 0; j < air_conditioners.size(); j++) {
 			auto &[a, b, p, m] = air_conditioners[j];
-			if (a <= i && i <= b) {
-				cooling += p;
-			}
+			if (a <= i && i <= b) { cooling += p; }
 		}
 
 		// iterate through cows to find the current cow
@@ -158,9 +152,7 @@ bool check(vector<array<int, 3>> &cows,
 		}
 
 		// For each position, the requirement of the cow must be met
-		if (cooling < cow_requirement) {
-			return false;
-		}
+		if (cooling < cow_requirement) { return false; }
 	}
 	return true;
 }
@@ -184,7 +176,7 @@ int main() {
 	}
 
 	int min_cost = 1e9;
-    // use a bit mask to get all subsets
+	// use a bit mask to get all subsets
 	for (int mask = 0; mask < (1 << M); mask++) {
 		int cost = 0;
 		vector<array<int, 4>> used_conditioners;
@@ -195,9 +187,7 @@ int main() {
 			}
 		}
 
-		if (check(cows, used_conditioners)) {
-			min_cost = min(min_cost, cost);
-		}
+		if (check(cows, used_conditioners)) { min_cost = min(min_cost, cost); }
 	}
 
 	cout << min_cost << endl;
