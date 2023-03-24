@@ -224,7 +224,7 @@ public class AirCownditioning {
 			this.coolReq = coolReq;
 		}
 	}
-	
+
 	static class AC {
 		public int start, end;
 		public int coolAmt;
@@ -240,7 +240,8 @@ public class AirCownditioning {
 	static final int MAX_STALL = 100;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int cowNum = Integer.parseInt(initial.nextToken());
 		int acNum = Integer.parseInt(initial.nextToken());
@@ -248,29 +249,25 @@ public class AirCownditioning {
 		Cow[] cows = new Cow[cowNum];
 		for (int c = 0; c < cowNum; c++) {
 			StringTokenizer cow = new StringTokenizer(read.readLine());
-			cows[c] = new Cow(
-				Integer.parseInt(cow.nextToken()),
-				Integer.parseInt(cow.nextToken()),
-				Integer.parseInt(cow.nextToken())
-			);
+			cows[c] = new Cow(Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()));
 		}
 
 		AC[] acs = new AC[acNum];
 		for (int a = 0; a < acNum; a++) {
 			StringTokenizer ac = new StringTokenizer(read.readLine());
-			acs[a] = new AC(
-				Integer.parseInt(ac.nextToken()),
-				Integer.parseInt(ac.nextToken()),
-				Integer.parseInt(ac.nextToken()),
-				Integer.parseInt(ac.nextToken())
-			);
+			acs[a] = new AC(Integer.parseInt(ac.nextToken()),
+			                Integer.parseInt(ac.nextToken()),
+			                Integer.parseInt(ac.nextToken()),
+			                Integer.parseInt(ac.nextToken()));
 		}
 
 		int minCost = Integer.MAX_VALUE;
 		for (int mask = 0; mask < (1 << acNum); mask++) {
 			// 1-indexed
-			int[] stalls = new int[MAX_STALL + 1];  
-	
+			int[] stalls = new int[MAX_STALL + 1];
+
 			int cost = 0;
 			for (int a = 0; a < acNum; a++) {
 				if ((mask & (1 << a)) != 0) {
@@ -280,7 +277,7 @@ public class AirCownditioning {
 					cost += acs[a].cost;
 				}
 			}
-	
+
 			boolean valid = true;
 			for (Cow c : cows) {
 				for (int i = c.start; i <= c.end; i++) {
@@ -290,9 +287,7 @@ public class AirCownditioning {
 					}
 				}
 			}
-			if (valid) {
-				minCost = Math.min(minCost, cost);
-			}
+			if (valid) { minCost = Math.min(minCost, cost); }
 		}
 
 		System.out.println(minCost);
@@ -327,7 +322,7 @@ cow_num, ac_num = [int(i) for i in input().split()]
 cows = [Cow(*[int(i) for i in input().split()]) for _ in range(cow_num)]
 acs = [AC(*[int(i) for i in input().split()]) for _ in range(ac_num)]
 
-min_cost = float('inf')
+min_cost = float("inf")
 for mask in range(1 << ac_num):
 	stalls = [0 for _ in range(MAX_STALL + 1)]
 
