@@ -7,10 +7,12 @@ author: Chuyang Wang
 
 [Official Analysis](http://www.usaco.org/current/data/sol_prob2_bronze_jan23.html)
 
-
-## Implementation
+## Explanation
 
 **Time Complexity:** $\mathcal{O}(2^M \cdot 100 \cdot (M + N))$
+
+
+## Solution 1: Subset with Recursion
 
 <LanguageSection>
 <CPPSection>
@@ -108,6 +110,95 @@ int main() {
 
 	uses.assign(M, false);
 	search(0);
+
+	cout << min_cost << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+
+## Solution 2: Subset with Bitmask
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * Check if the given 'air_conditioners' satisfy the constraints of the cows
+ */
+bool check(vector<array<int, 3>> &cows,
+		   vector<array<int, 4>> &air_conditioners) {
+	bool is_feasible = true;
+
+	// iterate through all positions to check if the current subset is feasible
+	for (int i = 1; i <= 100; i++) {
+		// iterate through air conditioners to find the current cooling units
+		int cooling = 0;
+		for (int j = 0; j < air_conditioners.size(); j++) {
+			auto &[a, b, p, m] = air_conditioners[j];
+			if (a <= i && i <= b) {
+				cooling += p;
+			}
+		}
+
+		// iterate through cows to find the current cow
+		int cow_requirement = 0;
+		for (int j = 0; j < cows.size(); j++) {
+			auto &[s, t, c] = cows[j];
+			if (s <= i && i <= t) {
+				cow_requirement = c;
+				break;
+			}
+		}
+
+		// For each position, the requirement of the cow must be met
+		if (cooling < cow_requirement) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+
+	vector<array<int, 3>> cows;
+	for (int i = 0; i < N; i++) {
+		int s, t, c;
+		cin >> s >> t >> c;
+		cows.push_back({s, t, c});
+	}
+
+	vector<array<int, 4>> air_conditioners;
+	for (int i = 0; i < M; i++) {
+		int a, b, p, m;
+		cin >> a >> b >> p >> m;
+		air_conditioners.push_back({a, b, p, m});
+	}
+
+	int min_cost = 1e9;
+    // use a bit mask to get all subsets
+	for (int mask = 0; mask < (1 << M); mask++) {
+		int cost = 0;
+		vector<array<int, 4>> used_conditioners;
+		for (int i = 0; i < M; i++) {
+			if (mask & (1 << i)) {
+				used_conditioners.push_back(air_conditioners[i]);
+				cost += air_conditioners[i][3];
+			}
+		}
+
+		if (check(cows, used_conditioners)) {
+			min_cost = min(min_cost, cost);
+		}
+	}
 
 	cout << min_cost << endl;
 }
