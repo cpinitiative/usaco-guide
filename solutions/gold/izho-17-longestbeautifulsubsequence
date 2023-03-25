@@ -1,0 +1,70 @@
+---
+id: izho-17-longestbeautifulsubsequence
+source: IZhO
+title: Longest Beautiful Subsequence
+author: Daniel Zhu
+---
+
+## Explanation
+### Subtasks 1-2
+Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices. One possible solution is defining $\texttt{dp}[i]$ as the length of the LBS (longest beautiful subsequence) that ends at $i$. 
+
+Define $\texttt{bc}[x][y]$ as $\text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$. We transition by iterating over all $j < i$ where $\texttt{bc}[a_i][a_j] == \texttt{k}[i]$. We can reconstruct an optimal solution by defining another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
+<Spoiler title="Code">
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) {
+		cin >> k[i];
+	}
+
+	vector<int> dp(n, 1);
+	// best_i: most optimal index to end on
+	int ans = 1, best_i = 0;
+	// prv[i] = optimal index to include right before i 
+	vector<int> prv(n);
+	// intially, prv[i] = i
+	iota(prv.begin(), prv.end(), 0);
+
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j < i; j++) {
+			// bc[a[j]][a[i]] == k[i]
+			if (__builtin_popcount(a[j] & a[i]) == k[i]) {
+				if (dp[j] + 1 > dp[i]) {
+					prv[i] = j;
+					dp[i] = dp[j] + 1;
+				}
+			}
+		}
+		if (dp[i] > ans) {
+			ans = dp[i];
+			best_i = i;
+		}
+	}
+	
+	cout << ans << endl;
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) cout << x + 1 << " ";
+}
+
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
