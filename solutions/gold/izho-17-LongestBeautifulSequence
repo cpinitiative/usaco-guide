@@ -6,17 +6,24 @@ author: Daniel Zhu
 ---
 
 ## Explanation
+
 ### Subtasks 1-2
+
 Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices.
 
 Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subsequence) that ends at $i$, and $\texttt{bc}[x][y]$ as $\text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$. We transition by iterating over all $j < i$ where $\texttt{bc}[a_i][a_j] == \texttt{k}[i]$.
 
 We can reconstruct an optimal solution by defining another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
 
+### Implementation
+
 **Time Complexity**: $\mathcal{O}(N^2)$
+
 <Spoiler title="Code">
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -58,29 +65,37 @@ int main() {
 	}
 
 	cout << ans << endl;
+	
 	vector<int> res;
 	while (prv[best_i] != best_i) {
 		res.push_back(best_i);
 		best_i = prv[best_i];
 	}
+	
 	res.push_back(best_i);
 	reverse(res.begin(), res.end());
-	for (int x : res) cout << x + 1 << " ";
+	for (int x : res) { cout << x + 1 << " "; }
 }
-
 ```
+
 </CPPSection>
 </LanguageSection>
+
 </Spoiler>
+
 ### Subtask 3
+
 While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
 
 More specifically, we redefine $\texttt{dp}[i]$ to be the length of the longest LBS that ends with **value** $i$ (rather than index). To calculate $\texttt{dp}[a_i]$, we try to transition from $\texttt{dp}[j]$ for all $j$ that satisfy $bc[j][a_i] == k[i]$. This improves our time complexity to $\mathcal{O}(NM)$.
 
 **Time Complexity**: $\mathcal{O}(NM)$
+
 <Spoiler title="Code">
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 #define f first
@@ -140,10 +155,14 @@ int main() {
     for (int x : res) cout << x + 1 << " ";
 }
 ```
+
 </CPPSection>
+
 </LanguageSection>
 </Spoiler>
+
 ### Subtask 4 (Full Credit)
+
 With much higher bounds on both $N$ and $M$, neither of the previously presented solutions will run in time.
 
 In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. The most extreme way to achieve this is to embed all search parameters directly in the DP state (i.e. $\texttt{dp}[i][k]$ is the length of the longest LBS that ends in $x$, where $\texttt{bc}[x][i] == k$). $\texttt{dp}[a[i]][k[i]]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$. However, each DP state now encapsulates a much larger amount of possible LBS's: any LBS that ends in $x$, where $\texttt{bc}[x][i] == k$, will be factored into $\texttt{dp}[i][k]$. Similarly, an LBS with fixed final value $a_i$ now affects $M$, rather than $1$, DP states: namely, all states $\texttt{dp}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a[i]][x]$.
@@ -157,9 +176,12 @@ Notice that, no matter how we define the DP state, these two complexities will a
 Based on the two extremes we considered, increased restriction on $x$ (the last number in the LBS) appears to directly correspond to a lower amount of affected states. In fact, if we restrict $b$ bits of $x$, the complexity of transition is $\mathcal{O}(2^b)$, and the amount of affected states is $\mathcal{O}(\frac{M}{2^b})$. Therefore, $\frac{\log_2M}{2} = 10$ is the best value for $b$, giving a final time complexity of $\mathcal{O}(N\sqrt{M})$.
 
 **Time Complexity:** $\mathcal{O}(N\sqrt{M})$
+
 <Spoiler title="Code">
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 #define f first
@@ -241,6 +263,8 @@ int main() {
     for (int x : res) cout << x + 1 << " ";
 }
 ```
+
 </CPPSection>
 </LanguageSection>
+
 </Spoiler>
