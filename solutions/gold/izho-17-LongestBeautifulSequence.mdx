@@ -32,13 +32,9 @@ int main() {
 	int n;
 	cin >> n;
 	vector<int> a(n);
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 	vector<int> k(n);
-	for (int i = 0; i < n; i++) {
-		cin >> k[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> k[i]; }
 
 	vector<int> dp(n, 1);
 	// best_i: most optimal index to end on
@@ -120,9 +116,9 @@ int main() {
 	for (int i = 0; i < n; i++) cin >> a[i];
 	vector<int> k(n);
 	for (int i = 0; i < n; i++) cin >> k[i];
-	int ans = 1, best_i = 0; // best_i: best index to end subsequence at
-	vector<int> prv(n); // prv[i]: best index to include before i
-	iota(prv.begin(), prv.end(), 0); // prv[i] = i
+	int ans = 1, best_i = 0;  // best_i: best index to end subsequence at
+	vector<int> prv(n);       // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
 	vector<pii> dp(1 << B, make_pair(-1, -1));
 	// dp[i].f: longest lbs that ends in i
 	// dp[i].s: optimal end index for lbs that ends in i
@@ -191,7 +187,7 @@ using namespace std;
 using pii = pair<int, int>;
 const int N = 1e5;
 const int B = 10;
-int bc[1 << B][1 << B]; // bc[i][j] = bit_count(i & j)
+int bc[1 << B][1 << B];  // bc[i][j] = bit_count(i & j)
 pii dp[1 << B][1 << B][B + 1];
 // define l(x) = 10 leftmost bits of x,
 // and r(x) = 10 rightmost bits of x
@@ -216,13 +212,13 @@ int main() {
 	for (int i = 0; i < n; i++) cin >> a[i];
 	vector<int> k(n);
 	for (int i = 0; i < n; i++) cin >> k[i];
-	int ans = 1, best_i = 0; // best_i: best index to end subsequence at
-	vector<int> prv(n); // prv[i]: best index to include before i
-	iota(prv.begin(), prv.end(), 0); // prv[i] = i
+	int ans = 1, best_i = 0;  // best_i: best index to end subsequence at
+	vector<int> prv(n);       // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
 
 	for (int i = 0; i < n; i++) {
-		int l = a[i] >> 10, r = a[i] % (1 << 10); // l(a[i]), r(a[i])
-		int lbs = 1; // length of longest lbs that ends at i
+		int l = a[i] >> 10, r = a[i] % (1 << 10);  // l(a[i]), r(a[i])
+		int lbs = 1;  // length of longest lbs that ends at i
 
 		// enumerate all possibilities for l(prev_num)
 		for (int j = 0; j < (1 << B); j++) {
@@ -246,7 +242,7 @@ int main() {
 
 		// update all answers a[i] affects
 		for (int j = 0; j < (1 << B); j++) {
-			pii& new_state = dp[l][j][bc[r][j]];
+			pii &new_state = dp[l][j][bc[r][j]];
 			if (lbs > new_state.f) {
 				new_state.f = lbs;
 				new_state.s = i;
