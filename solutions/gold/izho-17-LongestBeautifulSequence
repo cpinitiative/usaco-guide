@@ -7,9 +7,9 @@ author: Daniel Zhu
 
 ## Explanation
 ### Subtasks 1-2
-Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices. 
+Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices.
 
-Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subsequence) that ends at $i$, and $\texttt{bc}[x][y]$ as $\text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$. We transition by iterating over all $j < i$ where $\texttt{bc}[a_i][a_j] == \texttt{k}[i]$. 
+Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subsequence) that ends at $i$, and $\texttt{bc}[x][y]$ as $\text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$. We transition by iterating over all $j < i$ where $\texttt{bc}[a_i][a_j] == \texttt{k}[i]$.
 
 We can reconstruct an optimal solution by defining another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
 
@@ -36,7 +36,7 @@ int main() {
 	vector<int> dp(n, 1);
 	// best_i: most optimal index to end on
 	int ans = 1, best_i = 0;
-	// prv[i] = optimal index to include right before i 
+	// prv[i] = optimal index to include right before i
 	vector<int> prv(n);
 	// intially, prv[i] = i
 	iota(prv.begin(), prv.end(), 0);
@@ -56,7 +56,7 @@ int main() {
 			best_i = i;
 		}
 	}
-	
+
 	cout << ans << endl;
 	vector<int> res;
 	while (prv[best_i] != best_i) {
@@ -73,7 +73,7 @@ int main() {
 </LanguageSection>
 </Spoiler>
 ### Subtask 3
-While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead. 
+While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
 
 More specifically, we redefine $\texttt{dp}[i]$ to be the length of the longest LBS that ends with **value** $i$ (rather than index). To calculate $\texttt{dp}[a_i]$, we try to transition from $\texttt{dp}[j]$ for all $j$ that satisfy $bc[j][a_i] == k[i]$. This improves our time complexity to $\mathcal{O}(NM)$.
 
@@ -90,7 +90,7 @@ using pii = pair<int, int>;
 const int B = 8;
 
 int main() {
-    // preprocess: 
+    // preprocess:
 	// bc[i][j] = bit_count(i & j)
 	vector<vector<int>> bc(1 << B, vector<int>(1 << B));
     for (int i = 0; i < (1 << B); i++) {
@@ -146,13 +146,13 @@ int main() {
 ### Subtask 4 (Full Credit)
 With much higher bounds on both $N$ and $M$, neither of the previously presented solutions will run in time.
 
-In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. The most extreme way to achieve this is to embed all search parameters directly in the DP state (i.e. $\texttt{dp}[i][k]$ is the length of the longest LBS that ends in $x$, where $\texttt{bc}[x][i] == k$). $\texttt{dp}[a[i]][k[i]]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$. However, each DP state now encapsulates a much larger amount of possible LBS's: any LBS that ends in $x$, where $\texttt{bc}[x][i] == k$, will be factored into $\texttt{dp}[i][k]$. Similarly, an LBS with fixed final value $a_i$ now affects $M$, rather than $1$, DP states: namely, all states $\texttt{dp}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a[i]][x]$. 
+In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. The most extreme way to achieve this is to embed all search parameters directly in the DP state (i.e. $\texttt{dp}[i][k]$ is the length of the longest LBS that ends in $x$, where $\texttt{bc}[x][i] == k$). $\texttt{dp}[a[i]][k[i]]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$. However, each DP state now encapsulates a much larger amount of possible LBS's: any LBS that ends in $x$, where $\texttt{bc}[x][i] == k$, will be factored into $\texttt{dp}[i][k]$. Similarly, an LBS with fixed final value $a_i$ now affects $M$, rather than $1$, DP states: namely, all states $\texttt{dp}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a[i]][x]$.
 
 In summary, if $a_i$ is the last number in an LBS:
 - strict DP state (only 1 possible value of $a_i$) -> $\mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
 - loose DP state (up to $M$ possible values of $a_i$) -> $\mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
 
-Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a state such that both complexities are $\mathcal{O}(\sqrt{M})$. 
+Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a state such that both complexities are $\mathcal{O}(\sqrt{M})$.
 
 Based on the two extremes we considered, increased restriction on $x$ (the last number in the LBS) appears to directly correspond to a lower amount of affected states. In fact, if we restrict $b$ bits of $x$, the complexity of transition is $\mathcal{O}(2^b)$, and the amount of affected states is $\mathcal{O}(\frac{M}{2^b})$. Therefore, $\frac{\log_2M}{2} = 10$ is the best value for $b$, giving a final time complexity of $\mathcal{O}(N\sqrt{M})$.
 
@@ -170,7 +170,7 @@ const int N = 1e5;
 const int B = 10;
 int bc[1 << B][1 << B]; // bc[i][j] = bit_count(i & j)
 pii dp[1 << B][1 << B][B + 1];
-// define l(x) = 10 leftmost bits of x, 
+// define l(x) = 10 leftmost bits of x,
 // and r(x) = 10 rightmost bits of x
 // dp[i][j][k].f:
 // longest subsequence that ends in x, where x satisfies:
@@ -180,7 +180,7 @@ pii dp[1 << B][1 << B][B + 1];
 // index of the most optimal x
 
 int main() {
-    // preprocess: 
+    // preprocess:
     for (int i = 0; i < (1 << B); i++) {
         for (int j = 0; j < (1 << B); j++) {
             bc[i][j] = __builtin_popcount(i & j);
@@ -203,10 +203,10 @@ int main() {
 
         // enumerate all possibilities for l(prev_num)
         for (int j = 0; j < (1 << B); j++) {
-            // here, we use the fact that 
+            // here, we use the fact that
             // bc[x][y] = bc[l(x)][l(y)] + bc[r(x)][r(y)],
             // or bc[r(x)][r(y)] = bc[x][y] - bc[l(x)][l(y)]
-			
+
 			// required value of bc[r(x)][r(y)]
             int needed = k[i] - bc[j][l];
             if (needed < 0 || needed > 10) continue;
