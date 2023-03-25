@@ -84,7 +84,9 @@ int main() {
 While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
 
 More specifically, we redefine $\texttt{dp}[i]$ to be the length of the longest LBS that ends with **value** $i$ (rather than index). To calculate $\texttt{dp}[a_i]$, we try to transition from $\texttt{dp}[j]$ for all $j$ that satisfy $bc[j][a_i] == k[i]$. This improves our time complexity to $\mathcal{O}(NM)$.
+
 ### Implementation
+
 **Time Complexity**: $\mathcal{O}(NM)$
 
 <Spoiler title="Code">
@@ -172,6 +174,7 @@ Notice that, no matter how we define the DP state, these two complexities will a
 Based on the two extremes we considered, increased restriction on $x$ (the last number in the LBS) appears to directly correspond to a lower amount of affected states. In fact, if we restrict $b$ bits of $x$, the complexity of transition is $\mathcal{O}(2^b)$, and the amount of affected states is $\mathcal{O}(\frac{M}{2^b})$. Therefore, $\frac{\log_2M}{2} = 10$ is the best value for $b$, giving a final time complexity of $\mathcal{O}(N\sqrt{M})$.
 
 ### Implementation
+
 **Time Complexity:** $\mathcal{O}(N\sqrt{M})$
 
 <Spoiler title="Code">
