@@ -88,7 +88,7 @@ int main() {
 While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
 
 More specifically, we redefine $\texttt{dp}[i]$ to be the length of the longest LBS that ends with **value** $i$ (rather than index). To calculate $\texttt{dp}[a_i]$, we try to transition from $\texttt{dp}[j]$ for all $j$ that satisfy $bc[j][a_i] == k[i]$. This improves our time complexity to $\mathcal{O}(NM)$.
-
+### Implementation
 **Time Complexity**: $\mathcal{O}(NM)$
 
 <Spoiler title="Code">
@@ -105,54 +105,54 @@ using pii = pair<int, int>;
 const int B = 8;
 
 int main() {
-    // preprocess:
+	// preprocess:
 	// bc[i][j] = bit_count(i & j)
 	vector<vector<int>> bc(1 << B, vector<int>(1 << B));
-    for (int i = 0; i < (1 << B); i++) {
-        for (int j = 0; j < (1 << B); j++) {
-            bc[i][j] = __builtin_popcount(i & j);
-        }
-    }
+	for (int i = 0; i < (1 << B); i++) {
+		for (int j = 0; j < (1 << B); j++) {
+			bc[i][j] = __builtin_popcount(i & j);
+		}
+	}
 
 	int n;
-    cin >> n;
-    vector<int> a(n);
-    for (int i = 0; i < n; i++) cin >> a[i];
-    vector<int> k(n);
-    for (int i = 0; i < n; i++) cin >> k[i];
-    int ans = 1, best_i = 0; // best_i: best index to end subsequence at
-    vector<int> prv(n); // prv[i]: best index to include before i
-    iota(prv.begin(), prv.end(), 0); // prv[i] = i
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) cin >> k[i];
+	int ans = 1, best_i = 0; // best_i: best index to end subsequence at
+	vector<int> prv(n); // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0); // prv[i] = i
 	vector<pii> dp(1 << B, make_pair(-1, -1));
 	// dp[i].f: longest lbs that ends in i
 	// dp[i].s: optimal end index for lbs that ends in i
 
-    for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		if (dp[a[i]].f == -1) {
 			dp[a[i]].f = 1;
 			dp[a[i]].s = i;
 		}
-        for (int j = 0; j < (1 << B); j++) {
-            if (bc[j][a[i]] == k[i] && dp[j].f + 1 > dp[a[i]].f) {
+		for (int j = 0; j < (1 << B); j++) {
+			if (bc[j][a[i]] == k[i] && dp[j].f + 1 > dp[a[i]].f) {
 				dp[a[i]].f = dp[j].f + 1;
 				dp[a[i]].s = i;
 				prv[i] = dp[j].s;
 			}
-        }
-        if (dp[a[i]].f > ans) {
-            ans = dp[a[i]].f;
-            best_i = i;
-        }
-    }
-    cout << ans << endl;
-    vector<int> res;
-    while (prv[best_i] != best_i) {
-        res.push_back(best_i);
-        best_i = prv[best_i];
-    }
-    res.push_back(best_i);
-    reverse(res.begin(), res.end());
-    for (int x : res) cout << x + 1 << " ";
+		}
+		if (dp[a[i]].f > ans) {
+			ans = dp[a[i]].f;
+			best_i = i;
+		}
+	}
+	cout << ans << endl;
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) cout << x + 1 << " ";
 }
 ```
 
@@ -165,7 +165,7 @@ int main() {
 
 With much higher bounds on both $N$ and $M$, neither of the previously presented solutions will run in time.
 
-In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. The most extreme way to achieve this is to embed all search parameters directly in the DP state (i.e. $\texttt{dp}[i][k]$ is the length of the longest LBS that ends in $x$, where $\texttt{bc}[x][i] == k$). $\texttt{dp}[a[i]][k[i]]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$. However, each DP state now encapsulates a much larger amount of possible LBS's: any LBS that ends in $x$, where $\texttt{bc}[x][i] == k$, will be factored into $\texttt{dp}[i][k]$. Similarly, an LBS with fixed final value $a_i$ now affects $M$, rather than $1$, DP states: namely, all states $\texttt{dp}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a[i]][x]$.
+In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. The most extreme way to achieve this is to embed all search parameters directly in the DP state (i.e. $\texttt{dp}[i][k]$ is the length of the longest LBS that ends in $x$, where $\texttt{bc}[x][i] == k$). $\texttt{dp}[a[i]][k[i]]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$. However, each DP state now encapsulates a much larger amount of possible LBS's: any LBS that ends in $x$, where $\texttt{bc}[x][i] == k$, will be factored into $\texttt{dp}[i][k]$. Similarly, an LBS with fixed final value $a_i$ now affects $M$, rather than $1$, DP states: namely, all states $\texttt{dp}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
 
 In summary, if $a_i$ is the last number in an LBS:
 - strict DP state (only 1 possible value of $a_i$) -> $\mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
@@ -175,6 +175,7 @@ Notice that, no matter how we define the DP state, these two complexities will a
 
 Based on the two extremes we considered, increased restriction on $x$ (the last number in the LBS) appears to directly correspond to a lower amount of affected states. In fact, if we restrict $b$ bits of $x$, the complexity of transition is $\mathcal{O}(2^b)$, and the amount of affected states is $\mathcal{O}(\frac{M}{2^b})$. Therefore, $\frac{\log_2M}{2} = 10$ is the best value for $b$, giving a final time complexity of $\mathcal{O}(N\sqrt{M})$.
 
+### Implementation
 **Time Complexity:** $\mathcal{O}(N\sqrt{M})$
 
 <Spoiler title="Code">
@@ -202,65 +203,65 @@ pii dp[1 << B][1 << B][B + 1];
 // index of the most optimal x
 
 int main() {
-    // preprocess:
-    for (int i = 0; i < (1 << B); i++) {
-        for (int j = 0; j < (1 << B); j++) {
-            bc[i][j] = __builtin_popcount(i & j);
-        }
-    }
+	// preprocess:
+	for (int i = 0; i < (1 << B); i++) {
+		for (int j = 0; j < (1 << B); j++) {
+			bc[i][j] = __builtin_popcount(i & j);
+		}
+	}
 
 	int n;
-    cin >> n;
-    vector<int> a(n);
-    for (int i = 0; i < n; i++) cin >> a[i];
-    vector<int> k(n);
-    for (int i = 0; i < n; i++) cin >> k[i];
-    int ans = 1, best_i = 0; // best_i: best index to end subsequence at
-    vector<int> prv(n); // prv[i]: best index to include before i
-    iota(prv.begin(), prv.end(), 0); // prv[i] = i
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) cin >> k[i];
+	int ans = 1, best_i = 0; // best_i: best index to end subsequence at
+	vector<int> prv(n); // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0); // prv[i] = i
 
-    for (int i = 0; i < n; i++) {
-        int l = a[i] >> 10, r = a[i] % (1 << 10); // l(a[i]), r(a[i])
-        int lbs = 1; // length of longest lbs that ends at i
+	for (int i = 0; i < n; i++) {
+		int l = a[i] >> 10, r = a[i] % (1 << 10); // l(a[i]), r(a[i])
+		int lbs = 1; // length of longest lbs that ends at i
 
-        // enumerate all possibilities for l(prev_num)
-        for (int j = 0; j < (1 << B); j++) {
-            // here, we use the fact that
-            // bc[x][y] = bc[l(x)][l(y)] + bc[r(x)][r(y)],
-            // or bc[r(x)][r(y)] = bc[x][y] - bc[l(x)][l(y)]
+		// enumerate all possibilities for l(prev_num)
+		for (int j = 0; j < (1 << B); j++) {
+			// here, we use the fact that
+			// bc[x][y] = bc[l(x)][l(y)] + bc[r(x)][r(y)],
+			// or bc[r(x)][r(y)] = bc[x][y] - bc[l(x)][l(y)]
 
 			// required value of bc[r(x)][r(y)]
-            int needed = k[i] - bc[j][l];
-            if (needed < 0 || needed > 10) continue;
-            if (dp[j][r][needed].f + 1 > lbs) {
-                lbs = dp[j][r][needed].f + 1;
-                prv[i] = dp[j][r][needed].s;
-            }
-        }
+			int needed = k[i] - bc[j][l];
+			if (needed < 0 || needed > 10) continue;
+			if (dp[j][r][needed].f + 1 > lbs) {
+				lbs = dp[j][r][needed].f + 1;
+				prv[i] = dp[j][r][needed].s;
+			}
+		}
 
-        if (lbs > ans) {
-            ans = lbs;
-            best_i = i;
-        }
+		if (lbs > ans) {
+			ans = lbs;
+			best_i = i;
+		}
 
-        // update all answers a[i] affects
-        for (int j = 0; j < (1 << B); j++) {
-            pii& new_state = dp[l][j][bc[r][j]];
-            if (lbs > new_state.f) {
-                new_state.f = lbs;
-                new_state.s = i;
-            }
-        }
-    }
-    cout << ans << endl;
-    vector<int> res;
-    while (prv[best_i] != best_i) {
-        res.push_back(best_i);
-        best_i = prv[best_i];
-    }
-    res.push_back(best_i);
-    reverse(res.begin(), res.end());
-    for (int x : res) cout << x + 1 << " ";
+		// update all answers a[i] affects
+		for (int j = 0; j < (1 << B); j++) {
+			pii& new_state = dp[l][j][bc[r][j]];
+			if (lbs > new_state.f) {
+				new_state.f = lbs;
+				new_state.s = i;
+			}
+		}
+	}
+	cout << ans << endl;
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) cout << x + 1 << " ";
 }
 ```
 
