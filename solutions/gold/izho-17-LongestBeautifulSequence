@@ -7,7 +7,7 @@ author: Daniel Zhu
 
 ## Explanation
 ### Subtasks 1-2
-Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices. One possible solution is defining $\texttt{dp}[i]$ as the length of the LBS (longest beautiful subsequence) that ends at $i$. 
+Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices. One possible solution is defining $\texttt{dp}[i]$ as the length of the LBS (longest beautiful subsequence) that ends at $i$.
 
 Define $\texttt{bc}[x][y]$ as $\text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$. We transition by iterating over all $j < i$ where $\texttt{bc}[a_i][a_j] == \texttt{k}[i]$. We can reconstruct an optimal solution by defining another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
 <Spoiler title="Code">
@@ -32,7 +32,7 @@ int main() {
 	vector<int> dp(n, 1);
 	// best_i: most optimal index to end on
 	int ans = 1, best_i = 0;
-	// prv[i] = optimal index to include right before i 
+	// prv[i] = optimal index to include right before i
 	vector<int> prv(n);
 	// intially, prv[i] = i
 	iota(prv.begin(), prv.end(), 0);
@@ -52,7 +52,7 @@ int main() {
 			best_i = i;
 		}
 	}
-	
+
 	cout << ans << endl;
 	vector<int> res;
 	while (prv[best_i] != best_i) {
