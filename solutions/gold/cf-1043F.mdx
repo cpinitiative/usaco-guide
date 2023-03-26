@@ -92,7 +92,7 @@ $\texttt{gcd\_ways}[i][1]$.
 ```py
 from math import comb
 
-MOD = 10 ** 9 + 7
+MOD = 10**9 + 7
 ANS_UB = 7
 
 n = int(input())
@@ -112,7 +112,7 @@ for i in range(1, ANS_UB + 1):
 		for j_mul in range(2 * j, max_ + 1, j):
 			val -= gcd_ways[j_mul]
 		gcd_ways[j] = val
-	
+
 	if gcd_ways[1] > 0:
 		print(i)
 		break
@@ -126,10 +126,10 @@ else:
 Since C++ can't store huge numbers, we have to use a modulus to do our calculations.
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <set>
 #include <algorithm>
+#include <iostream>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -142,27 +142,23 @@ long long pow(long long base, long long exp) {
 	base %= MOD;
 	long long res = 1;
 	while (exp > 0) {
-		if (exp % 2 == 1) {
-			res = res * base % MOD;
-		}
+		if (exp % 2 == 1) { res = res * base % MOD; }
 		base = base * base % MOD;
 		exp /= 2;
 	}
 	return res;
 }
- 
+
 long long mod_inv(long long n) { return pow(n, MOD - 2); }
 
 int main() {
 	int n;
 	std::cin >> n;
-	
+
 	vector<long long> fact(n + 1);
 	fact[0] = 1;
-	for (int i = 1; i <= n; i++) {
-		fact[i] = (fact[i - 1] * i) % MOD;
-	}
-	auto comb = [&] (int n, int k) {
+	for (int i = 1; i <= n; i++) { fact[i] = (fact[i - 1] * i) % MOD; }
+	auto comb = [&](int n, int k) {
 		if (n < k) { return 0LL; }
 		return fact[n] * mod_inv(fact[k] * fact[n - k] % MOD) % MOD;
 	};
@@ -199,7 +195,7 @@ int main() {
 	}
 
 	cout << -1 << endl;
-	end:;
+end:;
 }
 ```
 
