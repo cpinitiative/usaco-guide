@@ -1,0 +1,204 @@
+---
+id: cf-1043F
+source: CF
+title: Make It One
+author: Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+Try to construct an upper bound on the maximum number of elements needed for a GCD of 1.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What's the maximum number of distinct prime factors you can cram into
+a number that's at most $3 \cdot 10^5$?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Let $\texttt{gcd\_ways}[i][\texttt{gcd}]$ be the number of ways to select a
+subset of size $i$ from the given array with a GCD of $\texttt{gcd}$.
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+Computing $\texttt{gcd\_ways}[i]$ from $\texttt{gcd\_ways}[i-1]$ seems to be nigh-impossible.
+Could there be an alternate way to compute it?
+What about if we calculated it from $\texttt{gcd\_ways}[i]$ itself?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/62797)
+
+## Explanation
+
+### An Upper Bound of the Answer
+
+Notice that a number less than $3 \cdot 10^5$ has at most 6 prime factors.
+Code it out in your favorite language if you're unconvinced by this!
+
+Now, we can deduce that any answer to the problem must less than 7
+(excluding the case where it's impossible).
+
+To see why this is true, say we had an element with 6 prime factors
+(the maximum amount) in the subset we were constructing.
+With an additional element, the GCD of that subset should probably have 1 less
+prime factor.
+If it doesn't reduce the number of prime factors, there's no sense in including it
+in the first place.
+
+### Dynamic Programming
+
+Now, we let $\texttt{gcd\_ways}[i][\texttt{gcd}]$
+be the number of ways to select a subset of size $i$
+from the given array with a GCD of $\texttt{gcd}$
+(If you read the hints you should've already seen this).
+
+We calculate $\texttt{gcd\_ways}[i][\texttt{gcd}]$ not from $\texttt{gcd\_ways}[i-1]$,
+but actually from $\texttt{gcd\_ways}[i]$ itself!
+
+Our transition is as follows:
+
+$$
+\texttt{gcd\_ways}[i][\texttt{gcd}]=\binom{x}{i}-\sum_{k=2}^{\infty}{\texttt{gcd\_ways}[i][k \cdot \texttt{gcd}]}
+$$
+
+In this formula, $x$ is the number of elements in our set that are divisible by $\texttt{gcd}$.
+We initially count the raw number of $\texttt{size}-i$ subsets with the binomial, but
+notice that we actually overcount: it's possible that we included a subset with GCD $2k$
+
+To remedy this, we subtract the sum over all multiples of $\texttt{gcd}$ to account
+for this initial error.
+
+Iterating over $i$ from 1 to 7 and $\texttt{gcd}$ from $M$ to 1,
+where $M$ is the maximum element given in the input,
+we can now check if there's a subset of size $i$ with a GCD of 1 by checking
+$\texttt{gcd\_ways}[i][1]$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log M (N + M))$, where $M$ is the same as above.
+
+<LanguageSection>
+<PySection>
+
+```py
+from math import comb
+
+MOD = 10**9 + 7
+ANS_UB = 7
+
+n = int(input())
+
+nums = {int(i) for i in input().split()}
+max_ = max(nums)
+
+div_by_num = [0 for _ in range(max_ + 1)]
+for d in range(1, max_ + 1):
+	for mul in range(d, max_ + 1, d):
+		div_by_num[d] += mul in nums
+
+for i in range(1, ANS_UB + 1):
+	gcd_ways = [0 for _ in range(max_ + 1)]
+	for j in range(max_, 0, -1):
+		val = comb(div_by_num[j], i)
+		for j_mul in range(2 * j, max_ + 1, j):
+			val -= gcd_ways[j_mul]
+		gcd_ways[j] = val
+
+	if gcd_ways[1] > 0:
+		print(i)
+		break
+else:
+	print(-1)
+```
+
+</PySection>
+<CPPSection>
+
+Since C++ can't store huge numbers, we have to use a modulus to do our calculations.
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <set>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+constexpr int MOD = 1e9 + 7;
+constexpr int ANS_UB = 7;
+
+long long pow(long long base, long long exp) {
+	base %= MOD;
+	long long res = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1) { res = res * base % MOD; }
+		base = base * base % MOD;
+		exp /= 2;
+	}
+	return res;
+}
+
+long long mod_inv(long long n) { return pow(n, MOD - 2); }
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	vector<long long> fact(n + 1);
+	fact[0] = 1;
+	for (int i = 1; i <= n; i++) { fact[i] = (fact[i - 1] * i) % MOD; }
+	auto comb = [&](int n, int k) {
+		if (n < k) { return 0LL; }
+		return fact[n] * mod_inv(fact[k] * fact[n - k] % MOD) % MOD;
+	};
+
+	std::set<int> nums;
+	for (int i = 0; i < n; i++) {
+		int x;
+		std::cin >> x;
+		nums.insert(x);
+	}
+
+	int max = *std::max_element(nums.begin(), nums.end());
+	vector<int> div_by_num(max + 1);
+	for (int d = 1; d <= max; d++) {
+		for (int mul = d; mul <= max; mul += d) {
+			div_by_num[d] += nums.count(mul);
+		}
+	}
+
+	for (int i = 1; i <= ANS_UB; i++) {
+		vector<long long> gcd_ways(max + 1);
+		for (int j = max; j >= 1; j--) {
+			long long val = comb(div_by_num[j], i);
+			for (int j_mul = 2 * j; j_mul <= max; j_mul += j) {
+				val = (val - gcd_ways[j_mul] + MOD) % MOD;
+			}
+			gcd_ways[j] = val;
+		}
+
+		if (gcd_ways[1] > 0) {
+			cout << i << endl;
+			return 0;
+		}
+	}
+
+	cout << -1 << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
