@@ -18,28 +18,24 @@ prerequisites:
 </Resources>
 
 <LanguageSection>
-
 <CPPSection>
 
 C++ contains two versions of sets and maps; one using **sorting** and the other
 using **hashing**.
 
 </CPPSection>
-
 <JavaSection>
 
 Java contains two versions of sets and maps; one using **sorting** and the other
 using **hashing**.
 
 </JavaSection>
-
 <PySection>
 
 Python has built-in sets and maps, however they do _not_ store elements in
 sorted order.
 
 </PySection>
-
 </LanguageSection>
 
 ## Sets
@@ -49,7 +45,6 @@ sorted order.
 A **set** is a collection of elements that contains no duplicates.
 
 <LanguageSection>
-
 <CPPSection>
 
 ### Unordered Sets
@@ -69,6 +64,17 @@ Some operations on an `std::unordered_set` named `s` include:
 Unordered sets work with primitive types, but require a
 [custom hash function](/gold/hashmaps#custom-hashing)
 for structures/classes like vectors and pairs.
+
+<Warning title="Unordered Set Performance">
+
+`unordered_set` actually has worst-case $\mathcal{O}(N)$ behavior, and it's
+possible to construct a test case for Distinct Numbers such that a program
+that uses `unordered_set` times out.
+For more on unordered maps and sets, check out [this module](/gold/unordered).
+
+In any case, just default to using ordered sets in C++.
+
+</Warning>
 
 ```cpp
 unordered_set<int> s;
@@ -108,7 +114,6 @@ for (int element : s) { cout << element << endl; }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ### Unordered Sets
@@ -166,7 +171,6 @@ for (int element : set) { System.out.println(element); }
 ```
 
 </JavaSection>
-
 <PySection>
 
 Python's built-in `set` uses hashing to support $\mathcal{O}(1)$ insertion,
@@ -191,7 +195,6 @@ s.remove(0)  # {4, 2}
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Solution - Distinct Numbers
