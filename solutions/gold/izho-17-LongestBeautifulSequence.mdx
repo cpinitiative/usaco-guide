@@ -7,13 +7,35 @@ author: Daniel Zhu
 
 ## Explanation
 
+Solving this problem all at once is extremely difficult: let's go through the subtasks first.
+
 ### Subtasks 1-2
 
 Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices.
 
-Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subsequence) that ends at $i$, and $\texttt{bc}[x][y]$ as $\text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$. We transition by iterating over all $j < i$ where $\texttt{bc}[a_i][a_j] == \texttt{k}[i]$.
+Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subsequence) that ends at $i$, and $\texttt{trans}_k(y)$ as all $x$ that satisfy $\texttt{bc}[x][y] = \text{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y) == k$. We transition by iterating over all $j < i$ where $a_j \in \texttt{trans}_{k_i}(a_i)$.  To reconstruct an optimal solution we define another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
 
-We can reconstruct an optimal solution by defining another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
+Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$. 
+- **Base case:** $\texttt{dp}[i] = 1$ for all $i$ (any single number forms an LBS) and $\texttt{prv}[i] = i$. 
+- $\texttt{dp}[1]$: we try extending the longest LBS that ends at $a_0 = 1$. Because $\texttt{bc}[a_0][a_1] == k_1$, our new LBS is valid, and we update $\texttt{dp}[1] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[1] = 0$.
+- $\texttt{dp}[2]$: we try to extend the LBS from both $a_0$ and $a_1$.
+	- $a_0$: $\texttt{bc}[a_0][a_2] == k_2$ -> $\texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
+	- $a_1$: $\texttt{bc}[a_1][a_2] == k_2$ -> $\texttt{dp}[2] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[2] = 1$
+	- We take the larger of the two DP values, so $\texttt{dp}[2] = 3$ and $\texttt{prv}[2] = 1$.
+- $\texttt{dp}[3]$: we try to extend from $a_0$, $a_1$, and $a_2$.
+	- $a_0$: $\texttt{bc}[a_0][a_3] \neq k_3$ -> no transition
+	- $a_1$: $\texttt{bc}[a_1][a_3] == k_3$ -> $\texttt{dp}[3] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[3] = 1$
+	- $a_2$: $\texttt{bc}[a_2][a_3] == k_3$ -> $\texttt{dp}[3] = \texttt{dp}[2] + 1 = 4$ and $\texttt{prv}[3] = 2$
+	- Taking the larger of the two options, $\texttt{dp}[3] = 4$ and $\texttt{prv}[3] = 2$.
+- **Final answer:** $\max(\texttt{dp}[i]_{i \in [0, n)}) = \texttt{dp}[3] = \boxed{4}$
+- **Reconstructing a solution:**
+	- choose $i$ s.t. $\texttt{dp}[i] = \max(\texttt{dp}[i]_{i \in [0, n)}) = 4 \Rightarrow i = 3$
+	- While $i \neq \texttt{prv}[i], i := \texttt{prv}[i]$: 
+		- $\texttt{prv}[3] = 2$ 
+		- $\texttt{prv}[2] = 1$ 
+		- $\texttt{prv}[1] = 0$  
+		- $\texttt{prv}[0] = 0$
+	- taking all values of $i$ and reversing them, we get the (0-indexed) solution $\{0, 1, 2, 3\}$.
 
 ### Implementation
 
@@ -83,10 +105,21 @@ int main() {
 
 While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
 
-More specifically, we redefine $\texttt{dp}[i]$ to be the length of the longest LBS that ends with **value** $i$ (rather than index). To calculate $\texttt{dp}[a_i]$, we try to transition from $\texttt{dp}[j]$ for all $j$ that satisfy $bc[j][a_i] == k[i]$. This improves our time complexity to $\mathcal{O}(NM)$.
+More specifically, we define $\texttt{dp}[i][x]$ to be the length of the longest LBS that ends with **value** $x$ (rather than index) and is a subset of the first $i$ numbers. We have two transitions for each index $i$: 
+- Include $a_i$: to calculate $\texttt{dp}[i][a_i]$, we transition from $\texttt{dp}[i - 1][x]$ for all $x \in \texttt{trans}_{k_i}(a_i)$.
+- Don't include $a_i$: $\texttt{dp}[i][x] = \texttt{dp}[i - 1][x]$ for all $x \leq M$.
+<Info title="Implementation Note">
+In order to reconstruct a solution, we need to store the ending index of the optimal LBS in $\texttt{dp}[i][x]$ in addition to its length. For brevity's sake, this is omitted in the example below.
+</Info>
+This improves our time complexity to $\mathcal{O}(NM)$. Notice that, because $\texttt{dp}[i][x]$ only depends on $\texttt{dp}[i - 1][...]$, we can drop the first dimension.
 
+Consider the first sample case again: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$. The maximum value is $M = 4$.
+- **Base case:** $\texttt{dp}[a_0 = 1] = 1$, all other DP values are initially 0
+- $\texttt{dp}[a_1 = 1]$: we loop over all states $\texttt{dp}[x]$ where $x \in [0, M] \bigcap \texttt{trans}_{k_i}(a_i)$. The values of $x$ that satisfy these conditions are $0$, $1$, and $4$. Out of these $x$'s, $\texttt{dp}[1]$ has the greatest value, so $\texttt{dp}[a_1] = \texttt{dp}[1] + 1 = 1 + 1 = 2$.
+- $\texttt{dp}[a_2 = 3]$: here, $x \in \{1, 2\}$ and $\texttt{dp}[2]$ has the greater value, so $\texttt{dp}[a_2] = \texttt{dp}[2] + 1 = 2 + 1 = 3$.
+- $\texttt{dp}[a_3 = 4]$: $x \in \{0, 1, 2, 3\}$ -> $\texttt{dp}[a_3] = \texttt{dp}[3] + 1 = 3 + 1 = 4$.
+- **Final answer:** the max DP value, $\boxed{4}$.
 ### Implementation
-
 **Time Complexity**: $\mathcal{O}(NM)$
 
 <Spoiler title="Code">
@@ -96,8 +129,6 @@ More specifically, we redefine $\texttt{dp}[i]$ to be the length of the longest 
 
 ```cpp
 #include <bits/stdc++.h>
-#define f first
-#define s second
 using namespace std;
 using pii = pair<int, int>;
 const int B = 8;
@@ -121,24 +152,24 @@ int main() {
 	int ans = 1, best_i = 0;  // best_i: best index to end subsequence at
 	vector<int> prv(n);       // prv[i]: best index to include before i
 	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+	// dp[i].first: longest lbs that ends in i
+	// dp[i].second: optimal end index for lbs that ends in i
 	vector<pii> dp(1 << B, make_pair(-1, -1));
-	// dp[i].f: longest lbs that ends in i
-	// dp[i].s: optimal end index for lbs that ends in i
 
 	for (int i = 0; i < n; i++) {
-		if (dp[a[i]].f == -1) {
-			dp[a[i]].f = 1;
-			dp[a[i]].s = i;
+		if (dp[a[i]].first == -1) {
+			dp[a[i]].first = 1;
+			dp[a[i]].second = i;
 		}
 		for (int j = 0; j < (1 << B); j++) {
-			if (bc[j][a[i]] == k[i] && dp[j].f + 1 > dp[a[i]].f) {
-				dp[a[i]].f = dp[j].f + 1;
-				dp[a[i]].s = i;
-				prv[i] = dp[j].s;
+			if (bc[j][a[i]] == k[i] && dp[j].first + 1 > dp[a[i]].first) {
+				dp[a[i]].first = dp[j].first + 1;
+				dp[a[i]].second = i;
+				prv[i] = dp[j].second;
 			}
 		}
-		if (dp[a[i]].f > ans) {
-			ans = dp[a[i]].f;
+		if (dp[a[i]].first > ans) {
+			ans = dp[a[i]].first;
 			best_i = i;
 		}
 	}
@@ -163,17 +194,67 @@ int main() {
 
 With much higher bounds on both $N$ and $M$, neither of the previously presented solutions will run in time.
 
-In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. The most extreme way to achieve this is to embed all search parameters directly in the DP state (i.e. $\texttt{dp}[i][k]$ is the length of the longest LBS that ends in $x$, where $\texttt{bc}[x][i] == k$). $\texttt{dp}[a[i]][k[i]]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$. However, each DP state now encapsulates a much larger amount of possible LBS's: any LBS that ends in $x$, where $\texttt{bc}[x][i] == k$, will be factored into $\texttt{dp}[i][k]$. Similarly, an LBS with fixed final value $a_i$ now affects $M$, rather than $1$, DP states: namely, all states $\texttt{dp}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
+In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. **How can we quickly process all transitions** (i.e. all $x \in \texttt{trans}_{k_i}(a_i)$)**?**
 
-In summary, if $a_i$ is the last number in an LBS:
-- strict DP state (only 1 possible value of $a_i$) -> $\mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
-- loose DP state (up to $M$ possible values of $a_i$) -> $\mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
+The most extreme way to optimize transitions is to embed the restrictions of $x$ directly in the DP state.
 
-Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a state such that both complexities are $\mathcal{O}(\sqrt{M})$.
+**Concretely, define $\texttt{dp2}[i][k]$ as the maximum value of $\texttt{dp}[x]$ over all $x \in \texttt{trans}_k(i)$.** 
 
-Based on the two extremes we considered, increased restriction on $x$ (the last number in the LBS) appears to directly correspond to a lower amount of affected states. In fact, if we restrict $b$ bits of $x$, the complexity of transition is $\mathcal{O}(2^b)$, and the amount of affected states is $\mathcal{O}(\frac{M}{2^b})$. Therefore, $\frac{\log_2M}{2} = 10$ is the best value for $b$, giving a final time complexity of $\mathcal{O}(N\sqrt{M})$.
+To better understand this redefinition of our DP state, let's look at our sample again. Notice, in our computation of $\texttt{dp}[a_3 = 4]$, we process all $x \in \{0, 1, 2, 3\}$ one by one. However, in our newly defined state, we can get the most optimal solution over all values $x$ simply by querying $\texttt{dp2}[a_3][k_3]$. 
+
+**In general, $\texttt{dp2}[a_i][k_i]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$.** 
+
+However, each $\texttt{dp2}$ state now encapsulates $|\texttt{trans}_k(i)| \leq M$ of our original $\texttt{dp}$ states. Similarly, an LBS with fixed final value $a_i$ affects $M$  $\texttt{dp2}$ states compared to one $\texttt{dp}$ state: namely, all states $\texttt{dp2}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
+
+In summary, if $x$ is the last number in an LBS:
+- $\texttt{dp}$ (only one possible value of $x$) -> $\mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
+- $\texttt{dp2}$ (up to $M$ possible values of $x$) -> $\mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
+
+Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a restriction such that both complexities are $\mathcal{O}(\sqrt{M})$. This motivates using a blend of $\texttt{dp}$ and $\texttt{dp2}$. Since $\texttt{dp}2$ already restricts bits, it seems natural to consider applying $\texttt{dp}$ on some bits of $x$ and $\texttt{dp2}$ on the rest. 
+
+Concretely, let $\texttt{l}(x, b)$ be the number represented by the $b$ leftmost bits of $x$ and $\texttt{r}(x, b)$ be the number represented by the $\texttt{bit\_count}(x) - b$ rightmost bits. In our new DP state $\texttt{dp3}[i][j][k]$, we will: 
+- fix $\texttt{l}(x, b) = i$ (this is the $\texttt{dp}$ part of our new state)
+-  restrict $\texttt{r}(x, b)$ s.t. $\texttt{r}(x, b) \in \texttt{trans}_k(j)$ (this is the $\texttt{dp2}$ part of our new state)
+
+What are the time complexities of *transition* and *affected states* now? 
+#### Transition:
+Let's say we're currently processing $a_i$. If we have $x$ s.t. $x \in \texttt{trans}_{k_i}(a_i) \Rightarrow \texttt{bc}[x][a_i] = k_i$. By considering the left and right sides of $x$ and $a_i$ separately, we can rewrite $\texttt{bc}[x][a_i]$ as $\texttt{bc}[\texttt{l}(x, b)][\texttt{l}(a_i, b)] + \texttt{bc}[\texttt{r}(x, b)][\texttt{r}(a_i, b)] = k_i$.
+___
+**Example:** $x$ = 01010, $a_i$ = 01101, $b$ = 3
+```
+01010 & 01101 = 01000 -> 1
+
+010   & 011   = 010   -> 1
+
+   10 &    01 =    00 -> 0
+```
+$1 + 0 = \boxed1$.
+___
+Since our DP state fixes $\texttt{l}(x, b)$, we should rewrite this equation to solve for $\texttt{r}(x, b)$: $\texttt{bc}[\texttt{r}(x, b)][\texttt{r}(a_i, b)] = k_i - \texttt{bc}[\texttt{l}(x, b)][\texttt{l}(a_i, b)] \Rightarrow \texttt{r}(x, b) \in \texttt{trans}_{k_i - \texttt{bc}[\texttt{l}(x, b)][\texttt{l}(a_i, b)]}(\texttt{r}(a_i, b))$. Note this restriction matches our $\texttt{dp3}$ restriction of $\texttt{r}(x, b) \in \texttt{trans}_k(j)$, so we have $j = \texttt{r}(a_i, b)$ and $k = k_i - \texttt{bc}[\texttt{l}(x, b)][\texttt{l}(a_i, b)] = k_i - \texttt{bc}[i][\texttt{l}(a_i, b)]$. As for $\texttt{l}(x, b)$, we simply enumerate all $2^b$ possibilities; therefore, $i \in [0, 2^b)$.
+
+**In summary, the transitions to $a_i$ are all states $\texttt{dp3}[x][\texttt{r}(a_i, b)][k_i - \texttt{bc}[x][\texttt{l}(a_i, b)]]$ where $x \in [0, 2^b)$**.
+
+Because the only variable in the state is $x$, the complexity of transition is the number of options for $x$ which is $\boxed{2^b}$.
+
+#### Affected States:
+We now have the length of the longest LBS that ends at $a_i$. What $\texttt{dp3}[x][y][k]$ states does this affect?
+
+Starting with the obvious, $x = \texttt{l}(a_i, b)$. We also have the restriction that $\texttt{r}(a_i, b) \in \texttt{trans}_k(y) \Rightarrow k = \texttt{bc}[\texttt{r}(a_i, b)][y]$. Because $\texttt{r}(a_i, b)$ is a constant, $k$ depends solely on $y$.
+
+**In summary, the states affected by $a_i$ are all states $\texttt{dp}3[\texttt{l}(a_i, b)][y][\texttt{bc}[\texttt{r}(a_i, b)][y]]$**. 
+
+$y$ has to have the same amount of bits as $\texttt{r}(a_i, b)$ which has $\log_2{M} - b$ bits. Therefore, $y$ has $2^{\log_2M - b} = \boxed{\frac{M}{2^b}}$.
+
+To sum it all up, the complexity of transition is $\mathcal{O}(2^b)$ and the complexity of affected states is $\mathcal{O}(\frac{M}{2^b})$. To minimize the sum of these complexities, we should equate them. Because $M = 2 ^{20}$, we find the optimal value of $b$ to be $\boxed{10}$.
 
 ### Implementation
+In the implementation below:
+- $\texttt{l}(x)$ denotes the 10 leftmost bits of $x$
+- $\texttt{r}(x)$ denotes the 10 righmost bits of $x$
+- $\texttt{dp}[i][j][k]$:
+	- what was previously referred to as $\texttt{dp3}$
+	- `.first`: length of longest LBS
+	- `.second`: end index of the longest LBS
 
 **Time Complexity:** $\mathcal{O}(N\sqrt{M})$
 
@@ -184,22 +265,12 @@ Based on the two extremes we considered, increased restriction on $x$ (the last 
 
 ```cpp
 #include <bits/stdc++.h>
-#define f first
-#define s second
 using namespace std;
 using pii = pair<int, int>;
 const int N = 1e5;
 const int B = 10;
 int bc[1 << B][1 << B];  // bc[i][j] = bit_count(i & j)
 pii dp[1 << B][1 << B][B + 1];
-// define l(x) = 10 leftmost bits of x,
-// and r(x) = 10 rightmost bits of x
-// dp[i][j][k].f:
-// longest subsequence that ends in x, where x satisfies:
-// 1) l(x) = i
-// 2) bc[r[x]][j] = k
-// dp[i][j][k].s:
-// index of the most optimal x
 
 int main() {
 	// preprocess:
@@ -232,9 +303,9 @@ int main() {
 			// required value of bc[r(x)][r(y)]
 			int needed = k[i] - bc[j][l];
 			if (needed < 0 || needed > 10) continue;
-			if (dp[j][r][needed].f + 1 > lbs) {
-				lbs = dp[j][r][needed].f + 1;
-				prv[i] = dp[j][r][needed].s;
+			if (dp[j][r][needed].first + 1 > lbs) {
+				lbs = dp[j][r][needed].first + 1;
+				prv[i] = dp[j][r][needed].second;
 			}
 		}
 
@@ -246,9 +317,9 @@ int main() {
 		// update all answers a[i] affects
 		for (int j = 0; j < (1 << B); j++) {
 			pii &new_state = dp[l][j][bc[r][j]];
-			if (lbs > new_state.f) {
-				new_state.f = lbs;
-				new_state.s = i;
+			if (lbs > new_state.first) {
+				new_state.first = lbs;
+				new_state.second = i;
 			}
 		}
 	}
