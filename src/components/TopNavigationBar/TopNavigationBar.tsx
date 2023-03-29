@@ -156,11 +156,11 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  Sign up for USACO Classes now!
+                  Come to the USACO Open Workshop and Q&A session!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/classes"
+                    href="https://joincpi.org/workshops/open23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
