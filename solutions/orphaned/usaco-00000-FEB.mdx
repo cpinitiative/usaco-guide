@@ -215,11 +215,13 @@ Nathan's commented code:
 using namespace std;
 
 int main() {
-	int n; cin >> n;
-	string s; cin >> s;
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
 
 	int mn = 0, mx = 0;
-	
+
 	int curIdx = 0;
 	while (curIdx < n) {
 		if (s[curIdx] == 'F') {
@@ -236,7 +238,7 @@ int main() {
 		if (s[nextIdx] == s[curIdx]) {
 			// Case 1: Solve something like BFFFFFB
 			int length = num_F + 2;
-			
+
 			// First, solve for mn
 			if (length % 2 == 0) {
 				// At best we can have something like BEBEBB
@@ -272,14 +274,15 @@ int main() {
 	int num_beginning_F = 0;
 	while (num_beginning_F < n && s[num_beginning_F] == 'F') num_beginning_F++;
 	int num_ending_F = 0;
-	while (num_ending_F < n && s[n-1-num_ending_F] == 'F') num_ending_F++;
-	
+	while (num_ending_F < n && s[n - 1 - num_ending_F] == 'F') num_ending_F++;
+
 	if (num_beginning_F == n) {
 		// everything is an F! special case
 		mn = 0;
-		mx = n-1;
+		mx = n - 1;
 	} else {
-		// mn doesn't change, since we can always alternate the beginning / ending properly
+		// mn doesn't change, since we can always alternate the beginning /
+		// ending properly
 		mx += num_beginning_F;
 		mx += num_ending_F;
 	}
@@ -294,9 +297,7 @@ int main() {
 	}
 
 	cout << possible_levels.size() << endl;
-	for (int i : possible_levels) {
-		cout << i << endl;
-	}
+	for (int i : possible_levels) { cout << i << endl; }
 }
 ```
 
@@ -306,15 +307,15 @@ Ben's code, which is a lot more concise and takes advantage of some nice similar
 N = int(input())
 S = list(input())
 if S.count("F") == N:
-    S[0] = "E"
+	S[0] = "E"
 positions = [i for i in range(N) if S[i] != "F"]
 ones = positions[0] + N - 1 - positions[-1]
 mn, mx = 0, 0
 for a, b in zip(positions, positions[1:]):
-    mn += ((b - a) & 1) ^ (S[a] != S[b])
-    mx += b - a - (S[a] != S[b])
+	mn += ((b - a) & 1) ^ (S[a] != S[b])
+	mx += b - a - (S[a] != S[b])
 ans = range(mn, ones + mx + 1, 1 + (ones == 0))
 print(len(ans))
 for level in ans:
-    print(level)
+	print(level)
 ```
