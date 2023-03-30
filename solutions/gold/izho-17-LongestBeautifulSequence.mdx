@@ -17,8 +17,8 @@ Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subs
 <Info title="Note">
 We use $\texttt{bc}[x][y]$ below to denote $\texttt{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$.
 </Info>
-Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$. 
-- **Base case:** $\texttt{dp}[i] = 1$ for all $i$ (any single number forms an LBS) and $\texttt{prv}[i] = i$. 
+Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$.
+- **Base case:** $\texttt{dp}[i] = 1$ for all $i$ (any single number forms an LBS) and $\texttt{prv}[i] = i$.
 - $\texttt{dp}[1]$: we try extending the longest LBS that ends at $a_0 = 1$. Because $\texttt{bc}[a_0][a_1] == k_1$, our new LBS is valid, and we update $\texttt{dp}[1] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[1] = 0$.
 - $\texttt{dp}[2]$: we try to extend the LBS from both $a_0$ and $a_1$.
 	- $a_0$: $\texttt{bc}[a_0][a_2] == k_2$ -> $\texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
@@ -39,7 +39,7 @@ Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0,
 		- $ans = \{\texttt{prv}[2], 2, 3\} = \{1, 2, 3\}$
 		- $ans = \{\texttt{prv}[1], 1, 2, 3\} = \{0, 1, 2, 3\}$
 		- $\texttt{prv}[0] = 0$, so we terminate.
-	- Therefore, our final (0-indexed) answer will be $ans = \boxed{\{0, 1, 2, 3\}}.$ 
+	- Therefore, our final (0-indexed) answer will be $ans = \boxed{\{0, 1, 2, 3\}}.$
 
 ### Implementation
 
@@ -109,7 +109,7 @@ int main() {
 
 While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
 
-More specifically, we define $\texttt{dp}[i][x]$ to be the length of the longest LBS that ends with **value** $x$ (rather than index) and is a subset of the first $i$ numbers. We have two transitions for each index $i$: 
+More specifically, we define $\texttt{dp}[i][x]$ to be the length of the longest LBS that ends with **value** $x$ (rather than index) and is a subset of the first $i$ numbers. We have two transitions for each index $i$:
 - Include $a_i$: to calculate $\texttt{dp}[i][a_i]$, we transition from $\texttt{dp}[i - 1][x]$ for all $x \in \texttt{trans}_{k_i}(a_i)$.
 - Don't include $a_i$: $\texttt{dp}[i][x] = \texttt{dp}[i - 1][x]$ for all $x \leq M$.
 <Info title="Implementation Note">
@@ -202,11 +202,11 @@ In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motiva
 
 The most extreme way to optimize transitions is to embed the restrictions of $x$ directly in the DP state.
 
-**Concretely, define $\texttt{dp2}[i][k]$ as the maximum value of $\texttt{dp}[x]$ over all $x$ in $\texttt{trans}_k(i)$.** 
+**Concretely, define $\texttt{dp2}[i][k]$ as the maximum value of $\texttt{dp}[x]$ over all $x$ in $\texttt{trans}_k(i)$.**
 
-To better understand this redefinition of our DP state, let's look at our sample again. Notice, in our computation of $\texttt{dp}[a_3 = 4]$, we process all $x \in \{0, 1, 2, 3\}$ one by one. However, in our newly defined state, we can get the most optimal solution over all values $x$ simply by querying $\texttt{dp2}[a_3][k_3]$. 
+To better understand this redefinition of our DP state, let's look at our sample again. Notice, in our computation of $\texttt{dp}[a_3 = 4]$, we process all $x \in \{0, 1, 2, 3\}$ one by one. However, in our newly defined state, we can get the most optimal solution over all values $x$ simply by querying $\texttt{dp2}[a_3][k_3]$.
 
-**In general, $\texttt{dp2}[a_i][k_i]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$.** 
+**In general, $\texttt{dp2}[a_i][k_i]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$.**
 
 However, each $\texttt{dp2}$ state now encapsulates $|\texttt{trans}_k(i)| \leq M$ of our original $\texttt{dp}$ states. Similarly, an LBS with fixed final value $a_i$ affects $M$  $\texttt{dp2}$ states compared to one $\texttt{dp}$ state: namely, all states $\texttt{dp2}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
 
@@ -214,13 +214,13 @@ In summary, if $x$ is the last number in an LBS:
 - $\texttt{dp}$ (only one possible value of $x$) -> $\mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
 - $\texttt{dp2}$ (up to $M$ possible values of $x$) -> $\mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
 
-Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a restriction such that both complexities are $\mathcal{O}(\sqrt{M})$. This motivates using a blend of $\texttt{dp}$ and $\texttt{dp2}$. Since $\texttt{dp}2$ already restricts bits, it seems natural to consider applying $\texttt{dp}$ on some bits of $x$ and $\texttt{dp2}$ on the rest. 
+Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a restriction such that both complexities are $\mathcal{O}(\sqrt{M})$. This motivates using a blend of $\texttt{dp}$ and $\texttt{dp2}$. Since $\texttt{dp}2$ already restricts bits, it seems natural to consider applying $\texttt{dp}$ on some bits of $x$ and $\texttt{dp2}$ on the rest.
 
-Concretely, let $\texttt{l}(x, b)$ be the number represented by the $b$ leftmost bits of $x$ and $\texttt{r}(x, b)$ be the number represented by the $\texttt{bit\_count}(x) - b$ rightmost bits. In our new DP state $\texttt{dp3}[i][j][k]$, we will: 
+Concretely, let $\texttt{l}(x, b)$ be the number represented by the $b$ leftmost bits of $x$ and $\texttt{r}(x, b)$ be the number represented by the $\texttt{bit\_count}(x) - b$ rightmost bits. In our new DP state $\texttt{dp3}[i][j][k]$, we will:
 - fix $\texttt{l}(x, b) = i$ (this is the $\texttt{dp}$ part of our new state)
 -  restrict $\texttt{r}(x, b)$ s.t. $\texttt{r}(x, b) \in \texttt{trans}_k(j)$ (this is the $\texttt{dp2}$ part of our new state)
 
-What are the time complexities of *transition* and *affected states* now? 
+What are the time complexities of *transition* and *affected states* now?
 #### Transition:
 Let's say we're currently processing $a_i$. If we have $x$ s.t. $x \in \texttt{trans}_{k_i}(a_i) \Rightarrow \texttt{bc}[x][a_i] = k_i$. By considering the left and right sides of $x$ and $a_i$ separately, we can rewrite $\texttt{bc}[x][a_i]$ as $\texttt{bc}[\texttt{l}(x, b)][\texttt{l}(a_i, b)] + \texttt{bc}[\texttt{r}(x, b)][\texttt{r}(a_i, b)] = k_i$.
 ___
@@ -245,7 +245,7 @@ We now have the length of the longest LBS that ends at $a_i$. What $\texttt{dp3}
 
 Starting with the obvious, $x = \texttt{l}(a_i, b)$. We also have the restriction that $\texttt{r}(a_i, b) \in \texttt{trans}_k(y) \Rightarrow k = \texttt{bc}[\texttt{r}(a_i, b)][y]$. Because $\texttt{r}(a_i, b)$ is a constant, $k$ depends solely on $y$.
 
-**In summary, the states affected by $a_i$ are all states $\texttt{dp}3[\texttt{l}(a_i, b)][y][\texttt{bc}[\texttt{r}(a_i, b)][y]]$**. 
+**In summary, the states affected by $a_i$ are all states $\texttt{dp}3[\texttt{l}(a_i, b)][y][\texttt{bc}[\texttt{r}(a_i, b)][y]]$**.
 
 $y$ has to have the same amount of bits as $\texttt{r}(a_i, b)$ which has $\log_2{M} - b$ bits. Therefore, $y$ has $2^{\log_2M - b} = \boxed{\frac{M}{2^b}}$.
 
@@ -273,7 +273,7 @@ const int B = 10;
 int bc[1 << B][1 << B];  // bc[i][j] = bit_count(i & j)
 struct state {
 	int length = 0, end = 0;
-    state() {}
+	state() {}
 	state(int l, int e) : length(l), end(e) {}
 };
 state dp[1 << B][1 << B][B + 1];
