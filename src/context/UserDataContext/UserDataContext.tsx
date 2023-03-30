@@ -365,7 +365,12 @@ export const UserDataProvider = ({
           setDoc(
             doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
             data
-          );
+          ).catch(err => {
+            console.error(err);
+            alert(
+              `importUserData: Error setting firebase doc. Check console for details.`
+            );
+          });
         }
         triggerRerender();
         return true;
