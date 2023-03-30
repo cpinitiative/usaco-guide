@@ -121,23 +121,23 @@ In order to reconstruct a solution, we need to store the ending index of the opt
 This improves our time complexity to $\mathcal{O}(NM)$. Notice that, because $\texttt{dp}[i][x]$ only depends on $\texttt{dp}[i - 1][...]$, we can drop the first dimension.
 
 Consider the first sample case again: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$. The maximum value is $M = 4$.
-- **Base case:** $\texttt{dp}[a_0 = 1] = \{1, 0\}$. 
+- **Base case:** $\texttt{dp}[a_0 = 1] = \{1, 0\}$.
 	- all other DP values are initially 0
 	- $\texttt{prv}[i] = i$
-- $\texttt{dp}[a_1 = 2] = \{2, 1\}$. 
-	- we loop over all states $\texttt{dp}[x]$ where $x \leq M$ and $x$ is in $\texttt{trans}_{k_i}(a_i)$. The values of $x$ that satisfy these conditions are $0$, $1$, and $4$. 
+- $\texttt{dp}[a_1 = 2] = \{2, 1\}$.
+	- we loop over all states $\texttt{dp}[x]$ where $x \leq M$ and $x$ is in $\texttt{trans}_{k_i}(a_i)$. The values of $x$ that satisfy these conditions are $0$, $1$, and $4$.
 	- Out of these $x$'s, $\texttt{dp}[x = 1]$ has the greatest value of `len`, so:
-		- $\texttt{dp}[a_1]. \texttt{len} = \texttt{dp}[x].\texttt{len} + 1 = 2$. 
+		- $\texttt{dp}[a_1]. \texttt{len} = \texttt{dp}[x].\texttt{len} + 1 = 2$.
 		- $\texttt{dp}[a_1].\texttt{end} = i = 1$.
 		- $\texttt{prv}[i] = \texttt{dp}[x].\texttt{end} = 0$.
 - $\texttt{dp}[a_2 = 3] = \{3, 2\}$.
 	- here, $x \in \{1, 2\}$ and $\texttt{dp}[x = 2]$ has the greater value, so:
-		- $\texttt{dp}[a_2]. \texttt{len} = \texttt{dp}[x].\texttt{len} + 1 = 3$. 
+		- $\texttt{dp}[a_2]. \texttt{len} = \texttt{dp}[x].\texttt{len} + 1 = 3$.
 		- $\texttt{dp}[a_2].\texttt{end} = i = 2$.
 		- $\texttt{prv}[i] = \texttt{dp}[x].\texttt{end} = 1$.
 - $\texttt{dp}[a_3 = 4] = \{4, 3\}$.
 	- here, $x \in \{0, 1, 2, 3\}$ and $\texttt{dp}[x = 3]$ has the greatest value so:
-		- $\texttt{dp}[a_3]. \texttt{len} = \texttt{dp}[x].\texttt{len} + 1 = 4$. 
+		- $\texttt{dp}[a_3]. \texttt{len} = \texttt{dp}[x].\texttt{len} + 1 = 4$.
 		- $\texttt{dp}[a_3].\texttt{end} = i = 3$.
 		- $\texttt{prv}[i] = \texttt{dp}[x].\texttt{end} = 2$.
 - **Final answer:** the max DP `len` value, $\boxed{4}$.
@@ -156,7 +156,9 @@ Consider the first sample case again: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{
 using namespace std;
 using pii = pair<int, int>;
 const int B = 8;
-struct State { int len, end; };
+struct State {
+	int len, end;
+};
 int main() {
 	// preprocess:
 	// bc[i][j] = bit_count(i & j)
@@ -176,7 +178,7 @@ int main() {
 	int ans = 1;
 	// best_i: most optimal index to end on
 	int best_i = 0;
-	vector<int> prv(n);       // prv[i]: best index to include before i
+	vector<int> prv(n);               // prv[i]: best index to include before i
 	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
 	vector<State> dp(1 << B, State{-1, -1});
 
@@ -317,13 +319,13 @@ int main() {
 	int ans = 1;
 	// best_i: most optimal index to end on
 	int best_i = 0;
-	vector<int> prv(n);       // prv[i]: best index to include before i
+	vector<int> prv(n);               // prv[i]: best index to include before i
 	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
 
 	for (int i = 0; i < n; i++) {
-		int l = a[i] >> B; // l(a[i])
-        int r = a[i] % (1 << B);  // r(a[i])
-		int lbs = 1;  // length of longest lbs that ends at i
+		int l = a[i] >> B;        // l(a[i])
+		int r = a[i] % (1 << B);  // r(a[i])
+		int lbs = 1;              // length of longest lbs that ends at i
 
 		// enumerate all possibilities for l(prev_num)
 		for (int j = 0; j < (1 << B); j++) {
