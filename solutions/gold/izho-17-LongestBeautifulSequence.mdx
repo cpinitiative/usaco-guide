@@ -216,11 +216,9 @@ int main() {
 </LanguageSection>
 </Spoiler>
 
-### Subtask 4 (Full Credit)
+### Subtask 3 (Alternate Solution)
 
-With much higher bounds on both $N$ and $M$, neither of the previously presented solutions will run in time.
-
-In our solution for Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. **How can we quickly process all $x$ in $\texttt{trans}_{k_i}(a_i)$?**
+In our previous solution for this Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. **How can we quickly process all $x$ in $\texttt{trans}_{k_i}(a_i)$?**
 
 The most extreme way to optimize transitions is to embed the restrictions of $x$ directly in the DP state.
 
@@ -230,7 +228,75 @@ To better understand this redefinition of our DP state, let's look at our sample
 
 **In general, $\texttt{dp2}[a_i][k_i]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$.**
 
-However, each $\texttt{dp2}$ state now encapsulates $|\texttt{trans}_k(i)| \leq M$ of our original $\texttt{dp}$ states. Similarly, an LBS with fixed final value $a_i$ affects $M$  $\texttt{dp2}$ states compared to one $\texttt{dp}$ state: namely, all states $\texttt{dp2}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
+However, each state $\texttt{dp2}[i][k]$ now encapsulates $|\texttt{trans}_k(i)| \leq M$ of our original $\texttt{dp}$ states. Similarly, an LBS with fixed final value $a_i$ **affects $M$  $\texttt{dp2}$ states** compared to one $\texttt{dp}$ state: namely, all states $\texttt{dp2}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
+
+### Implementation (`dp2`)
+
+<Spoiler title="Code">
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using pii = pair<int, int>;
+const int B = 8;
+struct State { int len, end; };
+int main() {
+	// preprocess:
+	// bc[i][j] = bit_count(i & j)
+	vector<vector<int>> bc(1 << B, vector<int>(1 << B));
+	for (int i = 0; i < (1 << B); i++) {
+		for (int j = 0; j < (1 << B); j++) {
+			bc[i][j] = __builtin_popcount(i & j);
+		}
+	}
+
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) cin >> k[i];
+	int ans = 1;
+	// best_i: most optimal index to end on
+	int best_i = 0;
+	vector<int> prv(n);       // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+	vector<vector<State>> dp2(1 << B, vector<State>(B, State{0, -1}));
+
+	for (int i = 0; i < n; i++) {
+		// length of longest LBS that ends at i
+		int len = dp2[a[i]][k[i]].len + 1;
+		if (dp2[a[i]][k[i]].end != -1) {
+			prv[i] = dp2[a[i]][k[i]].end;
+		}
+		for (int j = 0; j < (1 << B); j++) {
+			State& affected_state = dp2[j][bc[a[i]][j]];
+			if (len > affected_state.len) {
+				affected_state = State{len, i};
+			}
+		}
+		if (len > ans) {
+			ans = len;
+			best_i = i;
+		}
+	}
+	cout << ans << endl;
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) cout << x + 1 << " ";
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+### Subtask 4 (Full Solution)
 
 In summary, if $x$ is the last number in an LBS:
 - $\texttt{dp}$ (only one possible value of $x$) $\rightarrow \mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
