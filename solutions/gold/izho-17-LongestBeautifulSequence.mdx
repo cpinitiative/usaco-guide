@@ -240,7 +240,9 @@ However, each state $\texttt{dp2}[i][k]$ now encapsulates $|\texttt{trans}_k(i)|
 using namespace std;
 using pii = pair<int, int>;
 const int B = 8;
-struct State { int len, end; };
+struct State {
+	int len, end;
+};
 int main() {
 	// preprocess:
 	// bc[i][j] = bit_count(i & j)
@@ -260,21 +262,17 @@ int main() {
 	int ans = 1;
 	// best_i: most optimal index to end on
 	int best_i = 0;
-	vector<int> prv(n);       // prv[i]: best index to include before i
+	vector<int> prv(n);               // prv[i]: best index to include before i
 	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
 	vector<vector<State>> dp2(1 << B, vector<State>(B, State{0, -1}));
 
 	for (int i = 0; i < n; i++) {
 		// length of longest LBS that ends at i
 		int len = dp2[a[i]][k[i]].len + 1;
-		if (dp2[a[i]][k[i]].end != -1) {
-			prv[i] = dp2[a[i]][k[i]].end;
-		}
+		if (dp2[a[i]][k[i]].end != -1) { prv[i] = dp2[a[i]][k[i]].end; }
 		for (int j = 0; j < (1 << B); j++) {
-			State& affected_state = dp2[j][bc[a[i]][j]];
-			if (len > affected_state.len) {
-				affected_state = State{len, i};
-			}
+			State &affected_state = dp2[j][bc[a[i]][j]];
+			if (len > affected_state.len) { affected_state = State{len, i}; }
 		}
 		if (len > ans) {
 			ans = len;
