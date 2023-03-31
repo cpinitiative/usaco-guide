@@ -312,7 +312,7 @@ What are the time complexities of *transition* and *affected states* now?
 
 #### Transition:
 
-Let's say we're currently processing $a_i$. If we have $c$ such that $c \in \texttt{trans}_{k_i}(a_i)$, then $\texttt{bc}[c][a_i] = k_i$. By considering the left and right sides of $c$ and $a_i$ separately, we can rewrite $\texttt{bc}[c][a_i]$ as $\texttt{bc}[l_c][l_{a_i}] + \texttt{bc}[r_c][r_{a_i}] = k_i$.
+Let's say we're currently processing $a_i$. If we have $x$ such that $x \in \texttt{trans}_{k_i}(a_i)$, then $\texttt{bc}[x][a_i] = k_i$. By considering the left and right sides of $x$ and $a_i$ separately, we can rewrite $\texttt{bc}[x][a_i]$ as $\texttt{bc}[l_x][l_{a_i}] + \texttt{bc}[r_x][r_{a_i}] = k_i$.
 ___
 **Example:** $x$ = 01010, $a_i$ = 01101, $b$ = 3
 ```
@@ -324,21 +324,21 @@ ___
 ```
 $1 + 0 = \boxed1$.
 ___
-Since our DP state $\texttt{dp3}[x][y][k]$ fixes $l_c = x$, we should rewrite this equation to solve for $r_c$: $\texttt{bc}[r_c][r_{a_i}] = k_i - \texttt{bc}[l_c][l_{a_i}]$. Note this restriction matches our $\texttt{dp3}$ restriction of $\texttt{bc}[r_c][j] = k$, so we have $y = r_{a_i}$ and $k = k_i - \texttt{bc}[l_c][l_{a_i}] = k_i - \texttt{bc}[x][l_{a_i}]$. As for $x = l_c = \texttt{l}(c, b)$, we simply enumerate all $2^b$ possibilities; therefore, $i \in [0, 2^b)$.
+Since our DP state $\texttt{dp3}[l][r][k]$ fixes $l_x = l$, we should rewrite this equation to solve for $r_x$: $\texttt{bc}[r_x][r_{a_i}] = k_i - \texttt{bc}[l_x][l_{a_i}]$. Note this restriction matches our $\texttt{dp3}$ restriction of $\texttt{bc}[r_x][j] = k$, so we have $r = r_{a_i}$ and $k = k_i - \texttt{bc}[l_x][l_{a_i}] = k_i - \texttt{bc}[x][l_{a_i}]$. As for $l = l_x = \texttt{l}(x, b)$, we simply enumerate all $2^b$ possibilities; therefore, $i \in [0, 2^b)$.
 
-**In summary, the transitions to $a_i$ are all states $\texttt{dp3}[x][r_{a_i}][k_i - \texttt{bc}[x][l_{a_i}]]$ where $x \in [0, 2^b)$**.
+**In summary, the transitions to $a_i$ are all states $\texttt{dp3}[l][r_{a_i}][k_i - \texttt{bc}[l][l_{a_i}]]$ where $l \in [0, 2^b)$**.
 
-Because the only variable in the state is $x$, the complexity of transition is the number of options for $x$ which is $\boxed{2^b}$.
+Because the only variable in the state is $l$, the complexity of transition is the number of options for $l$ which is $\boxed{2^b}$.
 
 #### Affected States:
 
-We now have the length of the longest LBS that ends at $a_i$. What $\texttt{dp3}[x][y][k]$ states does this affect?
+We now have the length of the longest LBS that ends at $a_i$. What $\texttt{dp3}[l][r][k]$ states does this affect?
 
-Starting with the obvious, $x = l_{a_i}$. We also have the restriction that $r_{a_i} \in \texttt{trans}_k(y) \Rightarrow k = \texttt{bc}[r_{a_i}][y]$. Because $r_{a_i}$ is a constant, $k$ depends solely on $y$.
+Starting with the obvious, $l = l_{a_i}$. We also have the restriction that $r_{a_i} \in \texttt{trans}_k(r) \Rightarrow k = \texttt{bc}[r_{a_i}][r]$. Because $r_{a_i}$ is a constant, $k$ depends solely on $r$.
 
-**In summary, the states affected by $a_i$ are all states $\texttt{dp}3[l_{a_i}][y][\texttt{bc}[r_{a_i}][y]]$**.
+**In summary, the states affected by $a_i$ are all states $\texttt{dp3}[l_{a_i}][r][\texttt{bc}[r_{a_i}][r]]$**.
 
-$y$ has to have the same amount of bits as $r_{a_i} = \texttt{r}(a_i, b)$ which has $\log_2{M} - b$ bits. Therefore, $y$ has $2^{\log_2M - b} = \boxed{\frac{M}{2^b}}$ possibilities.
+$r$ has to have the same amount of bits as $r_{a_i} = \texttt{r}(a_i, b)$ which has $\log_2{M} - b$ bits. Therefore, $r$ has $2^{\log_2M - b} = \boxed{\frac{M}{2^b}}$ possibilities.
 
 To sum it all up, the complexity of transition is $\mathcal{O}(2^b)$ and the complexity of affected states is $\mathcal{O}(\frac{M}{2^b})$. To minimize the sum of these complexities, we should equate them. Because $M = 2 ^{20}$, we find the optimal value of $b$ to be $\boxed{10}$.
 
