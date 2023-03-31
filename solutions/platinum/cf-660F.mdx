@@ -61,7 +61,7 @@ $$
 
 <CPPSection>
 
-**Complexity**: $\mathcal{O}(n \log n)$. The impementation below uses a [Line Container](/adv/line-container/), but it's also possible to dynamically maintain a deque and using binary search for queries by taking advantange of the monotonicity of $l$. 
+**Complexity**: $\mathcal{O}(n \log n)$. The impementation below uses a [Line Container](/adv/line-container/), but it's also possible to dynamically maintain a deque and using binary search for queries by taking advantange of the monotonicity of $l$.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -70,8 +70,8 @@ using namespace std;
 //BeginCodeSnip{Line Container}
 /** Source: /adv/line-container?lang=cpp */
 template<typename T>
-T floor_div(T a, T b) { 
-	return a / b - ((a ^ b) < 0 && a % b); 
+T floor_div(T a, T b) {
+	return a / b - ((a ^ b) < 0 && a % b);
 }
 
 struct line_container_line {
@@ -96,11 +96,11 @@ class line_container : multiset<line_container_line, less<>> {
 public:
 	void add(long long m, long long b) {
 		auto z = insert({m, b, 0}), y = z++, x = y;
-		while (isect(y, z)) 
+		while (isect(y, z))
 			z = erase(z);
-		if (x != begin() && isect(--x, y)) 
+		if (x != begin() && isect(--x, y))
 			isect(x, y = erase(y));
-		while ((y = x) != begin() && (--x)->p >= y->p) 
+		while ((y = x) != begin() && (--x)->p >= y->p)
 			isect(x, erase(y));
 	}
 
