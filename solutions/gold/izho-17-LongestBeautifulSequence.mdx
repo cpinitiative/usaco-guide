@@ -21,13 +21,13 @@ Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0,
 - **Base case:** $\texttt{dp}[i] = 1$ for all $i$ (any single number forms an LBS) and $\texttt{prv}[i] = i$.
 - $\texttt{dp}[1]$: we try extending the longest LBS that ends at $a_0 = 1$. Because $\texttt{bc}[a_0][a_1] == k_1$, our new LBS is valid, and we update $\texttt{dp}[1] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[1] = 0$.
 - $\texttt{dp}[2]$: we try to extend the LBS from both $a_0$ and $a_1$.
-	- $a_0$: $\texttt{bc}[a_0][a_2] == k_2$ -> $\texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
-	- $a_1$: $\texttt{bc}[a_1][a_2] == k_2$ -> $\texttt{dp}[2] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[2] = 1$
+	- $a_0$: $\texttt{bc}[a_0][a_2] == k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
+	- $a_1$: $\texttt{bc}[a_1][a_2] == k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[2] = 1$
 	- We take the larger of the two DP values, so $\texttt{dp}[2] = 3$ and $\texttt{prv}[2] = 1$.
 - $\texttt{dp}[3]$: we try to extend from $a_0$, $a_1$, and $a_2$.
-	- $a_0$: $\texttt{bc}[a_0][a_3] \neq k_3$ -> no transition
-	- $a_1$: $\texttt{bc}[a_1][a_3] == k_3$ -> $\texttt{dp}[3] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[3] = 1$
-	- $a_2$: $\texttt{bc}[a_2][a_3] == k_3$ -> $\texttt{dp}[3] = \texttt{dp}[2] + 1 = 4$ and $\texttt{prv}[3] = 2$
+	- $a_0$: $\texttt{bc}[a_0][a_3] \neq k_3 \rightarrow$ no transition
+	- $a_1$: $\texttt{bc}[a_1][a_3] == k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[3] = 1$
+	- $a_2$: $\texttt{bc}[a_2][a_3] == k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[2] + 1 = 4$ and $\texttt{prv}[3] = 2$
 	- Taking the larger of the two options, $\texttt{dp}[3] = 4$ and $\texttt{prv}[3] = 2$.
 - **Final answer:** $\texttt{len} = \max(\texttt{dp}[i]_{i \in [0, n)}) = \texttt{dp}[3] = \boxed{4}$
 - **Reconstructing a solution:**
@@ -233,8 +233,8 @@ To better understand this redefinition of our DP state, let's look at our sample
 However, each $\texttt{dp2}$ state now encapsulates $|\texttt{trans}_k(i)| \leq M$ of our original $\texttt{dp}$ states. Similarly, an LBS with fixed final value $a_i$ affects $M$  $\texttt{dp2}$ states compared to one $\texttt{dp}$ state: namely, all states $\texttt{dp2}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
 
 In summary, if $x$ is the last number in an LBS:
-- $\texttt{dp}$ (only one possible value of $x$) -> $\mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
-- $\texttt{dp2}$ (up to $M$ possible values of $x$) -> $\mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
+- $\texttt{dp}$ (only one possible value of $x$) $\rightarrow \mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
+- $\texttt{dp2}$ (up to $M$ possible values of $x$) $\rightarrow \mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
 
 Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a restriction such that both complexities are $\mathcal{O}(\sqrt{M})$. This motivates using a blend of $\texttt{dp}$ and $\texttt{dp2}$. Since $\texttt{dp}2$ already restricts bits, it seems natural to consider applying $\texttt{dp}$ on some bits of $x$ and $\texttt{dp2}$ on the rest.
 
@@ -356,15 +356,20 @@ int main() {
 			}
 		}
 	}
+
 	cout << ans << endl;
+
 	vector<int> res;
 	while (prv[best_i] != best_i) {
 		res.push_back(best_i);
 		best_i = prv[best_i];
 	}
 	res.push_back(best_i);
+
 	reverse(res.begin(), res.end());
-	for (int x : res) cout << x + 1 << " ";
+	for (int x : res) {
+		cout << x + 1 << " ";
+	}
 }
 ```
 
