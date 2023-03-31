@@ -180,8 +180,8 @@ int main() {
 	int best_i = 0;
 	vector<int> prv(n);               // prv[i]: best index to include before i
 	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+	
 	vector<State> dp(1 << B, State{-1, -1});
-
 	for (int i = 0; i < n; i++) {
 		if (dp[a[i]].len == -1) {
 			dp[a[i]].len = 1;
@@ -199,7 +199,9 @@ int main() {
 			best_i = i;
 		}
 	}
+	
 	cout << ans << endl;
+	
 	vector<int> res;
 	while (prv[best_i] != best_i) {
 		res.push_back(best_i);
@@ -239,6 +241,7 @@ However, each state $\texttt{dp2}[i][k]$ now encapsulates $|\texttt{trans}_k(i)|
 #include <bits/stdc++.h>
 using namespace std;
 using pii = pair<int, int>;
+
 const int B = 8;
 struct State {
 	int len, end;
@@ -264,8 +267,8 @@ int main() {
 	int best_i = 0;
 	vector<int> prv(n);               // prv[i]: best index to include before i
 	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+	
 	vector<vector<State>> dp2(1 << B, vector<State>(B, State{0, -1}));
-
 	for (int i = 0; i < n; i++) {
 		// length of longest LBS that ends at i
 		int len = dp2[a[i]][k[i]].len + 1;
@@ -279,7 +282,9 @@ int main() {
 			best_i = i;
 		}
 	}
+
 	cout << ans << endl;
+	
 	vector<int> res;
 	while (prv[best_i] != best_i) {
 		res.push_back(best_i);
@@ -290,6 +295,7 @@ int main() {
 	for (int x : res) cout << x + 1 << " ";
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 </Spoiler>
