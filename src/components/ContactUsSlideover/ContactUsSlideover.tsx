@@ -341,7 +341,7 @@ export default function ContactUsSlideover({
                 ) rather than submitting this form.
               </div>
               <div className="text-sm">
-                If you have any questions about
+                If you have any questions about{' '}
                 <a
                   className="hover:underline text-blue-600 dark:text-blue-300"
                   target="_blank"
@@ -350,7 +350,7 @@ export default function ContactUsSlideover({
                 >
                   CPI classes
                 </a>
-                , please email
+                , please email{' '}
                 <a
                   className="hover:underline text-blue-600 dark:text-blue-300"
                   target="_blank"
@@ -358,7 +358,7 @@ export default function ContactUsSlideover({
                   href="mailto:classes@joincpi.org"
                 >
                   classes@joincpi.org
-                </a>
+                </a>{' '}
                 rather than submitting this form.
               </div>
               <div className="space-y-3">
