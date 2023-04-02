@@ -299,7 +299,6 @@ in a line.
 ### DFS Solution
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -340,7 +339,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -396,7 +394,6 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -630,7 +627,7 @@ using namespace std;
 
 const int MN = 1e5 + 1;
 
-int N, M, ans, rep[MN];
+int N, M, rep[MN];
 
 vector<int> adj_list[MN];
 bool visited[MN];
@@ -654,33 +651,27 @@ void bfs(int node) {
 }
 
 int count_components() {
-
 	int count = 0;
-	for (int i = 1; i <= N; ++i)
+	for (int i = 1; i <= N; i++) {
 		if (!visited[i]) {
 			rep[count++] = i;
 			bfs(i);
 		}
+	}
 	return count;
 }
 
 int main() {
-
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-
 	cin >> N >> M;
-
-	for (int i = 0, u, v; i < M; ++i) {
+	for (int i = 0; i < M; ++i) {
+		int u, v;
 		cin >> u >> v;
 		adj_list[u].push_back(v);
 		adj_list[v].push_back(u);
 	}
 
-	ans = count_components();
-
+	int ans = count_components();
 	cout << ans - 1 << '\n';
-
 	for (int i = 1; i < ans; ++i) {
 		cout << rep[i - 1] << " " << rep[i] << '\n';
 	}
