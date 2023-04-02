@@ -623,8 +623,8 @@ See [here.](https://codeforces.com/blog/entry/67883)
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 
 using namespace std;
 
@@ -635,56 +635,54 @@ vector<int> adj_list[MN];
 bool visited[MN];
 
 void bfs(int node) {
-    queue<int> q;
-    q.push(node);
-    visited[node] = true;
+	queue<int> q;
+	q.push(node);
+	visited[node] = true;
 
-    while (!q.empty()) {
-        int curr = q.front();
-        q.pop();
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
 
-        for (int u : adj_list[curr]) {
-            if (!visited[u]) {
-                q.push(u);
-                visited[u] = true;
-            }
-        }
-    }
+		for (int u : adj_list[curr]) {
+			if (!visited[u]) {
+				q.push(u);
+				visited[u] = true;
+			}
+		}
+	}
 }
 
 int count_components() {
 
-    int count = 0;
-    for (int i = 1; i <= N; ++i)
-        if (!visited[i]) {
-            rep[count++] = i;
-            bfs(i);
-        }
-    return count;
+	int count = 0;
+	for (int i = 1; i <= N; ++i)
+		if (!visited[i]) {
+			rep[count++] = i;
+			bfs(i);
+		}
+	return count;
 }
-
 
 int main() {
 
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    cin >> N >> M;
+	cin >> N >> M;
 
-    for (int i = 0, u, v; i < M; ++i) {
-        cin >> u >> v;
-        adj_list[u].push_back(v);
-        adj_list[v].push_back(u);
-    }
+	for (int i = 0, u, v; i < M; ++i) {
+		cin >> u >> v;
+		adj_list[u].push_back(v);
+		adj_list[v].push_back(u);
+	}
 
-    ans = count_components();
+	ans = count_components();
 
-    cout << ans - 1 << '\n';
+	cout << ans - 1 << '\n';
 
-    for (int i = 1; i < ans; ++i){
-        cout << rep[i-1] << " " << rep[i] << '\n';
-    }
-
+	for (int i = 1; i < ans; ++i) {
+		cout << rep[i - 1] << " " << rep[i] << '\n';
+	}
 }
 ```
 
