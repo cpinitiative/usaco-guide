@@ -7,6 +7,16 @@ author: Óscar Garries, George Pong
 
 [Official Analysis](http://www.usaco.org/current/data/sol_angry_silver_jan16.html)
 
+<Spoiler title="Hint 1">
+Notice that the value $R$ can exhibit between $0$ to $N$. Once R is less than the threshold we want to find, at least one hay bale will not detonate; greater than the threshold, no hay bale will survive. Perhaps we can use binary search for this property and incorporate it in our solution somehow?
+</Spoiler>
+
+<Spoiler title="Hint 2">
+Say we already know what the value $R$ might be. What is the most efficient way to check if this $R$ value is valid? Can we do it in linear time?
+</Spoiler>
+
+<Spoiler title="Solution">
+
 ## Explanation
 
 Notice that for any blast radius $x$, If $x$ can not detonate all the bales when shot efficiently, then any blast radius less than $x$ can not either. Thus, we can binary search for the minimum blast radius which can detonate all the bales.
@@ -32,7 +42,7 @@ This can be applied for every hay bale. We iterate through the sorted list of ha
 
 using namespace std;
 
-int main () {
+int main() {
 	freopen("angry.in", "r", stdin);
 	freopen("angry.out", "w", stdout);
 
@@ -40,17 +50,15 @@ int main () {
 	cin >> n >> k;
 	int ar[n];
 
-	for (int i = 0; i < n; i++) {
-		cin >> ar[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> ar[i]; }
 
-	sort (ar, ar + n);
+	sort(ar, ar + n);
 
 	int lo = 1, hi = 1e9;
 	int sol = 1e9;
 
 	while (lo <= hi) {
-		int mid = lo + (hi - lo)/2;
+		int mid = lo + (hi - lo) / 2;
 		int i = 0;
 		for (int kas = 0; kas < k && i < n; kas++) {
 			int hasta = ar[i];
@@ -70,7 +78,6 @@ int main () {
 
 	cout << sol << '\n';
 }
-
 ```
 
 </CPPSection>
@@ -78,7 +85,7 @@ int main () {
 <PySection>
 
 ```py
-with open('angry.in', 'r') as infile:
+with open("angry.in", "r") as infile:
 	n, k = map(int, infile.readline().split())
 	bales = [int(infile.readline()) for _ in range(n)]
 	bales.sort()
@@ -96,7 +103,7 @@ def valid_blast_radius(blast_radius: int) -> bool:
 	:returns: True if it is possible to blow up all bales, False otherwise
 	"""
 
-	last_blast_location = -float('inf')
+	last_blast_location = -float("inf")
 	needed_cows = 0
 	for bale_position in bales:
 
@@ -124,9 +131,11 @@ while left < right:
 	else:
 		left = mid + 1
 
-print(left, file=open('angry.out', 'w'))
+print(left, file=open("angry.out", "w"))
 ```
 
 </PySection>
 
 </LanguageSection>
+
+</Spoiler>
