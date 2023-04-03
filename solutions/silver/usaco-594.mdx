@@ -5,14 +5,21 @@ title: Angry Cows
 author: Óscar Garries, George Pong
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_angry_silver_jan16.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_angry_silver_jan16.html)
 
 <Spoiler title="Hint 1">
-Notice that the value $R$ can exhibit between $0$ to $N$. Once R is less than the threshold we want to find, at least one hay bale will not detonate; greater than the threshold, no hay bale will survive. Perhaps we can use binary search for this property and incorporate it in our solution somehow?
+
+Suppose we already know a certain value of $R$ can't detonate all the haybales; what does this say about all the $R$-values less than the current value of $R$?
+Likewise, if we know a certain value of $R$ *can* detonate everything, what does this say about all the $R$-values *greater* than the current value?
+
 </Spoiler>
 
 <Spoiler title="Hint 2">
-Say we already know what the value $R$ might be. What is the most efficient way to check if this $R$ value is valid? Can we do it in linear time?
+
+If a certain value of $R$ doesn't work, all values less than that won't work either.
+Similarly, if a $R$-value *works*, all values greater than that will work as well.
+What algorithm takes advantage of this neat property?
+
 </Spoiler>
 
 <Spoiler title="Solution">
@@ -27,14 +34,11 @@ We sort the list of hay bales by increasing position to let us easily determine 
 
 This can be applied for every hay bale. We iterate through the sorted list of hay bales and detonate every one of them, storing the number of cows needed and the position of the last blast. If the current hay bale is in the radius of the last blast, the bale is already detonated. Otherwise, we need one more cow to detonate the current bale, and we reset the last blast position optimally.
 
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
-
-
 <CPPSection>
 
 ```cpp
@@ -81,7 +85,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
@@ -135,7 +138,6 @@ print(left, file=open("angry.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
