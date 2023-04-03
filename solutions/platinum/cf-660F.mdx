@@ -85,10 +85,11 @@ class LineContainer : multiset<LineContainerLine, less<>> {
 			x->p = LLONG_MAX;
 			return false;
 		}
-		if (x->m == y->m)
+		if (x->m == y->m) {
 			x->p = x->b > y->b ? LLONG_MAX : LLONG_MIN;
-		else
+		} else {
 			x->p = floor_div(y->b - x->b, x->m - y->m);
+		}
 		return x->p >= y->p;
 	}
 
@@ -97,12 +98,15 @@ public:
 		auto z = insert({m, b, 0});
 		auto y = z++;
 		auto x = y;
-		while (isect(y, z))
+		while (isect(y, z)) {
 			z = erase(z);
-		if (x != begin() && isect(--x, y))
+		}
+		if (x != begin() && isect(--x, y)) {
 			isect(x, y = erase(y));
-		while ((y = x) != begin() && (--x)->p >= y->p)
+		}
+		while ((y = x) != begin() && (--x)->p >= y->p) {
 			isect(x, erase(y));
+		}
 	}
 
 	long long query(long long x) {
