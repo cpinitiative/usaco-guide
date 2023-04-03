@@ -68,19 +68,18 @@ $$
 using namespace std;
 
 //BeginCodeSnip{Line Container}
-/** Source: /adv/line-container?lang=cpp */
 template<typename T>
 T floor_div(T a, T b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }
 
-struct line_container_line {
+struct LineContainerLine {
 	mutable long long m, b, p;
-	bool operator<(const line_container_line &o) const { return m < o.m; }
+	bool operator<(const LineContainerLine &o) const { return m < o.m; }
 	bool operator<(long long x) const { return p < x; }
 };
 
-class line_container : multiset<line_container_line, less<>> {
+class LineContainer : multiset<LineContainerLine, less<>> {
 	bool isect(iterator x, iterator y) {
 		if (y == end()) {
 			x->p = LLONG_MAX;
@@ -95,7 +94,9 @@ class line_container : multiset<line_container_line, less<>> {
 
 public:
 	void add(long long m, long long b) {
-		auto z = insert({m, b, 0}), y = z++, x = y;
+		auto z = insert({m, b, 0});
+		auto y = z++;
+		auto x = y;
 		while (isect(y, z))
 			z = erase(z);
 		if (x != begin() && isect(--x, y))
@@ -125,7 +126,7 @@ int main() {
 		ips[i] = ips[i - 1] + A[i] * i;
 	}
 
-	line_container lc;
+	LineContainer lc;
 	long long ans = 0;
 	for (int i = 1; i <= N; i++) {
 		lc.add(-i, (i - 1) * pre[i - 1] - ips[i - 1]);
