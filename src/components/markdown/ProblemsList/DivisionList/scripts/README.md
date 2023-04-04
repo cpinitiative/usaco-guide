@@ -20,7 +20,7 @@ Python 3. `pip install -r requirements.txt`.
 From repo root:
 
 ```
-conda activate USACO
+conda activate USACO # environment with requirements installed
 cd src/components/markdown/ProblemsList/DivisionList/scripts/
 python update.py
 ```
