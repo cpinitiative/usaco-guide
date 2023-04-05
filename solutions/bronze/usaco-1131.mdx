@@ -1,0 +1,78 @@
+---
+id: usaco-1131
+source: USACO Bronze 2021 US Open
+title: Acowdemia I
+author: Juheon Rhee
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob1_bronze_open21.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<PySection>
+
+```py
+n, l = map(int, input().split())
+citations = sorted([*map(int, input().split())], reverse=True)
+length = len(citations)
+
+while citations[length - 1] < length and length >= 0:
+	length -= 1
+
+cur_h, length = length, len(citations)
+
+if cur_h is not n:
+	for i in range(cur_h, -1, -1):
+		if i <= cur_h - l:
+			break
+		citations[i] += 1
+
+citations.sort(reverse=True)
+while citations[length - 1] < length and length >= 0:
+	length -= 1
+
+print(length)
+```
+
+</PySection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, l;
+	cin >> n >> l;
+
+	vector<int> citations(n);
+	for (int i = 0; i < n; i++) { cin >> citations[i]; }
+	sort(citations.begin(), citations.end(), greater<int>());
+	int length = citations.size();
+
+	while (length >= 0 && citations[length - 1] < length) { length -= 1; }
+
+	int cur_h = length;
+	length = citations.size();
+
+	if (cur_h != n) {
+		for (int i = cur_h; i >= 0; i--) {
+			if (i <= cur_h - 1) { break; }
+			citations[i] += 1;
+		}
+	}
+	sort(citations.begin(), citations.end(), greater<int>());
+
+	while (length >= 0 && citations[length - 1] < length) { length -= 1; }
+
+	cout << length << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

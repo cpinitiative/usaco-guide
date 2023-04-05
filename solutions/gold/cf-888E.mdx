@@ -1,0 +1,134 @@
+---
+id: cf-888E
+source: CF
+title: Maximum Subsequence
+author: Chuyang Wang
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/55701)
+
+## Explanation
+
+For this problem, we are given $n \leq 35$ numbers and have to find a combination such that the sum of all elements in this combination modulo $m$ is maximized. A naive approach, i.e. trying out all $2^{35}$ possible combinations, is not feasible. However, we can use the [Meet-In-The-Middle Technique](https://usaco.guide/gold/meet-in-the-middle) to reduce the time complexity to $2^{\frac{n}{2}}$, which would be enough for our time bound.
+
+We first split the given array into two halves that are equally long. In case of odd $n$, we just put one more element into the first half. Then, we generate all combinations of numbers in the first half by using a bit mask and save the results modulo $m$ in a sorted set. For the second half, let's also generate all combinations for them. For each of these combinations, the maximal sum is the sum of all elements in this combination, $current\_sum$, plus the largest sum of a combination of the first half, $left\_sum$, which is less than $m - current\_sum$. It is never optimal to choose a value larger than $m - current\_sum$ since otherwise the result would be $left\_sum + current\_sum - m$, which is strictly less than $current\_sum$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^{\lceil \frac{n}{2} \rceil} \cdot n)$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * Calculate the sum of all elements in arr, represented by the binary mask, and
+ * take modulo mod.
+ */
+int unmask(int mask, const vector<int> &arr, int mod) {
+	int current_sum = 0;
+	for (int bit = 0; bit < arr.size(); bit++) {
+		if ((mask >> bit & 1) == 1) {
+			current_sum += arr[bit];
+			current_sum %= mod;
+		}
+	}
+	return current_sum;
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	// split the input array into two parts
+	vector<int> left_arr((n + 1) / 2);
+	vector<int> right_arr(n / 2);
+	for (int &i : left_arr) { cin >> i; }
+	for (int &i : right_arr) { cin >> i; }
+
+	// stores the sums of all combinations from the left_arr modulo m
+	set<int> left_sums;
+	for (int mask = 0; mask < (1 << left_arr.size()); mask++) {
+		left_sums.insert(unmask(mask, left_arr, m));
+	}
+
+	// the best value from all combinations of left_arr
+	int best = *left_sums.rbegin();
+	for (int mask = 0; mask < (1 << right_arr.size()); mask++) {
+		int current_sum = unmask(mask, right_arr, m);
+		/*
+		 * a possible new maximum value is the sum of current_sum and the
+		 * largest value below m - current_sum from the combinations in left_arr
+		 */
+		best = max(best,
+		           *prev(left_sums.lower_bound(m - current_sum)) + current_sum);
+	}
+
+	cout << best << endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class MaxSubseq {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int[] arr = Arrays.stream(br.readLine().split(" "))
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+		// split the input array into two parts
+		int[] leftArr = Arrays.copyOfRange(arr, 0, (n + 1) / 2);
+		int[] rightArr = Arrays.copyOfRange(arr, (n + 1) / 2, n);
+
+		// stores the sums of all combinations from the leftArr modulo m
+		SortedSet<Integer> leftSums = new TreeSet<>();
+		for (int mask = 0; mask < (1 << leftArr.length); mask++) {
+			leftSums.add(unmask(mask, leftArr, m));
+		}
+
+		// the best value from all combinations of leftArr
+		int best = leftSums.last();
+		for (int mask = 0; mask < (1 << rightArr.length); mask++) {
+			int currentSum = unmask(mask, rightArr, m);
+			/*
+			 * a possible new maximum value is the sum of currentSum and the
+			 * largest value below m - currentSum from the combinations in
+			 * leftArr
+			 */
+			best = Math.max(best, currentSum +
+			                          leftSums.headSet(m - currentSum).last());
+		}
+
+		System.out.println(best);
+	}
+
+	/**
+	 * Calculate the sum of all elements in arr, represented by the binary mask,
+	 * and take modulo mod.
+	 */
+	static int unmask(int mask, int[] arr, int mod) {
+		int currentSum = 0;
+		for (int bit = 0; bit < arr.length; bit++) {
+			if ((mask >> bit & 1) == 1) {
+				currentSum += arr[bit];
+				currentSum %= mod;
+			}
+		}
+		return currentSum;
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

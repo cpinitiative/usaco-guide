@@ -1,0 +1,134 @@
+---
+id: cses-1748
+source: CSES
+title: Increasing Subsequence II
+author: Benjamin Qi, Óscar Garries, Timothy Gao
+---
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+Let $dp[i]$ be the number of increasing subsequences of $x$ ending on the right
+of index $i$. Notice that $dp[i]$ can be calculated as the summation of all
+$dp[j]$ where $j < i$ and $x_j < x_i$.
+
+Naively, this gives an $\mathcal O(N^2)$ solution. In order to speed this up, we
+can coordinate compress, then range sum.
+
+More specifically, we sort all numbers in $x$ and map each distinct number to
+its index in the sorted array. This is known as coordinate compression, and it
+makes the range of the numbers significantly smaller.
+
+With this, we can create a [BIT](/gold/PURS), where each
+value is initially 0. As we iterate through $x$, $dp[i]$ would be the sum of the
+values at positions $j<k$ in the BIT, where $k$ is the index that $x_i$ maps to.
+We then increase position $k$ in the BIT by $dp[i]$ as preparation for the next
+element of $x$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MX = 2e5 + 5;
+
+int bit[MX];
+int n;
+
+void upd(int i, int val) {
+	for (; i <= n; i += (i & (-i))) { bit[i] = (bit[i] + val) % MOD; }
+}
+
+int query(int i) {
+	int res = 0;
+	for (; i; i -= (i & (-i))) { res = (res + bit[i]) % MOD; }
+	return res;
+}
+
+int main() {
+	cin >> n;
+	map<int, int> m;
+	vector<int> ar(n);
+	for (int i = 0; i < n; i++) {
+		cin >> ar[i];
+		m[ar[i]]++;
+	}
+	int co = 0;
+	for (auto &cur : m) { cur.second = ++co; }
+	for (int &x : ar) { x = m[x]; }
+	int sol = 0;
+	for (int x : ar) {
+		int subseq = 1 + query(x - 1);
+		sol = (sol + subseq) % MOD;
+		upd(x, subseq);
+	}
+	cout << sol << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+public class increasingsubsequencesII {
+	static final int mod = (int)(1e9 + 7);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		int N = Integer.parseInt(br.readLine());
+		int[] nums = new int[N];
+		int[] sorted = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			sorted[i] = nums[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(sorted);
+		Map<Integer, Integer> mp = new HashMap<>();
+		for (int i = 0; i < N; i++) { mp.put(sorted[i], i); }
+		BIT bit = new BIT(N);
+		int ret = 0;
+		for (int i : nums) {
+			int curr = bit.sum(mp.get(i) - 1) + 1;
+			bit.update(mp.get(i), curr);
+			ret += curr;
+			ret %= mod;
+		}
+		pw.println(ret);
+		pw.close();
+		br.close();
+	}
+	static class BIT {
+		public int[] bit;
+		public BIT(int N) { bit = new int[N + 1]; }
+		public int sum(int r) {
+			r++;
+			int ret = 0;
+			while (r > 0) {
+				ret += bit[r];
+				ret %= mod;
+				r -= r & -r;
+			}
+			return ret;
+		}
+		public void update(int idx, int v) {
+			idx++;
+			while (idx < bit.length) {
+				bit[idx] += v;
+				bit[idx] %= mod;
+				idx += idx & -idx;
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

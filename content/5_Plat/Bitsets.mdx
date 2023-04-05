@@ -42,29 +42,35 @@ Of course, the first step is to generate the sizes of each connected component.
 using namespace std;
 
 struct DSU {
-	vector<int> e; void init(int N) { e = vector<int>(N,-1); }
+	vector<int> e;
+	void init(int N) { e = vector<int>(N, -1); }
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
 	bool sameSet(int a, int b) { return get(a) == get(b); }
 	int size(int x) { return -e[get(x)]; }
-	bool unite(int x, int y) { // union by size
-		x = get(x), y = get(y); if (x == y) return 0;
-		if (e[x] > e[y]) swap(x,y);
-		e[x] += e[y]; e[y] = x; return 1;
+	bool unite(int x, int y) {  // union by size
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
+		return 1;
 	}
 };
 
 DSU D;
-int n,m;
+int n, m;
 vector<int> comps;
 
 void init() {
-	cin >> n >> m; D.init(n);
+	cin >> n >> m;
+	D.init(n);
 	for (int i = 0; i < m; ++i) {
-		int a,b; cin >> a >> b;
-		D.unite(a-1,b-1);
+		int a, b;
+		cin >> a >> b;
+		D.unite(a - 1, b - 1);
 	}
-	for (int i = 0; i < n; ++i) if (D.get(i) == i)
-		comps.push_back(D.size(i));
+	for (int i = 0; i < n; ++i)
+		if (D.get(i) == i) comps.push_back(D.size(i));
 }
 ```
 
@@ -82,8 +88,9 @@ below).
 ```cpp
 int main() {
 	init();
-	bitset<100001> posi; posi[0] = 1;
-	for (int t: comps) posi |= posi<<t;
+	bitset<100001> posi;
+	posi[0] = 1;
+	for (int t : comps) posi |= posi << t;
 	for (int i = 1; i <= n; ++i) cout << posi[i];
 	cout << "\n";
 }
@@ -126,13 +133,15 @@ vector<int> flav[1000001];
 ll ans;
 
 void input() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("cowpatibility.in","r",stdin);
-	freopen("cowpatibility.out","w",stdout);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	freopen("cowpatibility.in", "r", stdin);
+	freopen("cowpatibility.out", "w", stdout);
 	cin >> N;
 	for (int i = 0; i < N; ++i)
 		for (int j = 0; j < 5; ++j) {
-			int x; cin >> x;
+			int x;
+			cin >> x;
 			flav[x].push_back(i);
 		}
 }
@@ -145,8 +154,9 @@ and update the adjacency lists for those $x\in [0,HALF)$.
 int main() {
 	input();
 	for (int i = 1; i <= 1000000; ++i)
-		for (int x: flav[i]) if (x < HALF)
-			for (int y: flav[i]) adj[x][y] = 1;
+		for (int x : flav[i])
+			if (x < HALF)
+				for (int y : flav[i]) adj[x][y] = 1;
 	for (int i = 0; i < HALF; ++i) ans += adj[i].count();
 }
 ```
@@ -158,10 +168,13 @@ Of course, we can instead write the nested loop in a way that takes advantage of
 fast bitset operations once again.
 
 ```cpp
-for (int i = 1; i <= 1000000; ++i) if (flav[i].size() > 0) {
-	B b; for (int x: flav[i]) b[x] = 1;
-	for (int x: flav[i]) if (x < HALF) adj[x] |= b;
-}
+for (int i = 1; i <= 1000000; ++i)
+	if (flav[i].size() > 0) {
+		B b;
+		for (int x : flav[i]) b[x] = 1;
+		for (int x : flav[i])
+			if (x < HALF) adj[x] |= b;
+	}
 ```
 
 The full main function is as follows:
@@ -171,18 +184,24 @@ The full main function is as follows:
 ```cpp
 int main() {
 	input();
-	for (int i = 1; i <= 1000000; ++i) if (flav[i].size() > 0) {
-		B b; for (int x: flav[i]) b[x] = 1;
-		for (int x: flav[i]) if (x < HALF) adj[x] |= b;
-	}
+	for (int i = 1; i <= 1000000; ++i)
+		if (flav[i].size() > 0) {
+			B b;
+			for (int x : flav[i]) b[x] = 1;
+			for (int x : flav[i])
+				if (x < HALF) adj[x] |= b;
+		}
 	for (int i = 0; i < HALF; ++i) ans += adj[i].count();
 	for (int i = 0; i < HALF; ++i) adj[i].reset();
-	for (int i = 1; i <= 1000000; ++i) if (flav[i].size() > 0) {
-		B b; for (int x: flav[i]) b[x] = 1;
-		for (int x: flav[i]) if (x >= HALF) adj[x-HALF] |= b;
-	}
+	for (int i = 1; i <= 1000000; ++i)
+		if (flav[i].size() > 0) {
+			B b;
+			for (int x : flav[i]) b[x] = 1;
+			for (int x : flav[i])
+				if (x >= HALF) adj[x - HALF] |= b;
+		}
 	for (int i = 0; i < HALF; ++i) ans += adj[i].count();
-	cout << ((ll)N*N-ans)/2 << "\n";
+	cout << ((ll)N * N - ans) / 2 << "\n";
 }
 ```
 
@@ -203,7 +222,7 @@ left of the line from `a` to `b`.
 using namespace std;
 
 typedef long long ll;
-typedef pair<ll,ll> P;
+typedef pair<ll, ll> P;
 
 #define f first
 #define s second
@@ -211,18 +230,20 @@ typedef pair<ll,ll> P;
 ll cross(P a, P b, P c) {
 	b.f -= a.f, b.s -= a.s;
 	c.f -= a.f, c.s -= a.s;
-	return b.f*c.s-b.s*c.f;
+	return b.f * c.s - b.s * c.f;
 }
 
 vector<P> v;
 int N;
 
 void input() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("triangles.in","r",stdin);
-	freopen("triangles.out","w",stdout);
-	cin >> N; v.resize(N);
-	for (P& p: v) cin >> p.f >> p.s;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	freopen("triangles.in", "r", stdin);
+	freopen("triangles.out", "w", stdout);
+	cin >> N;
+	v.resize(N);
+	for (P &p : v) cin >> p.f >> p.s;
 }
 ```
 
@@ -236,21 +257,22 @@ lies within it iff `x` is to the left of each of sides
 ```cpp
 int main() {
 	input();
-	vector<int> res(N-2);
-	for (int i = 0; i < N; ++i) for (int j = i+1; j < N; ++j)
-		for (int k = j+1; k < N; ++k) {
-			vector<int> t = {i,j,k};
-			if (cross(v[t[0]],v[t[1]],v[t[2]]) < 0) swap(t[1],t[2]);
-			int cnt = 0;
-			for (int x = 0; x < N; ++x) {
-				if (cross(v[t[0]],v[t[1]],v[x]) <= 0) continue;
-				if (cross(v[t[1]],v[t[2]],v[x]) <= 0) continue;
-				if (cross(v[t[2]],v[t[0]],v[x]) <= 0) continue;
-				cnt ++;
+	vector<int> res(N - 2);
+	for (int i = 0; i < N; ++i)
+		for (int j = i + 1; j < N; ++j)
+			for (int k = j + 1; k < N; ++k) {
+				vector<int> t = {i, j, k};
+				if (cross(v[t[0]], v[t[1]], v[t[2]]) < 0) swap(t[1], t[2]);
+				int cnt = 0;
+				for (int x = 0; x < N; ++x) {
+					if (cross(v[t[0]], v[t[1]], v[x]) <= 0) continue;
+					if (cross(v[t[1]], v[t[2]], v[x]) <= 0) continue;
+					if (cross(v[t[2]], v[t[0]], v[x]) <= 0) continue;
+					cnt++;
+				}
+				res[cnt]++;
 			}
-			res[cnt] ++;
-		}
-	for (int i = 0; i < N-2; ++i) cout << res[i] << "\n";
+	for (int i = 0; i < N - 2; ++i) cout << res[i] << "\n";
 }
 ```
 
@@ -271,18 +293,20 @@ bitset<300> b[300][300];
 int main() {
 	input();
 	for (int i = 0; i < N; ++i)
-		for (int j = 0; j < N; ++j) if (j != i)
-			for (int k = 0; k < N; ++k) if (cross(v[i],v[j],v[k]) > 0)
-				b[i][j][k] = 1;
-	vector<int> res(N-2);
-	for (int i = 0; i < N; ++i) for (int j = i+1; j < N; ++j)
-		for (int k = j+1; k < N; ++k) {
-			vector<int> t = {i,j,k};
-			if (cross(v[t[0]],v[t[1]],v[t[2]]) < 0) swap(t[1],t[2]);
-			auto z = b[t[0]][t[1]]&b[t[1]][t[2]]&b[t[2]][t[0]];
-			res[z.count()] ++;
-		}
-	for (int i = 0; i < N-2; ++i) cout << res[i] << "\n";
+		for (int j = 0; j < N; ++j)
+			if (j != i)
+				for (int k = 0; k < N; ++k)
+					if (cross(v[i], v[j], v[k]) > 0) b[i][j][k] = 1;
+	vector<int> res(N - 2);
+	for (int i = 0; i < N; ++i)
+		for (int j = i + 1; j < N; ++j)
+			for (int k = j + 1; k < N; ++k) {
+				vector<int> t = {i, j, k};
+				if (cross(v[t[0]], v[t[1]], v[t[2]]) < 0) swap(t[1], t[2]);
+				auto z = b[t[0]][t[1]] & b[t[1]][t[2]] & b[t[2]][t[0]];
+				res[z.count()]++;
+			}
+	for (int i = 0; i < N - 2; ++i) cout << res[i] << "\n";
 }
 ```
 
@@ -334,35 +358,40 @@ using namespace std;
 
 typedef long long ll;
 
-int n,c;
+int n, c;
 const int Z = 1000000;
 mt19937 rng;
 
 int solve() {
 	cin >> n >> c;
-	vector<int> a(n); int sum = 0;
-	for (int& x: a) {
+	vector<int> a(n);
+	int sum = 0;
+	for (int &x : a) {
 		cin >> x;
 		sum += x;
 	}
 	if (sum <= c) return sum;
-	shuffle(begin(a),end(a),rng);
-	bitset<Z> B; B[Z/2] = 1;
+	shuffle(begin(a), end(a), rng);
+	bitset<Z> B;
+	B[Z / 2] = 1;
 	ll lst = 0;
 	for (int i = 0; i < n; ++i) {
-		ll cur = (ll)(i+1)*c/n;
-		int dif = cur-lst; lst = cur;
-		auto tmp = B>>dif;
-		ll wut = a[i]-dif;
-		if (wut >= 0) B = tmp|(B<<wut);
-		else B = tmp|(B>>(-wut));
+		ll cur = (ll)(i + 1) * c / n;
+		int dif = cur - lst;
+		lst = cur;
+		auto tmp = B >> dif;
+		ll wut = a[i] - dif;
+		if (wut >= 0) B = tmp | (B << wut);
+		else B = tmp | (B >> (-wut));
 	}
-	for (int i = Z/2; i >= 0; --i) if (B[i] == 1) return c-(Z/2-i);
+	for (int i = Z / 2; i >= 0; --i)
+		if (B[i] == 1) return c - (Z / 2 - i);
 	return 0;
 }
 
 int main() {
-	int T; cin >> T;
+	int T;
+	cin >> T;
 	for (int i = 0; i < T; ++i) cout << solve() << "\n";
 }
 ```

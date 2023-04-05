@@ -4,9 +4,9 @@ redirects:
   - /silver/ff
 title: Flood Fill
 author: Darren Yao
-contributors: Kevin Sheng
+contributors: Kevin Sheng, George Pong
 prerequisites:
-  - dfs
+  - graph-traversal
 description: 'Finding connected components in a graph represented by a grid.'
 frequency: 3
 ---
@@ -305,9 +305,7 @@ int col_num;
 int main() {
 	cin >> row_num >> col_num;
 	for (int r = 0; r < row_num; r++) {
-		for (int c = 0; c < col_num; c++) {
-			cin >> grid[r][c];
-		}
+		for (int c = 0; c < col_num; c++) { cin >> grid[r][c]; }
 	}
 }
 ```
@@ -325,15 +323,16 @@ public class Floodfill {
 	private static int rowNum;
 	private static int colNum;
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer dims = new StringTokenizer(read.readLine());
 		rowNum = Integer.parseInt(dims.nextToken());
 		colNum = Integer.parseInt(dims.nextToken());
 		grid = new int[rowNum][colNum];
 		for (int r = 0; r < rowNum; r++) {
 			grid[r] = Arrays.stream(read.readLine().split(" "))
-					.mapToInt(Integer::parseInt)
-					.toArray();
+			              .mapToInt(Integer::parseInt)
+			              .toArray();
 		}
 	}
 }
@@ -373,7 +372,7 @@ visited array, dimensions, and the current size variable globally.
 This means that we want to recursively call the search function for the squares
 above, below, and to the left and right of our current square. Due to its
 recursive nature, floodfill can be thought of as a modified version of
-[DFS](/silver/dfs). The algorithm to
+[DFS](/silver/graph-traversal). The algorithm to
 find the size of a connected component in a grid using flood fill is as follows
 (we’ll also maintain a 2D visited array).
 
@@ -391,17 +390,17 @@ int grid[MAX_N][MAX_N];  // the grid itself
 int row_num;
 int col_num;
 bool visited[MAX_N][MAX_N];  // keeps track of which nodes have been visited
-int curr_size = 0;  // reset to 0 each time we start a new component
+int curr_size = 0;           // reset to 0 each time we start a new component
 
-void floodfill(int r, int c, int color){
-	if (
-		(r < 0 || r >= row_num || c < 0 || c >= col_num)  // if out of bounds
-		|| grid[r][c] != color  // wrong color
-		|| visited[r][c]  // already visited this square
-	) return;
+void floodfill(int r, int c, int color) {
+	if ((r < 0 || r >= row_num || c < 0 || c >= col_num)  // if out of bounds
+	    || grid[r][c] != color                            // wrong color
+	    || visited[r][c]  // already visited this square
+	)
+		return;
 
-	visited[r][c] = true; // mark current square as visited
-	curr_size++; // increment the size for each square we visit
+	visited[r][c] = true;  // mark current square as visited
+	curr_size++;           // increment the size for each square we visit
 
 	// recursively call flood fill for neighboring squares
 	floodfill(r, c + 1, color);
@@ -439,22 +438,24 @@ int main() {
 public class Floodfill {
 	private static int[][] grid;  // the grid itself
 	private static int rowNum;
-	private static int colNum;  // grid dimensions, rows and columns
-	private static boolean[][] visited;  // keeps track of which nodes have been visited
-	private static int currSize = 0;  // reset to 0 each time we start a new component
+	private static int colNum;           // grid dimensions, rows and columns
+	private static boolean[][] visited;  // keeps track of which nodes have been
+	                                     // visited
+	private static int currSize =
+	    0;  // reset to 0 each time we start a new component
 
 	public static void main(String[] args) {
 		/*
 		 * input code and other problem-specific stuff here
 		 */
-		for (int r = 0; r < rowNum; r++){
-			for (int c = 0; c < colNum; c++){
-				if(!visited[r][c]){
+		for (int r = 0; r < rowNum; r++) {
+			for (int c = 0; c < colNum; c++) {
+				if (!visited[r][c]) {
 					currSize = 0;
 					/*
-					 * start a flood fill if the square hasn't already been visited,
-					 * and then store or otherwise use the component size
-					 * for whatever it's needed for
+					 * start a flood fill if the square hasn't already been
+					 * visited, and then store or otherwise use the component
+					 * size for whatever it's needed for
 					 */
 					floodfill(r, c, grid[r][c]);
 				}
@@ -463,14 +464,14 @@ public class Floodfill {
 	}
 
 	private static void floodfill(int r, int c, int color) {
-		if (
-			(r < 0 || r >= rowNum || c < 0 || c >= colNum)  // if out of bounds
-			|| grid[r][c] != color  // wrong color
-			|| visited[r][c]  // already visited this square
-		) return;
+		if ((r < 0 || r >= rowNum || c < 0 || c >= colNum)  // if out of bounds
+		    || grid[r][c] != color                          // wrong color
+		    || visited[r][c]  // already visited this square
+		)
+			return;
 
-		visited[r][c] = true; // mark current square as visited
-		currSize++; // increment the size for each square we visit
+		visited[r][c] = true;  // mark current square as visited
+		currSize++;            // increment the size for each square we visit
 
 		// recursively call flood fill for neighboring squares
 		floodfill(r, c + 1, color);
@@ -489,7 +490,7 @@ public class Floodfill {
 import sys
 
 MAX_N = 100
-sys.setrecursionlimit(2 ** 30)  # pretty much disable the recurion limit
+sys.setrecursionlimit(2**30)  # pretty much disable the recurion limit
 
 row_num = MAX_N
 col_num = MAX_N
@@ -505,7 +506,8 @@ def floodfill(r: int, c: int, color: int):
 		(r < 0 or r >= row_num or c < 0 or c >= col_num)  # if out of bounds
 		or grid[r][c] != color  # wrong color
 		or visited[r][c]  # already visited this square
-	): return
+	):
+		return
 
 	visited[r][c] = True  # mark current square as visited
 	curr_size += 1  # increment the size for each square we visit
@@ -556,7 +558,7 @@ Recursive implementations of flood fill sometimes lead to
 
 </Warning>
 
-A non-recursive implementation of flood fill adds adjacent nodes to a stack or queue, similar to [BFS](/gold/bfs), and is usually implemented as follows:
+A non-recursive implementation of flood fill adds adjacent nodes to a stack or queue, similar to [BFS](/silver/graph-traversal), and is usually implemented as follows:
 
 <LanguageSection>
 
@@ -564,8 +566,8 @@ A non-recursive implementation of flood fill adds adjacent nodes to a stack or q
 
 ```cpp
 #include <iostream>
-#include <string>
 #include <stack>
+#include <string>
 
 using namespace std;
 
@@ -579,20 +581,21 @@ string building[MAX_N];
 bool visited[MAX_N][MAX_N];
 
 void floodfill(int r, int c) {
-	// Note: you can also use a queue and pop from the front for a BFS-based approach
+	// Note: you can also use a queue and pop from the front for a BFS-based
+	// approach
 	stack<pair<int, int>> frontier;
 	frontier.push({r, c});
-	while(!frontier.empty()) {
+	while (!frontier.empty()) {
 		r = frontier.top().first;
 		c = frontier.top().second;
 		frontier.pop();
 
-		if (r < 0 || r >= row_num || c < 0 || c >= col_num
-				|| building[r][c] == '#' || visited[r][c])
+		if (r < 0 || r >= row_num || c < 0 || c >= col_num ||
+		    building[r][c] == '#' || visited[r][c])
 			continue;
 
 		visited[r][c] = true;
-		for (int i = 0; i < 4; i++){
+		for (int i = 0; i < 4; i++) {
 			frontier.push({r + R_CHANGE[i], c + C_CHANGE[i]});
 		}
 	}
@@ -600,9 +603,7 @@ void floodfill(int r, int c) {
 
 int main() {
 	cin >> row_num >> col_num;
-	for (int i = 0; i < row_num; i++) {
-		cin >> building[i];
-	}
+	for (int i = 0; i < row_num; i++) { cin >> building[i]; }
 
 	int room_num = 0;
 	for (int i = 0; i < row_num; i++) {
@@ -635,16 +636,17 @@ public class RoomCount {
 	private static int colNum;
 
 	public static void floodfill(int row, int col) {
-		// Note: you can also use a queue and pop from the front for a BFS-based approach
+		// Note: you can also use a queue and pop from the front for a BFS-based
+		// approach
 		Stack<Pos> frontier = new Stack<>();
 		frontier.push(new Pos(row, col));
-		while(!frontier.isEmpty()){
+		while (!frontier.isEmpty()) {
 			Pos curr = frontier.pop();
 			row = curr.row;
 			col = curr.col;
 
-			if (row < 0 || row >= rowNum || col < 0 || col >= colNum
-					|| building[row][col] == '#' || visited[row][col])
+			if (row < 0 || row >= rowNum || col < 0 || col >= colNum ||
+			    building[row][col] == '#' || visited[row][col])
 				continue;
 
 			visited[row][col] = true;
@@ -655,23 +657,22 @@ public class RoomCount {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer dims = new StringTokenizer(read.readLine());
 		rowNum = Integer.parseInt(dims.nextToken());
 		colNum = Integer.parseInt(dims.nextToken());
 
 		building = new char[rowNum][colNum];
-		for (int r = 0; r < rowNum; r++){
+		for (int r = 0; r < rowNum; r++) {
 			String row = read.readLine();
-			for (int j = 0; j < colNum; j++){
-				building[r][j] = row.charAt(j);
-			}
+			for (int j = 0; j < colNum; j++) { building[r][j] = row.charAt(j); }
 		}
 
 		visited = new boolean[rowNum][colNum];
 		int roomNum = 0;
-		for (int i = 0; i < rowNum; i++){
-			for (int j = 0; j < colNum; j++){
+		for (int i = 0; i < rowNum; i++) {
+			for (int j = 0; j < colNum; j++) {
 				if (building[i][j] == '.' && !visited[i][j]) {
 					floodfill(i, j);
 					roomNum++;
@@ -712,8 +713,14 @@ def floodfill(r: int, c: int):
 	frontier = [(r, c)]
 	while frontier:
 		r, c = frontier.pop()
-		if (r < 0 or r >= row_num or c < 0 or c >= col_num
-				or visited[r][c] or grid[r][c] == '#'):
+		if (
+			r < 0
+			or r >= row_num
+			or c < 0
+			or c >= col_num
+			or visited[r][c]
+			or grid[r][c] == "#"
+		):
 			continue
 
 		visited[r][c] = True
@@ -726,9 +733,59 @@ def floodfill(r: int, c: int):
 room_num = 0
 for row in range(row_num):
 	for col in range(col_num):
-		if not visited[row][col] and grid[row][col] == '.':
+		if not visited[row][col] and grid[row][col] == ".":
 			floodfill(row, col)
 			room_num += 1
+print(room_num)
+```
+
+### Python Optimization: Padding
+
+We can speed up floodfill by a constant time factor using an alternate way of ensuring no out-of-bounds accessing of the grid happens. Imagine a one-cell padding on all four sides of the array, for which the cells of which are marked as already having been visited. We can then get rid of the bound checking where we check if the next cell we visit is inclusive between 0 and the dimensions of the array. These cells in the padding may be added to the queue, but when they are visited in the floodfill loop, they are skipped for being marked visited and no out-of-bounds accessing happens. Furthermore, no additional out-of-bounds cells beyond the padding are added to the queue.
+
+One option for adding padding would be to start our entire grid with a filler row in the beginning, and also start each row with an element before we take in input. After input, then we can add the padding at the ends of rows and bottom of the grid. However, in python we only need to do the latter part as we can have the padding at the right and bottom of the matrix act as the padding for the left and top as the coordinate for the left and top, -1, would be interpreted as the end of the array.
+
+The speed benefit of this optimization is only noticeable for some large inputs (it may be even slower for small inputs) and likely only beneficial when using a slow language such as Python, where even the expected solution may TLE. Our new implementation for the previous problem would be as follows.
+
+```py
+row_num, col_num = [int(i) for i in input().split()]
+
+# We make each row a list so we can append at the end.
+grid = [[char for char in input()] for _ in range(row_num)]
+visited = [[False for _ in range(col_num)] for _ in range(row_num)]
+
+# We add padding here
+grid.append(["#"] * len(grid[0]))  # Add the bottom row
+visited.append([True] * len(visited[0]))
+for row_grid, row_visited in zip(grid, visited):  # Add right side
+	row_grid.append("#")
+	row_visited.append(True)
+
+
+def floodfill(r: int, c: int):
+	global visited
+
+	frontier = [(r, c)]
+	while frontier:
+		r, c = frontier.pop()
+
+		if visited[r][c] or grid[r][c] == "#":  # No bounds checking
+			continue
+
+		visited[r][c] = True
+		frontier.append((r - 1, c))
+		frontier.append((r, c - 1))
+		frontier.append((r + 1, c))
+		frontier.append((r, c + 1))
+
+
+room_num = 0
+for row in range(row_num):
+	for col in range(col_num):
+		if not visited[row][col] and grid[row][col] == ".":
+			floodfill(row, col)
+			room_num += 1
+
 print(room_num)
 ```
 

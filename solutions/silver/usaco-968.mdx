@@ -1,0 +1,258 @@
+---
+id: usaco-968
+source: USACO Silver 2019 December
+title: Milk Visits
+author: Qi Wang, Tanish Tyagi, Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_milkvisits_silver_dec19.html)
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+We perform a search on the tree, identifying connected components of cows that
+all have the same breed.
+
+In the sample test case, there are $3$ connected components:
+
+- Component $0$: Farms $1$, $2$, and $4$
+- Component $1$: Farm $3$
+- Component $2$: Farm $5$
+
+Next, we assign the farms in each component a number corresponding to the component
+they are in.
+For example, in the sample test case, farm $1$ would get the number $0$, $3$ would get
+the number $1$, and so on and so forth.
+
+When checking if a visiting farmer going from farm $A$ to $B$ will be happy,
+there's two possible cases:
+
+1. Farms $A$ and $B$ are part of the same component. This means the path between
+   $A$ and $B$ only contains cows of the same breed. If the farmer prefers milk
+   from this breed, then we should output $1$ and $0$ otherwise.
+2. Farms $A$ and $B$ are part of different components. This means that the
+   farmer will always be satisfied because the path between $A$ and $B$ contains
+   both breeds of cows, and so we should always output $1$.
+
+Here's a walkthrough for the sample test case queries:
+
+1. Farms $1$ and $4$ are in the same component, and since Farmer $1$'s preferred
+   cow is Holstein, they will be satisfied. ($1$)
+2. Farms $1$ and $4$ are in the same component, but since Farmer $2$'s preferred
+   cow is Guernsey, they will be unsatisfied. ($0$)
+3. Farms $1$ and $3$ are in different components, so Farmer $3$ will be
+   satisfied. ($1$)
+4. Same logic as query $3$. ($1$)
+5. Farm $5$ is Guernsey, and Farmer $5$'s preferred cow is Holstein, they will
+   be unsatisfied. ($0$)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cassert>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("milkvisits.in");
+	int farm_num;
+	int query_num;
+	read >> farm_num >> query_num;
+
+	vector<char> farms(farm_num);
+	for (char &f : farms) {
+		read >> f;
+		assert(f == 'G' || f == 'H');
+	}
+
+	vector<vector<int>> neighbors(farm_num);
+	for (int f = 0; f < farm_num - 1; f++) {
+		int f1, f2;
+		read >> f1 >> f2;
+		f1--;
+		f2--;
+		neighbors[f1].push_back(f2);
+		neighbors[f2].push_back(f1);
+	}
+
+	// Process the tree & detect the different components
+	int component_num = 0;
+	vector<int> component(farm_num, -1);
+	for (int f = 0; f < farm_num; f++) {
+		// Don't process a farm if it's been visited already
+		if (component[f] != -1) { continue; }
+		vector<int> frontier{f};
+		char type = farms[f];
+		while (!frontier.empty()) {
+			int curr = frontier.back();
+			frontier.pop_back();
+			// Assign the current component number to the farm
+			component[curr] = component_num;
+			for (int n : neighbors[curr]) {
+				// Visit a neighbor if it's new & is of the same type
+				if (farms[n] == type && component[n] == -1) {
+					frontier.push_back(n);
+				}
+			}
+		}
+		component_num++;
+	}
+
+	std::ofstream written("milkvisits.out");
+	for (int q = 0; q < query_num; q++) {
+		int a, b;
+		char milk;
+		read >> a >> b >> milk;
+		a--;
+		b--;
+
+		if (component[a] == component[b]) {
+			/*
+			 * If a & b are in the same component,
+			 * check if the milk type is the same as the one the farmer likes
+			 */
+			written << (farms[a] == milk);
+		} else {
+			// Output 1 otherwise because both milk types will be visited
+			written << 1;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MilkVisits {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("milkvisits.in"));
+
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int farmNum = Integer.parseInt(initial.nextToken());
+		int queryNum = Integer.parseInt(initial.nextToken());
+
+		String farms = read.readLine();
+
+		List<Integer>[] neighbors = new ArrayList[farmNum];
+		for (int f = 0; f < farmNum; f++) { neighbors[f] = new ArrayList<>(); }
+		for (int f = 0; f < farmNum - 1; f++) {
+			StringTokenizer road = new StringTokenizer(read.readLine());
+			int f1 = Integer.parseInt(road.nextToken()) - 1;
+			int f2 = Integer.parseInt(road.nextToken()) - 1;
+			neighbors[f1].add(f2);
+			neighbors[f2].add(f1);
+		}
+
+		// Process the tree & detect the different components
+		int componentNum = 0;
+		int[] component = new int[farmNum];
+		Arrays.fill(component, -1);
+		for (int f = 0; f < farmNum; f++) {
+			// Don't process a farm if it's been visited already
+			if (component[f] != -1) { continue; }
+			ArrayDeque<Integer> frontier = new ArrayDeque<>();
+			frontier.add(f);
+			char type = farms.charAt(f);
+			while (!frontier.isEmpty()) {
+				int curr = frontier.poll();
+				// Assign the current component number to the farm
+				component[curr] = componentNum;
+				for (int n : neighbors[curr]) {
+					// Visit a neighbor if it's new & is of the same type
+					if (farms.charAt(n) == type && component[n] == -1) {
+						frontier.add(n);
+					}
+				}
+			}
+			componentNum++;
+		}
+
+		PrintWriter written = new PrintWriter("milkvisits.out");
+		for (int q = 0; q < queryNum; q++) {
+			StringTokenizer query = new StringTokenizer(read.readLine());
+			int a = Integer.parseInt(query.nextToken()) - 1;
+			int b = Integer.parseInt(query.nextToken()) - 1;
+			char milk = query.nextToken().charAt(0);
+
+			if (component[a] == component[b]) {
+				/*
+				 * If a & b are in the same component,
+				 * check if the milk type is the same as the one the farmer
+				 * likes
+				 */
+				written.print(farms.charAt(a) == milk ? 1 : 0);
+			} else {
+				// Output 1 otherwise because both milk types will be visited
+				written.print(1);
+			}
+		}
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("milkvisits.in") as read:
+	farm_num, query_num = [int(i) for i in read.readline().split()]
+	farms = read.readline()
+	neighbors = [[] for _ in range(farm_num)]
+	for f in range(farm_num - 1):
+		f1, f2 = [int(i) - 1 for i in read.readline().split()]
+		neighbors[f1].append(f2)
+		neighbors[f2].append(f1)
+
+	queries = []
+	for _ in range(query_num):
+		query = read.readline().split()
+		query[0], query[1] = int(query[0]) - 1, int(query[1]) - 1
+		queries.append(query)
+
+# Process the tree & detect the different components
+component_num = 0
+component = [-1 for _ in range(farm_num)]
+for f in range(farm_num):
+	# Don't process a farm if it's been visited already
+	if component[f] != -1:
+		continue
+	frontier = [f]
+	curr_type = farms[f]
+	while frontier:
+		curr = frontier.pop()
+		# Assign the current component number to the farm
+		component[curr] = component_num
+		for n in neighbors[curr]:
+			# Visit a neighbor if it's new & is of the same type
+			if farms[n] == curr_type and component[n] == -1:
+				frontier.append(n)
+	component_num += 1
+
+with open("milkvisits.out", "w") as written:
+	for a, b, milk in queries:
+		if component[a] == component[b]:
+			"""
+			If a & b are in the same component,
+			check if the milk type is the same as the one the farmer likes
+			"""
+			print(1 if farms[a] == milk else 0, end="", file=written)
+		else:
+			# Output 1 otherwise because both milk types will be visited
+			print(1, end="", file=written)
+	print(file=written)
+```
+
+</PySection>
+</LanguageSection>

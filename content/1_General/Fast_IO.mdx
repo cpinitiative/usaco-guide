@@ -2,14 +2,18 @@
 id: fast-io
 title: Fast Input & Output
 author: Benjamin Qi, Nathan Chen
-description: 'Speeding up I/O can make a substantial difference.'
+description: 'Demonstrates how I/O speed can be the difference between TLE and AC.'
 prerequisites:
   - input-output
 ---
 
 The [USACO Instructions Page](http://www.usaco.org/index.php?page=instructions)
-briefly mentions some ways of speeding up I/O, but how much of a difference do
-these actually make? We'll use the following task to benchmark I/O speed:
+briefly mentions some ways of speeding up I/O:
+
+> For some of the more advanced problems with larger input sizes, competitors may benefit from using fast input/output, to more easily pass within the time limit. For C++ users, you may want to add "ios_base::sync_with_stdio(false); cin.tie(0);" to the top of your main method if you are using cin/cout. For Java users, you may want to use BufferedReader instead of Scanner.
+
+What do these do and how much of a difference do these actually make? We'll use the following
+task to benchmark I/O speed:
 
 ## Example Task
 
@@ -68,6 +72,9 @@ large. It is possible to see input files this large (the 11th input file for
 [Minimum Cost Paths](http://usaco.org/index.php?page=viewproblem2&cpid=1093),
 which has an output file ~2.8MB large).
 
+
+<Problems problems="roboherd" />
+
 ## Standard I/O
 
 ### Slow
@@ -94,13 +101,9 @@ int main() {
 		int x;
 		cin >> x;
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			cout << ans << endl;
-		}
+		if (M == 1) { cout << ans << endl; }
 	}
-	if (M == 0) {
-		cout << ans << endl;
-	}
+	if (M == 0) { cout << ans << endl; }
 }
 ```
 
@@ -117,7 +120,7 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		int M = sc.nextInt();
@@ -125,13 +128,9 @@ public class Solution {
 		int ans = 0;
 		for (int i = 0; i < N; i++) {
 			ans = (ans + sc.nextInt()) % MOD;
-			if (M == 1) {
-				System.out.println(ans);
-			}
+			if (M == 1) { System.out.println(ans); }
 		}
-		if (M == 0) {
-			System.out.println(ans);
-		}
+		if (M == 0) { System.out.println(ans); }
 	}
 }
 ```
@@ -145,7 +144,7 @@ public class Solution {
 <Spoiler title="input + print (18.9s)">
 
 ```py
-MOD = 10 ** 9 + 7
+MOD = 10**9 + 7
 
 M, N = map(int, input().split())
 
@@ -210,13 +209,9 @@ int main() {
 		int x;
 		cin >> x;
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			cout << ans << "\n";
-		}
+		if (M == 1) { cout << ans << "\n"; }
 	}
-	if (M == 0) {
-		cout << ans << "\n";
-	}
+	if (M == 0) { cout << ans << "\n"; }
 }
 ```
 
@@ -246,13 +241,9 @@ int main() {
 		int x;
 		cin >> x;
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			cout << ans << endl;
-		}
+		if (M == 1) { cout << ans << endl; }
 	}
-	if (M == 0) {
-		cout << ans << endl;
-	}
+	if (M == 0) { cout << ans << endl; }
 }
 ```
 
@@ -287,13 +278,9 @@ int main() {
 		int x;
 		scanf("%d", &x);
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			printf("%d\n", ans);
-		}
+		if (M == 1) { printf("%d\n", ans); }
 	}
-	if (M == 0) {
-		printf("%d\n", ans);
-	}
+	if (M == 0) { printf("%d\n", ans); }
 }
 ```
 
@@ -312,9 +299,10 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int M = Integer.parseInt(st.nextToken());
@@ -322,13 +310,9 @@ public class Solution {
 		int ans = 0;
 		for (int i = 0; i < N; i++) {
 			ans = (ans + Integer.parseInt(br.readLine())) % MOD;
-			if (M == 1) {
-				pw.println(ans);
-			}
+			if (M == 1) { pw.println(ans); }
 		}
-		if (M == 0) {
-			pw.println(ans);
-		}
+		if (M == 0) { pw.println(ans); }
 		pw.close();
 	}
 }
@@ -340,9 +324,34 @@ public class Solution {
 
 <PySection>
 
-Use `sys.stdin.readline` and `sys.stdout.write` instead.
+Replacing `input` with `sys.stdin.readline` results in a huge speedup.
 
-<Spoiler title="sys (2.4s)">
+<Spoiler title="readline + print (2.9s)">
+
+```py
+import sys
+
+input = sys.stdin.readline
+
+MOD = 10**9 + 7
+
+M, N = map(int, input().split())
+
+ans = 0
+for _ in range(N):
+	x = int(input())
+	ans = (ans + x) % MOD
+	if M == 1:
+		print(ans)
+if M == 0:
+	print(ans)
+```
+
+</Spoiler>
+
+Using `sys.stdin.readline` and `sys.stdout.write` is a bit faster:
+
+<Spoiler title="readline + write (2.4s)">
 
 ```py
 import sys
@@ -350,7 +359,7 @@ import sys
 read = sys.stdin.readline
 write = sys.stdout.write
 
-MOD = 10**9+7
+MOD = 10**9 + 7
 
 M, N = map(int, read().split())
 
@@ -399,13 +408,9 @@ int main() {
 		int x;
 		cin >> x;
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			cout << ans << "\n";
-		}
+		if (M == 1) { cout << ans << "\n"; }
 	}
-	if (M == 0) {
-		cout << ans << "\n";
-	}
+	if (M == 0) { cout << ans << "\n"; }
 }
 ```
 
@@ -435,13 +440,9 @@ int main() {
 		int x;
 		cin >> x;
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			cout << ans << "\n";
-		}
+		if (M == 1) { cout << ans << "\n"; }
 	}
-	if (M == 0) {
-		cout << ans << "\n";
-	}
+	if (M == 0) { cout << ans << "\n"; }
 }
 ```
 
@@ -453,7 +454,7 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
 	freopen("speed.in", "r", stdin);
@@ -465,13 +466,9 @@ int main() {
 		int x;
 		scanf("%d", &x);
 		ans = (ans + x) % MOD;
-		if (M == 1) {
-			printf("%d\n", ans);
-		}
+		if (M == 1) { printf("%d\n", ans); }
 	}
-	if (M == 0) {
-		printf("%d\n", ans);
-	}
+	if (M == 0) { printf("%d\n", ans); }
 }
 ```
 
@@ -483,15 +480,17 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9+7;
+const int MOD = 1e9 + 7;
 
 int main() {
 	ifstream fin("speed.in");
 	ofstream fout("speed.out");
-	int M, N; fin >> M >> N;
+	int M, N;
+	fin >> M >> N;
 	int ans = 0;
 	for (int i = 0; i < N; ++i) {
-		int x; fin >> x;
+		int x;
+		fin >> x;
 		ans = (ans + x) % MOD;
 		if (M) fout << ans << "\n";
 	}
@@ -514,7 +513,7 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(new File("speed.in"));
 		PrintWriter pw = new PrintWriter("speed.out");
@@ -524,13 +523,9 @@ public class Solution {
 		int ans = 0;
 		for (int i = 0; i < N; i++) {
 			ans = (ans + sc.nextInt()) % MOD;
-			if (M == 1) {
-				pw.println(ans);
-			}
+			if (M == 1) { pw.println(ans); }
 		}
-		if (M == 0) {
-			pw.println(ans);
-		}
+		if (M == 0) { pw.println(ans); }
 		pw.close();
 	}
 }
@@ -547,7 +542,7 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("speed.in"));
 		PrintWriter pw = new PrintWriter("speed.out");
@@ -557,13 +552,9 @@ public class Solution {
 		int ans = 0;
 		for (int i = 0; i < N; i++) {
 			ans = (ans + Integer.parseInt(br.readLine())) % MOD;
-			if (M == 1) {
-				pw.println(ans);
-			}
+			if (M == 1) { pw.println(ans); }
 		}
-		if (M == 0) {
-			pw.println(ans);
-		}
+		if (M == 0) { pw.println(ans); }
 		pw.close();
 	}
 }
@@ -580,31 +571,26 @@ A variant of the above method involves wrapping the `BufferedReader` with a
 import java.io.*;
 
 public class Solution {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 
 	static StreamTokenizer st;
 	static int nextInt() throws IOException {
 		st.nextToken();
-		return (int) st.nval;
+		return (int)st.nval;
 	}
 
 	public static void main(String[] args) throws Exception {
 		st = new StreamTokenizer(
-			new BufferedReader(new InputStreamReader(System.in))
-		);
+		    new BufferedReader(new InputStreamReader(System.in)));
 		PrintWriter pw = new PrintWriter(System.out);
 		int M = nextInt();
 		int N = nextInt();
 		int ans = 0;
 		for (int i = 0; i < N; i++) {
 			ans = (ans + nextInt()) % MOD;
-			if (M == 1) {
-				pw.println(ans);
-			}
+			if (M == 1) { pw.println(ans); }
 		}
-		if (M == 0) {
-			pw.println(ans);
-		}
+		if (M == 0) { pw.println(ans); }
 		pw.close();
 	}
 }
@@ -641,15 +627,16 @@ if M == 0:
 
 </LanguageSection>
 
+
+<LanguageSection>
+
+<CPPSection>
+
 ## Even Faster Methods
 
 The input methods described above are easy to type up from scratch and are
 usually fast enough for USACO contests. But if you're looking for something even
 faster ...
-
-<LanguageSection>
-
-<CPPSection>
 
 Using `fread` and `fwrite` reduces the runtime even further.
 
@@ -756,6 +743,12 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+
+## Even Faster Methods
+
+The input methods described above are easy to type up from scratch and are
+usually fast enough for USACO contests. But if you're looking for something even
+faster ...
 
 Even faster than `BufferedReader` is a custom-written Fast I/O class that reads
 bytes directly from an
@@ -875,17 +868,11 @@ public class Solution {
 
 </JavaSection>
 
-<PySection>
-
-<IncompleteSection />
-
-</PySection>
+<PySection />
 
 </LanguageSection>
 
-<LanguageSection>
-
-<CPPSection>
+<CPPOnly>
 
 ## Additional Notes
 
@@ -971,14 +958,7 @@ details.
 
 </Warning>
 
-</CPPSection>
+</CPPOnly>
 
-<JavaSection>
-
-</JavaSection>
-
-<PySection>
-
-</PySection>
-
-</LanguageSection>
+## Problems
+<Problems problems="soldier" />

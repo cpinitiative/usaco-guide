@@ -6,7 +6,7 @@ author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi, Nathan Chen
 prerequisites:
   - intro-sorting
   - intro-graphs
-description: 'Using a custom comparator to sort custom objects or values in a non-default order; Coordinate compressing values from a large range to a smaller one.'
+description: 'Using a custom comparator to sort custom objects or values in a non-default order, and compressing values from a large range to a smaller one.'
 ---
 
 <Resources>
@@ -59,13 +59,14 @@ using namespace std;
 
 int main() {
 	int M = 4;
-	vector<pair<int,pair<int,int>>> v;
+	vector<pair<int, pair<int, int>>> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.push_back({w,{a,b}});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.push_back({w, {a, b}});
 	}
-	sort(begin(v),end(v));
-	for (auto e: v) cout << e.s.f << " " << e.s.s << " " << e.f << "\n";
+	sort(begin(v), end(v));
+	for (auto e : v) cout << e.s.f << " " << e.s.s << " " << e.f << "\n";
 }
 ```
 
@@ -74,13 +75,14 @@ or a `vector` of `array<int,3>`s or `vector<int>`s:
 ```cpp
 int main() {
 	int M = 4;
-	vector<array<int,3>> v; // or vector<vector<int>>
+	vector<array<int, 3>> v;  // or vector<vector<int>>
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.push_back({w,a,b});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.push_back({w, a, b});
 	}
-	sort(begin(v),end(v));
-	for (auto e: v) cout << e[1] << " " << e[2] << " " << e[0] << "\n";
+	sort(begin(v), end(v));
+	for (auto e : v) cout << e[1] << " " << e[2] << " " << e[0] << "\n";
 }
 ```
 
@@ -116,13 +118,13 @@ default.
 using namespace std;
 
 struct Edge {
-	int a,b,w;
+	int a, b, w;
 };
 
 /* alternatively,
 class Edge {
-	public:
-		int a,b,w;
+    public:
+        int a,b,w;
 };
 */
 
@@ -130,10 +132,11 @@ int main() {
 	int M = 4;
 	vector<Edge> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.push_back({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.push_back({a, b, w});
 	}
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -146,8 +149,12 @@ import java.util.*;
 
 public class Sol {
 	static class Edge {
-		int a,b,w;
-		public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+		int a, b, w;
+		public Edge(int _a, int _b, int _w) {
+			a = _a;
+			b = _b;
+			w = _w;
+		}
 	}
 	public static void main(String[] args) {
 		int M = 4;
@@ -157,9 +164,9 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new Edge(a,b,w));
+			v.add(new Edge(a, b, w));
 		}
-		for (Edge e: v){
+		for (Edge e : v) {
 			System.out.print(e.a);
 			System.out.print(' ');
 			System.out.print(e.b);
@@ -181,13 +188,14 @@ class Edge:
 		self.b = b
 		self.w = w
 
+
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 </PySection>
@@ -245,19 +253,20 @@ In the context of Wormhole Sort (note the use of
 using namespace std;
 
 struct Edge {
-	int a,b,w;
-	bool operator<(const Edge& y) { return w < y.w; }
+	int a, b, w;
+	bool operator<(const Edge &y) { return w < y.w; }
 };
 
 int main() {
 	int M = 4;
 	vector<Edge> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.push_back({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.push_back({a, b, w});
 	}
-	sort(begin(v),end(v));
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	sort(begin(v), end(v));
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -265,9 +274,9 @@ We can also overload the operator outside of the class:
 
 ```cpp
 struct Edge {
-	int a,b,w;
+	int a, b, w;
 };
-bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
+bool operator<(const Edge &x, const Edge &y) { return x.w < y.w; }
 ```
 
 or within it using
@@ -275,8 +284,8 @@ or within it using
 
 ```cpp
 struct Edge {
-	int a,b,w;
-	friend bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
+	int a, b, w;
+	friend bool operator<(const Edge &x, const Edge &y) { return x.w < y.w; }
 };
 ```
 
@@ -290,27 +299,28 @@ comparators for the same object.
 using namespace std;
 
 struct Edge {
-	int a,b,w;
+	int a, b, w;
 };
 
-bool cmp(const Edge& x, const Edge& y) { return x.w < y.w; }
+bool cmp(const Edge &x, const Edge &y) { return x.w < y.w; }
 
 int main() {
 	int M = 4;
 	vector<Edge> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.push_back({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.push_back({a, b, w});
 	}
-	sort(begin(v),end(v),cmp);
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	sort(begin(v), end(v), cmp);
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
 We can also use [lambda expressions](/general/lambda) in C++11 or above:
 
 ```cpp
-sort(begin(v),end(v),[](const Edge& x, const Edge& y) { return x.w < y.w; });
+sort(begin(v), end(v), [](const Edge &x, const Edge &y) { return x.w < y.w; });
 ```
 
 </CPPSection>
@@ -361,9 +371,13 @@ import java.util.*;
 
 public class Sol {
 	static class Edge implements Comparable<Edge> {
-	    int a,b,w;
-	    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
-	    public int compareTo(Edge y) { return Integer.compare(w,y.w); }
+		int a, b, w;
+		public Edge(int _a, int _b, int _w) {
+			a = _a;
+			b = _b;
+			w = _w;
+		}
+		public int compareTo(Edge y) { return Integer.compare(w, y.w); }
 	}
 	public static void main(String[] args) {
 		int M = 4;
@@ -373,10 +387,10 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new Edge(a,b,w));
+			v.add(new Edge(a, b, w));
 		}
 		Collections.sort(v);
-		for (Edge e: v){
+		for (Edge e : v) {
 			System.out.print(e.a);
 			System.out.print(' ');
 			System.out.print(e.b);
@@ -397,13 +411,15 @@ import java.util.*;
 
 public class Sol {
 	static class Edge {
-	    int a,b,w;
-	    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+		int a, b, w;
+		public Edge(int _a, int _b, int _w) {
+			a = _a;
+			b = _b;
+			w = _w;
+		}
 	}
 	static class Comp implements Comparator<Edge> {
-	    public int compare(Edge a, Edge b) {
-	        return Integer.compare(a.w, b.w);
-	    }
+		public int compare(Edge a, Edge b) { return Integer.compare(a.w, b.w); }
 	}
 	public static void main(String[] args) {
 		int M = 4;
@@ -413,10 +429,10 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new Edge(a,b,w));
+			v.add(new Edge(a, b, w));
 		}
 		Collections.sort(v, new Comp());
-		for (Edge e: v){
+		for (Edge e : v) {
 			System.out.print(e.a);
 			System.out.print(' ');
 			System.out.print(e.b);
@@ -445,17 +461,19 @@ class Edge:
 		self.a = a
 		self.b = b
 		self.w = w
-	def __lt__(self, other): # lt means less than
+
+	def __lt__(self, other):  # lt means less than
 		return self.w < other.w
+
 
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
 v.sort()
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 ### Key Function
@@ -471,14 +489,15 @@ class Edge:
 		self.b = b
 		self.w = w
 
+
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
-v.sort(key=lambda x:x.w)
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
+v.sort(key=lambda x: x.w)
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 ### Comparison Function
@@ -495,21 +514,23 @@ this.
 ```py
 from functools import cmp_to_key
 
+
 class Edge:
 	def __init__(self, a, b, w):
 		self.a = a
 		self.b = b
 		self.w = w
 
+
 v = []
 M = 4
 for i in range(M):
-	a,b,w = map(int,input().split())
-	v.append(Edge(a,b,w))
+	a, b, w = map(int, input().split())
+	v.append(Edge(a, b, w))
 
-v.sort(key=cmp_to_key(lambda a,b: a.w-b.w))
+v.sort(key=cmp_to_key(lambda a, b: a.w - b.w))
 for e in v:
-	print(e.a,e.b,e.w)
+	print(e.a, e.b, e.w)
 ```
 
 </PySection>
@@ -539,8 +560,8 @@ otherwise compare first vertices.
 
 ```cpp
 struct Edge {
-	int a,b,w;
-	bool operator<(const Edge& y) {
+	int a, b, w;
+	bool operator<(const Edge &y) {
 		if (w != y.w) return w < y.w;
 		return a < y.a;
 	}
@@ -553,11 +574,15 @@ struct Edge {
 
 ```java
 static class Edge implements Comparable<Edge> {
-	int a,b,w;
-	public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	int a, b, w;
+	public Edge(int _a, int _b, int _w) {
+		a = _a;
+		b = _b;
+		w = _w;
+	}
 	public int compareTo(Edge y) {
-		if (w != y.w) return Integer.compare(w,y.w);
-		return Integer.compare(a,y.a);
+		if (w != y.w) return Integer.compare(w, y.w);
+		return Integer.compare(a, y.a);
 	}
 }
 ```
@@ -575,7 +600,8 @@ class Edge:
 		self.a = a
 		self.b = b
 		self.w = w
-	def __lt__(self, other): # lt means less than
+
+	def __lt__(self, other):  # lt means less than
 		return (self.w, self.a) < (other.w, other.a)
 ```
 
@@ -608,9 +634,9 @@ import java.util.*;
 
 public class Sol {
 	static class Comp implements Comparator<int[]> {
-		public int compare(int[] a, int[] b){
+		public int compare(int[] a, int[] b) {
 			for (int i = 0; i < a.length; ++i)
-				if (a[i] != b[i]) return Integer.compare(a[i],b[i]);
+				if (a[i] != b[i]) return Integer.compare(a[i], b[i]);
 			return 0;
 		}
 	}
@@ -622,10 +648,10 @@ public class Sol {
 			int a = in.nextInt();
 			int b = in.nextInt();
 			int w = in.nextInt();
-			v.add(new int[]{w,a,b});
+			v.add(new int[] {w, a, b});
 		}
 		Collections.sort(v, new Comp());
-		for (int[] e: v){
+		for (int[] e : v) {
 			System.out.print(e[1]);
 			System.out.print(' ');
 			System.out.print(e[2]);
@@ -856,7 +882,7 @@ using namespace std;
 
 typedef long long ll;
 
-ll difference_array[400005]; 
+ll difference_array[400005];
 //difference_array[i] = the difference of the values between special intervals i-1 and i
 
 int widths[400005]; //width[i] = the length of special interval i
@@ -955,25 +981,25 @@ import java.util.*;
 import java.io.*;
 
 public class rangequeries {
-	
+
 	//custom class that stores a few integers (used for directly storing the queries and updates given in the input)
 	static class Query {
-		
+
 		int l, r, v;
 		public Query(int l, int r, int v) {
 			this.l = l;
 			this.r = r;
 			this.v = v;
 		}
-		
+
 		public Query(int l, int r) {
 			this.l = l;
 			this.r = r;
 		}
-		
+
 	}
-	
-	static long difference_array[]; 
+
+	static long difference_array[];
 	//difference_array[i] = the difference of the values between special intervals i-1 and i
 
 	static int widths[]; //width[i] = the length of special interval i
@@ -992,14 +1018,14 @@ public class rangequeries {
 //BeginCodeSnip{Solution code}
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // A Scanner is too slow to solve this problem!
-		
+
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
-		
+
 		indices = new ArrayList<Integer>();
 		queries = new Query[Q];
 		updates = new Query[N];
-		
+
 		for(int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken()), v = Integer.parseInt(st.nextToken());
@@ -1016,11 +1042,11 @@ public class rangequeries {
 		}
 //EndCodeSnip
 		//========= COORDINATE COMPRESSION =======
-		TreeSet<Integer> temp = new TreeSet<Integer>(indices); 
+		TreeSet<Integer> temp = new TreeSet<Integer>(indices);
 		//Since temp is a set, all duplicate elements are removed
-		indices.clear(); 
+		indices.clear();
 		indices.addAll(temp); //The elements of temp will be added to indices in sorted order, since temp is a TreeSet
-		//The effect of these lines is to sort indices while removing duplicate elements. 
+		//The effect of these lines is to sort indices while removing duplicate elements.
 		//While this is not the only way to do it, it is one that requires little code.
 		//========= COORDINATE COMPRESSION =======
 //BeginCodeSnip{Solution code}
@@ -1028,7 +1054,7 @@ public class rangequeries {
 		widths = new int[indices.size() + 5];
 		interval_value = new long[indices.size() + 5];
 		prefix_sums = new long[indices.size() + 5];
-		
+
 		//We create the difference array, using coordinate compression and binary search to get the index of each special interval
 		//Note the 1-based indexing for convenience
 		for(int i = 0; i < N; i++) {
@@ -1057,9 +1083,9 @@ public class rangequeries {
 		for(int i = 0; i < Q; i++) {
 			System.out.println(prefix_sums[getCompressedIndex(queries[i].r)] - prefix_sums[getCompressedIndex(queries[i].l)]);
 		}
-		
+
 	}
-	
+
 }
 //EndCodeSnip
 ```

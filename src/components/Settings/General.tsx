@@ -6,10 +6,12 @@ export default function General(): JSX.Element {
   const {
     showIgnored,
     setShowIgnored,
-    hideTags,
-    setHideTags,
+    showTags,
+    setShowTags,
     hideDifficulty,
     setHideDifficulty,
+    hideModules,
+    setHideModules,
   } = React.useContext(UserDataContext);
   return (
     <div>
@@ -26,10 +28,10 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Tags
+                Problem Lists and Search: Show Tags
               </p>
             </div>
-            <Switch checked={hideTags} onChange={b => setHideTags(b)} />
+            <Switch checked={showTags} onChange={b => setShowTags(b)} />
           </li>
           <li className="py-4 flex items-center justify-between">
             <div className="flex flex-col">
@@ -37,13 +39,24 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Difficulty
+                Problem Lists and Search: Hide Difficulty
               </p>
             </div>
             <Switch
               checked={hideDifficulty}
               onChange={b => setHideDifficulty(b)}
             />
+          </li>
+          <li className="py-4 flex items-center justify-between">
+            <div className="flex flex-col">
+              <p
+                className="text-sm font-medium text-gray-500 dark:text-gray-300"
+                id="privacy-option-1-label"
+              >
+                Problem Search: Hide Modules
+              </p>
+            </div>
+            <Switch checked={hideModules} onChange={b => setHideModules(b)} />
           </li>
           <li className="py-4 flex items-center justify-between">
             <div className="flex flex-col">

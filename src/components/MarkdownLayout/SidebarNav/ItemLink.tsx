@@ -95,8 +95,6 @@ const StyledLink = styled.span`
 
 const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
   const { activeIDs } = useContext(MarkdownLayoutContext);
-  // const isActive = markdownLayoutInfo.id === link.id;
-  // console.log("WHOOPS",activeIDs)
   const isActive = activeIDs.includes(link.id);
   const itemRef = React.useRef(null);
 
@@ -167,7 +165,11 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
       darkLineColorStyle={darkLineColorStyle}
       darkDotColorStyle={darkDotColorStyle}
     >
-      <Link to={link.url}>
+      <Link
+        to={`${link.url}${
+          typeof location !== 'undefined' ? location.search : ''
+        }`}
+      >
         <StyledLink
           $isActive={isActive}
           ref={itemRef}

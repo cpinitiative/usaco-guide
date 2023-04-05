@@ -80,7 +80,7 @@ export default function Template(props): JSX.Element {
 }
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  query ($id: String!) {
     xdm(frontmatter: { id: { eq: $id } }) {
       body
       frontmatter {
@@ -128,6 +128,7 @@ export const pageQuery = graphql`
           name
           url
           source
+          sourceDescription
           difficulty
           isStarred
           tags

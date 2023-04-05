@@ -1,4 +1,4 @@
-import { setDoc } from 'firebase/firestore';
+import { arrayUnion, updateDoc } from 'firebase/firestore';
 import { ModuleActivity } from '../../../models/activity';
 import { ModuleProgress } from '../../../models/module';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
@@ -76,31 +76,27 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
       userProgressOnModulesActivity: this.activityValue,
 
       setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
-        if (!this.firebaseUserDoc) {
-          // if the user isn't using firebase, it is possible that they
-          // have multiple tabs open, which can result in localStorage
-          // being out of sync.
-          this.initializeFromLocalStorage();
-        }
+        //if (!this.firebaseUserDoc) {
+        // if the user isn't using firebase, it is possible that they
+        // have multiple tabs open, which can result in localStorage
+        // being out of sync.
+        // edit: always do this even though unnecessary bc people keep losing data
+        this.initializeFromLocalStorage();
+        //}
 
-        this.activityValue.push({
+        const newActivityData = {
           timestamp: Date.now(),
           moduleID: moduleID,
           moduleProgress: progress,
-        });
+        };
+        this.activityValue.push(newActivityData);
         this.progressValue[moduleID] = progress;
 
         if (this.firebaseUserDoc) {
-          setDoc(
-            this.firebaseUserDoc,
-            {
-              [this.progressStorageKey]: {
-                [moduleID]: progress,
-              },
-              [this.activityStorageKey]: this.activityValue,
-            },
-            { merge: true }
-          );
+          updateDoc(this.firebaseUserDoc, {
+            [`${this.progressStorageKey}.${moduleID}`]: progress,
+            [this.activityStorageKey]: arrayUnion(newActivityData),
+          });
         }
 
         this.writeValueToLocalStorage();

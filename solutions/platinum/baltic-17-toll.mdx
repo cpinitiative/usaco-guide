@@ -1,0 +1,93 @@
+---
+id: baltic-17-toll
+source: Baltic OI 2017
+title: Toll
+author: Andi Qu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2017_solutions.zip)
+
+## Solution
+
+Split the graph into $N / K$ "layers" with $K$ nodes each. Notice how this graph
+somewhat resembles a neural network.
+
+![Graph from the sample](<baltic-17-toll/graph.png>)
+
+Let $dp[a][b][x][y]$ denote the minimum cost of a path between nodes $Ka + x$ to
+$Kb + y$.
+
+For any triple $a < b < c$, the following recurrence holds:
+
+$$
+dp[a][c][x][y] = \min_{z \in [0, K)} (dp[a][b][x][z] + dp[b][c][z][y])
+$$
+
+This is known as the
+[$(\min,+)$ product](https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication).
+
+To finish, we can use any algorithm that allows us to quickly answer static
+range queries (ex. divide & conquer). Another approach is to use a sparse table.
+Instead of storing each DP state, we can store only $dp[i][i + 2^j][x][y]$ for
+each $i$, $j$, $x$, and $y$. Then we can find the value of
+$dp[\lfloor A / K \rfloor][\lfloor B / K \rfloor][A \% K][B \% K]$ in
+$\mathcal{O}(K^2 \log N)$ time per query with binary jumping. This gives a time
+complexity of $\mathcal{O}(K^2(N+O)\log N)$.
+
+## Implementation
+
+$\mathcal{O}(K^3 \log N)$ per query. We can reduce this to
+$\mathcal{O}(K^2 \log N)$ per query by only storing the `a % k`-th row of `ans`.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int k, n, m, o;
+int dp[50000][17][5][5], ans[5][5], tmp[5][5];
+
+void combine(int target[5][5], int a[5][5], int b[5][5]) {
+	for (int x = 0; x < k; x++) {
+		for (int y = 0; y < k; y++) {
+			for (int z = 0; z < k; z++) {
+				target[x][y] = min(target[x][y], a[x][z] + b[z][y]);
+			}
+		}
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> k >> n >> m >> o;
+	memset(dp, 0x3f, sizeof dp);
+	while (m--) {
+		int a, b, t;
+		cin >> a >> b >> t;
+		dp[a / k][0][a % k][b % k] = t;
+	}
+	for (int j = 1; j < 17; j++) {
+		for (int i = 0; i + (1 << j) < (n + k - 1) / k; i++) {
+			combine(dp[i][j], dp[i][j - 1], dp[i + (1 << j - 1)][j - 1]);
+		}
+	}
+
+	while (o--) {
+		int a, b;
+		cin >> a >> b;
+		memset(ans, 0x3f, sizeof ans);
+		for (int i = 0; i < 5; i++) ans[i][i] = 0;
+		for (int curr = a / k, dest = b / k, i = 16; ~i; i--) {
+			if (curr + (1 << i) <= dest) {
+				memset(tmp, 0x3f, sizeof tmp);
+				combine(tmp, ans, dp[curr][i]);
+				memcpy(ans, tmp, sizeof ans);
+				curr += (1 << i);
+			}
+		}
+		cout << (ans[a % k][b % k] == 0x3f3f3f3f ? -1 : ans[a % k][b % k])
+		     << '\n';
+	}
+	return 0;
+}
+```

@@ -1,0 +1,121 @@
+---
+id: cf-1056E
+source: CF
+title: Check Transcription
+author: Chuyang Wang
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/63461)
+
+## Explanation
+
+To solve this problem, we can use brute force and check every possible length of $r_0$. Let $c_0$ and $c_1$ denote the number of zeros and ones in $s$, respectively. The length of $r_1$ can be determined by $\frac{|s| - c_0 \cdot |r_0|}{c_1}$. If this length is not an integer, then this $r_0$ is invalid and no further check is required for it.
+
+For each possible length of $r_0$, we want to check if the given pattern in $s$ matches the received signal $t$. Let the hash of $r_i$ be $h_i$. By pre-calculating the prefix sums of the hashes for $t$, we can iterate through $s$ and check for each character $s_i$ in $s$ if the hash of its corresponding part in $t$ equals $h_{s_i}$. This corresponding part in $t$ can be located if we use a pointer $t_j$ and increase it by $|r_i|$ every time we checked a character from $s$. At the end, if all hashes match, then we have found a possible $r_0$. Otherwise, if there is a mismatch at any point, we can terminate and go for the next possible length of $r_0$.
+
+### Time Complexity
+
+We first note that checking for a possible $r_0$ can be done in $\mathcal{O}(|s|)$ since for each character $s_i$ in $s$, we can get the hash of its corresponding substring in $t$ in $\mathcal{O}(1)$, given $\mathcal{O}(|s|)$ pre-processing to calculate the prefix sums of the hashes.
+
+Then, let's determine that number of possible lengths of $r_0$. Without loss of generality, suppose $c_0 \geq c_1 \implies c_0 \geq |s| / 2$. As $|r_0|$ and $|r_1|$ are strict positive, $|r_0|$ must be less or equal to $\lfloor |t| / c_0 \rfloor$.
+
+Therefore, the overall time complexity is $\mathcal{O} (|s| \cdot (|t| / c_0)) \leq \mathcal{O} (|s| \cdot |t| \cdot (2 / |s|)) = \mathcal{O} (|t|)$.
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ull = unsigned long long int;
+
+ull m = 1e9 + 9;
+ull base = 9973;
+// Hashes and powers start with 1
+vector<ull> rolling_hash;
+vector<ull> powers;
+
+/** Calculate the prefix sums of the hashes for the given string t. */
+void generate_hash(string &t) {
+	rolling_hash.push_back(0);
+	powers.push_back(1);
+	for (int i = 0; i < t.size(); i++) {
+		ull current_hash = ((rolling_hash.back() * base) % m + (ull)t[i]) % m;
+		rolling_hash.push_back(current_hash);
+		powers.push_back(powers.back() * base % m);
+	}
+}
+
+/** Get the hash value of the substring (a,b] */
+ull get_hash(int a, int b) {
+	ull previous = rolling_hash[a] * powers[b - a] % m;
+	// Add m in case rolling_hash[b] < previous
+	return ((m + rolling_hash[b]) - previous) % m;
+}
+
+int main() {
+	string s, t;
+	cin >> s >> t;
+	generate_hash(t);
+
+	int count0 = 0;
+	int count1 = 0;
+	for (char &c : s) {
+		if (c == '0') {
+			count0++;
+		} else if (c == '1') {
+			count1++;
+		}
+	}
+
+	int pairs_count = 0;
+	// Brute force through all possible lengths of r0
+	for (int len_r0 = 1; len_r0 < t.size() / count0; len_r0++) {
+		// This r0 is invalid if the length of r1 is no longer an integer
+		if ((t.size() - len_r0 * count0) % count1 != 0) { continue; }
+		int len_r1 = (t.size() - len_r0 * count0) / count1;
+
+		int len_ri[2] = {len_r0, len_r1};
+		ull hash_i[2] = {0, 0};
+
+		// pointer_t points to the current position in the received signal t.
+		int pointer_t = 0;
+		// i points to the current position in the pattern string s.
+		for (int i = 0; i < s.size(); i++) {
+			int s_i = s[i] - '0';
+			// If the hash for r_i is not calculated yet, we first calculate
+			// this.
+			if (hash_i[s_i] == 0) {
+				hash_i[s_i] = get_hash(pointer_t, pointer_t + len_ri[s_i]);
+			}
+
+			/*
+			 * Compare the hash of r_i with the current substring in t. If they
+			 * are not the same, or if both hashes (and therefore both r_0 and
+			 * r_1) are the same, this r_0 is invalid and we can go to the next
+			 * possibility.
+			 */
+			if (hash_i[s_i] != get_hash(pointer_t, pointer_t + len_ri[s_i]) ||
+			    hash_i[0] == hash_i[1]) {
+				/*
+				 * Since we add one to the counter anyway, we want to subtract
+				 * one in case this r_0 does not count.
+				 */
+				pairs_count--;
+				break;
+			}
+			// Move the pointer to the start of next token.
+			pointer_t += len_ri[s_i];
+		}
+		pairs_count++;
+	}
+
+	cout << pairs_count << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>

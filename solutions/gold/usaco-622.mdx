@@ -1,0 +1,84 @@
+---
+id: usaco-622
+source: USACO Gold 2016 February
+title: Circular Barn Revisited
+author: Chuyang Wang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cbarn2_gold_feb16.html)
+
+## Explanation
+
+The problem asks for the minimum amount of distance the cows need to travel for a circular barn. However, if we fix the position of the first door, the problem can be reduced to a linear barn $\texttt{rooms}[1..n]$ where we place the first door at the beginning of our linear barn. In such case, we can define $\texttt{dp}[i][j]$ as the sum of distance to fill the rooms $[j, n]$ if we place the $i$-th door at $j$. All values of the $\texttt{dp}$ array are initialized with infinity. We further set $\texttt{dp}[0][n+1] = 0$ because with no doors the only case where the distance is zero is to fill no room. Our transitions would then be
+
+$\texttt{dp}[i][j] = min(\texttt{dp}[i][j], \sum_{p=j+1}^{n+1} (p-j-1) \cdot \texttt{rooms}[p-1] + \texttt{dp}[i-1][p])$,
+
+where $i \in [1,k]$ and $j \in [1,n]$. In other words, $dp[i][j]$ is the minimum of all distances if we put the $i$-th door at $j$ with the last door placed at some place $p$ after $j$. This distance is calculated by adding the distance to fill the rooms $[j, p)$ to the optimal amount of distance to fill rooms $[p, n]$ with $i-1$ doors. $\texttt{dp}[k][0]$ represents the minimum amount of distance needed if we place the first door at the beginning of the current array $\texttt{rooms}$. We then start from the second door by moving the first room $\texttt{rooms}[0]$ to the end of the array and do the DP again.
+
+Our answer would be the minimum distance among all possible positions for the first door.
+
+There are $n$ doors which can be chosen as the first door. In each DP, we add each time one of the $k$ doors and iterate through each of $n$ positions to place it. For each of these positions, we go through all possible $n$ placement of the last door and calculate the optimal result for our current position with the new door. This yields a total time complexity of $\mathcal{O}(k n^3)$, which is fast enough for the given constraints.
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("cbarn2.in", "r", stdin);
+	freopen("cbarn2.out", "w", stdout);
+
+	int n, k;
+	cin >> n >> k;
+	deque<int> rooms(n);
+	for (int &r : rooms) { cin >> r; }
+
+	long long min_dist = INT64_MAX;
+	// Iterate through all possible positions of the first door
+	for (int start_pos = 0; start_pos < n; start_pos++) {
+		vector<vector<long long>> dp(k + 1,
+		                             vector<long long>(n + 1, INT64_MAX));
+		// With no door used, the distance is only zero if there is no room
+		// filled
+		dp[0][n] = 0;
+		// Iterate through number of doors used
+		for (int used_door = 1; used_door <= k; used_door++) {
+			// Iterate through all possible positions to place this new door
+			for (int i = 0; i < n; i++) {
+				// partial_dist stores the sum of distance to fill rooms [i, j -
+				// 1]
+				long long partial_dist = 0;
+				/*
+				 * Iterate through all possible placements of the last door and
+				 * find the minimum if we use this placement with our new door
+				 * at i
+				 */
+				for (int j = i + 1; j <= n; j++) {
+					// Add the amount of distance needed to fill the new room at
+					// j - 1
+					partial_dist += rooms[j - 1] * (j - i - 1);
+					long long new_dist = dp[used_door - 1][j];
+					if (new_dist < INT64_MAX) { new_dist += partial_dist; }
+					dp[used_door][i] = min(dp[used_door][i], new_dist);
+				}
+			}
+		}
+		// Update the best answer using the current dp answer
+		min_dist = min(min_dist, dp[k][0]);
+		/*
+		 * Put the first room to the end of the deque so that the first door
+		 * would be placed at the second room
+		 */
+		int first_room = rooms.front();
+		rooms.pop_front();
+		rooms.push_back(first_room);
+	}
+
+	cout << min_dist << endl;
+}
+```
+</CPPSection>
+</LanguageSection>

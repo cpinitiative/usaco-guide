@@ -1,0 +1,121 @@
+---
+id: cf-1006F
+source: CF
+title: Xor Paths
+author: Chongtian Ma
+---
+
+[Offical Analysis (C++)](https://codeforces.com/blog/entry/60672)
+
+## Alternative Explanation
+This problem is actually pretty similar to the focus problem in [the meet-in-the-middle module](/gold/meet-in-the-middle). As the official editorial states, we can maneuver the grid in exactly $n + m - 2$ moves. Thus, we can split the moves up into two. If we have $x$ as the XOR sum from one side, then we are adding how many instances of $k ⊕x$ there are on the other side. One side is starting from $(1, 1)$ and making our way down, and the other side is from $(n, m)$ and making our way up. Each side will have half the moves.
+
+## Implementation
+The official solution uses DFS, but that isn't needed. We can simply loop over subsets. Note that at the end where we are counting the total number of ways, we have $1$ less than the total number of moves. This is because it takes one extra move to make the two sides meet.
+
+**Time Complexity: $O(2^{\frac{n + m - 2}{2}} \cdot \frac{n + m - 2}{2})$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	int n, m;
+	ll k;
+	cin >> n >> m >> k;
+	vector<vector<ll>> grid(n, vector<ll>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) { cin >> grid[i][j]; }
+	}
+	int moves = n + m - 2;
+
+	// edge case: 1 x 1 grid so moves = 0
+	if (moves == 0) {
+		cout << (grid[0][0] == k) << endl;
+		return 0;
+	}
+
+	// loop over all combinations of moves from (0, 0)
+
+	/*
+	 * left[i][j][k] = number of ways we can have
+	 * an xorsum of k ending at (row, col)
+	 */
+	vector<vector<map<ll, ll>>> left(n, vector<map<ll, ll>>(m));
+
+	int leftmoves = moves / 2;
+	for (int i = 0; i < (1 << leftmoves); i++) {
+		ll r = 0 ll c = 0;
+		ll xorsum = grid[0][0];
+		bool in_grid = true;
+		for (int j = 0; j < leftmoves; j++) {
+			/*
+			 * if the j'th bit is a 1, then we increase row number,
+			 * otherwise we increase col
+			 */
+			if (i & (1 << j)) {
+				r++;
+			} else {
+				c++;
+			}
+
+			if (r >= n || c >= m) {
+				// this subset leads to out of the grid
+				in_grid = false;
+				break;
+			}
+			xorsum ^= grid[r][c];
+		}
+		if (in_grid) { left[r][c][xorsum]++; }
+	}
+
+	ll answer = 0;
+
+	// here we do the same thing, but we are going up from (n - 1, m - 1)
+	int rightmoves = moves - leftmoves - 1;  // note the minus 1
+	for (int i = 0; i < (1 << rightmoves); i++) {
+		ll r = 0 ll c = 0;
+		ll xorsum = grid[n - 1][m - 1];
+		bool in_grid = true;
+		for (int j = 0; j < rightmoves; j++) {
+			/*
+			 * if the j'th bit is a 1, then we decrease row number,
+			 * otherwise we decrease col
+			 */
+			if (i & (1 << j)) {
+				r--;
+			} else {
+				c++;
+			}
+
+			if (r < 0 || c < 0) {
+				// out of the grid
+				in_grid = false;
+				break;
+			}
+			xorsum ^= grid[r][c];
+		}
+		if (in_grid) {
+			// number of ways we merge the two sides so total xor is k
+			ll search = k ^ xorsum;
+			if (r > 0) {
+				// merge with the top spot
+				answer += left[r - 1][c][search];
+			}
+			if (c > 0) {
+				// merge with the left spot
+				answer += left[r][c - 1][search];
+			}
+		}
+	}
+
+	cout << answer << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

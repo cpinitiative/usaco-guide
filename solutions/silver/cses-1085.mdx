@@ -1,0 +1,144 @@
+---
+id: cses-1085
+source: CSES
+title: Array Division
+author: Michael Cao, George Pong
+---
+
+# Explanation
+
+In this problem, we're asked to divide an array into $k$ subarrays such that the
+maximum sum of a subarray is minimized.
+
+Let's begin by making an important observation. First of all, if you can divide
+an array such that the maximum sum is at most $x$, you can also divide the array
+such that the maximum sum is at most $y > x$ with the same division.
+
+Now, given some maximum sum $x$, we can check whether a division is possible
+using a greedy algorithm. If we can divide the array into $s < k$ subarrays,
+then we can divide it into $k$ subarrays without increasing the maximum sum of a
+subarray. Therefore, we can greedily create subarrays as long as the sum of the
+subarray does not exceed $x$, and check if the number of subarrays is $\leq k$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+<Warning>
+
+Make sure to use `long long`s to avoid overflow! Implementing the greedy
+algorithm also requires some caution.
+
+</Warning>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	int n, k;
+	cin >> n >> k;
+	vector<ll> a(n);
+	// The maximum sum possible is the sum of all the elements in the vector.
+	ll max_sum = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		max_sum = max_sum + a[i];
+	}
+
+	ll lo = 0, hi = max_sum, ans = 0;
+	auto works = [&](ll mid) {
+		int groups = 0;
+		ll sum = 0;
+		for (int i = 0; i < n; i++) {
+			if (a[i] > mid) { return false; }
+			if (sum + a[i] > mid) {
+				++groups;
+				sum = 0;
+			}
+			sum += a[i];
+		}
+		if (sum > 0) { ++groups; }
+		return groups <= k;
+	};
+	while (lo <= hi) {
+		ll mid = (lo + hi) / 2;
+		if (works(mid)) {
+			hi = mid - 1;
+			ans = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	cout << ans << '\n';
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+n, k = map(int, input().split())
+nums = list(map(int, input().split()))
+
+
+def can_divide_arrays(max_sum: int) -> bool:
+	"""
+	Checks if it is possible to divide nums into k subarrays with each
+	each subarray having a maximum sum of max_sum
+
+	:param max_sum: The maximum sum of each subarray
+	:returns: If it is possible to divide nums with the above conditions.
+	"""
+	num_subarrays = 0
+	cur_subarr_sum = 0
+	for num in nums:
+		if cur_subarr_sum + num <= max_sum:
+			cur_subarr_sum += num
+		elif num <= max_sum:
+			num_subarrays += 1
+			cur_subarr_sum = num
+			if num_subarrays > k:
+				return False
+		else:
+			return False
+
+	# last sub seq is not counted in the loop
+	num_subarrays += cur_subarr_sum > 0
+
+	return num_subarrays <= k
+
+
+left, right = 0, sum(nums)
+
+while left < right:
+	mid = (left + right) // 2
+	if can_divide_arrays(mid):
+		right = mid
+	else:
+		left = mid + 1
+
+print(left)
+```
+
+</PySection>
+
+</LanguageSection>

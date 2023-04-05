@@ -1,0 +1,170 @@
+---
+id: usaco-596
+source: USACO Silver 2016 January
+title: Build Gates
+author: Maggie Liu, Aadit Ambadkar
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_gates_silver_jan16.html)
+
+<Warning>
+
+The official solution stores the farm in a $2005 \times 2005$ boolean array with
+the origin at $(1002, 1002)$, but this is not sufficient. Since each fence
+segment is doubled, the maximum distance in each direction could be $2000$
+units, causing an input such as $1000$ $\texttt{N}$s to go out of bounds. To not
+go out of bounds, an array of size $4003 \times 4003$ should be used: $1$ unit
+for the origin position, $2000$ units in each direction from the origin and $1$
+more unit in each direction to ensure that the farm includes area beyond the
+fence.
+
+</Warning>
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <map>
+using namespace std;
+void ff(int i, int j);
+
+bool fence[4003][4003] = {false};
+bool visited[4003][4003] = {false};
+int maxx = 2001, minx = 2001, maxy = 2001, miny = 2001;
+int main() {
+	freopen("gates.in", "r", stdin);
+	freopen("gates.out", "w", stdout);
+	int n;
+	string path;
+	cin >> n >> path;
+	int x = 2001, y = 2001;
+	map<char, pair<int, int>> dir{
+	    {'N', {-1, 0}}, {'S', {1, 0}}, {'E', {0, 1}}, {'W', {0, -1}}};
+	// mark fences, scaling so they are 2 units instead of 1
+	for (int i = 0; i < n; i++) {
+		fence[x + dir[path[i]].first][y + dir[path[i]].second] = true;
+		fence[x + 2 * dir[path[i]].first][y + 2 * dir[path[i]].second] = true;
+		x += 2 * dir[path[i]].first;
+		y += 2 * dir[path[i]].second;
+		minx = min(minx, x);
+		maxx = max(maxx, x);
+		miny = min(miny, y);
+		maxy = max(maxy, y);
+	}
+	// expand the farm to include area outside the fences
+	minx--;
+	maxx++;
+	miny--;
+	maxy++;
+	int regions = 0;
+	// floodfill the farm to find the number of regions the farm is broken into
+	for (int i = minx; i <= maxx; i++) {
+		for (int j = miny; j <= maxy; j++) {
+			if (!visited[i][j] && !fence[i][j]) {
+				ff(i, j);
+				regions++;
+			}
+		}
+	}
+	// answer is regions - 1 because each gate decreases the number of regions
+	// by 1
+	cout << regions - 1 << endl;
+	return 0;
+}
+
+void ff(int i, int j) {
+	if (i < minx || i > maxx || j < miny || j > maxy || visited[i][j] ||
+	    fence[i][j]) {
+		return;
+	}
+	visited[i][j] = true;
+	int x[] = {-1, 0, 0, 1}, y[] = {0, -1, 1, 0};
+	for (int k = 0; k < 4; k++) { ff(i + x[k], j + y[k]); }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Alternate Faster Solution
+
+It is possible to make the following 2 observations:
+
+1. For each contiguous closed region, there must be 1 gate. In a minimum state, each region has exactly 1 gate. For example, if there are 2 regions, there must be 2 gates.
+2. Each time FJ comes across a node he has visited along an edge he has not crossed in either direction, he creates exactly 1 new region. In other words, FJ creates exactly 1 new contiguous closed region if all of these conditions are met:
+	* FJ walks along an edge from point $a$ to $b$
+	* He did not walk from $a$ to $b$ in the past
+	* He did not walk from $b$ to $a$ in the past
+	* $b$ is a point he had already visited
+
+Under these observations, we can use a set of visited edges and visited nodes, and keep track of the number of contiguous closed regions. This solution is about 10 times faster than flood filling due to $\log N$ lookup and insertion.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("gates.in", "r", stdin);
+	freopen("gates.out", "w", stdout);
+
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
+
+	set<pair<pair<int, int>, pair<int, int>>> visedge;
+	set<pair<int, int>> visnode;
+	int ans = 0;
+	pair<int, int> prev{0, 0};
+	visnode.insert(prev);
+
+	for (int i = 0; i < n; i++) {
+		int x = prev.first;
+		int y = prev.second;
+		if (s[i] == 'N') {
+			x++;
+		} else if (s[i] == 'S') {
+			x--;
+		} else if (s[i] == 'E') {
+			y--;
+		} else {
+			y++;
+		}
+
+		// Check if the edge from prev to {x, y} was visited (see 2nd
+		// observation)
+		if (visedge.find({{x, y}, prev}) == visedge.end() &&
+		    visnode.find({x, y}) != visnode.end()) {
+			ans++;
+		}
+
+		visedge.insert({{x, y}, prev});
+		visedge.insert({prev, {x, y}});
+		visnode.insert({x, y});
+
+		prev.first = x;
+		prev.second = y;
+	}
+	cout << ans << "\n";
+}
+```
+</CPPSection>
+
+</LanguageSection>

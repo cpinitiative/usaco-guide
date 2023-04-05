@@ -6,6 +6,7 @@ import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../context/ConfettiContext';
 import { useDarkMode } from '../../context/DarkModeContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { replaceIllegalFirebaseCharacters } from '../../context/UserDataContext/properties/userProgressOnResources';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
   ResourceInfo,
@@ -20,9 +21,8 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] = useState<ResourceProgress>(
-    currentProgress
-  );
+  const [activeProgress, setActiveProgress] =
+    useState<ResourceProgress>(currentProgress);
 
   const icon = (status: ResourceProgress, equal: boolean) => {
     const colorMap: { [key in ResourceProgress]: string } = {
@@ -137,12 +137,10 @@ export default function ResourcestatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
-  const { userProgressOnModules, setModuleProgress } = useContext(
-    UserDataContext
-  );
-  const { userProgressOnResources, setUserProgressOnResources } = useContext(
-    UserDataContext
-  );
+  const { userProgressOnModules, setModuleProgress } =
+    useContext(UserDataContext);
+  const { userProgressOnResources, setUserProgressOnResources } =
+    useContext(UserDataContext);
   const updateResourceProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
@@ -158,7 +156,8 @@ export default function ResourcestatusCheckbox({
     setModuleProgress(markdownLayoutInfo.id, 'Reading');
   };
   const status: ResourceProgress =
-    userProgressOnResources[resource.url] || 'Not Started';
+    userProgressOnResources[replaceIllegalFirebaseCharacters(resource.url)] ||
+    'Not Started';
   const color: { [key in ResourceProgress]: string } = {
     'Not Started': 'bg-gray-200 dark:bg-gray-700',
     Reading: 'bg-yellow-300 dark:bg-yellow-500',
