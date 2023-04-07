@@ -193,6 +193,7 @@ The code below shows the variables we need to maintain and a recursive implement
 
 ```py
 import sys
+
 sys.setrecursionlimit(1000000)  # may need if input is large
 
 MAX_N = int(1e6)
@@ -202,6 +203,7 @@ visited = [False] * MAX_N
 """
 Define adjacency list and read in problem-specific input
 """
+
 
 def dfs(current_node):
 	visited[current_node] = True
@@ -227,26 +229,20 @@ public static void main(String[] args) throws IOException {
 	adj = new ArrayList<ArrayList<Integer>>();
 	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
 	/*
-	 * Read in problem-specific input 
+	 * Read in problem-specific input
 	 */
 
 	for (int i = 0; i < MAX_N; i++) {
 		// iterate over all connected components in the graph
-		if (!visited[i]) {
-			dfs(i);
-		}
+		if (!visited[i]) { dfs(i); }
 	}
 }
 
 static void dfs(int currentNode) {
-	if (visited[currentNode]) {
-		return;
-	}
+	if (visited[currentNode]) { return; }
 
 	visited[currentNode] = true;
-	for (int neighbor : adj.get(currentNode)) {
-		dfs(neighbor);
-	}
+	for (int neighbor : adj.get(currentNode)) { dfs(neighbor); }
 }
 ```
 </JavaSection>
@@ -261,9 +257,7 @@ void dfs(int current_node) {
 	if (visited[current_node]) { return; }
 	visited[current_node] = true;
 
-	for (int neighbor : adj[current_node]) {
-		dfs(neighbor);
-	}
+	for (int neighbor : adj[current_node]) { dfs(neighbor); }
 }
 
 int main() {
@@ -273,11 +267,8 @@ int main() {
 
 	for (int i = 0; i < MAX_N; i++) {
 		// iterate over all connected components in the graph
-		if (!visited[i]) {
-			dfs(i);
-		}
+		if (!visited[i]) { dfs(i); }
 	}
-	
 }
 ```
 </CPPSection>
@@ -302,9 +293,8 @@ public static void main(String[] args) throws IOException {
 	ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
 	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
 
-	
 	/*
-	 * Define adjacency list and read in problem-specific input 
+	 * Define adjacency list and read in problem-specific input
 	 */
 	for (int i = 0; i < MAX_N; i++) {
 		// iterate over all connected components in the graph
@@ -318,10 +308,8 @@ public static void main(String[] args) throws IOException {
 
 				if (visited[currentNode]) { continue; }
 				visited[currentNode] = true;
-				
-				for (int neighbor : adj.get(currentNode)) {
-					q.add(neighbor);
-				}
+
+				for (int neighbor : adj.get(currentNode)) { q.add(neighbor); }
 			}
 		}
 	}
@@ -335,7 +323,7 @@ const int MAX_N = 1e6;
 
 int main() {
 	vector<int> adj[MAX_N];
-	bool visited[MAX_N] = { 0 };
+	bool visited[MAX_N] = {0};
 	/*
 	 * Define adjacency list and read in problem-specific input
 	 */
@@ -352,13 +340,11 @@ int main() {
 
 				if (visited[current_node]) { continue; }
 				visited[current_node] = true;
-				
-				for (int neighbor : adj[current_node]) {
-					q.push(neighbor);
-				}
+
+				for (int neighbor : adj[current_node]) { q.push(neighbor); }
 			}
 		}
-	}	
+	}
 }
 ```
 </CPPSection>
@@ -380,14 +366,13 @@ for i in range(MAX_N):
 	if not visited[i]:
 		q = deque([i])
 
-		while (q):
+		while q:
 			node = q.popleft()
 			visited[node] = True
 
 			for neighbor in adj[node]:
 				if not visited[neighbor]:
 					q.append(neighbor)
-
 ```
 </PySection>
 </LanguageSection>
@@ -551,7 +536,7 @@ int main() {
 	scanf("%d%d", &N, &M);
 	for (int i = 0, u, v; i < M; ++i)
 		scanf("%d%d", &u, &v), adj_list[u].push_back(v),
-			adj_list[v].push_back(u);
+		    adj_list[v].push_back(u);
 	ans = count_components();
 	printf("%d\n", ans - 1);
 	for (int i = 1; i < ans; ++i) printf("%d %d\n", rep[i - 1], rep[i]);
@@ -573,7 +558,7 @@ public class Main {
 	public static boolean visited[];
 	public static void main(String[] args) throws IOException {
 		BufferedReader br =
-			new BufferedReader(new InputStreamReader(System.in));
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
@@ -728,7 +713,7 @@ public class Main {
 	public static boolean visited[];
 	public static void main(String[] args) throws IOException {
 		BufferedReader br =
-			new BufferedReader(new InputStreamReader(System.in));
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
@@ -827,9 +812,7 @@ int main() {
 			visited[current_node] = 1;
 
 			for (int u : adj[current_node]) {
-				if (!visited[u]) {
-					todo.push(u);
-				}
+				if (!visited[u]) { todo.push(u); }
 			}
 		}
 	};
@@ -869,7 +852,7 @@ rep = []
 def bfs(start):
 	# visit all nodes in the connected component
 	todo = deque([start])
-	while (todo):
+	while todo:
 		current_node = todo.popleft()
 		visited[current_node] = True
 
@@ -887,7 +870,6 @@ for i in range(n):
 print(len(rep) - 1)
 for i in range(1, len(rep)):
 	print(rep[i - 1] + 1, rep[i] + 1)
-
 ```
 </PySection>
 </LanguageSection>
@@ -983,7 +965,7 @@ public class BuildingTeams {
 	public static boolean bad;
 	public static boolean[] vis = new boolean[MN], group = new boolean[MN];
 	public static int[] hd = new int[MN], nx = new int[MM * 2],
-						to = new int[MM * 2];
+	                    to = new int[MM * 2];
 
 	public static void dfs(int n, boolean g) {
 		vis[n] = true;
@@ -1075,15 +1057,11 @@ int main() {
 	};
 
 	for (int i = 0; i < n; i++) {
-		if (color[i] == -1) {
-			bfs(i);
-		}
+		if (color[i] == -1) { bfs(i); }
 	}
 
 	if (ok) {
-		for (int i = 0; i < n; i++) {
-			cout << color[i] + 1 << ' ';
-		}
+		for (int i = 0; i < n; i++) { cout << color[i] + 1 << ' '; }
 		cout << endl;
 	} else {
 		cout << "IMPOSSIBLE" << endl;
@@ -1133,7 +1111,7 @@ for i in range(n):
 
 if ok:
 	for i in range(n):
-		print(color[i] + 1, end=' ')
+		print(color[i] + 1, end=" ")
 
 else:
 	print("IMPOSSIBLE")
