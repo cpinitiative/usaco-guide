@@ -10,17 +10,18 @@ author: Chongtian Ma
 ## Implementation
 
 Let's denote a spot as filled if its value is $0$ and empty if its value is $1$.
-The problem boils down to, for each A query find the leftmost consecutive
-segments of 1s and fill it with 0s, and for each L query set all values in that
-range to 1. This can be maintained with a lazy propagated segment tree.
+The problem boils down to, for each "A" query find the leftmost consecutive
+segments of $1$s and fill it with $0$s, and for each "L" query set all values in that
+range to $1$. This can be maintained with a lazy segment tree.
 
-For each segment in our tree, as the official editorial suggests, we need to
-maintain three pieces of information: $\mathtt{seg}$ as the maximum amount of
-consecutive $1$s, $\mathtt{pref}$ as the amount of $1$s from the left of the
-segment, and $\mathtt{suff}$ as the amount of $1$s from the right of the
-segment. When merging two segments, make sure to account for overlapping
+For each segment in our tree, we need to maintain three pieces of information: 
+$\mathtt{seg}$ as the maximum amount of
+consecutive $1$s, $\mathtt{pref}$ as the maximum prefix of $1$s in the segment, 
+and $\mathtt{suff}$ as the maximum suffix of $1$s in the segment. 
+When merging two segments, make sure to account for overlapping
 segments; for instance, $\mathtt{suff}$ of left segment can merge with
-$\mathtt{pref}$ of right segment.
+$\mathtt{pref}$ of right segment. This is because the largest interval can
+either lay fully inside one of the two segments, or in both when combined.
 
 In order to find the leftmost segment of $1$s length of at least $v$, we should
 repeatedly traverse down the left subtree until its $\mathtt{seg} < v$. Then, if
