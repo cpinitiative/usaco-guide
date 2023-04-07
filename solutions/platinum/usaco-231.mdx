@@ -47,18 +47,18 @@ struct segtree {
 	vector<item> vals;
 	const item NEUTRAL_FOR_MERGING = {0, 0, 0, 0};
 	const int NO_OPERATION = INT_MAX;  // arbitrary
-	
+
 	int update_op(int a, int b) {
 		if (b == NO_OPERATION) return a;
 		return b;
 	}
-	
+
 	// the segment is filled with b, so now we have len * b in total
 	item update_item(item a, int b, int len) {
 		if (b == NO_OPERATION) return a;
 		return {b * len, b * len, b * len, len};
 	}
-	
+
 	item merge(item a, item b) {
 		item tmp = {0, 0, 0, 0};
 		tmp.pref = a.pref == a.len ? a.pref + b.pref : a.pref;
@@ -67,18 +67,18 @@ struct segtree {
 		tmp.len = a.len + b.len;
 		return tmp;
 	}
-	
+
 	void apply_op(int &a, int b) { a = update_op(a, b); }
-	
+
 	void apply_item(item &a, int b, int len) { a = update_item(a, b, len); }
-	
+
 	segtree(int n) {
 		size = 1;
 		while (size < n) size *= 2;
 		op.resize(2 * size, NO_OPERATION);
 		vals.resize(2 * size, {0, 0, 0, 0});
 	}
-	
+
 	void propagate(int x, int lx, int rx) {
 		if (rx - lx == 1) return;
 		int m = (lx + rx) / 2;
@@ -88,7 +88,7 @@ struct segtree {
 		apply_item(vals[2 * x + 2], op[x], rx - m);
 		op[x] = NO_OPERATION;
 	}
-	
+
 	void set(int l, int r, int v, int x, int lx, int rx) {
 		propagate(x, lx, rx);
 		if (lx >= r || rx <= l) return;
@@ -102,7 +102,7 @@ struct segtree {
 		set(l, r, v, 2 * x + 2, m, rx);
 		vals[x] = merge(vals[2 * x + 1], vals[2 * x + 2]);
 	}
-	
+
 	void set(int l, int r, int v) { return set(l, r, v, 0, 0, size); }
 	// find leftmost index of first gap such that there are x consecutive 1s
 	int find(int v, int x, int lx, int rx) {
@@ -111,14 +111,16 @@ struct segtree {
 		if (rx - lx == 1) return lx;
 		int m = (lx + rx) / 2;
 		int left = find(v, 2 * x + 1, lx, m);
-		if (left != -1) { return left; }  // return if we found a valid segment in left subtree
+		if (left != -1) {
+			return left;
+		}  // return if we found a valid segment in left subtree
 		// since segment is in both ranges, we can deduce the start index
 		if (vals[2 * x + 1].suff + vals[2 * x + 2].pref >= v) {
 			return m - vals[2 * x + 1].suff;
 		}
 		return find(v, 2 * x + 2, m, rx);  // go down right subtree
 	}
-	
+
 	int find(int v) { return find(v, 0, 0, size); }
 };
 
