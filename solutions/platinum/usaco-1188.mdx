@@ -47,7 +47,7 @@ struct Block {
 	Block(vector<int> a) {
 		hi = -1e9;
 		lo = 1e9;
-		for (auto &i : a) {
+		for (auto& i : a) {
 			vals.push_back(i);
 			hi = max(hi, i);
 			lo = min(lo, i);
@@ -88,22 +88,28 @@ int main() {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 	cin >> n >> k;
-	int len = (int)floor(sqrt(n));
+	int len = (int) floor(sqrt(n));
 	vector<Block> sqrt{Block()};
 	for (int i = 0; i < n; i++) {
 		int x;
 		cin >> x;
 		int j = sqrt.size() - 1;
-		while (j > 0 && (x + k >= sqrt[j].hi && x - k <= sqrt[j].lo)) { j--; }
+		while (j > 0 && (x + k >= sqrt[j].hi && x - k <= sqrt[j].lo)) {
+			j--;
+		}
 		if (j < sqrt.size() - 1 && sqrt[j].reaches_end(x)) {
 			j++;
-			while (j < sqrt.size() - 1 && x >= sqrt[j].hi) { j++; }
+			while (j < sqrt.size() - 1 && x >= sqrt[j].hi) {
+				j++;
+			}
 		}
 		sqrt[j].add(x);
 		if (sqrt[j].vals.size() > len) {
 			int half = (sqrt[j].vals.size()) / 2;
 			vector<int> left, right;
-			for (int k = 0; k < half; k++) { left.push_back(sqrt[j].vals[k]); }
+			for (int k = 0; k < half; k++) {
+				left.push_back(sqrt[j].vals[k]);
+			}
 			for (int k = half; k < sqrt[j].vals.size(); k++) {
 				right.push_back(sqrt[j].vals[k]);
 			}
@@ -112,7 +118,9 @@ int main() {
 		}
 	}
 	for (auto block : sqrt) {
-		for (auto num : block.vals) { cout << num << endl; }
+		for (auto num : block.vals) {
+			cout << num << endl;
+		}
 	}
 }
 ```
