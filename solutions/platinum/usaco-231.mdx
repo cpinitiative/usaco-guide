@@ -40,12 +40,12 @@ using namespace std;
 
 struct segtree {
 	int size;
-	struct item {
+	struct Item {
 		int seg, pref, suff, len;
 	};
 	vector<int> op;
-	vector<item> vals;
-	const item NEUTRAL_FOR_MERGING = {0, 0, 0, 0};
+	vector<Item> vals;
+	const Item NEUTRAL_FOR_MERGING = {0, 0, 0, 0};
 	const int NO_OPERATION = INT_MAX;  // arbitrary
 
 	int update_op(int a, int b) {
@@ -54,13 +54,13 @@ struct segtree {
 	}
 
 	// the segment is filled with b, so now we have len * b in total
-	item update_item(item a, int b, int len) {
+	Item update_item(Item a, int b, int len) {
 		if (b == NO_OPERATION) return a;
 		return {b * len, b * len, b * len, len};
 	}
 
-	item merge(item a, item b) {
-		item tmp = {0, 0, 0, 0};
+	Item merge(Item a, Item b) {
+		Item tmp = {0, 0, 0, 0};
 		tmp.pref = a.pref == a.len ? a.pref + b.pref : a.pref;
 		tmp.suff = b.suff == b.len ? b.suff + a.suff : b.suff;
 		tmp.seg = max({a.seg, b.seg, a.suff + b.pref});
@@ -70,7 +70,7 @@ struct segtree {
 
 	void apply_op(int &a, int b) { a = update_op(a, b); }
 
-	void apply_item(item &a, int b, int len) { a = update_item(a, b, len); }
+	void apply_item(Item &a, int b, int len) { a = update_item(a, b, len); }
 
 	segtree(int n) {
 		size = 1;
