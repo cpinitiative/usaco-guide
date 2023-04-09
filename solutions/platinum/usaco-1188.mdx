@@ -19,15 +19,15 @@ We can speed this up with square root decomposition. We can split the array into
 
 We know an element $a[i]$ can pass completely through a block if $a[i] + k \ge MAX$ and $a[i] - k \le MIN$ where $MAX$ and $MIN$ are the maximum and minimum elements of the block respectively. We can find the rightmost block that element $a[i]$ cannot pass through which takes at most O($\sqrt{n}$) since we check every block.
 
-We can insert this element into the square root block at its correct position by swapping it down to the left inside the block till it reaches a place where it can't be swapped down anymore. This also takes O($\sqrt{n}$) time because of the block size.
+We can insert this element into the square root block at its correct position by swapping it down to the left inside the block till it reaches a place where it can't be swapped down anymore. This also takes $\mathcal{O}(\sqrt{N})$ time because of the block size.
 
-Now we need to swap it back towards the right until it reaches a point where which makes the array lexographically minimum. We can do this by finding the first block to the right of it that has it's $MAX > a[i]$ by checking each block again in O($\sqrt{n}$).
+Now we need to swap it back towards the right until it reaches a point where which makes the array lexographically minimum. We can do this by finding the first block to the right of it that has it's $MAX > a[i]$ by checking each block again in $\mathcal{O}(\sqrt{N})$.
 
 Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $MAX$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $MAX > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
 
-Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can simply split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a vector in C++ or ArrayList in Java, is dependent on the size of the array which in our case which takes O($\sqrt{n}$). We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
+Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can simply split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a vector in C++ or ArrayList in Java, is dependent on the size of the array which in our case which takes $\mathcal{O}(\sqrt{N})$. We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
 
-Processing each element of the array took O($\sqrt{n}$) time so the total time complexity is O($n\sqrt{n}$).
+Processing each element of the array took $\mathcal{O}(\sqrt{N})$ time so the total time complexity is $\mathcal{O}(N\sqrt{N})$.
 
 **Time Complexity:** $\mathcal{O}(N\sqrt{N})$
 
