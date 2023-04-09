@@ -38,7 +38,7 @@ Otherwise, we traverse down the right subtree.
 #include <bits/stdc++.h>
 using namespace std;
 
-struct segtree {
+struct SegTree {
 	int size;
 	struct Item {
 		int seg, pref, suff, len;
@@ -72,7 +72,7 @@ struct segtree {
 
 	void apply_item(Item &a, int b, int len) { a = update_item(a, b, len); }
 
-	segtree(int n) {
+	SegTree(int n) {
 		size = 1;
 		while (size < n) size *= 2;
 		op.resize(2 * size, NO_OPERATION);
@@ -130,7 +130,7 @@ int main() {
 	int n, m;
 	cin >> n >> m;
 
-	segtree st(n);
+	SegTree st(n);
 	st.set(0, n, 1);  // initialize all positions to 1
 	int ans = 0;
 	for (int query = 0; query < m; query++) {
