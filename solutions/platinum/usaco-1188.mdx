@@ -25,15 +25,11 @@ Now we need to swap it back towards the right until it reaches a point where whi
 
 Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $MAX$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $MAX > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
 
-such that $ in the initial leftmost block. 
-
 Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can simply split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a vector in C++ or ArrayList in Java, is dependent on the size of the array which in our case which takes O($\sqrt{n}$). We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
 
 Processing each element of the array took O($\sqrt{n}$) time so the total time complexity is O($n\sqrt{n}$).
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
-
-**Memory Complexity:** $\mathcal{O}(N\log N)$
+**Time Complexity:** $\mathcal{O}(N\sqrt{N})$
 
 ```cpp
 #include <bits/stdc++.h>
