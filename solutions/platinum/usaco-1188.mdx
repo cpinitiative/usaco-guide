@@ -1,0 +1,134 @@
+---
+id: usaco-1188
+source: USACO Platinum 2022 January
+title: Minimizing Haybales
+author: Aakash Gokhale
+---
+
+[External Solution](http://www.usaco.org/current/data/sol_prob1_platinum_jan22.html)
+
+## Solution
+
+There are a lot of different ways to solve this problem. I am going to explain one that involves square root decomposition but I would recommend reading the official editorial to check out some of the other solutions as well.
+
+Let's first try to solve the subtask and come up with an O($n^2$) solution.
+
+Note that we can simply insert an element into the prefix by swapping it down to the left until it reaches position $i$ where $|a[i] - a[i - 1]| > k$ because its impossible to keep swapping it. However, if $a[i] > a[i + 1]$, it is more optimal to swap it back to the right until it reaches a point where $a[i] < a[i + 1]$.
+
+We can speed this up with square root decomposition. We can split the array into blocks of size $\sqrt{n}$.
+
+We know an element $a[i]$ can pass completely through a block if $a[i] + k \ge MAX$ and $a[i] - k \le MIN$ where $MAX$ and $MIN$ are the maximum and minimum elements of the block respectively. We can find the rightmost block that element $a[i]$ cannot pass through which takes at most O($\sqrt{n}$) since we check every block.
+
+We can insert this element into the square root block at its correct position by swapping it down to the left inside the block till it reaches a place where it can't be swapped down anymore. This also takes O($\sqrt{n}$) time because of the block size.
+
+Now we need to swap it back towards the right until it reaches a point where which makes the array lexographically minimum. We can do this by finding the first block to the right of it that has it's $MAX > a[i]$ by checking each block again in O($\sqrt{n}$).
+
+Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $MAX$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $MAX > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
+
+such that $ in the initial leftmost block. 
+
+Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can simply split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a vector in C++ or ArrayList in Java, is dependent on the size of the array which in our case which takes O($\sqrt{n}$). We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
+
+Processing each element of the array took O($\sqrt{n}$) time so the total time complexity is O($n\sqrt{n}$).
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+**Memory Complexity:** $\mathcal{O}(N\log N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, k;
+
+struct Block {
+  int hi, lo;
+  vector<int> vals;
+  Block() {
+    hi = -1e9;
+    lo = 1e9;
+  }
+  Block(vector<int> a) {
+    hi = -1e9;
+    lo = 1e9;
+    for (auto& i : a) {
+      vals.push_back(i);
+      hi = max(hi, i);
+      lo = min(lo, i);
+    }
+  }
+  void add(int x) {
+    lo = min(lo, x);
+    hi = max(hi, x);
+    vals.push_back(x);
+    int i = vals.size() - 1;
+    while (i > 0 && abs(vals[i] - vals[i - 1]) <= k) {
+      swap(vals[i], vals[i - 1]);
+      i--;
+    }
+    while (i < vals.size() - 1 && vals[i] > vals[i + 1]) {
+      swap(vals[i], vals[i + 1]);
+      i++;
+    }
+  }
+  bool reaches_end(int x) {
+    vals.push_back(x);
+    int i = vals.size() - 1;
+    while (i > 0 && abs(vals[i] - vals[i - 1]) <= k) {
+      swap(vals[i], vals[i - 1]);
+      i--;
+    }
+    while (i < vals.size() - 1 && vals[i] > vals[i + 1]) {
+      swap(vals[i], vals[i + 1]);
+      i++;
+    }
+    bool ans = vals.back() == x;
+    vals.erase(begin(vals) + i);
+    return ans;
+  }
+};
+
+int main() {
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cin >> n >> k;
+  int len = (int) floor(sqrt(n));
+  vector<Block> sqrt{Block()};
+  for (int i = 0; i < n; i++) {
+    int x;
+    cin >> x;
+    int j = sqrt.size() - 1;
+    while (j > 0 && (x + k >= sqrt[j].hi && x - k <= sqrt[j].lo)) {
+      j--;
+    }
+    if (j < sqrt.size() - 1 && sqrt[j].reaches_end(x)) {
+      j++;
+      while (j < sqrt.size() - 1 && x >= sqrt[j].hi) {
+        j++;
+      }
+    }
+    sqrt[j].add(x);
+    if (sqrt[j].vals.size() > len) {
+      int half = (sqrt[j].vals.size()) / 2;
+      vector<int> left, right;
+      for (int k = 0; k < half; k++) {
+        left.push_back(sqrt[j].vals[k]);
+      }
+      for (int k = half; k < sqrt[j].vals.size(); k++) {
+        right.push_back(sqrt[j].vals[k]);
+      }
+      sqrt.insert(begin(sqrt) + j, Block(left));
+      sqrt[j + 1] = Block(right);
+    }
+  }
+  for (auto block : sqrt) {
+    for (auto num : block.vals) {
+      cout << num << endl;
+    }
+  }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
