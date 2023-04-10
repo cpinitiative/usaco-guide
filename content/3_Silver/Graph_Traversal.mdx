@@ -5,7 +5,7 @@ redirects:
   - /silver/bipartite
 title: Graph Traversal
 author: Siyong Huang, Benjamin Qi, Ryan Chou
-contributors: Andrew Wang, Jason Chen
+contributors: Andrew Wang, Jason Chen, Divyanshu Upreti
 prerequisites:
   - intro-graphs
   - complete-rec
@@ -502,39 +502,54 @@ in a line.
 <CPPSection>
 
 ```cpp
-#include <cstdio>
+#include <iostream>
+#include <queue>
 #include <vector>
+using namespace std;
 
-const int MN = 1e5 + 10;
-
-int N, M, ans, rep[MN];
-std::vector<int> adj_list[MN];
+const int MN = 1e5 + 1;
+int N, M, rep[MN];
+vector<int> adj_list[MN];
 bool visited[MN];
 
-void dfs(int node) {
+void bfs(int node) {
+	queue<int> q;
+	q.push(node);
 	visited[node] = true;
-	for (int u : adj_list[node])
-		if (!visited[u]) dfs(u);
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+		for (int u : adj_list[curr]) {
+			if (!visited[u]) {
+				q.push(u);
+				visited[u] = true;
+			}
+		}
+	}
 }
 int count_components() {
 	int count = 0;
-	for (int i = 1; i <= N; ++i)
+	for (int i = 1; i <= N; i++) {
 		if (!visited[i]) {
 			rep[count++] = i;
-			dfs(i);
+			bfs(i);
 		}
+	}
 	return count;
 }
-
 int main() {
-	scanf("%d%d", &N, &M);
-	for (int i = 0, u, v; i < M; ++i)
-		scanf("%d%d", &u, &v), adj_list[u].push_back(v),
-		    adj_list[v].push_back(u);
-	ans = count_components();
-	printf("%d\n", ans - 1);
-	for (int i = 1; i < ans; ++i) printf("%d %d\n", rep[i - 1], rep[i]);
-	return 0;
+	cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int u, v;
+		cin >> u >> v;
+		adj_list[u].push_back(v);
+		adj_list[v].push_back(u);
+	}
+	int ans = count_components();
+	cout << ans - 1 << '\n';
+	for (int i = 1; i < ans; ++i) {
+		cout << rep[i - 1] << " " << rep[i] << '\n';
+	}
 }
 ```
 
