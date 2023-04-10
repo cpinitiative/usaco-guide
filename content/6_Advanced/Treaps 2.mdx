@@ -1,0 +1,445 @@
+---
+id: treaps
+title: 'Treaps'
+author: Benjamin Qi, Dustin Miao
+description: 'A randomized binary search tree'
+prerequisites:
+  - RURQ
+  - 2DRQ
+frequency: 2
+---
+
+<Resources>
+	<Resource 
+		source = "GCP" 
+		title = "15.3 - Treaps" 
+	>
+		Splitting and merging with code
+	</Resource>
+	<Resource 
+		source = "cp-algo" 
+		title = "Treap" 
+		url = "/data_structures/treap.html"
+		starred
+	>
+		Description and code
+	</Resource>
+	<Resource
+		source = "Algorithm Tutorial"
+		title = "Treaps : One Tree to Rule ’em all"
+		url = "https://tanujkhattar.wordpress.com/2016/01/10/treaps-one-tree-to-rule-em-all-part-1/"
+	>
+		Code and diagrams
+	</Resource>
+	<Resource
+		source = "Benq"
+		title = "Treap presentation"
+		url = "https://docs.google.com/presentation/d/14xgtdDWnIBwmJRAuIdZ8FvLZcX9uRxnNoGOGAQRDIvc/edit?usp=drive_web&ouid=115931309508432537673"
+	>
+		Description of Split and Merge
+	</Resource>
+	<Resource
+		source = "CF"
+		title = "Merging BSTs"
+		url = "https://codeforces.com/blog/entry/67980"
+	>
+		Proof of time complexity for merging treaps
+	</Resource>
+</Resources>
+
+## Treaps
+
+Like a regular binary search tree, treaps contain keys that can be inserted,
+erased, and searched for in $\mathcal{\Theta}(\log n)$. However, regular
+binary search trees suffer from imbalancing, which causes the tree to have up to
+an $\mathcal{O}(n)$ depth and blows up the time complexity.
+
+![Unbalanced Binary Search Tree](./unbalanced_bst.png)
+
+A treap is a randomized binary search tree that stores two numbers in its nodes:
+a value and a priority. The values of a treap will satisfy the binary search
+tree property (where all the nodes in the left subtree are strictly smaller than
+the current node and all the nodes in the right subtree are strictly greater
+than the current node), and the priorities will satisfy the heap property (where
+all descendants of a node will have smaller or equal priorities).
+
+![Treap](./treap.png)
+
+Treaps have two main operations: splitting and merging. Other operations like
+insert, erase, and searching can be implemented in terms of these operations.
+
+### Splitting
+
+The `split` method takes in a pointer to the root of a treap $\texttt{root}$ and
+a value $x$, and returns two treaps denoted as $\texttt{left}$ and
+$\texttt{right}$. Like the name suggests, it splits the tree such that all nodes
+in $\texttt{left}$ have keys less than or equal to $x$ and all nodes in
+$\texttt{right}$ have keys greater than $x$.
+
+We can now implement it recursively. Let the left child of a node $n$ be denoted
+as $n.\texttt{left}$ and the right child as $n.\texttt{right}$.
+
+- If $\texttt{root} \leq x$, then both the root and the left subtree belong to
+  $\texttt{left}$. We now consider a call to `split` on $\texttt{root.right}$
+  and note its results as $\texttt{left'}$ and $\texttt{right'}$. Finally,
+  $\texttt{left}$ contains $\texttt{left'}$ and
+  $\texttt{right} = \texttt{right'}$.
+- If $\texttt{root} > x$, then both the root and the right subtree belong to
+  $\texttt{right}$. We now consider a call to `split` on $\texttt{root.left}$
+  and note its results as $\texttt{left'}$ and $\texttt{right'}$. Finally,
+  $\texttt{right}$ contains $\texttt{right'}$ and
+  $\texttt{left} = \texttt{left'}$.
+
+### Merging
+
+The `merge` method inverts the `split` method by taking in two treaps
+$\texttt{left}$ and $\texttt{right}$ and returns a single treap that has the
+nodes of both treaps. It works under the assuption that all keys
+$x \in \texttt{left}$ are strictly smaller than all keys $y \in \texttt{right}$.
+Furthermore, we need to merge these two treaps such that the resultant treap
+still satisfies the max heap property.
+
+We root the resultant treap at the root node that has the higher priority, and
+recursively call `merge` on the other tree and the corresponding subtree of the
+chosen tree.
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <stdlib.h>
+
+struct Node {
+	// the value and priority of the node respectively
+	int val, pri;
+	// pointer to left and right child (NULL means no child)
+	Node *left, *right;
+	Node(int val) : val(val), pri(rand()), left(NULL), right(NULL) { };
+} *root;
+
+/**
+ * pass in root as pointer, left and right as references
+ * to a node pointer so we can modify them
+ * (alternatively, we can return left and right pointers
+ * as an std::pair)
+ */
+void split(Node *root, int x, Node *&left, Node *&right) {
+	if (!root) {
+		left = right = NULL;
+		return;
+	}
+	if (root->val <= x) {
+		split(root->right, x, root->right, right);
+		left = root;
+	} else {
+		split(root->left, x, left, root->left);
+		right = root;
+	}
+}
+
+/**
+ * merge left and right pointers into root which
+ * is a reference to a pointer to enable
+ * modification within the function
+ */
+void merge(Node *&root, Node *left, Node *right) {
+	if (!left || !right) {
+		root = left ? left : right;
+		return;
+	}
+	if (left->pri > right->pri) {
+		merge(left->right, left->right, right);
+		root = left;
+	} else {
+		merge(right->left, left, right->left);
+		root = right;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+<Optional>
+For speed / memory, use arrays of fixed size rather than pointers.
+</Optional>
+
+## Implicit Treaps
+
+<FocusProblem problem="sam2"/>
+
+In their most basic form, treaps are not very useful (languages like C++
+and Java already have a built-in self-balancing binary tree that is much more
+efficient than treaps). However, with implicit treaps, we can efficiently
+perform operations on a regular array in fashion similar to segment trees and
+fenwick trees. The following operations are supported by implicit treaps:
+
+- Insert an element $x$ at position $i$
+- Delete the element at position $i$
+- Performing interval queries (sum, min, max, etc.)
+- Perform interval updates (add, set, reverse, etc.)
+
+The key behind implicit treaps lies in their name. We will use the index of the
+node to be its key. Because maintaining this value explicitely will result in up
+to $\mathcal{O}(n)$ values to be updated per insertion/deletion, we will keep
+this value implicitly.
+
+The index of a node is equal to the number of nodes less than it. It is
+important to note that these nodes can occur both in the left subtree of the
+current node as well as the node's ancestors and the left subtree of its
+ancestors. 
+
+Note that in an implicit treap, the merge function is largely unchanged because
+it does not depend on the key. In the split operation we go from the root down,
+so we simply maintain a running count of the size left subtree.
+
+An implementation of the split operation may look something like:
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+void split(Node *treap, Node *&left, Node *&right, int val, int add = 0) {
+	if (!treap) {
+		left = right = NULL;
+		return;
+	}
+
+	int cur_size = add + size(treap->left); //implicit key
+	if (cur_size < val) {
+		split(treap->right, treap->right, right, key, add + 1 + size(treap->left));
+		left = treap;
+	} else {
+		split(treap->left, left, treap->left, key, add)
+		right = treap;
+	}
+	treap->size = 1 + size(treap->left) + size(treap->right);
+}
+```
+
+</CPPSection>
+	
+</LanguageSection>	
+
+In the split operation, because we are always comparing $\texttt{cur\_size}$ to
+$\texttt{val}$, we can simply eliminate the $\texttt{add}$ parameter by
+subtracting from $\texttt{val}$ each time. Our new code looks like:
+
+<LanguageSection>
+	
+<CPPSection>
+	
+```cpp
+void split(Node *treap, Node *&left, Node *&right, int val) {
+	if (!treap) {
+		left = right = NULL;
+		return;
+	}
+
+	if (size(treap->left) < val) {
+		split(treap->right, treap->right, right, val - size(treap->left) - 1);
+		left = treap;
+	} else {
+		split(treap->left, left, treap->left, val);
+		right = treap;
+	}
+	treap->size = 1 + size(treap->left) + size(treap->right);
+}
+```
+
+</CPPSection>	
+	
+</LanguageSection>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+struct Node {
+	int val;
+	int weight, size;
+	Node *left, *right;
+	Node(int c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
+} *root;
+
+int size(Node *treap) {
+	return treap ? treap->size : 0;
+}
+
+void split(Node *treap, Node *&left, Node *&right, int val) {
+	if (!treap) {
+		left = right = NULL;
+		return;
+	}
+
+	if (size(treap->left) < val) {
+		split(treap->right, treap->right, right, val - size(treap->left) - 1);
+		left = treap;
+	} else {
+		split(treap->left, left, treap->left, val);
+		right = treap;
+	}
+	treap->size = 1 + size(treap->left) + size(treap->right);
+}
+
+void merge(Node *&treap, Node *left, Node *right) {
+	if (left == NULL) {
+		treap = right;
+		return;
+	}
+	if (right == NULL) {
+		treap = left;
+		return;
+	}
+
+	if (left->weight < right->weight) {
+		merge(left->right, left->right, right);
+		treap = left;
+	} else {
+		merge(right->left, left, right->left);
+		treap = right;
+	}
+	treap->size = 1 + size(treap->left) + size(treap->right);
+}
+```
+	
+</CPPSection>	
+	
+</LanguageSection>
+
+With split and merge, how do we implement the additional operations?
+
+- **Insert** can be done with one split and two merges: We split the array
+  between the index we want to insert, create a new node with the corresponding
+  value, and merge the three sections together.
+- **Delete** can be done with two splits and one merge: We split the array into
+  three parts before and after the index, and merge the two parts together.
+- **Range queries** can be performed by maintaining additional data in each
+  node. We update this data whenever we update $\texttt{size}$.
+- **Range updates** can be performed by maintaining a lazy tag in each node (as
+  in lazy propogation). When splitting or merging, we push these tags downwards
+  and perform the corresponding operation.
+
+### Cut and Paste - Solution
+
+We will use implicit treaps to represent the array. For each operation, divide
+it into two phases: cut and paste. For the cut phase, we split the array into
+three parts: $[1, a)$, $[a, b]$, and $(b, n]$. This can be accomplished using
+two split operations. For the paste phase, we can rearrange the sections such
+that we merge them in the order $[1, a)$ $(b, n]$ $[a, b]$. This can be done
+using two merge operations.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+	char val;
+	int weight, size;
+	Node *left, *right;
+	Node(char c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
+} *root;
+
+inline int size(Node *treap) {
+	return treap ? treap->size : 0;
+}
+
+void split(Node *treap, Node *&left, Node *&right, int val) {
+	if (!treap) {
+		left = right = NULL;
+		return;
+	}
+
+	if (size(treap->left) < val) {
+		split(treap->right, treap->right, right, val - size(treap->left) - 1);
+		left = treap;
+	} else {
+		split(treap->left, left, treap->left, val);
+		right = treap;
+	}
+	treap->size = 1 + size(treap->left) + size(treap->right);
+}
+
+void merge(Node *&treap, Node *left, Node *right) {
+	if (left == NULL) {
+		treap = right;
+		return;
+	}
+	if (right == NULL) {
+		treap = left;
+		return;
+	}
+
+	if (left->weight < right->weight) {
+		merge(left->right, left->right, right);
+		treap = left;
+	} else {
+		merge(right->left, left, right->left);
+		treap = right;
+	}
+	treap->size = 1 + size(treap->left) + size(treap->right);
+}
+
+ostream& operator<<(ostream &os, Node *n) {
+	if (!n) return os;
+	os << n->left;
+	os << n->val;
+	os << n->right;
+	return os;
+}
+
+int main() {
+	int N, Q;
+	string S;
+
+	cin >> N >> Q >> S;
+	for (char c : S) {
+		merge(root, root, new Node(c));
+	}
+	while (Q--) {
+		int l, r;
+		cin >> l >> r;
+		Node *a, *b, *c, *d;
+		split(root, a, b, l - 1);
+		split(b, c, d, r - l + 1);
+		merge(root, a, d);
+		merge(root, root, c);
+	}
+	cout << root << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+	
+<Problems problems="impl" />
+
+- [CSES - Cut and Paste](https://cses.fi/problemset/task/2072)
+- [CSES - Substring Reversal](https://cses.fi/problemset/task/2073)
+- [CSES - Reversals and Sums](https://cses.fi/problemset/task/2074)
+- [NOI - Maintaining a Sequence](https://dmoj.ca/problem/noi05p2)
+- [Old Gold - Airplane Boarding](http://www.usaco.org/index.php?page=viewproblem2&cpid=402)
+- [CSA - Strings](https://csacademy.com/contest/archive/task/strings/)
+- [HE - Points & Distances](https://www.hackerearth.com/problem/algorithm/septembereasy-points-and-distances-d30d0e6b/description/)
+- [IOI 2013 - Game](https://oj.uz/submission/242393)
+- [Algorithms Thread Treaps Contest](https://codeforces.com/gym/102787)
+
+<IncompleteSection>
+- Add merging treaps
+- Format problems
+</IncompleteSection>

@@ -1,0 +1,453 @@
+---
+id: paths-grids
+title: 'Paths on Grids'
+author: Nathan Chen, Michael Cao, Benjamin Qi, Andrew Wang
+contributors: Maggie Liu
+prerequisites:
+  - intro-dp
+description:
+  'Counting the number of "special" paths on a grid, and how some string
+  problems can be solved using grids.'
+frequency: 2
+---
+
+<!-- ### Paths in a Grid (and related) -->
+
+<!-- Interesting applications of "number of paths on a grid," some of which don't directly present a grid in the problem, but can be modelled as one. --> <!-- Asterisk> Such as Longest Common Subsequence. </Asterisk> -->
+
+<FocusProblem problem="sam" />
+
+<FocusProblem problem="pathSam" />
+
+## Tutorial
+
+<Resources>
+	<Resource source="CPH" title="7.3 - Paths in a Grid" starred />
+</Resources>
+
+A common archetype of DP Problems involves a 2D grid of square cells (like graph
+paper), and we have to analyze "paths." A **path** is a sequence of cells whose
+movement is restricted to one direction on the $x$-axis and one direction on the
+$y$-axis (for example, you may only be able to move down or to the right).
+Usually, the path also has to start in one corner of the grid and end on another
+corner. The problem may ask you to count the number of paths that satisfy some
+property, or it may ask you to find the max/min of some quantity over all paths.
+
+Usually, the sub-problems in this type of DP are a sub-rectangle of the whole
+grid. For example, consider a problem in which we count the number of paths from
+$(1, 1)$ to $(N, M)$ when we can only move in the positive $x$-direction and the
+positive $y$-direction.
+
+Let $\texttt{dp}[x][y]$ be the number of paths in the sub-rectangle whose
+corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted
+by $\texttt{dp}[x][y]$ is $(1, 1)$, and we know the last cell is $(x, y)$.
+However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus,
+if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or
+$(x, y-1)$, we construct paths that end on $(x, y)$. Working backwards like that
+motivates the following recurrence:
+$\texttt{dp}[x][y] = \texttt{dp}[x-1][y] + \texttt{dp}[x][y-1]$. We can use this
+recurrence to calculate $\texttt{dp}[N][M]$. Keep in mind that
+$\texttt{dp}[1][1] = 1$ because the path to $(1, 1)$ is just a single cell. In
+general, thinking about how you can append cells to paths will help you
+construct the correct DP recurrence.
+
+When using the DP recurrence, it's important that you compute the DP values in
+an order such that the dp-value for a cell is known before you use it to compute
+the dp-value for another cell. In the example problem above, it's fine to
+iterate through each row from $0$ to $M-1$:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+for(int i = 0; i < M; i++) {
+	for(int j = 0; j < N; j++) {
+		if(j > 0) dp[j][i] += dp[j - 1][i];
+		if(i > 0) dp[j][i] += dp[j][i - 1];
+	}
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+for(int i = 0; i < M; i++) {
+	for(int j = 0; j < N; j++) {
+		if(j > 0) dp[j][i] += dp[j - 1][i];
+		if(i > 0) dp[j][i] += dp[j][i - 1];
+	}
+}
+
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+for i in range(M):
+	for j in range(N):
+		if j > 0:
+			dp[j][i] += dp[j - 1][i]
+		if i > 0:
+			dp[j][i] += dp[j][i - 1]
+```
+
+</PySection>
+
+</LanguageSection>
+
+Note how the coordinates in the code are in the form (x coordinate, y
+coordinate). Most of the time, it's more convenient to think of points as (row,
+column) instead, which swaps the order of the coordinates, though the code uses
+the former format to be consistent with the definition of $\texttt{dp}[x][y]$.
+
+## Solution - Grid Paths
+
+In this problem, we are directly given a 2D grid of cells, and we have to count
+the number of paths from corner to corner that can only go down (positive $y$
+direction) and to the right (positive $x$ direction), with a special catch. The
+path can't use a cell marked with an asterisk.
+
+We come close to being able to use our original recurrence, but we have to
+modify it. Basically, if a cell $(x, y)$ is normal, we can use the recurrence
+normally. But, if cell $(x, y)$ has an asterisk, the dp-value is $0$, because no
+path can end on a trap.
+
+$$
+
+  \texttt{dp}[x][y] =
+\begin{cases}
+\texttt{dp}[x-1][y] + \texttt{dp}[x][y-1] & \text{if $(x, y)$ is not a trap} \\
+0, & \text{if $(x, y)$ is a trap}
+\end{cases}
+
+
+$$
+
+The code for the DP recurrence doesn't change much:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+bool ok[1000][1000];
+ll dp[1000][1000];
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int n; cin >> n;
+	for(int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		for(int j = 0; j < n; j++) {
+			if(s[j] == '.') ok[i][j] = true;
+			else ok[i][j] = false;
+		}
+	}
+
+	dp[0][0] = 1;
+	for(int i = 0; i < n; i++) {
+		for(int j = 0; j < n; j++) {
+			if(!ok[i][j]) dp[i][j] = 0;
+			else {
+				if(i > 0) dp[i][j] += dp[i - 1][j];
+				if(j > 0) dp[i][j] += dp[i][j - 1];
+				dp[i][j] %= 1000000007;
+			}
+		}
+	}
+
+	cout << dp[n - 1][n - 1] << "\n";
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int N = Integer.parseInt(br.readLine());
+		long dp[][] = new long[N][N];
+		boolean ok[][] = new boolean[N][N];
+		for(int i = 0; i < N; i++) {
+			String s = br.readLine();
+			for(int j = 0; j < N; j++) {
+				if(s.charAt(j) == '.') ok[i][j] = true;
+				else ok[i][j] = false;
+			}
+		}
+
+		dp[0][0] = 1;
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if(!ok[i][j]) dp[i][j] = 0;
+				else {
+					if(i > 0) dp[i][j] += dp[i - 1][j];
+					if(j > 0) dp[i][j] += dp[i][j - 1];
+					dp[i][j] %= 1000000007;
+				}
+			}
+		}
+
+		System.out.println(dp[N - 1][N - 1]);
+	}
+
+}
+
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+ok = [[char == "." for char in input()] for _ in range(n)]
+dp = [[0] * n for _ in range(n)]
+dp[0][0] = 1
+
+for i in range(n):
+	for j in range(n):
+		# if current square is a trap
+		if not ok[i][j]:
+			dp[i][j] = 0
+			continue
+		if i - 1 >= 0:
+			# add paths ending on the square above
+			dp[i][j] += dp[i - 1][j]
+		if j - 1 >= 0:
+			# add paths ending on the square to the left
+			dp[i][j] += dp[i][j - 1]
+		dp[i][j] %= int(1e9 + 7)
+
+print(dp[n - 1][n - 1])
+```
+
+</PySection>
+
+</LanguageSection>
+
+Note how the coordinates are now in the form (row, column) when reading in the
+input.
+
+## Solution - Longest Common Subsequence
+
+<Resources>
+	<Resource
+		source="Programiz"
+		url="https://www.programiz.com/dsa/longest-common-subsequence"
+		title="Longest Common Subsequence"
+		starred
+	/>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/longest-common-subsequence-dp-4/"
+		title="Longest Common Subsequence"
+	/>
+</Resources>
+
+The
+[longest common subsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem)
+is a classical string problem, but where's the grid?
+
+In fact, we can create a grid to solve it. Think about the following algorithm
+to create any (not necessarily the longest) subsequence between two strings $A$
+and $B$:
+
+- We start with two pointers, $i$, and $j$, each beginning at $0$.
+- We do some "action" at each time step, until there are no more available
+  "actions". An "action" can be any of the following:
+
+1. Increase the value of $i$ by $1$ (only works if $i < |A|$).
+2. Increase the value of $j$ by $1$ (only works if $j < |B|$).
+3. Increase the value of $i$ and $j$ by $1$ only if $A_i = B_j$. Append that
+   character $A_i$ (or $B_j$) to the common subsequence. (only works if
+   $i < |A|$ and $j < |B|$).
+
+- We know that this process creates a common subsequence because characters
+  which are common to both strings are found from left to right.
+
+This algorithm can also be illustrated on a grid. Let $A := xabcd$ and
+$B := yazc$. Then, the current state of the algorithm can be defined as a
+specific point $(i, j)$ using the values of $i$ and $j$ that we discussed
+previously. The process of increasing pointers can be seen as moving right (if
+$i$ is increased), moving down (if $j$ is increased), or moving diagonally (if
+both $i$ and $j$ increase). See that each diagonal movement adds one to the
+length of the common subsequence.
+
+Now, we re-phrase "the length of the longest increasing subsequence" as "the
+maximum number of 'diagonal movements' ("action 3" in the above algorithm) in a
+path from the top-left corner to the bottom-right corner on the grid." Thus, we
+have constructed a grid-type DP problem.
+
+<center>
+
+|     | _x_   | _a_   | _b_   | _c_   | _d_   |
+| --- | ----- | ----- | ----- | ----- | ----- |
+| _y_ | **0** | 0     | 0     | 0     | 0     |
+| _a_ | 0     | **1** | 1     | 1     | 1     |
+| _z_ | 0     | **1** | **1** | 1     | 1     |
+| _c_ | 0     | 1     | 1     | **2** | **2** |
+
+</center>
+
+In the above grid, see how the bolded path has diagonal movements at characters
+"a" and "c". That means the longest common subsequence between "xabcd" and
+"yazc" is "ac".
+
+Based on the three "actions", which are also the three possible movements of the
+path, we can create a DP-recurrence to find the longest common subsequence:
+
+$$
+\texttt{dp}[i][j] =
+\begin{cases}
+\max(\texttt{dp}[i-1][j], \texttt{dp}[i][j-1]) & \text{if }A_i \neq B_j \\
+\texttt{dp}[i-1][j-1]+1, & \text{if }A_i = B_j
+\end{cases}
+$$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+class Solution {
+public:
+	int longestCommonSubsequence(string a, string b) {
+		int dp[a.size()][b.size()];
+		for (int i = 0; i < a.size(); i++) {
+			fill(dp[i], dp[i] + b.size(), 0);
+		}
+		for (int i = 0; i < a.size(); i++) {
+			if(a[i] == b[0]) dp[i][0] = 1;
+			if(i != 0) dp[i][0] = max(dp[i][0], dp[i - 1][0]);
+		}
+		for (int i = 0; i < b.size(); i++) {
+			if(a[0] == b[i]) dp[0][i] = 1;
+			if(i != 0) dp[0][i] = max(dp[0][i], dp[0][i - 1]);
+		}
+		for (int i = 1; i < a.size(); i++) {
+			for (int j = 1; j < b.size(); j++) {
+				if(a[i] == b[j]) {
+					dp[i][j] = dp[i - 1][j - 1] + 1;
+				} else {
+					dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+				}
+			}
+		}
+		return dp[a.size() - 1][b.size() - 1];
+	}
+};
+```
+
+Ben - shorter version using macros:
+
+```cpp
+// CodeSnip{Benq Template}
+class Solution {
+public:
+	int longestCommonSubsequence(str a, str b) {
+		V<vi> dp(sz(a) + 1, vi(sz(b) + 1));
+		F0R(i, sz(a) + 1) F0R(j, sz(b) + 1) {
+			if (i < sz(a)) ckmax(dp[i + 1][j], dp[i][j]);
+			if (j < sz(b)) ckmax(dp[i][j + 1], dp[i][j]);
+			if (i < sz(a) && j < sz(b))
+				ckmax(dp[i + 1][j + 1], dp[i][j] + (a[i] == b[j]));
+		}
+		return dp[sz(a)][sz(b)];
+	}
+};
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+class Solution {
+	public int longestCommonSubsequence(String a, String b) {
+		int[][] dp = new int[a.length()][b.length()];
+		for (int i = 0; i < a.length(); i++) {
+			if(a.charAt(i) == b.charAt(0)) dp[i][0] = 1;
+			if(i != 0) dp[i][0] = Math.max(dp[i][0], dp[i-1][0]);
+		}
+		for (int i = 0; i < b.length(); i++) {
+			if(a.charAt(0) == b.charAt(i)) {
+				dp[0][i] = 1;
+			}
+			if(i != 0) dp[0][i] = Math.max(dp[0][i], dp[0][i-1]);
+		}
+		for (int i = 1; i < a.length(); i++) {
+			for (int j = 1; j < b.length(); j++) {
+				if(a.charAt(i) == b.charAt(j)) {
+					dp[i][j] = dp[i-1][j-1]+1;
+				} else {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+				}
+			}
+		}
+		return dp[a.length()-1][b.length()-1];
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+class Solution:
+	def longestCommonSubsequence(self, a: str, b: str) -> int:
+		dp = [[0] * (len(b) + 1)  for _ in range(len(a) + 1)]
+		for i in range(1, len(a) + 1):
+			for j in range(1, len(b) + 1):
+				if a[i - 1] == b[j - 1]:
+					dp[i][j] = dp[i - 1][j - 1] + 1
+				else:
+					dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+		return dp[len(a)][len(b)]
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Problems
+
+<Problems problems="pathsGrid" />
+
+<Optional>
+
+Don't expect you to solve this task at this level, but you might find it
+interesting:
+
+[Circular Longest Common Subsequence](https://oj.uz/problem/view/IZhO13_rowords)
+
+</Optional>

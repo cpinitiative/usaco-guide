@@ -1,0 +1,435 @@
+---
+id: greedy-sorting
+title: 'Greedy Algorithms with Sorting'
+author: Darren Yao
+redirects:
+  - /silver/greedy
+prerequisites:
+  - intro-greedy
+  - two-pointers
+  - intro-sorted-sets
+description: 'Solving greedy problems by sorting the input.'
+frequency: 3
+---
+
+<Resources>
+	<Resource source="IUSACO" title="9 - Greedy Algorithms">
+		Module is based off this.
+	</Resource>
+	<Resource source="CPH" title="6 - Greedy Algorithms" starred>
+		Scheduling, Tasks & Deadlines, Huffman Coding
+	</Resource>
+	<Resource source="PAPS" title="8 - Greedy Algorithms">
+		DAGs, Scheduling
+	</Resource>
+	<Resource
+		source="CPC"
+		title="5 - Greedy Algorithms"
+		url="05_greedy_algorithms"
+	>
+		slides from Intro to Algorithms
+	</Resource>
+</Resources>
+
+<br />
+
+Usually, when using a greedy algorithm, there is a **value function** that
+determines which choice is considered most optimal. For example, we often want
+to maximize or minimize a certain quantity, so we take the largest or smallest
+possible value in the next step.
+
+Here, we'll focus on problems where some sorting step is involved.
+
+## Example - Studying Algorithms
+
+Steph wants to improve her knowledge of algorithms over winter break. She has a
+total of $X$ ($1 \leq X \leq 10^4$) minutes to dedicate to learning algorithms.
+There are $N$ ($1 \leq N \leq 100$) algorithms, and each one of them requires
+$a_i$ ($1 \leq a_i \leq 100$) minutes to learn. Find the maximum number of
+algorithms she can learn.
+
+<FocusProblem problem="studyalgo" />
+
+### Solution - Studying Algorithms
+
+<Spoiler title="Solution">
+
+The first observation we make is that Steph should prioritize learning
+algorithms from easiest to hardest; in other words, start with learning the
+algorithm that requires the least amount of time, and then choose further
+algorithms in increasing order of time required. Let's look at the following
+example:
+
+$$
+X = 15, \qquad N = 6, \qquad a_i = \{ 4, 3, 8, 4, 7, 3 \}
+$$
+
+After sorting the array, we have $\{ 3, 3, 4, 4, 7, 8 \}$. Within the maximum of
+15 minutes, Steph can learn four algorithms in a total of $3+3+4+4 = 14$
+minutes.
+
+The implementation of this algorithm is very simple. We sort the array, and then
+take as many elements as possible while the sum of times of algorithms chosen so
+far is less than $X$. Sorting the array takes $\mathcal{O}(N \log N)$ time, and
+iterating through the array takes $\mathcal{O}(N)$ time, for a total time
+complexity of $\mathcal{O}(N \log N)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// read in the input, store the algorithms in a vector, algorithms
+sort(algorithms.begin(), algorithms.end());
+int count = 0; // number of minutes used so far
+int i = 0;
+while(i < N && count + algorithms[i] <= x){
+	// while there is enough time, learn more algorithms
+	count += algorithms[i];
+	i++;
+}
+cout << i << endl; // print the ans
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+// read in the input, store the algorithms in int[] algorithms
+Arrays.sort(algorithms);
+int count = 0; // number of minutes used so far
+int i = 0;
+while(i < N && count + algorithms[i] <= x){
+	// while there is enough time, learn more algorithms
+	count += algorithms[i];
+	i++;
+}
+pw.println(i); // print the ans
+pw.close();
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+# read in the input, store the algorithms in a list, algorithms
+algorithms.sort();
+count = 0 # number of minutes used so far
+i = 0
+while i < N and count + algorithms[i] <= x:
+	# while there is enough time, learn more algorithms
+	count += algorithms[i]
+	i+=1
+print(i) # print the ans
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Example - The Scheduling Problem
+
+<FocusProblem problem="movie" />
+
+There are $N$ events, each described by their starting and ending times. You can
+only attend one event at a time, and if you choose to attend an event, you must
+attend the entire event. Traveling between events is instantaneous. What's the
+maximum number of events you can attend?
+
+### Bad Greedy - Earliest Starting Next Event
+
+One possible ordering for a greedy algorithm would always select the next
+possible event that begins as soon as possible. Let's look at the following
+example, where the selected events are highlighted in red:
+
+<svg viewBox="0 0 200 40">
+	<line
+		x1="10"
+		y1="5"
+		x2="80"
+		y2="5"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="120"
+		y2="15"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+	<line
+		x1="110"
+		y1="25"
+		x2="180"
+		y2="25"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+</svg>
+
+In this example, the greedy algorithm selects two events, which is optimal.
+However, this doesn't always work, as shown by the following counterexample:
+
+<svg viewBox="0 0 200 40">
+	<line
+		x1="10"
+		y1="5"
+		x2="160"
+		y2="5"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="80"
+		y2="15"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+	<line
+		x1="100"
+		y1="25"
+		x2="135"
+		y2="25"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+</svg>
+
+In this case, the greedy algorithm selects to attend only one event. However,
+the optimal solution would be the following:
+
+<svg viewBox="0 0 200 40">
+	<line
+		x1="10"
+		y1="5"
+		x2="160"
+		y2="5"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="80"
+		y2="15"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="100"
+		y1="25"
+		x2="135"
+		y2="25"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+</svg>
+
+### Correct Greedy - Earliest Ending Next Event
+
+Instead, we can select the event that ends as early as possible. This correctly
+selects the three events.
+
+<svg viewBox="0 0 200 40">
+	<line
+		x1="10"
+		y1="5"
+		x2="160"
+		y2="5"
+		style={{ strokeWidth: 1 }}
+		className="stroke-current text-black dark:text-gray-200"
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="80"
+		y2="15"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="100"
+		y1="25"
+		x2="135"
+		y2="25"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
+	/>
+</svg>
+
+In fact, this algorithm always works. A brief explanation of correctness is as
+follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than
+$E_1$, then it is always optimal to select $E_1$. This is because selecting
+$E_1$ gives us more choices for future events. If we can select an event to go
+after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first.
+Thus, the set of events that can go after $E_2$ is a subset of the events that
+can go after $E_1$, making $E_1$ the optimal choice.
+
+For the following code, let's say we have the array `events` of events, which
+each contain a start and an end point.
+
+<LanguageSection>
+
+<CPPSection>
+
+We'll be using the C++ built in container pair to store each event. Note that
+since the standard sort in C++ sorts by first element, we will store each event
+as `pair<end, start>`.
+
+```cpp
+// read in the input, store the events in pair<int, int>[] events.
+sort(events, events + n); // sorts by first element (ending time)
+int currentEventEnd = -1; // end of event currently attending
+int ans = 0; // how many events were attended?
+for(int i = 0; i < n; i++){ // process events in order of end time
+	if(events[i].second >= currentEventEnd){ // if event can be attended
+	// we know that this is the earliest ending event that we can attend
+	// because of how the events are sorted
+		currentEventEnd = events[i].first;
+		ans++;
+	}
+}
+cout << ans << endl;
+```
+
+</CPPSection>
+
+<JavaSection>
+
+We'll be using the following static class to store each event:
+
+```java
+static class Event implements Comparable<Event>{
+	int start; int end;
+	public Event(int s, int e){
+		start = s; end = e;
+	}
+	public int compareTo(Event e){
+		return Integer.compare(this.end, e.end);
+	}
+}
+```
+
+```java
+// read in the input, store the events in Event[] events.
+Arrays.sort(events); // sorts by comparator we defined above
+int currentEventEnd = -1; // end of event currently attending
+int ans = 0; // how many events were attended?
+for(int i = 0; i < n; i++){ // process events in order of end time
+	if(events[i].start >= currentEventEnd){ // if event can be attended
+	// we know that this is the earliest ending event that we can attend
+	// because of how the events are sorted
+		currentEventEnd = events[i].end;
+		ans++;
+	}
+}
+pw.println(ans);
+pw.close();
+```
+
+</JavaSection>
+
+<PySection>
+
+We'll be using a list of list to store the events.
+
+```python
+# read in the input, store the events in [begin, end] format in list events.
+events.sort(key=lambda x:x[1]); # sorts by second element (ending time)
+currentEventEnd = -1
+ans = 0 # how many events were attended?
+for i in range(n): # process events in order of end time
+	if events[i][0] >= currentEventEnd: # if event can be attended
+		# we know that this is the earliest ending event that we can attend
+		# because of how the events are sorted
+		currentEventEnd = events[i][1]
+		ans+=1
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## When Greedy Fails
+
+We'll provide a few common examples of when greedy fails, so that you can avoid
+falling into obvious traps and wasting time getting wrong answers in contest.
+
+### Coin Change
+
+This problem gives several coin denominations, and asks for the minimum number
+of coins needed to make a certain value. Greedy algorithms can be used to solve
+this problem only in very specific cases (it can be proven that it works for the
+American as well as the Euro coin systems). However, it doesn't work in the
+general case. For example, let the coin denominations be $\{1, 3, 4\}$, and say
+the value we want is 6. The optimal solution is $\{3, 3\}$, which requires only
+two coins, but the greedy method of taking the highest possible valued coin that
+fits in the remaining denomination gives the solution $\{4, 1, 1\}$, which is
+incorrect.
+
+### Knapsack
+
+The knapsack problem gives a number of items, each having a **weight** and a
+**value**, and we want to choose a subset of these items. We are limited to a
+certain weight, and we want to maximize the value of the items that we take.
+
+Let's take the following example, where we have a maximum capacity of 4:
+
+<center>
+
+| Item | Weight | Value | Value Per Weight |
+| ---- | ------ | ----- | ---------------- |
+| A    | 3      | 18    | 6                |
+| B    | 2      | 10    | 5                |
+| C    | 2      | 10    | 5                |
+
+</center>
+
+If we use greedy based on highest value first, we choose item A and then we are
+done, as we don't have remaining weight to fit either of the other two. Using
+greedy based on value per weight again selects item A and then quits. However,
+the optimal solution is to select items B and C, as they combined have a higher
+value than item A alone. In fact, there is no working greedy solution. The
+solution to this problem uses **dynamic programming**, which is covered in gold.
+
+## Problems
+
+### CSES
+
+<Problems problems="cses" hideSuggestProblemButton />
+
+### Other
+
+<Problems problems="other" hideSuggestProblemButton />

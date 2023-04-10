@@ -1,0 +1,63 @@
+---
+id: multiplicative
+title: 'Prefix Sums of Multiplicative Functions'
+author: Benjamin Qi
+description: '?'
+frequency: 0
+---
+
+https://codeforces.com/blog/entry/54150
+
+## Linear Time Sieve
+
+https://judge.yosupo.jp/problem/enumerate_primes
+
+## Counting Primes
+
+https://judge.yosupo.jp/problem/counting_primes
+
+## Totient Function
+
+https://judge.yosupo.jp/problem/sum_of_totient_function
+
+```cpp
+template<int SZ> struct Sieve {
+	vi pr;
+	int sp[SZ], phi[SZ]; // smallest prime that divides
+	Sieve() { // above is faster
+		memset(sp,0,sizeof sp);
+		phi[1] = 1;
+		FOR(i,2,SZ) {
+			if (sp[i] == 0) {
+				sp[i] = i, pr.pb(i); phi[i] = i-1;
+			} trav(p,pr) {
+				if (p > sp[i] || i*p >= SZ) break;
+				sp[i*p] = p;
+				phi[i*p] = (p == sp[i] ? p : p-1)*phi[i];
+			}
+		}
+	}
+};
+
+const int HI = 5000000;
+Sieve<HI> S;
+ll N;
+vmi small(HI), big;
+
+int main() {
+	setIO(); re(N); big.rsz(N/HI+2);
+	FOR(i,1,HI) small[i] = small[i-1]+S.phi[i];
+	ROF(i,1,sz(big)) {
+		ll mx = N/i; big[i] = mi(mx)*(mx+1)/2; // dbg("HUH",i,big[i]);
+		for (ll fac = 2, nex; fac <= mx; fac = nex) {
+			ll quo = mx/fac; nex = mx/quo+1;
+			big[i] -= (nex-fac)*(quo < HI ? small[quo] : big[i*fac]);
+		}
+	}
+	ps(big[1]);
+}
+```
+
+(project euler)
+
+(topcoder problem)

@@ -1,0 +1,775 @@
+---
+id: bfs
+title: 'Breadth First Search (BFS)'
+author: Benjamin Qi, Andi Qu, Neo Wang 
+contributors: Qi Wang
+prerequisites:
+  - dfs
+  - flood-fill
+description:
+  'Traversing a graph in a way such that vertices closer to the starting vertex
+  are processed first.'
+frequency: 2
+---
+
+<!-- NOTE: general problems were RANDOMLY STARRED. please review! -->
+
+## Queues & Deques
+
+<Resources>
+	<Resource source="CPH" title="4.5 - Queues, Deques" />
+	<Resource source="PAPS" title="3.2, 6.3 - Queues" />
+</Resources>
+
+### Queues
+
+A queue is a First In First Out (FIFO) data structure that supports three
+operations, all in $\mathcal{O}(1)$ time.
+
+<LanguageSection>
+
+<CPPSection>
+
+#### [C++](http://www.cplusplus.com/reference/queue/queue/)
+
+- `push`: inserts at the back of the queue
+- `pop`: deletes from the front of the queue
+- `front`: retrieves the element at the front without removing it.
+
+```cpp
+queue<int> q;
+q.push(1); // [1]
+q.push(3); // [3, 1]
+q.push(4); // [4, 3, 1]
+q.pop(); // [4, 3]
+cout << q.front() << endl; // 3
+```
+
+</CPPSection>
+
+<JavaSection>
+
+#### Java
+
+- `add`: insertion at the back of the queue
+- `poll`: deletion from the front of the queue
+- `peek`: which retrieves the element at the front without removing it
+
+Java doesn't actually have a `Queue` class; it's only an interface. The most
+commonly used implementation is the `LinkedList`, declared as follows:
+
+```java
+Queue<Integer> q = new LinkedList<Integer>();
+q.add(1); // [1]
+q.add(3); // [3, 1]
+q.add(4); // [4, 3, 1]
+q.poll(); // [4, 3]
+System.out.println(q.peek()); // 3
+```
+
+</JavaSection>
+
+<PySection>
+
+#### Python
+
+Python has a `queue` built-in module.
+
+- `Queue.put(n)`: Inserts element to the back of the queue.
+- `Queue.get()`: Gets and removes the front element. If the queue
+  is empty, this will wait forever, creating a TLE error.
+- `Queue.queue[n]`: Gets the nth element without removing it. Set
+  n to 0 for the first element.
+
+```py
+from queue import Queue
+
+q = Queue()      # []
+q.put(1)         # [1]
+q.put(2)         # [1, 2]
+v = q.queue[0]   # v = 1, q = [1, 2]
+v = q.get()      # v = 1, q = [2]
+v = q.get()      # v = 2, q = []
+v = q.get()      # Code waits forever, creating TLE error.
+```
+<Warning>
+
+Python's `queue.Queue()` uses Locks to maintain a threadsafe synchronization, so it's quite slow.
+To avoid TLE, use `collections.deque()` instead for a faster version of a queue.
+
+</Warning>
+
+</PySection>
+
+</LanguageSection>
+
+### Deques
+
+A **deque** (usually pronounced "deck") stands for double ended queue and is a
+combination of a stack and a queue, in that it supports $\mathcal{O}(1)$
+insertions and deletions from both the front and the back of the deque. Not very
+common in Bronze / Silver.
+
+<LanguageSection>
+
+<CPPSection>
+
+#### [C++](http://www.cplusplus.com/reference/deque/deque/)
+
+The four methods for adding and removing are `push_back`, `pop_back`,
+`push_front`, and `pop_front`.
+
+```cpp
+deque<int> d;
+d.push_front(3);  // [3]
+d.push_front(4);  // [4, 3]
+d.push_back(7);  // [4, 3, 7]
+d.pop_front();  // [3, 7]
+d.push_front(1);  // [1, 3, 7]
+d.pop_back();  // [1, 3]
+```
+
+You can also access deques in constant time like an array in constant time with
+the `[]` operator. For example, to access the element $\texttt{i}$ for some
+deque $\texttt{dq}$, do $\texttt{dq[i]}$.
+
+</CPPSection>
+
+<JavaSection>
+
+#### Java
+
+In Java, the deque class is called `ArrayDeque`. The four methods for adding and
+removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
+
+```java
+ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
+deque.addFirst(3);  // [3]
+deque.addFirst(4);  // [4, 3]
+deque.addLast(7);  // [4, 3, 7]
+deque.removeFirst();  // [3, 7]
+deque.addFirst(1);  // [1, 3, 7]
+deque.removeLast();  // [1, 3]
+```
+
+</JavaSection>
+
+<PySection>
+
+#### Python
+
+In Python, `collections.deque()` is used for a deque data structure. The four methods for adding and removing are `appendleft`, `popleft`, `append`, and `pop`.
+```py
+d = collections.deque()
+d.appendleft(3)  # [3]
+d.appendleft(4)  # [4, 3]
+d.append(7)  # [4, 3, 7]
+d.popleft()  # [3, 7]
+d.appendleft(1)  # [1, 3, 7]
+d.pop()  # [1, 3]
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Breadth First Search
+
+<FocusProblem problem="sampleNormal" />
+
+### Resources
+
+<Resources>
+	<Resource source="CSA" title="BFS" url="breadth_first_search" starred>
+		interactive, implementation
+	</Resource>
+	<Resource source="PAPS" title="12.1 - BFS">
+		grid, 8-puzzle examples
+	</Resource>
+	<Resource source="cp-algo" title="BFS" url="graph/breadth-first-search.html">
+		common applications
+	</Resource>
+	<Resource
+		source="KA@KhanAcademy"
+		title="BFS and its uses"
+		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
+	 />
+	<Resource
+		source="Youtube"
+		title="Breadth First Search Algorithm"
+		url="https://www.youtube.com/watch?v=oDqjPvD54Ss"
+	>
+		If you prefer a video format
+	</Resource>
+</Resources>
+
+<!-- <Resource source="CPH" title="12.2 - Breadth-First Search">example, implementation</Resource>
+<Resource source="cp-algo" title="" url="graph/01_bfs.html" />
+<Resource
+	source="IUSACO"
+	title="10.4 - Graph Traversal Algorithms"
+ />
+<Resource source="CP2" title="4.2.2 - BFS" /> -->
+
+### Solution - Message Route
+
+**Time Complexity:** $\mathcal{O}(V+E)$
+
+We can observe is that there are many possible shortest paths to output.
+Fortunately, the problem states that we can print any valid solution. Notice
+that like every other BFS problem, the distance of each node increases by $1$
+when we travel to the next level of unvisited nodes. However, the problem
+requires that we add additional information - in this case, the path. When we
+traverse from node $a$ to $b$, we can set the parent of $b$ to $a$. After the
+BFS is complete, this allows us to backtrack through the parents which
+ultimately leads us to our starting node. We know to terminate at node $1$
+because it's the starting node. If there is no path to our end node, then its
+distance will remain at
+[`INT_MAX`](https://en.cppreference.com/w/c/types/limits).
+
+For the test input, we start with the following parent array.
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+After visiting children of node $1$:
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td>INT_MAX</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+After visiting node $5$ from node $4$:
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>1</td>
+				<td className="bg-green-200 dark:bg-green-800">4</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>1</td>
+				<td className="bg-green-200 dark:bg-green-800">2</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+To determine the path, we can backtrack from node $n \rightarrow 1$, in this
+case $5 \rightarrow 1$, pushing each value that we backtrack into a vector. The
+path we take is
+$5 \rightarrow \texttt{parent}[5]=4 \rightarrow \texttt{parent}[4] =1$ which
+corresponds to the vector $[5, 4, 1]$. We break at node $1$ because it was the
+initial starting node. Finally, we reverse the vector and print out its length
+(in this case, $3$).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using vi = vector<int>;
+#define pb push_back
+
+int main() {
+	int N, M; cin >> N >> M;
+	vi dist(N+1,INT_MAX), parent(N+1);
+	vector<vi> adj(N+1);
+	while (M--) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	queue<int> q;
+	dist[1] = 0; q.push(1);
+	while (!q.empty()) {
+		int x = q.front(); q.pop();
+		for (int t: adj[x]) if (dist[t] == INT_MAX) {
+			dist[t] = dist[x]+1; parent[t] = x;
+			q.push(t);
+		}
+	}
+	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
+	else {
+		cout << dist[N]+1 << "\n";
+		vi v{N}; while (v.back() != 1) v.pb(parent[v.back()]);
+		reverse(begin(v), end(v));
+		for (int t: v) cout << t << " ";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+
+import java.util.*;
+
+
+public class Solution {
+	// CodeSnip{Kattio}
+
+	private static Map<Integer, LinkedList<Integer>> adj = new HashMap<>();
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt(), m = io.nextInt();
+		for(int i = 0; i < m; i++) {
+			int a = io.nextInt(), b = io.nextInt();
+			if(adj.get(a) == null) {
+				adj.put(a, new LinkedList<>());
+			}
+
+			if(adj.get(b) == null) {
+				adj.put(b, new LinkedList<>());
+			}
+
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] prev = new int[n+1], dist = new int[n+1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[1] = 1;
+
+		Queue<Integer> bfs = new LinkedList<>();
+		bfs.add(1);
+
+		while(!bfs.isEmpty()) {
+			int top = bfs.poll();
+			if(dist[top] == Integer.MAX_VALUE) continue;
+			if(adj.get(top) != null) {
+				for(int e : adj.get(top)) {
+					if(dist[e] == Integer.MAX_VALUE) {
+						dist[e] = dist[top] + 1;
+						prev[e] = top;
+						bfs.add(e);
+					}
+				}
+			}
+		}
+
+		if(dist[n] == Integer.MAX_VALUE) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			System.out.println(dist[n]);
+			int[] res = new int[dist[n]];
+			int i = dist[n]-1;
+			for(int x = n; x != 0; x = prev[x]) {
+				res[i--] = x;
+			}
+			for(int a : res) System.out.print(a + " ");
+		}
+	}
+}
+```
+
+</JavaSection>
+
+<!--
+<JavaSection>
+
+Implementation of the CSAcademy article's problem in Java:
+
+<br />
+
+```java
+import java.util.*;
+import java.io.*;
+
+class Main {
+
+	static ArrayList<Integer> edges[];
+	static int dist[];
+	static boolean visited[];
+
+	static void bfs(int startNode) {
+		Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation
+		// of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
+		q.add(startNode);
+		visited[startNode] = true;
+		dist[startNode] = 0;
+
+		while(!q.isEmpty()) {
+			int currentNode = q.poll();
+
+			for(int adj : edges[currentNode]) {
+				if(!visited[adj]) {
+					visited[adj] = true;
+					dist[adj] = dist[currentNode]+1;
+					q.add(adj);
+				}
+			}
+		}
+	}
+
+	public static void main (String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		int start = Integer.parseInt(st.nextToken());
+		start--;
+
+		edges = new ArrayList[N];
+		dist = new int[N];
+		visited = new boolean[N];
+		for(int i = 0; i < N; i++) {
+			edges[i] = new ArrayList<Integer>();
+			dist[i] = -1;
+		}
+
+		for(int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			a--; b--;
+			edges[a].add(b);
+		}
+
+		bfs(start);
+
+		PrintWriter pw = new PrintWriter(System.out);
+
+		for(int i : dist) pw.print(i + " ");
+		pw.println();
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+-->
+
+</LanguageSection>
+
+<Info title="Pro Tip">
+
+In the gold division, the problem statement will almost never directly be,
+"Given an unweighted graph, find the shortest path between node $u$ and $v$."
+Instead, the difficulty in many BFS problems are converting the problem into a
+graph on which we can run BFS and get the answer.
+
+</Info>
+
+## 0/1 BFS
+
+A 0/1 BFS finds the shortest path in a graph where the weights on the edges can
+only be 0 or 1, and runs in $\mathcal{O}(V + E)$ using a deque. Read the
+resource below for an explanation of how the algorithm works.
+
+<Resources>
+	<Resource source="cp-algo" title="0-1 BFS" url="graph/01_bfs.html">
+		common applications
+	</Resource>
+</Resources>
+
+<FocusProblem problem="sampleZeroOne" />
+
+**Complexity:** $\mathcal O(NM)$
+
+We can use the following greedy strategy to find our answer:
+
+- Run flood fill to find each connected component with the same tracks.
+- Construct a graph where the nodes are the connected components and there are
+  edges between adjacent connected components.
+- The answer is the maximum distance from the node containing $(1, 1)$ to
+  another node. We can use BFS to find this distance.
+
+For a detailed proof of why this works, see
+[the official editorial](https://boi2013.informatik-olympiade.de/wp-content/uploads/2013/05/tracks-spoiler.pdf).
+
+Although this gives us an $\mathcal O(NM)$ solution, there is a simpler solution
+using 0/1 BFS!
+
+Consider the graph with an edge between each pair of adjacent cells with tracks,
+where the weight is 0 if the tracks are the same and 1 otherwise. The answer is
+simply the longest shortest-path from the top left cell. This is because going
+from one track to another same one is like not leaving a node (hence the cost is
+$0$), while going from one track to a different one is like traversing the edge
+between two nodes (hence the cost is $1$).
+
+Since the weight of each edge is either 0 or 1 and we want the shortest paths
+from the top left cell to each other cell, we can apply 0/1 BFS. The time
+complexity of this solution is $\mathcal O(NM)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int dx[4]{1, -1, 0, 0}, dy[4]{0, 0, 1, -1};
+
+int n, m, depth[4000][4000], ans = 1;
+string snow[4000];
+
+bool inside(int x, int y) {
+	return (x > -1 && x < n && y > -1 && y < m && snow[x][y] != '.');
+}
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) cin >> snow[i];
+
+	deque<pair<int, int>> q;
+	q.push_back({0, 0});
+	depth[0][0] = 1;
+
+	while (q.size()) {
+		pair<int, int> c = q.front();
+		q.pop_front();
+		ans = max(ans, depth[c.first][c.second]);
+
+		for (int i = 0; i < 4; i++) {
+			int x = c.first + dx[i], y = c.second + dy[i];
+			if (inside(x, y) && depth[x][y] == 0) {
+				if (snow[x][y] == snow[c.first][c.second]) {
+					depth[x][y] = depth[c.first][c.second];
+					q.push_front({x, y});
+				} else {
+					depth[x][y] = depth[c.first][c.second] + 1;
+					q.push_back({x, y});
+				}
+			}
+		}
+	}
+
+	cout << ans;
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class tracks {
+	static final int[] dx = {0, 0, -1, 1};
+	static final int[] dy = {-1, 1, 0, 0};
+	static int N = 1, H, W;
+	static int[][] grid, count;
+	public static void main(String[] args) {
+		FastIO io = new FastIO();
+
+		H = io.nextInt();
+		W = io.nextInt();
+		grid = new int[H][W];
+
+		for (int i = 0; i < H; i++) {
+			String line = io.next();
+			for (int j = 0; j < W; j++) {
+				grid[i][j] = (line.charAt(j) == 'F')?1:(line.charAt(j) == 'R')?2:-1;
+			}
+		}
+
+		io.println(bfs());
+		io.close();
+	}
+
+	private static int bfs() {
+		count = new int[H][W];
+
+		LinkedList<int[]> q = new LinkedList<>();
+		q.add(new int[]{0,0});
+		count[0][0] = 1;
+
+		while (!q.isEmpty()) {
+			int[] curr = q.poll();
+
+			N = Math.max(N, count[curr[0]][curr[1]]);
+
+			for (int i = 0; i < 4; i++) {
+				int nx = curr[0] + dx[i];
+				int ny = curr[1] + dy[i];
+
+				if(nx < 0 || ny < 0 || nx >= H || ny >= W) continue;
+				if(count[nx][ny] > 0) continue;
+				if(grid[nx][ny] == -1) continue;
+				if(grid[nx][ny] != grid[curr[0]][curr[1]]) {
+					count[nx][ny] = count[curr[0]][curr[1]] + 1;
+					q.addLast(new int[]{nx, ny});
+				}
+				else {
+					count[nx][ny] = count[curr[0]][curr[1]];
+					q.addFirst(new int[]{nx, ny});
+				}
+			}
+		}
+
+		return N;
+	}
+
+	//BeginCodeSnip{FastIO}
+	private static class FastIO extends PrintWriter {
+		private InputStream stream;
+		private byte[] buf = new byte[1<<16];
+		private int curChar, numChars;
+
+		// standard input
+		public FastIO() { this(System.in,System.out); }
+		public FastIO(InputStream i, OutputStream o) {
+			super(o);
+			stream = i;
+		}
+		// file input
+		public FastIO(String i, String o) throws IOException {
+			super(new FileWriter(o));
+			stream = new FileInputStream(i);
+		}
+
+		// throws InputMismatchException() if previously detected end of file
+		private int nextByte() {
+			if (numChars == -1) throw new InputMismatchException();
+			if (curChar >= numChars) {
+				curChar = 0;
+				try {
+					numChars = stream.read(buf);
+				} catch (IOException e) {
+					throw new InputMismatchException();
+				}
+				if (numChars == -1) return -1; // end of file
+			}
+			return buf[curChar++];
+		}
+
+		// to read in entire lines, replace c <= ' '
+		// with a function that checks whether c is a line break
+		public String next() {
+			int c; do { c = nextByte(); } while (c <= ' ');
+			StringBuilder res = new StringBuilder();
+			do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+			return res.toString();
+		}
+		public int nextInt() { // nextLong() would be implemented similarly
+			int c; do { c = nextByte(); } while (c <= ' ');
+			int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+			int res = 0;
+			do {
+				if (c < '0' || c > '9')
+					throw new InputMismatchException();
+				res = 10*res+c-'0';
+				c = nextByte();
+			} while (c > ' ');
+			return res * sgn;
+		}
+		public double nextDouble() { return Double.parseDouble(next()); }
+	}
+	//EndCodeSnip
+}
+```
+
+<Warning>
+
+Due to oj.uz's grading constraints for Java, this solution will TLE on the judge.
+
+</Warning>
+
+</JavaSection>
+
+</LanguageSection>
+
+<!-- Sometimes, when a Dijkstra runs too slowly, you need to use a 0/1 BFS instead.  -->
+
+<!-- ### Example: What's Up With Gravity?
+
+<FocusProblem problem="grav" />
+
+In this problem, let's connect two cells $(u, v)$ in the grid if you can reach $v$ from $u$ by flipping gravity, going left, or going right. Also, we should only store cells where CB doesn't fall in the direction of gravity.
+
+Now, we're given a weighted graph and we need to find the shortest path. Since the edge weights on the graph are only 1 if we change gravity and 0 otherwise, we can run a 0/1 BFS.  -->
+
+<!-- which runs much faster than Dijkstra's algorithm.
+ -->
+
+## Problems
+
+<Problems problems="general" hideSuggestProblemButton />

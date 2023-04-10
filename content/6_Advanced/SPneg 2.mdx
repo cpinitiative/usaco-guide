@@ -1,0 +1,230 @@
+---
+id: sp-neg
+title: 'Shortest Paths with Negative Edge Weights'
+author: Benjamin Qi, Andi Qu, Dong Liu
+prerequisites:
+  - shortest-paths
+description: 'Returning to Bellman-Ford and Floyd-Warshall.'
+frequency: 0
+---
+
+## Bellman-Ford
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Bellman-Ford"
+		url="graph/bellman_ford.html"
+		starred
+	 />
+	<Resource
+		source="cp-algo"
+		title="Finding Negative Cycle"
+		url="graph/finding-negative-cycle-in-graph.html"
+		starred
+	>
+		with Bellman-Ford
+	</Resource>
+	<Resource
+		source="CP2"
+		title="4.4.4 - SSSP with Negative Weight Cycle"
+	 />
+</Resources>
+
+<!-- 	<Resource
+		source="TC"
+		title="Intro to Graphs Section 3"
+		url="introduction-to-graphs-and-their-data-structures-section-3/"
+	 /> -->
+
+### Shortest Paths
+
+<FocusProblem problem="bellSam" />
+
+#### Solution
+
+<IncompleteSection />
+
+### Finding Negative Cycles
+
+<FocusProblem problem="bellSam2" />
+
+#### Solution
+
+As mentioned in
+[cp-algorithms](https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html),
+we relax the edges N times. If we perform an update on the $N$th iteration,
+there is an negative cycle.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct edge {
+	int from, to; ll weight;
+};
+
+const int MAXN = 2505;
+
+int n, m, parent[MAXN];
+ll dist[MAXN];
+vector<edge> graph;
+
+void BellmanFord(int source) {
+	fill(parent+1, parent+n+1, 0);
+	fill(dist+1, dist+n+1, 1e18);
+	dist[source] = 0;
+	int last_node_updated;
+	for(int i=1; i<=n; i++) {
+		last_node_updated = -1;
+		for(edge &e : graph) {
+			if(dist[e.from] + e.weight < dist[e.to]) {
+				dist[e.to] = dist[e.from] + e.weight;
+				parent[e.to] = e.from;
+				last_node_updated = e.to;
+			}
+		}
+	}
+	if(last_node_updated == -1) {
+		cout << "NO" << '\n';
+	} else {
+		cout << "YES" << '\n';
+		vector<int> cycle;
+		for(int i=0; i<n-1; i++) {
+			last_node_updated=parent[last_node_updated];
+		}
+		for(int x=last_node_updated; ; x=parent[x]) {
+			cycle.push_back(x);
+			if (x==last_node_updated && cycle.size()>1) break;
+		}
+		reverse(cycle.begin(), cycle.end());
+		for(int x : cycle) cout << x << ' ';
+		cout << '\n';
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	cin >> n >> m;
+	while(m--) {
+		int a, b; ll c;
+		cin >> a >> b >> c;
+		graph.push_back({a, b, c});
+	}
+	BellmanFord(1);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Simple Linear Programming
+
+You can also use shortest path algorithms to solve the following problem (a very
+simple [linear program](https://en.wikipedia.org/wiki/Linear_programming)).
+
+> Given variables $x_1,x_2,\ldots,x_N$ with constraints in the form
+> $x_i-x_j\ge c$, compute a feasible solution.
+
+#### Resources
+
+<Resources>
+	<Resource
+		source="MIT"
+		title="Slides from Intro to Algorithms"
+		url="https://www.cs.rit.edu/~spr/COURSES/ALG/MIT/lec18.pdf"
+	>
+		Linear Programming Trick
+	</Resource>
+</Resources>
+
+#### Problems
+
+Timeline (USACO Camp):
+
+- equivalent to
+  [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
+  except $N,C\le 5000$ and negative values of $x$ are possible.
+
+<Problems problems="linear" />
+
+## Floyd-Warshall
+
+<FocusProblem problem="floydSam" />
+
+### Solution - APSP
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MOD = 1000000007;
+const ll INF = 1e18;
+
+int n,m,q;
+ll dist[150][150], bad[150][150];
+
+void solve() {
+	F0R(i,n) F0R(j,n) dist[i][j] = INF, bad[i][j] = 0;
+	F0R(i,n) dist[i][i] = 0;
+	F0R(i,m) {
+		int u,v,w; cin >> u >> v >> w;
+		dist[u][v] = min(dist[u][v],(ll)w);
+	}
+	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)
+		dist[i][j] = min(dist[i][j],dist[i][k]+dist[k][j]);
+
+	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)
+		if (dist[i][j] > dist[i][k]+dist[k][j])
+			bad[i][j] = 1;
+
+	F0R(k,n) F0R(i,n) F0R(j,n) {
+		if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
+		if (bad[i][k] && dist[k][j] < INF) bad[i][j] = 1;
+	}
+
+	F0R(i,q) {
+		int u,v; cin >> u >> v;
+		if (bad[u][v]) cout << "-Infinity\n";
+		else if (dist[u][v] == INF) cout << "Impossible\n";
+		else cout << dist[u][v] << "\n";
+	}
+	cout << "\n";
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);cin.tie(0);
+	while (cin >> n >> m >> q) solve();
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems="floydProbs" />
+
+## Modified Dijkstra
+
+<!-- Can also use [Shortest Path Faster Algorithm](https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm) or  -->
+
+The Dijkstra code presented [earlier](/gold/shortest-paths#mathcalomlog-n-implementation)
+will still give correct results if there are no negative cycles. However, the
+same running time bound no longer applies, as demonstrated by subtasks 1-6 of
+the following problem.
+
+<Problems problems="dijk" />
+
+This problem forces you to analyze the inner workings of the three shortest-path
+algorithms we presented here. It also teaches you about how problemsetters could
+create hack cases!

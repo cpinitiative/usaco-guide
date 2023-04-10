@@ -1,0 +1,423 @@
+---
+id: intro-sorting
+title: Introduction to Sorting
+author: Darren Yao, Benjamin Qi, Allen Li, Andrew Wang
+description: 'Arranging collections in increasing order.'
+frequency: 2
+prerequisites:
+  - intro-ds
+---
+
+**Sorting** refers to arranging items in some particular order.
+
+## Sorting Methods
+
+<FocusProblem problem="bubble" />
+
+<Resources>
+	<Resource source="CPH" title="3.1 - Sorting Theory" starred>
+		bubble sort, merge sort, counting sort
+	</Resource>
+	<Resource source="CSA" title="Sorting" url="sorting">
+		selection sort, insertion sort, bubble sort, merge sort
+	</Resource>
+</Resources>
+
+<!-- No bronze problem should require you to sort an array in $\mathcal{O}(N\log N)$ time for Bronze,  -->
+
+## Library Sorting
+
+Although you usually do **not** need to know how sorting is implemented, you
+should know how to use built-in methods.
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource source="CPH" title="3.2 - Sorting in C++" starred>
+		can stop before user-defined structs, which are covered in silver
+	</Resource>
+	<Resource
+		source="CPP"
+		title="std::sort"
+		url="https://en.cppreference.com/w/cpp/algorithm/sort"
+	>
+		reference
+	</Resource>
+	<Resource source="CF" title="C++ Tricks" url="74684">
+		first two related to sorting
+	</Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+<Resources>
+<Resource
+	source="tutorialspoint"
+	title="Java sorting"
+	url="https://www.tutorialspoint.com/java/util/arrays_sort_object_index.htm"
+>
+	Covers sorting arrays
+</Resource>
+
+<Resource
+	source="Oracle"
+	title="Arrays.sort"
+	url="https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[])"
+>
+	API for sorting static arrays
+</Resource>
+
+<Resource 
+	  source = "Oracle"
+	  title = "Collections.sort"
+	  url = "https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)"
+	>
+	API for sorting dynamic arrays
+</Resource>
+</Resources>
+
+</JavaSection>
+
+<PySection>
+
+<Resources>
+	<Resource
+		source="PY"
+		title="Sorting HOW TO"
+		url="https://docs.python.org/3/howto/sorting.html"
+	>
+		reference
+	</Resource>
+</Resources>
+
+</PySection>
+
+</LanguageSection>
+
+### Static Arrays
+
+<LanguageSection>
+
+<CPPSection>
+
+To sort static arrays, use `sort(arr, arr + N)` where $N$ is the number of
+elements to be sorted. The range can also be specified by replacing `arr` and
+`arr + N` with the intended range. For example, `sort(arr + 1, arr + 4)` sorts
+indices $[1, 4)$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int arr[] = {5, 1, 3, 2, 4}; int N = 5;
+	sort(arr, arr + N);
+	for (int i = 0; i < N; i++)
+		cout << arr[i] << " "; //1 2 3 4 5
+	cout << endl;
+
+	int arr2[] = {5, 1, 3, 2, 4};
+	sort(arr2 + 1, arr2 + 4);
+	for (int i = 0; i < N; i++)
+		cout << arr2[i] << " "; //5 1 2 3 4
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+In order to sort a static array, use `Arrays.sort(arr)`.
+
+```java
+import java.util.*;
+
+class Main
+{
+	public static void main (String[] args)
+	{
+		int arr[] = {5, 1, 3, 2, 4};
+		Arrays.sort(arr);
+		for (int i = 0; i < arr.length; i++)
+			System.out.print(arr[i] + " "); //1 2 3 4 5
+	}
+}
+```
+
+<Warning>
+
+The `Arrays.sort()` function uses quicksort on primitive data types such as
+`long`s. This is fine for USACO, but in other contests such as CodeForces, it
+may time out on test cases specifically engineered to trigger worst-case
+$\Theta(N^2)$ behavior in quicksort.
+
+</Warning>
+
+See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of
+a solution that was hacked on CodeForces.
+
+Two ways to avoid this:
+
+- Declare the underlying array as an array of objects, for example `Long`
+  instead of `long`. This forces the `Arrays.sort()` function to use mergesort,
+  which is always $\mathcal{O}(N \log N)$.
+- [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
+
+</JavaSection>
+
+</LanguageSection>
+
+### Dynamic Arrays
+
+<LanguageSection>
+
+<CPPSection>
+
+In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or
+`sort(begin(v),end(v))`). The default sort function sorts the array in ascending
+order. Similarly, we can specify the range. For example,
+`sort(v.begin() + 1, v.begin() + 4)` sorts indices $[1, 4)$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> v{5, 1, 3, 2, 4};
+	sort(v.begin(), v.end());
+	for (int i : v)
+		cout << i << " "; //1 2 3 4 5
+	cout << endl;
+
+	v = {5, 1, 3, 2, 4};
+	sort(v.begin() + 1, v.begin() + 4);
+	for (int i : v)
+		cout << i << " "; //5 1 2 3 4
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+In order to sort a dynamic array, use `Collections.sort(list)`. The default sort
+function sorts the array in ascending order.
+
+```java
+import java.util.*;
+
+class Main
+{
+	public static void main (String[] args)
+	{
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		arr.add(5); arr.add(1); arr.add(3); arr.add(2); arr.add(4);
+		Collections.sort(arr);
+		for (int i : arr)
+			System.out.print(i + " "); //1 2 3 4 5
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+In order to sort a list, simply use the `sorted(list)` function.
+
+- [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
+
+</PySection>
+
+</LanguageSection>
+
+### (Dynamic) Arrays of Pairs & Tuples
+
+<LanguageSection>
+
+<CPPSection>
+
+By default, C++ pairs are sorted by first element and then second element in
+case of a tie.
+
+```cpp
+// Source: CPH
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<pair<int,int>> v;
+	v.push_back({1,5});
+	v.push_back({2,3});
+	v.push_back({1,2});
+	sort(v.begin(), v.end());
+	for (pair<int,int> p : v)
+		cout << p.first << " " << p.second << endl;
+}
+
+/* Output:
+1 2
+1 5
+2 3
+*/
+```
+
+Tuples are sorted similarly.
+
+</CPPSection>
+
+<JavaSection>
+
+You'll need to define your own **custom comparator**. This is covered in
+[Silver](/silver/sorting-custom).
+
+</JavaSection>
+
+<PySection>
+
+By default, Python tuples sort by first element, then second element, and so on
+in case of repeated ties.
+
+```py
+
+list = [(1, 2), (2, 3), (2, 1), (3, 1)]
+list = sorted(list)
+for x, y in list:
+	print(f'{x}, {y}')
+
+# Output:
+# 1, 2
+# 2, 1
+# 2, 3
+# 3, 1
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Problems
+
+<Warning>
+
+Bronze problems are designed that you shouldn't need a $\mathcal{O}(N\log N)$
+time sort (repeatedly extracting the minimum in $\mathcal{O}(N^2)$ time will
+always suffice).
+
+</Warning>
+
+<Problems problems="dis" />
+
+Note: There are some more sorting problems in the
+[Intro to Sets](/bronze/intro-sets) module.
+
+## Check Your Understanding
+
+<Quiz>
+<Quiz.Question>
+	What would the array $[7, 2, 6, 3, 1]$ be after 1 pass of bubble sort?
+	<Quiz.Answer correct>
+		$[2, 6, 3, 1, 7]$
+		<Quiz.Explanation>
+			Correct. Steps: 
+			
+			$[7, 2, 6, 3, 1]$
+			
+			$[2, 7, 6, 3, 1]$
+			
+			$[2, 6, 7, 3, 1]$
+			
+			$[2, 6, 3, 7, 1]$
+			
+			$[2, 6, 3, 1, 7]$
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+	<Quiz.Answer>
+	  $[1, 2, 7, 6, 3]$
+	  <Quiz.Explanation>
+		Incorrect. This is the array after 2 passes of selection sort.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+	<Quiz.Answer>
+	  $[1, 2, 3, 6, 7]$
+	  <Quiz.Explanation>
+		Incorrect. This is the array after it has been completely sorted.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+
+</Quiz.Question>
+
+  <Quiz.Question>
+	Which of these is an unstable sorting algorithm? (Stable means that if there are two elements with equal values, the order of the elements will not change after sorting.)
+	<Quiz.Answer>
+	  Insertion sort.
+	  <Quiz.Explanation>
+		Incorrect. In insertion sort, we will not swap two elements with equal values. Therefore it is stable.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+	<Quiz.Answer>
+	  Bubble sort.
+	  <Quiz.Explanation>
+		Incorrect. Bubble sort will never swap two elements with two equal values. Therefore it is stable.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+	<Quiz.Answer correct>
+	   Quick sort
+	  <Quiz.Explanation>
+		Correct. If one of two equal-valued elements is used as a pivot, then the order of those elements will change. Therefore quicksort is unstable.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+	What is the time complexity of mergesort?
+	<Quiz.Answer correct>
+	  $\mathcal{O}(n\log n)$
+	  <Quiz.Explanation>
+	   Each merge has the complexity of $\mathcal{O}(n)$, and there are a total of $\mathcal{O}(\log n)$ merge operations.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+	<Quiz.Answer>
+	  $\mathcal{O}(n^2)$
+	  <Quiz.Explanation>
+	  Incorrect. Merge sort is more efficient than $\mathcal{O}(n^2)$.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+	<Quiz.Answer>
+	  $\mathcal{O}(\log n)$
+	  <Quiz.Explanation>
+	  Incorrect. It is impossible to have more efficient sorting algorithms than $\mathcal{O}(n)$.
+	  </Quiz.Explanation>
+	</Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+	What is worst case time complexity for quicksort?
+	<Quiz.Answer correct>
+		$\mathcal{O}(n^2)$
+		<Quiz.Explanation>
+			Correct. If the partition process always picks the worst element as pivot in the quicksort, the complexity would be $\mathcal{O}(n^2)$ because there will be $\mathcal{O}(n)$ passes that will take $\mathcal{O}(n)$ comparisons each.
+	  	</Quiz.Explanation>
+	</Quiz.Answer>
+
+	<Quiz.Answer>
+		$\mathcal{O}(n\log{}n)$
+		<Quiz.Explanation>
+			Incorrect. This is the average time complexity for quicksort. If the partition process always picks the worst element as pivot in the quicksort, the complexity would be $\mathcal{O}(n^2)$ because there will be $\mathcal{O}(n)$ passes that will take $\mathcal{O}(n)$ comparisons each.
+		</Quiz.Explanation>
+	</Quiz.Answer>
+
+	<Quiz.Answer>
+		$\mathcal{O}(n)$
+		<Quiz.Explanation>
+			Incorrect. The average time complexity for quicksort is already $\mathcal{O}(n\log{}n)$.
+		</Quiz.Explanation>
+	</Quiz.Answer>
+</Quiz.Question>
+</Quiz>

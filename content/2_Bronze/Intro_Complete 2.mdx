@@ -1,0 +1,302 @@
+---
+id: intro-complete
+title: 'Basic Complete Search'
+author: Darren Yao, Dong Liu
+contributors: Brad Ma, Nathan Gong
+description: 'An easy example: iterating through all pairs.'
+frequency: 4
+---
+
+<Resources>
+	<Resource source="IUSACO" title="6 - Complete Search">
+		module is based off this
+	</Resource>
+</Resources>
+
+<br />
+
+In many problems (especially in Bronze) it suffices to check all possible cases
+in the solution space, whether it be all elements, all pairs of elements, or all
+subsets, or all permutations. Unsurprisingly, this is called **complete search**
+(or **brute force**), because it completely searches the entire solution space.
+
+<FocusProblem problem="sample" />
+
+<Spoiler title="Solution">
+
+We can iterate through every pair of points and find the square of the distance
+between them, by squaring the formula for Euclidean distance:
+
+$$
+\text{distance}[(x_1,y_1),(x_2,y_2)]^2 = (x_2-x_1)^2 + (y_2-y_1)^2.
+$$
+
+Maintain the current maximum square distance in `max_square`.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int N; cin >> N;
+	vector<int> x(N), y(N);
+	for (int& t: x) cin >> t;
+	for (int& t: y) cin >> t;
+	int max_square = 0;
+	for (int i = 0; i < N; i++) { // for each first point
+		for (int j = i+1; j < N; j++) { // for each second point
+			int dx = x[i]-x[j], dy = y[i]-y[j];
+			int square = dx*dx+dy*dy;
+			// if the square of the distance between the two points is greater than
+			// our current maximum, then update the maximum
+			max_square = max(max_square,square);
+		}
+	}
+	cout << max_square;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class MaximumDistance {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int[] x = new int[n];
+		int[] y = new int[n];
+
+		for (int i = 0; i < n; i++) {
+			x[i] = io.nextInt();
+		}
+		for (int i = 0; i < n; i++) {
+			y[i] = io.nextInt();
+		}
+
+		int max = 0; // storing the current maximum
+
+		for (int i = 0; i < n; i++) { // for each first point
+			for (int j = i + 1; j < n; j++) { // for each second point
+				int dx = x[i] - x[j];
+				int dy = y[i] - y[j];
+				// if the square of the distance between the two points is greater than
+				// our current maximum, then update the maximum
+				max = Math.max(max, dx * dx + dy * dy);
+			}
+		}
+		io.println(max);
+		io.close();
+	}
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+<Warning>
+
+Make sure compile using PyPy 3. TLEs using Python3.
+
+</Warning>
+
+```py
+n = int(input())
+x = list(map(int, input().split()))
+y = list(map(int, input().split()))
+
+max_square = 0
+for i in range(n):
+	for j in range(i + 1, n):
+		dx = x[i] - x[j]
+		dy = y[i] - y[j]
+		max_square = max(max_square, dx * dx + dy * dy)
+print(max_square)
+```
+
+</PySection>
+
+</LanguageSection>
+
+<br />
+
+A couple notes:
+
+- Since we're iterating through all pairs of points, we start the $j$ loop from
+  $j = i+1$ so that point $i$ and point $j$ are never the same point.
+  Furthermore, it makes it so that each pair is only counted once. In this
+  problem, it doesn't matter whether we double-count pairs or whether we allow
+  $i$ and $j$ to be the same point, but in other problems where we're counting
+  something rather than looking at the maximum, it's important to be careful
+  that we don't overcount.
+- Secondly, the problem asks for the square of the maximum Euclidean distance
+  between any two points. Some students may be tempted to maintain the maximum
+  distance in an integer variable, and then square it at the end when
+  outputting. However, the problem here is that while the square of the distance
+  between two integer points is always an integer, the distance itself isn't
+  guaranteed to be an integer. Thus, we'll end up shoving a non-integer value
+  into an integer variable, which truncates the decimal part.
+
+<LanguageSection>
+
+<CPPSection>
+
+The following solution correctly stores the maximum distance in a floating point
+variable.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int N; cin >> N;
+	vector<int> x(N), y(N);
+	for (int& t: x) cin >> t;
+	for (int& t: y) cin >> t;
+	double max_dist = 0;
+	for (int i = 0; i < N; i++) { // for each first point
+		for (int j = i+1; j < N; j++) { // for each second point
+			int dx = x[i]-x[j], dy = y[i]-y[j];
+			int square = dx*dx+dy*dy;
+			// if the square of the distance between the two points is greater than
+			// our current maximum, then update the maximum
+			max_dist = max(max_dist,sqrt(square));
+		}
+	}
+	cout << (int)pow(max_dist,2);
+}
+```
+<Warning>
+However, it still fails on the following test case (it outputs 12, but the
+answer is 13):
+</Warning>
+
+```
+2
+0 3
+2 0
+```
+
+Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you
+should stick with integers whenever possible.
+
+</CPPSection>
+	
+<JavaSection>
+
+The following solution correctly stores the maximum distance in a floating point
+variable.
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class MaximumDistance2 {
+	public static void main (String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int[] x = new int[n];
+		int[] y = new int[n];
+
+		for (int i = 0; i < n; i++) {
+			x[i] = io.nextInt();
+		}
+		for (int i = 0; i < n; i++) {
+			y[i] = io.nextInt();
+		}
+
+		double maxSquare = 0; // storing the current maximum
+		for (int i = 0; i < n; i++) {  // for each first point
+			for(int j = i + 1; j < n; j++){ // for each second point
+				int dx = x[i] - x[j];
+				int dy = y[i] - y[j];
+				int  square = dx * dx + dy * dy;
+				// if the square of the distance between the two points is greater than
+				// our current maximum, then update the maximum
+				maxSquare = Math.max(maxSquare, Math.sqrt(square));
+			}
+		}
+		io.println((int) Math.pow(maxSquare, 2));
+		io.close();
+	}
+}
+
+```
+<Warning>
+However, it still fails on the following test case (it outputs 12, but the
+answer is 13):
+</Warning>
+	
+```
+2
+0 3
+2 0
+```
+
+Rounding suffices (`(int) Math.round(Math.pow(maxSquare, 2))`), but the takeaway is that you
+should stick with integers whenever possible.
+
+</JavaSection>
+
+<PySection>
+
+The following solution correctly stores the maximum distance in a floating point
+variable.
+
+<Warning>
+
+Make sure to run using PyPy 3. The program will run out of time and/or memory unless you do.
+
+</Warning>
+
+```py
+import math
+N = int(input())
+xpoints = list(map(int, input().split(" ")))
+ypoints = list(map(int, input().split(" ")))
+
+points = [[xpoints[i], ypoints[i]] for i in range(N)]
+MaxDistance = 0
+for i in range(N): #first point
+	for j in range(i + 1, N): #second point
+		dx = points[i][0] - points[j][0]
+		dy = points[i][1] - points[j][1]
+		square = dx ** 2 + dy ** 2
+		#pick maximum
+		MaxDistance = max(MaxDistance, math.sqrt(square))
+
+print(round(MaxDistance ** 2))
+```
+<Warning>
+However, it still fails on the following test case (it outputs $12.999999999999998$, but the
+answer is $13$):
+</Warning>
+
+```
+2
+0 3
+2 0
+```
+
+Rounding suffices (`round(MaxDistance ** 2)`), but the takeaway is that you
+should stick with integers whenever possible.
+
+</PySection>
+
+</LanguageSection>
+</Spoiler>
+
+## Problems
+
+<Problems problems="probs" hideSuggestProblemButton />

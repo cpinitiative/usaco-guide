@@ -1,0 +1,173 @@
+---
+id: intro-bitwise
+title: Intro to Bitwise Operators
+description:
+  Goes over the six bitwise operators and the common ways they are used.
+author: Siyong Huang
+frequency: 0
+redirects:
+  - /bronze/intro-bitwise
+  - /plat/intro-bitwise
+---
+
+<Resources>
+	<Resource source="CPH" title="10.2 - Bit Operations" starred />
+	<Resource
+		source="CF"
+		title="Bitwise operations for beginners"
+		url="73490"
+		starred
+	>
+		Great explanation by Errichto
+	</Resource>
+	<Resource
+		source="GFG"
+		title="Bitwise Operators in C/C++"
+		url="bitwise-operators-in-c-cpp/"
+	>
+		The same operators are used in java and python
+	</Resource>
+</Resources>
+
+Let's take a look at some examples to better understand bitwise operators. Note
+that you typically won't be asked to use bitwise operators to implement
+addition/multiplication.
+
+## Example - Addition
+
+Try implementing addition using bitwise operators!
+You can test your implementation [here](http://poj.org/problem?id=1000).
+
+<Spoiler title="Solution">
+
+If we perform addition without carrying, then we are simply performing the XOR
+(`^`) operator. Then, the bits that we carry over are those equivalent to $1$ in
+both numbers: $a\&b$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int add(int a, int b) {
+	while (b > 0) {
+		int carry = a & b;
+		a ^= b;
+		b = carry << 1;
+	}
+	return a;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static int add(int a, int b) {
+	while (b > 0) {
+		int carry = a & b;
+		a ^= b;
+		b = carry << 1;
+	}
+	return a;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def add(a: int, b: int) -> int:
+	while b > 0:
+		carry = a & b
+		a ^= b
+		b = carry << 1
+	return a
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Example - Multiplication
+
+Now try implementing multiplication using bitwise operators!
+If you want to test your implementation of multiplication,
+you can do so [here](https://www.hackerrank.com/challenges/handshake/problem).
+
+<Spoiler title="Solution">
+
+For simplicity, we will use the `sum` functions defined above. If we divide up
+$b$ into $2^{b_1}+2^{b_2}+\dots+2^{b_n}$, we get the following:
+
+$$
+a \times b \\
+= a \times (2^{b_1}+2^{b_2}+\dots+2^{b_n}) \\
+= a2^{b_1}+a2^{b_2}+\dots+a2^{b_n} \\
+= \sum_{\text{bits in b}} {a\texttt{<<}b_i}
+$$
+
+(This same idea is used in binary exponentiation!)
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int prod(int a, int b) {
+	int c = 0;
+	while (b > 0) {
+		if ((b & 1) == 1) {
+			c = add(c, a);  // Use the addition function we coded previously
+		}
+		a <<= 1;
+		b >>= 1;
+	}
+	return c;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static int prod(int a, int b) {
+	int c = 0;
+	while(b > 0) {
+		if ((b & 1) == 1) {
+			c = add(c, a);  // Use the addition function we coded previously
+		}
+		a <<= 1;
+		b >>= 1;
+	}
+	return c;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def prod(a: int, b: int) -> int:
+	c = 0
+	while b > 0:
+		if b & 1:
+			c = add(c, a)  # Use the addition function we coded previously
+		a <<= 1
+		b >>= 1
+	return c
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Problems problems="probs" />

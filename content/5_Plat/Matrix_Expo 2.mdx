@@ -1,0 +1,173 @@
+---
+id: matrix-expo
+redirects:
+  - /plat/mat-exp
+title: 'Matrix Exponentiation'
+author: 'Benjamin Qi, Neo Wang'
+description: Repeatedly multiplying a square matrix by itself.
+prerequisites:
+  - intro-dp
+frequency: 1
+---
+
+<Resources>
+	<Resource source="CP2" title="5.9 - Powers of a Square Matrix" />
+	<Resource source="CPH" title="23 - Matrices" />
+	<Resource
+		source="CF"
+		url="https://codeforces.com/blog/entry/80195"
+		title="Errichto - Matrix Exponentiation"
+		starred
+	>
+		video + problemset
+	</Resource>
+	<Resource
+		source="CF"
+		title="Cool tricks using Matrix Exponential"
+		url="https://codeforces.com/blog/entry/43225"
+	>
+		interesting applications of mat exp
+	</Resource>
+	<Resource
+		source="Mostafa"
+		title="Matrix Power Applications"
+		url="https://github.com/mostafa-saad/ArabicCompetitiveProgramming/blob/master/04%20Math/Algorithms_Number_Theory_06_Matrix_Power_Applications.pptx"
+	>
+		powerpoint of matrix exponentiation
+	</Resource>
+</Resources>
+
+
+## Example - Fibonacci
+
+<FocusProblem problem='sample' />
+
+The fibonacci numbers are defined by the following matrix relation
+
+$$
+A = \begin{bmatrix}1&1\\1&0\end{bmatrix}^n=\begin{bmatrix}F_{n+1} & F_n \\ F_n & F_{n-1}\end{bmatrix}
+$$
+
+### Proof by Induction
+
+The fibonacci numbers are defined as follows:
+
+$$
+\begin{align*}
+F_0 &= 0 \\
+F_1 &= 1 \\
+F_{n+1} &= F_{n} + F_{n-1}
+\end{align*}
+$$
+
+Base case ($n=1$):
+
+$$
+A^1 = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix} = \begin{bmatrix}F_2 & F_1 \\ F_1 & F_0\end{bmatrix}
+$$
+
+Induction step ($n+1$):
+
+$$
+A^{n+1}=A\,A^n=\begin{bmatrix}
+1 & 1 \\ 1 & 0
+\end{bmatrix}\begin{bmatrix}
+F_{n+1} & F_{n} \\ F_{n} & F_{n-1}
+\end{bmatrix}=\begin{bmatrix}
+F_{n+1}+F_n & F_{n}+F_{n-1} \\  F_{n+1} & F_{n}
+\end{bmatrix}=\begin{bmatrix}
+F_{n+2} & F_{n+1} \\ F_{n+1} & F_{n}
+\end{bmatrix}
+$$
+
+The base case is true, and the induction step is true. Therefore the formula
+holds for all $n \in \mathbb{N}$.
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+**Time complexity:** $\mathcal{O}(\log n)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
+
+using Matrix = array<array<ll, 2>, 2>;
+
+Matrix mul(Matrix a, Matrix b) {
+	Matrix res = {{{0, 0}, {0, 0}}};
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
+			for(int k = 0; k < 2; k++) {
+				res[i][j] += a[i][k] * b[k][j];
+				res[i][j] %= MOD;
+			}
+		}
+	}
+
+	return res;
+}
+
+int main() {
+	ll n; cin >> n;
+
+	Matrix base = {{{1,0}, {0,1}}};
+	Matrix m = {{{1,1}, {1,0}}};
+
+	for(; n > 0; n /= 2, m = mul(m, m)) {
+		if(n & 1) base = mul(base, m);
+	}
+
+	cout << base[0][1];
+}
+```
+</CPPSection>
+
+<PySection>
+```python
+from typing import List
+
+MOD = 10 ** 9 + 7
+
+def mul(A : List[List[int]], B : List[List[int]], MOD : int) -> List[List[int]]:
+	C = [[0, 0], [0, 0]]
+    	for i in range(2):
+        	for j in range(2):
+			for k in range(2):
+				C[i][j] += ((A[i][k]) * (B[k][j])) % MOD
+    	return C
+
+def power(matrix : List[List[int]], n : int) -> List[List[int]]:
+	if n == 0:
+		return [[1, 0], [0, 1]]
+	if n == 1:
+		return matrix
+	half = power(matrix, n // 2, MOD)
+	square = mul(half, half, MOD)
+	if n % 2 == 0:
+		return square
+	return mul(matrix, square, MOD)
+ 
+ 
+n = int(input())
+if n == 0:
+  	print(0)
+elif n > 2:
+    	o = power([[1, 1], [1, 0]], n - 1)
+    	print(o[0][0] % MOD)
+else:
+    	print(1)
+
+```
+</PySection>
+</LanguageSection>
+## Problems
+
+<Problems problems="probs" />

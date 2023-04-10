@@ -1,0 +1,235 @@
+---
+id: count-min
+redirects:
+  - /adv/CntMin
+title: 'Counting Minimums with Segment Tree'
+author: Benjamin Qi, Dustin Miao
+prerequisites:
+  - RURQ
+description: "Querying for the minimum and number of occurences of minimum in a range"
+frequency: 0
+---
+
+<FocusProblem problem = "sam" />
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Finding max and number of occurences"
+		url="data_structures/segment_tree.html#toc-tgt-8"
+		starred
+	/>
+</Resources>
+
+We would like a data structure that can efficiently handle two types of operations:
+1. Update index $i$ to value $v$
+2. Report the minimum and the number of occurences of the minimum on a range $[l, r]$
+
+We can use a normal segment tree to handle range queries, but slightly modify each node and the merge operation. Let each node be a pair of values $(\texttt{val}, \texttt{cnt})$, where $\texttt{val}$ is the minimum value and $\texttt{cnt}$ is the number occurences of the minimum value. 
+
+If node $c$ has two children $a$ and $b$, then
+- if $a.\texttt{val} < b.\texttt{val}$, then $c = a$
+- if $a.\texttt{val} > b.\texttt{val}$, then $c = b$
+- if $a.\texttt{val} = b.\texttt{val}$, then $c = \{a.\texttt{val}, a.\texttt{cnt} + b.\texttt{cnt}\}$
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MAXN = 2e5;
+
+struct Node {
+	int val = INT32_MAX, cnt = 1;
+} tree[2 * MAXN];
+
+// combines two segment tree nodes
+Node merge(Node a, Node b) {
+	if (a.val < b.val) {
+		return a;
+	} else if (a.val > b.val) {
+		return b;
+	}
+	return {a.val, a.cnt + b.cnt};
+}
+
+// updates the ith value to v
+void update(int i, int v) {
+	for (tree[i += MAXN] = {v, 1}; i > 1; i >>= 1) {
+		tree[i >> 1] = merge(tree[i], tree[i ^ 1]);
+	}
+}
+
+// returns the minimum and occurences between indices l and r
+Node query(int l, int r) {
+	Node res;
+	for (l += MAXN, r += MAXN + 1; l < r; l >>= 1, r >>= 1) {
+		if (l & 1) res = merge(res, tree[l++]);
+		if (r & 1) res = merge(res, tree[--r]);
+	}
+	return res;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Solution - Area of Rectangles
+
+<Spoiler title = "Hint 1">
+
+Count the number of squares that are covered by **none** of the input rectangles.
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+Sort the rectangles by x-coordinate and run a sweep-line.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+We can use techniques introduced in [Range Queries with Sweep Line](/plat/range-sweep?lang=cpp)
+
+We sweep from left to right over the $x$-coordinates, maintaining two events for each rectangle: one for the left boundary and one for the right boundary. Maintain a Lazy Segment Tree over the $y$-coordinates. 
+- When we run into a left boundary of some rectangle with $y$-coordinates $(y_0, y_1)$, increase each index $i \in [y_0, y_1]$ by 1
+- When we run into a right boundary of some rectangle with $y$-coordinates $(y_0, y_1)$, decrease each index $i \in [y_0, y_1]$ by 1
+
+Then, for each $x$, we simply need to count the number of non-zero indices which corresponds to indices that are covered by at least one rectangle. How can we do this?
+
+Instead of counting the area covered by at least one rectangle, let's count the amount of space covered by no rectangles. We can subtract this amount from the total number of indices to get the value we want. 
+
+We can use a Segment Tree that counts the number of occurences of the minimum value. Because the minimum value is at least zero (there can't be a negative number of rectangles at a position) the number of uncovered squares is equal to the number of squares with value 0.
+
+</Spoiler>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXX = 1e6;
+const int MAXN = 2 * MAXX + 1;
+ 
+struct Event {
+	int t, x, y0, y1;
+	// t = 1 for left bound, -1 for right bound
+	bool operator<(const Event &e) { return x < e.x; }
+};
+ 
+int N;
+vector<Event> E;
+	
+// segment tree
+pair<long long, long long> tree[MAXN * 4];
+int lazy[MAXN * 4];
+ 
+pair<long long, long long> merge(pair<long long, long long> a, pair<long long, long long> b) {
+	if (a.first < b.first) {
+		return a;
+	}
+	if (a.first > b.first) {
+		return b;
+	}
+	return {a.first, a.second + b.second};
+}
+ 
+// pushes lazy updates down to children
+void pushdown(int t) {
+	if (lazy[t]) {
+		tree[t << 1].first += lazy[t];
+		lazy[t << 1] += lazy[t];
+		tree[t << 1 | 1].first += lazy[t];
+		lazy[t << 1 | 1] += lazy[t];
+		lazy[t] = 0;
+	}
+}
+
+// constructs the segment tree
+void build(int t = 1, int tl = 0, int tr = MAXN) {
+	if (tl == tr) {
+		tree[t] = {0, 1};
+		return;
+	}
+	
+	int tm = (tl + tr) >> 1;
+	build(t << 1, tl, tm);
+	build(t << 1 | 1, tm + 1, tr);
+	tree[t] = merge(tree[t << 1], tree[t << 1 | 1]);
+}
+
+// adds v to indices l to r 
+void update(int l, int r, int v, int t = 1, int tl = 0, int tr = MAXN) {
+	if (r < tl || tr < l) {
+		return;
+	}
+	if (l <= tl && tr <= r) {
+		tree[t].first += v;
+		lazy[t] += v;
+		return;
+	}
+	pushdown(t);
+	
+	int tm = (tl + tr) >> 1;
+	update(l, r, v, t << 1, tl, tm);
+	update(l, r, v, t << 1 | 1, tm + 1, tr);
+	tree[t] = merge(tree[t << 1], tree[t << 1 | 1]);
+}
+
+// queries min and count of entire segment tree
+long long query() {
+	// always maintain one element with value of zero
+	// so we don't have to check if zero is the minimum
+	return MAXN + 1 - tree[1].second;
+} 
+ 
+int main() {
+	cin >> N; 
+	build();
+	for (int i = 0; i < N; i++) {
+		int x0, y0, x1, y1;
+		cin >> x0 >> y0 >> x1 >> y1;
+	
+		// make coordinates positive
+		x0 += MAXX, y0 += MAXX;
+		x1 += MAXX, y1 += MAXX;
+	
+		E.push_back({1, x0, y0, y1 - 1});
+		E.push_back({-1, x1, y0, y1 - 1});
+	}
+	
+	sort(E.begin(), E.end());
+	
+	long long ans = 0;
+	update(E[0].y0, E[0].y1, 1);
+	for (int i = 1; i < 2 * N; i++) {
+		ans += query() * (E[i].x - E[i - 1].x);
+		update(E[i].y0, E[i].y1, E[i].t);
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+
+## Problems
+
+<Problems problems="lazySegCnt" />
+
+<Optional title="Permutation Tree">
+
+[Tutorial](https://codeforces.com/blog/entry/78898)
+
+</Optional>

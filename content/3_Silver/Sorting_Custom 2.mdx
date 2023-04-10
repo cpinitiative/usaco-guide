@@ -1,0 +1,1080 @@
+---
+id: sorting-custom
+title: 'Custom Comparators and Coordinate Compression'
+frequency: 3
+author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi, Nathan Chen
+prerequisites:
+  - intro-sorting
+  - intro-graphs
+description: 'Using a custom comparator to sort custom objects or values in a non-default order; Coordinate compressing values from a large range to a smaller one.'
+---
+
+<Resources>
+  <Resource source="IUSACO" title="8 - Sorting & Comparators">
+    partially based off this
+  </Resource>
+  <Resource
+    source="CPH"
+    title="3.2 - User-Defined Structs, Comparison Functions"
+  >
+    short overview of what this module will cover
+  </Resource>
+</Resources>
+
+<br />
+
+## Example - Wormhole Sort
+
+<FocusProblem problem="sample" />
+
+We won't discuss the full solution here, as some of the concepts necessary for
+solving this problem will be introduced later in Silver. However, many solutions
+to this problem start by sorting the edges in nondecreasing order of weight. For
+example, the sample contains the following edges:
+
+```
+1 2 9
+1 3 7
+2 3 10
+2 4 3
+```
+
+After sorting, it should look like
+
+```
+2 4 3
+1 3 7
+1 2 9
+2 3 10
+```
+
+With C++, the easiest method is to use a `vector` of nested `pair`s:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define f first
+#define s second
+
+int main() {
+	int M = 4;
+	vector<pair<int,pair<int,int>>> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({w,{a,b}});
+	}
+	sort(begin(v),end(v));
+	for (auto e: v) cout << e.s.f << " " << e.s.s << " " << e.f << "\n";
+}
+```
+
+or a `vector` of `array<int,3>`s or `vector<int>`s:
+
+```cpp
+int main() {
+	int M = 4;
+	vector<array<int,3>> v; // or vector<vector<int>>
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({w,a,b});
+	}
+	sort(begin(v),end(v));
+	for (auto e: v) cout << e[1] << " " << e[2] << " " << e[0] << "\n";
+}
+```
+
+In Python, we can use a list of lists.
+
+But in Java, we can't sort an `ArrayList` of `ArrayList`s without writing some
+additional code. What should we do?
+
+- If we only stored the edge weights and sorted them, we would have a sorted
+  list of edge weights, but it would be impossible to tell which weights
+  corresponded to which edges.
+- However, if we create a **class** representing the edges and define a **custom
+  comparator** to sort them by weight, we can sort the edges in ascending order
+  while also keeping track of their endpoints.
+
+## Classes
+
+First, we need to define a **class** that represents what we want to sort. In
+our example we will define a class `Edge` that contains the two endpoints of the
+edge and the weight.
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++
+
+A C++ `struct` is the same as a `class` in C++, but all members are public by
+default.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge {
+	int a,b,w;
+};
+
+/* alternatively,
+class Edge {
+	public:
+		int a,b,w;
+};
+*/
+
+int main() {
+	int M = 4;
+	vector<Edge> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({a,b,w});
+	}
+	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class Sol {
+	static class Edge {
+		int a,b,w;
+		public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	}
+	public static void main(String[] args) {
+		int M = 4;
+		Scanner in = new Scanner(System.in);
+		ArrayList<Edge> v = new ArrayList<Edge>();
+		for (int i = 0; i < M; ++i) {
+			int a = in.nextInt();
+			int b = in.nextInt();
+			int w = in.nextInt();
+			v.add(new Edge(a,b,w));
+		}
+		for (Edge e: v){
+			System.out.print(e.a);
+			System.out.print(' ');
+			System.out.print(e.b);
+			System.out.print(' ');
+			System.out.println(e.w);
+		}
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+class Edge:
+	def __init__(self, a, b, w):
+		self.a = a
+		self.b = b
+		self.w = w
+
+v = []
+M = 4
+for i in range(M):
+	a,b,w = map(int,input().split())
+	v.append(Edge(a,b,w))
+for e in v:
+	print(e.a,e.b,e.w)
+```
+
+</PySection>
+</LanguageSection>
+
+## Comparators
+
+Normally, sorting functions rely on moving objects with a lower value in front
+of objects with a higher value if sorting in ascending order, and vice versa if
+in descending order. This is done through comparing two objects at a time.
+
+<LanguageSection>
+
+<CPPSection>
+
+What a comparator does is compare two objects as follows, based on our
+comparison criteria:
+
+- If object $x$ is less than object $y$, return `true`
+- If object $x$ is greater than or equal to object $y$, return `false`
+
+Essentially, the comparator determines whether object $x$ belongs to the left of
+object $y$ in a sorted ordering.
+
+<Warning>
+
+A comparator **must** return false for two equal objects (not doing so results
+in undefined behavior and potentially a verdict of wrong answer or runtime
+error).
+
+</Warning>
+
+In addition to returning the correct answer, comparators should also satisfy the
+following conditions:
+
+- The function must be consistent with respect to reversing the order of the
+  arguments: if $x \neq y$ and `compare(x, y)` is `true`, then `compare(y, x)`
+  should be `false` and vice versa.
+- The function must be transitive. If `compare(x, y)` is true and
+  `compare(y, z)` is true, then `compare(x, z)` should also be true. If the
+  first two compare functions both return `false`, the third must also return
+  `false`.
+
+### Method 1 - Overloading the Less Than Operator
+
+This is the easiest to implement. However, it only works for objects (not
+primitives) and it doesn't allow you to define multiple ways to compare the same
+type of class.
+
+In the context of Wormhole Sort (note the use of
+[const Edge&](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)):
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge {
+	int a,b,w;
+	bool operator<(const Edge& y) { return w < y.w; }
+};
+
+int main() {
+	int M = 4;
+	vector<Edge> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({a,b,w});
+	}
+	sort(begin(v),end(v));
+	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+}
+```
+
+We can also overload the operator outside of the class:
+
+```cpp
+struct Edge {
+	int a,b,w;
+};
+bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
+```
+
+or within it using
+[friend](https://www.geeksforgeeks.org/friend-class-function-cpp/):
+
+```cpp
+struct Edge {
+	int a,b,w;
+	friend bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
+};
+```
+
+### Method 2 - Comparison Function
+
+This works for both objects and primitives, and you can declare many different
+comparators for the same object.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge {
+	int a,b,w;
+};
+
+bool cmp(const Edge& x, const Edge& y) { return x.w < y.w; }
+
+int main() {
+	int M = 4;
+	vector<Edge> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({a,b,w});
+	}
+	sort(begin(v),end(v),cmp);
+	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+}
+```
+
+We can also use [lambda expressions](/general/lambda) in C++11 or above:
+
+```cpp
+sort(begin(v),end(v),[](const Edge& x, const Edge& y) { return x.w < y.w; });
+```
+
+</CPPSection>
+
+<JavaSection>
+
+What a `Comparator` does is compare two objects as follows, based on our
+comparison criteria:
+
+- If object $x$ is less than object $y$, return a negative integer.
+- If object $x$ is greater than object $y$, return a positive integer.
+- If object $x$ is equal to object $y$, return 0.
+
+In addition to returning the correct number, comparators should also satisfy the
+following conditions:
+
+- The function must be consistent with respect to reversing the order of the
+  arguments: if `compare(x, y)` is positive, then `compare(y, x)` should be
+  negative and vice versa.
+- The function must be transitive. If `compare(x, y) > 0` and
+  `compare(y, z) > 0`, then `compare(x, z) > 0`. Same applies if the compare
+  functions return negative numbers.
+- Equality must be consistent. If `compare(x, y) = 0`, then `compare(x, z)` and
+  `compare(y, z)` must both be positive, both negative, or both zero. Note that
+  they don't have to be equal, they just need to have the same sign.
+
+Java has default functions for comparing `int`, `long`, `double` types. The
+`Integer.compare()`, `Long.compare()`, and `Double.compare()` functions take two
+arguments $x$ and $y$ and compare them as described above.
+
+There are two ways of implementing this in Java: `Comparable`, and `Comparator`.
+They essentially serve the same purpose, but `Comparable` is generally easier
+and shorter to code. `Comparable` is a function implemented within the class
+containing the custom object, while `Comparator` is its own class.
+
+### Method 1 - Comparable
+
+We'll need to put `implements Comparable<Edge>` into the heading of the class.
+Furthermore, we'll need to implement the `compareTo` method. Essentially,
+`compareTo(x)` is the `compare` function that we described above, with the
+object itself as the first argument, or `compare(self, x)`.
+
+When using Comparable, we can just call `Arrays.sort(arr)` or
+`Collections.sort(list)` on the array or list as usual.
+
+```java
+import java.util.*;
+
+public class Sol {
+	static class Edge implements Comparable<Edge> {
+	    int a,b,w;
+	    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	    public int compareTo(Edge y) { return Integer.compare(w,y.w); }
+	}
+	public static void main(String[] args) {
+		int M = 4;
+		Scanner in = new Scanner(System.in);
+		ArrayList<Edge> v = new ArrayList<Edge>();
+		for (int i = 0; i < M; ++i) {
+			int a = in.nextInt();
+			int b = in.nextInt();
+			int w = in.nextInt();
+			v.add(new Edge(a,b,w));
+		}
+		Collections.sort(v);
+		for (Edge e: v){
+			System.out.print(e.a);
+			System.out.print(' ');
+			System.out.print(e.b);
+			System.out.print(' ');
+			System.out.println(e.w);
+		}
+	}
+}
+```
+
+### Method 2 - Comparator
+
+If instead we choose to use `Comparator`, we'll need to declare a second class
+that implements `Comparator<Edge>`:
+
+```java
+import java.util.*;
+
+public class Sol {
+	static class Edge {
+	    int a,b,w;
+	    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	}
+	static class Comp implements Comparator<Edge> {
+	    public int compare(Edge a, Edge b) {
+	        return Integer.compare(a.w, b.w);
+	    }
+	}
+	public static void main(String[] args) {
+		int M = 4;
+		Scanner in = new Scanner(System.in);
+		ArrayList<Edge> v = new ArrayList<Edge>();
+		for (int i = 0; i < M; ++i) {
+			int a = in.nextInt();
+			int b = in.nextInt();
+			int w = in.nextInt();
+			v.add(new Edge(a,b,w));
+		}
+		Collections.sort(v, new Comp());
+		for (Edge e: v){
+			System.out.print(e.a);
+			System.out.print(' ');
+			System.out.print(e.b);
+			System.out.print(' ');
+			System.out.println(e.w);
+		}
+	}
+}
+```
+
+When using `Comparator`, the syntax for using the built-in sorting function
+requires a second argument: `Arrays.sort(arr, new Comp())`, or
+`Collections.sort(list, new Comp())`.
+
+</JavaSection>
+
+<PySection>
+
+### Defining Less Than Operator
+
+<!-- Tested -->
+
+```py
+class Edge:
+	def __init__(self, a, b, w):
+		self.a = a
+		self.b = b
+		self.w = w
+	def __lt__(self, other): # lt means less than
+		return self.w < other.w
+
+v = []
+M = 4
+for i in range(M):
+	a,b,w = map(int,input().split())
+	v.append(Edge(a,b,w))
+v.sort()
+for e in v:
+	print(e.a,e.b,e.w)
+```
+
+### Key Function
+
+This method maps an object to another comparable datatype with which to be
+sorted. This is the preferred method if you are only sorting something once. In
+this case we map edges to their weights.
+
+```py
+class Edge:
+	def __init__(self, a, b, w):
+		self.a = a
+		self.b = b
+		self.w = w
+
+v = []
+M = 4
+for i in range(M):
+	a,b,w = map(int,input().split())
+	v.append(Edge(a,b,w))
+v.sort(key=lambda x:x.w)
+for e in v:
+	print(e.a,e.b,e.w)
+```
+
+### Comparison Function
+
+A comparison function in Python must satisfy the same properties as a comparator
+in Java. Note that old-style cmp functions are
+[no longer supported](https://stackoverflow.com/questions/12749398/using-a-comparator-function-to-sort),
+so the comparison function must be converted into a key function with
+[`cmp_to_key`](https://docs.python.org/2/library/functools.html). Most of the
+time, it is better to use the key function, but in the rare case that the
+comparison function is not easily represented as a key function, we can use
+this.
+
+```py
+from functools import cmp_to_key
+
+class Edge:
+	def __init__(self, a, b, w):
+		self.a = a
+		self.b = b
+		self.w = w
+
+v = []
+M = 4
+for i in range(M):
+	a,b,w = map(int,input().split())
+	v.append(Edge(a,b,w))
+
+v.sort(key=cmp_to_key(lambda a,b: a.w-b.w))
+for e in v:
+	print(e.a,e.b,e.w)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Variations
+
+### Sorting in Decreasing Order of Weight
+
+We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code.
+Similarly, we can replace all occurrences of `Integer.compare(x, y)` with
+`-Integer.compare(x, y)` in our Java code. In Python, we can pass the parameter
+`reverse=True` to the `sort` or `sorted` function.
+
+### Sorting by Two Criteria
+
+Now, suppose we wanted to sort a list of `Edge`s in ascending order, primarily
+by weight and secondarily by first vertex (`a`). We can do this quite similarly
+to how we handled sorting by one criterion earlier. What the comparator function
+needs to do is to compare the weights if the weights are not equal, and
+otherwise compare first vertices.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+struct Edge {
+	int a,b,w;
+	bool operator<(const Edge& y) {
+		if (w != y.w) return w < y.w;
+		return a < y.a;
+	}
+};
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+static class Edge implements Comparable<Edge> {
+	int a,b,w;
+	public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	public int compareTo(Edge y) {
+		if (w != y.w) return Integer.compare(w,y.w);
+		return Integer.compare(a,y.a);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+In Python, tuples have a natural order based on their elements in order. We can
+take advantage of this to write a comparator:
+
+```py
+class Edge:
+	def __init__(self, a, b, w):
+		self.a = a
+		self.b = b
+		self.w = w
+	def __lt__(self, other): # lt means less than
+		return (self.w, self.a) < (other.w, other.a)
+```
+
+This also gives an easy way to write a key function to sort in this way:
+
+```py
+edges: list[Edge]
+edges.sort(key=lambda edge: (edge.w, edge.a))
+```
+
+</PySection>
+
+</LanguageSection>
+
+Sorting by an arbitrary number of criteria is done similarly.
+
+<LanguageSection>
+
+<CPPSection>
+
+</CPPSection>
+
+<JavaSection>
+
+With Java, we can implement a comparator for arrays of arbitrary length
+(although this might be more confusing than creating a separate class).
+
+```java
+import java.util.*;
+
+public class Sol {
+	static class Comp implements Comparator<int[]> {
+		public int compare(int[] a, int[] b){
+			for (int i = 0; i < a.length; ++i)
+				if (a[i] != b[i]) return Integer.compare(a[i],b[i]);
+			return 0;
+		}
+	}
+	public static void main(String[] args) {
+		int M = 4;
+		Scanner in = new Scanner(System.in);
+		ArrayList<int[]> v = new ArrayList<int[]>();
+		for (int i = 0; i < M; ++i) {
+			int a = in.nextInt();
+			int b = in.nextInt();
+			int w = in.nextInt();
+			v.add(new int[]{w,a,b});
+		}
+		Collections.sort(v, new Comp());
+		for (int[] e: v){
+			System.out.print(e[1]);
+			System.out.print(' ');
+			System.out.print(e[2]);
+			System.out.print(' ');
+			System.out.println(e[0]);
+		}
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+</PySection>
+
+</LanguageSection>
+
+## Coordinate Compression
+
+Coordinate compression describes the process of mapping each value in a list to its index if that
+list was sorted. For example, the list $\{7, 3, 4, 1\}$ would be compressed to
+$\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the first list, so it
+becomes $0$, and $7$ is the greatest value, so it becomes $3$, the largest index
+in the list.
+
+When we have values from a large range, but we
+only care about their relative order (for example, if we have to know if one
+value is above another), coordinate compression is a simple way to help
+with implementation. For example, if we have a set of integers ranging from $0$ to $10^9$, we
+can't use them as array indices because we'd have to create an array of size
+$10^9$, which would surely cause a `Memory Limit Exceeded` verdict. However, if
+there are only $N \leq 10^6$ such integers, we can coordinate-compress their
+values, which guarantees that the values will all be in the range from $0$ to
+$N-1$, which _can_ be used as array indices.
+
+<FocusProblem problem="sample2" />
+
+### Example 1
+
+A good example of coordinate compression in action is in the solution of _USACO
+Rectangular Pasture._ Again, we won't delve into the full solution but instead
+discuss how coordinate compression is applied. Since the solution uses
+[2D-prefix](/silver/prefix-sums-2) sums (another Silver topic), it is helpful if
+all point coordinates are coordinate-compressed to the range $0$ to $N-1$ so
+they can be used as array indices. Without coordinate compression, creating a large enough array would result in a `Memory Limit Exceeded` verdict.
+
+Below you will find the solution to Rectangular Pasture, which uses
+coordinate compression at the beginning. Observe how a custom comparator is used to sort the
+points:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//BeginCodeSnip{Solution code}
+#include <iostream>
+#include <algorithm>
+using namespace std;
+//EndCodeSnip
+
+typedef pair<int,int> Point;
+bool ycomp(Point p, Point q) { return p.second < q.second; }
+
+//BeginCodeSnip{Solution code}
+const int MAX_N = 2500;
+int N, Psum[MAX_N+1][MAX_N+1];
+Point P[MAX_N];
+
+int rsum(int x1, int y1, int x2, int y2)
+{
+	return Psum[x2+1][y2+1] - Psum[x2+1][y1] - Psum[x1][y2+1] + Psum[x1][y1];
+}
+
+int main(void)
+{
+	cin >> N;
+	for (int i=0; i<N; i++) {
+		int x, y;
+		cin >> x >> y;
+		P[i] = make_pair(x,y);
+	}
+//EndCodeSnip
+
+	sort(P, P+N);
+	for (int i=0; i<N; i++) P[i].first = i+1;
+	sort(P, P+N, ycomp);
+	for (int i=0; i<N; i++) P[i].second = i+1;
+
+//BeginCodeSnip{Solution code}
+	for (int i=0; i<N; i++) Psum[P[i].first][P[i].second] = 1;
+	for (int i=1; i<=N; i++)
+		for (int j=1; j<=N; j++)
+			Psum[i][j] += Psum[i-1][j] + Psum[i][j-1] - Psum[i-1][j-1];
+	long long answer = 0;
+	for (int i=0; i<N; i++)
+		for (int j=i; j<N; j++) {
+			int x1 = min(P[i].first, P[j].first) - 1;
+			int x2 = max(P[i].first, P[j].first) - 1;
+			answer += rsum(0,i,x1,j) * rsum(x2,i,N-1,j);
+		}
+	cout << answer + 1 << "\n";
+
+}
+//EndCodeSnip
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//BeginCodeSnip{Solution code}
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+
+public class RectangularPasture {
+	static int[][] sums;
+
+	static int getSum(int fromX, int toX, int fromY, int toY) {
+		return sums[toX][toY] - sums[fromX - 1][toY] - sums[toX][fromY - 1] + sums[fromX - 1][fromY - 1];
+	}
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		int n = in.nextInt();
+		//EndCodeSnip
+
+		int[] xs = new int[n];
+		int[] ys = new int[n];
+
+		Integer[] cows = new Integer[n];
+		for (int j = 0; j < n; j++) {
+			xs[j] = in.nextInt();
+			ys[j] = in.nextInt();
+			cows[j] = j;
+		}
+
+		Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
+		for (int x = 1; x <= n; x++) {
+			xs[cows[x - 1]] = x;
+		}
+		Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
+		for (int y = 1; y <= n; y++) {
+			ys[cows[y - 1]] = y;
+		}
+
+//BeginCodeSnip{Solution code}
+		sums = new int[n + 1][n + 1];
+		for (int j = 0; j < n; j++) {
+			sums[xs[j]][ys[j]]++;
+		}
+		for (int x = 0; x <= n; x++) {
+			for (int y = 0; y <= n; y++) {
+				if (x > 0) {
+					sums[x][y] += sums[x - 1][y];
+				}
+				if (y > 0) {
+					sums[x][y] += sums[x][y - 1];
+				}
+				if (x > 0 && y > 0) {
+					sums[x][y] -= sums[x - 1][y - 1];
+				}
+			}
+		}
+		long answer = n + 1;
+		for (int j = 0; j < n; j++) {
+			for (int k = j + 1; k < n; k++) {
+				answer += getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), 1, Math.min(ys[j], ys[k]))
+					* getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), Math.max(ys[j], ys[k]), n);
+			}
+		}
+		System.out.println(answer);
+	}
+}
+//EndCodeSnip
+```
+
+The solution uses a [lambda](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) function as the custom comparator, which our guide
+didn't discuss, but it should be apparent which coordinate (`x` or `y`) that the
+comparator is sorting by.
+
+</JavaSection>
+
+</LanguageSection>
+
+The solution to Rectangular Pasture directly replaces coordinates with their compressed values, and forgets the real values of the coordinates because they are unnecessary. However, there may be problems for which we need to also remember the original values of coordinates that we compress.
+
+### Example 2
+
+<FocusProblem problem="sample3" />
+
+This problem will require prefix sums and coordinate compression. However, the implementation of coordinate compression in this solution will also require remembering values in addition to compressing them (as opposed to just replacing the original values, as in the last problem). If you just want to focus on the implementation of coordinate compression and how it can switch between compressed indices and original values, see the contracted code below. `indices` is a list of values that need to be compressed. After it gets sorted and has duplicate values removed, it is ready to use. The method `getCompressedIndex` takes in an original value, and [binary searches](/silver/binary-search) for its position in `indices` to get its corresponding compressed index. To go from a compressed index to an original value, the code can just access that index in `indices`.
+
+We also provide a full solution:
+
+<Spoiler title = "Full Solution">
+
+First of all, let's figure out the value at each index in array $a$. It would be too slow to loop through every index in every update interval as well as every index in a query interval (The time complexity would be $O(N \cdot max_c + Q \cdot max_c)$ where $max_c$ is the maximum coordinate given in the input, which is up to $10^9$.). At the same time, that approach would take $O(max_c)$ memory, which is also too much. Instead, we make an observation that will make prefix sums paired with coordinate compression a viable option.
+
+Not every index in the whole range from $1...10^9$ is used in updates. In fact, there can be large intervals of indices that all have the same value. Call every index that is named in the input is a "special index." Now, note that the value at each index in the interval between two consecutive special indices is the same. This is because it is impossible for there to be an update that cuts in between two consecutive special indices as that would imply the existence of another special index between two consecutive special indices, i.e. a contradiction. We'll call the interval between two consecutive special indices a "special interval," and the "value of a special interval" will be the value that each of the elements take on inside it.
+
+Now, let's see how prefix sums (along with coordinate compression) helps.
+
+Temporarily forget about special indices. When an update asks us to add $+v$ to the interval $[l, r)$, we can mark index $l$ with $+v$ and index $r$ with $-v$ in a "difference array." We call it the difference array because it tells us the change in value when we go from one index to the next. Taking the prefix sums of the difference array will result in the actual values of the array $a$ (Take some time to convince yourself of this before moving on).
+
+Since the indices that we have to mark range from $0...10^9$, it'd take too much memory for us to use those indices directly. However, only special indices are ever actually used, so we're motivated to change the meaning of the difference array to save on memory (note that there are at most $2 \cdot (N+Q)$ special indices because $2$ indices are given for every update and query). Instead of the difference array representing the change in value from one special index to the next, let it represent the change in value from one special interval to the next. Now, it only has to have size $2 \cdot (N+Q)$. Taking the prefix sums of this difference array will give the values of all special intervals.
+
+We just have to coordinate compress the special indices so that we can conveniently use them as array indices for the difference array. We perform this coordinate compression by keeping a sorted list of all special indices, and using each special index's position in that list as its compressed index. To find a special index's position in the sorted list (a.k.a. its compressed index), we can [binary search](/silver/binary-search) on the list. The next part of the solution will show why it was important for us to store the original indices.
+
+So, with prefix sums and coordinate compression, it is possible for us to find the value of each special interval. Now, let's finish the problem. Let the "sum of a special interval" be the sum of every element inside the special interval, or in other words, the interval's length times its value. We already know each special interval's value, but we can also get its length because we stored the original indices. The length of an interval is its right index minus its left index, which we can find by accessing the sorted list. As a result, we can also find the sum of each special interval with the information we have. When the problem queries us for the sum between two special indices, we add up the sums of the special intervals between those two special indices. Thus, if we create another prefix sum array on the sums of the special intervals, we can easily answer these range sum queries in O(1) each.
+
+The code below can be expanded to show the full solution.
+
+</Spoiler>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//BeginCodeSnip{Solution code}
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+ll difference_array[400005]; 
+//difference_array[i] = the difference of the values between special intervals i-1 and i
+
+int widths[400005]; //width[i] = the length of special interval i
+ll interval_value[400005]; //interval_value[i] = the value of special interval i
+//the sum of a special interval is interval_value[i] * width[i]
+
+ll prefix_sums[400005]; //prefix_sums[i] = prefix sum of the sums of special intervals up to i
+
+vector<int> indices; //sorted list of special indices
+pair<int, int> queries[100005]; //queries given in the input <l, r>
+pair<pair<int, int>, int> updates[100005]; //updates in given in the input <<l, r>, v>
+
+//EndCodeSnip
+
+//finds the "compressed index" of a special index (a.k.a. its position in the sorted list)
+int getCompressedIndex(int a) {
+	return lower_bound(indices.begin(), indices.end(), a) - indices.begin();
+}
+
+//BeginCodeSnip{Solution code}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N, Q;
+	cin >> N >> Q;
+
+	for(int i = 0; i < N; i++) {
+		int l, r, v;
+		cin >> l >> r >> v;
+		indices.push_back(l);
+		indices.push_back(r);
+		updates[i] = {{l, r}, v};
+	}
+	for(int i = 0; i < Q; i++) {
+		int l, r;
+		cin >> l >> r;
+		indices.push_back(l);
+		indices.push_back(r);
+		queries[i] = {l, r};
+	}
+//EndCodeSnip
+	//========= COORDINATE COMPRESSION =======
+	sort(indices.begin(), indices.end());
+	indices.erase(unique(indices.begin(), indices.end()), indices.end());
+		/*
+		You can find info on "unique" here: https://www.cplusplus.com/reference/algorithm/unique/
+
+		Since our list is already sorted, the effect of "unique" is duplicates are removed. In total, these two lines
+		give us a sorted list with duplicates removed.
+		*/
+	//========= COORDINATE COMPRESSION =======
+//BeginCodeSnip{Solution code}
+	//We create the difference array, using coordinate compression and binary search to get the compressed index of each special index
+	//Note the 1-based indexing for convenience
+	for(int i = 0; i < N; i++) {
+		auto a = updates[i];
+
+		difference_array[getCompressedIndex(a.first.first)+1] += a.second;
+		difference_array[getCompressedIndex(a.first.second)+1] -= a.second;
+	}
+
+	//By keeping track of the original values of the special indices, we can also figure out the lengths of each special interval
+	for(int i = 0; i < indices.size()-1; i++) {
+		widths[i+1] = indices[i+1] - indices[i];
+	}
+
+	//We use prefix sums of the difference array to get the values of the intervals
+	for(int i = 1; i < indices.size(); i++) {
+		interval_value[i] = interval_value[i-1] + difference_array[i];
+	}
+
+	//We use prefix sums over the sums of the special intervals to be able to answer queries quickly
+	for(int i = 1; i < indices.size(); i++) {
+		prefix_sums[i] = prefix_sums[i-1] + interval_value[i] * widths[i];
+	}
+
+	//Classic use of prefix sum array to answer range sum queries
+	for(int i = 0; i < Q; i++) {
+		cout << prefix_sums[getCompressedIndex(queries[i].second)] - prefix_sums[getCompressedIndex(queries[i].first)] << "\n";
+	}
+
+	return 0;
+}
+//EndCodeSnip
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//BeginCodeSnip{Solution code}
+import java.util.*;
+import java.io.*;
+
+public class rangequeries {
+	
+	//custom class that stores a few integers (used for directly storing the queries and updates given in the input)
+	static class Query {
+		
+		int l, r, v;
+		public Query(int l, int r, int v) {
+			this.l = l;
+			this.r = r;
+			this.v = v;
+		}
+		
+		public Query(int l, int r) {
+			this.l = l;
+			this.r = r;
+		}
+		
+	}
+	
+	static long difference_array[]; 
+	//difference_array[i] = the difference of the values between special intervals i-1 and i
+
+	static int widths[]; //width[i] = the length of special interval i
+	static long interval_value[]; //interval_value[i] = the value of special interval i
+
+	static long prefix_sums[]; //prefix_sums[i] = prefix sum of the sums of special intervals up to i
+
+	static ArrayList<Integer> indices; //sorted list of special indices
+	static Query queries[]; //queries given in the input <l, r>
+	static Query updates[]; //updates in given in the input <l, r, v>
+//EndCodeSnip
+	//finds the "compressed index" of a special index (a.k.a. its position in the sorted list)
+	static int getCompressedIndex(int a) {
+		return Collections.binarySearch(indices, a);
+	}
+//BeginCodeSnip{Solution code}
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // A Scanner is too slow to solve this problem!
+		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
+		
+		indices = new ArrayList<Integer>();
+		queries = new Query[Q];
+		updates = new Query[N];
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken()), v = Integer.parseInt(st.nextToken());
+			indices.add(l);
+			indices.add(r);
+			updates[i] = new Query(l, r, v);
+		}
+		for(int i = 0; i < Q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken());
+			indices.add(l);
+			indices.add(r);
+			queries[i] = new Query(l, r);
+		}
+//EndCodeSnip
+		//========= COORDINATE COMPRESSION =======
+		TreeSet<Integer> temp = new TreeSet<Integer>(indices); 
+		//Since temp is a set, all duplicate elements are removed
+		indices.clear(); 
+		indices.addAll(temp); //The elements of temp will be added to indices in sorted order, since temp is a TreeSet
+		//The effect of these lines is to sort indices while removing duplicate elements. 
+		//While this is not the only way to do it, it is one that requires little code.
+		//========= COORDINATE COMPRESSION =======
+//BeginCodeSnip{Solution code}
+		difference_array = new long[indices.size() + 5];
+		widths = new int[indices.size() + 5];
+		interval_value = new long[indices.size() + 5];
+		prefix_sums = new long[indices.size() + 5];
+		
+		//We create the difference array, using coordinate compression and binary search to get the index of each special interval
+		//Note the 1-based indexing for convenience
+		for(int i = 0; i < N; i++) {
+			Query a = updates[i];
+
+			difference_array[getCompressedIndex(a.l)+1] += a.v;
+			difference_array[getCompressedIndex(a.r)+1] -= a.v;
+		}
+
+		//By keeping track of the original values of the special indices, we can also figure out the lengths of each special interval
+		for(int i = 0; i < indices.size()-1; i++) {
+			widths[i+1] = indices.get(i+1) - indices.get(i);
+		}
+
+		//We use prefix sums of the difference array to get the actual value of the intervals
+		for(int i = 1; i < indices.size(); i++) {
+			interval_value[i] = interval_value[i-1] + difference_array[i];
+		}
+
+		//We use prefix sums over the sums of the special intervals to be able to answer queries quickly
+		for(int i = 1; i < indices.size(); i++) {
+			prefix_sums[i] = prefix_sums[i-1] + interval_value[i] * widths[i];
+		}
+
+		//Classic use of prefix sum array to answer range sum queries
+		for(int i = 0; i < Q; i++) {
+			System.out.println(prefix_sums[getCompressedIndex(queries[i].r)] - prefix_sums[getCompressedIndex(queries[i].l)]);
+		}
+		
+	}
+	
+}
+//EndCodeSnip
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Problems
+
+<Info title="Pro Tip">
+
+Many of the problems below may use other Silver concepts, such as
+[prefix sums](/silver/prefix-sums).
+
+</Info>
+
+<Problems problems="general" hideSuggestProblemButton />

@@ -1,0 +1,587 @@
+---
+id: dfs
+redirects:
+  - /silver/bipartite
+title: Depth First Search (DFS)
+author: Siyong Huang, Benjamin Qi
+contributors: Andrew Wang, Jason Chen
+prerequisites:
+  - intro-graphs
+  - complete-rec
+description: 'Recursively traversing a graph.'
+frequency: 4
+---
+
+<!-- 	<Resource source="IUSACO" title="10.4 - DFS">
+		code + example
+	</Resource>
+	<Resource source="PAPS" title="12.2 - DFS">
+		pseudocode + example + code
+	</Resource>
+	<Resource
+		source="CP2"
+		title="4.2.1, 4.2.3 - DFS, Finding Connected Components"
+	 /> -->
+
+<Resources>
+	<Resource
+		source="CSA"
+		title="Depth First Search"
+		url="depth_first_search"
+		starred
+	>
+		up to but not including "More about DFS"
+	</Resource>
+	<Resource source="CPH" title="12.1 - DFS">
+		example diagram + code
+	</Resource>
+</Resources>
+
+From the second resource:
+
+> Depth-first search (DFS) is a straightforward graph traversal technique. The
+> algorithm begins at a starting node, and proceeds to all other nodes that are
+> reachable from the starting node using the edges of the graph.
+>
+> Depth-first search always follows a single path in the graph as long as it
+> finds new nodes. After this, it returns to previous nodes and begins to
+> explore other parts of the graph. The algorithm keeps track of visited nodes,
+> so that it processes each node only once.
+
+## Application - Connected Components
+
+<FocusProblem problem="sample" />
+
+A **connected component** is a maximal set of connected nodes in an undirected
+graph. In other words, two nodes are in the same connected component _if and
+only if_ they can reach each other via edges in the graph.
+
+In the above focus problem, the goal is to add the minimum possible number of
+edges such that the entire graph forms a single connected component.
+
+<!--
+
+   <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
+   <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource>
+   <Resource source="TC" title="Graphs Section 2" url="introduction-to-graphs-and-their-data-structures-section-2" />
+
+-->
+
+### Solution - Building Roads
+
+<Spoiler title="Solution">
+
+Note that each edge decreases the number of connected components by either zero
+or one. So you must add at least $C-1$ edges, where $C$ is the number of
+connected components in the input graph.
+
+There are many valid ways to pick $C-1$ new roads to build. The code below picks
+a single representative from each of the $C$ components and links them together
+in a line.
+
+<!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
+
+<!-- Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. -->
+
+<LanguageSection>
+
+<CPPSection>
+
+<!-- Tested on CSES -->
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+const int MN = 1e5+10;
+
+int N, M, ans, rep[MN];
+std::vector<int> adj_list[MN];
+bool visited[MN];
+
+void dfs(int node)
+{
+	visited[node] = true;
+	for(int u:adj_list[node])
+		if(!visited[u])
+			dfs(u);
+}
+int count_components()
+{
+	int count=0;
+	for(int i=1;i<=N;++i)
+		if(!visited[i])
+		{
+			rep[count++]=i;
+			dfs(i);
+		}
+	return count;
+}
+
+int main()
+{
+	scanf("%d%d", &N, &M);
+	for(int i=0,u,v;i<M;++i)
+		scanf("%d%d", &u, &v), adj_list[u].push_back(v), adj_list[v].push_back(u);
+	ans = count_components();
+	printf("%d\n", ans-1);
+	for(int i=1;i<ans;++i)
+		printf("%d %d\n", rep[i-1], rep[i]);
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+	public static ArrayList<Integer> adj[];
+	public static ArrayList<Integer> rep = new ArrayList<Integer>();
+	public static boolean visited[];
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N+1];
+		visited = new boolean[N+1];
+		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			adj[u].add(v); adj[v].add(u);
+		}
+		int ans = count_components();
+		out.println(ans-1);
+		for (int i = 1; i < ans; i++){
+			out.println(rep.get(i-1) + " " + rep.get(i));
+		}
+		out.close();
+	}
+
+	public static void dfs(int node)
+	{
+		visited[node] = true;
+		for (int u: adj[node])
+			if(!visited[u])
+				dfs(u);
+	}
+	public static int count_components()
+	{
+		int count = 0;
+		for (int i = 1; i <= adj.length-1; i++){
+			if(!visited[i]){
+				count++;
+				rep.add(i);
+				dfs(i);
+			}
+		}
+		return count;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def solve(n, adj):
+	unvisited = set(range(1, n+1))
+	starts = set()
+
+	def dfs(current):
+		for next in adj[current]:
+			if next in unvisited:
+				unvisited.remove(next)
+				dfs(next)
+
+	while unvisited:
+		start = unvisited.pop()
+		starts.add(start)
+		dfs(start)
+
+	print(len(starts) - 1)
+	root = starts.pop()
+	for other in starts:
+		print(root, other)
+
+if __name__ == '__main__':
+	n, m = map(int, input().split())
+	adj = [set() for _ in range(n+1)]
+	for _ in range(m):
+		u, v = map(int, input().split())
+		adj[u].add(v)
+		adj[v].add(u)
+	solve(n, adj)
+```
+
+Unfortunately, a danger in using DFS when dealing with large bounds is the
+possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the
+recursion limit in Python is set to
+[1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014)
+by default. So if you submit the above code, you'll get the following:
+
+```
+Traceback (most recent call last):
+  File "input/code.py", line 28, in <module>
+    solve(n, adj)
+  File "input/code.py", line 14, in solve
+    dfs(start, start)
+  File "input/code.py", line 9, in dfs
+    dfs(start, next)
+  File "input/code.py", line 9, in dfs
+    dfs(start, next)
+  File "input/code.py", line 9, in dfs
+    dfs(start, next)
+  [Previous line repeated 994 more times]
+  File "input/code.py", line 7, in dfs
+    if next in unvisited:
+RecursionError: maximum recursion depth exceeded in comparison
+```
+
+We can fix this by increasing the recursion limit:
+
+```py
+import sys
+sys.setrecursionlimit(1000000)
+```
+
+although we still get TLE on two test cases.
+
+To resolve this, we can implement a non-recursive solution (which turns out to
+be slightly faster). You can imagine adding to `to_visit` as calling the
+function recursively and popping from `to_visit` as starting the execution of
+the recursive function (though they are not exactly equivalent in the strictest
+sense).
+
+```py
+def solve(n, adj):
+	unvisited = set(range(1, n+1))
+	starts = set()
+
+	def dfs(start):
+		to_visit = [start]
+		while to_visit:
+			current = to_visit.pop()
+			for next in adj[current]:
+				if next in unvisited:
+					unvisited.remove(next)
+					to_visit.append(next)
+
+	while unvisited:
+		start = unvisited.pop()
+		starts.add(start)
+		dfs(start)
+
+	print(len(starts) - 1)
+	root = starts.pop()
+	for other in starts:
+		print(root, other)
+
+if __name__ == '__main__':
+	n, m = map(int, input().split())
+	adj = [set() for _ in range(n+1)]
+	for _ in range(m):
+		u, v = map(int, input().split())
+		adj[u].add(v)
+		adj[v].add(u)
+	solve(n, adj)
+```
+
+Recursion errors also come up frequently in [flood fill](/silver/ff) problems.
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<!--
+<LanguageSection>
+
+<CPPSection>
+
+</CPPSection>
+
+<JavaSection>
+
+</JavaSection>
+
+<CPPSection>
+
+## Increased recursion limit
+
+Refer to the module on [increasing stack size](/general/cpp-command#adjusting-stack-size-mac).
+
+</CPPSection>
+
+<JavaSection>
+
+## DFS With Stack
+
+A danger in using DFS when dealing with large bounds is the possibility of a common runtime error, **StackOverFlow Error** in Java. This commonly occurs when $N > 10^5$ due to the limited memory of the built-in "stack" of recursive calls. To resolve this, we can implement our solution iteravely by making our own stack instead of recursively calling a function. You can imagine adding to this stack being the equivalent of calling the recursive function and popping from this stack being the same as executing the function. (**Note**: StackOverFlow Error is more common in [floodfill](/silver/ff) problems due to the grid-like nature leading to high depths in recursion calls.)
+
+Solution using iterative DFS:
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+	public static ArrayList<Integer> adj[];
+	public static ArrayList<Integer> rep = new ArrayList<Integer>();
+	public static boolean visited[];
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N+1];
+		visited = new boolean[N+1];
+		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			adj[u].add(v); adj[v].add(u);
+		}
+		int ans = count_components();
+		out.println(ans-1);
+		for (int i = 1; i < ans; i++){
+			out.println(rep.get(i-1) + " " + rep.get(i));
+		}
+		out.close();
+	}
+
+	public static void dfs(int node)
+	{
+		Stack<Integer> dfs_stack = new Stack<Integer>();
+		dfs_stack.push(node);
+		while(!dfs_stack.isEmpty()){
+			int cur = dfs_stack.pop();
+			visited[cur] = true;
+			for (int u: adj[cur])
+				if(!visited[u])
+					dfs_stack.push(u);
+		}
+	}
+	public static int count_components()
+	{
+		int count = 0;
+		for (int i = 1; i <= adj.length-1; i++){
+			if(!visited[i]){
+				count++;
+				rep.add(i);
+				dfs(i);
+			}
+		}
+		return count;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+</PySection>
+
+</LanguageSection>
+-->
+
+<Optional title="Adjacency List Without an Array of Vectors">
+
+See [here.](https://codeforces.com/blog/entry/67883)
+
+</Optional>
+	
+<Info title="Pro Tip">
+
+Some problems that can be solved with DFS, such as [Comfortable Cows](http://www.usaco.org/index.php?page=viewproblem2&cpid=1110), may be more easily solved with a queue (described in the [BFS](/gold/bfs) module).
+
+</Info>
+
+### Problems
+
+<Problems problems="general" />
+
+## Application - Graph Two-Coloring
+
+<FocusProblem problem="bipsample" />
+
+**Graph two-coloring** refers to assigning a boolean value to each node of the
+graph, dictated by the edge configuration. The most common example of a
+two-colored graph is a **bipartite graph**, in which each edge connects two
+nodes of opposite colors.
+
+In the above focus problem, the goal is to assign each node (friend) of the
+graph to one of two colors (teams), subject to the constraint that edges
+(friendships) connect two nodes of opposite colors. In other words, we need to
+check whether the input is a bipartite graph and output a valid coloring if it
+is.
+
+<!-- all of these use BFS
+
+<Resource source="IUSACO" title="10.7 - Bipartite Graphs">
+		Uses BFS, but DFS accomplishes the same task.
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Bipartite Check"
+		url="graph/bipartite-check.html"
+	>
+		Uses BFS, but DFS accomplishes the same task.
+	</Resource>
+	<Resource source="CP2" title="4.2.6 - Bipartite Check"/>
+ -->
+
+### Solution - Building Teams
+
+<Resources>
+	<Resource source="CPH" title="12.3 - Bipartiteness check" starred>
+		Brief solution sketch with diagrams.
+	</Resource>
+</Resources>
+
+The idea is that we can arbitrarily label a node and then run DFS. Every time we
+visit a new (unvisited) node, we set its color based on the edge rule. When we
+visit a previously visited node, check to see whether its color matches the edge
+rule.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+const int MN = 1e5+10;
+
+int N, M;
+bool bad, vis[MN], group[MN];
+std::vector<int> a[MN];
+
+void dfs(int n=1, bool g=0)
+{
+	vis[n]=1;
+	group[n]=g;
+	for(int u:a[n])
+		if(vis[u])
+		{
+			if(group[u]==g)
+				bad=1;
+		}
+		else
+			dfs(u, !g);
+}
+int main()
+{
+	scanf("%d%d", &N, &M);
+	for(int i=0,u,v;i<M;++i)
+		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
+	for(int i=1;!bad && i<=N;++i)
+		if(!vis[i])
+			dfs(i);
+	if(bad)
+		printf("IMPOSSIBLE\n");
+	else
+		for(int i=1;i<=N;++i) printf("%d%c", group[i]+1, " \n"[i==N]);
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+
+Because Java is so slow, an adjacency list using lists/arraylists results in
+TLE. Instead, the Java sample code uses the edge representation mentioned in the
+optional block above.
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BuildingTeams
+{
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
+
+	public static final int MN = 100010;
+	public static final int MM = 200010;
+
+	public static int N, M;
+	public static boolean bad;
+	public static boolean[]	vis = new boolean[MN], group = new boolean[MN];
+	public static int[] hd = new int[MN], nx = new int[MM*2], to = new int[MM*2];
+
+	public static void dfs(int n, boolean g)
+	{
+		vis[n]=true;
+		group[n]=g;
+		for(int id=hd[n];id!=0;id=nx[id])
+			if(vis[to[id]])
+			{
+				if(group[to[id]]==g)
+					bad=true;
+			}
+			else
+				dfs(to[id], !g);
+	}
+	public static void adde(int u, int v, int id)
+	{
+		nx[id]=hd[u];
+		hd[u]=id;
+		to[id]=v;
+	}
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		M=in.nextInt();
+		for(int i=0,u,v;i<M;++i)
+		{
+			u=in.nextInt();
+			v=in.nextInt();
+			adde(u,v,i*2+1);
+			adde(v,u,i*2+2);
+		}
+		for(int i=1;!bad && i<=N;++i)
+			if(!vis[i])
+				dfs(i, false);
+		if(bad)
+			out.println("IMPOSSIBLE");
+		else
+			for(int i=1;i<=N;++i)
+			{
+				out.print(group[i] ? '1' : '2');
+				if(i<N) out.print(' ');
+				else out.println();
+			}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems="bip" hideSuggestProblemButton />

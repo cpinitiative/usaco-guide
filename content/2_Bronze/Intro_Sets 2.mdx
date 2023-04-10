@@ -1,0 +1,1168 @@
+---
+id: intro-sets
+title: Introduction to Sets & Maps
+author: Darren Yao, Benjamin Qi, Allen Li, Jesse Choe, Nathan Gong
+description: 'Maintaining collections of distinct elements/keys with sets and maps.'
+frequency: 2
+prerequisites:
+  - intro-sorting
+---
+
+<Resources>
+	<Resource source="IUSACO" title="4.4 - Sets & Maps">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="4.2, 4.3 - Sets, Maps">
+		covers similar material
+	</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+C++ contains two versions of sets and maps; one using **sorting** and the other
+using **hashing**.
+
+</CPPSection>
+
+<JavaSection>
+
+Java contains two versions of sets and maps; one using **sorting** and the other
+using **hashing**.
+
+</JavaSection>
+
+<PySection>
+
+Python has built-in sets and maps, however they do _not_ store elements in
+sorted order.
+
+</PySection>
+
+</LanguageSection>
+
+## Sets
+
+<FocusProblem problem="dis" />
+
+A **set** is a collection of elements that contains no duplicates.
+
+<LanguageSection>
+
+<CPPSection>
+
+### Unordered Sets
+
+In _unordered_ sets, elements are stored in an arbitrary order through hashing.
+Insertions, deletions, and searches are all $\mathcal{O}(1)$ (with a high
+constant factor). Unordered sets are implemented by
+[`std:unordered_set`](https://www.cplusplus.com/reference/unordered_set/unordered_set/)
+in the `<unordered_set>` header.
+
+Some operations on an `std::unordered_set` named `s` include:
+
+- `s.insert(x)`, which adds the element `x` to `s` if not already present.
+- `s.erase(x)`, which removes the element `x` from `s` if present.
+- `s.count(x)`, which returns `1` if `s` contains `x` and `0` if it doesn't.
+
+Unordered sets work with primitive types, but require a
+[custom hash function](/gold/unordered-map#custom-hashing)
+for structures/classes like vectors and pairs.
+
+```cpp
+unordered_set<int> s;
+s.insert(1);  // {1}
+s.insert(4);  // {1, 4}
+s.insert(2);  // {1, 4, 2}
+s.insert(1);  // does nothing because 1's already in the set
+cout << s.count(1) << endl;  // 1
+s.erase(1);  // {2, 4}
+cout << s.count(5) << endl;  // 0
+s.erase(0);  // does nothing because 0 wasn't in the set
+```
+
+### Sorted Sets
+
+In _sorted_ sets, the elements are sorted in order of element. Insertions,
+deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number
+of elements in the set. Sorted sets are implemented by
+[`std:set`](https://www.cplusplus.com/reference/set/set/) in the `<set>` header.
+
+`std::set` includes all the essential operations that `std::unordered_set` has
+(including insertion, deletion, searches, etc.), but also some additional ones.
+Refer to the
+[More Operations on Sorted Sets](/silver/intro-sorted-sets)
+module for more detail.
+
+You can iterate through a set in sorted order using a for-each loop.
+
+```cpp
+set<int> s;
+s.insert(1);  // [1]
+s.insert(4);  // [1, 4]
+s.insert(2);  // [1, 2, 4]
+
+// Outputs 1, 2, and 4 on separate lines
+for (int element : s) {
+	cout << element << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Unordered Sets
+
+In _unordered_ sets, elements are stored in an arbitrary order. Insertions,
+deletions, and searches are all $\mathcal{O}(1)$ (with a high constant factor).
+Unordered sets are implemented in Java by the
+[`HashSet`](https://docs.oracle.com/javase/7/docs/api/java/util/HashSet.html)
+class (which comes from the `java.util` library).
+
+Some operations on a `HashSet` named `set` include:
+
+- `set.add(x)`, which adds the element `x` to `set` if not already present.
+- `set.remove(x)`, which removes the element `x` from `set` if present.
+- `set.contains(x)`, which checks whether `set` contains the element `x`.
+
+Unordered sets work with primitive types and their object wrappers, but require
+a [custom hash function](/gold/unordered-map#custom-hashing)
+for custom classes.
+
+```java
+Set<Integer> set = new HashSet<>();
+set.add(1);  // {1}
+set.add(4);  // {1, 4}
+set.add(2);  // {1, 4, 2}
+set.add(1);  // {1, 4, 2}
+// the add method did nothing because 1 was already in the set
+System.out.println(set.contains(1));  // true
+set.remove(1);  // {4, 2}
+System.out.println(set.contains(5));  // false
+set.remove(0);  // does nothing because 0 wasn't in the set
+```
+
+### Sorted Sets
+
+In _sorted_ sets, the elements are stored in order. Insertions, deletions, and
+searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements in
+the set. Sorted sets are implemented in Java by the `TreeSet` class.
+
+`TreeSet` includes all the operations that `HashSet` has, but also includes some
+additional ones. Refer to the
+[More Operations on Sorted Sets](/silver/intro-sorted-sets)
+module for more detail.
+
+You can iterate through a `TreeSet` in sorted order using a for-each loop.
+
+```java
+Set<Integer> set = new TreeSet<>();
+set.add(1);  // {1}
+set.add(4);  // {1, 4}
+set.add(2);  // {1, 2, 4}
+
+// Outputs 1, 2, and 4 on separate lines
+for (int element : set) {
+	System.out.println(element);
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+Python's built-in `set` uses hashing to support $\mathcal{O}(1)$ insertion,
+deletion, and searches. Some operations on a Python `set` named `s` include:
+
+- `s.add(x)`: adds element `x` to `s` if not already present
+- `s.remove(x)`: removes an element `x` from `set` if present
+- `x in s`: checks whether `s` contains the element `x`
+
+```py
+s = set()
+s.add(1) # {1}
+s.add(4) # {1, 4}
+s.add(2) # {1, 4, 2}
+s.add(1) # {1, 4, 2}
+# the add method did nothing because 1 was already in the set
+print(1 in s) # True
+s.remove(1) # {4, 2}
+print(5 in s) # False
+s.remove(0) # {4, 2}
+# if the element to be removed does not exist, nothing happens
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Solution - Distinct Numbers
+
+This problem asks us to calculate the number of distinct values in a given list.
+
+#### Method 1 - Set
+
+This is probably the easier of the two methods, but requires knowledge of sets.
+Because sets only store one copy of each value, we can insert all the numbers
+into a set, and then print out the size of the set.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	set<int> distinctNumbers;
+	for (int i = 0; i < n; i++) {
+		int number; cin >> number;
+		distinctNumbers.insert(number);
+	}
+
+	cout << distinctNumbers.size() << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+// Source: Daniel
+
+import java.io.*;
+import java.util.*;
+
+public class DistinctNumbers {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		Set<Integer> set = new HashSet<>();
+		for (int i = 0; i < n; i++) {
+			set.add(io.nextInt());
+		}
+		io.println(set.size());
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n = int(input())  # unused
+nums = [int(x) for x in input().split()]
+distinct_nums = set(nums)
+print(len(distinct_nums))
+```
+
+We can do this more efficiently by skipping the creation of the list, and use a
+set comprehension directly:
+
+```py
+n = int(input())  # unused
+distinct_nums = {int(x) for x in input().split()}
+print(len(distinct_nums))
+```
+
+</PySection>
+
+</LanguageSection>
+
+#### Method 2 - Sorting
+
+Check out the [solution](/solutions/cses-1621) involving sorting.
+
+## Maps
+
+<FocusProblem problem="ex" />
+
+A **map** is a set of entries, each consisting of a **key** and a **value**. In
+a map, all keys are required to be unique, but values can be repeated. Maps have
+three primary methods:
+
+- one to add a specified key-value pairing
+- one to retrieve the value for a given key
+- one to remove a key-value pairing from the map
+
+<LanguageSection>
+
+<CPPSection>
+
+In _sorted_ maps, the pairs are sorted in order of key. Insertions, deletions,
+and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of pairs in
+the map. In _unordered_ maps, the pairs aren't kept in sorted order and all
+insertions, deletions, and searches are all $\mathcal{O}(1)$. Sorted maps are
+implemented with `std::map` and unordered maps are implemented with
+`std::unordered_map`.
+
+Some operations on an `std::map` and `std::unordered_map` named `m` include:
+
+- `m[key]`, which returns a reference to the value associated with the key
+  `key`.
+  - If `key` is not present in the map, then the value associated with `key` is
+    constructed using the default constructor of the value type. For example, if
+    the value type is `int`, then calling `m[key]` for a key not within the map
+    sets the value associated with that key to `0`. As another example, if the
+    value type is `std::string`, then calling `m[key]` for a key not within the
+    map sets the value associated with that key to the empty string. More
+    discussion regarding what happens in this case can be found
+    [here](https://stackoverflow.com/questions/10124679/what-happens-if-i-read-a-maps-value-where-the-key-does-not-exist).
+  - Alternatively, `m.at(key)` behaves the same as `m[key]` if `key` is
+    contained within `m` but throws an exception otherwise.
+  - `m[key] = value` will assign the value `value` to the key `key`.
+- `m.count(key)`, which returns the number of times the key is in the map
+  (either one or zero), and therefore checks whether a key exists in the map.
+- `m.erase(key)`, which removes the map entry associated with the specified key
+  if the key was present in the map.
+
+```cpp
+map<int, int> m;
+m[1] = 5;  // [(1, 5)]
+m[3] = 14;  // [(1, 5); (3, 14)]
+m[2] = 7;  // [(1, 5); (2, 7); (3, 14)]
+m[0] = -1;  // [(0, -1); (1, 5); (2, 7); (3, 14)]
+m.erase(2);  // [(0, -1); (1, 5); (3, 14)]
+cout << m[1] << endl;  // 5
+cout << m.count(7) << endl;  // 0
+cout << m.count(1) << endl;  // 1
+cout << m[2] << endl;  // 0
+```
+
+</CPPSection>
+
+<JavaSection>
+
+In _sorted_ maps, the pairs are sorted in order of key. Insertions, deletions,
+and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of pairs in
+the map.
+
+In _unordered_ maps, the pairs aren't kept in sorted order and all insertions,
+deletions, and searches are all $\mathcal{O}(1)$. Sorted maps are implemented
+with `TreeMap` and unordered maps are implemented with `HashMap`.
+
+In both `TreeMap` and `HashMap`, the `put(key, value)` method assigns a value to
+a key and places the key and value pair into the map. The `get(key)` method
+returns the value associated with the key. The `containsKey(key)` method checks
+whether a key exists in the map. Lastly, `remove(key)` removes the map entry
+associated with the specified key.
+
+```java
+Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
+map.put(1, 5);  // [(1, 5)]
+map.put(3, 14);  // [(1, 5); (3, 14)]
+map.put(2, 7);  // [(1, 5); (2, 7); (3, 14)]
+map.remove(2);  // [(1, 5); (3, 14)]
+System.out.println(map.get(1));  // 5
+System.out.println(map.containsKey(7));  // false
+System.out.println(map.containsKey(1));  // true
+```
+
+</JavaSection>
+
+<PySection>
+
+Colloquially, maps are referred to as **dicts** in python. They act as hash
+maps, so they have $\mathcal{O}(1)$ insertion, deletion, and searches.
+
+```py
+d = {}
+d[1] = 5  # {1: 5}
+d[3] = 14  # {1: 5, 3: 14}
+d[2] = 7  # {1: 5, 2: 7, 3: 14}
+del d[2]  # {1: 5, 3: 14}
+print(d[1])  # 5
+print(7 in d)  # False
+print(1 in d)  # True
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Iterating Over Maps
+
+<LanguageSection>
+
+<CPPSection>
+
+An `std::map` stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the
+form `{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
+keyword suffices to iterate over any type of pair (here, `auto` substitutes for
+`pair<const int, int>`).
+
+```cpp
+for (const auto& x : m) {
+	cout << x.first << " " << x.second << endl;
+}
+for (auto x : m) {
+	cout << x.first << " " << x.second << endl;
+}
+
+/* both output the following:
+0 -1
+1 5
+3 14
+*/
+```
+
+The first method (iterating over const references) is generally preferred over
+the second because the second will make a copy of each element that it iterates
+over. Additionally, you can pass by reference when iterating over a map,
+allowing you to modify the values (but not the keys) of the pairs stored in the
+map:
+
+```cpp
+for (auto& x : m) {
+	x.second = 3;
+}
+for (pair<int,int> x : m) {
+	cout << x.first << " " << x.second << endl;
+}
+
+/*
+0 3
+1 3
+3 3
+*/
+```
+
+</CPPSection>
+
+<JavaSection>
+
+To iterate over maps, you can use a for-each loop over the keys:
+
+```java
+for (int k : m.keySet()) {
+	System.out.println(k + " " + m.get(k));
+}
+```
+
+You can also use a for-each loop over the entries:
+
+```java
+for (Map.Entry entry : m.entrySet()) {
+	System.out.println(entry.getKey() + " " + entry.getValue());
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+To iterate over `dict`s, there are three options. Dicts will be returned in the
+same order of insertion in
+[Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+You can iterate over the keys:
+
+```py
+for key in d:
+	print(key)
+```
+
+You can iterate over the values:
+
+```py
+for value in d.values():
+	print(value)
+```
+
+You can iterate over the key-value pairs:
+
+```py
+for key, value in d.items():
+	print(key, value)
+```
+
+</PySection>
+
+</LanguageSection>
+
+While you are free to change the _values_ in a map when iterating over it (as
+demonstrated above), it is generally a bad idea to insert or remove elements of
+a map while iterating over it.
+
+<LanguageSection>
+<PySection>
+
+For example, the following code attempts to remove every entry from a map, but
+results in a runtime error.
+
+```py
+d = {i: i for i in range(10)}
+
+for i in d:
+	del d[i]
+```
+
+```
+Traceback (most recent call last):
+  File "test.py", line 3, in <module>
+    for i in d:
+RuntimeError: dictionary changed size during iteration
+```
+
+One way is to get around this is to create a new map.
+
+```py
+d = {i: i for i in range(10)}
+
+# only includes every third element
+d_new = dict(item for i, item in enumerate(d.items()) if i % 3 == 0)
+
+print("new dict:", d_new)  # new dict: {0: 0, 3: 3, 6: 6, 9: 9}
+```
+
+Another is to maintain a list of all the keys you want to remove and remove them
+after the iteration finishes:
+
+```py
+d = {i: i for i in range(10)}
+
+# removes every third element
+to_remove = {key for i, key in enumerate(d) if i % 3 == 0}
+
+for key in to_remove:
+	del d[key]
+
+print("new dict:", d)  # new dict: {1: 1, 2: 2, 4: 4, 5: 5, 7: 7, 8: 8}
+```
+
+</PySection>
+<CPPSection>
+
+For example, the following code attempts to remove every entry from a map, but
+results in a segmentation fault.
+
+```cpp
+map<int, int> m;
+
+for (int i = 0; i < 10; ++i)
+	m[i] = i;
+
+for (auto &it : m) {
+	cout << "Current Key: " << it.first << endl;
+
+	m.erase(it.first);
+}
+```
+
+The reason is due to "iterators, pointers and references referring to elements
+removed by the function [being] invalidated" (as stated in the documentation for
+[`erase`](http://www.cplusplus.com/reference/map/map/erase/)), though iterators
+are beyond the scope of this module.
+
+One way to get around this is to just create a new map instead of removing from
+the old one.
+
+```cpp
+map<int, int> m, M;
+
+for (int i = 0; i < 10; ++i)
+	m[i] = i;
+
+int current_iteration = 0;
+
+for (const auto &it : m) {
+	// only includes every third element
+	if (current_iteration % 3 == 0) {
+		M[it.first] = it.second;
+	}
+
+	current_iteration++;
+}
+
+swap(m, M);
+
+cout << "Entries:" << endl;
+for (const auto &it : m) {
+	cout << it.first << " " << it.second << endl;
+}
+/*
+ * Entries:
+ * 0 0
+ * 3 3
+ * 6 6
+ * 9 9
+ */
+```
+
+Another is to maintain a list of all the keys you want to erase and erase them
+after the iteration finishes.
+
+```cpp
+map<int, int> m;
+for (int i = 0; i < 10; ++i) {
+	m[i] = i;
+}
+
+vector<int> to_erase;
+int current_iteration = 0;
+
+for (const auto &it : m) {
+	// removes every third element
+	if (current_iteration % 3 == 0) {
+		to_erase.push_back(it.first);
+	}
+
+	current_iteration++;
+}
+
+for (int key : to_erase) {
+	m.erase(key);
+}
+
+cout << "Remaining entries:" << endl;
+for (const auto &it : m) {
+	cout << it.first << " " << it.second << endl;
+}
+
+/*
+ * Remaining entries:
+ * 1 1
+ * 2 2
+ * 4 4
+ * 5 5
+ * 7 7
+ * 8 8
+ */
+```
+
+</CPPSection>
+
+<JavaSection>
+
+Modifying a Collection (`Set`, `Map`, etc.) in the middle of a for-each loop
+will cause a
+[ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html).
+See the following snippet for an example:
+
+```java
+Map<Integer, Integer> m = new TreeMap<>();
+// m starts as {0: 0, 1: 1, 2: 2}
+m.put(0, 0); m.put(1, 1); m.put(2, 2);
+
+for (int key : m.keySet()) {
+	m.remove(key);  // ConcurrentModificationException thrown!!
+}
+```
+
+One work-around is to use `Iterator` and the `.remove()` method to remove
+elements while looping over them, like in the next code snippet:
+
+```java
+Map<Integer, Integer> m = new TreeMap<>();
+// m starts as {0: 0, 1: 1, 2: 2}
+m.put(0, 0); m.put(1, 1); m.put(2, 2);
+
+Iterator<Map.Entry<Integer, Integer>> iter = m.entrySet().iterator();
+while (iter.hasNext()) {
+	int key = iter.next().getKey();
+	if (key == 0 || key == 2) {
+		iter.remove();
+	}
+}
+
+// m ends as {1: 1}
+System.out.println("Remaining Entries:");
+for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
+	System.out.println(entry.getKey() + " " + entry.getValue());
+}
+```
+
+However, `Iterator` is outside the scope of this module.
+
+The easiest option (in most cases) if you want to remove/insert mutiple entries
+at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That
+means that you should put all the elements you want to remove (or add) in a new
+Collection, and then use that new Collection as the parameter of the
+`.addAll(c)` or `.removeAll(c)` method that you call on your original
+Collection. See the following code snippet for an example (it works equivalently
+to the code above):
+
+```java
+Map<Integer, Integer> m = new TreeMap<>();
+// m starts as {0: 0, 1: 1, 2: 2}
+m.put(0, 0); m.put(1, 1); m.put(2, 2);
+
+Set<Integer> keysToRemove = new TreeSet<>();
+for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
+	int key = entry.getKey();
+	if (key == 0 || key == 2) {
+		keysToRemove.add(key);
+	}
+}
+
+// removes all entries with key in keysToRemove
+m.keySet().removeAll(keysToRemove);
+
+// m ends as {1: 1}
+System.out.println("Remaining Entries:");
+for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
+	System.out.println(entry.getKey() + " " + entry.getValue());
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Problems
+
+Some of these problems can be solved by sorting alone, though sets or maps could
+make their implementation easier.
+
+<Problems problems="standard" />
+
+## Check Your Understanding
+
+<LanguageSection>
+<CPPSection>
+
+<Quiz>
+  <Quiz.Question>
+    What is the time complexity of insertions, deletions, and searches in a sorted set of size $N$?
+    <Quiz.Answer>
+      $\mathcal{O}(1)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N)$
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log N)$
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```cpp
+    set<int> s;
+    s.insert(1);
+    s.insert(4);
+    s.insert(5);
+    s.insert(2);
+    cout << s.count(3) << endl;
+    ```
+    <Quiz.Answer>
+      $1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $0$
+      <Quiz.Explanation>
+        Correct. $3$ isn't present in `s`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $-1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $-3$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```cpp
+    set<int> s{4, 1, 2, 1, 3, 2, 3, 1, 3, 1};
+    cout << s.size() << endl;
+    ```
+    <Quiz.Answer>
+      $1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $4$
+      <Quiz.Explanation>
+        Correct. There are $4$ unique elements in `s`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $7$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $10$
+      <Quiz.Explanation>
+    Sets only store unique elements.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    What is the time complexity of insertions, deletions, and searches in an unordered map of size $N$?
+    <Quiz.Answer correct>
+      $\mathcal{O}(1)$
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(\log N)$
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```cpp
+    map<int, int> m{{1, 5}, {2, 9}, {3, 7}, {4, 3}};
+    cout << m[2] << endl;
+    ```
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $9$
+      <Quiz.Explanation>
+        Correct. The value associated with the key $2$ is $9$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $2$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $0$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```cpp
+    map<int, int> m;
+    m[1] = 5;
+    m[2] = 9;
+    m[3] = 7;
+    m[4] = 3;
+    m.erase(2);
+    cout << m[2] << endl;
+    ```
+    <Quiz.Answer correct>
+      $0$
+      <Quiz.Explanation>
+        Correct. `m` is $0$ after the key $2$ is erased.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $9$
+      <Quiz.Explanation>
+  $m[2]$ is erased, so $m[2]$ is no longer $9$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $2$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```cpp
+    map<int, int> m;
+    m[0] = 1;
+    m[2] = 5;
+    m[3] = 18;
+    m[2] = 3;
+    m[4] = 14;
+    cout << m[2] << endl;
+    ```
+    <Quiz.Answer>
+      $1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $3$
+      <Quiz.Explanation>
+        Correct. `m[2]` is changed from $5$ to $3$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+        Note that while `m[2]` is set to $5$ at first, it is changed later on.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $-1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+</Quiz>
+</CPPSection>
+
+<JavaSection>
+<Quiz>
+  <Quiz.Question>
+    What is the time complexity of insertions, deletions, and searches in a sorted set of size $N$?
+    <Quiz.Answer>
+      $\mathcal{O}(1)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N)$
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log N)$
+      <Quiz.Explanation>
+    Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+  ```java
+  Set<Integer> s = new TreeSet<>();
+  s.insert(1);
+  s.insert(4);
+  s.insert(5);
+  s.insert(2);
+  System.out.println(s.contains(3));
+  ```
+    <Quiz.Answer>
+      `true`
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      `false`
+      <Quiz.Explanation>
+        Correct. $3$ isn't present in `s`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      `null`
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Error: `NullPointerException`
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+  ```java
+  Set<Integer> s = new TreeSet<>(Arrays.asList(4, 1, 2, 1, 3, 2, 3, 1, 3, 1));
+  System.out.println(s.size());
+  ```
+    <Quiz.Answer>
+      $1$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $4$
+      <Quiz.Explanation>
+        Correct. There are $4$ unique elements in `s`.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $7$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $10$
+      <Quiz.Explanation>
+    Sets only store unique elements.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    What is the time complexity of insertions, deletions, and searches in an unordered map of size $N$?
+    <Quiz.Answer correct>
+      $\mathcal{O}(1)$
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(\log N)$
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```java
+    Map<Integer, Integer> m = new TreeMap<>();
+    m.put(1, 5);
+    m.put(2, 9);
+    m.put(3, 7);
+    m.put(4, 3);
+    System.out.println(m.get(2));
+    ```
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $9$
+      <Quiz.Explanation>
+        Correct. The value associated with the key $2$ is $9$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $2$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $0$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+    ```java
+    Map<Integer, Integer> m = new TreeMap<>();
+    m.put(1, 5);
+    m.put(2, 9);
+    m.put(3, 7);
+    m.put(4, 3);
+    m.remove(2);
+    System.out.println(m.get(2));
+    ```
+    <Quiz.Answer correct>
+      `null`
+      <Quiz.Explanation>
+        Correct. Key $2$ has been erased.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $9$
+      <Quiz.Explanation>
+  $m[2]$ is erased, so $m[2]$ is no longer $9$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $5$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $0$
+      <Quiz.Explanation>
+
+      </Quiz.Explanation>
+    </Quiz.Answer>
+
+  </Quiz.Question>
+  <Quiz.Question>
+    Which of the following is the correct output of this code?
+  ```java
+  Map<Integer, Integer> m = new TreeMap<>();
+  m.put(0, 1);
+  m.put(2, 5);
+  m.put(3, 18);
+  m.put(2, 3);
+  m.put(4, 14);
+  System.out.println(m.get(2));
+  ```
+  <Quiz.Answer>
+    $1$
+    <Quiz.Explanation>
+
+    </Quiz.Explanation>
+  </Quiz.Answer>
+  <Quiz.Answer correct>
+    $3$
+    <Quiz.Explanation>
+      Correct. The value assosiated with key $2$ is changed from $5$ to $3$.
+    </Quiz.Explanation>
+  </Quiz.Answer>
+  <Quiz.Answer>
+    $5$
+    <Quiz.Explanation>
+      Note that while the value for key $2$ is set to $5$ at first, it is changed later on.
+    </Quiz.Explanation>
+  </Quiz.Answer>
+  <Quiz.Answer>
+    An error is thrown.
+    <Quiz.Explanation>
+
+    </Quiz.Explanation>
+  </Quiz.Answer>
+
+</Quiz.Question>
+
+</Quiz>
+</JavaSection>
+</LanguageSection>

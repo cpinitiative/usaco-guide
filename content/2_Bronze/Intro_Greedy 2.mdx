@@ -1,0 +1,244 @@
+---
+id: intro-greedy
+title: Introduction to Greedy Algorithms
+author: Darren Yao, Benjamin Qi
+contributors: Ryan Chou
+description:
+  'Selecting the choice that seems to be the best at the moment at every step of
+  your algorithm.'
+frequency: 2
+prerequisites:
+  - ad-hoc
+  - intro-ds
+---
+
+## Greedy Algorithms
+
+Some USACO Bronze problems that appear to be ad hoc can actually be solved using
+**greedy** algorithms. This idea will be covered in a future
+[module](/silver/greedy-sorting), but we'll introduce the general mindset in
+this section.
+
+<Resources>
+	<Resource source="CPH" title="6.1 - Coin Problem" starred>
+		other examples are outside scope of bronze
+	</Resource>
+</Resources>
+
+<Warning>
+
+True **"greedy"** problems start to show up in silver, though the greedy mindset
+can be very helpful for bronze problems.
+
+</Warning>
+
+From the above:
+
+> A **greedy** algorithm constructs a solution to the problem by always making a
+> choice that looks the best at the moment. A greedy algorithm never takes back
+> its choices, but directly constructs the final solution. For this reason,
+> greedy algorithms are usually very efficient.
+
+**Greedy** does not refer to a single algorithm, but rather a way of thinking
+that is applied to problems; there's no one way to do greedy algorithms. Hence,
+we use a selection of well-known examples to help you understand the greedy
+paradigm.
+
+### Example - Mad Scientist
+
+<FocusProblem problem="tutorial" />
+
+Try to come up with a greedy algorithm for problem above.
+
+<Spoiler title="Correct Greedy Algorithm">
+
+In this problem, the correct greedy solution is to continually flip the longest
+possible ranges of mismatching cows.
+
+Mad Scientist has an excellent
+[editorial](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html)
+with a video solution and intuitive proof.
+
+It is highly recommended you read it to gain a better understanding of the
+greedy algorithm.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+<LanguageSection>
+
+<CPPSection>
+
+From the
+[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+using ll = long long;
+
+int main() {
+	freopen("breedflip.in", "r", stdin);
+	freopen("breedflip.out", "w", stdout);
+	ll n;
+	cin >> n;
+	string A;
+	string B;
+	cin >> A >> B;
+	ll ans = 0;
+	bool mismatched = false;
+	for(ll i=0; i<n; i++) {
+		if(A[i] != B[i]) {
+			if(!mismatched) {
+				mismatched = true;
+				ans++;
+			}
+		} else {
+			mismatched = false;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+From the
+[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html)
+(with Kattio added):
+
+```java
+import java.io.*;
+import java.util.*;
+public class Solution {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("breedflip");
+		int n = io.nextInt();
+		char[] a = io.next().toCharArray();
+		char[] b = io.next().toCharArray();
+		int ret = 0;
+		while (!new String(a).equals(new String(b))) {
+			ret++;
+			int lhs = 0;
+			while (a[lhs] == b[lhs]) lhs++;
+			int rhs = n-1;
+			while (a[rhs] == b[rhs]) rhs--;
+			for (int i = lhs; i <= rhs; i++) {
+				if (a[i] == 'G') a[i] = 'H';
+				else a[i] = 'G';
+			}
+		}
+		io.println(ret);
+		io.close();
+	}
+
+	CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+import sys
+sys.stdin = open("breedflip.in","r")
+sys.stdout = open("breedflip.out","w")
+
+N,a,b = input(),input(),input()
+s = [False]+[x != y for x,y in zip(a,b)] # difference list
+# now count occurrences of [False,True], as the first C++ solution does
+print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:])))
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+Note that not all greedy problems necessarily require mathematical proofs of
+correctness. It is often sufficent to intuitively convince yourself your
+algorithm is correct.
+
+<Info title="Pro Tip">
+
+Sometimes, if the algorithm is easy enough to implement, you don't even need to
+convince yourself it's correct; just code it and see if it passes. Competitive
+programmers refer to this as "Proof by AC," or "Proof by Accepted."
+
+<!-- Don't overuse it though? -->
+
+</Info>
+
+## Problems
+
+<Problems problems="general" />
+
+<!-- Anything else major that needs to be added? Bronze Ad Hoc is not very complicated. -->
+
+## Quiz
+	
+<Quiz>
+  <Quiz.Question>
+    What is a greedy algorithm?
+    <Quiz.Answer>
+      An algorithm which backtracks in order to find the most optimal solution.
+      <Quiz.Explanation>
+        Incorrect. Although greedy algorithms can use backtracking, this is not true for all of them.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      An algorithm which makes the locally optimal choice at each stage.
+      <Quiz.Explanation>
+        Correct. This allows a greedy algorithm to be very efficient and often easier to code.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      An algorithm which tries every possible combination in order to find the most optimal outcome.
+      <Quiz.Explanation>
+        Incorrect. This is known as [complete search](/bronze/intro-complete) or [brute force](/bronze/intro-complete).
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Why would a greedy algorithm be preferred over a complete search algorithm when faced with a large input size? 
+    <Quiz.Answer correct>
+      Since greedy algorithms directly construct an answer, greedy algorithms are generally more efficient.
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Since finding an optimal choice is often easier than doing casework for all pairs, greedy algorithms are easier to implement.
+      <Quiz.Explanation>
+        Incorrect. This varies for every problem.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Greedy algorithms are much easier to debug.
+      <Quiz.Explanation>
+        Incorrect. This varies for every problem.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Why should you learn how to greedily think about problems?
+    <Quiz.Answer correct>
+      It provides a new outlook on a problem, and could help you solve a problem much faster!
+      <Quiz.Explanation>
+        Correct. All of these are viable answers.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      It can be a substitute for some algorithms.
+      <Quiz.Explanation>
+        Correct. All of these are viable answers.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>

@@ -1,0 +1,100 @@
+---
+id: offline-del
+title: 'Offline Deletion'
+author: Benjamin Qi, Siyong Huang
+prerequisites:
+  - dsu
+description: 'Erasing from non-amortized insert-only data structures.'
+frequency: 0
+---
+
+## Offline Deleting from a Data Structure
+
+Using a persistent data structure or rollbacking, you are able to simulate
+deleting from a data structure while only using insertion operations.
+
+<Resources>
+	<Resource
+		source="CP-Algorithms"
+		title="Deleting from a data structure in O(T(n) log n)"
+		url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html"
+		starred
+	>
+		includes code (but no explanation) for dynamic connectivity
+	</Resource>
+</Resources>
+
+## Dynamic Connectivity
+
+<Resources>
+	<Resource source="GCP" title="15.5.4 - Dynamic Connectivity"/>
+</Resources>
+
+**Dynamic Connectivity** is the most common problem using the deleting trick.
+The problem is to determine whether pairs of nodes are in the same connected
+component while edges are being inserted and removed.
+
+<Problems problems="sam" />
+
+### DSU With Rollback
+
+**DSU with rollback** is a subproblem required to solve the above task.
+
+<Problems problems="rollback" />
+
+<IncompleteSection>
+  
+explanation? check Guide to CP?
+
+</IncompleteSection>
+
+<Warning title="Watch Out!">
+
+Because path compression is amortized, it does not guarauntee
+$\mathcal{O}(N \log^2 N)$ runtime. You _must_ use merging by rank.
+
+</Warning>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+<!-- verified at https://codeforces.com/contest/1217/submission/62335472 -->
+
+```cpp
+int p[MN], r[MN];
+int *t[MN*40], v[MN*40], X;
+int setv(int *a, int b)
+{
+	if(*a != b) t[X] = a, v[X] = *a, *a = b, ++X;
+	return b;
+}
+void rollback(int x) {for(;X>x;) --X, *t[X] = v[X];}
+int find(int n) {return p[n] ? find(p[n]) : n;}
+bool merge(int a, int b)
+{
+	a = find(a), b = find(b);
+	if(a==b) return 0;
+	if(r[b]>r[a]) std::swap(a,b);
+	if(r[a]==r[b]) setv(r+a, r[a]+1);
+	return setv(p+b, a), 1;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+
+<Problems problems="res" />
+
+<!-- ## Dynamic Insertion
+
+mention sqrt
+
+(online Aho-Corasick)
+
+<Problems problems={"ins"} /> -->

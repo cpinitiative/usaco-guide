@@ -1,0 +1,1334 @@
+---
+id: binary-search
+redirects:
+  - /silver/binary-search-sorted
+  - /silver/binary-search-ans
+title: 'Binary Search'
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang, Dustin Miao
+prerequisites:
+  - greedy-sorting
+description:
+  'Binary searching on arbitrary monotonic functions and built-in functions for
+  binary search.'
+frequency: 3
+---
+
+<!-- process numbers from left to right, keep track of the last element of each block and use binary search of lower_bound to find which block the current numbers belongs -->
+
+## Introduction
+
+<Resources>
+	<Resource source="CSA" title="Binary Search" url="binary_search" starred>
+		animation, code, lower_bound + upper_bound
+	</Resource>
+	<Resource source="CPH" title="3.3 - Binary Search" starred>
+		code, lower_bound + upper_bound, some applications
+	</Resource>
+	<Resource
+		source="CF EDU"
+		title="Binary Search - Steps 1, 2"
+		url="https://codeforces.com/edu/course/2/lesson/6/1/practice"
+		starred
+	>
+		videos, problems similar to those covered in this module
+	</Resource>
+	<Resource
+		source="KA@KhanAcademy"
+		title="Binary Search"
+		url="https://www.khanacademy.org/computing/computer-science/algorithms/binary-search/a/binary-search"
+	>
+		plenty of diagrams, javascript implementation
+	</Resource>
+	<Resource source="IUSACO" title="12 - Binary Search">
+		module is based off this
+	</Resource>
+	<Resource source="TC" title="Binary Search" url="binary-search">
+		similar material
+	</Resource>
+	<Resource
+		source="LC"
+		title="Python Ultimate Binary Search Template"
+		url="https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems"
+	>
+		many problems & applications
+	</Resource>
+</Resources>
+
+<Youtube id="GU7DpgHINWQ" />
+
+When we binary search on an answer, we start with a search space of size $N$
+which we know the answer lies in. Then each iteration of the binary search cuts
+the search space in half, so the algorithm tests $\mathcal{O}(\log N)$ values.
+This is efficient and much better than testing each possible value in the search
+space.
+
+## Binary Searching on Monotonic Functions
+
+Let's say we have a boolean function `f(x)`. Usually, in such problems, we want
+to find the maximum or minimum value of $x$ such that `f(x)` is true. Similarly
+to how binary search on an array only works on a sorted array, binary search on
+the answer only works if the answer function is
+[monotonic](https://en.wikipedia.org/wiki/Monotonic_function), meaning that it
+is always non-decreasing or always non-increasing.
+
+### Finding The Maximum `x` Such That `f(x) = true`
+
+We want to construct a function `lastTrue` such that `lastTrue(lo, hi, f)`
+returns the last `x` in the range `[lo,hi]` such that `f(x) = true`. If no such
+`x` exists, then `lastTrue` should return `lo-1`.
+
+This can be done with binary search if `f(x)` satisfies both of the following
+conditions:
+
+- If `f(x) = true`, then `f(y) = true` for all $y \leq x$.
+- If `f(x) = false`, then `f(y) = false` for all $y \geq x$.
+
+For example, if `f(x)` is given by the following function:
+
+```
+f(1) = true
+f(2) = true
+f(3) = true
+f(4) = true
+f(5) = true
+f(6) = false
+f(7) = false
+f(8) = false
+```
+
+then `lastTrue(1, 8, f) = 5` and `lastTrue(7, 8, f) = 6`.
+
+#### Implementation 1
+
+Verify that this implementation doesn't call `f` on any values outside of the
+range `[lo, hi]`.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int last_true(int lo, int hi, function<bool(int)> f) {
+	// if none of the values in the range work, return lo - 1
+	lo--;
+	while (lo < hi) {
+		// find the middle of the current range (rounding up)
+		int mid = lo + (hi - lo + 1) / 2;
+		if (f(mid)) {
+			// if mid works, then all numbers smaller than mid also work
+			lo = mid;
+		} else {
+			// if mid does not work, greater values would not work either
+			hi = mid - 1;
+		}
+	}
+	return lo;
+}
+
+int main() {
+	// all numbers satisfy the condition (outputs 10)
+	cout << last_true(2, 10, [](int x) { return true; }) << endl;
+	
+	// outputs 5
+	cout << last_true(2, 10, [](int x) { return x * x <= 30; }) << endl;
+
+	// no numbers satisfy the condition (outputs 1)
+	cout << last_true(2, 10, [](int x) { return false; }) << endl;
+}
+```
+
+See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
+used in the main function.
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.function.Predicate;
+
+public class BinarySearch {
+	public static void main(String[] args) {
+		// all numbers satisfy the condition (outputs 10)
+		System.out.println(lastTrue(2, 10, (x) -> true));
+		
+		// outputs 5
+		System.out.println(lastTrue(2, 10, (x) -> x * x <= 30));
+		
+		// no numbers satisfy the condition (outputs 1)
+		System.out.println(lastTrue(2, 10, (x) -> false));
+	}
+
+	public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+		// if none of the values in the range work, return lo - 1
+		lo--;
+		while (lo < hi) {
+			// find the middle of the current range (rounding up)
+			int mid = lo + (hi - lo + 1) / 2;
+			if (f.test(mid)) {
+				// if mid works, then all numbers smaller than mid also work
+				lo = mid;
+			} else {
+				// if mid doesn't work, greater values would not work either
+				hi = mid - 1;
+			}
+		}
+		return lo;
+	}
+}
+```
+
+See the
+[Java Predicate Interface](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html)
+if you're not familiar with the `Predicate` interface used.
+
+</JavaSection>
+<PySection>
+
+```python
+from typing import Callable
+
+
+def last_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
+	"""
+	Binary Search
+	:param lo: lower bound
+	:param hi: upper bound
+	:param f: a function that returns whether a number is valid or not
+	:return: the maximum x such that f(x) is true
+	"""
+	# if none of the values in the range work, return lo - 1
+	lo -= 1
+	while lo < hi:
+		# find the middle of the current range (rounding up)
+		mid = lo + (hi - lo + 1) // 2
+		if f(mid):
+			# if mid works, then all numbers smaller than mid also work
+			lo = mid
+		else:
+			# if mid does not work, greater values would not work too
+			# so we exclude them
+			hi = mid - 1
+	return lo
+
+
+# all numbers satisfy the condition (outputs 10)
+print(last_true(2, 10, lambda x: True))
+
+# outputs 5
+print(last_true(2, 10, lambda x: x * x <= 30))
+
+# no numbers satisfy the condition (outputs 1)
+print(last_true(2, 10, lambda x: False))
+```
+
+See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if
+you're not familiar with the syntax used in the program.
+
+</PySection>
+</LanguageSection>
+
+#### Implementation 2
+
+This approach is based on interval jumping. Essentially, we start from the
+beginning of the array, make jumps, and reduce the jump length as we get closer
+to the target element. We use powers of 2, very similiar to
+[Binary Jumping](/plat/bin-jump).
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int last_true(int lo, int hi, function<bool(int)> f) {
+	lo--;
+	for (int dif = hi - lo; dif > 0; dif /= 2) {
+		while (lo + dif <= hi && f(lo + dif)) {
+			lo += dif;
+		}
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+	lo--;
+	for (int dif = hi - lo; dif > 0; dif /= 2) {
+		while (lo + dif <= hi && f.test(lo + dif)) {
+			lo += dif;
+		}
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import Callable
+
+
+def last_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
+	"""
+	Binary Search
+	:param lo: lower bound
+	:param hi: upper bound
+	:param f: a function that returns whether a number is valid or not
+	:return: the maximum x such that f(x) is true
+	"""
+	lo -= 1
+	dif = hi - lo
+	while dif > 0:
+		while lo + dif <= hi and f(lo + dif):
+			lo += dif
+		dif //= 2
+	return lo
+```
+
+</PySection>
+</LanguageSection>
+
+### Finding The Minimum `x` Such That `f(x) = true`
+
+We want to construct a function `firstTrue` such that `firstTrue(lo, hi, f)`
+returns the first `x` in the range `[lo,hi]` such that `f(x) = true`. If no such
+`x` exists, then `firstTrue` should return `hi+1`.
+
+Similarly to the previous part, this can be done with binary search if `f(x)`
+satisfies both of the following conditions:
+
+- If `f(x)` is true, then `f(y)` is true for all $y \geq x$.
+- If `f(x)` is false, then `f(y)` is false for all $y \leq x$.
+
+We will need to do the same thing, but when the condition is satisfied, we will
+cut the right part, and when it's not, the left part will be cut.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int first_true(int lo, int hi, function<bool(int)> f) {
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (f(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	return lo;
+}
+
+int main() {
+	// outputs 2
+	cout << first_true(2, 10, [](int x) { return true; }) << endl;
+	// outputs 6
+	cout << first_true(2, 10, [](int x) { return x * x >= 30; }) << endl;
+	// outputs 11
+	cout << first_true(2, 10, [](int x) { return false; }) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.function.Predicate;
+
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(firstTrue(2, 10, (x) -> true));  // outputs 2
+		System.out.println(firstTrue(2, 10, (x) -> x * x >= 30));  // outputs 6
+		System.out.println(firstTrue(2, 10, (x) -> false));  // outputs 11
+	}
+
+	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+		hi++;
+		while (lo < hi) {
+			int mid = lo + (hi - lo) / 2;
+			if (f.test(mid)) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		return lo;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+from typing import Callable
+
+
+def first_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
+	hi += 1
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid + 1
+	return lo
+
+
+print(first_true(2, 10, lambda x: True))  # outputs 2
+print(first_true(2, 10, lambda x: x * x >= 30))  # outputs 6
+print(first_true(2, 10, lambda x: False))  # outputs 11
+```
+
+</PySection>
+</LanguageSection>
+
+### Example - Maximum Median
+
+<FocusProblem problem="ex" />
+
+**Statement:** Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd,
+we can perform the following operation on it $k$ times: take any element of the
+array and increase it by $1$. We want to make the median of the array as large
+as possible after $k$ operations.
+
+**Constraints:** $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is
+odd.
+
+<Spoiler title="Solution">
+To get the current median, we first sort the array in ascending order.
+
+Now, notice that to increase the current value to a value, say $x$.
+All values currently greater than or equal to the median, must remain greater than or equal to the median.
+
+For example, say we have the sorted array
+$[1,1,2,3,4,4,5,5,6,8,8]$. The current median is $4$, so to increase the median to $6$, we have to increase the current median by $2$ and we also have to increase the $5$'s to $6$.
+
+Following this idea, to increase the median to $x$, we need to increase all values in the second half of the array to some value greater than or equal to $x$.
+	
+Then, we binary search for the maximum possible median. We know that the number of operations required to raise
+the median to $x$ increases monotonically as $x$ increases, so we can use binary
+search. For a given median value $x$, the number of operations required to raise
+the median to $x$ is
+
+$$
+\sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i]).
+$$
+
+If this value is less than or equal to $k$, then $x$ can be the median, so our
+check function returns `true`. Otherwise, $x$ cannot be the median, so our check
+function returns `false`.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int last_true(int lo, int hi, function<bool(int)> f) {
+	lo--;
+	while (lo < hi) {
+		int mid = lo + (hi - lo + 1) / 2;
+		if (f(mid)) {
+			lo = mid;
+		} else {
+			hi = mid - 1;
+		}
+	}
+	return lo;
+}
+
+int main() {
+	int size;
+	int max_ops;
+	cin >> size >> max_ops;
+	vector<int> arr(size);
+	for (int& i: arr) {
+		cin >> i;
+	}
+	
+	sort(arr.begin(), arr.end());
+	// Use 2e9 instead of INT32_MAX to avoid overflow
+	cout << last_true(1, 2e9, [&](int x) {
+		// Returns true if the median can be raised to x
+		long long ops_needed = 0;
+		for (int i = (size - 1) / 2; i < size; i++) {
+			ops_needed += max(0, x - arr[i]);
+		}
+		return ops_needed <= max_ops;
+	}) << endl;
+}
+```
+
+Here we write the check function as a
+[lambda expression](/general/lambda?lang=cpp#introduction).
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MaxMed {
+	static int size;
+	static int maxOps;
+	static int[] arr;
+	public static void main(String[] args){
+		Kattio io = new Kattio();
+
+		size = io.nextInt();
+		maxOps = io.nextInt();
+		arr = new int[size];
+		for (int i = 0; i < size; i++) {
+			arr[i] = io.nextInt();
+		}
+		Arrays.sort(arr);
+
+		// Use 2e9 instead of Integer.MAX_VALUE to avoid overflow
+		io.println(lastTrue(1, (int) 2e9));
+		io.close();
+	}
+
+	public static boolean medReachable(int x) {
+		// Returns true if median can be raised to x
+		long opsNeeded = 0;
+		for (int i = (size - 1) / 2; i < size; i++)
+			opsNeeded += Math.max(0, x - arr[i]);
+		return opsNeeded <= maxOps;
+	}
+
+	public static int lastTrue(int lo, int hi) {
+		lo--;
+		while (lo < hi) {
+			int mid = lo + (hi - lo + 1) / 2;
+			if (medReachable(mid)) {
+				lo = mid;
+			}
+			else {
+				hi = mid - 1;
+			}
+		}
+		return lo;
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+from typing import Callable
+
+
+def med_reachable(x: int) -> bool:
+	"""
+	Checks whether the number of given operations is sufficient
+	to raise the median of the array to x.
+	"""
+	ops_needed = 0
+	for i in range((size - 1) // 2, size):
+		ops_needed += max(0, x - arr[i])
+	return ops_needed <= max_ops
+
+
+# binary searches for the correct answer
+def last_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
+	lo -= 1
+	while lo < hi:
+		mid = lo + (hi - lo + 1) // 2;
+		if f(mid):
+			lo = mid
+		else:
+			hi = mid - 1
+	return lo
+
+
+size, max_ops = map(int, input().split())
+arr = sorted(list(map(int, input().split())))
+print(last_true(1, int(2e9), med_reachable))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+## Common Mistakes
+
+### Mistake 1 - Off By One
+
+Consider the code from CSAcademy's
+[Binary Search on Functions](https://csacademy.com/lesson/binary_search/).
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+long long f(int x) {
+	return (long long) x * x;
+}
+
+int sqrt(int x) {
+	int lo = 0;
+	int hi = x;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (f(mid) <= x) {
+			lo = mid;
+		} else {
+			hi = mid - 1;
+		}
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public static long f(int x) {
+	return (long) x * x;
+}
+
+public static int sqrt(int x) {
+	int lo = 0;
+	int hi = x;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (f(mid) <= x) {
+			lo = mid;
+		} else {
+			hi = mid - 1;
+		}
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+def f(x: int) -> int:
+	return x * x
+
+def sqrt(x: int) -> int:
+	lo = 0
+	hi = 0
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if f(mid) <= x:
+			lo = mid
+		else:
+			hi = mid - 1
+	return lo
+```
+
+</PySection>
+</LanguageSection>
+
+This results in an infinite loop if `left=0` and `right=1`! To fix this, set
+`middle = (left+right+1)/2` instead.
+
+### Mistake 2 - Not Accounting for Negative Bounds
+
+Consider a slightly modified version of `firstTrue`:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+
+using namespace std;
+
+int first_true(int lo, int hi, function<bool(int)> f) {
+	hi++;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (f(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+	hi++;
+	while (lo < hi) {
+		int mid = (lo + hi) / 2;
+		if (f.test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+from typing import Callable
+
+
+def first_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
+	hi += 1
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid + 1
+	return lo
+```
+
+</PySection>
+</LanguageSection>
+
+This code does not necessarily work if `lo` is negative! Consider the following
+example:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int main() {
+	// outputs -8 instead of -9
+	cout << first_true(-10, -10, [](int x) { return false; }) << "\n";
+	
+	// causes an infinite loop
+	cout << first_true(-10, -10, [](int x) { return true; }) << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public static void main(String[] args) {
+	// outputs -8 instead of -9
+	System.out.println(firstTrue(-10, -10, (x) -> false));
+
+	// causes an infinite loop
+	System.out.println(firstTrue(-10, -10, (x) -> true));
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+# outputs -8 instead of -9
+print(first_true(-10, -10, lambda x: False))
+
+# causes an infinite loop
+print(first_true(-10, -10, lambda x: True))
+```
+
+</PySection>
+</LanguageSection>
+
+This is because dividing an odd negative integer by two will round it up instead
+of down.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+
+using namespace std;
+
+int first_true(int lo, int hi, function<bool(int)> f) {
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (f(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (f.test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+from typing import Callable
+
+
+def first_true(lo: int, hi: int, f: Callable[[int], bool]) -> int:
+	hi += 1
+	while lo < hi:
+		mid = lo + (hi - lo) // 2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid + 1
+	return lo
+```
+
+</PySection>
+</LanguageSection>
+
+### Mistake 3 - Integer Overflow
+
+The first version of `firstTrue` won't work if `hi-lo` initially exceeds
+`INT_MAX`, while the second version of `firstTrue` won't work if `lo+hi` exceeds
+`INT_MAX` at any point during execution. If this is an issue, use `long long`s
+instead of `int`s.
+
+## Library Functions For Binary Search
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/algorithm/lower_bound/"
+		title="lower_bound, upper_bound"
+		starred
+	>
+		with examples
+	</Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+<Resources>
+	<Resource
+		source="JAVA"
+		url="https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)"
+		title="Arrays.binarySearch"
+	/>
+	<Resource
+		source="JAVA"
+		url="https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#binarySearch(java.util.List,%20T)"
+		title="Collections.binarySearch"
+	/>
+</Resources>
+
+</JavaSection>
+
+<PySection>
+
+<Resources>
+	<Resource
+		source="Python"
+		url="https://docs.python.org/3/library/bisect.html"
+		title="Array bisection algorithm"
+	/>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/binary-search-bisect-in-python/"
+		title="Binary Search (bisect) in Python"
+	/>
+</Resources>
+
+</PySection>
+
+</LanguageSection>
+
+### Example - Counting Haybales
+
+<FocusProblem problem="count" />
+
+As each of the points are in the range $0 \ldots 1\,000\,000\,000$, storing
+locations of haybales in a boolean array and then taking prefix sums of that
+would take too much time and memory.
+
+Instead, let's place all of the locations of the haybales into a list and sort
+it. Now we can use binary search to count the number of cows in any range
+$[A,B]$ in $\mathcal{O}(\log N)$ time.
+
+### With Built-in Function
+
+<LanguageSection>
+
+<CPPSection>
+
+We can use the the built-in
+[`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and
+[`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound)
+functions.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name="") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0);  // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (!name.empty()) {
+		freopen((name+".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int bale_num;
+	int query_num;
+	cin >> bale_num >> query_num;
+	vector<int> bales(bale_num);
+	for (int i = 0; i < bale_num; i++) {
+		cin >> bales[i];
+	}
+	
+	sort(begin(bales), end(bales));
+	for (int i = 0; i < query_num; i++) {
+		int q_start;
+		int q_end;
+		cin >> q_start >> q_end;
+		cout << upper_bound(begin(bales), end(bales), q_end) 
+					- lower_bound(begin(bales), end(bales), q_start) << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+We can use the builtin
+[`Arrays.binarySearch`](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)>)
+function.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Haybales {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		PrintWriter out = new PrintWriter("haybales.out");
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int baleNum = Integer.parseInt(st.nextToken());
+		int queryNum = Integer.parseInt(st.nextToken());
+		int[] bales = new int[baleNum];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < baleNum; i++) {
+			bales[i] = Integer.parseInt(st.nextToken());
+		}
+		
+		Arrays.sort(bales);
+		for (int i = 0; i < queryNum; i++) {
+			st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+			
+			// Get the left-est bale that's still in the interval
+			int bi = Arrays.binarySearch(bales, start);
+			if (bi < 0) {
+				bi = Math.abs(bi + 1);
+			}
+
+			// And also get the right-est bale that's still in the interval
+			int ti = Arrays.binarySearch(bales, end);
+			if (ti < 0) {
+				ti = Math.abs(ti + 2);
+			}
+			out.println(ti - bi + 1);
+		}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+We can use the builtin
+[`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect)
+function.
+
+```py
+from bisect import bisect
+
+inp = open("haybales.in", "r")
+out = open("haybales.out", "w")
+
+bale_num, query_num = map(int, inp.readline().split())
+bales = sorted(list(map(int, inp.readline().split())))
+for _ in range(query_num):
+	start, end = map(int, inp.readline().split())
+	print(bisect(bales, end) - bisect(bales, start - 1), file=out)
+```
+
+</PySection>
+</LanguageSection>
+
+### Without Using Built-in Functions
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name="") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0);  // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (!name.empty()) {
+		freopen((name+".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int bale_num;
+	int query_num;
+	cin >> bale_num >> query_num;
+	vector<int> bales(bale_num);
+	for (int& i: bales) {
+		cin >> i;
+	}
+
+	sort(begin(bales), end(bales));
+	// Returns the number of elements that are at most x
+	auto atMost = [&](int x) {
+		int lo = 0;
+		int hi = bales.size();
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (bales[mid] <= x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		return lo;
+	};
+
+	for (int i = 0; i < query_num; ++i) {
+		int q_start;
+		int q_end;
+		cin >> q_start >> q_end;
+		cout << atMost(q_end) - atMost(q_start - 1) << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Haybales {
+	static int[] bales;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("haybales");
+		int baleNum = io.nextInt();
+		int queryNum = io.nextInt();
+		bales = new int[baleNum];
+		for (int i = 0; i < baleNum; i++) {
+			bales[i] = io.nextInt();
+		}
+		Arrays.sort(bales);
+
+		for (int i = 0; i < queryNum; ++i) {
+			int start = io.nextInt();
+			int end = io.nextInt();
+			io.println(atMost(end) - atMost(start - 1));
+		}
+		io.close();
+	}
+
+	// Returns the number of elements that are at most x
+	public static int atMost(int x) {
+		int lo = 0;
+		int hi = bales.length;
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (bales[mid] <= x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		return lo;
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def at_most(x: int) -> int:
+	lo = 0
+	hi = len(bales)
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if bales[mid] <= x:
+			lo = mid + 1
+		else:
+			hi = mid
+	return lo
+
+
+inp = open("haybales.in", "r")
+out = open("haybales.out", "w")
+
+bale_num, query_num = map(int, inp.readline().split())
+bales = sorted(list(map(int, inp.readline().split())))
+for _ in range(query_num):
+	start, end = map(int, inp.readline().split())
+	print(at_most(end) - at_most(start - 1), file=out)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Problems
+
+### USACO
+
+<Problems problems="usaco" hideSuggestProblemButton />
+
+### General
+
+<Problems problems="general" hideSuggestProblemButton />
+
+## Quiz
+				
+<Quiz>
+  <Quiz.Question>
+    What is the worst and the best case time complexity for binary searching for a number in a sorted array of size $n$?
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$ / $\Omega(\log n)$
+      <Quiz.Explanation>
+        Incorrect. Consider the case where the target element is the median of the array. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(\log n)$ / $\Omega(1)$
+      <Quiz.Explanation>
+        Correct. The worst case happens when the number is not present, and the best case occurs if the first number we check is the target value. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n)$ / $\Omega(\log n)$
+      <Quiz.Explanation>
+        Incorrect. Binary search always takes at most $\lceil \log n \rceil$ iterations. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$ / $\Omega(\log \log n)$
+      <Quiz.Explanation>
+        Incorrect. Consider the case where the target element is the median of the array. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What is an advantage of using binary search over linear search?
+    <Quiz.Answer correct>
+      Faster time complexity
+      <Quiz.Explanation>
+        Correct. Linear search runs in $\mathcal{O}(n)$, whereas binary search runs in $\mathcal{O}(\log n)$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Less Memory
+      <Quiz.Explanation>
+        Incorrect. Binary search and linear search both use $\mathcal{O}(n)$ memory.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Easier implementation
+      <Quiz.Explanation>
+        Incorrect. Linear search is, in most cases, a simple `for` loop, whereas binary search most often requires at least two additional variables and conditionals. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Suppose a program involving binary search runs in $\mathcal{O}(\log n)$ time for some $n$. What is the smallest value of $n$ where runtime would be an issue? A typical online judge can handle around $10^9$ operations in a second. 
+    <Quiz.Answer>
+      $9$
+      <Quiz.Explanation>
+        Incorrect. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $10^9$
+      <Quiz.Explanation>
+      	Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+		<Quiz.Answer>
+		$99^9$
+    <Quiz.Explanation>
+    	Incorrect. 
+    </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $10^{10^{9}}$
+      <Quiz.Explanation>
+        Correct. The logarithm of this value is a bit more than $10^9$. A straightforward, logarithmic binary search will almost never run into issues regarding time limit. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Suppose we were tasked to find the maximum value `m` in the range $[l,r], 0 \leq l \leq r \leq 10^9$ such that a given monotonic boolean function `f(m)` returns `true`. The following code has an error in it that causes an infinite loop. Find the corrected version. Assume that `f(l)` always evaluates to true (i.e., there exists an `m` satisfying the given conditions). 
+
+<LanguageSection>
+<CPPSection>
+```cpp
+int find_max_true(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+<Quiz.Answer>
+```cpp
+int find_max_true(int l, int r, function<bool(int)> f) {
+	while (l <= r) { // <= instead of <
+		int m = (l + r) / 2;
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+ Incorrect. This will still cause an infinite loop. For instance, if for `f` we have
+```cpp
+bool f(int m) { return m <= 7; }
+``` 
+and call `find_max_true(1, 11, f)`, the program will never terminate (it will be stuck at $l = 6, r = 7$).
+</Quiz.Explanation>
+</Quiz.Answer>
+
+<Quiz.Answer>
+```cpp
+int find_max_true(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f(m)) {
+			l = m + 1;  // change m to m + 1
+		} else {
+			r = m;  // change m - 1 to m
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+Incorrect. While this will no longer cause an infinite loop, it will now output the wrong answer (instead of the maximum number that evaluates to true, it will return the minimum number that evaluates to false). 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+
+<Quiz.Answer>
+```cpp
+int find_max_true(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = l + (r - l) / 2;  // change (l + r) / 2
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+Incorrect. This is equivalent to the previous statement, except this statement is sometimes used to avoid integer overflow. 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+
+<Quiz.Answer correct>
+```cpp
+int find_max_true(int l, int r, function<bool(int)> f) {
+	while (l < r) {
+		int m = (l + r + 1) / 2;  // change (l + r) / 2
+		if (f(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+<Quiz.Explanation>
+        Correct. The reason for an infinite loop is when $r$ is one more than $l$ and `f(l)` evaluates to `true` . $m$ will be defined as $\lfloor \frac {l + r} 2 \rfloor = l$, and will thus evaluate to true, which means that $l$ and $r$ have not changed in the loop. By adding $1$ to the expression, $\lfloor \frac {l + r + 1} 2 \rfloor$ will instead evaluate to $r$ which will break the loop. 
+</Quiz.Explanation>
+</Quiz.Answer>
+
+</Quiz.Question>
+</Quiz>

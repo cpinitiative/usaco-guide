@@ -1,0 +1,777 @@
+---
+id: tree-euler
+title: 'Euler Tour Technique'
+author: Benjamin Qi, Andrew Wang, Neo Wang
+prerequisites:
+  - intro-tree
+  - PURS
+description:
+  'Flattening a tree into an array to easily query and update subtrees.'
+frequency: 2
+---
+
+## Introduction
+
+<FocusProblem problem="sample" />
+
+If we can preprocess a rooted tree such that every subtree corresponds to a
+contiguous range on an array, we can do updates and range queries on it!
+
+### Tutorial
+
+<Resources>
+	<Resource source="CPH" title="18.2 - Subtrees & Paths" starred>
+		introduces tree traversal array, how to solve above problem
+	</Resource>
+	<Resource
+		source="SecondThread"
+		title="Tree Basics - Tree Flattening"
+		url="https://codeforces.com/blog/entry/81527"
+	/>
+</Resources>
+
+### Implementation
+
+After running $\text{dfs}()$, each range $[\texttt{st}[i], \texttt{en}[i]]$
+contains all ranges $[\texttt{st}[j], \texttt{en}[j]]$ for each $j$ in the
+subtree of $i$. Also, $\texttt{en}[i]-\texttt{st}[i]+1$ is equal to the subtree
+size of $i$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MX = 2e5+5;
+vector<int> adj[MX];
+int timer = 0, st[MX], en[MX];
+
+void dfs(int node, int parent) {
+	st[node] = timer++;
+	for (int i : adj[node]) {
+		if (i != parent) {
+			dfs(i, node);
+		}
+	}
+	en[node] = timer-1;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static void dfs(int i, int p) {
+	st[i] = timer++;
+	for (int next : g[i]) {
+		if(next != p) dfs(next, i);
+	}
+	en[i] = timer-1;
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Example Input
+
+```
+5 3
+4 2 5 2 1
+1 2
+1 3
+3 4
+3 5
+2 3
+1 5 3
+2 3
+```
+
+Our example input corresponds to the following graph:
+
+<center>
+	
+<svg
+    width={747}
+    height={532}
+    className="stroke-current fill-transparent text-black dark:text-white"
+    style={{isolation:"isolate"}}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M528.5 507c35.622 0 64.5-28.878 64.5-64.5S564.122 378 528.5 378 464 406.878 464 442.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M524.141 439.828h3.257c2.047-.031 3.657-.57 4.829-1.617 1.171-1.047 1.757-2.461 1.757-4.242 0-4-1.992-6-5.976-6-1.875 0-3.375.539-4.5 1.617-1.11 1.062-1.664 2.476-1.664 4.242h-4.336c0-2.703.984-4.945 2.953-6.726 1.984-1.797 4.5-2.696 7.547-2.696 3.219 0 5.742.852 7.57 2.555 1.828 1.703 2.742 4.07 2.742 7.101 0 1.485-.484 2.922-1.453 4.313-.953 1.391-2.258 2.43-3.914 3.117 1.875.594 3.32 1.578 4.336 2.953 1.031 1.375 1.547 3.055 1.547 5.039 0 3.063-1 5.493-3 7.289-2 1.797-4.602 2.696-7.805 2.696-3.203 0-5.812-.867-7.828-2.602-2-1.734-3-4.023-3-6.867h4.359c0 1.797.586 3.234 1.758 4.312 1.172 1.079 2.742 1.618 4.711 1.618 2.094 0 3.696-.547 4.805-1.641 1.109-1.094 1.664-2.664 1.664-4.711 0-1.984-.609-3.508-1.828-4.57-1.219-1.063-2.977-1.61-5.274-1.641h-3.257v-3.539Z"
+      fill="currentColor"
+    />
+    <path
+      d="M106.5 181c35.622 0 64.5-28.878 64.5-64.5S142.122 52 106.5 52 42 80.878 42 116.5 70.878 181 106.5 181Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M118.195 133h-22.36v-3.117l11.813-13.125c1.75-1.985 2.954-3.594 3.61-4.828.672-1.25 1.008-2.539 1.008-3.868 0-1.781-.539-3.242-1.618-4.382-1.078-1.141-2.515-1.711-4.312-1.711-2.156 0-3.836.617-5.039 1.851-1.188 1.219-1.781 2.922-1.781 5.11H95.18c0-3.141 1.007-5.68 3.023-7.618 2.031-1.937 4.742-2.906 8.133-2.906 3.172 0 5.68.836 7.523 2.508 1.844 1.656 2.766 3.867 2.766 6.633 0 3.359-2.141 7.359-6.422 12l-9.141 9.914h17.133V133Z"
+      fill="currentColor"
+    />
+    <path
+      d="M220.5 470c35.622 0 64.5-28.878 64.5-64.5S256.122 341 220.5 341 156 369.878 156 405.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="m211.828 404.891 1.734-17.016h17.485v4.008h-13.805l-1.031 9.305c1.672-.985 3.57-1.477 5.695-1.477 3.11 0 5.578 1.031 7.406 3.094 1.829 2.047 2.743 4.82 2.743 8.32 0 3.516-.953 6.289-2.86 8.32-1.89 2.016-4.539 3.024-7.945 3.024-3.016 0-5.477-.836-7.383-2.508-1.906-1.672-2.992-3.984-3.258-6.938h4.102c.266 1.954.961 3.43 2.086 4.43 1.125.985 2.609 1.477 4.453 1.477 2.016 0 3.594-.688 4.734-2.063 1.157-1.375 1.735-3.273 1.735-5.695 0-2.281-.625-4.11-1.875-5.484-1.235-1.391-2.883-2.086-4.946-2.086-1.89 0-3.375.414-4.453 1.242l-1.148.937-3.469-.89Z"
+      fill="currentColor"
+    />
+    <path
+      d="M373.5 291c35.622 0 64.5-28.878 64.5-64.5S409.122 162 373.5 162 309 190.878 309 226.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M377.086 243h-4.359v-28.898l-8.743 3.21v-3.937l12.422-4.664h.68V243Z"
+      fill="currentColor"
+    />
+    <path
+      d="M657.5 246c35.622 0 64.5-28.878 64.5-64.5S693.122 117 657.5 117 593 145.878 593 181.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M665.141 186.539h4.734v3.539h-4.734V198h-4.36v-7.922h-15.539v-2.555l15.281-23.648h4.618v22.664Zm-14.977 0h10.617v-16.734l-.515.937-10.102 15.797Z"
+      fill="currentColor"
+    />
+    <path
+      d="m164 144 152 62M411 276l80 117M283 415l185 28M626 237l-73 150"
+      stroke="currentColor"
+      strokeWidth={6}
+    />
+  </svg>
+	
+</center>
+
+Before the DFS, our $\texttt{st}$ and $\texttt{en}$ arrays are initialized with
+zeros. In this visualization, the first row represents the node indices, the
+second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
+
+**Current timer value: 0**
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+Since we call $\text{dfs}(1, 0)$, we set $\texttt{st}[1]$ to the current timer
+value of $0$. Then, we proceed to call $\text{dfs}(2, 1)$ and
+$\text{dfs}(3, 1)$.
+
+**Current timer value: 1**
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td className="bg-green-100 dark:bg-green-700">0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+Now we must resolve $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$. It does not
+matter which order we process these in, so for this example, we start with
+$\text{dfs}(2, 1)$. Since the timer value is 1, we set $\texttt{st}[2]$ to 1 and
+increment the timer. However, because node $2$ has no children, we don't call
+$\text{dfs}$. Instead, we set $\texttt{en}[2]$ to 1 because our current timer is
+now 2.
+
+**Current timer value: 2**
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td className="bg-green-100 dark:bg-green-700">1</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td className="bg-red-100 dark:bg-red-700">1</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+Now we must resolve $\text{dfs}(3, 1)$. Similar to before, we set
+$\texttt{st}[3]$ to the value of the timer (2 in this case) and increment the
+timer. Then, we proceed to make the calls $\text{dfs}(4, 3)$ and
+$\text{dfs}(5, 3)$.
+
+**Current timer value: 3**
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td className="bg-green-100 dark:bg-green-700">2</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+Now we must resolve $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$. First, we resolve
+$\text{dfs}(4, 3)$ by setting $\texttt{st}[4]$ to the value of the timer (3 in
+this case) and incrementing the timer. Then, since node $4$ has no children, set
+$\texttt{en}[4]$ to 3.
+
+Now the value of the timer is 4, and we must resolve $\text{dfs}(5, 3)$. Similar
+to before, we set $\texttt{st}[5]$ to 4. Since node $5$ also has no children,
+set $\texttt{en}[5]$ to 4.
+
+**Current timer value: 5**
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td className="bg-green-100 dark:bg-green-700">3</td>
+				<td className="bg-green-100 dark:bg-green-700">4</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>0</td>
+				<td className="bg-red-100 dark:bg-red-700">3</td>
+				<td className="bg-red-100 dark:bg-red-700">4</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+Now, we must resolve the remaining $\texttt{en}[\text{node}] = \text{timer} - 1$
+calls. We first encounter and resolve node $3$, setting $\texttt{en}[3]$ to 4.
+We then do the same for node $1$, setting $\texttt{en}[1]$ to 4. Our DFS
+traversal is now complete.
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td className="bg-red-100 dark:bg-red-700">4</td>
+				<td>1</td>
+				<td className="bg-red-100 dark:bg-red-700">4</td>
+				<td>3</td>
+				<td>4</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+### Solution - Subtree Queries
+
+Assumes that `dfs()` code is included. Uses a segment tree.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+/**
+ * Description: 1D point update, range query where \texttt{comb} is
+	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
+ * Time: O(\log N)
+ * Source:
+	* http://codeforces.com/blog/entry/18051
+	* KACTL
+ * Verification: SPOJ Fenwick
+ */
+
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0; T comb(T a, T b) { return a+b; }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// sum on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+Seg<ll> S;
+int v[MX];
+
+int main() {
+	int n,q; cin >> n >> q;
+	FOR(i,1,n+1) cin >> v[i];
+	F0R(i,n-1) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	dfs(1,0);
+	S.init(n);
+	FOR(i,1,n+1) S.upd(st[i],v[i]);
+	F0R(i,q) {
+		int t; cin >> t;
+		if (t == 1) {
+			int s,x; cin >> s >> x;
+			S.upd(st[s],x);
+		} else {
+			int s; cin >> s;
+			cout << S.query(st[s],en[s]) << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static int[] st;
+	public static int[] en;
+	public static int timer, n;
+	public static ArrayList<Integer> g[];
+
+	//Segtree code
+	public static final int N = (int)1e5;  // limit for array size
+	public static long t[] = new long[2*N];
+
+	public static void update(int p, long value) {  // set value at position p
+		for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
+	}
+
+	public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
+		long res = 0;
+		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+			if ((l&1) != 0) res += t[l++];
+			if ((r&1) != 0) res += t[--r];
+		}
+		return res;
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer str = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(str.nextToken());
+      		int q = Integer.parseInt(str.nextToken());
+      		int[] val = new int[n+1];
+      		g = new ArrayList[n+1];
+      		str = new StringTokenizer(br.readLine());
+      		for (int i = 1; i <= n; i++) {
+         		g[i] = new ArrayList<Integer>();
+         		val[i] = Integer.parseInt(str.nextToken());
+      		}
+      		st = new int[n+1]; en = new int[n+1]; timer = 0;
+      		for (int i = 0; i < n-1; i++) {
+         		str = new StringTokenizer(br.readLine());
+         		int a = Integer.parseInt(str.nextToken());
+         		int b = Integer.parseInt(str.nextToken());
+         		g[a].add(b);
+         		g[b].add(a);
+      		}
+      		dfs(1, 0);
+      		for (int i = 1; i <= n; i++) {
+         		update(st[i], val[i]);
+      		}
+      		for (int i = 0; i < q; i++) {
+         		str = new StringTokenizer(br.readLine());
+         		int a = Integer.parseInt(str.nextToken());
+			if(a == 1) {
+				int b = Integer.parseInt(str.nextToken());
+				int c = Integer.parseInt(str.nextToken());
+				update(st[b], c);
+			} else {
+				int b = Integer.parseInt(str.nextToken());
+				System.out.println(query(st[b], en[b]+1));
+			}
+      		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## LCA
+
+<FocusProblem problem="lca" />
+
+<FocusProblem problem="lca2" />
+
+### Tutorial
+
+<Resources>
+	<Resource
+		source="CPH"
+		title="18.3 - Least Common Ancestor (Method 2)"
+		starred
+	 />
+	<Resource
+		source="cp-algo"
+		title="Reducing LCA to RMQ"
+		url="graph/lca.html"
+		starred
+	 />
+</Resources>
+
+### Implementation
+
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Trees%20(10)/LCArmq%20(10.2).h"
+		title="LCA with RMQ"
+	/>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int n; // The number of nodes in the graph
+vector<int> graph[100000];
+int timer = 0, tin[100000], euler_tour[200000];
+int segtree[800000]; // Segment tree for RMQ
+
+void dfs(int node = 0, int parent = -1) {
+	tin[node] = timer; // The time when we first visit a node
+	euler_tour[timer++] = node;
+	for (int i : graph[node]) {
+		if (i != parent) {
+			dfs(i, node);
+			euler_tour[timer++] = node;
+		}
+	}
+}
+
+int mn_tin(int x, int y) {
+	if (x == -1) return y;
+	if (y == -1) return x;
+	return (tin[x] < tin[y] ? x : y);
+}
+
+// Build the segment tree: run `build()` after running dfs`
+void build(int node = 1, int l = 0, int r = timer - 1) {
+	if (l == r) segtree[node] = euler_tour[l];
+	else {
+		int mid = (l + r) / 2;
+		build(node * 2, l, mid);
+		build(node * 2 + 1, mid + 1, r);
+		segtree[node] = mn_tin(segtree[node * 2], segtree[node * 2 + 1]);
+	}
+}
+
+int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
+	if (l > b || r < a) return -1;
+	if (l >= a && r <= b) return segtree[node];
+	int mid = (l + r) / 2;
+	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
+}
+
+// Make sure you run $dfs` and `build()` before you run this
+int lca(int a, int b) {
+	if (tin[a] > tin[b]) swap(a, b);
+	return query(tin[a], tin[b]);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class LCA {
+	public static int[] euler_tour, tin;
+	public static int timer, size, N;
+	public static ArrayList<Integer> g[];
+
+   	//Segtree code
+	public static final int maxsize = (int)1e7;  // limit for array size
+	public static int t[] = new int[maxsize];
+
+	public static void update(int p, int value) {  // set value at position p
+		for (t[p += size] = value; p > 1; p >>= 1) t[p>>1] = mn_tin(t[p], t[p^1]);
+	}
+	public static int query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
+		int res = N;
+		for (l += size, r += size; l < r; l >>= 1, r >>= 1) {
+			if ((l&1) != 0) res = mn_tin(res, t[l++]);
+			if ((r&1) != 0) res = mn_tin(res, t[--r]);
+		}
+		return res;
+	}
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer str = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(str.nextToken());
+		int Q = Integer.parseInt(str.nextToken());
+		int[] val = new int[N+1];
+		g = new ArrayList[N+1];
+		str = new StringTokenizer(br.readLine());
+		for (int i = 1; i <= N; i++) {
+			g[i] = new ArrayList<Integer>();
+		}
+		for (int i = 2; i <= N; i++) {
+			int a = Integer.parseInt(str.nextToken());
+			g[i].add(a);
+			g[a].add(i);
+		}
+		euler_tour = new int[2*N-1]; tin = new int[N+1];
+		dfs(1, 0);
+		size = 2*N-1;
+		for (int i = 0; i < 2*N-1; i++) {
+			update(i, euler_tour[i]);
+		}
+		for (int i = 0; i < Q; i++) {
+			str = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(str.nextToken());
+			int b = Integer.parseInt(str.nextToken());
+			System.out.println(lca(a, b));
+		}
+	}
+	public static void dfs(int i, int p) {
+		tin[i] = timer;
+		euler_tour[timer++] = i;
+		for (int next : g[i]) {
+			if(next != p){
+				dfs(next, i);
+				euler_tour[timer++] = i;
+			}
+		}
+	}
+	public static int lca(int a, int b) {
+		if(tin[a] > tin[b]) {
+			int temp = a;
+			a = b;
+			b = temp;
+		}
+		if(a == b) {
+			return a;
+		}
+		return query(tin[a], tin[b]);
+	}
+	public static int mn_tin(int x, int y) {
+		if (x == -1) return y;
+		if (y == -1) return x;
+		return (tin[x] < tin[y] ? x : y);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Sparse Tables
+
+The above code does $\mathcal{O}(N)$ time preprocessing and allows LCA queries
+in $\mathcal{O}(\log N)$ time. If we replace the segment tree that computes
+minimums with a **sparse table**, then we do $\mathcal{O}(N\log N)$ time
+preprocessing and query in $\mathcal{O}(1)$ time.
+
+<!-- [](https://en.wikipedia.org/wiki/Range_minimum_query) -->
+
+<FocusProblem problem="rmqSample" />
+
+### Resources
+
+<Resources>
+	<Resource
+		source="CPH"
+		title="9.1 - Minimum Queries"
+		url="/CPH.pdf#page=95"
+		starred
+	>
+		diagrams
+	</Resource>
+	<Resource source="PAPS" title="11.2.2 - Sparse Tables" starred>
+		code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Sparse Table"
+		url="data_structures/sparse-table.html"
+	 />
+</Resources>
+
+<!-- <Resource source="cp-algo" title="RMQ" url="sequences/rmq.html" /> -->
+
+<Optional title="Faster Preprocessing">
+
+From CPH:
+
+> There are also more sophisticated techniques where the preprocessing time is
+> only $\mathcal{O}(N)$, but such algorithms are not needed in competitive
+> programming.
+
+Ex. the following:
+
+- [CF: $\mathcal{O}(1)$ Query RMQ with $\mathcal{O}(N)$ build](https://codeforces.com/blog/entry/78931)
+
+</Optional>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RMQ%20(9.1).h"
+		title="RMQ"
+	 />
+</Resources>
+
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+
+<Problems problems="problems" />
