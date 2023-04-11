@@ -1,6 +1,10 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import {
+  connectFirestoreEmulator,
+  getFirestore,
+  initializeFirestore,
+} from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import * as React from 'react';
 import { createContext } from 'react';
@@ -24,6 +28,7 @@ export const FirebaseProvider = ({ children }) => {
       const firebaseApp =
         getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
       setFirebaseApp(firebaseApp);
+      initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
 
       const shouldUseEmulator = false;
       if (shouldUseEmulator) {
