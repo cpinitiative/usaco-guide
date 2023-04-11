@@ -96,7 +96,7 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-2-label"
               >
-                Use Long Polling -{' '}
+                Use Long Polling (Close and reopen tab after toggling) -{' '}
                 <span className="font-bold">
                   Note: this may hinder performance! Only enable if nothing
                   works.
