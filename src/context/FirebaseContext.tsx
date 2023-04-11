@@ -28,7 +28,12 @@ export const FirebaseProvider = ({ children }) => {
       const firebaseApp =
         getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
       setFirebaseApp(firebaseApp);
-      initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
+      if (localStorage.getItem('USACO_GUIDE_LONG_POLLING') === 'true') {
+        // console.log('Initializing long polling');
+        initializeFirestore(firebaseApp, {
+          experimentalForceLongPolling: true,
+        });
+      }
 
       const shouldUseEmulator = false;
       if (shouldUseEmulator) {
