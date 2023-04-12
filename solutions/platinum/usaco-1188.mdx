@@ -47,9 +47,9 @@ struct Block {
 	int hi, lo;
 	vector<int> vals;
 	Block() : hi(-INT32_MAX), lo(INT32_MAX) {}
-	
+
 	Block(vector<int> a) {
-		hi =-INT32_MAX;
+		hi = -INT32_MAX;
 		lo = INT32_MAX;
 		for (int i : a) {
 			vals.push_back(i);
@@ -57,7 +57,7 @@ struct Block {
 			lo = min(lo, i);
 		}
 	}
-	
+
 	// Adds element x to the block
 	void add(int x) {
 		lo = min(lo, x);
@@ -73,11 +73,11 @@ struct Block {
 			i++;
 		}
 	}
-	
+
 	/*
 	Checks whether the most optimal position for x is at the end,
 	if it is starts from the end.
-	*/	
+	*/
 	bool reaches_end(int x) {
 		vals.push_back(x);
 		int i = vals.size() - 1;
@@ -105,10 +105,12 @@ int main() {
 		int x;
 		cin >> x;
 		int j = sqrt.size() - 1;
-		// Finds the earliest block we can insert element x by swapping to the left
+		// Finds the earliest block we can insert element x by swapping to the
+		// left
 		while (j > 0 && (x + k >= sqrt[j].hi && x - k <= sqrt[j].lo)) { j--; }
-		// Handle edge case if x doesn't cross an element greater than it in block j while swapping left
-		// Swaps element x to the right to the lexographically optimal position
+		// Handle edge case if x doesn't cross an element greater than it in
+		// block j while swapping left Swaps element x to the right to the
+		// lexographically optimal position
 		if (j < sqrt.size() - 1 && sqrt[j].reaches_end(x)) {
 			j++;
 			while (j < sqrt.size() - 1 && x >= sqrt[j].hi) { j++; }
