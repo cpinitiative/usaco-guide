@@ -299,11 +299,12 @@ public static void main(String[] args) throws IOException {
 			while (q.size() > 0) {
 				int currentNode = q.peek();
 				q.poll();
-
-				if (visited[currentNode]) { continue; }
+				
 				visited[currentNode] = true;
 
-				for (int neighbor : adj.get(currentNode)) { q.add(neighbor); }
+				for (int neighbor : adj.get(currentNode)) {
+					if (!visited[neighbor]) { q.add(neighbor); }
+				}
 			}
 		}
 	}
@@ -332,10 +333,11 @@ int main() {
 				int current_node = q.front();
 				q.pop();
 
-				if (visited[current_node]) { continue; }
 				visited[current_node] = true;
 
-				for (int neighbor : adj[current_node]) { q.push(neighbor); }
+				for (int neighbor : adj[current_node]) {
+					if (!visited[neighbor]) { q.push(neighbor); }
+				}
 			}
 		}
 	}
