@@ -2,18 +2,17 @@
 id: usaco-743
 source: USACO Silver 2017 Open
 title: Modern Art 2
-author: Sofia Yang
+authors: Sofia Yang, William Yuan
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_art2_gold_open17.html)
 
+<LanguageSection>
+<JavaSection>
 
 ### Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
-
-<LanguageSection>
-<JavaSection>
 
 ```java
 import java.io.*;
@@ -77,4 +76,67 @@ public class ModernArt2 {
 }
 ```
 </JavaSection>
+
+
+<CPPSection>
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int mx = 1e5+5;
+int col[mx], start[mx], fin[mx], n, ans = 0;
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    freopen("art2.in", "r", stdin);
+    freopen("art2.out", "w", stdout);
+    fill(start, start+mx, 1<<30);
+    fill(fin, fin+mx, -(1<<30));
+    cin >> n;
+
+    // get start, end points
+    for (int i=1; i<=n; i++) {
+        cin >> col[i];
+        start[col[i]] = min(start[col[i]], i);
+        fin[col[i]] = max(fin[col[i]], i);
+    }
+
+    start[0] = 0, fin[0] = n+1;
+    stack<int> active; // keep track of segments
+
+    for (int i=0; i<=n; i++) {
+        int cur = col[i];
+        // insert color at start
+        if (i == start[col[i]]) {
+            active.emplace(col[i]);
+            ans = max(ans, (int)active.size());
+        }
+
+		// check for partial intersections
+    	// for example, in painting [1, 1, 2, 1, 2]
+    	// color 1 has start, end at 1, 4
+    	// color 2 has start, end at 3, 5
+    	// it is impossible to interweave them
+    	// since both colors are used only once
+    	// to paint a segment of the painting
+    	// thus, the painting is invalid
+        if (cur != active.top()) {
+            cout << "-1\n";
+            return 0;
+        }
+
+        // remove color at end
+        if (i == fin[col[i]]) active.pop();
+    }
+
+    // '0' is not a color.
+    cout << ans - 1 << "\n";
+}
+```
+</CPPSection>
+
 </LanguageSection>
