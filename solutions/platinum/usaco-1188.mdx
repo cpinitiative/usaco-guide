@@ -14,7 +14,7 @@ The official editorial does have some nice alternative solutions as well.
 
 Let's first try to solve the subtask and come up with an $\mathcal{O}(N^2)$ solution.
 
-Note that we can simply insert an element into the prefix by swapping it down to the left until it reaches position $i$ where $|a[i] - a[i - 1]| > k$ because its impossible to keep swapping it. However, if $a[i] > a[i + 1]$, it is more optimal to swap it back to the right until it reaches a point where $a[i] < a[i + 1]$.
+Note that we can insert an element into the prefix by swapping it down to the left until it reaches position $i$ where $|a[i] - a[i - 1]| > k$ because its impossible to keep swapping it. However, if $a[i] > a[i + 1]$, it is more optimal to swap it back to the right until it reaches a point where $a[i] < a[i + 1]$.
 
 We can speed this up with square root decomposition. We can split the array into blocks of size $\sqrt{n}$.
 
@@ -26,7 +26,7 @@ Now we need to swap it back towards the right until it reaches a point where whi
 
 Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $MAX$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $MAX > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
 
-Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can simply split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a vector in C++ or ArrayList in Java, is dependent on the size of the array which in our case which takes $\mathcal{O}(\sqrt{N})$. We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
+Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a ```vector``` in C++ or ```ArrayList``` in Java, is dependent on the size of the array which in our case which takes $\mathcal{O}(\sqrt{N})$. We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
 
 Processing each element of the array took $\mathcal{O}(\sqrt{N})$ time so the total time complexity is $\mathcal{O}(N\sqrt{N})$.
 
