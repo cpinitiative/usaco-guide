@@ -84,50 +84,49 @@ public class ModernArt2 {
 using namespace std;
 
 int main() {
-	freopen("art2.in", "r", stdin);
-	freopen("art2.out", "w", stdout);
-	int n;
-	cin >> n;
-	vector<int> col(n + 1);
-	vector<int> start(n + 1, 1 << 30);
-	vector<int> fin(n + 1, -(1 << 30));
+    freopen("art2.in", "r", stdin);
+    freopen("art2.out", "w", stdout);
+    int n;  cin >> n;
+    vector<int> col(n+1);
+    vector<int> start(n+1, INT32_MAX);
+    vector<int> end(n + 1, INT32_MIN);
 
-	// get start, end points
-	for (int i = 1; i <= n; i++) {
-		cin >> col[i];
-		start[col[i]] = min(start[col[i]], i);
-		fin[col[i]] = max(fin[col[i]], i);
-	}
+    // get start, end points
+    for (int i=1; i<=n; i++) {
+        cin >> col[i];
+        start[col[i]] = min(start[col[i]], i);
+        end[col[i]] = max(end[col[i]], i);
+    }
 
-	start[0] = 0, fin[0] = n + 1;
-	stack<int> active;  // keep track of segments
-	for (int i = 0; i <= n; i++) {
-		int cur = col[i];
-		// insert color at start
-		if (i == start[col[i]]) {
-			active.emplace(col[i]);
-			ans = max(ans, (int)active.size());
-		}
+    int ans = 0;
+    start[0] = 0;
+    end[0] = n + 1;
+    stack<int> active; // keep track of segments
 
-		// check for partial intersections
-		// for example, in painting [1, 1, 2, 1, 2]
-		// color 1 has start, end at 1, 4
-		// color 2 has start, end at 3, 5
-		// it is impossible to interweave them
-		// since both colors are used only once
-		// to paint a segment of the painting
-		// thus, the painting is invalid
-		if (cur != active.top()) {
-			cout << "-1" << endl;
-			return 0;
-		}
+    for (int i=0; i<=n; i++) {
+        int cur = col[i];
+        // insert color at start
+        if (i == start[col[i]]) {
+            active.emplace(col[i]);
+            ans = max(ans, (int)active.size());
+        }
 
-		// remove color at end
-		if (i == fin[col[i]]) active.pop();
-	}
+	/*
+	* Invalid because there are 2 partially intersecting segments.
+	* For instance if we have a finished painting of 1 1 2 1 2,
+	* it is impossible if we can only paint 1 once.
+	*/
+        if (cur != active.top()) {
+            cout << "-1\n";
+            return 0;
+        }
 
-	// '0' is not a color.
-	cout << ans - 1 << endl;
+        // remove color at end
+        if (i == end[col[i]]) active.pop();
+    }
+
+    // '0' is not a color.
+    cout << ans - 1 << "\n";
 }
 ```
 
