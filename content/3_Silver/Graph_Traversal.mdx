@@ -4,8 +4,8 @@ redirects:
   - /silver/dfs
   - /silver/bipartite
 title: Graph Traversal
-author: Siyong Huang, Benjamin Qi
-contributors: Andrew Wang, Jason Chen, Ryan Chou
+author: Siyong Huang, Benjamin Qi, Ryan Chou
+contributors: Andrew Wang, Jason Chen, Divyanshu Upreti
 prerequisites:
   - intro-graphs
   - complete-rec
@@ -13,87 +13,6 @@ description: 'Traversing a graph with DFS and BFS.'
 frequency: 4
 ---
 
-## Introduction
-
-<IncompleteSection>
-
-introduce the topic
-
-</IncompleteSection>
-
-<Resources>
-	<Resource source="CPH" title="12 - Graph traversal" starred />
-</Resources>
-
-
-## Applications
-
-### Connected Components
-
-<FocusProblem problem="connSample" />
-
-A **connected component** is a maximal set of connected nodes in an undirected
-graph. In other words, two nodes are in the same connected component _if and
-only if_ they can reach each other via edges in the graph.
-
-In the above focus problem, the goal is to add the minimum possible number of
-edges such that the entire graph forms a single connected component.
-
-### Graph Two-Coloring
-
-<FocusProblem problem="bipsample" />
-
-**Graph two-coloring** refers to assigning a boolean value to each node of the
-graph, dictated by the edge configuration. The most common example of a
-two-colored graph is a **bipartite graph**, in which each edge connects two
-nodes of opposite colors.
-
-In the above focus problem, the goal is to assign each node (friend) of the
-graph to one of two colors (teams), subject to the constraint that edges
-(friendships) connect two nodes of opposite colors. In other words, we need to
-check whether the input is a bipartite graph and output a valid coloring if it
-is.
-
-## Depth First Search
-
-<!-- 	<Resource source="IUSACO" title="10.4 - DFS">
-		code + example
-	</Resource>
-	<Resource source="PAPS" title="12.2 - DFS">
-		pseudocode + example + code
-	</Resource>
-	<Resource
-		source="CP2"
-		title="4.2.1, 4.2.3 - DFS, Finding Connected Components"
-	 /> -->
-
-<Resources>
-	<Resource
-		source="CSA"
-		title="Depth First Search"
-		url="depth_first_search"
-		starred
-	>
-		up to but not including "More about DFS"
-	</Resource>
-	<Resource source="CPH" title="12.1 - DFS">
-		example diagram + code
-	</Resource>
-</Resources>
-
-From the second resource:
-
-> Depth-first search (DFS) is a straightforward graph traversal technique. The
-> algorithm begins at a starting node, and proceeds to all other nodes that are
-> reachable from the starting node using the edges of the graph.
->
-> Depth-first search always follows a single path in the graph as long as it
-> finds new nodes. After this, it returns to previous nodes and begins to
-> explore other parts of the graph. The algorithm keeps track of visited nodes,
-> so that it processes each node only once.
-
-
-## Breadth First Search
 
 ### Prerequisite - Queues & Deques
 
@@ -247,6 +166,288 @@ d.pop()  # [1, 3]
 
 </LanguageSection>
 
+## Introduction
+
+The purpose of graph traversal algorithms is to visit all nodes within a graph in a certain order and compute some information along the way. Two common algorithms for doing this are **DFS** and **BFS**.
+
+In a depth-first search, we travel as far down a branch as we can before backtracking.
+
+<img src = "/graph-traversal-animations/dfs_demo.gif"/>
+
+In a breadth-first search, we travel through the vertices in order of their distance from the starting vertex.
+
+<img src = "/graph-traversal-animations/bfs_demo.gif"/>
+
+### Implementation
+
+#### DFS
+
+When implementing DFS, we often use a recursive function to visit the vertices and an array to store whether we've seen a vertex before.
+
+The code below shows the variables we need to maintain and a recursive implementation of DFS.
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+sys.setrecursionlimit(1000000)  # may need if input is large
+
+MAX_N = int(1e6)
+adj = [[] for _ in range(MAX_N)]
+visited = [False] * MAX_N
+
+# Define adjacency list and read in problem-specific input
+
+
+def dfs(current_node):
+	visited[current_node] = True
+	for neighbor in adj[current_node]:
+		if not visited[neighbor]:
+			dfs(neighbor)
+
+
+for i in range(MAX_N):
+	if not visited[i]:
+		dfs(i)
+```
+
+</PySection>
+<JavaSection>
+
+```java
+static ArrayList<ArrayList<Integer>> adj;
+static boolean[] visited;
+static final int MAX_N = (int)1e6;
+
+public static void main(String[] args) throws IOException {
+	visited = new boolean[MAX_N];
+	adj = new ArrayList<ArrayList<Integer>>();
+	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
+
+	// Define adjacency list and read in problem-specific input
+
+	for (int i = 0; i < MAX_N; i++) {
+		// iterate over all connected components in the graph
+		if (!visited[i]) { dfs(i); }
+	}
+}
+
+static void dfs(int currentNode) {
+	if (visited[currentNode]) { return; }
+
+	visited[currentNode] = true;
+	for (int neighbor : adj.get(currentNode)) { dfs(neighbor); }
+}
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+const int MAX_N = 1e6;
+vector<int> adj[MAX_N];
+bool visited[MAX_N];
+
+void dfs(int current_node) {
+	if (visited[current_node]) { return; }
+	visited[current_node] = true;
+
+	for (int neighbor : adj[current_node]) { dfs(neighbor); }
+}
+
+int main() {
+	// Define adjacency list and read in problem-specific input
+
+	for (int i = 0; i < MAX_N; i++) {
+		// iterate over all connected components in the graph
+		if (!visited[i]) { dfs(i); }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+
+#### BFS
+
+When implementing BFS, we often use a queue to track the next vertex to visit. Like DFS, we'll also keep an array to store whether we've seen a vertex before.
+
+The code below shows the variables we need to maintain and an iterative implementation of DFS.
+
+<LanguageSection>
+<JavaSection>
+
+```java
+static final int MAX_N = (int)1e6;
+
+public static void main(String[] args) throws IOException {
+	boolean[] visited = new boolean[MAX_N];
+	ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
+	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
+
+	// Define adjacency list and read in problem-specific input
+
+	for (int i = 0; i < MAX_N; i++) {
+		// iterate over all connected components in the graph
+		if (!visited[i]) {
+			Queue<Integer> q = new LinkedList<Integer>();
+			q.add(i);
+
+			while (q.size() > 0) {
+				int currentNode = q.peek();
+				q.poll();
+
+				visited[currentNode] = true;
+
+				for (int neighbor : adj.get(currentNode)) {
+					if (!visited[neighbor]) { q.add(neighbor); }
+				}
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+const int MAX_N = 1e6;
+
+int main() {
+	vector<int> adj[MAX_N];
+	bool visited[MAX_N] = {0};
+
+	// Define adjacency list and read in problem-specific input
+
+	for (int i = 0; i < MAX_N; i++) {
+		// iterate over all connected components in the graph
+		if (!visited[i]) {
+			queue<int> q;
+			q.push(i);
+
+			while (!q.empty()) {
+				int current_node = q.front();
+				q.pop();
+
+				visited[current_node] = true;
+
+				for (int neighbor : adj[current_node]) {
+					if (!visited[neighbor]) { q.push(neighbor); }
+				}
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from collections import deque
+
+MAX_N = int(1e6)
+adj = [[] for _ in range(MAX_N)]
+visited = [False] * MAX_N
+
+# Define adjacency list and read in problem-specific input
+
+for i in range(MAX_N):
+	# iterate over all connected components in the graph
+	if not visited[i]:
+		q = deque([i])
+
+		while q:
+			node = q.popleft()
+			visited[node] = True
+
+			for neighbor in adj[node]:
+				if not visited[neighbor]:
+					q.append(neighbor)
+```
+
+</PySection>
+</LanguageSection>
+
+<Resources>
+	<Resource source="CPH" title="12 - Graph traversal" starred />
+</Resources>
+
+
+## Applications
+
+### Connected Components
+
+<FocusProblem problem="connSample" />
+
+A **connected component** is a maximal set of connected nodes in an undirected
+graph. In other words, two nodes are in the same connected component _if and
+only if_ they can reach each other via edges in the graph.
+
+In the above focus problem, the goal is to add the minimum possible number of
+edges such that the entire graph forms a single connected component.
+
+### Graph Two-Coloring
+
+<FocusProblem problem="bipsample" />
+
+**Graph two-coloring** refers to assigning a boolean value to each node of the
+graph, dictated by the edge configuration. The most common example of a
+two-colored graph is a **bipartite graph**, in which each edge connects two
+nodes of opposite colors.
+
+In the above focus problem, the goal is to assign each node (friend) of the
+graph to one of two colors (teams), subject to the constraint that edges
+(friendships) connect two nodes of opposite colors. In other words, we need to
+check whether the input is a bipartite graph and output a valid coloring if it
+is.
+
+
+## Depth First Search
+
+<!-- 	<Resource source="IUSACO" title="10.4 - DFS">
+		code + example
+	</Resource>
+	<Resource source="PAPS" title="12.2 - DFS">
+		pseudocode + example + code
+	</Resource>
+	<Resource
+		source="CP2"
+		title="4.2.1, 4.2.3 - DFS, Finding Connected Components"
+	 /> -->
+
+<Resources>
+	<Resource
+		source="CSA"
+		title="Depth First Search"
+		url="depth_first_search"
+		starred
+	>
+		up to but not including "More about DFS"
+	</Resource>
+	<Resource source="CPH" title="12.1 - DFS">
+		example diagram + code
+	</Resource>
+</Resources>
+
+From the second resource:
+
+> Depth-first search (DFS) is a straightforward graph traversal technique. The
+> algorithm begins at a starting node, and proceeds to all other nodes that are
+> reachable from the starting node using the edges of the graph.
+>
+> Depth-first search always follows a single path in the graph as long as it
+> finds new nodes. After this, it returns to previous nodes and begins to
+> explore other parts of the graph. The algorithm keeps track of visited nodes,
+> so that it processes each node only once.
+
+
+## Breadth First Search
+
 ### Resources
 
 <Resources>
@@ -303,39 +504,54 @@ in a line.
 <CPPSection>
 
 ```cpp
-#include <cstdio>
+#include <iostream>
+#include <queue>
 #include <vector>
+using namespace std;
 
-const int MN = 1e5 + 10;
-
-int N, M, ans, rep[MN];
-std::vector<int> adj_list[MN];
+const int MN = 1e5 + 1;
+int N, M, rep[MN];
+vector<int> adj_list[MN];
 bool visited[MN];
 
-void dfs(int node) {
+void bfs(int node) {
+	queue<int> q;
+	q.push(node);
 	visited[node] = true;
-	for (int u : adj_list[node])
-		if (!visited[u]) dfs(u);
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+		for (int u : adj_list[curr]) {
+			if (!visited[u]) {
+				q.push(u);
+				visited[u] = true;
+			}
+		}
+	}
 }
 int count_components() {
-	int count = 0;
-	for (int i = 1; i <= N; ++i)
+	int count = 0;  // count of connected components processed
+	for (int i = 1; i <= N; i++) {
 		if (!visited[i]) {
 			rep[count++] = i;
-			dfs(i);
+			bfs(i);
 		}
+	}
 	return count;
 }
-
 int main() {
-	scanf("%d%d", &N, &M);
-	for (int i = 0, u, v; i < M; ++i)
-		scanf("%d%d", &u, &v), adj_list[u].push_back(v),
-		    adj_list[v].push_back(u);
-	ans = count_components();
-	printf("%d\n", ans - 1);
-	for (int i = 1; i < ans; ++i) printf("%d %d\n", rep[i - 1], rep[i]);
-	return 0;
+	cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int u, v;
+		cin >> u >> v;
+		adj_list[u].push_back(v);
+		adj_list[v].push_back(u);
+	}
+	int ans = count_components();
+	cout << ans - 1 << '\n';
+	for (int i = 1; i < ans; ++i) {
+		cout << rep[i - 1] << " " << rep[i] << '\n';
+	}
 }
 ```
 
@@ -440,18 +656,18 @@ by default. So if you submit the above code, you'll get the following:
 ```
 Traceback (most recent call last):
   File "input/code.py", line 28, in <module>
-    solve(n, adj)
+	solve(n, adj)
   File "input/code.py", line 14, in solve
-    dfs(start, start)
+	dfs(start, start)
   File "input/code.py", line 9, in dfs
-    dfs(start, next)
+	dfs(start, next)
   File "input/code.py", line 9, in dfs
-    dfs(start, next)
+	dfs(start, next)
   File "input/code.py", line 9, in dfs
-    dfs(start, next)
+	dfs(start, next)
   [Previous line repeated 994 more times]
   File "input/code.py", line 7, in dfs
-    if next in unvisited:
+	if next in unvisited:
 RecursionError: maximum recursion depth exceeded in comparison
 ```
 
@@ -463,54 +679,7 @@ import sys
 sys.setrecursionlimit(1000000)
 ```
 
-although we still get TLE on two test cases.
-
-<IncompleteSection>
-
-move this to BFS section?
-
-</IncompleteSection>
-
-To resolve this, we can implement a non-recursive solution (which turns out to
-be slightly faster). You can imagine adding to `to_visit` as calling the
-function recursively and popping from `to_visit` as starting the execution of
-the recursive function (though they are not exactly equivalent in the strictest
-sense).
-
-```py
-def solve(n, adj):
-	unvisited = set(range(1, n + 1))
-	starts = set()
-
-	def dfs(start):
-		to_visit = [start]
-		while to_visit:
-			current = to_visit.pop()
-			for next in adj[current]:
-				if next in unvisited:
-					unvisited.remove(next)
-					to_visit.append(next)
-
-	while unvisited:
-		start = unvisited.pop()
-		starts.add(start)
-		dfs(start)
-
-	print(len(starts) - 1)
-	root = starts.pop()
-	for other in starts:
-		print(root, other)
-
-
-if __name__ == "__main__":
-	n, m = map(int, input().split())
-	adj = [set() for _ in range(n + 1)]
-	for _ in range(m):
-		u, v = map(int, input().split())
-		adj[u].add(v)
-		adj[v].add(u)
-	solve(n, adj)
-```
+although we still get TLE on two test cases. To resolve this, we can implement a BFS solution, as shown below.
 
 Recursion errors also come up frequently in [flood fill](/silver/ff) problems.
 
@@ -619,8 +788,105 @@ See [here.](https://codeforces.com/blog/entry/67883)
 
 ### BFS Solution
 
-<IncompleteSection />
+<LanguageSection>
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u;
+		--v;
+
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	vector<bool> visited(n);
+	vector<int> rep;
+
+	function<void(int start)> bfs = [&](int start) {
+		queue<int> todo;
+		todo.push(start);
+
+		while (!todo.empty()) {
+			int current_node = todo.front();
+			todo.pop();
+			visited[current_node] = 1;
+
+			for (int u : adj[current_node]) {
+				if (!visited[u]) { todo.push(u); }
+			}
+		}
+	};
+
+	for (int i = 0; i < n; i++) {
+		if (!visited[i]) {
+			rep.push_back(i);
+			bfs(i);
+		}
+	}
+
+	cout << (int)rep.size() - 1 << endl;
+
+	for (int i = 1; i < (int)rep.size(); i++) {
+		cout << rep[i - 1] + 1 << ' ' << rep[i] + 1 << endl;
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from collections import deque
+
+n, m = map(int, input().split())
+adj = [[] for _ in range(n)]
+
+for _ in range(m):
+	u, v = map(int, input().split())
+
+	adj[u - 1].append(v - 1)
+	adj[v - 1].append(u - 1)
+
+visited = [False] * n
+rep = []
+
+
+def bfs(start):
+	# visit all nodes in the connected component
+	todo = deque([start])
+	while todo:
+		current_node = todo.popleft()
+		visited[current_node] = True
+
+		for u in adj[current_node]:
+			if not visited[u]:
+				todo.append(u)
+
+
+for i in range(n):
+	if not visited[i]:
+		# i will represent this component
+		rep.append(i)
+		bfs(i)
+
+print(len(rep) - 1)
+for i in range(1, len(rep)):
+	print(rep[i - 1] + 1, rep[i] + 1)
+```
+
+</PySection>
+</LanguageSection>
 ### Problems
 
 <Problems problems="general" />
@@ -644,15 +910,13 @@ See [here.](https://codeforces.com/blog/entry/67883)
 	<Resource source="CP2" title="4.2.6 - Bipartite Check"/>
 </Resources>
 
-### DFS Solution
-
 The idea is that we can arbitrarily label a node and then run DFS. Every time we
 visit a new (unvisited) node, we set its color based on the edge rule. When we
 visit a previously visited node, check to see whether its color matches the edge
 rule.
 
+### DFS Solution
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -688,7 +952,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 <Warning>
@@ -753,12 +1016,121 @@ public class BuildingTeams {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 ### BFS Solution
 
-<IncompleteSection />
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u;
+		--v;
+
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	vector<int> color(n, -1);
+	bool ok = 1;
+	function<void(int start)> bfs = [&](int start) {
+		queue<pair<int, int>> todo;
+		todo.push({start, 0});
+
+		while (!todo.empty()) {
+			pair<int, int> cur = todo.front();
+			todo.pop();
+			color[cur.first] = cur.second;
+
+			for (int u : adj[cur.first]) {
+				if (color[u] == -1) {
+					todo.push({u, 1 - cur.second});
+				} else if (color[u] == cur.second) {
+					// contradiction!
+					ok = 0;
+					return;
+				}
+			}
+		}
+	};
+
+	for (int i = 0; i < n; i++) {
+		if (color[i] == -1) { bfs(i); }
+	}
+
+	if (ok) {
+		for (int i = 0; i < n; i++) { cout << color[i] + 1 << ' '; }
+		cout << endl;
+	} else {
+		cout << "IMPOSSIBLE" << endl;
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from collections import deque
+
+n, m = map(int, input().split())
+adj = [[] for i in range(n)]
+
+for _ in range(m):
+	u, v = map(int, input().split())
+
+	adj[u - 1].append(v - 1)
+	adj[v - 1].append(u - 1)
+
+color = [-1] * n
+ok = True
+
+
+def bfs(start):
+	global ok
+
+	todo = deque([(start, 0)])
+
+	while todo:
+		u, c = todo.popleft()
+		color[u] = c
+
+		for v in adj[u]:
+			if color[v] == -1:
+				todo.append((v, 1 - c))
+			elif color[v] == c:
+				# contradiction!
+				ok = False
+				return
+
+
+for i in range(n):
+	if color[i] == -1:
+		bfs(i)
+
+if ok:
+	for i in range(n):
+		print(color[i] + 1, end=" ")
+
+else:
+	print("IMPOSSIBLE")
+```
+
+</PySection>
+</LanguageSection>
 
 ### Problems
 
