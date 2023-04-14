@@ -74,7 +74,11 @@ export const LanguageSection = (props: {
       JavaSection: 'java',
       PySection: 'py',
     };
-    sections[typeToLang[type]] = child;
+    const lang = typeToLang[type];
+    if (lang in sections) {
+      throw new Error(`duplicate section of language ${lang}`);
+    }
+    sections[lang] = child;
   });
   return sectionFromLang(sections);
 };
