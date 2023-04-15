@@ -98,8 +98,8 @@ export default function General(): JSX.Element {
               >
                 Use Long Polling (Close and reopen tab after toggling) -{' '}
                 <span className="font-bold">
-                  Note: this may hinder performance! Only enable if nothing
-                  works.
+                  Enable this option ONLY if you encounter issues connecting to
+                  Firebase (nothing loads).
                 </span>
               </p>
             </div>
