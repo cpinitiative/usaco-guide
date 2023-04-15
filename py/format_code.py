@@ -78,11 +78,24 @@ def denotes_lang(line: str):
 	)
 
 
-def comment_codesnip(line: str):
+def comment_for_lang(lang: str):
+	if lang in ["cpp", "java"]:
+		return "//"
+	else:
+		assert lang in ["py"]
+		return "#"
+
+
+def comment_codesnip(lang: str, line: str):
 	line_stripped = line.lstrip()
 	cs = "CodeSnip"
 	if any(line_stripped.startswith(word) for word in [cs, "Begin" + cs, "End" + cs]):
-		return line[: len(line) - len(line_stripped)] + "// " + line_stripped
+		return (
+			line[: len(line) - len(line_stripped)]
+			+ comment_for_lang(lang)
+			+ " "
+			+ line_stripped
+		)
 	else:
 		return line
 
@@ -108,7 +121,7 @@ def format_path(path: str):
 				# 	print(f"skipping formatting {path}")
 				# 	nlines += prog
 				# else:
-				prog = [comment_codesnip(prog_line) for prog_line in prog]
+				prog = [comment_codesnip(lang, prog_line) for prog_line in prog]
 				prog = [match_indentation(line, prog_line) for prog_line in prog]
 				ori_prog = prog
 				prog = format_prog(lang, prog)
