@@ -5,7 +5,7 @@ title: Minimizing Haybales
 author: Aakash Gokhale
 ---
 
-[External Solution (C++)](http://www.usaco.org/current/data/sol_prob1_platinum_jan22.html)
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_prob1_platinum_jan22.html)
 
 ## Explanation
 
@@ -24,13 +24,13 @@ We can insert an element into the prefix by swapping it down to the left until i
 
 We can speed this up with square root decomposition. We can split the array into blocks of size $\sqrt{n}$.
 
-We know an element $a[i]$ can pass completely through a block if $a[i] + k \ge MAX$ and $a[i] - k \le MIN$ where $MAX$ and $MIN$ are the maximum and minimum elements of the block respectively. We can find the rightmost block that element $a[i]$ cannot pass through which takes at most O($\sqrt{n}$) since we check every block.
+We know an element $a[i]$ can pass completely through a block if $a[i] + k \ge \texttt{MAX}$ and $a[i] - k \le \texttt{MIN}$ where $\texttt{MAX}$ and $\texttt{MIN}$ are the maximum and minimum elements of the block respectively. We can find the rightmost block that element $a[i]$ cannot pass through which takes at most O($\sqrt{n}$) since we check every block.
 
 We can insert this element into the square root block at its correct position by swapping it down to the left inside the block till it reaches a place where it can't be swapped down anymore. This also takes $\mathcal{O}(\sqrt{N})$ time because of the block size.
 
-Now we need to swap it back towards the right until it reaches a point where which makes the array lexographically minimum. We can do this by finding the first block to the right of it that has it's $MAX > a[i]$ by checking each block again in $\mathcal{O}(\sqrt{N})$.
+Now we need to swap it back towards the right until it reaches a point where which makes the array lexographically minimum. We can do this by finding the first block to the right of it that has it's $\texttt{MAX} > a[i]$ by checking each block again in $\mathcal{O}(\sqrt{N})$.
 
-Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $MAX$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $MAX > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
+Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $\texttt{MAX}$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $\texttt{MAX} > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
 
 Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a ```vector``` in C++ or ```ArrayList``` in Java, is dependent on the size of the array which in our case which takes $\mathcal{O}(\sqrt{N})$. We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
 
