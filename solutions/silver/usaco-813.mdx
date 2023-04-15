@@ -88,11 +88,11 @@ We can use a sorted set in place of the linked list mentioned in the official
 solution.
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class SnowBoots {
-	//BeginCodeSnip{Boot Class}
+	// BeginCodeSnip{Boot Class}
 	static class Boot {
 		public int maxDepth;
 		public int maxSteps;
@@ -103,7 +103,7 @@ public class SnowBoots {
 			this.index = index;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("snowboots");
@@ -112,24 +112,20 @@ public class SnowBoots {
 		int bootNum = io.nextInt();
 
 		int[] tiles = new int[tileNum];
-		for (int t = 0; t < tileNum; t++) {
-			tiles[t] = io.nextInt();
-		}
+		for (int t = 0; t < tileNum; t++) { tiles[t] = io.nextInt(); }
 
 		Boot[] boots = new Boot[bootNum];
 		for (int i = 0; i < bootNum; i++) {
 			boots[i] = new Boot(io.nextInt(), io.nextInt(), i);
 		}
 		// sort the boots from greatest depth to least depth
-		Arrays.sort(boots, Comparator.comparingInt(b -> -b.maxDepth));
+		Arrays.sort(boots, Comparator.comparingInt(b -> - b.maxDepth));
 
 		// list of tile indices, sorted by snow depth
 		Integer[] rawTilesByDepth = new Integer[tileNum - 2];
-		for (int i = 1; i < tileNum - 1; i++) {
-			rawTilesByDepth[i - 1] = i;
-		}
+		for (int i = 1; i < tileNum - 1; i++) { rawTilesByDepth[i - 1] = i; }
 		// we need the Integer class to use custom comparators
-		Arrays.sort(rawTilesByDepth, Comparator.comparingInt(t -> -tiles[t]));
+		Arrays.sort(rawTilesByDepth, Comparator.comparingInt(t -> - tiles[t]));
 
 		// cast the Integers back to ints for performance reasons
 		int[] tilesByDepth = new int[tileNum - 2];
@@ -138,9 +134,7 @@ public class SnowBoots {
 		}
 
 		TreeSet<Integer> validTiles = new TreeSet<>();
-		for (int t = 0; t < tileNum; t++) {
-			validTiles.add(t);
-		}
+		for (int t = 0; t < tileNum; t++) { validTiles.add(t); }
 
 		// the deepest tile that can still be traversed with the boot we're at
 		int tileAt = 0;
@@ -152,27 +146,24 @@ public class SnowBoots {
 			 * remove all the tiles that this boot can't traverse
 			 * & update tile_at & needed_step accordingly
 			 */
-			while (tileAt < tilesByDepth.length
-					&& tiles[tilesByDepth[tileAt]] > b.maxDepth) {
+			while (tileAt < tilesByDepth.length &&
+			       tiles[tilesByDepth[tileAt]] > b.maxDepth) {
 				int invalid = tilesByDepth[tileAt];
 				validTiles.remove(invalid);
-				neededStep = Math.max(
-					neededStep,
-					validTiles.ceiling(invalid) - validTiles.floor(invalid)
-				);
+				neededStep =
+				    Math.max(neededStep, validTiles.ceiling(invalid) -
+				                             validTiles.floor(invalid));
 				tileAt++;
 			}
 			canReach[b.index] = b.maxSteps >= neededStep;
 		}
 
-		for (boolean b : canReach) {
-			io.println(b ? 1 : 0);
-		}
+		for (boolean b : canReach) { io.println(b ? 1 : 0); }
 
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

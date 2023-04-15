@@ -86,7 +86,7 @@ public class Measurement {
 	static final String[] NAMES = new String[] {"Bessie", "Elsie", "Mildred"};
 	static final int START_AMT = 7;
 
-	//BeginCodeSnip{Update Class}
+	// BeginCodeSnip{Update Class}
 	static class Update {
 		public int day;
 		public String cow;
@@ -97,19 +97,18 @@ public class Measurement {
 			this.change = change;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("measurement.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("measurement.in"));
 		int updateNum = Integer.parseInt(read.readLine());
 		Update[] updates = new Update[updateNum];
 		for (int i = 0; i < updateNum; i++) {
 			StringTokenizer update = new StringTokenizer(read.readLine());
-			updates[i] = new Update(
-				Integer.parseInt(update.nextToken()),
-				update.nextToken(),
-				Integer.parseInt(update.nextToken())
-			);
+			updates[i] = new Update(Integer.parseInt(update.nextToken()),
+			                        update.nextToken(),
+			                        Integer.parseInt(update.nextToken()));
 		}
 
 		Arrays.sort(updates, Comparator.comparingInt(u -> u.day));
@@ -119,9 +118,7 @@ public class Measurement {
 		 * Later, we'll change the output values based on input.
 		 */
 		Map<String, Integer> outputs = new HashMap<>();
-		for (String name : NAMES) {
-			outputs.put(name, START_AMT);
-		}
+		for (String name : NAMES) { outputs.put(name, START_AMT); }
 
 		// The cows w/ the highest milk output.
 		List<String> display = Arrays.asList(NAMES);
@@ -137,9 +134,7 @@ public class Measurement {
 
 			List<String> newDisplay = new ArrayList<>();
 			for (Map.Entry<String, Integer> o : outputs.entrySet()) {
-				if (o.getValue() == maxOutput) {
-					newDisplay.add(o.getKey());
-				}
+				if (o.getValue() == maxOutput) { newDisplay.add(o.getKey()); }
 			}
 
 			// Update answer if old winner is different than new winner.

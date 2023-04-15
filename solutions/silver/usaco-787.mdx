@@ -92,7 +92,7 @@ import java.io.*;
 import java.util.*;
 
 public class Rental {
-	//BeginCodeSnip{Shop Class}
+	// BeginCodeSnip{Shop Class}
 	static class Shop {
 		public int price;
 		public int amt;
@@ -101,7 +101,7 @@ public class Rental {
 			this.price = price;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("rental.in"));
@@ -119,10 +119,8 @@ public class Rental {
 		Shop[] shops = new Shop[m];
 		for (int i = 0; i < m; i++) {
 			StringTokenizer shop = new StringTokenizer(read.readLine());
-			shops[i] = new Shop(
-				Integer.parseInt(shop.nextToken()),
-				Integer.parseInt(shop.nextToken())
-			);
+			shops[i] = new Shop(Integer.parseInt(shop.nextToken()),
+			                    Integer.parseInt(shop.nextToken()));
 		}
 
 		int[] rent = new int[r];
@@ -139,7 +137,7 @@ public class Rental {
 		}
 
 		// sort shops by selling price in descending order
-		Arrays.sort(shops, Comparator.comparingInt(s -> -s.price));
+		Arrays.sort(shops, Comparator.comparingInt(s -> - s.price));
 
 		// sort rent in descending order
 		Arrays.sort(rent);
@@ -177,9 +175,7 @@ public class Rental {
 			if (rentAt >= r || soldMoney > rent[rentAt]) {
 				maxMoney += soldMoney;
 				shopAt = currShop;
-				if (shopAt < m) {
-					shops[shopAt].amt -= last;
-				}
+				if (shopAt < m) { shops[shopAt].amt -= last; }
 				cowAt++;
 			} else {
 				maxMoney += rent[rentAt];

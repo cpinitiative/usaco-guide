@@ -79,9 +79,7 @@ public class Teamwork {
 		int cows = kattio.nextInt();
 		int teamSize = kattio.nextInt();
 		int[] input = new int[cows];
-		for (int i = 0; i < cows; i++) {
-			input[i] = kattio.nextInt();
-		}
+		for (int i = 0; i < cows; i++) { input[i] = kattio.nextInt(); }
 
 		/*
 		 * dp[i] is the maximum sum of skill level of the first i cows,
@@ -95,9 +93,7 @@ public class Teamwork {
 			int maxSkill = input[right];
 			for (int left = right; left >= 0; left--) {
 				int currSize = right - left + 1;
-				if (currSize > teamSize) {
-					break;
-				}
+				if (currSize > teamSize) { break; }
 				maxSkill = Math.max(maxSkill, input[left]);
 				/*
 				 * The 'new' result is the sum of the skill levels of the
@@ -106,9 +102,8 @@ public class Teamwork {
 				if (left == 0) {
 					dp[right] = Math.max(dp[right], maxSkill * currSize);
 				} else {
-					dp[right] = Math.max(
-							dp[right], dp[left - 1] + maxSkill * currSize
-					);
+					dp[right] =
+					    Math.max(dp[right], dp[left - 1] + maxSkill * currSize);
 				}
 			}
 		}

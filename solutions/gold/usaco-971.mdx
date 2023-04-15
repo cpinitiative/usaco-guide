@@ -119,7 +119,7 @@ import java.io.*;
 import java.util.*;
 
 public class MoortalCowmbat {
-	public static int MAXN = (int) 1e5;
+	public static int MAXN = (int)1e5;
 	public static int MAXL = 26;
 	public static int[][] freq = new int[MAXN][MAXL];
 	public static void main(String[] args) throws IOException {
@@ -131,9 +131,7 @@ public class MoortalCowmbat {
 
 		int[][] cost = new int[MAXL][MAXL];
 		for (int i = 0; i < M; i++) {
-			for (int j = 0; j < M; j++) {
-				cost[i][j] = io.nextInt();
-			}
+			for (int j = 0; j < M; j++) { cost[i][j] = io.nextInt(); }
 		}
 
 		// Calculate the minimum cost to change letter i to j.
@@ -150,9 +148,7 @@ public class MoortalCowmbat {
 		 * in the string in the range from 0 to i.
 		 */
 		for (int i = 1; i <= N; i++) {
-			for (int j = 0; j < M; j++) {
-				freq[i][j] = freq[i - 1][j];
-			}
+			for (int j = 0; j < M; j++) { freq[i][j] = freq[i - 1][j]; }
 			freq[i][S[i - 1] - 'a']++;
 		}
 
@@ -182,16 +178,13 @@ public class MoortalCowmbat {
 			}
 		}
 
-
-		//If (N >= 2K) there is >= 1 unique letter streaks.
+		// If (N >= 2K) there is >= 1 unique letter streaks.
 		for (int idx = (2 * K - 1); idx < N; idx++) {
 			// Continue the previous streak.
 			for (int j = 0; j < M; j++) {
 				dp[idx][j] = dp[idx - 1][j];
 				// Change the letter.
-				if (S[idx] - 'a' != j) {
-					dp[idx][j] += cost[S[idx] - 'a'][j];
-				}
+				if (S[idx] - 'a' != j) { dp[idx][j] += cost[S[idx] - 'a'][j]; }
 			}
 
 			// Make a new streak with letter 'let1'.
@@ -208,19 +201,18 @@ public class MoortalCowmbat {
 			for (int j = 1; j < M; j++) {
 				ans[idx] = Math.min(ans[idx], dp[idx][j]);
 			}
-
 		}
 		io.println(ans[N - 1]);
 		io.close();
-
 	}
 
-	// count(i, j, k) is the number of appearances of letter k between index i and j.
+	// count(i, j, k) is the number of appearances of letter k between index i
+	// and j.
 	static int count(int start, int end, int let) {
 		return freq[end + 1][let] - freq[start][let];
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>
