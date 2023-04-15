@@ -84,8 +84,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class FencePlan {
 	static Cow[] cows;
@@ -101,8 +101,8 @@ public class FencePlan {
 		int y;
 	}
 
-	static void floodfill (int currentCow) {  // dfs flood fill
-		visited[currentCow] = true;  // mark as visited
+	static void floodfill(int currentCow) {  // dfs flood fill
+		visited[currentCow] = true;          // mark as visited
 		Cow cow = cows[currentCow];
 
 		lowX = Integer.min(lowX, cow.x);  // take minimum and maximums
@@ -111,13 +111,11 @@ public class FencePlan {
 		highY = Integer.max(highY, cow.y);
 
 		for (int connectedCow : graph[currentCow]) {  // for each connected cow
-			if (!visited[connectedCow]) {
-				floodfill(connectedCow);
-			}
+			if (!visited[connectedCow]) { floodfill(connectedCow); }
 		}
 	}
 
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("fenceplan");
 
 		int n = io.nextInt();
@@ -132,7 +130,7 @@ public class FencePlan {
 			cows[x] = cow;
 		}
 
-		graph = new ArrayList[n + 1];  // one indexed
+		graph = new ArrayList[n + 1];             // one indexed
 		for (int x = 0; x < graph.length; x++) {  // initialize
 			graph[x] = new ArrayList<>();
 		}
@@ -145,13 +143,15 @@ public class FencePlan {
 		}
 
 		int lowestPerimeter = Integer.MAX_VALUE;
-		for (int cow = 1; cow <= n; cow++) {  // go through each connected component
+		for (int cow = 1; cow <= n;
+		     cow++) {  // go through each connected component
 			if (!visited[cow]) {
 				floodfill(cow);
 
 				// calculate the perimeter
 				int perimeter = ((highX - lowX) + (highY - lowY)) * 2;
-				lowestPerimeter = Math.min(lowestPerimeter, perimeter);  // track lowest
+				lowestPerimeter =
+				    Math.min(lowestPerimeter, perimeter);  // track lowest
 
 				lowX = Integer.MAX_VALUE;  // reset values
 				highX = Integer.MIN_VALUE;
@@ -163,7 +163,7 @@ public class FencePlan {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

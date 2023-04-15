@@ -104,26 +104,22 @@ Due to Java's relatively slow speed, the below solution will often TLE on some t
 </Warning>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class WormSort {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("wormsort");
 
 		int cowNum = io.nextInt();
 		int wormholeNum = io.nextInt();
 
 		int[] cows = new int[cowNum];
-		for (int c = 0; c < cowNum; c++) {
-			cows[c] = io.nextInt() - 1;
-		}
+		for (int c = 0; c < cowNum; c++) { cows[c] = io.nextInt() - 1; }
 
 		int maxWidth = 0;
 		List<int[]>[] neighbors = new ArrayList[cowNum];
-		for (int c = 0; c < cowNum; c++) {
-			neighbors[c] = new ArrayList<>();
-		}
+		for (int c = 0; c < cowNum; c++) { neighbors[c] = new ArrayList<>(); }
 		for (int w = 0; w < wormholeNum; w++) {
 			int c1 = io.nextInt() - 1;
 			int c2 = io.nextInt() - 1;
@@ -143,10 +139,9 @@ public class WormSort {
 			Arrays.fill(component, -1);
 			int currComp = 0;
 			for (int c = 0; c < cowNum; c++) {
-				if (component[c] != -1) {
-					continue;
-				}
-				List<Integer> frontier = new ArrayList<>(Collections.singletonList(c));
+				if (component[c] != -1) { continue; }
+				List<Integer> frontier =
+				    new ArrayList<>(Collections.singletonList(c));
 				while (!frontier.isEmpty()) {
 					int curr = frontier.remove(frontier.size() - 1);
 					component[curr] = currComp;
@@ -179,7 +174,7 @@ public class WormSort {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -201,45 +196,40 @@ $\mathcal{O}(\alpha(N))$ using a
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
-	private:
-		vector<int> parent;
-		vector<int> size;
-	public:
-		DSU(int size) : parent(size), size(size, 1) {
-			for (int i = 0; i < size; i++) {
-				parent[i] = i;
-			}
-		}
+  private:
+	vector<int> parent;
+	vector<int> size;
 
-		int get_top(int n) {
-			return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
-		}
+  public:
+	DSU(int size) : parent(size), size(size, 1) {
+		for (int i = 0; i < size; i++) { parent[i] = i; }
+	}
 
-		bool link(int n1, int n2) {
-			n1 = get_top(n1);
-			n2 = get_top(n2);
-			if (n1 == n2) {
-				return false;
-			}
-			if (size[n2] > size[n1]) {
-				return link(n2, n1);
-			}
-			parent[n2] = n1;
-			size[n1] += size[n2];
-			return true;
-		}
+	int get_top(int n) {
+		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (size[n2] > size[n1]) { return link(n2, n1); }
+		parent[n2] = n1;
+		size[n1] += size[n2];
+		return true;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 struct Wormhole {
 	int c1, c2;
@@ -253,14 +243,14 @@ int main() {
 	read >> cow_num >> wormhole_num;
 
 	vector<int> cows(cow_num);
-	for (int& c : cows) {
+	for (int &c : cows) {
 		read >> c;
 		c--;  // make the cows 0-indexed
 	}
 
 	int max_width = 0;
 	vector<Wormhole> wormholes(wormhole_num);
-	for (Wormhole& w : wormholes) {
+	for (Wormhole &w : wormholes) {
 		read >> w.c1 >> w.c2 >> w.width;
 		w.c1--;
 		w.c2--;
@@ -274,10 +264,8 @@ int main() {
 		int mid = (lo + hi) / 2;
 
 		DSU dsu(cow_num);
-		for (const Wormhole& w : wormholes) {
-			if (w.width >= mid) {
-				dsu.link(w.c1, w.c2);
-			}
+		for (const Wormhole &w : wormholes) {
+			if (w.width >= mid) { dsu.link(w.c1, w.c2); }
 		}
 
 		bool sortable = true;
@@ -296,7 +284,8 @@ int main() {
 		}
 	}
 
-	std::ofstream("wormsort.out") << (valid == max_width + 1 ? -1 : valid) << endl;
+	std::ofstream("wormsort.out")
+	    << (valid == max_width + 1 ? -1 : valid) << endl;
 }
 ```
 
@@ -304,27 +293,24 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class WormSort {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("wormsort");
 
 		int cowNum = io.nextInt();
 		int wormholeNum = io.nextInt();
 
 		int[] cows = new int[cowNum];
-		for (int c = 0; c < cowNum; c++) {
-			cows[c] = io.nextInt() - 1;
-		}
+		for (int c = 0; c < cowNum; c++) { cows[c] = io.nextInt() - 1; }
 
 		int maxWidth = 0;
 		List<int[]> wormholes = new ArrayList<>();
 		for (int w = 0; w < wormholeNum; w++) {
-			wormholes.add(new int[] {
-				io.nextInt() - 1, io.nextInt() - 1, io.nextInt()
-			});
+			wormholes.add(
+			    new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
 			maxWidth = Math.max(maxWidth, wormholes.get(w)[2]);
 		}
 
@@ -336,9 +322,7 @@ public class WormSort {
 
 			DSU dsu = new DSU(cowNum);
 			for (int[] w : wormholes) {
-				if (w[2] >= mid) {
-					dsu.link(w[0], w[1]);
-				}
+				if (w[2] >= mid) { dsu.link(w[0], w[1]); }
 			}
 
 			boolean sortable = true;
@@ -361,10 +345,10 @@ public class WormSort {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
 	private final int[] parent;
 	private final int[] size;
@@ -384,18 +368,14 @@ class DSU {
 	public boolean link(int e1, int e2) {
 		e1 = getTop(e1);
 		e2 = getTop(e2);
-		if (e1 == e2) {
-			return false;
-		}
-		if (size[e2] > size[e1]) {
-			return link(e2, e1);
-		}
+		if (e1 == e2) { return false; }
+		if (size[e2] > size[e1]) { return link(e2, e1); }
 		parent[e2] = e1;
 		size[e1] += size[e2];
 		return true;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>
@@ -415,53 +395,48 @@ all $p_i$ are in the same component as $i$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
-	private:
-		vector<int> parent;
-		vector<int> size;
-	public:
-		DSU(int size) : parent(size), size(size, 1) {
-			for (int i = 0; i < size; i++) {
-				parent[i] = i;
-			}
-		}
+  private:
+	vector<int> parent;
+	vector<int> size;
 
-		int get_top(int n) {
-			return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
-		}
+  public:
+	DSU(int size) : parent(size), size(size, 1) {
+		for (int i = 0; i < size; i++) { parent[i] = i; }
+	}
 
-		bool link(int n1, int n2) {
-			n1 = get_top(n1);
-			n2 = get_top(n2);
-			if (n1 == n2) {
-				return false;
-			}
-			if (size[n2] > size[n1]) {
-				return link(n2, n1);
-			}
-			parent[n2] = n1;
-			size[n1] += size[n2];
-			return true;
-		}
+	int get_top(int n) {
+		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (size[n2] > size[n1]) { return link(n2, n1); }
+		parent[n2] = n1;
+		size[n1] += size[n2];
+		return true;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 struct Wormhole {
 	int c1, c2;
 	int width;
 };
 
-bool operator<(const Wormhole& w1, const Wormhole& w2) {
+bool operator<(const Wormhole &w1, const Wormhole &w2) {
 	return w1.width < w2.width;
 }
 
@@ -472,14 +447,14 @@ int main() {
 	read >> cow_num >> wormhole_num;
 
 	vector<int> cows(cow_num);
-	for (int& c : cows) {
+	for (int &c : cows) {
 		read >> c;
 		c--;  // make the cows 0-indexed
 	}
 
 	int max_width = 0;
 	vector<Wormhole> wormholes(wormhole_num);
-	for (Wormhole& w : wormholes) {
+	for (Wormhole &w : wormholes) {
 		read >> w.c1 >> w.c2 >> w.width;
 		w.c1--;
 		w.c2--;
@@ -497,9 +472,9 @@ int main() {
 		}
 	}
 
-	std::ofstream("wormsort.out") << (
-		wormhole_at == wormhole_num ? -1 : wormholes[wormhole_at].width
-	) << endl;
+	std::ofstream("wormsort.out")
+	    << (wormhole_at == wormhole_num ? -1 : wormholes[wormhole_at].width)
+	    << endl;
 }
 ```
 
@@ -507,27 +482,24 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class WormSort {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("wormsort");
 
 		int cowNum = io.nextInt();
 		int wormholeNum = io.nextInt();
 
 		int[] cows = new int[cowNum];
-		for (int c = 0; c < cowNum; c++) {
-			cows[c] = io.nextInt() - 1;
-		}
+		for (int c = 0; c < cowNum; c++) { cows[c] = io.nextInt() - 1; }
 
 		int maxWidth = 0;
 		List<int[]> wormholes = new ArrayList<>();
 		for (int w = 0; w < wormholeNum; w++) {
-			wormholes.add(new int[] {
-				io.nextInt() - 1, io.nextInt() - 1, io.nextInt()
-			});
+			wormholes.add(
+			    new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
 			maxWidth = Math.max(maxWidth, wormholes.get(w)[2]);
 		}
 
@@ -538,18 +510,20 @@ public class WormSort {
 		for (int i = 0; i < cowNum; i++) {
 			while (dsu.getTop(i) != dsu.getTop(cows[i])) {
 				wormholeAt--;
-				dsu.link(wormholes.get(wormholeAt)[0], wormholes.get(wormholeAt)[1]);
+				dsu.link(wormholes.get(wormholeAt)[0],
+				         wormholes.get(wormholeAt)[1]);
 			}
 		}
 
-		io.println(wormholeAt == wormholeNum ? -1 : wormholes.get(wormholeAt)[2]);
+		io.println(wormholeAt == wormholeNum ? -1
+		                                     : wormholes.get(wormholeAt)[2]);
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
 	private final int[] parent;
 	private final int[] size;
@@ -569,18 +543,14 @@ class DSU {
 	public boolean link(int e1, int e2) {
 		e1 = getTop(e1);
 		e2 = getTop(e2);
-		if (e1 == e2) {
-			return false;
-		}
-		if (size[e2] > size[e1]) {
-			return link(e2, e1);
-		}
+		if (e1 == e2) { return false; }
+		if (size[e2] > size[e1]) { return link(e2, e1); }
 		parent[e2] = e1;
 		size[e1] += size[e2];
 		return true;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>

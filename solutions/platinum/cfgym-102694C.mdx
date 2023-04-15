@@ -52,8 +52,8 @@ the sloth will reach.
 import java.io.*;
 import java.util.*;
 public class SlothNaptime {
-	public static final int MAXN = (int) 3e5 + 5;
-	public static final int LOGN = (int) (Math.log(MAXN) / Math.log(2)) + 1;
+	public static final int MAXN = (int)3e5 + 5;
+	public static final int LOGN = (int)(Math.log(MAXN) / Math.log(2)) + 1;
 	public static ArrayList<Integer>[] adj = new ArrayList[MAXN];
 	// anc[i][j] is the 2^j-th parent of i.
 	public static int[][] anc = new int[MAXN][LOGN];
@@ -62,10 +62,8 @@ public class SlothNaptime {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		int N = io.nextInt();
-		for (int i = 0; i < MAXN; i++) {
-			adj[i] = new ArrayList<>();
-		}
-		for (int i = 0; i < N-1; i++) {
+		for (int i = 0; i < MAXN; i++) { adj[i] = new ArrayList<>(); }
+		for (int i = 0; i < N - 1; i++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
 			adj[a].add(b);
@@ -112,9 +110,7 @@ public class SlothNaptime {
 	// jump(i, j) returns jth ancestor of node i.
 	public static int jump(int node, int level) {
 		for (int i = 0; i < LOGN; i++) {
-			if ((level & (1 << i)) > 0) {
-				node = anc[node][i];
-			}
+			if ((level & (1 << i)) > 0) { node = anc[node][i]; }
 		}
 		return (node > -1) ? node : 0;
 	}
@@ -128,9 +124,7 @@ public class SlothNaptime {
 		}
 
 		a = jump(a, depth[a] - depth[b]);
-		if (a == b) {
-			return a;
-		}
+		if (a == b) { return a; }
 		for (int i = LOGN - 1; i >= 0; i--) {
 			int newA = anc[a][i];
 			int newB = anc[b][i];
@@ -142,7 +136,7 @@ public class SlothNaptime {
 		return anc[a][0];
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

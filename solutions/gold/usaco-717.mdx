@@ -90,8 +90,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class VisitFJ {
 	public static void main(String[] args) throws IOException {
@@ -109,13 +109,11 @@ public class VisitFJ {
 
 		for (int i = 0; i < N; i++) {
 			Arrays.fill(dist[i], Integer.MAX_VALUE);
-			for (int j = 0; j < N; j++) {
-				w[i][j] = io.nextInt();
-			}
+			for (int j = 0; j < N; j++) { w[i][j] = io.nextInt(); }
 		}
 
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		pq.add(new Edge(new int[]{0, 0}, 0));
+		pq.add(new Edge(new int[] {0, 0}, 0));
 		while (!pq.isEmpty()) {
 			Edge cur = pq.poll();
 			int[] pos = cur.t;
@@ -124,7 +122,8 @@ public class VisitFJ {
 
 			// If within 3 blocks away, update the minimum weight needed
 			if (d < 3 && d > 0) {
-				dist[N - 1][N - 1] = Math.min(dist[N - 1][N - 1], cur.w + T * d);
+				dist[N - 1][N - 1] =
+				    Math.min(dist[N - 1][N - 1], cur.w + T * d);
 			}
 
 			for (int i = 0; i < dx.length; i++) {
@@ -132,19 +131,16 @@ public class VisitFJ {
 				int ny = pos[1] + dy[i];
 
 				// Continue if new point is out of bound
-				if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
-					continue;
-				}
+				if (nx < 0 || nx >= N || ny < 0 || ny >= N) { continue; }
 
 				int nw = cur.w + w[nx][ny] + T * 3;
 
-				// If new distance is greater than current minimum distance, it is not needed
-				if (nw > dist[nx][ny]) {
-					continue;
-				}
+				// If new distance is greater than current minimum distance, it
+				// is not needed
+				if (nw > dist[nx][ny]) { continue; }
 				dist[nx][ny] = nw;
 
-				pq.add(new Edge(new int[]{nx, ny}, nw));
+				pq.add(new Edge(new int[] {nx, ny}, nw));
 			}
 		}
 
@@ -152,7 +148,7 @@ public class VisitFJ {
 		io.close();
 	}
 
-	private static class Edge implements Comparable<Edge>{
+	private static class Edge implements Comparable<Edge> {
 		int[] t;
 		int w;
 		public Edge(int[] t, int w) {
@@ -166,7 +162,7 @@ public class VisitFJ {
 		}
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>

@@ -62,15 +62,15 @@ print(censored)
 #include "bits/stdc++.h"
 using namespace std;
 
-//BeginCodeSnip{{USACO-style I/O. See General / Input & Output}}
+// BeginCodeSnip{{USACO-style I/O. See General / Input & Output}}
 void setIO(string name = "") {
 	cin.tie(0)->sync_with_stdio(0);
-	if ((int) name.size()) {
+	if ((int)name.size()) {
 		freopen((name + ".in").c_str(), "r", stdin);
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	setIO("censor");
@@ -83,8 +83,8 @@ int main() {
 	for (int i = 0; i < s.size(); i++) {
 		censored += s[i];
 		// If the end of the string is t, we remove t from the end
-		if (censored.size() > t.size()
-				&& censored.substr(censored.size() - t.size()) == t) {
+		if (censored.size() > t.size() &&
+		    censored.substr(censored.size() - t.size()) == t) {
 			censored.resize(censored.size() - t.size());
 		}
 	}
@@ -95,11 +95,11 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Censor {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("censor");
 		String s = io.next();
 		String t = io.next();
@@ -111,12 +111,15 @@ public class Censor {
 		// Add each character to the censored string
 		for (int x = t.length() - 1; x < s.length(); x++) {
 			censored = censored.append(s.charAt(x));
-			// We need to check if our current string's longer than the censored word
+			// We need to check if our current string's longer than the censored
+			// word
 			if (censored.length() >= t.length()) {
-				String check = censored.substring(censored.length() - t.length());
+				String check =
+				    censored.substring(censored.length() - t.length());
 				// If the end of the string is t, we remove t from the end
 				if (check.equals(t)) {
-					censored.delete(censored.length() - t.length(), censored.length());
+					censored.delete(censored.length() - t.length(),
+					                censored.length());
 				}
 			}
 		}
@@ -124,7 +127,7 @@ public class Censor {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>

@@ -87,15 +87,16 @@ Java exceeds the time limit on two test cases.
 
 ```java
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class TreeDistancesI {
 	static ArrayList<Integer>[] adj;
 	static int MAX_N = 200000;
-	static int [] firstMax = new int[MAX_N + 1];  // to store first-max length.
-	static int [] secondMax = new int[MAX_N + 1]; // to store second-max length.
-	static int [] c = new int[MAX_N + 1]; // to store child for path of max length.
+	static int[] firstMax = new int[MAX_N + 1];   // to store first-max length.
+	static int[] secondMax = new int[MAX_N + 1];  // to store second-max length.
+	static int[] c =
+	    new int[MAX_N + 1];  // to store child for path of max length.
 
 	public static void dfs(int v, int p) {
 		firstMax[v] = 0;
@@ -126,21 +127,19 @@ public class TreeDistancesI {
 				}
 			} else {
 				secondMax[x] = firstMax[x];
-				firstMax[x] =  firstMax[v] + 1;
+				firstMax[x] = firstMax[v] + 1;
 				c[x] = v;
 			}
 			dfs2(x, v);
 		}
 	}
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n, u, v;
 		n = io.nextInt();
 		adj = new ArrayList[n + 1];
-		for (int x = 0; x < adj.length; x++) {
-			adj[x] = new ArrayList();
-		}
+		for (int x = 0; x < adj.length; x++) { adj[x] = new ArrayList(); }
 
 		for (int i = 0; i < n - 1; i++) {
 			u = io.nextInt();
@@ -152,13 +151,11 @@ public class TreeDistancesI {
 		dfs(1, -1);
 		dfs2(1, -1);
 
-		for (int i = 1; i <= n; i++) {
-			io.print(firstMax[i] + " ");
-		}
+		for (int i = 1; i <= n; i++) { io.print(firstMax[i] + " "); }
 
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>

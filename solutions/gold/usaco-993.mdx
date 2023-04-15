@@ -86,9 +86,7 @@ public class TimeIsMooney {
 
 		// amount of moonies Bessie can make at each city
 		int[] values = new int[n];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = io.nextInt();
-		}
+		for (int i = 0; i < values.length; i++) { values[i] = io.nextInt(); }
 
 		List<List<Integer>> adj = new ArrayList<>();
 		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
@@ -101,9 +99,7 @@ public class TimeIsMooney {
 		// dp[t][i] = max amount of moonies Bessie can make after t days,
 		// ending at city i
 		long[][] dp = new long[T_MAX][n];
-		for (int i = 0; i < T_MAX; i++) {
-			Arrays.fill(dp[i], -1);
-		}
+		for (int i = 0; i < T_MAX; i++) { Arrays.fill(dp[i], -1); }
 
 		long best = 0;
 		dp[0][0] = 0;
@@ -114,9 +110,7 @@ public class TimeIsMooney {
 					// visit all cities adjacent to i, update dp array
 					for (int neighbor : adj.get(i)) {
 						dp[t + 1][neighbor] = Math.max(
-							dp[t + 1][neighbor],
-							dp[t][i] + values[neighbor]
-						);
+						    dp[t + 1][neighbor], dp[t][i] + values[neighbor]);
 					}
 				}
 			}

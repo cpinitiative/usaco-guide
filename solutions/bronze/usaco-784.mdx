@@ -166,11 +166,11 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Lifeguards {
-	//BeginCodeSnip{Lifeguard Class}
+	// BeginCodeSnip{Lifeguard Class}
 	static class Lifeguard {
 		public int start, end;
 
@@ -179,19 +179,20 @@ public class Lifeguards {
 			this.end = end;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("lifeguards.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("lifeguards.in"));
 		int n = Integer.parseInt(read.readLine());
 
 		Lifeguard[] lifeguards = new Lifeguard[n];
-		int maxTime = 0; // Max time we'll have to process up to
+		int maxTime = 0;  // Max time we'll have to process up to
 		for (int i = 0; i < n; i++) {
 			StringTokenizer lifeguard = new StringTokenizer(read.readLine());
-			lifeguards[i] = new Lifeguard(
-					Integer.parseInt(lifeguard.nextToken()),
-					Integer.parseInt(lifeguard.nextToken()));
+			lifeguards[i] =
+			    new Lifeguard(Integer.parseInt(lifeguard.nextToken()),
+			                  Integer.parseInt(lifeguard.nextToken()));
 			maxTime = Math.max(maxTime, lifeguards[i].end);
 		}
 		read.close();
@@ -209,7 +210,8 @@ public class Lifeguards {
 					// Check that it's not the fired cow
 					if (j != i) {
 						if (lifeguards[j].start <= t && t < lifeguards[j].end) {
-							// One more time slot covered- no need to search further
+							// One more time slot covered- no need to search
+							// further
 							timeCovered++;
 							break;
 						}

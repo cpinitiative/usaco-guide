@@ -30,7 +30,7 @@ using namespace std;
 
 using pii = pair<int, int>;
 
-//BeginCodeSnip{Suffix Automaton}
+// BeginCodeSnip{Suffix Automaton}
 /**
  * Generates the Suffix Automaton of a given string
  * Complexity: O(|S|)
@@ -39,7 +39,8 @@ struct SuffixAuto {
 	struct State {
 		int len, link, pos;
 		int next[26];
-		State(int len = 0, int link = -1, int pos = -1) : len(len), link(link), pos(pos) {
+		State(int len = 0, int link = -1, int pos = -1)
+		    : len(len), link(link), pos(pos) {
 			memset(next, -1, sizeof(next));
 		}
 	};
@@ -51,9 +52,7 @@ struct SuffixAuto {
 	SuffixAuto(const string &S) {
 		states.reserve(2 * S.size());
 		last = state();
-		for (char c : S) {
-			extend(c);
-		}
+		for (char c : S) { extend(c); }
 	}
 
 	void extend(char l) {
@@ -87,14 +86,12 @@ struct SuffixAuto {
 		for (char _c : P) {
 			int c = encode(_c);
 			s = states[s].next[c];
-			if (s == -1) {
-				return -1;
-			}
+			if (s == -1) { return -1; }
 		}
 		return s;
 	}
 
-private:
+  private:
 	int last;
 
 	int encode(char c) { return c - 'a'; }
@@ -104,7 +101,7 @@ private:
 		return states.size() - 1;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 const int MAXN = 1e5 + 1;
 
@@ -122,13 +119,9 @@ vector<int> ord;  // visited nodes in dfs
 
 void dfs(int u) {
 	int l = ord.size();
-	if (sa.states[u].pos != -1) {
-		ord.PB(sa.states[u].pos);
-	}
+	if (sa.states[u].pos != -1) { ord.PB(sa.states[u].pos); }
 
-	for (int v : suffix_link_tree[u]) {
-		dfs(v);
-	}
+	for (int v : suffix_link_tree[u]) { dfs(v); }
 
 	if (queries[u].size()) {
 		int r = ord.size();
@@ -140,8 +133,7 @@ void dfs(int u) {
 			}
 			if (t != INT_MAX) {
 				ans[q] += t;
-			}
-			else {
+			} else {
 				ans[q] = -1;
 			}
 		}
@@ -155,7 +147,8 @@ int main() {
 		suffix_link_tree[sa.states[i].link].push_back(i);
 	}
 	for (int i = 0; i < Q; i++) {
-		int K; string P;
+		int K;
+		string P;
 		cin >> K >> P;
 		int s = sa.run(P);
 		if (s == -1) {
@@ -168,9 +161,7 @@ int main() {
 
 	dfs(0);
 
-	for (int i = 0; i < Q; i++) {
-		cout << ans[i] << '\n';
-	}
+	for (int i = 0; i < Q; i++) { cout << ans[i] << '\n'; }
 }
 ```
 
