@@ -82,7 +82,7 @@ Floyd-Warshall is suitable because of the low $N (N \le 500)$, and the inclusion
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
 ll INF = 1e18;
 
@@ -125,7 +125,6 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
 	// CodeSnip{Kattio}
 
@@ -137,13 +136,12 @@ public class Main {
 		long[][] mat = new long[n][n];
 		long INF = (long)1e18;
 
-		for(long[] row : mat) {
-			Arrays.fill(row, INF);
-		}
+		for (long[] row : mat) { Arrays.fill(row, INF); }
 
 		for (int i = 0; i < m; i++) {
 			int u = io.nextInt(), v = io.nextInt(), w = io.nextInt();
-			u--; v--;
+			u--;
+			v--;
 			if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
 		}
 
@@ -156,7 +154,8 @@ public class Main {
 
 		while (q-- > 0) {
 			int u = io.nextInt(), v = io.nextInt();
-			u--; v--;
+			u--;
+			v--;
 			if (u == v) mat[u][v] = 0;
 			if (mat[u][v] == INF) mat[u][v] = -1;
 			io.println(mat[u][v]);

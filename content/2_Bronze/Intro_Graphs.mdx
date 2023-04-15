@@ -110,40 +110,30 @@ we go through its neighbors, adding cows as we go along, until we hit an end.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <fstream>
-#include <vector>
 #include <map>
 #include <string>
-#include <algorithm>
+#include <vector>
 
 using std::endl;
 using std::string;
 using std::vector;
 
-//BeginCodeSnip{Cow Names}
-// Lambda expression - see /general/lambda-funcs
+// BeginCodeSnip{Cow Names}
+//  Lambda expression - see /general/lambda-funcs
 const vector<string> COWS = []() {
-	vector<string> tmp{
-		"Bessie",
-		"Buttercup",
-		"Belinda",
-		"Beatrice",
-		"Bella",
-		"Blue",
-		"Betsy",
-		"Sue"
-	};
+	vector<string> tmp{"Bessie", "Buttercup", "Belinda", "Beatrice",
+	                   "Bella",  "Blue",      "Betsy",   "Sue"};
 	// sort names lexicographically
 	std::sort(std::begin(tmp), std::end(tmp));
 	return tmp;
 }();
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	std::map<string, int> cow_inds;
-	for (int i = 0; i < COWS.size(); i++) {
-		cow_inds[COWS[i]] = i;
-	}
+	for (int i = 0; i < COWS.size(); i++) { cow_inds[COWS[i]] = i; }
 
 	std::ifstream read("lineup.in");
 	int req_num;
@@ -189,9 +179,7 @@ int main() {
 	}
 
 	std::ofstream out("lineup.out");
-	for (int c : order) {
-		out << COWS[c] << endl;
-	}
+	for (int c : order) { out << COWS[c] << endl; }
 }
 ```
 

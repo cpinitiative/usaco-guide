@@ -64,28 +64,35 @@ Evidently, $\texttt{dp}[4]$ is counted twice in $\texttt{dp}[1]$.
 
 /**
  * Description: Kosaraju's Algorithm, DFS twice to generate
-	 * strongly connected components in topological order. $a,b$
-	 * in same component if both $a\to b$ and $b\to a$ exist.
+ * strongly connected components in topological order. $a,b$
+ * in same component if both $a\to b$ and $b\to a$ exist.
  * Time: O(N+M)
  * Source: Wikipedia
  * Verification: POI 8 peaceful commission
  */
 struct SCC {
-	int N; vector<vi> adj, radj;
-	vi todo, comp, comps; vector<bool> vis;
-	void init(int _N) { N = _N;
-		adj.rsz(N), radj.rsz(N), comp = vi(N,-1), vis.rsz(N); }
+	int N;
+	vector<vi> adj, radj;
+	vi todo, comp, comps;
+	vector<bool> vis;
+	void init(int _N) {
+		N = _N;
+		adj.rsz(N), radj.rsz(N), comp = vi(N, -1), vis.rsz(N);
+	}
 	void ae(int x, int y) { adj[x].pb(y), radj[y].pb(x); }
 	void dfs(int x) {
-		vis[x] = 1; each(y,adj[x]) if (!vis[y]) dfs(y);
-		todo.pb(x); }
+		vis[x] = 1;
+		each(y, adj[x]) if (!vis[y]) dfs(y);
+		todo.pb(x);
+	}
 	void dfs2(int x, int v) {
 		comp[x] = v;
-		each(y,radj[x]) if (comp[y] == -1) dfs2(y,v); }
-	void gen() { // fills allComp
-		F0R(i,N) if (!vis[i]) dfs(i);
+		each(y, radj[x]) if (comp[y] == -1) dfs2(y, v);
+	}
+	void gen() {  // fills allComp
+		F0R(i, N) if (!vis[i]) dfs(i);
 		reverse(all(todo));
-		each(x,todo) if (comp[x] == -1) dfs2(x,x), comps.pb(x);
+		each(x, todo) if (comp[x] == -1) dfs2(x, x), comps.pb(x);
 	}
 };
 
@@ -97,7 +104,8 @@ int main() {
 	setIO();
 
 	re(N, M);
-	SCC scc; scc.init(N);
+	SCC scc;
+	scc.init(N);
 	F0R(i, M) {
 		int1(a, b);
 		scc.ae(a, b);
@@ -105,21 +113,19 @@ int main() {
 
 	scc.gen();
 
-	F0R(i, N) { dp[scc.comp[i]]++; } // component size
+	F0R(i, N) { dp[scc.comp[i]]++; }  // component size
 	reverse(all(scc.todo));
 
 	each(c, scc.todo) {
 		// use reverse edges since we process in reverse order
 		each(e, scc.radj[c]) {
-			if(scc.comp[c] != scc.comp[e]) {
+			if (scc.comp[c] != scc.comp[e]) {
 				dp[scc.comp[e]] += dp[scc.comp[c]];
 			}
 		}
 	}
 
-	F0R(i, N) {
-		ps(dp[scc.comp[i]] - 1);
-	}
+	F0R(i, N) { ps(dp[scc.comp[i]] - 1); }
 }
 ```
 

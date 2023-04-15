@@ -78,8 +78,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	static int n;
@@ -90,26 +90,20 @@ public class Main {
 
 		n = io.nextInt();
 		weight = new int[n];
-		for (int i = 0; i < n; i++) {
-			weight[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
 
 		io.println(solve(0, 0, 0));
 		io.close();
 	}
 
 	static long solve(int index, long sum1, long sum2) {
-		if (index == n) {
-			return Math.abs(sum1 - sum2);
-		}
+		if (index == n) { return Math.abs(sum1 - sum2); }
 
-		return Math.min(
-			solve(index + 1, sum1 + weight[index], sum2),
-			solve(index + 1, sum1, sum2 + weight[index])
-		);
+		return Math.min(solve(index + 1, sum1 + weight[index], sum2),
+		                solve(index + 1, sum1, sum2 + weight[index]));
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -202,8 +196,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -211,9 +205,7 @@ public class Main {
 
 		int n = io.nextInt();
 		int weight[] = new int[n];
-		for (int i = 0; i < n; i++) {
-			weight[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
 
 		long ans = Long.MAX_VALUE;
 		for (int mask = 0; mask < (1 << n); mask++) {
@@ -234,9 +226,8 @@ public class Main {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
@@ -379,25 +370,20 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class CreatingStrings1
-{
+public class CreatingStrings1 {
 	static String s;
 	static List<String> perms = new ArrayList<String>();
 	static int[] charCount = new int[26];
 
-	static void search(String curr)
-	{
+	static void search(String curr) {
 		// we've finished creating a permutation
-		if (curr.length() == s.length())
-		{
+		if (curr.length() == s.length()) {
 			perms.add(curr);
 			return;
 		}
-		for (int i = 0; i < 26; i++)
-		{
+		for (int i = 0; i < 26; i++) {
 			// for all available characters
-			if (charCount[i] > 0)
-			{
+			if (charCount[i] > 0) {
 				// add it to the current string and search
 				charCount[i]--;
 				search(curr + (char)(i + 'a'));
@@ -406,20 +392,13 @@ public class CreatingStrings1
 		}
 	}
 
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		s = io.next();
-		for (int i = 0; i < s.length(); i++)
-		{
-			charCount[s.charAt(i) - 'a']++;
-		}
+		for (int i = 0; i < s.length(); i++) { charCount[s.charAt(i) - 'a']++; }
 		search("");
 		io.println(perms.size());
-		for (String perm : perms)
-		{
-			io.println(perm);
-		}
+		for (String perm : perms) { io.println(perm); }
 		io.close();
 	}
 
@@ -640,9 +619,7 @@ public class Chessboard {
 		Kattio io = new Kattio();
 		for (int i = 0; i < 8; i++) {
 			String str = io.next();
-			for (int j = 0; j < 8; j++) {
-				ok[i][j] = (str.charAt(j) == '.');
-			}
+			for (int j = 0; j < 8; j++) { ok[i][j] = (str.charAt(j) == '.'); }
 		}
 		genperm();
 		io.println(ans);
@@ -654,21 +631,15 @@ public class Chessboard {
 			boolean works = true;
 			boolean blocked[] = new boolean[16];
 			for (int i = 0; i < 8; i++) {
-				if (!ok[i][perm.get(i)]) {
-					works = false;
-				}
+				if (!ok[i][perm.get(i)]) { works = false; }
 			}
 			for (int i = 0; i < 8; i++) {
-				if (blocked[i + perm.get(i)]) {
-					works = false;
-				}
-				blocked[i + perm.get(i)] = true; //mark this diagonal
+				if (blocked[i + perm.get(i)]) { works = false; }
+				blocked[i + perm.get(i)] = true;  // mark this diagonal
 			}
 			Arrays.fill(blocked, false);
 			for (int i = 0; i < 8; i++) {
-				if (blocked[i + 7 - perm.get(i)]) {
-					works = false;
-				}
+				if (blocked[i + 7 - perm.get(i)]) { works = false; }
 				blocked[i + 7 - perm.get(i)] = true;
 			}
 			if (works) ans++;
@@ -684,7 +655,7 @@ public class Chessboard {
 		}
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -782,21 +753,22 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	static String g[];
 	static boolean sum[], diff[], c[];
 	static int ans = 0;
 
-	static void dfs(int r) { //place queen in row r
+	static void dfs(int r) {  // place queen in row r
 		if (r == 8) {
 			++ans;
 			return;
 		}
 		for (int i = 0; i < 8; ++i) {
-			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !diff[i - r + 7]) {
+			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] &&
+			    !diff[i - r + 7]) {
 				c[i] = sum[i + r] = diff[i - r + 7] = true;
 				dfs(r + 1);
 				c[i] = sum[i + r] = diff[i - r + 7] = false;
@@ -807,16 +779,16 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 		g = new String[8];
-		sum = new boolean[15]; diff = new boolean[15]; c = new boolean[8];
-		for (int i = 0; i < 8; ++i) {
-			g[i] = io.next();
-		}
+		sum = new boolean[15];
+		diff = new boolean[15];
+		c = new boolean[8];
+		for (int i = 0; i < 8; ++i) { g[i] = io.next(); }
 		dfs(0);
 		io.println(ans);
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

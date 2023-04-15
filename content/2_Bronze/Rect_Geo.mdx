@@ -82,23 +82,17 @@ public class Paint {
 		int d = io.nextInt();
 
 		boolean[] painted = new boolean[MAX_POS + 1];
-		for (int i = a; i < b; i++) {
-			painted[i] = true;
-		}
-		for (int i = c; i < d; i++) {
-			painted[i] = true;
-		}
+		for (int i = a; i < b; i++) { painted[i] = true; }
+		for (int i = c; i < d; i++) { painted[i] = true; }
 
 		int total = 0;
-		for (boolean i : painted) {
-			total += i ? 1 : 0;
-		}
+		for (boolean i : painted) { total += i ? 1 : 0; }
 
 		io.println(total);
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -202,7 +196,7 @@ public class Paint {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -400,12 +394,18 @@ public class Billboard {
 		Kattio io = new Kattio("billboard");
 
 		Rect a = new Rect(), b = new Rect(), t = new Rect();
-		a.x1 = io.nextInt(); a.y1 = io.nextInt();
-		a.x2 = io.nextInt(); a.y2 = io.nextInt();
-		b.x1 = io.nextInt(); b.y1 = io.nextInt();
-		b.x2 = io.nextInt(); b.y2 = io.nextInt();
-		t.x1 = io.nextInt(); t.y1 = io.nextInt();
-		t.x2 = io.nextInt(); t.y2 = io.nextInt();
+		a.x1 = io.nextInt();
+		a.y1 = io.nextInt();
+		a.x2 = io.nextInt();
+		a.y2 = io.nextInt();
+		b.x1 = io.nextInt();
+		b.y1 = io.nextInt();
+		b.x2 = io.nextInt();
+		b.y2 = io.nextInt();
+		t.x1 = io.nextInt();
+		t.y1 = io.nextInt();
+		t.x2 = io.nextInt();
+		t.y2 = io.nextInt();
 
 		io.println(a.area() + b.area() - intersect(a, t) - intersect(b, t));
 		io.close();
@@ -417,7 +417,7 @@ public class Billboard {
 		return xOverlap * yOverlap;
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -474,31 +474,37 @@ public class Billboard {
 		Kattio io = new Kattio("billboard");
 
 		int x1, y1, x2, y2;
-		x1 = io.nextInt(); y1 = io.nextInt();
-		x2 = io.nextInt(); y2 = io.nextInt();
+		x1 = io.nextInt();
+		y1 = io.nextInt();
+		x2 = io.nextInt();
+		y2 = io.nextInt();
 		Rectangle firstRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
-		x1 = io.nextInt(); y1 = io.nextInt();
-		x2 = io.nextInt(); y2 = io.nextInt();
+		x1 = io.nextInt();
+		y1 = io.nextInt();
+		x2 = io.nextInt();
+		y2 = io.nextInt();
 		Rectangle secondRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
-		x1 = io.nextInt(); y1 = io.nextInt();
-		x2 = io.nextInt(); y2 = io.nextInt();
+		x1 = io.nextInt();
+		y1 = io.nextInt();
+		x2 = io.nextInt();
+		y2 = io.nextInt();
 		Rectangle truck = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
 		long firstIntersect = getArea(firstRect.intersection(truck));
 		long secondIntersect = getArea(secondRect.intersection(truck));
 
-		io.println(getArea(firstRect) + getArea(secondRect)
-						- firstIntersect - secondIntersect);
+		io.println(getArea(firstRect) + getArea(secondRect) - firstIntersect -
+		           secondIntersect);
 		io.close();
 	}
 
 	public static long getArea(Rectangle r) {
-		return r.isEmpty() ? 0 : (long) r.getHeight() * (long) r.getWidth();
+		return r.isEmpty() ? 0 : (long)r.getHeight() * (long)r.getWidth();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

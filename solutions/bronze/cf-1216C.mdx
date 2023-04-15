@@ -317,15 +317,18 @@ print("NO" if A.x2 - A.x1 == 0 or A.y2 - A.y1 == 0 else "YES")
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
- 	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
-		Rect A = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-		Rect B = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
-		Rect C = new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect A =
+		    new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect B =
+		    new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect C =
+		    new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
 
 		A = cut(A, B);
 		A = cut(A, C);
@@ -336,8 +339,8 @@ public class Main {
 		} else {
 			System.out.println("YES");
 		}
- 		io.close();
-  	}
+		io.close();
+	}
 
 	// CodeSnip{Kattio}
 
@@ -350,15 +353,13 @@ public class Main {
 			y2 = d;
 		}
 
-		public int area() {
-			return (x2 - x1) * (y2 - y1);
-		}
+		public int area() { return (x2 - x1) * (y2 - y1); }
 	}
 
 	/*
 	   Main Idea: If B intersects entirely in the x or y direction, cut it.
-	   This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
-	   We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+	   This method cuts rectangle A based on rectangle B. (A - white sheet, B -
+	   black sheet) We can cut rectangle A if B covers all of x1->x2 or y1->y2.
 	 */
 	static Rect cut(Rect A, Rect B) {
 

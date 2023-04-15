@@ -69,22 +69,19 @@ public class Lineup {
 	static ArrayList<String> restrictionsA;
 	static ArrayList<String> restrictionsB;
 
-	private static ArrayList<String> permutations(ArrayList<String> s ) {
+	private static ArrayList<String> permutations(ArrayList<String> s) {
 		// 1. finds the largest k, that c[k] < c[k+1]
 		int first = s.size() - 2;
-		for ( ; first >= 0; first-- ) {
-			if (s.get(first).compareTo(s.get(first + 1)) < 0)
-				break;
+		for (; first >= 0; first--) {
+			if (s.get(first).compareTo(s.get(first + 1)) < 0) break;
 		}
 
-		if (first == -1)
-			return null;
+		if (first == -1) return null;
 
 		// 2. find last index toSwap, that c[k] < c[toSwap]
 		int toSwap = s.size() - 1;
-		for ( ; toSwap >= 0; toSwap-- ) {
-			if (s.get(first).compareTo(s.get(toSwap)) < 0)
-				break;
+		for (; toSwap >= 0; toSwap--) {
+			if (s.get(first).compareTo(s.get(toSwap)) < 0) break;
 		}
 
 		// 3. swap elements with indexes first and last
@@ -92,24 +89,21 @@ public class Lineup {
 
 		// 4. reverse sequence from k+1 to n (inclusive)
 		toSwap = s.size() - 1;
-		while ( first < toSwap )
-			Collections.swap( s, first++, toSwap-- );
+		while (first < toSwap) Collections.swap(s, first++, toSwap--);
 
 		return s;
 	}
 
 	private static int findIndex(ArrayList<String> perm, String cow) {
 		for (int i = 0; i < perm.size(); i++) {
-			if (cow.equals(perm.get(i))) {
-				return i;
-			}
+			if (cow.equals(perm.get(i))) { return i; }
 		}
 		return -1;
 	}
 
 	private static boolean check(ArrayList<String> perm) {
 		boolean passed = true;
-		for (int i = 0; i < restrictionsA.size() ; i++) {
+		for (int i = 0; i < restrictionsA.size(); i++) {
 			String cow1 = restrictionsA.get(i);
 			String cow2 = restrictionsB.get(i);
 			int a = findIndex(perm, cow1);
@@ -122,8 +116,7 @@ public class Lineup {
 
 		if (passed) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -133,7 +126,8 @@ public class Lineup {
 		int N = io.nextInt();
 
 		ArrayList<String> cows = new ArrayList<String>(
-				Arrays.asList("Bessie", "Buttercup", "Belinda", "Beatrice", "Bella", "Blue", "Betsy", "Sue"));
+		    Arrays.asList("Bessie", "Buttercup", "Belinda", "Beatrice", "Bella",
+		                  "Blue", "Betsy", "Sue"));
 
 		restrictionsA = new ArrayList<String>();
 		restrictionsB = new ArrayList<String>();
@@ -152,9 +146,7 @@ public class Lineup {
 		Collections.sort(cows);
 		while (cows != null) {
 			if (check(cows)) {
-				for(String c : cows) {
-					io.println(c);
-				}
+				for (String c : cows) { io.println(c); }
 				break;
 			}
 			cows = permutations(cows);
@@ -163,7 +155,7 @@ public class Lineup {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>

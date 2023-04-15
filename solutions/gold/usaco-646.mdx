@@ -32,10 +32,10 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> e;
-	DSU(int N): e(N, -1) { }
+	DSU(int N) : e(N, -1) {}
 
 	// get representive component (uses path compression)
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
@@ -54,7 +54,7 @@ struct DSU {
 		return true;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	freopen("closing.in", "r", stdin);
@@ -93,9 +93,7 @@ int main() {
 		conn[rev[i]] = 1;
 		for (int j : adj[rev[i]]) {
 			if (conn[j]) {
-				if (dsu.unite(j, rev[i])) {
-					cc--;
-				}
+				if (dsu.unite(j, rev[i])) { cc--; }
 			}
 		}
 		ans.push_back(cc == 1 ? "YES" : "NO");
@@ -103,16 +101,14 @@ int main() {
 	reverse(ans.begin(), ans.end());
 
 	freopen("closing.out", "w", stdout);
-	for (const string& i : ans) {
-		cout << i << '\n';
-	}
+	for (const string &i : ans) { cout << i << '\n'; }
 }
 ```
 </CPPSection>
 <PySection>
 
 ```py
-#BeginCodeSnip{Disjoint Set Union}
+# BeginCodeSnip{Disjoint Set Union}
 class DisjointSetUnion:
 	def __init__(self, num_nodes: int) -> None:
 		self.parent = [*range(num_nodes)]
@@ -137,9 +133,11 @@ class DisjointSetUnion:
 
 	def connected(self, a: int, b: int) -> bool:
 		return self.find_parent(a) == self.find_parent(b)
-#EndCodeSnip
 
-with open('closing.in', 'r') as infile:
+
+# EndCodeSnip
+
+with open("closing.in", "r") as infile:
 	n, m = map(int, infile.readline().split())
 	graph = [[] for _ in range(n)]
 	for _ in range(m):
@@ -167,10 +165,10 @@ for node in remove_order[::-1]:
 			if dsu.union(adj, node):
 				components -= 1
 
-	fully_connected.append('YES' if components == 1 else 'NO')
+	fully_connected.append("YES" if components == 1 else "NO")
 	open_barns.add(node)
 
-print(*fully_connected[::-1], sep='\n', file=open('closing.out', 'w'))
+print(*fully_connected[::-1], sep="\n", file=open("closing.out", "w"))
 ```
 
 </PySection>

@@ -46,47 +46,54 @@ Denote each cow as a node in a graph. Let's draw a directed edge from each node 
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
-//BeginCodeSnip{Topological Sort}
+// CodeSnip{CPP Short Template}
+// BeginCodeSnip{Topological Sort}
 /*
-  * Description: sorts vertices such that if there exists an edge x->y, then x goes before y
-  * Source: KACTL
-  * Verification: https://open.kattis.com/problems/quantumsuperposition
-  */
+ * Description: sorts vertices such that if there exists an edge x->y, then x
+ * goes before y Source: KACTL Verification:
+ * https://open.kattis.com/problems/quantumsuperposition
+ */
 
 struct TopoSort {
-	int N; vi in, res;
+	int N;
+	vi in, res;
 	vector<vi> adj;
-	void init(int _N) { N = _N; in.resize(N); adj.resize(N); }
+	void init(int _N) {
+		N = _N;
+		in.resize(N);
+		adj.resize(N);
+	}
 	void ae(int x, int y) { adj[x].pb(y), in[y]++; }
 	bool sort() {
 		priority_queue<int, vi, greater<int>> todo;
 		for (int i = 1; i < N; i++)
 			if (!in[i]) todo.push(i);
 		while (sz(todo)) {
-			int x = todo.top(); todo.pop(); res.pb(x);
+			int x = todo.top();
+			todo.pop();
+			res.pb(x);
 			for (const int &i : adj[x])
 				if (!(--in[i])) todo.push(i);
 		}
 		return sz(res) == N - 1;
 	}
 };
-//EndCodeSnip{Topological Sort}
+// EndCodeSnip{Topological Sort}
 
 vi ret;
 vector<vi> order;
 int n, m;
 
 bool check(int x) {
-	TopoSort T; T.init(n + 1);
+	TopoSort T;
+	T.init(n + 1);
 	for (int i = 0; i < x; i++) {
 		for (int j = 0; j < sz(order[i]) - 1; j++) {
 			T.ae(order[i][j], order[i][j + 1]);
 		}
 	}
 	bool ans = T.sort();
-	if (ans)
-		ret = T.res;
+	if (ans) ret = T.res;
 	return ans;
 }
 
@@ -96,10 +103,10 @@ int main() {
 	order.resize(m);
 
 	for (int i = 0; i < m; i++) {
-		int k; cin >> k;
+		int k;
+		cin >> k;
 		vi v(k);
-		for (int j = 0; j < k; j++)
-			cin >> v[j];
+		for (int j = 0; j < k; j++) cin >> v[j];
 		order[i] = v;
 	}
 
@@ -109,9 +116,7 @@ int main() {
 		check(mid) ? lo = mid : hi = mid - 1;
 	}
 
-	for (int i = 0; i < n; i++) {
-		cout << ret[i] << (i != n - 1 ? " " : "");
-	}
+	for (int i = 0; i < n; i++) { cout << ret[i] << (i != n - 1 ? " " : ""); }
 }
 ```
 
@@ -135,9 +140,7 @@ public class MilkingOrder {
 
 		adj = new List[M];
 
-		for (int i = 0; i < M; i++) {
-			adj[i] = new ArrayList<>();
-		}
+		for (int i = 0; i < M; i++) { adj[i] = new ArrayList<>(); }
 
 		for (int i = 0; i < M - 1; i++) {
 			int n = io.nextInt();
@@ -145,9 +148,7 @@ public class MilkingOrder {
 			int prev = -1;
 			for (int j = 0; j < n; j++) {
 				int to = io.nextInt() - 1;
-				if(prev != -1) {
-					adj[i].add(new Edge(prev, to));
-				}
+				if (prev != -1) { adj[i].add(new Edge(prev, to)); }
 
 				prev = to;
 			}
@@ -156,13 +157,12 @@ public class MilkingOrder {
 		int l = 0;
 		int r = M;
 
-		while(l < r) {
+		while (l < r) {
 			int mid = (l + r + 1) / 2;
 
-			if(check(mid)) {
+			if (check(mid)) {
 				l = mid;
-			}
-			else {
+			} else {
 				r = mid - 1;
 			}
 		}
@@ -171,9 +171,7 @@ public class MilkingOrder {
 
 		for (int i = 0; i < res.size(); i++) {
 			io.print(res.get(i));
-			if(i < res.size()-1) {
-				io.print(" ");
-			}
+			if (i < res.size() - 1) { io.print(" "); }
 		}
 
 		io.close();
@@ -184,9 +182,7 @@ public class MilkingOrder {
 		List<Integer>[] edge = new List[N];
 		res = new ArrayList<>();
 
-		for (int i = 0; i < N; i++) {
-			edge[i] = new ArrayList<>();
-		}
+		for (int i = 0; i < N; i++) { edge[i] = new ArrayList<>(); }
 
 		for (int i = 0; i < x; i++) {
 			for (int j = 0; j < adj[i].size(); j++) {
@@ -198,9 +194,7 @@ public class MilkingOrder {
 		PriorityQueue<Integer> q = new PriorityQueue<>();
 
 		for (int i = 0; i < N; i++) {
-			if(inDeg[i] == 0) {
-				q.add(i);
-			}
+			if (inDeg[i] == 0) { q.add(i); }
 		}
 
 		while (!q.isEmpty()) {
@@ -210,9 +204,7 @@ public class MilkingOrder {
 
 			for (int next : edge[curr]) {
 				inDeg[next]--;
-				if(inDeg[next] == 0) {
-					q.add(next);
-				}
+				if (inDeg[next] == 0) { q.add(next); }
 			}
 		}
 
@@ -227,9 +219,8 @@ public class MilkingOrder {
 		}
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>

@@ -79,7 +79,7 @@ import java.io.*;
 import java.util.*;
 
 public class TwoSets {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
@@ -96,9 +96,9 @@ public class TwoSets {
 		totalSum /= 2;
 
 		/*
-		 * DP[i][j] is the number of ways to make sum j with the first i elements.
-		 * The range of 'idx' is from 0 to N-1 because if all elements are used,
-		 * the subsets will be double counted.
+		 * DP[i][j] is the number of ways to make sum j with the first i
+		 * elements. The range of 'idx' is from 0 to N-1 because if all elements
+		 * are used, the subsets will be double counted.
 		 */
 		int[][] dp = new int[N][totalSum + 1];
 		dp[0][0] = 1;
@@ -106,7 +106,8 @@ public class TwoSets {
 			for (int curSum = 0; curSum <= totalSum; curSum++) {
 				/*
 				 * If the state (curSum - current element) is possible
-				 * DP[curSum] += DP[current element - 1][curSum - current element]
+				 * DP[curSum] += DP[current element - 1][curSum - current
+				 * element]
 				 */
 				if (idx >= 1) {
 					dp[idx][curSum] = dp[idx - 1][curSum];
@@ -122,7 +123,6 @@ public class TwoSets {
 		io.close();
 	}
 	// CodeSnip{Kattio}
-
 }
 ```
 </JavaSection>

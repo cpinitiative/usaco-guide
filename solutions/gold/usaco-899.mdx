@@ -110,8 +110,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Shortcut {
 	static long[] farms;
@@ -147,9 +147,7 @@ public class Shortcut {
 		while (!pq.isEmpty()) {
 			Edge c = pq.poll();
 
-			if(dist[c.t] <= c.e) {
-				continue;
-			}
+			if (dist[c.t] <= c.e) { continue; }
 			dist[c.t] = c.e;
 			// Keep edges that form the shortest path tree
 			fin.add(c);
@@ -157,9 +155,7 @@ public class Shortcut {
 			for (Edge e : adj[c.t]) {
 				int nw = c.e + e.e;
 
-				if(dist[e.t] <= nw) {
-					continue;
-				}
+				if (dist[e.t] <= nw) { continue; }
 
 				pq.add(new Edge(c.t, e.t, nw));
 			}
@@ -167,9 +163,7 @@ public class Shortcut {
 		// Don't need the edge from 0 to 0
 		fin.remove(0);
 
-		for (int i = 0; i < N; i++) {
-			adj[i].clear();
-		}
+		for (int i = 0; i < N; i++) { adj[i].clear(); }
 
 		// Turn tree into list
 		for (int i = 0; i < fin.size(); i++) {
@@ -197,7 +191,7 @@ public class Shortcut {
 		return farms[t];
 	}
 
-	//BeginCodeSnip{Edge Class}
+	// BeginCodeSnip{Edge Class}
 	private static class Edge implements Comparable<Edge> {
 		int f, t, e;
 		public Edge(int f, int t, int e) {
@@ -208,15 +202,13 @@ public class Shortcut {
 
 		@Override
 		public int compareTo(Edge o) {
-			if(o.e == e) {
-				return f  - o.f;
-			}
+			if (o.e == e) { return f - o.f; }
 			return e - o.e;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

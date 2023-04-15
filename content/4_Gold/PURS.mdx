@@ -182,7 +182,7 @@ public class MinSegmentTree {
 
 	/** Sets the value at ind to val. */
 	public void set(int ind, int val) {
-		assert(0 <= ind && ind < len);
+		assert (0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
@@ -192,15 +192,11 @@ public class MinSegmentTree {
 
 	/** @return the minimum of all elements in [start, end). */
 	public int rangeMin(int start, int end) {
-		assert(0 <= start && start < len && 0 < end && end <= len);
+		assert (0 <= start && start < len && 0 < end && end <= len);
 		int min = Integer.MAX_VALUE;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) {
-				min = Math.min(min, segtree[start++]);
-			}
-			if ((end & 1) != 0) {
-				min = Math.min(min, segtree[--end]);
-			}
+			if ((start & 1) != 0) { min = Math.min(min, segtree[start++]); }
+			if ((end & 1) != 0) { min = Math.min(min, segtree[--end]); }
 		}
 		return min;
 	}
@@ -211,9 +207,7 @@ public class MinSegmentTree {
 		int queryNum = io.nextInt();
 
 		MinSegmentTree segtree = new MinSegmentTree(arrLen);
-		for (int i = 0; i < arrLen; i++) {
-			segtree.set(i, io.nextInt());
-		}
+		for (int i = 0; i < arrLen; i++) { segtree.set(i, io.nextInt()); }
 
 		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
@@ -230,7 +224,7 @@ public class MinSegmentTree {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -394,7 +388,7 @@ public class SumSegmentTree {
 	}
 
 	public void set(int ind, int val) {
-		assert(0 <= ind && ind < len);
+		assert (0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
@@ -403,15 +397,11 @@ public class SumSegmentTree {
 	}
 
 	public long rangeSum(int start, int end) {
-		assert(0 <= start && start < len && 0 < end && end <= len);
+		assert (0 <= start && start < len && 0 < end && end <= len);
 		long total = 0;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) {
-				total = total + segtree[start++];
-			}
-			if ((end & 1) != 0) {
-				total = total + segtree[--end];
-			}
+			if ((start & 1) != 0) { total = total + segtree[start++]; }
+			if ((end & 1) != 0) { total = total + segtree[--end]; }
 		}
 		return total;
 	}
@@ -422,9 +412,7 @@ public class SumSegmentTree {
 		int queryNum = io.nextInt();
 
 		SumSegmentTree segtree = new SumSegmentTree(arrLen);
-		for (int i = 0; i < arrLen; i++) {
-			segtree.set(i, io.nextInt());
-		}
+		for (int i = 0; i < arrLen; i++) { segtree.set(i, io.nextInt()); }
 
 		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
@@ -441,9 +429,8 @@ public class SumSegmentTree {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
@@ -648,26 +635,20 @@ public class BIT {
 	}
 
 	/** Sets the value of index ind at the actual array to vall. */
-	public void set(int ind, long val) {
-		add(ind, val - arr[ind]);
-	}
+	public void set(int ind, long val) { add(ind, val - arr[ind]); }
 
 	/** Adds val to the element at index ind. */
 	public void add(int ind, long val) {
 		arr[ind] += val;
 		ind++;
-		for (; ind <= len; ind += ind & -ind) {
-			bit[ind] += val;
-		}
+		for (; ind <= len; ind += ind & -ind) { bit[ind] += val; }
 	}
 
 	/** @return The sum of all values in [0, ind]. */
 	public long prefSum(int ind) {
 		ind++;
 		long sum = 0;
-		for (; ind > 0; ind -= ind & -ind) {
-			sum += bit[ind];
-		}
+		for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
 		return sum;
 	}
 
@@ -677,9 +658,7 @@ public class BIT {
 		int queryNum = io.nextInt();
 
 		BIT bit = new BIT(arrLen);
-		for (int i = 0; i < arrLen; i++) {
-			bit.set(i, io.nextInt());
-		}
+		for (int i = 0; i < arrLen; i++) { bit.set(i, io.nextInt()); }
 
 		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
@@ -690,16 +669,13 @@ public class BIT {
 			} else if (type == 2) {
 				int start = io.nextInt() - 1;
 				int end = io.nextInt() - 1;
-				io.println(
-					bit.prefSum(end)
-					- bit.prefSum(start - 1)
-				);
+				io.println(bit.prefSum(end) - bit.prefSum(start - 1));
 			}
 		}
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -883,7 +859,7 @@ import java.util.*;
 
 public class Main {
 	public static void main(String[] args) {
-		final int MAX_ELEM = (int) 1e7;
+		final int MAX_ELEM = (int)1e7;
 		Kattio io = new Kattio();
 
 		int testNum = io.nextInt();
@@ -904,10 +880,10 @@ public class Main {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 
-//BeginCodeSnip{BIT Code}
+// BeginCodeSnip{BIT Code}
 class BIT {
 	private final long[] bit;
 	private final int len;
@@ -919,21 +895,17 @@ class BIT {
 
 	public void add(int ind, long val) {
 		ind++;
-		for (; ind <= len; ind += ind & -ind) {
-			bit[ind] += val;
-		}
+		for (; ind <= len; ind += ind & -ind) { bit[ind] += val; }
 	}
 
 	public long prefSum(int ind) {
 		ind++;
 		long sum = 0;
-		for (; ind > 0; ind -= ind & -ind) {
-			sum += bit[ind];
-		}
+		for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
 		return sum;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>

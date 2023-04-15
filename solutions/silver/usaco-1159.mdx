@@ -16,8 +16,8 @@ author: Nathan Gong, Jesse Choe
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class ConnectingTwoBarns {
 	public static void main(String[] args) {
@@ -28,9 +28,7 @@ public class ConnectingTwoBarns {
 			int m = io.nextInt();
 
 			List<List<Integer>> adj = new ArrayList<>();
-			for (int i = 0; i < n; i++) {
-				adj.add(new ArrayList<>());
-			}
+			for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
 			for (int i = 0; i < m; i++) {
 				int a = io.nextInt() - 1;
 				int b = io.nextInt() - 1;
@@ -73,9 +71,7 @@ public class ConnectingTwoBarns {
 			 * from 0...n-1, each component will be guaranteed to be in sorted
 			 * order
 			 */
-			for (int i = 0; i < n; i++) {
-				components.get(visited[i]).add(i);
-			}
+			for (int i = 0; i < n; i++) { components.get(visited[i]).add(i); }
 
 			// the components containing the two barns
 			List<Integer> barn1 = components.get(visited[0]);
@@ -98,18 +94,18 @@ public class ConnectingTwoBarns {
 				 * no longer holds true
 				 */
 				while (
-					// make sure we don't go out of bounds
-					barn1Index < barn1.size() - 1
-					&& Math.abs(barn1.get(barn1Index + 1) - i) < dist
-				) {
+				    // make sure we don't go out of bounds
+				    barn1Index < barn1.size() - 1 &&
+				    Math.abs(barn1.get(barn1Index + 1) - i) < dist) {
 					barn1Index++;
 				}
 
 				/*
-				 * we've now found the field in barn 1's component that's closest to i
+				 * we've now found the field in barn 1's component that's
+				 * closest to i
 				 *
-				 * we can use this to update the minimum distance between field i's
-				 * component and barn 1's component
+				 * we can use this to update the minimum distance between field
+				 * i's component and barn 1's component
 				 */
 				dist1[visited[i]] = Math.min(dist, dist1[visited[i]]);
 			}
@@ -119,10 +115,8 @@ public class ConnectingTwoBarns {
 			for (int i = 0; i < n; i++) {
 				int dist = Math.abs(barn2.get(barn2Index) - i);
 
-				while (
-					barn2Index < barn2.size() - 1
-					&& Math.abs(barn2.get(barn2Index + 1) - i) < dist
-				) {
+				while (barn2Index < barn2.size() - 1 &&
+				       Math.abs(barn2.get(barn2Index + 1) - i) < dist) {
 					barn2Index++;
 				}
 				dist2[visited[i]] = Math.min(dist, dist2[visited[i]]);
