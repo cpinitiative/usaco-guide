@@ -165,7 +165,7 @@ end, the parent of either node is the LCA of the two.
 <CPPSection>
 
 ```cpp
-CodeSnip{Benq Template}
+// CodeSnip{Benq Template}
 
 int N, Q, T = 1;
 int depth[200005];
@@ -173,13 +173,11 @@ int up[200005][20];
 vi adj[200005];
 
 void dfs(int v) {
-	FOR(i, 1, 20) {
-		up[v][i] = up[up[v][i-1]][i-1];
-	}
+	FOR(i, 1, 20) { up[v][i] = up[up[v][i - 1]][i - 1]; }
 
-	for(int x : adj[v]) {
-		if(x != up[v][0]) {
-			depth[x] = depth[up[x][0] = v]+1;
+	for (int x : adj[v]) {
+		if (x != up[v][0]) {
+			depth[x] = depth[up[x][0] = v] + 1;
 			dfs(x);
 		}
 	}
@@ -187,21 +185,20 @@ void dfs(int v) {
 
 int jump(int x, int d) {
 	F0R(i, 20) {
-		if((d >> i) & 1)
-			x = up[x][i];
+		if ((d >> i) & 1) x = up[x][i];
 	}
 	return x;
 }
 
 int LCA(int a, int b) {
-	if(depth[a] < depth[b]) swap(a, b);
+	if (depth[a] < depth[b]) swap(a, b);
 
 	a = jump(a, depth[a] - depth[b]);
-	if(a == b) return a;
+	if (a == b) return a;
 
 	R0F(i, 20) {
 		int aT = up[a][i], bT = up[b][i];
-		if(aT != bT) a = aT, b = bT;
+		if (aT != bT) a = aT, b = bT;
 	}
 
 	return up[a][0];
@@ -210,17 +207,22 @@ int LCA(int a, int b) {
 int main() {
 	re(N, Q);
 
-	rep(N-1) {
-		int b; re(b); --b;
-		adj[b].pb(i+1);
+	rep(N - 1) {
+		int b;
+		re(b);
+		--b;
+		adj[b].pb(i + 1);
 	}
 
 	up[0][0] = 0, depth[0] = 0;
 	dfs(0);
 
 	rep(Q) {
-		int a, b; re(a, b); --a; --b;
-		ps(LCA(a, b)+1);
+		int a, b;
+		re(a, b);
+		--a;
+		--b;
+		ps(LCA(a, b) + 1);
 	}
 }
 ```
@@ -253,7 +255,7 @@ common ancestor. Afterwards, our answer is the parent of $a$.
 <CPPSection>
 
 ```cpp
-CodeSnip{Benq Template}
+// CodeSnip{Benq Template}
 
 int N, Q, T = 1;
 vi st, en;
@@ -264,44 +266,46 @@ void dfs(int v, int p) {
 	st[v] = T++;
 	up[v][0] = p;
 
-	FOR(i, 1, 20) {
-		up[v][i] = up[up[v][i-1]][i-1];
-	}
+	FOR(i, 1, 20) { up[v][i] = up[up[v][i - 1]][i - 1]; }
 
-	for(int x : adj[v]) if(x != p) dfs(x, v);
+	for (int x : adj[v])
+		if (x != p) dfs(x, v);
 
-	en[v] = T-1;
+	en[v] = T - 1;
 }
 
-bool anc(int a, int b) {
-	return st[a] <= st[b] && en[a] >= en[b];
-}
+bool anc(int a, int b) { return st[a] <= st[b] && en[a] >= en[b]; }
 
 int LCA(int a, int b) {
-	if(anc(a, b)) return a;
-	if(anc(b, a)) return b;
+	if (anc(a, b)) return a;
+	if (anc(b, a)) return b;
 
 	R0F(i, 20) {
-		if(!anc(up[a][i], b))
-			a = up[a][i];
+		if (!anc(up[a][i], b)) a = up[a][i];
 	}
 	return up[a][0];
 }
 
 int main() {
 	re(N, Q);
-	st.resize(N); en.resize(N);
+	st.resize(N);
+	en.resize(N);
 
-	rep(N-1) {
-		int b; re(b); --b;
-		adj[b].pb(i+1);
+	rep(N - 1) {
+		int b;
+		re(b);
+		--b;
+		adj[b].pb(i + 1);
 	}
 
-	dfs(0,0);
+	dfs(0, 0);
 
 	rep(Q) {
-		int a, b; re(a, b); --a; --b;
-		ps(LCA(a, b)+1);
+		int a, b;
+		re(a, b);
+		--a;
+		--b;
+		ps(LCA(a, b) + 1);
 	}
 }
 ```
@@ -679,7 +683,7 @@ $\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, 
 <CPPSection>
 
 ```cpp
-CodeSnip{Benq Template}
+// CodeSnip{Benq Template}
 
 int N, Q, T = 1;
 int depth[200005];
@@ -687,13 +691,11 @@ int up[200005][20];
 vi adj[200005];
 
 void dfs(int v) {
-	FOR(i, 1, 20) {
-		up[v][i] = up[up[v][i-1]][i-1];
-	}
+	FOR(i, 1, 20) { up[v][i] = up[up[v][i - 1]][i - 1]; }
 
-	for(int x : adj[v]) {
-		if(x != up[v][0]) {
-			depth[x] = depth[up[x][0] = v]+1;
+	for (int x : adj[v]) {
+		if (x != up[v][0]) {
+			depth[x] = depth[up[x][0] = v] + 1;
 			dfs(x);
 		}
 	}
@@ -701,21 +703,21 @@ void dfs(int v) {
 
 int jump(int x, int d) {
 	F0R(i, 20) {
-		if((d>>i)&1)
-			x = up[x][i];
+		if ((d >> i) & 1) x = up[x][i];
 	}
 	return x;
 }
 
 int LCA(int a, int b) {
-	if(depth[a] < depth[b]) swap(a, b);
+	if (depth[a] < depth[b]) swap(a, b);
 
 	a = jump(a, depth[a] - depth[b]);
-	if(a == b) return a;
+	if (a == b) return a;
 
 	R0F(i, 20) {
-		int aT = up[a][i]; int bT = up[b][i];
-		if(aT != bT) a = aT, b = bT;
+		int aT = up[a][i];
+		int bT = up[b][i];
+		if (aT != bT) a = aT, b = bT;
 	}
 
 	return up[a][0];
@@ -724,8 +726,10 @@ int LCA(int a, int b) {
 int main() {
 	re(N, Q);
 
-	rep(N-1) {
-		int a, b; re(a, b); --a,--b;
+	rep(N - 1) {
+		int a, b;
+		re(a, b);
+		--a, --b;
 		adj[b].pb(a);
 		adj[a].pb(b);
 	}
@@ -734,7 +738,10 @@ int main() {
 	dfs(0);
 
 	rep(Q) {
-		int a, b; re(a, b); --a; --b;
+		int a, b;
+		re(a, b);
+		--a;
+		--b;
 		ps(depth[a] + depth[b] - 2 * depth[lca(a, b)]);
 	}
 }

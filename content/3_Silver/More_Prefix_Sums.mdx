@@ -588,24 +588,20 @@ public class ForestQueries {
 		N = io.nextInt();
 		Q = io.nextInt();
 
-		pfx = new int[N+1][N+1];
-		arr = new int[N+1][N+1];
+		pfx = new int[N + 1][N + 1];
+		arr = new int[N + 1][N + 1];
 
 		for (int i = 0; i < N; i++) {
 			String line = io.next();
 			for (int j = 0; j < N; j++) {
-				if (line.charAt(j) == '*') {
-					arr[i + 1][j + 1]++;
-				}
+				if (line.charAt(j) == '*') { arr[i + 1][j + 1]++; }
 			}
 		}
 
 		for (int i = 1; i < N + 1; i++) {
 			for (int j = 1; j < N + 1; j++) {
-				pfx[i][j] = arr[i][j]
-						+ pfx[i-1][j]
-						+ pfx[i][j-1]
-						- pfx[i-1][j-1];
+				pfx[i][j] = arr[i][j] + pfx[i - 1][j] + pfx[i][j - 1] -
+				            pfx[i - 1][j - 1];
 			}
 		}
 
@@ -614,17 +610,13 @@ public class ForestQueries {
 			int fromCol = io.nextInt();
 			int toRow = io.nextInt();
 			int toCol = io.nextInt();
-			io.println(
-					pfx[toRow][toCol]
-					- pfx[fromRow - 1][toCol]
-					- pfx[toRow][fromCol - 1]
-					+ pfx[fromRow - 1][fromCol - 1]
-			);
+			io.println(pfx[toRow][toCol] - pfx[fromRow - 1][toCol] -
+			           pfx[toRow][fromCol - 1] + pfx[fromRow - 1][fromCol - 1]);
 		}
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
