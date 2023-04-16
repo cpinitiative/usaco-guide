@@ -14,3 +14,78 @@ author: Chuyang Wang
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void solve() {
+	int n, p;
+	cin >> n >> p;
+	vector<int> arr(n);
+	vector<int> indices(n);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		indices[i] = i;
+	}
+	// i < j implies arr[indices[i]] <= arr[indices[j]]
+	sort(
+		indices.begin(), 
+		indices.end(),
+		[&](const int i, const int j) { return arr[i] < arr[j]; }
+	);
+
+	ll ans = 0;
+	int edges_remaining = n - 1;
+	// is_connected[i] == true if there is an edge between i and i+1
+	vector<bool> is_connected(n, false);
+	for (int i = 0; i < n; i++) {
+		int j = indices[i];
+		int val = arr[j];
+		/**
+		 * if the edge costs more than p, then connect the rest with edges of
+		 * type 2 which cost p
+		 */
+		if (val >= p) {
+			break;
+		}
+
+		// try to add an edge (j, indices[i]) to the left
+		while (j > 0 && !is_connected[j - 1] && arr[j - 1] % val == 0) {
+			edges_remaining--;
+			ans += val;
+			is_connected[j - 1] = true;
+			j--;
+		}
+
+		// try to add an edge (indices[i], j) to the right
+		j = indices[i];
+		while (j < n - 1 && !is_connected[j] && arr[j + 1] % val == 0) {
+			edges_remaining--;
+			ans += val;
+			is_connected[j] = true;
+			j++;
+		}
+	}
+	// the edges that still have to be added have the cost p
+	ans += (ll) edges_remaining * p;
+
+	cout << ans << endl;
+}
+
+int main() {
+	int t;
+	cin >> t;
+	while (t-- > 0) {
+		solve();
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
