@@ -33,11 +33,8 @@ void solve() {
 		indices[i] = i;
 	}
 	// i < j implies arr[indices[i]] <= arr[indices[j]]
-	sort(
-		indices.begin(), 
-		indices.end(),
-		[&](const int i, const int j) { return arr[i] < arr[j]; }
-	);
+	sort(indices.begin(), indices.end(),
+	     [&](const int i, const int j) { return arr[i] < arr[j]; });
 
 	ll ans = 0;
 	int edges_remaining = n - 1;
@@ -50,9 +47,7 @@ void solve() {
 		 * if the edge costs more than p, then connect the rest with edges of
 		 * type 2 which cost p
 		 */
-		if (val >= p) {
-			break;
-		}
+		if (val >= p) { break; }
 
 		// try to add an edge (j, indices[i]) to the left
 		while (j > 0 && !is_connected[j - 1] && arr[j - 1] % val == 0) {
@@ -72,7 +67,7 @@ void solve() {
 		}
 	}
 	// the edges that still have to be added have the cost p
-	ans += (ll) edges_remaining * p;
+	ans += (ll)edges_remaining * p;
 
 	cout << ans << endl;
 }
@@ -80,9 +75,7 @@ void solve() {
 int main() {
 	int t;
 	cin >> t;
-	while (t-- > 0) {
-		solve();
-	}
+	while (t-- > 0) { solve(); }
 }
 ```
 
