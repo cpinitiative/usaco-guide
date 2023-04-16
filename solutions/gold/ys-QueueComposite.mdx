@@ -1,0 +1,97 @@
+---
+id: ys-QueueComposite
+source: YS
+title: Queue Composite
+author: Ryan Chou
+---
+
+
+## Explanation
+
+Note that we can compute the portion with $x$ as a factor independently from the constant in the equation. Thus, we can support $\mathcal{O}(\log n)$ removals, and $\mathcal{O}(1)$ additions and queries.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const ll MOD = 998244353;
+
+ll bin_exp(ll x, ll n) {
+	assert(n >= 0);
+
+	x %= MOD;
+
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) {
+			res = res * x % MOD;
+		}
+		x = x * x % MOD;
+		n /= 2;
+	}
+	return res;
+}
+
+int main() {
+	int q;
+	cin >> q;
+
+	ll mult_x = 1;
+	ll constant = 0;
+
+	queue<pair<int, int>> f;
+
+	for (int _ = 0; _ < q; _++) {
+		int type;
+		cin >> type;
+
+		if (type == 0) {
+			int a, b;
+			cin >> a >> b;
+
+			// add to our queue
+			f.push({a, b});
+
+			// x will gain a factor of a in the final expansion
+			mult_x = (mult_x * a) % MOD;
+
+			/*
+			 * any existing constants will be multiplied by a
+			 * and b will be multiplied against all future "a"s
+			 */
+			constant = ((constant * a) % MOD + b) % MOD;
+		} else if (type == 1) {
+			pair<int, int> x = f.front();
+			f.pop();
+
+			// compute modular inverse with exponentation
+			ll inv = bin_exp(x.first, MOD - 2);
+
+			mult_x = (mult_x * inv) % MOD;
+			constant -= (x.second * mult_x) % MOD;
+			
+			if (constant < 0) {
+				constant += MOD;
+			}
+		} else {
+			int x;
+			cin >> x;
+
+			cout << ((mult_x * x) + constant) % MOD << endl;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
