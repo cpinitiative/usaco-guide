@@ -6,9 +6,27 @@ author: Ryan Chou
 ---
 
 
+
 ## Explanation
 
-Note that we can compute the portion with $x$ as a factor independently from the constant in the equation. Thus, we can support $\mathcal{O}(\log n)$ removals by calculating modular inverses, and $\mathcal{O}(1)$ additions and queries.
+Let's consider $f$ when we've added two equations to it, $\{a, b\}, \{c, d\}$.
+
+1. $$c(ax + b) + d$$
+2. $$acx + bc + d$$
+
+From this, we can make two observations.
+
+1. In the expanded equation, $x$ is just multiplied by all of its coefficents.
+2. Any constant is multiplied by all future coefficients.
+
+We can calculate all of this on the fly as we process "add" and "compute" queries, but how do we deal with "removal" queries under a modulus?
+
+<Spoiler title="Handling Removal Queries">
+
+We'll compute modular inverses to divide out removed coefficients, and subtract the constant multiplied by our new coefficient.
+
+The bottleneck comes from computing modular inverses, so the time complexity is $\mathcal{O}(\log n)$.
+</Spoiler>
 
 
 ## Implementation
