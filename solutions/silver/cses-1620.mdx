@@ -7,29 +7,25 @@ author: Michael Cao
 
 <Spoiler title="Hint 1">
 
-Try thinking about what variables can affect the amount of products each machine produce. What stays constant, what doesn't?
+If we change the total time, how will the number of products produced be affected?
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-Say we nudge the total time it takes for machines to produce products. How will the products each machine produce be affected?
-
-</Spoiler>
-
-<Spoiler title="Hint 2">
-
-How many products are produced when the total time is lower or higher than the actual answer? Less, more? Patterns?
+Compared to the desired number of products give in the input, how many products are produced when the total time is lower or higher than the actual answer?
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
+## Explanation
+
 In this problem, you're given $n$ machines and asked the minimum time these
 machines need to work to create $t$ products such that the $i$-th machine
 creates a product in $k_i$ time.
 
-# Binary Search
+### Binary Search
 
 Observe that the time needed to create at least $x$ products is monotonic. In
 other words, if the given machines can create $x$ products in $y_1$ time, then
@@ -46,8 +42,11 @@ Overall, the $n$ machines can create
 ‎‎$\sum_{i=1}^{n} \lfloor \frac{ans}{k_i} \rfloor$ products. If this sum
 $\geq t$, then $ans$ is valid.
 
-<LanguageSection>
+## Implementation
 
+**Time Complexity:** $\mathcal{O}(n \log t)$, where $t$ is the largest time we need to consider.
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -103,9 +102,7 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
-
 
 ```java
 import java.io.*;
@@ -154,7 +151,6 @@ public class FactoryMachines {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -180,7 +176,6 @@ print(ans)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
