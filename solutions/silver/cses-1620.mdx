@@ -5,6 +5,26 @@ title: Factory Machines
 author: Michael Cao
 ---
 
+<Spoiler title="Hint 1">
+
+Try thinking about what variables can affect the amount of products each machine produce. What stays constant, what doesn't?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Say we nudge the total time it takes for machines to produce products. How will the products each machine produce be affected?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+How many products are produced when the total time is lower or higher than the actual answer? Less, more? Patterns?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
 In this problem, you're given $n$ machines and asked the minimum time these
 machines need to work to create $t$ products such that the $i$-th machine
 creates a product in $k_i$ time.
@@ -99,12 +119,10 @@ public class FactoryMachines {
 		int goal = io.nextInt();
 
 		int[] machines = new int[n];
-		for (int i = 0; i < n; i++) {
-			machines[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { machines[i] = io.nextInt(); }
 
 		long lo = 0;
-		long hi = (long) 1e18;
+		long hi = (long)1e18;
 		long ans = 0;
 		while (lo <= hi) {
 			long mid = (lo + hi) / 2;
@@ -113,9 +131,7 @@ public class FactoryMachines {
 			for (int machine : machines) {
 				n_produced += mid / machine;
 				// Break as soon as we hit our goal
-				if (n_produced >= goal) {
-					break;
-				}
+				if (n_produced >= goal) { break; }
 			}
 
 			if (n_produced >= goal) {
@@ -162,3 +178,5 @@ print(ans)
 </PySection>
 
 </LanguageSection>
+
+</Spoiler>
