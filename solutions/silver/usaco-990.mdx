@@ -262,4 +262,52 @@ print(ans, file=open("berries.out", "w"))
 </PySection>
 
 </LanguageSection>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(max(B_i) \cdot N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("berries.in", "r", stdin);
+	freopen("berries.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+
+	int N, K;
+	cin >> N >> K;
+	int B[N];
+	for (int i = 0; i < N; i++) { cin >> B[i]; }
+	int m = 0;
+	for (int s = 1; ; s++) {
+		int full = 0;
+		for (int n : B) { full += n / s; }
+		full = min(full, K);
+		if (full < K / 2) { break; }
+		if (full < K) {
+			nth_element(
+				B, B + min(N, K - full) - 1, B + N, 
+				[&](int a, int b) {return a % s > b % s;}
+			);
+		}
+		int bessie = (full - K / 2) * s;
+		for (int i = 0; i < min(K - full, N); i++) {
+			bessie += B[i] % s;
+		}
+		m = max(m, bessie);
+	}
+	cout << m << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 </Spoiler>
