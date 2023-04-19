@@ -267,6 +267,7 @@ print(ans, file=open("berries.out", "w"))
 
 **Time Complexity:** $\mathcal{O}(max(B_i) \cdot N)$
 
+We want the $\min(N, K - f)$ greatest elements of B (comparing values $\text{mod } s$), where $f$ is the number of full baskets and $s$ is the size of a full basket. Since the order of these elements does not matter, we can use a selection algorithm instead of sorting to reduce the time complexity by a factor of $\log N$. 
 <LanguageSection>
 <CPPSection>
 
@@ -295,7 +296,7 @@ int main() {
 			            [&](int a, int b) { return a % s > b % s; });
 		}
 		int bessie = (full - K / 2) * s;
-		for (int i = 0; i < min(K - full, N); i++) { bessie += B[i] % s; }
+		for (int i = 0; i < min(N, K - full); i++) { bessie += B[i] % s; }
 		m = max(m, bessie);
 	}
 	cout << m << '\n';
