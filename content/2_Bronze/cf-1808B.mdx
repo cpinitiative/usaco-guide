@@ -1,0 +1,94 @@
+---
+id: cf-1808B
+source: CF 1808B
+title: Playing in a Casino
+author: Mike Mirzayanov
+---
+
+Official Video Solution: [(https://www.youtube.com/watch?v=FCdL47-AyZs&t=4s&ab_channel=DCCNITA)]()
+
+## Explanation
+
+
+Essentially, the solution is to calculate the difference between the sum of the larger elements and the sum of the smaller 
+elements in each column, and weighting this difference by the number of times that the smaller element appears in that column. 
+This is based on the observation that if we have n numbers, and we want to minimize the sum of absolute differences between
+each number and some target value, then the target value should be the median of those n numbers. This solution applies this 
+observation to each column of the matrix, separately.
+  
+## Implementation
+
+By Amit Singh Bisht
+
+**Time Complexity:** $\mathcal{O}(N^2 M)$
+
+<Youtube id="lR2clYk3B6g" />
+
+<Spoiler title="Video Solution Code">
+  
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+using namespace std;
+void sol();
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    ll t = 1;
+    cin >> t;
+    while (t--)
+    {
+        sol();
+    }
+    return 0;
+}
+long long lcm(int a, int b)
+{
+    return (a / __gcd(a, b)) * b;
+}
+bool compare_col(const vector<int> &v1, const vector<int> &v2)
+{
+    return v1[1] < v2[1];
+}
+void sol()
+{
+    ll n, m;
+    cin >> n >> m;
+    vector<vector<int>> a(n, vector<int>(m)), pre(n, vector<int>(m));
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = 0; j < m; j++)
+        {
+            cin >> a[i][j];
+        }
+    }
+    // ? ? sort(a.begin(), a.end(), compare_col);
+    ll ans=0;
+    for (ll i = 0; i < m; i++)
+    {
+        vector<ll> temp;
+        ll sum = 0;
+        for (ll j = 0; j < n; j++)
+        {
+            temp.push_back(a[j][i]);
+            sum+=a[j][i];
+        }
+        ll curr = 0;
+        sort(temp.begin(), temp.end());
+        for (ll j = 0; j < n; j++)
+        {
+            curr += temp[j];
+            ans += abs((sum - curr) - (n - 1 - j) * temp[j]);
+        }
+    }
+    
+    cout << ans << "\n";
+}
+```
+</CPPSection>
+  
