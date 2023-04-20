@@ -7,7 +7,7 @@ author: Panos Paskalis
 
 [Official Analysis] (http://www.csc.kth.se/contest/boi/candy-spoiler.pdf)
 
-## Observation 
+## Observation
 
 If there is a candy $i$ $(s_i, t_i)$ and a candy $j$ $(s_j, t_j)$, with
 $t_i < t_j$, then $j$ can be caught by the same wagon as $i$, if the distance
@@ -35,7 +35,7 @@ $$
 
 ## Finding the minimum number of wagons
 
-If we think of each candy as a segment $[s - t, s + t]$ 
+If we think of each candy as a segment $[s - t, s + t]$
 (note that each candy corresponds to a unique segment and vice versa), we can
 conclude that then candy $j$ can be caught by the same wagon as candy $i$ if
 the segment of $i$ is nested inside the segment of $j$.
@@ -54,7 +54,7 @@ $$
 then a sequence of non-nested segments would correspond to an increasing
 sequence of right endpoints. Therefore, the minimum number of required wagons
 would correspond to the length of the longest increasing sequence of right
-endpoints. 
+endpoints.
 
 ## Assigning the candies to wagons
 
@@ -89,65 +89,57 @@ ii candies[MAXN + 2];
 int lis[MAXN + 2];
 vector<ii> candies_caught[MAXN + 2];
 
-
-// NOTE: It is important to sort segments of same left point by decreasing 
+// NOTE: It is important to sort segments of same left point by decreasing
 // right point so they count as nested
-bool compare_segments(ii a, ii b)
-{
-    if (a.first == b.first)
-        return a.second > b.second;
+bool compare_segments(ii a, ii b) {
+	if (a.first == b.first) return a.second > b.second;
 
-    return a.first < b.first;
+	return a.first < b.first;
 }
 
-int main(void)
-{
-    scanf("%d", &n);
-    int s, t;
-    for (int i = 0; i < n; i++) {
-        scanf("%d %d", &s, &t);
-        candies[i] = make_pair(s - t, s + t);
-    }
+int main(void) {
+	scanf("%d", &n);
+	int s, t;
+	for (int i = 0; i < n; i++) {
+		scanf("%d %d", &s, &t);
+		candies[i] = make_pair(s - t, s + t);
+	}
 
-    // Sort the segments by left endpoint
-    sort(candies, candies + n, compare_segments);
+	// Sort the segments by left endpoint
+	sort(candies, candies + n, compare_segments);
 
-    for (int len = 0; len <= n; len++)
-        lis[len] = INT_MAX;
-    lis[0] = 0;
-    for (int i = 0; i < n; i++) {
-        int r_point = candies[i].second;
-        
-        int l = 0; // Condition: lis[l] < r_point
-        int r = n; // Condition: lis[r] >= r_point
-        while (r > l + 1) {
-            int mid = (l + r) / 2;
-            if (lis[mid] < r_point)
-                l = mid;
-            else 
-                r = mid;
-        }
+	for (int len = 0; len <= n; len++) lis[len] = INT_MAX;
+	lis[0] = 0;
+	for (int i = 0; i < n; i++) {
+		int r_point = candies[i].second;
 
-        lis[l+1] = r_point;
-        // Candies with the same lis length can be caught by the same wagon
-        candies_caught[l+1].push_back(candies[i]);
-    }
+		int l = 0;  // Condition: lis[l] < r_point
+		int r = n;  // Condition: lis[r] >= r_point
+		while (r > l + 1) {
+			int mid = (l + r) / 2;
+			if (lis[mid] < r_point) l = mid;
+			else r = mid;
+		}
 
-    int ans = 0;
-    while (ans < n && lis[ans + 1] != INT_MAX)
-        ans++;
+		lis[l + 1] = r_point;
+		// Candies with the same lis length can be caught by the same wagon
+		candies_caught[l + 1].push_back(candies[i]);
+	}
 
-    printf("%d\n", ans);
-    for (int len = 1; len <= ans; len++) 
-        for (ii c : candies_caught[len]) {
-            // Convert the segments back to s and t
-            int s = (long long)(c.first + c.second) / 2;
-            int t = (long long)(c.second - c.first) / 2;
+	int ans = 0;
+	while (ans < n && lis[ans + 1] != INT_MAX) ans++;
 
-            printf("%d %d %d\n", s, t, len);
-        }
-    
-    return 0;
+	printf("%d\n", ans);
+	for (int len = 1; len <= ans; len++)
+		for (ii c : candies_caught[len]) {
+			// Convert the segments back to s and t
+			int s = (long long)(c.first + c.second) / 2;
+			int t = (long long)(c.second - c.first) / 2;
+
+			printf("%d %d %d\n", s, t, len);
+		}
+
+	return 0;
 }
 ```
 
