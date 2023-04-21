@@ -33,39 +33,37 @@ void sol();
 long long lcm(int a, int b) { return (a / __gcd(a, b)) * b; }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    ll t;
-    cin >> t;
-    for (ll i = 0; i < t; i++) {
-        ll n, m;
-        cin >> n >> m;
-        vector<vector<int>> a(n, vector<int>(m)), pre(n, vector<int>(m));
-        for (ll i = 0; i < n; i++) {
-            for (ll j = 0; j < m; j++) {
-                cin >> a[i][j];
-            }
-        }
-        
-        ll ans = 0;
-        for (ll i = 0; i < m; i++) {
-            vector<ll> temp;
-            ll sum = 0;
-            for (ll j = 0; j < n; j++) {
-                temp.push_back(a[j][i]);
-                sum += a[j][i];
-            }
-            ll curr = 0;
-            sort(temp.begin(), temp.end());
-            for (ll j = 0; j < n; j++) {
-                curr += temp[j];
-                ans += abs((sum - curr) - (n - 1 - j) * temp[j]);
-            }
-        }
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t;
+	cin >> t;
+	for (ll i = 0; i < t; i++) {
+		ll n, m;
+		cin >> n >> m;
+		vector<vector<int>> a(n, vector<int>(m)), pre(n, vector<int>(m));
+		for (ll i = 0; i < n; i++) {
+			for (ll j = 0; j < m; j++) { cin >> a[i][j]; }
+		}
 
-        cout << ans << "\n";
-    }
-    return 0;
+		ll ans = 0;
+		for (ll i = 0; i < m; i++) {
+			vector<ll> temp;
+			ll sum = 0;
+			for (ll j = 0; j < n; j++) {
+				temp.push_back(a[j][i]);
+				sum += a[j][i];
+			}
+			ll curr = 0;
+			sort(temp.begin(), temp.end());
+			for (ll j = 0; j < n; j++) {
+				curr += temp[j];
+				ans += abs((sum - curr) - (n - 1 - j) * temp[j]);
+			}
+		}
+
+		cout << ans << "\n";
+	}
+	return 0;
 }
 ```
 </CPPSection>
