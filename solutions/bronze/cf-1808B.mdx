@@ -22,40 +22,39 @@ observation to each column of the matrix, separately.
 
 ```cpp
 #include <bits/stdc++.h>
-typedef long long ll;
 using namespace std;
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	ll t;
-	cin >> t;
-	for (ll i = 0; i < t; i++) {
-		ll n, m;
-		cin >> n >> m;
-		vector<vector<int>> a(n, vector<int>(m)), pre(n, vector<int>(m));
-		for (ll i = 0; i < n; i++) {
-			for (ll j = 0; j < m; j++) { cin >> a[i][j]; }
-		}
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t;
+    cin >> t;
+    for (int i = 0; i < t; i++) {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<double>> a(n, vector<double>(m)), pre(n, vector<double>(m));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) { cin >> a[i][j]; }
+        }
 
-		ll ans = 0;
-		for (ll i = 0; i < m; i++) {
-			vector<ll> temp;
-			ll sum = 0;
-			for (ll j = 0; j < n; j++) {
-				temp.push_back(a[j][i]);
-				sum += a[j][i];
-			}
-			ll curr = 0;
-			sort(temp.begin(), temp.end());
-			for (ll j = 0; j < n; j++) {
-				curr += temp[j];
-				ans += abs((sum - curr) - (n - 1 - j) * temp[j]);
-			}
-		}
+        double ans = 0.0;
+        for (int i = 0; i < m; i++) {
+            vector<double> temp;
+            double sum = 0.0;
+            for (int j = 0; j < n; j++) {
+                temp.push_back(a[j][i]);
+                sum += a[j][i];
+            }
+            double curr = 0.0;
+            sort(temp.begin(), temp.end());
+            for (int j = 0; j < n; j++) {
+                curr += temp[j];
+                ans += abs((sum - curr) - (n - 1 - j) * temp[j]);
+            }
+        }
 
-		cout << ans << "\n";
-	}
+        cout << fixed << setprecision(0) << ans << "\n";
+    }
 }
 ```
 </CPPSection>
