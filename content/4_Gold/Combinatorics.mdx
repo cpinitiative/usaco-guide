@@ -139,7 +139,7 @@ public static int binomial(int n, int k, int p) {
 <PySection>
 
 ```py
-def binomial(n, k, p):
+def binomial(n: int, k: int, p: int) -> int:
 	"""Computes nCk mod p using naive recursion"""
 	if k == 0 or k == n:
 		return 1
@@ -178,6 +178,7 @@ int binomial(int n, int k, int p) {
 		 */
 		if (i <= k) { dp[i][i] = 1; }
 	}
+
 	for (int i = 0; i <= n; i++) {
 		for (int j = 1; j <= min(i, k); j++) {
 			if (i != j) {  // skips over the base cases
@@ -214,6 +215,7 @@ public static int binomial(int n, int k, int p) {
 		 */
 		if (i <= k) { dp[i][i] = 1; }
 	}
+
 	for (int i = 0; i <= n; i++) {
 		for (int j = 1; j <= Math.min(i, k); j++) {
 			if (i != j) {  // skips over the base cases
@@ -230,7 +232,7 @@ public static int binomial(int n, int k, int p) {
 <PySection>
 
 ```py
-def binomial(n, k, p):
+def binomial(n: int, k, p):
 	"""Computes nCk mod p using dynamic programming"""
 	# dp[i][j] stores iCj
 	dp = [[0] * (k + 1) for _ in range(n + 1)]
@@ -385,13 +387,13 @@ public class BinomialCoefficients {
 <PySection>
 
 ```py
-MAXN = 10**6
+MAXN = 10 ** 6
 
 fac = [0] * (MAXN + 1)
 inv = [0] * (MAXN + 1)
 
 # Computes x^n modulo m in O(log p) time.
-def exp(x, n, m):
+def exp(x: int, n: int, m: int):
 	x %= m  # note: m * m must be less than 2^63 to avoid ll overflow
 	res = 1
 	while n > 0:
@@ -403,7 +405,7 @@ def exp(x, n, m):
 
 
 # Precomputes n! from 0 to MAXN.
-def factorial(p):
+def factorial(p: int):
 	global fac
 	fac[0] = 1
 	for i in range(1, MAXN + 1):
@@ -411,7 +413,7 @@ def factorial(p):
 
 
 # Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p) time
-def inverses(p):
+def inverses(p: int):
 	global inv
 	inv[MAXN] = exp(fac[MAXN], p - 2, p)
 	for i in range(MAXN, 0, -1):
@@ -419,7 +421,7 @@ def inverses(p):
 
 
 # Computes nCr mod p
-def choose(n, r, p):
+def choose(n: int, r: int, p: int):
 	return fac[n] * inv[r] % p * inv[n - r] % p
 ```
 
@@ -550,14 +552,14 @@ public class BinomialCoefficients {
 <PySection>
 
 ```py
-MAXN = 10**6
-MOD = 10**9 + 7
+MAXN = 10 ** 6
+MOD = 10 ** 9 + 7
 
 fac = [0] * (MAXN + 1)
 inv = [0] * (MAXN + 1)
 
 
-def exp(x, n, m):
+def exp(x: int, n: int, m: int):
 	x %= m
 	res = 1
 	while n > 0:
@@ -580,7 +582,7 @@ def inverses():
 		inv[i - 1] = inv[i] * i % MOD
 
 
-def choose(n, r):
+def choose(n: int, r: int):
 	return fac[n] * inv[r] % MOD * inv[n - r] % MOD
 
 
