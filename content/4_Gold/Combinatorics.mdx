@@ -187,6 +187,7 @@ int binomial(int n, int k, int p) {
 			}
 		}
 	}
+
 	return dp[n][k];  // returns nCk modulo p
 }
 ```
@@ -224,6 +225,7 @@ public static int binomial(int n, int k, int p) {
 			}
 		}
 	}
+
 	return dp[n][k];  // returns nCk modulo p
 }
 ```
@@ -324,8 +326,8 @@ void factorial(long long p) {
 }
 
 /**
- * Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p)
- * time
+ * Precomputes all modular inverse factorials
+ * from 0 to MAXN in O(n + log p) time
  */
 void inverses(long long p) {
 	inv[MAXN] = exp(fac[MAXN], p - 2, p);
@@ -368,8 +370,8 @@ public class BinomialCoefficients {
 	}
 
 	/**
-	 * Precomputes all modular inverse factorials from
-	 * 0 to MAXN in O(n + log p) time
+	 * Precomputes all modular inverse factorials
+	 * from 0 to MAXN in O(n + log p) time
 	 */
 	private static void inverses(long p) {
 		inv[MAXN] = exp(fac[MAXN], p - 2, p);
@@ -392,8 +394,9 @@ MAXN = 10**6
 fac = [0] * (MAXN + 1)
 inv = [0] * (MAXN + 1)
 
-# Computes x^n modulo m in O(log p) time.
+
 def exp(x: int, n: int, m: int):
+	"""Computes x^n modulo m in O(log p) time."""
 	x %= m  # note: m * m must be less than 2^63 to avoid ll overflow
 	res = 1
 	while n > 0:
@@ -404,24 +407,26 @@ def exp(x: int, n: int, m: int):
 	return res
 
 
-# Precomputes n! from 0 to MAXN.
 def factorial(p: int):
+	"""Precomputes n! from 0 to MAXN."""
 	global fac
 	fac[0] = 1
 	for i in range(1, MAXN + 1):
 		fac[i] = (fac[i - 1] * i) % p
 
 
-# Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p) time
 def inverses(p: int):
+	"""
+	Precomputes all modular inverse factorials from 0 to MAXN in O(n + log p) time
+	"""
 	global inv
 	inv[MAXN] = exp(fac[MAXN], p - 2, p)
 	for i in range(MAXN, 0, -1):
 		inv[i - 1] = (inv[i] * i) % p
 
 
-# Computes nCr mod p
 def choose(n: int, r: int, p: int):
+	"""Computes nCr mod p"""
 	return fac[n] * inv[r] % p * inv[n - r] % p
 ```
 
@@ -519,6 +524,7 @@ public class BinomialCoefficients {
 		}
 	}
 
+	// BeginCodeSnip{Counting Functions}
 	private static long exp(long x, long n, long m) {
 		x %= m;
 		long res = 1;
@@ -543,6 +549,7 @@ public class BinomialCoefficients {
 	private static long choose(int n, int r) {
 		return (((fac[n] * inv[r]) % MOD) * inv[n - r]) % MOD;
 	}
+	// EndCodeSnip
 
 	// CodeSnip{Kattio}
 }
@@ -559,6 +566,7 @@ fac = [0] * (MAXN + 1)
 inv = [0] * (MAXN + 1)
 
 
+# BeginCodeSnip{Counting Functions}
 def exp(x: int, n: int, m: int):
 	x %= m
 	res = 1
@@ -584,6 +592,7 @@ def inverses():
 
 def choose(n: int, r: int):
 	return fac[n] * inv[r] % MOD * inv[n - r] % MOD
+# EndCodeSnip
 
 
 factorial()
