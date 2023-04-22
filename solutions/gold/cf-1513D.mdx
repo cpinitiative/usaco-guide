@@ -9,6 +9,28 @@ author: Chuyang Wang
 
 ## Explanation
 
+Like [Kruskal's Algorithm](https://usaco.guide/gold/mst#kruskals), we generate
+our MST by adding edges greedily. Except the edges between any two adjacent
+elements in the array which cost $p$, an edge only exists between $i$ and $j$ if
+the greatest common divisor of all elements in $[i, j]$ equals the minimum of
+the range $[i, j]$. 
+
+As the cost of these edges is the minimum element of the range, let's iterate
+through all elements of the array in ascending order. This way, we guarantee
+that we always add edges that cost as less as possible. Let the current element
+be $a[k]$. There is an edge between $k$ and $k - 1$ if $a[k]$ divides $a[k -
+1]$. In that case, we can go further to $a[k - 2]$ and so on until $a[k]$ no
+longer divides $a[k - i]$, or when the two elements are connected already. We
+apply the same operation in the other direction ($k + 1$, ...). 
+
+We stop the iteration when the cost of the edge (= the value of the element) is
+greater than $p$. For all components that are not connected yet, we can simply
+connect them with cost $p$. If we count the number of edges $c$ already added,
+and since a MST has $N - 1$ edges, we can add $p \cdot (N - 1 - c)$ to the
+answer.
+
+Since the connected components are always a segment in the array, we only have
+to consider $\mathcal{O}(N)$ edges. 
 
 ## Implementation
 
