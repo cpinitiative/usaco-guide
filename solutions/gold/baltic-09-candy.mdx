@@ -97,11 +97,7 @@ typedef pair<int, int> pi;
 int main() {
 	int n;
 	cin >> n;
-
 	vector<pi> candies(n);
-	vector<int> lis(n + 1);
-	vector<vector<pi>> candies_caught(n + 1);
-
 	for (int i = 0; i < n; i++) {
 		int s, t;
 		cin >> s >> t;
@@ -117,8 +113,9 @@ int main() {
 		return (a.first == b.first ? a.second > b.second : a.first < b.first);
 	});
 
-	for (int len = 0; len <= n; len++) { lis[len] = INT_MAX; }
+	vector<int> lis(n + 1, INT_MAX);
 	lis[0] = 0;
+	vector<vector<pi>> candies_caught(n + 1);
 	for (int i = 0; i < n; i++) {
 		int r_point = candies[i].second;
 
