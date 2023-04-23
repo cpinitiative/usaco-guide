@@ -7,17 +7,13 @@ author: Amit Singh Bisht
 
 ## Explanation
 
-Essentially, the solution is to calculate the difference between the sum of the larger elements and the sum of the smaller
-elements in each column, and weighting this difference by the number of times that the smaller element appears in that column.
+Essentially, the solution is to use nested loops to iterate through the columns input matrix, then calculate the sum of each column, and sort the elements of each column in non-descending order. Then calculate the absolute difference between the sum of the column and a running sum of the sorted elements. This difference is multiplied by the number of elements that come before it in the sorted order to obtain the contribution of that element to the final answer. The contributions of all elements in a column are then summed up to obtain the final answer for that column, and this process is repeated for all columns.
 
-This is based on the observation that if we have $n$ numbers, and we want to minimize the sum of absolute differences between
-each number and some target value, then the target value should be the median of those $n$ numbers.
-This solution applies this
-observation to each column of the matrix, separately.
+The idea behind this approach is that the current element is being used as a representative of all the elements in the column that are smaller than it. Therefore, the difference between the sum of all elements and the sum of all elements before the current element is the sum of all the elements that are greater than the current element. This difference is then multiplied by the number of rows minus one minus the number of rows before the current element to obtain the total number of inversions.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2 M)$
+**Time Complexity:** $\mathcal{O}(MN \log N)$
 
 <LanguageSection>
 <CPPSection>
