@@ -23,10 +23,7 @@ observation to each column of the matrix, separately.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
 	int t;
 	cin >> t;
 	for (int i = 0; i < t; i++) {
@@ -36,26 +33,24 @@ int main() {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) { cin >> a[i][j]; }
 		}
-
-		int ans = 0;
+		long long ans = 0;
 		for (int i = 0; i < m; i++) {
-			vector<int> temp;
-			int sum = 0.0;
+			vector<long long> temp;
+			long long sum = 0;
 			for (int j = 0; j < n; j++) {
 				temp.push_back(a[j][i]);
 				sum += a[j][i];
 			}
-			int curr = 0;
+			long long curr = 0;
 			sort(temp.begin(), temp.end());
 			for (int j = 0; j < n; j++) {
 				curr += temp[j];
-				ans += abs((sum - curr) - (n - 1 - j) * temp[j]);
+				ans += llabs((sum - curr) - (n - 1 - j) * temp[j]);
 			}
 		}
-
-		cout << fixed << ans << "\n";
+		cout << ans << "\n";
 	}
-}
+} 
 ```
 </CPPSection>
 </LanguageSection>
