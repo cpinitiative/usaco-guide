@@ -18,28 +18,24 @@ prerequisites:
 </Resources>
 
 <LanguageSection>
-
 <CPPSection>
 
 C++ contains two versions of sets and maps; one using **sorting** and the other
 using **hashing**.
 
 </CPPSection>
-
 <JavaSection>
 
 Java contains two versions of sets and maps; one using **sorting** and the other
 using **hashing**.
 
 </JavaSection>
-
 <PySection>
 
 Python has built-in sets and maps, however they do _not_ store elements in
 sorted order.
 
 </PySection>
-
 </LanguageSection>
 
 ## Sets
@@ -49,7 +45,6 @@ sorted order.
 A **set** is a collection of elements that contains no duplicates.
 
 <LanguageSection>
-
 <CPPSection>
 
 ### Unordered Sets
@@ -69,6 +64,16 @@ Some operations on an `std::unordered_set` named `s` include:
 Unordered sets work with primitive types, but require a
 [custom hash function](/gold/hashmaps#custom-hashing)
 for structures/classes like vectors and pairs.
+
+<Warning title="Unordered Set Performance">
+
+`unordered_set` actually has worst-case $\mathcal{O}(N)$ behavior, and
+a program that uses it times out on Distinct Numbers.
+For more on unordered maps and sets, check out [this module](/gold/unordered).
+
+In any case, just default to using ordered sets in C++.
+
+</Warning>
 
 ```cpp
 unordered_set<int> s;
@@ -108,7 +113,6 @@ for (int element : s) { cout << element << endl; }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ### Unordered Sets
@@ -166,7 +170,6 @@ for (int element : set) { System.out.println(element); }
 ```
 
 </JavaSection>
-
 <PySection>
 
 Python's built-in `set` uses hashing to support $\mathcal{O}(1)$ insertion,
@@ -191,7 +194,6 @@ s.remove(0)  # {4, 2}
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Solution - Distinct Numbers
@@ -229,7 +231,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -243,9 +244,7 @@ public class DistinctNumbers {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		Set<Integer> set = new HashSet<>();
-		for (int i = 0; i < n; i++) {
-			set.add(io.nextInt());
-		}
+		for (int i = 0; i < n; i++) { set.add(io.nextInt()); }
 		io.println(set.size());
 		io.close();
 	}
@@ -255,7 +254,6 @@ public class DistinctNumbers {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -361,7 +359,6 @@ No - historically, no USACO problem has included an anti-hash test. However, the
 </Info>
 
 </PySection>
-
 </LanguageSection>
 
 #### Method 2 - Sorting
@@ -478,23 +475,17 @@ print(1 in d)  # True
 ### Iterating Over Maps
 
 <LanguageSection>
-
 <CPPSection>
 
 An `std::map` stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the
-form `{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
-keyword suffices to iterate over any type of pair (here, `auto` substitutes for
-`pair<const int, int>`).
+form `{key, value}`. To iterate over maps, you can use a `for` loop.
+The `auto` keyword suffices to iterate over any type of pair
+(here, `auto` substitutes for `pair<int, int>`).
 
 ```cpp
+// Both of these output the same thing
 for (const auto &x : m) { cout << x.first << " " << x.second << endl; }
 for (auto x : m) { cout << x.first << " " << x.second << endl; }
-
-/* both output the following:
-0 -1
-1 5
-3 14
-*/
 ```
 
 The first method (iterating over const references) is generally preferred over
@@ -504,18 +495,12 @@ allowing you to modify the values (but not the keys) of the pairs stored in the
 map:
 
 ```cpp
-for (auto &x : m) { x.second = 3; }
-for (pair<int, int> x : m) { cout << x.first << " " << x.second << endl; }
-
-/*
-0 3
-1 3
-3 3
-*/
+for (auto &x : m) {
+	x.second = 1234;  // Change all values to 1234
+}
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 To iterate over maps, you can use a for-each loop over the keys:
@@ -532,13 +517,21 @@ for (Map.Entry entry : m.entrySet()) {
 }
 ```
 
-</JavaSection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```java
+for (int k : m.keySet()) {
+	m.put(k, 1234);  // Change all values to 1234
+}
+```
+
+</JavaSection>
 <PySection>
 
-To iterate over `dict`s, there are three options. Dicts will be returned in the
-same order of insertion in
-[Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+To iterate over `dict`s, there are three options, all of which involve for loops.
+Dicts will be returned in the same order of insertion in
+[Python 3.6+](https://stackoverflow.com/questions/39980323).
 You can iterate over the keys:
 
 ```py
@@ -546,22 +539,29 @@ for key in d:
 	print(key)
 ```
 
-You can iterate over the values:
+Over the values:
 
 ```py
 for value in d.values():
 	print(value)
 ```
 
-You can iterate over the key-value pairs:
+And even over key-value pairs:
 
 ```py
 for key, value in d.items():
 	print(key, value)
 ```
 
-</PySection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```py
+for key in d:
+	d[key] = 1234  # Change all values to 1234
+```
+
+</PySection>
 </LanguageSection>
 
 While you are free to change the _values_ in a map when iterating over it (as

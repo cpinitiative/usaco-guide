@@ -14,6 +14,9 @@ author: Óscar Garries, Kevin Sheng
 <LanguageSection>
 <CPPSection>
 
+Note that using `set` here instead of `unordered_set`
+adds an extra $\log R$ factor to the time complexity.
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -113,7 +116,7 @@ import java.io.*;
 import java.util.*;
 
 public class CountCross {
-	//BeginCodeSnip{Road Class}
+	// BeginCodeSnip{Road Class}
 	private static class Road {
 		int sr, sc;
 		int er, ec;
@@ -132,14 +135,12 @@ public class CountCross {
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof Road)) {
-				return false;
-			}
-			Road r = (Road) o;
+			if (!(o instanceof Road)) { return false; }
+			Road r = (Road)o;
 			return sr == r.sr && sc == r.sc && er == r.er && ec == r.ec;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	private static int sideLen;
 	private static Set<Road> roads = new HashSet<>();
@@ -173,9 +174,7 @@ public class CountCross {
 			for (int c = 0; c < sideLen; c++) {
 				if (!visited[r][c]) {
 					int compSz = connectedCowNum(r, c, r, c);
-					if (compSz != 0) {
-						cowComponents.add(compSz);
-					}
+					if (compSz != 0) { cowComponents.add(compSz); }
 				}
 			}
 		}
@@ -183,7 +182,8 @@ public class CountCross {
 		int distantPairs = 0;
 		for (int i = 0; i < cowComponents.size(); i++) {
 			for (int j = i + 1; j < cowComponents.size(); j++) {
-				// all pairs of cows from these two components are considered distant
+				// all pairs of cows from these two components are considered
+				// distant
 				distantPairs += cowComponents.get(i) * cowComponents.get(j);
 			}
 		}
@@ -192,14 +192,17 @@ public class CountCross {
 		io.close();
 	}
 
-	/** @return the # of cows that a position can reach & marks them as visited */
+	/**
+	 * @return the # of cows that a position can reach & marks them as visited
+	 */
 	private static int connectedCowNum(int r, int c, int prevR, int prevC) {
 		// check if we're out of bounds,
-		if (r < 0 || c < 0 || r >= sideLen || c >= sideLen
-				// someplace we've gone before,
-				|| visited[r][c]
-				// or if we've just crossed a road
-				|| roads.contains(new Road(r, c, prevR, prevC))) {
+		if (r < 0 || c < 0 || r >= sideLen ||
+		    c >= sideLen
+		    // someplace we've gone before,
+		    || visited[r][c]
+		    // or if we've just crossed a road
+		    || roads.contains(new Road(r, c, prevR, prevC))) {
 			return 0;
 		}
 
@@ -216,7 +219,7 @@ public class CountCross {
 		return new int[][] {{r - 1, c}, {r + 1, c}, {r, c - 1}, {r, c + 1}};
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

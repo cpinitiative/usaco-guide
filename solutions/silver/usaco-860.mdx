@@ -128,8 +128,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MooyoMooyo {
 	static int n, m, k;
@@ -168,25 +168,19 @@ public class MooyoMooyo {
 					 */
 					if (grid[i][j] != 0 && region[i][j] == 0) {
 						int size = floodfill(i, j, r, grid[i][j]);
-						if (size >= k) {
-							largeRegions.add(r);
-						}
+						if (size >= k) { largeRegions.add(r); }
 						r++;
 					}
 				}
 			}
 
 			// Stop simulation if there are no more regions to delete
-			if (largeRegions.size() == 0) {
-				break;
-			}
+			if (largeRegions.size() == 0) { break; }
 
 			// Delete squares that are part of a large region
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < m; j++) {
-					if (largeRegions.contains(region[i][j])) {
-						grid[i][j] = 0;
-					}
+					if (largeRegions.contains(region[i][j])) { grid[i][j] = 0; }
 				}
 			}
 
@@ -199,21 +193,15 @@ public class MooyoMooyo {
 			for (int j = 0; j < m; j++) {
 				int count = n - 1;
 				for (int i = n - 1; i >= 0; i--) {
-					if (grid[i][j] != 0) {
-						grid[count--][j] = grid[i][j];
-					}
+					if (grid[i][j] != 0) { grid[count--][j] = grid[i][j]; }
 				}
 
-				while (count >= 0) {
-					grid[count--][j] = 0;
-				}
+				while (count >= 0) { grid[count--][j] = 0; }
 			}
 		}
 
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
-				io.print(grid[i][j]);
-			}
+			for (int j = 0; j < m; j++) { io.print(grid[i][j]); }
 			io.println();
 		}
 		io.close();
@@ -245,7 +233,7 @@ public class MooyoMooyo {
 <PySection>
 
 <Info>
-This solution uses [BFS](/gold/bfs), but the general gist is similar to the DFS solution.
+This solution uses [BFS](/silver/graph-traversal), but the general gist is similar to the DFS solution.
 </Info>
 
 ```py

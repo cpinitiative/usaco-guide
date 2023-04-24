@@ -82,12 +82,11 @@ import java.io.*;
 import java.util.*;
 
 public class YearOfTheCow {
-	static final String[] ZODIAC = {
-		"Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
-		"Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"
-	};
+	static final String[] ZODIAC = {"Ox",      "Tiger", "Rabbit", "Dragon",
+	                                "Snake",   "Horse", "Goat",   "Monkey",
+	                                "Rooster", "Dog",   "Pig",    "Rat"};
 
-	//BeginCodeSnip{Relation Class}
+	// BeginCodeSnip{Relation Class}
 	static class Relation {
 		String name;
 		boolean prev;  // is this a "previous" or "next" relation?
@@ -100,9 +99,9 @@ public class YearOfTheCow {
 			this.relative = relative;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 
@@ -115,9 +114,7 @@ public class YearOfTheCow {
 			String animal = io.next();
 			int year = -1;
 			for (int i = 0; i < ZODIAC.length; i++) {
-				if (ZODIAC[i].equals(animal)) {
-					year = i;
-				}
+				if (ZODIAC[i].equals(animal)) { year = i; }
 			}
 			io.next();
 			io.next();
@@ -131,9 +128,7 @@ public class YearOfTheCow {
 			int change = r.prev ? -1 : 1;
 			// +change because it has to be at least 1 year off
 			int year = birthYears.get(r.relative) + change;
-			while (mod(year, ZODIAC.length) != r.year) {
-				year += change;
-			}
+			while (mod(year, ZODIAC.length) != r.year) { year += change; }
 			birthYears.put(r.name, year);
 		}
 
@@ -142,11 +137,9 @@ public class YearOfTheCow {
 		io.close();
 	}
 
-	static int mod(int n, int m) {
-		return ((n % m) + m) % m;
-	}
+	static int mod(int n, int m) { return ((n % m) + m) % m; }
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

@@ -1,0 +1,446 @@
+---
+id: izho-17-LongestBeautifulSequence
+source: IZhO
+title: Longest Beautiful Subsequence
+author: Daniel Zhu
+---
+
+## Explanation
+
+Solving this problem all at once is extremely difficult: let's go through the subtasks first.
+
+### Subtasks 1-2
+
+Due to the small bounds on $N$, an $\mathcal{O}(N^2)$ solution suffices.
+
+Define $\texttt{dp}[i]$ as the length of the longest LBS (longest beautiful subsequence) that ends at $i$, and $\texttt{trans}_k(y)$ as all $x$ such that $x \hspace{3pt} \& \hspace{3pt} y$ has $k$ bits. We transition by iterating over all $j < i$ where $a_j \in \texttt{trans}_{k_i}(a_i)$.  To reconstruct an optimal solution we define another array $\texttt{prv}$, where $\texttt{prv}[i]$ is the most optimal index to include directly before index $i$.
+<Info title="Note">
+We use $\texttt{bc}[x][y]$ below to denote $\texttt{bit\_count}(x \hspace{3pt} \& \hspace{3pt} y)$.
+</Info>
+Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$.
+- **Base case:** $\texttt{dp}[i] = 1$ for all $i$ (any single number forms an LBS) and $\texttt{prv}[i] = i$.
+- $\texttt{dp}[1]$: we try extending the longest LBS that ends at $a_0 = 1$. Because $\texttt{bc}[a_0][a_1] == k_1$, our new LBS is valid, and we update $\texttt{dp}[1] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[1] = 0$.
+- $\texttt{dp}[2]$: we try to extend the LBS from both $a_0$ and $a_1$.
+	- $a_0$: $\texttt{bc}[a_0][a_2] == k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
+	- $a_1$: $\texttt{bc}[a_1][a_2] == k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[2] = 1$
+	- We take the larger of the two DP values, so $\texttt{dp}[2] = 3$ and $\texttt{prv}[2] = 1$.
+- $\texttt{dp}[3]$: we try to extend from $a_0$, $a_1$, and $a_2$.
+	- $a_0$: $\texttt{bc}[a_0][a_3] \neq k_3 \rightarrow$ no transition
+	- $a_1$: $\texttt{bc}[a_1][a_3] == k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[3] = 1$
+	- $a_2$: $\texttt{bc}[a_2][a_3] == k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[2] + 1 = 4$ and $\texttt{prv}[3] = 2$
+	- Taking the larger of the two options, $\texttt{dp}[3] = 4$ and $\texttt{prv}[3] = 2$.
+- **Final answer:** $\texttt{len} = \max(\texttt{dp}[i]_{i \in [0, n)}) = \texttt{dp}[3] = \boxed{4}$
+- **Reconstructing a solution:**
+	- Using our $\texttt{prv}$ array and the ending index of the LBS, we can repeatedly find the optimal index to include before the current one.
+	- choose $i$ such that $\texttt{dp}[i] = \texttt{len} = 4 \Rightarrow i = 3$
+	- intialize $ans$ as $\{i\} = \{3\}$.
+	- We repeatedly append $\texttt{prv}{[ans_0]}$ to the front of $ans$.
+		- $ans = \{\texttt{prv}[3], 3\} = \{2, 3\}$
+		- $ans = \{\texttt{prv}[2], 2, 3\} = \{1, 2, 3\}$
+		- $ans = \{\texttt{prv}[1], 1, 2, 3\} = \{0, 1, 2, 3\}$
+		- $\texttt{prv}[0] = 0$, so we terminate.
+	- Therefore, our final (0-indexed) answer will be $ans = \boxed{\{0, 1, 2, 3\}}.$
+
+### Implementation
+
+**Time Complexity**: $\mathcal{O}(N^2)$
+
+<Spoiler title="Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) { cin >> k[i]; }
+
+	vector<int> dp(n, 1);
+	int ans = 1;
+	// best_i: most optimal index to end on
+	int best_i = 0;
+	// prv[i] = optimal index to include right before i
+	vector<int> prv(n);
+	// intially, prv[i] = i
+	iota(prv.begin(), prv.end(), 0);
+
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j < i; j++) {
+			// bc[a[j]][a[i]] == k[i]
+			if (__builtin_popcount(a[j] & a[i]) == k[i]) {
+				if (dp[j] + 1 > dp[i]) {
+					prv[i] = j;
+					dp[i] = dp[j] + 1;
+				}
+			}
+		}
+		if (dp[i] > ans) {
+			ans = dp[i];
+			best_i = i;
+		}
+	}
+
+	cout << ans << endl;
+
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) { cout << x + 1 << " "; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+### Subtask 3
+
+While the bounds on $N$ are now much larger ($N \leq 10^5$), the maximum value of $a_i$ is now only $M = 2^8$. We can use this to optimize our solution: rather than looping over every possible previous index, we can loop over all possible previous values instead.
+
+More specifically, we define $\texttt{dp1}[i][x]$ to be the length of the longest LBS that ends with **value** $x$ (rather than index) and is a subset of the first $i$ numbers. We have two transitions for each index $i$:
+- Include $a_i$: to calculate $\texttt{dp1}[i][a_i]$, we transition from $\texttt{dp1}[i - 1][x]$ for all $x \in \texttt{trans}_{k_i}(a_i)$.
+- Don't include $a_i$: $\texttt{dp1}[i][x] = \texttt{dp1}[i - 1][x]$ for all $x \leq M$.
+
+<Info title="Implementation Note">
+In order to reconstruct a solution, we need to store the ending index of the optimal LBS in $\texttt{dp1}[i][x]$ in addition to its length. In our implementation, our `State` object holds an `end` property in addition to a `len` property. In our example below, we represent each state as `{len, end}`.
+</Info>
+
+This improves our time complexity to $\mathcal{O}(NM)$. Notice that, because $\texttt{dp1}[i][x]$ only depends on $\texttt{dp1}[i - 1][...]$, we can drop the first dimension.
+
+Consider the first sample case again: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$. The maximum value is $M = 4$.
+- **Base case:** $\texttt{dp1}[a_0 = 1] = \{1, 0\}$.
+	- all other DP values are initially 0
+	- $\texttt{prv}[i] = i$
+- $\texttt{dp1}[a_1 = 2] = \{2, 1\}$.
+	- we loop over all states $\texttt{dp1}[x]$ where $x \leq M$ and $x$ is in $\texttt{trans}_{k_i}(a_i)$. The values of $x$ that satisfy these conditions are $0$, $1$, and $4$.
+	- Out of these $x$'s, $\texttt{dp1}[x = 1]$ has the greatest value of `len`, so:
+		- $\texttt{dp1}[a_1]. \texttt{len} = \texttt{dp1}[x].\texttt{len} + 1 = 2$.
+		- $\texttt{dp1}[a_1].\texttt{end} = i = 1$.
+		- $\texttt{prv}[i] = \texttt{dp1}[x].\texttt{end} = 0$.
+- $\texttt{dp1}[a_2 = 3] = \{3, 2\}$.
+	- here, $x \in \{1, 2\}$ and $\texttt{dp1}[x = 2]$ has the greater value, so:
+		- $\texttt{dp1}[a_2]. \texttt{len} = \texttt{dp1}[x].\texttt{len} + 1 = 3$.
+		- $\texttt{dp1}[a_2].\texttt{end} = i = 2$.
+		- $\texttt{prv}[i] = \texttt{dp1}[x].\texttt{end} = 1$.
+- $\texttt{dp1}[a_3 = 4] = \{4, 3\}$.
+	- here, $x \in \{0, 1, 2, 3\}$ and $\texttt{dp1}[x = 3]$ has the greatest value so:
+		- $\texttt{dp1}[a_3]. \texttt{len} = \texttt{dp1}[x].\texttt{len} + 1 = 4$.
+		- $\texttt{dp1}[a_3].\texttt{end} = i = 3$.
+		- $\texttt{prv}[i] = \texttt{dp1}[x].\texttt{end} = 2$.
+- **Final answer:** the max DP `len` value, $\boxed{4}$.
+
+### Implementation
+
+**Time Complexity**: $\mathcal{O}(NM)$
+
+<Spoiler title="Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using pii = pair<int, int>;
+const int B = 8;
+struct State {
+	int len, end;
+};
+int main() {
+	// preprocess:
+	// bc[i][j] = bit_count(i & j)
+	vector<vector<int>> bc(1 << B, vector<int>(1 << B));
+	for (int i = 0; i < (1 << B); i++) {
+		for (int j = 0; j < (1 << B); j++) {
+			bc[i][j] = __builtin_popcount(i & j);
+		}
+	}
+
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) cin >> k[i];
+	int ans = 1;
+	// best_i: most optimal index to end on
+	int best_i = 0;
+	vector<int> prv(n);               // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+
+	vector<State> dp1(1 << B, State{-1, -1});
+	for (int i = 0; i < n; i++) {
+		if (dp1[a[i]].len == -1) {
+			dp1[a[i]].len = 1;
+			dp1[a[i]].end = i;
+		}
+		for (int j = 0; j < (1 << B); j++) {
+			if (bc[j][a[i]] == k[i] && dp1[j].len + 1 > dp1[a[i]].len) {
+				dp1[a[i]].len = dp1[j].len + 1;
+				dp1[a[i]].end = i;
+				prv[i] = dp1[j].end;
+			}
+		}
+		if (dp1[a[i]].len > ans) {
+			ans = dp1[a[i]].len;
+			best_i = i;
+		}
+	}
+
+	cout << ans << endl;
+
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) { cout << x + 1 << " "; }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+</Spoiler>
+
+### Subtask 3 (Alternate Solution)
+
+In our previous solution for this Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. **How can we quickly process all $x$ in $\texttt{trans}_{k_i}(a_i)$?**
+
+The most extreme way to optimize transitions is to embed the restrictions of $x$ directly in the DP state.
+
+**Concretely, define $\texttt{dp2}[i][k]$ as the maximum value of $\texttt{dp1}[x]$ over all $x$ in $\texttt{trans}_k(i)$.**
+
+To better understand this redefinition of our DP state, let's look at our sample again. Notice, in our computation of $\texttt{dp1}[a_3 = 4]$, we process all $x \in \{0, 1, 2, 3\}$ one by one. However, in our newly defined state, we can get the most optimal solution over all values $x$ simply by querying $\texttt{dp2}[a_3][k_3]$.
+
+**In general, $\texttt{dp2}[a_i][k_i]$ is now an $\mathcal{O}(1)$ transition to find the longest LBS that ends at index $i$.**
+
+However, each state $\texttt{dp2}[i][k]$ now encapsulates $|\texttt{trans}_k(i)| \leq M$ of our original $\texttt{dp1}$ states. Similarly, an LBS with fixed final value $a_i$ **affects $M$  $\texttt{dp2}$ states** compared to one $\texttt{dp1}$ state: namely, all states $\texttt{dp2}[x][k]$ where $x \in [0, M)$ and $k = \texttt{bc}[a_i][x]$.
+
+### Implementation (`dp2`)
+
+<Spoiler title="Code">
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using pii = pair<int, int>;
+
+const int B = 8;
+struct State {
+	int len, end;
+};
+int main() {
+	// preprocess:
+	// bc[i][j] = bit_count(i & j)
+	vector<vector<int>> bc(1 << B, vector<int>(1 << B));
+	for (int i = 0; i < (1 << B); i++) {
+		for (int j = 0; j < (1 << B); j++) {
+			bc[i][j] = __builtin_popcount(i & j);
+		}
+	}
+
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) cin >> k[i];
+	int ans = 1;
+	// best_i: most optimal index to end on
+	int best_i = 0;
+	vector<int> prv(n);               // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+
+	vector<vector<State>> dp2(1 << B, vector<State>(B, State{0, -1}));
+	for (int i = 0; i < n; i++) {
+		// length of longest LBS that ends at i
+		int len = dp2[a[i]][k[i]].len + 1;
+		if (dp2[a[i]][k[i]].end != -1) { prv[i] = dp2[a[i]][k[i]].end; }
+		for (int j = 0; j < (1 << B); j++) {
+			State &affected_state = dp2[j][bc[a[i]][j]];
+			if (len > affected_state.len) { affected_state = State{len, i}; }
+		}
+		if (len > ans) {
+			ans = len;
+			best_i = i;
+		}
+	}
+
+	cout << ans << endl;
+
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+	reverse(res.begin(), res.end());
+	for (int x : res) { cout << x + 1 << " "; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+### Subtask 4 (Full Solution)
+
+In summary, if $x$ is the last number in an LBS:
+- $\texttt{dp1}$ (only one possible value of $x$) $\rightarrow \mathcal{O}(M)$ transition, $\mathcal{O}(1)$ affected states
+- $\texttt{dp2}$ (up to $M$ possible values of $x$) $\rightarrow \mathcal{O}(1)$ transition,  $\mathcal{O}(M)$ affected states
+
+Notice that, no matter how we define the DP state, these two complexities will always multiply to $\mathcal{O}(M)$. Therefore, we want to find a restriction such that both complexities are $\mathcal{O}(\sqrt{M})$. This motivates using a blend of $\texttt{dp1}$ and $\texttt{dp2}$. Since $\texttt{dp1}2$ already restricts bits, it seems natural to consider applying $\texttt{dp1}$ on some bits of $x$ and $\texttt{dp2}$ on the rest.
+
+Concretely, let $l_x = \texttt{l}(x, b)$ be the number represented by the $b$ leftmost bits of $x$ and $r_x = \texttt{r}(x, b)$ be the number represented by the $\texttt{bit\_count}(x) - b$ rightmost bits. In our new DP state $\texttt{dp}[i][j][k]$, we will:
+- fix $l_x = i$ (this is the $\texttt{dp1}$ part of our new state)
+-  restrict $r_x$ such that $r_x \in \texttt{trans}_k(j) \Rightarrow \texttt{bc}[r_x][j] = k$ (this is the $\texttt{dp2}$ part of our new state)
+
+What are the time complexities of *transition* and *affected states* now?
+
+#### Transition
+
+Let's say we're currently processing $a_i$. If we have $x$ such that $x \in \texttt{trans}_{k_i}(a_i)$, then $\texttt{bc}[x][a_i] = k_i$. By considering the left and right sides of $x$ and $a_i$ separately, we can rewrite $\texttt{bc}[x][a_i]$ as $\texttt{bc}[l_x][l_{a_i}] + \texttt{bc}[r_x][r_{a_i}] = k_i$.
+___
+**Example:** $x$ = 01010, $a_i$ = 01101, $b$ = 3
+```
+01010 & 01101 = 01000 -> 1
+
+010   & 011   = 010   -> 1
+
+   10 &    01 =    00 -> 0
+```
+$1 + 0 = \boxed1$.
+___
+Since our DP state $\texttt{dp}[l][r][k]$ fixes $l_x = l$, we should rewrite this equation to solve for $r_x$: $\texttt{bc}[r_x][r_{a_i}] = k_i - \texttt{bc}[l_x][l_{a_i}]$. Note this restriction matches our $\texttt{dp}$ restriction of $\texttt{bc}[r_x][j] = k$, so we have $r = r_{a_i}$ and $k = k_i - \texttt{bc}[l_x][l_{a_i}] = k_i - \texttt{bc}[x][l_{a_i}]$. As for $l = l_x = \texttt{l}(x, b)$, we simply enumerate all $2^b$ possibilities; therefore, $i \in [0, 2^b)$.
+
+**In summary, the transitions to $a_i$ are all states $\texttt{dp}[l][r_{a_i}][k_i - \texttt{bc}[l][l_{a_i}]]$ where $l \in [0, 2^b)$**.
+
+Because the only variable in the state is $l$, the complexity of transition is the number of options for $l$ which is $\boxed{2^b}$.
+
+#### Affected States
+
+We now have the length of the longest LBS that ends at $a_i$. What $\texttt{dp}[l][r][k]$ states does this affect?
+
+Starting with the obvious, $l = l_{a_i}$. We also have the restriction that $r_{a_i} \in \texttt{trans}_k(r) \Rightarrow k = \texttt{bc}[r_{a_i}][r]$. Because $r_{a_i}$ is a constant, $k$ depends solely on $r$.
+
+**In summary, the states affected by $a_i$ are all states $\texttt{dp}[l_{a_i}][r][\texttt{bc}[r_{a_i}][r]]$**.
+
+$r$ has to have the same amount of bits as $r_{a_i} = \texttt{r}(a_i, b)$ which has $\log_2{M} - b$ bits. Therefore, $r$ has $2^{\log_2M - b} = \boxed{\frac{M}{2^b}}$ possibilities.
+
+To sum it all up, the complexity of transition is $\mathcal{O}(2^b)$ and the complexity of affected states is $\mathcal{O}(\frac{M}{2^b})$. To minimize the sum of these complexities, we should equate them. Because $M = 2 ^{20}$, we find the optimal value of $b$ to be $\boxed{10}$.
+
+### Implementation
+
+In the implementation below:
+- $\texttt{l}(x)$ denotes the 10 leftmost bits of $x$
+- $\texttt{r}(x)$ denotes the 10 righmost bits of $x$
+
+**Time Complexity:** $\mathcal{O}(N\sqrt{M})$
+
+<Spoiler title="Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using pii = pair<int, int>;
+const int N = 1e5;
+const int B = 10;
+int bc[1 << B][1 << B];  // bc[i][j] = bit_count(i & j)
+struct State {
+	int len;
+	int end;
+} dp[1 << B][1 << B][B + 1];
+
+int main() {
+	// preprocess:
+	for (int i = 0; i < (1 << B); i++) {
+		for (int j = 0; j < (1 << B); j++) {
+			bc[i][j] = __builtin_popcount(i & j);
+		}
+	}
+
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	vector<int> k(n);
+	for (int i = 0; i < n; i++) cin >> k[i];
+	int ans = 1;
+	// best_i: most optimal index to end on
+	int best_i = 0;
+	vector<int> prv(n);               // prv[i]: best index to include before i
+	iota(prv.begin(), prv.end(), 0);  // prv[i] = i
+
+	for (int i = 0; i < n; i++) {
+		int l = a[i] >> B;        // l(a[i])
+		int r = a[i] % (1 << B);  // r(a[i])
+		int lbs = 1;              // length of longest lbs that ends at i
+
+		// enumerate all possibilities for l(prev_num)
+		for (int j = 0; j < (1 << B); j++) {
+			// here, we use the fact that
+			// bc[x][y] = bc[l(x)][l(y)] + bc[r(x)][r(y)],
+			// or bc[r(x)][r(y)] = bc[x][y] - bc[l(x)][l(y)]
+
+			// required value of bc[r(x)][r(y)]
+			int needed = k[i] - bc[j][l];
+			if (needed < 0 || needed > B) continue;
+			if (dp[j][r][needed].len + 1 > lbs) {
+				lbs = dp[j][r][needed].len + 1;
+				prv[i] = dp[j][r][needed].end;
+			}
+		}
+
+		if (lbs > ans) {
+			ans = lbs;
+			best_i = i;
+		}
+
+		// update all answers a[i] affects
+		for (int j = 0; j < (1 << B); j++) {
+			State &new_state = dp[l][j][bc[r][j]];
+			if (lbs > new_state.len) {
+				new_state.len = lbs;
+				new_state.end = i;
+			}
+		}
+	}
+
+	cout << ans << endl;
+
+	vector<int> res;
+	while (prv[best_i] != best_i) {
+		res.push_back(best_i);
+		best_i = prv[best_i];
+	}
+	res.push_back(best_i);
+
+	reverse(res.begin(), res.end());
+	for (int x : res) { cout << x + 1 << " "; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

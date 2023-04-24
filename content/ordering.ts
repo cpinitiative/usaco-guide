@@ -111,7 +111,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Graphs',
       description:
         'Most Silver to Platinum contests have at least one graph problem.',
-      items: ['dfs', 'flood-fill', 'intro-tree', 'func-graphs'],
+      items: ['graph-traversal', 'flood-fill', 'intro-tree', 'func-graphs'],
     },
     {
       name: 'Conclusion',
@@ -142,7 +142,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Graphs',
       description:
         'Most Silver to Platinum contests have at least one graph problem.',
-      items: ['bfs', 'dsu', 'toposort', 'shortest-paths', 'mst'],
+      items: [
+        'unweighted-shortest-paths',
+        'dsu',
+        'toposort',
+        'shortest-paths',
+        'mst',
+      ],
     },
     {
       name: 'Data Structures',

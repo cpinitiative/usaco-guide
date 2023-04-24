@@ -178,7 +178,8 @@ public class Balancing {
 		Pair[] cows = new Pair[N];
 		for (int i = 0; i < N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			cows[i] = new Pair(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+			cows[i] = new Pair(Integer.parseInt(st.nextToken()),
+			                   Integer.parseInt(st.nextToken()));
 		}
 		br.close();
 
@@ -190,14 +191,13 @@ public class Balancing {
 		SegmentTree south = new SegmentTree();
 
 		/*
-		 * we begin the sweeping line from the bottom, i.e. the whole farm is in the
-		 * northern region
+		 * we begin the sweeping line from the bottom, i.e. the whole farm is in
+		 * the northern region
 		 */
-		for (int i = 0; i < N; i++) {
-			north.update(cows[i].a, 1);
-		}
+		for (int i = 0; i < N; i++) { north.update(cows[i].a, 1); }
 
-		// the minimum possible number of cows as defined in the problem statement
+		// the minimum possible number of cows as defined in the problem
+		// statement
 		int M = N;
 
 		// sweeping from bottom to top
@@ -210,8 +210,9 @@ public class Balancing {
 				j++;
 			}
 			/*
-			 * for current partition of north and south, we determine the optimal
-			 * partition between west and east by performing a binary search
+			 * for current partition of north and south, we determine the
+			 * optimal partition between west and east by performing a binary
+			 * search
 			 */
 			M = Math.min(M, north.query(south));
 			// move the sweeping line to the next y coordinate of interest
@@ -262,9 +263,12 @@ public class Balancing {
 			while (mid < size) {
 				int l = mid * 2;
 				int r = mid * 2 + 1;
-				// add the subtree which minimizes the overall maximum count of cows
-				if (Math.max(westSize + tree[l], otherWestSize + other.tree[l]) <
-					Math.max(eastSize + tree[r], otherEastSize + other.tree[r])) {
+				// add the subtree which minimizes the overall maximum count of
+				// cows
+				if (Math.max(westSize + tree[l],
+				             otherWestSize + other.tree[l]) <
+				    Math.max(eastSize + tree[r],
+				             otherEastSize + other.tree[r])) {
 					mid = r;
 					westSize += tree[l];
 					otherWestSize += other.tree[l];
@@ -276,8 +280,10 @@ public class Balancing {
 			}
 
 			// Add the last x coordinate either to the west or the east side
-			if (Math.max(westSize + tree[mid], otherWestSize + other.tree[mid]) <
-				Math.max(eastSize + tree[mid], otherEastSize + other.tree[mid])) {
+			if (Math.max(westSize + tree[mid],
+			             otherWestSize + other.tree[mid]) <
+			    Math.max(eastSize + tree[mid],
+			             otherEastSize + other.tree[mid])) {
 				westSize += tree[mid];
 				otherWestSize += other.tree[mid];
 			} else {
@@ -286,17 +292,15 @@ public class Balancing {
 			}
 
 			/*
-			 * the M value corresponding to the best west/east partition based on the
-			 * current given north/south partitions
+			 * the M value corresponding to the best west/east partition based
+			 * on the current given north/south partitions
 			 */
-			return Math.max(
-				Math.max(westSize, eastSize),
-				Math.max(otherWestSize, otherEastSize)
-			);
+			return Math.max(Math.max(westSize, eastSize),
+			                Math.max(otherWestSize, otherEastSize));
 		}
 	}
 
-	//BeginCodeSnip{class Pair}
+	// BeginCodeSnip{class Pair}
 	static class Pair implements Comparable<Pair> {
 		public int a;
 		public int b;
@@ -311,9 +315,7 @@ public class Balancing {
 		 */
 		@Override
 		public int compareTo(Pair other) {
-			if (a == other.a) {
-				return b - other.b;
-			}
+			if (a == other.a) { return b - other.b; }
 			return a - other.a;
 		}
 
@@ -321,13 +323,11 @@ public class Balancing {
 		 * Sort the object by reversed lexicographical order.
 		 */
 		public int compareBTo(Pair other) {
-			if (b == other.b) {
-				return a - other.a;
-			}
+			if (b == other.b) { return a - other.a; }
 			return b - other.b;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 }
 ```
 </JavaSection>
@@ -471,14 +471,12 @@ vector<int> calc_max_height(int max_cows, const vector<pair<int, int>> &cows) {
 			int y = cows[i].second;
 			count[y]++;
 			// update the sum of cows in the active region
-			if (y <= y_bound) {
-				sum++;
-			}
+			if (y <= y_bound) { sum++; }
 			i++;
 		}
 		/*
-		 * if the maximum allowed number of cows in the region is exceeded, decrease
-		 * the height of the region
+		 * if the maximum allowed number of cows in the region is exceeded,
+		 * decrease the height of the region
 		 */
 		while (sum > max_cows) {
 			sum -= count[y_bound];
@@ -496,12 +494,10 @@ int main() {
 	int N;
 	cin >> N;
 	vector<pair<int, int>> cows(N);
-	for (pair<int, int> &c : cows) {
-		cin >> c.first >> c.second;
-	}
+	for (pair<int, int> &c : cows) { cin >> c.first >> c.second; }
 
-	//BeginCodeSnip{Coordinate Compression}
-	// compress x coordinates
+	// BeginCodeSnip{Coordinate Compression}
+	//  compress x coordinates
 	sort(cows.begin(), cows.end());
 	int new_x = 0;
 	int actual_x = cows[0].first;
@@ -514,12 +510,11 @@ int main() {
 	}
 
 	// compress y coordinates
-	sort(
-		cows.begin(), cows.end(),
-		[&](const pair<int, int> &c1, const pair<int, int> &c2) {
-			return make_pair(c1.second, c1.first) < make_pair(c2.second, c2.first);
-		}
-	);
+	sort(cows.begin(), cows.end(),
+	     [&](const pair<int, int> &c1, const pair<int, int> &c2) {
+		     return make_pair(c1.second, c1.first) <
+		            make_pair(c2.second, c2.first);
+	     });
 	int new_y = 0;
 	int actual_y = cows[0].second;
 	for (int i = 0; i < N; i++) {
@@ -529,7 +524,7 @@ int main() {
 		}
 		cows[i].second = new_y;
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	sort(cows.begin(), cows.end());
 	int l = 1, h = N + 1;
@@ -540,9 +535,7 @@ int main() {
 
 		vector<int> west_south_height = calc_max_height(mid, cows);
 
-		for (pair<int, int> &t : cows) {
-			t.second = N - 1 - t.second;
-		}
+		for (pair<int, int> &t : cows) { t.second = N - 1 - t.second; }
 		vector<int> west_north_height = calc_max_height(mid, cows);
 
 		reverse(cows.begin(), cows.end());
@@ -552,20 +545,20 @@ int main() {
 		}
 		vector<int> east_south_height = calc_max_height(mid, cows);
 
-		for (pair<int, int> &t : cows) {
-			t.second = N - 1 - t.second;
-		}
+		for (pair<int, int> &t : cows) { t.second = N - 1 - t.second; }
 		vector<int> east_north_height = calc_max_height(mid, cows);
 
 		// for each possible x partition
 		for (int x = 0; x < N - 1; x++) {
 			/*
 			 * if the sum of the heights of the southern and northern regions is
-			 * larger than the height of the farm, then there is one solution with the
-			 * current maximum M, i.e. mid
+			 * larger than the height of the farm, then there is one solution
+			 * with the current maximum M, i.e. mid
 			 */
 			if (min(west_south_height[x], east_south_height[N - 2 - x]) + 1 +
-				min(west_north_height[x], east_north_height[N - 2 - x]) + 1 >= N) {
+			        min(west_north_height[x], east_north_height[N - 2 - x]) +
+			        1 >=
+			    N) {
 				possible = true;
 				break;
 			}

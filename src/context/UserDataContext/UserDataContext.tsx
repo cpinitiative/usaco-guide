@@ -276,6 +276,9 @@ export const UserDataProvider = ({
     UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
   }, []);
 
+  const [CREATING_ACCOUNT_FOR_FIRST_TIME, setCREATING_ACCOUNT_FOR_FIRST_TIME] =
+    useState(undefined);
+
   // If the user is signed in, sync remote data with local data
   React.useEffect(() => {
     if (firebaseUser) {
@@ -312,6 +315,10 @@ export const UserDataProvider = ({
           data = data || {};
           UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
           UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+
+          setCREATING_ACCOUNT_FOR_FIRST_TIME(
+            data['CREATING_ACCOUNT_FOR_FIRST_TIME']
+          );
           setIsLoaded(true);
           triggerRerender();
         },
@@ -359,13 +366,21 @@ export const UserDataProvider = ({
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
         )
       ) {
+        if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
+          data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
+            CREATING_ACCOUNT_FOR_FIRST_TIME;
         UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
         UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
         if (firebaseUser) {
           setDoc(
             doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
             data
-          );
+          ).catch(err => {
+            console.error(err);
+            alert(
+              `importUserData: Error setting firebase doc. Check console for details.`
+            );
+          });
         }
         triggerRerender();
         return true;

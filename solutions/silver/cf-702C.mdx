@@ -91,15 +91,14 @@ public class CellularNetwork {
 			int mid = (low + high) / 2;
 			if (towers[mid] >= value) {
 				high = mid;
-			}
-			else {
+			} else {
 				low = mid + 1;
 			}
 		}
 		return low;
 	}
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int m = io.nextInt();
@@ -107,13 +106,9 @@ public class CellularNetwork {
 		int[] cities = new int[n];
 		int[] towers = new int[m];
 
-		for (int i = 0; i < n; i++) {
-			cities[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cities[i] = io.nextInt(); }
 
-		for (int i = 0; i < m; i++) {
-			towers[i] = io.nextInt();
-		}
+		for (int i = 0; i < m; i++) { towers[i] = io.nextInt(); }
 
 		int minR = 0;
 		for (int i = 0; i < n; i++) {
@@ -125,10 +120,12 @@ public class CellularNetwork {
 			// if not, it will return the length of the
 			// array which is equal to m
 			if (towerRight < m) {
-				minRForThisCity = Math.min(minRForThisCity, towers[towerRight] - cities[i]);
+				minRForThisCity =
+				    Math.min(minRForThisCity, towers[towerRight] - cities[i]);
 			}
 			if (towerLeft >= 0) {
-				minRForThisCity = Math.min(minRForThisCity, cities[i] - towers[towerLeft]);
+				minRForThisCity =
+				    Math.min(minRForThisCity, cities[i] - towers[towerLeft]);
 			}
 
 			minR = Math.max(minR, minRForThisCity);
@@ -137,7 +134,7 @@ public class CellularNetwork {
 		io.println(minR);
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -258,7 +255,7 @@ public class CellularNetwork2 {
 	static final int MOD = 1000000007;
 	static final int MAXIMUM_SIZE = 100000;
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
 		int n = io.nextInt();
@@ -270,13 +267,9 @@ public class CellularNetwork2 {
 		int[] a = new int[n];
 		int[] b = new int[m];
 
-		for (int i = 0; i < n; i++) {
-			a[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
 
-		for (int i = 0; i < m; i++) {
-			b[i] = io.nextInt();
-		}
+		for (int i = 0; i < m; i++) { b[i] = io.nextInt(); }
 
 		int pointer1 = 0;
 
@@ -293,22 +286,18 @@ public class CellularNetwork2 {
 
 		// pointer going right to left
 		for (int i = n - 1; i >= 0; i--) {
-			while (pointer1 > 0 && b[pointer1 - 1] >= a[i]) {
-				pointer1--;
-			}
+			while (pointer1 > 0 && b[pointer1 - 1] >= a[i]) { pointer1--; }
 			dist[i] = Math.min(dist[i], Math.abs(a[i] - b[pointer1]));
 		}
 
 		int answer = 0;
 		// the maximum in the array is the answer
-		for (int i = 0; i < n; i++) {
-			answer = Math.max(answer, dist[i]);
-		}
+		for (int i = 0; i < n; i++) { answer = Math.max(answer, dist[i]); }
 
 		io.println(answer);
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>
@@ -386,7 +375,7 @@ import java.io.*;
 import java.util.*;
 
 public class CellularNetwork {
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
@@ -394,9 +383,7 @@ public class CellularNetwork {
 		int m = io.nextInt();
 		int[] cities = new int[n];
 		TreeSet<Integer> towers = new TreeSet<>();
-		for (int i = 0; i < n; i++) {
-			cities[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cities[i] = io.nextInt(); }
 
 		for (int i = 0; i < m; i++) {
 			int tower = io.nextInt();
@@ -411,14 +398,12 @@ public class CellularNetwork {
 			 * Integer if the value exists and null if it doesn't
 			 */
 			Integer closestTower = towers.lower(cities[i]);
-			Integer	farthestTower = towers.higher(cities[i]);
-			if (closestTower != null) {
-				distance = cities[i] - closestTower;
-			}
+			Integer farthestTower = towers.higher(cities[i]);
+			if (closestTower != null) { distance = cities[i] - closestTower; }
 			if (farthestTower != null) {
 				distance = Math.min(distance, farthestTower - cities[i]);
 			}
-			r = Math.max(r,distance);
+			r = Math.max(r, distance);
 		}
 		io.println(r);
 		io.close();

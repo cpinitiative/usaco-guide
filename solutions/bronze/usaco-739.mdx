@@ -268,11 +268,11 @@ import java.io.*;
 import java.util.*;
 
 public class BovineGenomics {
-	static final Map<Character, Integer> GENOME_ID = Map.ofEntries(
-		Map.entry('A', 0), Map.entry('T', 1), Map.entry('C', 2), Map.entry('G', 3)
-	);
+	static final Map<Character, Integer> GENOME_ID =
+	    Map.ofEntries(Map.entry('A', 0), Map.entry('T', 1), Map.entry('C', 2),
+	                  Map.entry('G', 3));
 
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("cownomics");
 
 		int cowNum = io.nextInt();
@@ -307,21 +307,15 @@ public class BovineGenomics {
 						 * third digits by 16, 4, and 1 respectively, we can
 						 * get a number unique to that combination.
 						 */
-						int total = (
-							spotted[sc][a] * 16
-							+ spotted[sc][b] * 4
-							+ spotted[sc][c] * 1
-						);
+						int total = (spotted[sc][a] * 16 + spotted[sc][b] * 4 +
+						             spotted[sc][c] * 1);
 						spottedIDs[total] = true;
 					}
 
 					boolean valid = true;
 					for (int pc = 0; pc < cowNum; pc++) {
-						int total = (
-							plain[pc][a] * 16
-							+ plain[pc][b] * 4
-							+ plain[pc][c] * 1
-						);
+						int total = (plain[pc][a] * 16 + plain[pc][b] * 4 +
+						             plain[pc][c] * 1);
 						// We can't tell the spotted & plain cows apart.
 						if (spottedIDs[total]) {
 							valid = false;
@@ -338,7 +332,7 @@ public class BovineGenomics {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

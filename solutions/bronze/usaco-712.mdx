@@ -57,8 +57,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CircleCross {
 	public static void main(String[] args) throws IOException {
@@ -72,14 +72,14 @@ public class CircleCross {
 				for (int c = b + 1; c < crossings.length(); c++) {
 					for (int d = c + 1; d < crossings.length(); d++) {
 						/*
-						 * If we find two entry/exit paths such that a < b < c < d,
-						 * the path of cows crossing (a, c) and (b, d) must intersect,
-						 * so we have a crossing pair
+						 * If we find two entry/exit paths such that a < b < c <
+						 * d, the path of cows crossing (a, c) and (b, d) must
+						 * intersect, so we have a crossing pair
 						 */
-						crossingPairs += (
-							crossings[a] == crossings[c] &&
-							crossings[b] == crossings[d]
-						) ? 1 : 0;
+						crossingPairs += (crossings[a] == crossings[c] &&
+						                  crossings[b] == crossings[d])
+						                     ? 1
+						                     : 0;
 					}
 				}
 			}
@@ -89,7 +89,7 @@ public class CircleCross {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -180,8 +180,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CircleCross {
 	public static void main(String[] args) throws IOException {
@@ -206,9 +206,10 @@ public class CircleCross {
 		for (int i = 0; i < 26; i++) {
 			for (int j = 0; j < 26; j++) {
 				// Increment by 1 if the condition in the explanation is met
-				crossingPairs += (
-					start[i] < start[j] && start[j] < end[i] && end[i] < end[j]
-				) ? 1 : 0;
+				crossingPairs += (start[i] < start[j] && start[j] < end[i] &&
+				                  end[i] < end[j])
+				                     ? 1
+				                     : 0;
 			}
 		}
 
@@ -216,7 +217,7 @@ public class CircleCross {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -320,11 +321,11 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CircleCross {
-	//BeginCodeSnip{Crossing Pair Class}
+	// BeginCodeSnip{Crossing Pair Class}
 	static class CrossingPair {
 		public char a;
 		public char b;
@@ -341,13 +342,11 @@ public class CircleCross {
 
 		@Override
 		public boolean equals(Object obj) {
-			return (
-				obj instanceof CrossingPair &&
-				a == ((CrossingPair) obj).a && b == ((CrossingPair) obj).b
-			);
+			return (obj instanceof CrossingPair && a == ((CrossingPair)obj).a &&
+			        b == ((CrossingPair)obj).b);
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("circlecross");
@@ -380,8 +379,10 @@ public class CircleCross {
 				}
 
 				for (char c : appearances) {
-					CrossingPair pair = new CrossingPair(crossings.charAt(i), c);
-					// Sort to make sure only (i, j) is stored, not (j, i) as well
+					CrossingPair pair =
+					    new CrossingPair(crossings.charAt(i), c);
+					// Sort to make sure only (i, j) is stored, not (j, i) as
+					// well
 					if (pair.a > pair.b) {
 						char temp = pair.a;
 						pair.a = pair.b;
@@ -396,7 +397,7 @@ public class CircleCross {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

@@ -34,7 +34,7 @@ def match_indentation(line, prog_line):
 
 
 def contains_banned_terms(prog: List[str]):
-	banned = ["CodeSnip", "while (???)"]
+	banned = ["while (???)"]  # "CodeSnip",
 	return any(ban in prog_line for ban in banned for prog_line in prog)
 
 
@@ -78,6 +78,28 @@ def denotes_lang(line: str):
 	)
 
 
+def comment_for_lang(lang: str):
+	if lang in ["cpp", "java"]:
+		return "//"
+	else:
+		assert lang in ["py"]
+		return "#"
+
+
+def comment_codesnip(lang: str, line: str):
+	line_stripped = line.lstrip()
+	cs = "CodeSnip"
+	if any(line_stripped.startswith(word) for word in [cs, "Begin" + cs, "End" + cs]):
+		return (
+			line[: len(line) - len(line_stripped)]
+			+ comment_for_lang(lang)
+			+ " "
+			+ line_stripped
+		)
+	else:
+		return line
+
+
 def format_path(path: str):
 	# print("formatting", path)
 	with open(path, "r") as f:
@@ -95,16 +117,18 @@ def format_path(path: str):
 			nlines.append(line[: line.find("```")] + f"```{lang}\n")
 		elif line.strip() == "```":
 			if lang is not None:  # end of lang block
-				if not contains_banned_terms(prog):
-					prog = [match_indentation(line, prog_line) for prog_line in prog]
-					ori_prog = prog
-					prog = format_prog(lang, prog)
-					if ori_prog != prog:
-						print("formatted", path)
-					whitespace = line[: line.find("```")]
-					nlines += [whitespace + line for line in prog]
-				else:  # don't format
-					nlines += prog
+				# if contains_banned_terms(prog):  # don't format
+				# 	print(f"skipping formatting {path}")
+				# 	nlines += prog
+				# else:
+				prog = [comment_codesnip(lang, prog_line) for prog_line in prog]
+				prog = [match_indentation(line, prog_line) for prog_line in prog]
+				ori_prog = prog
+				prog = format_prog(lang, prog)
+				if ori_prog != prog:
+					print("formatted", path)
+				whitespace = line[: line.find("```")]
+				nlines += [whitespace + line for line in prog]
 				prog = []
 				lang = None
 			nlines.append(line)

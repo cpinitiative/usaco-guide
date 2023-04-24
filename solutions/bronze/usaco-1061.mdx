@@ -365,8 +365,10 @@ public class StuckInARut {
 		StuckInARut.Kattio io = new StuckInARut.Kattio();
 		Integer N = io.nextInteger();
 
-		ArrayList<ArrayList<Integer>> east = new ArrayList<ArrayList<Integer>>();
-		ArrayList<ArrayList<Integer>> north = new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> east =
+		    new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> north =
+		    new ArrayList<ArrayList<Integer>>();
 		ArrayList<ArrayList<Integer>> pos = new ArrayList<ArrayList<Integer>>();
 
 		for (Integer i = 0; i < N; i++) {
@@ -380,37 +382,38 @@ public class StuckInARut {
 			p.add(i);
 			if (d.compareTo("E") == 0) {
 				east.add(p);
-			}
-			else {
+			} else {
 				north.add(p);
 			}
 		}
 
-		ArrayList<ArrayList<Integer>> meetTime = new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> meetTime =
+		    new ArrayList<ArrayList<Integer>>();
 		for (ArrayList<Integer> nC : north) {
 			for (ArrayList<Integer> eC : east) {
 				Integer yT = eC.get(1) - nC.get(1);
 				Integer xT = nC.get(0) - eC.get(0);
 
-				if (xT == yT) {
-					continue;
-				}
+				if (xT == yT) { continue; }
 
 				if (yT > xT && xT > 0) {
-					meetTime.add(new ArrayList<Integer>(Arrays.asList(yT, nC.get(2), eC.get(2), 0)));
-				}
-				else if (yT < xT && yT > 0) {
-					meetTime.add(new ArrayList<Integer>(Arrays.asList(xT, eC.get(2), nC.get(2), 1)));
+					meetTime.add(new ArrayList<Integer>(
+					    Arrays.asList(yT, nC.get(2), eC.get(2), 0)));
+				} else if (yT < xT && yT > 0) {
+					meetTime.add(new ArrayList<Integer>(
+					    Arrays.asList(xT, eC.get(2), nC.get(2), 1)));
 				}
 			}
 		}
 
-		Collections.sort(meetTime, new Comparator<ArrayList<Integer>>(){
-					public int compare(ArrayList<Integer> s1, ArrayList<Integer> s2) {
-						return Integer.compare(s1.get(0) , s2.get(0));
-					}});
+		Collections.sort(meetTime, new Comparator<ArrayList<Integer>>() {
+			public int compare(ArrayList<Integer> s1, ArrayList<Integer> s2) {
+				return Integer.compare(s1.get(0), s2.get(0));
+			}
+		});
 
-		ArrayList<Integer> ans = new ArrayList<Integer>(Collections.nCopies(N, myINF));
+		ArrayList<Integer> ans =
+		    new ArrayList<Integer>(Collections.nCopies(N, myINF));
 
 		for (ArrayList<Integer> mt : meetTime) {
 			if (ans.get(mt.get(2)) == myINF && ans.get(mt.get(1)) == myINF) {
@@ -425,15 +428,16 @@ public class StuckInARut {
 					Integer start = pos.get(mt.get(2)).get(1);
 					Integer end = start + ans.get(mt.get(2));
 
-					if (pos.get(mt.get(1)).get(1) >= start && pos.get(mt.get(1)).get(1) <= end) {
+					if (pos.get(mt.get(1)).get(1) >= start &&
+					    pos.get(mt.get(1)).get(1) <= end) {
 						ans.set(mt.get(1), mt.get(0));
 					}
-				}
-				else {
+				} else {
 					Integer start = pos.get(mt.get(2)).get(0);
 					Integer end = start + ans.get(mt.get(2));
 
-					if (pos.get(mt.get(1)).get(0) >= start && pos.get(mt.get(1)).get(0) <= end) {
+					if (pos.get(mt.get(1)).get(0) >= start &&
+					    pos.get(mt.get(1)).get(0) <= end) {
 						ans.set(mt.get(1), mt.get(0));
 					}
 				}
@@ -443,8 +447,7 @@ public class StuckInARut {
 		for (Integer v : ans) {
 			if (v == myINF) {
 				io.println("Infinity");
-			}
-			else {
+			} else {
 				io.println(v);
 			}
 		}
@@ -452,7 +455,7 @@ public class StuckInARut {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

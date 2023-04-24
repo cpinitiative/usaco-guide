@@ -311,7 +311,7 @@ export function DivisionList(props): JSX.Element {
 
   return (
     <>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mb-4">
         <DivisionButton
           options={divisions}
           state={curDivision}

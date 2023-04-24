@@ -66,12 +66,10 @@ using namespace std;
 
 using vi = vector<int>;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 struct DSU {
 	vi e;
-	DSU(int n) {
-		e = vi(n, -1);
-	}
+	DSU(int n) { e = vi(n, -1); }
 
 	int get(int x) {
 		if (e[x] < 0) {
@@ -82,38 +80,28 @@ struct DSU {
 		}
 	}
 
-	bool same(int a, int b) {
-		return get(a) == get(b);
-	}
+	bool same(int a, int b) { return get(a) == get(b); }
 
-	int size(int x) {
-		return -e[get(x)];
-	}
+	int size(int x) { return -e[get(x)]; }
 
 	bool unite(int x, int y) {
 		x = get(x);
 		y = get(y);
-		if (x == y) {
-			return false;
-		}
-		if (e[x] > e[y]) {
-			swap(x, y);
-		}
+		if (x == y) { return false; }
+		if (e[x] > e[y]) { swap(x, y); }
 		e[x] += e[y];
 		e[y] = x;
 		return true;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 void solve() {
 	int n;
 	cin >> n;
 	int a[n][n];
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cin >> a[i][j];
-		}
+		for (int j = 0; j < n; j++) { cin >> a[i][j]; }
 	}
 
 	DSU dsu(2 * n);
@@ -126,12 +114,13 @@ void solve() {
 			if (a[i][j] == a[j][i]) {
 				continue;
 			} else if (a[i][j] > a[j][i]) {
-				// Swap the elements if the states are not already merged the opposite way
+				// Swap the elements if the states are not already merged the
+				// opposite way
 				if (dsu.get(i) != dsu.get(j)) {
 					dsu.unite(i, j + n);
 					dsu.unite(j, i + n);
 				}
-			} else	{
+			} else {
 				// Keep the elements the same if the states
 				// are not already merged the opposite way
 				if (dsu.get(i) != dsu.get(j + n)) {
@@ -147,8 +136,8 @@ void solve() {
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
 			/*
-			 * If a[i][j] is part of a diagonal or the pair is equal (a[i][j] == a[j][i]),
-			 * manually set it to be the same as the original array
+			 * If a[i][j] is part of a diagonal or the pair is equal (a[i][j] ==
+			 * a[j][i]), manually set it to be the same as the original array
 			 */
 			if (i == j) {
 				ans[i][j] = a[i][j];
@@ -167,9 +156,7 @@ void solve() {
 	}
 
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << ans[i][j] << " ";
-		}
+		for (int j = 0; j < n; j++) { cout << ans[i][j] << " "; }
 		cout << '\n';
 	}
 }
@@ -179,9 +166,7 @@ int main() {
 	cin.tie(nullptr);
 	int T;
 	cin >> T;
-	for (int t = 0; t < T; t++) {
-		solve();
-	}
+	for (int t = 0; t < T; t++) { solve(); }
 }
 ```
 

@@ -112,8 +112,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class SolveTheMaze {
 	static int[] rowMovement = {0, 1, 0, -1};  // right, down, left, up
@@ -123,16 +123,14 @@ public class SolveTheMaze {
 	static int numRows;
 	static int numColumns;
 
-	static boolean inBoundaries (int newRow, int newColumn) {
+	static boolean inBoundaries(int newRow, int newColumn) {
 		if (newRow >= 0 && newRow < numRows) {
-			if (newColumn >= 0 && newColumn < numColumns) {
-				return true;
-			}
+			if (newColumn >= 0 && newColumn < numColumns) { return true; }
 		}
 		return false;
 	}
 
-	static void floodfill (int row, int column) {
+	static void floodfill(int row, int column) {
 		visited[row][column] = true;
 
 		for (int x = 0; x < 4; x++) {  // the 4 directions
@@ -140,7 +138,7 @@ public class SolveTheMaze {
 			int newColumn = column + columnMovement[x];
 			if (inBoundaries(newRow, newColumn)) {  // in boundaries
 				// not visited, and not #
-				if (! visited[newRow][newColumn]) {
+				if (!visited[newRow][newColumn]) {
 					if (grid[newRow][newColumn] != '#') {
 						floodfill(newRow, newColumn);
 					}
@@ -149,7 +147,7 @@ public class SolveTheMaze {
 		}
 	}
 
-	static String solve () {
+	static String solve() {
 		// surround the bad
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
@@ -159,9 +157,7 @@ public class SolveTheMaze {
 						int newColumn = j + columnMovement[x];
 						// check if it is in the boundaries
 						if (inBoundaries(newRow, newColumn)) {
-							if (grid[newRow][newColumn] == 'G') {
-								return "No";
-							}
+							if (grid[newRow][newColumn] == 'G') { return "No"; }
 							if (grid[newRow][newColumn] == '.') {
 								// turn it into #
 								grid[newRow][newColumn] = '#';
@@ -180,15 +176,13 @@ public class SolveTheMaze {
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
 				// make false if we find an unvisited G
-				if (grid[i][j] == 'G' && !visited[i][j]) {
-					return "No";
-				}
+				if (grid[i][j] == 'G' && !visited[i][j]) { return "No"; }
 			}
 		}
 		return "Yes";
 	}
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int numTestCases = io.nextInt();
 		for (int x = 0; x < numTestCases; x++) {
@@ -207,7 +201,7 @@ public class SolveTheMaze {
 		}
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

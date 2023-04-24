@@ -399,7 +399,7 @@ public class BadMilk {
 	 * We can differentiate the two by setting the value of milk
 	 * as -1 for someone getting sick.
 	 */
-	//BeginCodeSnip{Event Class}
+	// BeginCodeSnip{Event Class}
 	static class Event {
 		public int person;
 		public int milk;
@@ -411,11 +411,9 @@ public class BadMilk {
 			this.time = time;
 		}
 
-		public Event(int person, int time) {
-			this(person, -1, time);
-		}
+		public Event(int person, int time) { this(person, -1, time); }
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("badmilk.in"));
@@ -429,16 +427,12 @@ public class BadMilk {
 		for (int e = 0; e < events.length; e++) {
 			StringTokenizer ev = new StringTokenizer(read.readLine());
 			if (e < drinkTimes) {
-				events[e] = new Event(
-					Integer.parseInt(ev.nextToken()) - 1,
-					Integer.parseInt(ev.nextToken()) - 1,
-					Integer.parseInt(ev.nextToken())
-				);
+				events[e] = new Event(Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()));
 			} else {
-				events[e] = new Event(
-					Integer.parseInt(ev.nextToken()) - 1,
-					Integer.parseInt(ev.nextToken())
-				);
+				events[e] = new Event(Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()));
 			}
 		}
 
@@ -450,16 +444,17 @@ public class BadMilk {
 		 * the same point in time.
 		 */
 		Arrays.sort(
-			events,
-			(e1, e2) -> e1.time != e2.time ? e1.time - e2.time : e1.milk - e2.milk
-		);
+		    events,
+		    (e1,
+		     e2) -> e1.time != e2.time ? e1.time - e2.time : e1.milk - e2.milk);
 
 		int maxMed = 0;
 		// Go through each milk and check if it could be the bad one.
 		for (int m = 0; m < milkNum; m++) {
 			boolean possible = true;
 			boolean[] canBeSick = new boolean[personNum];
-			// Simulate the events, marking if each person could possibly be sick.
+			// Simulate the events, marking if each person could possibly be
+			// sick.
 			for (Event e : events) {
 				if (e.milk == -1) {
 					if (!canBeSick[e.person]) {
@@ -477,9 +472,7 @@ public class BadMilk {
 			 */
 			if (possible) {
 				int meds = 0;
-				for (boolean p : canBeSick) {
-					meds += p ? 1 : 0;
-				}
+				for (boolean p : canBeSick) { meds += p ? 1 : 0; }
 				maxMed = Math.max(maxMed, meds);
 			}
 		}

@@ -264,35 +264,32 @@ The implementation follows:
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{Range Maximum Segment Tree}
+// BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree {
-	private:
-		int len;
-		vector<int> segtree;
-	public:
-		MaxSegTree(int len) : len(len), segtree(2 * len) { }
+  private:
+	int len;
+	vector<int> segtree;
 
-		void set(int ind, int val) {
-			for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
-				segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
-			}
-		}
+  public:
+	MaxSegTree(int len) : len(len), segtree(2 * len) {}
 
-		// maximum of the range [from, to)
-		int range_max(int from, int to) {
-			int max_ = INT32_MIN;
-			for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
-				if ((from & 1) != 0) {
-					max_ = max(max_, segtree[from++]);
-				}
-				if ((to & 1) != 0) {
-					max_ = max(max_, segtree[--to]);
-				}
-			}
-			return max_;
+	void set(int ind, int val) {
+		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
 		}
+	}
+
+	// maximum of the range [from, to)
+	int range_max(int from, int to) {
+		int max_ = INT32_MIN;
+		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+			if ((from & 1) != 0) { max_ = max(max_, segtree[from++]); }
+			if ((to & 1) != 0) { max_ = max(max_, segtree[--to]); }
+		}
+		return max_;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int find_lis(vector<int> a) {
 	// apply coordinate compression to all elements of the array
@@ -301,12 +298,10 @@ int find_lis(vector<int> a) {
 	int at = 0;
 	map<int, int> coord_comp;
 	for (int i : sorted) {
-		if (!coord_comp.count(i)) {
-			coord_comp[i] = at++;
-		}
+		if (!coord_comp.count(i)) { coord_comp[i] = at++; }
 	}
 	// cmp(i) gives the compressed version of index i
-	auto cmp = [&] (int i) -> int { return coord_comp[a[i]]; };
+	auto cmp = [&](int i) -> int { return coord_comp[a[i]]; };
 
 	MaxSegTree dp(coord_comp.size());
 	dp.set(cmp(0), 1);
@@ -337,9 +332,7 @@ public class FindLis {
 		HashMap<Integer, Integer> coordComp = new HashMap<>();
 		int at = 0;
 		for (int i : sorted) {
-			if (!coordComp.containsKey(i)) {
-				coordComp.put(i, at++);
-			}
+			if (!coordComp.containsKey(i)) { coordComp.put(i, at++); }
 		}
 
 		MaxSegTree dp = new MaxSegTree(coordComp.size());
@@ -358,7 +351,7 @@ public class FindLis {
 	}
 }
 
-//BeginCodeSnip{Range Maximum Segment Tree}
+// BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree {
 	int len;
 	int[] segtree;
@@ -378,17 +371,13 @@ class MaxSegTree {
 	int rangeMax(int from, int to) {
 		int max = Integer.MIN_VALUE;
 		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
-			if ((from & 1) != 0) {
-				max = Math.max(max, segtree[from++]);
-			}
-			if ((to & 1) != 0) {
-				max = Math.max(max, segtree[--to]);
-			}
+			if ((from & 1) != 0) { max = Math.max(max, segtree[from++]); }
+			if ((to & 1) != 0) { max = Math.max(max, segtree[--to]); }
 		}
 		return max;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>

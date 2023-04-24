@@ -57,8 +57,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class PaintBarn {
 	static final int WIDTH = 1000;
@@ -74,7 +74,8 @@ public class PaintBarn {
 			int end_x = io.nextInt();
 			int end_y = io.nextInt();
 
-			// Set up the prefix sums array with all the corners of the given rectangle
+			// Set up the prefix sums array with all the corners of the given
+			// rectangle
 			barn[start_x][start_y]++;
 			barn[end_x][end_y]++;
 			barn[start_x][end_y]--;
@@ -88,16 +89,14 @@ public class PaintBarn {
 				if (x > 0) barn[x][y] += barn[x - 1][y];
 				if (y > 0) barn[x][y] += barn[x][y - 1];
 				if (x > 0 && y > 0) barn[x][y] -= barn[x - 1][y - 1];
-				if (barn[x][y] == paintReq) {
-					valid_area++;
-				}
+				if (barn[x][y] == paintReq) { valid_area++; }
 			}
 		}
 		io.println(valid_area);
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

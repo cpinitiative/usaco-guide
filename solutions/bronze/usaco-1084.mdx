@@ -5,8 +5,6 @@ title: Even More Odd Photos
 author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee
 ---
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_jan21.html)
-
 ## Video Solution
 
 By Melody Yu
@@ -69,18 +67,15 @@ import java.io.*;
 import java.util.*;
 
 public class EvenMoreOddPhotos {
-	public static  int group(int O, int E) {
+	public static int group(int O, int E) {
 		int diff = O - E;
 		if (diff == 0) {
 			return O + E;
-		}
-		else if (diff ==1) {
+		} else if (diff == 1) {
 			return O + E - 2;
-		}
-		else if (diff ==2) {
+		} else if (diff == 2) {
 			return E + O - 1;
-		}
-		else {
+		} else {
 			O -= 2;
 			E += 1;
 		}
@@ -94,25 +89,23 @@ public class EvenMoreOddPhotos {
 		int oddC = 0, evenC = 0;
 		for (int i = 0; i < N; i++) {
 			int cow = io.nextInt();
-			if (cow % 2 == 0){
+			if (cow % 2 == 0) {
 				evenC += 1;
-			}
-			else {
+			} else {
 				oddC += 1;
 			}
 		}
 
 		if (evenC > oddC) {
 			io.println(2 * oddC + 1);
-		}
-		else {
+		} else {
 			io.println(group(oddC, evenC));
 		}
 
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -120,11 +113,40 @@ public class EvenMoreOddPhotos {
 </LanguageSection>
 </Spoiler>
 
+<Spoiler title="Hint 1">
 
-## Video Solution
+Does FJ care about the actual values of the cows?
 
-Note: The video solution might not be the same as other solutions. Code in C++.
-<Youtube id="VbPjZamNA40" />
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What's preventing us from putting each cow in their own group
+and calling it a day?
+
+</Spoiler>
+
+<Spoiler title="Hint 2 (answer)">
+
+If there's too many even cows, then there won't be enough odd cows to alternate
+between the even cows and vice versa.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+How should we partition the cows if there's too many even cows?
+What about if there's too many odd cows?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_jan21.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <JavaSection>
@@ -232,3 +254,4 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+</Spoiler>

@@ -38,7 +38,6 @@ arbitrary order.
 ## Custom Hashing
 
 <LanguageSection>
-
 <CPPSection>
 
 There is no built in method for hashing pairs or vectors. Namely,
@@ -93,7 +92,6 @@ int main() { unordered_map<pi, int> um; }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 Java has its own hash functions for pre-defined objects like `ArrayList`'s.
@@ -137,13 +135,11 @@ public class HashTest {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 However, this hash function is quite bad; if we insert
 $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so
 it would easily be hacked in a Codeforces contest).
-
 
 <JavaOnly>
 
@@ -360,8 +356,7 @@ We can modify the declaration of `gp_hash_table` so that it supports the
 ```cpp
 template <class K, class V>
 using ht = gp_hash_table<
-    K, null_type, hash<K>, equal_to<K>, direct_mask_range_hashing<>,
-    linear_probe_fn<>,
+    K, V, hash<K>, equal_to<K>, direct_mask_range_hashing<>, linear_probe_fn<>,
     hash_standard_resize_policy<hash_exponential_size_policy<>,
                                 hash_load_check_resize_trigger<>, true>>;
 ```

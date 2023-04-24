@@ -68,8 +68,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Angry {
 	static int N;
@@ -80,17 +80,14 @@ public class Angry {
 
 		N = io.nextInt();
 		bales = new int[N];
-		for (int i = 0; i < N; i++) {
-			bales[i] = io.nextInt();
-		}
+		for (int i = 0; i < N; i++) { bales[i] = io.nextInt(); }
 
 		Arrays.sort(bales);
 		int maxExploded = 0;
 		for (int i = 0; i < N; i++) {
 			// Get the number of exploded bales for the left & right side
-			maxExploded = Math.max(
-				maxExploded, explodedNum(i, -1) + explodedNum(i, 1) + 1
-			);
+			maxExploded = Math.max(maxExploded,
+			                       explodedNum(i, -1) + explodedNum(i, 1) + 1);
 		}
 		io.println(maxExploded);
 		io.close();
@@ -102,17 +99,12 @@ public class Angry {
 		while (true) {
 			int next = prev;
 			// Getting the furthest explosion index without exceeding radius
-			while (
-				next + direction >= 0
-				&& next + direction < N
-				&& Math.abs(bales[next + direction] - bales[prev]) <= radius
-			) {
+			while (next + direction >= 0 && next + direction < N &&
+			       Math.abs(bales[next + direction] - bales[prev]) <= radius) {
 				next += direction;
 			}
 			// We didn't find a new haybale, so the chain explosion is over
-			if (next == prev) {
-				break;
-			}
+			if (next == prev) { break; }
 			// Update our previous explosion and increment radius
 			prev = next;
 			radius++;
@@ -120,7 +112,7 @@ public class Angry {
 		return Math.abs(prev - start);
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

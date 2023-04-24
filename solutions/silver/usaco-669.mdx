@@ -13,48 +13,45 @@ author: Neo Wang, Óscar Garries, Kevin Sheng
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
-	private:
-		vector<int> parents;
-		vector<int> sizes;
-	public:
-		DSU(int size) : parents(size), sizes(size, 1) {
-			for (int i = 0; i < size; i++) {
-				parents[i] = i;
-			}
-		}
+  private:
+	vector<int> parents;
+	vector<int> sizes;
 
-		int get_top(int n) {
-			return parents[n] == n ? n : (parents[n] = get_top(parents[n]));
-		}
+  public:
+	DSU(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
 
-		bool link(int n1, int n2) {
-			n1 = get_top(n1);
-			n2 = get_top(n2);
-			if (n1 == n2) {
-				return false;
-			}
-			if (sizes[n1] < sizes[n2]) {
-				std::swap(n1, n2);
-			}
-			sizes[n1] += sizes[n2];
-			parents[n2] = n1;
-			return true;
-		}
+	int get_top(int n) {
+		return parents[n] == n ? n : (parents[n] = get_top(parents[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (sizes[n1] < sizes[n2]) { std::swap(n1, n2); }
+		sizes[n1] += sizes[n2];
+		parents[n2] = n1;
+		return true;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
-struct Edge { int a, b, dist; };
+struct Edge {
+	int a, b, dist;
+};
 
 int main() {
 	std::ifstream read("moocast.in");
@@ -65,9 +62,7 @@ int main() {
 	vector<int> x(n);
 	vector<int> y(n);
 
-	for (int i = 0; i < n; i++) {
-		read >> x[i] >> y[i];
-	}
+	for (int i = 0; i < n; i++) { read >> x[i] >> y[i]; }
 
 	vector<Edge> edges;
 	for (int i = 0; i < n; i++) {
@@ -78,18 +73,16 @@ int main() {
 		}
 	}
 
-	auto cmp = [] (const Edge& e1, const Edge& e2) { return e1.dist < e2.dist; };
+	auto cmp = [](const Edge &e1, const Edge &e2) { return e1.dist < e2.dist; };
 	std::sort(edges.begin(), edges.end(), cmp);
 
 	int last_dist = 0;
 	int comp_num = n;
 	DSU dsu(n);
-	for (const Edge& e : edges) {
+	for (const Edge &e : edges) {
 		if (dsu.link(e.a, e.b)) {
 			last_dist = e.dist;
-			if (--comp_num == 1) {
-				break;
-			}
+			if (--comp_num == 1) { break; }
 		}
 	}
 
@@ -144,9 +137,7 @@ public class MooCast {
 		for (Edge e : edges) {
 			if (dsu.link(e.a, e.b)) {
 				lastDist = e.dist;
-				if (--compNum == 1) {
-					break;
-				}
+				if (--compNum == 1) { break; }
 			}
 		}
 
@@ -156,7 +147,7 @@ public class MooCast {
 	}
 }
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
 	private final int[] parents;
 	private final int[] sizes;
@@ -177,18 +168,14 @@ class DSU {
 	public boolean link(int e1, int e2) {
 		e1 = getTop(e1);
 		e2 = getTop(e2);
-		if (e1 == e2) {
-			return false;
-		}
-		if (sizes[e2] > sizes[e1]) {
-			return link(e2, e1);
-		}
+		if (e1 == e2) { return false; }
+		if (sizes[e2] > sizes[e1]) { return link(e2, e1); }
 		parents[e2] = e1;
 		sizes[e1] += sizes[e2];
 		return true;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>
@@ -197,7 +184,7 @@ class DSU {
 ```py
 from typing import NamedTuple
 
-#BeginCodeSnip{DSU}
+# BeginCodeSnip{DSU}
 class DSU:
 	def __init__(self, size: int) -> None:
 		self.sizes = [1 for _ in range(size)]
@@ -221,14 +208,18 @@ class DSU:
 		self.sizes[n1] += self.sizes[n2]
 		self.parents[n2] = n1
 		return True
-#EndCodeSnip
+
+
+# EndCodeSnip
+
 
 class Edge(NamedTuple):
 	a: int
 	b: int
 	dist: int
 
-with open('moocast.in') as read:
+
+with open("moocast.in") as read:
 	n = int(read.readline())
 	x = []
 	y = []
@@ -242,7 +233,7 @@ for i in range(n):
 	for j in range(i + 1, n):
 		dx = x[i] - x[j]
 		dy = y[i] - y[j]
-		edges.append(Edge(i, j, dx ** 2 + dy ** 2))
+		edges.append(Edge(i, j, dx**2 + dy**2))
 edges.sort(key=lambda e: e.dist)
 
 last_dist = 0
@@ -255,13 +246,13 @@ for e in edges:
 		if comp_num == 1:
 			break
 
-print(last_dist, file=open('moocast.out', 'w'))
+print(last_dist, file=open("moocast.out", "w"))
 ```
 
 </PySection>
 </LanguageSection>
 
-### Implementation (Binary Search + DFS)
+### Implementation (Binary Search + BFS)
 
 <LanguageSection>
 <CPPSection>
