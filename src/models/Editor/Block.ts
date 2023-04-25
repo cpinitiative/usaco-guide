@@ -22,9 +22,10 @@ export type Patches<T> = {
  * be updated so it stores the new state of the editor.
  */
 export default class Block<
-  T extends {
-    [key: string]: string;
-  },
+  T extends
+    {
+      [key: string]: string;
+    },
 > {
   private _state: T;
   public readonly id: string;
