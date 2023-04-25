@@ -172,9 +172,12 @@ public class Main {
 <PySection>
 
 ```py
+# 1e18 is used instead of float('inf') for performance reasons
+INF = int(1e18)
+
 n, m, q = map(int, input().split())
 
-mat = [[int(1e18)] * n for _ in range(n)]
+mat = [[INF] * n for _ in range(n)]
 
 for _ in range(m):
 	u, v, w = map(int, input().split())
@@ -194,7 +197,7 @@ for _ in range(q):
 	u, v = u - 1, v - 1
 	if u == v:
 		mat[u][v] = 0
-	if mat[u][v] == int(1e18):
+	if mat[u][v] == INF:
 		mat[u][v] = -1
 	print(mat[u][v])
 ```
