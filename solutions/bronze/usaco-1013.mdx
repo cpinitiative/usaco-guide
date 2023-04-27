@@ -113,6 +113,39 @@ public class swap {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+N, K = map(int, input().split())
+A1, A2 = map(int, input().split())
+B1, B2 = map(int, input().split())
+
+# create initial order of cows
+cows = list(range(1, N+1))
+
+# simulate two-step process K times
+for _ in range(K):
+    # reverse sequence of cows between A1 and A2
+    i, j = A1-1, A2-1
+    while i < j:
+        cows[i], cows[j] = cows[j], cows[i]
+        i += 1
+        j -= 1
+    
+    # reverse sequence of cows between B1 and B2
+    i, j = B1-1, B2-1
+    while i < j:
+        cows[i], cows[j] = cows[j], cows[i]
+        i += 1
+        j -= 1
+
+# output final order of cows
+for i in range(N):
+    print(cows[i])
+
+```
+
+</PySection>
 </LanguageSection>
 </Spoiler>
 
@@ -162,3 +195,6 @@ int main() {
 	for (int t : cur) cout << t + 1 << "\n";
 }
 ```
+
+	
+
