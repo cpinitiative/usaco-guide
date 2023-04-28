@@ -135,6 +135,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'lis',
         'dp-bitmasks',
         'dp-ranges',
+        'digit-dp',
       ],
     },
     {
