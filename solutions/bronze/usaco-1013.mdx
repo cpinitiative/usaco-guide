@@ -179,22 +179,6 @@ def reverse_segment(cows: List[int], start: int, end: int):
 		start += 1
 		end -= 1
 
-
-def find_cycle_length(cows: List[int], a1: int, a2: int, b1: int, b2: int) -> int:
-	# simulate the swap operation until we see a repeat
-	visited = set()
-	visited.add(tuple(cows))
-	while True:
-		reverse_segment(cows, a1 - 1, a2 - 1)
-		reverse_segment(cows, b1 - 1, b2 - 1)
-		if tuple(cows) in visited:
-			break
-		visited.add(tuple(cows))
-	# calculate the length of the cycle
-	cycle_len = len(visited)
-	return cycle_len
-
-
 n, k = map(int, input().split())
 a1, a2 = map(int, input().split())
 b1, b2 = map(int, input().split())
