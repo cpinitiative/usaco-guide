@@ -5,14 +5,13 @@ title: Swap
 author: Benjamin Qi, David Li
 ---
 
-
 ## Video Solution
 By David Li
 
 <Youtube id="LrcugMyMFyQ" />
 
-
 <Spoiler title="Video Solution Code">
+
 <LanguageSection>
 <CPPSection>
 
@@ -113,66 +112,16 @@ public class swap {
 ```
 
 </JavaSection>
-<PySection>
-
-```py
-from typing import List
-
-
-def reverse_segment(cows: List[int], start: int, end: int) -> None:
-	while start < end:
-		cows[start], cows[end] = cows[end], cows[start]
-		start += 1
-		end -= 1
-
-
-def find_cycle_length(cows: List[int], a1: int, a2: int, b1: int, b2: int) -> int:
-	# simulate the swap operation until we see a repeat
-	visited = set()
-	visited.add(tuple(cows))
-	while True:
-		reverse_segment(cows, a1 - 1, a2 - 1)
-		reverse_segment(cows, b1 - 1, b2 - 1)
-		if tuple(cows) in visited:
-			break
-		visited.add(tuple(cows))
-	# calculate the length of the cycle
-	cycle_len = len(visited)
-	return cycle_len
-
-
-n, k = map(int, input().split())
-a1, a2 = map(int, input().split())
-b1, b2 = map(int, input().split())
-
-cows = list(range(1, n + 1))
-
-# apply swaps
-visited = set()
-visited.add(tuple(cows))
-while True:
-	reverse_segment(cows, a1 - 1, a2 - 1)
-	reverse_segment(cows, b1 - 1, b2 - 1)
-	if tuple(cows) in visited:
-		break
-	visited.add(tuple(cows))
-cycle_len = len(visited)
-k %= cycle_len
-for i in range(k):
-	reverse_segment(cows, a1 - 1, a2 - 1)
-	reverse_segment(cows, b1 - 1, b2 - 1)
-
-# print cows
-print(*cows)
-```
-
-</PySection>
 </LanguageSection>
+
 </Spoiler>
 
 [Official Analysis](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
 
-C++ Version of Second Solution:
+## Implementation
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -216,3 +165,61 @@ int main() {
 	for (int t : cur) cout << t + 1 << "\n";
 }
 ```
+
+</CPPSection>
+<PySection>
+
+```py
+from typing import List
+
+
+def reverse_segment(cows: List[int], start: int, end: int):
+	while start < end:
+		cows[start], cows[end] = cows[end], cows[start]
+		start += 1
+		end -= 1
+
+
+def find_cycle_length(cows: List[int], a1: int, a2: int, b1: int, b2: int) -> int:
+	# simulate the swap operation until we see a repeat
+	visited = set()
+	visited.add(tuple(cows))
+	while True:
+		reverse_segment(cows, a1 - 1, a2 - 1)
+		reverse_segment(cows, b1 - 1, b2 - 1)
+		if tuple(cows) in visited:
+			break
+		visited.add(tuple(cows))
+	# calculate the length of the cycle
+	cycle_len = len(visited)
+	return cycle_len
+
+
+n, k = map(int, input().split())
+a1, a2 = map(int, input().split())
+b1, b2 = map(int, input().split())
+
+cows = list(range(1, n + 1))
+
+# apply swaps
+visited = set()
+visited.add(tuple(cows))
+while True:
+	reverse_segment(cows, a1 - 1, a2 - 1)
+	reverse_segment(cows, b1 - 1, b2 - 1)
+	if tuple(cows) in visited:
+		break
+	visited.add(tuple(cows))
+
+cycle_len = len(visited)
+k %= cycle_len
+for i in range(k):
+	reverse_segment(cows, a1 - 1, a2 - 1)
+	reverse_segment(cows, b1 - 1, b2 - 1)
+
+# print cows
+print(*cows)
+```
+
+</PySection>
+</LanguageSection>
