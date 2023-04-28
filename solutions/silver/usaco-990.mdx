@@ -314,8 +314,8 @@ public class Main {
 	static int s;
 	static Random rand;
 	public static void main(String[] args) throws IOException {
-		BufferedReader r = 
-			new BufferedReader(new FileReader(new File("berries.in")));
+		BufferedReader r =
+		    new BufferedReader(new FileReader(new File("berries.in")));
 		PrintWriter pw = new PrintWriter(new FileWriter("berries.out"));
 		rand = new Random();
 		StringTokenizer st = new StringTokenizer(r.readLine());
@@ -385,18 +385,21 @@ import random
 sys.stdin = open("berries.in", "r")
 sys.stdout = open("berries.out", "w")
 
+
 def quickselect(A, i, key):
 	def partition():
 		def swap(i, j):
 			A[i], A[j] = A[j], A[i]
+
 		m = l
-		swap(random.randint(l, r-1), r)
+		swap(random.randint(l, r - 1), r)
 		for i in range(l, r):
 			if key(A[i]) < key(A[r]):
 				swap(i, m)
 				m += 1
 		swap(m, r)
 		return m
+
 	l, r = 0, len(A) - 1
 	while l < r:
 		j = partition()
@@ -406,6 +409,7 @@ def quickselect(A, i, key):
 			l = j + 1
 		else:
 			r = j - 1
+
 
 N, K = map(int, input().split())
 B = list(map(int, input().split()))
@@ -417,7 +421,7 @@ for s in range(1, 1001):
 		break
 	if full < K and K - full < N:
 		quickselect(B, K - full, lambda x: -(x % s))
-	bessie = (full - K // 2) * s + sum(x % s for x in B[:K - full])
+	bessie = (full - K // 2) * s + sum(x % s for x in B[: K - full])
 	m = max(m, bessie)
 print(m)
 ```
