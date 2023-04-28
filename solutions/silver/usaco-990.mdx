@@ -304,7 +304,125 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int s;
+	static Random rand;
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = 
+			new BufferedReader(new FileReader(new File("berries.in")));
+		PrintWriter pw = new PrintWriter(new FileWriter("berries.out"));
+		rand = new Random();
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		int[] B = new int[N];
+		st = new StringTokenizer(r.readLine());
+		for (int i = 0; i < N; i++) { B[i] = Integer.parseInt(st.nextToken()); }
+		int m = 0;
+		for (s = 1;; s++) {
+			int full = 0;
+			for (int n : B) { full += n / s; }
+			full = Math.min(full, K);
+			if (full < K / 2) { break; }
+			if (full < K && K - full < N) { quickselect(B, K - full); }
+			int bessie = (full - K / 2) * s;
+			for (int i = 0; i < N && i < K - full; i++) { bessie += B[i] % s; }
+			m = Math.max(m, bessie);
+		}
+		pw.println(m);
+		pw.close();
+	}
+	static void quickselect(int[] A, int i) {
+		int l = 0, r = A.length - 1;
+		while (l < r) {
+			int j = partition(A, l, r);
+			if (j == i) {
+				return;
+			} else if (j < i) {
+				l = j + 1;
+			} else {
+				r = j - 1;
+			}
+		}
+	}
+	static int partition(int[] A, int l, int r) {
+		int m = l;
+		swap(A, l + rand.nextInt(r - l), r);
+		for (int i = l; i < r; i++) {
+			if (A[i] % s > A[r] % s) {
+				swap(A, i, m);
+				m++;
+			}
+		}
+		swap(A, m, r);
+		return m;
+	}
+	static void swap(int[] A, int i, int j) {
+		int t = A[i];
+		A[i] = A[j];
+		A[j] = t;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+This is slower than sorting because this is implemented in pure Python, while `sorted` is implemented in C.
+</Warning>
+
+```py
+import sys
+import random
+
+sys.stdin = open("berries.in", "r")
+sys.stdout = open("berries.out", "w")
+
+def quickselect(A, i, key):
+	def partition():
+		def swap(i, j):
+			A[i], A[j] = A[j], A[i]
+		m = l
+		swap(random.randint(l, r-1), r)
+		for i in range(l, r):
+			if key(A[i]) < key(A[r]):
+				swap(i, m)
+				m += 1
+		swap(m, r)
+		return m
+	l, r = 0, len(A) - 1
+	while l < r:
+		j = partition()
+		if j == i:
+			return
+		elif j < i:
+			l = j + 1
+		else:
+			r = j - 1
+
+N, K = map(int, input().split())
+B = list(map(int, input().split()))
+
+m = 0
+for s in range(1, 1001):
+	full = min(K, sum(b // s for b in B))
+	if full < K // 2:
+		break
+	if full < K and K - full < N:
+		quickselect(B, K - full, lambda x: -(x % s))
+	bessie = (full - K // 2) * s + sum(x % s for x in B[:K - full])
+	m = max(m, bessie)
+print(m)
+```
+
+</PySection>
 </LanguageSection>
 
 </Spoiler>
