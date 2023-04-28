@@ -13,7 +13,7 @@ author: Jeffrey Zhang
 Let us first observe that the *order of the words* beside the last word in each line is independent from the *order of the lines* in the poetry. Meaning we can take this problem apart into two distinct problems.
 
 1. Define $f(i)$ that calculates the total possible ways selected words can be arranged in a line that ends with a certain rhyme class $c_i$
-2. Calculate the final answer by figuring out different ways to map rhyme class $c$ to rhyme scheme $e$. 
+2. Calculate the final answer by figuring out different ways to map rhyme class $c$ to rhyme scheme $e$.
 
 Here is what I mean by using the sample testcase input as an example:
 ```
@@ -24,9 +24,9 @@ Here is what I mean by using the sample testcase input as an example:
 A
 B
 A
-``` 
+```
 
-There are $8$ different ways to juggle the words such that a line ends with a word with rhyme class $1$, and $4$ ways for class $2$. So $f(1) = 8$ and $f(2) = 4$. 
+There are $8$ different ways to juggle the words such that a line ends with a word with rhyme class $1$, and $4$ ways for class $2$. So $f(1) = 8$ and $f(2) = 4$.
 
 We can map the rhyme class to scheme in four different ways. Allowing us to obtain $f(1)^3 + f(1)^2f(2) + f(2)^2f(1) + f(2)^3 = 960$.
 
@@ -46,7 +46,7 @@ For this second part, we need to first make the observation that given any rhyme
 
 So to make our calculations easier, we can just sort the rhyme scheme, count the number of lines that have the same type and put them in a set call it $q$. In our example $q = [2, 1]$.
 
-To calculate our final answer, we just need to find the sum to this polynomial right here, and keep it simple, let us just assume total number of rhyme classes is $2$. 
+To calculate our final answer, we just need to find the sum to this polynomial right here, and keep it simple, let us just assume total number of rhyme classes is $2$.
 
 $f(1)^{q_1+ \dots +q_k} + f(1)^{q_1 + \dots + q_{k-1}} f(2)^{q_k} + \dots + f(1)^{q_k} f(2)^{q_1 + \dots + q_{k-1}} + f(2)^{q_1+ \dots + q_k}$.
 
@@ -67,83 +67,83 @@ When we expand this out, we can get the exact same distribution of the powers in
 typedef long long ll;
 using namespace std;
 
-//A O(log(b)) method for modular exponentiation
-ll fastmod(ll a, ll b){
-    if (a == 0) return 0;
-    ll track = 1;
-    while (b){
-        if (b & 1)
-            track = (track*a)%(ll)(1e9+7);
-        a = (a*a)%(ll)(1e9+7);
-        b = b >> 1;
-    }
-    return track;
+// A O(log(b)) method for modular exponentiation
+ll fastmod(ll a, ll b) {
+	if (a == 0) return 0;
+	ll track = 1;
+	while (b) {
+		if (b & 1) track = (track * a) % (ll)(1e9 + 7);
+		a = (a * a) % (ll)(1e9 + 7);
+		b = b >> 1;
+	}
+	return track;
 }
 
 int main() {
-    ofstream fout("poetry.out");
-    ifstream fin("poetry.in");
+	ofstream fout("poetry.out");
+	ifstream fin("poetry.in");
 
-    //Keep track how many words with same syllables and how many words in the same rhyme class
-    int n, m, k;
-    fin >> n >> m >> k;
-    vector<ll> count(k + 1, 0);
-    vector<vector<ll>> type(n + 1);
-    for (int i = 0; i < n; i++) {
-        int a,b;
-        fin >> a >> b;
-        count[a]++;
-        type[b].push_back(a);
-    }
-    vector<int> rhyme(m);
-    for (int i = 0; i < m; i++) {
-        char a;
-        fin >> a;
-        rhyme[i] = int(a - 'A');
-    }
+	// Keep track how many words with same syllables and how many words in the
+	// same rhyme class
+	int n, m, k;
+	fin >> n >> m >> k;
+	vector<ll> count(k + 1, 0);
+	vector<vector<ll>> type(n + 1);
+	for (int i = 0; i < n; i++) {
+		int a, b;
+		fin >> a >> b;
+		count[a]++;
+		type[b].push_back(a);
+	}
+	vector<int> rhyme(m);
+	for (int i = 0; i < m; i++) {
+		char a;
+		fin >> a;
+		rhyme[i] = int(a - 'A');
+	}
 
-    // First part
-    vector<ll> dp(k + 1, 0);
-    dp[0] = 1;
-    for (int i = 1; i <= k; i++) {
-        for (int j = 1; j <= i; j++) {
-            dp[i] = (dp[i] + (dp[i - j] * count[j]))%(ll)(1e9 + 7);
-        }
-    }
-    vector<ll> total(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (int j = 0; j < type[i].size(); j++) {
-            total[i] = (total[i]+dp[k - type[i][j]])%(ll)(1e9 + 7);
-        }
-    }
-    if (dp[k] == 0) {
-        fout << 0;
-        return 0;
-    }
+	// First part
+	vector<ll> dp(k + 1, 0);
+	dp[0] = 1;
+	for (int i = 1; i <= k; i++) {
+		for (int j = 1; j <= i; j++) {
+			dp[i] = (dp[i] + (dp[i - j] * count[j])) % (ll)(1e9 + 7);
+		}
+	}
+	vector<ll> total(n + 1, 0);
+	for (int i = 1; i <= n; i++) {
+		for (int j = 0; j < type[i].size(); j++) {
+			total[i] = (total[i] + dp[k - type[i][j]]) % (ll)(1e9 + 7);
+		}
+	}
+	if (dp[k] == 0) {
+		fout << 0;
+		return 0;
+	}
 
 	// Second part
-    sort(rhyme.begin(), rhyme.end());
-    vector<int> groups;
-    rhyme.push_back(-1);
-    int back = 0;
-    for (int i = 1; i <= m; i++) {
-        if (rhyme[i] != rhyme[i - 1]) {
-            groups.push_back(i - back);
-            back = i;
-        }
-    }
-    ll ans = 1;
-    for (int i = 0; i < groups.size(); i++) {
-        ll curr = 0;
-        for (int j = 1; j <= n; j++) {
-            curr = (curr + fastmod(total[j], groups[i]))%(ll)(1e9 + 7);
-        }
-        ans = (ans * curr)%(ll)(1e9 + 7);
-    }
+	sort(rhyme.begin(), rhyme.end());
+	vector<int> groups;
+	rhyme.push_back(-1);
+	int back = 0;
+	for (int i = 1; i <= m; i++) {
+		if (rhyme[i] != rhyme[i - 1]) {
+			groups.push_back(i - back);
+			back = i;
+		}
+	}
+	ll ans = 1;
+	for (int i = 0; i < groups.size(); i++) {
+		ll curr = 0;
+		for (int j = 1; j <= n; j++) {
+			curr = (curr + fastmod(total[j], groups[i])) % (ll)(1e9 + 7);
+		}
+		ans = (ans * curr) % (ll)(1e9 + 7);
+	}
 
-    fout << ans;
+	fout << ans;
 
-    return 0;
+	return 0;
 }
 ```
 
