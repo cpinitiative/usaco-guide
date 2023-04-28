@@ -116,32 +116,44 @@ public class swap {
 <PySection>
 
 ```py
-N, K = map(int, input().split())
-A1, A2 = map(int, input().split())
-B1, B2 = map(int, input().split())
+def reverse_segment(cows, start, end):
+    while start < end:
+        cows[start], cows[end] = cows[end], cows[start]
+        start += 1
+        end -= 1
 
-# create initial order of cows
-cows = list(range(1, N + 1))
+def find_cycle_length(cows, a1, a2, b1, b2):
+    # simulate the swap operation until we see a repeat
+    visited = set()
+    visited.add(tuple(cows))
+    while True:
+        reverse_segment(cows, a1 - 1, a2 - 1)
+        reverse_segment(cows, b1 - 1, b2 - 1)
+        if tuple(cows) in visited:
+            break
+        visited.add(tuple(cows))
+    # calculate the length of the cycle
+    cycle_len = len(visited)
+    return cycle_len
 
-# simulate two-step process K times
-for _ in range(K):
-	# reverse sequence of cows between A1 and A2
-	i, j = A1 - 1, A2 - 1
-	while i < j:
-		cows[i], cows[j] = cows[j], cows[i]
-		i += 1
-		j -= 1
+def apply_swaps(cows, a1, a2, b1, b2, k):
+    cycle_len = find_cycle_length(cows, a1, a2, b1, b2)
+    k %= cycle_len
+    for i in range(k):
+        reverse_segment(cows, a1 - 1, a2 - 1)
+        reverse_segment(cows, b1 - 1, b2 - 1)
 
-	# reverse sequence of cows between B1 and B2
-	i, j = B1 - 1, B2 - 1
-	while i < j:
-		cows[i], cows[j] = cows[j], cows[i]
-		i += 1
-		j -= 1
+    return cows
 
-# output final order of cows
-for i in range(N):
-	print(cows[i])
+n, k = map(int, input().split())
+a1, a2 = map(int, input().split())
+b1, b2 = map(int, input().split())
+
+cows = list(range(1, n+1))
+cows = apply_swaps(cows, a1, a2, b1, b2, k)
+
+for cow in cows:
+    print(cow)
 ```
 
 </PySection>
