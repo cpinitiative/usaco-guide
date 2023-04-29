@@ -68,16 +68,16 @@ counting interesting numbers is by using dynamic programming. The DP approach
 involves considering all 9 digits one at a time to occupy at least half of the
 number.
 
-Let $\texttt{dp[i][und][k][is0]}$ where $i$ is the current position, $und$ is
-whether you have gone below the actual number, $k$ is a counter to see if you
-have at least half of the same digit, and $is0$ is a boolean if you still have
-leading zeros. The transition involves looping through 9 digits to add to the
-current location and comparing with the digit we want to occupy at least half of
-the number.
+Let $\texttt{dp[pos][k][under][started]}$ where $pos$ is the current position,
+$k$ is a counter to see if you have at least half of the same digit, $under$ is
+whether you have gone below the actual number, and $started$ is a boolean if you
+still have leading zeros. The transition involves looping through 9 digits to
+add to the current location and comparing with the digit we want to occupy at
+least half of the number.
 
-Given the current state $\texttt{dp[i][und][k][is0]}$, we loop through all
-digits from 0 to 9 and consider adding each of them to the current position. If
-we add the digit $d$ to the current position, we update our state as follows:
+Given the current state $\texttt{dp[pos][k][under][started]}$, we loop through
+all digits from 0 to 9 and consider adding each of them to the current position.
+If we add the digit $d$ to the current position, we update our state as follows:
 
 * If $d$ is less than the $i$-th digit of the actual number $Y$, then we set
   $und$ to true.
@@ -103,7 +103,7 @@ Code by
 using namespace std;
 using ll = long long;
 
-ll dp[19][50][2][2];  // dp[pos][count][under][started]
+ll dp[19][50][2][2];  // dp[pos][k][under][started]
 string num;
 
 /** Reset the dp array to its initial values. */
@@ -166,7 +166,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 	for (int i = 0; i <= 9; i++) {
 		int digit_diff = num[pos] - '0';
 		/*
-		 * if the sequence will be larger than the upperbound, then we can
+		 * If the sequence will be larger than the upperbound, then we can
 		 * terminate
 		 */
 		if (under && i > digit_diff) {
