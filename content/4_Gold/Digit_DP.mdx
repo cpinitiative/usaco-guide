@@ -43,29 +43,52 @@ frequency: 1
 	</Resource>
 </Resources>
 
-Digit DP is a technique used to solve problems that asks you to find the number of integers within a range that satisfies some property based on the digits of the integers. Typically, the ranges are between large integers (such as between $1$ to $10^{18}$), so looping through each integer and checking if it satisfies the given property is too slow. Digit DP uses the digits of the integers to quickly count the number of integers with the given property in the range of integers.
+Digit DP is a technique used to solve problems that asks you to find the number
+of integers within a range that satisfies some property based on the digits of
+the integers. Typically, the ranges are between large integers (such as between
+$1$ to $10^{18}$), so looping through each integer and checking if it satisfies
+the given property is too slow. Digit DP uses the digits of the integers to
+quickly count the number of integers with the given property in the range of
+integers.
 
 ## Solution - Odometer
 
 ### Without Dynamic Programming
 
-We can solve this problem in $\mathcal{O}(Y - X)$ time by looping through $X \ldots Y$ and checking whether a given number is an interesting number. However, since $Y - X$ can be large, the naive solution is too slow, requiring us to optimize it.
+We can solve this problem in $\mathcal{O}(Y - X)$ time by looping through $X
+\ldots Y$ and checking whether a given number is an interesting number. However,
+since $Y - X$ can be large, the naive solution is too slow, requiring us to
+optimize it.
 
 ### With Dynamic Programming
 
-One way to optimize the brute force approach of looping from $X$ to $Y$ and counting interesting numbers is by using dynamic programming. The DP approach involves considering all 9 digits one at a time to occupy at least half of the number.
+One way to optimize the brute force approach of looping from $X$ to $Y$ and
+counting interesting numbers is by using dynamic programming. The DP approach
+involves considering all 9 digits one at a time to occupy at least half of the
+number.
 
-Let $\texttt{dp[i][und][k][is0]}$ where $i$ is the current position, $und$ is whether you have gone below the actual number, $k$ is a counter to see if you have at least half of the same digit, and $is0$ is a boolean if you still have leading zeros. The transition involves looping through 9 digits to add to the current location and comparing with the digit we want to occupy at least half of the number.
+Let $\texttt{dp[i][und][k][is0]}$ where $i$ is the current position, $und$ is
+whether you have gone below the actual number, $k$ is a counter to see if you
+have at least half of the same digit, and $is0$ is a boolean if you still have
+leading zeros. The transition involves looping through 9 digits to add to the
+current location and comparing with the digit we want to occupy at least half of
+the number.
 
-Given the current state $\texttt{dp[i][und][k][is0]}$, we loop through all digits from 0 to 9 and consider adding each of them to the current position. If we add the digit $d$ to the current position, we update our state as follows:
+Given the current state $\texttt{dp[i][und][k][is0]}$, we loop through all
+digits from 0 to 9 and consider adding each of them to the current position. If
+we add the digit $d$ to the current position, we update our state as follows:
 
-* If $d$ is less than the $i$-th digit of the actual number $Y$, then we set $und$ to true.
+* If $d$ is less than the $i$-th digit of the actual number $Y$, then we set
+  $und$ to true.
 * If $d$ is zero and we have a leading zero, then we set $is0$ to true.
 * If $d$ is equal to the digit we are interested in, then we increment $k$.
-* If $k$ is greater than $\lfloor \frac{i+1}{2} \rfloor$, then we increment our count of interesting numbers by 1.
-* We move on to the next position by setting $i$ to $i+1$ and transitioning to the next state.
+* If $k$ is greater than $\lfloor \frac{i+1}{2} \rfloor$, then we increment our
+  count of interesting numbers by 1.
+* We move on to the next position by setting $i$ to $i+1$ and transitioning to
+  the next state.
 
-This algorithm is fast enough as the number of digits is small and there are only nine digits.
+This algorithm is fast enough as the number of digits is small and there are
+only nine digits.
 
 <LanguageSection>
 <CPPSection>
