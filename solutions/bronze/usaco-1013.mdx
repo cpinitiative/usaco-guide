@@ -171,14 +171,16 @@ int main() {
 
 ```py
 from typing import List
+import sys
 
+sys.stdin = open("swap.in", "r")
+sys.stdout = open("swap.out", "w")
 
 def reverse_segment(cows: List[int], start: int, end: int):
-	while start < end:
-		cows[start], cows[end] = cows[end], cows[start]
-		start += 1
-		end -= 1
-
+    while start < end:
+        cows[start], cows[end] = cows[end], cows[start]
+        start += 1
+        end -= 1
 
 n, k = map(int, input().split())
 a1, a2 = map(int, input().split())
@@ -188,16 +190,16 @@ cows = list(range(1, n + 1))
 visited = set()
 visited.add(tuple(cows))
 while True:
-	reverse_segment(cows, a1 - 1, a2 - 1)
-	reverse_segment(cows, b1 - 1, b2 - 1)
-	if tuple(cows) in visited:
-		break
-	visited.add(tuple(cows))
+    reverse_segment(cows, a1 - 1, a2 - 1)
+    reverse_segment(cows, b1 - 1, b2 - 1)
+    if tuple(cows) in visited:
+        break
+    visited.add(tuple(cows))
 cycle_len = len(visited)
 k %= cycle_len
 for _ in range(k):
-	reverse_segment(cows, a1 - 1, a2 - 1)
-	reverse_segment(cows, b1 - 1, b2 - 1)
+    reverse_segment(cows, a1 - 1, a2 - 1)
+    reverse_segment(cows, b1 - 1, b2 - 1)
 
 print(*cows, sep="\n")
 ```
