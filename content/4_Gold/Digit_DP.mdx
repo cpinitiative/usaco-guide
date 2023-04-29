@@ -109,9 +109,7 @@ void reset() {
 	for (int i = 0; i < 19; i++) {
 		for (int j = 0; j < 50; j++) {
 			for (int k = 0; k < 2; k++) {
-				for (int l = 0; l < 2; l++) {
-					dp[i][j][k][l] = -1;
-				}
+				for (int l = 0; l < 2; l++) { dp[i][j][k][l] = -1; }
 			}
 		}
 	}
@@ -120,19 +118,17 @@ void reset() {
 /**
  * Calculate the number of sequences whose digits consist of at least half targ.
  * If targ2 is not -1, then calculate the number of sequences whose digits are
- * exactly half targ and half targ2. 
+ * exactly half targ and half targ2.
  * @param pos the starting position
  * @param k counter for the number of the target digit targ
  * @param under if the current sequence is smaller than the given upperbound
- * @param started if the sequence has any digit other than leading zeros 
+ * @param started if the sequence has any digit other than leading zeros
  */
 ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 	// base case: the sequence has reached the maximal length
 	if (pos == num.size()) {
 		// edge case: the sequence only contains zeros, i.e. did not start
-		if (!started) {
-			return 0;
-		}
+		if (!started) { return 0; }
 
 		/*
 		 * If we are interested in finding out whether the sequence contains
@@ -156,9 +152,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 		}
 	}
 
-	if (dp[pos][k][under][started] != -1) {
-		return dp[pos][k][under][started];
-	}
+	if (dp[pos][k][under][started] != -1) { return dp[pos][k][under][started]; }
 
 	ll ans = 0;
 	for (int i = 0; i <= 9; i++) {
@@ -167,9 +161,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 		 * If the sequence will be larger than the upperbound, then we can
 		 * terminate
 		 */
-		if (under && i > digit_diff) {
-			break;
-		}
+		if (under && i > digit_diff) { break; }
 
 		/*
 		 * If the new digit is smaller than the one in the upperbound, then any
@@ -177,9 +169,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 		 * more significant than any following one
 		 */
 		bool is_under = under;
-		if (i < digit_diff) {
-			is_under = false;
-		}
+		if (i < digit_diff) { is_under = false; }
 
 		// the sequence has started if any digits until pos is other than 0
 		bool is_started = started || i != 0;
@@ -189,9 +179,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 		 * targ and half of targ2, then any other number than targ or targ2
 		 * doesn't matter
 		 */
-		if (is_started && targ2 != -1 && i != targ && i != targ2) {
-			continue;
-		}
+		if (is_started && targ2 != -1 && i != targ && i != targ2) { continue; }
 
 		/*
 		 * The count for target digit targ is increased by one if i is targ, or
@@ -221,7 +209,7 @@ ll count_interesting_to(ll ubound) {
 
 	/*
 	 * If a sequence's digits consist of exactly half i and half j, then it will
-	 * be counted twice. We have to subtract duplicates to avoid overcount. 
+	 * be counted twice. We have to subtract duplicates to avoid overcount.
 	 */
 	ll duplicates = 0;
 	for (int i = 0; i <= 9; i++) {
@@ -234,8 +222,8 @@ ll count_interesting_to(ll ubound) {
 }
 
 int main() {
-    freopen("odometer.in", "r", stdin);
-    freopen("odometer.out", "w", stdout);
+	freopen("odometer.in", "r", stdin);
+	freopen("odometer.out", "w", stdout);
 
 	ll X, Y;
 	cin >> X >> Y;
