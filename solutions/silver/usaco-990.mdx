@@ -288,7 +288,7 @@ int main() {
 
 	int N, K;
 	cin >> N >> K;
-	int B[N];
+	vector<int> B(N);
 	for (int i = 0; i < N; i++) { cin >> B[i]; }
 	int m = 0;
 	for (int s = 1;; s++) {
@@ -396,7 +396,18 @@ import random
 import itertools
 
 
-def quickselect(A, i, key=lambda x: x):
+def quickselect(A: list, i: int, key=lambda x: x):
+	"""
+	This is a partial sorting algorithm that rearranges elements of A such that:
+	The element at index i is changed to whatever element would occur in that
+	position if A were sorted. All of the elements before this new ith element
+	are less than or equal to the elements after the new ith element. 
+	More formally, quickselect partially sorts A in ascending order so that the
+	condition key(A[j]) <= key(A[k]) is met for any j in the range [0, i) and 
+	for any k in the range [i, len(A)). The element placed in the ith position
+	is exactly the element that would occur in this position if the range was
+	fully sorted.
+	"""
 	def partition():
 		def swap(i, j):
 			A[i], A[j] = A[j], A[i]
