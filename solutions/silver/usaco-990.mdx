@@ -6,14 +6,18 @@ author: Qi Wang, Daniel Suh, Juheon Rhee
 ---
 
 <Spoiler title="Hint 1">
-Let's say Bessie and Elsie get the same number of berries, what's a case that give us this? How can we increase this value?
+
+Let's say Bessie and Elsie get the same number of berries.
+What's a case that give us this?
+How can we increase this value?
+
 </Spoiler>
 
 <Spoiler title="Solution">
 
-[Official Analysis](http://www.usaco.org/current/data/sol_berries_silver_jan20.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_berries_silver_jan20.html)
 
-## Implementation
+## Implementation 1
 
 **Time Complexity:** $\mathcal{O}(max(B_i) \cdot N\log N)$
 
@@ -93,17 +97,14 @@ int main() {
 <JavaSection>
 
 ```java
-// Created by Qi Wang
 import java.io.*;
 import java.util.*;
 
-public class berries {
+public class Berries {
 	static int N, K;
 	static int[] B;
 	public static void main(String[] args) throws IOException {
 		InputReader in = new InputReader("berries.in");
-		PrintWriter out =
-		    new PrintWriter(new BufferedWriter(new FileWriter("berries.out")));
 		N = in.nextInt();
 		K = in.nextInt();
 		B = new int[N];
@@ -142,10 +143,13 @@ public class berries {
 			}
 		}
 
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("berries.out")));
 		out.println(res);
 		out.close();
 	}
 
+	//BeginCodeSnip{Input Reader}
 	private static class InputReader {
 		public BufferedReader reader;
 		public StringTokenizer tokenizer;
@@ -208,11 +212,11 @@ public class berries {
 			return str;
 		}
 	}
+	//EndCodeSnip
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -260,14 +264,15 @@ print(ans, file=open("berries.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>
 
-## Implementation
+## Alternative Implementation
+
+We want the $\min(N, K - f)$ greatest elements of B (comparing values $\text{mod } s$), where $f$ is the number of full baskets and $s$ is the size of a full basket.
+Since the order of these elements does not matter, we can use a selection algorithm instead of sorting to reduce the time complexity by a factor of $\log N$.
 
 **Time Complexity:** $\mathcal{O}(max(B_i) \cdot N)$
 
-We want the $\min(N, K - f)$ greatest elements of B (comparing values $\text{mod } s$), where $f$ is the number of full baskets and $s$ is the size of a full basket. Since the order of these elements does not matter, we can use a selection algorithm instead of sorting to reduce the time complexity by a factor of $\log N$.
 <LanguageSection>
 <CPPSection>
 
@@ -299,7 +304,8 @@ int main() {
 		for (int i = 0; i < min(N, K - full); i++) { bessie += B[i] % s; }
 		m = max(m, bessie);
 	}
-	cout << m << '\n';
+
+	cout << m << endl;
 }
 ```
 
@@ -310,13 +316,12 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Berries {
 	static int s;
 	static Random rand;
 	public static void main(String[] args) throws IOException {
 		BufferedReader r =
 		    new BufferedReader(new FileReader(new File("berries.in")));
-		PrintWriter pw = new PrintWriter(new FileWriter("berries.out"));
 		rand = new Random();
 		StringTokenizer st = new StringTokenizer(r.readLine());
 		int N = Integer.parseInt(st.nextToken());
@@ -335,9 +340,12 @@ public class Main {
 			for (int i = 0; i < N && i < K - full; i++) { bessie += B[i] % s; }
 			m = Math.max(m, bessie);
 		}
+		
+		PrintWriter pw = new PrintWriter(new FileWriter("berries.out"));
 		pw.println(m);
 		pw.close();
 	}
+
 	static void quickselect(int[] A, int i) {
 		int l = 0, r = A.length - 1;
 		while (l < r) {
@@ -351,6 +359,7 @@ public class Main {
 			}
 		}
 	}
+
 	static int partition(int[] A, int l, int r) {
 		int m = l;
 		swap(A, l + rand.nextInt(r - l), r);
@@ -363,6 +372,7 @@ public class Main {
 		swap(A, m, r);
 		return m;
 	}
+
 	static void swap(int[] A, int i, int j) {
 		int t = A[i];
 		A[i] = A[j];
@@ -375,15 +385,14 @@ public class Main {
 <PySection>
 
 <Warning>
-This is slower than sorting because this is implemented in pure Python, while `sorted` is implemented in C.
+
+Due to Python's high constant factor, this actually runs slower than the previous solution.
+
 </Warning>
 
 ```py
 import sys
 import random
-
-sys.stdin = open("berries.in", "r")
-sys.stdout = open("berries.out", "w")
 
 
 def quickselect(A, i, key):
@@ -411,6 +420,8 @@ def quickselect(A, i, key):
 			r = j - 1
 
 
+sys.stdin = open('berries.in')
+
 N, K = map(int, input().split())
 B = list(map(int, input().split()))
 
@@ -423,7 +434,8 @@ for s in range(1, 1001):
 		quickselect(B, K - full, lambda x: -(x % s))
 	bessie = (full - K // 2) * s + sum(x % s for x in B[: K - full])
 	m = max(m, bessie)
-print(m)
+
+print(m, file=open('berries.out', 'w'))
 ```
 
 </PySection>
