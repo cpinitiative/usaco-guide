@@ -171,10 +171,6 @@ int main() {
 
 ```py
 from typing import List
-import sys
-
-sys.stdin = open("swap.in", "r")
-sys.stdout = open("swap.out", "w")
 
 
 def reverse_segment(cows: List[int], start: int, end: int):
@@ -184,10 +180,13 @@ def reverse_segment(cows: List[int], start: int, end: int):
 		end -= 1
 
 
-n, k = map(int, input().split())
-a1, a2 = map(int, input().split())
-b1, b2 = map(int, input().split())
+with open('swap.in') as read:
+	n, k = map(int, read.readline().split())
+	a1, a2 = map(int, read.readline().split())
+	b1, b2 = map(int, read.readline().split())
+
 cows = list(range(1, n + 1))
+
 # apply swaps
 visited = set()
 visited.add(tuple(cows))
@@ -197,13 +196,14 @@ while True:
 	if tuple(cows) in visited:
 		break
 	visited.add(tuple(cows))
+
 cycle_len = len(visited)
 k %= cycle_len
 for _ in range(k):
 	reverse_segment(cows, a1 - 1, a2 - 1)
 	reverse_segment(cows, b1 - 1, b2 - 1)
 
-print(*cows, sep="\n")
+print(*cows, sep='\n', file=open('swap.out', 'w'))
 ```
 
 </PySection>
