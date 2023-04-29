@@ -269,7 +269,7 @@ print(ans, file=open("berries.out", "w"))
 ## Alternative Implementation
 
 We want the $\min(N, K - f)$ greatest elements of B (comparing values $\text{mod } s$), where $f$ is the number of full baskets and $s$ is the size of a full basket.
-Since the order of these elements does not matter, we can use a selection algorithm instead of sorting to reduce the time complexity by a factor of $\log N$.
+Since the order of these elements does not matter, we can use a [selection algorithm](https://en.wikipedia.org/wiki/Selection_algorithm) instead of sorting to reduce the time complexity by a factor of $\log N$.
 
 **Time Complexity:** $\mathcal{O}(max(B_i) \cdot N)$
 
@@ -393,9 +393,9 @@ Due to Python's high constant factor, this actually runs slower than the previou
 ```py
 import sys
 import random
+import itertools
 
-
-def quickselect(A, i, key):
+def quickselect(A, i, key=lambda x: x):
 	def partition():
 		def swap(i, j):
 			A[i], A[j] = A[j], A[i]
@@ -426,7 +426,7 @@ N, K = map(int, input().split())
 B = list(map(int, input().split()))
 
 m = 0
-for s in range(1, 1001):
+for s in itertools.count(start=1):
 	full = min(K, sum(b // s for b in B))
 	if full < K // 2:
 		break
