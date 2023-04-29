@@ -9,10 +9,9 @@ author: Jeffrey Zhang
 
 ## Explanation
 
-Let's first observe that the *order of the words* beside the last word in each line is independent from the *order of the lines* in the poetry.
-Meaning we can take this problem apart into two distinct parts.
+Let's first observe that the *order of the words* beside the last word in each line is independent from the *order of the lines* in the poetry, so we can separate this problem into two distinct parts.
 
-1. Define $f(i)$ that calculates the total possible ways selected words can be arranged in a line that ends with a certain rhyme class $c_i$
+1. Define $f(i)$ that calculates the number of ways selected words can be arranged in a line that ends with a certain rhyme class $c_i$
 2. Calculate the actual answer by figuring out different ways to map rhyme class $c$ to rhyme scheme $e$
 
 Let's go through these steps with the sample test case: here it is again for reference.
@@ -27,27 +26,27 @@ B
 A
 ```
 
-There are $8$ different ways to juggle the words such that a line ends with a word with rhyme class $1$, and $4$ ways for class $2$.
-So $f(1) = 8$ and $f(2) = 4$.
+There are $8$ different ways to arrange the words such that a line ends with a word with rhyme class $1$, and $4$ ways for rhyme class $2$, so $f(1) = 8$ and $f(2) = 4$.
 
-We can map the rhyme class to scheme in four different ways.
-Allowing us to obtain $f(1)^3 + f(1)^2f(2) + f(2)^2f(1) + f(2)^3 = 960$.
+We can map the rhyme class to scheme in four different ways, so we have $f(1)^3 + f(1)^2f(2) + f(2)^2f(1) + f(2)^3 = 960$.
+
+Let's work through these parts in order.
 
 ### Part 1
 
-Now we have a clear understanding of what we are dealing with, let's first begin by tackle the first part of our problem.
-The intuition behind this part is similar to that of a knapsack variant.
-We are asked given a constraint of total length $k$, where each word have varied syllables $s_i$, we need find the total number of ways to fit selected words together so the total syllables of all the words is exactly $k$ letters long.
+This part is a bit similar to the knapsack problem.
+We're given a total length $k$ along with some words of syllable length $s_i$, and we need find the total number of ways to arrange a subset of the words such that the total is $k$ syllables.
 
-Let $dp[i]$ be the total number of ways to fit a total length $i$, and $p[j]$ represents the number of words with $j$ syllables.
-We can find the relationship between each state as
+Let $dp[i]$ be the number of ways to satisfy a total length $i$, and $p[j]$ be the number of words with $j$ syllables.
+Our transition is as follows:
 
 $$
 dp[i] = \sum_{j=0}^{i} dp[i-j] \cdot p[j]
 $$
 
-$dp[k]$ tells us the number of ways to fits words under length $k$, but it doesn't specify what is the ending word's rhyme class.
-To do that, we can simply write
+Now it remains to define our $f(i)$.
+$dp[k]$ tells us the number of ways to fits words under length $k$, but it doesn't specify what the ending word's rhyme class is.
+To do that, we use a summation as follows for our definition:
 
 $$
 f(i) = \sum_{j=0}^{k} dp[k-j] \cdot p_i[j]
@@ -56,21 +55,21 @@ $$
 ### Part 2
 
 Notice that given any rhyme scheme, the final answer they produce is equivalent to if any two lines of the scheme is switched.
-This is true because the combinations that one line can have does not affect any other line, meaning they are indpendent!
+This is true because the combinations that one line can have doesn't affect any other line.
 
-So to make our calculations easier, we can just sort the rhyme scheme, count the number of lines that have the same type and put them in a set call it $q$.
+So, to make our calculations easier, we can sort the rhyme scheme, count the number of lines that have the same type, and put them in a set (let's call that set $q$).
 In our example $q = [2, 1]$.
 
-To calculate our final answer, we just need to find the sum to this polynomial right here.
+To calculate our final answer, we just need to find the sum of this polynomial right here.
 To keep it simple, let's just assume total number of rhyme classes is $2$.
 
 $$
 f(1)^{q_1+ \dots +q_k} + f(1)^{q_1 + \dots + q_{k-1}} f(2)^{q_k} + \dots + f(1)^{q_k} f(2)^{q_1 + \dots + q_{k-1}} + f(2)^{q_1+ \dots + q_k}
 $$
 
-But now comes a new hurdle, this polynomial seems very daunting and we can quickly see the number of terms does not grow linearly as the number of rhyme classes grows.
+But this polynomial is pretty darn awful, and the number of terms in it grows much faster than the number of rhyme classes.
 
-In order to finish this final section of our problem, we need to make the observation that this polynomial is actually symmetrical, and we can instead express the expression as products of power series
+To solve this, we have to notice that this polynomial is actually symmetrical, and we can instead express the expression as products of power series
 
 $$
 (f(1)^{p_1} + f(2)^{p_1})(f(1)^{p_2} + f(2)^{p_2}) \cdots (f(1)^{p_k} + f(2)^{p_k})
