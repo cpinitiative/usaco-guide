@@ -171,21 +171,15 @@ int main() {
 
 ```py
 from typing import List
-
-
 def reverse_segment(cows: List[int], start: int, end: int):
 	while start < end:
 		cows[start], cows[end] = cows[end], cows[start]
 		start += 1
 		end -= 1
-
-
 n, k = map(int, input().split())
 a1, a2 = map(int, input().split())
 b1, b2 = map(int, input().split())
-
 cows = list(range(1, n + 1))
-
 # apply swaps
 visited = set()
 visited.add(tuple(cows))
@@ -195,14 +189,13 @@ while True:
 	if tuple(cows) in visited:
 		break
 	visited.add(tuple(cows))
-
 cycle_len = len(visited)
 k %= cycle_len
 for _ in range(k):
 	reverse_segment(cows, a1 - 1, a2 - 1)
 	reverse_segment(cows, b1 - 1, b2 - 1)
-
-print(*cows)
+			  
+print(*cows, sep="\n")
 ```
 
 </PySection>
