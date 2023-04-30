@@ -282,7 +282,6 @@ using namespace std;
 
 int main() {
 	freopen("berries.in", "r", stdin);
-	freopen("berries.out", "w", stdout);
 	ios::sync_with_stdio(false);
 	cin.tie(0);
 
@@ -305,6 +304,7 @@ int main() {
 		m = max(m, bessie);
 	}
 
+	freopen("berries.out", "w", stdout);
 	cout << m << endl;
 }
 ```
@@ -346,9 +346,11 @@ public class Berries {
 		pw.close();
 	}
 
+	//BeginCodeSnip{Quickselect Function}
 	/**
-	 * Rearranges A such that A[i] contains the ith greatest element in the list
-	 * (mod s) and A[j] % s >= A[i] % s for all 0 <= j <= i.
+	 * Rearranges A such that A[i] contains the
+	 * ith greatest element in the list (mod s)
+	 * and A[j] % s >= A[i] % s for all 0 <= j <= i.
 	 */
 	static void quickselect(int[] A, int i) {
 		int l = 0, r = A.length - 1;
@@ -382,6 +384,7 @@ public class Berries {
 		A[i] = A[j];
 		A[j] = t;
 	}
+	//EndCodeSnip
 }
 ```
 
@@ -430,10 +433,9 @@ def quickselect(A: list, i: int, key=lambda x: x):
 			r = j - 1
 
 
-sys.stdin = open("berries.in")
-
-N, K = map(int, input().split())
-B = list(map(int, input().split()))
+with open('berries.in') as read:
+	N, K = map(int, read.readline().split())
+	B = list(map(int, read.readline().split()))
 
 m = 0
 for s in itertools.count(start=1):
@@ -445,7 +447,7 @@ for s in itertools.count(start=1):
 	bessie = (full - K // 2) * s + sum(x % s for x in B[: K - full])
 	m = max(m, bessie)
 
-print(m, file=open("berries.out", "w"))
+print(m, file=open('berries.out', 'w'))
 ```
 
 </PySection>
