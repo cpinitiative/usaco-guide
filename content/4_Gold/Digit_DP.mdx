@@ -161,7 +161,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 		 * If the sequence will be larger than the upperbound, then we can
 		 * terminate
 		 */
-		if (under && i > digit_diff) { break; }
+		if (!under && i > digit_diff) { break; }
 
 		/*
 		 * If the new digit is smaller than the one in the upperbound, then any
@@ -169,7 +169,7 @@ ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
 		 * more significant than any following one
 		 */
 		bool is_under = under;
-		if (i < digit_diff) { is_under = false; }
+		if (i < digit_diff) { is_under = true; }
 
 		// the sequence has started if any digits until pos is other than 0
 		bool is_started = started || i != 0;
@@ -204,7 +204,7 @@ ll count_interesting_to(ll ubound) {
 	ll ans = 0;
 	for (int i = 0; i <= 9; i++) {
 		reset();
-		ans += solve_dp(0, 20, true, false, i, -1);
+		ans += solve_dp(0, 20, false, false, i, -1);
 	}
 
 	/*
@@ -215,7 +215,7 @@ ll count_interesting_to(ll ubound) {
 	for (int i = 0; i <= 9; i++) {
 		for (int j = 0; j <= 9; j++) {
 			reset();
-			duplicates += solve_dp(0, 20, true, false, i, j);
+			duplicates += solve_dp(0, 20, false, false, i, j);
 		}
 	}
 	return ans - (duplicates / 2);
