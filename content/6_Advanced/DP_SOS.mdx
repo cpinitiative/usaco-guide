@@ -30,6 +30,9 @@ frequency: 1
 Sum over subsets (SOS) dp is a trick that allows you to efficiently compute the sum of all the subsets of an array.
 
 The naive solution would be to iterate through every other mask and if the other mask is a subset of the current mask we add it to the current answer.
+
+<LanguageSection>
+<CPPSection>
 ```cpp
 int n = 20;
 vector<int> a(1 << n);
@@ -41,9 +44,15 @@ for (int i = 0; i < (1 << n); i++) {
 	}
 }
 ```
+</CPPSection>
+</LanguageSection>
+
 
 We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
 The time complexity here is O($3^n$)
+
+<LanguageSection>
+<CPPSection>
 ```cpp
 int n = 20;
 vector<int> a(1 << n);
@@ -53,7 +62,10 @@ for (int i = 0; i < (1 << n); i++) {
 	for (int j = (i - 1) & i; j >= 0; j = (j - 1) & i) { sos[i] += a[j]; }
 }
 ```
+</CPPSection>
+</LanguageSection>
 
+	
 Notice how in both of these examples we don't seem to be saving much information between different queries which is the essence of DP.
 Define $SOS(mask, x)$ to be the sum of subsets of $mask$ such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
 For example, $SOS(1001001, 3)$ includes the subsets $1001001$, $1000001$, $1001000$, $1000000$ which all have the same common prefix of $100$.
@@ -72,7 +84,10 @@ $SOS(mask, x) = \left\{
 		SOS(mask, x - 1) & \quad \textrm{otherwise}
 	\end{array}
 \right.$
+	
 
+<LanguageSection>
+<CPPSection>
 ```cpp
 int n = 20;
 vector<int> a(1 << n);
@@ -87,6 +102,8 @@ for (int mask = 0; mask < (1 << n); mask++) {
 	sos[mask] = dp[mask][n - 1];
 }
 ```
+</CPPSection>
+</LanguageSection>
 
 ## Additional Problems
 
