@@ -31,10 +31,11 @@ Sum over subsets (SOS) dp is a trick that allows you to efficiently compute the 
 
 The naive solution would be to iterate through every other mask and if the other mask is a subset of the current mask we add it to the current answer.
 ```cpp
-vector<int> a(1 << 20);
-vector<int> sos(1 << 20);
-for (int i = 0; i < (1 << 20); i++) {
-	for (int j = 0; j < (1 << 20); j++) {
+int n = 20;
+vector<int> a(1 << n);
+vector<int> sos(1 << n);
+for (int i = 0; i < (1 << n); i++) {
+	for (int j = 0; j < (1 << n); j++) {
 		// j is a subset of i
 		if ((i & j) == j) { sos[i] += a[j]; }
 	}
@@ -44,9 +45,11 @@ for (int i = 0; i < (1 << 20); i++) {
 We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
 The time complexity here is O($3^n$)
 ```cpp
-vector<int> a(1 << 20);
-vector<int> sos(1 << 20);
-for (int i = 0; i < (1 << 20); i++) {
+int n = 20;
+vector<int> a(1 << n);
+vector<int> sos(1 << n);
+for (int i = 0; i < (1 << n); i++) {
+	// Iterates over all subsets of i
 	for (int j = (i - 1) & i; j >= 0; j = (j - 1) & i) { sos[i] += a[j]; }
 }
 ```
@@ -71,13 +74,17 @@ $SOS(mask, x) = \left\{
 \right.$
 
 ```cpp
+int n = 20;
+vector<int> a(1 << n);
+vector<vector<int>> dp(1 << n, vector<int>(n));
+vector<int> sos(1 << n);
 for (int mask = 0; mask < (1 << n); mask++) {
 	dp[mask][-1] = a[mask];
 	for (int x = 0; x < n; x++) {
 		dp[mask][x] = dp[mask][x - 1];
 		if (mask & (1 << x)) { dp[mask][x] += dp[mask - (1 << x)][x - 1]; }
 	}
-	ans[mask] = dp[mask][n - 1];
+	sos[mask] = dp[mask][n - 1];
 }
 ```
 
