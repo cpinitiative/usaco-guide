@@ -241,11 +241,11 @@ import java.util.*;
 
 public class Odometer {
 	// dp[pos][count][under][started]
-	long[][][][] dp = new long[19][50][2][2];
-	String num;
+	static long[][][][] dp = new long[19][50][2][2];
+	static String num;
 
 	/** Reset the dp array to its initial values. */
-	public void reset() {
+	public static void reset() {
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 50; j++) {
 				for (int k = 0; k < 2; k++) {
@@ -259,14 +259,13 @@ public class Odometer {
 	 * Calculate the number of sequences whose digits consist of at least half
 	 * targ. If targ2 is not -1, then calculate the number of sequences whose
 	 * digits are exactly half targ and half targ2.
-	 *
 	 * @param pos     the starting position
 	 * @param k       counter for the number of the target digit targ
 	 * @param under   1 if the current sequence is smaller than the given
 	 *     upperbound
 	 * @param started 1 if the sequence has any digit other than leading zeros
 	 */
-	public long solveDP(int pos, int k, int under, int started, int targ,
+	public static long solveDP(int pos, int k, int under, int started, int targ,
 	                    int targ2) {
 		// base case: the sequence has reached the maximal length
 		if (pos == num.length()) {
@@ -346,7 +345,7 @@ public class Odometer {
 	}
 
 	/** Count interesting sequences that are less or equal ubound */
-	public long countInterestingTo(long ubound) {
+	public static long countInterestingTo(long ubound) {
 		num = String.valueOf(ubound);
 		long ans = 0;
 		for (int i = 0; i <= 9; i++) {
@@ -377,11 +376,9 @@ public class Odometer {
 		long X = Long.parseLong(st.nextToken());
 		long Y = Long.parseLong(st.nextToken());
 
-		Odometer solver = new Odometer();
-
 		PrintWriter pw = new PrintWriter("odometer.out");
-		pw.println(solver.countInterestingTo(Y) -
-		           solver.countInterestingTo(X - 1));
+		pw.println(countInterestingTo(Y) -
+		           countInterestingTo(X - 1));
 		pw.close();
 	}
 }
