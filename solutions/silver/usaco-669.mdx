@@ -64,6 +64,7 @@ int main() {
 
 	for (int i = 0; i < n; i++) { read >> x[i] >> y[i]; }
 
+	// Generate distances between all pairs of cows.
 	vector<Edge> edges;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
@@ -73,9 +74,12 @@ int main() {
 		}
 	}
 
+	// Sort edges by their distance.
 	auto cmp = [](const Edge &e1, const Edge &e2) { return e1.dist < e2.dist; };
 	std::sort(edges.begin(), edges.end(), cmp);
 
+	// Add edges from the smallest distance to the largest until the graph is
+	// connected. The answer is the last edge added.
 	int last_dist = 0;
 	int comp_num = n;
 	DSU dsu(n);
@@ -121,6 +125,7 @@ public class MooCast {
 			y[i] = Integer.parseInt(cow.nextToken());
 		}
 
+		// Generate distances between all pairs of cows.
 		List<Edge> edges = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			for (int j = i + 1; j < n; j++) {
@@ -129,8 +134,12 @@ public class MooCast {
 				edges.add(new Edge(i, j, dx * dx + dy * dy));
 			}
 		}
+
+		// Sort edges by their distance.
 		edges.sort(Comparator.comparingInt(e -> e.dist));
 
+		// Add edges from the smallest distance to the largest until the graph
+		// is connected. The answer is the last edge added.
 		int lastDist = 0;
 		int compNum = n;
 		DSU dsu = new DSU(n);
@@ -228,14 +237,19 @@ with open("moocast.in") as read:
 		x.append(x_i)
 		y.append(y_i)
 
+# Generate distances between all pairs of cows.
 edges = []
 for i in range(n):
 	for j in range(i + 1, n):
 		dx = x[i] - x[j]
 		dy = y[i] - y[j]
 		edges.append(Edge(i, j, dx**2 + dy**2))
+
+# Sort edges by their distance.
 edges.sort(key=lambda e: e.dist)
 
+# Add edges from the smallest distance to the largest until the graph is
+# connected. The answer is the last edge added.
 last_dist = 0
 comp_num = n
 dsu = DSU(n)
@@ -254,36 +268,50 @@ print(last_dist, file=open("moocast.out", "w"))
 
 ### Implementation (Binary Search + BFS)
 
+An alternative solution involves using binary search and BFS.
+
+Let's define a function that checks if all cows are reachable spending a maximum of `power` per walkie-talkie.
+This can be accomplished with BFS.
+
+Notice that since this function is monotonic: if all cows are reachable with a certain power level $P$, they will still be reachable with any power level greater than $P$.
+
+Therefore, binary search can be employed to find the minimum value of `power` for which `all_reachable(power)` holds true.
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <vector>
 
 using std::cout;
 using std::endl;
 using std::pair;
+using std::queue;
 using std::vector;
 
+/** @return the squared distance between 2 points */
 int dist_sq(const pair<int, int> &p1, const pair<int, int> &p2) {
 	int dx = p1.first - p2.first;
 	int dy = p1.second - p2.second;
 	return dx * dx + dy * dy;
 }
 
+/** @return if all cows are reachable with the given power level */
 bool all_reachable(int power, const vector<pair<int, int>> &cows) {
 	int start = 0;
-	vector<int> frontier{start};
+	queue<int> frontier;
+	frontier.push(start);
 	vector<bool> reached(cows.size());
 	reached[start] = true;
 	while (!frontier.empty()) {
-		int curr = frontier.back();
-		frontier.pop_back();
+		int curr = frontier.front();
+		frontier.pop();
 		for (int c = 0; c < cows.size(); c++) {
 			if (!reached[c] && dist_sq(cows[curr], cows[c]) <= power) {
-				frontier.push_back(c);
+				frontier.push(c);
 				reached[c] = true;
 			}
 		}
@@ -302,6 +330,7 @@ int main() {
 	vector<pair<int, int>> cows(cow_num);
 	for (pair<int, int> &c : cows) { read >> c.first >> c.second; }
 
+	// Binary search to find the minimum power level needed
 	int lo = 0;
 	int hi = INT32_MAX;
 	int valid = -1;
@@ -337,6 +366,7 @@ public class Moocast {
 			cows[c][1] = Integer.parseInt(cow.nextToken());
 		}
 
+		// Binary search to find the minimum power level needed
 		int lo = 0;
 		int hi = Integer.MAX_VALUE;
 		int valid = -1;
@@ -355,6 +385,7 @@ public class Moocast {
 		written.close();
 	}
 
+	// Function to check if all cows are reachable given a certain power level
 	static boolean allReachable(int power, int[][] cows) {
 		int start = 0;
 		ArrayDeque<Integer> frontier = new ArrayDeque<>();
@@ -377,6 +408,7 @@ public class Moocast {
 		return true;
 	}
 
+	// Function to calculate the squared distance between two points
 	static int distSq(int[] p1, int[] p2) {
 		int dx = p1[0] - p2[0];
 		int dy = p1[1] - p2[1];
