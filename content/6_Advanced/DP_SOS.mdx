@@ -29,16 +29,17 @@ frequency: 1
 
 Sum over subsets (SOS) DP is a trick that allows you to efficiently compute the sum of all the subsets of an array.
 
-The naive solution would be to iterate through every other mask and if the other mask is a subset of the current mask we add it to the current answer.
+The naive solution would be to iterate through every pair of masks and check if one of them is a subset of the other.
 
 <LanguageSection>
 <CPPSection>
 ```cpp
+// number of elements in the list for which you want to find the sum over all subsets
 int n = 20;
 vector<int> a(1 << n);
 vector<int> sos(1 << n);
 for (int i = 0; i < (1 << n); i++) {
-	// iterate over all subsets of i
+	// iterate over all other sets and checks whether it is a subset of i
 	for (int j = 0; j < (1 << n); j++) {
 		if ((i & j) == j) { sos[i] += a[j]; }
 	}
@@ -49,11 +50,14 @@ for (int i = 0; i < (1 << n); i++) {
 
 
 We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
-The time complexity here is O($3^n$)
+
+The difference comes from the fact that in the first example we iterate over every pair of subsets which takes $(2^n)^2$ time and the second we iterate directly over the subsets for each mask. This means each mask is only visited by $2^{n - k}$ other masks where k is the number of elements of the mask.
+This means that the total time complexity is O$\sum_0^n {n \choose k} \cdot 2^{n - k} = 3^n$).
 
 <LanguageSection>
 <CPPSection>
 ```cpp
+// number of elements in the list for which you want to find the sum over all subsets
 int n = 20;
 vector<int> a(1 << n);
 vector<int> sos(1 << n);
@@ -65,10 +69,9 @@ for (int i = 0; i < (1 << n); i++) {
 </CPPSection>
 </LanguageSection>
 
-
-Notice how in both of these examples we don't seem to be saving much information between different queries which is the essence of DP.
-Define $SOS(mask, x)$ to be the sum of subsets of $mask$ such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
-For example, $SOS(1001001, 3)$ includes the subsets $1001001$, $1000001$, $1001000$, $1000000$ which all have the same common prefix of $100$.
+Notice how in both of these examples we don't seem to be saving much information between different subsets which is the essence of DP.
+Define $\texttt{SOS}(mask, x)$ to be the sum of subsets of $mask$ such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
+For example, $\texttt{SOS}(1001001, 3)$ includes the subsets $1001001$, $1000001$, $1001000$, $1000000$ which all have the same common prefix of $100$.
 
 Let's try to figure out the transitions between different states.
 
@@ -78,10 +81,10 @@ If the $x$th bit of $mask$ is a $1$ then we can transition to this state from bo
 
 More formally,
 
-$SOS(mask, x) = \left\{
+$\texttt{SOS}(mask, x) = \left\{
 	\begin{array}{ c l }
-		SOS(mask, x - 1) + SOS(mask - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge mask| > 0 \\
-		SOS(mask, x - 1) & \quad \textrm{otherwise}
+		\texttt{SOS}(mask, x - 1) + \texttt{SOS}(mask - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge mask| > 0 \\
+		\texttt{SOS}(mask, x - 1) & \quad \textrm{otherwise}
 	\end{array}
 \right.$
 
@@ -89,6 +92,7 @@ $SOS(mask, x) = \left\{
 <LanguageSection>
 <CPPSection>
 ```cpp
+// number of elements in the list for which you want to find the sum over all subsets
 int n = 20;
 vector<int> a(1 << n);
 vector<vector<int>> dp(1 << n, vector<int>(n));
