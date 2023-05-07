@@ -23,8 +23,8 @@ To find the number of colored and uncolored nodes, we can run a [DFS](/silver/gr
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Bipartiteness {
 	public static ArrayList<Integer>[] adj;
@@ -32,7 +32,7 @@ public class Bipartiteness {
 	// counters for colored and uncolored nodes
 	public static long[] count = {0, 0};
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 
 		int n = io.nextInt();
@@ -40,9 +40,7 @@ public class Bipartiteness {
 		// +1 for 1-indexed nodes
 		adj = new ArrayList[n + 1];
 
-		for (int i = 0; i <= n; i++) {
-			adj[i] = new ArrayList<>();
-		}
+		for (int i = 0; i <= n; i++) { adj[i] = new ArrayList<>(); }
 
 		for (int i = 0; i < n - 1; i++) {
 			int u = io.nextInt();
@@ -67,9 +65,7 @@ public class Bipartiteness {
 		for (int u : adj[node]) {
 			// if the adjacent node isn't the parent,
 			// visit that node with the opposite color
-			if (u != parent) {
-				dfs(u, node, !color);
-			}
+			if (u != parent) { dfs(u, node, !color); }
 		}
 	}
 

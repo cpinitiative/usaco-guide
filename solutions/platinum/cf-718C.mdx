@@ -65,37 +65,34 @@ using pll = pair<ll, ll>;
 const int MAXN = 1e5 + 1;
 const ll MOD = 1e9 + 7;
 
-
-//BeginCodeSnip{Matrix Operations}
+// BeginCodeSnip{Matrix Operations}
 using Matrix = array<array<ll, 2>, 2>;
 
 // multiplies two two-by-two matricies
 Matrix multiply(const Matrix &a, const Matrix &b) {
 	return {(a[0][0] * b[0][0] + a[0][1] * b[1][0]) % MOD,
-		(a[0][0] * b[0][1] + a[0][1] * b[1][1]) % MOD,
-		(a[1][0] * b[0][0] + a[1][1] * b[1][0]) % MOD,
-		(a[1][0] * b[0][1] + a[1][1] * b[1][1]) % MOD};
+	        (a[0][0] * b[0][1] + a[0][1] * b[1][1]) % MOD,
+	        (a[1][0] * b[0][0] + a[1][1] * b[1][0]) % MOD,
+	        (a[1][0] * b[0][1] + a[1][1] * b[1][1]) % MOD};
 }
 
 // multiplies a one-by-two matrix with a two-by-two matrix
 pll multiply(const pll &a, const Matrix &b) {
 	return {(a.f * b[0][0] + a.s * b[1][0]) % MOD,
-		(a.f * b[0][1] + a.s * b[1][1]) % MOD};
+	        (a.f * b[0][1] + a.s * b[1][1]) % MOD};
 }
 
 // returns {0, 1, 1, 1,} to the power of n
 Matrix pow(ll n) {
-	Matrix res = {1, 0, 0, 1};  // identity matrix
+	Matrix res = {1, 0, 0, 1};   // identity matrix
 	Matrix base = {0, 1, 1, 1};  // fibonacci matrix
-	for (; n; n >>= 1) {  // binary exponentiation (log n)
-		if (n & 1) {
-			res = multiply(res, base);
-		}
+	for (; n; n >>= 1) {         // binary exponentiation (log n)
+		if (n & 1) { res = multiply(res, base); }
 		base = multiply(base, base);
 	}
 	return res;
 }
-//EndCodeSnip
+// EndCodeSnip
 
 int N, Q;
 pll tree[MAXN * 4];
@@ -108,8 +105,7 @@ pll merge(const pll &a, const pll &b) {
 
 // pushes lazy update in t to its children
 void pushdown(int t) {
-	if (lazy[t] == 0)
-		return;
+	if (lazy[t] == 0) return;
 	tree[t << 1] = multiply(tree[t << 1], pow(lazy[t]));
 	lazy[t << 1] += lazy[t];
 	tree[t << 1 | 1] = multiply(tree[t << 1 | 1], pow(lazy[t]));
@@ -119,9 +115,7 @@ void pushdown(int t) {
 
 // cycle range from l to r by v
 void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
-	if (r < tl || tr < l) {
-		return;
-	}
+	if (r < tl || tr < l) { return; }
 	if (l <= tl && tr <= r) {
 		tree[t] = multiply(tree[t], pow(v));
 		lazy[t] += v;
@@ -137,16 +131,13 @@ void update(int l, int r, ll v, int t = 1, int tl = 1, int tr = N) {
 
 // query sum from l to r
 ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
-	if (r < tl || tr < l) {
-		return 0;
-	}
-	if (l <= tl && tr <= r) {
-		return tree[t].f;
-	}
+	if (r < tl || tr < l) { return 0; }
+	if (l <= tl && tr <= r) { return tree[t].f; }
 	pushdown(t);
 
 	int tm = (tl + tr) >> 1;
-	return (query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr)) % MOD;
+	return (query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr)) %
+	       MOD;
 }
 
 int main() {

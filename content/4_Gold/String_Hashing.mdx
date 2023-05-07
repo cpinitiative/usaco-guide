@@ -242,7 +242,7 @@ using namespace std;
 
 using ll = long long;
 
-//BeginCodeSnip{HashedString}
+// BeginCodeSnip{HashedString}
 class HashedString {
   private:
 	// change M and B if you want
@@ -260,9 +260,7 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) {
-			pow.push_back(mod_mul(pow.back(), B));
-		}
+		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
 			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
@@ -271,14 +269,14 @@ class HashedString {
 
 	ll getHash(int start, int end) {
 		ll raw_val =
-			p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
+		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
 	}
 };
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 vector<ll> HashedString::pow = {1};
 const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
-//EndCodeSnip
+// EndCodeSnip
 
 int freq_target[26], freq_curr[26];
 string n, h;
@@ -308,9 +306,7 @@ int main() {
 		for (int j = 0; j < 26; j++) {
 			match &= freq_curr[j] == freq_target[j];
 		}
-		if (match) {
-			good.insert(hs.getHash(i + 1 - n.size(), i));
-		}
+		if (match) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
 	}
 
 	cout << good.size() << '\n';
@@ -369,9 +365,7 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) {
-			pow.push_back(mod_mul(pow.back(), B));
-		}
+		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
 			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
@@ -380,7 +374,7 @@ class HashedString {
 
 	ll getHash(int start, int end) {
 		ll raw_val =
-			p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
+		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
 	}
 };
@@ -396,9 +390,7 @@ const auto mod_mul = HashedString::mod_mul;
 ll inv(ll base, ll MOD) {
 	ll ans = 1, expo = MOD - 2;
 	while (expo) {
-		if (expo & 1) {
-			ans = mod_mul(ans, base);
-		}
+		if (expo & 1) { ans = mod_mul(ans, base); }
 		expo >>= 1;
 		base = mod_mul(base, base);
 	}
@@ -427,9 +419,7 @@ int main() {
 			h_hsh = mod_mul(h_hsh, inv(B + h[i - n.size()] - 'a', M));
 			h_hsh = mod_mul(h_hsh, B + h[i] - 'a');
 		}
-		if (n_hsh == h_hsh) {
-			good.insert(hs.getHash(i + 1 - n.size(), i));
-		}
+		if (n_hsh == h_hsh) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
 	}
 
 	cout << good.size() << '\n';

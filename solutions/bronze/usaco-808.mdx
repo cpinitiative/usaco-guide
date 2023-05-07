@@ -312,9 +312,7 @@ public class Hoofball {
 		}
 
 		// Return the position identifier of cow that the given cow passes to
-		if (leftRange <= rightRange) {
-			return leftCow;
-		}
+		if (leftRange <= rightRange) { return leftCow; }
 		return rightCow;
 	}
 
@@ -326,25 +324,17 @@ public class Hoofball {
 		cowsPassingTo = new int[N];
 		int ballsNeeded = 0;
 
-		for (int i = 0; i < N; i++) {
-			cows[i] = io.nextInt();
-		}
+		for (int i = 0; i < N; i++) { cows[i] = io.nextInt(); }
 
 		// Let's classify each cow
-		for (int i = 0; i < N; i++) {
-			cowsPassingTo[passToCow(i)]++;
-		}
+		for (int i = 0; i < N; i++) { cowsPassingTo[passToCow(i)]++; }
 
 		for (int i = 0; i < N; i++) {
 			// This is a source cow, so give it a ball
-			if (cowsPassingTo[i] == 0) {
-				ballsNeeded++;
-			}
+			if (cowsPassingTo[i] == 0) { ballsNeeded++; }
 			// This cow only passes to 1 other cow forever, so give it a ball
-			if (i < passToCow(i)
-				&& passToCow(passToCow(i)) == i
-				&& cowsPassingTo[i] == 1
-				&& cowsPassingTo[passToCow(i)] == 1) {
+			if (i < passToCow(i) && passToCow(passToCow(i)) == i &&
+			    cowsPassingTo[i] == 1 && cowsPassingTo[passToCow(i)] == 1) {
 				ballsNeeded++;
 			}
 		}
@@ -353,7 +343,7 @@ public class Hoofball {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

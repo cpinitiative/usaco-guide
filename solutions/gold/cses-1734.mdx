@@ -24,28 +24,24 @@ We answer the queries from right to left, sorted by their left indices. By using
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{BIT}
+// BeginCodeSnip{BIT}
 struct BIT {
 	int size;
 	vector<int> bit;
 	BIT(int n) : size(n), bit(n + 1) {}
 	void update(int x, int v) {
 		x++;
-		for (; x <= size; x += x & (-x)) {
-			bit[x] += v;
-		}
+		for (; x <= size; x += x & (-x)) { bit[x] += v; }
 	}
 	/** @return sum of the values in [0,b] */
 	int query(int b) {
 		b++;
 		int result = 0;
-		for (; b > 0; b -= b & (-b)) {
-			result += bit[b];
-		}
+		for (; b > 0; b -= b & (-b)) { result += bit[b]; }
 		return result;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	int n, q;
@@ -53,9 +49,7 @@ int main() {
 
 	vector<int> arr(n);
 	vector<vector<pair<int, int>>> queries(n);
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
 	for (int i = 0; i < q; i++) {
 		int a, b;
 		cin >> a >> b;
@@ -89,9 +83,7 @@ int main() {
 		}
 	}
 
-	for (auto &a : solution) {
-		cout << a << "\n";
-	}
+	for (auto &a : solution) { cout << a << "\n"; }
 }
 ```
 </CPPSection>
@@ -108,7 +100,8 @@ import java.util.*;
 
 public class DistinctValuesQueries {
 	public static void main(String[] args) throws IOException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader bf =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(bf.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int q = Integer.parseInt(st.nextToken());
@@ -120,9 +113,7 @@ public class DistinctValuesQueries {
 		}
 
 		List<List<Pair>> queries = new ArrayList<>();
-		for (int i = 0; i < n; i++) {
-			queries.add(new ArrayList<>());
-		}
+		for (int i = 0; i < n; i++) { queries.add(new ArrayList<>()); }
 		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(bf.readLine());
 			int a = Integer.parseInt(st.nextToken());
@@ -133,7 +124,8 @@ public class DistinctValuesQueries {
 		}
 		bf.close();
 
-		// last_index[val] is the left-most index where arr[last_index[val]] = val.
+		// last_index[val] is the left-most index where arr[last_index[val]] =
+		// val.
 		Map<Integer, Integer> last_index = new HashMap<>();
 		BIT bit = new BIT(n);
 		int[] solution = new int[q];
@@ -160,7 +152,8 @@ public class DistinctValuesQueries {
 			}
 		}
 
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		BufferedWriter bw =
+		    new BufferedWriter(new OutputStreamWriter(System.out));
 		for (int i = 0; i < q; i++) {
 			bw.write(Integer.toString(solution[i]));
 			bw.write("\n");
@@ -169,7 +162,7 @@ public class DistinctValuesQueries {
 		bw.close();
 	}
 
-	//BeginCodeSnip{BIT}
+	// BeginCodeSnip{BIT}
 	private static class BIT {
 		int size;
 		int[] bit;
@@ -181,24 +174,20 @@ public class DistinctValuesQueries {
 
 		void update(int x, int v) {
 			x++;
-			for (; x <= size; x += x & -x) {
-				bit[x] += v;
-			}
+			for (; x <= size; x += x & -x) { bit[x] += v; }
 		}
 
 		/** @return sum of values in [0,b] */
 		int query(int b) {
 			b++;
 			int result = 0;
-			for (; b > 0; b -= b & -b) {
-				result += bit[b];
-			}
+			for (; b > 0; b -= b & -b) { result += bit[b]; }
 			return result;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
-	//BeginCodeSnip{Pair}
+	// BeginCodeSnip{Pair}
 	private static class Pair {
 		public int first;
 		public int second;
@@ -208,7 +197,7 @@ public class DistinctValuesQueries {
 			second = b;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 }
 ```
 </JavaSection>

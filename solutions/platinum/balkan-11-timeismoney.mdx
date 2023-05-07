@@ -27,7 +27,7 @@ using namespace std;
 using ll = long long int;
 using pii = pair<int, int>;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> g;
 	DSU(int n) : g(n, -1) {}
@@ -46,7 +46,7 @@ struct DSU {
 		return true;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 struct Edge {
 	int x;
@@ -61,9 +61,8 @@ struct Edge {
  * time and cost as pair<int,int> as well as ids of edges of the MST as
  * vector<int>.
  */
-pair<pii, vector<int>> kruskal(
-	int n, vector<Edge> &edges, vector<int> &weights
-) {
+pair<pii, vector<int>> kruskal(int n, vector<Edge> &edges,
+                               vector<int> &weights) {
 	sort(begin(edges), end(edges), [&](const Edge &e1, const Edge &e2) {
 		return weights[e1.id] < weights[e2.id];
 	});
@@ -112,16 +111,12 @@ int main() {
 	vector<int> weights(M);
 
 	// A corresponds to the values of the MST if we only minimize the time
-	for (int i = 0; i < M; i++) {
-		weights[edges[i].id] = edges[i].time;
-	}
+	for (int i = 0; i < M; i++) { weights[edges[i].id] = edges[i].time; }
 	tie(A, best_MST) = kruskal(N, edges, weights);
 	best_V = A;
 
 	// B corresponds to values of the MST if we only minimize the cost
-	for (int i = 0; i < M; i++) {
-		weights[edges[i].id] = edges[i].cost;
-	}
+	for (int i = 0; i < M; i++) { weights[edges[i].id] = edges[i].cost; }
 	tie(B, current_MST) = kruskal(N, edges, weights);
 	// If solution B is better than A, update the best solution
 	if ((ll)B.first * B.second < (ll)A.first * A.second) {
@@ -137,26 +132,22 @@ int main() {
 		to_search.pop();
 
 		/*
-		 * Since P is on the right side of vector AB, the signed area is negative.
-		 * Thus, to maximize the unsigned area of triangle ABP, we should minimize
-		 * this signed value.
+		 * Since P is on the right side of vector AB, the signed area is
+		 * negative. Thus, to maximize the unsigned area of triangle ABP, we
+		 * should minimize this signed value.
 		 */
 		for (int i = 0; i < M; i++) {
-			weights[edges[i].id] = (
-				edges[i].cost * (B.first - A.first) -
-				edges[i].time * (B.second - A.second)
-			);
+			weights[edges[i].id] = (edges[i].cost * (B.first - A.first) -
+			                        edges[i].time * (B.second - A.second));
 		}
 		tie(P, current_MST) = kruskal(N, edges, weights);
 
 		/*
 		 * If P is on the left side of vector AB, we can terminate the search
-		 * on this branch. Note that the "left side of vector AB" is the right side
-		 * on the coordinate system.
+		 * on this branch. Note that the "left side of vector AB" is the right
+		 * side on the coordinate system.
 		 */
-		if (area(A, B, P) >= 0) {
-			continue;
-		}
+		if (area(A, B, P) >= 0) { continue; }
 
 		// Compare the V value and update the best result if needed.
 		if ((ll)P.first * P.second < (ll)best_V.first * best_V.second) {
@@ -165,8 +156,8 @@ int main() {
 		}
 
 		/*
-		 * Search further with the new acquired point P to see if there is another
-		 * point that is on a hyperbola further left than P.
+		 * Search further with the new acquired point P to see if there is
+		 * another point that is on a hyperbola further left than P.
 		 */
 		to_search.push({A, P});
 		to_search.push({P, B});
@@ -174,7 +165,7 @@ int main() {
 
 	cout << best_V.first << " " << best_V.second << "\n";
 	sort(begin(edges), end(edges),
-			 [](const Edge &e1, const Edge &e2) { return e1.id < e2.id; });
+	     [](const Edge &e1, const Edge &e2) { return e1.id < e2.id; });
 	for (int &id : best_MST) {
 		cout << edges[id].x << " " << edges[id].y << "\n";
 	}

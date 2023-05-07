@@ -6,9 +6,10 @@ import StateItem from './StateItem';
  * the state, rather than computing it when needed.
  */
 export default class DeepStateItem<
-  T extends {
-    [key: string]: string;
-  },
+  T extends
+    {
+      [key: string]: string;
+    },
 > extends StateItem<T> {
   private readonly _val: T;
   constructor(id: number, timestamp: Timestamp, value: T) {

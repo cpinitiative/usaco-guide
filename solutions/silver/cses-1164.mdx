@@ -118,9 +118,8 @@ public class RoomAllocation {
 		Arrays.sort(customers, Comparator.comparingInt(c -> c.arrival));
 
 		PriorityQueue<Room> pq = new PriorityQueue<>(
-			// order rooms by departure
-			Comparator.comparingInt(r -> r.departure)
-		);
+		    // order rooms by departure
+		    Comparator.comparingInt(r -> r.departure));
 
 		int k = 0;
 		// the room numbers allocated to each customer
@@ -182,11 +181,11 @@ public class RoomAllocation {
 	// BeginCodeSnip{FastIO}
 	class FastIO extends PrintWriter {
 		private InputStream stream;
-		private byte[] buf = new byte[1<<16];
+		private byte[] buf = new byte[1 << 16];
 		private int curChar, numChars;
 
 		// standard input
-		public FastIO() { this(System.in,System.out); }
+		public FastIO() { this(System.in, System.out); }
 		public FastIO(InputStream i, OutputStream o) {
 			super(o);
 			stream = i;
@@ -204,10 +203,8 @@ public class RoomAllocation {
 				curChar = 0;
 				try {
 					numChars = stream.read(buf);
-				} catch (IOException e) {
-					throw new InputMismatchException();
-				}
-				if (numChars == -1) return -1; // end of file
+				} catch (IOException e) { throw new InputMismatchException(); }
+				if (numChars == -1) return -1;  // end of file
 			}
 			return buf[curChar++];
 		}
@@ -215,19 +212,27 @@ public class RoomAllocation {
 		// to read in entire lines, replace c <= ' '
 		// with a function that checks whether c is a line break
 		public String next() {
-			int c; do { c = nextByte(); } while (c <= ' ');
+			int c;
+			do { c = nextByte(); } while (c <= ' ');
 			StringBuilder res = new StringBuilder();
-			do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+			do {
+				res.appendCodePoint(c);
+				c = nextByte();
+			} while (c > ' ');
 			return res.toString();
 		}
-		public int nextInt() { // nextLong() would be implemented similarly
-			int c; do { c = nextByte(); } while (c <= ' ');
-			int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+		public int nextInt() {  // nextLong() would be implemented similarly
+			int c;
+			do { c = nextByte(); } while (c <= ' ');
+			int sgn = 1;
+			if (c == '-') {
+				sgn = -1;
+				c = nextByte();
+			}
 			int res = 0;
 			do {
-				if (c < '0' || c > '9')
-					throw new InputMismatchException();
-				res = 10*res+c-'0';
+				if (c < '0' || c > '9') throw new InputMismatchException();
+				res = 10 * res + c - '0';
 				c = nextByte();
 			} while (c > ' ');
 			return res * sgn;

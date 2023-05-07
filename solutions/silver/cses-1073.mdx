@@ -67,17 +67,15 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Towers {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int[] cubes = new int[n];
-		for (int i = 0; i < n; i++) {
-			cubes[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cubes[i] = io.nextInt(); }
 
 		// Stores towers in non-decreasing order
 		List<Integer> towers = new ArrayList<>();
@@ -197,17 +195,15 @@ int main() {
 
 <JavaSection>
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Towers {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int[] cubes = new int[n];
-		for (int i = 0; i < n; i++) {
-			cubes[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cubes[i] = io.nextInt(); }
 
 		// Maps tower value to frequency
 		TreeMap<Integer, Integer> towers = new TreeMap<>();
@@ -221,18 +217,14 @@ public class Towers {
 			else {
 				int size = towers.higherKey(cubes[i]);
 				towers.put(size, towers.get(size) - 1);
-				if (towers.get(size) == 0) {
-					towers.remove(size);
-				}
+				if (towers.get(size) == 0) { towers.remove(size); }
 				towers.put(cubes[i], towers.getOrDefault(cubes[i], 0) + 1);
 			}
 		}
 
 		// Calculate total number of towers
 		int ans = 0;
-		for (int i : towers.values()) {
-			ans += i;
-		}
+		for (int i : towers.values()) { ans += i; }
 		io.println(ans);
 		io.close();
 	}

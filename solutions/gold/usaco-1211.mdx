@@ -50,29 +50,23 @@ typedef long long ll;
 
 const int MAX_Y = 10;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 
-ll parent(vector<int>& top, int a){
-	if (top[a] == a) {
-		return a;
-	}
+ll parent(vector<int> &top, int a) {
+	if (top[a] == a) { return a; }
 	return top[a] = parent(top, top[a]);
 }
 
-bool merge(vector<int>& top, vector<int>& sizes, int a, int b){
+bool merge(vector<int> &top, vector<int> &sizes, int a, int b) {
 	a = parent(top, a);
 	b = parent(top, b);
-	if (a == b) {
-		return false;
-	}
-	if (sizes[b] > sizes[a]) {
-		swap(a,b);
-	}
+	if (a == b) { return false; }
+	if (sizes[b] > sizes[a]) { swap(a, b); }
 	top[b] = a;
 	sizes[a] += sizes[b];
 	return true;
 }
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	int n;
@@ -93,7 +87,7 @@ int main() {
 		for (int j = 0; j <= MAX_Y; j++) {
 			if (buffer[j][2] != -1) {
 				ll dist = pow(points[i][0] - buffer[j][0], 2) +
-						pow(points[i][1] - buffer[j][1], 2);
+				          pow(points[i][1] - buffer[j][1], 2);
 				edges.push_back({dist, points[i][2], buffer[j][2]});
 			}
 		}
@@ -104,14 +98,10 @@ int main() {
 	// The following is a standard Kruskal MST algorithm
 	ll ans = 0;
 	vector<int> top(n);
-	vector<int> sizes(n,1);
-	for (int i = 0; i < n; i++) {
-		top[i] = i;
-	}
+	vector<int> sizes(n, 1);
+	for (int i = 0; i < n; i++) { top[i] = i; }
 	for (int i = 0; i < edges.size(); i++) {
-		if (merge(top, sizes, edges[i][1], edges[i][2])) {
-			ans += edges[i][0];
-		}
+		if (merge(top, sizes, edges[i][1], edges[i][2])) { ans += edges[i][0]; }
 	}
 
 	cout << ans << endl;

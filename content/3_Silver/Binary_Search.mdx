@@ -482,19 +482,17 @@ public class MaxMed {
 	static int size;
 	static int maxOps;
 	static int[] arr;
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
 		size = io.nextInt();
 		maxOps = io.nextInt();
 		arr = new int[size];
-		for (int i = 0; i < size; i++) {
-			arr[i] = io.nextInt();
-		}
+		for (int i = 0; i < size; i++) { arr[i] = io.nextInt(); }
 		Arrays.sort(arr);
 
 		// Use 2e9 instead of Integer.MAX_VALUE to avoid overflow
-		io.println(lastTrue(1, (int) 2e9));
+		io.println(lastTrue(1, (int)2e9));
 		io.close();
 	}
 
@@ -512,15 +510,14 @@ public class MaxMed {
 			int mid = lo + (hi - lo + 1) / 2;
 			if (medReachable(mid)) {
 				lo = mid;
-			}
-			else {
+			} else {
 				hi = mid - 1;
 			}
 		}
 		return lo;
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -1055,8 +1052,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Haybales {
 	static int[] bales;
@@ -1065,9 +1062,7 @@ public class Haybales {
 		int baleNum = io.nextInt();
 		int queryNum = io.nextInt();
 		bales = new int[baleNum];
-		for (int i = 0; i < baleNum; i++) {
-			bales[i] = io.nextInt();
-		}
+		for (int i = 0; i < baleNum; i++) { bales[i] = io.nextInt(); }
 		Arrays.sort(bales);
 
 		for (int i = 0; i < queryNum; ++i) {
@@ -1093,7 +1088,7 @@ public class Haybales {
 		return lo;
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -1145,6 +1140,7 @@ for _ in range(query_num):
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 bool binary_search(int x, std::vector<int> &a) {
 	int l = 0;
@@ -1162,8 +1158,10 @@ bool binary_search(int x, std::vector<int> &a) {
 	return false;
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 boolean binary_search(int x, int[] a) {
 	int l = 0;
@@ -1181,8 +1179,10 @@ boolean binary_search(int x, int[] a) {
 	return false;
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 def binary_search(x: int, a: list):
 	l = 0
@@ -1197,6 +1197,7 @@ def binary_search(x: int, a: list):
 			r = m - 1
 	return False
 ```
+
 </PySection>
 </LanguageSection>
 
@@ -1279,6 +1280,7 @@ def binary_search(x: int, a: list):
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
@@ -1292,10 +1294,48 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 	return l;
 }
 ```
+
 </CPPSection>
+<JavaSection>
+
+```java
+public int findMaxTrue(int l, int r, Predicate<Integer> f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f.test(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import Callable
+
+
+def find_max_true(l: int, r: int, f: Callable[[int], int]) -> int:
+	while l < r:
+		m = (l + r) // 2
+		if f(m):
+			l = m
+		else:
+			r = m - 1
+	return l
+```
+
+</PySection>
 </LanguageSection>
 
 <Quiz.Answer>
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l <= r) {  // <= instead of <
@@ -1309,16 +1349,76 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 	return l;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public int findMaxTrue(int l, int r, Predicate<Integer> f) {
+	while (l <= r) {  // <= instead of <
+		int m = (l + r) / 2;
+		if (f.test(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import Callable
+
+
+def find_max_true(l: int, r: int, f: Callable[[int], int]) -> int:
+	while l <= r:  # <= instead of <
+		m = (l + r) // 2
+		if f(m):
+			l = m
+		else:
+			r = m - 1
+	return l
+```
+
+</PySection>
+</LanguageSection>
 <Quiz.Explanation>
  Incorrect. This will still cause an infinite loop. For instance, if for `f` we have
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 bool f(int m) { return m <= 7; }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+Predicate<Integer> f = m -> m <= 7;
+```
+
+</JavaSection>
+<PySection>
+
+```py
+f = lambda m: m <= 7
+```
+
+</PySection>
+</LanguageSection>
 and call `find_max_true(1, 11, f)`, the program will never terminate (it will be stuck at $l = 6, r = 7$).
 </Quiz.Explanation>
 </Quiz.Answer>
 
 <Quiz.Answer>
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
@@ -1332,6 +1432,43 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 	return l;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public int findMaxTrue(int l, int r, Predicate<Integer> f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f.test(m)) {
+			l = m + 1;  // change m to m + 1
+		} else {
+			r = m;  // change m - 1 to m
+		}
+	}
+	return l;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import Callable
+
+
+def find_max_true(l: int, r: int, f: Callable[[int], int]) -> int:
+	while l < r:
+		m = (l + r) // 2
+		if f(m):
+			l = m + 1  # change m to m + 1
+		else:
+			r = m  # change m - 1 to m
+	return l
+```
+
+</PySection>
+</LanguageSection>
 <Quiz.Explanation>
 Incorrect. While this will no longer cause an infinite loop, it will now output the wrong answer (instead of the maximum number that evaluates to true, it will return the minimum number that evaluates to false).
 </Quiz.Explanation>
@@ -1339,6 +1476,9 @@ Incorrect. While this will no longer cause an infinite loop, it will now output 
 
 
 <Quiz.Answer>
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
@@ -1352,6 +1492,43 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 	return l;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public int findMaxTrue(int l, int r, Predicate<Integer> f) {
+	while (l < r) {
+		int m = l + (r - l) / 2;  // change (l + r) / 2
+		if (f.test(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import Callable
+
+
+def find_max_true(l: int, r: int, f: Callable[[int], int]) -> int:
+	while l < r:
+		m = l + (r - l) // 2  # change (l + r) // 2
+		if f(m):
+			l = m
+		else:
+			r = m - 1
+	return l
+```
+
+</PySection>
+</LanguageSection>
 <Quiz.Explanation>
 Incorrect. This is equivalent to the previous statement, except this statement is sometimes used to avoid integer overflow.
 </Quiz.Explanation>
@@ -1359,6 +1536,9 @@ Incorrect. This is equivalent to the previous statement, except this statement i
 
 
 <Quiz.Answer correct>
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 int find_max_true(int l, int r, function<bool(int)> f) {
 	while (l < r) {
@@ -1372,6 +1552,43 @@ int find_max_true(int l, int r, function<bool(int)> f) {
 	return l;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public int findMaxTrue(int l, int r, Predicate<Integer> f) {
+	while (l < r) {
+		int m = (l + r + 1) / 2;  // change (l + r) / 2
+		if (f.test(m)) {
+			l = m;
+		} else {
+			r = m - 1;
+		}
+	}
+	return l;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import Callable
+
+
+def find_max_true(l: int, r: int, f: Callable[[int], int]) -> int:
+	while l < r:
+		m = (l + r + 1) // 2  # change (l + r) / 2
+		if f(m):
+			l = m
+		else:
+			r = m - 1
+	return l
+```
+
+</PySection>
+</LanguageSection>
 <Quiz.Explanation>
         Correct. The reason for an infinite loop is when $r$ is one more than $l$ and `f(l)` evaluates to `true` . $m$ will be defined as $\lfloor \frac {l + r} 2 \rfloor = l$, and will thus evaluate to true, which means that $l$ and $r$ have not changed in the loop. By adding $1$ to the expression, $\lfloor \frac {l + r + 1} 2 \rfloor$ will instead evaluate to $r$ which will break the loop.
 </Quiz.Explanation>

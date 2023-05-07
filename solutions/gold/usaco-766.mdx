@@ -22,7 +22,7 @@ $$
 <CPPSection>
 
 ```cpp
-CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
 const int mx = 1e5 + 1, MOD = 1e9 + 7;
 
@@ -30,8 +30,8 @@ ll dp[mx][3];
 vi adj[mx];
 
 void dfs(int v, int p = 0) {
-	for(const int &e : adj[v]) {
-		if(e != p) {
+	for (const int &e : adj[v]) {
+		if (e != p) {
 			dfs(e, v);
 			dp[v][0] *= dp[e][1] + dp[e][2];
 			dp[v][1] *= dp[e][0] + dp[e][2];
@@ -46,17 +46,20 @@ void dfs(int v, int p = 0) {
 int main() {
 	setIO("barnpainting");
 
-	int n, m; cin >> n >> m;
-	for(int i = 0; i < n - 1; i++) {
-		int a, b; cin >> a >> b;
-		adj[a].pb(b); adj[b].pb(a);
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].pb(b);
+		adj[b].pb(a);
 	}
 
-	for(int i = 1; i <= n; i++)
-		dp[i][0] = 1, dp[i][1] = 1, dp[i][2] = 1;
+	for (int i = 1; i <= n; i++) dp[i][0] = 1, dp[i][1] = 1, dp[i][2] = 1;
 
-	while(m--) {
-		int b, c; cin >> b >> c;
+	while (m--) {
+		int b, c;
+		cin >> b >> c;
 		dp[b][0] = 0;
 		dp[b][1] = 0;
 		dp[b][2] = 0;

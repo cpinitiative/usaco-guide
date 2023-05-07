@@ -17,15 +17,15 @@ height difference between any two cells
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CrossCountrySkiing {
 	static int n, m;
-	static int startI, startJ; // Stores starting position of each floodfill
-	static int[][] course; // Stores the skiing course heights
-	static boolean[][] waypoints; // Stored as booleans instead of 1s and 0s
-	static boolean[][] vis; // Visited array for floodfill
+	static int startI, startJ;     // Stores starting position of each floodfill
+	static int[][] course;         // Stores the skiing course heights
+	static boolean[][] waypoints;  // Stored as booleans instead of 1s and 0s
+	static boolean[][] vis;        // Visited array for floodfill
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("ccski");
@@ -85,17 +85,11 @@ public class CrossCountrySkiing {
 	// prevHeight stores the height of the previous cell
 	static void floodfill(int i, int j, int d, int prevHeight) {
 		// Check if we are out of bounds
-		if (i < 0 || i >= n || j < 0 || j >= m) {
-			return;
-		}
+		if (i < 0 || i >= n || j < 0 || j >= m) { return; }
 		// Check if current position has already been visited
-		if (vis[i][j]) {
-			return;
-		}
+		if (vis[i][j]) { return; }
 		// Check if current position can be visited from previous position
-		if (Math.abs(course[i][j] - prevHeight) > d) {
-			return;
-		}
+		if (Math.abs(course[i][j] - prevHeight) > d) { return; }
 
 		// Mark position as visited if all checks pass
 		vis[i][j] = true;
@@ -116,9 +110,7 @@ public class CrossCountrySkiing {
 		// we know not all waypoints are reachable from one another
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				if (waypoints[i][j] && !vis[i][j]) {
-					return false;
-				}
+				if (waypoints[i][j] && !vis[i][j]) { return false; }
 			}
 		}
 

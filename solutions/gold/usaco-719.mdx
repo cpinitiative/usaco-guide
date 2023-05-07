@@ -23,52 +23,46 @@ We can query these ranges with a sum segment tree by processing all $2n$ points 
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstdio>
-#include <vector>
+#include <iostream>
 #include <map>
+#include <vector>
 
 using std::vector;
 
-//BeginCodeSnip{Segment Tree Implementation}
-template<class T> struct Seg {
+// BeginCodeSnip{Segment Tree Implementation}
+template <class T> struct Seg {
 	int n;
 	const T ID = 0;
 	vector<T> seg;
 
-	T comb(T a, T b) {
-		return a + b;
-	}
+	T comb(T a, T b) { return a + b; }
 
 	void init(int _n) {
 		n = _n;
 		seg.assign(2 * n, ID);
 	}
 
-	void pull(int p) {
-		seg[p] = comb(seg[2 * p], seg[2 * p + 1]);
-	}
+	void pull(int p) { seg[p] = comb(seg[2 * p], seg[2 * p + 1]); }
 
 	// update the value at position p
 	void upd(int p, T val) {
 		seg[p += n] = val;
 
-		for (p /= 2; p; p /= 2) {
-			pull(p);
-		}
+		for (p /= 2; p; p /= 2) { pull(p); }
 	}
 
 	// get the sum on the interval [l, r]
 	T query(int l, int r) {
 		T ra = ID, rb = ID;
 		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-			if (l & 1) ra = comb(ra,seg[l++]);
-			if (r & 1) rb = comb(seg[--r],rb);
+			if (l & 1) ra = comb(ra, seg[l++]);
+			if (r & 1) rb = comb(seg[--r], rb);
 		}
-		return comb(ra,rb);
+		return comb(ra, rb);
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	freopen("circlecross.in", "r", stdin);
@@ -99,7 +93,7 @@ int main() {
 			// record its location
 			starts[loc[i]] = i;
 			start_occ.upd(i, 1);
-		// this cow is ending
+			// this cow is ending
 		} else {
 			// add the number of cows which have started within this range
 			crossing_pairs += start_occ.query(starts[loc[i]] + 1, i - 1);

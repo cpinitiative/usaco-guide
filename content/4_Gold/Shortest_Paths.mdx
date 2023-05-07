@@ -82,7 +82,7 @@ Floyd-Warshall is suitable because of the low $N (N \le 500)$, and the inclusion
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
 ll INF = 1e18;
 
@@ -125,7 +125,6 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
 	// CodeSnip{Kattio}
 
@@ -137,13 +136,12 @@ public class Main {
 		long[][] mat = new long[n][n];
 		long INF = (long)1e18;
 
-		for(long[] row : mat) {
-			Arrays.fill(row, INF);
-		}
+		for (long[] row : mat) { Arrays.fill(row, INF); }
 
 		for (int i = 0; i < m; i++) {
 			int u = io.nextInt(), v = io.nextInt(), w = io.nextInt();
-			u--; v--;
+			u--;
+			v--;
 			if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
 		}
 
@@ -156,7 +154,8 @@ public class Main {
 
 		while (q-- > 0) {
 			int u = io.nextInt(), v = io.nextInt();
-			u--; v--;
+			u--;
+			v--;
 			if (u == v) mat[u][v] = 0;
 			if (mat[u][v] == INF) mat[u][v] = -1;
 			io.println(mat[u][v]);
@@ -168,6 +167,47 @@ public class Main {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+# 1e18 is used instead of float('inf') for performance reasons
+INF = int(1e18)
+
+n, m, q = map(int, input().split())
+
+mat = [[INF] * n for _ in range(n)]
+
+for _ in range(m):
+	u, v, w = map(int, input().split())
+	u, v = u - 1, v - 1
+	if w < mat[u][v]:
+		mat[u][v] = mat[v][u] = w
+
+# Floyd-Warshall algorithm
+for k in range(n):
+	for i in range(n):
+		for j in range(i + 1, n):
+			if mat[i][k] + mat[k][j] < mat[i][j]:
+				mat[i][j] = mat[j][i] = mat[i][k] + mat[k][j]
+
+for _ in range(q):
+	u, v = map(int, input().split())
+	u, v = u - 1, v - 1
+	if u == v:
+		mat[u][v] = 0
+	if mat[u][v] == INF:
+		mat[u][v] = -1
+	print(mat[u][v])
+```
+
+<Warning>
+
+Due to the strict time limits, this Python code recieves a TLE verdict on two test cases.
+
+</Warning>
+
+</PySection>
 
 </LanguageSection>
 
@@ -361,6 +401,41 @@ public class test {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import heapq
+
+N, M = map(int, input().split())
+
+graph = [[] for _ in range(N)]
+dist = [float("inf") for _ in range(N)]
+
+for i in range(M):
+	a, b, c = map(int, input().split())
+	graph[a - 1].append((b - 1, c))
+
+# Dijkstra's algorithm
+pq = []
+heapq.heappush(pq, (0, 0))
+dist[0] = 0  # The shortest path from a node to itself is 0
+while pq:
+	cdist, node = heapq.heappop(pq)
+	if cdist != dist[node]:
+		continue
+	for i in graph[node]:
+		# If we can reach a neighbouring node faster,
+		# we update its minimum distance
+		if cdist + i[1] < dist[i[0]]:
+			dist[i[0]] = cdist + i[1]
+			heapq.heappush(pq, (dist[i[0]], i[0]))
+
+for i in range(N):
+	print(dist[i], end=" ")
+```
+
+</PySection>
 
 </LanguageSection>
 

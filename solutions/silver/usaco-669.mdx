@@ -13,48 +13,45 @@ author: Neo Wang, Óscar Garries, Kevin Sheng
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
-	private:
-		vector<int> parents;
-		vector<int> sizes;
-	public:
-		DSU(int size) : parents(size), sizes(size, 1) {
-			for (int i = 0; i < size; i++) {
-				parents[i] = i;
-			}
-		}
+  private:
+	vector<int> parents;
+	vector<int> sizes;
 
-		int get_top(int n) {
-			return parents[n] == n ? n : (parents[n] = get_top(parents[n]));
-		}
+  public:
+	DSU(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
 
-		bool link(int n1, int n2) {
-			n1 = get_top(n1);
-			n2 = get_top(n2);
-			if (n1 == n2) {
-				return false;
-			}
-			if (sizes[n1] < sizes[n2]) {
-				std::swap(n1, n2);
-			}
-			sizes[n1] += sizes[n2];
-			parents[n2] = n1;
-			return true;
-		}
+	int get_top(int n) {
+		return parents[n] == n ? n : (parents[n] = get_top(parents[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (sizes[n1] < sizes[n2]) { std::swap(n1, n2); }
+		sizes[n1] += sizes[n2];
+		parents[n2] = n1;
+		return true;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
-struct Edge { int a, b, dist; };
+struct Edge {
+	int a, b, dist;
+};
 
 int main() {
 	std::ifstream read("moocast.in");
@@ -65,10 +62,9 @@ int main() {
 	vector<int> x(n);
 	vector<int> y(n);
 
-	for (int i = 0; i < n; i++) {
-		read >> x[i] >> y[i];
-	}
+	for (int i = 0; i < n; i++) { read >> x[i] >> y[i]; }
 
+	// Generate distances between all pairs of cows.
 	vector<Edge> edges;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
@@ -78,18 +74,19 @@ int main() {
 		}
 	}
 
-	auto cmp = [] (const Edge& e1, const Edge& e2) { return e1.dist < e2.dist; };
+	// Sort edges by their distance.
+	auto cmp = [](const Edge &e1, const Edge &e2) { return e1.dist < e2.dist; };
 	std::sort(edges.begin(), edges.end(), cmp);
 
+	// Add edges from the smallest distance to the largest until the graph is
+	// connected. The answer is the last edge added.
 	int last_dist = 0;
 	int comp_num = n;
 	DSU dsu(n);
-	for (const Edge& e : edges) {
+	for (const Edge &e : edges) {
 		if (dsu.link(e.a, e.b)) {
 			last_dist = e.dist;
-			if (--comp_num == 1) {
-				break;
-			}
+			if (--comp_num == 1) { break; }
 		}
 	}
 
@@ -128,6 +125,7 @@ public class MooCast {
 			y[i] = Integer.parseInt(cow.nextToken());
 		}
 
+		// Generate distances between all pairs of cows.
 		List<Edge> edges = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			for (int j = i + 1; j < n; j++) {
@@ -136,17 +134,19 @@ public class MooCast {
 				edges.add(new Edge(i, j, dx * dx + dy * dy));
 			}
 		}
+
+		// Sort edges by their distance.
 		edges.sort(Comparator.comparingInt(e -> e.dist));
 
+		// Add edges from the smallest distance to the largest until the graph
+		// is connected. The answer is the last edge added.
 		int lastDist = 0;
 		int compNum = n;
 		DSU dsu = new DSU(n);
 		for (Edge e : edges) {
 			if (dsu.link(e.a, e.b)) {
 				lastDist = e.dist;
-				if (--compNum == 1) {
-					break;
-				}
+				if (--compNum == 1) { break; }
 			}
 		}
 
@@ -156,7 +156,7 @@ public class MooCast {
 	}
 }
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 class DSU {
 	private final int[] parents;
 	private final int[] sizes;
@@ -177,18 +177,14 @@ class DSU {
 	public boolean link(int e1, int e2) {
 		e1 = getTop(e1);
 		e2 = getTop(e2);
-		if (e1 == e2) {
-			return false;
-		}
-		if (sizes[e2] > sizes[e1]) {
-			return link(e2, e1);
-		}
+		if (e1 == e2) { return false; }
+		if (sizes[e2] > sizes[e1]) { return link(e2, e1); }
 		parents[e2] = e1;
 		sizes[e1] += sizes[e2];
 		return true;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>
@@ -197,7 +193,7 @@ class DSU {
 ```py
 from typing import NamedTuple
 
-#BeginCodeSnip{DSU}
+# BeginCodeSnip{DSU}
 class DSU:
 	def __init__(self, size: int) -> None:
 		self.sizes = [1 for _ in range(size)]
@@ -221,14 +217,18 @@ class DSU:
 		self.sizes[n1] += self.sizes[n2]
 		self.parents[n2] = n1
 		return True
-#EndCodeSnip
+
+
+# EndCodeSnip
+
 
 class Edge(NamedTuple):
 	a: int
 	b: int
 	dist: int
 
-with open('moocast.in') as read:
+
+with open("moocast.in") as read:
 	n = int(read.readline())
 	x = []
 	y = []
@@ -237,14 +237,19 @@ with open('moocast.in') as read:
 		x.append(x_i)
 		y.append(y_i)
 
+# Generate distances between all pairs of cows.
 edges = []
 for i in range(n):
 	for j in range(i + 1, n):
 		dx = x[i] - x[j]
 		dy = y[i] - y[j]
-		edges.append(Edge(i, j, dx ** 2 + dy ** 2))
+		edges.append(Edge(i, j, dx**2 + dy**2))
+
+# Sort edges by their distance.
 edges.sort(key=lambda e: e.dist)
 
+# Add edges from the smallest distance to the largest until the graph is
+# connected. The answer is the last edge added.
 last_dist = 0
 comp_num = n
 dsu = DSU(n)
@@ -255,7 +260,7 @@ for e in edges:
 		if comp_num == 1:
 			break
 
-print(last_dist, file=open('moocast.out', 'w'))
+print(last_dist, file=open("moocast.out", "w"))
 ```
 
 </PySection>
@@ -263,36 +268,50 @@ print(last_dist, file=open('moocast.out', 'w'))
 
 ### Implementation (Binary Search + BFS)
 
+An alternative solution involves using binary search and BFS.
+
+Let's define a function that checks if all cows are reachable spending a maximum of `power` per walkie-talkie.
+This can be accomplished with BFS.
+
+Notice that since this function is monotonic: if all cows are reachable with a certain power level $P$, they will still be reachable with any power level greater than $P$.
+
+Therefore, binary search can be employed to find the minimum value of `power` for which `all_reachable(power)` holds true.
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <vector>
 
 using std::cout;
 using std::endl;
 using std::pair;
+using std::queue;
 using std::vector;
 
+/** @return the squared distance between 2 points */
 int dist_sq(const pair<int, int> &p1, const pair<int, int> &p2) {
 	int dx = p1.first - p2.first;
 	int dy = p1.second - p2.second;
 	return dx * dx + dy * dy;
 }
 
+/** @return if all cows are reachable with the given power level */
 bool all_reachable(int power, const vector<pair<int, int>> &cows) {
 	int start = 0;
-	vector<int> frontier{start};
+	queue<int> frontier;
+	frontier.push(start);
 	vector<bool> reached(cows.size());
 	reached[start] = true;
 	while (!frontier.empty()) {
-		int curr = frontier.back();
-		frontier.pop_back();
+		int curr = frontier.front();
+		frontier.pop();
 		for (int c = 0; c < cows.size(); c++) {
 			if (!reached[c] && dist_sq(cows[curr], cows[c]) <= power) {
-				frontier.push_back(c);
+				frontier.push(c);
 				reached[c] = true;
 			}
 		}
@@ -311,6 +330,7 @@ int main() {
 	vector<pair<int, int>> cows(cow_num);
 	for (pair<int, int> &c : cows) { read >> c.first >> c.second; }
 
+	// Binary search to find the minimum power level needed
 	int lo = 0;
 	int hi = INT32_MAX;
 	int valid = -1;
@@ -346,6 +366,7 @@ public class Moocast {
 			cows[c][1] = Integer.parseInt(cow.nextToken());
 		}
 
+		// Binary search to find the minimum power level needed
 		int lo = 0;
 		int hi = Integer.MAX_VALUE;
 		int valid = -1;
@@ -364,6 +385,7 @@ public class Moocast {
 		written.close();
 	}
 
+	// Function to check if all cows are reachable given a certain power level
 	static boolean allReachable(int power, int[][] cows) {
 		int start = 0;
 		ArrayDeque<Integer> frontier = new ArrayDeque<>();
@@ -386,6 +408,7 @@ public class Moocast {
 		return true;
 	}
 
+	// Function to calculate the squared distance between two points
 	static int distSq(int[] p1, int[] p2) {
 		int dx = p1[0] - p2[0];
 		int dy = p1[1] - p2[1];

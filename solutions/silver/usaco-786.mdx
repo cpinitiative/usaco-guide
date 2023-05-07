@@ -149,7 +149,7 @@ import java.io.*;
 import java.util.*;
 
 public class Lifeguards {
-	//BeginCodeSnip{Event Class}
+	// BeginCodeSnip{Event Class}
 	static class Event implements Comparable<Event> {
 		public int time;
 		public int cowId;
@@ -166,10 +166,11 @@ public class Lifeguards {
 			return time - other.time;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("lifeguards.in"));
+		BufferedReader read =
+		    new BufferedReader(new FileReader("lifeguards.in"));
 
 		int n = Integer.parseInt(read.readLine());
 		Event[] events = new Event[2 * n];
@@ -199,9 +200,7 @@ public class Lifeguards {
 			int currTime = e.time;
 
 			// 1. update total time covered by all the cows
-			if (active.size() > 0) {
-				totalTime += currTime - prevTime;
-			}
+			if (active.size() > 0) { totalTime += currTime - prevTime; }
 
 			// 2. check to see if there's only one cow in [prevTime, currTime]
 			if (active.size() == 1) {
@@ -232,15 +231,17 @@ public class Lifeguards {
 <PySection>
 
 ```py
-#BeginCodeSnip{Event Class}
+# BeginCodeSnip{Event Class}
 class Event:
 	def __init__(self, time: int, cow_id: int, is_start: bool) -> None:
 		self.time = time
 		self.cow_id = cow_id
 		self.is_start = is_start
-#EndCodeSnip
 
-with open('lifeguards.in') as read:
+
+# EndCodeSnip
+
+with open("lifeguards.in") as read:
 	n = int(read.readline())
 	events = []
 	for i in range(n):
@@ -283,7 +284,7 @@ for e in events:
 	# 4. update prev_time
 	prev_time = curr_time
 
-print(total_time - min(alone_time), file=open('lifeguards.out', 'w'))
+print(total_time - min(alone_time), file=open("lifeguards.out", "w"))
 ```
 
 </PySection>

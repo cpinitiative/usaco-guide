@@ -104,9 +104,7 @@ public class FindCentroid {
 		Kattio io = new Kattio();
 		N = io.nextInt();
 		adj = new List[N];
-		for (int i = 0; i < N; i++) {
-			adj[i] = new ArrayList<>();
-		}
+		for (int i = 0; i < N; i++) { adj[i] = new ArrayList<>(); }
 		subSize = new int[N];
 
 		for (int i = 0; i < N - 1; i++) {
@@ -119,16 +117,13 @@ public class FindCentroid {
 		subtreeSize(0, -1);
 		io.println(getCentroid(0, -1) + 1);
 		io.close();
-
 	}
 
 	// Find the size of the subtree under this node.
 	public static int subtreeSize(int node, int par) {
 		int res = 1;
 		for (int next : adj[node]) {
-			if (next == par) {
-				continue;
-			}
+			if (next == par) { continue; }
 			res += subtreeSize(next, node);
 		}
 		return (subSize[node] = res);
@@ -137,17 +132,14 @@ public class FindCentroid {
 	// Find the centroid of the tree (the subtree with <= N/2 nodes)
 	public static int getCentroid(int node, int par) {
 		for (int next : adj[node]) {
-			if (next == par) {
-				continue;
-			}
-			// Keep searching for the centroid if there are subtrees with more than N/2 nodes.
-			if (subSize[next] * 2 > N) {
-				return getCentroid(next, node);
-			}
+			if (next == par) { continue; }
+			// Keep searching for the centroid if there are subtrees with more
+			// than N/2 nodes.
+			if (subSize[next] * 2 > N) { return getCentroid(next, node); }
 		}
 		return node;
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

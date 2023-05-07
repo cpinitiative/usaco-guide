@@ -229,7 +229,8 @@ const ll MOD = 2019201997LL;
 const ll FACTOR1 = 2019201913LL;
 const ll FACTOR2 = 2019201949LL;
 
-/** @return the number of miles cow a and b are willing to walk to see each other */
+/** @return the number of miles cow a and b are willing to walk to see each
+ * other */
 ll calc_length(ll a, ll b) { return (a * FACTOR1 + b * FACTOR2) % MOD; }
 
 /**
@@ -250,9 +251,7 @@ vector<pair<int, int>> calc_sorted_edges(int N) {
 			count[calc_length(i, j) & (MAX_COMP - 1)]++;
 		}
 	}
-	for (int i = 1; i < MAX_COMP; i++) {
-		count[i] += count[i - 1];
-	}
+	for (int i = 1; i < MAX_COMP; i++) { count[i] += count[i - 1]; }
 	for (int i = 1; i <= N; i++) {
 		for (int j = i + 1; j <= N; j++) {
 			pass_1[--count[calc_length(i, j) & (MAX_COMP - 1)]] = {i, j};
@@ -262,13 +261,9 @@ vector<pair<int, int>> calc_sorted_edges(int N) {
 	// second pass of the radix sort on [1 << 16, 1 << 32)
 	count.assign(1 << 16, 0);
 	for (int i = 1; i <= N; i++) {
-		for (int j = i + 1; j <= N; j++) {
-			count[calc_length(i, j) >> 16]++;
-		}
+		for (int j = i + 1; j <= N; j++) { count[calc_length(i, j) >> 16]++; }
 	}
-	for (int i = 1; i < MAX_COMP; i++) {
-		count[i] += count[i - 1];
-	}
+	for (int i = 1; i < MAX_COMP; i++) { count[i] += count[i - 1]; }
 	for (int i = edges_count - 1; i >= 0; i--) {
 		auto &[a, b] = pass_1[i];
 		pass_2[--count[calc_length(a, b) >> 16]] = pass_1[i];
@@ -291,9 +286,7 @@ int main() {
 	DSU dsu(N + 1);
 	for (int i = 0; i < N * (N - 1) / 2; i++) {
 		auto &[a, b] = edges[i];
-		if (dsu.unite(a, b)) {
-			edge_lens.push_back(calc_length(a, b));
-		}
+		if (dsu.unite(a, b)) { edge_lens.push_back(calc_length(a, b)); }
 	}
 
 	cout << edge_lens[N - K] << endl;

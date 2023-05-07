@@ -28,91 +28,67 @@ we can print $\texttt{ans}$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
+#include <iostream>
 #include <vector>
 using namespace std;
 
 const int MAX_N = 2000;
 int parent[MAX_N];
 int compsize[MAX_N];
-struct Edge
-{
+struct Edge {
 	int from, to, weight;
 };
 
 // BeginCodeSnip{Standard DSU operations}
-void init(int n)
-{
-	for (int i = 0; i < n; i++)
-	{
+void init(int n) {
+	for (int i = 0; i < n; i++) {
 		parent[i] = i;
 		compsize[i] = 1;
 	}
 }
 
-int find(int a)
-{
-	if (a == parent[a])
-	{
-		return a;
-	}
+int find(int a) {
+	if (a == parent[a]) { return a; }
 	return parent[a] = find(parent[a]);
 }
 
-bool unite(int a, int b)
-{
+bool unite(int a, int b) {
 	int roota = find(a), rootb = find(b);
-	if (roota == rootb)
-	{
-		return false;
-	}
-	if (compsize[roota] > compsize[rootb])
-	{
-		swap(roota, rootb);
-	}
+	if (roota == rootb) { return false; }
+	if (compsize[roota] > compsize[rootb]) { swap(roota, rootb); }
 	parent[roota] = rootb;
 	compsize[rootb] += compsize[roota];
 	return true;
 }
 // EndCodeSnip
 
-int main()
-{
+int main() {
 	freopen("superbull.in", "r", stdin);
 	freopen("superbull.out", "w", stdout);
 	int n;
 	cin >> n;
 	int ids[MAX_N];
-	for (int i = 0; i < n; i++)
-	{
-		cin >> ids[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> ids[i]; }
 	vector<Edge> edges;
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = i + 1; j < n; j++)
-		{
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
 			edges.push_back({i, j, ids[i] ^ ids[j]});
 		}
 	}
 	init(n);
 	// sort edges in decreasing order of weight
-	sort(edges.begin(), edges.end(), [](Edge a, Edge b){
-		return a.weight > b.weight;
-	});
+	sort(edges.begin(), edges.end(),
+	     [](Edge a, Edge b) { return a.weight > b.weight; });
 	int eliminated = 0;
 	long long ans = 0;
-	for (Edge e : edges)
-	{
-		if (unite(e.from, e.to))
-		{
+	for (Edge e : edges) {
+		if (unite(e.from, e.to)) {
 			eliminated++;
 			ans += e.weight;
 			// if all but 1 team has been eliminated
-			if (eliminated == n - 1)
-			{
+			if (eliminated == n - 1) {
 				cout << ans << endl;
 				return 0;
 			}
@@ -160,9 +136,7 @@ public class Superbull {
 		int N = io.nextInt();
 
 		int[] ids = new int[N];
-		for (int i = 0; i < N; i++) {
-			ids[i] = io.nextInt();
-		}
+		for (int i = 0; i < N; i++) { ids[i] = io.nextInt(); }
 
 		long max_cost = 0;
 		boolean[] visited = new boolean[N];
@@ -173,12 +147,8 @@ public class Superbull {
 
 			// Find an unvisited node with the highest score.
 			for (int j = 0; j < N; j++) {
-				if (visited[j]) {
-					continue;
-				}
-				if (node == -1 || (score[i] > score[node])) {
-					node = j;
-				}
+				if (visited[j]) { continue; }
+				if (node == -1 || (score[i] > score[node])) { node = j; }
 			}
 
 			// Add this node to the MST.
@@ -196,7 +166,6 @@ public class Superbull {
 	}
 	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>

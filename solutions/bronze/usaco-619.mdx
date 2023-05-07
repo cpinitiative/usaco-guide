@@ -120,27 +120,25 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class balancing{
-	public static void main(String[] args) throws IOException{
+public class balancing {
+	public static void main(String[] args) throws IOException {
 
 		// file io
 		balancing.Kattio io = new balancing.Kattio("balancing");
 
 		// input
 
-		int n = io.nextInt(); // cows
+		int n = io.nextInt();  // cows
 
-		int[][] cows = new int[n][2]; // positions of cows
+		int[][] cows = new int[n][2];  // positions of cows
 
-		int[] xvals = new int[n]; // x coordinates of all cows
-		int[] yvals = new int[n]; // y coordinates of all cows
+		int[] xvals = new int[n];  // x coordinates of all cows
+		int[] yvals = new int[n];  // y coordinates of all cows
 
 		// get all values in input
 
-		for(int i = 0; i < n; i++) {
-			for(int j = 0; j < 2; j++) {
-				cows[i][j] = io.nextInt();
-			}
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 2; j++) { cows[i][j] = io.nextInt(); }
 			xvals[i] = cows[i][0];
 			yvals[i] = cows[i][1];
 		}
@@ -148,29 +146,30 @@ public class balancing{
 		ArrayList<Integer> xs = new ArrayList<Integer>();
 		ArrayList<Integer> ys = new ArrayList<Integer>();
 
-		gen_points(xvals, n, xs); // getting important points
+		gen_points(xvals, n, xs);  // getting important points
 		gen_points(yvals, n, ys);
 
-		int opt = n; // max possible answer is n
+		int opt = n;  // max possible answer is n
 
-
-		for(int i = 0; i < xs.size(); i++) {
-			for(int j = 0; j < ys.size(); j++) {
+		for (int i = 0; i < xs.size(); i++) {
+			for (int j = 0; j < ys.size(); j++) {
 				// iterating over all choices for a, b
 				int a = xs.get(i);
 				int b = ys.get(j);
 				int[][] cnt = new int[2][2];
 				// checking each cow
-				for(int cow = 0; cow < n; cow++) {
+				for (int cow = 0; cow < n; cow++) {
 					int p1 = 0, p2 = 0;
-					if(cows[cow][0] < a) p1 = 1;
-					if(cows[cow][1] < b) p2 = 1;
-					if((++cnt[p1][p2]) > opt) { // if it is worse than the optimal answer, break;
+					if (cows[cow][0] < a) p1 = 1;
+					if (cows[cow][1] < b) p2 = 1;
+					if ((++cnt[p1][p2]) > opt) {  // if it is worse than the
+						                          // optimal answer, break;
 						break;
 					}
 				}
 				// update running min
-				opt = Math.min(opt, Math.max(Math.max(cnt[0][0], cnt[0][1]), Math.max(cnt[1][0], cnt[1][1])));
+				opt = Math.min(opt, Math.max(Math.max(cnt[0][0], cnt[0][1]),
+				                             Math.max(cnt[1][0], cnt[1][1])));
 			}
 		}
 
@@ -185,21 +184,22 @@ public class balancing{
 		// 1 -> n
 		// to n/4 -> 3n/4
 
-		int l = n/4; // left bound of search space
-		int r = Math.min((3 * n)/4, n - 1); // right bound, we have to make sure we dont go out of bounds
+		int l = n / 4;                         // left bound of search space
+		int r = Math.min((3 * n) / 4, n - 1);  // right bound, we have to make
+		                                       // sure we dont go out of bounds
 
-		for(int i = l; i <= r; i++) {
+		for (int i = l; i <= r; i++) {
 			// if it is empty, add it
-			if(ret.isEmpty()) {
+			if (ret.isEmpty()) {
 				ret.add(coords[i] + 1);
-			} // if it is not a duplicate, add it
-			else if(ret.get(ret.size() - 1) != coords[i] + 1) {
+			}  // if it is not a duplicate, add it
+			else if (ret.get(ret.size() - 1) != coords[i] + 1) {
 				ret.add(coords[i] + 1);
 			}
 		}
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

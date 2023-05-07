@@ -130,11 +130,11 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Art {
-	//BeginCodeSnip{Color Rectangle Bound Class}
+	// BeginCodeSnip{Color Rectangle Bound Class}
 	static class Bound {
 		public int minR, maxR, minC, maxC;
 		public Bound(int minR, int maxR, int minC, int maxC) {
@@ -144,9 +144,9 @@ public class Art {
 			this.maxC = maxC;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("art.in"));
 
 		int width = Integer.parseInt(read.readLine());
@@ -154,8 +154,8 @@ public class Art {
 		Map<Integer, Bound> visible = new HashMap<>();
 		for (int r = 0; r < width; r++) {
 			canvas[r] = Arrays.stream(read.readLine().split(" "))
-					.mapToInt(Integer::parseInt)
-					.toArray();
+			                .mapToInt(Integer::parseInt)
+			                .toArray();
 			for (int c = 0; c < width; c++) {
 				if (!visible.containsKey(canvas[r][c])) {
 					visible.put(canvas[r][c], new Bound(r, r, c, c));
@@ -170,7 +170,7 @@ public class Art {
 		visible.remove(0);  // 0 isn't a color
 
 		// all the non-visible colors could've been painted first
-		int possFirst = (int) Math.pow(width, 2) - visible.size();
+		int possFirst = (int)Math.pow(width, 2) - visible.size();
 		// handle the edge case where there's only 1 color
 		if (visible.size() > 1) {
 			/*
@@ -189,12 +189,8 @@ public class Art {
 			Set<Integer> validColors = visible.keySet();
 			for (int r = 0; r < width; r++) {
 				for (int c = 0; c < width; c++) {
-					if (r > 0) {
-						rectNum[r][c] += rectNum[r - 1][c];
-					}
-					if (c > 0) {
-						rectNum[r][c] += rectNum[r][c - 1];
-					}
+					if (r > 0) { rectNum[r][c] += rectNum[r - 1][c]; }
+					if (c > 0) { rectNum[r][c] += rectNum[r][c - 1]; }
 					if (r > 0 && c > 0) {
 						rectNum[r][c] -= rectNum[r - 1][c - 1];
 					}
@@ -203,9 +199,7 @@ public class Art {
 					 * if 2 rectangles overlap, the one at the top
 					 * (aka the shown one) can't have been painted first
 					 */
-					if (rectNum[r][c] > 1) {
-						validColors.remove(canvas[r][c]);
-					}
+					if (rectNum[r][c] > 1) { validColors.remove(canvas[r][c]); }
 				}
 			}
 			possFirst += validColors.size();
