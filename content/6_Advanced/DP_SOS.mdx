@@ -34,8 +34,7 @@ The naive solution would be to iterate through every pair of masks and check if 
 <LanguageSection>
 <CPPSection>
 ```cpp
-// number of elements in the list for which you want to find the sum over all
-// subsets
+// number of elements in the list for which you want to find the sum over all subsets
 int n = 20;
 vector<int> a(1 << n);
 vector<int> sos(1 << n);
@@ -58,8 +57,7 @@ This means that the total time complexity is O$\sum_0^n {n \choose k} \cdot 2^{n
 <LanguageSection>
 <CPPSection>
 ```cpp
-// number of elements in the list for which you want to find the sum over all
-// subsets
+// number of elements in the list for which you want to find the sum over all subsets
 int n = 20;
 vector<int> a(1 << n);
 vector<int> sos(1 << n);
@@ -94,11 +92,14 @@ $\texttt{SOS}(mask, x) = \left\{
 <LanguageSection>
 <CPPSection>
 ```cpp
-// number of elements in the list for which you want to find the sum over all
-// subsets
+// number of elements in the list for which you want to find the sum over all subsets
 int n = 20;
+// the list for which you want to find the sum over all subsets
 vector<int> a(1 << n);
+// dp array that keeps track of the sum over subsets
+// with a certain amount of matching bits in the prefix
 vector<vector<int>> dp(1 << n, vector<int>(n));
+// answer for sum over subsets of each subset
 vector<int> sos(1 << n);
 for (int mask = 0; mask < (1 << n); mask++) {
 	dp[mask][-1] = a[mask];
