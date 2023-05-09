@@ -9,10 +9,11 @@ author: Jeffrey Zhang
 
 ## Explanation
 
-Let's first observe that the *order of the words* beside the last word in each line is independent from the *order of the lines* in the poetry, so we can separate this problem into two distinct parts.
+Observe that the order of the words beside the last word in each line is independent from the order of the lines.
+Because of this, we can separate this problem into two parts:
 
-1. Define $f(i)$ that calculates the number of ways selected words can be arranged in a line that ends with a certain rhyme class $c_i$
-2. Calculate the actual answer by figuring out different ways to map rhyme class $c$ to rhyme scheme $e$
+1. Calculate $f(i)$, which we'll define as the number of ways selected words can be arranged in a line that ends with a certain rhyme class $c_i$
+2. Get the actual answer by figuring out different ways to map rhyme class $c$ to rhyme scheme $e$
 
 Let's go through these steps with the sample test case: here it is again for reference.
 
@@ -58,9 +59,9 @@ Notice that given any rhyme scheme, the final answer they produce is equivalent 
 This is true because the combinations that one line can have doesn't affect any other line.
 
 So, to make our calculations easier, we can sort the rhyme scheme, count the number of lines that have the same type, and put them in a set (let's call that set $q$).
-In our example $q = [2, 1]$.
+In our example, $q = [2, 1]$.
 
-To calculate our final answer, we just need to find the sum of this polynomial right here.
+To calculate our final answer, we just need to find the sum of this polynomial below.
 To keep it simple, let's just assume total number of rhyme classes is $2$.
 
 $$
@@ -69,7 +70,7 @@ $$
 
 But this polynomial is pretty darn awful, and the number of terms in it grows much faster than the number of rhyme classes.
 
-To solve this, we have to notice that this polynomial is actually symmetrical, and we can instead express the expression as products of power series
+To solve this, we have to notice that this polynomial is actually symmetrical, and we can instead express the expression as products of power series:
 
 $$
 (f(1)^{p_1} + f(2)^{p_1})(f(1)^{p_2} + f(2)^{p_2}) \cdots (f(1)^{p_k} + f(2)^{p_k})
