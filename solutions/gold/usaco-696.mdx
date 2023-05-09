@@ -106,31 +106,37 @@ public class PromotionCounting {
 #include <bits/stdc++.h>
 using namespace std;
 const int mx = 1e5 + 1;
-int n, t = 0, out[mx], in[mx], bit[mx], ans[mx];
+int n, t = 0, out[mx], in[mx];
 vector<int> adj[mx];
 
-int sum(int i) {
-	int res = 0;
-	i++;
-	while (i > 0) {
-		res += bit[i];
-		i -= i & -i;
+struct BIT {
+	vector<int> bit;
+	int n;
+	BIT(int n) : n(n + 1), bit(n + 1) {}
+	int sum(int r) {
+		r++;
+		int ret = 0;
+		while (r > 0) {
+			ret += bit[r];
+			r -= r & -r;
+		}
+		return ret;
 	}
-	return res;
-}
 
-void update(int i, int v) {
-	i++;
-	while (i <= n) {
-		bit[i] += v;
-		i += i & -i;
+	void update(int idx, int v) {
+		idx++;
+		while (idx < n) {
+			bit[idx] += v;
+			idx += idx & -idx;
+		}
 	}
-}
+};
 
 void dfs(int cur, int prev) {
 	in[cur] = t;
-	for (int nxt : adj[cur])
+	for (int nxt : adj[cur]) {
 		if (nxt != prev) dfs(nxt, cur);
+	}
 	out[cur] = t++;
 }
 
@@ -153,16 +159,18 @@ int main() {
 
 	dfs(0, -1);
 	sort(a.rbegin(), a.rend());
+	vector<int> ans(n+1);
+	BIT bit(n);
 
 	for (int i = 0; i < n;) {
 		int r = i;
 
 		while (r < n && a[i].first == a[r].first) {
-			ans[a[r].second] = sum(out[a[r].second]) - sum(in[a[r].second] - 1);
+			ans[a[r].second] = bit.sum(out[a[r].second]) - bit.sum(in[a[r].second] - 1);
 			r++;
 		}
 
-		for (int j = i; j < r; j++) update(out[a[j].second], 1);
+		for (int j = i; j < r; j++) bit.update(out[a[j].second], 1);
 
 		i = r;
 	}
