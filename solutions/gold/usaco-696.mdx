@@ -106,8 +106,8 @@ public class PromotionCounting {
 #include <bits/stdc++.h>
 using namespace std;
 const int mx = 1e5 + 1;
-int n, t = 0, out[mx], in[mx];
-vector<int> adj[mx];
+int n, t = 0;
+vector<int> adj[mx], out(mx), in(mx);
 
 struct BIT {
 	vector<int> bit;
@@ -135,7 +135,9 @@ struct BIT {
 void dfs(int cur, int prev) {
 	in[cur] = t;
 	for (int nxt : adj[cur]) {
-		if (nxt != prev) dfs(nxt, cur);
+		if (nxt != prev) {
+			dfs(nxt, cur);
+		}
 	}
 	out[cur] = t++;
 }
