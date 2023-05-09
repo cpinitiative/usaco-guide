@@ -99,73 +99,75 @@ public class PromotionCounting {
 }
 ```
 </JavaSection>
-	
+
 <CPPSection>
-	
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int mx = 1e5+1;
+const int mx = 1e5 + 1;
 int n, t = 0, out[mx], in[mx], bit[mx], ans[mx];
 vector<int> adj[mx];
 
 int sum(int i) {
-    int res = 0;
-    i++;
-    while (i > 0) {
-        res += bit[i];
-        i -= i & -i;
-    }
-    return res;
+	int res = 0;
+	i++;
+	while (i > 0) {
+		res += bit[i];
+		i -= i & -i;
+	}
+	return res;
 }
 
 void update(int i, int v) {
-    i++;
-    while (i <= n) {
-        bit[i] += v;
-        i += i & -i;
-    }
+	i++;
+	while (i <= n) {
+		bit[i] += v;
+		i += i & -i;
+	}
 }
 
 void dfs(int cur, int prev) {
-    in[cur] = t;
-    for (int nxt: adj[cur]) if (nxt != prev) dfs(nxt, cur);
-    out[cur] = t++;
+	in[cur] = t;
+	for (int nxt : adj[cur])
+		if (nxt != prev) dfs(nxt, cur);
+	out[cur] = t++;
 }
 
 int main() {
-    freopen("promote.in", "r", stdin);
-    freopen("promote.out", "w", stdout);
-    cin >> n;
-    vector<pair<int, int>> a(n);
+	freopen("promote.in", "r", stdin);
+	freopen("promote.out", "w", stdout);
+	cin >> n;
+	vector<pair<int, int>> a(n);
 
-    for (int i=0; i<n; i++) {
-        cin >> a[i].first;
-        a[i].second = i;
-    }
+	for (int i = 0; i < n; i++) {
+		cin >> a[i].first;
+		a[i].second = i;
+	}
 
-    for (int i=1; i<n; i++) {
-        int p; cin >> p;
-        adj[--p].push_back(i);
-    }
+	for (int i = 1; i < n; i++) {
+		int p;
+		cin >> p;
+		adj[--p].push_back(i);
+	}
 
-    dfs(0, -1);
-    sort(a.rbegin(), a.rend());
+	dfs(0, -1);
+	sort(a.rbegin(), a.rend());
 
-    for (int i=0; i<n;) {
-        int r = i;
+	for (int i = 0; i < n;) {
+		int r = i;
 
-        while (r < n && a[i].first == a[r].first) {
-            ans[a[r].second] = sum(out[a[r].second]) - sum(in[a[r].second] - 1);
-            r++;
-        }
+		while (r < n && a[i].first == a[r].first) {
+			ans[a[r].second] = sum(out[a[r].second]) - sum(in[a[r].second] - 1);
+			r++;
+		}
 
-        for (int j=i; j<r; j++) update(out[a[j].second], 1);
+		for (int j = i; j < r; j++) update(out[a[j].second], 1);
 
-        i = r;
-    }
+		i = r;
+	}
 
-    for (int i=0; i<n; i++) cout << ans[i] << endl;
+	for (int i = 0; i < n; i++) cout << ans[i] << endl;
 }
 ```
 </CPPSection>
@@ -297,4 +299,3 @@ Add Centroid Decomp/HLD Solution
 Sort nodes from largest to smallest value, do path updates from itself the root.
 
 </IncompleteSection>
-
