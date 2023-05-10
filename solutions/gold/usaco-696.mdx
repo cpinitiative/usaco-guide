@@ -111,7 +111,7 @@ const int mx = 1e5 + 1;
 int n, t = 0;
 vector<int> adj[mx], out(mx), in(mx);
 
-//BeginCodeSnip{BIT}
+// BeginCodeSnip{BIT}
 struct BIT {
 	vector<int> bit;
 	int n;
@@ -136,14 +136,12 @@ struct BIT {
 		}
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 void dfs(int cur, int prev) {
 	in[cur] = t;
 	for (int nxt : adj[cur]) {
-		if (nxt != prev) {
-			dfs(nxt, cur);
-		}
+		if (nxt != prev) { dfs(nxt, cur); }
 	}
 	out[cur] = t++;
 }
@@ -166,13 +164,14 @@ int main() {
 
 	dfs(0, -1);
 	sort(a.rbegin(), a.rend());
-	vector<int> ans(n+1);
+	vector<int> ans(n + 1);
 	BIT bit(n);
 	for (int i = 0; i < n;) {
 		int r = i;
 
 		while (r < n && a[i].first == a[r].first) {
-			ans[a[r].second] = bit.sum(out[a[r].second]) - bit.sum(in[a[r].second] - 1);
+			ans[a[r].second] =
+			    bit.sum(out[a[r].second]) - bit.sum(in[a[r].second] - 1);
 			r++;
 		}
 
