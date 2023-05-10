@@ -219,8 +219,6 @@ class DSU:
 		self.sizes[n1] += self.sizes[n2]
 		self.parents[n2] = n1
 		return True
-
-
 # EndCodeSnip
 
 
@@ -412,7 +410,7 @@ public class Moocast {
 		return true;
 	}
 
-	// Function to calculate the squared distance between two points
+	/** @return the squared distance between two points */
 	static int distSq(int[] p1, int[] p2) {
 		int dx = p1[0] - p2[0];
 		int dy = p1[1] - p2[1];
@@ -435,7 +433,7 @@ public class Moocast {
 #include <bits/stdc++.h>
 using namespace std;
 
-int d2(pair<int, int> &a, pair<int, int> &b) {
+int dist_sq(pair<int, int> &a, pair<int, int> &b) {
 	int dx = a.first - b.first;
 	int dy = a.second - b.second;
 	return dx * dx + dy * dy;
@@ -443,12 +441,13 @@ int d2(pair<int, int> &a, pair<int, int> &b) {
 
 int main() {
 	freopen("moocast.in", "r", stdin);
-	freopen("moocast.out", "w", stdout);
 
 	int N;
 	cin >> N;
 	vector<pair<int, int>> cows(N);
-	for (auto &[x, y] : cows) cin >> x >> y;
+	for (auto &[x, y] : cows) {
+		cin >> x >> y;
+	}
 
 	vector<int> dist(N, INT_MAX - 1);
 	dist[0] = 0;
@@ -459,11 +458,13 @@ int main() {
 		dist[i] = INT_MAX;
 		for (int j = 0; j < N; j++) {
 			if (dist[j] != INT_MAX) {
-				dist[j] = min(dist[j], d2(cows[i], cows[j]));
+				dist[j] = min(dist[j], dist_sq(cows[i], cows[j]));
 			}
 		}
 	}
-	cout << m << '\n';
+
+	freopen("moocast.out", "w", stdout);
+	cout << m << endl;
 }
 ```
 
@@ -474,8 +475,8 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
-	static int d2(int[] a, int[] b) {
+public class MooCast {
+	static int distSq(int[] a, int[] b) {
 		int dx = a[0] - b[0];
 		int dy = a[1] - b[1];
 		return dx * dx + dy * dy;
@@ -495,8 +496,6 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new FileReader("moocast.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
-
 		StringTokenizer st = new StringTokenizer(r.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int[][] cows = new int[N][2];
@@ -515,10 +514,12 @@ public class Main {
 			dist[i] = Integer.MAX_VALUE;
 			for (int j = 0; j < N; j++) {
 				if (dist[j] != Integer.MAX_VALUE) {
-					dist[j] = Math.min(dist[j], d2(cows[i], cows[j]));
+					dist[j] = Math.min(dist[j], distSq(cows[i], cows[j]));
 				}
 			}
 		}
+
+		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
 		pw.println(m);
 		pw.close();
 	}
@@ -529,7 +530,7 @@ public class Main {
 <PySection>
 
 ```py
-def d2(a, b):
+def dist_sq(a, b):
 	return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
 
 
@@ -545,7 +546,7 @@ for t in range(N):
 	m = max(m, dist[i])
 	del dist[i]
 	for j in dist:
-		dist[j] = min(dist[j], d2(i, j))
+		dist[j] = min(dist[j], dist_sq(i, j))
 
 print(m, file=open("moocast.out", "w"))
 ```
