@@ -435,35 +435,34 @@ public class Moocast {
 #include <bits/stdc++.h>
 using namespace std;
 
-int d2(pair<int, int>& a, pair<int, int>& b) {
-    int dx = a.first - b.first;
-    int dy = a.second - b.second;
-    return dx * dx + dy * dy;
+int d2(pair<int, int> &a, pair<int, int> &b) {
+	int dx = a.first - b.first;
+	int dy = a.second - b.second;
+	return dx * dx + dy * dy;
 }
 int main() {
-    freopen("moocast.in", "r", stdin);
-    freopen("moocast.out", "w", stdout);
+	freopen("moocast.in", "r", stdin);
+	freopen("moocast.out", "w", stdout);
 
-    int N;
-    cin >> N;
-    vector<pair<int, int>> cows(N);
-    for (auto& [x, y] : cows)
-        cin >> x >> y;
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (auto &[x, y] : cows) cin >> x >> y;
 
-    vector<int> dist(N, INT_MAX - 1);
-    dist[0] = 0;
-    int m = 0;
-    for (int t = 0; t < N; t++) {
-        int i = min_element(dist.begin(), dist.end()) - dist.begin();
-        m = max(m, dist[i]);
-        dist[i] = INT_MAX;
-        for (int j = 0; j < N; j++) {
-            if (dist[j] != INT_MAX) {
-                dist[j] = min(dist[j], d2(cows[i], cows[j]));
-            }
-        }
-    }
-    cout << m << '\n';
+	vector<int> dist(N, INT_MAX - 1);
+	dist[0] = 0;
+	int m = 0;
+	for (int t = 0; t < N; t++) {
+		int i = min_element(dist.begin(), dist.end()) - dist.begin();
+		m = max(m, dist[i]);
+		dist[i] = INT_MAX;
+		for (int j = 0; j < N; j++) {
+			if (dist[j] != INT_MAX) {
+				dist[j] = min(dist[j], d2(cows[i], cows[j]));
+			}
+		}
+	}
+	cout << m << '\n';
 }
 ```
 
@@ -475,50 +474,48 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int d2(int[] a, int[] b) {
-        int dx = a[0] - b[0];
-        int dy = a[1] - b[1];
-        return dx * dx + dy * dy;
-    }
-    static int minIndex(int[] a) {
-        int m = a[0];
-        int j = 0;
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < m) {
-                m = a[i];
-                j = i;
-            }
-        }
-        return j;
-    }
+	static int d2(int[] a, int[] b) {
+		int dx = a[0] - b[0];
+		int dy = a[1] - b[1];
+		return dx * dx + dy * dy;
+	}
+	static int minIndex(int[] a) {
+		int m = a[0];
+		int j = 0;
+		for (int i = 1; i < a.length; i++) {
+			if (a[i] < m) {
+				m = a[i];
+				j = i;
+			}
+		}
+		return j;
+	}
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new FileReader("moocast.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
 
 		StringTokenizer st = new StringTokenizer(r.readLine());
 		int N = Integer.parseInt(st.nextToken());
-        int[][] cows = new int[N][2];
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(r.readLine());
-            cows[i][0] = Integer.parseInt(st.nextToken());
-            cows[i][1] = Integer.parseInt(st.nextToken());
-        }
-        int[] dist = new int[N];
-        for (int i = 1; i < N; i++) {
-            dist[i] = Integer.MAX_VALUE - 1;
-        }
-        int m = 0;
-        for (int t = 0; t < N; t++) {
-            int i = minIndex(dist);
-            m = Math.max(m, dist[i]);
-            dist[i] = Integer.MAX_VALUE;
-            for (int j = 0; j < N; j++) {
-                if (dist[j] != Integer.MAX_VALUE) {
-                    dist[j] = Math.min(dist[j], d2(cows[i], cows[j]));
-                }
-            }
-        }
-        pw.println(m);
+		int[][] cows = new int[N][2];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(r.readLine());
+			cows[i][0] = Integer.parseInt(st.nextToken());
+			cows[i][1] = Integer.parseInt(st.nextToken());
+		}
+		int[] dist = new int[N];
+		for (int i = 1; i < N; i++) { dist[i] = Integer.MAX_VALUE - 1; }
+		int m = 0;
+		for (int t = 0; t < N; t++) {
+			int i = minIndex(dist);
+			m = Math.max(m, dist[i]);
+			dist[i] = Integer.MAX_VALUE;
+			for (int j = 0; j < N; j++) {
+				if (dist[j] != Integer.MAX_VALUE) {
+					dist[j] = Math.min(dist[j], d2(cows[i], cows[j]));
+				}
+			}
+		}
+		pw.println(m);
 		pw.close();
 	}
 }
@@ -530,21 +527,21 @@ public class Main {
 ```py
 import sys
 
-sys.stdin = open('moocast.in', 'r')
-sys.stdout = open('moocast.out', 'w')
+sys.stdin = open("moocast.in", "r")
+sys.stdout = open("moocast.out", "w")
 
 N = int(input())
 d2 = lambda a, b: (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
 cows = [tuple(map(int, input().split())) for _ in range(N)]
-dist = {c: float('inf') for c in cows}
+dist = {c: float("inf") for c in cows}
 dist[cows[0]] = 0
 m = 0
 for t in range(N):
-    i = min(dist, key=dist.__getitem__)
-    m = max(m, dist[i])
-    del dist[i]
-    for j in dist:
-        dist[j] = min(dist[j], d2(i, j))
+	i = min(dist, key=dist.__getitem__)
+	m = max(m, dist[i])
+	del dist[i]
+	for j in dist:
+		dist[j] = min(dist[j], d2(i, j))
 
 print(m)
 ```
