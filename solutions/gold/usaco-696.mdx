@@ -12,6 +12,7 @@ author: Benjamin Qi, Timothy Gao, William Yuan
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 Recall from the [Euler tour module](/gold/tree-euler) that each subtree is represented as a contiguous interval in its Euler tour. With this knowledge, we can compress the tree into an array. Now, the problem is reduced the following: for each node $i$, we need to determine the number of elements that are less than $\texttt{tour}[i]$ from $i$ to $\texttt{tout}[i]$, where $\texttt{tout}[i]$ is the end of the subtree interval for node $i$. By processing the nodes in decreasing order, this is a problem we can solve in $\mathcal{O}(N \log N)$ time with a binary-indexed tree.
+
 <LanguageSection>
 <JavaSection>
 
@@ -98,17 +99,19 @@ public class PromotionCounting {
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 const int mx = 1e5 + 1;
 int n, t = 0;
 vector<int> adj[mx], out(mx), in(mx);
 
+//BeginCodeSnip{BIT}
 struct BIT {
 	vector<int> bit;
 	int n;
@@ -131,6 +134,7 @@ struct BIT {
 		}
 	}
 };
+//EndCodeSnip
 
 void dfs(int cur, int prev) {
 	in[cur] = t;
@@ -144,7 +148,6 @@ void dfs(int cur, int prev) {
 
 int main() {
 	freopen("promote.in", "r", stdin);
-	freopen("promote.out", "w", stdout);
 	cin >> n;
 	vector<pair<int, int>> a(n);
 
@@ -163,7 +166,6 @@ int main() {
 	sort(a.rbegin(), a.rend());
 	vector<int> ans(n+1);
 	BIT bit(n);
-
 	for (int i = 0; i < n;) {
 		int r = i;
 
@@ -177,20 +179,21 @@ int main() {
 		i = r;
 	}
 
-	for (int i = 0; i < n; i++) cout << ans[i] << endl;
+	freopen("promote.out", "w", stdout);
+	for (int i = 0; i < n; i++) cout << ans[i] << '\n';
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
-
-## Solution 2: ## Merging Indexed Sets
+## Solution 2 (Merging Indexed Sets)
 
 **Time Complexity:** $\mathcal{O}(N\log ^2N)$
 
-
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
@@ -238,6 +241,7 @@ int main() {
 	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
@@ -298,9 +302,9 @@ int main() {
 	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
 }
 ```
+
 </CPPSection>
 </LanguageSection>
-
 
 <IncompleteSection>
 
