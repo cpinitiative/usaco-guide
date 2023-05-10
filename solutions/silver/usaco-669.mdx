@@ -270,7 +270,7 @@ print(last_dist, file=open("moocast.out", "w"))
 
 ### Implementation (Binary Search + BFS)
 
-**Time Complexity:** $\mathcal{O}(N^2 \log(2 \cdot 25000^2))$
+**Time Complexity:** $\mathcal{O}(N^2 \log(\text{hi}))$, where $\text{hi} \ge 2 \cdot 25000^2$
 
 An alternative solution involves using binary search and BFS.
 
@@ -336,7 +336,7 @@ int main() {
 
 	// Binary search to find the minimum power level needed
 	int lo = 0;
-	int hi = 2 * 25000 * 25000;
+	int hi = INT_MAX;
 	int valid = -1;
 	while (lo <= hi) {
 		int mid = lo + (hi - lo) / 2;
@@ -372,7 +372,7 @@ public class Moocast {
 
 		// Binary search to find the minimum power level needed
 		int lo = 0;
-		int hi = 2 * 25000 * 25000;
+		int hi = Integer.MAX_VALUE;
 		int valid = -1;
 		while (lo <= hi) {
 			int mid = lo + (hi - lo) / 2;
@@ -440,6 +440,7 @@ int d2(pair<int, int> &a, pair<int, int> &b) {
 	int dy = a.second - b.second;
 	return dx * dx + dy * dy;
 }
+
 int main() {
 	freopen("moocast.in", "r", stdin);
 	freopen("moocast.out", "w", stdout);
@@ -479,6 +480,7 @@ public class Main {
 		int dy = a[1] - b[1];
 		return dx * dx + dy * dy;
 	}
+	
 	static int minIndex(int[] a) {
 		int m = a[0];
 		int j = 0;
@@ -490,6 +492,7 @@ public class Main {
 		}
 		return j;
 	}
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new FileReader("moocast.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
@@ -502,6 +505,7 @@ public class Main {
 			cows[i][0] = Integer.parseInt(st.nextToken());
 			cows[i][1] = Integer.parseInt(st.nextToken());
 		}
+
 		int[] dist = new int[N];
 		for (int i = 1; i < N; i++) { dist[i] = Integer.MAX_VALUE - 1; }
 		int m = 0;
@@ -525,14 +529,13 @@ public class Main {
 <PySection>
 
 ```py
-import sys
+def d2(a, b):
+	return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
 
-sys.stdin = open("moocast.in", "r")
-sys.stdout = open("moocast.out", "w")
+with open("moocast.in", "r") as stdin:
+	N = int(stdin.readline())
+	cows = [tuple(map(int, stdin.readline().strip().split())) for _ in range(N)]
 
-N = int(input())
-d2 = lambda a, b: (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
-cows = [tuple(map(int, input().split())) for _ in range(N)]
 dist = {c: float("inf") for c in cows}
 dist[cows[0]] = 0
 m = 0
@@ -543,7 +546,7 @@ for t in range(N):
 	for j in dist:
 		dist[j] = min(dist[j], d2(i, j))
 
-print(m)
+print(m, file=open("moocast.out", "w"))
 ```
 
 </PySection>
