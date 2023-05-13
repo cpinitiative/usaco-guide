@@ -74,7 +74,7 @@ public class swap {
 	public static void main(String[] args) throws IOException {
 		// reading in input
 		BufferedReader br =
-			new BufferedReader(new FileReader(new File("swap.in")));
+		    new BufferedReader(new FileReader(new File("swap.in")));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
@@ -148,17 +148,16 @@ Given that the cows just end up going around in cycles throughout all these swap
 ```cpp
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include <set>
 #include <numeric>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 /** Reverses a given vector from the interval [start, end] in-place. */
-template <typename T>
-void reverse_segment(vector<T>& vec, int start, int end) {
+template <typename T> void reverse_segment(vector<T> &vec, int start, int end) {
 	while (start < end) {
 		T temp = vec[start];
 		vec[start] = vec[end];
@@ -185,9 +184,7 @@ int main() {
 	while (true) {
 		reverse_segment(cows, a1 - 1, a2 - 1);
 		reverse_segment(cows, b1 - 1, b2 - 1);
-		if (visited.count(cows)) {
-			break;
-		}
+		if (visited.count(cows)) { break; }
 		visited.insert(cows);
 	}
 
@@ -199,9 +196,7 @@ int main() {
 	}
 
 	std::ofstream written("swap.out");
-	for (int c : cows) {
-		written << c << '\n';
-	}
+	for (int c : cows) { written << c << '\n'; }
 }
 ```
 
@@ -218,29 +213,25 @@ public class Swap {
 		StringTokenizer st = new StringTokenizer(read.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
-		
+
 		st = new StringTokenizer(read.readLine());
 		int a1 = Integer.parseInt(st.nextToken()) - 1;
 		int a2 = Integer.parseInt(st.nextToken()) - 1;
-		
+
 		st = new StringTokenizer(read.readLine());
 		int b1 = Integer.parseInt(st.nextToken()) - 1;
 		int b2 = Integer.parseInt(st.nextToken()) - 1;
 		read.close();
 
 		List<Integer> cows = new ArrayList<>();
-		for (int c = 1; c <= n; c++) {
-			cows.add(c);
-		}
+		for (int c = 1; c <= n; c++) { cows.add(c); }
 
 		Set<List<Integer>> visited = new HashSet<>();
 		visited.add(new ArrayList<>(cows));
 		while (true) {
 			reverseSegment(cows, a1, a2);
 			reverseSegment(cows, b1, b2);
-			if (visited.contains(cows)) {
-				break;
-			}
+			if (visited.contains(cows)) { break; }
 			visited.add(new ArrayList<>(cows));
 		}
 
@@ -252,9 +243,7 @@ public class Swap {
 		}
 
 		PrintWriter written = new PrintWriter("swap.out");
-		for (int c : cows) {
-			written.println(c);
-		}
+		for (int c : cows) { written.println(c); }
 		written.close();
 	}
 
