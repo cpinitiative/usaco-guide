@@ -11,26 +11,26 @@ See the [official editorial](https://codeforces.com/blog/entry/51163).
 
 ## Solution 2 - Divide and Conquer
 
-Define a function $f(k)$ that is the answer to query $k$. $f$ can be trivially implemented with an $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$ time complexity. 
+Define a function $f(k)$ that is the answer to query $k$. $f$ can be trivially implemented with an $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$ time complexity.
 
-**Lemma 1:** Consider some query $k$. For all $i < k$, $f(i) \geq f(k)$. For all $i > k$, $f(i) \leq f(k)$. 
+**Lemma 1:** Consider some query $k$. For all $i < k$, $f(i) \geq f(k)$. For all $i > k$, $f(i) \leq f(k)$.
 
 **Proof:** It turns out that proving just one of these statements proves the other (consider swapping $i$ and $k$). We will prove the second statement. If $v = f(k)$, then a solution for all $i > k$ with value $v$ can be constructed with the same intervals as $f(k)$. Note that this does not imply that $v$ is the value for $f(i)$, just that $f(i)$ has a lower bound of $v$. $\blacksquare$
 
-Consider queries ranging from $l$ to $r$, such that the answer to these queries lie in some range $[v_l, v_r]$. If $v_l = v_r$, then the answers for all queries in the range can be trivially assigned. Otherwise, for $m = \frac {l + r} 2$, compute the answer $f(m)$ in subquadratic time, and let this value be $v$. By definition, $v \in [v_l, v_r]$. From Lemma 1, we know that queries in the range of $[l, m)$ must have answers in the range $[v_l, v_m]$, and queries in the range of $(m, r]$ must have answers in the range $[v_m, v_r]$. This leads to a divide and conquer solution. 
+Consider queries ranging from $l$ to $r$, such that the answer to these queries lie in some range $[v_l, v_r]$. If $v_l = v_r$, then the answers for all queries in the range can be trivially assigned. Otherwise, for $m = \frac {l + r} 2$, compute the answer $f(m)$ in subquadratic time, and let this value be $v$. By definition, $v \in [v_l, v_r]$. From Lemma 1, we know that queries in the range of $[l, m)$ must have answers in the range $[v_l, v_m]$, and queries in the range of $(m, r]$ must have answers in the range $[v_m, v_r]$. This leads to a divide and conquer solution.
 
-The following lemma will allow us to prove that this run in time. 
+The following lemma will allow us to prove that this run in time.
 
 **Lemma 2:** If a function $f(k)$ has a domain $[0, n]$, such that $0 \leq f(k) \leq \lceil \frac n k  \rceil$, then there is at most $\mathcal{O}(\sqrt{n})$ distinct values that $f$ takes on over its domain.
 
 **Proof:** For $k \in [0, \sqrt{n}]$, $f(k)$ takes on at most $\sqrt{n}+ 1$ values. For all other $k > \sqrt{n}$, note that $f(k) \leq \frac n {\sqrt{n}} = \sqrt{n}$. Since both these cases are bounded by $\mathcal{O}(\sqrt{n})$ distinct values, there is a total of $\mathcal{O}(\sqrt{n})$. $\blacksquare$
 
-Fortunately for us, the function $f$ does satisfy this property (consider the case where all colors are distinct — Each segment has exactly $k$ elements, for a total of $\lceil \frac n k \rceil$ segments). Recall that in the solution, if $v_l = v_r$, we can simply manually assign the answers for the range. By Lemma 2, we know that $f$ achieves $\mathcal{O}(\sqrt{n})$ values. Combining Lemma 1 and Lemma 2, we see that all value which are equivalent must lie in a contiguous range within the array. Thus, this assignment step is performed $\mathcal{O}(\sqrt{n})$ times. 
+Fortunately for us, the function $f$ does satisfy this property (consider the case where all colors are distinct — Each segment has exactly $k$ elements, for a total of $\lceil \frac n k \rceil$ segments). Recall that in the solution, if $v_l = v_r$, we can simply manually assign the answers for the range. By Lemma 2, we know that $f$ achieves $\mathcal{O}(\sqrt{n})$ values. Combining Lemma 1 and Lemma 2, we see that all value which are equivalent must lie in a contiguous range within the array. Thus, this assignment step is performed $\mathcal{O}(\sqrt{n})$ times.
 
-A segment tree built over an array of size $n$ will visit at most $\mathcal{O}(\log n)$ nodes per query operation. Visiting each node takes $\mathcal{O}(1)$ time, for a total of $O(\log n)$ time. In our case, visiting each node takes $\mathcal{O}(n)$ time (to manually compute $f(m)$). Since we have $\mathcal{O}(\sqrt{n})$ Segment Tree "queries", each of which take $\mathcal{O}(n \log n)$ time to evaluate, our final complexity is $\mathcal{O}(n \sqrt{n} \log n)$. Although this may seem slow, the solution [passes comfortably within the time limit](https://codeforces.com/contest/786/submission/138572886). 
+A segment tree built over an array of size $n$ will visit at most $\mathcal{O}(\log n)$ nodes per query operation. Visiting each node takes $\mathcal{O}(1)$ time, for a total of $O(\log n)$ time. In our case, visiting each node takes $\mathcal{O}(n)$ time (to manually compute $f(m)$). Since we have $\mathcal{O}(\sqrt{n})$ Segment Tree "queries", each of which take $\mathcal{O}(n \log n)$ time to evaluate, our final complexity is $\mathcal{O}(n \sqrt{n} \log n)$. Although this may seem slow, the solution [passes comfortably within the time limit](https://codeforces.com/contest/786/submission/138572886).
 
 <Info>
-Using `std::bitset` when evaluating $f$ will allow solutions with even slower time complexities to pass in time. 
+Using `std::bitset` when evaluating $f$ will allow solutions with even slower time complexities to pass in time.
 </Info>
 
 ## Implementation
@@ -45,7 +45,7 @@ using namespace std;
 const int MAXN = 1e5 + 1;
 
 int N, A[MAXN], ans[MAXN];
- 
+
 int f(int m) {
 	bitset<MAXN> B = 0;
 	int ret = 0;  // number of segments
@@ -64,7 +64,7 @@ int f(int m) {
 	}
 	return ret + !!cnt;
 }
- 
+
 void dnq(int l = 1, int r = N, int lv = 1, int rv = N) {
 	if (r < l) {
 		return;
@@ -79,7 +79,7 @@ void dnq(int l = 1, int r = N, int lv = 1, int rv = N) {
 	dnq(l, m - 1, mv, rv);  // recurse to left subarray
 	dnq(m + 1, r, lv, mv);  // recurse to right subarray
 }
- 
+
 int main() {
 	cin >> N;
 	for (int i = 0; i < N; i++) {
