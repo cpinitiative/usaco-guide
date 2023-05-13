@@ -2,10 +2,11 @@
 id: usaco-1013
 source: USACO Bronze 2020 February
 title: Swap
-author: Benjamin Qi, David Li
+author: Benjamin Qi, David Li, Kevin Sheng
 ---
 
 ## Video Solution
+
 By David Li
 
 <Youtube id="LrcugMyMFyQ" />
@@ -73,7 +74,7 @@ public class swap {
 	public static void main(String[] args) throws IOException {
 		// reading in input
 		BufferedReader br =
-		    new BufferedReader(new FileReader(new File("swap.in")));
+			new BufferedReader(new FileReader(new File("swap.in")));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
@@ -116,7 +117,28 @@ public class swap {
 
 </Spoiler>
 
-[Official Analysis](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
+<Spoiler title="Hint 1">
+
+Try simulating the swaps yourselves on the sample input.
+Is there anything you notice?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+After a certain number of cycles, the cows end up right back where they started!
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Given that the cows just end up going around in cycles throughout all these swaps, can you think of a more efficient way to simulate them?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
 
 ## Implementation
 
@@ -124,58 +146,143 @@ public class swap {
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <numeric>
 
-int N, K;
-pair<int, int> A, B;
-vector<int> ori, cur;
+using std::cout;
+using std::endl;
+using std::vector;
 
-vector<int> apply(vector<int> v) {
-	reverse(begin(v) + A.first, begin(v) + A.second + 1);
-	reverse(begin(v) + B.first, begin(v) + B.second + 1);
-	return v;
+/** Reverses a given vector from the interval [start, end] in-place. */
+template <typename T>
+void reverse_segment(vector<T>& vec, int start, int end) {
+	while (start < end) {
+		T temp = vec[start];
+		vec[start] = vec[end];
+		vec[end] = temp;
+
+		start++;
+		end--;
+	}
 }
 
 int main() {
-	// fastio
-	cin.tie(0);
-	ios::sync_with_stdio(0);
-	freopen("swap.in", "r", stdin);
-	freopen("swap.out", "w", stdout);
+	std::ifstream read("swap.in");
+	int n, k;
+	read >> n >> k;
+	int a1, a2;
+	int b1, b2;
+	read >> a1 >> a2 >> b1 >> b2;
 
-	cin >> N >> K >> A.first >> A.second >> B.first >> B.second;
-	A.first--, A.second--, B.first--, B.second--;
+	vector<int> cows(n);
+	// Assign the values 1, 2, 3... to the vector of cows
+	iota(cows.begin(), cows.end(), 1);
 
-	ori.resize(N);
+	std::set<vector<int>> visited{cows};
+	while (true) {
+		reverse_segment(cows, a1 - 1, a2 - 1);
+		reverse_segment(cows, b1 - 1, b2 - 1);
+		if (visited.count(cows)) {
+			break;
+		}
+		visited.insert(cows);
+	}
 
-	// Fill values in increasing order (ie [0, 1, 2, 3, etc])
-	iota(begin(ori), end(ori), 0);
+	int cycle_len = visited.size();
+	int swaps_left = k % cycle_len;
+	for (int s = 0; s < swaps_left; s++) {
+		reverse_segment(cows, a1 - 1, a2 - 1);
+		reverse_segment(cows, b1 - 1, b2 - 1);
+	}
 
-	cur = ori;
-	int period = 0;
-
-	do {
-		period++;
-		cur = apply(cur);
-	} while (cur != ori);
-
-	for (K %= period; K; K--) { cur = apply(cur); }
-
-	for (int t : cur) cout << t + 1 << "\n";
+	std::ofstream written("swap.out");
+	for (int c : cows) {
+		written << c << '\n';
+	}
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Swap {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("swap.in"));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+		
+		st = new StringTokenizer(read.readLine());
+		int a1 = Integer.parseInt(st.nextToken()) - 1;
+		int a2 = Integer.parseInt(st.nextToken()) - 1;
+		
+		st = new StringTokenizer(read.readLine());
+		int b1 = Integer.parseInt(st.nextToken()) - 1;
+		int b2 = Integer.parseInt(st.nextToken()) - 1;
+		read.close();
+
+		List<Integer> cows = new ArrayList<>();
+		for (int c = 1; c <= n; c++) {
+			cows.add(c);
+		}
+
+		Set<List<Integer>> visited = new HashSet<>();
+		visited.add(new ArrayList<>(cows));
+		while (true) {
+			reverseSegment(cows, a1, a2);
+			reverseSegment(cows, b1, b2);
+			if (visited.contains(cows)) {
+				break;
+			}
+			visited.add(new ArrayList<>(cows));
+		}
+
+		int cycleLen = visited.size();
+		int swapsLeft = k % cycleLen;
+		for (int s = 0; s < swapsLeft; s++) {
+			reverseSegment(cows, a1, a2);
+			reverseSegment(cows, b1, b2);
+		}
+
+		PrintWriter written = new PrintWriter("swap.out");
+		for (int c : cows) {
+			written.println(c);
+		}
+		written.close();
+	}
+
+	/** Reverses a given list from the interval [start, end] in-place. */
+	static <T> void reverseSegment(List<T> lst, int start, int end) {
+		while (start < end) {
+			T temp = lst.get(start);
+			lst.set(start, lst.get(end));
+			lst.set(end, temp);
+
+			start++;
+			end--;
+		}
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
 from typing import List
 
 
-def reverse_segment(cows: List[int], start: int, end: int):
+def reverse_segment(lst: List[int], start: int, end: int):
+	"""Reverses a given list from the interval [start, end] in-place."""
 	while start < end:
-		cows[start], cows[end] = cows[end], cows[start]
+		lst[start], lst[end] = lst[end], lst[start]
 		start += 1
 		end -= 1
 
@@ -187,7 +294,7 @@ with open("swap.in") as read:
 
 cows = list(range(1, n + 1))
 
-# apply swaps
+# apply swaps until the cows repeat themselves
 visited = set()
 visited.add(tuple(cows))
 while True:
@@ -198,8 +305,8 @@ while True:
 	visited.add(tuple(cows))
 
 cycle_len = len(visited)
-k %= cycle_len
-for _ in range(k):
+swaps_left = k % cycle_len
+for _ in range(swaps_left):
 	reverse_segment(cows, a1 - 1, a2 - 1)
 	reverse_segment(cows, b1 - 1, b2 - 1)
 
@@ -208,3 +315,4 @@ print(*cows, sep="\n", file=open("swap.out", "w"))
 
 </PySection>
 </LanguageSection>
+</Spoiler>
