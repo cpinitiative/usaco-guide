@@ -1,0 +1,163 @@
+---
+id: cses-2079
+source: CSES
+title: Finding a Centroid
+author: Dong Liu, Paul Chen, Raviteja Kompalli
+---
+
+**Time Complexity**: $\mathcal O(N)$
+
+For more information about centroids and how to find/use them, see
+[their module](/plat/centroid).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int maxn = 2e5 + 5;
+int n;                // number of nodes
+vector<int> g[maxn];  // graph
+int s[maxn];          // size of subtree
+
+void dfs_size(int cur, int par) {
+	s[cur] = 1;
+	for (int chi : g[cur]) {
+		if (chi != par) {
+			dfs_size(chi, cur);
+			s[cur] += s[chi];
+		}
+	}
+}
+
+int get_centroid(int cur, int par) {
+	for (int chi : g[cur]) {
+		if (chi != par) {
+			if (s[chi] * 2 > n) { return get_centroid(chi, cur); }
+		}
+	}
+	return cur;
+}
+
+int main() {
+	cin >> n;
+	for (int i = 1; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+		g[a].push_back(b);
+		g[b].push_back(a);
+	}
+	dfs_size(1, -1);
+	int centroid = get_centroid(1, -1);
+	cout << centroid << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Centroid {
+	private static int n;  // number of nodes
+	private static List<List<Integer>> graph;
+	private static int[] sub_array_size;
+
+	private static void dfs_size(int curr, int prev) {
+		// size of a subtree is the sum of the sizes of all child subtrees + 1.
+		sub_array_size[curr] = 1;
+		for (int next : graph.get(curr)) {
+			if (next == prev) { continue; }
+			dfs_size(next, curr);
+			sub_array_size[curr] += sub_array_size[next];
+		}
+	}
+
+	private static int get_centroid(int curr, int prev) {
+		/*
+		 * if possible, move towards the adjacent node with the subtree size
+		 * greater than n / 2. Otherwise, we have found our centroid.
+		 */
+		for (int next : graph.get(curr)) {
+			if (next == prev) { continue; }
+			if (sub_array_size[next] * 2 > n) {
+				return get_centroid(next, curr);
+			}
+		}
+		return curr;
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		n = io.nextInt();
+		graph = new ArrayList<>();
+		for (int i = 0; i <= n; i++) { graph.add(new ArrayList<>()); }
+		sub_array_size = new int[n + 1];
+
+		for (int i = 0; i < n - 1; i++) {
+			int a = io.nextInt(), b = io.nextInt();
+			graph.get(a).add(b);
+			graph.get(b).add(a);
+		}
+
+		dfs_size(1, -1);
+
+		io.println(get_centroid(1, -1));
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+MAX_N = 200000
+g = [[] for i in range(MAX_N + 1)]  # graph
+subtree_size = [0 for i in range(MAX_N + 1)]  # size of subtree
+
+
+def dfs_size(curr: int, parent: int) -> None:
+	"""calculates all subtree sizes (sum of child sizes + 1)"""
+	subtree_size[curr] = 1
+	for child in g[curr]:
+		if child != parent:
+			dfs_size(child, curr)
+			subtree_size[curr] += subtree_size[child]
+
+
+def get_centroid(curr: int, parent: int) -> int:
+	"""
+	if possible, move towards the adjacent node with the subtree size
+	greater than n / 2. Otherwise, we have found our centroid.
+	"""
+	for child in g[curr]:
+		if child != parent:
+			if subtree_size[child] * 2 > n:
+				return get_centroid(child, curr)
+	return curr
+
+
+n = int(input())  # number of nodes
+for i in range(1, n):
+	a, b = map(int, input().split())
+	g[a].append(b)
+	g[b].append(a)
+
+dfs_size(1, -1)
+
+print(get_centroid(1, -1))
+```
+</PySection>
+
+</LanguageSection>

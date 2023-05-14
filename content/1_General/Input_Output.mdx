@@ -4,9 +4,7 @@ redirects:
   - /general/io
 title: Input & Output
 author: Darren Yao, Benjamin Qi, Allen Li
-description:
-  Demonstrates how to read input and print output for USACO contests, including
-  an example problem.
+description: How to read input and print output for USACO contests.
 prerequisites:
   - data-types
 ---
@@ -68,7 +66,7 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), and in USACO problems after
+In most websites (such as Codeforces and CSES), and in USACO problems after
 December 2020, input and output are **standard**.
 
 <LanguageSection>
@@ -265,15 +263,15 @@ class Kattio extends PrintWriter {
 	private BufferedReader r;
 	private StringTokenizer st;
 	// standard input
-	public Kattio() { this(System.in,System.out); }
+	public Kattio() { this(System.in, System.out); }
 	public Kattio(InputStream i, OutputStream o) {
 		super(o);
 		r = new BufferedReader(new InputStreamReader(i));
 	}
 	// USACO-style file input
 	public Kattio(String problemName) throws IOException {
-		super(problemName+".out");
-		r = new BufferedReader(new FileReader(problemName+".in"));
+		super(problemName + ".out");
+		r = new BufferedReader(new FileReader(problemName + ".in"));
 	}
 	// returns null if no more input
 	public String next() {
@@ -340,7 +338,8 @@ following (ex.
 [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)):
 
 ```java
-PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
+PrintWriter pw =
+    new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
 This is equivalent to what we use in this module:
@@ -387,7 +386,7 @@ import sys
 
 # sys.stdin/stdout is similar to a file in that we read lines for input/output
 my_str = sys.stdin.readline()
-sys.stdout.write(str(myStr) + '\n')
+sys.stdout.write(str(myStr) + "\n")
 # Renaming the read/write methods for convenience
 input = sys.stdin.readline
 print = sys.stdout.write
@@ -395,13 +394,13 @@ print = sys.stdout.write
 # Taking an integer as input
 my_int = int(input())
 # sys.stdout.write requires you to format code manually
-print(str(my_int) + '\n')
+print(str(my_int) + "\n")
 
 """
 For larger inputs, you can buffer the problem's input,
 and sort through it yourself. This is the fastest input method for python.
 """
-all_data = sys.stdin.read().split('\n')
+all_data = sys.stdin.read().split("\n")
 ```
 
 We can also use
@@ -649,8 +648,8 @@ I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf`
 and `printf`) to read and write data.
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 using namespace std;
 
 int main() {
@@ -676,8 +675,8 @@ For convenience, we can define a function that will redirect `stdin` and
 `stdout` based on the problem name:
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 using namespace std;
 
 // the argument is the input filename without the extension
@@ -909,22 +908,13 @@ int main() {
 	freopen("paint.out", "w", stdout);
 
 	vector<bool> cover(100);
-	int a;
-	int b;
-	int c;
-	int d;;
+	int a, b, c, d;
 	cin >> a >> b >> c >> d;
-	for (int i = a; i < b; i++) {
-		cover[i] = true;
-	}
-	for (int i = c; i < d; i++) {
-		cover[i] = true;
-	}
+	for (int i = a; i < b; i++) { cover[i] = true; }
+	for (int i = c; i < d; i++) { cover[i] = true; }
 
 	int ans = 0;
-	for (int i = 0; i < cover.size(); i++) {
-		ans += cover[i];
-	}
+	for (int i = 0; i < cover.size(); i++) { ans += cover[i]; }
 	cout << ans << endl;
 }
 ```
@@ -945,22 +935,13 @@ int main() {
 	ofstream fout("paint.out");
 
 	vector<bool> cover(100);
-	int a;
-	int b;
-	int c;
-	int d;;
+	int a, b, c, d;
 	fin >> a >> b >> c >> d;
-	for (int i = a; i < b; i++) {
-		cover[i] = true;
-	}
-	for (int i = c; i < d; i++) {
-		cover[i] = true;
-	}
+	for (int i = a; i < b; i++) { cover[i] = true; }
+	for (int i = c; i < d; i++) { cover[i] = true; }
 
 	int ans = 0;
-	for (int i = 0; i < cover.size(); i++) {
-		ans += cover[i];
-	}
+	for (int i = 0; i < cover.size(); i++) { ans += cover[i]; }
 	fout << ans << endl;
 }
 ```
@@ -990,17 +971,11 @@ public class Main {
 		int d = r.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		pw.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1035,17 +1010,11 @@ public class Main {
 		int d = Integer.parseInt(st.nextToken());
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		pw.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1067,7 +1036,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("paint");
 		int a = io.nextInt();
 		int b = io.nextInt();
@@ -1075,17 +1044,11 @@ public class Main {
 		int d = io.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		io.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1109,7 +1072,7 @@ public class Main {
 <Spoiler title="Method 1">
 
 ```py
-with open('paint.in', 'r') as inp:
+with open("paint.in", "r") as inp:
 	lines = [line for line in inp]
 	a, b = map(int, lines[0].split())
 	c, d = map(int, lines[1].split())
@@ -1123,7 +1086,7 @@ with open('paint.in', 'r') as inp:
 	ans = 0
 	for i in range(len(cover)):
 		ans += cover[i]
-	with open('paint.out', 'w') as out:
+	with open("paint.out", "w") as out:
 		print(ans, file=out)  # out.write(str(ans) + '\n') also works
 ```
 
@@ -1190,10 +1153,10 @@ output consists of a single integer `ans`:
 ### C++
 
 ```cpp
-cout << ans;  // OK, no newline
-cout << ans << endl;  // OK, newline
-cout << ans << "\n";  // OK, newline
-cout << ans << " ";  // NOT OK, extra space
+cout << ans;            // OK, no newline
+cout << ans << endl;    // OK, newline
+cout << ans << "\n";    // OK, newline
+cout << ans << " ";     // NOT OK, extra space
 cout << ans << "\n\n";  // NOT OK, extra newline
 ```
 
@@ -1204,10 +1167,10 @@ cout << ans << "\n\n";  // NOT OK, extra newline
 ### Java
 
 ```java
-pw.print(ans);  // OK, no newline
-pw.println(ans);  // OK, newline
-pw.print(ans + "\n");  // OK, newline
-pw.print(ans + " ");  // NOT OK, extra space
+pw.print(ans);           // OK, no newline
+pw.println(ans);         // OK, newline
+pw.print(ans + "\n");    // OK, newline
+pw.print(ans + " ");     // NOT OK, extra space
 pw.print(ans + "\n\n");  // NOT OK, extra newline
 ```
 
@@ -1218,11 +1181,11 @@ pw.print(ans + "\n\n");  // NOT OK, extra newline
 ### Python
 
 ```py
-print(ans, end='')  # OK, no newline
+print(ans, end="")  # OK, no newline
 print(ans)  # OK, newline
-print(str(ans) + '\n', end='')  # OK, newline
-print(str(ans) + " ", end='')  # NOT OK, extra space
-print(str(ans) + '\n')  # NOT OK, extra newline
+print(str(ans) + "\n", end="")  # OK, newline
+print(str(ans) + " ", end="")  # NOT OK, extra space
+print(str(ans) + "\n")  # NOT OK, extra newline
 ```
 
 </PySection>

@@ -28,7 +28,7 @@ Join our Discord server: https://discord.gg/VCxUzdYhzN
 The USACO Guide is run by the
 [Competitive Programming Initiative](https://joincpi.org/). We're looking for
 Content Authors to join our team to help us improve the Guide! Learn more
-[here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit).
+[here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit).
 
 ### Core Team
 

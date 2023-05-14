@@ -1,0 +1,259 @@
+---
+id: usaco-667
+source: USACO Silver 2016 December
+title: Cities & States
+author: Benjamin Qi, Kevin Sheng
+---
+
+[Official Editorial (Java)](http://www.usaco.org/current/data/sol_citystate_silver_dec16.html)
+
+As the editorial mentions, we can store the number of times a given four-letter
+string appears in a `map`.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+<Info>
+
+The time complexity of the below solution is actually
+  $\mathcal{O}(N\log N)$, since it uses `map`. Using `unordered_map` or `vector` would bring the complexity back
+down to $\mathcal{O}(N)$.
+
+</Info>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream read("citystate.in");
+	int N;
+	read >> N;
+
+	vector<pair<string, string>> pairs;
+	for (int i = 0; i < N; i++) {
+		string city;
+		string state;
+		read >> city >> state;
+		city = city.substr(
+		    0, 2);  // We only care about the first two letters of the city
+		pairs.push_back({city, state});
+	}
+
+	map<string, int> seen;
+	long long total = 0;
+	for (const auto &[c, s] : pairs) {
+		if (c != s) { total += seen[s + c]; }
+		seen[c + s]++;
+	}
+
+	ofstream("citystate.out") << total << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CityState {
+	static class Pair {
+		public String city;
+		public String state;
+		public Pair(String city, String state) {
+			this.city = city;
+			this.state = state;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("citystate.in"));
+		int pairNum = Integer.parseInt(read.readLine());
+		Pair[] pairs = new Pair[pairNum];
+		for (int p = 0; p < pairNum; p++) {
+			StringTokenizer cityState = new StringTokenizer(read.readLine());
+			String city = cityState.nextToken();
+			String state = cityState.nextToken();
+			// We only care about the first two letters of the city
+			city = city.substring(0, 2);
+			pairs[p] = new Pair(city, state);
+		}
+
+		Map<String, Integer> seen = new HashMap<>();
+		long total = 0;
+		for (Pair p : pairs) {
+			if (!p.city.equals(p.state)) {
+				total += seen.getOrDefault(p.state + p.city, 0);
+			}
+			seen.put(p.city + p.state,
+			         seen.getOrDefault(p.city + p.state, 0) + 1);
+		}
+
+		PrintWriter out = new PrintWriter("citystate.out");
+		out.println(total);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import defaultdict
+
+
+pairs = []
+with open("citystate.in") as read:
+	for _ in range(int(read.readline())):
+		city, state = read.readline().strip().split()
+		city = city[:2]  # We only care about the first two letters of the city
+		pairs.append((city, state))
+
+seen = defaultdict(int)
+total = 0
+for c, s in pairs:
+	if c != s:
+		total += seen[s + c]
+	seen[c + s] += 1
+
+print(total, file=open("citystate.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+However, note that we can optimize this by converting each string into an
+integer and using an array instead of a map.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int index(string s) {
+	int ind = 0;
+	for (char &c : s) { ind = 26 * ind + (c - 'A'); }
+	return ind;
+}
+
+int main() {
+	ifstream read("citystate.in");
+	int N;
+	read >> N;
+
+	vector<pair<string, string>> pairs;
+	for (int i = 0; i < N; i++) {
+		string city;
+		string state;
+		read >> city >> state;
+		city = city.substr(
+		    0, 2);  // We only care about the first two letters of the city
+		pairs.push_back({city, state});
+	}
+
+	vector<int> seen(26 * 26 * 26 * 26);
+	long long total = 0;
+	for (const auto &[c, s] : pairs) {
+		if (c != s) { total += seen[index(s + c)]; }
+		seen[index(c + s)]++;
+	}
+
+	ofstream("citystate.out") << total << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CityState {
+	static class Pair {
+		public String city;
+		public String state;
+		public Pair(String city, String state) {
+			this.city = city;
+			this.state = state;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("citystate.in"));
+		int pairNum = Integer.parseInt(read.readLine());
+		Pair[] pairs = new Pair[pairNum];
+		for (int p = 0; p < pairNum; p++) {
+			StringTokenizer cityState = new StringTokenizer(read.readLine());
+			String city = cityState.nextToken();
+			String state = cityState.nextToken();
+			// We only care about the first two letters of the city
+			city = city.substring(0, 2);
+			pairs[p] = new Pair(city, state);
+		}
+
+		int[] seen = new int[(int)Math.pow(26, 4)];
+		long total = 0;
+		for (Pair p : pairs) {
+			if (!p.city.equals(p.state)) {
+				total += seen[index(p.state + p.city)];
+			}
+			seen[index(p.city + p.state)]++;
+		}
+
+		PrintWriter out = new PrintWriter("citystate.out");
+		out.println(total);
+		out.close();
+	}
+
+	static int index(String s) {
+		int ind = 0;
+		for (int i = 0; i < s.length(); i++) {
+			ind = ind * 26 + (s.charAt(i) - 'A');
+		}
+		return ind;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def index(s: str) -> int:
+	ind = 0
+	for c in s:
+		ind = 26 * ind + (ord(c) - ord("A"))
+	return ind
+
+
+pairs = []
+with open("citystate.in") as read:
+	for _ in range(int(read.readline())):
+		city, state = read.readline().strip().split()
+		city = city[:2]  # We only care about the first two letters of the city
+		pairs.append((city, state))
+
+seen = [0 for _ in range(26**4)]
+total = 0
+for c, s in pairs:
+	if c != s:
+		total += seen[index(s + c)]
+	seen[index(c + s)] += 1
+
+print(total, file=open("citystate.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

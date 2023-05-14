@@ -5,10 +5,10 @@ redirects:
 title: 'Shortest Paths with Non-Negative Edge Weights'
 author: Benjamin Qi, Andi Qu, Qi Wang, Neo Wang
 prerequisites:
-  - bfs
+  - unweighted-shortest-paths
   - custom-cpp-stl
-description: 'Introduces Bellman-Ford, Floyd-Warshall, Dijkstra.'
-frequency: 3
+description: 'Bellman-Ford, Floyd-Warshall, and Dijkstra.'
+frequency: 2
 ---
 
 Nearly all Gold shortest path problems involve Dijkstra. However, it's a good
@@ -82,7 +82,7 @@ Floyd-Warshall is suitable because of the low $N (N \le 500)$, and the inclusion
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
 ll INF = 1e18;
 
@@ -125,7 +125,6 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
 	// CodeSnip{Kattio}
 
@@ -137,13 +136,12 @@ public class Main {
 		long[][] mat = new long[n][n];
 		long INF = (long)1e18;
 
-		for(long[] row : mat) {
-			Arrays.fill(row, INF);
-		}
+		for (long[] row : mat) { Arrays.fill(row, INF); }
 
 		for (int i = 0; i < m; i++) {
 			int u = io.nextInt(), v = io.nextInt(), w = io.nextInt();
-			u--; v--;
+			u--;
+			v--;
 			if (w < mat[u][v]) mat[u][v] = mat[v][u] = w;
 		}
 
@@ -156,7 +154,8 @@ public class Main {
 
 		while (q-- > 0) {
 			int u = io.nextInt(), v = io.nextInt();
-			u--; v--;
+			u--;
+			v--;
 			if (u == v) mat[u][v] = 0;
 			if (mat[u][v] == INF) mat[u][v] = -1;
 			io.println(mat[u][v]);
@@ -168,6 +167,47 @@ public class Main {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+# 1e18 is used instead of float('inf') for performance reasons
+INF = int(1e18)
+
+n, m, q = map(int, input().split())
+
+mat = [[INF] * n for _ in range(n)]
+
+for _ in range(m):
+	u, v, w = map(int, input().split())
+	u, v = u - 1, v - 1
+	if w < mat[u][v]:
+		mat[u][v] = mat[v][u] = w
+
+# Floyd-Warshall algorithm
+for k in range(n):
+	for i in range(n):
+		for j in range(i + 1, n):
+			if mat[i][k] + mat[k][j] < mat[i][j]:
+				mat[i][j] = mat[j][i] = mat[i][k] + mat[k][j]
+
+for _ in range(q):
+	u, v = map(int, input().split())
+	u, v = u - 1, v - 1
+	if u == v:
+		mat[u][v] = 0
+	if mat[u][v] == INF:
+		mat[u][v] = -1
+	print(mat[u][v])
+```
+
+<Warning>
+
+Due to the strict time limits, this Python code recieves a TLE verdict on two test cases.
+
+</Warning>
+
+</PySection>
 
 </LanguageSection>
 
@@ -204,6 +244,11 @@ Used as the first step of the following:
 	/>
 	<Resource source="CPC" title="8 - Shortest Paths" url="08_graphs_2" />
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph" />
+	<Resource
+		source="alexyd88"
+		title="Dijkstra Visualizer"
+		url="https://alexyd88.github.io/Dijkstra-Visualizer/"
+	/>
 </Resources>
 
 #### $\mathcal{O}(M\log N)$ Implementation
@@ -245,32 +290,38 @@ vector<pair<int, int>> graph[100000];
 ll dist[100000];
 int N;
 
-void dijkstra(int src) { // Source and destination
+void dijkstra(int src) {  // Source and destination
 	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX;
 	// Set all distances to infinity
 
-	using T = pair<ll,int>; priority_queue<T,vector<T>,greater<T>> pq;
-	dist[src] = 0; // The shortest path from a node to itself is 0
+	using T = pair<ll, int>;
+	priority_queue<T, vector<T>, greater<T>> pq;
+	dist[src] = 0;  // The shortest path from a node to itself is 0
 	pq.push({0, src});
 
 	while (pq.size()) {
-		ll cdist; int node; tie(cdist, node) = pq.top(); pq.pop();
+		ll cdist;
+		int node;
+		tie(cdist, node) = pq.top();
+		pq.pop();
 		if (cdist != dist[node]) continue;
 		for (pair<int, int> i : graph[node]) {
 			// If we can reach a neighbouring node faster,
 			// we update its minimum distance
-			if (cdist+i.second < dist[i.first]) {
-				pq.push({dist[i.first] = cdist+i.second, i.first});
+			if (cdist + i.second < dist[i.first]) {
+				pq.push({dist[i.first] = cdist + i.second, i.first});
 			}
 		}
 	}
 }
 
 int main() {
-	int M; cin >> N >> M;
+	int M;
+	cin >> N >> M;
 	for (int i = 0; i < M; ++i) {
-		int a,b,c; cin >> a >> b >> c;
-		graph[a-1].pb({b-1,c});
+		int a, b, c;
+		cin >> a >> b >> c;
+		graph[a - 1].pb({b - 1, c});
 	}
 	dijkstra(0);
 	for (int i = 0; i < N; ++i) cout << dist[i] << " ";
@@ -282,8 +333,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class test {
 	static class Pair<K, V> {
@@ -293,44 +344,41 @@ public class test {
 			this.a = a;
 			this.b = b;
 		}
-		public K getKey() {
-			return a;
-		}
-		public V getValue() {
-			return b;
-		}
+		public K getKey() { return a; }
+		public V getValue() { return b; }
 	}
 	static ArrayList<Pair<Integer, Integer>> graph[];
 	static long dist[];
 	static int N;
 
 	static void dijkstra(int src) {
-		//Set all distances to infinity
-		for (int i = 0; i < N; ++i)
-			dist[i] = Long.MAX_VALUE;
-		PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<Pair<Long, Integer>>
-			((a, b) -> Long.compare(a.getKey(), b.getKey()));
-		dist[src] = 0; // The shortest path from a node to itself is 0
+		// Set all distances to infinity
+		for (int i = 0; i < N; ++i) dist[i] = Long.MAX_VALUE;
+		PriorityQueue<Pair<Long, Integer>> pq =
+		    new PriorityQueue<Pair<Long, Integer>>(
+		        (a, b) -> Long.compare(a.getKey(), b.getKey()));
+		dist[src] = 0;  // The shortest path from a node to itself is 0
 		pq.add(new Pair<Long, Integer>(0L, src));
-		while(!pq.isEmpty()) {
+		while (!pq.isEmpty()) {
 			Pair<Long, Integer> p = pq.poll();
 			long cdist = p.getKey();
 			int node = p.getValue();
-			if(cdist != dist[node])
-				continue;
+			if (cdist != dist[node]) continue;
 			for (Pair<Integer, Integer> i : graph[node]) {
 				// If we can reach a neighbouring node faster,
 				// we update its minimum distance
-				if(cdist+i.getValue() < dist[i.getKey()]) {
+				if (cdist + i.getValue() < dist[i.getKey()]) {
 					dist[i.getKey()] = cdist + i.getValue();
-					pq.add(new Pair<Long, Integer>(dist[i.getKey()], i.getKey()));
+					pq.add(
+					    new Pair<Long, Integer>(dist[i.getKey()], i.getKey()));
 				}
 			}
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
@@ -347,14 +395,47 @@ public class test {
 			graph[a - 1].add(new Pair<Integer, Integer>(b - 1, c));
 		}
 		dijkstra(0);
-		for (int i = 0; i < N; i++) {
-			System.out.print(dist[i] + " ");
-		}
+		for (int i = 0; i < N; i++) { System.out.print(dist[i] + " "); }
 	}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import heapq
+
+N, M = map(int, input().split())
+
+graph = [[] for _ in range(N)]
+dist = [float("inf") for _ in range(N)]
+
+for i in range(M):
+	a, b, c = map(int, input().split())
+	graph[a - 1].append((b - 1, c))
+
+# Dijkstra's algorithm
+pq = []
+heapq.heappush(pq, (0, 0))
+dist[0] = 0  # The shortest path from a node to itself is 0
+while pq:
+	cdist, node = heapq.heappop(pq)
+	if cdist != dist[node]:
+		continue
+	for i in graph[node]:
+		# If we can reach a neighbouring node faster,
+		# we update its minimum distance
+		if cdist + i[1] < dist[i[0]]:
+			dist[i[0]] = cdist + i[1]
+			heapq.heappush(pq, (dist[i[0]], i[0]))
+
+for i in range(N):
+	print(dist[i], end=" ")
+```
+
+</PySection>
 
 </LanguageSection>
 

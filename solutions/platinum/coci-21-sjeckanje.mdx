@@ -1,0 +1,143 @@
+---
+id: coci-21-sjeckanje
+source: COCI 2021
+title: Sjeckanje
+author: Timothy Gao
+---
+
+[Official Editorial](https://dmoj.ca/problem/coci20c5p5/editorial)
+
+For any segment $[l, r]$ with at least three elements, if there exists $i$ such that $l\le i\le i+2\le r$ and $a_i \leq a_{i+2} \leq a_{i+1}$ or $a_i \geq a_{i+2} \geq a_{i+1}$, then the segment can be split into two segments $l, l+1, \dots, i+1$ and $i+2, i+3, \dots, r$. It may be proven that the sum of the values of the two segments is at least as high as the value of the initial segment. More generally, if a segment isn't strictly increasing or strictly decreasing, we can split it into two segments without lowering the total value. Therefore, an optimal solution can be constructed with only strictly increasing or decreasing segments. This paves the way for several key properties.
+
+Define array $D$ of length $N-1$ such that $D_i = A_{i+1} - A_i$. If the current segment $s = [l, r]$ is increasing, then $D_i > 0$ for $i \in [l, r)$ and $\sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$. If the current segment $s = [l, r]$ is decreasing, then $D_i < 0$ for $i \in [l, r)$ and $-1 \cdot \sum_{i=l}^{r-1} D_i = \text {max}(s) - \text {min}(s)$. Between any two adjacent selected segments $[a, b]$ and $[b+1, c]$, $D_b$ must not included in our answer. With this formulation, adding integer $x$ to all elements $l, l+1, \dots, r$ is equivalent to performing the point updates $D_{l-1}\mathrel{+}=x$ and $D_{r}\mathrel{-}=x$.
+
+Now, the problem becomes selecting segments on $D$ rather than the original $A$, where each segment contributes the absolute value of the sum of its elements to the final answer. Every two neighboring segments must be separated by at least one element (see $D_b$ above), and all elements in each segment must be either $< 0$ or $> 0$. One way to go from here is with a segment tree. Each Node stores the maximum value of its segment for each of the four cases of taking or not taking the first or last element, as well as the border elements of its segment.  When merging, we must pay attention to only combine two segments together if the signs of their border elements to be combined are the same to ensure that the combined segment continues to be either strictly increasing or decreasing.
+
+**Time Complexity**: $\mathcal O(N + Q\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+// BeginCodeSnip{Segtree Node}
+struct Node {
+	ll borders[2] = {};  // border values of segment
+	ll dp[2][2] = {};    // take/not-take left and right border values
+	Node() {}
+	Node(ll v) {
+		borders[0] = borders[1] = v;
+		dp[0][1] = 0;
+		dp[1][0] = 0;
+		dp[0][0] = 0;
+		dp[1][1] = abs(v);
+	}
+	// assume current is left
+	Node comb(Node &other) {
+		Node ret;
+		ret.borders[0] = borders[0];
+		ret.borders[1] = other.borders[1];
+		// [	 ][	 ]
+		// l	 mo	 r
+		// m and o same -> taken segments are combined
+		for (int l = 0; l < 2; l++) {
+			for (int m = 0; m < 2; m++) {
+				for (int o = 0; o < 2; o++) {
+					for (int r = 0; r < 2; r++) {
+						if (m && o) {
+							// it's never optimal to take two opposite sign
+							// values
+							if ((borders[1] < 0) == (other.borders[0] < 0)) {
+								ret.dp[l][r] = max(ret.dp[l][r],
+								                   dp[l][m] + other.dp[o][r]);
+							}
+						} else {
+							ret.dp[l][r] =
+							    max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
+						}
+					}
+				}
+			}
+		}
+		return ret;
+	}
+
+	// modify a single-element Node segment by +v
+	void upd(ll v) {
+		borders[0] += v;
+		borders[1] += v;
+		dp[1][1] = abs(borders[0]);
+	}
+};
+// EndCodeSnip
+
+// BeginCodeSnip{Segtree}
+struct SegTree {
+	Node val;
+	int gL, gR, mid;
+	SegTree *left, *right;
+	SegTree(int l, int r, vector<Node> &nums) {
+		gL = l;
+		gR = r;
+		mid = (gL + gR) / 2;
+		if (l == r) {
+			val = nums[l];
+		} else {
+			left = new SegTree(l, mid, nums),
+			right = new SegTree(mid + 1, r, nums);
+			val = left->val.comb(right->val);
+		}
+	}
+
+	void update(int idx, ll updval) {
+		if (gL == gR) {
+			val.upd(updval);
+		} else {
+			if (idx <= (gL + gR) / 2) {
+				left->update(idx, updval);
+			} else {
+				right->update(idx, updval);
+			}
+			val = left->val.comb(right->val);
+		}
+	}
+};
+// EndCodeSnip
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	int N, Q;
+	cin >> N >> Q;
+	vector<Node> D(N - 1);
+	int a;
+	cin >> a;
+	// compute difference array
+	for (int i = 0; i < N - 1; i++) {
+		int b;
+		cin >> b;
+		D[i] = Node(b - a);
+		swap(a, b);
+	}
+
+	// a_(i + 1) - a(i)
+	SegTree sgt(0, N - 2, D);
+	for (int q = 0; q < Q; q++) {
+		int l;
+		int r;
+		ll x;
+		cin >> l >> r >> x;
+		l--, r--;
+
+		if (l - 1 >= 0) { sgt.update(l - 1, x); }
+		if (r < N - 1) { sgt.update(r, -x); }
+		cout << sgt.val.dp[1][1] << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

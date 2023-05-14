@@ -1,0 +1,111 @@
+---
+id: ys-PersistentUnionFind
+source: YS
+title: Perisistent Union Find
+author: Chongtian Ma
+---
+
+## Explanation
+
+Using a data structure that can undo any past consecutive changes, we can solve this problem by processing queries offline. Let's construct a
+directed graph of queries. The $u$'th query and the $v$'th query has a directed edge iff $k_v = u$,  in other words, the $v$'th query is using the graph from query $u$. Thus using DFS, when we recurse through the graph we are simply processing queries, and when we exit our recursion we are simply undoing queries (this is possible due to using rollbacks)!
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct DSU {
+	vector<int> p, sz;
+	// stores info from the past
+	vector<pair<int, int>> past_parent, past_size;
+	DSU(int n) {
+		p.resize(n);
+		sz.resize(n, 1);
+		iota(p.begin(), p.end(), 0);
+	}
+
+	int get(int x) { return (p[x] == x) ? x : get(p[x]); }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (sz[a] < sz[b]) { swap(a, b); }
+		// add to history
+		past_parent.push_back({b, p[b]});
+		past_size.push_back({a, p[a]});
+
+		if (a != b) {
+			p[b] = a;
+			sz[a] += sz[b];
+		}
+	}
+
+	bool sameset(int a, int b) { return get(a) == get(b); }
+
+	// Reverts to previous DSU state.
+	void rollback() {
+		p[past_parent.back().first] = past_parent.back().second;
+		sz[past_size.back().first] = past_size.back().second;
+		past_parent.pop_back();
+		past_size.pop_back();
+	}
+};
+
+struct Query {
+	int t, k, u, v;
+};
+
+int main() {
+	cin.tie(0)->sync_with_stdio(false);
+	int n, q;
+	cin >> n >> q;
+
+	vector<Query> queries(q + 1);
+	vector<vector<int>> queries_using_k(q + 1);
+
+	for (int i = 1; i <= q; i++) {
+		Query tmp;
+		cin >> tmp.t >> tmp.k >> tmp.u >> tmp.v;
+		tmp.k++;
+		// construct query graph - add an edge between k and itself
+		queries_using_k[tmp.k].push_back(i);
+		queries[i] = tmp;
+	}
+
+	vector<bool> ans(q + 1);
+	DSU dsu(n);
+
+	// process queries in a dfs manner
+	auto dfs = [&](auto self, int idx) -> void {
+		if (queries[idx].t == 0) {
+			dsu.unite(queries[idx].u, queries[idx].v);
+		} else {
+			if (dsu.sameset(queries[idx].u, queries[idx].v)) {
+				ans[idx] = true;
+			}
+		}
+
+		// answer all the queries that use this dsu
+		for (int i : queries_using_k[idx]) { self(self, i); }
+
+		// roll back merges
+		if (queries[idx].t == 0) { dsu.rollback(); }
+	};
+
+	dfs(dfs, 0);
+
+	for (int i = 1; i <= q; i++) {
+		if (queries[i].t) { cout << ans[i] << "\n"; }
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

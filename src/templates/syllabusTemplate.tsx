@@ -94,7 +94,21 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
       Feel free to mark some as "skipped" and revisit them at a later time!
     </>
   ),
-  bronze: topicsWarning,
+  bronze: (
+    <>
+      {topicsWarning}
+      <br />
+      If you prefer videos instead of text, check out CPI's free{' '}
+      <a
+        href="https://joincpi.org/video-classes"
+        target="_blank"
+        rel="noreferrer"
+        className="underline"
+      >
+        self-study Bronze course.
+      </a>
+    </>
+  ),
   silver: topicsWarning,
   gold: topicsWarning,
   plat: (
@@ -136,7 +150,9 @@ export default function Template(props) {
     []
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
-  const problemIDs = data.problems.edges.map(x => x.node.uniqueId);
+  const problemIDs = [
+    ...new Set(data.problems.edges.map(x => x.node.uniqueId) as string[]),
+  ];
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const progressBarForCategory = category => {
@@ -233,6 +249,9 @@ export default function Template(props) {
                           item.frontmatter.description,
                           item.frontmatter.frequency,
                           item.isIncomplete,
+                          item.cppOc,
+                          item.javaOc,
+                          item.pyOc,
                           [],
                           item.fields.gitAuthorTime
                         )
@@ -249,7 +268,7 @@ export default function Template(props) {
   );
 }
 export const pageQuery = graphql`
-  query($division: String!) {
+  query ($division: String!) {
     modules: allXdm(
       filter: {
         fileAbsolutePath: { regex: "/content/" }
@@ -266,6 +285,9 @@ export const pageQuery = graphql`
             frequency
           }
           isIncomplete
+          cppOc
+          javaOc
+          pyOc
           fields {
             gitAuthorTime
           }

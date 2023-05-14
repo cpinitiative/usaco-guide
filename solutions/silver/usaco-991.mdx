@@ -1,0 +1,174 @@
+---
+id: usaco-991
+source: USACO Silver 2020 January
+title: Loan Repayment
+author: Brad Ma, Raviteja Kompalli, Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_loan_silver_jan20.html)
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(\sqrt{N} \cdot \log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+/**
+ * @return whether Farmer John gives Bessie at least N (numGallons)
+ * gallons of milk within withinDays with the given X value
+ */
+bool can_repay(long long num_gallons, long long within_days, long long at_least,
+               long long x_val) {
+	long long g = 0;
+	while (within_days > 0 && g < num_gallons) {
+		long long y = (num_gallons - g) / x_val;
+		if (y < at_least) {
+			long long leftover =
+			    ((num_gallons - g) + (at_least - 1)) / at_least;
+			return leftover <= within_days;
+		}
+
+		long long max_match = num_gallons - (x_val * y);
+		long long num_days = std::min((max_match - g) / y + 1, within_days);
+
+		g += y * num_days;  // update values
+		within_days -= num_days;
+	}
+
+	return g >= num_gallons;
+}
+
+int main() {
+	std::ifstream read("loan.in");
+
+	long long num_gallons;
+	long long within_days;
+	long long at_least;
+	read >> num_gallons >> within_days >> at_least;
+
+	// binary search on the largest X
+	long long low = 1;
+	long long high = INT64_MAX / 2;
+	while (low < high) {
+		long mid = (low + high + 1) / 2;
+		if (can_repay(num_gallons, within_days, at_least, mid)) {
+			low = mid;
+		} else {
+			high = mid - 1;
+		}
+	}
+
+	std::ofstream("loan.out")
+	    << low << endl;  // low == high, we can output either
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Loan {
+	/**
+	 * @return whether Farmer John gives Bessie at least N (numGallons)
+	 * gallons of milk within withinDays with the given X value
+	 */
+	static boolean canRepay(long numGallons, long withinDays, long atLeast,
+	                        long xVal) {
+		long g = 0;
+		while (withinDays > 0 && g < numGallons) {
+			long y = (numGallons - g) / xVal;
+			if (y < atLeast) {
+				long leftover = ((numGallons - g) + (atLeast - 1)) / atLeast;
+				return leftover <= withinDays;
+			}
+
+			long maxMatch = numGallons - (xVal * y);
+			long numDays = Math.min((maxMatch - g) / y + 1, withinDays);
+
+			g += y * numDays;  // update values
+			withinDays -= numDays;
+		}
+
+		return g >= numGallons;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("loan");
+		long numGallons = io.nextLong();
+		long withinDays = io.nextLong();
+		long atLeast = io.nextLong();
+
+		// binary search on the largest X
+		long low = 1;
+		long high = Long.MAX_VALUE / 2;
+		while (low < high) {
+			long mid = (low + high + 1) / 2;
+			if (canRepay(numGallons, withinDays, atLeast, mid)) {
+				low = mid;
+			} else {
+				high = mid - 1;
+			}
+		}
+
+		io.println(low);  // low == high, we can output either
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def can_repay(num_gallons: int, within_days: int, at_least: int, x_val: int) -> bool:
+	"""
+	:return whether Farmer John gives Bessie at least N (num_gallons)
+	gallons of milk within within_days with the given X value
+	"""
+	g = 0
+	while within_days > 0 and g < num_gallons:
+		y = (num_gallons - g) // x_val
+		if y < at_least:
+			leftover = (num_gallons - g + at_least - 1) // at_least
+			return leftover <= within_days
+
+		max_match = num_gallons - x_val * y
+		num_days = min((max_match - g) // y + 1, within_days)
+
+		g += y * num_days  # update values
+		within_days -= num_days
+
+	return g >= num_gallons
+
+
+with open("loan.in") as read:
+	num_gallons, within_days, at_least = map(int, read.readline().split())
+
+# binary search on the largest X
+low = 1
+high = 10**12
+while low < high:
+	mid = (low + high + 1) // 2
+	if can_repay(num_gallons, within_days, at_least, mid):
+		low = mid
+	else:
+		high = mid - 1
+
+print(low, file=open("loan.out", "w"))  # low == high, we can output either
+```
+
+</PySection>
+</LanguageSection>

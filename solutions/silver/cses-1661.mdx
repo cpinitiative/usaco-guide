@@ -1,0 +1,138 @@
+---
+id: cses-1661
+source: CSES
+title: Subarray Sums II
+author: Qi Wang, Brad Ma
+---
+
+## Problem
+
+We are asked to find the number of subarrays that sum up to $x$ given the size
+of the array and its elements.
+
+## Explanation
+
+We can have a map that keeps track of the prefix sums. At each index $i$, we can
+count the number of prefixes with sum equal to $\texttt{prefixSum}[i] - x$. This
+will ensure that we can remove a prefix from our current prefix to build a
+subarray with sum $x$. After every iteration, we just add our new prefix sum to
+the map.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+/**
+ * @author Qi Wang
+ * (detemplifying courtesy to Kevin Sheng)
+ */
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int N, X;
+	cin >> N >> X;
+	vector<int> T(N);
+	for (int i = 0; i < N; i++) { cin >> T[i]; }
+
+	long long prefix_sum = 0;
+	long long ans = 0;
+	map<long long, int> sums;
+	sums[0] = 1;
+	for (int x : T) {
+		prefix_sum += x;
+		/*
+		 * If there is a subarray with a prefix sum of prefix_sum - X,
+		 * we can exclude it from our current subarray to get the desired sum.
+		 * Thus, we can add the number of those subarrays to our answer.
+		 */
+		ans += sums[prefix_sum - X];
+		// Increment the amount of prefix sums with a sum of prefix_sum
+		sums[prefix_sum]++;
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SubarraySumsII {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int arraySize = io.nextInt();
+		int target = io.nextInt();
+		int[] array = new int[arraySize];
+
+		for (int x = 0; x < arraySize; x++) { array[x] = io.nextInt(); }
+
+		long prefixSum = 0;
+		long answer = 0;
+		Map<Long, Integer> sums = new HashMap<>();
+		sums.put((long)0, 1);
+
+		for (int x : array) {
+			prefixSum += x;
+			/*
+			 * If there is a subarray with a prefix sum of prefix_sum - X,
+			 * we can exclude it from our current subarray to get the desired
+			 * sum. Thus, we can add the number of those subarrays to our
+			 * answer.
+			 */
+			if (sums.containsKey(prefixSum -
+			                     target)) {  // check if it is in our map
+				answer += sums.get(prefixSum - target);
+			}
+
+			// Increment the amount of prefix sums with a sum of prefix_sum
+			if (!sums.containsKey(prefixSum)) {  // not yet in map, so add it
+				sums.put(prefixSum, 1);
+			} else {  // already in map, add one to it
+				sums.put(prefixSum, sums.get(prefixSum) + 1);
+			}
+		}
+		io.println(answer);
+		io.close();
+	}
+	// CodeSnip{Kattio};
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def main():
+
+	N, X = map(int, input().split())
+	prefix, res = 0, 0
+	mp = {0: 1}  # mp[0] = 1
+
+	for x in input().split():
+		prefix += int(x)
+		res += mp.get(prefix - X, 0)  # if not in dict, return 0
+		mp[prefix] = mp.get(prefix, 0) + 1
+	print(res)
+
+
+main()
+```
+</PySection>
+
+</LanguageSection>

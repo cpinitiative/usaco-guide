@@ -1,0 +1,325 @@
+---
+id: usaco-969
+source: USACO Gold 2019 December
+title: Milk Pumping
+author: Qi Wang, Ryan Chou, George Pong
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_pump_gold_dec19.html)
+
+The larger the denominator, the smaller the result will be. We also want to minimize the cost of the path. This hints at a shortest-path problem. Due to the low number of junction points, we can fix the minimum flow rate and search for the lowest cost path we could take.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M^2 \log N + MN)$
+
+<LanguageSection>
+
+<CPPSection>
+
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge {
+	int v, c, fl;
+};
+
+int n, m;
+const int PRECISION = 1e6;
+vector<vector<Edge>> adj;
+
+int dijkstra(int minf) {
+	priority_queue<pair<int, int>> pq;
+	vector<int> cost(n, INT32_MAX);
+	vector<bool> visited(n, false);
+
+	cost[0] = 0;
+	pq.push({0, 0});
+
+	while (!pq.empty()) {
+		pair<int, int> nxt = pq.top();
+		pq.pop();
+
+		if (nxt.second != cost[nxt.first] || visited[nxt.first]) { continue; }
+
+		for (Edge u : adj[nxt.first]) {
+			int ct = u.c + nxt.second;
+
+			/*
+			 * if the path has a flow value less
+			 * than our minimum, we can't consider it
+			 */
+			if (u.fl < minf || visited[u.v]) { continue; }
+
+			// path more optimal
+			if (cost[u.v] > ct) {
+				cost[u.v] = ct;
+				pq.push({u.v, ct});
+			}
+		}
+	}
+	return cost[n - 1] == INT32_MAX ? -1 : cost[n - 1];
+}
+
+int main() {
+	freopen("pump.in", "r", stdin);
+	freopen("pump.out", "w", stdout);
+
+	cin >> n >> m;
+
+	adj.resize(n);
+	vector<int> flows;
+	for (int i = 0; i < m; i++) {
+		int u, v, c, fl;
+		cin >> u >> v >> c >> fl;
+
+		flows.push_back(fl);
+		adj[--u].push_back({--v, c, fl});
+		adj[v].push_back({u, c, fl});
+	}
+
+	int ans = -1;
+	// we only have to consider the flow values given to us
+	for (int flow : flows) {
+		int cur = dijkstra(flow);
+
+		// can't complete this path
+		if (cur == -1) { continue; }
+		double ratio = double(flow) / double(cur);
+		ans = max(ans, (int)(ratio * PRECISION));
+	}
+	cout << ans << '\n';
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+import heapq
+
+with open("pump.in", "r") as infile:
+	n, m = map(int, infile.readline().split())
+
+	graph = [[] for _ in range(n)]
+	flow_rates = []
+
+	for _ in range(m):
+		a, b, c, f = map(int, infile.readline().split())
+		graph[a - 1].append((b - 1, c, f))
+		graph[b - 1].append((a - 1, c, f))
+		flow_rates.append(f)
+
+
+def dijkstra(flow_rate: int) -> float:
+
+	cost = [float("inf")] * n
+	cost[0] = 0  # start at FJ's farm
+	queue = [(0, 0)]
+	completed = set()
+
+	while queue:
+		curr_cost, curr_node = heapq.heappop(queue)
+
+		if curr_node in completed:
+			continue
+		completed.add(curr_node)
+
+		for adj_node, pipe_cost, pipe_flow in graph[curr_node]:
+			# we ignore all routes with flow rates less than our set rate
+			if pipe_flow < flow_rate:
+				continue
+			new_cost = curr_cost + pipe_cost
+			if new_cost < cost[adj_node]:
+				cost[adj_node] = new_cost
+				heapq.heappush(queue, (cost[adj_node], adj_node))
+
+	return 0 if cost[n - 1] == float("inf") else flow_rate / cost[n - 1]
+
+
+max_worth = 0
+for flow_rate in flow_rates:
+	worth = dijkstra(flow_rate)
+	if worth > max_worth:
+		max_worth = worth
+
+print(int(max_worth * 10**6), file=open("pump.out", "w"))
+```
+
+</PySection>
+
+<JavaSection>
+
+**Time Complexity:** $\mathcal{O}(M \log N + N)$
+
+```java
+// Created by Qi Wang
+import java.io.*;
+import java.util.*;
+
+public class pump {
+	static int N;
+	static int M;
+	static List<Node>[] adjList;
+	static boolean[] vist;
+	static int[] costs;
+	static int max = Integer.MIN_VALUE;
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws IOException {
+		InputReader in = new InputReader("pump.in");
+		N = in.nextInt();
+		M = in.nextInt();
+
+		adjList = new List[N];
+
+		for (int i = 0; i < N; i++) { adjList[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < M; i++) {
+			int from = in.nextInt() - 1;
+			int to = in.nextInt() - 1;
+			int cost = in.nextInt();
+			int flow = in.nextInt();
+
+			adjList[from].add(new Node(to, cost, flow));
+			adjList[to].add(new Node(from, cost, flow));
+		}
+
+		// Since flow is 1000 at most, we can just iterate through every value.
+		// Or you can just test the flow values present in testcase.
+		for (int minF = 0; minF <= 1000; minF++) {
+			costs = new int[N];
+			Arrays.fill(costs, Integer.MAX_VALUE);
+			vist = new boolean[N];
+			// Running dijkstra with the min flow that we set.
+			int[] res = dijkstra(minF);
+			// Failed getting to the destination
+			if (res[0] < 0) continue;
+			double frac = (double)res[1] / res[0];
+			// Maxing so we have the maximal answer.
+			max = Math.max(max, (int)Math.floor(frac * 1e6));
+		}
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("pump.out")));
+		out.println(max);
+		out.close();
+	}
+
+	public static int[] dijkstra(int minF) {
+		PriorityQueue<Node> pq = new PriorityQueue<>();
+		int min = Integer.MAX_VALUE;
+		pq.add(new Node(0, 0, 0));
+		costs[0] = 0;
+		while (!pq.isEmpty()) {
+			Node cur = pq.poll();
+			int n = cur.No;
+
+			if (vist[n]) continue;
+			vist[n] = true;
+
+			for (int i = 0; i < adjList[n].size(); i++) {
+				int t = adjList[n].get(i).No;
+				int c = adjList[n].get(i).c + cur.c;
+
+				if (adjList[n].get(i).f < minF) continue;
+				if (vist[t]) continue;
+
+				if (costs[t] > c) {
+					costs[t] = c;
+					min = Math.min(min, adjList[n].get(i).f);
+					pq.add(new Node(t, c, adjList[n].get(i).f));
+				}
+			}
+		}
+		return new int[] {costs[N - 1] == Integer.MAX_VALUE ? -1 : costs[N - 1],
+		                  min};
+	}
+
+	private static class Node implements Comparable {
+		int No;
+		int c;
+		int f;
+		public Node(int n, int c, int f) {
+			No = n;
+			this.c = c;
+			this.f = f;
+		}
+
+		@Override
+		public int compareTo(Object o) {
+			return c - ((Node)o).c;
+		}
+
+		@Override
+		public String toString() {
+			return No + " " + c + " " + f;
+		}
+	}
+
+	private static class InputReader {
+		public BufferedReader reader;
+		public StringTokenizer tokenizer;
+
+		public InputReader() {
+			try {
+				reader =
+				    new BufferedReader(new InputStreamReader(System.in), 32768);
+			} catch (Exception e) {
+				throw new NullPointerException("Could not create input stream");
+			}
+		}
+
+		public InputReader(String fileName) {
+			try {
+				reader = new BufferedReader(new FileReader(new File(fileName)),
+				                            32768);
+			} catch (Exception ex) {
+				throw new NullPointerException(
+				    "Input file does not exist! Put it in the project folder.");
+			}
+			tokenizer = null;
+		}
+
+		public String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) { throw new RuntimeException(e); }
+			}
+			return tokenizer.nextToken();
+		}
+
+		public boolean hasNextInt() throws IOException {
+			return reader.ready();
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+
+		public double nextDouble() { return Double.parseDouble(next()); }
+
+		public long nextLong() { return Long.parseLong(next()); }
+
+		public char nextChar() { return next().charAt(0); }
+
+		/**
+		 * When you call next(), that entire line will be skipped.
+		 * No flushing buffers.
+		 * Doesn't work when you want to scan the remaining line.
+		 *
+		 * @return entire line
+		 */
+
+		public String nextLine() {
+			String str = "";
+			try {
+				str = reader.readLine();
+				tokenizer = null;
+			} catch (IOException e) { throw new RuntimeException(e); }
+			return str;
+		}
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

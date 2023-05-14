@@ -42,18 +42,16 @@ size of $i$.
 <CPPSection>
 
 ```cpp
-const int MX = 2e5+5;
+const int MX = 2e5 + 5;
 vector<int> adj[MX];
 int timer = 0, st[MX], en[MX];
 
 void dfs(int node, int parent) {
 	st[node] = timer++;
 	for (int i : adj[node]) {
-		if (i != parent) {
-			dfs(i, node);
-		}
+		if (i != parent) { dfs(i, node); }
 	}
-	en[node] = timer-1;
+	en[node] = timer - 1;
 }
 ```
 
@@ -65,9 +63,9 @@ void dfs(int node, int parent) {
 public static void dfs(int i, int p) {
 	st[i] = timer++;
 	for (int next : g[i]) {
-		if(next != p) dfs(next, i);
+		if (next != p) dfs(next, i);
 	}
-	en[i] = timer-1;
+	en[i] = timer - 1;
 }
 ```
 
@@ -92,7 +90,7 @@ public static void dfs(int i, int p) {
 Our example input corresponds to the following graph:
 
 <center>
-	
+
 <svg
     width={747}
     height={532}
@@ -162,7 +160,7 @@ Our example input corresponds to the following graph:
       strokeWidth={6}
     />
   </svg>
-	
+
 </center>
 
 Before the DFS, our $\texttt{st}$ and $\texttt{en}$ arrays are initialized with
@@ -406,28 +404,35 @@ Assumes that `dfs()` code is included. Uses a segment tree.
 ```cpp
 /**
  * Description: 1D point update, range query where \texttt{comb} is
-	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
+ * any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
  * Time: O(\log N)
  * Source:
-	* http://codeforces.com/blog/entry/18051
-	* KACTL
+ * http://codeforces.com/blog/entry/18051
+ * KACTL
  * Verification: SPOJ Fenwick
  */
 
-template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return a+b; }
-	int n; vector<T> seg;
-	void init(int _n) { n = _n; seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
-	void upd(int p, T val) { // set val at position p
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-	T query(int l, int r) {	// sum on interval [l, r]
+template <class T> struct Seg {  // comb(ID,b) = b
+	const T ID = 0;
+	T comb(T a, T b) { return a + b; }
+	int n;
+	vector<T> seg;
+	void init(int _n) {
+		n = _n;
+		seg.assign(2 * n, ID);
+	}
+	void pull(int p) { seg[p] = comb(seg[2 * p], seg[2 * p + 1]); }
+	void upd(int p, T val) {  // set val at position p
+		seg[p += n] = val;
+		for (p /= 2; p; p /= 2) pull(p);
+	}
+	T query(int l, int r) {  // sum on interval [l, r]
 		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra,seg[l++]);
-			if (r&1) rb = comb(seg[--r],rb);
+		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if (l & 1) ra = comb(ra, seg[l++]);
+			if (r & 1) rb = comb(seg[--r], rb);
 		}
-		return comb(ra,rb);
+		return comb(ra, rb);
 	}
 };
 
@@ -435,23 +440,28 @@ Seg<ll> S;
 int v[MX];
 
 int main() {
-	int n,q; cin >> n >> q;
-	FOR(i,1,n+1) cin >> v[i];
-	F0R(i,n-1) {
-		int a,b; cin >> a >> b;
+	int n, q;
+	cin >> n >> q;
+	FOR(i, 1, n + 1) cin >> v[i];
+	F0R(i, n - 1) {
+		int a, b;
+		cin >> a >> b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
-	dfs(1,0);
+	dfs(1, 0);
 	S.init(n);
-	FOR(i,1,n+1) S.upd(st[i],v[i]);
-	F0R(i,q) {
-		int t; cin >> t;
+	FOR(i, 1, n + 1) S.upd(st[i], v[i]);
+	F0R(i, q) {
+		int t;
+		cin >> t;
 		if (t == 1) {
-			int s,x; cin >> s >> x;
-			S.upd(st[s],x);
+			int s, x;
+			cin >> s >> x;
+			S.upd(st[s], x);
 		} else {
-			int s; cin >> s;
-			cout << S.query(st[s],en[s]) << "\n";
+			int s;
+			cin >> s;
+			cout << S.query(st[s], en[s]) << "\n";
 		}
 	}
 }
@@ -462,8 +472,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	public static int[] st;
@@ -471,59 +481,61 @@ public class Main {
 	public static int timer, n;
 	public static ArrayList<Integer> g[];
 
-	//Segtree code
+	// Segtree code
 	public static final int N = (int)1e5;  // limit for array size
-	public static long t[] = new long[2*N];
+	public static long t[] = new long[2 * N];
 
 	public static void update(int p, long value) {  // set value at position p
-		for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
+		for (t[p += n] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
 	}
 
-	public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
+	public static long query(int l,
+	                         int r) {  // sum on interval [l, r) (0-INDEXED)
 		long res = 0;
 		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-			if ((l&1) != 0) res += t[l++];
-			if ((r&1) != 0) res += t[--r];
+			if ((l & 1) != 0) res += t[l++];
+			if ((r & 1) != 0) res += t[--r];
 		}
 		return res;
 	}
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer str = new StringTokenizer(br.readLine());
 		n = Integer.parseInt(str.nextToken());
-      		int q = Integer.parseInt(str.nextToken());
-      		int[] val = new int[n+1];
-      		g = new ArrayList[n+1];
-      		str = new StringTokenizer(br.readLine());
-      		for (int i = 1; i <= n; i++) {
-         		g[i] = new ArrayList<Integer>();
-         		val[i] = Integer.parseInt(str.nextToken());
-      		}
-      		st = new int[n+1]; en = new int[n+1]; timer = 0;
-      		for (int i = 0; i < n-1; i++) {
-         		str = new StringTokenizer(br.readLine());
-         		int a = Integer.parseInt(str.nextToken());
-         		int b = Integer.parseInt(str.nextToken());
-         		g[a].add(b);
-         		g[b].add(a);
-      		}
-      		dfs(1, 0);
-      		for (int i = 1; i <= n; i++) {
-         		update(st[i], val[i]);
-      		}
-      		for (int i = 0; i < q; i++) {
-         		str = new StringTokenizer(br.readLine());
-         		int a = Integer.parseInt(str.nextToken());
-			if(a == 1) {
+		int q = Integer.parseInt(str.nextToken());
+		int[] val = new int[n + 1];
+		g = new ArrayList[n + 1];
+		str = new StringTokenizer(br.readLine());
+		for (int i = 1; i <= n; i++) {
+			g[i] = new ArrayList<Integer>();
+			val[i] = Integer.parseInt(str.nextToken());
+		}
+		st = new int[n + 1];
+		en = new int[n + 1];
+		timer = 0;
+		for (int i = 0; i < n - 1; i++) {
+			str = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(str.nextToken());
+			int b = Integer.parseInt(str.nextToken());
+			g[a].add(b);
+			g[b].add(a);
+		}
+		dfs(1, 0);
+		for (int i = 1; i <= n; i++) { update(st[i], val[i]); }
+		for (int i = 0; i < q; i++) {
+			str = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(str.nextToken());
+			if (a == 1) {
 				int b = Integer.parseInt(str.nextToken());
 				int c = Integer.parseInt(str.nextToken());
 				update(st[b], c);
 			} else {
 				int b = Integer.parseInt(str.nextToken());
-				System.out.println(query(st[b], en[b]+1));
+				System.out.println(query(st[b], en[b] + 1));
 			}
-      		}
+		}
 	}
 }
 ```
@@ -569,13 +581,13 @@ public class Main {
 <CPPSection>
 
 ```cpp
-int n; // The number of nodes in the graph
+int n;  // The number of nodes in the graph
 vector<int> graph[100000];
 int timer = 0, tin[100000], euler_tour[200000];
-int segtree[800000]; // Segment tree for RMQ
+int segtree[800000];  // Segment tree for RMQ
 
 void dfs(int node = 0, int parent = -1) {
-	tin[node] = timer; // The time when we first visit a node
+	tin[node] = timer;  // The time when we first visit a node
 	euler_tour[timer++] = node;
 	for (int i : graph[node]) {
 		if (i != parent) {
@@ -606,7 +618,8 @@ int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
 	if (l > b || r < a) return -1;
 	if (l >= a && r <= b) return segtree[node];
 	int mid = (l + r) / 2;
-	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
+	return mn_tin(query(a, b, node * 2, l, mid),
+	              query(a, b, node * 2 + 1, mid + 1, r));
 }
 
 // Make sure you run $dfs` and `build()` before you run this
@@ -621,51 +634,51 @@ int lca(int a, int b) {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class LCA {
 	public static int[] euler_tour, tin;
 	public static int timer, size, N;
 	public static ArrayList<Integer> g[];
 
-   	//Segtree code
+	// Segtree code
 	public static final int maxsize = (int)1e7;  // limit for array size
 	public static int t[] = new int[maxsize];
 
 	public static void update(int p, int value) {  // set value at position p
-		for (t[p += size] = value; p > 1; p >>= 1) t[p>>1] = mn_tin(t[p], t[p^1]);
+		for (t[p += size] = value; p > 1; p >>= 1)
+			t[p >> 1] = mn_tin(t[p], t[p ^ 1]);
 	}
-	public static int query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
+	public static int query(int l,
+	                        int r) {  // sum on interval [l, r) (0-INDEXED)
 		int res = N;
 		for (l += size, r += size; l < r; l >>= 1, r >>= 1) {
-			if ((l&1) != 0) res = mn_tin(res, t[l++]);
-			if ((r&1) != 0) res = mn_tin(res, t[--r]);
+			if ((l & 1) != 0) res = mn_tin(res, t[l++]);
+			if ((r & 1) != 0) res = mn_tin(res, t[--r]);
 		}
 		return res;
 	}
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer str = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(str.nextToken());
 		int Q = Integer.parseInt(str.nextToken());
-		int[] val = new int[N+1];
-		g = new ArrayList[N+1];
+		int[] val = new int[N + 1];
+		g = new ArrayList[N + 1];
 		str = new StringTokenizer(br.readLine());
-		for (int i = 1; i <= N; i++) {
-			g[i] = new ArrayList<Integer>();
-		}
+		for (int i = 1; i <= N; i++) { g[i] = new ArrayList<Integer>(); }
 		for (int i = 2; i <= N; i++) {
 			int a = Integer.parseInt(str.nextToken());
 			g[i].add(a);
 			g[a].add(i);
 		}
-		euler_tour = new int[2*N-1]; tin = new int[N+1];
+		euler_tour = new int[2 * N - 1];
+		tin = new int[N + 1];
 		dfs(1, 0);
-		size = 2*N-1;
-		for (int i = 0; i < 2*N-1; i++) {
-			update(i, euler_tour[i]);
-		}
+		size = 2 * N - 1;
+		for (int i = 0; i < 2 * N - 1; i++) { update(i, euler_tour[i]); }
 		for (int i = 0; i < Q; i++) {
 			str = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(str.nextToken());
@@ -677,21 +690,19 @@ public class LCA {
 		tin[i] = timer;
 		euler_tour[timer++] = i;
 		for (int next : g[i]) {
-			if(next != p){
+			if (next != p) {
 				dfs(next, i);
 				euler_tour[timer++] = i;
 			}
 		}
 	}
 	public static int lca(int a, int b) {
-		if(tin[a] > tin[b]) {
+		if (tin[a] > tin[b]) {
 			int temp = a;
 			a = b;
 			b = temp;
 		}
-		if(a == b) {
-			return a;
-		}
+		if (a == b) { return a; }
 		return query(tin[a], tin[b]);
 	}
 	public static int mn_tin(int x, int y) {

@@ -135,7 +135,14 @@ const queries = [
           existingProblem.tags = [
             ...new Set([...existingProblem.tags, ...(node.tags || [])]),
           ];
-          if (moduleInfo) existingProblem.problemModules.push(moduleInfo);
+          if (
+            moduleInfo &&
+            !existingProblem.problemModules.find(
+              module => module.id === moduleInfo.id
+            )
+          ) {
+            existingProblem.problemModules.push(moduleInfo);
+          }
         } else {
           res.push({
             objectID: node.uniqueId,

@@ -1,0 +1,283 @@
+---
+id: usaco-640
+source: USACO Bronze 2016 Open
+title: Bull in a China Shop
+author: Maggie Liu, David Zhang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_bcs_bronze_open16.html)
+
+We can loop through all possible pairs of pieces and shift them to check if they
+can make the original figurine. Since we cannot shift a piece so any '#' fall
+outside the $N \times N$ grid, we need to find the sides of the pieces to
+determine how far to shift them.
+
+<Warning>
+
+The official solution doesn't check if any '#' fall outside the $N \times N$
+grid.
+
+</Warning>
+
+As we iterate the pieces, we find the left, right, top and bottom sides of the
+piece and store them in the $s$ array. When we are shifting, we shift
+$\texttt{piece[i]}$ $\texttt{idy}$ units to the left and $\texttt{idx}$ units
+up, and shift $\texttt{piece[j]}$ $\texttt{jdy}$ units to the left and
+$\texttt{jdx}$ units up. This will send the piece at
+$(x + \texttt{idx}, y + \texttt{idy})$ to $(x, y)$ and the piece at
+$(x + \texttt{jdx}, y + \texttt{jdy})$ to $(x, y)$. So, we see that
+$\texttt{idy}$ must be bounded by $\texttt{right} - n + 1$ and $\texttt{left}$,
+and $\texttt{idx}$ must be bounded by $\texttt{bottom} - n + 1$ and
+$\texttt{top}$, with $\texttt{jdy}$ and $\texttt{jdx}$ bounded similarly.
+Because of that, every '#' will fall inside the $N \times N$ grid.
+
+Once we have shifted the pieces, if there are two '#' in the same place, or if
+the result of superimposing the pieces is not the same as the original figurine
+($\texttt{pieces[0]}$), then this shift will not work.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K^2 \cdot N^6)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <vector>
+using namespace std;
+bool check(int piece, int x, int y);
+
+int n;
+bool pieces[11][8][8];
+vector<int> s[11];
+int main() {
+	freopen("bcs.in", "r", stdin);
+	freopen("bcs.out", "w", stdout);
+	int k;
+	cin >> n >> k;
+	char c;
+	int left, right, top, bottom;
+	for (int i = 0; i <= k; i++) {
+		left = n - 1;
+		right = 0;
+		top = n - 1;
+		bottom = 0;
+		for (int j = 0; j < n; j++) {
+			for (int l = 0; l < n; l++) {
+				cin >> c;
+				pieces[i][j][l] = (c == '#');
+				// find the sides of the piece
+				if (pieces[i][j][l]) {
+					bottom = max(bottom, j);
+					top = min(top, j);
+					right = max(right, l);
+					left = min(left, l);
+				}
+			}
+		}
+		s[i] = {left, right, top, bottom};
+	}
+
+	// try all the pieces and shifts to find the correct one
+	for (int i = 1; i <= k; i++) {
+		for (int j = i + 1; j <= k; j++) {
+			for (int idx = s[i][3] - n + 1; idx <= s[i][2]; idx++) {
+				for (int idy = s[i][1] - n + 1; idy <= s[i][0]; idy++) {
+					for (int jdx = s[j][3] - n + 1; jdx <= s[j][2]; jdx++) {
+						for (int jdy = s[j][1] - n + 1; jdy <= s[j][0]; jdy++) {
+							bool good = true;
+							for (int x = 0; x < n; x++) {
+								for (int y = 0; y < n; y++) {
+									bool ipiece = check(i, x + idx, y + idy);
+									bool jpiece = check(j, x + jdx, y + jdy);
+									// two '#' are in the same place
+									if (ipiece && jpiece) {
+										good = false;
+										break;
+									}
+									// the result doesn't match the figurine
+									if (pieces[0][x][y] != (ipiece || jpiece)) {
+										good = false;
+										break;
+									}
+								}
+								if (!good) { break; }
+							}
+							if (good) {
+								cout << i << " " << j << endl;
+								return 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// check if a piece is in bounds and is '#'
+bool check(int piece, int x, int y) {
+	return x >= 0 && x < n && y >= 0 && y < n && pieces[piece][x][y];
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class BCS {
+	public static boolean pieces[][][];
+	public static int n;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("bcs");
+
+		pieces = new boolean[11][8][8];
+		int[][] s = new int[11][4];
+		n = io.nextInt();
+		int k = io.nextInt();
+
+		for (int i = 0; i <= k; i++) {
+			int left = n - 1;
+			int right = 0;
+			int top = n - 1;
+			int bottom = 0;
+			for (int j = 0; j < n; j++) {
+				String str = io.next();
+				for (int l = 0; l < n; l++) {
+					char c = str.charAt(l);
+					pieces[i][j][l] = (c == '#');
+					// find the sides of the piece
+					if (pieces[i][j][l]) {
+						bottom = Math.max(bottom, j);
+						top = Math.min(top, j);
+						right = Math.max(right, l);
+						left = Math.min(left, l);
+					}
+				}
+			}
+			s[i] = new int[] {left, right, top, bottom};
+		}
+
+		// try all the pieces and shifts to find the correct one
+		for (int i = 1; i <= k; i++) {
+			for (int j = i + 1; j <= k; j++) {
+				for (int idx = s[i][3] - n + 1; idx <= s[i][2]; idx++) {
+					for (int idy = s[i][1] - n + 1; idy <= s[i][0]; idy++) {
+						for (int jdx = s[j][3] - n + 1; jdx <= s[j][2]; jdx++) {
+							for (int jdy = s[j][1] - n + 1; jdy <= s[j][0];
+							     jdy++) {
+								boolean good = true;
+								for (int x = 0; x < n; x++) {
+									for (int y = 0; y < n; y++) {
+										boolean ipiece =
+										    check(i, x + idx, y + idy);
+										boolean jpiece =
+										    check(j, x + jdx, y + jdy);
+										// two '#' are in the same place
+										if (ipiece && jpiece) {
+											good = false;
+											break;
+										}
+										// the result doesn't match the figurine
+										if (pieces[0][x][y] !=
+										    (ipiece || jpiece)) {
+											good = false;
+											break;
+										}
+									}
+									if (!good) { break; }
+								}
+								if (good) {
+									io.println(i + " " + j);
+									System.exit(0);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		io.close();
+	}
+
+	/** checks if a piece location is in bounds and is '#' */
+	static boolean check(int piece, int x, int y) {
+		return x >= 0 && x < n && y >= 0 && y < n && pieces[piece][x][y];
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<PySection>
+```py
+from sys import exit
+
+with open("bcs.in") as read:
+	n, k = [int(i) for i in read.readline().split()]
+	# First piece in this array is the one we're trying to match to
+	pieces = []
+	sides = []
+	for i in range(k + 1):
+		top = n - 1
+		bottom = 0
+		left = n - 1
+		right = 0
+		piece = [[False for _ in range(n)] for _ in range(n)]
+
+		for r in range(n):
+			row = read.readline()
+			for c in range(n):
+				piece[r][c] = row[c] == "#"
+				if piece[r][c]:
+					bottom = max(bottom, r)
+					top = min(top, r)
+					left = min(left, c)
+					right = max(right, c)
+
+		pieces.append(piece)
+		sides.append((left, right, top, bottom))
+
+
+def check(piece: [[bool]], x: int, y: int) -> bool:
+	"""checks if a piece location is in bounds and is '#'"""
+	return 0 <= x < len(piece) and 0 <= y < len(piece[x]) and piece[x][y]
+
+
+target = pieces[0]
+# Try all the pieces & shifts to find the correct one
+for i in range(1, k + 1):
+	for j in range(1, k + 1):
+		for idx in range(sides[i][3] - n + 1, sides[i][2] + 1):
+			for idy in range(sides[i][1] - n + 1, sides[i][0] + 1):
+				for jdx in range(sides[j][3] - n + 1, sides[j][2] + 1):
+					for jdy in range(sides[j][1] - n + 1, sides[j][0] + 1):
+						good = True
+						for x in range(n):
+							for y in range(n):
+								ipiece = check(pieces[i], x + idx, y + idy)
+								jpiece = check(pieces[j], x + jdx, y + jdy)
+								# two '#' are in the same place
+								if ipiece and jpiece:
+									good = False
+									break
+								# the result doesn't match the figurine
+								if target[x][y] != (ipiece or jpiece):
+									good = False
+									break
+
+							if not good:
+								break
+
+						if good:
+							print(i, j, file=open("bcs.out", "w"))
+							exit()
+```
+</PySection>
+</LanguageSection>

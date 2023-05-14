@@ -1,0 +1,96 @@
+---
+id: cf-1225D
+source: CF
+title: Power Products
+author: Jesse Choe
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/70898)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log ^2N \sqrt N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using pi = pair<int, int>;
+
+int exponent;
+
+/**
+ * We can define a prime factorization pair as the following:
+ * (a, b mod k) represents a prime number (a) to the power of (b mod k).
+ */
+vector<pi> factor(int number) {
+	map<int, int> factors;
+	for (int i = 2; i * i <= number; i++) {
+		while (number % i == 0) {
+			number /= i;
+			factors[i]++;
+		}
+	}
+	if (number > 1) { factors[number]++; }
+	vector<pi> prime_factorization;
+	for (pi primes : factors) {
+		if (primes.second % exponent > 0) {
+			prime_factorization.push_back(
+			    {primes.first, primes.second % exponent});
+		}
+	}
+	return prime_factorization;
+}
+
+/**
+ * Let's define the inverse of a prime factorization pair as follows:
+ * Given the pair (a, b), where a represents the prime number and
+ * b represents the exponent mod k, the inverse of (a, b) would be
+ * precisely (a, k - b) since a ^ b * a ^ (k - b) = a ^ k.
+ */
+vector<pi> find_factor_inverse(vector<pi> original) {
+	int prime_num = original.size();
+	vector<pi> inverse(prime_num);
+	for (int i = 0; i < prime_num; i++) {
+		inverse[i].first = original[i].first;
+		inverse[i].second = exponent - original[i].second;
+	}
+	return inverse;
+}
+
+int main() {
+	int size;
+	cin >> size >> exponent;
+	/*
+	 * Store the prime factorization pairs in an std::map
+	 * so we can check how many pairs can be multiplied
+	 * to a given pair so that it becomes some number x ^ k
+	 * quickly.
+	 */
+	map<vector<pi>, int> factor_frequency;
+	vector<int> arr(size);
+	for (int i = 0; i < size; i++) {
+		cin >> arr[i];
+		factor_frequency[factor(arr[i])]++;
+	}
+	ll num_of_pairs = 0;
+	for (int i = 0; i < size; i++) {
+		if (factor(arr[i]) == find_factor_inverse(factor(arr[i]))) {
+			// We don't want to count itself, so we do the frequency - 1
+			num_of_pairs += (factor_frequency[factor(arr[i])] - 1);
+		} else {
+			num_of_pairs +=
+			    factor_frequency[find_factor_inverse(factor(arr[i]))];
+		}
+	}
+	// We divide the number of pairs by 2 so that we don't overcount
+	cout << num_of_pairs / 2 << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

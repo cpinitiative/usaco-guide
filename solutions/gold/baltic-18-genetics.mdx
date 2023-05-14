@@ -1,0 +1,108 @@
+---
+id: baltic-18-genetics
+source: Baltic OI 2018
+title: Genetics
+author: Kevin Sheng
+---
+
+[Official Analysis](https://boi2018.progolymp.se/spoiler-day2.pdf)
+
+## Explanation
+
+A naive method would be to iterate through each pair of clones and calculate the number
+of positions with different genomes in near $\mathcal{O}(1)$ time.
+This seems to be virtually impossible, so we should probably try a different method.
+
+What if we somehow managed to check each clone against all the other clones at the same time?
+This way we could iterate through each character and maintain an $\mathcal{O}(N^2)$ time complexity.
+
+We can precalculate for each position the number of `A`s, `T`s, `C`s, and `G`s that all the clones have.
+Then, when checking a single subject, we see how many of the other genomes have been found at that position
+and sum up all the differences at the end.
+
+However, this brings up another problem: there's no way to check which genome belongs to which clone!
+If our subject differs from one clone by $k-1$ positions and from another clone by $k+1$ positions, our
+current algorithm would have no idea that they aren't the actual villain, as the total difference of the
+two is still $2k$, the same as if the subject differed from both by $k$ positions.
+
+To address this problem, we can assign each clone a random weight $R_i$.
+Then, instead of just calculating the *number* of clones with a certain genome at a certain position,
+we calculate the sum of the weights of these clones.
+This allows us to differentiate between a genome difference due to clone $A$ versus a genome difference due to clone $B$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <random>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const vector<char> DNA{'A', 'T', 'C', 'G'};
+
+int main() {
+	int dna_num, seq_len;
+	int diff_num;
+	std::cin >> dna_num >> seq_len >> diff_num;
+
+	vector<vector<char>> dna(dna_num, vector<char>(seq_len));
+	for (int d = 0; d < dna_num; d++) {
+		for (int i = 0; i < seq_len; i++) { std::cin >> dna[d][i]; }
+	}
+
+	// generate random 32-bit weights for each of the clones
+	std::random_device rd;
+	std::mt19937 gen(42069);
+	std::uniform_int_distribution<> distr(1, INT32_MAX);
+	vector<long long> weights(dna_num);
+	for (int d = 0; d < dna_num; d++) { weights[d] = distr(gen); }
+	// the sum of all the clones' weights
+	long long weight_sum = std::accumulate(weights.begin(), weights.end(), 0LL);
+
+	/*
+	 * dna_eq[d][j] = the sum of all the weights of the clones
+	 * who have their jth position equal to DNA[d]
+	 */
+	vector<vector<long long>> dna_eq(DNA.size(), vector<long long>(seq_len));
+	for (int d = 0; d < DNA.size(); d++) {
+		for (int i = 0; i < dna_num; i++) {
+			for (int j = 0; j < seq_len; j++) {
+				dna_eq[d][j] += (dna[i][j] == DNA[d]) * weights[i];
+			}
+		}
+	}
+
+	for (int d = 0; d < dna_num; d++) {
+		long long missed_amt = 0;
+		for (int i = 0; i < DNA.size(); i++) {
+			for (int j = 0; j < seq_len; j++) {
+				if (dna[d][j] == DNA[i]) {
+					/*
+					 * get all the clones who DON'T share the same
+					 * genome at this position and get the sum of their weights
+					 */
+					missed_amt += weight_sum - dna_eq[i][j];
+				}
+			}
+		}
+
+		// check if this lines up with the requirements of the problem
+		if (missed_amt == (weight_sum - weights[d]) * diff_num) {
+			cout << (d + 1) << endl;
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

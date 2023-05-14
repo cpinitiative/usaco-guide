@@ -217,38 +217,40 @@ const submitProblemSuggestion = functions.https.onCall(
       }
     );
 
-    const reviewersReq = await githubAPI.get(
-      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`
-    );
-
-    const reviewersToRemove = reviewersReq.data.users
-      .map(user => user.login)
-      .filter(user => !problemSuggestionReviewers[section].includes(user));
-    const keptReviewers = reviewersReq.data.users
-      .map(user => user.login)
-      .filter(user => problemSuggestionReviewers[section].includes(user));
-    await githubAPI.delete(
-      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
-      {
-        data: {
-          reviewers: reviewersToRemove,
-          team_reviewers: reviewersReq.data.teams.map(team => team.slug),
-        },
-      }
-    );
-    if (
-      problemSuggestionReviewers[section].filter(
-        u => !keptReviewers.includes(u)
-      ).length > 0
-    ) {
-      await githubAPI.post(
+    const useProblemSuggestionReviewers = false;
+    if (useProblemSuggestionReviewers) {
+      const reviewersReq = await githubAPI.get(
+        `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`
+      );
+      const reviewersToRemove = reviewersReq.data.users
+        .map(user => user.login)
+        .filter(user => !problemSuggestionReviewers[section].includes(user));
+      const keptReviewers = reviewersReq.data.users
+        .map(user => user.login)
+        .filter(user => problemSuggestionReviewers[section].includes(user));
+      await githubAPI.delete(
         `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
         {
-          reviewers: problemSuggestionReviewers[section].filter(
-            u => !keptReviewers.includes(u)
-          ),
+          data: {
+            reviewers: reviewersToRemove,
+            team_reviewers: reviewersReq.data.teams.map(team => team.slug),
+          },
         }
       );
+      if (
+        problemSuggestionReviewers[section].filter(
+          u => !keptReviewers.includes(u)
+        ).length > 0
+      ) {
+        await githubAPI.post(
+          `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
+          {
+            reviewers: problemSuggestionReviewers[section].filter(
+              u => !keptReviewers.includes(u)
+            ),
+          }
+        );
+      }
     }
 
     // post to /issues/ because github treats all PRs as issues, so the shared features between them (such as labels) use issue api

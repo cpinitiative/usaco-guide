@@ -1,0 +1,185 @@
+---
+id: usaco-714
+source: USACO Silver 2017 February
+title: Why Did the Cow Cross the Road I
+author: Benjamin Qi, Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_helpcross_silver_feb17.html)
+
+There are multiple greedy strategies (though all of them involve
+sorting the animals by time). Here, we follow the approach described by the
+analysis.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(N \log N+C\log C)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+int main() {
+	std::ifstream read("helpcross.in");
+
+	int num_chickens, num_cows;
+	read >> num_chickens >> num_cows;
+
+	vector<int> chickens(num_chickens);
+	for (int &c : chickens) { read >> c; }
+	std::sort(chickens.begin(), chickens.end());
+
+	vector<pair<int, int>> cows(num_cows);
+	for (pair<int, int> &c : cows) { read >> c.first >> c.second; }
+	// sort by starting time, tiebreak by ending time
+	std::sort(cows.begin(), cows.end());
+
+	int num_helped = 0;
+	int cow_at = 0;
+	std::priority_queue<int> available_cows;
+	for (int c : chickens) {
+		// add all the cows whose start times now include the chicken's time
+		while (cow_at < cows.size() && cows[cow_at].first <= c) {
+			available_cows.push(-cows[cow_at].second);
+			cow_at++;
+		}
+		// remove all the ending times that end too early for the chicken
+		while (!available_cows.empty() && -available_cows.top() < c) {
+			available_cows.pop();
+		}
+		// have the cow help the chicken w/ the earliest ending time
+		if (!available_cows.empty()) {
+			num_helped++;
+			available_cows.pop();
+		}
+	}
+
+	std::ofstream("helpcross.out") << num_helped << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class HelpCross {
+	// BeginCodeSnip{Cow Class}
+	static class Cow implements Comparable<Cow> {
+		int start;
+		int end;
+
+		public Cow(int start, int end) {
+			this.start = start;
+			this.end = end;
+		}
+
+		@Override
+		public int compareTo(Cow c) {
+			return start != c.start ? start - c.start : end - c.end;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("helpcross");
+		int numChickens = io.nextInt();
+		int numCows = io.nextInt();
+
+		int[] chickens = new int[numChickens];
+		for (int c = 0; c < numChickens; c++) { chickens[c] = io.nextInt(); }
+		Arrays.sort(chickens);
+
+		Cow[] cows = new Cow[numCows];
+		for (int c = 0; c < numCows; c++) {
+			cows[c] = new Cow(io.nextInt(), io.nextInt());
+		}
+		// sort by starting time, tiebreak by ending time
+		Arrays.sort(cows);
+
+		int numHelped = 0;
+		int cowAt = 0;
+		PriorityQueue<Integer> availableCows = new PriorityQueue<>();
+		for (int c : chickens) {
+			// add all the cows whose start times now include the chicken's time
+			while (cowAt < cows.length && cows[cowAt].start <= c) {
+				availableCows.add(cows[cowAt].end);
+				cowAt++;
+			}
+			// remove all the ending times that end too early for the chicken
+			while (!availableCows.isEmpty() && availableCows.peek() < c) {
+				availableCows.remove();
+			}
+			// have the cow help the chicken w/ the earliest ending time
+			if (!availableCows.isEmpty()) {
+				numHelped++;
+				availableCows.remove();
+			}
+		}
+
+		io.println(numHelped);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import heapq
+
+with open("helpcross.in") as read:
+	num_chickens, num_cows = [int(i) for i in read.readline().split()]
+
+	chickens = [int(read.readline()) for _ in range(num_chickens)]
+
+	cows = []
+	for _ in range(num_cows):
+		cows.append(tuple(int(i) for i in read.readline().split()))
+
+chickens.sort()
+# sort by starting time, tiebreak by ending time
+cows.sort()
+
+num_helped = 0
+cow_at = 0
+available_cows = []
+for c in chickens:
+	# add all the cows whose start times now include the chicken's time
+	while cow_at < num_cows and cows[cow_at][0] <= c:
+		heapq.heappush(available_cows, cows[cow_at][1])
+		cow_at += 1
+
+	"""
+	remove all the ending times that end too early for the chicken
+	since available_cows is a heap, the first element is the smallest
+	"""
+	while available_cows and available_cows[0] < c:
+		heapq.heappop(available_cows)
+
+	# have the cow help the chicken w/ the earliest ending time
+	if available_cows:
+		num_helped += 1
+		heapq.heappop(available_cows)
+
+print(num_helped, file=open("helpcross.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

@@ -1,0 +1,98 @@
+---
+id: ioi-11-race
+source: IOI 2011
+title: Race
+author: Timothy Gao
+---
+
+[Official Analysis (Centroid Decomposition)](https://ioinformatics.org/page/ioi-2011/37)
+
+## Alternative Solution: Small to Large Merging
+
+We are tasked with finding a path with the minimum number of traversed edges such that the path sum is $s$.
+First, we root the tree arbitrarily.
+Let $\text {lca}(u, v) = w$.
+We can break $\text {path}(u, v)$ into $\text {path}(u, w)$ and $\text {path}(v, w)$.
+
+Because $w$ must be an ancestor of both $u$ and $v$, $\text {sum}(u, w) = \text {sum}(u, root) - \text {sum}(w, root)$ and $\text {sum}(v, w) = \text {sum}(v, root) - \text {sum}(w, root)$ where $\text {sum}(a, b)$ is the sum of the path betwen the 2 nodes $a$ and $b$. We can compute $\text {sum}(i, root)$ for all $i$ in $O(N)$ with a simple DFS. We also compute $\text {dist}(i, root)$ where is the number of edges between $i$ and $root$ in similar fashion.
+
+We perform small to large merging to find an $\text {lca}$ $i$ such that $\text {sum}(u, root) + \text {sum} (v, root) - 2 \cdot \text {sum}(i, root) = s$, and $\text {dist}(u, root) + \text {dist}(v, root) - 2 \cdot \text {dist}(i, root) = s$ is minimized.
+
+To accomplish this, we can use small to large merging. For each $i$, we maintain a map of key to value pair of $\text {sum}(root, j) : \text {dist}(root, j)$ for  distinct $\text {sum}(root, j)$ for all $j$ in the subtree of $i$. If there are duplicate $\text {sum}(root, j)$ we take the minimum $\text {dist}(root, j)$.
+
+As we combine the maps of two nodes, we iterate through each key-pair $(sum_s, dist_s)$ of the smaller size map, search for a key-pair $sum_l = s - sum_s$ in the larger map, and if this exists we obtain $dist_s + dist_l$ from $sum_l$. Our answer would be minimum $dist_s + dist_l$ over all mergings. During this process we also merge all key-value pairs of the smaller map.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+The log factors come from small-to-large merging and the map operations.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef pair<ll, ll> pii;
+
+#define pb push_back
+
+#define f first
+#define s second
+
+const int maxn = 2e5 + 1;
+vector<pii> adj[maxn];
+map<ll, ll> info[maxn];
+ll dist[maxn], sum[maxn];  // define these relative to root
+int N, K;
+ll ret;
+
+void precomp(int u, int p, ll c, int h) {
+	info[u][c] = h;
+	sum[u] = c;
+	dist[u] = h;
+	for (auto n : adj[u]) {
+		if (p == n.f) { continue; }
+		precomp(n.f, u, c + n.s, h + 1);
+	}
+}
+
+void small_to_large_merge(int u, int p) {
+	ll target = K + 2 * sum[u];
+	for (auto n : adj[u]) {
+		if (n.f == p) { continue; }
+		small_to_large_merge(n.f, u);
+		if (info[n.f].size() > info[u].size()) { swap(info[n.f], info[u]); }
+		for (auto i : info[n.f]) {
+			if (info[u].find(target - i.f) != info[u].end()) {
+				ret = min(ret, info[u][target - i.f] + i.s - 2 * dist[u]);
+			}
+		}
+		for (auto i : info[n.f]) {
+			if (info[u].find(i.f) == info[u].end()) {
+				info[u].insert(i);
+			} else {
+				info[u][i.f] = min(info[u][i.f], i.s);
+			}
+		}
+	}
+}
+
+int best_path(int n, int k, int edges[][2], int weights[]) {
+	if (k == 1) { return 0; }
+	N = n;
+	K = k;
+	ret = INT_MAX;
+	for (int i = 0; i < n - 1; i++) {
+		int u = edges[i][0];
+		int v = edges[i][1];
+		adj[u].pb(pii(v, weights[i]));
+		adj[v].pb(pii(u, weights[i]));
+	}
+	precomp(0, -1, 0, 0);
+	small_to_large_merge(0, -1);
+	return ret == INT_MAX ? -1 : ret;
+}
+```

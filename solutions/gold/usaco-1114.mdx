@@ -1,0 +1,138 @@
+---
+id: usaco-1114
+source: USACO Gold 2021 February
+title: Modern Art 3
+author: Neo Wang, Sofia Yang
+---
+
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_prob2_gold_feb21.html)
+
+<Spoiler title="Hint 1">
+
+For a segment of size $2$, let's break it down into two segments of size $1$.
+Notice that if both segments share the same value, then the minimum number of paintings to paint this size $2$ segment is the sum of the two size $1$ segments minus $1$.
+Otherwise, it's just the sum of those two segments.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Can you generalize this property to any segment that starts from $a$ to $b$?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Define $\texttt{dp}[i][j]$ as the minimum number of paintings to paint the range
+$[i, j]$. Then, one of two things can happen when combining ranges
+$[i, j], [j + 1][k]$:
+
+1. $A[i] == A[k]$. This means that the range $[i, k]$ has a common color for each
+   endpoint. Therefore, we can "save" a color when merging the two ranges.
+   $$
+   \texttt{dp}[i][k] = \min(\texttt{dp}[i][k], \texttt{dp}[i][j] + \texttt{dp}[j + 1][k] - 1)
+   $$
+2. $A[i] \neq A[k]$. This means that there is no common color for the endpoint.
+   Since we cannot "save" a color when merging the two intervals, simply add
+   them together.
+
+$$
+\texttt{dp}[i][k] = \min(\texttt{dp}[i][k], \texttt{dp}[i][j] + \texttt{dp}[j+1][k])
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// CodeSnip{CPP Short Template}
+
+const int MAX_N = 300;
+
+int A[MAX_N], dp[MAX_N][MAX_N];
+
+int main() {
+	setIO();
+
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) cin >> A[i];
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { dp[i][j] = MAX_N + 1; }
+	}
+
+	for (int i = 0; i < MAX_N; i++) dp[i][i] = 1;
+
+	for (int s = 0; s < n; s++) {
+		for (int i = 0; i < n - s; i++) {
+			for (int j = i; j < i + s; j++) {
+				int k = i + s;
+				if (A[i] == A[k])
+					dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
+				dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k]);
+			}
+		}
+	}
+
+	cout << dp[0][n - 1] << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ModernArt3 {
+	public static final int MAXN = 300;
+	public static int[] painting = new int[MAXN];
+	// dp[i][j] is the number of moves to paint from i to j.
+	public static int[][] dp = new int[MAXN][MAXN];
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(in.readLine());
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < N; i++) {
+			painting[i] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) { dp[i][j] = MAXN + 1; }
+		}
+		for (int i = 0; i < N; i++) { dp[i][i] = 1; }
+		for (int s = 0; s < N; s++) {
+			for (int i = 0; i < N - s; i++) {
+				for (int j = i; j < i + s; j++) {
+					int k = i + s;
+					// Merge the 2 ranges
+					if (painting[i] == painting[k]) {
+						dp[i][k] =
+						    Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
+					}
+					// Sum of the both parts
+					dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k]);
+				}
+			}
+		}
+		System.out.println(dp[0][N - 1]);
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>

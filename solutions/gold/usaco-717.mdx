@@ -1,0 +1,169 @@
+---
+id: usaco-717
+source: USACO Gold 2017 December
+title: Why Did the Cow Cross the Road
+author: Qi Wang, Jeffrey Zhang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_visitfj_gold_feb17.html)
+
+## Solution
+
+Instead of treating this as a grid problem, let us try to approach it as a graph problem with nodes and edges.
+
+We first observe that the two intermediary tiles Bessie used to travel do not actually matter because Bessie only feasts on grass tiles every 3 moves and the time to travel between adjacent tiles is a constant $T$. So we want to form a direct edge between each tile that is exactly 3 manhattan distances apart, with a weight of
+
+$\{\text{The time to feast the target grass tile}\} + 3 * T$
+
+However, if the tile Bessie just feasted on is less than 3 units (using manhattan distance) away from Farmer John's tile, then it would be more desirable for Bessie to travel to Farmer John directly than take another 3-distanced tile. So, we also form a direct edge between those two tiles with a weight of
+
+$\{\text{The manhattan distance}\} * T$
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int, int> pii;
+#define ss second
+
+// Possible directions Bessie can go to eat grass
+int dx[] = {1, 0, -1, 0, 3, 0, -3, 0, 2, 2, 1, 1, -1, -1, -2, -2};
+int dy[] = {0, 1, 0, -1, 0, 3, 0, -3, 1, -1, 2, -2, 2, -2, 1, -1};
+
+int main() {
+	ifstream fin("visitfj.in");
+
+	int n, t;
+	fin >> n >> t;
+	vector<vector<int>> field(n, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { fin >> field[i][j]; }
+	}
+
+	// 2d integer grid initialized with max values for distance
+	vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
+	// 2d boolean grid initialized with false for tracking visits
+	vector<vector<bool>> visited(n, vector<bool>(n));
+	// {distance, {row, col}}
+	priority_queue<pair<int, pii>> dijkstra;
+	dijkstra.push(make_pair(0, make_pair(0, 0)));
+	dist[0][0] = 0;
+	while (!dijkstra.empty()) {
+		int x, y;
+		tie(x, y) = dijkstra.top().ss;
+		dijkstra.pop();
+
+		// check if this coordinate has already been visited
+		if (visited[x][y]) { continue; }
+		visited[x][y] = true;
+		for (int i = 0; i < 16; i++) {
+			int newx = x + dx[i], newy = y + dy[i];
+			// checking if this new location is out of bound
+			if (newx < 0 || newx >= n || newy < 0 || newy >= n) { continue; }
+			// updating the shortest distance to this new location
+			if (dist[newx][newy] > dist[x][y] + 3 * t + field[newx][newy]) {
+				dist[newx][newy] = dist[x][y] + 3 * t + field[newx][newy];
+				dijkstra.push(
+				    make_pair(-dist[newx][newy], make_pair(newx, newy)));
+			}
+		}
+
+		int manhattan = n - x - 1 + n - y - 1;
+		if (manhattan < 3) {
+			dist[n - 1][n - 1] =
+			    min(dist[n - 1][n - 1], dist[x][y] + manhattan * t);
+		}
+	}
+
+	ofstream("visitfj.out") << dist[n - 1][n - 1] << endl;
+}
+```
+
+</CPPSection>
+
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class VisitFJ {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("visitfj");
+
+		// Possible paths cow can take
+		int[] dx = {0, 1, 2, 3, 0, 1, 2, -1, -2, -3, -1, -2, 1, -1, 0, 0};
+		int[] dy = {3, 2, 1, 0, -3, -2, -1, 2, 1, 0, -2, -1, 0, 0, 1, -1};
+
+		int N = io.nextInt();
+		int T = io.nextInt();
+
+		int[][] w = new int[N][N];
+		int[][] dist = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			Arrays.fill(dist[i], Integer.MAX_VALUE);
+			for (int j = 0; j < N; j++) { w[i][j] = io.nextInt(); }
+		}
+
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.add(new Edge(new int[] {0, 0}, 0));
+		while (!pq.isEmpty()) {
+			Edge cur = pq.poll();
+			int[] pos = cur.t;
+
+			int d = N - 1 - pos[0] + N - 1 - pos[1];
+
+			// If within 3 blocks away, update the minimum weight needed
+			if (d < 3 && d > 0) {
+				dist[N - 1][N - 1] =
+				    Math.min(dist[N - 1][N - 1], cur.w + T * d);
+			}
+
+			for (int i = 0; i < dx.length; i++) {
+				int nx = pos[0] + dx[i];
+				int ny = pos[1] + dy[i];
+
+				// Continue if new point is out of bound
+				if (nx < 0 || nx >= N || ny < 0 || ny >= N) { continue; }
+
+				int nw = cur.w + w[nx][ny] + T * 3;
+
+				// If new distance is greater than current minimum distance, it
+				// is not needed
+				if (nw > dist[nx][ny]) { continue; }
+				dist[nx][ny] = nw;
+
+				pq.add(new Edge(new int[] {nx, ny}, nw));
+			}
+		}
+
+		io.println(dist[N - 1][N - 1]);
+		io.close();
+	}
+
+	private static class Edge implements Comparable<Edge> {
+		int[] t;
+		int w;
+		public Edge(int[] t, int w) {
+			this.t = t;
+			this.w = w;
+		}
+
+		@Override
+		public int compareTo(Edge o) {
+			return w - o.w;
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

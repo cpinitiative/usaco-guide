@@ -1,0 +1,136 @@
+---
+id: cses-1653
+source: CSES
+title: Elevator Rides
+author: Sofia Yang
+---
+
+[CPH Solution (10.5)](/CPH.pdf#page=112)
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\cdot 2^N)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ElevatorRides {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int people = io.nextInt();
+		int maxWeight = io.nextInt();
+
+		int[] weight = new int[people];
+		for (int i = 0; i < people; i++) { weight[i] = io.nextInt(); }
+
+		/*
+		 * dp[bitmask] is the current best state
+		 * in terms of the number of rides used, and weight used on the last
+		 * ride. The bitmask is used to represent whether the people have used
+		 * the elevator. If the ith bit is set, it means the ith person has used
+		 * the elevator.
+		 */
+		State[] dp = new State[1 << people];
+		dp[0] = new State(1, 0);
+
+		for (int mask = 1; mask < (1 << people); mask++) {
+			dp[mask] = new State(people + 1, maxWeight + 1);
+			for (int i = 0; i < people; i++) {
+				// the ith person has used the elevator.
+				if ((mask & (1 << i)) > 0) {
+					/*
+					 * The previous state from when the
+					 * ith person has not used the elevator.
+					 */
+					int prev = mask ^ (1 << i);
+					State cur = new State(dp[prev].rides, dp[prev].weight);
+					// We need to use a new ride.
+					if (cur.weight + weight[i] > maxWeight) {
+						cur.rides++;
+						cur.weight = Integer.min(weight[i], cur.weight);
+					} else {
+						// Add the weight of the ith person to the current ride.
+						cur.weight += weight[i];
+					}
+					// Check if it is better than the original.
+					if (cur.compareTo(dp[mask]) < 0) { dp[mask] = cur; }
+				}
+			}
+		}
+		// Result when all people have used the elevator.
+		io.println(dp[(1 << people) - 1].rides);
+		io.close();
+	}
+
+	// State (i,j) means that we're on the ith ride, and we've used up j weight.
+	static class State {
+		public int rides, weight;
+
+		public State(int rides, int weight) {
+			this.rides = rides;
+			this.weight = weight;
+		}
+
+		public int compareTo(State oState) {
+			if (this.rides == oState.rides) {
+				return Integer.compare(this.weight, oState.weight);
+			}
+			return Integer.compare(this.rides, oState.rides);
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+// CodeSnip{CPP Short Template}
+
+int main() {
+	int people, maxWeight;
+	cin >> people >> maxWeight;
+	vector<int> weight(people);
+	for (int &i : weight) cin >> i;
+
+	vector<pair<int, int>> dp(1 << people, {people + 1, maxWeight + 1});
+	dp[0] = make_pair(1, 0);
+	/*
+	 * Loop through all bitmasks.
+	 * The bitmasks represent whether each person has used the elevator or not.
+	 * If the ith bit is set, this means the ith person has used the elevator.
+	 */
+	for (int mask = 1; mask < (1 << people); mask++) {
+		for (int i = 0; i < people; i++)
+			// The ith person has used the elevator.
+			if (mask & (1 << i)) {
+				auto prev = dp[mask ^ (1 << i)];
+				int numRides = prev.first;
+				int totalWeight = prev.second;
+				// We need to use a new ride.
+				if (totalWeight + weight[i] <= maxWeight)
+					totalWeight += weight[i];
+				else {
+					// Add the weight of the ith person to the current ride.
+					numRides++;
+					totalWeight = weight[i];
+				}
+				// Update if it is better than the original.
+				dp[mask] = min(dp[mask], make_pair(numRides, totalWeight));
+			}
+	}
+	// Result when all people have used the elevator.
+	cout << dp[(1 << people) - 1].first;
+}
+```
+</CPPSection>
+</LanguageSection>

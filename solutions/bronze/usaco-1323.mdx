@@ -1,0 +1,321 @@
+---
+id: usaco-1323
+source: USACO Bronze 2023 Open
+title: FEB
+author: Nathan Wang
+---
+
+# Subtask 1
+
+For Subtask 1, we can brute-force generate every possible string S. If the string has length $n$, then there are $2^n$ possible such strings (in the worst case where the entire string is F). Each string takes $\mathcal{O}(n)$ time to compute an answer, so in total this solution takes $\mathcal{O}(2^n \cdot n)$ time.
+
+# Problem Solving Process
+
+Note: This section is intended to walk you through the *problem-solving process* of how to arrive at the solution, rather than just stating the solution immediately; ideally, this problem-solving process can be applied to other problems as well. If you have feedback on how well this format works for you / whether you found this section helpful, and the current date is not yet April 2024, please email me at nathan.r.wang@gmail.com.
+
+If you just want the full solution, scroll down to the "Full Solution" section below.
+
+## Step 1: Solving the Sample Inputs
+
+The first step is solving the sample inputs by hand. The goal is to make sure you fully understand what the problem is asking you to do.
+
+## Step 2: Coming up with more test cases
+
+Next, let's try coming up with more test cases we can solve by hand. Focus on two types of test cases:
+
+1. A lot of **simple test cases** that have some pattern to them. We want to use these to uncover patterns that we might be able to use to solve the problem. Examples: `BFB`, `BFFB`, `BFFBFFB`, etc.
+2. **Edge cases** -- as many as you can think of!
+
+As you come up with these test cases, try to **group them into patterns** (especially for the simple test cases). For example, `BFB`, `BFFB`, `BFFFB` can be grouped together into a pattern like `BF...FB`. The goal is to come up with solutions to each of these patterns, and then try to come up with a solution to the general problem.
+
+I came up with ~30 test cases, but the exact number doesn't really matter. Don't spend too much time on this (I spent ~4 minutes?); you can always come up with more later.
+
+<Spoiler title="Solution">
+
+It's totally fine if the test cases / patterns you came up with are different!
+
+### Simple Test Cases
+
+- Pattern: **BF...FB**. Test cases: `BB`, `BFB`, `BFFB`, `BFFFB`, `BFFFFB`
+- Pattern: **BF...FE**. Test cases: `BE`, `BFE`, `BFFE`, `BFFFE`, `BFFFFE`
+- Pattern: **EF...FE**. Test cases: `EE`, `EFE`, `EFFE`, `EFFFE`, `EFFFFE`
+- Pattern: **BF...FBEF...FE**. Test cases: `BFBEFE`, `BFFBEFFE`, `BFFFBEFE`
+- Pattern: **BF...FBBF...FB**. Test cases: `BFBBFB`, `BFFBBFFB`
+- Pattern: **BF...FBF...FB**. Test cases: `BFBFB`, `BFFBFB`
+- Pattern: **F...FB**. Test cases: `B`, `FB`, `FFB`, `FFFB`
+- Pattern: **BEF...**. Test cases: `BEF`, `BEFBEF`, `BEFBEFBEF`
+- Pattern: **BBB...**. Test cases: `B`, `BB`, `BBB`, `BBBB`
+
+### Edge Cases
+- Only B's: `BBBB`
+- Only E's: `EEEE`
+- No F's: `BEBEBEBBBEEBEB`
+- Only F's: `FFFFF`
+
+</Spoiler>
+
+## Step 3: Solving test cases by hand
+
+Now, we'll solve the test cases we came up with earlier by hand, trying to uncover patterns in how we solve them. Not all test case categories will have generalizable / nice solutions, and that's fine!
+
+As an example, here's what I wrote for one of the patterns I came up with.
+
+### Pattern 1: BF...FB
+
+- `BB`: $1$
+- `BFB`: $0$, $2$
+- `BFFB`: $1$, $3$
+- `BFFFB`: $0$, $2$, $4$
+- `BFFFFB`: $1$, $3$, $5$
+
+#### Possible Solution
+
+Do you see any patterns? (You might need to write out more cases.)
+
+<Spoiler title="Solution">
+If the length of the string is $n$, and $n$ is odd, our solutions are $0, 2, 4, \ldots n-1$. If $n$ is even, our solutions are $1, 3, 5, \ldots n-1$.
+</Spoiler>
+
+#### Explanation
+
+I arrived at the solution above solely by pattern-matching; I have no idea if it's correct. Let's try to convince ourself as to why it's correct (or if it's actually wrong)!
+
+Can you convince yourself that this solution is correct?
+
+If you're stuck, try using this strategy:
+
+1. Add constraints (simplify the problem as much as possible) until we reach a problem that we can solve / prove. For example, one constraint we might add is "assume the length of the string is even."
+2. Add back the constraints one at a time and update your solution / proof until we arrive back at the original problem.
+
+<Spoiler title="Solution">
+Solve the even / odd cases separately. For the even case, let's first try to answer the easier question, "What is our minimum / maximum" answer?
+
+Our minimum is $1$: We should alternate BEBEBEB as much as possible. Unfortunately, since the length is even, at the end we're forced to have two back-to-back B's, so our minimum answer is 1.
+
+Our maximum is $n-1$: We should fill the whole thing with B's, and our answer is $n-1$.
+
+Now, let's return to the original problem (what are all possible answers). If I wanted to construct an answer of $2$, is this possible? Let's try with BFFB: It doesn't seem like it! To go from an answer of $1$ (BEBEBB) to an answer of $2$, we have to flip an E to become a B. But doing so actually adds two to our answer (so we can get $3$), not one. So, by starting with BEBEBB (the string we used to get an answer of $1$), we can repeatedly change an E to become a B to add two to our answer. Therefore, we can have an answer of $1, 3, 5, \ldots n-1$.
+
+Now that we've solved the even case, we can apply a similar solution to solve the odd case.
+</Spoiler>
+
+### Try it yourself!
+
+For this step, feel free to follow along by solving the test cases I came up with, or you can also use the test cases that you came up with.
+
+For every pattern, try to come up with a possible solution, as well as a justification as to why that solution is correct. Not all patterns will have nice solutions -- if you can't think of anything, just move on! (Also, don't be afraid if your solution has a bunch of different cases -- "nice" solutions can still have different cases!)
+
+You may also find it helpful to skip a complicated pattern and come back to it later after you've solved some simpler patterns. Sometimes a complicated pattern's solution is just a combination of the solution of two easier patterns!
+
+<Spoiler title="Solution">
+Apologies for the brevity of these solutions; writing them all out would take too long...
+
+- `BF...FE`: If the length is $n$ and $n$ is odd, our min excitement level is $1$ and our max is $n-2$. If $n$ is even, our min is $0$ and our max is $n-2$. Let $x$ be our min and $y$ be our max. We can achieve any excitement level $x, x+2, x+4, \ldots y-2, y$.
+- `EF...FE`: Same solution as `BF...FB`
+- `BF...FBEF...FE`: Looks like we can split the string into two: `BF...FB` and `EF...FE` and add up their answers (ie. take one possible answer from the first string and another possible answer from the second string and add them together to get one possible answer for the combined strings).
+- `BF...FBBF...FB`: We can do the same here, except we need to add $1$ to each of the answers since the middle two $B$'s contribute $1$ to the answer as well.
+- `BF...FBF...FB`: The answer is the same as the previous pattern minus one.
+- `F...FB`: If the string length is $n$, we can get any value $0, 1, 2, 3, \ldots n-1$.
+- `BEFBEFBEF`: If BEF is repeated $n$ times, our answer is $n-1, n$.
+- `BBB...`: If the length is $n$, our answer is $n-1$.
+- Only B's: Handled above
+- Only E's: Same as only B's. In general, doesn't matter if you flip the letters
+- No F's: Can solve in linear time, not very interesting
+- Only F's: If length $n$, answer is $0, 1, \ldots n-1$.
+</Spoiler>
+
+## Step 4: Constructing a general solution
+
+Now, try to come up with a solution for the general problem using some of the solutions we came up with earlier.
+
+If you're stuck, the strategy from above is still applicable:
+
+1. Add constraints (simplify the problem as much as possible) until we reach a problem that we can solve / prove.
+2. Add back the constraints one at a time and update your solution / proof until we arrive back at the original problem.
+
+You can also go back to step 2 (come up with new small test cases / new patterns and try to find solutions to those) if you are stuck.
+
+<Spoiler title="Hint 1">
+Having leading / trailing F's seems to make the problem a little more difficult. Let's limit ourselves to the case where the starting / ending character is not F, and then re-add the constraint of F later.
+</Spoiler>
+
+<Spoiler title="Hint 2">
+`BF...FBEF...FE`'s solution was to split the substring into two and "combine" the solutions. This seems promising!
+
+- Can we split the string more than once?
+- In the general case, when should we "split" the substring?
+- How do we "combine" the solutions efficiently?
+</Spoiler>
+
+## Concluding Thoughts
+
+I hope this section on the problem-solving process I used to solve this problem was helpful! This process isn't specific to this problem, so hopefully you can apply a similar process to other problems as well.
+
+If you have feedback on whether you found this section helpful / what can be improved, and the current date is not yet April 2024, please email me at nathan.r.wang@gmail.com.
+
+# Full Solution
+
+First, assume the starting / ending character is not F.
+
+Split the string into "sections" such that each section has one starting character that isn't F, one ending character that isn't F, and a bunch of F's in the middle. The edge characters of each "section" can overlap. For the sample input `BFFFFFEBFE`, our sections are:
+
+- `BFFFFFE`
+- `EB`
+- `BFE`
+
+We will get an answer for each section and then combine the answers to get the answer for the whole string.
+
+## Solving each section
+
+Let's start by finding the lowest / highest possible excitement of each section. We will do this with casework:
+
+- Is the starting / ending character the same?
+- Is the length of the section even?
+
+Let $n$ be the length of the section.
+
+### Case 1: Starting / ending is same
+
+If $n$ is even, min is $1$ and max is $n-1$. Otherwise, min is $0$ and max is $n-1$.
+
+### Case 2: Starting / ending is different
+
+if $n$ is even, min is $0$ and max is $n-2$. Otherwise, min is $1$ and max is $n-2$.
+
+---
+
+Let $x$ be the min and $y$ be the max. We can achieve any value $x, x+2, x+4, \ldots y-2, y$.
+
+Start with the string that yields $x$; it's something like BEBEBEB. Changing one E to become a B will increase our answer by 2.
+
+If we examine something like BFFFB, note that it is impossible to achieve an answer of $1$.
+
+## Combining sections
+
+We can add the min / max values from every section together to get the min / max values for the whole string. If we let $x$ be the min for the whole string and $y$ be the max for the whole string, our possible answers are $x, x+2, x+4, \ldots, y-2, y$.
+
+## Handling F's on the first / last character
+
+Let $x$ be the number of F's at the start of the string and $y$ be the number of F's at the end of the string. By inspection, these F's contribute a minimum of $0$ to our excitement level and a maximum of $x + y$ to our excitement level.
+
+Note that in this special case where F is on the edge of the string, we can actually achieve any value in between $0$ and $x+y$! For example, take the string FFFB. We can get 0 by doing EBEB, 1 by doing BEBB, 2 by doing EBBB, and 3 by doing BBBB.
+
+As a result, as long as one of $x$ or $y$ is not $0$, we can achieve an excitement level for our overall string of every value in between min and max. However, if both $x$ and $y$ are $0$, then we still can only get excitement levels in increments of $2$.
+
+We also need to take care to handle the case where the entire string is F's properly.
+
+# Implementation
+
+Nathan's commented code:
+
+```cpp
+// Source: https://usaco.guide/general/io
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
+
+	int mn = 0, mx = 0;
+
+	int curIdx = 0;
+	while (curIdx < n) {
+		if (s[curIdx] == 'F') {
+			curIdx++;
+			continue;
+		}
+
+		int nextIdx = curIdx + 1;
+		while (nextIdx < n && s[nextIdx] == 'F') nextIdx++;
+		if (nextIdx == n) break;
+
+		int num_F = nextIdx - curIdx - 1;
+
+		if (s[nextIdx] == s[curIdx]) {
+			// Case 1: Solve something like BFFFFFB
+			int length = num_F + 2;
+
+			// First, solve for mn
+			if (length % 2 == 0) {
+				// At best we can have something like BEBEBB
+				mn += 1;
+			} else {
+				// We can alternate BEBEB
+				mn += 0;
+			}
+
+			// Next, solve for mx
+			mx += length - 1;
+		} else {
+			// Case 2: Solve something like BFFFFFE
+			int length = num_F + 2;
+
+			// First, solve for mn
+			if (length % 2 == 0) {
+				// We can alternate BEBEBE
+				mn += 0;
+			} else {
+				// At best we have BEBEE
+				mn += 1;
+			}
+
+			// Next, solve for mx
+			mx += length - 2;
+		}
+
+		curIdx = nextIdx;
+	}
+
+	// Special case: beginning / ending F's
+	int num_beginning_F = 0;
+	while (num_beginning_F < n && s[num_beginning_F] == 'F') num_beginning_F++;
+	int num_ending_F = 0;
+	while (num_ending_F < n && s[n - 1 - num_ending_F] == 'F') num_ending_F++;
+
+	if (num_beginning_F == n) {
+		// everything is an F! special case
+		mn = 0;
+		mx = n - 1;
+	} else {
+		// mn doesn't change, since we can always alternate the beginning /
+		// ending properly
+		mx += num_beginning_F;
+		mx += num_ending_F;
+	}
+
+	vector<int> possible_levels;
+	if (num_beginning_F == 0 && num_ending_F == 0) {
+		// Special case: We can only change in increments of two
+		assert((mx - mn) % 2 == 0);
+		for (int i = mn; i <= mx; i += 2) possible_levels.push_back(i);
+	} else {
+		for (int i = mn; i <= mx; i++) possible_levels.push_back(i);
+	}
+
+	cout << possible_levels.size() << endl;
+	for (int i : possible_levels) { cout << i << endl; }
+}
+```
+
+Ben's code, which is a lot more concise and takes advantage of some nice similarities between cases:
+
+```py
+N = int(input())
+S = list(input())
+if S.count("F") == N:
+	S[0] = "E"
+positions = [i for i in range(N) if S[i] != "F"]
+ones = positions[0] + N - 1 - positions[-1]
+mn, mx = 0, 0
+for a, b in zip(positions, positions[1:]):
+	mn += ((b - a) & 1) ^ (S[a] != S[b])
+	mx += b - a - (S[a] != S[b])
+ans = range(mn, ones + mx + 1, 1 + (ones == 0))
+print(len(ans))
+for level in ans:
+	print(level)
+```

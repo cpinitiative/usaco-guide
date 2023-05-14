@@ -1,0 +1,162 @@
+---
+id: usaco-763
+source: USACO Silver 2017 December
+title: Milk Measurement
+author: Qi Wang, Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_measurement_silver_dec17.html)
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+struct Log {
+	int day, cow, change;
+};
+
+int main() {
+	std::ifstream read("measurement.in");
+
+	int n;
+	int g;
+	read >> n >> g;
+
+	vector<Log> log(n);
+	std::map<int, int> cows;
+	for (Log &l : log) {
+		read >> l.day >> l.cow >> l.change;
+		cows[l.cow] = g;
+	}
+	std::sort(log.begin(), log.end(),
+	          [](const Log &l1, const Log &l2) { return l1.day < l2.day; });
+
+	std::map<int, int> milk_prod{{g, n}};
+
+	int changeAmt = 0;
+	for (Log l : log) {
+		int milk_amt = cows[l.cow];
+		bool was_top = milk_amt == milk_prod.rbegin()->first;
+		int prev_count = milk_prod[milk_amt];
+		// remove the previous milk production number
+		milk_prod[milk_amt]--;
+		if (milk_prod[milk_amt] == 0) { milk_prod.erase(milk_amt); }
+
+		// update the milk production amounts
+		milk_amt += l.change;
+		cows[l.cow] = milk_amt;
+		milk_prod[milk_amt]++;
+
+		bool is_top = milk_amt == milk_prod.rbegin()->first;
+		int curr_count = milk_prod[milk_amt];
+		if (was_top) {
+			if (is_top && curr_count == prev_count) { continue; }
+			/*
+			 * if it was the highest and now it's not or there are now
+			 * multiple highest cows, then FJ needs to change the portrait
+			 */
+			changeAmt++;
+		} else if (is_top) {
+			/*
+			 * if it wasn't at the highest but now it is,
+			 * then FJ needs to change the portrait also
+			 */
+			changeAmt++;
+		}
+	}
+
+	std::ofstream("measurement.out") << changeAmt << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Measurement {
+	// BeginCodeSnip{Log Class}
+	private static class Log {
+		int day, cow, change;
+		public Log(int day, int cow, int change) {
+			this.day = day;
+			this.cow = cow;
+			this.change = change;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("measurement");
+		int n = io.nextInt();
+		int g = io.nextInt();
+
+		Log[] log = new Log[n];
+		Map<Integer, Integer> cows = new HashMap<>();
+		for (int i = 0; i < n; i++) {
+			log[i] = new Log(io.nextInt(), io.nextInt(), io.nextInt());
+			cows.put(log[i].cow, g);
+		}
+		Arrays.sort(log, Comparator.comparingInt(o -> o.day));
+
+		// contains the frequency table of milk production in ascending order
+		TreeMap<Integer, Integer> milkProd = new TreeMap<>();
+		milkProd.put(g, n);
+
+		int changeAmt = 0;
+		for (Log l : log) {
+			int milkAmt = cows.get(l.cow);
+			boolean wasTop = milkAmt == milkProd.lastKey();
+			int prevCount = milkProd.get(milkAmt);
+
+			// remove the previous milk production number
+			milkProd.put(milkAmt, milkProd.get(milkAmt) - 1);
+			if (milkProd.get(milkAmt) == 0) { milkProd.remove(milkAmt); }
+
+			// update the milk production amounts
+			milkAmt += l.change;
+			cows.put(l.cow, milkAmt);
+			milkProd.put(milkAmt, milkProd.getOrDefault(milkAmt, 0) + 1);
+
+			boolean isTop = milkAmt == milkProd.lastKey();
+			int currCount = milkProd.get(milkAmt);
+			if (wasTop) {
+				if (isTop && currCount == prevCount) { continue; }
+				/*
+				 * if it was the highest and now it's not or there are now
+				 * multiple highest cows, then FJ needs to change the portrait
+				 */
+				changeAmt++;
+			} else if (isTop) {
+				/*
+				 * if it wasn't at the highest but now it is,
+				 * then FJ needs to change the portrait also
+				 */
+				changeAmt++;
+			}
+		}
+
+		io.println(changeAmt);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

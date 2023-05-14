@@ -2,7 +2,11 @@
 id: dp-more
 title: Additional DP Optimizations and Techniques
 author: Andi Qu
-description: Techniques and optimizations like Knuth's optimization.
+description: Additional dynamic programming techniques and optimizations like Knuth's optimization.
+prerequisites:
+  - convex-hull-trick
+  - dp-ranges
+  - dp-bitmasks
 frequency: 1
 ---
 
@@ -17,30 +21,42 @@ frequency: 1
 		url="https://jeffreyxiao.me/blog/knuths-optimization"
 	 />
 	<Resource source="GCP" title="15.4.3 - Knuth's Optimization"/>
-	<Resource 
-		source="GFG" 
-		title="Knuth's Optimization in Dynamic Programming" 
+	<Resource
+		source="GFG"
+		title="Knuth's Optimization in Dynamic Programming"
 		url="https://www.geeksforgeeks.org/knuths-optimization-in-dynamic-programming/"
 	>
 		Good explanation + Proof of correctness
 	</Resource>
 </Resources>
 
-Knuth's optimization is, in a way, a special case of Range DP. In general, it is used to solve DP problems with the following transition - $\texttt{dp}[i][j]$ = $\texttt{cost}[i][j] + min_{i≤k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j])$.  
-Further, the cost function must satisfy the following conditions, for all $a\leq b\leq c \leq d$:  
-1. $cost[b][c] ≤ cost[a][d]$ 
-2. $cost[a][c] + cost[b][d] ≤ cost[a][d] + cost[b][c]$ (the quadrangle inequality)
+Knuth's optimization is a special case of Range DP. In general, it is used to solve DP problems with transitions of the form
+$$
+\texttt{dp}[i][j] = \texttt{cost}[i][j] + \min_{i\leq k<j}(\texttt{dp}[i][k] + \texttt{dp}[k+1][j]).
+$$
+Further, the cost function must satisfy the following conditions for all $a\leq b\leq c \leq d$:
+1. $\texttt{cost}[b][c] \leq \texttt{cost}[a][d]$
+2. $\texttt{cost}[a][c] + \texttt{cost}[b][d] \leq \texttt{cost}[a][d] + \texttt{cost}[b][c]$ (the quadrangle inequality)
 
-The optimization is as follows - define $\texttt{opt}[i][j] = argmin_{i≤k<j}(dp[i][k] + dp[k+1][j])$. In other words, $\texttt{opt}[i][j]$ is the index $k$ for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value. If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show the following inequality - $\texttt{opt}[i][j-1] ≤ \texttt{opt}[i][j] ≤ \texttt{opt}[i+1][j]$. (The proof of correctness for this claim is in the resources above.)
+Define $\texttt{opt}[i][j]$ be the index for which $\texttt{dp}[i][k] + \texttt{dp}[k+1][j]$ takes on its minimum value, or equivalently,
+$$
+\texttt{opt}[i][j] = \argmin_{i\leq k<j}(dp[i][k] + dp[k+1][j]).
+$$
 
-The structure of the code is identical to that of Range DP, with the exception of maintaining the $\texttt{opt}$ array. To calculate $\texttt{dp}[i][j]$ and $\texttt{opt}[i][j]$, it is only necessary to check values of $k$ between $\texttt{opt}[i][j-1]$ and $\texttt{opt}[i+1][j]$. The time complexity of the final algorithm is $\mathcal{O} (N^2)$.
+If more than one such index exists, then take the minimum (or the maximum, doesn't matter). Then, assuming conditions on the dp transition and the cost function to be satisfied, we can show that $\texttt{opt}$ satisfies
+$$
+\texttt{opt}[i][j-1] \leq \texttt{opt}[i][j] \leq \texttt{opt}[i+1][j].
+$$
+The proof of correctness for this claim is in the resources above.
+
+The structure of the code is identical to that of [Range DP](https://usaco.guide/gold/dp-ranges), with the exception of maintaining the $\texttt{opt}$ array. To calculate $\texttt{dp}[i][j]$ and $\texttt{opt}[i][j]$, it is only necessary to check values of $k$ between $\texttt{opt}[i][j-1]$ and $\texttt{opt}[i+1][j]$. Because of the momotonicity of $\texttt{opt}$, the time complexity of the final algorithm can be shown to be $\mathcal{O}(N^2)$.
 
 ### Knuth's Optimization Problems
 
 <Problems problems="knuth_optimization" />
 
 
-## Miscellaneous Techniques
+## Connected-Component DP
 
 <Resources>
 	<Resource source="CF" title="zscoder - Nontrivial DP Techniques" url="47764">
@@ -54,7 +70,13 @@ Queue with 2 stacks is used to remove a factor of $\mathcal{O}(\log N)$ in [USAC
 
 </Optional> -->
 
-### "Connected Component" DP Problems
+### Connected-Component DP Problems
+
+<IncompleteSection>
+
+Make Permutations II a focus problem, move analysis to module.
+
+</IncompleteSection>
 
 <Problems problems="connected_component" />
 
@@ -96,11 +118,9 @@ of the cell _borders_ instead.
 
 ### Tutorial
 
-**Time Complexity:** $\mathcal O(NM 2^N)$.
-
-We'll process the grid cells column-by-column, row-by-row.
-
-Let $\texttt{dp}[i][j][mask]$ be the number of ways to tile the grid so that:
+We'll process the grid cells column-by-column, row-by-row. Let $i$ and $j$
+denote the row and column of the current cell we are considering,
+and $\texttt{dp}[i][j][mask]$ be the number of ways to tile the grid so that:
 
 - All cells from cell $(0, 0)$ to cell $(i, j - 1)$ are **covered**.
 - All cells from cell $(i + 1, j)$ to cell $(N - 1, M - 1)$ are **empty**.
@@ -115,13 +135,13 @@ The answer will be $\texttt{dp}[N - 1][M - 1][0]$.
 We now have three cases when calculating $\texttt{dp}[i][j][mask]$:
 
 - The $i$-th bit of the mask is 0, meaning that cell $(i, j)$ is **covered**.
-  - Case 1: we used a vertical tile to cover it.
+  - Case 1: we used a horizontal tile to cover it.
     - Cell $(i, j - 1)$ must have been empty, so there are
       $\texttt{dp}[i - 1][j][mask \oplus 2^i]$ ways to do this.
-  - Case 2: we used a horizontal tile to cover it.
+  - Case 2: we used a vertical tile to cover it.
     - This is only possible if $i > 0$.
-    - Cells $(i - 1, j)$, $(i - 1, j - 1)$, and $(i, j - 1)$ must have been
-      covered, so there are $\texttt{dp}[i - 1][j][mask \oplus 2^{i - 1}]$ ways
+    - Cell $(i,j-1)$ must have been covered and cell $(i-1,j)$ must have been
+	  empty, so there are $\texttt{dp}[i - 1][j][mask \oplus 2^{i - 1}]$ ways
       to do this.
     - This corresponds to
       `if (i && !(mask & (1 << i)) && !(mask & (1 << i - 1)))` in the code
@@ -139,6 +159,8 @@ $\texttt{dp}[i - 1][j]$.
 
 ### Code
 
+**Time Complexity:** $\mathcal O(NM 2^N)$
+
 <LanguageSection>
 
 <CPPSection>
@@ -152,22 +174,22 @@ const int MOD = 1e9 + 7;
 int dp[1 << 10][2];
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
 	int n, m;
 	cin >> n >> m;
 	dp[0][0] = 1;
-	for (int j = 0; j < m; j++) for (int i = 0; i < n; i++) {
-		for (int mask = 0; mask < (1 << n); mask++) {
-			dp[mask][1] = dp[mask ^ (1 << i)][0]; // Vertical/no tile
-			if (i && !(mask & (1 << i)) && !(mask & (1 << i - 1))) // Horizontal tile
-				dp[mask][1] += dp[mask ^ (1 << i - 1)][0];
-
-			if (dp[mask][1] >= MOD) dp[mask][1] -= MOD;
+	for (int j = 0; j < m; j++)
+		for (int i = 0; i < n; i++) {
+			for (int mask = 0; mask < (1 << n); mask++) {
+				dp[mask][1] = dp[mask ^ (1 << i)][0];  // Horizontal or no tile
+				if (i && !(mask & (1 << i)) &&
+				    !(mask & (1 << i - 1)))  // Vertical tile
+					dp[mask][1] += dp[mask ^ (1 << i - 1)][0];
+				if (dp[mask][1] >= MOD) dp[mask][1] -= MOD;
+			}
+			for (int mask = 0; mask < (1 << n); mask++)
+				dp[mask][0] = dp[mask][1];
 		}
-		for (int mask = 0; mask < (1 << n); mask++) dp[mask][0] = dp[mask][1];
-	}
-	cout << dp[0][0];
-	return 0;
+	cout << dp[0][0] << '\n';
 }
 ```
 

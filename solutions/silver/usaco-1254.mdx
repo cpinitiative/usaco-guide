@@ -1,0 +1,110 @@
+---
+id: usaco-1254
+source: USACO Silver 2022 December
+title: Barn Tree
+author: Aditya Gupta
+---
+
+## Explanation
+
+In order for each barn to have the same number of hay bales, each barn must have the average number of bales. Also, in any optimal solution, there will be at most one order for each edge.
+
+Thus, we can DFS from an arbitrary root. At each node, we calculate the number of bales the barn needs to either transport from its children to its parent or the number of bales it needs to transport from its parent to its children, and store this as an order.
+
+However, we also need to make sure that we print a valid ordering of these orders, so that a barn does not have negative hay bales at any moment. To do this, we keep track of the incoming and outgoing orders for each node, and construct a directed graph of these. Then, DFS from any unvisited node, and recurse on every barn that the node has an incoming order from (that hasn't been visited). Finally, print the barn's outgoing orders.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define f first
+#define s second
+const int MAX_N = 2e5;
+
+using ll = long long;
+using pll = pair<ll, ll>;
+
+vector<int> adj[MAX_N];
+vector<int> orders_from[MAX_N];  // Stores for each barn the barns that it
+                                 // receives an order from
+vector<pll> orders_to[MAX_N];    // Stores for each barn its outgoing orders
+
+int bales[MAX_N];
+bool visited[MAX_N];
+
+int n;
+int order_num;
+
+// Move hay bales and generate orders
+ll dfs(int node, int prev) {
+	ll bales_to_move = bales[node];
+	for (int i : adj[node]) {
+		if (i == prev) { continue; }
+		ll child_bales = dfs(i, node);
+		bales_to_move += child_bales;
+
+		// move bales from barn i to node
+		if (child_bales > 0) {
+			orders_from[node].emplace_back(i);
+			orders_to[i].emplace_back(node, child_bales);
+			order_num++;
+		} else if (child_bales < 0) {  // move bales from node to barn i
+			orders_from[i].emplace_back(node);
+			orders_to[node].emplace_back(i, -1 * child_bales);
+			order_num++;
+		}
+		// if child_bales is 0, we don't need to move any orders
+	}
+	return bales_to_move;
+}
+
+/*
+ * For each barn, we print out all outgoing orders of the barns it receives an
+ * order from. This ensures that we always have a valid ordering of orders.
+ */
+void print_orders(ll node) {
+	visited[node] = true;
+	for (int i : orders_from[node]) {
+		if (!visited[i]) { print_orders(i); }
+	}
+	for (const pll &i : orders_to[node]) {
+		cout << node + 1 << ' ' << i.f + 1 << ' ' << i.s << '\n';
+	}
+}
+
+int main() {
+	cin >> n;
+	ll avg = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> bales[i];
+		avg += bales[i];
+	}
+	avg /= n;
+
+	for (int i = 0; i < n; i++) { bales[i] -= avg; }
+
+	for (int i = 1; i < n; i++) {
+		int u, e;
+		cin >> u >> e;
+		adj[u - 1].emplace_back(e - 1);
+		adj[e - 1].emplace_back(u - 1);
+	}
+
+	dfs(0, -1);
+	cout << order_num << endl;
+
+	for (int i = 0; i < n; i++) {
+		if (!visited[i]) { print_orders(i); }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

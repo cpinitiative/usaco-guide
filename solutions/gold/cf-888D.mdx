@@ -1,0 +1,84 @@
+---
+id: cf-888D
+source: Codeforces Div 2
+title: Almost Identity Permutations
+author: Aakash Gokhale
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/55701)
+
+We can iterate from $0$ to $k$ and shuffle exactly $k$ positions of the permutation. After shuffling, exactly $k$ positions of the permutation should be different while the remaining positions remain the same to fulfill the almost identity criterion.
+
+Let's consider how to count the ways to shuffle exactly $m$ positions of the permutation. First we need to choose exactly $m$ positions in the permutations out of $n$ indices which is ${n \choose m}$. Now let’s consider how to shuffle the $m$ positions. We can consider permutations. However, in some permutations, all positions aren’t completely shuffled.
+
+For example, if $n = 4$.
+
+The identity permutation will be $1$ $2$ $3$ $4$.
+
+Let’s say that we want to rearrange the first 3 elements.
+
+One possible permutation is: $1$ $3$ $2$ $4$.
+
+In this permutation, the first element is still in this same place, which is not the desired outcome (we didn't shuffle all the elements we want to rearrange).
+
+Thus, we need to find all permutations where all the elements are out of place. However, since k is relatively small, we can brute force permutations to find the number of valid permutations.
+
+We can add the number of valid permutations multiplied by the number of ways to choose a permutation of that length.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NK)$
+
+<LanguageSection>
+
+<CPPSection>
+
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	// Use Pascal's Identity to precalculate combinations.
+	ll c[n + 1][k + 1];
+	fill_n(&c[0][0], (n + 1) * (k + 1), 0);
+	for (int i = 0; i <= n; i++) { c[i][0] = 1; }
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= k; j++) {
+			c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
+		}
+	}
+
+	ll ans = 0;
+	// Iterate over number of positions to shuffle.
+	for (int i = 0; i <= k; i++) {
+
+		// Calculate number of valid permutations result in all positions
+		// shuffled.
+		int a[i];
+		for (int j = 0; j < i; j++) a[j] = j;
+		int amt = 0;
+		do {
+			bool valid = 1;
+			for (int j = 0; j < i; j++)
+				if (a[j] == j) valid = 0;
+			if (valid) amt++;
+		} while (next_permutation(a, a + i));
+
+		// Add the number of valid permutations of i elements multiplied by the
+		// number of ways to choose i elements.
+		ans += c[n][i] * amt;
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

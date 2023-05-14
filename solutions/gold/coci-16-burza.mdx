@@ -1,0 +1,227 @@
+---
+id: coci-16-burza
+source: COCI 2016
+title: Burza
+author: Kevin Sheng
+---
+
+[Official Analysis](https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COCI/official/2017/contest2_solutions/solutions.pdf)
+
+## Explanation
+
+### Initial Analysis
+
+Let's first try to transform the terms of the game into something less arbitrary.
+
+Since Stjepan can't backtrack because he marks all nodes he visits himself, he
+can only move *down* the tree, increasing his depth as he goes.
+Given this, we can make a series of observations:
+1. Daniel can effectively "cut off" an entire subtree by marking a node, because
+   then Stjepan can't get through that one node. Note that this node has to be at a level
+   deeper than Stjepan's current level.
+2. If we can't prevent Stjepan from reaching a node of depth $k$ (with the root being of
+   depth $0$), then the game cannot always end in at most $k$ moves.
+3. Since we've already "lost" if Stjepan reaches depth $k$, we don't care about anything
+   below depth $k$. We can also remove any nodes that don't lead to a depth of at least $k$.
+   **Note that we won't consider any of these irrelevant nodes from here.**
+
+From the first observation, we can see that an optimal strategy would be to mark
+at most one node at each depth (excluding the root).
+
+Since marking a node of depth $d$ makes at least $k - d + 1$ nodes off-limit and
+we can mark nodes from depth $1$ to $k$, if $\frac{k \cdot (k - 1)}{2} \geq n$,
+the game can always end in $k$ moves.
+
+That reduces the maximum value of $k$ we have to consider down to around 30, which
+unfortunately is still too large for an exponential time solution. But it is
+*something*! Let's see if we can cut the bounds down further: 20 would be a good breakpoint.
+
+### Further Analysis
+
+To limit the maximum number of nodes to 20, we have to prove that a game can *always*
+end in $k$ moves if $k^2 \geq n$.
+
+Since each move results in breaking a tree down into a bunch of smaller trees,
+we can do a [proof by induction](https://en.wikipedia.org/wiki/Mathematical_induction).
+
+Let's define $n_r$ as the total number of nodes that haven't been made invalid yet
+after $r$ moves, and $t_r$ as the number of valid nodes Stjepan
+can move to after $r$ moves (aka the number of valid nodes of depth $r+1$).
+
+For example, let's say that we were at a depth of 1 in the following tree:
+![](<coci-16-burza/fork.png>)
+
+If we cut off node 2, $n_1$ would be 3 and
+$t_1$ would be 1, since Stjepan can only move to node 3.
+
+Our base case for the induction is the following:
+$$
+n_r \leq (k-r)^2
+$$
+This is true for $r=0$. Now, we just have to show that given the above,
+$$
+n_{r+1} \leq (k-r-1)^2 = (k-r)^2 - 2r + 2k - 1
+$$
+
+If we show this, we'll know that $n_r \leq (k-r)^2$ for *all* $r$.
+Setting $r=k$, we get $n_k \leq (k-k)^2=0$, which effectively means that it's possible
+for us to make all nodes invalid after $k$ moves.
+
+To prove this, let's first define a more concrete strategy:
+
+> At each level, cut off the node with the largest subtree size that hasn't been already
+> cut off. If there's multiple nodes with this quality, cut off any of them.
+
+If we follow the strategy defined earlier, at each turn we'll always cut off at least $\frac{n_r}{t_r}$
+nodes and also leave $t_r - 1$ nodes behind, since they're now above our current depth<Asterisk>The -1 is
+because we've already accounted for the node immediately below us in the fraction term.
+Removing it would result in overcounting.</Asterisk>.
+This yield the following inequality:
+$$
+n_{r+1} \leq n_r - \frac{n_r}{t_r} - (t_r - 1)
+$$
+While this is a meaningful relationship, the $t_r$ terms are a bit nasty.
+It'd be great if we could just have a relation between $n_r$ and $n_{r+1}$.
+
+Fortunately, through algebraic manipulation, it is possible to obtain the following inequality:
+$$
+n_r - \frac{n_r}{t_r} - (t_r - 1) \leq n_r - 2\sqrt{n_r} + 1
+$$
+Chaining this with the above inequality, we get
+$$
+n_{r+1} \leq n_r - 2\sqrt{n_r} + 1
+$$
+Since we know that $n_r \leq (k-r)^2$ and by extension $\sqrt{n_r} \leq k-r$, we can substitute
+those terms to prove our desired expression:
+$$
+n_{r+1} \leq (k-r)^2-2(k-r)=(k-r-1)^2
+$$
+
+And we're done! Since we've shown that any case where $k^2 \geq n$ will result in a win, we just
+have to handle the case where $N \leq 20$, for which
+[bitmask DP](/gold/dp-bitmasks) will suffice.
+
+### Bitmask DP
+
+Note that since a tree is a [planar graph](https://en.wikipedia.org/wiki/Planar_graph),
+any node we cut off will cover a continuous segment of leaves.
+
+Take the following tree as an example:
+![](<coci-16-burza/tree.png>)
+
+No node can cover only, say, 3 and 14. If it can cover those two then it also *must*
+cover node 1.
+
+This leads us to our DP state. Let $\texttt{max\_cover}[S]$ be the maximum number of
+leaves we can cover from the start given we take one node from each depth specified
+in the subset.
+
+For our transition, we try adding on depths to all previous subsets and iterate through
+all nodes in those depths.
+
+For example, if removing a node could cover the third leaf to the fifth leaf and our
+current previous subset can cover up to the fourth leaf, then putting those two together
+yields a configuration that can cover up to the fifth leaf.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^{\sqrt{N}} \cdot N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int node_num;
+	int max_turns;
+	std::cin >> node_num >> max_turns;
+	vector<vector<int>> neighbors(node_num);
+	for (int e = 0; e < node_num - 1; e++) {
+		int n1, n2;
+		std::cin >> n1 >> n2;
+		neighbors[--n1].push_back(--n2);
+		neighbors[n2].push_back(n1);
+	}
+
+	if (max_turns * max_turns >= node_num) {
+		cout << "DA" << endl;
+		return 0;
+	}
+
+	std::map<int, int> lost;
+	vector<vector<int>> cutoff_cover(node_num);
+	vector<vector<int>> depth_nodes(max_turns + 1);
+
+	std::function<void(int, int, int)> process_nodes;
+	process_nodes = [&](int at, int prev, int depth) {
+		depth_nodes[depth].push_back(at);
+		if (depth == max_turns) {
+			lost[at] = lost.size();
+			cutoff_cover[at] = {at};
+			return;  // we don't care about anything past this depth
+		}
+		for (int n : neighbors[at]) {
+			if (n != prev) {
+				process_nodes(n, at, depth + 1);
+				cutoff_cover[at].insert(cutoff_cover[at].end(),
+				                        cutoff_cover[n].begin(),
+				                        cutoff_cover[n].end());
+			}
+		}
+	};
+	process_nodes(0, 0, 0);
+
+	// intervals[n] the interval of leaves we can cover if we cut off node n
+	vector<std::pair<int, int>> intervals;
+	for (const vector<int> &cc : cutoff_cover) {
+		if (cc.empty()) {
+			intervals.push_back({-1, -1});
+		} else {
+			intervals.push_back({lost[cc.front()] + 1, lost[cc.back()] + 1});
+		}
+	}
+
+	/*
+	 * max_cover[ss] contains the max # of leaves we can cover all
+	 * the way from the start given that
+	 * we only cut off nodes of depths specified in the subsets ss
+	 */
+	vector<int> max_cover(1 << max_turns);
+	max_cover[0] = 0;
+	for (int ss = 1; ss < (1 << max_turns); ss++) {
+		int &curr = max_cover[ss];
+		// go through each possible previous depth
+		for (int to_add = 0; to_add < max_turns; to_add++) {
+			if ((ss & (1 << to_add)) != 0) {
+				int prev = max_cover[ss & ~(1 << to_add)];
+				// and all the nodes of said depth
+				for (int n : depth_nodes[to_add + 1]) {
+					// see if we can cover more nodes than before
+					if (intervals[n].first <= prev + 1) {
+						curr = std::max(curr, intervals[n].second);
+					}
+				}
+			}
+		}
+
+		if (max_cover[ss] == lost.size()) {
+			cout << "DA" << endl;
+			return 0;
+		}
+	}
+
+	cout << "NE" << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

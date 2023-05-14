@@ -1,0 +1,90 @@
+---
+id: ccc-Firehose
+source: CCC 2010
+title: Firehose
+author: Paul Chen
+---
+
+## Explanation
+
+Let $\texttt{possible}(i)$ be true if it's possible to connect a house to at least one fire hydrant after placing $k$ fire hydrants such that the length of each hose is $i$. We know that if $\texttt{possible}(i)$ is true, $\texttt{possible}(i + 1)$ is also true, because an increase in the length of the hose will not prevent a valid configuration of fire hydrants from being built. Consequently, $\texttt{possible}(i)$ is monotonic, and we can binary search for the smallest value of $i$ such that $\texttt{possible}(i)$ is true.
+
+We use a greedy algorithm to find $\texttt{possible}(i)$. Firstly, we want to sort all houses by their address. For each $j$ from $1...n$, let $h_j$ be the address of the $j$th house. Place a fire hydrant at address $h_j + i$, and this hydrant will cover all houses in the range $[h_j, h_j + 2i]$. We can repeat this process for the first house to the right whose address does not fall into this range until every house can be connected with at least one first hydrant. Note that due to the circular nature of the street, we must do all calculations$\mod 1000000$. If the number of hydrants needed is greater than the number of fire hydrants allowed, $\texttt{possible}(i)$ is false; otherwise, it is true.
+
+## Implementation
+
+**Time Complexity**: $\mathcal O(h^2\times log(\texttt{max}(H_i)))$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_H = 1000;
+const int STREET_SIZE = 1000000;
+
+int num_houses;
+int num_hydrants;
+int houses[MAX_H];
+
+bool possible(int length) {
+	for (int i = 0; i < num_houses; i++) {
+		// Number of fire hydrants that are needed.
+		int needed = 0;
+
+		// The house that we need to connect a fire hydrant to.
+		int start = houses[i];
+
+		for (int j = 1; j < num_houses; j++) {
+			// Address of house at index j.
+			int end = houses[(i + j) % num_houses];
+
+			/*
+			 * If the distance between the start and end houses is greater than
+			 * two times the length of the hose, a single fire hydrant will not
+			 * be enough to cover both houses.
+			 */
+			int dist = (end - start + STREET_SIZE) % STREET_SIZE;
+			if (dist > 2 * length) {
+				start = end;
+				needed++;
+			}
+		}
+
+		// Increment needed as we need another hydrant to reach the last houses.
+		needed++;
+
+		if (needed <= num_hydrants) { return true; }
+	}
+	return false;
+}
+
+int main() {
+	cin >> num_houses;
+	for (int i = 0; i < num_houses; i++) { cin >> houses[i]; }
+	cin >> num_hydrants;
+
+	sort(houses, houses + num_houses);
+
+	// Binary search for the lowest hose length
+	int l = 0;
+	int r = STREET_SIZE;
+	int ans = 0;
+	while (l <= r) {
+		int m = (l + r) / 2;
+		if (possible(m)) {
+			r = m - 1;
+			ans = m;
+		} else {
+			l = m + 1;
+		}
+	}
+
+	cout << ans << "\n";
+}
+```
+</CPPSection>
+
+</LanguageSection>

@@ -1,0 +1,303 @@
+---
+id: coci-16-zamjene
+source: COCI 2016
+title: Zamjene
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COCI/official/2017/contest2_solutions)
+
+## Explanation
+
+If you've done [Wormhole Sort](http://usaco.org/index.php?page=viewproblem2&cpid=992),
+this problem should look a bit familiar.
+From that problem's editorial, we know that it's possible to sort a component
+iff each positions' *sorted position* is in the same component as itself.
+This motivates a DSU-esque solution (for more info look at the [Guide solution](/problems/usaco-992-wormhole-sort/solution) for Wormhole Sort).
+
+### Hashing
+
+The main issue is addressing type 3 and type 4 queries.
+We need to be able to efficiently check if a component can be sorted, and if it can't,
+we also need to see how many components it can be paired up with so that they can be sorted as a whole.
+
+To do this, we have to check if a component has all the needed numbers for it to be able to be rearranged into sorted order.
+
+For example, say this was our (0-indexed) array:
+$$
+[16, 2, 10, 7, 12, 5, 3, 7, 20, 11]
+$$
+
+A component that consisted of the indexes $0$, $3$, and $4$ would need the numbers $2$, $7$, and $7$ to be sortable.
+
+We can get all the needed numbers by sorting the given array and getting the numbers at the positions of the components, but how can we quickly check if the two sets of numbers are the same? The answer is hashing.
+
+If we assign each number a certain random number,
+we can obtain our hash by multiplying each random number by the number of times it occurs in the set.
+
+For example, if our component was the multiset ${3, 3, 4, 4, 5}$, and $R_i$ would be the random number of $i$, our hash would be:
+$$
+2 \cdot R_3 + 2 \cdot R_4 + 1 \cdot R_5
+$$
+
+<Info>
+
+It's also possible to assign each distinct number in the array a distinct power of a certain random number.
+However, this might result in a higher chance of hashes colliding.
+
+</Info>
+
+Each component should not only have a hash of its number, but also a hash of the numbers it's supposed to have.
+For example, if our component was just the number $3$ but needs a $4$ to be sorted, its hash and required hash would be $R_3$ and $R_4$ respectively.
+Having this "required hash" allows us to quickly check if each component is sortable or not.
+
+When executing a union operation (aka a type 1 query), we can add the hashes and required hashes of the two components to get the hash of the combined component.
+When swapping two array elements (a type 2 query), we add and subtract the swapped elements' random values from each component, while leaving the required hashes untouched.
+
+### Tracking "Bad" Components
+
+However, when updating components, we also have to keep track of all the (henceforth referred to as "bad") components in the array to answer the output queries.
+
+First, we need the number of bad components after each modification.
+To answer a type 3 query, we check if there's any bad components.
+If there are, we output `NE`, and otherwise, we output `DA`.
+
+However, answering type 4 queries are a bit more tricky.
+We need some way to match up components such that the sum of their required hashes equals the sum of their actual hashes.
+In other words, if we let $x$ be the actual hash and $y$ be the required hash, we need to find all pairs of components ($i$ and $j$) such that the following is satisfied:
+$$
+x_i+x_j=y_i+y_j
+$$
+
+If we put the $i$s on one side, and $j$s on another, we get this:
+$$
+x_i-y_i=y_j-x_j
+$$
+
+This motivates us keeping a map of the difference between the required hash and actual hash and the number of positions whose components have such a difference.
+It doesn't matter whether we subtract the required hash from the actual hash or vice versa, as long as we stay consistent.
+We also keep track of the number of pairs of bad components that can be matched up.
+
+When adding or removing a bad component, we get its difference $d$ and see how many positions whose components have the difference $-d$ through the map to update the number of pairs.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(Q \cdot \alpha(N))$
+
+**Chance of Collision:** $\mathcal{O}\left(\frac{N^2}{MOD_1 * MOD_2}\right)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <random>
+#include <unordered_map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using ll = long long;
+
+struct Hash {
+	static const ll MOD1 = 1e9 + 7;
+	static const ll MOD2 = 1e9 + 9;
+
+	ll h1, h2;
+	Hash(ll h1, ll h2) : h1(h1 % MOD1), h2(h2 % MOD2) {}
+	Hash() : h1(0), h2(0) {}
+
+	Hash operator+(const Hash &o) {
+		return Hash((h1 + o.h1) % MOD1, (h2 + o.h2) % MOD2);
+	}
+
+	Hash operator-(const Hash &o) {
+		return Hash((h1 - o.h1 + MOD1) % MOD1, (h2 - o.h2 + MOD2) % MOD2);
+	}
+
+	Hash exp(const ll &n) { return Hash(h1 * n % MOD1, h2 * n % MOD2); }
+
+	inline vector<Hash> zero_pairs() {
+		return {
+		    Hash(MOD1 - h1, MOD2 - h2),
+		    Hash(-h1, -h2),
+		    Hash(-h1, MOD2 - h2),
+		    Hash(MOD1 - h1, -h2),
+		};
+	}
+
+	ll hash() const { return 1LL * h1 * MOD2 + h2; }
+};
+
+bool operator==(const Hash &h1, const Hash &h2) {
+	return h1.h1 == h2.h1 && h1.h2 == h2.h2;
+}
+
+bool operator!=(const Hash &h1, const Hash &h2) { return !(h1 == h2); }
+
+struct HashFn {
+	std::size_t operator()(const Hash &h) const { return h.hash(); }
+};
+
+class DominikArray {
+  private:
+	vector<int> arr;
+	vector<int> sorted;
+
+	vector<int> parent;
+	vector<int> size;
+	int bad_num = 0;  // # of bad components (used for type 3)
+
+	std::unordered_map<int, Hash> elem_val;  // each element's random number
+	// the current hash of a component
+	vector<Hash> hash;
+	// the needed hash for a component to be able to be sorted
+	vector<Hash> req_hash;
+	// the hash differences of the bad components
+	std::unordered_map<Hash, ll, HashFn> bad_diff;
+	ll cloud_pairs = 0;  // # of valid component pairs (used for type 4)
+
+	int get_top(int n) {
+		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	}
+
+	/** checks if a component is unsortable (n is a top node) */
+	inline bool is_unsortable(int n) { return hash[n] != req_hash[n]; }
+
+	/** add a bad component to the log & update data accordingly */
+	void add_if_bad(int n) {
+		if (is_unsortable(n)) {
+			// one more bad component
+			bad_num++;
+			Hash diff = req_hash[n] - hash[n];
+			bad_diff[diff] += size[n];
+			for (const Hash &zp : diff.zero_pairs()) {
+				cloud_pairs += bad_diff[zp] * size[n];
+			}
+		}
+	}
+
+	void remove_if_bad(int n) {
+		if (is_unsortable(n)) {
+			bad_num--;
+			Hash diff = req_hash[n] - hash[n];
+			bad_diff[diff] -= size[n];
+			for (const Hash &zp : diff.zero_pairs()) {
+				cloud_pairs -= bad_diff[zp] * size[n];
+			}
+		}
+	}
+
+  public:
+	DominikArray(vector<int> arr)
+	    : arr(arr), parent(arr.size()), size(arr.size(), 1), hash(arr.size()),
+	      req_hash(arr.size()) {
+		sorted = arr;
+		std::sort(sorted.begin(), sorted.end());
+
+		std::random_device rd;
+		std::mt19937 gen(42069);
+		std::uniform_int_distribution<long long> distr(1, INT64_MAX);
+		for (int i : sorted) {
+			if (!elem_val.count(i)) {
+				elem_val[i] = Hash(distr(gen), distr(gen));
+			}
+		}
+
+		// set up DSU and the hashes
+		for (int i = 0; i < arr.size(); i++) {
+			parent[i] = i;
+			hash[i] = elem_val[arr[i]];
+			req_hash[i] = elem_val[sorted[i]];
+			add_if_bad(i);
+		}
+	}
+
+	void swap(int a, int b) {
+		int top_a = get_top(a);
+		int top_b = get_top(b);
+
+		// temporarily take them out of the bad log (if applicable)
+		remove_if_bad(top_a);
+		remove_if_bad(top_b);
+
+		// change the hashes of the two components
+		hash[top_a] = hash[top_a] + elem_val[arr[b]] - elem_val[arr[a]];
+		hash[top_b] = hash[top_b] + elem_val[arr[a]] - elem_val[arr[b]];
+
+		// add them back (if applicable)
+		add_if_bad(top_a);
+		add_if_bad(top_b);
+
+		std::swap(arr[a], arr[b]);
+	}
+
+	void link(int a, int b) {
+		a = get_top(a);
+		b = get_top(b);
+		if (a == b) { return; }
+
+		if (size[a] < size[b]) { return link(b, a); }
+
+		remove_if_bad(a);
+		remove_if_bad(b);
+
+		// standard dsu operations
+		size[a] += size[b];
+		parent[b] = a;
+
+		// add the hash of the smaller component to the bigger one
+		hash[a] = hash[a] + hash[b];
+		req_hash[a] = req_hash[a] + req_hash[b];
+
+		// since b's merged into a, we just add a back (if applicable)
+		add_if_bad(a);
+	}
+
+	bool sortable() {
+		// for everything to be sortable, there can't be any bad components
+		return bad_num == 0;
+	}
+
+	ll needed_pair_num() { return cloud_pairs; }
+};
+
+int main() {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(NULL);
+
+	int arr_len;
+	int query_num;
+	std::cin >> arr_len >> query_num;
+	vector<int> arr(arr_len);
+	for (int &i : arr) { std::cin >> i; }
+
+	DominikArray array(arr);
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		int a, b;  // not necessarily used (queries of type 3 & 4)
+		switch (type) {
+		case 1:
+			std::cin >> a >> b;
+			array.swap(--a, --b);
+			break;
+		case 2:
+			std::cin >> a >> b;
+			array.link(--a, --b);
+			break;
+		case 3:
+			cout << (array.sortable() ? "DA" : "NE") << '\n';
+			break;
+		case 4:
+			cout << array.needed_pair_num() << '\n';
+			break;
+		};
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
