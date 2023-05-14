@@ -85,8 +85,7 @@ class DisjointSet:
 	parent = {}
 	sz = []
 
-	def make_set(self, sz):
-		# create `n` disjoint sets (one for each item)
+	def __init__(self, sz):
 		self.sz.append(1)
 		for i in range(1, sz + 1):
 			self.parent[i] = i
@@ -109,8 +108,7 @@ class DisjointSet:
 
 n, m = map(int, input().split(" "))
 
-ds = DisjointSet()
-ds.make_set(n)
+ds = DisjointSet(n)
 
 for i in range(0, m):
 	x, y = map(int, input().split(" "))
@@ -120,6 +118,11 @@ sizes = []
 for i in range(1, n + 1):
 	if ds.find(i) == i:
 		sizes.append(ds.find_size(i))
+num = 1
+for i in sizes:
+	num = num | num << i
+string = str(bin(num))
+print(string[3 : len(string)])
 ```
 
 </PySection>
