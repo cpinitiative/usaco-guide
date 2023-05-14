@@ -1,0 +1,845 @@
+---
+id: baltic-16-swap
+source: Baltic OI 2016
+title: Swap
+author: Benjamin Qi, Andi Qu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2016_solutions.zip)
+
+## Approach 1
+
+**Complexity:** $\mathcal{O}(N \log^2N)$ time with $\mathcal{O}(N \log N)$
+memory.
+
+Let the elements of $A$ be nodes of a graph and each potential swap be an edge
+between two nodes. Notice how this graph is a binary tree. We effectively want
+to perform some swaps to minimize the BFS order of this tree.
+
+Let $\texttt{merge}(A, B, C)$ denote the tree with $A$ as the root and $B$ and
+$C$ as the subtrees of $A$'s left and right children respectively. We can
+compute $\texttt{merge}(A, B, C)$ in $\mathcal{O}(|B| + |C|)$ time.
+
+We can now formulate a basic DP state. Let $dp[i][j]$ be the version of node
+$i$'s subtree after some swaps such that $A_i = j$ initially and the BFS order
+of $dp[i][j]$ is minimal. Let $l$ and $r$ be node $i$'s left and right children
+respectively. The following recurrence holds:
+
+$$
+dp[i][j] = \begin{cases}
+    \texttt{merge}(j, dp[l][A_l], dp[r][A_r]) & \text{if } j < \min(A_l, A_r)\\
+    \texttt{merge}(A_l, dp[l][j], dp[r][A_r]) & \text{if } A_l < \min(j, A_r)\\
+    \min(\texttt{merge}(A_r, dp[l][j], dp[r][A_l]), \texttt{merge}(A_r, dp[l][A_l], dp[r][j])) & \text{otherwise}
+\end{cases}
+$$
+
+The answer to the problem is thus $dp[1][A_1]$. If we compute this DP naively,
+we get a $\mathcal{O}(N^2 \log N)$ solution that uses $\mathcal(N^2 \log N)$
+memory (since $\mathcal{O}(\sum\text{subtree size}) = \mathcal{O}(N \log N)$).
+
+To improve this solution, notice that for some $i$, we have $j = A[k]$ only if
+$k$ is a child of an ancestor of $i$. Since there are only $\mathcal{O}(\log N)$
+ancestors of $i$ and each has at most 2 children, this allows us to cut the time
+(and memory) complexity down to $\mathcal{O}(N \log^2N)$! For convenience, we
+still refer to the original DP state in the rest of this solution.
+
+However, this DP still uses too much memory. There are two things we need to do
+to fix this:
+
+- Process the tree in reverse BFS order (i.e. starting from node $N$ and working
+  back to node 1). This allows us to free up the memory used by $dp[l]$ and
+  $dp[r]$ after we process some node $i$. This cuts the memory used down to
+  $\mathcal{O}(N \log N)$, but is still slightly too much.
+- Only compute the states that $dp[1][A_1]$ depends on. For example, the value
+  of $dp[2][A_1]$ is irrelevant if $A_1 < \min(A_2, A_3)$.
+
+These two optimizations save us just enough memory to get AC.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int a[200002];
+bool needed[200002][18][2];
+vector<int> dp[200002][18][2], tmp1, tmp2;
+
+void merge(vector<int> &ret, vector<int> &l, vector<int> &r) {
+	for (int i = 0, j = 1; i < l.size(); i += j, j <<= 1) {
+		for (int k = i; k < i + j && k < l.size(); k++) ret.push_back(l[k]);
+		for (int k = i; k < i + j && k < r.size(); k++) ret.push_back(r[k]);
+	}
+}
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	for (int i = 1; i <= n; i++) scanf("%d", a + i);
+
+	needed[1][0][1] = 1;
+	for (int node = 1; node <= n / 2; node++) {
+		for (int i = 0; node >> i; i++)
+			for (int j : {0, 1}) {
+				if (!needed[node][i][j]) continue;
+
+				int mn = min({a[((node >> i + 1) << 1) + j], a[2 * node],
+				              a[2 * node + 1]});
+				if (mn == a[((node >> i + 1) << 1) + j]) {
+					needed[2 * node][0][0] = needed[2 * node + 1][0][1] = 1;
+				} else if (mn == a[2 * node]) {
+					needed[2 * node][i + 1][j] = needed[2 * node + 1][0][1] = 1;
+				} else {
+					needed[2 * node][0][0] = needed[2 * node][i + 1][j] = 1;
+					needed[2 * node + 1][0][0] =
+					    needed[2 * node + 1][i + 1][j] = 1;
+				}
+			}
+	}
+
+	for (int node = n; node; node--) {
+		for (int i = 0; node >> i; i++)
+			for (int j : {0, 1}) {
+				if (!needed[node][i][j]) continue;
+
+				int p = ((node >> i + 1) << 1) + j;
+				if (2 * node > n) dp[node][i][j] = {a[p]};
+				else if (2 * node == n) {
+					dp[node][i][j] = {min(a[p], a[2 * node]),
+					                  max(a[p], a[2 * node])};
+				} else {
+					if (a[2 * node + 1] < min(a[p], a[2 * node])) {
+						tmp1 = tmp2 = {a[2 * node + 1]};
+						merge(tmp1, dp[2 * node][0][0],
+						      dp[2 * node + 1][i + 1][j]);
+						merge(tmp2, dp[2 * node][i + 1][j],
+						      dp[2 * node + 1][0][0]);
+						dp[node][i][j] = min(tmp1, tmp2);
+					} else {
+						dp[node][i][j] = {min(a[p], a[2 * node])};
+						if (a[p] < a[2 * node]) {
+							merge(dp[node][i][j], dp[2 * node][0][0],
+							      dp[2 * node + 1][0][1]);
+						} else {
+							merge(dp[node][i][j], dp[2 * node][i + 1][j],
+							      dp[2 * node + 1][0][1]);
+						}
+					}
+				}
+			}
+		if (2 * node < n) {
+			for (int i = 0; 2 * node >> i; i++)
+				for (int j : {0, 1}) {
+					vector<int>().swap(dp[2 * node][i][j]);
+					vector<int>().swap(dp[2 * node + 1][i][j]);
+				}
+		}
+	}
+
+	for (int i : dp[1][0][1]) printf("%d ", i);
+	return 0;
+}
+```
+
+## Approach 2
+
+Some magic DP. See the discussion on
+[CF](https://codeforces.com/blog/entry/44769?#comment-293999).
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$, can be reduced to
+$\mathcal{O}(N\log N)$.
+
+**Memory Complexity:** $\mathcal{O}(N\log N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string;  // yay python!
+
+using pi = pair<int, int>;
+using pl = pair<ll, ll>;
+using pd = pair<db, db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template <class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT > using V = vector<T>;
+tcT, size_t SZ > using AR = array<T, SZ>;
+tcT > using PR = pair<T, T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT > int lwb(V<T> &a, const T &b) { return int(lb(all(a), b) - bg(a)); }
+
+// loops
+#define FOR(i, a, b) for (int i = (a); i < (b); ++i)
+#define F0R(i, a) FOR(i, 0, a)
+#define ROF(i, a, b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i, a) ROF(i, 0, a)
+#define trav(a, x) for (auto &a : x)
+
+const int MOD = 1e9 + 7;  // 998244353;
+const int MX = 2e5 + 5;
+const ll INF = 1e18;  // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1, 0, -1, 0},
+          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); }  // # of bits set
+constexpr int bits(int x) {  // assert(x >= 0); // make C++11 compatible until
+	                         // USACO updates ...
+	return x == 0 ? 0 : 31 - __builtin_clz(x);
+}  // floor(log2(x))
+constexpr int p2(int x) { return 1 << x; }
+constexpr int msk2(int x) { return p2(x) - 1; }
+
+ll cdiv(ll a, ll b) {
+	return a / b + ((a ^ b) > 0 && a % b);
+}  // divide a by b rounded up
+ll fdiv(ll a, ll b) {
+	return a / b - ((a ^ b) < 0 && a % b);
+}  // divide a by b rounded down
+
+tcT > bool ckmin(T &a, const T &b) {
+	return b < a ? a = b, 1 : 0;
+}  // set a = min(a,b)
+tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+
+tcTU > T fstTrue(T lo, T hi, U f) {
+	hi++;
+	assert(lo <= hi);  // assuming f is increasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo) / 2;
+		f(mid) ? hi = mid : lo = mid + 1;
+	}
+	return lo;
+}
+tcTU > T lstTrue(T lo, T hi, U f) {
+	lo--;
+	assert(lo <= hi);  // assuming f is decreasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo + 1) / 2;
+		f(mid) ? lo = mid : hi = mid - 1;
+	}
+	return lo;
+}
+tcT > void remDup(vector<T> &v) {  // sort and remove duplicates
+	sort(all(v));
+	v.erase(unique(all(v)), end(v));
+}
+tcTU > void erase(T &t, const U &u) {  // don't erase
+	auto it = t.find(u);
+	assert(it != end(t));
+	t.erase(it);
+}  // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class... U
+tcT > void re(complex<T> &c);
+tcTU > void re(pair<T, U> &p);
+tcT > void re(V<T> &v);
+tcT, size_t SZ > void re(AR<T, SZ> &a);
+
+tcT > void re(T &x) { cin >> x; }
+void re(db &d) {
+	str t;
+	re(t);
+	d = stod(t);
+}
+void re(ld &d) {
+	str t;
+	re(t);
+	d = stold(t);
+}
+tcTUU > void re(T &t, U &...u) {
+	re(t);
+	re(u...);
+}
+
+tcT > void re(complex<T> &c) {
+	T a, b;
+	re(a, b);
+	c = {a, b};
+}
+tcTU > void re(pair<T, U> &p) { re(p.f, p.s); }
+tcT > void re(V<T> &x) { trav(a, x) re(a); }
+tcT, size_t SZ > void re(AR<T, SZ> &x) { trav(a, x) re(a); }
+tcT > void rv(int n, V<T> &x) {
+	x.rsz(n);
+	re(x);
+}
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1, c); }
+str ts(const char *s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+#ifdef LOCAL
+	return b ? "true" : "false";
+#else
+	return ts((int)b);
+#endif
+}
+tcT > str ts(complex<T> c) {
+	stringstream ss;
+	ss << c;
+	return ss.str();
+}
+str ts(V<bool> v) {
+	str res = "{";
+	F0R(i, sz(v)) res += char('0' + v[i]);
+	res += "}";
+	return res;
+}
+template <size_t SZ> str ts(bitset<SZ> b) {
+	str res = "";
+	F0R(i, SZ) res += char('0' + b[i]);
+	return res;
+}
+tcTU > str ts(pair<T, U> p);
+tcT > str ts(T v) {  // containers with begin(), end()
+#ifdef LOCAL
+	bool fst = 1;
+	str res = "{";
+	for (const auto &x : v) {
+		if (!fst) res += ", ";
+		fst = 0;
+		res += ts(x);
+	}
+	res += "}";
+	return res;
+#else
+	bool fst = 1;
+	str res = "";
+	for (const auto &x : v) {
+		if (!fst) res += " ";
+		fst = 0;
+		res += ts(x);
+	}
+	return res;
+
+#endif
+}
+tcTU > str ts(pair<T, U> p) {
+#ifdef LOCAL
+	return "(" + ts(p.f) + ", " + ts(p.s) + ")";
+#else
+	return ts(p.f) + " " + ts(p.s);
+#endif
+}
+
+// OUTPUT
+tcT > void pr(T x) { cout << ts(x); }
+tcTUU > void pr(const T &t, const U &...u) {
+	pr(t);
+	pr(u...);
+}
+void ps() { pr("\n"); }  // print w/ spaces
+tcTUU > void ps(const T &t, const U &...u) {
+	pr(t);
+	if (sizeof...(u)) pr(" ");
+	ps(u...);
+}
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU > void DBG(const T &t, const U &...u) {
+	cerr << ts(t);
+	if (sizeof...(u)) cerr << ", ";
+	DBG(u...);
+}
+#ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
+#define dbg(...)                                                               \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
+	    DBG(__VA_ARGS__)
+#define chk(...)                                                               \
+	if (!(__VA_ARGS__))                                                        \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")"                    \
+		     << "\n",                                                          \
+		    exit(0);
+#else
+#define dbg(...) 0
+#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(), "r", stdin); }
+void setOut(str s) { freopen(s.c_str(), "w", stdout); }
+void setIO(str s = "") {
+	unsyncIO();
+	setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s + ".in"), setOut(s + ".out");  // for USACO
+}
+
+map<pi, int> bes;
+int n, p[MX];
+
+int get(int ind, int y) {
+	if (bes.count({ind, y})) return bes[{ind, y}];
+	if (2 * ind > n) return ind;
+	if (2 * ind + 1 > n) {
+		if (y > p[2 * ind]) return 2 * ind;
+		return ind;
+	}
+	if (y < min(p[2 * ind], p[2 * ind + 1])) return bes[{ind, y}] = ind;
+	if (p[2 * ind] < min(y, p[2 * ind + 1]))
+		return bes[{ind, y}] = get(2 * ind, y);
+	int mn = min(y, p[2 * ind]);
+	if (get(2 * ind, mn) < get(2 * ind + 1, mn)) {
+		if (mn == y) return bes[{ind, y}] = get(2 * ind, y);
+		return bes[{ind, y}] = get(2 * ind + 1, y);
+	} else {
+		if (mn == y) return bes[{ind, y}] = get(2 * ind + 1, y);
+		return bes[{ind, y}] = get(2 * ind, y);
+	}
+}
+
+void solve(int ind) {
+	if (2 * ind > n) return;
+	if (2 * ind + 1 > n) {
+		if (p[ind] > p[2 * ind]) swap(p[ind], p[2 * ind]);
+		return;
+	}
+
+	if (p[ind] < min(p[2 * ind], p[2 * ind + 1])) {
+
+	} else if (p[2 * ind] < min(p[ind], p[2 * ind + 1])) {
+		swap(p[2 * ind], p[ind]);
+	} else {
+		int mn = min(p[ind], p[2 * ind]), mx = max(p[ind], p[2 * ind]);
+
+		p[ind] = p[2 * ind + 1];
+		if (get(2 * ind, mn) < get(2 * ind + 1, mn)) {
+			p[2 * ind] = mn, p[2 * ind + 1] = mx;
+		} else {
+			p[2 * ind] = mx, p[2 * ind + 1] = mn;
+		}
+	}
+	solve(ind + 1);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n;
+	FOR(i, 1, n + 1) cin >> p[i];
+	solve(1);
+	FOR(i, 1, n + 1) cout << p[i] << " ";
+}
+```
+
+## Approach 3
+
+Maintain some collection of heaps and compute the sequence in order. I think
+this is similar to what the official solution does, although I don't completely
+understand it.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+**Memory Complexity:** $\mathcal{O}(N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string;  // yay python!
+
+using pi = pair<int, int>;
+using pl = pair<ll, ll>;
+using pd = pair<db, db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template <class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT > using V = vector<T>;
+tcT, size_t SZ > using AR = array<T, SZ>;
+tcT > using PR = pair<T, T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT > int lwb(V<T> &a, const T &b) { return int(lb(all(a), b) - bg(a)); }
+
+// loops
+#define FOR(i, a, b) for (int i = (a); i < (b); ++i)
+#define F0R(i, a) FOR(i, 0, a)
+#define ROF(i, a, b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i, a) ROF(i, 0, a)
+#define trav(a, x) for (auto &a : x)
+
+const int MOD = 1e9 + 7;  // 998244353;
+const int MX = 2e5 + 5;
+const ll INF = 1e18;  // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1, 0, -1, 0},
+          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); }  // # of bits set
+constexpr int bits(int x) {  // assert(x >= 0); // make C++11 compatible until
+	                         // USACO updates ...
+	return x == 0 ? 0 : 31 - __builtin_clz(x);
+}  // floor(log2(x))
+constexpr int p2(int x) { return 1 << x; }
+constexpr int msk2(int x) { return p2(x) - 1; }
+
+ll cdiv(ll a, ll b) {
+	return a / b + ((a ^ b) > 0 && a % b);
+}  // divide a by b rounded up
+ll fdiv(ll a, ll b) {
+	return a / b - ((a ^ b) < 0 && a % b);
+}  // divide a by b rounded down
+
+tcT > bool ckmin(T &a, const T &b) {
+	return b < a ? a = b, 1 : 0;
+}  // set a = min(a,b)
+tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+
+tcTU > T fstTrue(T lo, T hi, U f) {
+	hi++;
+	assert(lo <= hi);  // assuming f is increasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo) / 2;
+		f(mid) ? hi = mid : lo = mid + 1;
+	}
+	return lo;
+}
+tcTU > T lstTrue(T lo, T hi, U f) {
+	lo--;
+	assert(lo <= hi);  // assuming f is decreasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo + 1) / 2;
+		f(mid) ? lo = mid : hi = mid - 1;
+	}
+	return lo;
+}
+tcT > void remDup(vector<T> &v) {  // sort and remove duplicates
+	sort(all(v));
+	v.erase(unique(all(v)), end(v));
+}
+tcTU > void erase(T &t, const U &u) {  // don't erase
+	auto it = t.find(u);
+	assert(it != end(t));
+	t.erase(it);
+}  // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class... U
+tcT > void re(complex<T> &c);
+tcTU > void re(pair<T, U> &p);
+tcT > void re(V<T> &v);
+tcT, size_t SZ > void re(AR<T, SZ> &a);
+
+tcT > void re(T &x) { cin >> x; }
+void re(db &d) {
+	str t;
+	re(t);
+	d = stod(t);
+}
+void re(ld &d) {
+	str t;
+	re(t);
+	d = stold(t);
+}
+tcTUU > void re(T &t, U &...u) {
+	re(t);
+	re(u...);
+}
+
+tcT > void re(complex<T> &c) {
+	T a, b;
+	re(a, b);
+	c = {a, b};
+}
+tcTU > void re(pair<T, U> &p) { re(p.f, p.s); }
+tcT > void re(V<T> &x) { trav(a, x) re(a); }
+tcT, size_t SZ > void re(AR<T, SZ> &x) { trav(a, x) re(a); }
+tcT > void rv(int n, V<T> &x) {
+	x.rsz(n);
+	re(x);
+}
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1, c); }
+str ts(const char *s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+#ifdef LOCAL
+	return b ? "true" : "false";
+#else
+	return ts((int)b);
+#endif
+}
+tcT > str ts(complex<T> c) {
+	stringstream ss;
+	ss << c;
+	return ss.str();
+}
+str ts(V<bool> v) {
+	str res = "{";
+	F0R(i, sz(v)) res += char('0' + v[i]);
+	res += "}";
+	return res;
+}
+template <size_t SZ> str ts(bitset<SZ> b) {
+	str res = "";
+	F0R(i, SZ) res += char('0' + b[i]);
+	return res;
+}
+tcTU > str ts(pair<T, U> p);
+tcT > str ts(T v) {  // containers with begin(), end()
+#ifdef LOCAL
+	bool fst = 1;
+	str res = "{";
+	for (const auto &x : v) {
+		if (!fst) res += ", ";
+		fst = 0;
+		res += ts(x);
+	}
+	res += "}";
+	return res;
+#else
+	bool fst = 1;
+	str res = "";
+	for (const auto &x : v) {
+		if (!fst) res += " ";
+		fst = 0;
+		res += ts(x);
+	}
+	return res;
+
+#endif
+}
+tcTU > str ts(pair<T, U> p) {
+#ifdef LOCAL
+	return "(" + ts(p.f) + ", " + ts(p.s) + ")";
+#else
+	return ts(p.f) + " " + ts(p.s);
+#endif
+}
+
+// OUTPUT
+tcT > void pr(T x) { cout << ts(x); }
+tcTUU > void pr(const T &t, const U &...u) {
+	pr(t);
+	pr(u...);
+}
+void ps() { pr("\n"); }  // print w/ spaces
+tcTUU > void ps(const T &t, const U &...u) {
+	pr(t);
+	if (sizeof...(u)) pr(" ");
+	ps(u...);
+}
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU > void DBG(const T &t, const U &...u) {
+	cerr << ts(t);
+	if (sizeof...(u)) cerr << ", ";
+	DBG(u...);
+}
+#ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
+#define dbg(...)                                                               \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
+	    DBG(__VA_ARGS__)
+#define chk(...)                                                               \
+	if (!(__VA_ARGS__))                                                        \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")"                    \
+		     << "\n",                                                          \
+		    exit(0);
+#else
+#define dbg(...) 0
+#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(), "r", stdin); }
+void setOut(str s) { freopen(s.c_str(), "w", stdout); }
+void setIO(str s = "") {
+	unsyncIO();
+	setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s + ".in"), setOut(s + ".out");  // for USACO
+}
+
+int n, p[MX];
+int par[MX];
+vi val[MX], child[MX];
+
+int qmin(int x) {
+	if (!par[x]) {
+		assert(p[x]);
+		return p[x];
+	}
+	assert(p[x] == 0);
+	x = par[x];
+	int res = MOD;
+	while (x) {
+		assert(sz(val[x]));
+		trav(t, val[x]) ckmin(res, t);
+		if (sz(val[x]) == 2) {
+			assert(!par[x]);
+			break;
+		} else {
+			assert(sz(val[x]) == 1 && par[x]);
+			x = par[x];
+		}
+	}
+	assert(res != MOD);
+	return res;
+}
+
+void delChild(int a, int b) {
+	assert(a && par[b] == a);
+	auto it = find(all(child[a]), b);
+	assert(it != end(child[a]));
+	child[a].erase(it);
+	par[b] = 0;
+}
+
+void setChild(int a, int b) {
+	assert(a);
+	child[a].pb(b);
+	par[b] = a;  // assert(p[b]);
+	p[b] = 0;
+}
+
+void setEq(int x) {
+	if (p[x]) return;
+	int v = qmin(x);
+	vi trail = {x};
+	while (find(all(val[trail.bk]), v) == end(val[trail.bk])) {
+		assert(trail.bk);
+		trail.pb(par[trail.bk]);
+	}
+	for (; sz(trail) > 1; trail.pop_back()) {
+		int t = trail.bk;
+		assert(sz(val[t]) && sz(child[t]) == 2);
+		int c = trail[sz(trail) - 2], C = child[t][0] + child[t][1] - c;
+		val[c].pb(v);
+		delChild(t, c);
+		delChild(t, C);
+		if (sz(val[t]) == 2) {
+			val[C].pb(val[t][0] + val[t][1] - v);
+		} else {
+			int P = par[t];
+			delChild(P, t);
+			setChild(P, C);
+		}
+	}
+}
+
+int main() {
+	setIO();
+	re(n);
+	FOR(i, 1, n + 1) re(p[i]);
+	FOR(i, 1, n + 1) {
+		if (!par[i] && sz(val[i])) {
+			assert(sz(val[i]) == 1 && p[i] == 0);
+			p[i] = val[i][0];
+			val[i] = {};
+		}
+		int x = qmin(i);
+		int mn = x;
+		if (2 * i <= n) ckmin(mn, p[2 * i]);
+		if (2 * i + 1 <= n) ckmin(mn, p[2 * i + 1]);
+		if (mn == x) setEq(i);      // just remove the min
+		else if (mn == p[2 * i]) {  // don't touch p[2*i+1]
+			if (!par[i]) p[2 * i] = p[i];
+			else {
+				int P = par[i];
+				delChild(P, i);
+				setChild(P, 2 * i);
+			}
+		} else {
+			if (!par[i]) val[i] = {p[i], p[2 * i]};
+			else val[i] = {p[2 * i]};
+			setChild(i, 2 * i), setChild(i, 2 * i + 1);
+		}
+		pr(mn, ' ');
+	}
+	// you should actually read the stuff at the bottom
+}
+```

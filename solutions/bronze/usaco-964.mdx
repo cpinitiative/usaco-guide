@@ -1,0 +1,126 @@
+---
+id: usaco-964
+source: USACO Bronze 2019 December
+title: Where Am I?
+author: Ananth Kashyap, Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_whereami_bronze_dec19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name = "") {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	if (name.size()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("whereami");
+	int boxes_num;
+	string boxes_sequence;
+	cin >> boxes_num >> boxes_sequence;
+
+	// check all sub lengths (k) from the smallest to biggest
+	for (int sub_len = 1; sub_len <= boxes_num; sub_len++) {
+		bool sol_found = true;
+		unordered_map<string, int> sub_frequency;
+		// store frequencies of all subs with given length (sub_len)
+		for (int idx = 0; idx <= boxes_num - sub_len; idx++) {
+			string sub = boxes_sequence.substr(idx, sub_len);
+			sub_frequency[sub]++;
+			if (sub_frequency[sub] > 1) { sol_found = false; }
+		}
+
+		// if all sub sequences are unique -> solution found
+		if (sol_found) {
+			cout << sub_len << endl;
+			break;
+		}
+	}
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WhereAmI {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("whereami");
+		int n = io.nextInt();
+		String s = io.next();
+
+		// try each length starting from the smallest one
+		for (int guess = 1; guess <= n; guess++) {
+			boolean good = true;
+			// try all substring combinations of that length
+			for (int i = 0; i + guess <= n; i++) {
+				for (int j = 0; j < i; j++) {
+					String substring1 = s.substring(i, i + guess);
+					String substring2 = s.substring(j, j + guess);
+					if (substring1.equals(substring2)) { good = false; }
+				}
+			}
+			if (good) {  // output the length and break because we want the
+				         // minimum
+				io.println(guess);
+				break;
+			}
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+# Take in input using Python file i/o system
+file_in = open("whereami.in")
+data = file_in.read().strip().split("\n")
+n = int(data[0])
+mailboxes = data[1]
+
+# Set the answer initially to n, as we know n is always a possible answer
+ans = n
+
+# We can iterate through lengths of sequences to find the smallest length
+for l in range(1, n + 1):
+	# Store the substrings in a set
+	sequences = set()
+	for i in range(n - l + 1):
+		sequences.add(mailboxes[i : i + l])
+	# Check if all substrings are unique
+	if len(sequences) == (n - l + 1):
+		ans = l
+		# We can exit the loop as this will be the smallest working length
+		break
+
+print(ans, file=open("whereami.out", "w"))
+```
+
+</PySection>
+
+</LanguageSection>

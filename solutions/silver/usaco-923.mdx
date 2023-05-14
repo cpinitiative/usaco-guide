@@ -1,0 +1,409 @@
+---
+id: usaco-923
+source: USACO Gold 2019 February
+title: Painting the Barn
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_paintbarn_gold_feb19.html)
+
+## Explanation
+
+### Initial Observations
+
+**Note:** This solution assumes one has already had a firm grasp of the
+[silver](http://www.usaco.org/current/data/sol_paintbarn_silver_feb19.html)
+version of this problem.
+
+We start off by calculating the layers of paint over each cell of the barn with
+prefix sums, but from there it's a bit hard to determine which layers we should
+paint. It's hard to directly calculate it from this array, but notice that there's
+two general states a cell can be in.
+
+1. If it's painted over, it will either add $1$ to the optimal area
+   (because it initially has $K-1$ layers of paint)
+   or subtract $1$ from the optimal area
+   (because it already has $K$ layers of paint).
+3. Nothing will happen to the optimal area if it's painted over.
+
+Since FJ must paint two *disjoint* rectangles, we don't have to consider the
+cells that need two layers of paint to become optimal.
+
+Let's call this array $\texttt{leftovers}$. With our example input, it would
+look like this (it's been shrunk- the actual array will always be a
+$200\times200$ matrix):
+
+<center>
+```
+     0   1   2   3   4   5   6   7   8   9
+0  [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+1  [ 0,  1,  1,  1,  0,  0,  0,  0,  0,  0]
+2  [ 0,  1, -1, -1,  1,  1,  1,  1,  0,  0]
+3  [ 0,  1, -1,  0, -1, -1, -1,  1,  0,  0]
+4  [ 0,  0,  1, -1, -1, -1, -1,  1,  0,  0]
+5  [ 0,  0,  1, -1, -1, -1, -1,  1,  0,  0]
+6  [ 0,  0,  1,  1,  1,  1,  1,  1,  0,  0]
+7  [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+8  [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+9  [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+```
+</center>
+
+### Using Kadane's
+
+Now, we've reduced this problem to finding the max submatrix sum on a matrix,
+given that we can have two disjoint submatrices.
+Though it's a tall talk, let's try and tackle this bit by bit, first by considering
+if there's only *1* matrix we can paint.
+
+To do that, we use a 2D version of
+[Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
+
+The $\mathcal{O}(N)$ 1D version can be implemented by the following code:
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int max_subarray(const vector<int> &arr) {
+	int best_sum = 0;
+	int curr_sum = 0;
+	for (int i : arr) {
+		curr_sum = max(curr_sum + i, 0);
+		best_sum = max(best_sum, curr_sum);
+	}
+	return best_sum;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public static int maxSubarray(int[] arr) {
+	int bestSum = 0;
+	int currSum = 0;
+	for (int i : arr) {
+		currSum = Math.max(currSum + i, 0);
+		bestSum = Math.max(bestSum, currSum);
+	}
+	return bestSum;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def max_subarray(arr: List[int]) -> int:
+	curr_sum = 0
+	best_sum = 0
+	for i in arr:
+		curr_sum = max(curr_sum + i, 0)
+		best_sum = max(best_sum, curr_sum)
+	return best_sum
+```
+
+</PySection>
+</LanguageSection>
+
+We can extend this to the second dimension
+(albeit with an extra $N^2$ factor in the complexity)
+by iterating through all ranges of columns in the matrix and running a 1D Kadane's
+where the sum of each element is the subarray is the sum of the column range of a row.
+
+For example, if our current column range was $[0,2]$, then we'd run our 1D Kadane's
+on the following array:
+$$
+[0,2,0,0,1,1,1,0,0,0]
+$$
+
+### Solving the Second Matrix
+
+The key to getting the max with two submatrices is noticing that there will
+always be a line, vertical or horizontal, that can divide the grid such that
+one rectangle is in one section and the other rectangle is in the other section.
+
+Building on this observation, we can go through all the lines we can draw
+through the matrix and get the max subarray on both sides.
+After this, we can take the max of the results of these lines and add it
+to the number of cells that were initially painted with the optimal number
+of layers of paint to get our final answer.
+
+We need a method to efficiently calculate the max submatrices for all the split
+regions, though.
+To start off, let's define four arrays which will have the following
+***initial*** values:
+
+* $\texttt{top\_best[i]}$: the best matrix whose ***lower*** side is the $i$th row.
+* $\texttt{bottom\_best[i]}$: the best matrix whose ***upper*** side is the $i$th row.
+* $\texttt{left\_best[i]}$: the best matrix whose ***right*** side is the $i$th column.
+* $\texttt{right\_best[i]}$: the best matrix whose ***left*** side is the $i$th column.
+
+We fill these arrays by running a 2D Kadane's starting from the top, bottom,
+left, or right, and updating the corresponding arrays with the max submatrix value.
+
+Next, we do a cumulative maximum from the start or from the end depending on the array
+to get the arrays with the following updated values:
+
+* $\texttt{top\_best[i]}$: the best matrix that lies ***at or above*** the $i$th row.
+* $\texttt{bottom\_best[i]}$: the best matrix that lies ***at or below*** $i$th row.
+* $\texttt{left\_best[i]}$: the best matrix that's ***at or to the left of*** the $i$th column.
+* $\texttt{right\_best[i]}$: the best matrix that's ***at or to the right of*** the $i$th column.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\max(x,y)^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::max;
+using std::vector;
+
+const int WIDTH = 200;
+
+int main() {
+	std::ifstream read("paintbarn.in");
+	int rect_num;
+	int optimal_amt;
+	read >> rect_num >> optimal_amt;
+
+	vector<vector<int>> barn(WIDTH, vector<int>(WIDTH));
+	for (int r = 0; r < rect_num; r++) {
+		int x1, y1, x2, y2;
+		read >> x1 >> y1 >> x2 >> y2;
+		for (int y = y1; y < y2; y++) {
+			barn[y][x1]++;
+			if (x2 < WIDTH) { barn[y][x2]--; }
+		}
+	}
+
+	for (int r = 0; r < WIDTH; r++) {
+		int so_far = 0;
+		for (int c = 0; c < WIDTH; c++) {
+			so_far += barn[r][c];
+			barn[r][c] = so_far;
+		}
+	}
+
+	/*
+	 * leftovers[r][c] = if we paint the cell there,
+	 * gives the amount of change in optimal paint size
+	 */
+	vector<vector<int>> leftovers(WIDTH, vector<int>(WIDTH));
+	int rn_amt = 0;
+	for (int r = 0; r < WIDTH; r++) {
+		for (int c = 0; c < WIDTH; c++) {
+			if (barn[r][c] == optimal_amt) {
+				leftovers[r][c] = -1;
+				rn_amt++;
+			} else if (barn[r][c] == optimal_amt - 1) {
+				leftovers[r][c] = 1;
+			}
+		}
+	}
+
+	// create a prefix sum array for easy 2d querying the leftovers array
+	vector<vector<int>> pref_leftovers(WIDTH + 1, vector<int>(WIDTH + 1));
+	for (int r = 1; r < WIDTH + 1; r++) {
+		for (int c = 1; c < WIDTH + 1; c++) {
+			pref_leftovers[r][c] =
+			    (pref_leftovers[r - 1][c] + pref_leftovers[r][c - 1] -
+			     pref_leftovers[r - 1][c - 1] + leftovers[r - 1][c - 1]);
+		}
+	}
+
+	// returns the sum of leftovers[from_r][from_c] to leftovers[to_r][to_c]
+	auto rect_sum = [&](int from_r, int from_c, int to_r, int to_c) {
+		return (pref_leftovers[to_r + 1][to_c + 1] -
+		        pref_leftovers[from_r][to_c + 1] -
+		        pref_leftovers[to_r + 1][from_c] +
+		        pref_leftovers[from_r][from_c]);
+	};
+
+	vector<int> top_best(WIDTH), bottom_best(WIDTH), left_best(WIDTH),
+	    right_best(WIDTH);
+	// iterate through all pairs of columns and rows for 2d kadane's
+	for (int start = 0; start < WIDTH; start++) {
+		for (int end = start; end < WIDTH; end++) {
+			int top_sum = 0;
+			int left_sum = 0;
+			int rect;
+			for (int i = 1; i < WIDTH; i++) {
+				rect = top_sum + rect_sum(i - 1, start, i - 1, end);
+				top_best[i] = max(top_best[i], top_sum = max(0, rect));
+
+				rect = left_sum + rect_sum(start, i - 1, end, i - 1);
+				left_best[i] = max(left_best[i], left_sum = max(0, rect));
+			}
+
+			int bottom_sum = 0;
+			int right_sum = 0;
+			for (int i = WIDTH - 1; i >= 1; i--) {
+				rect = bottom_sum + rect_sum(i, start, i, end);
+				bottom_best[i] = max(bottom_best[i], bottom_sum = max(0, rect));
+
+				rect = right_sum + rect_sum(start, i, end, i);
+				right_best[i] = max(right_best[i], right_sum = max(0, rect));
+			}
+		}
+	}
+
+	// run a cumulative maximum operation on these arrays
+	for (int i = 1; i < WIDTH; i++) {
+		top_best[i] = max(top_best[i], top_best[i - 1]);
+		left_best[i] = max(left_best[i], left_best[i - 1]);
+	}
+	for (int i = WIDTH - 2; i >= 0; i--) {
+		bottom_best[i] = max(bottom_best[i], bottom_best[i + 1]);
+		right_best[i] = max(right_best[i], right_best[i + 1]);
+	}
+
+	// and finally run through all lines for the best combination
+	int max_paintable = 0;
+	for (int i = 0; i < WIDTH; i++) {
+		max_paintable = max(max_paintable, top_best[i] + bottom_best[i]);
+		max_paintable = max(max_paintable, left_best[i] + right_best[i]);
+	}
+
+	std::ofstream("paintbarn.out") << rn_amt + max_paintable << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import static java.lang.Math.max;
+
+import java.io.*;
+import java.util.*;
+
+public final class PaintBarn {
+	static final int WIDTH = 200;
+
+	static int[][] prefLeftovers;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("paintbarn.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int rectNum = Integer.parseInt(initial.nextToken());
+		int optimalAmt = Integer.parseInt(initial.nextToken());
+		int[][] barn = new int[WIDTH][WIDTH];
+		for (int r = 0; r < rectNum; r++) {
+			int[] rect = Arrays.stream(read.readLine().split(" "))
+			                 .mapToInt(Integer::parseInt)
+			                 .toArray();
+			for (int y = rect[1]; y < rect[3]; y++) {
+				barn[y][rect[0]]++;
+				if (rect[2] < WIDTH) { barn[y][rect[2]]--; }
+			}
+		}
+		for (int r = 0; r < WIDTH; r++) {
+			int soFar = 0;
+			for (int c = 0; c < WIDTH; c++) {
+				soFar += barn[r][c];
+				barn[r][c] = soFar;
+			}
+		}
+
+		/*
+		 * leftovers[r][c] = if we paint the cell there,
+		 * gives the amount of change in optimal paint size
+		 */
+		int[][] leftovers = new int[WIDTH][WIDTH];
+		int rnAmt = 0;
+		for (int r = 0; r < WIDTH; r++) {
+			for (int c = 0; c < WIDTH; c++) {
+				if (barn[r][c] == optimalAmt) {
+					leftovers[r][c] = -1;
+					rnAmt++;
+				} else if (barn[r][c] == optimalAmt - 1) {
+					leftovers[r][c] = 1;
+				}
+			}
+		}
+
+		// create a prefix sum array for easy 2d querying the leftovers array
+		prefLeftovers = new int[WIDTH + 1][WIDTH + 1];
+		for (int r = 1; r < WIDTH + 1; r++) {
+			for (int c = 1; c < WIDTH + 1; c++) {
+				prefLeftovers[r][c] =
+				    (prefLeftovers[r - 1][c] + prefLeftovers[r][c - 1] -
+				     prefLeftovers[r - 1][c - 1] + leftovers[r - 1][c - 1]);
+			}
+		}
+
+		int[] topBest = new int[WIDTH];
+		int[] bottomBest = new int[WIDTH];
+		int[] leftBest = new int[WIDTH];
+		int[] rightBest = new int[WIDTH];
+		// iterate through all pairs of columns and rows for 2d kadane's
+		for (int start = 0; start < WIDTH; start++) {
+			for (int end = start; end < WIDTH; end++) {
+				int topSum = 0;
+				int leftSum = 0;
+				int rect;
+				for (int i = 1; i < WIDTH; i++) {
+					rect = topSum + rectSum(i - 1, start, i - 1, end);
+					topBest[i] = max(topBest[i], topSum = max(0, rect));
+
+					rect = leftSum + rectSum(start, i - 1, end, i - 1);
+					leftBest[i] = max(leftBest[i], leftSum = max(0, rect));
+				}
+
+				int bottomSum = 0;
+				int rightSum = 0;
+				for (int i = WIDTH - 1; i >= 1; i--) {
+					rect = bottomSum + rectSum(i, start, i, end);
+					bottomBest[i] =
+					    max(bottomBest[i], bottomSum = max(0, rect));
+
+					rect = rightSum + rectSum(start, i, end, i);
+					rightBest[i] = max(rightBest[i], rightSum = max(0, rect));
+				}
+			}
+		}
+
+		// run a cumulative maximum operation on these arrays
+		for (int i = 1; i < WIDTH; i++) {
+			topBest[i] = max(topBest[i], topBest[i - 1]);
+			leftBest[i] = max(leftBest[i], leftBest[i - 1]);
+		}
+		for (int i = WIDTH - 2; i >= 0; i--) {
+			bottomBest[i] = max(bottomBest[i], bottomBest[i + 1]);
+			rightBest[i] = max(rightBest[i], rightBest[i + 1]);
+		}
+
+		// and finally run through all lines for the best combination
+		int maxPaintable = 0;
+		for (int i = 0; i < WIDTH; i++) {
+			maxPaintable = max(maxPaintable, topBest[i] + bottomBest[i]);
+			maxPaintable = max(maxPaintable, leftBest[i] + rightBest[i]);
+		}
+
+		PrintWriter written = new PrintWriter("paintbarn.out");
+		written.println(rnAmt + maxPaintable);
+		written.close();
+	}
+
+	// returns the sum of leftovers[from_r][from_c] to leftovers[to_r][to_c]
+	static int rectSum(int fromR, int fromC, int toR, int toC) {
+		return (prefLeftovers[toR + 1][toC + 1] -
+		        prefLeftovers[fromR][toC + 1] - prefLeftovers[toR + 1][fromC] +
+		        prefLeftovers[fromR][fromC]);
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

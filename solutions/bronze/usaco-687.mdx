@@ -1,0 +1,173 @@
+---
+id: usaco-687
+source: USACO Bronze 2017 January
+title: Don't Be Last
+author: Benjamin Qi, Jesse Choe, Kevin Sheng
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_notlast_bronze_jan17.html)
+
+The test data is not particularly strong. Make sure that your solution outputs
+`Tie` in both of the following test cases.
+
+```
+4
+Bessie 1
+Elsie 1
+Daisy 2
+Gertie 3
+```
+
+```
+7
+Bessie 1
+Elsie 1
+Daisy 2
+Gertie 2
+Annabelle 3
+Maggie 4
+Henrietta 4
+```
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+constexpr int COW_NUM = 7;
+
+int main() {
+	ifstream read("notlast.in");
+	int N;
+	read >> N;
+
+	map<string, int> raw;
+	for (int i = 0; i < N; i++) {
+		string a;
+		int b;
+		read >> a >> b;
+		raw[a] += b;
+	}
+
+	vector<pair<int, string>> cows;
+	for (pair<string, int> t : raw) { cows.push_back({t.second, t.first}); }
+	sort(cows.begin(), cows.end());
+
+	int ind = 0;
+	/*
+	 * only move the pointer if all cows produced some milk, as
+	 * any unmentioned cows will have produced 0 milk
+	 */
+	if (cows.size() == COW_NUM) {
+		while (ind < cows.size() && cows[ind].first == cows[0].first) { ind++; }
+	}
+
+	if (ind < cows.size() &&
+	    (ind + 1 == cows.size() || cows[ind].first != cows[ind + 1].first)) {
+		ofstream("notlast.out") << cows[ind].second << endl;
+	} else {
+		ofstream("notlast.out") << "Tie" << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class NotLast {
+	static class Cow {
+		public String name;
+		public int amt;
+
+		public Cow(String name, int amt) {
+			this.name = name;
+			this.amt = amt;
+		}
+	}
+
+	static final int COW_NUM = 7;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("notlast.in"));
+
+		int cowNum = Integer.parseInt(read.readLine());
+		HashMap<String, Integer> raw = new HashMap<>();
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			String name = cow.nextToken();
+			int amt = Integer.parseInt(cow.nextToken());
+			raw.put(name, raw.getOrDefault(name, 0) + amt);
+		}
+
+		ArrayList<Cow> cows = new ArrayList<>();
+		for (String n : raw.keySet()) { cows.add(new Cow(n, raw.get(n))); }
+		cows.sort(Comparator.comparingInt(c -> c.amt));
+
+		int ind = 0;
+		/*
+		 * only move the pointer if all cows produced some milk, as
+		 * any unmentioned cows will have produced 0 milk
+		 */
+		if (cows.size() == COW_NUM) {
+			while (ind < cows.size() && cows.get(ind).amt == cows.get(0).amt) {
+				ind++;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("notlast.out");
+		if (ind < cows.size() && (ind + 1 == cows.size() ||
+		                          cows.get(ind).amt != cows.get(ind + 1).amt)) {
+			written.println(cows.get(ind).name);
+		} else {
+			written.println("Tie");
+		}
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+COW_NUM = 7
+
+with open("notlast.in") as read:
+	raw = {}
+	for _ in range(int(read.readline())):
+		name, amt = read.readline().split()
+		amt = int(amt)
+		if name not in raw:
+			raw[name] = 0
+		raw[name] += amt
+
+cows = [(amt, name) for name, amt in raw.items()]
+cows.sort()
+
+ind = 0
+"""
+only move the pointer if all cows produced some milk, as
+any unmentioned cows will have produced 0 milk
+"""
+if len(cows) == COW_NUM:
+	while ind < len(cows) and cows[ind][0] == cows[0][0]:
+		ind += 1
+
+written = open("notlast.out", "w")
+if ind < len(cows) and (ind + 1 == len(cows) or cows[ind][0] != cows[ind + 1][0]):
+	print(cows[ind][1], file=written)
+else:
+	print("Tie", file=written)
+```
+
+</PySection>
+</LanguageSection>

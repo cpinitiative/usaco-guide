@@ -48,14 +48,18 @@ and adding a pair takes $\mathcal{O}(\log N)$ time amortized.
 ```cpp
 #define lb lower_bound
 
-map<int,ll> m;
+map<int, ll> m;
 void ins(int a, ll b) {
-	auto it = m.lb(a); if (it != end(m) && it->s >= b) return;
-	it = m.insert(it,{a,b}); it->s = b;
+	auto it = m.lb(a);
+	if (it != end(m) && it->s >= b) return;
+	it = m.insert(it, {a, b});
+	it->s = b;
 	while (it != begin(m) && prev(it)->s <= b) m.erase(prev(it));
 }
-ll query(int x) { auto it = m.lb(x);
-	return it == end(m) ? 0 : it->s; }
+ll query(int x) {
+	auto it = m.lb(x);
+	return it == end(m) ? 0 : it->s;
+}
 // it = end(m) means that no pair satisfies a >= x
 ```
 

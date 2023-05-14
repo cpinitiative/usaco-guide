@@ -1,0 +1,174 @@
+---
+id: cses-1084
+source: CSES
+title: Apartments
+author: Nathan Gong, Danh Ta Chi Thanh
+---
+
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
+
+We can use a greedy approach to solve this problem. First, sort the applicants
+and apartments. We can keep two pointers $i$ and $j$ (initialized to 0),
+which keep track of the current index of the applicant and apartment we are
+looking at respectively. Then, while there are more applicants and apartments to
+look through, we repeatedly run the following check:
+
+- If $|\texttt{applicants}[i] - \texttt{apartments}[j]| \leq k$, we have found a
+  suitable apartment for the current applicant. Thus, we increment $i$, $j$, and
+  our answer.
+- Otherwise, $\texttt{apartments}[j]$ is either too big or too small for
+  $\texttt{applicants}[i]$. We can increment $i$ or $j$ accordingly.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n\log(n)+m\log(m))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAX_N = 2e5;
+
+/*
+ * Variables used for the current problem
+ * n: number of applicants
+ * m: number of apartments
+ * k: max diff between desired and actual size
+ * a and b: arrays for applicants and apartments respectively
+ */
+int n, m, k, a[MAX_N], b[MAX_N], ans;
+
+void solve() {
+	cin >> n >> m >> k;
+	for (int i = 0; i < n; ++i) cin >> a[i];
+	for (int i = 0; i < m; ++i) cin >> b[i];
+	sort(a, a + n);
+	sort(b, b + m);
+	int i = 0, j = 0;
+	while (i < n && j < m) {
+		// Found a suitable apartment for the applicant
+		if (abs(a[i] - b[j]) <= k) {
+			++i;
+			++j;
+			++ans;
+		} else {
+			// If the desired apartment size of the applicant is too big,
+			// move the apartment pointer to the right to find a bigger one
+			if (a[i] - b[j] > k) {
+				++j;
+			}
+			// If the desired apartment size is too small,
+			// skip that applicant and move to the next person
+			else {
+				++i;
+			}
+		}
+	}
+	cout << ans << "\n";
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	solve();
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+Java will TLE on test case #17.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Apartments {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();  // number of applicants
+		int m = io.nextInt();  // number of apartments
+		int k = io.nextInt();  // max diff between desired and actual size
+
+		int[] applicants = new int[n];
+		int[] apartments = new int[m];
+		for (int i = 0; i < n; i++) { applicants[i] = io.nextInt(); }
+		for (int i = 0; i < m; i++) { apartments[i] = io.nextInt(); }
+
+		Arrays.sort(applicants);
+		Arrays.sort(apartments);
+
+		int i = 0;
+		int j = 0;
+		int ans = 0;
+		while (i < n && j < m) {
+			// Found suitable apartment
+			if (Math.abs(applicants[i] - apartments[j]) <= k) {
+				i++;
+				j++;
+				ans++;
+			}
+			// Apartment is too small -> increment apartment pointer
+			else if (applicants[i] > apartments[j]) {
+				j++;
+			}
+			// Apartment is too big -> increment applicant pointer
+			else {
+				i++;
+			}
+		}
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n, m, tolerance = map(int, input().split())
+applicants = list(map(int, input().split()))
+apartments = list(map(int, input().split()))
+applicants.sort()
+apartments.sort()
+
+i = 0  # Applicant pointer
+j = 0  # Apartment pointer
+ans = 0
+while i < n and j < m:
+	applicant = applicants[i]
+	apartment = apartments[j]
+
+	if apartment < applicant - tolerance:
+		# If the desired apartment size of the applicant is too big,
+		# move the apartment pointer to the right to find a bigger one
+		j += 1
+	elif apartment > applicant + tolerance:
+		# If the desired apartment size is too small,
+		# skip that applicant and move to the next person
+		i += 1
+	else:
+		# Found a suitable apartment for the applicant
+		ans += 1
+		i += 1
+		j += 1
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>

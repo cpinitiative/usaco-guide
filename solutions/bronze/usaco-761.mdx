@@ -1,0 +1,200 @@
+---
+id: usaco-761
+source: USACO Bronze 2017 December
+title: Milk Measurement
+author: Ryan Chou, Mithil Srungarapu
+---
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_measurement_bronze_dec17.html)
+
+## Explanation
+
+Since there are only $3$ cows and $N \leq 1000$, we can sort all of the entries
+by date and update the selected cow's milk value for each entry.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$, as the number of cows is constant.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const vector<string> NAMES{"Bessie", "Elsie", "Mildred"};
+const int START_AMT = 7;
+
+int main() {
+	freopen("measurement.in", "r", stdin);
+
+	int update_num;
+	cin >> update_num;
+	vector<tuple<int, string, int>> updates;
+	for (int i = 0; i < update_num; i++) {
+		int day;
+		string cow;
+		int change;
+		cin >> day >> cow >> change;
+		updates.push_back(make_tuple(day, cow, change));
+	}
+
+	sort(updates.begin(), updates.end());
+
+	/*
+	 * Map which holds the current output of each cow.
+	 * Later, we'll change the output values based on input.
+	 */
+	map<string, int> outputs;
+	for (const auto &name : NAMES) { outputs[name] = START_AMT; }
+
+	vector<string> display = NAMES;  // The cows w/ the highest milk output.
+
+	int display_changes = 0;
+	for (const tuple<int, string, int> &u : updates) {
+		// Change output values based on input.
+		outputs[get<1>(u)] += get<2>(u);
+		int max_output = 0;
+		for (const auto &[_, output] : outputs) {
+			max_output = max(max_output, output);
+		}
+
+		vector<string> new_display;
+		for (const auto &[name, output] : outputs) {
+			if (output == max_output) { new_display.push_back(name); }
+		}
+
+		// Update answer if old winner is different than new winner.
+		display_changes += display != new_display;
+		display = new_display;
+	}
+
+	freopen("measurement.out", "w", stdout);
+	cout << display_changes << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Measurement {
+	static final String[] NAMES = new String[] {"Bessie", "Elsie", "Mildred"};
+	static final int START_AMT = 7;
+
+	// BeginCodeSnip{Update Class}
+	static class Update {
+		public int day;
+		public String cow;
+		public int change;
+		public Update(int day, String cow, int change) {
+			this.day = day;
+			this.cow = cow;
+			this.change = change;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("measurement.in"));
+		int updateNum = Integer.parseInt(read.readLine());
+		Update[] updates = new Update[updateNum];
+		for (int i = 0; i < updateNum; i++) {
+			StringTokenizer update = new StringTokenizer(read.readLine());
+			updates[i] = new Update(Integer.parseInt(update.nextToken()),
+			                        update.nextToken(),
+			                        Integer.parseInt(update.nextToken()));
+		}
+
+		Arrays.sort(updates, Comparator.comparingInt(u -> u.day));
+
+		/*
+		 * Map which holds the current output of each cow.
+		 * Later, we'll change the output values based on input.
+		 */
+		Map<String, Integer> outputs = new HashMap<>();
+		for (String name : NAMES) { outputs.put(name, START_AMT); }
+
+		// The cows w/ the highest milk output.
+		List<String> display = Arrays.asList(NAMES);
+
+		int displayChanges = 0;
+		for (Update u : updates) {
+			// Change output values based on input.
+			outputs.put(u.cow, outputs.get(u.cow) + u.change);
+			int maxOutput = 0;
+			for (int o : outputs.values()) {
+				maxOutput = Math.max(maxOutput, o);
+			}
+
+			List<String> newDisplay = new ArrayList<>();
+			for (Map.Entry<String, Integer> o : outputs.entrySet()) {
+				if (o.getValue() == maxOutput) { newDisplay.add(o.getKey()); }
+			}
+
+			// Update answer if old winner is different than new winner.
+			displayChanges += !display.equals(newDisplay) ? 1 : 0;
+			display = newDisplay;
+		}
+
+		PrintWriter written = new PrintWriter("measurement.out");
+		written.println(displayChanges);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+NAMES = ["Bessie", "Elsie", "Mildred"]
+START_AMT = 7
+
+with open("measurement.in") as read:
+	update_num = int(read.readline())
+	updates = []
+	for _ in range(update_num):
+		day, cow, change = read.readline().split()
+		updates.append((int(day), cow, int(change)))
+
+updates.sort()
+
+"""
+Map which holds the current output of each cow.
+Later, we'll change the output values based on input.
+"""
+outputs = {c: START_AMT for c in NAMES}
+
+display = NAMES.copy()  # The cows w/ the highest milk output.
+
+display_changes = 0
+for u in updates:
+	# Change output values based on input.
+	outputs[u[1]] += u[2]
+	max_output = max(outputs.values())
+	new_display = [name for name, o in outputs.items() if o == max_output]
+
+	# Update answer if old winner is different than new winner.
+	display_changes += display != new_display
+	display = new_display
+
+print(display_changes, file=open("measurement.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+<Info title="Cow Starting Amounts">
+
+You might have noticed that since we only keep track of the relative orders of
+the cows, the starting amount each cow produces doesn't matter at all.
+It could be 0, 9, or even -100, and the code would still produce the correct
+output.
+
+</Info>

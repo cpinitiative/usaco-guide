@@ -1,0 +1,147 @@
+---
+id: usaco-1017
+source: USACO Gold 2020 February
+title: Timeline
+author: Sofia Yang, Jeffrey Zhang
+---
+
+## Solution
+
+[Official Analysis](http://www.usaco.org/current/data/sol_timeline_gold_feb20.html)
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+void topo_sorting(vector<vector<pair<int, int>>> &graph, vector<bool> &visited,
+                  vector<int> &toposort, int node) {
+	visited[node] = true;
+	for (auto i : graph[node]) {
+		int a, b;
+		tie(a, b) = i;
+		if (visited[a]) { continue; }
+		topo_sorting(graph, visited, toposort, a);
+	}
+	toposort.push_back(node);
+}
+
+int main() {
+	ifstream fin("timeline.in");
+
+	int n, m, c;
+	fin >> n >> m >> c;
+	vector<int> start(n + 1);
+	for (int i = 1; i <= n; i++) { fin >> start[i]; }
+
+	vector<vector<pair<int, int>>> graph(n + 1);
+	for (int i = 0; i < c; i++) {
+		int a, b, c;
+		fin >> a >> b >> c;
+		graph[a].push_back(make_pair(b, c));
+	}
+
+	/*
+	 * Topologically sort the milking sessions,
+	 * starting from the earliest milking session.
+	 * Then, greedily set all its children's time to be
+	 * at least itself's time + edge weight.
+	 */
+	vector<bool> visited(n + 1);
+	vector<int> toposort;
+	for (int i = 1; i <= n; i++) {
+		if (visited[i]) { continue; }
+		topo_sorting(graph, visited, toposort, i);
+	}
+	for (int i = n - 1; i >= 0; i--) {
+		for (auto j : graph[toposort[i]]) {
+			int a, b;
+			tie(a, b) = j;
+			start[a] = max(start[a], start[toposort[i]] + b);
+		}
+	}
+
+	ofstream fout("timeline.out");
+	for (int i = 1; i <= n; i++) { fout << start[i] << "\n"; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class timeline {
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new FileReader("timeline.in"));
+		PrintWriter pw = new PrintWriter("timeline.out");
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int C = Integer.parseInt(st.nextToken());
+
+		// Read in each earliest session date.
+		st = new StringTokenizer(r.readLine());
+		int[] time = new int[N];
+		for (int i = 0; i < N; i++) {
+			time[i] = Integer.parseInt(st.nextToken());
+		}
+
+		ArrayList<edge>[] adj = new ArrayList[N];
+		for (int i = 0; i < N; i++) { adj[i] = new ArrayList<>(); }
+
+		// Read in each edge.
+		int[] inDegree = new int[N];
+		for (int i = 0; i < C; i++) {
+			st = new StringTokenizer(r.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			int c = Integer.parseInt(st.nextToken());
+			adj[a].add(new edge(b, c));
+			inDegree[b]++;
+		}
+
+		// Add all "starting" nodes with no incoming edges to the queue.
+		Queue<Integer> q = new LinkedList<>();
+		for (int i = 0; i < N; i++) {
+			if (inDegree[i] == 0) { q.add(i); }
+		}
+
+		while (!q.isEmpty()) {
+			int cur = q.poll();
+			for (edge next : adj[cur]) {
+				// Update the time for the next node.
+				int newTime = time[cur] + next.cost;
+				time[next.node] = Integer.max(time[next.node], newTime);
+
+				// There are no more incoming edges, add this node to the queue.
+				if (--inDegree[next.node] == 0) { q.add(next.node); }
+			}
+		}
+
+		for (int i : time) { pw.println(i); }
+		pw.close();
+	}
+
+	static class edge {
+		public int node, cost;
+
+		public edge(int node, int cost) {
+			this.node = node;
+			this.cost = cost;
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

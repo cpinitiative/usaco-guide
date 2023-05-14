@@ -1,11 +1,7 @@
-import Tippy from '@tippyjs/react';
-import { navigate } from 'gatsby';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
-import { useDarkMode } from '../../../context/DarkModeContext';
-import { contests, ProblemInfo, probSources } from '../../../models/problem';
+import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -56,7 +52,6 @@ export const difficultyClasses = {
 export default function ProblemsListItem(
   props: ProblemsListItemProps
 ): JSX.Element {
-  const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueId}`;
@@ -89,7 +84,9 @@ export default function ProblemsListItem(
 
   const sourceTooltip = divisionTable
     ? null
-    : probSources[problem.source]?.[1] ?? contests[problem.source]?.[1];
+    : problem?.sourceDescription ||
+      (probSources[problem.source]?.[1] ?? olympiads[problem.source]?.[1]);
+
   let resultsUrl = ''; // used only for division tables
   if (divisionTable) {
     const parts = problem.source.split(' ');
@@ -164,55 +161,6 @@ export default function ProblemsListItem(
     </td>
   );
 
-  const tippyRef = React.useRef<Instance>();
-  const [isDropdownShown, setIsDropdownShown] = React.useState(false);
-
-  const more = (
-    <div>
-      <Tippy
-        onCreate={tippy => (tippyRef.current = tippy)}
-        content={
-          isDropdownShown ? (
-            <ProblemsListItemDropdown
-              {...props}
-              onViewProblemSolutions={() => {
-                tippyRef.current.hide();
-                navigate('/problem-solutions/', {
-                  state: {
-                    problem,
-                  },
-                });
-              }}
-            />
-          ) : (
-            ''
-          )
-        }
-        theme={darkMode ? 'dark' : 'light'}
-        placement="bottom-end"
-        arrow={true}
-        animation="fade"
-        trigger="click"
-        interactive={true}
-        onShow={() => setIsDropdownShown(true)}
-        onHidden={() => setIsDropdownShown(false)}
-      >
-        <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
-          {/* Heroicon name: solid/dots-vertical */}
-          <svg
-            className="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-          </svg>
-        </button>
-      </Tippy>
-    </div>
-  );
-
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -226,16 +174,17 @@ export default function ProblemsListItem(
               </td>
             )
           : difficultyCol)}
-      {props.showTags && (
-        <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
-          {problem.tags && problem.tags.length ? (
-            <details className="text-gray-500 dark:text-dark-med-emphasis">
-              <summary>Show Tags</summary>
-              <span className="text-xs">{problem.tags.sort().join(', ')}</span>
-            </details>
-          ) : null}
-        </td>
-      )}
+      <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+        {problem.tags && problem.tags.length ? (
+          <details
+            open={props.showTags}
+            className="text-gray-500 dark:text-dark-med-emphasis"
+          >
+            <summary>Show Tags</summary>
+            <span className="text-xs">{problem.tags.sort().join(', ')}</span>
+          </details>
+        ) : null}
+      </td>
       {props.modules && (
         <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
           {problem.moduleLink ? (
@@ -251,7 +200,9 @@ export default function ProblemsListItem(
           )}
         </td>
       )}
-      <td className="text-center pr-2 md:pr-3">{more}</td>
+      <td className="text-center pr-2 md:pr-3">
+        <ProblemsListItemDropdown {...props} isFocusProblem={false} />
+      </td>
     </StyledProblemRow>
   );
 }

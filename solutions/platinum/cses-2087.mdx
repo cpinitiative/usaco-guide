@@ -1,0 +1,250 @@
+---
+id: cses-2087
+source: cses
+title: Houses and Schools
+author: Dustin Miao
+---
+# Explanation
+
+The final answer will be of the form $k_1 c_1 + k_2 c_2 + \dots + k_n c_n$. The sequence $k$ is a series of "mountains" and "valleys", the valleys occuring at the indicies of the schools and the mountains occuring at the midpoints between two schools. By partitioning this sequence along these points, we get a series of sequences that are increasing by $1$ or decreasing by $1$. Define the DP states as follows:
+
+- $f_{i,m}$ - minimum distance considering the first $i$ elements using $m$ schools ending at a valley
+- $g_{i,m}$ - minimum distance considering the first $i$ elements using $m$ schools ending at a mountain
+
+The transitions are the following:
+
+$$
+g_{i,m} = \min_{j \leq i} \left \{ f_{j,m} + \sum_{k = j + 1}^i c_k \cdot (k - j) \right \}
+$$
+
+$$
+f_{i,m} = \min_{j < i} \left \{ g_{j,m-1} + \sum_{k = j + 1}^i c_k \cdot (i - k) \right \}
+$$
+
+The transitions take linear time, but can be optimized to amortized constant time using convex hull trick.
+
+Define the following:
+
+- $t_k = \sum_{i = 1}^k c_i$
+- $p_k = \sum_{i = 1}^k c_i \cdot k$
+- $s_k = \sum_{i = 1}^k c_i \cdot (n - i + 1)$
+
+These can be precomputed in $\mathcal{O}(n)$ time.
+
+The DP equations becomes:
+
+$$
+g_{i,m} = \min_{j \leq i} \left \{ f_{j,m} + p_i - p_j - j \cdot (t_i - t_j) \right \}
+$$
+
+$$
+f_{i,m} = \min_{j < i} \left \{ g_{j,m-1} + s_i - s_j - (n - i)(t_i - t_j) \right \}
+$$
+
+With a bit of rearranging:
+
+$$
+g_{i,m} = \min_{j \leq i} \left \{ (f_{j,m} - p_j + jt_j) - jt_i \right \} + p_i
+$$
+
+$$
+f_{i,m} = \min_{j < i} \left \{ (g_{j,m-1} - s_j) + t_j(n - i) \right \} + s_i - t_i(n - i)
+$$
+
+Because both the slopes and the query points are monotonic, this can be maintained using a deque in amortized $\mathcal{O}(1)$. The total complexity is $\mathcal{O}(nm)$.
+
+# Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace geo {
+const double EPS = 1e-9;
+
+template <typename T> class point {
+	static_assert(is_arithmetic<T>::value, "T must be an arithmetic type");
+
+  public:
+	T x, y;
+
+	point() : x(T{}), y(T{}) {}
+
+	point(const T &_x, const T &_y) : x(_x), y(_y) {}
+
+	template <typename S> operator point<S>() const {
+		return point<S>(static_cast<S>(x), static_cast<S>(y));
+	}
+
+	template <typename S> point &operator=(const point<S> &p) {
+		x = p.x;
+		y = p.y;
+		return *this;
+	}
+
+	point &operator+=(const point &p) {
+		x += p.x;
+		y += p.y;
+		return *this;
+	}
+
+	point &operator-=(const point &p) {
+		x -= p.x;
+		y -= p.y;
+		return *this;
+	}
+
+	point &operator*=(const T &s) {
+		x *= s;
+		y *= s;
+		return *this;
+	}
+
+	void swap(point &p) {
+		swap(x, p.x);
+		swap(y, p.y);
+	}
+};
+
+template <typename T> point<T> make_point(const T &x, const T &y) {
+	return point<T>(x, y);
+}
+
+template <typename T> void swap(point<T> &p, point<T> &q) { p.swap(q); }
+
+template <typename T> point<T> operator-(const point<T> &p) {
+	return point<T>(-p.x, -p.y);
+}
+
+template <typename T> point<T> operator+(point<T> p, const point<T> &q) {
+	return p += q;
+}
+
+template <typename T> point<T> operator-(point<T> p, const point<T> &q) {
+	return p -= q;
+}
+
+template <typename T> point<T> operator*(point<T> p, const T &s) {
+	return p *= s;
+}
+
+template <typename T> point<T> operator*(const T &s, point<T> p) {
+	return p *= s;
+}
+
+template <typename T> T cross(const point<T> &p, const point<T> &q) {
+	long double ret = (long double)p.x * q.y - (long double)p.y * q.x;
+	if (abs(ret) > 1e18) return ret > 0 ? 1 : -1;
+	return p.x * q.y - p.y * q.x;
+}
+
+template <typename T> T operator^(const point<T> &p, const point<T> &q) {
+	return cross(p, q);
+}
+
+template <typename T> bool operator==(const point<T> &p, const point<T> &q) {
+	if constexpr (is_integral<T>::value) return p.x == q.x && p.y == q.y;
+	else return abs(p.x - q.x) <= EPS && abs(p.y - q.y) <= EPS;
+}
+
+template <typename T> bool operator!=(const point<T> &p, const point<T> &q) {
+	return !(p == q);
+}
+
+template <typename T> bool operator<(const point<T> &p, const point<T> &q) {
+	return p.x < q.x || (p.x == q.x && p.y < q.y);
+}
+
+template <typename T> bool operator>(const point<T> &p, const point<T> &q) {
+	return q < p;
+}
+
+template <typename T> bool operator<=(const point<T> &p, const point<T> &q) {
+	return !(p > q);
+}
+
+template <typename T> bool operator>=(const point<T> &p, const point<T> &q) {
+	return !(p < q);
+}
+}  // namespace geo
+
+struct monotonic_dp_hull {
+	long long prev_x = LLONG_MIN, prev_y = 1;
+	deque<geo::point<long long>> points;
+
+	void add(const geo::point<long long> &p) {
+		assert(points.empty() || p.x >= points.back().x);
+		if (!points.empty() && p.x == points.back().x) {
+			if (p.y <= points.back().y) return;
+			points.pop_back();
+		}
+		while (size() >= 2 && ((points.back() - p) ^
+		                       (points[size() - 2] - points.back())) <= 0)
+			points.pop_back();
+		points.push_back(p);
+	}
+
+	void add(long long m, long long b) { add(geo::point(m, b)); }
+
+	long long query(long long x, long long y = 1) {
+		assert(size() > 0);
+		assert(prev_x == LLONG_MIN || x * prev_y >= prev_x * y);
+		prev_x = x, prev_y = y;
+		while (size() >= 2 && x * (points[1].x - points[0].x) >=
+		                          (points[0].y - points[1].y) * y)
+			points.pop_front();
+		return points[0].x * x + points[0].y * y;
+	}
+
+	void clear() {
+		points.clear();
+		prev_x = LLONG_MIN, prev_y = 1;
+	}
+
+	int size() const { return points.size(); }
+};
+
+const long long INF = 1e16;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N, M;
+	cin >> N >> M;
+	vector<long long> A(N + 1, 0);
+	for (int i = 1; i <= N; i++) cin >> A[i];
+	vector<long long> sum(N + 1), pre(N + 1), suf(N + 1);
+	for (int i = 1; i <= N; i++) {
+		sum[i] = sum[i - 1] + A[i];
+		pre[i] = pre[i - 1] + A[i] * i;
+		suf[i] = suf[i - 1] + A[i] * (N - i + 1);
+	}
+
+	vector<vector<long long>> dp0(M + 1, vector<long long>(N + 1, INF));
+	vector<vector<long long>> dp1(M + 1, vector<long long>(N + 1, INF));
+
+	dp1[0][0] = 0;
+	for (int m = 1; m <= M; m++) {
+		monotonic_dp_hull md0, md1;
+		md1.add(0, 0);
+		for (int i = 1; i <= N; i++) {
+			dp0[m][i] = -md1.query((i - 1) - N) + suf[i - 1] -
+			            (N - (i - 1)) * sum[i - 1];
+			md0.add(i, -dp0[m][i] + pre[i] - i * sum[i]);
+			dp1[m][i] = -md0.query(sum[i]) + pre[i];
+			md1.add(sum[i], -dp1[m - 1][i] + suf[i]);
+		}
+	}
+
+	cout << dp1[M][N] << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

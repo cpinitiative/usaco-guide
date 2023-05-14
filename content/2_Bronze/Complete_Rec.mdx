@@ -2,8 +2,11 @@
 id: complete-rec
 title: 'Complete Search with Recursion'
 author: Many
-contributors: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang, Benjamin Qi, Dong Liu, Maggie Liu, Dustin Miao
-description: 'Includes generating subsets and permutations.'
+contributors:
+  Darren Yao, Sam Zhang, Michael Cao, Andrew Wang, Benjamin Qi, Dong Liu, Maggie
+  Liu, Dustin Miao
+description: 'Harder problems involving iterating through the entire solution space,
+including those that require generating subsets and permutations.'
 frequency: 1
 prerequisites:
   - intro-complete
@@ -41,115 +44,89 @@ The first method would be to write a recursive function which searches over all
 possibilities.
 
 At some index, we either add $\texttt{weight}_i$ to the first set or the second
-set, storing two sums $s_1$ and $s_2$ with the sum of values in each set.
+set, storing two sums $\texttt{sum}_1$ and $\texttt{sum}_2$ with the sum of
+values in each set.
 
 Then, we return the difference between the two sums once we've reached the end
 of the array.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	if(sz(name)){
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
 
-int n; ll weights[20];
+int n;
+ll weight[20];
 
-ll solve(int i, ll s1, ll s2){
-	if(i == n){
-		return abs(s1 - s2);
-	}
-	return min(solve(i + 1, s1 + weights[i], s2),
-			solve(i + 1, s1, s2 + weights[i]));
+ll solve(int i, ll sum1, ll sum2) {
+	if (i == n) { return abs(sum1 - sum2); }
+	return min(solve(i + 1, sum1 + weight[i], sum2),
+	           solve(i + 1, sum1, sum2 + weight[i]));
 }
 
 int main() {
-	setIO();
 	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> weights[i];
-	}
-	cout << solve(0, 0, 0) << "\n";
+	for (int i = 0; i < n; i++) { cin >> weight[i]; }
+	cout << solve(0, 0, 0) << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int N;
-	static int weights[];
+	static int n;
+	static int[] weight;
 
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 
-		N = io.nextInt();
-		weights = new int[N];
-		for (int i = 0; i < N; i++) {
-			weights[i] = io.nextInt();
-		}
+		n = io.nextInt();
+		weight = new int[n];
+		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
 
 		io.println(solve(0, 0, 0));
 		io.close();
 	}
 
 	static long solve(int index, long sum1, long sum2) {
-		if (index == N) {
-			return Math.abs(sum1 - sum2);
-		}
+		if (index == n) { return Math.abs(sum1 - sum2); }
 
-		return Math.min(
-			solve(index + 1, sum1 + weights[index], sum2),
-			solve(index + 1, sum1, sum2 + weights[index])
-		);
+		return Math.min(solve(index + 1, sum1 + weight[index], sum2),
+		                solve(index + 1, sum1, sum2 + weight[index]));
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 n = int(input())
-p = list(map(int, input().split()))
+weights = list(map(int, input().split()))
 
-def solve(i, s1, s2):
+
+def solve(i, sum1, sum2):
 	if i == n:
-		return abs(s2 - s1)
-	return min(solve(i + 1, s1 + p[i], s2),
-			   solve(i + 1, s1, s2 + p[i]))
+		return abs(sum2 - sum1)
+	return min(
+		solve(i + 1, sum1 + weights[i], sum2), solve(i + 1, sum1, sum2 + weights[i])
+	)
+
 
 print(solve(0, 0, 0))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 #### Generating Subsets with Bitmasks
@@ -184,120 +161,96 @@ Check [this module](/gold/intro-bitwise) for more information.
 </Info>
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	if(sz(name)){
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
 
-int n; ll weights[20];
+using namespace std;
+
+using ll = long long;
+
+int n;
+ll weight[20];
 
 int main() {
-	setIO();
 	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> weights[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> weight[i]; }
 	ll ans = (ll)1e18;
 	for (int mask = 0; mask < (1 << n); mask++) {
-		ll s1 = 0, s2 = 0;
+		ll sum1 = 0, sum2 = 0;
 		for (int j = 0; j < n; j++) {
-			if (mask & (1 << j)) { //if the j-th bit is toggled
-				s1 += weights[j];
-			}
-			else{
-				s2 += weights[j];
+			if (mask & (1 << j)) {  // if the j-th bit is toggled
+				sum1 += weight[j];
+			} else {
+				sum2 += weight[j];
 			}
 		}
-		ans = min(ans, abs(s1 - s2));
+		ans = min(ans, abs(sum1 - sum2));
 	}
 	cout << ans << "\n";
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 
-		int N = io.nextInt();
-		int weights[] = new int[N];
-		for (int i = 0; i < N; i++) {
-			weights[i] = io.nextInt();
-		}
+		int n = io.nextInt();
+		int weight[] = new int[n];
+		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
 
 		long ans = Long.MAX_VALUE;
-		for (int bitmask = 0; bitmask < (1 << N); bitmask++) {
-			long s1 = 0;
-			long s2 = 0;
+		for (int mask = 0; mask < (1 << n); mask++) {
+			long sum1 = 0;
+			long sum2 = 0;
 
-			for (int i = 0; i < N; i++) {
-				if ((bitmask & (1 << i)) > 0) {
-					s1 += weights[i];
+			for (int i = 0; i < n; i++) {
+				if ((mask & (1 << i)) > 0) {
+					sum1 += weight[i];
 				} else {
-					s2 += weights[i];
+					sum2 += weight[i];
 				}
 			}
-			ans = Math.min(ans, Math.abs(s1 - s2));
+			ans = Math.min(ans, Math.abs(sum1 - sum2));
 		}
 
 		io.println(ans);
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 n = int(input())
-p = list(map(int, input().split()))
+weight = list(map(int, input().split()))
 
-ans = float('inf')
+ans = float("inf")
 for mask in range(1 << n):
-	s1, s2 = 0, 0
+	sum1, sum2 = 0, 0
 	for i in range(n):
 		if mask & (1 << i):
-			s1 += p[i]
+			sum1 += weight[i]
 		else:
-			s2 += p[i]
-	ans = min(ans, abs(s1 - s2))
+			sum2 += weight[i]
+	ans = min(ans, abs(sum1 - sum2))
 
 print(ans)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Permutations
@@ -373,32 +326,26 @@ same size as $s$, we've found a permutation and can add it to the list of
 $\texttt{perms}$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
+
 using namespace std;
 
 string s;
 vector<string> perms;
 int char_count[26];
 
-void search(string curr)
-{
+void search(string curr) {
 	// we've finished creating a permutation
-	if (curr.size() == s.size())
-	{
+	if (curr.size() == s.size()) {
 		perms.push_back(curr);
 		return;
 	}
-	for (int i = 0; i < 26; i++)
-	{
+	for (int i = 0; i < 26; i++) {
 		// for all available characters
-		if (char_count[i] > 0)
-		{
+		if (char_count[i] > 0) {
 			// add it to the current string and search
 			char_count[i]--;
 			search(curr + (char)('a' + i));
@@ -407,49 +354,36 @@ void search(string curr)
 	}
 }
 
-int main()
-{
+int main() {
 	cin >> s;
-	for (char c : s)
-	{
-		char_count[c - 'a']++;
-	}
+	for (char c : s) { char_count[c - 'a']++; }
 	search("");
-	cout << perms.size() << endl;
-	for (string perm : perms)
-	{
-		cout << perm << endl;
-	}
+	cout << perms.size() << "\n";
+	for (string perm : perms) { cout << perm << "\n"; }
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class CreatingStrings1
-{
+public class CreatingStrings1 {
 	static String s;
 	static List<String> perms = new ArrayList<String>();
 	static int[] charCount = new int[26];
 
-	static void search(String curr)
-	{
+	static void search(String curr) {
 		// we've finished creating a permutation
-		if (curr.length() == s.length())
-		{
+		if (curr.length() == s.length()) {
 			perms.add(curr);
 			return;
 		}
-		for (int i = 0; i < 26; i++)
-		{
+		for (int i = 0; i < 26; i++) {
 			// for all available characters
-			if (charCount[i] > 0)
-			{
+			if (charCount[i] > 0) {
 				// add it to the current string and search
 				charCount[i]--;
 				search(curr + (char)(i + 'a'));
@@ -458,20 +392,13 @@ public class CreatingStrings1
 		}
 	}
 
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		s = io.next();
-		for (int i = 0; i < s.length(); i++)
-		{
-			charCount[s.charAt(i) - 'a']++;
-		}
+		for (int i = 0; i < s.length(); i++) { charCount[s.charAt(i) - 'a']++; }
 		search("");
 		io.println(perms.size());
-		for (String perm : perms)
-		{
-			io.println(perm);
-		}
+		for (String perm : perms) { io.println(perm); }
 		io.close();
 	}
 
@@ -480,13 +407,13 @@ public class CreatingStrings1
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 s = input()
 perms = []
 char_count = [0] * 26
+
 
 def search(curr):
 	# we've finished creating a permutation
@@ -498,11 +425,12 @@ def search(curr):
 		if char_count[i] > 0:
 			# add it to the current string and search
 			char_count[i] -= 1
-			search(curr + chr(ord('a') + i))
+			search(curr + chr(ord("a") + i))
 			char_count[i] += 1
 
+
 for c in s:
-	char_count[ord(c) - ord('a')] += 1
+	char_count[ord(c) - ord("a")] += 1
 
 search("")
 print(len(perms))
@@ -511,11 +439,9 @@ for perm in perms:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 <LanguageSection>
-
 <CPPSection>
 
 #### Generating Permutations Using [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
@@ -544,8 +470,8 @@ problem.
 
 ```cpp
 do {
-	check(v); // process or check the current permutation for validity
-} while(next_permutation(v.begin(), v.end()));
+	check(v);  // process or check the current permutation for validity
+} while (next_permutation(v.begin(), v.end()));
 ```
 
 Each call to `next_permutation` makes a constant number of swaps on average if
@@ -561,32 +487,23 @@ smaller than the initial string won't be generated.
 </Warning>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-int main()
-{
+int main() {
 	string s;
 	cin >> s;
 	vector<string> perms;
 	sort(s.begin(), s.end());
-	do
-	{
-		perms.push_back(s);
-	}
-	while (next_permutation(s.begin(), s.end()));
+	do { perms.push_back(s); } while (next_permutation(s.begin(), s.end()));
 	cout << perms.size() << endl;
-	for (string perm : perms)
-	{
-		cout << perm << endl;
-	}
+	for (const string &perm : perms) { cout << perm << endl; }
 }
 ```
 
 </CPPSection>
-
+<JavaSection/>
 <PySection>
 
 #### Generating Permutations Using [`itertools.permutations`](https://docs.python.org/3/library/itertools.html#itertools.permutations)
@@ -598,6 +515,7 @@ the characters into a string.
 
 ```py
 import itertools
+
 s = input()
 # perms is a sorted list of all the permutations of the given string
 perms = sorted(set(itertools.permutations(s)))
@@ -607,66 +525,7 @@ for perm in perms:
 ```
 
 </PySection>
-
-<JavaSection />
-
 </LanguageSection>
-
-<!-- <Resources>
-  <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
-</Resources> -->
-
-<!-- ### Checking Permutations in Lexicographical Order
-
-<LanguageSection>
-
-<CPPSection>
-
-#### Method 1
-
-($\mathcal{O}(N\cdot N!)$ code)
-
-<IncompleteSection />
-
-#### Method 2
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.util.*;
-
-public class Test {
-	static boolean[] used;
-	static List<Integer> cur = new ArrayList<>();
-	static int n;
-	static void gen() {
-		if (cur.size() == n) {
-			check(cur); // check if current permutation is valid, or print it
-			return;
-		}
-		for (int i = 0; i < n; ++i) if (!used[i]) {
-			used[i] = true; cur.add(i+1);
-			gen();
-			used[i] = false; cur.remove(cur.size()-1);
-		}
-	}
-	static void genPerm(int _n) {
-		n = _n; used = new boolean[n];
-		gen();
-	}
-	public static void main(String[] Args) {
-		genPerm(5);
-	}
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-<IncompleteSection /> -->
 
 ## Backtracking
 
@@ -685,7 +544,7 @@ public class Test {
 
 ### Solution - Chessboard & Queens
 
-#### Using `next_permutation`
+#### By Generating Permutations
 
 Since no two queens can be in the same column, let's generate a permutation of
 length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
@@ -699,78 +558,51 @@ $i + j = S$ for some $S$. Similarly, some bottom-right to top-left diagonal can
 be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
-using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int,int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	if(sz(name)){
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-		freopen((name+".out").c_str(), "w", stdout);
-	}
-}
 
 bool ok[8][8];
-
 int ans = 0;
 
 int main() {
-	setIO();
 	for (int i = 0; i < 8; i++) {
-		string s; cin >> s;
-		for (int j = 0; j < 8; j++) {
-			ok[i][j] = (s[j] == '.');
-		}
+		string s;
+		cin >> s;
+		for (int j = 0; j < 8; j++) { ok[i][j] = (s[j] == '.'); }
 	}
-	vi vals(8);
+	vector<int> vals(8);
 
-	iota(all(vals), 0); //set vals to 0 1 ... 7
+	iota(vals.begin(), vals.end(), 0);  // set vals to 0 1 ... 7
 
 	do {
 		bool works = true;
 		bool blocked[16];
-		for(int i = 0; i < 8; i++){
-			if(!ok[i][vals[i]]){
-				works = false;
-			}
+		for (int i = 0; i < 8; i++) {
+			if (!ok[i][vals[i]]) { works = false; }
 		}
-		//first mark all squares as not blocked
+		// first mark all squares as not blocked
 		memset(blocked, false, sizeof(blocked));
-		for(int i = 0; i < 8; i++){
-			if(blocked[i + vals[i]]){
-				works = false;
-			}
-			blocked[i + vals[i]] = true; //mark this diagonal
+		for (int i = 0; i < 8; i++) {
+			if (blocked[i + vals[i]]) { works = false; }
+			blocked[i + vals[i]] = true;  // mark this diagonal
 		}
 		memset(blocked, false, sizeof(blocked));
-		for(int i = 0; i < 8; i++){
-			if(blocked[i + 7 - vals[i]]){
-				works = false;
-			}
+		for (int i = 0; i < 8; i++) {
+			if (blocked[i + 7 - vals[i]]) { works = false; }
 			blocked[i + 7 - vals[i]] = true;
 		}
-		if(works) ++ans;
-	} while(next_permutation(all(vals)));
+		if (works) ++ans;
+	} while (next_permutation(vals.begin(), vals.end()));
 
 	cout << ans << '\n';
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -787,9 +619,7 @@ public class Chessboard {
 		Kattio io = new Kattio();
 		for (int i = 0; i < 8; i++) {
 			String str = io.next();
-			for (int j = 0; j < 8; j++) {
-				ok[i][j] = (str.charAt(j) == '.');
-			}
+			for (int j = 0; j < 8; j++) { ok[i][j] = (str.charAt(j) == '.'); }
 		}
 		genperm();
 		io.println(ans);
@@ -801,21 +631,15 @@ public class Chessboard {
 			boolean works = true;
 			boolean blocked[] = new boolean[16];
 			for (int i = 0; i < 8; i++) {
-				if (!ok[i][perm.get(i)]) {
-					works = false;
-				}
+				if (!ok[i][perm.get(i)]) { works = false; }
 			}
 			for (int i = 0; i < 8; i++) {
-				if (blocked[i + perm.get(i)]) {
-					works = false;
-				}
-				blocked[i + perm.get(i)] = true; //mark this diagonal
+				if (blocked[i + perm.get(i)]) { works = false; }
+				blocked[i + perm.get(i)] = true;  // mark this diagonal
 			}
 			Arrays.fill(blocked, false);
 			for (int i = 0; i < 8; i++) {
-				if (blocked[i + 7 - perm.get(i)]) {
-					works = false;
-				}
+				if (blocked[i + 7 - perm.get(i)]) { works = false; }
 				blocked[i + 7 - perm.get(i)] = true;
 			}
 			if (works) ans++;
@@ -831,12 +655,48 @@ public class Chessboard {
 		}
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+import itertools
+
+ok = [[0] * 8 for _ in range(8)]
+ans = 0
+for i in range(8):
+	s = input()
+	for j in range(8):
+		ok[i][j] = s[j] == "."
+
+vals = list(range(8))
+
+for permutation in itertools.permutations(vals):
+	works = True
+	for i in range(8):
+		if not ok[i][permutation[i]]:
+			works = False
+	blocked = [0] * 16
+	for i in range(8):
+		if blocked[i + permutation[i]]:
+			works = False
+		blocked[i + permutation[i]] = True
+
+	blocked = [0] * 16
+	for i in range(8):
+		if blocked[i + 7 - permutation[i]]:
+			works = False
+		blocked[i + 7 - permutation[i]] = True
+	if works:
+		ans += 1
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
 
 #### Using Backtracking
@@ -857,30 +717,32 @@ Finally, when we have placed all the queens and the board's state is valid, then
 increment the answer.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
 string g[8];
-bool sum[15], dif[15], c[8];
+bool sum[15], diff[15], c[8];
 int ans = 0;
 
-void dfs(int r) { // place queen in r-th row
+void dfs(int r) {  // place queen in r-th row
 	if (r == 8) {
-		++ans; // found valid placement
+		++ans;  // found valid placement
 		return;
 	}
 	for (int i = 0; i < 8; ++i) {
-		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
-			c[i] = sum[i + r] = dif[i - r + 7] = true;
+		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !diff[i - r + 7]) {
+			c[i] = sum[i + r] = diff[i - r + 7] = true;
 			dfs(r + 1);
-			c[i] = sum[i + r] = dif[i - r + 7] = false;
+			c[i] = sum[i + r] = diff[i - r + 7] = false;
 		}
 	}
 }
 
 int main() {
-	setIO();
 	for (int i = 0; i < 8; ++i) cin >> g[i];
 	dfs(0);
 	cout << ans;
@@ -888,28 +750,28 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	static String g[];
-	static boolean sum[], dif[], c[];
+	static boolean sum[], diff[], c[];
 	static int ans = 0;
 
-	static void dfs(int r) { //place queen in row r
+	static void dfs(int r) {  // place queen in row r
 		if (r == 8) {
 			++ans;
 			return;
 		}
 		for (int i = 0; i < 8; ++i) {
-			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
-				c[i] = sum[i + r] = dif[i - r + 7] = true;
+			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] &&
+			    !diff[i - r + 7]) {
+				c[i] = sum[i + r] = diff[i - r + 7] = true;
 				dfs(r + 1);
-				c[i] = sum[i + r] = dif[i - r + 7] = false;
+				c[i] = sum[i + r] = diff[i - r + 7] = false;
 			}
 		}
 	}
@@ -917,111 +779,62 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 		g = new String[8];
-		sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
-		for (int i = 0; i < 8; ++i) {
-			g[i] = io.next();
-		}
+		sum = new boolean[15];
+		diff = new boolean[15];
+		c = new boolean[8];
+		for (int i = 0; i < 8; ++i) { g[i] = io.next(); }
 		dfs(0);
 		io.println(ans);
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-g = [input() for i in range(8)]
-d1 = [0] * 15
-d2 = [0] * 15
+g = [input() for _ in range(8)]
+sum_ = [False] * 15
+diff = [False] * 15
 c = [0] * 8
 ans = 0
-def dfs(r): # place queen in r-th row
+
+
+def dfs(r):
+	global ans
 	if r == 8:
 		ans += 1
-	else:
-		for i in range(8):
-			if g[r][i] == '*':
-				continue
-			if c[i] or d1[r + i] or d2[i - r + 7]:
-				continue
-			c[i] = d1[r + i] = d2[i - r + 7] = 1
+		return
+	for i in range(8):
+		if g[r][i] == "." and not c[i] and not sum_[i + r] and not diff[i - r + 7]:
+			c[i] = sum_[i + r] = diff[i - r + 7] = True
 			dfs(r + 1)
-			c[i] = d1[r + i] = d2[i - r + 7] = 0
+			c[i] = sum_[i + r] = diff[i - r + 7] = False
+
+
 dfs(0)
 print(ans)
 ```
 
 </PySection>
-
 </LanguageSection>
 
-#### Pruning
-
-<FocusProblem problem="back2" />
-
-Both of the resources below describe this well so I won't repeat it here.
-
-<Resources>
-	<Resource source="CPH" title="5.4 - Pruning the search" starred>
-		code and explanation for focus problem
-	</Resource>
-	<Resource source="CP2" title="3.2 - Complete Search">
-		pruning tips
-	</Resource>
-</Resources>
 
 ## Problems
-
-None of these require pruning.
 
 <Problems problems="gen" />
 
 You can find more problems at the CP2 link given above or at
 [USACO Training](https://train.usaco.org/). However, these sorts of problems
-appear much less frequently then they once did.
-
-<IncompleteSection>
-
-make code consistent, improve some of these explanations
-
-</IncompleteSection>
+appear much less frequently than they once did.
 
 <LanguageSection>
     <PySection>
 	<Quiz>
 	  <Quiz.Question>
-	    What is the time complexity of printing each element of all of the permutations of an array of length $n$?
-	    <Quiz.Answer>
-	      $\mathcal{O}(n)$
-	      <Quiz.Explanation>
-		Incorrect: Consider how many permutations there are in total
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $\mathcal{O}(2^n)$
-	      <Quiz.Explanation>
-		Incorrect: Remember that permutations and subsets are different
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $\mathcal{O}(n!)$
-	      <Quiz.Explanation>
-		Incorrect: It also takes time to generate the permutations and print each element of the permutation
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $\mathcal{O}(n! \cdot n)$
-	      <Quiz.Explanation>
-		Correct: Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
 	    For what size of $n$ could we expect a solution that runs through all of the subsets of an array of length $n$ under reasonable time constraints?
 	    <Quiz.Answer>
 	      $n \leq 10^9$
@@ -1038,276 +851,204 @@ make code consistent, improve some of these explanations
 	    <Quiz.Answer correct>
 	      $n \leq 22$
 	      <Quiz.Explanation>
-		Correct: This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$). 
+		Correct: This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$).
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	    <Quiz.Answer correct>
 	      $n \leq 10$
 	      <Quiz.Explanation>
-		Correct: It's definitely possible to run a $2^n$ solution for $n \leq 10$. However, we can go larger, up to around $n \leq 25$ 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
-	    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
-	    <Quiz.Answer>
-	      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
-	      <Quiz.Explanation>
-		Incorrect: A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      Iterative methods are easier to implement and are often faster and less buggy. 
-	      <Quiz.Explanation>
-		Correct: Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
-	      <Quiz.Explanation>
-		Incorrect: Although recursion is slower than iterative methods, it's still fast enough to pass most problems
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	</Quiz>    
-    </PySection>
-	
-    <JavaSection>
-	<Quiz>
-	  <Quiz.Question>
-	    What is the time complexity of generating all the permutations of an array of length $n$?
-	    <Quiz.Answer>
-	      $\mathcal{O}(n)$
-	      <Quiz.Explanation>
-		Incorrect: Consider how many permutations there are in total
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $\mathcal{O}(2^n)$
-	      <Quiz.Explanation>
-		Incorrect: Remember that permutations and subsets are different
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $\mathcal{O}(n!)$
-	      <Quiz.Explanation>
-		Incorrect: It also takes time to generate the permutations
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $\mathcal{O}(n! \cdot n)$
-	      <Quiz.Explanation>
-		Correct: Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
-	    For what size of $n$ could we expect a solution that runs through all of the subsets of an array of length $n$ under reasonable time constraints?
-	    <Quiz.Answer>
-	      $n \leq 10^9$
-	      <Quiz.Explanation>
-		Incorrect: There are $2^n$ subsets of $n$ numbers. $2^{10^9}$ has around 301030000 digits which would take well until the heat death of the universe to finish generating all the subset! 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $n \leq 10^4$
-	      <Quiz.Explanation>
-		Incorrect: $n = 10^4$ is still too large
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $n \leq 22$
-	      <Quiz.Explanation>
-		Correct: This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$). 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $n \leq 10$
-	      <Quiz.Explanation>
-		Correct: It's definitely possible to run a $2^n$ solution for $n \leq 10$. However, we can go larger, up to around $n \leq 25$ 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
-	    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
-	    <Quiz.Answer>
-	      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
-	      <Quiz.Explanation>
-		Incorrect: A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      Iterative methods are easier to implement and are often faster and less buggy. 
-	      <Quiz.Explanation>
-		Correct: Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
-	      <Quiz.Explanation>
-		Incorrect: Although recursion is slowing than iterative methods, it's still fast enough to pass most problems
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	</Quiz>    
-    </JavaSection>
-    <CPPSection>
-	<Quiz>
-	  <Quiz.Question>
-	    What is the time complexity of generating all the permutations of an array of length $n$?
-	    <Quiz.Answer>
-	      $\mathcal{O}(n)$
-	      <Quiz.Explanation>
-		Incorrect: Consider how many permutations there are in total
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $\mathcal{O}(2^n)$
-	      <Quiz.Explanation>
-		Incorrect: Remember that permutations and subsets are different
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $\mathcal{O}(n!)$
-	      <Quiz.Explanation>
-		Incorrect: It also takes time to generate the permutations
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $\mathcal{O}(n! \cdot n)$
-	      <Quiz.Explanation>
-		Correct: Both recursion and $\texttt{next\_permutation}$ take $\mathcal{O}(n)$ time and there are $n!$ permutations, so the total time complexity is $\mathcal{O}(n! \cdot n)$
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
-	    For what size of $n$ could we expect a solution that runs through all of the subsets of an array of length $n$ under reasonable time constraints?
-	    <Quiz.Answer>
-	      $n \leq 10^9$
-	      <Quiz.Explanation>
-		Incorrect: There are $2^n$ subsets of $n$ numbers. $2^{10^9}$ has around 301030000 digits which would take well until the heat death of the universe to finish generating all the subsets!
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      $n \leq 10^4$
-	      <Quiz.Explanation>
-		Incorrect: $n = 10^4$ is still too large
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $n \leq 22$
-	      <Quiz.Explanation>
-		Correct: This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$). 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      $n \leq 10$
-	      <Quiz.Explanation>
-		Correct: It's definitely possible to run a $2^n$ solution for $n \leq 10$. However, we can go larger, up to around $n \leq 25$ 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
-	    Why are iterative methods of generating permutations and subsets like $\texttt{next\_permutation}$ and bitmasking preferable over recursive implementations?
-	    <Quiz.Answer>
-	      Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
-	      <Quiz.Explanation>
-		Incorrect: A hallmark of problems featuring complete search with permutations/subsets is that $n$ is small, usually $\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-	      Iterative methods are easier to implement and are often faster and less buggy. 
-	      <Quiz.Explanation>
-		Correct: Having to code your own permutation/subset function can be inefficient in a timed contest environment. It's definitely worth learning iterative methods to save valuable time on debugging. 
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-	      Recursion is so slow that it will often cause Time Limit Exceeded even for small arrays and should be avoided at all costs. 
-	      <Quiz.Explanation>
-		Incorrect: Although recursion is slowing than iterative methods, it's still fast enough to pass most problems
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	  </Quiz.Question>
-	  <Quiz.Question>
-	    The following code is meant to generate all subsets of a given array:
-		```cpp
-		int A[] = {1, 2, 3, 4, 5};
-
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 5) {
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-			}
-
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-			subset.pop_back();
-			generateSubsets(i + 1, subset);
-		}
-		```
-	    There is an error with this code that causes it to crash. What does the corrected code look like?
-	    <Quiz.Answer>
-		```cpp
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 5) {
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-			}
-
-			// must always go to empty subset first
-			generateSubsets(i + 1, subset);
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-		}
-		```
-		<Quiz.Explanation>
-		Incorrect: This is another way of generating subsets, but it's not the error!
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer>
-		```cpp
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 4) { // incorrect ending index
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-			}
-
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-			subset.pop_back();
-			generateSubsets(i + 1, subset);
-		}
-		```
-
-	      <Quiz.Explanation>
-		Incorrect: This doesn't stop the error and prevents us from adding the last number to any subset
-	      </Quiz.Explanation>
-	    </Quiz.Answer>
-	    <Quiz.Answer correct>
-		```cpp
-		void generateSubsets(int i, vector<int> &subset) {
-			if (i == 5) {
-				for (int x : subset)
-					cout << x << ' ';
-				cout << '\n';
-				return; // missing return statement
-			}
-
-			subset.push_back(A[i]);
-			generateSubsets(i + 1, subset);
-			subset.pop_back();
-			generateSubsets(i + 1, subset);
-		}
-		```
-	      <Quiz.Explanation>
-		Correct: After we finish printing (or checking) the subset, remember to always return immediately. Otherwise, it causes nasty errors that often crashes the program.
+		Correct: It's definitely possible to run a $2^n$ solution for $n \leq 10$. However, we can go larger, up to around $n \leq 25$
 	      </Quiz.Explanation>
 	    </Quiz.Answer>
 	  </Quiz.Question>
 	</Quiz>
+    </PySection>
+
+    <JavaSection>
+	<Quiz>
+	  <Quiz.Question>
+	    For what size of $n$ could we expect a solution that runs through all of the subsets of an array of length $n$ under reasonable time constraints?
+	    <Quiz.Answer>
+	      $n \leq 10^9$
+	      <Quiz.Explanation>
+		Incorrect: There are $2^n$ subsets of $n$ numbers. $2^{10^9}$ has around 301030000 digits which would take well until the heat death of the universe to finish generating all the subset!
+	      </Quiz.Explanation>
+	    </Quiz.Answer>
+	    <Quiz.Answer>
+	      $n \leq 10^4$
+	      <Quiz.Explanation>
+		Incorrect: $n = 10^4$ is still too large
+	      </Quiz.Explanation>
+	    </Quiz.Answer>
+	    <Quiz.Answer correct>
+	      $n \leq 22$
+	      <Quiz.Explanation>
+		Correct: This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$).
+	      </Quiz.Explanation>
+	    </Quiz.Answer>
+	    <Quiz.Answer correct>
+	      $n \leq 10$
+	      <Quiz.Explanation>
+		Correct: It's definitely possible to run a $2^n$ solution for $n \leq 10$. However, we can go larger, up to around $n \leq 25$
+	      </Quiz.Explanation>
+	    </Quiz.Answer>
+	  </Quiz.Question>
+	</Quiz>
+    </JavaSection>
+    <CPPSection>
+	<Quiz>
+	  <Quiz.Question>
+	    What is the time complexity of the following code?
+
+    	```cpp
+    	vector<int> perm(n);
+    	do {
+    	} while (next_permutation(begin(perm), end(perm)));
+    	```
+        <Quiz.Answer>
+          $\mathcal{O}(n)$
+          <Quiz.Explanation>
+    	Incorrect: Consider how many permutations there are in total
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer>
+          $\mathcal{O}(2^n)$
+          <Quiz.Explanation>
+    	Incorrect: Remember that permutations and subsets are different
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer correct>
+          $\mathcal{O}(n!)$
+          <Quiz.Explanation>
+    	Correct: `std::next_permutation` in C++ will run in $\mathcal{O}(n!)$ time.
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer>
+          $\mathcal{O}(n! \cdot n)$
+          <Quiz.Explanation>
+    	  Incorrect: Although an iteration of `std::next_permutation` may take up to $\mathcal{O}(n)$ time, the total time amortizes to $\mathcal{O}(n!)$. In practice, however, this difference doesn't matter.
+          </Quiz.Explanation>
+        </Quiz.Answer>
+      </Quiz.Question>
+      <Quiz.Question>
+        For what size of $n$ could we expect a solution that runs through all of the subsets of an array of length $n$ under reasonable time constraints?
+        <Quiz.Answer>
+          $n \leq 10^9$
+          <Quiz.Explanation>
+    	Incorrect: There are $2^n$ subsets of $n$ numbers. $2^{10^9}$ has around 301030000 digits which would take well until the heat death of the universe to finish generating all the subsets!
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer>
+          $n \leq 10^4$
+          <Quiz.Explanation>
+    	Incorrect: $n = 10^4$ is still too large
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer correct>
+          $n \leq 22$
+          <Quiz.Explanation>
+    	Correct: This is just about right: $2^{22} \approx 10^7$, which is a bit less than the number of computations that the grading server can run in a second (which is around $10^8$).
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer correct>
+          $n \leq 10$
+          <Quiz.Explanation>
+    	Correct: It's definitely possible to run a $2^n$ solution for $n \leq 10$. However, we can go larger, up to around $n \leq 25$
+          </Quiz.Explanation>
+        </Quiz.Answer>
+      </Quiz.Question>
+      <Quiz.Question>
+        Why is using `std::next_permutation` generally preferable to writing your own recursive function to iterate through permutations?
+        <Quiz.Answer>
+          Recursion often runs into the issue of stack size, which can cause unexpected runtime errors
+          <Quiz.Explanation>
+    	Incorrect: Most complete search with permutations/subsets is that $n$ is small, usually $n\leq 20$. This means that recursion won't go particularly deep, and there won't be any issues with stack size.
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer correct>
+          Using the C++ library function is easier and less buggy.
+          <Quiz.Explanation>
+    	Correct: Learning to use the C++ Standard Library to its full potential will save you a lot of time coding and debugging.
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer>
+          Recursion introduces unnecessary overhead that often causes Time Limit Exceeded.
+          <Quiz.Explanation>
+    	Incorrect: Although recursion is slowing than iterative methods, it's still fast enough to pass most problems
+          </Quiz.Explanation>
+        </Quiz.Answer>
+      </Quiz.Question>
+      <Quiz.Question>
+        The following code is meant to generate all subsets of a given array:
+    	```cpp
+    	int A[] = {1, 2, 3, 4, 5};
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 5) {
+    			for (int x : subset) cout << x << ' ';
+    			cout << '\n';
+    		}
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    		subset.pop_back();
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+        There is an error with this code that causes it to crash. What does the corrected code look like?
+        <Quiz.Answer>
+    	```cpp
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 5) {
+    			for (int x : subset) cout << x << ' ';
+    			cout << '\n';
+    		}
+    		// must always go to empty subset first
+    		generateSubsets(i + 1, subset);
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+    	<Quiz.Explanation>
+    	Incorrect: This is another way of generating subsets, but it's not the error!
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer>
+    	```cpp
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 4) {  // incorrect ending index
+    			for (int x : subset) cout << x << ' ';
+    			cout << '\n';
+    		}
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    		subset.pop_back();
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+
+          <Quiz.Explanation>
+    	Incorrect: This doesn't stop the error and prevents us from adding the last number to any subset
+          </Quiz.Explanation>
+        </Quiz.Answer>
+        <Quiz.Answer correct>
+    	```cpp
+    	void generateSubsets(int i, vector<int> &subset) {
+    		if (i == 5) {
+    			for (int x : subset) cout << x << ' ';
+    			cout << '\n';
+    			return;  // missing return statement
+    		}
+    		subset.push_back(A[i]);
+    		generateSubsets(i + 1, subset);
+    		subset.pop_back();
+    		generateSubsets(i + 1, subset);
+    	}
+    	```
+          <Quiz.Explanation>
+    	Correct: After we finish printing (or checking) the subset, remember to always return immediately. Otherwise, it causes nasty errors that often crashes the program.
+          </Quiz.Explanation>
+        </Quiz.Answer>
+      </Quiz.Question>
+    </Quiz>
     </CPPSection>
+
  </LanguageSection>
-		 

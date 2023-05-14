@@ -1,0 +1,95 @@
+---
+id: baltic-10-candies
+source: Baltic OI 2010
+title: Candies
+author: Andi Qu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2010_solutions.zip)
+
+The official solution runs in $\mathcal{O}(BN^2 \log N)$ time, but we can use
+bitsets to solve this problem in $\mathcal{O}(BN^3 / 64)$ time.
+
+Firstly, instead of changing the number of candies in a package, we can say that
+Kristian first discards a package and then adds a new one.
+
+## Observation 1
+
+After discarding a package, if Kristian can fulfill $K$ distinct orders, he can
+add a package so that he can fulfill $2K$ distinct orders.
+
+Why is this true?
+
+Think about what happens when we use a bitset to do knapsack DP. Imagine the
+current bitset storing which orders Kristian can fulfill is `B` and we're at a
+package with `a[i]` candies.
+
+To transition, we simply do `B |= B << a[i]`.
+
+Thus, if the added `a[i]` is sufficiently large, Kristian can double the number
+of orders he can fulfill.
+
+This means that the package discarded must be the one that yields the most
+orders Kristian can fulfill when it's discarded.
+
+We can do knapsack DP $N$ times (considering discarding each package) to find
+this package in $\mathcal{O}(BN^3 / 64)$ time.
+
+## Observation 2
+
+If there are 2 subsets of candies $A$ and $B$, the new package can't have
+$\sum_{i \in A} i - \sum_{i \in B} i$ candies, since the number of packages
+Kristian can fulfill won't double in that case. Note that $B$ can be the empty
+set.
+
+The number of candies in the new package must therefore be the smallest positive
+integer that can't be expressed as $\sum_{i \in A} i - \sum_{i \in B} i$ for two
+subsets of candies $A$ and $B$.
+
+To find this number, we can do knapsack DP again, but this time using both
+`a[i]` and `-a[i]` instead of just `a[i]`.
+
+This knapsack DP runs in $\mathcal{O}(BN^3 / 64)$ as well, which is fast enough
+for 100 points.
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+using namespace std;
+
+int a[100];
+
+int main() {
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> a[i];
+	sort(a, a + n, greater<int>());
+
+	pair<int, int> best = {0, -1};
+	for (int i = 0; i < n; i++) {
+		bitset<700000> dp;
+		dp[0] = 1;
+		for (int j = 0; j < n; j++) {
+			if (j == i) continue;
+			dp |= dp << a[j];
+		}
+		best = max(best, {dp.count(), i});
+	}
+
+	bitset<1400000> dp;
+	dp[700000] = 1;
+	for (int i = 0; i < n; i++) {
+		if (i == best.second) continue;
+		dp |= (dp << a[i]) | (dp >> a[i]);
+	}
+
+	cout << a[best.second] << ' ';
+	for (int i = 1; i < 70000; i++)
+		if (!dp[700000 + i]) return cout << i, 0;
+	return 0;
+}
+```

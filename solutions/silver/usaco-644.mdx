@@ -1,0 +1,232 @@
+---
+id: usaco-644
+source: USACO Silver 2016 Open
+title: Closing the Farm
+author: Jesse Choe, Maggie Liu, Nathan Gong, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_closing_silver_open16.html)
+
+In this problem, we are asked to determine if all remaining barns are connected
+as the barns close one at a time. To check this, we can run a [depth-first search
+(DFS)](/silver/graph-traversal) starting from the barn that will close last. To simulate the closure of
+each barn, we can store a boolean array and set each barn in the iteration to be
+"closed". Then, we can run the DFS and check how many nodes have been visited.
+If all the unclosed nodes have been visited, then we print "YES" otherwise, we
+print "NO".
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 + NM)$
+
+<LanguageSection>
+<PySection>
+<Warning title="Time Limit Exceeded">
+Since Python is slow, it exceeds the time limit on test cases 8 and 10 even though the solution is the intended one.
+</Warning>
+
+```py
+import sys
+
+sys.stdin = open("closing.in", "r")
+sys.stdout = open("closing.out", "w")
+
+n, m = map(int, input().split())
+
+adj, order = {}, []
+for i in range(1, n + 1):
+	adj[i] = []
+
+visited, closed = [False] * (n + 1), [False] * (n + 1)
+nodes = 0
+
+
+def dfs(node):
+	global nodes
+	if visited[node] or closed[node]:
+		return
+
+	# Visit this node if it isn't closed and we haven't visited it yet.
+	nodes += 1
+	visited[node] = True
+
+	for u in adj[node]:
+		if not visited[u]:
+			dfs(u)
+
+
+# Read in adjacency list.
+for i in range(m):
+	a, b = map(int, input().split())
+	adj[a].append(b)
+	adj[b].append(a)
+
+for i in range(n):
+	order.append(int(input()))
+
+dfs(1)
+
+"""
+The farm is initially connected if we've visited every node
+before any of the farms are closed.
+"""
+print("YES") if nodes == n else print("NO")
+
+for i in range(n - 1):
+	visited = [False] * (n + 1)
+	nodes = 0
+	closed[order[i]] = True
+
+	# Start DFS from the barn that will close last.
+	dfs(order[n - 1])
+
+	# Have we visited all the unclosed barns?
+	if nodes == n - i - 1:
+		print("YES")
+	else:
+		print("NO")
+```
+</PySection>
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int n, m;
+const int MAX_N = 3000;
+
+vector<vector<int>> adj(MAX_N);
+vector<int> vis(MAX_N);
+vector<int> closed(MAX_N);
+int nodes = 0;
+
+void dfs(int node) {
+	if (vis[node] || closed[node]) return;
+
+	// Visit this node if it isn't closed and we haven't visited it yet.
+	nodes++;
+	vis[node] = true;
+
+	for (int u : adj[node]) {
+		if (!vis[u]) dfs(u);
+	}
+}
+
+int main() {
+	freopen("closing.in", "r", stdin);
+	freopen("closing.out", "w", stdout);
+
+	cin >> n >> m;
+
+	// Read in adjacency list.
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	vector<int> ord(n);
+	for (int i = 0; i < n; i++) cin >> ord[i];
+
+	dfs(1);
+
+	/*
+	 * The farm is initially connected if we've visited every node
+	 * before any of the farms are closed.
+	 */
+	if (nodes == n) {
+		cout << "YES\n";
+	} else {
+		cout << "NO\n";
+	}
+
+	for (int i = 0; i < n - 1; i++) {
+		nodes = 0;
+		closed[ord[i]] = true;
+		fill(vis.begin(), vis.end(), false);
+
+		// Start DFS from the barn that will close last.
+		dfs(ord[n - 1]);
+
+		// Have we visited all the unclosed barns?
+		if (nodes == n - i - 1) {
+			cout << "YES"
+			     << "\n";
+		} else {
+			cout << "NO"
+			     << "\n";
+		}
+	}
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class closing {
+	// Store global variables used by dfs
+	static ArrayList<ArrayList<Integer>> adj;
+	static boolean[] visited, closed;
+	static int nodes;
+
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("closing.in"));
+		PrintWriter out = new PrintWriter("closing.out");
+
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+
+		visited = new boolean[n];
+		closed = new boolean[n];
+		adj = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<Integer>());
+
+		for (int i = 0; i < m; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] order = new int[n];
+		for (int i = 0; i < n; i++) { order[i] = sc.nextInt() - 1; }
+
+		for (int i = 0; i < n; i++) {
+			Arrays.fill(visited, false);
+			nodes = 0;
+
+			dfs(order[n - 1]);  // DFS from the barn that will close last
+			// Checks if all unclosed barns have been visited
+			if (nodes == n - i) {
+				out.println("YES");
+			} else {
+				out.println("NO");
+			}
+			closed[order[i]] = true;
+		}
+		out.close();
+	}
+
+	static void dfs(int node) {
+		if (visited[node] || closed[node]) return;
+
+		// Increase the number of nodes
+		// iff this barn hasn't already been closed or visited
+		nodes++;
+		visited[node] = true;
+		for (int neighbor : adj.get(node)) { dfs(neighbor); }
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

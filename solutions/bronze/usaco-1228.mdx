@@ -1,0 +1,222 @@
+---
+id: usaco-1228
+source: USACO Bronze 2022 Open
+title: Counting Liars
+author: Chongtian Ma, Juheon Rhee
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob2_bronze_open22.html)
+
+## Explanation
+
+After we sort the input, an important observation is that if Bessie is at position $x$, then the number of cows lying are all the
+cows with position less than $x$ that says "L" plus all the cows with a position greater than $x$ that says
+"G".
+
+Given this, we can loop through every cow's position and compute the total number
+of liars by using a forwards loop and a backwards loop.
+
+The answer is the minimum liars over all the positions we looped over.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<pair<int, char>> cows(n);
+	for (int i = 0; i < n; i++) {
+		// The position is read into .first for sorting.
+		cin >> cows[i].second >> cows[i].first;
+	}
+
+	sort(cows.begin(), cows.end());
+
+	/*
+	 * lying_left[i] stores the number of cows to the left of cow i
+	 * that must be lying given that Bessie is at the position of cow i.
+	 */
+	vector<int> lying_left(n);
+	for (int i = 1; i < n; i++) {
+		// Add up all the cows that are already lying to the left of our pos.
+		lying_left[i] += lying_left[i - 1];
+
+		if (cows[i - 1].second == 'L' && cows[i].first > cows[i - 1].first) {
+			/*
+			 * If the cow before says our position is to the left
+			 * but their position is strictly less than our position,
+			 * they're lying.
+			 */
+			lying_left[i]++;
+		}
+	}
+
+	/*
+	 * lying_right stores the same thing, but does it so for the cows
+	 * to the *right* of i.
+	 */
+	vector<int> lying_right(n);
+	// Fill it up in much the same way.
+	for (int i = n - 2; i >= 0; i--) {
+		lying_right[i] += lying_right[i + 1];
+
+		if (cows[i + 1].second == 'G' && cows[i].first < cows[i + 1].first) {
+			lying_right[i]++;
+		}
+	}
+
+	int min_liars = n;
+	for (int i = 0; i < n; i++) {
+		min_liars = min(min_liars, lying_left[i] + lying_right[i]);
+	}
+
+	cout << min_liars << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CountingLiars {
+	// BeginCodeSnip{Cow Class}
+	static class Cow {
+		char statement;
+		int pos;
+
+		public Cow(char statement, int pos) {
+			this.statement = statement;
+			this.pos = pos;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(read.readLine());
+
+		Cow[] cows = new Cow[n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[i] = new Cow(cow.nextToken().charAt(0),
+			                  Integer.parseInt(cow.nextToken()));
+		}
+		read.close();
+
+		Arrays.sort(cows, Comparator.comparingInt(c -> c.pos));
+
+		/*
+		 * lying_left[i] stores the number of cows to the left of cow i
+		 * that must be lying given that Bessie is at the position of cow i.
+		 */
+		int[] lying_left = new int[n];
+		for (int i = 1; i < n; i++) {
+			// Add up all the cows that are already lying to the left of our
+			// pos.
+			lying_left[i] += lying_left[i - 1];
+
+			if (cows[i - 1].statement == 'L' && cows[i].pos > cows[i - 1].pos) {
+				/*
+				 * If the cow before says our position is to the left
+				 * but their position is strictly less than our position,
+				 * they're lying.
+				 */
+				lying_left[i]++;
+			}
+		}
+
+		/*
+		 * lying_right stores the same thing, but does it so for the cows
+		 * to the *right* of i.
+		 */
+		int[] lying_right = new int[n];
+		// Fill it up in much the same way.
+		for (int i = n - 2; i >= 0; i--) {
+			lying_right[i] += lying_right[i + 1];
+
+			if (cows[i + 1].statement == 'G' && cows[i].pos < cows[i + 1].pos) {
+				lying_right[i]++;
+			}
+		}
+
+		int minLiars = n;
+		for (int i = 0; i < n; i++) {
+			minLiars = Math.min(minLiars, lying_left[i] + lying_right[i]);
+		}
+
+		System.out.println(minLiars);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import NamedTuple
+
+
+class Cow(NamedTuple):
+	pos: int
+	statement: str
+
+
+n = int(input())
+cows = []
+for _ in range(n):
+	statement, pos = input().split()
+	cows.append(Cow(int(pos), statement))
+
+cows.sort(key=lambda c: c.pos)
+
+"""
+lying_left[i] stores the number of cows to the left of cow i
+that must be lying given that Bessie is at the position of cow i.
+"""
+lying_left = [0 for _ in range(n)]
+for i in range(1, n):
+	# Add up all the cows that are already lying to the left of our pos.
+	lying_left[i] += lying_left[i - 1]
+
+	if cows[i - 1].statement == "L" and cows[i].pos > cows[i - 1].pos:
+		"""
+		If the cow before says our position is to the left
+		but their position is strictly less than our position,
+		they're lying.
+		"""
+		lying_left[i] += 1
+
+"""
+lying_right stores the same thing, but does it so for the cows
+to the *right* of i.
+"""
+lying_right = [0 for _ in range(n)]
+# Fill it up in much the same way.
+for i in range(n - 2, -1, -1):
+	lying_right[i] += lying_right[i + 1]
+
+	if cows[i + 1].statement == "G" and cows[i].pos < cows[i + 1].pos:
+		lying_right[i] += 1
+
+min_liars = n
+for i in range(n):
+	min_liars = min(min_liars, lying_left[i] + lying_right[i])
+
+print(min_liars)
+```
+
+</PySection>
+</LanguageSection>

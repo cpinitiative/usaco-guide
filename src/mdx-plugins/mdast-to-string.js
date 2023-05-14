@@ -15,7 +15,7 @@ const escapeHTML = str =>
         '>': '&gt;',
         "'": '&#39;',
         '"': '&quot;',
-      }[tag])
+      })[tag]
   );
 
 // Get the text content of a node.

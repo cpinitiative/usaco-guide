@@ -1,0 +1,69 @@
+---
+id: cses-1715
+source: CSES
+title: Creating Strings II
+author: Chongtian Ma
+---
+
+## Explanation
+
+This strategy is known as [The Multinomial Theorem](https://en.wikipedia.org/wiki/Multinomial_theorem).
+
+We are essentially counting how many distinct strings we can make by permuting the letters of the string. Note that if there are repeating characters in the string, permuting those characters in place counts as the same string since letters are indisguinshable.
+
+For example, consider the string $aab$, and supposed we denote the $a$'s that sppear in the string in order of which they appear, so the original string becomes $a_1a_2b$. One possible permutation is $a_2a_1b$. When we remove these subscripts, these two strings become the same thing.
+
+To account for this, we'll go through each letter which occurs in the string and divide off the number of arrangements among its occurrences. The total number of permutations is $n!$. The number of ways a letter can permute is also just the factorial of the number of times it appears in the string.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+const ll MOD = 1e9 + 7;
+const int MAXN = 1e6;
+
+array<ll, MAXN + 1> fact;  // fact[i] = i! % MOD
+array<ll, MAXN + 1> inv;   // inv[i] = modular inverse of fact[i];
+
+// calculate a ^ b (mod m) in log b time
+ll modpow(ll a, ll b, ll m) {
+	ll prod = 1;
+	while (b > 0) {
+		if (b % 2 == 1) { prod = (prod * a) % m; }
+		b /= 2;
+		a = (a * a) % m;
+	}
+	return prod;
+}
+
+int main() {
+	// precompute fact[i] and inv[i]
+	fact[0] = inv[0] = fact[1] = inv[1] = 1;
+	for (int i = 2; i <= MAXN; i++) {
+		fact[i] = fact[i - 1] * i % MOD;
+		inv[i] = modpow(fact[i], MOD - 2, MOD);
+	}
+
+	string s;
+	cin >> s;
+
+	vector<int> character_count(26);
+	for (char i : s) { character_count[i - 'a']++; }
+
+	ll total = fact[s.length()];
+	for (int i : character_count) {
+		// multiplying by inverse is the same as dividing
+		total = total * inv[i] % MOD;
+	}
+
+	cout << total << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

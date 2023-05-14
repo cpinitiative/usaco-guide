@@ -1,0 +1,211 @@
+---
+id: cf-1528A
+source: CF
+title: Parsa's Humongous Tree
+author: Ryan Chou
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/91058)
+
+## Explanation
+
+Without loss of generality, let's assume we've already computed the best beauty values for all of vertex $u$'s neighbors.
+
+Let $\texttt{range}_u$ store $l_u$ and $r_u$ and $\texttt{adj}_u$ store the beauty values of all vertices adjacent to $u$.
+
+For example, we'll set
+
+$\texttt{range}_u = \{1, 10\}$
+
+$\texttt{adj}_u = \{2, 3, 6, 9\}$
+
+Let's say that we select $7$, which gives us a beauty of $|7-2| + |7-3| + |7-6| + |7-9| = 12$. Can we do better than this?
+
+Intuitively, for any $X$ that we choose to be $u$'s beauty value, if there's more elements that are greater than this $X$, making $X$ as small as possible would be more optimal (increasing differences for these elements) and vice versa. Note that in a case where the number of greater beauty values is the same as the number of smaller beauty values, setting $X$ to the minimum or maximum will never decrease the answer. Moving $X$ will always increase the distance for the other end of the beauty values.
+
+<Info title="Why does this work?">
+[Choosing the median minimizes the sum of absolute deviation](https://math.stackexchange.com/questions/85448/why-does-the-median-minimize-ex-c), so we'd want to get as far away from the median as possible.
+</Info>
+
+This observation is all we need. Since setting $u$ to $l_u$ or $r_u$ is always optimal, we'll handle this through DP.
+
+If $\texttt{dp}[i][j]$ stores the maximum sum of beauty values at the subtree rooted at $i$ when $i$'s "beauty type" is $j$. Since vertex $i$ can only take two values, $j$ will be equal to $0$ when $u$'s beauty value is $l_u$ and $1$ when $u$'s beauty value is $r_u$.
+
+Our transitions are:
+
+$\texttt{dp}_{u \space 0} \mathrel{+}= \max(\texttt{dp}_{v \space 0} + |range_{u \space 0} - range_{v \space 0}|, \texttt{dp}_{v \space 1} + |range_{u \space 1} - range_{v \space 0}|)$
+
+$\texttt{dp}_{u \space 1} \mathrel{+}= \max( \texttt{dp}_{v \space 1} + |range_{u \space 1} - range_{v \space 1}|, \texttt{dp}_{v \space 0} + |range_{u \space 0} - range_{v \space 1}|)$
+
+This essentially means:
+
+If $u$ has the beauty $l_u$:
+
+$\texttt{dp}_{u \space 0} \mathrel{+}= \max($beauty if $v$ has a beauty value of $l_v$, beauty if $v$ has a beauty value of $r_v$)
+
+If $u$ has the beauty $r_u$:
+
+$\texttt{dp}_{u \space 1} \mathrel{+}= \max($beauty if $v$ has a beauty value of $l_v$, beauty if $v$ has a beauty value of $r_v$)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+vector<vector<int>> adj;
+vector<pair<int, int>> range;
+vector<vector<long long>> dp;
+
+// return optimal beauty value for vertex u with subtree v
+long long mx_beauty(int u, int v, bool type) {
+	if (!type) {
+		long long swtch = dp[v][1] + abs(range[u].first - range[v].second);
+		long long sm = dp[v][0] + abs(range[u].first - range[v].first);
+
+		return std::max(swtch, sm);
+	} else {
+		long long swtch = dp[v][1] + abs(range[u].second - range[v].second);
+		long long sm = dp[v][0] + abs(range[u].second - range[v].first);
+
+		return std::max(swtch, sm);
+	}
+}
+
+void calculate_dp(int u, int par) {
+	for (int v : adj[u]) {
+		if (v == par) { continue; }
+
+		calculate_dp(v, u);
+		dp[u][0] += mx_beauty(u, v, 0);
+		dp[u][1] += mx_beauty(u, v, 1);
+	}
+}
+
+int main() {
+	std::cin.tie(0)->sync_with_stdio(0);
+
+	int test_num;
+	std::cin >> test_num;
+
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		std::cin >> n;
+
+		range.clear();
+		adj.assign(n, {});
+		dp.assign(n, vector<long long>(2, 0));
+
+		for (int i = 0; i < n; i++) {
+			int l;
+			int r;
+			std::cin >> l >> r;
+
+			range.push_back(make_pair(l, r));
+		}
+
+		for (int i = 0; i < n - 1; i++) {
+			int u;
+			int v;
+			std::cin >> u >> v;
+
+			adj[--u].push_back(--v);
+			adj[v].push_back(u);
+		}
+
+		calculate_dp(0, -1);
+
+		cout << std::max(dp[0][0], dp[0][1]) << endl;
+	}
+}
+```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class ParsasHumongousTree {
+	private static List<List<Integer>> adj = new ArrayList<>();
+	private static int[] l, r;
+	private static long[][] dp;
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int t = io.nextInt();
+
+		for (int tc = 0; tc < t; tc++) {
+			int n = io.nextInt();
+
+			l = new int[n + 1];
+			r = new int[n + 1];
+			dp = new long[n + 1][2];
+			adj.clear();
+
+			for (int i = 1; i <= n; i++) {
+				l[i] = io.nextInt();
+				r[i] = io.nextInt();
+			}
+
+			for (int i = 0; i <= n; i++) { adj.add(new ArrayList<>()); }
+
+			for (int i = 0; i < n - 1; i++) {
+				int u = io.nextInt(), v = io.nextInt();
+				adj.get(u).add(v);
+				adj.get(v).add(u);
+			}
+
+			calculateDP(1, -1);
+
+			io.println(Math.max(dp[1][0], dp[1][1]));
+		}
+
+		io.flush();
+	}
+
+	private static void calculateDP(int u, int par) {
+		for (int v : adj.get(u)) {
+			// Continue if `v` is `u`'s parent.
+			if (v == par) { continue; }
+
+			// Calculate the DP values for 'v'.
+			calculateDP(v, u);
+
+			// DP transitions for 'u'.
+			dp[u][0] += maxBeauty(u, v, false);
+			dp[u][1] += maxBeauty(u, v, true);
+		}
+	}
+
+	// Return optimal beauty value for vertex u with subtree v.
+	private static long maxBeauty(int u, int v, boolean type) {
+		if (!type) {
+			long swtch = dp[v][1] + Math.abs(l[u] - r[v]);
+			long sm = dp[v][0] + Math.abs(l[u] - l[v]);
+
+			return Math.max(swtch, sm);
+		} else {
+			long swtch = dp[v][1] + Math.abs(r[u] - r[v]);
+			long sm = dp[v][0] + Math.abs(r[u] - l[v]);
+
+			return Math.max(swtch, sm);
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

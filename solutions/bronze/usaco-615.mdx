@@ -1,0 +1,103 @@
+---
+id: usaco-615
+source: USACO Bronze 2016 February
+title: Milk Pails
+author: Danh Ta Chi Thanh, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_bronze_feb16.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+
+using namespace std;
+
+int main() {
+	freopen("pails.in", "r", stdin);
+	int buck1, buck2;
+	int order;
+	cin >> buck1 >> buck2 >> order;
+
+	int closest = 0;
+	// Try all possible combinations of the first & second bucket.
+	for (int first = 0; first <= order; first++) {
+		if (buck1 * first > order) { break; }
+		for (int second = 0; second <= order; second++) {
+			int n = (buck1 * first) + (buck2 * second);
+			if (n > order) { break; }
+			closest = max(closest, n);
+		}
+	}
+
+	freopen("pails.out", "w", stdout);
+	cout << closest << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Pails {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("pails.in"));
+		StringTokenizer input = new StringTokenizer(read.readLine());
+		read.close();
+
+		int buck1 = Integer.parseInt(input.nextToken());
+		int buck2 = Integer.parseInt(input.nextToken());
+		int order = Integer.parseInt(input.nextToken());
+
+		int closest = 0;
+		// Try all possible combinations of the first & second bucket.
+		for (int first = 0; first <= order; first++) {
+			if (buck1 * first > order) { break; }
+			for (int second = 0; second <= order; second++) {
+				int n = (buck1 * first) + (buck2 * second);
+				if (n > order) { break; }
+				closest = Math.max(closest, n);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("pails.out");
+		written.println(closest);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("pails.in") as fin:
+	buck1, buck2, order = map(int, fin.readline().split())
+
+closest = 0
+# Try all possible combinations of the first & second bucket.
+for first in range(order + 1):
+	if buck1 * first > order:
+		break
+	for second in range(order + 1):
+		current = (buck1 * first) + (buck2 * second)
+		if current > order:
+			break
+		closest = max(closest, current)
+
+print(closest, file=open("pails.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

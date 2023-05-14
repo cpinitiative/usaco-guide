@@ -1,0 +1,136 @@
+---
+id: usaco-919
+source: USACO Silver 2019 February
+title: Painting the Barn
+author: Qi Wang, Nathan Wang, Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_paintbarn_silver_feb19.html)
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+From the official analysis (with minor modifications):
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int WIDTH = 1000;
+
+int main() {
+	freopen("paintbarn.in", "r", stdin);
+	freopen("paintbarn.out", "w", stdout);
+	int rect_num, paint_req;
+	cin >> rect_num >> paint_req;
+
+	int barn[WIDTH + 1][WIDTH + 1];
+	for (int i = 0; i < rect_num; i++) {
+		int start_x, start_y, end_x, end_y;
+		cin >> start_x >> start_y >> end_x >> end_y;
+		// Set up the prefix sums array with all the corners of the given
+		// rectangle
+		barn[start_x][start_y]++;
+		barn[start_x][end_y]--;
+		barn[end_x][start_y]--;
+		barn[end_x][end_y]++;
+	}
+
+	int valid_area = 0;
+	// Run 2D prefix sums on the array
+	for (int x = 0; x < WIDTH; x++) {
+		for (int y = 0; y < WIDTH; y++) {
+			if (x > 0) barn[x][y] += barn[x - 1][y];
+			if (y > 0) barn[x][y] += barn[x][y - 1];
+			if (x > 0 && y > 0) barn[x][y] -= barn[x - 1][y - 1];
+			valid_area += barn[x][y] == paint_req;
+		}
+	}
+	cout << valid_area << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PaintBarn {
+	static final int WIDTH = 1000;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("paintbarn");
+		int rectNum = io.nextInt();
+		int paintReq = io.nextInt();
+		int[][] barn = new int[WIDTH + 1][WIDTH + 1];
+
+		for (int i = 0; i < rectNum; i++) {
+			int start_x = io.nextInt();
+			int start_y = io.nextInt();
+			int end_x = io.nextInt();
+			int end_y = io.nextInt();
+
+			// Set up the prefix sums array with all the corners of the given
+			// rectangle
+			barn[start_x][start_y]++;
+			barn[end_x][end_y]++;
+			barn[start_x][end_y]--;
+			barn[end_x][start_y]--;
+		}
+
+		int valid_area = 0;
+		// Run 2D prefix sums on the array
+		for (int x = 0; x <= WIDTH; x++) {
+			for (int y = 0; y <= WIDTH; y++) {
+				if (x > 0) barn[x][y] += barn[x - 1][y];
+				if (y > 0) barn[x][y] += barn[x][y - 1];
+				if (x > 0 && y > 0) barn[x][y] -= barn[x - 1][y - 1];
+				if (barn[x][y] == paintReq) { valid_area++; }
+			}
+		}
+		io.println(valid_area);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+WIDTH = 1000
+
+barn = [[0 for _ in range(WIDTH + 1)] for _ in range(WIDTH + 1)]
+with open("paintbarn.in") as read:
+	rect_num, paint_req = [int(i) for i in read.readline().split()]
+	for _ in range(rect_num):
+		start_x, start_y, end_x, end_y = [int(i) for i in read.readline().split()]
+		# Set up the prefix sums array with all the corners of the given rectangle
+		barn[start_x][start_y] += 1
+		barn[start_x][end_y] -= 1
+		barn[end_x][start_y] -= 1
+		barn[end_x][end_y] += 1
+
+valid_area = 0
+# Run 2D prefix sums on the array
+for x in range(WIDTH + 1):
+	for y in range(WIDTH + 1):
+		if x > 0:
+			barn[x][y] += barn[x - 1][y]
+		if y > 0:
+			barn[x][y] += barn[x][y - 1]
+		if x > 0 and y > 0:
+			barn[x][y] -= barn[x - 1][y - 1]
+		valid_area += barn[x][y] == paint_req
+
+print(valid_area, file=open("paintbarn.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

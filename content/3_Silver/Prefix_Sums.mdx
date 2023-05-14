@@ -55,7 +55,7 @@ is **not** acceptable; it will almost certainly exceed the time limit.
 
 Instead, we can use prefix sums to process these array sum queries. We designate
 a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array,
-set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq n$,
+set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq N$,
 define the prefix sum array as follows:
 
 $$
@@ -65,7 +65,7 @@ $$
 Basically, what this means is that the element at index $k$ of the prefix sum
 array stores the sum of all the elements in the original array from index $1$ up
 to $k$. This can be calculated easily in $\mathcal{O}(N)$ by the following
-formula for each $1\le k\le n$:
+formula for each $1\le k\le N$:
 
 $$
 \texttt{prefix}[k]=\texttt{prefix}[k-1]+\texttt{arr}[k]
@@ -201,10 +201,9 @@ using namespace std;
 using ll = long long;
 using vl = vector<ll>;
 
-vl psum(const vl& a) {
-	vl psum(sz(a)+1);
-	for (int i = 0; i < sz(a); ++i)
-		psum[i+1] = psum[i]+a[i];
+vl psum(const vl &a) {
+	vl psum(sz(a) + 1);
+	for (int i = 0; i < sz(a); ++i) psum[i + 1] = psum[i] + a[i];
 	// or partial_sum(begin(a),end(a),begin(psum)+1);
 	return psum;
 }
@@ -213,8 +212,7 @@ int main() {
 	int N, Q;
 	cin >> N >> Q;
 	vl a(N);
-	for (ll& x: a)
-		cin >> x;
+	for (ll &x : a) cin >> x;
 	vl p = psum(a);
 	for (int i = 0; i < Q; ++i) {
 		int l, r;
@@ -229,13 +227,14 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class Main{
+public class Main {
 	static int N, Q;
-	public static void main(String[] args) throws IOException{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter writer = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(reader.readLine());
 		N = Integer.parseInt(st.nextToken());
@@ -243,30 +242,26 @@ public class Main{
 
 		st = new StringTokenizer(reader.readLine());
 		long[] a = new long[N];
-		for(int i = 0; i<N; i++){
-			a[i] = Long.parseLong(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { a[i] = Long.parseLong(st.nextToken()); }
 
 		long[] p = psum(a);
 
-		for(int i = 0; i<Q; i++){
+		for (int i = 0; i < Q; i++) {
 			int l, r;
 			st = new StringTokenizer(reader.readLine());
 			l = Integer.parseInt(st.nextToken());
 			r = Integer.parseInt(st.nextToken());
-			writer.println(p[r]-p[l]);
+			writer.println(p[r] - p[l]);
 		}
 
 		reader.close();
 		writer.close();
 	}
 
-	public static long[] psum(long[] a){
-		long[] psums = new long[N+1];
+	public static long[] psum(long[] a) {
+		long[] psums = new long[N + 1];
 
-		for(int i = 0; i<N; i++){
-			psums[i+1] = psums[i] + a[i];
-		}
+		for (int i = 0; i < N; i++) { psums[i + 1] = psums[i] + a[i]; }
 
 		return psums;
 	}
@@ -277,12 +272,13 @@ public class Main{
 
 <PySection>
 
-```python
+```py
 def psum(a):
-	psum=[0]
+	psum = [0]
 	for i in a:
-		psum.append(psum[-1]+i) # psum[-1] is the last element in the list
+		psum.append(psum[-1] + i)  # psum[-1] is the last element in the list
 	return psum
+
 
 N, Q = map(int, input().split())
 a = list(map(int, input().split()))
@@ -290,7 +286,7 @@ p = psum(a)
 
 for i in range(Q):
 	l, r = map(int, input().split())
-	print(p[r]-p[l])
+	print(p[r] - p[l])
 ```
 
 </PySection>
@@ -307,7 +303,7 @@ for i in range(Q):
 [this link](https://www.spoj.com/problems/HAYBALE/) to submit.
 
 </Warning>
-	
+
 ## Quiz
 
 <Quiz>
@@ -322,7 +318,7 @@ for i in range(Q):
     <Quiz.Answer>
       $\mathcal{O}(n^2)$
       <Quiz.Explanation>
-        Incorrect. Although this is the complexity that naively computing the prefix sum array will achieve, we can speed it up by employing a technique known as dynamic programming. 
+        Incorrect. Although this is the complexity that naively computing the prefix sum array will achieve, we can speed it up by employing a technique known as dynamic programming.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
@@ -334,7 +330,7 @@ for i in range(Q):
     <Quiz.Answer>
       $\mathcal{O}(n \log n)$
       <Quiz.Explanation>
-        Incorrect. There's no need to sort and/or employ any other technique that may add a $\log$ factor to the complexity. 
+        Incorrect. There's no need to sort and/or employ any other technique that may add a $\log$ factor to the complexity.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
@@ -355,13 +351,13 @@ for i in range(Q):
     <Quiz.Answer>
       $P = [0, 7, 12, 8, 5]$
       <Quiz.Explanation>
-        Incorrect. Recall that the prefix sum array is the sum of **all** previous element, not just the element directly before it. 
+        Incorrect. Recall that the prefix sum array is the sum of **all** previous element, not just the element directly before it.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
       $P = [19, 17, 12, 5, 4]$
       <Quiz.Explanation>
-        Incorrect. This is the "suffix sum" array, which is the prefix sum array computed in reverse. In general, it serves the same purpose as its counterpart so we rarely use it. 
+        Incorrect. This is the "suffix sum" array, which is the prefix sum array computed in reverse. In general, it serves the same purpose as its counterpart so we rarely use it.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
@@ -388,7 +384,7 @@ for i in range(Q):
     <Quiz.Answer>
       15; 21
       <Quiz.Explanation>
-        Incorrect. Recall that to get the sum of some range of values $[l, r]$, we need to calculate $P[r] - P[l - 1]$ instead of $P[r] + P[l - 1]$. 
+        Incorrect. Recall that to get the sum of some range of values $[l, r]$, we need to calculate $P[r] - P[l - 1]$ instead of $P[r] + P[l - 1]$.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
@@ -397,25 +393,25 @@ for i in range(Q):
     <Quiz.Answer>
       **Integer Overflow**: Even if we use modulo, the numbers will grow too quickly when multiplying, to the point where they may not fit within a 64-bit integer.
       <Quiz.Explanation>
-        Incorrect. We can calculate intermediate modulos, which will mitigate this problem. This property is a result of the distribute property of modulo which states that $(a \cdot b) \mod m = (a \mod m) \cdot (b \mod m) \mod m$. 
+        Incorrect. We can calculate intermediate modulos, which will mitigate this problem. This property is a result of the distribute property of modulo which states that $(a \cdot b) \mod m = (a \mod m) \cdot (b \mod m) \mod m$.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
       **Time Limit**: Multiplying, dividing, and modulo are relatively slow operations, and this will make the prefix product just as fast as iterating through the array.
       <Quiz.Explanation>
-        Incorrect. While it is true that multiplying and dividing are relatively slow, this difference is hardly enough to impact the runtime to the extent of causing TLE. 
+        Incorrect. While it is true that multiplying and dividing are relatively slow, this difference is hardly enough to impact the runtime to the extent of causing TLE.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      **Memory Limit**: When we switch to products, the memory goes from $\mathcal{O}(n)$ to $\mathcal{O}(n^2)$, which will result in MLE for $n \geq 10^5$. 
+      **Memory Limit**: When we switch to products, the memory goes from $\mathcal{O}(n)$ to $\mathcal{O}(n^2)$, which will result in MLE for $n \geq 10^5$.
       <Quiz.Explanation>
-        Incorrect. The memory remains the same regardless of whether we use sum or product. 
+        Incorrect. The memory remains the same regardless of whether we use sum or product.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer correct>
-      **Division under Modulo**: We cannot directly use division as a substitute for subtraction, because division is not distributive under modulo. 
+      **Division under Modulo**: We cannot directly use division as a substitute for subtraction, because division is not distributive under modulo.
       <Quiz.Explanation>
-        Correct! Division under modulo is not the same as addition, subtraction, or multiplication. To divide involves multiplying by the modulo inverse, which only exists if $M$ and the value to be divided by are relatively prime. One way we could conceivably do this is if $M$ is prime itself. 
+        Correct! Division under modulo is not the same as addition, subtraction, or multiplication. To divide involves multiplying by the modulo inverse, which only exists if $M$ and the value to be divided by are relatively prime. One way we could conceivably do this is if $M$ is prime itself.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>

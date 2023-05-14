@@ -1,0 +1,168 @@
+---
+id: usaco-668
+source: USACO Silver 2016 December
+title: Moocast
+author: Óscar Garries, Dong Liu, Owen Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_moocast_silver_dec16.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<bool>> connected;
+vector<bool> visited;
+
+/** @return how many cows can be reached from a cow c */
+int reachable_cows(int c) {
+	visited[c] = true;
+	// we can always reach the initial cow c
+	int reached = 1;
+	for (int nc = 0; nc < connected.size(); nc++) {
+		// make sure we can connect to this cow & it hasn't been reached yet
+		if (!visited[nc] && connected[c][nc]) {
+			visited[nc] = true;
+			reached += reachable_cows(nc);
+		}
+	}
+	return reached;
+}
+
+int main() {
+	freopen("moocast.in", "r", stdin);
+	int cow_num;
+	cin >> cow_num;
+	vector<int> x(cow_num), y(cow_num);
+	vector<int> power(cow_num);
+	for (int c = 0; c < cow_num; c++) { cin >> x[c] >> y[c] >> power[c]; }
+
+	connected = vector<vector<bool>>(cow_num, vector<bool>(cow_num));
+	for (int i = 0; i < cow_num; i++) {
+		for (int j = 0; j < cow_num; j++) {
+			int dist_squared =
+			    ((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
+			connected[i][j] = dist_squared <= power[i] * power[i];
+		}
+	}
+
+	int max_cows = 0;
+	for (int c = 0; c < cow_num; c++) {
+		visited.assign(cow_num, false);
+		max_cows = max(max_cows, reachable_cows(c));
+	}
+
+	freopen("moocast.out", "w", stdout);
+	cout << max_cows << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooCast {
+	static boolean[][] connected;
+	static boolean[] visited;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("moocast.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		int[] x = new int[cowNum];
+		int[] y = new int[cowNum];
+		int[] power = new int[cowNum];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			x[c] = Integer.parseInt(cow.nextToken());
+			y[c] = Integer.parseInt(cow.nextToken());
+			power[c] = Integer.parseInt(cow.nextToken());
+		}
+
+		connected = new boolean[cowNum][cowNum];
+		for (int i = 0; i < cowNum; i++) {
+			for (int j = 0; j < cowNum; j++) {
+				int distSquared = ((x[i] - x[j]) * (x[i] - x[j]) +
+				                   (y[i] - y[j]) * (y[i] - y[j]));
+				connected[i][j] = distSquared <= power[i] * power[i];
+			}
+		}
+
+		int maxCows = 0;
+		for (int c = 0; c < cowNum; c++) {
+			visited = new boolean[cowNum];
+			maxCows = Math.max(maxCows, reachableCows(c));
+		}
+
+		PrintWriter written = new PrintWriter("moocast.out");
+		written.println(maxCows);
+		written.close();
+	}
+
+	/** @return how many cows can be reached from a cow c */
+	static int reachableCows(int c) {
+		visited[c] = true;
+		int reached = 1;  // we can always reach the initial cow c
+		for (int nc = 0; nc < connected.length; nc++) {
+			// make sure we can connect to this cow & it hasn't been reached yet
+			if (!visited[nc] && connected[c][nc]) {
+				visited[nc] = true;
+				reached += reachableCows(nc);
+			}
+		}
+		return reached;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("moocast.in") as read:
+	cow_num = int(read.readline())
+	x = [0 for _ in range(cow_num)]
+	y = [0 for _ in range(cow_num)]
+	power = [0 for _ in range(cow_num)]
+	for c in range(cow_num):
+		x[c], y[c], power[c] = [int(i) for i in read.readline().split()]
+
+connected = [[False for _ in range(cow_num)] for _ in range(cow_num)]
+for i in range(cow_num):
+	for j in range(cow_num):
+		dist_squared = (x[i] - x[j]) ** 2 + (y[i] - y[j]) ** 2
+		connected[i][j] = dist_squared <= power[i] ** 2
+
+
+def reachable_cows(c: int) -> int:
+	""":return how many cows can be reached from a cow c"""
+	global visited
+	visited[c] = True
+	reached = 1  # we can always reach the initial cow c
+	for nc in range(cow_num):
+		# make sure we can connect to this cow & it hasn't been reached yet
+		if not visited[nc] and connected[c][nc]:
+			visited[nc] = True
+			reached += reachable_cows(nc)
+	return reached
+
+
+max_cows = 0
+for c in range(cow_num):
+	visited = [False for _ in range(cow_num)]
+	max_cows = max(max_cows, reachable_cows(c))
+
+print(max_cows, file=open("moocast.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
