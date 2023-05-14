@@ -37,6 +37,10 @@ operations you can perform.
 
 Of course, the first step is to generate the sizes of each connected component.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -73,8 +77,7 @@ void init() {
 		if (D.get(i) == i) comps.push_back(D.size(i));
 }
 ```
-
-<LanguageSection>
+</CPPSection>
 
 <PySection>
 
@@ -118,12 +121,8 @@ sizes = []
 for i in range(1, n + 1):
 	if ds.find(i) == i:
 		sizes.append(ds.find_size(i))
-num = 1
-for i in sizes:
-	num = num | num << i
-string = str(bin(num))
-print(string[3 : len(string)])
 ```
+
 </PySection>
 
 </LanguageSection>
@@ -139,6 +138,65 @@ below).
 
 <Spoiler title="Full Solution">
 
+
+<LanguageSection>
+
+<PySection>
+
+```py
+# BeginCodeSnip{DSU}
+class DisjointSet:
+	parent = {}
+	sz = []
+
+	def make_set(self, sz):
+		# create `n` disjoint sets (one for each item)
+		self.sz.append(1)
+		for i in range(1, sz + 1):
+			self.parent[i] = i
+			self.sz.append(1)
+
+	def find(self, k):
+		if self.parent[k] == k:
+			return k
+		return self.find(self.parent[k])
+
+	def find_size(self, x):
+		return self.sz[self.find(x)]
+
+	def union(self, a, b):
+		x = self.find(a)
+		y = self.find(b)
+		self.sz[y] += self.sz[x]
+		self.parent[x] = y
+
+
+n, m = map(int, input().split(" "))
+
+ds = DisjointSet()
+ds.make_set(n)
+
+for i in range(0, m):
+	x, y = map(int, input().split(" "))
+	ds.union(x, y)
+
+sizes = []
+for i in range(1, n + 1):
+	if ds.find(i) == i:
+		sizes.append(ds.find_size(i))
+# EndCodeSnip{}
+
+num = 1
+for i in sizes:
+	num = num | num << i
+string = str(bin(num))
+print(string[3 : len(string)])
+```
+
+</PySection>
+
+<CPPSection>
+
 ```cpp
 int main() {
 	init();
@@ -149,6 +207,10 @@ int main() {
 	cout << "\n";
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
 
 </Spoiler>
 
@@ -172,6 +234,9 @@ exchange for a slight increase in time by first computing the adjacency bitsets
 for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards.
 
 First, we read in all of the flavors.
+
+<LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -204,8 +269,12 @@ void input() {
 
 </CPPSection>
 
+</LanguageSection>
+
 Then for each flavor, we can look at all pairs of cows that share that flavor
 and update the adjacency lists for those $x\in [0,HALF)$.
+
+<LanguageSection>
 
 <CPPSection>
 
@@ -222,11 +291,15 @@ int main() {
 
 </CPPSection>
 
+</LanguageSection>
+
 `adj[i].count()` runs quickly enough since its runtime is divided by the bitset
 constant. However, looping over all cows in `flav[i]` is too slow if say,
 `flav[i]` contains all cows. Then the nested loop could take $\Theta(N^2)$ time!
 Of course, we can instead write the nested loop in a way that takes advantage of
 fast bitset operations once again.
+
+<LanguageSection>
 
 <CPPSection>
 
@@ -241,6 +314,8 @@ for (int i = 1; i <= 1000000; ++i)
 ```
 
 </CPPSection>
+
+</LanguageSection>
 
 The full main function is as follows:
 
