@@ -73,7 +73,49 @@ void init() {
 		if (D.get(i) == i) comps.push_back(D.size(i));
 }
 ```
+```py
+class DisjointSet:
+    parent = {}
+    sz = []
+    def make_set(self, sz):
+        # create `n` disjoint sets (one for each item)
+        self.sz.append(1)
+        for i in range(1, sz+1):
+            self.parent[i] = i
+            self.sz.append(1)
+    def find(self, k):
+        if self.parent[k] == k:
+            return k
+        return self.find(self.parent[k])
+    def find_size(self, x):
+        return self.sz[self.find(x)]
+    def union(self, a, b):
+        x = self.find(a)
+        y = self.find(b)
+        self.sz[y] += self.sz[x]
+        self.parent[x] = y
 
+
+n, m = map(int, input().split(' '))
+
+ds = DisjointSet()
+ds.make_set(n)
+
+for i in range(0, m):
+    x, y = map(int, input().split(' '))
+    ds.union(x, y)
+
+sizes = []
+for i in range(1, n+1):
+    if ds.find(i) == i:
+        sizes.append(ds.find_size(i))
+num = 1
+for i in sizes:
+    num = num | num << i
+string = str(bin(num))
+print(string[3:len(string)])
+
+```
 A naive knapsack solution would be as follows. For each
 $0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a
 subset of the first $i$ components whose sizes sum to $j$. Then the answer will
