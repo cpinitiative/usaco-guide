@@ -18,9 +18,9 @@ For example: If 2 and 3 want  the same thing and 3 and 4 want the same think, so
 <CPPSection>
 
 ```cpp
+#include <bitset>
 #include <iostream>
 #include <vector>
-#include <bitset>
 
 using namespace std;
 
@@ -28,22 +28,23 @@ const int NMAX = 2e5;
 
 int n, m;
 
-class DSU { // Disjoint Set Union
-private:
+class DSU {  // Disjoint Set Union
+  private:
 	vector<int> t, sz;
-public:
+
+  public:
 	DSU(int n) {
-		t.resize(n+1);
-		sz.resize(n+1);
-		for(int i = 1; i <= n; i++) { t[i] = i, sz[i] = 1; }
+		t.resize(n + 1);
+		sz.resize(n + 1);
+		for (int i = 1; i <= n; i++) { t[i] = i, sz[i] = 1; }
 	}
-	int find_size( int x ) { return sz[find_root(x)]; }
-	int find_root( int x ) {
-		if(t[x] == x) return x;
+	int find_size(int x) { return sz[find_root(x)]; }
+	int find_root(int x) {
+		if (t[x] == x) return x;
 		t[x] = find_root(t[x]);
 		return t[x];
 	}
-	void unite( int x, int y ){
+	void unite(int x, int y) {
 		x = find_root(x), y = find_root(y);
 		sz[y] += sz[x];
 		t[x] = y;
@@ -53,25 +54,25 @@ public:
 int main() {
 	scanf("%d %d", &n, &m);
 	DSU ds(n);
-	for(int i = 1; i <= m; i++) {
+	for (int i = 1; i <= m; i++) {
 		int x, y;
 		scanf("%d %d", &x, &y);
 		ds.unite(x, y);
 	}
 	vector<int> sizes;
-	for(int i = 1; i <= n; i++) {
-		if( ds.find_root(i) != i ) continue ;
+	for (int i = 1; i <= n; i++) {
+		if (ds.find_root(i) != i) continue;
 		sizes.push_back(ds.find_size(i));
 	}
-	
+
 	bitset<NMAX> dp;
 	dp[0] = 1;
-	for(auto sz : sizes) dp |= dp << sz;
-	
+	for (auto sz : sizes) dp |= dp << sz;
+
 	// The above line shifts the knapsack to the right by sz bits
-	 
-	for(int i = 1; i <= n; i++) cout << dp[i];
-	
+
+	for (int i = 1; i <= n; i++) cout << dp[i];
+
 	return 0;
 }
 ```
@@ -81,45 +82,49 @@ int main() {
 
 ```py
 class DisjointSet:
-    parent = {}
-    sz = []
-    def make_set(self, sz):
-        # create `n` disjoint sets (one for each item)
-        self.sz.append(1)
-        for i in range(1, sz+1):
-            self.parent[i] = i
-            self.sz.append(1)
-    def find(self, k):
-        if self.parent[k] == k:
-            return k
-        return self.find(self.parent[k])
-    def find_size(self, x):
-        return self.sz[self.find(x)]
-    def union(self, a, b):
-        x = self.find(a)
-        y = self.find(b)
-        self.sz[y] += self.sz[x]
-        self.parent[x] = y
+	parent = {}
+	sz = []
+
+	def make_set(self, sz):
+		# create `n` disjoint sets (one for each item)
+		self.sz.append(1)
+		for i in range(1, sz + 1):
+			self.parent[i] = i
+			self.sz.append(1)
+
+	def find(self, k):
+		if self.parent[k] == k:
+			return k
+		return self.find(self.parent[k])
+
+	def find_size(self, x):
+		return self.sz[self.find(x)]
+
+	def union(self, a, b):
+		x = self.find(a)
+		y = self.find(b)
+		self.sz[y] += self.sz[x]
+		self.parent[x] = y
 
 
-n, m = map(int, input().split(' '))
+n, m = map(int, input().split(" "))
 
 ds = DisjointSet()
 ds.make_set(n)
 
 for i in range(0, m):
-    x, y = map(int, input().split(' '))
-    ds.union(x, y)
+	x, y = map(int, input().split(" "))
+	ds.union(x, y)
 
 sizes = []
-for i in range(1, n+1):
-    if ds.find(i) == i:
-        sizes.append(ds.find_size(i))
+for i in range(1, n + 1):
+	if ds.find(i) == i:
+		sizes.append(ds.find_size(i))
 num = 1
 for i in sizes:
-    num = num | num << i
+	num = num | num << i
 string = str(bin(num))
-print(string[3:len(string)])
+print(string[3 : len(string)])
 ```
 
 </PySection>
