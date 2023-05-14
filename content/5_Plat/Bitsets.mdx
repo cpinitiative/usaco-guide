@@ -82,44 +82,47 @@ void init() {
 
 ```py
 class DisjointSet:
-    parent = {}
-    sz = []
-    def __init__(self, sz):
-        self.sz.append(1)
-        for i in range(1, sz+1):
-            self.parent[i] = i
-            self.sz.append(1)
-    def find(self, k):
-        if self.parent[k] == k:
-            return k
-        return self.find(self.parent[k])
-    def find_size(self, x):
-        return self.sz[self.find(x)]
-    def union(self, a, b):
-        x = self.find(a)
-        y = self.find(b)
-        self.sz[y] += self.sz[x]
-        self.parent[x] = y
+	parent = {}
+	sz = []
+
+	def __init__(self, sz):
+		self.sz.append(1)
+		for i in range(1, sz + 1):
+			self.parent[i] = i
+			self.sz.append(1)
+
+	def find(self, k):
+		if self.parent[k] == k:
+			return k
+		return self.find(self.parent[k])
+
+	def find_size(self, x):
+		return self.sz[self.find(x)]
+
+	def union(self, a, b):
+		x = self.find(a)
+		y = self.find(b)
+		self.sz[y] += self.sz[x]
+		self.parent[x] = y
 
 
-n, m = map(int, input().split(' '))
+n, m = map(int, input().split(" "))
 
 ds = DisjointSet(n)
 
 for i in range(0, m):
-    x, y = map(int, input().split(' '))
-    ds.union(x, y)
+	x, y = map(int, input().split(" "))
+	ds.union(x, y)
 
 sizes = []
-for i in range(1, n+1):
-    if ds.find(i) == i:
-        sizes.append(ds.find_size(i))
+for i in range(1, n + 1):
+	if ds.find(i) == i:
+		sizes.append(ds.find_size(i))
 num = 1
 for i in sizes:
-    num = num | num << i
+	num = num | num << i
 string = str(bin(num))
-print(string[3:len(string)])
-
+print(string[3 : len(string)])
 ```
 
 </PySection>
