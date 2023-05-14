@@ -77,51 +77,54 @@ int main() {
 </CPPSection>
 
 <PySection>
-	
+
 ```py
 class DisjointSet:
-    parent = {}
-    sz = []
-    def makeSet(self, sz):
-        # create `n` disjoint sets (one for each item)
-        self.sz.append(1)
-        for i in range(1, sz+1):
-            self.parent[i] = i
-            self.sz.append(1)
-    def Find(self, k):
-        if self.parent[k] == k:
-            return k
-        return self.Find(self.parent[k])
-    def FindSize(self, x):
-        return self.sz[self.Find(x)]
-    def Union(self, a, b):
-        x = self.Find(a)
-        y = self.Find(b)
-        self.sz[y] += self.sz[x]
-        self.parent[x] = y
+	parent = {}
+	sz = []
+
+	def makeSet(self, sz):
+		# create `n` disjoint sets (one for each item)
+		self.sz.append(1)
+		for i in range(1, sz + 1):
+			self.parent[i] = i
+			self.sz.append(1)
+
+	def Find(self, k):
+		if self.parent[k] == k:
+			return k
+		return self.Find(self.parent[k])
+
+	def FindSize(self, x):
+		return self.sz[self.Find(x)]
+
+	def Union(self, a, b):
+		x = self.Find(a)
+		y = self.Find(b)
+		self.sz[y] += self.sz[x]
+		self.parent[x] = y
 
 
-n, m = map(int, input().split(' '))
+n, m = map(int, input().split(" "))
 
 ds = DisjointSet()
 ds.makeSet(100003)
 
 for i in range(0, m):
-    x, y = map(int, input().split(' '))
-    ds.Union(x, y)
+	x, y = map(int, input().split(" "))
+	ds.Union(x, y)
 
 sizes = []
-for i in range(1, n+1):
-    if ds.Find(i) == i:
-        sizes.append(ds.FindSize(i))
+for i in range(1, n + 1):
+	if ds.Find(i) == i:
+		sizes.append(ds.FindSize(i))
 num = 1
 for i in sizes:
-    num = num | num << i
+	num = num | num << i
 string = str(bin(num))
-print(string[3:len(string)])
-
+print(string[3 : len(string)])
 ```
-	
+
 </PySection>
-	
+
 </LanguageSection>
