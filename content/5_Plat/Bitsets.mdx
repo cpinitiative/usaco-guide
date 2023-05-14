@@ -38,7 +38,6 @@ operations you can perform.
 Of course, the first step is to generate the sizes of each connected component.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -77,8 +76,8 @@ void init() {
 		if (D.get(i) == i) comps.push_back(D.size(i));
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
 
 ```py
@@ -124,7 +123,6 @@ for i in range(1, n + 1):
 ```
 
 </PySection>
-
 </LanguageSection>
 
 A naive knapsack solution would be as follows. For each
@@ -138,9 +136,7 @@ below).
 
 <Spoiler title="Full Solution">
 
-
 <LanguageSection>
-
 <PySection>
 
 ```py
@@ -169,6 +165,7 @@ class DisjointSet:
 		y = self.find(b)
 		self.sz[y] += self.sz[x]
 		self.parent[x] = y
+# EndCodeSnip
 
 
 n, m = map(int, input().split(" "))
@@ -176,7 +173,7 @@ n, m = map(int, input().split(" "))
 ds = DisjointSet()
 ds.make_set(n)
 
-for i in range(0, m):
+for i in range(m):
 	x, y = map(int, input().split(" "))
 	ds.union(x, y)
 
@@ -184,17 +181,16 @@ sizes = []
 for i in range(1, n + 1):
 	if ds.find(i) == i:
 		sizes.append(ds.find_size(i))
-# EndCodeSnip{}
 
 num = 1
 for i in sizes:
 	num = num | num << i
+
 string = str(bin(num))
 print(string[3 : len(string)])
 ```
 
 </PySection>
-
 <CPPSection>
 
 ```cpp
@@ -209,7 +205,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 </Spoiler>
@@ -236,7 +231,6 @@ for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards.
 First, we read in all of the flavors.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -268,14 +262,12 @@ void input() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 Then for each flavor, we can look at all pairs of cows that share that flavor
 and update the adjacency lists for those $x\in [0,HALF)$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -290,7 +282,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 `adj[i].count()` runs quickly enough since its runtime is divided by the bitset
@@ -300,7 +291,6 @@ Of course, we can instead write the nested loop in a way that takes advantage of
 fast bitset operations once again.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -314,7 +304,6 @@ for (int i = 1; i <= 1000000; ++i)
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 The full main function is as follows:
