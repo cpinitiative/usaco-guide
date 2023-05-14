@@ -15,69 +15,6 @@ For example: If 2 and 3 want the same thing and 3 and 4 want the same thing it m
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bitset>
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-const int NMAX = 2e5;
-
-int n, m;
-
-class DSU {  // Disjoint Set Union
-  private:
-	vector<int> t, sz;
-
-  public:
-	DSU(int n) {
-		t.resize(n + 1);
-		sz.resize(n + 1);
-		for (int i = 1; i <= n; i++) { t[i] = i, sz[i] = 1; }
-	}
-	int find_size(int x) { return sz[find_root(x)]; }
-	int find_root(int x) {
-		if (t[x] == x) return x;
-		t[x] = find_root(t[x]);
-		return t[x];
-	}
-	void unite(int x, int y) {
-		x = find_root(x), y = find_root(y);
-		sz[y] += sz[x];
-		t[x] = y;
-	}
-};
-
-int main() {
-	scanf("%d %d", &n, &m);
-	DSU ds(n);
-	for (int i = 1; i <= m; i++) {
-		int x, y;
-		scanf("%d %d", &x, &y);
-		ds.unite(x, y);
-	}
-	vector<int> sizes;
-	for (int i = 1; i <= n; i++) {
-		if (ds.find_root(i) != i) continue;
-		sizes.push_back(ds.find_size(i));
-	}
-
-	bitset<NMAX> dp;
-	dp[0] = 1;
-	for (auto sz : sizes) dp |= dp << sz;
-
-	// The above line shifts the knapsack to the right by sz bits
-
-	for (int i = 1; i <= n; i++) cout << dp[i];
-
-	return 0;
-}
-```
-
-</CPPSection>
 <PySection>
 
 ```py
