@@ -75,7 +75,9 @@ void init() {
 ```
 
 <LanguageSection>
-
+	
+<PySection>
+	
 ```py
 class DisjointSet:
 	parent = {}
@@ -122,6 +124,8 @@ for i in sizes:
 string = str(bin(num))
 print(string[3 : len(string)])
 ```
+</PySection>
+	
 </LanguageSection>
 
 A naive knapsack solution would be as follows. For each
@@ -168,7 +172,8 @@ exchange for a slight increase in time by first computing the adjacency bitsets
 for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards.
 
 First, we read in all of the flavors.
-
+<CPPSection>
+	
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -196,10 +201,14 @@ void input() {
 		}
 }
 ```
-
+	
+</CPPSection>
+	
 Then for each flavor, we can look at all pairs of cows that share that flavor
 and update the adjacency lists for those $x\in [0,HALF)$.
 
+<CPPSection>
+	
 ```cpp
 int main() {
 	input();
@@ -210,13 +219,17 @@ int main() {
 	for (int i = 0; i < HALF; ++i) ans += adj[i].count();
 }
 ```
+				 
+</CPPSection>
 
 `adj[i].count()` runs quickly enough since its runtime is divided by the bitset
 constant. However, looping over all cows in `flav[i]` is too slow if say,
 `flav[i]` contains all cows. Then the nested loop could take $\Theta(N^2)$ time!
 Of course, we can instead write the nested loop in a way that takes advantage of
 fast bitset operations once again.
-
+	
+<CPPSection>
+	
 ```cpp
 for (int i = 1; i <= 1000000; ++i)
 	if (flav[i].size() > 0) {
@@ -227,6 +240,8 @@ for (int i = 1; i <= 1000000; ++i)
 	}
 ```
 
+</CPPSection>
+	
 The full main function is as follows:
 
 <Spoiler title="Full Solution">
