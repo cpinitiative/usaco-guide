@@ -1,0 +1,239 @@
+---
+id: usaco-944
+source: USACO Silver 2019 US Open
+title: Fence Planning
+author: Brad Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_fenceplan_silver_open19.html)
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cow {
+	int x, y;
+	vector<int> adj;
+	bool visited;
+};
+
+vector<Cow> cows;
+vector<int> curr_net;
+
+void dfs(int curr) {
+	cows[curr].visited = true;
+	curr_net.push_back(curr);
+	for (int i : cows[curr].adj) {
+		if (!cows[i].visited) { dfs(i); }
+	}
+}
+
+int main() {
+	ifstream fin("fenceplan.in");
+	int n, m;
+	fin >> n >> m;
+	cows.resize(n);
+	for (Cow &c : cows) {
+		fin >> c.x >> c.y;
+		c.visited = false;
+	}
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		fin >> a >> b;
+		cows[a - 1].adj.push_back(b - 1);
+		cows[b - 1].adj.push_back(a - 1);
+	}
+
+	// group cows into networks using dfs
+	vector<vector<int>> networks;
+	for (int i = 0; i < n; i++) {
+		if (!cows[i].visited) {
+			curr_net.clear();
+			dfs(i);
+			networks.push_back(curr_net);
+		}
+	}
+
+	int min_perimeter = INT32_MAX;
+	for (vector<int> net : networks) {
+		int min_x = INT32_MAX;
+		int max_x = 0;
+		int min_y = INT32_MAX;
+		int max_y = 0;
+		for (int i : net) {
+			min_x = min(min_x, cows[i].x);
+			max_x = max(max_x, cows[i].x);
+			min_y = min(min_y, cows[i].y);
+			max_y = max(max_y, cows[i].y);
+		}
+		min_perimeter =
+		    min(min_perimeter, 2 * (max_x - min_x) + 2 * (max_y - min_y));
+	}
+
+	ofstream("fenceplan.out") << min_perimeter << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FencePlan {
+	static Cow[] cows;
+	static List<Integer>[] graph;
+	static boolean[] visited;
+	static int lowX = Integer.MAX_VALUE;
+	static int highX = Integer.MIN_VALUE;
+	static int lowY = Integer.MAX_VALUE;
+	static int highY = Integer.MIN_VALUE;
+
+	static class Cow {
+		int x;
+		int y;
+	}
+
+	static void floodfill(int currentCow) {  // dfs flood fill
+		visited[currentCow] = true;          // mark as visited
+		Cow cow = cows[currentCow];
+
+		lowX = Integer.min(lowX, cow.x);  // take minimum and maximums
+		highX = Integer.max(highX, cow.x);
+		lowY = Integer.min(lowY, cow.y);
+		highY = Integer.max(highY, cow.y);
+
+		for (int connectedCow : graph[currentCow]) {  // for each connected cow
+			if (!visited[connectedCow]) { floodfill(connectedCow); }
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("fenceplan");
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		visited = new boolean[n + 1];  // one-indexed
+		cows = new Cow[n + 1];
+
+		for (int x = 1; x <= n; x++) {  // read cow coordinates
+			Cow cow = new Cow();
+			cow.x = io.nextInt();
+			cow.y = io.nextInt();
+			cows[x] = cow;
+		}
+
+		graph = new ArrayList[n + 1];             // one indexed
+		for (int x = 0; x < graph.length; x++) {  // initialize
+			graph[x] = new ArrayList<>();
+		}
+
+		for (int x = 0; x < m; x++) {  // read connections
+			int a = io.nextInt();
+			int b = io.nextInt();
+			graph[a].add(b);  // add to the bi-directional unweighted graph
+			graph[b].add(a);
+		}
+
+		int lowestPerimeter = Integer.MAX_VALUE;
+		for (int cow = 1; cow <= n;
+		     cow++) {  // go through each connected component
+			if (!visited[cow]) {
+				floodfill(cow);
+
+				// calculate the perimeter
+				int perimeter = ((highX - lowX) + (highY - lowY)) * 2;
+				lowestPerimeter =
+				    Math.min(lowestPerimeter, perimeter);  // track lowest
+
+				lowX = Integer.MAX_VALUE;  // reset values
+				highX = Integer.MIN_VALUE;
+				lowY = Integer.MAX_VALUE;
+				highY = Integer.MIN_VALUE;
+			}
+		}
+		io.println(lowestPerimeter);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List
+from sys import setrecursionlimit
+
+setrecursionlimit(10**5)
+
+
+class Cow:
+	def __init__(self, x: int, y: int, adj: List[int], visited: bool) -> None:
+		self.x = x
+		self.y = y
+		self.adj = adj
+		self.visited = visited
+
+
+def connected_cows(cows: List[Cow], start: int) -> List[Cow]:
+	net = []
+
+	def dfs(curr: int) -> None:
+		cows[curr].visited = True
+		net.append(curr)
+		for c in cows[curr].adj:
+			if not cows[c].visited:
+				dfs(c)
+
+	dfs(start)
+	return net
+
+
+cows = []
+with open("fenceplan.in") as read:
+	n, m = [int(i) for i in read.readline().split()]
+
+	for _ in range(n):
+		x, y = [int(i) for i in read.readline().split()]
+		cows.append(Cow(x, y, [], False))
+
+	for _ in range(m):
+		a, b = [int(i) - 1 for i in read.readline().split()]
+		cows[a].adj.append(b)
+		cows[b].adj.append(a)
+
+networks = []
+for c in range(n):
+	if not cows[c].visited:
+		networks.append(connected_cows(cows, c))
+
+min_perimeter = float("inf")
+for net in networks:
+	min_x = float("inf")
+	max_x = 0
+	min_y = float("inf")
+	max_y = 0
+	for c in net:
+		c = cows[c]
+		min_x = min(min_x, c.x)
+		max_x = max(max_x, c.x)
+		min_y = min(min_y, c.y)
+		max_y = max(max_y, c.y)
+
+	min_perimeter = min(min_perimeter, 2 * (max_x - min_x) + 2 * (max_y - min_y))
+
+print(min_perimeter, file=open("fenceplan.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

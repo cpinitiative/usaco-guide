@@ -1,0 +1,107 @@
+---
+id: cf-1513D
+source: CF
+title: GCD and MST
+author: Chuyang Wang
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/89550)
+
+## Explanation
+
+Like [Kruskal's Algorithm](https://usaco.guide/gold/mst#kruskals), we generate
+our MST by adding edges greedily. Except the edges between any two adjacent
+elements in the array which cost $p$, an edge only exists between $i$ and $j$ if
+the greatest common divisor of all elements in $[i, j]$ equals the minimum of
+the range $[i, j]$.
+
+As the cost of these edges is the minimum element of the range, let's iterate
+through all elements of the array in ascending order. This way, we guarantee
+that we always add edges of minimum cost. Let the current element be $a[k]$.
+There is an edge between $k$ and $k - 1$ if $a[k]$ divides $a[k - 1]$. In that
+case, we can go further to $a[k - 2]$ and so on until $a[k]$ no longer divides
+$a[k - i]$, or when the two elements are connected already. We apply the same
+operation in the other direction ($k + 1$, ...).
+
+We stop the iteration when the cost of the edge (= the value of the element) is
+greater than $p$. For all components that are not connected yet, we can simply
+connect them with cost $p$. If we count the number of edges $c$ already added,
+and since a MST has $N - 1$ edges, we can add $p \cdot (N - 1 - c)$ to the
+answer.
+
+Since the connected components are always a segment in the array, we only have
+to consider $\mathcal{O}(N)$ edges.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+/** Solves a single test case. */
+void solve() {
+	int n, p;
+	cin >> n >> p;
+	vector<int> arr(n);
+	vector<int> indices(n);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		indices[i] = i;
+	}
+
+	// i < j implies arr[indices[i]] <= arr[indices[j]]
+	sort(indices.begin(), indices.end(),
+	     [&](const int i, const int j) { return arr[i] < arr[j]; });
+
+	ll ans = 0;
+	int edges_remaining = n - 1;
+	// is_connected[i] == true if there is an edge between i and i+1
+	vector<bool> is_connected(n, false);
+	for (int i = 0; i < n; i++) {
+		int j = indices[i];
+		int val = arr[j];
+		/*
+		 * if the edge costs more than p, then connect the rest with edges of
+		 * type 2 which cost p
+		 */
+		if (val >= p) { break; }
+
+		// try to add an edge (j, indices[i]) to the left
+		while (j > 0 && !is_connected[j - 1] && arr[j - 1] % val == 0) {
+			edges_remaining--;
+			ans += val;
+			is_connected[j - 1] = true;
+			j--;
+		}
+
+		// try to add an edge (indices[i], j) to the right
+		j = indices[i];
+		while (j < n - 1 && !is_connected[j] && arr[j + 1] % val == 0) {
+			edges_remaining--;
+			ans += val;
+			is_connected[j] = true;
+			j++;
+		}
+	}
+
+	// the edges that still have to be added have the cost p
+	ans += (ll)edges_remaining * p;
+
+	cout << ans << endl;
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
+}
+```
+
+</CPPSection>
+</LanguageSection>

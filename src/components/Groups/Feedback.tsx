@@ -28,12 +28,27 @@ export default function Feedback({ videoId }): JSX.Element {
   >(null);
   const [comment, setComment] = useState('');
   const [showAdditionalFeedback, setShowAdditionalFeedback] = useState(false);
+
   useEffect(() => {
     if (!db || !uid) return;
     getDoc(doc(db, 'videos', videoId, 'feedback', uid)).then(data => {
       setSelected(data.data()?.rating || null);
     });
   }, [uid, db]);
+
+  // Code to log video feedback to console
+  // const group = useActiveGroup();
+  // const isUserAdmin = isUserAdminOfGroup(group.groupData, group.activeUserId);
+  // useEffect(() => {
+  //   if (!db || !videoId || !isUserAdmin) return;
+  //   // actually, only some people can view video feedback, not just any admin
+  //   // but this is good enough whatever
+  //   getDocs(collection(db, 'videos', videoId, 'feedback'))
+  //     .then(snap => {
+  //       console.log(snap.docs.map(doc => doc.data()));
+  //     })
+  //     .catch(e => {});
+  // }, [videoId, db, isUserAdmin]);
 
   return (
     <>
@@ -49,7 +64,7 @@ export default function Feedback({ videoId }): JSX.Element {
             ([emoji, key, name]: [
               string,
               'very_bad' | 'bad' | 'good' | 'great',
-              string
+              string,
             ]) => (
               <button
                 key={key}

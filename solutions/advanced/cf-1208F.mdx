@@ -1,0 +1,85 @@
+---
+id: cf-1208F
+source: CF
+title: Bits and Pieces
+author: Dong Liu
+---
+
+## Explanation
+
+Let $|$ denote the bitwise OR operation and $\&$ denote the bitwise AND operation.
+
+The answer is equivalent to finding an $x$ such that $x=a_j\&a_k$ and $a_i|x$ is maximized for some three indices $i<j<k$.
+
+Note that $x$ can be binary searched since $2^b>2^0+2^1+\dots+2^{b-1}$, so we can loop through each $2^b$ in decreasing order and check if there exists an answer for $z$ such that $z$ is a superset of $x|2^b$. When we reach a bit $2^b$ such that it is contained in $a_i$, it doesn't matter whether it is in the final $x$ since $a_i|x$ already contains $2^b$.
+
+In other words, we have to find a pair $(j, k)$ such that $i<j<k$ and $a_j\&a_k$ is a superset of $x|2^b$. This is equivalent to finding $j$ and $k$ such that $j, k>i$, $a_j\supseteq x|2^b$, and $a_k\supseteq x|2^b$. This can be done by Sum Over Subsets DP (or supersets in this case) by maintaining $f_x$ and $g_x$, which stores the two largest $j$ such that $a_j\supseteq x$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log A + A\log A)$ where $A=\max a_i$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e6;
+const int B = 21;
+const int A = 1 << B;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> a(n), f(A, -1), g(A, -1);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		// second largest becomes largest, largest is updated to i
+		f[a[i]] = g[a[i]];
+		g[a[i]] = i;
+	}
+
+	for (int i = 0; i < B; i++) {
+		for (int j = 0; j < A; j++) {
+			if (j & (1 << i)) {
+				int k = j ^ (1 << i);
+				// updating largest (g[k]) from superset k to subset j
+				if (f[j] > g[k]) {  // case 1: on the right
+					f[k] = g[k], g[k] = f[j];
+				} else if (f[j] > f[k]) {  // case 2: in the middle
+					f[k] = f[j];
+				}
+				// updating second largest (f[k]) from superset k to subset j
+				if (g[j] > g[k]) {  // case 1: on the right
+					f[k] = g[k], g[k] = g[j];
+				} else if (g[j] > f[k]) {  // case 2: in the middle
+					f[k] = g[j];
+				}
+			}
+		}
+	}
+
+	int ans = 0;
+	for (int i = 0; i < n - 2; i++) {
+		int c = 0;
+		for (int j = B - 1; j >= 0; j--) {
+			/*
+			 * only consider if a[i] doesn't contain 2^j and
+			 * if the second largest is greater than i
+			 */
+			if ((a[i] & (1 << j)) == 0 && f[c | (1 << j)] > i) { c |= 1 << j; }
+		}
+		ans = max(ans, a[i] | c);
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

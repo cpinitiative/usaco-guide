@@ -1,0 +1,131 @@
+---
+id: cf-1398C
+source: CF
+title: Good Subarrays
+author: Jesse Choe, Brad Ma
+---
+
+[Official Editorial (Python)](https://codeforces.com/blog/entry/81506)
+
+## Solution - Prefix Sums + Math
+
+Following the editorial, we build a prefix sum array $p$ on the existing array.
+
+We know that subarray formed by $[l, r)$ is a good subarray iff $r-l=p_r-p_l$.
+Rearranging this equation leads to $p_r-r=p_l-l$, so we build
+a map (`sum_dist`) on values of $p_i-i$ for all valid $i$.
+
+Then, we iterate over all *values* of the map and check how many unordered pairs
+we can build with the number of values of $i$ that have the same value of $p_i-i$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+void solve() {
+	int n;
+	cin >> n;
+	vector<int> pref_arr(n + 1);
+	for (int i = 1; i <= n; i++) {
+		char c;
+		cin >> c;
+		pref_arr[i] = c - '0';
+	}
+
+	for (int i = 1; i <= n; i++) { pref_arr[i] += pref_arr[i - 1]; }
+
+	map<int, ll> sum_dist;
+	for (int i = 0; i <= n; i++) { sum_dist[pref_arr[i] - i]++; }
+
+	ll good_arrays = 0;
+	for (const auto &[_, f] : sum_dist) {
+		// calculate # of possible unordered pairs with f values of i
+		good_arrays += f * (f - 1) / 2;
+	}
+
+	cout << good_arrays << endl;
+}
+
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 0; i < t; i++) { solve(); }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GoodSubarrays {
+	static long solve(int arrLen, String strArr) {
+		int[] prefArr = new int[arrLen + 1];
+		for (int i = 1; i <= arrLen; i++) {
+			prefArr[i] = strArr.charAt(i - 1) - '0';
+		}
+		for (int i = 1; i <= arrLen; i++) { prefArr[i] += prefArr[i - 1]; }
+
+		Map<Integer, Long> sumDist = new HashMap<>();
+		for (int i = 0; i <= arrLen; i++) {
+			int val = prefArr[i] - i;
+			sumDist.put(val, sumDist.getOrDefault(val, 0L) + 1);
+		}
+
+		long goodArrays = 0;
+		for (long f : sumDist.values()) {
+			// calculate # of possible unordered pairs with f values of i
+			goodArrays += f * (f - 1) / 2;
+		}
+		return goodArrays;
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int t = io.nextInt();
+		for (int i = 0; i < t; i++) {
+			int arrLen = io.nextInt();
+			String array = io.next();
+			io.println(solve(arrLen, array));
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+<PySection>
+
+```py
+from collections import defaultdict
+
+for _ in range(int(input())):
+	arr_len = int(input())
+	arr = [ord(i) - ord("0") for i in input()]
+
+	pref_arr = [0] + arr
+	for i in range(1, len(pref_arr)):
+		pref_arr[i] += pref_arr[i - 1]
+
+	sum_dist = defaultdict(int)
+	for i in range(len(pref_arr)):
+		sum_dist[pref_arr[i] - i] += 1
+
+	good_arrays = 0
+	for f in sum_dist.values():
+		# calculate # of possible unordered pairs with f values of i
+		good_arrays += f * (f - 1) // 2
+	print(good_arrays)
+```
+
+</PySection>
+</LanguageSection>

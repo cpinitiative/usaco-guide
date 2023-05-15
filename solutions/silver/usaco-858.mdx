@@ -1,0 +1,217 @@
+---
+id: usaco-858
+source: USACO Silver 2018 December
+title: Convention
+author: Qi Wang, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_convention_silver_dec18.html)
+
+## Explanation
+
+Consider a possible maximum waiting time $X$, if we can't file all of the cows into the buses with this constraint, we can't process the cows with a smaller $X$ either. It remains to find how to check if some $X$ can be processed.
+
+Instead of the problem being:
+
+> Is it possible to file the cows in $M$ buses with a maximum waiting time of $X$?
+
+We'll transform the problem into:
+> What's the minimum number of buses needed to transport the cows with a maximum waiting time of $X$?
+
+This simplification allows us to break processing a cow into three cases:
+
+1. Adding this cow will cause the first cow to exceed the maximum waiting time.
+2. Adding this cow will overflow the bus capacity.
+3. Adding this cow will satisfy all of the constraints.
+
+It takes $\mathcal{O}(\log N)$ time to binary search on $X$ and $\mathcal{O}(N)$ time to validate a possible time constraint, so this leaves us with a $\mathcal{O}(N\log N)$ solution, which fits comfortably under the time limit.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class convention {
+	static int N;
+	static int numBus;
+	static int cap;
+	static int[] cow;
+	public static void main(String[] args) throws IOException {
+		InputReader in = new InputReader("convention.in");
+		N = in.nextInt();
+		numBus = in.nextInt();
+		cap = in.nextInt();
+		cow = new int[N];
+		for (int i = 0; i < N; i++) { cow[i] = in.nextInt(); }
+
+		Arrays.sort(cow);
+
+		// Lower Bound. Since minimal wait time has to be below the max arrival
+		// the upper bound can be the largest value in the array
+		int l = 0;
+		int r = cow[cow.length - 1];
+		while (l <= r) {
+			int mid = (l + r) / 2;
+			if (check(mid)) {
+				r = mid - 1;
+			} else {
+				l = mid + 1;
+			}
+		}
+		PrintWriter out = new PrintWriter(
+		    new BufferedWriter(new FileWriter("convention.out")));
+		System.out.println(l);
+		out.println(l);
+		out.close();
+	}
+	// Calculates the number of buses needed to ensure the minWait time. If
+	// larger than the buses available, false.
+	private static boolean check(int minWait) {
+		int first = cow[0];
+		int used = 1;
+		int curCap = 0;
+		for (int i = 0; i < N; i++) {
+			if (cow[i] - first > minWait || curCap >= cap) {
+				used++;
+				curCap = 0;
+				first = cow[i];
+			}
+			curCap++;
+		}
+		return used <= numBus;
+	}
+	private static class InputReader {
+		public BufferedReader reader;
+		public StringTokenizer tokenizer;
+
+		public InputReader() {
+			try {
+				reader =
+				    new BufferedReader(new InputStreamReader(System.in), 32768);
+			} catch (Exception e) {
+				throw new NullPointerException("Could not create input stream");
+			}
+		}
+
+		public InputReader(String fileName) {
+			try {
+				reader = new BufferedReader(new FileReader(new File(fileName)),
+				                            32768);
+			} catch (Exception ex) {
+				throw new NullPointerException(
+				    "Input file does not exist! Put it in the project folder.");
+			}
+			tokenizer = null;
+		}
+
+		public String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) { throw new RuntimeException(e); }
+			}
+			return tokenizer.nextToken();
+		}
+
+		public boolean hasNextInt() throws IOException {
+			return reader.ready();
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+
+		public double nextDouble() { return Double.parseDouble(next()); }
+
+		public long nextLong() { return Long.parseLong(next()); }
+
+		public char nextChar() { return next().charAt(0); }
+
+		/**
+		 * When you call next(), that entire line will be skipped.
+		 * No flushing buffers.
+		 * Doesn't work when you want to scan the remaining line.
+		 *
+		 * @return entire line
+		 */
+
+		public String nextLine() {
+			String str = "";
+			try {
+				str = reader.readLine();
+				tokenizer = null;
+			} catch (IOException e) { throw new RuntimeException(e); }
+			return str;
+		}
+	}
+}
+```
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using std::endl;
+using std::vector;
+
+int n, m, c;
+vector<int> arrivals;
+
+bool validate(int k) {
+	int bus = 0;   // number of buses needed
+	int cow = 0;   // current cow
+	int lcow = 0;  // earliest cow on this bus
+
+	while (cow < n) {
+		if (cow == lcow) { bus++; }
+
+		// can't satisfy time constraint by adding this cow
+		if (arrivals[cow] - arrivals[lcow] > k) {
+			lcow = cow;
+			// can't fit this cow in the bus
+		} else if (cow - lcow + 1 == c) {
+			lcow = ++cow;
+			// add this cow to the current bus
+		} else {
+			cow++;
+		}
+	}
+	return bus <= m;
+}
+
+int main() {
+	freopen("convention.in", "r", stdin);
+	freopen("convention.out", "w", stdout);
+
+	std::cin >> n >> m >> c;
+	arrivals.resize(n);
+
+	for (int i = 0; i < n; i++) { std::cin >> arrivals[i]; }
+
+	// sort by arrival time to process cows in order
+	sort(arrivals.begin(), arrivals.end());
+
+	int lo = 0;
+	int hi = arrivals[n - 1] - arrivals[0];
+
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+
+		if (validate(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	std::cout << lo << endl;
+}
+```
+</CPPSection>
+</LanguageSection>

@@ -1,0 +1,53 @@
+---
+id: ceoi-10-AHugeTower
+source: CEOI 2010
+title: A Huge Tower
+author: Óscar Garries, Evan Zhao
+---
+
+[Official Analysis](http://ceoi2010.ics.upjs.sk/pub/documents/ceoi_summary.pdf#page=14)
+
+## Explanation
+
+First, let's define some variables.
+Let $a_1, a_2, ..., a_n$ be the block sizes, sorted from least to greatest.
+Let $b_i$ be the number of indicies $j$ such that $j < i$ and $a_i \leq a_j + d$.
+Let $\texttt{ans}_i$ be the answer if the tower consisted of only the blocks $a_1, a_2, ..., a_i$. Of course, this means that $\texttt{ans}_n$ will be the final answer.
+
+For *any* tower consisting of the first $i - 1$ blocks, there will always be $b_i + 1$ number of ways to insert the block of size $a_i$ into the tower.
+To understand why, consider where the block of size $a_i$ can be inserted. The block of size $a_i$ can always be inserted at the bottom of the tower, because there is no block larger than $a_i$ in the tower. The block with size $a_i$ can be inserted at the top of some block $x$ with size $a_x$ if and only if $a_i \leq a_x + d$.
+
+Thus, we see that $\texttt{ans}_i = \texttt{ans}_{i-1} \cdot (b_i + 1)$, because there are $b_i + 1$ valid ways to insert block $a_i$ into any of the $ans_{i-1}$ valid towers.
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+This solution uses 2-pointers instead of creating the arrays $ans[]$ and $b[]$.
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MOD = 1e9 + 9;
+
+int main() {
+	int n, d;
+	cin >> n >> d;
+	vector<int> ar(n);
+	for (int i = 0; i < n; i++) { cin >> ar[i]; }
+	sort(ar.begin(), ar.end());  // sort the blocks
+	int r = 0, sol = 1;
+	for (int l = 0; l < n; l++) {
+		while (r < n - 1 && ar[r + 1] - ar[l] <= d) r++;
+		int dist =
+		    r - l +
+		    1;  // largest tower we can built when ar[l] block is the base
+		sol = (sol * 1LL * dist) % MOD;
+	}
+	cout << sol << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -1,0 +1,295 @@
+---
+id: usaco-716
+source: USACO Silver 2017 December
+title: Why Did the Cow Cross the Road III
+author: Óscar Garries, Kevin Sheng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_countcross_silver_feb17.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+Note that using `set` here instead of `unordered_set`
+adds an extra $\log R$ factor to the time complexity.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Road {
+	int sr, sc;
+	int er, ec;
+};
+
+/** to use the struct in a set, a comparator must be implemented. */
+inline bool operator<(const Road &r1, const Road &r2) {
+	return tie(r1.sr, r1.sc, r1.er, r1.ec) < tie(r2.sr, r2.sc, r2.er, r2.ec);
+}
+
+/** @return the 4 cardinal neighbors of a position */
+vector<pair<int, int>> neighbors(int r, int c) {
+	return {{r + 1, c}, {r - 1, c}, {r, c + 1}, {r, c - 1}};
+}
+
+int main() {
+	freopen("countcross.in", "r", stdin);
+
+	int side_len;
+	int cow_num;
+	int road_num;
+	cin >> side_len >> cow_num >> road_num;
+
+	set<Road> roads;
+	for (int r = 0; r < road_num; r++) {
+		int sr, sc;
+		int er, ec;
+		cin >> sr >> sc >> er >> ec;
+		// add a road that blocks moving from both directions
+		roads.insert(Road{--sr, --sc, --er, --ec});
+		roads.insert(Road{er, ec, sr, sc});
+	}
+
+	vector<vector<bool>> has_cow(side_len, vector<bool>(side_len));
+	for (int cow = 0; cow < cow_num; cow++) {
+		int r, c;
+		cin >> r >> c;
+		has_cow[--r][--c] = true;
+	}
+
+	vector<vector<bool>> visited(side_len, vector<bool>(side_len));
+
+	// returns the # of cows that a position can reach & marks them as visited
+	function<int(int, int, int, int)> connected_cow_num;
+	connected_cow_num = [&](int r, int c, int prev_r, int prev_c) -> int {
+		// check if we're out of bounds,
+		if (r < 0 || c < 0 || r >= side_len ||
+		    c >= side_len
+		    // someplace we've gone before,
+		    || visited[r][c]
+		    // or if we've just crossed a road
+		    || roads.count(Road{r, c, prev_r, prev_c})) {
+			return 0;
+		}
+
+		visited[r][c] = true;
+		int cow_num = has_cow[r][c];
+		for (const auto &[nr, nc] : neighbors(r, c)) {
+			cow_num += connected_cow_num(nr, nc, r, c);
+		}
+		return cow_num;
+	};
+
+	vector<int> cow_components;
+	for (int r = 0; r < side_len; r++) {
+		for (int c = 0; c < side_len; c++) {
+			if (!visited[r][c]) {
+				int comp_sz = connected_cow_num(r, c, r, c);
+				if (comp_sz != 0) { cow_components.push_back(comp_sz); }
+			}
+		}
+	}
+
+	int distant_pairs = 0;
+	for (int i = 0; i < cow_components.size(); i++) {
+		for (int j = i + 1; j < cow_components.size(); j++) {
+			// all pairs of cows from these two components are considered
+			// distant
+			distant_pairs += cow_components[i] * cow_components[j];
+		}
+	}
+
+	freopen("countcross.out", "w", stdout);
+	cout << distant_pairs << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CountCross {
+	// BeginCodeSnip{Road Class}
+	private static class Road {
+		int sr, sc;
+		int er, ec;
+
+		public Road(int sr, int sc, int er, int ec) {
+			this.sr = sr;
+			this.sc = sc;
+			this.er = er;
+			this.ec = ec;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(sr, sc, er, ec);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (!(o instanceof Road)) { return false; }
+			Road r = (Road)o;
+			return sr == r.sr && sc == r.sc && er == r.er && ec == r.ec;
+		}
+	}
+	// EndCodeSnip
+
+	private static int sideLen;
+	private static Set<Road> roads = new HashSet<>();
+	private static boolean[][] hasCow;
+	private static boolean[][] visited;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("countcross");
+
+		sideLen = io.nextInt();
+		int cowNum = io.nextInt();
+		int roadNum = io.nextInt();
+
+		for (int r = 0; r < roadNum; r++) {
+			int sr = io.nextInt() - 1;
+			int sc = io.nextInt() - 1;
+			int er = io.nextInt() - 1;
+			int ec = io.nextInt() - 1;
+			roads.add(new Road(sr, sc, er, ec));
+			roads.add(new Road(er, ec, sr, sc));
+		}
+
+		hasCow = new boolean[sideLen][sideLen];
+		for (int c = 0; c < cowNum; c++) {
+			hasCow[io.nextInt() - 1][io.nextInt() - 1] = true;
+		}
+
+		visited = new boolean[sideLen][sideLen];
+		List<Integer> cowComponents = new ArrayList<>();
+		for (int r = 0; r < sideLen; r++) {
+			for (int c = 0; c < sideLen; c++) {
+				if (!visited[r][c]) {
+					int compSz = connectedCowNum(r, c, r, c);
+					if (compSz != 0) { cowComponents.add(compSz); }
+				}
+			}
+		}
+
+		int distantPairs = 0;
+		for (int i = 0; i < cowComponents.size(); i++) {
+			for (int j = i + 1; j < cowComponents.size(); j++) {
+				// all pairs of cows from these two components are considered
+				// distant
+				distantPairs += cowComponents.get(i) * cowComponents.get(j);
+			}
+		}
+
+		io.println(distantPairs);
+		io.close();
+	}
+
+	/**
+	 * @return the # of cows that a position can reach & marks them as visited
+	 */
+	private static int connectedCowNum(int r, int c, int prevR, int prevC) {
+		// check if we're out of bounds,
+		if (r < 0 || c < 0 || r >= sideLen ||
+		    c >= sideLen
+		    // someplace we've gone before,
+		    || visited[r][c]
+		    // or if we've just crossed a road
+		    || roads.contains(new Road(r, c, prevR, prevC))) {
+			return 0;
+		}
+
+		visited[r][c] = true;
+		int cowNum = hasCow[r][c] ? 1 : 0;
+		for (int[] n : neighbors(r, c)) {
+			cowNum += connectedCowNum(n[0], n[1], r, c);
+		}
+		return cowNum;
+	}
+
+	/** @return the 4 cardinal neighbors of a position */
+	private static int[][] neighbors(int r, int c) {
+		return new int[][] {{r - 1, c}, {r + 1, c}, {r, c - 1}, {r, c + 1}};
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List, Tuple
+
+
+def neighbors(r: int, c: int) -> List[Tuple[int, int]]:
+	""":return the 4 cardinal neighbors of a position"""
+	return [(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)]
+
+
+with open("countcross.in") as read:
+	side_len, cow_num, road_num = [int(i) for i in read.readline().split()]
+
+	roads = set()
+	for _ in range(road_num):
+		sr, sc, er, ec = [int(i) - 1 for i in read.readline().split()]
+		roads.add((sr, sc, er, ec))
+		roads.add((er, ec, sr, sc))
+
+	has_cow = [[False for _ in range(side_len)] for _ in range(side_len)]
+	for _ in range(cow_num):
+		r, c = [int(i) - 1 for i in read.readline().split()]
+		has_cow[r][c] = True
+
+visited = [[False for _ in range(side_len)] for _ in range(side_len)]
+
+
+def connected_cow_num(r: int, c: int, prev_r: int, prev_c: int) -> int:
+	""":return the # of cows that a position can reach & marks them as visited"""
+	# check if we're out of bounds,
+	if (
+		r < 0
+		or c < 0
+		or r >= side_len
+		or c >= side_len
+		# someplace we've gone before,
+		or visited[r][c]
+		# or if we've just crossed a road
+		or (r, c, prev_r, prev_c) in roads
+	):
+		return 0
+
+	visited[r][c] = True
+	cow_num = has_cow[r][c]
+	for nr, nc in neighbors(r, c):
+		cow_num += connected_cow_num(nr, nc, r, c)
+	return cow_num
+
+
+cow_components = []
+for r in range(side_len):
+	for c in range(side_len):
+		if not visited[r][c]:
+			comp_sz = connected_cow_num(r, c, r, c)
+			if comp_sz != 0:
+				cow_components.append(comp_sz)
+
+distant_pairs = 0
+for i in range(len(cow_components)):
+	for j in range(i + 1, len(cow_components)):
+		# all pairs of cows from these two components are considered distant
+		distant_pairs += cow_components[i] * cow_components[j]
+
+print(distant_pairs, file=open("countcross.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

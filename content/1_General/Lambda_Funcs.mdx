@@ -35,10 +35,6 @@ description: 'Defining anonymous function objects.'
 	 />
 </Resources>
 
-Anything more beginner-friendly?
-
-<IncompleteSection />
-
 <Resources title="FAQ">
 	<Resource
 		source="SO"
@@ -75,49 +71,45 @@ If we add the following from the link above in C++14:
 ```cpp
 namespace std {
 
-template<class Fun>
-class y_combinator_result {
+template <class Fun> class y_combinator_result {
 	Fun fun_;
-public:
-	template<class T>
-	explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
 
-	template<class ...Args>
-	decltype(auto) operator()(Args &&...args) {
+  public:
+	template <class T>
+	explicit y_combinator_result(T &&fun) : fun_(std::forward<T>(fun)) {}
+
+	template <class... Args> decltype(auto) operator()(Args &&...args) {
 		return fun_(std::ref(*this), std::forward<Args>(args)...);
 	}
 };
 
-template<class Fun>
-decltype(auto) y_combinator(Fun &&fun) {
+template <class Fun> decltype(auto) y_combinator(Fun &&fun) {
 	return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
 }
 
-} // namespace std
+}  // namespace std
 ```
 
-Then we can have code like the following!
+Then we can have code like the following:
 
 ```cpp
 int main() {
 	cout << y_combinator([](auto gcd, int a, int b) -> int {
 		return b == 0 ? a : gcd(b, a % b);
-	})(20,30) << "\n"; // outputs 10
+	})(20, 30)
+	     << "\n";  // outputs 10
 }
 ```
 
-Looks like [ecnerwala](https://codeforces.com/contest/1375/submission/86008510)
-uses these a lot.
+### With [`function`](https://en.cppreference.com/w/cpp/utility/functional/function)
 
-### Another way
-
-Change `auto` to `function<return_type(param)>`.
+Instead of `auto`, use `function<return_type(param)>`.
 
 ```cpp
 int main() {
 	function<int(int, int)> gcd = [&](int a, int b) {
 		return b == 0 ? a : gcd(b, a % b);
 	};
-	cout << gcd(20, 30) << '\n'; // outputs 10
+	cout << gcd(20, 30) << '\n';  // outputs 10
 }
 ```

@@ -27,14 +27,24 @@ const ProgressBar = ({ text, green, yellow, blue }) => {
   );
 };
 
-const FancyNumber = ({ number, text, textColor, bgColor }) => (
+const FancyNumber = ({
+  number,
+  text,
+  textColor,
+  bgColor,
+  subTextColor = null,
+}) => (
   <div className="text-center">
     <span
       className={`text-3xl font-bold ${textColor} ${bgColor} rounded-full h-16 w-16 inline-block inline-flex items-center justify-center`}
     >
       {number}
     </span>
-    <span className={`block mt-1 text-sm font-medium uppercase ${textColor}`}>
+    <span
+      className={`block mt-1 text-sm font-medium uppercase ${
+        subTextColor ? subTextColor : textColor
+      }`}
+    >
       {text}
     </span>
   </div>
@@ -79,8 +89,9 @@ export default function DashboardProgress({
         <FancyNumber
           number={notStarted}
           text="Not Started"
-          textColor="text-gray-800 dark:text-gray-100"
-          bgColor="bg-gray-100 dark:bg-gray-700"
+          textColor="text-gray-800"
+          bgColor="bg-gray-100"
+          subTextColor="text-gray-800 dark:text-gray-100"
         />
       </div>
       <ProgressBar
@@ -141,6 +152,11 @@ export function UsacoTableProgress({
 }: {
   completed: number;
 }): JSX.Element {
+  let is_nan = false;
+  if (isNaN(completed)) {
+    completed = 0;
+    is_nan = true;
+  }
   let green = completed * 100;
   let yellow = 0;
   let blue = 0;
@@ -152,9 +168,14 @@ export function UsacoTableProgress({
     blue = yellow;
     yellow = 0;
   }
-  // ${Math.round(completed*1000)/10}%
   return (
-    <Tooltip content={`${Math.round(completed * 1000) / 10}%`}>
+    <Tooltip
+      content={
+        is_nan
+          ? 'No Information Available'
+          : `${Math.round(completed * 1000) / 10}%`
+      }
+    >
       {/* The span wrapper is needed for tippy to work */}
       <span className="cursor-pointer">
         <ProgressBarSmall

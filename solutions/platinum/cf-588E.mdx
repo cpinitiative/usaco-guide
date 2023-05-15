@@ -1,0 +1,157 @@
+---
+id: cf-588E
+source: CF
+title: Duff in the Army
+author: Chongtian Ma
+---
+
+## Explanation
+
+Note that for each two nodes $u$ and $v$, the path between them is just $u$ to
+$lca(u,v)$ and $v$ to $lca(u,v)$. Also note the constraint of $a \leq 10$ for
+each query. To answer each query, we only need to store the $10$ people with the
+smallest ids for the path from $u$ to $lca(u,v)$ and $v$ to $lca(u,v)$, and
+combine them. This can be done with binary lifting, which will store the $10$
+smallest ids for each vertex to their $2^k$'th ancestor.
+
+## Implementation
+
+We can answer each query in $\mathcal{O}(a \log n)$. Even though the constant
+factor is pretty bad, the problem limits give room for it. Note
+that if you do store more than $10$ smallest ids the problem will yield a MLE!
+
+**Time Complexity**: $\mathcal{O}(a \log n)$ for each query.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1e5 + 1;
+const int MAXL = 20;  // approximately maximum log
+                      // for euler-tour
+array<int, MAXN> enter_time, exit_time, depth;
+int timer = 1;
+
+// for binary lifting
+array<array<int, MAXL>, MAXN> up;  // up[i][j] stores the 2^jth ancestor for i
+
+// stores the (10) minimum people from the path from i to 2^jth ancestor
+vector<int> minimum_up[MAXN][MAXL];
+
+vector<int> graph[MAXN];      // main adjacency list
+vector<int> living_at[MAXN];  // number of people living at each city
+
+void remove_extra(vector<int> &x) {
+	// keeps only the first 10 elements (note constraint on a)
+	while (x.size() > 10) { x.pop_back(); }
+}
+
+// combine two vectors and keep the 10 minimum among them
+void combine(vector<int> &a, vector<int> b) {
+	// combine vector b into vector a
+	a.insert(a.end(), b.begin(), b.end());
+	sort(a.begin(), a.end());
+	remove_extra(a);
+}
+
+void dfs(int node, int parent) {
+	// initialize with direct parent information
+	depth[node] = depth[parent] + 1;
+	up[node][0] = parent;
+	combine(minimum_up[node][0], living_at[parent]);
+
+	enter_time[node] = timer++;
+	for (int child : graph[node]) {
+		if (child != parent) { dfs(child, node); }
+	}
+	exit_time[node] = timer - 1;
+}
+
+// checks if node a is an ancestor of b using euler tour
+bool is_ancestor(int a, int b) {
+	return enter_time[a] <= enter_time[b] && exit_time[a] >= exit_time[b];
+}
+
+int lca(int a, int b) {
+	if (is_ancestor(a, b)) { return a; }
+	for (int i = MAXL - 1; i >= 0; i--) {
+		if (!is_ancestor(up[a][i], b)) { a = up[a][i]; }
+	}
+	return up[a][0];
+}
+
+// gather all people going from a node to its k'th ancestor and
+// store the minimums in the people array
+void trace_path(int node, int k, vector<int> &people) {
+	for (int i = 0; i < MAXL; i++) {
+		if (k & (1 << i)) {
+			combine(people, minimum_up[node][i]);
+			node = up[node][i];
+		}
+	}
+}
+
+int main() {
+	int n, m, q;
+	scanf("%d %d %d", &n, &m, &q);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		scanf("%d %d", &u, &v);
+		graph[u].push_back(v);
+		graph[v].push_back(u);
+	}
+	for (int i = 1; i <= m; i++) {
+		int city;
+		scanf("%d", &city);
+		living_at[city].push_back(i);
+	}
+
+	// sort from smallest to largest and keep the 10 minimums
+	for (int i = 1; i <= n; i++) {
+		sort(living_at[i].begin(), living_at[i].end());
+		remove_extra(living_at[i]);
+	}
+
+	dfs(1, 1);
+
+	// fill in information for binary lifting
+	for (int k = 1; k < MAXL; k++) {
+		for (int i = 1; i <= n; i++) {
+			up[i][k] = up[up[i][k - 1]][k - 1];
+			// combine people from the left and the right
+			combine(minimum_up[i][k], minimum_up[i][k - 1]);
+			combine(minimum_up[i][k], minimum_up[up[i][k - 1]][k - 1]);
+		}
+	}
+
+	for (int query = 0; query < q; query++) {
+		int u, v, a;
+		scanf("%d %d %d", &u, &v, &a);
+		vector<int> min_people;
+		int least_common_ancestor = lca(u, v);
+
+		// gather the people living at cities u and v
+		if (least_common_ancestor != u) { combine(min_people, living_at[u]); }
+		if (least_common_ancestor != v) { combine(min_people, living_at[v]); }
+
+		// gather people living in path from lca to u and lca to v
+		trace_path(u, max(0, depth[u] - depth[least_common_ancestor] - 1),
+		           min_people);
+		trace_path(v, max(0, depth[v] - depth[least_common_ancestor] - 1),
+		           min_people);
+
+		combine(min_people, living_at[least_common_ancestor]);
+
+		int k = min((int)(min_people.size()), a);
+		printf("%d ", k);
+		for (int i = 0; i < k; i++) { printf("%d ", min_people[i]); }
+		puts(" ");
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

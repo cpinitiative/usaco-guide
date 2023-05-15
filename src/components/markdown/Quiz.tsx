@@ -1,115 +1,168 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import { atom, Provider, useAtom } from 'jotai';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import React from 'react';
 
 const quizScope = Symbol();
-const currentQuestionAtom = atom(0);
-currentQuestionAtom.scope = quizScope;
-const selectedAnswerAtom = atom(null as number | null);
-selectedAnswerAtom.scope = quizScope;
-const chosenAnswerAtom = atom(null as number | null);
-chosenAnswerAtom.scope = quizScope;
+const finalAnswersAtom = atom<number[]>([]); //saved previous answers
 
-const QuizAnswerExplanation = props => {
-  const chosenAnswer = useAtomValue(chosenAnswerAtom);
-  if (chosenAnswer === null) {
-    return null;
+const currentQuestionAtom = atom(0);
+const selectedAnswerAtom = atom(null as number | null); //user selection for current question
+const correctAnswersAtom = atom([] as number[]); //correct selection(s) for current question
+
+const handleSubmittedAnswerAtom = atom(
+  null,
+  (get, set, answer_index: number) => {
+    const i = get(currentQuestionAtom);
+    const finalAnswersClone = [...get(finalAnswersAtom)];
+    finalAnswersClone[i] = answer_index;
+    set(finalAnswersAtom, finalAnswersClone);
   }
+); //updates the finalAnswersArray upon question submit
+
+const submittedAtom = atom(false); //whether or not the current question is currently submitted
+
+const QuizAnswerExplanation = (props: { children?: React.ReactNode }) => {
   return (
     <div className="text-sm text-gray-700 dark:text-gray-400 no-y-margin">
       {props.children}
     </div>
   );
 };
-
+QuizAnswerExplanation.displayName = 'QuizAnswerExplanation';
+// Answer choice component
 const QuizMCAnswer = props => {
-  const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom);
-  const chosenAnswer = useAtomValue(chosenAnswerAtom);
+  const [selectedAnswer, setSelectedAnswer] = useAtom(
+    selectedAnswerAtom,
+    quizScope
+  );
   const isSelected = selectedAnswer === props.number;
-  const showCorrect = chosenAnswer !== null;
+  const [submitted, setSubmittedValue] = useAtom(submittedAtom, quizScope);
+  const correctAnswers = useAtomValue(correctAnswersAtom, quizScope);
+  const showVerdict =
+    submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
+  const isCorrect = submitted && correctAnswers.includes(selectedAnswer);
+  const Element = isCorrect ? 'div' : 'button';
   return (
-    <button
+    <Element
       className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
-      disabled={showCorrect}
-      onClick={() => setSelectedAnswer(props.number)}
+      onClick={() => {
+        if (!showVerdict) {
+          if (selectedAnswer !== props.number) {
+            // switch answers
+            setSelectedAnswer(props.number);
+            setSubmittedValue(false);
+          } else if (!submitted) {
+            //unselect current choice
+            setSelectedAnswer(null);
+          }
+        }
+      }}
     >
       <span
         className={classNames(
           'flex-shrink-0 h-6 w-6 rounded-full font-medium inline-flex items-center justify-center',
-          isSelected
+          isSelected || showVerdict //render ring
             ? 'ring-2 ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900 text-gray-100 dark:text-gray-900 font-bold'
             : 'border border-gray-600 text-gray-800 dark:border-gray-500 dark:text-gray-300',
-          isSelected &&
-            showCorrect &&
+          showVerdict &&
             (props.correct
               ? 'ring-green-600 bg-green-600 dark:ring-green-300 dark:bg-green-300'
               : 'ring-red-600 bg-red-600 dark:ring-red-300 dark:bg-red-300'),
           isSelected &&
-            !showCorrect &&
+            !submitted &&
             'ring-gray-600 bg-gray-600 dark:ring-gray-300 dark:bg-gray-300'
         )}
       >
-        {props.number}
+        {props.number + 1}
       </span>
-      <div className="flex-1 ml-3 no-y-margin">{props.children}</div>
-    </button>
+
+      <div className={classNames('flex-1 ml-3 no-y-margin')}>
+        {React.Children.map(props.children, child => {
+          if (child?.type?.displayName == 'QuizAnswerExplanation') {
+            if (!child.props.children || !showVerdict) {
+              return null;
+            }
+          }
+          if (!isCorrect && child?.type?.name == 'pre') {
+            return React.cloneElement(child, { copyButton: false });
+          }
+          return child;
+        })}
+      </div>
+    </Element>
   );
 };
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
-  const currentQuestion = useAtomValue(currentQuestionAtom);
+  const setCorrectAnswers = useUpdateAtom(correctAnswersAtom, quizScope);
+  React.useEffect(() => {
+    const correctAnswers = [];
+    let answerNum = 0;
+    React.Children.map(props.children, child => {
+      if (child?.type?.displayName === 'QuizMCAnswer') {
+        if (child.props.correct) correctAnswers.push(answerNum);
+        answerNum++;
+      }
+    });
+    setCorrectAnswers(correctAnswers);
+  }, []);
 
-  if (currentQuestion !== props.number) {
-    return null;
-  }
-
-  let num = 1;
-  return (
-    <div className="space-y-2">
-      {React.Children.map(props.children, child => {
-        if (child?.type?.displayName === 'QuizMCAnswer') {
-          return React.cloneElement(child, {
-            number: num++,
-          });
-        } else {
-          return child;
-        }
-      })}
-    </div>
-  );
+  let num = 0;
+  const answerChoices = React.Children.map(props.children, child => {
+    if (child?.type?.displayName === 'QuizMCAnswer') {
+      return React.cloneElement(child, {
+        number: num++,
+      });
+    } else {
+      return child;
+    }
+  });
+  return <div className="space-y-2">{answerChoices}</div>;
 };
 QuizQuestion.displayName = 'QuizQuestion';
 
 // needed to use scoped provider
 const ActualQuiz = props => {
-  const [currentQuestion, setCurrentQuestion] = useAtom(currentQuestionAtom);
-  const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom);
-  const [chosenAnswer, setChosenAnswer] = useAtom(chosenAnswerAtom);
+  const [currentQuestion, setCurrentQuestion] = useAtom(
+    currentQuestionAtom,
+    quizScope
+  );
 
-  const handleQuestionChange = newVal => {
-    setCurrentQuestion(newVal);
-    setChosenAnswer(null);
-    setSelectedAnswer(null);
+  const [selectedAnswer, setSelectedAnswer] = useAtom(
+    selectedAnswerAtom,
+    quizScope
+  );
+  const finalAnswers = useAtomValue(finalAnswersAtom, quizScope);
+  const submitAnswer = useUpdateAtom(handleSubmittedAnswerAtom, quizScope);
+  const [submitted, setSubmitted] = useAtom(submittedAtom, quizScope);
+  const canMoveOn = submitted || selectedAnswer === null; //if you can move on to the next question
+
+  const handleQuestionChange = (newQuestionIndex: number) => {
+    const newAnswer = finalAnswers[newQuestionIndex] ?? null;
+    setCurrentQuestion(newQuestionIndex);
+    setSubmitted(newAnswer !== null);
+    setSelectedAnswer(newAnswer);
   };
 
-  let num = 0;
+  const questionList: React.ReactElement[] = React.Children.map(
+    props.children,
+    child => {
+      if (child?.type?.displayName === 'QuizQuestion') {
+        return child;
+      } else {
+        throw new Error(
+          'Children of the Quiz component can only be Quiz.Question'
+        );
+      }
+    }
+  );
+
   return (
     <div className="quiz">
-      {React.Children.map(props.children, child => {
-        console.log(child);
-        if (child?.type?.displayName === 'QuizQuestion') {
-          return React.cloneElement(child, {
-            number: num++,
-          });
-        } else {
-          throw new Error(
-            'Children of the Quiz component can only be Quiz.Question'
-          );
-        }
-      })}
+      {questionList[currentQuestion]}
 
       <div className="flex items-center justify-between mt-4">
         <button
@@ -125,20 +178,18 @@ const ActualQuiz = props => {
         </span>
         <button
           className="btn"
-          disabled={
-            selectedAnswer === null ||
-            (chosenAnswer !== null && currentQuestion === num - 1)
-          }
+          disabled={canMoveOn && currentQuestion === questionList.length - 1}
           onClick={() => {
-            if (chosenAnswer === null) {
-              setChosenAnswer(selectedAnswer);
+            if (!canMoveOn) {
+              submitAnswer(selectedAnswer);
+              setSubmitted(true);
             } else {
               handleQuestionChange(currentQuestion + 1);
             }
           }}
         >
-          {chosenAnswer ? 'Next' : 'Submit'}{' '}
-          {chosenAnswer && <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />}
+          {selectedAnswer === null ? 'Skip' : submitted ? 'Next' : 'Submit'}{' '}
+          {canMoveOn && <ArrowRightIcon className="-mr-0.5 ml-2 h-4 w-4" />}
         </button>
       </div>
     </div>

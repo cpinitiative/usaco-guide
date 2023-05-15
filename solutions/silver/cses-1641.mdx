@@ -1,0 +1,182 @@
+---
+id: cses-1641
+source: CSES
+title: Sum of Three Values
+author: Andrew Wang, Brad Ma, Paul Chen
+---
+
+## Explanation
+This problem is an extension of the two sum problem except now with three
+values. We can set the third pointer to a certain value in the array and then
+the problem becomes the two sum problem discussed earlier in this module.
+
+First we'll sort the array. Then we'll loop through all possible values for the
+third pointer and check if all three pointers add up to the target amount, $x$,
+while having distinct positions. We can maintain the original positions of all
+values by storing the pairs `{a[i],i}`.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, x;
+	cin >> n >> x;
+	vector<pair<int, int>> arr;
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		pair<int, int> p;
+		p.first = a;
+		p.second = i;
+		// first in pair represents value, second represents index
+		arr.push_back(p);
+	}
+	sort(begin(arr), end(arr));
+	for (int i = 0; i < n; i++) {
+		int l, r;
+		l = 0;
+		r = n - 1;
+		while (l != r) {
+			int target;
+			target = x - arr.at(i).first;
+			if (l != i && r != i &&
+			    arr.at(l).first + arr.at(r).first == target) {
+				cout << arr.at(i).second << " " << arr.at(l).second << " "
+				     << arr.at(r).second << endl;
+				return 0;
+			}
+			if (arr.at(l).first + arr.at(r).first < target) {
+				l++;
+			} else {
+				r--;
+			}
+		}
+	}
+	cout << "IMPOSSIBLE" << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SumOfThreeValues {
+	static class Group implements Comparable<Group> {
+		int value, index;
+
+		Group(int value, int index) {
+			this.value = value;
+			this.index = index;
+		}
+
+		@Override
+		public int compareTo(Group other) {
+			return Integer.compare(this.value, other.value);
+		}
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int x = io.nextInt();
+		Group[] data = new Group[n];
+
+		for (int i = 1; i <= n; i++) {
+			// store the input in a class that has a value and an index
+			int value = io.nextInt();
+			Group group = new Group(value, i);
+
+			data[i - 1] = group;
+		}
+
+		Arrays.sort(data);  // make the values in increasing order
+		for (int i = 0; i < n; i++) {
+			int left = 0;
+			int right = n - 1;
+
+			while (left != right) {
+				int target = x - data[i].value;
+				// if all three values sum up to the target and aren't from the
+				// same index, we have found our answer
+				if (left != i && right != i &&
+				    data[left].value + data[right].value == target) {
+					// we have an answer, output it
+					io.println(data[i].index + " " + data[left].index + " " +
+					           data[right].index);
+
+					io.close();
+					System.exit(0);  // can end the program now
+				}
+				// not equal to target, increase left if the sums are lower
+				if (data[left].value + data[right].value < target) {
+					left++;
+				}
+				// not equal to target, decrease right if the sums
+				// are greater than target
+				else {
+					right--;
+				}
+			}
+		}
+
+		// output impossible if you reach the end with no answer
+		io.println("IMPOSSIBLE");
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+```py
+n, x = map(int, input().split())
+a = list(map(int, input().split()))
+
+p = [(a[i], i + 1) for i in range(n)]
+
+p.sort()
+
+for i in range(n):
+	left = 0
+	right = n - 1
+
+	while left < right:
+		target = x - p[i][0]
+
+		"""
+		if the values sum to the target and aren't from the same index,
+		we have found the answer
+		"""
+		if left != i and right != i and p[left][0] + p[right][0] == target:
+			print(p[left][1], p[right][1], p[i][1])
+			exit()
+
+		# increase left if the sum is lower
+		elif p[left][0] + p[right][0] < target:
+			left += 1
+
+		# otherwise decrease right
+		else:
+			right -= 1
+
+print("IMPOSSIBLE")
+```
+</PySection>
+
+</LanguageSection>

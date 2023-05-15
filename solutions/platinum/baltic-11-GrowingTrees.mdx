@@ -1,0 +1,96 @@
+---
+id: baltic-11-GrowingTrees
+source: Baltic OI 2011
+title: Growing Trees
+author: Dong Liu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2011_solutions.zip)
+
+**Time Complexity**: $\mathcal O(N\log N + Q\log^2 N)$
+
+Let's maintain an array $a$, which is sorted by height. To answer a query of type `C`, we can simply binary search on the endpoints of the query.
+
+Now, we just need to support updates. Let's first binary search for the first position $l$ such that $a[l] \geq h$. Let $r = l + c - 1$. We just need to increment the range, $[l, r]$ by $1$ while keeping $a$ sorted.
+
+However, we cannot just add $1$ to all elements in the range, $[l, r]$ because this might break the sorted order. This happens iff there is some index inside $i\in [l, r]$, such that $a[i] = a[r + 1]$; if we increment the range $[l, r]$, then $a[i] > a[r + 1]$, which is an inversion.
+
+To prevent this error, we find another range $[l', r']$, such that $a[i] = a[r]$ for all $i\in [l', r']$; this can be found with binary search. Since all $j < i$ sastify $a[j] < a[i]$, we can increment $[l, l' - 1]$ first. Then, since we need to increment a total of $c$ elements, we have $c - (l' - l)$ elements left. We increment the range $[r' - (c - (l' - l)) + 1, r']$ by one.
+
+Notice that this doesn't create any inversions because $a[r' + 1]$ is greater than $a[r']$ before the update: after the update, the array would be non-decreasing.
+
+Updates and queries can be handled with a lazy segment tree, but a binary indexed tree would suffice since we only need point queries.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define N 100000
+
+int n, q, a[N], bit[N];
+
+void add(int l, int r, int x) {  // add x to [l, r]
+	if (r < l) return;
+	for (; l < n; l |= l + 1) bit[l] += x;
+	for (++r; r < n; r |= r + 1) bit[r] -= x;
+}
+int query(int i) {  // point query at i
+	int sum = 0;
+	for (; i >= 0; i &= i + 1, --i) sum += bit[i];
+	return sum;
+}
+/* from Benq */
+template <class T, class U> T firstTrue(T lo, T hi, U f) {
+	assert(lo <= hi);
+	++hi;              // assuming f is increasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo) / 2;
+		f(mid) ? hi = mid : lo = mid + 1;
+	}
+	return lo;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> n >> q;
+	for (int i = 0; i < n; ++i) cin >> a[i];
+	sort(a, a + n);
+	for (int i = 0; i < n; ++i) add(i, i, a[i]);
+	for (int i = 0; i < q; ++i) {
+		char c;
+		int a, b;
+
+		cin >> c >> a >> b;
+		if (c == 'F') {
+			int l = firstTrue(0, n - 1, [&](int i) { return query(i) >= b; });
+			if (l == n)  // found nothing
+				continue;
+			int r = l + a - 1;
+			if (r >= n - 1) {
+				add(l, n - 1, 1);
+				continue;
+			}
+			int x = query(r);
+			int l_ = firstTrue(l, n - 1, [&](int i) { return query(i) >= x; });
+			int r_ =
+			    firstTrue(l_, n - 1, [&](int i) { return query(i) > x; }) - 1;
+			add(l, l_ - 1, 1);
+			add(r_ - (a - (l_ - l)) + 1, r_, 1);
+		} else {
+			int l = firstTrue(0, n - 1, [&](int i) { return query(i) >= a; });
+			int r = firstTrue(0, n - 1, [&](int i) { return query(i) > b; });
+			cout << r - l << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

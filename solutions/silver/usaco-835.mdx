@@ -1,0 +1,113 @@
+---
+id: usaco-835
+source: USACO Silver 2018 Open
+title: Lemonade Line
+author: Mrinall Umasudhan, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lemonade_silver_open18.html)
+
+The greedy strategy is to have cows with a smaller waiting time to be at the back of the line.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	freopen("lemonade.in", "r", stdin);
+	freopen("lemonade.out", "w", stdout);
+
+	int n;
+	cin >> n;
+
+	vector<int> cows(n);
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+
+	int ans = 0;
+	sort(cows.begin(), cows.end(), greater<int>());
+
+	for (int i = 0; i < n; i++) {
+		if (i <= cows[i]) {
+			ans++;
+		} else {
+			break;
+		}
+	}
+	cout << ans << "\n";
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+class cows {
+	int vals;
+	public cows(int vals) { this.vals = vals; }
+	public int getVals() { return this.vals; }
+}
+class Sort implements Comparator<cows> {  // Comparator for a specialized in
+	                                      // O(log N) for simple time limits.
+	public int compare(cows a, cows b) {
+		return Integer.compare(b.vals, a.vals);
+	}
+}
+public class lemonade {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("lemonade.in"));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("lemonade.out")));
+		int N = sc.nextInt();
+		ArrayList<cows> arr = new ArrayList<>();
+		int ans = 0;
+		for (int i = 0; i < N; i++) { arr.add(new cows(sc.nextInt())); }
+
+		while (true) {
+			arr.sort(new Sort());
+			int toRemove = arr.get(0).getVals();
+			if (toRemove >= ans) {
+				arr.remove(0);
+				ans++;
+			} else {
+				break;
+			}
+		}
+		out.println(ans);
+		out.close();
+	}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("lemonade.in", "r")
+sys.stdout = open("lemonade.out", "w")
+
+n = int(input())
+cows = list(map(int, input().split()))
+cows.sort(reverse=True)
+ans = 0
+
+for i in range(n):
+	if i <= cows[i]:
+		ans += 1
+	else:
+		break
+
+print(ans)
+```
+</PySection>
+</LanguageSection>

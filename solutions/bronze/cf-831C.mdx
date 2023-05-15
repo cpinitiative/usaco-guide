@@ -1,0 +1,132 @@
+---
+id: cf-831C
+source: CF
+title: Jury Marks
+author: Danh Ta Chi Thanh, Brad Ma
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/53302)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K^2 \log K)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int mark_num;
+	int remember_num;
+	cin >> mark_num >> remember_num;
+
+	// All net changes in the score
+	vector<int> changes(mark_num + 1);
+	vector<int> scores(remember_num);
+	for (int i = 1; i <= mark_num; ++i) {
+		cin >> changes[i];
+		changes[i] += changes[i - 1];
+	}
+	for (int &p : scores) { cin >> p; }
+
+	set<int> poss_starts;
+	for (int m = 1; m <= mark_num; ++m) {
+		poss_starts.insert(scores.front() - changes[m]);
+	}
+
+	int ans = 0;
+	for (int s : poss_starts) {
+		// What all the scores are going to now be given the starting score
+		set<int> points;
+		for (int i = 1; i <= mark_num; ++i) { points.insert(s + changes[i]); }
+
+		bool valid = true;
+		for (int p : scores) { valid &= points.count(p); }
+
+		ans += valid;
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class JuryMarks {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int numJury = io.nextInt();
+		int numScores = io.nextInt();
+		// All net changes in the score
+		int[] changes = new int[numJury + 1];
+		int[] scores = new int[numScores];
+
+		for (int x = 1; x <= numJury; x++) {
+			changes[x] = io.nextInt() + changes[x - 1];
+		}
+		for (int x = 0; x < numScores; x++) { scores[x] = io.nextInt(); }
+
+		Set<Integer> possStarts = new TreeSet<>();
+		for (int x = 1; x <= numJury; x++) {
+			possStarts.add(scores[0] - changes[x]);
+		}
+
+		int validStarts = 0;
+		for (int s : possStarts) {
+			// What all the scores are going to now be given the starting score
+			Set<Integer> points = new TreeSet<>();
+			for (int i = 1; i <= numJury; i++) { points.add(s + changes[i]); }
+
+			boolean valid = true;
+			for (int p : scores) { valid &= points.contains(p); }
+
+			validStarts += valid ? 1 : 0;
+		}
+		io.println(validStarts);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+mark_num, remember_num = [int(i) for i in input().split()]
+
+# All net changes in the score
+changes = [0] + [int(i) for i in input().split()]
+scores = {int(i) for i in input().split()}
+assert mark_num == len(changes) - 1 and len(scores) == remember_num
+
+for i in range(1, len(changes)):
+	changes[i] += changes[i - 1]
+
+poss_starts = set()
+random_score = next(iter(scores))
+for c in range(1, len(changes)):
+	poss_starts.add(random_score - changes[c])
+
+valid_starts = 0
+for s in poss_starts:
+	# What all the scores are going to now be given the starting score
+	resulting_scores = set()
+	for c in range(1, len(changes)):
+		resulting_scores.add(s + changes[c])
+
+	valid_starts += scores.issubset(resulting_scores)
+
+print(valid_starts)
+```
+
+</PySection>
+</LanguageSection>

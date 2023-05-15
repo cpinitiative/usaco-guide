@@ -1,0 +1,130 @@
+---
+id: usaco-993
+source: USACO Gold 2020 January
+title: Time is Mooney
+author: Nathan Gong, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_time_gold_jan20.html)
+
+
+We only need to keep track of the number of days that Bessie has been traveling and the amount of mooney that she has made. For every day up to $T_{\text{max}}$, we'll try to travel to each city, and update the mooney made if the current path is more optimal. The maximum amount of money she makes is $1000t - t^2$, in the case where she makes $1000$ mooney per city and the cost is $1$. Her earnings become negative when $t > 1000$, so we only have to check her movement across the cities for at most $1000$ days.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T_{\text{max}} \cdot (N + M))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_DAYS = 1000;
+
+int main() {
+	freopen("time.in", "r", stdin);
+	freopen("time.out", "w", stdout);
+
+	int n, m, c;
+	cin >> n >> m >> c;
+
+	vector<int> earn(n);
+	for (int i = 0; i < n; i++) { cin >> earn[i]; }
+
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[--u].push_back(--v);
+	}
+
+	// dp[i][j] = the max money that Bessie can make on day i if she ends in
+	// city j
+	vector<vector<int>> dp(MAX_DAYS + 1, vector<int>(n, -1));
+	// base case: if Bessie doesn't travel at all, she makes $0
+	dp[0][0] = 0;
+
+	int ans = 0;
+	for (int d = 0; d < MAX_DAYS; d++) {
+		for (int i = 0; i < n; i++) {
+			// if dp[d][i] == -1 then the city can't be visited
+			if (dp[d][i] != -1) {
+				for (int u : adj[i]) {
+					/*
+					 * dp[d + 1][u] = max(current money earned,
+					 * previous city's earnings + current city's earnings)
+					 */
+					dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u]);
+				}
+			}
+		}
+		ans = max(ans, (dp[d][0] - (c * d * d)));
+	}
+	cout << ans << "\n";
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TimeIsMooney {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("time");
+
+		// max time that we check (it can be any arbitrary large number as long
+		// as it is sufficient for O(T_MAX * (N + M)) time)
+		final int T_MAX = 1001;
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int c = io.nextInt();
+
+		// amount of moonies Bessie can make at each city
+		int[] values = new int[n];
+		for (int i = 0; i < values.length; i++) { values[i] = io.nextInt(); }
+
+		List<List<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+		for (int i = 0; i < m; i++) {
+			int n1 = io.nextInt() - 1;
+			int n2 = io.nextInt() - 1;
+			adj.get(n1).add(n2);
+		}
+
+		// dp[t][i] = max amount of moonies Bessie can make after t days,
+		// ending at city i
+		long[][] dp = new long[T_MAX][n];
+		for (int i = 0; i < T_MAX; i++) { Arrays.fill(dp[i], -1); }
+
+		long best = 0;
+		dp[0][0] = 0;
+		for (int t = 0; t < T_MAX - 1; t++) {  // populate dp array up to T_MAX
+			for (int i = 0; i < n; i++) {  // check each city at each time step
+				// skip city if it can't be reached at time t
+				if (dp[t][i] != -1) {
+					// visit all cities adjacent to i, update dp array
+					for (int neighbor : adj.get(i)) {
+						dp[t + 1][neighbor] = Math.max(
+						    dp[t + 1][neighbor], dp[t][i] + values[neighbor]);
+					}
+				}
+			}
+			// update the max profit Bessie can make after t days, ending
+			// at city 0
+			best = Math.max(best, dp[t][0] - t * t * c);
+		}
+
+		io.println(best);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

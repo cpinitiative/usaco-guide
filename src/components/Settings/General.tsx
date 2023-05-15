@@ -6,11 +6,34 @@ export default function General(): JSX.Element {
   const {
     showIgnored,
     setShowIgnored,
-    hideTags,
-    setHideTags,
+    showTags,
+    setShowTags,
     hideDifficulty,
     setHideDifficulty,
+    hideModules,
+    setHideModules,
   } = React.useContext(UserDataContext);
+  const [isLongPolling, setIsLongPolling] = React.useState<boolean>(false);
+  /**
+   * For people behind proxies or with terrible internet - behold the power of long polling!
+   */
+  React.useEffect(() => {
+    if (localStorage.getItem('USACO_GUIDE_LONG_POLLING') === 'true') {
+      setIsLongPolling(true);
+    } else {
+      setIsLongPolling(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (isLongPolling) {
+      localStorage.setItem('USACO_GUIDE_LONG_POLLING', 'true');
+      // console.log('Initializing long polling');
+    } else {
+      localStorage.setItem('USACO_GUIDE_LONG_POLLING', 'false');
+      // console.log('Disabling long polling');
+    }
+  }, [isLongPolling]);
   return (
     <div>
       <div className="space-y-1">
@@ -26,10 +49,10 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Tags
+                Problem Lists and Search: Show Tags
               </p>
             </div>
-            <Switch checked={hideTags} onChange={b => setHideTags(b)} />
+            <Switch checked={showTags} onChange={b => setShowTags(b)} />
           </li>
           <li className="py-4 flex items-center justify-between">
             <div className="flex flex-col">
@@ -37,7 +60,7 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
-                Problem Lists: Hide Difficulty
+                Problem Lists and Search: Hide Difficulty
               </p>
             </div>
             <Switch
@@ -49,12 +72,41 @@ export default function General(): JSX.Element {
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
+                id="privacy-option-1-label"
+              >
+                Problem Search: Hide Modules
+              </p>
+            </div>
+            <Switch checked={hideModules} onChange={b => setHideModules(b)} />
+          </li>
+          <li className="py-4 flex items-center justify-between">
+            <div className="flex flex-col">
+              <p
+                className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-2-label"
               >
                 Dashboard: Show Ignored Problems & Modules
               </p>
             </div>
             <Switch checked={showIgnored} onChange={b => setShowIgnored(b)} />
+          </li>
+          <li className="py-4 flex items-center justify-between">
+            <div className="flex flex-col">
+              <p
+                className="text-sm font-medium text-gray-500 dark:text-gray-300"
+                id="privacy-option-2-label"
+              >
+                Use Long Polling (Close and reopen tab after toggling) -{' '}
+                <span className="font-bold">
+                  Enable this option ONLY if you encounter issues connecting to
+                  Firebase (nothing loads).
+                </span>
+              </p>
+            </div>
+            <Switch
+              checked={isLongPolling}
+              onChange={b => setIsLongPolling(b)}
+            />
           </li>
         </ul>
       </div>

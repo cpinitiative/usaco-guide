@@ -1,0 +1,157 @@
+---
+id: usaco-690
+source: USACO Silver 2017 January
+title: Cow Dance Show
+author: Óscar Garries, Juheon Rhee, Brad Ma
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("cowdance.in", "r", stdin);
+	freopen("cowdance.out", "w", stdout);
+
+	int n, t;
+	cin >> n >> t;
+	int ar[n];
+
+	for (int i = 0; i < n; i++) { cin >> ar[i]; }
+
+	int hi = n, lo = 1;
+	int sol = n;
+
+	while (lo <= hi) {
+		int mid = lo + (hi - lo) / 2;
+		int time = 0, j = 0;
+		priority_queue<int> pq;
+		int size = 0;
+		while (size < mid && j < n) {
+			pq.push(-ar[j]);
+			size++;
+			j++;
+		}
+
+		while ((int)pq.size()) {
+			time += max(0, -pq.top() - time);
+			pq.pop();
+			if (j < n) {
+				pq.push(-(ar[j] + time));
+				j++;
+			}
+		}
+
+		if (time > t) {
+			lo = mid + 1;
+		} else {
+			sol = min(sol, mid);
+			hi = mid - 1;
+		}
+	}
+
+	cout << sol << '\n';
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import heapq
+
+with open("cowdance.in") as r:
+	n, maximum = map(int, r.readline().split())
+	dance = [int(r.readline()) for _ in range(n)]
+
+left = 1
+right = n + 1
+while left < right:
+	mid = (left + right) // 2
+	parts = dance[:mid]
+	heapq.heapify(parts)
+
+	for i in range(mid, n):
+		exit_stage_time = heapq.heappop(parts) + dance[i]
+		heapq.heappush(parts, exit_stage_time)
+
+	if maximum < max(parts):
+		left = mid + 1
+	else:
+		right = mid
+
+print(left, file=open("cowdance.out", "w"))
+```
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowDanceShow {
+	static int[] danceTimes;
+	static int n;
+	static int maxTime;
+
+	static boolean isOk(int stageSize) {
+		PriorityQueue<Integer> currentDancing = new PriorityQueue<>();
+
+		for (int x = 0; x < n; x++) {
+			if (currentDancing.size() < stageSize) {
+				currentDancing.add(danceTimes[x]);
+			} else {
+				// add the next cow in line to the one that will finish first
+				currentDancing.add(currentDancing.remove() + danceTimes[x]);
+			}
+		}
+
+		int lastFinish = Integer.MAX_VALUE;
+
+		while (currentDancing.size() > 0) {
+			lastFinish = currentDancing.remove();
+		}
+		return lastFinish <= maxTime;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("cowdance");
+		n = io.nextInt();
+		maxTime = io.nextInt();
+		danceTimes = new int[n];
+
+		for (int x = 0; x < n; x++) { danceTimes[x] = io.nextInt(); }
+
+		int low = 1;   // the lowest is only can fit one cow
+		int high = n;  // the highest needed is fitting all of the cows at once
+
+		while (low < high) {
+			int mid = (low + high) / 2;
+			if (isOk(mid)) {
+				high = mid;
+			} else {
+				low = mid + 1;
+			}
+		}
+		io.println(low);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

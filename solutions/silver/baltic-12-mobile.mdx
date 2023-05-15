@@ -1,0 +1,102 @@
+---
+id: baltic-12-mobile
+source: Baltic OI 2012
+title: Mobile
+author: Andi Qu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2012_solutions.zip)
+
+If we can cover the highway using circles of radius $r_1$, then we can also
+cover the highway using circles of radius $r_2 > r_1$. This suggests that we
+should binary search for the answer.
+
+## Checking a Radius
+
+If a circle covers a part of a highway, it covers a line segment. Using the
+Pythagorean theorem ($a^2 + b^2 = c^2$), we can find the coordinates of the
+endpoints of each such segment. Let the segment from the $i$-th tower be $s_i$.
+
+Checking whether a radius is good now becomes checking whether the union of
+these segments is a single segment that completely covers the highway.
+
+We can solve this in $\mathcal{O}(N \log N)$ time by sorting the segments by
+their left endpoints and then merging each segment into the union if it
+intersects the union of the previous segments.
+
+Unfortunately, this is just a bit too slow ($\mathcal{O}(N \log N \log L)$ in
+total) and only scores 50 points.
+
+Luckily, we don't have to sort the segments!
+
+### A Nice Property
+
+Why would we need to sort the segments in the first place?
+
+Imagine we had three segments $f$, $g$, and $h$ in that order in the unsorted
+list. Watch what happens when these segments are arranged as shown below:
+
+![Hack](<baltic-12-mobile/hack.png>)
+
+Without sorting, $g$ wouldn't be part of the union since $f \cap g = \emptyset$.
+However, the actual union contains all three segments.
+
+But what if $h$ completely covers $g$?
+
+![Antihack](<baltic-12-mobile/antihack.png>)
+
+In this case, it doesn't matter that $g$ isn't a part of the union, since
+$f \cup g \cup h = f \cup h$ anyway.
+
+The nice thing about this particular problem is that if we have segment $s_i$
+coming after segment $s_j$ in the list but $s_i$'s left endpoint is to the left
+of $s_j$'s left endpoint, then $s_i$ must completely cover $s_j$.
+
+Why is this true? The only time we will have segment $s_i$ coming after segment
+$s_j$ in the list but $s_i$'s left endpoint is to the left of $s_j$'s left
+endpoint is when $x_i > x_j$ and $y_i < y_j$.
+
+![Circles](<baltic-12-mobile/circles.png>)
+
+Clearly, $s_i$ completely covers $s_j$. We can therefore apply our algorithm for
+a sorted list and still get the correct answer!
+
+This gets rid of the $\log N$ factor in our original complexity and so the final
+complexity is $\mathcal{O}(N \log L)$, which is good enough for 100 points.
+
+(There is also an $\mathcal{O}(N)$ solution - try to come up with it yourself!)
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+#define x first
+#define y second
+using namespace std;
+
+pair<long long, long long> p[1000000];
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, len;
+	cin >> n >> len;
+	for (int i = 0; i < n; i++) cin >> p[i].x >> p[i].y;
+
+	double l = 1, r = 1.5e9;
+	while (r - l > 1e-3) {
+		double mid = (l + r) / 2, curr = 0;
+		for (int i = 0; i < n; i++) {
+			double delta = sqrt(mid * mid - p[i].y * p[i].y);
+			double a = p[i].x - delta, b = p[i].x + delta;
+			if (a <= curr) curr = max(curr, b);
+		}
+
+		if (curr >= len) r = mid;
+		else l = mid;
+	}
+
+	cout << fixed << setprecision(4) << l;
+	return 0;
+}
+```

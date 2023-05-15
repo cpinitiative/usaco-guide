@@ -1,0 +1,177 @@
+---
+id: cses-1620
+source: CSES
+title: Factory Machines
+author: Michael Cao
+---
+
+<Spoiler title="Hint 1">
+
+If we change the total time, how will the number of products produced be affected?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Compared to the desired number of products give in the input, how many products are produced when the total time is lower or higher than the actual answer?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+In this problem, you're given $n$ machines and asked the minimum time these
+machines need to work to create $t$ products such that the $i$-th machine
+creates a product in $k_i$ time.
+
+### Binary Search
+
+Observe that the time needed to create at least $x$ products is monotonic. In
+other words, if the given machines can create $x$ products in $y_1$ time, then
+the same machines can create at least $x$ products in $y_2 > y_1$ time. Using
+this property, we can binary search over the answer. Read
+[this module](/silver/binary-search) for more information.
+
+For some value we binary search for, $ans$, we are left with the task of
+checking whether we can create $t$ products in $ans$ time. To do this, observe
+that it's optimal for every machine to work simultaneously. Then, in $ans$ time,
+machine $i$ can create $\lfloor \frac{ans}{k_i} \rfloor$ products.
+
+Overall, the $n$ machines can create
+‎‎$\sum_{i=1}^{n} \lfloor \frac{ans}{k_i} \rfloor$ products. If this sum
+$\geq t$, then $ans$ is valid.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log t)$, where $t$ is the largest time we need to consider.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	if (sz(name)) {
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO();
+	int n;
+	ll t;
+	cin >> n >> t;
+	vector<ll> k(n);
+	for (int i = 0; i < n; i++) { cin >> k[i]; }
+	ll lo = 0;
+	ll hi = 1e18;
+	ll ans = 0;
+	while (lo <= hi) {
+		ll mid = (lo + hi) / 2;
+		ll sum = 0;
+		for (int i = 0; i < n; i++) {
+			sum += (mid / k[i]);
+			if (sum >= t) {  // deal with overflow
+				break;
+			}
+		}
+		if (sum >= t) {
+			ans = mid;
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FactoryMachines {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();  // number of machines
+		int goal = io.nextInt();
+
+		int[] machines = new int[n];
+		for (int i = 0; i < n; i++) { machines[i] = io.nextInt(); }
+
+		long lo = 0;
+		long hi = (long)1e18;
+		long ans = 0;
+		while (lo <= hi) {
+			long mid = (lo + hi) / 2;
+
+			long n_produced = 0;
+			for (int machine : machines) {
+				n_produced += mid / machine;
+				// Break as soon as we hit our goal
+				if (n_produced >= goal) { break; }
+			}
+
+			if (n_produced >= goal) {
+				ans = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+_, goal = map(int, input().split())
+machines = list(map(int, input().split()))
+
+lo = 0
+hi = int(1e18)
+ans = 0
+while lo <= hi:
+	mid = (lo + hi) // 2
+
+	n_produced = 0
+	for machine in machines:
+		n_produced += mid // machine
+
+	if n_produced >= goal:
+		ans = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
+print(ans)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

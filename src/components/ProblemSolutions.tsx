@@ -1,5 +1,8 @@
+import Filter from 'bad-words';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
+import { useDarkMode } from '../context/DarkModeContext';
 import { SignInContext } from '../context/SignInContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
@@ -18,24 +21,29 @@ export default function ProblemSolutions({
   showSubmitSolutionModal: () => void;
   problem: ProblemInfo;
 }): JSX.Element {
-  const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
-    problem
-  );
-  const {
-    deleteSolution,
-    upvoteSolution,
-    undoUpvoteSolution,
-    mutateSolution,
-  } = useUserProblemSolutionActions();
-  const { firebaseUser } = useContext(UserDataContext);
+  const { solutions, currentUserSolutions } =
+    useUserSolutionsForProblem(problem);
+  const { deleteSolution, upvoteSolution, undoUpvoteSolution, mutateSolution } =
+    useUserProblemSolutionActions();
+  const { firebaseUser, lang } = useContext(UserDataContext);
+  const [isContactUsActive, setIsContactUsActive] = useState(false);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
+  const isDarkMode = useDarkMode();
+  const filter = new Filter();
+  const langArr = ['cpp', 'java', 'py'];
+  langArr.sort(function (first, second) {
+    if (first === lang && second !== lang) {
+      return -1;
+    } else if (first !== lang && second === lang) {
+      return 1;
+    }
+    return 0;
+  });
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
   );
-
-  console.log(solutions, publicSolutions);
 
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
@@ -66,23 +74,26 @@ export default function ProblemSolutions({
         </h3>
         <p className="mt-1 text-gray-500 dark:text-gray-400">
           Below are user-submitted solutions for {problem?.name}. If you notice
-          any of them are incorrect, email us at{' '}
-          <a
-            className="underline text-blue-600 dark:text-blue-400"
-            href="mailto:usacoguide@gmail.com"
-            target="_blank"
-            rel="noreferrer"
-          >
-            usacoguide@gmail.com
-          </a>
-          .
+          any of them are incorrect, submit the contact form below.
         </p>
+
         <button
           className="my-4 btn-primary"
           onClick={() => (firebaseUser ? showSubmitSolutionModal() : signIn())}
         >
           {firebaseUser ? 'Submit a Solution' : 'Sign in to submit a solution'}
         </button>
+        <button
+          className="my-4 mx-3 btn-primary"
+          onClick={() => setIsContactUsActive(true)}
+        >
+          Contact Us
+        </button>
+        <ContactUsSlideover
+          isOpen={isContactUsActive}
+          onClose={() => setIsContactUsActive(false)}
+          defaultLocation={`Problem Solution - ${problem?.name} (ID: ${problem?.uniqueId})`}
+        />
         <div className="h-8" />
         <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
           My Solutions
@@ -118,6 +129,7 @@ export default function ProblemSolutions({
                       ? `language-${submission.language}`
                       : undefined
                   }
+                  isDarkMode={isDarkMode}
                 >
                   {submission.solutionCode}
                 </CodeBlock>
@@ -126,7 +138,7 @@ export default function ProblemSolutions({
           ))}
           {currentUserSolutions?.length === 0 && <span>No solutions yet!</span>}
         </div>
-        {['cpp', 'java', 'py'].map(lang => (
+        {langArr.map(lang => (
           <React.Fragment key={lang}>
             <div className="h-8" />
             <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
@@ -200,8 +212,11 @@ export default function ProblemSolutions({
                             ? `language-${submission.language}`
                             : undefined
                         }
+                        isDarkMode={isDarkMode}
                       >
-                        {submission.solutionCode}
+                        {filter.isProfane(submission.solutionCode)
+                          ? filter.clean(submission.solutionCode)
+                          : submission.solutionCode}
                       </CodeBlock>
                     </div>
                   </div>

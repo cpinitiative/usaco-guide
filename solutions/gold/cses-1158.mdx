@@ -1,0 +1,116 @@
+---
+id: cses-1158
+source: CSES
+title: Book Shop
+author: Sofia Yang, Neha Sane
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/70018)
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N\cdot X)$
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	int x;
+	cin >> n >> x;
+	vector<int> cost(n);
+	vector<int> pages(n);
+
+	for (int i = 0; i < n; i++) { cin >> cost[i]; }
+	for (int i = 0; i < n; i++) { cin >> pages[i]; }
+
+	/*
+	 * dp[i][j] is the most number of pages that can be bought from
+	 * the first i books and by spending at most j amount of money.
+	 */
+	vector<vector<int>> dp(n + 1, vector<int>(x + 1));
+	for (int i = 1; i <= n; i++) {
+		int curr_cost = cost[i - 1];
+		int curr_pages = pages[i - 1];
+		for (int j = 1; j <= x; j++) {
+			/*
+			 * if the current book is not bought, the the number of pages is
+			 * the same as number of pages bought for first i-1 books using
+			 * j amount of money
+			 */
+			dp[i][j] = dp[i - 1][j];
+			if (curr_cost <= j) {
+				/*
+				 * if the current book can be bought, then store the most
+				 * number of pages using the remaining money after buying
+				 * the current book plus the pages for the current book.
+				 */
+				dp[i][j] = max(dp[i][j], dp[i - 1][j - curr_cost] + curr_pages);
+			}
+		}
+	}
+	cout << dp[n][x] << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class bookShop {
+	public static void main(String[] args) throws IOException {
+		BufferedReader b = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(b.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int X = Integer.parseInt(st.nextToken());
+
+		// Read in the cost array.
+		int[] costs = new int[N];
+		st = new StringTokenizer(b.readLine());
+		for (int i = 0; i < N; i++) {
+			costs[i] = Integer.parseInt(st.nextToken());
+		}
+
+		// Read in the pages array.
+		int[] pages = new int[N];
+		st = new StringTokenizer(b.readLine());
+		for (int i = 0; i < N; i++) {
+			pages[i] = Integer.parseInt(st.nextToken());
+		}
+
+		// dp[i][j] is how many pages you have from the first i books,
+		// after spending j money.
+		int[][] dp = new int[N + 5][X + 5];
+		for (int book = 0; book < N; book++) {
+			for (int money = 0; money <= X; money++) {
+				dp[book + 1][money] = dp[book][money];
+				int prev = money - costs[book];
+				if (prev >= 0) {
+					// The total number of pages we have if we buy this book.
+					int newState = dp[book][prev] + pages[book];
+					dp[book + 1][money] =
+					    Integer.max(dp[book + 1][money], newState);
+				}
+			}
+		}
+
+		// Print the answer.
+		System.out.println(dp[N][X]);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

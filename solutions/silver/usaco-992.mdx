@@ -1,0 +1,557 @@
+---
+id: usaco-992
+source: USACO Silver 2020 January
+title: Wormhole Sort
+author: Óscar Garries, Neo Wang, Kevin Sheng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_wormsort_silver_jan20.html)
+
+## Solution 1 - Binary Search and Floodfill
+
+**Time Complexity:** $\mathcal O((N+M)\log \max w_i)$
+
+### Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("wormsort.in");
+	int cow_num;
+	int wormhole_num;
+	read >> cow_num >> wormhole_num;
+
+	vector<int> cows(cow_num);
+	for (int &c : cows) {
+		read >> c;
+		c--;  // make the cows 0-indexed
+	}
+
+	int max_width = 0;
+	vector<vector<std::pair<int, int>>> neighbors(cow_num);
+	for (int w = 0; w < wormhole_num; w++) {
+		int c1, c2, width;
+		read >> c1 >> c2 >> width;
+		c1--;
+		c2--;
+		neighbors[c1].push_back({c2, width});
+		neighbors[c2].push_back({c1, width});
+		max_width = std::max(max_width, width);
+	}
+
+	int lo = 0;
+	int hi = max_width + 1;
+	int valid = -1;
+	while (lo <= hi) {
+		int mid = (lo + hi) / 2;
+
+		vector<int> component(cow_num, -1);
+		int curr_comp = 0;
+		for (int c = 0; c < cow_num; c++) {
+			if (component[c] != -1) { continue; }
+			vector<int> frontier{c};
+			while (!frontier.empty()) {
+				int curr = frontier.back();
+				frontier.pop_back();
+				component[curr] = curr_comp;
+				for (const auto &[n, w] : neighbors[curr]) {
+					if (component[n] == -1 && w >= mid) {
+						frontier.push_back(n);
+					}
+				}
+			}
+			curr_comp++;
+		}
+
+		bool sortable = true;
+		for (int c = 0; c < cow_num; c++) {
+			if (component[c] != component[cows[c]]) {
+				sortable = false;
+				break;
+			}
+		}
+
+		if (sortable) {
+			valid = mid;
+			lo = mid + 1;
+		} else {
+			hi = mid - 1;
+		}
+	}
+
+	std::ofstream("wormsort.out")
+	    << (valid == max_width + 1 ? -1 : valid) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+
+Due to Java's relatively slow speed, the below solution will often TLE on some test cases.
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WormSort {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("wormsort");
+
+		int cowNum = io.nextInt();
+		int wormholeNum = io.nextInt();
+
+		int[] cows = new int[cowNum];
+		for (int c = 0; c < cowNum; c++) { cows[c] = io.nextInt() - 1; }
+
+		int maxWidth = 0;
+		List<int[]>[] neighbors = new ArrayList[cowNum];
+		for (int c = 0; c < cowNum; c++) { neighbors[c] = new ArrayList<>(); }
+		for (int w = 0; w < wormholeNum; w++) {
+			int c1 = io.nextInt() - 1;
+			int c2 = io.nextInt() - 1;
+			int width = io.nextInt();
+			neighbors[c1].add(new int[] {c2, width});
+			neighbors[c2].add(new int[] {c1, width});
+			maxWidth = Math.max(maxWidth, width);
+		}
+
+		int lo = 0;
+		int hi = maxWidth + 1;
+		int valid = -1;
+		int[] component = new int[cowNum];
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+
+			Arrays.fill(component, -1);
+			int currComp = 0;
+			for (int c = 0; c < cowNum; c++) {
+				if (component[c] != -1) { continue; }
+				List<Integer> frontier =
+				    new ArrayList<>(Collections.singletonList(c));
+				while (!frontier.isEmpty()) {
+					int curr = frontier.remove(frontier.size() - 1);
+					component[curr] = currComp;
+					for (int[] n : neighbors[curr]) {
+						if (component[n[0]] == -1 && n[1] >= mid) {
+							frontier.add(n[0]);
+						}
+					}
+				}
+				currComp++;
+			}
+
+			boolean sortable = true;
+			for (int c = 0; c < cowNum; c++) {
+				if (component[c] != component[cows[c]]) {
+					sortable = false;
+					break;
+				}
+			}
+
+			if (sortable) {
+				valid = mid;
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		io.println(valid == maxWidth + 1 ? -1 : valid);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+## Solution 2 - Binary Search and DSU
+
+Like the floodfill solution, we binary search on the answer $x$, which is valid if all
+$p_i$ are in the same component as $i$, which we can query in
+$\mathcal{O}(\alpha(N))$ using a
+[Disjoint Set Union](https://en.wikipedia.org/wiki/Disjoint-set_data_structure).
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{DSU}
+class DSU {
+  private:
+	vector<int> parent;
+	vector<int> size;
+
+  public:
+	DSU(int size) : parent(size), size(size, 1) {
+		for (int i = 0; i < size; i++) { parent[i] = i; }
+	}
+
+	int get_top(int n) {
+		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (size[n2] > size[n1]) { return link(n2, n1); }
+		parent[n2] = n1;
+		size[n1] += size[n2];
+		return true;
+	}
+};
+// EndCodeSnip
+
+struct Wormhole {
+	int c1, c2;
+	int width;
+};
+
+int main() {
+	std::ifstream read("wormsort.in");
+	int cow_num;
+	int wormhole_num;
+	read >> cow_num >> wormhole_num;
+
+	vector<int> cows(cow_num);
+	for (int &c : cows) {
+		read >> c;
+		c--;  // make the cows 0-indexed
+	}
+
+	int max_width = 0;
+	vector<Wormhole> wormholes(wormhole_num);
+	for (Wormhole &w : wormholes) {
+		read >> w.c1 >> w.c2 >> w.width;
+		w.c1--;
+		w.c2--;
+		max_width = std::max(max_width, w.width);
+	}
+
+	int lo = 0;
+	int hi = max_width + 1;
+	int valid = -1;
+	while (lo <= hi) {
+		int mid = (lo + hi) / 2;
+
+		DSU dsu(cow_num);
+		for (const Wormhole &w : wormholes) {
+			if (w.width >= mid) { dsu.link(w.c1, w.c2); }
+		}
+
+		bool sortable = true;
+		for (int c = 0; c < cow_num; c++) {
+			if (dsu.get_top(c) != dsu.get_top(cows[c])) {
+				sortable = false;
+				break;
+			}
+		}
+
+		if (sortable) {
+			valid = mid;
+			lo = mid + 1;
+		} else {
+			hi = mid - 1;
+		}
+	}
+
+	std::ofstream("wormsort.out")
+	    << (valid == max_width + 1 ? -1 : valid) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WormSort {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("wormsort");
+
+		int cowNum = io.nextInt();
+		int wormholeNum = io.nextInt();
+
+		int[] cows = new int[cowNum];
+		for (int c = 0; c < cowNum; c++) { cows[c] = io.nextInt() - 1; }
+
+		int maxWidth = 0;
+		List<int[]> wormholes = new ArrayList<>();
+		for (int w = 0; w < wormholeNum; w++) {
+			wormholes.add(
+			    new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
+			maxWidth = Math.max(maxWidth, wormholes.get(w)[2]);
+		}
+
+		int lo = 0;
+		int hi = maxWidth + 1;
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+
+			DSU dsu = new DSU(cowNum);
+			for (int[] w : wormholes) {
+				if (w[2] >= mid) { dsu.link(w[0], w[1]); }
+			}
+
+			boolean sortable = true;
+			for (int c = 0; c < cowNum; c++) {
+				if (dsu.getTop(c) != dsu.getTop(cows[c])) {
+					sortable = false;
+					break;
+				}
+			}
+
+			if (sortable) {
+				valid = mid;
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		io.println(valid == maxWidth + 1 ? -1 : valid);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+
+// BeginCodeSnip{DSU}
+class DSU {
+	private final int[] parent;
+	private final int[] size;
+	public DSU(int size) {
+		parent = new int[size];
+		this.size = new int[size];
+		for (int i = 0; i < size; i++) {
+			parent[i] = i;
+			this.size[i] = 1;
+		}
+	}
+
+	public int getTop(int n) {
+		return parent[n] == n ? n : (parent[n] = getTop(parent[n]));
+	}
+
+	public boolean link(int e1, int e2) {
+		e1 = getTop(e1);
+		e2 = getTop(e2);
+		if (e1 == e2) { return false; }
+		if (size[e2] > size[e1]) { return link(e2, e1); }
+		parent[e2] = e1;
+		size[e1] += size[e2];
+		return true;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+</LanguageSection>
+
+## Solution 3 - DSU
+
+Due to the DSU's fast query and linking complexity, we can drop the binary search
+and instead add wormholes from greatest width to least width until
+all $p_i$ are in the same component as $i$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M\alpha(M))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{DSU}
+class DSU {
+  private:
+	vector<int> parent;
+	vector<int> size;
+
+  public:
+	DSU(int size) : parent(size), size(size, 1) {
+		for (int i = 0; i < size; i++) { parent[i] = i; }
+	}
+
+	int get_top(int n) {
+		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (size[n2] > size[n1]) { return link(n2, n1); }
+		parent[n2] = n1;
+		size[n1] += size[n2];
+		return true;
+	}
+};
+// EndCodeSnip
+
+struct Wormhole {
+	int c1, c2;
+	int width;
+};
+
+bool operator<(const Wormhole &w1, const Wormhole &w2) {
+	return w1.width < w2.width;
+}
+
+int main() {
+	std::ifstream read("wormsort.in");
+	int cow_num;
+	int wormhole_num;
+	read >> cow_num >> wormhole_num;
+
+	vector<int> cows(cow_num);
+	for (int &c : cows) {
+		read >> c;
+		c--;  // make the cows 0-indexed
+	}
+
+	int max_width = 0;
+	vector<Wormhole> wormholes(wormhole_num);
+	for (Wormhole &w : wormholes) {
+		read >> w.c1 >> w.c2 >> w.width;
+		w.c1--;
+		w.c2--;
+		max_width = std::max(max_width, w.width);
+	}
+
+	std::sort(wormholes.begin(), wormholes.end());
+
+	int wormhole_at = wormhole_num;
+	DSU dsu(cow_num);
+	for (int i = 0; i < cow_num; i++) {
+		while (dsu.get_top(i) != dsu.get_top(cows[i])) {
+			wormhole_at--;
+			dsu.link(wormholes[wormhole_at].c1, wormholes[wormhole_at].c2);
+		}
+	}
+
+	std::ofstream("wormsort.out")
+	    << (wormhole_at == wormhole_num ? -1 : wormholes[wormhole_at].width)
+	    << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WormSort {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("wormsort");
+
+		int cowNum = io.nextInt();
+		int wormholeNum = io.nextInt();
+
+		int[] cows = new int[cowNum];
+		for (int c = 0; c < cowNum; c++) { cows[c] = io.nextInt() - 1; }
+
+		int maxWidth = 0;
+		List<int[]> wormholes = new ArrayList<>();
+		for (int w = 0; w < wormholeNum; w++) {
+			wormholes.add(
+			    new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
+			maxWidth = Math.max(maxWidth, wormholes.get(w)[2]);
+		}
+
+		wormholes.sort(Comparator.comparingInt(wh -> wh[2]));
+
+		int wormholeAt = wormholeNum;
+		DSU dsu = new DSU(cowNum);
+		for (int i = 0; i < cowNum; i++) {
+			while (dsu.getTop(i) != dsu.getTop(cows[i])) {
+				wormholeAt--;
+				dsu.link(wormholes.get(wormholeAt)[0],
+				         wormholes.get(wormholeAt)[1]);
+			}
+		}
+
+		io.println(wormholeAt == wormholeNum ? -1
+		                                     : wormholes.get(wormholeAt)[2]);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+
+// BeginCodeSnip{DSU}
+class DSU {
+	private final int[] parent;
+	private final int[] size;
+	public DSU(int size) {
+		parent = new int[size];
+		this.size = new int[size];
+		for (int i = 0; i < size; i++) {
+			parent[i] = i;
+			this.size[i] = 1;
+		}
+	}
+
+	public int getTop(int n) {
+		return parent[n] == n ? n : (parent[n] = getTop(parent[n]));
+	}
+
+	public boolean link(int e1, int e2) {
+		e1 = getTop(e1);
+		e2 = getTop(e2);
+		if (e1 == e2) { return false; }
+		if (size[e2] > size[e1]) { return link(e2, e1); }
+		parent[e2] = e1;
+		size[e1] += size[e2];
+		return true;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+</LanguageSection>

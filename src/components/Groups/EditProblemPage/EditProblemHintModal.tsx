@@ -36,6 +36,7 @@ export default function EditProblemHintModal({
   const handleSubmit = e => {
     e.preventDefault();
     onSave(hint);
+    setHint(defaultHint);
     onClose();
   };
 

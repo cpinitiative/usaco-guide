@@ -2,7 +2,7 @@
 id: lis
 title: 'Longest Increasing Subsequence'
 author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
-contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava
+contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Kevin Sheng
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
@@ -47,17 +47,19 @@ $A[i]$. We can then naively compute $dp$ (and thus the LIS) in
 $\mathcal{O}(N^2)$ time:
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
+#include <vector>
+using namespace std;
+
 int find_lis(vector<int> a) {
-	int n = a.size(), lis = 0;
-	vector<int> dp(n, 1);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < i; j++)
-			if (a[j] < a[i])
-				dp[i] = max(dp[i], dp[j] + 1);
+	int lis = 0;
+	vector<int> dp(a.size(), 1);
+	for (int i = 0; i < a.size(); i++) {
+		for (int j = 0; j < i; j++) {
+			if (a[j] < a[i]) { dp[i] = max(dp[i], dp[j] + 1); }
+		}
 		lis = max(lis, dp[i]);
 	}
 	return lis;
@@ -65,27 +67,42 @@ int find_lis(vector<int> a) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-
-public static int find_lis(int[] a) {
-	int n = a.length, lis = 0;
-	int[] dp = new int[n]; Arrays.fill(dp, 1);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < i; j++)
-			if (a[j] < a[i])
-				dp[i] = Math.max(dp[i], dp[j] + 1);
+public static int findLis(int[] a) {
+	int lis = 0;
+	int[] dp = new int[a.length];
+	Arrays.fill(dp, 1);
+	for (int i = 0; i < a.length; i++) {
+		for (int j = 0; j < i; j++) {
+			if (a[j] < a[i]) { dp[i] = Math.max(dp[i], dp[j] + 1); }
+		}
 		lis = Math.max(lis, dp[i]);
 	}
 	return lis;
 }
-
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+from typing import List
+
+
+def find_lis(a: List[int]) -> int:
+	lis = 0
+	dp = [1] * len(a)
+	for i in range(len(a)):
+		for j in range(i):
+			if a[j] < a[i]:
+				dp[i] = max(dp[i], dp[j] + 1)
+		lis = max(lis, dp[i])
+	return lis
+```
+
+</PySection>
 </LanguageSection>
 
 We can do much better than this though!
@@ -132,29 +149,34 @@ for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ for
 $k > j$.
 
 To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
-list with binary search, or we can use an ordered set (as demonstrated in the
+list with binary search, or we can use a sorted set (as demonstrated in the
 solution for PCB).
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
+#include <algorithm>
+#include <vector>
+using namespace std;
+
 int find_lis(vector<int> a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
-		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
+		if (pos == dp.size()) {
+			// we can have a new, longer increasing subsequence!
 			dp.push_back(i);
-		else  // oh ok, at least we can make the ending element smaller
+		} else {
+			// oh ok, at least we can make the ending element smaller
 			dp[pos] = i;
+		}
 	}
 	return dp.size();
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -163,25 +185,30 @@ public static int findLis(int[] a) {
 	for (int i : a) {
 		int pos = Collections.binarySearch(dp, i);
 		pos = pos < 0 ? Math.abs(pos + 1) : pos;
-		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
+		if (pos == dp.size()) {
+			// we can have a new, longer increasing subsequence!
 			dp.add(i);
-		else  // oh ok, at least we can make the ending element smaller
+		} else {
+			// oh ok, at least we can make the ending element smaller
 			dp.set(pos, i);
+		}
 	}
 	return dp.size();
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-# list from typing module
+from typing import List
+from bisect import bisect_left
+
+
 def find_lis(arr: List[int]) -> int:
 	min_endings = []
 	for i in arr:
-		pos = bisect_left(min_endings, i)  # bisect_left from the bisect module
+		pos = bisect_left(min_endings, i)
 		if pos == len(min_endings):  # we can have a new, longer increasing subsequence!
 			min_endings.append(i)
 		else:  # oh ok, at least we can make the ending element smaller
@@ -190,19 +217,18 @@ def find_lis(arr: List[int]) -> int:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Fast Solution (RMQ Data Structures)
 
 **Time Complexity**: $\mathcal O(N \log N)$, but perhaps a constant factor
-slower than binary search.
+slower than the previous solution.
 
 Note that the following solution assumes knowledge of a basic PURQ data
-structure for RMQ. Suitable implementations include a segment tree or a modified
-Fenwick tree, but both of these are generally considered Platinum level topics.
-However, this solution has the advantage of being more intuitive if you're
-deriving LIS on the spot.
+structure for RMQ (range max query). Suitable implementations include a segment
+tree or a modified Fenwick tree, but both of these are generally considered
+Platinum level topics. However, this solution has the advantage of being more
+intuitive if you're deriving LIS on the spot.
 
 Let $\texttt{dp}[k]$ be the length of the LIS of $a$ that ends with the element
 $k \in a$. Our base case is obviously $\texttt{dp}[a[0]] = 1$ (we have an LIS
@@ -229,53 +255,195 @@ process offline as we often can, however, we can avoid using a more advanced
 technique: it suffices to collect the array elements and sort them to coordinate
 compress, creating $\texttt{dp}$ with those compressed IDs instead.
 
-My implementation is below:
+The implementation follows:
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
-// Code by Aryansh Shrivastava
-
 #include <bits/stdc++.h>
 using namespace std;
 
-struct RMQ {
-	int n; vector<int> seg;
-	const int ID = 0; // at minimum, the length of a subsequence is 0 (-INF won't work here for example)
-	void init(int n0) { n = n0; seg.assign(2 * n, ID); }
-	void upd(int p, int v) {
-		seg[p += n] = v;
-		for(p /= 2; p; p /= 2) seg[p] = max(seg[2 * p], seg[2 * p + 1]);
-	}
-	int qry(int l, int r) {
-		int ql = ID, qr = ID;
-		for(l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-			if(l & 1) ql = max(ql, seg[l++]);
-			if(r & 1) qr = max(seg[--r], qr);
+// BeginCodeSnip{Range Maximum Segment Tree}
+class MaxSegTree {
+  private:
+	int len;
+	vector<int> segtree;
+
+  public:
+	MaxSegTree(int len) : len(len), segtree(2 * len) {}
+
+	void set(int ind, int val) {
+		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
 		}
-		return max(ql, qr);
 	}
-} dp;
 
-int n;
-vector<int> v, cmp;
+	// maximum of the range [from, to)
+	int range_max(int from, int to) {
+		int max_ = INT32_MIN;
+		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+			if ((from & 1) != 0) { max_ = max(max_, segtree[from++]); }
+			if ((to & 1) != 0) { max_ = max(max_, segtree[--to]); }
+		}
+		return max_;
+	}
+};
+// EndCodeSnip
 
-int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin >> n; v.resize(n);
-	for(int i = 0; i < n; ++i) cin >> v[i];
+int find_lis(vector<int> a) {
+	// apply coordinate compression to all elements of the array
+	vector<int> sorted(a);
+	sort(sorted.begin(), sorted.end());
+	int at = 0;
+	map<int, int> coord_comp;
+	for (int i : sorted) {
+		if (!coord_comp.count(i)) { coord_comp[i] = at++; }
+	}
+	// cmp(i) gives the compressed version of index i
+	auto cmp = [&](int i) -> int { return coord_comp[a[i]]; };
 
-	// define coordinate compression //
-	cmp = v;
-	sort(begin(cmp), end(cmp));
-	cmp.erase(unique(begin(cmp), end(cmp)), end(cmp));
-	auto cid = [&](int x) { return lower_bound(begin(cmp), end(cmp), x) - begin(cmp); };
-	// cid gives compressed id //
+	MaxSegTree dp(coord_comp.size());
+	dp.set(cmp(0), 1);
+	for (int i = 1; i < a.size(); i++) {
+		int max_prev = dp.range_max(0, cmp(i));
+		if (max_prev != INT32_MIN) {
+			dp.set(cmp(i), max_prev + 1);
+		} else {
+			dp.set(cmp(i), 1);
+		}
+	}
 
-	dp.init(size(cmp));
-	dp.upd(cid(v[0]), 1); // base case: a[0] has LIS 1
-	for(int i = 1; i < n; ++i) dp.upd(cid(v[i]), dp.qry(0, cid(v[i]) - 1) + 1);
-	cout << dp.qry(0, size(cmp) - 1) << "\n";
+	return dp.range_max(0, coord_comp.size());
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class FindLis {
+	public static int findLis(int[] a) {
+		// apply coordinate compression to all elements of the array
+		int[] sorted = a.clone();
+		Arrays.sort(sorted);
+		HashMap<Integer, Integer> coordComp = new HashMap<>();
+		int at = 0;
+		for (int i : sorted) {
+			if (!coordComp.containsKey(i)) { coordComp.put(i, at++); }
+		}
+
+		MaxSegTree dp = new MaxSegTree(coordComp.size());
+		dp.set(coordComp.get(a[0]), 1);
+		for (int i = 1; i < a.length; i++) {
+			int cmp = coordComp.get(a[i]);
+			int maxPrev = dp.rangeMax(0, cmp);
+			if (maxPrev != Integer.MIN_VALUE) {
+				dp.set(cmp, dp.rangeMax(0, cmp) + 1);
+			} else {
+				dp.set(cmp, 1);
+			}
+		}
+
+		return dp.rangeMax(0, coordComp.size());
+	}
+}
+
+// BeginCodeSnip{Range Maximum Segment Tree}
+class MaxSegTree {
+	int len;
+	int[] segtree;
+
+	public MaxSegTree(int len) {
+		this.len = len;
+		segtree = new int[2 * len];
+	}
+
+	void set(int ind, int val) {
+		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind >> 1] = Math.max(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	// maximum of the range [from, to)
+	int rangeMax(int from, int to) {
+		int max = Integer.MIN_VALUE;
+		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+			if ((from & 1) != 0) { max = Math.max(max, segtree[from++]); }
+			if ((to & 1) != 0) { max = Math.max(max, segtree[--to]); }
+		}
+		return max;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List
+
+
+class MaxSegTree:
+	def __init__(self, len_: int):
+		self.len = len_
+		self.segtree = [0] * (2 * len_)
+
+	def set(self, ind: int, val: int) -> None:
+		ind += self.len
+		self.segtree[ind] = val
+		while ind > 1:
+			self.segtree[ind >> 1] = max(self.segtree[ind], self.segtree[ind ^ 1])
+			ind >>= 1
+
+	# maximum of the range [from, to)
+	def range_max(self, start: int, end: int) -> int:
+		max_ = -float("inf")
+		start += self.len
+		end += self.len
+		while start < end:
+			if (start & 1) != 0:
+				max_ = max(max_, self.segtree[start])
+				start += 1
+			if (end & 1) != 0:
+				end -= 1
+				max_ = max(max_, self.segtree[end])
+
+			start >>= 1
+			end >>= 1
+		return max_
+
+
+def find_lis(a: List[int]) -> int:
+	# apply coordinate compression to all elements of the array
+	sorted_ = sorted(a)
+	coord_comp = {}
+	at = 0
+	for i in sorted_:
+		if i not in coord_comp:
+			coord_comp[i] = at
+			at += 1
+	# cmp(i) gives the compressed version of index i
+	cmp = lambda i: coord_comp[a[i]]
+
+	dp = MaxSegTree(len(coord_comp))
+	dp.set(cmp(0), 1)
+	for i in range(1, len(a)):
+		max_prev = dp.range_max(0, cmp(i))
+
+		if max_prev != -float("inf"):
+			dp.set(cmp(i), max_prev + 1)
+		else:
+			dp.set(cmp(i), 1)
+
+	return dp.range_max(0, len(coord_comp))
+```
+
+</PySection>
+</LanguageSection>
 
 ## Example - PCB
 
@@ -359,7 +527,6 @@ the inductive proof.
 ### Code
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -388,28 +555,29 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-class PCB{
-	public static void main(String[] args) throws IOException
-	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+class PCB {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
-		TreeMap<Integer, Integer> a = new TreeMap<Integer, Integer>(Collections.reverseOrder());
-		for(int i = 0; i < n; i++){
+		TreeMap<Integer, Integer> a =
+		    new TreeMap<Integer, Integer>(Collections.reverseOrder());
+		for (int i = 0; i < n; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			a.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+			a.put(Integer.parseInt(st.nextToken()),
+			      Integer.parseInt(st.nextToken()));
 		}
-		//finding the LIS of a reversed array = finding the LDS
+		// finding the LIS of a reversed array = finding the LDS
 		int lis = 0;
 		TreeSet<Integer> s = new TreeSet<Integer>();
-		for(int k : a.keySet()){
-			if(s.higher(a.get(k)) == null) lis++;
+		for (int k : a.keySet()) {
+			if (s.higher(a.get(k)) == null) lis++;
 			else s.remove(s.higher(a.get(k)));
 			s.add(a.get(k));
 		}
@@ -419,7 +587,6 @@ class PCB{
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 ## Problems

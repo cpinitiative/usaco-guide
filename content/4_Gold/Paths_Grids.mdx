@@ -62,13 +62,12 @@ iterate through each row from $0$ to $M-1$:
 
 ```cpp
 
-for(int i = 0; i < M; i++) {
-	for(int j = 0; j < N; j++) {
-		if(j > 0) dp[j][i] += dp[j - 1][i];
-		if(i > 0) dp[j][i] += dp[j][i - 1];
+for (int i = 0; i < M; i++) {
+	for (int j = 0; j < N; j++) {
+		if (j > 0) dp[j][i] += dp[j - 1][i];
+		if (i > 0) dp[j][i] += dp[j][i - 1];
 	}
 }
-
 ```
 
 </CPPSection>
@@ -77,13 +76,12 @@ for(int i = 0; i < M; i++) {
 
 ```java
 
-for(int i = 0; i < M; i++) {
-	for(int j = 0; j < N; j++) {
-		if(j > 0) dp[j][i] += dp[j - 1][i];
-		if(i > 0) dp[j][i] += dp[j][i - 1];
+for (int i = 0; i < M; i++) {
+	for (int j = 0; j < N; j++) {
+		if (j > 0) dp[j][i] += dp[j - 1][i];
+		if (i > 0) dp[j][i] += dp[j][i - 1];
 	}
 }
-
 ```
 
 </JavaSection>
@@ -121,14 +119,11 @@ normally. But, if cell $(x, y)$ has an asterisk, the dp-value is $0$, because no
 path can end on a trap.
 
 $$
-
   \texttt{dp}[x][y] =
 \begin{cases}
 \texttt{dp}[x-1][y] + \texttt{dp}[x][y-1] & \text{if $(x, y)$ is not a trap} \\
 0, & \text{if $(x, y)$ is a trap}
 \end{cases}
-
-
 $$
 
 The code for the DP recurrence doesn't change much:
@@ -151,23 +146,24 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	int n; cin >> n;
-	for(int i = 0; i < n; i++) {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
 		string s;
 		cin >> s;
-		for(int j = 0; j < n; j++) {
-			if(s[j] == '.') ok[i][j] = true;
+		for (int j = 0; j < n; j++) {
+			if (s[j] == '.') ok[i][j] = true;
 			else ok[i][j] = false;
 		}
 	}
 
 	dp[0][0] = 1;
-	for(int i = 0; i < n; i++) {
-		for(int j = 0; j < n; j++) {
-			if(!ok[i][j]) dp[i][j] = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (!ok[i][j]) dp[i][j] = 0;
 			else {
-				if(i > 0) dp[i][j] += dp[i - 1][j];
-				if(j > 0) dp[i][j] += dp[i][j - 1];
+				if (i > 0) dp[i][j] += dp[i - 1][j];
+				if (j > 0) dp[i][j] += dp[i][j - 1];
 				dp[i][j] %= 1000000007;
 			}
 		}
@@ -185,32 +181,33 @@ int main() {
 
 ```java
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		int N = Integer.parseInt(br.readLine());
 		long dp[][] = new long[N][N];
 		boolean ok[][] = new boolean[N][N];
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			String s = br.readLine();
-			for(int j = 0; j < N; j++) {
-				if(s.charAt(j) == '.') ok[i][j] = true;
+			for (int j = 0; j < N; j++) {
+				if (s.charAt(j) == '.') ok[i][j] = true;
 				else ok[i][j] = false;
 			}
 		}
 
 		dp[0][0] = 1;
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < N; j++) {
-				if(!ok[i][j]) dp[i][j] = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (!ok[i][j]) dp[i][j] = 0;
 				else {
-					if(i > 0) dp[i][j] += dp[i - 1][j];
-					if(j > 0) dp[i][j] += dp[i][j - 1];
+					if (i > 0) dp[i][j] += dp[i - 1][j];
+					if (j > 0) dp[i][j] += dp[i][j - 1];
 					dp[i][j] %= 1000000007;
 				}
 			}
@@ -218,9 +215,7 @@ public class Main {
 
 		System.out.println(dp[N - 1][N - 1]);
 	}
-
 }
-
 ```
 
 </JavaSection>
@@ -339,23 +334,21 @@ $$
 
 ```cpp
 class Solution {
-public:
+  public:
 	int longestCommonSubsequence(string a, string b) {
 		int dp[a.size()][b.size()];
+		for (int i = 0; i < a.size(); i++) { fill(dp[i], dp[i] + b.size(), 0); }
 		for (int i = 0; i < a.size(); i++) {
-			fill(dp[i], dp[i] + b.size(), 0);
-		}
-		for (int i = 0; i < a.size(); i++) {
-			if(a[i] == b[0]) dp[i][0] = 1;
-			if(i != 0) dp[i][0] = max(dp[i][0], dp[i - 1][0]);
+			if (a[i] == b[0]) dp[i][0] = 1;
+			if (i != 0) dp[i][0] = max(dp[i][0], dp[i - 1][0]);
 		}
 		for (int i = 0; i < b.size(); i++) {
-			if(a[0] == b[i]) dp[0][i] = 1;
-			if(i != 0) dp[0][i] = max(dp[0][i], dp[0][i - 1]);
+			if (a[0] == b[i]) dp[0][i] = 1;
+			if (i != 0) dp[0][i] = max(dp[0][i], dp[0][i - 1]);
 		}
 		for (int i = 1; i < a.size(); i++) {
 			for (int j = 1; j < b.size(); j++) {
-				if(a[i] == b[j]) {
+				if (a[i] == b[j]) {
 					dp[i][j] = dp[i - 1][j - 1] + 1;
 				} else {
 					dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
@@ -372,7 +365,7 @@ Ben - shorter version using macros:
 ```cpp
 // CodeSnip{Benq Template}
 class Solution {
-public:
+  public:
 	int longestCommonSubsequence(str a, str b) {
 		V<vi> dp(sz(a) + 1, vi(sz(b) + 1));
 		F0R(i, sz(a) + 1) F0R(j, sz(b) + 1) {
@@ -395,25 +388,23 @@ class Solution {
 	public int longestCommonSubsequence(String a, String b) {
 		int[][] dp = new int[a.length()][b.length()];
 		for (int i = 0; i < a.length(); i++) {
-			if(a.charAt(i) == b.charAt(0)) dp[i][0] = 1;
-			if(i != 0) dp[i][0] = Math.max(dp[i][0], dp[i-1][0]);
+			if (a.charAt(i) == b.charAt(0)) dp[i][0] = 1;
+			if (i != 0) dp[i][0] = Math.max(dp[i][0], dp[i - 1][0]);
 		}
 		for (int i = 0; i < b.length(); i++) {
-			if(a.charAt(0) == b.charAt(i)) {
-				dp[0][i] = 1;
-			}
-			if(i != 0) dp[0][i] = Math.max(dp[0][i], dp[0][i-1]);
+			if (a.charAt(0) == b.charAt(i)) { dp[0][i] = 1; }
+			if (i != 0) dp[0][i] = Math.max(dp[0][i], dp[0][i - 1]);
 		}
 		for (int i = 1; i < a.length(); i++) {
 			for (int j = 1; j < b.length(); j++) {
-				if(a.charAt(i) == b.charAt(j)) {
-					dp[i][j] = dp[i-1][j-1]+1;
+				if (a.charAt(i) == b.charAt(j)) {
+					dp[i][j] = dp[i - 1][j - 1] + 1;
 				} else {
-					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+					dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
 				}
 			}
 		}
-		return dp[a.length()-1][b.length()-1];
+		return dp[a.length() - 1][b.length() - 1];
 	}
 }
 ```
@@ -425,7 +416,7 @@ class Solution {
 ```py
 class Solution:
 	def longestCommonSubsequence(self, a: str, b: str) -> int:
-		dp = [[0] * (len(b) + 1)  for _ in range(len(a) + 1)]
+		dp = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
 		for i in range(1, len(a) + 1):
 			for j in range(1, len(b) + 1):
 				if a[i - 1] == b[j - 1]:

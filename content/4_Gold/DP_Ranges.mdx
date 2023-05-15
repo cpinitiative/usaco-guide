@@ -5,7 +5,7 @@ author: Michael Cao, Andi Qu
 prerequisites:
   - intro-dp
 description:
-  Solving the problem on every contiguous subarray of the original array.
+  Solving a DP problem on every contiguous subarray of the original array.
 frequency: 1
 redirects:
   - /plat/dp-ranges
@@ -72,7 +72,7 @@ and just duplicate it!)
 using namespace std;
 
 int dp[502][502];  // Min additions to get "jazz" from index i to j
-				   // Inclusive and 0-indexed
+                   // Inclusive and 0-indexed
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
@@ -83,9 +83,9 @@ int main() {
 			// Base case: We just duplicate s[i]
 			dp[i][i + j] = dp[i + 1][i + j] + 1;
 			for (int k = i + 1; k <= i + j; k++) {
-				if (s[k] == s[i]) { // We try match s[i] and s[k]
+				if (s[k] == s[i]) {  // We try match s[i] and s[k]
 					dp[i][i + j] =
-						min(dp[i][i + j], dp[i + 1][k - 1] + dp[k + 1][i + j]);
+					    min(dp[i][i + j], dp[i + 1][k - 1] + dp[k + 1][i + j]);
 				}
 			}
 		}
@@ -109,7 +109,8 @@ public class Jazz {
 		Kattio io = new Kattio();
 		char[] inp = io.next().toCharArray();
 
-		// DP[i][j] is the min number of additions to get "jazz" from index i to j
+		// DP[i][j] is the min number of additions to get "jazz" from index i to
+		// j
 		int[][] dp = new int[MAXN][MAXN];
 		for (int j = 0; j <= inp.length; j++) {
 			for (int i = 0; i < inp.length - j; i++) {
@@ -117,11 +118,9 @@ public class Jazz {
 				dp[i][i + j] = dp[i + 1][i + j] + 1;
 
 				for (int k = i + 1; k <= i + j; k++) {
-					if (inp[k] == inp[i]) { // Try to match letters i and k.
+					if (inp[k] == inp[i]) {  // Try to match letters i and k.
 						dp[i][i + j] = Math.min(
-							dp[i][i + j],
-							dp[i + 1][k - 1] + dp[k + 1][i + j]
-						);
+						    dp[i][i + j], dp[i + 1][k - 1] + dp[k + 1][i + j]);
 					}
 				}
 			}
@@ -129,11 +128,31 @@ public class Jazz {
 		io.println(dp[0][inp.length - 1]);
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+s = input()
+n = len(s)
+dp = [[0] * (n + 1) for _ in range(n + 1)]
+
+for i in range(n + 1):
+	for j in range(n - i):
+		dp[j][i + j] = dp[j + 1][i + j] + 1
+		for k in range(j + 1, i + j + 1):
+			if s[k] == s[j]:
+				dp[j][i + j] = min(dp[j][i + j], dp[j + 1][k - 1] + dp[k + 1][i + j])
+
+print(dp[0][n - 1])
+```
+
+</PySection>
+
 
 </LanguageSection>
 

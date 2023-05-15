@@ -21,14 +21,14 @@ contributions are welcome! To get started, simply pick an
 [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work
 on, leave a comment, and submit a Pull Request!
 
-Join our Discord server: https://discord.gg/UKbyewj2Ft
+Join our Discord server: https://discord.gg/VCxUzdYhzN
 
 ## Our Team
 
 The USACO Guide is run by the
 [Competitive Programming Initiative](https://joincpi.org/). We're looking for
 Content Authors to join our team to help us improve the Guide! Learn more
-[here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit).
+[here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit).
 
 ### Core Team
 
@@ -42,9 +42,10 @@ Content Authors to join our team to help us improve the Guide! Learn more
 
 ### Content Managers
 
-- Qi Wang (Since June 2021)
-- Dong Liu (Since June 2021)
+- Qi Wang (Since Jun 2021)
+- Dong Liu (Since Jun 2021)
 - Neo Wang (Since Aug 2021)
+- Kevin Sheng (Since Oct 2021)
 
 ### Former Core Team
 
@@ -54,23 +55,26 @@ Content Authors to join our team to help us improve the Guide! Learn more
 
 ### Current Content Authors
 
-- Jeffrey Meng (Since Oct 2020)
 - Jesse Choe (Since Feb 2021)
-- Kevin Sheng (Since Apr 2021)
-- Ananth Kashyap (Since Apr 2021)
 - Sofia Yang (Since Apr 2021)
 - Nathan Gong (Since Apr 2021)
 - Timothy Gao (Since May 2021)
 - Sathvik Chundru (Since May 2021)
-- Brad Ma (Since June 2021)
-- Albert Ye (Since June 2021)
-- Arpan Banerjee (Since June 2021)
-- Ryan Chou (Since July 2021)
-- Aadit Ambadkar (Since August 2021)
-- Dustin Miao (Since August 2021)
-- Ben Dodge (Since August 2021)
+- Brad Ma (Since Jun 2021)
+- Albert Ye (Since Jun 2021)
+- Arpan Banerjee (Since Jun 2021)
+- Ryan Chou (Since Jul 2021)
+- Aadit Ambadkar (Since Aug 2021)
+- Dustin Miao (Since Aug 2021)
+- Ben Dodge (Since Aug 2021)
+- Jeffrey Zhang (Since Feb 2022)
+- Chongtian Ma (Since May 2022)
+- Aditya Gupta (Since Jun 2022)
+- Chuyang Wang (Since August 2022)
+- Aakash Gokhale (Since August 2022)
+- Paul Chen (Since August 2022)
 - _This could be you!
-  [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
+  [Apply here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit)._
 
 ### Past Content Authors
 
@@ -78,6 +82,8 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Mrinall Umasudhan
 - Andrew Cheng
 - Zhixin Wang
+- Jeffrey Meng
+- Ananth Kashyap
 
 ## Tech Stack
 

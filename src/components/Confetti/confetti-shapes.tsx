@@ -107,50 +107,52 @@ type ShapeProps = {
 // from the props provided.
 // NOTE: You probably want to use one of the preloaded helpers below
 // (eg. createCircle).
-export const createShape = (shape: string) => ({
-  fill = '#000000',
-  backsideDarkenAmount = 0.25,
-  ...args
-}: ShapeProps = {}) => {
-  // Convert fill to RGB
-  const fillRgb = convertHexColorToRgb(fill);
+export const createShape =
+  (shape: string) =>
+  ({
+    fill = '#000000',
+    backsideDarkenAmount = 0.25,
+    ...args
+  }: ShapeProps = {}) => {
+    // Convert fill to RGB
+    const fillRgb = convertHexColorToRgb(fill);
 
-  // Get the factory for the provided shape
-  let shapeFactory;
-  switch (shape) {
-    case 'circle': {
-      shapeFactory = circleShapeFactory;
-      break;
+    // Get the factory for the provided shape
+    let shapeFactory;
+    switch (shape) {
+      case 'circle': {
+        shapeFactory = circleShapeFactory;
+        break;
+      }
+      case 'triangle': {
+        shapeFactory = triangleShapeFactory;
+        break;
+      }
+      case 'rectangle': {
+        shapeFactory = rectangleShapeFactory;
+        break;
+      }
+      case 'zigZag': {
+        shapeFactory = zigZagShapeFactory;
+        break;
+      }
+      default:
+        throw new Error('Unrecognized shape passed to `createShape`');
     }
-    case 'triangle': {
-      shapeFactory = triangleShapeFactory;
-      break;
-    }
-    case 'rectangle': {
-      shapeFactory = rectangleShapeFactory;
-      break;
-    }
-    case 'zigZag': {
-      shapeFactory = zigZagShapeFactory;
-      break;
-    }
-    default:
-      throw new Error('Unrecognized shape passed to `createShape`');
-  }
 
-  // Create a front and back side, where the back is identical but with a
-  // darker colour.
-  const backColor = mixWithBlack(fillRgb, backsideDarkenAmount);
+    // Create a front and back side, where the back is identical but with a
+    // darker colour.
+    const backColor = mixWithBlack(fillRgb, backsideDarkenAmount);
 
-  const frontSvgString = shapeFactory({ fill: fillRgb, ...args });
-  const backSvgString = shapeFactory({ fill: backColor, ...args });
+    const frontSvgString = shapeFactory({ fill: fillRgb, ...args });
+    const backSvgString = shapeFactory({ fill: backColor, ...args });
 
-  // Create and return image elements for both sides.
-  return {
-    front: createImageElement(frontSvgString),
-    back: createImageElement(backSvgString),
+    // Create and return image elements for both sides.
+    return {
+      front: createImageElement(frontSvgString),
+      back: createImageElement(backSvgString),
+    };
   };
-};
 
 export const createCircle = createShape('circle');
 export const createTriangle = createShape('triangle');

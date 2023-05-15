@@ -1,0 +1,201 @@
+---
+id: usaco-859
+source: USACO Silver 2018 December
+title: Convention II
+author: Ryan Chou, Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_convention2_silver_dec18.html)
+
+Due to the low bounds on $N$, we can naively simulate the events. We'll sort by arrival time to process the cows in order.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <set>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("convention2.in", "r", stdin);
+	freopen("convention2.out", "w", stdout);
+
+	int cow_num;
+	vector<vector<int>> cows;
+	cin >> cow_num;
+	for (int c = 0; c < cow_num; c++) {
+		int start, duration;
+		cin >> start >> duration;
+		cows.push_back({c, start, duration});
+	}
+
+	// sort by arrival time
+	auto cmp = [](const vector<int> &a, const vector<int> &b) {
+		return a[1] < b[1];
+	};
+	sort(cows.begin(), cows.end(), cmp);
+
+	int time = 0;
+	int curr = 0;
+	int longest_wait = 0;
+
+	// sorted by priority so that the highest seniority starts eating first
+	set<vector<int>> waiting;
+	// as long as we haven't processed all cows or there are still cows waiting
+	while (curr < cow_num || !waiting.empty()) {
+		// this cow can be processed.
+		if (curr < cow_num && cows[curr][1] <= time) {
+			waiting.insert(cows[curr]);
+			curr++;
+			// no cow waiting, skip to the next cow.
+		} else if (waiting.empty()) {
+			// set time to the ending time of the next cow.
+			time = cows[curr][1] + cows[curr][2];
+			curr++;
+		} else {
+			// process the next cow
+			vector<int> next = *waiting.begin();
+			longest_wait = max(longest_wait, time - next[1]);
+
+			// set the time to when this cow finishes
+			time += next[2];
+			waiting.erase(waiting.begin());
+		}
+	}
+
+	cout << longest_wait << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Convention2 {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("convention2.in"));
+
+		int cowNum = Integer.parseInt(read.readLine());
+		Cow[] cows = new Cow[cowNum];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			int start = Integer.parseInt(cow.nextToken());
+			int duration = Integer.parseInt(cow.nextToken());
+			cows[c] = new Cow(c, start, duration);
+		}
+
+		// sort by arrival time
+		Arrays.sort(cows, Comparator.comparingInt(c -> c.start));
+
+		int time = 0;
+		int curr = 0;
+		int longestWait = 0;
+
+		// sorted so that the highest seniority starts eating first
+		TreeSet<Cow> waiting = new TreeSet<>();
+		while (curr < cowNum || !waiting.isEmpty()) {
+			// this cow can be processed
+			if (curr < cowNum && cows[curr].start <= time) {
+				waiting.add(cows[curr]);
+				curr++;
+				// no cow waiting, skip to the next cow.
+			} else if (waiting.size() == 0) {
+				// set time to the ending time of the next cow.
+				time = cows[curr].start + cows[curr].duration;
+				curr++;
+			} else {
+				// process the next cow
+				Cow next = waiting.first();
+				longestWait = Math.max(longestWait, time - next.start);
+
+				// set the time to when this cow finishes
+				time += next.duration;
+				waiting.remove(waiting.first());
+			}
+		}
+
+		PrintWriter written = new PrintWriter("convention2.out");
+		written.println(longestWait);
+		written.close();
+	}
+
+	static class Cow implements Comparable<Cow> {
+		int seniority;
+		int start;
+		int duration;
+
+		public Cow(int seniority, int start, int duration) {
+			this.seniority = seniority;
+			this.start = start;
+			this.duration = duration;
+		}
+
+		@Override
+		public int compareTo(Cow other) {
+			return seniority - other.seniority;
+		}
+	};
+}
+```
+
+</JavaSection>
+<PySection>
+
+Even though Python doesn't have a sorted set for these operations, it's possible
+to simulate the operations needed with a [priority queue](https://docs.python.org/3/library/heapq.html).
+
+```py
+import heapq
+
+cows = []
+with open("convention2.in") as read:
+	for c in range(int(read.readline())):
+		start, duration = [int(i) for i in read.readline().split()]
+		cows.append((c, start, duration))
+
+# sort by arrival time
+cows.sort(key=lambda c: c[1])
+
+time = 0
+curr = 0
+longest_wait = 0
+
+# sorted by priority so that the highest seniority starts eating first
+waiting = []
+# as long as we haven't processed all cows or there are still cows waiting
+while curr < len(cows) or waiting:
+	# this cow can be processed
+	if curr < len(cows) and cows[curr][1] <= time:
+		heapq.heappush(waiting, cows[curr])
+		curr += 1
+	# no cow waiting, skip to the next cow
+	elif not waiting:
+		# set time to the ending time of the next cow
+		time = cows[curr][1] + cows[curr][2]
+		curr += 1
+	else:
+		# process the next cow
+		next_cow = heapq.heappop(waiting)
+		longest_wait = max(longest_wait, time - next_cow[1])
+
+		# set the time to when this cow finishes
+		time += next_cow[2]
+
+print(longest_wait, file=open("convention2.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

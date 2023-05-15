@@ -52,30 +52,18 @@ Don't overthink choosing a language -- you can always change languages later!
 
 C++ is typically faster than Java, which in turn is typically faster than
 Python. Although both Python and Java receive two times the C++ time limit in
-USACO, this is not the case for most other websites (ex. CodeForces, CSES). Even
+USACO, this is not the case for most other websites (ex. Codeforces, CSES). Even
 with the extended time limits, Python and Java sometimes have trouble passing.
 
-<!-- tl;dr no -->
+- As of the 2022-23 season, USACO staff usually ensure that it is possible to
+  receive full credit with all of C++, Python, and Java on Bronze and Silver
+  problems. However, this is not guaranteed.
+- Python is too slow for most Gold and Platinum problems.
+- We don't have any examples of USACO problems that are impossible to pass with
+  Java, though there are instances where the official C++ code is not fast
+  enough to receive full credit if translated into equivalent Java code.
 
-<!-- - **For Bronze, any language will do.** It is possible to receive full credit
-  with C++, Java, and Python in Bronze.
-- **For Silver<Asterisk>However, if Python is the only language you know / you
-  really want to use Python, you can still pass Silver with Python.</Asterisk>,
-  Gold, and Platinum, Python is not recommended**, because it is a slow language
-  and lacks an ordered map. -->
-
-- It is guaranteed to be able to receive full credit on all Bronze contests with
-  Python, C++, and Java.
-- Python lacks a data structure that keeps its keys in sorted order (the
-  equivalent of `set` in C++), which is required for some Silver problems.
-- It is almost always possible to receive full credit on all contests with Java,
-  though there are exceptions.
-
-<!-- - Java does not support features such as [macros](/general/generic/#macros),
-  [type aliases](/general/generic/#type-aliases-with-using), and `auto` that are
-  present in C++ (which some contestants rely on extensively). -->
-
-### Example - [Wormhole Sort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992)
+### Example - [Wormhole Sort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) (USACO Silver Jan 2020)
 
 The Java solution presented in the analysis requires over 3s to run (out of a
 time limit of 4s).
@@ -84,7 +72,7 @@ time limit of 4s).
 import java.io.*;
 import java.util.*;
 public class wormsort {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("wormsort.in"));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
@@ -92,28 +80,30 @@ public class wormsort {
 		loc = new int[n];
 		component = new int[n];
 		edges = new LinkedList[n];
-		for(int i = 0; i < n; i++) edges[i] = new LinkedList<>();
+		for (int i = 0; i < n; i++) edges[i] = new LinkedList<>();
 		lhs = new int[m];
 		rhs = new int[m];
 		weight = new int[m];
 		st = new StringTokenizer(br.readLine());
-		for(int i = 0; i < n; i++) loc[i] = Integer.parseInt(st.nextToken())-1;
-		for(int i = 0; i < m; i++) {
+		for (int i = 0; i < n; i++)
+			loc[i] = Integer.parseInt(st.nextToken()) - 1;
+		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
-			lhs[i] = Integer.parseInt(st.nextToken())-1;
-			rhs[i] = Integer.parseInt(st.nextToken())-1;
+			lhs[i] = Integer.parseInt(st.nextToken()) - 1;
+			rhs[i] = Integer.parseInt(st.nextToken()) - 1;
 			weight[i] = Integer.parseInt(st.nextToken());
 		}
 		br.close();
 		int minW = 0;
 		int maxW = 1000000001;
-		while(minW != maxW) {
+		while (minW != maxW) {
 			int mid = (minW + maxW + 1) / 2;
-			if(valid(mid)) minW = mid;
-			else maxW = mid-1;
+			if (valid(mid)) minW = mid;
+			else maxW = mid - 1;
 		}
-		if(minW > 1e9) minW = -1;
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("wormsort.out")));
+		if (minW > 1e9) minW = -1;
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("wormsort.out")));
 		pw.println(minW);
 		pw.close();
 	}
@@ -121,27 +111,25 @@ public class wormsort {
 	static LinkedList<Integer>[] edges;
 	static int[] component;
 	private static void dfs(int curr, int label) {
-		if(component[curr] == label) return;
+		if (component[curr] == label) return;
 		component[curr] = label;
-		for(int child: edges[curr]) dfs(child, label);
+		for (int child : edges[curr]) dfs(child, label);
 	}
 	private static boolean valid(int minW) {
 		Arrays.fill(component, -1);
-		for(int i = 0; i < edges.length; i++) edges[i].clear();
-		for(int i = 0; i < lhs.length; i++) {
-			if(weight[i] >= minW) {
+		for (int i = 0; i < edges.length; i++) edges[i].clear();
+		for (int i = 0; i < lhs.length; i++) {
+			if (weight[i] >= minW) {
 				edges[lhs[i]].add(rhs[i]);
 				edges[rhs[i]].add(lhs[i]);
 			}
 		}
 		int numcomps = 0;
-		for(int i = 0; i < component.length; i++) {
-			if(component[i] < 0) {
-				dfs(i, numcomps++);
-			}
+		for (int i = 0; i < component.length; i++) {
+			if (component[i] < 0) { dfs(i, numcomps++); }
 		}
-		for(int i = 0; i < loc.length; i++) {
-			if(component[i] != component[loc[i]]) return false;
+		for (int i = 0; i < loc.length; i++) {
+			if (component[i] != component[loc[i]]) return false;
 		}
 		return true;
 	}
@@ -151,43 +139,41 @@ public class wormsort {
 A comparable C++ solution runs in less than 800ms:
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-int n,m;
+int n, m;
 vector<int> loc, lhs, rhs, weight;
 vector<vector<int>> edges;
 vector<int> component;
 
 void dfs(int curr, int label) {
-	if(component[curr] == label) return;
+	if (component[curr] == label) return;
 	component[curr] = label;
-	for(int child: edges[curr]) dfs(child, label);
+	for (int child : edges[curr]) dfs(child, label);
 }
 
 bool valid(int minW) {
-	component.assign(n,-1);
-	for(int i = 0; i < edges.size(); i++) edges[i].clear();
-	for(int i = 0; i < lhs.size(); i++) {
-		if(weight[i] >= minW) {
+	component.assign(n, -1);
+	for (int i = 0; i < edges.size(); i++) edges[i].clear();
+	for (int i = 0; i < lhs.size(); i++) {
+		if (weight[i] >= minW) {
 			edges[lhs[i]].push_back(rhs[i]);
 			edges[rhs[i]].push_back(lhs[i]);
 		}
 	}
 	int numcomps = 0;
-	for(int i = 0; i < component.size(); i++) {
-		if(component[i] < 0) {
-			dfs(i, numcomps++);
-		}
+	for (int i = 0; i < component.size(); i++) {
+		if (component[i] < 0) { dfs(i, numcomps++); }
 	}
-	for(int i = 0; i < loc.size(); i++) {
-		if(component[i] != component[loc[i]]) return false;
+	for (int i = 0; i < loc.size(); i++) {
+		if (component[i] != component[loc[i]]) return false;
 	}
 	return true;
 }
 
 int main() {
-	freopen("wormsort.in","r",stdin);
+	freopen("wormsort.in", "r", stdin);
 	cin >> n >> m;
 	loc = vector<int>(n);
 	component = vector<int>(n);
@@ -195,23 +181,23 @@ int main() {
 	lhs = vector<int>(m);
 	rhs = vector<int>(m);
 	weight = vector<int>(m);
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		cin >> loc[i];
 		--loc[i];
 	}
-	for(int i = 0; i < m; i++) {
+	for (int i = 0; i < m; i++) {
 		cin >> lhs[i] >> rhs[i] >> weight[i];
 		--lhs[i], --rhs[i];
 	}
 	int minW = 0;
 	int maxW = 1000000001;
-	while(minW != maxW) {
+	while (minW != maxW) {
 		int mid = (minW + maxW + 1) / 2;
-		if(valid(mid)) minW = mid;
-		else maxW = mid-1;
+		if (valid(mid)) minW = mid;
+		else maxW = mid - 1;
 	}
-	if(minW > 1e9) minW = -1;
-	freopen("wormsort.out","w",stdout);
+	if (minW > 1e9) minW = -1;
+	freopen("wormsort.out", "w", stdout);
 	cout << minW << "\n";
 }
 ```
@@ -220,28 +206,33 @@ A comparable Python solution only passes the first five test cases:
 
 ```py
 import sys
+
 sys.setrecursionlimit(1000000)
 
-sys.stdin = open("wormsort.in","r")
-sys.stdout = open("wormsort.out","w")
+sys.stdin = open("wormsort.in", "r")
+sys.stdout = open("wormsort.out", "w")
 
-n,m = map(int,input().split())
-loc = [0]*n
-component = [0]*n
+n, m = map(int, input().split())
+loc = [0] * n
+component = [0] * n
 edges = [[] for i in range(n)]
 
-lhs = [0]*m
-rhs = [0]*m
-weight = [0]*m
+lhs = [0] * m
+rhs = [0] * m
+weight = [0] * m
 
-def dfs(curr,label):
-	if component[curr] == label: return
+
+def dfs(curr, label):
+	if component[curr] == label:
+		return
 	component[curr] = label
-	for child in edges[curr]: dfs(child, label)
+	for child in edges[curr]:
+		dfs(child, label)
+
 
 def valid(minW):
 	global component
-	component = [-1]*n
+	component = [-1] * n
 	for i in range(n):
 		edges[i].clear()
 	for i in range(m):
@@ -254,12 +245,14 @@ def valid(minW):
 			dfs(i, numcomps)
 			numcomps += 1
 	for i in range(n):
-		if component[i] != component[loc[i]]: return False
+		if component[i] != component[loc[i]]:
+			return False
 	return True
 
-loc = list(map(lambda x: int(x)-1,input().split()))
+
+loc = list(map(lambda x: int(x) - 1, input().split()))
 for i in range(m):
-	lhs[i],rhs[i],weight[i] = map(int,input().split())
+	lhs[i], rhs[i], weight[i] = map(int, input().split())
 	lhs[i] -= 1
 	rhs[i] -= 1
 
@@ -270,97 +263,95 @@ while minW != maxW:
 	if valid(mid):
 		minW = mid
 	else:
-		maxW = mid-1
+		maxW = mid - 1
 
-if minW > 1e9: minW = -1
+if minW > 1e9:
+	minW = -1
 print(minW)
 ```
 
-After some optimizations, this solution still passes only the first seven test
-cases:
+It is possible to optimise this approach to pass all testcases. This takes
+around 3.8s to run.
 
 ```py
-import sys
+def main():
+	f = open("wormsort.in", "rb")
+	n, m = map(int, f.readline().split())
+	loc = [*map(int, f.readline().split())]
+	edges = [[] for _ in range(n)]
+	weights = []
 
-sys.stdin = open("wormsort.in","r")
-sys.stdout = open("wormsort.out","w")
+	def valid(loc, minW):
+		component = [-1] * n
+		numcomps = 0
+		for i in range(n):
+			if component[i] != component[loc[i] - 1]:
+				return False
+			elif component[i] == -1:
+				todo = [i]
+				component[i] = numcomps
+				for node in todo:
+					for child, weight in edges[node]:
+						if component[child] == -1 and weight >= minW:
+							component[child] = numcomps
+							todo.append(child)
+				numcomps += 1
+		return True
 
-n,m = map(int,input().split())
-loc = [0]*n
-edges = [[] for i in range(n)]
+	for line in f:
+		a, b, w = map(int, line.split())
+		edges[a - 1].append((b - 1, w))
+		edges[b - 1].append((a - 1, w))
+		weights.append(w)
 
-def valid():
-	component = [-1]*n
-	numcomps = 0
-	for i in range(n):
-		if component[i] < 0:
-			todo = [i]
-			component[i] = numcomps
-			next_index = 0
-			while next_index < len(todo):
-				curr = todo[next_index]
-				next_index += 1
-				for child,weight in edges[curr]:
-					if weight < mid and component[child] < 0:
-						component[child] = numcomps
-						todo.append(child)
-			numcomps += 1
-	for i in range(n):
-		if component[i] != component[loc[i]]: return False
-	return True
+	weights.sort()
+	weights.append(10**9 + 1)
 
-loc = list(map(lambda x: int(x)-1,input().split()))
-all_edges = []
-for i in range(m):
-	lhs,rhs,weight = map(int,input().split())
-	all_edges.append((weight,lhs-1,rhs-1))
+	lo, hi = 0, m + 1
+	while lo != hi:
+		mid = (lo + hi) // 2
+		if valid(loc, weights[mid]):
+			lo = mid + 1
+		else:
+			hi = mid
 
-all_edges.sort(reverse=True)
-for i in range(m):
-	_,lhs,rhs = all_edges[i]
-	edges[lhs].append((rhs,i))
-	edges[rhs].append((lhs,i))
+	open("wormsort.out", "w").write(f"{-1 if lo == m + 1 else weights[lo-1]}\n")
 
-lo,hi = 0,m
-while lo != hi:
-	mid = (lo + hi) // 2
-	if valid():
-		hi = mid
-	else:
-		lo = mid+1
 
-print(-1 if lo == 0 else all_edges[lo-1][0])
+main()
 ```
 
-We are not sure whether it is possible to modify the above approach to receive
-full credit (please let us know if you manage to succeed)! Of course, it is
-possible to pass this problem in Python using DSU (a Gold topic):
+Finally, the approach below uses DSU (a Gold topic), which takes around 1s to
+run:
 
 ```py
 # Author: Nicolas Hsu
 
-file = open('wormsort.in')
+file = open("wormsort.in")
 N, M = map(int, file.readline().split())
-P = tuple(map(int, ('0 '+file.readline()).split()))
-W = [ tuple(map(int, file.readline().split())) for i in range(M) ]
-W.sort(key=lambda w:-w[2])
+P = tuple(map(int, ("0 " + file.readline()).split()))
+W = [tuple(map(int, file.readline().split())) for i in range(M)]
+W.sort(key=lambda w: -w[2])
 
-par = list(range(N+1))
+par = list(range(N + 1))
+
+
 def find(u):
-	if par[u]==u:
+	if par[u] == u:
 		return u
 	else:
 		par[u] = find(par[u])
 		return par[u]
 
+
 w = -1
-for n in range(1, N+1):
-	while find(n)!=find(P[n]):
+for n in range(1, N + 1):
+	while find(n) != find(P[n]):
 		w += 1
 		par[find(W[w][1])] = find(W[w][0])
 
-out = open('wormsort.out', 'w')
-out.write('-1' if w==-1 else str(W[w][2]))
+out = open("wormsort.out", "w")
+out.write("-1" if w == -1 else str(W[w][2]))
 out.close()
 ```
 

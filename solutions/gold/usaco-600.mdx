@@ -1,0 +1,215 @@
+---
+id: usaco-600
+source: USACO Platinum 2016 January
+title: Fort Moo
+author: Kevin Sheng, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_fortmoo_platinum_jan16.html)
+
+## Solution
+
+### Explanation
+
+By computing the [2D Prefix Sum](/silver/more-prefix-sums/) for the grid, we can evaluate the usability of a frame in $\mathcal{O}(1)$ time.
+
+Due to the low bounds on $N$, we can iterate through all possible pairs of columns and find the maximum area frame in $O(N)$ with a sliding window.
+
+### Implementation
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("fortmoo.in", "r", stdin);
+	freopen("fortmoo.out", "w", stdout);
+
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<bool>> grid(n, vector<bool>(m));
+	vector<vector<int>> pref_sum(n + 1, vector<int>(m + 1));
+
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+
+		for (int j = 0; j < m; j++) {
+			grid[i][j] = s[j] == 'X';
+
+			// build prefix sum
+			pref_sum[i + 1][j + 1] = pref_sum[i][j + 1] + pref_sum[i + 1][j];
+			pref_sum[i + 1][j + 1] -= pref_sum[i][j];
+			pref_sum[i + 1][j + 1] += grid[i][j];
+		}
+	}
+
+	int max_area = 0;
+
+	for (int c1 = 0; c1 < m; c1++) {
+		for (int c2 = 0; c2 < m; c2++) {
+			int prev = -1;
+
+			for (int r = 0; r < n; r++) {
+				bool emp = (pref_sum[r + 1][c2 + 1] - pref_sum[r][c2 + 1] -
+				            pref_sum[r + 1][c1] + pref_sum[r][c1]) == 0;
+
+				// row only
+				if (emp) { max_area = max(max_area, c2 - c1 + 1); }
+
+				// we can continue off of a previous valid row
+				if (emp && prev != -1) {
+					// update answer
+					max_area = max(max_area, (r - prev + 1) * (c2 - c1 + 1));
+				}
+
+				// reset prev
+				if (grid[r][c1] || grid[r][c2]) { prev = -1; }
+
+				// set prev
+				if (emp && prev == -1) { prev = r; }
+			}
+		}
+	}
+
+	cout << max_area << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+## Alternate Solution
+
+### Explanation
+The approach here is a bit different from the official solution, using an adaption of 2D Kadane's algorithm instead.
+
+Iterate through all possible pairs of columns. For each pair, we'll solve the problem with the restriction that the fort must be aligned along these two columns. For each row between these two columns, we will use prefix sums to check if the area between the two columns and in the row is clear.
+
+We keep a running variable $r_{start}$ which keeps track of the earliest row we can start the fort at and iterate through all possible row endings ($r_{end}$ in the code). Note that if a swampy area resides in one of the columns themselves, no fort can go through that row, so we must check for that and update $r_{start}$ accordingly.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const char BAD = 'X';
+
+// 2016 jan plat
+int main() {
+	std::ifstream read("fortmoo.in");
+	int row_num;
+	int col_num;
+	read >> row_num >> col_num;
+
+	vector<vector<bool>> sturdy(row_num, vector<bool>(col_num));
+	// col_num + 1 because of how pref sums work
+	vector<vector<int>> row_bad_nums(row_num, vector<int>(col_num + 1));
+	for (int r = 0; r < row_num; r++) {
+		for (int c = 0; c < col_num; c++) {
+			char cell;
+			read >> cell;
+			sturdy[r][c] = cell != BAD;
+			row_bad_nums[r][c + 1] += row_bad_nums[r][c] + (cell == BAD);
+		}
+	}
+
+	int max_area = 0;
+	for (int c_start = 0; c_start < col_num; c_start++) {
+		for (int c_end = c_start + 1; c_end < col_num; c_end++) {
+			int r_start = 0;
+			for (int r_end = 0; r_end < row_num; r_end++) {
+				bool rowValid = row_bad_nums[r_end][c_end + 1] -
+				                    row_bad_nums[r_end][c_start] ==
+				                0;
+				if (r_end == r_start && !rowValid) {
+					r_start++;
+					continue;
+				}
+				if (!sturdy[r_end][c_start] || !sturdy[r_end][c_end]) {
+					r_start = r_end + 1;
+				} else if (rowValid && r_start != r_end) {
+					max_area = std::max(max_area, (c_end - c_start + 1) *
+					                                  (r_end - r_start + 1));
+				}
+			}
+		}
+	}
+	cout << max_area << endl;
+	std::ofstream("fortmoo.out") << max_area << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FortMoo {
+	private static final char BAD = 'X';
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("fortmoo.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int rowNum = Integer.parseInt(initial.nextToken());
+		int colNum = Integer.parseInt(initial.nextToken());
+
+		boolean[][] sturdy = new boolean[rowNum][colNum];
+		// colNum + 1 because of how pref sums work
+		int[][] rowBadNums = new int[rowNum][colNum + 1];
+		for (int r = 0; r < rowNum; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < colNum; c++) {
+				rowBadNums[r][c + 1] =
+				    rowBadNums[r][c] + (row.charAt(c) == BAD ? 1 : 0);
+				sturdy[r][c] = row.charAt(c) != BAD;
+			}
+		}
+
+		int maxArea = 0;
+		for (int cStart = 0; cStart < colNum; cStart++) {
+			for (int cEnd = cStart + 1; cEnd < colNum; cEnd++) {
+				int rStart = 0;
+				for (int rEnd = 0; rEnd < rowNum; rEnd++) {
+					boolean rowValid =
+					    rowBadNums[rEnd][cEnd + 1] - rowBadNums[rEnd][cStart] ==
+					    0;
+					if (rEnd == rStart && !rowValid) {
+						rStart++;
+						continue;
+					}
+					if (!sturdy[rEnd][cStart] || !sturdy[rEnd][cEnd]) {
+						rStart = rEnd + 1;
+					} else if (rowValid && rStart != rEnd) {
+						maxArea = Math.max(maxArea, (cEnd - cStart + 1) *
+						                                (rEnd - rStart + 1));
+					}
+				}
+			}
+		}
+
+		PrintWriter written = new PrintWriter("fortmoo.out");
+		written.println(maxArea);
+		written.close();
+		System.out.println(maxArea);
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

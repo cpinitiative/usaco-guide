@@ -1,0 +1,579 @@
+---
+id: usaco-624
+source: USACO Platinum 2016 February
+title: Load Balancing
+author: Benjamin Qi, Chuyang Wang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_balancing_platinum_feb16.html)
+
+## Solution 1: With Segment Tree
+
+### Explanation
+
+The problem can be solved by sweeping a line from bottom to top. This line
+divides the farm into two regions, north and south. At the beginning, all cows
+belong to the northern region.
+
+For each of these lines, we need an efficient way to determine the optimal
+west/east partition to divide the farm into four pieces with the maximum number
+of cows appearing in one of the four regions, $M$, being minimized. To achieve
+this, we use two segment trees as our frequency tables to store the number of
+cows on a certain $x$ coordinate which belong to one of the two regions, north
+and south, respectively.
+
+Then, we do a binary search on both segment trees to find the best west/east
+partition which minimizes $M$. In particular, we begin from the root of the
+segment trees and always add either the left or right subtrees to the western or
+eastern region, depending on which of these two options leads to the smallest
+increase of $M$.
+
+At the end, we update our overall best solution and move the line to the next
+$y$-coordinate of interest. We add all cows with current $y$ coordinate to the
+southern region and remove them from the northern region.
+
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct SegmentTree {
+	int size;
+	vector<int> tree;
+	SegmentTree() : size(1 << 20) { tree.assign(size * 2, 0); }
+
+	/**
+	 * Increase the value at x by value, i.e. a[x] += value
+	 */
+	void update(int x, int value) {
+		x += size;
+		tree[x] += value;
+		while (x > 0) {
+			x /= 2;
+			tree[x] = tree[2 * x] + tree[2 * x + 1];
+		}
+	}
+
+	/**
+	 * Binary search on the x coordinates s.t. the maximum number of cows M
+	 * in the regions is minimized.
+	 * @param other The other horizontally divided region to be searched on
+	 * simultaneously
+	 * @return int The minimized number of cows based on current north/south
+	 * partition
+	 */
+	int query(SegmentTree &other) {
+		// the size of the four regions
+		int west_size, east_size, other_west_size, other_east_size;
+		west_size = east_size = other_west_size = other_east_size = 0;
+		// start with the whole segment tree as our subtree to search
+		int mid = 1;
+		while (mid < size) {
+			int l = mid * 2;
+			int r = mid * 2 + 1;
+			// add the subtree which minimizes the overall maximum count of cows
+			if (max(west_size + tree[l], other_west_size + other.tree[l]) <
+			    max(east_size + tree[r], other_east_size + other.tree[r])) {
+				mid = r;
+				west_size += tree[l];
+				other_west_size += other.tree[l];
+			} else {
+				mid = l;
+				east_size += tree[r];
+				other_east_size += other.tree[r];
+			}
+		}
+
+		// Add the last x coordinate either to the west or the east side
+		if (max(west_size + tree[mid], other_west_size + other.tree[mid]) <
+		    max(east_size + tree[mid], other_east_size + other.tree[mid])) {
+			west_size += tree[mid];
+			other_west_size += other.tree[mid];
+		} else {
+			east_size += tree[mid];
+			other_east_size += other.tree[mid];
+		}
+
+		/*
+		 * the M value corresponding to the best west/east partition based on
+		 * the current given north/south partitions
+		 */
+		return max(max(west_size, east_size),
+		           max(other_west_size, other_east_size));
+	}
+};
+
+int main() {
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (pair<int, int> &c : cows) { cin >> c.first >> c.second; }
+
+	// sort after the y coordinates and divide the farm into north and south
+	sort(cows.begin(), cows.end(),
+	     [&](const pair<int, int> &c1, const pair<int, int> &c2) {
+		     return make_pair(c1.second, c1.first) <
+		            make_pair(c2.second, c2.first);
+	     });
+
+	// north and south store the number of points on the x coordinates
+	SegmentTree north;
+	SegmentTree south;
+
+	/*
+	 * we begin the sweeping line from the bottom, i.e. the whole farm is in the
+	 * northern region
+	 */
+	for (int i = 0; i < N; i++) { north.update(cows[i].first, 1); }
+
+	// the minimum possible number of cows as defined in the problem statement
+	int M = N;
+
+	// sweeping from bottom to top
+	for (int i = 0; i < N;) {
+		// each time, move points on the line from north to south
+		int j = i;
+		while (j < N && cows[i].second == cows[j].second) {
+			north.update(cows[j].first, -1);
+			south.update(cows[j].first, 1);
+			j++;
+		}
+		/*
+		 * for current partition of north and south, we determine the optimal
+		 * partition between west and east by performing a binary search
+		 */
+		M = min(M, north.query(south));
+		// move the sweeping line to the next y coordinate of interest
+		i = j;
+	}
+
+	cout << M << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Balancing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("balancing.in"));
+
+		int N = Integer.parseInt(br.readLine());
+		Pair[] cows = new Pair[N];
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			cows[i] = new Pair(Integer.parseInt(st.nextToken()),
+			                   Integer.parseInt(st.nextToken()));
+		}
+		br.close();
+
+		// sort after the y coordinates and divide the farm into north and south
+		Arrays.sort(cows, (a, b) -> a.compareBTo(b));
+
+		// north and south store the number of points on the x coordinates
+		SegmentTree north = new SegmentTree();
+		SegmentTree south = new SegmentTree();
+
+		/*
+		 * we begin the sweeping line from the bottom, i.e. the whole farm is in
+		 * the northern region
+		 */
+		for (int i = 0; i < N; i++) { north.update(cows[i].a, 1); }
+
+		// the minimum possible number of cows as defined in the problem
+		// statement
+		int M = N;
+
+		// sweeping from bottom to top
+		for (int i = 0; i < N;) {
+			// each time, move points on the line from north to south
+			int j = i;
+			while (j < N && cows[i].b == cows[j].b) {
+				north.update(cows[j].a, -1);
+				south.update(cows[j].a, 1);
+				j++;
+			}
+			/*
+			 * for current partition of north and south, we determine the
+			 * optimal partition between west and east by performing a binary
+			 * search
+			 */
+			M = Math.min(M, north.query(south));
+			// move the sweeping line to the next y coordinate of interest
+			i = j;
+		}
+
+		PrintWriter pw = new PrintWriter(new FileWriter("balancing.out"));
+		pw.println(M);
+		pw.close();
+	}
+
+	static class SegmentTree {
+		int size;
+		int[] tree;
+
+		public SegmentTree() {
+			size = 1 << 20;
+			tree = new int[size * 2];
+		}
+
+		/**
+		 * Increase the value at x by value, i.e. a[x] += value
+		 */
+		public void update(int x, int value) {
+			x += size;
+			tree[x] += value;
+			while (x > 1) {
+				x /= 2;
+				tree[x] = tree[x * 2] + tree[x * 2 + 1];
+			}
+		}
+
+		/**
+		 * Binary search on the x coordinates s.t. the maximum number of cows M
+		 * in the regions is minimized.
+		 *
+		 * @param other The other horizontally divided region to be searched on
+		 *              simultaneously
+		 * @return int The minimized number of cows based on current north/south
+		 *         partition
+		 */
+		public int query(SegmentTree other) {
+			// the size of the four regions
+			int westSize, eastSize, otherWestSize, otherEastSize;
+			westSize = eastSize = otherWestSize = otherEastSize = 0;
+			// start with the whole segment tree as our subtree to search
+			int mid = 1;
+			while (mid < size) {
+				int l = mid * 2;
+				int r = mid * 2 + 1;
+				// add the subtree which minimizes the overall maximum count of
+				// cows
+				if (Math.max(westSize + tree[l],
+				             otherWestSize + other.tree[l]) <
+				    Math.max(eastSize + tree[r],
+				             otherEastSize + other.tree[r])) {
+					mid = r;
+					westSize += tree[l];
+					otherWestSize += other.tree[l];
+				} else {
+					mid = l;
+					eastSize += tree[r];
+					otherEastSize += other.tree[r];
+				}
+			}
+
+			// Add the last x coordinate either to the west or the east side
+			if (Math.max(westSize + tree[mid],
+			             otherWestSize + other.tree[mid]) <
+			    Math.max(eastSize + tree[mid],
+			             otherEastSize + other.tree[mid])) {
+				westSize += tree[mid];
+				otherWestSize += other.tree[mid];
+			} else {
+				eastSize += tree[mid];
+				otherEastSize += other.tree[mid];
+			}
+
+			/*
+			 * the M value corresponding to the best west/east partition based
+			 * on the current given north/south partitions
+			 */
+			return Math.max(Math.max(westSize, eastSize),
+			                Math.max(otherWestSize, otherEastSize));
+		}
+	}
+
+	// BeginCodeSnip{class Pair}
+	static class Pair implements Comparable<Pair> {
+		public int a;
+		public int b;
+
+		public Pair(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+
+		/**
+		 * Sort the object by lexicographical order.
+		 */
+		@Override
+		public int compareTo(Pair other) {
+			if (a == other.a) { return b - other.b; }
+			return a - other.a;
+		}
+
+		/**
+		 * Sort the object by reversed lexicographical order.
+		 */
+		public int compareBTo(Pair other) {
+			if (b == other.b) { return a - other.a; }
+			return b - other.b;
+		}
+	}
+	// EndCodeSnip
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+<Spoiler title="Alternative using a BIT">
+There is also an alternative solution using a binary indexed tree.
+
+<LanguageSection>
+<JavaSection>
+```java
+public class Balancing {
+	static final int MAX_Y = 1_000_001;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("balancing.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("balancing.out"));
+
+		int N = Integer.parseInt(br.readLine());
+		int[][] coords = new int[N][2];
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			coords[i] = new int[2];
+			coords[i][0] = Integer.parseInt(st.nextToken());
+			coords[i][1] = Integer.parseInt(st.nextToken());
+		}
+
+		BIT left = new BIT(MAX_Y);
+		BIT right = new BIT(MAX_Y);
+		for (int[] i : coords) { right.update(i[1], 1); }
+		int ret = N;
+		Arrays.sort(coords, (int[] a, int[] b) -> a[0] - b[0]);
+
+		for (int i = 0; i < N;) {
+			int j = i;
+			while (j < N && coords[j][0] == coords[i][0]) {
+				left.update(coords[j][1], 1);
+				right.update(coords[j][1], -1);
+				j++;
+			}
+			i = j;
+
+			int l = 0;
+			int r = (MAX_Y - 1) / 2;
+			while (l <= r) {
+				int mid = (l + r) / 2;
+				int up =
+				    Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
+				int down = Math.max(left.sum(2 * mid), right.sum(2 * mid));
+				if (up > down) {
+					l = mid + 1;
+				} else if (up < down) {
+					r = mid - 1;
+				} else {
+					ret = Math.min(ret, down);
+					break;
+				}
+			}
+		}
+		pw.println(ret);
+		pw.close();
+		br.close();
+	}
+
+	static class BIT {
+		public int[] bit;
+		public BIT(int N) { bit = new int[N + 1]; }
+
+		public int sum(int r) {
+			r++;
+			int ret = 0;
+			while (r > 0) {
+				ret += bit[r];
+				r -= r & -r;
+			}
+			return ret;
+		}
+
+		public void update(int idx, int v) {
+			idx++;
+			while (idx < bit.length) {
+				bit[idx] += v;
+				idx += idx & -idx;
+			}
+		}
+	}
+}
+```
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+
+## Solution 2: With Binary Search
+
+### Explanation
+
+Alternatively, we can also just binary search on the answer without using a PURQ
+data structure. To check if a chosen maximum number of cows in any of the four
+regions, henceforth referred to as $M^*$, is feasible, we calculate the maximum
+height of all four regions for each possible $x$ partition with at most $M^*$
+cows in the region. We then go through every $x$ coordinate and check if the sum
+of the heights of the southern and northern regions is larger than the height of
+the farm. As there are each two regions in the north and south, we always take
+the minimum between north-west/north-east and south-west/south-east. If there is
+such an $x$ partition that leads to the sum being larger than the height of the
+farm, then there is one solution with the current $x$ and $y$ partition.
+
+We do a coordinate compression on the $x$ and $y$ coordinates to simplify the
+implementation.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * Calculate the maximum height of the left bottom region for each possible
+ * partion based on the x coordinate which has maximum max_cows cows
+ * in the region.
+ * @return bound[i] is the maximum possible height for the region 0..i,
+ * 0..bound[i], in which the number of cows is less than or equal to max_cows
+ */
+vector<int> calc_max_height(int max_cows, const vector<pair<int, int>> &cows) {
+	// total number of cows in the current region
+	int sum = 0;
+	// number of cows based on the y coordinates
+	vector<int> count(cows.size());
+	// the current maximum height for the region
+	int y_bound = cows.size() - 1;
+	// the maximum heights for the region based on the x partition
+	vector<int> bound(cows.size());
+	for (int x = 0, i = 0; x < cows.size(); x++) {
+		while (i < cows.size() && cows[i].first == x) {
+			int y = cows[i].second;
+			count[y]++;
+			// update the sum of cows in the active region
+			if (y <= y_bound) { sum++; }
+			i++;
+		}
+		/*
+		 * if the maximum allowed number of cows in the region is exceeded,
+		 * decrease the height of the region
+		 */
+		while (sum > max_cows) {
+			sum -= count[y_bound];
+			y_bound--;
+		}
+		bound[x] = y_bound;
+	}
+	return bound;
+}
+
+int main() {
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (pair<int, int> &c : cows) { cin >> c.first >> c.second; }
+
+	// BeginCodeSnip{Coordinate Compression}
+	//  compress x coordinates
+	sort(cows.begin(), cows.end());
+	int new_x = 0;
+	int actual_x = cows[0].first;
+	for (int i = 0; i < N; i++) {
+		if (cows[i].first != actual_x) {
+			new_x++;
+			actual_x = cows[i].first;
+		}
+		cows[i].first = new_x;
+	}
+
+	// compress y coordinates
+	sort(cows.begin(), cows.end(),
+	     [&](const pair<int, int> &c1, const pair<int, int> &c2) {
+		     return make_pair(c1.second, c1.first) <
+		            make_pair(c2.second, c2.first);
+	     });
+	int new_y = 0;
+	int actual_y = cows[0].second;
+	for (int i = 0; i < N; i++) {
+		if (cows[i].second != actual_y) {
+			new_y++;
+			actual_y = cows[i].second;
+		}
+		cows[i].second = new_y;
+	}
+	// EndCodeSnip
+
+	sort(cows.begin(), cows.end());
+	int l = 1, h = N + 1;
+	// binar search on the maximum of M
+	while (l < h) {
+		int mid = (h + l) / 2;
+		bool possible = false;
+
+		vector<int> west_south_height = calc_max_height(mid, cows);
+
+		for (pair<int, int> &t : cows) { t.second = N - 1 - t.second; }
+		vector<int> west_north_height = calc_max_height(mid, cows);
+
+		reverse(cows.begin(), cows.end());
+		for (pair<int, int> &t : cows) {
+			t.first = N - 1 - t.first;
+			t.second = N - 1 - t.second;
+		}
+		vector<int> east_south_height = calc_max_height(mid, cows);
+
+		for (pair<int, int> &t : cows) { t.second = N - 1 - t.second; }
+		vector<int> east_north_height = calc_max_height(mid, cows);
+
+		// for each possible x partition
+		for (int x = 0; x < N - 1; x++) {
+			/*
+			 * if the sum of the heights of the southern and northern regions is
+			 * larger than the height of the farm, then there is one solution
+			 * with the current maximum M, i.e. mid
+			 */
+			if (min(west_south_height[x], east_south_height[N - 2 - x]) + 1 +
+			        min(west_north_height[x], east_north_height[N - 2 - x]) +
+			        1 >=
+			    N) {
+				possible = true;
+				break;
+			}
+		}
+
+		if (possible) {
+			h = mid;
+		} else {
+			l = mid + 1;
+		}
+	}
+
+	cout << l << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>

@@ -2,6 +2,7 @@ import { ExternalLinkIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 import { getProblemURL, ProblemInfo } from '../../models/problem';
+import ProblemsListItemDropdown from './ProblemsList/ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 
 export default function FocusProblem({
@@ -65,12 +66,24 @@ export default function FocusProblem({
             </div>
           </div>
           <div className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
+            <div className="mr-2">
+              <ProblemsListItemDropdown
+                onShowSolutionSketch={(problem: ProblemInfo) => {
+                  return problem;
+                }}
+                problem={problem}
+                showTags={true}
+                showDifficulty={true}
+                isFocusProblem={true}
+              />
+            </div>
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
         <div className="border-t border-gray-100 dark:border-gray-700 sm:flex sm:justify-between">
           <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 !mb-0 sm:pb-3">
-            Focus Problem – read through this problem before continuing!
+            Focus Problem – try your best to solve this problem before
+            continuing!
           </p>
           {problem.solution?.kind === 'internal' && (
             <a

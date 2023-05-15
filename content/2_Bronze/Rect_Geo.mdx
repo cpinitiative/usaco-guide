@@ -6,7 +6,7 @@ contributors: Allen Li, Andrew Wang, Dong Liu, Ryan Chou
 description:
   'Problems involving rectangles whose sides are parallel to the coordinate
   axes.'
-frequency: 2
+frequency: 1
 prerequisites:
   - time-comp
 ---
@@ -35,8 +35,92 @@ to a solution.
 
 Since all the intervals lie between the range, $[0, 100]$, we can mark each
 interval of length $1$ contained within each interval as painted using a loop.
-Then the answer will be the number of marked intervals. The code is provided
-[here](https://usaco.guide/general/input-output#method-1).
+Then the answer will be the number of marked intervals.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_POS = 100;
+
+int main() {
+	freopen("paint.in", "r", stdin);
+	freopen("paint.out", "w", stdout);
+
+	int a, b, c, d;
+	cin >> a >> b >> c >> d;
+
+	vector<bool> painted(MAX_POS + 1);
+	for (int i = a; i < b; i++) { painted[i] = true; }
+	for (int i = c; i < d; i++) { painted[i] = true; }
+
+	int total = 0;
+	for (bool i : painted) { total += i; }
+
+	cout << total << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Paint {
+	static final int MAX_POS = 100;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("paint");
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		int d = io.nextInt();
+
+		boolean[] painted = new boolean[MAX_POS + 1];
+		for (int i = a; i < b; i++) { painted[i] = true; }
+		for (int i = c; i < d; i++) { painted[i] = true; }
+
+		int total = 0;
+		for (boolean i : painted) { total += i ? 1 : 0; }
+
+		io.println(total);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+MAX_POS = 100
+
+sys.stdin = open("paint.in", "r")
+sys.stdout = open("paint.out", "w")
+
+a, b = map(int, input().split())
+c, d = map(int, input().split())
+
+painted = [False for _ in range(MAX_POS + 1)]
+for i in range(a, b):
+	painted[i] = True
+for i in range(c, d):
+	painted[i] = True
+
+print(sum(painted))
+```
+
+</PySection>
+</LanguageSection>
 
 However, this solution would not work for higher constraints (ex. if the
 coordinates were up to $10^9$).
@@ -58,14 +142,13 @@ $$
 
 The
 [official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html)
-splits computing the intersection length into several cases. However, we do it
-more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and
-$[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words,
+splits computing the intersection length into several cases. However, we can do it
+in a simpler way. An interval $[x,x+1]$ is contained within both $[a,b]$ and
+$[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$, or in other words if,
 $\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is
 $\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -80,7 +163,8 @@ int main() {
 	cin >> a >> b >> c >> d;
 
 	int total = (b - a) + (d - c);  // the sum of the two intervals
-	int intersection = max(min(b, d) - max(a, c), 0);  // subtract the intersection
+	int intersection =
+	    max(min(b, d) - max(a, c), 0);  // subtract the intersection
 	int ans = total - intersection;
 
 	cout << ans << "\n";
@@ -88,7 +172,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -113,12 +196,11 @@ public class Paint {
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -137,7 +219,6 @@ print(union)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
@@ -159,7 +240,6 @@ each of the $2000^2$ possible visible squares and check which ones are visible
 using nested for loops.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -181,24 +261,19 @@ int main() {
 		x2 += MAX_POS / 2;
 		y2 += MAX_POS / 2;
 		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				visible[x][y] =  i < 2;
-			}
+			for (int y = y1; y < y2; y++) { visible[x][y] = i < 2; }
 		}
 	}
 
 	int ans = 0;
 	for (int x = 0; x < MAX_POS; x++) {
-		for (int y = 0; y < MAX_POS; y++) {
-			ans += visible[x][y];
-		}
+		for (int y = 0; y < MAX_POS; y++) { ans += visible[x][y]; }
 	}
 	cout << ans << "\n";
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -207,7 +282,7 @@ import java.util.*;
 
 public class Billboard {
 	private static final int MAX_POS = 2000;
-	
+
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("billboard");
 		int visible[][] = new int[MAX_POS][MAX_POS];
@@ -222,32 +297,28 @@ public class Billboard {
 			x2 += MAX_POS / 2;
 			y2 += MAX_POS / 2;
 			for (int x = x1; x < x2; x++) {
-				for (int y = y1; y < y2; y++) {
-					visible[x][y] = i < 2 ? 1 : 0;
-				}
+				for (int y = y1; y < y2; y++) { visible[x][y] = i < 2 ? 1 : 0; }
 			}
 		}
 
 		int ans = 0;
 		for (int x = 0; x < 2000; ++x) {
-			for (int y = 0; y < 2000; ++y) {
-				ans += visible[x][y];
-			}
+			for (int y = 0; y < 2000; ++y) { ans += visible[x][y]; }
 		}
 
 		io.println(ans);
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
-Code runs marginally faster in Python [when placed in a function](https://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function),
+Code runs marginally faster in Python
+[when placed in a function](https://stackoverflow.com/questions/11241523),
 so we can use this to get all 10 test cases. When taken out of
 the function, the code passes only 9 test cases.
 
@@ -284,7 +355,6 @@ main()
 ```
 
 </PySection>
-
 </LanguageSection>
 
 Of course, this wouldn't suffice if the coordinates were changed to be up to
@@ -301,7 +371,6 @@ $10^9$.
 [Official Analysis](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)
 
 <LanguageSection>
-
 <JavaSection>
 
 Creating a class `Rect` to represent a rectangle makes the code easier
@@ -319,14 +388,20 @@ class Rect {
 public class Billboard {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("billboard");
-		
+
 		Rect a = new Rect(), b = new Rect(), t = new Rect();
-		a.x1 = io.nextInt(); a.y1 = io.nextInt();
-		a.x2 = io.nextInt(); a.y2 = io.nextInt();
-		b.x1 = io.nextInt(); b.y1 = io.nextInt();
-		b.x2 = io.nextInt(); b.y2 = io.nextInt();
-		t.x1 = io.nextInt(); t.y1 = io.nextInt();
-		t.x2 = io.nextInt(); t.y2 = io.nextInt();
+		a.x1 = io.nextInt();
+		a.y1 = io.nextInt();
+		a.x2 = io.nextInt();
+		a.y2 = io.nextInt();
+		b.x1 = io.nextInt();
+		b.y1 = io.nextInt();
+		b.x2 = io.nextInt();
+		b.y2 = io.nextInt();
+		t.x1 = io.nextInt();
+		t.y1 = io.nextInt();
+		t.x2 = io.nextInt();
+		t.y2 = io.nextInt();
 
 		io.println(a.area() + b.area() - intersect(a, t) - intersect(b, t));
 		io.close();
@@ -338,7 +413,7 @@ public class Billboard {
 		return xOverlap * yOverlap;
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -349,8 +424,10 @@ We can also use the built-in
 class. To create a new rectangle, use the following constructor:
 
 ```java
-// creates a rectangle with upper-left corner at (x,y) with a specified width
-// and height
+/*
+ * Creates a rectangle with upper-left corner at (x,y)
+ * with a specified width and height.
+ */
 Rectangle newRect = new Rectangle(x, y, width, height);
 ```
 
@@ -366,7 +443,7 @@ The `Rectangle` class supports numerous useful methods, including the following:
 - `rect.isEmpty()` checks whether `rect` is empty.
 
 This class can often lessen the implementation needed in some bronze problems
-and CodeForces problems.
+and Codeforces problems.
 
 <Info title="Important Note About Java Coordinates">
 
@@ -384,7 +461,7 @@ the solution below will work if all occurences of `-y2` are replaced with `y1`.
 With Built-in `Rectangle` class:
 
 ```java
-import java.awt.Rectangle; // needed to use Rectangle class
+import java.awt.Rectangle;
 import java.io.*;
 import java.util.*;
 
@@ -393,31 +470,37 @@ public class Billboard {
 		Kattio io = new Kattio("billboard");
 
 		int x1, y1, x2, y2;
-		x1 = io.nextInt(); y1 = io.nextInt();
-		x2 = io.nextInt(); y2 = io.nextInt();
+		x1 = io.nextInt();
+		y1 = io.nextInt();
+		x2 = io.nextInt();
+		y2 = io.nextInt();
 		Rectangle firstRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
-		
-		x1 = io.nextInt(); y1 = io.nextInt();
-		x2 = io.nextInt(); y2 = io.nextInt();
+
+		x1 = io.nextInt();
+		y1 = io.nextInt();
+		x2 = io.nextInt();
+		y2 = io.nextInt();
 		Rectangle secondRect = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
-		x1 = io.nextInt(); y1 = io.nextInt();
-		x2 = io.nextInt(); y2 = io.nextInt();
+		x1 = io.nextInt();
+		y1 = io.nextInt();
+		x2 = io.nextInt();
+		y2 = io.nextInt();
 		Rectangle truck = new Rectangle(x1, -y2, x2 - x1, y2 - y1);
 
 		long firstIntersect = getArea(firstRect.intersection(truck));
 		long secondIntersect = getArea(secondRect.intersection(truck));
 
-		io.println(getArea(firstRect) + getArea(secondRect)
-						- firstIntersect - secondIntersect);
+		io.println(getArea(firstRect) + getArea(secondRect) - firstIntersect -
+		           secondIntersect);
 		io.close();
 	}
 
 	public static long getArea(Rectangle r) {
-		return r.isEmpty() ? 0 : (long) r.getHeight() * (long) r.getWidth();
+		return r.isEmpty() ? 0 : (long)r.getHeight() * (long)r.getWidth();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -432,7 +515,6 @@ for an example of usage.
 </Optional>
 
 </JavaSection>
-
 <CPPSection>
 
 Note how creating a struct `Rect` to represent a rectangle makes the code easier
@@ -440,24 +522,13 @@ to understand.
 
 <!-- Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the code from the official analysis (modified slightly): -->
 
-<Info title="What's a struct?">
-
-A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same
-as a C++ `class` but all members are `public` rather than `private` by default.
-Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more
-information.
-
-</Info>
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 struct Rect {
 	int x1, y1, x2, y2;
-	int area() {
-		return (y2 - y1) * (x2 - x1); 
-	}
+	int area() { return (y2 - y1) * (x2 - x1); }
 };
 
 int intersect(Rect p, Rect q) {
@@ -479,7 +550,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 <!-- Unfortunately, Python doesn't have a built in rectangle class, so you need to write the class yourself. -->
@@ -490,6 +560,7 @@ to understand.
 ```py
 import sys
 
+
 class Rect:
 	def __init__(self):
 		self.x1, self.y1, self.x2, self.y2 = map(int, input().split())
@@ -497,10 +568,12 @@ class Rect:
 	def area(self):
 		return (self.y2 - self.y1) * (self.x2 - self.x1)
 
+
 def intersect(p, q):
 	x_overlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
 	y_overlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
 	return x_overlap * y_overlap
+
 
 sys.stdin = open("billboard.in", "r")
 sys.stdout = open("billboard.out", "w")
@@ -509,11 +582,15 @@ rects = []
 for _ in range(3):
 	rects.append(Rect())
 
-print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - intersect(rects[1], rects[2]))
+print(
+	rects[0].area()
+	+ rects[1].area()
+	- intersect(rects[0], rects[2])
+	- intersect(rects[1], rects[2])
+)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
@@ -521,21 +598,25 @@ print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - inters
 ## Common Formulas
 
 Certain tasks show up often in rectangle geometry problems. For example, many problems
-involve finding the overlapping area of two or more rectangles based on their coordinate points, 
+involve finding the overlapping area of two or more rectangles based on their coordinate points,
 or determining whether two rectangles intersect. Here, we'll discuss these formulas.
-	
+
 Note that these formulas only apply to rectangles which have sides parallel to the coordinate axes.
 
 <Info title="Coordinates">
-A rectangle can be represented with $2$ points: its top right corner and bottom left corner. We'll label these points $tr$ (top right) and $bl$ (bottom left).
+A rectangle can be represented with $2$ points: its top right corner and bottom left corner.
+We'll label these points $tr$ (top right) and $bl$ (bottom left).
+
+In this module, we'll assume that increasing $x$ moves to the right
+and increasing $y$ moves up.
 </Info>
 
 ### Finding area
-	
-The formula for finding the area of an individual rectangle is $w \cdot l$. 
+
+The formula for finding the area of an individual rectangle is $w \cdot l$.
 
 $\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is the length of the horizontal sides.
- 	
+
 1. $\texttt{width} = \texttt{tr}_x - \texttt{bl}_x$
 2. $\texttt{length} = \texttt{tr}_y - \texttt{bl}_y$
 3. $\texttt{area} = \texttt{width} \cdot \texttt{length}$
@@ -543,149 +624,148 @@ $\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is t
 ### Implementation
 
 <LanguageSection>
-	<CPPSection>
-
-		```cpp
-		long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
-			long long length = tr_y - bl_y;
-			long long width = tr_x - bl_x;
-			return length * width;
-		}
-		```
-	</CPPSection>
-	<PySection>
-
-		```py
-		def area(bl_x, bl_y, tr_x, tr_y):
-			length = tr_y - bl_y
-			width = tr_x - bl_x
-			return length * width
-		```
-	</PySection>
-	<JavaSection>
-		```java
-		int area(int bl_x, int bl_y, int tr_x, int tr_y) {
-			int length = tr_y - bl_y;
-			int width = tr_x - bl_x;
-			return length * width;
-		}
-		```
-	</JavaSection>
+<CPPSection>
+```cpp
+long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
+	long long length = tr_y - bl_y;
+	long long width = tr_x - bl_x;
+	return length * width;
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+int area(int bl_x, int bl_y, int tr_x, int tr_y) {
+	int length = tr_y - bl_y;
+	int width = tr_x - bl_x;
+	return length * width;
+}
+```
+</JavaSection>
+<PySection>
+```py
+def area(bl_x: int, bl_y: int, tr_x: int, tr_y: int) -> int:
+	length = tr_y - bl_y
+	width = tr_x - bl_x
+	return length * width
+```
+</PySection>
 </LanguageSection>
+
 ### Checking if two rectangles intersect
-	
-Given two rectangles $a$ and $b$, there are only two cases where they do not intersect: 
 
-1. $\texttt{tr}_{a_y}$ $\leq$ $\texttt{bl}_{b_y}$ or $\texttt{bl}_{a_y}$ $\geq$ $\texttt{tr}_{b_y}$.  
-2. $\texttt{bl}_{a_x}$ $\geq$ $\texttt{tr}_{b_x}$ or $\texttt{tr}_{a_x}$ $\leq$ $\texttt{bl}_{b_x}$. 
+Given two rectangles $a$ and $b$, there are only two cases where they do not intersect:
 
-In all other cases, the rectangles intersect. 
- ### Implementation
-	
+1. $\texttt{tr}_{a_y}$ $\leq$ $\texttt{bl}_{b_y}$ or $\texttt{bl}_{a_y}$ $\geq$ $\texttt{tr}_{b_y}$.
+2. $\texttt{bl}_{a_x}$ $\geq$ $\texttt{tr}_{b_x}$ or $\texttt{tr}_{a_x}$ $\leq$ $\texttt{bl}_{b_x}$.
+
+In all other cases, the rectangles intersect.
+### Implementation
+
 <LanguageSection>
-	<CPPSection>
-		```cpp
-		vector<int> intersect(vector<int> s1, vector<int> s2) {
-			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
-			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
-			
-			// no overlap
-			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
-					|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-		```
-	</CPPSection>
-	<PySection>
-		```py
-		def intersect(s1, s2):
-			bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
-			bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
-			
-			# no overlap
-			if (bl_a_x >= tr_b_x or tr_a_x <= bl_b_x
-					or bl_a_y >= tr_b_y or tr_a_y or bl_b_y):
-				return False
-			else:
-				return True
-		```
-	</PySection>
-	<JavaSection>
-		```java
-		boolean intersect(int[] s1, int[] s2) {
-			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
-			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
-			
-			// no overlap
-			if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x 
-					|| bl_a_y >= tr_b_y || tr_a_y <= bl_b_y) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-		```
-	</JavaSection>
-</LanguageSection>			 
+<CPPSection>
+```cpp
+bool intersect(vector<int> s1, vector<int> s2) {
+	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+
+	// no overlap
+	if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x || bl_a_y >= tr_b_y ||
+	    tr_a_y <= bl_b_y) {
+		return false;
+	} else {
+		return true;
+	}
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+boolean intersect(int[] s1, int[] s2) {
+	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+
+	// no overlap
+	if (bl_a_x >= tr_b_x || tr_a_x <= bl_b_x || bl_a_y >= tr_b_y ||
+	    tr_a_y <= bl_b_y) {
+		return false;
+	} else {
+		return true;
+	}
+}
+```
+</JavaSection>
+<PySection>
+```py
+def intersect(s1, s2) -> bool:
+	bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
+	bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
+
+	# no overlap
+	if bl_a_x >= tr_b_x or tr_a_x <= bl_b_x or bl_a_y >= tr_b_y or tr_a_y <= bl_b_y:
+		return False
+	else:
+		return True
+```
+</PySection>
+</LanguageSection>
+
 ### Finding area of intersection
-					 
+
 We'll assume that the shape formed by the intersection of two rectangles is itself a rectangle.
 
-First, we'll find this rectangle's length and width. 
-$\texttt{width} = \min(\texttt{tr}_{a_x}, \texttt{tr}_{b_x}) - \max(\texttt{bl}_{a_x}, \texttt{bl}_{b_x})$. 
+First, we'll find this rectangle's length and width.
+$\texttt{width} = \min(\texttt{tr}_{a_x}, \texttt{tr}_{b_x}) - \max(\texttt{bl}_{a_x}, \texttt{bl}_{b_x})$.
 $\texttt{length} = \min(\texttt{tr}_{a_y}, \texttt{tr}_{b_y}) - \max(\texttt{bl}_{a_y}, \texttt{bl}_{b_y})$.
-	
-If either of these values are negative, the rectangles do not intersect. 
-If they are zero, the rectangles intersect at a single point. 
-Multiply the length and width to find the overlapping area. 
+
+If either of these values are negative, the rectangles do not intersect.
+If they are zero, the rectangles intersect at a single point.
+Multiply the length and width to find the overlapping area.
 
 
 ### Implementation
 
 <LanguageSection>
-	<CPPSection>
-	
-		```cpp
-		int inter_area(vector<int> s1, vector<int> s2) {
-			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
-			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+<CPPSection>
 
-			return (
-				(min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) 
-				* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
-			);
-		}
-		```
-	</CPPSection>
-	<PySection>
+```cpp
+int inter_area(vector<int> s1, vector<int> s2) {
+	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
 
-		```py
-		def inter_area(s1, s2):
-			bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
-			bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
-			
-			return (
-				(min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x))
-				* (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y))
-			)
-		```
-	</PySection>
-	<JavaSection>
-		```java
-		int interArea(int[] s1, int[] s2) {
-			int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3]; 
-			int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
-			return (
-				(Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) 
-				* (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y))
-			);
-		}
-		```
-	</JavaSection>
+	return ((min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) *
+	        (min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y)));
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+def inter_area(s1, s2) -> int:
+	bl_a_x, bl_a_y, tr_a_x, tr_a_y = s1[0], s1[1], s1[2], s1[3]
+	bl_b_x, bl_b_y, tr_b_x, tr_b_y = s2[0], s2[1], s2[2], s2[3]
+
+	return (min(tr_a_x, tr_b_x) - max(bl_a_x, bl_b_x)) * (
+		min(tr_a_y, tr_b_y) - max(bl_a_y, bl_b_y)
+	)
+```
+
+</PySection>
+<JavaSection>
+
+```java
+int interArea(int[] s1, int[] s2) {
+	int bl_a_x = s1[0], bl_a_y = s1[1], tr_a_x = s1[2], tr_a_y = s1[3];
+	int bl_b_x = s2[0], bl_b_y = s2[1], tr_b_x = s2[2], tr_b_y = s2[3];
+	return ((Math.min(tr_a_x, tr_b_x) - Math.max(bl_a_x, bl_b_x)) *
+	        (Math.min(tr_a_y, tr_b_y) - Math.max(bl_a_y, bl_b_y)));
+}
+```
+
+</JavaSection>
 </LanguageSection>
+
 ## Problems
 
 <Problems problems="general" />

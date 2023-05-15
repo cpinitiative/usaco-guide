@@ -13,13 +13,15 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
-
-const ActivePostProblemsContext = React.createContext<{
-  activePostId: string;
-  setActivePostId: React.Dispatch<React.SetStateAction<string>>;
+type ActivePostProblemsContext = {
+  activePostId?: string;
+  setActivePostId: React.Dispatch<React.SetStateAction<string | undefined>>;
   problems: GroupProblemData[];
   isLoading: boolean;
-}>(null);
+} | null;
+
+const ActivePostProblemsContext =
+  React.createContext<ActivePostProblemsContext>(null);
 
 export function ActivePostProblemsProvider({
   children,
@@ -28,15 +30,15 @@ export function ActivePostProblemsProvider({
 }): ReactElement {
   const activeGroup = useActiveGroup();
   const { firebaseUser } = React.useContext(UserDataContext);
-  const [activePostId, setActivePostId] = React.useState<string>(null);
+  const [activePostId, setActivePostId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(true);
-  const [problems, setProblems] = React.useState<GroupProblemData[]>();
+  const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
 
   useFirebaseApp(
     firebaseApp => {
       setIsLoading(true);
-      setProblems(null);
-      if (activePostId === null || !firebaseUser?.uid) {
+      setProblems([]);
+      if (!activePostId || !firebaseUser?.uid) {
         return;
       }
       if (!activeGroup.activeGroupId) {
@@ -58,7 +60,9 @@ export function ActivePostProblemsProvider({
       );
       onSnapshot(q, {
         next: snap => {
-          setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          setProblems(
+            snap.docs.map(doc => ({ doc_id: doc.id, ...doc.data() }))
+          );
           setIsLoading(false);
         },
         error: error => {
@@ -83,12 +87,7 @@ export function ActivePostProblemsProvider({
   );
 }
 
-export function useActivePostProblems(): {
-  activePostId: string;
-  setActivePostId: (string) => void;
-  problems: GroupProblemData[];
-  isLoading: boolean;
-} {
+export function useActivePostProblems() {
   const context = React.useContext(ActivePostProblemsContext);
   if (context === null) {
     throw 'useActiveGroup must be used within a ActivePostProblemsProvider';

@@ -10,10 +10,8 @@ export default function EditProblemHintSection({
   onChange: (hints: ProblemHint[]) => any;
 }) {
   const [isHintModalOpen, setIsHintModalOpen] = React.useState(false);
-  const [
-    currentProblemHint,
-    setCurrentProblemHint,
-  ] = React.useState<ProblemHint>(null);
+  const [currentProblemHint, setCurrentProblemHint] =
+    React.useState<ProblemHint>(null);
 
   const handleSave = (hint: ProblemHint | null) => {
     if (hint === null) {

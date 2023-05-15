@@ -4,10 +4,10 @@ import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
 import Flatpickr from 'react-flatpickr';
+import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
-import toast from 'react-hot-toast';
 import { PostData } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
@@ -76,13 +76,6 @@ export default function EditPostPage(props) {
             <Link to="../" className="btn">
               <span>Back</span>
             </Link>
-            <button
-              type="submit"
-              onClick={() => updatePost(post.id, post).then(() => navigate(-1))}
-              className="btn"
-            >
-              Save
-            </button>
           </div>
         </div>
         <div className="h-6" />
@@ -115,7 +108,7 @@ export default function EditPostPage(props) {
 
                 <div className="mt-1">
                   <Flatpickr
-                    placeholder={'Choose a due date'}
+                    placeholder={'Choose a post date'}
                     options={{
                       dateFormat:
                         'Posted On'.split('').join('\\\\') +
@@ -134,7 +127,7 @@ export default function EditPostPage(props) {
                     value={post.timestamp?.toDate()}
                     onChange={date =>
                       editPost({
-                        timestamp: Timestamp.fromDate(date[0]),
+                        timestamp: date[0] ? Timestamp.fromDate(date[0]) : null,
                       })
                     }
                     className="input"
@@ -164,6 +157,7 @@ export default function EditPostPage(props) {
                             ).split(''),
                           ].join('\\\\'),
                         enableTime: true,
+                        minDate: post.timestamp?.toDate(),
                       }}
                       value={post.dueTimestamp?.toDate()}
                       onChange={date =>

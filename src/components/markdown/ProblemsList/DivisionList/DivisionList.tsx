@@ -5,17 +5,23 @@ import UserDataContext from '../../../../context/UserDataContext/UserDataContext
 import { ProblemSolutionInfo } from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
-import contestToPoints from './contest_to_points';
+import contestToPoints from './contest_to_points.json';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
-import divToProbs from './div_to_probs';
-import idToSol from './id_to_sol';
+import divToProbs from './div_to_probs.json';
+import idToSol from './id_to_sol.json';
 
+const startYear = 2016;
+const endYear = 2023; // manually increment this for a new season
+const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+
 const getSeasons = () => {
   const res = [];
-  for (let i = 2016; i <= 2021; ++i) {
+  for (let i = startYear; i <= endYear; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
+  res.push(allYears);
+  res.reverse();
   return res;
 };
 const seasons = getSeasons();
@@ -250,6 +256,10 @@ export function DivisionList(props): JSX.Element {
         divisionToSeasonToProbs[division][season] = [];
       }
       divisionToSeasonToProbs[division][season].push(prob);
+      if (!(allYears in divisionToSeasonToProbs[division])) {
+        divisionToSeasonToProbs[division][allYears] = [];
+      }
+      divisionToSeasonToProbs[division][allYears].push(prob);
     }
   }
   const userSettings = useContext(UserDataContext);
@@ -288,20 +298,20 @@ export function DivisionList(props): JSX.Element {
   const problems: DivisionProblemInfo[] =
     divisionToSeasonToProbs[curDivision][curSeason];
 
-  const allHavePercent = problems.every(problem => !!problem.percentageSolved);
+  const someHavePercent = problems.some(problem => !!problem.percentageSolved);
   const sortOrders = ['By Contest'];
-  if (allHavePercent) sortOrders.push('By Percent');
+  if (someHavePercent) sortOrders.push('By Percent');
   const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
   const sortedProblems = React.useMemo(() => {
-    if (!allHavePercent) return problems;
+    if (!someHavePercent) return problems;
     return [...problems].sort(
-      (a, b) => b.percentageSolved - a.percentageSolved
+      (a, b) => (b.percentageSolved || 0) - (a.percentageSolved || 0)
     );
   }, [problems]);
 
   return (
     <>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mb-4">
         <DivisionButton
           options={divisions}
           state={curDivision}

@@ -1,0 +1,138 @@
+---
+id: cf-860D
+source: CF
+title: Wizard's Tour
+author: Benjamin Qi
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/54604) (brief)
+
+In other words, we want to pair up as many edges as possible such that the edges
+in each pair share a vertex.
+
+> Obviously the task can be solved independently for each component.
+
+The answer is always $\left\lfloor \frac{m}{2}\right\rfloor$ for a single
+connected component.
+
+## Tree Case
+
+<Spoiler title="Solution">
+
+We can write a function `dfs(x,pre)` where `x` is a vertex of the tree and `pre`
+is the parent vertex of `x`. This function will pair up all edges in the subtree
+of `x` except maybe the edge connecting `pre` and `x`, depending on the parity
+of the number of edges in this subtree. The function returns `1` if the edge
+connecting `pre` and `x` is left unpaired and `0` otherwise.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+vector<int> adj[200001];
+vector<vector<int>> ans;
+
+bool dfs(int x, int pre) {
+	vector<int> curr;
+	for (int i : adj[x]) {
+		if (i != pre) {
+			if (dfs(i, x)) {  // spanning tree edge
+				curr.push_back(i);
+			}
+		}
+	}
+
+	for (int i = 0; i < curr.size() / 2; i++) {
+		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
+	}
+	if (curr.size() % 2 == 0) { return true; }
+	if (pre != -1) { ans.push_back({curr[curr.size() - 1], x, pre}); }
+
+	return false;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	dfs(1, -1);
+
+	cout << ans.size() << "\n";
+	for (const vector<int> &a : ans) {
+		cout << a[0] << " " << a[1] << " " << a[2] << "\n";
+	}
+}
+```
+
+</Spoiler>
+
+## General Case
+
+<Spoiler title="Solution">
+
+First, find any [spanning tree](/CPH.pdf#page=151). Then for each edge $(a,b)$
+not in the spanning tree, disconnect one of its endpoints (it doesn't matter
+which one). For example, if we disconnect $b$ then we treat the edge as $(a,x)$
+instead, where $x$ is connected to no vertices aside from $a$. This reduces the
+problem to the tree case.
+
+We only need to modify the above solution slightly. Here we disconnect the edge
+$(x,i)$ from $i$ whenever $x<i$ ($x>i$ would work just as well).
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+bool visited[200001];
+vector<int> adj[200001];
+vector<vector<int>> ans;
+
+bool dfs(int x, int pre) {
+	visited[x] = true;
+	vector<int> curr;
+	for (int i : adj[x]) {
+		if (i != pre) {
+			if (visited[i]) {  // non spanning tree edge
+				if (x < i) { curr.push_back(i); }
+			} else if (dfs(i, x)) {
+				curr.push_back(i);  // spanning tree edge
+			}
+		}
+	}
+
+	for (int i = 0; i < curr.size() / 2; i++) {
+		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
+	}
+	if (curr.size() % 2 == 0) { return true; }
+	if (pre != -1) { ans.push_back({curr[curr.size() - 1], x, pre}); }
+	return false;
+}
+
+int main() {
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	for (int i = 1; i <= n; i++) {
+		if (!visited[i]) { dfs(i, -1); }
+	}
+
+	cout << ans.size() << "\n";
+	for (auto a : ans) { cout << a[0] << " " << a[1] << " " << a[2] << "\n"; }
+}
+```
+
+</Spoiler>

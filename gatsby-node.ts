@@ -1,14 +1,14 @@
-import * as fs from 'fs';
-import importFresh from 'import-fresh';
-import * as path from 'path';
-import { SECTIONS } from './content/ordering';
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import * as freshOrdering from './content/ordering';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
+  checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
   ProblemMetadata,
 } from './src/models/problem';
-const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
 try {
@@ -27,9 +27,7 @@ try {
 exports.onCreateNode = async api => {
   const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
     api;
-
   const { createNodeField, createNode, createParentChildLink } = actions;
-
   if (node.internal.type === `File` && node.ext === '.mdx') {
     const content = await loadNodeContent(node);
     const xdmNode = await createXdmNode(
@@ -43,7 +41,6 @@ exports.onCreateNode = async api => {
     createNode(xdmNode);
     createParentChildLink({ parent: node, child: xdmNode });
   }
-
   function transformObject(obj, id) {
     const problemInfoNode = {
       ...obj,
@@ -58,7 +55,6 @@ exports.onCreateNode = async api => {
     createNode(problemInfoNode);
     createParentChildLink({ parent: node, child: problemInfoNode });
   }
-
   const isExtraProblems =
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
@@ -78,15 +74,15 @@ exports.onCreateNode = async api => {
         : `in node ${node.id}`;
       throw new Error(`Unable to parse JSON: ${hint}`);
     }
-
     const moduleId = parsedContent['MODULE_ID'];
     if (!moduleId && !isExtraProblems) {
       throw new Error(
         'Module ID not found in problem JSON file: ' + node.absolutePath
       );
     }
-
-    const freshOrdering = importFresh<any>('./content/ordering');
+    //const freshOrdering = importFresh<any>(
+    //  path.join(__dirname, './content/ordering.ts')
+    //);
     if (!isExtraProblems && !(moduleId in freshOrdering.moduleIDToSectionMap)) {
       throw new Error(
         '.problems.json moduleId does not correspond to module: ' +
@@ -95,12 +91,11 @@ exports.onCreateNode = async api => {
           node.absolutePath
       );
     }
-
     Object.keys(parsedContent).forEach(tableId => {
       if (tableId === 'MODULE_ID') return;
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
-          const freshOrdering = importFresh<any>('./content/ordering');
+          checkInvalidUsacoMetadata(metadata);
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
@@ -119,7 +114,6 @@ exports.onCreateNode = async api => {
         throw new Error(e);
       }
     });
-
     if (moduleId) {
       // create a node that contains all of a module's problems
       const id = createNodeId(`${node.id} >>> ModuleProblemLists`);
@@ -128,8 +122,6 @@ exports.onCreateNode = async api => {
         .map(listId => ({
           listId,
           problems: parsedContent[listId].map(x => {
-            const freshOrdering = importFresh<any>('./content/ordering');
-
             return {
               ...getProblemInfo(x, freshOrdering),
             };
@@ -156,8 +148,8 @@ exports.onCreateNode = async api => {
     node.internal.type === 'Xdm' &&
     node.fileAbsolutePath.includes('content')
   ) {
-    const ordering = importFresh<any>('./content/ordering');
-    if (!(node.frontmatter.id in ordering.moduleIDToSectionMap)) {
+    // const ordering = importFresh<any>('./content/ordering.ts');
+    if (!(node.frontmatter.id in freshOrdering.moduleIDToSectionMap)) {
       throw new Error(
         'module id does not show up in ordering: ' +
           node.frontmatter.id +
@@ -168,9 +160,8 @@ exports.onCreateNode = async api => {
     createNodeField({
       name: 'division',
       node,
-      value: ordering.moduleIDToSectionMap[node.frontmatter.id],
+      value: freshOrdering.moduleIDToSectionMap[node.frontmatter.id],
     });
-
     // https://angelos.dev/2019/09/add-support-for-modification-times-in-gatsby/
     const gitAuthorTime = execSync(
       `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
@@ -189,6 +180,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     if (err) throw new Error('error: ' + err);
     (data + '')
       .split('\n')
+      .filter(line => line != '')
       .filter(line => line.charAt(0) !== '#')
       .map(line => {
         const tokens = line.split('\t');
@@ -206,7 +198,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         });
       });
   });
-
   const result = await graphql(`
     query {
       modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
@@ -224,7 +215,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           }
         }
       }
-
       solutions: allXdm(
         filter: { fileAbsolutePath: { regex: "/solutions/" } }
       ) {
@@ -238,7 +228,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           }
         }
       }
-
       problems: allProblemInfo {
         edges {
           node {
@@ -269,7 +258,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   if (result.errors) {
     reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
   }
-
   // Check to make sure problems with the same unique ID have consistent information, and that there aren't duplicate slugs
   const problems = result.data.problems.edges;
   let problemSlugs = {}; // maps slug to problem unique ID
@@ -326,13 +314,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     problemURLToUniqueID[node.url] = node.uniqueId;
   });
   // End problems check
-
-  const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
+  const moduleTemplate = path.resolve(`./src/templates/moduleTemplate.tsx`);
   const modules = result.data.modules.edges;
   modules.forEach(({ node }) => {
     if (!node.fields?.division) return;
     const path = `/${node.fields.division}/${node.frontmatter.id}`;
-
     if (node.frontmatter.redirects) {
       node.frontmatter.redirects.forEach(fromPath => {
         createRedirect({
@@ -343,7 +329,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         });
       });
     }
-
     createPage({
       path,
       component: moduleTemplate,
@@ -352,7 +337,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
 
-    const freshOrdering = importFresh<any>('./content/ordering');
+    // const freshOrdering = importFresh<any>(
+    //   path.join(__dirname, './content/ordering.ts')
+    // );
     if (node.frontmatter.prerequisites)
       for (const prereq of node.frontmatter.prerequisites) {
         if (!(prereq in freshOrdering.moduleIDToSectionMap)) {
@@ -366,16 +353,16 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }
       }
   });
-  const solutionTemplate = require.resolve(
-    `./src/templates/solutionTemplate.tsx`
-  );
+  const solutionTemplate = path.resolve(`./src/templates/solutionTemplate.tsx`);
   const solutions = result.data.solutions.edges;
+  const problemsWithInternalSolutions = new Set<string>();
   solutions.forEach(({ node }) => {
     try {
       // we want to find all problems that this solution can be an internal solution for
       const problemsForThisSolution = problems.filter(
         ({ node: problemNode }) => problemNode.uniqueId === node.frontmatter.id
       );
+      problemsWithInternalSolutions.add(node.frontmatter.id);
       if (problemsForThisSolution.length === 0) {
         throw new Error(
           "Couldn't find corresponding problem for internal solution with frontmatter ID " +
@@ -435,12 +422,18 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       throw e;
     }
   });
-
+  problems
+    .filter(x => x.node.solution?.kind === 'internal')
+    .forEach(({ node: problemNode }) => {
+      if (!problemsWithInternalSolutions.has(problemNode.uniqueId)) {
+        console.error(
+          `Problem ${problemNode.uniqueId} claims to have an internal solution but doesn't`
+        );
+      }
+    });
   // Generate Syllabus Pages //
-  const syllabusTemplate = require.resolve(
-    `./src/templates/syllabusTemplate.tsx`
-  );
-  SECTIONS.forEach(division => {
+  const syllabusTemplate = path.resolve(`./src/templates/syllabusTemplate.tsx`);
+  freshOrdering.SECTIONS.forEach(division => {
     createPage({
       path: `/${division}`,
       component: syllabusTemplate,
@@ -460,10 +453,13 @@ exports.createSchemaCustomization = ({ actions }) => {
       fileAbsolutePath: String
       frontmatter: XdmFrontmatter
       isIncomplete: Boolean
+      cppOc: Int
+      javaOc: Int
+      pyOc: Int
       toc: TableOfContents
       mdast: String
     }
-  
+
     type XdmFrontmatter implements Node {
       id: String
       title: String
@@ -474,34 +470,35 @@ exports.createSchemaCustomization = ({ actions }) => {
       redirects: [String]
       frequency: Int
     }
-    
+
     type Heading {
       depth: Int
       value: String
       slug: String
     }
-    
+
     type TableOfContents {
       cpp: [Heading]
       java: [Heading]
       py: [Heading]
     }
-    
+
     type ModuleProblemLists implements Node {
       moduleId: String
       problemLists: [ModuleProblemList]
     }
-    
+
     type ModuleProblemList {
       listId: String!
       problems: [ModuleProblemInfo]
     }
-    
+
     type ProblemInfo implements Node {
       uniqueId: String!
       name: String!
       url: String!
       source: String!
+      sourceDescription: String
       isStarred: Boolean!
       difficulty: String
       tags: [String]
@@ -509,18 +506,19 @@ exports.createSchemaCustomization = ({ actions }) => {
       inModule: Boolean!
       module: Xdm @link(by: "frontmatter.id")
     }
-    
+
     type ModuleProblemInfo {
       uniqueId: String!
       name: String!
       url: String!
       source: String!
+      sourceDescription: String
       isStarred: Boolean!
       difficulty: String
       tags: [String]
       solution: ProblemSolutionInfo
     }
-    
+
     type ProblemSolutionInfo {
       kind: String!
       label: String
@@ -536,7 +534,7 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
   actions.setWebpackConfig({
     resolve: {
       alias: {
-        path: require.resolve('path-browserify'),
+        path: path.resolve('path-browserify'),
       },
       fallback: {
         fs: false,

@@ -3,7 +3,7 @@ id: adding-solution
 title: Adding Solutions
 author: Nathan Wang, Benjamin Qi, Qi Wang
 contributors: Maggie Liu, Sathvik Chundru
-description: 'How you can add your own solutions to the guide.'
+description: 'How to add your own solutions to the guide.'
 prerequisites:
   - contributing
 ---
@@ -15,9 +15,9 @@ See [Working With MDX](/general/working-mdx) for additional information.
 1.  [Fork](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)
     the GitHub repository.
 
-2.  If it doesn't already exist, create a new `mdx` file in `solutions/`
+2.  If it doesn't already exist, create a new `mdx` file in `solutions/<division>/`
     including frontmatter, e.g. the following in
-    [`usaco-690.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/usaco-690.mdx):
+    [`solutions/silver/usaco-690.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/silver/usaco-690.mdx):
 
     ```
     ---
@@ -64,6 +64,8 @@ See [Working With MDX](/general/working-mdx) for additional information.
     **Time Complexity:** $\mathcal{O}(N\log^2N)$
 
     ^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
+
+    If you need to link to a module, format your link like [this](/silver/binary-search) instead of [this](https://usaco.guide/silver/binary-search).
 
     <LanguageSection>
 
@@ -117,7 +119,7 @@ See [Working With MDX](/general/working-mdx) for additional information.
       "source": "Silver",
       "difficulty": "Easy",
       "isStarred": false,
-      "tags": ["Binary Search", "Ordered Set"],
+      "tags": ["Binary Search", "Sorted Set"],
       "solutionMetadata": {
         "kind": "internal"
       }
@@ -130,49 +132,69 @@ See [Working With MDX](/general/working-mdx) for additional information.
 
 ## Code Conventions
 
-Since code for the USACO Guide is contributed from several authors, code style
-will **not** be uniform. Of course, we still strive for code that is readable
-and understandable. If any code does not compile or is hard to read, contact us.
+Your code will be automatically formatted using [pre-commit](https://pre-commit.com/).
+We strive for code that is readable and understandable. If any code does not
+compile or is hard to read, contact us.
 
 Read our guidelines below before contributing code.
 
 ### General
 
+- Indentation will automatically be converted to tabs.
 - In general, do not include unused code (e.g. "templates").
   - There are some exceptions to this guideline (e.g. when using the `Kattio`
     class for Java I/O). In this case, collapse it with a
-    [`CodeSnip`](https://usaco.guide/general/working-mdx#code-blocks-and-code-snippets).
-- Use _tabs_ rather than spaces to indent.
-
-  <Info title="Pro Tip">
-  	If your code is indented with spaces, paste your code into the [Guide
-  	Editor](/editor), right-click, click "Command Palette" from the menu that
-  	pops up, and then search for "Convert Indentation to Tabs."
-  </Info>
-
-- Lines should not exceed 80 characters. If you need to, split comments across
-  multiple lines to follow this rule.
+    [`CodeSnip`](/general/working-mdx#code-blocks-and-code-snippets).
+- Use universally understandable variable names, especially for Bronze and
+  Silver. They should be more descriptive than what you would normally use
+  in-contest.
 - Add comments throughout your code to explain your logic. Feel free to
   copy-paste the official USACO solution and improve it by adding more
-  descriptive variable names and helpful comments.
-- Use universally understandable variable names, especially for Bronze and
-  Silver. Should be more descriptive than what you would normally use
-  in-contest.
-- Be _consistent_ about formatting your code, unlike the following snippet. We
-  don't care about which one you use (`a+b` or `a + b`), but pick one and stick
-  with it throughout your entire code!
+  descriptive variable names and helpful comments. Though keep in mind the
+  following guidelines from Google's
+  [C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Comments):
 
-  ```py
-  a,b = (0,1)
-  print(a+b)
-  print(a + b)
-  ```
+  > But remember: while comments are very important, the best code is
+  > self-documenting. Giving sensible names to types and variables is much
+  > better than using obscure names that you must then explain through comments.
+
+  <br />
+
+  > In general the actual name of the variable should be descriptive enough to
+  > give a good idea of what the variable is used for.
+
+  <br />
+
+  > Self-describing code doesn't need a comment.
+
+- Don't repeat yourself.
+  - [Rule Of Three](<https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)>)
+- Once you've finished making the changes requested by a review, make sure to re-request the review.
 
 <LanguageSection>
 
 <CPPSection>
 
 ### C++
+
+- Do not use variable names that could conflict with `using namespace std`. For
+  example, don't name a `std::set` "set."
+- Do not use variable-length arrays as discussed
+  [here](/bronze/intro-ds?lang=cpp#dynamic-arrays); they are not part of the C++
+  standard.
+- Do not include code that doesn't do anything. In particular,
+  - Do not include `cout.tie(nullptr)` as discussed
+    [here](/general/fast-io?lang=cpp#cintienullptr).
+  - Do not include [optimization pragmas](/adv/vectorization) unless you show
+    that they improve performance.
+- For Bronze through Gold in particular, do not use additional macros
+  (especially loop macros) beyond the ones listed below (see
+  [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
+
+  ```cpp
+  // CodeSnip{CPP Short Template}
+  int main() { setIO(); }
+  ```
 
 Optional reading:
 
@@ -193,42 +215,28 @@ Optional reading:
 	>
 		C++ style guide
 	</Resource>
+	<Resource
+		source="Google"
+		title="C++ Style Guide"
+		url="https://google.github.io/styleguide/cppguide.html"
+	>
+		useful reference, but mostly not relevant to competitive programming
+	</Resource>
 </Resources>
 
-- Do not use variable names that could conflict with `using namespace std`. For
-  example, don't name a `std::set` "set."
-- Do not use variable-length arrays as discussed
-  [here](/bronze/intro-ds?lang=cpp#dynamic-arrays).
-- Do not include code that doesn't do anything. In particular,
-  - Do not include `cout.tie(0)` as discussed
-    [here](/general/fast-io?lang=cpp#method-2---cintie0).
-  - Do not include [optimization pragmas](/adv/vectorization) unless you show
-    that they improve performance.
-- For Bronze through Gold in particular, do not use additional macros
-  (especially loop macros) beyond the ones listed below (see
-  [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
+C++ code is automatically formatted using [clang-format](https://clang.llvm.org/docs/ClangFormat.html) with the following settings:
 
-  ```cpp
-  CodeSnip{CPP Short Template}
-
-  int main() {
-    setIO();
-
-  }
-  ```
-
-- The C/C++ extension for
-  [Visual Studio Code](/general/running-code-locally?lang=cpp#resource-https%3A%2F%2Fcode.visualstudio.com%2F)
-  supports code formatting using `clang-format` (details
-  [here](https://code.visualstudio.com/docs/cpp/cpp-ide#_code-formatting)). To
-  indent using tabs, include the following in your
-  `C_Cpp.clang_format_fallbackStyle` setting.
-
-  ```
-  { UseTab: AlignWithSpaces, TabWidth: 4, IndentWidth: 4 }
-  ```
-
-  You don't have to use a formatter, but doing so will ensure consistency.
+```
+TabWidth: 4
+IndentWidth: 4
+UseTab: ForIndentation
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+SpacesBeforeTrailingComments: 2
+```
 
 </CPPSection>
 
@@ -237,13 +245,28 @@ Optional reading:
 ### Java
 
 - Regarding I/O, `Scanner` is
-  [significantly slower](/general/fast-io?lang=java#fast-input) than
+  [significantly slower](/general/fast-io?lang=java#standard-io) than
   `BufferedReader` and should be avoided. You may use your own I/O template, but
   collapse it as described above.
 - It is good practice to not use constant size arrays in Java.
 - Use polymorphism when possible.
   - For example, `List<Integer> list = new ArrayList<>()` instead of
     `ArrayList<Integer> list = new ArrayList<>()`.
+
+
+Java code is automatically formatted using [clang-format](https://clang.llvm.org/docs/ClangFormat.html) with the following settings:
+
+```
+TabWidth: 4
+IndentWidth: 4
+UseTab: ForIndentation
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+SpacesBeforeTrailingComments: 2
+```
 
 </JavaSection>
 
@@ -252,6 +275,17 @@ Optional reading:
 ### Python
 
 - Use `snake_case` to name variables in your code.
+
+<Resources>
+	<Resource
+		source="Google"
+		title="Python Style Guide"
+		url="https://google.github.io/styleguide/pyguide.html"
+	/>
+</Resources>
+
+
+Python code is automatically formatted using [Black with tabs](https://pypi.org/project/black-with-tabs/).
 
 </PySection>
 

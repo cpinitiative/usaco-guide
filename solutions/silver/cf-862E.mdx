@@ -1,0 +1,135 @@
+---
+id: cf-862E
+source: CF
+title: Mahmoud and Ehab and the function
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/54590)
+
+## Explanation
+
+Let's expand the rule for $f(j)$.
+
+$f(j) = |(\sum_{i = 1}^{n} (-1)^{i - 1} \cdot a_i) - (\sum_{i = 1}^{n} (-1)^{i - 1} \cdot b_{i + j})|$
+
+Let's call the added value $k$ and the $a$'s alternating sum $v$.
+
+Note that for each query, adding $k$ to an even-length segment won't make a difference because they'll cancel themselves. Otherwise, $v$ will differ by $k$ (it's not canceled by the following element).
+
+This means that we can precompute $v$ in $\mathcal{O}(N)$ time.
+
+What about $b$? We can compute each segment of $n$ elements with two pointers, since $b$'s values never change.
+
+However, checking every value of $j$ will surely TLE. Instead, we can notice that since we're calculating absolute value, we only care about the two closest elements on either side of it. Thus, we'll binary search on the alternating sums of $b$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + (M + Q)\log M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using std::vector;
+
+int main() {
+	int n;
+	int m;
+	int q;
+	std::cin >> n >> m >> q;
+
+	vector<int> a(n);
+	vector<int> b(m);
+
+	for (int i = 0; i < n; i++) { std::cin >> a[i]; }
+	for (int i = 0; i < m; i++) { std::cin >> b[i]; }
+
+	/*
+	 * calculate the odd and even sums,
+	 * if we start on a index with a different parity,
+	 * we have to invert the operation
+	 */
+	vector<long long> odd_b(m), even_b(m);
+
+	for (int i = 0; i < m; i++) {
+		if (i & 1) {
+			odd_b[i] = b[i];
+		} else {
+			even_b[i] = b[i];
+		}
+
+		if (i > 0) {
+			odd_b[i] += odd_b[i - 1];
+			even_b[i] += even_b[i - 1];
+		}
+	}
+
+	// let seg_b[i] represent the sum of the segment starting at i
+	vector<long long> seg_b(m - n + 1);
+
+	for (int i = 0; i <= (m - n); i++) {
+		long long sum_even = even_b[i + n - 1] - (i ? even_b[i - 1] : 0);
+		long long sum_odd = odd_b[i + n - 1] - (i ? odd_b[i - 1] : 0);
+
+		// if we started on an odd index, we have to invert the operations
+		if (i & 1) {
+			seg_b[i] = sum_odd - sum_even;
+		} else {
+			seg_b[i] = sum_even - sum_odd;
+		}
+	}
+
+	std::sort(seg_b.begin(), seg_b.end());
+
+	long long sum_a = 0;
+	for (int i = 0; i < n; i++) { sum_a += (i & 1 ? -a[i] : a[i]); }
+
+	auto qry = [&](auto it) {
+		auto loc = it;
+
+		if (loc == seg_b.end()) {
+			std::cout << llabs(*(prev(loc)) - sum_a) << std::endl;
+		} else {
+			long long ans = *loc - sum_a;
+
+			if (loc != std::prev(seg_b.end())) {
+				ans = std::min(ans, llabs(*(std::next(loc)) - sum_a));
+			}
+
+			if (loc != seg_b.begin()) {
+				ans = std::min(ans, llabs(*(std::prev(loc)) - sum_a));
+			}
+
+			std::cout << ans << std::endl;
+		}
+	};
+
+	qry(std::lower_bound(seg_b.begin(), seg_b.end(), sum_a));
+
+	for (int i = 0; i < q; i++) {
+		long long l, r, v;
+		std::cin >> l >> r >> v;
+
+		/*
+		 * note that these additions cancel unless the
+		 * length of the sequence incremented is odd
+		 */
+		if ((r - l + 1) & 1) {
+			// adjust based on whether we start by subtracting or adding
+			if (l & 1) {
+				sum_a += v;
+			} else {
+				sum_a -= v;
+			}
+		}
+
+		qry(std::lower_bound(seg_b.begin(), seg_b.end(), sum_a));
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
