@@ -86,21 +86,21 @@ class DisjointSet:
 	parent = {}
 	sz = []
 
-	def __init__(self, sz:int) -> int:  # Construct the DSU
+	def __init__(self, sz: int) -> int:  # Construct the DSU
 		self.sz.append(1)
 		for i in range(1, sz + 1):
 			self.parent[i] = i
 			self.sz.append(1)
 
-	def find(self, k:int) -> int:  # Find the root of k's component
+	def find(self, k: int) -> int:  # Find the root of k's component
 		if self.parent[k] == k:
 			return k
 		return self.find(self.parent[k])
 
-	def find_size(self, x:int) -> int:  # Find the x's component's size
+	def find_size(self, x: int) -> int:  # Find the x's component's size
 		return self.sz[self.find(x)]
 
-	def union(self, a:int, b:int) -> int:  # Combine two components into one
+	def union(self, a: int, b: int) -> int:  # Combine two components into one
 		x = self.find(a)
 		y = self.find(b)
 		self.sz[y] += self.sz[x]
@@ -148,21 +148,21 @@ class DisjointSet:
 	parent = {}
 	sz = []
 
-	def __init__(self, sz:int) -> int:
+	def __init__(self, sz: int) -> int:
 		self.sz.append(1)
 		for i in range(1, sz + 1):
 			self.parent[i] = i
 			self.sz.append(1)
 
-	def find(self, k:int) -> int:
+	def find(self, k: int) -> int:
 		if self.parent[k] == k:
 			return k
 		return self.find(self.parent[k])
 
-	def find_size(self, x:int) -> int:
+	def find_size(self, x: int) -> int:
 		return self.sz[self.find(x)]
 
-	def union(self, a:int, b:int) -> int:
+	def union(self, a: int, b: int) -> int:
 		x = self.find(a)
 		y = self.find(b)
 		self.sz[y] += self.sz[x]
