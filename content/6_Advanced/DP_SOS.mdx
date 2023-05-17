@@ -77,21 +77,21 @@ for (int i = 0; i < (1 << n); i++) {
 </LanguageSection>
 
 Notice how in both of these examples we don't seem to be saving much information between different subsets which is the essence of DP.
-Define $\texttt{SOS}(mask, x)$ to be the sum of subsets of $mask$ such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
+Define $\texttt{SOS}(\texttt{mask}, x)$ to be the sum of subsets of mask such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
 For example, $\texttt{SOS}(1001001, 3)$ includes the subsets $1001001$, $1000001$, $1001000$, $1000000$ which all have the same common prefix of $100$.
 
 Let's try to figure out the transitions between different states.
 
-If the $x$th bit of $mask$ is a $0$ then we can only transition to this state if the $x$th bit of the subset is also $0$. If the $x$th bit of the subset mask was a $1$ then it would no longer be a subset.
+If the $x$th bit of mask is a $0$ then we can only transition to this state if the $x$th bit of the subset is also $0$. If the $x$th bit of the subset mask was a $1$ then it would no longer be a subset.
 
-If the $x$th bit of $mask$ is a $1$ then we can transition to this state from both subsets where the $x$th bit is turned off and turned on because both of these cases would be subsets.
+If the $x$th bit of mask is a $1$ then we can transition to this state from both subsets where the $x$th bit is turned off and turned on because both of these cases would be subsets.
 
 More formally,
 
 $\texttt{SOS}(mask, x) = \left\{
 	\begin{array}{ c l }
-		\texttt{SOS}(mask, x - 1) + \texttt{SOS}(mask - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge mask| > 0 \\
-		\texttt{SOS}(mask, x - 1) & \quad \textrm{otherwise}
+		\texttt{SOS}(\texttt{mask}, x - 1) + \texttt{SOS}(\texttt{mask} - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge \texttt{mask}| > 0 \\
+		\texttt{SOS}(\texttt{mask}, x - 1) & \quad \textrm{otherwise}
 	\end{array}
 \right.$
 
