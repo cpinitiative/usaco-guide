@@ -7,6 +7,15 @@ author: Jesse Choe, Sofia Yang, Juheon Rhee
 
 [Official Analysis (C++)](http://usaco.org/current/data/sol_mountains_silver_jan19.html)
 
+## Explanation
+
+Notice that a mountain is obscured by another mountain iff the base of the mountain (the area the mountain takes up on the ground) is contained within the base of the other mountain.
+
+However, going through all pairs of mountains and checking if one is obscured by another takes $\mathcal{O}(N^2)$ time and is too slow given the input size.
+
+To speed things up, let's sort the mountains by their left end first and then iterate through all of them, keeping track of the rightmost right end we've seen.
+Then, if the right side of the current mountain is less than the current highest right end, we know that that mountain is obscured by another.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(n\log n)$
