@@ -8,7 +8,7 @@ author: Jesse Choe, Chuyang Wang
 [Official Editorial](http://codeforces.com/blog/entry/60288)
 
 
-# Solution (Coordinate Compression)
+# Solution 1: Coordinate Compression
 
 Due to the large constraints on $l_i$ and $r_i$, it is impossible to brute force
 the number of intersecting segments for each point on the coordinate line.
@@ -173,5 +173,76 @@ public class CoveredPointsCount {
 ```
 
 </JavaSection>
+
+</LanguageSection>
+
+
+# Solution 2: Map
+
+Alternatively, we can also use a map to store frequencies at each point of
+interest and iterate through them in order. This way, we don't need to
+explicitly perform the coordinate compression. 
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+
+	// distinct coordinates of the start and end of the segmetns
+	set<ll> points;
+	// frequency of a given coordinate
+	map<ll, int> freq;
+	for (int i = 0; i < n; i++) {
+		ll l, r;
+		cin >> l >> r;
+
+		/*
+		 * A segment starts from [l*, r*], so we should end the segment
+		 * at r* + 1 to ensure that r* is included into the segment.
+		 */
+		freq[l]++;
+		freq[r + 1]--;
+		points.insert(l);
+		points.insert(r + 1);
+	}
+
+	// number of overlapping segments at current position
+	int layers = freq[*points.begin()];
+	auto it = points.begin();
+	it++;
+	// cnt[i] := number of points covered by exactly i segments
+	vector<ll> cnt(n + 1, 0);
+    
+	/*
+	 * iterate through all coordinates of interest and add the number of points
+	 * in each range to the resp. answer
+	 */
+	while (it != points.end()) {
+		cnt[layers] += (*it - *prev(it));
+		layers += freq[*it];
+		it++;
+	}
+
+	for (int i = 1; i <= n; i++) {
+		cout << cnt[i] << " ";
+	}
+	cout << endl;
+}
+```
+
+</CPPSection>
 
 </LanguageSection>
