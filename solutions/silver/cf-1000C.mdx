@@ -95,5 +95,88 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CoveredPointsCount {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.valueOf(br.readLine());
+
+		Pair[] segments = new Pair[n];
+		// This stores only the unique endpoints in sorted order
+		SortedSet<Long> points = new TreeSet<>();
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			segments[i] = new Pair(
+					Long.valueOf(st.nextToken()),
+					Long.valueOf(st.nextToken())
+			);
+			// In a set, only unique points will be stored
+			points.add(segments[i].first);
+			points.add(segments[i].second + 1);
+		}
+		br.close();
+
+		int cur = 0;
+		// This map stores the compressed coordinates.
+		Map<Long, Integer> compressed = new HashMap<>();
+		List<Long> coords = new ArrayList<>();
+		for (long c : points) {
+			// Assign c to cur, where cur is our compressed coordinate for "a".
+			compressed.put(c, cur);
+			/*
+			 * We still need to remember our original endpoints so
+			 * we can retransform the compressed coordinates
+			 */
+			coords.add(c);
+			cur++;
+		}
+		// This stores the frequency of a given endpoint.
+		int[] freq = new int[2 * n];
+		for (int i = 0; i < n; i++) {
+			/*
+			 * A segment starts from [l*, r*], so we should end the segment
+			 * at r* + 1 to ensure that r* is included into the segment.
+			 */
+			freq[compressed.get(segments[i].first)]++;
+			freq[compressed.get(segments[i].second + 1)]--;
+		}
+		// prefix sums for number of points at a given compressed endpoint
+		for (int i = 1; i < 2 * n; i++) {
+			freq[i] += freq[i - 1];
+		}
+
+		// cnt[i] := number of points covered by exactly i segments
+		long[] cnt = new long[n + 1];
+		for (int i = 1; i < coords.size(); i++) {
+			/*
+			 * We decompress the endpoints for a given frequency and add the
+			 * points in this range to the answer.
+			 */
+			cnt[freq[i - 1]] += coords.get(i) - coords.get(i - 1);
+		}
+
+		for (int i = 1; i <= n; i++) {
+			System.out.print(cnt[i]);
+			System.out.print(" ");
+		}
+	}
+
+	private static class Pair {
+		public long first, second;
+
+		public Pair(long f, long s) {
+			first = f;
+			second = s;
+		}
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
