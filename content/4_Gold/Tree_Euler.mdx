@@ -78,14 +78,17 @@ g = [[] for i in range(200005)]
 st = [0 for i in range(200005)]
 en = [0 for i in range(200005)]
 pos = 1
-def dfs(node:int, parent:int):
-    global pos
-    st[node] = pos
-    pos += 1
-    for son in g[node]:
-        if son == parent: continue
-        dfs(son, node)
-    en[node] = pos - 1
+
+
+def dfs(node: int, parent: int):
+	global pos
+	st[node] = pos
+	pos += 1
+	for son in g[node]:
+		if son == parent:
+			continue
+		dfs(son, node)
+	en[node] = pos - 1
 ```
 
 </PySection>
@@ -565,55 +568,74 @@ public class Main {
 
 ```py
 import sys
+
 n, m = map(int, input().split())
 # BeginCodeSnip{Segment Tree}
 v = list(map(int, input().split()))
+
+
 class Segtree:
-    def __init__(self, sz):
-        self.t = [0] * sz * 3
-    def update(self, node, left, right, p, val):
-        if left == right:
-            self.t[node] = val
-            return None
-        mid = (left + right) // 2
-        if p <= mid: self.update(2*node, left, mid, p, val)
-        else: self.update(2*node+1,mid+1, right, p, val)
-        self.t[node] = self.t[2*node] + self.t[2*node+1]
-    def query(self, node, left, right, x, y) -> int:
-        if right < x or left > y: return 0
-        if x <= left and right <=y: return self.t[node]
-        mid = (left + right) // 2
-        return self.query(2*node, left, mid, x, y) + self.query(2*node+1, mid+1, right, x, y)
+	def __init__(self, sz):
+		self.t = [0] * sz * 3
+
+	def update(self, node, left, right, p, val):
+		if left == right:
+			self.t[node] = val
+			return None
+		mid = (left + right) // 2
+		if p <= mid:
+			self.update(2 * node, left, mid, p, val)
+		else:
+			self.update(2 * node + 1, mid + 1, right, p, val)
+		self.t[node] = self.t[2 * node] + self.t[2 * node + 1]
+
+	def query(self, node, left, right, x, y) -> int:
+		if right < x or left > y:
+			return 0
+		if x <= left and right <= y:
+			return self.t[node]
+		mid = (left + right) // 2
+		return self.query(2 * node, left, mid, x, y) + self.query(
+			2 * node + 1, mid + 1, right, x, y
+		)
+
+
 # EndCodeSnip
 g = [[] for i in range(200005)]
 st = [0 for i in range(200005)]
 en = [0 for i in range(200005)]
 pos = 1
-def dfs(node:int, parent:int):
-    global pos
-    st[node] = pos
-    pos += 1
-    for son in g[node]:
-        if son == parent: continue
-        dfs(son, node)
-    en[node] = pos - 1
 
 
-for i in range(n-1):
-    x, y = map(int, input().split())
-    g[x].append(y)
-    g[y].append(x)
+def dfs(node: int, parent: int):
+	global pos
+	st[node] = pos
+	pos += 1
+	for son in g[node]:
+		if son == parent:
+			continue
+		dfs(son, node)
+	en[node] = pos - 1
+
+
+for i in range(n - 1):
+	x, y = map(int, input().split())
+	g[x].append(y)
+	g[y].append(x)
 
 sys.setrecursionlimit(200002)
 dfs(1, 1)
 
-sg = Segtree(n+1)
-for i in range(1, n+1): sg.update(1, 1, n, st[i], v[i-1])
+sg = Segtree(n + 1)
+for i in range(1, n + 1):
+	sg.update(1, 1, n, st[i], v[i - 1])
 
 for i in range(m):
-    vals =  list(map(int, input().split()))
-    if vals[0] == 1: sg.update(1, 1, n, st[vals[1]], vals[2])
-    else: print(sg.query(1, 1, n, st[vals[1]], en[vals[1]]))
+	vals = list(map(int, input().split()))
+	if vals[0] == 1:
+		sg.update(1, 1, n, st[vals[1]], vals[2])
+	else:
+		print(sg.query(1, 1, n, st[vals[1]], en[vals[1]]))
 ```
 
 </PySection>

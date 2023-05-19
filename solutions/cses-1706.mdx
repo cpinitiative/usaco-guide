@@ -12,9 +12,9 @@ For example: if 2 and 3 want  the same thing and 3 and 4 want the same think ==>
 
 
 ```cpp
+#include <bitset>
 #include <iostream>
 #include <vector>
-#include <bitset>
 
 using namespace std;
 
@@ -22,25 +22,24 @@ const int NMAX = 2e5;
 
 int n, m;
 
-class DSU { // Disjoint Set Union
-private:
+class DSU {  // Disjoint Set Union
+  private:
 	int t[NMAX], sz[NMAX];
-public:
+
+  public:
 	DSU() {
-		for(int i = 1; i < NMAX; i++) {
+		for (int i = 1; i < NMAX; i++) {
 			t[i] = i;
 			sz[i] = 1;
 		}
 	}
-	int FindSize( int x ) {
-		return sz[FindRoot(x)];
-	}
-	int FindRoot( int x ) {
-		if(t[x] == x) return x;
+	int FindSize(int x) { return sz[FindRoot(x)]; }
+	int FindRoot(int x) {
+		if (t[x] == x) return x;
 		t[x] = FindRoot(t[x]);
 		return t[x];
 	}
-	void unite( int x, int y ){
+	void unite(int x, int y) {
 		x = FindRoot(x), y = FindRoot(y);
 		sz[y] += sz[x];
 		t[x] = y;
@@ -49,26 +48,24 @@ public:
 
 int main() {
 	scanf("%d %d", &n, &m);
-	for(int i = 1; i <= m; i++) {
+	for (int i = 1; i <= m; i++) {
 		int x, y;
 		scanf("%d %d", &x, &y);
 		ds.unite(x, y);
 	}
 	vector<int> sizes;
-	for(int i = 1; i <= n; i++) {
-		if( ds.FindRoot(i) != i ) continue ;
+	for (int i = 1; i <= n; i++) {
+		if (ds.FindRoot(i) != i) continue;
 		sizes.push_back(ds.FindSize(i));
 	}
 
 	bitset<100003> dp;
 	dp[0] = 1;
-	for(auto sz : sizes)
-		dp |= dp << sz;
+	for (auto sz : sizes) dp |= dp << sz;
 
 	// The above line shifts the knapsack to the right by sz bits
 
-	for(int i = 1; i <= n; i++)
-		cout << dp[i];
+	for (int i = 1; i <= n; i++) cout << dp[i];
 	puts("");
 
 	return 0;
