@@ -73,9 +73,7 @@ int main() {
 		freq[compressed[segments[i].second + 1]]--;
 	}
 	// prefix sums for number of points at a given compressed endpoint
-	for (int i = 1; i < 2 * n; i++) {
-		freq[i] += freq[i - 1];
-	}
+	for (int i = 1; i < 2 * n; i++) { freq[i] += freq[i - 1]; }
 
 	// cnt[i] := number of points covered by exactly i segments
 	vector<ll> cnt(n + 1, 0);
@@ -87,9 +85,7 @@ int main() {
 		cnt[freq[i - 1]] += coords[i] - coords[i - 1];
 	}
 
-	for (int i = 1; i <= n; i++) {
-		cout << cnt[i] << " ";
-	}
+	for (int i = 1; i <= n; i++) { cout << cnt[i] << " "; }
 	cout << endl;
 }
 ```
@@ -103,7 +99,8 @@ import java.util.*;
 
 public class CoveredPointsCount {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.valueOf(br.readLine());
 
 		Pair[] segments = new Pair[n];
@@ -111,10 +108,8 @@ public class CoveredPointsCount {
 		SortedSet<Long> points = new TreeSet<>();
 		for (int i = 0; i < n; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			segments[i] = new Pair(
-					Long.valueOf(st.nextToken()),
-					Long.valueOf(st.nextToken())
-			);
+			segments[i] = new Pair(Long.valueOf(st.nextToken()),
+			                       Long.valueOf(st.nextToken()));
 			// In a set, only unique points will be stored
 			points.add(segments[i].first);
 			points.add(segments[i].second + 1);
@@ -146,9 +141,7 @@ public class CoveredPointsCount {
 			freq[compressed.get(segments[i].second + 1)]--;
 		}
 		// prefix sums for number of points at a given compressed endpoint
-		for (int i = 1; i < 2 * n; i++) {
-			freq[i] += freq[i - 1];
-		}
+		for (int i = 1; i < 2 * n; i++) { freq[i] += freq[i - 1]; }
 
 		// cnt[i] := number of points covered by exactly i segments
 		long[] cnt = new long[n + 1];
