@@ -9,32 +9,11 @@ author: Jesse Choe, Sofia Yang, Juheon Rhee
 
 ## Explanation
 
-Notice that a mountain is obscured by another mountain if and only if the base or the mountain (the area the mountain takes up on the ground) is contained within the base of the other mountain.
+Notice that a mountain is obscured by another mountain iff the base of the mountain (the area the mountain takes up on the ground) is contained within the base of the other mountain.
 
-Since each mountain is a right triangle, for any mountain $\mathcal{i}$ the right side of the base is $\mathcal{i}_{x}+{i}_y$ and the left side is $\mathcal{i}_{x}-{i}_y$. This is shown below:
+However, going through all pairs of mountains and checking if one is obscured by another takes $\mathcal{O}(N^2)$ time and is too slow given the input size.
 
-![](usaco-896/mountains0.png)
-
-Therefore, for a mountain $\mathcal{i}$ to be contained in another mountain $\mathcal{j}$, $\mathcal{i}_{x}+{i}_{y}\le{j}_{x}+{j}_{y}$ and $\mathcal{i}_{x}-{i}_{y}\ge{j}_{x}-{j}_{y}$.
-
-We can see this in the graphs below:
-
-![](usaco-896/mountains1.png)
-
-In this case, In this case, $\mathcal{j}$, $\mathcal{i}_{x}+{i}_{y}\le{j}_{x}+{j}_{y}$ and $\mathcal{i}_{x}-{i}_{y}\ge{j}_{x}-{j}_{y}$, meaning that the left and right ends of the mountain $\mathcal{i}$ are contained within mountain $\mathcal{j}$.
-
-![](usaco-896/mountains2.png)
-
-In *this* case, $\mathcal{j}$, $\mathcal{i}_{x}+{i}_{y}\le{j}_{x}+{j}_{y}$, but $\mathcal{i}_{x}-{i}_{y}<{j}_{x}-{j}_{y}$, meaning that the right end of the mountain $\mathcal{i}$ is to the left of the rightmost end of mountain $\mathcal{j}$, but the left end of mountain $\mathcal{i}$ is not to the right of the left end of mountain $\mathcal{j}$, meaning it is not contained within mountain j.
-
-This same reasoning can also work if the mountains overlap, as shown below:
-
-![](usaco-896/mountains3.png)
-
-Using this information, we can loop through every pair of mountains and check if one is occluded by another, and complete this problem in $\mathcal{O}(n^2)$ time complexity, but that may be too slow and not complete every testcase (our Java implementation of this method completed 10/11 testcases), so we can use an alternative approach.
-
-If we sort the mountains by their left end.
-Then we can loop through the list and keep track of the highest right end.
+To speed things up, let's sort the mountains by their left end first and then iterate through all of them, keeping track of the rightmost right end we've seen.
 Then, if the right side of the current mountain is less than the current highest right end, we know that that mountain is obscured by another.
 
 ## Implementation
@@ -48,9 +27,7 @@ Then, if the right side of the current mountain is less than the current highest
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Mountain {
-	int start, end;
-};
+struct Mountain { int start, end; };
 
 bool operator<(const Mountain &m1, const Mountain &m2) {
 	// sort by start and tiebreak by putting the larger mountains first
