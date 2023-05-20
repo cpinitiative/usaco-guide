@@ -129,6 +129,35 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+	
+```py
+
+NMAX = 200009
+LOGMAX = 19
+n, q = map(int, input().split())
+up = [[0 for j in range(NMAX)] for i in range(LOGMAX)]
+
+def jmp(x:int, k:int) -> int:
+    for i in range(LOGMAX):
+        if(k & (1<<i)):
+            x = up[i][x]
+    return x if x > 0 else -1
+
+boss = list(map(int, input().split()))
+for i in range(n-1): up[0][i+2] = boss[i]
+
+for i in range(1, LOGMAX):
+    for j in range(1, n+1):
+        up[i][j] = up[i-1][up[i-1][j]] # Construct our parent array
+
+for i in range(q):
+    x, k = list(map(int, input().split()))
+    print(jmp(x, k))
+```
+	
+</PySection>
+	
 </LanguageSection>
 
 ### Problems
