@@ -79,14 +79,15 @@ st = [0 for i in range(NMAX)]
 en = [0 for i in range(NMAX)]
 timer = 1
 
+
 def dfs(node: int, parent: int):
-    global timer
-    st[node] = timer
-    timer += 1
-    for son in g[node]:
-        if son != parent:
-            dfs(son, node)
-    en[node] = timer - 1
+	global timer
+	st[node] = timer
+	timer += 1
+	for son in g[node]:
+		if son != parent:
+			dfs(son, node)
+	en[node] = timer - 1
 ```
 
 </PySection>
@@ -566,7 +567,8 @@ public class Main {
 
 ```py
 import sys
-sys.setrecursionlimit(10 ** 9)
+
+sys.setrecursionlimit(10**9)
 
 NMAX = 200005
 n, q = map(int, input().split())
@@ -575,37 +577,37 @@ v = list(map(int, input().split()))
 
 
 class SegmentTree:
-    def __init__(self, arr: list[int], n: int) -> None:
-        self.arr = arr
-        self.n = n
-        self.tree = [0] * (2 * n)
-        for ii in range(n):
-            self.tree[n + ii] = arr[ii]
-        for ii in reversed(range(n)):
-            self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
+	def __init__(self, arr: list[int], n: int) -> None:
+		self.arr = arr
+		self.n = n
+		self.tree = [0] * (2 * n)
+		for ii in range(n):
+			self.tree[n + ii] = arr[ii]
+		for ii in reversed(range(n)):
+			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
 
-    def add(self, i: int, v: int) -> None:
-        i += self.n
-        self.tree[i] = v
+	def add(self, i: int, v: int) -> None:
+		i += self.n
+		self.tree[i] = v
 
-        while i > 1:
-            self.tree[i >> 1] = self.tree[i] + self.tree[i ^ 1]
-            i >>= 1
+		while i > 1:
+			self.tree[i >> 1] = self.tree[i] + self.tree[i ^ 1]
+			i >>= 1
 
-    def range_sum(self, l: int, r: int) -> int:
-        l += self.n
-        r += self.n
-        sum = 0
-        while l < r:
-            if l & 1:
-                sum += self.tree[l]
-                l += 1
-            if r & 1:
-                r -= 1
-                sum += self.tree[r]
-            l >>= 1
-            r >>= 1
-        return sum
+	def range_sum(self, l: int, r: int) -> int:
+		l += self.n
+		r += self.n
+		sum = 0
+		while l < r:
+			if l & 1:
+				sum += self.tree[l]
+				l += 1
+			if r & 1:
+				r -= 1
+				sum += self.tree[r]
+			l >>= 1
+			r >>= 1
+		return sum
 
 
 g = [[] for i in range(NMAX)]
@@ -613,29 +615,31 @@ st = [0 for i in range(NMAX)]
 en = [0 for i in range(NMAX)]
 timer = 1
 
+
 def dfs(node: int, parent: int):
-    global timer
-    st[node] = timer
-    timer += 1
-    for son in g[node]:
-        if son != parent:
-            dfs(son, node)
-    en[node] = timer - 1
+	global timer
+	st[node] = timer
+	timer += 1
+	for son in g[node]:
+		if son != parent:
+			dfs(son, node)
+	en[node] = timer - 1
+
 
 for i in range(n - 1):
-    x, y = map(int, input().split())
-    g[x].append(y)
-    g[y].append(x)
+	x, y = map(int, input().split())
+	g[x].append(y)
+	g[y].append(x)
 
 dfs(1, 1)
 sg = SegmentTree(v, n)
 
 for i in range(q):
-    query = list(map(int, input().split()))
-    if query[0] == 1:
-        sg.add(st[query[1]]-1, query[2])
-    else:
-        print(sg.range_sum(st[query[1]]-1, en[query[1]]))
+	query = list(map(int, input().split()))
+	if query[0] == 1:
+		sg.add(st[query[1]] - 1, query[2])
+	else:
+		print(sg.range_sum(st[query[1]] - 1, en[query[1]]))
 ```
 
 </PySection>
