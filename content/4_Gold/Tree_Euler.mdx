@@ -570,12 +570,12 @@ import sys
 
 sys.setrecursionlimit(10**9)
 
-MAX_N = 200000
+MAX_N = 200001
 n, q = map(int, input().split())
 
 v = list(map(int, input().split()))
 
-# BeginCodeSnip{Segment Tree}
+# BeginCodeSnip{Segment Tree (from PURS module)}
 class SegmentTree:
 	def __init__(self, arr: list[int], n: int):
 		self.arr = arr
@@ -586,7 +586,7 @@ class SegmentTree:
 		for ii in reversed(range(n)):
 			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
 
-	def add(self, i: int, v: int) -> None:
+	def add(self, i: int, v: int):
 		i += self.n
 		self.tree[i] = v
 
