@@ -109,11 +109,11 @@ public class MeetingPlace {
 	static List<Double> locations = new ArrayList<>();
 	static List<Double> speeds = new ArrayList<>();
 
+	final static double MAX_ERROR = 10e-7;
 	static double min_ans = Double.MAX_VALUE;
 	static double curr_min_time;
 	static boolean left_has_max = false;  // which side gives us max answer
 	static boolean right_has_max = false;
-	static double MAX_ERROR = 10e-7;
 
 	/**
 	 * Checks whether all friends can converge on one point in the specified
@@ -125,8 +125,8 @@ public class MeetingPlace {
 			if (locations.get(i) == loc) { continue; }
 			double i_time = Math.abs(locations.get(i) - loc) / speeds.get(i);
 			if (i_time > max_time) {
-				left_has_max =
-				    false;  // reset to false, as we have a new maximum
+				// reset to false, as we have a new maximum
+				left_has_max = false;  
 				right_has_max = false;
 				if (locations.get(i) > loc) {
 					right_has_max = true;
@@ -149,13 +149,9 @@ public class MeetingPlace {
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-
 		int n = scanner.nextInt();
-
 		double low = 0;
-		// high will be the location of the farthest north friend
-		double high = 0;
-		double mid;
+		double high = 0; // location of the farthest north friend
 
 		for (int i = 0; i < n; i++) {
 			double location = scanner.nextDouble();
@@ -167,7 +163,7 @@ public class MeetingPlace {
 
 		// Binary search is used to find the minimum time.
 		while (high - low > MAX_ERROR) {
-			mid = (high + low) / 2;
+			double mid = (high + low) / 2;
 			curr_min_time = get_time(mid);
 			min_ans = Math.min(min_ans, curr_min_time);
 			if (left_has_max && right_has_max) {
