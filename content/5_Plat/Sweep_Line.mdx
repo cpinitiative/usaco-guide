@@ -67,6 +67,88 @@ Extending Solution 1, we can use a set instead of divide and conquer. Once again
 As we visit point $P$, we utilize the set to consider all points with y-coordiate in $[P_y-\delta, P_y+\delta]$. The set contains $[P_x-\delta, P_x]$ because of how it is maintained as a running window. Now we have the same bounding box as Solution 1, with at most 6 points inside.
 
 For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our set accordingly. Each point is inserted and removed from the set at most once, so the algorithm yields $\mathcal{O}(n\log n)$.
+
+<LanguageSection>
+	
+<CPPSection>
+	
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Point{ 
+	long double x, y; 
+	bool operator<(const Point &other) {
+		if(x == other.x) return y < other.y;
+		return x < other.x;
+	}
+};
+
+const pair<Point, Point> INF = {{-1e9, -1e9}, {1e9, 1e9}};
+long double dist(pair<Point, Point> a) { 
+	long double d1 = a.first.x - a.second.x;
+	long double d2 = a.first.y - a.second.y;
+	return sqrt(d1 * d1 + d2 * d2);
+}
+
+pair<Point, Point> min(pair<Point, Point> a, pair<Point, Point> b) { return (dist(a) < dist(b) ? a : b); }
+
+pair<Point, Point> strip_solve(vector<Point> &points) {
+	pair<Point, Point> ans = INF;
+	for(int i = 0; i < (int)points.size(); i++)
+		for(int j = i+1; j < (int)points.size() && j-i < 9; j++)
+			ans = min(ans, {points[i], points[j]});
+	return ans;
+}
+
+pair<Point, Point> solve(vector<Point> &points, int l, int r) {
+	if(r-l+1 <= 3) {
+		pair<Point, Point> ans = INF;
+		for(int i = l; i < r; i++)
+			for(int j = i+1; j < r; j++)
+				ans = min(ans, {points[i], points[j]});
+		return ans;
+	}
+	int mid = (l+r) >> 1;
+	pair<Point, Point> ans_left = solve(points, l, mid);
+	pair<Point, Point> ans_right = solve(points, mid+1, r);
+	pair<Point, Point> ans;
+	 
+	ans = min(ans_left, ans_right);
+	long double delta = dist(ans);
+	
+	Point mid_point = points[mid];
+	vector<Point> strip;
+	for(int i = l; i < r; i++)
+		if(abs(points[i].x - mid_point.x) <= delta)
+			strip.push_back(points[i]);
+	sort(strip.begin(), strip.end(), [](Point a, Point b){
+		return a.y < b.y ||( a.y == b.y && a.x < b.x);
+	});
+	return min(ans, strip_solve(strip));
+}
+
+int main() {
+	int n;
+	while(scanf("%d", &n) && n > 0) {
+		vector<Point> v;
+		for(int i = 0; i < n; i++) {
+			long double x, y;
+			scanf("%Lf %Lf", &x, &y);
+			v.push_back({x, y});
+		}
+		sort(v.begin(), v.end());
+		pair<Point, Point> ans = solve(v, 0, v.size());
+		printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.x, ans.first.y, ans.second.x, ans.second.y);
+	}
+	
+	return 0;
+}
+```
+</CPPSection>
+	
+</LanguageSection>
+
 ## Line Segments
 
 <FocusProblem problem="segSam" />
