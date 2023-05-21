@@ -74,9 +74,9 @@ public static void dfs(int i, int p) {
 <PySection>
 
 ```py
-g = [[] for i in range(NMAX)]
-st = [0 for i in range(NMAX)]
-en = [0 for i in range(NMAX)]
+g = [[] for i in range(MAX_N)]
+st = [0 for i in range(MAX_N)]
+en = [0 for i in range(MAX_N)]
 timer = 1
 
 
@@ -570,7 +570,7 @@ import sys
 
 sys.setrecursionlimit(10**9)
 
-MAX_N = 200001
+MAX_N = 2 * 10 ** 5
 n, q = map(int, input().split())
 
 v = list(map(int, input().split()))
@@ -628,20 +628,21 @@ def dfs(node: int, parent: int):
 	en[node] = timer - 1
 
 
-for i in range(n - 1):
+for _ in range(n - 1):
 	x, y = map(int, input().split())
+	x -= 1, y -= 1
 	g[x].append(y)
 	g[y].append(x)
 
-dfs(1, 1)
+dfs(0, 0)
 sg = SegmentTree(v, n)
 
 for i in range(q):
 	query = list(map(int, input().split()))
 	if query[0] == 1:
-		sg.add(st[query[1]] - 1, query[2])
+		sg.add(st[query[1]-1] - 1, query[2])
 	else:
-		print(sg.range_sum(st[query[1]] - 1, en[query[1]]))
+		print(sg.range_sum(st[query[1]-1] - 1, en[query[1]-1]))
 ```
 
 </PySection>
