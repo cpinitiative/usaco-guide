@@ -630,14 +630,15 @@ def dfs(node: int, parent: int):
 
 for _ in range(n - 1):
 	x, y = map(int, input().split())
-	x -= 1, y -= 1
+	x -= 1
+	y -= 1
 	g[x].append(y)
 	g[y].append(x)
 
 dfs(0, 0)
 sg = SegmentTree(v, n)
 
-for i in range(q):
+for _ in range(q):
 	query = list(map(int, input().split()))
 	if query[0] == 1:
 		sg.add(st[query[1]-1] - 1, query[2])
