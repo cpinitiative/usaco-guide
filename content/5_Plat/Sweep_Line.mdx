@@ -83,7 +83,7 @@ pair<Point, Point> get_closest_points(pair<Point, Point> a,
 	return (dist(a) < dist(b) ? a : b);
 }
 
-pair<Point, Point> strip_solve(vector<Point> &points) {
+pair<Point, Point> strip_solve(vector<Point> &points) { // Brute force for points with near mid_point
 	pair<Point, Point> ans = INF;
 	for (int i = 0; i < (int)points.size(); i++)
 		for (int j = i + 1; j < (int)points.size() && j - i < 9; j++)
@@ -91,17 +91,17 @@ pair<Point, Point> strip_solve(vector<Point> &points) {
 	return ans;
 }
 
-pair<Point, Point> solve(vector<Point> &points, int l, int r) {
+pair<Point, Point> solve(vector<Point> &points, int l, int r) { // Solve the problem for range [l, r]
 	if (l == r) { return INF; }
 	int mid = (l + r) / 2;
-	pair<Point, Point> ans_left = solve(points, l, mid);
-	pair<Point, Point> ans_right = solve(points, mid + 1, r);
+	pair<Point, Point> ans_left = solve(points, l, mid); // The smallest distance in range [l, mid]
+	pair<Point, Point> ans_right = solve(points, mid + 1, r); // The smallest distance in range [mid+1, r]
 	pair<Point, Point> ans;
 
 	ans = get_closest_points(ans_left, ans_right);
-	long double delta = dist(ans);
+	long double delta = dist(ans); 
 
-	Point mid_point = points[mid];
+	Point mid_point = points[mid]; 
 	vector<Point> strip;
 	for (int i = l; i < r; i++)
 		if (abs(points[i].x - mid_point.x) <= delta) strip.push_back(points[i]);
