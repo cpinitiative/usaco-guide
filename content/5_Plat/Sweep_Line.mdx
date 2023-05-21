@@ -56,7 +56,6 @@ To achieve the desired $\mathcal{O}(n)$ complexity per layer, we need to be able
 Because each step now runs in linear time and there is a total of $\lceil \log n \rceil$ steps, by the [master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)) our solution now runs in $\mathcal{O}(n\log n)$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -81,11 +80,13 @@ long double dist(const pair<Point, Point> &a) {
 
 pair<Point, Point> get_closest_points(const pair<Point, Point> &a,
                                       const pair<Point, Point> &b) {
-	return (dist(a) < dist(b) ? a : b);
+	return dist(a) < dist(b) ? a : b;
 }
 
-/* Brute force for points with near mid_point - the median point in the sorted
- * array */
+/**
+ * Brute force for points with near
+ * the median point in the sorted array
+ */
 pair<Point, Point> strip_solve(vector<Point> &points) {
 	pair<Point, Point> ans = INF;
 	for (int i = 0; i < (int)points.size(); i++) {
@@ -100,10 +101,11 @@ pair<Point, Point> strip_solve(vector<Point> &points) {
 pair<Point, Point> solve(vector<Point> &points, int l, int r) {
 	if (l == r) { return INF; }
 	int mid = (l + r) / 2;
-	pair<Point, Point> ans_left =
-	    solve(points, l, mid);  // The smallest distance in range [l, mid]
-	pair<Point, Point> ans_right =
-	    solve(points, mid + 1, r);  // The smallest distance in range [mid+1, r]
+	
+	// The smallest distance in range [l, mid]
+	pair<Point, Point> ans_left = solve(points, l, mid);
+	// The smallest distance in range [mid+1, r]
+	pair<Point, Point> ans_right = solve(points, mid + 1, r);
 	pair<Point, Point> ans;
 
 	ans = get_closest_points(ans_left, ans_right);
@@ -135,8 +137,8 @@ int main() {
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
 
 ### Solution 2
