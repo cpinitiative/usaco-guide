@@ -72,28 +72,28 @@ struct Point {
 };
 
 const pair<Point, Point> INF{{-1e9, -1e9}, {1e9, 1e9}};
-long double dist(pair<Point, Point> a) {
+	
+long double dist(const pair<Point, Point> &a) {
 	long double d1 = a.first.x - a.second.x;
 	long double d2 = a.first.y - a.second.y;
 	return sqrt(d1 * d1 + d2 * d2);
 }
 
-pair<Point, Point> get_closest_points(pair<Point, Point> a,
-                                      pair<Point, Point> b) {
+pair<Point, Point> get_closest_points(const pair<Point, Point> &a, const pair<Point, Point> &b) {
 	return (dist(a) < dist(b) ? a : b);
 }
-
-pair<Point, Point> strip_solve(
-    vector<Point> &points) {  // Brute force for points with near mid_point
+/* Brute force for points with near mid_point */
+pair<Point, Point> strip_solve(vector<Point> &points) {  
 	pair<Point, Point> ans = INF;
-	for (int i = 0; i < (int)points.size(); i++)
-		for (int j = i + 1; j < (int)points.size() && j - i < 9; j++)
+	for (int i = 0; i < (int)points.size(); i++) {
+		for (int j = i + 1; j < (int)points.size() && j - i < 9; j++) {
 			ans = get_closest_points(ans, {points[i], points[j]});
+		}
+	}
 	return ans;
 }
 
-pair<Point, Point> solve(vector<Point> &points, int l,
-                         int r) {  // Solve the problem for range [l, r]
+pair<Point, Point> solve(vector<Point> &points, int l, int r) {  // Solve the problem for range [l, r]
 	if (l == r) { return INF; }
 	int mid = (l + r) / 2;
 	pair<Point, Point> ans_left =
