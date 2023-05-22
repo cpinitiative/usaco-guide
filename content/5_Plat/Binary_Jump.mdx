@@ -130,34 +130,36 @@ int main() {
 </CPPSection>
 
 <PySection>
-	
-```py
 
+```py
 NMAX = 200001
 LOGMAX = 20
 n, q = map(int, input().split())
 up = [[0 for j in range(NMAX)] for i in range(LOGMAX)]
 
-def jmp(x:int, k:int) -> int:
-    for i in range(LOGMAX):
-        if(k & (1<<i)):
-            x = up[i][x]
-    return x if x > 0 else -1
+
+def jmp(x: int, k: int) -> int:
+	for i in range(LOGMAX):
+		if k & (1 << i):
+			x = up[i][x]
+	return x if x > 0 else -1
+
 
 boss = list(map(int, input().split()))
-for i in range(n-1): up[0][i+2] = boss[i]
+for i in range(n - 1):
+	up[0][i + 2] = boss[i]
 
 for i in range(1, LOGMAX):
-    for j in range(1, n+1):
-        up[i][j] = up[i-1][up[i-1][j]] # Construct our parent array
+	for j in range(1, n + 1):
+		up[i][j] = up[i - 1][up[i - 1][j]]  # Construct our parent array
 
 for i in range(q):
-    x, k = list(map(int, input().split()))
-    print(jmp(x, k))
+	x, k = list(map(int, input().split()))
+	print(jmp(x, k))
 ```
-	
+
 </PySection>
-	
+
 </LanguageSection>
 
 ### Problems
@@ -259,43 +261,53 @@ int main() {
 </CPPSection>
 
 <PySection>
-	
+
 ```py
 import sys
+
 NMAX = 200001
 LOGMAX = 20
 sys.setrecursionlimit(NMAX)
 
 n, q = map(int, input().split())
-g = [[] for _ in range(n+1)]
-depth = [0 for _ in range(n+1)]
+g = [[] for _ in range(n + 1)]
+depth = [0 for _ in range(n + 1)]
 up = [[0 for j in range(LOGMAX)] for i in range(NMAX)]
-	
+
 boss = list(map(int, input().split()))
-for i in range(2,n+1): g[boss[i-2]].append(i)
-	
-def dfs(node:int, parent:int):
-    up[node][0] = parent
-    for i in range(1, LOGMAX): up[node][i] = up[up[node][i-1]][i-1]
-    for son in g[node]:
-        if son != parent:
-            depth[son] = depth[node] + 1
-            dfs(son, node)
-	
-def jump(x:int, d:int) -> int:
-    for i in range(LOGMAX):
-        if((1<<i) & d):
-            x = up[x][i]
-    return x
-	
-def lca(x:int, y:int) -> int:
-    if depth[x] < depth[y]: x, y = y, x
-    x = jump(x, depth[x] - depth[y])
-    if x == y: return x
-    for i in range(LOGMAX):
-        a, b = up[x][i], up[y][i]
-        if a != b: x, y = a, b
-    return up[x][0]
+for i in range(2, n + 1):
+	g[boss[i - 2]].append(i)
+
+
+def dfs(node: int, parent: int):
+	up[node][0] = parent
+	for i in range(1, LOGMAX):
+		up[node][i] = up[up[node][i - 1]][i - 1]
+	for son in g[node]:
+		if son != parent:
+			depth[son] = depth[node] + 1
+			dfs(son, node)
+
+
+def jump(x: int, d: int) -> int:
+	for i in range(LOGMAX):
+		if (1 << i) & d:
+			x = up[x][i]
+	return x
+
+
+def lca(x: int, y: int) -> int:
+	if depth[x] < depth[y]:
+		x, y = y, x
+	x = jump(x, depth[x] - depth[y])
+	if x == y:
+		return x
+	for i in range(LOGMAX):
+		a, b = up[x][i], up[y][i]
+		if a != b:
+			x, y = a, b
+	return up[x][0]
+
 
 up[0][0] = 0
 depth[0] = 0
@@ -303,12 +315,12 @@ depth[0] = 0
 dfs(1, 0)
 
 for _ in range(q):
-    a, b = list(map(int, input().split()))
-    print(lca(a, b))
+	a, b = list(map(int, input().split()))
+	print(lca(a, b))
 ```
-	
+
 </PySection>
-	
+
 </LanguageSection>
 
 ### Alternative Solution (Company Queries II)
