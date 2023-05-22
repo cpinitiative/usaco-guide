@@ -114,8 +114,8 @@ Here's the code we're going to use to perform a Euler Tour on the graph:
 <CPPSection>
 
 ```cpp
-#include <vector>
 #include <iostream>
+#include <vector>
 
 using std::vector;
 
@@ -128,9 +128,7 @@ int timer = 0;
 void euler_tour(int at, int prev) {
 	start[at] = timer++;
 	for (int n : neighbors[at]) {
-		if (n != prev) {
-			euler_tour(n, at);
-		}
+		if (n != prev) { euler_tour(n, at); }
 	}
 	end[at] = timer;
 }
@@ -150,9 +148,7 @@ public class EulerTour {
 	static void eulerTour(int at, int prev) {
 		start[at] = timer++;
 		for (int n : neighbors[at]) {
-			if (n != prev) {
-				eulerTour(n, at);
-			}
+			if (n != prev) { eulerTour(n, at); }
 		}
 		end[at] = timer;
 	}
@@ -171,13 +167,13 @@ timer = 0
 
 
 def euler_tour(at: int, prev: int):
-    global timer
-    start[at] = timer
-    timer += 1
-    for n in neighbors[at]:
-        if n != prev:
-            euler_tour(n, at)
-    end[at] = timer
+	global timer
+	start[at] = timer
+	timer += 1
+	for n in neighbors[at]:
+		if n != prev:
+			euler_tour(n, at)
+	end[at] = timer
 ```
 
 </PySection>
@@ -427,15 +423,15 @@ size of $i$.
 <CPPSection>
 
 ```cpp
-#include <vector>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-//BeginCodeSnip{BIT (from PURS module)}
+// BeginCodeSnip{BIT (from PURS module)}
 template <class T> class BIT {
   private:
 	int size;
@@ -460,7 +456,7 @@ template <class T> class BIT {
 		return total;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 vector<vector<int>> neighbors;
 vector<int> start;
@@ -470,9 +466,7 @@ int timer = 0;
 void euler_tour(int at, int prev) {
 	start[at] = timer++;
 	for (int n : neighbors[at]) {
-		if (n != prev) {
-			euler_tour(n, at);
-		}
+		if (n != prev) { euler_tour(n, at); }
 	}
 	end[at] = timer;
 }
@@ -483,9 +477,7 @@ int main() {
 	std::cin >> node_num >> query_num;
 
 	vector<int> vals(node_num);
-	for (int& v : vals) {
-		std::cin >> v;
-	}
+	for (int &v : vals) { std::cin >> v; }
 
 	neighbors.resize(node_num);
 	for (int e = 0; e < node_num - 1; e++) {
@@ -500,9 +492,7 @@ int main() {
 	euler_tour(0, -1);
 
 	BIT<long long> bit(node_num);
-	for (int i = 0; i < node_num; i++) {
-		bit.set(start[i], vals[i]);
-	}
+	for (int i = 0; i < node_num; i++) { bit.set(start[i], vals[i]); }
 	for (int q = 0; q < query_num; q++) {
 		int type;
 		std::cin >> type;
