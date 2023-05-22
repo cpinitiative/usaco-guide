@@ -88,7 +88,6 @@ They will be covered in [platinum](/plat/seg-ext).
 
 ```cpp
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <vector>
 
@@ -99,9 +98,6 @@ using std::vector;
 /** A data structure that can answer point update & range minimum queries. */
 template <class T> class MinSegmentTree {
   private:
-	/** The operation to use for combining two elements. (Must be associative)
-	 */
-	T comb(T a, T b) { return std::min(a, b); }
 	const T DEFAULT = 1e18;  // Will overflow if T is an int
 
 	vector<T> segtree;
@@ -112,21 +108,19 @@ template <class T> class MinSegmentTree {
 
 	/** Sets the value at ind to val. */
 	void set(int ind, T val) {
-		assert(0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
-			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
+			segtree[ind / 2] = std::min(segtree[ind], segtree[ind ^ 1]);
 		}
 	}
 
 	/** @return the minimum element in the range [start, end) */
 	T range_min(int start, int end) {
-		assert(0 <= start && start < len && 0 < end && end <= len);
 		T sum = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) { sum = comb(sum, segtree[start++]); }
-			if ((end & 1) != 0) { sum = comb(sum, segtree[--end]); }
+			if (start % 2 == 1) { sum = std::min(sum, segtree[start++]); }
+			if (end % 2 == 1) { sum = std::min(sum, segtree[--end]); }
 		}
 		return sum;
 	}
@@ -137,7 +131,7 @@ int main() {
 	int query_num;
 	std::cin >> arr_len >> query_num;
 
-	MinSegmentTree<int> segtree(arr_len);
+	MinSegmentTree<long long> segtree(arr_len);
 	for (int i = 0; i < arr_len; i++) {
 		int n;
 		std::cin >> n;
@@ -145,18 +139,12 @@ int main() {
 	}
 
 	for (int q = 0; q < query_num; q++) {
-		int type;
-		std::cin >> type;
+		int type, arg1, arg2;
+		std::cin >> type >> arg1 >> arg2;
 		if (type == 1) {
-			int ind;
-			int val;
-			std::cin >> ind >> val;
-			segtree.set(ind - 1, val);
+			segtree.set(arg1 - 1, arg2);
 		} else if (type == 2) {
-			int start;
-			int end;
-			std::cin >> start >> end;
-			cout << segtree.range_min(start - 1, end) << '\n';
+			cout << segtree.range_min(arg1 - 1, arg2) << '\n';
 		}
 	}
 }
@@ -182,21 +170,19 @@ public class MinSegmentTree {
 
 	/** Sets the value at ind to val. */
 	public void set(int ind, int val) {
-		assert (0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
-			segtree[ind >> 1] = Math.min(segtree[ind], segtree[ind ^ 1]);
+			segtree[ind / 2] = Math.min(segtree[ind], segtree[ind ^ 1]);
 		}
 	}
 
 	/** @return the minimum of all elements in [start, end). */
 	public int rangeMin(int start, int end) {
-		assert (0 <= start && start < len && 0 < end && end <= len);
 		int min = Integer.MAX_VALUE;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) { min = Math.min(min, segtree[start++]); }
-			if ((end & 1) != 0) { min = Math.min(min, segtree[--end]); }
+			if (start % 2 == 1) { min = Math.min(min, segtree[start++]); }
+			if (end % 2 == 1) { min = Math.min(min, segtree[--end]); }
 		}
 		return min;
 	}
@@ -211,16 +197,15 @@ public class MinSegmentTree {
 
 		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
+			int arg1 = io.nextInt();
+			int arg2 = io.nextInt();
 			if (type == 1) {
-				int ind = io.nextInt() - 1;
-				int val = io.nextInt();
-				segtree.set(ind, val);
+				segtree.set(arg1 - 1, arg2);
 			} else {
-				int start = io.nextInt() - 1;
-				int end = io.nextInt() - 1;
-				io.println(segtree.rangeMin(start, end + 1));
+				io.println(segtree.rangeMin(arg1 - 1, arg2));
 			}
 		}
+
 		io.close();
 	}
 
@@ -229,63 +214,59 @@ public class MinSegmentTree {
 ```
 
 </JavaSection>
-
 <PySection>
+
 ```py
-import sys
-
-
-class SegmentTree:
+class MinSegmentTree:
 	"""A data structure that can answer point update & range minimum queries."""
 
-	def __init__(self, arr: list[int], n: int) -> None:
-		self.arr = arr
-		self.n = n
-		self.tree = [0] * (2 * n)
+	def __init__(self, len_: int):
+		self.len = len_
+		self.tree = [0] * (2 * len_)
 
-		for ii in range(n):
-			self.tree[n + ii] = arr[ii]
-		for ii in reversed(range(n)):
-			self.tree[ii] = min(self.tree[ii << 1], self.tree[(ii << 1) | 1])
+	def set(self, ind: int, val: int) -> None:
+		"""Sets the value at ind to val."""
+		ind += self.len
+		self.tree[ind] = val
 
-	def add(self, i: int, v: int) -> None:
-		"""Adds v to the element at index i."""
-		i += self.n
-		self.tree[i] = v
+		while ind > 1:
+			self.tree[ind // 2] = min(self.tree[ind], self.tree[ind ^ 1])
+			ind //= 2
 
-		while i > 1:
-			self.tree[i >> 1] = min(self.tree[i], self.tree[i ^ 1])
-			i >>= 1
+	def range_min(self, start: int, end: int) -> int:
+		""":return the minimum element of all elements in [start, end)"""
+		start += self.len
+		end += self.len
+		min_ = float("inf")
+		while start < end:
+			if start % 2 == 1:
+				min_ = min(min_, self.tree[start])
+				start += 1
+			if end % 2 == 1:
+				end -= 1
+				min_ = min(min_, self.tree[end])
 
-	def range_min(self, l: int, r: int) -> int:
-		""":return the minimum element with index in the range [l, r)"""
-		l += self.n
-		r += self.n
-		ret = float("inf")
-		while l < r:
-			if l & 1:
-				ret = min(ret, self.tree[l])
-				l += 1
-			if r & 1:
-				r -= 1
-				ret = min(ret, self.tree[r])
-			l >>= 1
-			r >>= 1
-		return ret
+			start //= 2
+			end //= 2
+		return min_
 
 
-n, q = map(int, sys.stdin.readline().split())
-array = list(map(int, sys.stdin.readline().split()))
-array_segment_tree = SegmentTree(array, n)
-for _ in range(q):
-	t, k, u = map(int, sys.stdin.readline().split())
-	if t == 1:
-		array_segment_tree.add(k - 1, u)
-	elif t == 2:
-		print(array_segment_tree.range_min(k - 1, u))
+arr_len, query_num = map(int, input().split())
+arr = list(map(int, input().split()))
+
+segtree = MinSegmentTree(arr_len)
+for i, v in enumerate(arr):
+	segtree.set(i, v)
+
+for _ in range(query_num):
+	type_, arg1, arg2 = map(int, input().split())
+	if type_ == 1:
+		segtree.set(arg1 - 1, arg2)
+	elif type_ == 2:
+		print(segtree.range_min(arg1 - 1, arg2))
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
 
 ### Solution - Dynamic Range Sum Queries
@@ -293,11 +274,10 @@ for _ in range(q):
 <LanguageSection>
 <CPPSection>
 
-Compared to the previous problem, all we need to change are `DEFAULT` and
-`comb`.
+Compared to the previous problem, all we need to change are `DEFAULT`
+and how we combine the elements.
 
 ```cpp
-#include <cassert>
 #include <iostream>
 #include <vector>
 
@@ -307,7 +287,6 @@ using std::vector;
 
 template <class T> class SumSegmentTree {
   private:
-	T comb(T a, T b) { return a + b; }
 	const T DEFAULT = 0;
 
 	vector<T> segtree;
@@ -317,20 +296,18 @@ template <class T> class SumSegmentTree {
 	SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
 
 	void set(int ind, T val) {
-		assert(0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
-			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
+			segtree[ind / 2] = segtree[ind] + segtree[ind ^ 1];
 		}
 	}
 
 	T range_sum(int start, int end) {
-		assert(0 <= start && start < len && 0 < end && end <= len);
 		T sum = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) { sum = comb(sum, segtree[start++]); }
-			if ((end & 1) != 0) { sum = comb(sum, segtree[--end]); }
+			if (start % 2 == 1) { sum += segtree[start++]; }
+			if (end % 2 == 1) { sum += segtree[--end]; }
 		}
 		return sum;
 	}
@@ -349,18 +326,12 @@ int main() {
 	}
 
 	for (int q = 0; q < query_num; q++) {
-		int type;
-		std::cin >> type;
+		int type, arg1, arg2;
+		std::cin >> type >> arg1 >> arg2;
 		if (type == 1) {
-			int ind;
-			int val;
-			std::cin >> ind >> val;
-			segtree.set(ind - 1, val);
+			segtree.set(arg1 - 1, arg2);
 		} else if (type == 2) {
-			int start;
-			int end;
-			std::cin >> start >> end;
-			cout << segtree.range_sum(start - 1, end) << '\n';
+			cout << segtree.range_sum(arg1 - 1, arg2) << '\n';
 		}
 	}
 }
@@ -388,7 +359,6 @@ public class SumSegmentTree {
 	}
 
 	public void set(int ind, int val) {
-		assert (0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
@@ -397,11 +367,10 @@ public class SumSegmentTree {
 	}
 
 	public long rangeSum(int start, int end) {
-		assert (0 <= start && start < len && 0 < end && end <= len);
 		long total = 0;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) { total = total + segtree[start++]; }
-			if ((end & 1) != 0) { total = total + segtree[--end]; }
+			if (start % 2 == 1) { total += segtree[start++]; }
+			if (end % 2 == 1) { total += segtree[--end]; }
 		}
 		return total;
 	}
@@ -416,16 +385,15 @@ public class SumSegmentTree {
 
 		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
+			int arg1 = io.nextInt();
+			int arg2 = io.nextInt();
 			if (type == 1) {
-				int ind = io.nextInt() - 1;
-				int val = io.nextInt();
-				segtree.set(ind, val);
-			} else if (type == 2) {
-				int start = io.nextInt() - 1;
-				int end = io.nextInt() - 1;
-				io.println(segtree.rangeSum(start, end + 1));
+				segtree.set(arg1 - 1, arg2);
+			} else {
+				io.println(segtree.rangeSum(arg1 - 1, arg2));
 			}
 		}
+
 		io.close();
 	}
 
@@ -435,57 +403,56 @@ public class SumSegmentTree {
 
 </JavaSection>
 <PySection>
+
 Compared to the previous problem, all we need to change is the way we aggregate
-values (from `min()` to '+'), and change the initial value (sum) to 0.
+values (from `min()` to '+'), and change the initial value to 0.
+
 ```py
-import sys
+class SumSegmentTree:
+	def __init__(self, len_: int):
+		self.len = len_
+		self.tree = [0] * (2 * len_)
+
+	def set(self, ind: int, val: int) -> None:
+		ind += self.len
+		self.tree[ind] = val
+
+		while ind > 1:
+			self.tree[ind // 2] = self.tree[ind] + self.tree[ind ^ 1]
+			ind //= 2
+
+	def range_sum(self, start: int, end: int) -> int:
+		start += self.len
+		end += self.len
+		total = 0
+		while start < end:
+			if start % 2 == 1:
+				total += self.tree[start]
+				start += 1
+			if end % 2 == 1:
+				end -= 1
+				total += self.tree[end]
+
+			start //= 2
+			end //= 2
+		return total
 
 
-class SegmentTree:
-	def __init__(self, arr: list[int], n: int) -> None:
-		self.arr = arr
-		self.n = n
-		self.tree = [0] * (2 * n)
+arr_len, query_num = map(int, input().split())
+arr = list(map(int, input().split()))
 
-		for ii in range(n):
-			self.tree[n + ii] = arr[ii]
-		for ii in reversed(range(n)):
-			self.tree[ii] = self.tree[ii << 1] + self.tree[(ii << 1) | 1]
+segtree = SumSegmentTree(arr_len)
+for i, v in enumerate(arr):
+	segtree.set(i, v)
 
-	def add(self, i: int, v: int) -> None:
-		i += self.n
-		self.tree[i] = v
-
-		while i > 1:
-			self.tree[i >> 1] = self.tree[i] + self.tree[i ^ 1]
-			i >>= 1
-
-	def range_sum(self, l: int, r: int) -> int:
-		l += self.n
-		r += self.n
-		sum = 0
-		while l < r:
-			if l & 1:
-				sum += self.tree[l]
-				l += 1
-			if r & 1:
-				r -= 1
-				sum += self.tree[r]
-			l >>= 1
-			r >>= 1
-		return sum
-
-
-n, q = map(int, sys.stdin.readline().split())
-array = list(map(int, sys.stdin.readline().split()))
-array_segment_tree = SegmentTree(array, n)
-for _ in range(q):
-	t, k, u = map(int, sys.stdin.readline().split())
-	if t == 1:
-		array_segment_tree.add(k - 1, u)
-	elif t == 2:
-		print(array_segment_tree.range_sum(k - 1, u))
+for _ in range(query_num):
+	type_, arg1, arg2 = map(int, input().split())
+	if type_ == 1:
+		segtree.set(arg1 - 1, arg2)
+	elif type_ == 2:
+		print(segtree.range_sum(arg1 - 1, arg2))
 ```
+
 </PySection>
 </LanguageSection>
 
@@ -520,7 +487,6 @@ first glance.
 ### Solution - Dynamic Range Sum Queries (With a BIT)
 
 <LanguageSection>
-
 <CPPSection>
 
 <Resources>
@@ -552,7 +518,7 @@ using std::vector;
  * Short for "binary indexed tree",
  * this data structure supports point update and range sum
  * queries like a segment tree.
- * */
+ */
 template <class T> class BIT {
   private:
 	int size;
@@ -594,24 +560,18 @@ int main() {
 	}
 
 	for (int q = 0; q < query_num; q++) {
-		int type;
-		std::cin >> type;
+		int type, arg1, arg2;
+		std::cin >> type >> arg1 >> arg2;
 		if (type == 1) {
-			int ind;
-			int val;
-			std::cin >> ind >> val;
-			bit.set(--ind, val);
+			bit.set(arg1 - 1, arg2);
 		} else if (type == 2) {
-			int start;
-			int end;
-			std::cin >> start >> end;
-			cout << (bit.pref_sum(--end) - bit.pref_sum(--start - 1)) << '\n';
+			cout << bit.pref_sum(arg2 - 1) - bit.pref_sum(arg1 - 2) << '\n';
 		}
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -622,7 +582,7 @@ import java.util.*;
  * Short for "binary indexed tree",
  * this data structure supports point update and range sum
  * queries like a segement tree.
- * */
+ */
 public class BIT {
 	private final long[] bit;
 	private final long[] arr;
@@ -662,16 +622,15 @@ public class BIT {
 
 		for (int i = 0; i < queryNum; i++) {
 			int type = io.nextInt();
+			int arg1 = io.nextInt();
+			int arg2 = io.nextInt();
 			if (type == 1) {
-				int ind = io.nextInt() - 1;
-				int val = io.nextInt();
-				bit.set(ind, val);
+				bit.set(arg1 - 1, arg2);
 			} else if (type == 2) {
-				int start = io.nextInt() - 1;
-				int end = io.nextInt() - 1;
-				io.println(bit.prefSum(end) - bit.prefSum(start - 1));
+				io.println(bit.prefSum(arg2 - 1) - bit.prefSum((arg1 - 1) - 1));
 			}
 		}
+
 		io.close();
 	}
 
@@ -680,12 +639,9 @@ public class BIT {
 ```
 
 </JavaSection>
-
 <PySection>
+
 ```py
-import sys
-
-
 class BIT:
 	"""
 	Short for "binary indexed tree",
@@ -693,50 +649,49 @@ class BIT:
 	queries like a segment tree.
 	"""
 
-	def __init__(self, arr: list[int], n: int) -> None:
-		self.tree = [0] * (n + 1)
-		self.size = n
-		for ii in range(n):
-			self.add_val(ii, arr[ii])
+	def __init__(self, len_: int) -> None:
+		self.bit = [0] * (len_ + 1)
+		self.arr = [0] * len_
+		self.len = len_
 
-	def add(self, i: int, v: int):
-		"""Adds v to the element at index i."""
-		i += 1
-		while i <= self.size:
-			self.tree[i] += v
-			i += i & (-i)
+	def set(self, ind: int, val: int):
+		"""Sets the value at ind to val"""
+		self.add(ind, val - self.arr[ind])
 
-	def prefix_sum(self, i: int):
-		"""@return The sum of all values with indices in the range [0, i]."""
-		s = 0
-		i += 1
-		while i > 0:
-			s += self.tree[i]
-			i -= i & (-i)
-		return s
+	def add(self, ind: int, val: int):
+		"""Adds val to the element at index ind."""
+		self.arr[ind] += val
+		ind += 1
+		while ind <= self.len:
+			self.bit[ind] += val
+			ind += ind & -ind
 
-	def range_sum(self, l: int, r: int):
-		"""
-		@return Difference of prefix sums to attain sum between all
-		values with indices in the range [l, r]
-		"""
-		return self.prefix_sum(r) - self.prefix_sum(l - 1)
+	def pref_sum(self, ind: int):
+		""":return The sum of all values in [0, ind]."""
+		ind += 1
+		sum_ = 0
+		while ind > 0:
+			sum_ += self.bit[ind]
+			ind -= ind & -ind
+		return sum_
 
 
-n, q = map(int, sys.stdin.readline().split())
-array = list(map(int, sys.stdin.readline().split()))
-array_bit = BIT(array, n)
+arr_len, query_num = map(int, input().split())
+arr = list(map(int, input().split()))
 
-for _ in range(q):
-	q_type, k, u = map(int, sys.stdin.readline().split())
+bit = BIT(arr_len)
+for i, v in enumerate(arr):
+	bit.add(i, v)
+
+for _ in range(query_num):
+	q_type, arg1, arg2 = map(int, input().split())
 	if q_type == 1:
-		array_bit.add(k - 1, u - array[k - 1])
-		array[k - 1] = u  # Make sure to update value after changing!
+		bit.set(arg1 - 1, arg2)
 	elif q_type == 2:
-		print(array_bit.range_sum(min(k, u) - 1, max(k, u) - 1))
+		print(bit.pref_sum(arg2 - 1) - bit.pref_sum(arg1 - 2))
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
 
 ## Finding the $k$-th Element
@@ -800,7 +755,6 @@ Covered in [Platinum](/plat/seg-ext).
 <Spoiler title="Solution">
 
 <LanguageSection>
-
 <CPPSection>
 
 Using an indexed set, we can solve this in just a few lines.
@@ -836,7 +790,7 @@ int main() {
 			tree.insert(x);
 		}
 
-		cout << inv_num << "\n";
+		cout << inv_num << '\n';
 	}
 }
 ```
@@ -848,7 +802,6 @@ duplicates. Instead, we would use an indexed set of pairs
 value while the second would denote the position of the value in the array.
 
 </CPPSection>
-
 <JavaSection>
 
 Using a binary indexed tree, we can count the number of inversions.
@@ -909,7 +862,52 @@ class BIT {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+# BeginCodeSnip{BIT}
+class BIT:
+	def __init__(self, len_: int) -> None:
+		self.bit = [0] * (len_ + 1)
+		self.arr = [0] * len_
+		self.len = len_
+
+	def add(self, ind: int, val: int):
+		self.arr[ind] += val
+		ind += 1
+		while ind <= self.len:
+			self.bit[ind] += val
+			ind += ind & -ind
+
+	def pref_sum(self, ind: int):
+		ind += 1
+		sum_ = 0
+		while ind > 0:
+			sum_ += self.bit[ind]
+			ind -= ind & -ind
+		return sum_
+
+
+# EndCodeSnip
+
+MAX_ELEM = 10**7
+
+test_num = int(input())
+for _ in range(test_num):
+	bit = BIT(MAX_ELEM + 1)
+
+	input()
+	arr_len = int(input())
+	inv_num = 0
+	for _ in range(arr_len):
+		x = int(input())
+		bit.add(x, 1)
+		inv_num += bit.pref_sum(MAX_ELEM) - bit.pref_sum(x)
+
+	print(inv_num)
+```
+
+</PySection>
 </LanguageSection>
 
 </Spoiler>
