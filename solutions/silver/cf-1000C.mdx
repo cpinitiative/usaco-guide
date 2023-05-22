@@ -74,17 +74,17 @@ int main() {
 	// prefix sums for number of points at a given compressed endpoint
 	for (int i = 1; i < 2 * n; i++) { freq[i] += freq[i - 1]; }
 
-	// cnt[i] := number of points covered by exactly i segments
-	vector<ll> cnt(n + 1);
+	// covered_num[i] := number of points covered by exactly i segments
+	vector<ll> covered_num(n + 1);
 	for (int i = 1; i < coords.size(); i++) {
 		/*
 		 * We decompress the endpoints for a given frequency and add the points
 		 * in this range to the answer.
 		 */
-		cnt[freq[i - 1]] += coords[i] - coords[i - 1];
+		covered_num[freq[i - 1]] += coords[i] - coords[i - 1];
 	}
 
-	for (int i = 1; i <= n; i++) { cout << cnt[i] << " "; }
+	for (int i = 1; i <= n; i++) { cout << covered_num[i] << " "; }
 	cout << endl;
 }
 ```
@@ -141,18 +141,18 @@ public class CoveredPointsCount {
 		// prefix sums for number of points at a given compressed endpoint
 		for (int i = 1; i < 2 * n; i++) { freq[i] += freq[i - 1]; }
 
-		// cnt[i] := number of points covered by exactly i segments
-		long[] cnt = new long[n + 1];
+		// coveredNum[i] := number of points covered by exactly i segments
+		long[] coveredNum = new long[n + 1];
 		for (int i = 1; i < coords.size(); i++) {
 			/*
 			 * We decompress the endpoints for a given frequency and add the
 			 * points in this range to the answer.
 			 */
-			cnt[freq[i - 1]] += coords.get(i) - coords.get(i - 1);
+			coveredNum[freq[i - 1]] += coords.get(i) - coords.get(i - 1);
 		}
 
 		for (int i = 1; i <= n; i++) {
-			System.out.print(cnt[i]);
+			System.out.print(coveredNum[i]);
 			System.out.print(" ");
 		}
 	}
@@ -220,21 +220,21 @@ int main() {
 	// number of overlapping segments at current position
 	int layers = freq[*points.begin()];
 	auto it = next(points.begin());
-	// cnt[i] := number of points covered by exactly i segments
-	vector<ll> cnt(n + 1);
+	// covered_num[i] := number of points covered by exactly i segments
+	vector<ll> covered_num(n + 1);
 
 	/*
 	 * iterate through all coordinates of interest and add the number of points
 	 * in each range to the resp. answer
 	 */
 	while (it != points.end()) {
-		cnt[layers] += (*it - *prev(it));
+		covered_num[layers] += (*it - *prev(it));
 		layers += freq[*it];
 		it++;
 	}
 
-	for (int i = 1; i < n; i++) { cout << cnt[i] << " "; }
-	cout << cnt[n] << endl;
+	for (int i = 1; i < n; i++) { cout << covered_num[i] << " "; }
+	cout << covered_num[n] << endl;
 }
 ```
 
