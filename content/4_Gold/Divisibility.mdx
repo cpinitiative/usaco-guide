@@ -66,8 +66,6 @@ to start.
 
 ## Prime Factorization
 
-<FocusProblem problem="sample" />
-
 A positive integer $a$ is called a **divisor** or a **factor** of a non-negative
 integer $b$ if $b$ is divisible by $a$, which means that there exists some
 integer $k$ such that $b = ka$. An integer $n > 1$ is **prime** if its only
@@ -87,7 +85,6 @@ Now, we will discuss how to find the prime factorization of any positive
 integer.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -105,12 +102,11 @@ vector<int> factor(int n) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-ArrayList<Integer> factor(int n) {
-	ArrayList<Integer> factors = new ArrayList<>();
+List<Integer> factor(int n) {
+	List<Integer> factors = new ArrayList<>();
 	for (int i = 2; i * i <= n; i++) {
 		while (n % i == 0) {
 			factors.add(i);
@@ -123,11 +119,13 @@ ArrayList<Integer> factor(int n) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-def factor(n):
+from typing import List
+
+
+def factor(n: int) -> List[int]:
 	ret = []
 	i = 2
 	while i * i <= n:
@@ -141,7 +139,6 @@ def factor(n):
 ```
 
 </PySection>
-
 </LanguageSection>
 
 This algorithm runs in $\mathcal{O}(\sqrt{n})$ time, because the for loop checks
@@ -154,7 +151,7 @@ Let's look at an example of how this algorithm works, for $n = 252$.
 
 <center>
 
-| $i$ | $n$   | $v$              |
+| $i$ | $n$   | $\texttt{ret}$              |
 | --- | ----- | ---------------- |
 | $2$ | $252$ | $\{\}$           |
 | $2$ | $126$ | $\{2\}$          |
@@ -168,6 +165,8 @@ At this point, the for loop terminates, because $i$ is already 3 which is
 greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the
 list of factors $v$, because it otherwise won't be added, for a final prime
 factorization of $\{2, 2, 3, 3, 7\}$.
+
+<FocusProblem problem="sample" />
 
 ### Solution - Counting Divisors
 
@@ -198,7 +197,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -213,10 +211,10 @@ public class Divisors {
 		int queryNum = Integer.parseInt(read.readLine());
 		StringBuilder ans = new StringBuilder();
 		for (int q = 0; q < queryNum; q++) {
-			int n = Integer.parseInt(read.readLine());
+			int x = Integer.parseInt(read.readLine());
 			int divisors = 0;
 			for (int i = 1; i * i <= n; i++) {
-				if (n % i == 0) { divisors += i * i == n ? 1 : 2; }
+				if (x % i == 0) { divisors += i * i == x ? 1 : 2; }
 			}
 			ans.append(divisors).append('\n');
 		}
@@ -226,23 +224,30 @@ public class Divisors {
 ```
 
 </JavaSection>
-
 <PySection>
 
-```py
-from math import sqrt
+<Warning>
 
+Due to Python's big constant factor, the below code TLEs on quite a few test cases.
+
+</Warning>
+
+```py
+ans = []
 for _ in range(int(input())):
 	div_num = 0
 	x = int(input())
-	for i in range(1, int(sqrt(x) + 1)):
+	i = 1
+	while i * i <= x:
 		if x % i == 0:
-			div_num = div_num + 1 if i**2 == x else div_num + 2
-	print(div_num)
+			div_num += 1 if i**2 == x else 2
+		i += 1
+	ans.append(div_num)
+
+print('\n'.join(str(i) for i in ans))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 This solution runs in $\mathcal{O}(n \sqrt x)$ time, which is just fast enough
@@ -263,18 +268,23 @@ range $[0, a_i]$ and each different exponent results in a different set of
 divisors, so each $p_i$ contributes $a_i + 1$ to the product.
 
 $x$ can have $\mathcal{O}(\log x)$ distinct prime factors, so if we can find the
-prime factorization of $x$ efficiently, we can answer queries in
-$\mathcal{O}(\log x)$ time instead of the previous $\mathcal{O}(\sqrt x)$ time.
+prime factorization of $x$ efficiently, we can use it with the above property to
+answer queries in $\mathcal{O}(\log x)$ time instead of the previous
+$\mathcal{O}(\sqrt x)$ time.
 
 Here's how we find the prime factorization of $x$ in $\mathcal{O}(\log x)$ time
 with $\mathcal{O}(x \log x)$ preprocessing:
 
-- For each $k \leq 10^6$, find any prime number that divides $k$.
-  - We can use the Sieve of Eratosthenes to find this efficiently.
-- For each $x$, we can then find the prime factorization by repeatedly dividing
-  $x$ by a prime number that divides $x$ until $x = 1$.
+1. For each $k \leq 10^6$, find any prime number that divides $k$.  
+   To find this, we can use the
+   [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
+   which runs in $\mathcal{O}(n \log n)$, where $n$ is the larger numbers we consider.
+   There's also a version of the sieve that runs in
+   [linear time](https://codeforces.com/blog/entry/54090), but we won't be needing it.
+2. We can find the prime factorization of $x$ by repeatedly dividing
+   it by the prime numbers we calculated earlier until $x = 1$.
 
-Alternatively, we can slightly modify the the prime factorization code above.
+Using this method gives us the following code:
 
 <LanguageSection>
 <CPPSection>
@@ -297,6 +307,7 @@ int main() {
 
 	int n;
 	cin >> n;
+
 	for (int i = 0; i < n; i++) {
 		int x;
 		cin >> x;
@@ -320,7 +331,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -367,7 +377,6 @@ public class Divisors {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -396,18 +405,12 @@ for _ in range(int(input())):
 			n //= largest
 		div_num *= count + 1
 	ans.append(div_num)
+
 print("\n".join(str(i) for i in ans))
 ```
 
 </PySection>
-
 </LanguageSection>
-
-<Optional>
-
-Apply the [linear sieve](https://codeforces.com/blog/entry/54090).
-
-</Optional>
 
 ## GCD & LCM
 
@@ -425,10 +428,9 @@ $$
 \end{cases}
 $$
 
-This algorithm is very easy to implement using a recursive function, as follows:
+This algorithm can be implemented with a recursive function as follows:
 
 <LanguageSection>
-
 <JavaSection>
 
 ```java
@@ -436,7 +438,6 @@ public int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 ```
 
 </JavaSection>
-
 <CPPSection>
 
 ```cpp
@@ -448,19 +449,20 @@ For C++14, you can use the built-in `__gcd(a,b)`.
 In C++17, there exists [`std::gcd`](https://en.cppreference.com/w/cpp/numeric/gcd)
 and [`std::lcm`](https://en.cppreference.com/w/cpp/numeric/lcm) in the
 [`<numeric>`](https://en.cppreference.com/w/cpp/header/numeric) header, so there's no
-need to code your own GCD and LCM if you're using that.
+need to code your own GCD and LCM if you're using that version.
 
 </CPPSection>
-
 <PySection>
 
 ```py
-def gcd(a, b):
+def gcd(a: int, b: int) -> int:
 	return a if b == 0 else gcd(b, a % b)
 ```
 
-</PySection>
+You won't have to actually implement this in-contest,
+as the built-in `math` library has a `gcd` and `lcm` function.
 
+</PySection>
 </LanguageSection>
 
 This function runs in $\mathcal{O}(\log ab)$ time because
@@ -468,36 +470,37 @@ $a\le b \implies b\pmod a <\frac{b}{2}$.
 
 The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are
 consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. In
-this case, the algorithm will calculate
-$\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means
-that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional
+this case, the algorithm will calculate that
+$\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$.
+This takes a total of $n+1$, which is proportional
 to $\log \left(F_n F_{n+1}\right)$.
 
-<!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
+<!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328) -->
 <!-- ^ this doesn't seem very helpful -->
 <!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $\mathcal{O}(\log ab)$. -->
 
 ### LCM
 
 The **least common multiple (LCM)** of two integers $a$ and $b$ is the smallest
-integer divisible by both $a$ and $b$. The LCM can easily be calculated from the
-following property with the GCD:
+integer divisible by both $a$ and $b$. The LCM can be calculated with the GCD
+using this property:
 
 $$
-\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}=\frac{a}{\gcd(a,b)}\cdot b.
+\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}
 $$
 
 <Warning>
 
 Coding $\text{lcm}$ as `a * b / gcd(a, b)` might cause integer overflow if the
 value of `a * b` is greater than the max size of the data type of `a * b` (e.g.
-the max size of `int` is around 2 billion). Dividng `a` by `gcd(a, b)` first,
-then multiplying it by `b` will prevent integer overflow if the result fits in
-an `int`.
+the max size of `int` in C++ and Java is around 2 billion).
+Dividng `a` by `gcd(a, b)` first, then multiplying it by `b` will prevent
+integer overflow if the result fits in an `int`.
 
 </Warning>
 
-If we want to take the GCD or LCM of more than two elements, we can do so two at
+Also, these two functions are associative, meaning that
+if we want to take the GCD or LCM of more than two elements, we can do so two at
 a time, in any order. For example,
 
 $$
