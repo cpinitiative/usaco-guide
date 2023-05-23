@@ -132,30 +132,31 @@ int main() {
 <PySection>
 
 ```py
-NMAX = 200001
-LOGMAX = 20
+import math
+
+
 n, q = map(int, input().split())
-up = [[0 for j in range(NMAX)] for i in range(LOGMAX)]
 
+def jmp(x: int, k: int) -> int: # Get the k'th ancestor of x
+    for i in range(LOGMAX):
+        if k & 1 << i:
+            x = up[i][x]
+        if x == -2: break
+    return x
 
-def jmp(x: int, k: int) -> int:
-	for i in range(LOGMAX):
-		if k & (1 << i):
-			x = up[i][x]
-	return x if x > 0 else -1
-
-
+LOGMAX = math.ceil(math.log2(n)) + 1
+up = [[-2 for j in range(n)] for i in range(LOGMAX)]
 boss = list(map(int, input().split()))
 for i in range(n - 1):
-	up[0][i + 2] = boss[i]
+    up[0][i + 1] = boss[i] - 1
 
 for i in range(1, LOGMAX):
-	for j in range(1, n + 1):
-		up[i][j] = up[i - 1][up[i - 1][j]]  # Construct our parent array
+    for j in range(n):
+        up[i][j] = up[i - 1][up[i - 1][j]]
 
 for i in range(q):
-	x, k = list(map(int, input().split()))
-	print(jmp(x, k))
+    x, k = list(map(int, input().split()))
+    print(jmp(x-1, k) + 1)
 ```
 
 </PySection>
