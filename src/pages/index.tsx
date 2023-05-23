@@ -10,7 +10,7 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
@@ -34,6 +34,7 @@ import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
@@ -53,7 +54,12 @@ const linkTextStyles =
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
-
+  const { firebaseUser } = React.useContext(UserDataContext);
+  React.useEffect(() => {
+    if (firebaseUser) {
+      navigate('/dashboard');
+    }
+  }, []);
   return (
     <Layout>
       <SEO title={null} />
