@@ -40,24 +40,25 @@ int id[NMAX], low[NMAX];
 vector<int> g[NMAX], two_edge_components[NMAX];
 stack<int> st;
 
-void dfs(int node, int parent = -1) {
+void dfs(int node, int parent = -1){
 	id[node] = low[node] = ++timer;
 	st.push(node);
 	bool pp = 0;
-	for (int son : g[node]) {
-		if (son == parent && !pp) {
+	for(int son : g[node]) {
+		if(son == parent && !pp)  {
 			pp = 1;
-			continue;
+			continue ;
 		}
-		if (!id[son]) {
+		if(!id[son]) {
 			dfs(son, node);
 			low[node] = min(low[node], low[son]);
 		} else {
 			low[node] = min(low[node], id[son]);
 		}
+	
 	}
-	if (low[node] == id[node]) {
-		while (st.top() != node) {
+	if(low[node] == id[node]) {
+		while(st.top() != node) {
 			two_edge_components[SCC].push_back(st.top());
 			st.pop();
 		}
@@ -69,21 +70,25 @@ void dfs(int node, int parent = -1) {
 int main() {
 	int n, m;
 	cin >> n >> m;
-	for (int i = 0; i < m; i++) {
+	for(int i = 0; i < m; i++) {
 		int x, y;
 		cin >> x >> y;
 		g[x].push_back(y);
 		g[y].push_back(x);
 	}
-
-	for (int node = 0; node < n; node++) {
-		if (!id[node]) dfs(node);
+	
+	for(int node = 0; node < n; node++) {
+		if(!id[node]) {
+			dfs(node);
+		}
 	}
-
+	
 	cout << SCC << '\n';
-	for (int i = 0; i < SCC; i++) {
+	for(int i = 0; i < SCC; i++) {
 		cout << two_edge_components[i].size() << ' ';
-		for (int node : two_edge_components[i]) cout << node << ' ';
+		for(int node : two_edge_components[i]) {
+			cout << node << ' ';
+		}
 		cout << '\n';
 	}
 }
