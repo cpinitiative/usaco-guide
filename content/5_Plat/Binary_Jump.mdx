@@ -138,7 +138,7 @@ import math
 n, q = map(int, input().split())
 
 
-def jmp(x: int, k: int) -> int:  # Get the k'th ancestor of x
+def kth_ancestor(x: int, k: int) -> int:  # return the kth ancestor of x
 	for i in range(LOGMAX):
 		if k & 1 << i:
 			x = up[i][x]
@@ -146,20 +146,20 @@ def jmp(x: int, k: int) -> int:  # Get the k'th ancestor of x
 			break
 	return x
 
-
-LOGMAX = math.ceil(math.log2(n)) + 1
-up = [[-2 for j in range(n)] for i in range(LOGMAX)]
+LOGMAX = math.ceil(math.log2(n))
+	
+up = [[-2 for j in range(n)] for i in range(LOGMAX + 1)]
 boss = list(map(int, input().split()))
 for i in range(n - 1):
 	up[0][i + 1] = boss[i] - 1
 
-for i in range(1, LOGMAX):
+for i in range(1, LOGMAX+1):
 	for j in range(n):
 		up[i][j] = up[i - 1][up[i - 1][j]]
 
 for i in range(q):
 	x, k = list(map(int, input().split()))
-	print(jmp(x - 1, k) + 1)
+	print(kth_ancestor(x - 1, k) + 1)
 ```
 
 </PySection>
