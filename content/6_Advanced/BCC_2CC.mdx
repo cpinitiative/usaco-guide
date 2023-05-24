@@ -25,7 +25,76 @@ frequency: 1
 
 <Problems problems="sam2" />
 
-(implementation)
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int NMAX = 3e5;
+
+int n, m, timer, SCC;
+int id[NMAX], low[NMAX];
+vector<int> g[NMAX], two_edge_components[NMAX];
+stack<int> st;
+
+void dfs(int node, int parent = -1){
+	id[node] = low[node] = ++timer;
+	st.push(node);
+	bool pp = 0;
+	for(auto son : g[node]) {
+		if(son == parent && !pp)  {
+			pp = 1;
+			continue ;
+		}
+		if(!id[son]) {
+			dfs(son, node);
+			low[node] = min(low[node], low[son]);
+		} else {
+			low[node] = min(low[node], id[son]);
+		}
+	
+	}
+	if(low[node] == id[node]) {
+		while(st.top() != node) {
+			two_edge_components[SCC].push_back(st.top());
+			st.pop();
+		}
+		two_edge_components[SCC++].push_back(st.top());
+		st.pop();
+	}
+}
+
+int main() {
+	scanf("%d %d", &n, &m);
+	for(int i = 0; i < m; i++) {
+		int x, y;
+		scanf("%d %d", &x, &y);	
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+	
+	for(int node = 0; node < n; node++) {
+		if(!id[node]) 
+			dfs(node);
+	}
+	
+	printf("%d\n", SCC);
+	for(int i = 0; i < SCC; i++) {
+		printf("%d ", (int)two_edge_components[i].size());
+		for(auto node : two_edge_components[i]) 
+			printf("%d ", node);
+		puts("");
+	}
+	
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### With DSU
 
