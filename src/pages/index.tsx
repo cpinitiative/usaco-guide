@@ -55,11 +55,9 @@ const linkTextStyles =
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
   const { firebaseUser } = React.useContext(UserDataContext);
-  React.useEffect(() => {
-    if (firebaseUser) {
-      navigate('/dashboard');
-    }
-  }, []);
+  if (firebaseUser) {
+    navigate('/dashboard');
+  }
   return (
     <Layout>
       <SEO title={null} />
