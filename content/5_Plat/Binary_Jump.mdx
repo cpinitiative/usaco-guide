@@ -140,24 +140,24 @@ up = [[None for j in range(n)] for i in range(LOGMAX + 1)]
 boss = list(map(int, input().split()))
 
 for i in range(n - 1):
-    up[0][i + 1] = boss[i] - 1
+	up[0][i + 1] = boss[i] - 1
 
 for i in range(1, LOGMAX + 1):
-    for j in range(n):
-        if up[i - 1][j] == None:
-            up[i][j] = None
-        else:
-            up[i][j] = up[i - 1][up[i - 1][j]]
+	for j in range(n):
+		if up[i - 1][j] == None:
+			up[i][j] = None
+		else:
+			up[i][j] = up[i - 1][up[i - 1][j]]
 
 for i in range(q):
-    x, k = list(map(int, input().split()))
-    x -= 1
-    for i in range(LOGMAX):
-        if k & 1 << i:
-            x = up[i][x]
-        if x == None:
-            break
-    print(x+1 if x != None else -1)
+	x, k = list(map(int, input().split()))
+	x -= 1
+	for i in range(LOGMAX):
+		if k & 1 << i:
+			x = up[i][x]
+		if x == None:
+			break
+	print(x + 1 if x != None else -1)
 ```
 
 </PySection>
