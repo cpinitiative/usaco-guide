@@ -34,7 +34,7 @@ Silver.
 
 ### Solution - Apple Division
 
-Since $n\le 20$, we can solve the focus problem by trying all possible divisions
+Since $n \le 20$, we can solve this by trying all possible divisions
 of $n$ apples into two sets and finding the one with the minimum difference in
 weights. Here are two ways to do this.
 
@@ -59,18 +59,24 @@ using namespace std;
 using ll = long long;
 
 int n;
-ll weight[20];
+vector<long long> weights;
 
-ll solve(int i, ll sum1, ll sum2) {
-	if (i == n) { return abs(sum1 - sum2); }
-	return min(solve(i + 1, sum1 + weight[i], sum2),
-	           solve(i + 1, sum1, sum2 + weight[i]));
+ll recurse_apples(int index, ll sum1, ll sum2) {
+	// We've added all apples- return the absolute difference
+	if (index == n) { return abs(sum1 - sum2); }
+	
+	// Try adding the current apple to either the first or second set
+	return min(recurse_apples(index + 1, sum1 + weights[index], sum2),
+	           recurse_apples(index + 1, sum1, sum2 + weights[index]));
 }
 
 int main() {
 	cin >> n;
-	for (int i = 0; i < n; i++) { cin >> weight[i]; }
-	cout << solve(0, 0, 0) << endl;
+	weights.resize(n);
+	for (int i = 0; i < n; i++) { cin >> weights[i]; }
+
+	// Solve the problem starting at apple 0 with both sets being empty
+	cout << recurse_apples(0, 0, 0) << endl;
 }
 ```
 
@@ -81,7 +87,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class AppleDivision {
 	static int n;
 	static int[] weight;
 
@@ -92,13 +98,16 @@ public class Main {
 		weight = new int[n];
 		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
 
+		// Solve the problem starting at apple 0 with both sets being empty
 		io.println(solve(0, 0, 0));
 		io.close();
 	}
 
 	static long solve(int index, long sum1, long sum2) {
+		// We've added all apples- return the absolute difference
 		if (index == n) { return Math.abs(sum1 - sum2); }
 
+		// Try adding the current apple to either the first or second set
 		return Math.min(solve(index + 1, sum1 + weight[index], sum2),
 		                solve(index + 1, sum1, sum2 + weight[index]));
 	}
@@ -115,14 +124,19 @@ n = int(input())
 weights = list(map(int, input().split()))
 
 
-def solve(i, sum1, sum2):
+def solve(i: int, sum1: int, sum2: int) -> int:
+	# We've added all apples- return the absolute difference
 	if i == n:
 		return abs(sum2 - sum1)
+	
+	# Try adding the current apple to either the first or second set
 	return min(
-		solve(i + 1, sum1 + weights[i], sum2), solve(i + 1, sum1, sum2 + weights[i])
+		solve(i + 1, sum1 + weights[i], sum2),
+		solve(i + 1, sum1, sum2 + weights[i])
 	)
 
 
+# Solve the problem starting at apple 0 with both sets being empty
 print(solve(0, 0, 0))
 ```
 
@@ -138,57 +152,66 @@ You are not expected to know this for Bronze.
 </Warning>
 
 A **bitmask** is an integer whose binary representation is used to represent a
-subset. For a particular bitmask, if the $i$'th bit is turned on (equal to $1$),
-we say the $i$'th apple is in $s_1$. Then, the rest of the apples are in $s_2$.
+subset. For a particular bitmask, if the $i$'th bit is equal to $1$,
+we say the $i$'th apple is in $s_1$. If not, we'll say it's in $s_2$.
 We can iterate through all subsets $s_1$ if we check all bitmasks ranging from
-$0$ to $2^N-1$. For each bitmask, find the sum of $s_1$ and $s_2$ and find the
-minimum difference between their sums.
+$0$ to $2^N-1$.
 
-Note the fancy bitwise operations:
+Let's do a quick demo with $N=3$.
+These are the integers from $0$ to $2^3-1$ along with their
+binary representations and the corresponding elements included in $s_1$.
+As you can see, all possible subsets are accounted for.
 
-- `1 << x` for an integer $x$ is another way of writing $2^x$, which, in binary,
-  has only the $x$'th bit turned on.
-- The `&` (and) operator will take two integers and return a new integer.
-  `a & b` for integers $a$ and $b$ will return a new integer whose $i$'th bit is
-  turned on if and only if the $i$'th bit is turned on for both $a$ and $b$.
-  Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is
-  turned on in $mask$.
+<center>
 
-<Info title="Bitwise Operations">
+| Number | Binary | Apples In $s_1$ |
+|--------|--------|-----------------|
+| 0      | `000`  | $\{\}$          |
+| 1      | `001`  | $\{0\}$         |
+| 2      | `010`  | $\{1\}$         |
+| 3      | `011`  | $\{0,1\}$       |
+| 4      | `100`  | $\{2\}$         |
+| 5      | `101`  | $\{0,2\}$       |
+| 6      | `110`  | $\{1,2\}$       |
+| 7      | `111`  | $\{0,1,2\}$     |
 
-Check [this module](/gold/intro-bitwise) for more information.
+</center>
 
-</Info>
+The code follows:
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
 using ll = long long;
 
-int n;
-ll weight[20];
-
 int main() {
+	int n;
 	cin >> n;
-	for (int i = 0; i < n; i++) { cin >> weight[i]; }
-	ll ans = (ll)1e18;
+	vector<ll> weights(n);
+	for (ll& w : weights) {
+		cin >> w;
+	}
+
+	ll ans = INT64_MAX;
 	for (int mask = 0; mask < (1 << n); mask++) {
-		ll sum1 = 0, sum2 = 0;
-		for (int j = 0; j < n; j++) {
-			if (mask & (1 << j)) {  // if the j-th bit is toggled
-				sum1 += weight[j];
+		ll sum1 = 0;
+		ll sum2 = 0;
+		for (int i = 0; i < n; i++) {
+			// Check if the ith bit is toggled
+			if (mask & (1 << i)) {
+				// If it is, the apple is included in sum1
+				sum1 += weights[i];
 			} else {
-				sum2 += weight[j];
+				sum2 += weights[i];
 			}
 		}
 		ans = min(ans, abs(sum1 - sum2));
 	}
-	cout << ans << "\n";
+
+	cout << ans << endl;
 }
 ```
 
@@ -199,24 +222,25 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class AppleDivision {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 
 		int n = io.nextInt();
-		int weight[] = new int[n];
-		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
+		int[] weights = new int[n];
+		for (int i = 0; i < n; i++) { weights[i] = io.nextInt(); }
 
 		long ans = Long.MAX_VALUE;
 		for (int mask = 0; mask < (1 << n); mask++) {
 			long sum1 = 0;
 			long sum2 = 0;
-
 			for (int i = 0; i < n; i++) {
+				// Check if the ith bit is toggled
 				if ((mask & (1 << i)) > 0) {
-					sum1 += weight[i];
+					// If it is, the apple is included in sum1
+					sum1 += weights[i];
 				} else {
-					sum2 += weight[i];
+					sum2 += weights[i];
 				}
 			}
 			ans = Math.min(ans, Math.abs(sum1 - sum2));
@@ -235,16 +259,20 @@ public class Main {
 
 ```py
 n = int(input())
-weight = list(map(int, input().split()))
+weights = list(map(int, input().split()))
 
 ans = float("inf")
 for mask in range(1 << n):
-	sum1, sum2 = 0, 0
+	sum1 = 0
+	sum2 = 0
 	for i in range(n):
+		# Checks if the ith bit is set
 		if mask & (1 << i):
-			sum1 += weight[i]
+			# If it is, the apple is included in sum1
+			sum1 += weights[i]
 		else:
-			sum2 += weight[i]
+			sum2 += weights[i]
+
 	ans = min(ans, abs(sum1 - sum2))
 
 print(ans)
@@ -252,6 +280,23 @@ print(ans)
 
 </PySection>
 </LanguageSection>
+
+Note the fancy bitwise operations:
+
+- `1 << x` for an integer $x$ is another way of writing $2^x$, which, in binary,
+  has only the $x$'th bit turned on.
+- The `&` (AND) operator will take two integers and return a new integer.
+  `a & b` for integers $a$ and $b$ will return a new integer whose $i$th bit is
+  turned on if and only if the $i$'th bit is turned on for both $a$ and $b$.
+  Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is
+  turned on in $mask$.
+
+<Info title="Bitwise Operations">
+
+We have a [dedicated module](/gold/intro-bitwise) for bitwise operations
+if you wanna learn more about them.
+
+</Info>
 
 ## Permutations
 
@@ -316,7 +361,7 @@ validity.
 
 <!-- For a list of $N$ elements, there are  ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $\mathcal{O}(N \cdot N!)$. -->
 
-Just a slight modification of method 1 from CPH.
+This is just a slight modification of method 1 from CPH.
 
 We'll use the recursive function $\texttt{search}$ to find all the permutations
 of the string $s$. First, keep track of how many of each character there are in
@@ -330,23 +375,22 @@ $\texttt{perms}$.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 string s;
 vector<string> perms;
 int char_count[26];
 
-void search(string curr) {
-	// we've finished creating a permutation
+void search(const string& curr) {
+	// We've finished creating a permutation
 	if (curr.size() == s.size()) {
 		perms.push_back(curr);
 		return;
 	}
 	for (int i = 0; i < 26; i++) {
-		// for all available characters
+		// For all available characters
 		if (char_count[i] > 0) {
-			// add it to the current string and search
+			// Add it to the current string and continue the search
 			char_count[i]--;
 			search(curr + (char)('a' + i));
 			char_count[i]++;
@@ -357,9 +401,11 @@ void search(string curr) {
 int main() {
 	cin >> s;
 	for (char c : s) { char_count[c - 'a']++; }
+
 	search("");
-	cout << perms.size() << "\n";
-	for (string perm : perms) { cout << perm << "\n"; }
+	
+	cout << perms.size() << '\n';
+	for (const string& perm : perms) { cout << perm << '\n'; }
 }
 ```
 
@@ -376,15 +422,15 @@ public class CreatingStrings1 {
 	static int[] charCount = new int[26];
 
 	static void search(String curr) {
-		// we've finished creating a permutation
+		// We've finished creating a permutation
 		if (curr.length() == s.length()) {
 			perms.add(curr);
 			return;
 		}
 		for (int i = 0; i < 26; i++) {
-			// for all available characters
+			// For all available characters
 			if (charCount[i] > 0) {
-				// add it to the current string and search
+				// Add it to the current string and continue the search
 				charCount[i]--;
 				search(curr + (char)(i + 'a'));
 				charCount[i]++;
@@ -395,8 +441,11 @@ public class CreatingStrings1 {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		s = io.next();
+		
 		for (int i = 0; i < s.length(); i++) { charCount[s.charAt(i) - 'a']++; }
+
 		search("");
+		
 		io.println(perms.size());
 		for (String perm : perms) { io.println(perm); }
 		io.close();
@@ -415,15 +464,15 @@ perms = []
 char_count = [0] * 26
 
 
-def search(curr):
+def search(curr: str = ""):
 	# we've finished creating a permutation
 	if len(curr) == len(s):
 		perms.append(curr)
 		return
 	for i in range(26):
-		# for all available characters
+		# For all available characters
 		if char_count[i] > 0:
-			# add it to the current string and search
+			# Add it to the current string and continue the search
 			char_count[i] -= 1
 			search(curr + chr(ord("a") + i))
 			char_count[i] += 1
@@ -432,7 +481,8 @@ def search(curr):
 for c in s:
 	char_count[ord(c) - ord("a")] += 1
 
-search("")
+search()
+
 print(len(perms))
 for perm in perms:
 	print(perm)
@@ -562,7 +612,6 @@ be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 bool ok[8][8];
