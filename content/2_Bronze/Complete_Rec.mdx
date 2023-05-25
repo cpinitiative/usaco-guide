@@ -89,14 +89,14 @@ import java.util.*;
 
 public class AppleDivision {
 	static int n;
-	static int[] weight;
+	static int[] weights;
 
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 
 		n = io.nextInt();
-		weight = new int[n];
-		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
+		weights = new int[n];
+		for (int i = 0; i < n; i++) { weights[i] = io.nextInt(); }
 
 		// Solve the problem starting at apple 0 with both sets being empty
 		io.println(recurseApples(0, 0, 0));
@@ -108,8 +108,8 @@ public class AppleDivision {
 		if (index == n) { return Math.abs(sum1 - sum2); }
 
 		// Try adding the current apple to either the first or second set
-		return Math.min(recurseApples(index + 1, sum1 + weight[index], sum2),
-		                recurseApples(index + 1, sum1, sum2 + weight[index]));
+		return Math.min(recurseApples(index + 1, sum1 + weights[index], sum2),
+		                recurseApples(index + 1, sum1, sum2 + weights[index]));
 	}
 
 	// CodeSnip{Kattio}
@@ -376,12 +376,12 @@ $\texttt{perms}$.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
+ 
 string s;
 vector<string> perms;
 int char_count[26];
-
-void search(const string& curr) {
+ 
+void search(const string& curr = "") {
 	// We've finished creating a permutation
 	if (curr.size() == s.size()) {
 		perms.push_back(curr);
@@ -397,12 +397,12 @@ void search(const string& curr) {
 		}
 	}
 }
-
+ 
 int main() {
 	cin >> s;
 	for (char c : s) { char_count[c - 'a']++; }
-
-	search("");
+ 
+	search();
 	
 	cout << perms.size() << '\n';
 	for (const string& perm : perms) { cout << perm << '\n'; }
