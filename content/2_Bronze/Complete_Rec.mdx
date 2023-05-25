@@ -99,17 +99,17 @@ public class AppleDivision {
 		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
 
 		// Solve the problem starting at apple 0 with both sets being empty
-		io.println(solve(0, 0, 0));
+		io.println(recurseApples(0, 0, 0));
 		io.close();
 	}
 
-	static long solve(int index, long sum1, long sum2) {
+	static long recurseApples(int index, long sum1, long sum2) {
 		// We've added all apples- return the absolute difference
 		if (index == n) { return Math.abs(sum1 - sum2); }
 
 		// Try adding the current apple to either the first or second set
-		return Math.min(solve(index + 1, sum1 + weight[index], sum2),
-		                solve(index + 1, sum1, sum2 + weight[index]));
+		return Math.min(recurseApples(index + 1, sum1 + weight[index], sum2),
+		                recurseApples(index + 1, sum1, sum2 + weight[index]));
 	}
 
 	// CodeSnip{Kattio}
@@ -124,20 +124,20 @@ n = int(input())
 weights = list(map(int, input().split()))
 
 
-def solve(i: int, sum1: int, sum2: int) -> int:
+def recurse_apples(i: int, sum1: int, sum2: int) -> int:
 	# We've added all apples- return the absolute difference
 	if i == n:
 		return abs(sum2 - sum1)
 	
 	# Try adding the current apple to either the first or second set
 	return min(
-		solve(i + 1, sum1 + weights[i], sum2),
-		solve(i + 1, sum1, sum2 + weights[i])
+		recurse_apples(i + 1, sum1 + weights[i], sum2),
+		recurse_apples(i + 1, sum1, sum2 + weights[i])
 	)
 
 
 # Solve the problem starting at apple 0 with both sets being empty
-print(solve(0, 0, 0))
+print(recurse_apples(0, 0, 0))
 ```
 
 </PySection>
