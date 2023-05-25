@@ -64,7 +64,7 @@ vector<long long> weights;
 ll recurse_apples(int index, ll sum1, ll sum2) {
 	// We've added all apples- return the absolute difference
 	if (index == n) { return abs(sum1 - sum2); }
-	
+
 	// Try adding the current apple to either the first or second set
 	return min(recurse_apples(index + 1, sum1 + weights[index], sum2),
 	           recurse_apples(index + 1, sum1, sum2 + weights[index]));
@@ -128,11 +128,11 @@ def recurse_apples(i: int, sum1: int, sum2: int) -> int:
 	# We've added all apples- return the absolute difference
 	if i == n:
 		return abs(sum2 - sum1)
-	
+
 	# Try adding the current apple to either the first or second set
 	return min(
 		recurse_apples(i + 1, sum1 + weights[i], sum2),
-		recurse_apples(i + 1, sum1, sum2 + weights[i])
+		recurse_apples(i + 1, sum1, sum2 + weights[i]),
 	)
 
 
@@ -191,9 +191,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<ll> weights(n);
-	for (ll& w : weights) {
-		cin >> w;
-	}
+	for (ll &w : weights) { cin >> w; }
 
 	ll ans = INT64_MAX;
 	for (int mask = 0; mask < (1 << n); mask++) {
@@ -381,7 +379,7 @@ string s;
 vector<string> perms;
 int char_count[26];
 
-void search(const string& curr) {
+void search(const string &curr) {
 	// We've finished creating a permutation
 	if (curr.size() == s.size()) {
 		perms.push_back(curr);
@@ -403,9 +401,9 @@ int main() {
 	for (char c : s) { char_count[c - 'a']++; }
 
 	search("");
-	
+
 	cout << perms.size() << '\n';
-	for (const string& perm : perms) { cout << perm << '\n'; }
+	for (const string &perm : perms) { cout << perm << '\n'; }
 }
 ```
 
@@ -441,11 +439,11 @@ public class CreatingStrings1 {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		s = io.next();
-		
+
 		for (int i = 0; i < s.length(); i++) { charCount[s.charAt(i) - 'a']++; }
 
 		search("");
-		
+
 		io.println(perms.size());
 		for (String perm : perms) { io.println(perm); }
 		io.close();
