@@ -33,27 +33,29 @@ frequency: 1
 
 using namespace std;
 
-const int NMAX = 3e5;
+const int MAX_N = 3e5;
 
-int timer, SCC;
-int id[NMAX], low[NMAX];
-vector<int> g[NMAX], two_edge_components[NMAX];
+int timer;
+int scc;
+int id[MAX_N];
+int low[MAX_N];
+vector<int> g[MAX_N], two_edge_components[MAX_N];
 stack<int> st;
 
 void dfs(int node, int parent = -1) {
 	id[node] = low[node] = ++timer;
 	st.push(node);
 	bool multiple_edges = False;
-	for (int son : g[node]) {
-		if (son == parent && !multiple_edges) {
+	for (int child : g[node]) {
+		if (child == parent && !multiple_edges) {
 			multiple_edges = True;
 			continue;
 		}
-		if (!id[son]) {
-			dfs(son, node);
-			low[node] = min(low[node], low[son]);
+		if (!id[child]) {
+			dfs(child, node);
+			low[node] = min(low[node], low[child]);
 		} else {
-			low[node] = min(low[node], id[son]);
+			low[node] = min(low[node], id[child]);
 		}
 	}
 	if (low[node] == id[node]) {
@@ -77,7 +79,7 @@ int main() {
 	}
 
 	for (int node = 0; node < n; node++) {
-		if (!id[node]) { dfs(node); }
+		if (id[node] != 0) { dfs(node); }
 	}
 
 	cout << SCC << '\n';
