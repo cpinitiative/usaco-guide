@@ -43,10 +43,10 @@ stack<int> st;
 void dfs(int node, int parent = -1) {
 	id[node] = low[node] = ++timer;
 	st.push(node);
-	bool pp = 0;
+	bool multiple_edges = 0; 
 	for (int son : g[node]) {
-		if (son == parent && !pp) {
-			pp = 1;
+		if (son == parent && !multiple_edges) {
+			multiple_edges = 1;
 			continue;
 		}
 		if (!id[son]) {
