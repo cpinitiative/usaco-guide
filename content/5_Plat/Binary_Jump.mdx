@@ -135,14 +135,14 @@ int main() {
 import math
 
 n, q = map(int, input().split())
-LOGMAX = math.ceil(math.log2(n))
-up = [[None for j in range(n)] for i in range(LOGMAX + 1)]
 boss = list(map(int, input().split()))
 
+log_max = math.ceil(math.log2(n))
+up = [[None for _ in range(n)] for _ in range(log_max + 1)]
 for i in range(n - 1):
 	up[0][i + 1] = boss[i] - 1
 
-for i in range(1, LOGMAX + 1):
+for i in range(1, log_max + 1):
 	for j in range(n):
 		if up[i - 1][j] is None:
 			up[i][j] = None
@@ -152,11 +152,12 @@ for i in range(1, LOGMAX + 1):
 for _ in range(q):
 	x, k = list(map(int, input().split()))
 	x -= 1
-	for i in range(LOGMAX):
+	for i in range(log_max):
 		if k & 1 << i:
 			x = up[i][x]
-		if x == None:
+		if x is None:
 			break
+
 	print(x + 1 if x is not None else -1)
 ```
 
