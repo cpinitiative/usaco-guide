@@ -538,9 +538,12 @@ using namespace std;
 int main() {
 	string s;
 	cin >> s;
-	vector<string> perms;
 	sort(s.begin(), s.end());
+
+	// perms is a sorted list of all the permutations of the given string
+	vector<string> perms;
 	do { perms.push_back(s); } while (next_permutation(s.begin(), s.end()));
+
 	cout << perms.size() << endl;
 	for (const string &perm : perms) { cout << perm << endl; }
 }
@@ -558,11 +561,13 @@ a set can filter out duplicates, and since tuples are returned, we need to join
 the characters into a string.
 
 ```py
-import itertools
+from itertools import permutations
 
 s = input()
+
 # perms is a sorted list of all the permutations of the given string
-perms = sorted(set(itertools.permutations(s)))
+perms = sorted(set(permutations(s)))
+
 print(len(perms))
 for perm in perms:
 	print("".join(perm))
@@ -590,16 +595,141 @@ for perm in perms:
 
 #### By Generating Permutations
 
-Since no two queens can be in the same column, let's generate a permutation of
-length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
+A brute-force solution that checks all $\binom{64}{8}$ possible queen
+combinations will have over 4 billion arrangements to check, making it too slow.
 
-By generating all permutations, we can quickly test all possible placements, and
-count how many are valid.
+We have to brute-froce a bit more intelligently.
+To do this, we can directly generate permutations so that no two queens are
+attacking each other due to being in the same row or column.
 
-To make the implementation easier, we can observe that some bottom-left to
-top-right diagonal can be represented as all squares $i, j$ such that
-$i + j = S$ for some $S$. Similarly, some bottom-right to top-left diagonal can
-be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
+Since no two queens can be in the same column, it makes sense
+to lay one out in each row.
+It remains to figure out how to vary the *rows* each queen is in.
+This can be done by generating all permutations from $1 \cdots 8$, with the
+numbers representing which row each queen is in.
+
+For example, the permutation $[6, 0, 5, 1, 4, 3, 7, 2]$ results in this
+queen arrangement:
+
+<table class="text-center">
+	<tbody>
+		<tr>
+			<td></td>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6</td>
+			<td>7</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+Doing this cuts down the number of arrangements we have to check down to
+a much more managable $8!$.
+
+<Info title="Easier Diagonal Checking">
+
+To make the implementation easier, notice that some bottom-left to
+top-right diagonal can be represented as all squares $i, j$
+($i$ being the row and $j$ being the column) such that $i + j = S$ for some $S$.
+For example, all squares on the diagonal from $6, 0$ to $0, 6$ have their
+coordinates sum to $6$.
+
+Similarly, some bottom-right to top-left diagonal can
+be represented as the same thing, but with $i-j$ instead of $i+j$.
+
+</Info>
 
 <LanguageSection>
 <CPPSection>
@@ -608,40 +738,57 @@ be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
 #include <bits/stdc++.h>
 using namespace std;
 
-bool ok[8][8];
-int ans = 0;
+const int DIM = 8;
 
 int main() {
-	for (int i = 0; i < 8; i++) {
-		string s;
-		cin >> s;
-		for (int j = 0; j < 8; j++) { ok[i][j] = (s[j] == '.'); }
+	vector<vector<bool>> blocked(DIM, vector<bool>(DIM));
+	for (int r = 0; r < DIM; r++) {
+		string row;
+		cin >> row;
+		for (int c = 0; c < DIM; c++) { blocked[r][c] = row[c] == '*'; }
 	}
-	vector<int> vals(8);
 
-	iota(vals.begin(), vals.end(), 0);  // set vals to 0 1 ... 7
+	vector<int> queens(DIM);
+	// Set the initial values to 0, 1...7
+	iota(queens.begin(), queens.end(), 0);
 
+	int valid_num = 0;
 	do {
 		bool works = true;
-		bool blocked[16];
-		for (int i = 0; i < 8; i++) {
-			if (!ok[i][vals[i]]) { works = false; }
+		// Check if any cells have been blocked off by the input
+		for (int c = 0; c < DIM; c++) {
+			if (blocked[queens[c]][c]) {
+				works = false;
+				break;
+			}
 		}
-		// first mark all squares as not blocked
-		memset(blocked, false, sizeof(blocked));
-		for (int i = 0; i < 8; i++) {
-			if (blocked[i + vals[i]]) { works = false; }
-			blocked[i + vals[i]] = true;  // mark this diagonal
-		}
-		memset(blocked, false, sizeof(blocked));
-		for (int i = 0; i < 8; i++) {
-			if (blocked[i + 7 - vals[i]]) { works = false; }
-			blocked[i + 7 - vals[i]] = true;
-		}
-		if (works) ++ans;
-	} while (next_permutation(vals.begin(), vals.end()));
 
-	cout << ans << '\n';
+		// Check the diagonals from the top-left to the bottom-right
+		vector<bool> taken(DIM * 2 - 1);
+		for (int c = 0; c < DIM; c++) {
+			// Check if the diagonal with sum has been taken
+			if (taken[c + queens[c]]) {
+				works = false;
+				break;
+			}
+			taken[c + queens[c]] = true;
+		}
+
+		// Check the diagonals from the top-right to the bottom-left
+		taken = vector<bool>(DIM * 2 - 1);
+		for (int c = 0; c < DIM; c++) {
+			// queens[c] - c can be negative; the DIM - 1 offsets that
+			if (taken[queens[c] - c + DIM - 1]) {
+				works = false;
+				break;
+			}
+			taken[queens[c] - c + DIM - 1] = true;
+		}
+
+		if (works) { valid_num++; }
+	} while (next_permutation(queens.begin(), queens.end()));
+
+	cout << valid_num << endl;
 }
 ```
 
@@ -652,53 +799,77 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Chessboard {
-	public static boolean ok[][] = new boolean[8][8];
-	public static List<Integer> perm = new ArrayList<>();
-	public static boolean[] chosen = new boolean[8];
-	public static int ans = 0;
+public class ChessboardQueens {
+	private static final int DIM = 8;
 
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio();
-		for (int i = 0; i < 8; i++) {
-			String str = io.next();
-			for (int j = 0; j < 8; j++) { ok[i][j] = (str.charAt(j) == '.'); }
+	private static boolean[][] blocked = new boolean[DIM][DIM];
+
+	private static final List<Integer> queens = new ArrayList<>();
+	private static final boolean[] chosen = new boolean[DIM];
+
+	private static int validNum = 0;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		for (int r = 0; r < DIM; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < DIM; c++) {
+				if (row.charAt(c) == '*') { blocked[r][c] = true; }
+			}
 		}
-		genperm();
-		io.println(ans);
-		io.close();
+
+		genQueens();
+
+		System.out.println(validNum);
 	}
 
-	public static void genperm() {
-		if (perm.size() == 8) {
+	private static void genQueens() {
+		if (queens.size() == DIM) {
 			boolean works = true;
-			boolean blocked[] = new boolean[16];
-			for (int i = 0; i < 8; i++) {
-				if (!ok[i][perm.get(i)]) { works = false; }
+
+			// Check if any cells have been blocked off by the input
+			for (int c = 0; c < DIM; c++) {
+				if (blocked[queens.get(c)][c]) {
+					works = false;
+					break;
+				}
 			}
-			for (int i = 0; i < 8; i++) {
-				if (blocked[i + perm.get(i)]) { works = false; }
-				blocked[i + perm.get(i)] = true;  // mark this diagonal
+
+			// Check the diagonals from the top-left to the bottom-right
+			boolean[] taken = new boolean[DIM * 2 - 1];
+			for (int c = 0; c < DIM; c++) {
+				// Check if the diagonal with this sum has been taken
+				if (taken[c + queens.get(c)]) {
+					works = false;
+					break;
+				}
+				taken[c + queens.get(c)] = true;
 			}
-			Arrays.fill(blocked, false);
-			for (int i = 0; i < 8; i++) {
-				if (blocked[i + 7 - perm.get(i)]) { works = false; }
-				blocked[i + 7 - perm.get(i)] = true;
+
+			// Check the diagonals from the top-right to the bottom-left
+			taken = new boolean[DIM * 2 - 1];
+			for (int c = 0; c < DIM; c++) {
+				// queens.get(c) - c can be negative; the DIM - 1 offsets that
+				if (taken[queens.get(c) - c + DIM - 1]) {
+					works = false;
+					break;
+				}
+				taken[queens.get(c) - c + DIM - 1] = true;
 			}
-			if (works) ans++;
+
+			if (works) { validNum++; }
 		} else {
-			for (int i = 0; i < 8; i++) {
-				if (chosen[i]) continue;
-				chosen[i] = true;
-				perm.add(i);
-				genperm();
-				chosen[i] = false;
-				perm.remove(perm.size() - 1);
+			for (int c = 0; c < DIM; c++) {
+				if (chosen[c]) { continue; }
+				chosen[c] = true;
+				queens.add(c);
+				genQueens();
+				chosen[c] = false;
+				queens.remove(queens.size() - 1);
 			}
 		}
 	}
-
-	// CodeSnip{Kattio}
 }
 ```
 
@@ -706,37 +877,48 @@ public class Chessboard {
 <PySection>
 
 ```py
-import itertools
+from itertools import permutations
 
-ok = [[0] * 8 for _ in range(8)]
-ans = 0
-for i in range(8):
-	s = input()
-	for j in range(8):
-		ok[i][j] = s[j] == "."
+DIM = 8
 
-vals = list(range(8))
+blocked = [[False] * DIM for _ in range(DIM)]
+for r in range(DIM):
+	row = input()
+	for c in range(DIM):
+		blocked[r][c] = row[c] == "*"
 
-for permutation in itertools.permutations(vals):
+valid_num = 0
+for queens in permutations(range(DIM)):
 	works = True
-	for i in range(8):
-		if not ok[i][permutation[i]]:
-			works = False
-	blocked = [0] * 16
-	for i in range(8):
-		if blocked[i + permutation[i]]:
-			works = False
-		blocked[i + permutation[i]] = True
 
-	blocked = [0] * 16
-	for i in range(8):
-		if blocked[i + 7 - permutation[i]]:
+	# Check if any cells have been blocked off by the input
+	for c in range(DIM):
+		if blocked[queens[c]][c]:
 			works = False
-		blocked[i + 7 - permutation[i]] = True
+			break
+
+	# Check the diagonals from the top-left to the bottom-right
+	taken = [False] * (DIM * 2 - 1)
+	for c in range(DIM):
+		# Check if the diagonal with sum has been taken
+		if taken[c + queens[c]]:
+			works = False
+			break
+		taken[c + queens[c]] = True
+
+	# Check the diagonals from the top-right to the bottom-left
+	taken = [False] * (DIM * 2 - 1)
+	for c in range(DIM):
+		# queens[c] - c can be negative; the DIM - 1 offsets that
+		if taken[queens[c] - c + DIM - 1]:
+			works = False
+			break
+		taken[queens[c] - c + DIM - 1] = True
+
 	if works:
-		ans += 1
+		valid_num += 1
 
-print(ans)
+print(valid_num)
 ```
 
 </PySection>
@@ -753,42 +935,60 @@ According to CPH:
 Since the bounds are small, we can recursively backtrack over all ways to place
 the queens, storing the current state of the board.
 
-Then, we can try to place a queen at all squares $x, y$ if it isn't attacked by
-a queen or blocked and recurse, before removing this queen and backtracking.
+At each level, we try to place a queen at all squares that aren't blocked
+or attacked by other queens.
+After this, we recurse, then remove this queen and backtrack.
 
-Finally, when we have placed all the queens and the board's state is valid, then
-increment the answer.
+Finally, we increment the answer when we've placed all eight queens.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-string g[8];
-bool sum[15], diff[15], c[8];
-int ans = 0;
+const int DIM = 8;
 
-void dfs(int r) {  // place queen in r-th row
-	if (r == 8) {
-		++ans;  // found valid placement
+vector<vector<bool>> blocked(DIM, vector<bool>(DIM));
+vector<bool> rows_taken(DIM);
+// Indicators for diagonals that go from the bottom left to the top right
+vector<bool> diag1(DIM * 2 - 1);
+// Indicators for diagonals that go from the bottom right to the top left
+vector<bool> diag2(DIM * 2 - 1);
+
+int valid_num = 0;
+
+void search_queens(int c = 0) {
+	if (c == DIM) {
+		// We've filled all rows, increment and return
+		valid_num++;
 		return;
 	}
-	for (int i = 0; i < 8; ++i) {
-		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !diff[i - r + 7]) {
-			c[i] = sum[i + r] = diff[i - r + 7] = true;
-			dfs(r + 1);
-			c[i] = sum[i + r] = diff[i - r + 7] = false;
+
+	for (int r = 0; r < DIM; r++) {
+		bool row_open = !rows_taken[r];
+		bool diag_open = !diag1[r + c] && !diag2[r - c + DIM - 1];
+		if (!blocked[r][c] && row_open && diag_open) {
+			// A row and two diagonals have been taken
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = true;
+			search_queens(c + 1);
+			// And now they aren't anymore
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = false;
 		}
 	}
 }
 
 int main() {
-	for (int i = 0; i < 8; ++i) cin >> g[i];
-	dfs(0);
-	cout << ans;
+	for (int r = 0; r < DIM; r++) {
+		string row;
+		cin >> row;
+		for (int c = 0; c < DIM; c++) { blocked[r][c] = row[c] == '*'; }
+	}
+
+	search_queens();
+
+	cout << valid_num << endl;
 }
 ```
 
@@ -797,41 +997,54 @@ int main() {
 
 ```java
 import java.io.*;
-import java.util.*;
 
-public class Main {
-	static String g[];
-	static boolean sum[], diff[], c[];
-	static int ans = 0;
+public class ChessboardQueens {
+	private static final int DIM = 8;
 
-	static void dfs(int r) {  // place queen in row r
-		if (r == 8) {
-			++ans;
+	private static boolean[][] blocked = new boolean[DIM][DIM];
+
+	private static final boolean[] rowsTaken = new boolean[DIM];
+	// Indicators for diagonals that go from the bottom left to the top right
+	private static final boolean[] diag1 = new boolean[DIM * 2 - 1];
+	// Indicators for diagonals that go from the bottom right to the top left
+	private static final boolean[] diag2 = new boolean[DIM * 2 - 1];
+
+	private static int validNum = 0;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		for (int r = 0; r < DIM; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < DIM; c++) {
+				if (row.charAt(c) == '*') { blocked[r][c] = true; }
+			}
+		}
+
+		searchQueens(0);
+
+		System.out.println(validNum);
+	}
+
+	private static void searchQueens(int c) {
+		if (c == DIM) {
+			// We've filled all rows, increment and return
+			validNum++;
 			return;
 		}
-		for (int i = 0; i < 8; ++i) {
-			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] &&
-			    !diff[i - r + 7]) {
-				c[i] = sum[i + r] = diff[i - r + 7] = true;
-				dfs(r + 1);
-				c[i] = sum[i + r] = diff[i - r + 7] = false;
+
+		for (int r = 0; r < DIM; r++) {
+			boolean row_open = !rowsTaken[r];
+			boolean diag_open = !diag1[r + c] && !diag2[r - c + DIM - 1];
+			if (!blocked[r][c] && row_open && diag_open) {
+				// A row and two diagonals have been taken
+				rowsTaken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = true;
+				searchQueens(c + 1);
+				// And now they aren't anymore
+				rowsTaken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = false;
 			}
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		Kattio io = new Kattio();
-		g = new String[8];
-		sum = new boolean[15];
-		diff = new boolean[15];
-		c = new boolean[8];
-		for (int i = 0; i < 8; ++i) { g[i] = io.next(); }
-		dfs(0);
-		io.println(ans);
-		io.close();
-	}
-
-	// CodeSnip{Kattio}
 }
 ```
 
@@ -839,27 +1052,44 @@ public class Main {
 <PySection>
 
 ```py
-g = [input() for _ in range(8)]
-sum_ = [False] * 15
-diff = [False] * 15
-c = [0] * 8
-ans = 0
+DIM = 8
+
+blocked = [[False for _ in range(DIM)] for _ in range(DIM)]
+for r in range(DIM):
+	row = input()
+	for c in range(DIM):
+		blocked[r][c] = row[c] == "*"
+
+rows_taken = [False] * DIM
+# Indicators for diagonals that go from the bottom left to the top right
+diag1 = [False] * (DIM * 2 - 1)
+# Indicators for diagonals that go from the bottom right to the top left
+diag2 = [False] * (DIM * 2 - 1)
+
+valid_num = 0
 
 
-def dfs(r):
-	global ans
-	if r == 8:
-		ans += 1
+def search_queens(c: int = 0):
+	global valid_num
+
+	if c == DIM:
+		# We've filled all rows, increment and return
+		valid_num += 1
 		return
-	for i in range(8):
-		if g[r][i] == "." and not c[i] and not sum_[i + r] and not diff[i - r + 7]:
-			c[i] = sum_[i + r] = diff[i - r + 7] = True
-			dfs(r + 1)
-			c[i] = sum_[i + r] = diff[i - r + 7] = False
+
+	for r in range(DIM):
+		row_open = not rows_taken[r]
+		diag_open = not diag1[r + c] and not diag2[r - c + DIM - 1]
+		if not blocked[r][c] and row_open and diag_open:
+			# A row and two diagonals have been taken
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = True
+			search_queens(c + 1)
+			# And now they aren't anymore
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = False
 
 
-dfs(0)
-print(ans)
+search_queens()
+print(valid_num)
 ```
 
 </PySection>
