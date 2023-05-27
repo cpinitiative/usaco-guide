@@ -543,7 +543,7 @@ int main() {
 	// perms is a sorted list of all the permutations of the given string
 	vector<string> perms;
 	do { perms.push_back(s); } while (next_permutation(s.begin(), s.end()));
-	
+
 	cout << perms.size() << endl;
 	for (const string &perm : perms) { cout << perm << endl; }
 }
@@ -657,9 +657,7 @@ int main() {
 	for (int r = 0; r < DIM; r++) {
 		string row;
 		cin >> row;
-		for (int c = 0; c < DIM; c++) {
-			blocked[r][c] = row[c] == '*';
-		}
+		for (int c = 0; c < DIM; c++) { blocked[r][c] = row[c] == '*'; }
 	}
 
 	vector<int> queens(DIM);
@@ -699,9 +697,7 @@ int main() {
 			taken[queens[c] - c + DIM - 1] = true;
 		}
 
-		if (works) {
-			valid_num++;
-		}
+		if (works) { valid_num++; }
 	} while (next_permutation(queens.begin(), queens.end()));
 
 	cout << valid_num << endl;
@@ -724,22 +720,20 @@ public class ChessboardQueens {
 	private static final boolean[] chosen = new boolean[DIM];
 
 	private static int validNum = 0;
-	
+
 	public static void main(String[] args) throws Exception {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		for (int r = 0; r < DIM; r++) {
 			String row = read.readLine();
 			for (int c = 0; c < DIM; c++) {
-				if (row.charAt(c) == '*') {
-					blocked[r][c] = true;
-				}
+				if (row.charAt(c) == '*') { blocked[r][c] = true; }
 			}
 		}
 
 		genQueens();
 
 		System.out.println(validNum);
-	
 	}
 
 	private static void genQueens() {
@@ -776,14 +770,10 @@ public class ChessboardQueens {
 				taken[queens.get(c) - c + DIM - 1] = true;
 			}
 
-			if (works) {
-				validNum++;
-			}
+			if (works) { validNum++; }
 		} else {
 			for (int c = 0; c < DIM; c++) {
-				if (chosen[c]) {
-					continue;
-				}
+				if (chosen[c]) { continue; }
 				chosen[c] = true;
 				queens.add(c);
 				genQueens();
@@ -807,12 +797,12 @@ blocked = [[False] * DIM for _ in range(DIM)]
 for r in range(DIM):
 	row = input()
 	for c in range(DIM):
-		blocked[r][c] = row[c] == '*'
+		blocked[r][c] = row[c] == "*"
 
 valid_num = 0
 for queens in permutations(range(DIM)):
 	works = True
-	
+
 	# Check if any cells have been blocked off by the input
 	for c in range(DIM):
 		if blocked[queens[c]][c]:
@@ -905,9 +895,7 @@ int main() {
 	for (int r = 0; r < DIM; r++) {
 		string row;
 		cin >> row;
-		for (int c = 0; c < DIM; c++) {
-			blocked[r][c] = row[c] == '*';
-		}
+		for (int c = 0; c < DIM; c++) { blocked[r][c] = row[c] == '*'; }
 	}
 
 	search_queens();
@@ -932,20 +920,19 @@ public class ChessboardQueens {
 	private static final boolean[] diag1 = new boolean[DIM * 2 - 1];
 	// Indicators for diagonals that go from the bottom right to the top left
 	private static final boolean[] diag2 = new boolean[DIM * 2 - 1];
-	
+
 	private static int validNum = 0;
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		for (int r = 0; r < DIM; r++) {
 			String row = read.readLine();
 			for (int c = 0; c < DIM; c++) {
-				if (row.charAt(c) == '*') {
-					blocked[r][c] = true;
-				}
+				if (row.charAt(c) == '*') { blocked[r][c] = true; }
 			}
 		}
-	
+
 		searchQueens(0);
 
 		System.out.println(validNum);
@@ -957,7 +944,7 @@ public class ChessboardQueens {
 			validNum++;
 			return;
 		}
-	
+
 		for (int r = 0; r < DIM; r++) {
 			boolean row_open = !rowsTaken[r];
 			boolean diag_open = !diag1[r + c] && !diag2[r - c + DIM - 1];
@@ -983,7 +970,7 @@ blocked = [[False for _ in range(DIM)] for _ in range(DIM)]
 for r in range(DIM):
 	row = input()
 	for c in range(DIM):
-		blocked[r][c] = row[c] == '*'
+		blocked[r][c] = row[c] == "*"
 
 rows_taken = [False] * DIM
 # Indicators for diagonals that go from the bottom left to the top right
