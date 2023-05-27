@@ -91,21 +91,29 @@ Sort the rectangles by x-coordinate and run a sweep-line.
 
 </Spoiler>
 
-<Spoiler title="Solution">
+We can use techniques introduced in [Range Queries with Sweep
+Line](/plat/range-sweep?lang=cpp)
 
-We can use techniques introduced in [Range Queries with Sweep Line](/plat/range-sweep?lang=cpp)
+We sweep from left to right over the $x$-coordinates, maintaining two events for
+each rectangle: one for the left boundary and one for the right boundary.
+Maintain a Lazy Segment Tree over the $y$-coordinates.
+- When we run into a left boundary of some rectangle with $y$-coordinates $(y_0,
+  y_1)$, increase each index $i \in [y_0, y_1]$ by 1
+- When we run into a right boundary of some rectangle with $y$-coordinates
+  $(y_0, y_1)$, decrease each index $i \in [y_0, y_1]$ by 1
 
-We sweep from left to right over the $x$-coordinates, maintaining two events for each rectangle: one for the left boundary and one for the right boundary. Maintain a Lazy Segment Tree over the $y$-coordinates.
-- When we run into a left boundary of some rectangle with $y$-coordinates $(y_0, y_1)$, increase each index $i \in [y_0, y_1]$ by 1
-- When we run into a right boundary of some rectangle with $y$-coordinates $(y_0, y_1)$, decrease each index $i \in [y_0, y_1]$ by 1
+Then, for each $x$, we simply need to count the number of non-zero indices which
+corresponds to indices that are covered by at least one rectangle. How can we do
+this?
 
-Then, for each $x$, we simply need to count the number of non-zero indices which corresponds to indices that are covered by at least one rectangle. How can we do this?
+Instead of counting the area covered by at least one rectangle, let's count the
+amount of space covered by no rectangles. We can subtract this amount from the
+total number of indices to get the value we want.
 
-Instead of counting the area covered by at least one rectangle, let's count the amount of space covered by no rectangles. We can subtract this amount from the total number of indices to get the value we want.
-
-We can use a Segment Tree that counts the number of occurences of the minimum value. Because the minimum value is at least zero (there can't be a negative number of rectangles at a position) the number of uncovered squares is equal to the number of squares with value 0.
-
-</Spoiler>
+We can use a Segment Tree that counts the number of occurences of the minimum
+value. Because the minimum value is at least zero (there can't be a negative
+number of rectangles at a position) the number of uncovered squares is equal to
+the number of squares with value 0.
 
 ### Implementation
 
