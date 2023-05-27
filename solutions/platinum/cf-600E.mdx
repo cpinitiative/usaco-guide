@@ -21,7 +21,7 @@ As explained in the official analysis, when we use small to large merging on dat
 using namespace std;
 using ll = long long;
 
-const int MAXN = 1e5 + 1;
+const int MAXN = 1e5;
 array<ll, MAXN> color, ans;
 vector<int> g[MAXN];
 
@@ -62,17 +62,18 @@ void dfs(int node, int p) {
 int main() {
 	int n;
 	cin >> n;
-	for (int i = 1; i <= n; i++) { cin >> color[i]; }
+	for (int i = 0; i < n; i++) { cin >> color[i]; }
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
+		--u; -- v;
 		g[u].push_back(v);
 		g[v].push_back(u);
 	}
 
-	dfs(1, 1);
+	dfs(0, 0);
 
-	for (int i = 1; i <= n; i++) { cout << ans[i] << " "; }
+	for (int i = 0; i < n; i++) { cout << ans[i] << " "; }
 }
 ```
 
