@@ -137,7 +137,7 @@ if implemented naively, but we can use bitset to speed it up!
 Note: you can't store all $N$ bitsets in memory at the same time (more on that
 below).
 
-<Spoiler title="Full Solution">
+### Full Solution - School Excursion
 
 <LanguageSection>
 <PySection>
@@ -250,8 +250,6 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-</Spoiler>
-
 **Challenge**: This solution runs in $\approx 0.3\text{s}$ when $N=10^5$ and
 there are no edges. Find a faster solution which can also be sped up with bitset
 (my solution runs in 0.03s).
@@ -351,7 +349,9 @@ for (int i = 1; i <= 1000000; ++i)
 
 The full main function is as follows:
 
-<Spoiler title="Full Solution">
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int main() {
@@ -377,7 +377,9 @@ int main() {
 }
 ```
 
-</Spoiler>
+</CPPSection>
+
+</LanguageSection>
 
 Apparently no test case contains more than $25000$ distinct colors, so we don't
 actually need to split the calculation into two halves.
@@ -388,6 +390,10 @@ actually need to split the calculation into two halves.
 
 First, we read in the input data. `cross(a,b,c)` is positive iff `c` lies to the
 left of the line from `a` to `b`.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -419,12 +425,20 @@ void input() {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 There are $\mathcal{O}(N^3)$ possible lots. Trying all possible lots and
 counting the number of trees that lie within each in $\mathcal{O}(N)$ for a
 total time complexity of $\mathcal{O}(N^4)$ should solve somewhere between 2 and
 5 test cases. Given a triangle `t[0], t[1], t[2]` with positive area, tree `x`
 lies within it iff `x` is to the left of each of sides
 `(t[0],t[1])`,`(t[1],t[2])`, and `(t[2],t[0])`.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int main() {
@@ -448,6 +462,10 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 The analysis describes how to count the number of trees within a lot in
 $\mathcal{O}(1)$, which is sufficient to solve the problem. However,
 $\mathcal{O}(N)$ is actually sufficient as long as we divide by the bitset
@@ -457,7 +475,7 @@ lies within triangle `(t[0],t[1],t[2])` as long as
 of `x` such that this holds true by taking the bitwise AND of the bitsets for
 all three sides and then counting the number of bits in the result.
 
-<Spoiler title="Fast Solution">
+### Fast Solution
 
 ```cpp
 bitset<300> b[300][300];
@@ -481,8 +499,6 @@ int main() {
 	for (int i = 0; i < N - 2; ++i) cout << res[i] << "\n";
 }
 ```
-
-</Spoiler>
 
 ## Knapsack Again
 
@@ -522,7 +538,11 @@ special case where each $a_i$ is either $0$ or $\max a_i$, we can bound the
 probability of failure using the Catalan numbers. I think it is something like
 $e^{-\frac{m^2}{n}}$ if we let the bitset have size $m\cdot \max a_i$.
 
-<Spoiler title="Solution">
+### Solution
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -568,7 +588,9 @@ int main() {
 }
 ```
 
-</Spoiler>
+</CPPSection>
+
+</LanguageSection>
 
 ## Other Applications
 
