@@ -23,18 +23,18 @@ array<ll, MAXN> color, ans;
 vector<int> g[MAXN];
 map<ll, ll> col_cnt[MAXN], sum_occur[MAXN];
 // col_cnt[i][j] = number of occurrences of color j in i
-// sum_occur[i][j] = sum of colors having occurrence j in subtree i 
+// sum_occur[i][j] = sum of colors having occurrence j in subtree i
 
-void dfs(int node, int p){
+void dfs(int node, int p) {
 	// initialize this node
 	col_cnt[node][color[node]] += 1;
 	sum_occur[node][1] += color[node];
-	
-	for (int i: g[node]) {
+
+	for (int i : g[node]) {
 		if (i == p) { continue; }
 		dfs(i, node);
 		// retrieve the biggest map so we have less to merge
-		if(col_cnt[node].size() < col_cnt[i].size()){
+		if (col_cnt[node].size() < col_cnt[i].size()) {
 			col_cnt[node].swap(col_cnt[i]);
 			sum_occur[node].swap(sum_occur[i]);
 		}
@@ -50,23 +50,21 @@ void dfs(int node, int p){
 		}
 	}
 	// retrieve the sum with the biggest j
-	ans[node] = sum_occur[node].rbegin() -> second;
+	ans[node] = sum_occur[node].rbegin()->second;
 }
 
-int main(){
-	int n; cin >> n;
-	for (int i = 1; i <= n; i++) {
-		cin >> color[i];
-	}
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) { cin >> color[i]; }
 	for (int i = 0; i < n - 1; i++) {
-		int u,v; cin >> u >> v;
+		int u, v;
+		cin >> u >> v;
 		g[u].push_back(v);
 		g[v].push_back(u);
 	}
 	dfs(1, 1);
-	for (int i = 1; i <= n; i++) {
-		cout << ans[i] << " ";
-	}
+	for (int i = 1; i <= n; i++) { cout << ans[i] << " "; }
 }
 ```
 </CPPSection>
