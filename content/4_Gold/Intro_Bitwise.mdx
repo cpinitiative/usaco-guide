@@ -30,7 +30,7 @@ redirects:
 </Resources>
 
 At this point, you should already be familiar with the three main bitwise operators (AND, OR, and XOR).
-Let's take a look at some examples to better understand them. 
+Let's take a look at some examples to better understand them.
 
 <FocusProblem problem="sample" />
 
@@ -48,11 +48,11 @@ useful to us?
 
 In fact, we can figure out the sum of two numbers using just their AND, OR and XOR values! Suppose we know their
 XOR values, we can use the following property:
-	
+
 $a + b = 2 \cdot (a \& b) + a \oplus b$
 
 <Spoiler title="Proof">
-$a \oplus b$ is essentially just $a + b$ in base $2$ but we never carry over to the next bit. Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the bit in $b$, thus one of them must be a $1$. However, when we add two $1$ bits, we yield a $0$, but we do not carry that $1$ to the next bit. This is where $a \& b$ comes in. 
+$a \oplus b$ is essentially just $a + b$ in base $2$ but we never carry over to the next bit. Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the bit in $b$, thus one of them must be a $1$. However, when we add two $1$ bits, we yield a $0$, but we do not carry that $1$ to the next bit. This is where $a \& b$ comes in.
 
 $a \& b$ is just the carry bits themselves, since a bit is $1$ only if it is a $1$ in both $a$ and $b$, which is exactly what we need. We multiply this by $2$ to shift all the bits to the left by one, so every value carries over to the next bit.
 </Spoiler>
@@ -73,20 +73,20 @@ Now this look's pretty great, but we need to get rid of the third case. By takin
 
 </Spoiler>
 
-Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem now. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array. 
+Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem now. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array.
 
 </Spoiler>
 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 int ask(string s, int a, int b) {
 	cout << s << " " << a << " " << b << endl;
-	int res; 
+	int res;
 	cin >> res;
 	return res;
 }
@@ -101,26 +101,24 @@ int sum(int a, int b) {
 }
 
 int main() {
-	int n, k; 
+	int n, k;
 	cin >> n >> k;
-	
+
 	// acquire first 3 elements
 	int aplusb = sum(1, 2);
 	int bplusc = sum(2, 3);
 	int aplusc = sum(1, 3);
-	
+
 	// solve a system of equations
 	vector<int> a(3);
 	a[1] = (aplusb + bplusc - aplusc) / 2;
 	a[0] = aplusb - a[1];
 	a[2] = bplusc - a[1];
-	
+
 	// get the rest of the array
-	for (int i = 4; i <= n; i++) {
-		a.push_back(sum(i - 1, i) - a.back());
-	}
+	for (int i = 4; i <= n; i++) { a.push_back(sum(i - 1, i) - a.back()); }
 	sort(a.begin(), a.end());
-	cout << "finish " << a[k-1] << endl;
+	cout << "finish " << a[k - 1] << endl;
 }
 ```
 </CPPSection>
