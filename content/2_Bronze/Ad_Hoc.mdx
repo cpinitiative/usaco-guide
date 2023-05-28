@@ -2,6 +2,7 @@
 id: ad-hoc
 title: Ad Hoc Problems
 author: Michael Cao
+contributors: Ananth Kashyap
 description:
   'Problems that do not fall into standard categories with well-studied
   solutions.'
@@ -34,6 +35,286 @@ approaching problems that appear to be ad hoc.
 
 In the end, the best way to get better at ad hoc problems (or any type of
 problem) is to do a lot of them.
+
+### Example - Milking Order
+
+<FocusProblem problem="tutorial" />
+
+Don't be afraid to give up on some approach if you aren't making progress!
+
+<Spoiler title="Hint 1">
+Let's try placing cow $1$ at a specific position.
+
+How might we go about checking to see if we'll end up with a valid ordering?
+</Spoiler>
+
+<Spoiler title="Solution 1">
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_milkorder_bronze_open18.html)
+
+What if we tried placing cow $1$ at every possible position?
+
+Then, we'll have some hierarchy we have to fit in and some free cows which can go anywhere. Let's just handle the hierarchy, since we can fit in the free cows at the end.
+
+As we sweep through the hierarchy, we'll also store a pointer that indicates our current position. Greedily, we should try to place these cows as early as possible to make sure that we have room to fit in all of them. As we go through the list, we have to make sure that this pointer never outruns some previous cow in our hierarchy.
+
+This check takes $\mathcal{O}(N + M + K)$, which brings our total time complexity to $\mathcal{O}(N(N + M + K))$.
+</Spoiler>
+
+<Spoiler title="Solution 2">
+Let's split the position of cow $1$ into cases.
+
+1. Cow $1$ is fixed. We can't move it at all, so we'll just have to output it's position
+2. Cow $1$ is in some hierarchy. Let's greedily place all of the cows in this hierarchy as early as possible.
+3. Cow $1$ is not in any hierarchy. Let's similarly place all hierarchys as late as possible, so we leave the earliest open space for cow $1$.
+
+**Time Complexity:** $\mathcal{O}(N(M + N))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("milkorder.in", "r", stdin);
+
+	int n, m, k;
+	cin >> n >> m >> k;
+
+	vector<int> hierarchy(m);
+	for (int i = 0; i < m; i++) { cin >> hierarchy[i]; }
+
+	vector<int> cows(n);
+	for (int i = 0; i < k; i++) {
+		int cow, position;
+		cin >> cow >> position;
+		cows[position - 1] = cow;
+	}
+
+	int ans;
+	if (find(cows.begin(), cows.end(), 1) != cows.end()) {
+		// Case 1
+		ans = find(cows.begin(), cows.end(), 1) - cows.begin() + 1;
+	} else {
+		if (find(hierarchy.begin(), hierarchy.end(), 1) != hierarchy.end()) {
+			// Case 2
+			int i = 0;
+			int pointer = 0;
+			while (pointer <= m - 1) {
+				if (find(cows.begin(), cows.end(), hierarchy[pointer]) !=
+				    cows.end()) {
+					// If the cow is in the hierarchy and has already been
+					// placed.
+					i = find(cows.begin(), cows.end(), hierarchy[pointer]) -
+					    cows.begin() + 1;
+					pointer++;
+				} else {
+					// Otherwise place the cow at the next earliest position.
+					if (cows[i] == 0) {
+						cows[i] = hierarchy[pointer];
+						pointer++;
+					}
+					i++;
+				}
+			}
+			for (int i = 0; i < n; i++) {
+				if (cows[i] == 1) {
+					ans = i + 1;
+					break;
+				}
+			}
+		} else {
+			// Case 3
+			int i = n - 1;
+			int pointer = m - 1;
+			while (pointer >= 0) {
+				if (find(cows.begin(), cows.end(), hierarchy[pointer]) !=
+				    cows.end()) {
+					// If the cow is in the hierarchy and has already been
+					// placed.
+					i = find(cows.begin(), cows.end(), hierarchy[pointer]) -
+					    cows.begin() - 1;
+					pointer--;
+				} else {
+					// Otherwise place the cow at the next latest position.
+					if (cows[i] == 0) {
+						cows[i] = hierarchy[pointer];
+						pointer--;
+					}
+					i--;
+				}
+			}
+			for (int i = 0; i < n; i++) {
+				if (cows[i] == 0) {
+					ans = i + 1;
+					break;
+				}
+			}
+		}
+	}
+
+	freopen("milkorder.out", "w", stdout);
+	cout << ans << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MilkingOrder {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("milkorder");
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int k = io.nextInt();
+
+		List<Integer> hierarchy = new ArrayList<>();
+		for (int i = 0; i < m; i++) { hierarchy.add(io.nextInt()); }
+
+		List<Integer> cows = new ArrayList<>(Collections.nCopies(n, 0));
+		for (int i = 0; i < k; i++) {
+			int cow = io.nextInt();
+			int position = io.nextInt();
+			cows.set(position - 1, cow);
+		}
+
+		int ans;
+		if (cows.contains(1)) {
+			// Case 1
+			ans = cows.indexOf(1) + 1;
+		} else {
+			if (hierarchy.contains(1)) {
+				// Case 2
+				int i = 0;
+				int pointer = 0;
+				while (pointer <= m - 1) {
+					if (cows.contains(hierarchy.get(pointer))) {
+						// If the cow is in the hierarchy and has already been
+						// placed.
+						i = cows.indexOf(hierarchy.get(pointer)) + 1;
+						pointer++;
+					} else {
+						// Otherwise place the cow at the next earliest
+						// position.
+						if (cows.get(i) == 0) {
+							cows.set(i, hierarchy.get(pointer));
+							pointer++;
+						}
+						i++;
+					}
+				}
+				ans = cows.indexOf(1) + 1;
+			} else {
+				// Case 3
+				int i = n - 1;
+				int pointer = m - 1;
+				while (pointer >= 0) {
+					if (cows.contains(hierarchy.get(pointer))) {
+						// If the cow is in the hierarchy and has already been
+						// placed.
+						i = cows.indexOf(hierarchy.get(pointer)) - 1;
+						pointer--;
+					} else {
+						// Otherwise place the cow at the next latest position.
+						if (cows.get(i) == 0) {
+							cows.set(i, hierarchy.get(pointer));
+							pointer--;
+						}
+						i--;
+					}
+				}
+				ans = cows.indexOf(0) + 1;
+			}
+		}
+
+		io.println(ans);
+		io.flush();
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+file_in = open("milkorder.in")
+data = file_in.read().strip().split("\n")
+n, m, k = map(int, data[0].split(" "))
+hierarchy = list(map(int, data[1].split(" ")))
+fixed = [list(map(int, data[i + 2].split(" "))) for i in range(k)]
+
+cows = [0 for i in range(n)]
+
+for i in range(k):
+	cows[fixed[i][1] - 1] = fixed[i][0]
+
+if 1 in cows:
+	# Case 1
+	ans = cows.index(1) + 1
+else:
+	if 1 in hierarchy:
+		# Case 2
+		i = 0
+		pointer = 0
+		while pointer <= m - 1:
+			if hierarchy[pointer] in cows:
+				# If the cow is in the hierarchy and has already been placed.
+				i = cows.index(hierarchy[pointer]) + 1
+				pointer += 1
+			else:
+				# Otherwise place the cow at the next earliest position.
+				if cows[i] == 0:
+					cows[i] = hierarchy[pointer]
+					i += 1
+					pointer += 1
+				else:
+					i += 1
+		for i in range(n):
+			if cows[i] == 1:
+				ans = i + 1
+				break
+	else:
+		# Case 3
+		i = n - 1
+		pointer = m - 1
+		while pointer >= 0:
+			if hierarchy[pointer] in cows:
+				# If the cow is in the hierarchy and has already been placed.
+				i = cows.index(hierarchy[pointer]) - 1
+				pointer -= 1
+			else:
+				# Otherwise place the cow at the next latest position.
+				if cows[i] == 0:
+					cows[i] = hierarchy[pointer]
+					i -= 1
+					pointer -= 1
+				else:
+					i -= 1
+
+		for i in range(n):
+			if cows[i] == 0:
+				ans = i + 1
+				break
+
+print(ans, file=open("milkorder.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+
+</Spoiler>
 
 ## Problems
 
