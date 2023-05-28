@@ -26,14 +26,14 @@ array<ll, MAXN> color;
 array<ll, MAXN> ans;
 vector<int> g[MAXN];
 
-// col_cnt[i][j] = number of occurrences of color j in i
-map<ll, ll> col_cnt[MAXN];
+// col_count[i][j] = number of occurrences of color j in i
+map<ll, ll> col_count[MAXN];
 // sum_occur[i][j] = sum of colors having occurrence j in subtree i
 map<ll, ll> sum_occur[MAXN];
 
 void dfs(int node, int p) {
 	// initialize this node
-	col_cnt[node][color[node]] += 1;
+	col_count[node][color[node]] += 1;
 	sum_occur[node][1] += color[node];
 
 	for (int i : g[node]) {
@@ -41,19 +41,19 @@ void dfs(int node, int p) {
 		dfs(i, node);
 
 		// retrieve the biggest map so we have less to merge
-		if (col_cnt[node].size() < col_cnt[i].size()) {
-			col_cnt[node].swap(col_cnt[i]);
+		if (col_count[node].size() < col_count[i].size()) {
+			col_count[node].swap(col_count[i]);
 			sum_occur[node].swap(sum_occur[i]);
 		}
 		// update bigger map with information from smaller map
-		for (auto [col, cnt] : col_cnt[i]) {
+		for (auto [col, cnt] : col_count[i]) {
 			// remove old occurrences
-			if (col_cnt[node].count(col)) {
-				sum_occur[node][col_cnt[node][col]] -= col;
+			if (col_count[node].count(col)) {
+				sum_occur[node][col_count[node][col]] -= col;
 			}
 			// add new occurrences
-			col_cnt[node][col] += cnt;
-			sum_occur[node][col_cnt[node][col]] += col;
+			col_count[node][col] += cnt;
+			sum_occur[node][col_count[node][col]] += col;
 		}
 	}
 
