@@ -5,22 +5,23 @@ title: Haircut
 author: Jeffrey Meng, Jeffrey Zhang
 ---
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_haircut_gold_open20.html)
-
-
 <Spoiler title="Hint 1">
-Ignore the fact that we need to print # inversions for each $j = 0, 1, \dots , N$. How can we compute the # inversions just for $j = N$ in $\mathcal{O}(N \log N)$ time?
+
+Say we just had to computer the number of inversions for when $j = N$.
+How can we do this efficiently?
+
 </Spoiler>
 
 <Spoiler title="Hint 2">
-Notice that the inversions is non increasing as $j$ decreases. What information should we gather now, so that we can reduce our answer from $j = N$ to $j = N - 1$?
-</Spoiler>
 
-<Spoiler title="Hint 3">
-The number of total inversions can be broken down to sum of inversions of each element in the hairline list. How can we precompute the # of inversions each element causes so that as we transition out answer from $j = N$ to $j = 0$, each step takes $\mathcal{O}(1)$ time?
+Notice that the number of inversions never increases as $j$ decreases.
+What additional information should we gather so that we can efficiently get an answer for $j = N - 1$ from when $j = N$?
+
 </Spoiler>
 
 <Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_haircut_gold_open20.html)
 
 First, we need to count the number of inversions. (Fun fact: the number of
 inversions is also a measure of how sorted an array is. If an array has 0
