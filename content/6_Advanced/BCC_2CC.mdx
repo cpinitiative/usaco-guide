@@ -30,7 +30,6 @@ frequency: 1
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int MAX_N = 3e5;
@@ -41,7 +40,7 @@ int id[MAX_N];
 int low[MAX_N];  // Lowest ID in  node's subtree in DFS tree
 vector<int> neighbors[MAX_N];
 vector<int> two_edge_components[MAX_N];
-stack<int> st;  // Keep track of path in dfs
+stack<int> st;  // Keeps track of the path in our dfs
 
 void dfs(int node, int parent = -1) {
 	id[node] = low[node] = ++timer;
@@ -59,6 +58,7 @@ void dfs(int node, int parent = -1) {
 			low[node] = min(low[node], id[child]);
 		}
 	}
+
 	if (low[node] == id[node]) {
 		while (st.top() != node) {
 			two_edge_components[scc].push_back(st.top());
