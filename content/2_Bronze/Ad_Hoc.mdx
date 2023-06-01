@@ -80,12 +80,14 @@ for i in range(k):
 
 	order[pos - 1] = cow - 1
 
-	# already fixed, nothing we can do
-	if cow == 1:
+	if cow == 1:  # already fixed, nothing we can do
 		print(pos)
 		exit(0)
-
-
+"""
+returns a boolean that represents whether it is
+possible to construct a valid ordering with given
+fixed elements
+"""
 def check():
 	new_order = order.copy()
 
@@ -142,6 +144,11 @@ using namespace std;
 
 int n, m, k;
 
+/*
+ * returns a boolean that represents whether it is
+ * possible to construct a valid ordering with given
+ * fixed elements
+ */
 bool check(vector<int> order, vector<int> &hierarchy) {
 	vector<int> cow_to_pos(n, -1);
 
@@ -192,8 +199,7 @@ int main() {
 
 		order[--pos] = --cow;
 
-		// already fixed, nothing we can do
-		if (cow == 0) {
+		if (cow == 0) {  // already fixed, nothing we can do
 			cout << pos + 1 << endl;
 			return 0;
 		}
@@ -214,6 +220,93 @@ int main() {
 }
 ```
 </CPPSection>
+
+<JavaSection>
+
+```java
+
+Save New Duplicate & Edit Just Text Twitter
+import java.io.*;
+import java.util.*;
+
+public class MilkOrder {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("milkorder.in"));
+		PrintWriter pw = new PrintWriter("milkorder.out");
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		int[] hierarchy = new int[m];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < m; i++) {
+			hierarchy[i] = Integer.parseInt(st.nextToken()) - 1;
+		}
+		
+		int[] order = new int[n];
+		Arrays.fill(order, -1);
+		for (int i = 0; i < k; i++) {
+			st = new StringTokenizer(br.readLine());
+			int cow = Integer.parseInt(st.nextToken()) - 1;
+			int pos = Integer.parseInt(st.nextToken()) - 1;
+			order[pos] = cow;
+
+			// already fixed, nothing we can do
+			if (cow == 0) {
+				pw.println(pos + 1);
+				pw.close();
+				System.exit(0);
+			}
+		}
+		br.close();
+
+		for (int i = 0; i < n; i++) {
+			if (order[i] == -1) {
+				// try placing cow 1 @ position i
+				order[i] = 0;
+				if (check(order, hierarchy)) {
+					pw.println(i + 1);
+					break;
+				}
+				order[i] = -1;
+			}
+		}
+		pw.close();
+	}
+
+	static boolean check(int[] order, int[] hierarchy) {
+		order = order.clone();
+
+		int[] cowToPos = new int[order.length];
+		Arrays.fill(cowToPos, -1);
+
+		for (int i = 0; i < order.length; i++) {
+			if (order[i] != -1) { cowToPos[order[i]] = i; }
+		}
+		
+		int hIdx = 0;
+		for (int i = 0; i < order.length && hIdx < hierarchy.length; i++) {
+			if (cowToPos[hierarchy[hIdx]] != -1) {
+				// we know the next cow has to be in front of it
+				if (i > cowToPos[hierarchy[hIdx]]) { return false; }
+				i = cowToPos[hierarchy[hIdx]];
+				hIdx++;
+			} else {
+				while (i < order.length && order[i] != -1) { i++; }
+				// run out of places
+				if (i == order.length) { return false; }
+				order[i] = hierarchy[hIdx];
+				cowToPos[hierarchy[hIdx]] = i;
+				hIdx++;
+			}
+		}
+
+		return true;
+	}
+}
+```
 </LanguageSection>
 
 ## Problems
