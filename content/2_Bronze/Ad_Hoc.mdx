@@ -153,7 +153,7 @@ bool check(vector<int> order, vector<int> &hierarchy) {
 		if (cow_to_pos[hierarchy[h_idx]] != -1) {
 			// we know the next cow has to be in front of it
 
-			if (i > cow_to_pos[hierarchy[h_idx]]) { return 0; }
+			if (i > cow_to_pos[hierarchy[h_idx]]) { return false; }
 
 			i = cow_to_pos[hierarchy[h_idx]];
 			h_idx++;
@@ -161,7 +161,7 @@ bool check(vector<int> order, vector<int> &hierarchy) {
 			while (i < n && order[i] != -1) { i++; }
 
 			// run out of places
-			if (i == n) { return 0; }
+			if (i == n) { return false; }
 
 			order[i] = hierarchy[h_idx];
 			cow_to_pos[hierarchy[h_idx]] = i;
@@ -169,7 +169,7 @@ bool check(vector<int> order, vector<int> &hierarchy) {
 		}
 	}
 
-	return 1;
+	return true;
 }
 
 int main() {
