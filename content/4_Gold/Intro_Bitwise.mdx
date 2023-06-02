@@ -45,7 +45,7 @@ The proof is as follows:
 
 $a \oplus b$ is essentially just $a + b$ in base $2$ but we never carry over to the next bit. Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the bit in $b$, thus one of them must be a $1$. However, when we add two $1$ bits, we yield a $0$, but we do not carry that $1$ to the next bit. This is where $a \& b$ comes in.
 
-$a \& b$ is just the carry bits themselves, since a bit is $1$ only if it is a $1$ in both $a$ and $b$, which is exactly what we need. We multiply this by $2$ to shift all the bits to the left by one, so every value carries over to the next bit.
+$a \& b$ is just the carry bits themselves, since a bit's $1$ only if it's a $1$ in both $a$ and $b$, which is exactly what we need. We multiply this by $2$ to shift all the bits to the left by one, so every value carries over to the next bit.
 
 To acquire the XOR values of the two numbers, we can use the following:
 
@@ -55,9 +55,9 @@ The proof is as follows:
 
 Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the bit in $b$. By negating $a \& b$, the bits that are left on are in the following format:
 
-- If it is $1$ in $a$ and $0$ in $b$
-- If it is $0$ in $a$ and $1$ in $b$
-- If it is $0$ in $a$ and $0$ in $b$
+- If it's $1$ in $a$ and $0$ in $b$
+- If it's $0$ in $a$ and $1$ in $b$
+- If it's $0$ in $a$ and $0$ in $b$
 
 Now this looks pretty great, but we need to get rid of the third case. By taking the bitwise AND with $a | b$, the ones that are left on is only if there is a $1$ in either $a$ or $b$. Obviously, the third case isnt included in $a | b$ since both bits are off, and we successfully eliminate that case.
 
@@ -107,14 +107,108 @@ int main() {
 	cout << "finish " << a[k - 1] << endl;
 }
 ```
-</CPPSection>
-</LanguageSection>
 
-Now let's take a look on how to implement addition and multiplication using only bitwise operators.
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TakeAGuess {
+	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+	public static void main(String[] args) throws IOException {
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		// Acquire the first 3 elements
+		int aPlusB = sum(0, 1);
+		int aPlusC = sum(0, 2);
+		int bPlusC = sum(1, 2);
+	
+		// Get the actual values by solving the equations
+		List<Integer> arr = new ArrayList<>();
+		arr.add((aPlusB + aPlusC - bPlusC) / 2);
+		arr.add(aPlusB - arr.get(0));
+		arr.add(aPlusC - arr.get(0));
+
+		// Get the rest of the array
+		for (int i = 3; i < n; i++) {
+			arr.add(sum(i - 1, i) - arr.get(arr.size() - 1));
+		}
+
+		arr.sort(Comparator.comparingInt(i -> i));
+		System.out.printf("finish %d%n", arr.get(k - 1));
+	}
+
+	/** @return the sum of the elements at a and b (0-indexed) */
+	private static int sum(int a, int b) throws IOException {
+		int and = ask("and", ++a, ++b);
+		int or = ask("or", a, b);
+
+		int xor = ~and & or;  // a ^ b = ~(a & b) & (a | b)
+
+		return 2 * and + xor;  // a + b = 2(a & b) + a ^ b
+	}
+
+	private static int ask(String s, int a, int b) throws IOException {
+		System.out.printf("%s %d %d%n", s, a, b);
+		System.out.flush();
+		return Integer.parseInt(br.readLine());
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def ask(s: str, a: int, b: int) -> int:
+	print(f'{s} {a} {b}', flush=True)
+	return int(input())
+
+
+def sum(a: int, b: int) -> int:
+	""":return the sum of the elements at a and b (0-indexed)"""
+	a += 1
+	b += 1
+	and_ = ask('and', a, b)
+	or_ = ask('or', a, b)
+
+	xor = ~and_ & or_  # a ^ b = ~(a & b) & (a | b)
+
+	return 2 * and_ + xor  # a + b = 2(a & b) + a ^ b
+
+
+n, k = [int(i) for i in input().split()]
+
+# Acquire the first 3 elements
+a_plus_b = sum(0, 1)
+a_plus_c = sum(0, 2)
+b_plus_c = sum(1, 2)
+
+# Get the actual values by solving the equations
+arr = [(a_plus_b + a_plus_c - b_plus_c) // 2]
+arr.append(a_plus_b - arr[0])
+arr.append(a_plus_c - arr[0])
+
+# Get the rest of the array
+for i in range(3, n):
+	arr.append(sum(i - 1, i) - arr[-1])
+
+arr.sort()
+print(f'finish {arr[k - 1]}')
+```
+
+</PySection>
+</LanguageSection>
 
 ## Example - Addition
 
-Try implementing addition using bitwise operators!
+Now let's take a look at implementing addition and multiplication using only bitwise operators.
+Before we do so, though, try implementing addition using bitwise operators on your own!
 You can test your implementation [here](http://poj.org/problem?id=1000).
 
 <Spoiler title="Solution">
@@ -124,7 +218,6 @@ If we perform addition without carrying, then we are simply performing the XOR
 both numbers: $a\&b$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -139,7 +232,6 @@ int add(int a, int b) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -154,7 +246,6 @@ public static int add(int a, int b) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -167,7 +258,6 @@ def add(a: int, b: int) -> int:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
