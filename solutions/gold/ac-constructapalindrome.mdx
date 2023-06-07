@@ -19,15 +19,15 @@ to *start* from the common location and try to get to the start and end.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
+using std::vector;
 
 int main() {
 	int node_num;
@@ -47,7 +47,7 @@ int main() {
 	for (int i = 0; i < node_num; i++) {
 		frontier.push({i, i});
 		dist[i][i] = 0;
-		for (const auto& [n, _] : neighbors[i]) {
+		for (const auto &[n, _] : neighbors[i]) {
 			if (dist[i][n] == INT32_MAX) {
 				dist[i][n] = dist[n][i] = 1;
 				frontier.push({i, n});
@@ -59,15 +59,15 @@ int main() {
 	while (!frontier.empty()) {
 		const auto [curr1, curr2] = frontier.front();
 		frontier.pop();
-		if ((curr1 == 0 && curr2 == node_num - 1)
-				|| (curr2 == 0 && curr1 == node_num - 1)) {
+		if ((curr1 == 0 && curr2 == node_num - 1) ||
+		    (curr2 == 0 && curr1 == node_num - 1)) {
 			possible = true;
 			break;
 		}
 
 		int new_dist = dist[curr1][curr2] + 2;
-		for (const auto& [n1, c1] : neighbors[curr1]) {
-			for (const auto& [n2, c2] : neighbors[curr2]) {
+		for (const auto &[n1, c1] : neighbors[curr1]) {
+			for (const auto &[n2, c2] : neighbors[curr2]) {
 				if (c1 == c2 && new_dist < dist[n1][n2]) {
 					dist[n1][n2] = dist[n2][n1] = new_dist;
 					frontier.push({n1, n2});
@@ -101,15 +101,14 @@ public class Main {
 	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int nodeNum = Integer.parseInt(initial.nextToken());
 		int edgeNum = Integer.parseInt(initial.nextToken());
-		
+
 		List<Edge>[] neighbors = new ArrayList[nodeNum];
-		for (int i = 0; i < nodeNum; i++) {
-			neighbors[i] = new ArrayList<>(0);
-		}
+		for (int i = 0; i < nodeNum; i++) { neighbors[i] = new ArrayList<>(0); }
 		for (int e = 0; e < edgeNum; e++) {
 			StringTokenizer edge = new StringTokenizer(read.readLine());
 			int n1 = Integer.parseInt(edge.nextToken()) - 1;
@@ -125,12 +124,12 @@ public class Main {
 			Arrays.fill(dist[i], Integer.MAX_VALUE);
 		}
 		for (int i = 0; i < nodeNum; i++) {
-			frontier.add(new int[]{i, i});
+			frontier.add(new int[] {i, i});
 			dist[i][i] = 0;
 			for (Edge e : neighbors[i]) {
 				if (dist[i][e.n] == Integer.MAX_VALUE) {
 					dist[i][e.n] = dist[e.n][i] = 1;
-					frontier.add(new int[]{i, e.n});
+					frontier.add(new int[] {i, e.n});
 				}
 			}
 		}
@@ -138,8 +137,8 @@ public class Main {
 		boolean possible = false;
 		while (!frontier.isEmpty()) {
 			int[] curr = frontier.poll();
-			if ((curr[0] == 0 && curr[1] == nodeNum - 1)
-					|| (curr[1] == 0 && curr[0] == nodeNum - 1)) {
+			if ((curr[0] == 0 && curr[1] == nodeNum - 1) ||
+			    (curr[1] == 0 && curr[0] == nodeNum - 1)) {
 				possible = true;
 				break;
 			}
@@ -149,7 +148,7 @@ public class Main {
 				for (Edge e2 : neighbors[curr[1]]) {
 					if (e1.c == e2.c && newDist < dist[e1.n][e2.n]) {
 						dist[e1.n][e2.n] = dist[e2.n][e1.n] = newDist;
-						frontier.add(new int[]{e1.n, e2.n});
+						frontier.add(new int[] {e1.n, e2.n});
 					}
 				}
 			}
@@ -176,12 +175,12 @@ for _ in range(edge_num):
 	neighbors[n2].append((n1, c))
 
 frontier = deque()
-dist = [[float('inf') for _ in range(node_num)] for _ in range(node_num)]
+dist = [[float("inf") for _ in range(node_num)] for _ in range(node_num)]
 for i in range(node_num):
 	frontier.append((i, i))
 	dist[i][i] = 0
 	for n, _ in neighbors[i]:
-		if dist[i][n] == float('inf'):
+		if dist[i][n] == float("inf"):
 			dist[i][n] = dist[n][i] = 1
 			frontier.append((i, n))
 
