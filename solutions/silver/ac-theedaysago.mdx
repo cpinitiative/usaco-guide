@@ -9,6 +9,22 @@ author: Chuyang Wang
 
 ## Explanation
 
+A string is happy if and only if the number of each digit in the string is
+divisible by 2. Let's represent this information using an integer $i$ and call
+it the state of a substring. The $k$-th bit of $i$ is 1 if the digit $k$
+occurred odd times in the string, and 0 otherwise.
+
+We go through all substrings $[0, j]$ for all $j \leq |S|$ and use a map
+$\text{states}$ to count how many times a state occurs in those substrings. Any
+substring $[l, r]$ is happy if the states of $[0, l - 1]$ and $[0, r]$ are
+identical. 
+
+To count the number of all happy substrings, we just have to consider all
+states. For each state that occurred $x$ times, there are $\frac{x(x-1)}{2}$
+ways to map any two of them $[0, j_1]$ and $[0, j_2]$ to get a happy substring
+$[j_1 - 1, j_2]$. The total number of all happy substrings is then
+$\sum_i^{2^{10}} \frac{\text{states}[i] \cdot (\text{states}[i] - 1)}{2}$. 
+
 
 ## Implementation
 
