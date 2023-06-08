@@ -1,0 +1,83 @@
+---
+id: cf-600E
+source: CF
+title: Lomsat gelral
+author: Chongtian Ma
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/21827)
+
+## Implementation
+
+As explained in the official analysis, when we use small to large merging on data structures such as sets and maps, we optimize the amount of operations from $\mathcal{O}(N^2 \log N)$ to $\mathcal{O}(N \log^2 N)$. We can take advantage of this to store all kinds of information related to colors, their sum, and their occurrences.
+
+**Time Complexity:** $\mathcal{O}(N \log^2 N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int MAX_N = 1e5;
+
+array<ll, MAX_N> color;
+array<ll, MAX_N> ans;
+vector<int> g[MAX_N];
+
+// col_count[i][j] = number of occurrences of color j in i
+map<ll, ll> col_count[MAX_N];
+// sum_occur[i][j] = sum of colors having occurrence j in subtree i
+map<ll, ll> sum_occur[MAX_N];
+
+void dfs(int node, int p) {
+	// initialize this node
+	col_count[node][color[node]] += 1;
+	sum_occur[node][1] += color[node];
+
+	for (int i : g[node]) {
+		if (i == p) { continue; }
+		dfs(i, node);
+
+		// retrieve the biggest map so we have less to merge
+		if (col_count[node].size() < col_count[i].size()) {
+			col_count[node].swap(col_count[i]);
+			sum_occur[node].swap(sum_occur[i]);
+		}
+		// update bigger map with information from smaller map
+		for (auto [col, cnt] : col_count[i]) {
+			// remove old occurrences
+			if (col_count[node].count(col)) {
+				sum_occur[node][col_count[node][col]] -= col;
+			}
+			// add new occurrences
+			col_count[node][col] += cnt;
+			sum_occur[node][col_count[node][col]] += col;
+		}
+	}
+
+	// retrieve the sum with the biggest j
+	ans[node] = sum_occur[node].rbegin()->second;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) { cin >> color[i]; }
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		g[--u].push_back(--v);
+		g[v].push_back(u);
+	}
+
+	dfs(0, 0);
+
+	for (int i = 0; i < n; i++) { cout << ans[i] << " "; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
