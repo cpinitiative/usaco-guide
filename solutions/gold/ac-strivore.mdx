@@ -32,8 +32,8 @@ is prevented?
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -41,14 +41,13 @@ using std::vector;
 
 constexpr int MOD = 1e9 + 7;
 
-// adapted from https://usaco.guide/gold/modular?lang=cpp#solution---exponentiation
+// adapted from
+// https://usaco.guide/gold/modular?lang=cpp#solution---exponentiation
 long long pow(long long base, long long exp) {
 	base %= MOD;
 	long long res = 1;
 	while (exp > 0) {
-		if (exp % 2 == 1) {
-			res = res * base % MOD;
-		}
+		if (exp % 2 == 1) { res = res * base % MOD; }
 		base = base * base % MOD;
 		exp /= 2;
 	}
@@ -65,9 +64,8 @@ int main() {
 	// place_num[i] = (str.size() + i) choose str.size()
 	vector<long long> place_num{1};
 	for (int i = 1; i <= char_num; i++) {
-		place_num.push_back(
-			place_num.back() * (i + str.size() - 1) % MOD * mod_inv(i) % MOD
-		);
+		place_num.push_back(place_num.back() * (i + str.size() - 1) % MOD *
+		                    mod_inv(i) % MOD);
 	}
 
 	long long total = 0;
@@ -89,10 +87,11 @@ int main() {
 import java.io.*;
 
 public class Main {
-	private static final int MOD = (int) 1e9 + 7;
+	private static final int MOD = (int)1e9 + 7;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int charNum = Integer.parseInt(read.readLine());
 		String str = read.readLine();
 
@@ -100,9 +99,8 @@ public class Main {
 		long[] placeNum = new long[charNum + 1];
 		placeNum[0] = 1;
 		for (int i = 1; i <= charNum; i++) {
-			placeNum[i] = (
-				placeNum[i - 1] * (i + str.length() - 1) % MOD * modInv(i) % MOD
-			);
+			placeNum[i] = (placeNum[i - 1] * (i + str.length() - 1) % MOD *
+			               modInv(i) % MOD);
 		}
 
 		long total = 0;
@@ -112,20 +110,19 @@ public class Main {
 			long backAmt = pow(26, backNum);
 			total = (total + strAmt * frontAmt % MOD * backAmt % MOD) % MOD;
 		}
-	
+
 		System.out.println(total);
 	}
 
 	static long modInv(long n) { return pow(n, MOD - 2); }
 
-	// adapted from https://usaco.guide/gold/modular?lang=java#solution---exponentiation
+	// adapted from
+	// https://usaco.guide/gold/modular?lang=java#solution---exponentiation
 	static long pow(long base, long exp) {
 		base %= MOD;
 		long res = 1;
 		while (exp > 0) {
-			if (exp % 2 == 1) {
-				res = res * base % MOD;
-			}
+			if (exp % 2 == 1) { res = res * base % MOD; }
 			base = base * base % MOD;
 			exp /= 2;
 		}
@@ -144,7 +141,7 @@ The below code will only run in time if you submit with PyPy.
 </Warning>
 
 ```py
-MOD = 10 ** 9 + 7
+MOD = 10**9 + 7
 
 
 def mod_inv(n: int):
