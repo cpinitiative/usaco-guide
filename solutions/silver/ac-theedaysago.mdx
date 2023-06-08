@@ -36,7 +36,35 @@ possible digits in the string.
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
+using ll = long long;
+
+int main() {
+	string S;
+	cin >> S;
+
+	// the current state
+	int cur_state = 0;
+	// states[i] := # of occurrences of state i in the substrings [0, j]
+	map<int, ll> states;
+	states[cur_state]++;
+
+	for (const char &digit : S) {
+		// update the parity of the current digit
+		cur_state ^= 1 << (digit - '0');
+		// update the counter for the state
+		states[cur_state]++;
+	}
+
+	ll ans = 0;
+	for (auto &[_, ct] : states) {
+		ans += ct * (ct - 1) / 2;
+	}
+
+	cout << ans << endl;
+}
 ```
 
 </CPPSection>
