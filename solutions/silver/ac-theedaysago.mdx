@@ -25,14 +25,12 @@ ways to map any two of them $[0, j_1]$ and $[0, j_2]$ to get a happy substring
 $[j_1 - 1, j_2]$. The total number of all happy substrings is then
 $\sum_i^{2^{10}} \frac{\text{states}[i] \cdot (\text{states}[i] - 1)}{2}$.
 
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(|S| + 2^D)$, where $D = 10$ is the number of
 possible digits in the string.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -66,7 +64,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -74,7 +71,6 @@ import java.io.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-
 		BufferedReader br =
 		    new BufferedReader(new InputStreamReader(System.in));
 		String S = br.readLine();
@@ -103,14 +99,13 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 S = input()
 
 # the current state
-cur_state: int = 0
+cur_state = 0
 # states[i] := # of occurrences of state i in the substrings [0, j]
 states = [0 for i in range(1 << 10)]
 states[cur_state] += 1
@@ -121,7 +116,7 @@ for digit in S:
 	# update the counter for the state
 	states[cur_state] += 1
 
-ans: int = 0
+ans = 0
 for ct in states:
 	ans += ct * (ct - 1) / 2
 
@@ -129,5 +124,4 @@ print(int(ans))
 ```
 
 </PySection>
-
 </LanguageSection>
