@@ -7,13 +7,13 @@ author: Kevin Sheng
 
 <Spoiler title="Hint 1">
 
-The answer doesn't depend on the content of the string.
+The answer doesn't depend on the content of $S$.
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-Say we fix the positions of the string's characters relative to the inserted ones.
+Say we fix the positions of the $S$'s characters relative to the inserted ones.
 How can we assign values to the inserted characters such that overcounting
 is prevented?
 
@@ -22,6 +22,22 @@ is prevented?
 <Spoiler title="Solution">
 
 [Official Analysis](https://img.atcoder.jp/abc171/editorial.pdf#page=18)
+
+The solution above says that if we don't allow characters right before a
+character of $S$ to be equal to said character, we can still count every
+possible string.
+
+Another way to think about this somewhat unintuitive observation is this:
+
+> For any possible string, go through the characters and greedily assign
+> the first character that matches that of $S$.
+> It is guaranteed that any character immediately before an assigned one won't
+> be equal to the assigned character.
+
+One of the strings obtainable from the first sample input is `moonwoff`.
+We can take the first two `o`s and the second-to-last `f`.
+
+After this (hopefully) helpful intuition, the implementation follows.
 
 ## Implementation
 
@@ -41,7 +57,7 @@ using std::vector;
 
 constexpr int MOD = 1e9 + 7;
 
-// adapted from https://usaco.guide/gold/modular?lang=cpp#solution---exponentiation
+// https://usaco.guide/gold/modular?lang=cpp#solution---exponentiation
 long long pow(long long base, long long exp) {
 	base %= MOD;
 	long long res = 1;
@@ -72,8 +88,11 @@ int main() {
 
 	long long total = 0;
 	for (int back_num = 0; back_num <= char_num; back_num++) {
+		// The number of ways we can place the chars of S
 		long long str_amt = place_num[char_num - back_num];
+		// How many ways to assign chars without violating the condition
 		long long front_amt = pow(25, char_num - back_num);
+		// And finally, the number of ways the chars in the back can be done
 		long long back_amt = pow(26, back_num);
 		total = (total + str_amt * front_amt % MOD * back_amt % MOD) % MOD;
 	}
@@ -107,8 +126,11 @@ public class Main {
 
 		long total = 0;
 		for (int backNum = 0; backNum <= charNum; backNum++) {
+			// The number of ways we can place the chars of S
 			long strAmt = placeNum[charNum - backNum];
+			// How many ways to assign chars without violating the condition
 			long frontAmt = pow(25, charNum - backNum);
+			// And finally, the number of ways the chars in the back can be done
 			long backAmt = pow(26, backNum);
 			total = (total + strAmt * frontAmt % MOD * backAmt % MOD) % MOD;
 		}
@@ -118,7 +140,7 @@ public class Main {
 
 	static long modInv(long n) { return pow(n, MOD - 2); }
 
-	// adapted from https://usaco.guide/gold/modular?lang=java#solution---exponentiation
+	// https://usaco.guide/gold/modular?lang=java#solution---exponentiation
 	static long pow(long base, long exp) {
 		base %= MOD;
 		long res = 1;
@@ -161,8 +183,11 @@ for i in range(1, char_num + 1):
 
 total = 0
 for back_num in range(0, char_num + 1):
+	# The number of ways we can place the chars of S
 	str_amt = place_num[char_num - back_num]
+	# How many ways to assign chars without violating the condition
 	front_amt = pow(25, char_num - back_num, MOD)
+	# And finally, the number of ways the chars in the back can be done
 	back_amt = pow(26, back_num, MOD)
 	total = (total + str_amt * front_amt * back_amt) % MOD
 
