@@ -1,0 +1,204 @@
+---
+id: ac-constructapalindrome
+source: AC
+title: Construct a Palindrome
+author: Kevin Sheng
+---
+
+[Official Analysis](https://atcoder.jp/contests/abc197/editorial/1005)
+
+While the official editorial starts from the beginning and end of the graph
+and tries to work its way to a common node or edge, it's also possible
+to *start* from the common location and try to get to the beginning and end.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 + M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+int main() {
+	int node_num;
+	int edge_num;
+	std::cin >> node_num >> edge_num;
+	vector<vector<pair<int, char>>> neighbors(node_num);
+	for (int e = 0; e < edge_num; e++) {
+		int n1, n2;
+		char c;
+		std::cin >> n1 >> n2 >> c;
+		neighbors[--n1].push_back({--n2, c});
+		neighbors[n2].push_back({n1, c});
+	}
+
+	std::queue<pair<int, int>> frontier;
+	vector<vector<int>> dist(node_num, vector<int>(node_num, INT32_MAX));
+	for (int i = 0; i < node_num; i++) {
+		frontier.push({i, i});
+		dist[i][i] = 0;
+		for (const auto &[n, _] : neighbors[i]) {
+			if (dist[i][n] == INT32_MAX) {
+				dist[i][n] = dist[n][i] = 1;
+				frontier.push({i, n});
+			}
+		}
+	}
+
+	bool possible = false;
+	while (!frontier.empty()) {
+		const auto [curr1, curr2] = frontier.front();
+		frontier.pop();
+		if ((curr1 == 0 && curr2 == node_num - 1) ||
+		    (curr2 == 0 && curr1 == node_num - 1)) {
+			possible = true;
+			break;
+		}
+
+		int new_dist = dist[curr1][curr2] + 2;
+		for (const auto &[n1, c1] : neighbors[curr1]) {
+			for (const auto &[n2, c2] : neighbors[curr2]) {
+				if (c1 == c2 && new_dist < dist[n1][n2]) {
+					dist[n1][n2] = dist[n2][n1] = new_dist;
+					frontier.push({n1, n2});
+				}
+			}
+		}
+	}
+
+	cout << (possible ? dist[0][node_num - 1] : -1) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	// BeginCodeSnip{Edge Class}
+	private static class Edge {
+		int n;
+		char c;
+
+		public Edge(int n, char c) {
+			this.n = n;
+			this.c = c;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int nodeNum = Integer.parseInt(initial.nextToken());
+		int edgeNum = Integer.parseInt(initial.nextToken());
+
+		List<Edge>[] neighbors = new ArrayList[nodeNum];
+		for (int i = 0; i < nodeNum; i++) { neighbors[i] = new ArrayList<>(0); }
+		for (int e = 0; e < edgeNum; e++) {
+			StringTokenizer edge = new StringTokenizer(read.readLine());
+			int n1 = Integer.parseInt(edge.nextToken()) - 1;
+			int n2 = Integer.parseInt(edge.nextToken()) - 1;
+			char c = edge.nextToken().charAt(0);
+			neighbors[n1].add(new Edge(n2, c));
+			neighbors[n2].add(new Edge(n1, c));
+		}
+
+		Deque<int[]> frontier = new ArrayDeque<>();
+		int[][] dist = new int[nodeNum][nodeNum];
+		for (int i = 0; i < nodeNum; i++) {
+			Arrays.fill(dist[i], Integer.MAX_VALUE);
+		}
+		for (int i = 0; i < nodeNum; i++) {
+			frontier.add(new int[] {i, i});
+			dist[i][i] = 0;
+			for (Edge e : neighbors[i]) {
+				if (dist[i][e.n] == Integer.MAX_VALUE) {
+					dist[i][e.n] = dist[e.n][i] = 1;
+					frontier.add(new int[] {i, e.n});
+				}
+			}
+		}
+
+		boolean possible = false;
+		while (!frontier.isEmpty()) {
+			int[] curr = frontier.poll();
+			if ((curr[0] == 0 && curr[1] == nodeNum - 1) ||
+			    (curr[1] == 0 && curr[0] == nodeNum - 1)) {
+				possible = true;
+				break;
+			}
+
+			int newDist = dist[curr[0]][curr[1]] + 2;
+			for (Edge e1 : neighbors[curr[0]]) {
+				for (Edge e2 : neighbors[curr[1]]) {
+					if (e1.c == e2.c && newDist < dist[e1.n][e2.n]) {
+						dist[e1.n][e2.n] = dist[e2.n][e1.n] = newDist;
+						frontier.add(new int[] {e1.n, e2.n});
+					}
+				}
+			}
+		}
+
+		System.out.println(possible ? dist[0][nodeNum - 1] : -1);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+
+node_num, edge_num = [int(i) for i in input().split()]
+neighbors = [[] for _ in range(node_num)]
+for _ in range(edge_num):
+	n1, n2, c = input().split()
+	n1 = int(n1) - 1
+	n2 = int(n2) - 1
+	neighbors[n1].append((n2, c))
+	neighbors[n2].append((n1, c))
+
+frontier = deque()
+dist = [[float("inf") for _ in range(node_num)] for _ in range(node_num)]
+for i in range(node_num):
+	frontier.append((i, i))
+	dist[i][i] = 0
+	for n, _ in neighbors[i]:
+		if dist[i][n] == float("inf"):
+			dist[i][n] = dist[n][i] = 1
+			frontier.append((i, n))
+
+possible = False
+while frontier:
+	curr1, curr2 = frontier.popleft()
+	if (curr1, curr2) in [(0, node_num - 1), (node_num - 1, 0)]:
+		possible = True
+		break
+
+	new_dist = dist[curr1][curr2] + 2
+	for n1, c1 in neighbors[curr1]:
+		for n2, c2 in neighbors[curr2]:
+			if c1 == c2 and new_dist < dist[n1][n2]:
+				dist[n1][n2] = dist[n2][n1] = new_dist
+				frontier.append((n1, n2))
+
+print(dist[0][node_num - 1] if possible else -1)
+```
+
+</PySection>
+</LanguageSection>
