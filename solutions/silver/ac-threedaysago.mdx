@@ -1,0 +1,127 @@
+---
+id: ac-threedaysago
+source: AtCoder Beginner Contest
+title: Three Days Ago
+author: Chuyang Wang
+---
+
+[Official Analysis](https://atcoder.jp/contests/abc295/editorial/6058)
+
+## Explanation
+
+A string is happy if and only if the number of each digit in the string is
+divisible by 2. Let's represent this information using an integer $i$ and call
+it the state of a substring. The $k$-th bit of $i$ is 1 if the digit $k$
+occurred odd times in the string, and 0 otherwise.
+
+We go through all substrings $[0, j]$ for all $j \leq |S|$ and use a map
+$\text{states}$ to count how many times a state occurs in those substrings. Any
+substring $[l, r]$ is happy if the states of $[0, l - 1]$ and $[0, r]$ are
+identical.
+
+To count the number of all happy substrings, we just have to consider all
+states. For each state that occurred $x$ times, there are $\frac{x(x-1)}{2}$
+ways to map any two of them $[0, j_1]$ and $[0, j_2]$ to get a happy substring
+$[j_1 - 1, j_2]$. The total number of all happy substrings is then
+$\sum_i^{2^{10}} \frac{\text{states}[i] \cdot (\text{states}[i] - 1)}{2}$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(|S| + 2^D)$, where $D = 10$ is the number of
+possible digits in the string.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	string S;
+	cin >> S;
+
+	// the current state
+	int cur_state = 0;
+	// states[i] := # of occurrences of state i in the substrings [0, j]
+	map<int, ll> states;
+	states[cur_state]++;
+
+	for (const char &digit : S) {
+		// update the parity of the current digit
+		cur_state ^= 1 << (digit - '0');
+		// update the counter for the state
+		states[cur_state]++;
+	}
+
+	ll ans = 0;
+	for (auto &[_, ct] : states) { ans += ct * (ct - 1) / 2; }
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		String S = br.readLine();
+
+		// the current state
+		int curState = 0;
+		// states[i] := # of occurrences of state i in the substrings [0, j]
+		long[] states = new long[1 << 10];
+		states[curState]++;
+
+		for (char digit : S.toCharArray()) {
+			// update the parity of the current digit
+			curState ^= 1 << (digit - '0');
+			// update the counter for the state
+			states[curState]++;
+		}
+
+		long ans = 0;
+		for (int i = 0; i < (1 << 10); i++) {
+			ans += states[i] * (states[i] - 1) / 2;
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+S = input()
+
+# the current state
+cur_state = 0
+# states[i] := # of occurrences of state i in the substrings [0, j]
+states = [0 for i in range(1 << 10)]
+states[cur_state] += 1
+
+for digit in S:
+	# update the parity of the current digit
+	cur_state ^= 1 << int(digit)
+	# update the counter for the state
+	states[cur_state] += 1
+
+ans = 0
+for ct in states:
+	ans += ct * (ct - 1) // 2
+
+print(ans)
+```
+
+</PySection>
+</LanguageSection>
