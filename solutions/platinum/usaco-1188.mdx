@@ -143,5 +143,104 @@ int main() {
 ```
 
 </CPPSection>
+			
+<JavaSection>
+```java
+import java.util.*;
+import java.io.*;
+
+public class MinimizingHaybales {
+  static int k;
+
+  public static class Block {
+    public int hi, lo;
+    ArrayList<Integer> vals;
+
+    public Block() {
+      vals = new ArrayList<>();
+      hi = (int) -1e9;
+      lo = (int) 1e9;
+    }
+    public Block(ArrayList<Integer> a) {
+      vals = new ArrayList<>();
+      hi = (int) -1e9;
+      lo = (int) 1e9;
+      for (int i : a) {
+        vals.add(i);
+        hi = Math.max(hi, i);
+        lo = Math.min(lo, i);
+      }
+    }
+
+    public boolean add(int x, boolean test) {
+      if (!test) {
+        lo = Math.min(lo, x);
+        hi = Math.max(hi, x);
+      }
+      vals.add(x);
+      int i = vals.size() - 1;
+      while (i > 0 && Math.abs(vals.get(i) - vals.get(i - 1)) <= k) {
+        int temp = vals.get(i);
+        vals.set(i, vals.get(i - 1));
+        vals.set(i - 1, temp);
+        i--;
+      }
+      while (i < vals.size() - 1 && vals.get(i) > vals.get(i + 1)) {
+        int temp = vals.get(i);
+        vals.set(i, vals.get(i + 1));
+        vals.set(i + 1, temp);
+        i++;
+      }
+      boolean ans = vals.get(vals.size() - 1) == x;
+      if (test) {
+        vals.remove(i);
+      }
+      return ans;
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    PrintWriter pw = new PrintWriter(System.out);
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int n = Integer.parseInt(st.nextToken()); k = Integer.parseInt(st.nextToken());
+    ArrayList<Block> sqrt = new ArrayList<>();
+    sqrt.add(new Block());
+    for (int i = 0; i < n; i++) {
+      int x = Integer.parseInt(br.readLine());
+      int j = sqrt.size() - 1;
+      while (j > 0 && (x + k >= sqrt.get(j).hi && x - k <= sqrt.get(j).lo)) {
+        j--;
+      }
+      if (j < sqrt.size() - 1 && sqrt.get(j).add(x, true)) {
+        j++;
+        while (j < sqrt.size() - 1 && x >= sqrt.get(j).hi) {
+          j++;
+        }
+      }
+      sqrt.get(j).add(x, false);
+      if (sqrt.get(j).vals.size() > 300) {
+        int half = (sqrt.get(j).vals.size()) / 2;
+        ArrayList<Integer> left = new ArrayList<>();
+        ArrayList<Integer> right = new ArrayList<>();
+        for (int k = 0; k < half; k++) {
+          left.add(sqrt.get(j).vals.get(k));
+        }
+        for (int k = half; k < sqrt.get(j).vals.size(); k++) {
+          right.add(sqrt.get(j).vals.get(k));
+        }
+        sqrt.add(j, new Block(left));
+        sqrt.set(j + 1, new Block(right));
+      }
+    }
+    for (Block block : sqrt) {
+      for (int num : block.vals) {
+        System.out.println(num);
+      }
+    }
+  }
+}
+```
+</JavaSection>
 
 </LanguageSection>
