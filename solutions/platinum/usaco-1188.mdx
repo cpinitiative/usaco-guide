@@ -158,13 +158,13 @@ public class MinimizingHaybales {
 
 		public Block() {
 			vals = new ArrayList<>();
-			hi = (int)-1e9;
-			lo = (int)1e9;
+			hi = Integer.MIN_VALUE;
+			lo = Integer.MAX_VALUE;
 		}
 		public Block(ArrayList<Integer> a) {
 			vals = new ArrayList<>();
-			hi = (int)-1e9;
-			lo = (int)1e9;
+			hi = Integer.MIN_VALUE;
+			lo = Integer.MAX_VALUE;
 			for (int i : a) {
 				vals.add(i);
 				hi = Math.max(hi, i);
@@ -204,6 +204,7 @@ public class MinimizingHaybales {
 		int n = Integer.parseInt(st.nextToken());
 		k = Integer.parseInt(st.nextToken());
 		ArrayList<Block> sqrt = new ArrayList<>();
+		
 		sqrt.add(new Block());
 		for (int i = 0; i < n; i++) {
 			int x = Integer.parseInt(br.readLine());
@@ -217,6 +218,7 @@ public class MinimizingHaybales {
 				while (j < sqrt.size() - 1 && x >= sqrt.get(j).hi) { j++; }
 			}
 			sqrt.get(j).add(x, false);
+			
 			if (sqrt.get(j).vals.size() > 300) {
 				int half = (sqrt.get(j).vals.size()) / 2;
 				ArrayList<Integer> left = new ArrayList<>();
