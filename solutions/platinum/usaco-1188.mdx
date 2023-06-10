@@ -41,7 +41,6 @@ Processing each element of the array took $\mathcal{O}(\sqrt{N})$ time so the to
 **Time Complexity:** $\mathcal{O}(N\sqrt{N})$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -143,8 +142,8 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -161,7 +160,8 @@ public class MinimizingHaybales {
 			hi = Integer.MIN_VALUE;
 			lo = Integer.MAX_VALUE;
 		}
-		public Block(ArrayList<Integer> a) {
+
+		public Block(List<Integer> a) {
 			vals = new ArrayList<>();
 			hi = Integer.MIN_VALUE;
 			lo = Integer.MAX_VALUE;
@@ -186,6 +186,7 @@ public class MinimizingHaybales {
 			}
 			vals.add(x);
 			int i = vals.size() - 1;
+			
 			while (i > 0 && Math.abs(vals.get(i) - vals.get(i - 1)) <= k) {
 				int temp = vals.get(i);
 				vals.set(i, vals.get(i - 1));
@@ -198,6 +199,7 @@ public class MinimizingHaybales {
 				vals.set(i + 1, temp);
 				i++;
 			}
+			
 			boolean ans = vals.get(vals.size() - 1) == x;
 			if (test) { vals.remove(i); }
 			return ans;
@@ -249,12 +251,13 @@ public class MinimizingHaybales {
 				sqrt.set(j + 1, new Block(right));
 			}
 		}
+	
 		for (Block block : sqrt) {
 			for (int num : block.vals) { System.out.println(num); }
 		}
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 </LanguageSection>
