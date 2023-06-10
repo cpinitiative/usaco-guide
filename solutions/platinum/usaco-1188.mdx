@@ -172,6 +172,10 @@ public class MinimizingHaybales {
 			}
 		}
 
+		/**
+		 * @param test If test is true, it checks the return condition without actually adding x, otherwise it actually adds x in the correct position
+		 * @return whether the most optimal position for x is at the end, if it is starts from the end.
+		 */
 		public boolean add(int x, boolean test) {
 			if (!test) {
 				lo = Math.min(lo, x);
@@ -208,17 +212,22 @@ public class MinimizingHaybales {
 		sqrt.add(new Block());
 		for (int i = 0; i < n; i++) {
 			int x = Integer.parseInt(br.readLine());
+			
+			// Finds the earliest block we can insert element x by swapping to the left
 			int j = sqrt.size() - 1;
 			while (j > 0 &&
 			       (x + k >= sqrt.get(j).hi && x - k <= sqrt.get(j).lo)) {
 				j--;
 			}
+			
+			// Handle edge case if x doesn't cross an element greater than it in block j while swapping left Swaps element x to the right to the lexographically optimal position
 			if (j < sqrt.size() - 1 && sqrt.get(j).add(x, true)) {
 				j++;
 				while (j < sqrt.size() - 1 && x >= sqrt.get(j).hi) { j++; }
 			}
 			sqrt.get(j).add(x, false);
 
+			// If block is too large split into two smalller blocks of equal size
 			if (sqrt.get(j).vals.size() > 300) {
 				int half = (sqrt.get(j).vals.size()) / 2;
 				ArrayList<Integer> left = new ArrayList<>();
