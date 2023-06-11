@@ -101,9 +101,7 @@ int main() {
 		std::cin >> a >> b >> c;
 		a--;
 		b--;
-		if (c < min_dist[a][b]) {
-			min_dist[a][b] = min_dist[b][a] = c;
-		}
+		if (c < min_dist[a][b]) { min_dist[a][b] = min_dist[b][a] = c; }
 	}
 
 	// Floyd-Warshall algorithm
@@ -149,22 +147,18 @@ public class ShortestRoutesII {
 
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-		
+
 		int n = io.nextInt();
 		int m = io.nextInt();
 		int q = io.nextInt();
 
 		long[][] minDist = new long[n][n];
-		for (int i = 0; i < n; i++) {
-			Arrays.fill(minDist[i], BIG);
-		}
+		for (int i = 0; i < n; i++) { Arrays.fill(minDist[i], BIG); }
 		for (int i = 0; i < m; i++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
 			int c = io.nextInt();
-			if (c < minDist[a][b]) {
-				minDist[a][b] = minDist[b][a] = c;
-			}
+			if (c < minDist[a][b]) { minDist[a][b] = minDist[b][a] = c; }
 		}
 
 		// Floyd-Warshall algorithm
@@ -196,7 +190,7 @@ public class ShortestRoutesII {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -234,13 +228,13 @@ for k in range(n):
 for _ in range(q):
 	a, b = map(int, input().split())
 	a, b = a - 1, b - 1
-	
+
 	# Handle some special cases
 	if a == b:
 		min_dist[a][b] = 0
 	elif min_dist[a][b] == BIG:
 		min_dist[a][b] = -1
-	
+
 	print(min_dist[a][b])
 ```
 
@@ -328,7 +322,7 @@ int main() {
 		cin >> a >> b >> c;
 		neighbors[a - 1].push_back({b - 1, c});
 	}
-	
+
 	// Initially set all distances to infinity
 	vector<long long> dist(n, LLONG_MAX);
 
@@ -343,10 +337,8 @@ int main() {
 	while (!pq.empty()) {
 		const auto [cdist, node] = pq.top();
 		pq.pop();
-		if (cdist != dist[node]) {
-			continue;
-		}
-		for (const pair<int, int>& i : neighbors[node]) {
+		if (cdist != dist[node]) { continue; }
+		for (const pair<int, int> &i : neighbors[node]) {
 			// If we can reach a neighbouring node faster,
 			// we update its minimum distance
 			if (cdist + i.second < dist[i.first]) {
@@ -382,15 +374,13 @@ public class ShortestRoutesI {
 
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
-		
+
 		int n = io.nextInt();
 		int m = io.nextInt();
 
 		// Adjacency list of (neighbour, edge weight)
 		List<Pair<Integer, Integer>>[] neighbors = new ArrayList[n];
-		for (int i = 0; i < n; i++) {
-			neighbors[i] = new ArrayList<>();
-		}
+		for (int i = 0; i < n; i++) { neighbors[i] = new ArrayList<>(); }
 		for (int i = 0; i < m; i++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
@@ -404,8 +394,8 @@ public class ShortestRoutesI {
 
 		// Dijkstra's algorithm
 		PriorityQueue<Pair<Long, Integer>> pq =
-			new PriorityQueue<>(Comparator.comparingLong(i -> i.a));
-		
+		    new PriorityQueue<>(Comparator.comparingLong(i -> i.a));
+
 		int start = 0;
 		dist[start] = 0;  // The shortest path from a node to itself is 0
 		pq.add(new Pair<>(0L, start));
@@ -413,9 +403,7 @@ public class ShortestRoutesI {
 			Pair<Long, Integer> curr = pq.poll();
 			long cdist = curr.a;
 			int node = curr.b;
-			if (cdist != dist[node]) {
-				continue;
-			}
+			if (cdist != dist[node]) { continue; }
 			for (Pair<Integer, Integer> i : neighbors[node]) {
 				// If we can reach a neighbouring node faster,
 				// we update its minimum distance
@@ -425,9 +413,7 @@ public class ShortestRoutesI {
 			}
 		}
 
-		for (int i = 0; i < n - 1; i++) {
-			io.print(dist[i] + " ");
-		}
+		for (int i = 0; i < n - 1; i++) { io.print(dist[i] + " "); }
 		io.println(dist[n - 1]);
 		io.close();
 	}
