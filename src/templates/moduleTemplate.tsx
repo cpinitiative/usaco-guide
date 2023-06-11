@@ -137,6 +137,7 @@ export const pageQuery = graphql`
             label
             labelTooltip
             url
+            hasHints
             sketch
           }
         }
