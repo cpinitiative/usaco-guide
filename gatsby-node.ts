@@ -242,6 +242,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               labelTooltip
               sketch
               url
+              hasHints
             }
             difficulty
             module {
@@ -513,7 +514,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       url: String!
       source: String!
       sourceDescription: String
-      isStarred: Boolean!
+      isStarred: Boolean! 
       difficulty: String
       tags: [String]
       solution: ProblemSolutionInfo
@@ -525,6 +526,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       labelTooltip: String
       url: String
       sketch: String
+      hasHints:Boolean
     }
   `;
   createTypes(typeDefs);
