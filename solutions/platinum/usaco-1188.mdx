@@ -109,13 +109,17 @@ int main() {
 		cin >> x;
 		int j = sqrt.size() - 1;
 
-		// Finds the earliest block we can insert element x
-		// by swapping to the left
+		/*
+		 * Finds the earliest block we can insert element x
+		 * by swapping to the left
+		 */
 		while (j > 0 && (x + k >= sqrt[j].hi && x - k <= sqrt[j].lo)) { j--; }
 
-		// Handle edge case if x doesn't cross an element greater than it in
-		// block j while swapping left Swaps element x to the right to the
-		// lexographically optimal position
+		/*
+		 * Handle edge case if x doesn't cross an element greater than it in
+		 * block j while swapping left. Swaps element x to the right to the
+		 * lexographically optimal position.
+		 */
 		if (j < sqrt.size() - 1 && sqrt[j].reaches_end(x)) {
 			j++;
 			while (j < sqrt.size() - 1 && x >= sqrt[j].hi) { j++; }
@@ -218,17 +222,21 @@ public class MinimizingHaybales {
 		for (int i = 0; i < n; i++) {
 			int x = Integer.parseInt(br.readLine());
 
-			// Finds the earliest block we can insert element x by swapping to
-			// the left
+			/*
+			 * Finds the earliest block we can insert element x by swapping to
+			 * the left.
+			 */
 			int j = sqrt.size() - 1;
 			while (j > 0 &&
 			       (x + k >= sqrt.get(j).hi && x - k <= sqrt.get(j).lo)) {
 				j--;
 			}
 
-			// Handle edge case if x doesn't cross an element greater than it in
-			// block j while swapping left Swaps element x to the right to the
-			// lexographically optimal position
+			/*
+			 * Handle edge case if x doesn't cross an element greater than it in
+			 * block j while swapping left. Swaps element x to the right to the
+			 * lexographically optimal position.
+			 */
 			if (j < sqrt.size() - 1 && sqrt.get(j).add(x, true)) {
 				j++;
 				while (j < sqrt.size() - 1 && x >= sqrt.get(j).hi) { j++; }
