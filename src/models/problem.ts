@@ -135,7 +135,7 @@ export type ProblemSolutionInfo =
   | {
       kind: 'internal';
       // The URL for internal solutions are well defined: /problems/[problem-slug]/solution
-      hasHints: boolean;
+      hasHints?: boolean;
     }
   | {
       kind: 'link';
@@ -190,7 +190,7 @@ export type ProblemSolutionMetadata =
   | {
       // internal solution
       kind: 'internal';
-      hasHints: boolean;
+      hasHints?: boolean;
     }
   | {
       // URL solution
@@ -338,8 +338,7 @@ export const getProblemInfo = (
   } else if (solutionMetadata.kind === 'internal') {
     sol = {
       kind: 'internal',
-
-      hasHints: solutionMetadata.hasHints,
+      ...(solutionMetadata.hasHints && { hasHints: solutionMetadata.hasHints }),
     };
   } else if (solutionMetadata.kind === 'link') {
     sol = {
