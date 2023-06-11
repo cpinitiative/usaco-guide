@@ -80,7 +80,7 @@ export default function ProblemListItemSolution(
         rel="noreferrer"
       >
         <div className="text-left">
-          Internal Sol {problem.solution.hasHints && '+ Hints'}
+          {problem.solution.hasHints && 'Hints +'}Internal Sol
         </div>
       </a>
     );
