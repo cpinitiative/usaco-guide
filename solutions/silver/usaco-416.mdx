@@ -2,10 +2,50 @@
 id: usaco-416
 source: USACO Silver 2014 March
 title: The Lazy Cow
-author: Brad Ma, Kevin Sheng
+author: Daniel Ge, Brad Ma, Kevin Sheng
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_lazy_silver.html)
+
+## Walkthrough
+<Spoiler title="Hint 1">
+If the range of values Bessie can move to forms a square instead of this diamond, we can apply normal prefix sums.
+</Spoiler>
+<Spoiler title="Hint 2">
+What transformation would take a diamond to a square?
+</Spoiler>
+<Spoiler title="Hint 3">
+Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk to form a square. 
+Note that there's one small issue that I leave to you to find and resolve (it will be covered in the solution).
+</Spoiler>
+
+## Solution
+<Spoiler title="Please read the walkthrough before opening this!">
+Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk to form a square like follows:
+```
+     0   1   2   3   4   5   6   7   8
+0  [ 0,  0,  0,  0, 50,  0,  0,  0,  0]
+1  [ 0,  0,  0, 14,  0,  5,  0,  0,  0]
+2  [ 0,  0, 99,  0,  3,  0, 25,  0,  0]
+3  [ 0,  8,  0, 10,  0,  2,  0,  6,  0]
+4  [10,  0,  7,  0, 1B,  0,  7,  0, 17]
+5  [ 0,  0,  0,  5,  0,  2,  0, 21,  0]
+6  [ 0,  0, 78,  0, 23,  0, 80,  0,  0]
+7  [ 0,  0,  0,  1,  0, 11,  0,  0,  0]
+8  [ 0,  0,  0,  0,  9,  0,  0,  0,  0]
+```
+
+This way for K = 2 centered at B like in the testcase, the range of squares that Bessie may reach is the 5x5 range in the middle.
+```
+[99,  0,  3,  0, 25]
+[ 0, 10,  0,  2,  0]
+[ 7,  0, 1B,  0,  7]
+[ 0,  5,  0,  2,  0]
+[78,  0, 23,  0, 80]
+```
+
+To calculate the sum of the numbers in these square ranges, we just use 2D prefix sums normally.
+</Spoiler>
 
 ## Implementation
 
