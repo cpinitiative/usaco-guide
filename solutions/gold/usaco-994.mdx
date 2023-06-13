@@ -49,8 +49,8 @@ const int MAX_VAL = 1e6;
 int main() {
 	freopen("threesum.in", "r", stdin);
 	freopen("threesum.out", "w", stdout);
-	cin.tie(0) -> sync_with_stdio(0);
-	
+	cin.tie(0)->sync_with_stdio(0);
+
 	int n, q;
 	cin >> n >> q;
 
@@ -67,30 +67,25 @@ int main() {
 	for (int i = n - 2; i >= 0; i--) {
 		// be careful to only consider values in between i and j
 		frq[val[i + 1]]++;
-		
+
 		for (int j = i + 2; j < n; j++) {
 			// separate val from shifted amt
 			int compliment = (MAX_VAL * 3) - (val[i] + val[j]);
-			
+
 			if (compliment >= 0 && compliment < (2 * MAX_VAL)) {
 				ways[i][j] = frq[rem];
 			}
 			frq[val[j]]++;
 		}
 
-		for (int j = i + 1; j < n; j++) {
-			frq[val[j]]--;
-		}
+		for (int j = i + 1; j < n; j++) { frq[val[j]]--; }
 	}
 
 	// essentially 2D prefix sum on ways
 	for (int i = n - 1; i >= 0; i--) {
 		for (int j = i + 1; j < n; j++) {
-			ways[i][j] += (
-				ways[i + 1][j] +
-				ways[i][j - 1] -
-				ways[i + 1][j - 1]
-			);
+			ways[i][j] +=
+			    (ways[i + 1][j] + ways[i][j - 1] - ways[i + 1][j - 1]);
 		}
 	}
 
@@ -105,8 +100,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 public class Threesum {
 	static final int MAX_VAL = 1000000;
 	public static void main(String[] args) throws IOException {
@@ -114,25 +109,22 @@ public class Threesum {
 		int N = io.nextInt();
 		int Q = io.nextInt();
 		int[] a = new int[N];
-		for (int i = 0; i < N; i++) {
-			a[i] = io.nextInt();
-		}
+		for (int i = 0; i < N; i++) { a[i] = io.nextInt(); }
 		long[][] dp = new long[N + 1][N + 1];
 		int[] cnt = new int[2 * MAX_VAL + 1];
-		// Calculate the number of k such that a[i] + a[j] + a[k] = 0 given i and j
+		// Calculate the number of k such that a[i] + a[j] + a[k] = 0 given i
+		// and j
 		for (int i = 0; i < N - 1; i++) {
-			for (int j = 0; j < N; j++) {
-				cnt[a[j] + MAX_VAL] = 0;
-			}
-			for (int j = i+1; j < N; j++) {
+			for (int j = 0; j < N; j++) { cnt[a[j] + MAX_VAL] = 0; }
+			for (int j = i + 1; j < N; j++) {
 				int k = -a[i] - a[j];
-				if(k >= -MAX_VALUE && k <= MAX_VALUE) {
+				if (k >= -MAX_VALUE && k <= MAX_VALUE) {
 					dp[i + 1][j + 1] += cnt[k + MAX_VAL];
 				}
 				cnt[a[j] + MAX_VAL]++;
 			}
 		}
-		
+
 		for (int i = N; i >= 1; i--) {
 			for (int j = i + 1; j <= N; j++) {
 				dp[i][j] += dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1];
@@ -145,8 +137,8 @@ public class Threesum {
 		}
 		io.close();
 	}
-	
-	//CodeSnip{Kattio}
+
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>

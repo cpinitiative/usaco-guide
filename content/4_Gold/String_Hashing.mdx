@@ -4,7 +4,7 @@ title: 'String Hashing'
 author: Benjamin Qi, Andi Qu
 contributors: Andrew Wang, Kevin Sheng
 description:
-  'Quickly test equality of substrings with a small probability of failure.'
+  'Quickly testing equality of substrings with a small probability of failure.'
 frequency: 1
 prerequisites:
   - modular
@@ -150,7 +150,7 @@ polynomial will always be $B^{b - a}$.
 
 <Info title="Collision Probability">
 
-In general, when using polynomial hashing modulo a prime modulus $M$, 
+In general, when using polynomial hashing modulo a prime modulus $M$,
 the probability of two distinct strings having equal hashing over all possible choices
 of the base $B$ can be up to $\frac{n}{M}$, where $n$ is the length of the longer
 of the two strings. See rng-58's blog post about hashing (linked above)
@@ -167,17 +167,17 @@ they hash to the same value is at most $10^{-4}$.
 <Warning>
 
 Given a set of the hashes of $m$ distinct strings with length up to $n$, the probability of two
-strings having equal hashes can be up to $\frac{m^2n}{M}$ by the 
+strings having equal hashes can be up to $\frac{m^2n}{M}$ by the
 [birthday paradox](https://en.wikipedia.org/wiki/Birthday_problem). Assuming
-$m$ and $n$ are on the order of $10^5$, $M=10^9+7$ is nowhere close to 
-large enough to avoid collisions. Use a larger prime modulus such as $2^{61}-1$ 
+$m$ and $n$ are on the order of $10^5$, $M=10^9+7$ is nowhere close to
+large enough to avoid collisions. Use a larger prime modulus such as $2^{61}-1$
 (and do multiplications using 128-bit integers).
 
 </Warning>
 
 <Warning>
 
-In contests with open hacking (in particular, CodeForces educational rounds), 
+In contests with open hacking (in particular, Codeforces educational rounds),
 make sure to choose the base of your polynomial hash randomly, as mentioned
 [here](https://codeforces.com/blog/entry/60442).
 
@@ -188,7 +188,7 @@ make sure to choose the base of your polynomial hash randomly, as mentioned
 <CPPSection>
 
 In C++, a virtually unhackable way of generating $B$ in the implementation
-above is to use a random number generator seeded with a high-precision clock, 
+above is to use a random number generator seeded with a high-precision clock,
 as described [here](https://codeforces.com/blog/entry/61587?#comment-455289).
 
 ```cpp
@@ -229,7 +229,7 @@ One way to solve this is by storing the polynomial hashes of each match in a
 set, since we expect different permutations to have different polynomial
 hashes. The answer would simply be the size of that set at the end.
 
-Using a relatively small modulus such as $M=10^9+9$ will not pass (see the 
+Using a relatively small modulus such as $M=10^9+9$ will not pass (see the
 note above regarding the birthday paradox). Instead, we use $M=2^{61}-1$.
 
 <LanguageSection>
@@ -242,7 +242,7 @@ using namespace std;
 
 using ll = long long;
 
-//BeginCodeSnip{HashedString}
+// BeginCodeSnip{HashedString}
 class HashedString {
   private:
 	// change M and B if you want
@@ -260,9 +260,7 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) {
-			pow.push_back(mod_mul(pow.back(), B));
-		}
+		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
 			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
@@ -271,14 +269,14 @@ class HashedString {
 
 	ll getHash(int start, int end) {
 		ll raw_val =
-			p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
+		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
 	}
 };
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 vector<ll> HashedString::pow = {1};
 const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
-//EndCodeSnip
+// EndCodeSnip
 
 int freq_target[26], freq_curr[26];
 string n, h;
@@ -308,9 +306,7 @@ int main() {
 		for (int j = 0; j < 26; j++) {
 			match &= freq_curr[j] == freq_target[j];
 		}
-		if (match) {
-			good.insert(hs.getHash(i + 1 - n.size(), i));
-		}
+		if (match) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
 	}
 
 	cout << good.size() << '\n';
@@ -336,7 +332,7 @@ compute the product $(B + s_1)(B + s_2) \dots (B + s_k) \bmod M$ as the hash
 (again, using two modulos). This hash is nice because the relative order of the
 letters doesn't matter, as multiplication is commutative. Furthermore,
 as any two strings with different frequency tables map to different polynomials
-in $B$, they hash to the same value with probability at most $\frac{|N|}{M}$ 
+in $B$, they hash to the same value with probability at most $\frac{|N|}{M}$
 over the choice of $B$.
 
 Since this hash requires the modular inverse, there's an extra $\log M$ factor
@@ -369,9 +365,7 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) {
-			pow.push_back(mod_mul(pow.back(), B));
-		}
+		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
 			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
@@ -380,7 +374,7 @@ class HashedString {
 
 	ll getHash(int start, int end) {
 		ll raw_val =
-			p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
+		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
 	}
 };
@@ -396,9 +390,7 @@ const auto mod_mul = HashedString::mod_mul;
 ll inv(ll base, ll MOD) {
 	ll ans = 1, expo = MOD - 2;
 	while (expo) {
-		if (expo & 1) {
-			ans = mod_mul(ans, base);
-		}
+		if (expo & 1) { ans = mod_mul(ans, base); }
 		expo >>= 1;
 		base = mod_mul(base, base);
 	}
@@ -427,9 +419,7 @@ int main() {
 			h_hsh = mod_mul(h_hsh, inv(B + h[i - n.size()] - 'a', M));
 			h_hsh = mod_mul(h_hsh, B + h[i] - 'a');
 		}
-		if (n_hsh == h_hsh) {
-			good.insert(hs.getHash(i + 1 - n.size(), i));
-		}
+		if (n_hsh == h_hsh) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
 	}
 
 	cout << good.size() << '\n';

@@ -17,10 +17,11 @@ const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 const getSeasons = () => {
   const res = [];
-  res.push(allYears);
   for (let i = startYear; i <= endYear; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
+  res.push(allYears);
+  res.reverse();
   return res;
 };
 const seasons = getSeasons();
@@ -164,6 +165,7 @@ export function DivisionList(props): JSX.Element {
               labelTooltip
               sketch
               url
+              hasHints
             }
             uniqueId
             url
@@ -275,7 +277,6 @@ export function DivisionList(props): JSX.Element {
     seasonHash ||
     (userSettings.divisionTableQuery && userSettings.divisionTableQuery.season);
   if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
-  console.log(curSeason);
 
   useEffect(() => {
     // https://dev.to/vvo/how-to-solve-window-is-not-defined-errors-in-react-and-next-js-5f97
@@ -311,7 +312,7 @@ export function DivisionList(props): JSX.Element {
 
   return (
     <>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mb-4">
         <DivisionButton
           options={divisions}
           state={curDivision}

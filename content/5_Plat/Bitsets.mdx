@@ -37,10 +37,173 @@ operations you can perform.
 
 Of course, the first step is to generate the sizes of each connected component.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
+// BeginCodeSnip{DSU}
+struct DSU {
+	vector<int> e;
+	void init(int N) { e = vector<int>(N, -1); }
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+	bool sameSet(int a, int b) { return get(a) == get(b); }
+	int size(int x) { return -e[get(x)]; }
+	bool unite(int x, int y) {  // union by size
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
+		return 1;
+	}
+};
+// EndCodeSnip
+
+DSU D;
+int n, m;
+vector<int> comps;
+
+void init() {
+	cin >> n >> m;
+	D.init(n);
+	for (int i = 0; i < m; ++i) {
+		int a, b;
+		cin >> a >> b;
+		D.unite(a - 1, b - 1);
+	}
+	for (int i = 0; i < n; ++i)
+		if (D.get(i) == i) comps.push_back(D.size(i));
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+# BeginCodeSnip{DSU}
+class DisjointSet:
+	parent = {}
+	sz = []
+
+	def __init__(self, sz: int) -> int:  # Construct the DSU
+		self.sz.append(1)
+		for i in range(1, sz + 1):
+			self.parent[i] = i
+			self.sz.append(1)
+
+	def find(self, k: int) -> int:  # Find the root of k's component
+		if self.parent[k] == k:
+			return k
+		return self.find(self.parent[k])
+
+	def find_size(self, x: int) -> int:  # Find x's component's size
+		return self.sz[self.find(x)]
+
+	def union(self, a: int, b: int) -> int:  # Combine two components into one
+		x = self.find(a)
+		y = self.find(b)
+		self.sz[y] += self.sz[x]
+		self.parent[x] = y
+
+
+# EndCodeSnip
+
+n, m = map(int, input().split(" "))
+
+ds = DisjointSet(n)
+
+for i in range(m):
+	x, y = map(int, input().split(" "))
+	ds.union(x, y)
+
+sizes = []
+for i in range(1, n + 1):
+	if ds.find(i) == i:
+		sizes.append(ds.find_size(i))
+```
+
+</PySection>
+</LanguageSection>
+
+A naive knapsack solution would be as follows. For each
+$0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a
+subset of the first $i$ components whose sizes sum to $j$. Then the answer will
+be stored in $\texttt{dp}[i]$. This runs in $\mathcal{O}(N^2)$ and is too slow
+if implemented naively, but we can use bitset to speed it up!
+
+Note: you can't store all $N$ bitsets in memory at the same time (more on that
+below).
+
+### Full Solution - School Excursion
+
+<LanguageSection>
+<PySection>
+
+```py
+# BeginCodeSnip{DSU}
+
+
+class DisjointSet:
+	parent = {}
+	sz = []
+
+	def __init__(self, sz: int) -> int:
+		self.sz.append(1)
+		for i in range(1, sz + 1):
+			self.parent[i] = i
+			self.sz.append(1)
+
+	def find(self, k: int) -> int:
+		if self.parent[k] == k:
+			return k
+		return self.find(self.parent[k])
+
+	def find_size(self, x: int) -> int:
+		return self.sz[self.find(x)]
+
+	def union(self, a: int, b: int) -> int:
+		x = self.find(a)
+		y = self.find(b)
+		self.sz[y] += self.sz[x]
+		self.parent[x] = y
+
+
+# EndCodeSnip
+
+
+n, m = map(int, input().split(" "))
+
+ds = DisjointSet()
+ds.make_set(n)
+
+for i in range(m):
+	x, y = map(int, input().split(" "))
+	ds.union(x, y)
+
+sizes = []
+for i in range(1, n + 1):
+	if ds.find(i) == i:
+		sizes.append(ds.find_size(i))
+
+num = 1
+for i in sizes:
+	num = num | num << i
+
+string = str(bin(num))
+print(string[3 : len(string)])
+```
+
+</PySection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> e;
 	void init(int N) { e = vector<int>(N, -1); }
@@ -72,20 +235,8 @@ void init() {
 	for (int i = 0; i < n; ++i)
 		if (D.get(i) == i) comps.push_back(D.size(i));
 }
-```
+// EndCodeSnip
 
-A naive knapsack solution would be as follows. For each
-$0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a
-subset of the first $i$ components whose sizes sum to $j$. Then the answer will
-be stored in $\texttt{dp}[i]$. This runs in $\mathcal{O}(N^2)$ and is too slow
-if implemented naively, but we can use bitset to speed it up!
-
-Note: you can't store all $N$ bitsets in memory at the same time (more on that
-below).
-
-<Spoiler title="Full Solution">
-
-```cpp
 int main() {
 	init();
 	bitset<100001> posi;
@@ -96,7 +247,8 @@ int main() {
 }
 ```
 
-</Spoiler>
+</CPPSection>
+</LanguageSection>
 
 **Challenge**: This solution runs in $\approx 0.3\text{s}$ when $N=10^5$ and
 there are no edges. Find a faster solution which can also be sped up with bitset
@@ -118,6 +270,9 @@ exchange for a slight increase in time by first computing the adjacency bitsets
 for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards.
 
 First, we read in all of the flavors.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -147,8 +302,14 @@ void input() {
 }
 ```
 
+</CPPSection>
+</LanguageSection>
+
 Then for each flavor, we can look at all pairs of cows that share that flavor
 and update the adjacency lists for those $x\in [0,HALF)$.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 int main() {
@@ -161,11 +322,17 @@ int main() {
 }
 ```
 
+</CPPSection>
+</LanguageSection>
+
 `adj[i].count()` runs quickly enough since its runtime is divided by the bitset
 constant. However, looping over all cows in `flav[i]` is too slow if say,
 `flav[i]` contains all cows. Then the nested loop could take $\Theta(N^2)$ time!
 Of course, we can instead write the nested loop in a way that takes advantage of
 fast bitset operations once again.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 for (int i = 1; i <= 1000000; ++i)
@@ -177,9 +344,14 @@ for (int i = 1; i <= 1000000; ++i)
 	}
 ```
 
+</CPPSection>
+</LanguageSection>
+
 The full main function is as follows:
 
-<Spoiler title="Full Solution">
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int main() {
@@ -205,7 +377,9 @@ int main() {
 }
 ```
 
-</Spoiler>
+</CPPSection>
+
+</LanguageSection>
 
 Apparently no test case contains more than $25000$ distinct colors, so we don't
 actually need to split the calculation into two halves.
@@ -216,6 +390,10 @@ actually need to split the calculation into two halves.
 
 First, we read in the input data. `cross(a,b,c)` is positive iff `c` lies to the
 left of the line from `a` to `b`.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -247,12 +425,20 @@ void input() {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 There are $\mathcal{O}(N^3)$ possible lots. Trying all possible lots and
 counting the number of trees that lie within each in $\mathcal{O}(N)$ for a
 total time complexity of $\mathcal{O}(N^4)$ should solve somewhere between 2 and
 5 test cases. Given a triangle `t[0], t[1], t[2]` with positive area, tree `x`
 lies within it iff `x` is to the left of each of sides
 `(t[0],t[1])`,`(t[1],t[2])`, and `(t[2],t[0])`.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int main() {
@@ -276,6 +462,10 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 The analysis describes how to count the number of trees within a lot in
 $\mathcal{O}(1)$, which is sufficient to solve the problem. However,
 $\mathcal{O}(N)$ is actually sufficient as long as we divide by the bitset
@@ -285,7 +475,7 @@ lies within triangle `(t[0],t[1],t[2])` as long as
 of `x` such that this holds true by taking the bitwise AND of the bitsets for
 all three sides and then counting the number of bits in the result.
 
-<Spoiler title="Fast Solution">
+### Fast Solution
 
 ```cpp
 bitset<300> b[300][300];
@@ -309,8 +499,6 @@ int main() {
 	for (int i = 0; i < N - 2; ++i) cout << res[i] << "\n";
 }
 ```
-
-</Spoiler>
 
 ## Knapsack Again
 
@@ -350,7 +538,11 @@ special case where each $a_i$ is either $0$ or $\max a_i$, we can bound the
 probability of failure using the Catalan numbers. I think it is something like
 $e^{-\frac{m^2}{n}}$ if we let the bitset have size $m\cdot \max a_i$.
 
-<Spoiler title="Solution">
+### Solution
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -396,7 +588,9 @@ int main() {
 }
 ```
 
-</Spoiler>
+</CPPSection>
+
+</LanguageSection>
 
 ## Other Applications
 

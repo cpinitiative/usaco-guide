@@ -243,13 +243,6 @@ export const RestOfMembers: Member[] = [
     linkedin: 'https://www.linkedin.com/in/riley-bonner-6b8726213/',
   },
   {
-    photo: 'julie',
-    name: 'Juheon Rhee',
-    titles: [roles.contentAuthor, roles.liveInstructor],
-    website: 'https://juheonrhee.com',
-    github: 'jjliewie',
-  },
-  {
     photo: 'ian',
     name: 'Ian Zhang',
     titles: [roles.liveInstructor],
@@ -306,6 +299,32 @@ export const RestOfMembers: Member[] = [
     photo: 'trisha',
     name: 'Trisha Sabadra',
     titles: [roles.liveInstructor],
+  },
+  {
+    photo: 'advay',
+    name: 'Advay Bajpai',
+    email: 'advayb2018@gmail.com',
+    github: 'ady00',
+    website: 'https://advaybajpai.me',
+    titles: [roles.webdev],
+  },
+  {
+    photo: 'jaiman',
+    name: 'Jaiman Pandya',
+    titles: [roles.clubCurriculum],
+  },
+  {
+    photo: 'aadit',
+    name: 'Aadit Ambadkar',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'nikita',
+    name: 'Nikita Gorshkov',
+    email: 'gorshkovnikita@gmail.com',
+    github: 'nikita-go',
+    website: 'https://www.nikitago.xyz/',
+    titles: [roles.webdev],
   },
   {
     photo: 'faris',
@@ -493,6 +512,13 @@ export const FormerMembers: Member[] = [
     name: 'Sofia Yang',
     github: 'TruaShamu',
     titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'julie',
+    name: 'Juheon Rhee',
+    titles: [roles.contentAuthor, roles.liveInstructor],
+    website: 'https://juheonrhee.com',
+    github: 'jjliewie',
   },
   {
     photo: 'vidith',

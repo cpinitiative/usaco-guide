@@ -13,7 +13,7 @@ After we sort the input, an important observation is that if Bessie is at positi
 cows with position less than $x$ that says "L" plus all the cows with a position greater than $x$ that says
 "G".
 
-Given this, we can loop through every cow's position and compute the total number 
+Given this, we can loop through every cow's position and compute the total number
 of liars by using a forwards loop and a backwards loop.
 
 The answer is the minimum liars over all the positions we looped over.
@@ -32,7 +32,7 @@ using namespace std;
 int main() {
 	int n;
 	cin >> n;
-	
+
 	vector<pair<int, char>> cows(n);
 	for (int i = 0; i < n; i++) {
 		// The position is read into .first for sorting.
@@ -40,7 +40,7 @@ int main() {
 	}
 
 	sort(cows.begin(), cows.end());
-	
+
 	/*
 	 * lying_left[i] stores the number of cows to the left of cow i
 	 * that must be lying given that Bessie is at the position of cow i.
@@ -49,17 +49,17 @@ int main() {
 	for (int i = 1; i < n; i++) {
 		// Add up all the cows that are already lying to the left of our pos.
 		lying_left[i] += lying_left[i - 1];
-		
+
 		if (cows[i - 1].second == 'L' && cows[i].first > cows[i - 1].first) {
 			/*
 			 * If the cow before says our position is to the left
 			 * but their position is strictly less than our position,
 			 * they're lying.
-			*/
+			 */
 			lying_left[i]++;
 		}
 	}
-	
+
 	/*
 	 * lying_right stores the same thing, but does it so for the cows
 	 * to the *right* of i.
@@ -68,12 +68,12 @@ int main() {
 	// Fill it up in much the same way.
 	for (int i = n - 2; i >= 0; i--) {
 		lying_right[i] += lying_right[i + 1];
-		
+
 		if (cows[i + 1].second == 'G' && cows[i].first < cows[i + 1].first) {
 			lying_right[i]++;
 		}
 	}
-	
+
 	int min_liars = n;
 	for (int i = 0; i < n; i++) {
 		min_liars = min(min_liars, lying_left[i] + lying_right[i]);
@@ -87,11 +87,11 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CountingLiars {
-	//BeginCodeSnip{Cow Class}
+	// BeginCodeSnip{Cow Class}
 	static class Cow {
 		char statement;
 		int pos;
@@ -101,19 +101,18 @@ public class CountingLiars {
 			this.pos = pos;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(read.readLine());
 
 		Cow[] cows = new Cow[n];
 		for (int i = 0; i < n; i++) {
 			StringTokenizer cow = new StringTokenizer(read.readLine());
-			cows[i] = new Cow(
-					cow.nextToken().charAt(0),
-					Integer.parseInt(cow.nextToken())
-			);
+			cows[i] = new Cow(cow.nextToken().charAt(0),
+			                  Integer.parseInt(cow.nextToken()));
 		}
 		read.close();
 
@@ -125,7 +124,8 @@ public class CountingLiars {
 		 */
 		int[] lying_left = new int[n];
 		for (int i = 1; i < n; i++) {
-			// Add up all the cows that are already lying to the left of our pos.
+			// Add up all the cows that are already lying to the left of our
+			// pos.
 			lying_left[i] += lying_left[i - 1];
 
 			if (cows[i - 1].statement == 'L' && cows[i].pos > cows[i - 1].pos) {
@@ -165,7 +165,7 @@ public class CountingLiars {
 </JavaSection>
 <PySection>
 
-```python
+```py
 from typing import NamedTuple
 
 
@@ -191,7 +191,7 @@ for i in range(1, n):
 	# Add up all the cows that are already lying to the left of our pos.
 	lying_left[i] += lying_left[i - 1]
 
-	if cows[i - 1].statement == 'L' and cows[i].pos > cows[i - 1].pos:
+	if cows[i - 1].statement == "L" and cows[i].pos > cows[i - 1].pos:
 		"""
 		If the cow before says our position is to the left
 		but their position is strictly less than our position,
@@ -208,7 +208,7 @@ lying_right = [0 for _ in range(n)]
 for i in range(n - 2, -1, -1):
 	lying_right[i] += lying_right[i + 1]
 
-	if cows[i + 1].statement == 'G' and cows[i].pos < cows[i + 1].pos:
+	if cows[i + 1].statement == "G" and cows[i].pos < cows[i + 1].pos:
 		lying_right[i] += 1
 
 min_liars = n

@@ -26,27 +26,26 @@ Here is the code implementation for the easiest approach.
 
 using namespace std;
 
-//variables used for the current problem
-int n,median;
+// variables used for the current problem
+int n, median;
 vector<int> p;
-long long ans,cnt;
+long long ans, cnt;
 
 void solve() {
 	cin >> n;
 	p.resize(n);
-	for (int &x : p){
-		cin >> x;
-	}
-	sort(p.begin(),p.end());
-	median=p[n/2];
-	for (const int &x : p){
-		ans+=abs(median-x); //Calculate the cost to modify the stick length
+	for (int &x : p) { cin >> x; }
+	sort(p.begin(), p.end());
+	median = p[n / 2];
+	for (const int &x : p) {
+		ans += abs(median - x);  // Calculate the cost to modify the stick
+		                         // length
 	}
 	cout << ans << "\n";
 	return;
 }
 
-int main(){
+int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 	solve();
@@ -58,18 +57,16 @@ int main(){
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class StickLengths {
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int N = io.nextInt();
 		int[] arr = new int[N];
-		for (int i = 0; i < N; i++) {
-			arr[i] = io.nextInt();
-		}
+		for (int i = 0; i < N; i++) { arr[i] = io.nextInt(); }
 		Arrays.sort(arr);
 
 		/*
@@ -78,9 +75,7 @@ public class StickLengths {
 		 */
 		int median = arr[N / 2];
 		long costs = 0;
-		for (int i = 0; i < N; i++) {
-			costs += Math.abs(arr[i] - median);
-		}
+		for (int i = 0; i < N; i++) { costs += Math.abs(arr[i] - median); }
 		io.println(costs);
 		io.close();
 	}
@@ -91,7 +86,7 @@ public class StickLengths {
 
 <PySection>
 
-```python
+```py
 n = int(input())
 sticks = sorted(list(map(int, input().split())))
 median = sticks[n // 2]

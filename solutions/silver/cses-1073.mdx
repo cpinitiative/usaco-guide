@@ -40,21 +40,23 @@ using vi = vector<int>;
 #define sz(x) (int)(x).size()
 
 int n;
-vi x; // stores towers in non-decreasing order
+vi x;  // stores towers in non-decreasing order
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	cin >> n;
 	for (int i = 0; i < n; ++i) {
-		int z; cin >> z;
+		int z;
+		cin >> z;
 		int lo = 0, hi = sz(x);
 		while (lo < hi) {
 			int mid = (lo + hi) / 2;
 			if (x[mid] > z) hi = mid;
 			else lo = mid + 1;
 		}
-		if (lo == sz(x)) x.pb(z); // create new tower
-		else x[lo] = z; // add to tower
+		if (lo == sz(x)) x.pb(z);  // create new tower
+		else x[lo] = z;            // add to tower
 	}
 	cout << sz(x);
 }
@@ -65,17 +67,15 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Towers {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int[] cubes = new int[n];
-		for (int i = 0; i < n; i++) {
-			cubes[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cubes[i] = io.nextInt(); }
 
 		// Stores towers in non-decreasing order
 		List<Integer> towers = new ArrayList<>();
@@ -110,7 +110,7 @@ public class Towers {
 
 <PySection>
 
-```python
+```py
 input()
 # Store the topmost cube of each tower
 towers = []
@@ -195,17 +195,15 @@ int main() {
 
 <JavaSection>
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Towers {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int[] cubes = new int[n];
-		for (int i = 0; i < n; i++) {
-			cubes[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cubes[i] = io.nextInt(); }
 
 		// Maps tower value to frequency
 		TreeMap<Integer, Integer> towers = new TreeMap<>();
@@ -219,18 +217,14 @@ public class Towers {
 			else {
 				int size = towers.higherKey(cubes[i]);
 				towers.put(size, towers.get(size) - 1);
-				if (towers.get(size) == 0) {
-					towers.remove(size);
-				}
+				if (towers.get(size) == 0) { towers.remove(size); }
 				towers.put(cubes[i], towers.getOrDefault(cubes[i], 0) + 1);
 			}
 		}
-		
+
 		// Calculate total number of towers
 		int ans = 0;
-		for (int i : towers.values()) {
-			ans += i;
-		}
+		for (int i : towers.values()) { ans += i; }
 		io.println(ans);
 		io.close();
 	}
@@ -242,7 +236,7 @@ public class Towers {
 
 <PySection>
 
-```python
+```py
 from bisect import bisect
 
 input()

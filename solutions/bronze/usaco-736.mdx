@@ -13,14 +13,14 @@ By Jay Fu
 <Youtube id="Oh_952B03xE" />
 
 <Spoiler title="Video Solution Code">
-    
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -30,16 +30,16 @@ string spotty[100], plain[100];
 bool test_location(int j) {
 	bool found_cow[2][4] = {0};
 
-	// found_cow[0] refers to spotty cows, and found_cow[1] refers to non-spotty cows.
-	// found_cow[0][0] = stores whether spotty cows has character A at position j
-	// found_cow[0][1] = stores whether spotty cows has character C at position j
-	// found_cow[0][2] = stores whether spotty cows has character G at position j
-	// found_cow[0][3] = stores whether spotty cows has character T at position j
-	// found_cow[1][0] = stores whether plain cows has character A at position j
-	// found_cow[1][1] = stores whether plain cows has character C at position j
-	// found_cow[1][2] = stores whether plain cows has character G at position j
-	// found_cow[1][3] = stores whether plain cows has character T at position j
-
+	// found_cow[0] refers to spotty cows, and found_cow[1] refers to non-spotty
+	// cows. found_cow[0][0] = stores whether spotty cows has character A at
+	// position j found_cow[0][1] = stores whether spotty cows has character C
+	// at position j found_cow[0][2] = stores whether spotty cows has character
+	// G at position j found_cow[0][3] = stores whether spotty cows has
+	// character T at position j found_cow[1][0] = stores whether plain cows has
+	// character A at position j found_cow[1][1] = stores whether plain cows has
+	// character C at position j found_cow[1][2] = stores whether plain cows has
+	// character G at position j found_cow[1][3] = stores whether plain cows has
+	// character T at position j
 
 	// iterate through spotty cows and update found_cow[0]
 	for (int i = 0; i < N; i++) {
@@ -81,7 +81,6 @@ int main(void) {
 	fout << answer << "\n";
 	return 0;
 }
-
 ```
 
 </CPPSection>
@@ -98,15 +97,17 @@ public class cownomicsBronze {
 
 	static boolean test_location(int j) {
 		boolean[][] found_cow = new boolean[2][4];
-		// found_cow[0] refers to spotty cows, and found_cow[1] refers to non-spotty cows.
-		// found_cow[0][0] = stores whether spotty cows has character A at position j
-		// found_cow[0][1] = stores whether spotty cows has character C at position j
-		// found_cow[0][2] = stores whether spotty cows has character G at position j
-		// found_cow[0][3] = stores whether spotty cows has character T at position j
-		// found_cow[1][0] = stores whether plain cows has character A at position j
-		// found_cow[1][1] = stores whether plain cows has character C at position j
-		// found_cow[1][2] = stores whether plain cows has character G at position j
-		// found_cow[1][3] = stores whether plain cows has character T at position j
+		// found_cow[0] refers to spotty cows, and found_cow[1] refers to
+		// non-spotty cows. found_cow[0][0] = stores whether spotty cows has
+		// character A at position j found_cow[0][1] = stores whether spotty
+		// cows has character C at position j found_cow[0][2] = stores whether
+		// spotty cows has character G at position j found_cow[0][3] = stores
+		// whether spotty cows has character T at position j found_cow[1][0] =
+		// stores whether plain cows has character A at position j
+		// found_cow[1][1] = stores whether plain cows has character C at
+		// position j found_cow[1][2] = stores whether plain cows has character
+		// G at position j found_cow[1][3] = stores whether plain cows has
+		// character T at position j
 
 		// iterate through spotty cows and update found_cow[0]
 		for (int i = 0; i < N; i++) {
@@ -124,8 +125,8 @@ public class cownomicsBronze {
 			if (plain[i].charAt(j) == 'T') found_cow[1][3] = true;
 		}
 
-		// if a character appears in both spotty and plain cows, then return false
-		// if there is no such genome, then return true
+		// if a character appears in both spotty and plain cows, then return
+		// false if there is no such genome, then return true
 		for (int i = 0; i < 4; ++i) {
 			if (found_cow[0][i] && found_cow[1][i]) return false;
 		}
@@ -141,14 +142,11 @@ public class cownomicsBronze {
 		M = Integer.parseInt(s.nextToken());
 		spotty = new String[100];
 		plain = new String[100];
-		for (int i = 0; i < N; i++) {
-			spotty[i] = br.readLine();
-		}
-		for (int i = 0; i < N; i++) {
-			plain[i] = br.readLine();
-		}
+		for (int i = 0; i < N; i++) { spotty[i] = br.readLine(); }
+		for (int i = 0; i < N; i++) { plain[i] = br.readLine(); }
 
-		// test each position in the genome to see if it could explain spottiness
+		// test each position in the genome to see if it could explain
+		// spottiness
 		int answer = 0;
 		for (int j = 0; j < M; j++) {
 			if (test_location(j)) answer++;
@@ -166,7 +164,7 @@ public class cownomicsBronze {
 ## Solution 1 - Brute force
 
 We'll iterate through every character in every genome. For each character index, we'll find if there are any characters that appear in the genome of both a spotted and plain cow at that index.
-If there are, this position isn't a possible solution, so we can end this part of our search and move on to the next position to save on runtime. If there aren't, this is a possible solution. 
+If there are, this position isn't a possible solution, so we can end this part of our search and move on to the next position to save on runtime. If there aren't, this is a possible solution.
 
 ## Implementation
 
@@ -176,8 +174,8 @@ If there are, this position isn't a possible solution, so we can end this part o
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -194,16 +192,12 @@ int main() {
 	// Each genome and the individual characters in each genome
 	vector<vector<char>> spotted_cows(n, vector<char>(m));
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			read >> spotted_cows[i][j];
-		}
+		for (int j = 0; j < m; j++) { read >> spotted_cows[i][j]; }
 	}
 
 	vector<vector<char>> plain_cows(n, vector<char>(m));
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			read >> plain_cows[i][j];
-		}
+		for (int j = 0; j < m; j++) { read >> plain_cows[i][j]; }
 	}
 
 	int poss_positions = 0;
@@ -214,7 +208,7 @@ int main() {
 		for (int j = 0; j < n; j++) {
 			// Compare to every other genome
 			for (int k = 0; k < n; k++) {
-				/* 
+				/*
 				 * If there are any duplicates,
 				 * then this isn't a possible position,
 				 * so we can stop counting and make sure we don't count it
@@ -229,9 +223,7 @@ int main() {
 		 * If we haven't found any equal characters,
 		 * then there are no duplicates and this is a possible sequence
 		 */
-		if (!dupe) {
-			poss_positions++;
-		}
+		if (!dupe) { poss_positions++; }
 	}
 
 	std::ofstream("cownomics.out") << poss_positions << endl;
@@ -241,7 +233,7 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-```java 
+```java
 import java.io.*;
 import java.util.*;
 
@@ -258,9 +250,7 @@ public class BovineGenomics {
 		for (int i = 0; i < n; i++) {
 			spottedCows[i] = io.next().toCharArray();
 		}
-		for (int i = 0; i < n; i++) {
-			plainCows[i] = io.next().toCharArray();
-		}
+		for (int i = 0; i < n; i++) { plainCows[i] = io.next().toCharArray(); }
 
 		int possPositions = 0;
 		// Iterate through every character
@@ -270,7 +260,7 @@ public class BovineGenomics {
 			for (int j = 0; j < n; j++) {
 				// Compare to every other genome
 				for (int k = 0; k < n; k++) {
-					/* 
+					/*
 					 * If there are any duplicates,
 					 * then this isn't a possible position,
 					 * so we can stop counting and make sure we don't count it
@@ -285,16 +275,14 @@ public class BovineGenomics {
 			 * If we haven't found any equal characters,
 			 * then there are no duplicates and this is a possible sequence
 			 */
-			if (!dupe) {
-				possPositions++;
-			}
+			if (!dupe) { possPositions++; }
 		}
-		
+
 		io.println(possPositions);
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -302,7 +290,7 @@ public class BovineGenomics {
 <PySection>
 
 ```py
-with open('cownomics.in', 'r') as read:
+with open("cownomics.in", "r") as read:
 	n, m = map(int, read.readline().split())
 
 	# Each genome and the individual characters in each genome
@@ -325,7 +313,7 @@ for i in range(m):
 			if spotted_cows[j][i] == plain_cows[k][i]:
 				dupe = True
 				break
-	
+
 	"""
 	If we haven't found any equal characters,
 	then there are no duplicates and this is a possible sequence
@@ -333,7 +321,7 @@ for i in range(m):
 	if not dupe:
 		poss_positions += 1
 
-print(poss_positions, file=open('cownomics.out', 'w'))
+print(poss_positions, file=open("cownomics.out", "w"))
 ```
 
 </PySection>
@@ -349,10 +337,10 @@ print(poss_positions, file=open('cownomics.out', 'w'))
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
-#include <vector>
+#include <iostream>
 #include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -364,27 +352,21 @@ int main() {
 	int n;
 	int m;
 	read >> n >> m;
-	
+
 	vector<vector<char>> spotted_cows(n, vector<char>(m));
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			read >> spotted_cows[i][j];
-		}
+		for (int j = 0; j < m; j++) { read >> spotted_cows[i][j]; }
 	}
 
 	vector<vector<char>> plain_cows(n, vector<char>(m));
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			read >> plain_cows[i][j];
-		}
+		for (int j = 0; j < m; j++) { read >> plain_cows[i][j]; }
 	}
 
 	int poss_positions = 0;
 	for (int i = 0; i < m; i++) {
 		std::set<char> seen;
-		for (int j = 0; j < n; j++) {
-			seen.insert(plain_cows[j][i]);
-		}
+		for (int j = 0; j < n; j++) { seen.insert(plain_cows[j][i]); }
 
 		bool dupe = false;
 		for (int j = 0; j < n; j++) {
@@ -394,9 +376,7 @@ int main() {
 			}
 		}
 
-		if (!dupe) {
-			poss_positions++;
-		}
+		if (!dupe) { poss_positions++; }
 	}
 
 	std::ofstream("cownomics.out") << poss_positions << endl;
@@ -422,16 +402,12 @@ public class BovineGenomics {
 		for (int i = 0; i < n; i++) {
 			spottedCows[i] = io.next().toCharArray();
 		}
-		for (int i = 0; i < n; i++) {
-			plainCows[i] = io.next().toCharArray();
-		}
+		for (int i = 0; i < n; i++) { plainCows[i] = io.next().toCharArray(); }
 
 		int possPositions = 0;
 		for (int i = 0; i < m; i++) {
 			Set<Character> seen = new HashSet<>();
-			for (int j = 0; j < n; j++) {
-				seen.add(plainCows[j][i]);
-			}
+			for (int j = 0; j < n; j++) { seen.add(plainCows[j][i]); }
 
 			boolean dupe = false;
 			for (int j = 0; j < n; j++) {
@@ -441,16 +417,14 @@ public class BovineGenomics {
 				}
 			}
 
-			if (!dupe) {
-				possPositions++;
-			}
+			if (!dupe) { possPositions++; }
 		}
 
 		io.println(possPositions);
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -458,7 +432,7 @@ public class BovineGenomics {
 <PySection>
 
 ```py
-with open('cownomics.in', 'r') as read:
+with open("cownomics.in", "r") as read:
 	n, m = map(int, read.readline().split())
 
 	spotted_cows = [read.readline() for _ in range(n)]
@@ -476,10 +450,8 @@ for i in range(m):
 	else:
 		poss_positions += 1
 
-print(poss_positions, file=open('cownomics.out', 'w'))
+print(poss_positions, file=open("cownomics.out", "w"))
 ```
 
 </PySection>
 </LanguageSection>
-
-

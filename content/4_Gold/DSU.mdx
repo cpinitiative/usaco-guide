@@ -4,10 +4,10 @@ title: Disjoint Set Union
 author: Benjamin Qi, Andrew Wang, Nathan Gong
 contributors: Michael Cao
 prerequisites:
-  - dfs
+  - graph-traversal
 description:
-  'The Disjoint Set Union (DSU) data structure allows you to add edges to an
-  initially empty graph and test whether two vertices of the graph are
+  'The Disjoint Set Union (DSU) data structure, which allows you to add edges to a
+   graph and test whether two vertices of the graph are
   connected.'
 frequency: 3
 ---
@@ -212,7 +212,7 @@ which is a substantial improvement and allows us to pass all test cases.
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> e;
 	DSU(int N) { e = vector<int>(N, -1); }
@@ -228,10 +228,12 @@ struct DSU {
 		x = get(x), y = get(y);
 		if (x == y) return false;
 		if (e[x] > e[y]) swap(x, y);
-		e[x] += e[y]; e[y] = x; return true;
+		e[x] += e[y];
+		e[y] = x;
+		return true;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	int node_num, query_num;
@@ -277,9 +279,7 @@ public class Main {
 		public boolean union(int x, int y) {
 			int xRoot = find(x);
 			int yRoot = find(y);
-			if (xRoot == yRoot) {
-				return false;
-			}
+			if (xRoot == yRoot) { return false; }
 			if (sizes[xRoot] < sizes[yRoot]) {
 				parents[xRoot] = yRoot;
 				sizes[yRoot] += sizes[xRoot];
@@ -291,9 +291,7 @@ public class Main {
 		}
 
 		// returns whether two nodes are in the same connected component
-		public boolean connected(int x, int y) {
-			return find(x) == find(y);
-		}
+		public boolean connected(int x, int y) { return find(x) == find(y); }
 	}
 
 	public static void main(String[] args) {

@@ -11,32 +11,32 @@ Let $\texttt{dp}[i][j]$ be the minimum total wasted area with a rectangular slab
 
 <LanguageSection>
 <CPPSection>
-	
+
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
 using ll = long long;
 using vi = vector<int>;
 using pi = pair<int, int>;
- 
+
 #define f first
 #define s second
 
 const int MAXN = 600;
-	
+
 /*
- * Let dp[i][j] be the minimum residual area with a 
+ * Let dp[i][j] be the minimum residual area with a
  * rectangular slab size of i x j
  */
 int dp[MAXN + 1][MAXN + 1];
 
-int main(){
+int main() {
 	// The width and height of the original slab.
-	int w, h; 
+	int w, h;
 	cin >> w >> h;
-	int n; 
-	cin >> n; 
+	int n;
+	cin >> n;
 	vector<pi> plates(n);
 	for (int i = 0; i < n; i++) {
 		// The width and height of the desired plates
@@ -44,32 +44,32 @@ int main(){
 	}
 	for (int i = 1; i <= w; i++) {
 		for (int j = 1; j <= h; j++) {
-			dp[i][j] = i * j; // Initialize dp[i][j] as i * j
+			dp[i][j] = i * j;  // Initialize dp[i][j] as i * j
 		}
 	}
 	for (int i = 0; i < n; i++) {
-		/* 
-		 * Set dp[x_i][y_i] as 0, where x_i and y_i are the width 
+		/*
+		 * Set dp[x_i][y_i] as 0, where x_i and y_i are the width
 		 * and heights of the desired plate sizes, respectively.
 		 */
 		dp[plates[i].f][plates[i].s] = 0;
 	}
-	/* 
-	 * Visit all the possible rectangles from with a width of 
+	/*
+	 * Visit all the possible rectangles from with a width of
 	 * i = 1...w and a height of j = 1...h
 	 */
 	for (int i = 1; i <= w; i++) {
 		for (int j = 1; j <= h; j++) {
 			for (int x = 1; x <= i; x++) {
-				/* 
-				 * Fix the height of the rectangle and find the 
+				/*
+				 * Fix the height of the rectangle and find the
 				 * optimal subrectangle with height j
 				 */
 				dp[i][j] = min(dp[i][j], dp[x][j] + dp[i - x][j]);
 			}
 			for (int y = 1; y <= j; y++) {
 				/*
-				 * Fix the width of the rectangle and find the 
+				 * Fix the width of the rectangle and find the
 				 * optimal subrectangle with width of i
 				 */
 				dp[i][j] = min(dp[i][j], dp[i][y] + dp[i][j - y]);
@@ -99,9 +99,7 @@ public class Phidias {
 
 		// In default, all the space on the slab is wasted.
 		for (int i = 0; i <= W; i++) {
-			for (int j = 0; j <= H; j++) {
-				dp[i][j] = i * j;
-			}
+			for (int j = 0; j <= H; j++) { dp[i][j] = i * j; }
 		}
 
 		// 0 space is wasted if the slab is the same size as plates.
@@ -118,11 +116,13 @@ public class Phidias {
 		for (int i = 1; i <= W; i++) {
 			for (int j = 1; j <= H; j++) {
 				for (int a = 1; a <= i; a++) {
-					// Fix the vertical cut to calculate the minimum area wasted.
+					// Fix the vertical cut to calculate the minimum area
+					// wasted.
 					dp[i][j] = Math.min(dp[i][j], dp[a][j] + dp[i - a][j]);
 				}
 				for (int b = 1; b <= j; b++) {
-					// Fix the horizontal cut to calculate the minimum area wasted.
+					// Fix the horizontal cut to calculate the minimum area
+					// wasted.
 					dp[i][j] = Math.min(dp[i][j], dp[i][b] + dp[i][j - b]);
 				}
 			}
@@ -132,8 +132,7 @@ public class Phidias {
 
 	// CodeSnip{Kattio}
 }
-						      
 ```
 </JavaSection>
-				
+
 </LanguageSection>

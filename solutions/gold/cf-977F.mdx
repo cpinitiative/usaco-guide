@@ -12,7 +12,6 @@ author: Sofia Yang, Kevin Sheng
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <JavaSection>
 
 ```java
@@ -24,9 +23,7 @@ public class ConsecutiveSubsequence {
 		Kattio io = new Kattio();
 		int N = io.nextInt();
 		int[] arr = new int[N];
-		for (int i = 0; i < N; i++) {
-			arr[i] = io.nextInt();
-		}
+		for (int i = 0; i < N; i++) { arr[i] = io.nextInt(); }
 
 		Map<Integer, Integer> dp = new HashMap<>();
 		for (int i = N - 1; i >= 0; i--) {
@@ -58,33 +55,30 @@ public class ConsecutiveSubsequence {
 		}
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <algorithm>
- 
+#include <iostream>
+#include <map>
+#include <vector>
+
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
- 
+using std::vector;
+
 int main() {
 	int size;
 	std::cin >> size;
 	vector<int> arr(size);
-	for (int& i : arr) {
-		std::cin >> i;
-	}
- 
+	for (int &i : arr) { std::cin >> i; }
+
 	int best_len = 1;
 	// given the ending limit, stores the longest consecutive sequence
 	std::map<int, pair<int, int>> ending_max_len;
@@ -103,19 +97,17 @@ int main() {
 			}
 		}
 	}
- 
+
 	int at_ind = -1;
-	for (const pair<int, pair<int, int>>& end : ending_max_len) {
-		if (end.second.first == best_len) {
-			at_ind = end.second.second;
-		}
+	for (const pair<int, pair<int, int>> &end : ending_max_len) {
+		if (end.second.first == best_len) { at_ind = end.second.second; }
 	}
 	vector<int> reverse_inds;
 	for (int i = 0; i < best_len; i++) {
 		reverse_inds.push_back(at_ind);
 		at_ind = come_from[at_ind];
 	}
- 
+
 	cout << best_len << endl;
 	for (int i = best_len - 1; i > 0; i--) {
 		cout << reverse_inds[i] + 1 << ' ';
@@ -123,5 +115,6 @@ int main() {
 	cout << reverse_inds.front() + 1 << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>

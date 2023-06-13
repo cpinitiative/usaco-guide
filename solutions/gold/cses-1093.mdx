@@ -55,15 +55,14 @@ int main() {
 	dp[0][0] = 1;
 	for (int i = 1; i < n; i++) {
 		for (int j = 0; j <= sum_elem; j++) {
-			// there are dp[i - 1][j] possibilities if we don't include the ith element
+			// there are dp[i - 1][j] possibilities if we don't include the ith
+			// element
 			dp[i][j] += dp[i - 1][j];
 
 			// previous sum by including the current element
 			int prev = j - i;
 
-			if (prev >= 0) {
-				dp[i][j] += dp[i - 1][prev];
-			}
+			if (prev >= 0) { dp[i][j] += dp[i - 1][prev]; }
 
 			dp[i][j] %= MOD;
 		}
@@ -80,7 +79,7 @@ import java.io.*;
 import java.util.*;
 
 public class TwoSets {
-	static final int MOD = (int) 1e9 + 7;
+	static final int MOD = (int)1e9 + 7;
 
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
@@ -97,9 +96,9 @@ public class TwoSets {
 		totalSum /= 2;
 
 		/*
-		 * DP[i][j] is the number of ways to make sum j with the first i elements.
-		 * The range of 'idx' is from 0 to N-1 because if all elements are used,
-		 * the subsets will be double counted.
+		 * DP[i][j] is the number of ways to make sum j with the first i
+		 * elements. The range of 'idx' is from 0 to N-1 because if all elements
+		 * are used, the subsets will be double counted.
 		 */
 		int[][] dp = new int[N][totalSum + 1];
 		dp[0][0] = 1;
@@ -107,7 +106,8 @@ public class TwoSets {
 			for (int curSum = 0; curSum <= totalSum; curSum++) {
 				/*
 				 * If the state (curSum - current element) is possible
-				 * DP[curSum] += DP[current element - 1][curSum - current element]
+				 * DP[curSum] += DP[current element - 1][curSum - current
+				 * element]
 				 */
 				if (idx >= 1) {
 					dp[idx][curSum] = dp[idx - 1][curSum];
@@ -123,7 +123,6 @@ public class TwoSets {
 		io.close();
 	}
 	// CodeSnip{Kattio}
-
 }
 ```
 </JavaSection>
@@ -133,7 +132,7 @@ public class TwoSets {
 ```py
 import sys
 
-MOD = 10 ** 9 + 7
+MOD = 10**9 + 7
 
 n = int(input())
 
@@ -141,24 +140,24 @@ sum_elem = n * (n + 1) // 2  # Sum of elements in [1, ..., n]
 
 # If the sum of the elements is odd, then we can't split it evenly.
 if sum_elem % 2 == 1:
-    print(0)
-    sys.exit()
+	print(0)
+	sys.exit()
 
 # dp[i][j] stores the number of ways to a set with sum j with nums [1, ..., i].
 dp = [[0] * (sum_elem // 2 + 1) for _ in range(n)]
 dp[0][0] = 1  # Always one way to split up zero elements into two sets.
 
 for i in range(1, len(dp)):
-    for j in range(len(dp[0])):
+	for j in range(len(dp[0])):
 
-        # Must include same as first i - 1 elements
-        dp[i][j] += dp[i - 1][j]
+		# Must include same as first i - 1 elements
+		dp[i][j] += dp[i - 1][j]
 
-        # Then add all the additional ways to make it with the j-th element.
-        if j - i >= 0:
-            dp[i][j] += dp[i - 1][j - i]
+		# Then add all the additional ways to make it with the j-th element.
+		if j - i >= 0:
+			dp[i][j] += dp[i - 1][j - i]
 
-        dp[i][j] %= MOD
+		dp[i][j] %= MOD
 
 print(dp[-1][sum_elem // 2])
 ```

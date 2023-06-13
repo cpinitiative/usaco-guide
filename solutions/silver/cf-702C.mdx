@@ -19,28 +19,33 @@ author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 #include <bits/stdc++.h>
 using namespace std;
 
-// returns the first index in the array that is >= value, or arr.size() if no 
+// returns the first index in the array that is >= value, or arr.size() if no
 // such index exists
-int firstAtLeast(const vector<int>& arr, int value) {
+int firstAtLeast(const vector<int> &arr, int value) {
 	int lo = 0, hi = arr.size();
 	while (lo < hi) {
-		int mid = (lo+hi)/2;
+		int mid = (lo + hi) / 2;
 		if (arr[mid] >= value) hi = mid;
-		else lo = mid+1;
+		else lo = mid + 1;
 	}
 	return lo;
 }
 
 int main() {
-	int n, m; cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 	vector<int> cities, towers;
 
 	for (int i = 0; i < n; i++) {
-		int city; cin >> city; cities.push_back(city);
+		int city;
+		cin >> city;
+		cities.push_back(city);
 	}
 
 	for (int i = 0; i < m; i++) {
-		int tower; cin >> tower; towers.push_back(tower);
+		int tower;
+		cin >> tower;
+		towers.push_back(tower);
 	}
 
 	int minR = 0;
@@ -51,11 +56,13 @@ int main() {
 		int minRForThisCity = 2e9;
 		if (towerRight < m) {
 			assert(towers[towerRight] >= cities[i]);
-			minRForThisCity = min(minRForThisCity, towers[towerRight] - cities[i]);
+			minRForThisCity =
+			    min(minRForThisCity, towers[towerRight] - cities[i]);
 		}
 		if (towerLeft >= 0) {
 			assert(towers[towerLeft] <= cities[i]);
-			minRForThisCity = min(minRForThisCity, cities[i] - towers[towerLeft]);
+			minRForThisCity =
+			    min(minRForThisCity, cities[i] - towers[towerLeft]);
 		}
 
 		minR = max(minR, minRForThisCity);
@@ -84,15 +91,14 @@ public class CellularNetwork {
 			int mid = (low + high) / 2;
 			if (towers[mid] >= value) {
 				high = mid;
-			}
-			else {
+			} else {
 				low = mid + 1;
 			}
 		}
 		return low;
 	}
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int m = io.nextInt();
@@ -100,13 +106,9 @@ public class CellularNetwork {
 		int[] cities = new int[n];
 		int[] towers = new int[m];
 
-		for (int i = 0; i < n; i++) {
-			cities[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cities[i] = io.nextInt(); }
 
-		for (int i = 0; i < m; i++) {
-			towers[i] = io.nextInt();
-		}
+		for (int i = 0; i < m; i++) { towers[i] = io.nextInt(); }
 
 		int minR = 0;
 		for (int i = 0; i < n; i++) {
@@ -118,10 +120,12 @@ public class CellularNetwork {
 			// if not, it will return the length of the
 			// array which is equal to m
 			if (towerRight < m) {
-				minRForThisCity = Math.min(minRForThisCity, towers[towerRight] - cities[i]);
+				minRForThisCity =
+				    Math.min(minRForThisCity, towers[towerRight] - cities[i]);
 			}
 			if (towerLeft >= 0) {
-				minRForThisCity = Math.min(minRForThisCity, cities[i] - towers[towerLeft]);
+				minRForThisCity =
+				    Math.min(minRForThisCity, cities[i] - towers[towerLeft]);
 			}
 
 			minR = Math.max(minR, minRForThisCity);
@@ -130,7 +134,7 @@ public class CellularNetwork {
 		io.println(minR);
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -155,14 +159,14 @@ We store two pointers, one for the current city and one for the current tower. W
 using namespace std;
 
 typedef long long ll;
-typedef pair <int, int> pii;
+typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 #define mp make_pair
 #define pb push_back
 
-#define FOR(i, a, b) for (int i=a; i<b; i++)
-#define F0R(i, a) for (int i=0; i<a; i++)
+#define FOR(i, a, b) for (int i = a; i < b; i++)
+#define F0R(i, a) for (int i = 0; i < a; i++)
 
 #define f first
 #define s second
@@ -170,28 +174,30 @@ typedef vector<int> vi;
 #define ub upper_bound
 
 const int MOD = 1000000007;
-double PI = 4*atan(1);
+double PI = 4 * atan(1);
 
 int dist[100000], ans = 0;
 
 int main() {
-	ios_base::sync_with_stdio(0);cin.tie(0);
-	F0R(i,100000) dist[i] = 2*MOD;
-	int n,m; cin >> n >> m;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	F0R(i, 100000) dist[i] = 2 * MOD;
+	int n, m;
+	cin >> n >> m;
 	vi a(n), b(m);
-	F0R(i,n) cin >> a[i];
-	F0R(i,m) cin >> b[i];
+	F0R(i, n) cin >> a[i];
+	F0R(i, m) cin >> b[i];
 	int c1 = 0;
-	F0R(i,n) {
-		while (c1<(m-1) && b[c1+1]<=a[i]) c1++;
-		dist[i] = min(dist[i], abs(a[i]-b[c1]));
+	F0R(i, n) {
+		while (c1 < (m - 1) && b[c1 + 1] <= a[i]) c1++;
+		dist[i] = min(dist[i], abs(a[i] - b[c1]));
 	}
-	c1 = m-1;
-	for (int i = n-1; i >= 0; --i) {
-		while (c1>0 && b[c1-1]>=a[i]) c1--;
-		dist[i] = min(dist[i],abs(a[i]-b[c1]));
+	c1 = m - 1;
+	for (int i = n - 1; i >= 0; --i) {
+		while (c1 > 0 && b[c1 - 1] >= a[i]) c1--;
+		dist[i] = min(dist[i], abs(a[i] - b[c1]));
 	}
-	F0R(i,n) ans = max(ans,dist[i]);
+	F0R(i, n) ans = max(ans, dist[i]);
 	cout << ans;
 	return 0;
 }
@@ -249,7 +255,7 @@ public class CellularNetwork2 {
 	static final int MOD = 1000000007;
 	static final int MAXIMUM_SIZE = 100000;
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
 		int n = io.nextInt();
@@ -261,13 +267,9 @@ public class CellularNetwork2 {
 		int[] a = new int[n];
 		int[] b = new int[m];
 
-		for (int i = 0; i < n; i++) {
-			a[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
 
-		for (int i = 0; i < m; i++) {
-			b[i] = io.nextInt();
-		}
+		for (int i = 0; i < m; i++) { b[i] = io.nextInt(); }
 
 		int pointer1 = 0;
 
@@ -284,22 +286,18 @@ public class CellularNetwork2 {
 
 		// pointer going right to left
 		for (int i = n - 1; i >= 0; i--) {
-			while (pointer1 > 0 && b[pointer1 - 1] >= a[i]) {
-				pointer1--;
-			}
+			while (pointer1 > 0 && b[pointer1 - 1] >= a[i]) { pointer1--; }
 			dist[i] = Math.min(dist[i], Math.abs(a[i] - b[pointer1]));
 		}
 
 		int answer = 0;
 		// the maximum in the array is the answer
-		for (int i = 0; i < n; i++) {
-			answer = Math.max(answer, dist[i]);
-		}
+		for (int i = 0; i < n; i++) { answer = Math.max(answer, dist[i]); }
 
 		io.println(answer);
 		io.close();
 	}
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>
@@ -330,43 +328,35 @@ to be the maximum of itself and $\texttt{dist}$.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <set>
-#include <algorithm>
 using namespace std;
 
-int main()
-{
+int main() {
 	int n, m;
 	cin >> n >> m;
 	int cities[n];
 	set<int> towers;
 	int tower;
-	for (int i = 0; i < n; i++)
-	{
-		cin >> cities[i];
-	}
-	for (int i = 0; i < m; i++)
-	{
+	for (int i = 0; i < n; i++) { cin >> cities[i]; }
+	for (int i = 0; i < m; i++) {
 		cin >> tower;
 		towers.insert(tower);
 	}
 	int r = 0;
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		int dist = 2e9 + 1;
-		//find closest tower to the right of the city
+		// find closest tower to the right of the city
 		auto closesttower = towers.lower_bound(cities[i]);
-		if (closesttower != towers.end())
-		{
-			//if a tower is found, update the distance
+		if (closesttower != towers.end()) {
+			// if a tower is found, update the distance
 			dist = *closesttower - cities[i];
 		}
-		//find closest tower to the left of the city
-		if (closesttower != towers.begin())
-		{
+		// find closest tower to the left of the city
+		if (closesttower != towers.begin()) {
 			closesttower--;
-			//update dist with the minimum of the distances
+			// update dist with the minimum of the distances
 			dist = min(dist, cities[i] - *closesttower);
 		}
 		r = max(r, dist);
@@ -385,7 +375,7 @@ import java.io.*;
 import java.util.*;
 
 public class CellularNetwork {
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
@@ -393,9 +383,7 @@ public class CellularNetwork {
 		int m = io.nextInt();
 		int[] cities = new int[n];
 		TreeSet<Integer> towers = new TreeSet<>();
-		for (int i = 0; i < n; i++) {
-			cities[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { cities[i] = io.nextInt(); }
 
 		for (int i = 0; i < m; i++) {
 			int tower = io.nextInt();
@@ -410,14 +398,12 @@ public class CellularNetwork {
 			 * Integer if the value exists and null if it doesn't
 			 */
 			Integer closestTower = towers.lower(cities[i]);
-			Integer	farthestTower = towers.higher(cities[i]);
-			if (closestTower != null) {
-				distance = cities[i] - closestTower;
-			}
+			Integer farthestTower = towers.higher(cities[i]);
+			if (closestTower != null) { distance = cities[i] - closestTower; }
 			if (farthestTower != null) {
 				distance = Math.min(distance, farthestTower - cities[i]);
 			}
-			r = Math.max(r,distance);
+			r = Math.max(r, distance);
 		}
 		io.println(r);
 		io.close();

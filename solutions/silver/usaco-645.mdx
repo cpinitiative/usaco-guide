@@ -20,17 +20,17 @@ using namespace std;
 const int MX = 5e4;
 int n, x[MX], y[MX], ar[MX];
 
-bool cmp (int a, int b) {
+bool cmp(int a, int b) {
 	if (x[a] == x[b]) return y[a] < y[b];
 	return x[a] < x[b];
 }
 
-bool cmp1 (int a, int b) {
+bool cmp1(int a, int b) {
 	if (y[a] == y[b]) return x[a] < x[b];
 	return y[a] < y[b];
 }
 
-int main () {
+int main() {
 	freopen("split.in", "r", stdin);
 	freopen("split.out", "w", stdout);
 	cin >> n;
@@ -41,10 +41,11 @@ int main () {
 		allX.insert(x[i]);
 		allY.insert(y[i]);
 	}
-	sort (ar, ar + n, cmp);
-	int x1 = *allX.rbegin(), x2 = *allX.begin(), y1 = *allY.rbegin(), y2 = *allY.begin();
-	long long area = (x1 - x2) * 1LL * (y1 - y2); // original area
-	long long sol = 0; // maximum difference
+	sort(ar, ar + n, cmp);
+	int x1 = *allX.rbegin(), x2 = *allX.begin(), y1 = *allY.rbegin(),
+	    y2 = *allY.begin();
+	long long area = (x1 - x2) * 1LL * (y1 - y2);  // original area
+	long long sol = 0;                             // maximum difference
 
 	for (int k = 0; k <= 1; k++) {
 		rightX = allX;
@@ -72,13 +73,12 @@ int main () {
 				y2 = *rightY.rbegin();
 				areaR = (x2 - x1) * 1LL * (y2 - y1);
 			}
-			sol = max (sol, area - (areaR + areaL));
+			sol = max(sol, area - (areaR + areaL));
 		}
-		sort (ar, ar + n, cmp1);
+		sort(ar, ar + n, cmp1);
 	}
 	cout << sol << '\n';
 }
-
 ```
 
 </CPPSection>
@@ -93,9 +93,9 @@ From the analysis:
 > entirely and just keep running mins and maxes in $y$.
 
 ```cpp
-CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
-const ll INF = 1e18; // not too close to LLONG_MAX
+const ll INF = 1e18;  // not too close to LLONG_MAX
 
 int N;
 ll ans = 0;
@@ -104,26 +104,28 @@ vector<pi> v;
 void tri() {
 	sort(all(v));
 	vector<pi> lef(N), rig(N);
-	auto comb = [](pi a, int b) -> pi { return mp(min(a.f,b),max(a.s,b)); };
-	lef[0] = {v[0].s,v[0].s};
-	for (int i = 1; i < N; ++i) lef[i] = comb(lef[i-1],v[i].s);
-	rig[N-1] = mp(v[N-1].s,v[N-1].s);
-	for (int i = N-2; i >= 0; --i) rig[i] = comb(rig[i+1],v[i].s);
-	ll area = (ll)(v.back().f-v.front().f)*(lef.back().s-lef.back().f);
+	auto comb = [](pi a, int b) -> pi { return mp(min(a.f, b), max(a.s, b)); };
+	lef[0] = {v[0].s, v[0].s};
+	for (int i = 1; i < N; ++i) lef[i] = comb(lef[i - 1], v[i].s);
+	rig[N - 1] = mp(v[N - 1].s, v[N - 1].s);
+	for (int i = N - 2; i >= 0; --i) rig[i] = comb(rig[i + 1], v[i].s);
+	ll area = (ll)(v.back().f - v.front().f) * (lef.back().s - lef.back().f);
 	ll best = INF;
-	for (int i = 0; i < N-1; ++i) if (v[i].f != v[i+1].f)
-		best = min(best,(ll)(v[i].f-v[0].f)*(lef[i].s-lef[i].f)
-			+(ll)(v.back().f-v[i+1].f)*(rig[i+1].s-rig[i+1].f));
-	ans = max(ans,area-best);
+	for (int i = 0; i < N - 1; ++i)
+		if (v[i].f != v[i + 1].f)
+			best = min(best, (ll)(v[i].f - v[0].f) * (lef[i].s - lef[i].f) +
+			                     (ll)(v.back().f - v[i + 1].f) *
+			                         (rig[i + 1].s - rig[i + 1].f));
+	ans = max(ans, area - best);
 }
 
 int main() {
 	setIO("split");
 	cin >> N;
 	v.resize(N);
-	for (pi& t : v) cin >> t.f >> t.s;
+	for (pi &t : v) cin >> t.f >> t.s;
 	tri();
-	for (pi& t : v) swap(t.f,t.s);
+	for (pi &t : v) swap(t.f, t.s);
 	tri();
 	cout << ans;
 	return 0;

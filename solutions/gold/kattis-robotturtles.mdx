@@ -21,7 +21,7 @@ immediately, then it will either:
 - return to the square later, in which case the turtle has wasted moves before
   returning.
 - never move onto the square, in which case the turtle wasted a move melting the
-  ice castle. 
+  ice castle.
 So, we only need to melt ice castles if the turtle moves forward immediately after.
 
 At each location, the turtle can:
@@ -43,8 +43,8 @@ the board.
 
 ```cpp
 #include <iostream>
-#include <string>
 #include <queue>
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -52,33 +52,18 @@ struct State {
 	// directions: 0 is up, 1 is right, 2 is down, 3 is left
 	int dist, i, j, dir;
 	string moves;
-	bool operator>(const State& a) const
-	{
-		return dist > a.dist;
-	}
+	bool operator>(const State &a) const { return dist > a.dist; }
 };
-bool ingrid(int a, int b)
-{
-	return a >= 0 && a < 8 && b >= 0 && b < 8;
-}
+bool ingrid(int a, int b) { return a >= 0 && a < 8 && b >= 0 && b < 8; }
 int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
 
-int main()
-{
+int main() {
 	string grid[8];
-	for (int i = 0; i < 8; i++)
-	{
-		cin >> grid[i];
-	}
-	int dist[4][8][8]{}; // dir, i, j
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			for (int k = 0; k < 8; k++)
-			{
-				dist[i][j][k] = 1e9;
-			}
+	for (int i = 0; i < 8; i++) { cin >> grid[i]; }
+	int dist[4][8][8]{};  // dir, i, j
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 8; j++) {
+			for (int k = 0; k < 8; k++) { dist[i][j][k] = 1e9; }
 		}
 	}
 	dist[1][7][0] = 0;
@@ -86,48 +71,38 @@ int main()
 	pq.push({0, 7, 0, 1, ""});
 
 	// use dijkstras to find the shortest path to the diamond
-	while (!pq.empty())
-	{
+	while (!pq.empty()) {
 		State cur = pq.top();
 		pq.pop();
-		if (cur.dist != dist[cur.dir][cur.i][cur.j])
-		{
-			continue;
-		}
-		if (grid[cur.i][cur.j] == 'D')
-		{
+		if (cur.dist != dist[cur.dir][cur.i][cur.j]) { continue; }
+		if (grid[cur.i][cur.j] == 'D') {
 			cout << cur.moves << endl;
 			return 0;
 		}
 		// move forward
 		int newi = cur.i + di[cur.dir], newj = cur.j + dj[cur.dir];
-		if (ingrid(newi, newj)
-				&& (grid[newi][newj] == '.' || grid[newi][newj] == 'D')
-				&& dist[cur.dir][cur.i][cur.j] + 1 < dist[cur.dir][newi][newj])
-		{
+		if (ingrid(newi, newj) &&
+		    (grid[newi][newj] == '.' || grid[newi][newj] == 'D') &&
+		    dist[cur.dir][cur.i][cur.j] + 1 < dist[cur.dir][newi][newj]) {
 			dist[cur.dir][newi][newj] = dist[cur.dir][cur.i][cur.j] + 1;
-			pq.push({dist[cur.dir][newi][newj],
-						newi, newj, cur.dir, cur.moves + "F"});
+			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir,
+			         cur.moves + "F"});
 		}
 		// melt ice castle and move forward
-		if (ingrid(newi, newj)
-				&& grid[newi][newj] == 'I'
-				&& dist[cur.dir][cur.i][cur.j] + 2 < dist[cur.dir][newi][newj])
-		{
+		if (ingrid(newi, newj) && grid[newi][newj] == 'I' &&
+		    dist[cur.dir][cur.i][cur.j] + 2 < dist[cur.dir][newi][newj]) {
 			dist[cur.dir][newi][newj] = dist[cur.dir][cur.i][cur.j] + 2;
-			pq.push({dist[cur.dir][newi][newj],
-						newi, newj, cur.dir, cur.moves + "XF"});
+			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir,
+			         cur.moves + "XF"});
 		}
 		// turn left or right
-		for (int turn : {-1, 1})
-		{
+		for (int turn : {-1, 1}) {
 			int newdir = (cur.dir + turn + 4) % 4;
 			string newmove = (turn == -1 ? "L" : "R");
-			if (dist[cur.dir][cur.i][cur.j] + 1 < dist[newdir][cur.i][cur.j])
-			{
+			if (dist[cur.dir][cur.i][cur.j] + 1 < dist[newdir][cur.i][cur.j]) {
 				dist[newdir][cur.i][cur.j] = dist[cur.dir][cur.i][cur.j] + 1;
-				pq.push({dist[newdir][cur.i][cur.j],
-							cur.i, cur.j, newdir, cur.moves + newmove});
+				pq.push({dist[newdir][cur.i][cur.j], cur.i, cur.j, newdir,
+				         cur.moves + newmove});
 			}
 		}
 	}

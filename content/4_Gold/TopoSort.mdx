@@ -4,11 +4,11 @@ title: 'Topological Sort'
 author: Benjamin Qi, Nathan Chen
 contributors: Michael Cao, Andi Qu, Andrew Wang, Qi Wang, Maggie Liu
 prerequisites:
-  - bfs
+  - graph-traversal
   - intro-dp
 description:
-  'An ordering of vertices in a directed acyclic graph that ensures that a node
-  is visited before every node it has a directed edge to.'
+  'Ordering the vertices of a directed acyclic graph such that each vertex
+  is visited before its children.'
 frequency: 1
 ---
 
@@ -183,7 +183,7 @@ public class CourseSchedule {
 </JavaSection>
 <PySection>
 
-```python
+```py
 import sys
 
 MAX_N = 10**5
@@ -384,7 +384,7 @@ public class cycle {
 </JavaSection>
 <PySection>
 
-```python
+```py
 import sys
 
 MAX_N = 10**5
@@ -545,7 +545,7 @@ public class TopoSort {
 
 <PySection>
 
-```python
+```py
 from collections import deque
 
 # The code is in a function so it can run faster.
@@ -626,7 +626,7 @@ Fortunately, this is the exact definition of a topological sort!
 
 In this task, we must find the longest path in a DAG.
 
-<Spoiler title="Solution">
+## Solution - Longest Flight Route
 
 Let $dp[v]$ denote the length of the longest path ending at the node $v$.
 Clearly
@@ -749,8 +749,8 @@ int main() {  // See "General - Fast I/O" for more information about the first
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 // longest_path
 public class Main {
@@ -762,38 +762,38 @@ public class Main {
 	// does a topological sort
 	static void compute() {
 		Queue<Integer> q = new ArrayDeque<Integer>();
-		for(int i = 0; i < N; i++) {
-			if(inDegree[i] == 0) {
-				q.add(i);
-			}
+		for (int i = 0; i < N; i++) {
+			if (inDegree[i] == 0) { q.add(i); }
 		}
 
-		while(!q.isEmpty()) {
+		while (!q.isEmpty()) {
 			int node = q.poll();
 
-			for(int next : edge[node]) {
+			for (int next : edge[node]) {
 				inDegree[next]--;
-				if(inDegree[next] == 0) q.add(next);
+				if (inDegree[next] == 0) q.add(next);
 			}
 
 			// The below block computes the DP
 			int mx = -999999999;
 			int mx_node = -1;
-			for(int prev : backEdge[node]) {
-				if(dist[prev] + 1 > mx) {
+			for (int prev : backEdge[node]) {
+				if (dist[prev] + 1 > mx) {
 					mx = dist[prev] + 1;
 					mx_node = prev;
 				}
 			}
 
 			dist[node] = mx;
-			if(node == 0) dist[node] = 1;
+			if (node == 0) dist[node] = 1;
 			prevFlight[node] = mx_node;
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in); // View "General - Fast I/O" for more information about the "FastIO" class
+		FastIO sc =
+		    new FastIO(System.in);  // View "General - Fast I/O" for more
+		                            // information about the "FastIO" class
 
 		N = sc.nextInt();
 		M = sc.nextInt();
@@ -804,7 +804,7 @@ public class Main {
 		edge = new List[N];
 		backEdge = new List[N];
 
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			prevFlight[i] = -1;
 			dist[i] = -999999999;
 			inDegree[i] = 0;
@@ -812,7 +812,7 @@ public class Main {
 			backEdge[i] = new ArrayList<>();
 		}
 
-		for(int i = 0; i < M; i++) {
+		for (int i = 0; i < M; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
 
@@ -825,24 +825,24 @@ public class Main {
 
 		PrintWriter pw = new PrintWriter(System.out);
 
-		ArrayDeque<Integer> answer = new ArrayDeque<>(); // Acts as a Stack
+		ArrayDeque<Integer> answer = new ArrayDeque<>();  // Acts as a Stack
 		int temp = N - 1;
 
 		boolean contains0 = false;
-		if(temp == 0) contains0 = true;
+		if (temp == 0) contains0 = true;
 
-		while(temp != -1 && dist[temp] >= 0) {
+		while (temp != -1 && dist[temp] >= 0) {
 			answer.push(temp);
 			temp = prevFlight[temp];
-			if(temp == 0) contains0 = true;
+			if (temp == 0) contains0 = true;
 		}
 
-		if(contains0) {
+		if (contains0) {
 			pw.println(dist[N - 1]);
-			while(!answer.isEmpty()) {
+			while (!answer.isEmpty()) {
 				pw.print(answer.peekFirst() + 1);
 				answer.pop();
-				if(!answer.isEmpty()) pw.print(" ");
+				if (!answer.isEmpty()) pw.print(" ");
 			}
 			pw.println();
 		} else {
@@ -863,17 +863,13 @@ public class Main {
 			dis = new FileInputStream(fileName);
 		}
 
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
+		public FastIO(InputStream is) throws Exception { dis = is; }
 
 		int nextInt() throws Exception {
 			int ret = 0;
 
 			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
+			do { b = nextByte(); } while (b <= ' ');
 			boolean negative = false;
 			if (b == '-') {
 				negative = true;
@@ -891,9 +887,7 @@ public class Main {
 			long ret = 0;
 
 			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
+			do { b = nextByte(); } while (b <= ' ');
 			boolean negative = false;
 			if (b == '-') {
 				negative = true;
@@ -919,9 +913,7 @@ public class Main {
 			StringBuffer ret = new StringBuffer();
 
 			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
+			do { b = nextByte(); } while (b <= ' ');
 			while (b > ' ') {
 				ret.appendCodePoint(b);
 				b = nextByte();
@@ -929,18 +921,14 @@ public class Main {
 
 			return ret.toString();
 		}
-
 	}
 	// EndCodeSnip
 }
-
 ```
 
 </JavaSection>
 
 </LanguageSection>
-
-</Spoiler>
 
 <!-- However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.
 

@@ -4,7 +4,7 @@ source: Old Gold
 title: The Cow Run
 author: Ryan Chou
 ---
- 
+
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_cowrun_mar13.html)
 
 ## Explanation
@@ -21,7 +21,7 @@ We have to keep track of the cows that we've already picked up. Since this'll al
 
 We also have to keep track of which side we're on ($k$).
 
-$\texttt{dp}[i][j][k] = \hspace{0.1cm}$minimum cost to visit all of these cows. 
+$\texttt{dp}[i][j][k] = \hspace{0.1cm}$minimum cost to visit all of these cows.
 
 The answer will be the minimum of each side when considering the entire range.
 
@@ -53,14 +53,12 @@ using namespace std;
 int main() {
 	freopen("cowrun.in", "r", stdin);
 	freopen("cowrun.out", "w", stdout);
-	
+
 	int n;
 	cin >> n;
 
 	vector<int> pos(n);
-	for (int i = 0; i < n; i++) {
-		cin >> pos[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> pos[i]; }
 
 	sort(pos.begin(), pos.end());
 
@@ -71,9 +69,7 @@ int main() {
 	 * k (0/1) = current side
 	 */
 	vector<vector<vector<int>>> dp(
-		n + 1,
-		vector<vector<int>>(n + 1, vector<int>(2, INT32_MAX))
-	);
+	    n + 1, vector<vector<int>>(n + 1, vector<int>(2, INT32_MAX)));
 
 	for (int i = n - 1; i >= 0; --i) {
 		for (int j = i; j < n; j++) {
@@ -83,20 +79,20 @@ int main() {
 			} else {
 				// the number of cows which the cost is inflicted upon
 				int remaining = n - (j - i);
-				
+
 				// consider if we want to go to the same or opposite side
 				if (i < n) {
 					dp[i][j][0] = min(
-						dp[i + 1][j][0] + (abs(pos[i + 1] - pos[i]) * remaining),
-						dp[i + 1][j][1] + (abs(pos[j] - pos[i]) * remaining)
-					);
+					    dp[i + 1][j][0] +
+					        (abs(pos[i + 1] - pos[i]) * remaining),
+					    dp[i + 1][j][1] + (abs(pos[j] - pos[i]) * remaining));
 				}
 
 				if (j > 0) {
 					dp[i][j][1] = min(
-						dp[i][j - 1][1] + (abs(pos[j - 1] - pos[j]) * remaining),
-						dp[i][j - 1][0] + (abs(pos[j] - pos[i]) * remaining)
-					);
+					    dp[i][j - 1][1] +
+					        (abs(pos[j - 1] - pos[j]) * remaining),
+					    dp[i][j - 1][0] + (abs(pos[j] - pos[i]) * remaining));
 				}
 			}
 		}

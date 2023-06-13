@@ -9,9 +9,10 @@ const TableOfContentsSidebar = ({
 }: {
   tableOfContents: TOCHeading[];
 }) => {
-  const hashes = useMemo(() => tableOfContents.map(heading => heading.slug), [
-    tableOfContents,
-  ]);
+  const hashes = useMemo(
+    () => tableOfContents.map(heading => heading.slug),
+    [tableOfContents]
+  );
   const activeHash = useActiveHash(hashes, '10px 0px 0px 0px');
 
   const getLinkStyles = heading =>

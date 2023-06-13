@@ -2,10 +2,34 @@
 id: usaco-787
 source: USACO Silver 2018 January
 title: Rental Service
-author: Óscar Garries, Kevin Sheng
+author: Óscar Garries, Kevin Sheng, Rishabh Agarwal
 ---
 
+<Spoiler title="Hint 1">
+
+Is there any reason for Farmer John to milk a cow that produces less milk over a cow that produces more?
+On a similar note, is there any reason for him to rent a cow that produces more milk over a cow that produces less milk?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+There isn't! It's *always* optimal to milk the cow that produces the most milk or rent the cow that produces the least milk.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_rental_silver_jan18.html)
+
+## Explanation
+
+Notice that we should always compare the highest-producing cow and the store offering the most money with the farmer offering the most money.
+
+To do this, we can make 3 lists containing the stores, farmers, and cows.
+Then, we sort the stores and farmers by the prices offered, and sort the cows by their milk production.
+
+Then, when we go through the list, we'll either milk the highest-producing cow or rent the lowest-producing cow, whichever one is more lucrative.
 
 ## Implementation
 
@@ -22,19 +46,13 @@ int main() {
 	cin >> n >> m >> r;
 
 	vector<int> milk_amt(n);
-	for (int i = 0; i < n; i++) {
-		cin >> milk_amt[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> milk_amt[i]; }
 
 	vector<pair<int, int>> shops(m);
-	for (int i = 0; i < m; i++) {
-		cin >> shops[i].second >> shops[i].first;
-	}
+	for (int i = 0; i < m; i++) { cin >> shops[i].second >> shops[i].first; }
 
 	vector<int> rent(r);
-	for (int i = 0; i < r; i++) {
-		cin >> rent[i];
-	}
+	for (int i = 0; i < r; i++) { cin >> rent[i]; }
 
 	// sort cows by milk production in descending order
 	sort(milk_amt.begin(), milk_amt.end(), greater<int>());
@@ -71,9 +89,7 @@ int main() {
 		if (rent_at >= r || sold_money > rent[rent_at]) {
 			max_money += sold_money;
 			shop_at = curr_shop;
-			if (shop_at < m) {
-				shops[shop_at].second -= last;
-			}
+			if (shop_at < m) { shops[shop_at].second -= last; }
 			cow_at++;
 		} else {
 			max_money += rent[rent_at];
@@ -100,7 +116,7 @@ import java.io.*;
 import java.util.*;
 
 public class Rental {
-	//BeginCodeSnip{Shop Class}
+	// BeginCodeSnip{Shop Class}
 	static class Shop {
 		public int price;
 		public int amt;
@@ -109,8 +125,8 @@ public class Rental {
 			this.price = price;
 		}
 	}
-	//EndCodeSnip
-	
+	// EndCodeSnip
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("rental.in"));
 
@@ -127,10 +143,8 @@ public class Rental {
 		Shop[] shops = new Shop[m];
 		for (int i = 0; i < m; i++) {
 			StringTokenizer shop = new StringTokenizer(read.readLine());
-			shops[i] = new Shop(
-				Integer.parseInt(shop.nextToken()),
-				Integer.parseInt(shop.nextToken())
-			);
+			shops[i] = new Shop(Integer.parseInt(shop.nextToken()),
+			                    Integer.parseInt(shop.nextToken()));
 		}
 
 		int[] rent = new int[r];
@@ -147,7 +161,7 @@ public class Rental {
 		}
 
 		// sort shops by selling price in descending order
-		Arrays.sort(shops, Comparator.comparingInt(s -> -s.price));
+		Arrays.sort(shops, Comparator.comparingInt(s -> - s.price));
 
 		// sort rent in descending order
 		Arrays.sort(rent);
@@ -166,13 +180,13 @@ public class Rental {
 			int soldMoney = 0;  // how much we can make from selling the milk
 			int currShop = shopAt;
 			int last = 0;
-	
+
 			// calculate how much money this cow can make if we sell its milk
 			while (currShop < m) {
 				int sold = Math.min(amt, shops[currShop].amt);
 				soldMoney += shops[currShop].price * sold;
 				amt -= sold;
-	
+
 				if (amt == 0) {
 					last = sold;
 					break;
@@ -180,14 +194,12 @@ public class Rental {
 					currShop++;
 				}
 			}
-	
+
 			// should we rent or sell this cow?
 			if (rentAt >= r || soldMoney > rent[rentAt]) {
 				maxMoney += soldMoney;
 				shopAt = currShop;
-				if (shopAt < m) {
-					shops[shopAt].amt -= last;
-				}
+				if (shopAt < m) { shops[shopAt].amt -= last; }
 				cowAt++;
 			} else {
 				maxMoney += rent[rentAt];
@@ -212,7 +224,7 @@ public class Rental {
 <PySection>
 
 ```py
-with open('rental.in') as read:
+with open("rental.in") as read:
 	n, m, r = [int(i) for i in read.readline().split()]
 
 	milk_amt = [int(read.readline()) for _ in range(n)]
@@ -265,8 +277,9 @@ while cow_at < n:
 		n -= 1
 		rent_at += 1
 
-print(max_money, file=open('rental.out', 'w'))
+print(max_money, file=open("rental.out", "w"))
 ```
 
 </PySection>
 </LanguageSection>
+</Spoiler>

@@ -26,15 +26,11 @@ int main() {
 	freopen("shuffle.in", "r", stdin);
 	int n;
 	cin >> n;
-	
+
 	vector<int> shuffle(n);
-	for (int& i : shuffle) {
-		cin >> i;
-	}
+	for (int &i : shuffle) { cin >> i; }
 	vector<int> ids(n);
-	for (int& i : ids) {
-		cin >> i;
-	}
+	for (int &i : ids) { cin >> i; }
 
 	for (int i = 0; i < SHUFFLE_NUM; i++) {
 		vector<int> past_order(n);
@@ -46,9 +42,7 @@ int main() {
 	}
 
 	freopen("shuffle.out", "w", stdout);
-	for (const int& i : ids) {
-		cout << i << '\n';
-	}
+	for (const int &i : ids) { cout << i << '\n'; }
 }
 ```
 
@@ -66,9 +60,11 @@ public class Shuffle {
 		BufferedReader read = new BufferedReader(new FileReader("shuffle.in"));
 		int n = Integer.parseInt(read.readLine());
 		int[] shuffle = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
+		                    .mapToInt(Integer::parseInt)
+		                    .toArray();
 		int[] ids = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
 		read.close();
 
 		for (int i = 0; i < SHUFFLE_NUM; i++) {
@@ -81,9 +77,7 @@ public class Shuffle {
 		}
 
 		PrintWriter written = new PrintWriter("shuffle.out");
-		for (int i : ids) {
-			written.println(i);
-		}
+		for (int i : ids) { written.println(i); }
 		written.close();
 	}
 }
@@ -95,7 +89,7 @@ public class Shuffle {
 ```py
 SHUFFLE_NUM = 3
 
-with open('shuffle.in') as read:
+with open("shuffle.in") as read:
 	n = int(read.readline())
 	shuffle = list(map(int, read.readline().split()))
 	ids = list(map(int, read.readline().split()))
@@ -107,7 +101,7 @@ for _ in range(SHUFFLE_NUM):
 		past_order[i] = ids[shuffle[i] - 1]
 	ids = past_order.copy()
 
-with open('shuffle.out', 'w') as written:
+with open("shuffle.out", "w") as written:
 	for i in past_order:
 		print(i, file=written)
 ```

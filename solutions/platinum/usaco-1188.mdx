@@ -1,0 +1,272 @@
+---
+id: usaco-1188
+source: USACO Platinum 2022 January
+title: Minimizing Haybales
+author: Aakash Gokhale
+---
+
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_prob1_platinum_jan22.html)
+
+## Explanation
+
+There's a ton of ways to solve this, but since you're probably here from the square root decomposition module, let's just go over that one.
+The official editorial does have some nice alternative solutions as well.
+
+### Subtask
+
+Let's first try to solve the subtask and come up with an $\mathcal{O}(N^2)$ solution.
+
+Let's try to construct the minumum possible ordering for each prefix of the array. We can do this with a strategy similar to insertion sort.
+
+We can insert an element into the prefix by swapping it down to the left until it reaches position $i$ where $|a[i] - a[i - 1]| > k$ because its impossible to keep swapping it. However, if $a[i] > a[i + 1]$, it is more optimal to swap it back to the right until it reaches a point where $a[i] < a[i + 1]$.
+
+### Full solution
+
+We can speed this up with square root decomposition. We can split the array into blocks of size $\sqrt{n}$.
+
+We know an element $a[i]$ can pass completely through a block if $a[i] + k \ge \texttt{MAX}$ and $a[i] - k \le \texttt{MIN}$ where $\texttt{MAX}$ and $\texttt{MIN}$ are the maximum and minimum elements of the block respectively. We can find the rightmost block that element $a[i]$ cannot pass through which takes at most O($\sqrt{n}$) since we check every block.
+
+We can insert this element into the square root block at its correct position by swapping it down to the left inside the block till it reaches a place where it can't be swapped down anymore. This also takes $\mathcal{O}(\sqrt{N})$ time because of the block size.
+
+Now we need to swap it back towards the right until it reaches a point where which makes the array lexographically minimum. We can do this by finding the first block to the right of it that has it's $\texttt{MAX} > a[i]$ by checking each block again in $\mathcal{O}(\sqrt{N})$.
+
+Notice that there is an edge case here where $a[i]$ can never be swapped down to the left past another element that is greater than it because of the restriction of $k$ even thought the $\texttt{MAX}$ element is greater than $a[i]$. In this case, we can push $a[i]$ into the next block and then apply the strategy of checking when the $\texttt{MAX} > a[i]$. We can check this by seeing that if after inserting $a[i]$ into the block and swapping towards the left and right appropriately as described above, $a[i]$ reaches the end of the block.
+
+Now the problem arises that when we add enough elements, the size of a block could potentially be bigger than $\sqrt{n}$. To deal with this issue we can split the block into two smaller blocks (each half the size of the original block) and insert them into the list of blocks. Inserting into a ```vector``` in C++ or ```ArrayList``` in Java, is dependent on the size of the array which in our case which takes $\mathcal{O}(\sqrt{N})$. We can prove that the amount of blocks is bounded to $2\sqrt{n}$.
+
+Processing each element of the array took $\mathcal{O}(\sqrt{N})$ time so the total time complexity is $\mathcal{O}(N\sqrt{N})$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\sqrt{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, k;
+
+struct Block {
+	int hi = -INT32_MAX;
+	int lo = INT32_MAX;
+	vector<int> vals;
+
+	Block(vector<int> a) {
+		for (int i : a) {
+			vals.push_back(i);
+			hi = max(hi, i);
+			lo = min(lo, i);
+		}
+	}
+
+	/** Adds element x to the block */
+	void add(int x) {
+		lo = min(lo, x);
+		hi = max(hi, x);
+		vals.push_back(x);
+		int i = vals.size() - 1;
+		while (i > 0 && abs(vals[i] - vals[i - 1]) <= k) {
+			swap(vals[i], vals[i - 1]);
+			i--;
+		}
+		while (i < vals.size() - 1 && vals[i] > vals[i + 1]) {
+			swap(vals[i], vals[i + 1]);
+			i++;
+		}
+	}
+
+	/**
+	 * @return whether the most optimal position for x is
+	 * at the end, if it is starts from the end.
+	 */
+	bool reaches_end(int x) {
+		vals.push_back(x);
+		int i = vals.size() - 1;
+		while (i > 0 && abs(vals[i] - vals[i - 1]) <= k) {
+			swap(vals[i], vals[i - 1]);
+			i--;
+		}
+		while (i < vals.size() - 1 && vals[i] > vals[i + 1]) {
+			swap(vals[i], vals[i + 1]);
+			i++;
+		}
+		bool ans = vals.back() == x;
+		vals.erase(begin(vals) + i);
+		return ans;
+	}
+};
+
+int main() {
+	cin >> n >> k;
+	int len = (int)floor(sqrt(n));
+	vector<Block> sqrt{Block()};
+
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		int j = sqrt.size() - 1;
+
+		/*
+		 * Finds the earliest block we can insert element x
+		 * by swapping to the left
+		 */
+		while (j > 0 && (x + k >= sqrt[j].hi && x - k <= sqrt[j].lo)) { j--; }
+
+		/*
+		 * Handle edge case if x doesn't cross an element greater than it in
+		 * block j while swapping left. Swaps element x to the right to the
+		 * lexographically optimal position.
+		 */
+		if (j < sqrt.size() - 1 && sqrt[j].reaches_end(x)) {
+			j++;
+			while (j < sqrt.size() - 1 && x >= sqrt[j].hi) { j++; }
+		}
+		sqrt[j].add(x);
+
+		// If block is too large split into two smalller blocks of equal size
+		if (sqrt[j].vals.size() > len) {
+			int half = (sqrt[j].vals.size()) / 2;
+			vector<int> left, right;
+			for (int k = 0; k < half; k++) { left.push_back(sqrt[j].vals[k]); }
+			for (int k = half; k < sqrt[j].vals.size(); k++) {
+				right.push_back(sqrt[j].vals[k]);
+			}
+			sqrt.insert(begin(sqrt) + j, Block(left));
+			sqrt[j + 1] = Block(right);
+		}
+	}
+
+	for (Block block : sqrt) {
+		for (int num : block.vals) { cout << num << endl; }
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MinimizingHaybales {
+	// sqrt(1e5) is roughly 300
+	static final int BLOCK_SIZE = 300;
+	static int k;
+
+	public static class Block {
+		public int hi, lo;
+		List<Integer> vals;
+
+		public Block() {
+			vals = new ArrayList<>();
+			hi = Integer.MIN_VALUE;
+			lo = Integer.MAX_VALUE;
+		}
+
+		public Block(List<Integer> a) {
+			vals = new ArrayList<>();
+			hi = Integer.MIN_VALUE;
+			lo = Integer.MAX_VALUE;
+			for (int i : a) {
+				vals.add(i);
+				hi = Math.max(hi, i);
+				lo = Math.min(lo, i);
+			}
+		}
+
+		/**
+		 * @param test If test is true, it checks the return condition without
+		 *     actually adding x, otherwise it actually adds x in the correct
+		 *     position
+		 * @return whether the most optimal position for x is at the end, if it
+		 *     is starts from the end.
+		 */
+		public boolean add(int x, boolean test) {
+			if (!test) {
+				lo = Math.min(lo, x);
+				hi = Math.max(hi, x);
+			}
+			vals.add(x);
+			int i = vals.size() - 1;
+
+			while (i > 0 && Math.abs(vals.get(i) - vals.get(i - 1)) <= k) {
+				int temp = vals.get(i);
+				vals.set(i, vals.get(i - 1));
+				vals.set(i - 1, temp);
+				i--;
+			}
+			while (i < vals.size() - 1 && vals.get(i) > vals.get(i + 1)) {
+				int temp = vals.get(i);
+				vals.set(i, vals.get(i + 1));
+				vals.set(i + 1, temp);
+				i++;
+			}
+
+			boolean ans = vals.get(vals.size() - 1) == x;
+			if (test) { vals.remove(i); }
+			return ans;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		k = Integer.parseInt(st.nextToken());
+		ArrayList<Block> sqrt = new ArrayList<>();
+
+		sqrt.add(new Block());
+		for (int i = 0; i < n; i++) {
+			int x = Integer.parseInt(br.readLine());
+
+			/*
+			 * Finds the earliest block we can insert element x by swapping to
+			 * the left.
+			 */
+			int j = sqrt.size() - 1;
+			while (j > 0 &&
+			       (x + k >= sqrt.get(j).hi && x - k <= sqrt.get(j).lo)) {
+				j--;
+			}
+
+			/*
+			 * Handle edge case if x doesn't cross an element greater than it in
+			 * block j while swapping left. Swaps element x to the right to the
+			 * lexographically optimal position.
+			 */
+			if (j < sqrt.size() - 1 && sqrt.get(j).add(x, true)) {
+				j++;
+				while (j < sqrt.size() - 1 && x >= sqrt.get(j).hi) { j++; }
+			}
+			sqrt.get(j).add(x, false);
+
+			// Split the block if it's too large
+			if (sqrt.get(j).vals.size() > BLOCK_SIZE) {
+				int half = (sqrt.get(j).vals.size()) / 2;
+				ArrayList<Integer> left = new ArrayList<>();
+				ArrayList<Integer> right = new ArrayList<>();
+				for (int k = 0; k < half; k++) {
+					left.add(sqrt.get(j).vals.get(k));
+				}
+				for (int k = half; k < sqrt.get(j).vals.size(); k++) {
+					right.add(sqrt.get(j).vals.get(k));
+				}
+				sqrt.add(j, new Block(left));
+				sqrt.set(j + 1, new Block(right));
+			}
+		}
+
+		for (Block block : sqrt) {
+			for (int num : block.vals) { System.out.println(num); }
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

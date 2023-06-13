@@ -8,7 +8,7 @@ author: Benjamin Qi, Óscar Garries, Nathan Gong
 ## Explanation
 
 <Info title="Implementation Note">
-We will be using 1-based arrays (index starting from 1) throughout this problem. 
+We will be using 1-based arrays (index starting from 1) throughout this problem.
 The element at index 0 will always be 0.
 </Info>
 
@@ -47,32 +47,31 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-template<class T> struct Seg {
+template <class T> struct Seg {
 	int n;
 	T ID = 0;
 	vector<T> seg;
-	T comb (T a, T b) {return a + b;}
-	void init (int _n) {n = _n; seg.assign(n * 2, ID);}
-	void pull (int p) {
-		seg[p] = comb(seg[p * 2], seg[p * 2 + 1]);
+	T comb(T a, T b) { return a + b; }
+	void init(int _n) {
+		n = _n;
+		seg.assign(n * 2, ID);
 	}
-	void upd (int i, T val) {
-		seg[i+=n] += val;
-		for (i /= 2; i; i /= 2) {
-			pull(i);
-		}
+	void pull(int p) { seg[p] = comb(seg[p * 2], seg[p * 2 + 1]); }
+	void upd(int i, T val) {
+		seg[i += n] += val;
+		for (i /= 2; i; i /= 2) { pull(i); }
 	}
-	T query (int l, int r) {
+	T query(int l, int r) {
 		T ra = ID, rb = ID;
 		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra, seg[l++]);
-			if (r&1) rb = comb(rb, seg[--r]);
+			if (l & 1) ra = comb(ra, seg[l++]);
+			if (r & 1) rb = comb(rb, seg[--r]);
 		}
 		return comb(ra, rb);
 	}
 };
 
-int main () {
+int main() {
 	int n, q;
 	cin >> n >> q;
 	// sgt stores the difference array
@@ -116,15 +115,11 @@ public class RangeUpdateQueries {
 		int q = io.nextInt();
 
 		int[] arr = new int[n + 1];
-		for (int i = 1; i <= n; i++) {
-			arr[i] = io.nextInt();
-		}
+		for (int i = 1; i <= n; i++) { arr[i] = io.nextInt(); }
 
 		// seg stores the difference array
 		SegmentTree seg = new SegmentTree(n + 1);
-		for (int i = 1; i <= n; i++) {
-			seg.add(i, arr[i] - arr[i - 1]);
-		}
+		for (int i = 1; i <= n; i++) { seg.add(i, arr[i] - arr[i - 1]); }
 		for (int i = 0; i < q; i++) {
 			int operation = io.nextInt();
 			if (operation == 1) {

@@ -28,7 +28,7 @@ int num_reachable;
 /** searches all vertices that can be reached through the current video v */
 void search_videos(int v) {
 	visited[v] = true;
-	for (const pair<int, int>& n: neighbors[v]) {
+	for (const pair<int, int> &n : neighbors[v]) {
 		/*
 		 * only visit nonvisited videos whose relevance
 		 * is greater than the current threshold
@@ -62,12 +62,12 @@ int main() {
 		int start;
 		cin >> threshold >> start;
 		start--;
-		
+
 		// reset our global variables for the current query
 		num_reachable = 0;
 		visited = vector<bool>(video_num);
 		search_videos(start);
-		
+
 		cout << num_reachable << '\n';
 	}
 }
@@ -77,8 +77,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MooTube {
 	private static class Edge {
@@ -94,16 +94,14 @@ public class MooTube {
 	static int numReachable;
 	static boolean[] visited;
 	static List<Edge>[] neighbors;
-	
+
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("mootube");
 		int videoNum = io.nextInt();
 		int queryNum = io.nextInt();
 
 		neighbors = new ArrayList[videoNum];
-		for (int v = 0; v < videoNum; v++) {
-			neighbors[v] = new ArrayList<>();
-		}
+		for (int v = 0; v < videoNum; v++) { neighbors[v] = new ArrayList<>(); }
 		for (int e = 0; e < videoNum - 1; e++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
@@ -142,7 +140,7 @@ public class MooTube {
 		}
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

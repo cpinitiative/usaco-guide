@@ -73,40 +73,37 @@ By adding these two values together, we get our answer for the query.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
-#include <vector>
+#include <iostream>
 #include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-//BeginCodeSnip{Binary Indexed Tree}
+// BeginCodeSnip{Binary Indexed Tree}
 class BITree {
-	private:
-		vector<long long> bit;
-		int size;
-	public:
-		BITree(int size) : size(size), bit(size) { }
+  private:
+	vector<long long> bit;
+	int size;
 
-		void increment(int ind, long long val) {
-			ind++;  // have the driver code not worry about 1-indexing
-			for (; ind <= size; ind += ind & -ind) {
-				bit[ind] += val;
-			}
-		}
+  public:
+	BITree(int size) : size(size), bit(size) {}
 
-		long long query(int ind) {
-			ind++;
-			long long sum = 0;
-			for (; ind > 0; ind -= ind & -ind) {
-				sum += bit[ind];
-			}
-			return sum;
-		}
+	void increment(int ind, long long val) {
+		ind++;  // have the driver code not worry about 1-indexing
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	long long query(int ind) {
+		ind++;
+		long long sum = 0;
+		for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
+		return sum;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	std::ifstream read("snowcow.in");
@@ -142,9 +139,7 @@ int main() {
 		frontier.push_back(curr);  // set a marker to record the outtime
 		processed[curr] = true;
 		for (int n : neighbors[curr]) {
-			if (!processed[n]) {
-				frontier.push_back(n);
-			}
+			if (!processed[n]) { frontier.push_back(n); }
 		}
 		timer++;
 	}
@@ -154,7 +149,7 @@ int main() {
 	for (int s = 0; s < snowball_num; s++) {
 		sub_size[s] = (end[s] - start[s] + 1) / 2;
 	}
-	
+
 	// the map for each color for tracking of parents & children
 	std::map<int, std::map<int, int>> colors;
 	// BIT for calculating the colorfulness due to parents & current snowball
@@ -171,14 +166,14 @@ int main() {
 			int color;
 			read >> color;
 
-			std::map<int, int>& painted = colors[color];
+			std::map<int, int> &painted = colors[color];
 			auto l_closest = painted.upper_bound(start[sb]);
 			/*
 			 * check if there's a parent of the snowball that's
 			 * already been painted with the color
 			 */
-			if (l_closest != painted.begin()
-					&& end[sb] <= end[(--l_closest)->second]) {
+			if (l_closest != painted.begin() &&
+			    end[sb] <= end[(--l_closest)->second]) {
 				continue;
 			}
 			// remove all children of the current snowball that are in the map
@@ -204,11 +199,10 @@ int main() {
 			 * the colors from parents influence every node in the subtree,
 			 * so multiply by the current subtree size
 			 */
-			long long above_colors = sub_size[sb] * above_unique.query(start[sb]);
-			long long below_colors = (
-				below_unique.query(end[sb])
-				- below_unique.query(start[sb])
-			);
+			long long above_colors =
+			    sub_size[sb] * above_unique.query(start[sb]);
+			long long below_colors =
+			    (below_unique.query(end[sb]) - below_unique.query(start[sb]));
 			written << above_colors + below_colors << '\n';
 		}
 	}
@@ -260,9 +254,7 @@ public class SnowCow {
 			frontier.add(curr);  // set a marker to record the outtime
 			processed[curr] = true;
 			for (int n : neighbors[curr]) {
-				if (!processed[n]) {
-					frontier.add(n);
-				}
+				if (!processed[n]) { frontier.add(n); }
 			}
 			timer++;
 		}
@@ -275,7 +267,8 @@ public class SnowCow {
 
 		// the map for each color for tracking of parents & children
 		Map<Integer, TreeMap<Integer, Integer>> colors = new HashMap<>();
-		// BIT for calculating the colorfulness due to parents & current snowball
+		// BIT for calculating the colorfulness due to parents & current
+		// snowball
 		BITree aboveUnique = new BITree(snowballNum * 2);
 		// and for calculating the colorfulness due to colors of children
 		BITree belowUnique = new BITree(snowballNum * 2);
@@ -299,7 +292,8 @@ public class SnowCow {
 				if (lClosest != null && end[sb] <= end[painted.get(lClosest)]) {
 					continue;
 				}
-				// remove all children of the current snowball that are in the map
+				// remove all children of the current snowball that are in the
+				// map
 				while (true) {
 					Integer rNext = painted.higherKey(start[sb]);
 					if (rNext == null || end[sb] <= end[painted.get(rNext)]) {
@@ -312,7 +306,7 @@ public class SnowCow {
 					belowUnique.increment(start[rNextSB], -subSize[rNextSB]);
 					painted.remove(rNext);
 				}
-				
+
 				painted.put(start[sb], sb);
 				aboveUnique.increment(start[sb], 1);
 				aboveUnique.increment(end[sb], -1);
@@ -323,10 +317,8 @@ public class SnowCow {
 				 * so multiply by the current subtree size
 				 */
 				long aboveColors = subSize[sb] * aboveUnique.query(start[sb]);
-				long belowColors = (
-					belowUnique.query(end[sb])
-					- belowUnique.query(start[sb])
-				);
+				long belowColors =
+				    (belowUnique.query(end[sb]) - belowUnique.query(start[sb]));
 				ans.append(aboveColors + belowColors).append('\n');
 			}
 		}
@@ -337,8 +329,7 @@ public class SnowCow {
 	}
 }
 
-
-//BeginCodeSnip{Binary Indexed Tree}
+// BeginCodeSnip{Binary Indexed Tree}
 class BITree {
 	private final long[] bit;
 	private final int size;
@@ -350,21 +341,17 @@ class BITree {
 
 	public void increment(int ind, long val) {
 		ind++;  // have the driver code not worry about 1-indexing
-		for (; ind <= size; ind += ind & -ind) {
-			bit[ind] += val;
-		}
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
 
 	public long query(int ind) {  // the bound's inclusive
 		ind++;
 		long sum = 0;
-		for (; ind > 0; ind -= ind & -ind) {
-			sum += bit[ind];
-		}
+		for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
 		return sum;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>

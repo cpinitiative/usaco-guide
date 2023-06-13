@@ -4,8 +4,7 @@ title: 'Simulation'
 author: Darren Yao
 contributors: Allen Li, Siyong Huang, Juheon Rhee
 description:
-  'Directly simulating the problem statement, which many Bronze problems allow
-  you to do.'
+  'Directly simulating the problem statement.'
 frequency: 4
 ---
 
@@ -31,8 +30,6 @@ solution may not be the easiest to implement!</Asterisk>.
 <FocusProblem problem="example" />
 
 ### Solution
-
-<Spoiler title="Solution">
 
 We can simulate the process. Store an array that keeps track of which shell is
 at which location, and Bessie's swapping can be simulated by swapping elements
@@ -84,8 +81,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Shell {
 	public static void main(String[] args) throws IOException {
@@ -97,11 +94,10 @@ public class Shell {
 		int[] shellAtPos = new int[3];
 
 		// Arbitrarily place the shells down
-		for (int i = 0; i < 3; i++) {
-			shellAtPos[i] = i;
-		}
+		for (int i = 0; i < 3; i++) { shellAtPos[i] = i; }
 
-		// counter[i] stores the number of times the shell with label i was picked
+		// counter[i] stores the number of times the shell with label i was
+		// picked
 		int[] counter = new int[3];
 
 		for (int i = 0; i < n; i++) {
@@ -123,7 +119,7 @@ public class Shell {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -158,15 +154,11 @@ print(max(counter), file=open("shell.out", "w"))
 </PySection>
 </LanguageSection>
 
-</Spoiler>
-
 ## Example 2
 
 <FocusProblem problem="example2" />
 
 ### Solution
-
-<Spoiler title="Solution">
 
 We can simulate the process of pouring buckets. The amount of milk poured from
 bucket $i$ to bucket $j$ is the smaller of the amount of milk in bucket $i$
@@ -222,8 +214,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MixMilk {
 	static final int N = 3;  // The number of buckets (which is 3)
@@ -250,19 +242,18 @@ public class MixMilk {
 			 * The amount of milk to pour is the minimum of the remaining milk
 			 * in bucket 1 and the available capacity of bucket 2
 			 */
-			int amt = Math.min(milk[bucket1], capacity[bucket2] - milk[bucket2]);
+			int amt =
+			    Math.min(milk[bucket1], capacity[bucket2] - milk[bucket2]);
 
 			milk[bucket1] -= amt;
 			milk[bucket2] += amt;
 		}
 
-		for (int m : milk) {
-			io.println(m);
-		}
+		for (int m : milk) { io.println(m); }
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -301,8 +292,6 @@ with open("mixmilk.out", "w") as out:
 
 </PySection>
 </LanguageSection>
-
-</Spoiler>
 
 ## Problems
 

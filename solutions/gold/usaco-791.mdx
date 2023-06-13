@@ -40,21 +40,17 @@ using ll = long long;
 
 const ll MOD = 1e9 + 7;
 
-//BeginCodeSnip{Segment Tree}
+// BeginCodeSnip{Segment Tree}
 template <class T> struct SegTree {
 	const T ID = 0;
-	T cmb(T a, T b) {
-		return (a + b) % MOD;
-	}
+	T cmb(T a, T b) { return (a + b) % MOD; }
 	int n;
-	vector <T> seg;
+	vector<T> seg;
 	SegTree(int _n) {
 		for (n = 1; n < _n;) n *= 2;
 		seg.assign(2 * n, ID);
 	}
-	void pull(int p) {
-		seg[p] = cmb(seg[2 * p], seg[2 * p + 1]);
-	}
+	void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
 	void upd(int p, T val) {
 		seg[p += n] = val;
 		for (p /= 2; p; p /= 2) pull(p);
@@ -68,18 +64,17 @@ template <class T> struct SegTree {
 		return cmb(ra, rb);
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 /**
  * Binary exponentiation for fast exponentiation.
- * However, since n is small enough, you could also precalculate the powers of m instead.
+ * However, since n is small enough, you could also precalculate the powers of m
+ * instead.
  */
 ll bi_pow(ll a, ll b) {
 	ll ans = 1;
 	while (b) {
-		if (b & 1) {
-			ans = ans * a % MOD;
-		}
+		if (b & 1) { ans = ans * a % MOD; }
 		a = a * a % MOD;
 		b /= 2;
 	}
@@ -94,13 +89,13 @@ int main() {
 
 	// Initialize segment tree
 	SegTree<ll> dp(n + 1);
-	
+
 	for (int i = 1; i <= n; i++) {
 		ll a;
 		if (i < k) {  // If i is less than k, dp[i] will be a power of m
 			a = bi_pow(m, i);
-		} else { // Otherwise, apply the second dp formula
-			a = (m - 1) * dp.query(max(1, i - (int) k + 1), i - 1) % MOD;
+		} else {  // Otherwise, apply the second dp formula
+			a = (m - 1) * dp.query(max(1, i - (int)k + 1), i - 1) % MOD;
 		}
 		dp.upd(i, a);
 	}

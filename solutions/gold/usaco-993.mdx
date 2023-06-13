@@ -32,9 +32,7 @@ int main() {
 	cin >> n >> m >> c;
 
 	vector<int> earn(n);
-	for (int i = 0; i < n; i++) {
-		cin >> earn[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> earn[i]; }
 
 	vector<vector<int>> adj(n);
 	for (int i = 0; i < m; i++) {
@@ -43,11 +41,12 @@ int main() {
 		adj[--u].push_back(--v);
 	}
 
-	// dp[i][j] = the max money that Bessie can make on day i if she ends in city j
+	// dp[i][j] = the max money that Bessie can make on day i if she ends in
+	// city j
 	vector<vector<int>> dp(MAX_DAYS + 1, vector<int>(n, -1));
 	// base case: if Bessie doesn't travel at all, she makes $0
 	dp[0][0] = 0;
-	
+
 	int ans = 0;
 	for (int d = 0; d < MAX_DAYS; d++) {
 		for (int i = 0; i < n; i++) {
@@ -55,7 +54,7 @@ int main() {
 			if (dp[d][i] != -1) {
 				for (int u : adj[i]) {
 					/*
-					 * dp[d + 1][u] = max(current money earned, 
+					 * dp[d + 1][u] = max(current money earned,
 					 * previous city's earnings + current city's earnings)
 					 */
 					dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u]);
@@ -78,7 +77,7 @@ public class TimeIsMooney {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("time");
 
-		// max time that we check (it can be any arbitrary large number as long 
+		// max time that we check (it can be any arbitrary large number as long
 		// as it is sufficient for O(T_MAX * (N + M)) time)
 		final int T_MAX = 1001;
 		int n = io.nextInt();
@@ -87,9 +86,7 @@ public class TimeIsMooney {
 
 		// amount of moonies Bessie can make at each city
 		int[] values = new int[n];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = io.nextInt();
-		}
+		for (int i = 0; i < values.length; i++) { values[i] = io.nextInt(); }
 
 		List<List<Integer>> adj = new ArrayList<>();
 		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
@@ -99,12 +96,10 @@ public class TimeIsMooney {
 			adj.get(n1).add(n2);
 		}
 
-		// dp[t][i] = max amount of moonies Bessie can make after t days, 
+		// dp[t][i] = max amount of moonies Bessie can make after t days,
 		// ending at city i
 		long[][] dp = new long[T_MAX][n];
-		for (int i = 0; i < T_MAX; i++) {
-			Arrays.fill(dp[i], -1);
-		}
+		for (int i = 0; i < T_MAX; i++) { Arrays.fill(dp[i], -1); }
 
 		long best = 0;
 		dp[0][0] = 0;
@@ -115,9 +110,7 @@ public class TimeIsMooney {
 					// visit all cities adjacent to i, update dp array
 					for (int neighbor : adj.get(i)) {
 						dp[t + 1][neighbor] = Math.max(
-							dp[t + 1][neighbor], 
-							dp[t][i] + values[neighbor]
-						);
+						    dp[t + 1][neighbor], dp[t][i] + values[neighbor]);
 					}
 				}
 			}
@@ -129,7 +122,7 @@ public class TimeIsMooney {
 		io.println(best);
 		io.close();
 	}
-	
+
 	// CodeSnip{Kattio}
 }
 ```

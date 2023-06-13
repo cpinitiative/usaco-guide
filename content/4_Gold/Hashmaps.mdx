@@ -8,7 +8,7 @@ title: (Optional) Hashmaps
 author: Darren Yao, Benjamin Qi
 contributors: Neo Wang, Nathan Gong
 description: 'Maintaining collections of distinct elements with hashing.'
-frequency: 0
+frequency: 1
 prerequisites:
   - intro-sets
   - string-hashing
@@ -38,7 +38,6 @@ arbitrary order.
 ## Custom Hashing
 
 <LanguageSection>
-
 <CPPSection>
 
 There is no built in method for hashing pairs or vectors. Namely,
@@ -93,14 +92,13 @@ int main() { unordered_map<pi, int> um; }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 Java has its own hash functions for pre-defined objects like `ArrayList`'s.
 However, a custom hash function is still needed for user-defined objects.
 In order to create one, we can implement the `hashCode` method.
 
-Additionally, in order for `HashSet`'s and `HashMap`'s to work with 
+Additionally, in order for `HashSet`'s and `HashMap`'s to work with
 a custom class, we must also implement the `equals` method.
 
 ```java
@@ -137,19 +135,17 @@ public class HashTest {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 However, this hash function is quite bad; if we insert
 $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so
-it would easily be hacked in a CodeForces contest).
-
+it would easily be hacked in a Codeforces contest).
 
 <JavaOnly>
 
 In Java, an easy way to hash custom objects is to use the builtin
 `Objects.hash()` method. This method takes in multiple objects and uses them
-to create a hash code. However, this is easily hackable, as the code 
+to create a hash code. However, this is easily hackable, as the code
 below shows.
 
 ```java
@@ -162,7 +158,7 @@ public class HashTest {
 		Set<Pair> set = new HashSet<>();
 		for (int i = 0; i < 100000; ++i) {
 			// Pair p = new Pair(i, 0); // ~0.2s on ide.usaco.guide
-			Pair p = new Pair(i, -31*i); // >5s
+			Pair p = new Pair(i, -31 * i);  // >5s
 			set.add(p);
 		}
 	}
@@ -197,11 +193,11 @@ base (as described in [this module](/gold/string-hashing)).
 
 ## Anti-Hash Tests
 
-The built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. We describe the issue below and how to fix it. Java users are not affected (see [this](https://codeforces.com/blog/entry/62393?#comment-464875) comment). 
+The built-in hashing algorithm for integers in C++ is vulnerable to pathological tests, causing abnormally slow runtimes. We describe the issue below and how to fix it. Java users are not affected (see [this](https://codeforces.com/blog/entry/62393?#comment-464875) comment).
 
-<Info title="Does this matter for USACO?">
+<Info title="Should I worry about anti-hash tests in USACO?">
 
-No - historically, no USACO problem has included an anti-hash test. However, these sorts of tests often appear in CodeForces, especially in educational rounds, where open hacking is allowed.
+No - historically, no USACO problem has included an anti-hash test. However, these sorts of tests often appear in Codeforces, especially in educational rounds, where open hacking is allowed.
 
 </Info>
 
@@ -210,6 +206,67 @@ No - historically, no USACO problem has included an anti-hash test. However, the
 		Explanation of this problem and how to fix it.
 	</Resource>
 </Resources>
+
+<Spoiler title="Hack Case Generator">
+
+```cpp
+// source: https://codeforces.com/blog/entry/62393
+#include <cassert>
+#include <ctime>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+const int N = 2e5;
+
+vector<int> gen_multiples(int x) {
+	int cur = 1, rem = 1;
+	vector<int> res;
+	for (int i = 1; i <= N; i++) {
+		assert(1 <= cur && cur <= 1e9);
+		res.push_back(cur);
+		cur += x;
+		if (cur > 1e9) {
+			++rem;
+			cur = rem;
+		}
+	}
+	return res;
+}
+
+double insert_numbers(vector<int> nums) {
+	clock_t begin = clock();
+	unordered_map<long long, int> m;
+	for (int n : nums) m[n];
+	return (double)(clock() - begin) / CLOCKS_PER_SEC;
+}
+
+int main() {
+	const long prime_list[]{
+	    107897ul, 116731ul, 126271ul, 136607ul, 147793ul, 159871ul, 172933ul,
+	    187091ul, 202409ul, 218971ul, 236897ul, 256279ul, 277261ul, 299951ul,
+	};  // https://github.com/gcc-mirror/gcc/blob/5bea0e90e58d971cf3e67f784a116d81a20b927a/libstdc%2B%2B-v3/src/shared/hashtable-aux.cc
+	for (int prime : prime_list) {
+		cerr << "testing " << prime << ": ";
+		vector<int> multiples = gen_multiples(prime);
+		double runtime = insert_numbers(multiples);
+		cerr << runtime << "\n";
+		if (runtime > 1) {
+			// output hack case for https://cses.fi/problemset/task/1640/
+			cout << N << " 1\n";
+			for (int i = 0; i < N; ++i) {
+				if (i) cout << " ";
+				cout << multiples[i];
+			}
+			cout << "\n";
+			exit(0);
+		}
+	}
+}
+```
+
+</Spoiler>
 
 In order to make your `unordered_map` unhackable, the hash function $H$ you select must have the following property: it is hard to find integers $x$ and $y$ such that $x\neq y$ but $H(x)\equiv H(y) \pmod{P}$, where $P$ is the prime modulus corresponding to the number of buckets in your unordered map. Note that:
  - The default hash function, $H(x)=x$, obviously does not satisfy this property, because you can simply choose $x=0$ and $y=P$.
@@ -230,7 +287,8 @@ struct chash {
 	// any random-ish large odd number will do
 	const uint64_t C = uint64_t(2e18 * PI) + 71;
 	// random 32-bit number
-	const uint32_t RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+	const uint32_t RANDOM =
+	    chrono::steady_clock::now().time_since_epoch().count();
 	size_t operator()(uint64_t x) const {
 		// see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 		return __builtin_bswap64((x ^ RANDOM) * C);
@@ -242,10 +300,10 @@ template <class K, class V> using cmap = unordered_map<K, V, chash>;
 
 ## A Faster HashMap in C++
 
-In C++, it's usually faster to use `gp_hash_table<K, V>` instead of 
-`unordered_map<K, V>`. Read / writes are much faster than `unordered_map`. 
-The documentation is rather confusing, so I'll just summarize the most useful 
-functions here. If you need a replacement for `unordered_set<K>`, use 
+In C++, it's usually faster to use `gp_hash_table<K, V>` instead of
+`unordered_map<K, V>`. Read / writes are much faster than `unordered_map`.
+The documentation is rather confusing, so I'll just summarize the most useful
+functions here. If you need a replacement for `unordered_set<K>`, use
 `gp_hash_table<K, null_type>`.
 
 <Resources>
@@ -274,8 +332,8 @@ functions here. If you need a replacement for `unordered_set<K>`, use
 
 ### Custom Hashing
 
-Like `unordered_map`, `gp_hash_table` is vulernable to hash collisions if a 
-cusetom hash function isn't used. We recommend using the same custom hash 
+Like `unordered_map`, `gp_hash_table` is vulernable to hash collisions if a
+cusetom hash function isn't used. We recommend using the same custom hash
 we used for unordered map above:
 
 ```cpp
@@ -298,8 +356,7 @@ We can modify the declaration of `gp_hash_table` so that it supports the
 ```cpp
 template <class K, class V>
 using ht = gp_hash_table<
-    K, null_type, hash<K>, equal_to<K>, direct_mask_range_hashing<>,
-    linear_probe_fn<>,
+    K, V, hash<K>, equal_to<K>, direct_mask_range_hashing<>, linear_probe_fn<>,
     hash_standard_resize_policy<hash_exponential_size_policy<>,
                                 hash_load_check_resize_trigger<>, true>>;
 ```
@@ -348,11 +405,9 @@ thrown).
 Since all the values are quite small, you can use an array instead of a hashmap.
 But if you didn't read the constraints carefully enough, you're in luck!
 
-<Spoiler title="Solution">
-
 <Warning>
 
-This code passes in 1180ms when initial capacity is specified, and TLEs 
+This code passes in 1180ms when initial capacity is specified, and TLEs
 when it is not.
 
 </Warning>
@@ -416,8 +471,6 @@ int main() {
 	}
 }
 ```
-
-</Spoiler>
 
 ## Problems
 

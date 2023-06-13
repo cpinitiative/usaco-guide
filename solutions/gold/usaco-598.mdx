@@ -50,18 +50,16 @@ Either one of the following happens:
 <CPPSection>
 
 ```cpp
-CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
 int N, M;
 
-const int INF = 1e9+7;
-const int MX = 1e3+1;
+const int INF = 1e9 + 7;
+const int MX = 1e3 + 1;
 
-int sq(int a) {
-	return a * a;
-}
+int sq(int a) { return a * a; }
 
-int dist(pi a, pi b) { // distance squared between two points
+int dist(pi a, pi b) {  // distance squared between two points
 	return sq(a.f - b.f) + sq(a.s - b.s);
 }
 
@@ -80,42 +78,43 @@ int main() {
 
 	cin >> N >> M;
 
+	vector<pi> jl(N + 1);  // john location
+	vector<pi> bl(M + 1);  // bessie location
 
-	vector<pi> jl(N+1); // john location
-	vector<pi> bl(M+1); // bessie location
-
-	int a, b; cin >> a >> b;
-
-	jl[0] = {a, b}; // initial john location
+	int a, b;
 	cin >> a >> b;
-	bl[0] = {a, b}; // initial bessie location
 
-	string jS, bS; // john and bessie movement strings
+	jl[0] = {a, b};  // initial john location
+	cin >> a >> b;
+	bl[0] = {a, b};  // initial bessie location
+
+	string jS, bS;  // john and bessie movement strings
 	cin >> jS >> bS;
 
-
 	// calculating both of their movements
-	// dx[md[jS[i]]] may look complicated, but it just maps the char to its change
+	// dx[md[jS[i]]] may look complicated, but it just maps the char to its
+	// change
 
-	for(int i = 0; i < sz(jS); i++) {
-		jl[i+1] = { jl[i].f + dx[md[jS[i]]], jl[i].s + dy[md[jS[i]]] };
+	for (int i = 0; i < sz(jS); i++) {
+		jl[i + 1] = {jl[i].f + dx[md[jS[i]]], jl[i].s + dy[md[jS[i]]]};
 	}
 
-	for(int i = 0; i < sz(bS); i++) {
-		bl[i+1] = { bl[i].f + dx[md[bS[i]]], bl[i].s + dy[md[bS[i]]] };
+	for (int i = 0; i < sz(bS); i++) {
+		bl[i + 1] = {bl[i].f + dx[md[bS[i]]], bl[i].s + dy[md[bS[i]]]};
 	}
 
 	// either john moves, bessie moves, or both move
 
-	fill_n(dp[0], MX*MX, INF);
+	fill_n(dp[0], MX * MX, INF);
 
 	dp[0][0] = 0;
 
-	for(int i = 0; i < N; i++) {
-		for(int j = 0; j < M; j++) {
-			dp[i+1][j] = min(dp[i+1][j], dp[i][j] + dist(jl[i+1], bl[j]));
-			dp[i][j+1] = min(dp[i][j+1], dp[i][j] + dist(jl[i], bl[j+1]));
-			dp[i+1][j+1] = min(dp[i+1][j+1], dp[i][j] + dist(jl[i+1], bl[j+1]));
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + dist(jl[i + 1], bl[j]));
+			dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + dist(jl[i], bl[j + 1]));
+			dp[i + 1][j + 1] =
+			    min(dp[i + 1][j + 1], dp[i][j] + dist(jl[i + 1], bl[j + 1]));
 		}
 	}
 
@@ -142,8 +141,8 @@ public class radio {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		fjLocs = new int[N + 1][2]; // FJ's locations.
-		bLocs = new int[M + 1][2]; // Bessie's locations.
+		fjLocs = new int[N + 1][2];  // FJ's locations.
+		bLocs = new int[M + 1][2];   // Bessie's locations.
 
 		// FJ's original location.
 		st = new StringTokenizer(br.readLine());
@@ -191,7 +190,6 @@ public class radio {
 
 		pw.println(dp[N][M]);
 		pw.close();
-
 	}
 
 	// Fill the location arrays for FJ and Bessie.
@@ -213,7 +211,6 @@ public class radio {
 	public static int cost(int[] a, int[] b) {
 		return (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]);
 	}
-
 }
 ```
 </JavaSection>

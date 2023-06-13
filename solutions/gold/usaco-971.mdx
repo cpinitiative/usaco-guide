@@ -22,13 +22,14 @@ const int MAXN = 1e5;
 const int MAXL = 26;
 int freq[MAXN][MAXL];
 
-// count(i, j, k) is the number of appearances of letter k between index i and j.
+// count(i, j, k) is the number of appearances of letter k between index i and
+// j.
 int count(int start, int end, int let) {
 	return freq[end + 1][let] - freq[start][let];
 }
 
 int main() {
-	freopen("cowmbat.in", "r", stdin); // see /general/input-output
+	freopen("cowmbat.in", "r", stdin);  // see /general/input-output
 	freopen("cowmbat.out", "w", stdout);
 	int N;
 	int M;
@@ -40,9 +41,7 @@ int main() {
 
 	vector<vector<int>> cost(M, vector<int>(M));
 	for (int i = 0; i < M; i++) {
-		for (int j = 0; j < M; j++) {
-			cin >> cost[i][j];
-		}
+		for (int j = 0; j < M; j++) { cin >> cost[i][j]; }
 	}
 
 	// Calculate the minimum cost to change letter i to j.
@@ -59,9 +58,7 @@ int main() {
 	 * in the string in the range from 0 to i.
 	 */
 	for (int i = 1; i <= N; i++) {
-		for (int j = 0; j < M; j++) {
-			freq[i][j] = freq[i - 1][j];
-		}
+		for (int j = 0; j < M; j++) { freq[i][j] = freq[i - 1][j]; }
 		freq[i][S[i - 1] - 'a']++;
 	}
 
@@ -86,11 +83,8 @@ int main() {
 
 		// Find a letter 'j' with minimum cost to change all the letters to.
 		ans[idx] = dp[idx][0];
-		for (int j = 1; j < M; j++) {
-			ans[idx] = min(ans[idx], dp[idx][j]);
-		}
+		for (int j = 1; j < M; j++) { ans[idx] = min(ans[idx], dp[idx][j]); }
 	}
-
 
 	// If (N >= 2K) there is >= 1 unique letter streaks.
 	for (int idx = (2 * K - 1); idx < N; idx++) {
@@ -98,9 +92,7 @@ int main() {
 		for (int j = 0; j < M; j++) {
 			dp[idx][j] = dp[idx - 1][j];
 			// Change the letter.
-			if (S[idx] - 'a' != j) {
-				dp[idx][j] += cost[S[idx] - 'a'][j];
-			}
+			if (S[idx] - 'a' != j) { dp[idx][j] += cost[S[idx] - 'a'][j]; }
 		}
 
 		// Make a new streak with letter 'let1'.
@@ -109,15 +101,12 @@ int main() {
 			for (int let2 = 0; let2 < M; let2++) {
 				add += cost[let2][let1] * count(idx - K + 1, idx, let2);
 			}
-			//Continue with same letter, or make a new streak
+			// Continue with same letter, or make a new streak
 			dp[idx][let1] = min(dp[idx][let1], ans[idx - K] + add);
 		}
 		// Update the answer.
 		ans[idx] = dp[idx][0];
-		for (int j = 1; j < M; j++) {
-			ans[idx] = min(ans[idx], dp[idx][j]);
-		}
-
+		for (int j = 1; j < M; j++) { ans[idx] = min(ans[idx], dp[idx][j]); }
 	}
 	cout << ans[N - 1] << endl;
 }
@@ -130,7 +119,7 @@ import java.io.*;
 import java.util.*;
 
 public class MoortalCowmbat {
-	public static int MAXN = (int) 1e5;
+	public static int MAXN = (int)1e5;
 	public static int MAXL = 26;
 	public static int[][] freq = new int[MAXN][MAXL];
 	public static void main(String[] args) throws IOException {
@@ -142,9 +131,7 @@ public class MoortalCowmbat {
 
 		int[][] cost = new int[MAXL][MAXL];
 		for (int i = 0; i < M; i++) {
-			for (int j = 0; j < M; j++) {
-				cost[i][j] = io.nextInt();
-			}
+			for (int j = 0; j < M; j++) { cost[i][j] = io.nextInt(); }
 		}
 
 		// Calculate the minimum cost to change letter i to j.
@@ -161,9 +148,7 @@ public class MoortalCowmbat {
 		 * in the string in the range from 0 to i.
 		 */
 		for (int i = 1; i <= N; i++) {
-			for (int j = 0; j < M; j++) {
-				freq[i][j] = freq[i - 1][j];
-			}
+			for (int j = 0; j < M; j++) { freq[i][j] = freq[i - 1][j]; }
 			freq[i][S[i - 1] - 'a']++;
 		}
 
@@ -193,16 +178,13 @@ public class MoortalCowmbat {
 			}
 		}
 
-
-		//If (N >= 2K) there is >= 1 unique letter streaks.
+		// If (N >= 2K) there is >= 1 unique letter streaks.
 		for (int idx = (2 * K - 1); idx < N; idx++) {
 			// Continue the previous streak.
 			for (int j = 0; j < M; j++) {
 				dp[idx][j] = dp[idx - 1][j];
 				// Change the letter.
-				if (S[idx] - 'a' != j) {
-					dp[idx][j] += cost[S[idx] - 'a'][j];
-				}
+				if (S[idx] - 'a' != j) { dp[idx][j] += cost[S[idx] - 'a'][j]; }
 			}
 
 			// Make a new streak with letter 'let1'.
@@ -219,19 +201,18 @@ public class MoortalCowmbat {
 			for (int j = 1; j < M; j++) {
 				ans[idx] = Math.min(ans[idx], dp[idx][j]);
 			}
-
 		}
 		io.println(ans[N - 1]);
 		io.close();
-
 	}
 
-	// count(i, j, k) is the number of appearances of letter k between index i and j.
+	// count(i, j, k) is the number of appearances of letter k between index i
+	// and j.
 	static int count(int start, int end, int let) {
 		return freq[end + 1][let] - freq[start][let];
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>

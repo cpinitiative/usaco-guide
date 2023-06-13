@@ -64,10 +64,7 @@ Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you
 have exactly $j$ shares of stock on that day. The final answer will be
 $dp[N][0]$. This solution runs in $\mathcal{O}(N^2)$ time.
 
-<Spoiler title="Slow Code">
-
 ```cpp
-
 vector<vl> dp = {{0}};
 int N;
 
@@ -95,8 +92,6 @@ int main() {
 	}
 }
 ```
-
-</Spoiler>
 
 If we run this on the first sample case, then we get the following table:
 
@@ -131,8 +126,6 @@ a function of $j$ is **concave down**.
 
 ### Full Solution
 
-<Spoiler title="Explanation">
-
 We'll process the shares in order. Suppose that we are currently considering the
 $i$-th day, where shares are worth $p_i$. We can replace (buy or sell a share)
 in the statement with (buy, then sell somewhere between 0 and 2 shares).
@@ -154,7 +147,9 @@ in the statement with (buy, then sell somewhere between 0 and 2 shares).
   difference in the list because we can't end up with a negative amount of
   shares.
 
-**Example:** consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
+<Spoiler title="Example">
+
+Let's consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
 
 Start with:
 
@@ -227,8 +222,6 @@ line represents not being able to sell any shares at all.
 
 </Spoiler>
 
-<Spoiler title="My Code">
-
 The implementation is quite simple; maintain a priority queue representing
 $dif[i]$ that allows you to pop the minimum element. After adding $i$ elements,
 $ans$ stores the current value of $dp[i][i]$. At the end, you add all the
@@ -258,8 +251,6 @@ int main() {
 	cout << ans << "\n";
 }
 ```
-
-</Spoiler>
 
 ### Extension
 
@@ -311,8 +302,6 @@ $\mathcal{O}(N\cdot d_N)$ time.
 
 ### Full Solution
 
-<Spoiler title="Explanation">
-
 Similar to before, this DP is concave up for a fixed $i$! Given a piecewise
 linear function $f_i(x)$ that takes as input $x$ and outputs $dp[i][x]$, we need
 to support the following two operations to transform this function into
@@ -331,10 +320,6 @@ linear function changes by one.
   priority queue.
 
 This solution runs in $\mathcal{O}(N\log N)$ time.
-
-</Spoiler>
-
-<Spoiler title="My Code">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -371,8 +356,6 @@ int main() {
 }
 ```
 
-</Spoiler>
-
 ## USACO Landscaping
 
 <FocusProblem problem="landscaping" />
@@ -388,8 +371,6 @@ dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units
 of dirt if $j$ is negative). The answer will be $dp[N][0]$.
 
 ### Full Solution
-
-<Spoiler title="Explanation">
 
 This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must
 be able to support the following operations.
@@ -414,10 +395,6 @@ $j\ge 0$. We'll call these the left and right deques, respectively.
 
 We can implement the last operation by updating all of the differences in the
 deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
-
-</Spoiler>
-
-<Spoiler title="My Solution">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -464,8 +441,6 @@ int main() {
 }
 ```
 
-</Spoiler>
-
 ### Extension
 
 We can solve this problem when $\sum A_i+\sum B_i$ is not so small by
@@ -473,7 +448,7 @@ maintaining a map from $j$ to $dif[j+1]-dif[j]$ for all $j$ such that the latter
 quantity is nonzero. Then the operation "add $Z\cdot |j|$ to $DP[j]$ for all
 $j$" corresponds to a point update in the map (`advance()` in the code below).
 
-<Spoiler title="Code (from Alex Wei)">
+Code from Alex Wei.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -541,8 +516,6 @@ int main() {
 	fout << res << '\n';
 }
 ```
-
-</Spoiler>
 
 ## Problems
 

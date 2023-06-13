@@ -74,109 +74,140 @@ complexity of this algorithm is thus $\mathcal{O}(N)$.
 exact same recurrences mentioned above.
 
 ```cpp
-CodeSnip{Benq Template}
+// CodeSnip{Benq Template}
 
 /**
  * Description: modular arithmetic operations
  */
 
-template<int RT> struct mint {
+template <int RT> struct mint {
 	// static const int mod = MOD;
-	static constexpr mint rt() { return RT; } // primitive root for FFT
-	int v; explicit operator int() const { return v; } // explicit -> don't silently convert to int
+	static constexpr mint rt() { return RT; }  // primitive root for FFT
+	int v;
+	explicit operator int() const {
+		return v;
+	}  // explicit -> don't silently convert to int
 	mint() { v = 0; }
-	mint(ll _v) { v = int((-MOD < _v && _v < MOD) ? _v : _v % MOD);
-		if (v < 0) v += MOD; }
-	friend bool operator==(const mint& a, const mint& b) {
-		return a.v == b.v; }
-	friend bool operator!=(const mint& a, const mint& b) {
-		return !(a == b); }
-	friend bool operator<(const mint& a, const mint& b) {
-		return a.v < b.v; }
-	friend void re(mint& a) { ll x; re(x); a = mint(x); }
+	mint(ll _v) {
+		v = int((-MOD < _v && _v < MOD) ? _v : _v % MOD);
+		if (v < 0) v += MOD;
+	}
+	friend bool operator==(const mint &a, const mint &b) { return a.v == b.v; }
+	friend bool operator!=(const mint &a, const mint &b) { return !(a == b); }
+	friend bool operator<(const mint &a, const mint &b) { return a.v < b.v; }
+	friend void re(mint &a) {
+		ll x;
+		re(x);
+		a = mint(x);
+	}
 	friend str ts(mint a) { return ts(a.v); }
 
-	mint& operator+=(const mint& m) {
+	mint &operator+=(const mint &m) {
 		if ((v += m.v) >= MOD) v -= MOD;
-		return *this; }
-	mint& operator-=(const mint& m) {
+		return *this;
+	}
+	mint &operator-=(const mint &m) {
 		if ((v -= m.v) < 0) v += MOD;
-		return *this; }
-	mint& operator*=(const mint& m) {
-		v = (ll)v*m.v%MOD; return *this; }
-	mint& operator/=(const mint& m) { return (*this) *= inv(m); }
+		return *this;
+	}
+	mint &operator*=(const mint &m) {
+		v = (ll)v * m.v % MOD;
+		return *this;
+	}
+	mint &operator/=(const mint &m) { return (*this) *= inv(m); }
 	friend mint pow(mint a, ll p) {
-		mint ans = 1; assert(p >= 0);
-		for (; p; p /= 2, a *= a) if (p&1) ans *= a;
-		return ans; }
-	friend mint inv(const mint& a) { assert(a.v != 0);
-		return pow(a,MOD-2); }
+		mint ans = 1;
+		assert(p >= 0);
+		for (; p; p /= 2, a *= a)
+			if (p & 1) ans *= a;
+		return ans;
+	}
+	friend mint inv(const mint &a) {
+		assert(a.v != 0);
+		return pow(a, MOD - 2);
+	}
 
 	mint operator-() const { return mint(-v); }
-	mint& operator++() { return *this += 1; }
-	mint& operator--() { return *this -= 1; }
-	friend mint operator+(mint a, const mint& b) { return a += b; }
-	friend mint operator-(mint a, const mint& b) { return a -= b; }
-	friend mint operator*(mint a, const mint& b) { return a *= b; }
-	friend mint operator/(mint a, const mint& b) { return a /= b; }
+	mint &operator++() { return *this += 1; }
+	mint &operator--() { return *this -= 1; }
+	friend mint operator+(mint a, const mint &b) { return a += b; }
+	friend mint operator-(mint a, const mint &b) { return a -= b; }
+	friend mint operator*(mint a, const mint &b) { return a *= b; }
+	friend mint operator/(mint a, const mint &b) { return a /= b; }
 };
 
 typedef mint<5> mi;
 
-template<int SZ> struct SubtreeDP {
-	int par[SZ]; vi adj[SZ];
+template <int SZ> struct SubtreeDP {
+	int par[SZ];
+	vi adj[SZ];
 	void ae(int a, int b) { adj[a].pb(b), adj[b].pb(a); }
 	struct T {
 		mi v = 1;
-		T& operator+=(const T& b) { v *= b.v; return *this; }
+		T &operator+=(const T &b) {
+			v *= b.v;
+			return *this;
+		}
 		void tran() { ++v; }
 	};
 	T up[SZ], down[SZ];
 	void dfs(int x) {
-		trav(t,adj[x]) if (t != par[x]) {
-			par[t] = x; dfs(t);
+		trav(t, adj[x]) if (t != par[x]) {
+			par[t] = x;
+			dfs(t);
 			down[x] += down[t];
 		}
 		down[x].tran();
 	}
 	void dfs2(int x) {
 		{
-			T pre = up[x]; // deal with prefixes
-			F0R(i,sz(adj[x])) {
-				int c = adj[x][i]; if (c == par[x]) continue;
-				up[c] += pre; pre += down[c];
+			T pre = up[x];  // deal with prefixes
+			F0R(i, sz(adj[x])) {
+				int c = adj[x][i];
+				if (c == par[x]) continue;
+				up[c] += pre;
+				pre += down[c];
 			}
 		}
 		{
-			T pre; // deal with suffixes
-			R0F(i,sz(adj[x])) {
-				int c = adj[x][i]; if (c == par[x]) continue;
-				up[c] += pre; pre += down[c];
+			T pre;  // deal with suffixes
+			R0F(i, sz(adj[x])) {
+				int c = adj[x][i];
+				if (c == par[x]) continue;
+				up[c] += pre;
+				pre += down[c];
 			}
 		}
-		F0R(i,sz(adj[x])) {
-			int c = adj[x][i]; if (c == par[x]) continue;
-			up[c].tran(); dfs2(c);
+		F0R(i, sz(adj[x])) {
+			int c = adj[x][i];
+			if (c == par[x]) continue;
+			up[c].tran();
+			dfs2(c);
 		}
 	}
 	// T getSub(int x, int y) { return par[x] == y ? down[x] : up[y]; }
-    // get subtree of x excluding y
+	// get subtree of x excluding y
 	void init(int n) {
-		par[1] = 0; dfs(1); dfs2(1);
-		FOR(i,1,n+1) ps((down[i].v-1)*up[i].v);
-        // FOR(i,1,n+1) { alternative method
-        //     T p = T(); trav(t,adj[i]) p += getSub(t,i);
-        //     ps(p.v);
-        // }
+		par[1] = 0;
+		dfs(1);
+		dfs2(1);
+		FOR(i, 1, n + 1) ps((down[i].v - 1) * up[i].v);
+		// FOR(i,1,n+1) { alternative method
+		//     T p = T(); trav(t,adj[i]) p += getSub(t,i);
+		//     ps(p.v);
+		// }
 	}
 };
 
 int main() {
-	setIO(); int n; re(n,MOD);
+	setIO();
+	int n;
+	re(n, MOD);
 	SubtreeDP<MX> S;
-	F0R(i,n-1) {
-		int a,b; re(a,b);
-		S.ae(a,b);
+	F0R(i, n - 1) {
+		int a, b;
+		re(a, b);
+		S.ae(a, b);
 	}
 	S.init(n);
 }

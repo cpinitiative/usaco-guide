@@ -25,9 +25,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<pair<char, int>> steps(n);
-	for (auto& [dir, num_steps] : steps) {
-		cin >> dir >> num_steps;
-	}
+	for (auto &[dir, num_steps] : steps) { cin >> dir >> num_steps; }
 
 	// FJ's starting position.
 	pair<int, int> curr{0, 0};
@@ -37,36 +35,35 @@ int main() {
 
 	int time = 0;
 	int max_regrow = INT32_MAX;
-	for (const auto& [dir, num_steps] : steps) {
+	for (const auto &[dir, num_steps] : steps) {
 		// Get the direction Farmer John is moving.
 		pair<int, int> delta;
 		switch (dir) {
-			case 'N':
-				delta = pair<int, int>{0, 1};
-				break;
-			case 'W':
-				delta = pair<int, int>{-1, 0};
-				break;
-			case 'E':
-				delta = pair<int, int>{1, 0};
-				break;
-			case 'S':
-				delta = pair<int, int>{0, -1};
-				break;
+		case 'N':
+			delta = pair<int, int>{0, 1};
+			break;
+		case 'W':
+			delta = pair<int, int>{-1, 0};
+			break;
+		case 'E':
+			delta = pair<int, int>{1, 0};
+			break;
+		case 'S':
+			delta = pair<int, int>{0, -1};
+			break;
 		}
 
 		for (int i = 0; i < num_steps; i++) {
 			// Update our curent position.
-			curr = pair<int, int>{
-				curr.first + delta.first, curr.second + delta.second
-			};
+			curr = pair<int, int>{curr.first + delta.first,
+			                      curr.second + delta.second};
 			time++;
 
 			// Check if FJ's been to this patch of grass before.
 			if (visits.count(curr)) {
 				max_regrow = min(max_regrow, time - visits[curr]);
 			}
-			
+
 			// Update the last time FJ has come upon this patch of grass.
 			visits[curr] = time;
 		}
@@ -86,7 +83,7 @@ import java.io.*;
 import java.util.*;
 
 public class Mowing {
-	//BeginCodeSnip{Step Class}
+	// BeginCodeSnip{Step Class}
 	static class Step {
 		char dir;
 		int numSteps;
@@ -96,7 +93,7 @@ public class Mowing {
 			this.numSteps = numSteps;
 		}
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("mowing.in"));
@@ -104,9 +101,8 @@ public class Mowing {
 		Step[] steps = new Step[n];
 		for (int s = 0; s < n; s++) {
 			StringTokenizer step = new StringTokenizer(read.readLine());
-			steps[s] = new Step(
-					step.nextToken().charAt(0), Integer.parseInt(step.nextToken())
-			);
+			steps[s] = new Step(step.nextToken().charAt(0),
+			                    Integer.parseInt(step.nextToken()));
 		}
 		read.close();
 
@@ -141,7 +137,7 @@ public class Mowing {
 	}
 }
 
-//BeginCodeSnip{Point Class}
+// BeginCodeSnip{Point Class}
 class Point {
 	int x, y;
 
@@ -151,20 +147,21 @@ class Point {
 	}
 
 	/**
-	 * @return The point reached after moving in the given direction from this point.
+	 * @return The point reached after moving in the given direction from this
+	 *     point.
 	 */
 	public Point next(char dir) {
 		switch (dir) {
-			case 'N':
-				return new Point(x, y + 1);
-			case 'W':
-				return new Point(x - 1, y);
-			case 'E':
-				return new Point(x + 1, y);
-			case 'S':
-				return new Point(x, y - 1);
-			default:
-				return this;
+		case 'N':
+			return new Point(x, y + 1);
+		case 'W':
+			return new Point(x - 1, y);
+		case 'E':
+			return new Point(x + 1, y);
+		case 'S':
+			return new Point(x, y - 1);
+		default:
+			return this;
 		}
 	}
 
@@ -180,17 +177,18 @@ class Point {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof Point && x == ((Point) obj).x && y == ((Point) obj).y;
+		return obj instanceof Point && x == ((Point)obj).x &&
+		    y == ((Point)obj).y;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>
 <PySection>
 
 ```py
-with open('mowing.in') as read:
+with open("mowing.in") as read:
 	n = int(read.readline())
 	steps = []
 	for _ in range(n):
@@ -204,18 +202,18 @@ curr = (0, 0)
 visits = {curr: 0}
 
 time = 0
-max_regrow = float('inf')
+max_regrow = float("inf")
 for dir_, num_steps in steps:
 	# Get the direction Farmer John is moving.
-	if dir_ == 'N':
+	if dir_ == "N":
 		delta = 0, 1
-	elif dir_ == 'W':
+	elif dir_ == "W":
 		delta = -1, 0
-	elif dir_ == 'E':
+	elif dir_ == "E":
 		delta = 1, 0
-	elif dir_ == 'S':
+	elif dir_ == "S":
 		delta = 0, -1
-	
+
 	for _ in range(int(num_steps)):
 		# Update our curent position.
 		curr = (curr[0] + delta[0], curr[1] + delta[1])
@@ -228,8 +226,8 @@ for dir_, num_steps in steps:
 		visits[curr] = time
 
 # Output -1 if FJ has never gone back to the same patch of grass.
-output = -1 if max_regrow == float('inf') else max_regrow
-print(output, file=open('mowing.out', 'w'))
+output = -1 if max_regrow == float("inf") else max_regrow
+print(output, file=open("mowing.out", "w"))
 ```
 
 </PySection>

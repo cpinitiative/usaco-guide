@@ -27,7 +27,7 @@ processed cows? Keep in mind that we can only reverse *prefixes*.
 
 <Spoiler title="Solution">
 
-[Official Analysis (C++, Java, Python)](http://usaco.org/current/data/sol_prob1_bronze_open22.html)
+[Official Analysis (C++, Java, and Python)](http://usaco.org/current/data/sol_prob1_bronze_open22.html)
 
 ## Implementation
 
@@ -37,8 +37,8 @@ processed cows? Keep in mind that we can only reverse *prefixes*.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cassert>
+#include <iostream>
 #include <string>
 
 using std::cout;
@@ -54,11 +54,9 @@ int main() {
 	int flips = 0;
 	for (int c = cow_num - 2; c >= 0; c -= 2) {
 		string sub = cows.substr(c, 2);
-		if (sub[0] == sub[1]) {
-			continue;
-		}
-		if ((sub == "GH" && flips % 2 == 0)
-				|| (sub == "HG" && flips % 2 == 1)) {
+		if (sub[0] == sub[1]) { continue; }
+		if ((sub == "GH" && flips % 2 == 0) ||
+		    (sub == "HG" && flips % 2 == 1)) {
 			flips++;
 		}
 	}
@@ -75,7 +73,8 @@ import java.io.*;
 
 public class Photoshoot {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int cowNum = Integer.parseInt(read.readLine());
 		String cows = read.readLine();
 		assert cows.length() == cowNum && cowNum % 2 == 0;
@@ -84,11 +83,9 @@ public class Photoshoot {
 		int flips = 0;
 		for (int c = cowNum - 2; c >= 0; c -= 2) {
 			String sub = cows.substring(c, c + 2);
-			if (sub.charAt(0) == sub.charAt(1)) {
-				continue;
-			}
-			if ((sub.equals("GH") && flips % 2 == 0)
-					|| (sub.equals("HG") && flips % 2 == 1)) {
+			if (sub.charAt(0) == sub.charAt(1)) { continue; }
+			if ((sub.equals("GH") && flips % 2 == 0) ||
+			    (sub.equals("HG") && flips % 2 == 1)) {
 				flips++;
 			}
 		}
@@ -108,7 +105,7 @@ assert len(cows) == cow_num and cow_num % 2 == 0
 
 flips = 0
 for c in range(cow_num - 2, -1, -2):
-	sub = cows[c:c + 2]
+	sub = cows[c : c + 2]
 	if sub[0] == sub[1]:
 		continue
 	if (sub == "GH" and flips % 2 == 0) or (sub == "HG" and flips % 2 == 1):

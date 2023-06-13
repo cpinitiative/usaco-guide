@@ -1,6 +1,7 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useDarkMode } from '../../context/DarkModeContext';
 import useProblemSubmissionResult from '../../hooks/useProblemSubmissionResult';
 import {
   FirebaseSubmission,
@@ -25,6 +26,8 @@ function ProblemSubmissionPopup() {
       : null;
 
   if (!submission) return null;
+
+  const isDarkMode = useDarkMode();
 
   return (
     <Transition
@@ -91,7 +94,10 @@ function ProblemSubmissionPopup() {
                   </a>
                 </p>
               ) : (
-                <CodeBlock className={`language-${submission.language}`}>
+                <CodeBlock
+                  className={`language-${submission.language}`}
+                  isDarkMode={isDarkMode}
+                >
                   {submissionResult?.sourceCode ?? 'Loading...'}
                 </CodeBlock>
               )}

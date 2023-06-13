@@ -14,7 +14,7 @@ By Yifan Ma
 <Youtube id="oqQ2TDLih2w" />
 
 <Spoiler title="Video Solution Code">
-    
+
 <LanguageSection>
 <CPPSection>
 
@@ -53,7 +53,9 @@ int personSick[51], timeSick[51];
 bool drankBefore(int person, int milkType, int time) {
 	// loop over all records of drinking
 	for (int i = 1; i <= d; ++i)
-		if (personDrink[i] == person && milkDrink[i] == milkType && timeDrink[i] < time) return 1;
+		if (personDrink[i] == person && milkDrink[i] == milkType &&
+		    timeDrink[i] < time)
+			return 1;
 	// none of the records satisfied the conditions, return false
 	return 0;
 }
@@ -73,7 +75,8 @@ bool milkBad(int milkType) {
 }
 
 int countDrink(int milkType) {
-	// didDrink[i] will be true if and only if person i did drink the given type of milk
+	// didDrink[i] will be true if and only if person i did drink the given type
+	// of milk
 	vector<bool> didDrink(51);
 	// loop over all records of drinking
 	for (int i = 1; i <= d; ++i)
@@ -81,8 +84,7 @@ int countDrink(int milkType) {
 	int cnt = 0;
 	// now that we've looped over all records, just count the number of people
 	// who drank that milk
-	for (int i = 1; i <= 50; ++i)
-		cnt += didDrink[i];
+	for (int i = 1; i <= 50; ++i) cnt += didDrink[i];
 	return cnt;
 }
 
@@ -92,15 +94,13 @@ signed main() {
 	cin >> n >> m >> d >> s;
 	for (int i = 1; i <= d; ++i)
 		cin >> personDrink[i] >> milkDrink[i] >> timeDrink[i];
-	for (int i = 1; i <= s; ++i)
-		cin >> personSick[i] >> timeSick[i];
+	for (int i = 1; i <= s; ++i) cin >> personSick[i] >> timeSick[i];
 
 	int ans = 0;
 	for (int i = 1; i <= m; ++i)
 		if (milkBad(i)) ans = max(ans, countDrink(i));
 
 	cout << ans << '\n';
-
 }
 ```
 
@@ -133,7 +133,8 @@ public class badmilk {
 	public static void main(String[] args) throws IOException {
 		// initialize file I/O
 		BufferedReader br = new BufferedReader(new FileReader("badmilk.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("badmilk.out")));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("badmilk.out")));
 
 		// read in the first line, store n, m, d, and s
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -146,7 +147,7 @@ public class badmilk {
 		personDrink = new int[d];
 		milkDrink = new int[d];
 		timeDrink = new int[d];
-		for(int i = 0; i < d; i++) {
+		for (int i = 0; i < d; i++) {
 			// read in record i of someone drinking milk
 			st = new StringTokenizer(br.readLine());
 			personDrink[i] = Integer.parseInt(st.nextToken());
@@ -157,7 +158,7 @@ public class badmilk {
 		// initialize the arrays about people getting sick
 		personSick = new int[s];
 		timeSick = new int[s];
-		for(int i = 0; i < s; i++) {
+		for (int i = 0; i < s; i++) {
 			// read in record i of someone drinking
 			st = new StringTokenizer(br.readLine());
 			personSick[i] = Integer.parseInt(st.nextToken());
@@ -166,12 +167,13 @@ public class badmilk {
 
 		int maxCanGetSick = 0;
 
-		for(int i = 1; i <= m; i++) {
+		for (int i = 1; i <= m; i++) {
 			// check if milk type i can be bad
-			if(milkTypeCanBeBad(i)) {
-				// the milk type can be bad, now count how many people drank that type of milk
+			if (milkTypeCanBeBad(i)) {
+				// the milk type can be bad, now count how many people drank
+				// that type of milk
 				int numDrank = numPeopleDrink(i);
-				if(numDrank > maxCanGetSick) {
+				if (numDrank > maxCanGetSick) {
 					// update the maximum number of people that could be sick
 					maxCanGetSick = numDrank;
 				}
@@ -193,9 +195,10 @@ public class badmilk {
 	 */
 	private static boolean milkTypeCanBeBad(int milkType) {
 		// loop over all records of people being sick
-		for(int i = 0; i < personSick.length; i++) {
-			// check for record i of sickness if that person drank that milk before they got sick
-			if(!personDrankMilkBefore(personSick[i], milkType, timeSick[i])) {
+		for (int i = 0; i < personSick.length; i++) {
+			// check for record i of sickness if that person drank that milk
+			// before they got sick
+			if (!personDrankMilkBefore(personSick[i], milkType, timeSick[i])) {
 				// that person did not, this milk type cannot be bad then
 				return false;
 			}
@@ -209,11 +212,14 @@ public class badmilk {
 	 * true if and only if the given person drank the given type of milk
 	 * before the given time.
 	 */
-	private static boolean personDrankMilkBefore(int person, int milkType, int time) {
+	private static boolean personDrankMilkBefore(int person, int milkType,
+	                                             int time) {
 		// loop over all records of drinking
-		for(int i = 0; i < personDrink.length; i++) {
-			// check if record i of drinking if that person did drink that type of milk before the given time
-			if(personDrink[i] == person && milkDrink[i] == milkType && timeDrink[i] < time) {
+		for (int i = 0; i < personDrink.length; i++) {
+			// check if record i of drinking if that person did drink that type
+			// of milk before the given time
+			if (personDrink[i] == person && milkDrink[i] == milkType &&
+			    timeDrink[i] < time) {
 				// all conditions are satisfised, return true
 				return true;
 			}
@@ -223,27 +229,25 @@ public class badmilk {
 	}
 
 	private static int numPeopleDrink(int milkType) {
-		// didDrink[i] will be true if and only if person i did drink the given type of milk
+		// didDrink[i] will be true if and only if person i did drink the given
+		// type of milk
 		boolean[] didDrink = new boolean[51];
 		// loop over all records of drinking
-		for(int i = 0; i < personDrink.length; i++) {
+		for (int i = 0; i < personDrink.length; i++) {
 			// check if this record corresponds to the given type of milk
-			if(milkDrink[i] == milkType) {
+			if (milkDrink[i] == milkType) {
 				// it does, mark that this person did drink that milk
 				didDrink[personDrink[i]] = true;
 			}
 		}
-		// now that we've looped over all records, just count the number of people
-		// who drank that milk
+		// now that we've looped over all records, just count the number of
+		// people who drank that milk
 		int numPeopleDrink = 0;
-		for(int i = 1; i < didDrink.length; i++) {
-			if(didDrink[i]) {
-				numPeopleDrink++;
-			}
+		for (int i = 1; i < didDrink.length; i++) {
+			if (didDrink[i]) { numPeopleDrink++; }
 		}
 		return numPeopleDrink;
 	}
-
 }
 ```
 
@@ -296,10 +300,10 @@ they could have possibly gotten sick.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -327,7 +331,7 @@ int main() {
 
 	vector<Event> events(drink_times + sick_times);
 	for (int e = 0; e < events.size(); e++) {
-		Event& ev = events[e];
+		Event &ev = events[e];
 		if (e < drink_times) {
 			read >> ev.person >> ev.milk >> ev.time;
 			ev.milk--;
@@ -345,11 +349,9 @@ int main() {
 	 * the same point in time.
 	 */
 	std::sort(
-		events.begin(), events.end(),
-		[&] (const Event& e1, const Event& e2) {
-			return e1.time != e2.time ? e1.time < e2.time : e1.milk < e2.milk;
-		}
-	);
+	    events.begin(), events.end(), [&](const Event &e1, const Event &e2) {
+		    return e1.time != e2.time ? e1.time < e2.time : e1.milk < e2.milk;
+	    });
 
 	int max_med = 0;
 	// Go through each milk and check if it could be the bad one.
@@ -357,7 +359,7 @@ int main() {
 		vector<bool> can_be_sick(people_num);
 		bool possible = true;
 		// Simulate the events, marking if each person could possibly be sick.
-		for (const Event& e : events) {
+		for (const Event &e : events) {
 			if (e.milk == -1) {
 				if (!can_be_sick[e.person]) {
 					possible = false;
@@ -374,9 +376,7 @@ int main() {
 		 */
 		if (possible) {
 			int meds = 0;
-			for (bool p : can_be_sick) {
-				meds += p;
-			}
+			for (bool p : can_be_sick) { meds += p; }
 			max_med = std::max(max_med, meds);
 		}
 	}
@@ -399,7 +399,7 @@ public class BadMilk {
 	 * We can differentiate the two by setting the value of milk
 	 * as -1 for someone getting sick.
 	 */
-	//BeginCodeSnip{Event Class}
+	// BeginCodeSnip{Event Class}
 	static class Event {
 		public int person;
 		public int milk;
@@ -411,11 +411,9 @@ public class BadMilk {
 			this.time = time;
 		}
 
-		public Event(int person, int time) {
-			this(person, -1, time);
-		}
+		public Event(int person, int time) { this(person, -1, time); }
 	}
-	//EndCodeSnip
+	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("badmilk.in"));
@@ -429,16 +427,12 @@ public class BadMilk {
 		for (int e = 0; e < events.length; e++) {
 			StringTokenizer ev = new StringTokenizer(read.readLine());
 			if (e < drinkTimes) {
-				events[e] = new Event(
-					Integer.parseInt(ev.nextToken()) - 1,
-					Integer.parseInt(ev.nextToken()) - 1,
-					Integer.parseInt(ev.nextToken())
-				);
+				events[e] = new Event(Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()));
 			} else {
-				events[e] = new Event(
-					Integer.parseInt(ev.nextToken()) - 1,
-					Integer.parseInt(ev.nextToken())
-				);
+				events[e] = new Event(Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()));
 			}
 		}
 
@@ -450,16 +444,17 @@ public class BadMilk {
 		 * the same point in time.
 		 */
 		Arrays.sort(
-			events,
-			(e1, e2) -> e1.time != e2.time ? e1.time - e2.time : e1.milk - e2.milk
-		);
+		    events,
+		    (e1,
+		     e2) -> e1.time != e2.time ? e1.time - e2.time : e1.milk - e2.milk);
 
 		int maxMed = 0;
 		// Go through each milk and check if it could be the bad one.
 		for (int m = 0; m < milkNum; m++) {
 			boolean possible = true;
 			boolean[] canBeSick = new boolean[personNum];
-			// Simulate the events, marking if each person could possibly be sick.
+			// Simulate the events, marking if each person could possibly be
+			// sick.
 			for (Event e : events) {
 				if (e.milk == -1) {
 					if (!canBeSick[e.person]) {
@@ -477,9 +472,7 @@ public class BadMilk {
 			 */
 			if (possible) {
 				int meds = 0;
-				for (boolean p : canBeSick) {
-					meds += p ? 1 : 0;
-				}
+				for (boolean p : canBeSick) { meds += p ? 1 : 0; }
 				maxMed = Math.max(maxMed, meds);
 			}
 		}
@@ -497,7 +490,7 @@ public class BadMilk {
 ```py
 from functools import cmp_to_key
 
-with open('badmilk.in') as read:
+with open("badmilk.in") as read:
 	data = [int(i) for i in read.readline().split()]
 	people_num, milk_num, drink_times, sick_times = data
 
@@ -553,7 +546,7 @@ for m in range(milk_num):
 	if possible:
 		max_med = max(max_med, sum(can_be_sick))
 
-print(max_med, file=open('badmilk.out', 'w'))
+print(max_med, file=open("badmilk.out", "w"))
 ```
 
 </PySection>

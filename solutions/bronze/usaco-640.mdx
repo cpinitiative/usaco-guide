@@ -44,8 +44,8 @@ the result of superimposing the pieces is not the same as the original figurine
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 #include <vector>
 using namespace std;
 bool check(int piece, int x, int y);
@@ -53,8 +53,7 @@ bool check(int piece, int x, int y);
 int n;
 bool pieces[11][8][8];
 vector<int> s[11];
-int main()
-{
+int main() {
 	freopen("bcs.in", "r", stdin);
 	freopen("bcs.out", "w", stdout);
 	int k;
@@ -105,9 +104,7 @@ int main()
 										break;
 									}
 								}
-								if (!good) {
-									break;
-								}
+								if (!good) { break; }
 							}
 							if (good) {
 								cout << i << " " << j << endl;
@@ -131,15 +128,15 @@ bool check(int piece, int x, int y) {
 
 <JavaSection>
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class BCS {
 	public static boolean pieces[][][];
 	public static int n;
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("bcs");
-	
+
 		pieces = new boolean[11][8][8];
 		int[][] s = new int[11][4];
 		n = io.nextInt();
@@ -164,7 +161,7 @@ public class BCS {
 					}
 				}
 			}
-			s[i] = new int[]{left, right, top, bottom};
+			s[i] = new int[] {left, right, top, bottom};
 		}
 
 		// try all the pieces and shifts to find the correct one
@@ -173,26 +170,28 @@ public class BCS {
 				for (int idx = s[i][3] - n + 1; idx <= s[i][2]; idx++) {
 					for (int idy = s[i][1] - n + 1; idy <= s[i][0]; idy++) {
 						for (int jdx = s[j][3] - n + 1; jdx <= s[j][2]; jdx++) {
-							for (int jdy = s[j][1] - n + 1; jdy <= s[j][0]; jdy++) {
+							for (int jdy = s[j][1] - n + 1; jdy <= s[j][0];
+							     jdy++) {
 								boolean good = true;
 								for (int x = 0; x < n; x++) {
 									for (int y = 0; y < n; y++) {
-										boolean ipiece = check(i, x + idx, y + idy);
-										boolean jpiece = check(j, x + jdx, y + jdy);
+										boolean ipiece =
+										    check(i, x + idx, y + idy);
+										boolean jpiece =
+										    check(j, x + jdx, y + jdy);
 										// two '#' are in the same place
-										if (ipiece && jpiece) {	
+										if (ipiece && jpiece) {
 											good = false;
 											break;
 										}
 										// the result doesn't match the figurine
-										if (pieces[0][x][y] != (ipiece || jpiece)) {
+										if (pieces[0][x][y] !=
+										    (ipiece || jpiece)) {
 											good = false;
 											break;
 										}
 									}
-									if (!good) {
-										break;
-									}
+									if (!good) { break; }
 								}
 								if (good) {
 									io.println(i + " " + j);
@@ -211,18 +210,16 @@ public class BCS {
 	static boolean check(int piece, int x, int y) {
 		return x >= 0 && x < n && y >= 0 && y < n && pieces[piece][x][y];
 	}
-  
+
 	// CodeSnip{Kattio}
 }
-
-
 ```
 </JavaSection>
 <PySection>
 ```py
 from sys import exit
 
-with open('bcs.in') as read:
+with open("bcs.in") as read:
 	n, k = [int(i) for i in read.readline().split()]
 	# First piece in this array is the one we're trying to match to
 	pieces = []
@@ -237,7 +234,7 @@ with open('bcs.in') as read:
 		for r in range(n):
 			row = read.readline()
 			for c in range(n):
-				piece[r][c] = row[c] == '#'
+				piece[r][c] = row[c] == "#"
 				if piece[r][c]:
 					bottom = max(bottom, r)
 					top = min(top, r)
@@ -279,9 +276,8 @@ for i in range(1, k + 1):
 								break
 
 						if good:
-							print(i, j, file=open('bcs.out', 'w'))
+							print(i, j, file=open("bcs.out", "w"))
 							exit()
-
 ```
 </PySection>
 </LanguageSection>

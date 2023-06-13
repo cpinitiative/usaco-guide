@@ -4,7 +4,7 @@ source: Old Gold
 title: Guard Mark
 author: Ryan Chou, Sofia Yang
 ---
- 
+
 [Official Analysis](http://www.usaco.org/current/data/sol_guard_gold.html)
 
 ## Explanation
@@ -59,7 +59,7 @@ using namespace std;
 struct Cow {
 	int height;
 	int weight;
-	int strength; 
+	int strength;
 };
 
 int main() {
@@ -92,22 +92,19 @@ int main() {
 
 				int prev = i ^ (1 << j);
 				/*
-				* maximum safety factor if we put cow j
-				* at the top of our stack (account for j's strength as well)
-				*/
-				dp[i].second = max(
-					dp[i].second,
-					min(dp[prev].second - cows[j].weight, cows[j].strength)
-				);
+				 * maximum safety factor if we put cow j
+				 * at the top of our stack (account for j's strength as well)
+				 */
+				dp[i].second =
+				    max(dp[i].second, min(dp[prev].second - cows[j].weight,
+				                          cows[j].strength));
 			}
 		}
 	}
 
 	int max_safety = -1;
 	for (int i = 1; i < (1 << n); i++) {
-		if (dp[i].first >= h) {
-			max_safety = max(dp[i].second, max_safety);
-		}
+		if (dp[i].first >= h) { max_safety = max(dp[i].second, max_safety); }
 	}
 
 	// no tall enough/stable arrangement exists
@@ -129,7 +126,7 @@ import java.util.*;
 public class GuardMark {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("guard");
-		
+
 		int N = io.nextInt();
 		int H = io.nextInt();
 		Cow[] cows = new Cow[N];
@@ -141,9 +138,9 @@ public class GuardMark {
 		}
 
 		/*
-	 	 * dp[subset][0] = Height of subset of cows
-	 	 * dp[subset][1] = Safety factor of subset of cows
-	 	 */
+		 * dp[subset][0] = Height of subset of cows
+		 * dp[subset][1] = Safety factor of subset of cows
+		 */
 		int[][] dp = new int[1 << N][2];
 
 		// Initially, the height is 0 and infinite height can be stacked.
@@ -156,22 +153,19 @@ public class GuardMark {
 			dp[i][0] = 0;
 			dp[i][1] = -1;
 			for (int j = 0; j < N; j++) {
-				if ((i & (1 << j)) == 0) {
-					continue;
-				}
+				if ((i & (1 << j)) == 0) { continue; }
 				// Add cow's height to total subset height.
 				dp[i][0] += cows[j].height;
 				// Previous subset before this bit was set.
 				int prev = i ^ (1 << j);
 				/*
-				* Maximum safety of subset given that j is topmost cow.
-				* Check for previous safety factor - j's weight,
-				* And check for j's own strength.
-				*/
-				dp[i][1] = Math.max(
-						dp[i][1],
-						Math.min(dp[prev][1] - cows[j].weight, cows[j].strength)
-				);
+				 * Maximum safety of subset given that j is topmost cow.
+				 * Check for previous safety factor - j's weight,
+				 * And check for j's own strength.
+				 */
+				dp[i][1] =
+				    Math.max(dp[i][1], Math.min(dp[prev][1] - cows[j].weight,
+				                                cows[j].strength));
 			}
 		}
 
@@ -190,9 +184,8 @@ public class GuardMark {
 			io.println(maxSafety);
 		}
 		io.close();
-
 	}
-	
+
 	static class Cow {
 		public int height;
 		public int weight;
@@ -204,8 +197,8 @@ public class GuardMark {
 			this.strength = strength;
 		}
 	}
-	
-	//CodeSnip{Kattio}
+
+	// CodeSnip{Kattio}
 }
 ```
 

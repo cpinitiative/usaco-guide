@@ -18,8 +18,8 @@ By Jeffrey Meng
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -43,12 +43,11 @@ int main() {
 		cin >> S;  // Read the next word.
 		word_length += S.length();
 
-		// If it still satisfies the constraint, print the word on the same line.
+		// If it still satisfies the constraint, print the word on the same
+		// line.
 		if (word_length <= K) {
 			// If it isn't the first ever word, print a space character.
-			if (i > 0) {
-				cout << " ";
-			}
+			if (i > 0) { cout << " "; }
 			cout << S;
 		} else {
 			// If it's over the line limit, print a new line first.
@@ -63,22 +62,20 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class WordProcessor {
-	public static void main (String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("word.in"));
-		
+
 		StringTokenizer st = new StringTokenizer(in.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
 
 		st = new StringTokenizer(in.readLine());
 		String[] words = new String[N];
-		for (int i = 0; i < N; i++) {
-			words[i] = st.nextToken();
-		}
+		for (int i = 0; i < N; i++) { words[i] = st.nextToken(); }
 
 		PrintWriter out = new PrintWriter("word.out");
 
@@ -106,14 +103,14 @@ public class WordProcessor {
 </LanguageSection>
 </Spoiler>
 
+## Implementation
+
 <LanguageSection>
 <CPPSection>
 
-## Implementation
-
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -134,9 +131,7 @@ int main() {
 		word_len += word.length();
 		if (word_len <= K) {
 			// Print a space if it isn't the first word.
-			if (i != 0) {
-				cout << ' ';
-			}
+			if (i != 0) { cout << ' '; }
 			cout << word;
 		} else {
 			cout << "\n" << word;
@@ -184,10 +179,8 @@ public class Word {
 </JavaSection>
 <PySection>
 
-## Implementation
-
-```python
-with open('word.in') as read:
+```py
+with open("word.in") as read:
 	max_width = int(read.readline().split()[1])
 	essay = read.readline().split()
 
@@ -196,14 +189,14 @@ rn_length = 0
 for w in essay:
 	# ok, this word exceeds the limit, let's wrap it around
 	if rn_length + len(w) > max_width:
-		formatted = formatted[:-1] + '\n'
+		formatted = formatted[:-1] + "\n"
 		rn_length = 0
-	formatted += w + ' '
+	formatted += w + " "
 	rn_length += len(w)
 formatted = formatted[:-1]
 
-with open('word.out', 'w') as written:
-	for line in formatted.split('\n'):
+with open("word.out", "w") as written:
+	for line in formatted.split("\n"):
 		print(line, file=written)
 ```
 

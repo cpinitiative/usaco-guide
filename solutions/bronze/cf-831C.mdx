@@ -30,9 +30,7 @@ int main() {
 		cin >> changes[i];
 		changes[i] += changes[i - 1];
 	}
-	for (int& p : scores) {
-		cin >> p;
-	}
+	for (int &p : scores) { cin >> p; }
 
 	set<int> poss_starts;
 	for (int m = 1; m <= mark_num; ++m) {
@@ -43,15 +41,11 @@ int main() {
 	for (int s : poss_starts) {
 		// What all the scores are going to now be given the starting score
 		set<int> points;
-		for (int i = 1; i <= mark_num; ++i) {
-			points.insert(s + changes[i]);
-		}
+		for (int i = 1; i <= mark_num; ++i) { points.insert(s + changes[i]); }
 
 		bool valid = true;
-		for (int p : scores) {
-			valid &= points.count(p);
-		}
-		
+		for (int p : scores) { valid &= points.count(p); }
+
 		ans += valid;
 	}
 	cout << ans << endl;
@@ -77,27 +71,21 @@ public class JuryMarks {
 		for (int x = 1; x <= numJury; x++) {
 			changes[x] = io.nextInt() + changes[x - 1];
 		}
-		for (int x = 0; x < numScores; x++) {
-			scores[x] = io.nextInt();
-		}
+		for (int x = 0; x < numScores; x++) { scores[x] = io.nextInt(); }
 
 		Set<Integer> possStarts = new TreeSet<>();
 		for (int x = 1; x <= numJury; x++) {
 			possStarts.add(scores[0] - changes[x]);
 		}
-		
+
 		int validStarts = 0;
 		for (int s : possStarts) {
 			// What all the scores are going to now be given the starting score
 			Set<Integer> points = new TreeSet<>();
-			for (int i = 1; i <= numJury; i++) {
-				points.add(s + changes[i]);
-			}
-			
+			for (int i = 1; i <= numJury; i++) { points.add(s + changes[i]); }
+
 			boolean valid = true;
-			for (int p : scores) {
-				valid &= points.contains(p);
-			}
+			for (int p : scores) { valid &= points.contains(p); }
 
 			validStarts += valid ? 1 : 0;
 		}
@@ -105,7 +93,7 @@ public class JuryMarks {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -119,10 +107,10 @@ mark_num, remember_num = [int(i) for i in input().split()]
 changes = [0] + [int(i) for i in input().split()]
 scores = {int(i) for i in input().split()}
 assert mark_num == len(changes) - 1 and len(scores) == remember_num
- 
+
 for i in range(1, len(changes)):
 	changes[i] += changes[i - 1]
- 
+
 poss_starts = set()
 random_score = next(iter(scores))
 for c in range(1, len(changes)):
@@ -134,7 +122,7 @@ for s in poss_starts:
 	resulting_scores = set()
 	for c in range(1, len(changes)):
 		resulting_scores.add(s + changes[c])
-	
+
 	valid_starts += scores.issubset(resulting_scores)
 
 print(valid_starts)

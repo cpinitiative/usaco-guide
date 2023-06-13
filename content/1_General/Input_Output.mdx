@@ -4,9 +4,7 @@ redirects:
   - /general/io
 title: Input & Output
 author: Darren Yao, Benjamin Qi, Allen Li
-description:
-  Demonstrates how to read input and print output for USACO contests, including
-  an example problem.
+description: How to read input and print output for USACO contests.
 prerequisites:
   - data-types
 ---
@@ -68,7 +66,7 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), and in USACO problems after
+In most websites (such as Codeforces and CSES), and in USACO problems after
 December 2020, input and output are **standard**.
 
 <LanguageSection>
@@ -469,13 +467,13 @@ Try to implement this yourself!
 	</Resource>
 </Resources>
 
+## Solution - Weird Algorithm
+
 <LanguageSection>
 
 <CPPSection>
 
 As noted in the resource above, this problem requires _64-bit integers_.
-
-<Spoiler title="Solution">
 
 ```cpp
 #include <iostream>
@@ -496,7 +494,6 @@ int main() {
 }
 ```
 
-</Spoiler>
 
 </CPPSection>
 
@@ -506,7 +503,6 @@ As noted in the resource above, this problem requires _64-bit integers_.
 
 ### Method 1 - `Scanner` and `System.out.print`
 
-<Spoiler title="Method 1">
 
 ```java
 import java.util.Scanner;
@@ -528,11 +524,7 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 ### Method 2 - `BufferedReader` and `PrintWriter`
-
-<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
@@ -560,11 +552,7 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
-#### With `Kattio`
-
-<Spoiler title="Kattio">
+### With `Kattio`
 
 ```java
 import java.io.*;
@@ -594,13 +582,9 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 </JavaSection>
 
 <PySection>
-
-<Spoiler title="Solution">
 
 ```py
 x = int(input())
@@ -612,8 +596,6 @@ while x != 1:
 		x = 3 * x + 1
 print(x)
 ```
-
-</Spoiler>
 
 </PySection>
 
@@ -896,8 +878,6 @@ For an explanation of the solutions below, check the
 
 ### Method 1 - `freopen`
 
-<Spoiler title="Method 1">
-
 ```cpp
 #include <iostream>
 #include <vector>
@@ -921,11 +901,7 @@ int main() {
 }
 ```
 
-</Spoiler>
-
 ### Method 2 - `<fstream>`
-
-<Spoiler title="Method 2">
 
 ```cpp
 #include <fstream>
@@ -948,15 +924,11 @@ int main() {
 }
 ```
 
-</Spoiler>
-
 </CPPSection>
 
 <JavaSection>
 
 ### Method 1 - `Scanner` and `PrintWriter`
-
-<Spoiler title="Method 1">
 
 ```java
 import java.io.*;
@@ -988,11 +960,7 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 ### Method 2 - `BufferedReader` and `PrintWriter`
-
-<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
@@ -1027,18 +995,14 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
-#### With `Kattio`
-
-<Spoiler title="Kattio">
+### With `Kattio`
 
 ```java
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("paint");
 		int a = io.nextInt();
 		int b = io.nextInt();
@@ -1046,17 +1010,11 @@ public class Main {
 		int d = io.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		io.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1069,15 +1027,11 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 </JavaSection>
 
 <PySection>
 
 ### Method 1
-
-<Spoiler title="Method 1">
 
 ```py
 with open("paint.in", "r") as inp:
@@ -1098,13 +1052,9 @@ with open("paint.in", "r") as inp:
 		print(ans, file=out)  # out.write(str(ans) + '\n') also works
 ```
 
-</Spoiler>
-
 ### Method 2
 
 Redirecting file input using `sys`, as mentioned above.
-
-<Spoiler title="Method 2">
 
 ```py
 import sys
@@ -1126,8 +1076,6 @@ for i in range(len(cover)):
 	ans += cover[i]
 print(ans)
 ```
-
-</Spoiler>
 
 </PySection>
 

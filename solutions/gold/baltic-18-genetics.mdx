@@ -9,7 +9,7 @@ author: Kevin Sheng
 
 ## Explanation
 
-A naive method would be to iterate through each pair of clones and calculate the number 
+A naive method would be to iterate through each pair of clones and calculate the number
 of positions with different genomes in near $\mathcal{O}(1)$ time.
 This seems to be virtually impossible, so we should probably try a different method.
 
@@ -38,10 +38,10 @@ This allows us to differentiate between a genome difference due to clone $A$ ver
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <random>
 #include <algorithm>
+#include <iostream>
+#include <random>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -56,9 +56,7 @@ int main() {
 
 	vector<vector<char>> dna(dna_num, vector<char>(seq_len));
 	for (int d = 0; d < dna_num; d++) {
-		for (int i = 0; i < seq_len; i++) {
-			std::cin >> dna[d][i];
-		}
+		for (int i = 0; i < seq_len; i++) { std::cin >> dna[d][i]; }
 	}
 
 	// generate random 32-bit weights for each of the clones
@@ -66,9 +64,7 @@ int main() {
 	std::mt19937 gen(42069);
 	std::uniform_int_distribution<> distr(1, INT32_MAX);
 	vector<long long> weights(dna_num);
-	for (int d = 0; d < dna_num; d++) {
-		weights[d] = distr(gen);
-	}
+	for (int d = 0; d < dna_num; d++) { weights[d] = distr(gen); }
 	// the sum of all the clones' weights
 	long long weight_sum = std::accumulate(weights.begin(), weights.end(), 0LL);
 
@@ -76,9 +72,7 @@ int main() {
 	 * dna_eq[d][j] = the sum of all the weights of the clones
 	 * who have their jth position equal to DNA[d]
 	 */
-	vector<vector<long long>> dna_eq(
-		DNA.size(), vector<long long>(seq_len)
-	);
+	vector<vector<long long>> dna_eq(DNA.size(), vector<long long>(seq_len));
 	for (int d = 0; d < DNA.size(); d++) {
 		for (int i = 0; i < dna_num; i++) {
 			for (int j = 0; j < seq_len; j++) {
@@ -100,7 +94,7 @@ int main() {
 				}
 			}
 		}
-		
+
 		// check if this lines up with the requirements of the problem
 		if (missed_amt == (weight_sum - weights[d]) * diff_num) {
 			cout << (d + 1) << endl;

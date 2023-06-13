@@ -1,0 +1,87 @@
+---
+id: cses-1631
+source: CSES
+title: Reading Books
+author: Paul Chen
+---
+
+[Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
+
+## Explanation
+
+Let $\texttt{sum}$ be $\sum\limits_{i=1}^n t_i$.
+
+Sort the array in ascending order. Kotivalo can read the books in the order $t_n, t_1, t_2, ..., t_{n-1}$, and Justiina can read them in the order $t_1, t_2, t_3, ..., t_n$.
+
+If $\texttt{sum} - t_n < t_n$, Justiina would finish reading books $t_1, t_2, t_3, ..., t_{n-1}$ and would have to wait for Kotivalo to finish reading $t_n$. Afterwards, Justiina can read $t_n$ and Kotivalo can read $t_1, t_2, t_3, ..., t_{n-1}$. In total, this will take $2 \times t_n$ units of time.
+
+If $\texttt{sum} - t_n \ge t_n$, Kotivalo would finish reading $t_n$ before Justiina finishes reading $t_1, t_2, t_3, ..., t_{n-1}$, so Justiina would not have to wait for Kotivalo to finish reading $t_n$. Thus, this will take $\texttt{sum}$ units of time.
+
+Therefore, the answer is $\max(\texttt{sum}, 2 \times t_n)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(N)$.
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	ll n;
+	cin >> n;
+
+	vector<ll> books(n);
+	for (ll i = 0; i < n; i++) { cin >> books[i]; }
+
+	ll longest_time = *max_element(books.begin(), books.end());
+	ll total_time = accumulate(books.begin(), books.end(), 0ll);
+
+	cout << max(total_time, longest_time * 2) << "\n";
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+class ReadBook {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+
+		long books[] = new long[n];
+		for (int i = 0; i < n; i++) { books[i] = io.nextLong(); }
+
+		long longest_time = Arrays.stream(books).max().getAsLong();
+		long total_time = Arrays.stream(books).sum();
+
+		io.println(Math.max(total_time, longest_time * 2));
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+books = [int(b) for b in input().split()]
+
+longest_time = max(books)
+total_time = sum(books)
+
+print(max(total_time, longest_time * 2))
+```
+
+</PySection>
+</LanguageSection>

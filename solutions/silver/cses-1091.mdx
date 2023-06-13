@@ -16,7 +16,7 @@ so that no ticket price is below it, we can return -1. If not, we find the
 greatest ticket price less than or equal to the maximum price, and then remove
 that price as specified by the problem. We use a multiset for this.
 
-## Implementation 
+## Implementation
 **Time Complexity:** $\mathcal{O}((n+ m)\log n)$
 
 <LanguageSection>
@@ -26,28 +26,29 @@ that price as specified by the problem. We use a multiset for this.
 
 using namespace std;
 
-//variables used for the current problem
-int n,m,h,t; multiset<int> tickets;
+// variables used for the current problem
+int n, m, h, t;
+multiset<int> tickets;
 
 void solve() {
 	cin >> n >> m;
-	for (int i=0;i<n;++i){
-		cin >> h; tickets.insert(h);
+	for (int i = 0; i < n; ++i) {
+		cin >> h;
+		tickets.insert(h);
 	}
-	for (int i=0;i<m;++i){
+	for (int i = 0; i < m; ++i) {
 		cin >> t;
 		auto it = tickets.upper_bound(t);
-		if (it==tickets.begin()){
+		if (it == tickets.begin()) {
 			cout << -1 << "\n";
-		}
-		else{
+		} else {
 			cout << *(--it) << "\n";
 			tickets.erase(it);
 		}
 	}
 }
 
-int main(){
+int main() {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 	solve();
@@ -76,12 +77,12 @@ public class ConcertTickets {
 		for (int i = 0; i < ticketNum; i++) {
 			int priceOfTicket = io.nextInt();
 			/*
-			 * If the set already contains the same key value, 
+			 * If the set already contains the same key value,
 			 * create another pair next to it
 			 */
 			if (ticketMultiset.containsKey(priceOfTicket)) {
-				ticketMultiset.put(priceOfTicket, 
-									ticketMultiset.get(priceOfTicket) + 1);
+				ticketMultiset.put(priceOfTicket,
+				                   ticketMultiset.get(priceOfTicket) + 1);
 			} else {
 				ticketMultiset.put(priceOfTicket, 1);
 			}
@@ -90,18 +91,18 @@ public class ConcertTickets {
 		for (int i = 0; i < peopleNum; i++) {
 			int customerMaxPrice = io.nextInt();
 			/*
-			 * Get the optimal ticket for this customer 
-			 * We add 1 because lowerEntry returns the highest 
+			 * Get the optimal ticket for this customer
+			 * We add 1 because lowerEntry returns the highest
 			 * *strictly* lower entry
 			 */
-			val = ticketMultiset.lowerEntry(customerMaxPrice + 1); 
+			val = ticketMultiset.lowerEntry(customerMaxPrice + 1);
 			// If there are no possible prices, we can exit and return -1
 			if (val != null) {
 				pw.println(val.getKey());
 				/*
-				 * If there's more than one set with the key value, 
-				 * then replace the current set with 
-				 * the next-lowest set with the same key 
+				 * If there's more than one set with the key value,
+				 * then replace the current set with
+				 * the next-lowest set with the same key
 				 */
 				if (val.getValue() == 1) {
 					ticketMultiset.remove(val.getKey());
@@ -117,60 +118,47 @@ public class ConcertTickets {
 		pw.close();
 	}
 	// Kattio is too slow
-	//BeginCodeSnip{Fast Reader}
-	static class Reader
-	{
+	// BeginCodeSnip{Fast Reader}
+	static class Reader {
 		final private int BUFFER_SIZE = 1 << 16;
 		private DataInputStream din;
 		private byte[] buffer;
 		private int bufferPointer, bytesRead;
- 
-		public Reader()
-		{
+
+		public Reader() {
 			din = new DataInputStream(System.in);
 			buffer = new byte[BUFFER_SIZE];
 			bufferPointer = bytesRead = 0;
 		}
-		private void fillBuffer() throws IOException
-		{
+		private void fillBuffer() throws IOException {
 			bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-			if (bytesRead == -1)
-				buffer[0] = -1;
+			if (bytesRead == -1) buffer[0] = -1;
 		}
- 
-		private byte read() throws IOException
-		{
-			if (bufferPointer == bytesRead)
-				fillBuffer();
+
+		private byte read() throws IOException {
+			if (bufferPointer == bytesRead) fillBuffer();
 			return buffer[bufferPointer++];
 		}
- 
-		public void close() throws IOException
-		{
-			if (din == null)
-				return;
+
+		public void close() throws IOException {
+			if (din == null) return;
 			din.close();
 		}
-		public int nextInt() throws IOException
-		{
+		public int nextInt() throws IOException {
 			int ret = 0;
 			byte c = read();
-			while (c <= ' ')
-				c = read();
+			while (c <= ' ') c = read();
 			boolean neg = (c == '-');
-			if (neg)
-				c = read();
-			do
-			{
+			if (neg) c = read();
+			do {
 				ret = ret * 10 + c - '0';
-			}  while ((c = read()) >= '0' && c <= '9');
- 
-			if (neg)
-				return -ret;
+			} while ((c = read()) >= '0' && c <= '9');
+
+			if (neg) return -ret;
 			return ret;
 		}
 	}
-	//EndCodeSnip{}
+	// EndCodeSnip{}
 }
 ```
 </JavaSection>

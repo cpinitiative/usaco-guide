@@ -34,9 +34,8 @@ export const UserPermissionsContextProvider = ({ children }) => {
     canCreateGroups: false,
   };
 
-  const [permissions, setPermissions] = React.useState<
-    { [key in UserPermissions]: boolean }
-  >(defaultPermissions);
+  const [permissions, setPermissions] =
+    React.useState<{ [key in UserPermissions]: boolean }>(defaultPermissions);
   const { firebaseUser } = React.useContext(UserDataContext);
 
   React.useEffect(() => {

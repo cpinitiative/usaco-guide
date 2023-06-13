@@ -19,8 +19,6 @@ frequency: 2
 
 ### Solution - Max Subarray Sum
 
-<Spoiler title="Solution">
-
 Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
 $i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
 $p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
@@ -117,8 +115,6 @@ print(max_subarray_sum)
 </PySection>
 </LanguageSection>
 
-</Spoiler>
-
 <Spoiler title = "Alternative Solution - Kadane's Algorithm">
 
 Note: it is recommended that you **disregard** this solution since it is not
@@ -158,21 +154,21 @@ int main() {
 	cout << max_subarray_sum << endl;
 }
 ```
-</CPPSection>	
+</CPPSection>
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
-	
+
 public class MaxSubarraySumKadane {
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 
 		long[] x = new long[n];
 
-		for (int i = 0; i < n; i++) { // read input
+		for (int i = 0; i < n; i++) {  // read input
 			x[i] = io.nextInt();
 		}
 
@@ -193,7 +189,7 @@ public class MaxSubarraySumKadane {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>
@@ -588,24 +584,20 @@ public class ForestQueries {
 		N = io.nextInt();
 		Q = io.nextInt();
 
-		pfx = new int[N+1][N+1];
-		arr = new int[N+1][N+1];
+		pfx = new int[N + 1][N + 1];
+		arr = new int[N + 1][N + 1];
 
 		for (int i = 0; i < N; i++) {
 			String line = io.next();
 			for (int j = 0; j < N; j++) {
-				if (line.charAt(j) == '*') {
-					arr[i + 1][j + 1]++;
-				}
+				if (line.charAt(j) == '*') { arr[i + 1][j + 1]++; }
 			}
 		}
 
 		for (int i = 1; i < N + 1; i++) {
 			for (int j = 1; j < N + 1; j++) {
-				pfx[i][j] = arr[i][j]
-						+ pfx[i-1][j]
-						+ pfx[i][j-1]
-						- pfx[i-1][j-1];
+				pfx[i][j] = arr[i][j] + pfx[i - 1][j] + pfx[i][j - 1] -
+				            pfx[i - 1][j - 1];
 			}
 		}
 
@@ -614,17 +606,13 @@ public class ForestQueries {
 			int fromCol = io.nextInt();
 			int toRow = io.nextInt();
 			int toCol = io.nextInt();
-			io.println(
-					pfx[toRow][toCol]
-					- pfx[fromRow - 1][toCol]
-					- pfx[toRow][fromCol - 1]
-					+ pfx[fromRow - 1][fromCol - 1]
-			);
+			io.println(pfx[toRow][toCol] - pfx[fromRow - 1][toCol] -
+			           pfx[toRow][fromCol - 1] + pfx[fromRow - 1][fromCol - 1]);
 		}
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 

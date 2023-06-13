@@ -3,7 +3,7 @@ id: intro-complete
 title: 'Basic Complete Search'
 author: Darren Yao, Dong Liu
 contributors: Brad Ma, Nathan Gong
-description: 'An easy example: iterating through all pairs.'
+description: 'Problems involving iterating through the entire solution space.'
 frequency: 4
 ---
 
@@ -22,7 +22,7 @@ subsets, or all permutations. Unsurprisingly, this is called **complete search**
 
 <FocusProblem problem="sample" />
 
-<Spoiler title="Solution">
+## Solution - Maximum Distance
 
 We can iterate through every pair of points and find the square of the distance
 between them, by squaring the formula for Euclidean distance:
@@ -71,8 +71,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MaxDist {
 	public static void main(String[] args) throws IOException {
@@ -81,15 +81,11 @@ public class MaxDist {
 		int[] x = new int[n];
 		int[] y = new int[n];
 
-		for (int i = 0; i < n; i++) {
-			x[i] = io.nextInt();
-		}
-		for (int i = 0; i < n; i++) {
-			y[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { x[i] = io.nextInt(); }
+		for (int i = 0; i < n; i++) { y[i] = io.nextInt(); }
 
-		int maxSquared = 0;  // stores the current maximum
-		for (int i = 0; i < n; i++) {  // for each first point
+		int maxSquared = 0;                    // stores the current maximum
+		for (int i = 0; i < n; i++) {          // for each first point
 			for (int j = i + 1; j < n; j++) {  // and each second point
 				int dx = x[i] - x[j];
 				int dy = y[i] - y[j];
@@ -102,12 +98,12 @@ public class MaxDist {
 				maxSquared = Math.max(maxSquared, square);
 			}
 		}
-		
+
 		io.println(maxSquared);
 		io.close();
 	}
-	
-	//CodeSnip{Kattio}
+
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -212,8 +208,8 @@ The following solution correctly stores the maximum distance in a floating point
 variable.
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class MaxDist {
 	public static void main(String[] args) throws IOException {
@@ -222,12 +218,8 @@ public class MaxDist {
 		int[] x = new int[n];
 		int[] y = new int[n];
 
-		for (int i = 0; i < n; i++) {
-			x[i] = io.nextInt();
-		}
-		for (int i = 0; i < n; i++) {
-			y[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { x[i] = io.nextInt(); }
+		for (int i = 0; i < n; i++) { y[i] = io.nextInt(); }
 
 		double maxDist = 0;
 		for (int i = 0; i < n; i++) {
@@ -244,11 +236,11 @@ public class MaxDist {
 			}
 		}
 
-		io.println((int) Math.round(Math.pow(maxDist, 2)));
+		io.println((int)Math.round(Math.pow(maxDist, 2)));
 		io.close();
 	}
-	
-	//CodeSnip{Kattio}
+
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -303,7 +295,6 @@ should stick with integers whenever possible.
 </PySection>
 
 </LanguageSection>
-</Spoiler>
 
 ## Problems
 

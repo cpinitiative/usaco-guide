@@ -1,11 +1,11 @@
 ---
 id: dp-sos
 title: Sum over Subsets DP
-author: Siyong Huang
+author: Siyong Huang, Aakash Gokhale
 description: Taking bitmask DP to the next level.
 prerequisites:
   - dp-bitmasks
-frequency: 0
+frequency: 1
 ---
 
 <Resources>
@@ -24,7 +24,110 @@ frequency: 0
 	>
 		Goes over brute force solutions
 	</Resource>
+	<Resource
+		source="CF"
+		title="Some SOS DP Insights"
+		url="105247"
+		starred
+	>
+		Characterizing SOS DP as multidimensional prefix sums
+	</Resource>
 </Resources>
+
+
+Sum over subsets (SOS) DP is a trick that allows you to efficiently compute the sum of all the subsets of an array.
+
+The naive solution would be to iterate through every pair of masks and check if one of them is a subset of the other.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// # of elements in the list for which you want to find the sum over all subsets
+int n = 20;
+
+// the list for which you want to find the sum over all subsets
+vector<int> a(1 << n);
+
+// answer for sum over subsets of each subset
+vector<int> sos(1 << n);
+
+for (int i = 0; i < (1 << n); i++) {
+	// iterate over all other sets and checks whether they're a subset of i
+	for (int j = 0; j < (1 << n); j++) {
+		if ((i & j) == j) { sos[i] += a[j]; }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
+
+The difference comes from the fact that in the first example we iterate over every pair of subsets which takes $(2^n)^2$ time and the second we iterate directly over the subsets for each mask. This means each mask is only visited by $2^{n - k}$ other masks where k is the number of elements of the mask.
+This means that the total time complexity is O$\sum_0^n {n \choose k} \cdot 2^{n - k} = 3^n$).
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int n = 20;
+vector<int> a(1 << n);
+vector<int> sos(1 << n);
+for (int i = 0; i < (1 << n); i++) {
+	// iterate over all subsets of i directly
+	for (int j = (i - 1) & i; j >= 0; j = (j - 1) & i) { sos[i] += a[j]; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Notice how in both of these examples we don't seem to be saving much information between different subsets which is the essence of DP.
+Define $\texttt{SOS}(\texttt{mask}, x)$ to be the sum of subsets of mask such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
+For example, $\texttt{SOS}(1001001, 3)$ includes the subsets $1001001$, $1000001$, $1001000$, $1000000$ which all have the same common prefix of $100$.
+
+Let's try to figure out the transitions between different states.
+
+If the $x$th bit of mask is a $0$ then we can only transition to this state if the $x$th bit of the subset is also $0$. If the $x$th bit of the subset mask was a $1$ then it would no longer be a subset.
+
+If the $x$th bit of mask is a $1$ then we can transition to this state from both subsets where the $x$th bit is turned off and turned on because both of these cases would be subsets.
+
+More formally,
+
+$\texttt{SOS}(mask, x) = \left\{
+	\begin{array}{ c l }
+		\texttt{SOS}(\texttt{mask}, x - 1) + \texttt{SOS}(\texttt{mask} - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge \texttt{mask}| > 0 \\
+		\texttt{SOS}(\texttt{mask}, x - 1) & \quad \textrm{otherwise}
+	\end{array}
+\right.$
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int n = 20;
+vector<int> a(1 << n);
+
+// keeps track of the sum over subsets
+// with a certain amount of matching bits in the prefix
+vector<vector<int>> dp(1 << n, vector<int>(n));
+
+vector<int> sos(1 << n);
+for (int mask = 0; mask < (1 << n); mask++) {
+	dp[mask][-1] = a[mask];
+	for (int x = 0; x < n; x++) {
+		dp[mask][x] = dp[mask][x - 1];
+		if (mask & (1 << x)) { dp[mask][x] += dp[mask - (1 << x)][x - 1]; }
+	}
+	sos[mask] = dp[mask][n - 1];
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Additional Problems
 

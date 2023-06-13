@@ -15,8 +15,8 @@ author: Ananth Kashyap, Sathvik Chundru, Brad Ma, Aadit Ambadkar
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -35,23 +35,19 @@ int main() {
 	int n;
 	read >> n;
 	vector<Cow> cows(n);
-	for (Cow& c : cows) {
-		read >> c.start >> c.end >> c.buckets;
-	}
+	for (Cow &c : cows) { read >> c.start >> c.end >> c.buckets; }
 
 	// The maximum number of buckets needed
 	int max_buckets = 0;
-	
+
 	/*
 	 * For each possible time, check how many buckets are needed at that time
 	 * and update the maximum accordingly
 	 */
 	for (int t = 1; t <= MAX_TIME; t++) {
 		int curr_buckets = 0;
-		for (const Cow& c : cows) {
-			if (c.start <= t && t <= c.end) {
-				curr_buckets += c.buckets;
-			}
+		for (const Cow &c : cows) {
+			if (c.start <= t && t <= c.end) { curr_buckets += c.buckets; }
 		}
 		max_buckets = std::max(max_buckets, curr_buckets);
 	}
@@ -82,15 +78,13 @@ public class BList {
 		int maxBuckets = 0;
 
 		/*
-		 * For each possible time, check how many buckets are needed at that time
-		 * and update the maximum accordingly
+		 * For each possible time, check how many buckets are needed at that
+		 * time and update the maximum accordingly
 		 */
 		for (int t = 1; t <= MAX_TIME; t++) {
 			int currBuckets = 0;
 			for (int[] c : cows) {
-				if (c[0] <= t && t <= c[1]) {
-					currBuckets += c[2];
-				}
+				if (c[0] <= t && t <= c[1]) { currBuckets += c[2]; }
 			}
 			maxBuckets = Math.max(maxBuckets, currBuckets);
 		}
@@ -99,7 +93,7 @@ public class BList {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -109,7 +103,7 @@ public class BList {
 ```py
 MAX_TIME = 1000
 
-with open('blist.in') as read:
+with open("blist.in") as read:
 	n = int(read.readline())
 	cows = [[int(i) for i in read.readline().split()] for _ in range(n)]
 
@@ -127,7 +121,7 @@ for t in range(1, MAX_TIME + 1):
 			curr_buckets += c[2]
 	max_buckets = max(max_buckets, curr_buckets)
 
-print(max_buckets, file=open('blist.out', 'w'))
+print(max_buckets, file=open("blist.out", "w"))
 ```
 
 </PySection>
@@ -146,8 +140,8 @@ through all the time steps at once.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using std::cout;
@@ -174,7 +168,8 @@ int main() {
 	}
 
 	int max_buckets = 0;  // the maximum number of buckets needed
-	int curr_buckets = 0;  // # of buckets we need at the current processing time
+	int curr_buckets =
+	    0;  // # of buckets we need at the current processing time
 	for (int t = 0; t < MAX_TIME; t++) {
 		// update the # of buckets we're using
 		curr_buckets += change[t];
@@ -212,7 +207,8 @@ public class BList {
 		}
 
 		int maxBuckets = 0;  // max # of buckets we'll need
-		int currBuckets = 0;  // # of buckets we need at the current processing time
+		int currBuckets =
+		    0;  // # of buckets we need at the current processing time
 		for (int t = 0; t < MAX_TIME; t++) {
 			// update the # of buckets we're using
 			currBuckets += change[t];
@@ -224,7 +220,7 @@ public class BList {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -235,11 +231,11 @@ public class BList {
 MAX_TIME = 1000
 
 change = [0 for _ in range(MAX_TIME + 1)]
-with open('blist.in') as read:
+with open("blist.in") as read:
 	n = int(read.readline().strip())
 	for _ in range(n):
 		start, end, amt = map(int, read.readline().strip().split())
-		
+
 		# at the start, we'll need some additional buckets
 		change[start] += amt
 		# at the end, those buckets are no longer needed
@@ -253,8 +249,8 @@ for t in range(MAX_TIME + 1):
 	# update the maximum accordingly
 	max_buckets = max(max_buckets, curr_buckets)
 
-print(max_buckets, file=open('blist.out', 'w'))
+print(max_buckets, file=open("blist.out", "w"))
 ```
 
 </PySection>
-</LanguageSection> 
+</LanguageSection>

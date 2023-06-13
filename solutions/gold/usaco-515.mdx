@@ -29,22 +29,18 @@ vector<vector<vector<int>>> next_show;
 vector<int> length;
 vector<pair<int, int>> dp;
 
-//BeginCodeSnip{bit operations}
+// BeginCodeSnip{bit operations}
 int pct(int x) { return __builtin_popcount(x); }
 int setbit(int n, int k) { return (n | (1 << k)); }
 int getbit(int n, int k) { return (n & (1 << k)) >> k; }
-//EndCodeSnip
+// EndCodeSnip
 
 int find_show_time(int t, int m) {
 	auto it = upper_bound(schedule[m].begin(), schedule[m].end(), t);
-	if (it == schedule[m].begin()) {
-		return -1;
-	}
+	if (it == schedule[m].begin()) { return -1; }
 
 	int start = *(it - 1);
-	if (start + length[m] < t || start > t) {
-		return -1;
-	}
+	if (start + length[m] < t || start > t) { return -1; }
 
 	return (it - 1) - schedule[m].begin();
 }
@@ -63,7 +59,7 @@ int main() {
 		cin >> t >> v;
 		length[i] = t;
 		int a;
-		while(v) {
+		while (v) {
 			cin >> a;
 			schedule[i].push_back(a);
 			v--;
@@ -75,7 +71,7 @@ int main() {
 			if (i == j) continue;
 			for (int ii = 0; ii < schedule[i].size(); ii++) {
 				next_show[i][j].push_back(
-				   find_show_time(schedule[i][ii] + length[i], j));
+				    find_show_time(schedule[i][ii] + length[i], j));
 			}
 		}
 	}
@@ -96,20 +92,21 @@ int main() {
 
 			int x;
 			if (i == 0) {
-				x = schedule[j][0] == 0 ? 0:-1;
+				x = schedule[j][0] == 0 ? 0 : -1;
 			} else {
 				x = next_show[dp[i].first][j][dp[i].second];
 			}
 			if (x != -1) {
 				// subset including j
 				if (dp[subset].first == -1 ||
-					schedule[dp[subset].first][dp[subset].second]
-				           + length[dp[subset].first] < schedule[j][x]
-					   + length[j]) {
-					   dp[subset] = {j, x};
+				    schedule[dp[subset].first][dp[subset].second] +
+				            length[dp[subset].first] <
+				        schedule[j][x] + length[j]) {
+					dp[subset] = {j, x};
 				}
-				if (schedule[dp[subset].first][dp[subset].second]
-					+ length[dp[subset].first] >= L) {
+				if (schedule[dp[subset].first][dp[subset].second] +
+				        length[dp[subset].first] >=
+				    L) {
 					ans = min(ans, pct(subset));
 				}
 			}

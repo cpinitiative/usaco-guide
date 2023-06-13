@@ -1,0 +1,61 @@
+---
+id: ac-smallmultiple
+source: AC
+title: Small Multiple
+author: Chongtian Ma
+---
+
+[Official Analysis](https://img.atcoder.jp/arc084/editorial.pdf)
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(K)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int INF = 1e9;
+
+int main() {
+	int k;
+	scanf("%d", &k);
+
+	// dist[i] = smallest digit sum to reach i % k
+	vector<int> dist(k, INF);
+
+	deque<int> q;
+
+	dist[1] = 1;
+	q.push_front(1);
+
+	while (!q.empty()) {
+		int cur = q.front();
+		q.pop_front();
+
+		// case 1: we append an extra 0 at the end (NO EXTRA COST)
+		int case1 = cur * 10 % k;
+		if (dist[cur] < dist[case1]) {
+			dist[case1] = dist[cur];
+			q.push_front(case1);
+		}
+
+		// case 2: we add one to cur but also increase the digit sum
+		int case2 = (cur + 1) % k;
+		if (dist[cur] + 1 < dist[case2]) {
+			dist[case2] = dist[cur] + 1;
+			q.push_back(case2);
+		}
+	}
+
+	// the answer must be 0 mod k
+	printf("%d\n", dist[0]);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
