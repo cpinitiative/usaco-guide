@@ -17,10 +17,10 @@ subtracted all multiples of both $6$, $10$, and $15$, which would mean that we m
 This extends for the entire array, requiring us to alternate adding and subtracting depending on how many primes we are currently mutliplying.
 
 Considering only $30$, the full example would be that our answer is added $3$ times for $2$, $3$, and $5$ (subsets of array with $1$ prime), then subtracted $3$
-times for $6$, $10$, and $15$ (subsets of array with $2$ primes), and finally added once for $30$ (subset of array with $3$ primes), 
+times for $6$, $10$, and $15$ (subsets of array with $2$ primes), and finally added once for $30$ (subset of array with $3$ primes),
 overall only being counted once.
 
-To implement this, we would need to go through each subset of the array, and add the number of multiples it has if the number of primes is not divisible by 2, and 
+To implement this, we would need to go through each subset of the array, and add the number of multiples it has if the number of primes is not divisible by 2, and
 subtract otherwise. This is known as the [Inclusion Exclusion Principle](https://cp-algorithms.com/combinatorics/inclusion-exclusion.html).
 In order to iterate through all subsets of the array, we can iterate from $1$ to $2^K-1$ and use bit operators to find which indices we are using.
 
@@ -37,40 +37,34 @@ using namespace std;
 typedef long long ll;
 
 int main() {
-    ll N, K;
-    cin >> N >> K;
-    ll a[K];
-    for (auto &i : a)
-        cin >> i;
-    ll ans = 0;
-    for (ll i = 1; i < (1<<K); i++)
-    {
-        ll cn = 1;
-        for (ll j = 0; j < K; j++)
-        {
-            //check if we are using a[j] in this number
-            if (i&(1<<j))
-            {
-                //check to not overflow, if we do set cn to N+1 so ans doesn't change
-                if (cn > N/a[j])
-                {
-                    cn = N+1;
-                    break;
-                }
-                cn *= a[j];
-            }
-        }
-        //__builtin_popcount gives the number of 1's in binary representation, which is also the number of primes we have multiplied
-        if (__builtin_popcount(i) % 2)
-        {
-            ans += N/cn;
-        }
-        else
-        {
-            ans -= N/cn;
-        }
-    }
-    cout << ans << endl;
+	ll N, K;
+	cin >> N >> K;
+	ll a[K];
+	for (auto &i : a) cin >> i;
+	ll ans = 0;
+	for (ll i = 1; i < (1 << K); i++) {
+		ll cn = 1;
+		for (ll j = 0; j < K; j++) {
+			// check if we are using a[j] in this number
+			if (i & (1 << j)) {
+				// check to not overflow, if we do set cn to N+1 so ans doesn't
+				// change
+				if (cn > N / a[j]) {
+					cn = N + 1;
+					break;
+				}
+				cn *= a[j];
+			}
+		}
+		//__builtin_popcount gives the number of 1's in binary representation,
+		//which is also the number of primes we have multiplied
+		if (__builtin_popcount(i) % 2) {
+			ans += N / cn;
+		} else {
+			ans -= N / cn;
+		}
+	}
+	cout << ans << endl;
 }
 ```
 </CPPSection>
