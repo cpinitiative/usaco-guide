@@ -20,7 +20,7 @@ Note that there's one small issue that I leave to you to find and resolve (it wi
 </Spoiler>
 
 ## Solution
-<Spoiler title="Please read the walkthrough before opening this!">
+<Spoiler title="Full Solution">
 Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk to form a square like follows:
 ```
      0   1   2   3   4   5   6   7   8
@@ -34,6 +34,16 @@ Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk t
 7  [ 0,  0,  0,  1,  0, 11,  0,  0,  0]
 8  [ 0,  0,  0,  0,  9,  0,  0,  0,  0]
 ```
+What's with the zeroes?
+If we simply rotate 45 degrees and cram all the cells connected diagonally into one row, then their distance becomes $1$, leading to an awkward situation like this one.
+```
+[99, 3, 25]
+[  10, 2  ]
+[ 7, 1, 7 ]
+[   5, 2  ]
+[78, 23,80]
+```
+This isn't really helpful. However, if we add a zero between, we can then forcefully re-expand the grid by a scale of 2.
 
 This way for K = 2 centered at B like in the testcase, the range of squares that Bessie may reach is the 5x5 range in the middle.
 ```
@@ -43,8 +53,17 @@ This way for K = 2 centered at B like in the testcase, the range of squares that
 [ 0,  5,  0,  2,  0]
 [78,  0, 23,  0, 80]
 ```
+<Optional title="Thinking from a geometric standpoint">
+Initially, the distance between adjacent cells is $1$ and the distance between cells connected diagonally is $\sqrt{2}$. 
+What we have done here is a dilation by a scale of $\sqrt{2}$, making the distance between adjacent cells now $\sqrt{2}$ and between cells $\sqrt{2} \cdot \sqrt{2} = 2$.
 
-To calculate the sum of the numbers in these square ranges, we just use 2D prefix sums normally.
+If we then rotate by 45 degrees and add 0s inbetween, everything falls into place. Try to visualize this in your head!
+</Optional>
+
+To calculate the sum of the numbers in these ranges, which are now the shapes of squares, we just use 2D prefix sums normally. Finally, we can brute force through all the squares Bessie can be and take the maximum sum.
+
+Doing the "rotation" can be done when reading input at normal $\mathcal{O}(N ^ 2)$ time (see code below), doing the pre-processing for prefix sums takes $\mathcal{O}(N ^ 2)$ time, 
+while calculating the sum of each of the $N^2$ squares costs $\mathcal{O}(1)$ time for a total of $\mathcal{O}(N ^ 2)$ time.
 </Spoiler>
 
 ## Implementation
