@@ -18,23 +18,112 @@ Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk t
 Note that there's one small issue that I leave to you to find and resolve (it will be covered in the solution).
 </Spoiler>
 
-## Solution
-<Spoiler title="Full Solution & Implementation">
+<Spoiler title="Solution">
 ## Explanation
 
 Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk to form a square like follows:
-```
-     0   1   2   3   4   5   6   7   8
-0  [ 0,  0,  0,  0, 50,  0,  0,  0,  0]
-1  [ 0,  0,  0, 14,  0,  5,  0,  0,  0]
-2  [ 0,  0, 99,  0,  3,  0, 25,  0,  0]
-3  [ 0,  8,  0, 10,  0,  2,  0,  6,  0]
-4  [10,  0,  7,  0, 1B,  0,  7,  0, 17]
-5  [ 0,  0,  0,  5,  0,  2,  0, 21,  0]
-6  [ 0,  0, 78,  0, 23,  0, 80,  0,  0]
-7  [ 0,  0,  0,  1,  0, 11,  0,  0,  0]
-8  [ 0,  0,  0,  0,  9,  0,  0,  0,  0]
-```
+<table>
+<tr>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >50</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+</tr>
+  <tr>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >14</td>
+    <td >0</td>
+    <td >5</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+  </tr>
+  <tr>
+    <td >0</td>
+    <td >0</td>
+    <td >99</td>
+    <td >0</td>
+    <td >3</td>
+    <td >0</td>
+    <td >25</td>
+    <td >0</td>
+    <td >0</td>
+  </tr>
+  <tr>
+    <td >0</td>
+    <td >8</td>
+    <td >0</td>
+    <td >10</td>
+    <td >0</td>
+    <td >2</td>
+    <td >0</td>
+    <td >6</td>
+    <td >0</td>
+  </tr>
+  <tr>
+    <td >10</td>
+    <td >0</td>
+    <td >7</td>
+    <td >0</td>
+    <td >1 (B)</td>
+    <td >0</td>
+    <td >7</td>
+    <td >0</td>
+    <td >17</td>
+  </tr>
+  <tr>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >5</td>
+    <td >0</td>
+    <td >2</td>
+    <td >0</td>
+    <td >21</td>
+    <td >0</td>
+  </tr>
+  <tr>
+    <td >0</td>
+    <td >0</td>
+    <td >78</td>
+    <td >0</td>
+    <td >23</td>
+    <td >0</td>
+    <td >80</td>
+    <td >0</td>
+    <td >0</td>
+  </tr>
+  <tr>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >1</td>
+    <td >0</td>
+    <td >11</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+  </tr>
+  <tr>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >9</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+    <td >0</td>
+  </tr>
+</table>
+
 What's with the zeroes?
 If we simply rotate 45 degrees and cram all the cells connected diagonally into one row, then their distance becomes $1$, leading to an awkward situation like this one.
 ```
@@ -47,13 +136,44 @@ If we simply rotate 45 degrees and cram all the cells connected diagonally into 
 This isn't really helpful. However, if we add a zero between, we can then forcefully re-expand the grid by a scale of 2.
 
 This way for K = 2 centered at B like in the testcase, the range of squares that Bessie may reach is the 5x5 range in the middle.
-```
-[99,  0,  3,  0, 25]
-[ 0, 10,  0,  2,  0]
-[ 7,  0, 1B,  0,  7]
-[ 0,  5,  0,  2,  0]
-[78,  0, 23,  0, 80]
-```
+<table>
+  <tr>
+    <td>99</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0</td>
+    <td>25</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>10</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>0</td>
+    <td>1 (B)</td>
+    <td>0</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>5</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>78</td>
+    <td>0</td>
+    <td>23</td>
+    <td>0</td>
+    <td>80</td>
+  </tr>
+</table>
+
 <Optional title="Thinking from a geometric standpoint">
 Initially, the distance between adjacent cells is $1$ and the distance between cells connected diagonally is $\sqrt{2}$.
 What we have done here is a dilation by a scale of $\sqrt{2}$, making the distance between adjacent cells now $\sqrt{2}$ and between cells $\sqrt{2} \cdot \sqrt{2} = 2$.
