@@ -20,7 +20,7 @@ Note that there's one small issue that I leave to you to find and resolve (it wi
 </Spoiler>
 
 ## Solution
-<Spoiler title="Full Solution">
+<Spoiler title="Full Solution & Implementation">
 Apply a rotation of 45 degrees on the grid such that the cells Bessie can walk to form a square like follows:
 ```
      0   1   2   3   4   5   6   7   8
@@ -60,15 +60,16 @@ What we have done here is a dilation by a scale of $\sqrt{2}$, making the distan
 If we then rotate by 45 degrees and add 0s inbetween, everything falls into place. Try to visualize this in your head!
 </Optional>
 
-To calculate the sum of the numbers in these ranges, which are now the shapes of squares, we just use 2D prefix sums normally. Finally, we can brute force through all the squares Bessie can be and take the maximum sum.
+To calculate the sum of the numbers in these squares, which are now the shapes of squares, a first approach may be to simply "slide" the square along, adding and subtracting columns along the way. 
 
-Doing the "rotation" can be done when reading input at normal $\mathcal{O}(N ^ 2)$ time (see code below), doing the pre-processing for prefix sums takes $\mathcal{O}(N ^ 2)$ time,
-while calculating the sum of each of the $N^2$ squares costs $\mathcal{O}(1)$ time for a total of $\mathcal{O}(N ^ 2)$ time.
-</Spoiler>
 
 ## Implementation
 
 **Time Complexity** $\mathcal{O}(K \cdot N ^ 2)$
+
+<Warning>
+Depending on how you implement this problem, your code might have trouble passing the last testcase(s) using this approach. There is a much faster solution below.
+</Warning>
 
 <LanguageSection>
 <CPPSection>
@@ -135,11 +136,6 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-<Warning>
-Depending on how you implement this problem, Java code may have trouble
-passing the last testcase even though the algorithm is correct.
-</Warning>
-
 ```java
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -203,6 +199,11 @@ public class Lazy {
 
 </JavaSection>
 </LanguageSection>
+
+However, a much faster solution is using 2D prefix sums to calculate the sum of these square in constant time. This way, we can brute force through all the squares Bessie can be and take the maximum sum.
+
+Doing the "rotation" can be done when reading input at normal $\mathcal{O}(N ^ 2)$ time (see code below), doing the pre-processing for prefix sums takes $\mathcal{O}(N ^ 2)$ time,
+while calculating the sum of each of the $N^2$ squares costs $\mathcal{O}(1)$ time for a total of $\mathcal{O}(N ^ 2)$ time.
 
 ## Implementation (Prefix Sums)
 
@@ -314,3 +315,4 @@ print(most_grass)
 
 </PySection>
 </LanguageSection>
+</Spoiler>
