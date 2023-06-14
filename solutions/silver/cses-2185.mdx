@@ -43,25 +43,25 @@ int main() {
 	for (auto &i : a) cin >> i;
 	ll ans = 0;
 	for (ll i = 1; i < (1 << K); i++) {
-		ll cn = 1;
+		ll primeProduct = 1;
 		for (ll j = 0; j < K; j++) {
 			// check if we are using a[j] in this number
 			if (i & (1 << j)) {
-				// check to not overflow, if we do set cn to N+1 so ans doesn't
+				// check to not overflow, if we do set primeProduct to N+1 so ans doesn't
 				// change
-				if (cn > N / a[j]) {
-					cn = N + 1;
+				if (primeProduct > N / a[j]) {
+					primeProduct = N + 1;
 					break;
 				}
-				cn *= a[j];
+				primeProduct *= a[j];
 			}
 		}
 		//__builtin_popcount gives the number of 1's in binary representation,
 		// which is also the number of primes we have multiplied
 		if (__builtin_popcount(i) % 2) {
-			ans += N / cn;
+			ans += N / primeProduct;
 		} else {
-			ans -= N / cn;
+			ans -= N / primeProduct;
 		}
 	}
 	cout << ans << endl;
