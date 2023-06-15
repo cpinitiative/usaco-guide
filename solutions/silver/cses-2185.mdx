@@ -7,11 +7,15 @@ author: Alex Du
 
 ## Solution
 
+**Time Complexity:** $\mathcal{O}(K\cdot 2^K)$
+
 We can identify that given any integer $c$, the number of integers that are divisible by it between 1 and $N$ is $\lfloor\frac{N}{c}\rfloor$
 
 If we consider each prime individually and find the number of multiples it has, we will find that there is an overlap
 for each number that is a multiple of two primes. For example, $10$ is a multiple of both $2$ and $5$, so if we added up all $\lfloor\frac{N}{a[i]}\rfloor$ for all
-primes, we would still need to subtract $\lfloor\frac{N}{a[i] \cdot a[j]}\rfloor$ for all distinct i and j. Similarly, this subtraction would
+primes, we would still need to subtract $\lfloor\frac{N}{a[i] \cdot a[j]}\rfloor$ for all distinct i and j.
+
+Similarly, this subtraction would
 have an overlap for each number that is a multiple of three primes. An example would be $30$, a multiple of $2$, $3$, and $5$, so we would have
 subtracted all multiples of both $6$, $10$, and $15$, which would mean that we must add back the number of integers that are multiples of three primes.
 This extends for the entire array, requiring us to alternate adding and subtracting depending on how many primes we are currently mutliplying.
@@ -25,7 +29,6 @@ subtract otherwise. This is known as the [Inclusion Exclusion Principle](https:/
 In order to iterate through all subsets of the array, we can iterate from $1$ to $2^K-1$ and use bit operators to find which indices we are using.
 
 ## Implementation
-Here is the code implementation.
 
 <LanguageSection>
 
@@ -35,35 +38,40 @@ Here is the code implementation.
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+const int MAX_K = 20;
+
+ll a[MAX_K];
 
 int main() {
-	ll N, K;
-	cin >> N >> K;
-	ll a[K];
-	for (auto &i : a) cin >> i;
+	ll n, k;
+	cin >> n >> k;
+	for (int i = 0; i < k; i++) cin >> a[i];
+
 	ll ans = 0;
-	for (ll i = 1; i < (1 << K); i++) {
-		ll primeProduct = 1;
-		for (ll j = 0; j < K; j++) {
+	for (ll i = 1; i < (1 << k); i++) {
+		ll prime_product = 1;
+		for (ll j = 0; j < k; j++) {
 			// check if we are using a[j] in this number
 			if (i & (1 << j)) {
-				// check to not overflow, if we do set primeProduct to N+1 so
+				// check to not overflow, if we do set prime_product to N+1 so
 				// ans doesn't change
-				if (primeProduct > N / a[j]) {
-					primeProduct = N + 1;
+				if (prime_product > n / a[j]) {
+					prime_product = n + 1;
 					break;
 				}
-				primeProduct *= a[j];
+				prime_product *= a[j];
 			}
 		}
+
 		//__builtin_popcount gives the number of 1's in binary representation,
 		// which is also the number of primes we have multiplied
 		if (__builtin_popcount(i) % 2) {
-			ans += N / primeProduct;
+			ans += n / prime_product;
 		} else {
-			ans -= N / primeProduct;
+			ans -= n / prime_product;
 		}
 	}
+
 	cout << ans << endl;
 }
 ```
