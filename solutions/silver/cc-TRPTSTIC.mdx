@@ -10,45 +10,44 @@ author: Daniel Ge
 **Time Complexity:** $\mathcal{O}(N \cdot M)$
 
 <LanguageSection>
-
 <CPPSection>
 
-### C++ Implementation
-
 ```cpp
-#define ll long long  // defining a macro to make code legible
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
 ll N, M, K;
-vector<vector<ll>> grid,
-    pref;  // Since N, M <= 1e6, we cannot just use an array
+// Since N, M <= 1e6, we cannot just use an array
+vector<vector<ll>> grid, pref;
 
-ll rangesum(ll row1, ll column1, ll row2,
-            ll column2) {  // Requires row1 < row2; column1 < column2
-	// BeginCodeSnip{We make this function to make applying prefix sums easier}
-	// Sometimes, the range of squares the mentor can reach goes outside the
-	// grid
-	if (row1 < 0) row1 = 0;
-	if (row2 >= N) row2 = N - 1;
-	if (column1 < 0) column1 = 0;
-	if (column2 >= M) column2 = M - 1;
+/**
+ * @return the sum from (row1, column1) to (row2, column2)
+ * Assumes row1 < row2 and column1 < column2
+ */
+ll rangesum(ll row1, ll column1, ll row2, ll column2) {
+	// Sometimes, the range the mentor can reach goes outside the grid
+	if (row1 < 0) { row1 = 0; }
+	if (row2 >= N) { row2 = N - 1; }
+	if (column1 < 0) { column1 = 0; }
+	if (column2 >= M) { column2 = M - 1; }
 
 	ll answer = 0;
 	answer += pref[row2][column2];
 	if (row1 > 0) { answer -= pref[row1 - 1][column2]; }
 	if (column1 > 0) { answer -= pref[row2][column1 - 1]; }
 	if (row1 > 0 && column1 > 0) { answer += pref[row1 - 1][column1 - 1]; }
+	
 	return answer;
-	// EndCodeSnip
 }
 
-bool test(ll distance) {  // Testing whether a certain distance will work
-	// Test centering the mentor at every room
+/** @return whether the given distance will work */
+bool test(ll distance) {
+	// Try centering the mentor at every room
 	for (ll i = 0; i < N; i++) {
 		for (ll j = 0; j < M; j++) {
-			if (grid[i][j] ==
-			    0) {  // The mentor has to at least be able to stay in this room
+			if (grid[i][j] == 0) {
+				// The mentor has to at least be able to stay in this room
 				continue;
 			}
 			if (rangesum(i - distance, j - distance, i + distance,
@@ -60,8 +59,8 @@ bool test(ll distance) {  // Testing whether a certain distance will work
 	return false;
 }
 
+/** Binary search, adapted from the code in its module. */
 ll first_true(ll lo, ll hi) {
-	// BeginCodeSnip{This binary search program is from the guide}
 	hi++;
 	while (lo < hi) {
 		ll mid = lo + (hi - lo) / 2;
@@ -72,11 +71,9 @@ ll first_true(ll lo, ll hi) {
 		}
 	}
 	return lo;
-	// EndCodeSnip
 }
 
 void solve() {
-	// Here is the main code that actually solves the testcases
 	cin >> N >> M >> K;
 
 	// Filling in the grid
@@ -114,22 +111,17 @@ void solve() {
 		}
 	}
 
-	// Binary search for the answer (minimal = first true) and directly
-	// outputting it
 	cout << first_true(0, max(N, M)) << endl;
 }
 
 int main() {
-	// BeginCodeSnip{Processing each testcase}
 	ll T;
 	cin >> T;
-	while (T--) {
-		solve();  // solves each testcase
+	for (int t = 0; t < T; t++) {
+		solve();
 	}
-	// EndCodeSnip
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
