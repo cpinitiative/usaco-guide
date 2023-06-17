@@ -14,17 +14,23 @@ Notice that a[i] will always be even since we need to cross back to get back to 
 So we can break each cross into pairs of $2$ which representing crossing to the left and them coming back.
 
 Let $dp[i]$ be the answer for the first $i$ numbers in the array. We can think about constructing paths in the dp. Intitially, for the first element, the paths look like below:
-<Insert Image>
+
+![](usaco-1283/first.png)
+
 There are $2$ cases when we are transitioning from $dp[i]$ to $dp[i + 1]$.
 
 1. $a[i] > a[i + 1]$
 In this case we simply need to choose some paths to extend and will get something like the picture below:
-<Insert Image>
+
+![](usaco-1283/second.png)
+
 There will be ${\frac{a[i]}{2} \choose \frac{a[i + 1]}{2}}$ ways to choose some paths to extend. Note that we had to divide by $2$ because all the paths come in pairs.
 
 2. $a[i] < a[i + 1]$
 In this case we will have to extend all of the paths but we will have some extras left over. In this case we need to split some paths into many paths as shown below.
-<Insert Image>
+
+![](usaco-1283/third.png)
+
 Note that we can actually split a path into many different paths even if the above diagram only shows $2$.
 We can also think about this as inserting extra paths in between an already formed path.
 Each extra path can be inserted in any of the extended paths. Also since the paths are non-distinct, we can use stars and bars (sticks and stones whatever you want to call it) to count the number of ways to insert it.
@@ -37,7 +43,7 @@ This minimizes the number of turns because the only times the turns happen are:
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
+**Time Complexity:** $\mathcal{O}(N + A + \log(P))$
 
 <LanguageSection>
 <CPPSection>
