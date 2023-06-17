@@ -96,25 +96,27 @@ long long choose(long long n, long long r, long long p) {
 }
 
 int main() {
-    ios::sync_with_stdio(0); cin.tie(0);
-    factorial(MOD);
-    inverses(MOD);
-    int n;
-    cin >> n;
-    vector<long long> a(n);
-    for (auto& i : a) {
-      cin >> i;
-    }
-    vector<long long> dp(n);
-    dp[0] = 1;
-    for (int i = 1; i < n; i++) {
-        if (a[i] <= a[i - 1]) {
-            dp[i] = dp[i - 1] * choose(a[i - 1] / 2, a[i] / 2, MOD) % MOD;
-        } else {
-            dp[i] = dp[i - 1] * choose(a[i - 1] / 2 - 1 + (a[i] - a[i - 1]) / 2, a[i - 1] / 2 - 1, MOD) % MOD;
-        }
-    }
-    cout << dp[n - 1] << endl;
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	factorial(MOD);
+	inverses(MOD);
+	int n;
+	cin >> n;
+	vector<long long> a(n);
+	for (auto &i : a) { cin >> i; }
+	vector<long long> dp(n);
+	dp[0] = 1;
+	for (int i = 1; i < n; i++) {
+		if (a[i] <= a[i - 1]) {
+			dp[i] = dp[i - 1] * choose(a[i - 1] / 2, a[i] / 2, MOD) % MOD;
+		} else {
+			dp[i] = dp[i - 1] *
+			        choose(a[i - 1] / 2 - 1 + (a[i] - a[i - 1]) / 2,
+			               a[i - 1] / 2 - 1, MOD) %
+			        MOD;
+		}
+	}
+	cout << dp[n - 1] << endl;
 }
 ```
 
