@@ -17,8 +17,8 @@ author: Daniel Ge
 using namespace std;
 using ll = long long;
 
-int N, M, K;
-// Since N, M <= 1e6, we cannot just use an array
+int n, m, k;
+// Since n, m <= 1e6, we cannot just use an array
 vector<vector<ll>> grid, pref;
 
 /**
@@ -28,9 +28,9 @@ vector<vector<ll>> grid, pref;
 ll rangesum(int row1, int column1, int row2, int column2) {
 	// Sometimes, the range the mentor can reach goes outside the grid
 	if (row1 < 0) { row1 = 0; }
-	if (row2 >= N) { row2 = N - 1; }
+	if (row2 >= n) { row2 = n - 1; }
 	if (column1 < 0) { column1 = 0; }
-	if (column2 >= M) { column2 = M - 1; }
+	if (column2 >= m) { column2 = m - 1; }
 
 	ll answer = 0;
 	answer += pref[row2][column2];
@@ -44,14 +44,14 @@ ll rangesum(int row1, int column1, int row2, int column2) {
 /** @return whether the given distance will work */
 bool test(int distance) {
 	// Try centering the mentor at every room
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
 			if (grid[i][j] == 0) {
 				// The mentor has to at least be able to stay in this room
 				continue;
 			}
 			if (rangesum(i - distance, j - distance, i + distance,
-			             j + distance) >= (K + 1)) {
+			             j + distance) >= (k + 1)) {
 				return true;
 			}
 		}
@@ -77,14 +77,14 @@ int main() {
 	int T;
 	cin >> T;
 	for (int t = 0; t < T; t++) {
-		cin >> N >> M >> K;
+		cin >> n >> m >> k;
 
 		// Filling in the grid
 		ll tot = 0;
 		grid.clear();
-		for (int i = 0; i < N; i++) {
+		for (int i = 0; i < n; i++) {
 			vector<ll> row;
-			for (int j = 0; j < M; j++) {
+			for (int j = 0; j < m; j++) {
 				ll a;
 				cin >> a;
 				tot += a;
@@ -92,7 +92,7 @@ int main() {
 			}
 			grid.push_back(row);
 		}
-		if (tot < (K + 1)) {  // Print -1 and go to next testcase if not enough
+		if (tot < (k + 1)) {  // Print -1 and go to next testcase if not enough
 			                  // space in hotel
 			cout << -1 << endl;
 			continue;
@@ -100,11 +100,11 @@ int main() {
 
 		// Setting up the size of the prefix sum array
 		pref.clear();
-		for (int i = 0; i < N; i++) { pref.push_back(vector<ll>(M)); }
+		for (int i = 0; i < n; i++) { pref.push_back(vector<ll>(m)); }
 
 		// Filling in the prefix sum array
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
 				pref[i][j] = grid[i][j];
 				if (i > 0) { pref[i][j] += pref[i - 1][j]; }
 				if (j > 0) { pref[i][j] += pref[i][j - 1]; }
@@ -112,7 +112,7 @@ int main() {
 			}
 		}
 
-		cout << first_true(0, max(N, M)) << endl;
+		cout << first_true(0, max(n, m)) << endl;
 	}
 }
 ```
