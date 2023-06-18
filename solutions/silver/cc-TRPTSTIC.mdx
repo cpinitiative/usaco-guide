@@ -76,43 +76,44 @@ int first_true(int lo, int hi) {
 int main() {
 	int T;
 	cin >> T;
-	for (int t = 0; t < T; t++) { 
-        cin >> N >> M >> K;
+	for (int t = 0; t < T; t++) {
+		cin >> N >> M >> K;
 
-        // Filling in the grid
-        ll tot = 0;
-        grid.clear();
-        for (int i = 0; i < N; i++) {
-            vector<ll> row;
-            for (int j = 0; j < M; j++) {
-                ll a;
-                cin >> a;
-                tot += a;
-                row.push_back(a);
-            }
-            grid.push_back(row);
-        }
-        if (tot < (K + 1)) { // Print -1 and go to next testcase if not enough space in hotel
-            cout << -1 << endl;
-            continue; 
-        }
+		// Filling in the grid
+		ll tot = 0;
+		grid.clear();
+		for (int i = 0; i < N; i++) {
+			vector<ll> row;
+			for (int j = 0; j < M; j++) {
+				ll a;
+				cin >> a;
+				tot += a;
+				row.push_back(a);
+			}
+			grid.push_back(row);
+		}
+		if (tot < (K + 1)) {  // Print -1 and go to next testcase if not enough
+			                  // space in hotel
+			cout << -1 << endl;
+			continue;
+		}
 
-        // Setting up the size of the prefix sum array
-        pref.clear();
-        for (int i = 0; i < N; i++) { pref.push_back(vector<ll>(M)); }
+		// Setting up the size of the prefix sum array
+		pref.clear();
+		for (int i = 0; i < N; i++) { pref.push_back(vector<ll>(M)); }
 
-        // Filling in the prefix sum array
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                pref[i][j] = grid[i][j];
-                if (i > 0) { pref[i][j] += pref[i - 1][j]; }
-                if (j > 0) { pref[i][j] += pref[i][j - 1]; }
-                if (i > 0 && j > 0) { pref[i][j] -= pref[i - 1][j - 1]; }
-            }
-        }
+		// Filling in the prefix sum array
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				pref[i][j] = grid[i][j];
+				if (i > 0) { pref[i][j] += pref[i - 1][j]; }
+				if (j > 0) { pref[i][j] += pref[i][j - 1]; }
+				if (i > 0 && j > 0) { pref[i][j] -= pref[i - 1][j - 1]; }
+			}
+		}
 
-        cout << first_true(0, max(N, M)) << endl;
-    }
+		cout << first_true(0, max(N, M)) << endl;
+	}
 }
 ```
 
