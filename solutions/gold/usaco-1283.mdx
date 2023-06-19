@@ -96,12 +96,15 @@ long long choose(long long n, long long r, long long p) {
 // EndCodeSnip
 
 int main() {
+	// Do some precalculations
 	factorial(MOD);
 	inverses(MOD);
+
 	int n;
 	cin >> n;
 	vector<long long> a(n);
 	for (auto &i : a) { cin >> i; }
+	
 	vector<long long> dp(n);
 	dp[0] = 1;
 	for (int i = 1; i < n; i++) {
@@ -113,6 +116,7 @@ int main() {
 			dp[i] = dp[i - 1] * ways % MOD;
 		}
 	}
+	
 	cout << dp[n - 1] << endl;
 }
 ```
