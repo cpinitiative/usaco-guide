@@ -65,7 +65,43 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
 
+public class solution {
+	public static long solve(long a, long b) {
+		if (a == b) {
+			return 0;
+		} else if (a > b) {
+			/*
+			 * Divide a greedily until a <= b, add 1 in case a is odd to enable
+			 * division.
+			 */
+			long isOdd = a % 2;
+			return 1 + isOdd + solve((a + isOdd) / 2, b);
+		} else {
+			/*
+			 * Otherwise, simulate multiplication of a by dividing b.
+			 * Alternatively, if it's better, add up to b directly.
+			 */
+			long isOdd = b % 2;
+			return Math.min(b - a, 1 + isOdd + solve(a, b / 2));
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			long a = Long.parseLong(st.nextToken());
+			long b = Long.parseLong(st.nextToken());
+
+			System.out.println(solve(a, b));
+		}
+	}
+}
 ```
 
 </JavaSection>
