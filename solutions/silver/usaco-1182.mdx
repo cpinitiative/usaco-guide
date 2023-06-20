@@ -108,7 +108,30 @@ public class solution {
 <PySection>
 
 ```py
+def solve(a, b):
+	if a == b:
+		return 0
+	elif a > b:
+		"""
+		Divide a greedily until a <= b, add 1 in case a is odd to enable
+		division.
+		"""
+		isOdd = a % 2;
+		return 1 + isOdd + solve((a + isOdd) // 2, b)
+	else:
+		"""
+		Otherwise, simulate multiplication of a by dividing b.
+		Alternatively, if it's better, add up to b directly. 
+		"""
+		isOdd = b % 2;
+		return min(b - a, 1 + isOdd + solve(a, b // 2))
 
+
+N = int(input())
+
+for i in range(N):
+	a, b = map(int, input().split())
+	print(solve(a, b))
 ```
 
 </PySection>
