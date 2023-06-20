@@ -10,9 +10,16 @@ author: Chongtian Ma, Chuyang Wang
 
 ## Explanation
 
+To transform $a$ into $b$, we proceed greedily. If $a > b$, it can be shown that
+it is never optimal to add more than once consecutively before dividing $a$ by
+2. Then, if $a < b$, we can simulate our strategy above by allowing
+multiplication, division, and subtraction by one on $b$. We therefore either
+divide $b$ by two (and first subtract by one if $b$ is odd) or subtract $b$ $b -
+a$ times to directly reach $a$. 
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\sqrt{N} \cdot \log{N})$
+**Time Complexity:** $\mathcal{O}(N \log{\log\max(A, b)})$
 
 <LanguageSection>
 <CPPSection>
