@@ -1,0 +1,56 @@
+---
+id: cf-632C
+source: CF
+title: The Smallest String Concatenation
+author: Daniel Ge
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/43493)
+
+## Solution
+<Info title="Quick note on notation">
+In C++ and Python, strings can be concatenated using the '+' operator and lexicographically compared using '\<' and '\>'. We will be using this notation in the solution below.
+</Info>
+
+If there were only two strings $a, b$, we can check whichever of $a + b, b + a$ is greater.
+
+**Time Complexity:** $\mathcal{O}(n \log(N) \cdot |a_i|)$
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+vector<string> inps;
+
+bool comp (string a, string b) {
+    return (a + b) < (b + a);
+}
+
+int main() {
+    cin >> n;
+    // Reading input to inps
+    for (int i = 0; i < n; i ++) {
+        string inp; cin >> inp;
+        inps.push_back(inp);
+    }
+
+    // Sorting by custom comparator
+    sort(inps.begin(), inps.end(), comp);
+
+    // Printing it all back out in the lexicographically smallest order
+    for (auto l : inps) {
+        cout << l;
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
