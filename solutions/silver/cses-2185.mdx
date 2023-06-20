@@ -74,17 +74,19 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
-```py
-# Exceeds time limit on test case 2 and 4 because of Python
+<Warning>
 
+Due to Python's big constant factor, this code will TLE on a couple of test cases.
+
+</Warning>
+
+```py
 n, k = map(int, input().split())
 a = list(map(int, input().split()))
 
 ans = 0
-
 for i in range(1, 1 << k):
 	prime_product = 1
 
@@ -92,11 +94,12 @@ for i in range(1, 1 << k):
 		# check if we are using a[j] in this number
 		if i & (1 << j):
 			# check to not overflow, if we do set prime_product to N+1 so
-			# ans doesn't change
+			# the ans doesn't change
 			if prime_product > n // a[j]:
 				prime_product = n + 1
 				break
 			prime_product *= a[j]
+
 	# convert to binary representation and count number of 1's,
 	# which is equal to the number of primes we have multiplied
 	if bin(i).count("1") % 2:
