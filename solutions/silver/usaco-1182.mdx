@@ -15,7 +15,7 @@ it is never optimal to add more than once consecutively before dividing $a$ by
 2. Then, if $a < b$, we can simulate our strategy above by allowing
 multiplication, division, and subtraction by one on $b$. We therefore either
 divide $b$ by two (and first subtract by one if $b$ is odd) or subtract $b$ $b -
-a$ times to directly reach $a$. 
+a$ times to directly reach $a$.
 
 ## Implementation
 
@@ -36,14 +36,14 @@ ll solve(ll a, ll b) {
 	} else if (a > b) {
 		/*
 		 * Divide a greedily until a <= b, add 1 in case a is odd to enable
-		 * division. 
+		 * division.
 		 */
 		ll is_odd = a % 2;
 		return 1 + is_odd + solve((a + is_odd) / 2, b);
 	} else {
 		/*
 		 * Otherwise, simulate multiplication of a by dividing b.
-		 * Alternatively, if it's better, add up to b directly. 
+		 * Alternatively, if it's better, add up to b directly.
 		 */
 		ll is_odd = b % 2;
 		return min(b - a, 1 + is_odd + solve(a, b / 2));
@@ -90,9 +90,10 @@ public class solution {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		
+
 		for (int i = 0; i < N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			long a = Long.parseLong(st.nextToken());
@@ -116,14 +117,14 @@ def solve(a, b):
 		Divide a greedily until a <= b, add 1 in case a is odd to enable
 		division.
 		"""
-		is_odd = a % 2;
+		is_odd = a % 2
 		return 1 + is_odd + solve((a + is_odd) // 2, b)
 	else:
 		"""
 		Otherwise, simulate multiplication of a by dividing b.
-		Alternatively, if it's better, add up to b directly. 
+		Alternatively, if it's better, add up to b directly.
 		"""
-		is_odd = b % 2;
+		is_odd = b % 2
 		return min(b - a, 1 + is_odd + solve(a, b // 2))
 
 
