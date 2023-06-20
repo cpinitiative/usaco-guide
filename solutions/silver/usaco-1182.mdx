@@ -25,7 +25,40 @@ a$ times to directly reach $a$.
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
+using ll = long long;
+
+ll solve(ll a, ll b) {
+	if (a == b) {
+		return 0;
+	} else if (a > b) {
+		/*
+		 * Divide a greedily until a <= b, add 1 in case a is odd to enable
+		 * division. 
+		 */
+		ll isOdd = a % 2;
+		return 1 + isOdd + solve((a + isOdd) / 2, b);
+	} else {
+		/*
+		 * Otherwise, simulate multiplication of a by dividing b.
+		 * Alternatively, if it's better, add up to b directly. 
+		 */
+		ll isOdd = b % 2;
+		return min(b - a, 1 + isOdd + solve(a, b / 2));
+	}
+}
+
+int main() {
+	int N;
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		ll a, b;
+		cin >> a >> b;
+		cout << solve(a, b) << endl;
+	}
+}
 ```
 
 </CPPSection>
