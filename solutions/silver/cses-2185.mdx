@@ -74,4 +74,37 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+<Warning>
+
+Due to Python's big constant factor, this code will TLE on a couple of test cases.
+
+</Warning>
+
+```py
+n, k = map(int, input().split())
+a = list(map(int, input().split()))
+
+ans = 0
+for i in range(1, 1 << k):
+	prime_product = 1
+
+	for j in range(k):
+		# check if we are using a[j] in this number
+		if i & (1 << j):
+			prime_product *= a[j]
+
+	# convert to binary representation and count number of 1's,
+	# which is equal to the number of primes we have multiplied
+	if bin(i).count("1") % 2:
+		ans += n // prime_product
+	else:
+		ans -= n // prime_product
+
+print(ans)
+```
+
+</PySection>
+
 </LanguageSection>
