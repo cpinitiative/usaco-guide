@@ -8,26 +8,38 @@ author: Daniel Ge
 [Official Editorial](https://codeforces.com/blog/entry/43493)
 
 ## Explanation
+
 <Info title="Quick note on notation">
-In C++ and Python, strings can be concatenated using the '+' operator and lexicographically compared using '\<' and '\>'. We will be using this notation in the solution below.
+
+In C++ and Python, strings can be concatenated using the '+' operator and lexicographically compared using '\<' and '\>'.
+We will be using this notation in the solution below.
+
 </Info>
 
 ### Solution
-The rigorous proof of the method used to solve this problem is avaliable on Codeforces and beyond the scope of USACO Silver. Therefore, we first present how one might arrive at this solution and be convinced that it works.
+
+The rigorous proof of the method used to solve this problem is avaliable on Codeforces and beyond the scope of USACO Silver.
+Therefore, we first present how one might arrive at this solution and be convinced that it works.
 
 <Warning title="Bogus Solution">
+
 Simply sort the strings lexicographically, concatenate, and finish.
+
 </Warning>
 
 If all the strings in the input had the same length, we can prove that this solution would in fact work.
 
 <Spoiler title="Proof of above">
-We construct our concatenation from left to right. Every step, we must append the lexicographically smallest string since appending any other string would instantly result in a lexicographically greater concatenation.
+
+We construct our concatenation from left to right.
+Every step, we must append the lexicographically smallest string since appending any other string would instantly result in a lexicographically greater concatenation.
 
 This is equivalent to sorting the strings lexicographically.
+
 </Spoiler>
 
-However, this method does not work in this problem as strings do not have to be the same length. For example, with the testcase:
+However, this method does not work in this problem as strings do not have to be the same length.
+For example, with the testcase:
 ```
 4
 z
@@ -37,7 +49,8 @@ by
 ```
 The best concatenation would be "bbyzaz".
 
-However, depending on how you personally define "lexicographically smaller", you may either get "bbyzza" or "bybzaz". Neither of these are the correct answer.
+However, depending on how you personally define "lexicographically smaller", you may either get "bbyzza" or "bybzaz".
+Neither of these are the correct answer.
 
 The reason why the solution fails here is because it doesn't make sense to compare two strings of different lengths since you don't know what can appear in the gap left by the shorter string.
 ```
@@ -46,49 +59,44 @@ by
 (If we don't know '?' we can't be sure which is smaller)
 ```
 
-Therefore, for this problem, it only ever makes sense to compare strings of same length. To do this, when deciding which of strings $a$ or $b$ goes first, we can instead compare $a + b$ and $b + a$, which have the same length.
+Therefore, for this problem, it only ever makes sense to compare strings of same length.
+To do this, when deciding which of strings $a$ or $b$ goes first, we can instead compare $a + b$ and $b + a$, which have the same length.
 ```
 bby
 byb
 (No uncertainty at all, "bby" is always smaller)
 ```
 
-Once again, though this is not a rigorous proof, it is how somebody may arrive at the solution and convince themselves that it works. For the rigorous proof provided by Lewis Gan, check the official editorial linked above.
+Once again, though this is not a rigorous proof, it is how one may arrive at the solution and convince themselves that it works.
+For the rigorous proof by Lewis Gan, check the official editorial linked above.
 
 **Time Complexity:** $\mathcal{O}(n \log(N) \cdot |a_i|)$
 
 ### Implementation
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-int n;
-vector<string> inps;
-
-bool comp(string a, string b) { return (a + b) < (b + a); }
+bool comp(const string& a, const string& b) { return (a + b) < (b + a); }
 
 int main() {
+	int n;
 	cin >> n;
-	// Reading input to inps
-	for (int i = 0; i < n; i++) {
-		string inp;
-		cin >> inp;
-		inps.push_back(inp);
-	}
+
+	vector<string> inps(n);
+	for (string& s : inps) { cin >> s; }
 
 	// Sorting by custom comparator
 	sort(inps.begin(), inps.end(), comp);
 
 	// Printing it all back out in the lexicographically smallest order
-	for (auto l : inps) { cout << l; }
+	for (const string& s : inps) { cout << s; }
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
