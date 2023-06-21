@@ -54,14 +54,12 @@ We can also compute this minimum distance with a [multi-source BFS](/silver/grap
 #include <bits/stdc++.h>
 using namespace std;
 
-const int BIG = 1e9;  // arbitrarily large integer
-
 int main() {
 	int c, n;
 	cin >> c >> n;
 
 	vector<int> teams(n);
-	vector<int> min_edits(1 << c, BIG);
+	vector<int> min_edits(1 << c, INT32_MAX);
 
 	for (int i = 0; i < n; i++) {
 		string breeds;
@@ -78,8 +76,10 @@ int main() {
 	for (int edit = 0; edit < c; edit++) {
 		for (int mask = 0; mask < (1 << c); mask++) {
 			// mask ^ (1 << edit) flips the edit-th bit of mask
-			min_edits[mask ^ (1 << edit)] =
-			    min(min_edits[mask ^ (1 << edit)], min_edits[mask] + 1);
+			if (min_edits[mask] != INT32_MAX) {
+				min_edits[mask ^ (1 << edit)] =
+					min(min_edits[mask ^ (1 << edit)], min_edits[mask] + 1);
+			}
 		}
 	}
 
@@ -94,11 +94,9 @@ int main() {
 <PySection>
 
 ```py
-BIG = 10**9  # arbitrary large integer
-
 c, n = map(int, input().split())
 teams = [0] * n
-min_edits = [BIG] * (1 << c)
+min_edits = [float('inf')] * (1 << c)
 
 for i in range(n):
 	breeds = input()
@@ -113,10 +111,11 @@ for i in range(n):
 
 for edit in range(c):
 	for mask in range(1 << c):
-		# mask ^ (1 << edit) flips the edit-th bit of mask
-		min_edits[mask ^ (1 << edit)] = min(
-			min_edits[mask ^ (1 << edit)], min_edits[mask] + 1
-		)
+		if min_edits[mask] != float('inf'):
+			# mask ^ (1 << edit) flips the edit-th bit of mask
+			min_edits[mask ^ (1 << edit)] = min(
+				min_edits[mask ^ (1 << edit)], min_edits[mask] + 1
+			)
 
 for i in range(n):
 	# teams[i] ^ ((1 << c) - 1) flips all the bits of teams[i]
