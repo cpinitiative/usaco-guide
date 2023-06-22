@@ -44,7 +44,7 @@ We may also compute this minimum distance with a [multi-source BFS](/silver/grap
 #include <bits/stdc++.h>
 using namespace std;
 
-const int BIG = 1e9; // arbitrarily large integer
+const int BIG = 1e9;  // arbitrarily large integer
 
 int main() {
 	int c, n;
@@ -59,9 +59,7 @@ int main() {
 
 		// convert teams to bitmasks
 		for (int j = 0; j < c; j++) {
-			if (breeds[j] == 'G') {
-				teams[i] += 1 << (c - j - 1);
-			}
+			if (breeds[j] == 'G') { teams[i] += 1 << (c - j - 1); }
 		}
 
 		min_edits[teams[i]] = 0;
@@ -70,8 +68,8 @@ int main() {
 	for (int edit = 0; edit < c; edit++) {
 		for (int mask = 0; mask < (1 << c); mask++) {
 			// mask ^ (1 << edit) flips the edit-th bit of mask
-			min_edits[mask ^ (1 << edit)] = min(min_edits[mask ^ (1 << edit)],
-												min_edits[mask] + 1);
+			min_edits[mask ^ (1 << edit)] =
+			    min(min_edits[mask ^ (1 << edit)], min_edits[mask] + 1);
 		}
 	}
 
@@ -97,7 +95,7 @@ for i in range(n):
 
 	# convert teams to bitmasks
 	for j in range(c):
-		if breeds[j] == 'G':
+		if breeds[j] == "G":
 			teams[i] += 1 << (c - j - 1)
 
 	min_edits[teams[i]] = 0
@@ -106,8 +104,9 @@ for i in range(n):
 for edit in range(c):
 	for mask in range(1 << c):
 		# mask ^ (1 << edit) flips the edit-th bit of mask
-		min_edits[mask ^ (1 << edit)] = min(min_edits[mask ^ (1 << edit)],
-											min_edits[mask] + 1)
+		min_edits[mask ^ (1 << edit)] = min(
+			min_edits[mask ^ (1 << edit)], min_edits[mask] + 1
+		)
 
 for i in range(n):
 	# teams[i] ^ ((1 << c) - 1) flips all the bits of teams[i]
