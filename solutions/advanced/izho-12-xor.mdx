@@ -71,12 +71,12 @@ struct Trie {
 		if (bit == -1) return INF;
 		int current_answer = INF;
 
-		int x_bit = (x >> bit) & 1, y_bit = (y >> bit) & 1; // get b-th bits of x and y
+		int x_bit = (x >> bit) & 1, y_bit = (y >> bit) & 1; // get bit-th bits of x and y
 
 		for(int p_bit = 0; p_bit <= 1; p_bit++) {
 			if (!children[p_bit]) continue; // not possible (no values like this)
 			
-			if ((x_bit ^ p_bit) == y_bit) { // possible answer continue traversing
+			if ((x_bit ^ p_bit) == y_bit) { // possible answer, continue traversing
 				if (bit == 0) {
 					// reached equality, therefore is an answer
 					current_answer = min(current_answer, children[p_bit]->smallest_index);
