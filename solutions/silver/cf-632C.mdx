@@ -1,0 +1,102 @@
+---
+id: cf-632C
+source: CF
+title: The Smallest String Concatenation
+author: Daniel Ge
+---
+
+[Official Editorial (C++ and Python)](https://codeforces.com/blog/entry/43493)
+
+## Explanation
+
+<Info title="Notation">
+
+In C++ and Python, strings can be concatenated using the '+' operator and lexicographically compared using '\<' and '\>'.
+We will be using this notation in the solution below.
+
+</Info>
+
+### Solution
+
+The rigorous proof of the method used to solve this problem is avaliable on Codeforces and beyond the scope of USACO Silver.
+However, we present here how one might arrive at this solution and be convinced that it works.
+
+<Warning title="Bogus Solution">
+
+Simply sort the strings lexicographically and then concatenate.
+
+</Warning>
+
+If all the strings in the input had the same length, we can prove that this solution would in fact work.
+
+<Spoiler title="Proof of above">
+
+We construct our concatenation by appending to our answer one string at a time. In other words, we build our answer from left to write.
+Every step, we must append the lexicographically smallest string since appending any other string would instantly result in a lexicographically greater concatenation.
+
+This is equivalent to sorting the strings lexicographically and then concatenating.
+
+</Spoiler>
+
+However, this method does not work in this problem as strings do not have to be the same length.
+For example, with the testcase:
+```
+4
+z
+za
+b
+by
+```
+The best concatenation would be "bbyzaz".
+
+However, depending on how you personally define "lexicographically smaller", you may either get "bbyzza" or "bybzaz".
+Neither of these are the correct answer.
+
+The reason why the solution fails here is because it doesn't make sense to compare two strings of different lengths since you don't know what can appear in the gap left by the shorter string.
+```
+b?
+by
+(If we don't know '?' we can't be sure which is smaller)
+```
+
+Therefore, for this problem, it only ever makes sense to compare strings of same length.
+To do this, when deciding which of strings $a$ or $b$ goes first, we can instead compare $a + b$ and $b + a$, which have the same length.
+```
+bby
+byb
+(No uncertainty at all, "bby" is smaller)
+```
+
+Though this is not a rigorous proof, this is how one may arrive at the solution and convince themselves that it works.
+For the rigorous proof by Lewis Gan, check the official editorial linked above.
+
+**Time Complexity:** $\mathcal{O}(n \log(N) \cdot |a_i|)$
+
+### Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool comp(const string &a, const string &b) { return (a + b) < (b + a); }
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<string> inps(n);
+	for (string &s : inps) { cin >> s; }
+
+	// Sorting by custom comparator
+	sort(inps.begin(), inps.end(), comp);
+
+	// Printing it all back out in the lexicographically smallest order
+	for (const string &s : inps) { cout << s; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
