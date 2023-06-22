@@ -60,9 +60,11 @@ struct Trie {
 		if (bit == -1) return;
 		int value_bit = (value >> bit) & 1;
 
-		if (!children[value_bit]) children[value_bit] = new Trie(); // create node if needed
-
-		children[value_bit]->insert_value(value, index, bit - 1); // recurse from child node
+		// create node if needed
+		if (!children[value_bit]) children[value_bit] = new Trie(); 
+		
+		// recurse from child node
+		children[value_bit]->insert_value(value, index, bit - 1); 
 	}
 
 	int find_smallest_index(int x, int y, int bit = 30) { 
@@ -71,18 +73,27 @@ struct Trie {
 		if (bit == -1) return INF;
 		int current_answer = INF;
 
-		int x_bit = (x >> bit) & 1, y_bit = (y >> bit) & 1; // get bit-th bits of x and y
+		// get bit-th bits of x and y
+		int x_bit = (x >> bit) & 1, y_bit = (y >> bit) & 1; 
 
 		for(int p_bit = 0; p_bit <= 1; p_bit++) {
-			if (!children[p_bit]) continue; // not possible (no values like this)
+			// not possible (no values like this)
+			if (!children[p_bit]) continue;
 			
-			if ((x_bit ^ p_bit) == y_bit) { // possible answer, continue traversing
+			if ((x_bit ^ p_bit) == y_bit) {
+				// possible answer, continue traversing
 				if (bit == 0) {
 					// reached equality, therefore is an answer
-					current_answer = min(current_answer, children[p_bit]->smallest_index);
+					current_answer = min(
+						current_answer, 
+						children[p_bit]->smallest_index
+					);
 				} else {
                     // continue traversing
-					current_answer = min(current_answer, children[p_bit]->find_smallest_index(x, y, bit - 1));
+					current_answer = min(
+						current_answer, 
+						children[p_bit]->find_smallest_index(x, y, bit - 1)
+					);
 				}
 			}
 
