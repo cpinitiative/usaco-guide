@@ -76,7 +76,6 @@ import java.io.*;
 import java.util.*;
 
 public class Haircut {
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(
@@ -195,18 +194,16 @@ public class Haircut {
 ```
 
 </JavaSection>
-
 <CPPSection>
+
+This implementation uses a segment tree instead of a BIT, but the idea is still the same.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 
-// The C++ Solution uses Segement Tree instead BIT,
-// but the idea is still the same.
-
-// Sum between two indices of the segment tree
+/** @return the sum between a and b. */
 int sum(vector<ll> &segtree, int a, int b) {
 	int c = segtree.size() / 2;
 	a += c;
@@ -221,7 +218,7 @@ int sum(vector<ll> &segtree, int a, int b) {
 	return s;
 }
 
-// Increase the element at k by x in a segment tree
+/** Increase the element at k by x in the segment tree. */
 void add(vector<ll> &segtree, int k, ll x) {
 	int c = segtree.size() / 2;
 	k += c;
@@ -232,14 +229,15 @@ void add(vector<ll> &segtree, int k, ll x) {
 }
 
 int main() {
-	ofstream fout("haircut.out");
 	ifstream fin("haircut.in");
 
 	int n;
 	fin >> n;
+
 	int c = 0;
 	while ((1 << c) <= n + 1) { c++; }
 	c = 1 << c;
+
 	vector<ll> segtree(2 * c);
 	vector<ll> ans(n + 2);
 	for (int i = 1; i <= n; i++) {
@@ -249,6 +247,7 @@ int main() {
 		add(segtree, a, 1);
 	}
 
+	ofstream fout("haircut.out");
 	ll total = 0;
 	for (int i = 0; i < n; i++) {
 		total += ans[i];
@@ -258,7 +257,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 </Spoiler>
