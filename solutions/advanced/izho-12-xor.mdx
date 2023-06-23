@@ -22,11 +22,11 @@ Firstly, let's iterate over the array from left to right and for every index, $r
 
 This can be done using a trie. The trie will store the binary representations of the values in the array and the indices of the values. At each node, we should store its two children and the smallest index in the subtree rooted at the node. Using this trie, we will find the values of $p_l$ that work one bit at a time.
 
-To find the possible values of $p_l$, we will traverse through the bits from most significant to least significant. At each bit, we will try both to make this bit on and to make this bit off. 
+To find the possible values of $p_l$, we will traverse through the bits from most significant to least significant. At each bit, we will try both to make this bit on and to make this bit off.
 
 In both cases, we check whether $p_l \oplus p_r = x$ holds at this specific bit. If it does, then this means that this is a possible answer and we must continue traversing (It can be shown that this will only happen for one of the two possible bits). It is also important to note that you must handle the case of total equality carefully.
 
-We also check if $p_l \oplus p_r > x$ holds at this specific bit. If it does, then this means that the xor value is already greater and the less significant bits are irrelevant. So, this is an answer and we take the smallest index in the subtree rooted at this node as all the values in the subtree satisfy the original inequality. 
+We also check if $p_l \oplus p_r > x$ holds at this specific bit. If it does, then this means that the xor value is already greater and the less significant bits are irrelevant. So, this is an answer and we take the smallest index in the subtree rooted at this node as all the values in the subtree satisfy the original inequality.
 
 To recap, we will iterate through the array, adding the values into the trie as we go along. At every index, we find the smallest index satisfying the condition and are trivially able to find the longest interval satisfying the original condition.
 
@@ -45,90 +45,94 @@ using namespace std;
 
 #define nl '\n'
 
-const int INF = 1e9+10;
+const int INF = 1e9 + 10;
 
 struct Trie {
-	int smallest_index; // smallest index of a value in this sub-trie
-	Trie* children[2]; // (either 0 or 1)
-	Trie() { smallest_index = INF; children[0] = children[1] = NULL; }
+	int smallest_index;  // smallest index of a value in this sub-trie
+	Trie *children[2];   // (either 0 or 1)
+	Trie() {
+		smallest_index = INF;
+		children[0] = children[1] = NULL;
+	}
 
 	void insert_value(int value, int index, int bit = 30) {
 		// inserts x into the trie
-		smallest_index = min(smallest_index, index); // update smallest index in sub-trie
+		smallest_index =
+		    min(smallest_index, index);  // update smallest index in sub-trie
 
 		if (bit == -1) return;
 		int value_bit = (value >> bit) & 1;
 
 		// create node if needed
-		if (!children[value_bit]) children[value_bit] = new Trie(); 
-		
+		if (!children[value_bit]) children[value_bit] = new Trie();
+
 		// recurse from child node
-		children[value_bit]->insert_value(value, index, bit - 1); 
+		children[value_bit]->insert_value(value, index, bit - 1);
 	}
 
-	int find_smallest_index(int x, int y, int bit = 30) { 
-		// returns smallest index such that P xor x >= y, where P is a element in the trie
-	
+	int find_smallest_index(int x, int y, int bit = 30) {
+		// returns smallest index such that P xor x >= y, where P is a element
+		// in the trie
+
 		if (bit == -1) return INF;
 		int current_answer = INF;
 
 		// get bit-th bits of x and y
-		int x_bit = (x >> bit) & 1, y_bit = (y >> bit) & 1; 
+		int x_bit = (x >> bit) & 1, y_bit = (y >> bit) & 1;
 
-		for(int p_bit = 0; p_bit <= 1; p_bit++) {
+		for (int p_bit = 0; p_bit <= 1; p_bit++) {
 			// not possible (no values like this)
 			if (!children[p_bit]) continue;
-			
+
 			if ((x_bit ^ p_bit) == y_bit) {
 				// possible answer, continue traversing
 				if (bit == 0) {
 					// reached equality, therefore is an answer
-					current_answer = min(
-						current_answer, 
-						children[p_bit]->smallest_index
-					);
+					current_answer =
+					    min(current_answer, children[p_bit]->smallest_index);
 				} else {
-                    // continue traversing
+					// continue traversing
 					current_answer = min(
-						current_answer, 
-						children[p_bit]->find_smallest_index(x, y, bit - 1)
-					);
+					    current_answer,
+					    children[p_bit]->find_smallest_index(x, y, bit - 1));
 				}
 			}
 
 			if ((x_bit ^ p_bit) > y_bit) {
 				// already have P xor x > y, hence all other bits don't matter
-	
-				// take smallest index in the sub-trie
-				current_answer = min(
-					current_answer, 
-					children[p_bit]->smallest_index); 
 
-				p_bit ^= 1; // continue down other possibility 
+				// take smallest index in the sub-trie
+				current_answer =
+				    min(current_answer, children[p_bit]->smallest_index);
+
+				p_bit ^= 1;  // continue down other possibility
 			}
 		}
 
 		return current_answer;
 	}
-		
 };
 
 int main() {
-	int N, X; cin >> N >> X;
-	vector<int> seq(N); for(auto& x : seq) cin >> x;
+	int N, X;
+	cin >> N >> X;
+	vector<int> seq(N);
+	for (auto &x : seq) cin >> x;
 
 	Trie trie;
-	int current_xor = 0; trie.insert_value(current_xor, -1);
+	int current_xor = 0;
+	trie.insert_value(current_xor, -1);
 
 	int answer = 0, best_index = -1;
-	for(int index = 0; index < N; index++) {
+	for (int index = 0; index < N; index++) {
 		current_xor ^= seq[index];
 
-		int position = trie.find_smallest_index(current_xor, X); // get best position 
+		int position =
+		    trie.find_smallest_index(current_xor, X);  // get best position
 
-		if (answer < (index - position)) { // check if its a better answer
+		if (answer < (index - position)) {  // check if its a better answer
 			answer = (index - position);
-			best_index = position + 1; // position is exclusive
+			best_index = position + 1;  // position is exclusive
 		}
 
 		trie.insert_value(current_xor, index);
@@ -136,7 +140,7 @@ int main() {
 
 	cout << best_index + 1 << " " << answer << nl;
 
-    return 0;
+	return 0;
 }
 ```
 
