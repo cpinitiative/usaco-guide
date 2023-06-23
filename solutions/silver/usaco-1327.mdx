@@ -1,0 +1,127 @@
+---
+id: usaco-1327
+source: USACO Silver 2023 Open
+title: Field Day
+author: Ryan Chou
+---
+
+<Spoiler title="Hint 1">
+
+Notice the bound on $C$ is *stupid* small.
+What time complexity might this imply?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+$\mathcal{O}(2^C \cdot C)$ or similar.
+This should inspire you to use bitmasks!
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++, Java, and Python)](http://www.usaco.org/current/data/sol_prob2_silver_open23.html)
+
+## Explanation
+
+From the problem statement, we want to find the pair of teams which have the maximum possible difference. However, given that
+we fix the team that we want to find the maximum difference for, we can reword the problem statement as finding the minimum difference
+for **the inverse** of that team.
+
+For example, the inverse of `HGHH` is `GHGG`, `GGGG` is `HHHH`, `HGHG` is `GHGH`, etc.
+
+Since $C \leq 18$, we have the ability to iterate over every single possible team. Instead of computing the distance between a pair of teams,
+let's envision each of these differing positions as a singular edit operation; the end mask being an amalgamation of a series of edits.
+
+Then, for each of the $2^C$ possible masks, we can compute the difference for editing each of its $C$ bits. If we initialize the distance
+of all of FJ's teams as $0$ and all other teams as an arbitrarily large number, we can compute the minimum distance for each mask in
+$\mathcal{O}(2^C \cdot C)$ time.
+
+Our answer would then be $C - \texttt{dist}_{\text{inv}(\texttt{team}_i)}$ where $\texttt{team}_i$ is our current team,
+$\text{inv}(x)$ returns the inverse for $x$, and $\texttt{dist}_{\texttt{mask}}$ gives us the minimum edit distance from one of FJ's teams.
+
+We can also compute this minimum distance with a [multi-source BFS](/silver/graph-traversal) in the same time complexity.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^C \cdot C + NC)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int c, n;
+	cin >> c >> n;
+
+	vector<int> teams(n);
+	vector<int> min_edits(1 << c, INT32_MAX);
+
+	for (int i = 0; i < n; i++) {
+		string breeds;
+		cin >> breeds;
+
+		// convert teams to bitmasks
+		for (int j = 0; j < c; j++) {
+			if (breeds[j] == 'G') { teams[i] += 1 << (c - j - 1); }
+		}
+
+		min_edits[teams[i]] = 0;
+	}
+
+	for (int edit = 0; edit < c; edit++) {
+		for (int mask = 0; mask < (1 << c); mask++) {
+			// mask ^ (1 << edit) flips the edit-th bit of mask
+			if (min_edits[mask] != INT32_MAX) {
+				min_edits[mask ^ (1 << edit)] =
+				    min(min_edits[mask ^ (1 << edit)], min_edits[mask] + 1);
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		// teams[i] ^ ((1 << c) - 1) flips all the bits of teams[i]
+		cout << c - min_edits[teams[i] ^ ((1 << c) - 1)] << endl;
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+c, n = map(int, input().split())
+teams = [0] * n
+min_edits = [float("inf")] * (1 << c)
+
+for i in range(n):
+	breeds = input()
+
+	# convert teams to bitmasks
+	for j in range(c):
+		if breeds[j] == "G":
+			teams[i] += 1 << (c - j - 1)
+
+	min_edits[teams[i]] = 0
+
+
+for edit in range(c):
+	for mask in range(1 << c):
+		if min_edits[mask] != float("inf"):
+			# mask ^ (1 << edit) flips the edit-th bit of mask
+			min_edits[mask ^ (1 << edit)] = min(
+				min_edits[mask ^ (1 << edit)], min_edits[mask] + 1
+			)
+
+for i in range(n):
+	# teams[i] ^ ((1 << c) - 1) flips all the bits of teams[i]
+	print(c - min_edits[teams[i] ^ ((1 << c) - 1)])
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>
