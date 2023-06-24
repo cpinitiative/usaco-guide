@@ -16,10 +16,12 @@ it is never optimal to add more than once consecutively before dividing $a$ by
 to three operations in sum, we can instead first divide and then just add one,
 which has the same effect but requires only two operations.
 
-Then, if $a < b$, we can simulate our strategy above by allowing multiplication,
-division, and subtraction by one on $b$. We therefore either divide $b$ by two
-(and first subtract by one if $b$ is odd) or subtract $b$ $b - a$ times to
-directly reach $a$.
+Then, if $a < b$, as the optimality of the strategy above is already shown,
+let's reuse it and work on $b$ by allowing multiplication, division, and
+subtraction by one. We therefore either divide $b$ by two (and first subtract by
+one if $b$ is odd) or subtract $b$ $b - a$ times to directly reach $a$. One can
+see that these operations applied on $b$ are equivalent to what one does on $a$
+in reversed order.
 
 ## Implementation
 
@@ -46,8 +48,8 @@ ll solve(ll a, ll b) {
 		return 1 + is_odd + solve((a + is_odd) / 2, b);
 	} else {
 		/*
-		 * Otherwise, simulate multiplication of a by dividing b.
-		 * Alternatively, if it's better, add up to b directly.
+		 * Otherwise, work on b to reach a by division. Alternatively, 
+		 * if it's better, perform subtraction until a is reached.
 		 */
 		ll is_odd = b % 2;
 		return min(b - a, 1 + is_odd + solve(a, b / 2));
@@ -85,8 +87,8 @@ public class Soulmates {
 			return 1 + isOdd + solve((a + isOdd) / 2, b);
 		} else {
 			/*
-			 * Otherwise, simulate multiplication of a by dividing b.
-			 * Alternatively, if it's better, add up to b directly.
+			 * Otherwise, work on b to reach a by division. Alternatively, 
+			 * if it's better, perform subtraction until a is reached.
 			 */
 			long isOdd = b % 2;
 			return Math.min(b - a, 1 + isOdd + solve(a, b / 2));
@@ -125,8 +127,8 @@ def solve(a, b):
 		return 1 + is_odd + solve((a + is_odd) // 2, b)
 	else:
 		"""
-		Otherwise, simulate multiplication of a by dividing b.
-		Alternatively, if it's better, add up to b directly.
+		Otherwise, work on b to reach a by division. Alternatively, 
+		if it's better, perform subtraction until a is reached.
 		"""
 		is_odd = b % 2
 		return min(b - a, 1 + is_odd + solve(a, b // 2))
