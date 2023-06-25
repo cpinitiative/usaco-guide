@@ -143,7 +143,17 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   onClick={() => {
                     const groupId = props.group?.id;
-                    if (groupId) {
+                    if (
+                      groupId &&
+                      confirm(
+                        'Are you sure you want to leave this group? You will not be able to rejoin unless you are provided with another link.'
+                      ) &&
+                      prompt(
+                        'Are you REALLY sure? Please type "Yes I am sure I want to leave"'
+                      )
+                        .toLowerCase()
+                        .indexOf('yes i am sure i want to leave') > -1
+                    ) {
                       leaveGroup(groupId, firebaseUser?.uid)
                         .then(() => navigate(`/groups/`))
                         .catch(e => {
