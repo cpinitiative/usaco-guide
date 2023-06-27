@@ -198,8 +198,8 @@ General centroid code is shown below.
 
 ```cpp
 vector<int> adj[maxn];  // adjacency list
-bool r[MN];  // removed
-int s[MN];   // subtree size
+bool r[MN];             // removed
+int s[MN];              // subtree size
 
 int dfs(int u, int p = 0) {
 	s[u] = 1;
@@ -208,8 +208,9 @@ int dfs(int u, int p = 0) {
 	return s[u];
 }
 
-int get_centroid(int u, int ms, int p = 0)
-{  // u = node, ms = size of current tree after node removals, p = parent
+int get_centroid(int u, int ms,
+                 int p = 0) {  // u = node, ms = size of current tree after node
+	                           // removals, p = parent
 	for (int v : adj[u])
 		if (v != p && !r[v])
 			if (s[v] * 2 > ms) return get_centroid(v, ms, u);
