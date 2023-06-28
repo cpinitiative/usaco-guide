@@ -55,7 +55,8 @@ int main() {
 		vector<ll> pref_xor(n + 1);
 
 		function<ll(int, int)> cost = [&](int l, int r) {
-			return (pref_sum[r] - pref_sum[l - 1]) - (pref_xor[r] ^ pref_xor[l - 1]);
+			return (pref_sum[r] - pref_sum[l - 1]) -
+			       (pref_xor[r] ^ pref_xor[l - 1]);
 		};
 
 		for (int i = 0; i < n; i++) {
@@ -115,8 +116,9 @@ for _ in range(tc):
 	pref_sum = [0] * (n + 1)
 	pref_xor = [0] * (n + 1)
 
-	cost = lambda l, r : (pref_sum[r] - pref_sum[l - 1]) \
-						- (pref_xor[r] ^ pref_xor[l - 1])
+	cost = lambda l, r: (pref_sum[r] - pref_sum[l - 1]) - (
+		pref_xor[r] ^ pref_xor[l - 1]
+	)
 
 	a = list(map(int, input().split()))
 	for i in range(n):
