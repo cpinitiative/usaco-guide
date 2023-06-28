@@ -2,7 +2,7 @@
 id: parallel_binary_search
 title: 'Parallel Binary Search'
 author: Talha Taki
-prerequisites: 
+prerequisites:
   - binary-search
 description: It's an amazing technique for doing the binary search for all queries parallely.
 frequency: 0
@@ -53,9 +53,9 @@ parallel_binary_search(l, r, level, candidate):
 	if m == 1:
         for i = 0 to m-1:
         ans[candidate[i]] = l
-    
+
     candidate.clean()
-    return 
+    return
 
     mid = floor((l + r) / 2)
 
@@ -98,120 +98,114 @@ $\text{DS[level].f()}$ = $\text{DSU[level].Find()}$
 
 ```cpp
 #include <bits/stdc++.h>
- 
-using namespace std;
- 
- 
-typedef pair <int, int> pii;
 
+using namespace std;
+
+typedef pair<int, int> pii;
 
 const int MAX_LOG = 20;
- 
+
 struct Disjoint_Set_Union {
-    int n;
-    std::vector <int> dsu;
+	int n;
+	std::vector<int> dsu;
 
-    Disjoint_Set_Union() {} // default constructor
-    Disjoint_Set_Union(int n) : n(n) {
-        dsu.resize(n+1); // 1-based indexing. Can also be used as 0-based indexed system.
-        iota(dsu.begin(), dsu.end(), 0);
-    }
+	Disjoint_Set_Union() {}  // default constructor
+	Disjoint_Set_Union(int n) : n(n) {
+		dsu.resize(n + 1);  // 1-based indexing. Can also be used as 0-based
+		                    // indexed system.
+		iota(dsu.begin(), dsu.end(), 0);
+	}
 
-    // Path compression technique
-    int Find(int x) { return x == dsu[x]? x : dsu[x] = Find(dsu[x]); }
+	// Path compression technique
+	int Find(int x) { return x == dsu[x] ? x : dsu[x] = Find(dsu[x]); }
 
-    void Union(int u, int v) {
-        u = Find(u);
-        v = Find(v);
+	void Union(int u, int v) {
+		u = Find(u);
+		v = Find(v);
 
-        dsu[v] = u;
-    }
+		dsu[v] = u;
+	}
 
 } DSU[MAX_LOG];
 
 int n, m, q;
- 
-vector <pii> edge, query;
-vector <int> ans, ptr(MAX_LOG);
- 
-void parallel_binary_search(int l, int r, int level, vector <int> &candidate) {
-    if (l == r) {
-        for(auto c : candidate) {
-            ans[c] = l;
-        }
-        candidate.clear();
-        return ;
-    }
- 
-    int mid = (l + r) / 2;
-    
-    // Adding edges upto 'mid'
-    for( ; ptr[level] <= mid; ptr[level]++) {
-        DSU[level].Union(edge[ptr[level]].first, edge[ptr[level]].second);
-    }
 
-    vector <int> left_candidate, right_candidate;
-    for(int c : candidate) {
-        if (DSU[level].Find(query[c].first) != DSU[level].Find(query[c].second)) {
-            right_candidate.push_back(c);
-        }
-        else {
-            left_candidate.push_back(c);
-        }
-    }
-    
-    // Memory complexity reduced to O(q)
-    candidate.clear();
- 
-    parallel_binary_search(l, mid, level + 1, left_candidate);
-    parallel_binary_search(mid + 1, r, level + 1, right_candidate);
+vector<pii> edge, query;
+vector<int> ans, ptr(MAX_LOG);
+
+void parallel_binary_search(int l, int r, int level, vector<int> &candidate) {
+	if (l == r) {
+		for (auto c : candidate) { ans[c] = l; }
+		candidate.clear();
+		return;
+	}
+
+	int mid = (l + r) / 2;
+
+	// Adding edges upto 'mid'
+	for (; ptr[level] <= mid; ptr[level]++) {
+		DSU[level].Union(edge[ptr[level]].first, edge[ptr[level]].second);
+	}
+
+	vector<int> left_candidate, right_candidate;
+	for (int c : candidate) {
+		if (DSU[level].Find(query[c].first) !=
+		    DSU[level].Find(query[c].second)) {
+			right_candidate.push_back(c);
+		} else {
+			left_candidate.push_back(c);
+		}
+	}
+
+	// Memory complexity reduced to O(q)
+	candidate.clear();
+
+	parallel_binary_search(l, mid, level + 1, left_candidate);
+	parallel_binary_search(mid + 1, r, level + 1, right_candidate);
 }
- 
-int main() {
- 
-    cin >> n >> m >> q;
-    
-    // 0-based indexing
-    for(int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
- 
-        edge.push_back({--u, --v});
-    }
- 
-    for(int i = 0; i < q; ++i) {
-        int u, v;
-        cin >> u >> v;
- 
-        query.push_back({--u, --v});
-    }
- 
-    for(int i = 0; i < MAX_LOG; ++i) {
-        DSU[i] = Disjoint_Set_Union(n);
-    }
 
-    // candidate = set of all relevant candidates for the range [0, m-1]
-    vector <int> candidate(q);
-    iota(candidate.begin(), candidate.end(), 0);
-    ans.resize(q);
-    
-    // [0....m-1] are the possible answers. 'm' is equivalent of -1 for the answer.
-    parallel_binary_search(0, m, 0, candidate);
- 
-    for(int i = 0; i < q; ++i) {
-        if (query[i].first == query[i].second) {
-            cout << "0\n";
-        }
-        else if (ans[i] == m) {
-            cout << "-1\n";
-        }
-        else {
-            // answer required to be 1-based.
-            cout << ans[i] + 1 << '\n';
-        }
-    }
- 
-    return 0;
+int main() {
+
+	cin >> n >> m >> q;
+
+	// 0-based indexing
+	for (int i = 0; i < m; ++i) {
+		int u, v;
+		cin >> u >> v;
+
+		edge.push_back({--u, --v});
+	}
+
+	for (int i = 0; i < q; ++i) {
+		int u, v;
+		cin >> u >> v;
+
+		query.push_back({--u, --v});
+	}
+
+	for (int i = 0; i < MAX_LOG; ++i) { DSU[i] = Disjoint_Set_Union(n); }
+
+	// candidate = set of all relevant candidates for the range [0, m-1]
+	vector<int> candidate(q);
+	iota(candidate.begin(), candidate.end(), 0);
+	ans.resize(q);
+
+	// [0....m-1] are the possible answers. 'm' is equivalent of -1 for the
+	// answer.
+	parallel_binary_search(0, m, 0, candidate);
+
+	for (int i = 0; i < q; ++i) {
+		if (query[i].first == query[i].second) {
+			cout << "0\n";
+		} else if (ans[i] == m) {
+			cout << "-1\n";
+		} else {
+			// answer required to be 1-based.
+			cout << ans[i] + 1 << '\n';
+		}
+	}
+
+	return 0;
 }
 ```
 </CPPSection>
