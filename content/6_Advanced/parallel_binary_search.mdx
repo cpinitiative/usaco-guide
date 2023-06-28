@@ -1,0 +1,229 @@
+---
+id: parallel_binary_search
+title: 'Parallel Binary Search'
+author: Talha Taki
+prerequisites: 
+  - binary-search
+description: It's an amazing technique for doing the binary search for all queries parallely.
+frequency: 0
+---
+
+<FocusProblem problem="sample" />
+
+<Resources>
+	<Resource
+		source="Robert's Blog"
+		title="A SImple Introduction to Parallel Binary Search"
+		url="https://robert1003.github.io/2020/02/05/parallel-binary-search.html"
+		starred
+	>
+	</Resource>
+		<Resource
+		source="CF"
+		title="Tutorial on Parallel Binary Search"
+		url="https://codeforces.com/blog/entry/45578"
+		starred
+	>
+	</Resource>
+
+</Resources>
+Both of the above resources provide a solution to [Meteors](https://szkopul.edu.pl/problemset/problem/7JrCYZ7LhEK4nBR5zbAXpcmM/site/?key=statement) using **parallel binary search** technique.
+
+<Info>
+This section is based on the definitions given in [Binary Search](/silver/binary-search) module.
+</Info>
+## Tutorial
+
+<IncompleteSection>
+
+</IncompleteSection>
+
+## Pseudocode
+Let $\text{event[i]}$ corresponds to some stuff that needed be done at that particular index $\text{i (lo <= i <= hi)}$
+
+For all $\mathcal{O}(log MaxAns)$ levels, we maintain independent data structure $\text{DS[level]}$. Associated with every data structure we have our monotonic function $\text{DS[level].f()}$ and $\text{DS[level].add()}$ for maintaining ongoing **events** at that **level**.
+
+
+A pseudocode for parallel binary search looks something like this:
+
+```
+parallel_binary_search(l, r, level, candidate):
+    m = candidate.size
+
+	if m == 1:
+        for i = 0 to m-1:
+        ans[candidate[i]] = l
+    
+    candidate.clean()
+    return 
+
+    mid = floor((l + r) / 2)
+
+    while pointer[level] <= mid:
+        DS[level].add(event[pointer[level]])
+        pointer[level] = pointer[level] + 1
+
+
+    for i = 0 to m-1:
+        if DS[level].f(lo, mid, candidate[i]) == True:
+            satisfied_candidate.add(candidate[i])
+        else:
+            unsatisfied_candidate.add(candidate[i])
+
+    candidate.clean()
+
+    parallel_binary_search(l, mid, level + 1, satisfied_candidate)
+    parallel_binary_search(mid + 1, r, level + 1, unsatisfied_candidate)
+
+// Calculating answers for the range [lo, hi] where `relevant_candidate` belongs to that range
+parallel_binary_search(lo, hi, 0, relevant_candidate)
+```
+
+## Generalized Complexity
+ <IncompleteSection>
+
+ </IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+## Solution - New Road Queries
+In this problem, the required data structure is [DSU](/gold/dsu) for knowing whether there is a path between two vertexes after adding some edges of the graph. Here:
+
+$\text{event[i]}$ = Add $\text{i}$<sup>th</sup> edge.
+
+$\text{DS[level].add()}$ = $\text{DSU[level].Union()}$
+
+$\text{DS[level].f()}$ = $\text{DSU[level].Find()}$
+
+```cpp
+#include <bits/stdc++.h>
+ 
+using namespace std;
+ 
+ 
+typedef pair <int, int> pii;
+
+
+const int MAX_LOG = 20;
+ 
+struct Disjoint_Set_Union {
+    int n;
+    std::vector <int> dsu;
+
+    Disjoint_Set_Union() {} // default constructor
+    Disjoint_Set_Union(int n) : n(n) {
+        dsu.resize(n+1); // 1-based indexing. Can also be used as 0-based indexed system.
+        iota(dsu.begin(), dsu.end(), 0);
+    }
+
+    // Path compression technique
+    int Find(int x) { return x == dsu[x]? x : dsu[x] = Find(dsu[x]); }
+
+    void Union(int u, int v) {
+        u = Find(u);
+        v = Find(v);
+
+        dsu[v] = u;
+    }
+
+} DSU[MAX_LOG];
+
+int n, m, q;
+ 
+vector <pii> edge, query;
+vector <int> ans, ptr(MAX_LOG);
+ 
+void parallel_binary_search(int l, int r, int level, vector <int> &candidate) {
+    if (l == r) {
+        for(auto c : candidate) {
+            ans[c] = l;
+        }
+        candidate.clear();
+        return ;
+    }
+ 
+    int mid = (l + r) / 2;
+    
+    // Adding edges upto 'mid'
+    for( ; ptr[level] <= mid; ptr[level]++) {
+        DSU[level].Union(edge[ptr[level]].first, edge[ptr[level]].second);
+    }
+
+    vector <int> left_candidate, right_candidate;
+    for(int c : candidate) {
+        if (DSU[level].Find(query[c].first) != DSU[level].Find(query[c].second)) {
+            right_candidate.push_back(c);
+        }
+        else {
+            left_candidate.push_back(c);
+        }
+    }
+    
+    // Memory complexity reduced to O(q)
+    candidate.clear();
+ 
+    parallel_binary_search(l, mid, level + 1, left_candidate);
+    parallel_binary_search(mid + 1, r, level + 1, right_candidate);
+}
+ 
+int main() {
+ 
+    cin >> n >> m >> q;
+    
+    // 0-based indexing
+    for(int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+ 
+        edge.push_back({--u, --v});
+    }
+ 
+    for(int i = 0; i < q; ++i) {
+        int u, v;
+        cin >> u >> v;
+ 
+        query.push_back({--u, --v});
+    }
+ 
+    for(int i = 0; i < MAX_LOG; ++i) {
+        DSU[i] = Disjoint_Set_Union(n);
+    }
+
+    // candidate = set of all relevant candidates for the range [0, m-1]
+    vector <int> candidate(q);
+    iota(candidate.begin(), candidate.end(), 0);
+    ans.resize(q);
+    
+    // [0....m-1] are the possible answers. 'm' is equivalent of -1 for the answer.
+    parallel_binary_search(0, m, 0, candidate);
+ 
+    for(int i = 0; i < q; ++i) {
+        if (query[i].first == query[i].second) {
+            cout << "0\n";
+        }
+        else if (ans[i] == m) {
+            cout << "-1\n";
+        }
+        else {
+            // answer required to be 1-based.
+            cout << ans[i] + 1 << '\n';
+        }
+    }
+ 
+    return 0;
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+<IncompleteSection>
+
+- Tags, difficulty yet to be justified.
+- Internal solutions need to be added.
+- More problems are welcomed
+
+</IncompleteSection>
+<Problems problems="general" />
