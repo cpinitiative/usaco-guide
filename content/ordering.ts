@@ -259,6 +259,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'matroid-isect',
         'interactive',
         'vectorization',
+        'parallel-binary-search',
       ],
     },
   ],
