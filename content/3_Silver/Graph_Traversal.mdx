@@ -303,32 +303,8 @@ System.out.println(q.peek());  // 3
 
 <PySection>
 
-Python has a `queue` built-in module.
-
-- `Queue.put(n)`: Inserts element to the back of the queue.
-- `Queue.get()`: Gets and removes the front element. If the queue
-  is empty, this will wait forever, creating a TLE error.
-- `Queue.queue[n]`: Gets the nth element without removing it. Set
-  n to 0 for the first element.
-
-```py
-from queue import Queue
-
-q = Queue()  # []
-q.put(1)  # [1]
-q.put(2)  # [1, 2]
-v = q.queue[0]  # v = 1, q = [1, 2]
-v = q.get()  # v = 1, q = [2]
-v = q.get()  # v = 2, q = []
-v = q.get()  # Code waits forever, creating TLE error.
-```
-
-<Warning>
-
-Python's `queue.Queue()` uses Locks to maintain a threadsafe synchronization, so it's quite slow.
-To avoid TLE, use `collections.deque()` instead for a faster version of a queue.
-
-</Warning>
+See `collections.deque()` in the next section;
+using only `.appendleft` and `.pop`, we effectively have a queue.
 
 </PySection>
 
@@ -390,10 +366,10 @@ In Python, `collections.deque()` is used for a deque data structure. The four me
 d = collections.deque()
 d.appendleft(3)  # [3]
 d.appendleft(4)  # [4, 3]
-d.append(7)  # [4, 3, 7]
-d.popleft()  # [3, 7]
+d.append(7)      # [4, 3, 7]
+d.popleft()      # [3, 7]
 d.appendleft(1)  # [1, 3, 7]
-d.pop()  # [1, 3]
+d.pop()          # [1, 3]
 ```
 
 </PySection>
@@ -552,19 +528,19 @@ using namespace std;
 
 int N;
 vector<vector<int>> adj;
-vector<bool> visited;
+vector<bool> vis;
 vector<int> rep;
 
 void dfs(int node) {
-	visited[node] = true;
+	vis[node] = true;
 	for (int u : adj[node])
-		if (!visited[u]) dfs(u);
+		if (!vis[u]) dfs(u);
 }
 
 int count_components() {
 	int count = 0;
 	for (int i = 1; i <= N; i++) {
-		if (!visited[i]) {
+		if (!vis[i]) {
 			count++;
 			rep.push_back(i);
 			dfs(i);
@@ -577,7 +553,7 @@ int main() {
 	int M;
 	cin >> N >> M;
 	adj.resize(N + 1);
-	visited.resize(N + 1);
+	vis.resize(N + 1);
 	for (int i = 0; i < M; i++) {
 		int u, v;
 		cin >> u >> v;
@@ -603,7 +579,7 @@ import java.util.*;
 public class Main {
 	public static ArrayList<Integer> adj[];
 	public static ArrayList<Integer> rep = new ArrayList<Integer>();
-	public static boolean visited[];
+	public static boolean vis[];
 	public static void main(String[] args) throws IOException {
 		BufferedReader br =
 		    new BufferedReader(new InputStreamReader(System.in));
@@ -612,7 +588,7 @@ public class Main {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		adj = new ArrayList[N + 1];
-		visited = new boolean[N + 1];
+		vis = new boolean[N + 1];
 		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -629,14 +605,14 @@ public class Main {
 		out.close();
 	}
 	public static void dfs(int node) {
-		visited[node] = true;
+		vis[node] = true;
 		for (int u : adj[node])
-			if (!visited[u]) dfs(u);
+			if (!vis[u]) dfs(u);
 	}
 	public static int count_components() {
 		int count = 0;
 		for (int i = 1; i <= adj.length - 1; i++) {
-			if (!visited[i]) {
+			if (!vis[i]) {
 				count++;
 				rep.add(i);
 				dfs(i);
@@ -652,35 +628,32 @@ public class Main {
 <PySection>
 
 ```py
-def solve(n, adj):
-	unvisited = set(range(1, n + 1))
-	starts = set()
+n, m = map(int, input().split())
+adj = [[] for _ in range(n + 1)]
+for _ in range(m):
+	u, v = map(int, input().split())
+	adj[u].append(v)
+	adj[v].append(u)
 
-	def dfs(current):
-		for next in adj[current]:
-			if next in unvisited:
-				unvisited.remove(next)
-				dfs(next)
+vis = [False] * (n+1)
+rep = []
 
-	while unvisited:
-		start = unvisited.pop()
-		starts.add(start)
-		dfs(start)
+def dfs(node):
+	vis[node] = True
+	for u in adj[node]:
+		if not vis[u]: dfs(u)
 
-	print(len(starts) - 1)
-	root = starts.pop()
-	for other in starts:
-		print(root, other)
+def count_components():
+	for i in range(1, n+1):
+		if not vis[i]:
+			rep.append(i)
+			dfs(i)
 
+count_components()
 
-if __name__ == "__main__":
-	n, m = map(int, input().split())
-	adj = [set() for _ in range(n + 1)]
-	for _ in range(m):
-		u, v = map(int, input().split())
-		adj[u].add(v)
-		adj[v].add(u)
-	solve(n, adj)
+print(len(rep) - 1)
+for u in rep[1:]:
+	print(rep[0], u)
 ```
 
 However, this code causes a runtime error on five test cases. See the
@@ -749,20 +722,18 @@ for i in range(1, N):
 then you will observe a *RecursionError* that looks like this:
 ```
 Traceback (most recent call last):
-  File "input/code.py", line 28, in <module>
-	solve(n, adj)
-  File "input/code.py", line 14, in solve
-	dfs(start, start)
-  File "input/code.py", line 9, in dfs
-	dfs(start, next)
-  File "input/code.py", line 9, in dfs
-	dfs(start, next)
-  File "input/code.py", line 9, in dfs
-	dfs(start, next)
-  [Previous line repeated 994 more times]
-  File "input/code.py", line 7, in dfs
-	if next in unvisited:
-RecursionError: maximum recursion depth exceeded in comparison
+  File "input/code.py", line 25, in <module>
+    count_components()
+  File "input/code.py", line 23, in count_components
+    dfs(i)
+  File "input/code.py", line 17, in dfs
+    if not vis[u]: dfs(u)
+  File "input/code.py", line 17, in dfs
+    if not vis[u]: dfs(u)
+  File "input/code.py", line 17, in dfs
+    if not vis[u]: dfs(u)
+  [Previous line repeated 995 more times]
+RecursionError: maximum recursion depth exceeded
 ```
 
 This will occur for $N>10^3$ since the recursion limit in Python is set to
@@ -770,43 +741,40 @@ This will occur for $N>10^3$ since the recursion limit in Python is set to
 
 ```py
 import sys
-
-sys.setrecursionlimit(1000000)
+sys.setrecursionlimit(10**6)
 
 # BeginCodeSnip{rest of solution}
-def solve(n, adj):
-	unvisited = set(range(1, n + 1))
-	starts = set()
+n, m = map(int, input().split())
+adj = [[] for _ in range(n + 1)]
+for _ in range(m):
+	u, v = map(int, input().split())
+	adj[u].append(v)
+	adj[v].append(u)
 
-	def dfs(current):
-		for next in adj[current]:
-			if next in unvisited:
-				unvisited.remove(next)
-				dfs(next)
+vis = [False] * (n+1)
+rep = []
 
-	while unvisited:
-		start = unvisited.pop()
-		starts.add(start)
-		dfs(start)
+def dfs(node):
+	vis[node] = True
+	for u in adj[node]:
+		if not vis[u]: dfs(u)
 
-	print(len(starts) - 1)
-	root = starts.pop()
-	for other in starts:
-		print(root, other)
+def count_components():
+	for i in range(1, n+1):
+		if not vis[i]:
+			rep.append(i)
+			dfs(i)
 
+count_components()
 
-if __name__ == "__main__":
-	n, m = map(int, input().split())
-	adj = [set() for _ in range(n + 1)]
-	for _ in range(m):
-		u, v = map(int, input().split())
-		adj[u].add(v)
-		adj[v].add(u)
-	solve(n, adj)
+print(len(rep) - 1)
+for u in rep[1:]:
+	print(rep[0], u)
 # EndCodeSnip
 ```
 
-although we still get TLE on two test cases. To resolve this, we can implement a BFS solution, as shown below.
+Note: This passes when submitted in CPython3,
+but TLEs on two testcases when submitted in PyPy3.
 
 </PySection>
 
@@ -836,7 +804,7 @@ int main() {
 		adj[v].push_back(u);
 	}
 
-	vector<bool> visited(n);
+	vector<bool> vis(n);
 	vector<int> rep;
 
 	auto bfs = [&](int start) {
@@ -846,16 +814,16 @@ int main() {
 		while (!todo.empty()) {
 			int current_node = todo.front();
 			todo.pop();
-			visited[current_node] = 1;
+			vis[current_node] = 1;
 
 			for (int u : adj[current_node]) {
-				if (!visited[u]) { todo.push(u); }
+				if (!vis[u]) { todo.push(u); }
 			}
 		}
 	};
 
 	for (int i = 0; i < n; i++) {
-		if (!visited[i]) {
+		if (!vis[i]) {
 			rep.push_back(i);
 			bfs(i);
 		}
@@ -884,7 +852,7 @@ for _ in range(m):
 	adj[u - 1].append(v - 1)
 	adj[v - 1].append(u - 1)
 
-visited = [False] * n
+vis = [False] * n
 rep = []
 
 
@@ -893,15 +861,15 @@ def bfs(start):
 	todo = deque([start])
 	while todo:
 		current_node = todo.popleft()
-		visited[current_node] = True
+		vis[current_node] = True
 
 		for u in adj[current_node]:
-			if not visited[u]:
+			if not vis[u]:
 				todo.append(u)
 
 
 for i in range(n):
-	if not visited[i]:
+	if not vis[i]:
 		# i will represent this component
 		rep.append(i)
 		bfs(i)
@@ -909,6 +877,7 @@ for i in range(n):
 print(len(rep) - 1)
 for i in range(1, len(rep)):
 	print(rep[i - 1] + 1, rep[i] + 1)
+
 ```
 
 </PySection>
@@ -1046,6 +1015,38 @@ public class BuildingTeams {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import sys
+sys.setrecursionlimit(10**6)
+
+n, m = map(int, input().split())
+adj = [[] for _ in range(n)]
+for _ in range(m):
+	u, v = map(int, input().split())
+	adj[u-1].append(v-1)
+	adj[v-1].append(u-1)
+
+color = [-1] * n
+
+def dfs(node, col):
+	color[node] = col
+	for u in adj[node]:
+		if color[u] == -1: dfs(u, col^3)
+		elif color[u] == col:
+			print("IMPOSSIBLE")
+			exit(0)
+
+for u in range(n):
+	if color[u] == -1:
+		dfs(u, 1)
+
+print(*color)
+```
+
+</PySection>
 </LanguageSection>
 
 ### BFS Solution
@@ -1165,3 +1166,4 @@ else:
 ### Graph Two-Coloring Problems
 
 <Problems problems="bip" />
+
