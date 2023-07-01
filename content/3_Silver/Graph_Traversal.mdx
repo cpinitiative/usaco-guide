@@ -366,10 +366,10 @@ In Python, `collections.deque()` is used for a deque data structure. The four me
 d = collections.deque()
 d.appendleft(3)  # [3]
 d.appendleft(4)  # [4, 3]
-d.append(7)      # [4, 3, 7]
-d.popleft()      # [3, 7]
+d.append(7)  # [4, 3, 7]
+d.popleft()  # [3, 7]
 d.appendleft(1)  # [1, 3, 7]
-d.pop()          # [1, 3]
+d.pop()  # [1, 3]
 ```
 
 </PySection>
@@ -635,19 +635,23 @@ for _ in range(m):
 	adj[u].append(v)
 	adj[v].append(u)
 
-vis = [False] * (n+1)
+vis = [False] * (n + 1)
 rep = []
+
 
 def dfs(node):
 	vis[node] = True
 	for u in adj[node]:
-		if not vis[u]: dfs(u)
+		if not vis[u]:
+			dfs(u)
+
 
 def count_components():
-	for i in range(1, n+1):
+	for i in range(1, n + 1):
 		if not vis[i]:
 			rep.append(i)
 			dfs(i)
+
 
 count_components()
 
@@ -741,6 +745,7 @@ This will occur for $N>10^3$ since the recursion limit in Python is set to
 
 ```py
 import sys
+
 sys.setrecursionlimit(10**6)
 
 # BeginCodeSnip{rest of solution}
@@ -751,19 +756,23 @@ for _ in range(m):
 	adj[u].append(v)
 	adj[v].append(u)
 
-vis = [False] * (n+1)
+vis = [False] * (n + 1)
 rep = []
+
 
 def dfs(node):
 	vis[node] = True
 	for u in adj[node]:
-		if not vis[u]: dfs(u)
+		if not vis[u]:
+			dfs(u)
+
 
 def count_components():
-	for i in range(1, n+1):
+	for i in range(1, n + 1):
 		if not vis[i]:
 			rep.append(i)
 			dfs(i)
+
 
 count_components()
 
@@ -877,7 +886,6 @@ for i in range(n):
 print(len(rep) - 1)
 for i in range(1, len(rep)):
 	print(rep[i - 1] + 1, rep[i] + 1)
-
 ```
 
 </PySection>
@@ -1020,24 +1028,28 @@ public class BuildingTeams {
 
 ```py
 import sys
+
 sys.setrecursionlimit(10**6)
 
 n, m = map(int, input().split())
 adj = [[] for _ in range(n)]
 for _ in range(m):
 	u, v = map(int, input().split())
-	adj[u-1].append(v-1)
-	adj[v-1].append(u-1)
+	adj[u - 1].append(v - 1)
+	adj[v - 1].append(u - 1)
 
 color = [-1] * n
+
 
 def dfs(node, col):
 	color[node] = col
 	for u in adj[node]:
-		if color[u] == -1: dfs(u, col^3)
+		if color[u] == -1:
+			dfs(u, col ^ 3)
 		elif color[u] == col:
 			print("IMPOSSIBLE")
 			exit(0)
+
 
 for u in range(n):
 	if color[u] == -1:
@@ -1166,4 +1178,3 @@ else:
 ### Graph Two-Coloring Problems
 
 <Problems problems="bip" />
-
