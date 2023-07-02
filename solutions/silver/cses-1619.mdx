@@ -2,7 +2,7 @@
 id: cses-1619
 source: CSES
 title: Restaurant Customers
-author: Michael Cao, Neo Wang, Brad Ma
+author: Michael Cao, Neo Wang, Brad Ma, Alex Du
 ---
 
 In this problem, we're given $n$ intervals with distinct start and end points,
@@ -244,6 +244,37 @@ public class Customers {
 ```
 
 </JavaSection>
+<PySection>
+<Warning>
+
+Due to Python's big constant factor, this code will TLE on one test case.
+
+</Warning>
+
+```py
+n = int(input())
+
+times = []
+
+for _ in range(n):
+    start, end = map(int, input().split())
+    times.append((start, 1))
+    times.append((end, -1))
+
+times.sort()
+
+curr_ppl = 0
+max_ppl = 0
+
+for t in times:
+    curr_ppl += t[1]
+    max_ppl = max(max_ppl, curr_ppl)
+
+print(max_ppl)
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Implementation 2
