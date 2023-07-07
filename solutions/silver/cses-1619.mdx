@@ -247,7 +247,7 @@ public class Customers {
 <PySection>
 <Warning>
 
-Due to Python's big constant factor, this code will TLE on one test case.
+Due to Python's big constant factor, this mirrored code will TLE on one test case.
 
 </Warning>
 
@@ -272,8 +272,28 @@ for t in times:
 
 print(max_ppl)
 ```
+Since "all arrival and leaving times are distinct," we can store if a given time is an arrival or departure, and sort all the arrival and leaving times in one array as in the below solution:
 
-</PySection>
+```py
+tmap = dict()  
+times = []
+for _ in range(int(input())):
+	start, end = input().split()
+	start = int(start)
+	end = int(end)
+	tmap[start] = 1
+	tmap[end] = -1
+	times.append(start)
+	times.append(end)
+
+times.sort()
+
+curr_ppl = 0
+max_ppl = 0
+for t in times:
+	curr_ppl += tmap[t]
+	max_ppl = max(max_ppl, curr_ppl)
+print(max_ppl)
 
 </LanguageSection>
 
