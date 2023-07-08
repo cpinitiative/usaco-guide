@@ -10,7 +10,7 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { Link, navigate } from 'gatsby';
+import { Link } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -54,9 +54,6 @@ const linkTextStyles =
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
   const { firebaseUser } = React.useContext(UserDataContext);
-  if (firebaseUser) {
-    navigate('/dashboard');
-  }
   return (
     <Layout>
       <SEO title={null} />
