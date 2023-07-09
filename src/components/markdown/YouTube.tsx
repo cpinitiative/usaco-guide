@@ -8,7 +8,7 @@ const Container = styled.div`
   padding-bottom: 56.25%;
 `;
 
-export default function Youtube({ id, autoplay = false }) {
+export default function YouTube({ id, autoplay = false }) {
   return (
     <Container>
       <iframe
