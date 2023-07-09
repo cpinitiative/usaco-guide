@@ -1,7 +1,7 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
-import Youtube from './markdown/Youtube';
+import YouTube from './markdown/YouTube';
 export default function Video(): JSX.Element {
   const [showVideo, setShowVideo] = React.useState(false);
   const data = useStaticQuery(graphql`
@@ -18,7 +18,7 @@ export default function Video(): JSX.Element {
       <div className="relative mx-auto w-full rounded-lg shadow-lg lg:mx-4 xl:mx-8 max-w-[512px]">
         {showVideo && (
           <div className="relative block w-full min-h-32 lg:min-h-64 xl:min-h-80 rounded-lg overflow-hidden focus:outline-none focus:shadow-outline bg-gray-300">
-            <Youtube id={'ueNT-w7Oluw'} autoplay />
+            <YouTube id={'ueNT-w7Oluw'} autoplay />
           </div>
         )}
         {!showVideo && (
