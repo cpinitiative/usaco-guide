@@ -473,8 +473,6 @@ Try to implement this yourself!
 
 <CPPSection>
 
-As noted in the resource above, this problem requires _64-bit integers_.
-
 ```cpp
 #include <iostream>
 using namespace std;
@@ -494,15 +492,11 @@ int main() {
 }
 ```
 
-
 </CPPSection>
 
 <JavaSection>
 
-As noted in the resource above, this problem requires _64-bit integers_.
-
 ### Method 1 - `Scanner` and `System.out.print`
-
 
 ```java
 import java.util.Scanner;
@@ -601,9 +595,114 @@ print(x)
 
 </LanguageSection>
 
+<CPPOnly>
+
+<Warning>
+
+As noted in the resource above, this problem requires _64-bit integers_.
+The following solution, which uses `int` instead of `long long`, does
+not pass all of the test cases.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	int x;
+	cin >> x;
+	while (x != 1) {
+		cout << x << " ";
+		if (x % 2 == 0) {
+			x /= 2;
+		} else {
+			x = 3 * x + 1;
+		}
+	}
+	cout << x << endl;
+}
+```
+
+This happens because some numbers in the sequence can exceed the maximum possible
+value for the `int` data type ($2^{31}-1$, as mentioned in the
+[prerequisite module](/general/data-types)).
+
+</Warning>
+
+</CPPOnly>
+
+<JavaOnly>
+
+As noted in the resource above, this problem requires _64-bit integers_.
+The following solution, which uses `int` instead of `long`, does
+not pass all of the test cases.
+
+```java
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner r = new Scanner(System.in);
+		int x = r.nextInt();
+		while (x != 1) {
+			System.out.print(x + " ");
+			if (x % 2 == 0) {
+				x /= 2;
+			} else {
+				x = 3 * x + 1;
+			}
+		}
+		System.out.println(x);
+	}
+}
+```
+
+This happens because some numbers in the sequence can exceed the maximum possible
+value for the `int` data type ($2^{31}-1$, as mentioned in the
+[prerequisite module](/general/data-types)).
+
+</JavaOnly>
+
+### How to Submit Your Solution
+
+<Info title="Choice of IDE">
+
+We assume in this section that you are using an online IDE, such as
+[USACO Guide IDE](https://ide.usaco.guide/). The instructions for using
+a local IDE are similar, except you skip the download step.
+
+</Info>
+
+Do the following to submit on CSES. Submitting on other platforms (such as
+USACO) is similar.
+
+1. Run your solution code with the sample input, and make sure that it produces the sample output.<Asterisk>for problems with only one correct output</Asterisk>
+2. Download your solution code into a file. The file extension should be one of `.cpp`, `.java`, `.py` or their equivalents, depending on your programming language.
+3. Open the problem statement. Log in if you aren't already logged in.
+4. Press the submit tab (for USACO, scroll to the bottom of the page).
+5. Upload your solution file. For CSES, assuming the file had the proper
+extension, the language should be automatically detected (for USACO, select
+the language yourself). Some platforms (such as Codeforces) allow you
+to paste your code into a text box instead of uploading a file.
+6. Submit your solution. For CSES, you will be redirected to the results page
+(for USACO, results will appear at the top of the page). If your solution is
+correct on all the test cases, you're done! Otherwise, fix your code and start
+again from step 1.
+
+<JavaOnly>
+
+<Warning title="File Naming for Java Users">
+
+The name of the file you submit must match the name of your public class.
+For example, if your public class is named `PublicClassName`, then the name of the
+file you submit must be `PublicClassName.java`.
+
+</Warning>
+
+</JavaOnly>
+
 ## File I/O
 
-<Info title="Update">
+<Info title="USACO File I/O">
 
 USACO problems from December 2020 onwards use standard I/O rather than file I/O.
 You'll still need to use file I/O to submit to earlier problems.
