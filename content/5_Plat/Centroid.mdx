@@ -50,23 +50,23 @@ const int maxn = 200010;
 
 int n;
 vector<int> adj[maxn];
-int subtree_size[maxn];
+int subtreeSize[maxn];
 
-int get_subtree_size(int node, int par = -1) {
-	int &res = subtree_size[node];
+int getSubtreeSize(int node, int par = -1) {
+	int &res = subtreeSize[node];
 	res = 1;
 	for (int i : adj[node]) {
 		if (i == par) continue;
-		res += get_subtree_size(i, node);
+		res += getSubtreeSize(i, node);
 	}
 	return res;
 }
 
-int get_centroid(int node, int par = -1) {
+int getCentroid(int node, int par = -1) {
 	for (int i : adj[node]) {
 		if (i == par) continue;
 
-		if (subtree_size[i] * 2 > n) { return get_centroid(i, node); }
+		if (subtreeSize[i] * 2 > n) { return getCentroid(i, node); }
 	}
 	return node;
 }
@@ -82,8 +82,10 @@ int main() {
 		adj[b].push_back(a);
 	}
 
-	get_subtree_size(0);
-	cout << get_centroid(0) + 1 << endl;
+	getSubtreeSize(0);
+	cout << getCentroid(0) + 1 << endl;
+
+	return 0;
 }
 ```
 
@@ -203,28 +205,39 @@ int s[MN];   // subtree size
 
 int dfs(int u, int p = 0) {
 	s[u] = 1;
-	for (int v : adj[u])
+	for (int v : adj[u]) {
 		if (v != p && !r[v]) s[u] += dfs(v, u);
+	}
 	return s[u];
 }
 
-int get_centroid(int u, int ms, int p = 0)
-{  // u = node, ms = size of current tree after node removals, p = parent
-	for (int v : adj[u])
-		if (v != p && !r[v])
-			if (s[v] * 2 > ms) return get_centroid(v, ms, u);
+
+/*
+ * This function returns the centroid of subtree
+ * containing node u after node removals saved in r
+ * u -> current node
+ * sz -> size of current subtree after node removals
+ * p -> parent of u
+ */
+int getCentroid(int u, int sz, int p = 0) {
+	for (int v : adj[u]) {
+		if (v != p && !r[v]) {
+			if (s[v] * 2 > sz) return getCentroid(v, sz, u);
+		}
+	}
 	return u;
 }
 
 void solve(int root = 1) {
-	int C = get_centroid(root, dfs(root));
+	int C = getCentroid(root, dfs(root));
 
 	// do something
 
 	r[C] = 1;  // remove current centroid
-	//  solve subtrees
-	for (int v : adj[C])
+	// solve subtrees
+	for (int v : adj[C]) {
 		if (!r[v]) solve(v);
+	}
 }
 ```
 
