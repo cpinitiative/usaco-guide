@@ -50,23 +50,23 @@ const int maxn = 200010;
 
 int n;
 vector<int> adj[maxn];
-int subtreeSize[maxn];
+int subtree_size[maxn];
 
-int getSubtreeSize(int node, int par = -1) {
-	int &res = subtreeSize[node];
+int get_subtree_size(int node, int par = -1) {
+	int &res = subtree_size[node];
 	res = 1;
 	for (int i : adj[node]) {
 		if (i == par) continue;
-		res += getSubtreeSize(i, node);
+		res += get_subtree_size(i, node);
 	}
 	return res;
 }
 
-int getCentroid(int node, int par = -1) {
+int get_centroid(int node, int par = -1) {
 	for (int i : adj[node]) {
 		if (i == par) continue;
 
-		if (subtreeSize[i] * 2 > n) { return getCentroid(i, node); }
+		if (subtree_size[i] * 2 > n) { return get_centroid(i, node); }
 	}
 	return node;
 }
@@ -82,8 +82,8 @@ int main() {
 		adj[b].push_back(a);
 	}
 
-	getSubtreeSize(0);
-	cout << getCentroid(0) + 1 << endl;
+	get_subtree_size(0);
+	cout << get_centroid(0) + 1 << endl;
 
 	return 0;
 }
@@ -219,23 +219,23 @@ int dfs(int u, int p = 0) {
  * sz -> size of current subtree after node removals
  * p -> parent of u
  */
-int getCentroid(int u, int sz, int p = 0) {
+int get_centroid(int u, int sz, int p = 0) {
 	for (int v : adj[u]) {
 		if (v != p && !r[v]) {
-			if (s[v] * 2 > sz) return getCentroid(v, sz, u);
+			if (s[v] * 2 > sz) return get_centroid(v, sz, u);
 		}
 	}
 	return u;
 }
 
 void solve(int root = 1) {
-	int C = getCentroid(root, dfs(root));
+	int c = get_centroid(root, dfs(root));
 
 	// do something
 
-	r[C] = 1;  // remove current centroid
+	r[c] = 1;  // remove current centroid
 	// solve subtrees
-	for (int v : adj[C]) {
+	for (int v : adj[c]) {
 		if (!r[v]) solve(v);
 	}
 }
