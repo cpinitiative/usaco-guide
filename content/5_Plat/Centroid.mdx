@@ -66,9 +66,7 @@ int get_centroid(int node, int parent = -1) {
 	for (int i : adj[node]) {
 		if (i == parent) continue;
 
-		if (subtree_size[i] * 2 > n) {
-			return get_centroid(i, node);
-		}
+		if (subtree_size[i] * 2 > n) { return get_centroid(i, node); }
 	}
 	return node;
 }
@@ -206,9 +204,7 @@ int subtree_size[MN];
 int dfs(int u, int parent = 0) {
 	subtree_size[u] = 1;
 	for (int v : adj[u]) {
-		if (v != parent && !is_removed[v]) {
-			subtree_size[u] += dfs(v, u);
-		}
+		if (v != parent && !is_removed[v]) { subtree_size[u] += dfs(v, u); }
 	}
 
 	return subtree_size[u];
@@ -226,9 +222,7 @@ int dfs(int u, int parent = 0) {
 int get_centroid(int u, int sz, int parent = 0) {
 	for (int v : adj[u]) {
 		if (v != parent && !is_removed[v]) {
-			if (subtree_size[v] * 2 > sz) {
-				return get_centroid(v, sz, u);
-			}
+			if (subtree_size[v] * 2 > sz) { return get_centroid(v, sz, u); }
 		}
 	}
 	return u;
@@ -242,9 +236,7 @@ void solve(int root = 1) {
 	r[c] = 1;  // remove current centroid
 	// solve subtrees
 	for (int v : adj[c]) {
-		if (!is_removed[v]) {
-			solve(v);
-		}
+		if (!is_removed[v]) { solve(v); }
 	}
 }
 ```
