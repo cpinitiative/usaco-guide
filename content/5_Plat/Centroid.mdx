@@ -52,21 +52,23 @@ int n;
 vector<int> adj[maxn];
 int subtree_size[maxn];
 
-int get_subtree_size(int node, int par = -1) {
+int get_subtree_size(int node, int parent = -1) {
 	int &res = subtree_size[node];
 	res = 1;
 	for (int i : adj[node]) {
-		if (i == par) continue;
+		if (i == parent) continue;
 		res += get_subtree_size(i, node);
 	}
 	return res;
 }
 
-int get_centroid(int node, int par = -1) {
+int get_centroid(int node, int parent = -1) {
 	for (int i : adj[node]) {
-		if (i == par) continue;
+		if (i == parent) continue;
 
-		if (subtree_size[i] * 2 > n) { return get_centroid(i, node); }
+		if (subtree_size[i] * 2 > n) {
+			return get_centroid(i, node);
+		}
 	}
 	return node;
 }
@@ -84,8 +86,6 @@ int main() {
 
 	get_subtree_size(0);
 	cout << get_centroid(0) + 1 << endl;
-
-	return 0;
 }
 ```
 
@@ -200,28 +200,35 @@ General centroid code is shown below.
 
 ```cpp
 vector<int> adj[maxn];  // adjacency list
-bool r[MN];             // removed
-int s[MN];              // subtree size
+bool is_removed[MN];
+int subtree_size[MN];
 
-int dfs(int u, int p = 0) {
-	s[u] = 1;
+int dfs(int u, int parent = 0) {
+	subtree_size[u] = 1;
 	for (int v : adj[u]) {
-		if (v != p && !r[v]) s[u] += dfs(v, u);
+		if (v != parent && !is_removed[v]) {
+			subtree_size[u] += dfs(v, u);
+		}
 	}
-	return s[u];
+
+	return subtree_size[u];
 }
 
 /*
- * This function returns the centroid of subtree
- * containing node u after node removals saved in r
- * u -> current node
- * sz -> size of current subtree after node removals
- * p -> parent of u
+ * This function returns a centroid (a tree may have
+ * two centroids) of the subtree containing node u
+ * after node removals
+ * @param u current node
+ * @param sz size of current subtree after node removals
+ * @param parent parent of u
+ * @return first centroid found
  */
-int get_centroid(int u, int sz, int p = 0) {
+int get_centroid(int u, int sz, int parent = 0) {
 	for (int v : adj[u]) {
-		if (v != p && !r[v]) {
-			if (s[v] * 2 > sz) return get_centroid(v, sz, u);
+		if (v != parent && !is_removed[v]) {
+			if (subtree_size[v] * 2 > sz) {
+				return get_centroid(v, sz, u);
+			}
 		}
 	}
 	return u;
@@ -235,7 +242,9 @@ void solve(int root = 1) {
 	r[c] = 1;  // remove current centroid
 	// solve subtrees
 	for (int v : adj[c]) {
-		if (!r[v]) solve(v);
+		if (!is_removed[v]) {
+			solve(v);
+		}
 	}
 }
 ```
