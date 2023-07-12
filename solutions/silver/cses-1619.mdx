@@ -248,7 +248,7 @@ public class Customers {
 <PySection>
 <Warning>
 
-Due to Python's big constant factor, this mirrored code will TLE on one test
+Due to Python's big constant factor, this code will TLE on one test
 case.
 
 </Warning>
@@ -278,12 +278,14 @@ print(max_ppl)
 Since "all arrival and leaving times are distinct," we can store if a given time is an arrival or departure, and sort all the arrival and leaving times in one array. This is fast enough to pass AC.
 
 ```py
+# Stores the change in the number of people at a specific time
 tmap = dict()
 times = []
 for _ in range(int(input())):
 	start, end = input().split()
 	start = int(start)
 	end = int(end)
+	# Change is 1 when person enters, -1 when person leaves
 	tmap[start] = 1
 	tmap[end] = -1
 	times.append(start)
@@ -293,6 +295,8 @@ times.sort()
 
 curr_ppl = 0
 max_ppl = 0
+
+# Iterate through all times to see the maximum amount of people
 for t in times:
 	curr_ppl += tmap[t]
 	max_ppl = max(max_ppl, curr_ppl)
@@ -359,7 +363,7 @@ int main() {
 <PySection>
 <Warning>
 
-Due to Python's big constant factor, this mirrored code will TLE on one test
+Due to Python's big constant factor, this code will TLE on one test
 case.
 
 </Warning>
