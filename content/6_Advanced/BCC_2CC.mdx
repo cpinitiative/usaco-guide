@@ -37,15 +37,16 @@ const int MAX_N = 3e5;
 int timer;
 int scc;
 int id[MAX_N];
-int low[MAX_N];  // Lowest ID in  node's subtree in DFS tree
+int low[MAX_N];  // Lowest ID in node's subtree in DFS tree
 vector<int> neighbors[MAX_N];
 vector<int> two_edge_components[MAX_N];
-stack<int> st;  // Keeps track of the path in our dfs
+stack<int> st;  // Keeps track of the path in our DFS
 
 void dfs(int node, int parent = -1) {
 	id[node] = low[node] = ++timer;
 	st.push(node);
 	bool multiple_edges = false;
+	
 	for (int child : neighbors[node]) {
 		if (child == parent && !multiple_edges) {
 			multiple_edges = true;
