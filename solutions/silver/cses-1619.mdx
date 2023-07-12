@@ -378,21 +378,22 @@ times.sort()
 
 curr = 0
 at = 0
+# Stores how much the # of people in the restaurant changes each time step
 ppl_change = [0] * (2 * n)
-
+# Compress the starting & ending events into a single array
 for i in range(2 * n):
 	if i == 0:
 		times[i] = (0, times[i][1])
 	elif times[i][0] > curr:
 		at += 1
 		curr = times[i][0]
-	ppl_change[at] += times[i][1]  # Adjusted indexing here
+	ppl_change[at] += times[i][1]
 
+# Build our prefix sum array
 ppl_amt = [0] * (2 * n + 1)
-
 for i in range(1, 2 * n + 1):
-	ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1]  # Adjusted indexing here
-
+	ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1]
+# Our answer is the maximum of the prefix sum array
 max_ppl = max(ppl_amt)
 
 print(max_ppl)
