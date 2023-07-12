@@ -1,0 +1,83 @@
+---
+id: cf-510C
+source: CF
+title: Fox And Names
+author: Daniel Ge
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// used for topological sort
+int indegree[26]; 
+vector<int> conn[26];
+vector<int> sorted;
+
+void topological_sort () {
+    queue<int> q;
+	for (int i = 0; i < 26; i ++) {
+		if(indegree[i] == 0) q.push(i);
+	}
+	while(!q.empty()) {
+		int pos = q.front();
+		q.pop();
+		sorted.push_back(pos);
+		for (auto c : conn[pos]) {
+			if((--indegree[c]) == 0) q.push(c);
+		}
+	}
+}
+
+int main () {
+	ios_base::sync_with_stdio(0); cin.tie(nullptr);
+    int N;
+	string cur, prev; // we make sure each pair of consecutive strings are in the right order
+
+	cin >> N >> prev; // no previous string to compare the first string to, so read directly into prev 
+	for (int i = 1; i < N; i ++) {
+		cin >> cur;
+
+        int leng = min(prev.length(), cur.length()); // maximum length to compare
+        int j;
+        for (j = 0; j < leng; j ++) {
+            if(prev[j] != cur[j]) { 
+                // as soon as we see a difference, 
+                // we make sure the alphabetic follows the order presented
+                indegree[int(cur[j]) - 97] ++;
+                conn[int(prev[j]) - 97].push_back(int(cur[j]) - 97); 
+                break;
+            }
+        }
+        if((j == leng) && (prev.length() > cur.length())) { 
+            // if cur is a prefix of prev, then it is already impossible
+            // for cur to be lexicographically more than prev
+			cout << "Impossible" << endl;
+			return 0;
+		}
+		prev = cur;
+	}
+
+	topological_sort();
+
+	if(sorted.size() < 26) { 
+        // if topological sort not complete-able, it's impossible
+        cout << "Impossible" << endl; 
+    } 
+	else {
+		for (auto s : sorted) {
+			cout << char(s + 97);
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
