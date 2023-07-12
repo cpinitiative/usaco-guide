@@ -16,10 +16,10 @@ priority, it is hard to bypass the effects of the higher bits if you don't alrea
 
 First, we can submit a query $(c, d) = (0, 0)$ to figure out whether $a$ or $b$ is greater (this will become helpful later on). Now, loop from most to least significant bits. Let $\mathtt{curA}$ and $\mathtt{curB}$ be the values for the bits of $a$ and $b$ we already know. We can try to differentiate the two numbers at this bit. We can submit two queries, in the form $(\mathtt{curA}| 2^B, \mathtt{curB})$, and $(\mathtt{curA}, \mathtt{curB} | 2^B)$ where we are currently looping on bit $B$. We also know that there are the following four cases we have to consider:
 
-- Both $a$ and $b$ has bit $B$ activated
-- Neither $a$ and $b$ has bit $B$ activated
-- Only $a$ has bit $B$ activated
-- Only $b$ has bit $B$ activated
+1. Both $a$ and $b$ has bit $B$ activated
+2. Neither $a$ and $b$ has bit $B$ activated
+3. Only $a$ has bit $B$ activated
+4. Only $b$ has bit $B$ activated
 
 When it is the first two cases, the results for the two queries will be different. This is because the since we are using XOR on an activated bit in one number and not the other, there will always be one query greater, since they have the same bit at this position. If the first query yields $-1$ or second query yields a $1$, both $a$ and $b$ must have bit $B$ activated.
 
