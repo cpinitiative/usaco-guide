@@ -242,6 +242,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               labelTooltip
               sketch
               url
+              hasHints
             }
             difficulty
             module {
@@ -525,6 +526,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       labelTooltip: String
       url: String
       sketch: String
+      hasHints:Boolean
     }
   `;
   createTypes(typeDefs);

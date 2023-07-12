@@ -1,0 +1,143 @@
+---
+id: usaco-1182
+source: USACO Silver 2022 January
+title: Searching for Soulmates
+author: Chongtian Ma, Chuyang Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob1_silver_jan22.html)
+
+
+## Explanation
+
+To transform $a$ into $b$, we proceed greedily. If $a > b$, it can be shown that
+it is never optimal to add more than once consecutively before dividing $a$ by
+2. To see this, consider adding two times before the division. While this leads
+to three operations in sum, we can instead first divide and then just add one,
+which has the same effect but requires only two operations.
+
+Then, if $a < b$, as the optimality of the strategy above is already shown,
+let's reuse it and work on $b$ by allowing multiplication, division, and
+subtraction by one. We therefore either divide $b$ by two (and first subtract by
+one if $b$ is odd) or subtract $b$ $b - a$ times to directly reach $a$. One can
+see that these operations applied on $b$ are equivalent to what one does on $a$
+in reversed order.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log{\max(A, B)})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+ll solve(ll a, ll b) {
+	if (a == b) {
+		return 0;
+	} else if (a > b) {
+		/*
+		 * Divide a greedily until a <= b, add 1 in case a is odd to enable
+		 * division.
+		 */
+		ll is_odd = a % 2;
+		return 1 + is_odd + solve((a + is_odd) / 2, b);
+	} else {
+		/*
+		 * Otherwise, work on b to reach a by division. Alternatively,
+		 * if it's better, perform subtraction until a is reached.
+		 */
+		ll is_odd = b % 2;
+		return min(b - a, 1 + is_odd + solve(a, b / 2));
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		ll a, b;
+		cin >> a >> b;
+		cout << solve(a, b) << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Soulmates {
+	public static long solve(long a, long b) {
+		if (a == b) {
+			return 0;
+		} else if (a > b) {
+			/*
+			 * Divide a greedily until a <= b, add 1 in case a is odd to enable
+			 * division.
+			 */
+			long isOdd = a % 2;
+			return 1 + isOdd + solve((a + isOdd) / 2, b);
+		} else {
+			/*
+			 * Otherwise, work on b to reach a by division. Alternatively,
+			 * if it's better, perform subtraction until a is reached.
+			 */
+			long isOdd = b % 2;
+			return Math.min(b - a, 1 + isOdd + solve(a, b / 2));
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			long a = Long.parseLong(st.nextToken());
+			long b = Long.parseLong(st.nextToken());
+
+			System.out.println(solve(a, b));
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def solve(a, b):
+	if a == b:
+		return 0
+	elif a > b:
+		"""
+		Divide a greedily until a <= b, add 1 in case a is odd to enable
+		division.
+		"""
+		is_odd = a % 2
+		return 1 + is_odd + solve((a + is_odd) // 2, b)
+	else:
+		"""
+		Otherwise, work on b to reach a by division. Alternatively,
+		if it's better, perform subtraction until a is reached.
+		"""
+		is_odd = b % 2
+		return min(b - a, 1 + is_odd + solve(a, b // 2))
+
+
+for _ in range(int(input())):
+	a, b = map(int, input().split())
+	print(solve(a, b))
+```
+
+</PySection>
+</LanguageSection>

@@ -10,7 +10,7 @@ author: Benjamin Qi, Kevin Sheng, Melody Yu, Ryan Chou
 ## Video Solution
 By Melody Yu
 
-<Youtube id="xed_5FjVMoo" />
+<YouTube id="xed_5FjVMoo" />
 
 <Spoiler title="Video Solution Code">
 
@@ -242,6 +242,53 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+from typing import List
+
+# list of cows, in alphabetical order
+COWS = ["Beatrice", "Belinda", "Bella", "Bessie", "Betsy", "Blue", "Buttercup", "Sue"]
+
+orderings = []
+
+
+def build(ordering: List[str]):
+	# finished building permutation
+	if len(ordering) == 8:
+		orderings.append(ordering.copy())
+		return
+
+	for cow in COWS:
+		if cow not in ordering:
+			ordering.append(cow)
+			build(ordering)
+			ordering.pop()
+
+
+with open("lineup.in") as read:
+	n = int(read.readline())
+	restrictions = []
+	for _ in range(n):
+		line = read.readline().split()
+		cow1 = line[0]
+		cow2 = line[-1]
+		restrictions.append((cow1, cow2))
+
+# build all possible orderings of cows
+build([])
+for order in orderings:
+	for rule in restrictions:
+		if abs(order.index(rule[0]) - order.index(rule[1])) > 1:
+			break
+	else:
+		with open("lineup.out", "w") as written:
+			for cow in order:
+				print(cow, file=written)
+		break
+```
+
+</PySection>
 </LanguageSection>
 
 ## $\mathcal{O}(N)$ Solution With Graphs

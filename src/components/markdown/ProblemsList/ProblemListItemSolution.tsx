@@ -79,7 +79,9 @@ export default function ProblemListItemSolution(
         target="_blank"
         rel="noreferrer"
       >
-        <div className="text-left">Internal Sol</div>
+        <div className="text-left">
+          {problem.solution.hasHints && 'Hints + '}Internal Sol
+        </div>
       </a>
     );
   } else {

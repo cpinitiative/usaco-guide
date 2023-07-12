@@ -210,7 +210,7 @@ export function usePostActions(groupId: string) {
         },
       };
       const resp = await fetch(
-        `https://oh2kjsg6kh.execute-api.us-west-1.amazonaws.com/Prod/submissions`,
+        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions`,
         {
           method: 'POST',
           headers: {

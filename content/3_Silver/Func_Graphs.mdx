@@ -91,8 +91,6 @@ Reread [CPH pg. 166](/CPH.pdf#page=166) a few more times.
 
 ### Solution
 
-<Spoiler title="Solution">
-
 [Official Tutorial](https://codeforces.com/blog/entry/65825)
 
 <!-- https://codeforces.com/contest/1137/submission/87195511 -->
@@ -102,6 +100,52 @@ $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node
 in the cycle after another $t$ queries.
 
 <LanguageSection>
+<PySection>
+
+```py
+import sys
+
+pos = [0] * 10
+
+
+def qry(x: list) -> None:
+	print("next", end=" ")
+	for i in x:
+		print(i, end=" ")
+
+	print()
+	sys.stdout.flush()
+
+
+def process() -> None:
+	global pos
+
+	s = input().split()
+
+	for j in range(int(s[0])):
+		for k in s[j + 1]:
+			pos[int(k)] = j
+
+
+while True:  # at most c * ceil(t / c) times
+	qry([0, 1])
+	process()
+	qry([0])
+	process()
+
+	if pos[0] == pos[1]:
+		break
+
+while True:  # at most t times
+	qry([i for i in range(10)])
+	process()
+
+	if pos[0] == pos[2]:
+		break
+
+print("done")
+```
+</PySection>
 
 <CPPSection>
 
@@ -199,6 +243,19 @@ Do you see why this is equivalent to the code mentioned in CPH?
 
 <LanguageSection>
 
+<PySection>
+
+```py
+a = succ(x)
+b = succ(succ(x))
+
+while a != b:
+	a = succ(a)
+	b = succ(succ(b))
+```
+
+</PySection>
+
 <CPPSection>
 
 ```cpp
@@ -233,6 +290,18 @@ $b$ corresponds to friend $1$ and $a$ corresponds to friend $0$.
 
 <LanguageSection>
 
+<PySection>
+
+```py
+a = x
+while a != b:
+	a = succ(a)
+	b = succ(b)
+first = a
+```
+
+</PySection>
+
 <CPPSection>
 
 ```cpp
@@ -265,8 +334,6 @@ first = a;
 
 $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and
 $1$.
-
-</Spoiler>
 
 ## Example - Badge
 
@@ -438,7 +505,72 @@ Try simulating the algorithm on the following directed graph in CSAcademy's
 `x`. Requires reverse adjacency lists (`radj`).
 
 <LanguageSection>
+<PySection>
 
+```py
+n = int(input())
+adj = [i - 1 for i in list(map(int, input().split()))]
+radj = [[] for _ in range(n)]
+ans = [-1] * n
+
+
+def fill_radj(x: int) -> None:
+	global ans
+
+	"""
+	As all nodes in the cycle are processed in function floyd,
+	the recursive call will only start at the nodes which
+	combine the cycle with the acyclic part of the connected component
+	where one of its outgoing arrows points to the node that is not
+	processed yet.
+	"""
+
+	for child in radj[x]:
+		if ans[child] == -1:
+			ans[child] = ans[x]
+			fill_radj(child)
+
+
+def floyd(x: int) -> None:
+	global ans
+	y = x
+
+	# find cycle with floyd's
+	while True:
+		x = adj[x]
+		y = adj[adj[y]]
+
+		if y == x:
+			break
+
+	# set answer for the cycle
+	while True:
+		ans[x] = x
+		x = adj[x]
+
+		if y == x:
+			break
+
+	# set answer for students not in cycle
+	while True:
+		fill_radj(x)
+		x = adj[x]
+
+		if y == x:
+			break
+
+
+for i in range(n):
+	radj[adj[i]].append(i)
+
+for i in range(n):
+	if ans[i] == -1:
+		floyd(i)
+
+for i in ans:
+	print(i + 1, end=" ")
+```
+</PySection>
 <CPPSection>
 
 ```cpp
@@ -665,6 +797,38 @@ public class badge2 {
 
 </JavaSection>
 
+<PySection>
+
+```py
+import sys
+
+# may need for large inputs
+sys.setrecursionlimit(1000000)
+
+vis = [0] * MAXN
+on_stack = [0] * MAXN
+next_node = [0] * MAXN
+num_of_cycles = 0
+
+
+def dfs(n: int):
+	global vis, on_stack
+	vis[n] = on_stack[n] = 1
+
+	if on_stack[next_node[n]]:
+		num_of_cycles += 1
+	elif not vis[next_node[n]]:
+		dfs(next_node[n])
+
+	on_stack[n] = 0
+
+
+# read input, etc.
+for i in range(MAXN):
+	if not vis[i]:
+		dfs(i)
+```
+</PySection>
 </LanguageSection>
 
 ## $K$-th Successor

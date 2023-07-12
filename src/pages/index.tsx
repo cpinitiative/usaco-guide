@@ -11,7 +11,6 @@ import {
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { Link, navigate } from 'gatsby';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -55,9 +54,6 @@ const linkTextStyles =
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
   const { firebaseUser } = React.useContext(UserDataContext);
-  if (firebaseUser) {
-    navigate('/dashboard');
-  }
   return (
     <Layout>
       <SEO title={null} />
@@ -594,13 +590,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       USACO stands for the{' '}
-                      <OutboundLink
+                      <a
                         href="http://www.usaco.org/"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         USA Computing Olympiad
-                      </OutboundLink>
+                      </a>
                       . Check out the{' '}
                       <Link
                         to="/general/usaco-faq"
@@ -651,13 +648,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Check out the{' '}
-                      <OutboundLink
+                      <a
                         href="https://joincpi.org/?ref=home"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         Competitive Programming Initiative
-                      </OutboundLink>
+                      </a>
                       !
                     </p>
                   </dd>
@@ -683,13 +681,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you get stuck, head over to the{' '}
-                      <OutboundLink
+                      <a
                         href="https://forum.usaco.guide"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         USACO Forum
-                      </OutboundLink>{' '}
+                      </a>{' '}
                       for help.
                     </p>
                   </dd>
@@ -718,13 +717,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Yes! Check out our{' '}
-                      <OutboundLink
+                      <a
                         href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         Github Repository
-                      </OutboundLink>
+                      </a>
                       .
                     </p>
                   </dd>

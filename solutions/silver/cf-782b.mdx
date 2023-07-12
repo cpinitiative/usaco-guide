@@ -13,18 +13,20 @@ We can binary search on the location where the friends will meet up. Since we wa
 
 Whenever we are calculating the answer, we take note of which side the maximum answer came from. If the max answer comes from both sides, regardless of where we decide to go next, our answer will only increase, so we return that answer. Otherwise, if it only comes from one side of the point that we just calculated, we move our search towards that side, as moving it towards the other side will only increase our answer.
 
+## Implementation
+
 **Time Complexity:** $\mathcal{O}(N\log M)$ where $M$ is the farthest north location
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-typedef long long ll;
+using ll = long long;
+
+const double MAX_ERROR = 10e-7;
 
 vector<double> locations;
 vector<double> speeds;
@@ -33,7 +35,6 @@ double min_ans = (double)INT_MAX;
 double curr_min_time;
 bool left_has_max = false;  // which side gives us max answer
 bool right_has_max = false;
-double MAX_ERROR = 10e-7;
 
 double get_time(double loc) {
 	double max_time = 0;
@@ -80,8 +81,10 @@ int main() {
 
 	while (high - low > MAX_ERROR) {
 		mid = (high + low) / 2;
-		curr_min_time = get_time(
-		    mid);  // returns time it would take if friends were to meet at mid
+
+		// returns time it would take if friends were to meet at mid
+		curr_min_time = get_time(mid);
+
 		min_ans = min(min_ans, curr_min_time);
 		if (left_has_max && right_has_max) {
 			break;
@@ -97,7 +100,88 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.util.*;
+
+public class MeetingPlace {
+	static final double MAX_ERROR = 10e-7;
+
+	static List<Double> locations = new ArrayList<>();
+	static List<Double> speeds = new ArrayList<>();
+
+	static double min_ans = Double.MAX_VALUE;
+	static double curr_min_time;
+	static boolean left_has_max = false;  // which side gives us max answer
+	static boolean right_has_max = false;
+
+	/**
+	 * Checks whether all friends can converge on one point in the specified
+	 * time interval.
+	 */
+	public static double get_time(double loc) {
+		double max_time = 0;
+		for (int i = 0; i < locations.size(); i++) {
+			if (locations.get(i) == loc) { continue; }
+			double i_time = Math.abs(locations.get(i) - loc) / speeds.get(i);
+			if (i_time > max_time) {
+				// reset to false, as we have a new maximum
+				left_has_max = false;
+				right_has_max = false;
+				if (locations.get(i) > loc) {
+					right_has_max = true;
+				} else {
+					left_has_max = true;
+				}
+				max_time = i_time;
+			} else if (i_time == max_time) {
+				// The max can be from both sides, so we don't reset the 2
+				// booleans
+				if (locations.get(i) > loc) {
+					right_has_max = true;
+				} else {
+					left_has_max = true;
+				}
+			}
+		}
+		return max_time;
+	}
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		int n = scanner.nextInt();
+		double low = 0;
+		double high = 0;  // location of the farthest north friend
+
+		for (int i = 0; i < n; i++) {
+			double location = scanner.nextDouble();
+			locations.add(location);
+			high = Math.max(high, location);
+		}
+
+		for (int i = 0; i < n; i++) { speeds.add(scanner.nextDouble()); }
+
+		// Binary search is used to find the minimum time.
+		while (high - low > MAX_ERROR) {
+			double mid = (high + low) / 2;
+			curr_min_time = get_time(mid);
+			min_ans = Math.min(min_ans, curr_min_time);
+			if (left_has_max && right_has_max) {
+				break;
+			} else if (left_has_max) {
+				high = mid;
+			} else {
+				low = mid;
+			}
+		}
+
+		System.out.printf("%.10f%n", min_ans);
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -143,5 +227,4 @@ print(((left + mid) / 2) if last_comparison else ((mid + right) / 2))
 ```
 
 </PySection>
-
 </LanguageSection>

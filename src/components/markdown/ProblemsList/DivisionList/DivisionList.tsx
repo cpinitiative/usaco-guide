@@ -165,6 +165,7 @@ export function DivisionList(props): JSX.Element {
               labelTooltip
               sketch
               url
+              hasHints
             }
             uniqueId
             url

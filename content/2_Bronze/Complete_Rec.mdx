@@ -34,7 +34,7 @@ Silver.
 
 ### Solution - Apple Division
 
-Since $n\le 20$, we can solve the focus problem by trying all possible divisions
+Since $n \le 20$, we can solve this by trying all possible divisions
 of $n$ apples into two sets and finding the one with the minimum difference in
 weights. Here are two ways to do this.
 
@@ -59,18 +59,24 @@ using namespace std;
 using ll = long long;
 
 int n;
-ll weight[20];
+vector<long long> weights;
 
-ll solve(int i, ll sum1, ll sum2) {
-	if (i == n) { return abs(sum1 - sum2); }
-	return min(solve(i + 1, sum1 + weight[i], sum2),
-	           solve(i + 1, sum1, sum2 + weight[i]));
+ll recurse_apples(int index, ll sum1, ll sum2) {
+	// We've added all apples- return the absolute difference
+	if (index == n) { return abs(sum1 - sum2); }
+
+	// Try adding the current apple to either the first or second set
+	return min(recurse_apples(index + 1, sum1 + weights[index], sum2),
+	           recurse_apples(index + 1, sum1, sum2 + weights[index]));
 }
 
 int main() {
 	cin >> n;
-	for (int i = 0; i < n; i++) { cin >> weight[i]; }
-	cout << solve(0, 0, 0) << endl;
+	weights.resize(n);
+	for (int i = 0; i < n; i++) { cin >> weights[i]; }
+
+	// Solve the problem starting at apple 0 with both sets being empty
+	cout << recurse_apples(0, 0, 0) << endl;
 }
 ```
 
@@ -81,26 +87,29 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class AppleDivision {
 	static int n;
-	static int[] weight;
+	static int[] weights;
 
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 
 		n = io.nextInt();
-		weight = new int[n];
-		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
+		weights = new int[n];
+		for (int i = 0; i < n; i++) { weights[i] = io.nextInt(); }
 
-		io.println(solve(0, 0, 0));
+		// Solve the problem starting at apple 0 with both sets being empty
+		io.println(recurseApples(0, 0, 0));
 		io.close();
 	}
 
-	static long solve(int index, long sum1, long sum2) {
+	static long recurseApples(int index, long sum1, long sum2) {
+		// We've added all apples- return the absolute difference
 		if (index == n) { return Math.abs(sum1 - sum2); }
 
-		return Math.min(solve(index + 1, sum1 + weight[index], sum2),
-		                solve(index + 1, sum1, sum2 + weight[index]));
+		// Try adding the current apple to either the first or second set
+		return Math.min(recurseApples(index + 1, sum1 + weights[index], sum2),
+		                recurseApples(index + 1, sum1, sum2 + weights[index]));
 	}
 
 	// CodeSnip{Kattio}
@@ -115,15 +124,20 @@ n = int(input())
 weights = list(map(int, input().split()))
 
 
-def solve(i, sum1, sum2):
+def recurse_apples(i: int, sum1: int, sum2: int) -> int:
+	# We've added all apples- return the absolute difference
 	if i == n:
 		return abs(sum2 - sum1)
+
+	# Try adding the current apple to either the first or second set
 	return min(
-		solve(i + 1, sum1 + weights[i], sum2), solve(i + 1, sum1, sum2 + weights[i])
+		recurse_apples(i + 1, sum1 + weights[i], sum2),
+		recurse_apples(i + 1, sum1, sum2 + weights[i]),
 	)
 
 
-print(solve(0, 0, 0))
+# Solve the problem starting at apple 0 with both sets being empty
+print(recurse_apples(0, 0, 0))
 ```
 
 </PySection>
@@ -138,57 +152,77 @@ You are not expected to know this for Bronze.
 </Warning>
 
 A **bitmask** is an integer whose binary representation is used to represent a
-subset. For a particular bitmask, if the $i$'th bit is turned on (equal to $1$),
-we say the $i$'th apple is in $s_1$. Then, the rest of the apples are in $s_2$.
+subset. In the context of this problem, if the $i$'th bit is equal to $1$ in a particular bitmask,
+we say the $i$'th apple is in $s_1$. If not, we'll say it's in $s_2$.
 We can iterate through all subsets $s_1$ if we check all bitmasks ranging from
-$0$ to $2^N-1$. For each bitmask, find the sum of $s_1$ and $s_2$ and find the
-minimum difference between their sums.
+$0$ to $2^N-1$.
 
-Note the fancy bitwise operations:
+Let's do a quick demo with $N=3$.
+These are the integers from $0$ to $2^3-1$ along with their
+binary representations and the corresponding elements included in $s_1$.
+As you can see, all possible subsets are accounted for.
+
+<center>
+
+| Number | Binary | Apples In $s_1$ |
+|--------|--------|-----------------|
+| 0      | `000`  | $\{\}$          |
+| 1      | `001`  | $\{0\}$         |
+| 2      | `010`  | $\{1\}$         |
+| 3      | `011`  | $\{0,1\}$       |
+| 4      | `100`  | $\{2\}$         |
+| 5      | `101`  | $\{0,2\}$       |
+| 6      | `110`  | $\{1,2\}$       |
+| 7      | `111`  | $\{0,1,2\}$     |
+
+</center>
+
+With this concept, we can implement our solution.
+
+You'll notice that our code contains some fancy bitwise operations:
 
 - `1 << x` for an integer $x$ is another way of writing $2^x$, which, in binary,
   has only the $x$'th bit turned on.
-- The `&` (and) operator will take two integers and return a new integer.
-  `a & b` for integers $a$ and $b$ will return a new integer whose $i$'th bit is
+- The `&` (AND) operator will take two integers and return a new integer.
+  `a & b` for integers $a$ and $b$ will return a new integer whose $i$th bit is
   turned on if and only if the $i$'th bit is turned on for both $a$ and $b$.
   Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is
   turned on in $mask$.
 
-<Info title="Bitwise Operations">
-
-Check [this module](/gold/intro-bitwise) for more information.
-
-</Info>
+If you wanna learn more about them, we have a
+[dedicated module](/silver/intro-bitwise) for bitwise operations.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
 using ll = long long;
 
-int n;
-ll weight[20];
-
 int main() {
+	int n;
 	cin >> n;
-	for (int i = 0; i < n; i++) { cin >> weight[i]; }
-	ll ans = (ll)1e18;
+	vector<ll> weights(n);
+	for (ll &w : weights) { cin >> w; }
+
+	ll ans = INT64_MAX;
 	for (int mask = 0; mask < (1 << n); mask++) {
-		ll sum1 = 0, sum2 = 0;
-		for (int j = 0; j < n; j++) {
-			if (mask & (1 << j)) {  // if the j-th bit is toggled
-				sum1 += weight[j];
+		ll sum1 = 0;
+		ll sum2 = 0;
+		for (int i = 0; i < n; i++) {
+			// Check if the ith bit is toggled
+			if (mask & (1 << i)) {
+				// If it is, the apple is included in sum1
+				sum1 += weights[i];
 			} else {
-				sum2 += weight[j];
+				sum2 += weights[i];
 			}
 		}
 		ans = min(ans, abs(sum1 - sum2));
 	}
-	cout << ans << "\n";
+
+	cout << ans << endl;
 }
 ```
 
@@ -199,24 +233,25 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class AppleDivision {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
 
 		int n = io.nextInt();
-		int weight[] = new int[n];
-		for (int i = 0; i < n; i++) { weight[i] = io.nextInt(); }
+		int[] weights = new int[n];
+		for (int i = 0; i < n; i++) { weights[i] = io.nextInt(); }
 
 		long ans = Long.MAX_VALUE;
 		for (int mask = 0; mask < (1 << n); mask++) {
 			long sum1 = 0;
 			long sum2 = 0;
-
 			for (int i = 0; i < n; i++) {
+				// Check if the ith bit is toggled
 				if ((mask & (1 << i)) > 0) {
-					sum1 += weight[i];
+					// If it is, the apple is included in sum1
+					sum1 += weights[i];
 				} else {
-					sum2 += weight[i];
+					sum2 += weights[i];
 				}
 			}
 			ans = Math.min(ans, Math.abs(sum1 - sum2));
@@ -235,16 +270,20 @@ public class Main {
 
 ```py
 n = int(input())
-weight = list(map(int, input().split()))
+weights = list(map(int, input().split()))
 
 ans = float("inf")
 for mask in range(1 << n):
-	sum1, sum2 = 0, 0
+	sum1 = 0
+	sum2 = 0
 	for i in range(n):
+		# Checks if the ith bit is set
 		if mask & (1 << i):
-			sum1 += weight[i]
+			# If it is, the apple is included in sum1
+			sum1 += weights[i]
 		else:
-			sum2 += weight[i]
+			sum2 += weights[i]
+
 	ans = min(ans, abs(sum1 - sum2))
 
 print(ans)
@@ -316,7 +355,7 @@ validity.
 
 <!-- For a list of $N$ elements, there are  ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $\mathcal{O}(N \cdot N!)$. -->
 
-Just a slight modification of method 1 from CPH.
+This is just a slight modification of method 1 from CPH.
 
 We'll use the recursive function $\texttt{search}$ to find all the permutations
 of the string $s$. First, keep track of how many of each character there are in
@@ -330,23 +369,22 @@ $\texttt{perms}$.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 string s;
 vector<string> perms;
 int char_count[26];
 
-void search(string curr) {
-	// we've finished creating a permutation
+void search(const string &curr = "") {
+	// We've finished creating a permutation
 	if (curr.size() == s.size()) {
 		perms.push_back(curr);
 		return;
 	}
 	for (int i = 0; i < 26; i++) {
-		// for all available characters
+		// For all available characters
 		if (char_count[i] > 0) {
-			// add it to the current string and search
+			// Add it to the current string and continue the search
 			char_count[i]--;
 			search(curr + (char)('a' + i));
 			char_count[i]++;
@@ -357,9 +395,11 @@ void search(string curr) {
 int main() {
 	cin >> s;
 	for (char c : s) { char_count[c - 'a']++; }
-	search("");
-	cout << perms.size() << "\n";
-	for (string perm : perms) { cout << perm << "\n"; }
+
+	search();
+
+	cout << perms.size() << '\n';
+	for (const string &perm : perms) { cout << perm << '\n'; }
 }
 ```
 
@@ -376,15 +416,15 @@ public class CreatingStrings1 {
 	static int[] charCount = new int[26];
 
 	static void search(String curr) {
-		// we've finished creating a permutation
+		// We've finished creating a permutation
 		if (curr.length() == s.length()) {
 			perms.add(curr);
 			return;
 		}
 		for (int i = 0; i < 26; i++) {
-			// for all available characters
+			// For all available characters
 			if (charCount[i] > 0) {
-				// add it to the current string and search
+				// Add it to the current string and continue the search
 				charCount[i]--;
 				search(curr + (char)(i + 'a'));
 				charCount[i]++;
@@ -395,8 +435,11 @@ public class CreatingStrings1 {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio();
 		s = io.next();
+
 		for (int i = 0; i < s.length(); i++) { charCount[s.charAt(i) - 'a']++; }
+
 		search("");
+
 		io.println(perms.size());
 		for (String perm : perms) { io.println(perm); }
 		io.close();
@@ -415,15 +458,15 @@ perms = []
 char_count = [0] * 26
 
 
-def search(curr):
+def search(curr: str = ""):
 	# we've finished creating a permutation
 	if len(curr) == len(s):
 		perms.append(curr)
 		return
 	for i in range(26):
-		# for all available characters
+		# For all available characters
 		if char_count[i] > 0:
-			# add it to the current string and search
+			# Add it to the current string and continue the search
 			char_count[i] -= 1
 			search(curr + chr(ord("a") + i))
 			char_count[i] += 1
@@ -432,7 +475,8 @@ def search(curr):
 for c in s:
 	char_count[ord(c) - ord("a")] += 1
 
-search("")
+search()
+
 print(len(perms))
 for perm in perms:
 	print(perm)
@@ -494,9 +538,12 @@ using namespace std;
 int main() {
 	string s;
 	cin >> s;
-	vector<string> perms;
 	sort(s.begin(), s.end());
+
+	// perms is a sorted list of all the permutations of the given string
+	vector<string> perms;
 	do { perms.push_back(s); } while (next_permutation(s.begin(), s.end()));
+
 	cout << perms.size() << endl;
 	for (const string &perm : perms) { cout << perm << endl; }
 }
@@ -514,11 +561,13 @@ a set can filter out duplicates, and since tuples are returned, we need to join
 the characters into a string.
 
 ```py
-import itertools
+from itertools import permutations
 
 s = input()
+
 # perms is a sorted list of all the permutations of the given string
-perms = sorted(set(itertools.permutations(s)))
+perms = sorted(set(permutations(s)))
+
 print(len(perms))
 for perm in perms:
 	print("".join(perm))
@@ -546,59 +595,200 @@ for perm in perms:
 
 #### By Generating Permutations
 
-Since no two queens can be in the same column, let's generate a permutation of
-length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
+A brute-force solution that checks all $\binom{64}{8}$ possible queen
+combinations will have over 4 billion arrangements to check, making it too slow.
 
-By generating all permutations, we can quickly test all possible placements, and
-count how many are valid.
+We have to brute-froce a bit more intelligently.
+To do this, we can directly generate permutations so that no two queens are
+attacking each other due to being in the same row or column.
 
-To make the implementation easier, we can observe that some bottom-left to
-top-right diagonal can be represented as all squares $i, j$ such that
-$i + j = S$ for some $S$. Similarly, some bottom-right to top-left diagonal can
-be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
+Since no two queens can be in the same column, it makes sense
+to lay one out in each row.
+It remains to figure out how to vary the *rows* each queen is in.
+This can be done by generating all permutations from $1 \cdots 8$, with the
+numbers representing which row each queen is in.
+
+For example, the permutation $[6, 0, 5, 1, 4, 3, 7, 2]$ results in this
+queen arrangement:
+
+<table class="text-center">
+	<tbody>
+		<tr>
+			<td></td>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6</td>
+			<td>7</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>Q</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>Q</td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+Doing this cuts down the number of arrangements we have to check down to
+a much more managable $8!$.
+
+<Info title="Easier Diagonal Checking">
+
+To make the implementation easier, notice that some bottom-left to
+top-right diagonal can be represented as all squares $i, j$
+($i$ being the row and $j$ being the column) such that $i + j = S$ for some $S$.
+For example, all squares on the diagonal from $6, 0$ to $0, 6$ have their
+coordinates sum to $6$.
+
+Similarly, some bottom-right to top-left diagonal can
+be represented as the same thing, but with $i-j$ instead of $i+j$.
+
+</Info>
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-bool ok[8][8];
-int ans = 0;
+const int DIM = 8;
 
 int main() {
-	for (int i = 0; i < 8; i++) {
-		string s;
-		cin >> s;
-		for (int j = 0; j < 8; j++) { ok[i][j] = (s[j] == '.'); }
+	vector<vector<bool>> blocked(DIM, vector<bool>(DIM));
+	for (int r = 0; r < DIM; r++) {
+		string row;
+		cin >> row;
+		for (int c = 0; c < DIM; c++) { blocked[r][c] = row[c] == '*'; }
 	}
-	vector<int> vals(8);
 
-	iota(vals.begin(), vals.end(), 0);  // set vals to 0 1 ... 7
+	vector<int> queens(DIM);
+	// Set the initial values to 0, 1...7
+	iota(queens.begin(), queens.end(), 0);
 
+	int valid_num = 0;
 	do {
 		bool works = true;
-		bool blocked[16];
-		for (int i = 0; i < 8; i++) {
-			if (!ok[i][vals[i]]) { works = false; }
+		// Check if any cells have been blocked off by the input
+		for (int c = 0; c < DIM; c++) {
+			if (blocked[queens[c]][c]) {
+				works = false;
+				break;
+			}
 		}
-		// first mark all squares as not blocked
-		memset(blocked, false, sizeof(blocked));
-		for (int i = 0; i < 8; i++) {
-			if (blocked[i + vals[i]]) { works = false; }
-			blocked[i + vals[i]] = true;  // mark this diagonal
-		}
-		memset(blocked, false, sizeof(blocked));
-		for (int i = 0; i < 8; i++) {
-			if (blocked[i + 7 - vals[i]]) { works = false; }
-			blocked[i + 7 - vals[i]] = true;
-		}
-		if (works) ++ans;
-	} while (next_permutation(vals.begin(), vals.end()));
 
-	cout << ans << '\n';
+		// Check the diagonals from the top-left to the bottom-right
+		vector<bool> taken(DIM * 2 - 1);
+		for (int c = 0; c < DIM; c++) {
+			// Check if the diagonal with sum has been taken
+			if (taken[c + queens[c]]) {
+				works = false;
+				break;
+			}
+			taken[c + queens[c]] = true;
+		}
+
+		// Check the diagonals from the top-right to the bottom-left
+		taken = vector<bool>(DIM * 2 - 1);
+		for (int c = 0; c < DIM; c++) {
+			// queens[c] - c can be negative; the DIM - 1 offsets that
+			if (taken[queens[c] - c + DIM - 1]) {
+				works = false;
+				break;
+			}
+			taken[queens[c] - c + DIM - 1] = true;
+		}
+
+		if (works) { valid_num++; }
+	} while (next_permutation(queens.begin(), queens.end()));
+
+	cout << valid_num << endl;
 }
 ```
 
@@ -609,53 +799,77 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Chessboard {
-	public static boolean ok[][] = new boolean[8][8];
-	public static List<Integer> perm = new ArrayList<>();
-	public static boolean[] chosen = new boolean[8];
-	public static int ans = 0;
+public class ChessboardQueens {
+	private static final int DIM = 8;
 
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio();
-		for (int i = 0; i < 8; i++) {
-			String str = io.next();
-			for (int j = 0; j < 8; j++) { ok[i][j] = (str.charAt(j) == '.'); }
+	private static boolean[][] blocked = new boolean[DIM][DIM];
+
+	private static final List<Integer> queens = new ArrayList<>();
+	private static final boolean[] chosen = new boolean[DIM];
+
+	private static int validNum = 0;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		for (int r = 0; r < DIM; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < DIM; c++) {
+				if (row.charAt(c) == '*') { blocked[r][c] = true; }
+			}
 		}
-		genperm();
-		io.println(ans);
-		io.close();
+
+		genQueens();
+
+		System.out.println(validNum);
 	}
 
-	public static void genperm() {
-		if (perm.size() == 8) {
+	private static void genQueens() {
+		if (queens.size() == DIM) {
 			boolean works = true;
-			boolean blocked[] = new boolean[16];
-			for (int i = 0; i < 8; i++) {
-				if (!ok[i][perm.get(i)]) { works = false; }
+
+			// Check if any cells have been blocked off by the input
+			for (int c = 0; c < DIM; c++) {
+				if (blocked[queens.get(c)][c]) {
+					works = false;
+					break;
+				}
 			}
-			for (int i = 0; i < 8; i++) {
-				if (blocked[i + perm.get(i)]) { works = false; }
-				blocked[i + perm.get(i)] = true;  // mark this diagonal
+
+			// Check the diagonals from the top-left to the bottom-right
+			boolean[] taken = new boolean[DIM * 2 - 1];
+			for (int c = 0; c < DIM; c++) {
+				// Check if the diagonal with this sum has been taken
+				if (taken[c + queens.get(c)]) {
+					works = false;
+					break;
+				}
+				taken[c + queens.get(c)] = true;
 			}
-			Arrays.fill(blocked, false);
-			for (int i = 0; i < 8; i++) {
-				if (blocked[i + 7 - perm.get(i)]) { works = false; }
-				blocked[i + 7 - perm.get(i)] = true;
+
+			// Check the diagonals from the top-right to the bottom-left
+			taken = new boolean[DIM * 2 - 1];
+			for (int c = 0; c < DIM; c++) {
+				// queens.get(c) - c can be negative; the DIM - 1 offsets that
+				if (taken[queens.get(c) - c + DIM - 1]) {
+					works = false;
+					break;
+				}
+				taken[queens.get(c) - c + DIM - 1] = true;
 			}
-			if (works) ans++;
+
+			if (works) { validNum++; }
 		} else {
-			for (int i = 0; i < 8; i++) {
-				if (chosen[i]) continue;
-				chosen[i] = true;
-				perm.add(i);
-				genperm();
-				chosen[i] = false;
-				perm.remove(perm.size() - 1);
+			for (int c = 0; c < DIM; c++) {
+				if (chosen[c]) { continue; }
+				chosen[c] = true;
+				queens.add(c);
+				genQueens();
+				chosen[c] = false;
+				queens.remove(queens.size() - 1);
 			}
 		}
 	}
-
-	// CodeSnip{Kattio}
 }
 ```
 
@@ -663,37 +877,48 @@ public class Chessboard {
 <PySection>
 
 ```py
-import itertools
+from itertools import permutations
 
-ok = [[0] * 8 for _ in range(8)]
-ans = 0
-for i in range(8):
-	s = input()
-	for j in range(8):
-		ok[i][j] = s[j] == "."
+DIM = 8
 
-vals = list(range(8))
+blocked = [[False] * DIM for _ in range(DIM)]
+for r in range(DIM):
+	row = input()
+	for c in range(DIM):
+		blocked[r][c] = row[c] == "*"
 
-for permutation in itertools.permutations(vals):
+valid_num = 0
+for queens in permutations(range(DIM)):
 	works = True
-	for i in range(8):
-		if not ok[i][permutation[i]]:
-			works = False
-	blocked = [0] * 16
-	for i in range(8):
-		if blocked[i + permutation[i]]:
-			works = False
-		blocked[i + permutation[i]] = True
 
-	blocked = [0] * 16
-	for i in range(8):
-		if blocked[i + 7 - permutation[i]]:
+	# Check if any cells have been blocked off by the input
+	for c in range(DIM):
+		if blocked[queens[c]][c]:
 			works = False
-		blocked[i + 7 - permutation[i]] = True
+			break
+
+	# Check the diagonals from the top-left to the bottom-right
+	taken = [False] * (DIM * 2 - 1)
+	for c in range(DIM):
+		# Check if the diagonal with sum has been taken
+		if taken[c + queens[c]]:
+			works = False
+			break
+		taken[c + queens[c]] = True
+
+	# Check the diagonals from the top-right to the bottom-left
+	taken = [False] * (DIM * 2 - 1)
+	for c in range(DIM):
+		# queens[c] - c can be negative; the DIM - 1 offsets that
+		if taken[queens[c] - c + DIM - 1]:
+			works = False
+			break
+		taken[queens[c] - c + DIM - 1] = True
+
 	if works:
-		ans += 1
+		valid_num += 1
 
-print(ans)
+print(valid_num)
 ```
 
 </PySection>
@@ -710,42 +935,60 @@ According to CPH:
 Since the bounds are small, we can recursively backtrack over all ways to place
 the queens, storing the current state of the board.
 
-Then, we can try to place a queen at all squares $x, y$ if it isn't attacked by
-a queen or blocked and recurse, before removing this queen and backtracking.
+At each level, we try to place a queen at all squares that aren't blocked
+or attacked by other queens.
+After this, we recurse, then remove this queen and backtrack.
 
-Finally, when we have placed all the queens and the board's state is valid, then
-increment the answer.
+Finally, we increment the answer when we've placed all eight queens.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-string g[8];
-bool sum[15], diff[15], c[8];
-int ans = 0;
+const int DIM = 8;
 
-void dfs(int r) {  // place queen in r-th row
-	if (r == 8) {
-		++ans;  // found valid placement
+vector<vector<bool>> blocked(DIM, vector<bool>(DIM));
+vector<bool> rows_taken(DIM);
+// Indicators for diagonals that go from the bottom left to the top right
+vector<bool> diag1(DIM * 2 - 1);
+// Indicators for diagonals that go from the bottom right to the top left
+vector<bool> diag2(DIM * 2 - 1);
+
+int valid_num = 0;
+
+void search_queens(int c = 0) {
+	if (c == DIM) {
+		// We've filled all rows, increment and return
+		valid_num++;
 		return;
 	}
-	for (int i = 0; i < 8; ++i) {
-		if (g[r][i] == '.' && !c[i] && !sum[i + r] && !diff[i - r + 7]) {
-			c[i] = sum[i + r] = diff[i - r + 7] = true;
-			dfs(r + 1);
-			c[i] = sum[i + r] = diff[i - r + 7] = false;
+
+	for (int r = 0; r < DIM; r++) {
+		bool row_open = !rows_taken[r];
+		bool diag_open = !diag1[r + c] && !diag2[r - c + DIM - 1];
+		if (!blocked[r][c] && row_open && diag_open) {
+			// A row and two diagonals have been taken
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = true;
+			search_queens(c + 1);
+			// And now they aren't anymore
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = false;
 		}
 	}
 }
 
 int main() {
-	for (int i = 0; i < 8; ++i) cin >> g[i];
-	dfs(0);
-	cout << ans;
+	for (int r = 0; r < DIM; r++) {
+		string row;
+		cin >> row;
+		for (int c = 0; c < DIM; c++) { blocked[r][c] = row[c] == '*'; }
+	}
+
+	search_queens();
+
+	cout << valid_num << endl;
 }
 ```
 
@@ -754,41 +997,54 @@ int main() {
 
 ```java
 import java.io.*;
-import java.util.*;
 
-public class Main {
-	static String g[];
-	static boolean sum[], diff[], c[];
-	static int ans = 0;
+public class ChessboardQueens {
+	private static final int DIM = 8;
 
-	static void dfs(int r) {  // place queen in row r
-		if (r == 8) {
-			++ans;
+	private static boolean[][] blocked = new boolean[DIM][DIM];
+
+	private static final boolean[] rowsTaken = new boolean[DIM];
+	// Indicators for diagonals that go from the bottom left to the top right
+	private static final boolean[] diag1 = new boolean[DIM * 2 - 1];
+	// Indicators for diagonals that go from the bottom right to the top left
+	private static final boolean[] diag2 = new boolean[DIM * 2 - 1];
+
+	private static int validNum = 0;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		for (int r = 0; r < DIM; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < DIM; c++) {
+				if (row.charAt(c) == '*') { blocked[r][c] = true; }
+			}
+		}
+
+		searchQueens(0);
+
+		System.out.println(validNum);
+	}
+
+	private static void searchQueens(int c) {
+		if (c == DIM) {
+			// We've filled all rows, increment and return
+			validNum++;
 			return;
 		}
-		for (int i = 0; i < 8; ++i) {
-			if (g[r].charAt(i) == '.' && !c[i] && !sum[i + r] &&
-			    !diff[i - r + 7]) {
-				c[i] = sum[i + r] = diff[i - r + 7] = true;
-				dfs(r + 1);
-				c[i] = sum[i + r] = diff[i - r + 7] = false;
+
+		for (int r = 0; r < DIM; r++) {
+			boolean row_open = !rowsTaken[r];
+			boolean diag_open = !diag1[r + c] && !diag2[r - c + DIM - 1];
+			if (!blocked[r][c] && row_open && diag_open) {
+				// A row and two diagonals have been taken
+				rowsTaken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = true;
+				searchQueens(c + 1);
+				// And now they aren't anymore
+				rowsTaken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = false;
 			}
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		Kattio io = new Kattio();
-		g = new String[8];
-		sum = new boolean[15];
-		diff = new boolean[15];
-		c = new boolean[8];
-		for (int i = 0; i < 8; ++i) { g[i] = io.next(); }
-		dfs(0);
-		io.println(ans);
-		io.close();
-	}
-
-	// CodeSnip{Kattio}
 }
 ```
 
@@ -796,27 +1052,44 @@ public class Main {
 <PySection>
 
 ```py
-g = [input() for _ in range(8)]
-sum_ = [False] * 15
-diff = [False] * 15
-c = [0] * 8
-ans = 0
+DIM = 8
+
+blocked = [[False for _ in range(DIM)] for _ in range(DIM)]
+for r in range(DIM):
+	row = input()
+	for c in range(DIM):
+		blocked[r][c] = row[c] == "*"
+
+rows_taken = [False] * DIM
+# Indicators for diagonals that go from the bottom left to the top right
+diag1 = [False] * (DIM * 2 - 1)
+# Indicators for diagonals that go from the bottom right to the top left
+diag2 = [False] * (DIM * 2 - 1)
+
+valid_num = 0
 
 
-def dfs(r):
-	global ans
-	if r == 8:
-		ans += 1
+def search_queens(c: int = 0):
+	global valid_num
+
+	if c == DIM:
+		# We've filled all rows, increment and return
+		valid_num += 1
 		return
-	for i in range(8):
-		if g[r][i] == "." and not c[i] and not sum_[i + r] and not diff[i - r + 7]:
-			c[i] = sum_[i + r] = diff[i - r + 7] = True
-			dfs(r + 1)
-			c[i] = sum_[i + r] = diff[i - r + 7] = False
+
+	for r in range(DIM):
+		row_open = not rows_taken[r]
+		diag_open = not diag1[r + c] and not diag2[r - c + DIM - 1]
+		if not blocked[r][c] and row_open and diag_open:
+			# A row and two diagonals have been taken
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = True
+			search_queens(c + 1)
+			# And now they aren't anymore
+			rows_taken[r] = diag1[r + c] = diag2[r - c + DIM - 1] = False
 
 
-dfs(0)
-print(ans)
+search_queens()
+print(valid_num)
 ```
 
 </PySection>

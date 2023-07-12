@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import { useDarkMode } from '../../context/DarkModeContext';
 import CodeBlock from '../markdown/CodeBlock/CodeBlock';
-import Youtube from '../markdown/Youtube';
+import YouTube from '../markdown/YouTube';
 import Feedback from './Feedback';
 
 const VideoComponent = ({ link }: { link: string }) => {
@@ -50,7 +50,7 @@ const VideoComponent = ({ link }: { link: string }) => {
   }
   return (
     <div className={'mt-6'}>
-      <Youtube id={id} />
+      <YouTube id={id} />
       <div className="h-4" />
       <Feedback videoId={id} />
     </div>

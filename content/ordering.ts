@@ -114,6 +114,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['graph-traversal', 'flood-fill', 'intro-tree', 'func-graphs'],
     },
     {
+      name: 'Additional Topics',
+      items: ['intro-bitwise'],
+    },
+    {
       name: 'Conclusion',
       description: 'Congratulations on making it this far!',
       items: ['silver-conclusion'],
@@ -161,12 +165,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional Topics',
       description: 'Rarely required.',
-      items: [
-        'string-hashing',
-        'hashmaps',
-        'meet-in-the-middle',
-        'intro-bitwise',
-      ],
+      items: ['string-hashing', 'hashmaps', 'meet-in-the-middle'],
     },
     {
       name: 'Conclusion',

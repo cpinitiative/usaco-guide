@@ -52,6 +52,7 @@ const problemsQuery = `{
           kind
           label
           labelTooltip
+          hasHints
           url
           sketch
         }
@@ -93,6 +94,7 @@ export const filesQuery = `{
           kind
           label
           labelTooltip
+          hasHints
           url
           sketch
         }

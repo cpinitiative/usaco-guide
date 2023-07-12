@@ -40,7 +40,7 @@ int main() {
 	vector<int> a(n);
 	for (int &i : a) { cin >> i; }
 
-	// Binary search over the maximum median
+	// Binary search for the maximum median
 	int lo = 1;
 	int hi = n;
 	while (lo < hi) {
@@ -48,9 +48,11 @@ int main() {
 		// Same as the f described in the editorial
 		vector<int> f(n);
 		for (int i = 0; i < n; i++) {
-			// If a[i] is greater than or equal to the median, it contributes 1
-			// to f(i) Otherwise if it less than the median, it contributes -1
-			// to f(i)
+			/*
+			 * If a[i] is greater than or equal to the median, it
+			 * contributes 1 to f(i) Otherwise if it less than the median,
+			 * it contributes -1 to f(i)
+			 */
 			f[i] = a[i] >= median ? 1 : -1;
 			if (i) { f[i] += f[i - 1]; }
 		}
@@ -79,4 +81,108 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MaxMedian {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(br.readLine());
+		int[] a = new int[n];
+		for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
+
+		// Binary search for the maximum median
+		int lo = 1;
+		int hi = n;
+		while (lo < hi) {
+			int median = (lo + hi + 1) / 2;
+			// Same as the f described in the editorial
+			int[] f = new int[n];
+			for (int i = 0; i < n; i++) {
+				/*
+				 * If a[i] is greater than or equal to the median, it
+				 * contributes 1 to f(i) Otherwise if it less than the median,
+				 * it contributes -1 to f(i)
+				 */
+				f[i] = a[i] >= median ? 1 : -1;
+				if (i > 0) { f[i] += f[i - 1]; }
+			}
+
+			// Keeps track of the minimum value of f(x) in the prefix
+			int mn = 0;
+			int diff = 0;
+			// Iterate over the ending pointer of a subarray.
+			for (int i = k - 1; i < n; i++) {
+				// Update the minimum element in the prefix.
+				if (i - k >= 0) { mn = Math.min(mn, f[i - k]); }
+				// Update the maximum possible difference.
+				diff = Math.max(diff, f[i] - mn);
+			}
+
+			// Update binary search bounds.
+			if (diff > 0) {
+				lo = median;
+			} else {
+				hi = median - 1;
+			}
+		}
+
+		pw.println(lo);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, k = [int(i) for i in input().split()]
+a = [int(i) for i in input().split()]
+
+# Binary search over the maximum median
+lo = 1
+hi = n
+while lo < hi:
+	median = (lo + hi + 1) // 2
+	# Same as the f described in the editorial
+	f = []
+	for i in range(n):
+		# If a[i] is greater than or equal to the median, it contributes 1 to f(i)
+		# Otherwise if it less than the median, it contributes -1 to f(i)
+		f.append(1 if a[i] >= median else -1)
+		if i > 0:
+			f[i] += f[i - 1]
+
+	# Keeps track of the minimum value of f(x) in the prefix
+	mn = 0
+	diff = 0
+	# Iterate over the ending pointer of a subarray.
+	for i in range(k - 1, n):
+		# Update the minimum element in the prefix.
+		if i - k >= 0:
+			mn = min(mn, f[i - k])
+		# Update the maximum possible difference.
+		diff = max(diff, f[i] - mn)
+
+	# Update binary search bounds.
+	if diff > 0:
+		lo = median
+	else:
+		hi = median - 1
+
+print(lo)
+```
+
+</PySection>
 </LanguageSection>
