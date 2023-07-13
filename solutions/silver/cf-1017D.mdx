@@ -9,15 +9,15 @@ author: Chongtian Ma
 
 ## Alternative Solution
 
-We can first precompute the wu values for each pair of strings. Then, we can prefix sum up the number of strings that gives each wu value of each string (represented by `pref_wu` in the following implementation). Thus, for each query we can utilize binary search to acquire the greatest prefix that have wu value not greater than $k$.
+We can first precompute the wu values for each pair of strings. Then, we can prefix sum up the number of strings that gives each wu value of each string (represented by `pref_wu` in the following implementation). Thus, for each query we can utilize output our prefix sum array.
 
-Also, note that in the implementation,
+In the implementation,
 instead of looping through all bits and finding which bits are the same, $i \oplus j$ essentially gives the mask of the bits that are different, so wu of total
-minus wu of $(i \oplus j)$ will also give wu values of the bits that are the same.
+minus wu of $(i \oplus j)$ will also give wu values of the bits that are the same. Also, since $k$ is at most $100$, we can precompute the answer for every $k$ of a string.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}({2^n}^2 + qn)$
+**Time Complexity:** $\mathcal{O}({2^{2n}} + qn)$
 
 <LanguageSection>
 
@@ -26,6 +26,8 @@ minus wu of $(i \oplus j)$ will also give wu values of the bits that are the sam
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
+const int max_k = 100;
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
@@ -55,19 +57,22 @@ int main() {
 	}
 
 	/*
-	 * precompute wu value between every pair of possible strings
-	 * .first stores the actual value, .second stores prefix of count
+	 * precompute wu value every possible k for a string
+	 * pref_wu[i][j] stores prefix of count up to k = j for string i
 	 */
-	vector<vector<pair<int, int>>> pref_wu(1 << n,
-	                                       vector<pair<int, int>>(1 << n));
+	vector<vector<int>> pref_wu(1 << n, vector<int>(max_k + 1));
 	for (int i = 0; i < (1 << n); i++) {
 		for (int j = 0; j < (1 << n); j++) {
-			pref_wu[i][j] = {wu.back() - wu[i ^ j], str_count[j]};
+			int all_same = (1 << n) - 1;
+			int diff = i ^ j;
+			int wu_value = wu[all_same] - wu[diff];
+			if (wu_value <= max_k) {
+				pref_wu[i][wu_value] += str_count[j];
+			}
 		}
-		sort(pref_wu[i].begin(), pref_wu[i].end());
 		// accumulate prefix sums of count
-		for (int j = 1; j < (1 << n); j++) {
-			pref_wu[i][j].second += pref_wu[i][j - 1].second;
+		for (int j = 1; j <= max_k; j++) {
+			pref_wu[i][j] += pref_wu[i][j-1];
 		}
 	}
 
@@ -79,16 +84,10 @@ int main() {
 		for (int i = 0; i < n; i++) {
 			if (t[i] == '1') { val += 1 << i; }
 		}
-		// binary search for the least element with wu greater than k
-		auto it = upper_bound(pref_wu[val].begin(), pref_wu[val].end(),
-		                      make_pair(k, INT32_MAX));
-		if (it == pref_wu[val].begin()) {
-			cout << 0 << "\n";
-		} else {
-			cout << prev(it)->second << "\n";
-		}
+		cout << pref_wu[val][k] << "\n";
 	}
 }
+
 ```
 </CPPSection>
 </LanguageSection>
